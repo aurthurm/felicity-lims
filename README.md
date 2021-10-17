@@ -2,6 +2,8 @@
 
 <p style="text-align: center;">A next generation open source laboratory information management system for clinical/medical laboratories</p>
 
+![Screenshot1](https://user-images.githubusercontent.com/17094364/137630249-b84e5b1c-f525-4b0a-8d1e-1e2820910a5f.png)
+
 <p style="text-align: center;">Felicity is the quality of being good, pleasant, or desirable.</p>
 
 ## Descritpion
