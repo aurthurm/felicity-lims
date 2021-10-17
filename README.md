@@ -1,10 +1,8 @@
-<h1><p style="text-align: center;">FELICITY LIMS</p></h1>
-
-<p style="text-align: center;">A next generation open source laboratory information management system for clinical/medical laboratories</p>
+# FELICITY LIMS
 
 ![Screenshot1](https://user-images.githubusercontent.com/17094364/137630249-b84e5b1c-f525-4b0a-8d1e-1e2820910a5f.png)
 
-<p style="text-align: center;">Felicity is the quality of being good, pleasant, or desirable.</p>
+A next generation open source laboratory information management system for clinical/medical laboratories.
 
 ## Descritpion
 The Felicity LIMS project aims to create a Laboratory Information Management System (LIMS) that tracks the complete laboratory workflow providing all the functionalities of a Laboratory Information Management System. 
@@ -15,6 +13,8 @@ Felicity LIMS will ensure that sufficient metadata is captured and clinical labo
 
 Felicity Backend is developed in Python using the FastAPI framework and strawberry GraphQL.
 Felicity FrontEnd is developed in VueJs, URQL, and Tailwind CSS.
+
+Felicity is the quality of being good, pleasant, or desirable.
 
 ## Main Features
  - Sample status tracking
