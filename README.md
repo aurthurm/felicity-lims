@@ -22,11 +22,25 @@ Felicity is the quality of being good, pleasant, or desirable.
  - Quality control
  - Reporting
  - Highly customizable and extensible
+ - Micro kanban Project management
 
 ## Installation
 
 ### Direct
-raw/direct instructions here
+#### using poetry
+#### using anaconda
 
 ### Docker
-docker instructions here
+This method uses Docker and docker-compose which handles the details of installing dependencies for you. On your Linux command line, run:
+```
+$ git clone https://github.com/aurthurm/felicity.git
+$ cd felicity
+$ docker-compose up -d
+```
+
+## Contact
+ - Email me here
+ - facebook me here
+ - Linked in me here
+ - Call/Whatsapp me here
+ - telegram me here
