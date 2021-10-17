@@ -23,6 +23,7 @@ Felicity is the quality of being good, pleasant, or desirable.
  - Reporting
  - Highly customizable and extensible
  - Micro kanban Project management
+ - Experimental Markdown Document manager
 
 ## Installation
 
