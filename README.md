@@ -55,6 +55,7 @@ bash felicity.sh &
 
 #### Frontend Installation 
 Install [NodeJs](https://github.com/nodesource/distributions/blob/master/README.md#installation-instructions)
+Install [Yarn](https://yarnpkg.com/getting-started/install)
 Then follow instructions below
 ```shell
 cd felicity/frontent/vite
