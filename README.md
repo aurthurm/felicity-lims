@@ -33,15 +33,15 @@ Felicity is the quality of being good, pleasant, or desirable.
 
 ### Docker
 This method uses Docker and docker-compose which handles the details of installing dependencies for you. On your Linux command line, run:
-```
+```shell
 $ git clone https://github.com/aurthurm/felicity.git
 $ cd felicity
 $ docker-compose up -d
 ```
 
 ## Contact
- - Email me here
- - facebook me here
- - Linked in me here
- - Call/Whatsapp me here
- - telegram me here
+ - Email me directly at aurthurmusendame@gmail.com
+ - Me on [facebook](https://www.fb.me/aurthur.musendame)
+ - Me on [Linked In](https://www.linkedin.com/in/aurthurmusendame)
+ - [Whatsapp Me](https://api.WhatsApp.com/send?phone=263776406399) or call on +263776406399
+ - Me on [Telegram](https://www.t.me/aurthurm)
