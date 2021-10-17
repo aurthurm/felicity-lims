@@ -15,8 +15,8 @@ Felicity Backend is developed in Python using the FastAPI framework and strawber
 Felicity FrontEnd is developed in VueJs, URQL, and Tailwind CSS.
 
 ## Main Features
-Sample status tracking
-Flexible batched sample workflow
-Quality control
-Reporting
-Highly customizable and extensible
+ - Sample status tracking
+ - Flexible batched sample workflow
+ - Quality control
+ - Reporting
+ - Highly customizable and extensible
