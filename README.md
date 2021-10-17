@@ -28,8 +28,23 @@ Felicity is the quality of being good, pleasant, or desirable.
 ## Installation
 
 ### Direct
-#### using poetry
-#### using anaconda
+#### Backend Installation 
+##### using poetry
+
+##### using anaconda
+Fist install [Miniconda](https://docs.conda.io/en/latest/miniconda.html)
+Create feicity enviroment using conda
+```shell
+$ conda create -n felicity python=3.9
+$ git clone https://github.com/aurthurm/felicity.git
+$ cd felicity
+$ conda activate felicity
+$ cd backend/felicity_lims
+$ pip install -r requirements.txt
+$ bash elicity.sh &
+````
+
+#### Frontend Installation 
 
 ### Docker
 This method uses Docker and docker-compose which handles the details of installing dependencies for you. On your Linux command line, run:
