@@ -31,6 +31,7 @@ Felicity is the quality of being good, pleasant, or desirable.
 #### Backend Installation 
 ##### using poetry
 Fist install [Poetry](https://python-poetry.org/docs/#installation)
+Then follow instructions below
 ```shell
 git clone https://github.com/aurthurm/felicity.git
 cd felicity
@@ -41,6 +42,7 @@ bash felicity.sh &
 
 ##### using anaconda
 Fist install [Miniconda](https://docs.conda.io/en/latest/miniconda.html)
+Then follow instructions below
 ```shell
 conda create -n felicity python=3.9
 conda activate felicity
@@ -52,6 +54,17 @@ bash felicity.sh &
 ````
 
 #### Frontend Installation 
+Install [NodeJs](https://github.com/nodesource/distributions/blob/master/README.md#installation-instructions)
+Then follow instructions below
+```shell
+cd felicity/frontent/vite
+yarn install
+# for production mode
+yarn build
+yarn start
+# for development mode
+yarn dev
+````
 
 ### Docker
 This method uses Docker and docker-compose which handles the details of installing dependencies for you. On your Linux command line, run:
