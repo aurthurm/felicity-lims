@@ -79,7 +79,7 @@ export class Task implements ITask {
 
  export interface IListing {
     uid?: string;
-    name?: string;
+    title?: string;
     description?: string;
     listingTasks?: ITask[];
   }
@@ -87,7 +87,7 @@ export class Task implements ITask {
   export class Listing implements IListing {
     constructor(
       public uid?: string,
-      public name?: string,
+      public title?: string,
       public description?: string,
       public listingTasks?: ITask[],
     ) {
@@ -203,23 +203,15 @@ export const mutations = <MutationTree<IState>>{
     state.board = null;;
   },
 
-  [MutationTypes.SET_BOARDS](state: IState, payload: any[]): void {
-    state.boards  = [];
-    let boards = parseEdgeNodeToList(payload)
-    state.boards = boards;
+  [MutationTypes.SET_BOARDS](state: IState, payload: any): void {
+    state.boards = payload.items;
   },
 
-  [MutationTypes.ADD_BOARD](state: IState, payload: any): void {
-    let board: IBoard = payload.board;
+  [MutationTypes.ADD_BOARD](state: IState, board: IBoard): void {
     state.boards.push(board)
   },
 
   [MutationTypes.SET_BOARD](state: IState, payload: IBoard): void {
-    let board = payload;
-    board.boardListings = parseEdgeNodeToList(payload?.boardListings)
-    board.boardListings!.forEach(board => {
-      board.listingTasks = parseEdgeNodeToList(board?.listingTasks)
-    })
     state.board = payload;
   },
 
@@ -236,9 +228,11 @@ export const mutations = <MutationTree<IState>>{
 
   // listing
   [MutationTypes.ADD_BOARD_LISTING](state: IState, payload: any): void {
-    let board = state.board;
-    if(board) board.boardListings!.push(payload.listing)
-    state.board = board;
+    if(state.board!.boardListings) {
+      state!.board!.boardListings.push(payload)
+    }else{
+      state!.board!.boardListings = [payload];
+    }
   },
 
   [MutationTypes.DELETE_BOARD_LISTING](state: IState, listingUid: any): void {
@@ -255,35 +249,24 @@ export const mutations = <MutationTree<IState>>{
     state.listingTask = null;
   },
 
-  [MutationTypes.ADD_LISTING_TASK](state: IState, payload: any): void {
+  [MutationTypes.ADD_LISTING_TASK](state: IState, task: any): void {
     let board = state.board;
-    board!.boardListings?.forEach((listing: IListing) => {
-      if (listing.uid?.toString() === payload.task.listingUid?.toString()) {
-        if(listing.listingTasks) {
-          listing.listingTasks.push(payload.task)
+    state!.board!.boardListings?.forEach((listing: IListing) => {
+      if (listing.uid?.toString() === task.listingUid?.toString()) {
+        if(listing.listingTasks!.length > 0) {
+          listing.listingTasks!.push(task)
         } else {
-          listing.listingTasks = [payload.task]
+          listing.listingTasks = [task]
         }
       }
     })
-    state.board = board;
   },
 
-  [MutationTypes.SET_LISTING_TASK](state: IState, payload: any): void {
-    let task = payload;
-    task.members = parseEdgeNodeToList(payload?.members)
-    task.tags = parseEdgeNodeToList(payload?.tags)
-    task.milestones = parseEdgeNodeToList(payload?.taskMilestones)
-    task.comments = parseEdgeNodeToList(payload?.taskComments)
+  [MutationTypes.SET_LISTING_TASK](state: IState, task: any): void {
     state.listingTask = task;
   },
 
-  [MutationTypes.MOVE_LISTING_TASK](state: IState, payload: any): void {
-    let task = payload;
-    task.members = parseEdgeNodeToList(payload?.members)
-    task.tags = parseEdgeNodeToList(payload?.tags)
-    task.milestones = parseEdgeNodeToList(payload?.taskMilestones)
-    task.comments = parseEdgeNodeToList(payload?.taskComments)
+  [MutationTypes.MOVE_LISTING_TASK](state: IState, task: any): void {
 
     state!.board!.boardListings!.forEach(listing => {
       // remove old task
@@ -312,19 +295,14 @@ export const mutations = <MutationTree<IState>>{
   [MutationTypes.DUPLICATE_LISTING_TASK](state: IState, payload: any): void {
     let board = state.board;
     board!.boardListings?.forEach((listing: IListing) => {
-      if (listing.uid?.toString() === payload.task.listingUid?.toString()) {
-        listing.listingTasks!.push(payload.task)
+      if (listing.uid?.toString() === payload.listingUid?.toString()) {
+        listing.listingTasks!.push(payload)
       }
     })
     state.board = board;
   },
 
-  [MutationTypes.UPDATE_LISTING_TASK](state: IState, payload: any): void {
-    let task = payload.task;
-    task.members = parseEdgeNodeToList(task?.members)
-    task.tags = parseEdgeNodeToList(task?.tags)
-    task.milestones = parseEdgeNodeToList(task?.taskMilestones)
-    task.comments = parseEdgeNodeToList(task?.taskComments)
+  [MutationTypes.UPDATE_LISTING_TASK](state: IState, task: any): void {
     state.listingTask = task;
   },
 
@@ -376,7 +354,7 @@ export const actions = <ActionTree<IState, RootState>>{
   },
   
   async [ActionTypes.DELETE_BOARD_LISTING]({ commit }, payload){
-    commit(MutationTypes.DELETE_BOARD_LISTING, payload.data.deleteBoardListing.listingUid);
+    commit(MutationTypes.DELETE_BOARD_LISTING, payload.data.deleteBoardListing.uid);
   },
   
   
@@ -397,11 +375,11 @@ export const actions = <ActionTree<IState, RootState>>{
   },
   
   async [ActionTypes.MOVE_LISTING_TASK]({ commit }, payload){
-    commit(MutationTypes.MOVE_LISTING_TASK, payload.data.updateListingTask.task);
+    commit(MutationTypes.MOVE_LISTING_TASK, payload.data.updateListingTask);
   },
   
   async [ActionTypes.DELETE_LISTING_TASK]({ commit }, payload){
-    commit(MutationTypes.DELETE_LISTING_TASK, payload.data.deleteListingTask.taskUid);
+    commit(MutationTypes.DELETE_LISTING_TASK, payload.data.deleteListingTask.uid);
   },
   
   async [ActionTypes.DUPLICATE_LISTING_TASK]({ commit }, payload){
@@ -414,12 +392,12 @@ export const actions = <ActionTree<IState, RootState>>{
 
   //  TASKS COMMENTS
   async [ActionTypes.ADD_TASK_COMMENT]({ commit }, payload){
-    commit(MutationTypes.ADD_TASK_COMMENT, payload.data.createTaskComment.taskComment);
+    commit(MutationTypes.ADD_TASK_COMMENT, payload.data.createTaskComment);
   },
 
   //  TASKS MILESTONES
   async [ActionTypes.ADD_TASK_MILESTONE]({ commit }, payload){
-    commit(MutationTypes.ADD_TASK_MILESTONE, payload.data.createTaskMilestone.taskMilestone);
+    commit(MutationTypes.ADD_TASK_MILESTONE, payload.data.createTaskMilestone);
   },
 
 };

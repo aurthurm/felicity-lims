@@ -1,53 +1,114 @@
-from graphene_sqlalchemy import SQLAlchemyObjectType
-from graphene import relay
+from typing import Optional, List
+from datetime import datetime
 
-from felicity.apps.kanban.models import (
-    Board,
-    BoardListing,
-    ListingTask,
-    TaskMilestone,
-    TaskComment,
-    TaskTag
-)
+import strawberry
+
+from felicity.gql import PageInfo
+from felicity.gql.setup.types import DepartmentType
+from felicity.gql.user.types import UserType
 
 
-# Graphene DocumentTag Type
-class BoardType(SQLAlchemyObjectType):
-    class Meta:
-        model = Board
-        interfaces = (relay.Node, )
+@strawberry.type
+class TaskTagType:
+    uid: int
+    name: str
 
 
-# Graphene DocumentCategory Type
-class BoardListingType(SQLAlchemyObjectType):
-    class Meta:
-        model = BoardListing
-        interfaces = (relay.Node, )
+@strawberry.type
+class TaskCommentType:
+    uid: int
+    comment: str
+    task_uid: int
+    created_by_uid: Optional[int]
+    created_by: Optional[UserType]
+    created_at: Optional[datetime]
+    updated_by_uid: Optional[int]
+    updated_by: Optional[UserType]
+    updated_at: Optional[datetime]
 
 
-# Graphene Document Type
-class ListingTaskType(SQLAlchemyObjectType):
-    class Meta:
-        model = ListingTask
-        interfaces = (relay.Node, )
+@strawberry.type
+class TaskMilestoneType:
+    uid: int
+    title: str
+    done: bool
+    task_uid: int
+    assignee_uid: Optional[int]
+    assignee: Optional[UserType]
+    created_by_uid: Optional[int]
+    created_by: Optional[UserType]
+    created_at: Optional[datetime]
+    updated_by_uid: Optional[int]
+    updated_by: Optional[UserType]
+    updated_at: Optional[datetime]
 
 
-# Graphene Document Type
-class TaskMilestoneType(SQLAlchemyObjectType):
-    class Meta:
-        model = TaskMilestone
-        interfaces = (relay.Node, )
+@strawberry.type
+class ListingTaskType:
+    uid: int
+    title: str
+    description: Optional[str]
+    listing_uid: Optional[int]
+    assignee_uid: Optional[int]
+    assignee: Optional[UserType]
+    tags: Optional[List[TaskTagType]]
+    members: Optional[List[UserType]]
+    task_milestones: Optional[List[TaskMilestoneType]]
+    task_comments:  Optional[List[TaskCommentType]]
+    due_date: Optional[datetime]
+    complete: bool
+    archived: bool
+    created_by_uid: Optional[int]
+    created_by: Optional[UserType]
+    created_at: Optional[datetime]
+    updated_by_uid: Optional[int]
+    updated_by: Optional[UserType]
+    updated_at: Optional[datetime]
 
 
-# Graphene Document Type
-class TaskCommentType(SQLAlchemyObjectType):
-    class Meta:
-        model = TaskComment
-        interfaces = (relay.Node, )
+@strawberry.type
+class BoardListingType:
+    uid: int
+    title: str
+    description: Optional[str]
+    board_uid: Optional[int]
+    listing_tasks: Optional[List[ListingTaskType]]
+    created_by_uid: Optional[int]
+    created_by: Optional[UserType]
+    created_at: Optional[datetime]
+    updated_by_uid: Optional[int]
+    updated_by: Optional[UserType]
+    updated_at: Optional[datetime]
 
 
-# Graphene Document Type
-class TaskTagType(SQLAlchemyObjectType):
-    class Meta:
-        model = TaskTag
-        interfaces = (relay.Node, )
+@strawberry.type
+class BoardType:
+    uid: int
+    title: str
+    description: Optional[str]
+    archived: bool
+    board_listings: Optional[List[BoardListingType]]
+    department_uid: Optional[int]
+    department: Optional[DepartmentType]
+    created_by_uid: Optional[int]
+    created_by: Optional[UserType]
+    created_at: Optional[datetime]
+    updated_by_uid: Optional[int]
+    updated_by: Optional[UserType]
+    updated_at: Optional[datetime]
+
+
+#  relay paginations
+@strawberry.type
+class BoardEdge:
+    cursor: str
+    node: BoardType
+
+
+@strawberry.type
+class BoardCursorPage:
+    page_info: PageInfo
+    edges: Optional[List[BoardEdge]]
+    items: Optional[List[BoardType]]
+    total_count: int
+

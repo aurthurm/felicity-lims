@@ -19,7 +19,7 @@ class SampleTypeBase(BaseAuditModel):
 
 
 class SampleTypeBaseInDB(SampleTypeBase):
-    uid: Optional[str] = None
+    uid: Optional[int] = None
 
     class Config:
         orm_mode = True
@@ -59,7 +59,7 @@ class ProfileBase(BaseAuditModel):
 
 
 class ProfileBaseInDB(ProfileBase):
-    uid: Optional[str] = None
+    uid: Optional[int] = None
 
     class Config:
         orm_mode = True
@@ -96,7 +96,7 @@ class AnalysisCategoryBase(BaseAuditModel):
 
 
 class AnalysisCategoryBaseInDB(AnalysisCategoryBase):
-    uid: Optional[str] = None
+    uid: Optional[int] = None
 
     class Config:
         orm_mode = True
@@ -135,14 +135,14 @@ class AnalysisBase(BaseAuditModel):
     sampletypes: Optional[List[SampleType]] = []
     tat_length_minutes: Optional[int] = None
     unit: Optional[str] = None
-    category_uid: Optional[str] = None
+    category_uid: Optional[int] = None
     sort_key: Optional[int] = 0
     internal_use: Optional[bool] = False
     active: Optional[bool] = True
 
 
 class AnalysisBaseInDB(AnalysisBase):
-    uid: Optional[str] = None
+    uid: Optional[int] = None
 
     class Config:
         orm_mode = True
@@ -174,13 +174,13 @@ class AnalysisInDB(AnalysisBaseInDB):
 
 # Shared properties
 class ResultOptionBase(BaseAuditModel):
-    option_key: Optional[str] = None
+    option_key: Optional[int] = None
     value: Optional[str] = None
-    analysis_uid: Optional[str] = None
+    analysis_uid: Optional[int] = None
 
 
 class ResultOptionBaseInDB(ResultOptionBase):
-    uid: Optional[str] = None
+    uid: Optional[int] = None
 
     class Config:
         orm_mode = True
@@ -220,7 +220,7 @@ class AnalysisRequestBase(BaseAuditModel):
 
 
 class AnalysisRequestBaseInDB(AnalysisRequestBase):
-    uid: Optional[str] = None
+    uid: Optional[int] = None
 
     class Config:
         orm_mode = True
@@ -265,7 +265,7 @@ class SampleBase(BaseAuditModel):
 
 
 class SampleBaseInDB(SampleBase):
-    uid: Optional[str] = None
+    uid: Optional[int] = None
 
     class Config:
         orm_mode = True
@@ -301,7 +301,7 @@ class RejectionReasonBase(BaseAuditModel):
 
 
 class RejectionReasonBaseInDB(RejectionReasonBase):
-    uid: Optional[str] = None
+    uid: Optional[int] = None
 
     class Config:
         orm_mode = True
@@ -354,7 +354,7 @@ class AnalysisResultBase(BaseAuditModel):
 
 
 class AnalysisResultBaseInDB(AnalysisResultBase):
-    uid: Optional[str] = None
+    uid: Optional[int] = None
 
     class Config:
         orm_mode = True
@@ -391,7 +391,7 @@ class QCSetBase(BaseAuditModel):
 
 
 class QCSetBaseInDB(QCSetBase):
-    uid: Optional[str] = None
+    uid: Optional[int] = None
 
     class Config:
         orm_mode = True
@@ -427,7 +427,7 @@ class QCLevelBase(BaseAuditModel):
 
 
 class QCLevelBaseInDB(QCLevelBase):
-    uid: Optional[str] = None
+    uid: Optional[int] = None
 
     class Config:
         orm_mode = True
@@ -466,7 +466,7 @@ class QCTemplateBase(BaseAuditModel):
 
 
 class QCTemplateBaseInDB(QCTemplateBase):
-    uid: Optional[str] = None
+    uid: Optional[int] = None
 
     class Config:
         orm_mode = True

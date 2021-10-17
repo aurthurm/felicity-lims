@@ -151,7 +151,7 @@ export default defineComponent({
 
     let allChecked = ref(false);
 
-    store.dispatch(ActionTypes.FETCH_ANALYSIS_RESULTS_FOR_SAMPLE, route.params.sampleUid)
+    store.dispatch(ActionTypes.FETCH_ANALYSIS_RESULTS_FOR_SAMPLE, +route.params.sampleUid)
     const analysisResults: IAnalysisResult = computed(() => store.getters.getAnalysisResults)
     const sample:ISampleRequest = computed(() => store.getters.getSample)
 

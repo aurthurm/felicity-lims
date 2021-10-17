@@ -30,9 +30,11 @@ export const actions = <ActionTree<IState, RootState>>{
     commit(MutationTypes.RESET_STATE);
   },
 
-  async [ActionTypes.FETCH_USERS]({ commit }) {
-    await useQuery({ query: GET_ALL_USERS })
-          .then(payload => commit(MutationTypes.SET_USERS, payload.data.value.userAll));
+  async [ActionTypes.FETCH_USERS]({ commit }, params) {
+    await urqlClient
+          .query( GET_ALL_USERS, { first: params?.first, after: params?.after, text: params?.text, sortBy: params?.sortBy })
+          .toPromise()
+          .then(result => commit(MutationTypes.SET_USERS, result.data.userAll))
   },
 
   // Auth

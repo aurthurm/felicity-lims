@@ -2,7 +2,7 @@ import secrets
 import os
 from typing import Any, Dict, List, Optional, Union
 
-from pydantic import AnyHttpUrl, BaseSettings, EmailStr, HttpUrl, PostgresDsn, validator
+from pydantic import AnyHttpUrl, AnyUrl, BaseSettings, EmailStr, HttpUrl, validator
 
 
 def getenv_boolean(var_name, default_value=False):
@@ -20,6 +20,11 @@ def getenv_value(value, default_value=None):
     return env_value
 
 
+class PostgresDsn(AnyUrl):
+    allowed_schemes = {'postgres', 'postgresql', 'postgres+asyncpg', 'postgresql+asyncpg'}
+    user_required = True
+
+
 class Settings(BaseSettings):
     API_V1_STR: str = "/api/v1"
     SECRET_KEY: str = secrets.token_urlsafe(32)
@@ -30,6 +35,7 @@ class Settings(BaseSettings):
         'http://localhost:8000',
         'http://localhost:3000',
         'http://192.168.137.97:3000',
+        'http://192.168.137.128:3000',
         'http://192.168.0.196:3000',
         'http://192.168.0.195:3000',
         'http://192.168.137.227:3000',
@@ -57,6 +63,7 @@ class Settings(BaseSettings):
     POSTGRES_PASSWORD: str = getenv_value("POSTGRES_PASSWORD", 'felicity')
     POSTGRES_DB: str = getenv_value("POSTGRES_DB", 'felicity_lims')
     SQLALCHEMY_DATABASE_URI: Optional[PostgresDsn] = None
+    SQLALCHEMY_ASYNC_DATABASE_URI: Optional[PostgresDsn] = None
 
     @validator("SQLALCHEMY_DATABASE_URI", pre=True)
     def assemble_db_connection(cls, v: Optional[str], values: Dict[str, Any]) -> Any:
@@ -64,6 +71,18 @@ class Settings(BaseSettings):
             return v
         return PostgresDsn.build(
             scheme="postgresql",
+            user=values.get("POSTGRES_USER"),
+            password=values.get("POSTGRES_PASSWORD"),
+            host=values.get("POSTGRES_SERVER"),
+            path=f"/{values.get('POSTGRES_DB') or ''}",
+        )
+
+    @validator("SQLALCHEMY_ASYNC_DATABASE_URI", pre=True)
+    def assemble_async_db_connection(cls, v: Optional[str], values: Dict[str, Any]) -> Any:
+        if isinstance(v, str):
+            return v
+        return PostgresDsn.build(
+            scheme="postgresql+asyncpg",
             user=values.get("POSTGRES_USER"),
             password=values.get("POSTGRES_PASSWORD"),
             host=values.get("POSTGRES_SERVER"),

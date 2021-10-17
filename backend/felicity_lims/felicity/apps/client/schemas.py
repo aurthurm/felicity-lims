@@ -11,7 +11,7 @@ from pydantic import BaseModel
 class ClientBase(BaseModel):
     name: Optional[str] = None
     code: Optional[str] = None
-    district_uid: Optional[str] = None
+    district_uid: Optional[int] = None
     email: Optional[str] = None
     email_cc: Optional[str] = None
     consent_email: Optional[bool] = None
@@ -23,7 +23,7 @@ class ClientBase(BaseModel):
 
 
 class ClientBaseInDB(ClientBase):
-    uid: Optional[str] = None
+    uid: Optional[int] = None
 
     class Config:
         orm_mode = True
@@ -31,7 +31,7 @@ class ClientBaseInDB(ClientBase):
 
 # Properties to receive via API on creation
 class ClientCreate(ClientBase):
-    district_uid: str
+    district_uid: Optional[int]
 
 
 # Properties to receive via API on update
@@ -55,7 +55,7 @@ class ClientInDB(ClientBaseInDB):
 
 # Shared properties
 class ClientContactBase(BaseModel):
-    client_uid: Optional[str] = None
+    client_uid: Optional[int] = None
     first_name: Optional[str] = None
     last_name: Optional[str] = None
     email: Optional[str] = None
@@ -68,7 +68,7 @@ class ClientContactBase(BaseModel):
 
 
 class ClientContactBaseInDB(ClientContactBase):
-    uid: Optional[str] = None
+    uid: Optional[int] = None
 
     class Config:
         orm_mode = True
@@ -76,7 +76,7 @@ class ClientContactBaseInDB(ClientContactBase):
 
 # Properties to receive via API on creation
 class ClientContactCreate(ClientContactBase):
-    client_uid: str
+    client_uid: int
 
 
 # Properties to receive via API on update

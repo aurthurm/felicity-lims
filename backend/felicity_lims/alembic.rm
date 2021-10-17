@@ -1,7 +1,0 @@
-After any changes or additions in database models, new alembic revision has to be created using the following command:
-
-alembic revision --autogenerate -m "some revision message"
-
-And then to upgrade the database to the newest revision:
-
-alembic upgrade head

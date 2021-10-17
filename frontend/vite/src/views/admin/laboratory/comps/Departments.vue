@@ -17,11 +17,11 @@
                 </tr>
                 </thead>
                 <tbody class="bg-white">
-                <tr v-for="dept in departments" :key="dept.uid">
+                <tr v-for="dept in departments" :key="dept?.uid">
                     <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
                     <div class="flex items-center">
                         <div>
-                        <div class="text-sm leading-5 text-gray-800">{{ dept.name }}</div>
+                        <div class="text-sm leading-5 text-gray-800">{{ dept?.name }}</div>
                         </div>
                     </div>
                     </td>

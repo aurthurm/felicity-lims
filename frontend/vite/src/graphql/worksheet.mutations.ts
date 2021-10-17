@@ -1,67 +1,52 @@
 import gql from 'graphql-tag';
 
 export const ADD_WORKSHEET_TEMPLATE= gql`
-  mutation AddWorkSheetTemplate($name: String!, $sampleTypeUid: String!, $description: String, $qcTemplateUid: String, $reserved: [ReservedInputType]!, $numberOfSamples: String!, $worksheetType: String, $instrumentUid: String, $cols:  String, $rows:  String, $analyses: [String]!, $rowWise: Boolean){
+  mutation AddWorkSheetTemplate($name: String!, $sampleTypeUid: Int!, $description: String, $qcTemplateUid: Int, $reserved: [ReservedInputType!]!, $numberOfSamples: Int!, $worksheetType: String, $instrumentUid: Int, $cols:  Int, $rows:  Int, $analyses: [Int!]!, $rowWise: Boolean){
   createWorksheetTemplate(name: $name, sampleTypeUid: $sampleTypeUid, description: $description, qcTemplateUid: $qcTemplateUid, reserved: $reserved, numberOfSamples: $numberOfSamples, worksheetType: $worksheetType, instrumentUid: $instrumentUid, cols: $cols, rows: $rows, analyses: $analyses, rowWise: $rowWise)
   {
-    worksheetTemplate {
+      uid
+      name
+      reserved
+      plate
+      numberOfSamples
+      rows
+      cols
+      rowWise
+      worksheetType
+      instrument {
+        uid
+        name
+      }
+      sampleType {
+        uid
+        name
+      }
+      description
+      qcTemplate {
+        uid
+        name
+        description
+        qcLevels {
           uid
-          name
-          reserved
-          plate
-          numberOfSamples
-          rows
-          cols
-          rowWise
-          worksheetType
-          instrument {
-            uid
-            name
-          }
-          sampleType {
-            uid
-            name
-          }
-          description
-          qcTemplate {
-            uid
-            name
-            description
-            qcLevels {
-              edges {
-                node {
-                  uid
-                  level
-                }
-              }
-            }
-          }
-          qcLevels {
-            edges {
-              node {
-                uid
-                level
-              }
-            }
-          }
-          analyses {
-            edges {
-              node {
-                uid
-                name
-              }
-            }
-          }
-          state
+          level
         }
-  }
+      }
+      qcLevels {
+        uid
+        level
+      }
+      analyses {
+        uid
+        name
+      }
+      state
+    }
 }`;
 
 export const EDIT_WORKSHEET_TEMPLATE= gql`
-  mutation EditWorkSheetTemplate($uid:String!, $name: String!, $sampleTypeUid: String!, $description: String, $qcTemplateUid: String, $reserved: [ReservedInputType]!, $numberOfSamples: String!, $worksheetType: String, $instrumentUid: String, $cols:  String, $rows:  String, $analyses: [String]!, $rowWise: Boolean){
+  mutation EditWorkSheetTemplate($uid:Int!, $name: String!, $sampleTypeUid: Int!, $description: String, $qcTemplateUid: Int, $reserved: [ReservedInputType!]!, $numberOfSamples: Int!, $worksheetType: String, $instrumentUid: Int, $cols:  Int, $rows:  Int, $analyses: [String!]!, $rowWise: Boolean){
   updateWorksheetTemplate(uid: $uid, name: $name, sampleTypeUid: $sampleTypeUid, description: $description, qcTemplateUid: $qcTemplateUid, reserved: $reserved, numberOfSamples: $numberOfSamples, worksheetType: $worksheetType, instrumentUid: $instrumentUid, cols: $cols, rows: $rows, analyses: $analyses, rowWise: $rowWise)
   {
-    worksheetTemplate {
           uid
           name
           reserved
@@ -85,41 +70,27 @@ export const EDIT_WORKSHEET_TEMPLATE= gql`
             name
             description
             qcLevels {
-              edges {
-                node {
-                  uid
-                  level
-                }
-              }
+              uid
+              level
             }
           }
           qcLevels {
-            edges {
-              node {
-                uid
-                level
-              }
-            }
+            uid
+            level
           }
           analyses {
-            edges {
-              node {
-                uid
-                name
-              }
-            }
+            uid
+            name
           }
           state
         }
-  }
 }`;
 
 
 export const ADD_WORKSHEET = gql`
-  mutation AddWorkSheet($analystUid:Int!, $templateUid: Int!){
-    createWorksheet(analystUid: $analystUid, templateUid: $templateUid)
+  mutation AddWorkSheet($analystUid:Int!, $templateUid: Int!, $count: Int){
+    createWorksheet(analystUid: $analystUid, templateUid: $templateUid, count:$count)
     {
-      worksheet {
         uid
         worksheetId
         numberOfSamples
@@ -138,26 +109,20 @@ export const ADD_WORKSHEET = gql`
           name
         }
         analyses {
-          edges {
-            node {
-              uid
-              name
-            }
-          }
+          uid
+          name
         }
         state
         createdAt
-      }
     }
   }`;
 
 
 
 export const WORKSHEET_UPDATE = gql`
-  mutation UpdateWorkSheet ($worksheetUid:Int!, $analystUid: Int, $action: String, $samples: [Int]) {
+  mutation UpdateWorkSheet ($worksheetUid:Int!, $analystUid: Int, $action: String, $samples: [Int!]!) {
     updateWorksheet(worksheetUid: $worksheetUid, analystUid: $analystUid, action: $action, samples: $samples )
     {
-      worksheet {
         uid
         numberOfSamples
         sampleType {
@@ -173,7 +138,6 @@ export const WORKSHEET_UPDATE = gql`
           name
         }
         plate
-      }
     }
   }`;
 
@@ -182,7 +146,6 @@ export const EDIT_WORKSHEET_APPLY_TEMPLATE= gql`
   mutation EditWorkSheetApplyTemplate($worksheetUid:Int!, $templateUid: Int!){
     updateWorksheetApplyTemplate(worksheetUid: $worksheetUid, templateUid: $templateUid)
   {
-    worksheet {
       uid
       numberOfSamples
       sampleType {
@@ -198,6 +161,5 @@ export const EDIT_WORKSHEET_APPLY_TEMPLATE= gql`
         name
       }
       plate
-    }
   }
 }`;

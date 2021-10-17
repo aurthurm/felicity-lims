@@ -405,7 +405,7 @@ export default defineComponent({
             setTimeout(function(){
               editListingTask('moveTask', {
                 uid: element?.uid,
-                listingUid: toUid,
+                listingUid: +toUid,
               });
             }, 500)
       }
@@ -471,7 +471,7 @@ export default defineComponent({
             if (result.isConfirmed) {
               editListingTask('moveTask', {
                 uid: task?.uid,
-                listingUid: event?.target?.value
+                listingUid: +event?.target?.value
               });
             }
           })

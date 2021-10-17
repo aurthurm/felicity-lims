@@ -39,7 +39,7 @@ import { parseDate } from '../../utils'
 export default {
     name: "tab-logs",
     props: {
-        targetId: String,
+        targetId: Number,
         targetType: String
     },
     setup(props){

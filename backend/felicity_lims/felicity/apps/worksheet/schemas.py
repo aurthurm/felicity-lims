@@ -1,6 +1,7 @@
 from typing import Optional, Dict, List
 
 from pydantic import BaseModel
+from felicity.apps.analysis.schemas import AnalysisBaseInDB, QCLevelInDB
 
 
 # 
@@ -14,6 +15,7 @@ class WorkSheetBase(BaseModel):
     worksheet_id: Optional[str] = None
     instrument_uid: Optional[int] = None
     sample_type_uid: Optional[int] = None
+    analyses: Optional[List[AnalysisBaseInDB]] = []
     analyses_uid: Optional[int] = None
     reserved: Optional[Dict] = {}
     number_of_samples: Optional[int] = None
@@ -26,7 +28,7 @@ class WorkSheetBase(BaseModel):
 
 
 class WorkSheetBaseInDB(WorkSheetBase):
-    uid: Optional[str] = None
+    uid: Optional[int] = None
 
     class Config:
         orm_mode = True
@@ -60,20 +62,21 @@ class WorkSheetInDB(WorkSheetBaseInDB):
 class WSTemplateBase(BaseModel):
     name: Optional[str] = None
     description: Optional[str] = None
-    instrument_uid: Optional[str] = None
-    sample_type_uid: Optional[str] = None
-    analyses: List[Optional[int]] = []
-    qc_analyses: List[Optional[int]] = []
+    instrument_uid: Optional[int] = None
+    sample_type_uid: Optional[int] = None
+    analyses: Optional[List[AnalysisBaseInDB]] = []
+    qc_analyses: Optional[List[AnalysisBaseInDB]] = []
+    qc_levels: Optional[List[QCLevelInDB]] = []
     reserved: Optional[Dict] = {}
-    number_of_samples: Optional[str] = None
+    number_of_samples: Optional[int] = None
     worksheet_type: Optional[str] = 'flat'
-    rows: Optional[str] = None
-    cols: Optional[str] = None
+    rows: Optional[int] = None
+    cols: Optional[int] = None
     row_wise: Optional[bool] = True
 
 
 class WSTemplateBaseInDB(WSTemplateBase):
-    uid: Optional[str] = None
+    uid: Optional[int] = None
 
     class Config:
         orm_mode = True

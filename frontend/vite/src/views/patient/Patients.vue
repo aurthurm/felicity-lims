@@ -138,6 +138,13 @@ export default defineComponent({
 
     let patientForm = reactive({ ...nullPatient });
     let patientSearch = ref('');
+    let patientBatch = ref(25);
+    let patientParams = reactive({ 
+      first: patientBatch.value, 
+      after: "",
+      text: "", 
+      sortBy: ["uid"]
+    });
 
     let provinces = ref([]);
     let districts = ref([]);
@@ -148,7 +155,7 @@ export default defineComponent({
     const genders = ["Male", "Female", "Missing", "Trans Gender"]
 
     store.dispatch(AdminActionTypes.FETCH_COUNTRIES);    
-    store.dispatch(ActionTypes.FETCH_PATIENTS);
+    store.dispatch(ActionTypes.FETCH_PATIENTS, patientParams);
 
     const { data: clients, fetching: CFetching, error: CError } = useQuery({
       query: GET_ALL_CLIENTS,

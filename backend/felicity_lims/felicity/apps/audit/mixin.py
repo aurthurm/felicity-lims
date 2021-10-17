@@ -1,11 +1,15 @@
 import json
+import logging
 import datetime
 from sqlalchemy import event, inspect
 from sqlalchemy.orm import class_mapper
 from sqlalchemy.orm.attributes import get_history
 
+from felicity.database.session import async_engine
 from felicity.apps.audit.models import AuditLog
 
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 ACTION_CREATE = 1
 ACTION_UPDATE = 2
@@ -27,7 +31,6 @@ class AuditableMixin:
 
     @staticmethod
     def create_audit(connection, object_type, object_id, action, **kwargs):
-        print(kwargs)
         audit = AuditLog(
             object_type,
             object_id,
@@ -35,14 +38,13 @@ class AuditableMixin:
             kwargs.get('state_before'),
             kwargs.get('state_after')
         )
-        audit.save(connection)
-        # audit.save()
 
+        audit.save(connection)
 
     @classmethod
     def __declare_last__(cls):
         if ACTION_CREATE in PLEASE_AUDIT:
-            event.listen(cls, 'after_insert', cls.audit_insert)
+            event.listens_for(cls, 'after_insert', cls.audit_insert)
 
         if ACTION_DELETE in PLEASE_AUDIT:
             event.listen(cls, 'after_delete', cls.audit_delete)

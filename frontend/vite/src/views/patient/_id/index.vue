@@ -225,7 +225,7 @@ export default defineComponent({
     const genders = ["Male", "Female", "Missing", "Trans Gender"]
     let getGender = pos => genders[pos];
 
-    store.dispatch(ActionTypes.FETCH_PATIENT_BY_UID, route.params.patientUid)
+    store.dispatch(ActionTypes.FETCH_PATIENT_BY_UID, +route.params.patientUid)
     let patient = computed(() => store.getters.getPatient);
 
     store.dispatch(AdminActionTypes.FETCH_COUNTRIES);

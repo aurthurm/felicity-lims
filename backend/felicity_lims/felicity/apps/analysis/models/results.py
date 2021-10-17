@@ -21,68 +21,72 @@ class AnalysisResult(Auditable, BaseMPTT):
     the number of linked sample_analyses at minimum :)
     """
     sample_uid = Column(Integer, ForeignKey('sample.uid'), nullable=False)
-    sample = relationship(analysis_models.Sample, backref="analysis_results")
+    sample = relationship(analysis_models.Sample, back_populates="analysis_results", lazy="selectin")
     worksheet_uid = Column(Integer, ForeignKey('worksheet.uid'), nullable=True)
-    worksheet = relationship(ws_models.WorkSheet, backref="analysis_results")
+    worksheet = relationship(ws_models.WorkSheet, back_populates="analysis_results", lazy="selectin")
     worksheet_position = Column(Integer, nullable=True)
     assigned = Column(Boolean(), default=False)
     analysis_uid = Column(Integer, ForeignKey('analysis.uid'), nullable=False)
-    analysis = relationship(analysis_models.Analysis, backref="analysis_results")
+    analysis = relationship(analysis_models.Analysis, backref="analysis_results", lazy="selectin")
     instrument_uid = Column(Integer, ForeignKey('instrument.uid'), nullable=True)
-    instrument = relationship(Instrument)
+    instrument = relationship(Instrument, lazy="selectin")
     method_uid = Column(Integer, ForeignKey('method.uid'), nullable=True)
-    method = relationship(Method)
+    method = relationship(Method, lazy="selectin")
     result = Column(String, nullable=True)
     analyst_uid = Column(Integer, ForeignKey('user.uid'), nullable=True)
+    analyst = relationship("User", foreign_keys=[analyst_uid], lazy="selectin")
     submitted_by_uid = Column(Integer, ForeignKey('user.uid'), nullable=True)
+    submitted_by = relationship("User", foreign_keys=[submitted_by_uid], lazy="selectin")
     date_submitted = Column(DateTime, nullable=True)
     verified_by_uid = Column(Integer, ForeignKey('user.uid'), nullable=True)
+    verified_by = relationship("User", foreign_keys=[verified_by_uid], lazy="selectin")
     date_verified = Column(DateTime, nullable=True)
     invalidated_by_uid = Column(Integer, ForeignKey('user.uid'), nullable=True)
+    invalidated_by = relationship("User", foreign_keys=[invalidated_by_uid], lazy="selectin")
     date_invalidated = Column(DateTime, nullable=True)
     retest = Column(Boolean(), default=False)
     reportable = Column(Boolean(), default=True)  # for retests or reflex
     status = Column(String, nullable=False)
 
-    def assign(self, ws_uid, position):
+    async def assign(self, ws_uid, position):
         self.worksheet_uid = ws_uid
         self.assigned = True
         self.worksheet_position = position
-        self.save()
+        await self.save()
 
-    def un_assign(self):
+    async def un_assign(self):
         self.worksheet_uid = None
         self.assigned = False
         self.worksheet_position = None
-        self.save()
+        await self.save()
 
-    def verify(self, verifier):
+    async def verify(self, verifier):
         self.status = conf.states.result.VERIFIED
         self.verified_by_uid = verifier.uid
         self.date_verified = datetime.now()
         self.updated_by_uid = verifier.uid # noqa
-        self.save()
+        await self.save()
 
-    def retract(self, retracted_by):
+    async def retract(self, retracted_by):
         self.status = conf.states.result.RETRACTED
         self.verified_by_uid = retracted_by.uid
         self.date_verified = datetime.now()
         self.updated_by_uid = retracted_by.uid # noqa
-        self.save()
+        await self.save()
 
-    def change_status(self, status):
+    async def change_status(self, status):
         self.status = status
-        self.save()
+        await self.save()
 
-    def hide_report(self):
+    async def hide_report(self):
         self.reportable = False
-        self.save()
+        await self.save()
 
     @classmethod
-    def create(cls, obj_in: schemas.AnalysisResultCreate) -> schemas.AnalysisResult:
+    async def create(cls, obj_in: schemas.AnalysisResultCreate) -> schemas.AnalysisResult:
         data = cls._import(obj_in)
-        return super().create(**data)
+        return await super().create(**data)
 
-    def update(self, obj_in: schemas.AnalysisResultUpdate) -> schemas.AnalysisResult:
+    async def update(self, obj_in: schemas.AnalysisResultUpdate) -> schemas.AnalysisResult:
         data = self._import(obj_in)
-        return super().update(**data)
+        return await super().update(**data)

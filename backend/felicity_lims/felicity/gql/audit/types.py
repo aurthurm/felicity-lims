@@ -1,12 +1,13 @@
-from graphene_sqlalchemy import SQLAlchemyObjectType
-from graphene import relay
-
-from felicity.apps.audit.models import AuditLog
+from typing import Optional, Text
+import strawberry
 
 
-# Graphene AuditLog Type
-class AuditLogType(SQLAlchemyObjectType):
-    class Meta:
-        model = AuditLog
-        interfaces = (relay.Node, )
-
+@strawberry.type
+class AuditLogType:
+    uid: int
+    user_id: Optional[int]
+    target_type: Optional[str]
+    target_id: Optional[int]
+    action: Optional[int]
+    state_before: Optional[Text]
+    state_after: Optional[Text]

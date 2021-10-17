@@ -1,492 +1,370 @@
+import inspect
 import logging
+from typing import Optional, List
 
-import graphene
-from graphql import GraphQLError
-from fastapi.encoders import jsonable_encoder
+import strawberry
 
 from felicity.apps.kanban import schemas, models
 from felicity.apps.user import models as user_models
-from felicity.gql import auth_from_info, verify_user_auth
+from felicity.gql import auth_from_info, verify_user_auth, DeletedItem
 from felicity.gql.kanban import types
+from felicity.utils import get_passed_args
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
-# 
-# Create Board Mutations
-# 
-class CreateBoard(graphene.Mutation):
-    class Arguments:
-        title = graphene.String(required=True)
-        description = graphene.String(required=False)
-        archived = graphene.Boolean(required=False)
-        department_uid = graphene.String(required=False)
-        create_by_uid = graphene.String(required=False)
+@strawberry.type
+class KanBanMutations:
+    @strawberry.mutation
+    async def create_board(self, info, title: str, description: Optional[str] = None, department_uid: Optional[int] = None,
+                           archived: Optional[bool] = False) -> types.BoardType:
 
-    ok = graphene.Boolean()
-    board = graphene.Field(lambda: types.BoardType)
+        inspector = inspect.getargvalues(inspect.currentframe())
+        passed_args = get_passed_args(inspector)
 
-    @staticmethod
-    def mutate(root, info, title, **kwargs):
-        is_authenticated, felicity_user = auth_from_info(info)
+        is_authenticated, felicity_user = await auth_from_info(info)
         verify_user_auth(is_authenticated, felicity_user, "Only Authenticated user can create kanban boards")
 
         if not title:
-            raise GraphQLError("Please Provide a Board title")
+            raise Exception("Please Provide a Board title")
 
-        exists = models.Board.get(title=title)
+        exists = await models.Board.get(title=title)
         if exists:
-            raise GraphQLError(f"Board {title} already exists")
-        
+            raise Exception(f"Board {title} already exists")
+
         incoming = {
-            "title": title,
             "created_by_uid": felicity_user.uid,
             "updated_by_uid": felicity_user.uid,
         }
-        for k, v in kwargs.items():
+        for k, v in passed_args.items():
             incoming[k] = v
 
         obj_in = schemas.BoardCreate(**incoming)
-        board = models.Board.create(obj_in)
-        ok = True
-        return CreateBoard(board=board, ok=ok)
+        board: models.Board = await models.Board.create(obj_in)
+        return board
 
-                
-class UpdateBoard(graphene.Mutation):
-    class Arguments:
-        uid = graphene.String(required=True)
-        title = graphene.String(required=True)
-        description = graphene.String(required=False)
-        archived = graphene.Boolean(required=False)
-        department_uid = graphene.String(required=False)
-        create_by_uid = graphene.String(required=False)
+    @strawberry.mutation
+    async def update_board(self, info, uid: int, title: Optional[str] = None, description: Optional[str] = None,
+                           archived: Optional[bool] = False, department_uid: Optional[int] = None) -> types.BoardType:
 
-    ok = graphene.Boolean()
-    board = graphene.Field(lambda: types.BoardType)
+        inspector = inspect.getargvalues(inspect.currentframe())
+        passed_args = get_passed_args(inspector)
 
-    @staticmethod
-    def mutate(root, info, uid, **kwargs):
-        is_authenticated, felicity_user = auth_from_info(info)
+        is_authenticated, felicity_user = await auth_from_info(info)
         verify_user_auth(is_authenticated, felicity_user, "Only Authenticated user can update kanban boards")
 
         if not uid:
-            raise GraphQLError("No uid provided to identify update obj")
-        
-        board = models.Board.get(uid=uid)
-        if not board:
-            raise GraphQLError(f"Board with uid {uid} not found. Cannot update obj ...")
+            raise Exception("No uid provided to identify update obj")
 
-        obj_data = jsonable_encoder(board)
+        board = await models.Board.get(uid=uid)
+        if not board:
+            raise Exception(f"Board with uid {uid} not found. Cannot update obj ...")
+
+        obj_data = board.to_dict(board)
         for field in obj_data:
-            if field in kwargs:
+            if field in passed_args:
                 try:
-                    setattr(board, field, kwargs[field])
+                    setattr(board, field, passed_args[field])
                 except Exception as e:
-                    logger.warning(f"failed to set attribute {field}: {e}")
+                    logger.warning(e)
 
         try:
             setattr(board, 'updated_by_uid', felicity_user.uid)
         except Exception as e:
-            logger.warning(f"failed to set attribute {'updated_by_uid'}: {e}")
+            logger.warning(e)
 
         obj_in = schemas.BoardUpdate(**board.to_dict())
-        board = board.update(obj_in)
-        ok = True
-        return UpdateBoard(ok=ok, board=board)
+        board = await board.update(obj_in)
+        return board
 
+    @strawberry.mutation
+    async def delete_board(self, info, uid: int) -> DeletedItem:
 
-class DeleteBoard(graphene.Mutation):
-    class Arguments:
-        uid = graphene.String(required=True)
+        inspector = inspect.getargvalues(inspect.currentframe())
+        passed_args = get_passed_args(inspector)
 
-    ok = graphene.Boolean()
-    board_uid = graphene.Int()
-
-    @staticmethod
-    def mutate(root, info, uid, **kwargs):
-        is_authenticated, felicity_user = auth_from_info(info)
+        is_authenticated, felicity_user = await auth_from_info(info)
         verify_user_auth(is_authenticated, felicity_user, "Only Authenticated user can delete kanban board")
 
         if not uid:
-            raise GraphQLError("No uid provided to identify update obj")
+            raise Exception("No uid provided to identify update obj")
 
-        board = models.Board.get(uid=uid)
+        board = await models.Board.get(uid=uid)
         if not board:
-            raise GraphQLError(f"Board with uid {uid} not found. Cannot delete obj ...")
+            raise Exception(f"Board with uid {uid} not found. Cannot delete obj ...")
 
         for listing in board.board_listings:
             if listing.listing_tasks:
-                raise GraphQLError(f"Cannot Delete a Board whose Listings have tasks ...")
+                raise Exception(f"Cannot Delete a Board whose Listings have tasks ...")
 
         board_uid = board.uid
-        board.delete()
+        await board.delete()
+        return DeletedItem(uid=board_uid)
 
-        ok = True
-        return DeleteBoard(ok=ok, board_uid=board_uid)
+    @strawberry.mutation
+    async def create_board_listing(self, info, title: str, board_uid: int, description: Optional[str] = None) -> types.BoardListingType:
 
+        inspector = inspect.getargvalues(inspect.currentframe())
+        passed_args = get_passed_args(inspector)
 
-#
-# Create BoardListing Mutations
-#
-class CreateBoardListing(graphene.Mutation):
-    class Arguments:
-        title = graphene.String(required=True)
-        description = graphene.String(required=False)
-        board_uid = graphene.String(required=True)
-
-    ok = graphene.Boolean()
-    listing = graphene.Field(lambda: types.BoardListingType)
-
-    @staticmethod
-    def mutate(root, info, title, **kwargs):
-        is_authenticated, felicity_user = auth_from_info(info)
+        is_authenticated, felicity_user = await auth_from_info(info)
         verify_user_auth(is_authenticated, felicity_user, "Only Authenticated user can create  kanban board listings")
 
         if not title:
-            raise GraphQLError("Please Provide a Listing title")
+            raise Exception("Please Provide a Listing title")
 
-        board_uid = kwargs.get('board_uid')
-        exists = models.BoardListing.get(title=title, board_uid=board_uid)
+        board_uid = passed_args.get('board_uid')
+        exists = await models.BoardListing.get(title=title, board_uid=board_uid)
         if exists:
-            raise GraphQLError(f"Listing {title} already exists in this board")
+            raise Exception(f"Listing {title} already exists in this board")
 
         incoming = {
-            "title": title,
-            "board_uid": board_uid,
             "created_by_uid": felicity_user.uid,
             "updated_by_uid": felicity_user.uid,
         }
-        for k, v in kwargs.items():
+        for k, v in passed_args.items():
             incoming[k] = v
 
         obj_in = schemas.BoardListingCreate(**incoming)
-        listing = models.BoardListing.create(obj_in)
-        ok = True
-        return CreateBoardListing(listing=listing, ok=ok)
+        listing: models.BoardListing = await models.BoardListing.create(obj_in)
+        return listing
 
+    @strawberry.mutation
+    async def update_board_listing(self, info, uid: int, title: Optional[str] = None, description: Optional[str] = None) -> types.BoardListingType:
 
-class UpdateBoardListing(graphene.Mutation):
-    class Arguments:
-        uid = graphene.String(required=True)
-        title = graphene.String(required=False)
-        description = graphene.String(required=False)
+        inspector = inspect.getargvalues(inspect.currentframe())
+        passed_args = get_passed_args(inspector)
 
-    ok = graphene.Boolean()
-    listing = graphene.Field(lambda: types.BoardListingType)
-
-    @staticmethod
-    def mutate(root, info, uid, **kwargs):
-        is_authenticated, felicity_user = auth_from_info(info)
+        is_authenticated, felicity_user = await auth_from_info(info)
         verify_user_auth(is_authenticated, felicity_user, "Only Authenticated user can update kanban board listings")
 
         if not uid:
-            raise GraphQLError("No uid provided to identify update obj")
+            raise Exception("No uid provided to identify update obj")
 
-        listing = models.BoardListing.get(uid=uid)
+        listing = await models.BoardListing.get(uid=uid)
         if not listing:
-            raise GraphQLError(f"Listing with uid {uid} not found. Cannot update obj ...")
+            raise Exception(f"Listing with uid {uid} not found. Cannot update obj ...")
 
-        obj_data = jsonable_encoder(listing)
+        obj_data = listing.to_dict()
         for field in obj_data:
-            if field in kwargs:
+            if field in passed_args:
                 try:
-                    setattr(listing, field, kwargs[field])
+                    setattr(listing, field, passed_args[field])
                 except Exception as e:
-                    logger.warning(f"failed to set attribute {field}: {e}")
+                    logger.warning(e)
 
         try:
             setattr(listing, 'updated_by_uid', felicity_user.uid)
         except Exception as e:
-            logger.warning(f"failed to set attribute {'updated_by_uid'}: {e}")
+            logger.warning(e)
 
         obj_in = schemas.BoardListingUpdate(**listing.to_dict())
-        listing = listing.update(obj_in)
-        ok = True
-        return UpdateBoardListing(ok=ok, listing=listing)
+        listing = await listing.update(obj_in)
+        return listing
 
+    @strawberry.mutation
+    async def delete_board_listing(self, info, uid: int) -> DeletedItem:
 
-class DeleteBoardListing(graphene.Mutation):
-    class Arguments:
-        uid = graphene.String(required=True)
+        inspector = inspect.getargvalues(inspect.currentframe())
+        passed_args = get_passed_args(inspector)
 
-    ok = graphene.Boolean()
-    listing_uid = graphene.Int()
-
-    @staticmethod
-    def mutate(root, info, uid, **kwargs):
-        is_authenticated, felicity_user = auth_from_info(info)
+        is_authenticated, felicity_user = await auth_from_info(info)
         verify_user_auth(is_authenticated, felicity_user, "Only Authenticated user can delete kanban board listings")
 
         if not uid:
-            raise GraphQLError("No uid provided to identify update obj")
+            raise Exception("No uid provided to identify update obj")
 
-        listing = models.BoardListing.get(uid=uid)
+        listing = await models.BoardListing.get(uid=uid)
         if not listing:
-            raise GraphQLError(f"Board Listing with uid {uid} not found. Cannot delete obj ...")
+            raise Exception(f"Board Listing with uid {uid} not found. Cannot delete obj ...")
 
         if listing.listing_tasks:
-            raise GraphQLError(f"First Delete/Move tasks from this listings in order to delete ...")
+            raise Exception(f"First Delete/Move tasks from this listings in order to delete ...")
 
         listing_uid = listing.uid
-        listing.delete()
+        await listing.delete()
 
-        ok = True
-        return DeleteBoardListing(ok=ok, listing_uid=listing_uid)
+        return DeletedItem(uid=listing_uid)
 
+    @strawberry.mutation
+    async def create_listing_task(self, info, title: str, listing_uid: int, description: Optional[str] = None) -> types.ListingTaskType:
 
-#
-# Create ListingTask Mutations
-#
-class CreateListingTask(graphene.Mutation):
-    class Arguments:
-        title = graphene.String(required=True)
-        description = graphene.String(required=False)
-        listing_uid = graphene.String(required=True)
+        inspector = inspect.getargvalues(inspect.currentframe())
+        passed_args = get_passed_args(inspector)
 
-    ok = graphene.Boolean()
-    task = graphene.Field(lambda: types.ListingTaskType)
-
-    @staticmethod
-    def mutate(root, info, title, **kwargs):
-        is_authenticated, felicity_user = auth_from_info(info)
+        is_authenticated, felicity_user = await auth_from_info(info)
         verify_user_auth(is_authenticated, felicity_user, "Only Authenticated user can create kanban tasks")
 
         if not title:
-            raise GraphQLError("Please Provide a Task title")
+            raise Exception("Please Provide a Task title")
 
         incoming = {
-            "title": title,
             "assignee_uid": felicity_user.uid,
             "created_by_uid": felicity_user.uid,
             "updated_by_uid": felicity_user.uid,
         }
-        for k, v in kwargs.items():
+        for k, v in passed_args.items():
             incoming[k] = v
 
         obj_in = schemas.ListingTaskCreate(**incoming)
-        task = models.ListingTask.create(obj_in)
+        task = await models.ListingTask.create(obj_in)
         task.members.append(felicity_user)
-        task.save()
+        task = await task.save()
+        return task
 
-        ok = True
-        return CreateListingTask(task=task, ok=ok)
+    @strawberry.mutation
+    async def update_listing_task(self, info, uid: int, title: Optional[str] = None, description: Optional[str] = None,
+                                  listing_uid: Optional[int] = None, due_date: Optional[str] = None, assignee_uid: Optional[int] = None,
+                                  member_uids: Optional[List[int]] = None, tags: Optional[List[str]] = None, complete: Optional[bool] = None,
+                                  archived: Optional[bool] = None) -> types.ListingTaskType:
 
+        inspector = inspect.getargvalues(inspect.currentframe())
+        passed_args = get_passed_args(inspector)
 
-class UpdateListingTask(graphene.Mutation):
-    class Arguments:
-        uid = graphene.String(required=True)
-        title = graphene.String(required=False)
-        description = graphene.String(required=False)
-        listing_uid = graphene.String(required=False)
-        due_date = graphene.String(required=False)
-        assignee_uid = graphene.String(required=False)
-        member_uids = graphene.List(graphene.String)
-        tags = graphene.List(graphene.String)
-        complete = graphene.Boolean(required=False)
-        archived = graphene.Boolean(required=False)
-
-    ok = graphene.Boolean()
-    task = graphene.Field(lambda: types.ListingTaskType)
-
-    @staticmethod
-    def mutate(root, info, uid, **kwargs):
-        is_authenticated, felicity_user = auth_from_info(info)
+        is_authenticated, felicity_user = await auth_from_info(info)
         verify_user_auth(is_authenticated, felicity_user, "Only Authenticated user can update kanban tasks")
 
         if not uid:
-            raise GraphQLError("No uid provided to identify update obj")
+            raise Exception("No uid provided to identify update obj")
 
-        task = models.ListingTask.get(uid=uid)
+        task = await models.ListingTask.get(uid=uid)
         if not task:
-            raise GraphQLError(f"Listing Task with uid {uid} not found. Cannot update obj ...")
+            raise Exception(f"Listing Task with uid {uid} not found. Cannot update obj ...")
 
-        # obj_data = jsonable_encoder(task)
         obj_data = task.to_dict()
         for field in obj_data:
-            if field in kwargs:
-                if kwargs[field] or kwargs[field] is False:
+            if field in passed_args:
+                if passed_args[field] or passed_args[field] is False:
                     try:
-                        setattr(task, field, kwargs[field])
+                        setattr(task, field, passed_args[field])
                     except Exception as e:
-                        logger.warning(f"failed to set attribute {field}: {e}")
+                        logger.warning(e)
 
         try:
             setattr(task, 'updated_by_uid', felicity_user.uid)
         except Exception as e:
-            logger.warning(f"failed to set attribute {'updated_by_uid'}: {e}")
+            logger.warning(e)
 
-        logger.warning(f"  kwargs: {kwargs}\n task.to_dict(): {task.to_dict()} ")
         obj_in = schemas.ListingTaskUpdate(**task.to_dict())
-        task = task.update(obj_in)
+        task = await task.update(obj_in)
 
-        member_uids = kwargs.get('member_uids', None)
+        member_uids = passed_args.get('member_uids', None)
         if member_uids:
             task.members = []
             if len(member_uids) > 0:
                 for member_uid in member_uids:
-                    member = user_models.User.get(uid=int(member_uid))
+                    member = await user_models.User.get(uid=int(member_uid))
                     task.members.append(member)
 
-        task.save()
+        task = await task.save()
+        return task
 
-        ok = True
-        return UpdateListingTask(ok=ok, task=task)
+    @strawberry.mutation
+    async def delete_listing_task(self, info, uid: int) -> DeletedItem:
 
+        inspector = inspect.getargvalues(inspect.currentframe())
+        passed_args = get_passed_args(inspector)
 
-class DeleteListingTask(graphene.Mutation):
-    class Arguments:
-        uid = graphene.String(required=True)
-
-    ok = graphene.Boolean()
-    task_uid = graphene.Int()
-
-    @staticmethod
-    def mutate(root, info, uid, **kwargs):
-        is_authenticated, felicity_user = auth_from_info(info)
+        is_authenticated, felicity_user = await auth_from_info(info)
         verify_user_auth(is_authenticated, felicity_user, "Only Authenticated user can delete kanban tasks")
 
         if not uid:
-            raise GraphQLError("No uid provided to identify update obj")
+            raise Exception("No uid provided to identify update obj")
 
-        task = models.ListingTask.get(uid=uid)
+        task = await models.ListingTask.get(uid=uid)
         if not task:
-            raise GraphQLError(f"Listing Task with uid {uid} not found. Cannot update obj ...")
+            raise Exception(f"Listing Task with uid {uid} not found. Cannot update obj ...")
 
         for comment in task.task_comments:
-            comment.delete()
+            await comment.delete()
 
         for milestone in task.task_milestones:
-            milestone.delete()
+            await milestone.delete()
 
         task_uid = task.uid
-        task.delete()
+        await task.delete()
+        return DeletedItem(uid=task_uid)
 
-        ok = True
-        return DeleteListingTask(ok=ok, task_uid=task_uid)
+    @strawberry.mutation
+    async def duplicate_listing_task(self, info, uid: int, title: str) -> types.ListingTaskType:
 
+        inspector = inspect.getargvalues(inspect.currentframe())
+        passed_args = get_passed_args(inspector)
 
-class DuplicateListingTask(graphene.Mutation):
-    class Arguments:
-        uid = graphene.String(required=True)
-        title = graphene.String(required=True)
-
-    ok = graphene.Boolean()
-    task = graphene.Field(lambda: types.ListingTaskType)
-
-    @staticmethod
-    def mutate(root, info, uid, title, **kwargs):
-        is_authenticated, felicity_user = auth_from_info(info)
+        is_authenticated, felicity_user = await auth_from_info(info)
         verify_user_auth(is_authenticated, felicity_user, "Only Authenticated user can delete kanban tasks")
 
         if not uid:
-            raise GraphQLError("No uid provided to identify update obj")
+            raise Exception("No uid provided to identify update obj")
 
         if not title:
-            raise GraphQLError("Please provide the title for the duplicate task")
+            raise Exception("Please provide the title for the duplicate task")
 
-        task = models.ListingTask.get(uid=uid)
+        task = await models.ListingTask.get(uid=uid)
         if not task:
-            raise GraphQLError(f"Listing Task with uid {uid} not found. Cannot update obj ...")
+            raise Exception(f"Listing Task with uid {uid} not found. Cannot update obj ...")
 
         task_data = task.to_dict()
         del task_data['uid']
         task_data['title'] = title
 
         obj_in = schemas.ListingTaskCreate(**task_data)
-        duplicate = models.ListingTask.create(obj_in)
+        duplicate = await models.ListingTask.create(obj_in)
         duplicate.task_milestones = task.task_milestones
-        duplicate.save()
+        duplicate = await duplicate.save()
 
-        ok = True
-        return DuplicateListingTask(ok=ok, task=duplicate)
+        return duplicate
 
-#
-# Create TaskComment Mutations
-#
-class CreateTaskComment(graphene.Mutation):
-    class Arguments:
-        task_uid = graphene.String(required=True)
-        comment = graphene.String(required=True)
+    @strawberry.mutation
+    async def create_task_comment(self, info, comment: str, task_uid: int) -> types.TaskCommentType:
 
-    ok = graphene.Boolean()
-    task_comment = graphene.Field(lambda: types.TaskCommentType)
+        inspector = inspect.getargvalues(inspect.currentframe())
+        passed_args = get_passed_args(inspector)
 
-    @staticmethod
-    def mutate(root, info, comment, task_uid, **kwargs):
-        is_authenticated, felicity_user = auth_from_info(info)
+        is_authenticated, felicity_user = await auth_from_info(info)
         verify_user_auth(is_authenticated, felicity_user, "Only Authenticated user can create kanban tasks")
 
         if not task_uid:
-            raise GraphQLError("Comment Missing the associated Listing Task")
+            raise Exception("Comment Missing the associated Listing Task")
 
         if not comment:
-            raise GraphQLError("Task Comment cannot be blank")
+            raise Exception("Task Comment cannot be blank")
 
         incoming = {
-            "comment": comment,
-            "task_uid": task_uid,
             "created_by_uid": felicity_user.uid,
             "updated_by_uid": felicity_user.uid,
         }
-        for k, v in kwargs.items():
+        for k, v in passed_args.items():
             incoming[k] = v
 
         obj_in = schemas.TaskCommentCreate(**incoming)
-        task_comment = models.TaskComment.create(obj_in)
-        ok = True
-        return CreateTaskComment(task_comment=task_comment, ok=ok)
+        task_comment: models.TaskComment = await models.TaskComment.create(obj_in)
+        return task_comment
 
+    @strawberry.mutation
+    async def create_task_milestone(self, info, title: str, task_uid: int, assignee_uid: Optional[int],
+                                    done: Optional[bool] = None) -> types.TaskMilestoneType:
 
-#
-# Create TaskMilestone Mutations
-#
-class CreateTaskMilestone(graphene.Mutation):
-    class Arguments:
-        task_uid = graphene.String(required=True)
-        title = graphene.String(required=True)
-        done = graphene.Boolean(required=False)
-        assignee_uid = graphene.String(required=False)
+        inspector = inspect.getargvalues(inspect.currentframe())
+        passed_args = get_passed_args(inspector)
 
-    ok = graphene.Boolean()
-    task_milestone = graphene.Field(lambda: types.TaskMilestoneType)
-
-    @staticmethod
-    def mutate(root, info, title, task_uid, **kwargs):
-        is_authenticated, felicity_user = auth_from_info(info)
+        is_authenticated, felicity_user = await auth_from_info(info)
         verify_user_auth(is_authenticated, felicity_user, "Only Authenticated user can create kanban tasks")
 
         if not task_uid:
-            raise GraphQLError("Milestone Missing the associated Listing Task")
+            raise Exception("Milestone Missing the associated Listing Task")
 
         if not title:
-            raise GraphQLError("Task Comment title cannot be blank")
+            raise Exception("Task Comment title cannot be blank")
 
         incoming = {
-            "task_uid": task_uid,
-            "title": title,
             "created_by_uid": felicity_user.uid,
             "updated_by_uid": felicity_user.uid,
         }
-        for k, v in kwargs.items():
+        for k, v in passed_args.items():
             incoming[k] = v
 
         obj_in = schemas.TaskMilestoneCreate(**incoming)
-        task_milestone = models.TaskMilestone.create(obj_in)
-        ok = True
-        return CreateTaskMilestone(task_milestone=task_milestone, ok=ok)
-
-
-class KanBanMutations(graphene.ObjectType):
-    create_board = CreateBoard.Field()
-    update_board = UpdateBoard.Field()
-    delete_board = DeleteBoard.Field()
-    create_board_listing = CreateBoardListing.Field()
-    update_board_listing = UpdateBoardListing.Field()
-    delete_board_listing = DeleteBoardListing.Field()
-    create_listing_task = CreateListingTask.Field()
-    update_listing_task = UpdateListingTask.Field()
-    delete_listing_task = DeleteListingTask.Field()
-    duplicate_listing_task = DuplicateListingTask.Field()
-    create_task_comment = CreateTaskComment.Field()
-    create_task_milestone = CreateTaskMilestone.Field()
+        task_milestone: models.TaskMilestone = await models.TaskMilestone.create(obj_in)
+        return task_milestone

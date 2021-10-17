@@ -1,4 +1,5 @@
 import logging
+from _testcapi import awaitType
 
 from sqlalchemy import Column, Integer, String, ForeignKey, Boolean
 from sqlalchemy.orm import relationship
@@ -26,17 +27,18 @@ class District(LocationBase):
     province = relationship("Province", backref="districts")
 
     @classmethod
-    def create(cls, district: schemas.DistrictCreate) -> schemas.District:
+    async def create(cls, district: schemas.DistrictCreate) -> schemas.District:
         """Create a new District and return the new instance."""
-        if cls.get(code=district.code):
+        exists = await cls.get(code=district.code)
+        if exists:
             raise Exception(f"District with code {district.code} already Exists")
         data = cls._import(district)
-        return super().create(**data)
+        return await super().create(**data)
 
-    def update(self, district: schemas.DistrictUpdate) -> schemas.District:
+    async def update(self, district: schemas.DistrictUpdate) -> schemas.District:
         """Update the district with given data"""
         data = self._import(district)
-        return super().update(**data)
+        return await super().update(**data)
 
 
 class Province(LocationBase):
@@ -44,17 +46,18 @@ class Province(LocationBase):
     country = relationship("Country", backref="provinces")
 
     @classmethod
-    def create(cls, province: schemas.ProvinceCreate) -> schemas.Province:
+    async def create(cls, province: schemas.ProvinceCreate) -> schemas.Province:
         """Create a new province and return the new instance."""
-        if cls.get(code=province.code):
+        exists = await cls.get(code=province.code)
+        if exists:
             raise Exception(f"Province with code {province.code} already Exists")
         data = cls._import(province)
-        return super().create(**data)
+        return await super().create(**data)
 
-    def update(self, province: schemas.ProvinceUpdate) -> schemas.Province:
+    async def update(self, province: schemas.ProvinceUpdate) -> schemas.Province:
         """Update the province with given data"""
         data = self._import(province)
-        return super().update(**data)
+        return await super().update(**data)
 
 
 class Country(DBModel):
@@ -63,14 +66,15 @@ class Country(DBModel):
     active = Column(Boolean(), default=False)
 
     @classmethod
-    def create(cls, country: schemas.CountryCreate) -> schemas.Country:
+    async def create(cls, country: schemas.CountryCreate) -> schemas.Country:
         """Create a new Country and return the new instance."""
-        if cls.get(code=country.code):
+        exists = await cls.get(code=country.code)
+        if exists:
             raise Exception(f"Country with code {country.code} already Exists")
         data = cls._import(country)
-        return super().create(**data)
+        return await super().create(**data)
 
-    def update(self, country: schemas.CountryUpdate) -> schemas.Country:
+    async def update(self, country: schemas.CountryUpdate) -> schemas.Country:
         """Update the country with given data"""
         data = self._import(country)
-        return super().update(**data)
+        return await super().update(**data)

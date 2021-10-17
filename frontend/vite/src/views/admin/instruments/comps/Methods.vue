@@ -21,17 +21,17 @@
         <ul>
           <li 
           v-for="meth in methods"
-          :key="meth.uid"
+          :key="meth?.uid"
           href="#"
           @click.prevent.stop="selectMethod(meth)"
           :class="[
             'bg-white w-full p-1 mb-1 rounded',
-            { 'border-gray-100 bg-green-100': meth.uid === method.uid },
+            { 'border-gray-100 bg-green-100': meth?.uid === method?.uid },
           ]">
             <a class="cursor-pointer">
               <div class="flex-grow p-1">
                 <div class="font-medium text-gray-500 hover:text-gray-700 flex justify-between">
-                  <span>{{ meth.name }}</span>
+                  <span>{{ meth?.name }}</span>
                   <span class="text-sm text-gray-500"></span>
                 </div>
               </div>
@@ -40,7 +40,7 @@
         </ul>
       </section>
 
-      <section class="col-span-8"  v-if="method.uid !== undefined">
+      <section class="col-span-8"  v-if="method?.uid !== undefined">
         <div class="bg-white rounded-lg shadow-sm hover:shadow-lg duration-500 px-4 sm:px-6 md:px-2 py-4" >
           <div class="grid grid-cols-12 gap-3">
             <div class="col-span-12 px-3 sm:px-0">

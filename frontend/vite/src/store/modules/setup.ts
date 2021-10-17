@@ -95,9 +95,8 @@ export const mutations = <MutationTree<IState>>{
 
 
   // INSTRUMENTS
-  [MutationTypes.SET_INSTRUMENTS](state: IState, payload: any[]): void {
-    state.instruments = [];
-    payload?.forEach(obj => state.instruments?.push(obj?.node));
+  [MutationTypes.SET_INSTRUMENTS](state: IState, payload: any): void {
+    state.instruments = payload?.items;
   },
 
   [MutationTypes.UPDATE_INSTRUMENT](state: IState, payload: IInstrument): void {
@@ -110,9 +109,8 @@ export const mutations = <MutationTree<IState>>{
   },
 
   // METHODS
-  [MutationTypes.SET_METHODS](state: IState, payload: any[]): void {
-    state.methods = [];
-    payload?.forEach(obj => state.methods?.push(obj?.node));
+  [MutationTypes.SET_METHODS](state: IState, payload: any): void {
+    state.methods = payload?.items;
   },
 
   [MutationTypes.UPDATE_METHOD](state: IState, payload: IMethod): void {
@@ -137,29 +135,29 @@ export const actions = <ActionTree<IState, RootState>>{
   // INSTRUMENTS
   async [ActionTypes.FETCH_INSTRUMENTS]({ commit }){
     await useQuery({ query: GET_ALL_INSTRUMENTS })
-          .then(payload => commit(MutationTypes.SET_INSTRUMENTS, payload.data.value.instrumentAll.edges));
+          .then(payload => commit(MutationTypes.SET_INSTRUMENTS, payload.data.value.instrumentAll));
   },
 
   async [ActionTypes.ADD_INSTRUMENT]({ commit }, payload){
-    commit(MutationTypes.ADD_INSTRUMENT, payload.data.createInstrument.instrument);
+    commit(MutationTypes.ADD_INSTRUMENT, payload.data.createInstrument);
   },
 
   async [ActionTypes.UPDATE_INSTRUMENT]({ commit }, payload){
-    commit(MutationTypes.UPDATE_INSTRUMENT, payload.data.updateInstrument.instrument);
+    commit(MutationTypes.UPDATE_INSTRUMENT, payload.data.updateInstrument);
   },
 
   // METHODS
   async [ActionTypes.FETCH_METHODS]({ commit }){
     await useQuery({ query: GET_ALL_METHODS })
-          .then(payload => commit(MutationTypes.SET_METHODS, payload.data.value.methodAll.edges));
+          .then(payload => commit(MutationTypes.SET_METHODS, payload.data.value.methodAll));
   },
 
   async [ActionTypes.ADD_METHOD]({ commit }, payload){
-    commit(MutationTypes.ADD_METHOD, payload.data.createMethod.method);
+    commit(MutationTypes.ADD_METHOD, payload.data.createMethod);
   },
 
   async [ActionTypes.UPDATE_METHOD]({ commit }, payload){
-    commit(MutationTypes.UPDATE_METHOD, payload.data.updateMethod.method);
+    commit(MutationTypes.UPDATE_METHOD, payload.data.updateMethod);
   },
 
 };

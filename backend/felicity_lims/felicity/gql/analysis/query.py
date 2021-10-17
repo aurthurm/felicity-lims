@@ -1,261 +1,291 @@
-import graphene
+from typing import List, Optional, Dict, Any
 import logging
-from graphene import (
-    relay,
-    String,
-)
-from graphene_sqlalchemy import SQLAlchemyConnectionField
+import strawberry
+import sqlalchemy as sa
 
-from felicity.gql.analysis import types as a_types
+from felicity.apps.analysis.utils import sample_search
+from felicity.gql.analysis.types import analysis as a_types
+from felicity.gql.analysis.types import results as r_types
 from felicity.apps.analysis.models import analysis as a_models
 from felicity.apps.analysis.models import results as r_models
 from felicity.apps.analysis.models import qc as qc_models
+from felicity.gql import PageInfo
+from felicity.utils import has_value_or_is_truthy
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
-class SampleFilterableConnectionField(SQLAlchemyConnectionField):
-    RELAY_ARGS = ['first', 'last', 'before', 'after', 'sort']
+@strawberry.type
+class AnalysisQuery:
+    @strawberry.field
+    async def sample_type_all(self, info) -> List[a_types.SampleTypeTyp]:
+        return await a_models.SampleType.all()
 
-    @classmethod
-    def get_query(cls, model, info, **args):
-        queryset = super(SampleFilterableConnectionField, cls).get_query(model, info, **args)
+    @strawberry.field
+    async def sample_type_by_uid(self, info, uid: int) -> a_types.SampleTypeTyp:
+        return await a_models.SampleType.get(uid=uid)
 
-        _text = None
-        _status = None
-        _client_uid = None
+    @strawberry.field
+    async def sample_all(self, info, page_size: Optional[int] = None,
+                         after_cursor: Optional[str] = None, before_cursor: Optional[str] = None,
+                         text: Optional[str] = None, status: Optional[str] = None, client_uid: Optional[int] = None,
+                         sort_by: Optional[List[str]] = None) -> r_types.SampleCursorPage:
+        filters = []
 
-        for field, value in args.items():
-            if field not in cls.RELAY_ARGS:
-                if value:
-                    if field == 'text':
-                        _text = value
+        logger.info(f"page_size : {page_size}")
+        logger.info(f"text : {text}")
+        logger.info(f"status : {status}")
+        logger.info(f"client_uid : {client_uid}")
+        logger.info(f"sort_by : {sort_by}")
 
-                    if field == 'status':
-                        _status = value
-
-                    if field == 'client_uid':
-                        _client_uid = value
-
-        combined = set()
-
-        if _text:
-            filters = [
+        _or_text_ = {}
+        if has_value_or_is_truthy(text):
+            arg_list = [
                 'sample_id__ilike',
-                'analysisrequest___patient___last_name__ilike',
                 'analysisrequest___patient___first_name__ilike',
+                'analysisrequest___patient___last_name__ilike',
                 'analysisrequest___patient___client_patient_id__ilike',
                 'analysisrequest___client_request_id__ilike',
             ]
-            for _filter in filters:
-                arg = dict()
-                if _status:
-                    arg["status__exact"] = _status
-                if _client_uid:
-                    arg["analysisrequest___client_uid__exact"] = _client_uid
-                arg[_filter] = f"%{_text}%"
-                arg["internal_use__ne"] = True
-                logger.warning(f" args built: {arg}")
-                queryset = model.where(**arg)
-                for item in queryset:
-                    combined.add(item)
-        else:
-            if _status:
-                if _client_uid:
-                    queryset = model.where(
-                        status__exact=_status,
-                        analysisrequest___client_uid__exact=_client_uid,
-                        internal_use__ne=True
-                    )
-                else:
-                    queryset = model.where(status__exact=_status, internal_use__ne=True)
-            else:
-                if _client_uid:
-                    queryset = model.where(analysisrequest___client_uid__exact=_client_uid, internal_use__ne=True)
-                else:
-                    queryset = model.where(internal_use__ne=True)
+            for _arg in arg_list:
+                _or_text_[_arg] = f"%{text}%"
 
-            for item in queryset:
-                combined.add(item)
+            text_filters = {sa.or_: _or_text_}
+            filters.append(text_filters)
 
-        return list(combined)
+        if client_uid:
+            filters.append({'analysisrequest___client_uid__exact': client_uid})
 
+        if status:
+            filters.append({'status__exact': status})
 
-class AnalysisQuery(graphene.ObjectType):
-    node = relay.Node.Field()
+        filters.append({'internal_use__ne': True})
 
-    # SampleTypes Queries
-    sample_type_all = SQLAlchemyConnectionField(a_types.SampleTypeTyp.connection)
-    sample_type_by_uid = graphene.Field(lambda: a_types.SampleTypeTyp, uid=graphene.String(default_value=""))
+        logger.info(f"Filters 00 : {filters}")
 
-    # Sample Queries
-    sample_all = SampleFilterableConnectionField(
-        a_types.SampleType.connection,
-        status=graphene.String(default_value=""),
-        client_uid=graphene.String(default_value=""),
-        text=graphene.String(default_value="")
-    )
-    sample_by_uid = graphene.Field(lambda: a_types.SampleType, uid=graphene.String(default_value=""))
-    sample_count = graphene.Field(lambda: graphene.Int, status=graphene.String(default_value=""),
-                                  text=graphene.String(default_value=""),
-                                  client_uid=graphene.String(default_value=""))
+        page = await a_models.Sample.paginate_with_cursors(
+            page_size=page_size,
+            after_cursor=after_cursor,
+            before_cursor=before_cursor,
+            filters=filters,
+            sort_by=sort_by
+        )
 
-    # Profile Queries
-    profile_all = SQLAlchemyConnectionField(a_types.ProfileType.connection)
-    profile_by_uid = graphene.Field(lambda: a_types.ProfileType, uid=graphene.String(default_value=""))
+        total_count: int = page.total_count
+        edges: List[r_types.SampleEdge[r_types.SamplesWithResults]] = page.edges
+        items: List[r_types.SamplesWithResults] = page.items
+        page_info: PageInfo = page.page_info
 
-    # AnalysisCategory Queries
-    analysis_category_all = SQLAlchemyConnectionField(a_types.AnalysisCategoryType.connection)
-    analysis_category_by_uid = graphene.Field(lambda: a_types.AnalysisCategoryType,
-                                              uid=graphene.String(default_value=""))
+        return r_types.SampleCursorPage(
+            total_count=total_count,
+            edges=edges,
+            items=items,
+            page_info=page_info,
+        )
 
-    # Analysis Queries
-    analysis_all = SQLAlchemyConnectionField(a_types.AnalysisType.connection)
-    analysis_by_uid = graphene.Field(lambda: a_types.AnalysisType, uid=graphene.String(default_value=""))
-    analysis_for_qc = graphene.List(lambda: a_types.AnalysisType)
+    # awaiting deprecation since sample_all can now achieve this
+    @strawberry.field
+    async def sample_search(self, info, status: str, text: str, client_uid: int) -> List[a_types.SampleType]:
+        return await sample_search(status, text, client_uid)
 
-    # Result Option Queries
-    result_options_by_analysis_uid = graphene.List(lambda: a_types.ResultOptionType, uid=graphene.String(default_value=""))
+    # awaiting deprecation since sample_all can now achieve this
+    @strawberry.field
+    async def sample_count(self, info, status: str, text: str, client_uid: int) -> int:
+        combined = await sample_search(status, text, client_uid)
+        return len(combined)
 
-    # AnalysisRequest Queries
-    analysis_request_all = SQLAlchemyConnectionField(a_types.AnalysisRequestType.connection)
-    analysis_request_by_uid = graphene.Field(lambda: a_types.AnalysisRequestType, uid=graphene.String(default_value=""))
-    analysis_requests_by_patient_uid = graphene.List(lambda: a_types.AnalysisRequestType, uid=graphene.String(default_value=""))
-    analysis_requests_by_client_uid = graphene.List(lambda: a_types.AnalysisRequestType, uid=graphene.String(default_value=""))
+    @strawberry.field
+    async def sample_by_uid(self, info, uid: int) -> a_types.SampleType:
+        return await a_models.Sample.get(uid=uid)
 
-    # AnalysisResult Queries
-    analysis_result_all = SQLAlchemyConnectionField(a_types.AnalysisResultType.connection)
-    analysis_result_by_uid = graphene.Field(lambda: a_types.AnalysisResultType, uid=graphene.String(default_value=""))
-    analysis_result_by_sample_uid = graphene.List(lambda: a_types.AnalysisResultType, uid=graphene.String(default_value=""))
+    @strawberry.field
+    async def profile_all(self, info) -> List[a_types.ProfileType]:
+        return await a_models.Profile.all()
 
-    # QCLevels Queries
-    qc_level_all = SQLAlchemyConnectionField(a_types.QCLevelType.connection)
-    qc_level_by_uid = graphene.Field(lambda: a_types.QCLevelType, uid=graphene.String(default_value=""))
+    @strawberry.field
+    async def profile_by_uid(self, info, uid: int) -> a_types.ProfileType:
+        return await a_models.Profile.get(uid=uid)
 
-    # QCSet Queries
-    qc_set_all = SQLAlchemyConnectionField(a_types.QCSetType.connection)
-    qc_set_by_uid = graphene.Field(lambda: a_types.QCSetType, uid=graphene.String(default_value=""))
+    @strawberry.field
+    async def analysis_category_all(self, info) -> List[a_types.AnalysisCategoryType]:
+        return await a_models.AnalysisCategory.all()
 
-    # QCTemplate Queries
-    qc_template_all = SQLAlchemyConnectionField(a_types.QCTemplateType.connection)
-    qc_template_by_uid = graphene.Field(lambda: a_types.QCTemplateType, uid=graphene.String(default_value=""))
+    @strawberry.field
+    async def analysis_category_by_uid(self, info, uid: int) -> a_types.AnalysisCategoryType:
+        return await a_models.AnalysisCategory.get(uid=uid)
 
-    @staticmethod
-    def resolve_sample_type_by_uid(self, info, uid):
-        sample_type = a_models.SampleType.get(uid=uid)
-        return sample_type
+    @strawberry.field
+    async def analysis_all(self, info, page_size: Optional[int] = None,
+                           after_cursor: Optional[str] = None, before_cursor: Optional[str] = None,
+                           text: Optional[str] = None,
+                           sort_by: Optional[List[str]] = None,
+                           qc_only: Optional[bool] = False) -> a_types.AnalysisCursorPage:
 
-    @staticmethod
-    def resolve_sample_by_uid(self, info, uid):
-        sample = a_models.Sample.get(uid=uid)
-        return sample
-
-    @staticmethod
-    def resolve_sample_count(self, info, status, text, client_uid):
-        combined = set()
-
-        if text:
-            filters = [
-                'sample_id__ilike',
-                'analysisrequest___patient___last_name__ilike',
-                'analysisrequest___patient___first_name__ilike',
-                'analysisrequest___patient___client_patient_id__ilike',
-                'analysisrequest___client_request_id__ilike',
+        filters = []
+        _or_text_ = {}
+        if has_value_or_is_truthy(text):
+            arg_list = [
+                'name__ilike',
+                'description__ilike',
+                'keyword__ilike',
             ]
-            for _filter in filters:
-                arg = dict()
-                if status:
-                    arg["status__exact"] = status
-                if client_uid:
-                    arg["analysisrequest___client_uid__exact"] = client_uid
-                arg[_filter] = f"%{text}%"
-                arg["internal_use__ne"] = True
-                queryset = a_models.Sample.where(**arg)
-                for item in queryset:
-                    combined.add(item)
-        else:
-            if status:
-                if client_uid:
-                    queryset = a_models.Sample.where(
-                        status__exact=status,
-                        analysisrequest___client_uid__exact=client_uid,
-                        internal_use__ne=True
-                    )
-                else:
-                    queryset = a_models.Sample.where(status__exact=status, internal_use__ne=True)
-            else:
-                if client_uid:
-                    queryset = a_models.Sample.where(analysisrequest___client_uid__exact=client_uid, internal_use__ne=True)
-                else:
-                    queryset = a_models.Sample.where(internal_use__ne=True)
+            for _arg in arg_list:
+                _or_text_[_arg] = f"%{text}%"
 
-            for item in queryset:
-                combined.add(item)
+            text_filters = {sa.or_: _or_text_}
+            filters.append(text_filters)
 
-        return len(list(combined))
+        if qc_only:
+            filters.append({'category___name__exact': 'Quality Control'})
 
-    @staticmethod
-    def resolve_profile_by_uid(self, info, uid):
-        profile = a_models.Profile.get(uid=uid)
-        return profile
+        page = await a_models.Analysis.paginate_with_cursors(
+            page_size=page_size,
+            after_cursor=after_cursor,
+            before_cursor=before_cursor,
+            filters=filters,
+            sort_by=sort_by
+        )
 
-    @staticmethod
-    def resolve_analysis_category_by_uid(self, info, uid):
-        analysis_category = a_models.AnalysisCategory.get(uid=uid)
-        return analysis_category
+        total_count: int = page.total_count
+        edges: List[a_types.AnalysisEdge[a_types.AnalysisType]] = page.edges
+        items: List[a_types.AnalysisType] = page.items
+        page_info: PageInfo = page.page_info
 
-    @staticmethod
-    def resolve_analysis_by_uid(self, info, uid):
-        analysis = a_models.Analysis.get(uid=uid)
-        return analysis
+        return a_types.AnalysisCursorPage(
+            total_count=total_count,
+            edges=edges,
+            items=items,
+            page_info=page_info,
+        )
 
-    @staticmethod
-    def resolve_analysis_for_qc(self, info):
-        analyses = a_models.Analysis.where(category___name__exact='Quality Control').all()
-        return analyses
+    @strawberry.field
+    async def analysis_by_uid(self, info, uid: int) -> a_types.AnalysisType:
+        return await a_models.Analysis.get(uid=uid)
 
-    @staticmethod
-    def resolve_analysis_request_by_uid(self, info, uid):
-        analysis_request = a_models.AnalysisRequest.get(uid=uid)
-        return analysis_request
+    @strawberry.field
+    async def analysis_request_all(self, info, page_size: Optional[int] = None,
+                                   after_cursor: Optional[str] = None, before_cursor: Optional[str] = None,
+                                   text: Optional[str] = None,
+                                   sort_by: Optional[List[str]] = None) -> a_types.AnalysisRequestCursorPage:
+        filters = []
 
-    @staticmethod
-    def resolve_analysis_requests_by_patient_uid(self, info, uid):
-        analysis_requests = a_models.AnalysisRequest.where(patient_uid__exact=uid).all()
-        return analysis_requests
+        _or_text_ = {}
+        if has_value_or_is_truthy(text):
+            arg_list = [
+                'client_request_id__ilike',
+                'patient___first_name__ilike',
+                'patient___last_name__ilike',
+                'patient___client_patient_id__ilike',
+            ]
+            for _arg in arg_list:
+                _or_text_[_arg] = f"%{text}%"
 
-    @staticmethod
-    def resolve_analysis_requests_by_client_uid(self, info, uid):
-        analysis_requests = a_models.AnalysisRequest.where(client_uid__exact=uid).all()
-        return analysis_requests
+            text_filters = {sa.or_: _or_text_}
+            filters.append(text_filters)
 
-    @staticmethod
-    def resolve_analysis_result_by_uid(self, info, uid):
-        analysis_result = r_models.AnalysisResult.get(uid=uid)
-        return analysis_result
+        filters.append({'internal_use__ne': True})
 
-    @staticmethod
-    def resolve_analysis_result_by_sample_uid(self, info, uid):
-        analysis_results = r_models.AnalysisResult.where(sample_uid__exact=uid)
-        return analysis_results
+        page = await a_models.AnalysisRequest.paginate_with_cursors(
+            page_size=page_size,
+            after_cursor=after_cursor,
+            before_cursor=before_cursor,
+            filters=filters,
+            sort_by=sort_by
+        )
 
-    @staticmethod
-    def resolve_qc_set_by_uid(self, info, uid):
-        qc_set = qc_models.QCSet.get(uid=uid)
-        return qc_set
+        total_count: int = page.total_count
+        edges: List[a_types.AnalysisRequestEdge[a_types.AnalysisRequestWithSamples]] = page.edges
+        items: List[a_types.AnalysisRequestType] = page.items
+        page_info: PageInfo = page.page_info
 
-    @staticmethod
-    def resolve_qc_level_by_uid(self, info, uid):
-        qc_template = qc_models.QCLevel.get(uid=uid)
-        return qc_template
+        return a_types.AnalysisRequestCursorPage(
+            total_count=total_count,
+            edges=edges,
+            items=items,
+            page_info=page_info,
+        )
 
-    @staticmethod
-    def resolve_qc_template_by_uid(self, info, uid):
-        qc_template = qc_models.QCTemplate.get(uid=uid)
-        return qc_template
+    @strawberry.field
+    async def analysis_request_by_uid(self, info, uid: int) -> a_types.AnalysisRequestWithSamples:
+        return await a_models.AnalysisRequest.get(uid=uid)
 
-    @staticmethod
-    def resolve_result_options_by_analysis_uid(self, info, uid):
-        r_options = a_models.ResultOption.where(analysis_uid__exact=uid).all()
-        return r_options
+    @strawberry.field
+    async def analysis_requests_by_patient_uid(self, info, uid: int) -> List[a_types.AnalysisRequestWithSamples]:
+        return await a_models.AnalysisRequest.get_all(patient_uid__exact=uid)
+
+    @strawberry.field
+    async def analysis_requests_by_client_uid(self, info, uid: int) -> List[a_types.AnalysisRequestWithSamples]:
+        return await a_models.AnalysisRequest.get_all(client_uid__exact=uid)
+
+    @strawberry.field
+    async def analysis_result_by_uid(self, info, uid: int) -> r_types.AnalysisResultType:
+        return await r_models.AnalysisResult.get(uid=uid)
+
+    @strawberry.field
+    async def analysis_result_by_sample_uid(self, info, uid: int) -> List[r_types.AnalysisResultType]:
+        return await r_models.AnalysisResult.get_all(sample_uid__exact=uid)
+
+    @strawberry.field
+    async def qc_set_all(self, info, page_size: Optional[int] = None,
+                         after_cursor: Optional[str] = None, before_cursor: Optional[str] = None,
+                         text: Optional[str] = None,
+                         sort_by: Optional[List[str]] = None) -> r_types.QCSetCursorPage:
+
+        filters = []
+        _or_text_ = {}
+        if has_value_or_is_truthy(text):
+            arg_list = [
+                'name__ilike',
+                'description__ilike',
+                'keyword__ilike',
+            ]
+            for _arg in arg_list:
+                _or_text_[_arg] = f"%{text}%"
+
+            text_filters = {sa.or_: _or_text_}
+            filters.append(text_filters)
+
+        page = await a_models.QCSet.paginate_with_cursors(
+            page_size=page_size,
+            after_cursor=after_cursor,
+            before_cursor=before_cursor,
+            filters=filters,
+            sort_by=sort_by
+        )
+
+        total_count: int = page.total_count
+        edges: List[r_types.QCSetEdge[r_types.QCSetWithSamples]] = page.edges
+        items: List[r_types.QCSetWithSamples] = page.items
+        page_info: PageInfo = page.page_info
+
+        return r_types.QCSetCursorPage(
+            total_count=total_count,
+            edges=edges,
+            items=items,
+            page_info=page_info,
+        )
+
+    @strawberry.field
+    async def qc_set_by_uid(self, info, uid: int) -> r_types.QCSetWithSamples:
+        return await qc_models.QCSet.get(uid=uid)
+
+    @strawberry.field
+    async def qc_level_all(self, info) -> List[a_types.QCLevelType]:
+        return await qc_models.QCLevel.all()
+
+    @strawberry.field
+    async def qc_level_by_uid(self, info, uid: int) -> a_types.QCLevelType:
+        return await qc_models.QCLevel.get(uid=uid)
+
+    @strawberry.field
+    async def qc_template_all(self, info) -> List[a_types.QCTemplateType]:
+        return await qc_models.QCTemplate.all()
+
+    @strawberry.field
+    async def qc_template_by_uid(self, info, uid: int) -> a_types.QCTemplateType:
+        return await qc_models.QCTemplate.get(uid=uid)
+
+    @strawberry.field
+    async def result_options_by_analysis_uid(self, info, uid: int) -> a_types.ResultOptionType:
+        return await a_models.ResultOption.get_all(analysis_uid__exact=uid)

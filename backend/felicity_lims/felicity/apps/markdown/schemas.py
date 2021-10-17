@@ -14,7 +14,7 @@ class DocumentTagBase(BaseModel):
 
 
 class DocumentTag(DocumentTagBase):
-    uid: Optional[str] = None
+    uid: Optional[int] = None
 
     class Config:
         orm_mode = True
@@ -36,7 +36,7 @@ class DocumentCategoryBase(BaseModel):
 
 
 class DocumentCategory(DocumentCategoryBase):
-    uid: Optional[str] = None
+    uid: Optional[int] = None
 
     class Config:
         orm_mode = True
@@ -62,27 +62,27 @@ class DocumentBase(BaseModel):
     tags: Optional[List[DocumentTag]] = []
     authors: Optional[List[User]] = []
     readers: Optional[List[User]] = []
-    department_uid: Optional[str] = None
+    department_uid: Optional[int] = None
     department: Optional[Department] = []
-    category_uid: Optional[str] = None
+    category_uid: Optional[int] = None
     category: Optional[DocumentCategory] = []
-    created_by_uid: Optional[str] = None
-    modified_by_uid: Optional[str] = None
+    created_by_uid: Optional[int] = None
+    modified_by_uid: Optional[int] = None
     date_archived: Optional[datetime] = None
-    archived_by_uid: Optional[str] = None
+    archived_by_uid: Optional[int] = None
     date_recalled: Optional[datetime] = None
-    recalled_by_uid: Optional[str] = None
+    recalled_by_uid: Optional[int] = None
     date_effected: Optional[datetime] = None
-    effected_by_uid: Optional[str] = None
+    effected_by_uid: Optional[int] = None
     date_approved: Optional[datetime] = None
-    approved_by_uid: Optional[str] = None
+    approved_by_uid: Optional[int] = None
     last_accessed: Optional[datetime] = None
-    last_accessed_by_uid: Optional[str] = None
+    last_accessed_by_uid: Optional[int] = None
     status: Optional[str] = None
 
 
 class Document(DocumentBase):
-    uid: Optional[str] = None
+    uid: Optional[int] = None
 
     class Config:
         orm_mode = True

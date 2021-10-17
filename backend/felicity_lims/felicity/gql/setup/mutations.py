@@ -1,8 +1,8 @@
+import inspect
 import logging
+from typing import Optional, Dict
 
-import graphene
-from graphql import GraphQLError
-from fastapi.encoders import jsonable_encoder
+import strawberry
 
 from felicity.apps.setup import models, schemas
 from felicity.gql.setup.types import (
@@ -15,613 +15,423 @@ from felicity.gql.setup.types import (
     ProvinceType,
     DistrictType,
 )
+from felicity.utils import get_passed_args
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
-# 
-# Laboratory Mutations
-# 
-class CreateLaboratory(graphene.Mutation):
-    class Arguments:
-        setup_name = graphene.String(required=False)
-        lab_name = graphene.String(required=True)
-        email = graphene.String(required=False)
-        email_cc = graphene.String(required=False)
-        mobile_phone = graphene.String(required=False)
-        business_phone = graphene.String(required=False)
-        lab_manager_uid = graphene.String(required=False)
+@strawberry.type
+class SetupMutations:
+    @strawberry.mutation
+    async def create_laboratory(self, info, lab_name: str, email: Optional[str] = None, email_cc: Optional[str] = None,  # noqa
+                                mobile_phone: Optional[str] = None, business_phone: Optional[str] = None,  # noqa
+                                lab_manager_uid: Optional[int] = None,  # noqa
+                                setup_name: str = "felicity") -> LaboratoryType:  # noqa
 
-    ok = graphene.Boolean()
-    laboratory = graphene.Field(lambda: LaboratoryType)
+        inspector = inspect.getargvalues(inspect.currentframe())
+        passed_args = get_passed_args(inspector)
 
-    @staticmethod
-    def mutate(root, info, lab_name, setup_name="felicity", **kwargs): 
         if not lab_name:
-            raise GraphQLError("Please Provide a name for your laboratory")
+            raise Exception("Please Provide a name for your laboratory")
+
         # Enforce single site instance
-        exists = models.Laboratory.get(setup_name=setup_name)
+        exists = await models.Laboratory.get(setup_name=setup_name)
         if exists:
-            raise GraphQLError(f"The laboratory named {exists.lab_name} is already using the setupname {setup_name}")
-        
-        incoming = {
-            "lab_name": lab_name,
-            "setup_name": setup_name,
-        }
-        for k, v in kwargs.items():
+            raise Exception(f"The laboratory named {exists.lab_name} is already using the setup name {setup_name}")
+
+        incoming: Dict = dict()
+        for k, v in passed_args.items():
             incoming[k] = v
 
-        obj_in = schemas.LaboratoryCreate(**incoming)  
-        laboratory = models.Laboratory.create(obj_in)
-        ok = True
-        return CreateLaboratory(laboratory=laboratory, ok=ok)
+        obj_in = schemas.LaboratoryCreate(**incoming)
+        laboratory: models.Laboratory = await models.Laboratory.create(obj_in)
+        return laboratory
 
-                
-class UpdateLaboratory(graphene.Mutation):
-    class Arguments:
-        setup_name = graphene.String(required=False)
-        lab_name = graphene.String(required=True)
-        email = graphene.String(required=False)
-        email_cc = graphene.String(required=False)
-        mobile_phone = graphene.String(required=False)
-        business_phone = graphene.String(required=False)
-        lab_manager_uid = graphene.String(required=False)
+    @strawberry.mutation
+    async def update_laboratory(self, info, uid: int, lab_name: str, email: Optional[str] = None, email_cc: Optional[str] = None,  # noqa
+                                mobile_phone: Optional[str] = None, business_phone: Optional[str] = None,  # noqa
+                                lab_manager_uid: Optional[int] = None, setup_name: Optional[str] = None) -> LaboratoryType:  # noqa
 
-    ok = graphene.Boolean()
-    laboratory = graphene.Field(lambda: LaboratoryType)
+        inspector = inspect.getargvalues(inspect.currentframe())
+        passed_args = get_passed_args(inspector)
 
-    @staticmethod
-    def mutate(root, info, uid, **kwargs):   
         if not uid:
-            raise GraphQLError("No uid provided to idenity update obj")
-        
-        laboratory = models.Laboratory.get(uid=uid)
+            raise Exception("No uid provided to identity update obj")
+
+        laboratory = await models.Laboratory.get(uid=uid)
         if not laboratory:
-            raise GraphQLError(f"Laboratory with uid {uid} not found. Cannot update obj ...")
+            raise Exception(f"Laboratory with uid {uid} not found. Cannot update obj ...")
 
-        obj_data = jsonable_encoder(laboratory)
+        obj_data = laboratory.to_dict()
         for field in obj_data:
-            if field in kwargs:
+            if field in passed_args:
                 try:
-                    setattr(laboratory, field, kwargs[field])
+                    setattr(laboratory, field, passed_args[field])
                 except Exception as e:
-                    logger.warning(e)               
-        obj_in = schemas.LaboratoryUpdate(**laboratory.to_dict())    
-        laboratory = laboratory.update(obj_in)
-        ok = True
-        return UpdateLaboratory(ok=ok, laboratory=laboratory)
-    
+                    logger.warning(e)
 
-# 
-# Department Mutations
-# 
-class CreateDepartment(graphene.Mutation):
-    class Arguments:
-        name = graphene.String(required=True)
-        description = graphene.String(required=False)
-        code = graphene.String(required=False)
+        obj_in = schemas.LaboratoryUpdate(**laboratory.to_dict())
+        laboratory = await laboratory.update(obj_in)
+        return laboratory
 
-    ok = graphene.Boolean()
-    department = graphene.Field(lambda: DepartmentType)
+    @strawberry.mutation
+    async def create_department(root, info, name: str, description: Optional[str] = None,  # noqa
+                                code: Optional[str] = None) -> DepartmentType:  # noqa
 
-    @staticmethod
-    def mutate(root, info, name, **kwargs): 
+        inspector = inspect.getargvalues(inspect.currentframe())
+        passed_args = get_passed_args(inspector)
+
         if not name:
-            raise GraphQLError("Please Provide a name for your department")
+            raise Exception("Please Provide a name for your department")
 
-        exists = models.Department.get(name=name)
+        exists = await models.Department.get(name=name)
         if exists:
-            raise GraphQLError(f"A Department named {name} already exists")
+            raise Exception(f"A Department named {name} already exists")
 
-        incoming = {
-            "name": name,
-        }
-        for k, v in kwargs.items():
+        incoming: Dict = dict()
+        for k, v in passed_args.items():
             incoming[k] = v
 
-        obj_in = schemas.DepartmentCreate(**incoming)  
-        department = models.Department.create(obj_in)
-        ok = True
-        return CreateDepartment(department=department, ok=ok)
+        obj_in = schemas.DepartmentCreate(**incoming)
+        department: models.Department = await models.Department.create(obj_in)
+        return department
 
-                
-class UpdateDepartment(graphene.Mutation):
-    class Arguments:
-        uid = graphene.String(required=True)
-        name = graphene.String(required=True)
-        description = graphene.String(required=False)
-        code = graphene.String(required=False)
+    @strawberry.mutation
+    async def update_department(self, info, uid: int, name: Optional[str] = None, description: Optional[str] = None,  # noqa
+                                code: Optional[str] = None) -> DepartmentType:  # noqa
 
-    ok = graphene.Boolean()
-    department = graphene.Field(lambda: DepartmentType)
+        inspector = inspect.getargvalues(inspect.currentframe())
+        passed_args = get_passed_args(inspector)
 
-    @staticmethod
-    def mutate(root, info, uid, **kwargs):   
         if not uid:
-            raise GraphQLError("No uid provided to idenity update obj")
-        
-        department = models.Department.get(uid=uid)
+            raise Exception("No uid provided to identity update obj")
+
+        department = await models.Department.get(uid=uid)
         if not department:
-            raise GraphQLError(f"department with uid {uid} not found. Cannot update obj ...")
+            raise Exception(f"department with uid {uid} not found. Cannot update obj ...")
 
-        obj_data = jsonable_encoder(department)
+        obj_data = department.to_dict()
         for field in obj_data:
-            if field in kwargs:
+            if field in passed_args:
                 try:
-                    setattr(department, field, kwargs[field])
+                    setattr(department, field, passed_args[field])
                 except Exception as e:
-                    logger.warning(e)               
-        obj_in = schemas.DepartmentUpdate(**department.to_dict())    
-        department = department.update(obj_in)
-        ok = True
-        return UpdateDepartment(ok=ok, department=department)
- 
+                    logger.warning(e)
 
-# 
-# SUpplier Mutations
-# 
-class CreateSupplier(graphene.Mutation):
-    class Arguments:
-        name = graphene.String(required=True)
-        description = graphene.String(required=False)
-        code = graphene.String(required=False)
+        obj_in = schemas.DepartmentUpdate(**department.to_dict())
+        department = await department.update(obj_in)
+        return department
 
-    ok = graphene.Boolean()
-    supplier = graphene.Field(lambda: SupplierType)
+    @strawberry.mutation
+    async def create_supplier(self, info, name: str, description: Optional[str] = None, code: Optional[str] = None) -> SupplierType:  # noqa
 
-    @staticmethod
-    def mutate(root, info, name, **kwargs): 
+        inspector = inspect.getargvalues(inspect.currentframe())
+        passed_args = get_passed_args(inspector)
+
         if not name:
-            raise GraphQLError("Please Provide a name for your supplier")
+            raise Exception("Please Provide a name for your supplier")
 
-        exists = models.Supplier.get(name=name)
+        exists = await models.Supplier.get(name=name)
         if exists:
-            raise GraphQLError(f"A Supplier named {name} already exists")
+            raise Exception(f"A Supplier named {name} already exists")
 
-        incoming = {
-            "name": name,
-        }
-        for k, v in kwargs.items():
+        incoming: Dict = dict()
+        for k, v in passed_args.items():
             incoming[k] = v
 
-        obj_in = schemas.SupplierCreate(**incoming)  
-        supplier = models.Supplier.create(obj_in)
-        ok = True
-        return CreateSupplier(supplier=supplier, ok=ok)
+        obj_in = schemas.SupplierCreate(**incoming)
+        supplier: models.Supplier = await models.Supplier.create(obj_in)
+        return supplier
 
-                
-class UpdateSupplier(graphene.Mutation):
-    class Arguments:
-        uid = graphene.String(required=True)
-        name = graphene.String(required=True)
-        description = graphene.String(required=False)
-        code = graphene.String(required=False)
+    @strawberry.mutation
+    async def update_supplier(self, info, uid: int, name: Optional[str] = None, description: Optional[str] = None,  # noqa
+                              code: Optional[str] = None) -> SupplierType:  # noqa
 
-    ok = graphene.Boolean()
-    supplier = graphene.Field(lambda: SupplierType)
+        inspector = inspect.getargvalues(inspect.currentframe())
+        passed_args = get_passed_args(inspector)
 
-    @staticmethod
-    def mutate(root, info, uid, **kwargs):   
         if not uid:
-            raise GraphQLError("No uid provided to idenity update obj")
-        
-        supplier = models.Supplier.get(uid=uid)
+            raise Exception("No uid provided to identity update obj")
+
+        supplier = await models.Supplier.get(uid=uid)
         if not supplier:
-            raise GraphQLError(f"supplier with uid {uid} not found. Cannot update obj ...")
+            raise Exception(f"supplier with uid {uid} not found. Cannot update obj ...")
 
-        obj_data = jsonable_encoder(supplier)
+        obj_data = supplier.to_dict()
         for field in obj_data:
-            if field in kwargs:
+            if field in passed_args:
                 try:
-                    setattr(supplier, field, kwargs[field])
+                    setattr(supplier, field, passed_args[field])
                 except Exception as e:
-                    logger.warning(e)               
-        obj_in = schemas.SupplierUpdate(**supplier.to_dict())    
-        supplier = supplier.update(obj_in)
-        ok = True
-        return UpdateSupplier(ok=ok, supplier=supplier)    
+                    logger.warning(e)
 
+        obj_in = schemas.SupplierUpdate(**supplier.to_dict())
+        supplier = await supplier.update(obj_in)
+        return supplier
 
-# 
-# Instrument Mutations
-# 
-class CreateInstrument(graphene.Mutation):
-    class Arguments:
-        name = graphene.String(required=True)
-        keyword = graphene.String(required=True)
-        description = graphene.String(required=False)
-        supplier_uid = graphene.String(required=False)
+    @strawberry.mutation
+    async def create_instrument(self, info, name: str, keyword: str, description: Optional[str] = None,  # noqa
+                                supplier_uid: Optional[int] = None) -> InstrumentType:  # noqa
 
-    ok = graphene.Boolean()
-    instrument = graphene.Field(lambda: InstrumentType)
+        inspector = inspect.getargvalues(inspect.currentframe())
+        passed_args = get_passed_args(inspector)
 
-    @staticmethod
-    def mutate(root, info, name, keyword, **kwargs): 
         if not name or not keyword:
-            raise GraphQLError("Provide a name and a unique keyword for your instrument")
+            raise Exception("Provide a name and a unique keyword for your instrument")
 
-        taken = models.Instrument.get(keyword=keyword)
+        taken = await models.Instrument.get(keyword=keyword)
         if taken:
-            raise GraphQLError(f"Provided keyword already assigned to instrument {taken.name}")
+            raise Exception(f"Provided keyword already assigned to instrument {taken.name}")
 
-        exists = models.Instrument.get(name=name)
+        exists = await models.Instrument.get(name=name)
         if exists:
-            raise GraphQLError(f"An Instrument named {name} already exists")
+            raise Exception(f"An Instrument named {name} already exists")
 
-        incoming = {
-            "name": name,
-            "keyword": keyword
-        }
-        for k, v in kwargs.items():
+        incoming: Dict = dict()
+        for k, v in passed_args.items():
             incoming[k] = v
 
-        obj_in = schemas.InstrumentCreate(**incoming)  
-        instrument = models.Instrument.create(obj_in)
-        ok = True
-        return CreateInstrument(instrument=instrument, ok=ok)
+        obj_in = schemas.InstrumentCreate(**incoming)
+        instrument: models.Instrument = await models.Instrument.create(obj_in)
+        return instrument
 
-                
-class UpdateInstrument(graphene.Mutation):
-    class Arguments:
-        uid = graphene.String(required=True)
-        name = graphene.String(required=True)
-        description = graphene.String(required=False)
-        keyword = graphene.String(required=False)
-        supplier_uid = graphene.String(required=False)
+    @strawberry.mutation
+    async def update_instrument(self, info, uid: int, name: Optional[str] = None, keyword: Optional[str] = None,  # noqa
+                                description: Optional[str] = None,  # noqa
+                                supplier_uid: Optional[int] = None) -> InstrumentType:  # noqa
 
-    ok = graphene.Boolean()
-    instrument = graphene.Field(lambda: InstrumentType)
+        inspector = inspect.getargvalues(inspect.currentframe())
+        passed_args = get_passed_args(inspector)
 
-    @staticmethod
-    def mutate(root, info, uid, **kwargs):   
         if not uid:
-            raise GraphQLError("No uid provided to idenity update obj")
+            raise Exception("No uid provided to identity update obj")
 
-        if 'keyword' in kwargs:
-            keyword = kwargs.get('keyword')
-            taken = models.Instrument.get(keyword=keyword)
+        if 'keyword' in passed_args:
+            keyword = passed_args.get('keyword')
+            taken = await models.Instrument.get(keyword=keyword)
             if taken and not (str(uid) == str(taken.uid)):
-                raise GraphQLError(f"Provided keyword already assigned to instrument {taken.name}")
-        
-        instrument = models.Instrument.get(uid=uid)
+                raise Exception(f"Provided keyword already assigned to instrument {taken.name}")
+
+        instrument = await models.Instrument.get(uid=uid)
         if not instrument:
-            raise GraphQLError(f"instrument with uid {uid} not found. Cannot update obj ...")
+            raise Exception(f"instrument with uid {uid} not found. Cannot update obj ...")
 
-        obj_data = jsonable_encoder(instrument)
+        obj_data = instrument.to_dict()
         for field in obj_data:
-            if field in kwargs:
+            if field in passed_args:
                 try:
-                    setattr(instrument, field, kwargs[field])
+                    setattr(instrument, field, passed_args[field])
                 except Exception as e:
-                    pass               
-        obj_in = schemas.InstrumentUpdate(**instrument.to_dict())    
-        instrument = instrument.update(obj_in)
-        ok = True
-        return UpdateInstrument(ok=ok, instrument=instrument)
-    
+                    logger.warning(e)
 
-#
-# Method Mutations
-# 
-class CreateMethod(graphene.Mutation):
-    class Arguments:
-        name = graphene.String(required=True)
-        keyword = graphene.String(required=True)
-        description = graphene.String(required=False)
+        obj_in = schemas.InstrumentUpdate(**instrument.to_dict())
+        instrument = await instrument.update(obj_in)
+        return instrument
 
-    ok = graphene.Boolean()
-    method = graphene.Field(lambda: MethodType)
+    @strawberry.mutation
+    async def create_method(self, info, name: str, keyword: Optional[str] = None, description: Optional[str] = None) -> MethodType:  # noqa
 
-    @staticmethod
-    def mutate(root, info, name, **kwargs): 
+        inspector = inspect.getargvalues(inspect.currentframe())
+        passed_args = get_passed_args(inspector)
+
         if not name:
-            raise GraphQLError("Provide a name for your method")
+            raise Exception("Provide a name for your method")
 
-        if 'keyword' in kwargs:
-            keyword = kwargs.get('keyword')
-            taken = models.Method.get(keyword=keyword)
+        if 'keyword' in passed_args:
+            keyword = passed_args.get('keyword')
+            taken = await models.Method.get(keyword=keyword)
             if taken:
-                raise GraphQLError(f"Provided keyword already assigned to Method {taken.name}")
+                raise Exception(f"Provided keyword already assigned to Method {taken.name}")
 
-        exists = models.Method.get(name=name)
+        exists = await models.Method.get(name=name)
         if exists:
-            raise GraphQLError(f"A Method named {name} already exists")
+            raise Exception(f"A Method named {name} already exists")
 
-        incoming = {
-            "name": name,
-        }
-        for k, v in kwargs.items():
+        incoming = {}
+        for k, v in passed_args.items():
             incoming[k] = v
 
-        obj_in = schemas.MethodCreate(**incoming)  
-        method = models.Method.create(obj_in)
-        ok = True
-        return CreateMethod(method=method, ok=ok)
+        obj_in = schemas.MethodCreate(**incoming)
+        method: models.Method = await models.Method.create(obj_in)
+        return method
 
-                
-class UpdateMethod(graphene.Mutation):
-    class Arguments:
-        uid = graphene.String(required=True)
-        name = graphene.String(required=True)
-        description = graphene.String(required=False)
-        keyword = graphene.String(required=False)
+    @strawberry.mutation
+    async def update_method(self, info, uid: int, name: Optional[str] = None, keyword: Optional[str] = None,  # noqa
+                            description: Optional[str] = None) -> MethodType:  # noqa
 
-    ok = graphene.Boolean()
-    method = graphene.Field(lambda: MethodType)
+        inspector = inspect.getargvalues(inspect.currentframe())
+        passed_args = get_passed_args(inspector)
 
-    @staticmethod
-    def mutate(root, info, uid, **kwargs):   
         if not uid:
-            raise GraphQLError("No uid provided to idenity update obj")
-        
-        if 'keyword' in kwargs:
-            keyword = kwargs.get('keyword')
-            taken = models.Method.get(keyword=keyword)
+            raise Exception("No uid provided to identity update obj")
+
+        if 'keyword' in passed_args:
+            keyword = passed_args.get('keyword')
+            taken = await models.Method.get(keyword=keyword)
             if taken and not (str(uid) == str(taken.uid)):
-                raise GraphQLError(f"Provided keyword already assigned to method {taken.name}")
-        
-        method = models.Method.get(uid=uid)
+                raise Exception(f"Provided keyword already assigned to method {taken.name}")
+
+        method = await models.Method.get(uid=uid)
         if not method:
-            raise GraphQLError(f"method with uid {uid} not found. Cannot update obj ...")
+            raise Exception(f"method with uid {uid} not found. Cannot update obj ...")
 
-        obj_data = jsonable_encoder(method)
+        obj_data = method.to_dict()
         for field in obj_data:
-            if field in kwargs:
+            if field in passed_args:
                 try:
-                    setattr(method, field, kwargs[field])
+                    setattr(method, field, passed_args[field])
                 except Exception as e:
-                    pass               
-        obj_in = schemas.MethodUpdate(**method.to_dict())    
-        method = method.update(obj_in)
-        ok = True
-        return UpdateMethod(ok=ok, method=method)
-    
+                    logger.warning(e)
 
-# 
-# Country Mutations
-#  
-class CreateCountry(graphene.Mutation):
-    class Arguments:
-        name = graphene.String(required=True)
-        code = graphene.String(required=False)
-        active = graphene.Boolean(required=False)
+        obj_in = schemas.MethodUpdate(**method.to_dict())
+        method = await method.update(obj_in)
+        return method
 
-    ok = graphene.Boolean()
-    country = graphene.Field(lambda: CountryType)
+    @strawberry.mutation
+    async def create_country(self, info, name: str, code: str, active: Optional[bool] = True) -> CountryType:  # noqa
 
-    @staticmethod
-    def mutate(root, info, name, code, **kwargs):
+        inspector = inspect.getargvalues(inspect.currentframe())
+        passed_args = get_passed_args(inspector)
+
         if not name:
-            raise GraphQLError("Please Provide a namefor the country")
-        exists = models.Country.get(code=code)
+            raise Exception("Please Provide a name for the country")
+
+        exists = await models.Country.get(code=code)
         if exists:
-            raise GraphQLError(f"Country code {code} already exists: This code belongs to {exists.name}")
-            
-        incoming = {
-            "name": name,
-            "code": code,
-            "active": True
-        }
-        for k, v in kwargs.items():
+            raise Exception(f"Country code {code} already exists: This code belongs to {exists.name}")
+
+        incoming = {}
+        for k, v in passed_args.items():
             incoming[k] = v
 
-        obj_in = schemas.CountryCreate(**incoming)  
-        country = models.Country.create(obj_in)
-        ok = True
-        return CreateCountry(country=country, ok=ok)
+        obj_in = schemas.CountryCreate(**incoming)
+        country: models.Country = await models.Country.create(obj_in)
+        return country
 
-                
-class UpdateCountry(graphene.Mutation):
-    class Arguments:
-        uid = graphene.String(required=True)
-        name = graphene.String(required=False)
-        code = graphene.String(required=False)
-        active = graphene.Boolean(required=False)
+    @strawberry.mutation
+    async def update_country(self, info, uid: int, name: Optional[str] = None, code: Optional[str] = None,  # noqa
+                             active: Optional[bool] = True) -> CountryType:  # noqa
 
-    ok = graphene.Boolean()
-    country = graphene.Field(lambda: CountryType)
+        inspector = inspect.getargvalues(inspect.currentframe())
+        passed_args = get_passed_args(inspector)
 
-    @staticmethod
-    def mutate(root, info, uid, **kwargs):  
         if not uid:
-            raise GraphQLError("No uid provided to idenity update obj")
-        
-        country = models.Country.get(uid=uid)
+            raise Exception("No uid provided to identity update obj")
+
+        country = await models.Country.get(uid=uid)
         if not country:
-            raise GraphQLError(f"country with uid {uid} not found. Cannot update obj ...")
+            raise Exception(f"country with uid {uid} not found. Cannot update obj ...")
 
-        obj_data = jsonable_encoder(country)
+        obj_data = country.to_dict()
         for field in obj_data:
-            if field in kwargs:
+            if field in passed_args:
                 try:
-                    setattr(country, field, kwargs[field])
+                    setattr(country, field, passed_args[field])
                 except Exception as e:
-                    pass               
-        obj_in = schemas.CountryUpdate(**country.to_dict())    
-        country = country.update(obj_in)
-        ok = True
-        return UpdateCountry(ok=ok, country=country)
-      
-   
-# 
-# Province Mutations
-#  
-class CreateProvince(graphene.Mutation):
-    class Arguments:
-        name = graphene.String(required=True)
-        code = graphene.String(required=False)
-        country_uid = graphene.Int(required=False)
-        email = graphene.String(required=False)
-        email_cc = graphene.String(required=False)
-        consent_email = graphene.Boolean(required=False)
-        mobile_phone = graphene.String(required=False)
-        business_phone = graphene.String(required=False)
-        consent_sms = graphene.Boolean(required=False)
-        active = graphene.Boolean(required=False)
+                    logger.warning(e)
 
-    ok = graphene.Boolean()
-    province = graphene.Field(lambda: ProvinceType)
+        obj_in = schemas.CountryUpdate(**country.to_dict())
+        country = await country.update(obj_in)
+        return country
 
-    @staticmethod
-    def mutate(root, info, name, code, **kwargs):
+    @strawberry.mutation
+    async def create_province(self, info, name: str, code: str, country_uid: Optional[int], email: Optional[str] = None,  # noqa
+                              email_cc: Optional[str] = None, mobile_phone: Optional[str] = None,  # noqa
+                              business_phone: Optional[str] = None, active: Optional[bool] = True) -> ProvinceType:  # noqa
+
+        inspector = inspect.getargvalues(inspect.currentframe())
+        passed_args = get_passed_args(inspector)
+
         if not name:
-            raise GraphQLError("Please Provide a name for the Province")
-        exists = models.Province.get(code=code)
+            raise Exception("Please Provide a name for the Province")
+
+        exists = await models.Province.get(code=code)
         if exists:
-            raise GraphQLError(f"Provice code {code} already belong to Province {exists.name}")
-            
-        incoming = {
-            "name": name,
-            "code": code,
-            "active": True
-        }
-        for k, v in kwargs.items():
+            raise Exception(f"Province code {code} already belong to Province {exists.name}")
+
+        incoming = {}
+        for k, v in passed_args.items():
             incoming[k] = v
-        
+
         province_in = schemas.ProvinceCreate(**incoming)
-        province = models.Province.create(province_in)
-        ok = True
-        return CreateProvince(province=province, ok=ok)
+        province: models.Province = await models.Province.create(province_in)
+        return province
 
-                
-class UpdateProvince(graphene.Mutation):
-    class Arguments:
-        uid = graphene.String(required=True)
-        name = graphene.String(required=False)
-        code = graphene.String(required=False)
-        country_uid = graphene.Int(required=False)
-        email = graphene.String(required=False)
-        email_cc = graphene.String(required=False)
-        mobile_phone = graphene.String(required=False)
-        business_phone = graphene.String(required=False)
-        active = graphene.Boolean(required=False)
+    @strawberry.mutation
+    async def update_province(self, info, uid: int, name: Optional[str] = None, code: Optional[str] = None, country_uid: Optional[int] = None,  # noqa
+                     email: Optional[str] = None, email_cc: Optional[str] = None, # noqa
+                     mobile_phone: Optional[str] = None, business_phone: Optional[str] = None,  # noqa
+                     active: Optional[bool] = True) -> ProvinceType:  # noqa
 
-    ok = graphene.Boolean()
-    province = graphene.Field(lambda: ProvinceType)
+        inspector = inspect.getargvalues(inspect.currentframe())
+        passed_args = get_passed_args(inspector)
 
-    @staticmethod
-    def mutate(root, info, uid, **kwargs):   
-        logger.info(kwargs)
         if not uid:
-            raise GraphQLError("No uid provided to idenity update obj")
-        
-        province = models.Province.get(uid=uid)
+            raise Exception("No uid provided to identity update obj")
+
+        province = await models.Province.get(uid=uid)
         if not province:
-            raise GraphQLError(f"province with id {uid} not found. Cannot update obj ...")
+            raise Exception(f"province with id {uid} not found. Cannot update obj ...")
 
-        obj_data = jsonable_encoder(province)
+        obj_data = province.to_dict()
         for field in obj_data:
-            if field in kwargs:
+            if field in passed_args:
                 try:
-                    setattr(province, field, kwargs[field])
+                    setattr(province, field, passed_args[field])
                 except Exception as e:
-                    pass             
-        obj_in = schemas.ProvinceUpdate(**province.to_dict())    
-        province = province.update(obj_in)
-        ok = True
-        return UpdateProvince(ok=ok, province=province)
-    
-  
-# 
-# District Mutations
-#  
-class CreateDistrict(graphene.Mutation):
-    class Arguments:
-        name = graphene.String(required=True)
-        code = graphene.String(required=False)
-        province_uid = graphene.Int(required=False)
-        email = graphene.String(required=False)
-        email_cc = graphene.String(required=False)
-        mobile_phone = graphene.String(required=False)
-        business_phone = graphene.String(required=False)
-        active = graphene.Boolean(required=False)
+                    logger.warning(e)
 
-    ok = graphene.Boolean()
-    district = graphene.Field(lambda: DistrictType)
+        obj_in = schemas.ProvinceUpdate(**province.to_dict())
+        province = await province.update(obj_in)
+        return province
 
-    @staticmethod
-    def mutate(root, info, name, code, **kwargs):
+    @strawberry.mutation
+    async def create_district(self, info, name: str, code: Optional[str] = None, province_uid: Optional[int] = None,  # noqa
+                              email: Optional[str] = None, email_cc: Optional[str] = None, mobile_phone: Optional[str] = None,  # noqa
+                              business_phone: Optional[str] = None, active: Optional[bool] = True) -> DistrictType:  # noqa
+
+        inspector = inspect.getargvalues(inspect.currentframe())
+        passed_args = get_passed_args(inspector)
+
         if not name:
-            raise GraphQLError("Please Provide a namefor the district")
-        exists = models.District.get(code=code)
+            raise Exception("Please Provide a name for the district")
+
+        exists = await models.District.get(code=code)
         if exists:
-            raise GraphQLError(f"District code {code} already belong to district {exists.name}")
-            
-        incoming = {
-            "name": name,
-            "code": code,
-            "active": True
-        }
-        for k, v in kwargs.items():
+            raise Exception(f"District code {code} already belong to district {exists.name}")
+
+        incoming = {}
+        for k, v in passed_args.items():
             incoming[k] = v
-        
+
         district_in = schemas.DistrictCreate(**incoming)
-        district = models.District.create(district_in)
-        ok = True
-        return CreateDistrict(district=district, ok=ok)
+        district: models.District = await models.District.create(district_in)
+        return district
 
-                
-class UpdateDistrict(graphene.Mutation):
-    class Arguments:
-        uid = graphene.String(required=True)
-        name = graphene.String(required=False)
-        code = graphene.String(required=False)
-        province_uid = graphene.Int(required=False)
-        email = graphene.String(required=False)
-        email_cc = graphene.String(required=False)
-        mobile_phone = graphene.String(required=False)
-        business_phone = graphene.String(required=False)
-        active = graphene.Boolean(required=False)
+    @strawberry.mutation
+    async def update_district(self, info, uid: int, name: str, code: Optional[str] = None, province_uid: Optional[int] = None,  # noqa
+                              email: Optional[str] = None, email_cc: Optional[str] = None, mobile_phone: Optional[str] = None,  # noqa
+                              business_phone: Optional[str] = None, active: Optional[bool] = True) -> DistrictType:  # noqa
 
+        inspector = inspect.getargvalues(inspect.currentframe())
+        passed_args = get_passed_args(inspector)
 
-    ok = graphene.Boolean()
-    district = graphene.Field(lambda: DistrictType)
-
-    @staticmethod
-    def mutate(root, info, uid, **kwargs):  
         if not uid:
-            raise GraphQLError("No uid provided to idenity update obj")
-        
-        district = models.District.get(uid=uid)
+            raise Exception("No uid provided to identity update obj")
+
+        district = await models.District.get(uid=uid)
         if not district:
-            raise GraphQLError(f"district with uid {uid} not found. Cannot update obj ...")
+            raise Exception(f"district with uid {uid} not found. Cannot update obj ...")
 
-        obj_data = jsonable_encoder(district)
+        obj_data = district.to_dict()
         for field in obj_data:
-            if field in kwargs:
+            if field in passed_args:
                 try:
-                    setattr(district, field, kwargs[field])
+                    setattr(district, field, passed_args[field])
                 except Exception as e:
-                    pass               
-        obj_in = schemas.DistrictUpdate(**district.to_dict())    
-        district = district.update(obj_in)
-        ok = True
-        return UpdateDistrict(ok=ok, district=district)
+                    logger.warning(e)
 
-    
-class SetupMutations(graphene.ObjectType):
-    # laboratory
-    create_laboratory = CreateLaboratory.Field()
-    update_laboratory = UpdateLaboratory.Field()
-    # department
-    create_department = CreateDepartment.Field()
-    update_department = UpdateDepartment.Field()
-    # suplier
-    create_supplier = CreateSupplier.Field()
-    update_supplier = UpdateSupplier.Field()
-    # instrument
-    create_instrument = CreateInstrument.Field()
-    update_instrument = UpdateInstrument.Field()
-    # method
-    create_method = CreateMethod.Field()
-    update_method = UpdateMethod.Field()
-    # Country
-    create_country = CreateCountry.Field()
-    update_country = UpdateCountry.Field()
-    # Provinve
-    create_province = CreateProvince.Field()
-    update_province = UpdateProvince.Field()
-    # District
-    create_district = CreateDistrict.Field()
-    update_district = UpdateDistrict.Field()
+        obj_in = schemas.DistrictUpdate(**district.to_dict())
+        district = await district.update(obj_in)
+        return district

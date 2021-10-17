@@ -18,19 +18,19 @@
                 </tr>
                 </thead>
                 <tbody class="bg-white">
-                <tr v-for="s_type in sampletypes" :key="s_type.uid">
+                <tr v-for="s_type in sampletypes" :key="s_type?.uid">
                     <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
                     <div class="flex items-center">
                         <div>
-                        <div class="text-sm leading-5 text-gray-800">{{ s_type.name }}</div>
+                        <div class="text-sm leading-5 text-gray-800">{{ s_type?.name }}</div>
                         </div>
                     </div>
                     </td>
                     <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-                    <div class="text-sm leading-5 text-blue-900">{{ s_type.abbr }}</div>
+                    <div class="text-sm leading-5 text-blue-900">{{ s_type?.abbr }}</div>
                     </td>
                     <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-                    <div class="text-sm leading-5 text-blue-900">{{ s_type.active }}</div>
+                    <div class="text-sm leading-5 text-blue-900">{{ s_type?.active }}</div>
                     </td>
                     <td class="px-1 py-1 whitespace-no-wrap text-right border-b border-gray-500 text-sm leading-5">
                         <button @click="FormManager(false, s_type)" class="px-2 py-1 mr-2 border-orange-500 border text-orange-500 rounded transition duration-300 hover:bg-orange-700 hover:text-white focus:outline-none">Edit</button>

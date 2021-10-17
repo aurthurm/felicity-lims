@@ -21,35 +21,35 @@ class AbstractBaseUser(DBModel):
         return f"{self.first_name} {self.last_name}"
 
     @classmethod
-    def get_by_email(cls, email):
-        user = cls.get(email=email)
+    async def get_by_email(cls, email):
+        user = await cls.get(email=email)
         if not user:
             return None
         return user
 
-    def give_super_powers(self):
+    async def give_super_powers(self):
         user_obj = jsonable_encoder(self)
         user_in = schemas.UserUpdate(**user_obj)
         user_in.is_superuser = True
-        self.update(user_in)
+        await self.update(user_in)
 
-    def strip_super_powers(self):
+    async def strip_super_powers(self):
         user_obj = jsonable_encoder(self)
         user_in = schemas.UserUpdate(**user_obj)
         user_in.is_superuser = False
-        self.update(user_in)
+        await self.update(user_in)
 
-    def activate(self):
+    async def activate(self):
         user_obj = jsonable_encoder(self)
         user_in = schemas.UserUpdate(**user_obj)
         user_in.is_active = True
-        self.update(user_in)
+        await self.update(user_in)
 
-    def deactivate(self):
+    async def deactivate(self):
         user_obj = jsonable_encoder(self)
         user_in = schemas.UserUpdate(user_obj)
         user_in.is_active = False
-        self.update(user_in)
+        await self.update(user_in)
 
 
 class AbstractAuth(DBModel):
@@ -64,24 +64,26 @@ class AbstractAuth(DBModel):
         return True if self.hashed_password else False
 
     @classmethod
-    def get_by_username(cls, username):
-        auth = cls.get(user_name=username)
+    async def get_by_username(cls, username):
+        auth = await cls.get(user_name=username)
         if not auth:
             # raise Exception("Invalid username, try again")
             return None
         return auth
 
     @classmethod
-    def create(cls, auth_in: schemas.AuthCreate) -> schemas.User:
-        if cls.get_by_username(auth_in.user_name):
+    async def create(cls, auth_in: schemas.AuthCreate) -> schemas.User:
+        by_username = await cls.get_by_username(auth_in.user_name)
+        if by_username:
             raise Exception("Username already exist")
         hashed_password = get_password_hash(auth_in.password)
         data = cls._import(auth_in)
         del data["password"]
         data["hashed_password"] = hashed_password
-        return super().create(**data)
+        created = await super().create(**data)
+        return created
 
-    def update(self, auth_in: schemas.AuthUpdate) -> schemas.User:
+    async def update(self, auth_in: schemas.AuthUpdate) -> schemas.User:
         update_data = self._import(auth_in)
 
         if 'password' in update_data:
@@ -90,4 +92,6 @@ class AbstractAuth(DBModel):
             update_data["hashed_password"] = hashed_password
         if 'user' in update_data:
             del update_data['user']
-        return super().update(**update_data)
+
+        updated = await super().update(**update_data)
+        return updated

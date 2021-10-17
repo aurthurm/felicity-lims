@@ -1,4 +1,4 @@
-from typing import Generator
+from typing import AsyncGenerator, Generator
 
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
@@ -9,19 +9,23 @@ from sqlalchemy.orm import Session
 from felicity.apps.user import crud, models, schemas
 from felicity.core import security
 from felicity.core.config import settings
-from felicity.database.session import SessionLocal
+from felicity.database.session import async_session_factory
 
 reusable_oauth2 = OAuth2PasswordBearer(
     tokenUrl=f"{settings.API_V1_STR}/login/access-token"
 )
 
 
-def get_db() -> Generator:
+async def get_db() -> AsyncGenerator:
+    session = async_session_factory()
     try:
-        db = SessionLocal()
-        yield db
+        yield session
+        await session.commit()
+    except async_session_factory as ex:
+        await session.rollback()
+        raise ex
     finally:
-        db.close()
+        await session.close()
 
 
 def get_current_user(

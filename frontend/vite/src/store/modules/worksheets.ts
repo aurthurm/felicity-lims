@@ -26,9 +26,9 @@ export class Reserved implements IReserved {
 }
 
 export interface IWorkSheetTemplate {
-  uid?: string;
+  uid?: number;
   name?: string;
-  qcTemplateUid?: string;
+  qcTemplateUid?: number;
   reserved?: IReserved[];
   preview?: IReserved[];
   numberOfSamples?: number;
@@ -44,7 +44,7 @@ export interface IWorkSheetTemplate {
 
 export class WorkSheetTemplate implements IWorkSheetTemplate {
   constructor(
-    public uid?: string,
+    public uid?: number,
     public name?: string,
     public reserved?: IReserved[],
     public preview?: IReserved[],
@@ -52,7 +52,7 @@ export class WorkSheetTemplate implements IWorkSheetTemplate {
     public rows?: number,
     public cols?: number,
     public rowWise?: Boolean,
-    public qcTemplateUid?: string,
+    public qcTemplateUid?: number,
     public worksheetType?: string,
     public instrument?: IInstrument,
     public description?: string,
@@ -68,7 +68,7 @@ export class WorkSheetTemplate implements IWorkSheetTemplate {
 
 
 export interface IWorkSheet {
-  uid?: string;
+  uid?: number;
   name?: string;
   reserved?: string[];
   plate?: Map<string, string>;
@@ -86,7 +86,7 @@ export interface IWorkSheet {
 
 export class WorkSheet implements IWorkSheet {
   constructor(
-    public uid?: string,
+    public uid?: number,
     public name?: string,
     public reserved?: string[],
     public plate?: Map<string, string>,
@@ -161,7 +161,7 @@ export const getters = <GetterTree<IState, RootState>>{
   getWorkSheetTemplates: (state) => state.workSheetTemplates,
   getWorkSheets: (state) => state.workSheets,
   getWorkSheet: (state) => state.workSheet,
-  getWorkSheetByUid: (state) => (uid: string) => state.workSheets?.find(ws => ws.uid === uid),
+  getWorkSheetByUid: (state) => (uid: number) => state.workSheets?.find(ws => ws.uid === uid),
 };
 
 // Mutations
@@ -171,26 +171,20 @@ export const mutations = <MutationTree<IState>>{
   },
 
   // WorkSheet Templates
-  [MutationTypes.SET_WORKSHEET_TEMPLATES](state: IState, payload: any): void {
+  [MutationTypes.SET_WORKSHEET_TEMPLATES](state: IState, wst: any): void {
     state.workSheetTemplates = [];
-    let wst = parseEdgeNodeToList(payload);
     wst?.forEach((template: IWorkSheetTemplate) => {
-      template.analyses = parseEdgeNodeToList(template?.analyses) || [];
       const data: any = template.reserved;
       const reserved = Object.entries(parseData(data)) as any[];
       let new_res: IReserved[] = [];
-      console.log(reserved);
       reserved?.forEach(item => new_res.push(keysToCamel(item[1]) as IReserved || {}));
       template.reserved = new_res;
     });
-    console.log(wst)
     state.workSheetTemplates = wst;
   },
 
-  [MutationTypes.UPDATE_WORKSHEET_TEMPLATE](state: IState, payload: IWorkSheetTemplate): void {
-    const index = state.workSheetTemplates.findIndex(x => x.uid === payload.uid);
-    let wst = payload;
-    wst.analyses = parseEdgeNodeToList(wst?.analyses) || [];
+  [MutationTypes.UPDATE_WORKSHEET_TEMPLATE](state: IState, wst: IWorkSheetTemplate): void {
+    const index = state.workSheetTemplates.findIndex(x => x.uid === wst.uid);
     const data: any = wst.reserved;
     const reserved = Object.entries(parseData(data)) as any[];
     let new_res: IReserved[] = [];
@@ -199,9 +193,7 @@ export const mutations = <MutationTree<IState>>{
     state!.workSheetTemplates[index] = wst;
   },
 
-  [MutationTypes.ADD_WORKSHEET_TEMPLATE](state: IState, payload: IWorkSheetTemplate): void {
-    let wst = payload;
-    wst.analyses = parseEdgeNodeToList(wst?.analyses) || [];
+  [MutationTypes.ADD_WORKSHEET_TEMPLATE](state: IState, wst: IWorkSheetTemplate): void {
     const data: any = wst.reserved;
     const reserved = Object.entries(parseData(data)) as any[];
     let new_res: IReserved[] = [];
@@ -211,28 +203,15 @@ export const mutations = <MutationTree<IState>>{
   },
 
   // WorkSheetS
-  [MutationTypes.SET_WORKSHEETS](state: IState, payload: any): void {
-    state.workSheets = [];
-    let wst = parseEdgeNodeToList(payload);
-    wst?.forEach((workSheet: any) => {
-      workSheet.analyses = parseEdgeNodeToList(workSheet?.analyses) || [];
-    });
-    state.workSheets = wst;
+  [MutationTypes.SET_WORKSHEETS](state: IState, wst: any): void {
+    state.workSheets = wst?.items;
   },
 
-  [MutationTypes.SET_WORKSHEET](state: IState, payload: any): void {
-    let wst = payload;
-    wst.analyses = parseEdgeNodeToList(wst?.analyses) || [];
-    wst.analysisResults = parseEdgeNodeToList(wst?.analysisResults) || [];
-    wst.analysisResults?.forEach((ar: any) => {
-      ar.analysis.resultoptions = parseEdgeNodeToList(ar?.analysis?.resultoptions) || [];
-    });
+  [MutationTypes.SET_WORKSHEET](state: IState, wst: any): void {
     state.workSheet = sortAnalysisResults(wst);
   },
 
-  [MutationTypes.ADD_WORKSHEET](state: IState, payload: IWorkSheet): void {
-    let ws = payload;
-    ws.analyses = parseEdgeNodeToList(ws?.analyses) || [];
+  [MutationTypes.ADD_WORKSHEET](state: IState, ws: IWorkSheet): void {
     state.workSheets.push(ws);
   },
 
@@ -255,11 +234,11 @@ export const actions = <ActionTree<IState, RootState>>{
   },
 
   async [ActionTypes.UPDATE_WORKSHEET_TEMPLATE]({ commit }, payload ){
-    commit(MutationTypes.UPDATE_WORKSHEET_TEMPLATE, payload.data.updateWorksheetTemplate.worksheetTemplate);
+    commit(MutationTypes.UPDATE_WORKSHEET_TEMPLATE, payload.data.updateWorksheetTemplate);
   },
 
   async [ActionTypes.ADD_WORKSHEET_TEMPLATE]({ commit }, payload ){
-    commit(MutationTypes.ADD_WORKSHEET_TEMPLATE, payload.data.createWorksheetTemplate.worksheetTemplate);
+    commit(MutationTypes.ADD_WORKSHEET_TEMPLATE, payload.data.createWorksheetTemplate);
   },
 
   // WorkSheetS
@@ -276,7 +255,7 @@ export const actions = <ActionTree<IState, RootState>>{
   },
 
   async [ActionTypes.ADD_WORKSHEET]({ commit }, payload ){
-    commit(MutationTypes.ADD_WORKSHEET, payload.data.createWorksheet.worksheet);
+    commit(MutationTypes.ADD_WORKSHEET, payload.data.createWorksheet);
   },
 
   async [ActionTypes.REMOVE_WORKSHEET]({ commit } ){

@@ -288,13 +288,19 @@ export default defineComponent({
     const formAction = ref(true);
 
     store.dispatch(ActionTypes.FETCH_ANALYSES_CATEGORIES);
-    store.dispatch(ActionTypes.FETCH_ANALYSES_SERVICES);
+
+    let analysesParams = reactive({ 
+      first: undefined, 
+      after: "",
+      text: "", 
+      sortBy: ["name"]
+    });
+    store.dispatch(ActionTypes.FETCH_ANALYSES_SERVICES, analysesParams);
 
     const { executeMutation: createAnalysisService } = useMutation(ADD_ANALYSIS_SERVICE);
     const { executeMutation: updateAnalysisService } = useMutation(EDIT_ANALYSIS_SERVICE);
 
     function addAnalysisService(): void {
-      console.log((analysisService))
       createAnalysisService({ 
         name: analysisService.name, 
         keyword: analysisService.keyword, 
@@ -331,7 +337,7 @@ export default defineComponent({
       Object.assign(analysisService, { ...(new AnalysisService()) });
     }
 
-    function FormManager(create: boolean, obj: IAnalysisService):void {
+    function FormManager(create: boolean, obj: IAnalysisService | null = null):void {
       formAction.value = create;
       showModal.value = true;
       formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "ANALYSES SERVICE";

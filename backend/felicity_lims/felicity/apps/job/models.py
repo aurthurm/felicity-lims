@@ -13,25 +13,25 @@ class Job(DBModel):
     status = Column(String)
     reason = Column(String)
 
-    def change_status(self, new_status, change_reason=""):
+    async def change_status(self, new_status, change_reason=""):
         self.status = new_status
         self.reason = change_reason
-        self.save()
+        await self.save()
 
-    def increase_priority(self):
+    async def increase_priority(self):
         if self.priority < conf.priorities.HIGH:
             self.priority += 1
-            self.save()
+            await self.save()
 
-    def decrease_priority(self):
+    async def decrease_priority(self):
         if self.priority > conf.priorities.NORMAL:
             self.priority -= 1
-            self.save()
+            await self.save()
 
     @classmethod
-    def fetch_sorted(cls):
+    async def fetch_sorted(cls):
         exclude = [conf.states.FINISHED, conf.states.FAILED]
-        jobs = Job.where(status__notin=exclude).sort('-priority').all()
+        jobs = await Job.where(status__notin=exclude).sort('-priority').all()
         _jobs = Job.smart_query(
             filters={
                 'status__notin': [conf.states.FINISHED, conf.states.FAILED],
@@ -41,10 +41,10 @@ class Job(DBModel):
         return jobs
 
     @classmethod
-    def create(cls, obj_in: schemas.JobCreate) -> schemas.Job:
+    async def create(cls, obj_in: schemas.JobCreate) -> schemas.Job:
         data = cls._import(obj_in)
-        return super().create(**data)
+        return await super().create(**data)
 
-    def update(self, obj_in: schemas.JobUpdate) -> schemas.Job:
+    async def update(self, obj_in: schemas.JobUpdate) -> schemas.Job:
         data = self._import(obj_in)
-        return super().update(**data)
+        return await super().update(**data)

@@ -12,7 +12,6 @@
 </template>
 
 <script lang="ts">
-import { debounce } from '../../../utils'
 import Split from 'split.js'
 import MarkdownIt from 'markdown-it';
 import Preview from './Preview.vue'
@@ -32,13 +31,13 @@ export default defineComponent({
   setup() {
     const store = useStore();
     const md = new MarkdownIt();
-    let timeout;
+    let timeout: any;
     let loading = ref(true);
     let document = reactive({ ...new Object });
     let content = computed(() => store.getters.getDocument );
     const { executeMutation: udateDocument } = useMutation(EDIT_MARKDOWN_DOCUMENT);
 
-    function editDocument(payload): void {
+    function editDocument(payload: string): void {
       udateDocument({ uid: document.uid, content: payload }).then((result) => {
         console.log(result)
         // store.dispatch(ActionTypes.SET_DOCUMENT, result);
@@ -52,7 +51,7 @@ export default defineComponent({
 
     let result = md.render(document?.content || "");
 
-    function updateContent(event): void {
+    function updateContent(event: any): void {
         store.dispatch(ActionTypes.UPDATE_DOCUMENT_CONTENT, event.target.value)
         if (timeout) clearTimeout(timeout); 
         timeout = setTimeout(() => {

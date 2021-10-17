@@ -1,41 +1,40 @@
-import graphene
-from graphene import (
-    relay,
-)
-from graphene_sqlalchemy import SQLAlchemyConnectionField
+from typing import Optional, List
+import strawberry
 from felicity.apps.markdown import models
-from felicity.gql import FilterableConnectionField
 from felicity.gql.markdown.types import DocumentTagType, DocumentCategoryType, DocumentType
 
 
-class FilterableAuditField(FilterableConnectionField):
-    pass
+## deprecated soon
 
 
-class MarkDownQuery(graphene.ObjectType):
-    node = relay.Node.Field()
-    document_all = SQLAlchemyConnectionField(DocumentType.connection)
-    document_tag_all = SQLAlchemyConnectionField(DocumentTagType.connection)
-    document_category_all = SQLAlchemyConnectionField(DocumentCategoryType.connection)
-    document_by_uid = graphene.Field(lambda: DocumentType, uid=graphene.String(default_value=""))
-    documents_by_tag = graphene.List(lambda: DocumentType, tag=graphene.String(default_value=""))
-    documents_by_category = graphene.List(lambda: DocumentType, category=graphene.String(default_value=""))
-    documents_search = graphene.List(lambda: DocumentType, query_string=graphene.String(default_value=""))
+@strawberry.type
+class MarkDownQuery:
+    @strawberry.field
+    async def document_all(self, info) -> Optional[List[DocumentType]]:
+        return await models.Document.all()
 
+    @strawberry.field
+    async def document_tag_all(self, info) -> Optional[List[DocumentTagType]]:
+        return await models.DocumentTag.all()
 
-    def resolve_document_by_uid(self, info, uid):
-        document = models.Document.get(uid=uid)
-        return document
+    @strawberry.field
+    async def document_category_all(self, info) -> Optional[List[DocumentCategoryType]]:
+        return await models.DocumentCategory.all()
 
-    def resolve_documents_by_tag(self, info, tag):
-        documents = models.Document.where(tags___name__ilike=f"%{tag}%").all()
-        return documents
+    @strawberry.field
+    async def document_by_uid(self, info, uid: int) -> Optional[DocumentType]:
+        return await models.Document.get(uid=uid)
 
-    def resolve_documents_by_category(self, info, category):
-        documents = models.Document.where(category___name__ilike=f"%{category}%").all()
-        return documents
+    @strawberry.field
+    async def documents_by_tag(self, info, tag: str) -> Optional[DocumentType]:
+        return await models.Document.where(tags___name__ilike=f"%{tag}%").all()
 
-    def resolve_documents_search(self, info, query_string):
+    @strawberry.field
+    async def documents_by_category(self, info, category: str) -> Optional[List[DocumentType]]:
+        return await models.Document.where(category___name__ilike=f"%{category}%").all()
+
+    @strawberry.field
+    async def documents_search(self, info, query_string: str) -> List[DocumentType]:
         filters = [
             'name__ilike',
             'subtitle__ilike',
@@ -46,7 +45,7 @@ class MarkDownQuery(graphene.ObjectType):
         for _filter in filters:
             arg = dict()
             arg[_filter] = f"%{query_string}%"
-            query = models.Document.where(**arg).all()
+            query = await models.Document.where(**arg).all()
             for item in query:
                 combined.add(item)
         return list(combined)

@@ -94,9 +94,8 @@ export default defineComponent({
     let form = reactive({ ...new Listing() });
 
     store.dispatch(ActionTypes.RESET_BOARD);
-    store.dispatch(ActionTypes.FETCH_BOARD_BY_UID, route.params.boardUid);
+    store.dispatch(ActionTypes.FETCH_BOARD_BY_UID, +route.params.boardUid);
     const board = computed(() => store.getters.getBoard );
-
     const { executeMutation: createBoardListing } = useMutation(ADD_BOARD_LISTING);
 
     function addBoardListing(): void {

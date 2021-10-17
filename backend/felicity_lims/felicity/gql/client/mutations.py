@@ -1,182 +1,134 @@
 import logging
-
-import graphene
-from graphql import GraphQLError
-from fastapi.encoders import jsonable_encoder
+import inspect
+from typing import Optional, List, Dict
+import strawberry
+from strawberry.types import Info
 
 from felicity.apps.client import schemas, models
 from felicity.gql.client.types import ClientType, ClientContactType
+from felicity.utils import get_passed_args
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
-# 
-# Client Mutations
-# 
-class CreateClient(graphene.Mutation):
-    class Arguments:
-        name = graphene.String(required=True)
-        code = graphene.String(required=True)
-        district_uid = graphene.Int(required=False)
-        email = graphene.String(required=False)
-        email_cc = graphene.String(required=False)
-        consent_email = graphene.Boolean(required=False)
-        mobile_phone = graphene.String(required=False)
-        business_phone = graphene.String(required=False)
-        consent_sms = graphene.Boolean(required=False)
-        internal_use = graphene.Boolean(required=False)
-        active = graphene.Boolean(required=False)
+@strawberry.type
+class ClientMutations:
+    @strawberry.mutation
+    async def create_client(self, info: Info, name: str, code: str, district_uid: Optional[int] = None,
+                            email: Optional[str] = None, email_cc: Optional[str] = None,
+                            consent_email: Optional[bool] = False, phone_mobile: Optional[str] = None,
+                            phone_business: Optional[str] = None, consent_sms: Optional[bool] = False,
+                            internal_use: Optional[bool] = False, active: Optional[bool] = True) -> ClientType:
 
-    ok = graphene.Boolean()
-    client = graphene.Field(lambda: ClientType)
+        inspector = inspect.getargvalues(inspect.currentframe())
+        passed_args = get_passed_args(inspector)
 
-    @staticmethod
-    def mutate(root, info, name, code, **kwargs):
         if not code or not name:
-            raise GraphQLError("Please Provide a name and a unique client code")
-        exists = models.Client.get(code=code)
+            raise Exception("Please Provide a name and a unique client code")
+
+        exists = await models.Client.get(code=code)
         if exists:
-            raise GraphQLError(f"Client code {code} already belong to client {exists.name}")
-        
-        incoming = {
-            "name": name,
-            "code": code,
-            "active": True
-        }
-        for k, v in kwargs.items():
+            raise Exception(f"Client code {code} already belong to client {exists.name}")
+
+        # incoming = {
+        #     "name": name,
+        #     "code": code,
+        #     "active": active,
+        # }
+
+        incoming: Dict = dict()
+        for k, v in passed_args.items():
             incoming[k] = v
 
-        obj_in = schemas.ClientCreate(**incoming)  
-        client = models.Client.create(obj_in)
-        ok = True
-        return CreateClient(client=client, ok=ok)
+        obj_in = schemas.ClientCreate(**incoming)
+        client = await models.Client.create(obj_in)
+        return client
 
-                
-class UpdateClient(graphene.Mutation):
-    class Arguments:
-        uid = graphene.String(required=True)
-        name = graphene.String(required=False)
-        code = graphene.String(required=False)
-        district_uid = graphene.Int(required=False)
-        email = graphene.String(required=False)
-        email_cc = graphene.String(required=False)
-        consent_email = graphene.Boolean(required=False)
-        mobile_phone = graphene.String(required=False)
-        business_phone = graphene.String(required=False)
-        consent_sms = graphene.Boolean(required=False)
-        internal_use = graphene.Boolean(required=False)
-        active = graphene.Boolean(required=False)
+    @strawberry.mutation
+    async def update_client(self, info, uid: int, name: Optional[str] = None, code: Optional[str] = None, district_uid: Optional[int] = None,
+                            email: Optional[str] = None, email_cc: Optional[str] = None, consent_email: Optional[bool] = False,
+                            mobile_phone: Optional[str] = None, business_phone: Optional[str] = None, consent_sms: Optional[bool] = False,
+                            internal_use: Optional[bool] = False, active: Optional[bool] = True) -> ClientType:
 
-    ok = graphene.Boolean()
-    client = graphene.Field(lambda: ClientType)
+        inspector = inspect.getargvalues(inspect.currentframe())
+        passed_args = get_passed_args(inspector)
 
-    @staticmethod
-    def mutate(root, info, uid, **kwargs):   
         if not uid:
-            raise GraphQLError("No uid provided to identify update obj")
-        
-        client = models.Client.get(uid=uid)
-        if not client:
-            raise GraphQLError(f"Client with uid {uid} not found. Cannot update obj ...")
+            raise Exception("No uid provided to identify update obj")
 
-        obj_data = jsonable_encoder(client)
+        client = await models.Client.get(uid=uid)
+        if not client:
+            raise Exception(f"Client with uid {uid} not found. Cannot update obj ...")
+
+        obj_data = client.to_dict()
         for field in obj_data:
-            if field in kwargs:
+            if field in passed_args:
                 try:
-                    setattr(client, field, kwargs[field])
+                    setattr(client, field, passed_args[field])
                 except Exception as e:
                     logger.warning(f"failed to set attribute {field}: {e}")
-        obj_in = schemas.ClientUpdate(**client.to_dict())    
-        client = client.update(obj_in)
-        ok = True
-        return UpdateClient(ok=ok, client=client)
+        obj_in = schemas.ClientUpdate(**client.to_dict())
+        client = await client.update(obj_in)
+        return client
 
+    @strawberry.mutation
+    async def create_client_contact(self, info, first_name: str, client_uid: int, last_name: Optional[str] = None,
+                                    email: Optional[str] = None, email_cc: Optional[str] = None,
+                                    mobile_phone: Optional[str] = None, consent_sms: Optional[bool] = False,
+                                    is_active: bool = True) -> ClientContactType:
 
-#
-# Client Contact Mutations
-#
+        inspector = inspect.getargvalues(inspect.currentframe())
+        passed_args = get_passed_args(inspector)
 
-class CreateClientContact(graphene.Mutation):
-    class Arguments:
-        client_uid = graphene.String(required=True)
-        first_name = graphene.String(required=True)
-        last_name = graphene.String(required=False)
-        email = graphene.String(required=False)
-        email_cc = graphene.String(required=False)
-        mobile_phone = graphene.String(required=False)
-        consent_sms = graphene.String(required=False)
-        is_active = graphene.Boolean(required=True)
-
-    ok = graphene.Boolean()
-    client_contact = graphene.Field(lambda: ClientContactType)
-
-    @staticmethod
-    def mutate(root, info, first_name, client_uid, **kwargs):
         if not client_uid or not first_name:
-            raise GraphQLError("Please Provide a first_name and a client uid")
-        client_exists = models.Client.get(uid=client_uid)
-        if not client_exists:
-            raise GraphQLError(f"Client with uid {client_uid} does not exist")
-        contact_exists = models.ClientContact.where(client_uid=client_uid, first_name=first_name).all()
-        if contact_exists:
-            raise GraphQLError(f"Client Contact with name {first_name} already exists")
+            raise Exception("Please Provide a first_name and a client uid")
 
-        incoming = {
-            "first_name": first_name,
-            "client_uid": client_uid,
-            "is_active": True,
-            "is_superuser": False,
-        }
-        for k, v in kwargs.items():
+        client_exists = await models.Client.get(uid=client_uid)
+        if not client_exists:
+            raise Exception(f"Client with uid {client_uid} does not exist")
+
+        contact_exists = await models.ClientContact.get_all(client_uid=client_uid, first_name=first_name)
+        logger.warning(contact_exists)
+        if contact_exists:
+            raise Exception(f"Client Contact with name {first_name} already exists")
+
+        # incoming = {
+        #     "first_name": first_name,
+        #     "client_uid": client_uid,
+        #     "is_active": True,
+        #     "is_superuser": False,
+        # }
+        incoming: Dict = dict()
+        for k, v in passed_args.items():
             incoming[k] = v
 
         obj_in = schemas.ClientContactCreate(**incoming)
-        client_contact = models.ClientContact.create(obj_in)
-        ok = True
-        return CreateClientContact(client_contact=client_contact, ok=ok)
+        client_contact = await models.ClientContact.create(obj_in)
+        return client_contact
 
+    @strawberry.mutation
+    async def update_client_contact(self, info, uid: int, first_name: str, last_name: Optional[str] = None,
+                                    email: Optional[str] = None, email_cc: Optional[str] = None, mobile_phone: Optional[str] = None,
+                                    consent_sms: Optional[bool] = False, is_active: bool = True) -> ClientContactType:
 
-class UpdateClientContact(graphene.Mutation):
-    class Arguments:
-        uid = graphene.String(required=True)
-        first_name = graphene.String(required=False)
-        last_name = graphene.String(required=False)
-        email = graphene.String(required=False)
-        email_cc = graphene.String(required=False)
-        mobile_phone = graphene.String(required=False)
-        consent_sms = graphene.String(required=False)
-        is_active = graphene.Boolean(required=False)
+        inspector = inspect.getargvalues(inspect.currentframe())
+        passed_args = get_passed_args(inspector)
 
-    ok = graphene.Boolean()
-    client_contact = graphene.Field(lambda: ClientContactType)
-
-    @staticmethod
-    def mutate(root, info, uid, **kwargs):
         if not uid:
-            raise GraphQLError("No uid provided to identify update obj")
+            raise Exception("No uid provided to identify update obj")
 
-        client_contact = models.ClientContact.get(uid=uid)
+        client_contact = await models.ClientContact.get(uid=uid)
         if not client_contact:
-            raise GraphQLError(f"Client Contact with uid {uid} not found. Cannot update obj ...")
+            raise Exception(f"Client Contact with uid {uid} not found. Cannot update obj ...")
 
-        obj_data = jsonable_encoder(client_contact)
+        obj_data = client_contact.to_dict()
         for field in obj_data:
-            if field in kwargs:
+            if field in passed_args:
                 try:
-                    setattr(client_contact, field, kwargs[field])
+                    setattr(client_contact, field, passed_args[field])
                 except Exception as e:
                     logger.warning(f"failed to set attribute {field}: {e}")
         obj_in = schemas.ClientContactUpdate(**client_contact.to_dict())
-        client_contact = client_contact.update(obj_in)
-        ok = True
-        return UpdateClientContact(ok=ok, client_contact=client_contact)
-
-class ClientMutations(graphene.ObjectType):
-    # Client
-    create_client = CreateClient.Field()
-    update_client = UpdateClient.Field()
-    # Client Contact
-    create_client_contact = CreateClientContact.Field()
-    update_client_contact = UpdateClientContact.Field()
-    
+        client_contact = await client_contact.update(obj_in)
+        return client_contact

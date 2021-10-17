@@ -1,14 +1,15 @@
 import gql from 'graphql-tag';
 
+
 export const ADD_PATIENT = gql`
   mutation AddPatient(
     $clientPatientId: String!,
     $firstName: String!,
     $middleName: String,
     $lastName: String!,
-    $age: String!,
+    $age: Int!,
     $gender: Int!,
-    $dateOfBirth: String,
+    $dateOfBirth: DateTime,
     $ageDobEstimated: Boolean,
     $clientUid: Int!,
     $phoneMobile: String!,
@@ -27,7 +28,6 @@ export const ADD_PATIENT = gql`
       phoneMobile: $phoneMobile,
       consentSms: $consentSms   
   ) {
-    patient {
         uid
         clientPatientId
         patientId
@@ -50,6 +50,5 @@ export const ADD_PATIENT = gql`
         phoneHome
         phoneMobile
         consentSms
-    }
   }
 }`;

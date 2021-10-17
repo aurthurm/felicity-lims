@@ -10,7 +10,7 @@
 import { defineComponent, reactive, computed } from 'vue';
 import { useRoute } from 'vue-router';
 import { useStore } from 'vuex';
-import { ActionTypes, WorkSheet } from '../../../store/modules/markdown';
+import { ActionTypes } from '../../../store/modules/markdown';
 
 export default defineComponent({
   name: "worksheet-single",
@@ -18,7 +18,7 @@ export default defineComponent({
     const route = useRoute();
     const store = useStore();
     
-    store.dispatch(ActionTypes.FETCH_DOCUMENT_BY_UID, route.params.documentUid)
+    store.dispatch(ActionTypes.FETCH_DOCUMENT_BY_UID, +route.params.documentUid)
 
     return { 
     };

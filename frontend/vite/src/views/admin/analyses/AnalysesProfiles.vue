@@ -4,7 +4,7 @@
       <hr>
       <button
         class="px-2 py-1 border-blue-500 border text-blue-500 rounded transition duration-300 hover:bg-blue-700 hover:text-white focus:outline-none"
-        @click="FormManager(true)"
+        @click="FormManager(true, null)"
       > Add Analyses Profile </button>
       <hr>
       <!-- <input
@@ -26,12 +26,12 @@
           @click.prevent.stop="selectProfile(profile)"
           :class="[
             'bg-white w-full p-1 mb-1 rounded',
-            { 'border-gray-100 bg-green-100': profile.uid === analysisProfile.uid },
+            { 'border-gray-100 bg-green-100': profile?.uid === analysisProfile?.uid },
           ]">
             <a class="cursor-pointer">
               <div class="flex-grow p-1">
                 <div class="font-medium text-gray-500 hover:text-gray-700 flex justify-between">
-                  <span>{{ profile.name }}</span>
+                  <span>{{ profile?.name }}</span>
                   <span class="text-sm text-gray-500"></span>
                 </div>
               </div>
@@ -48,7 +48,7 @@
                 <span>{{ analysisProfile?.name }}</span>
                 <div>
                   <button
-                    @click="FormManager(false)"
+                    @click="FormManager(false, null)"
                     class="ml-4 inline-flex items-center justify-center w-8 h-8 mr-2 border-blue-500 border text-gray-900 transition-colors duration-150 bg-white rounded-full focus:outline-none hover:bg-gray-200"
                   >
                     <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20">
@@ -102,7 +102,7 @@
                               <li 
                               v-for="service in category[1]" 
                               :key="service?.uid" class="cursor-pointer"
-                              @click.prevent="service.checked = !service.checked"
+                              @click.prevent="service.checked = !service?.checked"
                               :class="[
                                 { 'border-green-500 bg-gray-200 underline pl-3': false },
                               ]"
@@ -288,7 +288,7 @@ export default defineComponent({
       editAnalysisProfile();
     }
 
-    function FormManager(create: boolean, obj: IAnalysisProfile): void {
+    function FormManager(create: boolean, obj: IAnalysisProfile | null): void {
       formAction.value = create;
       showModal.value = true;
       formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "ANALYSES PROFILE";

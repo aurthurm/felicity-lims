@@ -106,9 +106,9 @@ export const mutations = <MutationTree<IState>>{
     Object.assign(state, initialState());
   },
 
-  [MutationTypes.SET_CLIENTS](state: IState, payload: any[]): void {
+  [MutationTypes.SET_CLIENTS](state: IState, payload: any): void {
     state.clients = [];
-    payload?.forEach(obj => state.clients?.push(obj?.node));
+    payload?.items?.forEach((client: IClient) => state.clients?.push(client));
   },  
   
   [MutationTypes.SET_CLIENT](state: IState, payload: IClient): void {
@@ -141,9 +141,11 @@ export const actions = <ActionTree<IState, RootState>>{
     commit(MutationTypes.RESET_STATE);
   },
 
-  async [ActionTypes.FETCH_CLIENTS]({ commit }){
-    await useQuery({ query: GET_ALL_CLIENTS })
-          .then(payload => commit(MutationTypes.SET_CLIENTS, payload.data.value.clientAll.edges));
+  async [ActionTypes.FETCH_CLIENTS]({ commit }, params){
+    await urqlClient
+    .query( GET_ALL_CLIENTS, { first: params.first, after: params.after, text: params.text, sortBy: params.sortBy })
+    .toPromise()
+    .then(result => commit(MutationTypes.SET_CLIENTS, result.data.clientAll))
   },
 
   async [ActionTypes.SEARCH_CLIENTS]({ commit }, query: string){

@@ -3,37 +3,38 @@ import gql from 'graphql-tag'
 export const GET_ALL_COUNTRIES = gql`
   query getAllCountries {
     countryAll {
-      edges{
-        node {
           uid
           name
           code
-        }
-      }
     }
   }`;
 
 export const GET_ALL_PROVINCES = gql`
   query getAllProvinces {
     provinceAll {
-      edges{
-        node {
-          uid
-          name
-          code
-          email
-          emailCc
-          businessPhone
-          mobilePhone
-          countryUid
-        }
+      totalCount
+      pageInfo {
+        hasNextPage
+        hasPreviousPage
+        startCursor
+        endCursor
+      }
+      items {
+        uid
+        name
+        code
+        email
+        emailCc
+        businessPhone
+        mobilePhone
+        countryUid
       }
     }
   }`;
 
 
 export const FILTER_PROVINCES_BY_COUNTRY = gql`
-  query filterProvincesByCountry($uid: String!) {
+  query filterProvincesByCountry($uid: Int!) {
     provincesByCountryUid(uid: $uid){
       name
       uid
@@ -46,8 +47,14 @@ export const FILTER_PROVINCES_BY_COUNTRY = gql`
 export const GET_ALL_DISTRICTS = gql`
   query getAllDistricts {
     districtAll {
-      edges{
-        node {
+      totalCount
+      pageInfo {
+        hasNextPage
+        hasPreviousPage
+        startCursor
+        endCursor
+      }
+      items {
           uid
           name
           code
@@ -57,12 +64,11 @@ export const GET_ALL_DISTRICTS = gql`
           mobilePhone
           provinceUid
         }
-      }
     }
   }`;
 
 export const FILTER_DISTRICTS_BY_PROVINCE = gql`
-  query filterDistrictsByProvince($uid: String!) {
+  query filterDistrictsByProvince($uid: Int!) {
     districtsByProvinceUid(uid: $uid){
       name
       uid

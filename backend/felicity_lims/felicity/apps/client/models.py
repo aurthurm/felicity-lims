@@ -29,16 +29,17 @@ class Client(DBModel):
     active = Column(Boolean(), default=False)
 
     @classmethod
-    def create(cls, obj_in: schemas.ClientCreate) -> schemas.Client:
-        if cls.get(code=obj_in.code):
+    async def create(cls, obj_in: schemas.ClientCreate) -> schemas.Client:
+        exist = await cls.get(code=obj_in.code)
+        if exist:
             raise Exception(f"Client with code {obj_in.code} already Exists")
 
         data = cls._import(obj_in)
-        return super().create(**data)
+        return await super().create(**data)
 
-    def update(self, obj_in: schemas.ClientUpdate) -> schemas.Client:
+    async def update(self, obj_in: schemas.ClientUpdate) -> schemas.Client:
         data = self._import(obj_in)
-        return super().update(**data)
+        return await super().update(**data)
 
     @property
     def get_province(self):
@@ -69,29 +70,29 @@ class ClientContact(AbstractBaseUser):
     client = relationship(Client, backref=backref('contacts', uselist=False))
 
     @classmethod
-    def create(cls, contact_in: schemas.ClientContactCreate) -> schemas.ClientContact:
+    async def create(cls, contact_in: schemas.ClientContactCreate) -> schemas.ClientContact:
         data = cls._import(contact_in)
-        return super().create(**data)
+        return await super().create(**data)
 
-    def update(self, contact_in: schemas.ClientContactUpdate) -> schemas.ClientContact:
+    async def update(self, contact_in: schemas.ClientContactUpdate) -> schemas.ClientContact:
         data = self._import(contact_in)
-        return super().update(**data)
+        return await super().update(**data)
 
     @property
     def user_type(self):
         return conf.CLIENT_CONTACT
 
-    def propagate_user_type(self):
+    async def propagate_user_type(self):
         """sets the user_type field in auth"""
-        self.auth.acquire_user_type(conf.CLIENT_CONTACT)
+        await self.auth.acquire_user_type(conf.CLIENT_CONTACT)
 
-    def unlink_auth(self):
+    async def unlink_auth(self):
         auth = self.auth
         _update = {**self.to_dict(), **{'auth_uid': None, 'auth': None}}
-        self.update(_update)
+        await self.update(_update)
         if not self.auth:
             auth.delete()
 
-    def link_auth(self, auth_uid):
+    async def link_auth(self, auth_uid):
         _update = {**self.to_dict(), **{'auth_uid': auth_uid}}
-        self.update(_update)
+        await self.update(_update)

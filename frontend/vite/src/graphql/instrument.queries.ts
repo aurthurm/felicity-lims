@@ -3,18 +3,23 @@ import gql from 'graphql-tag';
 export const GET_ALL_INSTRUMENTS = gql`
     query getAllInstruments {
         instrumentAll {
-            edges{
-            node {
+          totalCount
+          pageInfo {
+            hasNextPage
+            hasPreviousPage
+            startCursor
+            endCursor
+          }
+          items {
+            uid
+            name
+            description
+            keyword
+            supplier {
               uid
               name
-              description
-              keyword
-              supplier {
-                uid
-                name
-              }
             }
-        }
+          }
     }
 }`;
 
@@ -22,14 +27,19 @@ export const GET_ALL_INSTRUMENTS = gql`
 
 export const GET_ALL_METHODS = gql`
     query getAllMethods {
-        methodAll {
-            edges{
-              node {
-                uid
-                name
-                description
-                keyword
-              }
-          }
+      methodAll {
+        totalCount
+        pageInfo {
+          hasNextPage
+          hasPreviousPage
+          startCursor
+          endCursor
+        }
+        items {
+          uid
+          name
+          description
+          keyword
+        }
       }
   }`;

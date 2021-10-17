@@ -11,26 +11,26 @@ class DocumentCategory(DBModel):
     name = Column(String)
 
     @classmethod
-    def create(cls, obj_in: schemas.DocumentCategoryCreate) -> schemas.DocumentCategory:
+    async def create(cls, obj_in: schemas.DocumentCategoryCreate) -> schemas.DocumentCategory:
         data = cls._import(obj_in)
-        return super().create(**data)
+        return await super().create(**data)
 
-    def update(self, obj_in: schemas.DocumentCategoryUpdate) -> schemas.DocumentCategory:
+    async def update(self, obj_in: schemas.DocumentCategoryUpdate) -> schemas.DocumentCategory:
         data = self._import(obj_in)
-        return super().update(**data)
+        return await super().update(**data)
 
 
 class DocumentTag(DBModel):
     name = Column(String)
 
     @classmethod
-    def create(cls, obj_in: schemas.DocumentTagCreate) -> schemas.DocumentTag:
+    async def create(cls, obj_in: schemas.DocumentTagCreate) -> schemas.DocumentTag:
         data = cls._import(obj_in)
-        return super().create(**data)
+        return await super().create(**data)
 
-    def update(self, obj_in: schemas.DocumentTagUpdate) -> schemas.DocumentTag:
+    async def update(self, obj_in: schemas.DocumentTagUpdate) -> schemas.DocumentTag:
         data = self._import(obj_in)
-        return super().update(**data)
+        return await super().update(**data)
 
 
 doctags = Table("doctags", DBModel.metadata,
@@ -55,7 +55,7 @@ class Document(DBModel):
     document_id = Column(String)
     content = Column(String)
     version = Column(String)
-    tags = relationship(DocumentTag, secondary=doctags, backref="tagged_documents")
+    tags = relationship(DocumentTag, secondary=doctags, backref="tagged_documents", lazy="selectin")
     authors = relationship(User, secondary=docauthors, backref="authored_markdowns")
     readers = relationship(User, secondary=docreaders, backref="read_markdowns")
     department_uid = Column(Integer, ForeignKey('department.uid'), nullable=True)
@@ -77,10 +77,10 @@ class Document(DBModel):
     status = Column(String)
 
     @classmethod
-    def create(cls, obj_in: schemas.DocumentCreate) -> schemas.Document:
+    async def create(cls, obj_in: schemas.DocumentCreate) -> schemas.Document:
         data = cls._import(obj_in)
-        return super().create(**data)
+        return await super().create(**data)
 
-    def update(self, obj_in: schemas.DocumentUpdate) -> schemas.Document:
+    async def update(self, obj_in: schemas.DocumentUpdate) -> schemas.Document:
         data = self._import(obj_in)
-        return super().update(**data)
+        return await super().update(**data)

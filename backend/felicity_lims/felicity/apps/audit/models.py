@@ -33,10 +33,10 @@ class AuditLog(DBModel):
 
         try:
             updated_by_uid = state_after['updated_by_uid']
-        except KeyError:
+        except (KeyError, TypeError):
             updated_by_uid = None
 
-        self.user_id = updated_by_uid  # current user id
+        self.user_id = updated_by_uid if updated_by_uid else None
 
     def __repr__(self):
         return '<AuditLog %r: %r -> %r>' % (self.user_id, self.target_type, self.action)
@@ -51,28 +51,33 @@ class AuditLog(DBModel):
         if isinstance(state_before, str):
             state_before = json.loads(state_before)
 
-        to_delete = []
-        for key in state_after.keys():
-            if state_after[key] == state_before[key]:
-                to_delete.append(key)
+        if state_after:
+            to_delete = []
+            for key in state_after.keys():
+                if state_after[key] == state_before[key]:
+                    to_delete.append(key)
 
-        for _key in to_delete:
-            del state_after[_key]
-            del state_before[_key]
+            for _key in to_delete:
+                del state_after[_key]
+                del state_before[_key]
 
-        if len(state_after.keys()) == 1:
-            if list(state_after.keys())[0] == 'updated_at':
-                return
+            if len(state_after.keys()) == 1:
+                if list(state_after.keys())[0] == 'updated_at':
+                    return
 
-        state_after = json.dumps(state_after)
-        state_before = json.dumps(state_before)
+        state_after = json.dumps(state_after) if state_after else json.dumps({})
+        state_before = json.dumps(state_before) if state_before else json.dumps({})
 
         connection.execute(
             self.__table__.insert(),
-            user_id=self.user_id,
-            target_type=self.target_type,
-            target_id=self.target_id,
-            action=self.action,
-            state_before=state_before,
-            state_after=state_after
+            [
+                {
+                    'user_id':self.user_id,
+                    'target_type':self.target_type,
+                    'target_id':self.target_id,
+                    'action':self.action,
+                    'state_before':state_before,
+                    'state_after':state_after,
+                }
+            ]
         )

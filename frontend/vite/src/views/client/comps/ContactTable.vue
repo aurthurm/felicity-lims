@@ -98,6 +98,7 @@
 import { useMutation, useQuery } from '@urql/vue';
 import {reactive, computed, ref, watch} from 'vue';
 import { useStore } from 'vuex';
+import { useRoute } from 'vue-router';
 import modal from '../../_components/SimpleModal.vue'
 import { ClientContact,  } from '../../../store/modules/clients';
 import { ADD_CLIENT_CONTACT, EDIT_CLIENT_CONTACT } from '../../../graphql/clients.mutations';
@@ -110,17 +111,18 @@ export default {
         modal,
     },
     props: {
-      clientUid: String,
+      clientUid: Number,
     },
     setup(props){
         let formTitle = ref('');
         let showContactModal = ref(false);
         let createContact = ref(false);
         let store = useStore();
+        let router = useRoute();
         let contact = ref((new ClientContact()));
 
         // dispatch get contacts fo slients
-        store.dispatch(ActionTypes.FETCH_CLIENT_CONTACTS, props.clientUid)
+        store.dispatch(ActionTypes.FETCH_CLIENT_CONTACTS, +router.query.clientUid)
 
         const { executeMutation: createClientContact } = useMutation(ADD_CLIENT_CONTACT);
         const { executeMutation: updateClientContact } = useMutation(EDIT_CLIENT_CONTACT);
@@ -128,7 +130,7 @@ export default {
         let resetContact = () => Object.assign(contact, { ...(new ClientContact()) });
 
         function addClientContact() {
-          createClientContact({clientUid: props.clientUid, firstName: contact.value.firstName, mobilePhone: contact.value.mobilePhone, email: contact.value.email, }).then((result) => {
+          createClientContact({clientUid: +router.query.clientUid, firstName: contact.value.firstName, mobilePhone: contact.value.mobilePhone, email: contact.value.email, }).then((result) => {
             store.dispatch(ActionTypes.ADD_CREATED_CLIENT_CONTACT, result.data.createClientContact.clientContact);
           });
         }

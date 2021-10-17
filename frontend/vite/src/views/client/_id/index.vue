@@ -185,15 +185,21 @@ export default defineComponent({
 
     let countryUid = ref(null);
     let provinceUid = ref(null);
+    let clientParams = reactive({ 
+      first: null, 
+      after: null,
+      text: null, 
+      sortBy: ["name"]
+    });
 
     let formTitle = ref('');
 
-    store.dispatch(ActionTypes.FETCH_CLIENT_BY_UID, route.query.clientUid)
+    store.dispatch(ActionTypes.FETCH_CLIENT_BY_UID, +route.query.clientUid)
     let client = computed(() => store.getters.getClient);
     const resetClient = () => Object.assign(client, { ...(new Client()) })
 
     store.dispatch(AdminActionTypes.FETCH_COUNTRIES);
-    store.dispatch(ActionTypes.FETCH_CLIENTS);
+    // store.dispatch(ActionTypes.FETCH_CLIENTS, clientParams);
 
     const { executeMutation: createClient } = useMutation(ADD_CLIENT);
     const { executeMutation: updateClient } = useMutation(EDIT_CLIENT);

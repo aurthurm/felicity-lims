@@ -2,9 +2,8 @@ import gql from 'graphql-tag';
 
 // Board
 export const ADD_BOARD = gql`
-  mutation AddBoard($title: String!, $departmentUid: String, $description: String) {
+  mutation AddBoard($title: String!, $departmentUid: Int, $description: String) {
     createBoard(title: $title, departmentUid: $departmentUid, description: $description){
-      board {
           uid
           title
           description
@@ -14,14 +13,12 @@ export const ADD_BOARD = gql`
             name
           }
       }
-    }
   }
 `;
 
 export const EDIT_BOARD = gql`
-  mutation editBoard($uid: String!, $title: String!, $departmentUid: String, $description: String){
+  mutation editBoard($uid: Int!, $title: String!, $departmentUid: Int, $description: String){
     updateBoard(uid: $uid, title: $title, departmentUid: $departmentUid, description: $description){
-      board {
           uid
           title
           description
@@ -31,38 +28,33 @@ export const EDIT_BOARD = gql`
             name
         }
       }
-    }
   }
 `;
 
 export const DELETE_BOARD = gql`
-  mutation deleteBoard($uid: String!) {
+  mutation deleteBoard($uid: Int!) {
     deleteBoard(uid: $uid){
-      boardUid
-      ok
+      uid
     }
   }
 `;
 
 // board listing
 export const ADD_BOARD_LISTING = gql`
-  mutation addBoardListing($title: String!, $boardUid: String!, $description: String) {
+  mutation addBoardListing($title: String!, $boardUid: Int!, $description: String) {
     createBoardListing(title: $title, boardUid: $boardUid, description: $description){
-      listing {
           uid
           title
           description
           boardUid
-      }
     }
   }
 `;
 
 export const DELETE_BOARD_LISTING = gql`
-  mutation deleteListing($uid: String!) {
+  mutation deleteListing($uid: Int!) {
     deleteBoardListing(uid: $uid){
-      listingUid
-      ok
+     uid
     }
   }
 `;
@@ -70,25 +62,22 @@ export const DELETE_BOARD_LISTING = gql`
 
 // listing tasks
 export const ADD_LISTING_TASK = gql`
-  mutation addListingTask($title: String!, $listingUid: String!, $description: String) {
+  mutation addListingTask($title: String!, $listingUid: Int!, $description: String) {
     createListingTask(title: $title, listingUid: $listingUid, description: $description){
-      task {
           uid
           title
           description
           listingUid
-      }
     }
   }
 `;
 
 
 export const EDIT_LISTING_TASK = gql`
-  mutation editListingTask($uid: String!, $title: String, $description: String, $listingUid: String, $dueDate: String, 
-    $assigneeUid: String, $memberUids: [String], $tags: [String], $complete: Boolean, $archived: Boolean) {
+  mutation editListingTask($uid: Int!, $title: String, $description: String, $listingUid: Int, $dueDate: String, 
+    $assigneeUid: Int, $memberUids: [Int!], $tags: [String!], $complete: Boolean, $archived: Boolean) {
     updateListingTask(uid: $uid, title: $title, description: $description, listingUid: $listingUid, dueDate: $dueDate, 
     assigneeUid: $assigneeUid, memberUids: $memberUids, tags: $tags, complete: $complete, archived: $archived){
-      task {
       uid
       listingUid
       title
@@ -104,101 +93,80 @@ export const EDIT_LISTING_TASK = gql`
       }
       dueDate
       members {
-        edges {
-          node {
-            uid
-            firstName
-            lastName
-            auth {
-              userName
-            }
-          }
+        uid
+        firstName
+        lastName
+        auth {
+          userName
         }
       }
       tags {
-        edges {
-          node {
-            uid
-            name
-          }
-        }
+        uid
+        name
       }
       taskMilestones {
-        edges {
-          node {
-            uid
-            title
-            done
-            assigneeUid
-            assignee {
-              lastName
-              firstName
-              auth {
-                userName
-              }
-            }
-            createdAt
-            createdByUid
-            createdBy {
-              firstName
-              lastName
-              auth {
-                userName
-              }
-            }
+        uid
+        title
+        done
+        assigneeUid
+        assignee {
+          lastName
+          firstName
+          auth {
+            userName
+          }
+        }
+        createdAt
+        createdByUid
+        createdBy {
+          firstName
+          lastName
+          auth {
+            userName
           }
         }
       }
       taskComments {
-        edges {
-          node {
-            uid
-            comment
-            updatedAt
-            updatedByUid
-            updatedBy {
-              firstName
-              lastName
-              auth {
-                userName
-              }
-            }
+        uid
+        comment
+        updatedAt
+        updatedByUid
+        updatedBy {
+          firstName
+          lastName
+          auth {
+            userName
           }
         }
       }
       complete
       }
     }
-  }
 `;
 
 export const DELETE_LISTING_TASK = gql`
-  mutation removeListingTask($uid: String!) {
+  mutation removeListingTask($uid: Int!) {
     deleteListingTask(uid: $uid){
-      taskUid
-      ok
+      uid
     }
   }
 `;
 
 export const DUPLICATE_LISTING_TASK = gql`
-  mutation copyListingTask($uid: String!, $title: String!) {
+  mutation copyListingTask($uid: Int!, $title: String!) {
     duplicateListingTask(uid: $uid, title: $title){
-      task {
-          uid
-          listingUid
-          title
-          description
-          listingUid
-      }
+      uid
+      listingUid
+      title
+      description
+      listingUid
     }
   }
 `;
 
 export const ADD_TASK_COMMENT = gql`
-  mutation addTaskComment($comment: String!, $taskUid: String!) {
+  mutation addTaskComment($comment: String!, $taskUid: Int!) {
     createTaskComment(comment: $comment, taskUid: $taskUid){
-      taskComment {
       uid
       comment
       updatedByUid
@@ -210,15 +178,13 @@ export const ADD_TASK_COMMENT = gql`
         }
       }
       updatedAt
-      }
     }
   }
 `;
 
 export const ADD_TASK_MILESTONE = gql`
-  mutation addTaskMIlestone($title: String!, $taskUid: String!, $done: Boolean, $assigneeUid: String) {
+  mutation addTaskMIlestone($title: String!, $taskUid: Int!, $done: Boolean, $assigneeUid: Int) {
     createTaskMilestone(title: $title, taskUid: $taskUid, done: $done, assigneeUid: $assigneeUid){
-      taskMilestone {
       uid
       title
       done
@@ -240,6 +206,5 @@ export const ADD_TASK_MILESTONE = gql`
       }
       updatedAt
       }
-    }
   }
 `;

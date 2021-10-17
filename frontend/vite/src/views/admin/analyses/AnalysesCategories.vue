@@ -17,16 +17,16 @@
                 </tr>
                 </thead>
                 <tbody class="bg-white">
-                <tr v-for="category in analysesCategories"  :key="category.uid">
+                <tr v-for="category in analysesCategories"  :key="category?.uid">
                     <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
                     <div class="flex items-center">
                         <div>
-                        <div class="text-sm leading-5 text-gray-800">{{ category.name }}</div>
+                        <div class="text-sm leading-5 text-gray-800">{{ category?.name }}</div>
                         </div>
                     </div>
                     </td>
                     <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-                    <div class="text-sm leading-5 text-blue-900">{{ category.category }}</div>
+                    <div class="text-sm leading-5 text-blue-900">{{ category?.category }}</div>
                     </td>
                     <td class="px-1 py-1 whitespace-no-wrap text-right border-b border-gray-500 text-sm leading-5">
                         <button @click="FormManager(false, category)" class="px-2 py-1 mr-2 border-orange-500 border text-orange-500 rounded transition duration-300 hover:bg-orange-700 hover:text-white focus:outline-none">Edit</button>
@@ -115,7 +115,7 @@ export default defineComponent({
     
     let showModal = ref(false);
     let formTitle = ref('');
-    let form = reactive({ ...(new AnalysisCategory()) });
+    let form = reactive({} as IAnalysisCategory);
     const formAction = ref(true);
 
     store.dispatch(ActionTypes.FETCH_ANALYSES_CATEGORIES);
@@ -135,12 +135,12 @@ export default defineComponent({
       });
     }
 
-    function FormManager(create: boolean, obj: IAnalysisCategory):void {
+    function FormManager(create: boolean, obj: IAnalysisCategory | null):void {
       formAction.value = create;
       showModal.value = true;
       formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "ANALYSES CATEGORY";
       if (create) {
-        Object.assign(form, { ...(new AnalysisCategory()) });
+        Object.assign(form, {} as IAnalysisCategory);
       } else {
         Object.assign(form, { ...obj });
       }

@@ -1,5 +1,4 @@
-import graphene
-import asyncio
+import strawberry
 
 from felicity.gql.setup.query import SetupQuery
 from felicity.gql.audit.query import AuditLogQuery
@@ -20,33 +19,33 @@ from felicity.gql.kanban.query import KanBanQuery
 from felicity.gql.kanban.mutations import KanBanMutations
 
 
+@strawberry.type
 class Query(
-    SetupQuery, UserQuery, ClientQuery,
-    PatientQuery, AnalysisQuery, WorkSheetQuery,
-    AuditLogQuery, MarkDownQuery, KanBanQuery,
-    graphene.ObjectType
+    SetupQuery,
+    AuditLogQuery,
+    UserQuery,
+    ClientQuery,
+    PatientQuery,
+    AnalysisQuery,
+    WorkSheetQuery,
+    MarkDownQuery,
+    KanBanQuery,
 ):
     pass
 
 
+@strawberry.type
 class Mutation(
-    SetupMutations, UserMutations, ClientMutations,
-    PatientMutations, AnalysisMutations, WorkSheetMutations,
-    MarkdownMutations, KanBanMutations,
-    graphene.ObjectType
+    UserMutations,
+    SetupMutations,
+    ClientMutations,
+    PatientMutations,
+    MarkdownMutations,
+    AnalysisMutations,
+    WorkSheetMutations,
+    KanBanMutations,
 ):
     pass
 
 
-class Subscription(graphene.ObjectType):
-    count_seconds = graphene.Float(up_to=graphene.Int())
-
-    @staticmethod
-    async def resolve_count_seconds(root, info, up_to):
-        for i in range(up_to):
-            yield i
-            await asyncio.sleep(1.)
-        yield up_to
-
-
-gql_schema = graphene.Schema(query=Query, mutation=Mutation, subscription=Subscription)
+gql_schema = strawberry.Schema(query=Query, mutation=Mutation)

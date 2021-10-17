@@ -190,6 +190,12 @@ export default defineComponent({
 
     let client = reactive({ ...(new Client()) });
     const resetClient = () => Object.assign(client, { ...(new Client()) })
+    let clientParams = reactive({ 
+      first: 50, 
+      after: "",
+      text: "", 
+      sortBy: ["name"]
+    });
 
     let countryUid = ref(null);
     let provinceUid = ref(null);
@@ -197,7 +203,7 @@ export default defineComponent({
     let formTitle = ref('');
 
     store.dispatch(AdminActionTypes.FETCH_COUNTRIES);
-    store.dispatch(ActionTypes.FETCH_CLIENTS);
+    store.dispatch(ActionTypes.FETCH_CLIENTS, clientParams);
 
     const { executeMutation: createClient } = useMutation(ADD_CLIENT);
     const { executeMutation: updateClient } = useMutation(EDIT_CLIENT);
@@ -250,7 +256,14 @@ export default defineComponent({
         store.dispatch(ActionTypes.FETCH_CLIENT_CONTACTS, selected.uid);
     };
 
-    let searchClients = (event) => store.dispatch(ActionTypes.SEARCH_CLIENTS, event.target.value);
+
+    function searchClients(event){
+      clientParams.first = 100;
+      clientParams.after = null;
+      clientParams.text = event.target.value;
+      store.dispatch(ActionTypes.FETCH_CLIENTS, clientParams);
+      // store.dispatch(ActionTypes.SEARCH_CLIENTS, event.target.value);
+    }
 
     function FormManager(create, target, obj) {
       createItem.value = create;

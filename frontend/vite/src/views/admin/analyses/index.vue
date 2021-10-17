@@ -43,4 +43,4 @@
 }
 </style>
 
-<script src="./analyses.component.ts"></script>
+<script src="./analyses.component.ts" lang="ts"></script>

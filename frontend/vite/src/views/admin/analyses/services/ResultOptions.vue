@@ -15,7 +15,7 @@
             </tr>
             </thead>
             <tbody class="bg-white">
-            <tr v-for="option in analysis?.resultoptions"  :key="option.uid">
+            <tr v-for="option in analysis?.resultoptions"  :key="option?.uid">
                 <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
                 <div class="flex items-center">
                     <div>
@@ -120,6 +120,7 @@
         const { executeMutation: updateResultOption } = useMutation(EDIT_RESULT_OPTION);
 
         function addResultOption(): void {
+            form.optionKey = +form.optionKey!;
             createResultOption({ ...form, analysisUid: analysis?.value?.uid }).then((result) => {
                 store.dispatch(ActionTypes.ADD_RESULT_OPTION, result);
             });

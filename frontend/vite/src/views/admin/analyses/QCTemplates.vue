@@ -18,23 +18,23 @@
                 </tr>
                 </thead>
                 <tbody class="bg-white">
-                <tr v-for="templt in qcTemplates"  :key="templt.uid">
+                <tr v-for="templt in qcTemplates"  :key="templt?.uid">
                     <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
                     <div class="flex items-center">
                         <div>
-                        <div class="text-sm leading-5 text-gray-800">{{ templt.name }}</div>
+                        <div class="text-sm leading-5 text-gray-800">{{ templt?.name }}</div>
                         </div>
                     </div>
                     </td>
                     <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
                     <div class="flex items-center">
                         <div>
-                        <div class="text-sm leading-5 text-gray-800">{{ levelsNames(templt.qcLevels) }}</div>
+                        <div class="text-sm leading-5 text-gray-800">{{ levelsNames(templt?.qcLevels) }}</div>
                         </div>
                     </div>
                     </td>
                     <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-                    <div class="text-sm leading-5 text-blue-900">{{ templt.category }}</div>
+                    <div class="text-sm leading-5 text-blue-900">{{ templt?.category }}</div>
                     </td>
                     <td class="px-1 py-1 whitespace-no-wrap text-right border-b border-gray-500 text-sm leading-5">
                         <button @click="FormManager(false, templt)" class="px-2 py-1 mr-2 border-orange-500 border text-orange-500 rounded transition duration-300 hover:bg-orange-700 hover:text-white focus:outline-none">Edit</button>
@@ -164,7 +164,7 @@ export default defineComponent({
       return qcLevels;
     }
 
-    function FormManager(create: boolean, obj: IQCTemplate):void {
+    function FormManager(create: boolean, obj: IQCTemplate | null):void {
       formAction.value = create;
       showModal.value = true;
       formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "QC Template";
@@ -175,15 +175,14 @@ export default defineComponent({
       }
     }
 
-    function levelsNames(levels: IQCLevel[]): string[] {
+    function levelsNames(levels: IQCLevel[]): string {
       if (levels?.length <= 0 ) return '';
-      let qcLevels = [];
-      levels?.forEach(level => qcLevels.push(level.level));
+      let qcLevels: string[] = [];
+      levels?.forEach(level => qcLevels.push(level.level!));
       return qcLevels.join(", ");
     }
 
     function saveForm():void {
-      console.log(form)
       if (formAction.value === true) addQCTemplate();
       if (formAction.value === false) editQCTemplate();
       showModal.value = false;

@@ -83,7 +83,7 @@ export default {
     name: "tab-samples",
     props: {
         target: String,
-        targetUid: String
+        targetUid: Number
     },
     setup(props){
         const store = useStore();

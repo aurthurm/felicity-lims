@@ -1,158 +1,122 @@
+import inspect
 import logging
+from typing import Optional, List
 
-import graphene
-from graphql import GraphQLError
-from fastapi.encoders import jsonable_encoder
+import strawberry
 
 from felicity.apps.markdown import schemas, models, conf
 from felicity.gql.markdown import types
+from felicity.utils import get_passed_args
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
-# 
-# DocumentTag Mutations
-# 
-class CreateDocumentTag(graphene.Mutation):
-    class Arguments:
-        name = graphene.String(required=True)
+@strawberry.type
+class MarkdownMutations:
+    @strawberry.mutation
+    async def create_document_tag(self, info, name: str) -> types.DocumentTagType:
 
-    ok = graphene.Boolean()
-    tag = graphene.Field(lambda: types.DocumentTagType)
+        inspector = inspect.getargvalues(inspect.currentframe())
+        passed_args = get_passed_args(inspector)
 
-    @staticmethod
-    def mutate(root, info, name, **kwargs):
         if not name:
-            raise GraphQLError("Please Provide a Tag name")
+            raise Exception("Please Provide a Tag name")
 
-        exists = models.DocumentTag.get(name=name)
+        exists = await models.DocumentTag.get(name=name)
         if exists:
-            raise GraphQLError(f"DocumentTag {name} already exists")
-        
-        incoming = {
-            "name": name,
-        }
-        for k, v in kwargs.items():
+            raise Exception(f"DocumentTag {name} already exists")
+
+        incoming = {}
+        for k, v in passed_args.items():
             incoming[k] = v
 
         obj_in = schemas.DocumentTagCreate(**incoming)
-        tag = models.DocumentTag.create(obj_in)
-        ok = True
-        return CreateDocumentTag(tag=tag, ok=ok)
+        tag: models.DocumentTag = await models.DocumentTag.create(obj_in)
+        return tag
 
-                
-class UpdateDocumentTag(graphene.Mutation):
-    class Arguments:
-        uid = graphene.String(required=True)
-        name = graphene.String(required=False)
+    @strawberry.mutation
+    async def update_document_tag(self, info, uid: int, name: Optional[str] = None) -> types.DocumentTagType:  # noqa
 
-    ok = graphene.Boolean()
-    tag = graphene.Field(lambda: types.DocumentTagType)
+        inspector = inspect.getargvalues(inspect.currentframe())
+        passed_args = get_passed_args(inspector)
 
-    @staticmethod
-    def mutate(root, info, uid, **kwargs):   
         if not uid:
-            raise GraphQLError("No uid provided to identify update obj")
-        
-        tag = models.DocumentTag.get(uid=uid)
+            raise Exception("No uid provided to identify update obj")
+
+        tag = await models.DocumentTag.get(uid=uid)
         if not tag:
-            raise GraphQLError(f"Tag with uid {uid} not found. Cannot update obj ...")
+            raise Exception(f"Tag with uid {uid} not found. Cannot update obj ...")
 
-        obj_data = jsonable_encoder(tag)
+        obj_data = tag.to_dict()
         for field in obj_data:
-            if field in kwargs:
+            if field in passed_args:
                 try:
-                    setattr(tag, field, kwargs[field])
+                    setattr(tag, field, passed_args[field])
                 except Exception as e:
-                    logger.warning(f"failed to set attribute {field}: {e}")
+                    logger.warning(e)
+
         obj_in = schemas.DocumentTagUpdate(**tag.to_dict())
-        tag = tag.update(obj_in)
-        ok = True
-        return UpdateDocumentTag(ok=ok, tag=tag)
+        tag = await tag.update(obj_in)
+        return tag
 
+    @strawberry.mutation
+    async def create_document_category(self, info, name: str) -> types.DocumentCategoryType:  # noqa
 
-#
-# DocumentCategory Mutations
-#
-class CreateDocumentCategory(graphene.Mutation):
-    class Arguments:
-        name = graphene.String(required=True)
+        inspector = inspect.getargvalues(inspect.currentframe())
+        passed_args = get_passed_args(inspector)
 
-    ok = graphene.Boolean()
-    category = graphene.Field(lambda: types.DocumentCategoryType)
-
-    @staticmethod
-    def mutate(root, info, name, **kwargs):
         if not name:
-            raise GraphQLError("Please Provide a category name")
+            raise Exception("Please Provide a category name")
 
-        exists = models.DocumentCategory.get(name=name)
+        exists = await models.DocumentCategory.get(name=name)
         if exists:
-            raise GraphQLError(f"Document Category {name} already exists")
+            raise Exception(f"Document Category {name} already exists")
 
-        incoming = {
-            "name": name,
-        }
-        for k, v in kwargs.items():
+        incoming = {}
+        for k, v in passed_args.items():
             incoming[k] = v
 
         obj_in = schemas.DocumentCategoryCreate(**incoming)
-        category = models.DocumentCategory.create(obj_in)
-        ok = True
-        return CreateDocumentCategory(category=category, ok=ok)
+        category: models.DocumentCategory = await models.DocumentCategory.create(obj_in)
+        return category
 
+    @strawberry.mutation
+    async def update_document_category(self, info, uid: int, name: Optional[str] = None) -> types.DocumentCategoryType:  # noqa
 
-class UpdateDocumentCategory(graphene.Mutation):
-    class Arguments:
-        uid = graphene.String(required=True)
-        name = graphene.String(required=False)
+        inspector = inspect.getargvalues(inspect.currentframe())
+        passed_args = get_passed_args(inspector)
 
-    ok = graphene.Boolean()
-    category = graphene.Field(lambda: types.DocumentCategoryType)
-
-    @staticmethod
-    def mutate(root, info, uid, **kwargs):
         if not uid:
-            raise GraphQLError("No uid provided to identify update obj")
+            raise Exception("No uid provided to identify update obj")
 
-        category = models.DocumentCategory.get(uid=uid)
+        category = await models.DocumentCategory.get(uid=uid)
         if not category:
-            raise GraphQLError(f"Category with uid {uid} not found. Cannot update obj ...")
+            raise Exception(f"Category with uid {uid} not found. Cannot update obj ...")
 
-        obj_data = jsonable_encoder(category)
+        obj_data = category.to_dict()
         for field in obj_data:
-            if field in kwargs:
+            if field in passed_args:
                 try:
-                    setattr(category, field, kwargs[field])
+                    setattr(category, field, passed_args[field])
                 except Exception as e:
-                    logger.warning(f"failed to set attribute {field}: {e}")
+                    logger.warning(e)
+
         obj_in = schemas.DocumentCategoryUpdate(**category.to_dict())
-        category = category.update(obj_in)
-        ok = True
-        return UpdateDocumentCategory(ok=ok, category=category)
+        category = await category.update(obj_in)
+        return category
 
+    @strawberry.mutation
+    async def create_document(self, info, name: str, subtitle: Optional[str] = None, document_id: Optional[str] = None,  # noqa
+                              version: Optional[str] = None, department_uid: Optional[int] = None, category_uid: Optional[int] = None,  # noqa
+                              tags_uids: Optional[List[int]] = None) -> types.DocumentType:  # noqa
 
-#
-# Markdown Document Mutations
-#
-class CreateDocument(graphene.Mutation):
-    class Arguments:
-        name = graphene.String(required=True)
-        subtitle = graphene.String(required=False)
-        document_id = graphene.String(required=False)
-        version = graphene.String(required=False)
-        department_uid = graphene.String(required=False)
-        category_uid = graphene.String(required=False)
-        tags_uids = graphene.List(graphene.String, required=False)
+        inspector = inspect.getargvalues(inspect.currentframe())
+        passed_args = get_passed_args(inspector)
 
-    ok = graphene.Boolean()
-    document = graphene.Field(lambda: types.DocumentType)
-
-    @staticmethod
-    def mutate(root, info, name, **kwargs):
         if not name:
-            raise GraphQLError("Please Provide a name")
+            raise Exception("Please Provide a name")
+
         exists = models.Document.get(name=name)
         if exists:
             name += " Copy"
@@ -162,76 +126,55 @@ class CreateDocument(graphene.Mutation):
             "content": f"## {name}",
             "status": conf.states.DRAFT,
         }
-        for k, v in kwargs.items():
+        for k, v in passed_args.items():
             incoming[k] = v
 
-        logger.info(kwargs)
-        logger.info(incoming)
-        tags_uids = kwargs.get('tags_uids', [])
-        tags = []
-        for _tag_uid in tags_uids:
-            tag = models.DocumentTag.get(uid=_tag_uid)
-            if tag:
-                tags.append(tag)
-        incoming['tags'] = tags
+        tags_uids = passed_args.get('tags_uids', [])
+        if tags_uids:
+            tags = []
+            for _tag_uid in tags_uids:
+                tag = await models.DocumentTag.get(uid=_tag_uid)
+                if tag:
+                    tags.append(tag)
+            incoming['tags'] = tags
 
         obj_in = schemas.DocumentCreate(**incoming)
-        document = models.Document.create(obj_in)
-        ok = True
-        return CreateDocument(document=document, ok=ok)
+        document: models.Document = await models.Document.create(obj_in)
+        return document
 
+    @strawberry.mutation
+    async def update_document(root, info, uid: int, name: Optional[str] = None, subtitle: Optional[str] = None, document_id: Optional[str] = None,  # noqa
+                        version: Optional[str] = None, department_uid: Optional[int] = None, category_uid: Optional[int] = None,  # noqa
+                        tags_uids: Optional[List[int]] = None, content: Optional[str] = None) -> types.DocumentType:  # noqa
 
-class UpdateDocument(graphene.Mutation):
-    class Arguments:
-        uid = graphene.String(required=True)
-        name = graphene.String(required=False)
-        subtitle = graphene.String(required=False)
-        content = graphene.String(required=False)
-        document_id = graphene.String(required=False)
-        version = graphene.String(required=False)
-        department_uid = graphene.String(required=False)
-        category_uid = graphene.String(required=False)
-        tags_uids = graphene.List(graphene.String, required=False)
+        inspector = inspect.getargvalues(inspect.currentframe())
+        passed_args = get_passed_args(inspector)
 
-    ok = graphene.Boolean()
-    document = graphene.Field(lambda: types.DocumentType)
-
-    @staticmethod
-    def mutate(root, info, uid, **kwargs):
         if not uid:
-            raise GraphQLError("No uid provided to identify update obj")
+            raise Exception("No uid provided to identify update obj")
 
-        document = models.Document.get(uid=uid)
+        document = await models.Document.get(uid=uid)
         if not document:
-            raise GraphQLError(f"Document with uid {uid} not found. Cannot update obj ...")
+            raise Exception(f"Document with uid {uid} not found. Cannot update obj ...")
 
-        obj_data = jsonable_encoder(document)
+        obj_data = document.to_dict()
         for field in obj_data:
-            if field in kwargs:
+            if field in passed_args:
                 try:
-                    setattr(document, field, kwargs[field])
+                    setattr(document, field, passed_args[field])
                 except Exception as e:
-                    logger.warning(f"failed to set attribute {field}: {e}")
+                    logger.warning(e)
 
         document.tags.clear()
-        tags_uids = kwargs.get('tags_uids', [])
-        tags = []
-        for _tag_uid in tags_uids:
-            tag = models.DocumentTag.get(uid=_tag_uid)
-            if tag:
-                tags.append(tag)
-        setattr(document, 'tags', tags)
+        tags_uids = passed_args.get('tags_uids', [])
+        if tags_uids:
+            tags = []
+            for _tag_uid in tags_uids:
+                tag = await models.DocumentTag.get(uid=_tag_uid)
+                if tag:
+                    tags.append(tag)
+            setattr(document, 'tags', tags)
 
         obj_in = schemas.DocumentUpdate(**document.to_dict())
-        document = document.update(obj_in)
-        ok = True
-        return UpdateDocument(ok=ok, document=document)
-
-
-class MarkdownMutations(graphene.ObjectType):
-    create_document_tag = CreateDocumentTag.Field()
-    update_document_tag = UpdateDocumentTag.Field()
-    create_document_category = CreateDocumentCategory.Field()
-    update_document_category = UpdateDocumentCategory.Field()
-    create_document = CreateDocument.Field()
-    update_document = UpdateDocument.Field()
+        document = await document.update(obj_in)
+        return document

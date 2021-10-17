@@ -6,7 +6,7 @@ __dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # source "${__dir}"/al_revision.sh "ini felicity $(date)"
 
 # run upgrade
-source "${__dir}"/al_upgrade.sh
+#source "${__dir}"/al_upgrade.sh
 
 # then start server
 source "${__dir}"/runserver.sh

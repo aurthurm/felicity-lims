@@ -1,40 +1,79 @@
-import graphene
-from graphene import (
-    relay,
-    String,
-)
-from graphene_sqlalchemy import SQLAlchemyConnectionField
-
+from typing import List, Optional
+import strawberry
+import sqlalchemy as sa
 from felicity.apps.patient import models
+from felicity.gql import PageInfo
 from felicity.gql.patient.types import (
     PatientType,
+    PatientCursorPage, PatientEdge
 )
+from felicity.utils import has_value_or_is_truthy
 
-import logging
-class PatientQuery(graphene.ObjectType):
-    node = relay.Node.Field()
-    # PatientType
-    patient_all = SQLAlchemyConnectionField(PatientType.connection)
-    patient_by_uid = graphene.Field(lambda: PatientType, uid=graphene.Int(default_value=None))
-    patient_by_patient_id = graphene.Field(lambda: PatientType, patient_id=graphene.Int(default_value=None))
-    patient_search = graphene.List(lambda: PatientType, query_string=graphene.String(default_value=""))
-    
-    def resolve_patient_by_uid(self, info, uid):
-        query = models.Patient.get(uid=uid)
-        return query
-    
-    def resolve_patient_by_patient_id(self, info, patient_id):
-        query = models.Patient.get(patient_id=patient_id)
-        return query
-    
-    def resolve_patient_search(self, info, query_string):
+
+@strawberry.type
+class PatientQuery:
+    @strawberry.field
+    async def patient_all(self, info, page_size: Optional[int] = None,
+                          after_cursor: Optional[str] = None, before_cursor: Optional[str] = None,
+                          text: Optional[str] = None, sort_by: Optional[List[str]] = None) -> PatientCursorPage:
+        filters = {}
+
+        _or_ = dict()
+        if has_value_or_is_truthy(text):
+            arg_list = [
+                'first_name__ilike',
+                'last_name__ilike',
+                'middle_name__ilike',
+                'client_patient_id__ilike',
+                'patient_id__ilike',
+                'client___name__ilike',
+                'patient_id__ilike',
+                'email__ilike',
+                'phone_mobile__ilike',
+                'phone_home__ilike',
+            ]
+            for _arg in arg_list:
+                _or_[_arg] = f"%{text}%"
+
+            filters = {sa.or_: _or_}
+
+        page = await models.Patient.paginate_with_cursors(
+            page_size=page_size,
+            after_cursor=after_cursor,
+            before_cursor=before_cursor,
+            filters=filters,
+            sort_by=sort_by
+        )
+
+        total_count: int = page.total_count
+        edges: List[PatientEdge[PatientType]] = page.edges
+        items: List[PatientType] = page.items
+        page_info: PageInfo = page.page_info
+
+        return PatientCursorPage(
+            total_count=total_count,
+            edges=edges,
+            items=items,
+            page_info=page_info,
+        )
+
+    @strawberry.field
+    async def patient_by_uid(self, info, uid: int) -> Optional[PatientType]:
+        return await models.Patient.get(uid=uid)
+
+    @strawberry.field
+    async def patient_by_patient_id(self, info, patient_id: str) -> Optional[PatientType]:
+        return await models.Patient.get(patient_id=patient_id)
+
+    @strawberry.field
+    async def patient_search(self, info, query_string: str) -> List[PatientType]:
         filters = ['first_name__ilike', 'middle_name__ilike', 'last_name__ilike', 'patient_id__ilike',
                    'client_patient_id__ilike', 'phone_mobile__ilike', 'phone_home__ilike']
         combined = set()
         for _filter in filters:
             arg = dict()
             arg[_filter] = f"%{query_string}%"
-            query = models.Patient.where(**arg).all()
+            query = await models.Patient.where(**arg).all()
             for item in query:
                 combined.add(item)
         return list(combined)

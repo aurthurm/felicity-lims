@@ -75,28 +75,23 @@ export const mutations = <MutationTree<IState>>{
     Object.assign(state, initialState());
   },
 
-  [MutationTypes.SET_DOCUMENTS](state: IState, payload: any[]): void {
-    state.documents = [];
-    let documents = parseEdgeNodeToList(payload)
-    state.documents = documents;
+  [MutationTypes.SET_DOCUMENTS](state: IState, payload: any): void {
+    state.documents = payload;
   },  
 
   [MutationTypes.ADD_DOCUMENT](state: IState, payload: any): void {
-    let document = payload?.document;
-    state.documents?.push(document);
+    state.documents?.push(payload);
   },
 
   [MutationTypes.SET_DOCUMENT](state: IState, payload: any): void {
-    let document = payload;
-    state.document = document;
+    state.document = payload;
   },
 
   [MutationTypes.UPDATE_DOCUMENT_CONTENT](state: IState, data: string): void {
     if(state.document) state.document.content = data;
   },
 
-  [MutationTypes.UPDATE_DOCUMENT](state: IState, payload: any): void {
-    let document = payload?.document;
+  [MutationTypes.UPDATE_DOCUMENT](state: IState, document: any): void {
     const index = state.documents?.findIndex(x => x.uid === document.uid);
     state!.documents[index] = document;
   },

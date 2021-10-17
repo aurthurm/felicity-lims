@@ -1,60 +1,20 @@
 import gql from 'graphql-tag';
 
 export const GET_ALL_SAMPLE_TYPES = gql`
-    query getAllSampleTypes {
-        sampleTypeAll {
-            edges{
-            node {
-                uid
-                name
-                abbr
-                description
-                active
-            }
-        }
+  query getAllSampleTypes {
+    sampleTypeAll {
+        uid
+        name
+        abbr
+        description
+        active
     }
 }`;
 
 export const GET_ALL_ANALYSES_SERVICES = gql`
-    query getAllAnalysesServices {
-        analysisAll{
-            edges {
-                node {
-                    uid
-                    name
-                    keyword
-                    active
-                    sortKey
-                    categoryUid
-                    resultoptions {
-                      edges {
-                        node {
-                          uid
-                          optionKey
-                          value
-                        }
-                      }
-                    }
-                    category {
-                        uid
-                        name
-                    }
-                    profiles {
-                        edges {
-                            node {
-                                uid
-                                name
-                            }
-                    }
-                }
-            }
-        }
-    }
-}`;
-
-export const GET_ANALYSES_SERVICES_FOR_QC = gql`
-    query getAnalysisForQc {
-      analysisForQc{
+  query getAllAnalysesServices($first: Int, $after: String, $text: String, $sortBy: [String!] = ["name"]) {
+    analysisAll(pageSize:$first, afterCursor:$after, text:$text, sortBy:$sortBy){
+      items {
         uid
         name
         keyword
@@ -62,52 +22,37 @@ export const GET_ANALYSES_SERVICES_FOR_QC = gql`
         sortKey
         categoryUid
         resultoptions {
-          edges {
-            node {
-              uid
-              optionKey
-              value
-            }
-          }
+          uid
+          optionKey
+          value
         }
         category {
-            uid
-            name
+          uid
+          name
         }
         profiles {
-            edges {
-                node {
-                    uid
-                    name
-                }
-            }
+          uid
+          name
         }
+      }
     }
 }`;
+
 
 export const GET_ALL_ANALYSES_PROFILES = gql`
     query getAllAnalysesProfiles {
         profileAll {
-            edges {
-                node {
-                    uid
-                    name  
-                    description
-                    keyword
-                    active
-                    analyses {
-                        edges {
-                            node {
-                                uid
-                                name
-                                keyword
-                                active
-                                sortKey
-                            }
-                        }
-                    }
-                }
-            }
+          uid
+          name  
+          description
+          keyword
+          active
+          analyses {
+            name
+            keyword
+            active
+            sortKey
+          }
         }
     }`;
 
@@ -115,144 +60,109 @@ export const GET_ALL_ANALYSES_PROFILES = gql`
 export const GET_ALL_ANALYSES_PROFILES_AND_SERVICES = gql`
     query getAllProfilesANDServices {
         profileAll {
-            edges {
-                node {
-                    uid
-                    name  
-                    description
-                    keyword
-                    active
-                    analyses {
-                        edges {
-                            node {
-                                uid
-                                name
-                                keyword
-                                sortKey
-                                active
-                            }
-                        }
-                    }
-                }
+            uid
+            name  
+            description
+            keyword
+            active
+            analyses {
+              uid
+              name
+              keyword
+              sortKey
+              active
             }
         }
-
         analysisAll{
-            edges {
-                node {
-                    uid
-                    name
-                    keyword
-                    active
-                    sortKey
-                    categoryUid
-                    resultoptions {
-                      edges {
-                        node {
-                          uid
-                          optionKey
-                          value
-                        }
-                      }
-                    }
-                    category {
-                        uid
-                        name
-                    }
-                    profiles {
-                      edges {
-                        node {
-                            uid
-                            name
-                        }
-                   }
-                }
+          items {
+            uid
+            name
+            keyword
+            active
+            sortKey
+            categoryUid
+            resultoptions {
+              uid
+              optionKey
+              value
             }
+            category {
+                uid
+                name
+            }
+            profiles {
+              uid
+              name
+            }
+          }
         }
-        }
-
     }`;
 
 export const GET_ALL_ANALYSES_CATEGORIES = gql`
     query getAllAnalysesCategories {
         analysisCategoryAll {
-            edges {
-                node {
-                    uid
-                    name
-                    description
-                    active
-                }
-            }
+            uid
+            name
+            description
+            active
         }
     }`;
 
 
 export const GET_ALL_SAMPLES = gql`
-    query getAllSamples($first: Int!, $after: String, $status: String, $text: String, $clientUid: String) {
-      	sampleCount(status:$status, text:$text, clientUid: $clientUid)
-        sampleAll(first:$first, after:$after, status:$status, text:$text, clientUid: $clientUid) {
+    query getAllSamples($first: Int!, $after: String, $status: String!, $text: String!, $clientUid: Int!) {
+        sampleAll(pageSize: $first, afterCursor: $after, status: $status, text: $text, clientUid: $clientUid) {
+          totalCount
         	pageInfo {
               hasNextPage
               hasPreviousPage
               endCursor
               startCursor
             }
-            edges {
-                cursor
-                node {
+          items {
+            uid
+            analysisrequest {
+                uid
+                clientRequestId
+                patient {
                     uid
-                    analysisrequest {
-                        uid
-                        clientRequestId
-                        patient {
-                            uid
-                            firstName
-                            lastName
-                            clientPatientId
-                            gender
-                            dateOfBirth
-                            age
-                            ageDobEstimated
-                            consentSms
-                        }
-                        client {
-                            uid
-                            name
-                        }
-                    }
-                    sampletype {
-                        uid
-                        name
-                    }
-                    sampleId
-                    priority
-                    status
-                    analyses {
-                        edges {
-                            node {
-                                uid
-                                name
-                                sortKey
-                            }
-                        }
-                    }
-                    profiles {
-                        edges {
-                            node {
-                                uid
-                                name
-                            }
-                        }
-                    }
+                    firstName
+                    lastName
+                    clientPatientId
+                    gender
+                    dateOfBirth
+                    age
+                    ageDobEstimated
+                    consentSms
+                }
+                client {
+                    uid
+                    name
                 }
             }
+            sampletype {
+                uid
+                name
+            }
+            sampleId
+            priority
+            status
+            analyses {
+                uid
+                name
+                sortKey
+            }
+            profiles {
+                uid
+                name
+            }
         }
+            }
     }`;
 
 
 export const GET_ANALYSIS_REQUESTS_BY_PATIENT_UID = gql`
-query getAnalysesRequestsByPatientUid($uid: String!) {
+query getAnalysesRequestsByPatientUid($uid: Int!) {
   analysisRequestsByPatientUid(uid: $uid) {
     uid
     clientRequestId
@@ -273,34 +183,22 @@ query getAnalysesRequestsByPatientUid($uid: String!) {
       name
     }
     samples {
-      edges {
-        node {
-          uid
-          sampletype {
-            uid
-            name
-          }
-          sampleId
-          priority
-          status
-          analyses {
-            edges {
-              node {
-                uid
-                name
-                sortKey
-              }
-            }
-          }
-          profiles {
-            edges {
-              node {
-                uid
-                name
-              }
-            }
-          }
-        }
+      uid
+      sampletype {
+        uid
+        name
+      }
+      sampleId
+      priority
+      status
+      analyses {
+        uid
+        name
+        sortKey
+      }
+      profiles {
+        uid
+        name
       }
     }
   }
@@ -311,7 +209,7 @@ query getAnalysesRequestsByPatientUid($uid: String!) {
 
 
 export const GET_ANALYSIS_REQUESTS_BY_CLIENT_UID = gql`
-query getAnalysesRequestsByClientUid($uid: String!) {
+query getAnalysesRequestsByClientUid($uid: Int!) {
   analysisRequestsByClientUid(uid: $uid) {
     uid
     clientRequestId
@@ -332,34 +230,22 @@ query getAnalysesRequestsByClientUid($uid: String!) {
       name
     }
     samples {
-      edges {
-        node {
-          uid
-          sampletype {
-            uid
-            name
-          }
-          sampleId
-          priority
-          status
-          analyses {
-            edges {
-              node {
-                uid
-                name
-                sortKey
-              }
-            }
-          }
-          profiles {
-            edges {
-              node {
-                uid
-                name
-              }
-            }
-          }
-        }
+      uid
+      sampletype {
+        uid
+        name
+      }
+      sampleId
+      priority
+      status
+      analyses {
+        uid
+        name
+        sortKey
+      }
+      profiles {
+        uid
+        name
       }
     }
   }
@@ -369,8 +255,8 @@ query getAnalysesRequestsByClientUid($uid: String!) {
 
 
 export const GET_ANALYSIS_RESULTS_BY_SAMPLE_UID = gql`
-    query getAnalysesResultsBySampleUid($uid: String!) {
-        analysisResultBySampleUid(uid: $uid) {
+  query getAnalysesResultsBySampleUid($uid: Int!) {
+    analysisResultBySampleUid(uid: $uid) {
         uid
         status
         sampleUid
@@ -388,12 +274,8 @@ export const GET_ANALYSIS_RESULTS_BY_SAMPLE_UID = gql`
           sampleId
           status
           rejectionReasons {
-            edges {
-              node {
-                uid
-                reason
-              }
-            }
+            uid
+            reason
           }
         }
         analysisUid
@@ -403,13 +285,9 @@ export const GET_ANALYSIS_RESULTS_BY_SAMPLE_UID = gql`
           unit
           sortKey
           resultoptions {
-            edges {
-              node {
-                uid
-                optionKey
-                value
-              }
-            }
+            uid
+            optionKey
+            value
           }
         }
         retest
@@ -418,9 +296,9 @@ export const GET_ANALYSIS_RESULTS_BY_SAMPLE_UID = gql`
         createdByUid
         updatedAt
         updatedByUid
-        }
+      }
 
-        sampleByUid(uid: $uid){
+      sampleByUid(uid: $uid){
         uid
         analysisrequest {
             uid
@@ -449,63 +327,38 @@ export const GET_ANALYSIS_RESULTS_BY_SAMPLE_UID = gql`
         priority
         status
         analyses {
-            edges {
-                node {
-                    uid
-                    name
-                }
-            }
+            uid
+            name
         }
         profiles {
-            edges {
-                node {
-                    uid
-                    name
-                }
-            }
+          uid
+          name
         }
-        }
-
-    }`;
+      }
+}`;
 
 
 export const GET_ALL_QC_LEVELS = gql`
   query getAllQCLevels {
-  qcLevelAll {
-    edges {
-      node {
-        uid
-        level
-      }
+    qcLevelAll {
+      uid
+      level
     }
-  }
 }`;
 
 export const GET_ALL_QC_TEMPLATES = gql`
     query getAllQCTemplates {
     qcTemplateAll {
-      edges {
-        node {
-          uid
-          name
-          description
-          qcLevels {
-            edges {
-              node {
-                uid
-                level
-              }
-            }
-          }
-          departments {
-            edges {
-              node {
-                uid
-                name
-              }
-            }
-          }
-        }
+      uid
+      name
+      description
+      qcLevels {
+        uid
+        level
+      }
+      departments {
+        uid
+        name
       }
     }
   }`;
@@ -514,129 +367,125 @@ export const GET_ALL_QC_TEMPLATES = gql`
 export const GET_ALL_QC_SETS = gql`
   query getQCSeTs {
     qcSetAll {
-      edges {
-        node {
+      items {
           uid
           name
           note
           createdAt
-          samples {
-            edges {
-              node {
+        samples {
+          uid
+          sampleId
+          status
+          createdAt
+          updatedAt
+          assigned
+          qcLevel {
+            uid
+            level
+          }
+          analysisResults {
+            status
+            sampleUid
+            result
+            analysisUid
+            retest
+            reportable
+            analysis {
+              uid
+              name
+              sortKey
+              resultoptions {
                 uid
-                sampleId
-                status
-                qcLevel {
-                  uid
-                  level
-                }
-                analyses {
-                  edges {
-                    node {
-                      uid
-                      name
-                      sortKey
-                    }
-                  }
-                }
-                profiles {
-                  edges {
-                    node {
-                      uid
-                      name
-                    }
-                  }
-                }
+                optionKey
+                value
               }
             }
+            method {
+              uid
+              name
+            }
+            instrument {
+              uid
+              name
+            }
+          }
+          analyses {
+            uid
+            name
+            unit
+            resultoptions {
+              uid
+              optionKey
+              value
+            }
+          }
+          profiles {
+            uid
+            name
           }
         }
       }
-      }
+    }
   }`;
 
 
 export const GET_QC_SET_BY_UID = gql`
-    query getQCSetByUid($uid: String!) {
+    query getQCSetByUid($uid: Int!) {
       qcSetByUid(uid: $uid) {
         uid
         name
         note
         createdAt
         samples {
-          edges {
-            node {
+          uid
+          sampleId
+          status
+          createdAt
+          updatedAt
+          assigned
+          qcLevel {
+            uid
+            level
+          }
+          analysisResults {
+            status
+            sampleUid
+            result
+            analysisUid
+            retest
+            reportable
+            analysis {
               uid
-              sampleId
-              status
-              createdAt
-              updatedAt
-              assigned
-              qcLevel {
+              name
+              sortKey
+              resultoptions {
                 uid
-                level
-              }
-              analysisResults {
-                edges {
-                  node {
-                    status
-                    sampleUid
-                    result
-                    analysisUid
-                    retest
-                    reportable
-                    analysis {
-                      uid
-                      name
-                      sortKey
-                      resultoptions {
-                        edges {
-                          node {
-                            uid
-                            optionKey
-                            value
-                          }
-                        }
-                      }
-                    }
-                    method {
-                      uid
-                      name
-                    }
-                    instrument {
-                      uid
-                      name
-                    }
-                  }
-                }
-              }
-              analyses {
-                edges {
-                  node {
-                    uid
-                    name
-                    unit
-                    resultoptions {
-                      edges {
-                        node {
-                          uid
-                          optionKey
-                          value
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-              profiles {
-                edges {
-                  node {
-                    uid
-                    name
-                  }
-                }
+                optionKey
+                value
               }
             }
+            method {
+              uid
+              name
+            }
+            instrument {
+              uid
+              name
+            }
+          }
+          analyses {
+            uid
+            name
+            unit
+            resultoptions {
+              uid
+              optionKey
+              value
+            }
+          }
+          profiles {
+            uid
+            name
           }
         }
       }
@@ -644,7 +493,7 @@ export const GET_QC_SET_BY_UID = gql`
 
 
 export const GET_RESULT_OPTIONS_FOR_ANALYSIS = gql`
-    query resultOptionsByAnalysisUid($uid: String!) {
+    query resultOptionsByAnalysisUid($uid: Int!) {
       resultOptionsByAnalysisUid(uid: $uid) {
         uid
         optionKey

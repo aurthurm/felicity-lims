@@ -21,8 +21,6 @@ export const ADD_USER = gql`
     lastName: $lastName, 
     email: $email,
   ){
-    ok
-    user {
       uid
       firstName
       lastName
@@ -37,14 +35,9 @@ export const ADD_USER = gql`
         userType          
       }
       groups {
-        edges {
-          node {
-            uid
-            name
-          }
-        }
+        uid
+        name
       }
-    }
   }
   }
 `;
@@ -58,29 +51,22 @@ export const EDIT_USER = gql`
       lastName: $lastName, 
       email: $email,
     ){
-      ok
-      user {
+      uid
+      firstName
+      lastName
+      email
+      isActive
+      isSuperuser
+      mobilePhone
+      auth {
         uid
-        firstName
-        lastName
-        email
-        isActive
-        isSuperuser
-        mobilePhone
-        auth {
-          uid
-          userName
-          isBlocked
-          userType          
-        }
-        groups {
-          edges {
-            node {
-              uid
-              name
-            }
-          }
-        }
+        userName
+        isBlocked
+        userType          
+      }
+      groups {
+            uid
+            name
       }
     }
   }
@@ -95,14 +81,11 @@ export const ADD_USER_AUTH = gql`
       password: $password, 
       passwordc: $passwordc, 
     ){
-      ok
-      userAuth {
         uid
         userName
         userType
         isBlocked
         loginRetry
-      }
     }
   }
 `;
@@ -116,29 +99,22 @@ export const EDIT_USER_AUTH = gql`
       password: $password, 
       passwordc: $passwordc, 
     ){
-      ok
-      user {
+      uid
+      firstName
+      lastName
+      email
+      isActive
+      isSuperuser
+      mobilePhone
+      auth {
         uid
-        firstName
-        lastName
-        email
-        isActive
-        isSuperuser
-        mobilePhone
-        auth {
-          uid
-          userName
-          isBlocked
-          userType          
-        }
-        groups {
-          edges {
-            node {
-              uid
-              name
-            }
-          }
-        }
+        userName
+        isBlocked
+        userType          
+      }
+      groups {
+            uid
+            name
       }
     }
   }
@@ -146,23 +122,18 @@ export const EDIT_USER_AUTH = gql`
 
 
 export const UPDATE_GROUP_PERMS = gql`
-  mutation updateGroupsAndPermissions($groupUid: String!, $permissionUid: String!) {
-    updateGroupsAndPermissions(groupUid: $groupUid, permissionUid: $permissionUid) {
-      ok
-      group {
-        uid
-        name
-        active
-        permissions {
-          edges {
-            node {
+  mutation updateGroupsAndPermissions($groupUid: Int!, $permissionUid: Int!) {
+    updateGroupPermissions(groupUid: $groupUid, permissionUid: $permissionUid) {
+        group {
+          uid
+          name
+          active
+        }
+        permission {
               uid
               action
               target
-            }
-          }
         }
-      }
     }
   }`;
 
@@ -170,22 +141,16 @@ export const UPDATE_GROUP_PERMS = gql`
 export const ADD_DEPARTMENT = gql`
   mutation addDepartment($name: String!) {
     createDepartment(name: $name) {
-      ok
-      department {
         uid
         name
-      }
     }
   }`;
 
 
 export const UPDATE_DEPARTMENT = gql`
-  mutation editDepartment($uid: String!, $name: String!) {
+  mutation editDepartment($uid: Int!, $name: String!) {
     updateDepartment(uid: $uid, name: $name) {
-      ok
-      department {
         uid
         name
-      }
     }
   }`;

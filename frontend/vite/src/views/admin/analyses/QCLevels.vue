@@ -16,11 +16,11 @@
                 </tr>
                 </thead>
                 <tbody class="bg-white">
-                <tr v-for="level in qcLevels"  :key="level.uid">
+                <tr v-for="level in qcLevels"  :key="level?.uid">
                     <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
                       <div class="flex items-center">
                           <div>
-                          <div class="text-sm leading-5 text-gray-800">{{ level.level }}</div>
+                          <div class="text-sm leading-5 text-gray-800">{{ level?.level }}</div>
                           </div>
                       </div>
                     </td>

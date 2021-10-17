@@ -1,10 +1,16 @@
 import gql from 'graphql-tag'
 
 export const GET_ALL_CLIENTS = gql`
-  query getAllClients {
-    clientAll {
-      edges{
-        node {
+  query getAllClients($first: Int, $after: String, $text: String, $sortBy: [String!] = ["uid"]) {
+    clientAll(pageSize:$first, afterCursor:$after, text:$text, sortBy:$sortBy) {
+      totalCount
+      pageInfo {
+        hasNextPage
+        hasPreviousPage
+        startCursor
+        endCursor
+      }
+      items {
           uid
           name
           code
@@ -22,7 +28,6 @@ export const GET_ALL_CLIENTS = gql`
           }
         }
       }
-    }
   }`;
 
 export const SEARCH_CLIENTS = gql`
@@ -47,7 +52,7 @@ export const SEARCH_CLIENTS = gql`
   }`;
 
 export const GET_CLIENT_CONTACTS_BY_CLIENT_UID = gql`
-  query getClientContactsByClientUid($clientUid: String!) {
+  query getClientContactsByClientUid($clientUid: Int!) {
     clientContactByClientUid(clientUid: $clientUid){
       uid
       firstName
@@ -60,7 +65,7 @@ export const GET_CLIENT_CONTACTS_BY_CLIENT_UID = gql`
 
 
 export const GET_CLIENT_BY_UID = gql`
-  query getClientByUid($uid: String!) {
+  query getClientByUid($uid: Int!) {
     clientByUid(uid: $uid){
         uid
         name

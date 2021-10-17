@@ -14,7 +14,7 @@ import { IClient } from '../common';
 import { Client } from './clients';
 
 export interface IAnalysisCategory {
-  uid?: string;
+  uid?: number;
   name?: string;
   description?: string;
   active?: boolean;
@@ -22,7 +22,7 @@ export interface IAnalysisCategory {
 
 export class AnalysisCategory implements IAnalysisCategory {
   constructor(
-    public uid: string,
+    public uid: number,
     public name: string,
     public description: string,
     public active: boolean,
@@ -33,21 +33,22 @@ export class AnalysisCategory implements IAnalysisCategory {
 
 
 export interface IResultOption {
-  uid?: string;
-  analysisUid?: string;
-  optionKey?: string;
+  uid?: number;
+  analysisUid?: number;
+  optionKey?: number;
   value?: string;
 }
 
 export interface IAnalysisService {
-  uid?: string;
+  uid?: number;
   name?: string;
   keyword?: string;
   description?: string;
+  unit?: string;
   profiles?: IAnalysisProfile[];
   category?: IAnalysisCategory;
   resultoptions?: IResultOption[],
-  categoryUid?: string,
+  categoryUid?: number,
   sortKey?: number;
   active?: boolean;
   internalUse?: boolean;
@@ -56,25 +57,26 @@ export interface IAnalysisService {
 
 export class AnalysisService implements IAnalysisService {
   constructor(
-    public uid: string,
+    public uid: number,
     public name: string,
     public description: string,
     public keyword: string,
     public profiles: IAnalysisProfile[],
     public category: IAnalysisCategory,
     public resultoptions: IResultOption[],
-    public categoryUid: string,
+    public categoryUid: number,
     public sortKey: number,
     public active: boolean,
     public internalUse: boolean,
     public checked: boolean,
+    public unit: string,
   ) {
     this.active = true;
   }
 }
 
 export interface IAnalysisProfile {
-  uid?: string;
+  uid?: number;
   name?: string;
   description?: string;
   keyword?: string,
@@ -84,7 +86,7 @@ export interface IAnalysisProfile {
 
 export class AnalysisProfile implements IAnalysisProfile {
   constructor(
-    public uid: string,
+    public uid: number,
     public name: string,
     public description: string,
     public keyword: string,
@@ -96,16 +98,16 @@ export class AnalysisProfile implements IAnalysisProfile {
 }
 
 export interface ISample {
-  sampleType?: ISampleType; 
+  sampleType?: ISampleType | undefined; 
   profiles?: IAnalysisProfile[];
   analyses?: IAnalysisService[];
 }
 
 export class Sample implements ISample {
   constructor(
-    public sampleType: ISampleType,
-    public profiles: IAnalysisProfile[],
-    public analyses: IAnalysisService[],
+    public sampleType: ISampleType | undefined = undefined,
+    public profiles: IAnalysisProfile[] = [],
+    public analyses: IAnalysisService[] = [],
   ){
     this.analyses = [];
     this.profiles = [];
@@ -181,11 +183,11 @@ export interface IQCTemplate {
 
 export class QCTemplate implements IQCTemplate {
   constructor(
-    public uid: string,
-    public name: string, 
-    public description: string, 
-    public qcLevels: IQCLevel[],
-    public departments: any[],
+    public uid: string = "",
+    public name: string = "", 
+    public description: string = "", 
+    public qcLevels: IQCLevel[] = [],
+    public departments: any[] = [],
   ){
     this.qcLevels = [];
   }
@@ -274,7 +276,7 @@ export enum ActionTypes {
 
 function groupByCategory(analyses: IAnalysisService[]): any {
     const profiled = analyses?.reduce((r: any, obj) => {
-    const key = obj.category?.name || 'Un-Categorised';
+    const key = obj?.category?.name || 'No Category';
     r[key] = r[key] || [];
     r[key].push(obj);
     return r;
@@ -300,8 +302,7 @@ export const mutations = <MutationTree<IState>>{
 
   // analysis categories
   [MutationTypes.SET_ANALYSES_CATEGORIES](state: IState, payload: any[]): void {
-    state.analysesCategories = [];
-    state.analysesCategories = parseEdgeNodeToList(payload)
+    state.analysesCategories = payload;
   },
 
   [MutationTypes.UPDATE_ANALYSES_CATEGORY](state: IState, payload: IAnalysisCategory): void {
@@ -314,34 +315,21 @@ export const mutations = <MutationTree<IState>>{
   },
 
   // analysis services
-  [MutationTypes.SET_ANALYSES_SERVICES](state: IState, payload: any[]): void {
-    state.analysesServices = [];
-    let services =  parseEdgeNodeToList(payload);
-    services.forEach((service: IAnalysisService) => {
-      service.resultoptions = parseEdgeNodeToList(service?.resultoptions) || [];
-      service.profiles = parseEdgeNodeToList(service?.profiles) || [];
-    })
-    state.analysesServices = services;
+  [MutationTypes.SET_ANALYSES_SERVICES](state: IState, payload: any): void {
+    state.analysesServices = payload?.items;
   },
 
   [MutationTypes.UPDATE_ANALYSES_SERVICE](state: IState, payload: IAnalysisService): void {
     const index = state.analysesServices.findIndex(x => x.uid === payload.uid);
-    payload.resultoptions = parseEdgeNodeToList(payload?.resultoptions);
     state!.analysesServices[index] = payload;
   },
 
   [MutationTypes.ADD_ANALYSES_SERVICE](state: IState, payload: IAnalysisService): void {
-    payload.resultoptions = parseEdgeNodeToList(payload?.resultoptions);
     state.analysesServices.push(payload);
   },
 
   // analysis profiles
-  [MutationTypes.SET_ANALYSES_PROFILES](state: IState, payload: any[]): void {
-    state.analysesProfiles = [];
-    let profiles =  parseEdgeNodeToList(payload);
-    profiles.forEach((profile: IAnalysisProfile) => {
-      profile.analyses = parseEdgeNodeToList(profile?.analyses) || [];
-    })
+  [MutationTypes.SET_ANALYSES_PROFILES](state: IState, profiles: any[]): void {
     state.analysesProfiles = profiles;
   },
 
@@ -355,9 +343,8 @@ export const mutations = <MutationTree<IState>>{
   },
 
   // analysis QC Levels
-  [MutationTypes.SET_QC_LEVELS](state: IState, payload: any[]): void {
-    state.qcLevels = [];
-    state.qcLevels = parseEdgeNodeToList(payload);
+  [MutationTypes.SET_QC_LEVELS](state: IState, qcLevels: any[]): void {
+    state.qcLevels = qcLevels;
   },
 
   [MutationTypes.UPDATE_QC_LEVEL](state: IState, payload: IQCLevel): void {
@@ -370,12 +357,11 @@ export const mutations = <MutationTree<IState>>{
   },
 
   // analysis QC TEMPLATES
-  [MutationTypes.SET_ANALYSES_QC_TEMPLATES](state: IState, payload: any[]): void {
+  [MutationTypes.SET_ANALYSES_QC_TEMPLATES](state: IState, templates: any[]): void {
     state.qcTemplates = [];
-    let templates =  parseEdgeNodeToList(payload);
     templates.forEach((qcTemplate: IQCTemplate) => {
-      qcTemplate.qcLevels = parseEdgeNodeToList(qcTemplate?.qcLevels) || [];
-      qcTemplate.departments = parseEdgeNodeToList(qcTemplate?.departments) || [];
+      qcTemplate.qcLevels = qcTemplate?.qcLevels || [];
+      qcTemplate.departments = qcTemplate?.departments || [];
     })
     state.qcTemplates = templates;
   },
@@ -383,15 +369,15 @@ export const mutations = <MutationTree<IState>>{
   [MutationTypes.UPDATE_QC_TEMPLATE](state: IState, payload: IQCTemplate): void {
     const index = state.qcTemplates.findIndex(x => x.uid === payload.uid);
     let template = payload;
-    template.qcLevels = parseEdgeNodeToList(template?.qcLevels) || [];
-    template.departments = parseEdgeNodeToList(template?.departments) || [];
+    template.qcLevels = template?.qcLevels || [];
+    template.departments = template?.departments || [];
     state!.qcTemplates[index] = template;
   },
 
   [MutationTypes.ADD_QC_TEMPLATE](state: IState, payload: IQCTemplate): void {
     let template = payload;
-    template.qcLevels = parseEdgeNodeToList(template?.qcLevels) || [];
-    template.departments = parseEdgeNodeToList(template?.departments) || [];
+    template.qcLevels = template?.qcLevels || [];
+    template.departments = template?.departments || [];
     state.qcTemplates.push(template);
   },
 
@@ -437,25 +423,27 @@ export const actions = <ActionTree<IState, RootState>>{
   },
 
   async [ActionTypes.UPDATE_ANALYSES_CATEGORY]({ commit }, payload ){
-    commit(MutationTypes.UPDATE_ANALYSES_CATEGORY, payload.data.updateAnalysisCategory.analysisCategory);
+    commit(MutationTypes.UPDATE_ANALYSES_CATEGORY, payload.data.updateAnalysisCategory);
   },
 
   async [ActionTypes.ADD_ANALYSES_CATEGORY]({ commit }, payload ){
-    commit(MutationTypes.ADD_ANALYSES_CATEGORY, payload.data.createAnalysisCategory.analysisCategory);
+    commit(MutationTypes.ADD_ANALYSES_CATEGORY, payload.data.createAnalysisCategory);
   },
 
   // analysis services
-  async [ActionTypes.FETCH_ANALYSES_SERVICES]({ commit }){
-    await useQuery({ query: GET_ALL_ANALYSES_SERVICES })
-          .then(payload => commit(MutationTypes.SET_ANALYSES_SERVICES, payload.data.value.analysisAll));
+  async [ActionTypes.FETCH_ANALYSES_SERVICES]({ commit }, params){
+    await urqlClient
+          .query( GET_ALL_ANALYSES_SERVICES, { first: params.first, after: params.after, text: params.text, sortBy: params.sortBy})
+          .toPromise()
+          .then(result => commit(MutationTypes.SET_ANALYSES_SERVICES, result.data.analysisAll));
   },
 
   async [ActionTypes.UPDATE_ANALYSES_SERVICE]({ commit }, payload ){
-    commit(MutationTypes.UPDATE_ANALYSES_SERVICE, payload.data.updateAnalysis.analysis);
+    commit(MutationTypes.UPDATE_ANALYSES_SERVICE, payload.data.updateAnalysis);
   },
 
   async [ActionTypes.ADD_ANALYSES_SERVICE]({ commit }, payload ){
-    commit(MutationTypes.ADD_ANALYSES_SERVICE, payload.data.createAnalysis.analysis);
+    commit(MutationTypes.ADD_ANALYSES_SERVICE, payload.data.createAnalysis);
   },
 
   // 
@@ -474,11 +462,11 @@ export const actions = <ActionTree<IState, RootState>>{
   },
 
   async [ActionTypes.UPDATE_ANALYSES_PROFILE]({ commit }, payload ){
-    commit(MutationTypes.UPDATE_ANALYSES_PROFILE, payload.data.updateProfile.profile);
+    commit(MutationTypes.UPDATE_ANALYSES_PROFILE, payload.data.updateProfile);
   },
 
   async [ActionTypes.ADD_ANALYSES_PROFILE]({ commit }, payload ){
-    commit(MutationTypes.ADD_ANALYSES_PROFILE, payload.data.createProfile.profile);
+    commit(MutationTypes.ADD_ANALYSES_PROFILE, payload.data.createProfile);
   },
 
   // QC LEVELS
@@ -488,11 +476,11 @@ export const actions = <ActionTree<IState, RootState>>{
   },
 
   async [ActionTypes.UPDATE_QC_LEVEL]({ commit }, payload ){
-    commit(MutationTypes.UPDATE_QC_LEVEL, payload.data.updateQcLevel.qcLevel);
+    commit(MutationTypes.UPDATE_QC_LEVEL, payload.data.updateQcLevel);
   },
 
   async [ActionTypes.ADD_QC_LEVEL]({ commit }, payload ){
-    commit(MutationTypes.ADD_QC_LEVEL, payload.data.createQcLevel.qcLevel);
+    commit(MutationTypes.ADD_QC_LEVEL, payload.data.createQcLevel);
   },
 
 
@@ -503,20 +491,20 @@ export const actions = <ActionTree<IState, RootState>>{
   },
 
   async [ActionTypes.UPDATE_QC_TEMPLATE]({ commit }, payload ){
-    commit(MutationTypes.UPDATE_QC_TEMPLATE, payload.data.updateQcTemplate.qcTemplate);
+    commit(MutationTypes.UPDATE_QC_TEMPLATE, payload.data.updateQcTemplate);
   },
 
   async [ActionTypes.ADD_QC_TEMPLATE]({ commit }, payload ){
-    commit(MutationTypes.ADD_QC_TEMPLATE, payload.data.createQcTemplate.qcTemplate);
+    commit(MutationTypes.ADD_QC_TEMPLATE, payload.data.createQcTemplate);
   },
 
   // Result Options
   async [ActionTypes.ADD_RESULT_OPTION]({ commit }, payload ){
-    commit(MutationTypes.ADD_RESULT_OPTION, payload.data.createResultOption.resultOption);
+    commit(MutationTypes.ADD_RESULT_OPTION, payload.data.createResultOption);
   },
 
   async [ActionTypes.UPDATE_RESULT_OPTION]({ commit }, payload ){
-    commit(MutationTypes.UPDATE_RESULT_OPTION, payload.data.updateResultOption.resultOption);
+    commit(MutationTypes.UPDATE_RESULT_OPTION, payload.data.updateResultOption);
   },
 
 

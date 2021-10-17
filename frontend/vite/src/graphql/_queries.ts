@@ -1,10 +1,16 @@
 import gql from 'graphql-tag'
 
 export const GET_ALL_USERS = gql`
-  query userAll {
-    userAll {
-      edges {
-        node {
+  query userAll($first: Int, $after: String, $text: String, $sortBy: [String!] = ["uid"]) {
+    userAll(pageSize:$first, afterCursor:$after, text:$text, sortBy:$sortBy) {
+      totalCount
+      pageInfo {
+        hasNextPage
+        hasPreviousPage
+        startCursor
+        endCursor
+      }
+      items {
           uid
           firstName
           lastName
@@ -19,14 +25,9 @@ export const GET_ALL_USERS = gql`
             userType          
           }
           groups {
-            edges {
-              node {
-                uid
-                name
-              }
-            }
+            uid
+            name
           }
-        }
       }
     }
   }`;
@@ -35,50 +36,34 @@ export const GET_ALL_USERS = gql`
 export const GET_GROUPS_AND_PERMISSIONS = gql`
   query groupsAndPermissions {
     groupAll {
-      edges {
-        node {
-          uid
-          name
-          active
-          permissions {
-            edges {
-              node {
-                uid
-                action
-                target
-              }
-            }
-          }
-        }
+      uid
+      name
+      active
+      permissions {
+        uid
+        action
+        target
       }
     }
     
     permissionAll {
-      edges {
-        node {
           uid
           action
           target
-        }
-      }
     }
   }`;
 
 
 export const GET_AUDIT_LOG_FOR_TARGET = gql`
-  query getAuditLogs($targetType: String!, $targetId: String!) {
+  query getAuditLogs($targetType: String!, $targetId: Int!) {
     auditLogsFilter(targetType:$targetType, targetId:$targetId){
-      edges {
-        node {
-          uid
-          userId
-          targetType
-          targetId
-          action
-          stateBefore
-          stateAfter
-        }
-      }
+      uid
+      userId
+      targetType
+      targetId
+      action
+      stateBefore
+      stateAfter
     }
   }`;
 
@@ -86,13 +71,9 @@ export const GET_AUDIT_LOG_FOR_TARGET = gql`
 export const GET_DEPARTMENTS = gql`
   query getAllDepartments {
     departmentAll {
-      edges {
-        node {
-          uid
-          name
-          code
-          description
-        }
-      }
+      uid
+      name
+      code
+      description
     }
   }`;

@@ -182,9 +182,23 @@ export default defineComponent({
     });
 
     store.dispatch(SampleActionTypes.FETCH_SAMPLE_TYPES);
-    store.dispatch(ActionTypes.FETCH_ANALYSES_SERVICES);
+
+    let analysesParams = reactive({ 
+      first: undefined, 
+      after: "",
+      text: "", 
+      sortBy: ["name"]
+    });
+    store.dispatch(ActionTypes.FETCH_ANALYSES_SERVICES, analysesParams);
     store.dispatch(ActionTypes.FETCH_ANALYSES_PROFILES);
-    store.dispatch(ClientActionTypes.FETCH_CLIENTS);
+
+    let clientParams = reactive({ 
+      first: undefined, 
+      after: "",
+      text: "", 
+      sortBy: ["name"]
+    });
+    store.dispatch(ClientActionTypes.FETCH_CLIENTS, clientParams);
 
     const patient = computed(() => store.getters.getPatient)
     const clients = computed(() => store.getters.getClients)
@@ -193,7 +207,7 @@ export default defineComponent({
 
     function addAnalysesRequest(): void {
       createAnalysisRequest({ clientRequestId: form.clientRequestId, clientUid: form.client.uid, patientUid: form.patient.uid, samples: form.samples}).then((result) => {
-       store.dispatch(SampleActionTypes.ADD_SAMPLES, result);
+      //  store.dispatch(SampleActionTypes.ADD_SAMPLES, result);
       });
       router.push({ name: "patient-detail", params: { patientUid: form.patient.uid }});
     }

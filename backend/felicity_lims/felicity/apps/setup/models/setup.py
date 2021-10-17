@@ -17,17 +17,17 @@ class Laboratory(DBModel):
     business_phone = Column(String, nullable=True)
 
     @classmethod
-    def create(cls, obj_in: schemas.LaboratoryCreate) -> schemas.Laboratory:
+    async def create(cls, obj_in: schemas.LaboratoryCreate) -> schemas.Laboratory:
         data = cls._import(obj_in)
-        return super().create(**data)
+        return await super().create(**data)
 
-    def update(self, obj_in: schemas.LaboratoryUpdate) -> schemas.Laboratory:
+    async def update(self, obj_in: schemas.LaboratoryUpdate) -> schemas.Laboratory:
         data = self._import(obj_in)
-        return super().update(**data)
+        return await super().update(**data)
 
     @classmethod
-    def get_by_setup_name(cls, keyword="felicity"):
-        lab_setup = cls.get(setup_name=keyword)
+    async def get_by_setup_name(cls, keyword="felicity"):
+        lab_setup = await cls.get(setup_name=keyword)
         if not lab_setup:
             return None
         return lab_setup
@@ -39,13 +39,13 @@ class Supplier(DBModel):
     description = Column(String, nullable=True)
 
     @classmethod
-    def create(cls, obj_in: schemas.SupplierCreate) -> schemas.Supplier:
+    async def create(cls, obj_in: schemas.SupplierCreate) -> schemas.Supplier:
         data = cls._import(obj_in)
-        return super().create(**data)
+        return await super().create(**data)
 
-    def update(self, obj_in: schemas.SupplierUpdate) -> schemas.Supplier:
+    async def update(self, obj_in: schemas.SupplierUpdate) -> schemas.Supplier:
         data = self._import(obj_in)
-        return super().update(**data)
+        return await super().update(**data)
 
 
 class Department(DBModel):
@@ -55,13 +55,13 @@ class Department(DBModel):
     code = Column(String, nullable=True)
 
     @classmethod
-    def create(cls, obj_in: schemas.DepartmentCreate) -> schemas.Department:
+    async def create(cls, obj_in: schemas.DepartmentCreate) -> schemas.Department:
         data = cls._import(obj_in)
-        return super().create(**data)
+        return await super().create(**data)
 
-    def update(self, obj_in: schemas.DepartmentUpdate) -> schemas.Department:
+    async def update(self, obj_in: schemas.DepartmentUpdate) -> schemas.Department:
         data = self._import(obj_in)
-        return super().update(**data)
+        return await super().update(**data)
 
 
 class Instrument(DBModel):
@@ -73,13 +73,13 @@ class Instrument(DBModel):
     supplier = relationship(Supplier, backref="instruments")
 
     @classmethod
-    def create(cls, obj_in: schemas.InstrumentCreate) -> schemas.Instrument:
+    async def create(cls, obj_in: schemas.InstrumentCreate) -> schemas.Instrument:
         data = cls._import(obj_in)
-        return super().create(**data)
+        return await super().create(**data)
 
-    def update(self, obj_in: schemas.InstrumentUpdate) -> schemas.Instrument:
+    async def update(self, obj_in: schemas.InstrumentUpdate) -> schemas.Instrument:
         data = self._import(obj_in)
-        return super().update(**data)
+        return await super().update(**data)
 
 
 class Method(DBModel):
@@ -89,10 +89,10 @@ class Method(DBModel):
     keyword = Column(String, nullable=True)
 
     @classmethod
-    def create(cls, obj_in: schemas.MethodCreate) -> schemas.Method:
+    async def create(cls, obj_in: schemas.MethodCreate) -> schemas.Method:
         data = cls._import(obj_in)
-        return super().create(**data)
+        return await super().create(**data)
 
-    def update(self, obj_in: schemas.MethodUpdate) -> schemas.Method:
+    async def update(self, obj_in: schemas.MethodUpdate) -> schemas.Method:
         data = self._import(obj_in)
-        return super().update(**data)
+        return await super().update(**data)

@@ -44,10 +44,10 @@ class Auditable(BaseAuditDBModel, AuditableMixin):
 # Pydantic
 class BaseAuditModel(BaseModel):
     created_at: Optional[datetime] = None
-    created_by_uid: Optional[str] = None
+    created_by_uid: Optional[int] = None
     created_by: Optional[UserSchema] = None
     updated_at: Optional[datetime] = None
-    updated_by_uid: Optional[str] = None
+    updated_by_uid: Optional[int] = None
     updated_by: Optional[UserSchema] = None
 
 

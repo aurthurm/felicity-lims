@@ -8,8 +8,8 @@
     </div>
     <hr class="my-4">
     <div class="grid grid-cols-4 gap-4">
-      <span v-for="board in boards" :key="board.title">
-        <router-link :to="{ name: 'board-detail', params: { boardUid: board.uid }}">
+      <span v-for="board in boards" :key="board?.title">
+        <router-link :to="{ name: 'board-detail', params: { boardUid: board?.uid }}">
           <BoardCard  :board="board" class="col-span-1"/>
         </router-link>
       </span>
@@ -47,7 +47,7 @@
             <span class="text-gray-700">Department</span>
             <select class="form-select block w-full mt-1" v-model="form.departmentUid" >
               <option></option>
-              <option v-for="dept in departments" :key="dept.uid" :value="dept.uid">{{ dept.name }}</option>
+              <option v-for="dept in departments" :key="dept.uid" :value="dept.uid">{{ dept?.name }}</option>
             </select>
           </label>
         </div>
@@ -106,7 +106,7 @@ export default defineComponent({
 
     function editBoard(): void {
       updateBoard({ uid: form.uid, title: form.title, departmentUid: form.departmentUid, description: form.description }).then((result) => {
-        store.dispatch(ActionTypes.UPDATE_BOARD, result);
+        // store.dispatch(ActionTypes.UPDATE_BOARD, result);
       });
     }
 

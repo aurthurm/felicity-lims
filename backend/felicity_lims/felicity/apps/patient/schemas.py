@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import Optional
 
 from pydantic import BaseModel, EmailStr
@@ -17,7 +18,7 @@ class PatientBase(BaseModel):
     last_name: Optional[str] = None  
     gender: Optional[int] = 2
     age: Optional[int] = None
-    date_of_birth: Optional[str] = None
+    date_of_birth: Optional[datetime] = None
     age_dob_estimated: Optional[bool] = None
     phone_mobile: Optional[str] = None
     phone_home: Optional[str] = None

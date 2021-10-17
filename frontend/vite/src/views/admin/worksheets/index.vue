@@ -405,7 +405,14 @@ export default defineComponent({
     let workSheetTemplate = reactive({ ...(new WorkSheetTemplate()) });
     let formTitle = ref('');
 
-    store.dispatch(AnalysisActionTypes.FETCH_ANALYSES_SERVICES);
+
+    let analysesParams = reactive({ 
+      first: undefined, 
+      after: "",
+      text: "", 
+      sortBy: ["name"]
+    });
+    store.dispatch(AnalysisActionTypes.FETCH_ANALYSES_SERVICES, analysesParams);
     store.dispatch(SampleActionTypes.FETCH_SAMPLE_TYPES);
     store.dispatch(SetupActionTypes.FETCH_INSTRUMENTS);
     store.dispatch(AnalysisActionTypes.FETCH_ANALYSES_QC_TEMPLATES);
@@ -426,7 +433,7 @@ export default defineComponent({
         description: workSheetTemplate.description,
         qcTemplateUid: workSheetTemplate.qcTemplateUid,
         reserved: workSheetTemplate.reserved,
-        numberOfSamples: workSheetTemplate.numberOfSamples,
+        numberOfSamples: +workSheetTemplate.numberOfSamples,
         worksheetType: workSheetTemplate.worksheetType,
         cols:  workSheetTemplate.cols,
         rows:  workSheetTemplate.rows,

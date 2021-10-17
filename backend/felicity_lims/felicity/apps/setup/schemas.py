@@ -210,7 +210,7 @@ class CountryBase(BaseModel):
 
 
 class CountryBaseInDB(CountryBase):
-    uid: Optional[str] = None
+    uid: Optional[int] = None
 
     class Config:
         orm_mode = True
@@ -255,7 +255,7 @@ class ProvinceBase(BaseModel):
 
 
 class ProvinceBaseInDB(ProvinceBase):
-    uid: Optional[str] = None
+    uid: Optional[int] = None
 
     class Config:
         orm_mode = True
@@ -263,7 +263,7 @@ class ProvinceBaseInDB(ProvinceBase):
 
 # Properties to receive via API on creation
 class ProvinceCreate(ProvinceBase):
-    country_uid: str
+    country_uid: int
 
 
 # Properties to receive via API on update
@@ -300,7 +300,7 @@ class DistrictBase(BaseModel):
 
 
 class DistrictBaseInDB(DistrictBase):
-    uid: Optional[str] = None
+    uid: Optional[int] = None
 
     class Config:
         orm_mode = True
@@ -308,7 +308,7 @@ class DistrictBaseInDB(DistrictBase):
 
 # Properties to receive via API on creation
 class DistrictCreate(DistrictBase):
-    province_uid: str
+    province_uid: int
 
 
 # Properties to receive via API on update

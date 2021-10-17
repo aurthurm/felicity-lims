@@ -68,9 +68,8 @@ export const mutations = <MutationTree<IState>>{
     state.confRoute = val;
   },
 
-  [MutationTypes.SET_COUNTRIES](state: IState, payload: any[]): void {
-    state.countries = [];
-    payload?.forEach(obj => state.countries?.push(obj?.node));
+  [MutationTypes.SET_COUNTRIES](state: IState, countries: ICountry[]): void {
+    state.countries = countries;
   },
 
   [MutationTypes.SET_PROVINCES_DIRECT](state: IState, payload: any[]): void {
@@ -97,7 +96,7 @@ export const actions = <ActionTree<IState, RootState>>{
 
   async [ActionTypes.FETCH_COUNTRIES]({ commit }){
     await useQuery({ query: GET_ALL_COUNTRIES })
-          .then(payload => commit(MutationTypes.SET_COUNTRIES, payload.data.value.countryAll.edges));
+          .then(payload => commit(MutationTypes.SET_COUNTRIES, payload.data.value.countryAll));
   },
 
   async [ActionTypes.FILTER_PROVINCES_BY_COUNTRY]({ commit }, countryUid: string){

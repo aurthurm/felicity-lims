@@ -19,10 +19,11 @@
               <div class="relative">
                   <select
                       class="appearance-none h-full rounded-r border-t sm:rounded-r-none sm:border-r-0 border-r border-b block appearance-none w-full bg-white border-gray-400 text-gray-700 py-2 px-4 pr-8 leading-tight focus:outline-none focus:border-l focus:border-r focus:bg-white focus:border-gray-500">
-                      <option>All</option>
-                      <option>To be Verified</option>
-                      <option>Verified</option>
-                      <option>Published</option>
+                      <option value="">All</option>
+                      <option value="pending_assignment">Not Assigned</option>
+                      <option value="open">Open</option>
+                      <option value="to_be_verified">To Be Verified</option>
+                      <option value="verified">Verified</option>
                   </select>
                   <div
                       class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
@@ -123,7 +124,7 @@
     <template v-slot:body>
       <form action="post" class="p-1">
 
-        <div class="grid grid-cols-2 gap-x-4 mb-4">
+        <div class="grid grid-cols-3 gap-x-4 mb-4">
 
           <label class="block col-span-1 mb-2">
             <span class="text-gray-700">Analyst</span>
@@ -138,6 +139,10 @@
                <option></option>
               <option v-for="template in workSheetTemplates" :key="template.uid" :value="template.uid">{{ template.name }}</option>
             </select>
+          </label>
+          <label class="block col-span-1 mb-2">
+            <span class="text-gray-700">How Many</span>
+              <input type="number" class="form-input mt-1 block w-full" v-model="form.count" min="1" default-value="1" />
           </label>
         </div>
 
@@ -176,7 +181,11 @@ export default defineComponent({
     
     let showModal = ref(false);
     let formTitle = ref('');
-    let form = reactive({ ...Object });
+    let form = reactive({ 
+        analystUid: null,
+        templateUid: null,
+        count: 1,
+     });
     const formAction = ref(true);
 
     store.dispatch(ActionTypes.REMOVE_WORKSHEET)
@@ -189,6 +198,7 @@ export default defineComponent({
     const { executeMutation: createWorkSheet } = useMutation(ADD_WORKSHEET);
 
     function addWorksheet(): void {
+      form.count = +form.count;
       createWorkSheet(form).then((result) => {
        store.dispatch(ActionTypes.ADD_WORKSHEET, result);
        showModal.value = false;
@@ -197,8 +207,8 @@ export default defineComponent({
 
     function analysesText(analyses: IAnalysis[]): string {
         let names = [];
-        analyses.forEach(a => names.push(a.name));
-        return names.join(', ');
+        analyses?.forEach(a => names.push(a.name));
+        return names?.join(', ');
     }
 
     function FormManager(create):void {
@@ -209,6 +219,7 @@ export default defineComponent({
         let obj = new Object();
         obj.analystUid = null;
         obj.templateUid = null;
+        obj.count = 1;
         Object.assign(form, { ...obj });
       } else {
         console.log("This path is not possible !!!!!")

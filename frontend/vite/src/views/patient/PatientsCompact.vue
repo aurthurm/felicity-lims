@@ -326,12 +326,26 @@ export default defineComponent({
 
     let countryUid = ref(null);
     let provinceUid = ref(null);
+    let patientParams = reactive({ 
+      first: 25, 
+      after: "",
+      text: "", 
+      sortBy: ["-uid"]
+    });
+
 
     const genders = ["Male", "Female", "Missing", "Trans Gender"]
 
     store.dispatch(AdminActionTypes.FETCH_COUNTRIES);    
-    store.dispatch(ActionTypes.FETCH_PATIENTS);
-    store.dispatch(ClientActionTypes.FETCH_CLIENTS);
+    store.dispatch(ActionTypes.FETCH_PATIENTS, patientParams);
+
+    let clientParams = reactive({ 
+      first: undefined, 
+      after: "",
+      text: "", 
+      sortBy: ["name"]
+    });
+    store.dispatch(ClientActionTypes.FETCH_CLIENTS, clientParams);
 
     const { executeMutation: createPatient } = useMutation(ADD_PATIENT);
 
@@ -370,7 +384,11 @@ export default defineComponent({
     }
 
     function searchPatients(event) {
-      store.dispatch(ActionTypes.SEARCH_PATIENTS, event.target.value);
+      patientParams.first = 100;
+      patientParams.after = null;
+      patientParams.text = event.target.value;
+      // store.dispatch(ActionTypes.SEARCH_PATIENTS, event.target.value);
+      store.dispatch(ActionTypes.FETCH_PATIENTS, patientParams);
     }
 
     function isPatientSelected() {

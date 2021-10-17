@@ -4,13 +4,11 @@ import gql from 'graphql-tag';
 export const ADD_SAMPLE_TYPE= gql`
   mutation AddSampleType ($name: String!, $abbr: String!, $active: Boolean, $description: String!) {
     createSampleType(name: $name, abbr: $abbr, active: $active, description: $description){
-      sampleType {
         uid
         name
         abbr
         description
         active
-      }
     }
   }
 `;
@@ -18,49 +16,42 @@ export const ADD_SAMPLE_TYPE= gql`
 export const EDIT_SAMPLE_TYPE= gql`
   mutation EditSampleType ($uid: Int!, $name: String, $abbr: String, $active: Boolean, $description: String) {
     updateSampleType(uid: $uid, name: $name, abbr: $abbr, active: $active, description: $description){
-      sampleType {
         uid
         name
         abbr
         description
         active
-      }
     }
   }
 `;
 
 // RESULT_OPTION
 export const ADD_RESULT_OPTION= gql`
-  mutation AddResultOption ($optionKey: String!, $value: String!, $analysisUid: String!) {
+  mutation AddResultOption ($optionKey: Int!, $value: String!, $analysisUid: Int!) {
     createResultOption(optionKey: $optionKey, value: $value, analysisUid: $analysisUid){
-      resultOption{
         uid
         optionKey
         value
         analysisUid
-      }
     }
   }
 `;
 
 export const EDIT_RESULT_OPTION= gql`
-  mutation EditResultOption ($uid: Int!, $optionKey: String!, $value: String!) {
+  mutation EditResultOption ($uid: Int!, $optionKey: Int!, $value: String!) {
     updateResultOption(uid: $uid, optionKey: $optionKey, value: $value){
-      resultOption{
         uid
         optionKey
         value
         analysisUid
-      }
     }
   }
 `;
 
 // ANALYSIS_SERVICE
 export const ADD_ANALYSIS_SERVICE= gql`
-  mutation AddAnalysisService ($name: String!, $keyword: String!, $active: Boolean!, $internalUse: Boolean, $description: String!, $categoryUid: String, $sortKey: Int!, $sampleTypes: [String]) {
+  mutation AddAnalysisService ($name: String!, $keyword: String!, $active: Boolean!, $internalUse: Boolean, $description: String!, $categoryUid: Int, $sortKey: Int!, $sampleTypes: [Int!]) {
     createAnalysis(name: $name, keyword: $keyword, active: $active, internalUse: $internalUse, description: $description, sortKey: $sortKey, categoryUid: $categoryUid, sampleTypes:$sampleTypes){
-    analysis {
       uid
       name
       keyword
@@ -68,35 +59,25 @@ export const ADD_ANALYSIS_SERVICE= gql`
       description   
       categoryUid   
       resultoptions {
-        edges {
-          node {
-            uid
-            optionKey
-            value
-          }
-        }
+        uid
+        optionKey
+        value
       }
       category {
-          uid
-          name
+        uid
+        name
       }
       profiles {
-        edges {
-          node {
-            uid
-            name
-          }
-        }
+        uid
+        name
       }
-    }
   }
   }
 `;
 
 export const EDIT_ANALYSIS_SERVICE= gql`
-  mutation EditAnalysisService ($uid: Int!, $name: String!, $keyword: String!, $active: Boolean, $sortKey: Int, $internalUse: Boolean, $categoryUid: String, $description: String!, $sampleTypes: [String]) {
+  mutation EditAnalysisService ($uid: Int!, $name: String!, $keyword: String!, $active: Boolean, $sortKey: Int!, $internalUse: Boolean, $categoryUid: Int, $description: String!, $sampleTypes: [String!]!) {
     updateAnalysis(uid: $uid, name: $name, keyword: $keyword, active: $active, internalUse: $internalUse, sortKey: $sortKey, categoryUid: $categoryUid, description: $description, sampleTypes:$sampleTypes){
-    analysis {
       uid
       name
       keyword
@@ -104,27 +85,18 @@ export const EDIT_ANALYSIS_SERVICE= gql`
       description
       categoryUid   
       resultoptions {
-        edges {
-          node {
-            uid
-            optionKey
-            value
-          }
-        }
+        uid
+        optionKey
+        value
       }
       category {
-          uid
-          name
+        uid
+        name
       }
       profiles {
-        edges {
-          node {
-            uid
-            name
-          }
-        }
+        uid
+        name
       }
-    }
   }
   }
 `;
@@ -133,47 +105,35 @@ export const EDIT_ANALYSIS_SERVICE= gql`
 export const ADD_ANALYSIS_PROFILE= gql`
   mutation AddAnalysisProfile ($name: String!, $keyword: String!, $active: Boolean!, $description: String!) {
     createProfile(name: $name, keyword: $keyword, active: $active, description: $description){
-      profile {
       uid
       name
       description
       keyword
       active
       analyses {
-        edges {
-          node {
-            uid
-            name
-            keyword
-            active
-          }
-        }
+        uid
+        name
+        keyword
+        active
       }
-    }
   }
   }
 `;
 
 export const EDIT_ANALYSIS_PROFILE= gql`
-  mutation EditAnalysisProfile ($uid: Int!, $name: String!, $keyword: String!, $active: Boolean!, $description: String! $services: [String]) {
+  mutation EditAnalysisProfile ($uid: Int!, $name: String!, $keyword: String!, $active: Boolean!, $description: String! $services: [Int!]) {
     updateProfile(uid: $uid, name: $name, keyword: $keyword, active: $active, description: $description, services: $services){
-      profile {
       uid
       name     
       description
       keyword
       active
       analyses {
-        edges {
-          node {
-            uid
-            name
-            keyword
-            active
-          }
-        }
+        uid
+        name
+        keyword
+        active
       }
-    }
   }
   }
 `;
@@ -182,12 +142,10 @@ export const EDIT_ANALYSIS_PROFILE= gql`
 export const ADD_ANALYSIS_CATEGORY= gql`
   mutation AddAnalysisCategory ($name: String!, $description: String!, $active: Boolean) {
     createAnalysisCategory(name: $name, description: $description, active: $active){
-      analysisCategory {
         uid
         name
         active
         description
-    }
   }
   }
 `;
@@ -195,82 +153,65 @@ export const ADD_ANALYSIS_CATEGORY= gql`
 export const EDIT_ANALYSIS_CATEGORY= gql`
   mutation EditAnalysisCategory ($uid: Int!, $name: String!, $description: String!, $active: Boolean) {
     updateAnalysisCategory(uid: $uid, name: $name, description: $description, active: $active){
-      analysisCategory {
         uid
         name
         active
         description
-    }
   }
   }
 `;
 
 // ANALYSIS REQUEST
 export const ADD_ANALYSIS_REQUEST = gql`
-mutation AddAnalysisRequest ($clientRequestId: String!, $clientUid: String!, $patientUid: String!, $samples: [ARSampleInputType]!) {
+mutation AddAnalysisRequest ($clientRequestId: String!, $clientUid: Int!, $patientUid: Int!, $samples: [ARSampleInputType!]!) {
   createAnalysisRequest(clientRequestId: $clientRequestId, clientUid: $clientUid, patientUid: $patientUid, samples: $samples) {
-    analysisrequest {
       uid
-      samples {
-        edges {
-          node {
-            uid
-            analysisrequest {
-              uid
-              clientRequestId
-              patient {
-                uid
-                firstName
-                lastName
-                clientPatientId
-                gender
-                dateOfBirth
-                age
-                ageDobEstimated
-                consentSms
-              }
-              client {
-                uid
-                name
-              }
-            }
-            sampletype {
-              uid
-              name
-            }
-            sampleId
-            priority
-            status
-            analyses {
-              edges {
-                node {
-                  uid
-                  name
-                  sortKey
-                }
-              }
-            }
-            profiles {
-              edges {
-                node {
-                  uid
-                  name
-                }
-              }
-            }
-          }
-        }
-      }
-    }
+      # samples {
+      #   uid
+      #   analysisrequest {
+      #     uid
+      #     clientRequestId
+      #     patient {
+      #       uid
+      #       firstName
+      #       lastName
+      #       clientPatientId
+      #       gender
+      #       dateOfBirth
+      #       age
+      #       ageDobEstimated
+      #       consentSms
+      #     }
+      #     client {
+      #       uid
+      #       name
+      #     }
+      #   }
+      #   sampletype {
+      #     uid
+      #     name
+      #   }
+      #   sampleId
+      #   priority
+      #   status
+      #   analyses {
+      #     uid
+      #     name
+      #     sortKey
+      #   }
+      #   profiles {
+      #     uid
+      #     name
+      #   }
+      # }
   }
 }
 `;
 
 // ANALYSIS RESULTS
 export const SUBMIT_ANALYSIS_RESULTS = gql`
-  mutation SubmitAnalysisResults ($analysisResults: [ARResultInputType]!) {
+  mutation SubmitAnalysisResults ($analysisResults: [ARResultInputType!]!) {
     submitAnalysisResults(analysisResults: $analysisResults){
-      analysisResults {
         uid
         status
         sampleUid
@@ -280,12 +221,8 @@ export const SUBMIT_ANALYSIS_RESULTS = gql`
           sampleId
           status
           rejectionReasons {
-            edges {
-              node {
-                uid
-                reason
-              }
-            }
+            uid
+            reason
           }
         }
         analysisUid
@@ -295,13 +232,9 @@ export const SUBMIT_ANALYSIS_RESULTS = gql`
           unit
           sortKey
           resultoptions {
-            edges {
-              node {
-                uid
-                optionKey
-                value
-              }
-            }
+            uid
+            optionKey
+            value
           }
         }
         retest
@@ -310,15 +243,13 @@ export const SUBMIT_ANALYSIS_RESULTS = gql`
         createdByUid
         updatedAt
         updatedByUid
-        }
       }
   }
 `; 
 
 export const VERIFY_ANALYSIS_RESULTS = gql`
-  mutation VerifyAnalysisResults ($analyses: [String]!) {
+  mutation VerifyAnalysisResults ($analyses: [Int!]!) {
     verifyAnalysisResults(analyses: $analyses){
-      analysisResults {
         uid
         status
         sampleUid
@@ -328,12 +259,8 @@ export const VERIFY_ANALYSIS_RESULTS = gql`
           sampleId
           status
           rejectionReasons {
-            edges {
-              node {
                 uid
                 reason
-              }
-            }
           }
         }
         analysisUid
@@ -343,13 +270,9 @@ export const VERIFY_ANALYSIS_RESULTS = gql`
           unit
           sortKey
           resultoptions {
-            edges {
-              node {
                 uid
                 optionKey
                 value
-              }
-            }
           }
         }
         retest
@@ -358,15 +281,13 @@ export const VERIFY_ANALYSIS_RESULTS = gql`
         createdByUid
         updatedAt
         updatedByUid
-        }
-      }
+    }
   }
 `; 
  
 export const RETRACT_ANALYSIS_RESULTS = gql`
-  mutation RetractAnalysisResults ($analyses: [String]!) {
+  mutation RetractAnalysisResults ($analyses: [Int!]!) {
     retractAnalysisResults(analyses: $analyses){
-      analysisResults {
         uid
         status
         sampleUid
@@ -376,12 +297,8 @@ export const RETRACT_ANALYSIS_RESULTS = gql`
           sampleId
           status
           rejectionReasons {
-            edges {
-              node {
-                uid
-                reason
-              }
-            }
+            uid
+            reason
           }
         }
         analysisUid
@@ -391,13 +308,9 @@ export const RETRACT_ANALYSIS_RESULTS = gql`
           unit
           sortKey
           resultoptions {
-            edges {
-              node {
                 uid
                 optionKey
                 value
-              }
-            }
           }
         }
         retest
@@ -406,15 +319,13 @@ export const RETRACT_ANALYSIS_RESULTS = gql`
         createdByUid
         updatedAt
         updatedByUid
-        }
       }
   }
 `;
 
 export const RETEST_ANALYSIS_RESULTS = gql`
-  mutation RetestAnalysisResults ($analyses: [String]!) {
+  mutation RetestAnalysisResults ($analyses: [Int!]!) {
     retestAnalysisResults(analyses: $analyses){
-      analysisResults {
         uid
         status
         sampleUid
@@ -424,12 +335,8 @@ export const RETEST_ANALYSIS_RESULTS = gql`
           sampleId
           status
           rejectionReasons {
-            edges {
-              node {
                 uid
                 reason
-              }
-            }
           }
         }
         analysisUid
@@ -439,13 +346,9 @@ export const RETEST_ANALYSIS_RESULTS = gql`
           unit
           sortKey
           resultoptions {
-            edges {
-              node {
                 uid
                 optionKey
                 value
-              }
-            }
           }
         }
         retest
@@ -454,7 +357,6 @@ export const RETEST_ANALYSIS_RESULTS = gql`
         createdByUid
         updatedAt
         updatedByUid
-        }
       }
   }
 `; 
@@ -463,10 +365,8 @@ export const RETEST_ANALYSIS_RESULTS = gql`
 export const ADD_QC_LEVEL = gql`
   mutation AddQCLevel($level: String!) {
     createQcLevel(level: $level ){
-      qcLevel {
         uid
         level
-    }
   }
   }
 `;
@@ -474,110 +374,75 @@ export const ADD_QC_LEVEL = gql`
 export const EDIT_QC_LEVEL = gql`
   mutation EditQCLevel ($uid: Int!, $level: String!) {
     updateQcLevel(uid: $uid, level: $level){
-      qcLevel {
         uid
         level
-      }
     }
   }
 `;
 
 // ANALYSIS_CATEGORIES
 export const ADD_QC_TEMPLATE = gql`
-  mutation AddQCTemplate ($name: String!, $description: String!, $levels: [String], $departments: [String]) {
+  mutation AddQCTemplate ($name: String!, $description: String!, $levels: [Int!]!, $departments: [Int!]!) {
     createQcTemplate(name: $name, description: $description, levels: $levels, departments: $departments ){
-      qcTemplate {
         uid
-          name
-          description
-          qcLevels {
-            edges {
-              node {
-                uid
-                level
-              }
-            }
-          }
-          departments {
-            edges {
-              node {
-                uid
-                name
-              }
-            }
-          }
-    }
+        name
+        description
+        qcLevels {
+              uid
+              level
+        }
+        departments {
+              uid
+              name
+        }
   }
   }
 `;
 
 export const EDIT_QC_TEMPLATE = gql`
-  mutation EditQCTemplate ($uid: Int!, $name: String!, $description: String!, $levels: [String], $departments: [String]) {
+  mutation EditQCTemplate ($uid: Int!, $name: String!, $description: String!, $levels: [Int!]!, $departments: [Int!]!) {
     updateQcTemplate(uid: $uid, name: $name, description: $description, levels: $levels, departments: $departments){
-      qcTemplate {
         uid
         name
         description
         qcLevels {
-          edges {
-            node {
-              uid
-              level
-            }
-          }
+            uid
+            level
         }
         departments {
-          edges {
-            node {
-              uid
-              name
-            }
-          }
+          uid
+          name
         }
-      }
     }
   }
 `;
 
 // ANALYSIS_CATEGORIES
 export const ADD_QC_REQUEST = gql`
-  mutation AddQCRequest($samples: [QCSetInputType]!) {
+  mutation AddQCRequest($samples: [QCSetInputType!]!) {
     createQcSet(samples: $samples){
-      qcSets {
-        uid
-        name
-        note
-        createdAt
         samples {
-          edges {
-            node {
-              uid
-              sampleId
-              status
-              qcLevel {
+          uid
+          sampleId
+          status
+          qcLevel {
+            uid
+            level
+          }
+          analyses {
                 uid
-                level
-              }
-              analyses {
-                edges {
-                  node {
-                    uid
-                    name
-                  }
-                }
-              }
-              profiles {
-                edges {
-                  node {
-                    uid
-                    name
-                  }
-                }
-              }
-            }
+                name
+          }
+          profiles {
+                uid
+                name
           }
         }
-      }
+        qcSets {
+          uid
+          name
+          note
+        }
     }
   }
 `;

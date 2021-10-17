@@ -1,24 +1,12 @@
-import graphene
-from graphene import (
-    relay,
-)
-from graphene_sqlalchemy import SQLAlchemyConnectionField
+from typing import List
+import strawberry
 
-from  felicity.gql import FilterableConnectionField
+from felicity.apps.audit.models import AuditLog
 from felicity.gql.audit.types import AuditLogType
 
 
-class FilterableAuditField(FilterableConnectionField):
-    pass
-
-
-class AuditLogQuery(graphene.ObjectType):
-    node = relay.Node.Field()
-
-    audit_logs_All = SQLAlchemyConnectionField(AuditLogType.connection)
-
-    audit_logs_filter = FilterableAuditField(
-        AuditLogType.connection,
-        target_type=graphene.String(default_value=""),
-        target_id=graphene.String(default_value="")
-    )
+@strawberry.type
+class AuditLogQuery:
+    @strawberry.field
+    async def audit_logs_filter(self, info, target_type: str, target_id: int) -> List[AuditLogType]:
+        return await AuditLog.get_all(target_type=target_type, target_id=target_id)

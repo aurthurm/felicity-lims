@@ -172,7 +172,6 @@ function sortAnalysisRequests(ars: IAnalysisRequest[]): IAnalysisRequest[] {
 }
 
 function sortResults(results: IAnalysisResult[]): IAnalysisResult[] {
-  console.log(results)
   results = results?.sort((a: IAnalysisResult, b: IAnalysisResult) => {
     if(a?.analysisUid === b?.analysisUid) {
       return (a?.uid || 0) > (b?.uid || 0) ? 1 : -1;
@@ -205,9 +204,8 @@ export const mutations = <MutationTree<IState>>{
   },
 
   // SAMPLE TYPES
-  [MutationTypes.SET_SAMPLE_TYPES](state: IState, payload: any[]): void {
-    state.sampleTypes = [];
-    state.sampleTypes = parseEdgeNodeToList(payload)
+  [MutationTypes.SET_SAMPLE_TYPES](state: IState, sampleTypes: any[]): void {
+    state.sampleTypes = sampleTypes;
   },
 
   [MutationTypes.UPDATE_SAMPLE_TYPE](state: IState, payload: ISampleType): void {
@@ -223,23 +221,20 @@ export const mutations = <MutationTree<IState>>{
   [MutationTypes.RESET_SAMPLES](state: IState): void {
     state.samples = [];
   },
+  
   [MutationTypes.SET_SAMPLES](state: IState, payload: any): void {
-    let samples = parseEdgeNodeToList(payload?.samples);
-    samples?.forEach((sample: ISampleRequest) => {
-      sample.analyses = parseEdgeNodeToList(sample?.analyses) || [];
-      sample.profiles = parseEdgeNodeToList(sample?.profiles) || [];
-    });
+    const samples = payload.samples.items;
 
     if(payload.fromFilter){
       state.samples = [];
       state.samples = samples;
     } else {
-      let data = state.samples
+      const data = state.samples
       state.samples = data.concat(samples);
     }
-    
-    state.sampleCount = payload?.count;
-    state.pageInfo = payload?.samples?.pageInfo;
+
+    state.sampleCount = payload.samples?.totalCount;
+    state.pageInfo = payload.samples?.pageInfo;
   },
 
   [MutationTypes.SET_SAMPLE](state: IState, payload: any): void {
@@ -250,25 +245,11 @@ export const mutations = <MutationTree<IState>>{
   },
 
 
-  [MutationTypes.SET_ANALYSES_REQUESTS](state: IState, payload: IAnalysisRequest[]): void {
-    state.analysisRequests = [];
-    let requests = payload;
-    requests?.forEach(ar => {
-      ar.samples = parseEdgeNodeToList(ar?.samples) || [];
-      ar.samples?.forEach((sample: ISampleRequest) => {
-        sample.analyses = parseEdgeNodeToList(sample?.analyses) || [];
-        sample.profiles = parseEdgeNodeToList(sample?.profiles) || [];
-      })
-    });
+  [MutationTypes.SET_ANALYSES_REQUESTS](state: IState, requests: IAnalysisRequest[]): void {
     state.analysisRequests = sortAnalysisRequests(requests);
   },
 
-  [MutationTypes.SET_ANALYSES_RESULTS](state: IState, payload: IAnalysisResult[]): void {
-    state.analysisResults = [];
-    let results = payload;
-    results?.forEach((result: any) => {
-      result.analysis.resultoptions = parseEdgeNodeToList(result?.analysis?.resultoptions) || [];
-    })
+  [MutationTypes.SET_ANALYSES_RESULTS](state: IState, results: IAnalysisResult[]): void {
     state.analysisResults = sortResults(results);
   },
 
@@ -284,33 +265,16 @@ export const mutations = <MutationTree<IState>>{
     state.qcSet = null;
   },
 
-  [MutationTypes.SET_QC_SETS](state: IState, payload: any[]): void {
-    let qcSets = parseEdgeNodeToList(payload)
+  [MutationTypes.SET_QC_SETS](state: IState, qcSets: any[]): void {
     qcSets?.forEach((item: any) => {
       item.createdAt = parseDate(item?.createdAt);
-      item.samples = parseEdgeNodeToList(item?.samples) || [];
-      item.samples?.forEach((sample: any) => {
-        sample.profiles = parseEdgeNodeToList(sample?.profiles) || [];
-        sample.analyses = parseEdgeNodeToList(sample?.analyses) || [];
-      });
       if(!state.qcSets?.some(s => s.uid === item.uid)) {
         state.qcSets.push(item);
       }
     })
   },
 
-  [MutationTypes.SET_QC_SET](state: IState, payload: any): void {
-    let qcSet = payload;
-    qcSet.samples = parseEdgeNodeToList(qcSet?.samples) || [];
-    qcSet.samples?.forEach((sample: any) => {
-      sample.profiles = parseEdgeNodeToList(sample?.profiles) || [];
-      sample.analyses = parseEdgeNodeToList(sample?.analyses) || [];
-      sample.analyses.resultoptions = parseEdgeNodeToList(sample?.analyses?.resultoptions) || [];
-      sample.analysisResults = parseEdgeNodeToList(sample?.analysisResults) || [];
-      sample.analysisResults?.forEach(((result: any) => {
-        result.analysis.resultoptions = parseEdgeNodeToList(result.analysis.resultoptions) || [];
-      }));
-    })
+  [MutationTypes.SET_QC_SET](state: IState, qcSet: any): void {
     state.qcSet = qcSet;
   },
 
@@ -329,17 +293,18 @@ export const actions = <ActionTree<IState, RootState>>{
   },
 
   async [ActionTypes.UPDATE_SAMPLE_TYPE]({ commit }, payload ){
-    commit(MutationTypes.UPDATE_SAMPLE_TYPE, payload.data.updateSampleType.sampleType);
+    commit(MutationTypes.UPDATE_SAMPLE_TYPE, payload.data.updateSampleType);
   },
 
   async [ActionTypes.ADD_SAMPLE_TYPE]({ commit }, payload ){
-    commit(MutationTypes.ADD_SAMPLE_TYPE, payload.data.createSampleType.sampleType);
+    commit(MutationTypes.ADD_SAMPLE_TYPE, payload.data.createSampleType);
   },
 
   // SAMPLES
   async [ActionTypes.RESET_SAMPLES]({ commit }) {
     commit(MutationTypes.RESET_SAMPLES);
   },
+
   async [ActionTypes.FETCH_SAMPLES]({ commit }, params){
     await urqlClient
     .query( GET_ALL_SAMPLES, { first: params.first, after: params.after, status: params.status, text: params.text, clientUid: params.clientUid})
@@ -347,7 +312,6 @@ export const actions = <ActionTree<IState, RootState>>{
     .then(result => {
       commit(MutationTypes.SET_SAMPLES, {
         samples: result.data.sampleAll,
-        count: result.data.sampleCount,
         fromFilter: params.filterAction,
       });
     })
@@ -355,7 +319,7 @@ export const actions = <ActionTree<IState, RootState>>{
 
 
   async [ActionTypes.ADD_SAMPLES]({ commit }, payload){
-    commit(MutationTypes.SET_SAMPLES, payload.data.createAnalysisRequest.analysisrequest.samples);
+    commit(MutationTypes.SET_SAMPLES, payload.data.createAnalysisRequest.samples);
   },
 
   async [ActionTypes.FETCH_ANALYSIS_REQUESTS_FOR_PATIENT]({ commit }, uid){
@@ -386,7 +350,7 @@ export const actions = <ActionTree<IState, RootState>>{
   },
 
   async [ActionTypes.UPDATE_ANALYSIS_RESULTS]({ commit }, payload){
-    commit(MutationTypes.UPDATE_ANALYSIS_RESULTS, payload.data.submitAnalysisResults.analysisResults);
+    commit(MutationTypes.UPDATE_ANALYSIS_RESULTS, payload.data.submitAnalysisResults);
   },
 
   // QC SETS
@@ -410,7 +374,7 @@ export const actions = <ActionTree<IState, RootState>>{
   },
 
   async [ActionTypes.ADD_QC_SETS]({ commit }, payload){
-    commit(MutationTypes.SET_QC_SETS, payload.data.createQcSet.qcSets);
+    commit(MutationTypes.SET_QC_SETS, payload.data.createQcSet);
   },
 
 };

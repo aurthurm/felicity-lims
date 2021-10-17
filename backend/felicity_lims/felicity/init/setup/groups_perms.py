@@ -33,17 +33,17 @@ actions_targets = [
 ]
 
 
-def create_groups() -> None:
+async def create_groups() -> None:
     for _grp in groups:
-        exists = models.Group.get(name=_grp)
+        exists = await models.Group.get(name=_grp)
         if not exists:
             schema = schemas.GroupCreate(name=_grp)
-            models.Group.create(schema)
+            await models.Group.create(schema)
 
 
-def create_permissions() -> None:
+async def create_permissions() -> None:
     for _perm in actions_targets:
-        exists = models.Permission.get(action__exact=_perm[0], target__exact=_perm[1])
+        exists = await models.Permission.get(action__exact=_perm[0], target__exact=_perm[1])
         if not exists:
             schema = schemas.PermissionCreate(action=_perm[0], target=_perm[1])
-            models.Permission.create(schema)
+            await models.Permission.create(schema)

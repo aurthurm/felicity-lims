@@ -64,7 +64,7 @@ export default defineComponent({
     const route = useRoute();
     const store = useStore();
 
-    store.dispatch(ActionTypes.FETCH_WORKSHEET_BY_UID, route.params.workSheetUid)
+    store.dispatch(ActionTypes.FETCH_WORKSHEET_BY_UID, +route.params.workSheetUid)
 
     function analysesText(analyses: IAnalysis[]): string {
         let names = [];
