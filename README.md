@@ -22,3 +22,11 @@ Felicity is the quality of being good, pleasant, or desirable.
  - Quality control
  - Reporting
  - Highly customizable and extensible
+
+## Installation
+
+### Direct
+raw/direct instructions here
+
+### Docker
+docker instructions here
