@@ -384,6 +384,7 @@ export const GET_ALL_QC_SETS = gql`
             level
           }
           analysisResults {
+            uid
             status
             sampleUid
             result
@@ -448,6 +449,7 @@ export const GET_QC_SET_BY_UID = gql`
             level
           }
           analysisResults {
+            uid
             status
             sampleUid
             result

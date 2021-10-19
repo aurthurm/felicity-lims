@@ -47,11 +47,6 @@
       
     </section>
 
-    <hr>
-    <router-link to="/patients/search" class="px-2 py-1 border-blue-500 border text-blue-500 rounded transition duration-300 hover:bg-blue-700 hover:text-white focus:outline-none">Add Laboratory Request</router-link>
-    <hr>
-
-
     <section class="overflow-x-auto mt-4">
         <div class="align-middle inline-block min-w-full shadow overflow-hidden bg-white shadow-dashboard px-2 pt-1 rounded-bl-lg rounded-br-lg">
         <table class="min-w-full">
@@ -279,7 +274,13 @@ export default defineComponent({
       samples: [new QCRequest] as IQCRequest[]
     });
 
-    store.dispatch(ActionTypes.FETCH_ANALYSES_SERVICES);
+    let analysesParams = reactive({ 
+      first: undefined, 
+      after: "",
+      text: "", 
+      sortBy: ["name"]
+    });
+    store.dispatch(ActionTypes.FETCH_ANALYSES_SERVICES, analysesParams);
     store.dispatch(ActionTypes.FETCH_QC_LEVELS);
     store.dispatch(ActionTypes.FETCH_ANALYSES_QC_TEMPLATES);
     store.dispatch(ActionTypes.FETCH_ANALYSES_PROFILES);

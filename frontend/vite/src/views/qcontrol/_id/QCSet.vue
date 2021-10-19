@@ -30,25 +30,50 @@
               <td 
               v-for="result in analyte?.items" :key="result.uid"
               class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-                <!-- <div class="text-sm leading-5 text-blue-900"> {{ result?.sample?.qcLevel?.level }}</div> -->
-                <div  v-if="!isEditable(result)" class="text-sm leading-5 text-blue-900" >{{ result?.result  }}</div>
-                <label v-else-if="result?.analysis?.resultoptions?.length < 1" class="block" >
-                  <input class="form-input mt-1 block w-full" v-model="result.result" @keyup="check(result)"/>
-                </label>
-                <label v-else class="block col-span-2 mb-2" >
-                    <select class="form-input mt-1 block w-full" v-model="result.result" @change="check(result)">
-                      <option value=""></option>
-                      <option  
-                      v-for="(option, index) in result?.analysis?.resultoptions"
-                      :key="option.optionKey"
-                      :value="option.value" >{{ option.value }}</option>
-                  </select>
-                </label>
+                <div class="flex items-center">
+                  <input type="checkbox" class="mr-2" v-model="result.checked">
+                  <div>
+                    <div  v-if="!isEditable(result)" class="text-sm leading-5 text-blue-900" >{{ result?.result  }}</div>
+                    <label v-else-if="result?.analysis?.resultoptions?.length < 1" class="block" >
+                      <input class="form-input mt-1 block w-full" v-model="result.result" @keyup="check(result)"/>
+                    </label>
+                    <label v-else class="block col-span-2" >
+                        <select class="form-input mt-1 block w-full" v-model="result.result" @change="check(result)">
+                          <option value=""></option>
+                          <option  
+                          v-for="(option, index) in result?.analysis?.resultoptions"
+                          :key="option.optionKey"
+                          :value="option.value" >{{ option.value }}</option>
+                      </select>
+                    </label>
+                    <!-- <div class="text-sm italics text-blue-300"> {{ result?.sample?.qcLevel?.level }}</div> -->
+                    <div class="text-sm italics text-blue-600"> {{ result?.status }}</div>
+                  </div>
+                </div>
               </td>
           </tr>
           </tbody>
       </table>
       </div>
+  </section>
+
+  <section class="my-4">
+    <button 
+    v-if="can_submit"
+    @click.prevent="submitResults()" 
+    class="px-2 py-1 mr-2 border-blue-500 border text-blue-500 rounded transition duration-300 hover:bg-blue-700 hover:text-white focus:outline-none">Submit</button>
+    <button 
+    v-if="can_retract"
+    @click.prevent="retractResults()" 
+    class="px-2 py-1 mr-2 border-blue-500 border text-blue-500 rounded transition duration-300 hover:bg-blue-700 hover:text-white focus:outline-none">Retract</button>
+    <button 
+    v-if="can_verify"
+    @click.prevent="verifyResults()" 
+    class="px-2 py-1 mr-2 border-blue-500 border text-blue-500 rounded transition duration-300 hover:bg-blue-700 hover:text-white focus:outline-none">Verify</button>
+    <button 
+    v-if="can_retest"
+    @click.prevent="retestResults()" 
+    class="px-2 py-1 mr-2 border-blue-500 border text-blue-500 rounded transition duration-300 hover:bg-blue-700 hover:text-white focus:outline-none">Retest</button>
   </section>
 
 </template>
@@ -57,8 +82,11 @@
 import { defineComponent, ref, toRefs, computed, PropType } from 'vue';
 import { useStore } from 'vuex';
 import { useRoute } from 'vue-router';
+import { useMutation } from '@urql/vue';
 import { ActionTypes } from '../../../store/modules/samples';
 import { isNullOrWs } from '../../../utils';
+import Swal from 'sweetalert2';
+import { SUBMIT_ANALYSIS_RESULTS, VERIFY_ANALYSIS_RESULTS, RETEST_ANALYSIS_RESULTS, RETRACT_ANALYSIS_RESULTS } from '../../../graphql/analyses.mutations';
 
 export default defineComponent({
   name: 'qcset-detail',
@@ -66,7 +94,14 @@ export default defineComponent({
     let store = useStore();
     let route = useRoute();
 
-    store.dispatch(ActionTypes.FETCH_QC_SET_BY_UID, route.params.qcSetUid)
+    let can_submit = ref(false);
+    let can_retract = ref(false);
+    let can_verify = ref(false);
+    let can_retest = ref(false);
+
+    let allChecked = ref(false);
+
+    store.dispatch(ActionTypes.FETCH_QC_SET_BY_UID, +route.params.qcSetUid)
 
     let qcSet = computed(() => {
       let set = store.getters.getQCSet;
@@ -101,8 +136,52 @@ export default defineComponent({
       };
     });
 
+    function getResultsChecked(): any {
+      let results = [];
+      console.log(qcSet?.value['analytes']);
+      if(!qcSet?.value['analytes']) return [];
+      qcSet?.value['analytes']?.forEach(analyte => {
+        analyte?.items?.forEach(result => {
+          if (result.checked) results.push(result);
+        })
+      })
+      return results;
+    }
+
+    function getResultsUids(): string[] {
+      const results = getResultsChecked();
+      let ready = [];
+      results?.forEach(result => ready.push(result.uid))
+      return ready;
+    }
+
+    function checkUserActionPermissios(): void {
+      // reset
+      can_submit.value = false;
+      can_retract.value = false;
+      can_verify.value = false;
+      can_retest.value = false;
+
+      const checked = getResultsChecked();
+      if(checked?.length === 0) return;
+
+      // can submit
+      if(checked.every(result => result.status === 'pending')){
+        can_submit.value = true;
+      }
+
+      // can verify/ retract/retest
+      if(checked.every(result => result.status === 'resulted')){
+        can_retract.value = true;
+        can_verify.value = true;
+        can_retest.value = true;
+      }
+
+    }
+
     function check(result): void {
       result.checked = true;
+      checkUserActionPermissios()
     }
 
     function editResult(result: any): void {
@@ -118,10 +197,174 @@ export default defineComponent({
       return false;
     }
 
+    const { executeMutation: submitAnalysisResults } = useMutation(SUBMIT_ANALYSIS_RESULTS);
+    const { executeMutation: verifyAnalysisResults } = useMutation(VERIFY_ANALYSIS_RESULTS);  
+    const { executeMutation: retestAnalysisResults } = useMutation(RETEST_ANALYSIS_RESULTS); 
+    const { executeMutation: retractAnalysisResults } = useMutation(RETRACT_ANALYSIS_RESULTS); 
+    
+    function submitAnalysesResults(results): void {
+      submitAnalysisResults({ analysisResults: results, }).then((result) => {
+       store.dispatch(ActionTypes.UPDATE_ANALYSIS_RESULTS, result);
+      });
+    }    
+
+    function submitResult(result: ISampleResult): void {
+      if(result.status !== "pending") return;
+      result.result = result.editResult;
+      submitAnalysesResults([{ uid: result.uid , result: result.result }])
+    }    
+    
+    function verifyAnalysesResults(analyses): void {
+      verifyAnalysisResults({ analyses }).then((result) => {
+      //  store.dispatch(ResultActionTypes.UPDATE_ANALYSIS_RESULTS, result);
+      });
+    }  
+    
+    function retractAnalysesResults(analyses): void {
+      retractAnalysisResults({ analyses }).then((result) => {
+      //  store.dispatch(ResultActionTypes.UPDATE_ANALYSIS_RESULTS, result);
+      });
+    }  
+    
+    function retestAnalysesResults(analyses): void {
+      retestAnalysisResults({ analyses }).then((result) => {
+      //  store.dispatch(ResultActionTypes.UPDATE_ANALYSIS_RESULTS, result);
+      });
+    }
+
+    function prepareResults(): any[] {
+      const results = getResultsChecked();
+      let ready = [];
+      results?.forEach(result => ready.push({ uid: result.uid , result: result.result }))
+      return ready;
+    } 
+
+
+    const submitResults = async () => {
+      try {
+        Swal.fire({
+          title: 'Are you sure?',
+          text: "You want to submit these results",
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Yes, submit now!',
+          cancelButtonText: 'No, cancel submission!',
+        }).then((result) => {
+          if (result.isConfirmed) {
+            submitAnalysesResults(prepareResults());
+
+            Swal.fire(
+              'Its Happening!',
+              'Your results have been submitted.',
+              'success'
+            ).then(_ => location.reload())
+
+          }
+        })
+      } catch (error) {
+        logger.log(error)
+      }
+    }
+
+    const verifyResults = async () => {
+      try {
+        Swal.fire({
+          title: 'Are you sure?',
+          text: "You want to verify these results",
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Yes, verify now!',
+          cancelButtonText: 'No, cancel verification!',
+        }).then((result) => {
+          if (result.isConfirmed) {
+            verifyAnalysesResults(getResultsUids());
+
+            Swal.fire(
+              'Its Happening!',
+              'Your results have been verified.',
+              'success'
+            ).then(_ => location.reload())
+
+          }
+        })
+      } catch (error) {
+        logger.log(error)
+      }
+    }
+
+    const retractResults = async () => {
+      try {
+        Swal.fire({
+          title: 'Are you sure?',
+          text: "You want to retract these results",
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Yes, retract now!',
+          cancelButtonText: 'No, cancel retraction!',
+        }).then((result) => {
+          if (result.isConfirmed) {
+            retractAnalysesResults(getResultsUids());
+
+            Swal.fire(
+              'Its Happening!',
+              'Your results have been retracted.',
+              'success'
+            ).then(_ => location.reload())
+
+          }
+        })
+      } catch (error) {
+        logger.log(error)
+      }
+    }
+
+    const retestResults = async () => {
+      try {
+        Swal.fire({
+          title: 'Are you sure?',
+          text: "You want to retest these results",
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Yes, retest now!',
+          cancelButtonText: 'No, cancel retesting!',
+        }).then((result) => {
+          if (result.isConfirmed) {
+            retestAnalysesResults(getResultsUids());
+
+            Swal.fire(
+              'Its Happening!',
+              'Your results have been retested.',
+              'success'
+            ).then(_ => location.reload())
+
+          }
+        })
+      } catch (error) {
+        logger.log(error)
+      }
+    }
+
+
     return {
       qcSet,
       check,
       isEditable,
+      submitResults,
+      verifyResults,
+      retractResults,
+      retestResults,
+      can_submit,
+      can_retract,
+      can_verify,
+      can_retest,
     };
   },
 });

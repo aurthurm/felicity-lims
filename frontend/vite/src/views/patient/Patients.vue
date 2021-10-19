@@ -198,7 +198,12 @@ export default defineComponent({
     }
 
     function searchPatients(event) {
-      store.dispatch(ActionTypes.SEARCH_PATIENTS, event.target.value);
+      patientParams.first = 100;
+      patientParams.after = null;
+      patientParams.text = event.target.value;
+      // store.dispatch(ActionTypes.SEARCH_PATIENTS, event.target.value);
+      store.dispatch(ActionTypes.FETCH_PATIENTS, patientParams);
+      // store.dispatch(ActionTypes.SEARCH_PATIENTS, event.target.value);
     }
 
     function isPatientSelected() {

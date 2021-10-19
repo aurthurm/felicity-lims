@@ -73,7 +73,7 @@ class PatientQuery:
         for _filter in filters:
             arg = dict()
             arg[_filter] = f"%{query_string}%"
-            query = await models.Patient.where(**arg).all()
+            query = await models.Patient.get_all(**arg)
             for item in query:
                 combined.add(item)
         return list(combined)

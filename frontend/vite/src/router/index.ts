@@ -278,18 +278,17 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
-
-  if(to.path === '/') {
-    next({ path: '/dashboard' });
-  }
-
   if (to.matched.some((record) => record.meta.requiresAuth)) {
     let token = localStorage.getItem('fwt');
     if (!isTokenValid(token)) {
       next({ path: '/auth' });
-      return;
+      // return;
     } else {
-      next();
+      if(to.path === '/') {
+        next({ path: '/dashboard' });
+      }else{
+        next();
+      }
     }
   } else {
     next();

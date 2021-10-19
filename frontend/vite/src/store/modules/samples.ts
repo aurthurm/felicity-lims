@@ -265,8 +265,8 @@ export const mutations = <MutationTree<IState>>{
     state.qcSet = null;
   },
 
-  [MutationTypes.SET_QC_SETS](state: IState, qcSets: any[]): void {
-    qcSets?.forEach((item: any) => {
+  [MutationTypes.SET_QC_SETS](state: IState, payload: any): void {
+    payload?.items?.forEach((item: any) => {
       item.createdAt = parseDate(item?.createdAt);
       if(!state.qcSets?.some(s => s.uid === item.uid)) {
         state.qcSets.push(item);
