@@ -126,7 +126,7 @@
 <script lang="ts">
 import tabSamples from '../comps/SampleTable.vue';
 import tabCases from '../comps/CaseTable.vue';
-import tabLogs from '../../_components/timeline/AuditLog.vue';
+import tabLogs from '../../components/timeline/AuditLog.vue';
 
 import Swal from 'sweetalert2';
 import { defineComponent, ref, toRefs, computed, PropType, watch } from 'vue';

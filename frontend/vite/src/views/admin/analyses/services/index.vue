@@ -256,8 +256,8 @@
 </template>
 
 <script lang="ts">
-import modal from '../../../_components/SimpleModal.vue';
-import accordion from '../../../_components/Accordion.vue';
+import modal from '../../../../components/SimpleModal.vue';
+import accordion from '../../../../components/Accordion.vue';
 import ResultOptions from './ResultOptions.vue';
 
 import { useMutation } from '@urql/vue';

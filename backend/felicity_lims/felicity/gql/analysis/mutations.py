@@ -43,7 +43,7 @@ class ARResultInputType:
 
 @strawberry.input
 class QCSetInputType:
-    qcTemplateUid: Optional[str]
+    qcTemplateUid: Optional[int]
     qcLevels: List[int]
     analysisProfiles: List[int]
     analysisServices: List[int]
@@ -720,7 +720,7 @@ class AnalysisMutations:
                 s_in = schemas.SampleCreate(
                     sampletype_uid=qc_sample_type.uid,
                     internal_use=True,
-                    status=states.sample.PENDING,
+                    status=states.sample.RECEIVED,
                 )
                 sample: analysis_models.Sample = await analysis_models.Sample.create(s_in)
                 sample.analyses = analyses

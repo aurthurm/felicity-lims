@@ -78,7 +78,7 @@
 </template>
 
 <script lang="ts">
-    import modal from '../../../_components/SimpleModal.vue';
+    import modal from '../../../../components/SimpleModal.vue';
     import { defineComponent, ref, reactive, toRefs, watch } from 'vue';
     import { useRouter } from 'vue-router';
     import { useMutation } from '@urql/vue';

@@ -1,9 +1,26 @@
 <template>
-  some heasdr stuff here
-
   <hr>
-
-  <section class="overflow-x-auto mt-4">
+  <div class="flex justify-end">
+    <button
+    :class="[
+        'focus:outline-none',
+        { 'fill-current text-gray-900': gridView === true },
+        { 'fill-current text-gray-200': gridView === false },
+    ]"
+    @click.prevent="toggleView('grid')"
+    ><font-awesome-icon icon="th" /></button>
+    <button
+    :class="[
+        'focus:outline-none ml-2',
+        { 'fill-current text-gray-900': gridView === false },
+        { 'fill-current text-gray-200': gridView === true },
+    ]"
+    @click.prevent="toggleView('list')"
+    ><font-awesome-icon icon="th-list"/></button>
+  </div>
+  <section 
+  v-if="gridView"
+  class="overflow-x-auto mt-4">
       <div class="align-middle inline-block min-w-full shadow overflow-hidden bg-white shadow-dashboard px-2 pt-1 rounded-bl-lg rounded-br-lg">
       <table class="min-w-full">
           <thead>
@@ -31,7 +48,7 @@
               v-for="result in analyte?.items" :key="result.uid"
               class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
                 <div class="flex items-center">
-                  <input type="checkbox" class="mr-2" v-model="result.checked">
+                  <input type="checkbox" class="mr-2" v-model="result.checked" @change="checkCheck(result)" :disabled="isDisabledRowCheckBox(result)">
                   <div>
                     <div  v-if="!isEditable(result)" class="text-sm leading-5 text-blue-900" >{{ result?.result  }}</div>
                     <label v-else-if="result?.analysis?.resultoptions?.length < 1" class="block" >
@@ -54,6 +71,103 @@
           </tr>
           </tbody>
       </table>
+      </div>
+  </section>
+
+  <section v-else
+  class="overflow-x-auto">
+    <div class="align-middle inline-block min-w-full shadow overflow-hidden bg-white shadow-dashboard px-2 pt-1 rounded-bl-lg rounded-br-lg">
+        <table class="min-w-full">
+            <thead>
+                <tr>
+                  <th class="px-1 py-1 border-b-2 border-gray-300 text-left leading-4 text-black-500 tracking-wider">
+                      <input type="checkbox" class="" @change="toggleCheckAll()" v-model="allChecked" >
+                  </th>
+                    <th class="px-1 py-1 border-b-2 border-gray-300 text-left leading-4 text-black-500 tracking-wider"></th>
+                    <th class="px-1 py-1 border-b-2 border-gray-300 text-left leading-4 text-black-500 tracking-wider">Analysis</th>
+                    <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-black-500 tracking-wider">Methods</th>
+                    <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-black-500 tracking-wider">Instrument</th>
+                    <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-black-500 tracking-wider">Analyst</th>
+                    <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-black-500 tracking-wider">Result</th>
+                    <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-black-500 tracking-wider">Retest</th>
+                    <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-black-500 tracking-wider">Submitted</th>
+                    <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-black-500 tracking-wider">Due Date</th>
+                    <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-black-500 tracking-wider">Status</th>
+                    <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-black-500 tracking-wider">Reportable</th>
+                    <th class="px-1 py-1 border-b-2 border-gray-300"></th>
+                </tr>
+            </thead>
+            <tbody class="bg-white">
+                    <tr v-for="result in getResults()"  :key="result.uid">
+                      <td>
+                          <input type="checkbox" class="" v-model="result.checked" @change="checkCheck(result)" :disabled="isDisabledRowCheckBox(result)">
+                      </td>
+                        <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500"></td>
+                        <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
+                          <div class="text-sm leading-5 text-blue-900">{{ result.analysis?.name }}</div>
+                        </td>
+                        <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
+                          <div class="text-sm leading-5 text-blue-900">{{ result.method?.name || "None" }}</div>
+                        </td>
+                        <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
+                          <div class="text-sm leading-5 text-blue-900">{{ result.instrument?.name || "None"  }}</div>
+                        </td>
+                        <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
+                          <div class="text-sm leading-5 text-blue-900">{{ result.analyst?.name || "moyoza"}}</div>
+                        </td>
+                        <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
+                          <div  v-if="!isEditable(result)" class="text-sm leading-5 text-blue-900">{{ result?.result  }}</div>
+                          <label v-else-if="result?.analysis?.resultoptions?.length === 0" class="block" >
+                            <input class="form-input mt-1 block w-full" v-model="result.result" @keyup="check(result)"/>
+                          </label>
+                          <label v-else class="block col-span-2 mb-2" >
+                              <select class="form-input mt-1 block w-full" v-model="result.result" @change="check(result)">
+                                <option value=""></option>
+                                <option  
+                                v-for="(option, index) in result?.analysis?.resultoptions"
+                                :key="option.optionKey"
+                                :value="option.value" >{{ option.value }}</option>
+                            </select>
+                          </label>
+                        </td>
+                        <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
+                          <div class="text-sm leading-5 text-blue-900">
+                            <span v-if="result?.retest" class="text-green-500">
+                              <i class="fa fa-check-circle" aria-hidden="true"></i>
+                            </span>
+                            <span v-else class="text-red-500">
+                              <i class="fa fa-times-circle" aria-hidden="true"></i>
+                            </span>
+                          </div>
+                        </td>
+                        <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
+                          <div class="text-sm leading-5 text-blue-900">2020-10-10</div>
+                        </td>
+                        <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
+                          <div class="text-sm leading-5 text-blue-900">2020-10-10</div>
+                        </td>
+                        <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
+                          <button type="button" class="bg-blue-400 text-white p-1 rounded leading-none">{{ result.status }}</button>
+                        </td>
+                        <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
+                          <div class="text-sm leading-5 text-blue-900">
+                            <span v-if="result?.reportable" class="text-green-500">
+                              <i class="fa fa-thumbs-up" aria-hidden="true"></i>
+                            </span>
+                            <span v-else class="text-red-500">
+                              <i class="fa fa-thumbs-down" aria-hidden="true"></i>
+                            </span>
+                          </div>
+                        </td>
+                        <td class="px-1 py-1 whitespace-no-wrap text-right border-b border-gray-500 text-sm leading-5">
+                          <!-- <button @click.prevent="submitResult(result)" 
+                            class="p-1 ml-2 border-white border text-gray-500 rounded transition duration-300 hover:border-blue-500 hover:text-blue-500 focus:outline-none">
+                            submit
+                          </button> -->
+                        </td>
+                    </tr>
+              </tbody>
+          </table>
       </div>
   </section>
 
@@ -128,7 +242,10 @@ export default defineComponent({
             }
           })
         }
-      })
+      });
+
+      toggleView("grid");
+      console.log(final)
 
       return { 
         levels: final.levels, 
@@ -136,9 +253,23 @@ export default defineComponent({
       };
     });
 
+    function getResults(): any[] {
+      let results = [];
+      qcSet?.value['analytes']?.forEach(analyte => analyte["items"].forEach(result => results.push(result)))
+      return results;
+    }
+
+    function getAllAnalysisResults(): any {
+      let results = [];
+      if(!qcSet?.value['analytes']) return [];
+      qcSet?.value['analytes']?.forEach(analyte => {
+        analyte?.items?.forEach(result => results.push(result))
+      })
+      return results;
+    }
+
     function getResultsChecked(): any {
       let results = [];
-      console.log(qcSet?.value['analytes']);
       if(!qcSet?.value['analytes']) return [];
       qcSet?.value['analytes']?.forEach(analyte => {
         analyte?.items?.forEach(result => {
@@ -176,11 +307,35 @@ export default defineComponent({
         can_verify.value = true;
         can_retest.value = true;
       }
+    }
 
+    function areAllChecked(): Boolean {
+      const results = getAllAnalysisResults()
+      return results?.every(item => item.checked === true);
     }
 
     function check(result): void {
       result.checked = true;
+      checkUserActionPermissios()
+    }
+
+    function unCheck(result): void {
+      result.checked = false;
+      checkUserActionPermissios()
+    }
+
+    async function toggleCheckAll(): void {
+      const analysisResults = getResults();
+      await analysisResults?.value?.forEach(result => allChecked.value ? check(result) : unCheck(result));
+      checkUserActionPermissios()
+    }
+
+    function checkCheck(result): void {
+     if(areAllChecked()) {
+        allChecked.value = true;
+     } else {
+        allChecked.value = false;
+     }
       checkUserActionPermissios()
     }
 
@@ -189,12 +344,26 @@ export default defineComponent({
     }
 
     function isEditable(result): Boolean {
-      console.log(result)
       if(result?.editable || isNullOrWs(result?.result)) {
         editResult(result)
         return true
       };
       return false;
+    }
+
+    function isDisabledRowCheckBox(result: any): boolean {
+      switch (result?.status){
+        case "retracted":
+          return true;
+        case "verified":
+          if(result?.reportable === false){
+            return true;
+          } else {
+            return false;
+          }
+        default:
+          return false;
+      }
     }
 
     const { executeMutation: submitAnalysisResults } = useMutation(SUBMIT_ANALYSIS_RESULTS);
@@ -237,7 +406,7 @@ export default defineComponent({
       let ready = [];
       results?.forEach(result => ready.push({ uid: result.uid , result: result.result }))
       return ready;
-    } 
+    }
 
 
     const submitResults = async () => {
@@ -353,9 +522,57 @@ export default defineComponent({
     }
 
 
+    // View selection
+    let gridView = ref(true);
+    let view = ref('grid');
+    let hasDuplicates = ref(false);
+
+    function toggleView(choice: string): void {
+      let results = []
+      let samples = []
+
+      let set = store.getters.getQCSet;
+
+      // for all results in a sample
+      // if analyses is dublicated then a retract/retest has hapenned
+      set?.samples?.forEach(sample => {
+        samples.push(sample)
+        if(!sample.assigned) {
+          sample?.analysisResults?.forEach(result => results.push(result))
+        }
+      });
+
+      for(let sample of samples){
+          const filtered = results.filter(r => r.sampleUid === sample.uid);
+          let analysisUids = [];
+          filtered?.forEach(result => analysisUids.push(result.analysisUid));
+          hasDuplicates.value = (new Set(analysisUids)).size !== analysisUids.length;
+          console.log(hasDuplicates)
+          if(hasDuplicates.value === true) break;
+      }
+
+      if(hasDuplicates.value){
+        gridView.value = false;
+        view.value = 'list';
+      }else{
+        if(choice === 'grid') {
+          gridView.value = true;
+          view.value = 'grid';
+        } else {
+          gridView.value = false;
+          view.value = 'list';
+        }
+      }
+    }
+
     return {
       qcSet,
+      getResults,
       check,
+      checkCheck,
+      toggleCheckAll,
+      allChecked,
+      isDisabledRowCheckBox,
       isEditable,
       submitResults,
       verifyResults,
@@ -365,6 +582,8 @@ export default defineComponent({
       can_retract,
       can_verify,
       can_retest,
+      gridView,
+      toggleView,
     };
   },
 });

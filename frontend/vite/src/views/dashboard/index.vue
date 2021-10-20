@@ -47,6 +47,10 @@ export default defineComponent({
       query: GET_ALL_USERS,
     })
 
+    if (error) {
+      store.dispatch(ActionTypes.NOTIFY_ERROR, error)
+    }
+
     function doSuccess() {
       store.dispatch(ActionTypes.ALERT_SUCCESS, "yi doSuccess le")
     }
@@ -94,10 +98,6 @@ export default defineComponent({
 
 
     //
-
-
-
-
     return { 
       data, 
       fetching, 

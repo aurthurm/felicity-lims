@@ -336,9 +336,9 @@
 </template>
 
 <script lang="ts">
-import modal from '../../_components/SimpleModal.vue';
+import modal from '../../../components/SimpleModal.vue';
 import draggable from "vuedraggable";
-import TaskCard from "../../_components/TaskCard.vue";
+import TaskCard from "../../components/TaskCard.vue";
 import { useStore } from 'vuex';
 import { useMutation } from '@urql/vue';
 import { ActionTypes as AdminActionTypes } from '../../../store/actions';

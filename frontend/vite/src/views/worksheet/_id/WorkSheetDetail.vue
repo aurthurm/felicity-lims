@@ -51,7 +51,7 @@
 <script lang="ts">
 import tabAssignSamples from './WorkSheetAssign.vue';
 import tabWorksheetResults from './WorkSheetResults.vue';
-import tabLogs from '../../_components/AuditLog.vue';
+import tabLogs from '../../components/AuditLog.vue';
 import { IWorkSheet } from '../../../store/modules/worksheets'
 
 import { defineComponent, ref, toRefs, computed, PropType } from 'vue';

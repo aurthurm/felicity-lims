@@ -199,7 +199,7 @@
 </template>
 
 <script lang="ts">
-import modal from '../_components/SimpleModal.vue';
+import modal from '../../components/SimpleModal.vue';
 import { useMutation } from '@urql/vue';
 import { useStore } from 'vuex'
 import { ActionTypes } from '../../store/modules/markdown';

@@ -48,7 +48,7 @@ import { useStore } from 'vuex';
 import { defineComponent, ref, reactive, computed } from 'vue';
 
 
-import tabSamples from '../../_components/SampleListing.vue';
+import tabSamples from '../../components/SampleListing.vue';
 import tabContacts from '../comps/ContactTable.vue';
 
 import { ActionTypes } from '../../../store/modules/clients';

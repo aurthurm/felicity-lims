@@ -70,7 +70,7 @@
 </template>
 
 <script lang="ts">
-import modal from '../../_components/SimpleModal.vue';
+import modal from '../../../components/SimpleModal.vue';
 import { defineComponent, reactive, computed, onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useStore } from 'vuex';

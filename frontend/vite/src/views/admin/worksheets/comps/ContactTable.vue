@@ -98,7 +98,7 @@
 import { useMutation, useQuery } from '@urql/vue';
 import {reactive, computed, ref, watch} from 'vue';
 import { useStore } from 'vuex';
-import modal from '../../../_components/SimpleModal.vue'
+import modal from '../../../../components/SimpleModal.vue'
 import { ClientContact  } from '../../../../store/modules/clients';
 import { ADD_CLIENT_CONTACT, EDIT_CLIENT_CONTACT } from '../../../../graphql/clients.mutations';
 

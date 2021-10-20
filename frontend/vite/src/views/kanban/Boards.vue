@@ -67,8 +67,8 @@
 </template>
 
 <script lang="ts">
-import modal from '../_components/SimpleModal.vue';
-import BoardCard from '../_components/BoardCard.vue';
+import modal from '../../components/SimpleModal.vue';
+import BoardCard from '../components/BoardCard.vue';
 import { useStore } from 'vuex';
 import { useMutation } from '@urql/vue';
 import { ActionTypes, Board, IBoard } from '../../store/modules/kanban';

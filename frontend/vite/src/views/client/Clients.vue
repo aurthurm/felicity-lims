@@ -155,7 +155,7 @@ import { useMutation, useQuery } from '@urql/vue';
 import { mapGetters, useStore } from 'vuex';
 import { defineComponent, ref, reactive, computed } from 'vue';
 
-import modal from '../_components/SimpleModal.vue';
+import modal from '../../components/SimpleModal.vue';
 import { Client } from '../../store/modules/clients';
 import {  GET_ALL_CLIENTS, GET_CLIENT_CONTACTS_BY_CLIENT_UID } from '../../graphql/clients.queries';
 import { ADD_CLIENT, EDIT_CLIENT } from '../../graphql/clients.mutations';

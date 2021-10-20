@@ -15,7 +15,7 @@
   </div>
 </template>
 <script>
-import Badge from "./Badge.vue";
+import Badge from "../../components/Badge.vue";
 export default {
   name: "task-card",
   components: {

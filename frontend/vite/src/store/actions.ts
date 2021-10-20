@@ -12,6 +12,7 @@ import {
 export enum ActionTypes {
   RESET_STATE = 'RESET_STATE',
   PERSIST_AUTH_DATA = 'PERSIST_AUTH_DATA',
+  LOG_OUT = 'LOG_OUT',
 
   FETCH_GROUPS_AND_PERMISSIONS = 'FETCH_GROUPS_AND_PERMISSIONS',
   FETCH_USERS = 'FETCH_USERS',
@@ -44,6 +45,13 @@ export const actions = <ActionTree<IState, RootState>>{
     localStorage.setItem('fuser', authData.user?.firstName + " " + authData.user?.lastName); // Felicity User
     localStorage.setItem('fuid', authData.user?.uid); // Felicity UserUid
     await commit(MutationTypes.PERSIST_AUTH_DATA, authData);
+  },
+
+  async [ActionTypes.LOG_OUT]({ commit }) {
+    localStorage.removeItem("fwt");
+    localStorage.removeItem("fuser");
+    localStorage.removeItem("fuid");
+    commit(MutationTypes.RESET_STATE);
   },
 
   // Groups and permissions

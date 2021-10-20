@@ -50,9 +50,9 @@
 </style>
 
 <script lang="ts">
-import tabSamples from '../../_components/AnalyisRequestListing.vue';
+import tabSamples from '../../components/AnalyisRequestListing.vue';
 import tabCases from '../comps/CaseTable.vue';
-import tabLogs from '../../_components/AuditLog.vue';
+import tabLogs from '../../components/AuditLog.vue';
 
 import { defineComponent, ref, toRefs, computed, PropType } from 'vue';
 import { useStore } from 'vuex';

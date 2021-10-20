@@ -46,9 +46,7 @@ class FelicityAuthBackend(AuthenticationBackend):
                 # TODO: You'd want to verify the username and password here if needed
             elif scheme.lower() == 'bearer':
                 """"get is active user from token"""
-                # logger.info(f"credentials bearer: {credentials}")
                 user = await get_current_active_user(credentials)
-                # logger.info(f"User from token: {user.auth.user_name}")
                 username, _, password = user.auth.user_name, None, None
             else:
                 raise AuthenticationError(f'UnKnown Authentication Backend: {scheme.lower()}')

@@ -1,6 +1,6 @@
 import { defineComponent, ref, reactive, computed } from 'vue';
 import { useMutation } from '@urql/vue';
-import modal from '../../_components/SimpleModal.vue';
+import modal from '../../../components/SimpleModal.vue';
 import { 
   Country, 
   Province, 

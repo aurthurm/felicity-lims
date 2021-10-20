@@ -10,7 +10,7 @@ import PatientsView from '../views/patient/index.vue';
 import PatientsCompact from '../views/patient/PatientsCompact.vue';
 import ClientsView from '../views/client/index.vue';
 import SamplesView from '../views/sample/index.vue';
-import SamplesListing from '../views/_components/SampleListing.vue';
+import SamplesListing from '../views/components/SampleListing.vue';
 import QualityControlView from '../views/qcontrol/index.vue';
 import QualityControlListing from '../views/qcontrol/Listing.vue';
 import QCSetView from '../views/qcontrol/_id/index.vue';
@@ -278,17 +278,18 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
+
+  if(to.path === '/') {
+    next({ path: '/dashboard' });
+    return;
+  }
+
   if (to.matched.some((record) => record.meta.requiresAuth)) {
     let token = localStorage.getItem('fwt');
     if (!isTokenValid(token)) {
       next({ path: '/auth' });
-      // return;
     } else {
-      if(to.path === '/') {
-        next({ path: '/dashboard' });
-      }else{
-        next();
-      }
+      next();
     }
   } else {
     next();

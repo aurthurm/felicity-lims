@@ -84,12 +84,7 @@ export default defineComponent({
   setup() {
     const router = useRouter();
     const store = useStore();
-    // No hanging fruits
-    store.dispatch(ActionTypes.RESET_STATE);
-    localStorage.removeItem("fwt");
-    localStorage.removeItem("fuser");
-    localStorage.removeItem("fuid");
-    //
+    store.dispatch(ActionTypes.LOG_OUT);
     let userAuth = reactive({ data: null, error: null });
     let form = reactive({ username: null, password: null });
     const { executeMutation: authenticateUser } = useMutation(AUTHENTICATE_USER);

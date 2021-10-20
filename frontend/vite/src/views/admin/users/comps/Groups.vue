@@ -56,7 +56,7 @@ import { useRouter } from 'vue-router';
 import { useStore } from 'vuex';
 import { useMutation } from '@urql/vue';
 
-import accordion from '../../../_components/Accordion.vue';
+import accordion from '../../../../components/Accordion.vue';
 import { ActionTypes } from '../../../../store/actions';
 import { UPDATE_GROUP_PERMS  } from '../../../../graphql/_mutations';
 export default defineComponent({

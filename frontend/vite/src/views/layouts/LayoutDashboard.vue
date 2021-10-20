@@ -18,9 +18,9 @@
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
-import SideBar from '../_components/nav/NavigationAside.vue';
-import HeaderMain from '../_components/nav/NavigationMain.vue';
-import FooterMain from '../_components/FooterMain.vue';
+import SideBar from '../components/nav/NavigationAside.vue';
+import HeaderMain from '../components/nav/NavigationMain.vue';
+import FooterMain from '../components/FooterMain.vue';
 export default defineComponent({
   components: {
     HeaderMain,

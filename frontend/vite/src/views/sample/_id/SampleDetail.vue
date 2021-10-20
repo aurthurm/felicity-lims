@@ -35,7 +35,7 @@
 
 <script lang="ts">
 import tabResults from './Results.vue';
-import tabLogs from '../../_components/AuditLog.vue';
+import tabLogs from '../../components/AuditLog.vue';
 
 import { defineComponent, ref, toRefs, computed, PropType } from 'vue';
 import {useStore } from 'vuex';

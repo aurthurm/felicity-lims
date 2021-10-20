@@ -30,7 +30,7 @@ export class Alert implements IAlert {
 export interface INotification {
   ticks?: number;
   type?: string;
-  message?: string;
+  data?: any;
   icon?: string;
   toast?: boolean;
   position?: string;
@@ -44,6 +44,7 @@ export class Notification implements INotification {
     public ticks?: number,
     public type?: string,
     public message?: string,
+    public object?: string,
     public icon?: string,
     public toast?: boolean,
     public position?: string,
@@ -56,13 +57,13 @@ export class Notification implements INotification {
 // state contract
 export interface IState {
   alert: IAlert;
-  notifications: INotification[];
+  notification: INotification;
 }
 
 export const initialState = () => {
   return <IState>{
     alert: new Alert,
-    notifications: [],
+    notification: new Notification,
   };
 };
 
@@ -76,6 +77,12 @@ export enum MutationTypes {
   ALERT_WARING = 'ALERT_WARING',
   ALERT_INFO = 'ALERT_INFO',
   ALERT_QUESTION = 'ALERT_QUESTION',
+
+  NOTIFY_SUCCESS = 'NOTIFY_SUCCESS',
+  NOTIFY_ERROR = 'NOTIFY_ERROR',
+  NOTIFY_WARING = 'NOTIFY_WARING',
+  NOTIFY_INFO = 'NOTIFY_INFO',
+  NOTIFY_QUESTION = 'NOTIFY_QUESTION',
 }
 
 export enum ActionTypes {
@@ -86,6 +93,12 @@ export enum ActionTypes {
   ALERT_WARING = 'ALERT_WARING',
   ALERT_INFO = 'ALERT_INFO',
   ALERT_QUESTION = 'ALERT_QUESTION',
+
+  NOTIFY_SUCCESS = 'NOTIFY_SUCCESS',
+  NOTIFY_ERROR = 'NOTIFY_ERROR',
+  NOTIFY_WARING = 'NOTIFY_WARING',
+  NOTIFY_INFO = 'NOTIFY_INFO',
+  NOTIFY_QUESTION = 'NOTIFY_QUESTION',
 }
 
 // Getters
@@ -99,6 +112,7 @@ export const mutations = <MutationTree<IState>>{
     Object.assign(state, initialState());
   },
 
+  // aLERTS
   [MutationTypes.ALERT_SUCCESS](state: IState, message: string): void {
     state.alert.message = message;
     state.alert.icon = "success";
@@ -128,10 +142,36 @@ export const mutations = <MutationTree<IState>>{
     state.alert.icon = "question";
     state.alert.ticks = new Date().getTime();
   },
+
+  //NOTOFICATIONS 
+  [MutationTypes.NOTIFY_SUCCESS](state: IState, payload: any): void {
+    state.notification.data = payload;
+    state.notification.icon = "success";
+    state.notification.ticks = new Date().getTime();
+  },
+
+  [MutationTypes.NOTIFY_ERROR](state: IState, payload: any): void {
+    state.notification.data = payload;
+    state.notification.icon = "error";
+    state.notification.ticks = new Date().getTime();
+  },
+
+  [MutationTypes.NOTIFY_WARING](state: IState, payload: any): void {
+    state.notification.data = payload;
+    state.notification.icon = "warning";
+    state.notification.ticks = new Date().getTime();
+  },
+
+  [MutationTypes.NOTIFY_INFO](state: IState, payload: any): void {
+    state.notification.data = payload;
+    state.notification.icon = "info";
+    state.notification.ticks = new Date().getTime();
+  },
 }
 
 // Actions
 export const actions = <ActionTree<IState, RootState>>{
+  //Alerts
   async [ActionTypes.RESET_STATE]({ commit }) {
     commit(MutationTypes.RESET_STATE);
   },
@@ -154,6 +194,23 @@ export const actions = <ActionTree<IState, RootState>>{
 
   async [ActionTypes.ALERT_QUESTION]({ commit }, message ){
     commit(MutationTypes.ALERT_QUESTION, message);
+  },
+
+  //Notification
+  async [ActionTypes.NOTIFY_SUCCESS]({ commit }, payload ){
+    commit(MutationTypes.NOTIFY_SUCCESS, payload);
+  },
+
+  async [ActionTypes.NOTIFY_ERROR]({ commit }, payload ){
+    commit(MutationTypes.NOTIFY_ERROR, payload);
+  },
+
+  async [ActionTypes.NOTIFY_WARING]({ commit }, payload ){
+    commit(MutationTypes.NOTIFY_WARING, payload);
+  },
+
+  async [ActionTypes.NOTIFY_INFO]({ commit }, payload ){
+    commit(MutationTypes.NOTIFY_INFO, payload);
   },
 
 };

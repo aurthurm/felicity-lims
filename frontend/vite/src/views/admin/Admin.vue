@@ -19,7 +19,7 @@
 <script>
 import { defineComponent, ref } from 'vue';
 import { useRouter } from 'vue-router';
-import ItemSetting from '../_components/AdminBreadCrumb.vue';
+import ItemSetting from '../components/AdminBreadCrumb.vue';
 export default defineComponent({
   name: "admin",
   components: {

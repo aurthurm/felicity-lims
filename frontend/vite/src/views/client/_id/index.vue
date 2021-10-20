@@ -147,7 +147,7 @@
 </style>
 
 <script scope="ts">
-import modal from '../../_components/SimpleModal.vue';
+import modal from '../../../components/SimpleModal.vue';
 
 import { useMutation, useQuery } from '@urql/vue';
 import { mapGetters, useStore } from 'vuex';

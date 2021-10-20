@@ -160,9 +160,6 @@
         <div class="grid grid-cols-2 gap-x-4 mb-4">
           <label class="block col-span-2 mb-2">
             <span class="text-gray-700">Patient</span>
-     
-            <AutoComplete :suggestions="patients" :selection="patientQuery" />    
-
           </label>
           <label class="block col-span-2 mb-2">
             <span class="text-gray-700">Client Request ID</span>
@@ -272,8 +269,7 @@
 </template>
 
 <script lang="ts">
-import modal from './SimpleModal.vue';
-import AutoComplete from '../sample/comps/AddSample.vue';
+import modal from '../../components/SimpleModal.vue';
 
 import { useMutation } from '@urql/vue';
 import { defineComponent, ref, reactive, computed, watch } from 'vue';
@@ -287,7 +283,6 @@ export default defineComponent({
   name: "Samples",
   components: {
       modal,
-      AutoComplete
   },
   setup() {    
     const store = useStore();
