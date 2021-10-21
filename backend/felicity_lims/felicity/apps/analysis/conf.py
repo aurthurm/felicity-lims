@@ -17,6 +17,7 @@ class States:
         PENDING = 'pending'  # analytes that are pending results
         RESULTED = 'resulted'  # analytes that have results but not approved yet. 'to_be_verified' / 'un-authorised'
         RETRACTED = 'retracted'  # analytes with erroneous results for correction
+        CANCELLED = 'cancelled'  # analytes that are no longer required <in other words deleted>
         VERIFIED = 'verified'  # analytes that are authorised/approved
 
     def __init__(self):

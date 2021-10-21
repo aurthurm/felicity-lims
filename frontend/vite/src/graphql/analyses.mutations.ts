@@ -247,6 +247,24 @@ export const SUBMIT_ANALYSIS_RESULTS = gql`
   }
 `; 
 
+export const CANCEL_ANALYSIS_RESULTS = gql`
+  mutation CancelAnalysisResults ($analyses: [Int!]!) {
+    cancelAnalysisResults(analyses: $analyses){
+        uid
+        status
+    }
+  }
+`; 
+
+export const REINSTATE_ANALYSIS_RESULTS = gql`
+  mutation ReInstateAnalysisResults ($analyses: [Int!]!) {
+    reInstateAnalysisResults(analyses: $analyses){
+        uid
+        status
+    }
+  }
+`;
+
 export const VERIFY_ANALYSIS_RESULTS = gql`
   mutation VerifyAnalysisResults ($analyses: [Int!]!) {
     verifyAnalysisResults(analyses: $analyses){

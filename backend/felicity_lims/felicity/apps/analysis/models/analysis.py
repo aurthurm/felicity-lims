@@ -226,6 +226,9 @@ class Sample(Auditable, BaseMPTT):
     date_verified = Column(DateTime, nullable=True)
     invalidated_by_uid = Column(Integer, ForeignKey('user.uid'), nullable=True)
     invalidated_by = relationship(User, foreign_keys=[invalidated_by_uid], backref="invalidated_samples", lazy='selectin')
+    cancelled_by_uid = Column(Integer, ForeignKey('user.uid'), nullable=True)
+    cancelled_by = relationship("User", foreign_keys=[cancelled_by_uid], lazy="selectin")
+    date_cancelled = Column(DateTime, nullable=True)
     date_invalidated = Column(DateTime, nullable=True)
     rejection_reasons = relationship(RejectionReason, secondary=rrslink, backref="samples", lazy='selectin')
     internal_use = Column(Boolean(), default=False)
@@ -247,27 +250,53 @@ class Sample(Auditable, BaseMPTT):
             count = 0
         return f"{prefix}-{sequencer(count + 1, 5)}"
 
-    async def cancel(self):
-        self.status = states.sample.CANCELLED
-        await self.save()
+    async def cancel(self, cancelled_by):
+        if self.status in [states.sample.RECEIVED, states.sample.DUE]:
+            for result in self.analysis_results:
+                await result.cancel(cancelled_by=cancelled_by)
+            self.status = states.sample.CANCELLED
+            self.cancelled_by_uid = cancelled_by.uid
+            self.date_cancelled = datetime.now()
+            self.updated_by_uid = cancelled_by.uid # noqa
+            return await self.save()
+        return None
+
+    async def re_instate(self, re_instated_by):
+        sample = None
+        if self.status in [states.sample.CANCELLED]:
+            # A better way is to go to audit log and retrieve previous state especially for  DUE
+            # rather than transitioning all to RECEIVED
+            self.status = states.sample.RECEIVED
+            self.cancelled_by_uid = None
+            self.date_cancelled = None
+            self.updated_by_uid = re_instated_by.uid # noqa
+            sample = await self.save()
+            for result in self.analysis_results:
+                await result.re_instate(re_instated_by=re_instated_by)
+            return sample
+        return None
 
     async def submit(self, submitted_by):
         self.status = states.sample.TO_BE_VERIFIED
+        self.submitted_by_uid = submitted_by.uid
+        self.date_submitted = datetime.now()
         self.updated_by_uid = submitted_by.uid  # noqa
-        await self.save()
+        return await self.save()
 
     async def assign(self):
         self.assigned = True
-        await self.save()
+        return await self.save()
 
     async def un_assign(self):
         self.assigned = False
-        await self.save()
+        return await self.save()
 
     async def verify(self, verified_by):
         self.status = states.sample.VERIFIED
+        self.verified_by_uid = verified_by.uid
+        self.date_verified = datetime.now()
         self.updated_by_uid = verified_by.uid  # noqa
-        await self.save()
+        return await self.save()
 
         # DO REFLEX HERE
 

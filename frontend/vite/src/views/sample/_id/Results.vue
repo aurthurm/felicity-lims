@@ -105,6 +105,14 @@
     <section class="my-4">
       <button 
       v-if="can_submit"
+      @click.prevent="cancelResults()" 
+      class="px-2 py-1 mr-2 border-blue-500 border text-blue-500 rounded transition duration-300 hover:bg-blue-700 hover:text-white focus:outline-none">Cancel</button>
+      <button 
+      v-if="can_reinstate"
+      @click.prevent="reInstateResults()" 
+      class="px-2 py-1 mr-2 border-blue-500 border text-blue-500 rounded transition duration-300 hover:bg-blue-700 hover:text-white focus:outline-none">Re-Instate</button>
+      <button 
+      v-if="can_submit"
       @click.prevent="submitResults()" 
       class="px-2 py-1 mr-2 border-blue-500 border text-blue-500 rounded transition duration-300 hover:bg-blue-700 hover:text-white focus:outline-none">Submit</button>
       <button 
@@ -126,7 +134,7 @@
 <script lang="ts">
 import tabSamples from '../comps/SampleTable.vue';
 import tabCases from '../comps/CaseTable.vue';
-import tabLogs from '../../components/timeline/AuditLog.vue';
+import tabLogs from '../../../components/timeline/AuditLog.vue';
 
 import Swal from 'sweetalert2';
 import { defineComponent, ref, toRefs, computed, PropType, watch } from 'vue';
@@ -137,7 +145,13 @@ import { useMutation } from '@urql/vue';
 import { isNullOrWs } from '../../../utils';
 import { ActionTypes, ISampleRequest, IAnalysisResult } from '../../../store/modules/samples';
 import { GET_ANALYSIS_RESULTS_BY_SAMPLE_UID } from '../../../graphql/analyses.queries';
-import { SUBMIT_ANALYSIS_RESULTS, VERIFY_ANALYSIS_RESULTS, RETEST_ANALYSIS_RESULTS, RETRACT_ANALYSIS_RESULTS } from '../../../graphql/analyses.mutations';
+import { 
+  CANCEL_ANALYSIS_RESULTS,
+  REINSTATE_ANALYSIS_RESULTS,
+  SUBMIT_ANALYSIS_RESULTS, 
+  VERIFY_ANALYSIS_RESULTS, 
+  RETEST_ANALYSIS_RESULTS, 
+  RETRACT_ANALYSIS_RESULTS } from '../../../graphql/analyses.mutations';
 export default defineComponent({
   name: 'analyses-results',
   setup(props) {
@@ -148,6 +162,7 @@ export default defineComponent({
     let can_retract = ref(false);
     let can_verify = ref(false);
     let can_retest = ref(false);
+    let can_reinstate = ref(false);
 
     let allChecked = ref(false);
 
@@ -155,6 +170,8 @@ export default defineComponent({
     const analysisResults: IAnalysisResult = computed(() => store.getters.getAnalysisResults)
     const sample:ISampleRequest = computed(() => store.getters.getSample)
 
+    const { executeMutation: cancelAnalysisResults } = useMutation(CANCEL_ANALYSIS_RESULTS);
+    const { executeMutation: reInstateAnalysisResults } = useMutation(REINSTATE_ANALYSIS_RESULTS);
     const { executeMutation: submitAnalysisResults } = useMutation(SUBMIT_ANALYSIS_RESULTS);
     const { executeMutation: verifyAnalysisResults } = useMutation(VERIFY_ANALYSIS_RESULTS);  
     const { executeMutation: retestAnalysisResults } = useMutation(RETEST_ANALYSIS_RESULTS); 
@@ -170,7 +187,19 @@ export default defineComponent({
       if(result.status !== "pending") return;
       result.result = result.editResult;
       submitAnalysesResults([{ uid: result.uid , result: result.result }])
-    }    
+    }       
+    
+    function cancelAnalysesResults(analyses): void {
+      cancelAnalysisResults({ analyses }).then((result) => {
+      //  store.dispatch(ResultActionTypes.UPDATE_ANALYSIS_RESULTS, result);
+      });
+    }     
+    
+    function reInstateAnalysesResults(analyses): void {
+      reInstateAnalysisResults({ analyses }).then((result) => {
+      //  store.dispatch(ResultActionTypes.UPDATE_ANALYSIS_RESULTS, result);
+      });
+    }  
     
     function verifyAnalysesResults(analyses): void {
       verifyAnalysisResults({ analyses }).then((result) => {
@@ -244,7 +273,13 @@ export default defineComponent({
 
     function isEditable(result): Boolean {
       if(result?.editable || isNullOrWs(result?.result)) {
-        editResult(result)
+        if(['cancelled',"verified","retracted","to_be_verified"].includes(result.status)){
+          result.editable = false
+          return false
+        }else{
+          editResult(result)
+          return true
+        }
         return true
       };
       return false;
@@ -300,9 +335,16 @@ export default defineComponent({
       can_retract.value = false;
       can_verify.value = false;
       can_retest.value = false;
+      can_reinstate.value = false;
+
 
       const checked = getResultsChecked();
       if(checked.length === 0) return;
+
+      // can reinstate
+      if(checked.every(result => result.status === 'cancelled')){
+        can_reinstate.value = true;
+      }
 
       // can submit
       if(checked.every(result => result.status === 'pending')){
@@ -316,6 +358,62 @@ export default defineComponent({
         can_retest.value = true;
       }
 
+    }
+
+    const cancelResults = async () => {
+      try {
+        Swal.fire({
+          title: 'Are you sure?',
+          text: "You want to cancel these analytes",
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Yes, cancel now!',
+          cancelButtonText: 'No, do not cancel!',
+        }).then((result) => {
+          if (result.isConfirmed) {
+            cancelAnalysesResults(getResultsUids());
+
+            Swal.fire(
+              'Its Happening!',
+              'Your results have been cancelled.',
+              'success'
+            ).then(_ => location.reload())
+
+          }
+        })
+      } catch (error) {
+        logger.log(error)
+      }
+    }
+
+    const reInstateResults = async () => {
+      try {
+        Swal.fire({
+          title: 'Are you sure?',
+          text: "You want to reinstate analystes",
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Yes, reinstate now!',
+          cancelButtonText: 'No, do not reinstate!',
+        }).then((result) => {
+          if (result.isConfirmed) {
+            reInstateAnalysesResults(getResultsUids());
+
+            Swal.fire(
+              'Its Happening!',
+              'Your analystes have been reinstated.',
+              'success'
+            ).then(_ => location.reload())
+
+          }
+        })
+      } catch (error) {
+        logger.log(error)
+      }
     }
 
     const submitResults = async () => {
@@ -443,6 +541,8 @@ export default defineComponent({
       allChecked,
       checkCheck,
       check,
+      cancelResults,
+      reInstateResults,
       submitResults,
       verifyResults,
       retractResults,
@@ -451,6 +551,7 @@ export default defineComponent({
       can_retract,
       can_verify,
       can_retest,
+      can_reinstate,
     }
   },
 });

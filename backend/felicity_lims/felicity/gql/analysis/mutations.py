@@ -478,6 +478,57 @@ class AnalysisMutations:
         return sample
 
     @strawberry.mutation
+    async def cancel_sample(self, info, samples: List[int]) -> List[r_types.SamplesWithResults]:
+
+        inspector = inspect.getargvalues(inspect.currentframe())
+        passed_args = get_passed_args(inspector)
+
+        is_authenticated, felicity_user = await auth_from_info(info)
+        verify_user_auth(is_authenticated, felicity_user, "Only Authenticated user can cancel samples")
+
+        return_samples = []
+
+        if len(samples) == 0:
+            raise Exception(f"No Samples to cancel are provided!")
+
+        for _sa_uid in samples:
+            sample: analysis_models.Sample = await analysis_models.Sample.get(uid=_sa_uid)
+            if not sample:
+                raise Exception(f"Sample with uid {_sa_uid} not found")
+
+            sample = await sample.cancel(cancelled_by=felicity_user)
+            if sample:
+                return_samples.append(sample)
+
+        return return_samples
+
+    @strawberry.mutation
+    async def re_instate_sample(self, info, samples: List[int]) -> List[r_types.SamplesWithResults]:
+
+        inspector = inspect.getargvalues(inspect.currentframe())
+        passed_args = get_passed_args(inspector)
+
+        is_authenticated, felicity_user = await auth_from_info(info)
+        verify_user_auth(is_authenticated, felicity_user, "Only Authenticated user can re instate cancelled samples")
+
+        return_samples = []
+
+        if len(samples) == 0:
+            raise Exception(f"No Samples to cancel are provided!")
+
+        for _sa_uid in samples:
+            sample: analysis_models.Sample = await analysis_models.Sample.get(uid=_sa_uid)
+            if not sample:
+                raise Exception(f"Sample with uid {_sa_uid} not found")
+
+            status = getattr(sample, 'status', None)
+            if status in [states.sample.CANCELLED]:
+                sample = await sample.re_instate(re_instated_by=felicity_user)
+                return_samples.append(sample)
+
+        return return_samples
+
+    @strawberry.mutation
     async def submit_analysis_results(self, info, analysis_results: List[ARResultInputType]) -> List[r_types.AnalysisResultType]:
 
         inspector = inspect.getargvalues(inspect.currentframe())
@@ -657,6 +708,57 @@ class AnalysisMutations:
                 return_results.append(retest)
 
             return_results.append(a_result)
+        return return_results
+
+    @strawberry.mutation
+    async def cancel_analysis_results(self, info, analyses: List[int]) -> List[r_types.AnalysisResultType]:
+
+        inspector = inspect.getargvalues(inspect.currentframe())
+        passed_args = get_passed_args(inspector)
+
+        is_authenticated, felicity_user = await auth_from_info(info)
+        verify_user_auth(is_authenticated, felicity_user, "Only Authenticated user can cancel analysis results")
+
+        return_results = []
+
+        if len(analyses) == 0:
+            raise Exception(f"No analyses to Retest are provided!")
+
+        for _ar_uid in analyses:
+            a_result: result_models.AnalysisResult = await result_models.AnalysisResult.get(uid=_ar_uid)
+            if not a_result:
+                raise Exception(f"AnalysisResult with uid {_ar_uid} not found")
+
+            a_result = await a_result.cancel(cancelled_by=felicity_user)
+            if a_result:
+                return_results.append(a_result)
+
+        return return_results
+
+    @strawberry.mutation
+    async def re_instate_analysis_results(self, info, analyses: List[int]) -> List[r_types.AnalysisResultType]:
+
+        inspector = inspect.getargvalues(inspect.currentframe())
+        passed_args = get_passed_args(inspector)
+
+        is_authenticated, felicity_user = await auth_from_info(info)
+        verify_user_auth(is_authenticated, felicity_user, "Only Authenticated user can re instate cancelled analysis "
+                                                          "results")
+
+        return_results = []
+
+        if len(analyses) == 0:
+            raise Exception(f"No analyses to Reinstate are provided!")
+
+        for _ar_uid in analyses:
+            a_result: result_models.AnalysisResult = await result_models.AnalysisResult.get(uid=_ar_uid)
+            if not a_result:
+                raise Exception(f"AnalysisResult with uid {_ar_uid} not found")
+
+            a_result = await a_result.re_instate(re_instated_by=felicity_user)
+            if a_result:
+                return_results.append(a_result)
+
         return return_results
 
     @strawberry.mutation

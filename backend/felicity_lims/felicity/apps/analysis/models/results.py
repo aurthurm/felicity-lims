@@ -44,6 +44,9 @@ class AnalysisResult(Auditable, BaseMPTT):
     invalidated_by_uid = Column(Integer, ForeignKey('user.uid'), nullable=True)
     invalidated_by = relationship("User", foreign_keys=[invalidated_by_uid], lazy="selectin")
     date_invalidated = Column(DateTime, nullable=True)
+    cancelled_by_uid = Column(Integer, ForeignKey('user.uid'), nullable=True)
+    cancelled_by = relationship("User", foreign_keys=[cancelled_by_uid], lazy="selectin")
+    date_cancelled = Column(DateTime, nullable=True)
     retest = Column(Boolean(), default=False)
     reportable = Column(Boolean(), default=True)  # for retests or reflex
     status = Column(String, nullable=False)
@@ -52,35 +55,56 @@ class AnalysisResult(Auditable, BaseMPTT):
         self.worksheet_uid = ws_uid
         self.assigned = True
         self.worksheet_position = position
-        await self.save()
+        return await self.save()
 
     async def un_assign(self):
         self.worksheet_uid = None
         self.assigned = False
         self.worksheet_position = None
-        await self.save()
+        return await self.save()
 
     async def verify(self, verifier):
         self.status = conf.states.result.VERIFIED
         self.verified_by_uid = verifier.uid
         self.date_verified = datetime.now()
         self.updated_by_uid = verifier.uid # noqa
-        await self.save()
+        return await self.save()
 
     async def retract(self, retracted_by):
         self.status = conf.states.result.RETRACTED
         self.verified_by_uid = retracted_by.uid
         self.date_verified = datetime.now()
         self.updated_by_uid = retracted_by.uid # noqa
-        await self.save()
+        return await self.save()
+
+    async def cancel(self, cancelled_by):
+        if self.status in [conf.states.result.PENDING]:
+            self.status = conf.states.result.CANCELLED
+            self.cancelled_by_uid = cancelled_by.uid
+            self.date_cancelled = datetime.now()
+            self.updated_by_uid = cancelled_by.uid # noqa
+            return await self.save()
+        return None
+
+    async def re_instate(self, re_instated_by):
+        if self.sample.status in [conf.states.sample.CANCELLED]:
+            raise Exception("You cannot reinstate analytes of cancelled sample. Reinstate the sample instead")
+
+        if self.status in [conf.states.result.CANCELLED]:
+            self.status = conf.states.result.PENDING
+            self.cancelled_by_uid = None
+            self.date_cancelled = None
+            self.updated_by_uid = re_instated_by.uid # noqa
+            return await self.save()
+        return None
 
     async def change_status(self, status):
         self.status = status
-        await self.save()
+        return await self.save()
 
     async def hide_report(self):
         self.reportable = False
-        await self.save()
+        return await self.save()
 
     @classmethod
     async def create(cls, obj_in: schemas.AnalysisResultCreate) -> schemas.AnalysisResult:
