@@ -56,6 +56,11 @@ export const startsWith = (str: any, word: any) => {
     return str.lastIndexOf(word, 0) === 0;
 }
 
+export function ifZeroEmpty(val: any): any {
+  if(val === undefined) return "";
+  return val === 0 ? '' : val;
+}
+
 export default {
     isNullOrWs,
     parseUrlParams,
@@ -63,18 +68,10 @@ export default {
 };
 
 
-
-let data = {
-    'id':'123',
-    'employee_name': 'John',
-    'employee_type': 'new'  
- }
- 
-
 export const snakeToCamel = (val: any) => {
     const convert = (s: any) => s.replace(/(_\w)/g, (k: any) => k[1].toUpperCase());
     if (typeof val === 'object') {
-        data = Object.entries(val).reduce((x: any,[k,v]) => (x[convert(k)]=v) && x, {});
+        const data = Object.entries(val).reduce((x: any,[k,v]) => (x[convert(k)]=v) && x, {});
         return data;
     }
     if (typeof val === 'string') {

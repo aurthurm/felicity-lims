@@ -108,6 +108,8 @@ export interface IState {
   workSheetTemplates: IWorkSheetTemplate[];
   workSheets: IWorkSheet[];
   workSheet: IWorkSheet | null;
+  workSheetCount: number;
+  workSheetPageInfo: any;
 }
 
 export const initialState = () => {
@@ -115,6 +117,8 @@ export const initialState = () => {
     workSheetTemplates: [],
     workSheets: [],
     workSheet: null,
+    workSheetCount: 0,
+    workSheetPageInfo: null,
   };
 };
 
@@ -162,6 +166,8 @@ export const getters = <GetterTree<IState, RootState>>{
   getWorkSheets: (state) => state.workSheets,
   getWorkSheet: (state) => state.workSheet,
   getWorkSheetByUid: (state) => (uid: number) => state.workSheets?.find(ws => ws.uid === uid),
+  getWorkSheetCount: (state) => state.workSheetCount,
+  getWorkSheetPageInfo: (state) => state.workSheetPageInfo,
 };
 
 // Mutations
@@ -204,7 +210,16 @@ export const mutations = <MutationTree<IState>>{
 
   // WorkSheetS
   [MutationTypes.SET_WORKSHEETS](state: IState, wst: any): void {
-    state.workSheets = wst?.items;
+    const ws = wst?.worksheets?.items;
+    if(wst.fromFilter){
+      state.workSheets = [];
+      state.workSheets = ws;
+    } else {
+      const data = state.workSheets
+      state.workSheets = data.concat(ws);
+    }
+    state.workSheetCount = wst.worksheets?.totalCount;
+    state.workSheetPageInfo = wst.worksheets?.pageInfo;
   },
 
   [MutationTypes.SET_WORKSHEET](state: IState, wst: any): void {
@@ -242,10 +257,19 @@ export const actions = <ActionTree<IState, RootState>>{
   },
 
   // WorkSheetS
-  async [ActionTypes.FETCH_WORKSHEETS]({ commit }){
-    await useQuery({ query: GET_ALL_WORKSHEETS })
-          .then(payload => commit(MutationTypes.SET_WORKSHEETS, payload.data.value.worksheetAll));
+  async [ActionTypes.FETCH_WORKSHEETS]({ commit }, params){
+    await urqlClient
+      .query( GET_ALL_WORKSHEETS, { first: params.first, after: params.after, status: params.status, text: params.text})
+      .toPromise()
+      .then(result => {
+        commit(MutationTypes.SET_WORKSHEETS, {
+          worksheets: result.data.worksheetAll,
+          fromFilter: params.filterAction,
+        });
+      })
   },
+
+
 
   async [ActionTypes.FETCH_WORKSHEET_BY_UID]({ commit }, uid){
     await urqlClient

@@ -1,6 +1,6 @@
 <template>
   <div class="">
-        <div class="my-4 flex sm:flex-row flex-col">
+    <div class="my-4 flex sm:flex-row flex-col">
         <div class="flex flex-row mb-1 sm:mb-0">
             <div class="relative">
                 <select v-model="filterStatus"
@@ -278,6 +278,7 @@ import { useStore } from 'vuex';
 import { ActionTypes as SampleActionTypes } from '../../store/modules/samples';
 import { ActionTypes, AnalysisRequest, IAnalysisRequest, ISample, Sample } from '../../store/modules/analyses';
 import { ADD_ANALYSIS_SERVICE, EDIT_ANALYSIS_SERVICE  } from '../../graphql/analyses.mutations';
+import { ifZeroEmpty } from '../../utils'
 
 export default defineComponent({
   name: "Samples",
@@ -292,7 +293,7 @@ export default defineComponent({
     let formTitle = ref('');
     let form = reactive({ ...(new AnalysisRequest()) });
     const formAction = ref(true);
-    let pageInfo = computed(() => store.getters.getPageInfo)
+    let pageInfo = computed(() => store.getters.getSamplePageInfo)
     let filterText = ref("");
     let filterStatus = ref("");
 
@@ -336,11 +337,6 @@ export default defineComponent({
     //     store.dispatch(ActionTypes.UPDATE_ANALYSES_CATEGORY, result);
     //   });
     // }
-
-    function ifZeroEmpty(val: any): any {
-      if(val === undefined) return "";
-      return val === 0 ? '' : val;
-    }
 
     function profileAnalysesText(profiles: IProfile[], analyses: IAnalysis[]): string {
         let names = [];

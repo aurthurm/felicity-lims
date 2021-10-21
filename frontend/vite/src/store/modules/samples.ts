@@ -97,7 +97,7 @@ export interface IState {
   sampleTypes: ISampleType[];
   samples: ISampleRequest[];
   sampleCount: number;
-  pageInfo: any;
+  samplePageInfo: any;
   sample: ISampleRequest | null;
   analysisRequests: IAnalysisRequest[];
   analysisResults: IAnalysisResult[];
@@ -110,7 +110,7 @@ export const initialState = () => {
     sampleTypes: [],
     samples: [],
     sampleCount: 0,
-    pageInfo: null,
+    samplePageInfo: null,
     sample: null,
     analysisRequests: [], // for patient detail
     analysisResults: [],
@@ -188,7 +188,7 @@ export const getters = <GetterTree<IState, RootState>>{
   getSampleTypeByName: (state) => (name: string) => state.sampleTypes?.find(st => st.name?.toString().toLowerCase().trim() === name.toString().toLowerCase().trim()),
   getSamples: (state) => state.samples,
   getSampleCount: (state) => state.sampleCount,
-  getPageInfo: (state) => state.pageInfo,
+  getSamplePageInfo: (state) => state.samplePageInfo,
   getSample: (state) => state.sample,
   getAnalysisRequests: (state) => state.analysisRequests,
   getAnalysisResults: (state) => state.analysisResults,
@@ -234,7 +234,7 @@ export const mutations = <MutationTree<IState>>{
     }
 
     state.sampleCount = payload.samples?.totalCount;
-    state.pageInfo = payload.samples?.pageInfo;
+    state.samplePageInfo = payload.samples?.pageInfo;
   },
 
   [MutationTypes.SET_SAMPLE](state: IState, payload: any): void {

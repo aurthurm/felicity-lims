@@ -22,10 +22,12 @@ class WorkSheetQuery:
     @strawberry.field
     async def worksheet_all(self, info, page_size: Optional[int] = None,
                             after_cursor: Optional[str] = None, before_cursor: Optional[str] = None,
-                            text: Optional[str] = None, sort_by: Optional[List[str]] = None) -> WorkSheetCursorPage:
-        filters = {}
+                            text: Optional[str] = None, status: Optional[str] = None,
+                            sort_by: Optional[List[str]] = None) -> WorkSheetCursorPage:
 
-        _or_ = dict()
+        filters = []
+
+        _or_text_ = {}
         if has_value_or_is_truthy(text):
             arg_list = [
                 'state__ilike',
@@ -33,13 +35,17 @@ class WorkSheetQuery:
                 'analyst___first_name__ilike',
                 'analyst___last_name__ilike',
                 'analyst___auth___user_name__ilike',
-                'instrument___name__ilike',
-                'sample_type___name__ilike',
             ]
             for _arg in arg_list:
-                _or_[_arg] = f"%{text}%"
+                _or_text_[_arg] = f"%{text}%"
 
-            filters = {sa.or_: _or_}
+            text_filters = {sa.or_: _or_text_}
+            filters.append(text_filters)
+
+        if status:
+            filters.append({'state__exact': status})
+
+        # filters.append({'internal_use__ne': True})
 
         page = await ws_models.WorkSheet.paginate_with_cursors(
             page_size=page_size,

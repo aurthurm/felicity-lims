@@ -33,12 +33,6 @@ class AnalysisQuery:
                          sort_by: Optional[List[str]] = None) -> r_types.SampleCursorPage:
         filters = []
 
-        logger.info(f"page_size : {page_size}")
-        logger.info(f"text : {text}")
-        logger.info(f"status : {status}")
-        logger.info(f"client_uid : {client_uid}")
-        logger.info(f"sort_by : {sort_by}")
-
         _or_text_ = {}
         if has_value_or_is_truthy(text):
             arg_list = [
@@ -61,8 +55,6 @@ class AnalysisQuery:
             filters.append({'status__exact': status})
 
         filters.append({'internal_use__ne': True})
-
-        logger.info(f"Filters 00 : {filters}")
 
         page = await a_models.Sample.paginate_with_cursors(
             page_size=page_size,

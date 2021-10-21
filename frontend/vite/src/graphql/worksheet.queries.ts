@@ -33,8 +33,8 @@ export const GET_ALL_WORKSHEET_TEMPLATES = gql`
 
 
 export const GET_ALL_WORKSHEETS = gql`
-  query getAllWorksheets {
-    worksheetAll {
+  query getAllWorksheets($first: Int!, $after: String, $status: String!, $text: String!, $sortBy: [String!] = ["uid"]) {
+    worksheetAll(pageSize: $first, afterCursor: $after, status: $status, text: $text, sortBy: $sortBy) {
       totalCount
       pageInfo {
         hasNextPage
