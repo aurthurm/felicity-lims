@@ -73,17 +73,57 @@
     </div>
 
     <hr class="my-2">
-    <div class="flex content-start items-center">
-      <span class="text-blue-500"><i class="fas fa-info-circle"></i></span>
-      <p class="ml-2 italic text-red-500">Click register when you dont find your patient during search*</p>
-    </div>
-    <hr class="my-2">
+    <section class="flex justify-between">
+      <div>
+        <div class="flex content-start items-center">
+          <span class="text-blue-500"><i class="fas fa-info-circle"></i></span>
+          <p class="ml-2 italic text-red-500">Click register when you dont find your patient during search*</p>
+        </div>
+        <hr class="my-2">
 
-    <router-link
-      :to="{ name: 'patients-register', query: { cpid: patientSearch } }"
-      class="px-4 p-1 text-sm border-blue-500 border text-dark-700 transition-colors duration-150 rounded focus:outline-none hover:bg-blue-500 hover:text-gray-100">
-      Register New Patiet
-    </router-link>
+        <router-link
+          :to="{ name: 'patients-register', query: { cpid: patientSearch } }"
+          class="px-4 p-1 text-sm border-blue-500 border text-dark-700 transition-colors duration-150 rounded focus:outline-none hover:bg-blue-500 hover:text-gray-100">
+          Register New Patiet
+        </router-link>
+      </div>
+      <section class="flex justify-between">
+        <div></div>
+        <div class="my-4 flex sm:flex-row flex-col">
+          <button 
+          @click.prevent="showMorePatients()"
+          v-show="pageInfo?.hasNextPage"
+          class="px-2 py-1 mr-2 border-blue-500 border text-blue-500 rounded transition duration-300 hover:bg-blue-700 hover:text-white focus:outline-none"
+          >Show More</button>
+          <div class="flex flex-row mb-1 sm:mb-0">
+              <div class="relative">
+                  <select class="appearance-none h-full rounded-l border block  w-full bg-white border-gray-400 text-gray-700 py-2 px-4 pr-8 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                  v-model="patientBatch" :disabled="!pageInfo?.hasNextPage">
+                      <option value="25">25</option>
+                      <option value="50">50</option>
+                      <option value="100">100</option>
+                      <option value="250">250</option>
+                      <option value="500">500</option>
+                      <option value="1000">1000</option>
+                      <option value="5000">5000</option>
+                      <option value="10000">10000</option>
+                  </select>
+                  <div
+                      class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                      <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                          <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+                      </svg>
+                  </div>
+              </div>
+          </div>
+          <div class="block relative">
+              <input :placeholder="patientCount"
+                  class="appearance-none rounded-r rounded-l sm:rounded-l-none border border-gray-400 border-b block pl-8 pr-6 py-2 w-full bg-white text-sm placeholder-gray-400 text-gray-700 focus:bg-white focus:placeholder-gray-600 focus:text-gray-700 focus:outline-none" disabled/>
+          </div>
+        </div>
+      </section>
+    </section>
+
 
 </template>
 
@@ -143,7 +183,8 @@ export default defineComponent({
       first: patientBatch.value, 
       after: "",
       text: "", 
-      sortBy: ["uid"]
+      sortBy: ["uid"],
+      filterAction: false
     });
 
     let provinces = ref([]);
@@ -156,6 +197,7 @@ export default defineComponent({
 
     store.dispatch(AdminActionTypes.FETCH_COUNTRIES);    
     store.dispatch(ActionTypes.FETCH_PATIENTS, patientParams);
+    
 
     const { data: clients, fetching: CFetching, error: CError } = useQuery({
       query: GET_ALL_CLIENTS,
@@ -197,13 +239,24 @@ export default defineComponent({
       });
     }
 
+    let filterText = ref('')
     function searchPatients(event) {
+      filterText.value = event.target.value;
       patientParams.first = 100;
       patientParams.after = null;
       patientParams.text = event.target.value;
-      // store.dispatch(ActionTypes.SEARCH_PATIENTS, event.target.value);
+      patientParams.filterAction = true;
       store.dispatch(ActionTypes.FETCH_PATIENTS, patientParams);
-      // store.dispatch(ActionTypes.SEARCH_PATIENTS, event.target.value);
+    }
+
+    const pageInfo = computed(() => store.getters.getPatientPageInfo)
+
+    function showMorePatients(): void {
+      patientParams.first = +patientBatch.value;
+      patientParams.after = pageInfo?.value?.endCursor;
+      patientParams.text = filterText.value;
+      patientParams.filterAction = false;
+      store.dispatch(ActionTypes.FETCH_PATIENTS, patientParams);
     }
 
     function isPatientSelected() {
@@ -249,7 +302,11 @@ export default defineComponent({
       patientForm,
       getPatientFullName,
       patients: computed(() => store.getters.getPatients),
+      pageInfo,
+      patientCount: computed(() => store.getters.getPatients?.length + " of " + store.getters.getPatientCount + " patients"),
       patientSearch,
+      patientBatch,
+      showMorePatients,
       isPatientSelected,
       selectPatient,
       setPatientToNull,

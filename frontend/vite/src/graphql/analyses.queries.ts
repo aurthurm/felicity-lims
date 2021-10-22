@@ -365,8 +365,15 @@ export const GET_ALL_QC_TEMPLATES = gql`
 
 
 export const GET_ALL_QC_SETS = gql`
-  query getQCSeTs {
-    qcSetAll {
+  query getQCSeTs($first: Int!, $after: String, $text: String!, $sortBy: [String!] = ["uid"]) {
+    qcSetAll(pageSize: $first, afterCursor: $after, text: $text, sortBy: $sortBy){
+    totalCount
+    pageInfo {
+        hasNextPage
+        hasPreviousPage
+        endCursor
+        startCursor
+      }
       items {
           uid
           name

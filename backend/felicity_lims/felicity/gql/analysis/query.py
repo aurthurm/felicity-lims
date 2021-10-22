@@ -225,6 +225,7 @@ class AnalysisQuery:
                          sort_by: Optional[List[str]] = None) -> r_types.QCSetCursorPage:
 
         filters = []
+
         _or_text_ = {}
         if has_value_or_is_truthy(text):
             arg_list = [
@@ -237,6 +238,8 @@ class AnalysisQuery:
 
             text_filters = {sa.or_: _or_text_}
             filters.append(text_filters)
+
+        # filters.append({'internal_use__ne': True})
 
         page = await a_models.QCSet.paginate_with_cursors(
             page_size=page_size,

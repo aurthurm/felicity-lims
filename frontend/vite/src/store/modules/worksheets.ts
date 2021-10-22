@@ -8,7 +8,7 @@ import {
 } from '../../graphql/worksheet.queries';
 import { IInstrument } from './setup';
 import { IAnalysisService } from './analyses';
-import { parseEdgeNodeToList, parseData, snakeToCamel, keysToCamel } from '../../utils';
+import { parseEdgeNodeToList, parseData, snakeToCamel, keysToCamel, addListsUnique } from '../../utils';
 import { IAnalysisResult } from './samples';
 
 
@@ -215,8 +215,7 @@ export const mutations = <MutationTree<IState>>{
       state.workSheets = [];
       state.workSheets = ws;
     } else {
-      const data = state.workSheets
-      state.workSheets = data.concat(ws);
+      state.workSheets = addListsUnique(state.workSheets, ws, "uid");
     }
     state.workSheetCount = wst.worksheets?.totalCount;
     state.workSheetPageInfo = wst.worksheets?.pageInfo;

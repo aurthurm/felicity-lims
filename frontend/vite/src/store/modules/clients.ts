@@ -8,6 +8,7 @@ import { GET_ALL_CLIENTS,
   SEARCH_CLIENTS, 
   GET_CLIENT_CONTACTS_BY_CLIENT_UID, 
   GET_CLIENT_BY_UID } from '../../graphql/clients.queries';
+import { addListsUnique } from '../../utils';
 
 export class Client implements IClient {
   constructor(
@@ -58,6 +59,8 @@ export interface IState {
   clients?: IClient[];
   client?: IClient | null;
   clientContacts?: IClientContact[];
+  clientCount?: number;
+  clientPageInfo?: any;
 }
 
 export const initialState = () => {
@@ -65,6 +68,8 @@ export const initialState = () => {
     clients: [],
     client: null,
     clientContacts: [],
+    clientCount: 0,
+    clientPageInfo: null,
   };
 };
 
@@ -98,6 +103,8 @@ export const getters = <GetterTree<IState, RootState>>{
   getClients: (state) => state.clients,
   getClient: (state) => state.client,
   getClientByName: (state) => (name: string) => state.clients?.find(cl => cl.name === name),
+  getClientCount: (state) => state.clientCount,
+  getClientPageInfo: (state) => state.clientPageInfo,
 };
 
 // Mutations
@@ -107,8 +114,17 @@ export const mutations = <MutationTree<IState>>{
   },
 
   [MutationTypes.SET_CLIENTS](state: IState, payload: any): void {
-    state.clients = [];
-    payload?.items?.forEach((client: IClient) => state.clients?.push(client));
+    const clients = payload.clients.items;
+
+    if(payload.fromFilter){
+      state.clients = [];
+      state.clients = clients;
+    } else {
+      state.clients =  addListsUnique(state.clients!, clients, "uid");
+    }
+
+    state.clientCount = payload.clients?.totalCount;
+    state.clientPageInfo = payload.clients?.pageInfo;
   },  
   
   [MutationTypes.SET_CLIENT](state: IState, payload: IClient): void {
@@ -145,7 +161,10 @@ export const actions = <ActionTree<IState, RootState>>{
     await urqlClient
     .query( GET_ALL_CLIENTS, { first: params.first, after: params.after, text: params.text, sortBy: params.sortBy })
     .toPromise()
-    .then(result => commit(MutationTypes.SET_CLIENTS, result.data.clientAll))
+    .then(result => commit(MutationTypes.SET_CLIENTS, {
+      clients: result.data.clientAll,
+      fromFilter: params.filterAction,
+    }))
   },
 
   async [ActionTypes.SEARCH_CLIENTS]({ commit }, query: string){

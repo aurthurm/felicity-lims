@@ -107,9 +107,11 @@
   <section class="flex justify-between">
     <div></div>
     <div class="my-4 flex sm:flex-row flex-col">
-      <button @click.prevent="showMoreWorkSheets()"
+      <button 
+      @click.prevent="showMoreWorkSheets()"
+      v-show="pageInfo?.hasNextPage"
       class="px-2 py-1 mr-2 border-blue-500 border text-blue-500 rounded transition duration-300 hover:bg-blue-700 hover:text-white focus:outline-none"
-      :disabled="!pageInfo?.hasNextPage">Show More</button>
+      >Show More</button>
       <div class="flex flex-row mb-1 sm:mb-0">
           <div class="relative">
               <select class="appearance-none h-full rounded-l border block  w-full bg-white border-gray-400 text-gray-700 py-2 px-4 pr-8 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"

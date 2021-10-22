@@ -22,7 +22,7 @@
     <hr />
 
     <div class="grid grid-cols-12 gap-4 mt-2">
-      <section class="col-span-4 overflow-y-scroll overscroll-contain patient-scroll">
+      <section class="col-span-4 h-screen overflow-y-scroll overscroll-contain patient-scroll">
         <a
           v-for="pt in patients"
           :key="pt.patientId"

@@ -61,6 +61,15 @@ export function ifZeroEmpty(val: any): any {
   return val === 0 ? '' : val;
 }
 
+export function deDuplicateArrayBy(arr: any[], key: string): any[] {
+  return [...new Map(arr.map(item => [item[key], item])).values()]
+}
+
+export function addListsUnique(f: any[], s: any[], key: string): any[] {
+  const c = f?.concat(s);
+  return deDuplicateArrayBy(c,key);
+}
+
 export default {
     isNullOrWs,
     parseUrlParams,

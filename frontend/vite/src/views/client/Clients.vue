@@ -66,6 +66,39 @@
         </div>
     </div>
 
+    <section class="flex justify-between">
+      <div></div>
+      <div class="my-4 flex sm:flex-row flex-col">
+        <button @click.prevent="showMoreClients()"
+        class="px-2 py-1 mr-2 border-blue-500 border text-blue-500 rounded transition duration-300 hover:bg-blue-700 hover:text-white focus:outline-none"
+        :disabled="!pageInfo?.hasNextPage">Show More</button>
+        <div class="flex flex-row mb-1 sm:mb-0">
+            <div class="relative">
+                <select class="appearance-none h-full rounded-l border block  w-full bg-white border-gray-400 text-gray-700 py-2 px-4 pr-8 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                v-model="clientBatch" :disabled="!pageInfo?.hasNextPage">
+                    <option value="25">25</option>
+                    <option value="50">50</option>
+                    <option value="100">100</option>
+                    <option value="250">250</option>
+                    <option value="500">500</option>
+                    <option value="1000">1000</option>
+                    <option value="5000">5000</option>
+                    <option value="10000">10000</option>
+                </select>
+                <div
+                    class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                    <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                        <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+                    </svg>
+                </div>
+            </div>
+        </div>
+        <div class="block relative">
+            <input :placeholder="clientCount"
+                class="appearance-none rounded-r rounded-l sm:rounded-l-none border border-gray-400 border-b block pl-8 pr-6 py-2 w-full bg-white text-sm placeholder-gray-400 text-gray-700 focus:bg-white focus:placeholder-gray-600 focus:text-gray-700 focus:outline-none" disabled/>
+        </div>
+      </div>
+    </section>
 
 
   </div>
@@ -150,7 +183,7 @@
 }
 </style>
 
-<script scope="ts">
+<script lang="ts">
 import { useMutation, useQuery } from '@urql/vue';
 import { mapGetters, useStore } from 'vuex';
 import { defineComponent, ref, reactive, computed } from 'vue';
@@ -190,11 +223,13 @@ export default defineComponent({
 
     let client = reactive({ ...(new Client()) });
     const resetClient = () => Object.assign(client, { ...(new Client()) })
+    let clientBatch = ref(50)
     let clientParams = reactive({ 
-      first: 50, 
+      first: clientBatch.value, 
       after: "",
       text: "", 
-      sortBy: ["name"]
+      sortBy: ["name"],
+      filterAction: false
     });
 
     let countryUid = ref(null);
@@ -257,12 +292,23 @@ export default defineComponent({
     };
 
 
+    let filterText = ref('')
     function searchClients(event){
+      filterText.value = event.target.value;
       clientParams.first = 100;
       clientParams.after = null;
       clientParams.text = event.target.value;
       store.dispatch(ActionTypes.FETCH_CLIENTS, clientParams);
-      // store.dispatch(ActionTypes.SEARCH_CLIENTS, event.target.value);
+    }
+
+    const pageInfo = computed(() => store.getters.getClientPageInfo);
+
+    function showMoreClients(): void {
+      clientParams.first = +clientBatch.value;
+      clientParams.after = pageInfo?.value?.endCursor;
+      clientParams.text = filterText.value;
+      clientParams.filterAction = false;
+      store.dispatch(ActionTypes.FETCH_PATIENTS, clientParams);
     }
 
     function FormManager(create, target, obj) {
@@ -294,6 +340,10 @@ export default defineComponent({
       isClientSelected,
       client,
       clients: computed(() => store.getters.getClients),
+      clientCount: computed(() => store.getters.getClients?.length + " of " + store.getters.getClientCount + " clients"),
+      clientBatch,
+      pageInfo,
+      showMoreClients,
       selectClient,
       resetClient,
       countries: computed(() => store.getters.getCountries),

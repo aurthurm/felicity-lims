@@ -10,7 +10,7 @@
   </div>
   <hr>
 
-  <section class="my-4 flex sm:flex-row flex-col">
+  <!-- <section class="my-4 flex sm:flex-row flex-col">
         <div class="flex flex-row mb-1 sm:mb-0">
             <div class="relative">
                 <select
@@ -45,7 +45,7 @@
         class="px-2 py-1 ml-2 border-blue-500 border text-blue-500 rounded transition duration-300 hover:bg-blue-700 hover:text-white focus:outline-none">
         Filter ...</button>
       
-    </section>
+    </section> -->
 
     <section class="overflow-x-auto mt-4">
         <div class="align-middle inline-block min-w-full shadow overflow-hidden bg-white shadow-dashboard px-2 pt-1 rounded-bl-lg rounded-br-lg">
@@ -91,38 +91,40 @@
     </section>
 
     <section class="flex justify-between">
-    <div></div>
-    <div class="my-4 flex sm:flex-row flex-col">
-      <button 
-      class="px-2 py-1 mr-2 border-blue-500 border text-blue-500 rounded transition duration-300 hover:bg-blue-700 hover:text-white focus:outline-none"
-      >Show More</button>
-      <div class="flex flex-row mb-1 sm:mb-0">
-          <div class="relative">
-              <select class="appearance-none h-full rounded-l border block  w-full bg-white border-gray-400 text-gray-700 py-2 px-4 pr-8 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-               >
-                  <option value="25">25</option>
-                  <option value="50">50</option>
-                  <option value="100">100</option>
-                  <option value="250">250</option>
-                  <option value="500">500</option>
-                  <option value="1000">1000</option>
-                  <option value="5000">5000</option>
-                  <option value="10000">10000</option>
-              </select>
-              <div
-                  class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                  <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                      <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
-                  </svg>
-              </div>
-          </div>
+      <div></div>
+      <div class="my-4 flex sm:flex-row flex-col">
+        <button 
+        @click.prevent="showMoreQCSets()"
+        v-show="pageInfo?.hasNextPage"
+        class="px-2 py-1 mr-2 border-blue-500 border text-blue-500 rounded transition duration-300 hover:bg-blue-700 hover:text-white focus:outline-none"
+        >Show More</button>
+        <div class="flex flex-row mb-1 sm:mb-0">
+            <div class="relative">
+                <select class="appearance-none h-full rounded-l border block  w-full bg-white border-gray-400 text-gray-700 py-2 px-4 pr-8 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                v-model="qcSetBatch" :disabled="!pageInfo?.hasNextPage">
+                    <option value="25">25</option>
+                    <option value="50">50</option>
+                    <option value="100">100</option>
+                    <option value="250">250</option>
+                    <option value="500">500</option>
+                    <option value="1000">1000</option>
+                    <option value="5000">5000</option>
+                    <option value="10000">10000</option>
+                </select>
+                <div
+                    class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                    <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                        <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+                    </svg>
+                </div>
+            </div>
+        </div>
+        <div class="block relative">
+            <input :placeholder="qcSetCount"
+                class="appearance-none rounded-r rounded-l sm:rounded-l-none border border-gray-400 border-b block pl-8 pr-6 py-2 w-full bg-white text-sm placeholder-gray-400 text-gray-700 focus:bg-white focus:placeholder-gray-600 focus:text-gray-700 focus:outline-none" disabled/>
+        </div>
       </div>
-      <div class="block relative">
-          <input 
-              class="appearance-none rounded-r rounded-l sm:rounded-l-none border border-gray-400 border-b block pl-8 pr-6 py-2 w-full bg-white text-sm placeholder-gray-400 text-gray-700 focus:bg-white focus:placeholder-gray-600 focus:text-gray-700 focus:outline-none" disabled/>
-      </div>
-    </div>
-  </section> 
+    </section>
 
 
 
@@ -286,7 +288,16 @@ export default defineComponent({
     store.dispatch(ActionTypes.FETCH_ANALYSES_PROFILES);
     store.dispatch(SetUpActionTypes.FETCH_DEPARTMENTS);
     store.dispatch(SampleActionTypes.RESET_QC_SET)
-    store.dispatch(SampleActionTypes.FETCH_QC_SETS);
+
+    let qcSetBatch = ref(25);
+    let qcSetParams = reactive({ 
+      first: qcSetBatch.value, 
+      after: "",
+      text: "", 
+      sortBy: ["uid"],
+      filterAction: false
+    });
+    store.dispatch(SampleActionTypes.FETCH_QC_SETS, qcSetParams);
 
     const analysesProfiles = computed(() =>store.getters.getAnalysesProfiles);
     const analysesServices = computed(() => {
@@ -332,6 +343,15 @@ export default defineComponent({
       showModal.value = false;
     }
 
+    const pageInfo = computed(() => store.getters.getQCSetPageInfo);
+
+    function showMoreQCSets(): void {
+      qcSetParams.first = +qcSetBatch.value;
+      qcSetParams.after = pageInfo?.value?.endCursor;
+      qcSetParams.text = "";
+      qcSetParams.filterAction = false;
+      store.dispatch(SampleActionTypes.FETCH_QC_SETS, qcSetParams);
+    }
 
     function qcSetSamples(samples: any[]): string {
       let ids = [];
@@ -382,6 +402,10 @@ export default defineComponent({
       addQCSet,
       removeQCSet,
       qcSets: computed(() => store.getters.getQCSets),
+      qcSetCount: computed(() => store.getters.getQCSets?.length + " of " + store.getters.getQCSetCount + " QC Sets"),
+      qcSetBatch,
+      pageInfo,
+      showMoreQCSets,
       qcSetSamples,
       qcSetProfileAnalyses,
     };

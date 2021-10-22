@@ -1,7 +1,7 @@
 import { useQuery } from '@urql/vue';
 import { urqlClient } from '../../urql';
 import { RootState } from '../state';
-import { parseEdgeNodeToList, parseDate } from '../../utils'
+import { parseEdgeNodeToList, parseDate, addListsUnique } from '../../utils'
 import { ActionTree, GetterTree, MutationTree } from 'vuex';
 
 import {
@@ -103,6 +103,8 @@ export interface IState {
   analysisResults: IAnalysisResult[];
   qcSets: IQCSet[];
   qcSet: IQCSet | null;
+  qcSetCount: number;
+  qcSetPageInfo: any;
 }
 
 export const initialState = () => {
@@ -116,6 +118,8 @@ export const initialState = () => {
     analysisResults: [],
     qcSets: [],
     qcSet: null,
+    qcSetCount: 0,
+    qcSetPageInfo: null,
   };
 };
 
@@ -194,6 +198,8 @@ export const getters = <GetterTree<IState, RootState>>{
   getAnalysisResults: (state) => state.analysisResults,
   getQCSets: (state) => state.qcSets,
   getQCSet: (state) => state.qcSet,
+  getQCSetCount: (state) => state.qcSetCount,
+  getQCSetPageInfo: (state) => state.qcSetPageInfo,
 };
 
 
@@ -229,8 +235,7 @@ export const mutations = <MutationTree<IState>>{
       state.samples = [];
       state.samples = samples;
     } else {
-      const data = state.samples
-      state.samples = data.concat(samples);
+      state.samples = addListsUnique(state.samples, samples, "uid");
     }
 
     state.sampleCount = payload.samples?.totalCount;
@@ -266,12 +271,17 @@ export const mutations = <MutationTree<IState>>{
   },
 
   [MutationTypes.SET_QC_SETS](state: IState, payload: any): void {
-    payload?.items?.forEach((item: any) => {
-      item.createdAt = parseDate(item?.createdAt);
-      if(!state.qcSets?.some(s => s.uid === item.uid)) {
-        state.qcSets.push(item);
-      }
-    })
+    const qcSets = payload.qcSets.items;
+
+    if(payload.fromFilter){
+      state.qcSets = [];
+      state.qcSets = qcSets;
+    } else {
+      state.qcSets = addListsUnique(state.qcSets, qcSets, "uid");
+    }
+
+    state.qcSetCount = payload.qcSets?.totalCount;
+    state.qcSetPageInfo = payload.qcSets?.pageInfo;
   },
 
   [MutationTypes.SET_QC_SET](state: IState, qcSet: any): void {
@@ -358,9 +368,16 @@ export const actions = <ActionTree<IState, RootState>>{
     commit(MutationTypes.RESET_QC_SET);
   },
 
-  async [ActionTypes.FETCH_QC_SETS]({ commit }){
-    await useQuery({ query: GET_ALL_QC_SETS })
-          .then(payload => commit(MutationTypes.SET_QC_SETS, payload.data.value.qcSetAll));
+  async [ActionTypes.FETCH_QC_SETS]({ commit }, params){
+    await urqlClient
+    .query( GET_ALL_QC_SETS, { first: params.first, after: params.after, text: params.text, sortBy: params.sortBy})
+    .toPromise()
+    .then(result => {
+      commit(MutationTypes.SET_QC_SETS, {
+        qcSets: result.data.qcSetAll,
+        fromFilter: params.filterAction,
+      });
+    })
   },  
   
   async [ActionTypes.FETCH_QC_SET_BY_UID]({ commit }, uid){

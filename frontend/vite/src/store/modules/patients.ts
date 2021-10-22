@@ -5,6 +5,7 @@ import { ActionTree, GetterTree, MutationTree } from 'vuex';
 import { IClient, IDistrict, IProvince } from '../common'
 
 import { GET_ALL_PATIENTS, SEARCH_PATIENTS, GET_PATIENT_BY_UID } from '../../graphql/patient.queries';
+import { addListsUnique } from '../../utils';
 
 export interface IPatient {
   uid?: string,
@@ -54,12 +55,16 @@ export class Patient implements IPatient {
 export interface IState {
   patients?: IPatient[];
   patient?: IPatient | null;
+  patientCount?: number;
+  patientPageInfo?: any
 }
 
 export const initialState = () => {
   return <IState>{
     patients: [],
     patient: null,
+    patientCount: 0,
+    patientPageInfo: null,
   };
 };
 
@@ -88,6 +93,8 @@ export const getters = <GetterTree<IState, RootState>>{
   getPatients: (state) => state.patients,
   getPatientByUid: (state) => (uid: string) => state.patients?.find(p => p.uid === uid),
   getPatient: (state) => state.patient,
+  getPatientCount: (state) => state.patientCount,
+  getPatientPageInfo: (state) => state.patientPageInfo,
 };
 
 // Mutations
@@ -97,7 +104,17 @@ export const mutations = <MutationTree<IState>>{
   },
 
   [MutationTypes.SET_PATIENTS](state: IState, payload: any): void {
-    state.patients = payload?.items;
+    const patients = payload.patients.items;
+
+    if(payload.fromFilter){
+      state.patients = [];
+      state.patients = patients;
+    } else {
+      state.patients = addListsUnique(state.patients!, patients, "uid");
+    }
+
+    state.patientCount = payload.patients?.totalCount;
+    state.patientPageInfo = payload.patients?.pageInfo;
   },
 
   [MutationTypes.DIRECT_SET_PATIENTS](state: IState, patients: IPatient[]): void {
@@ -127,9 +144,12 @@ export const actions = <ActionTree<IState, RootState>>{
 
   async [ActionTypes.FETCH_PATIENTS]({ commit }, params){
     await urqlClient
-    .query( GET_ALL_PATIENTS, { first: params.first, after: params.after, text: params.text, sortBy: params.sortBy})
+    .query( GET_ALL_PATIENTS, { first: params.first, after: params.after, text: params.text, sortBy: ["uid"] })
     .toPromise()
-    .then(result => commit(MutationTypes.SET_PATIENTS, result.data.patientAll));
+    .then(result => commit(MutationTypes.SET_PATIENTS, {
+      patients: result.data.patientAll,
+      fromFilter: params.filterAction,
+    }));
   },
 
   async [ActionTypes.FETCH_PATIENT_BY_UID]({ commit }, uid){
