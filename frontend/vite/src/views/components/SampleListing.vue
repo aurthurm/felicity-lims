@@ -9,6 +9,7 @@
                     <option value="due">Due</option>
                     <option value="received">Received</option>
                     <option value="to_be_verified">To be Verified</option>
+                    <option value="verified">Verified</option>
                     <option value="invalidated">Invalidated</option>
                     <option value="cancelled">Cancelled</option>
                     <option value="rejected">Rejected</option>
@@ -47,6 +48,9 @@
         <table class="min-w-full">
             <thead>
             <tr>
+                <th class="px-1 py-1 border-b-2 border-gray-300 text-left leading-4 text-black-500 tracking-wider">
+                    <input type="checkbox" @change="toggleCheckAll()" v-model="allChecked">
+                </th>
                 <th class="px-1 py-1 border-b-2 border-gray-300 text-left leading-4 text-black-500 tracking-wider"></th>
                 <th class="px-1 py-1 border-b-2 border-gray-300 text-left leading-4 text-black-500 tracking-wider">Sampe ID</th>
                 <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-black-500 tracking-wider">Test(s)</th>
@@ -63,6 +67,9 @@
             <tr
                 v-for="sample in samples" :key="sample.uid"
             >
+                <td>
+                    <input type="checkbox" v-model="sample.checked" @change="checkCheck(sample)">
+                </td>
                 <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
                     <span v-if="sample.priority > 1"
                     :class="[
@@ -111,8 +118,24 @@
     </div>
 
 
-  <section class="flex justify-between">
-    <div></div>
+  <section class="flex justify-between items-center">
+    <div>
+         <button 
+         v-show="can_cancel" 
+         @click.prevent="cancelSamples_()" 
+         class="px-2 py-1 mr-2 border-blue-500 border text-blue-500 rounded transition duration-300 hover:bg-blue-700 hover:text-white focus:outline-none">Cancel</button>
+         <button 
+         v-show="can_reinstate" 
+         @click.prevent="reInstateSamples_()" 
+         class="px-2 py-1 mr-2 border-blue-500 border text-blue-500 rounded transition duration-300 hover:bg-blue-700 hover:text-white focus:outline-none">ReInstate</button>
+         <button 
+         v-show="can_receive" 
+         @click.prevent="receiveSamples_()" 
+         class="px-2 py-1 mr-2 border-blue-500 border text-blue-500 rounded transition duration-300 hover:bg-blue-700 hover:text-white focus:outline-none">Reveive</button>
+         <button v-show="can_reject" class="px-2 py-1 mr-2 border-blue-500 border text-blue-500 rounded transition duration-300 hover:bg-blue-700 hover:text-white focus:outline-none">Reject</button>
+         <button v-show="can_copy_to" class="px-2 py-1 mr-2 border-blue-500 border text-blue-500 rounded transition duration-300 hover:bg-blue-700 hover:text-white focus:outline-none">Copy to New</button>
+         <button v-show="can_print" class="px-2 py-1 mr-2 border-blue-500 border text-blue-500 rounded transition duration-300 hover:bg-blue-700 hover:text-white focus:outline-none">Print</button>
+    </div>
     <div class="my-4 flex sm:flex-row flex-col">
       <button 
       @click.prevent="showMoreSamples()"
@@ -273,13 +296,20 @@
 <script lang="ts">
 import modal from '../../components/SimpleModal.vue';
 
+import Swal from 'sweetalert2';
 import { useMutation } from '@urql/vue';
 import { defineComponent, ref, reactive, computed, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import { useStore } from 'vuex';
 import { ActionTypes as SampleActionTypes } from '../../store/modules/samples';
 import { ActionTypes, AnalysisRequest, IAnalysisRequest, ISample, Sample } from '../../store/modules/analyses';
-import { ADD_ANALYSIS_SERVICE, EDIT_ANALYSIS_SERVICE  } from '../../graphql/analyses.mutations';
+import { 
+  ADD_ANALYSIS_SERVICE, 
+  EDIT_ANALYSIS_SERVICE,
+  REINSTATE_SAMPLES,
+  RECEIVE_SAMPLES,
+  CANCEL_SAMPLES,
+  } from '../../graphql/analyses.mutations';
 import { ifZeroEmpty } from '../../utils'
 
 export default defineComponent({
@@ -318,6 +348,7 @@ export default defineComponent({
       after: "",
       status: "", 
       text: "", 
+      sortBy: ["uid"],
       clientUid: +ifZeroEmpty(route?.query?.clientUid),
       filterAction: false
     });
@@ -394,6 +425,190 @@ export default defineComponent({
       showModal.value = false;
     }
 
+    // user actions perms
+    let can_cancel = ref(false);
+    let can_receive = ref(false);
+    let can_reinstate = ref(false);
+    let can_print = ref(false);
+    let can_reject = ref(false);
+    let can_copy_to = ref(false);
+
+    let allChecked = ref(false); 
+    
+    function check(sample): void {
+      sample.checked = true;
+      checkUserActionPermissios()
+    }
+
+    function unCheck(sample): void {
+      sample.checked = false;
+      checkUserActionPermissios()
+    }
+
+    async function toggleCheckAll(): void {
+      await samples?.value?.forEach(sample => allChecked.value ? check(sample) : unCheck(sample));
+      checkUserActionPermissios()
+    }
+    
+    function areAllChecked(): Boolean {
+      return samples?.value?.every(item => item.checked === true);
+    }
+
+    function checkCheck(sample): void {
+     if(areAllChecked()) {
+        allChecked.value = true;
+     } else {
+        allChecked.value = false;
+     }
+      checkUserActionPermissios()
+    }
+
+    function getSamplesChecked(): any {
+      let box = [];
+      samples?.value?.forEach(sample => {
+        if (sample.checked) box.push(sample);
+      });
+      return box;
+    }
+
+    function checkUserActionPermissios(): void {
+      // reset
+      can_cancel.value = false;
+      can_receive.value = false;
+      can_reinstate.value = false;
+
+      const checked = getSamplesChecked();
+      if(checked.length === 0) return;
+
+      // can_receive
+      if(checked.every(result => result.status === 'due')){
+        can_receive.value = true;
+      }
+
+      // can_cancel
+      if(checked.every(result => ["received", "due"].includes(result.status))){
+        can_cancel.value = true;
+      }
+
+      // can_reinstate
+      if(checked.every(result => result.status === 'cancelled')){
+        can_reinstate.value = true;
+      }
+    }
+
+    function getSampleUids(): string[] {
+      const items = getSamplesChecked();
+      let ready = [];
+      items?.forEach(item => ready.push(item.uid))
+      return ready;
+    }
+
+    const { executeMutation: cancelSamples } = useMutation(CANCEL_SAMPLES); 
+
+    // function cancelSelectedSamples(analyses): void {
+    //   cancelSamples({ analyses }).then(_ => {});
+    // } 
+
+    const cancelSamples_ = async () => {
+      try {
+        Swal.fire({
+          title: 'Are you sure?',
+          text: "You want to cancel these samples",
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Yes, cancel now!',
+          cancelButtonText: 'No, do not cancel!',
+        }).then((result) => {
+          if (result.isConfirmed) {
+            // cancelSelectedSamples(getSampleUids())
+            let samples = getSampleUids()
+            cancelSamples({ samples }).then(_ => {});
+
+            Swal.fire(
+              'Its Happening!',
+              'Your samples have been cancelled.',
+              'success'
+            ).then(_ => location.reload())
+
+          }
+        })
+      } catch (error) {
+        logger.log(error)
+      }
+    }
+
+    const { executeMutation: reinstateSamples } = useMutation(REINSTATE_SAMPLES); 
+
+    function reInstateSelectedSamples(samples): void {
+      reinstateSamples({ samples }).then(_ => {});
+    }
+
+    const reInstateSamples_ = async () => {
+      try {
+        Swal.fire({
+          title: 'Are you sure?',
+          text: "You want to reinstate samples",
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Yes, reinstate now!',
+          cancelButtonText: 'No, do not reinstate!',
+        }).then((result) => {
+          if (result.isConfirmed) {
+            reInstateSelectedSamples(getSampleUids());
+
+            Swal.fire(
+              'Its Happening!',
+              'Your samples have been reinstated.',
+              'success'
+            ).then(_ => location.reload())
+
+          }
+        })
+      } catch (error) {
+        logger.log(error)
+      }
+    }
+
+
+    const { executeMutation: receiveSamples } = useMutation(RECEIVE_SAMPLES); 
+
+    function receiveSelectedSamples(samples): void {
+      receiveSamples({ samples }).then(_ => {});
+    }  
+
+    const receiveSamples_ = async () => {
+      try {
+        Swal.fire({
+          title: 'Are you sure?',
+          text: "You want to receive samples",
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Yes, receice now!',
+          cancelButtonText: 'No, do not receive!',
+        }).then((result) => {
+          if (result.isConfirmed) {
+            receiveSelectedSamples(getSampleUids());
+
+            Swal.fire(
+              'Its Happening!',
+              'Your analystes have been received.',
+              'success'
+            ).then(_ => location.reload())
+
+          }
+        })
+      } catch (error) {
+        logger.log(error)
+      }
+    }
+
+
     return {
       showModal, 
       analysesCategories: computed(() =>store.getters.getAnalysesCategories),
@@ -412,7 +627,19 @@ export default defineComponent({
       filterStatus,
       filterText,
       profileAnalysesText,
-      pageInfo
+      pageInfo,
+      allChecked,
+      toggleCheckAll,
+      checkCheck,
+      can_cancel,
+      can_receive,
+      can_reinstate,
+      can_print,
+      can_reject,
+      can_copy_to,
+      cancelSamples_,
+      reInstateSamples_,
+      receiveSamples_,
     };
   },
 });

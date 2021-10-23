@@ -218,19 +218,22 @@ class Sample(Auditable, BaseMPTT):
     priority = Column(Integer, nullable=False, default=0)
     status = Column(String, nullable=False)
     assigned = Column(Boolean(), default=False)
+    received_by_uid = Column(Integer, ForeignKey('user.uid'), nullable=True)
+    received_by = relationship(User, foreign_keys=[received_by_uid], lazy='selectin')
+    date_received = Column(DateTime, nullable=True)
     submitted_by_uid = Column(Integer, ForeignKey('user.uid'), nullable=True)
-    submitted_by = relationship(User, foreign_keys=[submitted_by_uid], backref="submitted_samples", lazy='selectin')
+    submitted_by = relationship(User, foreign_keys=[submitted_by_uid], lazy='selectin')
     date_submitted = Column(DateTime, nullable=True)
     verified_by_uid = Column(Integer, ForeignKey('user.uid'), nullable=True)
-    verified_by = relationship(User, foreign_keys=[verified_by_uid], backref="verified_samples", lazy='selectin')
+    verified_by = relationship(User, foreign_keys=[verified_by_uid], lazy='selectin')
     date_verified = Column(DateTime, nullable=True)
     invalidated_by_uid = Column(Integer, ForeignKey('user.uid'), nullable=True)
-    invalidated_by = relationship(User, foreign_keys=[invalidated_by_uid], backref="invalidated_samples", lazy='selectin')
+    invalidated_by = relationship(User, foreign_keys=[invalidated_by_uid], lazy='selectin')
+    date_invalidated = Column(DateTime, nullable=True)
     cancelled_by_uid = Column(Integer, ForeignKey('user.uid'), nullable=True)
     cancelled_by = relationship("User", foreign_keys=[cancelled_by_uid], lazy="selectin")
     date_cancelled = Column(DateTime, nullable=True)
-    date_invalidated = Column(DateTime, nullable=True)
-    rejection_reasons = relationship(RejectionReason, secondary=rrslink, backref="samples", lazy='selectin')
+    rejection_reasons = relationship(RejectionReason, secondary=rrslink, lazy='selectin')
     internal_use = Column(Boolean(), default=False)
     # QC Samples
     qc_set_uid = Column(Integer, ForeignKey('qcset.uid'), nullable=True)
@@ -249,6 +252,15 @@ class Sample(Auditable, BaseMPTT):
         if isinstance(count, type(None)):
             count = 0
         return f"{prefix}-{sequencer(count + 1, 5)}"
+
+    async def receive(self, received_by):
+        if self.status in [states.sample.DUE]:
+            self.status = states.sample.RECEIVED
+            self.received_by_uid = received_by.uid
+            self.date_received = datetime.now()
+            self.updated_by_uid = received_by.uid # noqa
+            return await self.save()
+        return None
 
     async def cancel(self, cancelled_by):
         if self.status in [states.sample.RECEIVED, states.sample.DUE]:

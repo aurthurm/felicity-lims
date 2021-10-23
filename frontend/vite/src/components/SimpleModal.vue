@@ -1,8 +1,8 @@
 <template>
-  <transition name="modal">
     <div class="modal-mask">
-      <div class="modal-wrapper ">
+      <div class="modal-wrapper" @click="$emit('close')">
         <div 
+          @click.stop
          :class="[
                 'modal-container max-h-screen overflow-y-scroll',
                 contentWidth ? contentWidth : 'w-3/4',
@@ -41,18 +41,26 @@
         </div>
       </div>
     </div>
-  </transition>
 </template>
 
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, onMounted } from 'vue';
 export default defineComponent({
   name: 'simple-modal',
   props: {
     contentWidth: String,
   },
-  setup(props) {
+  setup(props, { emit }) {
+
+    onMounted(() => {
+      document.addEventListener("keydown", (e) => {
+        if (e.keyCode == 27) {
+            emit('close');
+        }
+      });
+    })
+
     return {}
   },
 });
@@ -69,7 +77,7 @@ export default defineComponent({
   height: 100%;
   background-color: rgba(0, 0, 0, 0.5);
   display: table;
-  transition: opacity 0.3s ease;
+  transition: opacity 0.6s ease;
 }
 
 .modal-wrapper {
@@ -84,7 +92,7 @@ export default defineComponent({
   background-color: #fff;
   border-radius: 2px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.33);
-  transition: all 0.3s ease;
+  transition: all 0.6s ease;
   font-family: Helvetica, Arial, sans-serif;
 }
 

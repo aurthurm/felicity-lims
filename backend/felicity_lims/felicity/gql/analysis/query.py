@@ -54,7 +54,7 @@ class AnalysisQuery:
         if status:
             filters.append({'status__exact': status})
 
-        filters.append({'internal_use__ne': True})
+        # filters.append({'internal_use__ne': True})
 
         page = await a_models.Sample.paginate_with_cursors(
             page_size=page_size,

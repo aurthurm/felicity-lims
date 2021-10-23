@@ -7,6 +7,7 @@
 
 <script lang="ts">
 import Swal from 'sweetalert2';
+import JSConfetti from 'js-confetti'
 import { Notyf } from 'notyf';
 import { defineComponent, ref, computed, watch, inject } from 'vue';
 import { useRouter } from 'vue-router';
@@ -18,6 +19,11 @@ export default defineComponent({
     const { currentRoute } = useRouter();
     const store = useStore();
     const router = useRouter();
+
+    const jsConfetti = new JSConfetti();
+    jsConfetti.addConfetti({
+      emojis: ['🌈', '⚡️', '💥', '✨', '💫', '🌸'],
+    })
 
     const notyf = new Notyf({ // https://github.com/caroso1222/notyf
         duration: 5000,

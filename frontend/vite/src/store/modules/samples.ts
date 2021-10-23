@@ -232,7 +232,6 @@ export const mutations = <MutationTree<IState>>{
     const samples = payload.samples.items;
 
     if(payload.fromFilter){
-      state.samples = [];
       state.samples = samples;
     } else {
       state.samples = addListsUnique(state.samples, samples, "uid");
@@ -317,7 +316,9 @@ export const actions = <ActionTree<IState, RootState>>{
 
   async [ActionTypes.FETCH_SAMPLES]({ commit }, params){
     await urqlClient
-    .query( GET_ALL_SAMPLES, { first: params.first, after: params.after, status: params.status, text: params.text, clientUid: params.clientUid})
+    .query( GET_ALL_SAMPLES, { 
+      first: params.first, after: params.after, 
+      status: params.status, text: params.text, clientUid: params.clientUid, sortBy: params.sortBy })
     .toPromise()
     .then(result => {
       commit(MutationTypes.SET_SAMPLES, {

@@ -391,7 +391,7 @@ class AnalysisMutations:
                 'sampletype_uid': _st_uid,
                 'sample_id': None,
                 'priority': priority,
-                'status': states.sample.RECEIVED
+                'status': states.sample.DUE
             }
 
             profiles = []
@@ -478,7 +478,7 @@ class AnalysisMutations:
         return sample
 
     @strawberry.mutation
-    async def cancel_sample(self, info, samples: List[int]) -> List[r_types.SamplesWithResults]:
+    async def cancel_samples(self, info, samples: List[int]) -> List[r_types.SamplesWithResults]:
 
         inspector = inspect.getargvalues(inspect.currentframe())
         passed_args = get_passed_args(inspector)
@@ -503,7 +503,7 @@ class AnalysisMutations:
         return return_samples
 
     @strawberry.mutation
-    async def re_instate_sample(self, info, samples: List[int]) -> List[r_types.SamplesWithResults]:
+    async def re_instate_samples(self, info, samples: List[int]) -> List[r_types.SamplesWithResults]:
 
         inspector = inspect.getargvalues(inspect.currentframe())
         passed_args = get_passed_args(inspector)
@@ -521,9 +521,33 @@ class AnalysisMutations:
             if not sample:
                 raise Exception(f"Sample with uid {_sa_uid} not found")
 
-            status = getattr(sample, 'status', None)
-            if status in [states.sample.CANCELLED]:
-                sample = await sample.re_instate(re_instated_by=felicity_user)
+            sample = await sample.re_instate(re_instated_by=felicity_user)
+            if sample:
+                return_samples.append(sample)
+
+        return return_samples
+
+    @strawberry.mutation
+    async def receive_samples(self, info, samples: List[int]) -> List[r_types.SamplesWithResults]:
+
+        inspector = inspect.getargvalues(inspect.currentframe())
+        passed_args = get_passed_args(inspector)
+
+        is_authenticated, felicity_user = await auth_from_info(info)
+        verify_user_auth(is_authenticated, felicity_user, "Only Authenticated user can re receive due samples")
+
+        return_samples = []
+
+        if len(samples) == 0:
+            raise Exception(f"No Samples to receive are provided!")
+
+        for _sa_uid in samples:
+            sample: analysis_models.Sample = await analysis_models.Sample.get(uid=_sa_uid)
+            if not sample:
+                raise Exception(f"Sample with uid {_sa_uid} not found")
+
+            sample = await sample.receive(received_by=felicity_user)
+            if sample:
                 return_samples.append(sample)
 
         return return_samples

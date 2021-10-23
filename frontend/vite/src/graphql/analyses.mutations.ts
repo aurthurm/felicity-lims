@@ -25,6 +25,34 @@ export const EDIT_SAMPLE_TYPE= gql`
   }
 `;
 
+export const REINSTATE_SAMPLES = gql`
+  mutation ReInstateSamples ($samples: [Int!]!) {
+    reInstateSamples(samples: $samples){
+        uid
+        status
+    }
+  }
+`;
+
+export const CANCEL_SAMPLES = gql`
+  mutation CancelSamples ($samples: [Int!]!) {
+    cancelSamples(samples: $samples){
+        uid
+        status
+    }
+  }
+`;
+
+export const RECEIVE_SAMPLES = gql`
+  mutation ReceiveSamples ($samples: [Int!]!) {
+    receiveSamples(samples: $samples){
+        uid
+        status
+    }
+  }
+`;
+
+
 // RESULT_OPTION
 export const ADD_RESULT_OPTION= gql`
   mutation AddResultOption ($optionKey: Int!, $value: String!, $analysisUid: Int!) {
