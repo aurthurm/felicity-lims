@@ -41,7 +41,7 @@
     "sweetalert2": "^11.1.7",
     "tailwindcss": "^2.2.16",
     "urql": "^2.0.5",
-    "vee-validate": "^3.4.13",
+    "vee-validate": "^4.5.4",
     "vue": "^3.2.19",
     "vue-router": "4.0.11",
     "vue-sweetalert2": "^5.0.2",

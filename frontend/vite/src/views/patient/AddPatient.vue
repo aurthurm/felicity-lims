@@ -1,27 +1,31 @@
 <template>
   <section class="w-3/6">
     <h1 class="h1 my-4 font-bold text-dark-700">Add New Patient:</h1>
-    <form action="post" class="border-2 border-gray-900 border-dotted rounded p-4" autocomplete="off">
+    <form @submit.prevent="savePatientForm"
+    class="border-2 border-gray-900 border-dotted rounded p-4" autocomplete="off">
 
-          <label class="flex whitespace-nowrap mb-2 w-full">
+          <label class="flex whitespace-nowrap w-full">
             <span class="text-gray-700 w-4/12">Patient Unique Identifier</span>
             <input class="form-input mt-1 block w-full" v-model="patientForm.clientPatientId" placeholder="Patient Unique Identifier" />
           </label>
+          <span class="text-red-700 w-full mb-2">{{ formErrors?.data?.clientPatientId }}</span>
 
-          <label class="flex whitespace-nowrap mb-2 w-full">
+          <label class="flex whitespace-nowrap w-full">
             <span class="text-gray-700 w-4/12">First Name</span>
             <input class="form-input mt-1 w-full" v-model="patientForm.firstName" placeholder="First Name" />
           </label>
+          <span class="text-red-700 w-full mb-2">{{ formErrors?.data?.firstName }}</span>
 
           <label class="flex whitespace-nowrap mb-2 w-full">
             <span class="text-gray-700 w-4/12">Middle Name</span>
             <input class="form-input mt-1 w-full" v-model="patientForm.middleName" placeholder="Middle Name" />
           </label>
 
-          <label class="flex whitespace-nowrap mb-2 w-full">
+          <label class="flex whitespace-nowrap w-full">
             <span class="text-gray-700 w-4/12">Last Name</span>
             <input class="form-input mt-1 w-full" v-model="patientForm.lastName" placeholder="Last Name" />
           </label>
+          <span class="text-red-700 w-full mb-2">{{ formErrors?.data?.lastName }}</span>
 
           <label class="flex whitespace-nowrap mb-2 w-full">
             <span class="text-gray-700 w-4/12">Age</span>
@@ -57,13 +61,14 @@
           </label>
 
           <!-- other identifiers: passport, client pid, national id -->
-          <label class="flex whitespace-nowrap mb-2 w-full">
+          <label class="flex whitespace-nowrap w-full">
             <span class="text-gray-700 w-4/12">Primary Referrer</span>
             <select class="form-select mt-1 w-full" v-model="patientForm.clientUid">
                 <option></option>
                 <option v-for="client in clients" :key="client.uid" :value="client.uid"> {{ client.name }} {{ client.uid }}</option>
               </select>
           </label>
+          <span class="text-red-700 w-full mb-2">{{ formErrors?.data?.clientPatientId }}</span>
 
           <hr class="my-2">
 
@@ -92,13 +97,14 @@
           </div>
 
           <hr />
-          <button
+          <!-- <button
             type="button"
             @click.prevent="savePatientForm()"
             class="-mb-4 w-1/5 border border-green-500 bg-green-500 text-white rounded-md px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-green-600 focus:outline-none focus:shadow-outline"
           >
             Save Patient
-          </button>
+          </button> -->
+          <button type="submit" class="-mb-4 w-1/5 border border-green-500 bg-green-500 text-white rounded-md px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-green-600 focus:outline-none focus:shadow-outline"> Save Patient </button>
         </form>
     </section>
 </template>
@@ -135,9 +141,14 @@ export const IPatient = typeof Patient;
 import { ActionTypes } from '../../store/modules/patients';
 import { ActionTypes as ClientActionTypes } from '../../store/modules/clients';
 import { ActionTypes as AdminActionTypes } from '../../store/modules/admin';
-
+import { Form, Field, useField, useForm } from 'vee-validate';
+import { isNullOrWs } from '../../utils';
 export default defineComponent({
   name: 'add-patient',
+  components: {
+    Form,
+    Field,
+  },
   setup(context) {
     let store = useStore();
     let router = useRouter();
@@ -147,6 +158,7 @@ export default defineComponent({
     let createAction = ref(true)
 
     let patientForm = reactive({ ...nullPatient });
+    let formErrors = reactive({ hasError: false, data: {} });
     patientForm.clientPatientId = route.query.cpid;
 
     let provinces = ref([]);
@@ -207,19 +219,47 @@ export default defineComponent({
       });
     }
 
-    function patientFormManager(create) {
-      showModal.value = true;
-      createAction.value = create;
-      if (create) setPatientToNull();
+    function simpleValidator(form: Map, required: string[] = []): any {
+      if(required.length == 0) alert("There are no validation fields")
+      if(typeof(form) !== 'object' ) alert("Form must a Map Object")
+
+      let response = { hasError: false, data: {} };
+
+      for(let field of required){
+        if(isNullOrWs(form[field])){
+          response.hasError = true
+          response.data[field] = "This field is required"
+        }
+      }
+
+      return response;
     }
 
     function savePatientForm() {
-       if (createAction.value) addPatient();
+      const validations = simpleValidator(patientForm, ["clientPatientId", "firstName", "lastName", "clientUid", "consentSms"])
+      if(validations.hasError) {
+        Object.assign(formErrors, validations)
+        return
+      };
+      if (createAction.value) addPatient();
     }
+
+    // 
+
+    function isRequired(value) {
+      if (value && value.trim()) {
+        return true;
+      }
+      return 'This is required';
+    }
+    const { errorMessage, value } = useField('test1', isRequired);
+
 
     return {
       patientForm,
+      formErrors,
       savePatientForm,
+      errorMessage, value,
       countries: computed(() => store.getters.getCountries),
       clients: computed(() => store.getters.getClients),
       countryUid,
