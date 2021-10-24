@@ -1,30 +1,33 @@
 <template>
 
-  <div class="w-3/4 mx-auto mt-4 py-4">
+  <div class="w-3/6 mt-4 py-4">
     <h5 class="mb-4">Add Analysis Request</h5>
       <form action="post" class="p-4 mb-8 bg-white">
-        <div class="grid grid-cols-2 gap-x-4 mb-4">
-          <label class="block col-span-2 mb-2">
-            <span class="text-gray-700">Client Request ID</span>
+        <div class="">
+
+          <label class="flex whitespace-nowrap mb-2 w-full">
+            <span class="text-gray-700 w-4/12">Client Request ID</span>
             <input
               class="form-input mt-1 block w-full"
               v-model="form.clientRequestId"
               placeholder="CRID ..."
             />
           </label>
-          <label class="block col-span-2 mb-2">
-            <span class="text-gray-700">Clinical Data</span>
+
+          <label class="flex whitespace-nowrap mb-2 w-full">
+            <span class="text-gray-700 w-4/12">Clinical Data</span>
             <textarea
             cols="2"
-              class="form-input mt-1 block w-full"
+              class="form-input mt-1 w-full"
               v-model="form.clinicalData"
               placeholder="Clinical Data ..."
             />
           </label>
-          <label class="block col-span-1 mb-2">
-            <span class="text-gray-700">Client</span>
+
+          <label class="flex whitespace-nowrap mb-2 w-full">
+            <span class="text-gray-700 w-4/12">Client</span>
             <input
-              class="form-input mt-1 block w-full"
+              class="form-input mt-1 w-full"
               v-model="form.client.name"
               placeholder="Name ..."
               list="ice-cream-flavors"
@@ -35,8 +38,9 @@
                 <option v-for="client in clients" :key="client.uid" :value="client.name" :data-client="client"></option>
             </datalist>
           </label>
-          <label class="block col-span-2 mb-2">
-              <span class="text-gray-700">Client Contacts</span>
+
+          <label class="flex whitespace-nowrap mb-2 w-full">
+              <span class="text-gray-700 w-4/12">Client Contacts</span>
               <select 
               name="clientContacts" 
               id="clientContacts" 
@@ -49,15 +53,20 @@
                 :value="contact.uid" >{{ contact.firstName }} {{ contact.lastName }}</option>
             </select>
           </label>
-          <label class="block col-span-2 mb-2">
-            <span class="text-gray-700">Priority</span>
+
+          <label class="flex whitespace-nowrap mb-2 w-full">
+            <span class="text-gray-700 w-4/12">Priority</span>
             <input
+              type="number"
+              min="0"
+              max="2"
               class="form-input mt-1 block w-full"
               v-model="form.priority"
-              placeholder="Name ..."
             />
           </label>
+
         </div>
+
         <section id="samples">
             <hr>
             <div class="flex justify-between items-center py-2">
@@ -68,53 +77,54 @@
                 class="px-2 py-1 mr-2 border-green-500 border text-green-500 rounded transition duration-300 hover:bg-green-700 hover:text-white focus:outline-none">Add Sample</button>
             </div>
             <hr class="mb-4">
+
             <div v-for="(sample, index) in form.samples" :key="index">
                 <div class="flex items-center justify-between">
-                    <div class="">
-                        <div class="grid grid-cols-6 gap-x-4">
-                            <label class="block col-span-2 mb-2">
-                              <span class="text-gray-700">Sample Type</span>
-                                <select 
-                                name="sampleTypes" 
-                                id="sampleTypes" 
-                                v-model="sample.sampleType"
-                                class="form-input mt-1 block w-full" >
-                                  <option value=""></option>
-                                  <option  
-                                  v-for="sampleType in sampleTypes"
-                                  :key="sampleType.uid"
-                                  :value="sampleType.uid" >{{ sampleType.name }}</option>
-                              </select>
-                            </label>
-                            <label class="block col-span-2 mb-2">
-                                <span class="text-gray-700">Analysis Profiles</span>
-                                <select 
-                                name="analysisProfiles" 
-                                id="analysisProfiles" 
-                                v-model="sample.profiles"
-                                class="form-input mt-1 block w-full" multiple>
-                                  <option value=""></option>
-                                  <option  
-                                  v-for="(profile, index) in analysesProfiles"
-                                  :key="profile.uid"
-                                  :value="profile.uid" >{{ profile.name }}</option>
-                              </select>
-                            </label>
-                            <label class="block col-span-2 mb-2">
-                                <span class="text-gray-700">Analysis Services</span>
-                                <select 
-                                name="analysesServices" 
-                                id="analysesServices" 
-                                v-model="sample.analyses"
-                                class="form-input mt-1 block w-full" multiple>
-                                  <option value=""></option>
-                                  <option  
-                                  v-for="(service, index) in analysesServices"
-                                  :key="service.uid"
-                                  :value="service.uid" >{{ service.name }}</option>
-                              </select>
-                            </label>
-                        </div>
+                    <div class="flex items-top gap-x-4">
+                        <label class="flex flex-col whitespace-nowrap mb-2">
+                          <span class="text-gray-700">Sample Type</span>
+                            <select 
+                            name="sampleTypes" 
+                            id="sampleTypes" 
+                            v-model="sample.sampleType"
+                            class="form-input mt-1" >
+                              <option value=""></option>
+                              <option  
+                              v-for="sampleType in sampleTypes"
+                              :key="sampleType.uid"
+                              :value="sampleType.uid" >{{ sampleType.name }}</option>
+                          </select>
+                        </label>
+
+                        <label class="flex flex-col whitespace-nowrap mb-2">
+                            <span class="text-gray-700">Analysis Profiles</span>
+                            <select 
+                            name="analysisProfiles" 
+                            id="analysisProfiles" 
+                            v-model="sample.profiles"
+                            class="form-input mt-1" multiple>
+                              <option value=""></option>
+                              <option  
+                              v-for="(profile, index) in analysesProfiles"
+                              :key="profile.uid"
+                              :value="profile.uid" >{{ profile.name }}</option>
+                          </select>
+                        </label>
+
+                        <label class="flex flex-col whitespace-nowrap mb-2">
+                            <span class="text-gray-700">Analysis Services</span>
+                            <select 
+                            name="analysesServices" 
+                            id="analysesServices" 
+                            v-model="sample.analyses"
+                            class="form-input mt-1" multiple>
+                              <option value=""></option>
+                              <option  
+                              v-for="(service, index) in analysesServices"
+                              :key="service.uid"
+                              :value="service.uid" >{{ service.name }}</option>
+                          </select>
+                        </label>
                     </div>
                     <div class="">
                         <button
@@ -166,7 +176,7 @@ export default defineComponent({
 
     let formTitle = ref('');
     let formAction = ref(true);
-    let form = reactive({ ...(new AnalysisRequest) });
+    let form = reactive({ ...(new AnalysisRequest), priority: 0 });
     let clientQuery = ref('');
 
     const analysesProfiles = computed(() =>store.getters.getAnalysesProfiles);

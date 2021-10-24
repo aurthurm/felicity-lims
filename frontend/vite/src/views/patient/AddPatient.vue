@@ -1,86 +1,90 @@
 <template>
-  <section class="w-2/3">
+  <section class="w-3/6">
     <h1 class="h1 my-4 font-bold text-dark-700">Add New Patient:</h1>
-    <form action="post" class="border-2 border-gray-900 border-dotted rounded p-4" autocomplete="yebo">
-          <label class="block mb-2 w-1/3">
-            <span class="text-gray-700">Patient Unique Identifier</span>
+    <form action="post" class="border-2 border-gray-900 border-dotted rounded p-4" autocomplete="off">
+
+          <label class="flex whitespace-nowrap mb-2 w-full">
+            <span class="text-gray-700 w-4/12">Patient Unique Identifier</span>
             <input class="form-input mt-1 block w-full" v-model="patientForm.clientPatientId" placeholder="Patient Unique Identifier" />
           </label>
-          <div class="flex justify-between">
-            <label class="block mb-2 w-full">
-              <span class="text-gray-700">First Name</span>
-              <input class="form-input mt-1 block w-full" v-model="patientForm.firstName" placeholder="First Name" />
-            </label>
-            <label class="block mb-2 w-full mx-2">
-              <span class="text-gray-700">Middle Name</span>
-              <input class="form-input mt-1 block w-full" v-model="patientForm.middleName" placeholder="Middle Name" />
-            </label>
-            <label class="block mb-2 w-full">
-              <span class="text-gray-700">Last Name</span>
-              <input class="form-input mt-1 block w-full" v-model="patientForm.lastName" placeholder="Last Name" />
-            </label>
-          </div>
 
-          <div class="flex justify-between">
-            <label class="block mb-2 w-full">
-              <span class="text-gray-700">Age</span>
-              <input class="form-input mt-1 block w-full" type="number" v-model="patientForm.age" placeholder="Age" />
-            </label>
-            <label class="block mb-2 mx-2 w-full">
-              <span class="text-gray-700">Date of Birth</span>
-              <input class="form-input mt-1 block w-full" type="date" v-model="patientForm.dateOfBirth" placeholder="Date of Birth" />
-            </label>
-            <label class="inline-flex items-center -mb-6 w-full">
-              <input type="checkbox" class="form-checkbox text-green-500 mx-4" v-model="patientForm.ageDobEstimated" />
-              <span class="ml-2">Age/DOB Estimated?</span>
-            </label>
-          </div>
+          <label class="flex whitespace-nowrap mb-2 w-full">
+            <span class="text-gray-700 w-4/12">First Name</span>
+            <input class="form-input mt-1 w-full" v-model="patientForm.firstName" placeholder="First Name" />
+          </label>
 
-          <div class="flex justify-between">
-            <label class="block mb-2 w-full" >
-              <span class="text-gray-700">Gender</span>
-              <select class="form-select block w-full mt-1" v-model="patientForm.gender">
-                <option></option>
-                <option v-for="(sex, indx) in genders" :key="sex.index" :value="indx"> {{ sex }}</option>
-              </select>
-            </label>
-            <label class="block  mx-2 mb-2 w-full" >
-              <span class="text-gray-700">Mobile Number</span>
-              <input class="form-input mt-1 block w-full" type="number" v-model="patientForm.phoneMobile" placeholder="Mobile Number" />
-            </label>
-            <label class="inline-flex items-center -mb-6 w-full">
-              <input type="checkbox" class="form-checkbox text-green-500 mx-4" v-model="patientForm.consentSms" />
-              <span class="ml-2">Consent to SMS</span>
-            </label>
-          </div>
+          <label class="flex whitespace-nowrap mb-2 w-full">
+            <span class="text-gray-700 w-4/12">Middle Name</span>
+            <input class="form-input mt-1 w-full" v-model="patientForm.middleName" placeholder="Middle Name" />
+          </label>
+
+          <label class="flex whitespace-nowrap mb-2 w-full">
+            <span class="text-gray-700 w-4/12">Last Name</span>
+            <input class="form-input mt-1 w-full" v-model="patientForm.lastName" placeholder="Last Name" />
+          </label>
+
+          <label class="flex whitespace-nowrap mb-2 w-full">
+            <span class="text-gray-700 w-4/12">Age</span>
+            <input class="form-input mt-1 w-full" type="number" v-model="patientForm.age" placeholder="Age" />
+          </label>
+
+          <label class="flex whitespace-nowrap mb-2 w-full">
+            <span class="text-gray-700 w-4/12">Date of Birth</span>
+            <input class="form-input mt-1 w-full" type="date" v-model="patientForm.dateOfBirth" placeholder="Date of Birth" />
+          </label>
+
+          <label class="flex whitespace-nowrap mb-2 w-full">
+            <span class="text-gray-700 w-3/12">Age/DOB Estimated?</span>
+            <input type="checkbox" class="form-checkbox text-green-500" v-model="patientForm.ageDobEstimated" />
+          </label>
+
+          <label class="flex whitespace-nowrap mb-2 w-full" >
+            <span class="text-gray-700 w-4/12">Gender</span>
+            <select class="form-select mt-1 w-full" v-model="patientForm.gender">
+              <option></option>
+              <option v-for="(sex, indx) in genders" :key="sex.index" :value="indx"> {{ sex }}</option>
+            </select>
+          </label>
+
+          <label class="flex whitespace-nowrap mb-2 w-full" >
+            <span class="text-gray-700 w-4/12">Mobile Number</span>
+            <input class="form-input mt-1 w-full" type="number" v-model="patientForm.phoneMobile" placeholder="Mobile Number" />
+          </label>
+
+          <label class="flex whitespace-nowrap mb-2 w-full">
+            <span class="text-gray-700 w-3/12">Consent to SMS</span>
+            <input type="checkbox" class="form-checkbox text-green-500" v-model="patientForm.consentSms" />
+          </label>
 
           <!-- other identifiers: passport, client pid, national id -->
-          <label class="block mb-2 w-full">
-            <span class="text-gray-700">Primary Referrer</span>
-            <select class="form-select block w-full mt-1" v-model="patientForm.clientUid">
+          <label class="flex whitespace-nowrap mb-2 w-full">
+            <span class="text-gray-700 w-4/12">Primary Referrer</span>
+            <select class="form-select mt-1 w-full" v-model="patientForm.clientUid">
                 <option></option>
                 <option v-for="client in clients" :key="client.uid" :value="client.uid"> {{ client.name }} {{ client.uid }}</option>
               </select>
           </label>
 
+          <hr class="my-2">
+
           <div class="grid grid-cols-3 gap-x-4 mb-4">
-            <label class="block col-span-1 mb-2 w-full">
-              <span class="text-gray-700">Country</span>
-              <select class="form-select block w-full mt-1" v-model="countryUid" @change="getProvinces($event)">
+            <label class="flex items-center whitespace-nowrap col-span-1 mb-2 w-full">
+              <span class="text-gray-700 w-4/12">Country</span>
+              <select class="form-select mt-1 w-full" v-model="countryUid" @change="getProvinces($event)">
                 <option></option>
                 <option v-for="country in countries" :key="country.uid" :value="country.uid"> {{ country.name }} {{ country.uid }}</option>
               </select>
             </label>
-            <label class="block col-span-1 mb-2 w-full">
-              <span class="text-gray-700">Province</span>
-              <select class="form-select block w-full mt-1" v-model="provinceUid" @change="getDistricts($event)">
+            <label class="flex items-center whitespace-nowrap col-span-1 mb-2 w-full">
+              <span class="text-gray-700 w-4/12">Province</span>
+              <select class="form-select mt-1 w-full" v-model="provinceUid" @change="getDistricts($event)">
                 <option></option>
                 <option v-for="province in provinces" :key="province.uid" :value="province.uid"> {{ province.name }} {{ province.uid }}</option>
               </select>
             </label>
-            <label class="block col-span-1 mb-2 w-full">
-              <span class="text-gray-700">District</span>
-              <select class="form-select block w-full mt-1" v-model="patientForm.districtUid">
+            <label class="flex items-center whitespace-nowrap col-span-1 mb-2 w-full">
+              <span class="text-gray-700 w-4/12">District</span>
+              <select class="form-select mt-1 w-full" v-model="patientForm.districtUid">
                 <option></option>
                 <option v-for="district in districts" :key="district.uid" :value="district.uid"> {{ district.name }} {{ district.uid }}</option>
               </select>
@@ -117,12 +121,7 @@ import { defineComponent, ref, reactive, computed } from 'vue';
 import { mapGetters, useStore } from 'vuex';
 import { useRouter, useRoute } from 'vue-router';
 import { useQuery } from '@urql/vue';
-import tabSamples from '../components/AnalyisRequestListing.vue';
-import tabCases from './comps/CaseTable.vue';
-import tabLogs from '../components/AuditLog.vue';
-import modal from '../../components/SimpleModal.vue';
 import { Patient } from '../../store/modules/patients';
-import { GET_ALL_PATIENTS, SEARCH_PATIENTS } from '../../graphql/patient.queries';
 import {  GET_ALL_CLIENTS } from '../../graphql/clients.queries';
 import {
   GET_ALL_COUNTRIES,
@@ -139,24 +138,13 @@ import { ActionTypes as AdminActionTypes } from '../../store/modules/admin';
 
 export default defineComponent({
   name: 'add-patient',
-  components: {
-    tabSamples,
-    tabCases,
-    tabLogs,
-    modal,
-  },
   setup(context) {
     let store = useStore();
     let router = useRouter();
     let route = useRoute();
 
     const nullPatient = new Patient();
-    let createAction = ref(true);
-    let showModal = ref(false);
-
-    let currentTab = ref('samples');
-    const tabs = ['samples', 'cases', 'logs'];
-    let currentTabComponent = computed(() => 'tab-' + currentTab.value);
+    let createAction = ref(true)
 
     let patientForm = reactive({ ...nullPatient });
     patientForm.clientPatientId = route.query.cpid;
@@ -169,9 +157,15 @@ export default defineComponent({
 
     const genders = ["Male", "Female", "Missing", "Trans Gender"]
 
-    store.dispatch(AdminActionTypes.FETCH_COUNTRIES);    
-    store.dispatch(ActionTypes.FETCH_PATIENTS);
-    store.dispatch(ClientActionTypes.FETCH_CLIENTS);
+    store.dispatch(AdminActionTypes.FETCH_COUNTRIES);  
+    let clientParams = reactive({ 
+      first: undefined, 
+      after: "",
+      text: "", 
+      sortBy: ["name"],
+      filterAction: false
+    });
+    store.dispatch(ClientActionTypes.FETCH_CLIENTS, clientParams);
 
     const { executeMutation: createPatient } = useMutation(ADD_PATIENT);
 
@@ -213,28 +207,6 @@ export default defineComponent({
       });
     }
 
-    function searchPatients(event) {
-      store.dispatch(ActionTypes.SEARCH_PATIENTS, event.target.value);
-    }
-
-    function isPatientSelected() {
-      return patientForm.patientId !== undefined;
-    }
-
-    let getPatientFullName = (pt) => {
-      return pt.firstName + ' ' + pt.lastName;
-    };
-
-    let getGender = pos => genders[pos];
-
-    let selectPatient = (pt) => {
-      Object.assign(patientForm, { ...pt });
-    };
-
-    let setPatientToNull = () => {
-      Object.assign(patientForm, { ...nullPatient });
-    };
-
     function patientFormManager(create) {
       showModal.value = true;
       createAction.value = create;
@@ -246,17 +218,7 @@ export default defineComponent({
     }
 
     return {
-      showModal,
-      tabs,
-      currentTab,
-      currentTabComponent,
       patientForm,
-      getPatientFullName,
-      patients: computed(() => store.getters.getPatients),
-      isPatientSelected,
-      selectPatient,
-      setPatientToNull,
-      patientFormManager,
       savePatientForm,
       countries: computed(() => store.getters.getCountries),
       clients: computed(() => store.getters.getClients),
@@ -267,8 +229,6 @@ export default defineComponent({
       getProvinces,
       getDistricts,
       genders,
-      getGender,
-      searchPatients,
     };
   },
 });

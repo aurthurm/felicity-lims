@@ -156,107 +156,109 @@
   </div>
 
   <!-- Patient Edit Form Modal -->
-  <modal v-if="showModal" @close="showModal = false">
+  <modal v-if="showModal" @close="showModal = false" :contentWidth="'w-3/6'">
     <template v-slot:header>
       <h3>Patient Form</h3>
     </template>
 
     <template v-slot:body>
-      <form action="post" class="p-1">
-        <label class="block mb-2">
-          <span class="text-gray-700">Patient Unique Identifier</span>
-          <input class="form-input mt-1 block w-full" v-model="patientForm.clientPatientId" placeholder="Patient Unique Identifier" />
-        </label>
-        <div class="flex justify-between">
-          <label class="block mb-2 w-full">
-            <span class="text-gray-700">First Name</span>
-            <input class="form-input mt-1 block w-full" v-model="patientForm.firstName" placeholder="First Name" />
-          </label>
-          <label class="block mb-2 w-full mx-2">
-            <span class="text-gray-700">Middle Name</span>
-            <input class="form-input mt-1 block w-full" v-model="patientForm.middleName" placeholder="Middle Name" />
-          </label>
-          <label class="block mb-2 w-full">
-            <span class="text-gray-700">Last Name</span>
-            <input class="form-input mt-1 block w-full" v-model="patientForm.lastName" placeholder="Last Name" />
-          </label>
-        </div>
+     <form action="post" class="border-2 border-gray-900 border-dotted rounded p-4" autocomplete="off">
 
-        <div class="flex justify-between">
-          <label class="block mb-2 w-full">
-            <span class="text-gray-700">Age</span>
-            <input class="form-input mt-1 block w-full" type="number" v-model="patientForm.age" placeholder="Age" />
+          <label class="flex whitespace-nowrap mb-2 w-full">
+            <span class="text-gray-700 w-4/12">Patient Unique Identifier</span>
+            <input class="form-input mt-1 block w-full" v-model="patientForm.clientPatientId" placeholder="Patient Unique Identifier" />
           </label>
-          <label class="block mb-2 mx-2 w-full">
-            <span class="text-gray-700">Date of Birth</span>
-            <input class="form-input mt-1 block w-full" type="date" v-model="patientForm.dateOfBirth" placeholder="Date of Birth" />
-          </label>
-          <label class="inline-flex items-center -mb-6 w-full">
-            <input type="checkbox" class="form-checkbox text-green-500 mx-4" v-model="patientForm.ageDobEstimated" />
-            <span class="ml-2">Age/DOB Estimated?</span>
-          </label>
-        </div>
 
-        <div class="flex justify-between">
-          <label class="block mb-2 w-full" >
-            <span class="text-gray-700">Gender</span>
-            <select class="form-select block w-full mt-1" v-model="patientForm.gender">
-               <option></option>
+          <label class="flex whitespace-nowrap mb-2 w-full">
+            <span class="text-gray-700 w-4/12">First Name</span>
+            <input class="form-input mt-1 w-full" v-model="patientForm.firstName" placeholder="First Name" />
+          </label>
+
+          <label class="flex whitespace-nowrap mb-2 w-full">
+            <span class="text-gray-700 w-4/12">Middle Name</span>
+            <input class="form-input mt-1 w-full" v-model="patientForm.middleName" placeholder="Middle Name" />
+          </label>
+
+          <label class="flex whitespace-nowrap mb-2 w-full">
+            <span class="text-gray-700 w-4/12">Last Name</span>
+            <input class="form-input mt-1 w-full" v-model="patientForm.lastName" placeholder="Last Name" />
+          </label>
+
+          <label class="flex whitespace-nowrap mb-2 w-full">
+            <span class="text-gray-700 w-4/12">Age</span>
+            <input class="form-input mt-1 w-full" type="number" v-model="patientForm.age" placeholder="Age" />
+          </label>
+
+          <label class="flex whitespace-nowrap mb-2 w-full">
+            <span class="text-gray-700 w-4/12">Date of Birth</span>
+            <input class="form-input mt-1 w-full" type="date" v-model="patientForm.dateOfBirth" placeholder="Date of Birth" />
+          </label>
+
+          <label class="flex whitespace-nowrap mb-2 w-full">
+            <span class="text-gray-700 w-3/12">Age/DOB Estimated?</span>
+            <input type="checkbox" class="form-checkbox text-green-500" v-model="patientForm.ageDobEstimated" />
+          </label>
+
+          <label class="flex whitespace-nowrap mb-2 w-full" >
+            <span class="text-gray-700 w-4/12">Gender</span>
+            <select class="form-select mt-1 w-full" v-model="patientForm.gender">
+              <option></option>
               <option v-for="(sex, indx) in genders" :key="sex.index" :value="indx"> {{ sex }}</option>
             </select>
           </label>
-          <label class="block mb-2 w-full" >
-            <span class="text-gray-700">Mobile Number</span>
-            <input class="form-input mt-1 block w-full" type="number" v-model="patientForm.phoneMobile" placeholder="Mobile Number" />
-          </label>
-          <label class="inline-flex items-center -mb-6 w-full">
-            <input type="checkbox" class="form-checkbox text-green-500 mx-4" v-model="patientForm.consentSms" />
-            <span class="ml-2">Consent to SMS</span>
-          </label>
-        </div>
 
-        <!-- other identifiers: passport, client pid, national id -->
-        <label class="block mb-2 w-full">
-          <span class="text-gray-700">Primary Referrer</span>
-          <select class="form-select block w-full mt-1" v-model="patientForm.clientUid">
-              <option></option>
-              <option v-for="client in clients" :key="client.uid" :value="client.uid"> {{ client.name }} {{ client.uid }}</option>
-            </select>
-        </label>
+          <label class="flex whitespace-nowrap mb-2 w-full" >
+            <span class="text-gray-700 w-4/12">Mobile Number</span>
+            <input class="form-input mt-1 w-full" type="number" v-model="patientForm.phoneMobile" placeholder="Mobile Number" />
+          </label>
 
-        <div class="grid grid-cols-3 gap-x-4 mb-4">
-          <label class="block col-span-1 mb-2 w-full">
-            <span class="text-gray-700">Country</span>
-            <select class="form-select block w-full mt-1" v-model="countryUid" @change="getProvinces($event)">
-              <option></option>
-              <option v-for="country in countries" :key="country.uid" :value="country.uid"> {{ country.name }} {{ country.uid }}</option>
-            </select>
+          <label class="flex whitespace-nowrap mb-2 w-full">
+            <span class="text-gray-700 w-3/12">Consent to SMS</span>
+            <input type="checkbox" class="form-checkbox text-green-500" v-model="patientForm.consentSms" />
           </label>
-          <label class="block col-span-1 mb-2 w-full">
-            <span class="text-gray-700">Province</span>
-            <select class="form-select block w-full mt-1" v-model="provinceUid" @change="getDistricts($event)">
-               <option></option>
-              <option v-for="province in provinces" :key="province.uid" :value="province.uid"> {{ province.name }} {{ province.uid }}</option>
-            </select>
-          </label>
-          <label class="block col-span-1 mb-2 w-full">
-            <span class="text-gray-700">District</span>
-            <select class="form-select block w-full mt-1" v-model="patientForm.districtUid">
-               <option></option>
-              <option v-for="district in districts" :key="district.uid" :value="district.uid"> {{ district.name }} {{ district.uid }}</option>
-            </select>
-          </label>
-        </div>
 
-        <hr />
-        <button
-          type="button"
-          @click.prevent="savePatientForm()"
-          class="-mb-4 w-full border border-green-500 bg-green-500 text-white rounded-md px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-green-600 focus:outline-none focus:shadow-outline"
-        >
-          Save Patient
-        </button>
-      </form>
+          <!-- other identifiers: passport, client pid, national id -->
+          <label class="flex whitespace-nowrap mb-2 w-full">
+            <span class="text-gray-700 w-4/12">Primary Referrer</span>
+            <select class="form-select mt-1 w-full" v-model="patientForm.clientUid">
+                <option></option>
+                <option v-for="client in clients" :key="client.uid" :value="client.uid"> {{ client.name }} {{ client.uid }}</option>
+              </select>
+          </label>
+
+          <div class="grid grid-cols-3 gap-x-4 mb-4">
+            <label class="flex items-center whitespace-nowrap col-span-1 mb-2 w-full">
+              <span class="text-gray-700 w-4/12">Country</span>
+              <select class="form-select mt-1 w-full" v-model="countryUid" @change="getProvinces($event)">
+                <option></option>
+                <option v-for="country in countries" :key="country.uid" :value="country.uid"> {{ country.name }} {{ country.uid }}</option>
+              </select>
+            </label>
+            <label class="flex items-center whitespace-nowrap col-span-1 mb-2 w-full">
+              <span class="text-gray-700 w-4/12">Province</span>
+              <select class="form-select mt-1 w-full" v-model="provinceUid" @change="getDistricts($event)">
+                <option></option>
+                <option v-for="province in provinces" :key="province.uid" :value="province.uid"> {{ province.name }} {{ province.uid }}</option>
+              </select>
+            </label>
+            <label class="flex items-center whitespace-nowrap col-span-1 mb-2 w-full">
+              <span class="text-gray-700 w-4/12">District</span>
+              <select class="form-select mt-1 w-full" v-model="patientForm.districtUid">
+                <option></option>
+                <option v-for="district in districts" :key="district.uid" :value="district.uid"> {{ district.name }} {{ district.uid }}</option>
+              </select>
+            </label>
+          </div>
+
+          <hr />
+          <button
+            type="button"
+            @click.prevent="savePatientForm()"
+            class="-mb-4 w-1/5 border border-green-500 bg-green-500 text-white rounded-md px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-green-600 focus:outline-none focus:shadow-outline"
+          >
+            Save Patient
+          </button>
+        </form>
     </template>
   </modal>
 </template>

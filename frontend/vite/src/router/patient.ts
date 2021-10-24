@@ -58,14 +58,14 @@ const patientRoutes = [
         name: 'patient-samples',
         component: SampleSingleView,
         children: [
-          {
-            path: '',
-            name: 'patient-samples',
-            component: SampleSingleView,
-            meta: {
-              requiresAuth: true,
-            },
-          },
+          // {
+          //   path: '',
+          //   name: 'patient-samples',
+          //   component: SampleSingleView,
+          //   meta: {
+          //     requiresAuth: true,
+          //   },
+          // },
           {
             path: ':sampleUid',
             name: 'sample-detail',

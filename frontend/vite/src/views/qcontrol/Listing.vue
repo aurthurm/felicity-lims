@@ -82,7 +82,6 @@
                     <router-link 
                     :to="{ name:'qc-set-detail', params: { qcSetUid: qcSet.uid } }"
                     class="px-2 py-1 mr-2 border-gray-500 border text-gray-500 rounded transition duration-300 hover:bg-gray-700 hover:text-white focus:outline-none">View Detail</router-link>
-                    <button class="px-2 py-1 mr-2 border-blue-500 border text-blue-500 rounded transition duration-300 hover:bg-blue-700 hover:text-white focus:outline-none">View Chart</button>
                 </td>
             </tr>
             </tbody>

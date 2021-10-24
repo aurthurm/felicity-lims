@@ -23,6 +23,8 @@ import KanBanView from '../views/kanban/index.vue';
 import KanBanBoards from '../views/kanban/Boards.vue'
 import KanBanBoardSingle from '../views/kanban/_id/index.vue'
 import KanBanBoardDetail from '../views/kanban/_id/Listings.vue'
+import KanBanTaskView from '../views/kanban/_id/task/index.vue'
+import KanBanTaskDetail from '../views/kanban/_id/task/Task.vue'
 import MarkDownView from '../views/markdown/index.vue';
 import MarkDownListing from '../views/markdown/DocumentListing.vue';
 import MarkDownDocumentSingle from '../views/markdown/_id/index.vue';
@@ -189,6 +191,24 @@ const routes: RouteRecordRaw[] = [
             meta: {
               requiresAuth: true,
             },
+          },
+          {
+            path: 'task',
+            name: 'board-task',
+            component: KanBanTaskView,
+            meta: {
+              requiresAuth: true,
+            },
+            children: [
+              {
+                path: ':taskUid',
+                name: 'task-detail',
+                component: KanBanTaskDetail,
+                meta: {
+                  requiresAuth: true,
+                },
+              },
+            ],
           },
         ],
         meta: {

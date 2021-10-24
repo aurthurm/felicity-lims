@@ -17,6 +17,7 @@
     </div>
     <div class="ml-4">
         <button 
+        v-show="showAddList"
         class="mt-6 border border-gray-900 border-dashed rounded py-2 px-2 text-gray-500"
         @click.prevent="FormManager()">
           <i class="fa fa-plus-circle" aria-hidden="true"></i> Listing
@@ -136,6 +137,7 @@ export default defineComponent({
 
 
     return { 
+      showAddList: computed(() => !route.path.includes("task") ),
       board,
       showModal,
       FormManager,

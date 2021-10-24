@@ -260,7 +260,6 @@ export default defineComponent({
       });
 
       toggleView("grid");
-      console.log(final)
 
       return { 
         levels: final.levels, 
@@ -645,7 +644,6 @@ export default defineComponent({
           let analysisUids = [];
           filtered?.forEach(result => analysisUids.push(result.analysisUid));
           hasDuplicates.value = (new Set(analysisUids)).size !== analysisUids.length;
-          console.log(hasDuplicates)
           if(hasDuplicates.value === true) break;
       }
 

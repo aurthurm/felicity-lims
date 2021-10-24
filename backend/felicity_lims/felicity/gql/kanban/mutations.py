@@ -343,7 +343,7 @@ class KanBanMutations:
         return task_comment
 
     @strawberry.mutation
-    async def create_task_milestone(self, info, title: str, task_uid: int, assignee_uid: Optional[int],
+    async def create_task_milestone(self, info, title: str, task_uid: int, assignee_uid: Optional[int] = None,
                                     done: Optional[bool] = None) -> types.TaskMilestoneType:
 
         inspector = inspect.getargvalues(inspect.currentframe())
