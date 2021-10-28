@@ -92,7 +92,7 @@ export default defineComponent({
     function login() {
       authenticateUser({ username: form.username, password: form.password }).then((result) => {
         Object.assign(userAuth, result);
-        if(!result.error)  store.dispatch(ActionTypes.PERSIST_AUTH_DATA, result).then(_ => router.push({ name: "DashBoard" }));
+        if(!result.error)  store.dispatch(ActionTypes.PERSIST_AUTH_DATA, result).then(_ => router.push({ name: "DASHBOARD" }));
       });
     }
 

@@ -1,8 +1,9 @@
 import { RouteRecordRaw, createRouter, createWebHistory } from 'vue-router';
+import { canAccessPage, roles } from './../guards';
+import { pages } from './constants';
 import adminRoutes from './admin';
 import patientRoutes from './patient';
 import clientRoutes from './client';
-
 
 import LoginView from '../views/auth/Login.vue';
 import DashBoardView from '../views/dashboard/index.vue';
@@ -32,13 +33,15 @@ import MarkDownDocumentView from '../views/markdown/_id/Document.vue';
 import AboutView from '../views/About.vue';
 import AdminView from '../views/admin/index.vue';
 import PageNotFound from '../views/404.vue';
+import NotAuthorised from '../views/Restricted.vue';
 import { isTokenValid } from './checks';
+
 
 const routes: RouteRecordRaw[] = [
   // { path: '/', redirect: '/dashboard' },
   {
     path: '/dashboard',
-    name: 'DashBoard',
+    name: pages.DASHBOARD,
     component: DashBoardView,
     meta: {
       requiresAuth: true,
@@ -46,13 +49,13 @@ const routes: RouteRecordRaw[] = [
   },
   {
     path: '/auth',
-    name: 'Login',
+    name: pages.LOGIN,
     component: LoginView,
     meta: { layout: 'empty' },
   },
   {
     path: '/patients',
-    name: 'Patients',
+    name: pages.PATIENTS,
     component: PatientsView,
     children: patientRoutes,
     meta: {
@@ -61,7 +64,7 @@ const routes: RouteRecordRaw[] = [
   },
   {
     path: '/patients-compact',
-    name: 'patients-compact',
+    name: pages.PATIENTS_COMPACT,
     component: PatientsCompact,
     meta: {
       requiresAuth: true,
@@ -69,7 +72,7 @@ const routes: RouteRecordRaw[] = [
   },
   {
     path: '/clients',
-    name: 'clients',
+    name: pages.CLIENTS,
     component: ClientsView,
     children: clientRoutes,
     meta: {
@@ -78,7 +81,7 @@ const routes: RouteRecordRaw[] = [
   },
   {
     path: '/samples',
-    name: 'Samples',
+    name: pages.SAMPLES,
     component: SamplesView,
     children: [
       {
@@ -96,7 +99,7 @@ const routes: RouteRecordRaw[] = [
   },
   {
     path: '/quality-control',
-    name: 'quality-control',
+    name: pages.QC_SAMPLES,
     component: QualityControlView,
     children: [
       {
@@ -132,7 +135,7 @@ const routes: RouteRecordRaw[] = [
   },
   {
     path: '/worksheets',
-    name: 'WorkSheets',
+    name: pages.WORKSHEETS,
     component: WorkSheetsView,
     children: [
       {
@@ -168,7 +171,7 @@ const routes: RouteRecordRaw[] = [
   },
   {
     path: '/kanban-boards',
-    name: 'KanBan',
+    name: pages.KANBAN_BOARD,
     component: KanBanView,
     children: [
       {
@@ -222,7 +225,7 @@ const routes: RouteRecordRaw[] = [
   },
   {
     path: '/documents',
-    name: 'MarkDown',
+    name: pages.MARKDOWN_DOCUMENTS,
     component: MarkDownView,
     children: [
       {
@@ -273,7 +276,7 @@ const routes: RouteRecordRaw[] = [
     },
   },
   {
-    name: 'admin',
+    name: pages.ADMINISTRATION,
     path: '/admin',
     component: AdminView,
     children: adminRoutes,
@@ -283,9 +286,17 @@ const routes: RouteRecordRaw[] = [
     },
   },
   {
-    name: '404-page-not-found',
+    name: pages.FOUR_OR_FOUR,
     path: '/:pathMatch(.*)',
     component: PageNotFound,
+    meta: {
+      layout: 'empty',
+    },
+  },
+  {
+    name: pages.NOT_AUTHORISED,
+    path: '/acced-denied',
+    component: NotAuthorised,
     meta: {
       layout: 'empty',
     },
@@ -300,20 +311,69 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
 
   if(to.path === '/') {
-    next({ path: '/dashboard' });
+    next({ name: pages.DASHBOARD });
     return;
   }
 
   if (to.matched.some((record) => record.meta.requiresAuth)) {
+
     let token = localStorage.getItem('fwt');
+
     if (!isTokenValid(token)) {
-      next({ path: '/auth' });
+      next({ name: pages.LOGIN });
     } else {
-      next();
+      if(!hasAccess(to.matched[0].name)){  // to.matched[0] get outer page
+       next({ name: pages.NOT_AUTHORISED });
+      } else {
+        next();
+      }
+
     }
+
   } else {
     next();
   }
+
 });
+
+
+function hasAccess(page: any) {
+  const userRole = localStorage.getItem('fRole') || "";
+
+  switch (page) {
+    case pages.DASHBOARD:
+      return canAccessPage(userRole, pages.DASHBOARD)
+
+    case pages.PATIENTS:
+      return canAccessPage(userRole, pages.PATIENTS)
+      
+    case pages.PATIENTS_COMPACT:
+      return canAccessPage(userRole, pages.PATIENTS_COMPACT)
+    
+    case pages.CLIENTS:
+      return canAccessPage(userRole, pages.CLIENTS)
+    
+    case pages.SAMPLES:
+      return canAccessPage(userRole, pages.SAMPLES)
+
+    case pages.QC_SAMPLES:
+      return canAccessPage(userRole, pages.QC_SAMPLES)
+      
+    case pages.WORKSHEETS:
+      return canAccessPage(userRole, pages.WORKSHEETS)
+    
+    case pages.MARKDOWN_DOCUMENTS:
+      return canAccessPage(userRole, pages.MARKDOWN_DOCUMENTS)
+    
+    case pages.KANBAN_BOARD:
+      return canAccessPage(userRole, pages.KANBAN_BOARD)
+    
+      case pages.ADMINISTRATION:
+        return canAccessPage(userRole, pages.ADMINISTRATION)
+
+    default:
+      return false;
+  }
+}
 
 export default router;

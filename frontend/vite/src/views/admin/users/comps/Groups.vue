@@ -3,7 +3,6 @@
     <div class="container w-full my-4">
         <h5>Groups and Permissios</h5>
         <hr>
-
         <div v-for="group in groups" :key="group">
             <accordion >
               <template v-slot:title>{{ group?.name }}</template>

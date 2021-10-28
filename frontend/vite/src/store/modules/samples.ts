@@ -56,7 +56,7 @@ export class SampleRequest implements ISampleRequest {
 }
 
 export interface IAnalysisResult {
-  uid?: string;
+  uid?: number;
   analysisUid?: string;
   analysis?: IAnalysisService;
   worksheetPosition?: number;
@@ -66,6 +66,8 @@ export interface IAnalysisResult {
   result?: string;
   editResult?: string;
   createdAt?: string;
+  checked?: boolean;
+  editable?: boolean;
 }
 
 export class AnalysisResult implements IAnalysisResult {

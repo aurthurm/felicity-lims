@@ -28,6 +28,7 @@ export const mutations = <MutationTree<IState>>{
     state.auth = authData.user;
     state.token = authData.token;
     state.isAuthenticated = true;
+    if(state.auth) state.auth.role = "ADMINISTRATOR";
   },
 
   [MutationTypes.SET_USERS](state: IState, payload): void {
@@ -35,8 +36,8 @@ export const mutations = <MutationTree<IState>>{
   },
 
   [MutationTypes.SET_GROUPS_AND_PERMISSIONS](state: IState, payload): void {
-    state.groups = payload?.permissionAll;
-    state.permissions = payload?.groupAll;
+    state.groups = payload?.groupAll;
+    state.permissions = payload?.permissionAll;
   },
 
   [MutationTypes.UPDATE_GROUPS_PERMISSIONS](state: IState, payload): void {

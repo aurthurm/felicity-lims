@@ -35,9 +35,11 @@
     </div>
 
 
-    <button
-    @click.prevent="FormManager(true)"
+    <div v-show="hasRights(userRole, objects.WORKSHEET, actions.CREATE)">
+      <button
+      @click.prevent="FormManager(true)"
       class="p-2 h-10 border-blue-500 border text-blue-500 rounded transition duration-300 hover:bg-blue-700 hover:text-white focus:outline-none">Add WorkSheet</button>
+    </div>
   </div>
 
   
@@ -194,6 +196,8 @@ import { ActionTypes, IWorkSheet } from '../../store/modules/worksheets';
 import { ActionTypes as BaseActionTypes } from '../../store/actions';
 import { ADD_WORKSHEET } from '../../graphql/worksheet.mutations'
 import { ifZeroEmpty } from '../../utils'
+import { hasRights, objects, actions } from './../../guards';
+
 export default defineComponent({
   name: "Samples",
   components: {
@@ -288,6 +292,8 @@ export default defineComponent({
     }
 
     return {
+      hasRights, objects, actions,
+      userRole: computed(() => localStorage.getItem('fRole') || "" ),
       showModal, 
       FormManager,
       form,

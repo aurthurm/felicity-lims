@@ -44,6 +44,7 @@ export const actions = <ActionTree<IState, RootState>>{
     localStorage.setItem('fwt', authData.token); // Felicity Web Token
     localStorage.setItem('fuser', authData.user?.firstName + " " + authData.user?.lastName); // Felicity User
     localStorage.setItem('fuid', authData.user?.uid); // Felicity UserUid
+    localStorage.setItem('fRole', "ADMINISTRATOR"); // Felicity userRule
     await commit(MutationTypes.PERSIST_AUTH_DATA, authData);
   },
 
@@ -51,6 +52,7 @@ export const actions = <ActionTree<IState, RootState>>{
     localStorage.removeItem("fwt");
     localStorage.removeItem("fuser");
     localStorage.removeItem("fuid");
+    localStorage.removeItem("fRole");
     commit(MutationTypes.RESET_STATE);
   },
 

@@ -4,9 +4,10 @@ export interface IAuth {
   username?: string;
   firstName?: string;
   lastName?: string;
+  role?: string;
 }
 export class Auth implements IAuth {
-  constructor(public email?: string, public username?: string, public password?: string) {}
+  constructor(public email?: string, public username?: string, public password?: string, role?: string) {}
 }
 export interface IState {
   title: string;

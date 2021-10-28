@@ -85,6 +85,7 @@
               >Profile</a
             >
             <router-link
+              v-show="canAccessPage(userRole, pages.ADMINISTRATION)"
               to="/admin"
               class="no-underline text-gray-500 py-1 opacity-50 flex items-center px-4 border-b border-transparent hover:opacity-100 md:hover:border-grey-dark hover:bg-gray-800 hover:text-gray-200"
               >Configurations</router-link>
@@ -100,11 +101,10 @@
 </template>
 
 
-
-
-
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
+import { defineComponent, ref, computed } from 'vue';
+import { canAccessPage, roles } from './../../../guards';
+import { pages } from "./../../../router/constants";
 export default defineComponent({
   setup(_, { emit }) {
     const dropdownOpen = ref(false);
@@ -113,6 +113,8 @@ export default defineComponent({
     const userFullName: string = localStorage.getItem('fuser');
 
     return {
+      pages, canAccessPage,
+      userRole: computed(() => localStorage.getItem('fRole') || "" ),
       isOpen,
       dropdownOpen,
       userFullName

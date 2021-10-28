@@ -20,7 +20,7 @@
       </div>
       <hr>
       <section class="flex justify-center items-center mt-4">
-        <h1>Sorry 404 Page not Found</h1>
+        <h1>Sorry You are not Authorised to access this resource</h1>
 
         <div>
           <button 
@@ -35,7 +35,7 @@
   </div>
 </template>
 <script>
-import { defineComponent, ref } from 'vue';
+import { defineComponent, ref,} from 'vue';
 import { useRouter } from 'vue-router';
 import { pages } from "./../router/constants";
 export default defineComponent({

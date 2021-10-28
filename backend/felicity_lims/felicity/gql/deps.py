@@ -16,8 +16,8 @@ async def get_current_user(token: str = None) -> models.User:
             token, settings.SECRET_KEY, algorithms=[security.ALGORITHM]
         )
         token_data = core_schemas.TokenPayload(**payload)
-    except (jwt.JWTError, ValidationError):
-        raise Exception("Could not validate credentials")
+    except (jwt.JWTError, ValidationError) as e:
+        raise Exception(f"Could not validate credentials:{e}")
     user = await models.User.get(uid=token_data.sub)
     if not user:
         raise GraphQLError("User not found!")

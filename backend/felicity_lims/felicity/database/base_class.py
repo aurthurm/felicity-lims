@@ -196,11 +196,6 @@ class DBModel(AllFeaturesMixin, TimestampsMixin):
     async def paginate_with_cursors(cls, page_size: [int] = None, after_cursor: Any = None, before_cursor: Any = None,
                                     filters: Any = None, sort_by: List[str] = None) -> PageCursor:
 
-        logger.info(f"Filters in: {filters}")
-        logger.info(f"page_size : {page_size}")
-        logger.info(f"sort_by : {sort_by}")
-        logger.info(f"after_cursor : {after_cursor}")
-
         if not filters:
             filters = {}
 
@@ -225,8 +220,6 @@ class DBModel(AllFeaturesMixin, TimestampsMixin):
             _filters = filters
             if cursor_limit:
                 _filters = _filters.extend({sa_or_: cursor_limit})
-
-        logger.info(f"Filters final: {filters}")
 
         stmt = cls.smart_query(filters=_filters, sort_attrs=sort_by)
         qs = (await cls.session.execute(stmt)).scalars().all()
