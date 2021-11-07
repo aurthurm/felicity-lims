@@ -35,22 +35,22 @@
                   </div>
                   <div class="flex">
                     <span class="text-gray-800 text-sm font-medium w-16">District:</span>
-                    <span class="text-gray-600 text-sm md:text-md">{{ client?.name }}</span>
+                    <span class="text-gray-600 text-sm md:text-md">{{ client?.district?.name }}</span>
                   </div>
                   <div class="flex">
                     <span class="text-gray-800 text-sm font-medium w-16">Code:</span>
-                    <span class="text-gray-600 text-sm md:text-md">{{ client?.name }}</span>
+                    <span class="text-gray-600 text-sm md:text-md">{{ client?.code }}</span>
                   </div>
                 </div>
                 <div class="col-span-1">
                   <!-- Communication Details -->
                   <div class="flex">
                     <span class="text-gray-800 text-sm font-medium w-16">Email:</span>
-                    <span class="text-gray-600 text-sm md:text-md">{{ client?.name }}</span>
+                    <span class="text-gray-600 text-sm md:text-md">{{ client?.email }}</span>
                   </div>
                   <div class="flex">
                     <span class="text-gray-800 text-sm font-medium w-16">Mobile:</span>
-                    <span class="text-gray-600 text-sm md:text-md">{{ client?.name }}</span>
+                    <span class="text-gray-600 text-sm md:text-md">{{ client?.mobilePhone }}</span>
                   </div>
                 </div>
               </div>
@@ -60,7 +60,6 @@
       
       </section>
     </div>
-
 
     <router-view />
 

@@ -8,13 +8,13 @@ from sqlalchemy.orm import relationship
 from felicity.apps.client.models import Client
 from felicity.apps.core.utils import sequencer
 from felicity.apps.patient import schemas
-from felicity.database.base_class import DBModel
+from felicity.apps import DBModel, Auditable
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
-class Patient(DBModel):
+class Patient(Auditable, DBModel):
     # Identification
     client_patient_id = Column(String, index=True, unique=True, nullable=False)
     patient_id = Column(String, index=True, unique=True, nullable=True)

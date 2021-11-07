@@ -9,6 +9,16 @@ export const AUTHENTICATE_USER = gql`
         uid
         firstName
         lastName
+        groups {
+          uid
+          name
+          keyword
+          permissions {
+            uid
+            action
+            target
+          }
+        }
       }
     }
   }`;
@@ -37,6 +47,12 @@ export const ADD_USER = gql`
       groups {
         uid
         name
+        keyword
+        permissions {
+          uid
+          action
+          target
+        }
       }
   }
   }
@@ -44,12 +60,15 @@ export const ADD_USER = gql`
 
 
 export const EDIT_USER = gql`
-  mutation editUser($userUid: Int!, $firstName: String!, $lastName: String, $email: String) {
+  mutation editUser($userUid: Int!, $firstName: String!, $lastName: String, $email: String, $groupUid: Int, $mobilePhone: String, $isActive: Boolean) {
     updateUser(
       userUid: $userUid,
       firstName: $firstName, 
       lastName: $lastName, 
       email: $email,
+      groupUid: $groupUid,
+      mobilePhone: $mobilePhone,
+      isActive: $isActive,
     ){
       uid
       firstName
@@ -65,8 +84,14 @@ export const EDIT_USER = gql`
         userType          
       }
       groups {
-            uid
-            name
+        uid
+        name
+        keyword
+        permissions {
+          uid
+          action
+          target
+        }
       }
     }
   }
@@ -81,11 +106,11 @@ export const ADD_USER_AUTH = gql`
       password: $password, 
       passwordc: $passwordc, 
     ){
-        uid
-        userName
-        userType
-        isBlocked
-        loginRetry
+      uid
+      userName
+      userType
+      isBlocked
+      loginRetry
     }
   }
 `;
@@ -113,8 +138,14 @@ export const EDIT_USER_AUTH = gql`
         userType          
       }
       groups {
-            uid
-            name
+        uid
+        name
+        keyword
+        permissions {
+          uid
+          action
+          target
+        }
       }
     }
   }
@@ -127,12 +158,13 @@ export const UPDATE_GROUP_PERMS = gql`
         group {
           uid
           name
+          keyword
           active
         }
         permission {
-              uid
-              action
-              target
+          uid
+          action
+          target
         }
     }
   }`;
@@ -141,8 +173,8 @@ export const UPDATE_GROUP_PERMS = gql`
 export const ADD_DEPARTMENT = gql`
   mutation addDepartment($name: String!) {
     createDepartment(name: $name) {
-        uid
-        name
+      uid
+      name
     }
   }`;
 
@@ -150,7 +182,7 @@ export const ADD_DEPARTMENT = gql`
 export const UPDATE_DEPARTMENT = gql`
   mutation editDepartment($uid: Int!, $name: String!) {
     updateDepartment(uid: $uid, name: $name) {
-        uid
-        name
+      uid
+      name
     }
   }`;

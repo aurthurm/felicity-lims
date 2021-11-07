@@ -24,7 +24,8 @@ class PermissionType:
 class GroupType:
     uid: int
     name: Optional[str]
-    permissions: Optional[PermissionType]
+    keyword: Optional[str]
+    permissions: Optional[List[PermissionType]]
     active: Optional[bool]
 
 

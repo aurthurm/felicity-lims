@@ -1,5 +1,6 @@
 from datetime import datetime
 import logging
+from typing import List
 
 from sqlalchemy import Column, String, Integer, ForeignKey, Boolean, DateTime, Table
 from sqlalchemy.orm import relationship

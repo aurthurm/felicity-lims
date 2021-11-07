@@ -1,6 +1,6 @@
 <template>
+  <h2>WORKSHEETS</h2>
   <div class="flex justify-between items-center">
-
     <div class="my-4 flex sm:flex-row flex-col">
         <div class="flex flex-row mb-1 sm:mb-0">
             <div class="relative">
@@ -33,7 +33,6 @@
         </div><button @click.prevent="filterWorkSheets()"
       class="px-2 py-1 ml-2 border-blue-500 border text-blue-500 rounded transition duration-300 hover:bg-blue-700 hover:text-white focus:outline-none">Filter ...</button>
     </div>
-
 
     <div v-show="hasRights(userRole, objects.WORKSHEET, actions.CREATE)">
       <button
@@ -75,7 +74,7 @@
               <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
               <div class="flex items-center">
                   <div>
-                  <div class="text-sm leading-5 text-gray-800">
+                  <div class="text-sm leading-5 text-gray-800 font-semibold">
                     <router-link :to="{ name: 'worksheet-detail', params: { workSheetUid: worksheet?.uid  }}">{{ worksheet?.worksheetId }}</router-link>
                   </div>
                   </div>

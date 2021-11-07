@@ -1,8 +1,8 @@
 <template>
 
-    <div class="container w-full my-4">
+    <div class="w-full my-4">
         <hr>
-        <div class="flex justify-between">
+        <div class="flex justify-between items-center">
           <h3>Users</h3>
           <button @click="UserFormManager(true, null)" class="px-2 py-1 ml-2 border-blue-500 border text-blue-500 rounded transition duration-300 hover:bg-blue-700 hover:text-white focus:outline-none">Add User/Lab Contact</button>
         </div>
@@ -128,7 +128,7 @@
                 <input 
                 type="checkbox" 
                 name="toggle" id="toggle" 
-                v-model="form.active"
+                v-model="form.isActive"
                 class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer outline-none"/>
                 <label for="toggle" class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer"></label>
             </div>
@@ -245,6 +245,7 @@ export default defineComponent({
     }
 
     function editUser(): void {
+      console.log(form)
       updateUser(form).then((result) => {
        console.log(result)
       });
@@ -264,7 +265,7 @@ export default defineComponent({
 
     function userGroupsName(user: any): void {
         let groups = [];
-        user?.groups?.forEach(a => groups.push(g.name));
+        user?.groups?.forEach(g => groups.push(g.name));
         return groups.join(', ');
     }
 
@@ -277,17 +278,17 @@ export default defineComponent({
         user.firstName = "";
         user.lastName = "";
         user.email = "";
-        user.active = true;
+        user.isActive = true;
         user.groupUid = undefined;
         Object.assign(form, { ...user });
       } else {
         obj.userUid = obj?.uid;
+        obj.groupUid = obj.groups[0]?.uid;
         Object.assign(form, { ...obj });
       }
     }
 
     function saveUserForm(): void {
-      console.log(form)
       if(formAction.value){
         addUser()
       } else {
@@ -297,7 +298,6 @@ export default defineComponent({
     }
 
     function UserAuthFormManager(create, obj): void {
-      console.log(obj)
       formAction.value = create;
       showUserAuthModal.value = true;
       formTitle.value = (create ? 'ADD' : 'EDIT') + ' AUTHENTICATION ' + "FOR USER " + obj?.firstName;

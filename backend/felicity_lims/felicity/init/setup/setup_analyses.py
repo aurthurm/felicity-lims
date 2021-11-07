@@ -1,5 +1,6 @@
 from typing import Optional
-
+from felicity.core.config import settings
+import json
 from felicity.apps.analysis.models.analysis import (
     SampleType,
     AnalysisCategory,
@@ -20,109 +21,86 @@ from felicity.apps.analysis.schemas import (
 
 
 async def create_categories():
-    categories = [
-        AnalysisCategoryCreate(
-            name="Quality Control",
-            description='Quality Control Analysis Services Groupings',
-            active=True
-        ),
-        AnalysisCategoryCreate(
-            name="Molecular Tech",
-            description='Molecular Techniques',
-            active=True
-        ),
-    ]
-    for category in categories:
-        cat = await AnalysisCategory.get(name=category.name)
-        if not cat:
-            await AnalysisCategory.create(category)
+    with open(settings.BASE_DIR + '/init/setup/data/analyses.json', 'r') as json_file:
+        data = json.load(json_file)
+    categories = data.get("categories", [])
+
+    for _cat in categories:
+        category = await AnalysisCategory.get(name=_cat)
+        if not category:
+            cat_in = AnalysisCategoryCreate(
+                name=_cat,
+                description=_cat
+            )
+            await AnalysisCategory.create(cat_in)
 
 
 async def create_qc_levels() -> None:
-    qc_levels = [
-        QCLevelCreate(level='Blank'),
-        QCLevelCreate(level='Negative Control'),
-        QCLevelCreate(level='Positive Control'),
-        QCLevelCreate(level='Low Positive Control'),
-        QCLevelCreate(level='High Positive Control'),
-    ]
+    with open(settings.BASE_DIR + '/init/setup/data/analyses.json', 'r') as json_file:
+        data = json.load(json_file)
+    qc_levels = data.get("qc_levels", [])
 
-    for level_in in qc_levels:
-        qc_level: Optional[QCLevel] = await QCLevel.get(level=level_in.level)
+    for _lvl in qc_levels:
+        qc_level = await QCLevel.get(level=_lvl)
         if not qc_level:
-            await QCLevel.create(level_in)
+            lvl_in = QCLevelCreate(level=_lvl)
+            await QCLevel.create(lvl_in)
 
 
 async def create_sample_types() -> None:
-    s_types = [
-        SampleTypeCreate(name="QC Sample", description="QC Sample", abbr="QCS", active=True),
-        SampleTypeCreate(name="Whole Blood", description="Whole Blood", abbr="WB", active=True),
-        SampleTypeCreate(name="Blood Plasma", description="Blood Plasma", abbr="BP", active=True),
-        SampleTypeCreate(name="Dried Blood Spot", description="Dried Blood Spot", abbr="DBS", active=True),
-        SampleTypeCreate(name="Urine", description="Urine", abbr="BV", active=True),
-        SampleTypeCreate(name="Stool", description="Stool", abbr="BG", active=True),
-        SampleTypeCreate(name="Synovial Fluid", description="Synovial Fluid", abbr="SF", active=False),
-        SampleTypeCreate(name="Cerebral Spinal Fluid", description="Cerebral Spinal Fluid", abbr="CSF", active=False),
-        SampleTypeCreate(name="Nasal-Pharyngeal Swab", description="Nasal-Pharyngeal Swab", abbr="NPS", active=True),
-        SampleTypeCreate(name="Oral-Pharyngeal Swab", description="Oral-Pharyngeal Swab", abbr="OSF", active=False),
-        SampleTypeCreate(name="Pus Swab", description="Pus Swabd", abbr="PS", active=True),
-    ]
+    with open(settings.BASE_DIR + '/init/setup/data/analyses.json', 'r') as json_file:
+        data = json.load(json_file)
+    sample_types = data.get("sample_types", [])
 
-    for st_in in s_types:
-        st: Optional[SampleType] = await SampleType.get(name=st_in.name)
+    for _st in sample_types:
+        st_name = _st.get("name")
+        st_description = _st.get("description")
+        st_abbr = _st.get("abbr")
+        st_active = _st.get("active", 0)
+        st = await SampleType.get(name=st_name, abbr=st_abbr)
         if not st:
+            st_in = SampleTypeCreate(
+                name=st_name,
+                description=st_description,
+                abbr=st_abbr.upper(),
+                active=bool(st_active)
+            )
             await SampleType.create(st_in)
 
 
 async def create_analyses_services_and_profiles() -> None:
-    analyses = [
-        AnalysisCreate(name="HIV", description="Human Immune Virus", keyword="hiv", sort_key=1, active=True),
-        AnalysisCreate(name="HIV Viral Load", description="HIV Viral Load", keyword="hivViralLoad", sort_key=1, active=True),
-        AnalysisCreate(name="EID", description="Early Infant Diagnosis", keyword="hivEid", sort_key=1, active=True),
-    ]
+    with open(settings.BASE_DIR + '/init/setup/data/analyses.json', 'r') as json_file:
+        data = json.load(json_file)
 
-    for an_in in analyses:
-        anal: Optional[Analysis] = await Analysis.get(name=an_in.name)
-        if not anal:
+    analyses = data.get("analyses", [])
+
+    for _anal in analyses:
+        analyte: Optional[Analysis] = await Analysis.get(name=_anal.get('name'))
+        if not analyte:
+            an_in = AnalysisCreate(
+                name=_anal.get('name'),
+                description=_anal.get('description'),
+                keyword=_anal.get('keyword'),
+                sort_key=_anal.get('sort_key'),
+                active=bool(_anal.get('active'))
+            )
             await Analysis.create(an_in)
 
-    profiles = [
-        {
-            "name": "U&E's",
-            "description": "Urea and Electrolytes",
-            "services": [
-                AnalysisCreate(name="Urea", description="Urea", keyword="urea", sort_key=5, active=True),
-                AnalysisCreate(name="Creatinine", description="Creatinine", keyword="creatinine", sort_key=4, active=True),
-                AnalysisCreate(name="K+", description="Potassium", keyword="potassium", sort_key=1, active=True),
-                AnalysisCreate(name="Na-", description="Sodium", keyword="sodium", sort_key=2, active=True),
-                AnalysisCreate(name="Cl-", description="Chloride", keyword="chloride", sort_key=3, active=True),
-            ],
-        },
-        {
-            "name": "FBC",
-            "description": "Full Blood Count",
-            "services": [
-                AnalysisCreate(name="WBC", description="White Blood Cells", keyword="wbc", sort_key=1, active=True),
-                AnalysisCreate(name="RBC", description="Red Blood Cells", keyword="rbc", sort_key=2, active=True),
-                AnalysisCreate(name="HGB", description="Haemoglobin", keyword="hbg", sort_key=3, active=True),
-                AnalysisCreate(name="MVC", description="Mean Cell Volume", keyword="mcv", sort_key=4, active=True),
-                AnalysisCreate(name="MCH", description="Mean Cell Haemaglobin", keyword="mch", sort_key=5, active=True),
-                AnalysisCreate(name="MCHC", description="Mean Cell Haemaglobin Concentration", keyword="mchc", sort_key=6, active=True),
-                AnalysisCreate(name="PLT", description="Platelets", keyword="plt", sort_key=7, active=True),
-            ],
-        },
-    ]
+    profiles = data.get("analyses_profiles", [])
 
-    for profile in profiles:
-        a_profile: Optional[Profile] = await Profile.get(name=profile.get("name"))
+    for _prf in profiles:
+        a_profile: Optional[Profile] = await Profile.get(name=_prf.get("name"))
         if not a_profile:
-            prof_in = ProfileCreate(**profile)
+            prof_in = ProfileCreate(
+                name=_prf.get("name"),
+                description=_prf.get("description"),
+            )
             a_profile = await Profile.create(prof_in)
 
-        analyses = profile.get("services", [])
-        for an_in in analyses:
-            anal: Optional[Analysis] = await Analysis.get(name=an_in.name)
-            if not anal:
-                an_in.profiles = [a_profile]
-                anal = await Analysis.create(an_in)
+        analyses_names = _prf.get("analyses_names", [])
+        for _a_name in analyses_names:
+            anal: Optional[Analysis] = await Analysis.get(name=_a_name)
+            if anal:
+                if a_profile not in anal.profiles:
+                    anal.profiles.append(a_profile)
 

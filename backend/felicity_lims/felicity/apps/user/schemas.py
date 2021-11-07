@@ -134,6 +134,7 @@ class PermissionInDB(PermissionInDBBase):
 # Shared properties
 class GroupBase(BaseModel):
     name: Optional[str] = None
+    keyword: Optional[str] = None
     members: Optional[List[User]] = None
     permissions: Optional[List[Permission]] = None
     active: bool = False

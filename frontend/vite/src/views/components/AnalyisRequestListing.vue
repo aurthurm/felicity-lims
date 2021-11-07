@@ -36,8 +36,8 @@
                             </td>
                             <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
                             <div class="flex items-center">
-                                <div>
-                                <router-link :to="{ name: 'sample-detail', params: { patientUid: request.patient?.uid, sampleUid: sample?.uid  }}">{{ sample.sampleId }}</router-link>
+                                <div class=" font-semibold">
+                                    <router-link :to="{ name: 'sample-detail', params: { patientUid: request.patient?.uid, sampleUid: sample?.uid  }}">{{ sample.sampleId }}</router-link>
                                 </div>
                             </div>
                             </td>

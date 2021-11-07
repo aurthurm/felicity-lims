@@ -3,13 +3,13 @@ from felicity.apps.user import models
 from felicity.apps.user import schemas
 
 
-class FGroup:
-    ADMINISTRATOR = 'ADMINISTRATOR'
-    LAB_MANAGER = 'LAB_MANAGER'
-    SCIENTIST = 'SCIENTIST'
-    TECHNOLOGIST = 'TECHNOLOGIST'
-    LAB_HAND = "LAB_HAND"
-    GUEST = "GUEST"
+class FGroup:  # (KEYWORD, NAME)
+    ADMINISTRATOR = ('ADMINISTRATOR', "Administrator")
+    LAB_MANAGER = ('LAB_MANAGER', "Laboratory Manager")
+    SCIENTIST = ('SCIENTIST', "Laboratory Scientist")
+    TECHNOLOGIST = ('TECHNOLOGIST', "Laboratory Technologist")
+    LAB_HAND = ("LAB_HAND", "Laboratory Hand")
+    GUEST = ("GUEST", "Guest")
 
 
 class FObject:
@@ -50,41 +50,41 @@ groups = [
 # default permissions
 permissions = {
     fa.CREATE: {
-        fo.PATIENT: [fg.LAB_HAND],
-        fo.SAMPLE: [fg.LAB_HAND],
-        fo.WORKSHEET: [fg.SCIENTIST, fg.TECHNOLOGIST],
+        fo.PATIENT: [fg.LAB_HAND[0]],
+        fo.SAMPLE: [fg.LAB_HAND[0]],
+        fo.WORKSHEET: [fg.SCIENTIST[0], fg.TECHNOLOGIST[0]],
     },
     fa.READ: {
-        fo.PATIENT: [fg.ADMINISTRATOR, fg.LAB_MANAGER, fg.SCIENTIST, fg.TECHNOLOGIST, fg.LAB_HAND, fg.GUEST],
-        fo.SAMPLE: [fg.ADMINISTRATOR, fg.LAB_MANAGER, fg.SCIENTIST, fg.TECHNOLOGIST, fg.LAB_HAND, fg.GUEST],
-        fo.WORKSHEET: [fg.ADMINISTRATOR, fg.LAB_MANAGER, fg.SCIENTIST, fg.TECHNOLOGIST, fg.GUEST],
+        fo.PATIENT: [fg.ADMINISTRATOR[0], fg.LAB_MANAGER[0], fg.SCIENTIST[0], fg.TECHNOLOGIST[0], fg.LAB_HAND[0], fg.GUEST[0]],
+        fo.SAMPLE: [fg.ADMINISTRATOR[0], fg.LAB_MANAGER[0], fg.SCIENTIST[0], fg.TECHNOLOGIST[0], fg.LAB_HAND[0], fg.GUEST[0]],
+        fo.WORKSHEET: [fg.ADMINISTRATOR[0], fg.LAB_MANAGER[0], fg.SCIENTIST[0], fg.TECHNOLOGIST[0], fg.GUEST[0]],
     },
     fa.UPDATE: {
-        fo.PATIENT: [fg.LAB_HAND],
-        fo.SAMPLE: [fg.LAB_HAND],
-        fo.WORKSHEET: [fg.SCIENTIST, fg.TECHNOLOGIST],
+        fo.PATIENT: [fg.LAB_HAND[0]],
+        fo.SAMPLE: [fg.LAB_HAND[0]],
+        fo.WORKSHEET: [fg.SCIENTIST[0], fg.TECHNOLOGIST[0]],
     },
     fa.SUBMIT: {
-        fo.SAMPLE: [fg.SCIENTIST, fg.TECHNOLOGIST],
-        fo.WORKSHEET: [fg.SCIENTIST, fg.TECHNOLOGIST],
+        fo.SAMPLE: [fg.SCIENTIST[0], fg.TECHNOLOGIST[0]],
+        fo.WORKSHEET: [fg.SCIENTIST[0], fg.TECHNOLOGIST[0]],
     },
     fa.VERIFY: {
-        fo.SAMPLE: [fg.SCIENTIST, fg.TECHNOLOGIST],
-        fo.WORKSHEET: [fg.SCIENTIST, fg.TECHNOLOGIST],
+        fo.SAMPLE: [fg.SCIENTIST[0], fg.TECHNOLOGIST[0]],
+        fo.WORKSHEET: [fg.SCIENTIST[0], fg.TECHNOLOGIST[0]],
     },
     fa.CANCEL: {
-        fo.SAMPLE: [fg.SCIENTIST, fg.TECHNOLOGIST, fg.LAB_HAND],
+        fo.SAMPLE: [fg.SCIENTIST[0], fg.TECHNOLOGIST[0], fg.LAB_HAND[0]],
     },
     fa.RETEST: {
-        fo.SAMPLE: [fg.SCIENTIST, fg.TECHNOLOGIST],
-        fo.WORKSHEET: [fg.SCIENTIST, fg.TECHNOLOGIST],
+        fo.SAMPLE: [fg.SCIENTIST[0], fg.TECHNOLOGIST[0]],
+        fo.WORKSHEET: [fg.SCIENTIST[0], fg.TECHNOLOGIST[0]],
     },
     fa.INVALIDATE: {
-        fo.SAMPLE: [fg.SCIENTIST, fg.TECHNOLOGIST],
+        fo.SAMPLE: [fg.SCIENTIST[0], fg.TECHNOLOGIST[0]],
     },
     fa.DELETE: {
-        fo.BOARD: [fg.ADMINISTRATOR, fg.LAB_MANAGER, fg.SCIENTIST, fg.TECHNOLOGIST, fg.LAB_HAND],
-        fo.DOCUMENT: [fg.ADMINISTRATOR, fg.LAB_MANAGER, fg.SCIENTIST, fg.TECHNOLOGIST, fg.LAB_HAND],
+        fo.BOARD: [fg.ADMINISTRATOR[0], fg.LAB_MANAGER[0], fg.SCIENTIST[0], fg.TECHNOLOGIST[0], fg.LAB_HAND[0]],
+        fo.DOCUMENT: [fg.ADMINISTRATOR[0], fg.LAB_MANAGER[0], fg.SCIENTIST[0], fg.TECHNOLOGIST[0], fg.LAB_HAND[0]],
     },
 }
 
@@ -99,9 +99,9 @@ def get_action_targets():  # e.g ('verify', 'worksheet'),
 
 async def create_groups() -> None:
     for _grp in groups:
-        exists = await models.Group.get(name=_grp)
+        exists = await models.Group.get(name=_grp[1])
         if not exists:
-            schema = schemas.GroupCreate(name=_grp)
+            schema = schemas.GroupCreate(name=_grp[1], keyword=_grp[0])
             await models.Group.create(schema)
 
 

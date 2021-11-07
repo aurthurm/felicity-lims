@@ -157,8 +157,9 @@ class Permission(DBModel):
 
 class Group(DBModel):
     name = Column(String, unique=True, index=True, nullable=False)
-    members = relationship("User", secondary=gulink, back_populates="groups")
-    permissions = relationship("Permission", secondary=gplink, backref="groups")
+    keyword = Column(String, unique=True, index=True, nullable=False, default="keyword_x")
+    members = relationship("User", secondary=gulink, back_populates="groups", lazy="selectin")
+    permissions = relationship("Permission", secondary=gplink, backref="groups", lazy="selectin")
     active = Column(Boolean(), default=True)
 
     # required in order to acess columns with server defaults

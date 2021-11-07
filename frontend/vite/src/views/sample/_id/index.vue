@@ -1,7 +1,7 @@
 <template>
 
   <div class="flex justify-between">
-    <h3 class="my-4">Sample Detail</h3>
+    <h3 class="my-4 font-bold">Sample Detail</h3>
     <router-link
       v-if="sample?.analysisrequest?.patient?.uid"
      :to="{ name: 'patient-detail', params: { patientUid: sample?.analysisrequest?.patient?.uid } }" 
@@ -41,26 +41,26 @@
           <div class="col-span-1">
             <!-- Client Details -->
             <div class="flex">
-              <span class="text-gray-800 text-sm font-medium w-1/4">Requests:</span>
+              <span class="text-gray-800 text-sm font-semibold w-1/6">Requests:</span>
               <span class="text-gray-600 text-sm md:text-md">{{ profileAnalysesText(sample?.profiles, sample?.analyses) }}</span>
             </div>
             <div class="flex">
-              <span class="text-gray-800 text-sm font-medium w-1/4">Client Request ID:</span>
+              <span class="text-gray-800 text-sm font-semibold w-1/6">Client Request ID:</span>
               <span class="text-gray-600 text-sm md:text-md">{{ sample?.analysisrequest?.clientRequestId }}</span>
             </div>
             <div class="flex">
-              <span class="text-gray-800 text-sm font-medium w-1/4">Sample Type:</span>
+              <span class="text-gray-800 text-sm font-semibold w-1/6">Sample Type:</span>
               <span class="text-gray-600 text-sm md:text-md">{{ sample?.sampletype?.name }}</span>
             </div>
           </div>
           <div class="col-span-1">
             <!-- Communication Details -->
             <div class="flex">
-              <span class="text-gray-800 text-sm font-medium w-1/4">Client:</span>
+              <span class="text-gray-800 text-sm font-semibold w-1/6">Client:</span>
               <span class="text-gray-600 text-sm md:text-md">{{ sample?.analysisrequest?.client?.name }}</span>
             </div>
             <div class="flex">
-              <span class="text-gray-800 text-sm font-medium w-1/4">Cliet Contact:</span>
+              <span class="text-gray-800 text-sm font-semibold w-1/6">Cliet Contact:</span>
               <span class="text-gray-600 text-sm md:text-md">Sister in Charge</span>
             </div>
           </div>

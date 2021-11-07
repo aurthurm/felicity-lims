@@ -105,7 +105,6 @@ export const mutations = <MutationTree<IState>>{
 
   [MutationTypes.SET_PATIENTS](state: IState, payload: any): void {
     const patients = payload.patients.items;
-
     if(payload.fromFilter){
       state.patients = [];
       state.patients = patients;

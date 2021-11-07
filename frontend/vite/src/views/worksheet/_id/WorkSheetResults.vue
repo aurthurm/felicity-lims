@@ -49,8 +49,11 @@
                     </span>
                 </td>
                 <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-                  <div class="text-sm leading-5 text-gray-800">
-                    <router-link :to="{ name: 'sample-detail', params: { patientUid: result?.sample?.analysisrequest?.patient?.uid, sampleUid: result?.sample?.uid  }}">{{ result?.sample?.sampleId }} </router-link>
+                  <div class="text-sm leading-5 text-gray-800 font-semibold">
+                    <router-link
+                     v-if="result?.sample?.analysisrequest?.patient?.uid" 
+                     :to="{ name: 'sample-detail', params: { patientUid: result?.sample?.analysisrequest?.patient?.uid, sampleUid: result?.sample?.uid  }}">{{ result?.sample?.sampleId }} </router-link>
+                     <div v-else>{{ result?.sample?.sampleId }}</div>
                   </div>
                   <span v-if="viewDetail">
                     <div >

@@ -27,6 +27,7 @@ export const GET_ALL_USERS = gql`
           groups {
             uid
             name
+            keyword
           }
       }
     }
@@ -38,6 +39,7 @@ export const GET_GROUPS_AND_PERMISSIONS = gql`
     groupAll {
       uid
       name
+      keyword
       active
       permissions {
         uid
@@ -47,9 +49,9 @@ export const GET_GROUPS_AND_PERMISSIONS = gql`
     }
     
     permissionAll {
-          uid
-          action
-          target
+      uid
+      action
+      target
     }
   }`;
 

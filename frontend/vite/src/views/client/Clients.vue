@@ -41,21 +41,21 @@
                       class="p-1 ml-2 border-white border text-gray-500 rounded transition duration-300 hover:border-blue-500 hover:text-blue-500 focus:outline-none">{{ client?.name }}</router-link>
                   </td>
                   <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-                  <div class="flex items-center">
-                      <div class="text-sm leading-5 text-gray-800">{{ client?.code }}</div>
-                  </div>
+                    <div class="flex items-center">
+                        <div class="text-sm leading-5 text-gray-800">{{ client?.code }}</div>
+                    </div>
                   </td>
                   <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-                  <div class="text-sm leading-5 text-blue-900">{{ client?.province?.name }} yrs</div>
+                    <div class="text-sm leading-5 text-blue-900">{{ client?.district?.name }}</div>
                   </td>
                   <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-                  <div class="text-sm leading-5 text-blue-900">{{ client?.district?.name }}</div>
+                    <div class="text-sm leading-5 text-blue-900">{{ client?.district?.province?.name }}</div>
                   </td>
                   <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-                  <div class="text-sm leading-5 text-blue-900">{{ client?.mobile }}</div>
+                    <div class="text-sm leading-5 text-blue-900">{{ client?.mobile }}</div>
                   </td>
                   <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-                  <div class="text-sm leading-5 text-blue-900">{{ client?.email }}</div>
+                    <div class="text-sm leading-5 text-blue-900">{{ client?.email }}</div>
                   </td>
                   <td class="px-1 py-1 whitespace-no-wrap text-right border-b border-gray-500 text-sm leading-5">
                       <button class="px-2 py-1 mr-2 border-orange-500 border text-orange-500 rounded transition duration-300 hover:bg-orange-700 hover:text-white focus:outline-none">View</button>
@@ -298,6 +298,7 @@ export default defineComponent({
       clientParams.first = 100;
       clientParams.after = null;
       clientParams.text = event.target.value;
+      clientParams.filterAction = true
       store.dispatch(ActionTypes.FETCH_CLIENTS, clientParams);
     }
 

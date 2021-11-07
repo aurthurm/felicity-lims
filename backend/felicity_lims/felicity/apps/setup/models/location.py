@@ -24,7 +24,7 @@ class LocationBase(DBModel):
 
 class District(LocationBase):
     province_uid = Column(Integer, ForeignKey("province.uid"))
-    province = relationship("Province", backref="districts")
+    province = relationship("Province", backref="districts", lazy="selectin")
 
     @classmethod
     async def create(cls, district: schemas.DistrictCreate) -> schemas.District:
@@ -43,7 +43,7 @@ class District(LocationBase):
 
 class Province(LocationBase):
     country_uid = Column(Integer, ForeignKey("country.uid"))
-    country = relationship("Country", backref="provinces")
+    country = relationship("Country", backref="provinces", lazy="selectin")
 
     @classmethod
     async def create(cls, province: schemas.ProvinceCreate) -> schemas.Province:

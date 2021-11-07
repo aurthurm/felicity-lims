@@ -4,7 +4,7 @@
     <div class="bg-white rounded-lg shadow-sm hover:shadow-lg duration-500 px-4 py-4" >
       <div class="grid grid-cols-12 gap-1">
         <!-- Meta Column -->
-        <div class="col-span-12 flex justify-between font-md text-medium mb-2">
+        <div class="col-span-12 flex justify-between font-bold text-medium mb-2">
           <h3>{{ worksheet?.worksheetId }}</h3>
           <button type="button" class="bg-blue-400 text-white p-1 rounded leading-none">{{ worksheet?.state || "unknown" }}</button>
         </div>
@@ -15,29 +15,29 @@
             <div class="col-span-1">
               <!-- Client Details -->
               <div class="flex">
-                <span class="text-gray-800 text-sm font-medium w-16">Analyst</span>
+                <span class="text-gray-800 text-sm font-semibold w-1/6">Analyst</span>
                 <span class="text-gray-600 text-sm md:text-md">{{ worksheet?.analyst?.firstName }}</span>
               </div>
               <div class="flex">
-                <span class="text-gray-800 text-sm font-medium w-16">Instrument:</span>
+                <span class="text-gray-800 text-md font-semibold w-1/6">Instrument:</span>
                 <span class="text-gray-600 text-sm md:text-md">{{ worksheet?.instrument?.name  }}</span>
               </div>
               <div class="flex">
-                <span class="text-gray-800 text-sm font-medium w-16">Method:</span>
+                <span class="text-gray-800 text-sm font-semibold w-1/6">Method:</span>
                 <span class="text-gray-600 text-sm md:text-md">{{ worksheet?.method?.name  }}</span>
               </div>
             </div>
             <div class="col-span-1">
               <div class="flex">
-                <span class="text-gray-800 text-sm font-medium w-16">Analyses:</span>
+                <span class="text-gray-800 text-sm font-semibold w-1/6">Analyses:</span>
                 <span class="text-gray-600 text-sm md:text-md">{{ analysesText(worksheet?.analyses) }}</span>
               </div>
               <div class="flex">
-                <span class="text-gray-800 text-sm font-medium w-16">Samples:</span>
+                <span class="text-gray-800 text-sm font-semibold w-1/6">Samples:</span>
                 <span class="text-gray-600 text-sm md:text-md">{{ worksheet?.assignedCount }}</span>
               </div>
               <div class="flex">
-                <span class="text-gray-800 text-sm font-medium w-16">Template:</span>
+                <span class="text-gray-800 text-sm font-semibold w-1/6">Template:</span>
                 <span class="text-gray-600 text-sm md:text-md">{{ worksheet?.template?.name }}</span>
               </div>
             </div>

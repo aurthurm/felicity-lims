@@ -4,21 +4,19 @@
       <div class="grid grid-cols-12 gap-3">
         <!-- Meta Column -->
         <div class="sm:col-span-2 text-center hidden sm:block">
-          <div class="inline-block font-md text-medium mb-2">{{ patient?.patientId }}</div>
+          <div class="inline-block font-bold text-medium mb-2">{{ patient?.patientId }}</div>
           <!-- Age -->
           <div
             class="grid grid-rows-2 mx-auto mb-1 py-1 w-4/5 2lg:w-3/5 rounded-md bg-green-400"
           >
-            <div class="inline-block font-medium text-2xl text-white">{{ patient?.age }}</div>
-            <div class="inline-block font-medium text-white text-sm lg:text-md">Yrs Old</div>
+            <div class="inline-block font-bold text-2xl text-white">{{ patient?.age }}</div>
+            <div class="inline-block font-semibold text-white text-sm lg:text-md">Yrs Old</div>
           </div>
         </div>
         <!-- Summary Column -->
         <div class="col-span-12 sm:col-start-3 sm:col-end-13 px-3 sm:px-0">
-          <div
-            class="flex justify-between sm:text-sm md:text-md lg:text-lg text-gray-700 font-bold"
-          >
-            <span>{{ patient?.firstName }} {{ patient?.lasstName }}</span>
+          <div class="flex justify-between sm:text-sm md:text-md lg:text-lg">
+            <span class="font-bold text-gray-800">{{ patient?.firstName?.toUpperCase() }} {{ patient?.lastName?.toUpperCase() }}</span>
             <div>
               <span class="font-medium text-md">{{ patient?.dateOfBirth }}</span>
               <button
@@ -38,19 +36,19 @@
             <div class="col-span-1">
               <!-- Client Details -->
               <div class="flex">
-                <span class="text-gray-800 text-sm font-medium w-16">Client</span>
+                <span class="text-gray-800 text-sm font-semibold w-1/6">Client</span>
                 <span class="text-gray-600 text-sm md:text-md">{{
                   patient?.client?.name
                 }}</span>
               </div>
               <div class="flex">
-                <span class="text-gray-800 text-sm font-medium w-16">District:</span>
+                <span class="text-gray-800 text-sm font-semibold w-1/6">District:</span>
                 <span class="text-gray-600 text-sm md:text-md">{{
                   patient?.client?.district?.name
                 }}</span>
               </div>
               <div class="flex">
-                <span class="text-gray-800 text-sm font-medium w-16">Province: </span>
+                <span class="text-gray-800 text-sm font-semibold w-1/6">Province: </span>
                 <span class="text-gray-600 text-sm md:text-md">{{
                   patient?.client?.district?.province?.name
                 }}</span>
@@ -59,7 +57,7 @@
             <div class="col-span-1">
               <!-- Identifiers -->
               <div class="col-span-2 flex mt-2">
-                <span class="text-gray-800 text-sm font-medium">Client Patient ID: </span>
+                <span class="text-gray-800 text-sm font-semibold w-1/6">Client Patient ID: </span>
                 <span class="text-gray-600 text-sm md:text-md"> {{
                   patient?.clientPatientId
                 }}</span>
@@ -71,11 +69,7 @@
     </div>
     
     <router-view  />                    
-
-
-
     
-
   </div>
 
     <!-- Patient Edit Form Modal -->

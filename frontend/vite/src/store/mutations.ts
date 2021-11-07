@@ -42,7 +42,7 @@ export const mutations = <MutationTree<IState>>{
 
   [MutationTypes.UPDATE_GROUPS_PERMISSIONS](state: IState, payload): void {
     let group = payload?.group;
-    const index = state.groups?.findIndex(g => g.uid === group.uid);
+    const index = state.groups?.findIndex(g => g.uid === group?.uid);
     group.permissions = group?.permissions || [];
     state!.groups[index] = group;
   },

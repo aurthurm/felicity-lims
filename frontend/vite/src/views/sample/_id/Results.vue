@@ -1,7 +1,7 @@
 <template>
 
   <hr class="mt-4 mb-2">
-  <h3 class="">Analyses/Results</h3>
+  <h3 class="font-bold">Analyses/Results</h3>
   <hr class="mb-4 mt-2">
 
   <div class="overflow-x-auto">
@@ -35,7 +35,7 @@
                       </td>
                         <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500"></td>
                         <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-                          <div class="text-sm leading-5 text-blue-900">{{ result.analysis?.name }}</div>
+                          <div class="text-sm leading-5 text-blue-900 font-semibold">{{ result.analysis?.name }}</div>
                         </td>
                         <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
                           <div class="text-sm leading-5 text-blue-900">{{ result.method?.name || "None" }}</div>
@@ -132,9 +132,6 @@
 </template>
 
 <script lang="ts">
-import tabSamples from '../comps/SampleTable.vue';
-import tabCases from '../comps/CaseTable.vue';
-import tabLogs from '../../../components/timeline/AuditLog.vue';
 import FButton from '../../../components/Buttons/Button.vue'
 import { defineComponent, onMounted } from 'vue';
 import { useStore } from 'vuex';

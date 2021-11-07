@@ -34,7 +34,6 @@ logger = logging.getLogger(__name__)
 class FelicityAuthBackend(AuthenticationBackend):
     async def authenticate(self, request):
         if "Authorization" not in request.headers:
-            logger.info(f"No Authorization Data")
             return
 
         auth = request.headers["Authorization"]

@@ -54,6 +54,7 @@ export const actions = <ActionTree<IState, RootState>>{
     localStorage.removeItem("fuid");
     localStorage.removeItem("fRole");
     commit(MutationTypes.RESET_STATE);
+    return true
   },
 
   // Groups and permissions

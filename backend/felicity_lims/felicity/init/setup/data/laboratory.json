@@ -1,4 +1,17 @@
 {
-  "setup name": "felicity",
-  "Laboratory Name": "Felicity Labs",
+  "setup_name": "felicity",
+  "laboratory_name": "Felicity Labs",
+  "departments": [
+    "Microbiology",
+    "Bacteriology",
+    "Parasitology",
+    "Chemistry",
+    "Serology",
+    "Haematology",
+    "Haematology",
+    "Blood Bank",
+    "Histology",
+    "Immunology",
+    "HIV"
+  ]
 }

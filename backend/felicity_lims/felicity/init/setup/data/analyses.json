@@ -1,0 +1,49 @@
+{
+  "categories": ["Quality Control", "Molecular Techniques"],
+  "qc_levels": ["Blank", "Negative Control", "Positive Control", "Low Positive Control", "High Positive Control"],
+  "sample_types": [
+    {"name": "QC Sample", "description": "QC Sample", "abbr": "QCS", "active": 1 },
+    {"name": "Whole Blood", "description": "Whole Blood", "abbr": "WB", "active": 1 },
+    {"name": "Blood Plasma", "description": "Blood Plasma", "abbr": "BP", "active": 1 },
+    {"name": "Dried Blood Spot", "description": "Dried Blood Spot", "abbr": "DBS", "active": 1 },
+    {"name": "Urine", "description": "Urine", "abbr": "BV", "active": 1 },
+    {"name": "Stool", "description": "Stool", "abbr": "BG", "active": 1 },
+    {"name": "Synovial Fluid", "description": "Synovial Fluid", "abbr": "SF", "active": 0 },
+    {"name": "Cerebral Spinal Fluid", "description": "Cerebral Spinal Fluid", "abbr": "CSF", "active": 0 },
+    {"name": "Nasal-Pharyngeal Swab", "description": "Nasal-Pharyngeal Swab", "abbr": "NPS", "active": 1 },
+    {"name": "Oral-Pharyngeal Swab", "description": "Oral-Pharyngeal Swab", "abbr": "OPS", "active": 0 },
+    {"name": "Pus Swab", "description": "Pus Swab", "abbr": "PS", "active": 0 }
+  ],
+  "analyses": [
+    {"name": "HIV", "description": "Human Immune Virus", "keyword": "hiv", "sort_key": 1, "active": 1},
+    {"name": "HIV Viral Load", "description": "HIV Viral Load", "keyword": "hivViralLoad", "sort_key": 1, "active": 1},
+    {"name": "EID", "description": "Early Infant Diagnosis", "keyword": "hivEid", "sort_key": 1, "active": 1},
+
+    {"name": "Urea", "description": "Urea", "keyword": "urea", "sort_key": 5, "active": 1},
+    {"name": "Creatinine", "description": "Creatinine", "keyword": "creatinine", "sort_key": 4, "active": 1},
+    {"name": "K+", "description": "Potassium", "keyword": "potassium", "sort_key": 1, "active": 1},
+    {"name": "Na-", "description": "Sodium", "keyword": "sodium", "sort_key": 2, "active": 1},
+    {"name": "Cl-", "description": "Chloride", "keyword": "chloride", "sort_key": 3, "active": 1},
+
+    {"name": "WBC", "description": "White Blood Cells", "keyword": "wbc", "sort_key": 1, "active": 1},
+    {"name": "RBC", "description": "Red Blood Cells", "keyword": "rbc", "sort_key": 2, "active": 1},
+    {"name": "HGB", "description": "Haemoglobin", "keyword": "hbg", "sort_key": 3, "active": 1},
+    {"name": "MVC", "description": "Mean Cell Volume", "keyword": "mcv", "sort_key": 4, "active": 1},
+    {"name": "MCH", "description": "Mean Cell Haemoglobin", "keyword": "mch", "sort_key": 5, "active": 1},
+    {"name": "MCHC", "description": "Mean Cell Haemoglobin Concentration", "keyword": "mchc", "sort_key": 6, "active": 1},
+    {"name": "PLT", "description": "Platelets", "keyword": "plt", "sort_key": 7, "active": 1}
+  ],
+  "analyses_profiles": [
+    {
+        "name": "U&E's",
+        "description": "Urea and Electrolytes",
+        "analyses_names": ["Urea", "Creatinine", "K+", "Na-", "Cl-"]
+    },
+    {
+        "name": "FBC",
+        "description": "Full Blood Count",
+        "analyses_names": ["WBC", "RBC", "HGB", "MVC", "MCH", "MCHC", "PLT"]
+    }
+  ]
+}
+

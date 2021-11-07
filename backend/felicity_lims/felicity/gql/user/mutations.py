@@ -50,7 +50,9 @@ class UserMutations:
 
     @strawberry.mutation
     async def update_user(self, info, user_uid: int, first_name: Optional[str], last_name: Optional[str],
-                          email: Optional[str]) -> UserType:
+                          mobile_phone: Optional[str], email: Optional[str], group_uid: Optional[int],
+                          is_active: Optional[bool]) -> UserType:
+
         user = await user_models.User.get_one(uid=user_uid)
         if not user:
             raise Exception("Error, failed to fetch user for updating")
@@ -62,9 +64,21 @@ class UserMutations:
             setattr(user, 'last_name', last_name)
         if email and 'email' in user_data:
             setattr(user, 'email', email)
+        if mobile_phone and 'mobile_phone' in user_data:
+            setattr(user, 'mobile_phone', mobile_phone)
+        if is_active and 'is_active' in user_data:
+            setattr(user, 'is_active', is_active)
 
         user_in = user_schemas.UserUpdate(**user.to_dict())
         user = await user.update(user_in)
+
+        # group management
+        grp_ids = [grp.uid for grp in user.groups]
+        if group_uid and group_uid not in grp_ids:
+            group = await user_models.Group.get(uid=group_uid)
+            user.groups = [group]
+            user = await user.save()
+
         return user
 
     @strawberry.mutation

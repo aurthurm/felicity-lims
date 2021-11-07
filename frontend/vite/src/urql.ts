@@ -1,12 +1,13 @@
 import { createClient, defaultExchanges, dedupExchange, cacheExchange, fetchExchange, errorExchange } from 'urql';
 import { makeOperation } from '@urql/core';
-// import { devtoolsExchange } from '@urql/devtools'
+import { devtoolsExchange } from '@urql/devtools'
 import { authExchange } from '@urql/exchange-auth';
 
 import { graphql_url } from './conf'
 
 // 1. get auth data
-const getAuth = async (authState: any) => {
+const getAuth = async ({ authState }) => {
+
   if (!authState) {
     const token = localStorage.getItem('fwt');
     if (token) {
@@ -15,13 +16,17 @@ const getAuth = async (authState: any) => {
     return null;
   }
 
+  if(authState.token) {
+    return { token: authState.token };
+  }
+
   logout();
 
   return null;
 };
 
 // 2. add auth to all requests
-const addAuthToOperation = (authState: any, operation: any) => {
+const addAuthToOperation = ({ authState, operation }) => {
   if (!authState || !authState.token) {
     return operation;
   }
@@ -37,20 +42,27 @@ const addAuthToOperation = (authState: any, operation: any) => {
       ...fetchOptions,
       headers: {
         ...fetchOptions.headers,
-        Authorization: authState.token,
+        Authorization: `Bearer ${authState.token}`,
       },
+      credentials: 'include',
     },
   });
 };
 
 
 const didAuthError = (error: any ) => {
+  if(!error.graphQLErrors|| error.graphQLErrors.length ===0){
+    return error.message == "[Network] Failed to fetch"
+  }
   return error.graphQLErrors.some((e: any) => e.extensions?.code === 'FORBIDDEN');
 };
 
 const logout = () => {
-  console.log("logging you out")
-  localStorage.clear();
+  localStorage.removeItem("fwt");
+  localStorage.removeItem("fuser");
+  localStorage.removeItem("fuid");
+  localStorage.removeItem("fRole");
+  location.reload();
 }
 
 const willAuthError = (authState: any) => {
@@ -61,39 +73,44 @@ const willAuthError = (authState: any) => {
 // https://github.com/FormidableLabs/urql/tree/main/exchanges/auth#quick-start-guide
 export const urqlClient = createClient({
   url: graphql_url,
-  // ...((process.env.DEV) && { exchanges: [devtoolsExchange, ...defaultExchanges] }),
-  // exchanges: [
-  //   dedupExchange,
-  //   cacheExchange,
-  //   errorExchange({
-  //     onError: error => {
-  //       const isAuthError = error.graphQLErrors.some(e => e.extensions?.code === 'FORBIDDEN');
-  //       if (isAuthError) {
-  //         logout();
-  //       }
-  //     },
-  //   }),
-  //   authExchange({
-  //     addAuthToOperation,
-  //     willAuthError,
-  //     didAuthError,
-  //     getAuth,
-  //   }),
-  //   fetchExchange
-  // ],  
-  fetchOptions: () => {
-    const token = localStorage.getItem('fwt');
-    return {
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': 'GET, POST, PATCH, PUT, DELETE, OPTIONS',
-        'Access-Control-Allow-Headers': 'Origin, Content-Type, X-Auth-Token',
-        ...(token && {
-          'x-felicity-user-id': "felicity-user",
-          'x-felicity-role': "felicity-administrator",
-          'Authorization': `Bearer ${token}`
-        }),
+   ...(('process.env.DEV') && { exchanges: [devtoolsExchange, ...defaultExchanges] }),
+  exchanges: [
+    dedupExchange,
+    cacheExchange,
+    errorExchange({
+      onError: error => {
+        let isAuthError = false;
+        if(!error.graphQLErrors || error.graphQLErrors.length ===0){
+          isAuthError = error.message === "[Network] Failed to fetch";
+        }else{
+          isAuthError = error.graphQLErrors.some(e => e.extensions?.code === 'FORBIDDEN');
+        }
+        if (isAuthError) {
+          logout();
+        }
       },
-    };
-  }
+    }),
+    authExchange({
+      addAuthToOperation,
+      willAuthError,
+      didAuthError,
+      getAuth,
+    }),
+    fetchExchange
+  ],  
+  // fetchOptions: () => {
+  //   const token = localStorage.getItem('fwt');
+  //   return {
+  //     headers: {
+  //       'Access-Control-Allow-Origin': '*',
+  //       'Access-Control-Allow-Methods': 'GET, POST, PATCH, PUT, DELETE, OPTIONS',
+  //       'Access-Control-Allow-Headers': 'Origin, Content-Type, X-Auth-Token',
+  //       ...(token && {
+  //         'x-felicity-user-id': "felicity-user",
+  //         'x-felicity-role': "felicity-administrator",
+  //         'Authorization': `Bearer ${token}`
+  //       }),
+  //     },
+  //   };
+  // }
 });

@@ -179,13 +179,6 @@ export default defineComponent({
     let patientForm = reactive({ ...nullPatient });
     let patientSearch = ref('');
     let patientBatch = ref(25);
-    let patientParams = reactive({ 
-      first: patientBatch.value, 
-      after: "",
-      text: "", 
-      sortBy: ["uid"],
-      filterAction: false
-    });
 
     let provinces = ref([]);
     let districts = ref([]);
@@ -195,7 +188,14 @@ export default defineComponent({
 
     const genders = ["Male", "Female", "Missing", "Trans Gender"]
 
-    store.dispatch(AdminActionTypes.FETCH_COUNTRIES);    
+    store.dispatch(AdminActionTypes.FETCH_COUNTRIES);   
+    let patientParams = reactive({ 
+      first: patientBatch.value, 
+      after: "",
+      text: "", 
+      sortBy: ["uid"],
+      filterAction: false
+    }); 
     store.dispatch(ActionTypes.FETCH_PATIENTS, patientParams);
     
 
@@ -240,7 +240,7 @@ export default defineComponent({
     }
 
     let filterText = ref('')
-    function searchPatients(event) {
+    function searchPatients(event): void {
       filterText.value = event.target.value;
       patientParams.first = 100;
       patientParams.after = null;

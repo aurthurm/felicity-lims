@@ -332,7 +332,8 @@ export default defineComponent({
       first: 25, 
       after: "",
       text: "", 
-      sortBy: ["-uid"]
+      sortBy: ["-uid"],
+      filterAction: false
     });
 
 
@@ -389,6 +390,7 @@ export default defineComponent({
       patientParams.first = 100;
       patientParams.after = null;
       patientParams.text = event.target.value;
+      patientParams.filterAction = true;
       // store.dispatch(ActionTypes.SEARCH_PATIENTS, event.target.value);
       store.dispatch(ActionTypes.FETCH_PATIENTS, patientParams);
     }

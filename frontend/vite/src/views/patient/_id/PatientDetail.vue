@@ -28,7 +28,10 @@
         <div>
           <tab-samples v-if="currentTab === 'samples'" target="patient-samples" :targetUid="patient?.uid"/>
           <tab-cases v-if="currentTab === 'cases'" />
-          <tab-logs v-if="currentTab === 'logs'"/>
+          <tab-logs 
+          v-if="currentTab === 'logs'" 
+          targetType="patient"
+          :targetId="patient?.uid" />
         </div>
 
       </section>
