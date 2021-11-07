@@ -1,0 +1,128 @@
+{
+  "country": {
+    "name": "Zimbabwe",
+    "code": "ZW",
+    "provinces": [
+      {
+        "name": "Bulawayo",
+        "code": "ZW-BU",
+        "districts": [
+          { "name": "Bulawayo", "code": ""}
+        ]
+      },
+      {
+        "name": "Harare",
+        "code": "ZW-HA",
+        "districts": [
+          { "name": "Harare", "code": ""}
+        ]
+      },
+      {
+        "name": "Manicaland",
+        "code": "ZW-MA",
+        "districts": [
+          { "name": "Buhera", "code": ""},
+          { "name": "Chimanimani", "code": ""},
+          { "name": "Chipinge", "code": ""},
+          { "name": "Makoni", "code": ""},
+          { "name": "Mutare", "code": ""},
+          { "name": "Mutasa", "code": ""},
+          { "name": "Nyanga", "code": ""}
+        ]
+      },
+      {
+        "name": "Mashonaland Central",
+        "code": "ZW-MC",
+        "districts": [
+          { "name": "Bindura", "code": ""},
+          { "name": "Guruve", "code": ""},
+          { "name": "Mazowe", "code": ""},
+          { "name": "Mbire", "code": ""},
+          { "name": "Mukumbura", "code": ""},
+          { "name": "Muzarabani", "code": ""},
+          { "name": "Rushinga", "code": ""},
+          { "name": "Shamva", "code": ""}
+        ]
+      },
+      {
+        "name": "Mashonaland East",
+        "code": "ZW-ME",
+        "districts": [
+          { "name": "Chikomba", "code": ""},
+          { "name": "Goromonzi", "code": ""},
+          { "name": "Hwedza (Wedza)", "code": ""},
+          { "name": "Marondera", "code": ""},
+          { "name": "Mudzi", "code": ""},
+          { "name": "Murehwa", "code": ""},
+          { "name": "Mutoko", "code": ""},
+          { "name": "Seke", "code": ""},
+          { "name": "Uzumba Maramba Pfungwe", "code": ""}
+        ]
+      },
+      {
+        "name": "Mashonaland West",
+        "code": "ZW-MW",
+        "districts": [
+          { "name": "Chegutu", "code": ""},
+          { "name": "Hurungwe", "code": ""},
+          { "name": "Kadoma", "code": ""},
+          { "name": "Kariba", "code": ""},
+          { "name": "Mukonde", "code": ""},
+          { "name": "Zvimba", "code": ""}
+        ]
+      },
+      {
+        "name": "Masvingo",
+        "code": "ZW-MV",
+        "districts": [
+          { "name": "Bikita", "code": ""},
+          { "name": "Chiredzi", "code": ""},
+          { "name": "Chivi", "code": ""},
+          { "name": "Gutu", "code": ""},
+          { "name": "Masvingo", "code": ""},
+          { "name": "Mwenezi", "code": ""},
+          { "name": "Zaka", "code": ""}
+        ]
+      },
+      {
+        "name": "Matabeleland North",
+        "code": "ZW-MN",
+        "districts": [
+          { "name": "Binga", "code": ""},
+          { "name": "Bubi", "code": ""},
+          { "name": "Hwange", "code": ""},
+          { "name": "Lupane", "code": ""},
+          { "name": "Nkayi", "code": ""},
+          { "name": "Tsholotsho", "code": ""},
+          { "name": "Umguza", "code": ""}
+        ]
+      },
+      {
+        "name": "Matabeleland South",
+        "code": "ZW-MS",
+        "districts": [
+          { "name": "Beitbridge", "code": ""},
+          { "name": "Bulilimangwe", "code": ""},
+          { "name": "Gwanda", "code": ""},
+          { "name": "Insiza", "code": ""},
+          { "name": "Matobo", "code": ""},
+          { "name": "Umzingwane", "code": ""}
+        ]
+      },
+      {
+        "name": "Midlands",
+        "code": "ZW-MI",
+        "districts": [
+          { "name": "Chirumhanzu", "code": ""},
+          { "name": "Gokwe North", "code": ""},
+          { "name": "Gokwe South", "code": ""},
+          { "name": "Gweru", "code": ""},
+          { "name": "Kwekwe", "code": ""},
+          { "name": "Mberengwa", "code": ""},
+          { "name": "Shurugwi", "code": ""},
+          { "name": "Zvishavane", "code": ""}
+        ]
+      }
+    ]
+  }
+}
