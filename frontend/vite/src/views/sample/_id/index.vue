@@ -34,7 +34,39 @@
               </button>
             </div>
           <span>{{ profileAnalysesText(sample?.profiles, sample?.analyses) }}</span>
-          <button type="button" class="bg-blue-400 text-white p-1 rounded leading-none">{{ sample?.status }}</button>
+          <!-- <button type="button" class="bg-blue-400 text-white p-1 rounded leading-none">{{ sample?.status }}</button> -->
+          <div >
+            <div
+              @click="dropdownOpen = !dropdownOpen"
+              class="hidden md:block md:flex md:items-center ml-2 mt-2" >
+              <button type="button" class="bg-blue-400 text-white p-1 rounded leading-none">{{ sample?.status }}</button>
+              <div class="ml-2"><font-awesome-icon icon="chevron-down" class="text-gray-400" /></div>
+            </div>
+            <div
+              v-show="dropdownOpen"
+              @click="dropdownOpen = false"
+              class="fixed inset-0 h-full w-full z-10" ></div>
+            <div
+              v-show="dropdownOpen"
+              class="absolute mt-4 py-0 bg-gray-300 rounded-md shadow-xl z-20" >
+              <div
+                v-show="canVerify"
+                class="no-underline text-gray-900 py-0 opacity-60 px-4 border-b border-transparent hover:opacity-100 md:hover:border-grey-dark hover:bg-blue-400 hover:text-white"
+                >Verify</div>
+              <div
+                v-show="canReject"
+                class="no-underline text-gray-900 py-0 opacity-60 px-4 border-b border-transparent hover:opacity-100 md:hover:border-grey-dark hover:bg-red-400 hover:text-white"
+                >Reject</div>
+              <div
+                v-show="canCancel"
+                class="no-underline text-gray-900 py-0 opacity-60 px-4 border-b border-transparent hover:opacity-100 md:hover:border-grey-dark hover:bg-red-400 hover:text-white"
+                >Cancel</div>
+              <div
+                v-show="canInvalidate"
+                class="no-underline text-gray-900 py-0 opacity-60 px-4 border-b border-transparent hover:opacity-100 md:hover:border-grey-dark hover:bg-gray-400 hover:text-white"
+                >Invalidate</div>
+            </div>
+          </div>
         </div>
         <hr />
         <div class="grid grid-cols-2 mt-2">
@@ -74,14 +106,15 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, computed } from 'vue';
+import { defineComponent, reactive, computed, ref } from 'vue';
 import { useRoute } from 'vue-router';
 import { useStore } from 'vuex';
-import { ActionTypes } from '../../../store/modules/samples';
+import { ActionTypes, ISampleRequest } from '../../../store/modules/samples';
 
 export default defineComponent({
   name: "sample-single",
   setup() {
+    const dropdownOpen = ref(false);
     const route = useRoute();
     const store = useStore();
 
@@ -95,15 +128,31 @@ export default defineComponent({
     }
 
     function FormManager(create): void {
-
     }
-
-    console.log(sample)
+    // Sample Actions
+    
 
     return { 
+        dropdownOpen,
         sample,
         profileAnalysesText,
-        FormManager
+        FormManager,
+        canCancel: computed(() => {
+          if(["received", "due"].includes(sample.value.status?.toLowerCase())) return true;
+          return false
+        }),
+        canVerify: computed(() => { // all anlytes must be verified first
+          if(sample.value.status?.toLowerCase() === "to_be_verified") return true;
+          return false
+        }),
+        canInvalidate: computed(() => { // only for published a.k.a printed
+          if(sample.value.status?.toLowerCase() === "published") return true;
+          return false
+        }),
+        canReject: computed(() => {
+          if(["received", "due"].includes(sample.value.status?.toLowerCase())) return true;
+          return false
+        }),
     };
   },
 });
