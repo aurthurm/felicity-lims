@@ -1,34 +1,22 @@
 import Swal from 'sweetalert2';
-import { ref, toRefs, computed, PropType, watch, reactive } from 'vue';
-import { useRoute } from 'vue-router';
-import { useStore } from 'vuex';
+import { toRefs, computed, reactive } from 'vue';
 import { useMutation } from '@urql/vue';
-
-import { isNullOrWs } from '../utils';
-import { ActionTypes, ISampleRequest, IAnalysisResult } from '../store/modules/samples';
-import { GET_ANALYSIS_RESULTS_BY_SAMPLE_UID } from '../graphql/analyses.queries';
 import { 
   REINSTATE_SAMPLES,
   RECEIVE_SAMPLES,
   CANCEL_SAMPLES,
-  } from '../graphql/analyses.mutations';
-import { IAnalysisProfile, IAnalysisService } from '../store/modules/analyses';
+} from '../graphql/analyses.mutations';
 import store from '../store';
 
-export default function useSampleModules(){
+export default function useSampleComposable(){
 
     const state = reactive({
-      samples: computed(() => store.getters.getSamples )
+      samples: computed(() => store.getters.getSamples ),
     })
 
     // CANCEL_SAMPLES
-    const { executeMutation: cancelSamples } = useMutation(CANCEL_SAMPLES); 
-
-    // function cancelSelectedSamples(analyses): void {
-    //   cancelSamples({ analyses }).then(_ => {});
-    // } 
-
-    const cancelSamples_ = async () => {
+    const { executeMutation: _canceller } = useMutation(CANCEL_SAMPLES); 
+    const cancelSamples = async (samples: string[]) => {
       try {
         Swal.fire({
           title: 'Are you sure?',
@@ -41,9 +29,8 @@ export default function useSampleModules(){
           cancelButtonText: 'No, do not cancel!',
         }).then((result) => {
           if (result.isConfirmed) {
-            // cancelSelectedSamples(getSampleUids())
-            let samples = getSampleUids()
-            cancelSamples({ samples }).then(_ => {});
+
+            _canceller({ samples }).then(_ => {});
 
             Swal.fire(
               'Its Happening!',
@@ -54,18 +41,13 @@ export default function useSampleModules(){
           }
         })
       } catch (error) {
-        logger.log(error)
+        console.log(error)
       }
     }
 
     // REINSTATE_SAMPLES
-    const { executeMutation: reinstateSamples } = useMutation(REINSTATE_SAMPLES); 
-
-    function reInstateSelectedSamples(samples): void {
-      reinstateSamples({ samples }).then(_ => {});
-    }
-
-    const reInstateSamples_ = async () => {
+    const { executeMutation: _reinstater } = useMutation(REINSTATE_SAMPLES); 
+    const reInstateSamples = async (samples: string[]) => {
       try {
         Swal.fire({
           title: 'Are you sure?',
@@ -78,7 +60,8 @@ export default function useSampleModules(){
           cancelButtonText: 'No, do not reinstate!',
         }).then((result) => {
           if (result.isConfirmed) {
-            reInstateSelectedSamples(getSampleUids());
+
+            _reinstater({ samples }).then(_ => {});
 
             Swal.fire(
               'Its Happening!',
@@ -89,18 +72,13 @@ export default function useSampleModules(){
           }
         })
       } catch (error) {
-        logger.log(error)
+        console.log(error)
       }
     }
 
     // RECEIVE_SAMPLES
-    const { executeMutation: receiveSamples } = useMutation(RECEIVE_SAMPLES); 
-
-    function receiveSelectedSamples(samples): void {
-      receiveSamples({ samples }).then(_ => {});
-    }  
-
-    const receiveSamples_ = async () => {
+    const { executeMutation: _receiver } = useMutation(RECEIVE_SAMPLES); 
+    const receiveSamples = async (samples: string[]) => {
       try {
         Swal.fire({
           title: 'Are you sure?',
@@ -113,11 +91,12 @@ export default function useSampleModules(){
           cancelButtonText: 'No, do not receive!',
         }).then((result) => {
           if (result.isConfirmed) {
-            receiveSelectedSamples(getSampleUids());
+
+            _receiver({ samples }).then(_ => {});
 
             Swal.fire(
               'Its Happening!',
-              'Your analystes have been received.',
+              'Your samples have been received.',
               'success'
             ).then(_ => location.reload())
 
@@ -128,8 +107,10 @@ export default function useSampleModules(){
       }
     }
 
-
     return {
       ...toRefs(state),
+      cancelSamples,
+      reInstateSamples,
+      receiveSamples,
     }
   }

@@ -28,7 +28,7 @@ import { useStore } from 'vuex';
 import { useMutation } from '@urql/vue';
 
 
-import { ActionTypes } from '../../../store/modules/worksheets';
+import { ActionTypes } from '../../../store/modules/worksheet';
 import { EDIT_WORKSHEET_APPLY_TEMPLATE } from '../../../graphql/worksheet.mutations';
 
 export default defineComponent({

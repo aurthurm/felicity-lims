@@ -205,7 +205,7 @@ import { defineComponent, ref, toRefs, computed, PropType } from 'vue';
 import { useStore } from 'vuex';
 import { useRoute } from 'vue-router';
 import { useMutation } from '@urql/vue';
-import { ActionTypes } from '../../../store/modules/samples';
+import { ActionTypes } from '../../../store/modules/sample';
 import { isNullOrWs } from '../../../utils';
 import Swal from 'sweetalert2';
 import { 

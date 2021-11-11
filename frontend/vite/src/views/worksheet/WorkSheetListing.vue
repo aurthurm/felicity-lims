@@ -191,7 +191,7 @@ import { useMutation } from '@urql/vue';
 import { defineComponent, ref, reactive, computed, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import { useStore } from 'vuex';
-import { ActionTypes, IWorkSheet } from '../../store/modules/worksheets';
+import { ActionTypes, IWorkSheet } from '../../store/modules/worksheet';
 import { ActionTypes as BaseActionTypes } from '../../store/actions';
 import { ADD_WORKSHEET } from '../../graphql/worksheet.mutations'
 import { ifZeroEmpty } from '../../utils'

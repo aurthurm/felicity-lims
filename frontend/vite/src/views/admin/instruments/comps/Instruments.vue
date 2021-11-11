@@ -154,7 +154,8 @@ import { useMutation } from '@urql/vue';
 import { defineComponent, ref, reactive, computed, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import { useStore } from 'vuex';
-import { ActionTypes, Instrument, IInstrument } from '../../../../store/modules/setup';
+import { ActionTypes } from '../../../../store/modules/setup';
+import { IInstrument } from '../../../../models/setup'
 import { ADD_INSTRUMENT, EDIT_INSTRUMENT  } from '../../../../graphql/instrument.mutations';
 
 export default defineComponent({
@@ -173,7 +174,7 @@ export default defineComponent({
     let formTitle = ref('');
     const formAction = ref(true);
 
-    let instrument = reactive({ ...new Instrument });
+    let instrument = reactive({ ...({} as IInstrument) });
 
     store.dispatch(ActionTypes.FETCH_INSTRUMENTS);    
 
@@ -197,7 +198,7 @@ export default defineComponent({
     }
     
     function resetInstrument(): void {
-      Object.assign(instrument, { ...new Instrument})
+      Object.assign(instrument, { ...({} as IInstrument)})
     }
 
     function FormManager(create: boolean, obj: IInstrument): void {
@@ -205,7 +206,7 @@ export default defineComponent({
       showModal.value = true;
       formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "ANALYSES INSTRUMENT";
       if (create) {
-        Object.assign(instrument, { ...new Instrument });
+        Object.assign(instrument, { ...({} as IInstrument) });
       } else {
         Object.assign(instrument, { ...obj });
       }

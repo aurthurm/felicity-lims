@@ -1,58 +1,6 @@
 import { RootState } from '../state';
 import { ActionTree, GetterTree, MutationTree } from 'vuex';
-
-export interface IAlert {
-  ticks?: number;
-  type?: string;
-  message?: string;
-  icon?: string;
-  toast?: boolean;
-  position?: string;
-  showConfirmButton?: boolean;
-  timer?: number;
-  timerProgressBar?: boolean;
-}
-
-export class Alert implements IAlert {
-  constructor(
-    public ticks?: number,
-    public type?: string,
-    public message?: string,
-    public icon?: string,
-    public toast?: boolean,
-    public position?: string,
-    public showConfirmButton?: boolean,
-    public timer?: number,
-    public timerProgressBar?: boolean   ,
-  ){}
-}
-
-export interface INotification {
-  ticks?: number;
-  type?: string;
-  data?: any;
-  icon?: string;
-  toast?: boolean;
-  position?: string;
-  showConfirmButton?: boolean;
-  timer?: number;
-  timerProgressBar?: boolean;
-}
-
-export class Notification implements INotification {
-  constructor(
-    public ticks?: number,
-    public type?: string,
-    public message?: string,
-    public object?: string,
-    public icon?: string,
-    public toast?: boolean,
-    public position?: string,
-    public showConfirmButton?: boolean,
-    public timer?: number,
-    public timerProgressBar?: boolean,
-  ){}
-}
+import { INotification, IAlert } from '../../models/notification'
 
 // state contract
 export interface IState {
@@ -62,8 +10,8 @@ export interface IState {
 
 export const initialState = () => {
   return <IState>{
-    alert: new Alert,
-    notification: new Notification,
+    alert: {} as IAlert,
+    notification: {} as INotification,
   };
 };
 

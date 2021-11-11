@@ -285,7 +285,7 @@ import tabSamples from '../components/AnalyisRequestListing.vue';
 import tabCases from './comps/CaseTable.vue';
 import tabLogs from '../components/AuditLog.vue';
 import modal from '../../components/SimpleModal.vue';
-import { Patient } from '../../store/modules/patients';
+import { IPatient } from '../../models/patient';
 import { GET_ALL_PATIENTS, SEARCH_PATIENTS } from '../../graphql/patient.queries';
 import {  GET_ALL_CLIENTS } from '../../graphql/clients.queries';
 import {
@@ -297,8 +297,8 @@ import { ADD_PATIENT } from '../../graphql/patient.mutations';
 
 export const IPatient = typeof Patient;
 
-import { ActionTypes } from '../../store/modules/patients';
-import { ActionTypes as ClientActionTypes } from '../../store/modules/clients';
+import { ActionTypes } from '../../store/modules/patient';
+import { ActionTypes as ClientActionTypes } from '../../store/modules/client';
 import { ActionTypes as AdminActionTypes } from '../../store/modules/admin';
 
 export default defineComponent({
@@ -313,7 +313,7 @@ export default defineComponent({
     let store = useStore();
     let router = useRouter();
 
-    const nullPatient = new Patient();
+    const nullPatient = {};
     let createAction = ref(true);
     let showModal = ref(false);
 

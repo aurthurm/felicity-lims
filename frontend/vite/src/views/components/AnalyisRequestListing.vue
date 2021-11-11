@@ -78,7 +78,7 @@
 import {reactive, computed, ref, toRefs, watch} from 'vue'
 import { useStore } from 'vuex';
 
-import { ActionTypes } from '../../store/modules/samples'
+import { ActionTypes } from '../../store/modules/sample'
 export default {
     name: "tab-samples",
     props: {

@@ -3,8 +3,8 @@
     "strict": true,
     "jsx": "vue",
     "outDir": "./dist",
-    "target": "es5", // es2017, esnext
-    "module": "esnext", // commonjs
+    "target": "es6", // es2017, esnext
+    "module": "es6", // commonjs
     "lib": [ // es2015
       "ESNext",
       "DOM"

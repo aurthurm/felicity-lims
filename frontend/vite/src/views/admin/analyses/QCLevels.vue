@@ -88,7 +88,8 @@ import { useMutation } from '@urql/vue';
 import { defineComponent, ref, reactive, computed } from 'vue';
 import { useStore } from 'vuex';
 import { useRouter } from 'vue-router';
-import { ActionTypes, QCLevel, IQCLevel } from '../../../store/modules/analyses';
+import { ActionTypes } from '../../../store/modules/analysis';
+import { IQCLevel } from '../../../models/analysis';
 import { ADD_QC_LEVEL, EDIT_QC_LEVEL  } from '../../../graphql/analyses.mutations';
 
 
@@ -102,7 +103,7 @@ export default defineComponent({
     
     let showModal = ref(false);
     let formTitle = ref('');
-    let form = reactive({ ...(new QCLevel()) });
+    let form = reactive({}) as IQCLevel;
     const formAction = ref(true);
 
     store.dispatch(ActionTypes.FETCH_QC_LEVELS);
@@ -126,7 +127,7 @@ export default defineComponent({
       showModal.value = true;
       formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "QC Level";
       if (create) {
-        Object.assign(form, { ...(new QCLevel()) });
+        Object.assign(form, { ...({} as IQCLevel) });
       } else {
         Object.assign(form, { ...obj });
       }

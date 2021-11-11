@@ -187,7 +187,7 @@ import { defineComponent, ref, toRefs, reactive, computed, onMounted, PropType }
 import { useRoute } from 'vue-router';
 import { mapGetters, useStore } from 'vuex';
 
-import { Patient, IPatient } from '../../../store/modules/patients';
+import { Patient, IPatient } from '../../../store/modules/patient';
 import { GET_ALL_PATIENTS, SEARCH_PATIENTS } from '../../../graphql/patient.queries';
 import {  GET_ALL_CLIENTS } from '../../../graphql/clients.queries';
 import {
@@ -197,7 +197,7 @@ import {
 } from '../../../graphql/admin.queries';
 import { ADD_PATIENT } from '../../../graphql/patient.mutations';
 
-import { ActionTypes } from '../../../store/modules/patients';
+import { ActionTypes } from '../../../store/modules/patient';
 import { ActionTypes as AdminActionTypes } from '../../../store/modules/admin';
 
 export default defineComponent({

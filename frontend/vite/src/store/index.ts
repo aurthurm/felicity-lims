@@ -8,12 +8,12 @@ import { mutations } from './mutations';
 
 // modules
 import { admin } from './modules/admin';
-import { clients } from './modules/clients';
-import { patients } from './modules/patients';
-import { samples } from './modules/samples';
-import { analyses } from './modules/analyses';
+import { clients } from './modules/client';
+import { patients } from './modules/patient';
+import { samples } from './modules/sample';
+import { analyses } from './modules/analysis';
 import { cases } from './modules/cases';
-import { worksheets } from './modules/worksheets';
+import { worksheets } from './modules/worksheet';
 import { markdown } from './modules/markdown';
 import { kanban } from './modules/kanban';
 import { toast } from './modules/toast';

@@ -301,8 +301,9 @@ import { useMutation } from '@urql/vue';
 import { defineComponent, ref, reactive, computed, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import { useStore } from 'vuex';
-import { ActionTypes as SampleActionTypes } from '../../store/modules/samples';
-import { ActionTypes, AnalysisRequest, IAnalysisRequest, ISample, Sample } from '../../store/modules/analyses';
+import { ActionTypes as SampleActionTypes } from '../../store/modules/sample';
+import { ActionTypes } from '../../store/modules/analysis';
+import { IAnalysisRequest, ISample } from '../../models/analysis';
 import { 
   ADD_ANALYSIS_SERVICE, 
   EDIT_ANALYSIS_SERVICE,
@@ -323,7 +324,7 @@ export default defineComponent({
     
     let showModal = ref(false);
     let formTitle = ref('');
-    let form = reactive({ ...(new AnalysisRequest()) });
+    let form = reactive({}) as IAnalysisRequest;
     const formAction = ref(true);
     let pageInfo = computed(() => store.getters.getSamplePageInfo)
     let filterText = ref("");

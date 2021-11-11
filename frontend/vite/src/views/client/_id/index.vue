@@ -145,7 +145,7 @@
 }
 </style>
 
-<script scope="ts">
+<script lang="ts">
 import modal from '../../../components/SimpleModal.vue';
 
 import { useMutation, useQuery } from '@urql/vue';
@@ -153,7 +153,6 @@ import { mapGetters, useStore } from 'vuex';
 import { useRoute } from 'vue-router';
 import { defineComponent, ref, reactive, computed } from 'vue';
 
-import { Client } from '../../../store/modules/clients';
 import {  GET_ALL_CLIENTS, GET_CLIENT_CONTACTS_BY_CLIENT_UID } from '../../../graphql/clients.queries';
 import { ADD_CLIENT, EDIT_CLIENT } from '../../../graphql/clients.mutations';
 import {
@@ -162,12 +161,12 @@ import {
   FILTER_DISTRICTS_BY_PROVINCE,
 } from '../../../graphql/admin.queries';
 
-export const IClient = typeof Client;
-import { ActionTypes } from '../../../store/modules/clients';
+import { ActionTypes } from '../../../store/modules/client';
 import { ActionTypes as AdminActionTypes } from '../../../store/modules/admin';
+// import { IClient } from '../../../models/client';
 
 export default defineComponent({
-  name: 'clients-conf',
+  name: 'clients-listi',
   components: {
     modal,
   },
@@ -195,7 +194,7 @@ export default defineComponent({
 
     store.dispatch(ActionTypes.FETCH_CLIENT_BY_UID, +route.query.clientUid)
     let client = computed(() => store.getters.getClient);
-    const resetClient = () => Object.assign(client, { ...(new Client()) })
+    const resetClient = () => Object.assign(client, {})
 
     store.dispatch(AdminActionTypes.FETCH_COUNTRIES);
     // store.dispatch(ActionTypes.FETCH_CLIENTS, clientParams);
@@ -247,7 +246,7 @@ export default defineComponent({
       formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + target.toUpperCase();
       if(target == "client") showClientModal.value = true;
       if (create) {
-        if(target == "client") Object.assign(client, { ...(new Client()) });
+        if(target == "client") Object.assign(client, {});
       } else {
         if(target == "client") Object.assign(client, { ...obj });
       }

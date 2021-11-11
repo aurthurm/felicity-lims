@@ -136,7 +136,7 @@ import FButton from '../../../components/Buttons/Button.vue'
 import { defineComponent, onMounted } from 'vue';
 import { useStore } from 'vuex';
 import { useRoute } from 'vue-router';
-import { ActionTypes } from '../../../store/modules/samples';
+import { ActionTypes } from '../../../store/modules/sample';
 
 import useAnalysisResults from '../../../modules/analysis'
 

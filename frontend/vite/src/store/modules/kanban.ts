@@ -1,7 +1,6 @@
 import { useQuery } from '@urql/vue';
 import { urqlClient } from '../../urql';
 import { RootState } from '../state';
-import { parseEdgeNodeToList } from '../../utils'
 import { ActionTree, GetterTree, MutationTree } from 'vuex';
 
 import {
@@ -9,112 +8,7 @@ import {
   GET_BOARD_BY_UID,
   GET_LISTING_TASK_BY_UID
 } from '../../graphql/kanban.queries';
-
-
-
-export interface IComment {
-  uid?: string;
-  comment?: string;
-  dateCommented?: string;
-  commentBy?: string;
-}
-
-export class Comment implements IComment {
-  constructor(
-    public uid?: string,
-    public comment?: string,
-    public dateCommented?: string,
-    public commentBy?: string,
-  ) {
-  }
-}
-
-export interface IMileStone {
-  uid?: string;
-  name?: string;
-  done?: boolean;
-  assignee?: string;
-}
-
-export class MileStone implements IMileStone {
-  constructor(
-    public uid?: string,
-    public name?: string,
-    public done?: boolean,
-    public assignee?: string,
-  ) {
-  }
-}
-
-export interface ITask {
-  uid?: string;
-  title?: string;
-  description?: string;
-  listingUid?: string;
-  milestones?: IMileStone[];
-  comments?: IComment[];
-  status?: string;
-  assignee?: string;
-  dueDate?: string,
-  members?: string[];
-  tags?: string[];
-}
-
-export class Task implements ITask {
-  constructor(
-    public uid?: string,
-    public title?: string,
-    public description?: string,
-    public listingUid?: string,
-    public milestones?: IMileStone[],
-    public comments?: IMileStone[],
-    public status?: string,
-    public assignee?: string,
-    public dueDate?: string,
-    public members?: string[],
-    public tags?: string[],
-  ) {
-  }
-}
-
- export interface IListing {
-    uid?: string;
-    title?: string;
-    description?: string;
-    listingTasks?: ITask[];
-  }
-  
-  export class Listing implements IListing {
-    constructor(
-      public uid?: string,
-      public title?: string,
-      public description?: string,
-      public listingTasks?: ITask[],
-    ) {
-    }
-  }
-  
-
-export interface IBoard {
-  uid?: string;
-  title?: string;
-  description?: string;
-  departmentUid?: string;
-  department?: any;
-  boardListings?: IListing[];
-}
-
-export class Board implements IBoard {
-  constructor(
-    public uid?: string,
-    public title?: string,
-    public description?: string,
-    public boardListings?: IListing[],
-    public departmentUid?: string,
-    public department?: any,
-  ) {
-  }
-}
+import { IBoard, IListing, ITask, IMileStone, IComment } from '../../models/kanban'
 
 // state contract
 export interface IState {

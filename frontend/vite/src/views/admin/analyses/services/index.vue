@@ -264,7 +264,8 @@ import { useMutation } from '@urql/vue';
 import { defineComponent, ref, reactive, computed, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import { useStore } from 'vuex';
-import { ActionTypes, AnalysisService, IAnalysisService } from '../../../../store/modules/analyses';
+import { ActionTypes } from '../../../../store/modules/analysis';
+import { IAnalysisService } from '../../../../models/analysis';
 import { ADD_ANALYSIS_SERVICE, EDIT_ANALYSIS_SERVICE  } from '../../../../graphql/analyses.mutations';
 
 export default defineComponent({

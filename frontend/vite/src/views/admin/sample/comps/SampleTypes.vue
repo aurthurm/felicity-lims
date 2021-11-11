@@ -123,7 +123,8 @@ import { useMutation } from '@urql/vue';
 import { defineComponent, ref, reactive, computed } from 'vue';
 import { useStore } from 'vuex';
 import { useRouter } from 'vue-router';
-import { ActionTypes, SampleType, ISampleType } from '../../../../store/modules/samples';
+import { ActionTypes } from '../../../../store/modules/sample';
+import { ISampleType } from '../../../../models/analysis'
 import { ADD_SAMPLE_TYPE, EDIT_SAMPLE_TYPE  } from '../../../../graphql/analyses.mutations';
 
 

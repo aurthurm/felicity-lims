@@ -43,7 +43,7 @@
 }
 </style>
 
-<script scope="ts">
+<script lang="ts">
 import { useStore } from 'vuex';
 import { defineComponent, ref, reactive, computed } from 'vue';
 
@@ -51,7 +51,7 @@ import { defineComponent, ref, reactive, computed } from 'vue';
 import tabSamples from '../../components/SampleListing.vue';
 import tabContacts from '../comps/ContactTable.vue';
 
-import { ActionTypes } from '../../../store/modules/clients';
+import { ActionTypes } from '../../../store/modules/client';
 import { ActionTypes as AdminActionTypes } from '../../../store/modules/admin';
 
 export default defineComponent({

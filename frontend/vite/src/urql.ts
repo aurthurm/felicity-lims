@@ -98,19 +98,19 @@ export const urqlClient = createClient({
     }),
     fetchExchange
   ],  
-  // fetchOptions: () => {
-  //   const token = localStorage.getItem('fwt');
-  //   return {
-  //     headers: {
-  //       'Access-Control-Allow-Origin': '*',
-  //       'Access-Control-Allow-Methods': 'GET, POST, PATCH, PUT, DELETE, OPTIONS',
-  //       'Access-Control-Allow-Headers': 'Origin, Content-Type, X-Auth-Token',
-  //       ...(token && {
-  //         'x-felicity-user-id': "felicity-user",
-  //         'x-felicity-role': "felicity-administrator",
-  //         'Authorization': `Bearer ${token}`
-  //       }),
-  //     },
-  //   };
-  // }
+  fetchOptions: () => {
+    const token = localStorage.getItem('fwt');
+    return {
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'GET, POST, PATCH, PUT, DELETE, OPTIONS',
+        'Access-Control-Allow-Headers': 'Origin, Content-Type, X-Auth-Token',
+        ...(token && {
+          'x-felicity-user-id': "felicity-user",
+          'x-felicity-role': "felicity-administrator",
+          'Authorization': `Bearer ${token}`
+        }),
+      },
+    };
+  }
 });

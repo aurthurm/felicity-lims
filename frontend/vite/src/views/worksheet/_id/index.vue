@@ -56,7 +56,7 @@
 import { defineComponent, reactive, computed } from 'vue';
 import { useRoute } from 'vue-router';
 import { useStore } from 'vuex';
-import { ActionTypes, WorkSheet } from '../../../store/modules/worksheets';
+import { ActionTypes, WorkSheet } from '../../../store/modules/worksheet';
 
 export default defineComponent({
   name: "worksheet-single",

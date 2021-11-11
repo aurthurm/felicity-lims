@@ -1,7 +1,7 @@
 import { useQuery } from '@urql/vue';
 import { urqlClient } from '../../urql';
 import { RootState } from '../state';
-import { parseEdgeNodeToList, parseDate, addListsUnique } from '../../utils'
+import { parseEdgeNodeToList, addListsUnique } from '../../utils'
 import { ActionTree, GetterTree, MutationTree } from 'vuex';
 
 import {
@@ -12,87 +12,7 @@ import {
   GET_ANALYSIS_RESULTS_BY_SAMPLE_UID,
   GET_ALL_QC_SETS, GET_QC_SET_BY_UID
 } from '../../graphql/analyses.queries';
-import { IAnalysisProfile, IAnalysisRequest, IAnalysisService, ISample } from './analyses';
-
-export interface ISampleType {
-  uid?: string;
-  name?: string;
-  abbr?: string;
-  description?: string;
-  active?: boolean;
-}
-
-export class SampleType implements ISampleType{
-  constructor(
-    public uid: string,
-    public name: string,
-    public abbr: string,
-    public description: string,
-    public active: boolean,
-  ) {
-    this.active = true;
-  }
-}
-
-export interface ISampleRequest extends ISample {
-  uid?: string;
-  sampleId?: string;
-  priority?: string;
-  status?: string;
-  analysisRequest?: IAnalysisRequest;
-}
-
-export class SampleRequest implements ISampleRequest {
-  constructor(
-    public uid: string, 
-    public sampleId: string, 
-    public priority: string,
-    public status: string,
-    public analysisRequest: IAnalysisRequest,
-    public sampleType: ISampleType,
-    public profiles: IAnalysisProfile[],
-    public analyses: IAnalysisService[],
-     ){}
-}
-
-export interface IAnalysisResult {
-  uid?: number;
-  analysisUid?: string;
-  analysis?: IAnalysisService;
-  worksheetPosition?: number;
-  sampleUid?: string;
-  sample?: ISampleRequest;
-  status?: string;
-  result?: string;
-  editResult?: string;
-  createdAt?: string;
-  checked?: boolean;
-  editable?: boolean;
-}
-
-export class AnalysisResult implements IAnalysisResult {
-  constructor(
-    public uid: string,
-    public analysisUid: string,
-    public analysis: IAnalysisService,
-    public worksheetPosition: number,
-    public sampleUId: string,
-    public sample: ISampleRequest,
-    public status: string,
-    public result: string,
-  ) {
-    this.result = "";
-  }
-}
-
-
-export interface IQCSet {
-  uid?: string;
-  name?: string;
-  note?: string;
-  createdAt?: string;
-  samples?: ISample[];
-}
+import { IAnalysisRequest, ISampleType, ISampleRequest, IAnalysisResult, IQCSet } from '../../models/analysis';
 
 // state contract
 export interface IState {

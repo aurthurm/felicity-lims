@@ -2,15 +2,14 @@ import { defineComponent, ref, reactive, computed } from 'vue';
 import { useMutation } from '@urql/vue';
 import modal from '../../../components/SimpleModal.vue';
 import { 
-  Country, 
-  Province, 
-  District, 
-  GenericLocation 
-} from '../../../store/common';
+  ICountry, 
+  IProvince, 
+  IDistrict, 
+  IGenericLocation 
+} from '../../../models/location';
 import { ADD_COUNTRY, UPDATE_COUNTRY, ADD_PROVINCE, ADD_DISTRICT, UPDATE_DISTRICT, UPDATE_PROVINCE } from '../../../graphql/admin.mutations';
 import store from '../../../store';
 
-export const ICountry = typeof Country;
 import { ActionTypes } from '../../../store/modules/admin';
 
 export default defineComponent({
@@ -19,10 +18,10 @@ export default defineComponent({
     modal,
   },
   setup() {
-    const nullCountry = new Country();
-    const nullProvince = new Province();
-    const nullDistrict = new District();
-    const nullLocation = new GenericLocation();
+    const nullCountry = {} as ICountry;
+    const nullProvince = {} as IProvince;
+    const nullDistrict = {} as IDistrict;
+    const nullLocation = {} as IGenericLocation;
 
     let createLocation = ref(true);
     let showModal = ref(false);

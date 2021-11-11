@@ -189,7 +189,7 @@ import { mapGetters, useStore } from 'vuex';
 import { defineComponent, ref, reactive, computed } from 'vue';
 
 import modal from '../../components/SimpleModal.vue';
-import { Client } from '../../store/modules/clients';
+import { IClient } from '../../models/client';
 import {  GET_ALL_CLIENTS, GET_CLIENT_CONTACTS_BY_CLIENT_UID } from '../../graphql/clients.queries';
 import { ADD_CLIENT, EDIT_CLIENT } from '../../graphql/clients.mutations';
 import {
@@ -199,7 +199,7 @@ import {
 } from '../../graphql/admin.queries';
 
 export const IClient = typeof Client;
-import { ActionTypes } from '../../store/modules/clients';
+import { ActionTypes } from '../../store/modules/client';
 import { ActionTypes as AdminActionTypes } from '../../store/modules/admin';
 
 export default defineComponent({
@@ -221,8 +221,8 @@ export default defineComponent({
     let provinces = ref([]);
     let districts = ref([]);
 
-    let client = reactive({ ...(new Client()) });
-    const resetClient = () => Object.assign(client, { ...(new Client()) })
+    let client = reactive({}) as IClient;
+    const resetClient = () => Object.assign(client, {}) as IClient
     let clientBatch = ref(50)
     let clientParams = reactive({ 
       first: clientBatch.value, 

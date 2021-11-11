@@ -1,8 +1,6 @@
 import { MutationTree } from 'vuex';
 import { IState, initialState } from './state';
 
-import { parseEdgeNodeToList } from '../utils'
-
 export enum MutationTypes {
   RESET_STATE = 'RESET_STATE',
   PERSIST_AUTH_DATA = 'PERSIST_AUTH_DATA',

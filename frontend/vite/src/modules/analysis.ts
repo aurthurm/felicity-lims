@@ -1,12 +1,12 @@
 import Swal from 'sweetalert2';
-import { ref, toRefs, computed, PropType, watch, reactive } from 'vue';
+import { toRefs, computed, reactive } from 'vue';
 import { useRoute } from 'vue-router';
 import { useStore } from 'vuex';
 import { useMutation } from '@urql/vue';
 
 import { isNullOrWs } from '../utils';
-import { ActionTypes, ISampleRequest, IAnalysisResult } from '../store/modules/samples';
-import { GET_ANALYSIS_RESULTS_BY_SAMPLE_UID } from '../graphql/analyses.queries';
+import { ActionTypes } from '../store/modules/sample';
+import { ISampleRequest, IAnalysisResult } from '../models/analysis'
 import { 
   CANCEL_ANALYSIS_RESULTS,
   REINSTATE_ANALYSIS_RESULTS,
@@ -14,9 +14,9 @@ import {
   VERIFY_ANALYSIS_RESULTS, 
   RETEST_ANALYSIS_RESULTS, 
   RETRACT_ANALYSIS_RESULTS } from '../graphql/analyses.mutations';
-import { IAnalysisProfile, IAnalysisService } from '../store/modules/analyses';
+import { IAnalysisProfile, IAnalysisService } from '../models/analysis';
 
-export default function useAnalysisResults(){
+export default function useAnalysisComposable(){
     const route = useRoute();
     const store = useStore();
 
@@ -31,60 +31,7 @@ export default function useAnalysisResults(){
         sample: computed<ISampleRequest>(() => store.getters.getSample)
     });
 
-    // store.dispatch(ActionTypes.FETCH_ANALYSIS_RESULTS_FOR_SAMPLE, +route.params.sampleUid)
-
-    const { executeMutation: cancelAnalysisResults } = useMutation(CANCEL_ANALYSIS_RESULTS);
-    const { executeMutation: reInstateAnalysisResults } = useMutation(REINSTATE_ANALYSIS_RESULTS);
-    const { executeMutation: submitAnalysisResults } = useMutation(SUBMIT_ANALYSIS_RESULTS);
-    const { executeMutation: verifyAnalysisResults } = useMutation(VERIFY_ANALYSIS_RESULTS);  
-    const { executeMutation: retestAnalysisResults } = useMutation(RETEST_ANALYSIS_RESULTS); 
-    const { executeMutation: retractAnalysisResults } = useMutation(RETRACT_ANALYSIS_RESULTS); 
-    
-    function submitAnalysesResults(results: IAnalysisResult[]): void {
-      submitAnalysisResults({ analysisResults: results, }).then((result) => {
-       store.dispatch(ActionTypes.UPDATE_ANALYSIS_RESULTS, result);
-      });
-    }    
-
-    function submitResult(result: IAnalysisResult): void {
-      if(result.status !== "pending") return;
-      result.result = result.editResult;
-      submitAnalysesResults([{ uid: result.uid , result: result.result }])
-    }       
-    
-    function cancelAnalysesResults(analyses: any[]): void {
-      cancelAnalysisResults({ analyses }).then((result) => {
-      //  store.dispatch(ResultActionTypes.UPDATE_ANALYSIS_RESULTS, result);
-      });
-    }     
-    
-    function reInstateAnalysesResults(analyses: any[]): void {
-      reInstateAnalysisResults({ analyses }).then((result) => {
-      //  store.dispatch(ResultActionTypes.UPDATE_ANALYSIS_RESULTS, result);
-      });
-    }  
-    
-    function verifyAnalysesResults(analyses: any[]): void {
-      verifyAnalysisResults({ analyses }).then((result) => {
-      //  store.dispatch(ResultActionTypes.UPDATE_ANALYSIS_RESULTS, result);
-      });
-    }  
-    
-    function retractAnalysesResults(analyses: any[]): void {
-      retractAnalysisResults({ analyses }).then((result) => {
-      //  store.dispatch(ResultActionTypes.UPDATE_ANALYSIS_RESULTS, result);
-      });
-    }  
-    
-    function retestAnalysesResults(analyses: any[]): void {
-      retestAnalysisResults({ analyses }).then((result) => {
-      //  store.dispatch(ResultActionTypes.UPDATE_ANALYSIS_RESULTS, result);
-      });
-    }
-
-    function areAllChecked(): Boolean {
-      return state.analysisResults?.every((item: IAnalysisResult) => item.checked === true);
-    }
+    // store.dispatch(ActionTypes.FETCH_ANALYSIS_RESULTS_FOR_SAMPLE, +route.params.sampleUid)  
     
     function getResultsChecked(): any {
       let results: IAnalysisResult[] = [];
@@ -94,61 +41,7 @@ export default function useAnalysisResults(){
       return results;
     }
 
-    function checkCheck(result: IAnalysisResult): void {
-     if(areAllChecked()) {
-        state.allChecked = true;
-     } else {
-        state.allChecked = false;
-     }
-      checkUserActionPermissios()
-    }
-
-    function check(result: IAnalysisResult): void {
-      result.checked = true;
-      checkUserActionPermissios()
-    }
-
-    function unCheck(result: IAnalysisResult): void {
-      result.checked = false;
-      checkUserActionPermissios()
-    }
-
-    async function toggleCheckAll() {
-      await state.analysisResults?.forEach(result => state.allChecked ? check(result) : unCheck(result));
-      checkUserActionPermissios()
-    }
-
-    async function unCheckAll() {
-      await state.analysisResults?.forEach(result => unCheck(result))
-      checkUserActionPermissios()
-    }
-
-    function profileAnalysesText(profiles: IAnalysisProfile[], analyses: IAnalysisService[]): string {
-        let names: string[] = [];
-        profiles?.forEach(p => names.push(p.name!));
-        analyses?.forEach(a => names.push(a.name!));
-        return names.join(', ');
-    }
-
-    function editResult(result: any): void {
-      result.editable = true;
-    }
-
-    function isEditable(result: IAnalysisResult): Boolean {
-      if(result?.editable || isNullOrWs(result?.result)) {
-        if(['cancelled',"verified","retracted","to_be_verified"].includes(result.status!)){
-          result.editable = false
-          return false
-        }else{
-          editResult(result)
-          return true
-        }
-        return true
-      };
-      return false;
-    }
-
-    function prepareResults(): any[] {
+    function prepareResults(): IAnalysisResult[] {
       const results = getResultsChecked();
       let ready: IAnalysisResult[] = [];
       results?.forEach((result: IAnalysisResult) => ready.push({ uid: result.uid , result: result.result }))
@@ -162,19 +55,38 @@ export default function useAnalysisResults(){
       return ready;
     }
 
-    function getResultRowColor(result: any): string {
-      switch (result?.status){
-        case "retracted":
-          return 'bg-gray-300'
-        case "verified":
-          if(result?.reportable === false){
-            return 'bg-red-100';
-          } else {
-            return '';
-          }
-        default:
-          return ''
-      }
+    // Analysis CheckMark Management
+    function checkCheck(result: IAnalysisResult): void {
+     if(areAllChecked()) {
+        state.allChecked = true;
+     } else {
+        state.allChecked = false;
+     }
+      resetAnalysesPermissions()
+    }
+
+    function check(result: IAnalysisResult): void {
+      result.checked = true;
+      resetAnalysesPermissions()
+    }
+
+    function unCheck(result: IAnalysisResult): void {
+      result.checked = false;
+      resetAnalysesPermissions()
+    }
+
+    async function toggleCheckAll() {
+      await state.analysisResults?.forEach(result => state.allChecked ? check(result) : unCheck(result));
+      resetAnalysesPermissions()
+    }
+
+    async function unCheckAll() {
+      await state.analysisResults?.forEach(result => unCheck(result))
+      resetAnalysesPermissions()
+    }
+
+    function areAllChecked(): Boolean {
+      return state.analysisResults?.every((item: IAnalysisResult) => item.checked === true);
     }
 
     function isDisabledRowCheckBox(result: any): boolean {
@@ -192,14 +104,48 @@ export default function useAnalysisResults(){
       }
     }
 
-    function checkUserActionPermissios(): void {
+    // Analysis Edit Management
+    function editResult(result: any): void {
+      result.editable = true;
+    }
+
+    function isEditable(result: IAnalysisResult): Boolean {
+      if(result?.editable || isNullOrWs(result?.result)) {
+        if(['cancelled',"verified","retracted","to_be_verified"].includes(result.status!)){
+          result.editable = false
+          return false
+        }else{
+          editResult(result)
+          return true
+        }
+      };
+      return false;
+    }
+
+    //
+    function getResultRowColor(result: any): string {
+      switch (result?.status){
+        case "retracted":
+          return 'bg-gray-300'
+        case "verified":
+          if(result?.reportable === false){
+            return 'bg-red-100';
+          } else {
+            return '';
+          }
+        default:
+          return ''
+      }
+    }
+
+    //
+    function resetAnalysesPermissions(): void {
       // reset
       state.can_submit = false;
       state.can_retract = false;
       state.can_verify = false;
       state.can_retest = false;
       state.can_reinstate = false;
-
 
       const checked = getResultsChecked();
       if(checked.length === 0) return;
@@ -214,7 +160,7 @@ export default function useAnalysisResults(){
         state.can_submit = true;
       }
 
-      // can verify/ retract/retest
+      // can verify/retract/retest
       if(checked.every((result: IAnalysisResult) => result.status === 'resulted')){
         state.can_retract = true;
         state.can_verify = true;
@@ -223,6 +169,8 @@ export default function useAnalysisResults(){
 
     }
 
+    // Cancell Analyses
+    const { executeMutation: _canceller } = useMutation(CANCEL_ANALYSIS_RESULTS);
     const cancelResults = async () => {
       try {
         Swal.fire({
@@ -236,7 +184,10 @@ export default function useAnalysisResults(){
           cancelButtonText: 'No, do not cancel!',
         }).then((result) => {
           if (result.isConfirmed) {
-            cancelAnalysesResults(getResultsUids());
+
+            _canceller({ analyses: getResultsUids() }).then((result) => {
+              store.dispatch(ActionTypes.UPDATE_ANALYSIS_RESULTS, result);
+            });
 
             Swal.fire(
               'Its Happening!',
@@ -251,6 +202,8 @@ export default function useAnalysisResults(){
       }
     }
 
+    // Reinstate Analyses
+    const { executeMutation: _reinstater } = useMutation(REINSTATE_ANALYSIS_RESULTS);
     const reInstateResults = async () => {
       try {
         Swal.fire({
@@ -264,7 +217,10 @@ export default function useAnalysisResults(){
           cancelButtonText: 'No, do not reinstate!',
         }).then((result) => {
           if (result.isConfirmed) {
-            reInstateAnalysesResults(getResultsUids());
+
+            _reinstater({ analyses: getResultsUids() }).then((result) => {
+              store.dispatch(ActionTypes.UPDATE_ANALYSIS_RESULTS, result);
+            });
 
             Swal.fire(
               'Its Happening!',
@@ -279,6 +235,15 @@ export default function useAnalysisResults(){
       }
     }
 
+    // Submit Analyses
+    const { executeMutation: _submitter } = useMutation(SUBMIT_ANALYSIS_RESULTS);
+
+    function submitResult(result: IAnalysisResult): void {
+      if(result.status !== "pending") return;
+      result.result = result.editResult;
+      _submitter([{ uid: result.uid , result: result.result }])
+    }     
+
     const submitResults = async () => {
       try {
         Swal.fire({
@@ -292,7 +257,10 @@ export default function useAnalysisResults(){
           cancelButtonText: 'No, cancel submission!',
         }).then((result) => {
           if (result.isConfirmed) {
-            submitAnalysesResults(prepareResults());
+
+            _submitter({ analysisResults: prepareResults() }).then((result) => {
+              store.dispatch(ActionTypes.UPDATE_ANALYSIS_RESULTS, result);
+             });
 
             Swal.fire(
               'Its Happening!',
@@ -307,6 +275,8 @@ export default function useAnalysisResults(){
       }
     }
 
+    // Verify Analyses
+    const { executeMutation: _verifier } = useMutation(VERIFY_ANALYSIS_RESULTS);
     const verifyResults = async () => {
       try {
         Swal.fire({
@@ -320,7 +290,10 @@ export default function useAnalysisResults(){
           cancelButtonText: 'No, cancel verification!',
         }).then((result) => {
           if (result.isConfirmed) {
-            verifyAnalysesResults(getResultsUids());
+
+            _verifier({ analyses: getResultsUids() }).then((result) => {
+              store.dispatch(ActionTypes.UPDATE_ANALYSIS_RESULTS, result);
+            });
 
             Swal.fire(
               'Its Happening!',
@@ -334,7 +307,9 @@ export default function useAnalysisResults(){
         console.log(error)
       }
     }
-
+  
+    // Retract Analyses
+    const { executeMutation: _retracter } = useMutation(RETRACT_ANALYSIS_RESULTS); 
     const retractResults = async () => {
       try {
         Swal.fire({
@@ -348,7 +323,10 @@ export default function useAnalysisResults(){
           cancelButtonText: 'No, cancel retraction!',
         }).then((result) => {
           if (result.isConfirmed) {
-            retractAnalysesResults(getResultsUids());
+
+            _retracter({ analyses: getResultsUids() }).then((result) => {
+              store.dispatch(ActionTypes.UPDATE_ANALYSIS_RESULTS, result);
+            });
 
             Swal.fire(
               'Its Happening!',
@@ -363,6 +341,8 @@ export default function useAnalysisResults(){
       }
     }
 
+    // Retest Analyses
+    const { executeMutation: _retester } = useMutation(RETEST_ANALYSIS_RESULTS); 
     const retestResults = async () => {
       try {
         Swal.fire({
@@ -376,7 +356,10 @@ export default function useAnalysisResults(){
           cancelButtonText: 'No, cancel retesting!',
         }).then((result) => {
           if (result.isConfirmed) {
-            retestAnalysesResults(getResultsUids());
+
+            _retester({ analyses: getResultsUids() }).then((result) => {
+              store.dispatch(ActionTypes.UPDATE_ANALYSIS_RESULTS, result);
+            });
 
             Swal.fire(
               'Its Happening!',
@@ -391,10 +374,14 @@ export default function useAnalysisResults(){
       }
     }
 
-
     return {
       ...toRefs(state),
-      profileAnalysesText,
+      profileAnalysesText: computed<string>((profiles: IAnalysisProfile[], analyses: IAnalysisService[]) => {
+        let names: string[] = [];
+        profiles?.forEach(p => names.push(p.name!));
+        analyses?.forEach(a => names.push(a.name!));
+        return names.join(', ');
+      }),
       isDisabledRowCheckBox,
       getResultRowColor,
       submitResult,

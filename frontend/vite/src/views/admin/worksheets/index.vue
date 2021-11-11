@@ -374,7 +374,6 @@
 </style>
 
 <script lang="ts">
-import tabContacts from './comps/ContactTable.vue';
 import modal from '../../../components/SimpleModal.vue';
 
 import { useMutation, useQuery } from '@urql/vue';
@@ -382,15 +381,17 @@ import { mapGetters, useStore } from 'vuex';
 import { defineComponent, ref, reactive, computed } from 'vue';
 
 import { ADD_WORKSHEET_TEMPLATE, EDIT_WORKSHEET_TEMPLATE } from '../../../graphql/worksheet.mutations';
-import { ActionTypes, WorkSheetTemplate, IWorkSheetTemplate, Reserved } from '../../../store/modules/worksheets';
-import { ActionTypes as AnalysisActionTypes, AnalysisService } from '../../../store/modules/analyses';
-import { ActionTypes as SampleActionTypes, SampleType } from '../../../store/modules/samples';
-import { ActionTypes as SetupActionTypes, Instrument } from '../../../store/modules/setup';
+import { ActionTypes } from '../../../store/modules/worksheet';
+import { IWorkSheetTemplate, IReserved } from '../../../models/worksheet';
+import { ActionTypes as AnalysisActionTypes } from '../../../store/modules/analysis';
+import { ActionTypes as SampleActionTypes} from '../../../store/modules/sample';
+import { ActionTypes as SetupActionTypes } from '../../../store/modules/setup';
+import { IAnalysisService, ISampleType } from '../../../models/analysis';
+import { IInstrument } from '../../../models/setup';
 
 export default defineComponent({
   name: 'worksheet-templates',
   components: {
-    tabContacts,
     modal,
   },
   setup() {
@@ -402,7 +403,7 @@ export default defineComponent({
 
     let showModal = ref(false);
     let createItem = ref(null);
-    let workSheetTemplate = reactive({ ...(new WorkSheetTemplate()) });
+    let workSheetTemplate = reactive({}) as IWorkSheetTemplate;
     let formTitle = ref('');
 
 

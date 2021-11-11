@@ -5,7 +5,7 @@
 
 <script lang="ts">
 import { defineComponent, ref, toRefs, computed } from 'vue';
-import { IPatient } from '../../../store/modules/patients';
+import { IPatient } from '../../../store/modules/patient';
 
 export default defineComponent({
   name: "patient-auto-complete",

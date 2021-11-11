@@ -250,7 +250,8 @@ import { useStore } from 'vuex';
 import { useRoute } from 'vue-router';
 import { useMutation } from '@urql/vue';
 import { ActionTypes as AdminActionTypes } from '../../../../store/actions';
-import { ActionTypes, Task, ITask, IMileStone } from '../../../../store/modules/kanban';
+import { ActionTypes  } from '../../../../store/modules/kanban';
+import { ITask, IMileStone } from '../../../../models/kanban';
 import { 
   ADD_LISTING_TASK, 
   ADD_TASK_COMMENT, 

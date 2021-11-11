@@ -4,27 +4,9 @@ import { RootState } from '../state';
 import { ActionTree, GetterTree, MutationTree } from 'vuex';
 
 import { GET_ALL_DOCUMENTS, GET_DOCUMENT_BY_UID } from '../../graphql/markdown.queries';
-import { parseEdgeNodeToList } from '../../utils';
+import { IMDocument } from '../../models/document';
 
-export interface IMDocument {
-  uid?: number,
-  name?: string,  
-  subtitle?: string,
-  content?: string,
-  version?: string,
-  status?: string,
-}
 
-export class MDocument implements IMDocument {
-  constructor(
-    public uid?: number,
-    public name?: string,
-    public subtitle?: string,
-    public content?: string,
-    public version?: string,
-    public status?: string,
-  ) {}
-}
 
 // state contract
 export interface IState {

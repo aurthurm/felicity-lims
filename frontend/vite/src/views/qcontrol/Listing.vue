@@ -250,11 +250,12 @@
 import modal from '../../components/SimpleModal.vue';
 import { useMutation } from '@urql/vue';
 import { defineComponent, ref, toRefs, reactive, computed, watch } from 'vue';
-import { ActionTypes as SampleActionTypes } from '../../store/modules/samples';
+import { ActionTypes as SampleActionTypes } from '../../store/modules/sample';
 import { isNullOrWs } from '../../utils';
 import { useRoute, useRouter } from 'vue-router';
 import { useStore } from 'vuex';
-import { ActionTypes, QCRequest, IQCRequest } from '../../store/modules/analyses';
+import { ActionTypes } from '../../store/modules/analysis';
+import { IQCRequest } from '../../models/analysis';
 import { ADD_QC_REQUEST } from '../../graphql/analyses.mutations';
 import { ActionTypes as SetUpActionTypes } from '../../store/actions';
 import { isNullOrWs } from '../../utils';
@@ -272,7 +273,7 @@ export default defineComponent({
 
     let formAction = ref(true);
     let form = reactive({ 
-      samples: [new QCRequest] as IQCRequest[]
+      samples: [{}] as IQCRequest[]
     });
 
     let analysesParams = reactive({ 

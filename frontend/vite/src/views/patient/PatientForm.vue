@@ -126,7 +126,7 @@ import { defineComponent, ref, reactive, computed, onMounted, toRefs } from 'vue
 import { mapGetters, useStore } from 'vuex';
 import { useRouter, useRoute } from 'vue-router';
 import { useQuery } from '@urql/vue';
-import { Patient, IPatient } from '../../store/modules/patients';
+import { IPatient } from '../../models/patient';
 import {  GET_ALL_CLIENTS } from '../../graphql/clients.queries';
 import {
   GET_ALL_COUNTRIES,
@@ -135,8 +135,8 @@ import {
 } from '../../graphql/admin.queries';
 import { ADD_PATIENT } from '../../graphql/patient.mutations';
 
-import { ActionTypes } from '../../store/modules/patients';
-import { ActionTypes as ClientActionTypes } from '../../store/modules/clients';
+import { ActionTypes } from '../../store/modules/patient';
+import { ActionTypes as ClientActionTypes } from '../../store/modules/client';
 import { ActionTypes as AdminActionTypes } from '../../store/modules/admin';
 import { simpleValidator } from '../../modules/validators'
 export default defineComponent({

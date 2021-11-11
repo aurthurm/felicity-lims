@@ -1,14 +1,5 @@
-export interface IAuth {
-  uid?: string;
-  email?: string;
-  username?: string;
-  firstName?: string;
-  lastName?: string;
-  role?: string;
-}
-export class Auth implements IAuth {
-  constructor(public email?: string, public username?: string, public password?: string, role?: string) {}
-}
+import { IAuth } from '../models/auth'
+
 export interface IState {
   title: string;
   isAuthenticated: boolean;

@@ -91,7 +91,8 @@ import TaskCard from "../../components/TaskCard.vue";
 import { useStore } from 'vuex';
 import { useMutation } from '@urql/vue';
 import { ActionTypes as AdminActionTypes } from '../../../store/actions';
-import { ActionTypes, Task } from '../../../store/modules/kanban';
+import { ActionTypes } from '../../../store/modules/kanban';
+import { ITask } from '../../../models/kanban';
 import { 
   ADD_LISTING_TASK, 
   EDIT_LISTING_TASK,

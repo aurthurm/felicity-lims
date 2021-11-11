@@ -109,7 +109,7 @@
 import { defineComponent, reactive, computed, ref } from 'vue';
 import { useRoute } from 'vue-router';
 import { useStore } from 'vuex';
-import { ActionTypes, ISampleRequest } from '../../../store/modules/samples';
+import { ActionTypes, ISampleRequest } from '../../../store/modules/sample';
 
 export default defineComponent({
   name: "sample-single",
@@ -138,19 +138,19 @@ export default defineComponent({
         profileAnalysesText,
         FormManager,
         canCancel: computed(() => {
-          if(["received", "due"].includes(sample.value.status?.toLowerCase())) return true;
+          if(["received", "due"].includes(sample.value?.status?.toLowerCase())) return true;
           return false
         }),
         canVerify: computed(() => { // all anlytes must be verified first
-          if(sample.value.status?.toLowerCase() === "to_be_verified") return true;
+          if(sample.value?.status?.toLowerCase() === "to_be_verified") return true;
           return false
         }),
         canInvalidate: computed(() => { // only for published a.k.a printed
-          if(sample.value.status?.toLowerCase() === "published") return true;
+          if(sample.value?.status?.toLowerCase() === "published") return true;
           return false
         }),
         canReject: computed(() => {
-          if(["received", "due"].includes(sample.value.status?.toLowerCase())) return true;
+          if(["received", "due"].includes(sample.value?.status?.toLowerCase())) return true;
           return false
         }),
     };

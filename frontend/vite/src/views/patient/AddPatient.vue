@@ -127,7 +127,7 @@ import { defineComponent, ref, reactive, computed } from 'vue';
 import { mapGetters, useStore } from 'vuex';
 import { useRouter, useRoute } from 'vue-router';
 import { useQuery } from '@urql/vue';
-import { Patient } from '../../store/modules/patients';
+import { IPatient } from '../../models/patient';
 import {  GET_ALL_CLIENTS } from '../../graphql/clients.queries';
 import {
   GET_ALL_COUNTRIES,
@@ -138,8 +138,8 @@ import { ADD_PATIENT } from '../../graphql/patient.mutations';
 
 export const IPatient = typeof Patient;
 
-import { ActionTypes } from '../../store/modules/patients';
-import { ActionTypes as ClientActionTypes } from '../../store/modules/clients';
+import { ActionTypes } from '../../store/modules/patient';
+import { ActionTypes as ClientActionTypes } from '../../store/modules/client';
 import { ActionTypes as AdminActionTypes } from '../../store/modules/admin';
 import { Form, Field, useField, useForm } from 'vee-validate';
 import { isNullOrWs } from '../../utils';
@@ -154,7 +154,7 @@ export default defineComponent({
     let router = useRouter();
     let route = useRoute();
 
-    const nullPatient = new Patient();
+    const nullPatient = {} as IPatient;
     let createAction = ref(true)
 
     let patientForm = reactive({ ...nullPatient });

@@ -76,7 +76,8 @@ import { defineComponent, reactive, computed, onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useStore } from 'vuex';
 import { useMutation } from '@urql/vue';
-import { ActionTypes, Listing, IListing } from '../../../store/modules/kanban';
+import { ActionTypes } from '../../../store/modules/kanban';
+import { IListing } from '../../../models/kanban';
 import { ADD_BOARD_LISTING, DELETE_BOARD } from '../../../graphql/kanban.mutations';
 
 export default defineComponent({
@@ -92,7 +93,7 @@ export default defineComponent({
     // Modal Vars
     let showModal = ref(false);
     let formTitle = ref("");
-    let form = reactive({ ...new Listing() });
+    let form = reactive({});
 
     store.dispatch(ActionTypes.RESET_BOARD);
     store.dispatch(ActionTypes.FETCH_BOARD_BY_UID, +route.params.boardUid);

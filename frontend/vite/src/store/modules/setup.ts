@@ -1,5 +1,4 @@
 import { useQuery } from '@urql/vue';
-import { urqlClient } from '../../urql';
 import { RootState } from '../state';
 import { ActionTree, GetterTree, MutationTree } from 'vuex';
 
@@ -7,40 +6,7 @@ import {
   GET_ALL_METHODS,
   GET_ALL_INSTRUMENTS,
 } from '../../graphql/instrument.queries';
-
-
-export interface IInstrument {
-  uid?: string;
-  name?: string;
-  keyword?: string;
-  description?: string;
-  supplier?: any;
-}
-
-export class Instrument implements IInstrument {
-  constructor(
-    public uid?: string,
-    public name?: string,
-    public description?: string,
-    public supplier?: any,
-  ) {}
-}
-
-export interface IMethod {
-  uid?: string;
-  name?: string;
-  keyword?: string;
-  description?: string;
-}
-
-export class Method implements IMethod {
-  constructor(
-    public uid?: string,
-    public name?: string,
-    public description?: string,
-  ) { }
-}
-
+import {IInstrument, IMethod} from '../../models/setup'
 
 // state contract
 export interface IState {

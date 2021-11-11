@@ -52,7 +52,7 @@
 import tabAssignSamples from './WorkSheetAssign.vue';
 import tabWorksheetResults from './WorkSheetResults.vue';
 import tabLogs from '../../components/AuditLog.vue';
-import { IWorkSheet } from '../../../store/modules/worksheets'
+import { IWorkSheet } from '../../../store/modules/worksheet'
 
 import { defineComponent, ref, toRefs, computed, PropType } from 'vue';
 import { useStore } from 'vuex';

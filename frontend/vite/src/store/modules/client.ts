@@ -1,58 +1,13 @@
-import { useQuery } from '@urql/vue';
 import { urqlClient } from '../../urql';
 import { RootState } from '../state';
 import { ActionTree, GetterTree, MutationTree } from 'vuex';
-import { IClient, IDistrict } from '../common'
 
 import { GET_ALL_CLIENTS, 
   SEARCH_CLIENTS, 
   GET_CLIENT_CONTACTS_BY_CLIENT_UID, 
   GET_CLIENT_BY_UID } from '../../graphql/clients.queries';
 import { addListsUnique } from '../../utils';
-
-export class Client implements IClient {
-  constructor(
-    public uid?: number,
-    public name?: string,
-    public code?: string,
-    public email?: string,
-    public emailCc?: string[],
-    public consentEmail?: boolean,
-    public businessPhone?: string,
-    public mobilePhone?: string,
-    public consentSms?: boolean,
-    public district?: IDistrict,
-    public districtUid?: string,
-  ) {}
-}
-
-export interface IClientContact {
-  uid?: number,
-  firstName?: string,  
-  lastname?: string,
-  email?: string,
-  emailCc?: string[],
-  consentEmail?: boolean,
-  businessPhone?: string,
-  mobilePhone?: string,
-  consentSms?: boolean,
-  client?: IClient,
-}
-
-export class ClientContact implements IClientContact {
-  constructor(
-    public uid?: number,
-    public firstName?: string,
-    public lastName?: string,
-    public email?: string,
-    public emailCc?: string[],
-    public consentEmail?: boolean,
-    public businessPhone?: string,
-    public mobilePhone?: string,
-    public consentSms?: boolean,
-    public client?: IClient,
-  ) {}
-}
+import { IClient, IClientContact } from '../../models/client'
 
 // state contract
 export interface IState {

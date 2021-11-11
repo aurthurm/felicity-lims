@@ -84,7 +84,7 @@
     import { useMutation } from '@urql/vue';
     import { useStore } from 'vuex';
 
-    import { ActionTypes, IResultOption } from '../../../../store/modules/analyses';
+    import { ActionTypes, IResultOption } from '../../../../store/modules/analysis';
     import { ADD_RESULT_OPTION, EDIT_RESULT_OPTION  } from '../../../../graphql/analyses.mutations';
 
     export default defineComponent({

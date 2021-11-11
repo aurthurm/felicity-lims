@@ -154,7 +154,8 @@ import { useMutation } from '@urql/vue';
 import { defineComponent, ref, reactive, computed, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import { useStore } from 'vuex';
-import { ActionTypes, Method, IMethod } from '../../../../store/modules/setup';
+import { ActionTypes } from '../../../../store/modules/setup';
+import { IMethod } from '../../../../models/setup'
 import { ADD_METHOD, EDIT_METHOD  } from '../../../../graphql/instrument.mutations';
 
 export default defineComponent({
@@ -173,7 +174,7 @@ export default defineComponent({
     let formTitle = ref('');
     const formAction = ref(true);
 
-    let method = reactive({ ...new Method });
+    let method = reactive({}) as IMethod;
 
     store.dispatch(ActionTypes.FETCH_METHODS);    
 
@@ -197,7 +198,7 @@ export default defineComponent({
     }
     
     function resetMethod(): void {
-      Object.assign(method, { ...(new Method())})
+      Object.assign(method, { ...({} as IMethod)})
     }
 
     function FormManager(create: boolean, obj: IMethod): void {
@@ -205,7 +206,7 @@ export default defineComponent({
       showModal.value = true;
       formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "ANALYSES METHOD";
       if (create) {
-        Object.assign(method, { ...new Method });
+        Object.assign(method, { ...{} as IMethod });
       } else {
         Object.assign(method, { ...obj });
       }

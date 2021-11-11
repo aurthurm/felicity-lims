@@ -154,12 +154,13 @@ import { useMutation } from '@urql/vue';
 import { defineComponent, ref, toRefs, reactive, computed, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useStore } from 'vuex';
-import { ActionTypes as SampleActionTypes } from '../../store/modules/samples';
-import { ActionTypes, AnalysisRequest, IAnalysisRequest, ISample, Sample } from '../../store/modules/analyses';
+import { ActionTypes as SampleActionTypes } from '../../store/modules/sample';
+import { ActionType } from '../../store/modules/analysis';
+import { IAnalysisRequest, ISample } from '../../models/analysis';
 import { ADD_ANALYSIS_SERVICE, EDIT_ANALYSIS_SERVICE, ADD_ANALYSIS_REQUEST  } from '../../graphql/analyses.mutations';
-import { IPatient } from '../patient/Patients.vue';
-import { ActionTypes as PatientActionTypes } from '../../store/modules/patients';
-import { ActionTypes as ClientActionTypes } from '../../store/modules/clients';
+import { IPatient } from '../../models/patient';
+import { ActionTypes as PatientActionTypes } from '../../store/modules/patient';
+import { ActionTypes as ClientActionTypes } from '../../store/modules/client';
 import { isNullOrWs } from '../../utils';
 
 export default defineComponent({
@@ -176,7 +177,7 @@ export default defineComponent({
 
     let formTitle = ref('');
     let formAction = ref(true);
-    let form = reactive({ ...(new AnalysisRequest), priority: 0 });
+    let form = reactive({ ...({} as IAnalysisRequest), priority: 0 });
     let clientQuery = ref('');
 
     const analysesProfiles = computed(() =>store.getters.getAnalysesProfiles);

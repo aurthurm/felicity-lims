@@ -1,55 +1,10 @@
-import { useQuery } from '@urql/vue';
 import { urqlClient } from '../../urql';
 import { RootState } from '../state';
 import { ActionTree, GetterTree, MutationTree } from 'vuex';
-import { IClient, IDistrict, IProvince } from '../common'
 
 import { GET_ALL_PATIENTS, SEARCH_PATIENTS, GET_PATIENT_BY_UID } from '../../graphql/patient.queries';
 import { addListsUnique } from '../../utils';
-
-export interface IPatient {
-  uid?: string,
-  clientPatientId?: string;
-  patientId?: string;
-  firstName?: string;
-  middleName?: string;
-  lastName?: string;
-  client?: IClient;
-  clientUid?: String;
-  gender?: string;
-  age?: number;
-  dateOfBirth?: Date;
-  ageDobEstimated?: Boolean;
-  phoneHome?: string;
-  phoneMobile?: string;
-  consentSms?: string;
-  district?: IDistrict;
-  districtUid?: string;
-  province?: IProvince;
-  provinceUid?: string;
-}
-
-export class Patient implements IPatient {
-  constructor(
-    public uid?: string,
-    public patientId?: string,
-    public clientPatientId?: string,
-    public firstName?: string,
-    public lastName?: string,
-    public gender?: string,
-    public age?: number,
-    public dateOfBirth?: Date,
-    public ageDobEstimated?: Boolean,
-    public client?: IClient,
-    public clientUid?: string,
-    public phoneMobile?: string,
-    public consentSms?: string,
-    public district?: IDistrict,
-    public districtUid?: string,
-    public province?: IProvince,
-    public provinceUid?: string
-  ) {}
-}
+import { IPatient } from '../../models/patient'
 
 // state contract
 export interface IState {

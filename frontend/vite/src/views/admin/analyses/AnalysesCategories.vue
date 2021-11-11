@@ -101,7 +101,8 @@ import { useMutation } from '@urql/vue';
 import { defineComponent, ref, reactive, computed } from 'vue';
 import { useStore } from 'vuex';
 import { useRouter } from 'vue-router';
-import { ActionTypes, AnalysisCategory, IAnalysisCategory } from '../../../store/modules/analyses';
+import { ActionTypes,  } from '../../../store/modules/analysis';
+import { IAnalysisCategory } from '../../../models/analysis';
 import { ADD_ANALYSIS_CATEGORY, EDIT_ANALYSIS_CATEGORY  } from '../../../graphql/analyses.mutations';
 
 

@@ -2,7 +2,7 @@ import { useQuery } from '@urql/vue';
 import { urqlClient } from '../../urql';
 import { RootState } from '../state';
 import { ActionTree, GetterTree, MutationTree } from 'vuex';
-import { IDistrict, IProvince, ICountry } from '../common'
+import { IDistrict, IProvince, ICountry } from '../../models/location'
 
 import {
   GET_ALL_COUNTRIES,

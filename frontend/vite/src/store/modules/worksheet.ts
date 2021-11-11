@@ -6,102 +6,10 @@ import { ActionTree, GetterTree, MutationTree } from 'vuex';
 import {
   GET_ALL_WORKSHEET_TEMPLATES, GET_ALL_WORKSHEETS, GET_WORKSHEET_BY_UID
 } from '../../graphql/worksheet.queries';
-import { IInstrument } from './setup';
-import { IAnalysisService } from './analyses';
-import { parseEdgeNodeToList, parseData, snakeToCamel, keysToCamel, addListsUnique } from '../../utils';
-import { IAnalysisResult } from './samples';
+import { parseData, keysToCamel, addListsUnique } from '../../utils';
+import { IAnalysisResult } from '../../models/analysis';
+import { IWorkSheetTemplate, IWorkSheet, IReserved } from '../../models/worksheet';
 
-
-export interface IReserved {
-  position: number;
-  levelUid?: string;
-}
-
-export class Reserved implements IReserved {
-  constructor(
-    public position: number,
-    public levelUid?: string,
-  ){
-  }
-}
-
-export interface IWorkSheetTemplate {
-  uid?: number;
-  name?: string;
-  qcTemplateUid?: number;
-  reserved?: IReserved[];
-  preview?: IReserved[];
-  numberOfSamples?: number;
-  rows?: number;
-  cols?: number;
-  rowWise?: Boolean;
-  worksheetType?: string;
-  instrument?: IInstrument;
-  description?: string;
-  analyses?: IAnalysisService[];
-  state?: string;
-}
-
-export class WorkSheetTemplate implements IWorkSheetTemplate {
-  constructor(
-    public uid?: number,
-    public name?: string,
-    public reserved?: IReserved[],
-    public preview?: IReserved[],
-    public numberOfSamples?: number,
-    public rows?: number,
-    public cols?: number,
-    public rowWise?: Boolean,
-    public qcTemplateUid?: number,
-    public worksheetType?: string,
-    public instrument?: IInstrument,
-    public description?: string,
-    public analyses?: IAnalysisService[],
-    public state?: string,
-    ){
-      this.analyses = [];
-      this.worksheetType = 'flat';
-      this.rowWise = true;
-      this.reserved = [new Reserved(1,"Blank"), new Reserved(2,"Control"), new Reserved(3,"Control")];
-  }
-}
-
-
-export interface IWorkSheet {
-  uid?: number;
-  name?: string;
-  reserved?: string[];
-  plate?: Map<string, string>;
-  numberOfSamples?: number;
-  analysisResults?: IAnalysisResult[],
-  rows?: number;
-  cols?: number;
-  rowWise?: Boolean;
-  worksheetType?: string;
-  instrument?: IInstrument;
-  description?: string;
-  analyses?: IAnalysisService[];
-  state?: string;
-}
-
-export class WorkSheet implements IWorkSheet {
-  constructor(
-    public uid?: number,
-    public name?: string,
-    public reserved?: string[],
-    public plate?: Map<string, string>,
-    public numberOfSamples?: number,
-    public analysisResults?: IAnalysisResult[],
-    public rows?: number,
-    public cols?: number,
-    public rowWise?: Boolean,
-    public worksheetType?: string,
-    public instrument?: IInstrument,
-    public description?: string,
-    public analyses?: IAnalysisService[],
-    public state?: string,
-    ){}
-}
 
 // state contract
 export interface IState {

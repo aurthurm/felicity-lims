@@ -136,8 +136,8 @@ import { useMutation } from '@urql/vue';
 
 import { useRoute } from 'vue-router';
 import { useStore } from 'vuex';
-import { ActionTypes, WorkSheet } from '../../../store/modules/worksheets';
-import { ActionTypes as ResultActionTypes } from '../../../store/modules/samples';
+import { ActionTypes, WorkSheet } from '../../../store/modules/worksheet';
+import { ActionTypes as ResultActionTypes } from '../../../store/modules/sample';
 import { isNullOrWs } from '../../../utils';
 import { SUBMIT_ANALYSIS_RESULTS, VERIFY_ANALYSIS_RESULTS, RETEST_ANALYSIS_RESULTS, RETRACT_ANALYSIS_RESULTS } from '../../../graphql/analyses.mutations';
 import { WORKSHEET_UPDATE } from '../../../graphql/worksheet.mutations';

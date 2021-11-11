@@ -145,7 +145,7 @@ import { defineComponent, ref, reactive, computed } from 'vue';
 import { mapGetters, useStore } from 'vuex';
 import { useRouter  } from 'vue-router';
 import { useQuery } from '@urql/vue';
-import { IPatient, Patient } from '../../store/modules/patients';
+import { IPatient } from '../../models/patient';
 import { GET_ALL_PATIENTS, SEARCH_PATIENTS } from '../../graphql/patient.queries';
 import {  GET_ALL_CLIENTS } from '../../graphql/clients.queries';
 import {
@@ -157,7 +157,7 @@ import { ADD_PATIENT } from '../../graphql/patient.mutations';
 
 export const IPatient = typeof Patient;
 
-import { ActionTypes } from '../../store/modules/patients';
+import { ActionTypes } from '../../store/modules/patient';
 import { ActionTypes as AdminActionTypes } from '../../store/modules/admin';
 
 export default defineComponent({
@@ -168,7 +168,7 @@ export default defineComponent({
     let router = useRouter();
 
 
-    const nullPatient = new Patient();
+    const nullPatient = {} as IPatient;
     let createAction = ref(true);
     let showModal = ref(false);
 
