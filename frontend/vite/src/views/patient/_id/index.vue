@@ -119,7 +119,7 @@
             <span class="text-gray-700">Gender</span>
             <select class="form-select block w-full mt-1" v-model="patient.gender">
                <option></option>
-              <option v-for="(sex, indx) in genders" :key="sex.index" :value="indx"> {{ sex }}</option>
+              <option v-for="(sex, indx) in genders" :key="indx" :value="indx"> {{ sex }}</option>
             </select>
           </label>
           <label class="block mb-2 w-full" >
@@ -183,15 +183,12 @@
 import modal from '../../../components/SimpleModal.vue';
 
 import { useMutation, useQuery } from '@urql/vue';
-import { defineComponent, ref, toRefs, reactive, computed, onMounted, PropType } from 'vue';
+import { defineComponent, ref, computed} from 'vue';
 import { useRoute } from 'vue-router';
-import { mapGetters, useStore } from 'vuex';
+import { useStore } from 'vuex';
 
-import { Patient, IPatient } from '../../../store/modules/patient';
-import { GET_ALL_PATIENTS, SEARCH_PATIENTS } from '../../../graphql/patient.queries';
 import {  GET_ALL_CLIENTS } from '../../../graphql/clients.queries';
 import {
-  GET_ALL_COUNTRIES,
   FILTER_PROVINCES_BY_COUNTRY,
   FILTER_DISTRICTS_BY_PROVINCE,
 } from '../../../graphql/admin.queries';
@@ -199,6 +196,8 @@ import { ADD_PATIENT } from '../../../graphql/patient.mutations';
 
 import { ActionTypes } from '../../../store/modules/patient';
 import { ActionTypes as AdminActionTypes } from '../../../store/modules/admin';
+import { IDistrict, IProvince } from '../../../models/location';
+import { IPatient } from '../../../models/patient';
 
 export default defineComponent({
   name: "patient-single",
@@ -209,18 +208,19 @@ export default defineComponent({
     const route = useRoute();
     const store = useStore();
 
-    let showModal = ref(false);    
+    let showModal = ref<boolean>(false);    
   
-    let countryUid = ref(null);
-    let provinceUid = ref(null);    
-    let provinces = ref([]);
-    let districts = ref([]);
+    let countryUid = ref<number>();
+    let provinceUid = ref<number>();    
+    let provinces = ref<IProvince[]>([]);
+    let districts = ref<IDistrict[]>([]);
 
-    const genders = ["Male", "Female", "Missing", "Trans Gender"]
-    let getGender = pos => genders[pos];
+    const genders: string[]= ["Male", "Female", "Missing", "Trans Gender"]
+
+    let getGender = (pos: number) => genders[pos];
 
     store.dispatch(ActionTypes.FETCH_PATIENT_BY_UID, +route.params.patientUid)
-    let patient = computed(() => store.getters.getPatient);
+    let patient = computed<IPatient>(() => store.getters.getPatient);
 
     store.dispatch(AdminActionTypes.FETCH_COUNTRIES);
 
@@ -240,13 +240,13 @@ export default defineComponent({
       requestPolicy: 'network-only',
     });
 
-    function getProvinces(event) {
+    function getProvinces(event: any) {
       provincesfilter.executeQuery({requestPolicy: 'network-only'}).then(result => {
         provinces.value = result.data.value?.provincesByCountryUid;
       });
     }
 
-    function getDistricts(event) {
+    function getDistricts(event: any) {
       districtsfilter.executeQuery({requestPolicy: 'network-only'}).then(result => {
         districts.value = result.data.value?.districtsByProvinceUid;
       });

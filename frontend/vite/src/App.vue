@@ -57,7 +57,7 @@ export default defineComponent({
     
     const layout = computed(() => `${currentRoute.value.meta.layout || defaultLayout}-layout`);
 
-    const fireAlert = (options) => {
+    const fireAlert = (options: any) => {
       Swal.fire({
         title: 'Yay!',
         text: options.message,

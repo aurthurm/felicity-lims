@@ -14,7 +14,8 @@
     </div>
   </div>
 </template>
-<script>
+
+<script lang="ts">
 import Badge from "../../components/Badge.vue";
 export default {
   name: "task-card",
@@ -28,7 +29,7 @@ export default {
     }
   },
   computed: {
-    badgeColor() {
+    badgeColor(): string {
       const mappings = {
         Design: "purple",
         "Feature Request": "teal",

@@ -249,16 +249,13 @@
 <script lang="ts">
 import modal from '../../components/SimpleModal.vue';
 import { useMutation } from '@urql/vue';
-import { defineComponent, ref, toRefs, reactive, computed, watch } from 'vue';
+import { defineComponent, ref, reactive, computed } from 'vue';
 import { ActionTypes as SampleActionTypes } from '../../store/modules/sample';
-import { isNullOrWs } from '../../utils';
-import { useRoute, useRouter } from 'vue-router';
 import { useStore } from 'vuex';
 import { ActionTypes } from '../../store/modules/analysis';
-import { IQCRequest } from '../../models/analysis';
+import { IAnalysisProfile, IAnalysisService, IQCRequest, ISample } from '../../models/analysis';
 import { ADD_QC_REQUEST } from '../../graphql/analyses.mutations';
 import { ActionTypes as SetUpActionTypes } from '../../store/actions';
-import { isNullOrWs } from '../../utils';
 export default defineComponent({
   name: "quality-control-listing",
   components: {
@@ -266,13 +263,12 @@ export default defineComponent({
   },
   setup()  {    
     const store = useStore();
-    const route = useRoute();
-    const router = useRouter();
 
-    let showModal = ref(false);
+    let showModal = ref<boolean>(false);
 
-    let formAction = ref(true);
+    let formAction = ref<boolean>(true);
     let form = reactive({ 
+      departmentUid: undefined,
       samples: [{}] as IQCRequest[]
     });
 
@@ -289,7 +285,7 @@ export default defineComponent({
     store.dispatch(SetUpActionTypes.FETCH_DEPARTMENTS);
     store.dispatch(SampleActionTypes.RESET_QC_SET)
 
-    let qcSetBatch = ref(25);
+    let qcSetBatch = ref<number>(25);
     let qcSetParams = reactive({ 
       first: qcSetBatch.value, 
       after: "",
@@ -299,11 +295,11 @@ export default defineComponent({
     });
     store.dispatch(SampleActionTypes.FETCH_QC_SETS, qcSetParams);
 
-    const analysesProfiles = computed(() =>store.getters.getAnalysesProfiles);
-    const analysesServices = computed(() => {
-      const services = store.getters.getAnalysesServicesSimple;
-      let s = new Set();
-      services.forEach((service, index) => {
+    const analysesProfiles = computed<IAnalysisProfile[]>(() =>store.getters.getAnalysesProfiles);
+    const analysesServices = computed<IAnalysisService[]>(() => {
+      const services: IAnalysisService[] = store.getters.getgetAnalysesServicesSimple;
+      let s = new Set<IAnalysisService>();
+      services.forEach((service: IAnalysisService) => {
         if(service.profiles?.length === 0){
           s.add(service)
         }
@@ -320,10 +316,10 @@ export default defineComponent({
     }
 
     function addQCSet(): void {
-      form.samples?.push(new QCRequest());
+      form.samples?.push({} as IQCRequest);
     }
 
-    function removeQCSet(index): void {
+    function removeQCSet(index: number): void {
         form.samples?.splice(index, 1);
     }
 
@@ -331,8 +327,7 @@ export default defineComponent({
       formAction.value = create;
       showModal.value = true;
       if (create) {
-        let ar = new QCRequest();
-        Object.assign(form, { ...ar });
+        Object.assign(form, {} as IQCRequest);
       } else {
         Object.assign(form, { ...obj });
       }
@@ -353,15 +348,15 @@ export default defineComponent({
       store.dispatch(SampleActionTypes.FETCH_QC_SETS, qcSetParams);
     }
 
-    function qcSetSamples(samples: any[]): string {
-      let ids = [];
-      let levels = [];
-      samples?.forEach(sample => {
+    function qcSetSamples(samples: ISample[]): string {
+      let ids:string[] = [];
+      let levels:string[] = [];
+      samples?.forEach((sample: ISample) => {
         let sampleId = sample?.sampleId + ' (' + sample.status + ')';
         if(!ids.includes(sampleId)){
           ids.push(sampleId)
         }
-        let level = sample?.qcLevel?.level?.match(/\b([A-Z])/g).join('') + ' (' + sample.status + ')';
+        let level = sample?.qcLevel?.level?.match(/\b([A-Z])/g)!.join('') + ' (' + sample.status + ')';
         if(!levels.includes(level)){
           levels.push(level)
         }
@@ -369,19 +364,19 @@ export default defineComponent({
       return levels.join(', ');
     }
 
-    function qcSetProfileAnalyses(samples: any[]): string {
-      let names = [];
-      samples?.forEach(sample => {
-          sample.profiles.forEach(p => {
-            if(!names.includes(p.name)){
-              names.push(p.name)
+    function qcSetProfileAnalyses(samples: ISample[]): string {
+      let names: string[] = [];
+      samples?.forEach((sample: ISample) => {
+          sample.profiles!.forEach(p => {
+            if(!names.includes(p.name!)){
+              names.push(p.name!)
             }
           });
       })
       samples?.forEach(sample => {
-          sample.analyses.forEach(a => {
-            if(!names.includes(a.name)){
-              names.push(a.name)
+          sample.analyses!.forEach(a => {
+            if(!names.includes(a.name!)){
+              names.push(a.name!)
             }
           });
       })
@@ -396,7 +391,6 @@ export default defineComponent({
       qcLevels: computed(() => store.getters.getQCLevels),
       analysesProfiles,
       analysesServices,
-      FormManager,
       form,
       saveForm,
       addQCSet,

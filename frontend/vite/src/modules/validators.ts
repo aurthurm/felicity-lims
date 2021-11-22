@@ -1,6 +1,6 @@
 import { isNullOrWs } from "../utils";
 
-export const simpleValidator = (form: Map<any, any>, required: string[] = []) => {
+export const simpleValidator = (form: any, required: string[] = []) => {
     if(required.length == 0) alert("There are no validation fields")
     if(typeof(form) !== 'object' ) alert("Form must a Map Object")
 

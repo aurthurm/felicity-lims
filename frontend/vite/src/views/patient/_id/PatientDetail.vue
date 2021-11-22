@@ -57,9 +57,10 @@ import tabSamples from '../../components/AnalyisRequestListing.vue';
 import tabCases from '../comps/CaseTable.vue';
 import tabLogs from '../../components/AuditLog.vue';
 
-import { defineComponent, ref, toRefs, computed, PropType } from 'vue';
+import { defineComponent, ref, computed } from 'vue';
 import { useStore } from 'vuex';
 import { useRouter } from 'vue-router';
+import { IPatient } from '../../../models/patient';
 
 export default defineComponent({
   name: 'patient-detail',

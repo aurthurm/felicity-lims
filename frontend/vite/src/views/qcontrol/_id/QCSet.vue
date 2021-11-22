@@ -48,7 +48,7 @@
               v-for="result in analyte?.items" :key="result.uid"
               class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
                 <div class="flex items-center">
-                  <input type="checkbox" class="mr-2" v-model="result.checked" @change="checkCheck(result)" :disabled="isDisabledRowCheckBox(result)">
+                  <input type="checkbox" class="mr-2" v-model="result.checked" @change="checkCheck()" :disabled="isDisabledRowCheckBox(result)">
                   <div>
                     <div  v-if="!isEditable(result)" class="text-sm leading-5 text-blue-900" >{{ result?.result  }}</div>
                     <label v-else-if="result?.analysis?.resultoptions?.length < 1" class="block" >
@@ -100,7 +100,7 @@
             <tbody class="bg-white">
                     <tr v-for="result in getResults()"  :key="result.uid">
                       <td>
-                          <input type="checkbox" class="" v-model="result.checked" @change="checkCheck(result)" :disabled="isDisabledRowCheckBox(result)">
+                          <input type="checkbox" class="" v-model="result.checked" @change="checkCheck()" :disabled="isDisabledRowCheckBox(result)">
                       </td>
                         <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500"></td>
                         <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
@@ -201,7 +201,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, toRefs, computed, PropType } from 'vue';
+import { defineComponent, ref, computed } from 'vue';
 import { useStore } from 'vuex';
 import { useRoute } from 'vue-router';
 import { useMutation } from '@urql/vue';
@@ -215,6 +215,7 @@ import {
   VERIFY_ANALYSIS_RESULTS, 
   RETEST_ANALYSIS_RESULTS, 
   RETRACT_ANALYSIS_RESULTS } from '../../../graphql/analyses.mutations';
+import { IAnalysisResult, IQCLevel, IQCSet, ISample } from '../../../models/analysis';
 
 export default defineComponent({
   name: 'qcset-detail',
@@ -222,34 +223,32 @@ export default defineComponent({
     let store = useStore();
     let route = useRoute();
 
-    let can_submit = ref(false);
-    let can_retract = ref(false);
-    let can_verify = ref(false);
-    let can_retest = ref(false);
-    let can_reinstate = ref(false);
+    let can_submit = ref<boolean>(false);
+    let can_retract = ref<boolean>(false);
+    let can_verify = ref<boolean>(false);
+    let can_retest = ref<boolean>(false);
+    let can_reinstate = ref<boolean>(false);
 
-    let allChecked = ref(false);
+    let allChecked = ref<boolean>(false);
 
     store.dispatch(ActionTypes.FETCH_QC_SET_BY_UID, +route.params.qcSetUid)
 
     let qcSet = computed(() => {
-      let set = store.getters.getQCSet;
+      let set: IQCSet = store.getters.getQCSet;
       if(!set) return;
-      let final = new Object();
-      final.levels = []; // table headers
-      final.analytes = []; // table rows
+      let final = { levels: [], analytes: [] } as any;
       set?.samples?.forEach(sample => {
         if(!sample.assigned) {
-          if(!final.levels.some(l => l.uid == sample?.qcLevel?.uid)){
+          if(!final.levels.some((l: IQCLevel) => l.uid == sample?.qcLevel?.uid)){
             final.levels.push(sample?.qcLevel);
           }
           sample?.analysisResults?.forEach(result => {
-            if(!final.analytes.some(a => a.uid == result?.analysis?.uid)){
+            if(!final.analytes.some((a: IAnalysisResult) => a.uid == result?.analysis?.uid)){
               final.analytes.push(result?.analysis)
             }
-            const index = final.analytes.findIndex(a => a.uid == result?.analysis?.uid);
+            const index = final.analytes.findIndex((a: IAnalysisResult) => a.uid == result?.analysis?.uid);
             if(final.analytes[index]["items"]){
-              if(!final.analytes[index]["items"]?.some(a => a.sampleUid === result.sampleUid)){
+              if(!final.analytes[index]["items"]?.some((a: IAnalysisResult) => a.sampleUid === result.sampleUid)){
                 final.analytes[index]["items"].push({ ...result, sample }) 
               }
             } else {
@@ -262,41 +261,41 @@ export default defineComponent({
       toggleView("grid");
 
       return { 
-        levels: final.levels, 
-        analytes: final.analytes,
+        levels: final.levels as IQCLevel[], 
+        analytes: final.analytes as any[],
       };
     });
 
-    function getResults(): any[] {
-      let results = [];
-      qcSet?.value['analytes']?.forEach(analyte => analyte["items"].forEach(result => results.push(result)))
+    function getResults(): IAnalysisResult[] {
+      let results: IAnalysisResult[] = [];
+      qcSet?.value!['analytes']?.forEach((analyte: Map<String, any>) => analyte.get("items").forEach((result: IAnalysisResult) => results.push(result)))
       return results;
     }
 
-    function getAllAnalysisResults(): any {
-      let results = [];
-      if(!qcSet?.value['analytes']) return [];
+    function getAllAnalysisResults(): IAnalysisResult[] {
+      let results: IAnalysisResult[] = [];
+      if(!qcSet?.value!['analytes']) return [];
       qcSet?.value['analytes']?.forEach(analyte => {
-        analyte?.items?.forEach(result => results.push(result))
+        analyte?.items?.forEach((result: IAnalysisResult) => results.push(result))
       })
       return results;
     }
 
-    function getResultsChecked(): any {
-      let results = [];
-      if(!qcSet?.value['analytes']) return [];
+    function getResultsChecked(): IAnalysisResult[] {
+      let results: IAnalysisResult[] = [];
+      if(!qcSet?.value!['analytes']) return [];
       qcSet?.value['analytes']?.forEach(analyte => {
-        analyte?.items?.forEach(result => {
+        analyte?.items?.forEach((result: IAnalysisResult) => {
           if (result.checked) results.push(result);
         })
       })
       return results;
     }
 
-    function getResultsUids(): string[] {
+    function getResultsUids(): number[] {
       const results = getResultsChecked();
-      let ready = [];
-      results?.forEach(result => ready.push(result.uid))
+      let ready: number[] = [];
+      results?.forEach((result: IAnalysisResult) => ready.push(result.uid!))
       return ready;
     }
 
@@ -336,23 +335,23 @@ export default defineComponent({
       return results?.every(item => item.checked === true);
     }
 
-    function check(result): void {
+    function check(result: IAnalysisResult): void {
       result.checked = true;
       checkUserActionPermissios()
     }
 
-    function unCheck(result): void {
+    function unCheck(result: IAnalysisResult): void {
       result.checked = false;
       checkUserActionPermissios()
     }
 
-    async function toggleCheckAll(): void {
+    function toggleCheckAll(): void {
       const analysisResults = getResults();
-      await analysisResults?.value?.forEach(result => allChecked.value ? check(result) : unCheck(result));
+      analysisResults?.forEach((result: IAnalysisResult) => allChecked.value ? check(result) : unCheck(result));
       checkUserActionPermissios()
     }
 
-    function checkCheck(result): void {
+    function checkCheck(): void {
      if(areAllChecked()) {
         allChecked.value = true;
      } else {
@@ -365,9 +364,9 @@ export default defineComponent({
       result.editable = true;
     }
 
-    function isEditable(result): Boolean {
+    function isEditable(result: IAnalysisResult): Boolean {
       if(result?.editable || isNullOrWs(result?.result)) {
-        if(['cancelled',"verified","retracted","to_be_verified"].includes(result.status)){
+        if(['cancelled',"verified","retracted","to_be_verified"].includes(result.status!)){
           result.editable = false
           return false
         }else{
@@ -401,51 +400,51 @@ export default defineComponent({
     const { executeMutation: retestAnalysisResults } = useMutation(RETEST_ANALYSIS_RESULTS); 
     const { executeMutation: retractAnalysisResults } = useMutation(RETRACT_ANALYSIS_RESULTS); 
     
-    function submitAnalysesResults(results): void {
+    function submitAnalysesResults(results: IAnalysisResult[]): void {
       submitAnalysisResults({ analysisResults: results, }).then((result) => {
        store.dispatch(ActionTypes.UPDATE_ANALYSIS_RESULTS, result);
       });
     }    
 
-    function submitResult(result: ISampleResult): void {
+    function submitResult(result: IAnalysisResult): void {
       if(result.status !== "pending") return;
       result.result = result.editResult;
       submitAnalysesResults([{ uid: result.uid , result: result.result }])
     }    
     
-    function cancelAnalysesResults(analyses): void {
+    function cancelAnalysesResults(analyses: number[]): void {
       cancelAnalysisResults({ analyses }).then((result) => {
       //  store.dispatch(ResultActionTypes.UPDATE_ANALYSIS_RESULTS, result);
       });
     }     
     
-    function reInstateAnalysesResults(analyses): void {
+    function reInstateAnalysesResults(analyses: number[]): void {
       reInstateAnalysisResults({ analyses }).then((result) => {
       //  store.dispatch(ResultActionTypes.UPDATE_ANALYSIS_RESULTS, result);
       });
     }  
     
-    function verifyAnalysesResults(analyses): void {
+    function verifyAnalysesResults(analyses: number[]): void {
       verifyAnalysisResults({ analyses }).then((result) => {
       //  store.dispatch(ResultActionTypes.UPDATE_ANALYSIS_RESULTS, result);
       });
     }  
     
-    function retractAnalysesResults(analyses): void {
+    function retractAnalysesResults(analyses: number[]): void {
       retractAnalysisResults({ analyses }).then((result) => {
       //  store.dispatch(ResultActionTypes.UPDATE_ANALYSIS_RESULTS, result);
       });
     }  
     
-    function retestAnalysesResults(analyses): void {
+    function retestAnalysesResults(analyses: number[]): void {
       retestAnalysisResults({ analyses }).then((result) => {
       //  store.dispatch(ResultActionTypes.UPDATE_ANALYSIS_RESULTS, result);
       });
     }
 
-    function prepareResults(): any[] {
+    function prepareResults(): IAnalysisResult[] {
       const results = getResultsChecked();
-      let ready = [];
+      let ready: IAnalysisResult[]= [];
       results?.forEach(result => ready.push({ uid: result.uid , result: result.result }))
       return ready;
     }
@@ -474,7 +473,7 @@ export default defineComponent({
           }
         })
       } catch (error) {
-        logger.log(error)
+        console.log(error)
       }
     }
 
@@ -502,7 +501,7 @@ export default defineComponent({
           }
         })
       } catch (error) {
-        logger.log(error)
+        console.log(error)
       }
     }
 
@@ -530,7 +529,7 @@ export default defineComponent({
           }
         })
       } catch (error) {
-        logger.log(error)
+        console.log(error)
       }
     }
 
@@ -558,7 +557,7 @@ export default defineComponent({
           }
         })
       } catch (error) {
-        logger.log(error)
+        console.log(error)
       }
     }
 
@@ -586,7 +585,7 @@ export default defineComponent({
           }
         })
       } catch (error) {
-        logger.log(error)
+        console.log(error)
       }
     }
 
@@ -614,35 +613,35 @@ export default defineComponent({
           }
         })
       } catch (error) {
-        logger.log(error)
+        console.log(error)
       }
     }
 
 
     // View selection
-    let gridView = ref(true);
-    let view = ref('grid');
-    let hasDuplicates = ref(false);
+    let gridView = ref<boolean>(true);
+    let view = ref<string>('grid');
+    let hasDuplicates = ref<boolean>(false);
 
     function toggleView(choice: string): void {
-      let results = []
-      let samples = []
+      let results: IAnalysisResult[]= []
+      let samples: ISample[] = []
 
-      let set = store.getters.getQCSet;
+      let set: IQCSet = store.getters.getQCSet;
 
       // for all results in a sample
       // if analyses is dublicated then a retract/retest has hapenned
-      set?.samples?.forEach(sample => {
+      set?.samples?.forEach((sample: ISample) => {
         samples.push(sample)
         if(!sample.assigned) {
-          sample?.analysisResults?.forEach(result => results.push(result))
+          sample?.analysisResults?.forEach((result: IAnalysisResult) => results.push(result))
         }
       });
 
       for(let sample of samples){
-          const filtered = results.filter(r => r.sampleUid === sample.uid);
-          let analysisUids = [];
-          filtered?.forEach(result => analysisUids.push(result.analysisUid));
+          const filtered: IAnalysisResult[] = results.filter(r => r.sampleUid === sample.uid);
+          let analysisUids:number[] = [];
+          filtered?.forEach(result => analysisUids.push(result.analysisUid!));
           hasDuplicates.value = (new Set(analysisUids)).size !== analysisUids.length;
           if(hasDuplicates.value === true) break;
       }

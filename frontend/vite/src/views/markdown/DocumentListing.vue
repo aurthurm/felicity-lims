@@ -214,10 +214,10 @@ export default defineComponent({
   setup() {
     let store = useStore();
 
-    let showModal = ref(false);
-    let formTitle = ref('');
-    let form = reactive({ ...new Object });
-    const formAction = ref(true);
+    let showModal = ref<boolean>(false);
+    let formTitle = ref<string>('');
+    let form = reactive({}) as any;
+    const formAction = ref<boolean>(true);
 
     store.dispatch(DepartmentActionTypes.FETCH_DEPARTMENTS);
     store.dispatch(ActionTypes.FETCH_DOCUMENTS);
@@ -242,12 +242,10 @@ export default defineComponent({
       showModal.value = true;
       formTitle.value = (create ? 'ADD' : 'EDIT') + ' ' + "Markdown Document";
       if (create) {
-        Object.assign(form, { ...(new Object()) });
+        Object.assign(form, {});
       } else {
         Object.assign(form, { ...obj });
       }
-      console.log(obj)
-      console.log(form)
     }
 
     function saveForm():void {

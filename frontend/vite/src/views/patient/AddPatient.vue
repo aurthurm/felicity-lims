@@ -46,7 +46,7 @@
             <span class="text-gray-700 w-4/12">Gender</span>
             <select class="form-select mt-1 w-full" v-model="patientForm.gender">
               <option></option>
-              <option v-for="(sex, indx) in genders" :key="sex.index" :value="indx"> {{ sex }}</option>
+              <option v-for="(sex, indx) in genders" :key="indx" :value="indx"> {{ sex }}</option>
             </select>
           </label>
 
@@ -124,50 +124,46 @@
 <script lang="ts">
 import { useMutation } from '@urql/vue';
 import { defineComponent, ref, reactive, computed } from 'vue';
-import { mapGetters, useStore } from 'vuex';
+import { useStore } from 'vuex';
 import { useRouter, useRoute } from 'vue-router';
 import { useQuery } from '@urql/vue';
 import { IPatient } from '../../models/patient';
-import {  GET_ALL_CLIENTS } from '../../graphql/clients.queries';
 import {
-  GET_ALL_COUNTRIES,
   FILTER_PROVINCES_BY_COUNTRY,
   FILTER_DISTRICTS_BY_PROVINCE,
 } from '../../graphql/admin.queries';
 import { ADD_PATIENT } from '../../graphql/patient.mutations';
-
-export const IPatient = typeof Patient;
 
 import { ActionTypes } from '../../store/modules/patient';
 import { ActionTypes as ClientActionTypes } from '../../store/modules/client';
 import { ActionTypes as AdminActionTypes } from '../../store/modules/admin';
 import { Form, Field, useField, useForm } from 'vee-validate';
 import { isNullOrWs } from '../../utils';
+import { IDistrict, IProvince } from '../../models/location';
 export default defineComponent({
   name: 'add-patient',
   components: {
     Form,
     Field,
   },
-  setup(context) {
+  setup() {
     let store = useStore();
     let router = useRouter();
     let route = useRoute();
 
-    const nullPatient = {} as IPatient;
-    let createAction = ref(true)
+    let createAction = ref<boolean>(true)
 
-    let patientForm = reactive({ ...nullPatient });
-    let formErrors = reactive({ hasError: false, data: {} });
-    patientForm.clientPatientId = route.query.cpid;
+    let patientForm = reactive<IPatient>({});
+    let formErrors = reactive({ hasError: false, data: <any>{} });
+    patientForm.clientPatientId = route.query.cpid + "";
 
-    let provinces = ref([]);
-    let districts = ref([]);
+    let provinces = ref<IProvince[]>([]);
+    let districts = ref<IDistrict[]>([]);
 
-    let countryUid = ref(null);
-    let provinceUid = ref(null);
+    let countryUid = ref<number>();
+    let provinceUid = ref<number>();
 
-    const genders = ["Male", "Female", "Missing", "Trans Gender"]
+    const genders: string[] = ["Male", "Female", "Missing", "Trans Gender"]
 
     store.dispatch(AdminActionTypes.FETCH_COUNTRIES);  
     let clientParams = reactive({ 
@@ -207,23 +203,23 @@ export default defineComponent({
       });
     }
 
-    function getProvinces(event) {
+    function getProvinces(event: any) {
       provincesfilter.executeQuery({requestPolicy: 'network-only'}).then(result => {
         provinces.value = result.data.value?.provincesByCountryUid;
       });
     }
 
-    function getDistricts(event) {
+    function getDistricts(event: any) {
       districtsfilter.executeQuery({requestPolicy: 'network-only'}).then(result => {
         districts.value = result.data.value?.districtsByProvinceUid;
       });
     }
 
-    function simpleValidator(form: Map, required: string[] = []): any {
+    function simpleValidator(form: any, required: string[] = []): any {
       if(required.length == 0) alert("There are no validation fields")
       if(typeof(form) !== 'object' ) alert("Form must a Map Object")
 
-      let response = { hasError: false, data: {} };
+      let response = { hasError: false, data: <any>{} };
 
       for(let field of required){
         if(isNullOrWs(form[field])){
@@ -246,7 +242,7 @@ export default defineComponent({
 
     // 
 
-    function isRequired(value) {
+    function isRequired(value: string) {
       if (value && value.trim()) {
         return true;
       }
@@ -259,7 +255,6 @@ export default defineComponent({
       patientForm,
       formErrors,
       savePatientForm,
-      errorMessage, value,
       countries: computed(() => store.getters.getCountries),
       clients: computed(() => store.getters.getClients),
       countryUid,

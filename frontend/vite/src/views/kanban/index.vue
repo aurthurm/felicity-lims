@@ -4,8 +4,8 @@
   </div>
 </template>
 
-<script>
-import { defineComponent, computed } from 'vue';
+<script lang="ts">
+import { defineComponent } from 'vue';
 export default defineComponent({
   name: "kanban-view",
   setup() {

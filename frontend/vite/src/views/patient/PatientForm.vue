@@ -6,69 +6,69 @@
 
           <label class="flex whitespace-nowrap w-full">
             <span class="text-gray-700 w-4/12">Patient Unique Identifier</span>
-            <input class="form-input mt-1 block w-full" v-model="patientForm.clientPatientId" placeholder="Patient Unique Identifier" />
+            <input class="form-input mt-1 block w-full" v-model="patient.clientPatientId" placeholder="Patient Unique Identifier" />
           </label>
-          <span class="text-red-700 w-full mb-2">{{ formErrors?.data?.clientPatientId }}</span>
+          <span class="text-red-700 w-full mb-2">{{ errors?.data?.clientPatientId }}</span>
 
           <label class="flex whitespace-nowrap w-full">
             <span class="text-gray-700 w-4/12">First Name</span>
-            <input class="form-input mt-1 w-full" v-model="patientForm.firstName" placeholder="First Name" />
+            <input class="form-input mt-1 w-full" v-model="patient.firstName" placeholder="First Name" />
           </label>
-          <span class="text-red-700 w-full mb-2">{{ formErrors?.data?.firstName }}</span>
+          <span class="text-red-700 w-full mb-2">{{ errors?.data?.firstName }}</span>
 
           <label class="flex whitespace-nowrap mb-2 w-full">
             <span class="text-gray-700 w-4/12">Middle Name</span>
-            <input class="form-input mt-1 w-full" v-model="patientForm.middleName" placeholder="Middle Name" />
+            <input class="form-input mt-1 w-full" v-model="patient.middleName" placeholder="Middle Name" />
           </label>
 
           <label class="flex whitespace-nowrap w-full">
             <span class="text-gray-700 w-4/12">Last Name</span>
-            <input class="form-input mt-1 w-full" v-model="patientForm.lastName" placeholder="Last Name" />
+            <input class="form-input mt-1 w-full" v-model="patient.lastName" placeholder="Last Name" />
           </label>
-          <span class="text-red-700 w-full mb-2">{{ formErrors?.data?.lastName }}</span>
+          <span class="text-red-700 w-full mb-2">{{ errors?.data?.lastName }}</span>
 
           <label class="flex whitespace-nowrap mb-2 w-full">
             <span class="text-gray-700 w-4/12">Age</span>
-            <input class="form-input mt-1 w-full" type="number" v-model="patientForm.age" placeholder="Age" />
+            <input class="form-input mt-1 w-full" type="number" v-model="patient.age" placeholder="Age" />
           </label>
 
           <label class="flex whitespace-nowrap mb-2 w-full">
             <span class="text-gray-700 w-4/12">Date of Birth</span>
-            <input class="form-input mt-1 w-full" type="date" v-model="patientForm.dateOfBirth" placeholder="Date of Birth" />
+            <input class="form-input mt-1 w-full" type="date" v-model="patient.dateOfBirth" placeholder="Date of Birth" />
           </label>
 
           <label class="flex whitespace-nowrap mb-2 w-full">
             <span class="text-gray-700 w-3/12">Age/DOB Estimated?</span>
-            <input type="checkbox" class="form-checkbox text-green-500" v-model="patientForm.ageDobEstimated" />
+            <input type="checkbox" class="form-checkbox text-green-500" v-model="patient.ageDobEstimated" />
           </label>
 
           <label class="flex whitespace-nowrap mb-2 w-full" >
             <span class="text-gray-700 w-4/12">Gender</span>
-            <select class="form-select mt-1 w-full" v-model="patientForm.gender">
+            <select class="form-select mt-1 w-full" v-model="patient.gender">
               <option></option>
-              <option v-for="(sex, indx) in genders" :key="sex.index" :value="indx"> {{ sex }}</option>
+              <option v-for="(sex, indx) in genders" :key="indx" :value="indx"> {{ sex }}</option>
             </select>
           </label>
 
           <label class="flex whitespace-nowrap mb-2 w-full" >
             <span class="text-gray-700 w-4/12">Mobile Number</span>
-            <input class="form-input mt-1 w-full" type="number" v-model="patientForm.phoneMobile" placeholder="Mobile Number" />
+            <input class="form-input mt-1 w-full" type="number" v-model="patient.phoneMobile" placeholder="Mobile Number" />
           </label>
 
           <label class="flex whitespace-nowrap mb-2 w-full">
             <span class="text-gray-700 w-3/12">Consent to SMS</span>
-            <input type="checkbox" class="form-checkbox text-green-500" v-model="patientForm.consentSms" />
+            <input type="checkbox" class="form-checkbox text-green-500" v-model="patient.consentSms" />
           </label>
 
           <!-- other identifiers: passport, client pid, national id -->
           <label class="flex whitespace-nowrap w-full">
             <span class="text-gray-700 w-4/12">Primary Referrer</span>
-            <select class="form-select mt-1 w-full" v-model="patientForm.clientUid">
+            <select class="form-select mt-1 w-full" v-model="patient.clientUid">
                 <option></option>
                 <option v-for="client in clients" :key="client.uid" :value="client.uid"> {{ client.name }} {{ client.uid }}</option>
               </select>
           </label>
-          <span class="text-red-700 w-full mb-2">{{ formErrors?.data?.clientPatientId }}</span>
+          <span class="text-red-700 w-full mb-2">{{ errors?.data?.clientPatientId }}</span>
 
           <hr class="my-2">
 
@@ -89,7 +89,7 @@
             </label>
             <label class="flex items-center whitespace-nowrap col-span-1 mb-2 w-full">
               <span class="text-gray-700 w-4/12">District</span>
-              <select class="form-select mt-1 w-full" v-model="patientForm.districtUid">
+              <select class="form-select mt-1 w-full" v-model="patient.districtUid">
                 <option></option>
                 <option v-for="district in districts" :key="district.uid" :value="district.uid"> {{ district.name }} {{ district.uid }}</option>
               </select>
@@ -122,14 +122,12 @@
 
 <script lang="ts">
 import { useMutation } from '@urql/vue';
-import { defineComponent, ref, reactive, computed, onMounted, toRefs } from 'vue';
-import { mapGetters, useStore } from 'vuex';
-import { useRouter, useRoute } from 'vue-router';
+import { defineComponent, reactive, computed, onMounted, toRefs } from 'vue';
+import { useStore } from 'vuex';
+import { useRouter } from 'vue-router';
 import { useQuery } from '@urql/vue';
 import { IPatient } from '../../models/patient';
-import {  GET_ALL_CLIENTS } from '../../graphql/clients.queries';
 import {
-  GET_ALL_COUNTRIES,
   FILTER_PROVINCES_BY_COUNTRY,
   FILTER_DISTRICTS_BY_PROVINCE,
 } from '../../graphql/admin.queries';
@@ -139,24 +137,25 @@ import { ActionTypes } from '../../store/modules/patient';
 import { ActionTypes as ClientActionTypes } from '../../store/modules/client';
 import { ActionTypes as AdminActionTypes } from '../../store/modules/admin';
 import { simpleValidator } from '../../modules/validators'
+import { IDistrict, IProvince } from '../../models/location';
+import { IClient } from '../../models/client';
 export default defineComponent({
   name: 'patient-form',
-  setup(context) {
+  setup() {
     let store = useStore();
     let router = useRouter();
-    let route = useRoute();
 
     const state = reactive({
-        genders: ["Male", "Female", "Missing", "Trans Gender"]
+        genders: ["Male", "Female", "Missing", "Trans Gender"] as string[],
         patient: <IPatient>{} ,
-        errors: { hasError: false, data: {}},
+        errors: { hasError: false, data: <any>{}},
         createAction: true,
         countries: computed(() => store.getters.getCountries),
-        countryUid: null,
-        provinces: [],
-        provinceUid: null,
-        districts: [],
-        clients: computed(() => store.getters.getClients),
+        countryUid: undefined as number | undefined,
+        provinces: [] as IProvince[],
+        provinceUid:  undefined as number | undefined,
+        districts: [] as IDistrict[],
+        clients: computed<IClient[]>(() => store.getters.getClients),
     })
 
     let clientParams = reactive({ 
@@ -173,9 +172,9 @@ export default defineComponent({
     })
 
     // Provinces
-    function getProvinces(event) {
+    function getProvinces(event:any) {
       provincesfilter.executeQuery({requestPolicy: 'network-only'}).then(result => {
-        provinces.value = result.data.value?.provincesByCountryUid;
+        state.provinces = result.data.value?.provincesByCountryUid;
       });
     }
 
@@ -187,9 +186,9 @@ export default defineComponent({
     });
 
     // Districts
-    function getDistricts(event) {
+    function getDistricts(event: any) {
       districtsfilter.executeQuery({requestPolicy: 'network-only'}).then(result => {
-        districts.value = result.data.value?.districtsByProvinceUid;
+        state.districts = result.data.value?.districtsByProvinceUid;
       });
     }
 
@@ -204,10 +203,10 @@ export default defineComponent({
     const { executeMutation: createPatient } = useMutation(ADD_PATIENT);
 
     function addPatient() {
-      createPatient({ clientPatientId: patientForm.clientPatientId, firstName: patientForm.firstName,
-        middleName: patientForm.middleName, lastName: patientForm.lastName, age: patientForm.age,
-        gender: patientForm.gender, dateOfBirth: patientForm.dateOfBirth, ageDobEstimated: patientForm.ageDobEstimated,
-        clientUid: patientForm.clientUid, phoneMobile: patientForm.phoneMobile, consentSms: patientForm.consentSms, 
+      createPatient({ clientPatientId: state.patient.clientPatientId, firstName: state.patient.firstName,
+        middleName: state.patient.middleName, lastName: state.patient.lastName, age: state.patient.age,
+        gender: state.patient.gender, dateOfBirth: state.patient.dateOfBirth, ageDobEstimated: state.patient.ageDobEstimated,
+        clientUid: state.patient.clientUid, phoneMobile: state.patient.phoneMobile, consentSms: state.patient.consentSms, 
       }).then(result => {
         store.dispatch(ActionTypes.ADD_PATIENT, result);
         router.push({ name: "patient-detail", params: { patientUid: result?.data?.createPatient?.patient?.uid }});
@@ -215,7 +214,7 @@ export default defineComponent({
     }
 
     function savePatientForm() {
-      const validations = simpleValidator(patientForm, ["clientPatientId", "firstName", "lastName", "clientUid", "consentSms"])
+      const validations = simpleValidator(state.patient, ["clientPatientId", "firstName", "lastName", "clientUid", "consentSms"])
       if(validations.hasError) {
         state.errors = validations;
         return
@@ -226,6 +225,8 @@ export default defineComponent({
     return {
       ...toRefs(state),
       savePatientForm,
+      getProvinces,
+      getDistricts,
     };
   },
 });

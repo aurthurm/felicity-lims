@@ -25,6 +25,7 @@ export interface IWorkSheetTemplate {
 
 export interface IWorkSheet {
     uid?: number;
+    worksheetId?: string;
     name?: string;
     reserved?: string[];
     plate?: Map<string, string>;
@@ -38,5 +39,15 @@ export interface IWorkSheet {
     description?: string;
     analyses?: IAnalysisService[];
     state?: string;
+    assignedCount?: number;
+    analyst?: any;
+    priority?: number
+
 }
   
+export interface IWorkSheetForm {
+    analystUid?: number;
+    templateUid?: number;
+    instrumentUid?: number;
+    count: number;
+}

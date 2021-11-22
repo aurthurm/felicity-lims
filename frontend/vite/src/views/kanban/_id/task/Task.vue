@@ -251,19 +251,16 @@ import { useRoute } from 'vue-router';
 import { useMutation } from '@urql/vue';
 import { ActionTypes as AdminActionTypes } from '../../../../store/actions';
 import { ActionTypes  } from '../../../../store/modules/kanban';
-import { ITask, IMileStone } from '../../../../models/kanban';
+import { IBoard, IListing, IMileStone, ITask } from '../../../../models/kanban';
 import { 
-  ADD_LISTING_TASK, 
   ADD_TASK_COMMENT, 
   ADD_TASK_MILESTONE,
   EDIT_LISTING_TASK,
   DELETE_LISTING_TASK,
-  DUPLICATE_LISTING_TASK,
-  DELETE_BOARD_LISTING } from '../../../../graphql/kanban.mutations';
+  DUPLICATE_LISTING_TASK} from '../../../../graphql/kanban.mutations';
 import { defineComponent, ref, reactive, computed } from 'vue';
 import { parseDate } from '../../../../utils';
 import Swal from 'sweetalert2';
-import EditorJS from '@editorjs/editorjs';
 import router from '../../../../router';
 
 export default defineComponent({
@@ -273,12 +270,12 @@ export default defineComponent({
       let route = useRoute();
 
       // Task Form
-      let showModal = ref(false);
+      let showModal = ref<boolean>(false);
 
-      let taskFormTitle = ref("");
-      let taskForm = reactive({ ...new Task() });
+      let taskFormTitle = ref<string>("");
+      let taskForm = reactive<ITask>({});
 
-      let kanBanTaskListing = reactive({}) as ITaskListing;
+      let kanBanTaskListing = reactive({}) as IListing;
 
       store.dispatch(AdminActionTypes.FETCH_USERS)
       store.dispatch(ActionTypes.RESET_LISTING_TASK)
@@ -288,7 +285,7 @@ export default defineComponent({
 
       const { executeMutation: updateListingTask } = useMutation(EDIT_LISTING_TASK);
 
-      function editListingTask(updateType, updateData): void {
+      function editListingTask(updateType: string, updateData: any): void {
         // updateData only contains vars to be updated
         updateListingTask({ ...updateData }).then((result) => {
           if(updateType === 'moveTask') store.dispatch(ActionTypes.MOVE_LISTING_TASK, result);
@@ -296,21 +293,20 @@ export default defineComponent({
         });
       }
 
+      let showTaskModal = ref<boolean>(false)
       function TaskFormManager(listing: any): void {
         showTaskModal.value = true;
         taskFormTitle.value = "ADD " + listing.title + " LISTING";
-        let task = new Task;
-        task.listingUid = listing.uid;
-        Object.assign(taskForm, { ...task });
+        Object.assign(taskForm, { listingUid: listing.uid } as IListing);
       }
 
       function saveTaskForm():void {
-        addListingTask();
+        // addListingTask();
         showTaskModal.value = false;
       }
 
       // Move Task
-      const moveListingTask = async (task, event) => {
+      const moveListingTask = async (task: ITask, event:any) => {
         showModal.value = !showModal.value;
         try {
           Swal.fire({
@@ -331,12 +327,12 @@ export default defineComponent({
             }
           })
         } catch (error) {
-          logger.log(error)
+          console.log(error)
         }
       }
 
       // update due dateOfBirth
-      function updateDueDate(task, event): void {
+      function updateDueDate(task: ITask, event: any): void {
         editListingTask('updateTask', {
           uid: task?.uid,
           dueDate: event?.target?.value
@@ -346,7 +342,7 @@ export default defineComponent({
       // Delete Task
       const { executeMutation: deleteListingTask } = useMutation(DELETE_LISTING_TASK);
 
-      const deleteTask = async (task) => {
+      const deleteTask = async (task: ITask) => {
         showModal.value = !showModal.value;
         try {
           Swal.fire({
@@ -367,7 +363,7 @@ export default defineComponent({
             }
           })
         } catch (error) {
-          logger.log(error)
+          console.log(error)
         }
       }
 
@@ -376,7 +372,7 @@ export default defineComponent({
 
       let dulicateTitle = ref('');
 
-      const duplicateTask = async (task) => {
+      const duplicateTask = async (task: ITask) => {
         showModal.value = !showModal.value;
         try {
           Swal.fire({
@@ -396,7 +392,7 @@ export default defineComponent({
             }
           })
         } catch (error) {
-          logger.log(error)
+          console.log(error)
         }
       }
 
@@ -407,7 +403,7 @@ export default defineComponent({
       let showAddComment = ref(false);
       const { executeMutation: createTaskComment } = useMutation(ADD_TASK_COMMENT);
 
-      function addTaskComment(task): void {
+      function addTaskComment(task: ITask): void {
         createTaskComment({ taskUid: task?.uid, comment: taskCommentEntry?.value }).then((result) => {
           store.dispatch(ActionTypes.ADD_TASK_COMMENT, result);
           taskCommentEntry.value = '';
@@ -424,7 +420,7 @@ export default defineComponent({
 
       const { executeMutation: createTaskMilestone } = useMutation(ADD_TASK_MILESTONE);
 
-      function addTaskMilestone(task): void {
+      function addTaskMilestone(task: ITask): void {
         createTaskMilestone({ 
           taskUid: task?.uid, 
           title: taskMilestone?.title,
@@ -443,22 +439,22 @@ export default defineComponent({
       }
 
       // Task Members
-      let showAddMember = ref(false);
-      let newMember = ref('');
+      let showAddMember = ref<boolean>(false);
+      let newMember = ref<number>();
 
-      function addNewMember(task): void {
-        let uids = [];
-        task?.mambers?.forEach(member => uids.push(member?.uid));
-        uids.push(newMember?.value);
+      function addNewMember(task: ITask): void {
+        let uids:number[] = [];
+        task?.members?.forEach(member => uids.push(member?.uid));
+        uids.push(newMember?.value!);
         editListingTask('updateTask', {
           uid: task?.uid,
           memberUids: uids
         });
-        newMember.value = null;
+        newMember.value = undefined;
       }
 
       // Task status
-      function toggleTaskStatus(task): void {
+      function toggleTaskStatus(task: ITask): void {
         editListingTask('updateTask', {
           uid: task?.uid,
           complete: !task.complete
@@ -468,34 +464,29 @@ export default defineComponent({
       // Task Assignee
       let newAssignee = ref('');
       let changeAssignee = ref(false);
-      function assignTaskAssignee(task): void {
+      function assignTaskAssignee(task: ITask): void {
         editListingTask('updateTask', {
           uid: task?.uid,
           assigneeUid: newAssignee?.value,
         });
-        newAssignee.value = null;
+        newAssignee.value = '';
         changeAssignee.value = false;
       }
 
       // Editable task title
-      function updateTaskTitle(task, event): void {
+      function updateTaskTitle(task: ITask, event: any): void {
         console.log(event?.target?.value);
       }
 
 
       return { 
-          showModal,
           parseDate,
           users: computed(() => store.getters.getUsers),
           board: computed(() => store.getters.getBoard ),
-          taskForm,
-          taskFormTitle,
-          TaskFormManager,
-          saveTaskForm,
           kanBanTask,
           kanBanTaskListing: computed(() => {
-            let b = store.getters.getBoard;
-            return b?.boardListings?.filter(l => l?.uid == kanBanTask?.value?.listingUid)[0];
+            let b: IBoard = store.getters.getBoard;
+            return b?.boardListings?.filter((l: IListing) => l?.uid == kanBanTask?.value?.listingUid)[0];
           }),
           newMember,
           showAddMember,

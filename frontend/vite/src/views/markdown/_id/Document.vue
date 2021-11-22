@@ -21,7 +21,6 @@ import { useStore } from 'vuex';
 import { defineComponent, ref, reactive, computed, onMounted, watch } from 'vue';
 import { EDIT_MARKDOWN_DOCUMENT } from '../../../graphql/markdown.mutations';
 import { ActionTypes } from '../../../store/modules/markdown';
-import { isCompositeType } from 'graphql';
 export default defineComponent({
   name: "mark-down-docs",
   components: {
@@ -33,7 +32,7 @@ export default defineComponent({
     const md = new MarkdownIt();
     let timeout: any;
     let loading = ref(true);
-    let document = reactive({ ...new Object });
+    let document = reactive({}) as any;
     let content = computed(() => store.getters.getDocument );
     const { executeMutation: udateDocument } = useMutation(EDIT_MARKDOWN_DOCUMENT);
 

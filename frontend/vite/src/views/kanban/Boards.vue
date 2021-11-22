@@ -3,7 +3,7 @@
       <h1 class="h1 my-4 font-bold text-dark-700">BOARDS</h1>
         <button
           class="px-2 py-1 my-2 ml-8 text-sm border-blue-500 border text-dark-700 transition-colors duration-150 rounded-lg focus:outline-none hover:bg-blue-500 hover:text-gray-100"
-          @click="FormManager(true, null)"
+          @click="FormManager(true, {})"
         > Add Board</button>
     </div>
     <hr class="my-4">
@@ -89,9 +89,9 @@ export default defineComponent({
     let moveTimeOut = ref(null);
 
     // Modal Vars
-    let formTitle = ref("")
-    let formAction = ref(false);
-    let form = reactive({ ...new Board() });
+    let formTitle = ref<string>("")
+    let formAction = ref<boolean>(false);
+    let form = reactive<IBoard>({});
 
     store.dispatch(BaseActionTypes.FETCH_DEPARTMENTS)
     store.dispatch(ActionTypes.FETCH_BOARDS)
@@ -116,7 +116,7 @@ export default defineComponent({
       showModal.value = true;
       formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "BOARD";
       if (create) {
-        Object.assign(form, { ...new Board });
+        Object.assign(form, {} as IBoard);
       } else {
         Object.assign(form, { ...obj });
       }

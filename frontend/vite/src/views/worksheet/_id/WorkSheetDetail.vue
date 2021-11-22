@@ -52,10 +52,10 @@
 import tabAssignSamples from './WorkSheetAssign.vue';
 import tabWorksheetResults from './WorkSheetResults.vue';
 import tabLogs from '../../components/AuditLog.vue';
-import { IWorkSheet } from '../../../store/modules/worksheet'
 
-import { defineComponent, ref, toRefs, computed, PropType } from 'vue';
+import { defineComponent, ref, computed } from 'vue';
 import { useStore } from 'vuex';
+import { IWorkSheet } from '../../../models/worksheet';
 
 export default defineComponent({
   name: 'worksheet-detail',
@@ -65,14 +65,14 @@ export default defineComponent({
     tabLogs,
   },
 
-  setup(props) {
+  setup() {
     let store = useStore();
 
     let currentTab = ref('detail');
     const tabs = ['detail', 'assign-samples', 'logs'];
     let currentTabComponent = computed(() => 'tab-' + currentTab.value);
 
-    const worksheet:IWorkSheet = computed(() => store.getters.getWorkSheet)
+    const worksheet = computed<IWorkSheet>(() => store.getters.getWorkSheet)
 
     return {
       tabs,

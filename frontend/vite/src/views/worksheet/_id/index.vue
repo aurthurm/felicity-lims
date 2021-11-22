@@ -53,10 +53,11 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, computed } from 'vue';
+import { defineComponent, computed } from 'vue';
 import { useRoute } from 'vue-router';
 import { useStore } from 'vuex';
-import { ActionTypes, WorkSheet } from '../../../store/modules/worksheet';
+import { IAnalysisService } from '../../../models/analysis';
+import { ActionTypes } from '../../../store/modules/worksheet';
 
 export default defineComponent({
   name: "worksheet-single",
@@ -66,9 +67,9 @@ export default defineComponent({
 
     store.dispatch(ActionTypes.FETCH_WORKSHEET_BY_UID, +route.params.workSheetUid)
 
-    function analysesText(analyses: IAnalysis[]): string {
-        let names = [];
-        analyses?.forEach(a => names.push(a.name));
+    function analysesText(analyses: IAnalysisService[]): string {
+        let names: string[] = [];
+        analyses?.forEach(a => names.push(a.name!));
         return names.join(', ');
     }
 

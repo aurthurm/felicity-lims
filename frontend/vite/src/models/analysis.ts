@@ -1,5 +1,6 @@
 import { IClient } from "./client";
 import { IPatient } from "./patient";
+import { IInstrument, IMethod } from "./setup";
 
 export interface ISampleType {
     uid?: number;
@@ -9,9 +10,10 @@ export interface ISampleType {
 export interface ISampleRequest extends ISample {
     uid?: number;
     sampleId?: string;
-    priority?: string;
+    priority?: number;
     status?: string;
-    analysisRequest?: IAnalysisRequest;
+    analysisrequest?: IAnalysisRequest;
+    sampletype?: ISampleType;
 }
 
 export interface IAnalysisService {
@@ -32,13 +34,21 @@ export interface IAnalysisService {
 
 export interface IAnalysisResult {
     uid?: number;
-    analysisUid?: string;
+    analysisUid?: number;
     analysis?: IAnalysisService;
+    instrumentUid?: number;
+    instrument?: IInstrument;
+    methodUid?: number;
+    method?: IMethod;
+    analystUid?: number;
+    analyst?: any;
     worksheetPosition?: number;
-    sampleUid?: string;
+    sampleUid?: number;
     sample?: ISampleRequest;
     status?: string;
     result?: string;
+    retest?: boolean;
+    reportable?: boolean;
     editResult?: string;
     createdAt?: string;
     checked?: boolean;
@@ -86,6 +96,7 @@ export interface IAnalysisProfile {
   
   
 export interface ISample {
+    uid?: number;
     sampleType?: ISampleType | undefined; 
     profiles?: IAnalysisProfile[];
     analyses?: IAnalysisService[];
@@ -93,6 +104,7 @@ export interface ISample {
   
 
 export interface IAnalysisRequest {
+    uid?: number;
     patient?: IPatient; 
     client?: IClient;  
     samples?: ISample[];
@@ -164,9 +176,15 @@ export interface IAnalysisCategory {
   }
   
   export interface ISample {
+    uid?: number;
+    sampleId?: string;
     sampleType?: ISampleType | undefined; 
     profiles?: IAnalysisProfile[];
     analyses?: IAnalysisService[];
+    assigned?: boolean;
+    qcLevel?: IQCLevel;
+    analysisResults?: IAnalysisResult[];
+    status?: string;
   }
   
   
@@ -201,4 +219,15 @@ export interface IAnalysisCategory {
   }
 
 
-  export interface IQCSet {}
+  export interface IQCSet {
+    uid?: number;
+    name?: string; 
+    samples?: ISample[];
+    analytes?:IAnalysisService
+    created_by_uid: number
+    created_by: any
+    created_at: string
+    updated_by_uid: number
+    updated_by: any
+    updated_at: string
+  }

@@ -90,17 +90,13 @@ import draggable from "vuedraggable";
 import TaskCard from "../../components/TaskCard.vue";
 import { useStore } from 'vuex';
 import { useMutation } from '@urql/vue';
-import { ActionTypes as AdminActionTypes } from '../../../store/actions';
 import { ActionTypes } from '../../../store/modules/kanban';
-import { ITask } from '../../../models/kanban';
 import { 
   ADD_LISTING_TASK, 
   EDIT_LISTING_TASK,
   DELETE_BOARD_LISTING } from '../../../graphql/kanban.mutations';
 import { defineComponent, ref, reactive, computed } from 'vue';
-import { parseDate } from '../../../utils';
-import Swal from 'sweetalert2';
-import router from '../../../router';
+import { IListing, ITask } from '../../../models/kanban';
 export default defineComponent({
   name: "Kanban-Tasks",
   components: {
@@ -112,36 +108,35 @@ export default defineComponent({
       let store = useStore();
       let showModal = ref(false);
       let modalTitle = ref("Default")
-      let movedObjectsIds = ref([]);
-      let moveTimeOut = ref(null);
+      let movedObjectsIds = ref<string[]>([]);
 
-      function log(event) {
+      function log(event: any) {
           if (event.moved) console.log("moved")
           if (event.removed) console.log("removed")
           if (event.added) console.log("added")
           // console.log(event)
       }
 
-      function removeFromMoved(val) {
+      function removeFromMoved(val: string) {
         const index = movedObjectsIds.value.indexOf(val);
         if (index > -1) {
             movedObjectsIds.value.splice(index, 1);
         }
       }
       
-      function movedFrom(event) {
+      function movedFrom(event: any) {
           return event.from.previousElementSibling.innerText;
       }
       
-      function movedTo(event) {
+      function movedTo(event: any) {
           return event.to.parentElement.firstElementChild.innerText;
       }
       
-      function movedToLIstingUid(event) {
+      function movedToLIstingUid(event: any) {
           return event.to.parentElement.firstElementChild.dataset.listing;
       }
 
-      function checkMove(event) {
+      function checkMove(event: any) {
             const from = movedFrom(event)
             const toUid = movedToLIstingUid(event)
             const to = movedTo(event)
@@ -156,9 +151,9 @@ export default defineComponent({
       }
 
       // Task Form
-      let showTaskModal = ref(false);
-      let taskFormTitle = ref("");
-      let taskForm = reactive({ ...new Task() });
+      let showTaskModal = ref<boolean>(false);
+      let taskFormTitle = ref<string>("");
+      let taskForm = reactive<ITask>({});
 
       const { executeMutation: createListingTask } = useMutation(ADD_LISTING_TASK);
       const { executeMutation: updateListingTask } = useMutation(EDIT_LISTING_TASK);
@@ -169,19 +164,17 @@ export default defineComponent({
         });
       }
 
-      function editListingTask(updateType, updateData): void {
+      function editListingTask(updateType: string, updateData: any): void {
         updateListingTask({ ...updateData }).then((result) => {
           if(updateType === 'moveTask') store.dispatch(ActionTypes.MOVE_LISTING_TASK, result);
           if(updateType === 'updateTask') store.dispatch(ActionTypes.UPDATE_LISTING_TASK, result);
         });
       }
 
-      function TaskFormManager(listing: any): void {
+      function TaskFormManager(listing: IListing): void {
         showTaskModal.value = true;
         taskFormTitle.value = "ADD " + listing.title + " LISTING";
-        let task = new Task;
-        task.listingUid = listing.uid;
-        Object.assign(taskForm, { ...task });
+        Object.assign(taskForm, { listingUid: listing.uid } as ITask);
       }
 
       function saveTaskForm():void {
@@ -192,7 +185,7 @@ export default defineComponent({
       // Delete Listing
       const { executeMutation: deleteBoardListing } = useMutation(DELETE_BOARD_LISTING);
 
-      function deleteListing(listing): void {
+      function deleteListing(listing: IListing): void {
         deleteBoardListing({ uid: listing?.uid }).then(result => {
           store.dispatch(ActionTypes.DELETE_BOARD_LISTING, result);
         })
@@ -200,10 +193,7 @@ export default defineComponent({
 
       return { 
           board: computed(() => store.getters.getBoard ),
-          log, 
           checkMove,
-          showModal,
-          modalTitle,
           showTaskModal,
           taskForm,
           taskFormTitle,

@@ -4,12 +4,11 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, toRefs, computed } from 'vue';
-import { IPatient } from '../../../store/modules/patient';
+import { defineComponent} from 'vue';
 
 export default defineComponent({
   name: "patient-auto-complete",
-  setup(props, { emit }) {
+  setup() {
 
         return {
 

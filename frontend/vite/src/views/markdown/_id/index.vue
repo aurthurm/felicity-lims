@@ -7,7 +7,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, computed } from 'vue';
+import { defineComponent} from 'vue';
 import { useRoute } from 'vue-router';
 import { useStore } from 'vuex';
 import { ActionTypes } from '../../../store/modules/markdown';

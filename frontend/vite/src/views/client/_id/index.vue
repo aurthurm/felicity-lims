@@ -149,20 +149,19 @@
 import modal from '../../../components/SimpleModal.vue';
 
 import { useMutation, useQuery } from '@urql/vue';
-import { mapGetters, useStore } from 'vuex';
+import { useStore } from 'vuex';
 import { useRoute } from 'vue-router';
 import { defineComponent, ref, reactive, computed } from 'vue';
-
-import {  GET_ALL_CLIENTS, GET_CLIENT_CONTACTS_BY_CLIENT_UID } from '../../../graphql/clients.queries';
 import { ADD_CLIENT, EDIT_CLIENT } from '../../../graphql/clients.mutations';
 import {
-  GET_ALL_COUNTRIES,
   FILTER_PROVINCES_BY_COUNTRY,
   FILTER_DISTRICTS_BY_PROVINCE,
 } from '../../../graphql/admin.queries';
 
 import { ActionTypes } from '../../../store/modules/client';
 import { ActionTypes as AdminActionTypes } from '../../../store/modules/admin';
+import { IDistrict, IProvince } from '../../../models/location';
+import { IClient } from '../../../models/client';
 // import { IClient } from '../../../models/client';
 
 export default defineComponent({
@@ -175,14 +174,14 @@ export default defineComponent({
     const route = useRoute();
 
     let showClientModal = ref(false);
-    let createItem = ref(null);
-    let targetItem = ref('');
+    let createItem = ref<boolean>(false);
+    let targetItem = ref<string>('');
 
-    let provinces = ref([]);
-    let districts = ref([]);
+    let provinces = ref<IProvince[]>([]);
+    let districts = ref<IDistrict[]>([]);
 
-    let countryUid = ref(null);
-    let provinceUid = ref(null);
+    let countryUid = ref<number>();
+    let provinceUid = ref<number>();
     let clientParams = reactive({ 
       first: null, 
       after: null,
@@ -190,11 +189,11 @@ export default defineComponent({
       sortBy: ["name"]
     });
 
-    let formTitle = ref('');
+    let formTitle = ref<string>('');
 
-    store.dispatch(ActionTypes.FETCH_CLIENT_BY_UID, +route.query.clientUid)
-    let client = computed(() => store.getters.getClient);
-    const resetClient = () => Object.assign(client, {})
+    store.dispatch(ActionTypes.FETCH_CLIENT_BY_UID, +route.query.clientUid!)
+    let client = computed(() => store.getters.getClient) as IClient;
+    const resetClient = () => Object.assign(client, {} as IClient)
 
     store.dispatch(AdminActionTypes.FETCH_COUNTRIES);
     // store.dispatch(ActionTypes.FETCH_CLIENTS, clientParams);
@@ -228,19 +227,19 @@ export default defineComponent({
       });
     }
 
-    function getProvinces(event) {
+    function getProvinces(event: any) {
       provincesfilter.executeQuery({requestPolicy: 'network-only'}).then(result => {
         provinces.value = result.data.value?.provincesByCountryUid;
       });
     }
 
-    function getDistricts(event) {
+    function getDistricts(event: any) {
       districtsfilter.executeQuery({requestPolicy: 'network-only'}).then(result => {
         districts.value = result.data.value?.districtsByProvinceUid;
       });
     }
 
-    function FormManager(create, target, obj) {
+    function FormManager(create: boolean, target: string, obj: IClient = {}) {
       createItem.value = create;
       targetItem.value = target;
       formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + target.toUpperCase();
@@ -264,7 +263,6 @@ export default defineComponent({
       saveForm,
       formTitle,
       client,
-      clients: computed(() => store.getters.getClients),
       countries: computed(() => store.getters.getCountries),
       countryUid,
       provinceUid,

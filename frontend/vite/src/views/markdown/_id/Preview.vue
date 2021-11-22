@@ -4,7 +4,7 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import { useStore } from 'vuex';
 import { computed, defineComponent } from 'vue'
 export default defineComponent({

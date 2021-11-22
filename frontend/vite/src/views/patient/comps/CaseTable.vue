@@ -107,7 +107,8 @@
     </div>
 
 </template>
-<script>
+
+<script lang="ts">
 import {reactive, computed, ref, onMounted} from 'vue'
 
 export default {

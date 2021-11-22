@@ -18,22 +18,21 @@
       <div class="col-span-12 px-3 sm:px-0">
         <div class="mb-2 flex justify-between sm:text-sm md:text-md lg:text-lg text-gray-700 font-bold">
           <div>
-              <span v-if="sample?.priority < 1"
+              <span v-if="sample?.priority! < 1"
                 :class="[
                     'font-small',
-                    { 'text-red-700': sample?.priority < 1 },
+                    { 'text-red-700': sample?.priority! < 1 },
                 ]">
                     <i class="fa fa-star"></i>
               </span>
               {{ sample?.sampleId }} 
-              <button
-                @click="FormManager(false, 'client', client)"
+              <!-- <button
                 class="ml-4 text-xs inline-flex items-center justify-center w-6 h-6 mr-2 border-blue-500 border text-gray-900 transition-colors duration-150 bg-white rounded-full focus:outline-none hover:bg-gray-200"
               >
                 <i class="fa fa-pen"></i>
-              </button>
+              </button> -->
             </div>
-          <span>{{ profileAnalysesText(sample?.profiles, sample?.analyses) }}</span>
+          <span>{{ profileAnalysesText(sample?.profiles!, sample?.analyses!) }}</span>
           <!-- <button type="button" class="bg-blue-400 text-white p-1 rounded leading-none">{{ sample?.status }}</button> -->
           <div >
             <div
@@ -74,7 +73,7 @@
             <!-- Client Details -->
             <div class="flex">
               <span class="text-gray-800 text-sm font-semibold w-1/6">Requests:</span>
-              <span class="text-gray-600 text-sm md:text-md">{{ profileAnalysesText(sample?.profiles, sample?.analyses) }}</span>
+              <span class="text-gray-600 text-sm md:text-md">{{ profileAnalysesText(sample?.profiles!, sample?.analyses!) }}</span>
             </div>
             <div class="flex">
               <span class="text-gray-800 text-sm font-semibold w-1/6">Client Request ID:</span>
@@ -82,7 +81,7 @@
             </div>
             <div class="flex">
               <span class="text-gray-800 text-sm font-semibold w-1/6">Sample Type:</span>
-              <span class="text-gray-600 text-sm md:text-md">{{ sample?.sampletype?.name }}</span>
+              <span class="text-gray-600 text-sm md:text-md">{{ sample?.sampletype!.name }}</span>
             </div>
           </div>
           <div class="col-span-1">
@@ -106,28 +105,26 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, computed, ref } from 'vue';
-import { useRoute } from 'vue-router';
+import { defineComponent, computed, ref } from 'vue';
 import { useStore } from 'vuex';
-import { ActionTypes, ISampleRequest } from '../../../store/modules/sample';
+import { IAnalysisProfile, IAnalysisService, ISampleRequest } from '../../../models/analysis';
 
 export default defineComponent({
   name: "sample-single",
   setup() {
     const dropdownOpen = ref(false);
-    const route = useRoute();
     const store = useStore();
 
-    const sample:ISampleRequest = computed(() => store.getters.getSample)
+    const sample = computed<ISampleRequest>(() => store.getters.getSample)
 
-    function profileAnalysesText(profiles: IProfile[], analyses: IAnalysis[]): string {
-        let names = [];
-        profiles?.forEach(p => names.push(p.name));
-        analyses?.forEach(a => names.push(a.name));
+    function profileAnalysesText(profiles: IAnalysisProfile[], analyses: IAnalysisService[]): string {
+        let names: string[] = [];
+        profiles?.forEach(p => names.push(p.name!));
+        analyses?.forEach(a => names.push(a.name!));
         return names.join(', ');
     }
 
-    function FormManager(create): void {
+    function FormManager(create: boolean): void {
     }
     // Sample Actions
     
@@ -138,7 +135,7 @@ export default defineComponent({
         profileAnalysesText,
         FormManager,
         canCancel: computed(() => {
-          if(["received", "due"].includes(sample.value?.status?.toLowerCase())) return true;
+          if(["received", "due"].includes(sample.value?.status?.toLowerCase()!)) return true;
           return false
         }),
         canVerify: computed(() => { // all anlytes must be verified first
@@ -150,7 +147,7 @@ export default defineComponent({
           return false
         }),
         canReject: computed(() => {
-          if(["received", "due"].includes(sample.value?.status?.toLowerCase())) return true;
+          if(["received", "due"].includes(sample.value?.status?.toLowerCase()!)) return true;
           return false
         }),
     };

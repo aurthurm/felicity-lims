@@ -31,11 +31,10 @@
 
 </template>
 
-<script>
+<script lang="ts">
 import { defineComponent, ref } from 'vue'
-import { useRouter } from 'vue-router'
 import { useQuery } from '@urql/vue';
-import { mapGetters, mapActions, useStore} from "vuex";
+import { useStore} from "vuex";
 import { GET_ALL_USERS } from '../../graphql/_queries'
 import { ActionTypes } from '../../store/modules/toast'
 export default defineComponent({
@@ -81,7 +80,7 @@ export default defineComponent({
         var itemId = document.getElementById("itemId")
         var token = document.getElementById("token")
         ws = new WebSocket("ws://localhost:8000/ws");
-        ws.onmessage = function(event) {
+        ws.onmessage = function(event: any) {
             var messages = document.getElementById('messages')
             var message = document.createElement('li')
             var content = document.createTextNode(event.data)

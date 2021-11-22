@@ -7,9 +7,10 @@ export interface IComment {
   
   export interface IMileStone {
     uid?: string;
-    name?: string;
+    title?: string;
     done?: boolean;
     assignee?: string;
+    assigneeUid?: number;
   }
   
 
@@ -23,8 +24,9 @@ export interface IComment {
     status?: string;
     assignee?: string;
     dueDate?: string,
-    members?: string[];
+    members?: any[];
     tags?: string[];
+    complete?: boolean;
   }
 
    export interface IListing {

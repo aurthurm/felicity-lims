@@ -72,13 +72,13 @@
 
 <script lang="ts">
 import modal from '../../../components/SimpleModal.vue';
-import { defineComponent, reactive, computed, onMounted, ref } from 'vue';
+import { defineComponent, reactive, computed, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useStore } from 'vuex';
 import { useMutation } from '@urql/vue';
 import { ActionTypes } from '../../../store/modules/kanban';
-import { IListing } from '../../../models/kanban';
 import { ADD_BOARD_LISTING, DELETE_BOARD } from '../../../graphql/kanban.mutations';
+import { IBoard, IListing } from '../../../models/kanban';
 
 export default defineComponent({
   name: "kanaban-single",
@@ -91,9 +91,9 @@ export default defineComponent({
     const store = useStore();
 
     // Modal Vars
-    let showModal = ref(false);
-    let formTitle = ref("");
-    let form = reactive({});
+    let showModal = ref<boolean>(false);
+    let formTitle = ref<string>("");
+    let form = reactive<IListing>({});
 
     store.dispatch(ActionTypes.RESET_BOARD);
     store.dispatch(ActionTypes.FETCH_BOARD_BY_UID, +route.params.boardUid);
@@ -109,7 +109,7 @@ export default defineComponent({
     function FormManager(): void {
       showModal.value = true;
       formTitle.value = "ADD BOARD LISTING";
-      Object.assign(form, { ...new Listing });
+      Object.assign(form, {} as IListing);
     }
 
     function saveForm():void {
@@ -120,16 +120,16 @@ export default defineComponent({
     // Delete Board
     const { executeMutation: deleteBoard } = useMutation(DELETE_BOARD);
 
-    function canDeleteBoard(board): boolean {
+    function canDeleteBoard(board: IBoard): boolean {
       if(board?.boardListings?.length === 0) return true;
       let canDetele = true;
-      board?.boardListings?.forEach(listing => {
-        if(listing?.listingTasks?.length > 0) canDetele = false;
+      board?.boardListings?.forEach((listing: IListing) => {
+        if(listing?.listingTasks?.length! > 0) canDetele = false;
       })
       return canDetele
     }
 
-    function deletekanBanBoard(board): void {
+    function deletekanBanBoard(board: IBoard): void {
       deleteBoard({ uid: board?.uid }).then(result => {
         store.dispatch(ActionTypes.DELETE_BOARD, result);
       })

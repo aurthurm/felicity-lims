@@ -185,22 +185,20 @@
 
 <script lang="ts">
 import { useMutation, useQuery } from '@urql/vue';
-import { mapGetters, useStore } from 'vuex';
+import { useStore } from 'vuex';
 import { defineComponent, ref, reactive, computed } from 'vue';
 
 import modal from '../../components/SimpleModal.vue';
 import { IClient } from '../../models/client';
-import {  GET_ALL_CLIENTS, GET_CLIENT_CONTACTS_BY_CLIENT_UID } from '../../graphql/clients.queries';
 import { ADD_CLIENT, EDIT_CLIENT } from '../../graphql/clients.mutations';
 import {
-  GET_ALL_COUNTRIES,
   FILTER_PROVINCES_BY_COUNTRY,
   FILTER_DISTRICTS_BY_PROVINCE,
 } from '../../graphql/admin.queries';
 
-export const IClient = typeof Client;
 import { ActionTypes } from '../../store/modules/client';
 import { ActionTypes as AdminActionTypes } from '../../store/modules/admin';
+import { IDistrict, IProvince } from '../../models/location';
 
 export default defineComponent({
   name: 'clients-conf',
@@ -215,15 +213,15 @@ export default defineComponent({
     let currentTabComponent = computed(() => 'tab-' + currentTab.value);
 
     let showClientModal = ref(false);
-    let createItem = ref(null);
-    let targetItem = ref('');
+    let createItem = ref<boolean>(false);
+    let targetItem = ref<string>('');
 
-    let provinces = ref([]);
-    let districts = ref([]);
+    let provinces = ref<IProvince[]>([]);
+    let districts = ref<IDistrict[]>([]);
 
     let client = reactive({}) as IClient;
     const resetClient = () => Object.assign(client, {}) as IClient
-    let clientBatch = ref(50)
+    let clientBatch = ref<number>(50)
     let clientParams = reactive({ 
       first: clientBatch.value, 
       after: "",
@@ -269,13 +267,13 @@ export default defineComponent({
       });
     }
 
-    function getProvinces(event) {
+    function getProvinces(event: Event) {
       provincesfilter.executeQuery({requestPolicy: 'network-only'}).then(result => {
         provinces.value = result.data.value?.provincesByCountryUid;
       });
     }
 
-    function getDistricts(event) {
+    function getDistricts(event: Event) {
       districtsfilter.executeQuery({requestPolicy: 'network-only'}).then(result => {
         districts.value = result.data.value?.districtsByProvinceUid;
       });
@@ -285,7 +283,7 @@ export default defineComponent({
       return client.uid !== undefined;
     }
 
-    let selectClient = (selected) => {
+    let selectClient = (selected: IClient) => {
         currentTab.value = 'samples';
         Object.assign(client, { ...selected });
         store.dispatch(ActionTypes.FETCH_CLIENT_CONTACTS, selected.uid);
@@ -293,10 +291,10 @@ export default defineComponent({
 
 
     let filterText = ref('')
-    function searchClients(event){
+    function searchClients(event: any){
       filterText.value = event.target.value;
       clientParams.first = 100;
-      clientParams.after = null;
+      clientParams.after = "";
       clientParams.text = event.target.value;
       clientParams.filterAction = true
       store.dispatch(ActionTypes.FETCH_CLIENTS, clientParams);
@@ -309,16 +307,16 @@ export default defineComponent({
       clientParams.after = pageInfo?.value?.endCursor;
       clientParams.text = filterText.value;
       clientParams.filterAction = false;
-      store.dispatch(ActionTypes.FETCH_PATIENTS, clientParams);
+      store.dispatch(ActionTypes.FETCH_CLIENTS, clientParams);
     }
 
-    function FormManager(create, target, obj) {
+    function FormManager(create: boolean, target: string, obj: IClient = {}) {
       createItem.value = create;
       targetItem.value = target;
       formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + target.toUpperCase();
       if(target == "client") showClientModal.value = true;
       if (create) {
-        if(target == "client") Object.assign(client, { ...(new Client()) });
+        if(target == "client") Object.assign(client, {} as IClient);
       } else {
         if(target == "client") Object.assign(client, { ...obj });
       }
@@ -332,20 +330,15 @@ export default defineComponent({
 
     return {
       showClientModal,
-      tabs,
-      currentTab,
-      currentTabComponent,
       FormManager,
       saveForm,
       formTitle,
-      isClientSelected,
       client,
       clients: computed(() => store.getters.getClients),
       clientCount: computed(() => store.getters.getClients?.length + " of " + store.getters.getClientCount + " clients"),
       clientBatch,
       pageInfo,
       showMoreClients,
-      selectClient,
       resetClient,
       countries: computed(() => store.getters.getCountries),
       countryUid,

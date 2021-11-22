@@ -23,7 +23,7 @@
 
 <script lang="ts">
 import Swal from 'sweetalert2';
-import { defineComponent, ref, toRefs, computed, PropType } from 'vue';
+import { defineComponent, ref, computed } from 'vue';
 import { useStore } from 'vuex';
 import { useMutation } from '@urql/vue';
 
@@ -35,7 +35,7 @@ export default defineComponent({
   name: 'worksheet-asign',
   setup() {
     const store = useStore();
-    const templateUid = ref(null);
+    const templateUid = ref<number>();
 
     store.dispatch(ActionTypes.FETCH_WORKSHEET_TEMPLATES);
     const worksheet = computed(()=> store.getters.getWorkSheet); 
@@ -69,7 +69,7 @@ export default defineComponent({
           }
         })
       } catch (error) {
-        logger.log(error)
+        console.log(error)
       }
     }
 

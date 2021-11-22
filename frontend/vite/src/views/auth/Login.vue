@@ -74,7 +74,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, reactive } from 'vue';
+import { defineComponent, reactive } from 'vue';
 import { useRouter } from 'vue-router';
 import { useStore } from 'vuex';
 import { useMutation } from '@urql/vue';
@@ -85,8 +85,8 @@ export default defineComponent({
     const router = useRouter();
     const store = useStore();
     store.dispatch(ActionTypes.LOG_OUT);
-    let userAuth = reactive({ data: null, error: null });
-    let form = reactive({ username: null, password: null });
+    let userAuth = reactive<any>({ data: null, error: null });
+    let form = reactive<any>({ username: null, password: null });
     const { executeMutation: authenticateUser } = useMutation(AUTHENTICATE_USER);
 
     function login() {

@@ -81,7 +81,7 @@
               </div>
               </td>
               <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-              <div class="text-sm leading-5 text-blue-900">{{ analysesText(worksheet?.analyses) }}</div>
+              <div class="text-sm leading-5 text-blue-900">{{ analysesText(worksheet?.analyses!) }}</div>
               </td>
               <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
               <div class="text-sm leading-5 text-blue-900">{{ worksheet?.assignedCount }}</div>
@@ -188,14 +188,16 @@
 import modal from '../../components/SimpleModal.vue';
 
 import { useMutation } from '@urql/vue';
-import { defineComponent, ref, reactive, computed, watch } from 'vue';
+import { defineComponent, ref, reactive, computed } from 'vue';
 import { useRoute } from 'vue-router';
 import { useStore } from 'vuex';
-import { ActionTypes, IWorkSheet } from '../../store/modules/worksheet';
+import { ActionTypes } from '../../store/modules/worksheet';
 import { ActionTypes as BaseActionTypes } from '../../store/actions';
 import { ADD_WORKSHEET } from '../../graphql/worksheet.mutations'
 import { ifZeroEmpty } from '../../utils'
 import { hasRights, objects, actions } from './../../guards';
+import { IWorkSheet, IWorkSheetForm } from '../../models/worksheet';
+import { IAnalysisService } from '../../models/analysis';
 
 export default defineComponent({
   name: "Samples",
@@ -206,21 +208,17 @@ export default defineComponent({
     const store = useStore();
     const route = useRoute();
     
-    let showModal = ref(false);
-    let formTitle = ref('');
-    let form = reactive({ 
-        analystUid: null,
-        templateUid: null,
-        count: 1,
-     });
-    const formAction = ref(true);
+    let showModal = ref<boolean>(false);
+    let formTitle = ref<string>('');
+    let form = reactive<IWorkSheetForm>({ count: 1 });
+    const formAction = ref<boolean>(true);
     let pageInfo = computed(() => store.getters.getWorkSheetPageInfo)
-    let filterText = ref("");
-    let filterStatus = ref("");
+    let filterText = ref<string>("");
+    let filterStatus = ref<string>("");
 
     store.dispatch(ActionTypes.REMOVE_WORKSHEET)    
     
-    let workSheetBatch = ref(25);
+    let workSheetBatch = ref<number>(25);
     let workSheetParams = reactive({ 
       first: workSheetBatch.value, 
       after: "",
@@ -233,7 +231,7 @@ export default defineComponent({
     store.dispatch(ActionTypes.FETCH_WORKSHEET_TEMPLATES);
     store.dispatch(BaseActionTypes.FETCH_USERS);
     // fetch instruments, analysts, methods
-    const woksheets = computed(() =>store.getters.getWorkSheets)
+    const woksheets = computed<IWorkSheet[]>(() => store.getters.getWorkSheets);
 
     const { executeMutation: createWorkSheet } = useMutation(ADD_WORKSHEET);
 
@@ -245,22 +243,18 @@ export default defineComponent({
       });
     }
 
-    function analysesText(analyses: IAnalysis[]): string {
-        let names = [];
-        analyses?.forEach(a => names.push(a.name));
+    function analysesText(analyses: IAnalysisService[]): string {
+        let names: string[] = [];
+        analyses?.forEach(a => names.push(a.name!));
         return names?.join(', ');
     }
 
-    function FormManager(create):void {
+    function FormManager(create: boolean):void {
       formAction.value = create;
       showModal.value = true;
       formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "WORKSHEET";
       if (create) {
-        let obj = new Object();
-        obj.analystUid = null;
-        obj.templateUid = null;
-        obj.count = 1;
-        Object.assign(form, { ...obj });
+        Object.assign(form, { count: 1 } as IWorkSheetForm);
       } else {
         console.log("This path is not possible !!!!!")
       }
@@ -302,7 +296,7 @@ export default defineComponent({
       analysesText,
       analysts: computed(() => store.getters.getUsers),
       workSheetTemplates: computed(() => store.getters.getWorkSheetTemplates),
-      analystName: (analyst) => {
+      analystName: (analyst: any) => {
           if(analyst?.auth?.userName) return analyst?.auth?.userName;
           if(analyst?.firstName) return analyst.firstName + ' ' + analyst.lastName;
           return "----";

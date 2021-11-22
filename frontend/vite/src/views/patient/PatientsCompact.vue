@@ -203,7 +203,7 @@
             <span class="text-gray-700 w-4/12">Gender</span>
             <select class="form-select mt-1 w-full" v-model="patientForm.gender">
               <option></option>
-              <option v-for="(sex, indx) in genders" :key="sex.index" :value="indx"> {{ sex }}</option>
+              <option v-for="(sex, indx) in genders" :key="indx" :value="indx"> {{ sex }}</option>
             </select>
           </label>
 
@@ -278,28 +278,24 @@
 <script lang="ts">
 import { useMutation } from '@urql/vue';
 import { defineComponent, ref, reactive, computed } from 'vue';
-import { mapGetters, useStore } from 'vuex';
+import { useStore } from 'vuex';
 import { useRouter } from 'vue-router';
 import { useQuery } from '@urql/vue';
 import tabSamples from '../components/AnalyisRequestListing.vue';
 import tabCases from './comps/CaseTable.vue';
 import tabLogs from '../components/AuditLog.vue';
 import modal from '../../components/SimpleModal.vue';
-import { IPatient } from '../../models/patient';
-import { GET_ALL_PATIENTS, SEARCH_PATIENTS } from '../../graphql/patient.queries';
-import {  GET_ALL_CLIENTS } from '../../graphql/clients.queries';
 import {
-  GET_ALL_COUNTRIES,
   FILTER_PROVINCES_BY_COUNTRY,
   FILTER_DISTRICTS_BY_PROVINCE,
 } from '../../graphql/admin.queries';
 import { ADD_PATIENT } from '../../graphql/patient.mutations';
 
-export const IPatient = typeof Patient;
-
 import { ActionTypes } from '../../store/modules/patient';
 import { ActionTypes as ClientActionTypes } from '../../store/modules/client';
 import { ActionTypes as AdminActionTypes } from '../../store/modules/admin';
+import { IPatient } from '../../models/patient';
+import { IDistrict, IProvince } from '../../models/location';
 
 export default defineComponent({
   name: 'patient-search',
@@ -309,25 +305,23 @@ export default defineComponent({
     tabLogs,
     modal,
   },
-  setup(context) {
+  setup() {
     let store = useStore();
-    let router = useRouter();
 
-    const nullPatient = {};
-    let createAction = ref(true);
-    let showModal = ref(false);
+    let createAction = ref<boolean>(true);
+    let showModal = ref<boolean>(false);
 
-    let currentTab = ref('samples');
-    const tabs = ['samples', 'cases', 'logs'];
-    let currentTabComponent = computed(() => 'tab-' + currentTab.value);
+    let currentTab = ref<string>('samples');
+    const tabs: string[] = ['samples', 'cases', 'logs'];
+    let currentTabComponent = computed<string>(() => 'tab-' + currentTab.value);
 
-    let patientForm = reactive({ ...nullPatient });
+    let patientForm = reactive<IPatient>({});
 
-    let provinces = ref([]);
-    let districts = ref([]);
+    let provinces = ref<IProvince[]>([]);
+    let districts = ref<IDistrict[]>([]);
 
-    let countryUid = ref(null);
-    let provinceUid = ref(null);
+    let countryUid = ref<number>();
+    let provinceUid = ref<number>();
     let patientParams = reactive({ 
       first: 25, 
       after: "",
@@ -337,7 +331,7 @@ export default defineComponent({
     });
 
 
-    const genders = ["Male", "Female", "Missing", "Trans Gender"]
+    const genders: string[] = ["Male", "Female", "Missing", "Trans Gender"]
 
     store.dispatch(AdminActionTypes.FETCH_COUNTRIES);    
     store.dispatch(ActionTypes.FETCH_PATIENTS, patientParams);
@@ -374,21 +368,21 @@ export default defineComponent({
       }).then(result => store.dispatch(ActionTypes.ADD_PATIENT, result));
     }
 
-    function getProvinces(event) {
+    function getProvinces(event: any) {
       provincesfilter.executeQuery({requestPolicy: 'network-only'}).then(result => {
         provinces.value = result.data.value?.provincesByCountryUid;
       });
     }
 
-    function getDistricts(event) {
+    function getDistricts(event: any) {
       districtsfilter.executeQuery({requestPolicy: 'network-only'}).then(result => {
         districts.value = result.data.value?.districtsByProvinceUid;
       });
     }
 
-    function searchPatients(event) {
+    function searchPatients(event: any) {
       patientParams.first = 100;
-      patientParams.after = null;
+      patientParams.after = "";
       patientParams.text = event.target.value;
       patientParams.filterAction = true;
       // store.dispatch(ActionTypes.SEARCH_PATIENTS, event.target.value);
@@ -399,21 +393,21 @@ export default defineComponent({
       return patientForm.patientId !== undefined;
     }
 
-    let getPatientFullName = (pt) => {
+    let getPatientFullName = (pt: IPatient) => {
       return pt.firstName + ' ' + pt.lastName;
     };
 
-    let getGender = pos => genders[pos];
+    let getGender = (pos: number) => genders[pos];
 
-    let selectPatient = (pt) => {
+    let selectPatient = (pt: IPatient) => {
       Object.assign(patientForm, { ...pt });
     };
 
     let setPatientToNull = () => {
-      Object.assign(patientForm, { ...nullPatient });
+      Object.assign(patientForm, {} as IPatient);
     };
 
-    function patientFormManager(create) {
+    function patientFormManager(create: boolean) {
       showModal.value = true;
       createAction.value = create;
       if (create) setPatientToNull();
@@ -428,7 +422,6 @@ export default defineComponent({
       showModal,
       tabs,
       currentTab,
-      currentTabComponent,
       patientForm,
       getPatientFullName,
       patients: computed(() => store.getters.getPatients),

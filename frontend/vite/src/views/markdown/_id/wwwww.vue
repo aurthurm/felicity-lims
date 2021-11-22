@@ -13,7 +13,7 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import { watch, ref } from 'vue'
 import mitt from 'mitt'
 export const emitter = mitt()
@@ -37,7 +37,7 @@ export default {
     watch(currentTitle, newVal => {
       emit('update:title', newVal)
     })
-    const hadnleTitleBlur = event => {
+    const hadnleTitleBlur = (event:any) => {
       console.log(event.target.value)
       emit('title-blur', event.target.value)
     }

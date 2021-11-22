@@ -151,15 +151,13 @@
 <script lang="ts">
 
 import { useMutation } from '@urql/vue';
-import { defineComponent, ref, toRefs, reactive, computed, watch } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
+import { defineComponent, ref, reactive, computed } from 'vue';
+import { useRouter } from 'vue-router';
 import { useStore } from 'vuex';
 import { ActionTypes as SampleActionTypes } from '../../store/modules/sample';
-import { ActionType } from '../../store/modules/analysis';
-import { IAnalysisRequest, ISample } from '../../models/analysis';
-import { ADD_ANALYSIS_SERVICE, EDIT_ANALYSIS_SERVICE, ADD_ANALYSIS_REQUEST  } from '../../graphql/analyses.mutations';
-import { IPatient } from '../../models/patient';
-import { ActionTypes as PatientActionTypes } from '../../store/modules/patient';
+import { IAnalysisCategory, IAnalysisRequest, IAnalysisService, ISample } from '../../models/analysis';
+import { ADD_ANALYSIS_REQUEST  } from '../../graphql/analyses.mutations';
+import { ActionTypes } from '../../store/modules/analysis';
 import { ActionTypes as ClientActionTypes } from '../../store/modules/client';
 import { isNullOrWs } from '../../utils';
 
@@ -167,24 +165,23 @@ export default defineComponent({
   name: "add-sample",
   props: {
     patient: {
-    type: Object
-  }
+      type: Object
+    }
   },
-  setup(props) {    
+  setup() {    
     const store = useStore();
-    const route = useRoute();
     const router = useRouter();
 
-    let formTitle = ref('');
-    let formAction = ref(true);
-    let form = reactive({ ...({} as IAnalysisRequest), priority: 0 });
-    let clientQuery = ref('');
+    let showModal = ref<boolean>(false);
+    let formTitle = ref<string>('');
+    let formAction = ref<boolean>(true);
+    let form = reactive({ priority: 0 }) as any ;
 
     const analysesProfiles = computed(() =>store.getters.getAnalysesProfiles);
-    const analysesServices = computed(() => {
-      const services = store.getters.getAnalysesServicesSimple;
-      let s = new Set();
-      services.forEach((service, index) => {
+    const analysesServices = computed<IAnalysisService[]>(() => {
+      const services: IAnalysisService[] = store.getters.getAnalysesServicesSimple;
+      let s = new Set<IAnalysisService>();
+      services.forEach((service: IAnalysisService, index: number) => {
         if(service.profiles?.length === 0){
           s.add(service)
         }
@@ -217,21 +214,21 @@ export default defineComponent({
     const { executeMutation: createAnalysisRequest } = useMutation(ADD_ANALYSIS_REQUEST);
 
     function addAnalysesRequest(): void {
-      createAnalysisRequest({ clientRequestId: form.clientRequestId, clientUid: form.client.uid, patientUid: form.patient.uid, samples: form.samples}).then((result) => {
+      createAnalysisRequest({ clientRequestId: form.clientRequestId, clientUid: form.client!.uid, patientUid: form.patient!.uid, samples: form.samples}).then((result) => {
       //  store.dispatch(SampleActionTypes.ADD_SAMPLES, result);
       });
-      router.push({ name: "patient-detail", params: { patientUid: form.patient.uid }});
+      router.push({ name: "patient-detail", params: { patientUid: form.patient!.uid }});
     }
 
     function addSample(): void {
-      form.samples?.push(new Sample());
+      form.samples?.push({} as ISample);
     }
 
-    function removeSample(index): void {
+    function removeSample(index: number): void {
         form.samples?.splice(index, 1);
     }
 
-    function setSampleType(sample: ISample, event: Event): void {
+    function setSampleType(sample: ISample, event: any): void {
       sample.sampleType = store.getters.getSampleTypeByName(event.target.value);
     }
 
@@ -240,17 +237,15 @@ export default defineComponent({
       showModal.value = true;
       formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "ANALYSES ANALYSIS REQUEST";
       if (create) {
-        let ar = new AnalysisRequest();
-        ar.patient = patient.value;
-        Object.assign(form, { ...ar });
+        Object.assign(form, { patient:  patient.value } as IAnalysisRequest);
       } else {
         Object.assign(form, { ...obj });
       }
     }
 
     function getClientContacts(): void {
-      if(!isNullOrWs(form.client.name)) {
-        const clt = store.getters.getClientByName(form.client.name);
+      if(!isNullOrWs(form.client!.name)) {
+        const clt = store.getters.getClientByName(form.client!.name);
         store.dispatch(ClientActionTypes.FETCH_CLIENT_CONTACTS, clt?.uid);
         form.client = clt;
       }
@@ -264,19 +259,14 @@ export default defineComponent({
     }
 
     return {
-      analysesCategories: computed(() =>store.getters.getAnalysesCategories),
       sampleTypes: computed(() => store.getters.getSampleTypes),
       analysesProfiles,
       analysesServices,
       clients,
-      patient,
-      FormManager,
       form,
-      formTitle,
       saveForm,
       addSample,
       removeSample,
-      setSampleType,
       getClientContacts,
       clientContacts: computed(() => store.getters.getClientContacts),
     };

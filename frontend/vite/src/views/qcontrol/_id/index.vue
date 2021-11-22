@@ -22,26 +22,26 @@ export default defineComponent({
     const  WARNING = "#FEB900";
     const  GOOD = "#00FF00";
 
-    function westGardRule(dataset: Map[], key: string): Map[] {
-      let values = [];
+    function westGardRule(dataset: any[], key: string): any {
+      let values: number[] = [];
       dataset?.forEach(item => {
         if(typeof(item[key]) == "number") values.push(item[key])
       })
 
-      const n = values.length;
-      const mu = jStat.mean(values)
-      const sd = jStat.stdev(values)
-      const x_sds = [-4,-3,-2,-1,0,1,2,3,4].map(x =>  Math.round((x * (mu + sd)) * 100) / 100);
+      const n:number = values.length;
+      const mu:number = jStat.mean(values)
+      const sd:number = jStat.stdev(values)
+      const x_sds:number[] = [-4,-3,-2,-1,0,1,2,3,4].map(x =>  Math.round((x * (mu + sd)) * 100) / 100);
 
       // adjust based on  x_sds
-      const zero = 0
-      const one_sd = Math.round((mu + sd) * 100) / 100
-      const two_sd = Math.round(2 * (mu + sd) * 100) / 100
-      const three_sd = Math.round(3 * (mu + sd) * 100) / 100
-      const four_sd  = Math.round(4 * (mu + sd) * 100) / 100
+      const zero:number = 0
+      const one_sd:number = Math.round((mu + sd) * 100) / 100
+      const two_sd:number = Math.round(2 * (mu + sd) * 100) / 100
+      const three_sd:number = Math.round(3 * (mu + sd) * 100) / 100
+      const four_sd:number  = Math.round(4 * (mu + sd) * 100) / 100
 
       for(let [i, obs] of dataset.entries()) {
-        const current = jStat.abs([obs[key]])[0]
+        const current = jStat.abs([obs.get(key)])[0]
         let prev_1, prev_2, prev_3;
         // defaults
         obs["color"] = GOOD
@@ -66,7 +66,7 @@ export default defineComponent({
           // or both controls in the same run exceeded 2sd
           if(i > 1 && dataset[i-1]) {
               prev_1 = jStat.abs([dataset[i-1][key]])[0]
-              if(prev_1 <= plus_3_sd & prev_1 > plus_2_sd) {
+              if(prev_1 <= three_sd && prev_1 > two_sd) {
                 obs["color"] = ERROR
                 obs["rule"]  = "2_2s"
                 continue
@@ -94,10 +94,10 @@ export default defineComponent({
           prev_2 = jStat.abs([dataset[i-2][key]])[0]
           prev_3 = jStat.abs([dataset[i-3][key]])[0]
 
-          if(current > one_sd & current <= two_sd &
-            prev_1 > one_sd & prev_1 <= two_sd &
-            prev_2 > one_sd & prev_2 <= two_sd &
-            prev_3 > one_sd & prev_3 <= two_sd){
+          if(current > one_sd && current <= two_sd &&
+            prev_1 > one_sd && prev_1 <= two_sd &&
+            prev_2 > one_sd && prev_2 <= two_sd &&
+            prev_3 > one_sd && prev_3 <= two_sd){
               // on either side of the mean 
               // obs["color"] = ERROR
               // obs["rule"]  = "4_1s"

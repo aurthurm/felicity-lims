@@ -2,7 +2,7 @@
     <!-- Contacts Table View -->
     <div class="overflow-x-auto mt-4">
         <button 
-        @click="FormManager(true, null)"
+        @click="FormManager(true, {})"
         class="px-1 py-0 mb-4 border-blue-500 border text-blue-500 rounded transition duration-300 hover:bg-blue-700 hover:text-white focus:outline-none">Add Contact</button>
 
         <div class="align-middle inline-block min-w-full shadow overflow-hidden bg-white shadow-dashboard px-2 pt-1 rounded-bl-lg rounded-br-lg">
@@ -95,13 +95,14 @@
 
 </template>
 <script lang="ts">
-import { useMutation, useQuery } from '@urql/vue';
-import {reactive, computed, ref, watch} from 'vue';
+import { useMutation } from '@urql/vue';
+import { computed, ref} from 'vue';
 import { useStore } from 'vuex';
 import { useRoute } from 'vue-router';
 import modal from '../../../components/SimpleModal.vue'
 import { ADD_CLIENT_CONTACT, EDIT_CLIENT_CONTACT } from '../../../graphql/clients.mutations';
 import { ActionTypes } from '../../../store/modules/client';
+import { IClientContact } from '../../../models/client';
 // import { IClientContact } from '../../../models/client';
 export default {
     name: "tab-contacts",
@@ -111,7 +112,7 @@ export default {
     props: {
       clientUid: Number,
     },
-    setup(props){
+    setup(){
         let formTitle = ref('');
         let showContactModal = ref(false);
         let createContact = ref(false);
@@ -120,7 +121,7 @@ export default {
         let contact = ref();
 
         // dispatch get contacts fo slients
-        store.dispatch(ActionTypes.FETCH_CLIENT_CONTACTS, +router.query.clientUid)
+        store.dispatch(ActionTypes.FETCH_CLIENT_CONTACTS, +router.query.clientUid!)
 
         const { executeMutation: createClientContact } = useMutation(ADD_CLIENT_CONTACT);
         const { executeMutation: updateClientContact } = useMutation(EDIT_CLIENT_CONTACT);
@@ -128,7 +129,7 @@ export default {
         let resetContact = () => Object.assign(contact, {});
 
         function addClientContact() {
-          createClientContact({clientUid: +router.query.clientUid, firstName: contact.value.firstName, mobilePhone: contact.value.mobilePhone, email: contact.value.email, }).then((result) => {
+          createClientContact({clientUid: +router.query.clientUid!, firstName: contact.value.firstName, mobilePhone: contact.value.mobilePhone, email: contact.value.email, }).then((result) => {
             store.dispatch(ActionTypes.ADD_CREATED_CLIENT_CONTACT, result.data.createClientContact.clientContact);
           });
         }
@@ -141,7 +142,7 @@ export default {
           );
         }
 
-        function FormManager(create, obj) {
+        function FormManager(create: boolean, obj: IClientContact = {}) {
             createContact.value = create;
             formTitle.value = (create ? 'CREATE' : 'EDIT') + " CONTACT";
             showContactModal.value = true;

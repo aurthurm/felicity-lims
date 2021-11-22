@@ -2,6 +2,7 @@ import { ILocation, IDistrict } from "./location";
 
 export interface IClient extends ILocation {
   district?: IDistrict;
+  districtUid?: number;
 }
 
 export interface IClientContact {

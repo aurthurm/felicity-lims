@@ -37,13 +37,13 @@
             <tbody class="bg-white">
             <tr v-for="result in worksheet?.analysisResults" :key="result.uid" :class="[getResultRowColor(result)]">
                 <td>
-                    <input type="checkbox" class="" v-model="result.checked" @change="checkCheck(result)" :disabled="checkDisabled(result)">
+                    <input type="checkbox" class="" v-model="result.checked" @change="checkCheck()" :disabled="checkDisabled(result)">
                 </td>
                 <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-                    <span v-if="result?.sample?.priority > 0"
+                    <span v-if="result?.sample?.priority! > 0"
                     :class="[
                         'font-small',
-                        { 'text-red-700': worksheet.priority > 1 },
+                        { 'text-red-700': worksheet?.priority! > 1 },
                     ]">
                         <i class="fa fa-star"></i>
                     </span>
@@ -131,32 +131,34 @@
 <script lang="ts">
 import Swal from 'sweetalert2';
 
-import { defineComponent, ref, reactive, computed } from 'vue';
+import { defineComponent, ref, computed } from 'vue';
 import { useMutation } from '@urql/vue';
 
-import { useRoute } from 'vue-router';
 import { useStore } from 'vuex';
-import { ActionTypes, WorkSheet } from '../../../store/modules/worksheet';
-import { ActionTypes as ResultActionTypes } from '../../../store/modules/sample';
 import { isNullOrWs } from '../../../utils';
-import { SUBMIT_ANALYSIS_RESULTS, VERIFY_ANALYSIS_RESULTS, RETEST_ANALYSIS_RESULTS, RETRACT_ANALYSIS_RESULTS } from '../../../graphql/analyses.mutations';
+import { 
+SUBMIT_ANALYSIS_RESULTS, 
+VERIFY_ANALYSIS_RESULTS, 
+RETEST_ANALYSIS_RESULTS, 
+RETRACT_ANALYSIS_RESULTS } from '../../../graphql/analyses.mutations';
 import { WORKSHEET_UPDATE } from '../../../graphql/worksheet.mutations';
+import { IWorkSheet } from '../../../models/worksheet';
+import { IAnalysisResult, IAnalysisService } from '../../../models/analysis';
 
 export default defineComponent({
   name: 'worksheet-results',
-  setup(props) {
-    const route = useRoute();
+  setup() {
     const store = useStore();
 
-    let can_submit = ref(false);
-    let can_retract = ref(false);
-    let can_verify = ref(false);
-    let can_retest = ref(false);
-    let can_unassign = ref(false);
+    let can_submit = ref<boolean>(false);
+    let can_retract = ref<boolean>(false);
+    let can_verify = ref<boolean>(false);
+    let can_retest = ref<boolean>(false);
+    let can_unassign = ref<boolean>(false);
 
-    let allChecked = ref(false);
-    let viewDetail = ref(false);
-    let worksheet = computed(()=> store.getters.getWorkSheet); 
+    let allChecked = ref<boolean>(false);
+    let viewDetail = ref<boolean>(false);
+    let worksheet = computed<IWorkSheet>(()=> store.getters.getWorkSheet); 
 
     const { executeMutation: submitAnalysisResults } = useMutation(SUBMIT_ANALYSIS_RESULTS);  
     const { executeMutation: workSheetUpdate } = useMutation(WORKSHEET_UPDATE);  
@@ -164,52 +166,51 @@ export default defineComponent({
     const { executeMutation: retestAnalysisResults } = useMutation(RETEST_ANALYSIS_RESULTS); 
     const { executeMutation: retractAnalysisResults } = useMutation(RETRACT_ANALYSIS_RESULTS); 
 
-    function submitAnalysesResults(results): void {
+    function submitAnalysesResults(results: IAnalysisResult[]): void {
       submitAnalysisResults({ analysisResults: results, }).then((result) => {
       //  store.dispatch(ResultActionTypes.UPDATE_ANALYSIS_RESULTS, result);
 
       });
     }
 
-    function unAssignAnalyses(analyses): void {
-      console.log({ worksheetUid: worksheet.value.uid, samples: analyses, action: "worksheet_un_assign" })
+    function unAssignAnalyses(analyses: number[]): void {
       workSheetUpdate({ worksheetUid: worksheet.value.uid, samples: analyses, action: "worksheet_un_assign" }).then((result) => {
       //  store.dispatch(ResultActionTypes.UPDATE_ANALYSIS_RESULTS, result);
       });
     }
 
-    function verifyAnalysesResults(analyses): void {
+    function verifyAnalysesResults(analyses: number[]): void {
       verifyAnalysisResults({ analyses }).then((result) => {
       //  store.dispatch(ResultActionTypes.UPDATE_ANALYSIS_RESULTS, result);
 
       });
     }
     
-    function retractAnalysesResults(analyses): void {
+    function retractAnalysesResults(analyses: number[]): void {
       retractAnalysisResults({ analyses }).then((result) => {
       //  store.dispatch(ResultActionTypes.UPDATE_ANALYSIS_RESULTS, result);
       });
     }  
     
-    function retestAnalysesResults(analyses): void {
+    function retestAnalysesResults(analyses: number[]): void {
       retestAnalysisResults({ analyses }).then((result) => {
       //  store.dispatch(ResultActionTypes.UPDATE_ANALYSIS_RESULTS, result);
       });
     }
 
-    function areAllChecked(): Boolean {
-      return worksheet.value?.analysisResults?.every(item => item.checked === true);
+    function areAllChecked(): boolean {
+      return worksheet.value?.analysisResults?.every(item => item.checked === true)!;
     }
     
     function getResultsChecked(): any {
-      let results = [];
+      let results: IAnalysisResult[]= [];
       worksheet.value?.analysisResults?.forEach(result => {
         if (result.checked) results.push(result);
       });
       return results;
     }
 
-    function checkCheck(result): void {
+    function checkCheck(): void {
      if(areAllChecked()) {
         allChecked.value = true;
      } else {
@@ -218,7 +219,7 @@ export default defineComponent({
      checkUserActionPermissios()
     }
 
-    function check(result): void {
+    function check(result: IAnalysisResult): void {
       if(checkDisabled(result)) {
         unCheck(result);
         return;
@@ -227,11 +228,11 @@ export default defineComponent({
       checkUserActionPermissios()
     }
 
-    function checkDisabled(result): boolean {
-      return ["retracted", 'verified'].includes(result.status);
+    function checkDisabled(result: IAnalysisResult): boolean {
+      return ["retracted", 'verified'].includes(result.status!);
     }
 
-    function unCheck(result): void {
+    function unCheck(result: IAnalysisResult): void {
       result.checked = false;
       checkUserActionPermissios()
     }
@@ -246,9 +247,9 @@ export default defineComponent({
       checkUserActionPermissios()
     }
 
-    function analysesText(analyses: IAnalysis[]): string {
-        let names = [];
-        analyses?.forEach(a => names.push(a.name));
+    function analysesText(analyses: IAnalysisService[]): string {
+        let names: string[]= [];
+        analyses?.forEach(a => names.push(a.name!));
         return names.join(', ');
     }
 
@@ -256,7 +257,7 @@ export default defineComponent({
       result.editable = true;
     }
 
-    function isEditable(result): Boolean {
+    function isEditable(result: IAnalysisResult): Boolean {
       if(result?.editable || isNullOrWs(result?.result)) {
         editResult(result)
         return true
@@ -266,19 +267,17 @@ export default defineComponent({
 
     function prepareResults(): any[] {
       const results = getResultsChecked();
-      let ready = [];
-      results?.forEach(result => ready.push({ uid: result.uid , result: result.result }))
+      let ready: IAnalysisResult[] = [];
+      results?.forEach((result: IAnalysisResult) => ready.push({ uid: result.uid , result: result.result }))
       return ready;
     } 
 
-    function getResultsUids(): string[] {
+    function getResultsUids(): number[] {
       const results = getResultsChecked();
-      let ready = [];
-      results?.forEach(result => ready.push(result.uid))
+      let ready: number[] = [];
+      results?.forEach((result: IAnalysisResult) => ready.push(result.uid!))
       return ready;
     }
-
-
 
     function getResultRowColor(result: any): string {
       switch (result?.status){
@@ -336,13 +335,13 @@ export default defineComponent({
       if(checked.length === 0) return;
 
       // can submit
-      if(checked.every(result => result.status === 'pending')){
+      if(checked.every((result: IAnalysisResult) => result.status === 'pending')){
         can_submit.value = true;
         can_unassign.value = true;
       }
 
       // can verify/ retract/ retest
-      if(checked.every(result => result.status === 'resulted')){
+      if(checked.every((result: IAnalysisResult) => result.status === 'resulted')){
         can_retract.value = true;
         can_verify.value = true;
         can_retest.value = true;
@@ -375,7 +374,7 @@ export default defineComponent({
           }
         })
       } catch (error) {
-        logger.log(error)
+        console.log(error)
       }
     }
 
@@ -403,7 +402,7 @@ export default defineComponent({
           }
         })
       } catch (error) {
-        logger.log(error)
+        console.log(error)
       }      
     }
 
@@ -431,7 +430,7 @@ export default defineComponent({
           }
         })
       } catch (error) {
-        logger.log(error)
+        console.log(error)
       }
     }
 
@@ -459,7 +458,7 @@ export default defineComponent({
           }
         })
       } catch (error) {
-        logger.log(error)
+        console.log(error)
       }
     }
 
@@ -487,18 +486,15 @@ export default defineComponent({
           }
         })
       } catch (error) {
-        logger.log(error)
+        console.log(error)
       }
     }
 
     return {
       worksheet,
-      analysesText,
       getResultRowColor,
-      isDisabledRowCheckBox,
       checkDisabled,
       viewDetail,
-      isNullOrWs,
       isEditable,
       toggleCheckAll,
       allChecked,
