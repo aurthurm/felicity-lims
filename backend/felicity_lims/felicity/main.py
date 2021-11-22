@@ -68,16 +68,17 @@ async def startup():
     await initialize_felicity()
     felicity_workforce_init()
 
+
 @flims.on_event("startup")
 @repeat_every(seconds=3)  # 60 * 60 = 1 hour
 async def always_and_forever():
     # print(datetime.now())
     pass
 
+
 @flims.on_event("shutdown")
 async def shutdown():
     felicity_halt_workforce()
-
 
 
 # Set all CORS enabled origins
@@ -116,6 +117,7 @@ class ConnectionManager:
 
 
 manager = ConnectionManager()
+
 
 @flims.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):
