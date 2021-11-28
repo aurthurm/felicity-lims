@@ -110,7 +110,7 @@ export default defineComponent({
     const dropdownOpen = ref(false);
     const isOpen = ref(false);
 
-    const userFullName: string = localStorage.getItem('fuser');
+    const userFullName: string | null = localStorage.getItem('fuser');
 
     return {
       pages, canAccessPage,

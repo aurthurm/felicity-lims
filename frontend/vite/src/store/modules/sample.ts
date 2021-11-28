@@ -10,17 +10,18 @@ import {
   GET_ANALYSIS_REQUESTS_BY_PATIENT_UID,
   GET_ANALYSIS_REQUESTS_BY_CLIENT_UID,
   GET_ANALYSIS_RESULTS_BY_SAMPLE_UID,
-  GET_ALL_QC_SETS, GET_QC_SET_BY_UID
+  GET_ALL_QC_SETS, GET_QC_SET_BY_UID,
+  GET_SAMPLE_STATUS_BY_UID
 } from '../../graphql/analyses.queries';
-import { IAnalysisRequest, ISampleType, ISampleRequest, IAnalysisResult, IQCSet } from '../../models/analysis';
+import { IAnalysisRequest, ISampleType, ISample, IAnalysisResult, IQCSet } from '../../models/analysis';
 
 // state contract
 export interface IState {
   sampleTypes: ISampleType[];
-  samples: ISampleRequest[];
+  samples: ISample[];
   sampleCount: number;
   samplePageInfo: any;
-  sample: ISampleRequest | null;
+  sample: ISample | null;
   analysisRequests: IAnalysisRequest[];
   analysisResults: IAnalysisResult[];
   qcSets: IQCSet[];
@@ -57,11 +58,13 @@ export enum MutationTypes {
   RESET_SAMPLES = "RESET_SAMPLES",
   SET_SAMPLES = 'SET_SAMPLES',
   SET_SAMPLE = 'SET_SAMPLE',
+  UPDATE_SAMPLE_STATUS = 'UPDATE_SAMPLE_STATUS',
 
   SET_ANALYSES_REQUESTS = 'SET_ANALYSES_REQUESTS',
 
   SET_ANALYSES_RESULTS = 'SET_ANALYSES_RESULTS',
   UPDATE_ANALYSIS_RESULTS = 'UPDATE_ANALYSIS_RESULTS',
+  UPDATE_ANALYSIS_RESULTS_STATUS = 'UPDATE_ANALYSIS_RESULTS_STATUS',
 
   SET_QC_SETS = 'FETCH_QC_SETS',
   SET_QC_SET = 'FETCH_QC_SET',
@@ -79,11 +82,14 @@ export enum ActionTypes {
   FETCH_SAMPLES = 'FETCH_SAMPLES',
   ADD_SAMPLES = 'ADD_SAMPLES',
 
+  FETCH_SAMPLE_STATUS = 'FETCH_SAMPLE_STATUS',
+
   FETCH_ANALYSIS_REQUESTS_FOR_PATIENT = 'FETCH_ANALYSIS_REQUESTS_FOR_PATIENT',
   FETCH_ANALYSIS_REQUESTS_FOR_CLIENT = 'FETCH_ANALYSIS_REQUESTS_FOR_CLIENT',
 
   FETCH_ANALYSIS_RESULTS_FOR_SAMPLE = 'FETCH_ANALYSIS_RESULTS_FOR_SAMPLE',
   UPDATE_ANALYSIS_RESULTS = 'UPDATE_ANALYSIS_RESULTS',
+  UPDATE_ANALYSIS_RESULTS_STATUS = 'UPDATE_ANALYSIS_RESULTS_STATUS',
 
   FETCH_QC_SETS = 'FETCH_QC_SETS',
   FETCH_QC_SET_BY_UID = 'FETCH_QC_SET_BY_UID',
@@ -163,6 +169,20 @@ export const mutations = <MutationTree<IState>>{
     state.samplePageInfo = payload.samples?.pageInfo;
   },
 
+  [MutationTypes.UPDATE_SAMPLE_STATUS](state: IState, sample: ISample): void {
+
+    console.log("updating sample status: ", sample)
+
+    if(state.sample && sample.status){
+      state.sample.status = sample.status;
+    }
+    // also update sample listing
+    const index = state.samples.findIndex(x => x.uid === sample.uid);
+    if(index > -1) {
+      state!.samples[index].status = sample.status;
+    }
+  },
+
   [MutationTypes.SET_SAMPLE](state: IState, payload: any): void {
     let sample = payload;
     sample.analyses = parseEdgeNodeToList(sample?.analyses) || [];
@@ -182,7 +202,20 @@ export const mutations = <MutationTree<IState>>{
   [MutationTypes.UPDATE_ANALYSIS_RESULTS](state: IState, payload: IAnalysisResult[]): void {
     payload?.forEach(result => {
       const index = state.analysisResults.findIndex(x => x.uid === result.uid);
-      state!.analysisResults[index] = result;
+      if(index > -1) {
+        state!.analysisResults[index] = result;
+      } else {
+        state!.analysisResults.push(result);
+      }
+    })
+  },
+
+  [MutationTypes.UPDATE_ANALYSIS_RESULTS_STATUS](state: IState, payload: any[]): void {
+    payload?.forEach(result => {
+      const index = state.analysisResults.findIndex(x => x.uid === result.uid);
+      if(index > -1) {
+        state!.analysisResults[index].status = result.status;
+      }
     })
   },
 
@@ -255,6 +288,16 @@ export const actions = <ActionTree<IState, RootState>>{
     commit(MutationTypes.SET_SAMPLES, payload.data.createAnalysisRequest.samples);
   },
 
+  async [ActionTypes.FETCH_SAMPLE_STATUS]({ commit }, uid){
+    if(!uid) return;
+    await urqlClient
+    .query( GET_SAMPLE_STATUS_BY_UID, { uid }, { requestPolicy:'network-only' })
+    .toPromise()
+    .then(result => {
+      commit(MutationTypes.UPDATE_SAMPLE_STATUS, result.data.sampleByUid);
+    })
+  },
+
   async [ActionTypes.FETCH_ANALYSIS_REQUESTS_FOR_PATIENT]({ commit }, uid){
     if(!uid) return;
     await urqlClient
@@ -282,8 +325,12 @@ export const actions = <ActionTree<IState, RootState>>{
     })
   },
 
-  async [ActionTypes.UPDATE_ANALYSIS_RESULTS]({ commit }, payload){
-    commit(MutationTypes.UPDATE_ANALYSIS_RESULTS, payload.data.submitAnalysisResults);
+  async [ActionTypes.UPDATE_ANALYSIS_RESULTS]({ commit }, results: IAnalysisResult[]){
+    commit(MutationTypes.UPDATE_ANALYSIS_RESULTS, results);
+  },
+
+  async [ActionTypes.UPDATE_ANALYSIS_RESULTS_STATUS]({ commit }, results: any[]){
+    commit(MutationTypes.UPDATE_ANALYSIS_RESULTS_STATUS, results);
   },
 
   // QC SETS

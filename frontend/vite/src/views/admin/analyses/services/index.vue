@@ -261,8 +261,7 @@ import accordion from '../../../../components/Accordion.vue';
 import ResultOptions from './ResultOptions.vue';
 
 import { useMutation } from '@urql/vue';
-import { defineComponent, ref, reactive, computed, watch } from 'vue';
-import { useRouter } from 'vue-router';
+import { defineComponent, ref, reactive, computed } from 'vue';
 import { useStore } from 'vuex';
 import { ActionTypes } from '../../../../store/modules/analysis';
 import { IAnalysisService } from '../../../../models/analysis';
@@ -285,7 +284,7 @@ export default defineComponent({
     
     let showModal = ref(false);
     let formTitle = ref('');
-    let analysisService = reactive({ ...(new AnalysisService()) });
+    let analysisService = reactive({}) as IAnalysisService;
     const formAction = ref(true);
 
     store.dispatch(ActionTypes.FETCH_ANALYSES_CATEGORIES);
@@ -335,15 +334,15 @@ export default defineComponent({
     }
 
     function resetAnalysisService():void {
-      Object.assign(analysisService, { ...(new AnalysisService()) });
+      Object.assign(analysisService, {} as IAnalysisService);
     }
 
-    function FormManager(create: boolean, obj: IAnalysisService | null = null):void {
+    function FormManager(create: boolean, obj: IAnalysisService = {}):void {
       formAction.value = create;
       showModal.value = true;
       formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "ANALYSES SERVICE";
       if (create) {
-        Object.assign(analysisService, { ...(new AnalysisService()) });
+        Object.assign(analysisService, {} as IAnalysisService);
       } else {
         Object.assign(analysisService, { ...obj });
       }
@@ -364,7 +363,6 @@ export default defineComponent({
       analysesServices: computed(() =>store.getters.getAnalysesServices),
       selectAnalysisService,
       analysisService,
-      category: analysisService.category?.uid || null,
       FormManager,
       saveForm
     };

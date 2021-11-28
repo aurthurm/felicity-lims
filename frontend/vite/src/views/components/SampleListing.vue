@@ -10,6 +10,7 @@
                     <option value="received">Received</option>
                     <option value="to_be_verified">To be Verified</option>
                     <option value="verified">Verified</option>
+                    <option value="published">Published</option>
                     <option value="invalidated">Invalidated</option>
                     <option value="cancelled">Cancelled</option>
                     <option value="rejected">Rejected</option>
@@ -63,55 +64,55 @@
                 <th class="px-1 py-1 border-b-2 border-gray-300"></th>
             </tr>
             </thead>
-            <tbody class="bg-white">
-            <tr
-                v-for="sample in samples" :key="sample.uid"
-            >
-                <td>
-                    <input type="checkbox" v-model="sample.checked" @change="checkCheck(sample)">
-                </td>
-                <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-                    <span v-if="sample.priority > 1"
-                    :class="[
-                        'font-small',
-                        { 'text-red-700': sample.priority > 1 },
-                    ]">
-                        <i class="fa fa-star"></i>
-                    </span>
-                </td>
-                <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-                <div class="flex items-center">
-                    <div class="text-sm leading-5 text-gray-800">
-                      <router-link :to="{ name: 'sample-detail', params: { patientUid: sample?.analysisrequest?.patient?.uid, sampleUid:sample?.uid  }}">{{ sample.sampleId }}</router-link>
-                    </div>
-                </div>
-                </td>
-                <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-                <div class="text-sm leading-5 text-blue-900">{{ profileAnalysesText(sample.profiles, sample.analyses) }}</div>
-                </td>
-                <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-                <div class="text-sm leading-5 text-blue-900">{{ sample?.analysisrequest?.patient?.firstName }} {{ sample?.analysisrequest?.patient?.lastName }}</div>
-                </td>
-                <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-                <div class="text-sm leading-5 text-blue-900">{{ sample?.analysisrequest?.patient?.clientPatientId }}</div>
-                </td>
-                <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-                <div class="text-sm leading-5 text-blue-900">{{ sample?.analysisrequest?.client?.name }}</div>
-                </td>
-                <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-                <div class="text-sm leading-5 text-blue-900">10/10/2020</div>
-                </td>
-                <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-                <div class="text-sm leading-5 text-blue-900">Amos T ...</div>
-                </td>
-                <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-                <button type="button" class="bg-blue-400 text-white p-1 rounded leading-none">{{ sample.status }}</button>
-                </td>
-                <td class="px-1 py-1 whitespace-no-wrap text-right border-b border-gray-500 text-sm leading-5">
-                    <!-- <button class="px-2 py-1 mr-2 border-orange-500 border text-orange-500 rounded transition duration-300 hover:bg-orange-700 hover:text-white focus:outline-none">View</button> -->
-                    <button class="px-2 py-1 mr-2 border-blue-500 border text-blue-500 rounded transition duration-300 hover:bg-blue-700 hover:text-white focus:outline-none">View</button>
-                </td>
-            </tr>
+            <tbody class="bg-white" v-if="samples?.length > 0">
+              <tr
+                  v-for="sample in samples" :key="sample.uid"
+              >
+                  <td>
+                      <input type="checkbox" v-model="sample.checked" @change="checkCheck(sample)">
+                  </td>
+                  <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
+                      <span v-if="sample.priority! > 1"
+                      :class="[
+                          'font-small',
+                          { 'text-red-700': sample.priority! > 1 },
+                      ]">
+                          <i class="fa fa-star"></i>
+                      </span>
+                  </td>
+                  <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
+                  <div class="flex items-center">
+                      <div class="text-sm leading-5 text-gray-800">
+                        <router-link :to="{ name: 'sample-detail', params: { patientUid: sample?.analysisrequest?.patient?.uid, sampleUid:sample?.uid  }}">{{ sample.sampleId }}</router-link>
+                      </div>
+                  </div>
+                  </td>
+                  <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
+                  <div class="text-sm leading-5 text-blue-900">{{ profileAnalysesText(sample.profiles!, sample.analyses!) }}</div>
+                  </td>
+                  <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
+                  <div class="text-sm leading-5 text-blue-900">{{ sample?.analysisrequest?.patient?.firstName }} {{ sample?.analysisrequest?.patient?.lastName }}</div>
+                  </td>
+                  <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
+                  <div class="text-sm leading-5 text-blue-900">{{ sample?.analysisrequest?.patient?.clientPatientId }}</div>
+                  </td>
+                  <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
+                  <div class="text-sm leading-5 text-blue-900">{{ sample?.analysisrequest?.client?.name }}</div>
+                  </td>
+                  <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
+                  <div class="text-sm leading-5 text-blue-900">10/10/2020</div>
+                  </td>
+                  <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
+                  <div class="text-sm leading-5 text-blue-900">Amos T ...</div>
+                  </td>
+                  <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
+                  <button type="button" class="bg-blue-400 text-white p-1 rounded leading-none">{{ sample.status }}</button>
+                  </td>
+                  <td class="px-1 py-1 whitespace-no-wrap text-right border-b border-gray-500 text-sm leading-5">
+                      <!-- <button class="px-2 py-1 mr-2 border-orange-500 border text-orange-500 rounded transition duration-300 hover:bg-orange-700 hover:text-white focus:outline-none">View</button> -->
+                      <button class="px-2 py-1 mr-2 border-blue-500 border text-blue-500 rounded transition duration-300 hover:bg-blue-700 hover:text-white focus:outline-none">View</button>
+                  </td>
+              </tr>
             </tbody>
         </table>
         </div>
@@ -134,7 +135,14 @@
          class="px-2 py-1 mr-2 border-blue-500 border text-blue-500 rounded transition duration-300 hover:bg-blue-700 hover:text-white focus:outline-none">Reveive</button>
          <button v-show="can_reject" class="px-2 py-1 mr-2 border-blue-500 border text-blue-500 rounded transition duration-300 hover:bg-blue-700 hover:text-white focus:outline-none">Reject</button>
          <button v-show="can_copy_to" class="px-2 py-1 mr-2 border-blue-500 border text-blue-500 rounded transition duration-300 hover:bg-blue-700 hover:text-white focus:outline-none">Copy to New</button>
-         <button v-show="can_print" class="px-2 py-1 mr-2 border-blue-500 border text-blue-500 rounded transition duration-300 hover:bg-blue-700 hover:text-white focus:outline-none">Print</button>
+         <button 
+         v-show="can_download" 
+         @click.prevent="downloadReports_()" 
+         class="px-2 py-1 mr-2 border-blue-500 border text-blue-500 rounded transition duration-300 hover:bg-blue-700 hover:text-white focus:outline-none">Download</button>
+         <button 
+         v-show="can_print" 
+         @click.prevent="printReports_()" 
+         class="px-2 py-1 mr-2 border-blue-500 border text-blue-500 rounded transition duration-300 hover:bg-blue-700 hover:text-white focus:outline-none">Print</button>
     </div>
     <div class="my-4 flex sm:flex-row flex-col">
       <button 
@@ -174,8 +182,8 @@
 
   </div>
 
-  <!-- Location Edit Form Modal -->
-  <modal v-if="showModal" @close="showModal = false">
+  <!-- =Form Modal -->
+  <!-- <modal v-if="showModal" @close="showModal = false">
     <template v-slot:header>
       <h3>{{ formTitle }}</h3>
     </template>
@@ -288,7 +296,7 @@
         </button>
       </form>
     </template>
-  </modal>
+  </modal> -->
 
 
 </template>
@@ -297,21 +305,23 @@
 import modal from '../../components/SimpleModal.vue';
 
 import Swal from 'sweetalert2';
-import { useMutation } from '@urql/vue';
-import { defineComponent, ref, reactive, computed, watch } from 'vue';
+import { useMutation, useQuery } from '@urql/vue';
+import { defineComponent, ref, reactive, computed } from 'vue';
 import { useRoute } from 'vue-router';
 import { useStore } from 'vuex';
 import { ActionTypes as SampleActionTypes } from '../../store/modules/sample';
 import { ActionTypes } from '../../store/modules/analysis';
-import { IAnalysisRequest, ISample } from '../../models/analysis';
+import { IAnalysisProfile, IAnalysisService, ISample } from '../../models/analysis';
 import { 
-  ADD_ANALYSIS_SERVICE, 
-  EDIT_ANALYSIS_SERVICE,
   REINSTATE_SAMPLES,
   RECEIVE_SAMPLES,
   CANCEL_SAMPLES,
+  PUBLISH_SAMPLES,
   } from '../../graphql/analyses.mutations';
+
+import { SAMPLES_FOR_REPORTS_BY_UIDS } from '../../graphql/analyses.queries';
 import { ifZeroEmpty } from '../../utils'
+import useReportComposable from '../../modules/reports'; 
 
 export default defineComponent({
   name: "Samples",
@@ -322,13 +332,9 @@ export default defineComponent({
     const store = useStore();
     let route = useRoute();
     
-    let showModal = ref(false);
-    let formTitle = ref('');
-    let form = reactive({}) as IAnalysisRequest;
-    const formAction = ref(true);
     let pageInfo = computed(() => store.getters.getSamplePageInfo)
-    let filterText = ref("");
-    let filterStatus = ref("");
+    let filterText = ref<string>("");
+    let filterStatus = ref<string>("");
 
     store.dispatch(SampleActionTypes.RESET_SAMPLES);
     store.dispatch(SampleActionTypes.FETCH_SAMPLE_TYPES);
@@ -343,7 +349,7 @@ export default defineComponent({
     store.dispatch(ActionTypes.FETCH_ANALYSES_PROFILES);
 
 
-    let sampleBatch = ref(50);
+    let sampleBatch = ref<number>(50);
     let sampleParams = reactive({ 
       first: sampleBatch.value, 
       after: "",
@@ -354,37 +360,14 @@ export default defineComponent({
       filterAction: false
     });
     store.dispatch(SampleActionTypes.FETCH_SAMPLES, sampleParams);
-    const samples = computed(() =>store.getters.getSamples)
 
-    // const { executeMutation: createAnalysisCategory } = useMutation(ADD_ANALYSIS_SERVICE);
-    // const { executeMutation: updateAnalysisCategory } = useMutation(EDIT_ANALYSIS_SERVICE);
+    const samples = computed<ISample[]>(() => store.getters.getSamples )
 
-    // function addAnalysesCategory(): void {
-    //   console.log(form)
-    //   createAnalysisCategory({ name: form.name, description: form.description, active: form.active}).then((result) => {
-    //    store.dispatch(ActionTypes.ADD_ANALYSES_CATEGORY, result);
-    //   });
-    // }
-
-    // function editAnalysesCategory(): void {
-    //   updateAnalysisCategory({ uid: form.uid, name: form.name, description: form.description, active: form.active}).then((result) => {
-    //     store.dispatch(ActionTypes.UPDATE_ANALYSES_CATEGORY, result);
-    //   });
-    // }
-
-    function profileAnalysesText(profiles: IProfile[], analyses: IAnalysis[]): string {
-        let names = [];
-        profiles.forEach(p => names.push(p.name));
-        analyses.forEach(a => names.push(a.name));
+    function profileAnalysesText(profiles: IAnalysisProfile[], analyses: IAnalysisService[]): string {
+        let names: string[]= [];
+        profiles.forEach(p => names.push(p.name!));
+        analyses.forEach(a => names.push(a.name!));
         return names.join(', ');
-    }
-
-    function addSample(): void {
-        form.samples?.push(new AnalysisRequest());
-    }
-
-    function removeSample(index): void {
-        form.samples?.splice(index, 1);
     }
 
     function showMoreSamples(): void {
@@ -406,56 +389,37 @@ export default defineComponent({
       store.dispatch(SampleActionTypes.FETCH_SAMPLES, sampleParams);
     }
 
-    function FormManager(create: boolean, obj: IAnalysisCategory):void {
-      formAction.value = create;
-      showModal.value = true;
-      formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "ANALYSES ANALYSIS REQUEST";
-      if (create) {
-        const request = new AnalysisRequest();
-        request.samples = [];
-        request.samples.push(new Sample())
-        Object.assign(form, { ...request });
-      } else {
-        Object.assign(form, { ...obj });
-      }
-    }
-
-    function saveForm():void {
-      if (formAction.value === true) addAnalysesCategory();
-      if (formAction.value === false) editAnalysesCategory();
-      showModal.value = false;
-    }
-
     // user actions perms
-    let can_cancel = ref(false);
-    let can_receive = ref(false);
-    let can_reinstate = ref(false);
-    let can_print = ref(false);
-    let can_reject = ref(false);
-    let can_copy_to = ref(false);
+    let can_cancel = ref<boolean>(false);
+    let can_receive = ref<boolean>(false);
+    let can_reinstate = ref<boolean>(false);
+    let can_reject = ref<boolean>(false);
+    let can_copy_to = ref<boolean>(false);
+    let can_download= ref<boolean>(false);
+    let can_print = ref<boolean>(false);
 
-    let allChecked = ref(false); 
+    let allChecked = ref<boolean>(false); 
     
-    function check(sample): void {
+    function check(sample: ISample): void {
       sample.checked = true;
       checkUserActionPermissios()
     }
 
-    function unCheck(sample): void {
+    function unCheck(sample: ISample): void {
       sample.checked = false;
       checkUserActionPermissios()
     }
 
-    async function toggleCheckAll(): void {
-      await samples?.value?.forEach(sample => allChecked.value ? check(sample) : unCheck(sample));
+    function toggleCheckAll(): void {
+      samples?.value?.forEach((sample: ISample) => allChecked.value ? check(sample) : unCheck(sample));
       checkUserActionPermissios()
     }
     
     function areAllChecked(): Boolean {
-      return samples?.value?.every(item => item.checked === true);
+      return samples?.value?.every((sample: ISample) => sample.checked === true);
     }
 
-    function checkCheck(sample): void {
+    function checkCheck(sample: ISample): void {
      if(areAllChecked()) {
         allChecked.value = true;
      } else {
@@ -464,9 +428,9 @@ export default defineComponent({
       checkUserActionPermissios()
     }
 
-    function getSamplesChecked(): any {
-      let box = [];
-      samples?.value?.forEach(sample => {
+    function getSamplesChecked(): ISample[] {
+      let box:ISample[] = [];
+      samples?.value?.forEach((sample: ISample) => {
         if (sample.checked) box.push(sample);
       });
       return box;
@@ -477,38 +441,46 @@ export default defineComponent({
       can_cancel.value = false;
       can_receive.value = false;
       can_reinstate.value = false;
+      can_download.value = false;
+      can_print.value = false;
 
-      const checked = getSamplesChecked();
+      const checked: ISample[] = getSamplesChecked();
       if(checked.length === 0) return;
 
       // can_receive
-      if(checked.every(result => result.status === 'due')){
+      if(checked.every((sample: ISample) => sample.status === 'due')){
         can_receive.value = true;
       }
 
       // can_cancel
-      if(checked.every(result => ["received", "due"].includes(result.status))){
+      if(checked.every((sample: ISample) => ["received", "due"].includes(sample.status!))){
         can_cancel.value = true;
       }
 
       // can_reinstate
-      if(checked.every(result => result.status === 'cancelled')){
+      if(checked.every((sample: ISample) => sample.status === 'cancelled')){
         can_reinstate.value = true;
+      }
+
+      // can_download
+      if(checked.every((sample: ISample) => ["verified", "published"].includes(sample.status!))){
+        can_download.value = true;
+      }
+
+      // can_print
+      if(checked.every((sample: ISample) => sample.status === 'verified')){
+        can_print.value = true;
       }
     }
 
-    function getSampleUids(): string[] {
-      const items = getSamplesChecked();
-      let ready = [];
-      items?.forEach(item => ready.push(item.uid))
+    function getSampleUids(): number[] {
+      const items: ISample[] = getSamplesChecked();
+      let ready: number[] = [];
+      items?.forEach(item => ready.push(item.uid!))
       return ready;
     }
 
     const { executeMutation: cancelSamples } = useMutation(CANCEL_SAMPLES); 
-
-    // function cancelSelectedSamples(analyses): void {
-    //   cancelSamples({ analyses }).then(_ => {});
-    // } 
 
     const cancelSamples_ = async () => {
       try {
@@ -523,7 +495,6 @@ export default defineComponent({
           cancelButtonText: 'No, do not cancel!',
         }).then((result) => {
           if (result.isConfirmed) {
-            // cancelSelectedSamples(getSampleUids())
             let samples = getSampleUids()
             cancelSamples({ samples }).then(_ => {});
 
@@ -536,13 +507,13 @@ export default defineComponent({
           }
         })
       } catch (error) {
-        logger.log(error)
+        console.log(error)
       }
     }
 
     const { executeMutation: reinstateSamples } = useMutation(REINSTATE_SAMPLES); 
 
-    function reInstateSelectedSamples(samples): void {
+    function reInstateSelectedSamples(samples: number[]): void {
       reinstateSamples({ samples }).then(_ => {});
     }
 
@@ -570,14 +541,14 @@ export default defineComponent({
           }
         })
       } catch (error) {
-        logger.log(error)
+        console.log(error)
       }
     }
 
 
     const { executeMutation: receiveSamples } = useMutation(RECEIVE_SAMPLES); 
 
-    function receiveSelectedSamples(samples): void {
+    function receiveSelectedSamples(samples: number[]): void {
       receiveSamples({ samples }).then(_ => {});
     }  
 
@@ -605,21 +576,88 @@ export default defineComponent({
           }
         })
       } catch (error) {
-        logger.log(error)
+        console.log(error)
+      }
+    }
+
+    const { processReports }  = useReportComposable();
+    let reportUids = ref<number[]>([]);
+    const reportProcessor =  useQuery({
+        query: SAMPLES_FOR_REPORTS_BY_UIDS,
+        variables: { uids:  reportUids },
+        requestPolicy: 'network-only',
+      })
+
+    const downloadReports_ = async () => {
+
+      try {
+        Swal.fire({
+          title: 'Are you sure?',
+          text: "You want to download reports",
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Yes, download now!',
+          cancelButtonText: 'No, do not download!',
+        }).then((result) => {
+          if (result.isConfirmed) {
+
+            reportUids.value = getSampleUids();
+            console.log(reportUids);
+
+            reportProcessor.executeQuery({requestPolicy: 'network-only'}).then(res => {
+              let _samples = res?.data.value?.samplesByUids;
+              if(_samples.length > 0) { processReports(_samples) }
+            });
+
+            // Swal.fire(
+            //   'Its Happening!',
+            //   'Your sample reports are being processed.',
+            //   'success'
+            // ).then(_ => {})
+
+          }
+        })
+      } catch (error) {
+        console.log(error)
+      }
+    }
+
+
+    const { executeMutation: publishSamples } = useMutation(PUBLISH_SAMPLES); 
+
+    const printReports_ = async () => {
+      try {
+        Swal.fire({
+          title: 'Are you sure?',
+          text: "You want to flag as printed",
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Yes, flag now!',
+          cancelButtonText: 'No, do not flag!',
+        }).then((result) => {
+          if (result.isConfirmed) {
+
+            publishSamples({ samples:getSampleUids() }).then(_ => {});
+
+            Swal.fire(
+              'Its Happening!',
+              'Your sample have been published.',
+              'success'
+            ).then(_ => location.reload())
+
+          }
+        })
+      } catch (error) {
+        console.log(error)
       }
     }
 
 
     return {
-      showModal, 
-      analysesCategories: computed(() =>store.getters.getAnalysesCategories),
-      patients: computed(() =>store.getters.getPatients),
-      FormManager,
-      form,
-      formTitle,
-      saveForm,
-      addSample,
-      removeSample,
       samples,
       sampleCount: computed(() => store.getters.getSamples?.length + " of " + store.getters.getSampleCount + " samples"),
       showMoreSamples,
@@ -635,12 +673,15 @@ export default defineComponent({
       can_cancel,
       can_receive,
       can_reinstate,
-      can_print,
       can_reject,
       can_copy_to,
+      can_download,
+      can_print,
       cancelSamples_,
       reInstateSamples_,
       receiveSamples_,
+      downloadReports_,
+      printReports_
     };
   },
 });

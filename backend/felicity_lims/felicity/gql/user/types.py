@@ -57,7 +57,7 @@ class UpdatedGroupPerms:
     permission: PermissionType
 
 
-#  relay paginations
+# relay pagination
 @strawberry.type
 class UserEdge:
     cursor: str

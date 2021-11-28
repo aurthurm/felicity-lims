@@ -6,7 +6,7 @@ import { useMutation } from '@urql/vue';
 
 import { isNullOrWs } from '../utils';
 import { ActionTypes } from '../store/modules/sample';
-import { ISampleRequest, IAnalysisResult } from '../models/analysis'
+import { ISample, IAnalysisResult } from '../models/analysis'
 import { 
   CANCEL_ANALYSIS_RESULTS,
   REINSTATE_ANALYSIS_RESULTS,
@@ -28,7 +28,7 @@ export default function useAnalysisComposable(){
         can_reinstate: false,
         allChecked: false,
         analysisResults: computed<IAnalysisResult[]>(() => store.getters.getAnalysisResults),
-        sample: computed<ISampleRequest>(() => store.getters.getSample)
+        sample: computed<ISample>(() => store.getters.getSample)
     });
 
     // store.dispatch(ActionTypes.FETCH_ANALYSIS_RESULTS_FOR_SAMPLE, +route.params.sampleUid)  
@@ -43,7 +43,7 @@ export default function useAnalysisComposable(){
 
     function prepareResults(): IAnalysisResult[] {
       const results = getResultsChecked();
-      let ready: IAnalysisResult[] = [];
+      let ready: any[] = [];
       results?.forEach((result: IAnalysisResult) => ready.push({ uid: result.uid , result: result.result }))
       return ready;
     } 
@@ -169,6 +169,14 @@ export default function useAnalysisComposable(){
 
     }
 
+    // _updateSample is state has changed
+    const _updateSample = async () => {
+      const sample = computed<ISample>(() => store.getters.getSample);
+      if(sample.value) {
+        store.dispatch(ActionTypes.FETCH_SAMPLE_STATUS, sample?.value?.uid);
+      }
+    }
+
     // Cancell Analyses
     const { executeMutation: _canceller } = useMutation(CANCEL_ANALYSIS_RESULTS);
     const cancelResults = async () => {
@@ -185,15 +193,20 @@ export default function useAnalysisComposable(){
         }).then((result) => {
           if (result.isConfirmed) {
 
-            _canceller({ analyses: getResultsUids() }).then((result) => {
-              store.dispatch(ActionTypes.UPDATE_ANALYSIS_RESULTS, result);
+            _canceller({ analyses: getResultsUids() }).then(resp => {
+              if(resp.error){
+                console.error(resp)
+                return
+              }
+              _updateSample()
+              store.dispatch(ActionTypes.UPDATE_ANALYSIS_RESULTS_STATUS, resp.data.cancelAnalysisResults);
             });
 
             Swal.fire(
               'Its Happening!',
               'Your results have been cancelled.',
               'success'
-            ).then(_ => location.reload())
+            ).then(_ => {})
 
           }
         })
@@ -218,15 +231,20 @@ export default function useAnalysisComposable(){
         }).then((result) => {
           if (result.isConfirmed) {
 
-            _reinstater({ analyses: getResultsUids() }).then((result) => {
-              store.dispatch(ActionTypes.UPDATE_ANALYSIS_RESULTS, result);
+            _reinstater({ analyses: getResultsUids() }).then(resp => {
+              if(resp.error){
+                console.error(resp)
+                return
+              }
+              _updateSample()
+              store.dispatch(ActionTypes.UPDATE_ANALYSIS_RESULTS_STATUS, resp.data.reInstateAnalysisResults);
             });
 
             Swal.fire(
               'Its Happening!',
               'Your analystes have been reinstated.',
               'success'
-            ).then(_ => location.reload())
+            ).then(_ => {})
 
           }
         })
@@ -258,15 +276,20 @@ export default function useAnalysisComposable(){
         }).then((result) => {
           if (result.isConfirmed) {
 
-            _submitter({ analysisResults: prepareResults() }).then((result) => {
-              store.dispatch(ActionTypes.UPDATE_ANALYSIS_RESULTS, result);
+            _submitter({ analysisResults: prepareResults() }).then(resp => {
+              if(resp.error){
+                console.error(resp)
+                return
+              }
+              _updateSample()
+              store.dispatch(ActionTypes.UPDATE_ANALYSIS_RESULTS, resp.data.submitAnalysisResults);
              });
 
             Swal.fire(
               'Its Happening!',
               'Your results have been submitted.',
               'success'
-            ).then(_ => location.reload())
+            ).then(_ => {})
 
           }
         })
@@ -291,15 +314,20 @@ export default function useAnalysisComposable(){
         }).then((result) => {
           if (result.isConfirmed) {
 
-            _verifier({ analyses: getResultsUids() }).then((result) => {
-              store.dispatch(ActionTypes.UPDATE_ANALYSIS_RESULTS, result);
+            _verifier({ analyses: getResultsUids() }).then(resp => {
+              if(resp.error){
+                console.error(resp)
+                return
+              }
+              _updateSample()
+              store.dispatch(ActionTypes.UPDATE_ANALYSIS_RESULTS, resp.data.verifyAnalysisResults);
             });
 
             Swal.fire(
               'Its Happening!',
               'Your results have been verified.',
               'success'
-            ).then(_ => location.reload())
+            ).then(_ => {})
 
           }
         })
@@ -324,15 +352,20 @@ export default function useAnalysisComposable(){
         }).then((result) => {
           if (result.isConfirmed) {
 
-            _retracter({ analyses: getResultsUids() }).then((result) => {
-              store.dispatch(ActionTypes.UPDATE_ANALYSIS_RESULTS, result);
+            _retracter({ analyses: getResultsUids() }).then(resp => {
+              if(resp.error){
+                console.error(resp)
+                return
+              }
+              _updateSample()
+              store.dispatch(ActionTypes.UPDATE_ANALYSIS_RESULTS, resp.data.retractAnalysisResults);
             });
 
             Swal.fire(
               'Its Happening!',
               'Your results have been retracted.',
               'success'
-            ).then(_ => location.reload())
+            ).then(_ => {})
 
           }
         })
@@ -357,15 +390,20 @@ export default function useAnalysisComposable(){
         }).then((result) => {
           if (result.isConfirmed) {
 
-            _retester({ analyses: getResultsUids() }).then((result) => {
-              store.dispatch(ActionTypes.UPDATE_ANALYSIS_RESULTS, result);
+            _retester({ analyses: getResultsUids() }).then(resp => {
+              if(resp.error){
+                console.error(resp)
+                return
+              }
+              _updateSample()
+              store.dispatch(ActionTypes.UPDATE_ANALYSIS_RESULTS, resp.data.retestAnalysisResults);
             });
 
             Swal.fire(
               'Its Happening!',
               'Your results have been retested.',
               'success'
-            ).then(_ => location.reload())
+            ).then(_ => {})
 
           }
         })

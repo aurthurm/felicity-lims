@@ -49,6 +49,10 @@
               v-show="dropdownOpen"
               class="absolute mt-4 py-0 bg-gray-300 rounded-md shadow-xl z-20" >
               <div
+                v-show="canReceive"
+                class="no-underline text-gray-900 py-0 opacity-60 px-4 border-b border-transparent hover:opacity-100 md:hover:border-grey-dark hover:bg-blue-400 hover:text-white"
+                >Receive</div>
+              <div
                 v-show="canVerify"
                 class="no-underline text-gray-900 py-0 opacity-60 px-4 border-b border-transparent hover:opacity-100 md:hover:border-grey-dark hover:bg-blue-400 hover:text-white"
                 >Verify</div>
@@ -60,6 +64,10 @@
                 v-show="canCancel"
                 class="no-underline text-gray-900 py-0 opacity-60 px-4 border-b border-transparent hover:opacity-100 md:hover:border-grey-dark hover:bg-red-400 hover:text-white"
                 >Cancel</div>
+              <div
+                v-show="canReinstate"
+                class="no-underline text-gray-900 py-0 opacity-60 px-4 border-b border-transparent hover:opacity-100 md:hover:border-grey-dark hover:bg-red-400 hover:text-white"
+                >Reinstate</div>
               <div
                 v-show="canInvalidate"
                 class="no-underline text-gray-900 py-0 opacity-60 px-4 border-b border-transparent hover:opacity-100 md:hover:border-grey-dark hover:bg-gray-400 hover:text-white"
@@ -107,7 +115,7 @@
 <script lang="ts">
 import { defineComponent, computed, ref } from 'vue';
 import { useStore } from 'vuex';
-import { IAnalysisProfile, IAnalysisService, ISampleRequest } from '../../../models/analysis';
+import { IAnalysisProfile, IAnalysisService, ISample } from '../../../models/analysis';
 
 export default defineComponent({
   name: "sample-single",
@@ -115,7 +123,7 @@ export default defineComponent({
     const dropdownOpen = ref(false);
     const store = useStore();
 
-    const sample = computed<ISampleRequest>(() => store.getters.getSample)
+    const sample = computed<ISample>(() => store.getters.getSample)
 
     function profileAnalysesText(profiles: IAnalysisProfile[], analyses: IAnalysisService[]): string {
         let names: string[] = [];
@@ -134,8 +142,16 @@ export default defineComponent({
         sample,
         profileAnalysesText,
         FormManager,
+        canReceive: computed(() => {
+          if(["due"].includes(sample.value?.status?.toLowerCase()!)) return true;
+          return false
+        }),
         canCancel: computed(() => {
           if(["received", "due"].includes(sample.value?.status?.toLowerCase()!)) return true;
+          return false
+        }),
+        canReinstate: computed(() => {
+          if(["cancelled"].includes(sample.value?.status?.toLowerCase()!)) return true;
           return false
         }),
         canVerify: computed(() => { // all anlytes must be verified first

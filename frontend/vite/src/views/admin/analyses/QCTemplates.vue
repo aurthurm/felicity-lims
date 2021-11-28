@@ -2,7 +2,7 @@
 
     <div class="container w-full my-4">
         <hr>
-          <button @click="FormManager(true, null)"
+          <button @click="FormManager(true)"
            class="px-2 py-1 border-blue-500 border text-blue-500 rounded transition duration-300 hover:bg-blue-700 hover:text-white focus:outline-none">Add QC Template</button>
         <hr>
 
@@ -101,28 +101,12 @@
 
 </template>
 
-
-<style scoped>
-  /* CHECKBOX TOGGLE SWITCH */
-  /* @apply rules for documentation, these do not work as inline style */
-  .toggle-checkbox:checked {
-    @apply: right-0 border-green-400;
-    right: 0;
-    border-color: #68D391;
-  }
-  .toggle-checkbox:checked + .toggle-label {
-    @apply: bg-green-400;
-    background-color: #68D391;
-  }
-</style>
-
 <script lang="ts" scope="ts">
 import modal from '../../../components/SimpleModal.vue';
 
 import { useMutation } from '@urql/vue';
 import { defineComponent, ref, reactive, computed } from 'vue';
 import { useStore } from 'vuex';
-import { useRouter } from 'vue-router';
 import { ActionTypes } from '../../../store/modules/analysis';
 import { IQCTemplate, IQCLevel } from '../../../models/analysis';
 import { ADD_QC_TEMPLATE, EDIT_QC_TEMPLATE  } from '../../../graphql/analyses.mutations';
@@ -147,25 +131,25 @@ export default defineComponent({
     const { executeMutation: updateQCTemplate } = useMutation(EDIT_QC_TEMPLATE);
 
     function addQCTemplate(): void {
-      createQCTemplate({ name: form.name, description: form.description, levels: levelsUids(form.qcLevels), departments: form.departments}).then((result) => {
+      createQCTemplate({ name: form.name, description: form.description, levels: levelsUids(form.qcLevels!), departments: form.departments}).then((result) => {
        store.dispatch(ActionTypes.ADD_QC_TEMPLATE, result);
       });
     }
 
     function editQCTemplate(): void {
-      updateQCTemplate({ uid: form.uid, name: form.name, description: form.description, levels: levelsUids(form.qcLevels), departments: form.departments}).then((result) => {
+      updateQCTemplate({ uid: form.uid, name: form.name, description: form.description, levels: levelsUids(form.qcLevels!), departments: form.departments}).then((result) => {
         store.dispatch(ActionTypes.UPDATE_QC_TEMPLATE, result);
       });
     }
 
-    function levelsUids(levels: IQCLevel[]): string[] {
+    function levelsUids(levels: IQCLevel[]): number[] {
       if (levels?.length <= 0 ) return [];
-      let qcLevels = [];
-      levels?.forEach(level => qcLevels.push(level.uid));
+      let qcLevels: number[] = [];
+      levels?.forEach(level => qcLevels.push(level.uid!));
       return qcLevels;
     }
 
-    function FormManager(create: boolean, obj: IQCTemplate | null):void {
+    function FormManager(create: boolean, obj: IQCTemplate = {}): void {
       formAction.value = create;
       showModal.value = true;
       formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "QC Template";
@@ -183,7 +167,7 @@ export default defineComponent({
       return qcLevels.join(", ");
     }
 
-    function saveForm():void {
+    function saveForm(): void {
       if (formAction.value === true) addQCTemplate();
       if (formAction.value === false) editQCTemplate();
       showModal.value = false;

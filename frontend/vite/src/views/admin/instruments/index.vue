@@ -40,4 +40,4 @@
 }
 </style>
 
-<script src="./instruments.component.ts"></script>
+<script src="./instruments.component.ts" lang="ts"></script>

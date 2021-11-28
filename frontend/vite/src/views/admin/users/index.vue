@@ -77,4 +77,4 @@
 }
 </style>
 
-<script src="./users.component.ts"></script>
+<script src="./users.component.ts" lang="ts"></script>

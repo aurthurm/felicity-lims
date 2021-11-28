@@ -160,6 +160,65 @@ export const GET_ALL_SAMPLES = gql`
             }
     }`;
 
+export const SAMPLES_FOR_REPORTS_BY_UIDS = gql`
+  query getsamplesByUids($uids: [Int!]) {
+    samplesByUids(sampleUids:$uids){
+      uid
+      analysisrequest {
+        requestId
+        patient {
+          uid
+          patientId
+          firstName
+          lastName
+          dateOfBirth
+          age
+        }
+        client {
+          name
+          email
+          phoneMobile
+        }
+      }
+      sampletype {
+        name
+      }
+      sampleId
+      status
+      dateVerified
+      verifiedBy {
+        firstName
+        lastName
+        auth {
+          userName
+        }
+      }
+      dateSubmitted
+      submittedBy {
+        firstName
+        lastName
+        auth {
+          userName
+        }
+      }
+      analysisResults {
+        analysis {
+          name
+          unit
+        }
+        uid
+        result
+        instrument {
+          name
+        }
+        method {
+          name
+        }
+        reportable
+        retest
+      }
+    }
+}`;
 
 export const GET_ANALYSIS_REQUESTS_BY_PATIENT_UID = gql`
 query getAnalysesRequestsByPatientUid($uid: Int!) {
@@ -337,6 +396,55 @@ export const GET_ANALYSIS_RESULTS_BY_SAMPLE_UID = gql`
       }
 }`;
 
+export const GET_SAMPLE_BY_UID = gql`
+  query getSampleByUid($uid: Int!) {
+      sampleByUid(uid: $uid){
+        uid
+        analysisrequest {
+            uid
+            clientRequestId
+            patient {
+                uid
+                firstName
+                lastName
+                clientPatientId
+                gender
+                dateOfBirth
+                age
+                ageDobEstimated
+                consentSms
+            }
+            client {
+                uid
+                name
+            }
+        }
+        sampletype {
+            uid
+            name
+        }
+        sampleId
+        priority
+        status
+        analyses {
+            uid
+            name
+        }
+        profiles {
+          uid
+          name
+        }
+      }
+}`;
+
+export const GET_SAMPLE_STATUS_BY_UID = gql`
+  query getSampleByUid($uid: Int!) {
+      sampleByUid(uid: $uid){
+        uid
+        sampleId
+        status
+      }
+}`;
 
 export const GET_ALL_QC_LEVELS = gql`
   query getAllQCLevels {

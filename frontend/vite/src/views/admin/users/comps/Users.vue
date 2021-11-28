@@ -4,7 +4,7 @@
         <hr>
         <div class="flex justify-between items-center">
           <h3>Users</h3>
-          <button @click="UserFormManager(true, null)" class="px-2 py-1 ml-2 border-blue-500 border text-blue-500 rounded transition duration-300 hover:bg-blue-700 hover:text-white focus:outline-none">Add User/Lab Contact</button>
+          <button @click="UserFormManager(true)" class="px-2 py-1 ml-2 border-blue-500 border text-blue-500 rounded transition duration-300 hover:bg-blue-700 hover:text-white focus:outline-none">Add User/Lab Contact</button>
         </div>
         <hr>
         
@@ -59,7 +59,7 @@
                           v-if="user?.auth"
                           :class="[
                             'block h-4 w-4 rounded-full bottom-0 right-0',
-                            !user?.isBlocked ? 'bg-green-400' : 'bg-red-400' ,
+                            !user?.auth?.isBlocked ? 'bg-green-400' : 'bg-red-400' ,
                           ]"
                         ></span>
                     </td>
@@ -159,7 +159,7 @@
             <span class="text-gray-700">UserName</span>
             <input
               class="form-input mt-1 block w-full"
-              v-model="form.username"
+              v-model="form.userName"
               placeholder="First Name ..."
             />
           </label>
@@ -207,14 +207,18 @@
 </template>
 
 <script lang="ts">
+
 import modal from '../../../../components/SimpleModal.vue';
 
 import { defineComponent, ref, computed, reactive } from 'vue';
-import { useRouter } from 'vue-router';
 import { useStore } from 'vuex';
 import { useMutation } from '@urql/vue';
 import { ActionTypes } from '../../../../store/actions';
 import { ADD_USER, EDIT_USER, ADD_USER_AUTH, EDIT_USER_AUTH  } from '../../../../graphql/_mutations';
+import { IUser, IUserAuth } from '../../../../models/auth';
+
+interface IUserAuthForm extends IUser, IUserAuth {};
+
 export default defineComponent({
   name: "tab-users",
   components: {
@@ -223,15 +227,15 @@ export default defineComponent({
   setup() {
     let store = useStore();
 
-    let showUserModal = ref(false);
-    let showUserAuthModal = ref(false);
-    let formTitle = ref('');
-    let form = reactive({ ...new Object });
-    const formAction = ref(true);
+    let showUserModal = ref<boolean>(false);
+    let showUserAuthModal = ref<boolean>(false);
+    let formTitle = ref<string>('');
+    let form = reactive({}) as IUserAuthForm;
+    const formAction = ref<boolean>(true);
 
     store.dispatch(ActionTypes.FETCH_GROUPS_AND_PERMISSIONS);
     store.dispatch(ActionTypes.FETCH_USERS);
-    let users = computed(() => store.getters.getUsers)
+    let users = computed<IUser[]>(() => store.getters.getUsers);
 
     const { executeMutation: createUser } = useMutation(ADD_USER);
     const { executeMutation: updateUser } = useMutation(EDIT_USER);
@@ -239,42 +243,34 @@ export default defineComponent({
     const { executeMutation: updateUserAuth } = useMutation(EDIT_USER_AUTH);
 
     function addUser(): void {
-      createUser(form).then((result) => {
-       console.log(result)
-      });
+      createUser(form).then((result) => {});
     }
 
     function editUser(): void {
       console.log(form)
-      updateUser(form).then((result) => {
-       console.log(result)
-      });
+      updateUser(form).then((result) => {});
     }
 
     function addUserAuth(): void {
-      createUserAuth(form).then((result) => {
-       console.log(result)
-      });
+      createUserAuth(form).then((result) => {});
     }
 
     function editUserAuth(): void {
-      updateUserAuth(form).then((result) => {
-       console.log(result)
-      });
+      updateUserAuth(form).then((result) => {});
     }
 
-    function userGroupsName(user: any): void {
-        let groups = [];
+    function userGroupsName(user: IUser): string {
+        let groups: string[] = [];
         user?.groups?.forEach(g => groups.push(g.name));
         return groups.join(', ');
     }
 
-    function UserFormManager(create, obj): void {
+    function UserFormManager(create:boolean, obj: IUser = {} as IUser): void {
       formAction.value = create;
       showUserModal.value = true;
       formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "USER";
       if (create) {
-        let user = new Object;
+        let user = new Object as IUser;
         user.firstName = "";
         user.lastName = "";
         user.email = "";
@@ -283,7 +279,7 @@ export default defineComponent({
         Object.assign(form, { ...user });
       } else {
         obj.userUid = obj?.uid;
-        obj.groupUid = obj.groups[0]?.uid;
+        obj.groupUid = obj?.groups![0]?.uid;
         Object.assign(form, { ...obj });
       }
     }
@@ -297,27 +293,26 @@ export default defineComponent({
       showUserModal.value = false;
     }
 
-    function UserAuthFormManager(create, obj): void {
+    function UserAuthFormManager(create: boolean, obj: IUser): void {
       formAction.value = create;
       showUserAuthModal.value = true;
       formTitle.value = (create ? 'ADD' : 'EDIT') + ' AUTHENTICATION ' + "FOR USER " + obj?.firstName;
-      let userAuth = new Object;
+      let userAuth = new Object as IUserAuth;
       userAuth.userUid = obj?.uid;
       userAuth.password = "";
       userAuth.passwordc = "";
       if (create) {
-        userAuth.username = "";
+        userAuth.userName = "";
         userAuth.isBlocked = false;
         Object.assign(form, { ...userAuth });
       } else {
-        userAuth.username = obj?.auth?.userName;
+        userAuth.userName = obj?.auth?.userName;
         userAuth.isBlocked = obj?.auth?.isBlocked;
         Object.assign(form, { ...userAuth });
       }
     }
 
     function saveUserAuthForm(): void {
-        console.log(form)
         if(formAction.value){
           addUserAuth()
         } else {

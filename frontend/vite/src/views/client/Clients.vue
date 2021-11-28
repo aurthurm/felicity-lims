@@ -208,11 +208,11 @@ export default defineComponent({
   setup() {
     const store = useStore();
 
-    let currentTab = ref('samples');
-    const tabs = ['samples', 'contacts'];
+    let currentTab = ref<string>('samples');
+    const tabs: string[] = ['samples', 'contacts'];
     let currentTabComponent = computed(() => 'tab-' + currentTab.value);
 
-    let showClientModal = ref(false);
+    let showClientModal = ref<boolean>(false);
     let createItem = ref<boolean>(false);
     let targetItem = ref<string>('');
 
@@ -230,10 +230,10 @@ export default defineComponent({
       filterAction: false
     });
 
-    let countryUid = ref(null);
-    let provinceUid = ref(null);
+    let countryUid = ref<number>();
+    let provinceUid = ref<number>();
 
-    let formTitle = ref('');
+    let formTitle = ref<string>('');
 
     store.dispatch(AdminActionTypes.FETCH_COUNTRIES);
     store.dispatch(ActionTypes.FETCH_CLIENTS, clientParams);
@@ -244,14 +244,14 @@ export default defineComponent({
     const provincesfilter = useQuery({
       query: FILTER_PROVINCES_BY_COUNTRY,
       variables: { uid: countryUid },
-      pause: computed(() => countryUid !== null),
+      pause: computed(() => countryUid !== undefined),
       requestPolicy: 'network-only',
     });
 
     const districtsfilter = useQuery({
       query: FILTER_DISTRICTS_BY_PROVINCE,
       variables: { uid: provinceUid },
-      pause: computed(() => provinceUid !== null),
+      pause: computed(() => provinceUid !== undefined),
       requestPolicy: 'network-only',
     });
 
@@ -290,7 +290,7 @@ export default defineComponent({
     };
 
 
-    let filterText = ref('')
+    let filterText = ref<string>('')
     function searchClients(event: any){
       filterText.value = event.target.value;
       clientParams.first = 100;

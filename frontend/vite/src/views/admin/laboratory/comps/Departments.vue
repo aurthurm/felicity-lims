@@ -77,9 +77,9 @@ import modal from '../../../../components/SimpleModal.vue';
 import { useMutation } from '@urql/vue';
 import { defineComponent, ref, reactive, computed } from 'vue';
 import { useStore } from 'vuex';
-import { useRouter } from 'vue-router';
 import { ActionTypes } from '../../../../store/actions';
 import { ADD_DEPARTMENT, UPDATE_DEPARTMENT } from '../../../../graphql/_mutations';
+import { IDepartment } from '../../../../models/setup';
 
 
 export default defineComponent({
@@ -90,9 +90,9 @@ export default defineComponent({
   setup() {
     const store = useStore();
     
-    let showModal = ref(false);
-    let formTitle = ref('');
-    let form = reactive({ ...new Object });
+    let showModal = ref<boolean>(false);
+    let formTitle = ref<string>('');
+    let form = reactive({}) as IDepartment;
     const formAction = ref(true);
 
     store.dispatch(ActionTypes.FETCH_DEPARTMENTS);

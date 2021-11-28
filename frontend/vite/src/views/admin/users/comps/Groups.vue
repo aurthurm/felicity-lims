@@ -50,14 +50,14 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, reactive, computed } from 'vue';
-import { useRouter } from 'vue-router';
+import { defineComponent, computed } from 'vue';
 import { useStore } from 'vuex';
 import { useMutation } from '@urql/vue';
 
 import accordion from '../../../../components/Accordion.vue';
 import { ActionTypes } from '../../../../store/actions';
 import { UPDATE_GROUP_PERMS  } from '../../../../graphql/_mutations';
+import { IGroup, IPermission } from '../../../../models/auth';
 export default defineComponent({
   name: "tab-groups",
   components: {
@@ -69,14 +69,14 @@ export default defineComponent({
 
     const { executeMutation: updateGroupPermissions } = useMutation(UPDATE_GROUP_PERMS);
 
-    function updateGroupPerms(group, permission): void {
+    function updateGroupPerms(group: IGroup, permission: IPermission): void {
       updateGroupPermissions({  groupUid: group?.uid, permissionUid: permission?.uid }).then((result) => {
        store.dispatch(ActionTypes.UPDATE_GROUPS_PERMISSIONS, result);
       });
     }
 
-    function belongsToGroup(group, permission): boolean {
-      return group?.permissions?.some(perm => perm?.uid === permission?.uid);
+    function belongsToGroup(group: IGroup, permission: IPermission): boolean {
+      return group?.permissions!.some(perm => perm?.uid === permission?.uid);
     }
 
     return { 

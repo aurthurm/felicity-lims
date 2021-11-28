@@ -151,8 +151,7 @@
 import modal from '../../../../components/SimpleModal.vue';
 
 import { useMutation } from '@urql/vue';
-import { defineComponent, ref, reactive, computed, watch } from 'vue';
-import { useRouter } from 'vue-router';
+import { defineComponent, ref, reactive, computed } from 'vue';
 import { useStore } from 'vuex';
 import { ActionTypes } from '../../../../store/modules/setup';
 import { IMethod } from '../../../../models/setup'
@@ -201,7 +200,7 @@ export default defineComponent({
       Object.assign(method, { ...({} as IMethod)})
     }
 
-    function FormManager(create: boolean, obj: IMethod): void {
+    function FormManager(create: boolean, obj: IMethod = {}): void {
       formAction.value = create;
       showModal.value = true;
       formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "ANALYSES METHOD";

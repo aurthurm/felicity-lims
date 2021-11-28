@@ -11,8 +11,8 @@ export default defineComponent({
   },
   setup() {
 
-    let currentTab = ref('sample-types');
-    const tabs = ['sample-types', 'container-types'];
+    let currentTab = ref<string>('sample-types');
+    const tabs: string[] = ['sample-types', 'container-types'];
     let currentTabComponent = computed(() => 'tab-' + currentTab.value);
  
     return {

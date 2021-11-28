@@ -30,7 +30,7 @@ export default {
   },
   computed: {
     badgeColor(): string {
-      const mappings = {
+      const mappings: any = {
         Design: "purple",
         "Feature Request": "teal",
         Backend: "blue",

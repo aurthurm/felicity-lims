@@ -1,53 +1,58 @@
 import { IInstrument } from './setup'
-import { IAnalysisService, IAnalysisResult } from './analysis'
+import { IAnalysisService, IAnalysisResult, ISampleType } from './analysis'
 
 export interface IReserved {
     position: number;
-    levelUid?: string;
+    levelUid: string;
+    row: number;
+    col: number;
+    name: string;
+    sampleUid: number;
 }
 
 export interface IWorkSheetTemplate {
-    uid?: number;
-    name?: string;
-    qcTemplateUid?: number;
-    reserved?: IReserved[];
-    preview?: IReserved[];
-    numberOfSamples?: number;
-    rows?: number;
-    cols?: number;
-    rowWise?: Boolean;
-    worksheetType?: string;
-    instrument?: IInstrument;
-    description?: string;
-    analyses?: IAnalysisService[];
-    state?: string;
+    uid: number;
+    name: string;
+    qcTemplateUid: number;
+    reserved: IReserved[];
+    preview: IReserved[];
+    numberOfSamples: number;
+    rows: number;
+    cols: number;
+    rowWise: boolean;
+    worksheetType: string;
+    instrument: IInstrument;
+    sampleType: ISampleType;
+    description: string;
+    analyses: IAnalysisService[];
+    state: string;
 }
 
 export interface IWorkSheet {
-    uid?: number;
-    worksheetId?: string;
-    name?: string;
-    reserved?: string[];
-    plate?: Map<string, string>;
-    numberOfSamples?: number;
-    analysisResults?: IAnalysisResult[],
-    rows?: number;
-    cols?: number;
-    rowWise?: Boolean;
-    worksheetType?: string;
-    instrument?: IInstrument;
-    description?: string;
-    analyses?: IAnalysisService[];
-    state?: string;
-    assignedCount?: number;
-    analyst?: any;
-    priority?: number
+    uid: number;
+    worksheetId: string;
+    name: string;
+    reserved: string[];
+    plate: Map<string, string>;
+    numberOfSamples: number;
+    analysisResults: IAnalysisResult[],
+    rows: number;
+    cols: number;
+    rowWise: Boolean;
+    worksheetType: string;
+    instrument: IInstrument;
+    description: string;
+    analyses: IAnalysisService[];
+    state: string;
+    assignedCount: number;
+    analyst: any;
+    priority: number
 
 }
   
 export interface IWorkSheetForm {
-    analystUid?: number;
-    templateUid?: number;
-    instrumentUid?: number;
+    analystUid: number;
+    templateUid: number;
+    instrumentUid: number;
     count: number;
 }

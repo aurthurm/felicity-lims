@@ -11,8 +11,8 @@ export default defineComponent({
   },
   setup() {
 
-    let currentTab = ref('users');
-    const tabs = ['users', 'groups'];
+    let currentTab = ref<string>('users');
+    const tabs: string[] = ['users', 'groups'];
     let currentTabComponent = computed(() => 'tab-' + currentTab.value);
  
     return {

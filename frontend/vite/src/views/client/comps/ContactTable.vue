@@ -125,9 +125,7 @@ export default {
 
         const { executeMutation: createClientContact } = useMutation(ADD_CLIENT_CONTACT);
         const { executeMutation: updateClientContact } = useMutation(EDIT_CLIENT_CONTACT);
-
-        let resetContact = () => Object.assign(contact, {});
-
+        
         function addClientContact() {
           createClientContact({clientUid: +router.query.clientUid!, firstName: contact.value.firstName, mobilePhone: contact.value.mobilePhone, email: contact.value.email, }).then((result) => {
             store.dispatch(ActionTypes.ADD_CREATED_CLIENT_CONTACT, result.data.createClientContact.clientContact);
@@ -147,7 +145,7 @@ export default {
             formTitle.value = (create ? 'CREATE' : 'EDIT') + " CONTACT";
             showContactModal.value = true;
             if (create) {
-                resetContact();
+                Object.assign(contact, {} as IClientContact);
             } else {
                 Object.assign(contact.value, { ...obj });
             }

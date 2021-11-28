@@ -26,10 +26,10 @@
                         </tr>
                         <tr v-for="sample in request.samples" :key="sample.uid" >
                             <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-                                <span v-if="sample.priority < 1"
+                                <span v-if="sample.priority! < 1"
                                 :class="[
                                     'font-small',
-                                    { 'text-red-700': sample.priority == 0 },
+                                    { 'text-red-700': sample.priority! == 0 },
                                 ]">
                                     <i class="fa fa-star"></i>
                                 </span>
@@ -42,7 +42,7 @@
                             </div>
                             </td>
                             <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-                            <div class="text-sm leading-5 text-blue-900">{{ profileAnalysesText(sample.profiles, sample.analyses) }}</div>
+                            <div class="text-sm leading-5 text-blue-900">{{ profileAnalysesText(sample.profiles!, sample.analyses!) }}</div>
                             </td>
                             <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
                             <div class="text-sm leading-5 text-blue-900">{{ request.patient?.firstName }} {{ request.patient?.lastName }}</div>
@@ -75,8 +75,9 @@
 </template>
 
 <script lang="ts">
-import {reactive, computed, ref, toRefs, watch} from 'vue'
+import { computed, toRefs, watch} from 'vue'
 import { useStore } from 'vuex';
+import { IAnalysisRequest } from '../../models/analysis';
 
 import { ActionTypes } from '../../store/modules/sample'
 export default {
@@ -93,7 +94,7 @@ export default {
         if(target?.value==='patient-samples') store.dispatch(ActionTypes.FETCH_ANALYSIS_REQUESTS_FOR_PATIENT, targetUid?.value);
         if(target?.value==='client-samples') store.dispatch(ActionTypes.FETCH_ANALYSIS_REQUESTS_FOR_CLIENT, targetUid?.value);
 
-        const analysisRequests = computed(() => store.getters.getAnalysisRequests);
+        const analysisRequests = computed<IAnalysisRequest[]>(() => store.getters.getAnalysisRequests);
 
         watch(() => props.targetUid, (uid, prev) => {
             if(target?.value==='patient-samples') store.dispatch(ActionTypes.FETCH_ANALYSIS_REQUESTS_FOR_PATIENT, uid);
@@ -101,7 +102,7 @@ export default {
         })
 
         function profileAnalysesText(profiles: any[], analyses: any[]): string {
-            let names = [];
+            let names: string[] = [];
             profiles.forEach(p => names.push(p.name));
             analyses.forEach(a => names.push(a.name));
             return names.join(', ');

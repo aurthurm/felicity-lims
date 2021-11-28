@@ -31,7 +31,7 @@
 </template>
 
 <script lang="ts">
-import {reactive, computed, toRefs, onMounted} from 'vue'
+import { computed, toRefs } from 'vue'
 import { useStore } from 'vuex';
 import { ActionTypes } from '../../store/actions'
 import { parseDate } from '../../utils'
@@ -55,8 +55,8 @@ export default {
         let users = computed(() => store.getters.getUsers)
 
         function translateUser(userId: any): string {
-            const user = users?.value?.find(u => u['uid']?.toString() === userId?.toString())
-            if(!user) return;
+            const user = users?.value?.find((u: any) => u['uid']?.toString() === userId?.toString())
+            if(!user) return '';
             // console.log(user['firstName'], user['lastName'], user['auth']['userName'])
             return user['auth']['userName']
         }
@@ -65,10 +65,10 @@ export default {
             if(action === 1) return "created"
             if(action === 2) return "updated"
             if(action === 3) return "deleted"
-            return;
+            return '';
         }
 
-        function changes(log: any): any[] {
+        function changes(log: any): any {
             let trails = new Set();
             
             Object.entries(log?.stateBefore)?.map(([keyB, valueB]) => {

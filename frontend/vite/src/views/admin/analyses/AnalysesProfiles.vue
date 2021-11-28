@@ -4,7 +4,7 @@
       <hr>
       <button
         class="px-2 py-1 border-blue-500 border text-blue-500 rounded transition duration-300 hover:bg-blue-700 hover:text-white focus:outline-none"
-        @click="FormManager(true, null)"
+        @click="FormManager(true)"
       > Add Analyses Profile </button>
       <hr>
       <!-- <input
@@ -48,7 +48,7 @@
                 <span>{{ analysisProfile?.name }}</span>
                 <div>
                   <button
-                    @click="FormManager(false, null)"
+                    @click="FormManager(false)"
                     class="ml-4 inline-flex items-center justify-center w-8 h-8 mr-2 border-blue-500 border text-gray-900 transition-colors duration-150 bg-white rounded-full focus:outline-none hover:bg-gray-200"
                   >
                     <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20">
@@ -216,11 +216,10 @@ import modal from '../../../components/SimpleModal.vue';
 import accordion from '../../../components/Accordion.vue';
 
 import { useMutation } from '@urql/vue';
-import { defineComponent, ref, reactive, computed, watch } from 'vue';
-import { useRouter } from 'vue-router';
+import { defineComponent, ref, reactive, computed } from 'vue';
 import { useStore } from 'vuex';
 import { ActionTypes } from '../../../store/modules/analysis';
-import { IAnalysisProfile } from '../../../models/analysis';
+import { IAnalysisProfile, IAnalysisService } from '../../../models/analysis';
 import { ADD_ANALYSIS_PROFILE, EDIT_ANALYSIS_PROFILE  } from '../../../graphql/analyses.mutations';
 
 export default defineComponent({
@@ -240,10 +239,10 @@ export default defineComponent({
     let formTitle = ref('');
     const formAction = ref(true);
 
-    let analysisProfile = reactive({ ...(new AnalysisProfile()) });
+    let analysisProfile = reactive({}) as IAnalysisProfile;
 
     store.dispatch(ActionTypes.FETCH_ANALYSES_PROFILES_AND_SERVICES);    
-    let analysesServices = computed(() => store.getters.getAnalysesServices);
+    let analysesServices = computed<any[]>(() => store.getters.getAnalysesServices);
 
     const { executeMutation: createAnalysisProfile } = useMutation(ADD_ANALYSIS_PROFILE);
     const { executeMutation: updateAnalysisProfile } = useMutation(EDIT_ANALYSIS_PROFILE);
@@ -264,7 +263,7 @@ export default defineComponent({
       Object.assign(analysisProfile, { ...profile})
       // hight services that fall into this profile
       analysesServices.value?.forEach(item => {
-        item[1].forEach(service => {
+        item[1].forEach((service: IAnalysisService) => {
           service.checked = false;
           if(service.profiles?.some(p => p.uid === analysisProfile.uid) || false) {
             service.checked = true;
@@ -273,28 +272,24 @@ export default defineComponent({
       })
     }
     
-    function resetProfile(): void {
-      Object.assign(analysisProfile, { ...(new AnalysisProfile())})
-    }
-
     function updateProfile(): void {
       analysisProfile.analyses = [];
       analysesServices.value?.forEach(item => {
-        item[1].forEach(service => {
+        item[1].forEach((service: IAnalysisService) => {
           if(service.checked) {
-            analysisProfile.analyses.push(service.uid);
+            analysisProfile.analyses!.push(service.uid);
           };
         })
       })
       editAnalysisProfile();
     }
 
-    function FormManager(create: boolean, obj: IAnalysisProfile | null): void {
+    function FormManager(create: boolean, obj: IAnalysisProfile = {}): void {
       formAction.value = create;
       showModal.value = true;
       formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "ANALYSES PROFILE";
       if (create) {
-        Object.assign(analysisProfile, { ...(new AnalysisProfile()) });
+        Object.assign(analysisProfile, {} as IAnalysisProfile);
       } else {
         Object.assign(analysisProfile, { ...obj });
       }

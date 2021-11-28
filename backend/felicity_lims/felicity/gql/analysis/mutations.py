@@ -553,6 +553,31 @@ class AnalysisMutations:
         return return_samples
 
     @strawberry.mutation
+    async def publish_samples(self, info, samples: List[int]) -> List[a_types.SampleType]:
+
+        inspector = inspect.getargvalues(inspect.currentframe())
+        passed_args = get_passed_args(inspector)
+
+        is_authenticated, felicity_user = await auth_from_info(info)
+        verify_user_auth(is_authenticated, felicity_user, "Only Authenticated user can re publish samples")
+
+        return_samples = []
+
+        if len(samples) == 0:
+            raise Exception(f"No Samples to publish are provided!")
+
+        for _sa_uid in samples:
+            sample: analysis_models.Sample = await analysis_models.Sample.get(uid=_sa_uid)
+            if not sample:
+                raise Exception(f"Sample with uid {_sa_uid} not found")
+
+            sample = await sample.publish(published_by=felicity_user)
+            if sample:
+                return_samples.append(sample)
+
+        return return_samples
+
+    @strawberry.mutation
     async def submit_analysis_results(self, info, analysis_results: List[ARResultInputType]) -> List[r_types.AnalysisResultType]:
 
         inspector = inspect.getargvalues(inspect.currentframe())
@@ -643,7 +668,8 @@ class AnalysisMutations:
             # No Empty Results
             status = getattr(a_result, 'status', None)
             if status == states.result.RESULTED:
-                await a_result.verify(verifier=felicity_user)
+                a_result = await a_result.verify(verifier=felicity_user)
+                return_results.append(a_result)
             else:
                 continue
 
@@ -660,8 +686,6 @@ class AnalysisMutations:
             # try to submit associated worksheet
             if a_result.worksheet_uid:
                 await a_result.worksheet.verify(verified_by=felicity_user)
-
-            return_results.append(a_result)
 
         return return_results
 

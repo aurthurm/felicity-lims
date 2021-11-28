@@ -151,8 +151,7 @@
 import modal from '../../../../components/SimpleModal.vue';
 
 import { useMutation } from '@urql/vue';
-import { defineComponent, ref, reactive, computed, watch } from 'vue';
-import { useRouter } from 'vue-router';
+import { defineComponent, ref, reactive, computed } from 'vue';
 import { useStore } from 'vuex';
 import { ActionTypes } from '../../../../store/modules/setup';
 import { IInstrument } from '../../../../models/setup'
@@ -174,7 +173,7 @@ export default defineComponent({
     let formTitle = ref('');
     const formAction = ref(true);
 
-    let instrument = reactive({ ...({} as IInstrument) });
+    let instrument = reactive({})  as IInstrument;
 
     store.dispatch(ActionTypes.FETCH_INSTRUMENTS);    
 
@@ -201,7 +200,7 @@ export default defineComponent({
       Object.assign(instrument, { ...({} as IInstrument)})
     }
 
-    function FormManager(create: boolean, obj: IInstrument): void {
+    function FormManager(create: boolean, obj: IInstrument = {}): void {
       formAction.value = create;
       showModal.value = true;
       formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "ANALYSES INSTRUMENT";

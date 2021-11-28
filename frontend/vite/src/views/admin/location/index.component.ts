@@ -4,13 +4,14 @@ import modal from '../../../components/SimpleModal.vue';
 import { 
   ICountry, 
   IProvince, 
-  IDistrict, 
-  IGenericLocation 
+  IDistrict
 } from '../../../models/location';
 import { ADD_COUNTRY, UPDATE_COUNTRY, ADD_PROVINCE, ADD_DISTRICT, UPDATE_DISTRICT, UPDATE_PROVINCE } from '../../../graphql/admin.mutations';
 import store from '../../../store';
 
 import { ActionTypes } from '../../../store/modules/admin';
+
+interface IForm extends ICountry, IProvince, IDistrict {};
 
 export default defineComponent({
   name: 'location',
@@ -18,20 +19,16 @@ export default defineComponent({
     modal,
   },
   setup() {
-    const nullCountry = {} as ICountry;
-    const nullProvince = {} as IProvince;
-    const nullDistrict = {} as IDistrict;
-    const nullLocation = {} as IGenericLocation;
 
-    let createLocation = ref(true);
-    let showModal = ref(false);
-    let targetLocation = ref('');
+    let createLocation = ref<boolean>(true);
+    let showModal = ref<boolean>(false);
+    let targetLocation = ref<string>('');
 
-    let country = reactive({ ...nullCountry });
-    let province = reactive({ ...nullProvince });
-    let district = reactive({ ...nullDistrict });
-    let form = reactive({ ...nullLocation });
-    let formTitle = ref('');
+    let country = reactive({}) as ICountry;
+    let province = reactive({}) as IProvince;
+    let district = reactive({}) as IDistrict;
+    let form = reactive({}) as IForm;
+    let formTitle = ref<string>('');
 
     store.dispatch(ActionTypes.FETCH_COUNTRIES);   
 
@@ -92,7 +89,7 @@ export default defineComponent({
       return province.uid !== undefined;
     }
 
-    let selectLocation = (target: string, selected: any): void => {
+    let selectLocation = (target: string, selected: ICountry | IProvince | IDistrict): void => {
       if (target === 'country') { 
         Object.assign(country, { ...selected });
         store.dispatch(ActionTypes.FILTER_PROVINCES_BY_COUNTRY, selected.uid);
@@ -106,27 +103,27 @@ export default defineComponent({
       if (target === 'district') Object.assign(district, { ...selected });
     };
 
-    let resetSelected = (target: string):void => {
+    let resetSelected = (target: string): void => {
       if (target === 'country') {
-        Object.assign(country, { ...nullCountry });
-        Object.assign(province, { ...nullProvince });
-        Object.assign(district, { ...nullDistrict });
+        Object.assign(country, {} as ICountry);
+        Object.assign(province, {} as IProvince);
+        Object.assign(district, {} as IDistrict);
       }
       if (target === 'province') {
-        Object.assign(province, { ...nullProvince });
-        Object.assign(district, { ...nullDistrict });
+        Object.assign(province, {} as IProvince);
+        Object.assign(district, {} as IDistrict);
       }
-      if (target === 'district') Object.assign(district, { ...nullDistrict });
+      if (target === 'district') Object.assign(district, {} as IDistrict);
     };
 
-    function FormManager(create: boolean, target: string, locationObj: Location):void {
+    function FormManager(create: boolean, target: string, locationObj: IForm = {}): void {
       createLocation.value = create;
       targetLocation.value = target;
       showModal.value = true;
       formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + target.toUpperCase();
       if (create) {
         resetSelected(target);
-        Object.assign(form, { ...nullLocation });
+        Object.assign(form, {} as IForm);
       } else {
         Object.assign(form, { ...locationObj });
       }

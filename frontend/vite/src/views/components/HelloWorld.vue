@@ -2,7 +2,7 @@
   <h1>{{ state.msg }}</h1>
 </template>
 
-<script>
+<script lang="ts">
 import { reactive, toRefs, watchEffect } from 'vue';
 export default {
   name: 'HelloWorld',

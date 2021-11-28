@@ -2,7 +2,7 @@
 
     <div class="container w-full my-4">
         <hr>
-          <button @click="FormManager(true, null)"
+          <button @click="FormManager(true)"
            class="px-2 py-1 border-blue-500 border text-blue-500 rounded transition duration-300 hover:bg-blue-700 hover:text-white focus:outline-none">Add QC Level</button>
         <hr>
 
@@ -122,7 +122,7 @@ export default defineComponent({
       });
     }
 
-    function FormManager(create: boolean, obj: IQCLevel):void {
+    function FormManager(create: boolean, obj: IQCLevel = {}):void {
       formAction.value = create;
       showModal.value = true;
       formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "QC Level";

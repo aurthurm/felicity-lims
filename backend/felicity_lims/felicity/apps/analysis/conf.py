@@ -9,6 +9,7 @@ class States:
         RECEIVED = 'received'  # samples received in the laboratory and ready for processing
         TO_BE_VERIFIED = 'to_be_verified'  # 'un-authorised'
         VERIFIED = 'verified'  # samples that are authorised for release
+        PUBLISHED = 'published' # printed samples
         INVALIDATED = 'invalidated'  # once verified samples with erroneous results
         CANCELLED = 'cancelled'  # samples that are no longer required <in other words deleted>
         REJECTED = 'rejected'  # samples rejected for no conformance reasons

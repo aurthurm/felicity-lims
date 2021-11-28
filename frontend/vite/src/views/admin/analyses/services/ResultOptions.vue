@@ -80,12 +80,12 @@
 <script lang="ts">
     import modal from '../../../../components/SimpleModal.vue';
     import { defineComponent, ref, reactive, toRefs, watch } from 'vue';
-    import { useRouter } from 'vue-router';
     import { useMutation } from '@urql/vue';
     import { useStore } from 'vuex';
 
-    import { ActionTypes, IResultOption } from '../../../../store/modules/analysis';
+    import { ActionTypes } from '../../../../store/modules/analysis';
     import { ADD_RESULT_OPTION, EDIT_RESULT_OPTION  } from '../../../../graphql/analyses.mutations';
+import { IResultOption } from '../../../../models/analysis';
 
     export default defineComponent({
     name: 'result-options',
@@ -99,7 +99,7 @@
             default: () => ({}),
         },
         analysisUid: {
-            type: String,
+            type: Number,
             required: true,
             default: 0,
         },
@@ -132,7 +132,7 @@
             });
         }
     
-        function FormManager(create: boolean, obj: IResultOption):void {
+        function FormManager(create: boolean, obj: IResultOption = {}):void {
             formAction.value = create;
             showModal.value = true;
             formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "RESULT OPTION";

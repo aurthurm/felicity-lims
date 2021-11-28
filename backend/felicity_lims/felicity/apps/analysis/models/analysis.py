@@ -227,6 +227,9 @@ class Sample(Auditable, BaseMPTT):
     verified_by_uid = Column(Integer, ForeignKey('user.uid'), nullable=True)
     verified_by = relationship(User, foreign_keys=[verified_by_uid], lazy='selectin')
     date_verified = Column(DateTime, nullable=True)
+    published_by_uid = Column(Integer, ForeignKey('user.uid'), nullable=True)
+    published_by = relationship(User, foreign_keys=[published_by_uid], lazy='selectin')
+    date_published = Column(DateTime, nullable=True)
     invalidated_by_uid = Column(Integer, ForeignKey('user.uid'), nullable=True)
     invalidated_by = relationship(User, foreign_keys=[invalidated_by_uid], lazy='selectin')
     date_invalidated = Column(DateTime, nullable=True)
@@ -308,6 +311,13 @@ class Sample(Auditable, BaseMPTT):
         self.verified_by_uid = verified_by.uid
         self.date_verified = datetime.now()
         self.updated_by_uid = verified_by.uid  # noqa
+        return await self.save()
+
+    async def publish(self, published_by):
+        self.status = states.sample.PUBLISHED
+        self.published_by_uid = published_by.uid
+        self.date_published = datetime.now()
+        self.updated_by_uid = published_by.uid  # noqa
         return await self.save()
 
         # DO REFLEX HERE

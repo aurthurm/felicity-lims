@@ -11,8 +11,8 @@ export default defineComponent({
   },
   setup() {
 
-    let currentTab = ref('laboratory');
-    const tabs = ['laboratory', 'departments'];
+    let currentTab = ref<string>('laboratory');
+    const tabs: string[]= ['laboratory', 'departments'];
     let currentTabComponent = computed(() => 'tab-' + currentTab.value);
  
     return {

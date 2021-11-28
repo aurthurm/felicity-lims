@@ -41,7 +41,7 @@ export default defineComponent({
       const four_sd:number  = Math.round(4 * (mu + sd) * 100) / 100
 
       for(let [i, obs] of dataset.entries()) {
-        const current = jStat.abs([obs.get(key)])[0]
+        const current = jStat.abs([obs[key]])[0]
         let prev_1, prev_2, prev_3;
         // defaults
         obs["color"] = GOOD

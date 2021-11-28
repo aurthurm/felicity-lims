@@ -45,9 +45,8 @@
 
 </template>
 
-<script>
-import { defineComponent, ref } from 'vue';
-import { useRouter } from 'vue-router';
+<script lang="ts">
+import { defineComponent } from 'vue';
 export default defineComponent({
   name: "tab-container-types",
   components: {

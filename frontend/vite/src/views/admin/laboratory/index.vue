@@ -22,7 +22,6 @@
         <tab-departments v-if="currentTab === 'departments'" />
 
   </div>
-
 </template>
 
 <style lang="postcss">
@@ -40,4 +39,4 @@
 }
 </style>
 
-<script src="./laboratory.component.ts"></script>
+<script src="./laboratory.component.ts" lang="ts"></script>

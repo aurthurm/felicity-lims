@@ -162,7 +162,6 @@ import { ActionTypes } from '../../../store/modules/client';
 import { ActionTypes as AdminActionTypes } from '../../../store/modules/admin';
 import { IDistrict, IProvince } from '../../../models/location';
 import { IClient } from '../../../models/client';
-// import { IClient } from '../../../models/client';
 
 export default defineComponent({
   name: 'clients-listi',
@@ -173,7 +172,7 @@ export default defineComponent({
     const store = useStore();
     const route = useRoute();
 
-    let showClientModal = ref(false);
+    let showClientModal = ref<boolean>(false);
     let createItem = ref<boolean>(false);
     let targetItem = ref<string>('');
 
@@ -193,7 +192,6 @@ export default defineComponent({
 
     store.dispatch(ActionTypes.FETCH_CLIENT_BY_UID, +route.query.clientUid!)
     let client = computed(() => store.getters.getClient) as IClient;
-    const resetClient = () => Object.assign(client, {} as IClient)
 
     store.dispatch(AdminActionTypes.FETCH_COUNTRIES);
     // store.dispatch(ActionTypes.FETCH_CLIENTS, clientParams);
@@ -245,7 +243,7 @@ export default defineComponent({
       formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + target.toUpperCase();
       if(target == "client") showClientModal.value = true;
       if (create) {
-        if(target == "client") Object.assign(client, {});
+        if(target == "client") Object.assign(client, {} as IClient);
       } else {
         if(target == "client") Object.assign(client, { ...obj });
       }

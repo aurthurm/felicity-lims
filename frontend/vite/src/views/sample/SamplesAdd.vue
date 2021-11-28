@@ -28,7 +28,7 @@
             <span class="text-gray-700 w-4/12">Client</span>
             <input
               class="form-input mt-1 w-full"
-              v-model="form.client.name"
+              v-model="form.clientName"
               placeholder="Name ..."
               list="ice-cream-flavors"
               @change="getClientContacts()"
@@ -44,7 +44,7 @@
               <select 
               name="clientContacts" 
               id="clientContacts" 
-              v-model="form.client.clientContact"
+              v-model="form.clientContact"
               class="form-input mt-1 block w-full">
                 <option value=""></option>
                 <option  
@@ -155,7 +155,7 @@ import { defineComponent, ref, reactive, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { useStore } from 'vuex';
 import { ActionTypes as SampleActionTypes } from '../../store/modules/sample';
-import { IAnalysisCategory, IAnalysisRequest, IAnalysisService, ISample } from '../../models/analysis';
+import { IAnalysisCategory, IAnalysisProfile, IAnalysisRequest, IAnalysisService, ISample, ISampleType } from '../../models/analysis';
 import { ADD_ANALYSIS_REQUEST  } from '../../graphql/analyses.mutations';
 import { ActionTypes } from '../../store/modules/analysis';
 import { ActionTypes as ClientActionTypes } from '../../store/modules/client';
@@ -175,7 +175,7 @@ export default defineComponent({
     let showModal = ref<boolean>(false);
     let formTitle = ref<string>('');
     let formAction = ref<boolean>(true);
-    let form = reactive({ priority: 0 }) as any ;
+    let form = reactive({ priority: 0, samples: [] as ISample[] }) as IAnalysisRequest;
 
     const analysesProfiles = computed(() =>store.getters.getAnalysesProfiles);
     const analysesServices = computed<IAnalysisService[]>(() => {
@@ -221,7 +221,12 @@ export default defineComponent({
     }
 
     function addSample(): void {
-      form.samples?.push({} as ISample);
+      const sample = {    
+        sampleType: {} as ISampleType,
+        profiles: [] as IAnalysisProfile[],
+        analyses: [] as IAnalysisService[],
+      } as ISample
+      form.samples.push(sample);
     }
 
     function removeSample(index: number): void {
@@ -244,8 +249,8 @@ export default defineComponent({
     }
 
     function getClientContacts(): void {
-      if(!isNullOrWs(form.client!.name)) {
-        const clt = store.getters.getClientByName(form.client!.name);
+      if(!isNullOrWs(form.clientName)) {
+        const clt = store.getters.getClientByName(form.clientName);
         store.dispatch(ClientActionTypes.FETCH_CLIENT_CONTACTS, clt?.uid);
         form.client = clt;
       }
@@ -253,7 +258,7 @@ export default defineComponent({
 
     function saveForm(): void {
       form.patient = patient.value;
-      const clt = store.getters.getClientByName(form.client?.name);
+      const clt = store.getters.getClientByName(form.clientName);
       form.client = clt;
       if (formAction.value === true) addAnalysesRequest();
     }

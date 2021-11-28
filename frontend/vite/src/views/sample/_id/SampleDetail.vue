@@ -39,7 +39,7 @@ import tabLogs from '../../components/AuditLog.vue';
 
 import { defineComponent, ref, computed } from 'vue';
 import {useStore } from 'vuex';
-import { ISampleRequest } from '../../../models/analysis';
+import { ISample } from '../../../models/analysis';
 export default defineComponent({
   name: 'patient-search',
   components: {
@@ -53,7 +53,7 @@ export default defineComponent({
     const tabs = ['analysis-results', 'logs'];
     let currentTabComponent = computed(() => 'tab-' + currentTab.value);
 
-    const sample = computed<ISampleRequest>(() => store.getters.getSample)
+    const sample = computed<ISample>(() => store.getters.getSample)
 
     return {
       tabs,

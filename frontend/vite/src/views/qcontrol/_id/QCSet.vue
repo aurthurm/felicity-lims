@@ -268,7 +268,7 @@ export default defineComponent({
 
     function getResults(): IAnalysisResult[] {
       let results: IAnalysisResult[] = [];
-      qcSet?.value!['analytes']?.forEach((analyte: Map<String, any>) => analyte.get("items").forEach((result: IAnalysisResult) => results.push(result)))
+      qcSet?.value!['analytes']?.forEach((analyte: any) => analyte["items"].forEach((result: IAnalysisResult) => results.push(result)))
       return results;
     }
 
@@ -400,7 +400,7 @@ export default defineComponent({
     const { executeMutation: retestAnalysisResults } = useMutation(RETEST_ANALYSIS_RESULTS); 
     const { executeMutation: retractAnalysisResults } = useMutation(RETRACT_ANALYSIS_RESULTS); 
     
-    function submitAnalysesResults(results: IAnalysisResult[]): void {
+    function submitAnalysesResults(results: any[]): void {
       submitAnalysisResults({ analysisResults: results, }).then((result) => {
        store.dispatch(ActionTypes.UPDATE_ANALYSIS_RESULTS, result);
       });

@@ -1,7 +1,7 @@
 import moment from 'moment';
 
 
-export const parseDate = function(str: string) {
+export const parseDate = function(str: any) {
     let date = moment(str);
     if(date.isValid()) {
         return date.format('MMMM Do YYYY, h:mm:ss a');
@@ -61,6 +61,13 @@ export function ifZeroEmpty(val: any): any {
   return val === 0 ? '' : val;
 }
 
+export function ifNoValEmpty(val: any): any {
+  if(val === undefined) return "";
+  if(val === null) return "";
+  if(!val) return "";
+  return val;
+}
+
 export function deDuplicateArrayBy(arr: any[], key: string): any[] {
   return [...new Map(arr.map(item => [item[key], item])).values()]
 }
@@ -103,7 +110,7 @@ export  const isObject = (obj: any) => {
 
 export const keysToCamel:any = (obj: any) => {
     if (isObject(obj)) {
-      const n = {};
+      const n:any = {};
   
       Object.keys(obj)
         .forEach((k) => {

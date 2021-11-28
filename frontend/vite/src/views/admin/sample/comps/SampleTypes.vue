@@ -2,7 +2,7 @@
 
     <div class="container w-full my-4">
         <hr>
-          <button @click="FormManager(true, null)"
+          <button @click="FormManager(true)"
            class="px-2 py-1 border-blue-500 border text-blue-500 rounded transition duration-300 hover:bg-blue-700 hover:text-white focus:outline-none">Add Sample Type</button>
         <hr>
 
@@ -102,16 +102,12 @@
 </template>
 
 
-<style>
-  /* CHECKBOX TOGGLE SWITCH */
-  /* @apply rules for documentation, these do not work as inline style */
+<style scoped>
   .toggle-checkbox:checked {
-    @apply: right-0 border-green-400;
     right: 0;
     border-color: #68D391;
   }
   .toggle-checkbox:checked + .toggle-label {
-    @apply: bg-green-400;
     background-color: #68D391;
   }
 </style>
@@ -122,7 +118,6 @@ import modal from '../../../../components/SimpleModal.vue';
 import { useMutation } from '@urql/vue';
 import { defineComponent, ref, reactive, computed } from 'vue';
 import { useStore } from 'vuex';
-import { useRouter } from 'vue-router';
 import { ActionTypes } from '../../../../store/modules/sample';
 import { ISampleType } from '../../../../models/analysis'
 import { ADD_SAMPLE_TYPE, EDIT_SAMPLE_TYPE  } from '../../../../graphql/analyses.mutations';
@@ -136,10 +131,10 @@ export default defineComponent({
   setup() {
     const store = useStore();
     
-    let showModal = ref(false);
-    let formTitle = ref('');
-    let form = reactive({ ...(new SampleType()) });
-    const formAction = ref(true);
+    let showModal = ref<boolean>(false);
+    let formTitle = ref<string>('');
+    let form = reactive({}) as ISampleType;
+    const formAction = ref<boolean>(true);
 
     store.dispatch(ActionTypes.FETCH_SAMPLE_TYPES);
     const { executeMutation: createSampleType } = useMutation(ADD_SAMPLE_TYPE);
@@ -157,12 +152,12 @@ export default defineComponent({
       });
     }
 
-    function FormManager(create: boolean, obj: ISampleType):void {
+    function FormManager(create: boolean, obj: ISampleType = {}):void {
       formAction.value = create;
       showModal.value = true;
       formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "SAMPLE TYPE";
       if (create) {
-        Object.assign(form, { ...(new SampleType()) });
+        Object.assign(form, {} as ISampleType);
       } else {
         Object.assign(form, { ...obj });
       }

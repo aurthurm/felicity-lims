@@ -4,7 +4,7 @@
       <h1 class="h1 my-4 font-bold text-dark-700">WorkSheet Templates</h1>
         <button
           class="p-2 my-2 ml-8 text-sm border-blue-500 border text-dark-700 transition-colors duration-150 rounded-lg focus:outline-none hover:bg-blue-500 hover:text-gray-100"
-          @click="FormManager(true, null)"
+          @click="FormManager(true, {})"
         >
           Add Template
         </button>
@@ -157,9 +157,9 @@
                         <span 
                         :class="[
                         'my-1 p-1 text-white rounded-xl flex justify-center',
-                        { 'bg-green-400': workSheetTemplate?.preview[index*workSheetTemplate.cols + col - 1]?.name !== 'sample' },
-                        { 'bg-blue-400': workSheetTemplate?.preview[index*workSheetTemplate.cols + col - 1]?.name === 'sample' },
-                        ]">({{ index*workSheetTemplate.cols + col }})  {{ workSheetTemplate?.preview[index*workSheetTemplate.cols + col - 1]?.name }}</span>
+                        { 'bg-green-400': workSheetTemplate?.preview![index*workSheetTemplate.cols! + col - 1]?.name !== 'sample' },
+                        { 'bg-blue-400': workSheetTemplate?.preview![index*workSheetTemplate.cols! + col - 1]?.name === 'sample' },
+                        ]">({{ index*workSheetTemplate.cols! + col }})  {{ workSheetTemplate?.preview![index*workSheetTemplate.cols! + col - 1]?.name }}</span>
                       </div>
                     </div>
 
@@ -174,9 +174,9 @@
                           <span 
                           :class="[
                           'my-1 p-1 text-white rounded-xl flex justify-center',
-                          { 'bg-green-400': workSheetTemplate?.preview[index*workSheetTemplate.rows + row - 1]?.name !== 'sample' },
-                          { 'bg-blue-400': workSheetTemplate?.preview[index*workSheetTemplate.rows + row - 1]?.name === 'sample' },
-                          ]">({{ index*workSheetTemplate.rows + row }})  {{ workSheetTemplate?.preview[index*workSheetTemplate.rows + row - 1]?.name }}</span>
+                          { 'bg-green-400': workSheetTemplate?.preview![index*workSheetTemplate.rows! + row - 1]?.name !== 'sample' },
+                          { 'bg-blue-400': workSheetTemplate?.preview![index*workSheetTemplate.rows! + row - 1]?.name === 'sample' },
+                          ]">({{ index*workSheetTemplate.rows! + row }})  {{ workSheetTemplate?.preview![index*workSheetTemplate.rows! + row - 1]?.name }}</span>
                         </div>
                       </div>
                     </div>
@@ -269,21 +269,21 @@
         <div class="grid grid-cols-3 gap-x-4 mb-4">
           <label class="block col-span-1 mb-2">
             <span class="text-gray-700">Instrument</span>
-            <select class="form-select block w-full mt-1" v-model="workSheetTemplate.instrument.uid">
+            <select class="form-select block w-full mt-1" v-model="workSheetTemplate.instrument!.uid">
               <option></option>
               <option v-for="instrument in instruments" :key="instrument.uid" :value="instrument.uid">{{ instrument.name }}</option>
             </select>
           </label>
           <label class="block col-span-1 mb-2">
             <span class="text-gray-700">SampleType</span>
-            <select class="form-select block w-full mt-1" v-model="workSheetTemplate.sampleType.uid">
+            <select class="form-select block w-full mt-1" v-model="workSheetTemplate.sampleType!.uid">
                <option></option>
               <option v-for="stype in sampleTypes" :key="stype.uid" :value="stype.uid"> {{ stype.name }}</option>
             </select>
           </label>
           <label class="block col-span-1 mb-2">
             <span class="text-gray-700">Anslysis Service</span>
-            <select class="form-select block w-full mt-1" v-model="workSheetTemplate.analyses[0].uid">
+            <select class="form-select block w-full mt-1" v-model="workSheetTemplate.analyses![0].uid">
                <option></option>
               <option v-for="service in services" :key="service.uid" :value="service.uid"> {{ service.name }}</option>
             </select>
@@ -376,17 +376,17 @@
 <script lang="ts">
 import modal from '../../../components/SimpleModal.vue';
 
-import { useMutation, useQuery } from '@urql/vue';
-import { mapGetters, useStore } from 'vuex';
+import { useMutation } from '@urql/vue';
+import { useStore } from 'vuex';
 import { defineComponent, ref, reactive, computed } from 'vue';
 
 import { ADD_WORKSHEET_TEMPLATE, EDIT_WORKSHEET_TEMPLATE } from '../../../graphql/worksheet.mutations';
 import { ActionTypes } from '../../../store/modules/worksheet';
-import { IWorkSheetTemplate, IReserved } from '../../../models/worksheet';
+import { IReserved, IWorkSheetTemplate } from '../../../models/worksheet';
 import { ActionTypes as AnalysisActionTypes } from '../../../store/modules/analysis';
 import { ActionTypes as SampleActionTypes} from '../../../store/modules/sample';
 import { ActionTypes as SetupActionTypes } from '../../../store/modules/setup';
-import { IAnalysisService, ISampleType } from '../../../models/analysis';
+import { IAnalysisService, IQCLevel, IQCTemplate, ISampleType } from '../../../models/analysis';
 import { IInstrument } from '../../../models/setup';
 
 export default defineComponent({
@@ -397,15 +397,14 @@ export default defineComponent({
   setup() {
     const store = useStore();
 
-    let currentTab = ref('preview');
-    const tabs = ['preview'];
+    let currentTab = ref<string>('preview');
+    const tabs: string[] = ['preview'];
     let currentTabComponent = computed(() => 'tab-' + currentTab.value);
 
-    let showModal = ref(false);
-    let createItem = ref(null);
+    let showModal = ref<boolean>(false);
+    let createItem = ref<any>(null);
     let workSheetTemplate = reactive({}) as IWorkSheetTemplate;
-    let formTitle = ref('');
-
+    let formTitle = ref<string>('');
 
     let analysesParams = reactive({ 
       first: undefined, 
@@ -423,23 +422,23 @@ export default defineComponent({
     const { executeMutation: createWorksheetTemplate } = useMutation(ADD_WORKSHEET_TEMPLATE);
     const { executeMutation: updateWorksheetTemplate } = useMutation(EDIT_WORKSHEET_TEMPLATE);
 
-    const qcTemplates =  computed(() => store.getters.getQCTemplates);
-    const workSheetTemplates = computed(() => store.getters.getWorkSheetTemplates);
+    const qcTemplates =  computed<IQCTemplate[]>(() => store.getters.getQCTemplates);
+    const workSheetTemplates = computed<IWorkSheetTemplate[]>(() => store.getters.getWorkSheetTemplates);
 
     function addWorksheetTemplate() {
       createWorksheetTemplate({ 
         name: workSheetTemplate.name,
-        sampleTypeUid: workSheetTemplate.sampleType.uid,
-        instrumentUid: workSheetTemplate.instrument.uid,
+        sampleTypeUid: workSheetTemplate.sampleType!.uid,
+        instrumentUid: workSheetTemplate.instrument!.uid,
         description: workSheetTemplate.description,
         qcTemplateUid: workSheetTemplate.qcTemplateUid,
         reserved: workSheetTemplate.reserved,
-        numberOfSamples: +workSheetTemplate.numberOfSamples,
+        numberOfSamples: +workSheetTemplate.numberOfSamples!,
         worksheetType: workSheetTemplate.worksheetType,
         cols:  workSheetTemplate.cols,
         rows:  workSheetTemplate.rows,
         rowWise:  workSheetTemplate.rowWise,
-        analyses: workSheetTemplate.analyses[0]?.uid
+        analyses: workSheetTemplate.analyses![0]?.uid
        }).then((result) => {
         store.dispatch(ActionTypes.ADD_WORKSHEET_TEMPLATE, result)
       });
@@ -449,8 +448,8 @@ export default defineComponent({
       updateWorksheetTemplate({ 
         uid: workSheetTemplate.uid,
         name: workSheetTemplate.name,
-        sampleTypeUid: workSheetTemplate.sampleType.uid,
-        instrumentUid: workSheetTemplate.instrument.uid,
+        sampleTypeUid: workSheetTemplate.sampleType!.uid,
+        instrumentUid: workSheetTemplate.instrument!.uid,
         description: workSheetTemplate.description,
         qcTemplateUid: workSheetTemplate.qcTemplateUid,
         reserved: workSheetTemplate.reserved,
@@ -459,28 +458,28 @@ export default defineComponent({
         cols:  workSheetTemplate.cols,
         rows:  workSheetTemplate.rows,
         rowWise:  workSheetTemplate.rowWise,
-        analyses: workSheetTemplate.analyses[0]?.uid
+        analyses: workSheetTemplate.analyses![0]?.uid
        }).then((result) => {
         store.dispatch(ActionTypes.UPDATE_WORKSHEET_TEMPLATE, result)
       });
     }
 
-    function generatePreview(wst: IWorkSheetTemplate): void {
-      console.log(wst);
-      let items = [];
-      const indexes = Array.from({length: wst?.numberOfSamples + wst?.reserved?.length}, (x, i) => i + 1);
+    function generatePreview(wst: IWorkSheetTemplate): IReserved[] {
+      let items:IReserved[] = [];
+      const indexes: number[] = Array.from({length: wst?.numberOfSamples! + wst?.reserved!?.length}, (x, i) => i + 1);
       
       indexes.forEach(i => {  
-          let item = new Reserved();
-          item.position = i;
-          item.row = 1;
-          item.col = 1;
-          item.name ="sample"
+          let item = {
+            position: i,
+            row: 1,
+            col: 1,
+            name:"sample",
+            sampleUid: undefined
+          } as IReserved;
           if(wst?.reserved?.some(x => x.position === i)){
             item.name ="control"
           }
-          item.sampleUid = "";
-          wst?.reserved?.forEach(r => {
+          wst?.reserved?.forEach((r: IReserved) => {
             if(r[1]?.position === i) {
               item.name = r[1]?.name;
             }
@@ -499,41 +498,38 @@ export default defineComponent({
     }
 
     function addReserved(): void {
-      workSheetTemplate.reserved?.push(new Reserved());
+      workSheetTemplate.reserved?.push({} as IReserved);
     }
 
-    function removeReserved(index): void {
+    function removeReserved(index: number): void {
         workSheetTemplate.reserved?.splice(index, 1);
     }
 
     function appyQCTemplate(): void {
       workSheetTemplate.reserved = [];
       if(!(workSheetTemplate.qcTemplateUid)) return;
-      const template = qcTemplates.value?.find(item => item.uid === workSheetTemplate.qcTemplateUid);
-      template?.qcLevels.forEach((level, index) => {
-        let reserved = new Reserved();
-        reserved.position = index + 1;
-        reserved.levelUid = level.uid;
-        workSheetTemplate.reserved?.push(reserved)
+      const template: IQCTemplate | undefined = qcTemplates.value?.find((item: IQCTemplate) => item.uid === workSheetTemplate.qcTemplateUid);
+      template?.qcLevels!.forEach((level, index) => {
+        workSheetTemplate.reserved?.push({ position: index + 1, levelUid: level.uid } as IReserved)
       });
     } 
 
-    function changeWorkSheetType(event: IEvent): void {
+    function changeWorkSheetType(event: any): void {
       if(event.target.value == 'flat') {
-        workSheetTemplate.cols = null;
-        workSheetTemplate.rows = null;
+        workSheetTemplate.cols = undefined;
+        workSheetTemplate.rows = undefined;
       }
     }
 
-    function FormManager(create, obj) {
+    function FormManager(create: boolean, obj: IWorkSheetTemplate) {
       createItem.value = create;
       formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "WOKKSHEET TEMPLATE";
       showModal.value = true;
       if (create) {
-        let wst = new WorkSheetTemplate();
-        wst.instrument = new Instrument;
-        wst.sampleType = new SampleType;
-        wst.analyses = [new AnalysisService];
+        let wst = {} as IWorkSheetTemplate;
+        wst.instrument = {} as IInstrument;
+        wst.sampleType = {} as ISampleType;
+        wst.analyses = [{} as IAnalysisService];
         Object.assign(workSheetTemplate, { ...wst });
       } else {
         selectWorkSheetTemplate(obj)
@@ -552,21 +548,20 @@ export default defineComponent({
       showModal,
       tabs,
       currentTab,
-      currentTabComponent,
       FormManager,
       saveForm,
       formTitle,
       workSheetTemplates,
       appyQCTemplate,
       qcTemplates,
-      instruments: computed(() => store.getters.getInstruments),
+      instruments: computed<IInstrument[]>(() => store.getters.getInstruments),
       services: computed(() => {
-        const services = store.getters.getAnalysesServicesSimple;
+        const services: IAnalysisService[] = store.getters.getAnalysesServicesSimple;
         const forQC = services?.filter(service => service?.category?.name !== 'Quality Control');
         return forQC;
       }),
-      qcLevels: computed(() => store.getters.getQCLevels),
-      sampleTypes: computed(() => store.getters.getSampleTypes),
+      qcLevels: computed<IQCLevel[]>(() => store.getters.getQCLevels),
+      sampleTypes: computed<ISampleType[]>(() => store.getters.getSampleTypes),
       workSheetTemplate,
       selectWorkSheetTemplate,
       addReserved,

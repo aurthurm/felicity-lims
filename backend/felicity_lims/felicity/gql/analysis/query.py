@@ -54,7 +54,9 @@ class AnalysisQuery:
         if status:
             filters.append({'status__exact': status})
 
+        # Exclude QC Sample else front-end will throw ?????
         # filters.append({'internal_use__ne': True})
+        filters.append({'analysisrequest__ne': None })
 
         page = await a_models.Sample.paginate_with_cursors(
             page_size=page_size,
@@ -90,6 +92,10 @@ class AnalysisQuery:
     @strawberry.field
     async def sample_by_uid(self, info, uid: int) -> a_types.SampleType:
         return await a_models.Sample.get(uid=uid)
+
+    @strawberry.field
+    async def samples_by_uids(self, info, sample_uids: List[int] = []) -> List[r_types.SamplesWithResults]:
+        return await a_models.Sample.get_all(uid__in=sample_uids)
 
     @strawberry.field
     async def profile_all(self, info) -> List[a_types.ProfileType]:

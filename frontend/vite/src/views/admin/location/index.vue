@@ -13,7 +13,7 @@
           <div
             v-for="c in countries"
             :key="c.uid"
-              :class="country?.uid === c.uid ? 'bg-white w-full flex justify-between p-2 mb-1 rounded-xl shadow border c-active' : 'bg-white w-full flex justify-between p-2 mb-1 rounded-xl shadow border' "
+            :class="country?.uid === c.uid ? 'bg-white w-full flex justify-between p-2 mb-1 rounded-xl shadow border c-active' : 'bg-white w-full flex justify-between p-2 mb-1 rounded-xl shadow border' "
           >
             <a
               href="#"
@@ -142,4 +142,4 @@
 }
 </style>
 
-<script src="./index.component.ts"></script>
+<script src="./index.component.ts" lang="ts"></script>>
