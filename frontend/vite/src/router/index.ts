@@ -1,4 +1,5 @@
 import { RouteRecordRaw, createRouter, createWebHistory } from 'vue-router';
+import { PropType } from 'vue';
 import { canAccessPage, roles } from './../guards';
 import { pages } from './constants';
 import adminRoutes from './admin';
@@ -11,6 +12,7 @@ import PatientsView from '../views/patient/index.vue';
 import PatientsCompact from '../views/patient/PatientsCompact.vue';
 import ClientsView from '../views/client/index.vue';
 import SamplesView from '../views/sample/index.vue';
+import RejectSamples from '../views/sample/RejectSamples.vue';
 import SamplesListing from '../views/components/SampleListing.vue';
 import QualityControlView from '../views/qcontrol/index.vue';
 import QualityControlListing from '../views/qcontrol/Listing.vue';
@@ -35,6 +37,8 @@ import AdminView from '../views/admin/index.vue';
 import PageNotFound from '../views/404.vue';
 import NotAuthorised from '../views/Restricted.vue';
 import { isTokenValid } from './checks';
+
+import { ISample } from '../models/analysis'
 
 
 const routes: RouteRecordRaw[] = [
@@ -88,6 +92,19 @@ const routes: RouteRecordRaw[] = [
         path: '',
         name: 'samples-listing',
         component: SamplesListing,
+        meta: {
+          requiresAuth: true,
+        },
+      },
+      {
+        path: 'rejections',
+        name: 'reject-samples',
+        component: RejectSamples,
+        props: true,
+        // props: (route) => ({
+        //   samples: Array as PropType<ISample[]>,
+        //   ...route.params
+        // }),
         meta: {
           requiresAuth: true,
         },

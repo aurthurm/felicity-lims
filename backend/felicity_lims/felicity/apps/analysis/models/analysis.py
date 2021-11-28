@@ -244,6 +244,22 @@ class Sample(Auditable, BaseMPTT):
     qc_level_uid = Column(Integer, ForeignKey('qclevel.uid'), nullable=True)
     qc_level = relationship(QCLevel, backref="qcsamples", lazy='selectin')
 
+    @staticmethod
+    def copy_include_keys():
+        """Keys to include when duplicating Sample"""
+        return [
+            'analysisrequest_uid',
+            'sampletype_uid',
+            'status',
+            'sample_id',
+            'profiles',
+            'analyses',
+            'priority',
+            'received_by_uid',
+            'date_received',
+            'internal_use',
+        ]
+
     @classmethod
     async def create_sample_id(cls, sampletype):
         prefix_key = sampletype.abbr
@@ -255,6 +271,21 @@ class Sample(Auditable, BaseMPTT):
         if isinstance(count, type(None)):
             count = 0
         return f"{prefix}-{sequencer(count + 1, 5)}"
+
+    def copy_sample_id_unique(self):
+        split = self.sample_id.split("_R")
+        prefix = split[0]
+        stub = None
+        try:
+            stub = split[1]
+        except IndexError:
+            stub = None
+        finally:
+            if not stub:
+                return prefix + "_R01"
+            else:
+                count = int(stub)
+                return f"{prefix}_R{sequencer(count + 1, 2)}"
 
     async def receive(self, received_by):
         if self.status in [states.sample.DUE]:
@@ -277,7 +308,6 @@ class Sample(Auditable, BaseMPTT):
         return None
 
     async def re_instate(self, re_instated_by):
-        sample = None
         if self.status in [states.sample.CANCELLED]:
             # A better way is to go to audit log and retrieve previous state especially for  DUE
             # rather than transitioning all to RECEIVED
@@ -289,14 +319,18 @@ class Sample(Auditable, BaseMPTT):
             for result in self.analysis_results:
                 await result.re_instate(re_instated_by=re_instated_by)
             return sample
-        return None
+        return self
 
     async def submit(self, submitted_by):
-        self.status = states.sample.TO_BE_VERIFIED
-        self.submitted_by_uid = submitted_by.uid
-        self.date_submitted = datetime.now()
-        self.updated_by_uid = submitted_by.uid  # noqa
-        return await self.save()
+        statuses = [states.result.RESULTED, states.result.RETRACTED, states.result.VERIFIED]
+        match = all([(sibling.status in statuses) for sibling in self.analysis_results])
+        if match and self.status == states.sample.RECEIVED:
+            self.status = states.sample.TO_BE_VERIFIED
+            self.submitted_by_uid = submitted_by.uid
+            self.date_submitted = datetime.now()
+            self.updated_by_uid = submitted_by.uid  # noqa
+            return await self.save()
+        return self
 
     async def assign(self):
         self.assigned = True
@@ -307,18 +341,46 @@ class Sample(Auditable, BaseMPTT):
         return await self.save()
 
     async def verify(self, verified_by):
-        self.status = states.sample.VERIFIED
-        self.verified_by_uid = verified_by.uid
-        self.date_verified = datetime.now()
-        self.updated_by_uid = verified_by.uid  # noqa
-        return await self.save()
+        statuses = [states.result.VERIFIED, states.result.RETRACTED, states.result.CANCELLED]
+        match = all([(sibling.status in statuses) for sibling in self.analysis_results])
+        if match and self.status == states.sample.TO_BE_VERIFIED:
+            self.status = states.sample.VERIFIED
+            self.verified_by_uid = verified_by.uid
+            self.date_verified = datetime.now()
+            self.updated_by_uid = verified_by.uid  # noqa
+            return await self.save()
+        return self
 
     async def publish(self, published_by):
-        self.status = states.sample.PUBLISHED
-        self.published_by_uid = published_by.uid
-        self.date_published = datetime.now()
-        self.updated_by_uid = published_by.uid  # noqa
-        return await self.save()
+        if self.status == states.sample.VERIFIED:
+            self.status = states.sample.PUBLISHED
+            self.published_by_uid = published_by.uid
+            self.date_published = datetime.now()
+            self.updated_by_uid = published_by.uid  # noqa
+            return await self.save()
+        return self
+
+    async def invalidate(self, invalidated_by) -> (schemas.Sample, schemas.Sample):
+        statuses = [states.sample.VERIFIED, states.sample.PUBLISHED]
+        copy = None
+        if self.status in statuses:
+            copy = await self.duplicate_unique()
+            self.status = states.sample.INVALIDATED
+            self.invalidated_by_uid = invalidated_by.uid
+            invalidated = await self.save()
+            return copy, invalidated
+        return copy, self
+
+    async def reject(self, reasons, rejected_by):
+        statuses = [states.sample.RECEIVED, states.sample.DUE]
+        if self.status in statuses:
+            self.status = states.sample.REJECTED
+            self.rejection_reasons = reasons
+            self.received_by_uid = rejected_by.uid
+            self.updated_by_uid = rejected_by.uid  # noqa
+            return await self.save()
+        return self
+
 
         # DO REFLEX HERE
 
@@ -328,6 +390,18 @@ class Sample(Auditable, BaseMPTT):
         sampletype_uid = data['sampletype_uid']
         sample_type = await SampleType.find(sampletype_uid)  # get(uid=sampletype_uid)
         data['sample_id'] = await cls.create_sample_id(sample_type)
+        return await super().create(**data)
+
+    async def duplicate_unique(self) -> schemas.Sample:
+        data = self.to_dict(nested=False)
+        data['sample_id'] = self.copy_sample_id_unique()
+        for key, _ in list(data.items()):
+            if key not in self.copy_include_keys():
+                del data[key]
+        data['status'] = states.sample.RECEIVED
+        data['profiles'] = self.profiles
+        data['analyses'] = self.analyses
+        data['parent_id'] = self.uid
         return await super().create(**data)
 
     async def update(self, obj_in: schemas.SampleUpdate) -> schemas.Sample:

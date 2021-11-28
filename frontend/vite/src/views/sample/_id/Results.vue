@@ -133,7 +133,7 @@
 
 <script lang="ts">
 import FButton from '../../../components/Buttons/Button.vue'
-import { defineComponent, onMounted } from 'vue';
+import { defineComponent, onMounted, watch } from 'vue';
 import { useStore } from 'vuex';
 import { useRoute } from 'vue-router';
 import { ActionTypes } from '../../../store/modules/sample';
@@ -175,6 +175,11 @@ export default defineComponent({
     } = useAnalysisResults()
 
     onMounted(() => store.dispatch(ActionTypes.FETCH_ANALYSIS_RESULTS_FOR_SAMPLE, +route.params.sampleUid))
+
+    watch(() => route.params.sampleUid, (sampleUid, prev) => {
+      store.dispatch(ActionTypes.RESET_SAMPLE)
+      store.dispatch(ActionTypes.FETCH_ANALYSIS_RESULTS_FOR_SAMPLE, +route.params.sampleUid)
+    })
 
     return {
       sample,

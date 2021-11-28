@@ -12,8 +12,7 @@ from felicity.apps.analysis.models import analysis as analysis_models
 from felicity.apps.analysis.models import qc as qc_models
 from felicity.apps.analysis.models import results as result_models
 from felicity.apps.analysis.utils import (
-    get_qc_sample_type,
-    retest_analysis_result
+    get_qc_sample_type
 )
 from felicity.apps.analysis import schemas
 from felicity.gql import auth_from_info, verify_user_auth
@@ -53,6 +52,13 @@ class QCSetInputType:
 class CreateQCSetData:
     samples: List[a_types.SampleType]
     qc_sets: List[a_types.QCSetType]
+
+
+@strawberry.input
+class SampleRejectInputType:
+    uid: Optional[int]
+    reasons: List[int]
+    other: Optional[str]
 
 
 @strawberry.type
@@ -534,7 +540,7 @@ class AnalysisMutations:
         passed_args = get_passed_args(inspector)
 
         is_authenticated, felicity_user = await auth_from_info(info)
-        verify_user_auth(is_authenticated, felicity_user, "Only Authenticated user can re receive due samples")
+        verify_user_auth(is_authenticated, felicity_user, "Only Authenticated user can receive due samples")
 
         return_samples = []
 
@@ -547,6 +553,63 @@ class AnalysisMutations:
                 raise Exception(f"Sample with uid {_sa_uid} not found")
 
             sample = await sample.receive(received_by=felicity_user)
+            if sample:
+                return_samples.append(sample)
+
+        return return_samples
+
+    @strawberry.mutation
+    async def verify_samples(self, info, samples: List[int]) -> List[a_types.SampleType]:
+
+        inspector = inspect.getargvalues(inspect.currentframe())
+        passed_args = get_passed_args(inspector)
+
+        is_authenticated, felicity_user = await auth_from_info(info)
+        verify_user_auth(is_authenticated, felicity_user, "Only Authenticated user can verify samples")
+
+        return_samples = []
+
+        if len(samples) == 0:
+            raise Exception(f"No Samples to verify are provided!")
+
+        for _sa_uid in samples:
+            sample: analysis_models.Sample = await analysis_models.Sample.get(uid=_sa_uid)
+            if not sample:
+                raise Exception(f"Sample with uid {_sa_uid} not found")
+
+            sample = await sample.verify(verified_by=felicity_user)
+            if sample:
+                return_samples.append(sample)
+
+        return return_samples
+
+    @strawberry.mutation
+    async def reject_samples(self, info, samples: List[SampleRejectInputType]) -> List[a_types.SampleType]:
+
+        inspector = inspect.getargvalues(inspect.currentframe())
+        passed_args = get_passed_args(inspector)
+
+        is_authenticated, felicity_user = await auth_from_info(info)
+        verify_user_auth(is_authenticated, felicity_user, "Only Authenticated user can reject samples")
+
+        return_samples = []
+
+        if len(samples) == 0:
+            raise Exception(f"No Samples to verify are provided!")
+
+        for _sam in samples:
+            sample: analysis_models.Sample = await analysis_models.Sample.get(uid=_sam.uid)
+            if not sample:
+                raise Exception(f"Sample with uid {_sam.uid} not found")
+
+            reasons = []
+            for re_uid in _sam.reasons:
+                reason = analysis_models.RejectionReason.get(uid=re_uid)
+                if not reason:
+                    raise Exception(f"RejectionReason with uid {re_uid} not found")
+                reasons.append(reason)
+
+            sample = await sample.reject(reasons=reasons, rejected_by=felicity_user)
             if sample:
                 return_samples.append(sample)
 
@@ -578,6 +641,58 @@ class AnalysisMutations:
         return return_samples
 
     @strawberry.mutation
+    async def invalidate_samples(self, info, samples: List[int]) -> List[a_types.SampleType]:
+
+        inspector = inspect.getargvalues(inspect.currentframe())
+        passed_args = get_passed_args(inspector)
+
+        is_authenticated, felicity_user = await auth_from_info(info)
+        verify_user_auth(is_authenticated, felicity_user, "Only Authenticated user can re invalidate samples")
+
+        return_samples = []
+
+        if len(samples) == 0:
+            raise Exception(f"No Samples to invalidate are provided!")
+
+        for _sa_uid in samples:
+            sample: analysis_models.Sample = await analysis_models.Sample.get(uid=_sa_uid)
+            if not sample:
+                raise Exception(f"Sample with uid {_sa_uid} not found")
+
+            copy, invalidated = await sample.invalidate(invalidated_by=felicity_user)
+
+            # add invalidated or original
+            if invalidated:
+                return_samples.append(invalidated)
+
+            # add copy and create analytes
+            if copy:
+                return_samples.append(copy)
+
+                # create associated analysis
+                _profiles_analyses = set()
+
+                for _prof in copy.profiles:
+                    analyses_ = _prof.analyses
+                    for _an in analyses_:
+                        _profiles_analyses.add(_an)
+
+                    for _anal in copy.analyses:
+                        if _anal not in _profiles_analyses:
+                            _profiles_analyses.add(_anal)
+
+                for _service in _profiles_analyses:
+                    a_result_in = {
+                        'sample_uid': copy.uid,
+                        'analysis_uid': _service.uid,
+                        'status': states.result.PENDING
+                    }
+                    a_result_schema = schemas.AnalysisResultCreate(**a_result_in)
+                    await result_models.AnalysisResult.create(a_result_schema)
+
+        return return_samples
+
+    @strawberry.mutation
     async def submit_analysis_results(self, info, analysis_results: List[ARResultInputType]) -> List[r_types.AnalysisResultType]:
 
         inspector = inspect.getargvalues(inspect.currentframe())
@@ -593,7 +708,7 @@ class AnalysisMutations:
 
         for _ar in analysis_results:
             uid = _ar.uid
-            a_result: result_models.AnalysisResult  = await result_models.AnalysisResult.get(uid=uid)
+            a_result: result_models.AnalysisResult = await result_models.AnalysisResult.get(uid=uid)
             if not a_result:
                 raise Exception(f"AnalysisResult with uid {uid} not found")
 
@@ -630,13 +745,8 @@ class AnalysisMutations:
             a_result_in = schemas.AnalysisResultUpdate(**a_result.to_dict())
             a_result = await a_result.update(a_result_in)
 
-            # check if all sibling analyses for connected sample are resulted and change sample state \
-            # to to_be_verified
-
-            statuses = [states.result.RESULTED, states.result.RETRACTED, states.result.VERIFIED]
-            siblings = await result_models.AnalysisResult.get_all(sample_uid=a_result.sample_uid) # a_result.sample.analysis_results
-            match = all([(sibling.status in statuses) for sibling in siblings])
-            if match:
+            # try to submit sample
+            if a_result.sample:
                 await a_result.sample.submit(submitted_by=felicity_user)
 
             # try to submit associated worksheet
@@ -673,14 +783,13 @@ class AnalysisMutations:
             else:
                 continue
 
-            # check if all sibling analyses for connected sample are verified/retracted and change sample state \
-            # to verified
+            # TODO: optimisation -> reduce db-calls
+            #  Avoid calling verify sample & verify worksheet len(analyses) times
+            #  However create "set" holder variables and hold sample, worksheet ids
+            #  after the for loop has completed, then try verify linkages
 
-            statuses = [states.result.VERIFIED, states.result.RETRACTED]
-            siblings = await result_models.AnalysisResult.get_all(sample_uid=a_result.sample_uid) # a_result.sample.analysis_results
-            match = all([(sibling.status in statuses) for sibling in siblings])
-            logger.warning(match)
-            if match:
+            # try to verify associated sample
+            if a_result.sample:
                 await a_result.sample.verify(verified_by=felicity_user)
 
             # try to submit associated worksheet
@@ -708,20 +817,17 @@ class AnalysisMutations:
             if not a_result:
                 raise Exception(f"AnalysisResult with uid {_ar_uid} not found")
 
-            status = getattr(a_result, 'status', None)
-            if status in [states.result.RESULTED]:
-                retest = await retest_analysis_result(a_result)
-                await a_result.hide_report()
-                await a_result.retract(retracted_by=felicity_user)
+            retest, a_result = await a_result.retest_result(retested_by=felicity_user, next_action="retract")
 
-                # if in worksheet then keep add retest to ws
-                if a_result.worksheet_uid:
-                    retest.worksheet_uid = a_result.worksheet_uid
-                    retest.worksheet_position = a_result.worksheet_position
-                    retest.assigned = True
-                    retest = await retest.save()
+            # if in worksheet then keep add retest to ws
+            if a_result.worksheet_uid:
+                retest.worksheet_uid = a_result.worksheet_uid
+                retest.worksheet_position = a_result.worksheet_position
+                retest.assigned = True
+                retest = await retest.save()
 
-                # add retest
+            # add retest
+            if retest:
                 return_results.append(retest)
 
             # add original
@@ -747,15 +853,11 @@ class AnalysisMutations:
             if not a_result:
                 raise Exception(f"AnalysisResult with uid {_ar_uid} not found")
 
-            status = getattr(a_result, 'status', None)
-            if status in [states.result.RESULTED]:
-                retest = await retest_analysis_result(a_result)
-                await a_result.hide_report()
-                await a_result.verify(verifier=felicity_user)
-
+            retest, a_result = await a_result.retest_result(retested_by=felicity_user, next_action="verify")
+            if retest:
                 return_results.append(retest)
-
             return_results.append(a_result)
+
         return return_results
 
     @strawberry.mutation

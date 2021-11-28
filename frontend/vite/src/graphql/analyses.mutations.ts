@@ -62,6 +62,34 @@ export const PUBLISH_SAMPLES = gql`
   }
 `;
 
+export const INVALIDATE_SAMPLES = gql`
+  mutation InvalidateSamples ($samples: [Int!]!) {
+    invalidateSamples(samples: $samples){
+        uid
+        sampleId
+        status
+    }
+  }
+`;
+
+export const VERIFY_SAMPLES = gql`
+  mutation VerifySamples ($samples: [Int!]!) {
+    verifySamples(samples: $samples){
+        uid
+        status
+    }
+  }
+`;
+
+export const REJECT_SAMPLES = gql`
+  mutation RejectSamples ($samples: [SampleRejectInputType!]!) {
+    rejectSamples(samples: $samples){
+        uid
+        status
+    }
+  }
+`;
+
 // RESULT_OPTION
 export const ADD_RESULT_OPTION= gql`
   mutation AddResultOption ($optionKey: Int!, $value: String!, $analysisUid: Int!) {

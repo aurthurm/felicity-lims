@@ -157,6 +157,8 @@ class SampleType:  # for Sample
     date_invalidated: Optional[datetime]
     rejection_reasons: Optional[List[RejectionReasonType]]
     internal_use: bool
+    parent_id: int
+    parent: Optional['SampleType']
     # QC Samples
     qc_set_uid: Optional[int]
     qc_set: Optional[QCSetType]

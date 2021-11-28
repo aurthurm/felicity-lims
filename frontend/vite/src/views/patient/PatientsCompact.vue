@@ -149,7 +149,10 @@
    
         <tab-samples v-if="currentTab === 'samples'" target="patient-samples" :targetUid="patientForm.uid" />
         <tab-cases v-if="currentTab === 'cases'" />
-        <tab-logs v-if="currentTab === 'logs'"/>
+         <tab-logs 
+          v-if="currentTab === 'logs'" 
+          targetType="patient"
+          :targetId="patientForm?.uid" />
 
       </section>
     </div>
@@ -315,7 +318,7 @@ export default defineComponent({
     const tabs: string[] = ['samples', 'cases', 'logs'];
     let currentTabComponent = computed<string>(() => 'tab-' + currentTab.value);
 
-    let patientForm = reactive<IPatient>({});
+    let patientForm = reactive({}) as IPatient;
 
     let provinces = ref<IProvince[]>([]);
     let districts = ref<IDistrict[]>([]);

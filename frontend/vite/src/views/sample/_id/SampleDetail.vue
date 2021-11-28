@@ -37,29 +37,30 @@
 import tabResults from './Results.vue';
 import tabLogs from '../../components/AuditLog.vue';
 
-import { defineComponent, ref, computed } from 'vue';
+import { defineComponent, ref, computed, reactive, toRefs } from 'vue';
 import {useStore } from 'vuex';
 import { ISample } from '../../../models/analysis';
+
 export default defineComponent({
   name: 'patient-search',
   components: {
     tabResults,
     tabLogs
   },
-  setup(props) {
+  setup() {
     let store = useStore();
 
-    let currentTab = ref('analysis-results');
-    const tabs = ['analysis-results', 'logs'];
-    let currentTabComponent = computed(() => 'tab-' + currentTab.value);
+    const state = reactive({
+      currentTab: ref('analysis-results'),
+      tabs: ['analysis-results', 'logs'],
+      sample: computed<ISample>(() => store.getters.getSample)
+    })
 
-    const sample = computed<ISample>(() => store.getters.getSample)
-
+    let currentTabComponent = computed(() => 'tab-' + state.currentTab);
+    
     return {
-      tabs,
-      currentTab,
+      ...toRefs(state),
       currentTabComponent,
-      sample,
     }
   },
 });

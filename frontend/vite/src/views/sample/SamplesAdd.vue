@@ -86,7 +86,7 @@
                             <select 
                             name="sampleTypes" 
                             id="sampleTypes" 
-                            v-model="sample.sampleType"
+                            v-model="sample.sampletype"
                             class="form-input mt-1" >
                               <option value=""></option>
                               <option  
@@ -222,7 +222,7 @@ export default defineComponent({
 
     function addSample(): void {
       const sample = {    
-        sampleType: {} as ISampleType,
+        sampletype: {} as ISampleType,
         profiles: [] as IAnalysisProfile[],
         analyses: [] as IAnalysisService[],
       } as ISample
@@ -234,7 +234,7 @@ export default defineComponent({
     }
 
     function setSampleType(sample: ISample, event: any): void {
-      sample.sampleType = store.getters.getSampleTypeByName(event.target.value);
+      sample.sampletype = store.getters.getSampleTypeByName(event.target.value);
     }
 
     function FormManager(create: boolean, obj: IAnalysisCategory):void {

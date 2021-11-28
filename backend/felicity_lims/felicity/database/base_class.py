@@ -199,7 +199,6 @@ class DBModel(AllFeaturesMixin, TimestampsMixin):
         if not filters:
             filters = {}
 
-        print(f"incoming filters: {filters}")
         # get total count without paging filters from cursors
         total_count: int = await cls.count_where(filters=filters)
         total_count = total_count if total_count else 0
@@ -223,7 +222,6 @@ class DBModel(AllFeaturesMixin, TimestampsMixin):
             if cursor_limit:
                 _filters.append({sa_or_: cursor_limit})
 
-        print(f"Final --> Filters: {_filters}, sort_by: {sort_by}")
         stmt = cls.smart_query(filters=_filters, sort_attrs=sort_by)
         qs = (await cls.session.execute(stmt)).scalars().all()
 

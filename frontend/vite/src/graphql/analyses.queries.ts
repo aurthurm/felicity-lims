@@ -446,6 +446,15 @@ export const GET_SAMPLE_STATUS_BY_UID = gql`
       }
 }`;
 
+export const GET_SAMPLE_BY_PARENT_ID = gql`
+  query getSampleParentId($parentId: Int!) {
+      sampleByParentId(parentId: $parentId){
+        uid
+        sampleId
+        status
+      }
+}`;
+
 export const GET_ALL_QC_LEVELS = gql`
   query getAllQCLevels {
     qcLevelAll {

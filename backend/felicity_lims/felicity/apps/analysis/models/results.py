@@ -9,7 +9,7 @@ from felicity.apps.analysis.models import analysis as analysis_models
 from felicity.apps.core import BaseMPTT
 from felicity.apps.setup.models.setup import Instrument, Method
 from felicity.apps.worksheet import models as ws_models
-from felicity.apps import BaseAuditDBModel, Auditable
+from felicity.apps import Auditable
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -50,6 +50,32 @@ class AnalysisResult(Auditable, BaseMPTT):
     retest = Column(Boolean(), default=False)
     reportable = Column(Boolean(), default=True)  # for retests or reflex
     status = Column(String, nullable=False)
+
+    async def retest_result(self, retested_by, next_action="verify"):
+        retest = None
+        if self.status in [conf.states.result.RESULTED]:
+            a_result_in = {
+                'sample_uid': self.sample.uid,
+                'analysis_uid': self.analysis_uid,
+                'status': conf.states.result.PENDING,
+                'instrument_uid': self.instrument_uid,
+                'method_uid': self.method_uid,
+                'parent_id': self.uid,
+                'retest': True
+            }
+            a_result_schema = schemas.AnalysisResultCreate(**a_result_in)
+            retest = await AnalysisResult.create(a_result_schema)
+
+            await self.hide_report()
+            if next_action == "verify":
+                final = await self.verify(verifier=retested_by)
+            elif next_action == "retract":
+                final = await self.retract(retracted_by=retested_by)
+            else:
+                final = self
+
+            return retest, final
+        return retest, self
 
     async def assign(self, ws_uid, position):
         self.worksheet_uid = ws_uid

@@ -1,13 +1,21 @@
 import { PDFDocument, StandardFonts, rgb } from 'pdf-lib'
 import { ifNoValEmpty } from '../utils'
+import Swal from 'sweetalert2';
+import { ref, reactive } from 'vue';
+import { useMutation, useQuery } from '@urql/vue';
+import {
+  PUBLISH_SAMPLES,
+} from '../graphql/analyses.mutations';
+import { 
+  SAMPLES_FOR_REPORTS_BY_UIDS,
+} from '../graphql/analyses.queries';
 
 export default function useReportComposable(){
 
-    async function processReports(samples: any[]) {
+    async function generateReports(samples: any[]) {
       console.log(samples)
 
       const template = await PDFDocument.create()
-      const timesRoman = await template.embedFont(StandardFonts.TimesRoman)
       const timesRomanBold = await template.embedFont(StandardFonts.TimesRomanBold)
       const helvetica = await template.embedFont(StandardFonts.Helvetica)
       const helveticaBold = await template.embedFont(StandardFonts.HelveticaBold)
@@ -136,7 +144,51 @@ export default function useReportComposable(){
 
     }
 
+    let reportUids = ref<number[]>([]);
+
+    const reportProcessor =  useQuery({
+        query: SAMPLES_FOR_REPORTS_BY_UIDS,
+        variables: { uids:  reportUids },
+        requestPolicy: 'network-only',
+      })
+
+    const downloadReports = async (uids: number[]) => {
+      reportUids.value = uids;
+
+      try {
+        Swal.fire({
+          title: 'Are you sure?',
+          text: "You want to download reports",
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Yes, download now!',
+          cancelButtonText: 'No, do not download!',
+        }).then((result) => {
+          if (result.isConfirmed) {
+
+
+            reportProcessor.executeQuery({requestPolicy: 'network-only'}).then(res => {
+              let _samples = res?.data.value?.samplesByUids;
+              if(_samples.length > 0) { generateReports(_samples) }
+            });
+
+            // Swal.fire(
+            //   'Its Happening!',
+            //   'Your sample reports are being processed.',
+            //   'success'
+            // ).then(_ => {})
+
+          }
+        })
+      } catch (error) {
+        console.log(error)
+      }
+    }
+
     return {
-      processReports,
+      generateReports,
+      downloadReports,
     }
   }

@@ -32,6 +32,8 @@ class AnalysisResultType:
     invalidated_by_uid: Optional[int]
     date_invalidated: datetime
     retest: bool
+    parent_id: int
+    parent: Optional['AnalysisResultType']
     reportable: bool
     status: Optional[str]
     created_by_uid: Optional[int]

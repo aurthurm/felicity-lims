@@ -94,7 +94,13 @@ class AnalysisQuery:
         return await a_models.Sample.get(uid=uid)
 
     @strawberry.field
+    async def sample_by_parent_id(self, info, parent_id: int) -> List[a_types.SampleType]:
+        """Retrieve associated invalidated parent - children relationship by mptt parent_id"""
+        return await a_models.Sample.get_all(parent_id=parent_id)
+
+    @strawberry.field
     async def samples_by_uids(self, info, sample_uids: List[int] = []) -> List[r_types.SamplesWithResults]:
+        """Samples for publishing/ report printing"""
         return await a_models.Sample.get_all(uid__in=sample_uids)
 
     @strawberry.field

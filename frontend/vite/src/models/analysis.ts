@@ -97,7 +97,7 @@ export interface IQCTemplate {
   export interface ISample {
     uid: number;
     sampleId: string;
-    sampleType: ISampleType | undefined; 
+    sampletype: ISampleType | undefined; 
     profiles: IAnalysisProfile[];
     analyses: IAnalysisService[];
     assigned: boolean;

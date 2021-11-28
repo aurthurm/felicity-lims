@@ -334,6 +334,7 @@ class RejectionReasonInDB(RejectionReasonBaseInDB):
 # Shared properties
 class AnalysisResultBase(BaseAuditModel):
     analysis_uid: Optional[int] = None
+    parent_id: Optional[int] = None
     sample_uid: Optional[int] = None
     instrument_uid: Optional[int] = None
     method_uid: Optional[int] = None

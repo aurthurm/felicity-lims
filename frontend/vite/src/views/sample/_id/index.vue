@@ -31,6 +31,13 @@
               >
                 <i class="fa fa-pen"></i>
               </button> -->
+              <span v-if="sample?.analysisrequest?.patient?.uid && childSample?.uid">
+                  <font-awesome-icon icon="angle-double-right" class="mx-2" />
+                  <router-link :to="{ name: 'sample-detail', params: { patientUid: sample?.analysisrequest?.patient?.uid, sampleUid: childSample?.uid } }" 
+                    class="p-2 my-2 text-sm border-blue-500 border text-dark-700 transition-colors duration-150 rounded-lg focus:outline-none hover:bg-blue-500 hover:text-gray-100">
+                    {{ childSample?.sampleId }}
+                  </router-link>
+              </span>
             </div>
           <span>{{ profileAnalysesText(sample?.profiles!, sample?.analyses!) }}</span>
           <!-- <button type="button" class="bg-blue-400 text-white p-1 rounded leading-none">{{ sample?.status }}</button> -->
@@ -50,10 +57,12 @@
               class="absolute mt-4 py-0 bg-gray-300 rounded-md shadow-xl z-20" >
               <div
                 v-show="canReceive"
+                @click="receiveSample()"
                 class="no-underline text-gray-900 py-0 opacity-60 px-4 border-b border-transparent hover:opacity-100 md:hover:border-grey-dark hover:bg-blue-400 hover:text-white"
                 >Receive</div>
               <div
                 v-show="canVerify"
+                @click="verifySample()"
                 class="no-underline text-gray-900 py-0 opacity-60 px-4 border-b border-transparent hover:opacity-100 md:hover:border-grey-dark hover:bg-blue-400 hover:text-white"
                 >Verify</div>
               <div
@@ -62,14 +71,17 @@
                 >Reject</div>
               <div
                 v-show="canCancel"
+                @click="cancelSample()"
                 class="no-underline text-gray-900 py-0 opacity-60 px-4 border-b border-transparent hover:opacity-100 md:hover:border-grey-dark hover:bg-red-400 hover:text-white"
                 >Cancel</div>
               <div
                 v-show="canReinstate"
+                @click="reInstateSample()"
                 class="no-underline text-gray-900 py-0 opacity-60 px-4 border-b border-transparent hover:opacity-100 md:hover:border-grey-dark hover:bg-red-400 hover:text-white"
                 >Reinstate</div>
               <div
                 v-show="canInvalidate"
+                @click="invalidateSample()"
                 class="no-underline text-gray-900 py-0 opacity-60 px-4 border-b border-transparent hover:opacity-100 md:hover:border-grey-dark hover:bg-gray-400 hover:text-white"
                 >Invalidate</div>
             </div>
@@ -113,17 +125,51 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref } from 'vue';
+import { defineComponent, computed, toRefs, reactive, watch } from 'vue';
 import { useStore } from 'vuex';
+import { useQuery } from '@urql/vue';
 import { IAnalysisProfile, IAnalysisService, ISample } from '../../../models/analysis';
+import useSampleComposable from '../../../modules/samples';
+
+import { GET_SAMPLE_BY_PARENT_ID } from '../../../graphql/analyses.queries';
+import { ActionTypes } from '../../../store/modules/sample';
+import { useRoute } from 'vue-router';
 
 export default defineComponent({
   name: "sample-single",
   setup() {
-    const dropdownOpen = ref(false);
     const store = useStore();
+    const route = useRoute();
+    store.dispatch(ActionTypes.RESET_SAMPLE);
 
-    const sample = computed<ISample>(() => store.getters.getSample)
+    const { cancelSamples, reInstateSamples, receiveSamples, invalidateSamples, verifySamples }  = useSampleComposable();
+
+    const state = reactive({
+      dropdownOpen: false,
+      sample: computed<ISample>(() => store.getters.getSample),
+      childSample: {} as ISample,
+    }); 
+
+    const sampleAcquire = useQuery({
+      query: GET_SAMPLE_BY_PARENT_ID,
+      variables: { parentId: +route.params.sampleUid },
+      requestPolicy: 'network-only',
+    });
+
+    watch(() => state.sample, (sample, _) => {
+      if(!sample) return;
+      if(sample.status !== 'invalidated') {
+        state.childSample = {} as ISample
+        return
+      };
+      sampleAcquire.executeQuery({requestPolicy: 'network-only'}).then(resp => {
+        const samples = resp.data.value?.sampleByParentId;
+        if(samples?.length > 0) {
+          state.childSample = samples[0]
+        };
+        
+      });
+    })
 
     function profileAnalysesText(profiles: IAnalysisProfile[], analyses: IAnalysisService[]): string {
         let names: string[] = [];
@@ -132,38 +178,36 @@ export default defineComponent({
         return names.join(', ');
     }
 
-    function FormManager(create: boolean): void {
-    }
-    // Sample Actions
-    
-
     return { 
-        dropdownOpen,
-        sample,
+        ...toRefs(state),
         profileAnalysesText,
-        FormManager,
         canReceive: computed(() => {
-          if(["due"].includes(sample.value?.status?.toLowerCase()!)) return true;
+          if(["due"].includes(state.sample?.status?.toLowerCase())) return true;
           return false
         }),
+        receiveSample: async () => receiveSamples([state.sample?.uid]),
         canCancel: computed(() => {
-          if(["received", "due"].includes(sample.value?.status?.toLowerCase()!)) return true;
+          if(["received", "due"].includes(state.sample?.status?.toLowerCase())) return true;
           return false
         }),
+        cancelSample: async () => cancelSamples([state.sample?.uid]),
         canReinstate: computed(() => {
-          if(["cancelled"].includes(sample.value?.status?.toLowerCase()!)) return true;
+          if(["cancelled"].includes(state.sample?.status?.toLowerCase())) return true;
           return false
         }),
-        canVerify: computed(() => { // all anlytes must be verified first
-          if(sample.value?.status?.toLowerCase() === "to_be_verified") return true;
+        reInstateSample: async () => reInstateSamples([state.sample?.uid]),
+        canVerify: computed(() => {
+          if(state.sample?.status?.toLowerCase() === "to_be_verified") return true;
           return false
         }),
-        canInvalidate: computed(() => { // only for published a.k.a printed
-          if(sample.value?.status?.toLowerCase() === "published") return true;
+        verifySample: async () => verifySamples([state.sample?.uid]),
+        canInvalidate: computed(() => {
+          if(state.sample?.status?.toLowerCase() === "published") return true;
           return false
         }),
+        invalidateSample: async () => invalidateSamples([state.sample?.uid]),
         canReject: computed(() => {
-          if(["received", "due"].includes(sample.value?.status?.toLowerCase()!)) return true;
+          if(["received", "due"].includes(state.sample?.status?.toLowerCase())) return true;
           return false
         }),
     };

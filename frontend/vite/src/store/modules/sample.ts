@@ -56,9 +56,12 @@ export enum MutationTypes {
   UPDATE_SAMPLE_TYPE = 'UPDATE_SAMPLE_TYPE',
 
   RESET_SAMPLES = "RESET_SAMPLES",
+  RESET_SAMPLE = "RESET_SAMPLE",
   SET_SAMPLES = 'SET_SAMPLES',
   SET_SAMPLE = 'SET_SAMPLE',
+
   UPDATE_SAMPLE_STATUS = 'UPDATE_SAMPLE_STATUS',
+  UPDATE_SAMPLES_STATUS = 'UPDATE_SAMPLES_STATUS',
 
   SET_ANALYSES_REQUESTS = 'SET_ANALYSES_REQUESTS',
 
@@ -79,10 +82,13 @@ export enum ActionTypes {
   UPDATE_SAMPLE_TYPE = 'UPDATE_SAMPLE_TYPE',
 
   RESET_SAMPLES = "RESET_SAMPLES",
+  RESET_SAMPLE = "RESET_SAMPLE",
   FETCH_SAMPLES = 'FETCH_SAMPLES',
   ADD_SAMPLES = 'ADD_SAMPLES',
 
   FETCH_SAMPLE_STATUS = 'FETCH_SAMPLE_STATUS',
+  UPDATE_SAMPLE_STATUS = 'UPDATE_SAMPLE_STATUS',
+  UPDATE_SAMPLES_STATUS = 'UPDATE_SAMPLES_STATUS',
 
   FETCH_ANALYSIS_REQUESTS_FOR_PATIENT = 'FETCH_ANALYSIS_REQUESTS_FOR_PATIENT',
   FETCH_ANALYSIS_REQUESTS_FOR_CLIENT = 'FETCH_ANALYSIS_REQUESTS_FOR_CLIENT',
@@ -156,6 +162,10 @@ export const mutations = <MutationTree<IState>>{
     state.samples = [];
   },
   
+  [MutationTypes.RESET_SAMPLE](state: IState): void {
+    state.sample = null;
+  },
+
   [MutationTypes.SET_SAMPLES](state: IState, payload: any): void {
     const samples = payload.samples.items;
 
@@ -170,9 +180,6 @@ export const mutations = <MutationTree<IState>>{
   },
 
   [MutationTypes.UPDATE_SAMPLE_STATUS](state: IState, sample: ISample): void {
-
-    console.log("updating sample status: ", sample)
-
     if(state.sample && sample.status){
       state.sample.status = sample.status;
     }
@@ -181,6 +188,15 @@ export const mutations = <MutationTree<IState>>{
     if(index > -1) {
       state!.samples[index].status = sample.status;
     }
+  },
+
+  [MutationTypes.UPDATE_SAMPLES_STATUS](state: IState, samples: ISample[]): void {
+    samples?.forEach(sample => {
+      const index = state.samples.findIndex(x => x.uid === sample.uid);
+      if(index > -1) {
+        state!.samples[index].status = sample.status;
+      }
+    })
   },
 
   [MutationTypes.SET_SAMPLE](state: IState, payload: any): void {
@@ -269,6 +285,10 @@ export const actions = <ActionTree<IState, RootState>>{
     commit(MutationTypes.RESET_SAMPLES);
   },
 
+  async [ActionTypes.RESET_SAMPLE]({ commit }) {
+    commit(MutationTypes.RESET_SAMPLE);
+  },
+
   async [ActionTypes.FETCH_SAMPLES]({ commit }, params){
     await urqlClient
     .query( GET_ALL_SAMPLES, { 
@@ -298,6 +318,14 @@ export const actions = <ActionTree<IState, RootState>>{
     })
   },
 
+  async [ActionTypes.UPDATE_SAMPLE_STATUS]({ commit }, sample){
+    commit(MutationTypes.UPDATE_SAMPLE_STATUS, sample)
+  },
+
+  async [ActionTypes.UPDATE_SAMPLES_STATUS]({ commit }, samples){
+    commit(MutationTypes.UPDATE_SAMPLES_STATUS, samples)
+  },
+
   async [ActionTypes.FETCH_ANALYSIS_REQUESTS_FOR_PATIENT]({ commit }, uid){
     if(!uid) return;
     await urqlClient
@@ -317,7 +345,7 @@ export const actions = <ActionTree<IState, RootState>>{
   async [ActionTypes.FETCH_ANALYSIS_RESULTS_FOR_SAMPLE]({ commit }, uid){
     if(!uid) return;
     await urqlClient
-    .query( GET_ANALYSIS_RESULTS_BY_SAMPLE_UID, { uid })
+    .query( GET_ANALYSIS_RESULTS_BY_SAMPLE_UID, { uid }, { requestPolicy: 'network-only' })
     .toPromise()
     .then(result => {
       commit(MutationTypes.SET_ANALYSES_RESULTS, result.data.analysisResultBySampleUid);
