@@ -56,9 +56,9 @@ class CreateQCSetData:
 
 @strawberry.input
 class SampleRejectInputType:
-    uid: Optional[int]
+    uid: int
     reasons: List[int]
-    other: Optional[str]
+    other: Optional[str] = None
 
 
 @strawberry.type
@@ -167,6 +167,51 @@ class AnalysisMutations:
         result_option_in = schemas.ResultOptionUpdate(**result_option.to_dict())
         result_option = await result_option.update(result_option_in)
         return result_option
+
+    @strawberry.mutation
+    async def create_rejection_reason(self, info, reason: str) -> a_types.RejectionReasonType:
+
+        inspector = inspect.getargvalues(inspect.currentframe())
+        passed_args = get_passed_args(inspector)
+
+        is_authenticated, felicity_user = await auth_from_info(info)
+        verify_user_auth(is_authenticated, felicity_user, "Only Authenticated user can create rejection reasons")
+
+        if not reason:
+            raise Exception("reason is mandatory")
+
+        exists = await analysis_models.RejectionReason.get(reason=reason)
+        if exists:
+            raise Exception(f"The Rejection reason -> {reason} <- already exists")
+
+        obj_in = schemas.RejectionReasonCreate(**passed_args)
+        rejection_reason: analysis_models.RejectionReason = await analysis_models.RejectionReason.create(obj_in)
+        return rejection_reason
+
+    @strawberry.mutation
+    async def update_rejection_reason(self, info, uid: int, reason: str) -> a_types.RejectionReasonType:
+
+        inspector = inspect.getargvalues(inspect.currentframe())
+        passed_args = get_passed_args(inspector)
+
+        is_authenticated, felicity_user = await auth_from_info(info)
+        verify_user_auth(is_authenticated, felicity_user, "Only Authenticated user can update rejection reasons")
+
+        rejection_reason = await analysis_models.RejectionReason.get(uid=uid)
+        if not rejection_reason:
+            raise Exception(f"rejection reason with uid {uid} does not exist")
+
+        qc_data = rejection_reason.to_dict()
+        for field in qc_data:
+            if field in passed_args:
+                try:
+                    setattr(rejection_reason, field, passed_args[field])
+                except AttributeError as e:
+                    logger.warning(e)
+
+        rr_in = schemas.RejectionReasonUpdate(**rejection_reason.to_dict())
+        rejection_reason = await rejection_reason.update(rr_in)
+        return rejection_reason
 
     @strawberry.mutation
     async def create_analysis_category(self, info, name: str, description: Optional[str] = None,
@@ -604,7 +649,7 @@ class AnalysisMutations:
 
             reasons = []
             for re_uid in _sam.reasons:
-                reason = analysis_models.RejectionReason.get(uid=re_uid)
+                reason = await analysis_models.RejectionReason.get(uid=re_uid)
                 if not reason:
                     raise Exception(f"RejectionReason with uid {re_uid} not found")
                 reasons.append(reason)
@@ -612,6 +657,10 @@ class AnalysisMutations:
             sample = await sample.reject(reasons=reasons, rejected_by=felicity_user)
             if sample:
                 return_samples.append(sample)
+
+            if sample.status == states.sample.REJECTED:
+                for analyte in sample.analysis_results:
+                    await analyte.cancel(cancelled_by=felicity_user)
 
         return return_samples
 
@@ -1023,7 +1072,7 @@ class AnalysisMutations:
         inspector = inspect.getargvalues(inspect.currentframe())
         passed_args = get_passed_args(inspector)
         
-        is_authenticated, felicity_user = auth_from_info(info)
+        is_authenticated, felicity_user = await auth_from_info(info)
         verify_user_auth(is_authenticated, felicity_user, "Only Authenticated user can update qc-levels")
 
         qc_level = await qc_models.QCLevel.get(uid=uid)

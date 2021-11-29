@@ -296,3 +296,11 @@ class AnalysisQuery:
     @strawberry.field
     async def result_options_by_analysis_uid(self, info, uid: int) -> a_types.ResultOptionType:
         return await a_models.ResultOption.get_all(analysis_uid__exact=uid)
+
+    @strawberry.field
+    async def rejection_reasons_all(self, info) -> List[a_types.RejectionReasonType]:
+        return await a_models.RejectionReason.all()
+
+    @strawberry.field
+    async def rejection_reason_by_uid(self, info, uid: int) -> a_types.RejectionReasonType:
+        return await a_models.RejectionReason.get(uid=uid)

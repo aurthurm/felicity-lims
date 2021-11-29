@@ -133,3 +133,9 @@ export interface IQCTemplate {
     updated_by: any
     updated_at: string
   }
+
+
+  export interface IRejectionReason {
+    uid: number;
+    reason: string;
+  }

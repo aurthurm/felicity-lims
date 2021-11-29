@@ -23,6 +23,7 @@
         <tab-analyses-categories v-else-if="currentTab === 'analyses-categories'" />
         <tab-quality-control-levels v-else-if="currentTab === 'quality-control-levels'" />
         <tab-quality-control-templates v-else="currentTab === 'quality-control-templates'" />
+        <tab-rejection-reasons v-else="currentTab === 'rejection-reasons'" />
 
   </div>
 

@@ -627,3 +627,14 @@ export const GET_RESULT_OPTIONS_FOR_ANALYSIS = gql`
         analysisUid
       }
   }`;
+
+
+export const GET_ALL_REJECTION_REASONS = gql`
+  query getAllRejectionReasons {
+    rejectionReasonsAll {
+      uid
+      reason
+    }
+}`;
+
+

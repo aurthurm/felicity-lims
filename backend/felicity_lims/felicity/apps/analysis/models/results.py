@@ -113,8 +113,8 @@ class AnalysisResult(Auditable, BaseMPTT):
         return None
 
     async def re_instate(self, re_instated_by):
-        if self.sample.status in [conf.states.sample.CANCELLED]:
-            raise Exception("You cannot reinstate analytes of cancelled sample. Reinstate the sample instead")
+        if self.sample.status not in [conf.states.sample.RECEIVED, conf.states.sample.DUE]:
+            raise Exception("You can only reinstate analytes of due and received samples")
 
         if self.status in [conf.states.result.CANCELLED]:
             self.status = conf.states.result.PENDING

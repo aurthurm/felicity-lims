@@ -42,10 +42,10 @@
                 rows="3"
                 class="form-input mt-1" multiple v-model="sample.reasons">
                   <option value=""></option>
-                  <option value="Sample Clotted">Sample Clotted</option>
-                  <option value="Sample Spoiled">Sample Spoiled</option>
-                  <option value="Sample Insufficient">Sample Insufficient</option>
-                  <option value="Sample Whatever">Sample Whatever</option>
+                  <option 
+                  v-for="rejection in rejectionReasons"
+                  :key="rejection.uid"
+                  :value="rejection.uid">{{ rejection.reason }}</option>
               </select>
             </label>
           </div>
@@ -78,10 +78,11 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, toRefs, computed, reactive} from 'vue';
+import { defineComponent, toRefs, computed, onMounted, reactive} from 'vue';
 import {useStore } from 'vuex';
 import { IAnalysisProfile, IAnalysisService } from '../../models/analysis';
 import  useSampleComposable  from '../../modules/samples'
+import { ActionTypes } from '../../store/modules/analysis';
 
   export default defineComponent({
     name: 'sample-rejection',
@@ -92,7 +93,7 @@ import  useSampleComposable  from '../../modules/samples'
       }
     },
     setup(props) {
-      let store = useStore();
+      const store = useStore();
       const { rejectSamples } = useSampleComposable(); 
 
       const { samples } = toRefs(props);
@@ -110,6 +111,7 @@ import  useSampleComposable  from '../../modules/samples'
       }
       state.rejections = coll;
 
+      onMounted(() => store.dispatch(ActionTypes.FETCH_REJECTION_REASONS))
 
       return {
         ...toRefs(state),
@@ -125,13 +127,13 @@ import  useSampleComposable  from '../../modules/samples'
             item.other = sample.other;
           })
         }, 
+        rejectionReasons: computed(() =>store.getters.getRejectionReasons),
         rejectSamples_: async () => {
           const toReject:any[] = [];
           state.rejections?.forEach(item => {
             toReject.push({ uid: item?.uid, reasons: item?.reasons, other: item?.other })
           })
-          await rejectSamples(toReject)
-          // router.puch({ name: "samples" })
+          await rejectSamples(toReject);
         }
       }
     },

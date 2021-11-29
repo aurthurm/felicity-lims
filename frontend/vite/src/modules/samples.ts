@@ -11,10 +11,19 @@ import {
   REJECT_SAMPLES,
 } from '../graphql/analyses.mutations';
 import { ActionTypes } from '../store/modules/sample';
-import store from '../store';
+import { ActionTypes as AlertActionTypes } from '../store/modules/toast'
 import { ISample } from '../models/analysis';
+import { useRouter } from 'vue-router';
+import { useStore } from 'vuex';
+// import store from '../store';
+
+
+
 
 export default function useSampleComposable(){
+
+    const router = useRouter();
+    const store = useStore();
 
     const state = reactive({
       samples: computed(() => store.getters.getSamples ),
@@ -267,7 +276,7 @@ export default function useSampleComposable(){
               'Its Happening!',
               'Your sample(s) have been rejected.',
               'success'
-            ).then(_ => {})
+            ).then(_ => router.push({ name: "samples-listing" }))
 
           }
         })

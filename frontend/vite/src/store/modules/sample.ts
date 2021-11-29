@@ -293,7 +293,8 @@ export const actions = <ActionTree<IState, RootState>>{
     await urqlClient
     .query( GET_ALL_SAMPLES, { 
       first: params.first, after: params.after, 
-      status: params.status, text: params.text, clientUid: params.clientUid, sortBy: params.sortBy })
+      status: params.status, text: params.text, clientUid: params.clientUid, sortBy: params.sortBy }
+      )
     .toPromise()
     .then(result => {
       commit(MutationTypes.SET_SAMPLES, {

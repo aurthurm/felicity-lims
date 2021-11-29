@@ -15,6 +15,7 @@ import {
   RETEST_ANALYSIS_RESULTS, 
   RETRACT_ANALYSIS_RESULTS } from '../graphql/analyses.mutations';
 import { IAnalysisProfile, IAnalysisService } from '../models/analysis';
+import { ActionTypes as AlertActionTypes } from '../store/modules/toast'
 
 export default function useAnalysisComposable(){
     const route = useRoute();
@@ -233,18 +234,21 @@ export default function useAnalysisComposable(){
 
             _reinstater({ analyses: getResultsUids() }).then(resp => {
               if(resp.error){
+                // store.dispatch(AlertActionTypes.NOTIFY_WARING, resp?.error?.message);
+                store.dispatch(AlertActionTypes.ALERT_WARING, resp?.error?.message);
                 console.error(resp)
+                console.log(store.state.toast)
                 return
               }
               _updateSample()
               store.dispatch(ActionTypes.UPDATE_ANALYSIS_RESULTS_STATUS, resp.data.reInstateAnalysisResults);
             });
 
-            Swal.fire(
-              'Its Happening!',
-              'Your analystes have been reinstated.',
-              'success'
-            ).then(_ => {})
+            // Swal.fire(
+            //   'Its Happening!',
+            //   'Your analystes have been reinstated.',
+            //   'success'
+            // ).then(_ => {})
 
           }
         })

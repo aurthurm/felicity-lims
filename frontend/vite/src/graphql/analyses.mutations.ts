@@ -529,3 +529,22 @@ export const ADD_QC_REQUEST = gql`
     }
   }
 `;
+
+// REJECTION REASONS
+export const ADD_REJECTION_REASON = gql`
+mutation AddRejectionReason($reason: String!) {
+  createRejectionReason(reason: $reason ){
+      uid
+      reason
+  }
+}
+`;
+
+export const EDIT_REJECTION_REASON = gql`
+mutation EditRejectionReason ($uid: Int!, $reason: String!) {
+  updateRejectionReason(uid: $uid, reason: $reason){
+      uid
+      reason
+  }
+}
+`;

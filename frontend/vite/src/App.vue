@@ -9,13 +9,13 @@
 import Swal from 'sweetalert2';
 import JSConfetti from 'js-confetti'
 import { Notyf } from 'notyf';
-import { defineComponent, ref, computed, watch, inject } from 'vue';
+import { defineComponent, computed, watch } from 'vue';
 import { useRouter } from 'vue-router';
-import { mapGetters, mapActions, useStore } from "vuex";
+import { useStore } from "vuex";
 import { ActionTypes } from './store/actions'
 const defaultLayout = 'default';
 export default defineComponent({
-  setup(props, context) {
+  setup() {
     const { currentRoute } = useRouter();
     const store = useStore();
     const router = useRouter();
@@ -66,12 +66,18 @@ export default defineComponent({
       })
     }
 
-    watch(store.state.toast.alert, (current, prev) => {
+    watch(() => store.state.toast.alert, (current, prev) => {
+      if(!current.data) return;
+
+      console.log("watch alert: ", current)
+
       fireAlert(current)
     });
 
     watch(store.state.toast.notification, (current, prev) => {
       if(!current.data) return;
+
+      console.log("watch toast: ", current)
 
       let _message = current.data;
       let message = _message

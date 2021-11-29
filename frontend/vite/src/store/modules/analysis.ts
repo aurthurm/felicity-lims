@@ -4,9 +4,10 @@ import { RootState } from '../state';
 import { ActionTree, GetterTree, MutationTree } from 'vuex';
 import {
   GET_ALL_ANALYSES_SERVICES, GET_ALL_ANALYSES_PROFILES, GET_ALL_ANALYSES_CATEGORIES,
-  GET_ALL_ANALYSES_PROFILES_AND_SERVICES, GET_ALL_QC_TEMPLATES, GET_ALL_QC_LEVELS
+  GET_ALL_ANALYSES_PROFILES_AND_SERVICES, GET_ALL_QC_TEMPLATES, GET_ALL_QC_LEVELS,
+  GET_ALL_REJECTION_REASONS
 } from '../../graphql/analyses.queries';
-import { IAnalysisCategory,  IAnalysisService, IAnalysisProfile, IQCLevel, IQCTemplate} from '../../models/analysis'
+import { IAnalysisCategory,  IAnalysisService, IAnalysisProfile, IQCLevel, IQCTemplate, IRejectionReason} from '../../models/analysis'
 
 
 // state contract
@@ -16,6 +17,7 @@ export interface IState {
   analysesProfiles: IAnalysisProfile[];
   qcLevels: IQCLevel[];
   qcTemplates: IQCTemplate[];
+  rejectionReasons: IRejectionReason[];
 }
 
 export const initialState = () => {
@@ -25,6 +27,7 @@ export const initialState = () => {
     analysesProfiles: [],
     qcLevels: [],
     qcTemplates: [],
+    rejectionReasons: [],
   };
 };
 
@@ -56,6 +59,12 @@ export enum MutationTypes {
   SET_RESULT_OPTIONS = 'SET_RESULT_OPTIONS',
   ADD_RESULT_OPTION = 'ADD_RESULT_OPTION',
   UPDATE_RESULT_OPTION = 'UPDATE_RESULT_OPTION',
+
+
+  
+  SET_REJECTION_REASONS = 'SET_REJECTION_REASONS',
+  ADD_REJECTION_REASON = 'ADD_REJECTION_REASON',
+  UPDATE_REJECTION_REASON = 'UPDATE_REJECTION_REASON',
 }
 
 export enum ActionTypes {
@@ -82,11 +91,13 @@ export enum ActionTypes {
   ADD_QC_TEMPLATE = 'ADD_QC_TEMPLATE',
   UPDATE_QC_TEMPLATE = 'UPDATE_QC_TEMPLATE',
 
-  FETCH_SAMPLES = 'FETCH_SAMPLES',
-
   FETCH_RESULT_OPTIONS = 'FETCH_RESULT_OPTIONS',
   ADD_RESULT_OPTION = 'ADD_RESULT_OPTION',
   UPDATE_RESULT_OPTION = 'UPDATE_RESULT_OPTION',
+
+  FETCH_REJECTION_REASONS = 'FETCH_REJECTION_REASONS',
+  ADD_REJECTION_REASON = 'ADD_REJECTION_REASON',
+  UPDATE_REJECTION_REASON = 'UPDATE_REJECTION_REASON',
 }
 
 function groupByCategory(analyses: IAnalysisService[]): any {
@@ -107,6 +118,7 @@ export const getters = <GetterTree<IState, RootState>>{
   getAnalysesProfiles: (state) => state.analysesProfiles,
   getQCLevels: (state) => state.qcLevels,
   getQCTemplates: (state) => state.qcTemplates,
+  getRejectionReasons: (state) => state.rejectionReasons,
 };
 
 // Mutations
@@ -223,6 +235,20 @@ export const mutations = <MutationTree<IState>>{
     });
   },
 
+  // ReJECTION REASONS
+  [MutationTypes.SET_REJECTION_REASONS](state: IState, rejectionReasons: IRejectionReason[]): void {
+    state.rejectionReasons = rejectionReasons;
+  },
+
+  [MutationTypes.UPDATE_REJECTION_REASON](state: IState, reason: IRejectionReason): void {
+    const index = state.rejectionReasons.findIndex(x => x.uid === reason.uid);
+    state!.rejectionReasons[index] = reason;
+  },
+
+  [MutationTypes.ADD_REJECTION_REASON](state: IState, reason: IRejectionReason): void {
+    state.rejectionReasons.push(reason);
+  },
+
 };
 
 // Actions
@@ -322,6 +348,19 @@ export const actions = <ActionTree<IState, RootState>>{
     commit(MutationTypes.UPDATE_RESULT_OPTION, payload.data.updateResultOption);
   },
 
+  // ReJECTION REASONS
+  async [ActionTypes.FETCH_REJECTION_REASONS]({ commit }){
+    await useQuery({ query: GET_ALL_REJECTION_REASONS })
+          .then(payload => commit(MutationTypes.SET_REJECTION_REASONS, payload.data.value.rejectionReasonsAll));
+  },
+
+  async [ActionTypes.UPDATE_REJECTION_REASON]({ commit }, payload ){
+    commit(MutationTypes.UPDATE_REJECTION_REASON, payload.data.updateRejectionReason);
+  },
+
+  async [ActionTypes.ADD_REJECTION_REASON]({ commit }, payload ){
+    commit(MutationTypes.ADD_REJECTION_REASON, payload.data.createRejectionReason);
+  },
 
 };
 
