@@ -2,7 +2,7 @@ import { ActionTree } from 'vuex';
 import { useQuery } from '@urql/vue';
 import { urqlClient } from '../urql';
 
-import { IState, RootState, IAuth } from './state';
+import { IState, RootState } from './state';
 import { MutationTypes } from './mutations';
 
 import {

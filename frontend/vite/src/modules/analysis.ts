@@ -15,11 +15,12 @@ import {
   RETEST_ANALYSIS_RESULTS, 
   RETRACT_ANALYSIS_RESULTS } from '../graphql/analyses.mutations';
 import { IAnalysisProfile, IAnalysisService } from '../models/analysis';
-import { ActionTypes as AlertActionTypes } from '../store/modules/toast'
+import useNotifyToast from './messages';
 
 export default function useAnalysisComposable(){
     const route = useRoute();
     const store = useStore();
+    const { toastWarning } = useNotifyToast();
 
     const state = reactive({
         can_submit: false,
@@ -234,8 +235,8 @@ export default function useAnalysisComposable(){
 
             _reinstater({ analyses: getResultsUids() }).then(resp => {
               if(resp.error){
-                // store.dispatch(AlertActionTypes.NOTIFY_WARING, resp?.error?.message);
-                store.dispatch(AlertActionTypes.ALERT_WARING, resp?.error?.message);
+                toastWarning(resp?.error?.message)
+                // swalWarning(resp?.error?.message)
                 console.error(resp)
                 console.log(store.state.toast)
                 return

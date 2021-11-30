@@ -1,114 +1,85 @@
 <template>
-    <h4>Felicity Flash DashBoard</h4>
-    <span v-if="fetching">Fetching users data ...</span>
-    <span v-else-if="error">Error: {{ error }}</span>
-    <ul v-else>
-      <li v-for="user in data.userAll.edges" :key="user.id">{{ user.node.firstName }}</li>
-    </ul> 
+  <section class="flex justify-between">
+    <h1 class="text-2xl text-gray-800 font-bold">DashBoard</h1>
+    <div class="flex justify-end align-items-center">
+      <button type="button" class="px-2 py-1 mr-2 border-green-500 border text-green-500 rounded transition duration-300 hover:bg-green-700 hover:text-white focus:outline-none">Today</button>
+      <button type="button" class="px-2 py-1 mr-2 border-yellow-500 border text-yellow-500 rounded transition duration-300 hover:bg-yellow-700 hover:text-white focus:outline-none">Yesterday</button>
+      <button type="button" class="px-2 py-1 mr-2 border-green-500 border text-green-500 rounded transition duration-300 hover:bg-green-700 hover:text-white focus:outline-none">Week</button>
+      <button type="button" class="px-2 py-1 mr-2 border-yellow-500 border text-yellow-500 rounded transition duration-300 hover:bg-yellow-700 hover:text-white focus:outline-none">Last Week</button>
+      <button type="button" class="px-2 py-1 mr-2 border-green-500 border text-green-500 rounded transition duration-300 hover:bg-green-700 hover:text-white focus:outline-none">Month</button>
+      <button type="button" class="px-2 py-1 mr-2 border-yellow-500 border text-yellow-500 rounded transition duration-300 hover:bg-yellow-700 hover:text-white focus:outline-none">Last Month</button>
+      <button type="button" class="px-2 py-1 mr-2 border-green-500 border text-green-500 rounded transition duration-300 hover:bg-green-700 hover:text-white focus:outline-none">Quarter</button>
+      <button type="button" class="px-2 py-1 mr-2 border-yellow-500 border text-yellow-500 rounded transition duration-300 hover:bg-yellow-700 hover:text-white focus:outline-none">Last Quarter</button>
+      <button type="button" class="px-2 py-1 mr-2 border-green-500 border text-green-500 rounded transition duration-300 hover:bg-green-700 hover:text-white focus:outline-none">Year</button>
+      <button type="button" class="px-2 py-1 mr-2 border-blue-500 border text-blue-500 rounded transition duration-300 hover:bg-blue-700 hover:text-white focus:outline-none">All</button>
 
-  <hr class="mt-4 mb-2">
-  <div class="flex justify-between mb-2">
-    <button @click="doSuccess" type="button" class="btn btn-success">Success</button>
-    <button @click="doError" type="button" class="btn btn-danger">Error</button>
-    <button @click="doWarning" type="button" class="btn btn-warning">Warning</button>
-    <button @click="doInfo" type="button" class="btn btn-info">Info</button>
-    <button @click="doQuestion" type="button" class="btn btn-primary">QUESTION?</button>
-  </div>
-  <hr>
-  <section>
-    <h1>WebSocket Chat</h1>
-        <form action="" >
-            <label>Item ID: <input type="text" id="itemId" autocomplete="off" value="foo"/></label>
-            <label>Token: <input type="text" id="token" autocomplete="off" value="some-key-token"/></label>
-            <button  @click.prevent="connect()">Connect</button>
-            <hr>
-            <label>Message: <input type="text" id="messageText" autocomplete="off"/></label>
-            <button @click.prevent="sendMessage()">Send</button>
-        </form>
-        <ul id='messages'>
-        </ul>
+      <span class="ml-4 mr-1 px-2 py-1 border-gray-500 border text-gray-500 rounded transition duration-300 hover:bg-gray-700 hover:text-white focus:outline-none">12, Jan 2020 - 31 March 2021</span>
+      <button type="button" class="px-2 py-1 border-blue-500 border text-blue-500 rounded transition duration-300 hover:bg-blue-700 hover:text-white focus:outline-none">Apply</button>
+    </div>
   </section>
+
+  <section class="col-span-12 mt-2">
+
+    <nav class="bg-white px-6 pt-2 shadow-md mt-2">
+        <div class="-mb-px flex justify-start">
+        <a
+          v-for="tab in tabs"
+          :key="tab"
+          :class="[
+            'no-underline text-gray-500 uppercase tracking-wide font-bold text-xs py-1 mr-8 tab',
+            { 'tab-active': currentTab === tab },
+          ]"
+          @click="currentTab = tab"
+          href="#"
+        >
+          {{ tab }}
+        </a>
+      </div>
+    </nav>
+
+    <div class="pt-4">
+      <tab-overview v-if="currentTab === 'overview'" />
+      <tab-resource v-if="currentTab === 'resource'" />
+      <tab-laggard v-if="currentTab === 'laggard'" />
+      <tab-notice v-if="currentTab === 'notices'" />
+      <tab-line-listing v-if="currentTab === 'line-listing'" />
+    </div>
+
+  </section>
+
 
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue'
-import { useQuery } from '@urql/vue';
-import { useStore} from "vuex";
-import { GET_ALL_USERS } from '../../graphql/_queries'
-import { ActionTypes } from '../../store/modules/toast'
+import { defineComponent, ref, computed } from 'vue'
+import tabOverview from './Overview.vue';
+import tabLaggard from './Laggard.vue';
+import tabResource from './Resource.vue';
+import tabLineListing from './LineListing.vue';
+import tabNotice from './Notice.vue';
+
 export default defineComponent({
   name: "DashBoard",
+  components: {
+    tabOverview,
+    tabLaggard,
+    tabResource,
+    tabLineListing,
+    tabNotice
+  },
   setup() {
-    let store = useStore();
 
-    const { data, fetching, error } = useQuery({
-      query: GET_ALL_USERS,
-    })
-
-    if (error) {
-      store.dispatch(ActionTypes.NOTIFY_ERROR, error)
-    }
-
-    function doSuccess() {
-      store.dispatch(ActionTypes.ALERT_SUCCESS, "yi doSuccess le")
-    }
-
-    function doError() { 
-      store.dispatch(ActionTypes.ALERT_ERROR, "yi doError le")
-    }
-
-    function doWarning() {
-      store.dispatch(ActionTypes.ALERT_WARING, "yi doWarning le")
-    }
-
-    function doInfo() {
-      store.dispatch(ActionTypes.ALERT_INFO, "yi doInfo le")
-    }
-
-    function doQuestion() {
-      store.dispatch(ActionTypes.ALERT_QUESTION, "yi doQuestion le")
-    }
-
-    // function
-
-
-
-    let ws = ref(null);
-
-    function connect() {
-        var itemId = document.getElementById("itemId")
-        var token = document.getElementById("token")
-        ws = new WebSocket("ws://localhost:8000/ws");
-        ws.onmessage = function(event: any) {
-            var messages = document.getElementById('messages')
-            var message = document.createElement('li')
-            var content = document.createTextNode(event.data)
-            message.appendChild(content)
-            messages.appendChild(message)
-        };
-    }
-
-    function sendMessage() {
-        var input = document.getElementById("messageText")
-        ws.send(input.value)
-        input.value = ''
-    }
-
+    // move this to be managed in a central dash board composable private state
+    // also in same state manage dashboard global drill down filters
+    let currentTab = ref('overview');
+    const tabs = ['overview', 'resource', 'laggard', 'notices', 'line-listing'];
+    let currentTabComponent = computed(() => 'tab-' + currentTab.value);
 
     //
     return { 
-      data, 
-      fetching, 
-      error,
-      doSuccess,
-      doError,
-      doWarning,
-      doInfo,
-      doQuestion,
-      ws,
-      connect,
-      sendMessage
+      tabs,
+      currentTab,
+      currentTabComponent,
     };
   },
 });
