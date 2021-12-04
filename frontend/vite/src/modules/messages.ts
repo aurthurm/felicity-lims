@@ -75,25 +75,31 @@ export default function useNotifyToast(){
 
     // Automatic Error handling from Graphql backend
     const gqlErrorHandler = (error: any) => {
-        let _message = error;
-        let message = _message
-      
-        if(typeof(message) == 'object'){
-          message = message.message
-          if(_message.networkError) {
-            message = _message.networkError.message
-            // only logout on network error
-            swalError("!!OOPS!!: Something just hapenned Please login again :)")
-            setTimeout(() => logOut(), 2000)
-          }
+      console.log(error);
+      if(typeof(error) == 'object'){
+        if(error.graphQLErrors) {
+          const gErrors = new Set()
+          error.graphQLErrors?.forEach((err :any) => gErrors.add(err.message))
+          gErrors?.forEach((err :any) => toastError(err))
         }
+        if(error.networkError) {
+          toastError(error.networkError.message);
+          swalError("!!OOPS!!: Something just hapenned Please login again :)")
+          setTimeout(() => logOut(), 2000)
+        }
+      }
+    }
+
+    const gqlResponseHandler = (res: any):any => {
+      if(res.error) gqlErrorHandler(res.error);
+      return res.data;
     }
 
     // -- 
     return { 
         toastSuccess, toastInfo, toastWarning, toastError,
         swalSuccess, swalInfo, swalWarning, swalError,
-        gqlErrorHandler,
+        gqlResponseHandler, gqlErrorHandler,
         logOut
     }
 }

@@ -1,53 +1,132 @@
+import logging
+from typing import Optional, List
+
+from sqlalchemy import Column, String, ForeignKey, Table, Integer
+from sqlalchemy.orm import relationship
+
+from felicity.apps.user.models import User
+from . import schemas
+from felicity.apps import BaseAuditDBModel, DBModel
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+"""
+ Many to Many Link between Users and ActivityFeed
+"""
+activity_feed_subscription = Table('activity_feed_subscription', DBModel.metadata,
+                                   Column("feed_uid", ForeignKey('activityfeed.uid'), primary_key=True),
+                                   Column("user_uid", ForeignKey('user.uid'), primary_key=True)
+                                   )
 
 
-# Data Feeds/groups for stream targeting
-class Feed:
-    uid: str
-    name: str
-    followers: list
+class ActivityFeed(BaseAuditDBModel):
+    """ActivityFeed"""
+    name = Column(String, nullable=False)
+    subscribers = relationship('User', secondary=activity_feed_subscription, lazy="selectin")
 
-    def get_feed(self, uid):
-        """get feed"""
+    @classmethod
+    async def create(cls, obj_in: schemas.ActivityFeedCreate) -> schemas.ActivityFeed:
+        data = cls._import(obj_in)
+        return await super().create(**data)
 
-    def follow(self, feed_uid, user_uid):
-        """Add a follower from the feed's followers"""
+    async def update(self, obj_in: schemas.ActivityFeedUpdate) -> schemas.ActivityFeed:
+        data = self._import(obj_in)
+        return await super().update(**data)
 
-    def unfollow(self, feed_uid, user_uid):
-        """Remove a follower from the feed's followers"""
+    async def reset_subscribers(self) -> schemas.ActivityFeed:
+        self.subscribers.clear()
+        return await self.save()
 
-    def following(self, feed_uid):
-        """A list of followers of a feed"""
+    async def remove_subscriber(self, user: User) -> schemas.ActivityFeed:
+        self.subscribers.remove(user)
+        return await self.save()
+
+    async def add_subscriber(self, user: User) -> schemas.ActivityFeed:
+        if user not in self.viewers:
+            self.subscribers.append(user)
+            return await self.save()
+        return self
 
 
-# Activity Stream
-# Actor. The object that performed the activity.
-# Verb. The verb phrase that identifies the action of the activity.
-# Action Object. (Optional) The object linked to the action itself.
-# Target. (Optional) The object to which the activity was performed.
-# e.g Aurthur (actor) verified (verb) worksheet ws20-1222 (action object) 20 on felicity lims (target) minutes ago
-# maybe target as feed
-class Stream:
-    uid: str
-    actor_uid: str
-    actor: str
-    verb: str
-    action_uid: str
-    action: str
-    target_uid: str
-    target: str
+"""
+ Many to Many Link between ActivityStream and ActivityFeed
+"""
+activity_stream_feed = Table('activity_stream_feed', DBModel.metadata,
+                             Column("feed_uid", ForeignKey('activityfeed.uid'), primary_key=True),
+                             Column("stream_uid", ForeignKey('activitystream.uid'), primary_key=True)
+                             )
 
-    # add_activity(actor_uid=1, verb="", action_uid=56, target=feed_uid/group_uid)
-    def add_activity(self, activity: dict):
-        """A activity stream"""
+"""
+ Many to Many Link between Users and ActivityStream
+"""
+activity_stream_view = Table('activity_stream_view', DBModel.metadata,
+                             Column("stream_uid", ForeignKey('activitystream.uid'), primary_key=True),
+                             Column("user_uid", ForeignKey('user.uid'), primary_key=True)
+                             )
 
-    def remove_activity(self, activity_uid):
-        """remove activity stream"""
 
-    def seers(self, activity_uid):
-        """list of users who have seen the stream"""
+class ActivityStream(BaseAuditDBModel):
+    """ActivityStream
+    Actor. The object that performed the activity.
+    Verb. The verb phrase that identifies the action of the activity.
+    Action Object. (Optional) The object linked to the action itself.
+    Target. (Optional) The object to which the activity was performed.
+    e.g. Aurthur (actor) verified (verb) worksheet ws20-1222 (action object) 20 on felicity lims (target) minutes ago
+    ?? maybe target as feed
+    """
+    feeds = relationship(ActivityFeed, secondary=activity_stream_feed, lazy="selectin")
+    actor_uid = Column(Integer, ForeignKey('user.uid'), nullable=True)
+    actor = relationship('User', foreign_keys=[actor_uid], lazy='selectin')
+    verb = Column(String, nullable=True)
+    action_object_uid = Column(Integer, nullable=True)
+    action_object = Column(String, nullable=True)
+    target_uid = Column(Integer, nullable=True)
+    target = Column(String, nullable=True)
+    viewers = relationship('User', secondary=activity_stream_view, lazy="selectin")
 
-    def not_seers(self, activity_uid):
+    @classmethod
+    async def create(cls, obj_in: schemas.ActivityStreamCreate) -> schemas.ActivityStream:
+        data = cls._import(obj_in)
+        return await super().create(**data)
+
+    async def update(self, obj_in: schemas.ActivityStreamUpdate) -> schemas.ActivityStream:
+        data = self._import(obj_in)
+        return await super().update(**data)
+
+    async def reset_feeds(self) -> schemas.ActivityStream:
+        self.feeds.clear()
+        return await self.save()
+
+    async def remove_feed(self, feed: ActivityFeed) -> schemas.ActivityStream:
+        self.feeds.remove(feed)
+        return await self.save()
+
+    async def add_feed(self, feed: ActivityFeed) -> schemas.ActivityStream:
+        if feed not in self.feeds:
+            self.feeds.append(feed)
+            return await self.save()
+        return self
+
+    async def reset_viewers(self) -> schemas.ActivityStream:
+        self.viewers.clear()
+        return await self.save()
+
+    async def remove_viewer(self, viewer: User) -> schemas.ActivityStream:
+        self.viewers.remove(viewer)
+        return await self.save()
+
+    async def add_viewer(self, viewer: User) -> schemas.ActivityStream:
+        if viewer not in self.viewers:
+            self.viewers.append(viewer)
+            return await self.save()
+        return self
+
+    async def not_viewed(self, activity_uid) -> Optional[List[User]]:
         """list of users who have not seen the stream"""
+        pass
 
-    def for_seer(self, seer_uid, seen=False):
+    @classmethod
+    async def for_viewer(cls, viewer: User, seen=False) -> Optional[List[schemas.ActivityStream]]:
         """Streams for user: seen or unseen"""
+        pass

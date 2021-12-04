@@ -39,3 +39,7 @@ from felicity.apps.kanban.models import ListingTask  # noqa
 from felicity.apps.kanban.models import TaskTag  # noqa
 from felicity.apps.kanban.models import TaskMilestone  # noqa
 from felicity.apps.kanban.models import TaskComment  # noqa
+from felicity.apps.stream.models import ActivityFeed  # noqa
+from felicity.apps.stream.models import ActivityStream  # noqa
+from felicity.apps.noticeboard.models import Notice  # noqa
+from felicity.apps.notification.models import Notification  # noqa

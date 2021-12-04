@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 import logging
 
 from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, DateTime, Table
@@ -79,6 +79,20 @@ class Profile(DBModel):
     tat_length_minutes = Column(Integer, nullable=True)
     active = Column(Boolean(), default=False)
     analyses = relationship('Analysis', secondary=aplink, back_populates="profiles", lazy="selectin")
+
+    async def update_tat(self):
+        tats = []
+        tat = None
+        for anal in self.analyses:
+            tats.append(anal.tat_length_minutes)
+
+        if len(tats) > 0:
+            tat = sorted(tats, reverse=False)[0]
+
+        if tat:
+            self.tat_length_minutes = tat
+            return await self.save()
+        return self
 
     @classmethod
     async def create(cls, obj_in: schemas.ProfileCreate) -> schemas.Profile:
@@ -238,6 +252,7 @@ class Sample(Auditable, BaseMPTT):
     date_cancelled = Column(DateTime, nullable=True)
     rejection_reasons = relationship(RejectionReason, secondary=rrslink, lazy='selectin')
     internal_use = Column(Boolean(), default=False)
+    due_date = Column(DateTime, nullable=True)
     # QC Samples
     qc_set_uid = Column(Integer, ForeignKey('qcset.uid'), nullable=True)
     qc_set = relationship(QCSet, back_populates="samples", lazy='selectin')
@@ -259,6 +274,34 @@ class Sample(Auditable, BaseMPTT):
             'date_received',
             'internal_use',
         ]
+
+    async def update_due_date(self, reset: bool = False):
+        tats = []
+        length: int = 0
+        for anal in self.analyses:
+            tats.append(anal.tat_length_minutes)
+
+        for prof in self.profiles:
+            tats.append(prof.tat_length_minutes)
+
+        if len(tats) > 0:
+            length = sorted(tats, reverse=False)[0]
+
+        if reset:
+            start = datetime.now()
+        else:
+            start = self.created_at
+            if not start:
+                start = datetime.now()
+
+        if length:
+            self.due_date = start + timedelta(minutes=length)
+            return await self.save()
+        return self
+
+    async def extend_due_date(self, ext_minutes: int):
+        self.due_date += timedelta(minutes=ext_minutes)
+        return await self.save()
 
     @classmethod
     async def create_sample_id(cls, sampletype):

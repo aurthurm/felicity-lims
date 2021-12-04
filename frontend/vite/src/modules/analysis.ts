@@ -20,7 +20,7 @@ import useNotifyToast from './messages';
 export default function useAnalysisComposable(){
     const route = useRoute();
     const store = useStore();
-    const { toastWarning } = useNotifyToast();
+    const { toastWarning, gqlResponseHandler } = useNotifyToast();
 
     const state = reactive({
         can_submit: false,
@@ -234,15 +234,9 @@ export default function useAnalysisComposable(){
           if (result.isConfirmed) {
 
             _reinstater({ analyses: getResultsUids() }).then(resp => {
-              if(resp.error){
-                toastWarning(resp?.error?.message)
-                // swalWarning(resp?.error?.message)
-                console.error(resp)
-                console.log(store.state.toast)
-                return
-              }
+              const data = gqlResponseHandler(resp)
               _updateSample()
-              store.dispatch(ActionTypes.UPDATE_ANALYSIS_RESULTS_STATUS, resp.data.reInstateAnalysisResults);
+              store.dispatch(ActionTypes.UPDATE_ANALYSIS_RESULTS_STATUS, data?.reInstateAnalysisResults);
             });
 
             // Swal.fire(
