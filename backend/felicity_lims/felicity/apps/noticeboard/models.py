@@ -53,15 +53,15 @@ class Notice(BaseAuditDBModel):
         data = self._import(obj_in)
         return await super().update(**data)
 
-    async def reset_views(self):
+    async def reset_views(self) -> schemas.Notice:
         self.viewers.clear()
         return await self.save()
 
-    async def remove_viewer(self, user: User):
+    async def remove_viewer(self, user: User) -> schemas.Notice:
         self.viewers.remove(user)
         return await self.save()
 
-    async def add_viewer(self, user: User):
+    async def add_viewer(self, user: User) -> schemas.Notice:
         if user not in self.viewers:
             self.viewers.append(user)
             return await self.save()

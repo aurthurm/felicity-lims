@@ -43,3 +43,4 @@ from felicity.apps.stream.models import ActivityFeed  # noqa
 from felicity.apps.stream.models import ActivityStream  # noqa
 from felicity.apps.noticeboard.models import Notice  # noqa
 from felicity.apps.notification.models import Notification  # noqa
+from felicity.apps.messaging.models import Message  # noqa
