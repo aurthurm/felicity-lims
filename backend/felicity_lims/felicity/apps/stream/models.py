@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
  Many to Many Link between Users and ActivityFeed
 """
 activity_feed_subscription = Table('activity_feed_subscription', DBModel.metadata,
-                                   Column("feed_uid", ForeignKey('activityfeed.uid'), primary_key=True),
+                                   Column("activity_feed_uid", ForeignKey('activityfeed.uid'), primary_key=True),
                                    Column("user_uid", ForeignKey('user.uid'), primary_key=True)
                                    )
 
@@ -53,7 +53,7 @@ class ActivityFeed(BaseAuditDBModel):
  Many to Many Link between ActivityStream and ActivityFeed
 """
 activity_stream_feed = Table('activity_stream_feed', DBModel.metadata,
-                             Column("feed_uid", ForeignKey('activityfeed.uid'), primary_key=True),
+                             Column("activity_feed_uid", ForeignKey('activityfeed.uid'), primary_key=True),
                              Column("stream_uid", ForeignKey('activitystream.uid'), primary_key=True)
                              )
 
@@ -61,7 +61,7 @@ activity_stream_feed = Table('activity_stream_feed', DBModel.metadata,
  Many to Many Link between Users and ActivityStream
 """
 activity_stream_view = Table('activity_stream_view', DBModel.metadata,
-                             Column("stream_uid", ForeignKey('activitystream.uid'), primary_key=True),
+                             Column("activity_stream_uid", ForeignKey('activitystream.uid'), primary_key=True),
                              Column("user_uid", ForeignKey('user.uid'), primary_key=True)
                              )
 

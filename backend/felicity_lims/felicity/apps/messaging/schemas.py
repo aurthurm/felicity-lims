@@ -8,12 +8,12 @@ from felicity.apps.user.schemas import User
 # Message Schemas
 #
 class MessageBase(BaseAuditModel):
-    recipients: Optional[List[User]] = []
-    subject: Optional[str] = ""
+    thread_uid: int
+    thread: Optional["MessageThread"] = None
     body: Optional[str] = ""
     viewers: Optional[List[User]] = []
     deleted_by: Optional[List[User]] = []
-    broadcast: Optional[bool] = False
+    parent_id: Optional[int] = None
 
 
 class Message(MessageBase):
@@ -28,4 +28,29 @@ class MessageCreate(MessageBase):
 
 
 class MessageUpdate(MessageBase):
+    pass
+
+
+#
+# MessageThread Schemas
+#
+class MessageThreadBase(BaseAuditModel):
+    broadcast: Optional[bool] = False
+    recipients: Optional[List[User]] = []
+    messages: Optional[List[Message]] = []
+    recipients: Optional[List[User]] = []
+
+
+class MessageThread(MessageThreadBase):
+    uid: Optional[int] = None
+
+    class Config:
+        orm_mode = True
+
+
+class MessageThreadCreate(MessageThreadBase):
+    pass
+
+
+class MessageThreadUpdate(MessageThreadBase):
     pass

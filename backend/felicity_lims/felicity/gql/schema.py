@@ -17,6 +17,12 @@ from felicity.gql.markdown.query import MarkDownQuery
 from felicity.gql.markdown.mutations import MarkdownMutations
 from felicity.gql.kanban.query import KanBanQuery
 from felicity.gql.kanban.mutations import KanBanMutations
+from felicity.gql.messaging.query import MessageQuery
+from felicity.gql.messaging.mutations import MessageMutations
+from felicity.gql.noticeboard.query import NoticeQuery
+from felicity.gql.noticeboard.mutations import NoticeMutations
+from felicity.gql.notification.query import NotificationQuery
+
 
 
 @strawberry.type
@@ -30,6 +36,9 @@ class Query(
     WorkSheetQuery,
     MarkDownQuery,
     KanBanQuery,
+    MessageQuery,
+    NoticeQuery,
+    NotificationQuery,
 ):
     pass
 
@@ -44,6 +53,8 @@ class Mutation(
     AnalysisMutations,
     WorkSheetMutations,
     KanBanMutations,
+    MessageMutations,
+    NoticeMutations,
 ):
     pass
 

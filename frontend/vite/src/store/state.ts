@@ -1,15 +1,16 @@
-import { IAuth } from '../models/auth'
+import { IGroup, IPermission, IUser } from '../models/auth'
+import { IDepartment } from '../models/setup';
 
 export interface IState {
   title: string;
   isAuthenticated: boolean;
   token: string ;
-  auth?: IAuth | null;
-  groups: any[];
-  permissions: any[];
-  users: any[];
+  auth?: IUser | null;
+  groups: IGroup[];
+  permissions: IPermission[];
+  users: IUser[];
   auditLogs: any[];
-  departments: any[];
+  departments: IDepartment[];
 }
 
 export const initialState = () => {

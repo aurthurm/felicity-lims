@@ -21,7 +21,7 @@ def get_passed_args(inspection):
 
     final = {**kwargs, **_locals}
     # [(arg,args.locals[arg]) for arg in args.args]
-    print(f"Func Inspector: {final}")
+    # print(f"Func Inspector: {final}")
     return final
 
 

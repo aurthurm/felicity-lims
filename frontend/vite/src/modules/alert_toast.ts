@@ -1,10 +1,6 @@
 import Swal from 'sweetalert2';
 import JSConfetti from 'js-confetti'
 import { Notyf } from 'notyf';
-import  { ref } from 'vue'
-import { useStore } from 'vuex';
-import { useRouter } from 'vue-router';
-import { ActionTypes } from '../store/actions'
 
 const jsConfetti = new JSConfetti();
 
@@ -13,7 +9,7 @@ jsConfetti.addConfetti({
 })
 
 const notyf = new Notyf({ // https://github.com/caroso1222/notyf
-    duration: 5000,
+    duration: 50000,
     position: {
       x: 'left',
       y: 'bottom',
@@ -53,8 +49,6 @@ const fireAlert = (options: any) => {
 
 
 export default function useNotifyToast(){
-    const store = useStore();
-    const router = useRouter();
 
     // Notify Toast Notifications
     const toastSuccess = (message: string) => notyf.success(message);
@@ -69,10 +63,6 @@ export default function useNotifyToast(){
     const swalWarning = (message: string) => fireAlert({ icon: "warning", message });
     const swalError = (message: string) => fireAlert({ icon: "error", message });
 
-    const logOut = () => {
-        store.dispatch(ActionTypes.LOG_OUT).then(_ => router.push({ name: "Login" }));
-    }
-
     // Automatic Error handling from Graphql backend
     const gqlErrorHandler = (error: any) => {
       console.log(error);
@@ -85,7 +75,6 @@ export default function useNotifyToast(){
         if(error.networkError) {
           toastError(error.networkError.message);
           swalError("!!OOPS!!: Something just hapenned Please login again :)")
-          setTimeout(() => logOut(), 2000)
         }
       }
     }
@@ -99,9 +88,7 @@ export default function useNotifyToast(){
     return { 
         toastSuccess, toastInfo, toastWarning, toastError,
         swalSuccess, swalInfo, swalWarning, swalError,
-        gqlResponseHandler, gqlErrorHandler,
-        logOut
-    }
+        gqlResponseHandler, gqlErrorHandler    }
 }
 
 

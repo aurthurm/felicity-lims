@@ -15,7 +15,7 @@ import {
   RETEST_ANALYSIS_RESULTS, 
   RETRACT_ANALYSIS_RESULTS } from '../graphql/analyses.mutations';
 import { IAnalysisProfile, IAnalysisService } from '../models/analysis';
-import useNotifyToast from './messages';
+import useNotifyToast from './alert_toast';
 
 export default function useAnalysisComposable(){
     const route = useRoute();

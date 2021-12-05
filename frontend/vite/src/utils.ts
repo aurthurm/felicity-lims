@@ -9,6 +9,8 @@ export const parseDate = function(str: any) {
     return str;
 }
 
+export const subtractDates = (first: any, second: any)  => Math.floor(Math.abs(first - second)/ (1000 * 60 * 60 * 24))
+
 export const parseEdgeNodeToList = (payload: any) => {
     const list: any[] = [];
     if(!payload || !payload?.edges) return payload;

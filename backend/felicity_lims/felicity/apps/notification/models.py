@@ -46,10 +46,9 @@ department_notification = Table('department_notification', DBModel.metadata,
 class Notification(BaseAuditDBModel):
     """Notification"""
     # target audiences
-    departments = relationship('Department', secondary=department_notification, back_populates="notifications",
-                               lazy="selectin")
-    groups = relationship('Group', secondary=group_notification, back_populates="notifications", lazy="selectin")
-    users = relationship('User', secondary=user_notification, back_populates="notifications", lazy="selectin")
+    departments = relationship('Department', secondary=department_notification, lazy="selectin")
+    groups = relationship('Group', secondary=group_notification, lazy="selectin")
+    users = relationship('User', secondary=user_notification, lazy="selectin")
     #
     message = Column(String, nullable=False)
     #

@@ -32,13 +32,12 @@ import MarkDownView from '../views/markdown/index.vue';
 import MarkDownListing from '../views/markdown/DocumentListing.vue';
 import MarkDownDocumentSingle from '../views/markdown/_id/index.vue';
 import MarkDownDocumentView from '../views/markdown/_id/Document.vue';
+import NoticeAdminView  from '../views/notice/index.vue';
 import AboutView from '../views/About.vue';
 import AdminView from '../views/admin/index.vue';
 import PageNotFound from '../views/404.vue';
 import NotAuthorised from '../views/Restricted.vue';
 import { isTokenValid } from './checks';
-
-import { ISample } from '../models/analysis'
 
 
 const routes: RouteRecordRaw[] = [
@@ -241,6 +240,24 @@ const routes: RouteRecordRaw[] = [
     },
   },
   {
+    name: pages.NOTICE_MANAGER,
+    path: '/notice-manager',
+    component: NoticeAdminView,
+    // children: [
+    //   {
+    //     path: '',
+    //     name: 'notice-home',
+    //     component: NoticeAdminView,
+    //     meta: {
+    //       requiresAuth: true,
+    //     },
+    //   },
+    // ],
+    meta: {
+      requiresAuth: true,
+    },
+  },
+  {
     path: '/documents',
     name: pages.MARKDOWN_DOCUMENTS,
     component: MarkDownView,
@@ -385,8 +402,11 @@ function hasAccess(page: any) {
     case pages.KANBAN_BOARD:
       return canAccessPage(userRole, pages.KANBAN_BOARD)
     
-      case pages.ADMINISTRATION:
-        return canAccessPage(userRole, pages.ADMINISTRATION)
+    case pages.ADMINISTRATION:
+      return canAccessPage(userRole, pages.ADMINISTRATION)
+  
+    case pages.NOTICE_MANAGER:
+      return canAccessPage(userRole, pages.NOTICE_MANAGER)
 
     default:
       return false;
