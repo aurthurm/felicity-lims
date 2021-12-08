@@ -3,6 +3,7 @@ from datetime import datetime
 
 import strawberry
 
+from felicity.apps.noticeboard import models
 from felicity.gql.setup.types import DepartmentType
 from felicity.gql.user.types import UserType, GroupType
 
@@ -22,3 +23,9 @@ class NoticeType:
     updated_at: Optional[datetime]
     updated_by_uid: Optional[int]
     updated_by: Optional[UserType]
+
+
+@strawberry.type
+class NoticeOperationError:
+    error: str
+    suggestion: str = ""

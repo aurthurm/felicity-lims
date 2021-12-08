@@ -7,19 +7,23 @@ import strawberry
 
 from felicity.apps.noticeboard import schemas, models
 from felicity.gql import auth_from_info, verify_user_auth
-from felicity.gql.noticeboard.types import NoticeType
+from felicity.gql.noticeboard.types import NoticeType, NoticeOperationError
 from felicity.apps.patient.models import logger
 from felicity.utils import get_passed_args
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+AddNoticeResponse = strawberry.union("AddNoticeResponse", (NoticeType, NoticeOperationError),
+                                     description="Union of possible outcomes when adding a new notice"
+                                     )
+
 
 @strawberry.type
 class NoticeMutations:
     @strawberry.mutation
     async def create_notice(self, info, title: str, body: str, expiry: str, groups: Optional[List[int]] = [],
-                            departments: Optional[List[int]] = []) -> NoticeType:
+                            departments: Optional[List[int]] = []) -> AddNoticeResponse:
 
         inspector = inspect.getargvalues(inspect.currentframe())
         passed_args = get_passed_args(inspector)
@@ -28,11 +32,17 @@ class NoticeMutations:
         verify_user_auth(is_authenticated, felicity_user, "Only Authenticated user can create notices")
 
         if not title or not body or not expiry:
-            raise Exception("title, body, and expiry are mandatory")
+            return NoticeOperationError(
+                error="Some fields have missing required data",
+                suggestion="Make sure that the fields: [title, body, expiry] all have values"
+            )
 
         exists = await models.Notice.get(title=title)
         if exists:
-            raise Exception(f"Notice with title {title} already exists: change your title !")
+            return NoticeOperationError(
+                error="Notice title Duplication not Allowed",
+                suggestion=f"Change the notice title"
+            )
 
         incoming = {
             "created_by_uid": felicity_user.uid,
@@ -57,7 +67,7 @@ class NoticeMutations:
 
         obj_in = schemas.NoticeCreate(**incoming)
         notice: models.Notice = await models.Notice.create(obj_in)
-        return notice
+        return NoticeType(**notice.simple_marshal())
 
     @strawberry.mutation
     async def update_notice(self, info, uid: int, title: str, body: str, expiry: str, groups: Optional[List[int]] = [],

@@ -20,7 +20,7 @@ class TrailMixin(object):
 
     @declared_attr
     def created_by(self):
-        return relationship(User, foreign_keys=[self.created_by_uid])
+        return relationship(User, foreign_keys=[self.created_by_uid], lazy='selectin')
 
     @declared_attr
     def updated_by_uid(self):
@@ -28,7 +28,7 @@ class TrailMixin(object):
 
     @declared_attr
     def updated_by(self):
-        return relationship(User, foreign_keys=[self.updated_by_uid])
+        return relationship(User, foreign_keys=[self.updated_by_uid], lazy='selectin')
 
 
 class BaseAuditDBModel(DBModel, TrailMixin):

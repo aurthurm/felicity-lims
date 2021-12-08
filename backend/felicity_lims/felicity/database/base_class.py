@@ -48,6 +48,23 @@ class DBModel(AllFeaturesMixin, TimestampsMixin):
     def __tablename__(cls) -> str:
         return cls.__name__.lower()
 
+    def simple_marshal(self, exclude=None):
+        """convert instance to dict
+        leverages instance.__dict__
+        """
+        if exclude is None:
+            exclude = []
+        exclude.append("_sa_instance_state")
+
+        data = self.__dict__
+        return_data = {}
+
+        for field in data:
+            if field not in exclude:
+                return_data[field] = data[field]
+
+        return return_data
+
     @classmethod
     async def all_by_page(cls, page: int = 1, limit: int = 20, **kwargs) -> Dict:
         start = (page - 1) * limit
