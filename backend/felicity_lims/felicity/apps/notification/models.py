@@ -44,7 +44,15 @@ department_notification = Table('department_notification', DBModel.metadata,
 
 
 class Notification(BaseAuditDBModel):
-    """Notification"""
+    """Notification
+    Custom messages about system status. These are more like activity streams only that they are very specific
+    messages to notify users about something important
+    examples:
+        32 samples are due in 4 days, today, etc ....
+        7 open worksheets have been lying idle for 3 weeks plus with 137 samples past their duw date.
+        2 worksheets have no samples, consider deleting them to avoid cluttering your dashboard
+        ...
+    """
     # target audiences
     departments = relationship('Department', secondary=department_notification, lazy="selectin")
     groups = relationship('Group', secondary=group_notification, lazy="selectin")

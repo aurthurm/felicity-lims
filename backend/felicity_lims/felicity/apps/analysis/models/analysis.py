@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 import logging
-
-from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, DateTime, Table
+from time import sleep
+from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, DateTime, Table, event
 from sqlalchemy.orm import relationship
 
 from felicity.apps.analysis import schemas
@@ -12,10 +12,13 @@ from felicity.apps.core import BaseMPTT
 from felicity.apps.core.utils import sequencer
 from felicity.apps.patient import models as pt_models
 from felicity.apps import BaseAuditDBModel, DBModel, Auditable
+from felicity.apps.stream.utils import FelicityStreamer
 from felicity.apps.user.models import User
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
+streamer = FelicityStreamer()
 
 
 class SampleType(BaseAuditDBModel):
@@ -303,6 +306,7 @@ class Sample(Auditable, BaseMPTT):
         self.due_date += timedelta(minutes=ext_minutes)
         return await self.save()
 
+
     @classmethod
     async def create_sample_id(cls, sampletype):
         prefix_key = sampletype.abbr
@@ -330,49 +334,58 @@ class Sample(Auditable, BaseMPTT):
                 count = int(stub)
                 return f"{prefix}_R{sequencer(count + 1, 2)}"
 
+    async def get_analysis_results(self):
+        from felicity.apps.analysis.models.results import AnalysisResult
+        return await AnalysisResult.get_all(sample_uid=self.uid)
+
     async def receive(self, received_by):
         if self.status in [states.sample.DUE]:
             self.status = states.sample.RECEIVED
             self.received_by_uid = received_by.uid
             self.date_received = datetime.now()
-            self.updated_by_uid = received_by.uid # noqa
+            self.updated_by_uid = received_by.uid  # noqa
             return await self.save()
         return None
 
     async def cancel(self, cancelled_by):
+        analysis_results = await self.get_analysis_results()
         if self.status in [states.sample.RECEIVED, states.sample.DUE]:
-            for result in self.analysis_results:
+            for result in analysis_results:
                 await result.cancel(cancelled_by=cancelled_by)
             self.status = states.sample.CANCELLED
             self.cancelled_by_uid = cancelled_by.uid
             self.date_cancelled = datetime.now()
-            self.updated_by_uid = cancelled_by.uid # noqa
+            self.updated_by_uid = cancelled_by.uid  # noqa
             return await self.save()
         return None
 
     async def re_instate(self, re_instated_by):
+        analysis_results = await self.get_analysis_results()
         if self.status in [states.sample.CANCELLED]:
             # A better way is to go to audit log and retrieve previous state especially for  DUE
             # rather than transitioning all to RECEIVED
             self.status = states.sample.RECEIVED
             self.cancelled_by_uid = None
             self.date_cancelled = None
-            self.updated_by_uid = re_instated_by.uid # noqa
+            self.updated_by_uid = re_instated_by.uid  # noqa
             sample = await self.save()
-            for result in self.analysis_results:
+            for result in analysis_results:
                 await result.re_instate(re_instated_by=re_instated_by)
             return sample
         return self
 
     async def submit(self, submitted_by):
         statuses = [states.result.RESULTED, states.result.RETRACTED, states.result.VERIFIED]
-        match = all([(sibling.status in statuses) for sibling in self.analysis_results])
+        analysis_results = await self.get_analysis_results()
+        match = all([(sibling.status in statuses) for sibling in analysis_results])
         if match and self.status == states.sample.RECEIVED:
             self.status = states.sample.TO_BE_VERIFIED
             self.submitted_by_uid = submitted_by.uid
             self.date_submitted = datetime.now()
             self.updated_by_uid = submitted_by.uid  # noqa
-            return await self.save()
+            saved = await self.save()
+            await streamer.stream(saved, submitted_by, "submitted", "sample")
+            return saved
         return self
 
     async def assign(self):
@@ -385,13 +398,16 @@ class Sample(Auditable, BaseMPTT):
 
     async def verify(self, verified_by):
         statuses = [states.result.VERIFIED, states.result.RETRACTED, states.result.CANCELLED]
-        match = all([(sibling.status in statuses) for sibling in self.analysis_results])
+        analysis_results = await self.get_analysis_results()
+        match = all([(sibling.status in statuses) for sibling in analysis_results])
         if match and self.status == states.sample.TO_BE_VERIFIED:
             self.status = states.sample.VERIFIED
             self.verified_by_uid = verified_by.uid
             self.date_verified = datetime.now()
             self.updated_by_uid = verified_by.uid  # noqa
-            return await self.save()
+            saved = await self.save()
+            await streamer.stream(saved, verified_by, "verified", "sample")
+            return saved
         return self
 
     async def publish(self, published_by):
@@ -424,7 +440,6 @@ class Sample(Auditable, BaseMPTT):
             return await self.save()
         return self
 
-
         # DO REFLEX HERE
 
     @classmethod
@@ -450,3 +465,11 @@ class Sample(Auditable, BaseMPTT):
     async def update(self, obj_in: schemas.SampleUpdate) -> schemas.Sample:
         data = self._import(obj_in)
         return await super().update(**data)
+
+
+# @event.listens_for(Sample, "after_update")
+# def stream_sample_verified_models(mapper, connection, target): # noqa
+#     logger.log("stream_sample_verified inn")
+#     logger.log(target)
+#     print("hurray inn")
+

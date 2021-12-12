@@ -7,7 +7,7 @@ from sqlalchemy import Column, Integer
 from sqlalchemy.sql import func
 from sqlalchemy.orm import selectinload, as_declarative, declared_attr
 from sqlalchemy import or_ as sa_or_
-from felicity.database.async_mixins import AllFeaturesMixin, TimestampsMixin, smart_query
+from felicity.database.async_mixins import AllFeaturesMixin, smart_query
 from felicity.database.paginator.cursor import PageCursor, EdgeNode, PageInfo
 
 from felicity.database.session import AsyncSessionScoped
@@ -33,9 +33,16 @@ class classproperty(object):
         return self.fget(owner_cls)
 
 
+# return dict((key, value) for key, value in f.__dict__.items() if not callable(value) and not key.startswith('__'))
+# vars(), dir()
+# json.loads(json.dumps(self, default=lambda o: o.__dict__))
+# dict((key, getattr(x, key)) for key in dir(x) if key not in dir(x.__class__))
+# if not name.startswith('__') and not inspect.ismethod(value):
+
+
 # Enhanced Base Model Class with some django-like super powers
 @as_declarative()
-class DBModel(AllFeaturesMixin, TimestampsMixin):
+class DBModel(AllFeaturesMixin):
     __name__: str
     __abstract__ = True
 
@@ -48,7 +55,7 @@ class DBModel(AllFeaturesMixin, TimestampsMixin):
     def __tablename__(cls) -> str:
         return cls.__name__.lower()
 
-    def simple_marshal(self, exclude=None):
+    def marshal_simple(self, exclude=None):
         """convert instance to dict
         leverages instance.__dict__
         """
@@ -61,9 +68,28 @@ class DBModel(AllFeaturesMixin, TimestampsMixin):
 
         for field in data:
             if field not in exclude:
-                return_data[field] = data[field]
+                return_data[field] = data[field]  # getattr(self, field)
 
         return return_data
+
+    def marshal_nested(self, obj=None):
+        if obj is None:
+            obj = self
+
+        if isinstance(obj, dict):
+            return {k: self.marshal_nested(v) for k, v in obj.items()}
+        elif hasattr(obj, "_ast"):
+            return self.marshal_nested(obj._ast())
+        elif not isinstance(obj, str) and hasattr(obj, "__iter__"):
+            return [self.marshal_nested(v) for v in obj]
+        elif hasattr(obj, "__dict__"):
+            return {
+                k: self.marshal_nested(v)
+                for k, v in obj.__dict__.items()
+                if not callable(v) and not k.startswith('_')
+            }
+        else:
+            return obj
 
     @classmethod
     async def all_by_page(cls, page: int = 1, limit: int = 20, **kwargs) -> Dict:

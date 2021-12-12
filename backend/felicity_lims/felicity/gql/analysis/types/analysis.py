@@ -155,9 +155,19 @@ class SampleType:  # for Sample
     invalidated_by_uid: Optional[int]
     invalidated_by: Optional[UserType]
     date_invalidated: Optional[datetime]
+    received_by_uid: Optional[int]
+    received_by: Optional[UserType]
+    date_received: Optional[datetime]
+    published_by_uid: Optional[int]
+    published_by: Optional[UserType]
+    date_published: Optional[datetime]
+    cancelled_by_uid: Optional[int]
+    cancelled_by: Optional[UserType]
+    date_cancelled: Optional[datetime]
+    due_date: Optional[datetime]
     rejection_reasons: Optional[List[RejectionReasonType]]
     internal_use: bool
-    parent_id: int
+    parent_id: Optional[int]
     parent: Optional['SampleType']
     # QC Samples
     qc_set_uid: Optional[int]

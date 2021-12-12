@@ -28,7 +28,7 @@ class PostgresDsn(AnyUrl):
 class Settings(BaseSettings):
     BASE_DIR: str = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
     API_V1_STR: str = "/api/v1"
-    SECRET_KEY: str = secrets.token_urlsafe(32)
+    SECRET_KEY: str = "uIM7aXFRzaIxWr1NEy_RMQg9iIuDkLAlkOPs5zpgbts"  # secrets.token_urlsafe(32)
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 16
     SERVER_NAME: str = getenv_value("SERVER_NAME", 'felicity')
     SERVER_HOST: AnyHttpUrl = getenv_value("SERVER_HOST", 'https://localhost')

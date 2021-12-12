@@ -3,7 +3,6 @@ import binascii
 import logging
 import pyfiglet as pf
 from typing import List
-from datetime import datetime
 
 from fastapi import FastAPI, WebSocket
 from starlette.middleware.cors import CORSMiddleware
@@ -17,6 +16,8 @@ from starlette.authentication import (
 )
 
 from strawberry.asgi import GraphQL
+from strawberry.subscriptions import GRAPHQL_WS_PROTOCOL, GRAPHQL_TRANSPORT_WS_PROTOCOL
+
 
 from felicity.api.api_v1.api import api_router  # noqa
 from felicity.core.config import settings  # noqa
@@ -57,7 +58,7 @@ class FelicityAuthBackend(AuthenticationBackend):
 
 
 flims = FastAPI(
-    title=settings.PROJECT_NAME, openapi_url=f"{settings.API_V1_STR}/openapi.json"
+    title=settings.PROJECT_NAME, openapi_url=f"{settings.API_V1_STR}/openapi.json",
 )
 
 
@@ -96,32 +97,9 @@ flims.add_middleware(
     backend=FelicityAuthBackend()
 )
 
-graphql_app = GraphQL(gql_schema)
+graphql_app = GraphQL(gql_schema, subscription_protocols=[GRAPHQL_WS_PROTOCOL, GRAPHQL_TRANSPORT_WS_PROTOCOL])
 
 flims.include_router(api_router, prefix=settings.API_V1_STR)
 flims.add_route("/felicity-gql", graphql_app)
-flims.add_websocket_route("/felicity-ws", graphql_app)
+flims.add_websocket_route("/subscriptions", graphql_app, "felicity-subscriptions")
 
-
-class ConnectionManager:
-    def __init__(self):
-        self.connections: List[WebSocket] = []
-
-    async def connect(self, websocket: WebSocket):
-        await websocket.accept()
-        self.connections.append(websocket)
-
-    async def broadcast(self, data: str):
-        for connection in self.connections:
-            await connection.send_text(data)
-
-
-manager = ConnectionManager()
-
-
-@flims.websocket("/ws")
-async def websocket_endpoint(websocket: WebSocket):
-    await manager.connect(websocket)
-    while True:
-        data = await websocket.receive_text()
-        await manager.broadcast(f"Client {data}")

@@ -21,34 +21,28 @@
       </div>
     </div>
     <div class="flex">
-      <a
-        href="#"
-        class="no-underline text-white opacity-50 flex items-center px-4 border-b border-transparent hover:opacity-100 md:hover:border-grey-dark"
-      >
-        <font-awesome-icon icon="chart-line" class="mr-2" />
-        <span>Analytics</span>
-      </a>
-      <a
+      <!-- <a
         href="#"
         class="no-underline text-white opacity-50 flex items-center px-4 border-b border-transparent hover:opacity-100 md:hover:border-grey-dark"
       >
         <font-awesome-icon icon="flag" class="mr-2" />
         <span>Activities</span>
-      </a>
+      </a> -->
       <a
         href="#"
         class="no-underline text-white opacity-50 flex items-center px-4 border-b border-transparent hover:opacity-100 md:hover:border-grey-dark"
+        @click="showNotifications(true)"
       >
         <font-awesome-icon icon="bell" class="mr-2" />
         <span>Notifications</span>
       </a>
-      <a
+      <!-- <a
         href="#"
         class="no-underline text-white opacity-50 flex items-center px-4 border-b border-transparent hover:opacity-100 md:hover:border-grey-dark"
       >
         <font-awesome-icon icon="envelope" class="mr-2" />
         <span class="text-sm">Messages</span>
-      </a>
+      </a> -->
       <div class="flex text-right align-middle py-2">
         <div>
           <img
@@ -103,21 +97,27 @@
 
 <script lang="ts">
 import { defineComponent, ref, computed } from 'vue';
-import { canAccessPage, roles } from './../../../guards';
+import { canAccessPage } from './../../../guards';
 import { pages } from "./../../../router/constants";
+import useNotificationComposable from './../../../modules/notification'
 export default defineComponent({
+  emits: ["openNotifications"],
   setup(_, { emit }) {
     const dropdownOpen = ref(false);
     const isOpen = ref(false);
 
     const userFullName: string | null = localStorage.getItem('fuser');
 
+
+    const {  showNotifications } = useNotificationComposable()
+
     return {
       pages, canAccessPage,
       userRole: computed(() => localStorage.getItem('fRole') || "" ),
       isOpen,
       dropdownOpen,
-      userFullName
+      userFullName,
+      showNotifications
     };
   },
 });

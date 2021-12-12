@@ -35,11 +35,12 @@ class ActivityStreamBase(BaseAuditModel):
     feeds: Optional[List[ActivityFeed]] = []
     actor_uid: Optional[int] = None
     actor: Optional[User] = None
-    verb: Optional[int] = None
-    action_object: Optional[int] = None
+    verb: Optional[str] = None
+    action_object_type: Optional[str] = None
     action_object_uid: Optional[int] = None
-    target: Optional[str] = None
+    action_object: Optional[str] = None
     target_uid: Optional[int] = None
+    target: Optional[str] = None
     viewers: Optional[List[User]] = []
 
 

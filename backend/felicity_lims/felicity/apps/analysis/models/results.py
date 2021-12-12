@@ -5,10 +5,7 @@ from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, DateTime
 from sqlalchemy.orm import relationship
 
 from felicity.apps.analysis import schemas, conf
-from felicity.apps.analysis.models import analysis as analysis_models
 from felicity.apps.core import BaseMPTT
-from felicity.apps.setup.models.setup import Instrument, Method
-from felicity.apps.worksheet import models as ws_models
 from felicity.apps import Auditable
 
 logging.basicConfig(level=logging.INFO)
@@ -21,17 +18,17 @@ class AnalysisResult(Auditable, BaseMPTT):
     the number of linked sample_analyses at minimum :)
     """
     sample_uid = Column(Integer, ForeignKey('sample.uid'), nullable=False)
-    sample = relationship(analysis_models.Sample, back_populates="analysis_results", lazy="selectin")
+    sample = relationship("Sample", back_populates="analysis_results", lazy="selectin")
     worksheet_uid = Column(Integer, ForeignKey('worksheet.uid'), nullable=True)
-    worksheet = relationship(ws_models.WorkSheet, back_populates="analysis_results", lazy="selectin")
+    worksheet = relationship("WorkSheet", back_populates="analysis_results", lazy="selectin")
     worksheet_position = Column(Integer, nullable=True)
     assigned = Column(Boolean(), default=False)
     analysis_uid = Column(Integer, ForeignKey('analysis.uid'), nullable=False)
-    analysis = relationship(analysis_models.Analysis, backref="analysis_results", lazy="selectin")
+    analysis = relationship("Analysis", backref="analysis_results", lazy="selectin")
     instrument_uid = Column(Integer, ForeignKey('instrument.uid'), nullable=True)
-    instrument = relationship(Instrument, lazy="selectin")
+    instrument = relationship("Instrument", lazy="selectin")
     method_uid = Column(Integer, ForeignKey('method.uid'), nullable=True)
-    method = relationship(Method, lazy="selectin")
+    method = relationship("Method", lazy="selectin")
     result = Column(String, nullable=True)
     analyst_uid = Column(Integer, ForeignKey('user.uid'), nullable=True)
     analyst = relationship("User", foreign_keys=[analyst_uid], lazy="selectin")

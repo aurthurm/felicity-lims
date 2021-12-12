@@ -1,5 +1,5 @@
 import logging
-from typing import Optional, List
+from typing import Optional, List, Any
 
 from sqlalchemy import Column, String, ForeignKey, Table, Integer
 from sqlalchemy.orm import relationship
@@ -79,6 +79,7 @@ class ActivityStream(BaseAuditDBModel):
     actor_uid = Column(Integer, ForeignKey('user.uid'), nullable=True)
     actor = relationship('User', foreign_keys=[actor_uid], lazy='selectin')
     verb = Column(String, nullable=True)
+    action_object_type = Column(String, nullable=True)
     action_object_uid = Column(Integer, nullable=True)
     action_object = Column(String, nullable=True)
     target_uid = Column(Integer, nullable=True)
@@ -130,3 +131,17 @@ class ActivityStream(BaseAuditDBModel):
     async def for_viewer(cls, viewer: User, seen=False) -> Optional[List[schemas.ActivityStream]]:
         """Streams for user: seen or unseen"""
         pass
+
+    @classmethod
+    async def stream(cls, obj: Any, actor: User, verb: str, object_type: str, feeds: List[ActivityFeed] = None):
+        if feeds is None:
+            feeds = []
+        s_in = schemas.ActivityStreamCreate(
+            feeds=feeds,
+            actor_uid=actor.uid,
+            verb=verb,
+            action_object_type=object_type,
+            action_object_uid=obj.uid,
+            target_uid=None,
+        )
+        _stream = await cls.create(s_in)

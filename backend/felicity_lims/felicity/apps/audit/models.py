@@ -3,7 +3,7 @@ import logging
 
 from sqlalchemy import Column, Integer, String, UnicodeText
 
-from felicity.apps import DBModel
+from felicity.database.base_class import DBModel
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -72,12 +72,12 @@ class AuditLog(DBModel):
             self.__table__.insert(),
             [
                 {
-                    'user_id':self.user_id,
-                    'target_type':self.target_type,
-                    'target_id':self.target_id,
-                    'action':self.action,
-                    'state_before':state_before,
-                    'state_after':state_after,
+                    'user_id': self.user_id,
+                    'target_type': self.target_type,
+                    'target_id': self.target_id,
+                    'action': self.action,
+                    'state_before': state_before,
+                    'state_after': state_after,
                 }
             ]
         )

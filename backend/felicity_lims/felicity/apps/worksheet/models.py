@@ -9,6 +9,7 @@ from sqlalchemy.dialects.postgresql import JSONB
 from felicity.apps import BaseAuditDBModel, DBModel, Auditable
 from felicity.apps.core.utils import sequencer
 from felicity.apps.setup.models.setup import Instrument
+from felicity.apps.stream.utils import FelicityStreamer
 from felicity.apps.user.models import User
 from felicity.apps.analysis.models import analysis as analysis_models
 from felicity.apps.analysis.models import results as result_models
@@ -189,7 +190,10 @@ class WorkSheet(Auditable, WSBase):
                 self.state = conf.worksheet_states.TO_BE_VERIFIED
                 self.updated_by_uid = submitter.uid  # noqa
                 self.submitted_by_uid = submitter.uid
-                await self.save()
+                saved = await self.save()
+                await FelicityStreamer.stream(saved, submitter, "submitted", "worksheet")
+                return saved
+        return self
 
     async def verify(self, verified_by):
         if self.state != conf.worksheet_states.VERIFIED:
@@ -201,7 +205,10 @@ class WorkSheet(Auditable, WSBase):
                 self.state = conf.worksheet_states.VERIFIED
                 self.updated_by_uid = verified_by.uid  # noqa
                 self.verified_by_uid = verified_by.uid
-                await self.save()
+                saved = await self.save()
+                await FelicityStreamer.stream(saved, verified_by, "verified", "worksheet")
+                return saved
+        return self
 
     async def set_plate(self, fill):
         self.plate = fill

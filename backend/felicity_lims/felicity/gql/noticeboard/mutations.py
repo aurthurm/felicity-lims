@@ -67,7 +67,7 @@ class NoticeMutations:
 
         obj_in = schemas.NoticeCreate(**incoming)
         notice: models.Notice = await models.Notice.create(obj_in)
-        return NoticeType(**notice.simple_marshal())
+        return NoticeType(**notice.marshal_simple())
 
     @strawberry.mutation
     async def update_notice(self, info, uid: int, title: str, body: str, expiry: str, groups: Optional[List[int]] = [],

@@ -1,9 +1,18 @@
-import { createClient, defaultExchanges, dedupExchange, cacheExchange, fetchExchange, errorExchange } from 'urql';
+import { createClient, defaultExchanges, dedupExchange, cacheExchange, fetchExchange, errorExchange, subscriptionExchange } from 'urql';
 import { makeOperation } from '@urql/core';
 import { devtoolsExchange } from '@urql/devtools'
 import { authExchange } from '@urql/exchange-auth';
 
-import { graphql_url } from './conf'
+import { graphql_url, graphql_ws_url } from './conf'
+
+import { createClient as createWSClient } from 'graphql-ws';
+import { SubscriptionClient } from 'subscriptions-transport-ws'
+
+const subscriptionClient = new SubscriptionClient( graphql_ws_url, { reconnect: true });
+
+const wsClient = createWSClient({
+  url: graphql_ws_url,
+});
 
 // 1. get auth data
 const getAuth = async ({ authState }) => {
@@ -96,7 +105,15 @@ export const urqlClient = createClient({
       didAuthError,
       getAuth,
     }),
-    fetchExchange
+    fetchExchange,
+    subscriptionExchange({
+      // forwardSubscription: (operation) => ({
+      //   subscribe: (sink: any) => ({
+      //     unsubscribe: wsClient.subscribe(operation, sink),
+      //   }),
+      // }),
+      forwardSubscription: operation => subscriptionClient.request(operation) as any
+    }),
   ],  
   fetchOptions: () => {
     const token = localStorage.getItem('fwt');
@@ -112,5 +129,5 @@ export const urqlClient = createClient({
         }),
       },
     };
-  }
+  },
 });

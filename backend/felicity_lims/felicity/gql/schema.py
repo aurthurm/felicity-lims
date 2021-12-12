@@ -22,7 +22,7 @@ from felicity.gql.messaging.mutations import MessageMutations
 from felicity.gql.noticeboard.query import NoticeQuery
 from felicity.gql.noticeboard.mutations import NoticeMutations
 from felicity.gql.notification.query import NotificationQuery
-
+from felicity.gql.stream.subscription import StreamSubscription
 
 
 @strawberry.type
@@ -59,4 +59,11 @@ class Mutation(
     pass
 
 
-gql_schema = strawberry.Schema(query=Query, mutation=Mutation)
+@strawberry.type
+class Subscription(
+    StreamSubscription
+):
+    pass
+
+
+gql_schema = strawberry.Schema(query=Query, mutation=Mutation, subscription=Subscription)

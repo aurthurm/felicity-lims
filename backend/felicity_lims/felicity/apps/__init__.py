@@ -3,9 +3,10 @@ from typing import Optional
 from pydantic import BaseModel
 
 from sqlalchemy.ext.declarative import declared_attr
-from sqlalchemy import Column, Integer, ForeignKey
+from sqlalchemy import Column, Integer, ForeignKey, DateTime, func
 from sqlalchemy.orm import relationship
 
+from felicity.apps.core.hooks import EventHookMixin
 from felicity.database.base_class import DBModel
 from felicity.apps.user.models import User
 from felicity.apps.user.schemas import User as UserSchema
@@ -13,6 +14,9 @@ from felicity.apps.audit.mixin import AuditableMixin
 
 
 class TrailMixin(object):
+    @declared_attr
+    def created_at(self):
+        return Column(DateTime, default=datetime.utcnow)
 
     @declared_attr
     def created_by_uid(self):
@@ -21,6 +25,10 @@ class TrailMixin(object):
     @declared_attr
     def created_by(self):
         return relationship(User, foreign_keys=[self.created_by_uid], lazy='selectin')
+
+    @declared_attr
+    def updated_at(self):
+        return Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
     @declared_attr
     def updated_by_uid(self):
@@ -41,6 +49,11 @@ class Auditable(BaseAuditDBModel, AuditableMixin):
     __abstract__ = True
 
 
+# class EventHooked(BaseAuditDBModel, EventHookMixin):
+#     """Listens for All events:  Not working"""
+#     __abstract__ = True
+
+
 # Pydantic
 class BaseAuditModel(BaseModel):
     created_at: Optional[datetime] = None
@@ -49,5 +62,3 @@ class BaseAuditModel(BaseModel):
     updated_at: Optional[datetime] = None
     updated_by_uid: Optional[int] = None
     updated_by: Optional[UserSchema] = None
-
-
