@@ -1,9 +1,10 @@
 from datetime import datetime, timedelta
 import logging
 from time import sleep
-from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, DateTime, Table, event
+from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, DateTime, Table
 from sqlalchemy.orm import relationship
 
+from felicity.database.session import async_session_factory
 from felicity.apps.analysis import schemas
 from felicity.apps.analysis.models.qc import QCLevel, QCSet
 from felicity.apps.analysis.conf import states
@@ -11,7 +12,7 @@ from felicity.apps.client import models as ct_models
 from felicity.apps.core import BaseMPTT
 from felicity.apps.core.utils import sequencer
 from felicity.apps.patient import models as pt_models
-from felicity.apps import BaseAuditDBModel, DBModel, Auditable
+from felicity.apps import BaseAuditDBModel, DBModel, Auditable, SEQUENTIAL_ID_RETRIES
 from felicity.apps.stream.utils import FelicityStreamer
 from felicity.apps.user.models import User
 
@@ -166,17 +167,29 @@ class AnalysisRequest(BaseAuditDBModel):
         prefix_year = str(datetime.now().year)[2:]
         prefix = f"{prefix_key}{prefix_year}"
         stmt = cls.where(request_id__startswith=f'%{prefix}%')
-        res = await cls.session.execute(stmt)
-        count = len(res.scalars().all())
-        if isinstance(count, type(None)):
-            count = 0
-        return f"{prefix}-{sequencer(count + 1, 5)}"
+        async with async_session_factory() as session:
+            res = await session.execute(stmt)
+            count = len(res.scalars().all())
+            if isinstance(count, type(None)):
+                count = 0
+            return f"{prefix}-{sequencer(count + 1, 5)}"
 
     @classmethod
     async def create(cls, obj_in: schemas.AnalysisRequestCreate) -> schemas.AnalysisRequest:
         data = cls._import(obj_in)
-        data['request_id'] = await cls.create_request_id()
-        return await super().create(**data)
+        created = None
+        count = 0
+        while count < SEQUENTIAL_ID_RETRIES:
+            try:
+                data['request_id'] = await cls.create_request_id()
+                created = await super().create(**data)
+                if created:
+                    break
+            except Exception:  # noqa
+                logger.warning(f"AnalysisRequest ID generate Trial {count}")
+
+            count += 1
+        return created
 
     async def update(self, obj_in: schemas.SampleTypeUpdate) -> schemas.AnalysisRequest:
         data = self._import(obj_in)
@@ -306,18 +319,18 @@ class Sample(Auditable, BaseMPTT):
         self.due_date += timedelta(minutes=ext_minutes)
         return await self.save()
 
-
     @classmethod
     async def create_sample_id(cls, sampletype):
         prefix_key = sampletype.abbr
         prefix_year = str(datetime.now().year)[2:]
         prefix = f"{prefix_key}{prefix_year}"
         stmt = cls.where(sample_id__startswith=f'%{prefix}%')
-        result = await cls.session.execute(stmt)
-        count = len(result.scalars().all())
-        if isinstance(count, type(None)):
-            count = 0
-        return f"{prefix}-{sequencer(count + 1, 5)}"
+        async with async_session_factory() as session:
+            result = await session.execute(stmt)
+            count = len(result.scalars().all())
+            if isinstance(count, type(None)):
+                count = 0
+            return f"{prefix}-{sequencer(count + 1, 5)}"
 
     def copy_sample_id_unique(self):
         split = self.sample_id.split("_R")
@@ -445,10 +458,22 @@ class Sample(Auditable, BaseMPTT):
     @classmethod
     async def create(cls, obj_in: schemas.SampleCreate) -> schemas.Sample:
         data = cls._import(obj_in)
-        sampletype_uid = data['sampletype_uid']
-        sample_type = await SampleType.find(sampletype_uid)  # get(uid=sampletype_uid)
-        data['sample_id'] = await cls.create_sample_id(sample_type)
-        return await super().create(**data)
+        sample_type_uid = data['sampletype_uid']
+
+        created = None
+        count = 0
+        while count < SEQUENTIAL_ID_RETRIES:
+            try:
+                sample_type = await SampleType.find(sample_type_uid)
+                data['sample_id'] = await cls.create_sample_id(sample_type)
+                created = await super().create(**data)
+                if created:
+                    break
+            except Exception:  # noqa
+                logger.warning(f"Sample ID generate Trial {count}")
+
+            count += 1
+        return created
 
     async def duplicate_unique(self) -> schemas.Sample:
         data = self.to_dict(nested=False)
@@ -466,10 +491,8 @@ class Sample(Auditable, BaseMPTT):
         data = self._import(obj_in)
         return await super().update(**data)
 
-
 # @event.listens_for(Sample, "after_update")
 # def stream_sample_verified_models(mapper, connection, target): # noqa
 #     logger.log("stream_sample_verified inn")
 #     logger.log(target)
 #     print("hurray inn")
-

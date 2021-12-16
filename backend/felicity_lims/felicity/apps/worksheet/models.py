@@ -6,7 +6,7 @@ from sqlalchemy import Column, String, Integer, ForeignKey, Boolean, DateTime, T
 from sqlalchemy.orm import relationship
 from sqlalchemy.dialects.postgresql import JSONB
 
-from felicity.apps import BaseAuditDBModel, DBModel, Auditable
+from felicity.apps import BaseAuditDBModel, DBModel, Auditable, SEQUENTIAL_ID_RETRIES
 from felicity.apps.core.utils import sequencer
 from felicity.apps.setup.models.setup import Instrument
 from felicity.apps.stream.utils import FelicityStreamer
@@ -16,6 +16,7 @@ from felicity.apps.analysis.models import results as result_models
 from felicity.apps.analysis.models import qc as qc_models
 from felicity.apps.analysis import conf as analysis_conf
 from felicity.apps.worksheet import schemas, conf
+from felicity.database.session import async_session_factory
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -220,16 +221,30 @@ class WorkSheet(Auditable, WSBase):
         prefix_year = str(datetime.now().year)[2:]
         prefix = f"{prefix_key}{prefix_year}"
         stmt = cls.where(worksheet_id__startswith=f'%{prefix}%')
-        res = await cls.session.execute(stmt)
-        count = len(res.scalars().all())
-        if isinstance(count, type(None)):
-            count = 0
-        return f"{prefix}-{sequencer(count + 1, 5)}"
+        async with async_session_factory() as session:
+            res = await session.execute(stmt)
+            count = len(res.scalars().all())
+            if isinstance(count, type(None)):
+                count = 0
+            return f"{prefix}-{sequencer(count + 1, 5)}"
 
     @classmethod
     async def create(cls, obj_in: schemas.WorkSheetCreate) -> schemas.WorkSheet:
         data = cls._import(obj_in)
-        data['worksheet_id'] = await cls.create_worksheet_id()
+        created = None
+        count = 1
+        while count < SEQUENTIAL_ID_RETRIES:
+            try:
+                data['worksheet_id'] = await cls.create_worksheet_id()
+                created = await super().create(**data)
+                if created:
+                    break
+            except Exception:  # noqa
+                logger.warning(f"WorkSheet ID generate Trial {count}")
+
+            count += 1
+
+        return created
         return await super().create(**data)
 
     async def update(self, obj_in: schemas.WorkSheetUpdate) -> schemas.WorkSheet:

@@ -70,7 +70,7 @@ async def create_analysis_request(self, info, patient_uid: int, client_uid: int,
 
     patient = await pt_models.Patient.get(uid=patient_uid)
     if not patient:
-        raise Exception(f"Patient Not found")
+        raise Exception(f"Patient with uid {patient_uid} Not found")
 
     client = await ct_models.Client.get(uid=client_uid)
     if not client:

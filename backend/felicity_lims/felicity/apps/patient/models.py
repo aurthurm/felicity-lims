@@ -8,7 +8,8 @@ from sqlalchemy.orm import relationship
 from felicity.apps.client.models import Client
 from felicity.apps.core.utils import sequencer
 from felicity.apps.patient import schemas
-from felicity.apps import DBModel, Auditable
+from felicity.apps import DBModel, Auditable, SEQUENTIAL_ID_RETRIES
+from felicity.database.session import async_session_factory
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -54,8 +55,20 @@ class Patient(Auditable, DBModel):
     @classmethod
     async def create(cls, obj_in: schemas.PatientCreate) -> schemas.Patient:
         data = cls._import(obj_in)
-        data['patient_id'] = await cls.create_patient_id()
-        return await super().create(**data)
+        created = None
+        count = 1
+        while count < SEQUENTIAL_ID_RETRIES:
+            try:
+                data['patient_id'] = await cls.create_patient_id()
+                created = await super().create(**data)
+                if created:
+                    break
+            except Exception:  # noqa
+                logger.warning(f"Patient ID generate Trial {count}")
+
+            count += 1
+
+        return created
 
     async def update(self, obj_in: schemas.PatientUpdate) -> schemas.Patient:
         data = self._import(obj_in)
@@ -67,8 +80,9 @@ class Patient(Auditable, DBModel):
         prefix_year = str(datetime.now().year)[2:]
         prefix = f"{prefix_key}{prefix_year}"
         stmt = cls.where(patient_id__startswith=f'%{prefix}%')
-        res = await cls.session.execute(stmt)
-        count = len(res.scalars().all())
-        if isinstance(count, type(None)):
-            count = 0
-        return f"{prefix}-{sequencer(count + 5, 5)}"
+        async with async_session_factory() as session:
+            res = await session.execute(stmt)
+            count = len(res.scalars().all())
+            if isinstance(count, type(None)):
+                count = 0
+            return f"{prefix}-{sequencer(count + 5, 5)}"

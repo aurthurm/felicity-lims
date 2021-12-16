@@ -6,7 +6,7 @@ from sqlalchemy import Column, Integer
 from sqlalchemy.sql import func
 from sqlalchemy.orm import selectinload, as_declarative, declared_attr
 from sqlalchemy import or_ as sa_or_
-from felicity.database.async_mixins import AllFeaturesMixin, smart_query
+from felicity.database.async_mixins import AllFeaturesMixin, smart_query, ModelNotFoundError
 from felicity.database.paginator.cursor import PageCursor, EdgeNode, PageInfo
 
 from felicity.database.session import AsyncSessionScoped, async_session_factory
@@ -93,10 +93,67 @@ class DBModel(AllFeaturesMixin):
         end = start + limit
 
         stmt = cls.where(**kwargs).limit(limit).offset(start)
-        results = await cls.session.execute(stmt)
-        found = results.scalars().all()
+        async with async_session_factory() as session:
+            results = await session.execute(stmt)
+            found = results.scalars().all()
 
         return found  # cls.query.slice(start, end).all()
+
+    async def delete(self):
+        """Removes the model from the current entity session and mark for deletion.
+        """
+        async with async_session_factory() as session:
+            await session.delete(self)
+            await session.flush()
+
+    @classmethod
+    async def destroy(cls, *ids):
+        """Delete the records with the given ids
+        :type ids: list
+        :param ids: primary key ids of records
+        """
+        for pk in ids:
+            obj = await cls.find(pk)
+            if obj:
+                await obj.delete()
+
+        async with async_session_factory() as session:
+            await session.flush()
+
+    @classmethod
+    async def all(cls):
+        async with async_session_factory() as session:
+            result = await session.execute(select(cls))
+            _all = result.scalars().all()
+            return _all
+
+    @classmethod
+    async def first(cls):
+        async with async_session_factory() as session:
+            result = await session.execute(select(cls))
+            _first = result.scalars().first()
+            return _first
+
+    @classmethod
+    async def find(cls, id_):
+        """Find record by the id
+        :param id_: the primary key
+        """
+        stmt = cls.where(uid=id_)
+        async with async_session_factory() as session:
+            results = await session.execute(stmt)
+            one_or_none = results.scalars().one_or_none()
+            return one_or_none
+
+    @classmethod
+    async def find_or_fail(cls, id_):
+        # assume that query has custom get_or_fail method
+        result = await cls.find(id_)
+        if result:
+            return result
+        else:
+            raise ModelNotFoundError("{} with uid '{}' was not found"
+                                     .format(cls.__name__, id_))
 
     @classmethod
     async def get(cls, **kwargs):
@@ -106,9 +163,10 @@ class DBModel(AllFeaturesMixin):
         """
         # stmt = select(cls).where(**kwargs)
         stmt = cls.where(**kwargs)
-        results = await cls.session.execute(stmt)
-        found = results.scalars().first()
-        return found
+        async with async_session_factory() as session:
+            results = await session.execute(stmt)
+            found = results.scalars().first()
+            return found
 
     @classmethod
     async def create(cls, **kwargs):
@@ -145,9 +203,11 @@ class DBModel(AllFeaturesMixin):
         stmt = cls.where(**kwargs)
         if related:
             stmt.options(selectinload(related))
-        results = await cls.session.execute(stmt)
-        found = results.scalars().first()
-        return found
+
+        async with async_session_factory() as session:
+            results = await session.execute(stmt)
+            found = results.scalars().first()
+            return found
 
     @classmethod
     def _import(cls, schema_in: InDBSchemaType):
@@ -160,27 +220,30 @@ class DBModel(AllFeaturesMixin):
     async def save(self):
         """Saves the updated model to the current entity db.
         """
-        try:
-            self.session.add(self)
-            await self.session.flush()
-            await self.session.commit()
-        except Exception as e:
-            await self.session.rollback()
-            raise
-        return self
+        async with async_session_factory() as session:
+            try:
+                session.add(self)
+                await session.flush()
+                await session.commit()
+            except Exception as e:
+                await session.rollback()
+                raise
+            return self
 
     @classmethod
     async def get_one(cls, **kwargs):
         stmt = cls.where(**kwargs)
-        results = await cls.session.execute(stmt)
-        found = results.scalars().first()
-        return found
+        async with async_session_factory() as session:
+            results = await session.execute(stmt)
+            found = results.scalars().first()
+            return found
 
     @classmethod
     async def get_all(cls, **kwargs):
         stmt = cls.where(**kwargs)
-        results = await cls.session.execute(stmt)
-        return results.scalars().all()
+        async with async_session_factory() as session:
+            results = await session.execute(stmt)
+            return results.scalars().all()
 
     @classmethod
     async def count_where(cls, filters):
@@ -191,9 +254,10 @@ class DBModel(AllFeaturesMixin):
         # stmt = select(func.count(cls.uid)).select_from(cls)
         # stmt = smart_query(query=stmt, filters=filters)
         stmt = smart_query(select(cls), filters=filters)
-        res = await cls.session.execute(stmt)
-        count = len(res.scalars().all())
-        return count
+        async with async_session_factory() as session:
+            res = await session.execute(stmt)
+            count = len(res.scalars().all())
+            return count
 
     @classmethod
     async def fulltext_search(cls, search_string, field):
@@ -201,9 +265,10 @@ class DBModel(AllFeaturesMixin):
         stmt = select(cls).filter(
             func.to_tsvector('english', getattr(cls, field)).match(search_string, postgresql_regconfig='english')
         )
-        results = await cls.session.execute(stmt)
-        search = results.scalars().all()
-        return search
+        async with async_session_factory() as session:
+            results = await session.execute(stmt)
+            search = results.scalars().all()
+            return search
 
     @classmethod
     async def get_by_uids(cls, uids: List[Any]) -> AsyncIterator[Any]:
@@ -211,16 +276,18 @@ class DBModel(AllFeaturesMixin):
             select(cls)
                 .where(cls.uid.in_(uids))  # type: ignore
         )
-        stream = await cls.session.stream(stmt.order_by(cls.uid))
-        async for row in stream:
-            yield row
+        async with async_session_factory() as session:
+            stream = await session.stream(stmt.order_by(cls.uid))
+            async for row in stream:
+                yield row
 
     @classmethod
     async def stream_all(cls) -> AsyncIterator[Any]:
         stmt = select(cls)
-        stream = await cls.session.stream(stmt.order_by(cls.uid))
-        async for row in stream:
-            yield row
+        async with async_session_factory() as session:
+            stream = await session.stream(stmt.order_by(cls.uid))
+            async for row in stream:
+                yield row
 
     @staticmethod
     def psql_records_to_dict(self, records, many=False):
@@ -260,7 +327,11 @@ class DBModel(AllFeaturesMixin):
                 _filters.append({sa_or_: cursor_limit})
 
         stmt = cls.smart_query(filters=_filters, sort_attrs=sort_by)
-        qs = (await cls.session.execute(stmt)).scalars().all()
+
+        async with async_session_factory() as session:
+            res = await session.execute(stmt)
+
+        qs = res.scalars().all()
 
         if qs is not None:
             items = qs[:page_size]
@@ -318,8 +389,4 @@ class DBModel(AllFeaturesMixin):
     @classmethod
     def encode_cursor(cls, identifier: Any):
         return b64encode(str(identifier).encode('utf8')).decode('ascii')
-
-
-# DBModel.set_session(AsyncSessionScoped())
-DBModel.set_session(async_session_factory())
 

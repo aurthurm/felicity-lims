@@ -13,6 +13,9 @@ from felicity.apps.user.schemas import User as UserSchema
 from felicity.apps.audit.mixin import AuditableMixin
 
 
+SEQUENTIAL_ID_RETRIES = 20
+
+
 class TrailMixin(object):
     @declared_attr
     def created_at(self):
