@@ -60,6 +60,7 @@ async def create_analysis_request(self, info, patient_uid: int, client_uid: int,
                                   samples: List[ARSampleInputType] = None,
                                   client_request_id: Optional[str] = None, internal_use: Optional[bool] = False,
                                   priority: int = priorities.sample.NORMAL) -> a_types.AnalysisRequestWithSamples:
+    logger.info("Received request to create analysis request")
 
     inspector = inspect.getargvalues(inspect.currentframe())
     passed_args = get_passed_args(inspector)
@@ -91,6 +92,7 @@ async def create_analysis_request(self, info, patient_uid: int, client_uid: int,
     analysisrequest: analysis_models.AnalysisRequest = await analysis_models.AnalysisRequest.create(obj_in)
 
     # 1. create samples
+    logger.info(f"Adding {len(samples)} samples to the analysis request {analysisrequest.client_request_id}")
     for s in samples:  # ARResultInputType
         _st_uid = s.sample_type
         _profiles = s.profiles
@@ -131,6 +133,7 @@ async def create_analysis_request(self, info, patient_uid: int, client_uid: int,
         sample: analysis_models.Sample = await analysis_models.Sample.create(sample_schema)
 
         # Attach Analysis result for each Analyses
+        logger.info(f"Adding {len(_profiles_analyses)} service results to the sample {sample.sample_id}")
         for _service in _profiles_analyses:
             a_result_in = {
                 'sample_uid': sample.uid,
@@ -142,12 +145,12 @@ async def create_analysis_request(self, info, patient_uid: int, client_uid: int,
 
     return analysisrequest
 
+
 @strawberry.mutation
 async def update_analysis_request(self, info, uid: int, patient_uid: Optional[int] = None,
                                   client_uid: Optional[int] = None,
                                   client_request_id: Optional[str] = None,
                                   internal_use: Optional[bool] = False) -> a_types.AnalysisRequestWithSamples:
-
     inspector = inspect.getargvalues(inspect.currentframe())
     passed_args = get_passed_args(inspector)
 
@@ -170,11 +173,11 @@ async def update_analysis_request(self, info, uid: int, patient_uid: Optional[in
     analysis_request = await analysis_request.update(ar_in)
     return analysis_request
 
+
 @strawberry.mutation
 async def update_sample(self, info, uid: int, sampletype_uid: Optional[int] = None, profiles: List[int] = None,
                         analyses: List[int] = None, internal_use: Optional[bool] = False,
                         cancel: Optional[bool] = False) -> a_types.SampleType:
-
     inspector = inspect.getargvalues(inspect.currentframe())
     passed_args = get_passed_args(inspector)
 
@@ -193,9 +196,9 @@ async def update_sample(self, info, uid: int, sampletype_uid: Optional[int] = No
 
     return sample
 
+
 @strawberry.mutation
 async def cancel_samples(self, info, samples: List[int]) -> List[r_types.SamplesWithResults]:
-
     inspector = inspect.getargvalues(inspect.currentframe())
     passed_args = get_passed_args(inspector)
 
@@ -218,9 +221,9 @@ async def cancel_samples(self, info, samples: List[int]) -> List[r_types.Samples
 
     return return_samples
 
+
 @strawberry.mutation
 async def re_instate_samples(self, info, samples: List[int]) -> List[r_types.SamplesWithResults]:
-
     inspector = inspect.getargvalues(inspect.currentframe())
     passed_args = get_passed_args(inspector)
 
@@ -243,9 +246,9 @@ async def re_instate_samples(self, info, samples: List[int]) -> List[r_types.Sam
 
     return return_samples
 
+
 @strawberry.mutation
 async def receive_samples(self, info, samples: List[int]) -> List[r_types.SamplesWithResults]:
-
     inspector = inspect.getargvalues(inspect.currentframe())
     passed_args = get_passed_args(inspector)
 
@@ -268,9 +271,9 @@ async def receive_samples(self, info, samples: List[int]) -> List[r_types.Sample
 
     return return_samples
 
+
 @strawberry.mutation
 async def verify_samples(self, info, samples: List[int]) -> List[a_types.SampleType]:
-
     inspector = inspect.getargvalues(inspect.currentframe())
     passed_args = get_passed_args(inspector)
 
@@ -293,9 +296,9 @@ async def verify_samples(self, info, samples: List[int]) -> List[a_types.SampleT
 
     return return_samples
 
+
 @strawberry.mutation
 async def reject_samples(self, info, samples: List[SampleRejectInputType]) -> List[a_types.SampleType]:
-
     inspector = inspect.getargvalues(inspect.currentframe())
     passed_args = get_passed_args(inspector)
 
@@ -329,9 +332,9 @@ async def reject_samples(self, info, samples: List[SampleRejectInputType]) -> Li
 
     return return_samples
 
+
 @strawberry.mutation
 async def publish_samples(self, info, samples: List[int]) -> List[a_types.SampleType]:
-
     inspector = inspect.getargvalues(inspect.currentframe())
     passed_args = get_passed_args(inspector)
 
@@ -354,9 +357,9 @@ async def publish_samples(self, info, samples: List[int]) -> List[a_types.Sample
 
     return return_samples
 
+
 @strawberry.mutation
 async def invalidate_samples(self, info, samples: List[int]) -> List[a_types.SampleType]:
-
     inspector = inspect.getargvalues(inspect.currentframe())
     passed_args = get_passed_args(inspector)
 

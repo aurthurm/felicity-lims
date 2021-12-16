@@ -16,12 +16,12 @@ AsyncSessionScoped = async_scoped_session(async_session_factory, scopefunc=curre
 
 
 #  Async Dependency
-async def get_session() -> AsyncSession:
+async def get_session() -> AsyncGenerator:
     async with async_session_factory() as session:
         yield session
 
 
-# or Async Dependency 2
+# or
 async def get_db() -> AsyncGenerator:
     session = async_session_factory()
     try:

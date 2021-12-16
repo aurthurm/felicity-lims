@@ -38,7 +38,7 @@ class ActiveRecordMixin(InspectionMixin, SessionMixin):
         :return: the new model instance
         """
         fill = cls().fill(**kwargs)
-        created = await cls.save(fill)
+        created = await fill.save()
         return created
 
     async def update(self, **kwargs):

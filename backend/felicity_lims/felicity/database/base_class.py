@@ -1,6 +1,5 @@
 from typing import Dict, TypeVar, AsyncIterator, List, Any, Optional
 from base64 import b64decode, b64encode
-import logging
 from pydantic import BaseModel as PydanticBaseModel
 from sqlalchemy.future import select
 from sqlalchemy import Column, Integer
@@ -10,13 +9,10 @@ from sqlalchemy import or_ as sa_or_
 from felicity.database.async_mixins import AllFeaturesMixin, smart_query
 from felicity.database.paginator.cursor import PageCursor, EdgeNode, PageInfo
 
-from felicity.database.session import AsyncSessionScoped
+from felicity.database.session import AsyncSessionScoped, async_session_factory
 from felicity.utils import has_value_or_is_truthy
 
 InDBSchemaType = TypeVar("InDBSchemaType", bound=PydanticBaseModel)
-
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
 
 
 # noinspection PyPep8Naming
@@ -149,7 +145,6 @@ class DBModel(AllFeaturesMixin):
         stmt = cls.where(**kwargs)
         if related:
             stmt.options(selectinload(related))
-            logger.info(stmt)
         results = await cls.session.execute(stmt)
         found = results.scalars().first()
         return found
@@ -170,7 +165,6 @@ class DBModel(AllFeaturesMixin):
             await self.session.flush()
             await self.session.commit()
         except Exception as e:
-            logger.info(f"Rolling Back -> Session Save Error: {e}")
             await self.session.rollback()
             raise
         return self
@@ -319,7 +313,6 @@ class DBModel(AllFeaturesMixin):
         try:
             return int(decoded)
         except Exception as e:
-            logger.warning(e)
             return decoded
 
     @classmethod
@@ -327,4 +320,6 @@ class DBModel(AllFeaturesMixin):
         return b64encode(str(identifier).encode('utf8')).decode('ascii')
 
 
-DBModel.set_session(AsyncSessionScoped())
+# DBModel.set_session(AsyncSessionScoped())
+DBModel.set_session(async_session_factory())
+

@@ -22,5 +22,5 @@ class FelicityStreamer:
             action_object_uid=obj.uid,
             target_uid=None,
         )
-        stream = await ActivityStream.create(s_in)
+        stream: ActivityStream = await ActivityStream.create(s_in)
         await broadcast.publish("activities", stream)

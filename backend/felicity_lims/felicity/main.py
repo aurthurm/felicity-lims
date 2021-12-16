@@ -18,8 +18,8 @@ from starlette.authentication import (
 from strawberry.asgi import GraphQL
 from strawberry.subscriptions import GRAPHQL_WS_PROTOCOL, GRAPHQL_TRANSPORT_WS_PROTOCOL
 
-
 from felicity.api.api_v1.api import api_router  # noqa
+from felicity.apps.core.channel import broadcast
 from felicity.core.config import settings  # noqa
 from felicity.core.repeater import repeat_every
 from felicity.gql.schema import gql_schema  # noqa
@@ -103,3 +103,69 @@ flims.include_router(api_router, prefix=settings.API_V1_STR)
 flims.add_route("/felicity-gql", graphql_app)
 flims.add_websocket_route("/subscriptions", graphql_app, "felicity-subscriptions")
 
+
+class ConnectionManager:
+    def __init__(self):
+        self.connections: List[WebSocket] = []
+
+    async def connect(self, websocket: WebSocket):
+        await websocket.accept()
+        self.connections.append(websocket)
+
+    async def broadcast(self, data: str):
+        for connection in self.connections:
+            await connection.send_text(data)
+
+
+manager = ConnectionManager()
+
+
+@flims.websocket("/ws/{after_uid}")
+async def websocket_endpoint(websocket: WebSocket, after_uid: int):
+    await manager.connect(websocket)
+    while True:
+        data = await websocket.receive_text()
+        await manager.broadcast(f"Client {after_uid}: {data}")
+
+
+from starlette.concurrency import run_until_first_complete
+
+
+async def chatroom_ws(websocket):
+    await websocket.accept()
+    await run_until_first_complete(
+        (chatroom_ws_receiver, {"websocket": websocket}),
+        (chatroom_ws_sender, {"websocket": websocket}),
+    )
+
+
+async def chatroom_ws_receiver(websocket):
+    async for message in websocket.iter_text():
+        await broadcast.publish(channel="activities", message=message)
+
+
+async def chatroom_ws_sender(websocket):
+    async with broadcast.subscribe(channel="activities") as subscriber:
+        async for event in subscriber:
+            await websocket.send_text(event.message)
+
+
+flims.add_websocket_route("/chatter", chatroom_ws, "chatroom_ws")
+import json
+
+
+async def get_streams(websocket):
+    async with broadcast.subscribe(channel="activities") as subscriber:
+        async for event in subscriber:
+            data = json.loads(json.dumps(event.message.marshal_simple(), indent=4, sort_keys=True, default=str))
+            await websocket.send_json(data)
+
+
+async def stream_socket(websocket):
+    await websocket.accept()
+    await run_until_first_complete(
+        (get_streams, {"websocket": websocket}),
+    )
+
+
+flims.add_websocket_route("/streamer", stream_socket, "stream-only")
