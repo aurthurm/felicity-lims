@@ -4,9 +4,6 @@
     class="border-2 border-gray-900 border-dotted rounded p-4" 
     autocomplete="off">
 
-
-          <div class="text-red-700 w-4/12">{{ errors }}</div>
-
           <label class="flex whitespace-nowrap w-full">
             <span class="text-gray-700 w-4/12">Patient Unique Identifier</span>
             <div class="w-full">
@@ -96,7 +93,7 @@
             <div class="w-full">
               <select class="form-select mt-1 w-full" v-model="clientUid">
                   <option></option>
-                  <option v-for="client in state.clients" :key="client.uid" :value="client.uid"> {{ client.name }} {{ client.uid }}</option>
+                  <option v-for="client in state.clients" :key="client.uid" :value="client.uid">{{ client.name }}</option>
               </select>
               <div class="text-red-700 w-4/12">{{ errors.clientUid }}</div>
             </div>
@@ -108,21 +105,21 @@
             <label class="flex items-center whitespace-nowrap col-span-1 mb-2 w-full">
               <span class="text-gray-700 w-4/12">Country</span>
               <select class="form-select mt-1 w-full" v-model="countryUid" @change="getProvinces($event)">
-                <option></option>
+                <option :value="null"></option>
                 <option v-for="country in state.countries" :key="country.uid" :value="country.uid"> {{ country.name }}</option>
               </select>
             </label>
             <label class="flex items-center whitespace-nowrap col-span-1 mb-2 w-full">
               <span class="text-gray-700 w-4/12">Province</span>
               <select class="form-select mt-1 w-full" v-model="provinceUid" @change="getDistricts($event)">
-                <option></option>
+                <option :value="null"></option>
                 <option v-for="province in state.provinces" :key="province.uid" :value="province.uid"> {{ province.name }}</option>
               </select>
             </label>
             <label class="flex items-center whitespace-nowrap col-span-1 mb-2 w-full">
               <span class="text-gray-700 w-4/12">District</span>
               <select class="form-select mt-1 w-full" v-model="districtUid">
-                <option></option>
+                <option :value="null"></option>
                 <option v-for="district in state.districts" :key="district.uid" :value="district.uid"> {{ district.name }}</option>
               </select>
             </label>
@@ -283,8 +280,8 @@
       const data = gqlResponseHandler(result)
       if (data) {
         store.dispatch(ActionTypes.ADD_PATIENT, data.createPatient);
-        if(navigate) router.push({ name: "patient-detail", params: { patientUid: data?.createPatient?.uid }});
-        if(!navigate) emit('close');
+        emit('close');
+        if(navigate.value === true) router.push({ name: "patient-detail", params: { patientUid: data?.createPatient?.uid }});
       }
     });
   }

@@ -7,8 +7,10 @@ from .analysis_category import (create_analysis_category, update_analysis_catego
 from .analysis_profile import (create_profile, update_profile)
 from .analysis_service import (create_analysis, update_analysis)
 from .analysis_request import (
-    create_analysis_request, update_analysis_request,
-    update_sample, cancel_samples,
+    create_analysis_request,
+    # update_analysis_request,
+    # update_sample,
+    cancel_samples,
     re_instate_samples, receive_samples, verify_samples, reject_samples,
     publish_samples, invalidate_samples
 )
@@ -31,8 +33,10 @@ AnalysisMutations = create_type(
         create_analysis_category, update_analysis_category,
         create_profile, update_profile,
         create_analysis, update_analysis,
-        create_analysis_request, update_analysis_request,
-        update_sample, cancel_samples, re_instate_samples, receive_samples, verify_samples, reject_samples,
+        create_analysis_request,
+        # update_analysis_request,
+        # update_sample,
+        cancel_samples, re_instate_samples, receive_samples, verify_samples, reject_samples,
         publish_samples, invalidate_samples,
         submit_analysis_results, verify_analysis_results, retract_analysis_results, retest_analysis_results,
         cancel_analysis_results, re_instate_analysis_results,

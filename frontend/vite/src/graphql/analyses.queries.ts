@@ -261,7 +261,6 @@ query getAnalysesRequestsByPatientUid($uid: Int!) {
       }
     }
   }
-
 }`;
 
 

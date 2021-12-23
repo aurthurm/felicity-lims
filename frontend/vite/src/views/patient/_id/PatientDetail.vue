@@ -75,7 +75,6 @@ export default defineComponent({
 
     let currentTab = ref('samples');
     const tabs = ['samples', 'cases', 'logs'];
-    let currentTabComponent = computed(() => 'tab-' + currentTab.value);
 
     function addSample(patient: IPatient): void {
       router?.push({
@@ -89,7 +88,6 @@ export default defineComponent({
     return {
       tabs,
       currentTab,
-      currentTabComponent,
       patient: computed(() => store.getters.getPatient),
       addSample,
     };

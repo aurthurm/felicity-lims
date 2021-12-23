@@ -112,7 +112,9 @@ export interface IQCTemplate {
   export interface IAnalysisRequest {
     clinicalData: string;
     patient: IPatient; 
+    cientUid: number; 
     client: IClient; 
+    clientContactUid?: number,
     clientContact?: IClientContact; 
     clientName?: string;
     samples: ISample[];

@@ -14,7 +14,7 @@
         />
       </div>
       <button
-        @click.prevent="showModal = true"
+        @click.prevent="quickRegistration"
           class="px-4 my-2 p-1 text-sm border-blue-500 border text-dark-700 transition-colors duration-150 rounded-lg focus:outline-none hover:bg-blue-500 hover:text-gray-100">
           Quick Registration</button>
     </div>
@@ -165,7 +165,10 @@
     </template>
 
     <template v-slot:body>
-      <PatientForm :patient="patientForm" @close="updatePatient" />
+      <PatientForm 
+      :patient="patientForm" 
+      :navigate="false"
+      @close="updatePatient" />
     </template>
   </modal>
 
@@ -233,15 +236,24 @@
   let getGender = (pos: number) => genders[pos];
 
   let selectPatient = (pt: IPatient) => {
-    Object.assign(patientForm, { ...pt });
+    Object.assign(patientForm, pt);
   };
 
   let setPatientToNull = () => {
-    Object.assign(patientForm, {} as IPatient);
+    Object.assign(patientForm, {});
   };
+  
+  const quickRegistration = () => {
+    console.log(isPatientSelected())
+    setPatientToNull();
+    console.log(patientForm)
+    showModal.value = true;
+    console.log(patientForm)
+    console.log(isPatientSelected())
+  }
 
   const updatePatient = (patient: IPatient) => {
-    Object.assign(patientForm, { ...patient });
+    selectPatient(patient);
     showModal.value = false;
   }
 </script>

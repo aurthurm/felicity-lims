@@ -112,6 +112,7 @@ export default function useAnalysisComposable(){
     }
 
     function isEditable(result: IAnalysisResult): Boolean {
+      if(state.sample.status === 'due') return false;
       if(result?.editable || isNullOrWs(result?.result)) {
         if(['cancelled',"verified","retracted","to_be_verified"].includes(result.status!)){
           result.editable = false

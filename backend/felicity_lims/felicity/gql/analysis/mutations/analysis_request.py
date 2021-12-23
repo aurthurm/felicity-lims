@@ -1,5 +1,6 @@
 import inspect
 import logging
+import asyncio
 from typing import Optional, List
 
 import strawberry
@@ -143,58 +144,59 @@ async def create_analysis_request(self, info, patient_uid: int, client_uid: int,
             a_result_schema = schemas.AnalysisResultCreate(**a_result_in)
             await result_models.AnalysisResult.create(a_result_schema)
 
-    return analysis_request
+    await asyncio.sleep(1)
+    return await analysis_models.AnalysisRequest.get_related(uid=analysis_request.uid, related=["samples"])
 
 
-@strawberry.mutation
-async def update_analysis_request(self, info, uid: int, patient_uid: Optional[int] = None,
-                                  client_uid: Optional[int] = None,
-                                  client_request_id: Optional[str] = None,
-                                  internal_use: Optional[bool] = False) -> a_types.AnalysisRequestWithSamples:
-    inspector = inspect.getargvalues(inspect.currentframe())
-    passed_args = get_passed_args(inspector)
+# @strawberry.mutation
+# async def update_analysis_request(self, info, uid: int, patient_uid: Optional[int] = None,
+#                                   client_uid: Optional[int] = None,
+#                                   client_request_id: Optional[str] = None,
+#                                   internal_use: Optional[bool] = False) -> a_types.AnalysisRequestWithSamples:
+#     inspector = inspect.getargvalues(inspect.currentframe())
+#     passed_args = get_passed_args(inspector)
+#
+#     is_authenticated, felicity_user = await auth_from_info(info)
+#     verify_user_auth(is_authenticated, felicity_user, "Only Authenticated user can update analysis requests")
+#
+#     analysis_request = await analysis_models.AnalysisRequest.get(uid=uid)
+#     if not analysis_request:
+#         raise Exception(f"AnalysisRequest with uid {uid} does not exist")
+#
+#     ar_data = analysis_request.to_dict()
+#     for field in ar_data:
+#         if field in passed_args:
+#             try:
+#                 setattr(analysis_request, field, passed_args[field])
+#             except AttributeError as e:
+#                 logger.warning(e)
+#
+#     ar_in = schemas.AnalysisRequestUpdate(**analysis_request.to_dict())
+#     analysis_request = await analysis_request.update(ar_in)
+#     return analysis_request
 
-    is_authenticated, felicity_user = await auth_from_info(info)
-    verify_user_auth(is_authenticated, felicity_user, "Only Authenticated user can update analysis requests")
 
-    analysis_request = await analysis_models.AnalysisRequest.get(uid=uid)
-    if not analysis_request:
-        raise Exception(f"AnalysisRequest with uid {uid} does not exist")
-
-    ar_data = analysis_request.to_dict()
-    for field in ar_data:
-        if field in passed_args:
-            try:
-                setattr(analysis_request, field, passed_args[field])
-            except AttributeError as e:
-                logger.warning(e)
-
-    ar_in = schemas.AnalysisRequestUpdate(**analysis_request.to_dict())
-    analysis_request = await analysis_request.update(ar_in)
-    return analysis_request
-
-
-@strawberry.mutation
-async def update_sample(self, info, uid: int, sampletype_uid: Optional[int] = None, profiles: List[int] = None,
-                        analyses: List[int] = None, internal_use: Optional[bool] = False,
-                        cancel: Optional[bool] = False) -> a_types.SampleType:
-    inspector = inspect.getargvalues(inspect.currentframe())
-    passed_args = get_passed_args(inspector)
-
-    is_authenticated, felicity_user = await auth_from_info(info)
-    verify_user_auth(is_authenticated, felicity_user, "Only Authenticated user can update samples")
-
-    sample = await analysis_models.Sample.get(uid=uid)
-    if not sample:
-        raise Exception(f"Sample with uid {uid} not found")
-
-    if passed_args.get('cancel'):
-        await sample.cancel()
-    else:
-        # TODO: remove/change profile/analyses if no results yet
-        pass
-
-    return sample
+# @strawberry.mutation
+# async def update_sample(self, info, uid: int, sampletype_uid: Optional[int] = None, profiles: List[int] = None,
+#                         analyses: List[int] = None, internal_use: Optional[bool] = False,
+#                         cancel: Optional[bool] = False) -> a_types.SampleType:
+#     inspector = inspect.getargvalues(inspect.currentframe())
+#     passed_args = get_passed_args(inspector)
+#
+#     is_authenticated, felicity_user = await auth_from_info(info)
+#     verify_user_auth(is_authenticated, felicity_user, "Only Authenticated user can update samples")
+#
+#     sample = await analysis_models.Sample.get(uid=uid)
+#     if not sample:
+#         raise Exception(f"Sample with uid {uid} not found")
+#
+#     if passed_args.get('cancel'):
+#         await sample.cancel()
+#     else:
+#         # TODO: remove/change profile/analyses if no results yet
+#         pass
+#
+#     return sample
 
 
 @strawberry.mutation

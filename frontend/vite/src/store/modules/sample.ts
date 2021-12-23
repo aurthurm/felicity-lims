@@ -64,6 +64,7 @@ export enum MutationTypes {
   UPDATE_SAMPLES_STATUS = 'UPDATE_SAMPLES_STATUS',
 
   SET_ANALYSES_REQUESTS = 'SET_ANALYSES_REQUESTS',
+  ADD_ANALYSIS_REQUEST = 'ADD_ANALYSIS_REQUEST',
 
   SET_ANALYSES_RESULTS = 'SET_ANALYSES_RESULTS',
   UPDATE_ANALYSIS_RESULTS = 'UPDATE_ANALYSIS_RESULTS',
@@ -92,6 +93,7 @@ export enum ActionTypes {
 
   FETCH_ANALYSIS_REQUESTS_FOR_PATIENT = 'FETCH_ANALYSIS_REQUESTS_FOR_PATIENT',
   FETCH_ANALYSIS_REQUESTS_FOR_CLIENT = 'FETCH_ANALYSIS_REQUESTS_FOR_CLIENT',
+  ADD_ANALYSIS_REQUEST = 'ADD_ANALYSIS_REQUEST',
 
   FETCH_ANALYSIS_RESULTS_FOR_SAMPLE = 'FETCH_ANALYSIS_RESULTS_FOR_SAMPLE',
   UPDATE_ANALYSIS_RESULTS = 'UPDATE_ANALYSIS_RESULTS',
@@ -209,6 +211,11 @@ export const mutations = <MutationTree<IState>>{
 
   [MutationTypes.SET_ANALYSES_REQUESTS](state: IState, requests: IAnalysisRequest[]): void {
     state.analysisRequests = sortAnalysisRequests(requests);
+  },
+
+
+  [MutationTypes.ADD_ANALYSIS_REQUEST](state: IState, request: IAnalysisRequest): void {
+    state.analysisRequests.push(request);
   },
 
   [MutationTypes.SET_ANALYSES_RESULTS](state: IState, results: IAnalysisResult[]): void {
@@ -341,6 +348,11 @@ export const actions = <ActionTree<IState, RootState>>{
     .query( GET_ANALYSIS_REQUESTS_BY_CLIENT_UID, { uid })
     .toPromise()
     .then(result => commit(MutationTypes.SET_ANALYSES_REQUESTS, result.data.analysisRequestsByClientUid))
+  },
+
+
+  async [ActionTypes.ADD_ANALYSIS_REQUEST]({ commit }, payload){
+    commit(MutationTypes.ADD_ANALYSIS_REQUEST, payload)
   },
 
   async [ActionTypes.FETCH_ANALYSIS_RESULTS_FOR_SAMPLE]({ commit }, uid){
