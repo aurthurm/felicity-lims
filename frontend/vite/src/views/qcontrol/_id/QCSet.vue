@@ -51,14 +51,14 @@
                   <input type="checkbox" class="mr-2" v-model="result.checked" @change="checkCheck()" :disabled="isDisabledRowCheckBox(result)">
                   <div>
                     <div  v-if="!isEditable(result)" class="text-sm leading-5 text-blue-900" >{{ result?.result  }}</div>
-                    <label v-else-if="result?.analysis?.resultoptions?.length < 1" class="block" >
+                    <label v-else-if="result?.analysis?.resultOptions?.length < 1" class="block" >
                       <input class="form-input mt-1 block w-full" v-model="result.result" @keyup="check(result)"/>
                     </label>
                     <label v-else class="block col-span-2" >
                         <select class="form-input mt-1 block w-full" v-model="result.result" @change="check(result)">
                           <option value=""></option>
                           <option  
-                          v-for="(option, index) in result?.analysis?.resultoptions"
+                          v-for="(option, index) in result?.analysis?.resultOptions"
                           :key="option.optionKey"
                           :value="option.value" >{{ option.value }}</option>
                       </select>
@@ -117,14 +117,14 @@
                         </td>
                         <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
                           <div  v-if="!isEditable(result)" class="text-sm leading-5 text-blue-900">{{ result?.result  }}</div>
-                          <label v-else-if="result?.analysis?.resultoptions?.length === 0" class="block" >
+                          <label v-else-if="result?.analysis?.resultOptions?.length === 0" class="block" >
                             <input class="form-input mt-1 block w-full" v-model="result.result" @keyup="check(result)"/>
                           </label>
                           <label v-else class="block col-span-2 mb-2" >
                               <select class="form-input mt-1 block w-full" v-model="result.result" @change="check(result)">
                                 <option value=""></option>
                                 <option  
-                                v-for="(option, index) in result?.analysis?.resultoptions"
+                                v-for="(option, index) in result?.analysis?.resultOptions"
                                 :key="option.optionKey"
                                 :value="option.value" >{{ option.value }}</option>
                             </select>

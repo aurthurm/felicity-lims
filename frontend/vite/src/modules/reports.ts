@@ -45,34 +45,34 @@ export default function useReportComposable(){
 
         // -----
         page.drawText('First name:', { x: leftColXL, y: patientTop - yDiff * 1, size: 10, font: helveticaBold })
-        page.drawText(ifNoValEmpty(sample?.analysisrequest?.patient?.firstName), { x: leftColXV, y: patientTop - yDiff * 1, size: 10, font: helvetica })
+        page.drawText(ifNoValEmpty(sample?.analysisRequest?.patient?.firstName), { x: leftColXV, y: patientTop - yDiff * 1, size: 10, font: helvetica })
 
         page.drawText('Last name:', { x: leftColXL, y: patientTop - yDiff * 2, size: 10, font: helveticaBold })
-        page.drawText(ifNoValEmpty(sample?.analysisrequest?.patient?.lastName), { x: leftColXV, y: patientTop - yDiff * 2, size: 10, font: helvetica })
+        page.drawText(ifNoValEmpty(sample?.analysisRequest?.patient?.lastName), { x: leftColXV, y: patientTop - yDiff * 2, size: 10, font: helvetica })
 
         page.drawText('Gender:', { x: leftColXL, y: patientTop - yDiff * 3, size: 10, font: helveticaBold })
         page.drawText('', { x: leftColXV, y: patientTop - yDiff * 3, size: 10, font: helvetica })
 
         page.drawText('Age:', { x: leftColXL, y: patientTop - yDiff * 4, size: 10, font: helveticaBold })
-        page.drawText(ifNoValEmpty(sample?.analysisrequest?.patient?.age)?.toString(), { x: leftColXV, y: patientTop - yDiff * 4, size: 10, font: helvetica })
+        page.drawText(ifNoValEmpty(sample?.analysisRequest?.patient?.age)?.toString(), { x: leftColXV, y: patientTop - yDiff * 4, size: 10, font: helvetica })
 
         page.drawText('D.O.B:', { x: leftColXL, y: patientTop - yDiff * 5, size: 10, font: helveticaBold })
-        page.drawText(ifNoValEmpty(sample?.analysisrequest?.patient?.dateOfBirth)?.toString(), { x: leftColXV, y: patientTop - yDiff * 5, size: 10, font: helvetica })
+        page.drawText(ifNoValEmpty(sample?.analysisRequest?.patient?.dateOfBirth)?.toString(), { x: leftColXV, y: patientTop - yDiff * 5, size: 10, font: helvetica })
 
         // -----
         let rightColXL = pageMarginLeft + 250
         let rightColXV = rightColXL + 90
         page.drawText('Client Patient Id:', { x: rightColXL, y: patientTop - yDiff * 1, size: 10, font: helveticaBold })
-        page.drawText(ifNoValEmpty(sample?.analysisrequest?.patient?.patientId), { x: rightColXV, y: patientTop - yDiff * 1, size: 10, font: helvetica })
+        page.drawText(ifNoValEmpty(sample?.analysisRequest?.patient?.patientId), { x: rightColXV, y: patientTop - yDiff * 1, size: 10, font: helvetica })
 
         page.drawText('Client name:', { x: rightColXL, y: patientTop - yDiff * 2, size: 10, font: helveticaBold })
-        page.drawText(ifNoValEmpty(sample?.analysisrequest?.client?.name), { x: rightColXV, y: patientTop - yDiff * 2, size: 10, font: helvetica })
+        page.drawText(ifNoValEmpty(sample?.analysisRequest?.client?.name), { x: rightColXV, y: patientTop - yDiff * 2, size: 10, font: helvetica })
 
         page.drawText('Client Phone:', { x: rightColXL, y: patientTop - yDiff * 3, size: 10, font: helveticaBold })
-        page.drawText(ifNoValEmpty(sample?.analysisrequest?.client?.phoneMobile)?.toString(), { x: rightColXV, y: patientTop - yDiff * 3, size: 10, font: helvetica })
+        page.drawText(ifNoValEmpty(sample?.analysisRequest?.client?.phoneMobile)?.toString(), { x: rightColXV, y: patientTop - yDiff * 3, size: 10, font: helvetica })
 
         page.drawText('Client Email:', { x: rightColXL, y: patientTop - yDiff * 4, size: 10, font: helveticaBold })
-        page.drawText(ifNoValEmpty(sample?.analysisrequest?.client?.email), { x: rightColXV, y: patientTop - yDiff * 4, size: 10, font: helvetica })
+        page.drawText(ifNoValEmpty(sample?.analysisRequest?.client?.email), { x: rightColXV, y: patientTop - yDiff * 4, size: 10, font: helvetica })
 
         // Sample Detail Section
         const sampleTop = patientTop - 110
@@ -81,7 +81,7 @@ export default function useReportComposable(){
 
         // -----
         page.drawText('Sample ID:', { x: leftColXL, y: sampleTop - yDiff * 1, size: 10, font: helveticaBold })
-        page.drawText(ifNoValEmpty(sample?.analysisrequest?.requestId), { x: leftColXV, y: sampleTop - yDiff * 1, size: 10, font: helvetica })
+        page.drawText(ifNoValEmpty(sample?.analysisRequest?.requestId), { x: leftColXV, y: sampleTop - yDiff * 1, size: 10, font: helvetica })
 
         page.drawText('Sample Type:', { x: leftColXL, y: sampleTop - yDiff * 2, size: 10, font: helveticaBold })
         page.drawText(ifNoValEmpty(sample?.sampleType?.name), { x: leftColXV, y: sampleTop - yDiff * 2, size: 10, font: helvetica })

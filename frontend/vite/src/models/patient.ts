@@ -21,4 +21,6 @@ export interface IPatient {
     districtUid: number;
     province: IProvince;
     provinceUid: number;
+    country: IDistrict;
+    countryUid: number;
 }

@@ -22,12 +22,20 @@ export const GET_ALL_PATIENTS = gql`
         gender
         dateOfBirth
         ageDobEstimated
+        clientUid
         client { 
+          uid
           name
           district {
+            uid
             name
             province {
+              uid
               name
+              country {
+                uid
+                name
+              }
             }
           }
         }

@@ -18,7 +18,7 @@ export interface IAnalysisService {
     unit: string;
     profiles: IAnalysisProfile[];
     category: IAnalysisCategory;
-    resultoptions: IResultOption[],
+    resultOptions: IResultOption[],
     categoryUid: number,
     sortKey: number;
     active: boolean;
@@ -97,12 +97,12 @@ export interface IQCTemplate {
   export interface ISample {
     uid: number;
     sampleId: string;
-    sampletype: ISampleType | undefined; 
+    sampleType: ISampleType | undefined;
     profiles: IAnalysisProfile[];
     analyses: IAnalysisService[];
     assigned: boolean;
     qcLevel: IQCLevel;
-    analysisrequest: IAnalysisRequest;
+    analysisRequest: IAnalysisRequest;
     analysisResults: IAnalysisResult[];
     status: string;
     priority: number;

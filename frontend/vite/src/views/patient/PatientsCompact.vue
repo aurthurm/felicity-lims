@@ -14,7 +14,7 @@
         />
       </div>
       <button
-        @click.prevent="patientFormManager(true)"
+        @click.prevent="showModal = true"
           class="px-4 my-2 p-1 text-sm border-blue-500 border text-dark-700 transition-colors duration-150 rounded-lg focus:outline-none hover:bg-blue-500 hover:text-gray-100">
           Quick Registration</button>
     </div>
@@ -79,7 +79,7 @@
                 <div>
                   <span class="font-medium text-md">{{ patientForm.dateOfBirth }}</span>
                   <button
-                    @click="patientFormManager(false)"
+                    @click="showModal = true"
                     class="ml-4 inline-flex items-center justify-center w-8 h-8 mr-2 border-blue-500 border text-gray-900 transition-colors duration-150 bg-white rounded-full focus:outline-none hover:bg-gray-200"
                   >
                     <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20">
@@ -165,105 +165,10 @@
     </template>
 
     <template v-slot:body>
-     <form action="post" class="border-2 border-gray-900 border-dotted rounded p-4" autocomplete="off">
-
-          <label class="flex whitespace-nowrap mb-2 w-full">
-            <span class="text-gray-700 w-4/12">Patient Unique Identifier</span>
-            <input class="form-input mt-1 block w-full" v-model="patientForm.clientPatientId" placeholder="Patient Unique Identifier" />
-          </label>
-
-          <label class="flex whitespace-nowrap mb-2 w-full">
-            <span class="text-gray-700 w-4/12">First Name</span>
-            <input class="form-input mt-1 w-full" v-model="patientForm.firstName" placeholder="First Name" />
-          </label>
-
-          <label class="flex whitespace-nowrap mb-2 w-full">
-            <span class="text-gray-700 w-4/12">Middle Name</span>
-            <input class="form-input mt-1 w-full" v-model="patientForm.middleName" placeholder="Middle Name" />
-          </label>
-
-          <label class="flex whitespace-nowrap mb-2 w-full">
-            <span class="text-gray-700 w-4/12">Last Name</span>
-            <input class="form-input mt-1 w-full" v-model="patientForm.lastName" placeholder="Last Name" />
-          </label>
-
-          <label class="flex whitespace-nowrap mb-2 w-full">
-            <span class="text-gray-700 w-4/12">Age</span>
-            <input class="form-input mt-1 w-full" type="number" v-model="patientForm.age" placeholder="Age" />
-          </label>
-
-          <label class="flex whitespace-nowrap mb-2 w-full">
-            <span class="text-gray-700 w-4/12">Date of Birth</span>
-            <input class="form-input mt-1 w-full" type="date" v-model="patientForm.dateOfBirth" placeholder="Date of Birth" />
-          </label>
-
-          <label class="flex whitespace-nowrap mb-2 w-full">
-            <span class="text-gray-700 w-3/12">Age/DOB Estimated?</span>
-            <input type="checkbox" class="form-checkbox text-green-500" v-model="patientForm.ageDobEstimated" />
-          </label>
-
-          <label class="flex whitespace-nowrap mb-2 w-full" >
-            <span class="text-gray-700 w-4/12">Gender</span>
-            <select class="form-select mt-1 w-full" v-model="patientForm.gender">
-              <option></option>
-              <option v-for="(sex, indx) in genders" :key="indx" :value="indx"> {{ sex }}</option>
-            </select>
-          </label>
-
-          <label class="flex whitespace-nowrap mb-2 w-full" >
-            <span class="text-gray-700 w-4/12">Mobile Number</span>
-            <input class="form-input mt-1 w-full" type="number" v-model="patientForm.phoneMobile" placeholder="Mobile Number" />
-          </label>
-
-          <label class="flex whitespace-nowrap mb-2 w-full">
-            <span class="text-gray-700 w-3/12">Consent to SMS</span>
-            <input type="checkbox" class="form-checkbox text-green-500" v-model="patientForm.consentSms" />
-          </label>
-
-          <!-- other identifiers: passport, client pid, national id -->
-          <label class="flex whitespace-nowrap mb-2 w-full">
-            <span class="text-gray-700 w-4/12">Primary Referrer</span>
-            <select class="form-select mt-1 w-full" v-model="patientForm.clientUid">
-                <option></option>
-                <option v-for="client in clients" :key="client.uid" :value="client.uid"> {{ client.name }} {{ client.uid }}</option>
-              </select>
-          </label>
-
-          <div class="grid grid-cols-3 gap-x-4 mb-4">
-            <label class="flex items-center whitespace-nowrap col-span-1 mb-2 w-full">
-              <span class="text-gray-700 w-4/12">Country</span>
-              <select class="form-select mt-1 w-full" v-model="countryUid" @change="getProvinces($event)">
-                <option></option>
-                <option v-for="country in countries" :key="country.uid" :value="country.uid"> {{ country.name }} {{ country.uid }}</option>
-              </select>
-            </label>
-            <label class="flex items-center whitespace-nowrap col-span-1 mb-2 w-full">
-              <span class="text-gray-700 w-4/12">Province</span>
-              <select class="form-select mt-1 w-full" v-model="provinceUid" @change="getDistricts($event)">
-                <option></option>
-                <option v-for="province in provinces" :key="province.uid" :value="province.uid"> {{ province.name }} {{ province.uid }}</option>
-              </select>
-            </label>
-            <label class="flex items-center whitespace-nowrap col-span-1 mb-2 w-full">
-              <span class="text-gray-700 w-4/12">District</span>
-              <select class="form-select mt-1 w-full" v-model="patientForm.districtUid">
-                <option></option>
-                <option v-for="district in districts" :key="district.uid" :value="district.uid"> {{ district.name }} {{ district.uid }}</option>
-              </select>
-            </label>
-          </div>
-
-          <hr />
-          <button
-            type="button"
-            @click.prevent="savePatientForm()"
-            class="-mb-4 w-1/5 border border-green-500 bg-green-500 text-white rounded-md px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-green-600 focus:outline-none focus:shadow-outline"
-          >
-            Save Patient
-          </button>
-        </form>
+      <PatientForm :patient="patientForm" @close="updatePatient" />
     </template>
   </modal>
+
 </template>
 
 <style lang="postcss" scoped>
@@ -271,180 +176,72 @@
   /* min-height: calc(100vh - 250px); */
   min-height: 100%;
 }
-
-.tab-active {
-  border-bottom: 2px solid rgb(194, 193, 193);
-  color: rgb(37, 37, 37) !important;
-}
 </style>
 
-<script lang="ts">
-import { useMutation } from '@urql/vue';
-import { defineComponent, ref, reactive, computed } from 'vue';
-import { useStore } from 'vuex';
-import { useRouter } from 'vue-router';
-import { useQuery } from '@urql/vue';
-import tabSamples from '../components/AnalyisRequestListing.vue';
-import tabCases from './comps/CaseTable.vue';
-import tabLogs from '../components/AuditLog.vue';
-import modal from '../../components/SimpleModal.vue';
-import {
-  FILTER_PROVINCES_BY_COUNTRY,
-  FILTER_DISTRICTS_BY_PROVINCE,
-} from '../../graphql/admin.queries';
-import { ADD_PATIENT } from '../../graphql/patient.mutations';
 
-import { ActionTypes } from '../../store/modules/patient';
-import { ActionTypes as ClientActionTypes } from '../../store/modules/client';
-import { ActionTypes as AdminActionTypes } from '../../store/modules/admin';
-import { IPatient } from '../../models/patient';
-import { IDistrict, IProvince } from '../../models/location';
+<script setup lang="ts">
+  import { ref, reactive, computed } from 'vue';
+  import { useStore } from 'vuex';
+  import tabSamples from '../components/AnalyisRequestListing.vue';
+  import tabCases from './comps/CaseTable.vue';
+  import tabLogs from '../components/AuditLog.vue';
+  import modal from '../../components/SimpleModal.vue';
+  import PatientForm from './PatientForm.vue';
 
-export default defineComponent({
-  name: 'patient-search',
-  components: {
-    tabSamples,
-    tabCases,
-    tabLogs,
-    modal,
-  },
-  setup() {
-    let store = useStore();
+  import { ActionTypes } from '../../store/modules/patient';
+  import { ActionTypes as AdminActionTypes } from '../../store/modules/admin';
+  import { IPatient } from '../../models/patient';
 
-    let createAction = ref<boolean>(true);
-    let showModal = ref<boolean>(false);
+  let store = useStore();
+  let showModal = ref<boolean>(false);
+  let currentTab = ref<string>('samples');
+  const tabs: string[] = ['samples', 'cases', 'logs'];
 
-    let currentTab = ref<string>('samples');
-    const tabs: string[] = ['samples', 'cases', 'logs'];
-    let currentTabComponent = computed<string>(() => 'tab-' + currentTab.value);
+  let patientForm = reactive({}) as IPatient;
 
-    let patientForm = reactive({}) as IPatient;
+  let patientParams = reactive({ 
+    first: 25, 
+    after: "",
+    text: "", 
+    sortBy: ["-uid"],
+    filterAction: false
+  });
 
-    let provinces = ref<IProvince[]>([]);
-    let districts = ref<IDistrict[]>([]);
+  const genders: string[] = ["Male", "Female", "Missing", "Trans Gender"]
 
-    let countryUid = ref<number>();
-    let provinceUid = ref<number>();
-    let patientParams = reactive({ 
-      first: 25, 
-      after: "",
-      text: "", 
-      sortBy: ["-uid"],
-      filterAction: false
-    });
+  store.dispatch(AdminActionTypes.FETCH_COUNTRIES);    
+  store.dispatch(ActionTypes.FETCH_PATIENTS, patientParams);
 
+  const patients = computed(() => store.getters.getPatients )
 
-    const genders: string[] = ["Male", "Female", "Missing", "Trans Gender"]
-
-    store.dispatch(AdminActionTypes.FETCH_COUNTRIES);    
+  function searchPatients(event: any) {
+    patientParams.first = 100;
+    patientParams.after = "";
+    patientParams.text = event.target.value;
+    patientParams.filterAction = true;
     store.dispatch(ActionTypes.FETCH_PATIENTS, patientParams);
+  }
 
-    let clientParams = reactive({ 
-      first: undefined, 
-      after: "",
-      text: "", 
-      sortBy: ["name"]
-    });
-    store.dispatch(ClientActionTypes.FETCH_CLIENTS, clientParams);
+  function isPatientSelected() {
+    return patientForm.patientId !== undefined;
+  }
 
-    const { executeMutation: createPatient } = useMutation(ADD_PATIENT);
+  let getPatientFullName = (pt: IPatient) => {
+    return pt.firstName + ' ' + pt.lastName;
+  };
 
-    const provincesfilter = useQuery({
-      query: FILTER_PROVINCES_BY_COUNTRY,
-      variables: { uid: countryUid },
-      pause: computed(() => countryUid !== null), // not working
-      requestPolicy: 'network-only',
-    });
+  let getGender = (pos: number) => genders[pos];
 
-    const districtsfilter = useQuery({
-      query: FILTER_DISTRICTS_BY_PROVINCE,
-      variables: { uid: provinceUid },
-      pause: computed(() => provinceUid !== null), // not working
-      requestPolicy: 'network-only',
-    });
+  let selectPatient = (pt: IPatient) => {
+    Object.assign(patientForm, { ...pt });
+  };
 
-    function addPatient() {
-      createPatient({ clientPatientId: patientForm.clientPatientId, firstName: patientForm.firstName,
-        middleName: patientForm.middleName, lastName: patientForm.lastName, age: patientForm.age,
-        gender: patientForm.gender, dateOfBirth: patientForm.dateOfBirth, ageDobEstimated: patientForm.ageDobEstimated,
-        clientUid: patientForm.clientUid, phoneMobile: patientForm.phoneMobile, consentSms: patientForm.consentSms, 
-      }).then(result => store.dispatch(ActionTypes.ADD_PATIENT, result));
-    }
+  let setPatientToNull = () => {
+    Object.assign(patientForm, {} as IPatient);
+  };
 
-    function getProvinces(event: any) {
-      provincesfilter.executeQuery({requestPolicy: 'network-only'}).then(result => {
-        provinces.value = result.data.value?.provincesByCountryUid;
-      });
-    }
-
-    function getDistricts(event: any) {
-      districtsfilter.executeQuery({requestPolicy: 'network-only'}).then(result => {
-        districts.value = result.data.value?.districtsByProvinceUid;
-      });
-    }
-
-    function searchPatients(event: any) {
-      patientParams.first = 100;
-      patientParams.after = "";
-      patientParams.text = event.target.value;
-      patientParams.filterAction = true;
-      // store.dispatch(ActionTypes.SEARCH_PATIENTS, event.target.value);
-      store.dispatch(ActionTypes.FETCH_PATIENTS, patientParams);
-    }
-
-    function isPatientSelected() {
-      return patientForm.patientId !== undefined;
-    }
-
-    let getPatientFullName = (pt: IPatient) => {
-      return pt.firstName + ' ' + pt.lastName;
-    };
-
-    let getGender = (pos: number) => genders[pos];
-
-    let selectPatient = (pt: IPatient) => {
-      Object.assign(patientForm, { ...pt });
-    };
-
-    let setPatientToNull = () => {
-      Object.assign(patientForm, {} as IPatient);
-    };
-
-    function patientFormManager(create: boolean) {
-      showModal.value = true;
-      createAction.value = create;
-      if (create) setPatientToNull();
-    }
-
-    function savePatientForm() {
-       if (createAction.value) addPatient();
-       showModal.value = false;
-    }
-
-    return {
-      showModal,
-      tabs,
-      currentTab,
-      patientForm,
-      getPatientFullName,
-      patients: computed(() => store.getters.getPatients),
-      isPatientSelected,
-      selectPatient,
-      setPatientToNull,
-      patientFormManager,
-      savePatientForm,
-      countries: computed(() => store.getters.getCountries),
-      clients: computed(() => store.getters.getClients),
-      countryUid,
-      provinces,
-      provinceUid,
-      districts,
-      getProvinces,
-      getDistricts,
-      genders,
-      getGender,
-      searchPatients,
-    };
-  },
-});
+  const updatePatient = (patient: IPatient) => {
+    Object.assign(patientForm, { ...patient });
+    showModal.value = false;
+  }
 </script>

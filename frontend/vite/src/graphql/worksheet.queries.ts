@@ -128,7 +128,7 @@ export const GET_WORKSHEET_BY_UID = gql`
           uid
           name
           unit
-          resultoptions {
+          resultOptions {
             uid
             optionKey
             value
@@ -138,7 +138,7 @@ export const GET_WORKSHEET_BY_UID = gql`
           uid
           sampleId
           priority
-          analysisrequest {
+          analysisRequest {
             uid
             client {
               uid

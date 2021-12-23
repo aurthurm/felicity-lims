@@ -214,10 +214,10 @@ export const mutations = <MutationTree<IState>>{
     state?.analysesServices?.forEach(service => {
       console.log(service?.uid, payload?.analysisUid);
       if (service?.uid == payload?.analysisUid){
-        const index = service.resultoptions!.findIndex(ro => ro.uid === payload.uid);
-        console.log(service!.resultoptions![index])
-        service!.resultoptions![index] = payload;
-        console.log(service!.resultoptions![index])
+        const index = service.resultOptions!.findIndex(ro => ro.uid === payload.uid);
+        console.log(service!.resultOptions![index])
+        service!.resultOptions![index] = payload;
+        console.log(service!.resultOptions![index])
       }
     });
     console.log(state?.analysesServices);
@@ -226,10 +226,10 @@ export const mutations = <MutationTree<IState>>{
   [MutationTypes.ADD_RESULT_OPTION](state: IState, payload: any): void {
     state?.analysesServices?.forEach(service => {
       if (service?.uid == payload?.analysisUid){
-        if(service?.resultoptions){
-          service?.resultoptions?.push(payload);
+        if(service?.resultOptions){
+          service?.resultOptions?.push(payload);
         } else {
-          service!.resultoptions = [payload];
+          service!.resultOptions = [payload];
         }
       }
     });

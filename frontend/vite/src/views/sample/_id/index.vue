@@ -3,8 +3,8 @@
   <div class="flex justify-between">
     <h3 class="my-4 font-bold">Sample Detail</h3>
     <router-link
-      v-if="sample?.analysisrequest?.patient?.uid"
-     :to="{ name: 'patient-detail', params: { patientUid: sample?.analysisrequest?.patient?.uid } }" 
+      v-if="sample?.analysisRequest?.patient?.uid"
+     :to="{ name: 'patient-detail', params: { patientUid: sample?.analysisRequest?.patient?.uid } }" 
       class="p-2 my-2 text-sm border-blue-500 border text-dark-700 transition-colors duration-150 rounded-lg focus:outline-none hover:bg-blue-500 hover:text-gray-100">
       ... other samples
     </router-link>
@@ -31,9 +31,9 @@
               >
                 <i class="fa fa-pen"></i>
               </button> -->
-              <span v-if="sample?.analysisrequest?.patient?.uid && childSample?.uid">
+              <span v-if="sample?.analysisRequest?.patient?.uid && childSample?.uid">
                   <font-awesome-icon icon="angle-double-right" class="mx-2" />
-                  <router-link :to="{ name: 'sample-detail', params: { patientUid: sample?.analysisrequest?.patient?.uid, sampleUid: childSample?.uid } }" 
+                  <router-link :to="{ name: 'sample-detail', params: { patientUid: sample?.analysisRequest?.patient?.uid, sampleUid: childSample?.uid } }" 
                     class="p-2 my-2 text-sm border-blue-500 border text-dark-700 transition-colors duration-150 rounded-lg focus:outline-none hover:bg-blue-500 hover:text-gray-100">
                     {{ childSample?.sampleId }}
                   </router-link>
@@ -97,18 +97,18 @@
             </div>
             <div class="flex">
               <span class="text-gray-800 text-sm font-semibold w-1/6">Client Request ID:</span>
-              <span class="text-gray-600 text-sm md:text-md">{{ sample?.analysisrequest?.clientRequestId }}</span>
+              <span class="text-gray-600 text-sm md:text-md">{{ sample?.analysisRequest?.clientRequestId }}</span>
             </div>
             <div class="flex">
               <span class="text-gray-800 text-sm font-semibold w-1/6">Sample Type:</span>
-              <span class="text-gray-600 text-sm md:text-md">{{ sample?.sampletype!.name }}</span>
+              <span class="text-gray-600 text-sm md:text-md">{{ sample?.sampleType!.name }}</span>
             </div>
           </div>
           <div class="col-span-1">
             <!-- Communication Details -->
             <div class="flex">
               <span class="text-gray-800 text-sm font-semibold w-1/6">Client:</span>
-              <span class="text-gray-600 text-sm md:text-md">{{ sample?.analysisrequest?.client?.name }}</span>
+              <span class="text-gray-600 text-sm md:text-md">{{ sample?.analysisRequest?.client?.name }}</span>
             </div>
             <div class="flex">
               <span class="text-gray-800 text-sm font-semibold w-1/6">Cliet Contact:</span>

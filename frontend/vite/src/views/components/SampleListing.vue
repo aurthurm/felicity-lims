@@ -83,7 +83,7 @@
                   <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
                   <div class="flex items-center">
                       <div class="text-sm leading-5 text-gray-800">
-                        <router-link :to="{ name: 'sample-detail', params: { patientUid: sample?.analysisrequest?.patient?.uid, sampleUid:sample?.uid  }}">{{ sample.sampleId }}</router-link>
+                        <router-link :to="{ name: 'sample-detail', params: { patientUid: sample?.analysisRequest?.patient?.uid, sampleUid:sample?.uid  }}">{{ sample.sampleId }}</router-link>
                       </div>
                   </div>
                   </td>
@@ -91,13 +91,13 @@
                   <div class="text-sm leading-5 text-blue-900">{{ profileAnalysesText(sample.profiles!, sample.analyses!) }}</div>
                   </td>
                   <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-                  <div class="text-sm leading-5 text-blue-900">{{ sample?.analysisrequest?.patient?.firstName }} {{ sample?.analysisrequest?.patient?.lastName }}</div>
+                  <div class="text-sm leading-5 text-blue-900">{{ sample?.analysisRequest?.patient?.firstName }} {{ sample?.analysisRequest?.patient?.lastName }}</div>
                   </td>
                   <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-                  <div class="text-sm leading-5 text-blue-900">{{ sample?.analysisrequest?.patient?.clientPatientId }}</div>
+                  <div class="text-sm leading-5 text-blue-900">{{ sample?.analysisRequest?.patient?.clientPatientId }}</div>
                   </td>
                   <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-                  <div class="text-sm leading-5 text-blue-900">{{ sample?.analysisrequest?.client?.name }}</div>
+                  <div class="text-sm leading-5 text-blue-900">{{ sample?.analysisRequest?.client?.name }}</div>
                   </td>
                   <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
                   <div class="text-sm leading-5 text-blue-900">10/10/2020</div>

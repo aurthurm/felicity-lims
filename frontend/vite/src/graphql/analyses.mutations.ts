@@ -123,7 +123,7 @@ export const ADD_ANALYSIS_SERVICE= gql`
       sortKey
       description   
       categoryUid   
-      resultoptions {
+      resultOptions {
         uid
         optionKey
         value
@@ -149,7 +149,7 @@ export const EDIT_ANALYSIS_SERVICE= gql`
       sortKey
       description
       categoryUid   
-      resultoptions {
+      resultOptions {
         uid
         optionKey
         value
@@ -233,7 +233,7 @@ mutation AddAnalysisRequest ($clientRequestId: String!, $clientUid: Int!, $patie
       uid
       # samples {
       #   uid
-      #   analysisrequest {
+      #   analysisRequest {
       #     uid
       #     clientRequestId
       #     patient {
@@ -252,7 +252,7 @@ mutation AddAnalysisRequest ($clientRequestId: String!, $clientUid: Int!, $patie
       #       name
       #     }
       #   }
-      #   sampletype {
+      #   sampleType {
       #     uid
       #     name
       #   }
@@ -291,12 +291,12 @@ export const SUBMIT_ANALYSIS_RESULTS = gql`
           }
         }
         analysisUid
-        analysis{
+        analysis {
           uid
           name
           unit
           sortKey
-          resultoptions {
+          resultOptions {
             uid
             optionKey
             value
@@ -352,7 +352,7 @@ export const VERIFY_ANALYSIS_RESULTS = gql`
           name
           unit
           sortKey
-          resultoptions {
+          resultOptions {
                 uid
                 optionKey
                 value
@@ -390,7 +390,7 @@ export const RETRACT_ANALYSIS_RESULTS = gql`
           name
           unit
           sortKey
-          resultoptions {
+          resultOptions {
                 uid
                 optionKey
                 value
@@ -428,7 +428,7 @@ export const RETEST_ANALYSIS_RESULTS = gql`
           name
           unit
           sortKey
-          resultoptions {
+          resultOptions {
                 uid
                 optionKey
                 value

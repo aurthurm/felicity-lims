@@ -50,7 +50,8 @@
     "vue-sweetalert2": "^5.0.2",
     "vue3-markdown-it": "^1.0.9",
     "vuedraggable": "^4.1.0",
-    "vuex": "^4.0.2"
+    "vuex": "^4.0.2",
+    "yup": "^0.32.11"
   },
   "devDependencies": {
     "@tailwindcss/custom-forms": "^0.2.1",

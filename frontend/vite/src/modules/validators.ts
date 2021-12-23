@@ -7,7 +7,7 @@ export const simpleValidator = (form: any, required: string[] = []) => {
     let response = { hasError: false, data: new Map() };
 
     for(let field of required){
-      if(isNullOrWs(form.get(field))){
+      if(isNullOrWs(form[field])){
         response.hasError = true
         response.data.set(field, "This field is required")
       }

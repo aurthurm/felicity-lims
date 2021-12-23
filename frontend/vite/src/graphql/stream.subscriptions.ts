@@ -18,7 +18,7 @@ export const SUBSCRIBE_TO_TEST_STREAM = gql`
         ...on SampleType {
           uid
           sampleId
-          analysisrequest {
+          analysisRequest {
             patientUid
           }
         }
@@ -50,7 +50,7 @@ subscription getTestingStream {
       ...on SampleType {
         uid
         sampleId
-        analysisrequest {
+        analysisRequest {
           patientUid
         }
       }

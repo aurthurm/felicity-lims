@@ -31,7 +31,9 @@ export enum MutationTypes {
   SET_PATIENTS = 'SET_PATIENTS',
   SET_PATIENT = 'SET_PATIENT',
   DIRECT_SET_PATIENTS = 'DIRECT_SET_PATIENTS',
+
   ADD_PATIENT = 'ADD_PATIENT',
+  UPDATE_PATIENT = "UPDATE_PATIENT"
 }
 
 export enum ActionTypes {
@@ -41,12 +43,13 @@ export enum ActionTypes {
   FETCH_PATIENTS= 'FETCH_PATIENTS',
   SEARCH_PATIENTS= 'SEARCH_PATIENTS',
   ADD_PATIENT = 'ADD_PATIENT',
+  UPDATE_PATIENT = "UPDATE_PATIENT"
 }
 
 // Getters
 export const getters = <GetterTree<IState, RootState>>{
   getPatients: (state) => state.patients,
-  getPatientByUid: (state) => (uid: string) => state.patients?.find(p => p.uid === uid),
+  getPatientByUid: (state) => (uid: number) => state.patients?.find(p => p.uid === uid),
   getPatient: (state) => state.patient,
   getPatientCount: (state) => state.patientCount,
   getPatientPageInfo: (state) => state.patientPageInfo,
@@ -83,6 +86,12 @@ export const mutations = <MutationTree<IState>>{
   [MutationTypes.ADD_PATIENT](state: IState, payload: IPatient): void {
     state.patients?.push(payload);
   },
+
+  [MutationTypes.UPDATE_PATIENT](state: IState, payload: IPatient): void {
+    const index = state.patients!.findIndex(x => x.uid === payload.uid);
+    state.patients![index] = { ...state.patients![index], ...payload };
+    state.patient = payload;
+  },
 };
 
 // Actions
@@ -93,7 +102,11 @@ export const actions = <ActionTree<IState, RootState>>{
   },
 
   async [ActionTypes.ADD_PATIENT]({ commit }, payload: any){
-    commit(MutationTypes.ADD_PATIENT, payload.data.createPatient);
+    commit(MutationTypes.ADD_PATIENT, payload);
+  },
+
+  async [ActionTypes.UPDATE_PATIENT]({ commit }, payload: any){
+    commit(MutationTypes.UPDATE_PATIENT, payload);
   },
 
   async [ActionTypes.FETCH_PATIENTS]({ commit }, params){

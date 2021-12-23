@@ -15,7 +15,7 @@
             </tr>
             </thead>
             <tbody class="bg-white">
-            <tr v-for="option in analysis?.resultoptions"  :key="option?.uid">
+            <tr v-for="option in analysis?.resultOptions"  :key="option?.uid">
                 <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
                 <div class="flex items-center">
                     <div>

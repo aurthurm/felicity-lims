@@ -51,17 +51,17 @@
                 <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
                   <div class="text-sm leading-5 text-gray-800 font-semibold">
                     <router-link
-                     v-if="result?.sample?.analysisrequest?.patient?.uid" 
-                     :to="{ name: 'sample-detail', params: { patientUid: result?.sample?.analysisrequest?.patient?.uid, sampleUid: result?.sample?.uid  }}">{{ result?.sample?.sampleId }} </router-link>
+                     v-if="result?.sample?.analysisRequest?.patient?.uid" 
+                     :to="{ name: 'sample-detail', params: { patientUid: result?.sample?.analysisRequest?.patient?.uid, sampleUid: result?.sample?.uid  }}">{{ result?.sample?.sampleId }} </router-link>
                      <div v-else>{{ result?.sample?.sampleId }}</div>
                   </div>
                   <span v-if="viewDetail">
                     <div >
-                          {{ result?.sample?.analysisrequest?.patient?.firstName }}
-                          {{ result?.sample?.analysisrequest?.patient?.lastName }}
+                          {{ result?.sample?.analysisRequest?.patient?.firstName }}
+                          {{ result?.sample?.analysisRequest?.patient?.lastName }}
                     </div>
                     <div >
-                          {{ result?.sample?.analysisrequest?.client?.name }}
+                          {{ result?.sample?.analysisRequest?.client?.name }}
                     </div>
                   </span>
                 </td>
@@ -76,14 +76,14 @@
                 </td>
                 <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
                   <div  v-if="!isEditable(result)" >{{ result?.result  }}</div>
-                  <label v-else-if="result?.analysis?.resultoptions?.length === 0" class="block" >
+                  <label v-else-if="result?.analysis?.resultOptions?.length === 0" class="block" >
                     <input class="form-input mt-1 block w-full" v-model="result.result" @keyup="check(result)"/>
                   </label>
                   <label v-else class="block col-span-2 mb-2" >
                       <select class="form-input mt-1 block w-full" v-model="result.result" @change="check(result)">
                         <option value=""></option>
                         <option  
-                        v-for="(option, index) in result?.analysis?.resultoptions"
+                        v-for="(option, index) in result?.analysis?.resultOptions"
                         :key="option.optionKey"
                         :value="option.value" >{{ option.value }}</option>
                     </select>

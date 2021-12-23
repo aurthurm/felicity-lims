@@ -79,202 +79,33 @@
     </template>
 
     <template v-slot:body>
-      <form action="post" class="p-1">
-        <label class="block mb-2">
-          <span class="text-gray-700">Patient Unique Identifier</span>
-          <input class="form-input mt-1 block w-full" v-model="patient.clientPatientId" placeholder="Patient Unique Identifier" />
-        </label>
-        <div class="flex justify-between">
-          <label class="block mb-2 w-full">
-            <span class="text-gray-700">First Name</span>
-            <input class="form-input mt-1 block w-full" v-model="patient.firstName" placeholder="First Name" />
-          </label>
-          <label class="block mb-2 w-full mx-2">
-            <span class="text-gray-700">Middle Name</span>
-            <input class="form-input mt-1 block w-full" v-model="patient.middleName" placeholder="Middle Name" />
-          </label>
-          <label class="block mb-2 w-full">
-            <span class="text-gray-700">Last Name</span>
-            <input class="form-input mt-1 block w-full" v-model="patient.lastName" placeholder="Last Name" />
-          </label>
-        </div>
-
-        <div class="flex justify-between">
-          <label class="block mb-2 w-full">
-            <span class="text-gray-700">Age</span>
-            <input class="form-input mt-1 block w-full" type="number" v-model="patient.age" placeholder="Age" />
-          </label>
-          <label class="block mb-2 mx-2 w-full">
-            <span class="text-gray-700">Date of Birth</span>
-            <input class="form-input mt-1 block w-full" type="date" v-model="patient.dateOfBirth" placeholder="Date of Birth" />
-          </label>
-          <label class="inline-flex items-center -mb-6 w-full">
-            <input type="checkbox" class="form-checkbox text-green-500 mx-4" v-model="patient.ageDobEstimated" />
-            <span class="ml-2">Age/DOB Estimated?</span>
-          </label>
-        </div>
-
-        <div class="flex justify-between">
-          <label class="block mb-2 w-full" >
-            <span class="text-gray-700">Gender</span>
-            <select class="form-select block w-full mt-1" v-model="patient.gender">
-               <option></option>
-              <option v-for="(sex, indx) in genders" :key="indx" :value="indx"> {{ sex }}</option>
-            </select>
-          </label>
-          <label class="block mb-2 w-full" >
-            <span class="text-gray-700">Mobile Number</span>
-            <input class="form-input mt-1 block w-full" type="number" v-model="patient.phoneMobile" placeholder="Mobile Number" />
-          </label>
-          <label class="inline-flex items-center -mb-6 w-full">
-            <input type="checkbox" class="form-checkbox text-green-500 mx-4" v-model="patient.consentSms" />
-            <span class="ml-2">Consent to SMS</span>
-          </label>
-        </div>
-
-        <!-- other identifiers: passport, client pid, national id -->
-        <label class="block mb-2 w-full">
-          <span class="text-gray-700">Primary Referrer</span>
-          <select class="form-select block w-full mt-1" v-model="patient.clientUid">
-              <option></option>
-              <option v-for="client in clients?.clientAll?.edges" :key="client.node.uid" :value="client.node.uid"> {{ client.node.name }} {{ client.node.uid }}</option>
-            </select>
-        </label>
-
-        <div class="grid grid-cols-3 gap-x-4 mb-4">
-          <label class="block col-span-1 mb-2 w-full">
-            <span class="text-gray-700">Country</span>
-            <select class="form-select block w-full mt-1" v-model="countryUid" @change="getProvinces($event)">
-              <option></option>
-              <option v-for="country in countries" :key="country.uid" :value="country.uid"> {{ country.name }} {{ country.uid }}</option>
-            </select>
-          </label>
-          <label class="block col-span-1 mb-2 w-full">
-            <span class="text-gray-700">Province</span>
-            <select class="form-select block w-full mt-1" v-model="provinceUid" @change="getDistricts($event)">
-               <option></option>
-              <option v-for="province in provinces" :key="province.uid" :value="province.uid"> {{ province.name }} {{ province.uid }}</option>
-            </select>
-          </label>
-          <label class="block col-span-1 mb-2 w-full">
-            <span class="text-gray-700">District</span>
-            <select class="form-select block w-full mt-1" v-model="patient.districtUid">
-               <option></option>
-              <option v-for="district in districts" :key="district.uid" :value="district.uid"> {{ district.name }} {{ district.uid }}</option>
-            </select>
-          </label>
-        </div>
-
-        <hr />
-        <button
-          type="button"
-          @click.prevent="updatePatient()"
-          class="-mb-4 w-full border border-green-500 bg-green-500 text-white rounded-md px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-green-600 focus:outline-none focus:shadow-outline"
-        >
-          Save Patient
-        </button>
-      </form>
+      <PatientForm :patient="patient" :navigate="false" @close="updatePatient"/>
     </template>
   </modal>
 
 </template>
 
-<script lang="ts">
-import modal from '../../../components/SimpleModal.vue';
+<script setup lang="ts">
+  import modal from '../../../components/SimpleModal.vue';
+  import PatientForm from '../PatientForm.vue'
 
-import { useMutation, useQuery } from '@urql/vue';
-import { defineComponent, ref, computed} from 'vue';
-import { useRoute } from 'vue-router';
-import { useStore } from 'vuex';
+  import { ref, computed} from 'vue';
+  import { useRoute } from 'vue-router';
+  import { useStore } from 'vuex';
 
-import {  GET_ALL_CLIENTS } from '../../../graphql/clients.queries';
-import {
-  FILTER_PROVINCES_BY_COUNTRY,
-  FILTER_DISTRICTS_BY_PROVINCE,
-} from '../../../graphql/admin.queries';
-import { ADD_PATIENT } from '../../../graphql/patient.mutations';
+  import { ActionTypes } from '../../../store/modules/patient';
+  import { IPatient } from '../../../models/patient';
 
-import { ActionTypes } from '../../../store/modules/patient';
-import { ActionTypes as AdminActionTypes } from '../../../store/modules/admin';
-import { IDistrict, IProvince } from '../../../models/location';
-import { IPatient } from '../../../models/patient';
+  const route = useRoute();
+  const store = useStore();
 
-export default defineComponent({
-  name: "patient-single",
-  components: {
-    modal,
-  },
-  setup() {
-    const route = useRoute();
-    const store = useStore();
+  let showModal = ref<boolean>(false);  
 
-    let showModal = ref<boolean>(false);    
-  
-    let countryUid = ref<number>();
-    let provinceUid = ref<number>();    
-    let provinces = ref<IProvince[]>([]);
-    let districts = ref<IDistrict[]>([]);
+  store.dispatch(ActionTypes.FETCH_PATIENT_BY_UID, +route.params.patientUid)
+  let patient = computed<IPatient>(() => store.getters.getPatient);
 
-    const genders: string[]= ["Male", "Female", "Missing", "Trans Gender"]
-
-    let getGender = (pos: number) => genders[pos];
-
-    store.dispatch(ActionTypes.FETCH_PATIENT_BY_UID, +route.params.patientUid)
-    let patient = computed<IPatient>(() => store.getters.getPatient);
-
-    store.dispatch(AdminActionTypes.FETCH_COUNTRIES);
-
-    const { executeMutation: createPatient } = useMutation(ADD_PATIENT);
-
-    const provincesfilter = useQuery({
-      query: FILTER_PROVINCES_BY_COUNTRY,
-      variables: { uid: countryUid },
-      pause: computed(() => countryUid !== null), // not working
-      requestPolicy: 'network-only',
-    });
-
-    const districtsfilter = useQuery({
-      query: FILTER_DISTRICTS_BY_PROVINCE,
-      variables: { uid: provinceUid },
-      pause: computed(() => provinceUid !== null), // not working
-      requestPolicy: 'network-only',
-    });
-
-    function getProvinces(event: any) {
-      provincesfilter.executeQuery({requestPolicy: 'network-only'}).then(result => {
-        provinces.value = result.data.value?.provincesByCountryUid;
-      });
-    }
-
-    function getDistricts(event: any) {
-      districtsfilter.executeQuery({requestPolicy: 'network-only'}).then(result => {
-        districts.value = result.data.value?.districtsByProvinceUid;
-      });
-    }
-
-    const { data: clients, fetching: CFetching, error: CError } = useQuery({
-      query: GET_ALL_CLIENTS,
-    });
-
-    function updatePatient() {
-      // editPatient();
-      showModal.value = false;
-    }
-
-    return { 
-      showModal,
-      genders,
-      patient,
-      updatePatient,
-      clients,
-      countries: computed(() => store.getters.getCountries),
-      countryUid,
-      getProvinces,
-      provinces,
-      provinceUid,
-      getDistricts,
-      districts,
-    };
-  },
-});
+  const updatePatient = (res: IPatient) => {
+    store.dispatch(ActionTypes.UPDATE_PATIENT, res)
+    showModal.value = false;
+  };
 </script>
