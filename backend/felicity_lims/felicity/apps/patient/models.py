@@ -6,6 +6,7 @@ from sqlalchemy.future import select
 from sqlalchemy.orm import relationship
 
 from felicity.apps.client.models import Client
+from felicity.apps.core.models import IdSequence
 from felicity.apps.core.utils import sequencer
 from felicity.apps.patient import schemas
 from felicity.apps import DBModel, Auditable, SEQUENTIAL_ID_RETRIES
@@ -55,34 +56,10 @@ class Patient(Auditable, DBModel):
     @classmethod
     async def create(cls, obj_in: schemas.PatientCreate) -> schemas.Patient:
         data = cls._import(obj_in)
-        created = None
-        count = 1
-        while count < SEQUENTIAL_ID_RETRIES:
-            try:
-                data['patient_id'] = await cls.create_patient_id()
-                created = await super().create(**data)
-                if created:
-                    break
-            except Exception:  # noqa
-                logger.warning(f"Patient ID generate Trial {count}")
-
-            count += 1
-
-        return created
+        data['patient_id'] = (await IdSequence.get_next_number("P"))[1]
+        return await super().create(**data)
 
     async def update(self, obj_in: schemas.PatientUpdate) -> schemas.Patient:
         data = self._import(obj_in)
         return await super().update(**data)
-        
-    @classmethod
-    async def create_patient_id(cls):
-        prefix_key = "P"
-        prefix_year = str(datetime.now().year)[2:]
-        prefix = f"{prefix_key}{prefix_year}"
-        stmt = cls.where(patient_id__startswith=f'%{prefix}%')
-        async with async_session_factory() as session:
-            res = await session.execute(stmt)
-            count = len(res.scalars().all())
-            if isinstance(count, type(None)):
-                count = 0
-            return f"{prefix}-{sequencer(count + 5, 5)}"
+

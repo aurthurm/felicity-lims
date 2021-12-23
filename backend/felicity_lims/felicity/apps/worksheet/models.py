@@ -7,6 +7,7 @@ from sqlalchemy.orm import relationship
 from sqlalchemy.dialects.postgresql import JSONB
 
 from felicity.apps import BaseAuditDBModel, DBModel, Auditable, SEQUENTIAL_ID_RETRIES
+from felicity.apps.core.models import IdSequence
 from felicity.apps.core.utils import sequencer
 from felicity.apps.setup.models.setup import Instrument
 from felicity.apps.stream.utils import FelicityStreamer
@@ -144,7 +145,7 @@ class WorkSheet(Auditable, WSBase):
 
         all_results = await result_models.AnalysisResult.get_all(worksheet_uid=self.uid)
         for result in all_results:
-            if result.sample.sampletype.name == "QC Sample":
+            if result.sample.sample_type.name == "QC Sample":
                 qc_results.append(result)
             else:
                 results.append(result)
@@ -216,35 +217,9 @@ class WorkSheet(Auditable, WSBase):
         await self.save()
 
     @classmethod
-    async def create_worksheet_id(cls):
-        prefix_key = "WS"
-        prefix_year = str(datetime.now().year)[2:]
-        prefix = f"{prefix_key}{prefix_year}"
-        stmt = cls.where(worksheet_id__startswith=f'%{prefix}%')
-        async with async_session_factory() as session:
-            res = await session.execute(stmt)
-            count = len(res.scalars().all())
-            if isinstance(count, type(None)):
-                count = 0
-            return f"{prefix}-{sequencer(count + 1, 5)}"
-
-    @classmethod
     async def create(cls, obj_in: schemas.WorkSheetCreate) -> schemas.WorkSheet:
         data = cls._import(obj_in)
-        created = None
-        count = 1
-        while count < SEQUENTIAL_ID_RETRIES:
-            try:
-                data['worksheet_id'] = await cls.create_worksheet_id()
-                created = await super().create(**data)
-                if created:
-                    break
-            except Exception:  # noqa
-                logger.warning(f"WorkSheet ID generate Trial {count}")
-
-            count += 1
-
-        return created
+        data['worksheet_id'] = (await IdSequence.get_next_number("WS"))[1]
         return await super().create(**data)
 
     async def update(self, obj_in: schemas.WorkSheetUpdate) -> schemas.WorkSheet:

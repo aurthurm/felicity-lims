@@ -12,6 +12,7 @@ from felicity.init.setup.setup_analyses import (
     create_qc_levels,
     create_categories,
     create_sample_types,
+    init_id_sequence,
     create_analyses_services_and_profiles,
 )
 
@@ -34,6 +35,7 @@ async def initialize_felicity() -> bool:
     await create_categories()
     await create_qc_levels()
     await create_sample_types()
+    await init_id_sequence()
     await create_analyses_services_and_profiles()
 
     logger.info("Felicity LIMS Initialisation completed.")

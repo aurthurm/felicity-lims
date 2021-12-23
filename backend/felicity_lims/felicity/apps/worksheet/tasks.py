@@ -68,7 +68,7 @@ async def populate_worksheet_plate(job_uid: int):
             'assigned__exact': False,
             # 'profiles__uid__in': [_p.uid for _p in ws.profiles], # ?? re-looking needed for profile based WS's
             'analysis_uid__in': [_a.uid for _a in ws.analyses],
-            'sample___sampletype_uid__exact': ws.sample_type_uid,
+            'sample___sample_type_uid__exact': ws.sample_type_uid,
         },
         sort_attrs=['-sample___priority', '-created_at']
     )
@@ -78,8 +78,8 @@ async def populate_worksheet_plate(job_uid: int):
     available_samples = len(samples)
     logger.info(f"Done filtering: Got {available_samples} samples available ...")
     if available_samples == 0:
-        await job.change_status(new_status=job_states.FAILED, change_reason=f"There are no samples to assign to WorkSheet "
-                                                                      f"{ws_uid}")
+        await job.change_status(new_status=job_states.FAILED, change_reason=f"There are no samples to assign to "
+                                                                            f"WorkSheet {ws_uid}")
         logger.warning(f"There are no samples to assign to WorkSheet {ws_uid}")
         return
 
@@ -196,7 +196,7 @@ async def setup_ws_quality_control(ws):
 
                 # create qc_sample
                 s_in = SampleCreate(
-                    sampletype_uid=sample_type.uid,
+                    sample_type_uid=sample_type.uid,
                     internal_use=True,
                     status=analysis_conf.states.sample.RECEIVED,
                 )

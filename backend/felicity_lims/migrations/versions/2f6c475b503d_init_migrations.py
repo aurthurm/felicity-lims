@@ -1,8 +1,8 @@
-"""init db
+"""init_migrations
 
-Revision ID: 65757b85675c
+Revision ID: 2f6c475b503d
 Revises: 
-Create Date: 2021-12-16 17:00:10.843140
+Create Date: 2021-12-19 13:11:40.055653
 
 """
 from alembic import op
@@ -11,7 +11,7 @@ import sqlmodel
 from sqlalchemy.dialects import postgresql
 
 # revision identifiers, used by Alembic.
-revision = '65757b85675c'
+revision = '2f6c475b503d'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -69,6 +69,14 @@ def upgrade():
     op.create_index(op.f('ix_group_keyword'), 'group', ['keyword'], unique=True)
     op.create_index(op.f('ix_group_name'), 'group', ['name'], unique=True)
     op.create_index(op.f('ix_group_uid'), 'group', ['uid'], unique=False)
+    op.create_table('idsequence',
+    sa.Column('uid', sa.Integer(), autoincrement=True, nullable=False),
+    sa.Column('prefix', sa.String(), nullable=False),
+    sa.Column('number', sa.Integer(), nullable=False),
+    sa.PrimaryKeyConstraint('uid'),
+    sa.UniqueConstraint('prefix')
+    )
+    op.create_index(op.f('ix_idsequence_uid'), 'idsequence', ['uid'], unique=False)
     op.create_table('job',
     sa.Column('uid', sa.Integer(), autoincrement=True, nullable=False),
     sa.Column('action', sa.String(), nullable=True),
@@ -1140,6 +1148,8 @@ def downgrade():
     op.drop_table('method')
     op.drop_index(op.f('ix_job_uid'), table_name='job')
     op.drop_table('job')
+    op.drop_index(op.f('ix_idsequence_uid'), table_name='idsequence')
+    op.drop_table('idsequence')
     op.drop_index(op.f('ix_group_uid'), table_name='group')
     op.drop_index(op.f('ix_group_name'), table_name='group')
     op.drop_index(op.f('ix_group_keyword'), table_name='group')

@@ -1,13 +1,20 @@
 from typing import Optional
 import json
+import logging
+
 from felicity.core.config import settings
 from felicity.apps.setup import models
 from felicity.apps.setup import schemas
 from felicity.apps.client import models as client_models
 from felicity.apps.client import schemas as client_schemas
 
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
 
 async def create_geographies() -> None:
+    logger.info(f"Setting up geographies (country, province, districts) .....")
+
     with open(settings.BASE_DIR + '/init/setup/data/country.json', 'r') as json_file:
         data = json.load(json_file)
 
@@ -56,6 +63,8 @@ async def create_geographies() -> None:
 
 
 async def create_clients() -> None:
+    logger.info(f"Setting up clients and contacts .....")
+
     with open(settings.BASE_DIR + '/init/setup/data/clients.json', 'r') as json_file:
         clients = json.load(json_file)
 
@@ -83,6 +92,8 @@ async def create_clients() -> None:
 
 
 async def create_laboratory() -> None:
+    logger.info(f"Setting up the laboratory .....")
+
     with open(settings.BASE_DIR + '/init/setup/data/laboratory.json', 'r') as json_file:
         data = json.load(json_file)
 

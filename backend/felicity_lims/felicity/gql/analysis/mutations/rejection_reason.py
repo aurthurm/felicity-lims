@@ -52,7 +52,6 @@ class SampleRejectInputType:
 
 @strawberry.mutation
 async def create_rejection_reason(self, info, reason: str) -> a_types.RejectionReasonType:
-
     inspector = inspect.getargvalues(inspect.currentframe())
     passed_args = get_passed_args(inspector)
 
@@ -70,9 +69,9 @@ async def create_rejection_reason(self, info, reason: str) -> a_types.RejectionR
     rejection_reason: analysis_models.RejectionReason = await analysis_models.RejectionReason.create(obj_in)
     return rejection_reason
 
+
 @strawberry.mutation
 async def update_rejection_reason(self, info, uid: int, reason: str) -> a_types.RejectionReasonType:
-
     inspector = inspect.getargvalues(inspect.currentframe())
     passed_args = get_passed_args(inspector)
 

@@ -132,7 +132,7 @@ class AnalysisBase(BaseAuditModel):
     description: Optional[str] = None
     keyword: Optional[str] = None
     profiles: Optional[List[Profile]] = []
-    sampletypes: Optional[List[SampleType]] = []
+    sample_types: Optional[List[SampleType]] = []
     tat_length_minutes: Optional[int] = None
     unit: Optional[str] = None
     category_uid: Optional[int] = None
@@ -252,8 +252,8 @@ class AnalysisRequestInDB(AnalysisRequestBaseInDB):
 
 # Shared properties
 class SampleBase(BaseAuditModel):
-    analysisrequest_uid: Optional[int] = None
-    sampletype_uid: Optional[int] = None
+    analysis_request_uid: Optional[int] = None
+    sample_type_uid: Optional[int] = None
     profiles: Optional[List[Profile]] = []
     analyses: Optional[List[Analysis]] = []
     sample_id: Optional[str] = None

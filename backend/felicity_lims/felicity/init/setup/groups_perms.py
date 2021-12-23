@@ -1,6 +1,9 @@
-from typing import Optional
+import logging
 from felicity.apps.user import models
 from felicity.apps.user import schemas
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 
 class FGroup:  # (KEYWORD, NAME)
@@ -55,8 +58,10 @@ permissions = {
         fo.WORKSHEET: [fg.SCIENTIST[0], fg.TECHNOLOGIST[0]],
     },
     fa.READ: {
-        fo.PATIENT: [fg.ADMINISTRATOR[0], fg.LAB_MANAGER[0], fg.SCIENTIST[0], fg.TECHNOLOGIST[0], fg.LAB_HAND[0], fg.GUEST[0]],
-        fo.SAMPLE: [fg.ADMINISTRATOR[0], fg.LAB_MANAGER[0], fg.SCIENTIST[0], fg.TECHNOLOGIST[0], fg.LAB_HAND[0], fg.GUEST[0]],
+        fo.PATIENT: [fg.ADMINISTRATOR[0], fg.LAB_MANAGER[0], fg.SCIENTIST[0], fg.TECHNOLOGIST[0], fg.LAB_HAND[0],
+                     fg.GUEST[0]],
+        fo.SAMPLE: [fg.ADMINISTRATOR[0], fg.LAB_MANAGER[0], fg.SCIENTIST[0], fg.TECHNOLOGIST[0], fg.LAB_HAND[0],
+                    fg.GUEST[0]],
         fo.WORKSHEET: [fg.ADMINISTRATOR[0], fg.LAB_MANAGER[0], fg.SCIENTIST[0], fg.TECHNOLOGIST[0], fg.GUEST[0]],
     },
     fa.UPDATE: {
@@ -98,6 +103,7 @@ def get_action_targets():  # e.g ('verify', 'worksheet'),
 
 
 async def create_groups() -> None:
+    logger.info(f"Setting up groups .....")
     for _grp in groups:
         exists = await models.Group.get(name=_grp[1])
         if not exists:
@@ -106,6 +112,7 @@ async def create_groups() -> None:
 
 
 async def create_permissions() -> None:
+    logger.info(f"Setting up permissions .....")
     for _perm in get_action_targets():
         exists = await models.Permission.get(action__exact=_perm[0], target__exact=_perm[1])
         if not exists:

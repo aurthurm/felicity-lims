@@ -70,7 +70,7 @@ class PatientMutations:
         return patient
 
     @strawberry.mutation
-    async def update_patient(self, info, uid: int, client_patient_id: str, first_name: str, last_name: str, client_uid: str,
+    async def update_patient(self, info, uid: int, client_patient_id: str, first_name: str, last_name: str, client_uid: int,
                              middle_name: Optional[str] = None, gender: Optional[int] = None, age: Optional[int] = None,
                              date_of_birth: Optional[datetime] = None, age_dob_estimated: Optional[bool] = False,
                              phone_mobile: Optional[str] = None, phone_home: Optional[str] = None, consent_sms: Optional[bool] = False,

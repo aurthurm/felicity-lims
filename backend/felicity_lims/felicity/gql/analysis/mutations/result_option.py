@@ -53,7 +53,6 @@ class SampleRejectInputType:
 @strawberry.mutation
 async def create_result_option(self, info, analysis_uid: int, option_key: int,
                                value: str) -> a_types.ResultOptionType:
-
     inspector = inspect.getargvalues(inspect.currentframe())
     passed_args = get_passed_args(inspector)
 
@@ -82,7 +81,6 @@ async def create_result_option(self, info, analysis_uid: int, option_key: int,
 @strawberry.mutation
 async def update_result_option(self, info, uid: int, option_key: Optional[int] = None,
                                value: Optional[str] = None) -> a_types.ResultOptionType:
-
     inspector = inspect.getargvalues(inspect.currentframe())
     passed_args = get_passed_args(inspector)
 

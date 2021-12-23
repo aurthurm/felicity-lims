@@ -89,10 +89,10 @@ async def create_analysis_request(self, info, patient_uid: int, client_uid: int,
     }
 
     obj_in = schemas.AnalysisRequestCreate(**incoming)
-    analysisrequest: analysis_models.AnalysisRequest = await analysis_models.AnalysisRequest.create(obj_in)
+    analysis_request: analysis_models.AnalysisRequest = await analysis_models.AnalysisRequest.create(obj_in)
 
     # 1. create samples
-    logger.info(f"Adding {len(samples)} samples to the analysis request {analysisrequest.client_request_id}")
+    logger.info(f"Adding {len(samples)} samples to the analysis request {analysis_request.client_request_id}")
     for s in samples:  # ARResultInputType
         _st_uid = s.sample_type
         _profiles = s.profiles
@@ -102,8 +102,8 @@ async def create_analysis_request(self, info, patient_uid: int, client_uid: int,
             raise Exception(f"Error, failed to retrieve sample type {_st_uid}")
 
         sample_in = {
-            'analysisrequest_uid': analysisrequest.uid,
-            'sampletype_uid': _st_uid,
+            'analysis_request_uid': analysis_request.uid,
+            'sample_type_uid': _st_uid,
             'sample_id': None,
             'priority': priority,
             'status': states.sample.DUE
@@ -143,7 +143,7 @@ async def create_analysis_request(self, info, patient_uid: int, client_uid: int,
             a_result_schema = schemas.AnalysisResultCreate(**a_result_in)
             await result_models.AnalysisResult.create(a_result_schema)
 
-    return analysisrequest
+    return analysis_request
 
 
 @strawberry.mutation

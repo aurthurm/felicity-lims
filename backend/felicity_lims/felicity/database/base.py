@@ -1,4 +1,5 @@
 from felicity.database.base_class import DBModel  # noqa
+from felicity.apps.core.models import IdSequence # noqa
 from felicity.apps.audit.models import AuditLog  # noqa
 from felicity.apps.setup.models import Country  # noqa
 from felicity.apps.setup.models import Province  # noqa

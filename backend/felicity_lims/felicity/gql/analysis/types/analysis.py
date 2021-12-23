@@ -87,10 +87,10 @@ class AnalysisType:
     description: Optional[str]
     keyword: Optional[str]
     unit: Optional[str]
-    sampletypes: Optional[List[SampleTypeTyp]]
+    sample_types: Optional[List[SampleTypeTyp]]
     category_uid: Optional[int]
     category: Optional[AnalysisCategoryType]
-    resultoptions: Optional[List[ResultOptionType]]
+    result_options: Optional[List[ResultOptionType]]
     tat_length_minutes: int
     sort_key: int
     internal_use: bool
@@ -136,10 +136,10 @@ class AnalysisCursorPage:
 @strawberry.type
 class SampleType:  # for Sample
     uid: int
-    analysisrequest_uid: int
-    analysisrequest: Optional[AnalysisRequestType]
-    sampletype_uid: int
-    sampletype: Optional[SampleTypeTyp]
+    analysis_request_uid: int
+    analysis_request: Optional[AnalysisRequestType]
+    sample_type_uid: int
+    sample_type: Optional[SampleTypeTyp]
     sample_id: str
     profiles: Optional[List[ProfileType]]
     analyses: Optional[List[AnalysisType]]

@@ -54,9 +54,7 @@ class SampleRejectInputType:
 
 
 @strawberry.mutation
-async def submit_analysis_results(self, info, analysis_results: List[ARResultInputType]) -> List[
-    r_types.AnalysisResultType]:
-
+async def submit_analysis_results(self, info, analysis_results: List[ARResultInputType]) -> List[r_types.AnalysisResultType]:
     inspector = inspect.getargvalues(inspect.currentframe())
     passed_args = get_passed_args(inspector)
 
@@ -118,9 +116,9 @@ async def submit_analysis_results(self, info, analysis_results: List[ARResultInp
         return_results.append(a_result)
     return return_results
 
+
 @strawberry.mutation
 async def verify_analysis_results(self, info, analyses: List[int]) -> List[r_types.AnalysisResultType]:
-
     inspector = inspect.getargvalues(inspect.currentframe())
     passed_args = get_passed_args(inspector)
 
@@ -160,9 +158,9 @@ async def verify_analysis_results(self, info, analyses: List[int]) -> List[r_typ
 
     return return_results
 
+
 @strawberry.mutation
 async def retract_analysis_results(self, info, analyses: List[int]) -> List[r_types.AnalysisResultType]:
-
     inspector = inspect.getargvalues(inspect.currentframe())
     passed_args = get_passed_args(inspector)
 
@@ -196,9 +194,9 @@ async def retract_analysis_results(self, info, analyses: List[int]) -> List[r_ty
         return_results.append(a_result)
     return return_results
 
+
 @strawberry.mutation
 async def retest_analysis_results(self, info, analyses: List[int]) -> List[r_types.AnalysisResultType]:
-
     inspector = inspect.getargvalues(inspect.currentframe())
     passed_args = get_passed_args(inspector)
 
@@ -222,9 +220,9 @@ async def retest_analysis_results(self, info, analyses: List[int]) -> List[r_typ
 
     return return_results
 
+
 @strawberry.mutation
 async def cancel_analysis_results(self, info, analyses: List[int]) -> List[r_types.AnalysisResultType]:
-
     inspector = inspect.getargvalues(inspect.currentframe())
     passed_args = get_passed_args(inspector)
 
@@ -247,9 +245,9 @@ async def cancel_analysis_results(self, info, analyses: List[int]) -> List[r_typ
 
     return return_results
 
+
 @strawberry.mutation
 async def re_instate_analysis_results(self, info, analyses: List[int]) -> List[r_types.AnalysisResultType]:
-
     inspector = inspect.getargvalues(inspect.currentframe())
     passed_args = get_passed_args(inspector)
 

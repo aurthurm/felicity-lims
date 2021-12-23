@@ -77,13 +77,13 @@ async def create_analysis(self, info, name: str, description: str, keyword: str,
     for k, v in passed_args.items():
         incoming[k] = v
 
-    sample_types = passed_args.get('sampletypes', None)
+    sample_types = passed_args.get('sample_types', None)
     incoming['sample_types'] = []
     if sample_types:
         for _uid in sample_types:
             stype = await analysis_models.SampleType.get(uid=_uid)
             if stype not in incoming['sample_types']:
-                incoming['sampletypes'].append(stype)
+                incoming['sample_types'].append(stype)
 
     obj_in = schemas.AnalysisCreate(**incoming)  # skip this stage if its not adding analyses and stypes
     analysis: analysis_models.Analysis = await analysis_models.Analysis.create(obj_in)
@@ -115,12 +115,12 @@ async def update_analysis(self, info, uid: int, name: str, description: str, key
                 logger.warning(e)
 
     sample_types = passed_args.get('sample_types', None)
-    analysis.sampletypes.clear()
+    analysis.sample_types.clear()
     if sample_types:
         for _uid in sample_types:
             stype = await analysis_models.SampleType.get(uid=_uid)
-            if stype not in analysis.sampletypes:
-                analysis.sampletypes.append(stype)
+            if stype not in analysis.sample_types:
+                analysis.sample_types.append(stype)
 
     analysis_in = schemas.AnalysisUpdate(**analysis.to_dict(nested=False))
     analysis = await analysis.update(analysis_in)

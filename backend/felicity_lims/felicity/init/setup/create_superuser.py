@@ -1,10 +1,15 @@
 from typing import Optional
-
+import logging
 from felicity.apps.user import models, schemas
 from felicity.core.config import settings
 
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
 
 async def create_super_user() -> None:
+    logger.info(f"Setting up first superuser - System Administrator - .....")
+
     superuser: Optional[models.User] = await models.User.get_by_email(settings.FIRST_SUPERUSER_EMAIL)
     if not superuser:
         su_in = schemas.UserCreate(

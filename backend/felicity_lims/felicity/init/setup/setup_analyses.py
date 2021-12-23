@@ -1,4 +1,8 @@
+from datetime import datetime
 from typing import Optional
+import logging
+
+from felicity.apps.core.models import IdSequence
 from felicity.core.config import settings
 import json
 from felicity.apps.analysis.models.analysis import (
@@ -18,9 +22,15 @@ from felicity.apps.analysis.schemas import (
     AnalysisUpdate,
     ProfileCreate,
 )
+from felicity.database.session import async_session_factory
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 
 async def create_categories():
+    logger.info(f"Setting up analyses categories .....")
+
     with open(settings.BASE_DIR + '/init/setup/data/analyses.json', 'r') as json_file:
         data = json.load(json_file)
     categories = data.get("categories", [])
@@ -36,6 +46,8 @@ async def create_categories():
 
 
 async def create_qc_levels() -> None:
+    logger.info(f"Setting QC Levels .....")
+
     with open(settings.BASE_DIR + '/init/setup/data/analyses.json', 'r') as json_file:
         data = json.load(json_file)
     qc_levels = data.get("qc_levels", [])
@@ -47,7 +59,33 @@ async def create_qc_levels() -> None:
             await QCLevel.create(lvl_in)
 
 
+async def init_id_sequence() -> None:
+    logger.info(f"Setting up id sequence .....")
+
+    with open(settings.BASE_DIR + '/init/setup/data/analyses.json', 'r') as json_file:
+        data = json.load(json_file)
+
+    sample_types = data.get("sample_types", [])
+
+    prefix_keys = ["WS", "P", "AR"]
+
+    for _st in sample_types:
+        st_abbr = _st.get("abbr")
+        if st_abbr not in prefix_keys:
+            prefix_keys.append(st_abbr)
+
+    prefix_year = str(datetime.now().year)[2:]
+    id_prefixes = [f"{prefix_key}{prefix_year}" for prefix_key in prefix_keys]
+
+    for prefix in id_prefixes:
+        id_seq = await IdSequence.get(prefix=prefix)
+        if id_seq is None:
+            await IdSequence.create(**{"prefix": prefix, "number": 0})
+
+
 async def create_sample_types() -> None:
+    logger.info(f"Setting up sample types .....")
+
     with open(settings.BASE_DIR + '/init/setup/data/analyses.json', 'r') as json_file:
         data = json.load(json_file)
     sample_types = data.get("sample_types", [])
@@ -69,6 +107,8 @@ async def create_sample_types() -> None:
 
 
 async def create_analyses_services_and_profiles() -> None:
+    logger.info(f"Setting up analysis services and profiles .....")
+
     with open(settings.BASE_DIR + '/init/setup/data/analyses.json', 'r') as json_file:
         data = json.load(json_file)
 
@@ -101,6 +141,12 @@ async def create_analyses_services_and_profiles() -> None:
         for _a_name in analyses_names:
             anal: Optional[Analysis] = await Analysis.get(name=_a_name)
             if anal:
-                if a_profile not in anal.profiles:
+                if a_profile.uid not in [profile.uid for profile in anal.profiles]:
                     anal.profiles.append(a_profile)
 
+                    async with async_session_factory() as session:
+                        try:
+                            await session.flush()
+                            await session.commit()
+                        except Exception:  # noqa
+                            await session.rollback()

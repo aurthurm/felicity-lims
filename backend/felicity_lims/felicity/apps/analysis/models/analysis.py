@@ -4,6 +4,7 @@ from time import sleep
 from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, DateTime, Table
 from sqlalchemy.orm import relationship
 
+from felicity.apps.core.models import IdSequence
 from felicity.database.session import async_session_factory
 from felicity.apps.analysis import schemas
 from felicity.apps.analysis.models.qc import QCLevel, QCSet
@@ -44,7 +45,7 @@ class SampleType(BaseAuditDBModel):
 Many to Many Link between Analysis and SampleType
 """
 astlink = Table('astlink', DBModel.metadata,
-                Column("sampletype_uid", ForeignKey('sampletype.uid'), primary_key=True),
+                Column("sample_type_uid", ForeignKey('sampletype.uid'), primary_key=True),
                 Column("analysis_uid", ForeignKey('analysis.uid'), primary_key=True)
                 )
 
@@ -115,8 +116,8 @@ class Analysis(BaseAuditDBModel):
     keyword = Column(String, nullable=False, unique=True)
     unit = Column(String, nullable=True)
     profiles = relationship('Profile', secondary=aplink, back_populates="analyses", lazy="selectin")
-    sampletypes = relationship('SampleType', secondary=astlink, backref="analyses", lazy="selectin")
-    resultoptions = relationship('ResultOption', backref="analyses", lazy="selectin")
+    sample_types = relationship('SampleType', secondary=astlink, backref="analyses", lazy="selectin")
+    result_options = relationship('ResultOption', backref="analyses", lazy="selectin")
     category_uid = Column(Integer, ForeignKey('analysiscategory.uid'))
     category = relationship(AnalysisCategory, backref="analyses", lazy="selectin")
     tat_length_minutes = Column(Integer, nullable=True)  # to calculate TAT
@@ -156,40 +157,16 @@ class AnalysisRequest(BaseAuditDBModel):
     patient = relationship(pt_models.Patient, backref="analysis_requests", lazy='selectin')
     client_uid = Column(Integer, ForeignKey('client.uid'))
     client = relationship(ct_models.Client, backref="analysis_requests", lazy='selectin')
-    samples = relationship("Sample", back_populates="analysisrequest", lazy='selectin')
+    samples = relationship("Sample", back_populates="analysis_request", lazy='selectin')
     request_id = Column(String, index=True, unique=True, nullable=True)
     client_request_id = Column(String, unique=True, nullable=False)
     internal_use = Column(Boolean(), default=False)  # e.g Test Requests
 
     @classmethod
-    async def create_request_id(cls):
-        prefix_key = 'AR'
-        prefix_year = str(datetime.now().year)[2:]
-        prefix = f"{prefix_key}{prefix_year}"
-        stmt = cls.where(request_id__startswith=f'%{prefix}%')
-        async with async_session_factory() as session:
-            res = await session.execute(stmt)
-            count = len(res.scalars().all())
-            if isinstance(count, type(None)):
-                count = 0
-            return f"{prefix}-{sequencer(count + 1, 5)}"
-
-    @classmethod
     async def create(cls, obj_in: schemas.AnalysisRequestCreate) -> schemas.AnalysisRequest:
         data = cls._import(obj_in)
-        created = None
-        count = 0
-        while count < SEQUENTIAL_ID_RETRIES:
-            try:
-                data['request_id'] = await cls.create_request_id()
-                created = await super().create(**data)
-                if created:
-                    break
-            except Exception:  # noqa
-                logger.warning(f"AnalysisRequest ID generate Trial {count}")
-
-            count += 1
-        return created
+        data['request_id'] = (await IdSequence.get_next_number("AR"))[1]
+        return await super().create(**data)
 
     async def update(self, obj_in: schemas.SampleTypeUpdate) -> schemas.AnalysisRequest:
         data = self._import(obj_in)
@@ -237,10 +214,10 @@ class RejectionReason(BaseAuditDBModel):
 
 class Sample(Auditable, BaseMPTT):
     """Sample"""
-    analysisrequest_uid = Column(Integer, ForeignKey('analysisrequest.uid'), nullable=True)
-    analysisrequest = relationship('AnalysisRequest', back_populates="samples", lazy='selectin')
-    sampletype_uid = Column(Integer, ForeignKey('sampletype.uid'), nullable=False)
-    sampletype = relationship('SampleType', backref="samples", lazy='selectin')
+    analysis_request_uid = Column(Integer, ForeignKey('analysisrequest.uid'), nullable=True)
+    analysis_request = relationship('AnalysisRequest', back_populates="samples", lazy='selectin')
+    sample_type_uid = Column(Integer, ForeignKey('sampletype.uid'), nullable=False)
+    sample_type = relationship('SampleType', backref="samples", lazy='selectin')
     sample_id = Column(String, index=True, unique=True, nullable=True)
     profiles = relationship(Profile, secondary=splink, backref="samples", lazy='selectin')
     analyses = relationship(Analysis, secondary=salink, backref="samples", lazy='selectin')
@@ -273,14 +250,14 @@ class Sample(Auditable, BaseMPTT):
     qc_set_uid = Column(Integer, ForeignKey('qcset.uid'), nullable=True)
     qc_set = relationship(QCSet, back_populates="samples", lazy='selectin')
     qc_level_uid = Column(Integer, ForeignKey('qclevel.uid'), nullable=True)
-    qc_level = relationship(QCLevel, backref="qcsamples", lazy='selectin')
+    qc_level = relationship(QCLevel, backref="qc_samples", lazy='selectin')
 
     @staticmethod
     def copy_include_keys():
         """Keys to include when duplicating Sample"""
         return [
-            'analysisrequest_uid',
-            'sampletype_uid',
+            'analysis_request_uid',
+            'sample_type_uid',
             'status',
             'sample_id',
             'profiles',
@@ -318,19 +295,6 @@ class Sample(Auditable, BaseMPTT):
     async def extend_due_date(self, ext_minutes: int):
         self.due_date += timedelta(minutes=ext_minutes)
         return await self.save()
-
-    @classmethod
-    async def create_sample_id(cls, sampletype):
-        prefix_key = sampletype.abbr
-        prefix_year = str(datetime.now().year)[2:]
-        prefix = f"{prefix_key}{prefix_year}"
-        stmt = cls.where(sample_id__startswith=f'%{prefix}%')
-        async with async_session_factory() as session:
-            result = await session.execute(stmt)
-            count = len(result.scalars().all())
-            if isinstance(count, type(None)):
-                count = 0
-            return f"{prefix}-{sequencer(count + 1, 5)}"
 
     def copy_sample_id_unique(self):
         split = self.sample_id.split("_R")
@@ -458,22 +422,13 @@ class Sample(Auditable, BaseMPTT):
     @classmethod
     async def create(cls, obj_in: schemas.SampleCreate) -> schemas.Sample:
         data = cls._import(obj_in)
-        sample_type_uid = data['sampletype_uid']
+        sample_type = await SampleType.find(data['sample_type_uid'])
+        data['sample_id'] = (await IdSequence.get_next_number(sample_type.abbr))[1]
+        return await super().create(**data)
 
-        created = None
-        count = 0
-        while count < SEQUENTIAL_ID_RETRIES:
-            try:
-                sample_type = await SampleType.find(sample_type_uid)
-                data['sample_id'] = await cls.create_sample_id(sample_type)
-                created = await super().create(**data)
-                if created:
-                    break
-            except Exception:  # noqa
-                logger.warning(f"Sample ID generate Trial {count}")
-
-            count += 1
-        return created
+    async def update(self, obj_in: schemas.SampleUpdate) -> schemas.Sample:
+        data = self._import(obj_in)
+        return await super().update(**data)
 
     async def duplicate_unique(self) -> schemas.Sample:
         data = self.to_dict(nested=False)
@@ -486,10 +441,6 @@ class Sample(Auditable, BaseMPTT):
         data['analyses'] = self.analyses
         data['parent_id'] = self.uid
         return await super().create(**data)
-
-    async def update(self, obj_in: schemas.SampleUpdate) -> schemas.Sample:
-        data = self._import(obj_in)
-        return await super().update(**data)
 
 # @event.listens_for(Sample, "after_update")
 # def stream_sample_verified_models(mapper, connection, target): # noqa
