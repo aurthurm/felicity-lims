@@ -11,6 +11,7 @@ from felicity.apps.job import (
 from felicity.apps.job.sched import felicity_resume_workforce
 from felicity.apps.user import models as user_models
 from felicity.apps.worksheet import models, schemas, conf
+from felicity.database.session import async_session_factory
 from felicity.gql import auth_from_info, verify_user_auth
 from felicity.gql.worksheet.types import WorkSheetType, WorkSheetTemplateType
 from felicity.apps.job.conf import actions, categories, priorities, states
@@ -65,8 +66,7 @@ class WorkSheetMutations:
         if qc_template_uid:
             qc_template = await qc_models.QCTemplate.get(uid=qc_template_uid)
             if qc_template:
-                for qc_level in qc_template.qc_levels:
-                    _qc_levels.append(qc_level)
+                _qc_levels = qc_template.qc_levels
 
         reserved: List = passed_args.get('reserved', None)
         incoming['reserved'] = []
@@ -74,19 +74,21 @@ class WorkSheetMutations:
             positions = dict()
             for item in reserved:
                 positions[item.position] = {"position": item.position, "level_uid": item.level_uid}
-                qc_level = await qc_models.QCLevel.get(uid=item.level_uid)
-                if qc_level not in _qc_levels:
+                l_uids = [lvl.uid for lvl in _qc_levels]
+                if item.level_uid not in l_uids:
+                    qc_level = await qc_models.QCLevel.get(uid=item.level_uid)
                     _qc_levels.append(qc_level)
+
             incoming['reserved'] = positions
 
         _analyses = []
         if analyses:
             for _uid in analyses:
-                anal = await analysis_models.Analysis.get(uid=_uid)
-                if anal not in _analyses:
+                a_uids = [an.uid for an in _analyses]
+                if _uid not in a_uids:
+                    anal = await analysis_models.Analysis.get(uid=_uid)
                     _analyses.append(anal)
 
-        logger.warning(f"check schema: {incoming}")
         wst_schema = schemas.WSTemplateCreate(**incoming)
         wst_schema.analyses = _analyses
         wst_schema.qc_levels = _qc_levels
@@ -290,7 +292,12 @@ class WorkSheetMutations:
         }
 
         ws_schema = schemas.WorkSheetUpdate(**incoming)
-        ws_schema.analyses = ws_temp.analyses
+
+        for anal in ws_temp.analyses:
+            a_uids = [an.uid for an in ws_schema.analyses]
+            if anal.uid not in a_uids:
+                ws_schema.analyses.append(anal)
+
         ws = await ws.update(ws_schema)
 
         # Add a job

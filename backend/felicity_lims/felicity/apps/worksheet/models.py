@@ -79,16 +79,16 @@ class WorkSheetTemplate(WSBase):
     """
     name = Column(String, unique=True, nullable=False)
     description = Column(String)
-    profiles = relationship(analysis_models.Profile, secondary=wstplink, backref="worksheet_templates", lazy="selectin")
-    analyses = relationship(analysis_models.Analysis, secondary=wstalink, backref="worksheet_templates", lazy="selectin")
+    profiles = relationship(analysis_models.Profile, secondary=wstplink, lazy="selectin")
+    analyses = relationship(analysis_models.Analysis, secondary=wstalink, lazy="selectin")
     qc_template_uid = Column(Integer, ForeignKey('qctemplate.uid'), nullable=True)
-    qc_template = relationship(qc_models.QCTemplate, backref='worksheet_templates', lazy="selectin")
+    qc_template = relationship(qc_models.QCTemplate, lazy="selectin")
     # to help cater for those created without template we also keep the qc_levels
     qc_levels = relationship(qc_models.QCLevel, secondary=wstqcllink, lazy="selectin")
     instrument_uid = Column(Integer, ForeignKey('instrument.uid'), nullable=True)
-    instrument = relationship(Instrument, backref='worksheet_templates', lazy="selectin")
+    instrument = relationship(Instrument, lazy="selectin")
     sample_type_uid = Column(Integer, ForeignKey('sampletype.uid'), nullable=False)
-    sample_type = relationship(analysis_models.SampleType, backref='worksheet_templates', lazy="selectin")
+    sample_type = relationship(analysis_models.SampleType, lazy="selectin")
 
     @classmethod
     async def create(cls, obj_in: schemas.WSTemplateCreate) -> schemas.WSTemplate:
@@ -119,24 +119,24 @@ wsalink = Table('wsalink', DBModel.metadata,
 
 class WorkSheet(Auditable, WSBase):
     template_uid = Column(Integer, ForeignKey('worksheettemplate.uid'), nullable=False)
-    template = relationship('WorkSheetTemplate', backref='worksheets', lazy="selectin")
+    template = relationship('WorkSheetTemplate', lazy="selectin")
     analyst_uid = Column(Integer, ForeignKey('user.uid'), nullable=False)
-    analyst = relationship(User, foreign_keys=[analyst_uid], backref="analysed_worksheets", lazy="selectin")
+    analyst = relationship(User, foreign_keys=[analyst_uid], lazy="selectin")
     worksheet_id = Column(String, index=True, unique=True, nullable=False)
-    profiles = relationship(analysis_models.Profile, secondary=wsplink, backref="worksheets", lazy="selectin")
-    analyses = relationship(analysis_models.Analysis, secondary=wsalink, backref="worksheets", lazy="selectin")
+    profiles = relationship(analysis_models.Profile, secondary=wsplink, lazy="selectin")
+    analyses = relationship(analysis_models.Analysis, secondary=wsalink, lazy="selectin")
     instrument_uid = Column(Integer, ForeignKey('instrument.uid'), nullable=True)
     instrument = relationship(Instrument, backref='worksheets', lazy="selectin")
     sample_type_uid = Column(Integer, ForeignKey('sampletype.uid'), nullable=False)
-    sample_type = relationship(analysis_models.SampleType, backref='worksheets', lazy="selectin")
+    sample_type = relationship(analysis_models.SampleType, lazy="selectin")
     assigned_count = Column(Integer, nullable=False, default=0)
     analysis_results = relationship("AnalysisResult", back_populates="worksheet", lazy="selectin")
     #
     submitted_by_uid = Column(Integer, ForeignKey('user.uid'), nullable=True)
-    submitted_by = relationship(User, foreign_keys=[submitted_by_uid], backref="submitted_worksheets", lazy="selectin")
+    submitted_by = relationship(User, foreign_keys=[submitted_by_uid], lazy="selectin")
     date_submitted = Column(DateTime, nullable=True)
     verified_by_uid = Column(Integer, ForeignKey('user.uid'), nullable=True)
-    verified_by = relationship(User, foreign_keys=[verified_by_uid], backref="verified_worksheets", lazy="selectin")
+    verified_by = relationship(User, foreign_keys=[verified_by_uid], lazy="selectin")
     date_verified = Column(DateTime, nullable=True)
 
     async def get_analysis_results(self):
