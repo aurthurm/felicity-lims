@@ -86,6 +86,10 @@ export const REJECT_SAMPLES = gql`
     rejectSamples(samples: $samples){
         uid
         status
+        rejectionReasons{
+          uid
+          reason
+        }
     }
   }
 `;
@@ -463,7 +467,7 @@ export const EDIT_QC_LEVEL = gql`
 
 // ANALYSIS_CATEGORIES
 export const ADD_QC_TEMPLATE = gql`
-  mutation AddQCTemplate ($name: String!, $description: String!, $levels: [Int!]!, $departments: [Int!]!) {
+  mutation AddQCTemplate ($name: String!, $description: String!, $levels: [Int!]!, $departments: [Int!]) {
     createQcTemplate(name: $name, description: $description, levels: $levels, departments: $departments ){
         uid
         name
@@ -481,7 +485,7 @@ export const ADD_QC_TEMPLATE = gql`
 `;
 
 export const EDIT_QC_TEMPLATE = gql`
-  mutation EditQCTemplate ($uid: Int!, $name: String!, $description: String!, $levels: [Int!]!, $departments: [Int!]!) {
+  mutation EditQCTemplate ($uid: Int!, $name: String!, $description: String!, $levels: [Int!]!, $departments: [Int!]) {
     updateQcTemplate(uid: $uid, name: $name, description: $description, levels: $levels, departments: $departments){
         uid
         name

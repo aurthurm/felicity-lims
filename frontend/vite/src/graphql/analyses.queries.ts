@@ -156,8 +156,12 @@ export const GET_ALL_SAMPLES = gql`
                 uid
                 name
             }
-        }
+            rejectionReasons{
+              uid
+              reason
             }
+          }
+        }
     }`;
 
 export const SAMPLES_FOR_REPORTS_BY_UIDS = gql`
@@ -185,6 +189,10 @@ export const SAMPLES_FOR_REPORTS_BY_UIDS = gql`
       }
       sampleId
       status
+      rejectionReasons{
+        uid
+        reason
+      }
       dateVerified
       verifiedBy {
         firstName
@@ -255,6 +263,10 @@ query getAnalysesRequestsByPatientUid($uid: Int!) {
         name
         sortKey
       }
+      rejectionReasons{
+        uid
+        reason
+      }
       profiles {
         uid
         name
@@ -296,6 +308,10 @@ query getAnalysesRequestsByClientUid($uid: Int!) {
       sampleId
       priority
       status
+      rejectionReasons{
+        uid
+        reason
+      }
       analyses {
         uid
         name
@@ -384,6 +400,10 @@ export const GET_ANALYSIS_RESULTS_BY_SAMPLE_UID = gql`
         sampleId
         priority
         status
+        rejectionReasons{
+          uid
+          reason
+        }
         analyses {
             uid
             name
@@ -432,6 +452,10 @@ export const GET_SAMPLE_BY_UID = gql`
         profiles {
           uid
           name
+        }
+        rejectionReasons{
+          uid
+          reason
         }
       }
 }`;

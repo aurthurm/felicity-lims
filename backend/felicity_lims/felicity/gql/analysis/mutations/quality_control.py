@@ -58,7 +58,7 @@ class SampleRejectInputType:
 
 
 @strawberry.mutation
-async def create_QC_set(self, info, samples: List[QCSetInputType]) -> CreateQCSetData:
+async def create_QC_set(info, samples: List[QCSetInputType]) -> CreateQCSetData:
     inspector = inspect.getargvalues(inspect.currentframe())
     passed_args = get_passed_args(inspector)
 
@@ -144,7 +144,7 @@ async def create_QC_set(self, info, samples: List[QCSetInputType]) -> CreateQCSe
 
 
 @strawberry.mutation
-async def create_QC_level(self, info, level: str) -> a_types.QCLevelType:
+async def create_QC_level(info, level: str) -> a_types.QCLevelType:
     inspector = inspect.getargvalues(inspect.currentframe())
     passed_args = get_passed_args(inspector)
 
@@ -164,7 +164,7 @@ async def create_QC_level(self, info, level: str) -> a_types.QCLevelType:
 
 
 @strawberry.mutation
-async def update_QC_level(self, info, uid: int, level: str) -> a_types.QCLevelType:
+async def update_QC_level(info, uid: int, level: str) -> a_types.QCLevelType:
     inspector = inspect.getargvalues(inspect.currentframe())
     passed_args = get_passed_args(inspector)
 
@@ -189,7 +189,7 @@ async def update_QC_level(self, info, uid: int, level: str) -> a_types.QCLevelTy
 
 
 @strawberry.mutation
-async def create_QC_template(self, info, name: str, description: str, departments: List[int] = None,
+async def create_QC_template(info, name: str, description: str, departments: Optional[List[int]] = None,
                              levels: List[int] = None) -> a_types.QCTemplateType:
     inspector = inspect.getargvalues(inspect.currentframe())
     passed_args = get_passed_args(inspector)
@@ -233,7 +233,7 @@ async def create_QC_template(self, info, name: str, description: str, department
 
 
 @strawberry.mutation
-async def update_QC_template(self, info, uid: int, name: Optional[str] = None, description: Optional[str] = None,
+async def update_QC_template(info, uid: int, name: Optional[str] = None, description: Optional[str] = None,
                              departments: List[int] = None, levels: List[int] = None) -> a_types.QCTemplateType:
     inspector = inspect.getargvalues(inspect.currentframe())
     passed_args = get_passed_args(inspector)

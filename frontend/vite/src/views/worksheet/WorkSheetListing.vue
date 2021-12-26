@@ -34,7 +34,8 @@
       class="px-2 py-1 ml-2 border-blue-500 border text-blue-500 rounded transition duration-300 hover:bg-blue-700 hover:text-white focus:outline-none">Filter ...</button>
     </div>
 
-    <div v-show="hasRights(userRole, objects.WORKSHEET, actions.CREATE)">
+    <!-- <div v-show="hasRights(userRole, objects.WORKSHEET, actions.CREATE)"> -->
+    <div >
       <button
       @click.prevent="FormManager(true)"
       class="p-2 h-10 border-blue-500 border text-blue-500 rounded transition duration-300 hover:bg-blue-700 hover:text-white focus:outline-none">Add WorkSheet</button>
@@ -262,7 +263,7 @@ export default defineComponent({
 
     function saveForm():void {
       if (formAction.value === true) addWorksheet();
-      // showModal.value = false;
+      showModal.value = false;
     }
 
     function showMoreWorkSheets(): void {

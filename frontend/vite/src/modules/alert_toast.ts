@@ -9,7 +9,7 @@ jsConfetti.addConfetti({
 })
 
 const notyf = new Notyf({ // https://github.com/caroso1222/notyf
-    duration: 50000,
+    duration: 5000,
     position: {
       x: 'left',
       y: 'bottom',
@@ -32,8 +32,8 @@ const notyf = new Notyf({ // https://github.com/caroso1222/notyf
       {
         type: 'error',
         background: 'indianred',
-        duration: 2000,
-        dismissible: false
+        duration: 10000,
+        dismissible: true
       }
     ]
 });

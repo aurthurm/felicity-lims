@@ -1,5 +1,6 @@
 import logging
 from datetime import datetime
+from typing import List
 
 from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, DateTime
 from sqlalchemy.orm import relationship
@@ -7,6 +8,7 @@ from sqlalchemy.orm import relationship
 from felicity.apps.analysis import schemas, conf
 from felicity.apps.core import BaseMPTT
 from felicity.apps import Auditable
+from felicity.database.session import async_session_factory
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -128,6 +130,26 @@ class AnalysisResult(Auditable, BaseMPTT):
     async def hide_report(self):
         self.reportable = False
         return await self.save()
+
+    @classmethod
+    async def filter_for_worksheet(cls, analyses_status: str, analyses_uids: List[int], sample_type_uid: List[int]) \
+            -> List[schemas.AnalysisResult]:
+
+        analytes_stmt = AnalysisResult.smart_query(
+            filters={
+                'status__exact': analyses_status,
+                'assigned__exact': False,
+                # 'profiles__uid__in': [_p.uid for _p in ws.profiles], # ?? re-looking needed for profile based WS's
+                'analysis_uid__in': analyses_uids,
+                'sample___sample_type_uid__exact': sample_type_uid,
+            },
+            sort_attrs=['-sample___priority', '-created_at']
+        )
+
+        async with async_session_factory() as session:
+            analyses_results = (await session.execute(analytes_stmt)).scalars().all()
+
+        return analyses_results
 
     @classmethod
     async def create(cls, obj_in: schemas.AnalysisResultCreate) -> schemas.AnalysisResult:

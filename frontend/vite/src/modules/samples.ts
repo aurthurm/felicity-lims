@@ -287,9 +287,10 @@ export default function useSampleComposable(){
 
     // invalidate sample
     const { executeMutation: invaidater_ } = useMutation(INVALIDATE_SAMPLES); 
-    const invalidateSamples = async (uids: number[]) => {
+    const invalidateSamples = async (uids: number[]): Promise<ISample[]> => {
+      let invalidated: ISample[] = [];
       try {
-        Swal.fire({
+        await Swal.fire({
           title: 'Are you sure?',
           text: "You want to invalidate sample",
           icon: 'warning',
@@ -298,7 +299,7 @@ export default function useSampleComposable(){
           cancelButtonColor: '#d33',
           confirmButtonText: 'Yes, invalidate now!',
           cancelButtonText: 'No, do not invalidate!',
-        }).then((result) => {
+        }).then(async (result) => {
           if (result.isConfirmed) {
 
             invaidater_({ samples: uids }).then(resp => {
@@ -307,12 +308,14 @@ export default function useSampleComposable(){
                 return
               }
               const samples = resp.data.invalidateSamples;
+              invalidated = samples;
+
               if(samples.length <= 0) return;
               _updateSamplesStatus(samples)
               _updateSampleStatus(samples[0])
             });
 
-            Swal.fire(
+            await Swal.fire(
               'Its Happening!',
               'Your sample(s) have been invalidated.',
               'success'
@@ -323,6 +326,7 @@ export default function useSampleComposable(){
       } catch (error) {
         console.log(error)
       }
+      return invalidated;
     }
 
     return {

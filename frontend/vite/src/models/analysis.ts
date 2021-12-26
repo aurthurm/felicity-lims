@@ -104,6 +104,7 @@ export interface IQCTemplate {
     qcLevel: IQCLevel;
     analysisRequest: IAnalysisRequest;
     analysisResults: IAnalysisResult[];
+    rejectionReasons: IRejectionReason[];
     status: string;
     priority: number;
     checked: boolean;

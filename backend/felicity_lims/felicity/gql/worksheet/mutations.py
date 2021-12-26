@@ -10,7 +10,7 @@ from felicity.apps.job import (
 )
 from felicity.apps.job.sched import felicity_resume_workforce
 from felicity.apps.user import models as user_models
-from felicity.apps.worksheet import models, schemas, tasks, conf
+from felicity.apps.worksheet import models, schemas, conf
 from felicity.gql import auth_from_info, verify_user_auth
 from felicity.gql.worksheet.types import WorkSheetType, WorkSheetTemplateType
 from felicity.apps.job.conf import actions, categories, priorities, states
@@ -33,10 +33,14 @@ class ReservedInputType:
 class WorkSheetMutations:
     @strawberry.mutation
     async def create_worksheet_template(self, info, name: str, sample_type_uid: int, analyses: List[int],  # noqa
-                                        number_of_samples: Optional[int], instrument_uid: Optional[int], worksheet_type: Optional[str],  # noqa
-                                        rows: Optional[int] = None, cols: Optional[int] = None, row_wise: Optional[bool] = None,  # noqa
-                                        description: Optional[str] = None, reserved: List[ReservedInputType] = None,  # noqa
-                                        qc_template_uid: Optional[int] = None,  profiles: Optional[List[int]] = None) -> WorkSheetTemplateType:  # noqa
+                                        number_of_samples: Optional[int], instrument_uid: Optional[int],
+                                        worksheet_type: Optional[str],  # noqa
+                                        rows: Optional[int] = None, cols: Optional[int] = None,
+                                        row_wise: Optional[bool] = None,  # noqa
+                                        description: Optional[str] = None, reserved: List[ReservedInputType] = None,
+                                        # noqa
+                                        qc_template_uid: Optional[int] = None,
+                                        profiles: Optional[List[int]] = None) -> WorkSheetTemplateType:  # noqa
 
         inspector = inspect.getargvalues(inspect.currentframe())
         passed_args = get_passed_args(inspector)
@@ -61,7 +65,8 @@ class WorkSheetMutations:
         if qc_template_uid:
             qc_template = await qc_models.QCTemplate.get(uid=qc_template_uid)
             if qc_template:
-                _qc_levels = qc_template.qc_levels
+                for qc_level in qc_template.qc_levels:
+                    _qc_levels.append(qc_level)
 
         reserved: List = passed_args.get('reserved', None)
         incoming['reserved'] = []
@@ -86,18 +91,20 @@ class WorkSheetMutations:
         wst_schema.analyses = _analyses
         wst_schema.qc_levels = _qc_levels
         wst = await models.WorkSheetTemplate.create(wst_schema)
-        # wst.analyses = _analyses
-        # wst.qc_levels = _qc_levels
-        # wst = await wst.save()
 
         return wst
 
     @strawberry.mutation
-    async def update_worksheet_template(root, info, uid: int, name: str, sample_type_uid: int, analyses: List[int],  # noqa
-                                        number_of_samples: Optional[int], instrument_uid: Optional[int], worksheet_type: Optional[str],  # noqa
-                                        rows: Optional[int] = None, cols: Optional[int] = None, row_wise: Optional[bool] = None,  # noqa
-                                        description: Optional[str] = None, reserved: List[ReservedInputType] = None,  # noqa
-                                        qc_template_uid: Optional[int] = None,  profiles: Optional[List[int]] = None) -> WorkSheetTemplateType:
+    async def update_worksheet_template(root, info, uid: int, name: str, sample_type_uid: int, analyses: List[int],
+                                        # noqa
+                                        number_of_samples: Optional[int], instrument_uid: Optional[int],
+                                        worksheet_type: Optional[str],  # noqa
+                                        rows: Optional[int] = None, cols: Optional[int] = None,
+                                        row_wise: Optional[bool] = None,  # noqa
+                                        description: Optional[str] = None, reserved: List[ReservedInputType] = None,
+                                        # noqa
+                                        qc_template_uid: Optional[int] = None,
+                                        profiles: Optional[List[int]] = None) -> WorkSheetTemplateType:
 
         inspector = inspect.getargvalues(inspect.currentframe())
         passed_args = get_passed_args(inspector)
@@ -151,7 +158,8 @@ class WorkSheetMutations:
         return ws_template
 
     @strawberry.mutation
-    async def create_worksheet(self, info, template_uid: int, analyst_uid: int, count: Optional[int] = 1) -> List[WorkSheetType]:
+    async def create_worksheet(self, info, template_uid: int, analyst_uid: int, count: Optional[int] = 1) -> List[
+        WorkSheetType]:
 
         inspector = inspect.getargvalues(inspect.currentframe())
         passed_args = get_passed_args(inspector)
@@ -186,7 +194,7 @@ class WorkSheetMutations:
         # ws_schema.qc_levels = ws_temp.qc_levels
 
         # Add a jobs
-        worksheets: models.WorkSheet  = []
+        worksheets: models.WorkSheet = []
         for i in list(range(count)):
             ws = await models.WorkSheet.create(ws_schema)
             worksheets.append(ws)
@@ -204,8 +212,9 @@ class WorkSheetMutations:
         return worksheets
 
     @strawberry.mutation  # action=[unassign, etc], samples: [sample_uids]
-    async def update_worksheet(self, info, worksheet_uid: int, analyst_uid: Optional[int], action: Optional[str],  # noqa
-                         samples: List[int]) -> WorkSheetType:  # noqa
+    async def update_worksheet(self, info, worksheet_uid: int, analyst_uid: Optional[int], action: Optional[str],
+                               # noqa
+                               samples: List[int]) -> WorkSheetType:  # noqa
 
         inspector = inspect.getargvalues(inspect.currentframe())
         passed_args = get_passed_args(inspector)
@@ -293,7 +302,7 @@ class WorkSheetMutations:
             job_id=ws.uid,
             status=states.PENDING
         )
-        job = await job_models.Job.create(job_schema)
+        await job_models.Job.create(job_schema)
         felicity_resume_workforce()
         # await tasks.populate_worksheet_plate(job.uid)
 

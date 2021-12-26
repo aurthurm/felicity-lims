@@ -37,10 +37,10 @@ class AnalysisQuery:
         if has_value_or_is_truthy(text):
             arg_list = [
                 'sample_id__ilike',
-                'analysisrequest___patient___first_name__ilike',
-                'analysisrequest___patient___last_name__ilike',
-                'analysisrequest___patient___client_patient_id__ilike',
-                'analysisrequest___client_request_id__ilike',
+                'analysis_request___patient___first_name__ilike',
+                'analysis_request___patient___last_name__ilike',
+                'analysis_request___patient___client_patient_id__ilike',
+                'analysis_request___client_request_id__ilike',
             ]
             for _arg in arg_list:
                 _or_text_[_arg] = f"%{text}%"
@@ -49,14 +49,14 @@ class AnalysisQuery:
             filters.append(text_filters)
 
         if client_uid:
-            filters.append({'analysisrequest___client_uid__exact': client_uid})
+            filters.append({'analysis_request___client_uid__exact': client_uid})
 
         if status:
             filters.append({'status__exact': status})
 
         # Exclude QC Sample else front-end will throw ?????
         # filters.append({'internal_use__ne': True})
-        filters.append({'analysisrequest__ne': None })
+        filters.append({'analysis_request__ne': None })
 
         page = await a_models.Sample.paginate_with_cursors(
             page_size=page_size,

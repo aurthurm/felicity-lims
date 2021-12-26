@@ -67,6 +67,7 @@
                 >Verify</div>
               <div
                 v-show="canReject"
+                @click="rejectSample()"
                 class="no-underline text-gray-900 py-0 opacity-60 px-4 border-b border-transparent hover:opacity-100 md:hover:border-grey-dark hover:bg-red-400 hover:text-white"
                 >Reject</div>
               <div
@@ -120,6 +121,16 @@
     </div>
   </div>
 
+  <div 
+    v-show="sample?.status ==='rejected'"
+    class="bg-red-200 rounded-sm shadow-md duration-500 px-4 sm:px-6 md:px-2 py-4 my-4" >
+    <!-- <h3 clas="font-bold text-gray-800 text-md">This sample was rejected because of the following reason(s):</h3> -->
+    <ul>
+      <li v-for="reason in sample?.rejectionReasons">{{ reason.reason }}</li>
+    </ul>
+  </div>
+
+
   <router-view />
 
 </template>
@@ -133,13 +144,15 @@ import useSampleComposable from '../../../modules/samples';
 
 import { GET_SAMPLE_BY_PARENT_ID } from '../../../graphql/analyses.queries';
 import { ActionTypes } from '../../../store/modules/sample';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 
 export default defineComponent({
   name: "sample-single",
   setup() {
     const store = useStore();
     const route = useRoute();
+    const router = useRouter();
+
     store.dispatch(ActionTypes.RESET_SAMPLE);
 
     const { cancelSamples, reInstateSamples, receiveSamples, invalidateSamples, verifySamples }  = useSampleComposable();
@@ -205,11 +218,16 @@ export default defineComponent({
           if(state.sample?.status?.toLowerCase() === "published") return true;
           return false
         }),
-        invalidateSample: async () => invalidateSamples([state.sample?.uid]),
+        invalidateSample: async () => invalidateSamples([state.sample?.uid]).then((res: ISample[]) => {
+          let inv = res?.filter(s => s.uid !== state.sample?.uid)
+          if(inv.length > 0) state.childSample = inv[0];
+
+        }),
         canReject: computed(() => {
           if(["received", "due"].includes(state.sample?.status?.toLowerCase())) return true;
           return false
         }),
+        rejectSample: async () =>  router.push({ name: "reject-samples", params: { samples: JSON.stringify([state.sample]) }})
     };
   },
 });

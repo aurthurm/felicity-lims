@@ -13,13 +13,13 @@ from felicity.apps.analysis.schemas import (
 from felicity.apps.job import models as job_models
 from felicity.apps.job.conf import states as job_states
 from felicity.apps.worksheet import models, conf
+from felicity.database.session import async_session_factory
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
 async def populate_worksheet_plate(job_uid: int):
-
     logger.info(f"starting job {job_uid} ....")
     job = await job_models.Job.get(uid=job_uid)
     if not job:
@@ -41,7 +41,8 @@ async def populate_worksheet_plate(job_uid: int):
 
     # Don't handle processed worksheets
     if ws.state in [conf.worksheet_states.TO_BE_VERIFIED, conf.worksheet_states.VERIFIED]:
-        await job.change_status(new_status=job_states.FAILED, change_reason=f"WorkSheet {ws_uid} - is already processed")
+        await job.change_status(new_status=job_states.FAILED,
+                                change_reason=f"WorkSheet {ws_uid} - is already processed")
         logger.warning(f"WorkSheet {ws_uid} - is already processed")
         return
 
@@ -49,31 +50,24 @@ async def populate_worksheet_plate(job_uid: int):
     has_processed_samples = await ws.has_processed_samples()
     if has_processed_samples:
         await job.change_status(new_status=job_states.FAILED, change_reason=f"WorkSheet {ws_uid} - contains at least a "
-                                                                      f"processed sample")
+                                                                            f"processed sample")
         logger.warning(f"WorkSheet {ws_uid} - contains at least a processed sample")
         return
 
     # Enforce WS sample size limit
     if not ws.assigned_count < ws.number_of_samples:
         await job.change_status(new_status=job_states.FAILED, change_reason=f"WorkSheet {ws_uid} already has "
-                                                                      f"{ws.assigned_count} assigned samples")
+                                                                            f"{ws.assigned_count} assigned samples")
         logger.warning(f"WorkSheet {ws_uid} already has {ws.assigned_count} assigned samples")
         return
 
     logger.info(f"Filtering samples by template criteria ...")
     # get sample, filtered by analysis_service and Sample Type
-    samples_stmt = AnalysisResult.smart_query(
-        filters={
-            'status__exact': analysis_conf.states.result.PENDING,
-            'assigned__exact': False,
-            # 'profiles__uid__in': [_p.uid for _p in ws.profiles], # ?? re-looking needed for profile based WS's
-            'analysis_uid__in': [_a.uid for _a in ws.analyses],
-            'sample___sample_type_uid__exact': ws.sample_type_uid,
-        },
-        sort_attrs=['-sample___priority', '-created_at']
+    samples = await AnalysisResult.filter_for_worksheet(
+        analyses_status=analysis_conf.states.result.PENDING,
+        analyses_uids=[_a.uid for _a in ws.analyses],
+        sample_type_uid=ws.sample_type_uid
     )
-
-    samples = (await AnalysisResult.session.execute(samples_stmt)).scalars().all()
 
     available_samples = len(samples)
     logger.info(f"Done filtering: Got {available_samples} samples available ...")

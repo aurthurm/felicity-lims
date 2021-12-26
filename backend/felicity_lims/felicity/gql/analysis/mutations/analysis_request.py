@@ -380,7 +380,7 @@ async def invalidate_samples(self, info, samples: List[int]) -> List[a_types.Sam
 
         copy, invalidated = await sample.invalidate(invalidated_by=felicity_user)
 
-        # add invalidated or original
+        # add invalidated
         if invalidated:
             return_samples.append(invalidated)
 
@@ -396,9 +396,9 @@ async def invalidate_samples(self, info, samples: List[int]) -> List[a_types.Sam
                 for _an in analyses_:
                     _profiles_analyses.add(_an)
 
-                for _anal in copy.analyses:
-                    if _anal not in _profiles_analyses:
-                        _profiles_analyses.add(_anal)
+            for _anal in copy.analyses:
+                if _anal not in _profiles_analyses:
+                    _profiles_analyses.add(_anal)
 
             for _service in _profiles_analyses:
                 a_result_in = {
