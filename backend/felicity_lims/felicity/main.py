@@ -66,7 +66,7 @@ flims = FastAPI(
 async def startup():
     # print("\n")
     # print(pf.Figlet("doom").renderText("FELICITY  LIMS"))  # "puffy"
-    await initialize_felicity()
+    # await initialize_felicity()
     felicity_workforce_init()
 
 

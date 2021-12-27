@@ -33,20 +33,20 @@ class DocumentTag(DBModel):
         return await super().update(**data)
 
 
-doctags = Table("doctags", DBModel.metadata,
-                Column("document_uid", ForeignKey('document.uid'), primary_key=True),
-                Column("tag_uid", ForeignKey('documenttag.uid'), primary_key=True),
-                )
+document_tags = Table("document_tags", DBModel.metadata,
+                      Column("document_uid", ForeignKey('document.uid'), primary_key=True),
+                      Column("tag_uid", ForeignKey('documenttag.uid'), primary_key=True),
+                      )
 
-docauthors = Table("docauthors", DBModel.metadata,
-                   Column("document_uid", ForeignKey('document.uid'), primary_key=True),
-                   Column("user_uid", ForeignKey('user.uid'), primary_key=True),
-                   )
+document_authors = Table("document_authors", DBModel.metadata,
+                         Column("document_uid", ForeignKey('document.uid'), primary_key=True),
+                         Column("user_uid", ForeignKey('user.uid'), primary_key=True),
+                         )
 
-docreaders = Table("docreaders", DBModel.metadata,
-                   Column("document_uid", ForeignKey('document.uid'), primary_key=True),
-                   Column("user_uid", ForeignKey('user.uid'), primary_key=True),
-                   )
+document_readers = Table("document_readers", DBModel.metadata,
+                         Column("document_uid", ForeignKey('document.uid'), primary_key=True),
+                         Column("user_uid", ForeignKey('user.uid'), primary_key=True),
+                         )
 
 
 class Document(DBModel):
@@ -55,9 +55,9 @@ class Document(DBModel):
     document_id = Column(String)
     content = Column(String)
     version = Column(String)
-    tags = relationship(DocumentTag, secondary=doctags, backref="tagged_documents", lazy="selectin")
-    authors = relationship(User, secondary=docauthors, backref="authored_markdowns", lazy="selectin")
-    readers = relationship(User, secondary=docreaders, backref="read_markdowns", lazy="selectin")
+    tags = relationship(DocumentTag, secondary=document_tags,  lazy="selectin")
+    authors = relationship(User, secondary=document_authors, lazy="selectin")
+    readers = relationship(User, secondary=document_readers, lazy="selectin")
     department_uid = Column(Integer, ForeignKey('department.uid'), nullable=True)
     department = relationship(Department, lazy="selectin")
     category_uid = Column(Integer, ForeignKey('documentcategory.uid'), nullable=True)

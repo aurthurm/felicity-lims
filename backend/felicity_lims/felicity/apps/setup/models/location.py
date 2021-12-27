@@ -4,14 +4,14 @@ from _testcapi import awaitType
 from sqlalchemy import Column, Integer, String, ForeignKey, Boolean
 from sqlalchemy.orm import relationship
 
-from felicity.database.base_class import DBModel
+from felicity.apps import BaseAuditDBModel
 from felicity.apps.setup import schemas
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
-class LocationBase(DBModel):
+class LocationBase(BaseAuditDBModel):
     __abstract__ = True
     code = Column(String, index=True, unique=True, nullable=True)
     name = Column(String)
@@ -60,7 +60,7 @@ class Province(LocationBase):
         return await super().update(**data)
 
 
-class Country(DBModel):
+class Country(BaseAuditDBModel):
     name = Column(String, default='Zimbabwe')
     code = Column(String, index=True, unique=True, nullable=True)
     active = Column(Boolean(), default=False)

@@ -253,8 +253,8 @@ export default defineComponent({
     }
 
     function showMoreSamples(): void {
-      sampleParams.first = state.sampleBatch;
-      sampleParams.after = state.pageInfo?.value?.endCursor;
+      sampleParams.first = +state.sampleBatch;
+      sampleParams.after = state.pageInfo?.endCursor;
       sampleParams.text = state.filterText;
       sampleParams.status = state.filterStatus;
       sampleParams.filterAction = false;

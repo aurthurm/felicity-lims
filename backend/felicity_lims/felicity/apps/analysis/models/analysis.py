@@ -1,11 +1,9 @@
 from datetime import datetime, timedelta
 import logging
-from time import sleep
 from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, DateTime, Table
 from sqlalchemy.orm import relationship
 
 from felicity.apps.core.models import IdSequence
-from felicity.database.session import async_session_factory
 from felicity.apps.analysis import schemas
 from felicity.apps.analysis.models.qc import QCLevel, QCSet
 from felicity.apps.analysis.conf import states
@@ -13,7 +11,7 @@ from felicity.apps.client import models as ct_models
 from felicity.apps.core import BaseMPTT
 from felicity.apps.core.utils import sequencer
 from felicity.apps.patient import models as pt_models
-from felicity.apps import BaseAuditDBModel, DBModel, Auditable, SEQUENTIAL_ID_RETRIES
+from felicity.apps import BaseAuditDBModel, DBModel, Auditable
 from felicity.apps.stream.utils import FelicityStreamer
 from felicity.apps.user.models import User
 
@@ -44,20 +42,20 @@ class SampleType(BaseAuditDBModel):
 """
 Many to Many Link between Analysis and SampleType
 """
-astlink = Table('astlink', DBModel.metadata,
-                Column("sample_type_uid", ForeignKey('sampletype.uid'), primary_key=True),
-                Column("analysis_uid", ForeignKey('analysis.uid'), primary_key=True)
-                )
+analysis_sample_type = Table('analysis_sample_type', DBModel.metadata,
+                             Column("sample_type_uid", ForeignKey('sampletype.uid'), primary_key=True),
+                             Column("analysis_uid", ForeignKey('analysis.uid'), primary_key=True)
+                             )
 
 """
  Many to Many Link between Analysis and Profile
     Offers multi-profiles flexibility per analysis
     A rare scenario worth supporting :)
 """
-aplink = Table('aplink', DBModel.metadata,
-               Column("analysis_uid", ForeignKey('analysis.uid'), primary_key=True),
-               Column("profile_uid", ForeignKey('profile.uid'), primary_key=True)
-               )
+analysis_profile = Table('analysis_profile', DBModel.metadata,
+                         Column("analysis_uid", ForeignKey('analysis.uid'), primary_key=True),
+                         Column("profile_uid", ForeignKey('profile.uid'), primary_key=True)
+                         )
 
 
 class AnalysisCategory(BaseAuditDBModel):
@@ -76,14 +74,14 @@ class AnalysisCategory(BaseAuditDBModel):
         return await super().update(**data)
 
 
-class Profile(DBModel):
+class Profile(BaseAuditDBModel):
     """Grouped Analysis e.g FBC, U&E's, MCS ..."""
     name = Column(String, nullable=False)
     description = Column(String, nullable=False)
     keyword = Column(String, nullable=True, unique=True)
     tat_length_minutes = Column(Integer, nullable=True)
     active = Column(Boolean(), default=False)
-    analyses = relationship('Analysis', secondary=aplink, back_populates="profiles", lazy="selectin")
+    analyses = relationship('Analysis', secondary=analysis_profile, back_populates="profiles", lazy="selectin")
 
     async def update_tat(self):
         tats = []
@@ -115,8 +113,8 @@ class Analysis(BaseAuditDBModel):
     description = Column(String, nullable=False)
     keyword = Column(String, nullable=False, unique=True)
     unit = Column(String, nullable=True)
-    profiles = relationship('Profile', secondary=aplink, back_populates="analyses", lazy="selectin")
-    sample_types = relationship('SampleType', secondary=astlink, backref="analyses", lazy="selectin")
+    profiles = relationship('Profile', secondary=analysis_profile, back_populates="analyses", lazy="selectin")
+    sample_types = relationship('SampleType', secondary=analysis_sample_type, backref="analyses", lazy="selectin")
     result_options = relationship('ResultOption', backref="analyses", lazy="selectin")
     category_uid = Column(Integer, ForeignKey('analysiscategory.uid'))
     category = relationship(AnalysisCategory, backref="analyses", lazy="selectin")
@@ -176,26 +174,26 @@ class AnalysisRequest(BaseAuditDBModel):
 """
 Many to Many Link between Sample and Profile
 """
-splink = Table('splink', DBModel.metadata,
-               Column("sample_uid", ForeignKey('sample.uid'), primary_key=True),
-               Column("profile_uid", ForeignKey('profile.uid'), primary_key=True)
-               )
+sample_profile = Table('sample_profile', DBModel.metadata,
+                       Column("sample_uid", ForeignKey('sample.uid'), primary_key=True),
+                       Column("profile_uid", ForeignKey('profile.uid'), primary_key=True)
+                       )
 
 """
 Many to Many Link between Sample and Analysis
 """
-salink = Table('salink', DBModel.metadata,
-               Column("sample_uid", ForeignKey('sample.uid'), primary_key=True),
-               Column("analysis_uid", ForeignKey('analysis.uid'), primary_key=True)
-               )
+sample_analysis = Table('sample_analysis', DBModel.metadata,
+                        Column("sample_uid", ForeignKey('sample.uid'), primary_key=True),
+                        Column("analysis_uid", ForeignKey('analysis.uid'), primary_key=True)
+                        )
 
 """
 Many to Many Link between Sample and Rejection Reason
 """
-rrslink = Table('rrslink', DBModel.metadata,
-                Column("sample_uid", ForeignKey('sample.uid'), primary_key=True),
-                Column("rejection_reason_uid", ForeignKey('rejectionreason.uid'), primary_key=True)
-                )
+sample_rejection_reason = Table('sample_rejection_reason', DBModel.metadata,
+                                Column("sample_uid", ForeignKey('sample.uid'), primary_key=True),
+                                Column("rejection_reason_uid", ForeignKey('rejectionreason.uid'), primary_key=True)
+                                )
 
 
 class RejectionReason(BaseAuditDBModel):
@@ -219,8 +217,8 @@ class Sample(Auditable, BaseMPTT):
     sample_type_uid = Column(Integer, ForeignKey('sampletype.uid'), nullable=False)
     sample_type = relationship('SampleType', backref="samples", lazy='selectin')
     sample_id = Column(String, index=True, unique=True, nullable=True)
-    profiles = relationship(Profile, secondary=splink, backref="samples", lazy='selectin')
-    analyses = relationship(Analysis, secondary=salink, backref="samples", lazy='selectin')
+    profiles = relationship(Profile, secondary=sample_profile, backref="samples", lazy='selectin')
+    analyses = relationship(Analysis, secondary=sample_analysis, backref="samples", lazy='selectin')
     analysis_results = relationship("AnalysisResult", back_populates="sample", lazy='selectin')
     priority = Column(Integer, nullable=False, default=0)
     status = Column(String, nullable=False)
@@ -243,7 +241,7 @@ class Sample(Auditable, BaseMPTT):
     cancelled_by_uid = Column(Integer, ForeignKey('user.uid'), nullable=True)
     cancelled_by = relationship("User", foreign_keys=[cancelled_by_uid], lazy="selectin")
     date_cancelled = Column(DateTime, nullable=True)
-    rejection_reasons = relationship(RejectionReason, secondary=rrslink, lazy='selectin')
+    rejection_reasons = relationship(RejectionReason, secondary=sample_rejection_reason, lazy='selectin')
     internal_use = Column(Boolean(), default=False)
     due_date = Column(DateTime, nullable=True)
     # QC Samples

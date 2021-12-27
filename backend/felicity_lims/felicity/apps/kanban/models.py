@@ -13,7 +13,8 @@ class Board(BaseAuditDBModel):
     archived = Column(Boolean(), default=False)
     department_uid = Column(Integer, ForeignKey('department.uid'), nullable=True)
     department = relationship(Department, backref="boards", lazy="selectin")
-    board_listings = relationship("BoardListing", back_populates="board", cascade="all, delete, delete-orphan", lazy="selectin")
+    board_listings = relationship("BoardListing", back_populates="board", cascade="all, delete, delete-orphan",
+                                  lazy="selectin")
 
     @classmethod
     async def create(cls, obj_in: schemas.BoardCreate) -> schemas.Board:
@@ -55,15 +56,15 @@ class TaskTag(BaseAuditDBModel):
         return await super().update(**data)
 
 
-tasktagged = Table("tasktagged", DBModel.metadata,
-                   Column("task_uid", ForeignKey('listingtask.uid'), primary_key=True),
-                   Column("tag_uid", ForeignKey('tasktag.uid'), primary_key=True),
-                   )
+tagged_tasks = Table("tagged_tasks", DBModel.metadata,
+                     Column("task_uid", ForeignKey('listingtask.uid'), primary_key=True),
+                     Column("tag_uid", ForeignKey('tasktag.uid'), primary_key=True),
+                     )
 
-taskmember = Table("taskmember", DBModel.metadata,
-                   Column("task_uid", ForeignKey('listingtask.uid'), primary_key=True),
-                   Column("user_uid", ForeignKey('user.uid'), primary_key=True),
-                   )
+member_tasks = Table("member_tasks", DBModel.metadata,
+                     Column("task_uid", ForeignKey('listingtask.uid'), primary_key=True),
+                     Column("user_uid", ForeignKey('user.uid'), primary_key=True),
+                     )
 
 
 class ListingTask(BaseAuditDBModel):
@@ -73,9 +74,10 @@ class ListingTask(BaseAuditDBModel):
     listing = relationship(BoardListing, back_populates="listing_tasks", lazy="selectin")
     assignee_uid = Column(Integer, ForeignKey('user.uid'), nullable=True)
     assignee = relationship(User, foreign_keys=[assignee_uid], lazy="selectin")
-    tags = relationship(TaskTag, secondary=tasktagged, lazy="selectin")
-    members = relationship(User, secondary=taskmember, lazy="selectin")
-    task_milestones = relationship("TaskMilestone", back_populates="task", cascade="all, delete-orphan", lazy="selectin")
+    tags = relationship(TaskTag, secondary=tagged_tasks, lazy="selectin")
+    members = relationship(User, secondary=member_tasks, lazy="selectin")
+    task_milestones = relationship("TaskMilestone", back_populates="task", cascade="all, delete-orphan",
+                                   lazy="selectin")
     task_comments = relationship("TaskComment", back_populates="task", cascade="all, delete-orphan", lazy="selectin")
     due_date = Column(DateTime, nullable=True)
     complete = Column(Boolean(), default=False)

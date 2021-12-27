@@ -2,7 +2,7 @@ from sqlalchemy import Boolean, Column, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 from sqlalchemy.orm import backref
 
-from felicity.database.base_class import DBModel
+from felicity.apps import BaseAuditDBModel
 from felicity.apps.user.abstract import AbstractBaseUser
 from felicity.apps.user import conf
 from felicity.apps.user.models import UserAuth
@@ -11,7 +11,7 @@ from felicity.apps.setup.models import Province
 from felicity.apps.client import schemas
 
 
-class Client(DBModel):
+class Client(BaseAuditDBModel):
     """Client/Facility"""
     name = Column(String, nullable=False)
     code = Column(String, index=True, unique=True, nullable=False)

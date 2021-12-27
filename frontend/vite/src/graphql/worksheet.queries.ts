@@ -152,6 +152,10 @@ export const GET_WORKSHEET_BY_UID = gql`
               patientId
             }
           }
+          qcLevel {
+            uid
+            level
+          }
         }
       }
     }

@@ -1,8 +1,7 @@
 import logging
 
-from sqlalchemy.future import select
-from sqlalchemy import Column, Integer, String, ForeignKey, Boolean,Table
-from sqlalchemy.orm import relationship, backref, selectinload
+from sqlalchemy import Column, Integer, String, ForeignKey, Boolean, Table
+from sqlalchemy.orm import relationship, backref
 
 from felicity.apps.core.utils import is_valid_email
 from felicity.core.security import verify_password
@@ -10,9 +9,9 @@ from . import conf
 from .abstract import (
     DBModel,
     AbstractBaseUser,
-    AbstractAuth
+    AbstractAuth,
+    schemas
 )
-from felicity.apps.user import schemas
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -77,29 +76,24 @@ class UserAuth(AbstractAuth):
 """
 Many to Many Link between Group and User
 """
-gulink = Table('gulink', DBModel.metadata,
-               Column('user_uid', ForeignKey('user.uid'), primary_key=True),
-               Column('group_uid', ForeignKey('group.uid'), primary_key=True)
-               )
+user_groups = Table('user_groups', DBModel.metadata,
+                    Column('user_uid', ForeignKey('user.uid'), primary_key=True),
+                    Column('group_uid', ForeignKey('group.uid'), primary_key=True)
+                    )
 
 """
 Many to Many Link between Group and Permission
 """
-gplink = Table('gplink', DBModel.metadata,
-               Column('permission_uid', ForeignKey('permission.uid'), primary_key=True),
-               Column('group_uid', ForeignKey('group.uid'), primary_key=True)
-               )
+permission_groups = Table('permission_groups', DBModel.metadata,
+                          Column('permission_uid', ForeignKey('permission.uid'), primary_key=True),
+                          Column('group_uid', ForeignKey('group.uid'), primary_key=True)
+                          )
 
 
 class User(AbstractBaseUser):
     auth_uid = Column(Integer, ForeignKey('userauth.uid'))
     auth = relationship("UserAuth", backref=backref(conf.LABORATORY_CONTACT, uselist=False), lazy='joined')
-    groups = relationship("Group", secondary=gulink, back_populates="members", lazy='selectin')
-
-    # required in order to access columns with server defaults
-    # or SQL expression defaults, subsequent to a flush, without
-    # triggering an expired load
-    __mapper_args__ = {"eager_defaults": True}
+    groups = relationship("Group", secondary=user_groups, back_populates="members", lazy='selectin')
 
     @classmethod
     async def create(cls, user_in: schemas.UserCreate) -> schemas.User:
@@ -141,7 +135,7 @@ class User(AbstractBaseUser):
 
 
 class Permission(DBModel):
-    action = Column(String, nullable=False)   # e.g create, modify
+    action = Column(String, nullable=False)  # e.g create, modify
     target = Column(String, nullable=False)  # e.g sample, worksheet
     active = Column(Boolean(), default=True)
 
@@ -158,14 +152,9 @@ class Permission(DBModel):
 class Group(DBModel):
     name = Column(String, unique=True, index=True, nullable=False)
     keyword = Column(String, unique=True, index=True, nullable=False, default="keyword_x")
-    members = relationship("User", secondary=gulink, back_populates="groups", lazy="selectin")
-    permissions = relationship("Permission", secondary=gplink, backref="groups", lazy="selectin")
+    members = relationship("User", secondary=user_groups, back_populates="groups", lazy="selectin")
+    permissions = relationship("Permission", secondary=permission_groups, backref="groups", lazy="selectin")
     active = Column(Boolean(), default=True)
-
-    # required in order to acess columns with server defaults
-    # or SQL expression defaults, subsequent to a flush, without
-    # triggering an expired load
-    __mapper_args__ = {"eager_defaults": True}
 
     @classmethod
     def create(cls, obj_in):

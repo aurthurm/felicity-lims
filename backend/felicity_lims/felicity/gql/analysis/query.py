@@ -56,7 +56,7 @@ class AnalysisQuery:
 
         # Exclude QC Sample else front-end will throw ?????
         # filters.append({'internal_use__ne': True})
-        filters.append({'analysis_request__ne': None })
+        filters.append({'analysis_request__ne': None})
 
         page = await a_models.Sample.paginate_with_cursors(
             page_size=page_size,

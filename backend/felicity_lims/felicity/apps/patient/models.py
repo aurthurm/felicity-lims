@@ -1,16 +1,11 @@
 import logging
-from datetime import datetime
-
-from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, DateTime, func
-from sqlalchemy.future import select
+from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, DateTime
 from sqlalchemy.orm import relationship
 
 from felicity.apps.client.models import Client
 from felicity.apps.core.models import IdSequence
-from felicity.apps.core.utils import sequencer
 from felicity.apps.patient import schemas
-from felicity.apps import DBModel, Auditable, SEQUENTIAL_ID_RETRIES
-from felicity.database.session import async_session_factory
+from felicity.apps import DBModel, Auditable
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

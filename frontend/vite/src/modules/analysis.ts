@@ -77,11 +77,11 @@ export default function useAnalysisComposable(){
               store.dispatch(ActionTypes.UPDATE_ANALYSIS_RESULTS_STATUS, data?.reInstateAnalysisResults);
             });
 
-            // await Swal.fire(
-            //   'Its Happening!',
-            //   'Your analystes have been reinstated.',
-            //   'success'
-            // ).then(_ => resetAnalysesPermissions())
+            await Swal.fire(
+              'Its Happening!',
+              'Your analystes have been reinstated.',
+              'success'
+            ).then(_ => {})
 
           }
         })

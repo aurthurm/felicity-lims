@@ -1,3 +1,4 @@
+import logging
 from typing import Dict, TypeVar, AsyncIterator, List, Any, Optional
 from base64 import b64decode, b64encode
 from pydantic import BaseModel as PydanticBaseModel
@@ -13,6 +14,9 @@ from felicity.database.session import AsyncSessionScoped, async_session_factory
 from felicity.utils import has_value_or_is_truthy
 
 InDBSchemaType = TypeVar("InDBSchemaType", bound=PydanticBaseModel)
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 
 # noinspection PyPep8Naming
@@ -41,6 +45,12 @@ class classproperty(object):
 class DBModel(AllFeaturesMixin):
     __name__: str
     __abstract__ = True
+
+    # __mapper_args__ :
+    # required in order to access columns with server defaults
+    # or SQL expression defaults, subsequent to a flush, without
+    # triggering an expired load
+    __mapper_args__ = {"eager_defaults": True}
 
     uid = Column(Integer, primary_key=True, index=True, nullable=False, autoincrement=True)
 
@@ -247,17 +257,19 @@ class DBModel(AllFeaturesMixin):
 
     @classmethod
     async def count_where(cls, filters):
+        # stmt = smart_query(select(cls), filters=filters)
         # stmt = select(func.count(cls.uid))
         # stmt = select(func.count('*')).select_from(cls)
         # stmt = select(cls, func.count(cls.uid))
         # stmt = select(cls).with_only_columns([func.count(cls.uid)]).order_by(None)
-        # stmt = select(func.count(cls.uid)).select_from(cls)
-        # stmt = smart_query(query=stmt, filters=filters)
-        stmt = smart_query(select(cls), filters=filters)
+        # stmt = select(func.count()).select_from(cls)
+        # stmt = select(func.count()).select_from(select(cls).subquery())
+        stmt = select(func.count(cls.uid)).select_from(cls)
+        stmt = smart_query(query=stmt, filters=filters)
         async with async_session_factory() as session:
             res = await session.execute(stmt)
-            count = len(res.scalars().all())
-            return count
+            count = res.scalars().one()
+        return count
 
     @classmethod
     async def fulltext_search(cls, search_string, field):
@@ -299,7 +311,6 @@ class DBModel(AllFeaturesMixin):
     @classmethod
     async def paginate_with_cursors(cls, page_size: [int] = None, after_cursor: Any = None, before_cursor: Any = None,
                                     filters: Any = None, sort_by: List[str] = None) -> PageCursor:
-
         if not filters:
             filters = {}
 
@@ -328,18 +339,22 @@ class DBModel(AllFeaturesMixin):
 
         stmt = cls.smart_query(filters=_filters, sort_attrs=sort_by)
 
+        if page_size:
+            stmt = stmt.limit(page_size)
+
         async with async_session_factory() as session:
             res = await session.execute(stmt)
 
         qs = res.scalars().all()
 
         if qs is not None:
-            items = qs[:page_size]
+            # items = qs[:page_size]
+            items = qs
         else:
             qs = []
             items = []
 
-        has_additional = len(qs) > len(items)
+        has_additional = len(items) < page_size if page_size else True  # len(qs) > len(items)s
         page_info = {
             'start_cursor': cls.encode_cursor(items[0].uid) if items else None,
             'end_cursor': cls.encode_cursor(items[-1].uid) if items else None,
@@ -389,4 +404,3 @@ class DBModel(AllFeaturesMixin):
     @classmethod
     def encode_cursor(cls, identifier: Any):
         return b64encode(str(identifier).encode('utf8')).decode('ascii')
-

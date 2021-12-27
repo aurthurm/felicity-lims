@@ -1,12 +1,45 @@
 from fastapi.encoders import jsonable_encoder
-from sqlalchemy import Boolean, Column, Integer, String
+from datetime import datetime
+from sqlalchemy.ext.declarative import declared_attr
+from sqlalchemy import Boolean, Column, Integer, String, DateTime
 
 from felicity.apps.user import schemas
 from felicity.core.security import get_password_hash
-from felicity.database.base_class import DBModel
+from felicity.apps import DBModel  # noqa
 
 
-class AbstractBaseUser(DBModel):
+class SimpleAuditMixin(object):
+    """
+    Can't use BaseAuditMixin since
+    user table does not exist yest
+    """
+
+    @declared_attr
+    def created_at(self):
+        return Column(DateTime, default=datetime.utcnow)
+
+    @declared_attr
+    def creator_name(self):
+        return Column(String, nullable=True)
+
+    @declared_attr
+    def creator_uid(self):
+        return Column(Integer, nullable=True)
+
+    @declared_attr
+    def updated_at(self):
+        return Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    @declared_attr
+    def updator_name(self):
+        return Column(String, nullable=True)
+
+    @declared_attr
+    def updator_uid(self):
+        return Column(Integer, nullable=True)
+
+
+class AbstractBaseUser(SimpleAuditMixin, DBModel):
     __abstract__ = True
     first_name = Column(String, index=True)
     last_name = Column(String, index=True)
@@ -52,7 +85,7 @@ class AbstractBaseUser(DBModel):
         await self.update(user_in)
 
 
-class AbstractAuth(DBModel):
+class AbstractAuth(SimpleAuditMixin, DBModel):
     __abstract__ = True
     user_name = Column(String, unique=True, index=True, nullable=False)
     hashed_password = Column(String, nullable=False)

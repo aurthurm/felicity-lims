@@ -1,4 +1,3 @@
-from datetime import datetime
 import logging
 from typing import List
 
@@ -6,9 +5,8 @@ from sqlalchemy import Column, String, Integer, ForeignKey, Boolean, DateTime, T
 from sqlalchemy.orm import relationship
 from sqlalchemy.dialects.postgresql import JSONB
 
-from felicity.apps import BaseAuditDBModel, DBModel, Auditable, SEQUENTIAL_ID_RETRIES
+from felicity.apps import BaseAuditDBModel, DBModel, Auditable
 from felicity.apps.core.models import IdSequence
-from felicity.apps.core.utils import sequencer
 from felicity.apps.setup.models.setup import Instrument
 from felicity.apps.stream.utils import FelicityStreamer
 from felicity.apps.user.models import User
@@ -17,13 +15,12 @@ from felicity.apps.analysis.models import results as result_models
 from felicity.apps.analysis.models import qc as qc_models
 from felicity.apps.analysis import conf as analysis_conf
 from felicity.apps.worksheet import schemas, conf
-from felicity.database.session import async_session_factory
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
-class WSBase(DBModel):
+class WSBase(BaseAuditDBModel):
     __abstract__ = True
     worksheet_type = Column(String)
     reserved = Column(JSONB)
@@ -49,7 +46,7 @@ class WSBase(DBModel):
 """
 Many to Many Link between WorkSheetTemplate and Profile
 """
-wstplink = Table('wstplink', DBModel.metadata,
+worksheet_template_profile = Table('worksheet_template_profile', DBModel.metadata,
                  Column("ws_template_uid", ForeignKey('worksheettemplate.uid'), primary_key=True),
                  Column("profile_uid", ForeignKey('profile.uid'), primary_key=True)
                  )
@@ -57,7 +54,7 @@ wstplink = Table('wstplink', DBModel.metadata,
 """
 any to Many Link between WorkSheetTemplate and Analysis
 """
-wstalink = Table('wstalink', DBModel.metadata,
+worksheet_template_analysis = Table('worksheet_template_analysis', DBModel.metadata,
                  Column("ws_template_uid", ForeignKey('worksheettemplate.uid'), primary_key=True),
                  Column("analysis_uid", ForeignKey('analysis.uid'), primary_key=True)
                  )
@@ -65,7 +62,7 @@ wstalink = Table('wstalink', DBModel.metadata,
 """
 Many to Many Link between WorkSheetTemplate and QCLevel
 """
-wstqcllink = Table('wstqcllink', DBModel.metadata,
+worksheet_template_qc_level = Table('worksheet_template_qc_level', DBModel.metadata,
                    Column("ws_template_uid", ForeignKey('worksheettemplate.uid'), primary_key=True),
                    Column("qc_level_uid", ForeignKey('qclevel.uid'), primary_key=True)
                    )
@@ -79,12 +76,12 @@ class WorkSheetTemplate(WSBase):
     """
     name = Column(String, unique=True, nullable=False)
     description = Column(String)
-    profiles = relationship(analysis_models.Profile, secondary=wstplink, lazy="selectin")
-    analyses = relationship(analysis_models.Analysis, secondary=wstalink, lazy="selectin")
+    profiles = relationship(analysis_models.Profile, secondary=worksheet_template_profile, lazy="selectin")
+    analyses = relationship(analysis_models.Analysis, secondary=worksheet_template_analysis, lazy="selectin")
     qc_template_uid = Column(Integer, ForeignKey('qctemplate.uid'), nullable=True)
     qc_template = relationship(qc_models.QCTemplate, lazy="selectin")
     # to help cater for those created without template we also keep the qc_levels
-    qc_levels = relationship(qc_models.QCLevel, secondary=wstqcllink, lazy="selectin")
+    qc_levels = relationship(qc_models.QCLevel, secondary=worksheet_template_qc_level, lazy="selectin")
     instrument_uid = Column(Integer, ForeignKey('instrument.uid'), nullable=True)
     instrument = relationship(Instrument, lazy="selectin")
     sample_type_uid = Column(Integer, ForeignKey('sampletype.uid'), nullable=False)
@@ -103,7 +100,7 @@ class WorkSheetTemplate(WSBase):
 """
 Many to Many Link between WorkSheet and Profile
 """
-wsplink = Table('wsplink', DBModel.metadata,
+worksheet_profile = Table('worksheet_profile', DBModel.metadata,
                 Column("worksheet_uid", ForeignKey('worksheet.uid'), primary_key=True),
                 Column("profile_uid", ForeignKey('profile.uid'), primary_key=True)
                 )
@@ -111,7 +108,7 @@ wsplink = Table('wsplink', DBModel.metadata,
 """
 Many to Many Link between WorkSheet and Analysis
 """
-wsalink = Table('wsalink', DBModel.metadata,
+worksheet_analysis = Table('worksheet_analysis', DBModel.metadata,
                 Column("worksheet_uid", ForeignKey('worksheet.uid'), primary_key=True),
                 Column("analysis_uid", ForeignKey('analysis.uid'), primary_key=True)
                 )
@@ -123,8 +120,8 @@ class WorkSheet(Auditable, WSBase):
     analyst_uid = Column(Integer, ForeignKey('user.uid'), nullable=False)
     analyst = relationship(User, foreign_keys=[analyst_uid], lazy="selectin")
     worksheet_id = Column(String, index=True, unique=True, nullable=False)
-    profiles = relationship(analysis_models.Profile, secondary=wsplink, lazy="selectin")
-    analyses = relationship(analysis_models.Analysis, secondary=wsalink, lazy="selectin")
+    profiles = relationship(analysis_models.Profile, secondary=worksheet_profile, lazy="selectin")
+    analyses = relationship(analysis_models.Analysis, secondary=worksheet_analysis, lazy="selectin")
     instrument_uid = Column(Integer, ForeignKey('instrument.uid'), nullable=True)
     instrument = relationship(Instrument, backref='worksheets', lazy="selectin")
     sample_type_uid = Column(Integer, ForeignKey('sampletype.uid'), nullable=False)

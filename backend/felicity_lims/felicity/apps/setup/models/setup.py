@@ -1,16 +1,16 @@
 from sqlalchemy import Column, Integer, String, ForeignKey
 from sqlalchemy.orm import relationship
 
-from felicity.database.base_class import DBModel
+from felicity.apps import DBModel, BaseAuditDBModel
 from felicity.apps.user.models import User
 from felicity.apps.setup import schemas
 
 
-class Laboratory(DBModel):
+class Laboratory(BaseAuditDBModel):
     setup_name = Column(String, default="felicity", nullable=False)  # Do not change this value ever
     lab_name = Column(String, nullable=False)
     lab_manager_uid = Column(Integer, ForeignKey("user.uid"), nullable=True)
-    lab_manager = relationship(User, backref="lab_manager")  # TODO refactor backref value to  backref="laboratory"
+    lab_manager = relationship(User, foreign_keys=[lab_manager_uid], backref="lab_manager")  # TODO refactor backref value to  backref="laboratory"
     email = Column(String, nullable=True)  # Main Email Adress
     email_cc = Column(String, nullable=True)
     mobile_phone = Column(String, nullable=True)
@@ -33,7 +33,7 @@ class Laboratory(DBModel):
         return lab_setup
 
 
-class Supplier(DBModel):
+class Supplier(BaseAuditDBModel):
     """Supplier"""
     name = Column(String, nullable=False)
     description = Column(String, nullable=True)
@@ -48,7 +48,7 @@ class Supplier(DBModel):
         return await super().update(**data)
 
 
-class Department(DBModel):
+class Department(BaseAuditDBModel):
     """Departrments/Sections"""
     name = Column(String, nullable=False)
     description = Column(String, nullable=True)
@@ -64,7 +64,7 @@ class Department(DBModel):
         return await super().update(**data)
 
 
-class Instrument(DBModel):
+class Instrument(BaseAuditDBModel):
     """Instrument/Analyser"""
     name = Column(String, nullable=False)
     description = Column(String, nullable=True)
@@ -82,7 +82,7 @@ class Instrument(DBModel):
         return await super().update(**data)
 
 
-class Method(DBModel):
+class Method(BaseAuditDBModel):
     """Analyses/Test Method"""
     name = Column(String, nullable=False)
     description = Column(String, nullable=True)
