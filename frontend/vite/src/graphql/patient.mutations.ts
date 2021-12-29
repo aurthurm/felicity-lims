@@ -28,28 +28,37 @@ export const ADD_PATIENT = gql`
       phoneMobile: $phoneMobile,
       consentSms: $consentSms   
   ) {
-        uid
-        clientPatientId
-        patientId
-        firstName
-        middleName
-        lastName
-        age
-        gender
-        dateOfBirth
-        ageDobEstimated
-        client { 
+    ... on PatientType {
+      __typename
+      uid
+      clientPatientId
+      patientId
+      firstName
+      middleName
+      lastName
+      age
+      gender
+      dateOfBirth
+      ageDobEstimated
+      client { 
+        name
+        district {
           name
-          district {
+          province {
             name
-            province {
-              name
-            }
           }
         }
-        phoneHome
-        phoneMobile
-        consentSms
+      }
+      phoneHome
+      phoneMobile
+      consentSms
+    }
+
+    ... on OperationError {
+      __typename
+      error
+      suggestion
+    }
   }
 }`;
 
@@ -82,27 +91,36 @@ export const UPDATE_PATIENT = gql`
       phoneMobile: $phoneMobile,
       consentSms: $consentSms   
   ) {
-        uid
-        clientPatientId
-        patientId
-        firstName
-        middleName
-        lastName
-        age
-        gender
-        dateOfBirth
-        ageDobEstimated
-        client { 
+    ... on PatientType {
+      __typename
+      uid
+      clientPatientId
+      patientId
+      firstName
+      middleName
+      lastName
+      age
+      gender
+      dateOfBirth
+      ageDobEstimated
+      client { 
+        name
+        district {
           name
-          district {
+          province {
             name
-            province {
-              name
-            }
           }
         }
-        phoneHome
-        phoneMobile
-        consentSms
+      }
+      phoneHome
+      phoneMobile
+      consentSms
+    }
+
+    ... on OperationError {
+      __typename
+      error
+      suggestion
+    }
   }
 }`;

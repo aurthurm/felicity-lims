@@ -163,7 +163,8 @@ async def create_analysis_request(info, payload: AnalysisRequestInputType) -> An
             await result_models.AnalysisResult.create(a_result_schema)
 
     await asyncio.sleep(1)
-    return await analysis_models.AnalysisRequest.get_related(uid=analysis_request.uid, related=["samples"])
+    analysis_request = await analysis_models.AnalysisRequest.get_related(uid=analysis_request.uid, related=["samples"])
+    return a_types.AnalysisRequestWithSamples(**analysis_request.marshal_simple())
 
 
 # @strawberry.mutation

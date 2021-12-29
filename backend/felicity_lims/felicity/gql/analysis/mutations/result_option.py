@@ -55,7 +55,7 @@ async def create_result_option(info, payload: ResultOptionInputType) -> ResultOp
 
     obj_in = schemas.ResultOptionCreate(**incoming)
     result_option: analysis_models.ResultOption = await analysis_models.ResultOption.create(obj_in)
-    return result_option
+    return a_types.ResultOptionType(**result_option.marshal_simple())
 
 
 @strawberry.mutation
@@ -80,4 +80,4 @@ async def update_result_option(info, uid: int, payload: ResultOptionInputType) -
 
     result_option_in = schemas.ResultOptionUpdate(**result_option.to_dict())
     result_option = await result_option.update(result_option_in)
-    return result_option
+    return a_types.ResultOptionType(**result_option.marshal_simple())

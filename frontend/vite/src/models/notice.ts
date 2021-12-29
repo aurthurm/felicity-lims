@@ -2,7 +2,7 @@ import { IGroup, IUser } from "./auth";
 import { IDepartment } from "./setup";
 
 export interface INotice {
-    uid: string;
+    uid: number;
     title: string;
     body: string;
     departments: IDepartment[];

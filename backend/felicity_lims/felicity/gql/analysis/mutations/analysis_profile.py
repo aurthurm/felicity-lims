@@ -51,7 +51,7 @@ async def create_profile(info, payload: ProfileInputType) -> AnalysisProfileResp
 
     obj_in = schemas.ProfileCreate(**incoming)
     profile: analysis_models.Profile = await analysis_models.Profile.create(obj_in)
-    return profile
+    return a_types.ProfileType(**profile.marshal_simple())
 
 
 @strawberry.mutation
@@ -86,4 +86,4 @@ async def update_profile(info, uid: int, payload: ProfileInputType) -> AnalysisP
                 profile.analyses.append(anal)
     profile = await profile.save()
 
-    return profile
+    return a_types.ProfileType(**profile.marshal_simple())

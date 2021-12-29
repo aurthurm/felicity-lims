@@ -52,7 +52,7 @@ async def create_sample_type(info, payload: SampleTypeInputType) -> SampleTypeRe
 
     obj_in = schemas.SampleTypeCreate(**incoming)
     sample_type: analysis_models.SampleType = await analysis_models.SampleType.create(obj_in)
-    return sample_type
+    return a_types.SampleTypeTyp(**sample_type.marshal_simple())
 
 
 @strawberry.mutation
@@ -77,4 +77,4 @@ async def update_sample_type(info, uid: int, payload: SampleTypeInputType) -> Sa
 
     sample_type_in = schemas.SampleTypeUpdate(**sample_type.to_dict())
     sample_type = await sample_type.update(sample_type_in)
-    return sample_type
+    return a_types.SampleTypeTyp(**sample_type.marshal_simple())

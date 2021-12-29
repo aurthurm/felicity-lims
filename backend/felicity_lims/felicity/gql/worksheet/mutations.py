@@ -1,4 +1,3 @@
-import inspect
 import logging
 from typing import Optional, List
 
@@ -17,7 +16,7 @@ from felicity.apps.job.conf import actions, categories, priorities, states
 from felicity.apps.analysis.models import analysis as analysis_models
 from felicity.apps.analysis.models import results as result_models
 from felicity.apps.analysis.models import qc as qc_models
-from felicity.utils import get_passed_args, has_value_or_is_truthy
+from felicity.utils import has_value_or_is_truthy
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -74,14 +73,6 @@ class WorkSheetMutations:
     @strawberry.mutation
     async def create_worksheet_template(self, info, payload: WorksheetTemplateInputType) -> WorkSheetTemplateResponse:
 
-        inspector = inspect.getargvalues(inspect.currentframe())
-        passed_args = get_passed_args(inspector)
-
-        logger.info(f"passed_args: {passed_args}")
-
-        inspector = inspect.getargvalues(inspect.currentframe())
-        passed_args = get_passed_args(inspector)
-
         is_authenticated, felicity_user = await auth_from_info(info)
         verify_user_auth(is_authenticated, felicity_user, "Only Authenticated user can create worksheet templates")
 
@@ -116,11 +107,10 @@ class WorkSheetMutations:
             if qc_template:
                 _qc_levels = qc_template.qc_levels
 
-        reserved: List = passed_args.get('reserved', None)
         incoming['reserved'] = []
-        if reserved:
+        if payload.reserved:
             positions = dict()
-            for item in reserved:
+            for item in payload.reserved:
                 positions[item.position] = {"position": item.position, "level_uid": item.level_uid}
                 l_uids = [lvl.uid for lvl in _qc_levels]
                 if item.level_uid not in l_uids:
@@ -265,6 +255,9 @@ class WorkSheetMutations:
                                action: Optional[str],
                                samples: List[int]
                                ) -> WorkSheetResponse:  # noqa
+
+        is_authenticated, felicity_user = await auth_from_info(info)
+        verify_user_auth(is_authenticated, felicity_user, "Only Authenticated user can update worksheets")
 
         if not worksheet_uid:
             return OperationError(

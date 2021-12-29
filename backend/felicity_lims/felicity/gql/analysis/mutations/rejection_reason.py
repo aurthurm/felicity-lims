@@ -42,7 +42,7 @@ async def create_rejection_reason(info, reason: str) -> RejectionReasonResponse:
 
     obj_in = schemas.RejectionReasonCreate(**incoming)
     rejection_reason: analysis_models.RejectionReason = await analysis_models.RejectionReason.create(obj_in)
-    return rejection_reason
+    return a_types.RejectionReasonType(**rejection_reason.marshal_simple())
 
 
 @strawberry.mutation
@@ -63,4 +63,4 @@ async def update_rejection_reason(info, uid: int, reason: str) -> RejectionReaso
 
     rr_in = schemas.RejectionReasonUpdate(**rejection_reason.to_dict())
     rejection_reason = await rejection_reason.update(rr_in)
-    return rejection_reason
+    return a_types.RejectionReasonType(**rejection_reason.marshal_simple())

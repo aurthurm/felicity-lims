@@ -166,7 +166,7 @@ async def create_QC_level(info, level: str) -> QCLevelResponse:
 
     obj_in = schemas.QCLevelCreate(**passed_args)
     qc_level: qc_models.QCLevel = await qc_models.QCLevel.create(obj_in)
-    return qc_level
+    return a_types.QCLevelType(**qc_level.marshal_simple())
 
 
 @strawberry.mutation
@@ -187,7 +187,7 @@ async def update_QC_level(info, uid: int, level: str) -> QCLevelResponse:
 
     qc_in = schemas.QCTemplateUpdate(**qc_level.to_dict())
     qc_level = await qc_level.update(qc_in)
-    return qc_level
+    return a_types.QCLevelType(**qc_level.marshal_simple())
 
 
 @strawberry.mutation
@@ -229,7 +229,7 @@ async def create_QC_template(info, payload: QCTemplateInputType) -> QCTemplateRe
             if dept not in qc_template.departments:
                 qc_template.departments.append(dept)
     qc_template = await qc_template.save()
-    return qc_template
+    return a_types.QCTemplateType(**qc_template.marshal_simple())
 
 
 @strawberry.mutation
@@ -271,4 +271,4 @@ async def update_QC_template(info, uid: int, payload: QCTemplateInputType) -> QC
             if dept not in qc_template.departments:
                 qc_template.departments.append(dept)
     qc_template = await qc_template.save()
-    return qc_template
+    return a_types.QCTemplateType(**qc_template.marshal_simple())

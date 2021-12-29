@@ -1,36 +1,59 @@
 import gql from 'graphql-tag';
 
+const GroupTypeFields = gql`
+fragment GroupTypeFields on GroupType {
+  uid
+  name
+  keyword
+}`
+
+const PermissionTypeFields = gql`
+fragment PermissionTypeFields on PermissionType {
+  uid
+  action
+  target
+}`
+
 export const AUTHENTICATE_USER = gql`
+  ${PermissionTypeFields}
+  ${GroupTypeFields}
   mutation AuthenticateUser($username: String!, $password: String!) {
     authenticateUser(password: $password, username: $username) {
-      token
-      tokenType
-      user {
-        uid
-        firstName
-        lastName
-        groups {
+      ... on AuthenticatedData {
+        __typename
+        token
+        tokenType
+        user {
           uid
-          name
-          keyword
-          permissions {
-            uid
-            action
-            target
+          firstName
+          lastName
+          groups {
+            permissions {
+              ...PermissionTypeFields
+            }
+            ...GroupTypeFields
           }
         }
+      }
+      ... on OperationError {
+        __typename
+        error
+        suggestion
       }
     }
   }`;
 
 
 export const ADD_USER = gql`
+  ${PermissionTypeFields}
+  ${GroupTypeFields}
   mutation addUser($firstName: String!, $lastName: String!, $email: String!) {
     createUser(
     firstName: $firstName, 
     lastName: $lastName, 
     email: $email,
   ){
+    ... on UserType {
       uid
       firstName
       lastName
@@ -45,21 +68,25 @@ export const ADD_USER = gql`
         userType          
       }
       groups {
-        uid
-        name
-        keyword
         permissions {
-          uid
-          action
-          target
+          ...PermissionTypeFields
         }
+        ...GroupTypeFields
       }
+    }
+    ... on OperationError {
+      __typename
+      error
+      suggestion
+    }
   }
   }
 `;
 
 
 export const EDIT_USER = gql`
+  ${PermissionTypeFields}
+  ${GroupTypeFields}
   mutation editUser($userUid: Int!, $firstName: String!, $lastName: String, $email: String, $groupUid: Int, $mobilePhone: String, $isActive: Boolean) {
     updateUser(
       userUid: $userUid,
@@ -70,28 +97,31 @@ export const EDIT_USER = gql`
       mobilePhone: $mobilePhone,
       isActive: $isActive,
     ){
-      uid
-      firstName
-      lastName
-      email
-      isActive
-      isSuperuser
-      mobilePhone
-      auth {
+      ... on UserType {
         uid
-        userName
-        isBlocked
-        userType          
-      }
-      groups {
-        uid
-        name
-        keyword
-        permissions {
+        firstName
+        lastName
+        email
+        isActive
+        isSuperuser
+        mobilePhone
+        auth {
           uid
-          action
-          target
+          userName
+          isBlocked
+          userType          
         }
+        groups {
+          permissions {
+            ...PermissionTypeFields
+          }
+          ...GroupTypeFields
+        }
+      }
+      ... on OperationError {
+        __typename
+        error
+        suggestion
       }
     }
   }
@@ -106,17 +136,26 @@ export const ADD_USER_AUTH = gql`
       password: $password, 
       passwordc: $passwordc, 
     ){
-      uid
-      userName
-      userType
-      isBlocked
-      loginRetry
+      ... on UserAuthType {
+        uid
+        userName
+        userType
+        isBlocked
+        loginRetry
+      }
+      ... on OperationError {
+        __typename
+        error
+        suggestion
+      }
     }
   }
 `;
 
 
 export const EDIT_USER_AUTH = gql`
+  ${PermissionTypeFields}
+  ${GroupTypeFields}
   mutation  editUserAuth($userUid: Int!, $username: String!, $password: String!, $passwordc: String!) {
     updateUserAuth(
       userUid: $userUid, 
@@ -124,28 +163,31 @@ export const EDIT_USER_AUTH = gql`
       password: $password, 
       passwordc: $passwordc, 
     ){
-      uid
-      firstName
-      lastName
-      email
-      isActive
-      isSuperuser
-      mobilePhone
-      auth {
+      ... on UserType {
         uid
-        userName
-        isBlocked
-        userType          
-      }
-      groups {
-        uid
-        name
-        keyword
-        permissions {
+        firstName
+        lastName
+        email
+        isActive
+        isSuperuser
+        mobilePhone
+        auth {
           uid
-          action
-          target
+          userName
+          isBlocked
+          userType          
         }
+        groups {
+          permissions {
+            ...PermissionTypeFields
+          }
+          ...GroupTypeFields
+        }
+      }
+      ... on OperationError {
+        __typename
+        error
+        suggestion
       }
     }
   }
@@ -155,6 +197,7 @@ export const EDIT_USER_AUTH = gql`
 export const UPDATE_GROUP_PERMS = gql`
   mutation updateGroupsAndPermissions($groupUid: Int!, $permissionUid: Int!) {
     updateGroupPermissions(groupUid: $groupUid, permissionUid: $permissionUid) {
+      ... on UpdatedGroupPerms {
         group {
           uid
           name
@@ -166,6 +209,12 @@ export const UPDATE_GROUP_PERMS = gql`
           action
           target
         }
+      }
+      ... on OperationError {
+        __typename
+        error
+        suggestion
+      }
     }
   }`;
 
@@ -173,8 +222,15 @@ export const UPDATE_GROUP_PERMS = gql`
 export const ADD_DEPARTMENT = gql`
   mutation addDepartment($name: String!) {
     createDepartment(name: $name) {
-      uid
-      name
+      ... on DepartmentType {
+        uid
+        name
+      }
+      ... on OperationError {
+        __typename
+        error
+        suggestion
+      }
     }
   }`;
 
@@ -182,7 +238,14 @@ export const ADD_DEPARTMENT = gql`
 export const UPDATE_DEPARTMENT = gql`
   mutation editDepartment($uid: Int!, $name: String!) {
     updateDepartment(uid: $uid, name: $name) {
-      uid
-      name
+      ... on DepartmentType {
+        uid
+        name
+      }
+      ... on OperationError {
+        __typename
+        error
+        suggestion
+      }
     }
   }`;

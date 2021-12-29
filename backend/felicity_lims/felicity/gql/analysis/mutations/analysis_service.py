@@ -73,7 +73,7 @@ async def create_analysis(info, payload: AnalysisInputType) -> ProfilesServiceRe
     obj_in = schemas.AnalysisCreate(**incoming)  # skip this stage if its not adding analyses and stypes
     analysis: analysis_models.Analysis = await analysis_models.Analysis.create(obj_in)
 
-    return analysis
+    return a_types.AnalysisWithProfiles(**analysis.marshal_simple())
 
 
 @strawberry.mutation
@@ -105,4 +105,4 @@ async def update_analysis(info, uid: int, payload: AnalysisInputType) -> Profile
 
     analysis_in = schemas.AnalysisUpdate(**analysis.to_dict(nested=False))
     analysis = await analysis.update(analysis_in)
-    return analysis
+    return a_types.AnalysisWithProfiles(**analysis.marshal_simple())

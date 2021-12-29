@@ -51,7 +51,7 @@ async def create_analysis_category(info, payload: AnalysisCategoryInputType) -> 
 
     obj_in = schemas.AnalysisCategoryCreate(**incoming)
     analysis_category: analysis_models.AnalysisCategory = await analysis_models.AnalysisCategory.create(obj_in)
-    return analysis_category
+    return a_types.AnalysisCategoryType(**analysis_category.marshal_simple())
 
 
 @strawberry.mutation
@@ -77,4 +77,4 @@ async def update_analysis_category(self, info, uid: int, payload: AnalysisCatego
 
     profile_in = schemas.AnalysisCategoryUpdate(**analysis_category.to_dict())
     analysis_category = await analysis_category.update(profile_in)
-    return analysis_category
+    return a_types.AnalysisCategoryType(**analysis_category.marshal_simple())

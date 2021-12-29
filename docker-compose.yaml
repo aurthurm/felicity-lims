@@ -15,7 +15,7 @@ services:
             - felicity_be
         networks:
             - felicitynet
-        command: bash -c "cd vite && yarn dev"
+        command: bash -c "cd vite && yarn dev --host"
 
     felicity_be:
         container_name: felicity_be

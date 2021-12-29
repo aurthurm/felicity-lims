@@ -31,7 +31,7 @@
                     <button class="px-2 py-1 mr-2 border-grey-500 border text-grey-500 rounded transition duration-300 hover:bg-gray-100 hover:text-black-700 focus:outline-none"
                     @click="FormManager(false, notice)">View/Edit</button>
                     <button class="px-2 py-1 mr-2  ml-2 border-red-500 border text-red-500 rounded transition duration-300 hover:bg-red-100 hover:text-black-700 focus:outline-none"
-                    @click="deleteNotice(notice)">Delete</button>
+                    @click="deleteNotice(notice.uid)">Delete</button>
                 </td>
             </tr>
             </tbody>
@@ -93,7 +93,7 @@ import modal from '../../components/SimpleModal.vue';
 import { useMutation } from '@urql/vue';
 import { useStore } from 'vuex'
 import { ActionTypes as DepartmentActionTypes } from '../../store/actions';
-import { ADD_NOTICE, EDIT_NOTICE } from '../../graphql/notice.mutations';
+import { ADD_NOTICE, EDIT_NOTICE, DELETE_NOTICE } from '../../graphql/notice.mutations';
 import { defineComponent, onMounted, reactive, computed} from 'vue';
 import { INotice } from '../../models/notice';
 
@@ -111,7 +111,7 @@ export default defineComponent({
     let store = useStore();
 
     const { gqlResponseHandler, gqlOpertionalErrorHandler } = useNotifyToast()
-    const { _myNotices, fetchMyNotices, _addNotice, _updateNotice } = useNoticeComposable()
+    const { _myNotices, fetchMyNotices, _addNotice, _updateNotice, _deleteNotice } = useNoticeComposable()
     const modalState = reactive({
       notice: {} as INotice,
       title: "",
@@ -184,7 +184,7 @@ export default defineComponent({
       modalState,
       FormManager,
       saveForm,
-      deleteNotice: ,
+      deleteNotice
      };
   },
 });
