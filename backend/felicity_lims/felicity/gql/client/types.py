@@ -1,5 +1,5 @@
 from typing import Optional, List
-import strawberry
+import strawberry  # noqa
 
 from felicity.gql import PageInfo
 from felicity.gql.setup.types import DistrictType, ProvinceType

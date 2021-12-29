@@ -64,6 +64,7 @@ async def run_jobs_if_exists():
     if len(jobs) == 0:
         felicity_pause_workforce()
     else:
+        jobs = sorted(jobs, key=lambda j: j.uid)
         for job in jobs:
             if job.category == job_conf.categories.WORKSHEET:
                 if job.action == job_conf.actions.WS_ASSIGN:

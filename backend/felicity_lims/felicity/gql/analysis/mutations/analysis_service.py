@@ -1,83 +1,68 @@
-import inspect
 import logging
 from typing import Optional, List
 
-import strawberry
+import strawberry  # noqa
 
 from felicity.apps.analysis import schemas
 from felicity.apps.analysis.models import analysis as analysis_models
-from felicity.apps.patient.models import logger
-from felicity.gql import auth_from_info, verify_user_auth
+from felicity.gql import auth_from_info, verify_user_auth, OperationError
 from felicity.gql.analysis.types import analysis as a_types
-from felicity.utils import get_passed_args
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
 @strawberry.input
-class ARSampleInputType:
-    sample_type: int
-    profiles: List[int]
-    analyses: List[int]
+class AnalysisInputType:
+    name: str
+    description: str
+    keyword: str
+    sort_key: int
+    sample_types: Optional[List[int]] = None
+    category_uid: Optional[int] = None,
+    internal_use: Optional[bool] = False
+    tat_length_minutes: int = None
+    unit: str = None
+    active: Optional[bool] = True
 
 
-@strawberry.input
-class ARResultInputType:
-    uid: int
-    result: str
-    reportable: Optional[bool] = True
-
-
-@strawberry.input
-class QCSetInputType:
-    qcTemplateUid: Optional[int]
-    qcLevels: List[int]
-    analysisProfiles: List[int]
-    analysisServices: List[int]
-
-
-@strawberry.type
-class CreateQCSetData:
-    samples: List[a_types.SampleType]
-    qc_sets: List[a_types.QCSetType]
-
-
-@strawberry.input
-class SampleRejectInputType:
-    uid: int
-    reasons: List[int]
-    other: Optional[str] = None
+ProfilesServiceResponse = strawberry.union("ProfilesServiceResponse",
+                                           (a_types.AnalysisWithProfiles, OperationError),  # noqa
+                                           description=""
+                                           )
 
 
 @strawberry.mutation
-async def create_analysis(self, info, name: str, description: str, keyword: str, sort_key: int,
-                          sample_types: Optional[List[int]] = None, category_uid: Optional[int] = None,
-                          internal_use: Optional[bool] = False, tat_length_minutes: int = None, unit: str = None,
-                          active: Optional[bool] = True) -> a_types.AnalysisWithProfiles:
-
-    inspector = inspect.getargvalues(inspect.currentframe())
-    passed_args = get_passed_args(inspector)
+async def create_analysis(info, payload: AnalysisInputType) -> ProfilesServiceResponse:
 
     is_authenticated, felicity_user = await auth_from_info(info)
     verify_user_auth(is_authenticated, felicity_user, "Only Authenticated user can create analysis")
 
-    if not name or not description:
-        raise Exception("Name and Description are mandatory")
+    if not payload.name or not payload.description:
+        return OperationError(
+            error="Name and Description are mandatory"
+        )
 
-    exists = await analysis_models.Analysis.get(name=name)
+    exists = await analysis_models.Analysis.get(name=payload.name)
     if exists:
-        raise Exception(f"A analysis named {name} already exists")
+        return OperationError(
+            error=f"A analysis named {payload.name} already exists"
+        )
 
-    exists = await analysis_models.Analysis.get(keyword=keyword)
+    exists = await analysis_models.Analysis.get(keyword=payload.keyword)
     if exists:
-        raise Exception(f"Analysis Keyword {keyword} is not unique")
+        return OperationError(
+            error=f"Analysis Keyword {payload.keyword} is not unique"
+        )
 
-    incoming = {}
-    for k, v in passed_args.items():
+    incoming = {
+        "created_by_uid": felicity_user.uid,
+        "updated_by_uid": felicity_user.uid,
+    }
+    for k, v in payload.__dict__.items():
         incoming[k] = v
 
-    sample_types = passed_args.get('sample_types', None)
+    sample_types = payload.__dict__.get('sample_types', None)
     incoming['sample_types'] = []
     if sample_types:
         for _uid in sample_types:
@@ -90,34 +75,30 @@ async def create_analysis(self, info, name: str, description: str, keyword: str,
 
     return analysis
 
-@strawberry.mutation
-async def update_analysis(self, info, uid: int, name: str, description: str, keyword: str, sort_key: int,
-                          sample_types: Optional[List[str]] = None, category_uid: Optional[int] = None,
-                          internal_use: Optional[bool] = False, tat_length_minutes: int = None, unit: str = None,
-                          active: Optional[bool] = True) -> a_types.AnalysisWithProfiles:
 
-    inspector = inspect.getargvalues(inspect.currentframe())
-    passed_args = get_passed_args(inspector)
+@strawberry.mutation
+async def update_analysis(info, uid: int, payload: AnalysisInputType) -> ProfilesServiceResponse:
 
     is_authenticated, felicity_user = await auth_from_info(info)
     verify_user_auth(is_authenticated, felicity_user, "Only Authenticated user can update analysis")
 
     analysis = await analysis_models.Analysis.get(uid=uid)
     if not analysis:
-        raise Exception(f"Analysis with uid {uid} does not exist -- cannot update")
+        return OperationError(
+            error=f"Analysis with uid {uid} does not exist -- cannot update"
+        )
 
     analysis_data = analysis.to_dict()
     for field in analysis_data:
-        if field in passed_args:
+        if field in payload.__dict__:
             try:
-                setattr(analysis, field, passed_args[field])
+                setattr(analysis, field, payload.__dict__[field])
             except AttributeError as e:
                 logger.warning(e)
 
-    sample_types = passed_args.get('sample_types', None)
     analysis.sample_types.clear()
-    if sample_types:
-        for _uid in sample_types:
+    if payload.sample_types:
+        for _uid in payload.sample_types:
             stype = await analysis_models.SampleType.get(uid=_uid)
             if stype not in analysis.sample_types:
                 analysis.sample_types.append(stype)

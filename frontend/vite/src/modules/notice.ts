@@ -28,7 +28,8 @@ export default function useNoticeComposable(){
     }
 
     return {
-        state: toRefs(_state), _myNotices,
+        state: _state, 
+        _myNotices,
         fetchMyNotices,
         _addNotice, _updateNotice, _deleteNotice
     }

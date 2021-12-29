@@ -1,6 +1,6 @@
 import logging
 from datetime import datetime
-from typing import List
+from typing import List, Tuple
 
 from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, DateTime
 from sqlalchemy.orm import relationship
@@ -132,22 +132,26 @@ class AnalysisResult(Auditable, BaseMPTT):
         return await self.save()
 
     @classmethod
-    async def filter_for_worksheet(cls, analyses_status: str, analyses_uids: List[int], sample_type_uid: List[int]) \
-            -> List[schemas.AnalysisResult]:
+    async def filter_for_worksheet(cls,
+                                   analyses_status: str, analyses_uids: List[int], sample_type_uid: List[int],
+                                   limit:int) -> List[schemas.AnalysisResult]:
 
-        analytes_stmt = AnalysisResult.smart_query(
-            filters={
+        filters = {
                 'status__exact': analyses_status,
                 'assigned__exact': False,
                 # 'profiles__uid__in': [_p.uid for _p in ws.profiles], # ?? re-looking needed for profile based WS's
                 'analysis_uid__in': analyses_uids,
                 'sample___sample_type_uid__exact': sample_type_uid,
-            },
-            sort_attrs=['-sample___priority', '-created_at']
-        )
+        }
+        sort_attrs = ['-sample___priority', 'sample___sample_id', '-created_at']
+
+        analytes_stmt = cls.smart_query(filters=filters, sort_attrs=sort_attrs)
+        stmt = analytes_stmt.limit(limit)
+
+        # available: int = await cls.count_where(filters=filters)
 
         async with async_session_factory() as session:
-            analyses_results = (await session.execute(analytes_stmt)).scalars().all()
+            analyses_results = (await session.execute(stmt)).scalars().all()
 
         return analyses_results
 

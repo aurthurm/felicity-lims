@@ -1,4 +1,4 @@
-import strawberry
+import strawberry  # noqa
 from typing import List, Optional
 import sqlalchemy as sa
 

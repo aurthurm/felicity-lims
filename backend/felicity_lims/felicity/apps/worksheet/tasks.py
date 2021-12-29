@@ -13,7 +13,6 @@ from felicity.apps.analysis.schemas import (
 from felicity.apps.job import models as job_models
 from felicity.apps.job.conf import states as job_states
 from felicity.apps.worksheet import models, conf
-from felicity.database.session import async_session_factory
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -66,28 +65,24 @@ async def populate_worksheet_plate(job_uid: int):
     samples = await AnalysisResult.filter_for_worksheet(
         analyses_status=analysis_conf.states.result.PENDING,
         analyses_uids=[_a.uid for _a in ws.analyses],
-        sample_type_uid=ws.sample_type_uid
+        sample_type_uid=ws.sample_type_uid,
+        limit=ws.number_of_samples
     )
 
-    available_samples = len(samples)
-    logger.info(f"Done filtering: Got {available_samples} samples available ...")
-    if available_samples == 0:
+    obtained_count = len(samples)
+    logger.info(f"Done filtering: Got {obtained_count} for assignment ...")
+    if obtained_count == 0:
         await job.change_status(new_status=job_states.FAILED, change_reason=f"There are no samples to assign to "
                                                                             f"WorkSheet {ws_uid}")
         logger.warning(f"There are no samples to assign to WorkSheet {ws_uid}")
         return
 
-    assign_count = ws.number_of_samples
-    if ws.assigned_count > 0:
-        assign_count = ws.number_of_samples
-
-    samples = samples[:assign_count]
     reserved = [int(r) for r in list(ws.reserved.keys())]
 
     if ws.assigned_count == 0:
 
         position = 1
-        for key, sample in enumerate(reversed(samples)):
+        for key, sample in enumerate(sorted(samples, key=lambda s: s.uid, reverse=True)):
 
             while position in reserved:
                 # skip reserved ?qc positions
@@ -96,7 +91,7 @@ async def populate_worksheet_plate(job_uid: int):
             await sample.assign(ws.uid, position)
             position += 1
 
-    else:  # create worksheet using an empty position filling strategy if not empty
+    else:  # populate worksheet using an empty position filling strategy if not empty
 
         assigned_positions = []
         empty_positions = []
@@ -118,7 +113,7 @@ async def populate_worksheet_plate(job_uid: int):
 
         # fill in empty positions
         empty_positions = sorted(empty_positions)
-        samples = list(reversed(samples))
+        samples = sorted(samples, key=lambda s: s.uid, reverse=True)  # list(reversed(samples))
 
         logger.info(f"samples: {samples}")
         logger.info(f"assigned_positions: {assigned_positions}")
@@ -154,7 +149,7 @@ def get_sample_position(reserved, level_uid) -> int:
             val_uid = int(v.get('level_uid', 0))
             if val_uid == level_uid:
                 return int(k)
-    except Exception:
+    except Exception:  # noqa
         pass
 
     return 0
@@ -173,7 +168,7 @@ async def setup_ws_quality_control(ws):
 
         try:
             qc_set = _qc_sets[0]
-        except Exception:
+        except Exception:  # noqa
             qc_set_schema = QCSetCreate(name="Set", note="Auto Generated")
             qc_set = await QCSet.create(qc_set_schema)
 

@@ -4,6 +4,10 @@ def get_passed_args(inspection):
 
     :param inspection: current frame arguments
     :return: dict of arguments passed into function
+    usage:
+        import inspector
+        inspector = inspect.getargvalues(inspect.currentframe())
+        passed_args = get_passed_args(inspector)
     """
     _args = inspection.args
     _locals = inspection.locals
@@ -26,8 +30,12 @@ def get_passed_args(inspection):
 
 
 def has_value_or_is_truthy(val) -> bool:  # noqa
+    if isinstance(val, bool):
+        return True
+
     if not val:
         return False
+
     if isinstance(val, str):
         if not val.strip():
             return False

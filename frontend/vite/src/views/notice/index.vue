@@ -21,23 +21,23 @@
             <tr v-for="notice in notices" :key="notice.uid">
                 <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
                   <div class="flex items-center">
-                      <div class="text-sm leading-5 text-gray-800">
+                      <div class="text-sm leading-5 text-gray-800" @click="FormManager(false, notice)">
                         {{ notice.title }}
                       </div>
                   </div>
                 </td>
                 <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">{{ notice.status }}</td>
                 <td class="px-1 py-1 whitespace-no-wrap text-right border-b border-gray-500 text-sm leading-5">
-                    <button class="px-2 py-1 mr-2 border-blue-500 border text-blue-500 rounded transition duration-300 hover:bg-blue-700 hover:text-white focus:outline-none">View</button>
-                    <button class="px-2 py-1 mr-2 border-orange-500 border text-orange-500 rounded transition duration-300 hover:bg-orange-700 hover:text-white focus:outline-none"
-                    @click="FormManager(false, notice)">Edit</button>
+                    <button class="px-2 py-1 mr-2 border-grey-500 border text-grey-500 rounded transition duration-300 hover:bg-gray-100 hover:text-black-700 focus:outline-none"
+                    @click="FormManager(false, notice)">View/Edit</button>
+                    <button class="px-2 py-1 mr-2  ml-2 border-red-500 border text-red-500 rounded transition duration-300 hover:bg-red-100 hover:text-black-700 focus:outline-none"
+                    @click="deleteNotice(notice)">Delete</button>
                 </td>
             </tr>
             </tbody>
         </table>
         </div>
     </div>
-
 
   <!-- Notice Form Modal -->
   <modal v-if="modalState.showModal" @close="modalState.showModal = false">
@@ -110,7 +110,7 @@ export default defineComponent({
   setup() {
     let store = useStore();
 
-    const { gqlResponseHandler } = useNotifyToast()
+    const { gqlResponseHandler, gqlOpertionalErrorHandler } = useNotifyToast()
     const { _myNotices, fetchMyNotices, _addNotice, _updateNotice } = useNoticeComposable()
     const modalState = reactive({
       notice: {} as INotice,
@@ -128,6 +128,7 @@ export default defineComponent({
 
     const { executeMutation: createNotice } = useMutation(ADD_NOTICE);
     const { executeMutation: udateNotice } = useMutation(EDIT_NOTICE);
+    const { executeMutation: noticeDeleter } = useMutation(DELETE_NOTICE);
 
     function addNotice(): void {
       createNotice({ 
@@ -136,7 +137,8 @@ export default defineComponent({
         expiry: modalState.notice.expiry
       }).then((res) => {
         const data = gqlResponseHandler(res)
-        _addNotice(data?.createNotice);
+        const createdNotice = gqlOpertionalErrorHandler(data?.createNotice)
+        if(createdNotice) _addNotice(createdNotice);
       });
     }
 
@@ -149,6 +151,14 @@ export default defineComponent({
       }).then((res) => {
         const data = gqlResponseHandler(res)
         _updateNotice(data?.updateNotice);
+      });
+    }
+
+    function deleteNotice(uid: number): void {
+      noticeDeleter({ uid }).then((res) => {
+        const data = gqlResponseHandler(res)
+        const deletedNotice = gqlOpertionalErrorHandler(data?.deleteNotice)
+        _deleteNotice(deletedNotice);
       });
     }
 
@@ -174,7 +184,7 @@ export default defineComponent({
       modalState,
       FormManager,
       saveForm,
-      parseDate,
+      deleteNotice: ,
      };
   },
 });

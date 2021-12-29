@@ -1,5 +1,5 @@
 from typing import Optional, List
-import strawberry
+import strawberry  # noqa
 from felicity.apps.messaging import models
 from felicity.gql.messaging.types import MessageThreadType
 

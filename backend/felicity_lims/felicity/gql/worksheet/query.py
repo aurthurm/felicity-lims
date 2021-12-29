@@ -1,6 +1,6 @@
 import logging
 from typing import List, Optional
-import strawberry
+import strawberry  # noqa
 import sqlalchemy as sa
 
 from felicity.gql import PageInfo

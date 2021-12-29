@@ -1,6 +1,6 @@
 from typing import List, Optional, Dict, Any
 import logging
-import strawberry
+import strawberry  # noqa
 import sqlalchemy as sa
 
 from felicity.apps.analysis.utils import sample_search

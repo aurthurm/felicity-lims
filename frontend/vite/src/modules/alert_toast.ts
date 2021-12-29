@@ -38,8 +38,8 @@ const notyf = new Notyf({ // https://github.com/caroso1222/notyf
     ]
 });
 
-const fireAlert = (options: any) => {
-    Swal.fire({
+const fireAlert = async (options: any) => {
+    await Swal.fire({
       title: 'Yay!',
       text: options.message,
       icon: options.icon,
@@ -61,7 +61,7 @@ export default function useNotifyToast(){
     const swalSuccess = (message: string) => fireAlert({ icon: "success", message });
     const swalInfo = (message: string) => fireAlert({ icon: "info", message });
     const swalWarning = (message: string) => fireAlert({ icon: "warning", message });
-    const swalError = (message: string) => fireAlert({ icon: "error", message });
+    const swalError = async (message: string) => await fireAlert({ icon: "error", message });
 
     // Automatic Error handling from Graphql backend
     const gqlErrorHandler = (error: any) => {
@@ -84,11 +84,20 @@ export default function useNotifyToast(){
       return res.data;
     }
 
+    const gqlOpertionalErrorHandler = (res: any):any => {
+      if(res.__typename === 'OperationError') {
+        swalError(res.error + "\n" + res.suggestion);
+        return;
+      };
+      return res;
+    }
+
     // -- 
     return { 
         toastSuccess, toastInfo, toastWarning, toastError,
         swalSuccess, swalInfo, swalWarning, swalError,
-        gqlResponseHandler, gqlErrorHandler    }
+        gqlResponseHandler, gqlErrorHandler, gqlOpertionalErrorHandler 
+    }
 }
 
 

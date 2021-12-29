@@ -2,7 +2,7 @@ from datetime import datetime
 import json
 from typing import Optional, List, Any, NewType
 
-import strawberry
+import strawberry  # noqa
 
 from felicity.gql import PageInfo
 from felicity.gql.analysis.types.analysis import ProfileType, AnalysisType, QCTemplateType, QCLevelType, SampleTypeTyp
@@ -41,6 +41,12 @@ class WorkSheetTemplateType:
     instrument: Optional[InstrumentType]
     sample_type_uid: Optional[int]
     sample_type: Optional[SampleTypeTyp]
+    created_by_uid: Optional[int]
+    created_by: Optional[UserType]
+    created_at: Optional[datetime]
+    updated_by_uid: Optional[int]
+    updated_by: Optional[UserType]
+    updated_at: Optional[datetime]
 
 
 @strawberry.type

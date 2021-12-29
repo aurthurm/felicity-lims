@@ -1,5 +1,5 @@
 from typing import Optional, List, TypeVar, Generic
-import strawberry
+import strawberry  # noqa
 
 from felicity.gql import PageInfo
 

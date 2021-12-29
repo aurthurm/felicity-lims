@@ -1,7 +1,7 @@
 from typing import Optional, List
 from datetime import datetime
 
-import strawberry
+import strawberry  # noqa
 
 from felicity.gql import PageInfo
 from felicity.gql.analysis.types.analysis import SampleType, AnalysisType, QCSetType

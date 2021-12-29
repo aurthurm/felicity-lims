@@ -1,5 +1,5 @@
 from typing import Optional, List
-import strawberry
+import strawberry  # noqa
 from felicity.apps.notification import models
 from felicity.gql.notification.types import NotificationType
 

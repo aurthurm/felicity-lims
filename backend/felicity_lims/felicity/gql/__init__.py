@@ -1,11 +1,44 @@
 import logging
 from typing import Optional
-
-import strawberry
+from datetime import datetime
+import strawberry  # noqa
 from felicity.apps.user.models import User, UserAuth
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
+
+@strawberry.type
+class PageInfo:
+    has_next_page: bool
+    has_previous_page: bool
+    start_cursor: Optional[str]
+    end_cursor: Optional[str]
+
+
+@strawberry.type
+class DeletedItem:
+    uid: int
+
+
+@strawberry.type
+class MessageType:
+    message: str
+
+
+@strawberry.type
+class OperationError:
+    error: str
+    suggestion: Optional[str] = ""
+
+
+DeleteResponse = strawberry.union("DeleteResponse", (DeletedItem, OperationError),
+                                  description="Union of possible outcomes when deleting some object"
+                                  )
+
+MessageResponse = strawberry.union("MessageResponse", (MessageType, OperationError),
+                                   description="Union of possible outcomes when deleting some object"
+                                   )
 
 
 def is_authenticated(request):
@@ -50,22 +83,15 @@ async def auth_from_info(info):
     return is_auth, user
 
 
-def verify_user_auth(is_auth: bool = False, user=None, err_msg: str = None) -> None:
+def verify_user_auth(is_auth: bool = False, user=None, err_msg: str = None):
     if not is_auth:
-        raise Exception(f"Please login: {err_msg}")
+        return OperationError(
+            error=f"{err_msg}",
+            suggestion="Try to login again"
+        )
 
     if not user:
-        raise Exception(f"Failed to acquire authenticated user")
-
-
-@strawberry.type
-class PageInfo:
-    has_next_page: bool
-    has_previous_page: bool
-    start_cursor: Optional[str]
-    end_cursor: Optional[str]
-
-@strawberry.type
-class DeletedItem:
-    uid: int
-
+        return OperationError(
+            error="Failed to acquire authenticated user",
+            suggestion="refresh your page. If error persists, logout and login again"
+        )

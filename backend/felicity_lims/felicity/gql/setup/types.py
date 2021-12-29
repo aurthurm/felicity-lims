@@ -1,4 +1,4 @@
-import strawberry
+import strawberry  # noqa
 from typing import Optional, List
 
 from felicity.gql import PageInfo

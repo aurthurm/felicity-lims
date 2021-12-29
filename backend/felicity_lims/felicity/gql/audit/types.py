@@ -1,5 +1,5 @@
 from typing import Optional, Text
-import strawberry
+import strawberry  # noqa
 
 
 @strawberry.type

@@ -1,7 +1,7 @@
 from typing import Optional, List
 from datetime import datetime
 
-import strawberry
+import strawberry  # noqa
 
 from felicity.apps.noticeboard import models
 from felicity.gql.setup.types import DepartmentType
@@ -23,9 +23,3 @@ class NoticeType:
     updated_at: Optional[datetime]
     updated_by_uid: Optional[int]
     updated_by: Optional[UserType]
-
-
-@strawberry.type
-class NoticeOperationError:
-    error: str
-    suggestion: str = ""

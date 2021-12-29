@@ -10,6 +10,7 @@
                     <option value="open">Open</option>
                     <option value="to_be_verified">To be Verified</option>
                     <option value="verified">Verified</option>
+                    <option value="pending_assignment">Not Assigned</option>
                 </select>
                 <div
                     class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">

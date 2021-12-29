@@ -1,7 +1,7 @@
 from typing import Optional, List
 from datetime import datetime
 
-import strawberry
+import strawberry  # noqa
 
 from felicity.gql import PageInfo
 from felicity.gql.client.types import ClientType
@@ -31,12 +31,6 @@ class QCSetType:
     uid: int
     name: str
     note: str
-    created_by_uid: Optional[int]
-    created_by: Optional[UserType]
-    created_at: Optional[datetime]
-    updated_by_uid: Optional[int]
-    updated_by: Optional[UserType]
-    updated_at: Optional[datetime]
 
 
 @strawberry.type

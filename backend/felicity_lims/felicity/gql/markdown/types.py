@@ -1,7 +1,7 @@
 from typing import Optional, List, Text
 from datetime import datetime
 
-import strawberry
+import strawberry  # noqa
 
 from felicity.gql.setup.types import DepartmentType
 from felicity.gql.user.types import UserType

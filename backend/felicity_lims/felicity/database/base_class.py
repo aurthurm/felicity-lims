@@ -284,10 +284,12 @@ class DBModel(AllFeaturesMixin):
 
     @classmethod
     async def get_by_uids(cls, uids: List[Any]) -> AsyncIterator[Any]:
+
         stmt = (
             select(cls)
                 .where(cls.uid.in_(uids))  # type: ignore
         )
+
         async with async_session_factory() as session:
             stream = await session.stream(stmt.order_by(cls.uid))
             async for row in stream:
@@ -354,7 +356,7 @@ class DBModel(AllFeaturesMixin):
             qs = []
             items = []
 
-        has_additional = len(items) < page_size if page_size else True  # len(qs) > len(items)s
+        has_additional = len(items) == page_size if page_size else True  # len(qs) > len(items)s
         page_info = {
             'start_cursor': cls.encode_cursor(items[0].uid) if items else None,
             'end_cursor': cls.encode_cursor(items[-1].uid) if items else None,

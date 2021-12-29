@@ -2,7 +2,7 @@ import inspect
 import logging
 from typing import Optional, List
 
-import strawberry
+import strawberry  # noqa
 
 from felicity.apps.analysis import schemas
 from felicity.apps.analysis.conf import states
@@ -12,28 +12,13 @@ from felicity.apps.analysis.models import results as result_models
 from felicity.apps.analysis.utils import (
     get_qc_sample_type
 )
-from felicity.apps.patient.models import logger
 from felicity.apps.setup.models import setup as setup_models
-from felicity.gql import auth_from_info, verify_user_auth
+from felicity.gql import auth_from_info, verify_user_auth, OperationError
 from felicity.gql.analysis.types import analysis as a_types
 from felicity.utils import get_passed_args
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
-
-
-@strawberry.input
-class ARSampleInputType:
-    sample_type: int
-    profiles: List[int]
-    analyses: List[int]
-
-
-@strawberry.input
-class ARResultInputType:
-    uid: int
-    result: str
-    reportable: Optional[bool] = True
 
 
 @strawberry.input
@@ -51,22 +36,39 @@ class CreateQCSetData:
 
 
 @strawberry.input
-class SampleRejectInputType:
-    uid: int
-    reasons: List[int]
-    other: Optional[str] = None
+class QCTemplateInputType:
+    name: str
+    description: str
+    departments: Optional[List[int]] = None
+    levels: List[int] = None
+
+
+QCSetResponse = strawberry.union("QCSetResponse",
+                                 (CreateQCSetData, OperationError),  # noqa
+                                 description=""
+                                 )
+
+QCLevelResponse = strawberry.union("QCLevelResponse",
+                                 (a_types.QCLevelType, OperationError),  # noqa
+                                 description=""
+                                 )
+
+QCTemplateResponse = strawberry.union("QCTemplateResponse",
+                                 (a_types.QCTemplateType, OperationError),  # noqa
+                                 description=""
+                                 )
 
 
 @strawberry.mutation
-async def create_QC_set(info, samples: List[QCSetInputType]) -> CreateQCSetData:
-    inspector = inspect.getargvalues(inspect.currentframe())
-    passed_args = get_passed_args(inspector)
+async def create_QC_set(info, samples: List[QCSetInputType]) -> QCSetResponse:
 
     is_authenticated, felicity_user = await auth_from_info(info)
     verify_user_auth(is_authenticated, felicity_user, "Only Authenticated user can create qc-sets")
 
     if not samples or len(samples) == 0:
-        raise Exception("There are No QC Requests to create")
+        return OperationError(
+            error="There are No QC Requests to create"
+        )
 
     qc_sample_type = await get_qc_sample_type()
     qc_samples: List[analysis_models.Sample] = []
@@ -144,7 +146,7 @@ async def create_QC_set(info, samples: List[QCSetInputType]) -> CreateQCSetData:
 
 
 @strawberry.mutation
-async def create_QC_level(info, level: str) -> a_types.QCLevelType:
+async def create_QC_level(info, level: str) -> QCLevelResponse:
     inspector = inspect.getargvalues(inspect.currentframe())
     passed_args = get_passed_args(inspector)
 
@@ -152,11 +154,15 @@ async def create_QC_level(info, level: str) -> a_types.QCLevelType:
     verify_user_auth(is_authenticated, felicity_user, "Only Authenticated user can create qc-levels")
 
     if not level:
-        raise Exception("Level Name is mandatory")
+        return OperationError(
+            error="Level Name is mandatory"
+        )
 
     exists = await qc_models.QCLevel.get(level=level)
     if exists:
-        raise Exception(f"A QCLevel named {level} already exists")
+        return OperationError(
+            error=f"A QCLevel named {level} already exists"
+        )
 
     obj_in = schemas.QCLevelCreate(**passed_args)
     qc_level: qc_models.QCLevel = await qc_models.QCLevel.create(obj_in)
@@ -164,24 +170,20 @@ async def create_QC_level(info, level: str) -> a_types.QCLevelType:
 
 
 @strawberry.mutation
-async def update_QC_level(info, uid: int, level: str) -> a_types.QCLevelType:
-    inspector = inspect.getargvalues(inspect.currentframe())
-    passed_args = get_passed_args(inspector)
-
+async def update_QC_level(info, uid: int, level: str) -> QCLevelResponse:
     is_authenticated, felicity_user = await auth_from_info(info)
     verify_user_auth(is_authenticated, felicity_user, "Only Authenticated user can update qc-levels")
 
     qc_level = await qc_models.QCLevel.get(uid=uid)
     if not qc_level:
-        raise Exception(f"QCLevel with uid {uid} does not exist")
+        return OperationError(
+            error=f"QCLevel with uid {uid} does not exist"
+        )
 
-    qc_data = qc_level.to_dict()
-    for field in qc_data:
-        if field in passed_args:
-            try:
-                setattr(qc_level, field, passed_args[field])
-            except AttributeError as e:
-                logger.warning(e)
+    try:
+        setattr(qc_level, "level", level)
+    except AttributeError as e:
+        logger.warning(e)
 
     qc_in = schemas.QCTemplateUpdate(**qc_level.to_dict())
     qc_level = await qc_level.update(qc_in)
@@ -189,42 +191,40 @@ async def update_QC_level(info, uid: int, level: str) -> a_types.QCLevelType:
 
 
 @strawberry.mutation
-async def create_QC_template(info, name: str, description: str, departments: Optional[List[int]] = None,
-                             levels: List[int] = None) -> a_types.QCTemplateType:
-    inspector = inspect.getargvalues(inspect.currentframe())
-    passed_args = get_passed_args(inspector)
-
+async def create_QC_template(info, payload: QCTemplateInputType) -> QCTemplateResponse:
     is_authenticated, felicity_user = await auth_from_info(info)
     verify_user_auth(is_authenticated, felicity_user, "Only Authenticated user can create qc-templates")
 
-    if not name:
-        raise Exception("Name is mandatory")
+    if not payload.name:
+        return OperationError(
+            error="Name is mandatory"
+        )
 
-    exists = await qc_models.QCTemplate.get(name=name)
+    exists = await qc_models.QCTemplate.get(name=payload.name)
     if exists:
-        raise Exception(f"A QCTemplate named {name} already exists")
+        return OperationError(
+            error=f"A QCTemplate named {payload.name} already exists"
+        )
 
     incoming = {}
-    for k, v in passed_args.items():
+    for k, v in payload.__dict__.items():
         if k not in ['levels', 'departments']:
             incoming[k] = v
 
     obj_in = schemas.QCTemplateCreate(**incoming)
     qc_template: qc_models.QCTemplate = await qc_models.QCTemplate.create(obj_in)
 
-    levels = passed_args.get('levels', None)
     qc_template.qc_levels.clear()
-    if levels:
-        for _uid in levels:
+    if payload.levels:
+        for _uid in payload.levels:
             level = await qc_models.QCLevel.get(uid=_uid)
             if level not in qc_template.qc_levels:
                 qc_template.qc_levels.append(level)
     qc_template = await qc_template.save()
 
-    departments = passed_args.get('departments', None)
     qc_template.departments.clear()
-    if departments:
-        for _uid in departments:
+    if payload.departments:
+        for _uid in payload.departments:
             dept = await setup_models.Department.get(uid=_uid)
             if dept not in qc_template.departments:
                 qc_template.departments.append(dept)
@@ -233,43 +233,40 @@ async def create_QC_template(info, name: str, description: str, departments: Opt
 
 
 @strawberry.mutation
-async def update_QC_template(info, uid: int, name: Optional[str] = None, description: Optional[str] = None,
-                             departments: List[int] = None, levels: List[int] = None) -> a_types.QCTemplateType:
-    inspector = inspect.getargvalues(inspect.currentframe())
-    passed_args = get_passed_args(inspector)
+async def update_QC_template(info, uid: int, payload: QCTemplateInputType) -> QCTemplateResponse:
 
     is_authenticated, felicity_user = await auth_from_info(info)
     verify_user_auth(is_authenticated, felicity_user, "Only Authenticated user can update qc-templates")
 
     qc_template = await qc_models.QCTemplate.get(uid=uid)
     if not qc_template:
-        raise Exception(f"QCTemplate with uid {uid} does not exist")
+        return OperationError(
+            error=f"QCTemplate with uid {uid} does not exist"
+        )
 
     qc_data = qc_template.to_dict()
     for field in qc_data:
-        if field in passed_args:
+        if field in payload.__dict__:
             try:
-                setattr(qc_template, field, passed_args[field])
-            except AttributeError as e:
+                setattr(qc_template, field, payload.__dict__[field])
+            except AttributeError as e:  # noqa
                 # raise Exception(f"{e}")
                 pass
 
     qc_in = schemas.QCTemplateUpdate(**qc_template.to_dict())
     qc_template = await qc_template.update(qc_in)
 
-    levels = passed_args.get('levels', None)
     qc_template.qc_levels.clear()
-    if levels:
-        for _uid in levels:
+    if payload.levels:
+        for _uid in payload.levels:
             level = await qc_models.QCLevel.get(uid=_uid)
             if level not in qc_template.qc_levels:
                 qc_template.qc_levels.append(level)
     qc_template = await qc_template.save()
 
-    departments = passed_args.get('departments', None)
     qc_template.departments.clear()
-    if departments:
-        for _uid in departments:
+    if payload.departments:
+        for _uid in payload.departments:
             dept = await setup_models.Department.get(uid=_uid)
             if dept not in qc_template.departments:
                 qc_template.departments.append(dept)

@@ -1,6 +1,6 @@
 from typing import AsyncGenerator
 
-import strawberry
+import strawberry  # noqa
 import asyncio
 import logging
 

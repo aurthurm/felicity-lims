@@ -1,4 +1,4 @@
-import strawberry
+import strawberry  # noqa
 
 from felicity.gql.setup.query import SetupQuery
 from felicity.gql.audit.query import AuditLogQuery

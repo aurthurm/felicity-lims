@@ -1,5 +1,5 @@
 from typing import List, Optional
-import strawberry
+import strawberry  # noqa
 import sqlalchemy as sa
 
 from felicity.apps.client import models

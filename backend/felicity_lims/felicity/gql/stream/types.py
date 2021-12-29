@@ -1,6 +1,6 @@
 from typing import Optional, List, Union
 from datetime import datetime
-import strawberry
+import strawberry  # noqa
 
 from felicity.apps.analysis.models.analysis import Sample
 from felicity.apps.worksheet.models import WorkSheet

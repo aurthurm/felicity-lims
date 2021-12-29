@@ -1,28 +1,17 @@
-import inspect
 import logging
 from datetime import datetime
 from typing import Optional, List
 
-import strawberry
+import strawberry  # noqa
 
 from felicity.apps.analysis import schemas
 from felicity.apps.analysis.conf import states
 from felicity.apps.analysis.models import results as result_models
-from felicity.apps.patient.models import logger
-from felicity.gql import auth_from_info, verify_user_auth
-from felicity.gql.analysis.types import analysis as a_types
+from felicity.gql import auth_from_info, verify_user_auth, OperationError
 from felicity.gql.analysis.types import results as r_types
-from felicity.utils import get_passed_args
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
-
-
-@strawberry.input
-class ARSampleInputType:
-    sample_type: int
-    profiles: List[int]
-    analyses: List[int]
 
 
 @strawberry.input
@@ -32,45 +21,36 @@ class ARResultInputType:
     reportable: Optional[bool] = True
 
 
-@strawberry.input
-class QCSetInputType:
-    qcTemplateUid: Optional[int]
-    qcLevels: List[int]
-    analysisProfiles: List[int]
-    analysisServices: List[int]
-
-
 @strawberry.type
-class CreateQCSetData:
-    samples: List[a_types.SampleType]
-    qc_sets: List[a_types.QCSetType]
+class ResultListingType:
+    results: List[r_types.AnalysisResultType]
 
 
-@strawberry.input
-class SampleRejectInputType:
-    uid: int
-    reasons: List[int]
-    other: Optional[str] = None
+AnalysisResultResponse = strawberry.union("AnalysisResultResponse",
+                                          (ResultListingType, OperationError),  # noqa
+                                          description="Union of possible outcomes when actioning samples"
+                                          )
 
 
 @strawberry.mutation
-async def submit_analysis_results(self, info, analysis_results: List[ARResultInputType]) -> List[r_types.AnalysisResultType]:
-    inspector = inspect.getargvalues(inspect.currentframe())
-    passed_args = get_passed_args(inspector)
-
+async def submit_analysis_results(info, analysis_results: List[ARResultInputType]) -> AnalysisResultResponse:
     is_authenticated, felicity_user = await auth_from_info(info)
     verify_user_auth(is_authenticated, felicity_user, "Only Authenticated user can submit analysis results")
 
     return_results = []
 
     if len(analysis_results) == 0:
-        raise Exception(f"No Results to update are provided!")
+        return OperationError(
+            error=f"No Results to update are provided!"
+        )
 
     for _ar in analysis_results:
         uid = _ar.uid
         a_result: result_models.AnalysisResult = await result_models.AnalysisResult.get(uid=uid)
         if not a_result:
-            raise Exception(f"AnalysisResult with uid {uid} not found")
+            return OperationError(
+                error=f"AnalysisResult with uid {uid} not found"
+            )
 
         # only submit results in pending state
         if a_result.status not in [states.result.PENDING]:
@@ -99,7 +79,7 @@ async def submit_analysis_results(self, info, analysis_results: List[ARResultInp
             # set updated_by
             try:
                 setattr(a_result, 'updated_by_uid', felicity_user.uid)
-            except AttributeError as e:
+            except AttributeError:
                 pass
 
         a_result_in = schemas.AnalysisResultUpdate(**a_result.to_dict())
@@ -114,26 +94,27 @@ async def submit_analysis_results(self, info, analysis_results: List[ARResultInp
             await a_result.worksheet.submit(submitter=felicity_user)
 
         return_results.append(a_result)
-    return return_results
+    return ResultListingType(return_results)
 
 
 @strawberry.mutation
-async def verify_analysis_results(self, info, analyses: List[int]) -> List[r_types.AnalysisResultType]:
-    inspector = inspect.getargvalues(inspect.currentframe())
-    passed_args = get_passed_args(inspector)
-
+async def verify_analysis_results(info, analyses: List[int]) -> AnalysisResultResponse:
     is_authenticated, felicity_user = await auth_from_info(info)
     verify_user_auth(is_authenticated, felicity_user, "Only Authenticated user can verify analysis results")
 
     return_results = []
 
     if len(analyses) == 0:
-        raise Exception(f"No analyses to verify are provided!")
+        return OperationError(
+            error=f"No analyses to verify are provided!"
+        )
 
     for _ar_uid in analyses:
         a_result: result_models.AnalysisResult = await result_models.AnalysisResult.get(uid=_ar_uid)
         if not a_result:
-            raise Exception(f"AnalysisResult with uid {_ar_uid} not found")
+            return OperationError(
+                error=f"AnalysisResult with uid {_ar_uid} not found"
+            )
 
         # No Empty Results
         status = getattr(a_result, 'status', None)
@@ -156,26 +137,27 @@ async def verify_analysis_results(self, info, analyses: List[int]) -> List[r_typ
         if a_result.worksheet_uid:
             await a_result.worksheet.verify(verified_by=felicity_user)
 
-    return return_results
+    return ResultListingType(return_results)
 
 
 @strawberry.mutation
-async def retract_analysis_results(self, info, analyses: List[int]) -> List[r_types.AnalysisResultType]:
-    inspector = inspect.getargvalues(inspect.currentframe())
-    passed_args = get_passed_args(inspector)
-
+async def retract_analysis_results(info, analyses: List[int]) -> AnalysisResultResponse:
     is_authenticated, felicity_user = await auth_from_info(info)
     verify_user_auth(is_authenticated, felicity_user, "Only Authenticated user can retract analysis results")
 
     return_results = []
 
     if len(analyses) == 0:
-        raise Exception(f"No analyses to retract are provided!")
+        return OperationError(
+            error=f"No analyses to retract are provided!"
+        )
 
     for _ar_uid in analyses:
         a_result: result_models.AnalysisResult = await result_models.AnalysisResult.get(uid=_ar_uid)
         if not a_result:
-            raise Exception(f"AnalysisResult with uid {_ar_uid} not found")
+            return OperationError(
+                error=f"AnalysisResult with uid {_ar_uid} not found"
+            )
 
         retest, a_result = await a_result.retest_result(retested_by=felicity_user, next_action="retract")
 
@@ -192,13 +174,11 @@ async def retract_analysis_results(self, info, analyses: List[int]) -> List[r_ty
 
         # add original
         return_results.append(a_result)
-    return return_results
+    return ResultListingType(return_results)
 
 
 @strawberry.mutation
-async def retest_analysis_results(self, info, analyses: List[int]) -> List[r_types.AnalysisResultType]:
-    inspector = inspect.getargvalues(inspect.currentframe())
-    passed_args = get_passed_args(inspector)
+async def retest_analysis_results(info, analyses: List[int]) -> AnalysisResultResponse:
 
     is_authenticated, felicity_user = await auth_from_info(info)
     verify_user_auth(is_authenticated, felicity_user, "Only Authenticated user can retest analysis results")
@@ -206,50 +186,53 @@ async def retest_analysis_results(self, info, analyses: List[int]) -> List[r_typ
     return_results = []
 
     if len(analyses) == 0:
-        raise Exception(f"No analyses to Retest are provided!")
+        return OperationError(
+            error=f"No analyses to Retest are provided!"
+        )
 
     for _ar_uid in analyses:
         a_result: result_models.AnalysisResult = await result_models.AnalysisResult.get(uid=_ar_uid)
         if not a_result:
-            raise Exception(f"AnalysisResult with uid {_ar_uid} not found")
+            return OperationError(
+                error=f"AnalysisResult with uid {_ar_uid} not found"
+            )
 
         retest, a_result = await a_result.retest_result(retested_by=felicity_user, next_action="verify")
         if retest:
             return_results.append(retest)
         return_results.append(a_result)
 
-    return return_results
+    return ResultListingType(return_results)
 
 
 @strawberry.mutation
-async def cancel_analysis_results(self, info, analyses: List[int]) -> List[r_types.AnalysisResultType]:
-    inspector = inspect.getargvalues(inspect.currentframe())
-    passed_args = get_passed_args(inspector)
-
+async def cancel_analysis_results(info, analyses: List[int]) -> AnalysisResultResponse:
     is_authenticated, felicity_user = await auth_from_info(info)
     verify_user_auth(is_authenticated, felicity_user, "Only Authenticated user can cancel analysis results")
 
     return_results = []
 
     if len(analyses) == 0:
-        raise Exception(f"No analyses to Retest are provided!")
+        return OperationError(
+            error=f"No analyses to Retest are provided!"
+        )
 
     for _ar_uid in analyses:
         a_result: result_models.AnalysisResult = await result_models.AnalysisResult.get(uid=_ar_uid)
         if not a_result:
-            raise Exception(f"AnalysisResult with uid {_ar_uid} not found")
+            return OperationError(
+                error=f"AnalysisResult with uid {_ar_uid} not found"
+            )
 
         a_result = await a_result.cancel(cancelled_by=felicity_user)
         if a_result:
             return_results.append(a_result)
 
-    return return_results
+    return ResultListingType(return_results)
 
 
 @strawberry.mutation
-async def re_instate_analysis_results(self, info, analyses: List[int]) -> List[r_types.AnalysisResultType]:
-    inspector = inspect.getargvalues(inspect.currentframe())
-    passed_args = get_passed_args(inspector)
+async def re_instate_analysis_results(info, analyses: List[int]) -> AnalysisResultResponse:
 
     is_authenticated, felicity_user = await auth_from_info(info)
     verify_user_auth(is_authenticated, felicity_user, "Only Authenticated user can re instate cancelled analysis "
@@ -258,15 +241,19 @@ async def re_instate_analysis_results(self, info, analyses: List[int]) -> List[r
     return_results = []
 
     if len(analyses) == 0:
-        raise Exception(f"No analyses to Reinstate are provided!")
+        return OperationError(
+            error=f"No analyses to Reinstate are provided!"
+        )
 
     for _ar_uid in analyses:
         a_result: result_models.AnalysisResult = await result_models.AnalysisResult.get(uid=_ar_uid)
         if not a_result:
-            raise Exception(f"AnalysisResult with uid {_ar_uid} not found")
+            return OperationError(
+                error=f"AnalysisResult with uid {_ar_uid} not found"
+            )
 
         a_result = await a_result.re_instate(re_instated_by=felicity_user)
         if a_result:
             return_results.append(a_result)
 
-    return return_results
+    return ResultListingType(return_results)

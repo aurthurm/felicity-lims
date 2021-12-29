@@ -3,18 +3,38 @@ import logging
 import time
 from typing import Optional
 
-import strawberry
+import strawberry  # noqa
 
 from felicity.core.config import settings
 from felicity.core import security
 from felicity.core.security import generate_password_reset_token
 from felicity.apps.user import models as user_models
 from felicity.apps.user import schemas as user_schemas
+from felicity.gql import OperationError, MessageResponse, MessageType
 from felicity.gql.user.types import UserType, AuthenticatedData, UpdatedGroupPerms
 from felicity.gql.user.types import UserAuthType
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
+UserResponse = strawberry.union("UserResponse",
+                                (UserType, OperationError),  # noqa
+                                description=""
+                                )
+
+UserAuthResponse = strawberry.union("UserAuthResponse",
+                                    (UserAuthType, OperationError),  # noqa
+                                    description=""
+                                    )
+AuthenticatedDataResponse = strawberry.union("AuthenticatedDataResponse",
+                                             (AuthenticatedData, OperationError),  # noqa
+                                             description=""
+                                             )
+
+UpdatedGroupPermsResponse = strawberry.union("UpdatedGroupPermsResponse",
+                                             (UpdatedGroupPerms, OperationError),  # noqa
+                                             description=""
+                                             )
 
 
 def simple_task(message: str):
@@ -27,14 +47,18 @@ def simple_task(message: str):
 class UserMutations:
     @strawberry.mutation
     async def create_user(self, info, first_name: str, last_name: str,
-                          email: str, open_reg: Optional[bool] = False) -> UserType:
+                          email: str, open_reg: Optional[bool] = False) -> UserResponse:
         if open_reg and not settings.USERS_OPEN_REGISTRATION:
-            raise Exception("Open user registration is forbidden on this server")
+            return OperationError(
+                error="Open user registration is forbidden on this server"
+            )
 
         if email:
             user_e = await user_models.User.get_by_email(email=email)
             if user_e:
-                raise Exception("A user with this email already exists in the system")
+                return OperationError(
+                    error="A user with this email already exists in the system"
+                )
 
         user_in = {
             "first_name": first_name,
@@ -43,19 +67,21 @@ class UserMutations:
             "is_superuser": False,
         }
         user_in = user_schemas.UserCreate(**user_in)
-        user = await user_models.User.create(user_in=user_in)
+        user: user_models.User = await user_models.User.create(user_in=user_in)
         if user_in.email:
             logger.info("Handle email sending in a standalone service")
-        return user
+        return UserType(**user.marshal_simple())
 
     @strawberry.mutation
     async def update_user(self, info, user_uid: int, first_name: Optional[str], last_name: Optional[str],
                           mobile_phone: Optional[str], email: Optional[str], group_uid: Optional[int],
-                          is_active: Optional[bool]) -> UserType:
+                          is_active: Optional[bool]) -> UserResponse:
 
         user = await user_models.User.get_one(uid=user_uid)
         if not user:
-            raise Exception("Error, failed to fetch user for updating")
+            return OperationError(
+                error="Error, failed to fetch user for updating"
+            )
 
         user_data = user.to_dict().keys()
         if first_name and 'first_name' in user_data:
@@ -79,10 +105,16 @@ class UserMutations:
             user.groups = [group]
             user = await user.save()
 
-        return user
+        return UserType(**user.marshal_simple())
 
     @strawberry.mutation
-    async def create_user_auth(self, info, user_uid: int, username: str, password: str, passwordc: str) -> UserAuthType:
+    async def create_user_auth(self, info,
+                               user_uid: int,
+                               username: str,
+                               password: str,
+                               passwordc: str
+                               ) -> UserAuthResponse:
+
         auth = await user_models.UserAuth.get_by_username(username=username)
         user = await user_models.User.get(uid=user_uid)
 
@@ -92,19 +124,29 @@ class UserMutations:
 
             if user.auth:
                 if user.auth.uid == auth.uid:
-                    raise Exception(f"The two accounts are already linked")
+                    return OperationError(
+                        error=f"The two accounts are already linked"
+                    )
                 else:
-                    raise Exception(f"User is already linked to different auth details")
+                    return OperationError(
+                        error=f"User is already linked to different auth details"
+                    )
             elif linked_user:  # auth.lcuser/auth.ccuser/auth.dcuser
-                raise Exception(f"Auth details are already linked to {linked_user.full_name}")
+                return OperationError(
+                    error=f"Auth details are already linked to {linked_user.full_name}"
+                )
             else:
                 await user.link_auth(auth_uid=auth.uid)
         else:
             if not user:  # if there is no user there is nothing to link
-                raise Exception("An error occured: Try Again")  # Should never happen :)
+                return OperationError(
+                    error="An error occurred: Try Again"
+                )
 
             if password != passwordc:
-                raise Exception("Password do not match, try again")
+                return OperationError(
+                    error="Password do not match, try again"
+                )
 
             auth_in = {
                 "user_name": username,
@@ -113,24 +155,35 @@ class UserMutations:
                 "is_blocked": False
             }
             auth_schema = user_schemas.AuthCreate(**auth_in)
-            auth = await user_models.UserAuth.create(auth_in=auth_schema)
+            auth: user_models.UserAuth = await user_models.UserAuth.create(auth_in=auth_schema)
             await user.link_auth(auth_uid=auth.uid)
             time.sleep(1)
             await user.propagate_user_type()
-        return auth
+        return UserAuthType(**auth.marshal_simple())
 
     @strawberry.mutation
-    async def update_user_auth(self, info, user_uid: int, username: Optional[str],
-                               password: Optional[str], passwordc: Optional[str]) -> UserType:
+    async def update_user_auth(self, info,
+                               user_uid: int,
+                               username: Optional[str],
+                               password: Optional[str],
+                               passwordc: Optional[str]
+                               ) -> UserResponse:
+
         if not username or not password:
-            raise Exception("Provide username and password to update")
+            return OperationError(
+                error="Provide username and password to update"
+            )
 
         user = await user_models.User.get_one(uid=user_uid)
         if not user:
-            raise Exception("Error, failed to fetch user for updating")
+            return OperationError(
+                error="Error, failed to fetch user for updating"
+            )
 
         if not user.auth_uid:
-            raise Exception(f"User {user.full_name} has not authentication account")
+            return OperationError(
+                error=f"User {user.full_name} has not authentication account"
+            )
 
         auth = user.auth
         auth_in = user_schemas.AuthUpdate(**auth.to_dict())
@@ -138,31 +191,41 @@ class UserMutations:
         if username:
             username_taken = await user_models.UserAuth.get_by_username(username=username)
             if username_taken:
-                raise Exception(f"The username {username} is already taken")
+                return OperationError(
+                    error=f"The username {username} is already taken"
+                )
 
             auth_in.user_name = username
 
         if password:
             if len(password) < 5:
-                raise Exception(f"Password must be more than characters long")
+                return OperationError(
+                    error=f"Password must be more than characters long"
+                )
 
             if password != passwordc:
-                raise Exception(f"provided passwords do not match")
+                return OperationError(
+                    error=f"provided passwords do not match"
+                )
 
             auth_in.password = password
 
         await auth.update(auth_in)
-        return user
+        return UserType(**user.marshal_simple())
 
     @strawberry.mutation
-    async def authenticate_user(self, info, username: str, password: str) -> AuthenticatedData:
+    async def authenticate_user(self, info, username: str, password: str) -> AuthenticatedDataResponse:
         auth = await user_models.UserAuth.get_by_username(username=username)
         if not auth:
-            raise Exception("Incorrect username")
+            return OperationError(
+                error="Incorrect username"
+            )
 
         has_access = await auth.has_access(password)
         if not has_access:
-            raise Exception("Failed to log you in")  # Weird it should not reach here
+            return OperationError(
+                error="Failed to log you in"
+            )
 
         access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
         # _user = getattr(auth, auth.user_type)
@@ -171,26 +234,34 @@ class UserMutations:
         return AuthenticatedData(token=access_token[0], token_type="bearer", user=_user)
 
     @strawberry.mutation
-    async def unlink_user_auth(self, info, user_uid: int) -> UserType:
+    async def unlink_user_auth(self, info, user_uid: int) -> UserResponse:
         user = await user_models.User.get(uid=user_uid)
         if not user:
-            raise Exception("User not found")
+            return OperationError(
+                error="User not found"
+            )
 
         if not user.auth_uid:
-            raise Exception(f"User {user.full_name} is not linked to auth access")
+            return OperationError(
+                error=f"User {user.full_name} is not linked to auth access"
+            )
 
         await user.unlink_auth()
-        return user
+        return UserType(**user.marshal_simple())
 
     @strawberry.mutation
-    async def recover_password(self, info, username: str) -> str:
+    async def recover_password(self, info, username: str) -> MessageResponse:
         auth = await user_models.UserAuth.get_by_username(username=username)
         if not auth:
-            raise Exception("Error, failed to fetch user for password reset")
+            return OperationError(
+                error="Error, failed to fetch user for password reset"
+            )
 
         user = await user_models.User.get(auth_uid=auth.uid)
         if not user:
-            raise Exception("You cannot rest password for an un-linked account")
+            return OperationError(
+                error="You cannot rest password for an un-linked account"
+            )
 
         password_reset_token = generate_password_reset_token(email=auth.user.email)
         # send_reset_password_email(
@@ -200,20 +271,26 @@ class UserMutations:
         # TODO: send them a new passwod to their registered phone
         # TODO: SEND USER A DEFAULT PASSWORD TO LOGIN WITH SO THEY CAN CHANGE LATER
         msg = "Password recovery email sent"
-        return msg
+        return MessageType(msg)
 
     @strawberry.mutation
-    async def update_group_permissions(self, info, group_uid: int, permission_uid: int) -> UpdatedGroupPerms:
+    async def update_group_permissions(self, info, group_uid: int, permission_uid: int) -> UpdatedGroupPermsResponse:
         if not group_uid or not permission_uid:
-            raise Exception("Group and Permission are required.")
+            return OperationError(
+                error="Group and Permission are required."
+            )
 
         permission = await user_models.Permission.get(uid=permission_uid)
         if not permission:
-            raise Exception(f"permission with uid {permission_uid} not found")
+            return OperationError(
+                error=f"permission with uid {permission_uid} not found"
+            )
 
         group = await user_models.Group.get(uid=group_uid)
         if not group:
-            raise Exception(f"group with uid {group_uid} not found")
+            return OperationError(
+                error=f"group with uid {group_uid} not found"
+            )
 
         print(dir(group.permissions))
 

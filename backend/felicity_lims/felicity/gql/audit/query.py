@@ -1,5 +1,5 @@
 from typing import List
-import strawberry
+import strawberry  # noqa
 
 from felicity.apps.audit.models import AuditLog
 from felicity.gql.audit.types import AuditLogType

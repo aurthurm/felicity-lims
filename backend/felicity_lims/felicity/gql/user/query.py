@@ -1,6 +1,6 @@
 from typing import List, Optional
 import sqlalchemy as sa
-import strawberry
+import strawberry  # noqa
 
 from felicity.gql.user.types import (
     UserType, UserEdge, UserCursorPage,
