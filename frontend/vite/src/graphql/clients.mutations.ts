@@ -1,8 +1,8 @@
 import gql from 'graphql-tag';
 
 export const ADD_CLIENT = gql`
-  mutation AddClient($name: String!, $code: String!, $districtUid: Int!) {
-    createClient(name: $name, code: $code, districtUid: $districtUid) {
+  mutation AddClient($payload: ClientInputType!) {
+    createClient(payload: $payload) {
       ... on ClientType {
         __typename
         uid
@@ -33,8 +33,8 @@ export const ADD_CLIENT = gql`
 `;
 
 export const EDIT_CLIENT = gql`
-  mutation editClient($uid: Int!, $name: String!, $code: String!, $districtUid: Int!){
-    updateClient(uid: $uid, name: $name, code: $code, districtUid: $districtUid){
+  mutation editClient($uid: Int!, $payload: ClientInputType!){
+    updateClient(uid: $uid, payload: $payload){
       ... on ClientType {
         __typename
         uid
@@ -65,8 +65,8 @@ export const EDIT_CLIENT = gql`
 `;
 
 export const ADD_CLIENT_CONTACT = gql`
-  mutation AddClientContact($clientUid: Int!, $firstName: String!, $email: String, $mobilePhone: String) {
-    createClientContact(clientUid: $clientUid, firstName:$firstName, email: $email, mobilePhone: $mobilePhone, isActive:true){
+  mutation AddClientContact($payload: ClientContactInputType!) {
+    createClientContact(payload: $payload){
       ... on ClientContactType {
         __typename
         uid
@@ -87,8 +87,8 @@ export const ADD_CLIENT_CONTACT = gql`
 `;
 
 export const EDIT_CLIENT_CONTACT = gql`
-  mutation editClientContact($uid: Int!, $firstName: String!, $email: String, $mobilePhone: String){
-    updateClientContact(uid: $uid, firstName: $firstName, email: $email, mobilePhone: $mobilePhone){
+  mutation editClientContact($uid: Int!, $payload: ClientContactInputType!){
+    updateClientContact(uid: $uid, payload: $payload){
       ... on ClientContactType {
         __typename
         uid

@@ -1,9 +1,10 @@
 import gql from 'graphql-tag';
 
+
 // Board
 export const ADD_BOARD = gql`
-  mutation AddBoard($title: String!, $departmentUid: Int, $description: String) {
-    createBoard(title: $title, departmentUid: $departmentUid, description: $description){
+  mutation AddBoard($payload: BoardInputType!) {
+    createBoard(payload: $payload){
       ... on BoardType {
         __typename
         uid
@@ -26,8 +27,8 @@ export const ADD_BOARD = gql`
 `;
 
 export const EDIT_BOARD = gql`
-  mutation editBoard($uid: Int!, $title: String!, $departmentUid: Int, $description: String){
-    updateBoard(uid: $uid, title: $title, departmentUid: $departmentUid, description: $description){
+  mutation editBoard($uid: Int!, $payload: BoardInputType!){
+    updateBoard(uid: $uid, payload: $payload){
       ... on BoardType {
         __typename
         uid
@@ -67,8 +68,8 @@ export const DELETE_BOARD = gql`
 
 // board listing
 export const ADD_BOARD_LISTING = gql`
-  mutation addBoardListing($title: String!, $boardUid: Int!, $description: String) {
-    createBoardListing(title: $title, boardUid: $boardUid, description: $description){
+  mutation addBoardListing($payload: BoardListingInputType!) {
+    createBoardListing(payload: $payload){
       ... on BoardListingType {
         uid
         title
@@ -127,10 +128,8 @@ export const ADD_LISTING_TASK = gql`
 
 
 export const EDIT_LISTING_TASK = gql`
-  mutation editListingTask($uid: Int!, $title: String, $description: String, $listingUid: Int, $dueDate: String, 
-    $assigneeUid: Int, $memberUids: [Int!], $tags: [String!], $complete: Boolean, $archived: Boolean) {
-    updateListingTask(uid: $uid, title: $title, description: $description, listingUid: $listingUid, dueDate: $dueDate, 
-    assigneeUid: $assigneeUid, memberUids: $memberUids, tags: $tags, complete: $complete, archived: $archived){
+  mutation editListingTask($uid: Int!, $payload: ListingTaskInputType!) {
+    updateListingTask(uid: $uid, payload: $payload){
       ... on ListingTaskType{
         __typename
         uid

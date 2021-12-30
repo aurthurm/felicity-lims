@@ -1,8 +1,8 @@
 import gql from 'graphql-tag';
 
 export const ADD_WORKSHEET_TEMPLATE= gql`
-  mutation AddWorkSheetTemplate($name: String!, $sampleTypeUid: Int!, $description: String, $qcTemplateUid: Int, $reserved: [ReservedInputType!]!, $numberOfSamples: Int!, $worksheetType: String, $instrumentUid: Int, $cols:  Int, $rows:  Int, $analyses: [Int!]!, $rowWise: Boolean){
-  createWorksheetTemplate(name: $name, sampleTypeUid: $sampleTypeUid, description: $description, qcTemplateUid: $qcTemplateUid, reserved: $reserved, numberOfSamples: $numberOfSamples, worksheetType: $worksheetType, instrumentUid: $instrumentUid, cols: $cols, rows: $rows, analyses: $analyses, rowWise: $rowWise)
+  mutation AddWorkSheetTemplate($payload: WorksheetTemplateInputType!){
+  createWorksheetTemplate(payload: $payload)
   {
     ... on WorkSheetTemplateType {
       __typename
@@ -53,8 +53,8 @@ export const ADD_WORKSHEET_TEMPLATE= gql`
 }`;
 
 export const EDIT_WORKSHEET_TEMPLATE= gql`
-  mutation EditWorkSheetTemplate($uid:Int!, $name: String!, $sampleTypeUid: Int!, $description: String, $qcTemplateUid: Int, $reserved: [ReservedInputType!]!, $numberOfSamples: Int!, $worksheetType: String, $instrumentUid: Int, $cols:  Int, $rows:  Int, $analyses: [String!]!, $rowWise: Boolean){
-  updateWorksheetTemplate(uid: $uid, name: $name, sampleTypeUid: $sampleTypeUid, description: $description, qcTemplateUid: $qcTemplateUid, reserved: $reserved, numberOfSamples: $numberOfSamples, worksheetType: $worksheetType, instrumentUid: $instrumentUid, cols: $cols, rows: $rows, analyses: $analyses, rowWise: $rowWise)
+  mutation EditWorkSheetTemplate($uid:Int!, $payload: WorksheetTemplateInputType!){
+  updateWorksheetTemplate(uid: $uid, payload: $payload)
   {
     ... on WorkSheetTemplateType {
       __typename

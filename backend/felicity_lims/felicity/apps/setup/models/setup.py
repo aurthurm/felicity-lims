@@ -1,7 +1,7 @@
 from sqlalchemy import Column, Integer, String, ForeignKey
 from sqlalchemy.orm import relationship
 
-from felicity.apps import DBModel, BaseAuditDBModel
+from felicity.apps import BaseAuditDBModel
 from felicity.apps.user.models import User
 from felicity.apps.setup import schemas
 
@@ -10,7 +10,7 @@ class Laboratory(BaseAuditDBModel):
     setup_name = Column(String, default="felicity", nullable=False)  # Do not change this value ever
     lab_name = Column(String, nullable=False)
     lab_manager_uid = Column(Integer, ForeignKey("user.uid"), nullable=True)
-    lab_manager = relationship(User, foreign_keys=[lab_manager_uid], backref="lab_manager")  # TODO refactor backref value to  backref="laboratory"
+    lab_manager = relationship(User, foreign_keys=[lab_manager_uid], backref="lab_manager", lazy="selectin")  # TODO refactor backref value to  backref="laboratory"
     email = Column(String, nullable=True)  # Main Email Adress
     email_cc = Column(String, nullable=True)
     mobile_phone = Column(String, nullable=True)
@@ -70,7 +70,7 @@ class Instrument(BaseAuditDBModel):
     description = Column(String, nullable=True)
     keyword = Column(String, nullable=True)
     supplier_uid = Column(Integer, ForeignKey("supplier.uid"), nullable=True)
-    supplier = relationship(Supplier, backref="instruments")
+    supplier = relationship(Supplier, backref="instruments", lazy="selectin")
 
     @classmethod
     async def create(cls, obj_in: schemas.InstrumentCreate) -> schemas.Instrument:

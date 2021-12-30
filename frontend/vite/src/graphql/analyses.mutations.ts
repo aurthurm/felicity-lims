@@ -2,8 +2,8 @@ import gql from 'graphql-tag';
 
 // SAMPLE_TYPE
 export const ADD_SAMPLE_TYPE= gql`
-  mutation AddSampleType ($name: String!, $abbr: String!, $active: Boolean, $description: String!) {
-    createSampleType(name: $name, abbr: $abbr, active: $active, description: $description){
+  mutation AddSampleType ($payload: SampleTypeInputType!) {
+    createSampleType(payload: $payload){
       ... on SampleTypeTyp {
         __typename
         uid
@@ -24,8 +24,8 @@ export const ADD_SAMPLE_TYPE= gql`
 `;
 
 export const EDIT_SAMPLE_TYPE= gql`
-  mutation EditSampleType ($uid: Int!, $name: String, $abbr: String, $active: Boolean, $description: String) {
-    updateSampleType(uid: $uid, name: $name, abbr: $abbr, active: $active, description: $description){
+  mutation EditSampleType ($uid: Int!, $payload: SampleTypeInputType!) {
+    updateSampleType(uid: $uid, payload: $payload){
       ... on SampleTypeTyp {
         __typename
         uid
@@ -192,8 +192,8 @@ export const REJECT_SAMPLES = gql`
 
 // RESULT_OPTION
 export const ADD_RESULT_OPTION= gql`
-  mutation AddResultOption ($optionKey: Int!, $value: String!, $analysisUid: Int!) {
-    createResultOption(optionKey: $optionKey, value: $value, analysisUid: $analysisUid){
+  mutation AddResultOption ($payload: ResultOptionInputType!) {
+    createResultOption(payload: $payload){
       ... on ResultOptionType {
         __typename
         uid
@@ -213,8 +213,8 @@ export const ADD_RESULT_OPTION= gql`
 `;
 
 export const EDIT_RESULT_OPTION= gql`
-  mutation EditResultOption ($uid: Int!, $optionKey: Int!, $value: String!) {
-    updateResultOption(uid: $uid, optionKey: $optionKey, value: $value){
+  mutation EditResultOption ($uid: Int!, $payload: ResultOptionInputType!) {
+    updateResultOption(uid: $uid, payload: $payload){
       ... on ResultOptionType {
         __typename
         uid
@@ -236,8 +236,8 @@ export const EDIT_RESULT_OPTION= gql`
 
 // ANALYSIS_SERVICE
 export const ADD_ANALYSIS_SERVICE= gql`
-  mutation AddAnalysisService ($name: String!, $keyword: String!, $active: Boolean!, $internalUse: Boolean, $description: String!, $categoryUid: Int, $sortKey: Int!, $sampleTypes: [Int!]) {
-    createAnalysis(name: $name, keyword: $keyword, active: $active, internalUse: $internalUse, description: $description, sortKey: $sortKey, categoryUid: $categoryUid, sampleTypes:$sampleTypes){
+  mutation AddAnalysisService ($payload: AnalysisInputType!) {
+    createAnalysis(payload: $payload){
       ... on AnalysisWithProfiles {
         __typename
         uid
@@ -271,8 +271,8 @@ export const ADD_ANALYSIS_SERVICE= gql`
 `;
 
 export const EDIT_ANALYSIS_SERVICE= gql`
-  mutation EditAnalysisService ($uid: Int!, $name: String!, $keyword: String!, $active: Boolean, $sortKey: Int!, $internalUse: Boolean, $categoryUid: Int, $description: String!, $sampleTypes: [String!]!) {
-    updateAnalysis(uid: $uid, name: $name, keyword: $keyword, active: $active, internalUse: $internalUse, sortKey: $sortKey, categoryUid: $categoryUid, description: $description, sampleTypes:$sampleTypes){
+  mutation EditAnalysisService ($uid: Int!, $payload: AnalysisInputType!) {
+    updateAnalysis(uid: $uid, payload: $payload){
       ... on AnalysisWithProfiles {
         __typename
         uid
@@ -306,8 +306,8 @@ export const EDIT_ANALYSIS_SERVICE= gql`
 
 // ANALYSIS_PROFILES
 export const ADD_ANALYSIS_PROFILE= gql`
-  mutation AddAnalysisProfile ($name: String!, $keyword: String!, $active: Boolean!, $description: String!) {
-    createProfile(name: $name, keyword: $keyword, active: $active, description: $description){
+  mutation AddAnalysisProfile ($payload: ProfileInputType!) {
+    createProfile(payload: $payload){
       ... on ProfileType {
         __typename
         uid
@@ -333,8 +333,8 @@ export const ADD_ANALYSIS_PROFILE= gql`
 `;
 
 export const EDIT_ANALYSIS_PROFILE= gql`
-  mutation EditAnalysisProfile ($uid: Int!, $name: String!, $keyword: String!, $active: Boolean!, $description: String! $services: [Int!]) {
-    updateProfile(uid: $uid, name: $name, keyword: $keyword, active: $active, description: $description, services: $services){
+  mutation EditAnalysisProfile ($uid: Int!, $payload: ProfileInputType!) {
+    updateProfile(uid: $uid, payload: $payload){
       ... on ProfileType {
         __typename
         uid
@@ -361,8 +361,8 @@ export const EDIT_ANALYSIS_PROFILE= gql`
 
 // ANALYSIS_CATEGORIES
 export const ADD_ANALYSIS_CATEGORY= gql`
-  mutation AddAnalysisCategory ($name: String!, $description: String!, $active: Boolean) {
-    createAnalysisCategory(name: $name, description: $description, active: $active){
+  mutation AddAnalysisCategory ($payload: AnalysisCategoryInputType!) {
+    createAnalysisCategory(payload: $payload){
       ... on AnalysisCategoryType {
         __typename
         uid
@@ -381,8 +381,8 @@ export const ADD_ANALYSIS_CATEGORY= gql`
 `;
 
 export const EDIT_ANALYSIS_CATEGORY= gql`
-  mutation EditAnalysisCategory ($uid: Int!, $name: String!, $description: String!, $active: Boolean) {
-    updateAnalysisCategory(uid: $uid, name: $name, description: $description, active: $active){
+  mutation EditAnalysisCategory ($uid: Int!, $payload: AnalysisCategoryInputType!) {
+    updateAnalysisCategory(uid: $uid, payload: $payload){
       ... on AnalysisCategoryType {
         __typename
         uid
@@ -402,8 +402,8 @@ export const EDIT_ANALYSIS_CATEGORY= gql`
 
 // ANALYSIS REQUEST
 export const ADD_ANALYSIS_REQUEST = gql`
-mutation AddAnalysisRequest ($clientRequestId: String!, $clientUid: Int!, $patientUid: Int!, $samples: [ARSampleInputType!]!) {
-  createAnalysisRequest(clientRequestId: $clientRequestId, clientUid: $clientUid, patientUid: $patientUid, samples: $samples) {
+mutation AddAnalysisRequest ($payload: AnalysisRequestInputType!) {
+  createAnalysisRequest(payload: $payload) {
     ... on AnalysisRequestWithSamples{
       __typename
       uid
@@ -730,8 +730,8 @@ export const EDIT_QC_LEVEL = gql`
 
 // ANALYSIS_CATEGORIES
 export const ADD_QC_TEMPLATE = gql`
-  mutation AddQCTemplate ($name: String!, $description: String!, $levels: [Int!]!, $departments: [Int!]) {
-    createQcTemplate(name: $name, description: $description, levels: $levels, departments: $departments ){
+  mutation AddQCTemplate ($payload: QCTemplateInputType!) {
+    createQcTemplate(payload: $payload){
       ... on QCTemplateType {
         __typename
         uid
@@ -757,8 +757,8 @@ export const ADD_QC_TEMPLATE = gql`
 `;
 
 export const EDIT_QC_TEMPLATE = gql`
-  mutation EditQCTemplate ($uid: Int!, $name: String!, $description: String!, $levels: [Int!]!, $departments: [Int!]) {
-    updateQcTemplate(uid: $uid, name: $name, description: $description, levels: $levels, departments: $departments){
+  mutation EditQCTemplate ($uid: Int!, $payload: QCTemplateInputType!) {
+    updateQcTemplate(uid: $uid, payload: $payload){
       ... on QCTemplateType {
         __typename
         uid

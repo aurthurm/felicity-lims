@@ -3,6 +3,7 @@ from typing import Dict, TypeVar, AsyncIterator, List, Any, Optional
 from base64 import b64decode, b64encode
 from pydantic import BaseModel as PydanticBaseModel
 from sqlalchemy.future import select
+from sqlalchemy import update
 from sqlalchemy import Column, Integer
 from sqlalchemy.sql import func
 from sqlalchemy.orm import selectinload, as_declarative, declared_attr
@@ -115,6 +116,7 @@ class DBModel(AllFeaturesMixin):
         async with async_session_factory() as session:
             await session.delete(self)
             await session.flush()
+            await session.commit()
 
     @classmethod
     async def destroy(cls, *ids):
@@ -181,7 +183,7 @@ class DBModel(AllFeaturesMixin):
     @classmethod
     async def create(cls, **kwargs):
         """Returns a new get instance of the class
-        This is so that mutations can work well and prevent asyc IO issues
+        This is so that mutations can work well and prevent async IO issues
         """
         fill = cls().fill(**kwargs)
         created = await cls.save(fill)
@@ -189,9 +191,19 @@ class DBModel(AllFeaturesMixin):
             created = await cls.get(uid=created.uid)
         return created
 
+    @classmethod
+    async def bulk_create(cls, items: List):
+        """
+        @param items a list of Pydantic models
+        """
+        to_save = []
+        for data in items:
+            to_save.append(cls().fill(**cls._import(data)))
+        return await cls.save_all(to_save)
+
     async def update(self, **kwargs):
         """Returns a new get instance of the class
-        This is so that mutations can work well and prevent asyc IO issues
+        This is so that mutations can work well and prevent async IO issues
         """
         fill = self.fill(**kwargs)
         updated = await fill.save()
@@ -200,8 +212,42 @@ class DBModel(AllFeaturesMixin):
         return updated
 
     @classmethod
+    async def bulk_update_where(cls, update_data: List, filters: Dict):
+        """
+        @param update_data a List of dictionary update values.
+        @param filters is a dict of filter values.
+        e.g [{'uid': 34, update_values}, ...]
+        """
+        to_update = [cls._import(data) for data in update_data]
+
+        # stmt = update(cls).where(filters).values(to_save).execution_options(synchronize_session="fetch")
+        query = smart_query(query=update(cls), filters=filters)
+        stmt = query.values(to_update).execution_options(synchronize_session="fetch")
+
+        async with async_session_factory() as session:
+            results = await session.execute(stmt)
+            updated = results.scalars().all()
+
+        return updated
+
+    @classmethod
+    async def bulk_update_with_mappings(cls, mappings: List):
+        """
+        @param mappings a List of dictionary update values with pks.
+        e.g [{'uid': 34, update_values}, ...]
+        """
+        to_update = [cls._import(data) for data in mappings]
+
+        async with async_session_factory() as session:
+            await session.bulk_update_mappings(cls, to_update)
+            await session.flush()
+            await session.commit()
+
+        return to_update
+
+    @classmethod
     async def get_related(cls, related: Optional[list] = None, **kwargs):
-        """Return the the first value in database based on given args.
+        """Return the first value in database based on given args.
         Example:
             User.get(id=5)
         """
@@ -239,6 +285,18 @@ class DBModel(AllFeaturesMixin):
                 await session.rollback()
                 raise
             return self
+
+    @classmethod
+    async def save_all(cls, items):
+        async with async_session_factory() as session:
+            try:
+                session.add_all(items)
+                await session.flush()
+                await session.commit()
+            except Exception as e:
+                await session.rollback()
+                raise
+        return items
 
     @classmethod
     async def get_one(cls, **kwargs):

@@ -1,8 +1,8 @@
 import gql from 'graphql-tag';
 
 export const ADD_MARKDOWN_DOCUMENT = gql`
-  mutation AddMDocument($name: String!, $departmentUid: Int) {
-    createDocument(name: $name, departmentUid: $departmentUid){
+  mutation AddMDocument($payload: MarkdownInputType!) {
+    createDocument(payload: $payload,){
       ... on DocumentType {
         __typename
         uid
@@ -27,8 +27,8 @@ export const ADD_MARKDOWN_DOCUMENT = gql`
 `;
 
 export const EDIT_MARKDOWN_DOCUMENT = gql`
-  mutation editMDocument($uid: Int!, $name: String, $departmentUid: Int, $content: String){
-    updateDocument(uid: $uid, name: $name, departmentUid: $departmentUid, content: $content){
+  mutation editMDocument($uid: Int!, $payload: MarkdownInputType!){
+    updateDocument(uid: $uid, payload: $payload){
       ... on DocumentType {
         __typename
         uid

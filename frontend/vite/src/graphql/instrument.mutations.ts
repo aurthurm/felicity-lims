@@ -2,8 +2,8 @@ import gql from 'graphql-tag';
 
 // INSTRUMENT
 export const ADD_INSTRUMENT= gql`
-  mutation AddInstrument ($name: String!, $keyword: String!, $description: String!, $supplierUid: Int) {
-    createInstrument(name: $name, keyword: $keyword, description: $description, supplierUid:$supplierUid)  {
+  mutation AddInstrument ($payload: InstrumentInputType!) {
+    createInstrument(payload: $payload)  {
       ... on InstrumentType {
         __typename
         uid
@@ -26,8 +26,8 @@ export const ADD_INSTRUMENT= gql`
 `;
 
 export const EDIT_INSTRUMENT= gql`
-  mutation EditInstrument ($uid: Int!, $name: String!, $keyword: String!, $description: String!, $supplierUid: Int) {
-    updateInstrument(uid: $uid, name: $name, keyword: $keyword, description: $description, supplierUid:$supplierUid){
+  mutation EditInstrument ($uid: Int!, $payload: InstrumentInputType!) {
+    updateInstrument(uid: $uid, payload: $payload){
       ... on InstrumentType {
         __typename
         uid
@@ -52,8 +52,8 @@ export const EDIT_INSTRUMENT= gql`
 
 // METHOD
 export const ADD_METHOD= gql`
-  mutation AddMethod ($name: String!, $keyword: String!, $description: String!) {
-    createMethod(name: $name, keyword:  $keyword, description: $description) {
+  mutation AddMethod ($payload: MethodInputType!) {
+    createMethod(payload: $payload) {
       ... on MethodType {
         __typename
         uid
@@ -73,8 +73,8 @@ export const ADD_METHOD= gql`
 `;
 
 export const EDIT_METHOD= gql`
-  mutation EditMethod ($uid: Int!, $name: String!, $keyword: String!, $description: String!) {
-    updateMethod(uid: $uid, name: $name, keyword:  $keyword, description: $description){
+  mutation EditMethod ($uid: Int!, $payload: MethodInputType!) {
+    updateMethod(uid: $uid, payload: $payload){
       ... on MethodType {
         __typename
         uid

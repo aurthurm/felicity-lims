@@ -153,14 +153,24 @@ async def create_analysis_request(info, payload: AnalysisRequestInputType) -> An
 
         # Attach Analysis result for each Analyses
         logger.info(f"Adding {len(_profiles_analyses)} service results to the sample {sample.sample_id}")
+        # for _service in _profiles_analyses:
+        #     a_result_in = {
+        #         'sample_uid': sample.uid,
+        #         'analysis_uid': _service.uid,
+        #         'status': states.result.PENDING
+        #     }
+        #     a_result_schema = schemas.AnalysisResultCreate(**a_result_in)
+        #     await result_models.AnalysisResult.create(a_result_schema)
+
+        a_result_schema = schemas.AnalysisResultCreate(
+            sample_uid=sample.uid,
+            status=states.result.PENDING,
+            analysis_uid=None
+        )
+        result_schemas = []
         for _service in _profiles_analyses:
-            a_result_in = {
-                'sample_uid': sample.uid,
-                'analysis_uid': _service.uid,
-                'status': states.result.PENDING
-            }
-            a_result_schema = schemas.AnalysisResultCreate(**a_result_in)
-            await result_models.AnalysisResult.create(a_result_schema)
+            result_schemas.append(a_result_schema.copy(update={"analysis_uid": _service.uid}))
+        await result_models.AnalysisResult.bulk_create(result_schemas)
 
     await asyncio.sleep(1)
     analysis_request = await analysis_models.AnalysisRequest.get_related(uid=analysis_request.uid, related=["samples"])

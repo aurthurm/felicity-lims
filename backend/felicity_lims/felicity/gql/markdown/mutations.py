@@ -136,11 +136,7 @@ class MarkdownMutations:
         return types.DocumentCategoryType(**category.marshal_simple())
 
     @strawberry.mutation
-    async def update_document_category(self, info, uid: int,
-                                       name: Optional[str] = None) -> DocumentCategoryResponse:  # noqa
-
-        inspector = inspect.getargvalues(inspect.currentframe())
-        passed_args = get_passed_args(inspector)
+    async def update_document_category(self, info, uid: int, name: Optional[str] = None) -> DocumentCategoryResponse:
 
         is_authenticated, felicity_user = await auth_from_info(info)
         verify_user_auth(is_authenticated, felicity_user, "Only Authenticated user can update document categories")
@@ -156,13 +152,10 @@ class MarkdownMutations:
                 error=f"Category with uid {uid} not found. Cannot update obj ..."
             )
 
-        obj_data = category.to_dict()
-        for field in obj_data:
-            if field in passed_args:
-                try:
-                    setattr(category, field, passed_args[field])
-                except Exception as e:
-                    logger.warning(e)
+        try:
+            setattr(category, "name", name)
+        except Exception as e:
+            logger.warning(e)
 
         obj_in = schemas.DocumentCategoryUpdate(**category.to_dict())
         category = await category.update(obj_in)

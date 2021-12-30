@@ -3,6 +3,7 @@ from typing import Optional, List
 
 import strawberry  # noqa
 
+from felicity.apps.core.models import IdSequence
 from felicity.apps.job import (
     models as job_models,
     schemas as job_schemas
@@ -231,20 +232,41 @@ class WorkSheetMutations:
         # ws_schema.qc_levels = ws_temp.qc_levels
 
         # Add a jobs
-        worksheets: List[models.WorkSheet] = []
-        for i in list(range(count)):
-            ws = await models.WorkSheet.create(ws_schema)
-            worksheets.append(ws)
-            job_schema = job_schemas.JobCreate(
-                action=actions.WS_ASSIGN,
-                category=categories.WORKSHEET,
-                priority=priorities.MEDIUM,
-                job_id=ws.uid,
-                status=states.PENDING
-            )
-            job = await job_models.Job.create(job_schema)
-            felicity_resume_workforce()
-            # await tasks.populate_worksheet_plate(job.uid)
+        # worksheets: List[models.WorkSheet] = []
+        # for i in list(range(count)):
+        #     ws = await models.WorkSheet.create(ws_schema)
+        #     worksheets.append(ws)
+        #     job_schema = job_schemas.JobCreate(
+        #         action=actions.WS_ASSIGN,
+        #         category=categories.WORKSHEET,
+        #         priority=priorities.MEDIUM,
+        #         job_id=ws.uid,
+        #         status=states.PENDING
+        #     )
+        #     job = await job_models.Job.create(job_schema)
+        #     felicity_resume_workforce()
+        #     # await tasks.populate_worksheet_plate(job.uid)
+
+        worksheet_schemas = [ws_schema.copy(update={
+            "worksheet_id": (await IdSequence.get_next_number("WS"))[1]
+        }) for i in list(range(count))]
+
+        worksheets = await models.WorkSheet.bulk_create(worksheet_schemas)
+        logger.info(f"Bulk create: {worksheets}")
+
+        job_schema = job_schemas.JobCreate(
+            action=actions.WS_ASSIGN,
+            category=categories.WORKSHEET,
+            priority=priorities.MEDIUM,
+            job_id=None,
+            status=states.PENDING
+        )
+        j_schemas = []
+        for ws in worksheets:
+            j_schemas.append(job_schema.copy(update={"job_id": ws.uid}))
+
+        await job_models.Job.bulk_create(j_schemas)
+        felicity_resume_workforce()
 
         return WorksheetListingType(worksheets)
 

@@ -1,5 +1,4 @@
 import logging
-from _testcapi import awaitType
 
 from sqlalchemy import Column, Integer, String, ForeignKey, Boolean
 from sqlalchemy.orm import relationship

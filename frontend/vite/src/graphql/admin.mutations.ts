@@ -1,8 +1,8 @@
 import gql from 'graphql-tag';
 
 export const ADD_COUNTRY = gql`
-  mutation AddCountry($name: String!, $code: String!) {
-    createCountry(name: $name, code: $code) {
+  mutation AddCountry($payload: CountryInputType!) {
+    createCountry(payload: $payload) {
         ... on CountryType {
           __typename
           uid
@@ -19,8 +19,8 @@ export const ADD_COUNTRY = gql`
 `;
 
 export const UPDATE_COUNTRY = gql`
-  mutation editCountry($uid: Int!, $name: String!, $code: String, $active: Boolean) {
-    updateCountry(uid: $uid, name: $name, code: $code, active: $active) {
+  mutation editCountry($uid: Int!, $payload: CountryInputType!) {
+    updateCountry(uid: $uid, payload: $payload) {
       ... on CountryType {
         __typename
         uid
@@ -37,8 +37,8 @@ export const UPDATE_COUNTRY = gql`
 `;
 
 export const ADD_PROVINCE = gql`
-  mutation AddProvince($name: String!, $code: String!, $countryUid: Int!) {
-    createProvince(name: $name, code: $code, countryUid: $countryUid) {
+  mutation AddProvince($payload: ProvinceType!) {
+    createProvince(payload: $payload) {
       ... on ProvinceType {
         __typename
         uid
@@ -56,8 +56,8 @@ export const ADD_PROVINCE = gql`
 `;
 
 export const UPDATE_PROVINCE = gql`
-  mutation editProvince($uid: Int!, $name: String!, $code: String, $active: Boolean) {
-    updateProvince(uid: $uid, name: $name, code: $code, active: $active) {
+  mutation editProvince($uid: Int!, $payload: ProvinceType!) {
+    updateProvince(uid: $uid, payload: $payload) {
       ... on ProvinceType {
         __typename
         uid
@@ -75,8 +75,8 @@ export const UPDATE_PROVINCE = gql`
 `;
 
 export const ADD_DISTRICT = gql`
-  mutation AddDistrict($name: String!, $code: String, $provinceUid: Int!) {
-    createDistrict(name: $name, code: $code, provinceUid: $provinceUid) {
+  mutation AddDistrict($payload: ProvinceType!) {
+    createDistrict(payload: $payload) {
       ... on DistrictType {
         __typename
         uid
@@ -95,8 +95,8 @@ export const ADD_DISTRICT = gql`
 
 
 export const UPDATE_DISTRICT = gql`
-  mutation editDistrict($uid: Int!, $name: String!, $code: String, $active: Boolean) {
-    updateDistrict(uid: $uid, name: $name, code: $code, active: $active) {
+  mutation editDistrict($uid: Int!, $payload: ProvinceType!) {
+    updateDistrict(uid: $uid, payload: $payload) {
       ... on DistrictType {
         __typename
         uid

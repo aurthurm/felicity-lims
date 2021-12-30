@@ -1,8 +1,8 @@
 import gql from 'graphql-tag';
 
 export const ADD_NOTICE = gql`
-  mutation AddNotice($title: String!, $body: String!, $expiry: String!) {
-    createNotice(title: $title, body: $body, expiry: $expiry){
+  mutation AddNotice($payload: NoticeInputType!) {
+    createNotice(payload: $payload){
       ... on NoticeType {
         __typename
         uid
@@ -29,8 +29,8 @@ export const ADD_NOTICE = gql`
 `;
 
 export const EDIT_NOTICE = gql`
-  mutation editNotice($uid: Int!, $title: String!, $body: String!, $expiry: String!){
-    updateNotice(uid: $uid, title: $title, body: $body, expiry: $expiry){
+  mutation editNotice($uid: Int!, $payload: NoticeInputType!){
+    updateNotice(uid: $uid, payload: $payload){
       ... on NoticeType {
         __typename
         uid
@@ -60,7 +60,7 @@ export const EDIT_NOTICE = gql`
 export const DELETE_NOTICE = gql`
   mutation deleteNotice($uid: Int!){
     deleteNotice(uid: $uid){
-      ... on DeleteType {
+      ... on DeletedItem {
         __typename
         uid
       }
