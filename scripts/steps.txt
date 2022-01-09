@@ -1,0 +1,81 @@
+sudo su -
+
+# Configuration
+export BASE_DOMAIN=felicity.com
+export BASE_NAME=felicity-com
+export ENV_NAME_SHORT=stag
+export ENV_NAME_LONG=staging
+export TRAEFIK_USERNAME=admin
+export TRAEFIK_PASSWORD=admin
+export TRAEFIK_EMAIL=admin@$BASE_DOMAIN
+
+# Clone your repo
+# Assuming it is hosted at gitlab.com:
+ssh-keygen -t rsa -b 2048 -C "aurthurmusendame@gmail.com.com"
+cat ~/.ssh/id_rsa.pub
+# Copy and paste the output of the above into a new key at https://gitlab.com/-/profile/keys
+git clone git@github.com:aurthurm/felicity.git
+cd bar
+nano .env
+# paste env vars
+
+# Configure your DNS, e.g.:
+# CNAME stag ec2-...amazonaws.com.
+# CNAME traefik stag.foo.com
+
+# You should not need to modify anything below this line
+
+# From https://dockerswarm.rocks/
+export USE_HOSTNAME=$ENV_NAME_SHORT.$BASE_DOMAIN
+echo $USE_HOSTNAME > /etc/hostname
+hostname -F /etc/hostname
+apt-get update
+apt-get upgrade -y
+curl -fsSL get.docker.com -o get-docker.sh
+CHANNEL=stable sh get-docker.sh
+rm get-docker.sh
+docker swarm init
+docker node ls
+
+# From https://dockerswarm.rocks/traefik/
+docker network create --driver=overlay traefik-public
+export NODE_ID=$(docker info -f '{{.Swarm.NodeID}}')
+docker node update --label-add traefik-public.traefik-public-certificates=true $NODE_ID
+export EMAIL=$TRAEFIK_EMAIL
+export DOMAIN=traefik.$ENV_NAME_SHORT.$BASE_DOMAIN
+export USERNAME=$TRAEFIK_USERNAME
+export PASSWORD=$TRAEFIK_PASSWORD
+export HASHED_PASSWORD=$(openssl passwd -apr1 $PASSWORD)
+curl -L dockerswarm.rocks/traefik.yml -o traefik.yml
+docker stack deploy -c traefik.yml traefik
+docker stack ps traefik
+
+# From https://docs.docker.com/compose/install/
+curl -L "https://github.com/docker/compose/releases/download/1.27.4/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+chmod +x /usr/local/bin/docker-compose
+ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
+source ~/.profile
+docker-compose --version
+
+# The deploy script requires this library
+apt install -y python3-pip
+pip3 install docker-auto-labels
+
+# Deploy your project
+export TAG=$ENV_NAME_SHORT
+# this isn't mentioned anywhere in the docs, and the script won't complain because DOMAIN was already set to traefik.foo.com
+export DOMAIN=$ENV_NAME_SHORT.$BASE_DOMAIN
+export FRONTEND_ENV=$ENV_NAME_LONG
+bash scripts/build.sh
+export TRAEFIK_TAG=$ENV_NAME_SHORT.$BASE_DOMAIN
+export STACK_NAME=$ENV_NAME_SHORT-$BASE_NAME
+bash scripts/deploy.sh
+
+# If you get an error after the previous line, you may need to modify
+# docker-compose.yml:
+#   - change `version` to 3.6
+#   - remove `depends_on` sections
+# Then re-run the previous line
+
+# Tail logs
+docker service logs traefik_traefik -f

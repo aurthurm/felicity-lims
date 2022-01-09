@@ -1,6 +1,0 @@
-{
-  "dependencies": {
-    "@urql/core": "^2.0.0",
-    "@urql/vue": "^0.3.0"
-  }
-}

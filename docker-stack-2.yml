@@ -1,0 +1,307 @@
+networks:
+  traefik-public:
+    external: true
+    name: traefik-public
+services:
+  backend:
+    build:
+      args:
+        INSTALL_DEV: "false"
+      context: /home/aurthur/Development/Python/felicity/felicity_lims/backend
+      dockerfile: backend.dockerfile
+    depends_on:
+      db:
+        condition: service_started
+    deploy:
+      labels:
+      - traefik.enable=true
+      - traefik.constraint-label-stack=felicity.com
+      - traefik.http.routers.felicity-com-backend-http.rule=PathPrefix(`/api`) ||
+        PathPrefix(`/docs`) || PathPrefix(`/redoc`)
+      - traefik.http.services.felicity-com-backend.loadbalancer.server.port=80
+    environment:
+      BACKEND_CORS_ORIGINS: '["http://localhost", "http://localhost:4200", "http://localhost:3000",
+        "http://localhost:8080", "https://localhost", "https://localhost:4200", "https://localhost:3000",
+        "https://localhost:8080", "http://dev.felicity.com", "https://stag.felicity.com",
+        "https://felicity.com", "http://local.dockertoolbox.tiangolo.com", "http://localhost.tiangolo.com"]'
+      DOCKER_IMAGE_BACKEND: lims_backend
+      DOCKER_IMAGE_CELERYWORKER: lims_celeryworker
+      DOCKER_IMAGE_FRONTEND: lims_frontend
+      DOMAIN: localhost
+      EMAILS_FROM_EMAIL: info@felicity.com
+      FIRST_SUPERUSER: admin@felicity.com
+      FIRST_SUPERUSER_PASSWORD: admin
+      FLOWER_BASIC_AUTH: admin:admin
+      PGADMIN_DEFAULT_EMAIL: admin@felicity.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+      PGADMIN_LISTEN_PORT: '5050'
+      POSTGRES_DB: app
+      POSTGRES_PASSWORD: felicity
+      POSTGRES_SERVER: db
+      POSTGRES_USER: postgres
+      PROJECT_NAME: felicity
+      SECRET_KEY: 88d08895c7ddd073af5a7d284a9f58a55391ff66755814af98b693064c2aec77
+      SENTRY_DSN: ''
+      SERVER_HOST: https://localhost
+      SERVER_NAME: localhost
+      SMTP_HOST: ''
+      SMTP_PASSWORD: ''
+      SMTP_PORT: '587'
+      SMTP_TLS: "True"
+      SMTP_USER: ''
+      STACK_NAME: felicity-com
+      TRAEFIK_PUBLIC_NETWORK: traefik-public
+      TRAEFIK_PUBLIC_TAG: traefik-public
+      TRAEFIK_TAG: felicity.com
+      USERS_OPEN_REGISTRATION: "False"
+    image: lims_backend:latest
+  celeryworker:
+    build:
+      args:
+        INSTALL_DEV: "false"
+      context: /home/aurthur/Development/Python/felicity/felicity_lims/backend
+      dockerfile: celeryworker.dockerfile
+    depends_on:
+      db:
+        condition: service_started
+      queue:
+        condition: service_started
+    environment:
+      BACKEND_CORS_ORIGINS: '["http://localhost", "http://localhost:4200", "http://localhost:3000",
+        "http://localhost:8080", "https://localhost", "https://localhost:4200", "https://localhost:3000",
+        "https://localhost:8080", "http://dev.felicity.com", "https://stag.felicity.com",
+        "https://felicity.com", "http://local.dockertoolbox.tiangolo.com", "http://localhost.tiangolo.com"]'
+      DOCKER_IMAGE_BACKEND: lims_backend
+      DOCKER_IMAGE_CELERYWORKER: lims_celeryworker
+      DOCKER_IMAGE_FRONTEND: lims_frontend
+      DOMAIN: localhost
+      EMAILS_FROM_EMAIL: info@felicity.com
+      FIRST_SUPERUSER: admin@felicity.com
+      FIRST_SUPERUSER_PASSWORD: admin
+      FLOWER_BASIC_AUTH: admin:admin
+      PGADMIN_DEFAULT_EMAIL: admin@felicity.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+      PGADMIN_LISTEN_PORT: '5050'
+      POSTGRES_DB: app
+      POSTGRES_PASSWORD: felicity
+      POSTGRES_SERVER: db
+      POSTGRES_USER: postgres
+      PROJECT_NAME: felicity
+      SECRET_KEY: 88d08895c7ddd073af5a7d284a9f58a55391ff66755814af98b693064c2aec77
+      SENTRY_DSN: ''
+      SERVER_HOST: https://localhost
+      SERVER_NAME: localhost
+      SMTP_HOST: ''
+      SMTP_PASSWORD: ''
+      SMTP_PORT: '587'
+      SMTP_TLS: "True"
+      SMTP_USER: ''
+      STACK_NAME: felicity-com
+      TRAEFIK_PUBLIC_NETWORK: traefik-public
+      TRAEFIK_PUBLIC_TAG: traefik-public
+      TRAEFIK_TAG: felicity.com
+      USERS_OPEN_REGISTRATION: "False"
+    image: lims_celeryworker:latest
+  db:
+    deploy:
+      placement:
+        constraints:
+        - node.labels.felicity-com.app-db-data == true
+    environment:
+      BACKEND_CORS_ORIGINS: '["http://localhost", "http://localhost:4200", "http://localhost:3000",
+        "http://localhost:8080", "https://localhost", "https://localhost:4200", "https://localhost:3000",
+        "https://localhost:8080", "http://dev.felicity.com", "https://stag.felicity.com",
+        "https://felicity.com", "http://local.dockertoolbox.tiangolo.com", "http://localhost.tiangolo.com"]'
+      DOCKER_IMAGE_BACKEND: lims_backend
+      DOCKER_IMAGE_CELERYWORKER: lims_celeryworker
+      DOCKER_IMAGE_FRONTEND: lims_frontend
+      DOMAIN: localhost
+      EMAILS_FROM_EMAIL: info@felicity.com
+      FIRST_SUPERUSER: admin@felicity.com
+      FIRST_SUPERUSER_PASSWORD: admin
+      FLOWER_BASIC_AUTH: admin:admin
+      PGADMIN_DEFAULT_EMAIL: admin@felicity.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+      PGADMIN_LISTEN_PORT: '5050'
+      PGDATA: /var/lib/postgresql/data/pgdata
+      POSTGRES_DB: app
+      POSTGRES_PASSWORD: felicity
+      POSTGRES_SERVER: db
+      POSTGRES_USER: postgres
+      PROJECT_NAME: felicity
+      SECRET_KEY: 88d08895c7ddd073af5a7d284a9f58a55391ff66755814af98b693064c2aec77
+      SENTRY_DSN: ''
+      SMTP_HOST: ''
+      SMTP_PASSWORD: ''
+      SMTP_PORT: '587'
+      SMTP_TLS: "True"
+      SMTP_USER: ''
+      STACK_NAME: felicity-com
+      TRAEFIK_PUBLIC_NETWORK: traefik-public
+      TRAEFIK_PUBLIC_TAG: traefik-public
+      TRAEFIK_TAG: felicity.com
+      USERS_OPEN_REGISTRATION: "False"
+    image: postgres:12
+    volumes:
+    - app-db-data:/var/lib/postgresql/data/pgdata:rw
+  flower:
+    command:
+    - --broker=amqp://guest@queue:5672//
+    deploy:
+      labels:
+      - traefik.enable=true
+      - traefik.docker.network=traefik-public
+      - traefik.constraint-label=traefik-public
+      - traefik.http.routers.felicity-com-flower-http.rule=Host(`flower.localhost`)
+      - traefik.http.routers.felicity-com-flower-http.entrypoints=http
+      - traefik.http.routers.felicity-com-flower-http.middlewares=felicity-com-https-redirect
+      - traefik.http.routers.felicity-com-flower-https.rule=Host(`flower.localhost`)
+      - traefik.http.routers.felicity-com-flower-https.entrypoints=https
+      - traefik.http.routers.felicity-com-flower-https.tls=true
+      - traefik.http.routers.felicity-com-flower-https.tls.certresolver=le
+      - traefik.http.services.felicity-com-flower.loadbalancer.server.port=5555
+    environment:
+      BACKEND_CORS_ORIGINS: '["http://localhost", "http://localhost:4200", "http://localhost:3000",
+        "http://localhost:8080", "https://localhost", "https://localhost:4200", "https://localhost:3000",
+        "https://localhost:8080", "http://dev.felicity.com", "https://stag.felicity.com",
+        "https://felicity.com", "http://local.dockertoolbox.tiangolo.com", "http://localhost.tiangolo.com"]'
+      DOCKER_IMAGE_BACKEND: lims_backend
+      DOCKER_IMAGE_CELERYWORKER: lims_celeryworker
+      DOCKER_IMAGE_FRONTEND: lims_frontend
+      DOMAIN: localhost
+      EMAILS_FROM_EMAIL: info@felicity.com
+      FIRST_SUPERUSER: admin@felicity.com
+      FIRST_SUPERUSER_PASSWORD: admin
+      FLOWER_BASIC_AUTH: admin:admin
+      PGADMIN_DEFAULT_EMAIL: admin@felicity.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+      PGADMIN_LISTEN_PORT: '5050'
+      POSTGRES_DB: app
+      POSTGRES_PASSWORD: felicity
+      POSTGRES_SERVER: db
+      POSTGRES_USER: postgres
+      PROJECT_NAME: felicity
+      SECRET_KEY: 88d08895c7ddd073af5a7d284a9f58a55391ff66755814af98b693064c2aec77
+      SENTRY_DSN: ''
+      SMTP_HOST: ''
+      SMTP_PASSWORD: ''
+      SMTP_PORT: '587'
+      SMTP_TLS: "True"
+      SMTP_USER: ''
+      STACK_NAME: felicity-com
+      TRAEFIK_PUBLIC_NETWORK: traefik-public
+      TRAEFIK_PUBLIC_TAG: traefik-public
+      TRAEFIK_TAG: felicity.com
+      USERS_OPEN_REGISTRATION: "False"
+    image: mher/flower
+    networks:
+      default: null
+      traefik-public: null
+  frontend:
+    build:
+      args:
+        FRONTEND_ENV: production
+      context: /home/aurthur/Development/Python/felicity/felicity_lims/frontend
+    deploy:
+      labels:
+      - traefik.enable=true
+      - traefik.constraint-label-stack=felicity.com
+      - traefik.http.routers.felicity-com-frontend-http.rule=PathPrefix(`/`)
+      - traefik.http.services.felicity-com-frontend.loadbalancer.server.port=80
+    image: lims_frontend:latest
+  pgadmin:
+    depends_on:
+      db:
+        condition: service_started
+    deploy:
+      labels:
+      - traefik.enable=true
+      - traefik.docker.network=traefik-public
+      - traefik.constraint-label=traefik-public
+      - traefik.http.routers.felicity-com-pgadmin-http.rule=Host(`pgadmin.localhost`)
+      - traefik.http.routers.felicity-com-pgadmin-http.entrypoints=http
+      - traefik.http.routers.felicity-com-pgadmin-http.middlewares=felicity-com-https-redirect
+      - traefik.http.routers.felicity-com-pgadmin-https.rule=Host(`pgadmin.localhost`)
+      - traefik.http.routers.felicity-com-pgadmin-https.entrypoints=https
+      - traefik.http.routers.felicity-com-pgadmin-https.tls=true
+      - traefik.http.routers.felicity-com-pgadmin-https.tls.certresolver=le
+      - traefik.http.services.felicity-com-pgadmin.loadbalancer.server.port=5050
+    environment:
+      BACKEND_CORS_ORIGINS: '["http://localhost", "http://localhost:4200", "http://localhost:3000",
+        "http://localhost:8080", "https://localhost", "https://localhost:4200", "https://localhost:3000",
+        "https://localhost:8080", "http://dev.felicity.com", "https://stag.felicity.com",
+        "https://felicity.com", "http://local.dockertoolbox.tiangolo.com", "http://localhost.tiangolo.com"]'
+      DOCKER_IMAGE_BACKEND: lims_backend
+      DOCKER_IMAGE_CELERYWORKER: lims_celeryworker
+      DOCKER_IMAGE_FRONTEND: lims_frontend
+      DOMAIN: localhost
+      EMAILS_FROM_EMAIL: info@felicity.com
+      FIRST_SUPERUSER: admin@felicity.com
+      FIRST_SUPERUSER_PASSWORD: admin
+      FLOWER_BASIC_AUTH: admin:admin
+      PGADMIN_DEFAULT_EMAIL: admin@felicity.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+      PGADMIN_LISTEN_PORT: '5050'
+      POSTGRES_DB: app
+      POSTGRES_PASSWORD: felicity
+      POSTGRES_SERVER: db
+      POSTGRES_USER: postgres
+      PROJECT_NAME: felicity
+      SECRET_KEY: 88d08895c7ddd073af5a7d284a9f58a55391ff66755814af98b693064c2aec77
+      SENTRY_DSN: ''
+      SMTP_HOST: ''
+      SMTP_PASSWORD: ''
+      SMTP_PORT: '587'
+      SMTP_TLS: "True"
+      SMTP_USER: ''
+      STACK_NAME: felicity-com
+      TRAEFIK_PUBLIC_NETWORK: traefik-public
+      TRAEFIK_PUBLIC_TAG: traefik-public
+      TRAEFIK_TAG: felicity.com
+      USERS_OPEN_REGISTRATION: "False"
+    image: dpage/pgadmin4
+    networks:
+      default: null
+      traefik-public: null
+  proxy:
+    command:
+    - --providers.docker
+    - --providers.docker.constraints=Label(`traefik.constraint-label-stack`, `felicity.com`)
+    - --providers.docker.exposedbydefault=false
+    - --providers.docker.swarmmode
+    - --accesslog
+    - --log
+    - --api
+    deploy:
+      labels:
+      - traefik.enable=true
+      - traefik.docker.network=traefik-public
+      - traefik.constraint-label=traefik-public
+      - traefik.http.middlewares.felicity-com-https-redirect.redirectscheme.scheme=https
+      - traefik.http.middlewares.felicity-com-https-redirect.redirectscheme.permanent=true
+      - traefik.http.routers.felicity-com-proxy-http.rule=Host(`localhost`) || Host(`www.localhost`)
+      - traefik.http.routers.felicity-com-proxy-http.entrypoints=http
+      - traefik.http.routers.felicity-com-proxy-https.rule=Host(`localhost`) || Host(`www.localhost`)
+      - traefik.http.routers.felicity-com-proxy-https.entrypoints=https
+      - traefik.http.routers.felicity-com-proxy-https.tls=true
+      - traefik.http.routers.felicity-com-proxy-https.tls.certresolver=le
+      - traefik.http.services.felicity-com-proxy.loadbalancer.server.port=80
+      - traefik.http.middlewares.felicity-com-www-redirect.redirectregex.regex=^https?://(www.)?(localhost)/(.*)
+      - traefik.http.middlewares.felicity-com-www-redirect.redirectregex.replacement=https://localhost/$${3}
+      - traefik.http.routers.felicity-com-proxy-https.middlewares=felicity-com-www-redirect
+      - traefik.http.routers.felicity-com-proxy-http.middlewares=felicity-com-www-redirect,felicity-com-https-redirect
+      placement:
+        constraints:
+        - node.role == manager
+    image: traefik:v2.2
+    networks:
+      default: null
+      traefik-public: null
+    volumes:
+    - /var/run/docker.sock:/var/run/docker.sock:rw
+  queue:
+    image: rabbitmq:3
+version: '3.3'
+volumes:
+  app-db-data: {}
+
