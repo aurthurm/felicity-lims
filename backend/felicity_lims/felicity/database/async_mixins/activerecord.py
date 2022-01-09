@@ -1,7 +1,8 @@
 from sqlalchemy.future import select
-from .utils import classproperty
-from .session import SessionMixin
+
 from .inspection import InspectionMixin
+from .session import SessionMixin
+from .utils import classproperty
 
 
 class ModelNotFoundError(ValueError):
@@ -95,5 +96,6 @@ class ActiveRecordMixin(InspectionMixin, SessionMixin):
         if result:
             return result
         else:
-            raise ModelNotFoundError("{} with uid '{}' was not found"
-                                     .format(cls.__name__, id_))
+            raise ModelNotFoundError(
+                "{} with uid '{}' was not found".format(cls.__name__, id_)
+            )

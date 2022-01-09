@@ -1,9 +1,8 @@
 import json
 import logging
 
-from sqlalchemy import Column, Integer, String, UnicodeText
-
 from felicity.database.base_class import DBModel
+from sqlalchemy import Column, Integer, String, UnicodeText
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -11,14 +10,23 @@ logger = logging.getLogger(__name__)
 
 class AuditLog(DBModel):
     """Model an audit log of user actions"""
+
     user_id = Column(Integer, doc="The ID of the user who made the change")
-    target_type = Column(String(100), nullable=False, doc="The table name of the altered object")
+    target_type = Column(
+        String(100), nullable=False, doc="The table name of the altered object"
+    )
     target_id = Column(Integer, doc="The ID of the altered object")
     action = Column(Integer, doc="Create (1), update (2), or delete (3)")
-    state_before = Column(UnicodeText, doc="Stores a JSON string representation of a dict containing the altered "
-                                           "column names and original values")
-    state_after = Column(UnicodeText, doc="Stores a JSON string representation of a dict containing the altered "
-                                          "column names and new values")
+    state_before = Column(
+        UnicodeText,
+        doc="Stores a JSON string representation of a dict containing the altered "
+        "column names and original values",
+    )
+    state_after = Column(
+        UnicodeText,
+        doc="Stores a JSON string representation of a dict containing the altered "
+        "column names and new values",
+    )
 
     def __init__(self, target_type, target_id, action, state_before, state_after):
 
@@ -32,14 +40,14 @@ class AuditLog(DBModel):
             state_after = json.loads(state_after)
 
         try:
-            updated_by_uid = state_after['updated_by_uid']
+            updated_by_uid = state_after["updated_by_uid"]
         except (KeyError, TypeError):
             updated_by_uid = None
 
         self.user_id = updated_by_uid if updated_by_uid else None
 
     def __repr__(self):
-        return '<AuditLog %r: %r -> %r>' % (self.user_id, self.target_type, self.action)
+        return "<AuditLog %r: %r -> %r>" % (self.user_id, self.target_type, self.action)
 
     def save(self, connection):
 
@@ -62,7 +70,7 @@ class AuditLog(DBModel):
                 del state_before[_key]
 
             if len(state_after.keys()) == 1:
-                if list(state_after.keys())[0] == 'updated_at':
+                if list(state_after.keys())[0] == "updated_at":
                     return
 
         state_after = json.dumps(state_after) if state_after else json.dumps({})
@@ -72,12 +80,12 @@ class AuditLog(DBModel):
             self.__table__.insert(),
             [
                 {
-                    'user_id': self.user_id,
-                    'target_type': self.target_type,
-                    'target_id': self.target_id,
-                    'action': self.action,
-                    'state_before': state_before,
-                    'state_after': state_after,
+                    "user_id": self.user_id,
+                    "target_type": self.target_type,
+                    "target_id": self.target_id,
+                    "action": self.action,
+                    "state_before": state_before,
+                    "state_after": state_after,
                 }
-            ]
+            ],
         )

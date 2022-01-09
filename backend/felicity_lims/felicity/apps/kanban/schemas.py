@@ -1,7 +1,5 @@
-from typing import Optional, List
 from datetime import datetime
-
-from pydantic import BaseModel
+from typing import List, Optional
 
 from felicity.apps import BaseAuditModel
 from felicity.apps.setup.schemas import Department

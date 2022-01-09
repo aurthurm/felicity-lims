@@ -11,8 +11,9 @@ from felicity.apps.analysis.models import (
 )
 from felicity.apps.client import models as ct_models
 from felicity.apps.patient import models as pt_models
-from felicity.gql import OperationError, auth_from_info, verify_user_auth
-from felicity.gql.analysis.types import analysis as a_types, results as r_types
+from felicity.api.gql import OperationError, auth_from_info, verify_user_auth
+from felicity.api.gql.analysis.types import results as r_types
+from felicity.api.gql.analysis.types import analysis as a_types
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -67,6 +68,8 @@ SampleActionResponse = strawberry.union(
 class AnalysisRequestInputType:
     patient_uid: int
     client_uid: int
+    clientContactUid: int
+    clinicalData: Optional[str] = ""
     samples: List[ARSampleInputType] = None
     client_request_id: Optional[str] = None
     internal_use: Optional[bool] = False

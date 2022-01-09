@@ -1,6 +1,5 @@
 import logging
 from typing import Optional
-from datetime import datetime
 import strawberry  # noqa
 from felicity.apps.user.models import User, UserAuth
 

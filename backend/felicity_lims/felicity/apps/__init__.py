@@ -5,7 +5,7 @@ from pydantic import BaseModel
 from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy import Column, Integer, ForeignKey, DateTime, func
 from sqlalchemy.orm import relationship
-from felicity.apps.core.hooks import EventHookMixin
+from felicity.apps.common.hooks import EventHookMixin
 from felicity.database.base_class import DBModel
 from felicity.apps.user.schemas import User as UserSchema
 from felicity.apps.audit.mixin import AuditableMixin
@@ -18,11 +18,11 @@ class TrailMixin(object):
 
     @declared_attr
     def created_by_uid(self):
-        return Column(Integer, ForeignKey('user.uid'), nullable=True)
+        return Column(Integer, ForeignKey("user.uid"), nullable=True)
 
     @declared_attr
     def created_by(self):
-        return relationship("User", foreign_keys=[self.created_by_uid], lazy='selectin')
+        return relationship("User", foreign_keys=[self.created_by_uid], lazy="selectin")
 
     @declared_attr
     def updated_at(self):
@@ -30,11 +30,11 @@ class TrailMixin(object):
 
     @declared_attr
     def updated_by_uid(self):
-        return Column(Integer, ForeignKey('user.uid'), nullable=True)
+        return Column(Integer, ForeignKey("user.uid"), nullable=True)
 
     @declared_attr
     def updated_by(self):
-        return relationship("User", foreign_keys=[self.updated_by_uid], lazy='selectin')
+        return relationship("User", foreign_keys=[self.updated_by_uid], lazy="selectin")
 
 
 class BaseAuditDBModel(DBModel, TrailMixin):
@@ -45,6 +45,7 @@ class BaseAuditDBModel(DBModel, TrailMixin):
 
 class Auditable(BaseAuditDBModel, AuditableMixin):
     """With Audit Log"""
+
     __abstract__ = True
 
 

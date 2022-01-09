@@ -2,15 +2,12 @@ import asyncio
 import os
 from logging.config import fileConfig
 
-from sqlalchemy import engine_from_config
-from sqlalchemy import pool
-from sqlalchemy.ext.asyncio import AsyncEngine
-from sqlmodel import SQLModel
-
 from alembic import context
+
 #
 from felicity.database.base import DBModel
-from felicity.database.base import *
+from sqlalchemy import engine_from_config, pool
+from sqlalchemy.ext.asyncio import AsyncEngine
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
@@ -82,10 +79,7 @@ async def run_migrations_online():
     configuration["sqlalchemy.url"] = get_async_url()
     connectable = AsyncEngine(
         engine_from_config(
-            configuration,
-            prefix="sqlalchemy.",
-            poolclass=pool.NullPool,
-            future=True,
+            configuration, prefix="sqlalchemy.", poolclass=pool.NullPool, future=True
         )
     )
 

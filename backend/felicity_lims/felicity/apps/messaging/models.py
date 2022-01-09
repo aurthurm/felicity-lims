@@ -1,12 +1,12 @@
 import logging
-from typing import List
 
-from sqlalchemy import Column, String, ForeignKey, Boolean, Table, Integer
-from sqlalchemy.orm import relationship
-from felicity.apps.core import BaseMPTT
-from felicity.apps.user.models import User
-from . import schemas
 from felicity.apps import BaseAuditDBModel, DBModel
+from felicity.apps.common import BaseMPTT
+from felicity.apps.user.models import User
+from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, Table
+from sqlalchemy.orm import relationship
+
+from . import schemas
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -14,33 +14,42 @@ logger = logging.getLogger(__name__)
 """
  Many to Many Link between Users (recipients)  and MessageThread
 """
-message_thread_recipient = Table('message_thread_recipient', DBModel.metadata,
-                                 Column("message_thread_uid", ForeignKey('messagethread.uid'), primary_key=True),
-                                 Column("user_uid", ForeignKey('user.uid'), primary_key=True)
-                                 )
+message_thread_recipient = Table(
+    "message_thread_recipient",
+    DBModel.metadata,
+    Column("message_thread_uid", ForeignKey("messagethread.uid"), primary_key=True),
+    Column("user_uid", ForeignKey("user.uid"), primary_key=True),
+)
 
 """
  Many to Many Link between Users (deletions)  and MessageThread
 """
-message_thread_delete = Table('message_thread_delete', DBModel.metadata,
-                              Column("message_thread_uid", ForeignKey('messagethread.uid'), primary_key=True),
-                              Column("user_uid", ForeignKey('user.uid'), primary_key=True)
-                              )
+message_thread_delete = Table(
+    "message_thread_delete",
+    DBModel.metadata,
+    Column("message_thread_uid", ForeignKey("messagethread.uid"), primary_key=True),
+    Column("user_uid", ForeignKey("user.uid"), primary_key=True),
+)
 
 
 class MessageThread(BaseAuditDBModel):
     """MessageThread"""
+
     broadcast = Column(Boolean, nullable=False)
-    messages = relationship('Message', back_populates="thread", lazy="selectin")
-    recipients = relationship('User', secondary=message_thread_recipient, lazy="selectin")
-    deleted_by = relationship('User', secondary=message_thread_delete, lazy="selectin")
+    messages = relationship("Message", back_populates="thread", lazy="selectin")
+    recipients = relationship(
+        "User", secondary=message_thread_recipient, lazy="selectin"
+    )
+    deleted_by = relationship("User", secondary=message_thread_delete, lazy="selectin")
 
     @classmethod
     async def create(cls, obj_in: schemas.MessageThreadCreate) -> schemas.MessageThread:
         data = cls._import(obj_in)
         return await super().create(**data)
 
-    async def update(self, obj_in: schemas.MessageThreadUpdate) -> schemas.MessageThread:
+    async def update(
+        self, obj_in: schemas.MessageThreadUpdate
+    ) -> schemas.MessageThread:
         data = self._import(obj_in)
         return await super().update(**data)
 
@@ -94,27 +103,32 @@ class MessageThread(BaseAuditDBModel):
 """
  Many to Many Link between Users (views) and Message
 """
-message_view = Table('message_view', DBModel.metadata,
-                     Column("message_uid", ForeignKey('message.uid'), primary_key=True),
-                     Column("user_uid", ForeignKey('user.uid'), primary_key=True)
-                     )
+message_view = Table(
+    "message_view",
+    DBModel.metadata,
+    Column("message_uid", ForeignKey("message.uid"), primary_key=True),
+    Column("user_uid", ForeignKey("user.uid"), primary_key=True),
+)
 
 """
  Many to Many Link between Users (deletions) and Message
 """
-message_delete = Table('message_delete', DBModel.metadata,
-                       Column("message_uid", ForeignKey('message.uid'), primary_key=True),
-                       Column("user_uid", ForeignKey('user.uid'), primary_key=True)
-                       )
+message_delete = Table(
+    "message_delete",
+    DBModel.metadata,
+    Column("message_uid", ForeignKey("message.uid"), primary_key=True),
+    Column("user_uid", ForeignKey("user.uid"), primary_key=True),
+)
 
 
 class Message(BaseAuditDBModel, BaseMPTT):
     """Message"""
-    thread_uid = Column(Integer, ForeignKey('messagethread.uid'), nullable=True)
-    thread = relationship('MessageThread', back_populates="messages", lazy='selectin')
+
+    thread_uid = Column(Integer, ForeignKey("messagethread.uid"), nullable=True)
+    thread = relationship("MessageThread", back_populates="messages", lazy="selectin")
     body = Column(String, nullable=False)
-    viewers = relationship('User', secondary=message_view, lazy="selectin")
-    deleted_by = relationship('User', secondary=message_delete, lazy="selectin")
+    viewers = relationship("User", secondary=message_view, lazy="selectin")
+    deleted_by = relationship("User", secondary=message_delete, lazy="selectin")
 
     @classmethod
     async def create(cls, obj_in: schemas.MessageCreate) -> schemas.Message:

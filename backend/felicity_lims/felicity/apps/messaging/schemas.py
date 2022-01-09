@@ -1,4 +1,4 @@
-from typing import Optional, List
+from typing import List, Optional
 
 from felicity.apps import BaseAuditModel
 from felicity.apps.user.schemas import User

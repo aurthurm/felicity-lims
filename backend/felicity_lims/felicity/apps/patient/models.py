@@ -1,11 +1,11 @@
 import logging
-from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, DateTime
-from sqlalchemy.orm import relationship
 
+from felicity.apps import Auditable, DBModel
 from felicity.apps.client.models import Client
-from felicity.apps.core.models import IdSequence
+from felicity.apps.common.models import IdSequence
 from felicity.apps.patient import schemas
-from felicity.apps import DBModel, Auditable
+from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, String
+from sqlalchemy.orm import relationship
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -15,7 +15,7 @@ class Patient(Auditable, DBModel):
     # Identification
     client_patient_id = Column(String, index=True, unique=True, nullable=False)
     patient_id = Column(String, index=True, unique=True, nullable=True)
-    client_uid = Column(Integer, ForeignKey('client.uid'), nullable=True)
+    client_uid = Column(Integer, ForeignKey("client.uid"), nullable=True)
     client = relationship(Client, backref="patients", lazy="selectin")
     # Details
     first_name = Column(String, nullable=False)
@@ -25,7 +25,7 @@ class Patient(Auditable, DBModel):
     age = Column(Integer, nullable=True)
     date_of_birth = Column(DateTime, nullable=True)
     age_dob_estimated = Column(Boolean(), default=False)
-    # Contact 
+    # Contact
     phone_mobile = Column(String, nullable=True)
     phone_home = Column(String, nullable=True)
     consent_sms = Column(Boolean(), default=False)
@@ -33,14 +33,14 @@ class Patient(Auditable, DBModel):
     # status
     internal_use = Column(Boolean(), default=False)  # e.g Test Patient
     active = Column(Boolean(), default=True)
-    
+
     @property
     def get_gender(self):
         genders = ["Male", "Female", "Missing", "Trans Gender"]
         if not isinstance(self.gender, int) or self.gender > 3 or self.gender < 0:
             return genders[2]
         return genders[self.gender]
-    
+
     @property
     def full_name(self):
         if self.middle_name:
@@ -51,10 +51,9 @@ class Patient(Auditable, DBModel):
     @classmethod
     async def create(cls, obj_in: schemas.PatientCreate) -> schemas.Patient:
         data = cls._import(obj_in)
-        data['patient_id'] = (await IdSequence.get_next_number("P"))[1]
+        data["patient_id"] = (await IdSequence.get_next_number("P"))[1]
         return await super().create(**data)
 
     async def update(self, obj_in: schemas.PatientUpdate) -> schemas.Patient:
         data = self._import(obj_in)
         return await super().update(**data)
-

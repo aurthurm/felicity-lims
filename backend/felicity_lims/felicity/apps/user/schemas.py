@@ -1,11 +1,10 @@
-from typing import Optional, List
+from typing import List, Optional
 
 from pydantic import BaseModel, EmailStr
 
-
-#  
+#
 #  User Schema
-# 
+#
 
 # Shared properties
 class UserBase(BaseModel):
@@ -45,9 +44,9 @@ class UserInDB(UserInDBBase):
     pass
 
 
-#  
+#
 #  Auth Schema
-# 
+#
 
 
 # Shared properties

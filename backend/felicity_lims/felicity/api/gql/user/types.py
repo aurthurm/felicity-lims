@@ -1,7 +1,7 @@
 from typing import List, Optional
 
 import strawberry  # noqa
-from felicity.gql import PageInfo
+from felicity.api.gql import PageInfo
 
 
 @strawberry.type

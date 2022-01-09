@@ -1,11 +1,12 @@
 import logging
-from sqlalchemy import Column, String, ForeignKey, Table, DateTime
-from sqlalchemy.orm import relationship
 
-from felicity.apps.user.models import User, Group
-from . import schemas
 from felicity.apps import BaseAuditDBModel, DBModel
 from felicity.apps.setup.models import Department
+from felicity.apps.user.models import Group, User
+from sqlalchemy import Column, DateTime, ForeignKey, String, Table
+from sqlalchemy.orm import relationship
+
+from . import schemas
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -13,35 +14,44 @@ logger = logging.getLogger(__name__)
 """
  Many to Many Link between Users and Notices
 """
-notice_view = Table('notice_view', DBModel.metadata,
-                    Column("notice_uid", ForeignKey('notice.uid'), primary_key=True),
-                    Column("user_uid", ForeignKey('user.uid'), primary_key=True)
-                    )
+notice_view = Table(
+    "notice_view",
+    DBModel.metadata,
+    Column("notice_uid", ForeignKey("notice.uid"), primary_key=True),
+    Column("user_uid", ForeignKey("user.uid"), primary_key=True),
+)
 
 """
  Many to Many Link between Group and Notices
 """
-group_notice = Table('group_notice', DBModel.metadata,
-                     Column("notice_uid", ForeignKey('notice.uid'), primary_key=True),
-                     Column("group_uid", ForeignKey('group.uid'), primary_key=True)
-                     )
+group_notice = Table(
+    "group_notice",
+    DBModel.metadata,
+    Column("notice_uid", ForeignKey("notice.uid"), primary_key=True),
+    Column("group_uid", ForeignKey("group.uid"), primary_key=True),
+)
 
 """
  Many to Many Link between Department and Notices
 """
-department_notice = Table('department_notice', DBModel.metadata,
-                          Column("notice_uid", ForeignKey('notice.uid'), primary_key=True),
-                          Column("department_uid", ForeignKey('department.uid'), primary_key=True)
-                          )
+department_notice = Table(
+    "department_notice",
+    DBModel.metadata,
+    Column("notice_uid", ForeignKey("notice.uid"), primary_key=True),
+    Column("department_uid", ForeignKey("department.uid"), primary_key=True),
+)
 
 
 class Notice(BaseAuditDBModel):
     """Notice"""
-    departments = relationship('Department', secondary=department_notice, lazy="selectin")
-    groups = relationship('Group', secondary=group_notice, lazy="selectin")
+
+    departments = relationship(
+        "Department", secondary=department_notice, lazy="selectin"
+    )
+    groups = relationship("Group", secondary=group_notice, lazy="selectin")
     title = Column(String, nullable=False)
     body = Column(String, nullable=False)
-    viewers = relationship('User', secondary=notice_view, lazy="selectin")
+    viewers = relationship("User", secondary=notice_view, lazy="selectin")
     expiry = Column(DateTime, nullable=False)
 
     @classmethod

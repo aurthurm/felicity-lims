@@ -1,16 +1,19 @@
-from typing import AsyncGenerator
 from asyncio import current_task
-from sqlalchemy.orm import sessionmaker
-from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine, async_scoped_session
+from typing import AsyncGenerator
+
 from felicity.core.config import settings
+from sqlalchemy.ext.asyncio import (
+    AsyncSession,
+    async_scoped_session,
+    create_async_engine,
+)
+from sqlalchemy.orm import sessionmaker
 
-
-async_engine = create_async_engine(settings.SQLALCHEMY_ASYNC_DATABASE_URI, pool_pre_ping=True, echo=False, future=True)
+async_engine = create_async_engine(
+    settings.SQLALCHEMY_ASYNC_DATABASE_URI, pool_pre_ping=True, echo=False, future=True
+)
 async_session_factory = sessionmaker(
-    bind=async_engine,
-    expire_on_commit=False,
-    autoflush=False,
-    class_=AsyncSession,
+    bind=async_engine, expire_on_commit=False, autoflush=False, class_=AsyncSession
 )
 AsyncSessionScoped = async_scoped_session(async_session_factory, scopefunc=current_task)
 

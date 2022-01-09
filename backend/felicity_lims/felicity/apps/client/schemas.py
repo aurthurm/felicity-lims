@@ -2,10 +2,9 @@ from typing import Optional
 
 from pydantic import BaseModel
 
-
 #
 # Client Schemas
-# 
+#
 
 # Shared properties
 class ClientBase(BaseModel):
@@ -47,6 +46,7 @@ class Client(ClientBaseInDB):
 # Properties stored in DB
 class ClientInDB(ClientBaseInDB):
     pass
+
 
 #
 # Client Contact Schemas

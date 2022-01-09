@@ -2,7 +2,7 @@ from datetime import datetime
 from typing import List, Optional
 
 import strawberry  # noqa
-from felicity.gql.user.types import UserType
+from felicity.api.gql.user.types import UserType
 
 
 @strawberry.type

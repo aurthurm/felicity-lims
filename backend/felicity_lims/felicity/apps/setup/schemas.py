@@ -2,10 +2,9 @@ from typing import Optional
 
 from pydantic import BaseModel, EmailStr
 
-
-#  
-#  Laboratory 
-# 
+#
+#  Laboratory
+#
 
 # Shared properties
 class LaboratoryBase(BaseModel):
@@ -46,8 +45,8 @@ class LaboratoryInDB(LaboratoryInDBBase):
 
 
 #
-#  Department 
-# 
+#  Department
+#
 
 # Shared properties
 class DepartmentBase(BaseModel):
@@ -84,8 +83,8 @@ class DepartmentInDB(DepartmentInDBBase):
 
 
 #
-#  Instrument 
-# 
+#  Instrument
+#
 
 # Shared properties
 class InstrumentBase(BaseModel):
@@ -122,9 +121,9 @@ class InstrumentInDB(InstrumentInDBBase):
     pass
 
 
-#  
-#  Method 
-# 
+#
+#  Method
+#
 
 # Shared properties
 class MethodBase(BaseModel):
@@ -161,8 +160,8 @@ class MethodInDB(MethodInDBBase):
 
 
 #
-#  Supplier 
-# 
+#  Supplier
+#
 
 # Shared properties
 class SupplierBase(BaseModel):
@@ -200,7 +199,7 @@ class SupplierInDB(SupplierInDBBase):
 
 #
 # Country s
-# 
+#
 
 # Shared properties
 class CountryBase(BaseModel):
@@ -238,7 +237,7 @@ class CountryInDB(CountryBaseInDB):
 
 #
 # Province s
-# 
+#
 
 # Shared properties
 class ProvinceBase(BaseModel):
@@ -281,9 +280,9 @@ class ProvinceInDB(ProvinceBaseInDB):
     pass
 
 
-# 
+#
 # District s
-# 
+#
 
 # Shared properties
 class DistrictBase(BaseModel):

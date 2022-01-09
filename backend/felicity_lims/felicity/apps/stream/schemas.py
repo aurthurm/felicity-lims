@@ -1,8 +1,7 @@
-from typing import Optional, List
+from typing import List, Optional
 
 from felicity.apps import BaseAuditModel
-from felicity.apps.setup.schemas import Department
-from felicity.apps.user.schemas import User, Group
+from felicity.apps.user.schemas import User
 
 
 #

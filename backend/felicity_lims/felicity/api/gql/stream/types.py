@@ -4,9 +4,9 @@ from typing import List, Optional, Union
 import strawberry  # noqa
 from felicity.apps.analysis.models.analysis import Sample
 from felicity.apps.worksheet.models import WorkSheet
-from felicity.gql.analysis.types.analysis import SampleType
-from felicity.gql.user.types import UserType
-from felicity.gql.worksheet.types import WorkSheetType
+from felicity.api.gql.analysis.types.analysis import SampleType
+from felicity.api.gql.user.types import UserType
+from felicity.api.gql.worksheet.types import WorkSheetType
 
 
 @strawberry.type

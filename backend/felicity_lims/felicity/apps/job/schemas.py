@@ -2,12 +2,12 @@ from typing import Optional
 
 from pydantic import BaseModel
 
-from .conf import states, categories, priorities
+from .conf import categories, priorities, states
 
 
-# 
+#
 # Job Schemas
-# 
+#
 class JobBase(BaseModel):
     action: Optional[str] = None
     category: Optional[str] = categories.WORKSHEET

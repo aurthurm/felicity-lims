@@ -1,11 +1,12 @@
 import logging
-from sqlalchemy import Column, String, ForeignKey, Table
+
+from felicity.apps import BaseAuditDBModel, DBModel
+from felicity.apps.setup.models import Department
+from felicity.apps.user.models import Group, User
+from sqlalchemy import Column, ForeignKey, String, Table
 from sqlalchemy.orm import relationship
 
-from felicity.apps.user.models import User, Group
-from felicity.apps.setup.models import Department
 from . import schemas
-from felicity.apps import BaseAuditDBModel, DBModel
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -13,34 +14,42 @@ logger = logging.getLogger(__name__)
 """
  Many to Many Link between Users and Notification
 """
-user_notification = Table('user_notification', DBModel.metadata,
-                          Column("notification_uid", ForeignKey('notification.uid'), primary_key=True),
-                          Column("user_uid", ForeignKey('user.uid'), primary_key=True)
-                          )
+user_notification = Table(
+    "user_notification",
+    DBModel.metadata,
+    Column("notification_uid", ForeignKey("notification.uid"), primary_key=True),
+    Column("user_uid", ForeignKey("user.uid"), primary_key=True),
+)
 
 """
  Many to Many Link between Users and Notification
 """
-notification_view = Table('notification_view', DBModel.metadata,
-                          Column("notification_uid", ForeignKey('notification.uid'), primary_key=True),
-                          Column("user_uid", ForeignKey('user.uid'), primary_key=True)
-                          )
+notification_view = Table(
+    "notification_view",
+    DBModel.metadata,
+    Column("notification_uid", ForeignKey("notification.uid"), primary_key=True),
+    Column("user_uid", ForeignKey("user.uid"), primary_key=True),
+)
 
 """
  Many to Many Link between Group and Notification
 """
-group_notification = Table('group_notification', DBModel.metadata,
-                           Column("notification_uid", ForeignKey('notification.uid'), primary_key=True),
-                           Column("group_uid", ForeignKey('group.uid'), primary_key=True)
-                           )
+group_notification = Table(
+    "group_notification",
+    DBModel.metadata,
+    Column("notification_uid", ForeignKey("notification.uid"), primary_key=True),
+    Column("group_uid", ForeignKey("group.uid"), primary_key=True),
+)
 
 """
  Many to Many Link between Department and Notification
 """
-department_notification = Table('department_notification', DBModel.metadata,
-                                Column("notification_uid", ForeignKey('notification.uid'), primary_key=True),
-                                Column("department_uid", ForeignKey('department.uid'), primary_key=True)
-                                )
+department_notification = Table(
+    "department_notification",
+    DBModel.metadata,
+    Column("notification_uid", ForeignKey("notification.uid"), primary_key=True),
+    Column("department_uid", ForeignKey("department.uid"), primary_key=True),
+)
 
 
 class Notification(BaseAuditDBModel):
@@ -53,14 +62,17 @@ class Notification(BaseAuditDBModel):
         2 worksheets have no samples, consider deleting them to avoid cluttering your dashboard
         ...
     """
+
     # target audiences
-    departments = relationship('Department', secondary=department_notification, lazy="selectin")
-    groups = relationship('Group', secondary=group_notification, lazy="selectin")
-    users = relationship('User', secondary=user_notification, lazy="selectin")
+    departments = relationship(
+        "Department", secondary=department_notification, lazy="selectin"
+    )
+    groups = relationship("Group", secondary=group_notification, lazy="selectin")
+    users = relationship("User", secondary=user_notification, lazy="selectin")
     #
     message = Column(String, nullable=False)
     #
-    viewers = relationship('User', secondary=notification_view, lazy="selectin")
+    viewers = relationship("User", secondary=notification_view, lazy="selectin")
 
     @classmethod
     async def create(cls, obj_in: schemas.NotificationCreate) -> schemas.Notification:

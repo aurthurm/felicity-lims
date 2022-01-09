@@ -1,12 +1,12 @@
 import logging
-from typing import Optional, List, Any
+from typing import Any, List, Optional
 
-from sqlalchemy import Column, String, ForeignKey, Table, Integer
+from felicity.apps import BaseAuditDBModel, DBModel
+from felicity.apps.user.models import User
+from sqlalchemy import Column, ForeignKey, Integer, String, Table
 from sqlalchemy.orm import relationship
 
-from felicity.apps.user.models import User
 from . import schemas
-from felicity.apps import BaseAuditDBModel, DBModel
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -14,16 +14,21 @@ logger = logging.getLogger(__name__)
 """
  Many to Many Link between Users and ActivityFeed
 """
-activity_feed_subscription = Table('activity_feed_subscription', DBModel.metadata,
-                                   Column("activity_feed_uid", ForeignKey('activityfeed.uid'), primary_key=True),
-                                   Column("user_uid", ForeignKey('user.uid'), primary_key=True)
-                                   )
+activity_feed_subscription = Table(
+    "activity_feed_subscription",
+    DBModel.metadata,
+    Column("activity_feed_uid", ForeignKey("activityfeed.uid"), primary_key=True),
+    Column("user_uid", ForeignKey("user.uid"), primary_key=True),
+)
 
 
 class ActivityFeed(BaseAuditDBModel):
     """ActivityFeed"""
+
     name = Column(String, nullable=False)
-    subscribers = relationship('User', secondary=activity_feed_subscription, lazy="selectin")
+    subscribers = relationship(
+        "User", secondary=activity_feed_subscription, lazy="selectin"
+    )
 
     @classmethod
     async def create(cls, obj_in: schemas.ActivityFeedCreate) -> schemas.ActivityFeed:
@@ -52,18 +57,22 @@ class ActivityFeed(BaseAuditDBModel):
 """
  Many to Many Link between ActivityStream and ActivityFeed
 """
-activity_stream_feed = Table('activity_stream_feed', DBModel.metadata,
-                             Column("activity_feed_uid", ForeignKey('activityfeed.uid'), primary_key=True),
-                             Column("stream_uid", ForeignKey('activitystream.uid'), primary_key=True)
-                             )
+activity_stream_feed = Table(
+    "activity_stream_feed",
+    DBModel.metadata,
+    Column("activity_feed_uid", ForeignKey("activityfeed.uid"), primary_key=True),
+    Column("stream_uid", ForeignKey("activitystream.uid"), primary_key=True),
+)
 
 """
  Many to Many Link between Users and ActivityStream
 """
-activity_stream_view = Table('activity_stream_view', DBModel.metadata,
-                             Column("activity_stream_uid", ForeignKey('activitystream.uid'), primary_key=True),
-                             Column("user_uid", ForeignKey('user.uid'), primary_key=True)
-                             )
+activity_stream_view = Table(
+    "activity_stream_view",
+    DBModel.metadata,
+    Column("activity_stream_uid", ForeignKey("activitystream.uid"), primary_key=True),
+    Column("user_uid", ForeignKey("user.uid"), primary_key=True),
+)
 
 
 class ActivityStream(BaseAuditDBModel):
@@ -75,23 +84,28 @@ class ActivityStream(BaseAuditDBModel):
     e.g. Aurthur (actor) verified (verb) worksheet ws20-1222 (action object) 20 on felicity lims (target) minutes ago
     ?? maybe target as feed
     """
+
     feeds = relationship(ActivityFeed, secondary=activity_stream_feed, lazy="selectin")
-    actor_uid = Column(Integer, ForeignKey('user.uid'), nullable=True)
-    actor = relationship('User', foreign_keys=[actor_uid], lazy='selectin')
+    actor_uid = Column(Integer, ForeignKey("user.uid"), nullable=True)
+    actor = relationship("User", foreign_keys=[actor_uid], lazy="selectin")
     verb = Column(String, nullable=True)
     action_object_type = Column(String, nullable=True)
     action_object_uid = Column(Integer, nullable=True)
     action_object = Column(String, nullable=True)
     target_uid = Column(Integer, nullable=True)
     target = Column(String, nullable=True)
-    viewers = relationship('User', secondary=activity_stream_view, lazy="selectin")
+    viewers = relationship("User", secondary=activity_stream_view, lazy="selectin")
 
     @classmethod
-    async def create(cls, obj_in: schemas.ActivityStreamCreate) -> schemas.ActivityStream:
+    async def create(
+        cls, obj_in: schemas.ActivityStreamCreate
+    ) -> schemas.ActivityStream:
         data = cls._import(obj_in)
         return await super().create(**data)
 
-    async def update(self, obj_in: schemas.ActivityStreamUpdate) -> schemas.ActivityStream:
+    async def update(
+        self, obj_in: schemas.ActivityStreamUpdate
+    ) -> schemas.ActivityStream:
         data = self._import(obj_in)
         return await super().update(**data)
 
@@ -125,15 +139,22 @@ class ActivityStream(BaseAuditDBModel):
 
     async def not_viewed(self, activity_uid) -> Optional[List[User]]:
         """list of users who have not seen the stream"""
-        pass
 
     @classmethod
-    async def for_viewer(cls, viewer: User, seen=False) -> Optional[List[schemas.ActivityStream]]:
+    async def for_viewer(
+        cls, viewer: User, seen=False
+    ) -> Optional[List[schemas.ActivityStream]]:
         """Streams for user: seen or unseen"""
-        pass
 
     @classmethod
-    async def stream(cls, obj: Any, actor: User, verb: str, object_type: str, feeds: List[ActivityFeed] = None):
+    async def stream(
+        cls,
+        obj: Any,
+        actor: User,
+        verb: str,
+        object_type: str,
+        feeds: List[ActivityFeed] = None,
+    ):
         if feeds is None:
             feeds = []
         s_in = schemas.ActivityStreamCreate(

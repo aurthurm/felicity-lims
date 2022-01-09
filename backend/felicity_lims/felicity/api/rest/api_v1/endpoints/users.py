@@ -2,7 +2,7 @@ from typing import Any, List
 
 from fastapi import APIRouter, Body, Depends, HTTPException
 from fastapi.encoders import jsonable_encoder
-from felicity.api import deps
+from felicity.api.rest import deps
 from felicity.apps.user import crud, models, schemas
 from felicity.core.config import settings
 from felicity.utils.email.email import send_new_account_email

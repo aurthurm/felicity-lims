@@ -1,34 +1,34 @@
 import logging
-from felicity.apps.user import models
-from felicity.apps.user import schemas
+
+from felicity.apps.user import models, schemas
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
 class FGroup:  # (KEYWORD, NAME)
-    ADMINISTRATOR = ('ADMINISTRATOR', "Administrator")
-    LAB_MANAGER = ('LAB_MANAGER', "Laboratory Manager")
-    SCIENTIST = ('SCIENTIST', "Laboratory Scientist")
-    TECHNOLOGIST = ('TECHNOLOGIST', "Laboratory Technologist")
+    ADMINISTRATOR = ("ADMINISTRATOR", "Administrator")
+    LAB_MANAGER = ("LAB_MANAGER", "Laboratory Manager")
+    SCIENTIST = ("SCIENTIST", "Laboratory Scientist")
+    TECHNOLOGIST = ("TECHNOLOGIST", "Laboratory Technologist")
     LAB_HAND = ("LAB_HAND", "Laboratory Hand")
     GUEST = ("GUEST", "Guest")
 
 
 class FObject:
-    PATIENT = 'PATIENT'
-    SAMPLE = 'SAMPLE'
-    ANALYTE = 'ANALYTE'
-    WORKSHEET = 'WORKSHEET'
+    PATIENT = "PATIENT"
+    SAMPLE = "SAMPLE"
+    ANALYTE = "ANALYTE"
+    WORKSHEET = "WORKSHEET"
     BOARD = "BOARD"
     DOCUMENT = "DOCUMENT"
 
 
 class FAction:
-    CREATE = 'CREATE'
-    READ = 'READ'
-    UPDATE = 'UPDATE'
-    DELETE = 'DELETE'
+    CREATE = "CREATE"
+    READ = "READ"
+    UPDATE = "UPDATE"
+    DELETE = "DELETE"
     SUBMIT = "SUBMIT"
     VERIFY = "VERIFY"
     CANCEL = "CANCEL"
@@ -58,11 +58,29 @@ permissions = {
         fo.WORKSHEET: [fg.SCIENTIST[0], fg.TECHNOLOGIST[0]],
     },
     fa.READ: {
-        fo.PATIENT: [fg.ADMINISTRATOR[0], fg.LAB_MANAGER[0], fg.SCIENTIST[0], fg.TECHNOLOGIST[0], fg.LAB_HAND[0],
-                     fg.GUEST[0]],
-        fo.SAMPLE: [fg.ADMINISTRATOR[0], fg.LAB_MANAGER[0], fg.SCIENTIST[0], fg.TECHNOLOGIST[0], fg.LAB_HAND[0],
-                    fg.GUEST[0]],
-        fo.WORKSHEET: [fg.ADMINISTRATOR[0], fg.LAB_MANAGER[0], fg.SCIENTIST[0], fg.TECHNOLOGIST[0], fg.GUEST[0]],
+        fo.PATIENT: [
+            fg.ADMINISTRATOR[0],
+            fg.LAB_MANAGER[0],
+            fg.SCIENTIST[0],
+            fg.TECHNOLOGIST[0],
+            fg.LAB_HAND[0],
+            fg.GUEST[0],
+        ],
+        fo.SAMPLE: [
+            fg.ADMINISTRATOR[0],
+            fg.LAB_MANAGER[0],
+            fg.SCIENTIST[0],
+            fg.TECHNOLOGIST[0],
+            fg.LAB_HAND[0],
+            fg.GUEST[0],
+        ],
+        fo.WORKSHEET: [
+            fg.ADMINISTRATOR[0],
+            fg.LAB_MANAGER[0],
+            fg.SCIENTIST[0],
+            fg.TECHNOLOGIST[0],
+            fg.GUEST[0],
+        ],
     },
     fa.UPDATE: {
         fo.PATIENT: [fg.LAB_HAND[0]],
@@ -77,19 +95,27 @@ permissions = {
         fo.SAMPLE: [fg.SCIENTIST[0], fg.TECHNOLOGIST[0]],
         fo.WORKSHEET: [fg.SCIENTIST[0], fg.TECHNOLOGIST[0]],
     },
-    fa.CANCEL: {
-        fo.SAMPLE: [fg.SCIENTIST[0], fg.TECHNOLOGIST[0], fg.LAB_HAND[0]],
-    },
+    fa.CANCEL: {fo.SAMPLE: [fg.SCIENTIST[0], fg.TECHNOLOGIST[0], fg.LAB_HAND[0]]},
     fa.RETEST: {
         fo.SAMPLE: [fg.SCIENTIST[0], fg.TECHNOLOGIST[0]],
         fo.WORKSHEET: [fg.SCIENTIST[0], fg.TECHNOLOGIST[0]],
     },
-    fa.INVALIDATE: {
-        fo.SAMPLE: [fg.SCIENTIST[0], fg.TECHNOLOGIST[0]],
-    },
+    fa.INVALIDATE: {fo.SAMPLE: [fg.SCIENTIST[0], fg.TECHNOLOGIST[0]]},
     fa.DELETE: {
-        fo.BOARD: [fg.ADMINISTRATOR[0], fg.LAB_MANAGER[0], fg.SCIENTIST[0], fg.TECHNOLOGIST[0], fg.LAB_HAND[0]],
-        fo.DOCUMENT: [fg.ADMINISTRATOR[0], fg.LAB_MANAGER[0], fg.SCIENTIST[0], fg.TECHNOLOGIST[0], fg.LAB_HAND[0]],
+        fo.BOARD: [
+            fg.ADMINISTRATOR[0],
+            fg.LAB_MANAGER[0],
+            fg.SCIENTIST[0],
+            fg.TECHNOLOGIST[0],
+            fg.LAB_HAND[0],
+        ],
+        fo.DOCUMENT: [
+            fg.ADMINISTRATOR[0],
+            fg.LAB_MANAGER[0],
+            fg.SCIENTIST[0],
+            fg.TECHNOLOGIST[0],
+            fg.LAB_HAND[0],
+        ],
     },
 }
 
@@ -114,7 +140,9 @@ async def create_groups() -> None:
 async def create_permissions() -> None:
     logger.info(f"Setting up permissions .....")
     for _perm in get_action_targets():
-        exists = await models.Permission.get(action__exact=_perm[0], target__exact=_perm[1])
+        exists = await models.Permission.get(
+            action__exact=_perm[0], target__exact=_perm[1]
+        )
         if not exists:
             schema = schemas.PermissionCreate(action=_perm[0], target=_perm[1])
             await models.Permission.create(schema)

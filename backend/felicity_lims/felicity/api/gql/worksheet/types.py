@@ -3,17 +3,17 @@ from datetime import datetime
 from typing import Any, List, NewType, Optional
 
 import strawberry  # noqa
-from felicity.gql import PageInfo
-from felicity.gql.analysis.types.analysis import (
+from felicity.api.gql import PageInfo
+from felicity.api.gql.analysis.types.analysis import (
     AnalysisType,
     ProfileType,
     QCLevelType,
     QCTemplateType,
     SampleTypeTyp,
 )
-from felicity.gql.analysis.types.results import AnalysisResultType
-from felicity.gql.setup.types import InstrumentType
-from felicity.gql.user.types import UserType
+from felicity.api.gql.analysis.types.results import AnalysisResultType
+from felicity.api.gql.setup.types import InstrumentType
+from felicity.api.gql.user.types import UserType
 
 JSONScalar = strawberry.scalar(
     NewType("JSONScalar", Any),

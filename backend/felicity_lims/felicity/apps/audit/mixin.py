@@ -1,12 +1,11 @@
+import datetime
 import json
 import logging
-import datetime
+
+from felicity.apps.audit.models import AuditLog
 from sqlalchemy import event, inspect
 from sqlalchemy.orm import class_mapper
 from sqlalchemy.orm.attributes import get_history
-
-from felicity.database.session import async_engine
-from felicity.apps.audit.models import AuditLog
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -35,8 +34,8 @@ class AuditableMixin:
             object_type,
             object_id,
             action,
-            kwargs.get('state_before'),
-            kwargs.get('state_after')
+            kwargs.get("state_before"),
+            kwargs.get("state_after"),
         )
 
         audit.save(connection)
@@ -45,13 +44,13 @@ class AuditableMixin:
     def __declare_last__(cls):
         logger.debug("trigger")
         if ACTION_CREATE in PLEASE_AUDIT:
-            event.listens_for(cls, 'after_insert', cls.audit_insert)
+            event.listens_for(cls, "after_insert", cls.audit_insert)
 
         if ACTION_DELETE in PLEASE_AUDIT:
-            event.listen(cls, 'after_delete', cls.audit_delete)
+            event.listen(cls, "after_delete", cls.audit_delete)
 
         if ACTION_UPDATE in PLEASE_AUDIT:
-            event.listen(cls, 'after_update', cls.audit_update)
+            event.listen(cls, "after_update", cls.audit_update)
 
     @staticmethod
     def audit_insert(mapper, connection, target):
@@ -79,7 +78,7 @@ class AuditableMixin:
                 state_before[attr.key] = get_history(target, attr.key)[2].pop()
                 state_after[attr.key] = getattr(target, attr.key)
             else:
-                if attr.key in ['updated_by_uid', 'created_by_uid']:
+                if attr.key in ["updated_by_uid", "created_by_uid"]:
                     state_after[attr.key] = getattr(target, attr.key)
                     try:
                         state_before[attr.key] = get_history(target, attr.key)[2].pop()
@@ -87,9 +86,14 @@ class AuditableMixin:
                         state_before[attr.key] = getattr(target, attr.key)
 
         if len(state_after.keys()) == 1:
-            if 'updated_at' in list(state_after.keys()):
+            if "updated_at" in list(state_after.keys()):
                 return
 
-        target.create_audit(connection, target.__tablename__, target.uid, ACTION_UPDATE,
-                            state_before=json.dumps(state_before, default=custom_serial),
-                            state_after=json.dumps(state_after, default=custom_serial))
+        target.create_audit(
+            connection,
+            target.__tablename__,
+            target.uid,
+            ACTION_UPDATE,
+            state_before=json.dumps(state_before, default=custom_serial),
+            state_after=json.dumps(state_after, default=custom_serial),
+        )

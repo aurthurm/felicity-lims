@@ -1,5 +1,3 @@
-from sqlalchemy.future import select
-from sqlalchemy.orm import Session, scoped_session, Query
 from .utils import classproperty
 
 
@@ -30,8 +28,9 @@ class SessionMixin:
         if cls._session is not None:
             return cls._session
         else:
-            raise NoSessionError('Cant get session.'
-                                 'Please, call SaActiveRecord.set_session()')
+            raise NoSessionError(
+                "Cant get session." "Please, call SaActiveRecord.set_session()"
+            )
 
     @classmethod
     def set_conn_object(cls, connection):
@@ -42,5 +41,7 @@ class SessionMixin:
         if cls._connection is not None:
             return cls._connection
         else:
-            raise NoConnectionError('Cant get db connection object.'
-                                    'Please, call SaActiveRecord.set_conn_object()')
+            raise NoConnectionError(
+                "Cant get db connection object."
+                "Please, call SaActiveRecord.set_conn_object()"
+            )

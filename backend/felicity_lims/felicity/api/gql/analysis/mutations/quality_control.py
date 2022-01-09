@@ -12,8 +12,8 @@ from felicity.apps.analysis.models import (
 )
 from felicity.apps.analysis.utils import get_qc_sample_type
 from felicity.apps.setup.models import setup as setup_models
-from felicity.gql import OperationError, auth_from_info, verify_user_auth
-from felicity.gql.analysis.types import analysis as a_types
+from felicity.api.gql import OperationError, auth_from_info, verify_user_auth
+from felicity.api.gql.analysis.types import analysis as a_types
 from felicity.utils import get_passed_args
 
 logging.basicConfig(level=logging.INFO)

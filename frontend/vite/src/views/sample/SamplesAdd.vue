@@ -292,7 +292,7 @@
       clientContactUid: request.clientContactUid, 
       samples: request.samples
     }
-    arCreator(payload).then((result) => {
+    arCreator({payload}).then((result) => {
       const data = gqlResponseHandler(result)
       if(data) store.dispatch(SampleActionTypes.ADD_ANALYSIS_REQUEST, data.createAnalysisRequest);
     });

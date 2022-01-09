@@ -1,27 +1,24 @@
+import json
+import logging
 from datetime import datetime
 from typing import Optional
-import logging
 
-from felicity.apps.core.models import IdSequence
-from felicity.core.config import settings
-import json
 from felicity.apps.analysis.models.analysis import (
-    SampleType,
-    AnalysisCategory,
     Analysis,
+    AnalysisCategory,
     Profile,
+    SampleType,
 )
-from felicity.apps.analysis.models.qc import (
-    QCLevel
-)
+from felicity.apps.analysis.models.qc import QCLevel
 from felicity.apps.analysis.schemas import (
-    SampleTypeCreate,
-    QCLevelCreate,
     AnalysisCategoryCreate,
     AnalysisCreate,
-    AnalysisUpdate,
     ProfileCreate,
+    QCLevelCreate,
+    SampleTypeCreate,
 )
+from felicity.apps.common.models import IdSequence
+from felicity.core.config import settings
 from felicity.database.session import async_session_factory
 
 logging.basicConfig(level=logging.INFO)
@@ -31,24 +28,21 @@ logger = logging.getLogger(__name__)
 async def create_categories():
     logger.info(f"Setting up analyses categories .....")
 
-    with open(settings.BASE_DIR + '/init/setup/data/analyses.json', 'r') as json_file:
+    with open(settings.BASE_DIR + "/init/setup/data/analyses.json", "r") as json_file:
         data = json.load(json_file)
     categories = data.get("categories", [])
 
     for _cat in categories:
         category = await AnalysisCategory.get(name=_cat)
         if not category:
-            cat_in = AnalysisCategoryCreate(
-                name=_cat,
-                description=_cat
-            )
+            cat_in = AnalysisCategoryCreate(name=_cat, description=_cat)
             await AnalysisCategory.create(cat_in)
 
 
 async def create_qc_levels() -> None:
     logger.info(f"Setting QC Levels .....")
 
-    with open(settings.BASE_DIR + '/init/setup/data/analyses.json', 'r') as json_file:
+    with open(settings.BASE_DIR + "/init/setup/data/analyses.json", "r") as json_file:
         data = json.load(json_file)
     qc_levels = data.get("qc_levels", [])
 
@@ -62,7 +56,7 @@ async def create_qc_levels() -> None:
 async def init_id_sequence() -> None:
     logger.info(f"Setting up id sequence .....")
 
-    with open(settings.BASE_DIR + '/init/setup/data/analyses.json', 'r') as json_file:
+    with open(settings.BASE_DIR + "/init/setup/data/analyses.json", "r") as json_file:
         data = json.load(json_file)
 
     sample_types = data.get("sample_types", [])
@@ -86,7 +80,7 @@ async def init_id_sequence() -> None:
 async def create_sample_types() -> None:
     logger.info(f"Setting up sample types .....")
 
-    with open(settings.BASE_DIR + '/init/setup/data/analyses.json', 'r') as json_file:
+    with open(settings.BASE_DIR + "/init/setup/data/analyses.json", "r") as json_file:
         data = json.load(json_file)
     sample_types = data.get("sample_types", [])
 
@@ -101,7 +95,7 @@ async def create_sample_types() -> None:
                 name=st_name,
                 description=st_description,
                 abbr=st_abbr.upper(),
-                active=bool(st_active)
+                active=bool(st_active),
             )
             await SampleType.create(st_in)
 
@@ -109,20 +103,20 @@ async def create_sample_types() -> None:
 async def create_analyses_services_and_profiles() -> None:
     logger.info(f"Setting up analysis services and profiles .....")
 
-    with open(settings.BASE_DIR + '/init/setup/data/analyses.json', 'r') as json_file:
+    with open(settings.BASE_DIR + "/init/setup/data/analyses.json", "r") as json_file:
         data = json.load(json_file)
 
     analyses = data.get("analyses", [])
 
     for _anal in analyses:
-        analyte: Optional[Analysis] = await Analysis.get(name=_anal.get('name'))
+        analyte: Optional[Analysis] = await Analysis.get(name=_anal.get("name"))
         if not analyte:
             an_in = AnalysisCreate(
-                name=_anal.get('name'),
-                description=_anal.get('description'),
-                keyword=_anal.get('keyword'),
-                sort_key=_anal.get('sort_key'),
-                active=bool(_anal.get('active'))
+                name=_anal.get("name"),
+                description=_anal.get("description"),
+                keyword=_anal.get("keyword"),
+                sort_key=_anal.get("sort_key"),
+                active=bool(_anal.get("active")),
             )
             await Analysis.create(an_in)
 
@@ -132,8 +126,7 @@ async def create_analyses_services_and_profiles() -> None:
         a_profile: Optional[Profile] = await Profile.get(name=_prf.get("name"))
         if not a_profile:
             prof_in = ProfileCreate(
-                name=_prf.get("name"),
-                description=_prf.get("description"),
+                name=_prf.get("name"), description=_prf.get("description")
             )
             a_profile = await Profile.create(prof_in)
 

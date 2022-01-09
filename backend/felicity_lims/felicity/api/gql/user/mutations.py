@@ -8,8 +8,8 @@ from felicity.apps.user import models as user_models, schemas as user_schemas
 from felicity.core import security
 from felicity.core.config import settings
 from felicity.core.security import generate_password_reset_token
-from felicity.gql import MessageResponse, MessageType, OperationError
-from felicity.gql.user.types import (
+from felicity.api.gql import MessageResponse, MessageType, OperationError
+from felicity.api.gql.user.types import (
     AuthenticatedData,
     UpdatedGroupPerms,
     UserAuthType,

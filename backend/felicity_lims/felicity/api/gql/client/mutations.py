@@ -3,8 +3,8 @@ from typing import Dict, Optional
 
 import strawberry  # noqa
 from felicity.apps.client import models, schemas
-from felicity.gql import OperationError, auth_from_info, verify_user_auth
-from felicity.gql.client.types import ClientContactType, ClientType
+from felicity.api.gql import OperationError, auth_from_info, verify_user_auth
+from felicity.api.gql.client.types import ClientContactType, ClientType
 from strawberry.types import Info  # noqa
 
 logging.basicConfig(level=logging.INFO)

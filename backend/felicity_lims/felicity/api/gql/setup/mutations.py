@@ -3,8 +3,8 @@ from typing import Dict, Optional
 
 import strawberry  # noqa
 from felicity.apps.setup import models, schemas
-from felicity.gql import OperationError
-from felicity.gql.setup.types import (
+from felicity.api.gql import OperationError
+from felicity.api.gql.setup.types import (
     CountryType,
     DepartmentType,
     DistrictType,
@@ -19,7 +19,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 LaboratoryResponse = strawberry.union(
-    "PatientResponse", (LaboratoryType, OperationError), description=""  # noqa
+    "LaboratoryResponse", (LaboratoryType, OperationError), description=""  # noqa
 )
 
 InstrumentResponse = strawberry.union(

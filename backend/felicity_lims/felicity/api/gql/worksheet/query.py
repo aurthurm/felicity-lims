@@ -4,8 +4,8 @@ from typing import List, Optional
 import sqlalchemy as sa
 import strawberry  # noqa
 from felicity.apps.worksheet import models as ws_models
-from felicity.gql import PageInfo
-from felicity.gql.worksheet.types import (
+from felicity.api.gql import PageInfo
+from felicity.api.gql.worksheet.types import (
     WorkSheetCursorPage,
     WorkSheetEdge,
     WorkSheetTemplateType,

@@ -1,11 +1,10 @@
 import logging
 
-from sqlalchemy import Column, ForeignKey, Integer, String, Table
-from sqlalchemy.orm import relationship
-
+from felicity.apps import BaseAuditDBModel, DBModel
 from felicity.apps.analysis import schemas
 from felicity.apps.setup.models.setup import Department
-from felicity.apps import BaseAuditDBModel, DBModel
+from sqlalchemy import Column, ForeignKey, String, Table
+from sqlalchemy.orm import relationship
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -15,9 +14,10 @@ class QCSet(BaseAuditDBModel):
     """A Set/Group of QC Samples that are run together.
      - e.g a Viral Load Rack the QCLevels are a set i.e Negative Control, Low Pos Control, High Pos Control
     """
+
     name = Column(String, nullable=False)
     note = Column(String, nullable=True)
-    samples = relationship("Sample", back_populates='qc_set', lazy="selectin")
+    samples = relationship("Sample", back_populates="qc_set", lazy="selectin")
 
     @classmethod
     async def create(cls, obj_in: schemas.QCSetCreate) -> schemas.QCSet:
@@ -37,6 +37,7 @@ class QCLevel(BaseAuditDBModel):
     - Low Positive Control
     - High Positive Control
     """
+
     level = Column(String, nullable=False)
 
     @classmethod
@@ -52,18 +53,22 @@ class QCLevel(BaseAuditDBModel):
 """
 Many to Many Link between QCTemplate and Department
 """
-qc_template_department = Table('qc_template_department', DBModel.metadata,
-                               Column("department_uid", ForeignKey('department.uid'), primary_key=True),
-                               Column("qc_template_uid", ForeignKey('qctemplate.uid'), primary_key=True)
-                               )
+qc_template_department = Table(
+    "qc_template_department",
+    DBModel.metadata,
+    Column("department_uid", ForeignKey("department.uid"), primary_key=True),
+    Column("qc_template_uid", ForeignKey("qctemplate.uid"), primary_key=True),
+)
 
 """
 Many to Many Link between QCTemplate and  QCLevel
 """
-qc_template_qc_level = Table('qc_template_qc_level', DBModel.metadata,
-                             Column("qc_level_uid", ForeignKey('qclevel.uid'), primary_key=True),
-                             Column("qc_template_uid", ForeignKey('qctemplate.uid'), primary_key=True)
-                             )
+qc_template_qc_level = Table(
+    "qc_template_qc_level",
+    DBModel.metadata,
+    Column("qc_level_uid", ForeignKey("qclevel.uid"), primary_key=True),
+    Column("qc_template_uid", ForeignKey("qctemplate.uid"), primary_key=True),
+)
 
 
 class QCTemplate(BaseAuditDBModel):
@@ -77,10 +82,18 @@ class QCTemplate(BaseAuditDBModel):
         - Negative Control
         - Positive COntrol
     """
+
     name = Column(String, nullable=False)
     description = Column(String, nullable=True)
-    departments = relationship(Department, secondary=qc_template_department, backref="qc_templates", lazy="selectin")
-    qc_levels = relationship(QCLevel, secondary=qc_template_qc_level, backref="qc_templates", lazy="selectin")
+    departments = relationship(
+        Department,
+        secondary=qc_template_department,
+        backref="qc_templates",
+        lazy="selectin",
+    )
+    qc_levels = relationship(
+        QCLevel, secondary=qc_template_qc_level, backref="qc_templates", lazy="selectin"
+    )
 
     @classmethod
     async def create(cls, obj_in: schemas.QCTemplateCreate) -> schemas.QCTemplate:

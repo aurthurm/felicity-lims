@@ -1,9 +1,9 @@
 from typing import List, Optional
 
 import strawberry  # noqa
-from felicity.gql import PageInfo
-from felicity.gql.setup.types import DistrictType, ProvinceType
-from felicity.gql.user.types import UserAuthType
+from felicity.api.gql import PageInfo
+from felicity.api.gql.setup.types import DistrictType, ProvinceType
+from felicity.api.gql.user.types import UserAuthType
 
 
 @strawberry.type

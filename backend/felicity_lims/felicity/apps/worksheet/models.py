@@ -1,20 +1,21 @@
 import logging
 from typing import List
 
-from sqlalchemy import Column, String, Integer, ForeignKey, Boolean, DateTime, Table
-from sqlalchemy.orm import relationship
-from sqlalchemy.dialects.postgresql import JSONB
-
-from felicity.apps import BaseAuditDBModel, DBModel, Auditable
-from felicity.apps.core.models import IdSequence
+from felicity.apps import Auditable, BaseAuditDBModel, DBModel
+from felicity.apps.analysis import conf as analysis_conf
+from felicity.apps.analysis.models import (
+    analysis as analysis_models,
+    qc as qc_models,
+    results as result_models,
+)
+from felicity.apps.common.models import IdSequence
 from felicity.apps.setup.models.setup import Instrument
 from felicity.apps.stream.utils import FelicityStreamer
 from felicity.apps.user.models import User
-from felicity.apps.analysis.models import analysis as analysis_models
-from felicity.apps.analysis.models import results as result_models
-from felicity.apps.analysis.models import qc as qc_models
-from felicity.apps.analysis import conf as analysis_conf
-from felicity.apps.worksheet import schemas, conf
+from felicity.apps.worksheet import conf, schemas
+from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, String, Table
+from sqlalchemy.dialects.postgresql import JSONB
+from sqlalchemy.orm import relationship
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -34,38 +35,44 @@ class WSBase(BaseAuditDBModel):
     def plate_values(self):
         """Values for the WS plate creator"""
         data = dict()
-        data['reserved'] = self.reserved
-        data['n_samples'] = self.number_of_samples
-        data['t_type'] = self.worksheet_type
-        data['rows'] = self.rows
-        data['cols'] = self.cols
-        data['row_wise'] = self.row_wise
+        data["reserved"] = self.reserved
+        data["n_samples"] = self.number_of_samples
+        data["t_type"] = self.worksheet_type
+        data["rows"] = self.rows
+        data["cols"] = self.cols
+        data["row_wise"] = self.row_wise
         return data
 
 
 """
 Many to Many Link between WorkSheetTemplate and Profile
 """
-worksheet_template_profile = Table('worksheet_template_profile', DBModel.metadata,
-                 Column("ws_template_uid", ForeignKey('worksheettemplate.uid'), primary_key=True),
-                 Column("profile_uid", ForeignKey('profile.uid'), primary_key=True)
-                 )
+worksheet_template_profile = Table(
+    "worksheet_template_profile",
+    DBModel.metadata,
+    Column("ws_template_uid", ForeignKey("worksheettemplate.uid"), primary_key=True),
+    Column("profile_uid", ForeignKey("profile.uid"), primary_key=True),
+)
 
 """
 any to Many Link between WorkSheetTemplate and Analysis
 """
-worksheet_template_analysis = Table('worksheet_template_analysis', DBModel.metadata,
-                 Column("ws_template_uid", ForeignKey('worksheettemplate.uid'), primary_key=True),
-                 Column("analysis_uid", ForeignKey('analysis.uid'), primary_key=True)
-                 )
+worksheet_template_analysis = Table(
+    "worksheet_template_analysis",
+    DBModel.metadata,
+    Column("ws_template_uid", ForeignKey("worksheettemplate.uid"), primary_key=True),
+    Column("analysis_uid", ForeignKey("analysis.uid"), primary_key=True),
+)
 
 """
 Many to Many Link between WorkSheetTemplate and QCLevel
 """
-worksheet_template_qc_level = Table('worksheet_template_qc_level', DBModel.metadata,
-                   Column("ws_template_uid", ForeignKey('worksheettemplate.uid'), primary_key=True),
-                   Column("qc_level_uid", ForeignKey('qclevel.uid'), primary_key=True)
-                   )
+worksheet_template_qc_level = Table(
+    "worksheet_template_qc_level",
+    DBModel.metadata,
+    Column("ws_template_uid", ForeignKey("worksheettemplate.uid"), primary_key=True),
+    Column("qc_level_uid", ForeignKey("qclevel.uid"), primary_key=True),
+)
 
 
 class WorkSheetTemplate(WSBase):
@@ -74,17 +81,24 @@ class WorkSheetTemplate(WSBase):
     a template has a single analyses associated in order to avoid
     cases where multi analyses can be assigned to a single ws
     """
+
     name = Column(String, unique=True, nullable=False)
     description = Column(String)
-    profiles = relationship(analysis_models.Profile, secondary=worksheet_template_profile, lazy="selectin")
-    analyses = relationship(analysis_models.Analysis, secondary=worksheet_template_analysis, lazy="selectin")
-    qc_template_uid = Column(Integer, ForeignKey('qctemplate.uid'), nullable=True)
+    profiles = relationship(
+        analysis_models.Profile, secondary=worksheet_template_profile, lazy="selectin"
+    )
+    analyses = relationship(
+        analysis_models.Analysis, secondary=worksheet_template_analysis, lazy="selectin"
+    )
+    qc_template_uid = Column(Integer, ForeignKey("qctemplate.uid"), nullable=True)
     qc_template = relationship(qc_models.QCTemplate, lazy="selectin")
     # to help cater for those created without template we also keep the qc_levels
-    qc_levels = relationship(qc_models.QCLevel, secondary=worksheet_template_qc_level, lazy="selectin")
-    instrument_uid = Column(Integer, ForeignKey('instrument.uid'), nullable=True)
+    qc_levels = relationship(
+        qc_models.QCLevel, secondary=worksheet_template_qc_level, lazy="selectin"
+    )
+    instrument_uid = Column(Integer, ForeignKey("instrument.uid"), nullable=True)
     instrument = relationship(Instrument, lazy="selectin")
-    sample_type_uid = Column(Integer, ForeignKey('sampletype.uid'), nullable=False)
+    sample_type_uid = Column(Integer, ForeignKey("sampletype.uid"), nullable=False)
     sample_type = relationship(analysis_models.SampleType, lazy="selectin")
 
     @classmethod
@@ -100,39 +114,49 @@ class WorkSheetTemplate(WSBase):
 """
 Many to Many Link between WorkSheet and Profile
 """
-worksheet_profile = Table('worksheet_profile', DBModel.metadata,
-                Column("worksheet_uid", ForeignKey('worksheet.uid'), primary_key=True),
-                Column("profile_uid", ForeignKey('profile.uid'), primary_key=True)
-                )
+worksheet_profile = Table(
+    "worksheet_profile",
+    DBModel.metadata,
+    Column("worksheet_uid", ForeignKey("worksheet.uid"), primary_key=True),
+    Column("profile_uid", ForeignKey("profile.uid"), primary_key=True),
+)
 
 """
 Many to Many Link between WorkSheet and Analysis
 """
-worksheet_analysis = Table('worksheet_analysis', DBModel.metadata,
-                Column("worksheet_uid", ForeignKey('worksheet.uid'), primary_key=True),
-                Column("analysis_uid", ForeignKey('analysis.uid'), primary_key=True)
-                )
+worksheet_analysis = Table(
+    "worksheet_analysis",
+    DBModel.metadata,
+    Column("worksheet_uid", ForeignKey("worksheet.uid"), primary_key=True),
+    Column("analysis_uid", ForeignKey("analysis.uid"), primary_key=True),
+)
 
 
 class WorkSheet(Auditable, WSBase):
-    template_uid = Column(Integer, ForeignKey('worksheettemplate.uid'), nullable=False)
-    template = relationship('WorkSheetTemplate', lazy="selectin")
-    analyst_uid = Column(Integer, ForeignKey('user.uid'), nullable=False)
+    template_uid = Column(Integer, ForeignKey("worksheettemplate.uid"), nullable=False)
+    template = relationship("WorkSheetTemplate", lazy="selectin")
+    analyst_uid = Column(Integer, ForeignKey("user.uid"), nullable=False)
     analyst = relationship(User, foreign_keys=[analyst_uid], lazy="selectin")
     worksheet_id = Column(String, index=True, unique=True, nullable=False)
-    profiles = relationship(analysis_models.Profile, secondary=worksheet_profile, lazy="selectin")
-    analyses = relationship(analysis_models.Analysis, secondary=worksheet_analysis, lazy="selectin")
-    instrument_uid = Column(Integer, ForeignKey('instrument.uid'), nullable=True)
-    instrument = relationship(Instrument, backref='worksheets', lazy="selectin")
-    sample_type_uid = Column(Integer, ForeignKey('sampletype.uid'), nullable=False)
+    profiles = relationship(
+        analysis_models.Profile, secondary=worksheet_profile, lazy="selectin"
+    )
+    analyses = relationship(
+        analysis_models.Analysis, secondary=worksheet_analysis, lazy="selectin"
+    )
+    instrument_uid = Column(Integer, ForeignKey("instrument.uid"), nullable=True)
+    instrument = relationship(Instrument, backref="worksheets", lazy="selectin")
+    sample_type_uid = Column(Integer, ForeignKey("sampletype.uid"), nullable=False)
     sample_type = relationship(analysis_models.SampleType, lazy="selectin")
     assigned_count = Column(Integer, nullable=False, default=0)
-    analysis_results = relationship("AnalysisResult", back_populates="worksheet", lazy="selectin")
+    analysis_results = relationship(
+        "AnalysisResult", back_populates="worksheet", lazy="selectin"
+    )
     #
-    submitted_by_uid = Column(Integer, ForeignKey('user.uid'), nullable=True)
+    submitted_by_uid = Column(Integer, ForeignKey("user.uid"), nullable=True)
     submitted_by = relationship(User, foreign_keys=[submitted_by_uid], lazy="selectin")
     date_submitted = Column(DateTime, nullable=True)
-    verified_by_uid = Column(Integer, ForeignKey('user.uid'), nullable=True)
+    verified_by_uid = Column(Integer, ForeignKey("user.uid"), nullable=True)
     verified_by = relationship(User, foreign_keys=[verified_by_uid], lazy="selectin")
     date_verified = Column(DateTime, nullable=True)
 
@@ -170,7 +194,8 @@ class WorkSheet(Auditable, WSBase):
     async def has_processed_samples(self):
         states = [
             analysis_conf.states.result.RESULTED,
-            analysis_conf.states.result.VERIFIED]
+            analysis_conf.states.result.VERIFIED,
+        ]
 
         results, qc_results = await self.get_analysis_results()
         analysis_results = results + qc_results
@@ -181,7 +206,8 @@ class WorkSheet(Auditable, WSBase):
         if self.state != conf.worksheet_states.TO_BE_VERIFIED:
             states = [
                 analysis_conf.states.result.RESULTED,
-                analysis_conf.states.result.VERIFIED]
+                analysis_conf.states.result.VERIFIED,
+            ]
 
             results, qc_results = await self.get_analysis_results()
             analysis_results = results + qc_results
@@ -190,13 +216,18 @@ class WorkSheet(Auditable, WSBase):
                 self.updated_by_uid = submitter.uid  # noqa
                 self.submitted_by_uid = submitter.uid
                 saved = await self.save()
-                await FelicityStreamer.stream(saved, submitter, "submitted", "worksheet")
+                await FelicityStreamer.stream(
+                    saved, submitter, "submitted", "worksheet"
+                )
                 return saved
         return self
 
     async def verify(self, verified_by):
         if self.state != conf.worksheet_states.VERIFIED:
-            states = [analysis_conf.states.result.VERIFIED, analysis_conf.states.result.RETRACTED]
+            states = [
+                analysis_conf.states.result.VERIFIED,
+                analysis_conf.states.result.RETRACTED,
+            ]
 
             results, qc_results = await self.get_analysis_results()
             analysis_results = results + qc_results
@@ -205,7 +236,9 @@ class WorkSheet(Auditable, WSBase):
                 self.updated_by_uid = verified_by.uid  # noqa
                 self.verified_by_uid = verified_by.uid
                 saved = await self.save()
-                await FelicityStreamer.stream(saved, verified_by, "verified", "worksheet")
+                await FelicityStreamer.stream(
+                    saved, verified_by, "verified", "worksheet"
+                )
                 return saved
         return self
 
@@ -216,7 +249,7 @@ class WorkSheet(Auditable, WSBase):
     @classmethod
     async def create(cls, obj_in: schemas.WorkSheetCreate) -> schemas.WorkSheet:
         data = cls._import(obj_in)
-        data['worksheet_id'] = (await IdSequence.get_next_number("WS"))[1]
+        data["worksheet_id"] = (await IdSequence.get_next_number("WS"))[1]
         return await super().create(**data)
 
     async def update(self, obj_in: schemas.WorkSheetUpdate) -> schemas.WorkSheet:

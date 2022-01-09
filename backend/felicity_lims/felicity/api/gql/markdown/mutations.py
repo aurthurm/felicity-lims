@@ -4,8 +4,8 @@ from typing import List, Optional
 
 import strawberry  # noqa
 from felicity.apps.markdown import conf, models, schemas
-from felicity.gql import OperationError, auth_from_info, verify_user_auth
-from felicity.gql.markdown import types
+from felicity.api.gql import OperationError, auth_from_info, verify_user_auth
+from felicity.api.gql.markdown import types
 from felicity.utils import get_passed_args
 
 logging.basicConfig(level=logging.INFO)

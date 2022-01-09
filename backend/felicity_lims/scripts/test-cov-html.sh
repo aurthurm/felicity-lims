@@ -3,4 +3,4 @@
 set -e
 set -x
 
-pytest --cov=app --cov-report=term-missing felicity/tests "${@}"
+bash scripts/test.sh --cov-report=html "${@}"

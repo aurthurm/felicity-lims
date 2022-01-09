@@ -1,10 +1,9 @@
 from datetime import datetime, timedelta
-from typing import Any, Union, Optional
-
-from jose import jwt
-from passlib.context import CryptContext
+from typing import Any, Optional, Union
 
 from felicity.core.config import settings
+from jose import jwt
+from passlib.context import CryptContext
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
@@ -22,7 +21,7 @@ def get_password_hash(password: str) -> str:
 
 #  JWTokens
 def create_access_token(
-        subject: Union[str, Any], expires_delta: timedelta = None
+    subject: Union[str, Any], expires_delta: timedelta = None
 ) -> str:
     if expires_delta:
         expire = datetime.utcnow() + expires_delta
@@ -42,7 +41,7 @@ def generate_password_reset_token(email: str) -> str:
     expires = now + delta
     exp = expires.timestamp()
     encoded_jwt = jwt.encode(
-        {"exp": exp, "nbf": now, "sub": email}, settings.SECRET_KEY, algorithm="HS256",
+        {"exp": exp, "nbf": now, "sub": email}, settings.SECRET_KEY, algorithm="HS256"
     )
     return encoded_jwt
 

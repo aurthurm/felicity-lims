@@ -3,7 +3,7 @@ import json
 import logging
 
 from felicity.apps.audit.models import AuditLog
-from felicity.apps.core.hooks import conf
+from felicity.apps.common.hooks import conf
 from sqlalchemy import inspect
 from sqlalchemy.orm import class_mapper
 from sqlalchemy.orm.attributes import get_history

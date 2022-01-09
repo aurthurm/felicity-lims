@@ -3,8 +3,8 @@ import logging
 import strawberry  # noqa
 from felicity.apps.analysis import schemas
 from felicity.apps.analysis.models import analysis as analysis_models
-from felicity.gql import OperationError, auth_from_info, verify_user_auth
-from felicity.gql.analysis.types import analysis as a_types
+from felicity.api.gql import OperationError, auth_from_info, verify_user_auth
+from felicity.api.gql.analysis.types import analysis as a_types
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

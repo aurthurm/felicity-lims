@@ -265,6 +265,7 @@
   const { executeMutation: patientCreator } = useMutation(ADD_PATIENT);
   function addPatient(payload: IPatient) {
     patientCreator({ 
+     payload: {
       clientPatientId: payload.clientPatientId, 
       firstName: payload.firstName,
       middleName: payload.middleName, 
@@ -275,7 +276,8 @@
       ageDobEstimated: payload.ageDobEstimated,
       clientUid: payload.clientUid, 
       phoneMobile: payload.phoneMobile, 
-      consentSms: payload.consentSms, 
+      consentSms: payload.consentSms,
+     } 
     }).then(result => {
       const data = gqlResponseHandler(result)
       if (data) {
@@ -290,17 +292,19 @@
   function updatePatient(payload: IPatient) {
     patientUpdater({ 
       uid: payload.uid,
-      clientPatientId: payload.clientPatientId, 
-      firstName: payload.firstName,
-      middleName: payload.middleName, 
-      lastName: payload.lastName, 
-      age: payload.age,
-      gender: payload.gender, 
-      dateOfBirth: payload.dateOfBirth, 
-      ageDobEstimated: payload.ageDobEstimated,
-      clientUid: payload.clientUid, 
-      phoneMobile: payload.phoneMobile, 
-      consentSms: payload.consentSms, 
+      payload: {
+        clientPatientId: payload.clientPatientId, 
+        firstName: payload.firstName,
+        middleName: payload.middleName, 
+        lastName: payload.lastName, 
+        age: payload.age,
+        gender: payload.gender, 
+        dateOfBirth: payload.dateOfBirth, 
+        ageDobEstimated: payload.ageDobEstimated,
+        clientUid: payload.clientUid, 
+        phoneMobile: payload.phoneMobile, 
+        consentSms: payload.consentSms, 
+      }
     }).then(result => {
       const data = gqlResponseHandler(result)
       if (data) {

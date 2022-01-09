@@ -1,12 +1,11 @@
-from typing import Optional, Dict, List
+from typing import Dict, List, Optional
 
-from pydantic import BaseModel
 from felicity.apps.analysis.schemas import AnalysisBaseInDB, QCLevelInDB
+from pydantic import BaseModel
 
-
-# 
+#
 # WorkSheet Schemas
-# 
+#
 
 # Shared properties
 class WorkSheetBase(BaseModel):
@@ -54,9 +53,9 @@ class WorkSheetInDB(WorkSheetBaseInDB):
     pass
 
 
-# 
+#
 # WSTemplate Schemas
-# 
+#
 
 # Shared properties
 class WSTemplateBase(BaseModel):
@@ -69,7 +68,7 @@ class WSTemplateBase(BaseModel):
     qc_levels: Optional[List[QCLevelInDB]] = []
     reserved: Optional[Dict] = {}
     number_of_samples: Optional[int] = None
-    worksheet_type: Optional[str] = 'flat'
+    worksheet_type: Optional[str] = "flat"
     rows: Optional[int] = None
     cols: Optional[int] = None
     row_wise: Optional[bool] = True

@@ -1,16 +1,19 @@
-from sqlalchemy import Column, Integer, String, ForeignKey
-from sqlalchemy.orm import relationship
-
 from felicity.apps import BaseAuditDBModel
-from felicity.apps.user.models import User
 from felicity.apps.setup import schemas
+from felicity.apps.user.models import User
+from sqlalchemy import Column, ForeignKey, Integer, String
+from sqlalchemy.orm import relationship
 
 
 class Laboratory(BaseAuditDBModel):
-    setup_name = Column(String, default="felicity", nullable=False)  # Do not change this value ever
+    setup_name = Column(
+        String, default="felicity", nullable=False
+    )  # Do not change this value ever
     lab_name = Column(String, nullable=False)
     lab_manager_uid = Column(Integer, ForeignKey("user.uid"), nullable=True)
-    lab_manager = relationship(User, foreign_keys=[lab_manager_uid], backref="lab_manager", lazy="selectin")  # TODO refactor backref value to  backref="laboratory"
+    lab_manager = relationship(
+        User, foreign_keys=[lab_manager_uid], backref="lab_manager", lazy="selectin"
+    )  # TODO refactor backref value to  backref="laboratory"
     email = Column(String, nullable=True)  # Main Email Adress
     email_cc = Column(String, nullable=True)
     mobile_phone = Column(String, nullable=True)
@@ -35,6 +38,7 @@ class Laboratory(BaseAuditDBModel):
 
 class Supplier(BaseAuditDBModel):
     """Supplier"""
+
     name = Column(String, nullable=False)
     description = Column(String, nullable=True)
 
@@ -50,6 +54,7 @@ class Supplier(BaseAuditDBModel):
 
 class Department(BaseAuditDBModel):
     """Departrments/Sections"""
+
     name = Column(String, nullable=False)
     description = Column(String, nullable=True)
     code = Column(String, nullable=True)
@@ -66,6 +71,7 @@ class Department(BaseAuditDBModel):
 
 class Instrument(BaseAuditDBModel):
     """Instrument/Analyser"""
+
     name = Column(String, nullable=False)
     description = Column(String, nullable=True)
     keyword = Column(String, nullable=True)
@@ -84,6 +90,7 @@ class Instrument(BaseAuditDBModel):
 
 class Method(BaseAuditDBModel):
     """Analyses/Test Method"""
+
     name = Column(String, nullable=False)
     description = Column(String, nullable=True)
     keyword = Column(String, nullable=True)

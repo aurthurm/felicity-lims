@@ -4,10 +4,10 @@ This file is part of Felicity LIMS Software
 
 
 class States:
-    PENDING = 'pending'
-    RUNNING = 'running'
-    FAILED = 'failed'
-    FINISHED = 'finished'
+    PENDING = "pending"
+    RUNNING = "running"
+    FAILED = "failed"
+    FINISHED = "finished"
 
 
 states = States()

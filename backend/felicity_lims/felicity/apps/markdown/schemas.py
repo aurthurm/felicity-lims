@@ -1,9 +1,9 @@
-from typing import Optional, List
 from datetime import datetime
+from typing import List, Optional
 
-from pydantic import BaseModel
 from felicity.apps.setup.schemas import Department
 from felicity.apps.user.schemas import User
+from pydantic import BaseModel
 
 
 #

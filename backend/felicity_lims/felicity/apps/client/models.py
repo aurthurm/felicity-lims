@@ -1,18 +1,16 @@
-from sqlalchemy import Boolean, Column, ForeignKey, Integer, String
-from sqlalchemy.orm import relationship
-from sqlalchemy.orm import backref
-
 from felicity.apps import BaseAuditDBModel
-from felicity.apps.user.abstract import AbstractBaseUser
-from felicity.apps.user import conf
-from felicity.apps.user.models import UserAuth
-from felicity.apps.setup.models import District
-from felicity.apps.setup.models import Province
 from felicity.apps.client import schemas
+from felicity.apps.setup.models import District, Province
+from felicity.apps.user import conf
+from felicity.apps.user.abstract import AbstractBaseUser
+from felicity.apps.user.models import UserAuth
+from sqlalchemy import Boolean, Column, ForeignKey, Integer, String
+from sqlalchemy.orm import backref, relationship
 
 
 class Client(BaseAuditDBModel):
     """Client/Facility"""
+
     name = Column(String, nullable=False)
     code = Column(String, index=True, unique=True, nullable=False)
     district_uid = Column(Integer, ForeignKey("district.uid"), nullable=True)
@@ -61,20 +59,24 @@ class Client(BaseAuditDBModel):
 
 
 class ClientContact(AbstractBaseUser):
-    auth_uid = Column(Integer, ForeignKey('userauth.uid'), nullable=True)
+    auth_uid = Column(Integer, ForeignKey("userauth.uid"), nullable=True)
     auth = relationship(UserAuth, backref=backref(conf.CLIENT_CONTACT, uselist=False))
     email = Column(String, unique=False, index=True, nullable=True)
     email_cc = Column(String, nullable=True)
     consent_sms = Column(Boolean(), default=False)
-    client_uid = Column(Integer, ForeignKey('client.uid'), nullable=False)
-    client = relationship(Client, backref=backref('contacts', uselist=False))
+    client_uid = Column(Integer, ForeignKey("client.uid"), nullable=False)
+    client = relationship(Client, backref=backref("contacts", uselist=False))
 
     @classmethod
-    async def create(cls, contact_in: schemas.ClientContactCreate) -> schemas.ClientContact:
+    async def create(
+        cls, contact_in: schemas.ClientContactCreate
+    ) -> schemas.ClientContact:
         data = cls._import(contact_in)
         return await super().create(**data)
 
-    async def update(self, contact_in: schemas.ClientContactUpdate) -> schemas.ClientContact:
+    async def update(
+        self, contact_in: schemas.ClientContactUpdate
+    ) -> schemas.ClientContact:
         data = self._import(contact_in)
         return await super().update(**data)
 
@@ -88,11 +90,11 @@ class ClientContact(AbstractBaseUser):
 
     async def unlink_auth(self):
         auth = self.auth
-        _update = {**self.to_dict(), **{'auth_uid': None, 'auth': None}}
+        _update = {**self.to_dict(), **{"auth_uid": None, "auth": None}}
         await self.update(_update)
         if not self.auth:
             auth.delete()
 
     async def link_auth(self, auth_uid):
-        _update = {**self.to_dict(), **{'auth_uid': auth_uid}}
+        _update = {**self.to_dict(), **{"auth_uid": auth_uid}}
         await self.update(_update)

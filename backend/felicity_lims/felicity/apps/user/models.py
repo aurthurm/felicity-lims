@@ -1,17 +1,12 @@
 import logging
 
-from sqlalchemy import Column, Integer, String, ForeignKey, Boolean, Table
-from sqlalchemy.orm import relationship, backref
-
-from felicity.apps.core.utils import is_valid_email
+from felicity.apps.common.utils import is_valid_email
 from felicity.core.security import verify_password
+from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, Table
+from sqlalchemy.orm import backref, relationship
+
 from . import conf
-from .abstract import (
-    DBModel,
-    AbstractBaseUser,
-    AbstractAuth,
-    schemas
-)
+from .abstract import AbstractAuth, AbstractBaseUser, DBModel, schemas
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -27,10 +22,13 @@ class UserAuth(AbstractAuth):
     lcuser: laboratory contacts
     dcuser: dispatch center contacts
     """
+
     user_type = Column(String, nullable=True)
 
     async def acquire_user_type(self, user_type):
-        _update = {'user_type': user_type}  # {**self.to_dict(), **{'user_type': user_type}}
+        _update = {
+            "user_type": user_type
+        }  # {**self.to_dict(), **{'user_type': user_type}}
         update_in = schemas.AuthUpdate(**_update)
         await self.update(update_in)
 
@@ -42,9 +40,11 @@ class UserAuth(AbstractAuth):
         # _user = getattr(self, self.user_type)
         _user = await User.get(auth_uid=self.uid)
         if not _user:
-            raise Exception("Authentication disabled for this account. Contact Admin to re-link")
+            raise Exception(
+                "Authentication disabled for this account. Contact Admin to re-link"
+            )
 
-        if not getattr(_user, 'is_active'):  # e.g self.ccuser.is_active
+        if not getattr(_user, "is_active"):  # e.g self.ccuser.is_active
             raise Exception("In active account: contact administrator")
 
         auth_obj = self.to_dict()
@@ -53,15 +53,15 @@ class UserAuth(AbstractAuth):
             msg = ""
             if self.login_retry < 3:
                 retries += 1
-                msg = f'Wrong Password {3 - retries} attempts left'
-                auth_obj['login_retry'] = retries
+                msg = f"Wrong Password {3 - retries} attempts left"
+                auth_obj["login_retry"] = retries
                 if retries == 3:
-                    auth_obj['is_blocked'] = True
+                    auth_obj["is_blocked"] = True
                     msg = f"Sorry your Account has been Blocked"
             await self.update(auth_obj)
             raise Exception(msg)
         if self.login_retry != 0:
-            auth_obj['login_retry'] = 0
+            auth_obj["login_retry"] = 0
             await self.update(auth_obj)
         return self
 
@@ -76,24 +76,34 @@ class UserAuth(AbstractAuth):
 """
 Many to Many Link between Group and User
 """
-user_groups = Table('user_groups', DBModel.metadata,
-                    Column('user_uid', ForeignKey('user.uid'), primary_key=True),
-                    Column('group_uid', ForeignKey('group.uid'), primary_key=True)
-                    )
+user_groups = Table(
+    "user_groups",
+    DBModel.metadata,
+    Column("user_uid", ForeignKey("user.uid"), primary_key=True),
+    Column("group_uid", ForeignKey("group.uid"), primary_key=True),
+)
 
 """
 Many to Many Link between Group and Permission
 """
-permission_groups = Table('permission_groups', DBModel.metadata,
-                          Column('permission_uid', ForeignKey('permission.uid'), primary_key=True),
-                          Column('group_uid', ForeignKey('group.uid'), primary_key=True)
-                          )
+permission_groups = Table(
+    "permission_groups",
+    DBModel.metadata,
+    Column("permission_uid", ForeignKey("permission.uid"), primary_key=True),
+    Column("group_uid", ForeignKey("group.uid"), primary_key=True),
+)
 
 
 class User(AbstractBaseUser):
-    auth_uid = Column(Integer, ForeignKey('userauth.uid'))
-    auth = relationship("UserAuth", backref=backref(conf.LABORATORY_CONTACT, uselist=False), lazy='joined')
-    groups = relationship("Group", secondary=user_groups, back_populates="members", lazy='selectin')
+    auth_uid = Column(Integer, ForeignKey("userauth.uid"))
+    auth = relationship(
+        "UserAuth",
+        backref=backref(conf.LABORATORY_CONTACT, uselist=False),
+        lazy="joined",
+    )
+    groups = relationship(
+        "Group", secondary=user_groups, back_populates="members", lazy="selectin"
+    )
 
     @classmethod
     async def create(cls, user_in: schemas.UserCreate) -> schemas.User:
@@ -122,14 +132,16 @@ class User(AbstractBaseUser):
 
     async def unlink_auth(self):
         auth = self.auth
-        _update = {**self.to_dict(), **{'auth_uid': None, 'auth': None}}
+        _update = {**self.to_dict(), **{"auth_uid": None, "auth": None}}
         update_in = schemas.UserUpdate(**_update)
         await self.update(update_in)
         if not self.auth:
             await auth.delete()
 
     async def link_auth(self, auth_uid):
-        _update = {'auth_uid': auth_uid}  # {**result.to_dict(), **{'auth_uid': auth_uid}}
+        _update = {
+            "auth_uid": auth_uid
+        }  # {**result.to_dict(), **{'auth_uid': auth_uid}}
         update_in = schemas.UserUpdate(**_update)
         await self.update(update_in)
 
@@ -151,9 +163,15 @@ class Permission(DBModel):
 
 class Group(DBModel):
     name = Column(String, unique=True, index=True, nullable=False)
-    keyword = Column(String, unique=True, index=True, nullable=False, default="keyword_x")
-    members = relationship("User", secondary=user_groups, back_populates="groups", lazy="selectin")
-    permissions = relationship("Permission", secondary=permission_groups, backref="groups", lazy="selectin")
+    keyword = Column(
+        String, unique=True, index=True, nullable=False, default="keyword_x"
+    )
+    members = relationship(
+        "User", secondary=user_groups, back_populates="groups", lazy="selectin"
+    )
+    permissions = relationship(
+        "Permission", secondary=permission_groups, backref="groups", lazy="selectin"
+    )
     active = Column(Boolean(), default=True)
 
     @classmethod

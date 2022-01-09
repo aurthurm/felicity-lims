@@ -1,11 +1,11 @@
-from fastapi.encoders import jsonable_encoder
 from datetime import datetime
-from sqlalchemy.ext.declarative import declared_attr
-from sqlalchemy import Boolean, Column, Integer, String, DateTime
 
+from fastapi.encoders import jsonable_encoder
+from felicity.apps import DBModel  # noqa
 from felicity.apps.user import schemas
 from felicity.core.security import get_password_hash
-from felicity.apps import DBModel  # noqa
+from sqlalchemy import Boolean, Column, DateTime, Integer, String
+from sqlalchemy.ext.declarative import declared_attr
 
 
 class SimpleAuditMixin(object):
@@ -119,12 +119,12 @@ class AbstractAuth(SimpleAuditMixin, DBModel):
     async def update(self, auth_in: schemas.AuthUpdate) -> schemas.User:
         update_data = self._import(auth_in)
 
-        if 'password' in update_data:
+        if "password" in update_data:
             hashed_password = get_password_hash(update_data["password"])
             del update_data["password"]
             update_data["hashed_password"] = hashed_password
-        if 'user' in update_data:
-            del update_data['user']
+        if "user" in update_data:
+            del update_data["user"]
 
         updated = await super().update(**update_data)
         return updated

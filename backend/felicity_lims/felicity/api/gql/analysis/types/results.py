@@ -2,10 +2,10 @@ from datetime import datetime
 from typing import List, Optional
 
 import strawberry  # noqa
-from felicity.gql import PageInfo
-from felicity.gql.analysis.types.analysis import AnalysisType, QCSetType, SampleType
-from felicity.gql.setup.types import InstrumentType, MethodType
-from felicity.gql.user.types import UserType
+from felicity.api.gql import PageInfo
+from felicity.api.gql.analysis.types.analysis import AnalysisType, QCSetType, SampleType
+from felicity.api.gql.setup.types import InstrumentType, MethodType
+from felicity.api.gql.user.types import UserType
 
 
 @strawberry.type

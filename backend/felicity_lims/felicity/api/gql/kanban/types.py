@@ -2,9 +2,9 @@ from datetime import datetime
 from typing import List, Optional
 
 import strawberry  # noqa
-from felicity.gql import PageInfo
-from felicity.gql.setup.types import DepartmentType
-from felicity.gql.user.types import UserType
+from felicity.api.gql import PageInfo
+from felicity.api.gql.setup.types import DepartmentType
+from felicity.api.gql.user.types import UserType
 
 
 @strawberry.type

@@ -10,7 +10,6 @@ async def check_open_worksheets():
     e.g.
         ---
     """
-    pass
 
 
 async def check_incomplete_worksheet_assignments():
@@ -19,7 +18,6 @@ async def check_incomplete_worksheet_assignments():
     e.g.
         xxx you have 2 worksheets assigned to you
     """
-    pass
 
 
 async def check_empty_worksheets():
@@ -28,7 +26,6 @@ async def check_empty_worksheets():
     e.g.
         there are 45 empty worksheets ......
     """
-    pass
 
 
 async def check_over_due_analyses():
@@ -37,7 +34,6 @@ async def check_over_due_analyses():
     e.g.
         there are 3456 analyses that are not overdue
     """
-    pass
 
 
 # Management Like Notification
@@ -47,7 +43,6 @@ async def worksheets_created():
     e.g.
         there are 2 worksheets created today
     """
-    pass
 
 
 async def worksheets_verified():
@@ -56,7 +51,6 @@ async def worksheets_verified():
     e.g.
         there are 2 worksheets verified today
     """
-    pass
 
 
 async def worksheets_resulted():
@@ -65,7 +59,6 @@ async def worksheets_resulted():
     e.g.
         there are 2 worksheets created today
     """
-    pass
 
 
 async def worksheets_pending_verification():
@@ -74,5 +67,3 @@ async def worksheets_pending_verification():
     e.g.
         4 worksheet await verification
     """
-    pass
-

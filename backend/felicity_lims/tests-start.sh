@@ -1,10 +1,6 @@
 #! /usr/bin/env bash
+set -e
 
-# Let the DB start
-python /felicity_lims/felicity/backend_pre_start.py
+python /felicity_lims/felicity/tests_pre_start.py
 
-# Run migrations
-alembic upgrade head
-
-# Create initial data in DB
-python /felicity_lims/felicity/initial_data.py
+bash ./scripts/test.sh "$@"

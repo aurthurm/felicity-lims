@@ -2,7 +2,7 @@ from typing import List, Optional
 
 import strawberry  # noqa
 from felicity.apps.notification import models
-from felicity.gql.notification.types import NotificationType
+from felicity.api.gql.notification.types import NotificationType
 
 
 @strawberry.type

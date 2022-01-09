@@ -1,7 +1,7 @@
 import logging
 from typing import Any
 
-from felicity.apps.core.channel import broadcast
+from felicity.apps.common.channel import broadcast
 from felicity.apps.stream.models import ActivityStream
 from felicity.apps.stream.schemas import ActivityStreamCreate
 

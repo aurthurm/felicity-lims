@@ -1,4 +1,3 @@
-import secrets
 import os
 from typing import Any, Dict, List, Optional, Union
 
@@ -21,25 +20,30 @@ def getenv_value(value, default_value=None):
 
 
 class PostgresDsn(AnyUrl):
-    allowed_schemes = {'postgres', 'postgresql', 'postgres+asyncpg', 'postgresql+asyncpg'}
+    allowed_schemes = {
+        "postgres",
+        "postgresql",
+        "postgres+asyncpg",
+        "postgresql+asyncpg",
+    }
     user_required = True
 
 
 class Settings(BaseSettings):
-    BASE_DIR: str = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+    BASE_DIR: str = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
     API_V1_STR: str = "/api/v1"
     SECRET_KEY: str = "uIM7aXFRzaIxWr1NEy_RMQg9iIuDkLAlkOPs5zpgbts"  # secrets.token_urlsafe(32)
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 16
-    SERVER_NAME: str = getenv_value("SERVER_NAME", 'felicity')
-    SERVER_HOST: AnyHttpUrl = getenv_value("SERVER_HOST", 'https://localhost')
+    SERVER_NAME: str = getenv_value("SERVER_NAME", "felicity")
+    SERVER_HOST: AnyHttpUrl = getenv_value("SERVER_HOST", "https://localhost")
     BACKEND_CORS_ORIGINS: List[AnyHttpUrl] = [
-        'http://localhost:8000',
-        'http://localhost:3000',
-        'http://192.168.137.97:3000',
-        'http://192.168.137.128:3000',
-        'http://192.168.0.196:3000',
-        'http://192.168.0.195:3000',
-        'http://192.168.137.227:3000',
+        "http://localhost:8000",
+        "http://localhost:3000",
+        "http://192.168.137.97:3000",
+        "http://192.168.137.128:3000",
+        "http://192.168.0.196:3000",
+        "http://192.168.0.195:3000",
+        "http://192.168.137.227:3000",
     ]
 
     @validator("BACKEND_CORS_ORIGINS", pre=True)
@@ -50,7 +54,7 @@ class Settings(BaseSettings):
             return v
         raise ValueError(v)
 
-    PROJECT_NAME: str = getenv_value("PROJECT_NAME", 'FELLICITY LIMS')
+    PROJECT_NAME: str = getenv_value("PROJECT_NAME", "FELLICITY LIMS")
     SENTRY_DSN: Optional[HttpUrl] = getenv_value("SENTRY_DSN", "")
 
     @validator("SENTRY_DSN", pre=True)
@@ -59,10 +63,10 @@ class Settings(BaseSettings):
             return None
         return v
 
-    POSTGRES_SERVER: str = getenv_value("POSTGRES_SERVER", 'localhost') # felicity_db
-    POSTGRES_USER: str = getenv_value("POSTGRES_USER", 'felicity')
-    POSTGRES_PASSWORD: str = getenv_value("POSTGRES_PASSWORD", 'felicity')
-    POSTGRES_DB: str = getenv_value("POSTGRES_DB", 'felicity_lims')
+    POSTGRES_SERVER: str = getenv_value("POSTGRES_SERVER", "localhost")  # felicity_db
+    POSTGRES_USER: str = getenv_value("POSTGRES_USER", "felicity")
+    POSTGRES_PASSWORD: str = getenv_value("POSTGRES_PASSWORD", "felicity")
+    POSTGRES_DB: str = getenv_value("POSTGRES_DB", "felicity_lims")
     SQLALCHEMY_DATABASE_URI: Optional[PostgresDsn] = None
     SQLALCHEMY_ASYNC_DATABASE_URI: Optional[PostgresDsn] = None
 
@@ -79,7 +83,9 @@ class Settings(BaseSettings):
         )
 
     @validator("SQLALCHEMY_ASYNC_DATABASE_URI", pre=True)
-    def assemble_async_db_connection(cls, v: Optional[str], values: Dict[str, Any]) -> Any:
+    def assemble_async_db_connection(
+        cls, v: Optional[str], values: Dict[str, Any]
+    ) -> Any:
         if isinstance(v, str):
             return v
         return PostgresDsn.build(
@@ -117,9 +123,11 @@ class Settings(BaseSettings):
         )
 
     EMAIL_TEST_USER: EmailStr = "admin@stanchionlabs.inc"
-    FIRST_SUPERUSER_EMAIL: EmailStr = getenv_value("FIRST_SUPERUSER", 'admin@felicitylabs.com')
-    FIRST_SEPERUSER_USERNAME: str = getenv_value("FIRST_SEPERUSER_USERNAME", 'admin')
-    FIRST_SUPERUSER_PASSWORD: str = getenv_value("FIRST_SUPERUSER_PASSWORD", 'admin')
+    FIRST_SUPERUSER_EMAIL: EmailStr = getenv_value(
+        "FIRST_SUPERUSER", "admin@felicitylabs.com"
+    )
+    FIRST_SEPERUSER_USERNAME: str = getenv_value("FIRST_SEPERUSER_USERNAME", "admin")
+    FIRST_SUPERUSER_PASSWORD: str = getenv_value("FIRST_SUPERUSER_PASSWORD", "admin")
     USERS_OPEN_REGISTRATION: bool = False
 
     class Config:

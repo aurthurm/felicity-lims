@@ -3,15 +3,11 @@ from pathlib import Path
 
 import emails
 from emails.template import JinjaTemplate
-
 from felicity.core.config import settings
 
 
 async def send_email(
-    email_to: str,
-    subject_template: str = "",
-    html_template: str = "",
-        environment=None,
+    email_to: str, subject_template: str = "", html_template: str = "", environment=None
 ) -> None:
     if environment is None:
         environment = {}

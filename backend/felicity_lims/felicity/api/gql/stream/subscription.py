@@ -3,9 +3,9 @@ import logging
 from typing import AsyncGenerator
 
 import strawberry  # noqa
-from felicity.apps.core.channel import BroadcastEvent, Subscriber, broadcast
+from felicity.apps.common.channel import BroadcastEvent, Subscriber, broadcast
 from felicity.apps.stream.models import ActivityStream
-from felicity.gql.stream.types import ActivityStreamType
+from felicity.api.gql.stream.types import ActivityStreamType
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

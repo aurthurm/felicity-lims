@@ -7,14 +7,14 @@ from felicity.apps.analysis.models import (
     qc as qc_models,
     results as result_models,
 )
-from felicity.apps.core.models import IdSequence
+from felicity.apps.common.models import IdSequence
 from felicity.apps.job import models as job_models, schemas as job_schemas
 from felicity.apps.job.conf import actions, categories, priorities, states
 from felicity.apps.job.sched import felicity_resume_workforce
 from felicity.apps.user import models as user_models
 from felicity.apps.worksheet import conf, models, schemas
-from felicity.gql import OperationError, auth_from_info, verify_user_auth
-from felicity.gql.worksheet.types import WorkSheetTemplateType, WorkSheetType
+from felicity.api.gql import OperationError, auth_from_info, verify_user_auth
+from felicity.api.gql.worksheet.types import WorkSheetTemplateType, WorkSheetType
 from felicity.utils import has_value_or_is_truthy
 
 logging.basicConfig(level=logging.INFO)
@@ -283,7 +283,10 @@ class WorkSheetMutations:
         await job_models.Job.bulk_create(j_schemas)
         felicity_resume_workforce()
 
-        return WorksheetListingType(worksheets)
+        # to get lazy loads working otherwise return WorksheetListingType(worksheets)
+        to_send = [models.WorkSheet.get(uid=ws.uid) for ws in worksheets]
+
+        return WorksheetListingType(to_send)
 
     @strawberry.mutation
     async def update_worksheet(

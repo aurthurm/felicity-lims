@@ -1,18 +1,20 @@
 import logging
-from typing import Dict, TypeVar, AsyncIterator, List, Any, Optional
 from base64 import b64decode, b64encode
-from pydantic import BaseModel as PydanticBaseModel
-from sqlalchemy.future import select
-from sqlalchemy import update
-from sqlalchemy import Column, Integer
-from sqlalchemy.sql import func
-from sqlalchemy.orm import selectinload, as_declarative, declared_attr
-from sqlalchemy import or_ as sa_or_
-from felicity.database.async_mixins import AllFeaturesMixin, smart_query, ModelNotFoundError
-from felicity.database.paginator.cursor import PageCursor, EdgeNode, PageInfo
+from typing import Any, AsyncIterator, Dict, List, Optional, TypeVar
 
-from felicity.database.session import AsyncSessionScoped, async_session_factory
+from felicity.database.async_mixins import (
+    AllFeaturesMixin,
+    ModelNotFoundError,
+    smart_query,
+)
+from felicity.database.paginator.cursor import EdgeNode, PageCursor, PageInfo
+from felicity.database.session import async_session_factory
 from felicity.utils import has_value_or_is_truthy
+from pydantic import BaseModel as PydanticBaseModel
+from sqlalchemy import Column, Integer, or_ as sa_or_, update
+from sqlalchemy.future import select
+from sqlalchemy.orm import as_declarative, declared_attr, selectinload, join
+from sqlalchemy.sql import func
 
 InDBSchemaType = TypeVar("InDBSchemaType", bound=PydanticBaseModel)
 
@@ -315,6 +317,10 @@ class DBModel(AllFeaturesMixin):
 
     @classmethod
     async def count_where(cls, filters):
+        """
+        :param filters:
+        :return: int
+        """
         # stmt = smart_query(select(cls), filters=filters)
         # stmt = select(func.count(cls.uid))
         # stmt = select(func.count('*')).select_from(cls)
@@ -322,10 +328,11 @@ class DBModel(AllFeaturesMixin):
         # stmt = select(cls).with_only_columns([func.count(cls.uid)]).order_by(None)
         # stmt = select(func.count()).select_from(cls)
         # stmt = select(func.count()).select_from(select(cls).subquery())
-        stmt = select(func.count(cls.uid)).select_from(cls)
-        stmt = smart_query(query=stmt, filters=filters)
+        # stmt = select(func.count(cls.uid)).select_from(cls)
+        filter_stmt = smart_query(query=select(cls), filters=filters)
+        count_stmt = select(func.count(filter_stmt.c.uid)).select_from(filter_stmt)
         async with async_session_factory() as session:
-            res = await session.execute(stmt)
+            res = await session.execute(count_stmt)
             count = res.scalars().one()
         return count
 

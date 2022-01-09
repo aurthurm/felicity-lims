@@ -3,8 +3,9 @@ from typing import List, Optional
 import sqlalchemy as sa
 import strawberry  # noqa
 from felicity.apps.user import models as user_models
-from felicity.gql import PageInfo, deps
-from felicity.gql.user.types import (
+from felicity.api.gql import PageInfo
+from felicity.api.gql import deps
+from felicity.api.gql.user.types import (
     GroupType,
     PermissionType,
     UserCursorPage,

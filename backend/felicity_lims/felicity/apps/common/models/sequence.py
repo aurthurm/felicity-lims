@@ -1,7 +1,7 @@
 import logging
 from datetime import datetime
 
-from felicity.apps.core.utils import sequencer
+from felicity.apps.common.utils import sequencer
 from felicity.database.base_class import DBModel
 from felicity.database.session import async_session_factory
 from sqlalchemy import Column, Integer, String

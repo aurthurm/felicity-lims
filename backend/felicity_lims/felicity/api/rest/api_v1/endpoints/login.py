@@ -3,8 +3,8 @@ from typing import Any
 
 from fastapi import APIRouter, Body, Depends, HTTPException
 from fastapi.security import OAuth2PasswordRequestForm
-from felicity.api import deps
-from felicity.apps.core import schemas as core_schemas
+from felicity.api.rest import deps
+from felicity.apps.common import schemas as core_schemas
 from felicity.apps.user import crud, models, schemas
 from felicity.core import security
 from felicity.core.config import settings

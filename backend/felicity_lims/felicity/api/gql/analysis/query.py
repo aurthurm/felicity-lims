@@ -9,8 +9,9 @@ from felicity.apps.analysis.models import (
     results as r_models,
 )
 from felicity.apps.analysis.utils import sample_search
-from felicity.gql import PageInfo
-from felicity.gql.analysis.types import analysis as a_types, results as r_types
+from felicity.api.gql import PageInfo
+from felicity.api.gql.analysis.types import results as r_types
+from felicity.api.gql.analysis.types import analysis as a_types
 from felicity.utils import has_value_or_is_truthy
 
 logging.basicConfig(level=logging.INFO)

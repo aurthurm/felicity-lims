@@ -75,6 +75,12 @@ cd felicity
 docker-compose up -d
 ```
 
+## Other projects 
+    - Felicity Docs - Built with Laboratory QMS in Mind but can be used anywhere for document management
+    - Felicity Stocker - Medical Laboratory Inventory Management system
+    - Felicity Requisitions - 
+    - Felicity Spacious - End to End laboratory management system with all module combined into one. 
+
 ## Contact
  - Email me directly at aurthurmusendame@gmail.com
  - Me on [facebook](https://www.fb.me/aurthur.musendame)

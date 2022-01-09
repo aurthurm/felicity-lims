@@ -1,19 +1,19 @@
-from datetime import datetime, timedelta
 import logging
-from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, DateTime, Table
-from sqlalchemy.orm import relationship
+from datetime import datetime, timedelta
 
-from felicity.apps.core.models import IdSequence
+from felicity.apps import Auditable, BaseAuditDBModel, DBModel
 from felicity.apps.analysis import schemas
-from felicity.apps.analysis.models.qc import QCLevel, QCSet
 from felicity.apps.analysis.conf import states
+from felicity.apps.analysis.models.qc import QCLevel, QCSet
 from felicity.apps.client import models as ct_models
-from felicity.apps.core import BaseMPTT
-from felicity.apps.core.utils import sequencer
+from felicity.apps.common import BaseMPTT
+from felicity.apps.common.models import IdSequence
+from felicity.apps.common.utils import sequencer
 from felicity.apps.patient import models as pt_models
-from felicity.apps import BaseAuditDBModel, DBModel, Auditable
 from felicity.apps.stream.utils import FelicityStreamer
 from felicity.apps.user.models import User
+from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, String, Table
+from sqlalchemy.orm import relationship
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -23,6 +23,7 @@ streamer = FelicityStreamer()
 
 class SampleType(BaseAuditDBModel):
     """SampleType"""
+
     name = Column(String, nullable=False)
     description = Column(String, nullable=False)
     active = Column(Boolean(), default=False)
@@ -42,46 +43,61 @@ class SampleType(BaseAuditDBModel):
 """
 Many to Many Link between Analysis and SampleType
 """
-analysis_sample_type = Table('analysis_sample_type', DBModel.metadata,
-                             Column("sample_type_uid", ForeignKey('sampletype.uid'), primary_key=True),
-                             Column("analysis_uid", ForeignKey('analysis.uid'), primary_key=True)
-                             )
+analysis_sample_type = Table(
+    "analysis_sample_type",
+    DBModel.metadata,
+    Column("sample_type_uid", ForeignKey("sampletype.uid"), primary_key=True),
+    Column("analysis_uid", ForeignKey("analysis.uid"), primary_key=True),
+)
 
 """
  Many to Many Link between Analysis and Profile
     Offers multi-profiles flexibility per analysis
     A rare scenario worth supporting :)
 """
-analysis_profile = Table('analysis_profile', DBModel.metadata,
-                         Column("analysis_uid", ForeignKey('analysis.uid'), primary_key=True),
-                         Column("profile_uid", ForeignKey('profile.uid'), primary_key=True)
-                         )
+analysis_profile = Table(
+    "analysis_profile",
+    DBModel.metadata,
+    Column("analysis_uid", ForeignKey("analysis.uid"), primary_key=True),
+    Column("profile_uid", ForeignKey("profile.uid"), primary_key=True),
+)
 
 
 class AnalysisCategory(BaseAuditDBModel):
     """Categorise Analysis"""
+
     name = Column(String, nullable=False)
     description = Column(String, nullable=False)
     active = Column(Boolean(), default=False)
 
     @classmethod
-    async def create(cls, obj_in: schemas.AnalysisCategoryCreate) -> schemas.AnalysisCategory:
+    async def create(
+        cls, obj_in: schemas.AnalysisCategoryCreate
+    ) -> schemas.AnalysisCategory:
         data = cls._import(obj_in)
         return await super().create(**data)
 
-    async def update(self, obj_in: schemas.AnalysisCategoryUpdate) -> schemas.AnalysisCategory:
+    async def update(
+        self, obj_in: schemas.AnalysisCategoryUpdate
+    ) -> schemas.AnalysisCategory:
         data = self._import(obj_in)
         return await super().update(**data)
 
 
 class Profile(BaseAuditDBModel):
     """Grouped Analysis e.g FBC, U&E's, MCS ..."""
+
     name = Column(String, nullable=False)
     description = Column(String, nullable=False)
     keyword = Column(String, nullable=True, unique=True)
     tat_length_minutes = Column(Integer, nullable=True)
     active = Column(Boolean(), default=False)
-    analyses = relationship('Analysis', secondary=analysis_profile, back_populates="profiles", lazy="selectin")
+    analyses = relationship(
+        "Analysis",
+        secondary=analysis_profile,
+        back_populates="profiles",
+        lazy="selectin",
+    )
 
     async def update_tat(self):
         tats = []
@@ -109,14 +125,25 @@ class Profile(BaseAuditDBModel):
 
 class Analysis(BaseAuditDBModel):
     """Analysis Test/Service"""
+
     name = Column(String, nullable=False)
     description = Column(String, nullable=False)
     keyword = Column(String, nullable=False, unique=True)
     unit = Column(String, nullable=True)
-    profiles = relationship('Profile', secondary=analysis_profile, back_populates="analyses", lazy="selectin")
-    sample_types = relationship('SampleType', secondary=analysis_sample_type, backref="analyses", lazy="selectin")
-    result_options = relationship('ResultOption', backref="analyses", lazy="selectin")
-    category_uid = Column(Integer, ForeignKey('analysiscategory.uid'))
+    profiles = relationship(
+        "Profile",
+        secondary=analysis_profile,
+        back_populates="analyses",
+        lazy="selectin",
+    )
+    sample_types = relationship(
+        "SampleType",
+        secondary=analysis_sample_type,
+        backref="analyses",
+        lazy="selectin",
+    )
+    result_options = relationship("ResultOption", backref="analyses", lazy="selectin")
+    category_uid = Column(Integer, ForeignKey("analysiscategory.uid"))
     category = relationship(AnalysisCategory, backref="analyses", lazy="selectin")
     tat_length_minutes = Column(Integer, nullable=True)  # to calculate TAT
     sort_key = Column(Integer, nullable=True)
@@ -135,9 +162,10 @@ class Analysis(BaseAuditDBModel):
 
 class ResultOption(BaseAuditDBModel):
     """Result Choices"""
+
     option_key = Column(Integer, nullable=False)
     value = Column(String, nullable=False)
-    analysis_uid = Column(Integer, ForeignKey('analysis.uid'))
+    analysis_uid = Column(Integer, ForeignKey("analysis.uid"))
 
     @classmethod
     async def create(cls, obj_in: schemas.ResultOptionCreate) -> schemas.ResultOption:
@@ -151,19 +179,26 @@ class ResultOption(BaseAuditDBModel):
 
 class AnalysisRequest(BaseAuditDBModel):
     """AnalysisRequest a.k.a Laboratory Request"""
-    patient_uid = Column(Integer, ForeignKey('patient.uid'))
-    patient = relationship(pt_models.Patient, backref="analysis_requests", lazy='selectin')
-    client_uid = Column(Integer, ForeignKey('client.uid'))
-    client = relationship(ct_models.Client, backref="analysis_requests", lazy='selectin')
-    samples = relationship("Sample", back_populates="analysis_request", lazy='selectin')
+
+    patient_uid = Column(Integer, ForeignKey("patient.uid"))
+    patient = relationship(
+        pt_models.Patient, backref="analysis_requests", lazy="selectin"
+    )
+    client_uid = Column(Integer, ForeignKey("client.uid"))
+    client = relationship(
+        ct_models.Client, backref="analysis_requests", lazy="selectin"
+    )
+    samples = relationship("Sample", back_populates="analysis_request", lazy="selectin")
     request_id = Column(String, index=True, unique=True, nullable=True)
     client_request_id = Column(String, unique=True, nullable=False)
     internal_use = Column(Boolean(), default=False)  # e.g Test Requests
 
     @classmethod
-    async def create(cls, obj_in: schemas.AnalysisRequestCreate) -> schemas.AnalysisRequest:
+    async def create(
+        cls, obj_in: schemas.AnalysisRequestCreate
+    ) -> schemas.AnalysisRequest:
         data = cls._import(obj_in)
-        data['request_id'] = (await IdSequence.get_next_number("AR"))[1]
+        data["request_id"] = (await IdSequence.get_next_number("AR"))[1]
         return await super().create(**data)
 
     async def update(self, obj_in: schemas.SampleTypeUpdate) -> schemas.AnalysisRequest:
@@ -174,96 +209,124 @@ class AnalysisRequest(BaseAuditDBModel):
 """
 Many to Many Link between Sample and Profile
 """
-sample_profile = Table('sample_profile', DBModel.metadata,
-                       Column("sample_uid", ForeignKey('sample.uid'), primary_key=True),
-                       Column("profile_uid", ForeignKey('profile.uid'), primary_key=True)
-                       )
+sample_profile = Table(
+    "sample_profile",
+    DBModel.metadata,
+    Column("sample_uid", ForeignKey("sample.uid"), primary_key=True),
+    Column("profile_uid", ForeignKey("profile.uid"), primary_key=True),
+)
 
 """
 Many to Many Link between Sample and Analysis
 """
-sample_analysis = Table('sample_analysis', DBModel.metadata,
-                        Column("sample_uid", ForeignKey('sample.uid'), primary_key=True),
-                        Column("analysis_uid", ForeignKey('analysis.uid'), primary_key=True)
-                        )
+sample_analysis = Table(
+    "sample_analysis",
+    DBModel.metadata,
+    Column("sample_uid", ForeignKey("sample.uid"), primary_key=True),
+    Column("analysis_uid", ForeignKey("analysis.uid"), primary_key=True),
+)
 
 """
 Many to Many Link between Sample and Rejection Reason
 """
-sample_rejection_reason = Table('sample_rejection_reason', DBModel.metadata,
-                                Column("sample_uid", ForeignKey('sample.uid'), primary_key=True),
-                                Column("rejection_reason_uid", ForeignKey('rejectionreason.uid'), primary_key=True)
-                                )
+sample_rejection_reason = Table(
+    "sample_rejection_reason",
+    DBModel.metadata,
+    Column("sample_uid", ForeignKey("sample.uid"), primary_key=True),
+    Column("rejection_reason_uid", ForeignKey("rejectionreason.uid"), primary_key=True),
+)
 
 
 class RejectionReason(BaseAuditDBModel):
     """Result Choices"""
+
     reason = Column(String, nullable=False)
 
     @classmethod
-    async def create(cls, obj_in: schemas.RejectionReasonCreate) -> schemas.RejectionReason:
+    async def create(
+        cls, obj_in: schemas.RejectionReasonCreate
+    ) -> schemas.RejectionReason:
         data = cls._import(obj_in)
         return await super().create(**data)
 
-    async def update(self, obj_in: schemas.RejectionReasonUpdate) -> schemas.RejectionReason:
+    async def update(
+        self, obj_in: schemas.RejectionReasonUpdate
+    ) -> schemas.RejectionReason:
         data = self._import(obj_in)
         return await super().update(**data)
 
 
 class Sample(Auditable, BaseMPTT):
     """Sample"""
-    analysis_request_uid = Column(Integer, ForeignKey('analysisrequest.uid'), nullable=True)
-    analysis_request = relationship('AnalysisRequest', back_populates="samples", lazy='selectin')
-    sample_type_uid = Column(Integer, ForeignKey('sampletype.uid'), nullable=False)
-    sample_type = relationship('SampleType', backref="samples", lazy='selectin')
+
+    analysis_request_uid = Column(
+        Integer, ForeignKey("analysisrequest.uid"), nullable=True
+    )
+    analysis_request = relationship(
+        "AnalysisRequest", back_populates="samples", lazy="selectin"
+    )
+    sample_type_uid = Column(Integer, ForeignKey("sampletype.uid"), nullable=False)
+    sample_type = relationship("SampleType", backref="samples", lazy="selectin")
     sample_id = Column(String, index=True, unique=True, nullable=True)
-    profiles = relationship(Profile, secondary=sample_profile, backref="samples", lazy='selectin')
-    analyses = relationship(Analysis, secondary=sample_analysis, backref="samples", lazy='selectin')
-    analysis_results = relationship("AnalysisResult", back_populates="sample", lazy='selectin')
+    profiles = relationship(
+        Profile, secondary=sample_profile, backref="samples", lazy="selectin"
+    )
+    analyses = relationship(
+        Analysis, secondary=sample_analysis, backref="samples", lazy="selectin"
+    )
+    analysis_results = relationship(
+        "AnalysisResult", back_populates="sample", lazy="selectin"
+    )
     priority = Column(Integer, nullable=False, default=0)
     status = Column(String, nullable=False)
     assigned = Column(Boolean(), default=False)
-    received_by_uid = Column(Integer, ForeignKey('user.uid'), nullable=True)
-    received_by = relationship(User, foreign_keys=[received_by_uid], lazy='selectin')
+    received_by_uid = Column(Integer, ForeignKey("user.uid"), nullable=True)
+    received_by = relationship(User, foreign_keys=[received_by_uid], lazy="selectin")
     date_received = Column(DateTime, nullable=True)
-    submitted_by_uid = Column(Integer, ForeignKey('user.uid'), nullable=True)
-    submitted_by = relationship(User, foreign_keys=[submitted_by_uid], lazy='selectin')
+    submitted_by_uid = Column(Integer, ForeignKey("user.uid"), nullable=True)
+    submitted_by = relationship(User, foreign_keys=[submitted_by_uid], lazy="selectin")
     date_submitted = Column(DateTime, nullable=True)
-    verified_by_uid = Column(Integer, ForeignKey('user.uid'), nullable=True)
-    verified_by = relationship(User, foreign_keys=[verified_by_uid], lazy='selectin')
+    verified_by_uid = Column(Integer, ForeignKey("user.uid"), nullable=True)
+    verified_by = relationship(User, foreign_keys=[verified_by_uid], lazy="selectin")
     date_verified = Column(DateTime, nullable=True)
-    published_by_uid = Column(Integer, ForeignKey('user.uid'), nullable=True)
-    published_by = relationship(User, foreign_keys=[published_by_uid], lazy='selectin')
+    published_by_uid = Column(Integer, ForeignKey("user.uid"), nullable=True)
+    published_by = relationship(User, foreign_keys=[published_by_uid], lazy="selectin")
     date_published = Column(DateTime, nullable=True)
-    invalidated_by_uid = Column(Integer, ForeignKey('user.uid'), nullable=True)
-    invalidated_by = relationship(User, foreign_keys=[invalidated_by_uid], lazy='selectin')
+    invalidated_by_uid = Column(Integer, ForeignKey("user.uid"), nullable=True)
+    invalidated_by = relationship(
+        User, foreign_keys=[invalidated_by_uid], lazy="selectin"
+    )
     date_invalidated = Column(DateTime, nullable=True)
-    cancelled_by_uid = Column(Integer, ForeignKey('user.uid'), nullable=True)
-    cancelled_by = relationship("User", foreign_keys=[cancelled_by_uid], lazy="selectin")
+    cancelled_by_uid = Column(Integer, ForeignKey("user.uid"), nullable=True)
+    cancelled_by = relationship(
+        "User", foreign_keys=[cancelled_by_uid], lazy="selectin"
+    )
     date_cancelled = Column(DateTime, nullable=True)
-    rejection_reasons = relationship(RejectionReason, secondary=sample_rejection_reason, lazy='selectin')
+    rejection_reasons = relationship(
+        RejectionReason, secondary=sample_rejection_reason, lazy="selectin"
+    )
     internal_use = Column(Boolean(), default=False)
     due_date = Column(DateTime, nullable=True)
     # QC Samples
-    qc_set_uid = Column(Integer, ForeignKey('qcset.uid'), nullable=True)
-    qc_set = relationship(QCSet, back_populates="samples", lazy='selectin')
-    qc_level_uid = Column(Integer, ForeignKey('qclevel.uid'), nullable=True)
-    qc_level = relationship(QCLevel, backref="qc_samples", lazy='selectin')
+    qc_set_uid = Column(Integer, ForeignKey("qcset.uid"), nullable=True)
+    qc_set = relationship(QCSet, back_populates="samples", lazy="selectin")
+    qc_level_uid = Column(Integer, ForeignKey("qclevel.uid"), nullable=True)
+    qc_level = relationship(QCLevel, backref="qc_samples", lazy="selectin")
 
     @staticmethod
     def copy_include_keys():
         """Keys to include when duplicating Sample"""
         return [
-            'analysis_request_uid',
-            'sample_type_uid',
-            'status',
-            'sample_id',
-            'profiles',
-            'analyses',
-            'priority',
-            'received_by_uid',
-            'date_received',
-            'internal_use',
+            "analysis_request_uid",
+            "sample_type_uid",
+            "status",
+            "sample_id",
+            "profiles",
+            "analyses",
+            "priority",
+            "received_by_uid",
+            "date_received",
+            "internal_use",
         ]
 
     async def update_due_date(self, reset: bool = False):
@@ -311,6 +374,7 @@ class Sample(Auditable, BaseMPTT):
 
     async def get_analysis_results(self):
         from felicity.apps.analysis.models.results import AnalysisResult
+
         return await AnalysisResult.get_all(sample_uid=self.uid)
 
     async def receive(self, received_by):
@@ -350,7 +414,11 @@ class Sample(Auditable, BaseMPTT):
         return self
 
     async def submit(self, submitted_by):
-        statuses = [states.result.RESULTED, states.result.RETRACTED, states.result.VERIFIED]
+        statuses = [
+            states.result.RESULTED,
+            states.result.RETRACTED,
+            states.result.VERIFIED,
+        ]
         analysis_results = await self.get_analysis_results()
         match = all([(sibling.status in statuses) for sibling in analysis_results])
         if match and self.status == states.sample.RECEIVED:
@@ -372,7 +440,11 @@ class Sample(Auditable, BaseMPTT):
         return await self.save()
 
     async def verify(self, verified_by):
-        statuses = [states.result.VERIFIED, states.result.RETRACTED, states.result.CANCELLED]
+        statuses = [
+            states.result.VERIFIED,
+            states.result.RETRACTED,
+            states.result.CANCELLED,
+        ]
         analysis_results = await self.get_analysis_results()
         match = all([(sibling.status in statuses) for sibling in analysis_results])
         if match and self.status == states.sample.TO_BE_VERIFIED:
@@ -420,8 +492,8 @@ class Sample(Auditable, BaseMPTT):
     @classmethod
     async def create(cls, obj_in: schemas.SampleCreate) -> schemas.Sample:
         data = cls._import(obj_in)
-        sample_type = await SampleType.find(data['sample_type_uid'])
-        data['sample_id'] = (await IdSequence.get_next_number(sample_type.abbr))[1]
+        sample_type = await SampleType.find(data["sample_type_uid"])
+        data["sample_id"] = (await IdSequence.get_next_number(sample_type.abbr))[1]
         return await super().create(**data)
 
     async def update(self, obj_in: schemas.SampleUpdate) -> schemas.Sample:
@@ -430,15 +502,16 @@ class Sample(Auditable, BaseMPTT):
 
     async def duplicate_unique(self) -> schemas.Sample:
         data = self.to_dict(nested=False)
-        data['sample_id'] = self.copy_sample_id_unique()
+        data["sample_id"] = self.copy_sample_id_unique()
         for key, _ in list(data.items()):
             if key not in self.copy_include_keys():
                 del data[key]
-        data['status'] = states.sample.RECEIVED
-        data['profiles'] = self.profiles
-        data['analyses'] = self.analyses
-        data['parent_id'] = self.uid
+        data["status"] = states.sample.RECEIVED
+        data["profiles"] = self.profiles
+        data["analyses"] = self.analyses
+        data["parent_id"] = self.uid
         return await super().create(**data)
+
 
 # @event.listens_for(Sample, "after_update")
 # def stream_sample_verified_models(mapper, connection, target): # noqa

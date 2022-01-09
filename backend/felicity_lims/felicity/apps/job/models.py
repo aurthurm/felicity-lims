@@ -1,7 +1,7 @@
-from sqlalchemy import Column, String, Integer
-
 from felicity.database.base_class import DBModel
-from . import schemas, conf
+from sqlalchemy import Column, Integer, String
+
+from . import conf, schemas
 
 
 class Job(DBModel):
@@ -31,12 +31,10 @@ class Job(DBModel):
     @classmethod
     async def fetch_sorted(cls):
         exclude = [conf.states.FINISHED, conf.states.FAILED]
-        jobs = await Job.where(status__notin=exclude).sort('-priority').all()
+        jobs = await Job.where(status__notin=exclude).sort("-priority").all()
         _jobs = Job.smart_query(
-            filters={
-                'status__notin': [conf.states.FINISHED, conf.states.FAILED],
-            },
-            sort_attrs=['-priority']
+            filters={"status__notin": [conf.states.FINISHED, conf.states.FAILED]},
+            sort_attrs=["-priority"],
         )
         return jobs
 

@@ -1,5 +1,3 @@
-
-    
 async def psql_records_to_dict(records, many=False):
     """Converts a db record(s) to dict
     database usually return a databases.backends.postgres.Record

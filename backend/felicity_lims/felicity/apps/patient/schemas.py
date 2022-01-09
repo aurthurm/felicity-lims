@@ -3,10 +3,9 @@ from typing import Optional
 
 from pydantic import BaseModel, EmailStr
 
-
-#  
+#
 #  Patient Schema
-# 
+#
 
 # Shared properties
 class PatientBase(BaseModel):
@@ -15,7 +14,7 @@ class PatientBase(BaseModel):
     patient_id: Optional[str] = None
     first_name: Optional[str] = None
     middle_name: Optional[str] = None
-    last_name: Optional[str] = None  
+    last_name: Optional[str] = None
     gender: Optional[int] = 2
     age: Optional[int] = None
     date_of_birth: Optional[datetime] = None
@@ -25,7 +24,7 @@ class PatientBase(BaseModel):
     consent_sms: Optional[bool] = None
     email: Optional[EmailStr] = None
     internal_use: Optional[bool] = False
-    active: Optional[bool] = None  
+    active: Optional[bool] = None
 
 
 # Properties to receive via API on creation

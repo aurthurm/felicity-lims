@@ -2,7 +2,7 @@ from typing import List, Optional
 
 import strawberry  # noqa
 from felicity.apps.markdown import models
-from felicity.gql.markdown.types import (
+from felicity.api.gql.markdown.types import (
     DocumentCategoryType,
     DocumentTagType,
     DocumentType,

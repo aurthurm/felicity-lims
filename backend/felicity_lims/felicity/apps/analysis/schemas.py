@@ -1,13 +1,13 @@
-from typing import Optional, List
 from datetime import datetime
+from typing import List, Optional
 
 from felicity.apps import BaseAuditModel
 from felicity.apps.setup.schemas import Department
 
 
-# 
+#
 # SampleType Schemas
-# 
+#
 
 # Shared properties
 class SampleTypeBase(BaseAuditModel):
@@ -45,9 +45,9 @@ class SampleTypeInDB(SampleTypeBaseInDB):
     pass
 
 
-# 
+#
 # Profile Schemas
-# 
+#
 
 # Shared properties
 class ProfileBase(BaseAuditModel):
@@ -124,7 +124,7 @@ class AnalysisCategoryInDB(AnalysisCategoryBaseInDB):
 
 #
 # Analysis Schemas
-# 
+#
 
 # Shared properties
 class AnalysisBase(BaseAuditModel):
@@ -208,7 +208,7 @@ class ResultOptionInDB(ResultOptionBaseInDB):
 
 #
 # AnalysisRequest Schemas
-# 
+#
 
 # Shared properties
 class AnalysisRequestBase(BaseAuditModel):
@@ -248,7 +248,7 @@ class AnalysisRequestInDB(AnalysisRequestBaseInDB):
 
 #
 # Sample Schemas
-# 
+#
 
 # Shared properties
 class SampleBase(BaseAuditModel):
@@ -329,7 +329,7 @@ class RejectionReasonInDB(RejectionReasonBaseInDB):
 
 #
 # AnalysisResultBase Schemas
-# 
+#
 
 # Shared properties
 class AnalysisResultBase(BaseAuditModel):

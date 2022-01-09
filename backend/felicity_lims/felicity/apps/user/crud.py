@@ -1,8 +1,10 @@
-from typing import Any, Dict, Optional, Union, TypeVar
+from typing import Any, Dict, Optional, Union
+
+from felicity.apps.common.crud import CRUDBase
+from felicity.core.security import get_password_hash  # noqa
+from felicity.core.security import verify_password
 from sqlalchemy.orm import Session
 
-from felicity.apps.core.crud import CRUDBase
-from felicity.core.security import get_password_hash, verify_password  # noqa
 from .models import User
 from .schemas import UserCreate, UserUpdate
 
@@ -29,7 +31,7 @@ class CRUDUser(CRUDBase[User, UserCreate, UserUpdate]):
         return db_obj
 
     def update(
-            self, db: Session, *, db_obj: User, obj_in: Union[UserUpdate, Dict[str, Any]]
+        self, db: Session, *, db_obj: User, obj_in: Union[UserUpdate, Dict[str, Any]]
     ) -> User:
         if isinstance(obj_in, dict):
             update_data = obj_in
@@ -49,7 +51,9 @@ class CRUDUser(CRUDBase[User, UserCreate, UserUpdate]):
             return None
         return _user
 
-    def authenticate_by_username(self, db: Session, *, username: str, password: str) -> Optional[User]:
+    def authenticate_by_username(
+        self, db: Session, *, username: str, password: str
+    ) -> Optional[User]:
         _user = self.get_by_username(db, username=username)
         if not _user:
             return None

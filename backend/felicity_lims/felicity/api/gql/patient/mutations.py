@@ -5,8 +5,8 @@ from typing import Dict, Optional
 import strawberry  # noqa
 from felicity.apps.client import models as client_models
 from felicity.apps.patient import models, schemas
-from felicity.gql import OperationError, auth_from_info, verify_user_auth
-from felicity.gql.patient.types import PatientType
+from felicity.api.gql import OperationError, auth_from_info, verify_user_auth
+from felicity.api.gql.patient.types import PatientType
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

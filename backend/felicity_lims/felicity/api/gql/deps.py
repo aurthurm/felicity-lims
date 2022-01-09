@@ -1,4 +1,4 @@
-from felicity.apps.core import schemas as core_schemas  # noqa
+from felicity.apps.common import schemas as core_schemas  # noqa
 from felicity.apps.user import models  # noqa
 from felicity.core import security  # noqa
 from felicity.core.config import settings  # noqa

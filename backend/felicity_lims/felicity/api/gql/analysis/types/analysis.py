@@ -2,11 +2,11 @@ from datetime import datetime
 from typing import List, Optional
 
 import strawberry  # noqa
-from felicity.gql import PageInfo
-from felicity.gql.client.types import ClientType
-from felicity.gql.patient.types import PatientType
-from felicity.gql.setup.types import DepartmentType
-from felicity.gql.user.types import UserType
+from felicity.api.gql import PageInfo
+from felicity.api.gql.client.types import ClientType
+from felicity.api.gql.patient.types import PatientType
+from felicity.api.gql.setup.types import DepartmentType
+from felicity.api.gql.user.types import UserType
 
 
 @strawberry.type
@@ -30,6 +30,13 @@ class QCSetType:
     uid: int
     name: str
     note: str
+    #
+    created_by_uid: Optional[int]
+    created_by: Optional[UserType]
+    created_at: Optional[datetime]
+    updated_by_uid: Optional[int]
+    updated_by: Optional[UserType]
+    updated_at: Optional[datetime]
 
 
 @strawberry.type
@@ -48,6 +55,7 @@ class AnalysisRequestType:
     request_id: str
     client_request_id: str
     internal_use: bool
+    #
     created_by_uid: Optional[int]
     created_by: Optional[UserType]
     created_at: Optional[datetime]
@@ -88,6 +96,7 @@ class AnalysisType:
     sort_key: int
     internal_use: bool
     active: bool
+    #
     created_by_uid: Optional[int]
     created_by: Optional[UserType]
     created_at: Optional[datetime]

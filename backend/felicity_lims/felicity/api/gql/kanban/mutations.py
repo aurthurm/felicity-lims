@@ -5,14 +5,14 @@ from typing import List, Optional
 import strawberry  # noqa
 from felicity.apps.kanban import models, schemas
 from felicity.apps.user import models as user_models
-from felicity.gql import (
+from felicity.api.gql import (
     DeletedItem,
     DeleteResponse,
     OperationError,
     auth_from_info,
     verify_user_auth,
 )
-from felicity.gql.kanban import types
+from felicity.api.gql.kanban import types
 from felicity.utils import get_passed_args
 
 logging.basicConfig(level=logging.INFO)

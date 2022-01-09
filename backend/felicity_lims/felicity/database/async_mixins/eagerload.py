@@ -1,17 +1,16 @@
 try:
-    from typing import List
-except ImportError: # pragma: no cover
+    pass
+except ImportError:  # pragma: no cover
     pass
 
 from sqlalchemy.future import select
-from sqlalchemy.orm import joinedload
-from sqlalchemy.orm import subqueryload
+from sqlalchemy.orm import joinedload, subqueryload
 from sqlalchemy.orm.attributes import InstrumentedAttribute
 
 from .session import SessionMixin
 
-JOINED = 'joined'
-SUBQUERY = 'subquery'
+JOINED = "joined"
+SUBQUERY = "subquery"
 
 
 def eager_expr(schema):
@@ -26,6 +25,7 @@ def _flatten_schema(schema):
     """
     :type schema: dict
     """
+
     def _flatten(schema, parent_path, result):
         """
         :type schema: dict
@@ -43,14 +43,14 @@ def _flatten_schema(schema):
             else:
                 join_method, inner_schema = value, None
 
-            full_path = parent_path + '.' + path if parent_path else path
+            full_path = parent_path + "." + path if parent_path else path
             result[full_path] = join_method
 
             if inner_schema:
                 _flatten(inner_schema, full_path, result)
 
     result = {}
-    _flatten(schema, '', result)
+    _flatten(schema, "", result)
     return result
 
 
@@ -65,8 +65,7 @@ def _eager_expr_from_flat_schema(flat_schema):
         elif join_method == SUBQUERY:
             result.append(subqueryload(path))
         else:
-            raise ValueError('Bad join method `{}` in `{}`'
-                             .format(join_method, path))
+            raise ValueError("Bad join method `{}` in `{}`".format(join_method, path))
     return result
 
 
@@ -95,7 +94,9 @@ class EagerLoadMixin(SessionMixin):
             }
             User.with_(schema).first()
         """
-        return select(cls).options(*eager_expr(schema or {}))  # cls.query.options(*eager_expr(schema or {}))
+        return select(cls).options(
+            *eager_expr(schema or {})
+        )  # cls.query.options(*eager_expr(schema or {}))
 
     @classmethod
     def with_joined(cls, *paths):

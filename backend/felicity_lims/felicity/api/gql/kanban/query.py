@@ -3,8 +3,8 @@ from typing import List, Optional
 import sqlalchemy as sa
 import strawberry  # noqa
 from felicity.apps.kanban import models
-from felicity.gql import PageInfo
-from felicity.gql.kanban.types import (
+from felicity.api.gql import PageInfo
+from felicity.api.gql.kanban.types import (
     BoardCursorPage,
     BoardEdge,
     BoardListingType,
