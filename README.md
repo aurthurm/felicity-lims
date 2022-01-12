@@ -75,15 +75,28 @@ cd felicity
 docker-compose up -d
 ```
 
+### Loadtest
+Start the application with gunicorn and experiment with various workers 
+```shell
+gunicorn --workers 4 --bind 0.0.0.0:8000 -k uvicorn.workers.UvicornWorker --reload felicity.main:flims
+```
+Experiment with various -c and --rps values
+```shell
+sudo npm install -g loadtest
+loadtest --data '{"query": "query{clientAll{items{uid name code district{uid name email emailCc province{uid name code country{uid name}}}}}}"}' -c 4 --rps 500  http://localhost:8000/felicity-gql -T 'application/json'
+loadtest --data '{"query": "query getAllSamples{sampleAll(pageSize:10 afterCursor:\"\" status:\"\" text:\"\" clientUid:0 sortBy:[\"uid\"]){totalCount pageInfo{hasNextPage hasPreviousPage endCursor startCursor __typename}items{uid analysisRequest{uid clientRequestId patient{uid firstName lastName clientPatientId gender dateOfBirth age ageDobEstimated consentSms __typename}client{uid name __typename}__typename}sampleType{uid name __typename}sampleId priority status analyses{uid name sortKey __typename}profiles{uid name __typename}rejectionReasons{uid reason __typename}__typename}__typename}}"}' -c 10 --rps 10000  http://localhost:8000/felicity-gql -T 'application/json'
+```
+The application seems to be very performant even without using a load balancer and caching.
+
 ## Other projects 
     - Felicity Docs - Built with Laboratory QMS in Mind but can be used anywhere for document management
     - Felicity Stocker - Medical Laboratory Inventory Management system
-    - Felicity Requisitions - 
-    - Felicity Spacious - End to End laboratory management system with all module combined into one. 
-
+    - Felicity Request - Requests and Approvals (e-Requisitions)
+    - Felicity Teams - Project Management Tool
+    - Felicity Field - Survey Data Collection Tool, Forms ,Analytics etc
 ## Contact
- - Email me directly at aurthurmusendame@gmail.com
- - Me on [facebook](https://www.fb.me/aurthur.musendame)
- - Me on [Linked In](https://www.linkedin.com/in/aurthurmusendame)
- - [Whatsapp Me](https://api.WhatsApp.com/send?phone=263776406399) or call on +263776406399
- - Me on [Telegram](https://www.t.me/aurthurm)
+ - [EMail](mailto:aurthurmusendame@gmail.com?subject=[GitHub]%20Felicity%20Lims%20Enquiry)
+ - [Facebook](https://www.fb.me/aurthur.musendame)
+ - [LinkedIn](https://www.linkedin.com/in/aurthurmusendame)
+ - [Whatsapp](https://api.WhatsApp.com/send?phone=263776406399)
+ - [Telegram](https://www.t.me/aurthurm)

@@ -10,7 +10,7 @@ from felicity.apps.analysis.models import (
 )
 from felicity.apps.common.models import IdSequence
 from felicity.apps.setup.models.setup import Instrument
-from felicity.apps.stream.utils import FelicityStreamer
+from felicity.apps.notification.utils import FelicityStreamer
 from felicity.apps.user.models import User
 from felicity.apps.worksheet import conf, schemas
 from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, String, Table

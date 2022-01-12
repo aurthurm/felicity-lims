@@ -172,13 +172,15 @@ export const REJECT_SAMPLES = gql`
     rejectSamples(samples: $samples){
       ... on SampleListingType{
         __typename
-        uid
-        status
-        rejectionReasons{
+        samples {
           uid
-          reason
-        }
+          status
+          rejectionReasons{
+            uid
+            reason
+          }
 
+        }
       }
 
       ... on OperationError {

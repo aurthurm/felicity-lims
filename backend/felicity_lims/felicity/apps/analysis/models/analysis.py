@@ -10,7 +10,7 @@ from felicity.apps.common import BaseMPTT
 from felicity.apps.common.models import IdSequence
 from felicity.apps.common.utils import sequencer
 from felicity.apps.patient import models as pt_models
-from felicity.apps.stream.utils import FelicityStreamer
+from felicity.apps.notification.utils import FelicityStreamer
 from felicity.apps.user.models import User
 from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, String, Table
 from sqlalchemy.orm import relationship

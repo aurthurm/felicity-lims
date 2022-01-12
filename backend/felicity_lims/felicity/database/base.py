@@ -36,8 +36,8 @@ from felicity.apps.setup.models import Laboratory  # noqa
 from felicity.apps.setup.models import Method  # noqa
 from felicity.apps.setup.models import Province  # noqa
 from felicity.apps.setup.models import Supplier  # noqa
-from felicity.apps.stream.models import ActivityFeed  # noqa
-from felicity.apps.stream.models import ActivityStream  # noqa
+from felicity.apps.notification.models import ActivityFeed  # noqa
+from felicity.apps.notification.models import ActivityStream  # noqa
 from felicity.apps.user.models import Group  # noqa
 from felicity.apps.user.models import Permission  # noqa
 from felicity.apps.user.models import User  # noqa

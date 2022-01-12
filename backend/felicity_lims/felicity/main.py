@@ -167,4 +167,4 @@ async def stream_socket(websocket):
     await run_until_first_complete((get_streams, {"websocket": websocket}))
 
 
-flims.add_websocket_route("/streamer", stream_socket, "stream-only")
+flims.add_websocket_route("/streamer", stream_socket, "notification-only")

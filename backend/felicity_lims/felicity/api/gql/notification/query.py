@@ -6,7 +6,7 @@ from felicity.api.gql.notification.types import NotificationType
 
 
 @strawberry.type
-class NotificationQuery:
+class StreamNotificationQuery:
     @strawberry.field
     async def notification_filter(
         self,

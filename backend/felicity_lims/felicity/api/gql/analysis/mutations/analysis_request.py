@@ -30,7 +30,7 @@ class ARSampleInputType:
 class SampleRejectInputType:
     uid: int
     reasons: List[int]
-    other: Optional[str]
+    other: Optional[str] = ""
 
 
 AnalysisRequestResponse = strawberry.union(

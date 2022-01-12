@@ -12,12 +12,12 @@ from felicity.api.gql.messaging.mutations import MessageMutations
 from felicity.api.gql.messaging.query import MessageQuery
 from felicity.api.gql.noticeboard.mutations import NoticeMutations
 from felicity.api.gql.noticeboard.query import NoticeQuery
-from felicity.api.gql.notification.query import NotificationQuery
+from felicity.api.gql.notification.query import StreamNotificationQuery
 from felicity.api.gql.patient.mutations import PatientMutations
 from felicity.api.gql.patient.query import PatientQuery
 from felicity.api.gql.setup.mutations import SetupMutations
 from felicity.api.gql.setup.query import SetupQuery
-from felicity.api.gql.stream.subscription import StreamSubscription
+from felicity.api.gql.notification.subscription import StreamSubscription
 from felicity.api.gql.user.mutations import UserMutations
 from felicity.api.gql.user.query import UserQuery
 from felicity.api.gql.worksheet.mutations import WorkSheetMutations
@@ -37,7 +37,7 @@ class Query(
     KanBanQuery,
     MessageQuery,
     NoticeQuery,
-    NotificationQuery,
+    StreamNotificationQuery,
 ):
     pass
 
