@@ -141,18 +141,20 @@ export default defineComponent({
     const { executeMutation: updateSampleType } = useMutation(EDIT_SAMPLE_TYPE);
 
     function addSampleType(): void {
-      createSampleType({ name: form.name, abbr: form.abbr, description: form.description, active: form.active }).then((result) => {
+      const payload = { name: form.name, abbr: form.abbr, description: form.description, active: form.active}
+      createSampleType({ payload }).then((result) => {
        store.dispatch(ActionTypes.ADD_SAMPLE_TYPE, result);
       });
     }
 
     function editSampleType(): void {
-      updateSampleType({ uid: form.uid, name: form.name, abbr: form.abbr, description: form.description, active: form.active }).then((result) => {
+      const payload = { name: form.name, abbr: form.abbr, description: form.description, active: form.active}
+      updateSampleType({ uid: form.uid, payload }).then((result) => {
         store.dispatch(ActionTypes.UPDATE_SAMPLE_TYPE, result);
       });
     }
 
-    function FormManager(create: boolean, obj: ISampleType = {}):void {
+    function FormManager(create: boolean, obj = {} as ISampleType):void {
       formAction.value = create;
       showModal.value = true;
       formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "SAMPLE TYPE";

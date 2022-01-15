@@ -238,7 +238,7 @@
                   class="form-input mt-1 block w-full"
                   v-model="workSheetTemplate.cols"
                   type="number"
-                  :disabled="workSheetTemplate.worksheetType === 'flat'"
+                  disabled
                 />
               </label>
               <label class="block col-span-1 mb-2">
@@ -247,7 +247,7 @@
                   class="form-input mt-1 block w-full"
                   v-model="workSheetTemplate.rows"
                   type="number"
-                  :disabled="workSheetTemplate.worksheetType === 'flat'"
+                  disabled
                 />
               </label>
               <label for="toggle" class="text-gray-700 mt-8 ml-4">
@@ -256,7 +256,7 @@
                     type="checkbox" 
                     name="toggle" id="toggle" 
                     v-model="workSheetTemplate.rowWise"
-                   :disabled="workSheetTemplate.worksheetType === 'flat'"
+                    disabled
                     class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer outline-none"/>
                     <label for="toggle" class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer"></label>
                 </div>
@@ -426,7 +426,7 @@ export default defineComponent({
     const workSheetTemplates = computed<IWorkSheetTemplate[]>(() => store.getters.getWorkSheetTemplates);
 
     function addWorksheetTemplate() {
-      createWorksheetTemplate({ 
+      const payload = { 
         name: workSheetTemplate.name,
         sampleTypeUid: workSheetTemplate.sampleType!.uid,
         instrumentUid: workSheetTemplate.instrument!.uid,
@@ -439,14 +439,14 @@ export default defineComponent({
         rows:  workSheetTemplate.rows,
         rowWise:  workSheetTemplate.rowWise,
         analyses: workSheetTemplate.analyses![0]?.uid
-       }).then((result) => {
+      }
+      createWorksheetTemplate({ payload }).then((result) => {
         store.dispatch(ActionTypes.ADD_WORKSHEET_TEMPLATE, result)
       });
     }
 
     function editWorksheetTemplate() {
-      updateWorksheetTemplate({ 
-        uid: workSheetTemplate.uid,
+      const payload = { 
         name: workSheetTemplate.name,
         sampleTypeUid: workSheetTemplate.sampleType!.uid,
         instrumentUid: workSheetTemplate.instrument!.uid,
@@ -459,7 +459,8 @@ export default defineComponent({
         rows:  workSheetTemplate.rows,
         rowWise:  workSheetTemplate.rowWise,
         analyses: workSheetTemplate.analyses![0]?.uid
-       }).then((result) => {
+      }
+      updateWorksheetTemplate({ uid: workSheetTemplate.uid, payload }).then((result) => {
         store.dispatch(ActionTypes.UPDATE_WORKSHEET_TEMPLATE, result)
       });
     }
@@ -475,16 +476,16 @@ export default defineComponent({
             col: 1,
             name:"sample",
             sampleUid: undefined
-          } as IReserved;
+          };
           if(wst?.reserved?.some(x => x.position === i)){
             item.name ="control"
           }
-          wst?.reserved?.forEach((r: IReserved) => {
+          wst?.reserved?.forEach((r: any) => {
             if(r[1]?.position === i) {
               item.name = r[1]?.name;
             }
           });
-          items.push(item)
+          items.push(item as any)
       });
 
       return items;
@@ -510,7 +511,7 @@ export default defineComponent({
       if(!(workSheetTemplate.qcTemplateUid)) return;
       const template: IQCTemplate | undefined = qcTemplates.value?.find((item: IQCTemplate) => item.uid === workSheetTemplate.qcTemplateUid);
       template?.qcLevels!.forEach((level, index) => {
-        workSheetTemplate.reserved?.push({ position: index + 1, levelUid: level.uid } as IReserved)
+        workSheetTemplate.reserved?.push({ position: index + 1, levelUid: level.uid } as IReserved);
       });
     } 
 
@@ -521,7 +522,7 @@ export default defineComponent({
       }
     }
 
-    function FormManager(create: boolean, obj: IWorkSheetTemplate) {
+    function FormManager(create: boolean, obj = {} as IWorkSheetTemplate) {
       createItem.value = create;
       formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "WOKKSHEET TEMPLATE";
       showModal.value = true;

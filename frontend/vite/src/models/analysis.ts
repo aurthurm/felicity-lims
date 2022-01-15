@@ -61,7 +61,7 @@ export interface IAnalysisProfile {
     name: string;
     description: string;
     keyword: string,
-    analyses: IAnalysisService[];
+    analyses: IAnalysisService[] | number[];
     active: boolean;
 }
 
@@ -88,7 +88,7 @@ export interface IQCTemplate {
 }
 
   export interface IResultOption {
-    uid: number;
+    uid?: number;
     analysisUid: number;
     optionKey: number;
     value: string;

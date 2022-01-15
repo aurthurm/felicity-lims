@@ -131,13 +131,15 @@ export default defineComponent({
     const { executeMutation: updateQCTemplate } = useMutation(EDIT_QC_TEMPLATE);
 
     function addQCTemplate(): void {
-      createQCTemplate({ name: form.name, description: form.description, levels: levelsUids(form.qcLevels!), departments: form.departments}).then((result) => {
+      const payload = { name: form.name, description: form.description, levels: levelsUids(form.qcLevels!), departments: form.departments }
+      createQCTemplate({ payload}).then((result) => {
        store.dispatch(ActionTypes.ADD_QC_TEMPLATE, result);
       });
     }
 
     function editQCTemplate(): void {
-      updateQCTemplate({ uid: form.uid, name: form.name, description: form.description, levels: levelsUids(form.qcLevels!), departments: form.departments}).then((result) => {
+      const payload = { name: form.name, description: form.description, levels: levelsUids(form.qcLevels!), departments: form.departments }
+      updateQCTemplate({ uid: form.uid, payload }).then((result) => {
         store.dispatch(ActionTypes.UPDATE_QC_TEMPLATE, result);
       });
     }
@@ -149,7 +151,7 @@ export default defineComponent({
       return qcLevels;
     }
 
-    function FormManager(create: boolean, obj: IQCTemplate = {}): void {
+    function FormManager(create: boolean, obj = {} as IQCTemplate): void {
       formAction.value = create;
       showModal.value = true;
       formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "QC Template";

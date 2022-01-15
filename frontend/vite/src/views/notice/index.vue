@@ -131,10 +131,14 @@ export default defineComponent({
     const { executeMutation: noticeDeleter } = useMutation(DELETE_NOTICE);
 
     function addNotice(): void {
-      createNotice({ 
-        title: modalState.notice.title, 
-        body: modalState.notice.body,
-        expiry: modalState.notice.expiry
+      createNotice({
+        payload: { 
+          title: modalState.notice.title, 
+          body: modalState.notice.body,
+          expiry: modalState.notice.expiry,
+          groups: [],
+          departments: []
+        }
       }).then((res) => {
         const data = gqlResponseHandler(res)
         const createdNotice = gqlOpertionalErrorHandler(data?.createNotice)
@@ -145,9 +149,13 @@ export default defineComponent({
     function editNotice(): void {
       udateNotice({ 
         uid: modalState.notice.uid,
-        title: modalState.notice.title, 
-        body: modalState.notice.body,
-        expiry: modalState.notice.expiry
+        payload: {
+          title: modalState.notice.title, 
+          body: modalState.notice.body,
+          expiry: modalState.notice.expiry,
+          groups: [],
+          departments: []
+        }
       }).then((res) => {
         const data = gqlResponseHandler(res)
         _updateNotice(data?.updateNotice);

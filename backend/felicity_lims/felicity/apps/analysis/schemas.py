@@ -135,7 +135,7 @@ class AnalysisBase(BaseAuditModel):
     sample_types: Optional[List[SampleType]] = []
     tat_length_minutes: Optional[int] = None
     unit: Optional[str] = None
-    category_uid: Optional[int] = None
+    category_uid: Optional[int]
     sort_key: Optional[int] = 0
     internal_use: Optional[bool] = False
     active: Optional[bool] = True

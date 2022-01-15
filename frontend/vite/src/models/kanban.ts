@@ -1,24 +1,24 @@
 export interface IComment {
-    uid: string;
+    uid: number;
     comment: string;
     dateCommented: string;
     commentBy: string;
   }
   
   export interface IMileStone {
-    uid: string;
+    uid: number;
     title: string;
     done: boolean;
     assignee: string;
-    assigneeUid: number;
+    assigneeUid: number | undefined;
   }
   
 
   export interface ITask {
-    uid: string;
+    uid: number;
     title: string;
     description: string;
-    listingUid: string;
+    listingUid: number;
     milestones: IMileStone[];
     comments: IComment[];
     status: string;
@@ -30,7 +30,7 @@ export interface IComment {
   }
 
    export interface IListing {
-      uid: string;
+      uid: number;
       title: string;
       description: string;
       listingTasks: ITask[];
@@ -38,7 +38,7 @@ export interface IComment {
     
   
   export interface IBoard {
-    uid: string;
+    uid: number;
     title: string;
     description: string;
     departmentUid: string;

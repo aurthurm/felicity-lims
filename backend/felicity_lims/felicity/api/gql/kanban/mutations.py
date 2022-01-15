@@ -291,15 +291,17 @@ class KanBanMutations:
         incoming = {
             "assignee_uid": felicity_user.uid,
             "listing_uid": listing_uid,
+            "title": title,
             "description": description,
             "created_by_uid": felicity_user.uid,
             "updated_by_uid": felicity_user.uid,
         }
 
         obj_in = schemas.ListingTaskCreate(**incoming)
+        obj_in.members = [felicity_user]
         task: models.ListingTask = await models.ListingTask.create(obj_in)
-        task.members.append(felicity_user)
-        task = await task.save()
+        # task.members.append(felicity_user)
+        # task = await task.save()
         return types.ListingTaskType(**task.marshal_simple())
 
     @strawberry.mutation
@@ -326,7 +328,7 @@ class KanBanMutations:
         obj_data = task.to_dict()
         for field in obj_data:
             if field in payload.__dict__:
-                if payload.__[field] or payload.__dict__[field] is False:
+                if payload.__dict__[field] or payload.__dict__[field] is False:
                     try:
                         setattr(task, field, payload.__dict__[field])
                     except Exception as e:
@@ -338,16 +340,18 @@ class KanBanMutations:
             logger.warning(e)
 
         obj_in = schemas.ListingTaskUpdate(**task.to_dict())
-        task = await task.update(obj_in)
+        await task.update(obj_in)
 
+        _members = []
         if payload.member_uids:
-            task.members = []
             if len(payload.member_uids) > 0:
                 for member_uid in payload.member_uids:
                     member = await user_models.User.get(uid=int(member_uid))
-                    task.members.append(member)
+                    _members.append(member)
 
+        task.members = _members
         task = await task.save()
+
         return types.ListingTaskType(**task.marshal_simple())
 
     @strawberry.mutation
@@ -474,6 +478,8 @@ class KanBanMutations:
         incoming = {
             "assignee_uid": assignee_uid,
             "done": done,
+            "title": title,
+            "task_uid": task_uid,
             "created_by_uid": felicity_user.uid,
             "updated_by_uid": felicity_user.uid,
         }

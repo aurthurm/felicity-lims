@@ -99,9 +99,10 @@ export default defineComponent({
     store.dispatch(ActionTypes.FETCH_BOARD_BY_UID, +route.params.boardUid);
     const board = computed(() => store.getters.getBoard );
     const { executeMutation: createBoardListing } = useMutation(ADD_BOARD_LISTING);
-
+ 
     function addBoardListing(): void {
-      createBoardListing({ title: form.title, description: form.description, boardUid: board.value.uid }).then((result) => {
+      const payload = { title: form.title, description: form.description, boardUid: board.value.uid };
+      createBoardListing({ payload }).then((result) => {
        store.dispatch(ActionTypes.ADD_BOARD_LISTING, result);
       });
     }

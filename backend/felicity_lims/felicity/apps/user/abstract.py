@@ -105,7 +105,7 @@ class AbstractAuth(SimpleAuditMixin, DBModel):
         return auth
 
     @classmethod
-    async def create(cls, auth_in: schemas.AuthCreate) -> schemas.User:
+    async def create(cls, auth_in: schemas.AuthCreate) -> schemas.Auth:
         by_username = await cls.get_by_username(auth_in.user_name)
         if by_username:
             raise Exception("Username already exist")
@@ -116,7 +116,7 @@ class AbstractAuth(SimpleAuditMixin, DBModel):
         created = await super().create(**data)
         return created
 
-    async def update(self, auth_in: schemas.AuthUpdate) -> schemas.User:
+    async def update(self, auth_in: schemas.AuthUpdate) -> schemas.Auth:
         update_data = self._import(auth_in)
 
         if "password" in update_data:

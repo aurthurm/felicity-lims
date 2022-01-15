@@ -17,12 +17,26 @@ class SampleTypeTyp:
     active: bool
     internal_use: bool
     abbr: str
+    #
+    created_by_uid: Optional[int]
+    created_by: Optional[UserType]
+    created_at: Optional[datetime]
+    updated_by_uid: Optional[int]
+    updated_by: Optional[UserType]
+    updated_at: Optional[datetime]
 
 
 @strawberry.type
 class QCLevelType:
     uid: int
     level: str
+    #
+    created_by_uid: Optional[int]
+    created_by: Optional[UserType]
+    created_at: Optional[datetime]
+    updated_by_uid: Optional[int]
+    updated_by: Optional[UserType]
+    updated_at: Optional[datetime]
 
 
 @strawberry.type
@@ -43,6 +57,13 @@ class QCSetType:
 class RejectionReasonType:
     uid: int
     reason: str
+    #
+    created_by_uid: Optional[int]
+    created_by: Optional[UserType]
+    created_at: Optional[datetime]
+    updated_by_uid: Optional[int]
+    updated_by: Optional[UserType]
+    updated_at: Optional[datetime]
 
 
 @strawberry.type
@@ -70,6 +91,13 @@ class AnalysisCategoryType:
     name: str
     description: Optional[str]
     active: bool
+    #
+    created_by_uid: Optional[int]
+    created_by: Optional[UserType]
+    created_at: Optional[datetime]
+    updated_by_uid: Optional[int]
+    updated_by: Optional[UserType]
+    updated_at: Optional[datetime]
 
 
 @strawberry.type
@@ -78,7 +106,14 @@ class ResultOptionType:
     option_key: int
     value: str
     analysis_uid: int
-    # analysis: AnalysisType
+    # analysis: Optional['AnalysisType']
+    #
+    created_by_uid: Optional[int]
+    created_by: Optional[UserType]
+    created_at: Optional[datetime]
+    updated_by_uid: Optional[int]
+    updated_by: Optional[UserType]
+    updated_at: Optional[datetime]
 
 
 @strawberry.type
@@ -114,6 +149,13 @@ class ProfileType:
     tat_length_minutes: Optional[int]
     analyses: Optional[List[AnalysisType]]
     active: bool
+    #
+    created_by_uid: Optional[int]
+    created_by: Optional[UserType]
+    created_at: Optional[datetime]
+    updated_by_uid: Optional[int]
+    updated_by: Optional[UserType]
+    updated_at: Optional[datetime]
 
 
 @strawberry.type
@@ -211,3 +253,10 @@ class QCTemplateType:
     description: Optional[str]
     departments: List[DepartmentType]
     qc_levels: List[QCLevelType]
+    #
+    created_by_uid: Optional[int]
+    created_by: Optional[UserType]
+    created_at: Optional[datetime]
+    updated_by_uid: Optional[int]
+    updated_by: Optional[UserType]
+    updated_at: Optional[datetime]

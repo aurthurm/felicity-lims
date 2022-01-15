@@ -484,7 +484,7 @@ class SetupMutations:
     @strawberry.mutation
     async def create_district(
         self, info, payload: DistrictInputType
-    ) -> DepartmentResponse:  # noqa
+    ) -> DistrictResponse:  # noqa
 
         if not payload.name:
             return OperationError(error="Please Provide a name for the district")

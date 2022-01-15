@@ -14,6 +14,7 @@
         @focus="setServiceToNull()"
       /> -->
     </div>
+
     <hr />
 
     <div class="grid grid-cols-12 gap-4 mt-2">
@@ -301,7 +302,7 @@ export default defineComponent({
     const { executeMutation: updateAnalysisService } = useMutation(EDIT_ANALYSIS_SERVICE);
 
     function addAnalysisService(): void {
-      createAnalysisService({ 
+      const payload = { 
         name: analysisService.name, 
         keyword: analysisService.keyword, 
         description: analysisService.description, 
@@ -309,22 +310,23 @@ export default defineComponent({
         sortKey: analysisService.sortKey,
         active: analysisService.active, 
         internalUse: analysisService.internalUse, 
-        }).then((result) => {
+      }
+      createAnalysisService({ payload }).then((result) => {
        store.dispatch(ActionTypes.ADD_ANALYSES_SERVICE, result);
       });
     }
 
     function editAnalysisService(): void {
-      updateAnalysisService({ 
-        uid: analysisService.uid, 
+      const payload = { 
         name: analysisService.name, 
         keyword: analysisService.keyword, 
         description: analysisService.description, 
-        categoryUid: analysisService.categoryUid,
+        categoryUid: analysisService.categoryUid, 
         sortKey: analysisService.sortKey,
         active: analysisService.active, 
         internalUse: analysisService.internalUse, 
-        }).then((result) => {
+      }
+      updateAnalysisService({  uid: analysisService.uid,  payload }).then((result) => {
         store.dispatch(ActionTypes.UPDATE_ANALYSES_SERVICE, result);
       });
     }
@@ -333,11 +335,7 @@ export default defineComponent({
       Object.assign(analysisService, { ...service });
     }
 
-    function resetAnalysisService():void {
-      Object.assign(analysisService, {} as IAnalysisService);
-    }
-
-    function FormManager(create: boolean, obj: IAnalysisService = {}):void {
+    function FormManager(create: boolean, obj = {} as IAnalysisService):void {
       formAction.value = create;
       showModal.value = true;
       formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "ANALYSES SERVICE";

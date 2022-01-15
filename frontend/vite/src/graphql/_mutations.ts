@@ -129,10 +129,10 @@ export const EDIT_USER = gql`
 
 
 export const ADD_USER_AUTH = gql`
-  mutation addUserAuth($userUid: Int!, $username: String!, $password: String!, $passwordc: String!) {
+  mutation addUserAuth($userUid: Int!, $userName: String!, $password: String!, $passwordc: String!) {
     createUserAuth(
       userUid: $userUid, 
-      username: $username, 
+      userName: $userName, 
       password: $password, 
       passwordc: $passwordc, 
     ){
@@ -220,8 +220,8 @@ export const UPDATE_GROUP_PERMS = gql`
 
 
 export const ADD_DEPARTMENT = gql`
-  mutation addDepartment($name: String!) {
-    createDepartment(name: $name) {
+  mutation addDepartment($payload: DepartmentInputType!) {
+    createDepartment(payload: $payload) {
       ... on DepartmentType {
         uid
         name
@@ -236,8 +236,8 @@ export const ADD_DEPARTMENT = gql`
 
 
 export const UPDATE_DEPARTMENT = gql`
-  mutation editDepartment($uid: Int!, $name: String!) {
-    updateDepartment(uid: $uid, name: $name) {
+  mutation editDepartment($uid: Int!, $payload: DepartmentInputType!) {
+    updateDepartment(uid: $uid, payload: $payload) {
       ... on DepartmentType {
         uid
         name

@@ -40,13 +40,15 @@ export default defineComponent({
     const { executeMutation: updateDistrict } = useMutation(UPDATE_DISTRICT);
 
     function addCountry():void {
-      createCountry({ name: form.name, code: form.code }).then((result) => {
+      const payload = {name: form.name, code: form.code}
+      createCountry({ payload }).then((result) => {
         Object.assign(country, result);
       });
     }
 
     function editCountry():void {
-      updateCountry({ uid: form.uid, name: form.name, code: form.code, active: true }).then(
+      const payload = {name: form.name, code: form.code, active: true}
+      updateCountry({ uid: form.uid, payload }).then(
         (result) => {
           Object.assign(country, result);
         },
@@ -54,13 +56,15 @@ export default defineComponent({
     }
 
     function addProvince():void {
-      createProvince({name: form.name, code:form.code, countryUid: country.uid}).then((result) => {
+      const payload = {name: form.name, code:form.code, countryUid: country.uid}
+      createProvince({ payload }).then((result) => {
         Object.assign(province, result);
       });
     }
 
     function editProvince():void {
-      updateProvince({ uid: form.uid, name: form.name, code: form.code, active: true }).then(
+      const payload = {name: form.name, code: form.code, active: true}
+      updateProvince({ uid: form.uid, payload }).then(
         (result) => {
           Object.assign(province, result);
         },
@@ -68,13 +72,15 @@ export default defineComponent({
     }
 
     function addDistrict():void {
-      createDistrict({name: form.name, code:form.code, provinceUid: province.uid}).then((result) => {
+      const payload = {name: form.name, code:form.code, provinceUid: province.uid}
+      createDistrict({ payload }).then((result) => {
         Object.assign(district, result);
       });
     }
 
     function editDistrict():void {
-      updateDistrict({ uid: form.uid, name: form.name, code: form.code, active: true }).then(
+      const payload = {name: form.name, code: form.code, active: true}
+      updateDistrict({ uid: form.uid, payload }).then(
         (result) => {
           Object.assign(district, result);
         },
@@ -116,7 +122,7 @@ export default defineComponent({
       if (target === 'district') Object.assign(district, {} as IDistrict);
     };
 
-    function FormManager(create: boolean, target: string, locationObj: IForm = {}): void {
+    function FormManager(create: boolean, target: string, locationObj: IForm): void {
       createLocation.value = create;
       targetLocation.value = target;
       showModal.value = true;

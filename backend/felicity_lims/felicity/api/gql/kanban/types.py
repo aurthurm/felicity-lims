@@ -18,6 +18,7 @@ class TaskCommentType:
     uid: int
     comment: str
     task_uid: int
+    task: Optional['ListingTaskType']
     created_by_uid: Optional[int]
     created_by: Optional[UserType]
     created_at: Optional[datetime]
@@ -32,6 +33,7 @@ class TaskMilestoneType:
     title: str
     done: bool
     task_uid: int
+    task: Optional['ListingTaskType']
     assignee_uid: Optional[int]
     assignee: Optional[UserType]
     created_by_uid: Optional[int]
@@ -48,6 +50,7 @@ class ListingTaskType:
     title: str
     description: Optional[str]
     listing_uid: Optional[int]
+    listing: Optional['BoardListingType']
     assignee_uid: Optional[int]
     assignee: Optional[UserType]
     tags: Optional[List[TaskTagType]]
@@ -71,6 +74,7 @@ class BoardListingType:
     title: str
     description: Optional[str]
     board_uid: Optional[int]
+    board: Optional['BoardType']
     listing_tasks: Optional[List[ListingTaskType]]
     created_by_uid: Optional[int]
     created_by: Optional[UserType]

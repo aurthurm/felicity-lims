@@ -248,13 +248,15 @@ export default defineComponent({
     const { executeMutation: updateAnalysisProfile } = useMutation(EDIT_ANALYSIS_PROFILE);
 
     function addAnalysisProfile(): void {
-      createAnalysisProfile({ name: analysisProfile.name, keyword: analysisProfile.keyword, description: analysisProfile.description, active: analysisProfile.active }).then((result) => {
+      const payload = { name: analysisProfile.name, keyword: analysisProfile.keyword, description: analysisProfile.description, active: analysisProfile.active }
+      createAnalysisProfile({ payload }).then((result) => {
        store.dispatch(ActionTypes.ADD_ANALYSES_PROFILE, result);
       });
     }
 
     function editAnalysisProfile(): void {
-      updateAnalysisProfile({ uid: analysisProfile.uid, name: analysisProfile.name, keyword: analysisProfile.keyword, description: analysisProfile.description, active: analysisProfile.active, services: analysisProfile.analyses }).then((result) => {
+      const payload = { name: analysisProfile.name, keyword: analysisProfile.keyword, description: analysisProfile.description, active: analysisProfile.active, services: analysisProfile.analyses }
+      updateAnalysisProfile({ uid: analysisProfile.uid, payload }).then((result) => {
         store.dispatch(ActionTypes.UPDATE_ANALYSES_PROFILE, result);
       });
     }
@@ -284,7 +286,7 @@ export default defineComponent({
       editAnalysisProfile();
     }
 
-    function FormManager(create: boolean, obj: IAnalysisProfile = {}): void {
+    function FormManager(create: boolean, obj = {} as IAnalysisProfile): void {
       formAction.value = create;
       showModal.value = true;
       formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "ANALYSES PROFILE";

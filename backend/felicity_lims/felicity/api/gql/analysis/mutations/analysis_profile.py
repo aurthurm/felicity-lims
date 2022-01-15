@@ -21,7 +21,7 @@ AnalysisProfileResponse = strawberry.union(
 class ProfileInputType:
     name: str
     description: str
-    services: Optional[int]
+    services: Optional[int] = None
     keyword: Optional[str] = None
     active: Optional[bool] = True
 

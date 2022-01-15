@@ -75,7 +75,6 @@ export const ADD_BOARD_LISTING = gql`
         title
         description
         boardUid
-
       }
 
       ... on OperationError {

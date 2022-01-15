@@ -124,14 +124,15 @@ export default defineComponent({
     const { executeMutation: updateAnalysisCategory } = useMutation(EDIT_ANALYSIS_CATEGORY);
 
     function addAnalysesCategory(): void {
-      console.log(form)
-      createAnalysisCategory({ name: form.name, description: form.description, active: form.active}).then((result) => {
+      const payload = { name: form.name, description: form.description, active: form.active }
+      createAnalysisCategory({ payload }).then((result) => {
        store.dispatch(ActionTypes.ADD_ANALYSES_CATEGORY, result);
       });
     }
 
     function editAnalysesCategory(): void {
-      updateAnalysisCategory({ uid: form.uid, name: form.name, description: form.description, active: form.active}).then((result) => {
+      const payload = { name: form.name, description: form.description, active: form.active }
+      updateAnalysisCategory({ uid: form.uid, payload }).then((result) => {
         store.dispatch(ActionTypes.UPDATE_ANALYSES_CATEGORY, result);
       });
     }

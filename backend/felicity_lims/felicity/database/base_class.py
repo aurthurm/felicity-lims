@@ -108,8 +108,7 @@ class DBModel(AllFeaturesMixin):
         stmt = cls.where(**kwargs).limit(limit).offset(start)
         async with async_session_factory() as session:
             results = await session.execute(stmt)
-            found = results.scalars().all()
-
+        found = results.scalars().all()
         return found  # cls.query.slice(start, end).all()
 
     async def delete(self):
@@ -138,15 +137,15 @@ class DBModel(AllFeaturesMixin):
     async def all(cls):
         async with async_session_factory() as session:
             result = await session.execute(select(cls))
-            _all = result.scalars().all()
-            return _all
+        _all = result.scalars().all()
+        return _all
 
     @classmethod
     async def first(cls):
         async with async_session_factory() as session:
             result = await session.execute(select(cls))
-            _first = result.scalars().first()
-            return _first
+        _first = result.scalars().first()
+        return _first
 
     @classmethod
     async def find(cls, id_):
@@ -156,8 +155,9 @@ class DBModel(AllFeaturesMixin):
         stmt = cls.where(uid=id_)
         async with async_session_factory() as session:
             results = await session.execute(stmt)
-            one_or_none = results.scalars().one_or_none()
-            return one_or_none
+
+        one_or_none = results.scalars().one_or_none()
+        return one_or_none
 
     @classmethod
     async def find_or_fail(cls, id_):
@@ -179,8 +179,8 @@ class DBModel(AllFeaturesMixin):
         stmt = cls.where(**kwargs)
         async with async_session_factory() as session:
             results = await session.execute(stmt)
-            found = results.scalars().first()
-            return found
+        found = results.scalars().first()
+        return found
 
     @classmethod
     async def create(cls, **kwargs):
@@ -228,8 +228,7 @@ class DBModel(AllFeaturesMixin):
 
         async with async_session_factory() as session:
             results = await session.execute(stmt)
-            updated = results.scalars().all()
-
+        updated = results.scalars().all()
         return updated
 
     @classmethod
@@ -264,8 +263,8 @@ class DBModel(AllFeaturesMixin):
 
         async with async_session_factory() as session:
             results = await session.execute(stmt)
-            found = results.scalars().first()
-            return found
+        found = results.scalars().first()
+        return found
 
     @classmethod
     def _import(cls, schema_in: InDBSchemaType):
@@ -286,7 +285,19 @@ class DBModel(AllFeaturesMixin):
             except Exception as e:
                 await session.rollback()
                 raise
-            return self
+        return self
+
+    async def flush_commit_session(self):
+        """Saves the updated model to the current entity db.
+        """
+        async with async_session_factory() as session:
+            try:
+                await session.flush()
+                await session.commit()
+            except Exception as e:
+                await session.rollback()
+                raise
+        return self
 
     @classmethod
     async def save_all(cls, items):
@@ -305,15 +316,15 @@ class DBModel(AllFeaturesMixin):
         stmt = cls.where(**kwargs)
         async with async_session_factory() as session:
             results = await session.execute(stmt)
-            found = results.scalars().first()
-            return found
+        found = results.scalars().first()
+        return found
 
     @classmethod
     async def get_all(cls, **kwargs):
         stmt = cls.where(**kwargs)
         async with async_session_factory() as session:
             results = await session.execute(stmt)
-            return results.scalars().all()
+        return results.scalars().all()
 
     @classmethod
     async def count_where(cls, filters):
@@ -333,7 +344,7 @@ class DBModel(AllFeaturesMixin):
         count_stmt = select(func.count(filter_stmt.c.uid)).select_from(filter_stmt)
         async with async_session_factory() as session:
             res = await session.execute(count_stmt)
-            count = res.scalars().one()
+        count = res.scalars().one()
         return count
 
     @classmethod
@@ -344,8 +355,8 @@ class DBModel(AllFeaturesMixin):
         )
         async with async_session_factory() as session:
             results = await session.execute(stmt)
-            search = results.scalars().all()
-            return search
+        search = results.scalars().all()
+        return search
 
     @classmethod
     async def get_by_uids(cls, uids: List[Any]) -> AsyncIterator[Any]:
@@ -357,16 +368,16 @@ class DBModel(AllFeaturesMixin):
 
         async with async_session_factory() as session:
             stream = await session.stream(stmt.order_by(cls.uid))
-            async for row in stream:
-                yield row
+        async for row in stream:
+            yield row
 
     @classmethod
     async def stream_all(cls) -> AsyncIterator[Any]:
         stmt = select(cls)
         async with async_session_factory() as session:
             stream = await session.stream(stmt.order_by(cls.uid))
-            async for row in stream:
-                yield row
+        async for row in stream:
+            yield row
 
     @staticmethod
     def psql_records_to_dict(self, records, many=False):

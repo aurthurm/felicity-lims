@@ -3,7 +3,7 @@ import { IAnalysisService, IAnalysisResult, ISampleType } from './analysis'
 
 export interface IReserved {
     position: number;
-    levelUid: string;
+    levelUid: number;
     row: number;
     col: number;
     name: string;
@@ -17,8 +17,8 @@ export interface IWorkSheetTemplate {
     reserved: IReserved[];
     preview: IReserved[];
     numberOfSamples: number;
-    rows: number;
-    cols: number;
+    rows: number | undefined;
+    cols: number | undefined;
     rowWise: boolean;
     worksheetType: string;
     instrument: IInstrument;

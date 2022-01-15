@@ -21,7 +21,7 @@ class SampleTypeInputType:
 
 
 SampleTypeResponse = strawberry.union(
-    "ResultOptionResponse",
+    "SampleTypeResponse",
     (a_types.SampleTypeTyp, OperationError),  # noqa
     description="",
 )

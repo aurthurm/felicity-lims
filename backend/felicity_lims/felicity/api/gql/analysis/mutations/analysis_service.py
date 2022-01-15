@@ -18,7 +18,7 @@ class AnalysisInputType:
     keyword: str
     sort_key: int
     sample_types: Optional[List[int]] = None
-    category_uid: Optional[int] = None,
+    category_uid: Optional[int] = None
     internal_use: Optional[bool] = False
     tat_length_minutes: int = None
     unit: str = None
@@ -68,7 +68,8 @@ async def create_analysis(info, payload: AnalysisInputType) -> ProfilesServiceRe
             stype = await analysis_models.SampleType.get(uid=_uid)
             if stype not in incoming['sample_types']:
                 incoming['sample_types'].append(stype)
-
+    logger.info(payload.category_uid)
+    logger.info(incoming)
     obj_in = schemas.AnalysisCreate(**incoming)  # skip this stage if its not adding analyses and stypes
     analysis: analysis_models.Analysis = await analysis_models.Analysis.create(obj_in)
 

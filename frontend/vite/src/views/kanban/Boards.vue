@@ -91,7 +91,7 @@ export default defineComponent({
     // Modal Vars
     let formTitle = ref<string>("")
     let formAction = ref<boolean>(false);
-    let form = reactive<IBoard>({});
+    let form = reactive<IBoard>({} as IBoard);
 
     store.dispatch(BaseActionTypes.FETCH_DEPARTMENTS)
     store.dispatch(ActionTypes.FETCH_BOARDS)
@@ -100,13 +100,15 @@ export default defineComponent({
     const { executeMutation: updateBoard } = useMutation(EDIT_BOARD);
 
     function addBoard(): void {
-      createBoard({ title: form.title, departmentUid: form.departmentUid, description: form.description }).then((result) => {
+      const payload = { title: form.title, departmentUid: form.departmentUid, description: form.description };
+      createBoard({ payload }).then((result) => {
        store.dispatch(ActionTypes.ADD_BOARD, result);
       });
     }
 
     function editBoard(): void {
-      updateBoard({ uid: form.uid, title: form.title, departmentUid: form.departmentUid, description: form.description }).then((result) => {
+      const payload = {title: form.title, departmentUid: form.departmentUid, description: form.description}
+      updateBoard({ uid: form.uid, payload }).then((result) => {
         // store.dispatch(ActionTypes.UPDATE_BOARD, result);
       });
     }

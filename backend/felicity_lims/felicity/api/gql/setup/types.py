@@ -1,7 +1,8 @@
 from typing import List, Optional
-
+from datetime import datetime
 import strawberry  # noqa
 from felicity.api.gql import PageInfo
+from felicity.api.gql.user.types import UserType
 
 
 @strawberry.type
@@ -15,6 +16,13 @@ class LaboratoryType:
     email_cc: Optional[str]
     mobile_phone: Optional[str]
     business_phone: Optional[str]
+    #
+    created_by_uid: Optional[int]
+    created_by: Optional['UserType']
+    created_at: Optional[datetime]
+    updated_by_uid: Optional[int]
+    updated_by: Optional['UserType']
+    updated_at: Optional[datetime]
 
 
 @strawberry.type
@@ -32,6 +40,13 @@ class InstrumentType:
     keyword: Optional[str]
     supplier_uid: Optional[int]
     supplier: Optional[SupplierType]
+    #
+    created_by_uid: Optional[int]
+    created_by: Optional['UserType']
+    created_at: Optional[datetime]
+    updated_by_uid: Optional[int]
+    updated_by: Optional['UserType']
+    updated_at: Optional[datetime]
 
 
 #  relay paginations
@@ -55,6 +70,13 @@ class DepartmentType:
     name: Optional[str]
     description: Optional[str]
     code: Optional[str]
+    #
+    created_by_uid: Optional[int]
+    created_by: Optional['UserType']
+    created_at: Optional[datetime]
+    updated_by_uid: Optional[int]
+    updated_by: Optional['UserType']
+    updated_at: Optional[datetime]
 
 
 @strawberry.type
@@ -63,6 +85,13 @@ class MethodType:
     name: Optional[str]
     description: Optional[str]
     keyword: Optional[str]
+    #
+    created_by_uid: Optional[int]
+    created_by: Optional['UserType']
+    created_at: Optional[datetime]
+    updated_by_uid: Optional[int]
+    updated_by: Optional['UserType']
+    updated_at: Optional[datetime]
 
 
 #  relay paginations
@@ -86,6 +115,13 @@ class CountryType:
     name: Optional[str]
     code: Optional[str]
     active: Optional[str]
+    #
+    created_by_uid: Optional[int]
+    created_by: Optional['UserType']
+    created_at: Optional[datetime]
+    updated_by_uid: Optional[int]
+    updated_by: Optional['UserType']
+    updated_at: Optional[datetime]
 
 
 @strawberry.type
@@ -100,6 +136,13 @@ class ProvinceType:
     active: Optional[bool]
     country_uid: Optional[int]
     country: Optional[CountryType]
+    #
+    created_by_uid: Optional[int]
+    created_by: Optional['UserType']
+    created_at: Optional[datetime]
+    updated_by_uid: Optional[int]
+    updated_by: Optional['UserType']
+    updated_at: Optional[datetime]
 
 
 #  relay paginations
@@ -129,6 +172,13 @@ class DistrictType:
     active: Optional[bool]
     province_uid: Optional[int]
     province: Optional[ProvinceType]
+    #
+    created_by_uid: Optional[int]
+    created_by: Optional['UserType']
+    created_at: Optional[datetime]
+    updated_by_uid: Optional[int]
+    updated_by: Optional['UserType']
+    updated_at: Optional[datetime]
 
 
 #  relay paginations

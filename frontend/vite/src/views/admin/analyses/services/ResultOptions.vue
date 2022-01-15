@@ -121,18 +121,22 @@ import { IResultOption } from '../../../../models/analysis';
 
         function addResultOption(): void {
             form.optionKey = +form.optionKey!;
-            createResultOption({ ...form, analysisUid: analysis?.value?.uid }).then((result) => {
+            const payload = { ...form, analysisUid: analysis?.value?.uid }
+            createResultOption({ payload }).then((result) => {
                 store.dispatch(ActionTypes.ADD_RESULT_OPTION, result);
             });
         }
 
         function editResultOption(): void {
-            updateResultOption({ ...form }).then((result) => {
+            const payload = { ...form };
+            delete payload['uid']
+
+            updateResultOption({ uid : form.uid,  payload }).then((result) => {
                 store.dispatch(ActionTypes.UPDATE_RESULT_OPTION, result);
             });
         }
     
-        function FormManager(create: boolean, obj: IResultOption = {}):void {
+        function FormManager(create: boolean, obj = {} as IResultOption):void {
             formAction.value = create;
             showModal.value = true;
             formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "RESULT OPTION";

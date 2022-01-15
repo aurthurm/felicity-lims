@@ -1,5 +1,5 @@
 from typing import List, Optional
-
+from datetime import datetime
 import strawberry  # noqa
 from felicity.api.gql import PageInfo
 
@@ -11,6 +11,13 @@ class UserAuthType:
     login_retry: int
     is_blocked: bool
     user_type: Optional[str]
+    #
+    created_at: Optional[datetime]
+    creator_name: Optional[str]
+    creator_uid: Optional[int]
+    updated_at: Optional[datetime]
+    updator_name: Optional[str]
+    updator_uid: Optional[int]
 
 
 @strawberry.type
@@ -43,6 +50,13 @@ class UserType:
     is_superuser: bool
     auth_uid: Optional[int]
     auth: Optional[UserAuthType]
+    #
+    created_at: Optional[datetime]
+    creator_name: Optional[str]
+    creator_uid: Optional[int]
+    updated_at: Optional[datetime]
+    updator_name: Optional[str]
+    updator_uid: Optional[int]
 
 
 @strawberry.type

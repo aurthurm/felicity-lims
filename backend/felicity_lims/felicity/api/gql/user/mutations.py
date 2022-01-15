@@ -123,10 +123,10 @@ class UserMutations:
 
     @strawberry.mutation
     async def create_user_auth(
-        self, info, user_uid: int, username: str, password: str, passwordc: str
+        self, info, user_uid: int, user_name: str, password: str, passwordc: str
     ) -> UserAuthResponse:
 
-        auth = await user_models.UserAuth.get_by_username(username=username)
+        auth = await user_models.UserAuth.get_by_username(username=user_name)
         user = await user_models.User.get(uid=user_uid)
 
         # 1. Link if not already Linked
@@ -154,19 +154,17 @@ class UserMutations:
                 return OperationError(error="Password do not match, try again")
 
             auth_in = {
-                "user_name": username,
+                "user_name": user_name,
                 "password": password,
                 "login_retry": 0,
                 "is_blocked": False,
             }
             auth_schema = user_schemas.AuthCreate(**auth_in)
-            auth: user_models.UserAuth = await user_models.UserAuth.create(
-                auth_in=auth_schema
-            )
+            auth: user_models.UserAuth = await user_models.UserAuth.create(auth_schema)  # noqa
             await user.link_auth(auth_uid=auth.uid)
             time.sleep(1)
             await user.propagate_user_type()
-        return UserAuthType(**auth.marshal_simple())
+        return UserAuthType(**auth.marshal_simple(exclude=['hashed_password']))
 
     @strawberry.mutation
     async def update_user_auth(

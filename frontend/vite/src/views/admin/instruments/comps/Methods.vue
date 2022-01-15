@@ -181,13 +181,15 @@ export default defineComponent({
     const { executeMutation: updateMethod } = useMutation(EDIT_METHOD);
 
     function addMethod(): void {
-      createMethod({ name: method.name, keyword: method.keyword, description: method.description }).then((result) => {
+      const payload = { name: method.name, keyword: method.keyword, description: method.description}
+      createMethod({ payload }).then((result) => {
        store.dispatch(ActionTypes.ADD_METHOD, result);
       });
     }
 
     function editMethod(): void {
-      updateMethod({ uid: method.uid, name: method.name, keyword: method.keyword, description: method.description }).then((result) => {
+      const payload = { name: method.name, keyword: method.keyword, description: method.description }
+      updateMethod({ uid: method.uid, payload }).then((result) => {
         store.dispatch(ActionTypes.UPDATE_METHOD, result);
       });
     }
@@ -200,7 +202,7 @@ export default defineComponent({
       Object.assign(method, { ...({} as IMethod)})
     }
 
-    function FormManager(create: boolean, obj: IMethod = {}): void {
+    function FormManager(create: boolean, obj = {} as IMethod): void {
       formAction.value = create;
       showModal.value = true;
       formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "ANALYSES METHOD";

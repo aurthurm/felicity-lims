@@ -181,13 +181,15 @@ export default defineComponent({
     const { executeMutation: updateInstrument } = useMutation(EDIT_INSTRUMENT);
 
     function addInstrument(): void {
-      createInstrument({ name: instrument.name, keyword: instrument.keyword, description: instrument.description }).then((result) => {
+      const payload = { name: instrument.name, keyword: instrument.keyword, description: instrument.description }
+      createInstrument({ payload }).then((result) => {
        store.dispatch(ActionTypes.ADD_INSTRUMENT, result);
       });
     }
 
     function editInstrument(): void {
-      updateInstrument({ uid: instrument.uid, name: instrument.name, keyword: instrument.keyword, description: instrument.description }).then((result) => {
+      const payload = { name: instrument.name, keyword: instrument.keyword, description: instrument.description }
+      updateInstrument({ uid: instrument.uid, payload }).then((result) => {
         store.dispatch(ActionTypes.UPDATE_INSTRUMENT, result);
       });
     }
@@ -200,7 +202,7 @@ export default defineComponent({
       Object.assign(instrument, { ...({} as IInstrument)})
     }
 
-    function FormManager(create: boolean, obj: IInstrument = {}): void {
+    function FormManager(create: boolean, obj = {} as IInstrument): void {
       formAction.value = create;
       showModal.value = true;
       formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "ANALYSES INSTRUMENT";

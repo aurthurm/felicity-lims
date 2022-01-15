@@ -100,13 +100,13 @@ export default defineComponent({
     const { executeMutation: updateDepartment } = useMutation(UPDATE_DEPARTMENT);
 
     function addDepartment(): void {
-      createDepartment({ name: form.name }).then((result) => {
+      createDepartment({ payload: { name: form.name } }).then((result) => {
         store.dispatch(ActionTypes.ADD_DEPARTMENT, result);
       });
     }
 
     function editDepartment(): void {
-      updateDepartment({ uid: form.uid, name: form.name }).then((result) => {
+      updateDepartment({ uid: form.uid, payload: { name: form.name }}).then((result) => {
         store.dispatch(ActionTypes.UPDATE_DEPARTMENT, result);
       });
     }

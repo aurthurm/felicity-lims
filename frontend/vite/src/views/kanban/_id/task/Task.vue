@@ -52,14 +52,15 @@
               <div class="pr-2 overflow-y-scroll" style="height: 65vh">
                 <section>
                   <input 
-                  class="form-input border border-white mt-1 block w-full text-lg font-semibold"
+                  class="form-input mt-1 block w-full text-lg font-semibold rounded border-transparent focus:border-gray-100 focus:ring-0"
                   @keyup="updateTaskTitle(kanBanTask, $event)" 
                   :value="kanBanTask?.title"/>
                   <hr>  
-                  <textarea 
-                  rows="3"
-                  :value="kanBanTask?.description"
-                  class="form-input  border border-white font-medium tracking-wide text-gray-600 w-full p-2"></textarea>
+                  <div 
+                  @input="updateTaskDescription(kanBanTask, $event)"
+                  class="form-input rounded border-transparent focus:border-gray-100 focus:ring-0 font-medium tracking-wide text-gray-600 w-full p-2" 
+                  v-html="kanBanTask?.description"
+                  contenteditable></div>
                 </section>
                 <hr>
                 <section class="font-medium my-4">
@@ -245,7 +246,7 @@
       </section>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import { useStore } from 'vuex';
 import { useRoute } from 'vue-router';
 import { useMutation } from '@urql/vue';
@@ -258,14 +259,11 @@ import {
   EDIT_LISTING_TASK,
   DELETE_LISTING_TASK,
   DUPLICATE_LISTING_TASK} from '../../../../graphql/kanban.mutations';
-import { defineComponent, ref, reactive, computed } from 'vue';
+import { ref, reactive, computed } from 'vue';
 import { parseDate } from '../../../../utils';
 import Swal from 'sweetalert2';
 import router from '../../../../router';
 
-export default defineComponent({
-  name: "Kanban-Task",
-  setup() {
       let store = useStore();
       let route = useRoute();
 
@@ -273,31 +271,39 @@ export default defineComponent({
       let showModal = ref<boolean>(false);
 
       let taskFormTitle = ref<string>("");
-      let taskForm = reactive<ITask>({});
-
-      let kanBanTaskListing = reactive({}) as IListing;
+      let taskForm = reactive<ITask>({}as ITask);
 
       store.dispatch(AdminActionTypes.FETCH_USERS)
       store.dispatch(ActionTypes.RESET_LISTING_TASK)
       store.dispatch(ActionTypes.FETCH_LISTING_TASK_BY_UID, +route.params.taskUid)
+
+      const users = computed(() => store.getters.getUsers)
+      const board = computed(() => store.getters.getBoard )
+
+      const kanBanTaskListing = computed(() => {
+        let b: IBoard = store.getters.getBoard;
+        return b?.boardListings?.filter((l: IListing) => l?.uid == kanBanTask?.value?.listingUid)[0];
+      })
 
       let kanBanTask = computed(() => store.getters.getListingTask);
 
       const { executeMutation: updateListingTask } = useMutation(EDIT_LISTING_TASK);
 
       function editListingTask(updateType: string, updateData: any): void {
-        // updateData only contains vars to be updated
-        updateListingTask({ ...updateData }).then((result) => {
+        const payload = { ...updateData };
+        delete payload['uid'];
+
+        updateListingTask({ uid: updateData.uid,  payload }).then((result) => {
           if(updateType === 'moveTask') store.dispatch(ActionTypes.MOVE_LISTING_TASK, result);
           if(updateType === 'updateTask') store.dispatch(ActionTypes.UPDATE_LISTING_TASK, result);
         });
       }
 
       let showTaskModal = ref<boolean>(false)
-      function TaskFormManager(listing: any): void {
+      function TaskFormManager(listing: IListing): void {
         showTaskModal.value = true;
         taskFormTitle.value = "ADD " + listing.title + " LISTING";
-        Object.assign(taskForm, { listingUid: listing.uid } as IListing);
+        Object.assign(taskForm, { listingUid: listing.uid });
       }
 
       function saveTaskForm():void {
@@ -473,56 +479,34 @@ export default defineComponent({
         changeAssignee.value = false;
       }
 
-      // Editable task title
+      // Editable task title and Description
+      let titleTimeOut: any;
       function updateTaskTitle(task: ITask, event: any): void {
-        console.log(event?.target?.value);
+        clearTimeout(titleTimeOut);
+        titleTimeOut = setTimeout(function(){ 
+          editListingTask('updateTask', {
+            uid: task?.uid,
+            title: event?.target?.value
+          });
+         }, 3000);
       }
 
 
-      return { 
-          parseDate,
-          users: computed(() => store.getters.getUsers),
-          board: computed(() => store.getters.getBoard ),
-          kanBanTask,
-          kanBanTaskListing: computed(() => {
-            let b: IBoard = store.getters.getBoard;
-            return b?.boardListings?.filter((l: IListing) => l?.uid == kanBanTask?.value?.listingUid)[0];
-          }),
-          newMember,
-          showAddMember,
-          addNewMember,
-          showAddComment,
-          taskCommentEntry,
-          saveTaskComment,
-          showAddMilestone,
-          taskMilestone,
-          saveTaskMilestone,
-          moveListingTask,
-          updateDueDate,
-          deleteTask,
-          dulicateTitle,
-          duplicateTask,
-          toggleTaskStatus,
-          newAssignee,
-          changeAssignee,
-          assignTaskAssignee,
-          updateTaskTitle
+      let descTimeOut: any;
+      function updateTaskDescription(task: ITask, event: any): void {
+        clearTimeout(descTimeOut);
+        descTimeOut = setTimeout(function(){ 
+          editListingTask('updateTask', {
+            uid: task?.uid,
+            description: event?.target?.innerHTML
+          });
+         }, 3000);
       }
-  },
-});
 </script>
 
 <style scoped>
-
-.h-tasks {
-  height: 80vh;
-}
-.column-width {
-  min-width: 320px;
-  width: 320px;
-}
-
-.ghost-card {
-  @apply border opacity-50 border-blue-500 bg-gray-200
+div[contenteditable]{
+    max-height: 500px;
+    overflow: auto;
 }
 </style>
