@@ -4,7 +4,23 @@ import json
 import logging
 from typing import List
 
+
+from starlette.concurrency import run_until_first_complete
+from starlette.middleware.authentication import AuthenticationMiddleware
+from starlette.middleware.cors import CORSMiddleware
+from starlette.authentication import AuthCredentials  # UnauthenticatedUser,
+from starlette.authentication import (
+    AuthenticationBackend,
+    AuthenticationError,
+    SimpleUser,
+)
+
 from fastapi import FastAPI, WebSocket
+from fastapi.staticfiles import StaticFiles
+
+from strawberry.asgi import GraphQL
+from strawberry.subscriptions import GRAPHQL_TRANSPORT_WS_PROTOCOL, GRAPHQL_WS_PROTOCOL
+
 from felicity.api.rest.api_v1.api import api_router  # noqa
 from felicity.apps.common.channel import broadcast
 from felicity.apps.job.sched import felicity_halt_workforce, felicity_workforce_init
@@ -12,17 +28,9 @@ from felicity.core.config import settings  # noqa
 from felicity.core.repeater import repeat_every
 from felicity.api.gql.deps import get_current_active_user
 from felicity.api.gql.schema import gql_schema  # noqa
-from starlette.authentication import AuthCredentials  # UnauthenticatedUser,
-from starlette.authentication import (
-    AuthenticationBackend,
-    AuthenticationError,
-    SimpleUser,
-)
-from starlette.concurrency import run_until_first_complete
-from starlette.middleware.authentication import AuthenticationMiddleware
-from starlette.middleware.cors import CORSMiddleware
-from strawberry.asgi import GraphQL
-from strawberry.subscriptions import GRAPHQL_TRANSPORT_WS_PROTOCOL, GRAPHQL_WS_PROTOCOL
+from felicity.utils.dirs import resolve_root_dirs
+from felicity.views import default_home_page
+from felicity.init import initialize_felicity  # noqa
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -97,9 +105,13 @@ graphql_app = GraphQL(
     subscription_protocols=[GRAPHQL_WS_PROTOCOL, GRAPHQL_TRANSPORT_WS_PROTOCOL],
 )
 
+default_home_page(flims)
 flims.include_router(api_router, prefix=settings.API_V1_STR)
 flims.add_route("/felicity-gql", graphql_app)
 flims.add_websocket_route("/subscriptions", graphql_app, "felicity-subscriptions")
+
+resolve_root_dirs()
+flims.mount('/media', StaticFiles(directory="media"), name='media')
 
 
 class ConnectionManager:

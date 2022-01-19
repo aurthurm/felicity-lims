@@ -29,7 +29,12 @@
 
 <script setup lang="ts">
   import Accordion from '../../components/Accordion.vue'
-  import useNoticeComposable from '../../modules/notice';
+  import useNoticeComposable from '../../modules/notice'
+  import { onMounted } from 'vue'
 
-  const { state } = useNoticeComposable();
+  const { state, fetchMyNotices } = useNoticeComposable();
+
+  onMounted(() => {
+    fetchMyNotices(1)
+  })
 </script>

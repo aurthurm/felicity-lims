@@ -206,7 +206,7 @@ export default defineComponent({
 
     const state = reactive({
       filterText: "",
-      filterStatus: "",
+      filterStatus: "received",
       sampleBatch: 50,
       samples: computed<ISample[]>(() => store.getters.getSamples ),
       pageInfo: computed(() => store.getters.getSamplePageInfo),
@@ -236,7 +236,7 @@ export default defineComponent({
     let sampleParams = reactive({ 
       first: state.sampleBatch, 
       after: "",
-      status: "", 
+      status: state.filterStatus, 
       text: "", 
       sortBy: ["uid"],
       clientUid: +ifZeroEmpty(route?.query?.clientUid),

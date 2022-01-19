@@ -212,11 +212,11 @@ export default defineComponent({
     
     let showModal = ref<boolean>(false);
     let formTitle = ref<string>('');
-    let form = reactive<IWorkSheetForm>({ count: 1 });
+    let form = reactive<IWorkSheetForm>({ count: 1 } as IWorkSheetForm);
     const formAction = ref<boolean>(true);
     let pageInfo = computed(() => store.getters.getWorkSheetPageInfo)
     let filterText = ref<string>("");
-    let filterStatus = ref<string>("");
+    let filterStatus = ref<string>("open");
 
     store.dispatch(ActionTypes.REMOVE_WORKSHEET)    
     

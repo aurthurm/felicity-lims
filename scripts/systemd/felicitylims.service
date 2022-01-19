@@ -1,0 +1,15 @@
+[Unit]
+Description=Felicity Lims BackEnd
+After=network.target
+
+[Service]
+User=felicity
+WorkingDirectory=/home/aurthur/Development/Python/felicity/felicity_lims/backend/felicity_lims/
+LimitNOFILE=4096
+Environment=APP_CONFIG=production
+ExecStart=/home/aurthur/miniconda3/envs/felicity/bin/gunicorn --workers 20 --bind 0.0.0.0:8000 -k uvicorn.workers.UvicornWorker felicity.main:flims
+Restart=on-failure
+RestartSec=5s
+
+[Install]
+WantedBy=multi-user.target

@@ -22,6 +22,7 @@ from felicity.api.gql.user.mutations import UserMutations
 from felicity.api.gql.user.query import UserQuery
 from felicity.api.gql.worksheet.mutations import WorkSheetMutations
 from felicity.api.gql.worksheet.query import WorkSheetQuery
+from felicity.api.gql.analytics.query import AnalyticsQuery
 
 
 @strawberry.type
@@ -38,6 +39,7 @@ class Query(
     MessageQuery,
     NoticeQuery,
     StreamNotificationQuery,
+    AnalyticsQuery,
 ):
     pass
 

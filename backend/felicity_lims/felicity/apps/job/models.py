@@ -14,9 +14,10 @@ class Job(DBModel):
     reason = Column(String)
 
     async def change_status(self, new_status, change_reason=""):
-        self.status = new_status
-        self.reason = change_reason
-        await self.save()
+        if new_status != conf.states.FINISHED:
+            self.status = new_status
+            self.reason = change_reason
+            await self.save()
 
     async def increase_priority(self):
         if self.priority < conf.priorities.HIGH:

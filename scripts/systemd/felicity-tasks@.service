@@ -1,0 +1,12 @@
+[Unit]
+Description=Felicity task worker %I
+After=network.target
+
+[Service]
+User=ubuntu
+WorkingDirectory=/home/ubuntu/felicity
+ExecStart=/home/ubuntu/felicity/venv/bin/rq worker felicity-tasks
+Restart=always
+
+[Install]
+WantedBy=felicity-tasks.target

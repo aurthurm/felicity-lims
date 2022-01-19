@@ -73,11 +73,6 @@
             v-show="dropdownOpen"
             class="absolute right-0 mt-4 py-2 w-48 bg-gray-700 rounded-md shadow-xl z-20"
           >
-            <a
-              href="#"
-              class="no-underline text-gray-500 py-1 opacity-50 flex items-center px-4 border-b border-transparent hover:opacity-100 md:hover:border-grey-dark hover:bg-gray-800 hover:text-gray-200"
-              >Profile</a
-            >
             <router-link
               v-show="canAccessPage(userRole, pages.ADMINISTRATION)"
               to="/admin"

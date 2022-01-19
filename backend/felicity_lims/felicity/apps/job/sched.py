@@ -3,6 +3,8 @@ import logging
 
 from apscheduler.events import EVENT_JOB_ERROR, EVENT_JOB_EXECUTED
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
+
+from felicity.apps.analytics.utils import generate_report
 from felicity.apps.job import conf as job_conf, models as job_models
 from felicity.apps.worksheet.tasks import populate_worksheet_plate
 
@@ -67,6 +69,9 @@ async def run_jobs_if_exists():
                     await populate_worksheet_plate(job.uid)
                 else:
                     logging.warning(f"Unknown Worksheet job action: {job.action}")
+            elif job.category == job_conf.categories.REPORT:
+                logging.warning(f"Running Task: {job.action}")
+                await generate_report(job.uid)
             else:
                 logging.warning(f"Non categorised job found: {job.uid}")
 

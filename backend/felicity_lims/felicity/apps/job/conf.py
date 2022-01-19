@@ -27,6 +27,7 @@ class Actions(object):
     WS_VERIFY = "worksheet_verify"
     WS_SUBMIT = "worksheet_submit"
     WS_UN_ASSIGN = "worksheet_un_assign"
+    GENERATE_REPORT = "generate_report"
 
 
 actions = Actions()
@@ -34,6 +35,7 @@ actions = Actions()
 
 class Categories(object):
     WORKSHEET = "worksheet"
+    REPORT = "report"
 
 
 categories = Categories()

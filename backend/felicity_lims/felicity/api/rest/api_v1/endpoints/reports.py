@@ -1,0 +1,83 @@
+from typing import Any, List, Dict
+import logging
+
+from fastapi import APIRouter, Depends, HTTPException
+from felicity.api.rest import deps
+from felicity.apps.job.sched import felicity_resume_workforce
+from felicity.apps.user import models as user_models
+from felicity.apps.analysis.models import analysis as ana_models
+from felicity.apps.analytics import models, conf
+from felicity.apps.analytics import schemas as an_schema
+from felicity.apps.job import models as job_models
+from felicity.apps.job import schemas as job_schemas
+from felicity.apps.job import conf as job_conf
+from felicity.utils.dirs import resolve_media_dirs_for, deleteFile
+from uuid import uuid4
+router = APIRouter()
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+
+@router.get("/", response_model=List[an_schema.ReportMeta])
+async def read_reports(
+        current_user: user_models.User = Depends(deps.get_current_active_superuser),
+) -> Any:
+    """
+    Retrieve previously generated csv reports.
+    """
+    return await models.ReportMeta.all()
+
+
+@router.post("/", response_model=an_schema.ReportMeta)
+async def request_report_generation(
+        *,
+        request_in: an_schema.ReportRequest,
+        current_user: user_models.User = Depends(deps.get_current_active_user),
+) -> Any:
+    """
+    Generate Reports.
+    """
+    media_dir = resolve_media_dirs_for("reports")
+    file_path = media_dir + uuid4().hex
+    analyses = await ana_models.Analysis.get_all(uid__in=request_in.analyses_uids)
+    report_in = an_schema.ReportMetaCreate(
+        period_start=request_in.period_start.replace(tzinfo=None),
+        period_end=request_in.period_end.replace(tzinfo=None),
+        date_column=request_in.date_column,
+        temp=file_path,
+        report_type=request_in.report_type,
+        status=conf.report_states.PENDING,
+        created_by_uid=current_user.uid,
+        updated_by_uid=current_user.uid
+    )
+    report_in.analyses = analyses if analyses else []
+    report = await models.ReportMeta.create(report_in)
+    # Add a job
+    job_schema = job_schemas.JobCreate(
+        action=job_conf.actions.GENERATE_REPORT,
+        category=job_conf.categories.REPORT,
+        priority=job_conf.priorities.NORMAL,
+        creator_uid=current_user.uid,
+        job_id=report.uid,
+        status=job_conf.states.PENDING,
+    )
+    await job_models.Job.create(job_schema)
+    felicity_resume_workforce()
+    return report
+
+
+@router.delete("/delete_report/{report_uid}", response_model=an_schema.ReportMetaDeleted)
+async def delete_report(
+        *,
+        report_uid: int,
+        current_user: user_models.User = Depends(deps.get_current_active_user),
+):
+    report: models.ReportMeta = await models.ReportMeta.get(uid=report_uid)
+    deleteFile(report.location)
+    for analysis in report.analyses:
+        report.analyses.remove(analysis)
+    report.analyses = []
+    await report.save()
+    await report.delete()
+    return an_schema.ReportMetaDeleted(uid=report_uid, message="Deletion Success!!")

@@ -22,7 +22,7 @@ logger = logging.getLogger(__name__)
 async def initialize_felicity() -> bool:
     logger.info("Initializing Felicity LIMS ...")
 
-    # Initial Data pepopulation
+    # Initial Data pre population
     await create_super_user()
     await create_geographies()
     await create_clients()

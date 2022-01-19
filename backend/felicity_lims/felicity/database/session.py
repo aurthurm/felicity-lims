@@ -10,7 +10,7 @@ from sqlalchemy.ext.asyncio import (
 from sqlalchemy.orm import sessionmaker
 
 async_engine = create_async_engine(
-    settings.SQLALCHEMY_ASYNC_DATABASE_URI, pool_pre_ping=True, echo=False, future=True
+    settings.SQLALCHEMY_ASYNC_DATABASE_URI, pool_pre_ping=True, echo=True, future=True
 )
 async_session_factory = sessionmaker(
     bind=async_engine, expire_on_commit=False, autoflush=False, class_=AsyncSession

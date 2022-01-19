@@ -44,4 +44,5 @@ from felicity.apps.user.models import User  # noqa
 from felicity.apps.user.models import UserAuth  # noqa
 from felicity.apps.worksheet.models import WorkSheet  # noqa
 from felicity.apps.worksheet.models import WorkSheetTemplate  # noqa
+from felicity.apps.analytics.models import ReportMeta  # noqa
 from felicity.database.base_class import DBModel  # noqa

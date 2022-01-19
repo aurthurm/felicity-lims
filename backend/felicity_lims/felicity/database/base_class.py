@@ -109,7 +109,7 @@ class DBModel(AllFeaturesMixin):
         async with async_session_factory() as session:
             results = await session.execute(stmt)
         found = results.scalars().all()
-        return found  # cls.query.slice(start, end).all()
+        return found
 
     async def delete(self):
         """Removes the model from the current entity session and mark for deletion.
@@ -249,8 +249,6 @@ class DBModel(AllFeaturesMixin):
     @classmethod
     async def get_related(cls, related: Optional[list] = None, **kwargs):
         """Return the first value in database based on given args.
-        Example:
-            User.get(id=5)
         """
         try:
             del kwargs['related']
@@ -362,8 +360,7 @@ class DBModel(AllFeaturesMixin):
     async def get_by_uids(cls, uids: List[Any]) -> AsyncIterator[Any]:
 
         stmt = (
-            select(cls)
-                .where(cls.uid.in_(uids))  # type: ignore
+            select(cls).where(cls.uid.in_(uids))  # type: ignore
         )
 
         async with async_session_factory() as session:
