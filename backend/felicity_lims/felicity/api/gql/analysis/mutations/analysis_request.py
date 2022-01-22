@@ -14,6 +14,7 @@ from felicity.apps.patient import models as pt_models
 from felicity.api.gql import OperationError, auth_from_info, verify_user_auth
 from felicity.api.gql.analysis.types import results as r_types
 from felicity.api.gql.analysis.types import analysis as a_types
+from felicity.api.gql.permissions import CanVerifySample
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -130,6 +131,8 @@ async def create_analysis_request(
             )
 
         sample_in = {
+            "created_by_uid": felicity_user.uid,
+            "updated_by_uid": felicity_user.uid,
             "analysis_request_uid": analysis_request.uid,
             "sample_type_uid": _st_uid,
             "sample_id": None,
@@ -178,7 +181,8 @@ async def create_analysis_request(
         #     await result_models.AnalysisResult.create(a_result_schema)
 
         a_result_schema = schemas.AnalysisResultCreate(
-            sample_uid=sample.uid, status=states.result.PENDING, analysis_uid=None
+            sample_uid=sample.uid, status=states.result.PENDING, analysis_uid=None,
+            patient_uid=felicity_user.uid, client_uid=felicity_user.uid
         )
         result_schemas = []
         for _service in _profiles_analyses:
@@ -321,7 +325,7 @@ async def receive_samples(info, samples: List[int]) -> ResultedSampleActionRespo
     return ResultedSampleListingType(return_samples)
 
 
-@strawberry.mutation
+@strawberry.mutation(permission_classes=[CanVerifySample])
 async def verify_samples(info, samples: List[int]) -> SampleActionResponse:
     is_authenticated, felicity_user = await auth_from_info(info)
     verify_user_auth(

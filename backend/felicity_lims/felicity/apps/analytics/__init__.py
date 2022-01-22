@@ -86,14 +86,14 @@ class AnalyticsInit(Generic[ModelType]):
             raise AttributeError(f"Model has no attr {group_by}")
 
         group_by = getattr(self.model, group_by)
-        stmt = select(group_by, func.count(self.model.uid).label('total')).group_by(group_by)
+        stmt = select(group_by, func.count(self.model.uid).label('total')).filter(group_by!=None).group_by(group_by) # noqa
 
         async with async_session_factory() as session:
             result = await session.execute(stmt)
 
         return result.all()  # scalars drops total
 
-    async def get_sample_process_performance(self, start: Tuple[str, str], end: [str, str]):
+    async def get_sample_process_performance(self, start: Tuple[str, str], end: Tuple[str, str]):
         """
         :param start: process start Tuple[str::Column, str::Date]
         :param end:  process end Tuple[str::Column, str::Date]
@@ -155,7 +155,7 @@ class AnalyticsInit(Generic[ModelType]):
 
         return result.all()
 
-    async def get_analysis_process_performance(self, start: Tuple[str, str], end: [str, str]):
+    async def get_analysis_process_performance(self, start: Tuple[str, str], end: Tuple[str, str]):
         """
         :param start: process start Tuple[str::Column, str::Date]
         :param end:  process end Tuple[str::Column, str::Date]

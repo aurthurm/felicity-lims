@@ -36,15 +36,10 @@ class Settings(BaseSettings):
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 16
     SERVER_NAME: str = getenv_value("SERVER_NAME", "felicity")
     SERVER_HOST: AnyHttpUrl = getenv_value("SERVER_HOST", "https://localhost")
-    BACKEND_CORS_ORIGINS: List[AnyHttpUrl] = [
-        "http://localhost:8000",
-        "http://localhost:3000",
-        "http://192.168.137.97:3000",
-        "http://192.168.137.128:3000",
-        "http://192.168.0.196:3000",
-        "http://192.168.0.195:3000",
-        "http://192.168.137.227:3000",
-    ]
+    BACKEND_CORS_ORIGINS: List[AnyHttpUrl] = ["http://localhost:8000", "http://localhost:3000",
+                                              "http://192.168.137.97:3000", "http://192.168.137.128:3000",
+                                              "http://192.168.0.196:3000", "http://192.168.0.195:3000",
+                                              "http://192.168.137.227:3000"]
 
     @validator("BACKEND_CORS_ORIGINS", pre=True)
     def assemble_cors_origins(cls, v: Union[str, List[str]]) -> Union[List[str], str]:

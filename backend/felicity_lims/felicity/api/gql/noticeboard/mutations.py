@@ -96,7 +96,10 @@ class NoticeMutations:
 
         notice = await models.Notice.get(uid=uid)
         if not notice:
-            raise Exception(f"notice with uid {uid} does not exist")
+            raise OperationError(
+                error=f"notice with uid {uid} does not exist",
+                suggestion=f"Refresh page",
+            )
 
         notice_data = notice.to_dict()
         for field in notice_data:

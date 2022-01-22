@@ -10,13 +10,6 @@
             </Attribute>
           </value>
         </entry>
-        <entry key="/backend/felicity_lims/media/reports/2022/01/19/2cb92934f80b4b019025415c6c5d70ce.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
       </map>
     </option>
   </component>

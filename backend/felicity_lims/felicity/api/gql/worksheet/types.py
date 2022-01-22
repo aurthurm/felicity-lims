@@ -3,6 +3,7 @@ from datetime import datetime
 from typing import Any, List, NewType, Optional
 
 import strawberry  # noqa
+
 from felicity.api.gql import PageInfo
 from felicity.api.gql.analysis.types.analysis import (
     AnalysisType,
@@ -19,7 +20,7 @@ JSONScalar = strawberry.scalar(
     NewType("JSONScalar", Any),
     serialize=lambda v: v,
     parse_value=lambda v: json.loads(v),
-    description="The GenericScalar scalar type represents a generic GraphQL scalar value that could be: List or Object.",
+    description="json field",
 )
 
 

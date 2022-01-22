@@ -1,9 +1,0 @@
-[program:felicity-tasks]
-command=/home/ubuntu/felicity/venv/bin/rq worker felicity-tasks
-numprocs=1
-directory=/home/ubuntu/felicity
-user=ubuntu
-autostart=true
-autorestart=true
-stopasgroup=true
-killasgroup=true

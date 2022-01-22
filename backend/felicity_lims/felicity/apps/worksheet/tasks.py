@@ -109,7 +109,7 @@ async def populate_worksheet_plate(job_uid: int):
                 # skip reserved ?qc positions
                 position += 1
 
-            await sample.assign(ws.uid, position)
+            await sample.assign(ws.uid, position, ws.instrument_uid)
             position += 1
 
     else:  # populate worksheet using an empty position filling strategy if not empty
@@ -143,7 +143,7 @@ async def populate_worksheet_plate(job_uid: int):
         logger.info(f"empty_positions: {empty_positions}")
 
         for key in list(range(len(samples))):
-            await samples[key].assign(ws.uid, empty_positions[key])
+            await samples[key].assign(ws.uid, empty_positions[key], ws.instrument_uid)
 
     time.sleep(1)
 
@@ -180,7 +180,7 @@ def get_sample_position(reserved, level_uid) -> int:
     return 0
 
 
-async def setup_ws_quality_control(ws):
+async def setup_ws_quality_control(ws: models.WorkSheet):
     reserved_pos = ws.reserved
     if ws.template.qc_levels:
         # if ws has qc set, then retrieve
@@ -230,4 +230,4 @@ async def setup_ws_quality_control(ws):
                 a_result_schema = AnalysisResultCreate(**a_result_in)
                 ar: AnalysisResult = await AnalysisResult.create(a_result_schema)
                 position = get_sample_position(reserved_pos, level.uid)
-                await ar.assign(ws.uid, position)
+                await ar.assign(ws.uid, position, ws.instrument_uid)

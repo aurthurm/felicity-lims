@@ -94,6 +94,9 @@ class PatientMutations:
                     setattr(patient, field, payload.__dict__[field])
                 except Exception as e:  # noqa
                     pass
+
+        setattr(patient, "updated_by_uid", felicity_user.uid)
+
         obj_in = schemas.PatientUpdate(**patient.to_dict())
         patient = await patient.update(obj_in)
         return PatientType(**patient.marshal_simple())

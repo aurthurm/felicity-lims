@@ -65,7 +65,6 @@ export default function useNotifyToast(){
 
     // Automatic Error handling from Graphql backend
     const gqlErrorHandler = (error: any) => {
-      console.log(error);
       if(typeof(error) == 'object'){
         if(error.graphQLErrors) {
           const gErrors = new Set()

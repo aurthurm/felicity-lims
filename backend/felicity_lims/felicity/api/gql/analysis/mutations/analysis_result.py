@@ -8,6 +8,7 @@ from felicity.apps.analysis.conf import states
 from felicity.apps.analysis.models import results as result_models
 from felicity.api.gql import OperationError, auth_from_info, verify_user_auth
 from felicity.api.gql.analysis.types import results as r_types
+from felicity.api.gql.permissions import CanVerifyAnalysisResult
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -101,7 +102,7 @@ async def submit_analysis_results(
     return ResultListingType(return_results)
 
 
-@strawberry.mutation
+@strawberry.mutation(permission_classes=[CanVerifyAnalysisResult])
 async def verify_analysis_results(info, analyses: List[int]) -> AnalysisResultResponse:
     is_authenticated, felicity_user = await auth_from_info(info)
     verify_user_auth(

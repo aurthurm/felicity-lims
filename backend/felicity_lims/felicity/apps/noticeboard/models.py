@@ -1,4 +1,5 @@
 import logging
+from typing import Optional, List
 
 from felicity.apps import BaseAuditDBModel, DBModel
 from felicity.apps.setup.models import Department
@@ -14,7 +15,7 @@ logger = logging.getLogger(__name__)
 """
  Many to Many Link between Users and Notices
 """
-notice_view = Table(
+notice_view: Table = Table(
     "notice_view",
     DBModel.metadata,
     Column("notice_uid", ForeignKey("notice.uid"), primary_key=True),
@@ -24,7 +25,7 @@ notice_view = Table(
 """
  Many to Many Link between Group and Notices
 """
-group_notice = Table(
+group_notice: Table = Table(
     "group_notice",
     DBModel.metadata,
     Column("notice_uid", ForeignKey("notice.uid"), primary_key=True),
@@ -34,7 +35,7 @@ group_notice = Table(
 """
  Many to Many Link between Department and Notices
 """
-department_notice = Table(
+department_notice: Table = Table(
     "department_notice",
     DBModel.metadata,
     Column("notice_uid", ForeignKey("notice.uid"), primary_key=True),
@@ -45,14 +46,14 @@ department_notice = Table(
 class Notice(BaseAuditDBModel):
     """Notice"""
 
-    departments = relationship(
+    departments: Optional[List[Department]] = relationship(
         "Department", secondary=department_notice, lazy="selectin"
     )
-    groups = relationship("Group", secondary=group_notice, lazy="selectin")
-    title = Column(String, nullable=False)
-    body = Column(String, nullable=False)
-    viewers = relationship("User", secondary=notice_view, lazy="selectin")
-    expiry = Column(DateTime, nullable=False)
+    groups: Optional[List[Group]] = relationship("Group", secondary=group_notice, lazy="selectin")
+    title: str = Column(String, nullable=False)
+    body: str = Column(String, nullable=False)
+    viewers: Optional[List[User]] = relationship("User", secondary=notice_view, lazy="selectin")
+    expiry: bool = Column(DateTime, nullable=False)
 
     @classmethod
     async def create(cls, obj_in: schemas.NoticeCreate) -> schemas.Notice:

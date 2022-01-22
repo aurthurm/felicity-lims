@@ -11,7 +11,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
-class Patient(Auditable, DBModel):
+class Patient(Auditable):
     # Identification
     client_patient_id = Column(String, index=True, unique=True, nullable=False)
     patient_id = Column(String, index=True, unique=True, nullable=True)

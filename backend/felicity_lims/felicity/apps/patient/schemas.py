@@ -1,14 +1,17 @@
 from datetime import datetime
 from typing import Optional
 
-from pydantic import BaseModel, EmailStr
+from felicity.apps import BaseAuditModel
+from pydantic import EmailStr
 
 #
 #  Patient Schema
 #
 
 # Shared properties
-class PatientBase(BaseModel):
+
+
+class PatientBase(BaseAuditModel):
     client_patient_id: Optional[str] = None
     client_uid: Optional[int] = None
     patient_id: Optional[str] = None

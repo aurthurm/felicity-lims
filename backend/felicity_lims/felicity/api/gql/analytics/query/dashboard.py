@@ -69,6 +69,42 @@ async def count_sample_group_by_status(info) -> types.GroupedCounts:
 
 
 @strawberry.field
+async def count_analyte_group_by_status(info) -> types.GroupedCounts:
+    analytics = AnalyticsInit(AnalysisResult)
+    results = await analytics.get_counts_group_by('status')
+
+    stats = []
+    for row in results:
+        stats.append(types.GroupCount(group=group_exists(row[0]), count=row[1]))
+
+    return types.GroupedCounts(data=stats)
+
+
+@strawberry.field
+async def count_worksheet_group_by_status(info) -> types.GroupedCounts:
+    analytics = AnalyticsInit(WorkSheet)
+    results = await analytics.get_counts_group_by('state')
+
+    stats = []
+    for row in results:
+        stats.append(types.GroupCount(group=group_exists(row[0]), count=row[1]))
+
+    return types.GroupedCounts(data=stats)
+
+
+@strawberry.field
+async def count_analyte_group_by_instrument(info) -> types.GroupedCounts:
+    analytics = AnalyticsInit(AnalysisResult)
+    results = await analytics.get_counts_group_by('instrument_uid')
+
+    stats = []
+    for row in results:
+        stats.append(types.GroupCount(group=get_instrument(group_exists(row[0])), count=row[1]))
+
+    return types.GroupedCounts(data=stats)
+
+
+@strawberry.field
 async def count_sample_group_by_action(info) -> types.GroupedData:
     analytics = AnalyticsInit(Sample)
     created = await analytics.get_counts_group_by('created_by_uid')
@@ -98,42 +134,6 @@ async def count_sample_group_by_action(info) -> types.GroupedData:
     stats.append(publication)
 
     return types.GroupedData(data=stats)
-
-
-@strawberry.field
-async def count_analyte_group_by_status(info) -> types.GroupedCounts:
-    analytics = AnalyticsInit(AnalysisResult)
-    results = await analytics.get_counts_group_by('status')
-
-    stats = []
-    for row in results:
-        stats.append(types.GroupCount(group=group_exists(row[0]), count=row[1]))
-
-    return types.GroupedCounts(data=stats)
-
-
-@strawberry.field
-async def count_analyte_group_by_instrument(info) -> types.GroupedCounts:
-    analytics = AnalyticsInit(AnalysisResult)
-    results = await analytics.get_counts_group_by('instrument_uid')
-
-    stats = []
-    for row in results:
-        stats.append(types.GroupCount(group=get_instrument(group_exists(row[0])), count=row[1]))
-
-    return types.GroupedCounts(data=stats)
-
-
-@strawberry.field
-async def count_worksheet_group_by_status(info) -> types.GroupedCounts:
-    analytics = AnalyticsInit(WorkSheet)
-    results = await analytics.get_counts_group_by('state')
-
-    stats = []
-    for row in results:
-        stats.append(types.GroupCount(group=group_exists(row[0]), count=row[1]))
-
-    return types.GroupedCounts(data=stats)
 
 
 @strawberry.field

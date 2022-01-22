@@ -84,16 +84,18 @@ class AnalysisResult(Auditable, BaseMPTT):
             return retest, final
         return retest, self
 
-    async def assign(self, ws_uid, position):
+    async def assign(self, ws_uid, position, instrument_uid):
         self.worksheet_uid = ws_uid
         self.assigned = True
         self.worksheet_position = position
+        self.instrument_uid = instrument_uid if instrument_uid else None
         return await self.save()
 
     async def un_assign(self):
         self.worksheet_uid = None
         self.assigned = False
         self.worksheet_position = None
+        self.instrument_uid = None
         return await self.save()
 
     async def verify(self, verifier):

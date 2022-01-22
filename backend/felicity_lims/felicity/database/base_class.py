@@ -384,7 +384,7 @@ class DBModel(AllFeaturesMixin):
         return [dict(record) for record in records]
 
     @classmethod
-    async def paginate_with_cursors(cls, page_size: [int] = None, after_cursor: Any = None, before_cursor: Any = None,
+    async def paginate_with_cursors(cls, page_size: int = None, after_cursor: Any = None, before_cursor: Any = None,
                                     filters: Any = None, sort_by: List[str] = None) -> PageCursor:
         if not filters:
             filters = {}

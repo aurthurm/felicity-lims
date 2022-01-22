@@ -1,7 +1,9 @@
 import logging
-from typing import Optional
+from typing import Optional, Tuple
+
 import strawberry  # noqa
-from felicity.apps.user.models import User, UserAuth
+
+from ...apps.user.models import User, UserAuth
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -52,7 +54,7 @@ def same_origin(request):
     return request.headers.get("sec-fetch-site", "unknown") == "same-origin"
 
 
-async def auth_from_info(info):
+async def auth_from_info(info) -> Tuple[bool,Optional[User]]:
     is_auth = is_authenticated(info.context["request"])
 
     try:
@@ -70,18 +72,6 @@ async def auth_from_info(info):
     user = await User.get(auth_uid=auth.uid)
     if not user:
         return False, None
-
-    # extract other info from request headers
-
-    # try:
-    #     user_role = info.context['request'].headers.get('x-felicity-role')
-    # except AttributeError:
-    #     user_role = None
-    #
-    # try:
-    #     user_id = info.context['request'].headers.get('x-felicity-user-id')
-    # except AttributeError:
-    #     token = None
 
     return is_auth, user
 

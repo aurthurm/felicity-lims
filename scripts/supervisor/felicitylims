@@ -1,8 +1,0 @@
-[program:felicitylims]
-command=/home/ubuntu/felicitylims/venv/bin/gunicorn -b localhost:8000 -w 4 felicitylims:app
-directory=/home/ubuntu/felicitylims
-user=ubuntu
-autostart=true
-autorestart=true
-stopasgroup=true
-killasgroup=true
