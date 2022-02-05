@@ -21,7 +21,7 @@ logger = logging.getLogger(__name__)
 
 @router.get("/", response_model=List[an_schema.ReportMeta])
 async def read_reports(
-        current_user: user_models.User = Depends(deps.get_current_active_superuser),
+        current_user: user_models.User = Depends(deps.get_current_active_user),
 ) -> Any:
     """
     Retrieve previously generated csv reports.
@@ -38,6 +38,7 @@ async def request_report_generation(
     """
     Generate Reports.
     """
+    logger.info(f"Report Gen request: {request_in.__dict__}")
     media_dir = resolve_media_dirs_for("reports")
     file_path = media_dir + uuid4().hex
     analyses = await ana_models.Analysis.get_all(uid__in=request_in.analyses_uids)
@@ -47,6 +48,7 @@ async def request_report_generation(
         date_column=request_in.date_column,
         temp=file_path,
         report_type=request_in.report_type,
+        sample_states=', '.join(request_in.sample_states),
         status=conf.report_states.PENDING,
         created_by_uid=current_user.uid,
         updated_by_uid=current_user.uid
@@ -67,7 +69,7 @@ async def request_report_generation(
     return report
 
 
-@router.delete("/delete_report/{report_uid}", response_model=an_schema.ReportMetaDeleted)
+@router.delete("/{report_uid}", response_model=an_schema.ReportMetaDeleted)
 async def delete_report(
         *,
         report_uid: int,

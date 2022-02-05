@@ -1,3 +1,5 @@
+import logging
+
 from felicity.apps.analysis.models.analysis import Sample
 from felicity.apps.analytics import models, AnalyticsInit
 from felicity.apps.analytics import conf
@@ -6,17 +8,25 @@ from felicity.apps.job import conf as job_conf
 from pathlib import Path
 import pandas as pd
 
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
 
 async def generate_report(job_uid: str):
     job: job_models.Job = await job_models.Job.get(uid=job_uid)
-
-    report: models.ReportMeta = await models.ReportMeta.get(uid=job_uid)
+    report: models.ReportMeta = await models.ReportMeta.get(uid=job.job_id)
     if report.status != conf.report_states.PENDING:
         await job.change_status(new_status=job_conf.states.FAILED)
         return
 
     analytics = AnalyticsInit(Sample)
-    columns, lines = await analytics.get_line_listing()
+    columns, lines = await analytics.get_line_listing(
+        period_start=report.period_start,
+        period_end=report.period_end,
+        sample_states=report.sample_states.split(', '),
+        date_column=report.date_column,
+        analysis_uids=[an.uid for an in report.analyses],
+    )
 
     data_list = [line for line in lines]
 

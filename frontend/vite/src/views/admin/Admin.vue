@@ -8,7 +8,7 @@
                 :key="setting.path"
                 :title="setting.title"
                 :path="setting.path"
-                icon="cog"
+                :icon="setting.icon"
                 />
         </ul>
         <hr>
@@ -26,15 +26,16 @@ export default defineComponent({
   },
   setup() {
       const configs = ref([
-          { title: "Country, Provinces, Districts", path: "/admin/location-conf",},
-          { title: "Laboratory, Departments", path: "/admin/laboratory-conf",},
-          { title: "Users, Groups", path: "/admin/users-conf",},
-          { title: "Suppliers", path: "/admin/suppliers-conf",},
-          { title: "Instruments, Methods", path: "/admin/instruments-conf",},
-          { title: "Sample Types, Containers", path: "/admin/sampletypes-conf",},
-          { title: "Tests, Categories, Profiles, QC", path: "/admin/analyses-conf",},
-          { title: "WorkSheet Templates", path: "/admin/worksheets-conf",},
-          { title: "Email, SMS", path: "/admin/publication-conf",},
+          { title: "Country, Provinces, Districts", path: "/admin/location-conf", icon: "flag"},
+          { title: "Laboratory, Departments", path: "/admin/laboratory-conf", icon: "file-medical"},
+          { title: "Users, Groups", path: "/admin/users-conf", icon: "users"},
+          { title: "Suppliers", path: "/admin/suppliers-conf", icon: "caravan"},
+          { title: "Instruments, Methods", path: "/admin/instruments-conf", icon: "laptop-medical"},
+          { title: "Sample Types, Containers", path: "/admin/sampletypes-conf", icon: "fill"},
+          { title: "Tests, Categories, Profiles, QC", path: "/admin/analyses-conf", icon: "microscope"},
+          { title: "WorkSheet Templates", path: "/admin/worksheets-conf", icon: "grip-horizontal"},
+          { title: "Email, SMS", path: "/admin/publication-conf", icon: "copy"},
+          { title: "Reflex Rules", path: "/admin/reflex-rule-conf", icon: "code-branch"},
       ])
     return { configs };
   },

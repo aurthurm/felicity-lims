@@ -1,16 +1,17 @@
 """init
 
-Revision ID: fa37b969bbce
+Revision ID: 2d20bac7d93e
 Revises: 
-Create Date: 2022-01-17 23:52:16.004851
+Create Date: 2022-02-05 21:21:46.535060
 
 """
 from alembic import op
 import sqlalchemy as sa
+import sqlmodel
 from sqlalchemy.dialects import postgresql
 
 # revision identifiers, used by Alembic.
-revision = 'fa37b969bbce'
+revision = '2d20bac7d93e'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -326,6 +327,20 @@ def upgrade():
     sa.PrimaryKeyConstraint('uid')
     )
     op.create_index(op.f('ix_qctemplate_uid'), 'qctemplate', ['uid'], unique=False)
+    op.create_table('reflexrule',
+    sa.Column('uid', sa.Integer(), autoincrement=True, nullable=False),
+    sa.Column('name', sa.String(), nullable=False),
+    sa.Column('description', sa.String(), nullable=False),
+    sa.Column('created_at', sa.DateTime(), nullable=True),
+    sa.Column('created_by_uid', sa.Integer(), nullable=True),
+    sa.Column('updated_at', sa.DateTime(), nullable=True),
+    sa.Column('updated_by_uid', sa.Integer(), nullable=True),
+    sa.ForeignKeyConstraint(['created_by_uid'], ['user.uid'], ),
+    sa.ForeignKeyConstraint(['updated_by_uid'], ['user.uid'], ),
+    sa.PrimaryKeyConstraint('uid')
+    )
+    op.create_index(op.f('ix_reflexrule_name'), 'reflexrule', ['name'], unique=True)
+    op.create_index(op.f('ix_reflexrule_uid'), 'reflexrule', ['uid'], unique=False)
     op.create_table('rejectionreason',
     sa.Column('uid', sa.Integer(), autoincrement=True, nullable=False),
     sa.Column('reason', sa.String(), nullable=False),
@@ -347,6 +362,7 @@ def upgrade():
     sa.Column('location', sa.String(), nullable=True),
     sa.Column('temp', sa.String(), nullable=True),
     sa.Column('status', sa.String(), nullable=True),
+    sa.Column('sample_states', sa.String(), nullable=True),
     sa.Column('created_at', sa.DateTime(), nullable=True),
     sa.Column('created_by_uid', sa.Integer(), nullable=True),
     sa.Column('updated_at', sa.DateTime(), nullable=True),
@@ -726,6 +742,39 @@ def upgrade():
     sa.ForeignKeyConstraint(['user_uid'], ['user.uid'], ),
     sa.PrimaryKeyConstraint('message_uid', 'user_uid')
     )
+    op.create_table('reflexaction',
+    sa.Column('uid', sa.Integer(), autoincrement=True, nullable=False),
+    sa.Column('level', sa.Integer(), nullable=False),
+    sa.Column('description', sa.String(), nullable=False),
+    sa.Column('analysis_uid', sa.Integer(), nullable=False),
+    sa.Column('sample_type_uid', sa.Integer(), nullable=True),
+    sa.Column('reflex_rule_uid', sa.Integer(), nullable=False),
+    sa.Column('created_at', sa.DateTime(), nullable=True),
+    sa.Column('created_by_uid', sa.Integer(), nullable=True),
+    sa.Column('updated_at', sa.DateTime(), nullable=True),
+    sa.Column('updated_by_uid', sa.Integer(), nullable=True),
+    sa.ForeignKeyConstraint(['analysis_uid'], ['analysis.uid'], ),
+    sa.ForeignKeyConstraint(['created_by_uid'], ['user.uid'], ),
+    sa.ForeignKeyConstraint(['reflex_rule_uid'], ['reflexrule.uid'], ),
+    sa.ForeignKeyConstraint(['sample_type_uid'], ['sampletype.uid'], ),
+    sa.ForeignKeyConstraint(['updated_by_uid'], ['user.uid'], ),
+    sa.PrimaryKeyConstraint('uid')
+    )
+    op.create_index(op.f('ix_reflexaction_uid'), 'reflexaction', ['uid'], unique=False)
+    op.create_table('reflexanalysisvalue',
+    sa.Column('uid', sa.Integer(), autoincrement=True, nullable=False),
+    sa.Column('analysis_uid', sa.Integer(), nullable=False),
+    sa.Column('value', sa.String(), nullable=False),
+    sa.Column('created_at', sa.DateTime(), nullable=True),
+    sa.Column('created_by_uid', sa.Integer(), nullable=True),
+    sa.Column('updated_at', sa.DateTime(), nullable=True),
+    sa.Column('updated_by_uid', sa.Integer(), nullable=True),
+    sa.ForeignKeyConstraint(['analysis_uid'], ['analysis.uid'], ),
+    sa.ForeignKeyConstraint(['created_by_uid'], ['user.uid'], ),
+    sa.ForeignKeyConstraint(['updated_by_uid'], ['user.uid'], ),
+    sa.PrimaryKeyConstraint('uid')
+    )
+    op.create_index(op.f('ix_reflexanalysisvalue_uid'), 'reflexanalysisvalue', ['uid'], unique=False)
     op.create_table('resultoption',
     sa.Column('uid', sa.Integer(), autoincrement=True, nullable=False),
     sa.Column('option_key', sa.Integer(), nullable=False),
@@ -815,6 +864,34 @@ def upgrade():
     sa.PrimaryKeyConstraint('uid')
     )
     op.create_index(op.f('ix_listingtask_uid'), 'listingtask', ['uid'], unique=False)
+    op.create_table('reflex_action_analysis',
+    sa.Column('analysis_uid', sa.Integer(), nullable=False),
+    sa.Column('reflex_action_uid', sa.Integer(), nullable=False),
+    sa.ForeignKeyConstraint(['analysis_uid'], ['analysis.uid'], ),
+    sa.ForeignKeyConstraint(['reflex_action_uid'], ['reflexaction.uid'], ),
+    sa.PrimaryKeyConstraint('analysis_uid', 'reflex_action_uid')
+    )
+    op.create_table('reflex_action_analysis_value',
+    sa.Column('reflex_analysis_value_uid', sa.Integer(), nullable=False),
+    sa.Column('reflex_action_uid', sa.Integer(), nullable=False),
+    sa.ForeignKeyConstraint(['reflex_action_uid'], ['reflexaction.uid'], ),
+    sa.ForeignKeyConstraint(['reflex_analysis_value_uid'], ['reflexanalysisvalue.uid'], ),
+    sa.PrimaryKeyConstraint('reflex_analysis_value_uid', 'reflex_action_uid')
+    )
+    op.create_table('reflexbrain',
+    sa.Column('uid', sa.Integer(), autoincrement=True, nullable=False),
+    sa.Column('reflex_action_uid', sa.Integer(), nullable=False),
+    sa.Column('description', sa.String(), nullable=True),
+    sa.Column('created_at', sa.DateTime(), nullable=True),
+    sa.Column('created_by_uid', sa.Integer(), nullable=True),
+    sa.Column('updated_at', sa.DateTime(), nullable=True),
+    sa.Column('updated_by_uid', sa.Integer(), nullable=True),
+    sa.ForeignKeyConstraint(['created_by_uid'], ['user.uid'], ),
+    sa.ForeignKeyConstraint(['reflex_action_uid'], ['reflexaction.uid'], ),
+    sa.ForeignKeyConstraint(['updated_by_uid'], ['user.uid'], ),
+    sa.PrimaryKeyConstraint('uid')
+    )
+    op.create_index(op.f('ix_reflexbrain_uid'), 'reflexbrain', ['uid'], unique=False)
     op.create_table('worksheet',
     sa.Column('uid', sa.Integer(), autoincrement=True, nullable=False),
     sa.Column('worksheet_type', sa.String(), nullable=True),
@@ -936,6 +1013,30 @@ def upgrade():
     op.create_index(op.f('ix_patient_client_patient_id'), 'patient', ['client_patient_id'], unique=True)
     op.create_index(op.f('ix_patient_patient_id'), 'patient', ['patient_id'], unique=True)
     op.create_index(op.f('ix_patient_uid'), 'patient', ['uid'], unique=False)
+    op.create_table('reflex_brain_analysis_value',
+    sa.Column('reflex_analysis_value_uid', sa.Integer(), nullable=False),
+    sa.Column('reflex_brain_uid', sa.Integer(), nullable=False),
+    sa.ForeignKeyConstraint(['reflex_analysis_value_uid'], ['reflexanalysisvalue.uid'], ),
+    sa.ForeignKeyConstraint(['reflex_brain_uid'], ['reflexbrain.uid'], ),
+    sa.PrimaryKeyConstraint('reflex_analysis_value_uid', 'reflex_brain_uid')
+    )
+    op.create_table('reflex_brain_finalise',
+    sa.Column('reflex_analysis_value_uid', sa.Integer(), nullable=False),
+    sa.Column('reflex_brain_uid', sa.Integer(), nullable=False),
+    sa.ForeignKeyConstraint(['reflex_analysis_value_uid'], ['reflexanalysisvalue.uid'], ),
+    sa.ForeignKeyConstraint(['reflex_brain_uid'], ['reflexbrain.uid'], ),
+    sa.PrimaryKeyConstraint('reflex_analysis_value_uid', 'reflex_brain_uid')
+    )
+    op.create_table('reflexbrainanalysis',
+    sa.Column('uid', sa.Integer(), autoincrement=True, nullable=False),
+    sa.Column('analysis_uid', sa.Integer(), nullable=False),
+    sa.Column('reflex_brain_uid', sa.Integer(), nullable=False),
+    sa.Column('count', sa.Integer(), nullable=True),
+    sa.ForeignKeyConstraint(['analysis_uid'], ['analysis.uid'], ),
+    sa.ForeignKeyConstraint(['reflex_brain_uid'], ['reflexbrain.uid'], ),
+    sa.PrimaryKeyConstraint('uid', 'analysis_uid', 'reflex_brain_uid')
+    )
+    op.create_index(op.f('ix_reflexbrainanalysis_uid'), 'reflexbrainanalysis', ['uid'], unique=False)
     op.create_table('tagged_tasks',
     sa.Column('task_uid', sa.Integer(), nullable=False),
     sa.Column('tag_uid', sa.Integer(), nullable=False),
@@ -1083,6 +1184,7 @@ def upgrade():
     sa.Column('retest', sa.Boolean(), nullable=True),
     sa.Column('reportable', sa.Boolean(), nullable=True),
     sa.Column('status', sa.String(), nullable=False),
+    sa.Column('reflex_level', sa.Integer(), nullable=True),
     sa.Column('created_at', sa.DateTime(), nullable=True),
     sa.Column('created_by_uid', sa.Integer(), nullable=True),
     sa.Column('updated_at', sa.DateTime(), nullable=True),
@@ -1161,6 +1263,10 @@ def downgrade():
     op.drop_index(op.f('ix_taskcomment_uid'), table_name='taskcomment')
     op.drop_table('taskcomment')
     op.drop_table('tagged_tasks')
+    op.drop_index(op.f('ix_reflexbrainanalysis_uid'), table_name='reflexbrainanalysis')
+    op.drop_table('reflexbrainanalysis')
+    op.drop_table('reflex_brain_finalise')
+    op.drop_table('reflex_brain_analysis_value')
     op.drop_index(op.f('ix_patient_uid'), table_name='patient')
     op.drop_index(op.f('ix_patient_patient_id'), table_name='patient')
     op.drop_index(op.f('ix_patient_client_patient_id'), table_name='patient')
@@ -1177,6 +1283,10 @@ def downgrade():
     op.drop_index(op.f('ix_worksheet_worksheet_id'), table_name='worksheet')
     op.drop_index(op.f('ix_worksheet_uid'), table_name='worksheet')
     op.drop_table('worksheet')
+    op.drop_index(op.f('ix_reflexbrain_uid'), table_name='reflexbrain')
+    op.drop_table('reflexbrain')
+    op.drop_table('reflex_action_analysis_value')
+    op.drop_table('reflex_action_analysis')
     op.drop_index(op.f('ix_listingtask_uid'), table_name='listingtask')
     op.drop_table('listingtask')
     op.drop_index(op.f('ix_client_uid'), table_name='client')
@@ -1186,6 +1296,10 @@ def downgrade():
     op.drop_table('worksheettemplate')
     op.drop_index(op.f('ix_resultoption_uid'), table_name='resultoption')
     op.drop_table('resultoption')
+    op.drop_index(op.f('ix_reflexanalysisvalue_uid'), table_name='reflexanalysisvalue')
+    op.drop_table('reflexanalysisvalue')
+    op.drop_index(op.f('ix_reflexaction_uid'), table_name='reflexaction')
+    op.drop_table('reflexaction')
     op.drop_table('message_view')
     op.drop_table('message_delete')
     op.drop_table('document_tags')
@@ -1240,6 +1354,9 @@ def downgrade():
     op.drop_table('reportmeta')
     op.drop_index(op.f('ix_rejectionreason_uid'), table_name='rejectionreason')
     op.drop_table('rejectionreason')
+    op.drop_index(op.f('ix_reflexrule_uid'), table_name='reflexrule')
+    op.drop_index(op.f('ix_reflexrule_name'), table_name='reflexrule')
+    op.drop_table('reflexrule')
     op.drop_index(op.f('ix_qctemplate_uid'), table_name='qctemplate')
     op.drop_table('qctemplate')
     op.drop_index(op.f('ix_qcset_uid'), table_name='qcset')

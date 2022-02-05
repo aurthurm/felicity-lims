@@ -30,11 +30,14 @@
 <script setup lang="ts">
   import Accordion from '../../components/Accordion.vue'
   import useNoticeComposable from '../../modules/notice'
+  import { useStore } from 'vuex'
   import { onMounted } from 'vue'
 
+  const store = useStore();
   const { state, fetchMyNotices } = useNoticeComposable();
 
   onMounted(() => {
-    fetchMyNotices(1)
+    const user = store.getters.getAuth;
+    fetchMyNotices(user?.uid)
   })
 </script>

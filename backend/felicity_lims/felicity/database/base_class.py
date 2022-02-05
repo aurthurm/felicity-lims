@@ -179,8 +179,18 @@ class DBModel(AllFeaturesMixin):
         stmt = cls.where(**kwargs)
         async with async_session_factory() as session:
             results = await session.execute(stmt)
-        found = results.scalars().first()
-        return found
+            found = results.scalars().first()
+            return found
+
+    @staticmethod
+    async def db_commit():
+        async with async_session_factory() as session:
+            await session.commit()
+
+    @staticmethod
+    async def db_flush():
+        async with async_session_factory() as session:
+            await session.flush()
 
     @classmethod
     async def create(cls, **kwargs):
@@ -233,6 +243,34 @@ class DBModel(AllFeaturesMixin):
 
     @classmethod
     async def bulk_update_with_mappings(cls, mappings: List):
+        """
+        @param mappings a List of dictionary update values with pks.
+        e.g [{'uid': 34, update_values}, ...]
+        ?? there must be zero many to many relations
+        """
+        from sqlalchemy.sql.expression import bindparam
+        to_update = [cls._import(data) for data in mappings]
+        for item in to_update:
+            item["_uid"] = item["uid"]
+
+        query = update(cls).where(cls.uid == bindparam('_uid'))
+
+        binds = {}
+        for key in to_update[0]:
+            if key != "_uid":
+                binds[key] = bindparam(key)
+
+        stmt = query.values(binds).execution_options(synchronize_session="fetch")
+
+        async with async_session_factory() as session:
+            results = await session.execute(stmt, to_update)
+            await session.flush()
+            await session.commit()
+
+        return results.scalars.all()
+
+    @classmethod
+    async def bulk_update_with_mappings_not_working(cls, mappings: List):
         """
         @param mappings a List of dictionary update values with pks.
         e.g [{'uid': 34, update_values}, ...]

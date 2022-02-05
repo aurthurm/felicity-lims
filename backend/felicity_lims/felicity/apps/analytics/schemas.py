@@ -10,6 +10,7 @@ class ReportMetaBase(BaseAuditModel):
     period_start: datetime
     period_end: datetime
     date_column: str
+    sample_states: Optional[str]
     report_type: str = conf.report_types.LINE_LISTING
     status: Optional[str] = conf.report_states.PENDING
     analyses: Optional[List[Analysis]] = None
@@ -41,7 +42,7 @@ class ReportMetaDeleted(BaseModel):
 class ReportRequest(BaseModel):
     report_type: str
     analyses_uids: List[int]
-    sample_states: Optional[List[str]]
+    sample_states: List[str]
     date_column: str
     period_start: datetime
     period_end: datetime

@@ -61,17 +61,21 @@ export enum ActionTypes {
 function sortAnalysisResults(ws: any): IWorkSheet {
   ws.analysisResults = ws?.analysisResults?.sort((a: IAnalysisResult, b: IAnalysisResult) => {
     if(a.worksheetPosition === b.worksheetPosition) {
-      return (a?.uid || 0) > (b?.uid || 0) ? 1 : -1;;
+      return (a?.uid || 0) > (b?.uid || 0) ? 1 : -1;
     }
     return (a?.worksheetPosition || 0) > (b?.worksheetPosition || 1) ? 1 : -1
   });
   return ws;
 }
 
+function sortWorksheets(ws: IWorkSheet[]): IWorkSheet[] {
+  return ws?.sort((a: IWorkSheet, b: IWorkSheet) => (a?.uid || 0) < (b?.uid || 0) ? 1 : -1);
+}
+
 // Getters
 export const getters = <GetterTree<IState, RootState>>{
   getWorkSheetTemplates: (state) => state.workSheetTemplates,
-  getWorkSheets: (state) => state.workSheets,
+  getWorkSheets: (state) => sortWorksheets(state.workSheets),
   getWorkSheet: (state) => state.workSheet,
   getWorkSheetByUid: (state) => (uid: number) => state.workSheets?.find(ws => ws.uid === uid),
   getWorkSheetCount: (state) => state.workSheetCount,
@@ -133,8 +137,8 @@ export const mutations = <MutationTree<IState>>{
     state.workSheet = sortAnalysisResults(wst);
   },
 
-  [MutationTypes.ADD_WORKSHEET](state: IState, ws: IWorkSheet): void {
-    state.workSheets.push(ws);
+  [MutationTypes.ADD_WORKSHEET](state: IState, worksheets: IWorkSheet[]): void {
+    worksheets?.forEach(ws => state.workSheets.push(ws))
   },
 
   [MutationTypes.REMOVE_WORKSHEET](state: IState): void {
@@ -186,7 +190,7 @@ export const actions = <ActionTree<IState, RootState>>{
   },
 
   async [ActionTypes.ADD_WORKSHEET]({ commit }, payload ){
-    commit(MutationTypes.ADD_WORKSHEET, payload.data.createWorksheet);
+    commit(MutationTypes.ADD_WORKSHEET, payload.data.createWorksheet.worksheets);
   },
 
   async [ActionTypes.REMOVE_WORKSHEET]({ commit } ){

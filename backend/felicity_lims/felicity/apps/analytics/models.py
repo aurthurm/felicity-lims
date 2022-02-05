@@ -32,6 +32,7 @@ class ReportMeta(BaseAuditDBModel):
     location = Column(String, nullable=True)
     temp = Column(String, nullable=True)
     status = Column(String)
+    sample_states = Column(String)
 
     async def set_final(self,  status: str, location: Union[str, None] = None):
         if self.status != conf.report_states.READY:

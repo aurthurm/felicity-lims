@@ -60,7 +60,7 @@
     let total = 0; 
     state.resourceStats?.value.instruments?.forEach((inst: any) => total += inst.count)
     const pct = (count/total)*100
-    return pct + " %"
+    return pct.toFixed(2) + " %"
   }
 
   const plotUserMatrix = (data: any, elem: string, grpName: string) => {

@@ -9,6 +9,7 @@ from felicity.apps.analysis.models import results as result_models
 from felicity.api.gql import OperationError, auth_from_info, verify_user_auth
 from felicity.api.gql.analysis.types import results as r_types
 from felicity.api.gql.permissions import CanVerifyAnalysisResult
+from felicity.apps.analysis.utils import verify__from_result_uids, retest_from_result_uids
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -111,38 +112,10 @@ async def verify_analysis_results(info, analyses: List[int]) -> AnalysisResultRe
         "Only Authenticated user can verify analysis results",
     )
 
-    return_results = []
-
     if len(analyses) == 0:
         return OperationError(error=f"No analyses to verify are provided!")
 
-    for _ar_uid in analyses:
-        a_result: result_models.AnalysisResult = await result_models.AnalysisResult.get(
-            uid=_ar_uid
-        )
-        if not a_result:
-            return OperationError(error=f"AnalysisResult with uid {_ar_uid} not found")
-
-        # No Empty Results
-        status = getattr(a_result, "status", None)
-        if status == states.result.RESULTED:
-            a_result = await a_result.verify(verifier=felicity_user)
-            return_results.append(a_result)
-        else:
-            continue
-
-        # TODO: optimisation -> reduce db-calls
-        #  Avoid calling verify sample & verify worksheet len(analyses) times
-        #  However create "set" holder variables and hold sample, worksheet ids
-        #  after the for loop has completed, then try verify linkages
-
-        # try to verify associated sample
-        if a_result.sample:
-            await a_result.sample.verify(verified_by=felicity_user)
-
-        # try to submit associated worksheet
-        if a_result.worksheet_uid:
-            await a_result.worksheet.verify(verified_by=felicity_user)
+    return_results = await verify__from_result_uids(analyses, felicity_user)
 
     return ResultListingType(return_results)
 
@@ -198,26 +171,12 @@ async def retest_analysis_results(info, analyses: List[int]) -> AnalysisResultRe
         "Only Authenticated user can retest analysis results",
     )
 
-    return_results = []
-
     if len(analyses) == 0:
         return OperationError(error=f"No analyses to Retest are provided!")
 
-    for _ar_uid in analyses:
-        a_result: result_models.AnalysisResult = await result_models.AnalysisResult.get(
-            uid=_ar_uid
-        )
-        if not a_result:
-            return OperationError(error=f"AnalysisResult with uid {_ar_uid} not found")
+    retests, originals = await retest_from_result_uids(analyses, felicity_user)
 
-        retest, a_result = await a_result.retest_result(
-            retested_by=felicity_user, next_action="verify"
-        )
-        if retest:
-            return_results.append(retest)
-        return_results.append(a_result)
-
-    return ResultListingType(return_results)
+    return ResultListingType(retests + originals)
 
 
 @strawberry.mutation

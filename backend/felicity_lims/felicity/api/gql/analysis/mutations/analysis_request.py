@@ -15,6 +15,7 @@ from felicity.api.gql import OperationError, auth_from_info, verify_user_auth
 from felicity.api.gql.analysis.types import results as r_types
 from felicity.api.gql.analysis.types import analysis as a_types
 from felicity.api.gql.permissions import CanVerifySample
+from felicity.apps.reflex.utils import ReflexUtil
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -79,7 +80,7 @@ class AnalysisRequestInputType:
 
 @strawberry.mutation
 async def create_analysis_request(
-    info, payload: AnalysisRequestInputType
+        info, payload: AnalysisRequestInputType
 ) -> AnalysisRequestResponse:
     logger.info("Received request to create analysis request")
 
@@ -137,7 +138,7 @@ async def create_analysis_request(
             "sample_type_uid": _st_uid,
             "sample_id": None,
             "priority": payload.priority,
-            "status": states.sample.DUE,
+            "status": states.sample.RECEIVED,
         }
 
         profiles = []
@@ -182,14 +183,16 @@ async def create_analysis_request(
 
         a_result_schema = schemas.AnalysisResultCreate(
             sample_uid=sample.uid, status=states.result.PENDING, analysis_uid=None,
-            patient_uid=felicity_user.uid, client_uid=felicity_user.uid
+            created_by_uid=felicity_user.uid, updated_by_uid=felicity_user.uid
         )
         result_schemas = []
         for _service in _profiles_analyses:
             result_schemas.append(
                 a_result_schema.copy(update={"analysis_uid": _service.uid})
             )
-        await result_models.AnalysisResult.bulk_create(result_schemas)
+        created = await result_models.AnalysisResult.bulk_create(result_schemas)
+        logger.info(f"ReflexUtil .... set_reflex_actions ...")
+        await ReflexUtil.set_reflex_actions(created)
 
     await asyncio.sleep(1)
     analysis_request = await analysis_models.AnalysisRequest.get_related(
@@ -351,7 +354,7 @@ async def verify_samples(info, samples: List[int]) -> SampleActionResponse:
 
 @strawberry.mutation
 async def reject_samples(
-    info, samples: List[SampleRejectInputType]
+        info, samples: List[SampleRejectInputType]
 ) -> SampleActionResponse:
     is_authenticated, felicity_user = await auth_from_info(info)
     verify_user_auth(

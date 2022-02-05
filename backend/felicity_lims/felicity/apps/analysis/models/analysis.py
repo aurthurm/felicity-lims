@@ -1,5 +1,6 @@
 import logging
 from datetime import datetime, timedelta
+from typing import Tuple, List, Dict
 
 from felicity.apps import Auditable, BaseAuditDBModel, DBModel
 from felicity.apps.analysis import schemas
@@ -486,8 +487,6 @@ class Sample(Auditable, BaseMPTT):
             self.updated_by_uid = rejected_by.uid  # noqa
             return await self.save()
         return self
-
-        # DO REFLEX HERE
 
     @classmethod
     async def create(cls, obj_in: schemas.SampleCreate) -> schemas.Sample:

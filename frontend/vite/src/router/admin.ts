@@ -8,6 +8,7 @@ import AnalysesConf from '../views/admin/analyses/index.vue';
 import SuppliersConf from '../views/admin/suppliers/index.vue';
 import SampleConf from '../views/admin/sample/index.vue';
 import WSTemplatesConf from '../views/admin/worksheets/index.vue';
+import ReflexRulesConf from '../views/admin/reflex/index.vue';
 
 
 const adminRoutes = [
@@ -87,6 +88,14 @@ const adminRoutes = [
     path: 'suppliers-conf',
     name: 'suppliers-conf',
     component: SuppliersConf,
+    meta: {
+      requiresAuth: true,
+    },
+  },
+  {
+    path: 'reflex-rule-conf',
+    name: 'reflex-rule-conf',
+    component: ReflexRulesConf,
     meta: {
       requiresAuth: true,
     },

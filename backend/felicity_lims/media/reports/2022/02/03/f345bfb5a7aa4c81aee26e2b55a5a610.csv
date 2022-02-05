@@ -1,0 +1,5 @@
+Patient Id,First Name,Last Name,Client Patient Id,Gender,Age,Date Of Birth,Age DOB Estimated,Client Request Id,Sample Id,Date Received,Date Submitted,Date Verified,Date Published,Date Invalidated,Date Cancelled,Analysis,Result,Method,Instrument,Reportable,Sample Status,Period Criteria - created_at
+P22-136459,Autumn,Allen,655-23-4839,3,47,1994-07-10 10:02:29.000000,True,866-26-2734,WB22-44883,,,,,,,HIV,,,,True,rejected,2022-01-23 10:15:59.377420
+P22-136516,Emily,Beard,881-50-8304,2,16,1982-05-26 16:12:38.000000,False,643-99-0553,BP22-44533,,,,,,,HIV,,,,True,rejected,2022-01-23 10:16:13.714601
+P22-136506,Matthew,Vargas,089-04-7477,3,2,1974-01-14 20:36:20.000000,False,318-41-8337,WB22-44902,,,,,,,HIV,,,,True,rejected,2022-01-23 10:16:08.079586
+P22-136501,Marcus,Wolf,868-18-0654,3,88,1991-12-26 07:44:05.000000,True,898-78-9597,WB22-44898,,,,,,,HIV,,,,True,rejected,2022-01-23 10:16:07.172511

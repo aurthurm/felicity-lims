@@ -23,6 +23,8 @@ from felicity.api.gql.user.query import UserQuery
 from felicity.api.gql.worksheet.mutations import WorkSheetMutations
 from felicity.api.gql.worksheet.query import WorkSheetQuery
 from felicity.api.gql.analytics.query import AnalyticsQuery
+from felicity.api.gql.reflex.query import ReflexRuleQuery
+from felicity.api.gql.reflex.mutations import ReflexRuleMutations
 
 
 @strawberry.type
@@ -40,6 +42,7 @@ class Query(
     NoticeQuery,
     StreamNotificationQuery,
     AnalyticsQuery,
+    ReflexRuleQuery,
 ):
     pass
 
@@ -56,6 +59,7 @@ class Mutation(
     KanBanMutations,
     MessageMutations,
     NoticeMutations,
+    ReflexRuleMutations,
 ):
     pass
 

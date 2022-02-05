@@ -57,6 +57,8 @@ class AnalysisResult(Auditable, BaseMPTT):
     retest = Column(Boolean(), default=False)
     reportable = Column(Boolean(), default=True)  # for retests or reflex
     status = Column(String, nullable=False)
+    # reflex level
+    reflex_level = Column(Integer, nullable=True)
 
     async def retest_result(self, retested_by, next_action="verify"):
         retest = None
@@ -161,6 +163,7 @@ class AnalysisResult(Auditable, BaseMPTT):
             # 'profiles__uid__in': [_p.uid for _p in ws.profiles], # ?? re-looking needed for profile based WS's
             "analysis_uid__in": analyses_uids,
             "sample___sample_type_uid__exact": sample_type_uid,
+            "sample___status": conf.states.sample.RECEIVED,
         }
         sort_attrs = ["-sample___priority", "sample___sample_id", "-created_at"]
 

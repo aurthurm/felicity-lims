@@ -16,6 +16,7 @@ from felicity.apps.worksheet import conf, models, schemas
 from felicity.api.gql import OperationError, auth_from_info, verify_user_auth
 from felicity.api.gql.worksheet.types import WorkSheetTemplateType, WorkSheetType
 from felicity.utils import has_value_or_is_truthy
+from felicity.database.session import async_session_factory
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -69,7 +70,7 @@ WorkSheetResponse = strawberry.union(
 class WorkSheetMutations:
     @strawberry.mutation
     async def create_worksheet_template(
-        self, info, payload: WorksheetTemplateInputType
+            self, info, payload: WorksheetTemplateInputType
     ) -> WorkSheetTemplateResponse:
 
         is_authenticated, felicity_user = await auth_from_info(info)
@@ -80,9 +81,9 @@ class WorkSheetMutations:
         )
 
         if (
-            not payload.name
-            or not payload.sample_type_uid
-            or not len(payload.analyses) > 0
+                not payload.name
+                or not payload.sample_type_uid
+                or not len(payload.analyses) > 0
         ):
             return OperationError(
                 error="Template name and sample type and analysis are mandatory"
@@ -148,7 +149,7 @@ class WorkSheetMutations:
 
     @strawberry.mutation
     async def update_worksheet_template(
-        self, uid: int, payload: WorksheetTemplateInputType
+            self, uid: int, payload: WorksheetTemplateInputType
     ) -> WorkSheetTemplateResponse:
 
         if not uid:
@@ -175,8 +176,9 @@ class WorkSheetMutations:
         if payload.reserved:
             positions = dict()
             for item in payload.reserved:
-                positions[item["position"]] = item
-                qc_level = await qc_models.QCLevel.get(uid=item["level_uid"])
+                logger.info(item, positions)
+                positions[item.position] = item.__dict__
+                qc_level = await qc_models.QCLevel.get(uid=item.level_uid)
                 if qc_level not in _qc_levels:
                     _qc_levels.append(qc_level)
             setattr(ws_template, "reserved", positions)
@@ -191,14 +193,19 @@ class WorkSheetMutations:
                 if anal not in _analyses:
                     _analyses.append(anal)
 
+        ws_template.analyses = []
+        ws_template.qc_levels = []
+        ws_template = await ws_template.save()
+
         ws_template.analyses = _analyses
         ws_template.qc_levels = _qc_levels
         ws_template = await ws_template.save()
+
         return WorkSheetTemplateType(**ws_template.marshal_simple())
 
     @strawberry.mutation
     async def create_worksheet(
-        self, info, template_uid: int, analyst_uid: int, count: Optional[int] = 1
+            self, info, template_uid: int, analyst_uid: int, count: Optional[int] = 1
     ) -> WorkSheetsResponse:
 
         is_authenticated, felicity_user = await auth_from_info(info)
@@ -290,12 +297,12 @@ class WorkSheetMutations:
 
     @strawberry.mutation
     async def update_worksheet(
-        self,
-        info,
-        worksheet_uid: int,
-        analyst_uid: Optional[int],
-        action: Optional[str],
-        samples: List[int],
+            self,
+            info,
+            worksheet_uid: int,
+            analyst_uid: Optional[int],
+            action: Optional[str],
+            samples: List[int],
     ) -> WorkSheetResponse:  # noqa
 
         is_authenticated, felicity_user = await auth_from_info(info)
@@ -334,7 +341,7 @@ class WorkSheetMutations:
                     if not result:
                         continue
                     if (
-                        not result.sample.qc_level_uid
+                            not result.sample.qc_level_uid
                     ):  # skip un assign of quality control samples
                         result.un_assign()
                 await worksheet.reset_assigned_count()
@@ -345,7 +352,7 @@ class WorkSheetMutations:
 
     @strawberry.mutation
     async def update_worksheet_apply_template(
-        self, info, template_uid: int, worksheet_uid: int
+            self, info, template_uid: int, worksheet_uid: int
     ) -> WorkSheetResponse:
 
         is_authenticated, felicity_user = await auth_from_info(info)
@@ -368,8 +375,13 @@ class WorkSheetMutations:
                 error=f"WorkSheet Template {template_uid} does not exist"
             )
 
-        # TODO:
-        #   If templates are different then first un-assign else fill in the difference or or un-assign and refill
+        # If WS already contains at least a sample from a different template do nothing: No confusion here
+        if ws.assigned_count > 0 and ws.template_uid != template_uid:
+            return OperationError(
+                error=f"Worksheet has {ws.assigned_count} assigned samples. You can not apply a different template",
+                suggestion="Un-assign contained samples first and you will be able to apply any template of your "
+                           "choosing "
+            )
 
         incoming = {
             "template_uid": template_uid,
@@ -384,13 +396,28 @@ class WorkSheetMutations:
         }
 
         ws_schema = schemas.WorkSheetUpdate(**incoming)
-
-        for anal in ws_temp.analyses:
-            a_uids = [an.uid for an in ws_schema.analyses]
-            if anal.uid not in a_uids:
-                ws_schema.analyses.append(anal)
-
         ws = await ws.update(ws_schema)
+
+        # updated separately to avoid object already in session issue
+        _analyses = []
+        for anal in ws_temp.analyses:
+            anal_uids = [an.uid for an in _analyses]
+            if anal.uid not in anal_uids:
+                analysis = await analysis_models.Analysis.get(uid=anal.uid)
+                _analyses.append(analysis)
+
+        for anal in ws.analyses:
+            ws.analyses.remove(anal)
+        ws.analyses = []
+        await ws.save()
+
+        async with async_session_factory() as session:
+            stmt = (
+                models.worksheet_analysis.insert()
+            )
+            await session.execute(stmt, {"worksheet_uid": ws.uid, "analysis_uid": _analyses[0].uid})
+            await session.commit()
+            await session.flush()
 
         # Add a job
         job_schema = job_schemas.JobCreate(

@@ -352,6 +352,7 @@ class AnalysisResultBase(BaseAuditModel):
     assigned: Optional[bool] = False
     retest: Optional[bool] = False
     reportable: Optional[bool] = True
+    reflex_level: Optional[int] = None
 
 
 class AnalysisResultBaseInDB(AnalysisResultBase):

@@ -142,6 +142,9 @@ async def populate_worksheet_plate(job_uid: int):
         logger.info(f"assigned_positions: {assigned_positions}")
         logger.info(f"empty_positions: {empty_positions}")
 
+        # balance sample count to avoid a key error
+        samples = samples[:len(empty_positions)]
+
         for key in list(range(len(samples))):
             await samples[key].assign(ws.uid, empty_positions[key], ws.instrument_uid)
 
@@ -200,8 +203,9 @@ async def setup_ws_quality_control(ws: models.WorkSheet):
         for level in ws.template.qc_levels:
             # if ws has qc_set with this level, skip
             add_qc_sample = True
-            if qc_set.samples:
-                for _sample in qc_set.samples:
+            samples = await Sample.get_all(qc_set_uid=qc_set.uid)
+            if samples:
+                for _sample in samples:
                     if _sample.qc_level.uid == level.uid:
                         add_qc_sample = False
 

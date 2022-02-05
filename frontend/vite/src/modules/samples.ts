@@ -276,7 +276,7 @@ export default function useSampleComposable(){
               'Its Happening!',
               'Your sample(s) have been rejected.',
               'success'
-            ).then(_ => router.push({ name: "samples-listing" }))
+            ).then(_ => {}) // router.push({ name: "samples-listing" })
 
           }
         })

@@ -1,4 +1,5 @@
-from typing import Tuple, Type, TypeVar, Generic
+from typing import Tuple, Type, TypeVar, Generic, List
+from datetime import datetime
 import logging
 from dateutil import parser
 
@@ -21,7 +22,32 @@ class AnalyticsInit(Generic[ModelType]):
         self.table = model.__tablename__
         self.alias = model.__tablename__ + "_tbl"
 
-    async def get_line_listing(self):
+    async def get_line_listing(self, period_start: str, period_end: str, sample_states: List[str],
+                               date_column: str, analysis_uids: List[int]):
+        start_date = parser.parse(str(period_start))
+        end_date = parser.parse(str(period_end))
+
+        if len(analysis_uids) > 0:
+            an_uids = analysis_uids
+            if len(an_uids) == 1:
+                an_uids.append(analysis_uids[0])
+            an_uids = tuple(an_uids)
+        else:
+            an_uids = (0, 0)
+
+        if sample_states:
+            statuses = sample_states
+            if len(sample_states) == 1:
+                statuses.append(sample_states[0])
+            statuses = tuple(statuses)
+        else:
+            statuses = ('', '')  # noqa
+
+        logger.info(f"analysis_uids: {analysis_uids}")
+        logger.info(f"an_uids: {an_uids}")
+        logger.info(f"sample_states: {sample_states}")
+        logger.info(f"statuses: {statuses}")
+
         stmt = text(f"""
             select 
                 pt.patient_id as "Patient Id",
@@ -45,7 +71,8 @@ class AnalyticsInit(Generic[ModelType]):
                 mt.name as "Method",
                 inst.name as "Instrument",
                 re.reportable as "Reportable",
-                sa.status as "Sample Status"
+                sa.status as "Sample Status",
+                sa.{date_column} as "Period Criteria - {date_column}"
             from {self.table} sa
             inner join analysisresult re on re.sample_uid = sa.uid
             inner join analysisrequest ar on ar.uid = sa.analysis_request_uid
@@ -56,12 +83,19 @@ class AnalyticsInit(Generic[ModelType]):
             left join instrument inst on inst.uid = re.instrument_uid
             left join method mt on mt.uid = re.method_uid
             where
-                sa.status in ('due','received','to_be_verified', 'verified', 'published')
-            limit 5000
+                sa.{date_column} >= :sd and
+                sa.{date_column} <= :ed and 
+                an.uid in {an_uids} and
+                sa.status in {statuses}
         """)
 
+        logger.info(stmt)
+
         async with async_session_factory() as session:
-            result = await session.execute(stmt)
+            result = await session.execute(stmt, {
+                "sd": start_date,
+                "ed": end_date,
+            })
 
         # columns result.keys()/result._metadata.keys
         return result.keys(), result.all()
@@ -86,7 +120,8 @@ class AnalyticsInit(Generic[ModelType]):
             raise AttributeError(f"Model has no attr {group_by}")
 
         group_by = getattr(self.model, group_by)
-        stmt = select(group_by, func.count(self.model.uid).label('total')).filter(group_by!=None).group_by(group_by) # noqa
+        stmt = select(group_by, func.count(self.model.uid).label('total')).filter(group_by != None).group_by(
+            group_by)  # noqa
 
         async with async_session_factory() as session:
             result = await session.execute(stmt)
@@ -148,7 +183,7 @@ class AnalyticsInit(Generic[ModelType]):
               ) as diff
         """
 
-        stmt = text(raw_sql)
+        stmt = text(raw_sql)  # noqa:
 
         async with async_session_factory() as session:
             result = await session.execute(stmt, {"sd": start_date, "ed": end_date})
@@ -216,7 +251,7 @@ class AnalyticsInit(Generic[ModelType]):
               diff.name
         """
 
-        stmt = text(raw_sql)
+        stmt = text(raw_sql)  # noqa:
 
         logger.info(stmt)
 
@@ -269,8 +304,8 @@ class AnalyticsInit(Generic[ModelType]):
               completed_delayed
         """
 
-        stmt_for_incomplete = text(raw_sql_for_incomplete)
-        stmt_for_complete = text(raw_sql_for_complete)
+        stmt_for_incomplete = text(raw_sql_for_incomplete)  # noqa:
+        stmt_for_complete = text(raw_sql_for_complete)  # noqa:
 
         async with async_session_factory() as session:
             result_for_incomplete = await session.execute(stmt_for_incomplete)

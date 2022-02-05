@@ -3,8 +3,8 @@
     "strict": true,
     "jsx": "vue",
     "outDir": "./dist",
-    "target": "es6", // es2017, esnext
-    "module": "es6", // commonjs
+    "target": "esnext", // es2017, esnext,es6
+    "module": "esnext", // commonjs, es6
     "lib": [ // es2015
       "ESNext",
       "DOM"
@@ -31,6 +31,7 @@
     "src/orig.tsx"
   ],
   "types": [
-    "vue-sweetalert2"
+    "vue-sweetalert2",
+    "vite/client",
   ],
 }

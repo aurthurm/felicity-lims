@@ -3,15 +3,15 @@ import { makeOperation } from '@urql/core';
 import { devtoolsExchange } from '@urql/devtools'
 import { authExchange } from '@urql/exchange-auth';
 
-import { graphql_url, graphql_ws_url } from './conf'
+import { GQL_BASE_URL, WS_BASE_URL } from './conf'
 
 import { createClient as createWSClient } from 'graphql-ws';
 import { SubscriptionClient } from 'subscriptions-transport-ws'
 
-const subscriptionClient = new SubscriptionClient( graphql_ws_url, { reconnect: true });
+const subscriptionClient = new SubscriptionClient( WS_BASE_URL, { reconnect: true });
 
 const wsClient = createWSClient({
-  url: graphql_ws_url,
+  url: WS_BASE_URL,
 });
 
 // 1. get auth data
@@ -81,7 +81,7 @@ const willAuthError = (authState: any) => {
 
 // https://github.com/FormidableLabs/urql/tree/main/exchanges/auth#quick-start-guide
 export const urqlClient = createClient({
-  url: graphql_url,
+  url: GQL_BASE_URL,
    ...(('process.env.DEV') && { exchanges: [devtoolsExchange, ...defaultExchanges] }),
   exchanges: [
     dedupExchange,

@@ -238,7 +238,7 @@ export default defineComponent({
       after: "",
       status: state.filterStatus, 
       text: "", 
-      sortBy: ["uid"],
+      sortBy: ["-created_at"],
       clientUid: +ifZeroEmpty(route?.query?.clientUid),
       filterAction: false
     });

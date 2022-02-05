@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="ProjectPlainTextFileTypeManager">
+    <file url="file://$PROJECT_DIR$/backend/felicity_lims/migrations/versions/01228c01bc34_addedreport_sample_states.py" />
+    <file url="file://$PROJECT_DIR$/backend/felicity_lims/migrations/versions/0770c5bfbea5_rb_to_non_unique.py" />
+    <file url="file://$PROJECT_DIR$/backend/felicity_lims/migrations/versions/4b8c09117dfc_refactored_reflex_action.py" />
+    <file url="file://$PROJECT_DIR$/backend/felicity_lims/migrations/versions/60286d1c5b98_.py" />
+    <file url="file://$PROJECT_DIR$/backend/felicity_lims/migrations/versions/6f0b5336e6e2_added_reflex_tables.py" />
+    <file url="file://$PROJECT_DIR$/backend/felicity_lims/migrations/versions/fa37b969bbce_init.py" />
+  </component>
   <component name="ProjectRootManager" version="2" project-jdk-name="Python 3.9 (felicity)" project-jdk-type="Python SDK" />
   <component name="PyCharmProfessionalAdvertiser">
     <option name="shown" value="true" />

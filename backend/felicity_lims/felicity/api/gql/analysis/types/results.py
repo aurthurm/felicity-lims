@@ -35,12 +35,14 @@ class AnalysisResultType:
     parent: Optional["AnalysisResultType"]
     reportable: bool
     status: Optional[str]
+    reflex_level: Optional[int]
     created_by_uid: Optional[int]
     created_by: Optional[UserType]
     created_at: Optional[datetime]
     updated_by_uid: Optional[int]
     updated_by: Optional[UserType]
     updated_at: Optional[datetime]
+
 
 
 @strawberry.type
