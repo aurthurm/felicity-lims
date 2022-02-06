@@ -9,6 +9,8 @@ import SuppliersConf from '../views/admin/suppliers/index.vue';
 import SampleConf from '../views/admin/sample/index.vue';
 import WSTemplatesConf from '../views/admin/worksheets/index.vue';
 import ReflexRulesConf from '../views/admin/reflex/index.vue';
+import ReflexListing from '../views/admin/reflex/ReflexListing.vue';
+import ReflexRuleDetail from '../views/admin/reflex/_id/index.vue';
 
 
 const adminRoutes = [
@@ -96,6 +98,24 @@ const adminRoutes = [
     path: 'reflex-rule-conf',
     name: 'reflex-rule-conf',
     component: ReflexRulesConf,
+    children: [
+        {
+          path: '',
+          name: 'reflex-listing',
+          component: ReflexListing,
+          meta: {
+            requiresAuth: true,
+          },
+        },
+        {
+          path: ':uid',
+          name: 'reflex-detail',
+          component: ReflexRuleDetail,
+          meta: {
+            requiresAuth: true,
+          },
+        }
+    ],
     meta: {
       requiresAuth: true,
     },

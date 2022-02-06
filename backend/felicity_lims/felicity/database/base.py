@@ -46,7 +46,9 @@ from felicity.apps.worksheet.models import WorkSheet  # noqa
 from felicity.apps.worksheet.models import WorkSheetTemplate  # noqa
 from felicity.apps.analytics.models import ReportMeta  # noqa
 from felicity.apps.reflex.models import ReflexRule  # noqa
-from felicity.apps.reflex.models import ReflexAnalysisValue  # noqa
+from felicity.apps.reflex.models import ReflexBrainFinal  # noqa
+from felicity.apps.reflex.models import ReflexBrainCriteria  # noqa
+from felicity.apps.reflex.models import ReflexBrainAddition  # noqa
 from felicity.apps.reflex.models import ReflexBrain  # noqa
 from felicity.apps.reflex.models import ReflexAction  # noqa
 from felicity.database.base_class import DBModel  # noqa

@@ -423,7 +423,8 @@ class DBModel(AllFeaturesMixin):
 
     @classmethod
     async def paginate_with_cursors(cls, page_size: int = None, after_cursor: Any = None, before_cursor: Any = None,
-                                    filters: Any = None, sort_by: List[str] = None) -> PageCursor:
+                                    filters: Any = None, sort_by: List[str] = None,
+                                    get_related: str = None) -> PageCursor:
         if not filters:
             filters = {}
 
@@ -451,6 +452,9 @@ class DBModel(AllFeaturesMixin):
                 _filters.append({sa_or_: cursor_limit})
 
         stmt = cls.smart_query(filters=_filters, sort_attrs=sort_by)
+
+        if get_related:
+            stmt = stmt.options(selectinload(get_related))
 
         if page_size:
             stmt = stmt.limit(page_size)

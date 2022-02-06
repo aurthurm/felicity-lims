@@ -1,14 +1,21 @@
 <template>
-  <div class="">
-    <div class="flex justify-start">
-      <h4>Reflex Rules</h4>
-    </div>
-    <hr>
-    <router-view />
-  </div>
+
+  <router-view />
+  
 </template>
 
 <script setup lang="ts">
-  import { computed } from 'vue';
+  import {reactive } from 'vue'
+  import { useStore } from 'vuex';
+  import { ActionTypes as AnaysisActionTypes } from '../../../store/modules/analysis'
+  const  store = useStore();
 
+  let analysesParams = reactive({ 
+    first: undefined, 
+    after: "",
+    text: "", 
+    sortBy: ["name"]
+  });
+
+  store.dispatch(AnaysisActionTypes.FETCH_ANALYSES_SERVICES, analysesParams)
 </script>

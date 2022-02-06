@@ -38,22 +38,7 @@ class ReflexRuleCursorPage:
 
 
 @strawberry.type
-class ReflexAnalysisValueType:
-    uid: int
-    analysis_uid: int
-    analysis: Optional[AnalysisType]
-    value: str
-    #
-    created_by_uid: Optional[int]
-    created_by: Optional[UserType]
-    created_at: Optional[datetime]
-    updated_by_uid: Optional[int]
-    updated_by: Optional[UserType]
-    updated_at: Optional[datetime]
-
-
-@strawberry.type
-class ReflexBrainAnalysisType:
+class ReflexBrainAdditionType:
     analysis_uid: int
     analysis: Optional[AnalysisType]
     reflex_brain_uid: int
@@ -62,14 +47,33 @@ class ReflexBrainAnalysisType:
 
 
 @strawberry.type
+class ReflexBrainCriteriaType:
+    analysis_uid: int
+    analysis: Optional[AnalysisType]
+    reflex_brain_uid: int
+    reflex_brain: Optional["ReflexBrainType"]
+    operator: str
+    value: str
+
+
+@strawberry.type
+class ReflexBrainFinalType:
+    analysis_uid: int
+    analysis: Optional[AnalysisType]
+    reflex_brain_uid: int
+    reflex_brain: Optional["ReflexBrainType"]
+    value: str
+
+
+@strawberry.type
 class ReflexBrainType:
     reflex_action_uid: int
     reflex_action: Optional["ReflexBrainType"]
     uid: int
     description: str
-    analyses_values: Optional[List[ReflexAnalysisValueType]]
-    add_new: Optional[List[ReflexBrainAnalysisType]]
-    finalise: Optional[List[ReflexAnalysisValueType]]
+    analyses_values: Optional[List[ReflexBrainCriteriaType]]
+    add_new: Optional[List[ReflexBrainAdditionType]]
+    finalise: Optional[List[ReflexBrainFinalType]]
     #
     created_by_uid: Optional[int]
     created_by: Optional[UserType]
@@ -84,8 +88,7 @@ class ReflexActionType:
     uid: int
     level: int
     description: str
-    analysis_uid: int
-    analysis: Optional[AnalysisType]
+    analyses: Optional[List[AnalysisType]]
     sample_type_uid: Optional[int]
     sample_type: Optional[SampleTypeTyp]
     reflex_rule_uid: int

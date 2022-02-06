@@ -58,6 +58,12 @@ mappings.set(
     [roles.ADMINISTRATOR, roles.LAB_MANAGER, roles.SCIENTIST, roles.TECHNOLOGIST, roles.LAB_HAND]
 );
 
+mappings.set(
+    pages.REFLEX_RULES, 
+    [roles.ADMINISTRATOR, roles.LAB_MANAGER, roles.SCIENTIST, roles.TECHNOLOGIST]
+);
+
+
 
 function canAccessPage(userRole: string, pageName: string) {
   if (!userRole) {

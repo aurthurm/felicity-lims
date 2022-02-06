@@ -110,7 +110,7 @@ export  const isObject = (obj: any) => {
     return obj === Object(obj) && !Array.isArray(obj) && typeof obj !== 'function';
 };
 
-export const keysToCamel:any = (obj: any) => {
+export const keysToCamel = (obj: any):any => {
     if (isObject(obj)) {
       const n:any = {};
   
@@ -128,3 +128,12 @@ export const keysToCamel:any = (obj: any) => {
     
     return obj;
 };
+
+const special = ['zeroth','first', 'second', 'third', 'fourth', 'fifth', 'sixth', 'seventh', 'eighth', 'ninth', 'tenth', 'eleventh', 'twelfth', 'thirteenth', 'fourteenth', 'fifteenth', 'sixteenth', 'seventeenth', 'eighteenth', 'nineteenth'];
+const deca = ['twent', 'thirt', 'fort', 'fift', 'sixt', 'sevent', 'eight', 'ninet'];
+
+export const stringifyNumber = (n: number):string => {
+  if (n < 20) return special[n];
+  if (n%10 === 0) return deca[Math.floor(n/10)-2] + 'ieth';
+  return deca[Math.floor(n/10)-2] + 'y-' + special[n%10];
+}

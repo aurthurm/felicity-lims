@@ -164,6 +164,7 @@ class AnalysisQuery:
             before_cursor=before_cursor,
             filters=filters,
             sort_by=sort_by,
+            get_related="profiles"
         )
 
         total_count: int = page.total_count

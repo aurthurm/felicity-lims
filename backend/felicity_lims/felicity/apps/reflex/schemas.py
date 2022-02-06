@@ -1,8 +1,6 @@
-from datetime import datetime
 from typing import Optional, List
 
 from felicity.apps import BaseAuditModel
-from pydantic import EmailStr
 from felicity.apps.analysis.schemas import SampleType, Analysis
 
 
@@ -36,18 +34,20 @@ class ReflexRuleUpdate(ReflexRuleBase):
 
 
 #
-#  ReflexAnalysisValue Schema
+#  ReflexBrainAddition Schema
 #
 
 # Shared properties
-class ReflexAnalysisValueBase(BaseAuditModel):
+class ReflexBrainAdditionBase(BaseAuditModel):
     analysis_uid: int
     analysis: Optional[Analysis]
-    value: str
+    reflex_brain_uid: int
+    reflex_brain: Optional["ReflexBrain"]
+    count: int
 
 
 # Additional properties to return via API
-class ReflexAnalysisValue(ReflexAnalysisValueBase):
+class ReflexBrainAddition(ReflexBrainAdditionBase):
     uid: int
 
     class Config:
@@ -55,12 +55,74 @@ class ReflexAnalysisValue(ReflexAnalysisValueBase):
 
 
 # Properties to receive via API on creation
-class ReflexAnalysisValueCreate(ReflexAnalysisValueBase):
+class ReflexBrainAdditionCreate(ReflexBrainAdditionBase):
     pass
 
 
 # Properties to receive via API on update
-class ReflexAnalysisValueUpdate(ReflexAnalysisValueBase):
+class ReflexBrainAdditionUpdate(ReflexBrainAdditionBase):
+    pass
+
+
+#
+#  ReflexBrainFinal Schema
+#
+
+# Shared properties
+class ReflexBrainFinalBase(BaseAuditModel):
+    analysis_uid: int
+    analysis: Optional[Analysis]
+    reflex_brain_uid: int
+    reflex_brain: Optional["ReflexBrain"]
+    value: str
+
+
+# Additional properties to return via API
+class ReflexBrainFinal(ReflexBrainFinalBase):
+    uid: int
+
+    class Config:
+        orm_mode = True
+
+
+# Properties to receive via API on creation
+class ReflexBrainFinalCreate(ReflexBrainFinalBase):
+    pass
+
+
+# Properties to receive via API on update
+class ReflexBrainFinalUpdate(ReflexBrainFinalBase):
+    pass
+
+
+#
+#  ReflexBrainCriteria Schema
+#
+
+# Shared properties
+class ReflexBrainCriteriaBase(BaseAuditModel):
+    analysis_uid: int
+    analysis: Optional[Analysis]
+    reflex_brain_uid: int
+    reflex_brain: Optional["ReflexBrain"]
+    value: str
+
+
+# Additional properties to return via API
+class ReflexBrainCriteria(ReflexBrainCriteriaBase):
+    uid: int
+
+    class Config:
+        orm_mode = True
+
+
+# Properties to receive via API on creation
+class ReflexBrainCriteriaCreate(ReflexBrainCriteriaBase):
+    pass
+
+
+# Properties to receive via API on update
+class ReflexBrainCriteriaUpdate(ReflexBrainCriteriaBase):
     pass
 
 
@@ -73,9 +135,9 @@ class ReflexBrainBase(BaseAuditModel):
     reflex_action_uid: int
     reflex_action: Optional["ReflexAction"]
     description: Optional[str]
-    analyses_values: Optional[List[ReflexAnalysisValue]]
-    add_new: Optional[List[Analysis]]
-    finalise: Optional[List[ReflexAnalysisValue]]
+    analyses_values: Optional[List[ReflexBrainCriteria]]
+    add_new: Optional[List[ReflexBrainAddition]]
+    finalise: Optional[List[ReflexBrainFinal]]
 
 
 # Additional properties to return via API
@@ -107,8 +169,7 @@ class ReflexActionBase(BaseAuditModel):
     reflex_rule_uid: int
     reflex_rule: Optional[ReflexRule]
     brains: Optional[List[ReflexBrain]]
-    analysis_uid: int
-    analysis: Optional[Analysis]
+    analyses: Optional[List[Analysis]]
     sample_type_uid: Optional[int]
     sample_type: Optional[SampleType]
 

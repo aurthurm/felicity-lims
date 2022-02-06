@@ -24,46 +24,9 @@ class ReflexRule(Auditable):
         return await super().update(**data)
 
 
-class ReflexAnalysisValue(Auditable):
-    analysis_uid = Column(Integer, ForeignKey("analysis.uid"), nullable=False)
-    analysis = relationship("Analysis", lazy="selectin")
-    value = Column(String, nullable=False)
-
-    @classmethod
-    async def create(cls, obj_in: schemas.ReflexAnalysisValueCreate) -> schemas.ReflexAnalysisValue:
-        data = cls._import(obj_in)
-        return await super().create(**data)
-
-    async def update(self, obj_in: schemas.ReflexAnalysisValueUpdate) -> schemas.ReflexAnalysisValue:
-        data = self._import(obj_in)
-        return await super().update(**data)
-
-
-"""
-Many to Many Link between ReflexBrain and ReflexAnalysisValue
-"""
-reflex_brain_analysis_value = Table(
-    "reflex_brain_analysis_value",
-    DBModel.metadata,
-    Column("reflex_analysis_value_uid", ForeignKey("reflexanalysisvalue.uid"), primary_key=True),
-    Column("reflex_brain_uid", ForeignKey("reflexbrain.uid"), primary_key=True),
-)
-
-"""
-Many to Many Link between ReflexBrain and ReflexAnalysisValue for final values
-"""
-reflex_brain_finalise = Table(
-    "reflex_brain_finalise",
-    DBModel.metadata,
-    Column("reflex_analysis_value_uid", ForeignKey("reflexanalysisvalue.uid"), primary_key=True),
-    Column("reflex_brain_uid", ForeignKey("reflexbrain.uid"), primary_key=True),
-)
-
-
-class ReflexBrainAnalysis(DBModel):
-    """
-    Many to Many Link between ReflexBrain and Analysis
-    with extra data
+class ReflexBrainAddition(DBModel):
+    """Many to Many Link between ReflexBrain and Analysis
+    with extra data for additions
     """
     analysis_uid = Column(Integer, ForeignKey("analysis.uid"), primary_key=True)
     analysis = relationship("Analysis", lazy="selectin")
@@ -71,11 +34,51 @@ class ReflexBrainAnalysis(DBModel):
     count = Column(Integer, default=1)
 
     @classmethod
-    async def create(cls, obj_in: schemas.ReflexBrainCreate) -> schemas.ReflexBrain:
+    async def create(cls, obj_in: schemas.ReflexBrainAdditionCreate) -> schemas.ReflexBrainAddition:
         data = cls._import(obj_in)
         return await super().create(**data)
 
-    async def update(self, obj_in: schemas.ReflexBrainUpdate) -> schemas.ReflexBrain:
+    async def update(self, obj_in: schemas.ReflexBrainAdditionUpdate) -> schemas.ReflexBrainAddition:
+        data = self._import(obj_in)
+        return await super().update(**data)
+
+
+class ReflexBrainFinal(DBModel):
+    """Many to Many Link between ReflexBrain and Analysis
+    with extra data for finalize where necessary
+    """
+    analysis_uid = Column(Integer, ForeignKey("analysis.uid"), primary_key=True)
+    analysis = relationship("Analysis", lazy="selectin")
+    reflex_brain_uid = Column(Integer, ForeignKey("reflexbrain.uid"), primary_key=True)
+    value = Column(String)
+
+    @classmethod
+    async def create(cls, obj_in: schemas.ReflexBrainFinalCreate) -> schemas.ReflexBrainFinal:
+        data = cls._import(obj_in)
+        return await super().create(**data)
+
+    async def update(self, obj_in: schemas.ReflexBrainFinalUpdate) -> schemas.ReflexBrainFinal:
+        data = self._import(obj_in)
+        return await super().update(**data)
+
+
+class ReflexBrainCriteria(DBModel):
+    """Many to Many Link between ReflexBrain and Analysis
+    with extra data for criteria/decision making
+    operators: =, !=, >, >=, <, <=
+    """
+    analysis_uid = Column(Integer, ForeignKey("analysis.uid"), primary_key=True)
+    analysis = relationship("Analysis", lazy="selectin")
+    reflex_brain_uid = Column(Integer, ForeignKey("reflexbrain.uid"), primary_key=True)
+    operator = Column(String, nullable=False)
+    value = Column(String)
+
+    @classmethod
+    async def create(cls, obj_in: schemas.ReflexBrainCriteriaCreate) -> schemas.ReflexBrainCriteria:
+        data = cls._import(obj_in)
+        return await super().create(**data)
+
+    async def update(self, obj_in: schemas.ReflexBrainCriteriaUpdate) -> schemas.ReflexBrainCriteria:
         data = self._import(obj_in)
         return await super().update(**data)
 
@@ -84,9 +87,9 @@ class ReflexBrain(Auditable):
     reflex_action_uid = Column(Integer, ForeignKey("reflexaction.uid"), nullable=False, default=1)
     reflex_action = relationship("ReflexAction", back_populates="brains", lazy="selectin")
     description = Column(String, nullable=True)
-    analyses_values = relationship("ReflexAnalysisValue", secondary=reflex_brain_analysis_value, lazy="selectin")
-    add_new = relationship("ReflexBrainAnalysis", lazy="selectin")
-    finalise = relationship("ReflexAnalysisValue", secondary=reflex_brain_finalise, lazy="selectin")
+    analyses_values = relationship(ReflexBrainCriteria, lazy="selectin")
+    add_new = relationship(ReflexBrainAddition, lazy="selectin")
+    finalise = relationship(ReflexBrainFinal, lazy="selectin")
 
     @classmethod
     async def create(cls, obj_in: schemas.ReflexBrainCreate) -> schemas.ReflexBrain:
@@ -97,16 +100,6 @@ class ReflexBrain(Auditable):
         data = self._import(obj_in)
         return await super().update(**data)
 
-
-"""
-Many to Many Link between ReflexBrain and ReflexAnalysisValue
-"""
-reflex_action_analysis_value = Table(
-    "reflex_action_analysis_value",
-    DBModel.metadata,
-    Column("reflex_analysis_value_uid", ForeignKey("reflexanalysisvalue.uid"), primary_key=True),
-    Column("reflex_action_uid", ForeignKey("reflexaction.uid"), primary_key=True),
-)
 
 """
 Many to Many Link between ReflexBrain and Analysis
@@ -123,8 +116,7 @@ class ReflexAction(Auditable):
     level = Column(Integer, nullable=False, default=1)
     description = Column(String, nullable=False)
     # triggers
-    analysis_uid = Column(Integer, ForeignKey("analysis.uid"), nullable=False)
-    analysis = relationship("Analysis", lazy="selectin")
+    analyses = relationship("Analysis", secondary=reflex_action_analysis, lazy="selectin")
     sample_type_uid = Column(Integer, ForeignKey("sampletype.uid"), nullable=True)
     sample_type = relationship("SampleType", lazy="selectin")
     # --

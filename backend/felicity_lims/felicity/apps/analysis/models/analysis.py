@@ -135,7 +135,6 @@ class Analysis(BaseAuditDBModel):
         "Profile",
         secondary=analysis_profile,
         back_populates="analyses",
-        lazy="selectin",
     )
     sample_types = relationship(
         "SampleType",

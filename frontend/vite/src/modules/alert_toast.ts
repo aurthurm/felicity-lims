@@ -91,11 +91,15 @@ export default function useNotifyToast(){
       return res;
     }
 
+    const gqlAllErrorHandler = (res: any): any => {
+      return gqlOpertionalErrorHandler(gqlResponseHandler(res))
+    }
+
     // -- 
     return { 
         toastSuccess, toastInfo, toastWarning, toastError,
         swalSuccess, swalInfo, swalWarning, swalError,
-        gqlResponseHandler, gqlErrorHandler, gqlOpertionalErrorHandler 
+        gqlResponseHandler, gqlErrorHandler, gqlOpertionalErrorHandler, gqlAllErrorHandler
     }
 }
 

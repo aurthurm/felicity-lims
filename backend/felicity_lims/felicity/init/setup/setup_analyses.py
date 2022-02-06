@@ -134,10 +134,11 @@ async def create_analyses_services_and_profiles() -> None:
         for _a_name in analyses_names:
             anal: Optional[Analysis] = await Analysis.get(name=_a_name)
             if anal:
-                if a_profile.uid not in [profile.uid for profile in anal.profiles]:
+                profiles = await Profile.get_all(analyses___uid=anal.uid)
+                if a_profile.uid not in [profile.uid for profile in profiles]:
                     logger.info(f"adding anal: {anal} to profile: {a_profile}")
-                    anal.profiles.append(a_profile)
-                    await anal.save()
+                    a_profile.analyses.append(anal)
+                    await a_profile.save()
 
                     async with async_session_factory() as session:
                         try:

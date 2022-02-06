@@ -25,7 +25,7 @@ class ReflexUtil:
         """Prepares an analysis result for reflex testing"""
         for result in analysis_results:
             logger.info(f"set_reflex_actions for : {result}")
-            filters = {"analysis_uid": result.analysis_uid, "level": 1}
+            filters = {"analyses___uid": result.analysis_uid, "level": 1}
             action: reflex_models.ReflexAction = await reflex_models.ReflexAction.get(**filters)
             if action:
                 result.reflex_level = 1
@@ -37,7 +37,7 @@ class ReflexUtil:
         if not self.analysis_result.reflex_level:
             return
 
-        filters = {"analysis_uid": self.analysis.uid, "level": self.analysis_result.reflex_level}
+        filters = {"analyses___uid": self.analysis.uid, "level": self.analysis_result.reflex_level}
         action: reflex_models.ReflexAction = await reflex_models.ReflexAction.get(**filters)
         if not action:
             logger.info(f"No reflex action found for analysis: {self.analysis.name}")
@@ -60,8 +60,8 @@ class ReflexUtil:
 
         # check whether related analysis must be cousins or siblings
         av_uids = []
-        for val in brain.analyses_values:
-            av_uids.append(val.analysis_uid)
+        for criteria in brain.analyses_values:
+            av_uids.append(criteria.analysis_uid)
         logger.info(f"Reflex Decision av_uids: {av_uids}")
         if not av_uids:
             return
@@ -76,31 +76,31 @@ class ReflexUtil:
         matches = []
 
         # current result has to be one of the analysis values
-        avs = [(av.analysis_uid, av.value) for av in analyses_values]
-        _avs = avs
-        logger.info(f"Reflex Decision avs: {avs}")
-        if (current_result.analysis_uid, current_result.result) not in avs:
-            logger.info(f"{(current_result.analysis_uid, current_result.result)} not in avs")
+        criteria_values = [(criteria.analysis_uid, criteria.value) for criteria in analyses_values]
+        _criteria_values = criteria_values
+        logger.info(f"Reflex criteria_values: {criteria_values}")
+        if (current_result.analysis_uid, current_result.result) not in criteria_values:
+            logger.info(f"{(current_result.analysis_uid, current_result.result)} not in criteria_values")
             return
         else:
             logger.info(f"{(current_result.analysis_uid, current_result.result)} in avs")
             matches.append(True)
-            avs.remove((current_result.analysis_uid, current_result.result))
+            criteria_values.remove((current_result.analysis_uid, current_result.result))
 
         # check if avs have latest result matches from results pool
-        for _av in _avs:
+        for _cv in _criteria_values:
             _anal = list(filter(
-                lambda res: res.analysis_uid == _av[0],
+                lambda res: res.analysis_uid == _cv[0],
                 results_pool
             ))
             # get latest
             _anal = sorted(_anal, key=lambda x: x.created_at)
             logger.info(f"_anal: {_anal}")
 
-            logger.info(f"_anal[0].result: {_anal[0].result} :: _av[1]: {_av[1]}")
-            if _anal[0].result == _av[1]:
+            logger.info(f"_anal[0].result: {_anal[0].result} :: _av[1]: {_cv[1]}")
+            if _anal[0].result == _cv[1]:
                 matches.append(True)
-                avs.remove((_anal[0].analysis_uid, _anal[0].result))
+                criteria_values.remove((_anal[0].analysis_uid, _anal[0].result))
             else:
                 matches.append(False)
 

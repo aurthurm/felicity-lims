@@ -1,11 +1,14 @@
 import logging
-from typing import Dict, Optional, List, Tuple
+from typing import Dict, Optional, List
 
 import strawberry  # noqa
 from felicity.apps.reflex import models, schemas
 from felicity.apps.analysis.models import analysis as analysis_models
 from felicity.api.gql import OperationError, auth_from_info, verify_user_auth
-from felicity.api.gql.reflex.types import ReflexRuleType, ReflexActionType, ReflexBrainType, ReflexAnalysisValueType
+from felicity.api.gql.reflex.types import (
+    ReflexRuleType, ReflexActionType, ReflexBrainType,
+    ReflexBrainFinalType, ReflexBrainAdditionType, ReflexBrainCriteriaType
+)
 from felicity.database.session import async_session_factory
 
 logging.basicConfig(level=logging.INFO)
@@ -28,7 +31,7 @@ ReflexRuleResponse = strawberry.union("ReflexRuleResponse",
 class ReflexActionInput:
     level: int
     description: str
-    analysis_uid: int
+    analyses: List[int]
     reflex_rule_uid: int
     sample_type_uid: Optional[int] = None
 
@@ -40,24 +43,31 @@ ReflexActionResponse = strawberry.union("ReflexActionResponse",
 
 
 @strawberry.input
-class ReflexAnalysisValueInput:
-    uid: int
+class ReflexCriteriaInput:
+    analysis_uid: int
+    operator: str
     value: str
 
 
 @strawberry.input
 class ReflexAddNewInput:
-    uid: int
+    analysis_uid: int
     count: int
+
+
+@strawberry.input
+class ReflexFinalInput:
+    analysis_uid: int
+    value: str
 
 
 @strawberry.input
 class ReflexBrainInput:
     reflex_action_uid: int
     description: str
-    analyses_values: Optional[List[ReflexAnalysisValueInput]] = None
+    analyses_values: Optional[List[ReflexCriteriaInput]] = None
     add_new: Optional[List[ReflexAddNewInput]] = None
-    finalise: Optional[List[ReflexAnalysisValueInput]] = None
+    finalise: Optional[List[ReflexFinalInput]] = None
 
 
 ReflexBrainResponse = strawberry.union("ReflexBrainResponse",
@@ -97,7 +107,7 @@ class ReflexRuleMutations:
         return ReflexRuleType(**reflex.marshal_simple())
 
     @strawberry.mutation
-    async def reflex_rule(self, info, uid: int, payload: ReflexRuleInput) -> ReflexRuleResponse:
+    async def update_reflex_rule(self, info, uid: int, payload: ReflexRuleInput) -> ReflexRuleResponse:
 
         is_authenticated, felicity_user = await auth_from_info(info)
         verify_user_auth(is_authenticated, felicity_user, "Only Authenticated user can update reflex rules")
@@ -133,7 +143,7 @@ class ReflexRuleMutations:
         is_authenticated, felicity_user = await auth_from_info(info)
         verify_user_auth(is_authenticated, felicity_user, "Only Authenticated user can add reflex actions")
 
-        if not payload.analysis_uid or not payload.level or not payload.description:
+        if not len(payload.analyses) > 0 or not payload.level or not payload.description:
             return OperationError(
                 error="Anaysis, Level and description are required"
             )
@@ -145,7 +155,16 @@ class ReflexRuleMutations:
         for k, v in payload.__dict__.items():
             incoming[k] = v
 
+        del incoming['analyses']
+
         obj_in = schemas.ReflexActionCreate(**incoming)
+
+        analyses = []
+        for _anal_uid in payload.analyses:
+            _anal = await analysis_models.Analysis.get(uid=_anal_uid)
+            analyses.append(_anal)
+        obj_in.analyses = analyses
+
         action: models.ReflexAction = await models.ReflexAction.create(obj_in)
         return ReflexActionType(**action.marshal_simple())
 
@@ -176,6 +195,12 @@ class ReflexRuleMutations:
 
         setattr(reflex_action, "updated_by_uid", felicity_user.uid)
 
+        analyses = []
+        for _anal_uid in payload.analyses:
+            _anal = await analysis_models.Analysis.get(uid=_anal_uid)
+            analyses.append(_anal)
+        setattr(reflex_action, "analyses", analyses)
+
         obj_in = schemas.ReflexActionUpdate(**reflex_action.to_dict())
         reflex_action = await reflex_action.update(obj_in)
         return ReflexActionType(**reflex_action.marshal_simple())
@@ -199,41 +224,44 @@ class ReflexRuleMutations:
         }
         obj_in = schemas.ReflexBrainCreate(**incoming)
 
-        analyses_values = []
-        for av in payload.analyses_values:
-            _anal = await analysis_models.Analysis.get(uid=av.uid)
-            ra_in = schemas.ReflexAnalysisValueCreate(
-                analysis_uid=_anal.uid,
-                value=av.value,
-            )
-            _anal_val = await models.ReflexAnalysisValue.create(ra_in)
-            analyses_values.append(_anal_val)
-        obj_in.analyses_values = analyses_values
-
-        finalise = []
-        for av in payload.finalise:
-            _anal = await analysis_models.Analysis.get(uid=av.uid)
-            ra_in = schemas.ReflexAnalysisValueCreate(
-                analysis_uid=_anal.uid,
-                value=av.value,
-            )
-            _anal_val = await models.ReflexAnalysisValue.create(ra_in)
-            finalise.append(_anal_val)
-        obj_in.finalise = finalise
-
         brain: models.ReflexBrain = await models.ReflexBrain.create(obj_in)
 
+        analyses_values = []
+        for criteria in payload.analyses_values:
+            _anal = await analysis_models.Analysis.get(uid=criteria.analysis_uid)
+            assoc = models.ReflexBrainCriteria()
+            assoc.operator = criteria.operator
+            assoc.value = criteria.value
+            assoc.analysis_uid = _anal.uid
+            assoc.reflex_brain_uid = brain.uid
+            analyses_values.append(assoc)
+        brain.analyses_values = analyses_values
+
+        finalise = []
+        for final in payload.finalise:
+            _anal = await analysis_models.Analysis.get(uid=final.analysis_uid)
+            assoc = models.ReflexBrainFinal()
+            assoc.value = final.value
+            assoc.analysis_uid = _anal.uid
+            assoc.reflex_brain_uid = brain.uid
+            finalise.append(assoc)
+        brain.finalise = finalise
+
         add_new = []
-        for _add in payload.add_new:
-            _anal = await analysis_models.Analysis.get(uid=_add.uid)
-            assoc = models.ReflexBrainAnalysis()
-            assoc.count = _add.count
+        for add_n in payload.add_new:
+            _anal = await analysis_models.Analysis.get(uid=add_n.analysis_uid)
+            assoc = models.ReflexBrainAddition()
+            assoc.count = add_n.count
             assoc.analysis_uid = _anal.uid
             assoc.reflex_brain_uid = brain.uid
             add_new.append(assoc)
         brain.add_new = add_new
 
-        brain = await brain.save()
+        await brain.save()
+        brain = await models.ReflexBrain.get_related(
+            related=['add_new.analysis','analyses_values.analysis'],
+            uid=brain.uid
+        )
         return ReflexBrainType(**brain.marshal_simple())
 
     @strawberry.mutation
@@ -264,36 +292,35 @@ class ReflexRuleMutations:
         setattr(reflex_brain, "updated_by_uid", felicity_user.uid)
 
         analyses_values = []
-        for av in payload.analyses_values:
-            _anal = await analysis_models.Analysis.get(uid=av.uid)
-            ra_in = schemas.ReflexAnalysisValueCreate(
-                analysis_uid=_anal.uid,
-                value=av.value,
-            )
-            _anal_val = await models.ReflexAnalysisValue.create(ra_in)
-            analyses_values.append(_anal_val)
+        for criteria in payload.analyses_values:
+            _anal = await analysis_models.Analysis.get(uid=criteria.analysis_uid)
+            assoc = models.ReflexBrainCriteria()
+            assoc.operator = criteria.operator
+            assoc.value = criteria.value
+            assoc.analysis_uid = _anal.uid
+            assoc.reflex_brain_uid = reflex_brain.uid
+            analyses_values.append(assoc)
         reflex_brain.analyses_values = analyses_values
 
+        finalise = []
+        for final in payload.finalise:
+            _anal = await analysis_models.Analysis.get(uid=final.analysis_uid)
+            assoc = models.ReflexBrainFinal()
+            assoc.value = final.value
+            assoc.analysis_uid = _anal.uid
+            assoc.reflex_brain_uid = reflex_brain.uid
+            finalise.append(assoc)
+        reflex_brain.finalise = finalise
+
         add_new = []
-        for _add in payload.add_new:
-            _anal = await analysis_models.Analysis.get(uid=_add.uid)
-            assoc = models.ReflexBrainAnalysis()
-            assoc.count = _add.count
+        for add_n in payload.add_new:
+            _anal = await analysis_models.Analysis.get(uid=add_n.analysis_uid)
+            assoc = models.ReflexBrainAddition()
+            assoc.count = add_n.count
             assoc.analysis_uid = _anal.uid
             assoc.reflex_brain_uid = reflex_brain.uid
             add_new.append(assoc)
         reflex_brain.add_new = add_new
-
-        finalise = []
-        for av in payload.finalise:
-            _anal = await analysis_models.Analysis.get(uid=av.uid)
-            ra_in = schemas.ReflexAnalysisValueCreate(
-                analysis_uid=_anal.uid,
-                value=av.value,
-            )
-            _anal_val = await models.ReflexAnalysisValue.create(ra_in)
-            finalise.append(_anal_val)
-        reflex_brain.finalise = finalise
 
         obj_in = schemas.ReflexBrainUpdate(**reflex_brain.to_dict())
         reflex_brain = await reflex_brain.update(obj_in)
