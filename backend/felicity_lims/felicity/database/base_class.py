@@ -1,7 +1,7 @@
 import logging
 from base64 import b64decode, b64encode
 from typing import Any, AsyncIterator, Dict, List, Optional, TypeVar
-
+import re
 from felicity.database.async_mixins import (
     AllFeaturesMixin,
     ModelNotFoundError,
@@ -20,6 +20,18 @@ InDBSchemaType = TypeVar("InDBSchemaType", bound=PydanticBaseModel)
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
+"""?? Usefull Tools
+1. https://docs.sqlalchemy.org/en/14/orm/session_events.html#adding-global-where-on-criteria
+   Maybe for global department filters ?
+   
+2. https://stackoverflow.com/questions/12753450/sqlalchemy-mixins-and-event-listener
+
+SQLAlchemy "event.listen" for all models
+event.listen(MyBaseMixin, 'before_insert', get_created_by_id, propagate=True)
+event.listen(MyBaseMixin, 'before_update', get_updated_by_id, propagate=True)
+
+"""
 
 
 # noinspection PyPep8Naming
@@ -62,6 +74,9 @@ class DBModel(AllFeaturesMixin):
     # Generate __tablename__ automatically
     @declared_attr
     def __tablename__(cls) -> str:
+        # from CamelCase to table camel_case
+        # return '_'.join(re.sub('([A-Z][a-z]+)', r' \1', re.sub('([A-Z]+)', r' \1', cls.__name__)).split()).lower()
+        # from CamelCase to table camelcase
         return cls.__name__.lower()
 
     def marshal_simple(self, exclude=None):

@@ -35,6 +35,7 @@ export const GET_EFLEX_RULE_BY_UID = gql`
         brains{
           description
           analysesValues {
+            analysisUid
             analysis {
               uid
               name
@@ -43,9 +44,11 @@ export const GET_EFLEX_RULE_BY_UID = gql`
                 value
               }
             }
+            operator
             value
           }
           addNew {
+            analysisUid
             analysis {
               uid
               name
@@ -57,6 +60,7 @@ export const GET_EFLEX_RULE_BY_UID = gql`
             count
           }
           finalise {
+            analysisUid
             analysis {
               name
               resultOptions {

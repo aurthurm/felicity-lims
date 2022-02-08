@@ -28,7 +28,7 @@
           class="block col-span-1 bg-white py-2 px-4 m">
             <div class="flex justify-between items-center">
               <h2 class="my-2 text-l text-gray-600 font-bold">{{ stringToNum(index + 1) }} Brain</h2>
-              <span class="p-2" @click="reflexBrainFormManager(false, action)"><font-awesome-icon icon="edit" class="text-md text-gray-400 mr-1" /></span>
+              <span class="p-2" @click="reflexBrainFormManager(false, brain)"><font-awesome-icon icon="edit" class="text-md text-gray-400 mr-1" /></span>
             </div>
             <h3>{{brain?.description}}</h3>
             <hr class="my-2">
@@ -177,7 +177,7 @@
                             name="analysisService" 
                             id="analysisService" 
                             v-model="anVal.analysisUid"
-                            class="form-input mt-1" >
+                            class="form-input mt-1" @change="setCriteriaResultOptions($event, anVal)">
                               <option value=""></option>
                               <option  
                               v-for="service in analysesServices"
@@ -201,11 +201,24 @@
                         <label class="block col-span-1 mb-2">
                           <span class="text-gray-700">Result</span>
                           <input
+                            v-if="criteriaResultOptions.length == 0"
                             class="form-input mt-1 block w-full"
                             v-model="anVal.value"
                             type="text"
                             placeholder="Result ..."
                           />
+                          <select 
+                            v-else
+                            name="criteriaValue" 
+                            id="criteriaValue" 
+                            v-model="anVal.value"
+                            class="form-input mt-1" >
+                              <option value=""></option>
+                              <option  
+                              v-for="result in criteriaResultOptions"
+                              :key="result.uid"
+                              :value="result.uid" >{{ result.value }}</option>
+                          </select>
                         </label>
                     </div>
                     <div class="">
@@ -238,7 +251,7 @@
                             name="analysisService" 
                             id="analysisService" 
                             v-model="addNu.analysisUid"
-                            class="form-input mt-1" >
+                            class="form-input mt-1">
                               <option value=""></option>
                               <option  
                               v-for="service in analysesServices"
@@ -287,7 +300,7 @@
                             name="analysisService" 
                             id="analysisService" 
                             v-model="final.analysisUid"
-                            class="form-input mt-1" >
+                            class="form-input mt-1"  @change="setFinalResultOptions($event, final)">
                               <option value=""></option>
                               <option  
                               v-for="service in analysesServices"
@@ -298,11 +311,24 @@
                         <label class="block col-span-1 mb-2">
                           <span class="text-gray-700">Result</span>
                           <input
+                            v-if="finalResultOptions.length == 0"
                             class="form-input mt-1 block w-full"
                             v-model="final.value"
                             type="text"
                             placeholder="Result ..."
                           />
+                          <select 
+                            v-else
+                            name="finalValue" 
+                            id="finalValue" 
+                            v-model="final.value"
+                            class="form-input mt-1" >
+                              <option value=""></option>
+                              <option  
+                              v-for="result in finalResultOptions"
+                              :key="result.uid"
+                              :value="result.uid" >{{ result.value }}</option>
+                          </select>
                         </label>
                     </div>
                     <div class="">
@@ -347,6 +373,7 @@
     EDIT_REFLEX_BRAIN
   } from '../../../../graphql/reflex.mutations';
   import { stringifyNumber } from '../../../../utils';
+import { IAnalysisService, IResultOption } from '../../../../models/analysis';
 
   const { gqlAllErrorHandler } = useNotifyToast()
   const { 
@@ -461,6 +488,13 @@
   function removeCriteria(index: number): void {
     brainForm.analysesValues?.splice(index, 1);
   }
+
+  let criteriaResultOptions = ref<IResultOption[]>([]);
+  function setCriteriaResultOptions(event: any, anal: IReflexBrainCriteria){
+    const analysis: IAnalysisService = analysesServices?.find((s: IAnalysisService) => s.uid === anal.analysisUid)
+    anal.value = undefined;
+    criteriaResultOptions.value = analysis.resultOptions || [];
+  }
   
   function addNew(): void {
     brainForm.addNew?.push({} as IReflexBrainAddition)
@@ -478,6 +512,13 @@
     brainForm.finalise?.splice(index, 1);
   }
 
+  let finalResultOptions = ref<IResultOption[]>([]);
+  function setFinalResultOptions(event: any, anal: IReflexBrainFinal){
+    const analysis: IAnalysisService = analysesServices?.find((s: IAnalysisService) => s.uid === anal.analysisUid)
+    anal.value = undefined;
+    finalResultOptions.value = analysis.resultOptions || [];
+  }
+
   function reflexBrainFormManager(create: boolean, obj: IReflexBrain = {}):void {
     formAction.value = create;
     showBrainModal.value = true;
@@ -486,6 +527,10 @@
     if (create) {
       Object.assign(brainForm, {} as IReflexBrain);
     } else {
+      let crit: IReflexBrainCriteria[] = [];
+      let addN: IReflexBrainAddition[] = [];
+      let finl: IReflexBrainFinal[] = [];
+      console.log(obj)
       Object.assign(brainForm, { ...obj });
     }
   }

@@ -9,8 +9,6 @@ logger = logging.getLogger(__name__)
 class EventHookMixin:
     """Event Monitor"""
 
-    __abstract__ = True
-
     @classmethod
     def __declare_last__(cls):
         logger.debug("inside __declare_last__ EventHookMixin")
