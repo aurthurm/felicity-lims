@@ -2,7 +2,7 @@ from datetime import datetime
 from typing import List, Optional
 
 from felicity.apps import BaseAuditModel
-from felicity.apps.setup.schemas import Department
+from felicity.apps.setup.schemas import Department, Unit
 
 
 #
@@ -165,6 +165,215 @@ class Analysis(AnalysisBaseInDB):
 
 # Properties stored in DB
 class AnalysisInDB(AnalysisBaseInDB):
+    pass
+
+
+#
+# AnalysisInterim Schemas
+#
+
+# Shared properties
+class AnalysisInterimBase(BaseAuditModel):
+    key: int
+    value: str
+    analysis_uid: int
+    instrument_uid: int
+
+
+class AnalysisInterimInDB(AnalysisInterimBase):
+    uid: Optional[int] = None
+
+    class Config:
+        orm_mode = True
+
+
+# Properties to receive via API on creation
+class AnalysisInterimCreate(AnalysisInterimBase):
+    pass
+
+
+# Properties to receive via API on update
+class AnalysisInterimUpdate(AnalysisInterimBase):
+    pass
+
+
+# Properties to return via API
+class AnalysisInterim(AnalysisInterimInDB):
+    pass
+
+
+# Properties stored in DB
+class AnalysisInterimInDB(AnalysisInterimInDB):
+    pass
+
+
+#
+# AnalysisCorrectionFactor Schemas
+#
+
+# Shared properties
+class AnalysisCorrectionFactorBase(BaseAuditModel):
+    factor: str
+    analysis_uid: int
+    instrument_uid: int
+    method_uid: int
+
+
+class AnalysisCorrectionFactorBaseInDB(AnalysisCorrectionFactorBase):
+    uid: Optional[int] = None
+
+    class Config:
+        orm_mode = True
+
+
+# Properties to receive via API on creation
+class AnalysisCorrectionFactorCreate(AnalysisCorrectionFactorBase):
+    pass
+
+
+# Properties to receive via API on update
+class AnalysisCorrectionFactorUpdate(AnalysisCorrectionFactorBase):
+    pass
+
+
+# Properties to return via API
+class AnalysisCorrectionFactor(AnalysisCorrectionFactorBaseInDB):
+    pass
+
+
+# Properties stored in DB
+class AnalysisCorrectionFactorInDB(AnalysisCorrectionFactorBaseInDB):
+    pass
+
+
+#
+# AnalysisDetectionLimit Schemas
+#
+
+# Shared properties
+class AnalysisDetectionLimitBase(BaseAuditModel):
+    lower_limit: str
+    upper_limit: str
+    analysis_uid: int
+    instrument_uid: int
+    method_uid: int
+
+
+class AnalysisDetectionLimitBaseInDB(AnalysisDetectionLimitBase):
+    uid: Optional[int] = None
+
+    class Config:
+        orm_mode = True
+
+
+# Properties to receive via API on creation
+class AnalysisDetectionLimitCreate(AnalysisDetectionLimitBase):
+    pass
+
+
+# Properties to receive via API on update
+class AnalysisDetectionLimitUpdate(AnalysisDetectionLimitBase):
+    pass
+
+
+# Properties to return via API
+class AnalysisDetectionLimit(AnalysisDetectionLimitBaseInDB):
+    pass
+
+
+# Properties stored in DB
+class AnalysisDetectionLimitInDB(AnalysisDetectionLimitBaseInDB):
+    pass
+
+
+#
+# AnalysisUncertainty Schemas
+#
+
+# Shared properties
+class AnalysisUncertaintyBase(BaseAuditModel):
+    min: float
+    max: float
+    value: float
+    analysis_uid: int
+    instrument_uid: int
+    method_uid: int
+
+
+class AnalysisUncertaintyBaseInDB(AnalysisUncertaintyBase):
+    uid: Optional[int] = None
+
+    class Config:
+        orm_mode = True
+
+
+# Properties to receive via API on creation
+class AnalysisUncertaintyCreate(AnalysisUncertaintyBase):
+    pass
+
+
+# Properties to receive via API on update
+class AnalysisUncertaintyUpdate(AnalysisUncertaintyBase):
+    pass
+
+
+# Properties to return via API
+class AnalysisUncertainty(AnalysisUncertaintyBaseInDB):
+    pass
+
+
+# Properties stored in DB
+class AnalysisUncertaintyInDB(AnalysisUncertaintyBaseInDB):
+    pass
+
+
+#
+# AnalysisSpecification Schemas
+#
+
+# Shared properties
+class AnalysisSpecificationBase(BaseAuditModel):
+    analysis_uid: int
+    unit_uid: int
+    unit: Optional[Unit]
+    min: float
+    max: float
+    min_warn: float
+    max_warn: float
+    min_report: str
+    max_report: str
+    warn_values: str
+    warn_report: str
+    gender: str
+    age_min: int
+    age_max: int
+    method_uid: int
+
+
+class AnalysisSpecificationBaseInDB(AnalysisSpecificationBase):
+    uid: Optional[int] = None
+
+    class Config:
+        orm_mode = True
+
+
+# Properties to receive via API on creation
+class AnalysisSpecificationCreate(AnalysisSpecificationBase):
+    pass
+
+
+# Properties to receive via API on update
+class AnalysisSpecificationUpdate(AnalysisSpecificationBase):
+    pass
+
+
+# Properties to return via API
+class AnalysisSpecification(AnalysisSpecificationBaseInDB):
+    pass
+
+
+# Properties stored in DB
+class AnalysisSpecificationInDB(AnalysisSpecificationBaseInDB):
     pass
 
 

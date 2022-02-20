@@ -1,6 +1,6 @@
 import logging
 from typing import Dict, Optional
-
+from datetime import datetime
 import strawberry  # noqa
 from felicity.apps.setup import models, schemas
 from felicity.api.gql import OperationError
@@ -12,7 +12,7 @@ from felicity.api.gql.setup.types import (
     LaboratoryType,
     MethodType,
     ProvinceType,
-    SupplierType,
+    SupplierType, ManufacturerType, InstrumentTypeType, UnitType, InstrumentCalibrationType, CalibrationCertificateType,
 )
 
 logging.basicConfig(level=logging.INFO)
@@ -21,7 +21,9 @@ logger = logging.getLogger(__name__)
 LaboratoryResponse = strawberry.union(
     "LaboratoryResponse", (LaboratoryType, OperationError), description=""  # noqa
 )
-
+InstrumentTypeResponse = strawberry.union(
+    "InstrumentTypeResponse", (InstrumentTypeType, OperationError), description="" # noqa
+)
 InstrumentResponse = strawberry.union(
     "InstrumentResponse", (InstrumentType, OperationError), description=""  # noqa
 )
@@ -40,8 +42,20 @@ DistrictResponse = strawberry.union(
 SupplierResponse = strawberry.union(
     "SupplierResponse", (SupplierType, OperationError), description=""  # noqa
 )
+ManufacturerResponse = strawberry.union(
+    "ManufacturerResponse", (ManufacturerType, OperationError), description=""  # noqa
+)
 DepartmentResponse = strawberry.union(
     "DepartmentResponse", (DepartmentType, OperationError), description=""  # noqa
+)
+UnitResponse = strawberry.union(
+    "UnitResponse", (UnitType, OperationError), description="" # noqa
+)
+InstrumentCalibrationResponse = strawberry.union(
+    "InstrumentCalibrationResponse", (InstrumentCalibrationType, OperationError), description="" # noqa
+)
+CalibrationCertificateResponse = strawberry.union(
+    "CalibrationCertificateResponse", (CalibrationCertificateType, OperationError), description="" # noqa
 )
 
 
@@ -68,6 +82,18 @@ class SupplierInputType:
     name: str
     description: Optional[str] = None
     code: Optional[str] = None
+
+
+@strawberry.input
+class ManufacturerInputType:
+    name: str
+    description: Optional[str] = None
+
+
+@strawberry.input
+class InstrumentTypeInputType:
+    name: str
+    description: Optional[str] = None
 
 
 @strawberry.input
@@ -114,6 +140,40 @@ class DistrictInputType:
     mobile_phone: Optional[str] = None
     business_phone: Optional[str] = None
     active: Optional[bool] = True
+
+
+@strawberry.input
+class UnitInputType:
+    name: int
+    is_si_unit: bool
+
+
+@strawberry.input
+class InstrumentCalibrationInput:
+    instrument_uid: int
+    date_reported: Optional[datetime]
+    start_date: Optional[datetime]
+    end_date: Optional[datetime]
+    calibration_id: Optional[str] = ""
+    report_id: Optional[str] = ""
+    performed_by: Optional[str] = ""
+    notes_before: Optional[str] = ""
+    work_done: Optional[str] = ""
+    remarks: Optional[str] = ""
+
+
+@strawberry.input
+class CalibrationCertificateInput:
+    instrument_uid: int
+    date_issued: Optional[datetime]
+    valid_from_date: Optional[datetime]
+    valid_to_date: Optional[datetime]
+    certificate_code: Optional[str] = ""
+    issuer: Optional[str] = ""
+    performed_by: Optional[str] = ""
+    approved_by: Optional[str] = ""
+    remarks: Optional[str] = ""
+    internal: bool = True
 
 
 @strawberry.type
@@ -264,6 +324,102 @@ class SetupMutations:
         return SupplierType(**supplier.marshal_simple())
 
     @strawberry.mutation
+    async def create_manufacturer(
+        self, info, payload: ManufacturerInputType
+    ) -> ManufacturerResponse:  # noqa
+
+        if not payload.name:
+            return OperationError(error="Please a name for your manufacturer")
+
+        exists = await models.Manufacturer.get(name=payload.name)
+        if exists:
+            return OperationError(
+                error=f"A Manufacturer named {payload.name} already exists"
+            )
+
+        incoming: Dict = dict()
+        for k, v in payload.__dict__.items():
+            incoming[k] = v
+
+        obj_in = schemas.ManufacturerCreate(**incoming)
+        manufacturer: models.Manufacturer = await models.Manufacturer.create(obj_in)
+        return ManufacturerType(**manufacturer.marshal_simple())
+
+    @strawberry.mutation
+    async def update_manufacturer(
+        self, info, uid: int, payload: ManufacturerInputType
+    ) -> ManufacturerResponse:  # noqa
+
+        if not uid:
+            return OperationError(error="No uid provided to identity update obj")
+
+        manufacturer = await models.Manufacturer.get(uid=uid)
+        if not manufacturer:
+            return OperationError(
+                error=f"manufacturer with uid {uid} not found. Cannot update obj ..."
+            )
+
+        obj_data = manufacturer.to_dict()
+        for field in obj_data:
+            if field in payload.__dict__:
+                try:
+                    setattr(manufacturer, field, payload.__dict__[field])
+                except Exception as e:
+                    logger.warning(e)
+
+        obj_in = schemas.ManufacturerUpdate(**manufacturer.to_dict())
+        manufacturer = await manufacturer.update(obj_in)
+        return ManufacturerType(**manufacturer.marshal_simple())
+
+    @strawberry.mutation
+    async def create_instrument_type(
+        self, info, payload: InstrumentTypeInputType
+    ) -> InstrumentTypeResponse:  # noqa
+
+        if not payload.name:
+            return OperationError(error="Please a name for your instrument type")
+
+        exists = await models.InstrumentType.get(name=payload.name)
+        if exists:
+            return OperationError(
+                error=f"A InstrumentType named {payload.name} already exists"
+            )
+
+        incoming: Dict = dict()
+        for k, v in payload.__dict__.items():
+            incoming[k] = v
+
+        obj_in = schemas.InstrumentTypeCreate(**incoming)
+        inst_type: models.InstrumentType = await models.InstrumentType.create(obj_in)
+        return InstrumentTypeType(**inst_type.marshal_simple())
+
+    @strawberry.mutation
+    async def update_instrument_type(
+        self, info, uid: int, payload: InstrumentTypeInputType
+    ) -> InstrumentTypeResponse:  # noqa
+
+        if not uid:
+            return OperationError(error="No uid provided to identity update obj")
+
+        inst_type = await models.InstrumentType.get(uid=uid)
+        if not inst_type:
+            return OperationError(
+                error=f"manufacturer with uid {uid} not found. Cannot update obj ..."
+            )
+
+        obj_data = inst_type.to_dict()
+        for field in obj_data:
+            if field in payload.__dict__:
+                try:
+                    setattr(inst_type, field, payload.__dict__[field])
+                except Exception as e:
+                    logger.warning(e)
+
+        obj_in = schemas.InstrumentTypeUpdate(**inst_type.to_dict())
+        inst_type = await inst_type.update(obj_in)
+        return InstrumentTypeType(**inst_type.marshal_simple())
+
+    @strawberry.mutation
     async def create_instrument(
         self, info, payload: InstrumentInputType
     ) -> InstrumentResponse:  # noqa
@@ -325,6 +481,84 @@ class SetupMutations:
         obj_in = schemas.InstrumentUpdate(**instrument.to_dict())
         instrument = await instrument.update(obj_in)
         return InstrumentType(**instrument.marshal_simple())
+
+    @strawberry.mutation
+    async def create_instrument_caliberation(
+        self, info, payload: InstrumentCalibrationInput
+    ) -> InstrumentCalibrationResponse:  # noqa
+
+        incoming: Dict = dict()
+        for k, v in payload.__dict__.items():
+            incoming[k] = v
+
+        obj_in = schemas.InstrumentCalibrationCreate(**incoming)
+        calib: models.InstrumentCalibration = await models.InstrumentCalibration.create(obj_in)
+        return InstrumentCalibrationType(**calib.marshal_simple())
+
+    @strawberry.mutation
+    async def update_instrument_caliberation(
+        self, info, uid: int, payload: InstrumentInputType
+    ) -> InstrumentCalibrationResponse:  # noqa
+
+        if not uid:
+            return OperationError(error="No uid provided to identity update obj")
+
+        caliberation = await models.InstrumentCalibration.get(uid=uid)
+        if not caliberation:
+            return OperationError(
+                error=f"caliberation with uid {uid} not found. Cannot update obj ..."
+            )
+
+        obj_data = caliberation.to_dict()
+        for field in obj_data:
+            if field in payload.__dict__:
+                try:
+                    setattr(caliberation, field, payload.__dict__[field])
+                except Exception as e:
+                    logger.warning(e)
+
+        obj_in = schemas.InstrumentCalibrationUpdate(**caliberation.to_dict())
+        caliberation = await caliberation.update(obj_in)
+        return InstrumentCalibrationType(**caliberation.marshal_simple())
+
+    @strawberry.mutation
+    async def create_caliberation_certificate(
+        self, info, payload: CalibrationCertificateInput
+    ) -> CalibrationCertificateResponse:  # noqa
+
+        incoming: Dict = dict()
+        for k, v in payload.__dict__.items():
+            incoming[k] = v
+
+        obj_in = schemas.CalibrationCertificateCreate(**incoming)
+        certificate: models.CalibrationCertificate = await models.CalibrationCertificate.create(obj_in)
+        return CalibrationCertificateType(**certificate.marshal_simple())
+
+    @strawberry.mutation
+    async def update_caliberation_certificate(
+        self, info, uid: int, payload: CalibrationCertificateInput
+    ) -> CalibrationCertificateResponse:  # noqa
+
+        if not uid:
+            return OperationError(error="No uid provided to identity update obj")
+
+        certificate = await models.CalibrationCertificate.get(uid=uid)
+        if not certificate:
+            return OperationError(
+                error=f"caliberation certificate with uid {uid} not found. Cannot update obj ..."
+            )
+
+        obj_data = certificate.to_dict()
+        for field in obj_data:
+            if field in payload.__dict__:
+                try:
+                    setattr(certificate, field, payload.__dict__[field])
+                except Exception as e:
+                    logger.warning(e)
+
+        obj_in = schemas.CalibrationCertificateUpdate(**certificate.to_dict())
+        certificate = await certificate.update(obj_in)
+        return CalibrationCertificateType(**certificate.marshal_simple())
 
     @strawberry.mutation
     async def create_method(
@@ -527,3 +761,51 @@ class SetupMutations:
         obj_in = schemas.DistrictUpdate(**district.to_dict())
         district = await district.update(obj_in)
         return DistrictType(**district.marshal_simple())
+
+    @strawberry.mutation
+    async def create_unit(
+        self, info, payload: UnitInputType
+    ) -> UnitResponse:  # noqa
+
+        if not payload.name:
+            return OperationError(error="Unit name is required")
+
+        exists = await models.Unit.get(name=payload.name)
+        if exists:
+            return OperationError(
+                error=f"A Unit named {payload.name} already exists"
+            )
+
+        incoming: Dict = dict()
+        for k, v in payload.__dict__.items():
+            incoming[k] = v
+
+        obj_in = schemas.UnitCreate(**incoming)
+        unit: models.Unit = await models.Unit.create(obj_in)
+        return UnitType(**unit.marshal_simple())
+
+    @strawberry.mutation
+    async def update_unit(
+        self, info, uid: int, payload: UnitInputType
+    ) -> UnitResponse:  # noqa
+
+        if not uid:
+            return OperationError(error="No uid provided to identity update obj")
+
+        unit = await models.Unit.get(uid=uid)
+        if not unit:
+            return OperationError(
+                error=f"unit with uid {uid} not found. Cannot update obj ..."
+            )
+
+        obj_data = unit.to_dict()
+        for field in obj_data:
+            if field in payload.__dict__:
+                try:
+                    setattr(unit, field, payload.__dict__[field])
+                except Exception as e:
+                    logger.warning(e)
+
+        obj_in = schemas.UnitUpdate(**unit.to_dict())
+        unit = await unit.update(obj_in)
+        return UnitType(**unit.marshal_simple())

@@ -1,2 +1,7 @@
 from .location import District, Country, Province
-from .setup import Laboratory, Supplier, Instrument, Department, Method
+from .setup import (
+    Laboratory, Supplier, Manufacturer,
+    InstrumentType, Instrument,
+    InstrumentCalibration, CalibrationCertificate,
+    Department, Method, Unit
+)

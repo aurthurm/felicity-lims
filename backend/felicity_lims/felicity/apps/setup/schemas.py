@@ -1,12 +1,16 @@
 from typing import Optional
-
+from datetime import datetime
 from pydantic import BaseModel, EmailStr
+from felicity.apps import BaseAuditModel
+
 
 #
 #  Laboratory
 #
 
 # Shared properties
+
+
 class LaboratoryBase(BaseModel):
     setup_name: Optional[str] = "felicity"
     lab_name: Optional[str] = None
@@ -83,6 +87,44 @@ class DepartmentInDB(DepartmentInDBBase):
 
 
 #
+# InstrumentType Schemas
+#
+
+# Shared properties
+class InstrumentTypeBase(BaseAuditModel):
+    name: Optional[str] = None
+    description: Optional[str] = None
+    active: Optional[bool] = True
+
+
+class InstrumentTypeBaseInDB(InstrumentTypeBase):
+    uid: Optional[int] = None
+
+    class Config:
+        orm_mode = True
+
+
+# Properties to receive via API on creation
+class InstrumentTypeCreate(InstrumentTypeBase):
+    pass
+
+
+# Properties to receive via API on update
+class InstrumentTypeUpdate(InstrumentTypeBase):
+    pass
+
+
+# Properties to return via API
+class InstrumentType(InstrumentTypeBaseInDB):
+    pass
+
+
+# Properties stored in DB
+class AnalysisCategoryInDB(InstrumentTypeBaseInDB):
+    pass
+
+
+#
 #  Instrument
 #
 
@@ -118,6 +160,98 @@ class Instrument(InstrumentInDBBase):
 
 # Additional properties stored in DB
 class InstrumentInDB(InstrumentInDBBase):
+    pass
+
+
+#
+#  InstrumentCalibration
+#
+
+# Shared properties
+class InstrumentCalibrationBase(BaseModel):
+    instrument_uid: int
+    instrument: Optional[Instrument]
+    calibration_id: str
+    date_reported: datetime
+    report_id: str
+    performed_by: str
+    start_date: datetime
+    end_date: datetime
+    notes_before: str
+    work_done: str
+    remarks: str
+
+
+# Properties to receive via API on creation
+class InstrumentCalibrationCreate(InstrumentCalibrationBase):
+    pass
+
+
+# Properties to receive via API on update
+class InstrumentCalibrationUpdate(InstrumentCalibrationBase):
+    pass
+
+
+class InstrumentCalibrationInDBBase(InstrumentCalibrationBase):
+    uid: int = None
+
+    class Config:
+        orm_mode = True
+
+
+# Additional properties to return via API
+class InstrumentCalibration(InstrumentCalibrationInDBBase):
+    pass
+
+
+# Additional properties stored in DB
+class InstrumentCalibrationInDB(InstrumentCalibrationInDBBase):
+    pass
+
+
+#
+#  CalibrationCertificate
+#
+
+# Shared properties
+class CalibrationCertificateBase(BaseModel):
+    instrument_uid: int
+    instrument: Optional[Instrument]
+    certificate_code: str
+    internal: bool = True
+    issuer: str
+    date_issued: datetime
+    valid_from_date: datetime
+    valid_to_date: datetime
+    performed_by: str
+    approved_by: str
+    remarks: str
+
+
+# Properties to receive via API on creation
+class CalibrationCertificateCreate(CalibrationCertificateBase):
+    pass
+
+
+# Properties to receive via API on update
+class CalibrationCertificateUpdate(CalibrationCertificateBase):
+    pass
+
+
+class CalibrationCertificateInDBBase(CalibrationCertificateBase):
+    uid: int = None
+
+    class Config:
+        orm_mode = True
+
+
+# Additional properties to return via API
+class CalibrationCertificate(CalibrationCertificateInDBBase):
+    pass
+
+
+# Additional properties stored in DB
+class CalibrationCertificateInDB(CalibrationCertificateInDBBase):
     pass
 
 
@@ -160,6 +294,43 @@ class MethodInDB(MethodInDBBase):
 
 
 #
+#  Unit
+#
+
+# Shared properties
+class UnitBase(BaseModel):
+    name: str = None
+    is_si_unit: bool = False
+
+
+# Properties to receive via API on creation
+class UnitCreate(UnitBase):
+    pass
+
+
+# Properties to receive via API on update
+class UnitUpdate(UnitBase):
+    pass
+
+
+class UnitInDBBase(UnitBase):
+    uid: int = None
+
+    class Config:
+        orm_mode = True
+
+
+# Additional properties to return via API
+class Unit(UnitInDBBase):
+    pass
+
+
+# Additional properties stored in DB
+class UnitInDB(UnitInDBBase):
+    pass
+
+
+#
 #  Supplier
 #
 
@@ -194,6 +365,44 @@ class Supplier(SupplierInDBBase):
 
 # Additional properties stored in DB
 class SupplierInDB(SupplierInDBBase):
+    pass
+
+
+#
+#  Manufacturer
+#
+
+# Shared properties
+class ManufacturerBase(BaseModel):
+    name: str = None
+    description: str = None
+    keyword: str = None
+
+
+# Properties to receive via API on creation
+class ManufacturerCreate(ManufacturerBase):
+    pass
+
+
+# Properties to receive via API on update
+class ManufacturerUpdate(ManufacturerBase):
+    pass
+
+
+class ManufacturerInDBBase(ManufacturerBase):
+    uid: int = None
+
+    class Config:
+        orm_mode = True
+
+
+# Additional properties to return via API
+class Manufacturer(ManufacturerInDBBase):
+    pass
+
+
+# Additional properties stored in DB
+class ManufacturerInDB(ManufacturerInDBBase):
     pass
 
 

@@ -31,8 +31,8 @@ def _flatten_schema(schema):
         :type schema: dict
         """
         for path, value in schema.items():
-            # for supporting schemas like Product.user: {...},
-            # we transform, say, Product.user to 'user' string
+            # for supporting schemas like StockProduct.user: {...},
+            # we transform, say, StockProduct.user to 'user' string
             if isinstance(path, InstrumentedAttribute):
                 path = path.key
 

@@ -1,4 +1,9 @@
 from felicity.apps.analysis.models.analysis import Analysis  # noqa
+from felicity.apps.analysis.models.analysis import AnalysisCorrectionFactor  # noqa
+from felicity.apps.analysis.models.analysis import AnalysisDetectionLimit  # noqa
+from felicity.apps.analysis.models.analysis import AnalysisInterim  # noqa
+from felicity.apps.analysis.models.analysis import AnalysisUncertainty  # noqa
+from felicity.apps.analysis.models.analysis import AnalysisSpecification  # noqa
 from felicity.apps.analysis.models.analysis import AnalysisCategory  # noqa
 from felicity.apps.analysis.models.analysis import AnalysisRequest  # noqa
 from felicity.apps.analysis.models.analysis import Profile  # noqa
@@ -31,11 +36,17 @@ from felicity.apps.patient.models import Patient  # noqa
 from felicity.apps.setup.models import Country  # noqa
 from felicity.apps.setup.models import Department  # noqa
 from felicity.apps.setup.models import District  # noqa
+from felicity.apps.setup.models import InstrumentType  # noqa
 from felicity.apps.setup.models import Instrument  # noqa
+from felicity.apps.setup.models import InstrumentCalibration  # noqa
+from felicity.apps.setup.models import CalibrationCertificate  # noqa
+from felicity.apps.setup.models import Unit  # noqa
 from felicity.apps.setup.models import Laboratory  # noqa
 from felicity.apps.setup.models import Method  # noqa
+# from felicity.apps.setup.models import MethodValidation  # noqa
 from felicity.apps.setup.models import Province  # noqa
 from felicity.apps.setup.models import Supplier  # noqa
+from felicity.apps.setup.models import Manufacturer  # noqa
 from felicity.apps.notification.models import ActivityFeed  # noqa
 from felicity.apps.notification.models import ActivityStream  # noqa
 from felicity.apps.user.models import Group  # noqa
@@ -51,4 +62,19 @@ from felicity.apps.reflex.models import ReflexBrainCriteria  # noqa
 from felicity.apps.reflex.models import ReflexBrainAddition  # noqa
 from felicity.apps.reflex.models import ReflexBrain  # noqa
 from felicity.apps.reflex.models import ReflexAction  # noqa
+from felicity.apps.storage.models import StoreRoom  # noqa
+from felicity.apps.storage.models import StorageLocation  # noqa
+from felicity.apps.storage.models import StorageSection  # noqa
+from felicity.apps.storage.models import StorageContainer  # noqa
+from felicity.apps.storage.models import StorageSlot  # noqa
+from felicity.apps.inventory.entities import StockItem  # noqa
+from felicity.apps.inventory.entities import StockCategory  # noqa
+from felicity.apps.inventory.entities import Hazard  # noqa
+from felicity.apps.inventory.entities import StockUnit  # noqa
+from felicity.apps.inventory.entities import StockPackaging  # noqa
+from felicity.apps.inventory.entities import StockProduct  # noqa
+from felicity.apps.inventory.entities import StockOrder  # noqa
+from felicity.apps.inventory.entities import StockOrderProduct  # noqa
+from felicity.apps.inventory.entities import StockTransaction  # noqa
+from felicity.apps.inventory.entities import StockAdjustment  # noqa
 from felicity.database.base_class import DBModel  # noqa

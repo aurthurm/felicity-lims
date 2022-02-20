@@ -1,6 +1,5 @@
 import logging
 from datetime import datetime, timedelta
-from typing import Tuple, List, Dict
 
 from felicity.apps import Auditable, BaseAuditDBModel, DBModel
 from felicity.apps.analysis import schemas
@@ -13,7 +12,7 @@ from felicity.apps.common.utils import sequencer
 from felicity.apps.patient import models as pt_models
 from felicity.apps.notification.utils import FelicityStreamer
 from felicity.apps.user.models import User
-from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, String, Table
+from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, String, Table, Float
 from sqlalchemy.orm import relationship
 
 logging.basicConfig(level=logging.INFO)
@@ -69,6 +68,8 @@ class AnalysisCategory(BaseAuditDBModel):
 
     name = Column(String, nullable=False)
     description = Column(String, nullable=False)
+    department_uid = Column(Integer, ForeignKey("department.uid"), nullable=True)
+    department = relationship("Department", lazy="selectin")
     active = Column(Boolean(), default=False)
 
     @classmethod
@@ -99,6 +100,8 @@ class Profile(BaseAuditDBModel):
         back_populates="profiles",
         lazy="selectin",
     )
+    department_uid = Column(Integer, ForeignKey("department.uid"), nullable=True)
+    department = relationship("Department", lazy="selectin")
 
     async def update_tat(self):
         tats = []
@@ -130,7 +133,9 @@ class Analysis(BaseAuditDBModel):
     name = Column(String, nullable=False)
     description = Column(String, nullable=False)
     keyword = Column(String, nullable=False, unique=True)
-    unit = Column(String, nullable=True)
+    # default unit: can be overridden by specification unit
+    unit_uid = Column(Integer, ForeignKey("unit.uid"), nullable=True)
+    unit = relationship("Unit", lazy="selectin")
     profiles = relationship(
         "Profile",
         secondary=analysis_profile,
@@ -148,6 +153,12 @@ class Analysis(BaseAuditDBModel):
     tat_length_minutes = Column(Integer, nullable=True)  # to calculate TAT
     sort_key = Column(Integer, nullable=True)
     internal_use = Column(Boolean(), default=False)  # e.g QC Services
+    department_uid = Column(Integer, ForeignKey("department.uid"), nullable=True)
+    department = relationship("Department", lazy="selectin")
+    # precision -> decimal places to report
+    precision = Column(Integer, nullable=True)
+    required_verifications = Column(Integer, nullable=True, default=1)
+    hidden = Column(Boolean(), default=False)
     active = Column(Boolean(), default=False)
 
     @classmethod
@@ -156,6 +167,115 @@ class Analysis(BaseAuditDBModel):
         return await super().create(**data)
 
     async def update(self, obj_in: schemas.AnalysisUpdate) -> schemas.Analysis:
+        data = self._import(obj_in)
+        return await super().update(**data)
+
+
+class AnalysisInterim(BaseAuditDBModel):
+    """Analysis Interim Result Field"""
+    key = Column(Integer, nullable=False)
+    value = Column(String, nullable=False)
+    analysis_uid = Column(Integer, ForeignKey("analysis.uid"), nullable=True)
+    instrument_uid = Column(Integer, ForeignKey("instrument.uid"), nullable=True)
+
+    @classmethod
+    async def create(cls, obj_in: schemas.AnalysisInterimCreate) -> schemas.AnalysisInterim:
+        data = cls._import(obj_in)
+        return await super().create(**data)
+
+    async def update(self, obj_in: schemas.AnalysisInterimUpdate) -> schemas.AnalysisInterim:
+        data = self._import(obj_in)
+        return await super().update(**data)
+
+
+class AnalysisCorrectionFactor(BaseAuditDBModel):
+    """Analysis Correction Factor"""
+    factor = Column(Float, nullable=False)
+    analysis_uid = Column(Integer, ForeignKey("analysis.uid"), nullable=True)
+    instrument_uid = Column(Integer, ForeignKey("instrument.uid"), nullable=True)
+    method_uid = Column(Integer, ForeignKey("method.uid"), nullable=True)
+
+    @classmethod
+    async def create(cls, obj_in: schemas.AnalysisCorrectionFactorCreate) -> schemas.AnalysisCorrectionFactor:
+        data = cls._import(obj_in)
+        return await super().create(**data)
+
+    async def update(self, obj_in: schemas.AnalysisCorrectionFactorUpdate) -> schemas.AnalysisCorrectionFactor:
+        data = self._import(obj_in)
+        return await super().update(**data)
+
+
+class AnalysisDetectionLimit(BaseAuditDBModel):
+    """Analysis Detection Limit"""
+    lower_limit = Column(Float, nullable=False)
+    upper_limit = Column(Float, nullable=False)
+    analysis_uid = Column(Integer, ForeignKey("analysis.uid"), nullable=True)
+    instrument_uid = Column(Integer, ForeignKey("instrument.uid"), nullable=True)
+    method_uid = Column(Integer, ForeignKey("method.uid"), nullable=True)
+
+    @classmethod
+    async def create(cls, obj_in: schemas.AnalysisDetectionLimitCreate) -> schemas.AnalysisDetectionLimit:
+        data = cls._import(obj_in)
+        return await super().create(**data)
+
+    async def update(self, obj_in: schemas.AnalysisDetectionLimitUpdate) -> schemas.AnalysisDetectionLimit:
+        data = self._import(obj_in)
+        return await super().update(**data)
+
+
+class AnalysisUncertainty(BaseAuditDBModel):
+    """Analysis Measurment Uncertainty"""
+    min = Column(Float, nullable=False)
+    max = Column(Float, nullable=False)
+    value = Column(Float, nullable=False)
+    analysis_uid = Column(Integer, ForeignKey("analysis.uid"), nullable=True)
+    instrument_uid = Column(Integer, ForeignKey("instrument.uid"), nullable=True)
+    method_uid = Column(Integer, ForeignKey("method.uid"), nullable=True)
+
+    @classmethod
+    async def create(cls, obj_in: schemas.AnalysisUncertaintyCreate) -> schemas.AnalysisUncertainty:
+        data = cls._import(obj_in)
+        return await super().create(**data)
+
+    async def update(self, obj_in: schemas.AnalysisUncertaintyUpdate) -> schemas.AnalysisUncertainty:
+        data = self._import(obj_in)
+        return await super().update(**data)
+
+
+class AnalysisSpecification(BaseAuditDBModel):
+    """Analysis Specification Ranges"""
+    analysis_uid = Column(Integer, ForeignKey("analysis.uid"), nullable=True)
+    unit_uid = Column(Integer, ForeignKey("unit.uid"), nullable=True)
+    unit = relationship("Unit", lazy="selectin")
+    # Normal Range
+    min = Column(Float, nullable=True)
+    max = Column(Float, nullable=True)
+    # Below Normal Range: Raise Alarm
+    min_warn = Column(Float, nullable=True)
+    # Above Normal Range: Raise Alarm
+    max_warn = Column(Float, nullable=True)
+    # Result Value if less than min_warn
+    min_report = Column(String, nullable=True)
+    # Result Value if more than max_warn
+    max_report = Column(String, nullable=True)
+    # If result is textual
+    # comma seperated warn results
+    warn_values = Column(String, nullable=True)
+    # Result Value if result in warn_values
+    warn_report = Column(String, nullable=True)
+    #
+    # dependencies
+    method_uid = Column(Integer, ForeignKey("method.uid"), nullable=True)
+    gender = Column(String, nullable=True)
+    age_min = Column(Integer, nullable=True)
+    age_max = Column(Integer, nullable=True)
+
+    @classmethod
+    async def create(cls, obj_in: schemas.AnalysisSpecificationCreate) -> schemas.AnalysisSpecification:
+        data = cls._import(obj_in)
+        return await super().create(**data)
+
+    async def update(self, obj_in: schemas.AnalysisSpecificationUpdate) -> schemas.AnalysisSpecification:
         data = self._import(obj_in)
         return await super().update(**data)
 
@@ -238,20 +358,16 @@ sample_rejection_reason = Table(
 
 
 class RejectionReason(BaseAuditDBModel):
-    """Result Choices"""
+    """Rejection Reason"""
 
     reason = Column(String, nullable=False)
 
     @classmethod
-    async def create(
-        cls, obj_in: schemas.RejectionReasonCreate
-    ) -> schemas.RejectionReason:
+    async def create(cls, obj_in: schemas.RejectionReasonCreate) -> schemas.RejectionReason:
         data = cls._import(obj_in)
         return await super().create(**data)
 
-    async def update(
-        self, obj_in: schemas.RejectionReasonUpdate
-    ) -> schemas.RejectionReason:
+    async def update(self, obj_in: schemas.RejectionReasonUpdate) -> schemas.RejectionReason:
         data = self._import(obj_in)
         return await super().update(**data)
 

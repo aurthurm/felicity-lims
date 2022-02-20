@@ -258,6 +258,46 @@ class AnalysisQuery:
         return await r_models.AnalysisResult.get_all(sample_uid__exact=uid)
 
     @strawberry.field
+    async def analysis_interim_all(self, info) -> List[a_types.AnalysisInterimType]:
+        return await a_models.AnalysisInterim.all()
+
+    @strawberry.field
+    async def analysis_interim_by_uid(self, info, uid: int) -> a_types.AnalysisInterimType:
+        return await a_models.AnalysisInterim.get(uid=uid)
+
+    @strawberry.field
+    async def analysis_correction_factor_all(self, info) -> List[a_types.AnalysisCorrectionFactorType]:
+        return await a_models.AnalysisCorrectionFactor.all()
+
+    @strawberry.field
+    async def analysis_correction_factor_by_uid(self, info, uid: int) -> a_types.AnalysisCorrectionFactorType:
+        return await a_models.AnalysisCorrectionFactor.get(uid=uid)
+
+    @strawberry.field
+    async def analysis_uncertainty_all(self, info) -> List[a_types.AnalysisUncertaintyType]:
+        return await a_models.AnalysisUncertainty.all()
+
+    @strawberry.field
+    async def analysis_uncertainty_by_uid(self, info, uid: int) -> a_types.AnalysisUncertaintyType:
+        return await a_models.AnalysisUncertainty.get(uid=uid)
+
+    @strawberry.field
+    async def analysis_detection_limit_all(self, info) -> List[a_types.AnalysisDetectionLimitType]:
+        return await a_models.AnalysisDetectionLimit.all()
+
+    @strawberry.field
+    async def analysis_detection_limit_by_uid(self, info, uid: int) -> a_types.AnalysisDetectionLimitType:
+        return await a_models.AnalysisUncertainty.get(uid=uid)
+
+    @strawberry.field
+    async def analysis_specification_all(self, info) -> List[a_types.AnalysisSpecificationType]:
+        return await a_models.AnalysisSpecification.all()
+
+    @strawberry.field
+    async def analysis_specification_uid(self, info, uid: int) -> a_types.AnalysisSpecificationType:
+        return await a_models.AnalysisSpecification.get(uid=uid)
+
+    @strawberry.field
     async def qc_set_all(
         self,
         info,

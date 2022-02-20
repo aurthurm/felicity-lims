@@ -5,7 +5,7 @@ import strawberry  # noqa
 from felicity.api.gql import PageInfo
 from felicity.api.gql.client.types import ClientType
 from felicity.api.gql.patient.types import PatientType
-from felicity.api.gql.setup.types import DepartmentType
+from felicity.api.gql.setup.types import DepartmentType, UnitType
 from felicity.api.gql.user.types import UserType
 
 
@@ -260,3 +260,62 @@ class QCTemplateType:
     updated_by_uid: Optional[int]
     updated_by: Optional[UserType]
     updated_at: Optional[datetime]
+
+
+@strawberry.type
+class AnalysisInterimType:
+    uid: int
+    key: int
+    value: str
+    analysis_uid: int
+    instrument_uid: int
+
+
+@strawberry.type
+class AnalysisCorrectionFactorType:
+    uid: int
+    factor: str
+    analysis_uid: int
+    instrument_uid: int
+    method_uid: int
+
+
+@strawberry.type
+class AnalysisDetectionLimitType:
+    uid: int
+    lower_limit: str
+    upper_limit: str
+    analysis_uid: int
+    instrument_uid: int
+    method_uid: int
+
+
+@strawberry.type
+class AnalysisUncertaintyType:
+    uid: int
+    min: float
+    max: float
+    value: float
+    analysis_uid: int
+    instrument_uid: int
+    method_uid: int
+
+
+@strawberry.type
+class AnalysisSpecificationType:
+    uid: int
+    analysis_uid: int
+    unit_uid: int
+    unit: Optional[UnitType]
+    min: float
+    max: float
+    min_warn: float
+    max_warn: float
+    min_report: str
+    max_report: str
+    warn_values: str
+    warn_report: str
+    gender: str
+    age_min: int
+    age_max: int
+    method_uid: int

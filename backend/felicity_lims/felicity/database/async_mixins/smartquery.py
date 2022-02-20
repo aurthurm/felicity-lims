@@ -281,24 +281,24 @@ class SmartQueryMixin(InspectionMixin, EagerLoadMixin):
     @classmethod
     def filter_expr(cls_or_alias, **filters):
         """
-        forms expressions like [Product.age_from = 5,
-                                Product.subject_ids.in_([1,2])]
+        forms expressions like [StockProduct.age_from = 5,
+                                StockProduct.subject_ids.in_([1,2])]
         from filters like {'age_from': 5, 'subject_ids__in': [1,2]}
 
         Example 1:
-            db.query(Product).filter(
-                *Product.filter_expr(age_from = 5, subject_ids__in=[1, 2]))
+            db.query(StockProduct).filter(
+                *StockProduct.filter_expr(age_from = 5, subject_ids__in=[1, 2]))
 
         Example 2:
             filters = {'age_from': 5, 'subject_ids__in': [1,2]}
-            db.query(Product).filter(*Product.filter_expr(**filters))
+            db.query(StockProduct).filter(*StockProduct.filter_expr(**filters))
 
 
         ### About alias ###:
         If we will use alias:
-            alias = aliased(Product) # table name will be product_1
+            alias = aliased(StockProduct) # table name will be product_1
         we can't just write query like
-            db.query(alias).filter(*Product.filter_expr(age_from=5))
+            db.query(alias).filter(*StockProduct.filter_expr(age_from=5))
         because it will be compiled to
             SELECT * FROM product_1 WHERE product.age_from=5
         which is wrong: we select from 'product_1' but filter on 'product'
@@ -307,28 +307,28 @@ class SmartQueryMixin(InspectionMixin, EagerLoadMixin):
         We need to obtain
             SELECT * FROM product_1 WHERE product_1.age_from=5
         For such case, we can call filter_expr ON ALIAS:
-            alias = aliased(Product)
+            alias = aliased(StockProduct)
             db.query(alias).filter(*alias.filter_expr(age_from=5))
 
         Alias realization details:
           * we allow to call this method
             either ON ALIAS (say, alias.filter_expr())
-            or on class (Product.filter_expr())
+            or on class (StockProduct.filter_expr())
           * when method is called on alias, we need to generate SQL using
             aliased table (say, product_1), but we also need to have a real
-            class to call methods on (say, Product.relations)
+            class to call methods on (say, StockProduct.relations)
           * so, we have 'mapper' that holds table name
             and 'cls' that holds real class
 
             when we call this method ON ALIAS, we will have:
                 mapper = <product_1 table>
-                cls = <Product>
+                cls = <StockProduct>
             when we call this method ON CLASS, we will simply have:
-                mapper = <Product> (or we could write <Product>.__mapper__.
+                mapper = <StockProduct> (or we could write <StockProduct>.__mapper__.
                                     It doesn't matter because when we call
-                                    <Product>.getattr, SA will magically
-                                    call <Product>.__mapper__.getattr())
-                cls = <Product>
+                                    <StockProduct>.getattr, SA will magically
+                                    call <StockProduct>.__mapper__.getattr())
+                cls = <StockProduct>
         """
         if isinstance(cls_or_alias, AliasedClass):
             mapper, cls = cls_or_alias, inspect(cls_or_alias).mapper.class_
@@ -421,11 +421,11 @@ class SmartQueryMixin(InspectionMixin, EagerLoadMixin):
         """
         Shortcut for smart_query() method
         Example 1:
-          Product.where(subject_ids__in=[1,2], grade_from_id=2).all()
+          StockProduct.where(subject_ids__in=[1,2], grade_from_id=2).all()
 
         Example 2:
           filters = {'subject_ids__in': [1,2], 'grade_from_id': 2}
-          Product.where(**filters).all()
+          StockProduct.where(**filters).all()
 
         Example 3 (with joins):
           Post.where(public=True, user___name__startswith='Bi').all()

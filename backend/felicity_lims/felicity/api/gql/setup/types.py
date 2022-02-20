@@ -33,6 +33,27 @@ class SupplierType:
 
 
 @strawberry.type
+class ManufacturerType:
+    uid: int
+    name: Optional[str]
+    description: Optional[str]
+
+
+@strawberry.type
+class InstrumentTypeType:
+    uid: int
+    name: Optional[str]
+    description: Optional[str]
+
+
+@strawberry.type
+class UnitType:
+    uid: int
+    name: str
+    is_si_unit: bool
+
+
+@strawberry.type
 class InstrumentType:
     uid: int
     name: Optional[str]
@@ -62,6 +83,38 @@ class InstrumentCursorPage:
     edges: Optional[List[InstrumentEdge]]
     items: Optional[List[InstrumentType]]
     total_count: int
+
+
+@strawberry.type
+class InstrumentCalibrationType:
+    uid: int
+    instrument_uid: int
+    instrument: Optional[InstrumentType]
+    calibration_id: str
+    date_reported: datetime
+    report_id: str
+    performed_by: str
+    start_date: datetime
+    end_date: datetime
+    notes_before: str
+    work_done: str
+    remarks: str
+
+
+@strawberry.type
+class CalibrationCertificateType:
+    uid: int
+    instrument_uid: int
+    instrument: Optional[InstrumentType]
+    certificate_code: str
+    internal: bool
+    issuer: str
+    date_issued: datetime
+    valid_from_date: datetime
+    valid_to_date: datetime
+    performed_by: str
+    approved_by: str
+    remarks: str
 
 
 @strawberry.type

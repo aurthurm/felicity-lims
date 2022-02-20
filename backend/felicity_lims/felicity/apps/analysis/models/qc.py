@@ -3,7 +3,7 @@ import logging
 from felicity.apps import BaseAuditDBModel, DBModel
 from felicity.apps.analysis import schemas
 from felicity.apps.setup.models.setup import Department
-from sqlalchemy import Column, ForeignKey, String, Table
+from sqlalchemy import Column, ForeignKey, String, Table, Boolean, Float, Integer, DateTime
 from sqlalchemy.orm import relationship
 
 logging.basicConfig(level=logging.INFO)
@@ -29,16 +29,67 @@ class QCSet(BaseAuditDBModel):
         return await super().update(**data)
 
 
+"""
+Many to Many Link between QCReference and  Analysis
+"""
+qc_reference_analysis = Table(
+    "qc_reference_analysis",
+    DBModel.metadata,
+    Column("qc_reference_uid", ForeignKey("qcreference.uid"), primary_key=True),
+    Column("analysis_uid", ForeignKey("analysis.uid"), primary_key=True),
+)
+
+
+class QCReference(BaseAuditDBModel):
+    """QC Sample Reference Material    :: Not Implemented Yet
+    - can have multi analytes/Profile
+    - states: Active (in-use - there must be only 1 active per analysis)
+              InActive awaiting activation
+              Depleted
+    """
+    name = Column(String, nullable=False)
+    description = Column(String, nullable=False)
+    analyses = relationship("Analysis", secondary=qc_reference_analysis, lazy="selectin")
+    department_uid = Column(Integer, ForeignKey("department.uid"), nullable=True)
+    department = relationship("Department", lazy="selectin")
+    is_string_result = Column(Boolean, nullable=True)
+    # string results
+    expected_result = Column(String, nullable=True)
+    # numeric results
+    min_value = Column(Float, nullable=True)
+    max_value = Column(Float, nullable=True)
+    allowable_error = Column(Float, nullable=True)
+    # dates
+    ref_date_created = Column(DateTime, nullable=True)
+    ref_date_opened = Column(DateTime, nullable=True)
+    ref_date_expiry = Column(String, nullable=True)
+    is_active = Column(Boolean, nullable=False, default=True)
+    # source of reference material or In-house
+    manufacturer = Column(String, nullable=True)
+    supplier = Column(String, nullable=True)
+    catalog_number = Column(String, nullable=True)
+    lot_number = Column(String, nullable=True)
+
+
 class QCLevel(BaseAuditDBModel):
     """Sample Level /category
     - None - normal sample
     - Negative Control
-    - PositiveControl
-    - Low Positive Control
-    - High Positive Control
+    - EID PositiveControl
+    - HIV Low Positive Control
+    - HIV High Positive Control
     """
-
     level = Column(String, nullable=False)
+    # department_uid = Column(Integer, ForeignKey("department.uid"), nullable=True)
+    # department = relationship(
+    #     "Department", lazy="selectin"
+    # )
+    # # Default Reference Value to be override by QCReference sample values
+    # is_string_result = Column(Boolean, nullable=True)
+    # expected_result = Column(String, nullable=True)
+    # min_value = Column(Float, nullable=True)
+    # max_value = Column(Float, nullable=True)
+    # allowable_error = Column(Float, nullable=True)
 
     @classmethod
     async def create(cls, obj_in: schemas.QCLevelCreate) -> schemas.QCLevel:
