@@ -17,6 +17,7 @@
                     <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-black-500 tracking-wider">Methods</th>
                     <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-black-500 tracking-wider">Instrument</th>
                     <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-black-500 tracking-wider">Analyst</th>
+                    <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-black-500 tracking-wider">Interim</th>
                     <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-black-500 tracking-wider">Result</th>
                     <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-black-500 tracking-wider">Retest</th>
                     <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-black-500 tracking-wider">Submitted</th>
@@ -45,6 +46,18 @@
                         </td>
                         <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
                           <div class="text-sm leading-5 text-blue-900">{{ result.analyst?.name || "moyoza"}}</div>
+                        </td>
+                        <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
+                          <div  v-if="!isEditable(result) || result?.analysis?.interims?.length === 0" class="text-sm leading-5 text-blue-900"> --- </div>
+                          <label v-else class="block col-span-2 mb-2" >
+                              <select class="form-input mt-1 block w-full" v-model="result.result" @change="check(result)">
+                                <option value=""></option>
+                                <option  
+                                v-for="(interim, index) in result?.analysis?.interims"
+                                :key="interim.key"
+                                :value="interim.value" >{{ interim.value }}</option>
+                            </select>
+                          </label>
                         </td>
                         <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
                           <div  v-if="!isEditable(result)" class="text-sm leading-5 text-blue-900">{{ result?.result  }}</div>
@@ -139,7 +152,7 @@
   import { ActionTypes } from '../../../store/modules/sample';
 
   import useAnalysisResults from '../../../modules/analysis'
-  import { IAnalysisProfile, IAnalysisResult, IAnalysisService, ISample } from '../../../models/analysis';
+  import { IAnalysisInterim, IAnalysisProfile, IAnalysisResult, IAnalysisService, ISample } from '../../../models/analysis';
 import { isNullOrWs } from '../../../utils';
 
   const route = useRoute();

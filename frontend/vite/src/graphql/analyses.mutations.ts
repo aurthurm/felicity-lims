@@ -236,6 +236,51 @@ export const EDIT_RESULT_OPTION= gql`
   }
 `;
 
+
+// ANALYSIS_INTERIM
+export const ADD_ANALYSIS_INTERIM= gql`
+  mutation AddAnalysisInterim ($payload: AnalysisInterimInput!) {
+    createAnalysisInterim(payload: $payload){
+      ... on AnalysisInterimType {
+        __typename
+        uid
+        key
+        value
+        analysisUid
+        instrumentUid
+      }
+
+      ... on OperationError {
+        __typename
+        error
+        suggestion
+      }
+    }
+  }
+`;
+
+export const EDIT_ANALYSIS_INTERIM= gql`
+  mutation EditAnalysisInterim ($uid: Int!, $payload: AnalysisInterimInput!) {
+    updateAnalysisInterim(uid: $uid, payload: $payload){
+      ... on AnalysisInterimType {
+        __typename
+        uid
+        key
+        value
+        analysisUid
+        instrumentUid
+      }
+
+
+      ... on OperationError {
+        __typename
+        error
+        suggestion
+      }
+    }
+  }
+`;
+
 // ANALYSIS_SERVICE
 export const ADD_ANALYSIS_SERVICE= gql`
   mutation AddAnalysisService ($payload: AnalysisInputType!) {
@@ -482,6 +527,13 @@ export const SUBMIT_ANALYSIS_RESULTS = gql`
             name
             unit
             sortKey
+            interims {
+              uid
+              key
+              value
+              analysisUid
+              instrumentUid
+            }
             resultOptions {
               uid
               optionKey
@@ -571,6 +623,13 @@ export const VERIFY_ANALYSIS_RESULTS = gql`
             name
             unit
             sortKey
+            interims {
+              uid
+              key
+              value
+              analysisUid
+              instrumentUid
+            }
             resultOptions {
               uid
               optionKey
@@ -620,6 +679,13 @@ export const RETRACT_ANALYSIS_RESULTS = gql`
             name
             unit
             sortKey
+            interims {
+              uid
+              key
+              value
+              analysisUid
+              instrumentUid
+            }
             resultOptions {
               uid
               optionKey
@@ -669,6 +735,13 @@ export const RETEST_ANALYSIS_RESULTS = gql`
             name
             unit
             sortKey
+            interims {
+              uid
+              key
+              value
+              analysisUid
+              instrumentUid
+            }
             resultOptions {
               uid
               optionKey

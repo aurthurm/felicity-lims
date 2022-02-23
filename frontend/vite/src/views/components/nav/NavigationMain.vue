@@ -36,13 +36,14 @@
         <font-awesome-icon icon="bell" class="mr-2" />
         <span>Notifications</span>
       </a>
-      <!-- <a
-        href="#"
+      <router-link
+        v-show="canAccessPage(userRole, pages.ADMINISTRATION)"
+        to="/admin"
         class="no-underline text-white opacity-50 flex items-center px-4 border-b border-transparent hover:opacity-100 md:hover:border-grey-dark"
-      >
-        <font-awesome-icon icon="envelope" class="mr-2" />
-        <span class="text-sm">Messages</span>
-      </a> -->
+        >
+        <font-awesome-icon icon="cog" class="mr-2"/>
+        <span class="text-sm">Settings</span>
+      </router-link>
       <div class="flex text-right align-middle py-2">
         <div>
           <img
@@ -73,11 +74,6 @@
             v-show="dropdownOpen"
             class="absolute right-0 mt-4 py-2 w-48 bg-gray-700 rounded-md shadow-xl z-20"
           >
-            <router-link
-              v-show="canAccessPage(userRole, pages.ADMINISTRATION)"
-              to="/admin"
-              class="no-underline text-gray-500 py-1 opacity-50 flex items-center px-4 border-b border-transparent hover:opacity-100 md:hover:border-grey-dark hover:bg-gray-800 hover:text-gray-200"
-              >Configurations</router-link>
             <router-link
               to="/auth"
               class="no-underline text-gray-500 py-1 opacity-50 flex items-center px-4 border-b border-transparent hover:opacity-100 md:hover:border-grey-dark hover:bg-gray-800 hover:text-gray-200"

@@ -24,7 +24,6 @@ const logout = () => {
   localStorage.removeItem("fuser");
   localStorage.removeItem("fuid");
   localStorage.removeItem("fRole");
-  location.reload();
   return
 }
 

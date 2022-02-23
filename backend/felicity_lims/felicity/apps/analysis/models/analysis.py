@@ -147,6 +147,7 @@ class Analysis(BaseAuditDBModel):
         backref="analyses",
         lazy="selectin",
     )
+    interims = relationship("AnalysisInterim", backref="analyses", lazy="selectin")
     result_options = relationship("ResultOption", backref="analyses", lazy="selectin")
     category_uid = Column(Integer, ForeignKey("analysiscategory.uid"))
     category = relationship(AnalysisCategory, backref="analyses", lazy="selectin")
@@ -177,6 +178,7 @@ class AnalysisInterim(BaseAuditDBModel):
     value = Column(String, nullable=False)
     analysis_uid = Column(Integer, ForeignKey("analysis.uid"), nullable=True)
     instrument_uid = Column(Integer, ForeignKey("instrument.uid"), nullable=True)
+    instrument = relationship("Instrument")
 
     @classmethod
     async def create(cls, obj_in: schemas.AnalysisInterimCreate) -> schemas.AnalysisInterim:

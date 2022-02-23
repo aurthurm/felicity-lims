@@ -31,6 +31,7 @@ from felicity.api.gql.schema import gql_schema  # noqa
 from felicity.utils.dirs import resolve_root_dirs
 from felicity.views import default_home_page
 from felicity.init import initialize_felicity  # noqa
+from felicity.core.config import settings
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -72,7 +73,9 @@ flims = FastAPI(
 async def startup():
     # print("\n")
     # print(pf.Figlet("doom").renderText("FELICITY  LIMS"))  # "puffy"
-    # await initialize_felicity()
+    if settings.LOAD_SETUP_DATA:
+        await initialize_felicity()
+
     felicity_workforce_init()
 
 

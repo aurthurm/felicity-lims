@@ -1,6 +1,6 @@
 import { IClient, IClientContact } from "./client";
 import { IPatient } from "./patient";
-import { IInstrument, IMethod } from "./setup";
+import { IInstrument, IMethod, IUnit } from "./setup";
 
 export interface ISampleType {
     uid?: number;
@@ -19,6 +19,7 @@ export interface IAnalysisService {
     profiles?: IAnalysisProfile[];
     category?: IAnalysisCategory;
     resultOptions?: IResultOption[],
+    interims?: IAnalysisInterim[],
     categoryUid?: number,
     sortKey?: number;
     active?: boolean;
@@ -137,8 +138,62 @@ export interface IQCTemplate {
     updated_at?: string
   }
 
-
   export interface IRejectionReason {
     uid?: number;
     reason?: string;
   }
+
+  export interface IAnalysisInterim {
+      uid?: number,
+      key?: number,
+      value?: string,
+      analysisUid?: number,
+      instrumentUid?: number,
+  }
+  
+  export interface IAnalysisCorrectionFactor {
+      uid?: number,
+      factor?: string,
+      analysisUid?: number,
+      instrumentUid?: number,
+      methodUid?: number,
+  }
+  
+  export interface IAnalysisDetectionLimit {
+    uid?: number,
+    lowerLimit?: string,
+    upperLimit?: string,
+    analysisUid?: number,
+    instrumentUid?: number,
+    methodUid?: number,
+  }
+  
+  export interface IAnalysisUncertainty {
+    uid?: number,
+    min?: number,
+    max?: number,
+    value?: number,
+    analysisUid?: number,
+    instrumentUid?: number,
+    methodUid?: number,
+  }
+  
+  export interface IAnalysisSpecification {
+    uid?: number,
+    analysisUid?: number,
+    unitUid?: number,
+    unit?: IUnit[],
+    min?: number,
+    max?: number,
+    minWarn?: number,
+    maxWarn?: number,
+    minReport?: string,
+    maxReport?: string,
+    warnValues?: string,
+    warnReport?: string,
+    gender?: string,
+    ageMin?: number,
+    ageMax?: number,
+    methodUid?: number,
+  }
+  

@@ -18,7 +18,7 @@ import './assets/css/style.css'
 import App from './App.vue'
 import router from './router'
 import store from './store'
-import { graphql_url } from './conf'
+import { GQL_BASE_URL } from './conf'
 import { urqlClient } from './urql'
 
 library.add(fas, fab)
@@ -28,7 +28,7 @@ const app = createApp(App)
 app.component('font-awesome-icon', FontAwesomeIcon)
 app.component('default-layout', LayoutDashboard)
 app.component('empty-layout', LayoutEmpty)
-app.use(urql, urqlClient)  // { url: graphql_url } replaces urqlClient
+app.use(urql, urqlClient)  // { url: GQL_BASE_URL } replaces urqlClient
 app.use(VueSweetalert2)
 app.use(VueMarkdownIt)
 app.use(router)

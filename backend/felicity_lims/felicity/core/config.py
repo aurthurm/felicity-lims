@@ -125,6 +125,8 @@ class Settings(BaseSettings):
     FIRST_SUPERUSER_PASSWORD: str = getenv_value("FIRST_SUPERUSER_PASSWORD", "admin")
     USERS_OPEN_REGISTRATION: bool = False
 
+    LOAD_SETUP_DATA = getenv_boolean("LOAD_SETUP_DATA", False)
+
     class Config:
         case_sensitive = True
 

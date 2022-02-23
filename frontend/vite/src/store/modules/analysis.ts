@@ -60,7 +60,9 @@ export enum MutationTypes {
   ADD_RESULT_OPTION = 'ADD_RESULT_OPTION',
   UPDATE_RESULT_OPTION = 'UPDATE_RESULT_OPTION',
 
-
+  FETCH_ANALYSIS_INTERIMS = 'FETCH_ANALYSIS_INTERIMS',
+  ADD_ANALYSIS_INTERIM = 'ADD_ANALYSIS_INTERIM',
+  UPDATE_ANALYSIS_INTERIM = 'UPDATE_ANALYSIS_INTERIM',
   
   SET_REJECTION_REASONS = 'SET_REJECTION_REASONS',
   ADD_REJECTION_REASON = 'ADD_REJECTION_REASON',
@@ -94,6 +96,10 @@ export enum ActionTypes {
   FETCH_RESULT_OPTIONS = 'FETCH_RESULT_OPTIONS',
   ADD_RESULT_OPTION = 'ADD_RESULT_OPTION',
   UPDATE_RESULT_OPTION = 'UPDATE_RESULT_OPTION',
+
+  FETCH_ANALYSIS_INTERIMS = 'FETCH_ANALYSIS_INTERIMS',
+  ADD_ANALYSIS_INTERIM = 'ADD_ANALYSIS_INTERIM',
+  UPDATE_ANALYSIS_INTERIM = 'UPDATE_ANALYSIS_INTERIM',
 
   FETCH_REJECTION_REASONS = 'FETCH_REJECTION_REASONS',
   ADD_REJECTION_REASON = 'ADD_REJECTION_REASON',
@@ -210,17 +216,12 @@ export const mutations = <MutationTree<IState>>{
 
   // RESULT OPTIONS
   [MutationTypes.UPDATE_RESULT_OPTION](state: IState, payload: any): void {
-    console.log(payload);
     state?.analysesServices?.forEach(service => {
-      console.log(service?.uid, payload?.analysisUid);
       if (service?.uid == payload?.analysisUid){
         const index = service.resultOptions!.findIndex(ro => ro.uid === payload.uid);
-        console.log(service!.resultOptions![index])
         service!.resultOptions![index] = payload;
-        console.log(service!.resultOptions![index])
       }
     });
-    console.log(state?.analysesServices);
   },
 
   [MutationTypes.ADD_RESULT_OPTION](state: IState, payload: any): void {
@@ -234,6 +235,34 @@ export const mutations = <MutationTree<IState>>{
       }
     });
   },
+
+  // ANALYSIS INTERIMS
+  [MutationTypes.UPDATE_ANALYSIS_INTERIM](state: IState, payload: any): void {
+    console.log(payload);
+    state?.analysesServices?.forEach(service => {
+      console.log(service?.uid, payload?.analysisUid);
+      if (service?.uid == payload?.analysisUid){
+        const index = service.interims!.findIndex(ro => ro.uid === payload.uid);
+        console.log(service!.interims![index])
+        service!.interims![index] = payload;
+        console.log(service!.interims![index])
+      }
+    });
+    console.log(state?.analysesServices);
+  },
+
+  [MutationTypes.ADD_ANALYSIS_INTERIM](state: IState, payload: any): void {
+    state?.analysesServices?.forEach(service => {
+      if (service?.uid == payload?.analysisUid){
+        if(service?.interims){
+          service?.interims?.push(payload);
+        } else {
+          service!.interims = [payload];
+        }
+      }
+    });
+  },
+
 
   // ReJECTION REASONS
   [MutationTypes.SET_REJECTION_REASONS](state: IState, rejectionReasons: IRejectionReason[]): void {
@@ -346,6 +375,15 @@ export const actions = <ActionTree<IState, RootState>>{
 
   async [ActionTypes.UPDATE_RESULT_OPTION]({ commit }, payload ){
     commit(MutationTypes.UPDATE_RESULT_OPTION, payload.data.updateResultOption);
+  },
+
+  // Interim Fields
+  async [ActionTypes.ADD_ANALYSIS_INTERIM]({ commit }, payload ){
+    commit(MutationTypes.ADD_ANALYSIS_INTERIM, payload.data.createAnalysisInterim);
+  },
+
+  async [ActionTypes.UPDATE_ANALYSIS_INTERIM]({ commit }, payload ){
+    commit(MutationTypes.UPDATE_ANALYSIS_INTERIM, payload.data.updateAnalysisInterim);
   },
 
   // ReJECTION REASONS

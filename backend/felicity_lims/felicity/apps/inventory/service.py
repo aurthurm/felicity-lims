@@ -4,6 +4,9 @@ from felicity.apps.inventory import repository
 class StockItemService:
     repository = repository.StockItemRepository
 
+    def create(self, kwargs):
+        return self.repository.create(kwargs)
+
 
 class StockCategoryService:
     repository = repository.StockCategoryRepository

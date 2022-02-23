@@ -1,5 +1,5 @@
 export interface IInstrument {
-    uid: string;
+    uid: number;
     name: string;
     keyword: string;
     description: string;
@@ -7,15 +7,21 @@ export interface IInstrument {
   }
   
   export interface IMethod {
-    uid: string;
+    uid: number;
     name: string;
     keyword: string;
     description: string;
   }
 
   export interface IDepartment {
-    uid: string;
+    uid: number;
     name: string;
     description: string;
 
+  }
+
+  export interface IUnit {
+    uid: number,
+    name: string,
+    isSiUnit: boolean;
   }

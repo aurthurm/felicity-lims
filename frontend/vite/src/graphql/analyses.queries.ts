@@ -21,6 +21,13 @@ export const GET_ALL_ANALYSES_SERVICES = gql`
         active
         sortKey
         categoryUid
+        interims {
+          uid
+          key
+          value
+          analysisUid
+          instrumentUid
+        }
         resultOptions {
           uid
           optionKey
@@ -81,6 +88,13 @@ export const GET_ALL_ANALYSES_PROFILES_AND_SERVICES = gql`
             active
             sortKey
             categoryUid
+            interims {
+              uid
+              key
+              value
+              analysisUid
+              instrumentUid
+            }
             resultOptions {
               uid
               optionKey
@@ -358,6 +372,13 @@ export const GET_ANALYSIS_RESULTS_BY_SAMPLE_UID = gql`
           name
           unit
           sortKey
+          interims {
+            uid
+            key
+            value
+            analysisUid
+            instrumentUid
+          }
           resultOptions {
             uid
             optionKey

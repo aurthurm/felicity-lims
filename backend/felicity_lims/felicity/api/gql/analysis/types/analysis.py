@@ -126,6 +126,7 @@ class AnalysisType:
     sample_types: Optional[List[SampleTypeTyp]]
     category_uid: Optional[int]
     category: Optional[AnalysisCategoryType]
+    interims: Optional[List['AnalysisInterimType']]
     result_options: Optional[List[ResultOptionType]]
     tat_length_minutes: int
     sort_key: int
@@ -269,6 +270,13 @@ class AnalysisInterimType:
     value: str
     analysis_uid: int
     instrument_uid: int
+    #
+    created_by_uid: Optional[int]
+    created_by: Optional[UserType]
+    created_at: Optional[datetime]
+    updated_by_uid: Optional[int]
+    updated_by: Optional[UserType]
+    updated_at: Optional[datetime]
 
 
 @strawberry.type
@@ -278,6 +286,13 @@ class AnalysisCorrectionFactorType:
     analysis_uid: int
     instrument_uid: int
     method_uid: int
+    #
+    created_by_uid: Optional[int]
+    created_by: Optional[UserType]
+    created_at: Optional[datetime]
+    updated_by_uid: Optional[int]
+    updated_by: Optional[UserType]
+    updated_at: Optional[datetime]
 
 
 @strawberry.type
@@ -288,6 +303,13 @@ class AnalysisDetectionLimitType:
     analysis_uid: int
     instrument_uid: int
     method_uid: int
+    #
+    created_by_uid: Optional[int]
+    created_by: Optional[UserType]
+    created_at: Optional[datetime]
+    updated_by_uid: Optional[int]
+    updated_by: Optional[UserType]
+    updated_at: Optional[datetime]
 
 
 @strawberry.type
@@ -299,6 +321,13 @@ class AnalysisUncertaintyType:
     analysis_uid: int
     instrument_uid: int
     method_uid: int
+    #
+    created_by_uid: Optional[int]
+    created_by: Optional[UserType]
+    created_at: Optional[datetime]
+    updated_by_uid: Optional[int]
+    updated_by: Optional[UserType]
+    updated_at: Optional[datetime]
 
 
 @strawberry.type
@@ -319,3 +348,10 @@ class AnalysisSpecificationType:
     age_min: int
     age_max: int
     method_uid: int
+    #
+    created_by_uid: Optional[int]
+    created_by: Optional[UserType]
+    created_at: Optional[datetime]
+    updated_by_uid: Optional[int]
+    updated_by: Optional[UserType]
+    updated_at: Optional[datetime]
