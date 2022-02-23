@@ -126,6 +126,26 @@ class Profile(BaseAuditDBModel):
         data = self._import(obj_in)
         return await super().update(**data)
 
+"""
+ Many to Many Link between Analyses and Method
+"""
+analysis_method = Table(
+    "analysis_method",
+    DBModel.metadata,
+    Column("analysis_uid", ForeignKey("analysis.uid"), primary_key=True),
+    Column("method_uid", ForeignKey("method.uid"), primary_key=True),
+)
+
+"""
+ Many to Many Link between Analyses and Intruments
+"""
+analysis_instrument = Table(
+    "analysis_instrument",
+    DBModel.metadata,
+    Column("analysis_uid", ForeignKey("analysis.uid"), primary_key=True),
+    Column("instrument_uid", ForeignKey("instrument.uid"), primary_key=True),
+)
+
 
 class Analysis(BaseAuditDBModel):
     """Analysis Test/Service"""
@@ -144,6 +164,18 @@ class Analysis(BaseAuditDBModel):
     sample_types = relationship(
         "SampleType",
         secondary=analysis_sample_type,
+        backref="analyses",
+        lazy="selectin",
+    )
+    instruments = relationship(
+        "Instrument",
+        secondary=analysis_instrument,
+        backref="analyses",
+        lazy="selectin",
+    )
+    methods = relationship(
+        "Method",
+        secondary=analysis_method,
         backref="analyses",
         lazy="selectin",
     )

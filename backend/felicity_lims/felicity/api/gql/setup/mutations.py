@@ -1,5 +1,5 @@
 import logging
-from typing import Dict, Optional
+from typing import Dict, Optional, List
 from datetime import datetime
 import strawberry  # noqa
 from felicity.apps.setup import models, schemas
@@ -109,6 +109,7 @@ class MethodInputType:
     name: str
     keyword: Optional[str] = None
     description: Optional[str] = None
+    instruments: Optional[List[int]] = None
 
 
 @strawberry.input

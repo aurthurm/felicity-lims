@@ -61,6 +61,7 @@ class InstrumentType:
     keyword: Optional[str]
     supplier_uid: Optional[int]
     supplier: Optional[SupplierType]
+    methods: Optional[List["MethodType"]]
     #
     created_by_uid: Optional[int]
     created_by: Optional['UserType']
@@ -138,6 +139,7 @@ class MethodType:
     name: Optional[str]
     description: Optional[str]
     keyword: Optional[str]
+    instruments: Optional[List[InstrumentType]]
     #
     created_by_uid: Optional[int]
     created_by: Optional['UserType']

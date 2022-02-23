@@ -161,8 +161,7 @@
           <analysis-specifications :analysis="analysisService" :analysisUid="analysisService?.uid"/>
         </div>
         <div v-else-if="currentTab === 'methods'">
-          <h3>Methods</h3>
-          <hr>
+           <analysis-methods :analysis="analysisService" :analysisUid="analysisService?.uid"/>
         </div>
         <div v-else> <!-- fiancials -->
           <h3>Billing</h3>
@@ -270,6 +269,7 @@
   import AnalysisUncertainty from './Uncertainty.vue'
   import DetectionLimits from './DetectionLimit.vue'
   import AnalysisSpecifications from './Specifications.vue'
+  import AnalysisMethods from './Methods.vue'
 
   import { useMutation } from '@urql/vue';
   import { ref, reactive, computed } from 'vue';

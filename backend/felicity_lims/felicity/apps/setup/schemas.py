@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, List
 from datetime import datetime
 from pydantic import BaseModel, EmailStr
 from felicity.apps import BaseAuditModel
@@ -264,6 +264,7 @@ class MethodBase(BaseModel):
     name: str = None
     description: str = None
     keyword: str = None
+    instruments: Optional[List[Instrument]]
 
 
 # Properties to receive via API on creation

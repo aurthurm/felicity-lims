@@ -85,14 +85,15 @@ class Department(BaseAuditDBModel):
         data = self._import(obj_in)
         return await super().update(**data)
 
+
 """
- Many to Many Link between Instrument and Method
+ Many to Many Link between Method and Instruments
 """
-instrument_method = Table(
-    "instrument_method",
+method_instrument = Table(
+    "method_instrument",
     DBModel.metadata,
-    Column("instrument_uid", ForeignKey("instrument.uid"), primary_key=True),
     Column("method_uid", ForeignKey("method.uid"), primary_key=True),
+    Column("instrument_uid", ForeignKey("instrument.uid"), primary_key=True),
 )
 
 
@@ -104,7 +105,7 @@ class Method(BaseAuditDBModel):
     keyword = Column(String, nullable=True)
     instruments = relationship(
         "Instrument",
-        secondary=instrument_method,
+        secondary=method_instrument,
         back_populates="methods",
     )
 
@@ -131,13 +132,13 @@ class InstrumentType(BaseAuditDBModel):
 
     @classmethod
     async def create(
-        cls, obj_in: schemas.InstrumentTypeCreate
+            cls, obj_in: schemas.InstrumentTypeCreate
     ) -> schemas.InstrumentType:
         data = cls._import(obj_in)
         return await super().create(**data)
 
     async def update(
-        self, obj_in: schemas.InstrumentTypeUpdate
+            self, obj_in: schemas.InstrumentTypeUpdate
     ) -> schemas.InstrumentType:
         data = self._import(obj_in)
         return await super().update(**data)
@@ -155,9 +156,8 @@ class Instrument(BaseAuditDBModel):
     supplier = relationship(Supplier, backref="instruments", lazy="selectin")
     methods = relationship(
         "Method",
-        secondary=instrument_method,
+        secondary=method_instrument,
         back_populates="instruments",
-        lazy="selectin",
     )
 
     @classmethod

@@ -1,3 +1,5 @@
+import { IAnalysisService } from "./analysis";
+
 export interface IInstrument {
     uid: number;
     name: string;
@@ -11,6 +13,8 @@ export interface IInstrument {
     name: string;
     keyword: string;
     description: string;
+    instruments: number[] | IInstrument[];
+    analyses: number[] | IAnalysisService[];
   }
 
   export interface IDepartment {
