@@ -213,7 +213,7 @@ class AnalysisInterimInDB(AnalysisInterimInDB):
 
 # Shared properties
 class AnalysisCorrectionFactorBase(BaseAuditModel):
-    factor: str
+    factor: float
     analysis_uid: int
     instrument_uid: int
     method_uid: int
@@ -334,20 +334,20 @@ class AnalysisUncertaintyInDB(AnalysisUncertaintyBaseInDB):
 # Shared properties
 class AnalysisSpecificationBase(BaseAuditModel):
     analysis_uid: int
-    unit_uid: int
+    min: Optional[float] = None
+    max: Optional[float] = None
+    min_warn: Optional[float] = None
+    max_warn: Optional[float] = None
+    min_report: Optional[str] = None
+    max_report: Optional[str] = None
+    warn_values: Optional[str] = None
+    warn_report: Optional[str] = None
+    gender: Optional[str] = None
+    age_min: Optional[int] = None
+    age_max: Optional[int] = None
+    method_uid: Optional[int] = None
+    unit_uid: Optional[int] = None
     unit: Optional[Unit]
-    min: float
-    max: float
-    min_warn: float
-    max_warn: float
-    min_report: str
-    max_report: str
-    warn_values: str
-    warn_report: str
-    gender: str
-    age_min: int
-    age_max: int
-    method_uid: int
 
 
 class AnalysisSpecificationBaseInDB(AnalysisSpecificationBase):

@@ -147,7 +147,11 @@ class Analysis(BaseAuditDBModel):
         backref="analyses",
         lazy="selectin",
     )
-    interims = relationship("AnalysisInterim", backref="analyses", lazy="selectin")
+    interims = relationship("AnalysisInterim", backref="analysis", lazy="selectin")
+    correction_factors = relationship("AnalysisCorrectionFactor", backref="analysis", lazy="selectin")
+    specifications = relationship("AnalysisSpecification", backref="analysis", lazy="selectin")
+    detection_limits = relationship("AnalysisDetectionLimit", backref="analysis", lazy="selectin")
+    uncertainties = relationship("AnalysisUncertainty", backref="analysis", lazy="selectin")
     result_options = relationship("ResultOption", backref="analyses", lazy="selectin")
     category_uid = Column(Integer, ForeignKey("analysiscategory.uid"))
     category = relationship(AnalysisCategory, backref="analyses", lazy="selectin")
@@ -226,7 +230,9 @@ class AnalysisDetectionLimit(BaseAuditDBModel):
 
 
 class AnalysisUncertainty(BaseAuditDBModel):
-    """Analysis Measurment Uncertainty"""
+    """Analysis Measurment Uncertainty
+    If value is within the the range min.max then result becomes a range (result +/- value)
+    """
     min = Column(Float, nullable=False)
     max = Column(Float, nullable=False)
     value = Column(Float, nullable=False)

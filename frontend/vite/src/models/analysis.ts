@@ -18,8 +18,12 @@ export interface IAnalysisService {
     unit?: string;
     profiles?: IAnalysisProfile[];
     category?: IAnalysisCategory;
-    resultOptions?: IResultOption[],
-    interims?: IAnalysisInterim[],
+    resultOptions?: IResultOption[];
+    interims?: IAnalysisInterim[];
+    correctionFactors?: IAnalysisCorrectionFactor[];
+    specifications?: IAnalysisSpecification[];
+    detectionLimits?: IAnalysisSpecification[];
+    uncertainties?: IAnalysisUncertainty[];
     categoryUid?: number,
     sortKey?: number;
     active?: boolean;
@@ -161,8 +165,8 @@ export interface IQCTemplate {
   
   export interface IAnalysisDetectionLimit {
     uid?: number,
-    lowerLimit?: string,
-    upperLimit?: string,
+    lowerLimit?: number,
+    upperLimit?: number,
     analysisUid?: number,
     instrumentUid?: number,
     methodUid?: number,

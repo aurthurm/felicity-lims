@@ -21,6 +21,59 @@ export const GET_ALL_ANALYSES_SERVICES = gql`
         active
         sortKey
         categoryUid
+        specifications {
+          uid
+          analysisUid
+          unitUid
+          unit {
+            uid
+            name
+            isSiUnit
+          },
+          min
+          max
+          minWarn
+          maxWarn
+          minReport
+          maxReport
+          warnValues
+          warnReport
+          gender
+          ageMin
+          ageMax
+          methodUid
+        }
+        uncertainties {
+          uid
+          min
+          max
+          value
+          analysisUid
+          instrumentUid
+          methodUid
+        }
+        detectionLimits {
+          uid
+          lowerLimit
+          upperLimit
+          analysisUid
+          instrumentUid
+          methodUid
+        }
+        correctionFactors {
+          uid
+          factor
+          analysisUid
+          instrumentUid
+          methodUid
+        }
+        correctionFactors {
+          uid
+          factor
+          analysisUid
+          instrumentUid
+          methodUid
+        }
         interims {
           uid
           key
@@ -88,6 +141,59 @@ export const GET_ALL_ANALYSES_PROFILES_AND_SERVICES = gql`
             active
             sortKey
             categoryUid
+            specifications {
+              uid
+              analysisUid
+              unitUid
+              unit {
+                uid
+                name
+                isSiUnit
+              },
+              min
+              max
+              minWarn
+              maxWarn
+              minReport
+              maxReport
+              warnValues
+              warnReport
+              gender
+              ageMin
+              ageMax
+              methodUid
+            }
+            uncertainties {
+              uid
+              min
+              max
+              value
+              analysisUid
+              instrumentUid
+              methodUid
+            }
+            detectionLimits {
+              uid
+              lowerLimit
+              upperLimit
+              analysisUid
+              instrumentUid
+              methodUid
+            }
+            correctionFactors {
+              uid
+              factor
+              analysisUid
+              instrumentUid
+              methodUid
+            }
+            correctionFactors {
+              uid
+              factor
+              analysisUid
+              instrumentUid
+              methodUid
+            }
             interims {
               uid
               key
@@ -357,7 +463,7 @@ export const GET_ANALYSIS_RESULTS_BY_SAMPLE_UID = gql`
             uid
             name
           }
-        sample{
+        sample {
           uid
           sampleId
           status

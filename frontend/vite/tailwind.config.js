@@ -1,3 +1,5 @@
+const colors = require('tailwindcss/colors')
+
 module.exports = {
   future: {
     removeDeprecatedGapUtilities: true,
@@ -19,7 +21,11 @@ module.exports = {
     extend: {
       gridTemplateColumns: {
         'dashboard': '150px minmax(350px, 1fr)',
-      }
-    }
+      },
+      colors: {
+        amber: colors.amber,
+        black: colors.black,
+      },
+    },
   }
 }

@@ -1,4 +1,5 @@
 import logging
+from typing import Optional
 
 import strawberry  # noqa
 from felicity.apps.analysis import schemas
@@ -20,7 +21,7 @@ class AnalysisInterimInput:
 
 @strawberry.input
 class AnalysisCorrectionFactorInput:
-    factor: str
+    factor: float
     analysis_uid: int
     instrument_uid: int
     method_uid: int
@@ -28,8 +29,8 @@ class AnalysisCorrectionFactorInput:
 
 @strawberry.input
 class AnalysisDetectionLimitInput:
-    lower_limit: str
-    upper_limit: str
+    lower_limit: float
+    upper_limit: float
     analysis_uid: int
     instrument_uid: int
     method_uid: int
@@ -48,19 +49,19 @@ class AnalysisUncertaintyInput:
 @strawberry.input
 class AnalysisSpecificationInput:
     analysis_uid: int
-    unit_uid: int
-    min: float
-    max: float
-    min_warn: float
-    max_warn: float
-    min_report: str
-    max_report: str
-    warn_values: str
-    warn_report: str
-    gender: str
-    age_min: int
-    age_max: int
-    method_uid: int
+    min: Optional[float] = None
+    max: Optional[float] = None
+    min_warn: Optional[float] = None
+    max_warn: Optional[float] = None
+    min_report: Optional[str] = None
+    max_report: Optional[str] = None
+    warn_values: Optional[str] = None
+    warn_report: Optional[str] = None
+    gender: Optional[str] = None
+    age_min: Optional[int] = None
+    age_max: Optional[int] = None
+    method_uid: Optional[int] = None
+    unit_uid: Optional[int] = None
 
 
 AnalysisInterimResponse = strawberry.union("AnalysisInterimResponse",
@@ -228,7 +229,7 @@ async def create_analysis_uncertainty(info, payload: AnalysisUncertaintyInput) -
 
     obj_in = schemas.AnalysisUncertaintyCreate(**incoming)
     uncertainty: analysis_models.AnalysisUncertainty = await analysis_models.AnalysisUncertainty.create(obj_in)
-    return a_types.AnalysisInterimType(**uncertainty.marshal_simple())
+    return a_types.AnalysisUncertaintyType(**uncertainty.marshal_simple())
 
 
 @strawberry.mutation
@@ -261,6 +262,12 @@ async def create_analysis_specification(info, payload: AnalysisSpecificationInpu
 
     is_authenticated, felicity_user = await auth_from_info(info)
     verify_user_auth(is_authenticated, felicity_user, "Only Authenticated user can add analysis specifications")
+
+    if not payload.min and not payload.warn_values:
+        return OperationError(
+            error=f"Specification can not be empty",
+            suggestion="Provide values for either numeric or texual specification based on expected result type"
+        )
 
     incoming = {
         "created_by_uid": felicity_user.uid,

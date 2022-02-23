@@ -18,7 +18,7 @@
     <hr />
 
     <div class="grid grid-cols-12 gap-4 mt-2">
-      <section class="col-span-4 overflow-y-scroll overscroll-contain analyses-scroll bg-white p-1">
+      <section class="col-span-2 overflow-y-scroll overscroll-contain analyses-scroll bg-white p-1">
         <div class="w-full">
             <accordion v-for="category in analysesServices" :key="category[0]">
               <template v-slot:title>{{ category[0] }}</template>
@@ -52,7 +52,7 @@
         </div>
       </section>
 
-      <section class="col-span-8" v-if="analysisService?.uid !== undefined">
+      <section class="col-span-10" v-if="analysisService?.uid !== undefined">
         <!-- Question Listing Item Card -->
         <div class="bg-white rounded-lg shadow-sm hover:shadow-lg duration-500 px-4 sm:px-6 md:px-2 py-4" >
           <div class="grid grid-cols-12 gap-3">
@@ -142,21 +142,23 @@
           <hr> 
           <input type="text">
         </div>
-        <div v-else-if="currentTab === 'analyses'">
-          <h3>Analyses</h3>
-          <hr>
-            <input type="text">
-        </div>
         <div v-else-if="currentTab === 'uncertainities'">
-          <h3>Udertainities</h3>
-          <hr>
-            <input type="text">
+          <analysis-uncertainty :analysis="analysisService" :analysisUid="analysisService?.uid"/>
+        </div>
+        <div v-else-if="currentTab === 'correction-factor'">
+          <correction-factor :analysis="analysisService" :analysisUid="analysisService?.uid"/>
         </div>
         <div v-else-if="currentTab === 'result-options'">
           <result-options :analysis="analysisService" :analysisUid="analysisService?.uid"/>
         </div>
         <div v-else-if="currentTab === 'interims'">
           <interim-fields :analysis="analysisService" :analysisUid="analysisService?.uid"/>
+        </div>
+        <div v-else-if="currentTab === 'detection-limits'">
+          <detection-limits :analysis="analysisService" :analysisUid="analysisService?.uid"/>
+        </div>
+        <div v-else-if="currentTab === 'specifications'">
+          <analysis-specifications :analysis="analysisService" :analysisUid="analysisService?.uid"/>
         </div>
         <div v-else-if="currentTab === 'methods'">
           <h3>Methods</h3>
@@ -259,116 +261,98 @@
 
 </template>
 
-<script lang="ts">
-import modal from '../../../../components/SimpleModal.vue';
-import accordion from '../../../../components/Accordion.vue';
-import ResultOptions from './ResultOptions.vue';
-import InterimFields from './InterimFields.vue'
+<script setup lang="ts">
+  import modal from '../../../../components/SimpleModal.vue';
+  import accordion from '../../../../components/Accordion.vue';
+  import ResultOptions from './ResultOptions.vue';
+  import InterimFields from './InterimFields.vue'
+  import CorrectionFactor from './CorrectionFactor.vue'
+  import AnalysisUncertainty from './Uncertainty.vue'
+  import DetectionLimits from './DetectionLimit.vue'
+  import AnalysisSpecifications from './Specifications.vue'
 
-import { useMutation } from '@urql/vue';
-import { defineComponent, ref, reactive, computed } from 'vue';
-import { useStore } from 'vuex';
-import { ActionTypes } from '../../../../store/modules/analysis';
-import { IAnalysisService } from '../../../../models/analysis';
-import { ADD_ANALYSIS_SERVICE, EDIT_ANALYSIS_SERVICE  } from '../../../../graphql/analyses.mutations';
+  import { useMutation } from '@urql/vue';
+  import { ref, reactive, computed } from 'vue';
+  import { useStore } from 'vuex';
+  import { ActionTypes } from '../../../../store/modules/analysis';
+  import { IAnalysisService } from '../../../../models/analysis';
+  import { ADD_ANALYSIS_SERVICE, EDIT_ANALYSIS_SERVICE  } from '../../../../graphql/analyses.mutations';
 
-export default defineComponent({
-  name: "tab-analyses-services",
-  components: {
-    accordion,
-    modal,
-    ResultOptions,
-    InterimFields,
-  },
-  setup() {
+  let currentTab = ref('general');
+  const tabs = ['general', 'uncertainities', 'result-options','interims','correction-factor', 'detection-limits', 'specifications', 'methods', 'financials'];
 
-    // each tab if just gonna be forms with updatable values on button click
-    let currentTab = ref('general');
-    const tabs = ['general', 'calculations', 'uncertainities', 'result-options','interims', 'methods', 'financials'];
+  let store = useStore();
+  
+  let showModal = ref(false);
+  let formTitle = ref('');
+  let analysisService = reactive({}) as IAnalysisService;
+  const formAction = ref(true);
 
-    let store = useStore();
-    
-    let showModal = ref(false);
-    let formTitle = ref('');
-    let analysisService = reactive({}) as IAnalysisService;
-    const formAction = ref(true);
+  store.dispatch(ActionTypes.FETCH_ANALYSES_CATEGORIES);
 
-    store.dispatch(ActionTypes.FETCH_ANALYSES_CATEGORIES);
+  const analysesCategories = computed(() =>store.getters.getAnalysesCategories)
+  const analysesServices = computed(() =>store.getters.getAnalysesServices)
 
-    let analysesParams = reactive({ 
-      first: undefined, 
-      after: "",
-      text: "", 
-      sortBy: ["name"]
+  let analysesParams = reactive({ 
+    first: undefined, 
+    after: "",
+    text: "", 
+    sortBy: ["name"]
+  });
+  store.dispatch(ActionTypes.FETCH_ANALYSES_SERVICES, analysesParams);
+
+  const { executeMutation: createAnalysisService } = useMutation(ADD_ANALYSIS_SERVICE);
+  const { executeMutation: updateAnalysisService } = useMutation(EDIT_ANALYSIS_SERVICE);
+
+  function addAnalysisService(): void {
+    const payload = { 
+      name: analysisService.name, 
+      keyword: analysisService.keyword, 
+      description: analysisService.description, 
+      categoryUid: analysisService.categoryUid, 
+      sortKey: analysisService.sortKey,
+      active: analysisService.active, 
+      internalUse: analysisService.internalUse, 
+    }
+    createAnalysisService({ payload }).then((result) => {
+      store.dispatch(ActionTypes.ADD_ANALYSES_SERVICE, result);
     });
-    store.dispatch(ActionTypes.FETCH_ANALYSES_SERVICES, analysesParams);
+  }
 
-    const { executeMutation: createAnalysisService } = useMutation(ADD_ANALYSIS_SERVICE);
-    const { executeMutation: updateAnalysisService } = useMutation(EDIT_ANALYSIS_SERVICE);
-
-    function addAnalysisService(): void {
-      const payload = { 
-        name: analysisService.name, 
-        keyword: analysisService.keyword, 
-        description: analysisService.description, 
-        categoryUid: analysisService.categoryUid, 
-        sortKey: analysisService.sortKey,
-        active: analysisService.active, 
-        internalUse: analysisService.internalUse, 
-      }
-      createAnalysisService({ payload }).then((result) => {
-       store.dispatch(ActionTypes.ADD_ANALYSES_SERVICE, result);
-      });
+  function editAnalysisService(): void {
+    const payload = { 
+      name: analysisService.name, 
+      keyword: analysisService.keyword, 
+      description: analysisService.description, 
+      categoryUid: analysisService.categoryUid, 
+      sortKey: analysisService.sortKey,
+      active: analysisService.active, 
+      internalUse: analysisService.internalUse, 
     }
+    updateAnalysisService({  uid: analysisService.uid,  payload }).then((result) => {
+      store.dispatch(ActionTypes.UPDATE_ANALYSES_SERVICE, result);
+    });
+  }
 
-    function editAnalysisService(): void {
-      const payload = { 
-        name: analysisService.name, 
-        keyword: analysisService.keyword, 
-        description: analysisService.description, 
-        categoryUid: analysisService.categoryUid, 
-        sortKey: analysisService.sortKey,
-        active: analysisService.active, 
-        internalUse: analysisService.internalUse, 
-      }
-      updateAnalysisService({  uid: analysisService.uid,  payload }).then((result) => {
-        store.dispatch(ActionTypes.UPDATE_ANALYSES_SERVICE, result);
-      });
+  function selectAnalysisService(service: IAnalysisService):void {
+    Object.assign(analysisService, { ...service });
+  }
+
+  function FormManager(create: boolean, obj = {} as IAnalysisService):void {
+    formAction.value = create;
+    showModal.value = true;
+    formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "ANALYSES SERVICE";
+    if (create) {
+      Object.assign(analysisService, {} as IAnalysisService);
+    } else {
+      Object.assign(analysisService, { ...obj });
     }
+  }
 
-    function selectAnalysisService(service: IAnalysisService):void {
-      Object.assign(analysisService, { ...service });
-    }
+  function saveForm():void {
+    if (formAction.value === true) addAnalysisService();
+    if (formAction.value === false) editAnalysisService();
+    showModal.value = false;
+  }
 
-    function FormManager(create: boolean, obj = {} as IAnalysisService):void {
-      formAction.value = create;
-      showModal.value = true;
-      formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "ANALYSES SERVICE";
-      if (create) {
-        Object.assign(analysisService, {} as IAnalysisService);
-      } else {
-        Object.assign(analysisService, { ...obj });
-      }
-    }
-
-    function saveForm():void {
-      if (formAction.value === true) addAnalysisService();
-      if (formAction.value === false) editAnalysisService();
-      showModal.value = false;
-    }
-
-    return { 
-      showModal,
-      formTitle,
-      tabs,
-      currentTab,
-      analysesCategories: computed(() =>store.getters.getAnalysesCategories),
-      analysesServices: computed(() =>store.getters.getAnalysesServices),
-      selectAnalysisService,
-      analysisService,
-      FormManager,
-      saveForm
-    };
-  },
-});
 </script>

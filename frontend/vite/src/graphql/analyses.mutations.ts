@@ -11,7 +11,6 @@ export const ADD_SAMPLE_TYPE= gql`
         abbr
         description
         active
-
       }
 
       ... on OperationError {
@@ -271,6 +270,202 @@ export const EDIT_ANALYSIS_INTERIM= gql`
         instrumentUid
       }
 
+
+      ... on OperationError {
+        __typename
+        error
+        suggestion
+      }
+    }
+  }
+`;
+
+// ANALYSIS_CORRECTION_FACTOR
+export const ADD_ANALYSIS_CORRECTION_FACTOR = gql`
+  mutation AddAnalysisCorrectionFactor ($payload: AnalysisCorrectionFactorInput!) {
+    createAnalysisCorrectionFactor(payload: $payload){
+      ... on AnalysisCorrectionFactorType {
+        __typename
+        uid
+        factor
+        analysisUid
+        instrumentUid
+        methodUid
+      }
+
+      ... on OperationError {
+        __typename
+        error
+        suggestion
+      }
+    }
+  }
+`;
+
+export const EDIT_ANALYSIS_CORRECTION_FACTOR = gql`
+  mutation EditAnalysisCorrectionFactor ($uid: Int!, $payload: AnalysisCorrectionFactorInput!) {
+    updateAnalysisCorrectionFactor(uid: $uid, payload: $payload){
+      ... on AnalysisCorrectionFactorType {
+        __typename
+        uid
+        factor
+        analysisUid
+        instrumentUid
+        methodUid
+      }
+
+      ... on OperationError {
+        __typename
+        error
+        suggestion
+      }
+    }
+  }
+`;
+
+// ANALYSIS_UNCERTAINTY
+export const ADD_ANALYSIS_UNCERTAINTY = gql`
+  mutation AddAnalysisUncertainty ($payload: AnalysisUncertaintyInput!) {
+    createAnalysisUncertainty(payload: $payload){
+      ... on AnalysisUncertaintyType {
+        __typename
+        uid
+        value
+        min
+        max
+        analysisUid
+        instrumentUid
+        methodUid
+      }
+
+      ... on OperationError {
+        __typename
+        error
+        suggestion
+      }
+    }
+  }
+`;
+
+export const EDIT_ANALYSIS_UNCERTAINTY = gql`
+  mutation EditAnalysisUncertainty ($uid: Int!, $payload: AnalysisUncertaintyInput!) {
+    updateAnalysisUncertainty(uid: $uid, payload: $payload){
+      ... on AnalysisUncertaintyType {
+        __typename
+        uid
+        value
+        min
+        max
+        analysisUid
+        instrumentUid
+        methodUid
+      }
+
+      ... on OperationError {
+        __typename
+        error
+        suggestion
+      }
+    }
+  }
+`;
+
+// ANALYSIS DETECTION LIMIT
+export const ADD_ANALYSIS_DETECTION_LIMIT = gql`
+  mutation AddAnalysisDetectionLimit ($payload: AnalysisDetectionLimitInput!) {
+    createAnalysisDetectionLimit(payload: $payload){
+      ... on AnalysisDetectionLimitType {
+        __typename
+        uid
+        lowerLimit
+        upperLimit
+        analysisUid
+        instrumentUid
+        methodUid
+      }
+
+      ... on OperationError {
+        __typename
+        error
+        suggestion
+      }
+    }
+  }
+`;
+
+export const EDIT_ANALYSIS_DETECTION_LIMIT = gql`
+  mutation EditAnalysisDetectionLimit ($uid: Int!, $payload: AnalysisDetectionLimitInput!) {
+    updateAnalysisDetectionLimit(uid: $uid, payload: $payload){
+      ... on AnalysisDetectionLimitType {
+        __typename
+        uid
+        lowerLimit
+        upperLimit
+        analysisUid
+        instrumentUid
+        methodUid
+      }
+
+      ... on OperationError {
+        __typename
+        error
+        suggestion
+      }
+    }
+  }
+`;
+
+// ANALYSIS SPECIFICATION
+export const ADD_ANALYSIS_SPECIFICATION = gql`
+  mutation AddAnalysisSpecification ($payload: AnalysisSpecificationInput!) {
+    createAnalysisSpecification(payload: $payload){
+      ... on AnalysisSpecificationType {
+        __typename
+        uid
+        analysisUid
+        min
+        max
+        minWarn
+        maxWarn
+        minReport
+        maxReport
+        warnValues
+        warnReport
+        gender
+        ageMin
+        ageMax
+        methodUid
+      }
+
+      ... on OperationError {
+        __typename
+        error
+        suggestion
+      }
+    }
+  }
+`;
+
+export const EDIT_ANALYSIS_SPECIFICATION = gql`
+  mutation EditAnalysisSpecification ($uid: Int!, $payload: AnalysisSpecificationInput!) {
+    updateAnalysisSpecification(uid: $uid, payload: $payload){
+      ... on AnalysisSpecificationType {
+        __typename
+        uid
+        analysisUid
+        min
+        max
+        minWarn
+        maxWarn
+        minReport
+        maxReport
+        warnValues
+        warnReport
+        gender
+        ageMin
+        ageMax
+        methodUid
+      }
 
       ... on OperationError {
         __typename

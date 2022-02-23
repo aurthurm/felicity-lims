@@ -127,6 +127,10 @@ class AnalysisType:
     category_uid: Optional[int]
     category: Optional[AnalysisCategoryType]
     interims: Optional[List['AnalysisInterimType']]
+    correction_factors: Optional[List['AnalysisCorrectionFactorType']]
+    specifications: Optional[List['AnalysisSpecificationType']]
+    detection_limits: Optional[List['AnalysisDetectionLimitType']]
+    uncertainties: Optional[List['AnalysisUncertaintyType']]
     result_options: Optional[List[ResultOptionType]]
     tat_length_minutes: int
     sort_key: int
@@ -282,7 +286,7 @@ class AnalysisInterimType:
 @strawberry.type
 class AnalysisCorrectionFactorType:
     uid: int
-    factor: str
+    factor: float
     analysis_uid: int
     instrument_uid: int
     method_uid: int
@@ -298,8 +302,8 @@ class AnalysisCorrectionFactorType:
 @strawberry.type
 class AnalysisDetectionLimitType:
     uid: int
-    lower_limit: str
-    upper_limit: str
+    lower_limit: float
+    upper_limit: float
     analysis_uid: int
     instrument_uid: int
     method_uid: int
@@ -334,20 +338,20 @@ class AnalysisUncertaintyType:
 class AnalysisSpecificationType:
     uid: int
     analysis_uid: int
-    unit_uid: int
+    min: Optional[float]
+    max: Optional[float]
+    min_warn: Optional[float]
+    max_warn: Optional[float]
+    min_report: Optional[str]
+    max_report: Optional[str]
+    warn_values: Optional[str]
+    warn_report: Optional[str]
+    gender: Optional[str]
+    age_min: Optional[int]
+    age_max: Optional[int]
+    method_uid: Optional[int]
+    unit_uid: Optional[int]
     unit: Optional[UnitType]
-    min: float
-    max: float
-    min_warn: float
-    max_warn: float
-    min_report: str
-    max_report: str
-    warn_values: str
-    warn_report: str
-    gender: str
-    age_min: int
-    age_max: int
-    method_uid: int
     #
     created_by_uid: Optional[int]
     created_by: Optional[UserType]

@@ -63,6 +63,22 @@ export enum MutationTypes {
   FETCH_ANALYSIS_INTERIMS = 'FETCH_ANALYSIS_INTERIMS',
   ADD_ANALYSIS_INTERIM = 'ADD_ANALYSIS_INTERIM',
   UPDATE_ANALYSIS_INTERIM = 'UPDATE_ANALYSIS_INTERIM',
+
+  FETCH_ANALYSIS_CORRECTION_FACTORS = 'FETCH_ANALYSIS_CORRECTION_FACTORS',
+  ADD_ANALYSIS_CORRECTION_FACTOR = 'ADD_ANALYSIS_CORRECTION_FACTOR',
+  UPDATE_ANALYSIS_CORRECTION_FACTOR = 'UPDATE_ANALYSIS_CORRECTION_FACTOR',
+
+  FETCH_ANALYSIS_DETECTION_LIMITS = 'FETCH_ANALYSIS_DETECTION_LIMITS',
+  ADD_ANALYSIS_DETECTION_LIMIT = 'ADD_ANALYSIS_DETECTION_LIMIT',
+  UPDATE_ANALYSIS_DETECTION_LIMIT = 'UPDATE_ANALYSIS_DETECTION_LIMIT',
+
+  FETCH_ANALYSIS_SPECIFICATIONS = 'FETCH_ANALYSIS_SPECIFICATIONS',
+  ADD_ANALYSIS_SPECIFICATION = 'ADD_ANALYSIS_SPECIFICATION',
+  UPDATE_ANALYSIS_SPECIFICATION = 'UPDATE_ANALYSIS_SPECIFICATION',
+
+  FETCH_ANALYSIS_UNCERTAINTIES = 'FETCH_ANALYSIS_UNCERTAINTIES',
+  ADD_ANALYSIS_UNCERTAINTY = 'ADD_ANALYSIS_UNCERTAINTY',
+  UPDATE_ANALYSIS_UNCERTAINTY = 'UPDATE_ANALYSIS_UNCERTAINTY',
   
   SET_REJECTION_REASONS = 'SET_REJECTION_REASONS',
   ADD_REJECTION_REASON = 'ADD_REJECTION_REASON',
@@ -100,6 +116,22 @@ export enum ActionTypes {
   FETCH_ANALYSIS_INTERIMS = 'FETCH_ANALYSIS_INTERIMS',
   ADD_ANALYSIS_INTERIM = 'ADD_ANALYSIS_INTERIM',
   UPDATE_ANALYSIS_INTERIM = 'UPDATE_ANALYSIS_INTERIM',
+
+  FETCH_ANALYSIS_CORRECTION_FACTORS = 'FETCH_ANALYSIS_CORRECTION_FACTORS',
+  ADD_ANALYSIS_CORRECTION_FACTOR = 'ADD_ANALYSIS_CORRECTION_FACTOR',
+  UPDATE_ANALYSIS_CORRECTION_FACTOR = 'UPDATE_ANALYSIS_CORRECTION_FACTOR',
+
+  FETCH_ANALYSIS_DETECTION_LIMITS = 'FETCH_ANALYSIS_DETECTION_LIMITS',
+  ADD_ANALYSIS_DETECTION_LIMIT = 'ADD_ANALYSIS_DETECTION_LIMIT',
+  UPDATE_ANALYSIS_DETECTION_LIMIT = 'UPDATE_ANALYSIS_DETECTION_LIMIT',
+
+  FETCH_ANALYSIS_SPECIFICATIONS = 'FETCH_ANALYSIS_SPECIFICATIONS',
+  ADD_ANALYSIS_SPECIFICATION = 'ADD_ANALYSIS_SPECIFICATION',
+  UPDATE_ANALYSIS_SPECIFICATION = 'UPDATE_ANALYSIS_SPECIFICATION',
+
+  FETCH_ANALYSIS_UNCERTAINTIES = 'FETCH_ANALYSIS_UNCERTAINTIES',
+  ADD_ANALYSIS_UNCERTAINTY = 'ADD_ANALYSIS_UNCERTAINTY',
+  UPDATE_ANALYSIS_UNCERTAINTY = 'UPDATE_ANALYSIS_UNCERTAINTY',
 
   FETCH_REJECTION_REASONS = 'FETCH_REJECTION_REASONS',
   ADD_REJECTION_REASON = 'ADD_REJECTION_REASON',
@@ -238,17 +270,12 @@ export const mutations = <MutationTree<IState>>{
 
   // ANALYSIS INTERIMS
   [MutationTypes.UPDATE_ANALYSIS_INTERIM](state: IState, payload: any): void {
-    console.log(payload);
     state?.analysesServices?.forEach(service => {
-      console.log(service?.uid, payload?.analysisUid);
       if (service?.uid == payload?.analysisUid){
         const index = service.interims!.findIndex(ro => ro.uid === payload.uid);
-        console.log(service!.interims![index])
         service!.interims![index] = payload;
-        console.log(service!.interims![index])
       }
     });
-    console.log(state?.analysesServices);
   },
 
   [MutationTypes.ADD_ANALYSIS_INTERIM](state: IState, payload: any): void {
@@ -263,6 +290,93 @@ export const mutations = <MutationTree<IState>>{
     });
   },
 
+  // ANALYSIS CORRECTION FACTORS
+  [MutationTypes.UPDATE_ANALYSIS_CORRECTION_FACTOR](state: IState, payload: any): void {
+    state?.analysesServices?.forEach(service => {
+      if (service?.uid == payload?.analysisUid){
+        const index = service.correctionFactors!.findIndex(ro => ro.uid === payload.uid);
+        service!.correctionFactors![index] = payload;
+      }
+    });
+  },
+
+  [MutationTypes.ADD_ANALYSIS_CORRECTION_FACTOR](state: IState, payload: any): void {
+    state?.analysesServices?.forEach(service => {
+      if (service?.uid == payload?.analysisUid){
+        if(service?.correctionFactors){
+          service?.correctionFactors?.push(payload);
+        } else {
+          service!.correctionFactors = [payload];
+        }
+      }
+    });
+  },
+
+  // ANALYSIS UNCERTAINTY
+  [MutationTypes.UPDATE_ANALYSIS_UNCERTAINTY](state: IState, payload: any): void {
+    state?.analysesServices?.forEach(service => {
+      if (service?.uid == payload?.analysisUid){
+        const index = service.uncertainties!.findIndex(ro => ro.uid === payload.uid);
+        service!.uncertainties![index] = payload;
+      }
+    });
+  },
+
+  [MutationTypes.ADD_ANALYSIS_UNCERTAINTY](state: IState, payload: any): void {
+    state?.analysesServices?.forEach(service => {
+      if (service?.uid == payload?.analysisUid){
+        if(service?.uncertainties){
+          service?.uncertainties?.push(payload);
+        } else {
+          service!.uncertainties = [payload];
+        }
+      }
+    });
+  },
+
+  // ANALYSIS DETECTION LIMITS
+  [MutationTypes.UPDATE_ANALYSIS_DETECTION_LIMIT](state: IState, payload: any): void {
+    state?.analysesServices?.forEach(service => {
+      if (service?.uid == payload?.analysisUid){
+        const index = service.detectionLimits!.findIndex(ro => ro.uid === payload.uid);
+        service!.detectionLimits![index] = payload;
+      }
+    });
+  },
+
+  [MutationTypes.ADD_ANALYSIS_DETECTION_LIMIT](state: IState, payload: any): void {
+    state?.analysesServices?.forEach(service => {
+      if (service?.uid == payload?.analysisUid){
+        if(service?.detectionLimits){
+          service?.detectionLimits?.push(payload);
+        } else {
+          service!.detectionLimits = [payload];
+        }
+      }
+    });
+  },
+
+  // ANALYSIS SPECIFICATION
+  [MutationTypes.UPDATE_ANALYSIS_SPECIFICATION](state: IState, payload: any): void {
+    state?.analysesServices?.forEach(service => {
+      if (service?.uid == payload?.analysisUid){
+        const index = service.specifications!.findIndex(ro => ro.uid === payload.uid);
+        service!.specifications![index] = payload;
+      }
+    });
+  },
+
+  [MutationTypes.ADD_ANALYSIS_SPECIFICATION](state: IState, payload: any): void {
+    state?.analysesServices?.forEach(service => {
+      if (service?.uid == payload?.analysisUid){
+        if(service?.specifications){
+          service?.specifications?.push(payload);
+        } else {
+          service!.specifications = [payload];
+        }
+      }
+    });
+  },
 
   // ReJECTION REASONS
   [MutationTypes.SET_REJECTION_REASONS](state: IState, rejectionReasons: IRejectionReason[]): void {
@@ -384,6 +498,42 @@ export const actions = <ActionTree<IState, RootState>>{
 
   async [ActionTypes.UPDATE_ANALYSIS_INTERIM]({ commit }, payload ){
     commit(MutationTypes.UPDATE_ANALYSIS_INTERIM, payload.data.updateAnalysisInterim);
+  },
+
+  // Correction Factors
+  async [ActionTypes.ADD_ANALYSIS_CORRECTION_FACTOR]({ commit }, payload ){
+    commit(MutationTypes.ADD_ANALYSIS_CORRECTION_FACTOR, payload.data.createAnalysisCorrectionFactor);
+  },
+
+  async [ActionTypes.UPDATE_ANALYSIS_CORRECTION_FACTOR]({ commit }, payload ){
+    commit(MutationTypes.UPDATE_ANALYSIS_CORRECTION_FACTOR, payload.data.updateAnalysisCorrectionFactor);
+  },
+
+  // Detection Limits
+  async [ActionTypes.ADD_ANALYSIS_DETECTION_LIMIT]({ commit }, payload ){
+    commit(MutationTypes.ADD_ANALYSIS_DETECTION_LIMIT, payload.data.createAnalysisDetectionLimit);
+  },
+
+  async [ActionTypes.UPDATE_ANALYSIS_DETECTION_LIMIT]({ commit }, payload ){
+    commit(MutationTypes.UPDATE_ANALYSIS_DETECTION_LIMIT, payload.data.updateAnalysisDetectionLimit);
+  },
+
+  // Uncertainties
+  async [ActionTypes.ADD_ANALYSIS_UNCERTAINTY]({ commit }, payload ){
+    commit(MutationTypes.ADD_ANALYSIS_UNCERTAINTY, payload.data.createAnalysisUncertainty);
+  },
+
+  async [ActionTypes.UPDATE_ANALYSIS_UNCERTAINTY]({ commit }, payload ){
+    commit(MutationTypes.UPDATE_ANALYSIS_UNCERTAINTY, payload.data.updateAnalysisUncertainty);
+  },
+
+  // Specifications
+  async [ActionTypes.ADD_ANALYSIS_SPECIFICATION]({ commit }, payload ){
+    commit(MutationTypes.ADD_ANALYSIS_SPECIFICATION, payload.data.createAnalysisSpecification);
+  },
+
+  async [ActionTypes.UPDATE_ANALYSIS_SPECIFICATION]({ commit }, payload ){
+    commit(MutationTypes.UPDATE_ANALYSIS_SPECIFICATION, payload.data.updateAnalysisSpecification);
   },
 
   // ReJECTION REASONS
