@@ -13,12 +13,13 @@ class Laboratory(BaseAuditDBModel):
     lab_name = Column(String, nullable=False)
     lab_manager_uid = Column(Integer, ForeignKey("user.uid"), nullable=True)
     lab_manager = relationship(
-        User, foreign_keys=[lab_manager_uid], backref="lab_manager", lazy="selectin"
-    )  # TODO refactor backref value to  backref="laboratory"
+        User, foreign_keys=[lab_manager_uid], backref="user_uid", lazy="selectin"
+    )
     email = Column(String, nullable=True)  # Main Email Adress
     email_cc = Column(String, nullable=True)
     mobile_phone = Column(String, nullable=True)
     business_phone = Column(String, nullable=True)
+    logo = Column(String, nullable=True)
 
     @classmethod
     async def create(cls, obj_in: schemas.LaboratoryCreate) -> schemas.Laboratory:
@@ -35,6 +36,32 @@ class Laboratory(BaseAuditDBModel):
         if not lab_setup:
             return None
         return lab_setup
+
+
+class LaboratorySetting(BaseAuditDBModel):
+    laboratory_uid = Column(Integer, ForeignKey("laboratory.uid"), nullable=True)
+    laboratory = relationship(
+        Laboratory, foreign_keys=[laboratory_uid], backref="settings", lazy="selectin"
+    )
+    allow_self_verification = Column(Boolean(), nullable=False)
+    allow_patient_registration = Column(Boolean(), nullable=True)
+    allow_sample_registration = Column(Boolean(), nullable=True)
+    allow_worksheet_creation = Column(Boolean(), nullable=True)
+    default_route = Column(String, nullable=True)
+    password_lifetime = Column(Integer, nullable=True)
+    inactivity_log_out = Column(Integer, nullable=True)
+    default_theme = Column(String, nullable=True)
+    auto_receive_samples = Column(Boolean(), nullable=True)
+    sticker_copies = Column(Integer, nullable=True)
+
+    @classmethod
+    async def create(cls, obj_in: schemas.LaboratorySettingCreate) -> schemas.LaboratorySetting:
+        data = cls._import(obj_in)
+        return await super().create(**data)
+
+    async def update(self, obj_in: schemas.LaboratorySettingUpdate) -> schemas.LaboratorySetting:
+        data = self._import(obj_in)
+        return await super().update(**data)
 
 
 class Supplier(BaseAuditDBModel):
@@ -107,6 +134,7 @@ class Method(BaseAuditDBModel):
         "Instrument",
         secondary=method_instrument,
         back_populates="methods",
+        lazy="selectin",
     )
 
     @classmethod
@@ -154,6 +182,8 @@ class Instrument(BaseAuditDBModel):
     instrument_type = relationship("InstrumentType", lazy="selectin")
     supplier_uid = Column(Integer, ForeignKey("supplier.uid"), nullable=True)
     supplier = relationship(Supplier, backref="instruments", lazy="selectin")
+    manufacturer_uid = Column(Integer, ForeignKey("manufacturer.uid"), nullable=True)
+    manufacturer = relationship("Manufacturer", backref="manufacturers", lazy="selectin")
     methods = relationship(
         "Method",
         secondary=method_instrument,

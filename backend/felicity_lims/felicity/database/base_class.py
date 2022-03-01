@@ -299,6 +299,21 @@ class DBModel(AllFeaturesMixin):
 
         return to_update
 
+
+    @classmethod
+    async def table_insert(cls, table, mappings):
+        """
+        @param mappings a dictionary update values.
+        e.g {'name': 34, 'day': "fff"}
+        """
+        async with async_session_factory() as session:
+            stmt = (
+                table.insert()
+            )
+            await session.execute(stmt, mappings)
+            await session.commit()
+            await session.flush()
+
     @classmethod
     async def get_related(cls, related: Optional[list] = None, **kwargs):
         """Return the first value in database based on given args.

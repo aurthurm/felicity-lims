@@ -7,12 +7,6 @@
         @click="FormManager(true)"
       > Add Instrument</button>
       <hr>
-      <!-- <input
-        class="w-64 h-10 ml-6 pl-4 pr-2 py-1 text-sm text-gray-700 placeholder-gray-600 border-1 border-gray-400 rounded-md  focus:placeholder-gray-500 focus:border-green-100 focus:outline-none focus:shadow-outline-purple form-input"
-        type="text" placeholder="Search ..." aria-label="Search"
-        @keyup="searchProfile($event)"
-        @focus="setProfileToNull()"
-      /> -->
     </div>
     <hr />
 
@@ -106,7 +100,7 @@
 
     <template v-slot:body>
       <form action="post" class="p-1">
-        <div class="grid grid-cols-2 gap-x-4 mb-4">
+        <div class="grid grid-cols-3 gap-x-4 mb-4">
           <label class="block col-span-2 mb-2">
             <span class="text-gray-700">Instrument Name</span>
             <input
@@ -115,7 +109,7 @@
               placeholder="Name ..."
             />
           </label>
-          <label class="block col-span-2 mb-2">
+          <label class="block col-span-1 mb-2">
             <span class="text-gray-700">keyword</span>
             <input
               class="form-input mt-1 block w-full"
@@ -123,7 +117,34 @@
               placeholder="Keyword ..."
             />
           </label>
-          <label class="block col-span-2 mb-2">
+          <label class="block col-span-1 mb-2" >
+            <span class="text-gray-700 w-4/12">Instrument Type</span>
+            <div class="w-full">
+              <select class="form-select mt-1 w-full" v-model="instrument.instrumentTypeUid">
+                <option></option>
+                <option v-for="instrumentType in instrumentTypes" :key="instrumentType?.uid" :value="instrumentType.uid"> {{ instrumentType?.name }}</option>
+              </select>
+            </div>
+          </label>
+          <label class="block col-span-1 mb-2" >
+            <span class="text-gray-700 w-4/12">Manufacturer</span>
+            <div class="w-full">
+              <select class="form-select mt-1 w-full" v-model="instrument.manufacturerUid">
+                <option></option>
+                <option v-for="manufacturer in manufacturers" :key="manufacturer?.uid" :value="manufacturer.uid"> {{ manufacturer?.name }}</option>
+              </select>
+            </div>
+          </label>
+          <label class="block col-span-1 mb-2" >
+            <span class="text-gray-700 w-4/12">Supplier</span>
+            <div class="w-full">
+              <select class="form-select mt-1 w-full" v-model="instrument.supplierUid">
+                <option></option>
+                <option v-for="supplier in suppliers" :key="supplier?.uid" :value="supplier.uid"> {{ supplier?.name }}</option>
+              </select>
+            </div>
+          </label>
+          <label class="block col-span-3 mb-2">
             <span class="text-gray-700">Description</span>
             <textarea
             cols="2"
@@ -147,89 +168,79 @@
 
 </template>
 
-<script lang="ts">
-import modal from '../../../../components/SimpleModal.vue';
+<script setup lang="ts">
+  import modal from '../../../../components/SimpleModal.vue';
 
-import { useMutation } from '@urql/vue';
-import { defineComponent, ref, reactive, computed } from 'vue';
-import { useStore } from 'vuex';
-import { ActionTypes } from '../../../../store/modules/setup';
-import { IInstrument } from '../../../../models/setup'
-import { ADD_INSTRUMENT, EDIT_INSTRUMENT  } from '../../../../graphql/instrument.mutations';
+  import { useMutation } from '@urql/vue';
+  import { defineComponent, ref, reactive, computed } from 'vue';
+  import { useStore } from 'vuex';
+  import { ActionTypes } from '../../../../store/modules/setup';
+  import { IInstrument } from '../../../../models/setup'
+  import { ADD_INSTRUMENT, EDIT_INSTRUMENT  } from '../../../../graphql/instrument.mutations';
 
-export default defineComponent({
-  name: "tab-instruments",
-  components: {
-    modal,
-  },
-  setup() {
-    let store = useStore();
+  let store = useStore();
 
-    // each tab if just gonna be forms with updatable values on button click
-    let currentTab = ref('view');
-    const tabs = ['view', 'configs',];
-    
-    let showModal = ref(false);
-    let formTitle = ref('');
-    const formAction = ref(true);
+  // each tab if just gonna be forms with updatable values on button click
+  let currentTab = ref('view');
+  const tabs = ['view', 'configs',];
+  
+  let showModal = ref(false);
+  let formTitle = ref('');
+  const formAction = ref(true);
 
-    let instrument = reactive({})  as IInstrument;
+  let instrument = reactive({})  as IInstrument;
 
-    store.dispatch(ActionTypes.FETCH_INSTRUMENTS);    
+  store.dispatch(ActionTypes.FETCH_INSTRUMENT_TYPES);    
+  const instrumentTypes = computed(() =>store.getters.getInstrumentTypes)
 
-    const { executeMutation: createInstrument } = useMutation(ADD_INSTRUMENT);
-    const { executeMutation: updateInstrument } = useMutation(EDIT_INSTRUMENT);
+  store.dispatch(ActionTypes.FETCH_INSTRUMENTS);    
+  const instruments = computed(() =>store.getters.getInstruments)
 
-    function addInstrument(): void {
-      const payload = { name: instrument.name, keyword: instrument.keyword, description: instrument.description }
-      createInstrument({ payload }).then((result) => {
-       store.dispatch(ActionTypes.ADD_INSTRUMENT, result);
-      });
+  store.dispatch(ActionTypes.FETCH_MANUFACTURERS);    
+  const manufacturers = computed(() =>store.getters.getManufacturers)
+
+  store.dispatch(ActionTypes.FETCH_SUPPLIERS);    
+  const suppliers = computed(() =>store.getters.getSuppliers)
+
+  const { executeMutation: createInstrument } = useMutation(ADD_INSTRUMENT);
+  const { executeMutation: updateInstrument } = useMutation(EDIT_INSTRUMENT);
+
+  function addInstrument(): void {
+    const payload = { name: instrument.name, keyword: instrument.keyword, description: instrument.description }
+    createInstrument({ payload }).then((result) => {
+      store.dispatch(ActionTypes.ADD_INSTRUMENT, result);
+    });
+  }
+
+  function editInstrument(): void {
+    const payload = { name: instrument.name, keyword: instrument.keyword, description: instrument.description }
+    updateInstrument({ uid: instrument.uid, payload }).then((result) => {
+      store.dispatch(ActionTypes.UPDATE_INSTRUMENT, result);
+    });
+  }
+
+  function selectInstrument(obj: IInstrument): void {
+    Object.assign(instrument, { ...obj})
+  }
+  
+  function resetInstrument(): void {
+    Object.assign(instrument, { ...({} as IInstrument)})
+  }
+
+  function FormManager(create: boolean, obj = {} as IInstrument): void {
+    formAction.value = create;
+    showModal.value = true;
+    formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "ANALYSES INSTRUMENT";
+    if (create) {
+      Object.assign(instrument, { ...({} as IInstrument) });
+    } else {
+      Object.assign(instrument, { ...obj });
     }
+  }
 
-    function editInstrument(): void {
-      const payload = { name: instrument.name, keyword: instrument.keyword, description: instrument.description }
-      updateInstrument({ uid: instrument.uid, payload }).then((result) => {
-        store.dispatch(ActionTypes.UPDATE_INSTRUMENT, result);
-      });
-    }
-
-    function selectInstrument(obj: IInstrument): void {
-      Object.assign(instrument, { ...obj})
-    }
-    
-    function resetInstrument(): void {
-      Object.assign(instrument, { ...({} as IInstrument)})
-    }
-
-    function FormManager(create: boolean, obj = {} as IInstrument): void {
-      formAction.value = create;
-      showModal.value = true;
-      formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "ANALYSES INSTRUMENT";
-      if (create) {
-        Object.assign(instrument, { ...({} as IInstrument) });
-      } else {
-        Object.assign(instrument, { ...obj });
-      }
-    }
-
-    function saveForm():void {
-      if (formAction.value === true) addInstrument();
-      if (formAction.value === false) editInstrument();
-      showModal.value = false;
-    }
-
-    return { 
-      showModal,
-      formTitle,
-      tabs,
-      currentTab,
-      instruments: computed(() =>store.getters.getInstruments),
-      selectInstrument,
-      instrument,
-      FormManager,
-      saveForm,
-    };
-  },
-});
+  function saveForm():void {
+    if (formAction.value === true) addInstrument();
+    if (formAction.value === false) editInstrument();
+    showModal.value = false;
+  }
 </script>

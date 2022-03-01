@@ -244,12 +244,8 @@
   };
   
   const quickRegistration = () => {
-    console.log(isPatientSelected())
     setPatientToNull();
-    console.log(patientForm)
     showModal.value = true;
-    console.log(patientForm)
-    console.log(isPatientSelected())
   }
 
   const updatePatient = (patient: IPatient) => {

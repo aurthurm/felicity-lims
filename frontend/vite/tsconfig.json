@@ -11,14 +11,16 @@
     ],
     "declaration": false,
     "sourceMap": true,
-    "noImplicitAny": true,
+    "noImplicitAny": false,
+    "allowJs": true,
     "moduleResolution": "node",
     "experimentalDecorators": true,
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
     "typeRoots": [
       "./node_modules/@types",
-      "./node_modules/vite/dist/"
+      "./node_modules/vite/dist/",
+      "./types/"
     ]
   },
   "exclude": [

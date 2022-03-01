@@ -5,7 +5,7 @@ import strawberry  # noqa
 from felicity.api.gql import PageInfo
 from felicity.api.gql.client.types import ClientType
 from felicity.api.gql.patient.types import PatientType
-from felicity.api.gql.setup.types import DepartmentType, UnitType
+from felicity.api.gql.setup.types import DepartmentType, UnitType, MethodType, InstrumentType
 from felicity.api.gql.user.types import UserType
 
 
@@ -132,6 +132,8 @@ class AnalysisType:
     detection_limits: Optional[List['AnalysisDetectionLimitType']]
     uncertainties: Optional[List['AnalysisUncertaintyType']]
     result_options: Optional[List[ResultOptionType]]
+    instruments: Optional[List[InstrumentType]]
+    methods: Optional[List[MethodType]]
     tat_length_minutes: int
     sort_key: int
     internal_use: bool

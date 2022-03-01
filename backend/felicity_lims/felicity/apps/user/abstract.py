@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from fastapi.encoders import jsonable_encoder
-from felicity.apps import DBModel  # noqa
+from felicity.apps import DBModel, BaseAuditDBModel # noqa
 from felicity.apps.user import schemas
 from felicity.core.security import get_password_hash
 from sqlalchemy import Boolean, Column, DateTime, Integer, String

@@ -6,7 +6,7 @@ from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, Table
 from sqlalchemy.orm import backref, relationship
 
 from . import conf
-from .abstract import AbstractAuth, AbstractBaseUser, DBModel, schemas
+from .abstract import AbstractAuth, AbstractBaseUser, DBModel, BaseAuditDBModel, schemas
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -104,6 +104,10 @@ class User(AbstractBaseUser):
     groups = relationship(
         "Group", secondary=user_groups, back_populates="members", lazy="selectin"
     )
+    avatar = Column(String, nullable=True)
+    bio = Column(String, nullable=True)
+    default_route = Column(Boolean(), nullable=True)
+
 
     @classmethod
     async def create(cls, user_in: schemas.UserCreate) -> schemas.User:
@@ -152,13 +156,13 @@ class Permission(DBModel):
     active = Column(Boolean(), default=True)
 
     @classmethod
-    def create(cls, obj_in):
+    async def create(cls, obj_in):
         data = cls._import(obj_in)
-        return super().create(**data)
+        return await super().create(**data)
 
-    def update(self, obj_in):
+    async def update(self, obj_in):
         data = self._import(obj_in)
-        return super().update(**data)
+        return await super().update(**data)
 
 
 class Group(DBModel):
@@ -194,3 +198,31 @@ class Group(DBModel):
 
     def remove_perm(self, perm):
         self.permissions.remove(perm)
+
+
+department_preference = Table(
+    "department_preference",
+    DBModel.metadata,
+    Column("department_uid", ForeignKey("department.uid"), primary_key=True),
+    Column("preference_uid", ForeignKey("userpreference.uid"), primary_key=True),
+)
+
+
+class UserPreference(BaseAuditDBModel):
+    """Preferences for System Personalisation"""
+    user_uid = Column(Integer, ForeignKey("user.uid"))
+    user = relationship("User", foreign_keys=[user_uid], backref="preferences", lazy="joined")
+    expanded_menu = Column(Boolean(), default=False)
+    departments = relationship(
+        "Department", secondary=department_preference, lazy="selectin"
+    )
+    theme = Column(String, default=conf.themes.LIGHT)  # dark, light
+
+    @classmethod
+    async def create(cls, obj_in: schemas.UserPreferenceCreate) -> schemas.UserPreference:
+        data = cls._import(obj_in)
+        return await super().create(**data)
+
+    async def update(self, obj_in: schemas.UserPreferenceUpdate) -> schemas.UserPreference:
+        data = self._import(obj_in)
+        return await super().update(**data)

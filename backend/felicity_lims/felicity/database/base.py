@@ -42,6 +42,7 @@ from felicity.apps.setup.models import InstrumentCalibration  # noqa
 from felicity.apps.setup.models import CalibrationCertificate  # noqa
 from felicity.apps.setup.models import Unit  # noqa
 from felicity.apps.setup.models import Laboratory  # noqa
+from felicity.apps.setup.models import LaboratorySetting
 from felicity.apps.setup.models import Method  # noqa
 # from felicity.apps.setup.models import MethodValidation  # noqa
 from felicity.apps.setup.models import Province  # noqa

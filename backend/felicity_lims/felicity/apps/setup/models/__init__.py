@@ -3,5 +3,6 @@ from .setup import (
     Laboratory, Supplier, Manufacturer,
     InstrumentType, Instrument,
     InstrumentCalibration, CalibrationCertificate,
-    Department, Method, Unit
+    Department, Method, Unit,
+    method_instrument, LaboratorySetting
 )

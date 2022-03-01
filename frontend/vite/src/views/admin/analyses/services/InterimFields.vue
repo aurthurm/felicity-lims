@@ -123,7 +123,6 @@ import { IInstrument } from '../../../../models/setup';
   const formAction = ref(true);
 
   watch(() => props.analysisUid, (anal, prev) => {
-      console.log(analysis);
   })
 
   store.dispatch(SetupActionTypes.FETCH_INSTRUMENTS);

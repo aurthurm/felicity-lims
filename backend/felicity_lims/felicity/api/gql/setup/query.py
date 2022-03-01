@@ -5,6 +5,8 @@ import strawberry  # noqa
 from felicity.apps.setup import models
 from felicity.api.gql import PageInfo
 from felicity.api.gql.setup.types import (
+    SupplierType,
+    ManufacturerType,
     CountryType,
     DepartmentType,
     DistrictCursorPage,
@@ -20,7 +22,7 @@ from felicity.api.gql.setup.types import (
     ProvinceCursorPage,
     ProvinceEdge,
     ProvinceType,
-    SupplierType,
+    SupplierType, InstrumentTypeType, InstrumentTypeEdge, InstrumentTypeCursorPage,
 )
 from felicity.utils import has_value_or_is_truthy
 
@@ -33,8 +35,52 @@ async def get_all_suppliers() -> List[SupplierType]:
     return await models.Supplier.all()
 
 
+async def get_all_manufacturers() -> List[ManufacturerType]:
+    return await models.Manufacturer.all()
+
+
 async def get_all_departments() -> List[DepartmentType]:
     return await models.Department.all()
+
+
+async def get_all_instrument_types(
+    self,
+    info,
+    page_size: Optional[int] = None,
+    after_cursor: Optional[str] = None,
+    before_cursor: Optional[str] = None,
+    text: Optional[str] = None,
+    sort_by: Optional[List[str]] = None,
+) -> InstrumentCursorPage:
+    filters = {}
+
+    _or_ = dict()
+    if has_value_or_is_truthy(text):
+        arg_list = [
+            "name__ilike",
+            "description__ilike",
+        ]
+        for _arg in arg_list:
+            _or_[_arg] = f"%{text}%"
+
+        filters = {sa.or_: _or_}
+
+    page = await models.InstrumentType.paginate_with_cursors(
+        page_size=page_size,
+        after_cursor=after_cursor,
+        before_cursor=before_cursor,
+        filters=filters,
+        sort_by=sort_by,
+    )
+
+    total_count: int = page.total_count
+    edges: List[InstrumentTypeEdge[InstrumentType]] = page.edges
+    items: List[InstrumentTypeType] = page.items
+    page_info: PageInfo = page.page_info
+
+    return InstrumentTypeCursorPage(
+        total_count=total_count, edges=edges, items=items, page_info=page_info
+    )
 
 
 async def get_all_instruments(
@@ -71,6 +117,7 @@ async def get_all_instruments(
         before_cursor=before_cursor,
         filters=filters,
         sort_by=sort_by,
+        get_related="methods"
     )
 
     total_count: int = page.total_count
@@ -108,6 +155,7 @@ async def get_all_methods(
         before_cursor=before_cursor,
         filters=filters,
         sort_by=sort_by,
+        get_related="instruments"
     )
 
     total_count: int = page.total_count
@@ -225,6 +273,13 @@ class SetupQuery:
         query = await models.Laboratory.get(uid=uid)
         return query
 
+    manufacturer_all: List[ManufacturerType] = strawberry.field(resolver=get_all_manufacturers)
+
+    @strawberry.field
+    async def manufacturer_by_uid(self, info, uid: int) -> ManufacturerType:
+        query = await models.Manufacturer.get(uid=uid)
+        return query
+
     supplier_all: List[SupplierType] = strawberry.field(resolver=get_all_suppliers)
 
     @strawberry.field
@@ -239,6 +294,15 @@ class SetupQuery:
     @strawberry.field
     async def department_by_uid(self, info, uid: int) -> DepartmentType:
         query = await models.Department.get(uid=uid)
+        return query
+
+    instrument_type_all: List[InstrumentTypeType] = strawberry.field(
+        resolver=get_all_instrument_types
+    )
+
+    @strawberry.field
+    async def instrument_type_by_uid(self, info, uid: int) -> InstrumentTypeType:
+        query = await models.InstrumentType.get(uid=uid)
         return query
 
     instrument_all: InstrumentCursorPage = strawberry.field(

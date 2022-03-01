@@ -1,6 +1,6 @@
 from typing import Optional, List
 
-from felicity.apps import BaseAuditModel
+from felicity.apps.common.schemas import BaseAuditModel
 from felicity.apps.analysis.schemas import SampleType, Analysis
 
 

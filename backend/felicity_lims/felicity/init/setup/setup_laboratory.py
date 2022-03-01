@@ -118,3 +118,21 @@ async def create_laboratory() -> None:
             if not department:
                 d_in = schemas.DepartmentCreate(name=_dept, description=_dept)
                 await models.Department.create(d_in)
+
+    # Add Settings Page
+    lab_settings = await models.LaboratorySetting.get(laboratory_uid=laboratory.uid)
+    if not lab_settings:
+        setting_in = schemas.LaboratorySettingCreate(
+            laboratory_uid=laboratory.uid,
+            allow_self_verification=False,
+            allow_patient_registration=True,
+            allow_sample_registration=True,
+            allow_worksheet_creation=True,
+            default_route="DASHBOARD",
+            password_lifetime=90,
+            inactivity_log_out=30,
+            default_theme="LIGHT",
+            auto_receive_samples=True,
+            sticker_copies=2,
+        )
+        await models.LaboratorySetting.create(setting_in)

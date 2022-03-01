@@ -1,7 +1,7 @@
 from typing import List, Optional, Union
 from pydantic import BaseModel
 from datetime import datetime
-from felicity.apps import BaseAuditModel
+from felicity.apps.common.schemas import BaseAuditModel
 from felicity.apps.analysis.schemas import Analysis
 from felicity.apps.analytics import conf
 

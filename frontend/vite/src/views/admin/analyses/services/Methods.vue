@@ -1,7 +1,7 @@
 <template>
   <button
       class="px-2 py-1 border-blue-500 border text-blue-500 rounded transition duration-300 hover:bg-blue-700 hover:text-white focus:outline-none"
-      @click="FormManager(true)"
+      @click="methodManager(true)"
     >Add Method</button>
   <hr>
   <div class="overflow-x-auto mt-4">
@@ -9,25 +9,25 @@
       <table class="min-w-full">
           <thead>
           <tr>
-              <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-black-500 tracking-wider">Intrument</th>
               <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-black-500 tracking-wider">Method</th>
+              <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-black-500 tracking-wider">Instruments</th>
               <th class="px-1 py-1 border-b-2 border-gray-300"></th>
           </tr>
           </thead>
           <tbody class="bg-white">
-          <tr v-for="method in methods"  :key="method?.uid">
+          <tr v-for="method in analysis.methods"  :key="method?.uid">
               <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
               <div class="flex items-center">
                   <div>
-                  <div class="text-sm leading-5 text-gray-800">{{ instrumentName(1) }}</div>
+                  <div class="text-sm leading-5 text-gray-800">{{ method?.name }}</div>
                   </div>
               </div>
               </td>
               <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-                <div class="text-sm leading-5 text-blue-900">{{ method.name }}</div>
+                <div class="text-sm leading-5 text-blue-900">{{  instrumentNames(method) }}</div>
               </td>
               <td class="px-1 py-1 whitespace-no-wrap text-right border-b border-gray-500 text-sm leading-5">
-                  <button @click="FormManager(false, method)" class="px-2 py-1 mr-2 border-orange-500 border text-orange-500 rounded transition duration-300 hover:bg-orange-700 hover:text-white focus:outline-none">Edit</button>
+                  <button @click="methodManager(false, method)" class="px-2 py-1 mr-2 border-orange-500 border text-orange-500 rounded transition duration-300 hover:bg-orange-700 hover:text-white focus:outline-none">Edit</button>
               </td>
           </tr>
           </tbody>
@@ -42,7 +42,7 @@
     </template>
 
     <template v-slot:body >
-      <method-form />
+      <method-form :method="method" :methodUid="method?.uid" :analysis="analysis"  :analysisUid="analysis?.uid" />
     </template>
   </modal>
 
@@ -52,21 +52,18 @@
   import modal from '../../../../components/SimpleModal.vue';
   import MethodForm from '../../instruments/comps/MethodForm.vue';
   
-  import { computed, ref, reactive, toRefs, watch } from 'vue';
-  import { useMutation } from '@urql/vue';
+  import { ref, toRefs, watch, PropType, reactive } from 'vue';
   import { useStore } from 'vuex';
 
-  import { ActionTypes } from '../../../../store/modules/analysis';
   import { ActionTypes as SetupActionTypes } from '../../../../store/modules/setup';
-  import { ADD_ANALYSIS_UNCERTAINTY, EDIT_ANALYSIS_UNCERTAINTY  } from '../../../../graphql/analyses.mutations';
-  import { IAnalysisUncertainty } from '../../../../models/analysis';
-  import { IInstrument, IMethod } from '../../../../models/setup';
+  import { IAnalysisService } from '../../../../models/analysis';
+  import { IMethod } from '../../../../models/setup';
 
   const props = defineProps({
       analysis: {
-          type: Object,
+          type: Object as PropType<IAnalysisService>,
           required: true,
-          default: () => ({}),
+          default: () => ({ uid: undefined }),
       },
       analysisUid: {
           type: Number,
@@ -79,64 +76,34 @@
   const { analysis } = toRefs(props);
   let showModal = ref(false);
   let formTitle = ref('');
-  let form = reactive({}) as IAnalysisUncertainty;
-  const formAction = ref(true);
+  let method =  reactive({}) as IMethod;
 
-  watch(() => props.analysisUid, (anal, prev) => {
-      console.log(analysis);
-  })
+  watch(() => props.analysisUid, (anal, prev) => {})
 
   store.dispatch(SetupActionTypes.FETCH_INSTRUMENTS);
-  const instruments = computed<IInstrument[]>(() => store.getters.getInstruments)
-
   store.dispatch(SetupActionTypes.FETCH_METHODS);
-  const methods = computed<IMethod[]>(() => store.getters.getMethods)
 
-  const { executeMutation: createAnalysisUncertainty } = useMutation(ADD_ANALYSIS_UNCERTAINTY);
-  const { executeMutation: updateAnalysisUncertainty } = useMutation(EDIT_ANALYSIS_UNCERTAINTY);
-
-  function addAnalysisUncertainty(): void {
-      const payload = { ...form, analysisUid: analysis?.value?.uid }
-      createAnalysisUncertainty({ payload }).then((result) => {
-          store.dispatch(ActionTypes.ADD_ANALYSIS_UNCERTAINTY, result);
-      });
+  const instrumentNames = (mth: IMethod): string => {
+      const final: string[] = [];
+      mth.instruments?.forEach((instr: any) => {
+          const exist = analysis.value.instruments?.some(item => item?.uid === instr?.uid);
+          if (exist) {
+            final.push(instr?.name);
+          }
+      })
+    return  final.join(', ');
   }
-
-  function editAnalysisUncertainty(): void {
-      const payload: any = { ...form };
-      delete payload['uid']
-      delete payload['__typename']
-
-      updateAnalysisUncertainty({ uid : form.uid,  payload }).then((result) => {
-          store.dispatch(ActionTypes.UPDATE_ANALYSIS_UNCERTAINTY, result);
-      });
-  }
-
-  function FormManager(create: boolean, obj = {} as IAnalysisUncertainty):void {
-      formAction.value = create;
-      showModal.value = true;
-      formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "ANALYSIS UNCERTAINTY";
-      if (create) {
-          Object.assign(form, { min: null, max: null, value: null, instrumentUid: null , methodUid: null });
+  
+  const methodManager = (create: boolean, selected: IMethod = {} as IMethod) => {
+      
+      if(create) {
+          formTitle.value = "Add Method"
+          Object.assign(method, {});
       } else {
-          Object.assign(form, { ...obj });
+          formTitle.value = "Update Method"
+          Object.assign(method, selected);
       }
-  }
-
-  function saveForm():void {
-      if (formAction.value === true) addAnalysisUncertainty();
-      if (formAction.value === false) editAnalysisUncertainty();
-      showModal.value = false;
-  }
-
-  const instrumentName = (uid: number): string => {
-    const index = instruments?.value?.findIndex(item => item.uid === uid)
-    return instruments?.value[index]?.name || "unknown";
-  }
-
-  const methodName = (uid: number): string => {
-    const index = methods?.value?.findIndex(item => item.uid === uid)
-    return methods?.value[index]?.name || "unknown";
+      showModal.value = !showModal.value
   }
 
 </script>

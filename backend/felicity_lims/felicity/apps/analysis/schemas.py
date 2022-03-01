@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import List, Optional
 
-from felicity.apps import BaseAuditModel
+from felicity.apps.common.schemas import BaseAuditModel
 from felicity.apps.setup.schemas import Department, Unit
 
 

@@ -1,13 +1,10 @@
 from datetime import datetime
-from typing import Optional
-from pydantic import BaseModel
 
 from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy import Column, Integer, ForeignKey, DateTime, func
 from sqlalchemy.orm import relationship
 from felicity.apps.common.hooks import EventHookMixin
 from felicity.database.base_class import DBModel
-from felicity.apps.user.schemas import User as UserSchema
 from felicity.apps.audit.mixin import AuditableMixin
 
 
@@ -52,13 +49,3 @@ class Auditable(BaseAuditDBModel, AuditableMixin):
 # class EventHooked(BaseAuditDBModel, EventHookMixin):
 #     """Listens for All events:  Not working"""
 #     __abstract__ = True
-
-
-# Pydantic
-class BaseAuditModel(BaseModel):
-    created_at: Optional[datetime] = None
-    created_by_uid: Optional[int] = None
-    created_by: Optional[UserSchema] = None
-    updated_at: Optional[datetime] = None
-    updated_by_uid: Optional[int] = None
-    updated_by: Optional[UserSchema] = None

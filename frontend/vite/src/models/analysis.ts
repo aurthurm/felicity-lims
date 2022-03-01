@@ -24,6 +24,8 @@ export interface IAnalysisService {
     specifications?: IAnalysisSpecification[];
     detectionLimits?: IAnalysisSpecification[];
     uncertainties?: IAnalysisUncertainty[];
+    instruments?: IInstrument[];
+    methods?: IMethod[];
     categoryUid?: number,
     sortKey?: number;
     active?: boolean;

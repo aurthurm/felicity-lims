@@ -81,6 +81,23 @@ export const GET_ALL_ANALYSES_SERVICES = gql`
           analysisUid
           instrumentUid
         }
+        instruments {
+          uid
+          name
+          keyword
+        }
+        methods {
+          uid
+          name
+          keyword
+          description
+          instruments {
+            uid
+            name
+            keyword
+            description
+          }
+        }
         resultOptions {
           uid
           optionKey
@@ -200,6 +217,18 @@ export const GET_ALL_ANALYSES_PROFILES_AND_SERVICES = gql`
               value
               analysisUid
               instrumentUid
+            }
+            instruments {
+              uid
+              name
+              keyword
+              description
+            }
+            methods {
+              uid
+              name
+              keyword
+              description
             }
             resultOptions {
               uid

@@ -1,7 +1,7 @@
 from typing import Optional, List
 from datetime import datetime
 from pydantic import BaseModel, EmailStr
-from felicity.apps import BaseAuditModel
+from felicity.apps.common.schemas import BaseAuditModel
 
 
 #
@@ -46,6 +46,36 @@ class Laboratory(LaboratoryInDBBase):
 # Additional properties stored in DB
 class LaboratoryInDB(LaboratoryInDBBase):
     pass
+
+
+class LaboratorySettingBase(BaseAuditModel):
+    laboratory_uid: Optional[int] = None
+    laboratory: Optional[Laboratory] = None
+    allow_self_verification: Optional[bool] = False
+    allow_patient_registration: Optional[bool] = True
+    allow_sample_registration: Optional[bool] = True
+    allow_worksheet_creation: Optional[bool] = True
+    default_route: Optional[str] = None
+    password_lifetime: Optional[int] = None
+    inactivity_log_out: Optional[int] = None
+    default_theme: Optional[str] = None
+    auto_receive_samples: Optional[bool] = True
+    sticker_copies: Optional[int] = 2
+
+
+class LaboratorySettingCreate(LaboratorySettingBase):
+    pass
+
+
+class LaboratorySettingUpdate(LaboratorySettingBase):
+    pass
+
+
+class LaboratorySetting(LaboratorySettingBase):
+    uid: Optional[int] = None
+
+    class Config:
+        orm_mode = True
 
 
 #
@@ -133,7 +163,12 @@ class InstrumentBase(BaseModel):
     name: str = None
     description: str = None
     keyword: str = None
+    instrument_type_uid: int = None
+    instrument_type: Optional[InstrumentType]
+    manufacturer_uid: int = None
+    manufacturer: Optional['Manufacturer']
     supplier_uid: int = None
+    supplier: Optional['Supplier']
 
 
 # Properties to receive via API on creation
@@ -264,7 +299,7 @@ class MethodBase(BaseModel):
     name: str = None
     description: str = None
     keyword: str = None
-    instruments: Optional[List[Instrument]]
+    instruments: Optional[List[Instrument]] = []
 
 
 # Properties to receive via API on creation

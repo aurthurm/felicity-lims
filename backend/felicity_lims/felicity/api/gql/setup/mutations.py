@@ -1,7 +1,9 @@
 import logging
+from dataclasses import field
 from typing import Dict, Optional, List
 from datetime import datetime
 import strawberry  # noqa
+from felicity.apps.analysis.models import analysis as analysis_models
 from felicity.apps.setup import models, schemas
 from felicity.api.gql import OperationError
 from felicity.api.gql.setup.types import (
@@ -13,6 +15,7 @@ from felicity.api.gql.setup.types import (
     MethodType,
     ProvinceType,
     SupplierType, ManufacturerType, InstrumentTypeType, UnitType, InstrumentCalibrationType, CalibrationCertificateType,
+    LaboratorySettingType,
 )
 
 logging.basicConfig(level=logging.INFO)
@@ -20,6 +23,9 @@ logger = logging.getLogger(__name__)
 
 LaboratoryResponse = strawberry.union(
     "LaboratoryResponse", (LaboratoryType, OperationError), description=""  # noqa
+)
+LaboratorySettingResponse = strawberry.union(
+    "LaboratorySettingResponse", (LaboratorySettingType, OperationError), description=""  # noqa
 )
 InstrumentTypeResponse = strawberry.union(
     "InstrumentTypeResponse", (InstrumentTypeType, OperationError), description="" # noqa
@@ -71,6 +77,21 @@ class LaboratoryInputType:
 
 
 @strawberry.input
+class LaboratorySettingInputType:
+    laboratory_uid: int
+    allow_self_verification: Optional[bool] = False
+    allow_patient_registration: Optional[bool] = True
+    allow_sample_registration: Optional[bool] = True
+    allow_worksheet_creation: Optional[bool] = True
+    default_route: Optional[str] = None
+    password_lifetime: Optional[int] = None
+    inactivity_log_out: Optional[int] = None
+    default_theme: Optional[str] = None
+    auto_receive_samples: Optional[bool] = True
+    sticker_copies: Optional[int] = 2
+
+
+@strawberry.input
 class DepartmentInputType:
     name: str
     description: Optional[str] = None
@@ -101,15 +122,18 @@ class InstrumentInputType:
     name: str
     keyword: str
     description: Optional[str] = None
+    instrument_type_uid: Optional[int] = None
     supplier_uid: Optional[int] = None
+    manufacturer_uid: Optional[int] = None
 
 
 @strawberry.input
 class MethodInputType:
     name: str
+    instruments: Optional[List[int]] = field(default_factory=list)
+    analyses: Optional[List[int]] = field(default_factory=list)
     keyword: Optional[str] = None
     description: Optional[str] = None
-    instruments: Optional[List[int]] = None
 
 
 @strawberry.input
@@ -180,29 +204,6 @@ class CalibrationCertificateInput:
 @strawberry.type
 class SetupMutations:
     @strawberry.mutation
-    async def create_laboratory(
-        self, info, payload: LaboratoryInputType
-    ) -> LaboratoryResponse:  # noqa
-
-        if not payload.lab_name:
-            return OperationError(error="Please Provide a name for your laboratory")
-
-        # Enforce single site instance
-        exists = await models.Laboratory.get(setup_name=payload.setup_name)
-        if exists:
-            return OperationError(
-                error=f"The laboratory named {exists.lab_name} is already using the setup name {payload.setup_name}"
-            )
-
-        incoming: Dict = dict()
-        for k, v in payload.__dict__.items():
-            incoming[k] = v
-
-        obj_in = schemas.LaboratoryCreate(**incoming)
-        laboratory: models.Laboratory = await models.Laboratory.create(obj_in)
-        return LaboratoryType(**laboratory.marshal_simple())
-
-    @strawberry.mutation
     async def update_laboratory(
         self, info, uid: int, payload: LaboratoryInputType
     ) -> LaboratoryResponse:  # noqa
@@ -227,6 +228,32 @@ class SetupMutations:
         obj_in = schemas.LaboratoryUpdate(**laboratory.to_dict())
         laboratory = await laboratory.update(obj_in)
         return LaboratoryType(**laboratory.marshal_simple())
+
+    @strawberry.mutation
+    async def update_laboratory_setting(
+        self, info, uid: int, payload: LaboratorySettingInputType
+    ) -> LaboratorySettingResponse:  # noqa
+
+        if not uid:
+            return OperationError(error="No uid provided to identity update obj")
+
+        lab_setting = await models.LaboratorySetting.get(uid=uid)
+        if not lab_setting:
+            return OperationError(
+                error=f"Laboratory Setting with uid {uid} not found. Cannot update obj ..."
+            )
+
+        obj_data = lab_setting.to_dict()
+        for field in obj_data:
+            if field in payload.__dict__:
+                try:
+                    setattr(lab_setting, field, payload.__dict__[field])
+                except Exception as e:
+                    logger.warning(e)
+
+        obj_in = schemas.LaboratoryUpdate(**lab_setting.to_dict())
+        laboratory = await lab_setting.update(obj_in)
+        return LaboratorySettingType(**laboratory.marshal_simple())
 
     @strawberry.mutation
     async def create_department(
@@ -582,11 +609,41 @@ class SetupMutations:
 
         incoming = {}
         for k, v in payload.__dict__.items():
-            incoming[k] = v
+            if k not in ['instruments', 'analyses']:
+                incoming[k] = v
 
         obj_in = schemas.MethodCreate(**incoming)
         method: models.Method = await models.Method.create(obj_in)
-        return MethodType(**method.marshal_simple())
+
+        _instruments = set()
+        for i_uid in payload.instruments:
+            instrument = await models.Instrument.get(uid=i_uid)
+            if instrument not in _instruments:
+                _instruments.add(instrument)
+                await models.Method.table_insert(
+                    table=models.method_instrument,
+                    mappings={"method_uid": method.uid, "instrument_uid": instrument.uid}
+                )
+
+        for a_uid in payload.analyses:
+            analysis = await analysis_models.Analysis.get(uid=a_uid)
+            meth_uids = [meth.uid for meth in analysis.methods]
+            if method.uid not in meth_uids:
+                await analysis_models.Analysis.table_insert(
+                    table=analysis_models.analysis_method,
+                    mappings={"method_uid": method.uid, "analysis_uid": analysis.uid}
+                )
+
+            for inst in method.instruments:
+                inst_uids = [inst.uid for inst in analysis.instruments]
+                if inst.uid not in inst_uids:
+                    analysis.instruments.append(inst)
+                    await analysis_models.Analysis.table_insert(
+                        table=analysis_models.analysis_instrument,
+                        mappings={"instrument_uid": inst.uid, "analysis_uid": analysis.uid}
+                    )
+
+        return MethodType(**method.marshal_simple(exclude=['instruments', 'analyses']))
 
     @strawberry.mutation
     async def update_method(

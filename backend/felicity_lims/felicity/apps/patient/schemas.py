@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import Optional
 
-from felicity.apps import BaseAuditModel
+from felicity.apps.common.schemas import BaseAuditModel
 from pydantic import EmailStr
 
 #

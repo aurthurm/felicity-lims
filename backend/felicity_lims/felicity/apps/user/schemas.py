@@ -1,12 +1,17 @@
 from typing import List, Optional
+from datetime import datetime
 
-from pydantic import BaseModel, EmailStr
+from felicity.apps.common.schemas import BaseModel, BaseAuditModel
+from pydantic import EmailStr
+from felicity.apps.user.conf import themes
 
 #
 #  User Schema
 #
 
 # Shared properties
+
+
 class UserBase(BaseModel):
     email: Optional[EmailStr] = None
     is_active: Optional[bool] = True
@@ -15,6 +20,8 @@ class UserBase(BaseModel):
     last_name: Optional[str] = None
     password: Optional[str] = None
     user_name: Optional[str] = None
+    avatar: Optional[str] = None
+    bio: Optional[str] = None
 
 
 # Properties to receive via API on creation
@@ -163,4 +170,30 @@ class Group(GroupInDBBase):
 
 # Additional properties stored in DB
 class GroupInDB(GroupInDBBase):
+    pass
+
+
+#
+#  User Preferences
+#
+class UserPreferenceBase(BaseAuditModel):
+    user_uid: int
+    user: Optional[User]
+    expanded_menu: Optional[bool] = False
+    departments: Optional[List['Department']]
+    theme: Optional[str] = themes.LIGHT
+
+
+class UserPreference(UserPreferenceBase):
+    uid: Optional[int] = None
+
+    class Config:
+        orm_mode = True
+
+
+class UserPreferenceCreate(UserPreferenceBase):
+    pass
+
+
+class UserPreferenceUpdate(UserPreferenceBase):
     pass

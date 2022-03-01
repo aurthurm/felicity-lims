@@ -1,6 +1,6 @@
 from typing import Optional
 from datetime import datetime
-from felicity.apps import BaseAuditModel
+from felicity.apps.common.schemas import BaseAuditModel
 from felicity.apps.setup.schemas import Department, Supplier
 from felicity.apps.storage.schemas import StoreRoom
 from felicity.apps.user.schemas import User

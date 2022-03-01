@@ -1,5 +1,6 @@
 from typing import List, Optional
 from datetime import datetime
+from dataclasses import field
 import strawberry  # noqa
 from felicity.api.gql import PageInfo
 from felicity.api.gql.user.types import UserType
@@ -26,10 +27,34 @@ class LaboratoryType:
 
 
 @strawberry.type
+class LaboratorySettingType:
+    uid: int
+    laboratory_uid: int
+    laboratory: LaboratoryType
+    allow_self_verification: Optional[bool] = False
+    allow_patient_registration: Optional[bool] = True
+    allow_sample_registration: Optional[bool] = True
+    allow_worksheet_creation: Optional[bool] = True
+    default_route: Optional[str] = None
+    password_lifetime: Optional[int] = None
+    inactivity_log_out: Optional[int] = None
+    default_theme: Optional[str] = None
+    auto_receive_samples: Optional[bool] = True
+    sticker_copies: Optional[int] = 2
+
+
+@strawberry.type
 class SupplierType:
     uid: int
     name: Optional[str]
     description: Optional[str]
+    #
+    created_by_uid: Optional[int]
+    created_by: Optional['UserType']
+    created_at: Optional[datetime]
+    updated_by_uid: Optional[int]
+    updated_by: Optional['UserType']
+    updated_at: Optional[datetime]
 
 
 @strawberry.type
@@ -37,6 +62,13 @@ class ManufacturerType:
     uid: int
     name: Optional[str]
     description: Optional[str]
+    #
+    created_by_uid: Optional[int]
+    created_by: Optional['UserType']
+    created_at: Optional[datetime]
+    updated_by_uid: Optional[int]
+    updated_by: Optional['UserType']
+    updated_at: Optional[datetime]
 
 
 @strawberry.type
@@ -44,6 +76,28 @@ class InstrumentTypeType:
     uid: int
     name: Optional[str]
     description: Optional[str]
+    #
+    created_by_uid: Optional[int]
+    created_by: Optional['UserType']
+    created_at: Optional[datetime]
+    updated_by_uid: Optional[int]
+    updated_by: Optional['UserType']
+    updated_at: Optional[datetime]
+
+
+#  relay paginations
+@strawberry.type
+class InstrumentTypeEdge:
+    cursor: str
+    node: InstrumentTypeType
+
+
+@strawberry.type
+class InstrumentTypeCursorPage:
+    page_info: PageInfo
+    edges: Optional[List[InstrumentTypeEdge]]
+    items: Optional[List[InstrumentTypeType]]
+    total_count: int
 
 
 @strawberry.type
@@ -61,7 +115,10 @@ class InstrumentType:
     keyword: Optional[str]
     supplier_uid: Optional[int]
     supplier: Optional[SupplierType]
-    methods: Optional[List["MethodType"]]
+    manufacturer_uid: Optional[int]
+    manufacturer: Optional[ManufacturerType]
+    instrument_type_uid: Optional[int]
+    instrument_type: Optional[InstrumentTypeType]
     #
     created_by_uid: Optional[int]
     created_by: Optional['UserType']
@@ -69,6 +126,7 @@ class InstrumentType:
     updated_by_uid: Optional[int]
     updated_by: Optional['UserType']
     updated_at: Optional[datetime]
+    methods: Optional[List["MethodType"]] = field(default_factory=list)
 
 
 #  relay paginations
@@ -139,7 +197,6 @@ class MethodType:
     name: Optional[str]
     description: Optional[str]
     keyword: Optional[str]
-    instruments: Optional[List[InstrumentType]]
     #
     created_by_uid: Optional[int]
     created_by: Optional['UserType']
@@ -147,6 +204,7 @@ class MethodType:
     updated_by_uid: Optional[int]
     updated_by: Optional['UserType']
     updated_at: Optional[datetime]
+    instruments: Optional[List["InstrumentType"]] = field(default_factory=list)
 
 
 #  relay paginations
