@@ -22,13 +22,18 @@ from felicity.api.gql.setup.types import (
     ProvinceCursorPage,
     ProvinceEdge,
     ProvinceType,
-    SupplierType, InstrumentTypeType, InstrumentTypeEdge, InstrumentTypeCursorPage,
+    SupplierType, InstrumentTypeType, InstrumentTypeEdge, InstrumentTypeCursorPage, LaboratorySettingType,
 )
 from felicity.utils import has_value_or_is_truthy
 
 
-async def get_all_laboratories() -> List[LaboratoryType]:
-    return await models.Laboratory.all()
+async def get_laboratory(setup_name: str) -> LaboratoryType:
+    return await models.Laboratory.get(setup_name=setup_name)
+
+
+async def get_laboratory_setting(setup_name: str) -> LaboratorySettingType:
+    laboratory = await models.Laboratory.get(setup_name=setup_name)
+    return await models.LaboratorySetting.get(laboratory_uid=laboratory.uid)
 
 
 async def get_all_suppliers() -> List[SupplierType]:
@@ -264,14 +269,13 @@ async def get_all_countries() -> List[CountryType]:
 
 @strawberry.type
 class SetupQuery:
-    laboratory_all: List[LaboratoryType] = strawberry.field(
-        resolver=get_all_laboratories
+    laboratory: LaboratoryType = strawberry.field(
+        resolver=get_laboratory
     )
 
-    @strawberry.field
-    async def laboratory_by_uid(self, info, uid: int) -> Optional[LaboratoryType]:
-        query = await models.Laboratory.get(uid=uid)
-        return query
+    laboratory_setting: LaboratorySettingType = strawberry.field(
+        resolver=get_laboratory_setting
+    )
 
     manufacturer_all: List[ManufacturerType] = strawberry.field(resolver=get_all_manufacturers)
 

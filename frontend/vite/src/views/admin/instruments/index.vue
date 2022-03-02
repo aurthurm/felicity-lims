@@ -1,16 +1,5 @@
 <style lang="postcss">
-  .scroll-section {
-    height: 400px;
-  }
 
-  .tab-active {
-    border-bottom: 2px solid rgb(194, 193, 193);
-    color: rgb(37, 37, 37) !important;
-  }
-
-  .c-active {
-    background-color: lightblue;
-  }
 </style>
 
 <template>
@@ -42,9 +31,9 @@
 
 <script setup lang="ts">
   import { ref, computed } from 'vue';
-  import tabInstrumentTypes from './comps/InstrumentTypes.vue'
-  import tabInstruments from './comps/Instruments.vue'
-  import tabMethods from './comps/Methods.vue'
+  import tabInstrumentTypes from './InstrumentTypes.vue'
+  import tabInstruments from './Instruments.vue'
+  import tabMethods from './Methods.vue'
 
   let currentTab = ref('instruments');
   const tabs = ['instrument-types', 'instruments', 'methods'];

@@ -33,9 +33,8 @@
               v-for="pt in patients"
               :key="pt.patientId">
                   <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-                  <div class="flex items-center">
-                      <div class="text-sm leading-5 text-gray-800">{{ pt.patientId }}</div>
-                  </div>
+                    <router-link :to="{ name: 'patient-detail', params: { patientUid: pt?.uid } }" 
+                      class="p-1 ml-2 border-white border text-gray-500 rounded transition duration-300 hover:border-blue-500 hover:text-blue-500 focus:outline-none">{{ pt.patientId }}</router-link>
                   </td>
                   <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
                     <router-link :to="{ name: 'patient-detail', params: { patientUid: pt?.uid } }" 
@@ -61,8 +60,8 @@
                   </td>
     
                   <td class="px-1 py-1 whitespace-no-wrap text-right border-b border-gray-500 text-sm leading-5">
-                      <button class="px-2 py-1 mr-2 border-orange-500 border text-orange-500 rounded transition duration-300 hover:bg-orange-700 hover:text-white focus:outline-none">View</button>
-                      <a 
+                    <a 
+                      v-show="shield.hasRights(shield.actions.CREATE, shield.objects.SAMPLE)"
                       @click.prevent="addSample(pt)"
                       class="px-2 py-1 mr-2 border-blue-500 border text-blue-500 rounded transition duration-300 hover:bg-blue-700 hover:text-white focus:outline-none">Add Analysis Request</a >
                   </td>
@@ -82,6 +81,7 @@
         <hr class="my-2">
 
         <router-link
+          v-show="shield.hasRights(shield.actions.CREATE, shield.objects.PATIENT)"
           :to="{ name: 'patients-register', query: { cpid: patientSearch } }"
           class="px-4 p-1 text-sm border-blue-500 border text-dark-700 transition-colors duration-150 rounded focus:outline-none hover:bg-blue-500 hover:text-gray-100">
           Register New Patiet
@@ -128,182 +128,168 @@
 </template>
 
 <style lang="postcss" scoped>
-.patient-scroll {
-  /* min-height: calc(100vh - 250px); */
-  min-height: 100%;
-}
+  .patient-scroll {
+    /* min-height: calc(100vh - 250px); */
+    min-height: 100%;
+  }
 
-.tab-active {
-  border-bottom: 2px solid rgb(194, 193, 193);
-  color: rgb(37, 37, 37) !important;
-}
+  .tab-active {
+    border-bottom: 2px solid rgb(194, 193, 193);
+    color: rgb(37, 37, 37) !important;
+  }
 </style>
 
-<script lang="ts">
-import { useMutation } from '@urql/vue';
-import { defineComponent, ref, reactive, computed } from 'vue';
-import { useStore } from 'vuex';
-import { useRouter  } from 'vue-router';
-import { useQuery } from '@urql/vue';
-import {  GET_ALL_CLIENTS } from '../../graphql/clients.queries';
-import {
-  FILTER_PROVINCES_BY_COUNTRY,
-  FILTER_DISTRICTS_BY_PROVINCE,
-} from '../../graphql/admin.queries';
-import { ADD_PATIENT } from '../../graphql/patient.mutations';
-import { ActionTypes } from '../../store/modules/patient';
-import { ActionTypes as AdminActionTypes } from '../../store/modules/admin';
-import { IPatient } from '../../models/patient';
-import { IDistrict, IProvince } from '../../models/location';
+<script setup lang="ts">
+  import { useMutation } from '@urql/vue';
+  import { ref, reactive, computed, inject } from 'vue';
+  import { useStore } from 'vuex';
+  import { useRouter  } from 'vue-router';
+  import { useQuery } from '@urql/vue';
+  import {  GET_ALL_CLIENTS } from '../../graphql/clients.queries';
+  import {
+    FILTER_PROVINCES_BY_COUNTRY,
+    FILTER_DISTRICTS_BY_PROVINCE,
+  } from '../../graphql/admin.queries';
+  import { ADD_PATIENT } from '../../graphql/patient.mutations';
+  import { ActionTypes } from '../../store/modules/patient';
+  import { ActionTypes as AdminActionTypes } from '../../store/modules/admin';
+  import { IPatient } from '../../models/patient';
+  import { IDistrict, IProvince } from '../../models/location';
 
-export default defineComponent({
-  name: 'patients',
+  import * as shield from '../../guards'
 
-  setup() {
-    let store = useStore();
-    let router = useRouter();
+  let store = useStore();
+  let router = useRouter();
 
-    let createAction = ref<boolean>(true);
-    let showModal = ref<boolean>(false);
+  let createAction = ref<boolean>(true);
+  let showModal = ref<boolean>(false);
 
-    let currentTab = ref<string>('samples');
-    const tabs: string[] = ['samples', 'cases', 'logs'];
-    // let currentTabComponent: string = computed(() => 'tab-' + currentTab.value);
+  let currentTab = ref<string>('samples');
+  const tabs: string[] = ['samples', 'cases', 'logs'];
+  // let currentTabComponent: string = computed(() => 'tab-' + currentTab.value);
 
-    let patientForm = reactive({} as IPatient);
-    let patientSearch = ref<string>('');
-    let patientBatch = ref<number>(25);
+  let patientForm = reactive({} as IPatient);
+  let patientSearch = ref<string>('');
+  let patientBatch = ref<number>(25);
 
-    let provinces = ref<IProvince[]>([]);
-    let districts = ref<IDistrict[]>([]);
+  let provinces = ref<IProvince[]>([]);
+  let districts = ref<IDistrict[]>([]);
 
-    let countryUid = ref<number>();
-    let provinceUid = ref<number>();
+  let countryUid = ref<number>();
+  let provinceUid = ref<number>();
 
-    const genders: string[] = ["Male", "Female", "Missing", "Trans Gender"]
 
-    store.dispatch(AdminActionTypes.FETCH_COUNTRIES);   
-    let patientParams = reactive({ 
-      first: patientBatch.value, 
-      after: "",
-      text: "", 
-      sortBy: ["uid"],
-      filterAction: false
-    }); 
+
+  const genders: string[] = ["Male", "Female", "Missing", "Trans Gender"]
+
+  store.dispatch(AdminActionTypes.FETCH_COUNTRIES);   
+  let patientParams = reactive({ 
+    first: patientBatch.value, 
+    after: "",
+    text: "", 
+    sortBy: ["uid"],
+    filterAction: false
+  }); 
+  store.dispatch(ActionTypes.FETCH_PATIENTS, patientParams);
+  const patients = computed(() => store.getters.getPatients)
+  const patientCount = computed(() => store.getters.getPatients?.length + " of " + store.getters.getPatientCount + " patients")
+  
+  const { data: clients, fetching: CFetching, error: CError } = useQuery({
+    query: GET_ALL_CLIENTS,
+  });
+
+  const { executeMutation: createPatient } = useMutation(ADD_PATIENT);
+
+  const provincesfilter = useQuery({
+    query: FILTER_PROVINCES_BY_COUNTRY,
+    variables: { uid: countryUid },
+    pause: computed(() => countryUid !== null), // not working
+    requestPolicy: 'network-only',
+  });
+
+  const districtsfilter = useQuery({
+    query: FILTER_DISTRICTS_BY_PROVINCE,
+    variables: { uid: provinceUid },
+    pause: computed(() => provinceUid !== null), // not working
+    requestPolicy: 'network-only',
+  });
+
+  function addPatient() {
+    createPatient({ clientPatientId: patientForm.clientPatientId, firstName: patientForm.firstName,
+      middleName: patientForm.middleName, lastName: patientForm.lastName, age: patientForm.age,
+      gender: patientForm.gender, dateOfBirth: patientForm.dateOfBirth, ageDobEstimated: patientForm.ageDobEstimated,
+      clientUid: patientForm.clientUid, phoneMobile: patientForm.phoneMobile, consentSms: patientForm.consentSms, 
+    }).then(result => store.dispatch(ActionTypes.ADD_PATIENT, result));
+  }
+
+  function getProvinces(event: any) {
+    provincesfilter.executeQuery({requestPolicy: 'network-only'}).then(result => {
+      provinces.value = result.data.value?.provincesByCountryUid;
+    });
+  }
+
+  function getDistricts(event: any) {
+    districtsfilter.executeQuery({requestPolicy: 'network-only'}).then(result => {
+      districts.value = result.data.value?.districtsByProvinceUid;
+    });
+  }
+
+  let filterText = ref<string>('')
+  function searchPatients(event: any): void {
+    filterText.value = event.target.value;
+    patientParams.first = 100;
+    patientParams.after = "";
+    patientParams.text = event.target.value;
+    patientParams.filterAction = true;
     store.dispatch(ActionTypes.FETCH_PATIENTS, patientParams);
-    
+  }
 
-    const { data: clients, fetching: CFetching, error: CError } = useQuery({
-      query: GET_ALL_CLIENTS,
-    });
+  const pageInfo = computed(() => store.getters.getPatientPageInfo)
 
-    const { executeMutation: createPatient } = useMutation(ADD_PATIENT);
+  function showMorePatients(): void {
+    patientParams.first = +patientBatch.value;
+    patientParams.after = pageInfo?.value?.endCursor;
+    patientParams.text = filterText.value;
+    patientParams.filterAction = false;
+    store.dispatch(ActionTypes.FETCH_PATIENTS, patientParams);
+  }
 
-    const provincesfilter = useQuery({
-      query: FILTER_PROVINCES_BY_COUNTRY,
-      variables: { uid: countryUid },
-      pause: computed(() => countryUid !== null), // not working
-      requestPolicy: 'network-only',
-    });
+  function isPatientSelected() {
+    return patientForm.patientId !== undefined;
+  }
 
-    const districtsfilter = useQuery({
-      query: FILTER_DISTRICTS_BY_PROVINCE,
-      variables: { uid: provinceUid },
-      pause: computed(() => provinceUid !== null), // not working
-      requestPolicy: 'network-only',
-    });
+  let getPatientFullName = (pt: IPatient) => {
+    return pt.firstName + ' ' + pt.lastName;
+  };
 
-    function addPatient() {
-      createPatient({ clientPatientId: patientForm.clientPatientId, firstName: patientForm.firstName,
-        middleName: patientForm.middleName, lastName: patientForm.lastName, age: patientForm.age,
-        gender: patientForm.gender, dateOfBirth: patientForm.dateOfBirth, ageDobEstimated: patientForm.ageDobEstimated,
-        clientUid: patientForm.clientUid, phoneMobile: patientForm.phoneMobile, consentSms: patientForm.consentSms, 
-      }).then(result => store.dispatch(ActionTypes.ADD_PATIENT, result));
-    }
+  let getGender = (pos: number) => genders[pos];
 
-    function getProvinces(event: any) {
-      provincesfilter.executeQuery({requestPolicy: 'network-only'}).then(result => {
-        provinces.value = result.data.value?.provincesByCountryUid;
-      });
-    }
+  let selectPatient = (pt: IPatient) => {
+    Object.assign(patientForm, { ...pt });
+  };
 
-    function getDistricts(event: any) {
-      districtsfilter.executeQuery({requestPolicy: 'network-only'}).then(result => {
-        districts.value = result.data.value?.districtsByProvinceUid;
-      });
-    }
+  let setPatientToNull = () => {
+    Object.assign(patientForm, {} as IPatient);
+  };
 
-    let filterText = ref<string>('')
-    function searchPatients(event: any): void {
-      filterText.value = event.target.value;
-      patientParams.first = 100;
-      patientParams.after = "";
-      patientParams.text = event.target.value;
-      patientParams.filterAction = true;
-      store.dispatch(ActionTypes.FETCH_PATIENTS, patientParams);
-    }
+  function patientFormManager(create: boolean) {
+    showModal.value = true;
+    createAction.value = create;
+    if (create) setPatientToNull();
+  }
 
-    const pageInfo = computed(() => store.getters.getPatientPageInfo)
+  function savePatientForm() {
+      if (createAction.value) addPatient();
+      showModal.value = false;
+  }
 
-    function showMorePatients(): void {
-      patientParams.first = +patientBatch.value;
-      patientParams.after = pageInfo?.value?.endCursor;
-      patientParams.text = filterText.value;
-      patientParams.filterAction = false;
-      store.dispatch(ActionTypes.FETCH_PATIENTS, patientParams);
-    }
+  function addSample(patient: IPatient): void {
+    router?.push({
+        name: 'samples-add',
+        params: {
+            patientUid: patient.uid
+        }
+    })
+  }
 
-    function isPatientSelected() {
-      return patientForm.patientId !== undefined;
-    }
-
-    let getPatientFullName = (pt: IPatient) => {
-      return pt.firstName + ' ' + pt.lastName;
-    };
-
-    let getGender = (pos: number) => genders[pos];
-
-    let selectPatient = (pt: IPatient) => {
-      Object.assign(patientForm, { ...pt });
-    };
-
-    let setPatientToNull = () => {
-      Object.assign(patientForm, {} as IPatient);
-    };
-
-    function patientFormManager(create: boolean) {
-      showModal.value = true;
-      createAction.value = create;
-      if (create) setPatientToNull();
-    }
-
-    function savePatientForm() {
-       if (createAction.value) addPatient();
-       showModal.value = false;
-    }
-
-    function addSample(patient: IPatient): void {
-      router?.push({
-          name: 'samples-add',
-          params: {
-              patientUid: patient.uid
-          }
-      })
-    }
-
-    return {
-      addSample,
-      getPatientFullName,
-      patients: computed(() => store.getters.getPatients),
-      pageInfo,
-      patientCount: computed(() => store.getters.getPatients?.length + " of " + store.getters.getPatientCount + " patients"),
-      patientSearch,
-      patientBatch,
-      showMorePatients,
-      setPatientToNull,
-      getGender,
-      searchPatients
-    };
-  },
-});
 </script>

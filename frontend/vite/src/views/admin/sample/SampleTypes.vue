@@ -113,14 +113,14 @@
 </style>
 
 <script lang="ts" scope="ts">
-import modal from '../../../../components/SimpleModal.vue';
+import modal from '../../../components/SimpleModal.vue';
 
 import { useMutation } from '@urql/vue';
 import { defineComponent, ref, reactive, computed } from 'vue';
 import { useStore } from 'vuex';
-import { ActionTypes } from '../../../../store/modules/sample';
-import { ISampleType } from '../../../../models/analysis'
-import { ADD_SAMPLE_TYPE, EDIT_SAMPLE_TYPE  } from '../../../../graphql/analyses.mutations';
+import { ActionTypes } from '../../../store/modules/sample';
+import { ISampleType } from '../../../models/analysis'
+import { ADD_SAMPLE_TYPE, EDIT_SAMPLE_TYPE  } from '../../../graphql/analyses.mutations';
 
 
 export default defineComponent({

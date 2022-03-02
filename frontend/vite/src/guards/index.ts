@@ -3,9 +3,9 @@ import hasRights from "./actions";
 import { actions, objects, roles } from "./constants";
 import { pages } from "./../router/constants";
 
-function hasAccess(userRole: string, objectName: string, action: string) {
-    return canAccessPage(userRole, action) && hasRights(userRole, objectName, action);
-}
+export { canAccessPage, hasRights,  actions, objects, roles, pages};
 
-export default hasAccess
-export { canAccessPage, hasRights,  actions, objects, roles, pages };
+// Permisions Method 2
+// Add Role
+// Choose AccessiblePages 
+//    for each page: add object actions

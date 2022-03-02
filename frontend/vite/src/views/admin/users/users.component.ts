@@ -1,7 +1,7 @@
 import { defineComponent, ref, computed } from 'vue';
 
-import tabUsers from './comps/Users.vue'
-import tabGroups from './comps/Groups.vue'
+import tabUsers from './Users.vue'
+import tabGroups from './Groups.vue'
 
 export default defineComponent({
   name: 'users-conf',

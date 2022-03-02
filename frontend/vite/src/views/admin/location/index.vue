@@ -9,11 +9,11 @@
         >
           Add Country
         </button>
-        <div class="overflow-y-scroll overscroll-contain scroll-section">
+        <div class="overflow-y-scroll overscroll-contain scroll-section pr-8">
           <div
             v-for="c in countries"
             :key="c.uid"
-            :class="country?.uid === c.uid ? 'bg-white w-full flex justify-between p-2 mb-1 rounded-xl shadow border c-active' : 'bg-white w-full flex justify-between p-2 mb-1 rounded-xl shadow border' "
+            :class="country?.uid === c.uid ? 'bg-white w-full flex justify-between p-2 mb-1 rounded-l shadow border c-active' : 'bg-white w-full flex justify-between p-2 mb-1 rounded-l shadow border' "
           >
             <a
               href="#"
@@ -37,11 +37,11 @@
         >
           Add Province
         </button>
-        <div class="overflow-y-scroll overscroll-contain scroll-section">
+        <div class="overflow-y-scroll overscroll-contain scroll-section pr-8">
           <div
             v-for="p in provinces"
             :key="p.uid"
-            :class="province?.uid === p.uid ? 'bg-white w-full flex justify-between p-2 mb-1 rounded-xl shadow border c-active' : 'bg-white w-full flex justify-between p-2 mb-1 rounded-xl shadow border' "
+            :class="province?.uid === p.uid ? 'bg-white w-full flex justify-between p-2 mb-1 rounded-l shadow border c-active' : 'bg-white w-full flex justify-between p-2 mb-1 rounded-l shadow border' "
           >
             <a
               href="#"
@@ -66,11 +66,11 @@
         >
           Add District
         </button>
-        <div class="overflow-y-scroll overscroll-contain scroll-section">
+        <div class="overflow-y-scroll overscroll-contain scroll-section pr-8">
           <div
             v-for="d in districts"
             :key="d.uid"
-            :class="district?.uid === d.uid ? 'bg-white w-full flex justify-between p-2 mb-1 rounded-xl shadow border c-active' : 'bg-white w-full flex justify-between p-2 mb-1 rounded-xl shadow border' "
+            :class="district?.uid === d.uid ? 'bg-white w-full flex justify-between p-2 mb-1 rounded-l shadow border c-active' : 'bg-white w-full flex justify-between p-2 mb-1 rounded-l shadow border' "
           >
             <a
               href="#"
@@ -127,19 +127,19 @@
   </modal>
 </template>
 
-<style lang="postcss">
-.scroll-section {
-  height: 400px;
-}
+<style lang="postcss" scoped>
+  .scroll-section {
+    height: 70vh;
+  }
 
-.tab-active {
-  border-bottom: 2px solid rgb(194, 193, 193);
-  color: rgb(37, 37, 37) !important;
-}
+  .tab-active {
+    border-bottom: 2px solid rgb(194, 193, 193);
+    color: rgb(37, 37, 37) !important;
+  }
 
-.c-active {
-  background-color: lightblue;
-}
+  .c-active {
+    background-color: lightblue;
+  }
 </style>
 
 <script src="./index.component.ts" lang="ts"></script>>

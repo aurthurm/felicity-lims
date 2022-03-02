@@ -22,7 +22,7 @@ export interface IAnalysisService {
     interims?: IAnalysisInterim[];
     correctionFactors?: IAnalysisCorrectionFactor[];
     specifications?: IAnalysisSpecification[];
-    detectionLimits?: IAnalysisSpecification[];
+    detectionLimits?: IAnalysisDetectionLimit[];
     uncertainties?: IAnalysisUncertainty[];
     instruments?: IInstrument[];
     methods?: IMethod[];

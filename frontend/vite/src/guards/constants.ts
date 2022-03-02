@@ -9,8 +9,10 @@ const roles = {
 };
 
 const objects = {
-  SAMPLE: "SAMPLE",
   PATIENT: "PATIENT",
+  CLIENT: "CLIENT",
+  SAMPLE: "SAMPLE",
+  RESULT: "RESULT",
   WORKSHEET: "WORKSHEET",
   BOARD: "BOARD",
   DOCUMENT: "DOCUMENT",

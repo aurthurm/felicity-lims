@@ -48,7 +48,7 @@ def upgrade():
     sa.Column('allow_patient_registration', sa.Boolean(), nullable=True),
     sa.Column('allow_sample_registration', sa.Boolean(), nullable=True),
     sa.Column('allow_worksheet_creation', sa.Boolean(), nullable=True),
-    sa.Column('default_route', sa.Boolean(), nullable=True),
+    sa.Column('default_route', sa.String(), nullable=True),
     sa.Column('password_lifetime', sa.Integer(), nullable=True),
     sa.Column('inactivity_log_out', sa.Integer(), nullable=True),
     sa.Column('default_theme', sa.String(), nullable=True),

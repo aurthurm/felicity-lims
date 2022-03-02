@@ -63,18 +63,7 @@
 </template>
 
 <style lang="postcss">
-.scroll-section {
-  height: 400px;
-}
 
-.tab-active {
-  border-bottom: 2px solid rgb(194, 193, 193);
-  color: rgb(37, 37, 37) !important;
-}
-
-.c-active {
-  background-color: lightblue;
-}
 </style>
 
 <script src="./users.component.ts" lang="ts"></script>

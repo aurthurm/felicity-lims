@@ -1,5 +1,40 @@
 import gql from 'graphql-tag'
 
+
+export const GET_LABORATORY = gql`
+  query getLaboratory($setupName: String! = "felicity") {
+    laboratory(setupName:$setupName) {
+      uid
+      setupName
+      labName
+      labManagerUid
+      email
+      emailCc
+      mobilePhone
+      businessPhone
+      address
+      logo
+    }
+}`;
+
+export const GET_LABORATORY_SETTING = gql`
+  query getLaboratorySetting($setupName: String! = "felicity") {
+    laboratorySetting(setupName:$setupName) {
+      uid
+      laboratoryUid
+      allowSelfVerification
+      allowPatientRegistration
+      allowSampleRegistration
+      allowWorksheetCreation
+      defaultRoute
+      passwordLifetime
+      inactivityLogOut
+      defaultTheme
+      autoReceiveSamples
+      stickerCopies
+    }
+}`;
+
 export const GET_ALL_USERS = gql`
   query userAll($first: Int, $after: String, $text: String, $sortBy: [String!] = ["uid"]) {
     userAll(pageSize:$first, afterCursor:$after, text:$text, sortBy:$sortBy) {
@@ -40,6 +75,7 @@ export const GET_GROUPS_AND_PERMISSIONS = gql`
       uid
       name
       keyword
+      pages
       active
       permissions {
         uid

@@ -42,7 +42,7 @@
         </div>
     </div>
 
-      <!-- Location Edit Form Modal -->
+  <!-- Location Edit Form Modal -->
   <modal v-if="showModal" @close="showModal = false">
     <template v-slot:header>
       <h3>{{ formTitle }}</h3>
@@ -112,7 +112,7 @@
   }
 </style>
 
-<script lang="ts" scope="ts">
+<script lang="ts">
 import modal from '../../../../components/SimpleModal.vue';
 
 import { useMutation } from '@urql/vue';

@@ -38,6 +38,7 @@
     <!-- <div v-show="hasRights(userRole, objects.WORKSHEET, actions.CREATE)"> -->
     <div >
       <button
+      v-show="shield.hasRights(shield.actions.CREATE, shield.objects.WORKSHEET)"
       @click.prevent="FormManager(true)"
       class="p-2 h-10 border-blue-500 border text-blue-500 rounded transition duration-300 hover:bg-blue-700 hover:text-white focus:outline-none">Add WorkSheet</button>
     </div>
@@ -186,27 +187,22 @@
 
 </template>
 
-<script lang="ts">
-import modal from '../../components/SimpleModal.vue';
+<script setup lang="ts">
+  import modal from '../../components/SimpleModal.vue';
 
-import { useMutation } from '@urql/vue';
-import { defineComponent, ref, reactive, computed } from 'vue';
-import { useRoute } from 'vue-router';
-import { useStore } from 'vuex';
-import { ActionTypes } from '../../store/modules/worksheet';
-import { ActionTypes as BaseActionTypes } from '../../store/actions';
-import { ADD_WORKSHEET } from '../../graphql/worksheet.mutations'
-import { ifZeroEmpty } from '../../utils'
-import { hasRights, objects, actions } from './../../guards';
-import { IWorkSheet, IWorkSheetForm } from '../../models/worksheet';
-import { IAnalysisService } from '../../models/analysis';
+  import { useMutation } from '@urql/vue';
+  import { ref, reactive, computed } from 'vue';
+  import { useRoute } from 'vue-router';
+  import { useStore } from 'vuex';
+  import { ActionTypes } from '../../store/modules/worksheet';
+  import { ActionTypes as BaseActionTypes } from '../../store/actions';
+  import { ADD_WORKSHEET } from '../../graphql/worksheet.mutations'
+  import { ifZeroEmpty } from '../../utils'
+  import { IWorkSheet, IWorkSheetForm } from '../../models/worksheet';
+  import { IAnalysisService } from '../../models/analysis';
 
-export default defineComponent({
-  name: "Samples",
-  components: {
-      modal,
-  },
-  setup() {    
+  import * as shield from '../../guards'
+  
     const store = useStore();
     const route = useRoute();
     
@@ -234,6 +230,8 @@ export default defineComponent({
     store.dispatch(BaseActionTypes.FETCH_USERS);
     // fetch instruments, analysts, methods
     const woksheets = computed<IWorkSheet[]>(() => store.getters.getWorkSheets);
+    const workSheetTemplates = computed(() => store.getters.getWorkSheetTemplates)
+    const workSheetCount = computed(() => store.getters.getWorkSheets?.length + " of " + store.getters.getWorkSheetCount + " worksheets")
 
     const { executeMutation: createWorkSheet } = useMutation(ADD_WORKSHEET);
 
@@ -286,32 +284,10 @@ export default defineComponent({
       store.dispatch(ActionTypes.FETCH_WORKSHEETS, workSheetParams);
     }
 
-    return {
-      hasRights, objects, actions,
-      userRole: computed(() => localStorage.getItem('fRole') || "" ),
-      showModal, 
-      FormManager,
-      form,
-      formTitle,
-      saveForm,
-      woksheets,
-      analysesText,
-      analysts: computed(() => store.getters.getUsers),
-      workSheetTemplates: computed(() => store.getters.getWorkSheetTemplates),
-      analystName: (analyst: any) => {
+    const analysts = computed(() => store.getters.getUsers)
+    const analystName = (analyst: any) => {
           if(analyst?.auth?.userName) return analyst?.auth?.userName;
           if(analyst?.firstName) return analyst.firstName + ' ' + analyst.lastName;
           return "----";
-      },
-
-      workSheetCount: computed(() => store.getters.getWorkSheets?.length + " of " + store.getters.getWorkSheetCount + " worksheets"),
-      showMoreWorkSheets,
-      workSheetBatch,
-      filterWorkSheets,
-      filterStatus,
-      filterText,
-      pageInfo
-    };
-  },
-});
+    }
 </script>

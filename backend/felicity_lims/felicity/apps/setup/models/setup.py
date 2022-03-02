@@ -19,6 +19,7 @@ class Laboratory(BaseAuditDBModel):
     email_cc = Column(String, nullable=True)
     mobile_phone = Column(String, nullable=True)
     business_phone = Column(String, nullable=True)
+    address = Column(String)
     logo = Column(String, nullable=True)
 
     @classmethod

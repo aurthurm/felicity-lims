@@ -173,53 +173,53 @@
 
   <section class="my-4">
     <button 
-    v-if="can_submit"
+    v-if="shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) && can_submit"
     @click.prevent="cancelResults()" 
     class="px-2 py-1 mr-2 border-blue-500 border text-blue-500 rounded transition duration-300 hover:bg-blue-700 hover:text-white focus:outline-none">Cancel</button>
     <button 
-    v-if="can_reinstate"
+    v-if="shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) && can_reinstate"
     @click.prevent="reInstateResults()" 
     class="px-2 py-1 mr-2 border-blue-500 border text-blue-500 rounded transition duration-300 hover:bg-blue-700 hover:text-white focus:outline-none">Re-Instate</button>
     <button 
-    v-if="can_submit"
+    v-if="shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) && can_submit"
     @click.prevent="submitResults()" 
     class="px-2 py-1 mr-2 border-blue-500 border text-blue-500 rounded transition duration-300 hover:bg-blue-700 hover:text-white focus:outline-none">Submit</button>
     <button 
-    v-if="can_retract"
+    v-if="shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) && can_retract"
     @click.prevent="retractResults()" 
     class="px-2 py-1 mr-2 border-blue-500 border text-blue-500 rounded transition duration-300 hover:bg-blue-700 hover:text-white focus:outline-none">Retract</button>
     <button 
-    v-if="can_verify"
+    v-if="shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) && can_verify"
     @click.prevent="verifyResults()" 
     class="px-2 py-1 mr-2 border-blue-500 border text-blue-500 rounded transition duration-300 hover:bg-blue-700 hover:text-white focus:outline-none">Verify</button>
     <button 
-    v-if="can_retest"
+    v-if="shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) && can_retest"
     @click.prevent="retestResults()" 
     class="px-2 py-1 mr-2 border-blue-500 border text-blue-500 rounded transition duration-300 hover:bg-blue-700 hover:text-white focus:outline-none">Retest</button>
   </section>
 
 </template>
 
-<script lang="ts">
-import { defineComponent, ref, computed } from 'vue';
-import { useStore } from 'vuex';
-import { useRoute } from 'vue-router';
-import { useMutation } from '@urql/vue';
-import { ActionTypes } from '../../../store/modules/sample';
-import { isNullOrWs } from '../../../utils';
-import Swal from 'sweetalert2';
-import { 
-  CANCEL_ANALYSIS_RESULTS,
-  REINSTATE_ANALYSIS_RESULTS,
-  SUBMIT_ANALYSIS_RESULTS, 
-  VERIFY_ANALYSIS_RESULTS, 
-  RETEST_ANALYSIS_RESULTS, 
-  RETRACT_ANALYSIS_RESULTS } from '../../../graphql/analyses.mutations';
-import { IAnalysisResult, IQCLevel, IQCSet, ISample } from '../../../models/analysis';
+<script setup lang="ts">
+  import { ref, computed } from 'vue';
+  import { useStore } from 'vuex';
+  import { useRoute } from 'vue-router';
+  import { useMutation } from '@urql/vue';
+  import { ActionTypes } from '../../../store/modules/sample';
+  import { isNullOrWs } from '../../../utils';
+  import Swal from 'sweetalert2';
+  import { 
+    CANCEL_ANALYSIS_RESULTS,
+    REINSTATE_ANALYSIS_RESULTS,
+    SUBMIT_ANALYSIS_RESULTS, 
+    VERIFY_ANALYSIS_RESULTS, 
+    RETEST_ANALYSIS_RESULTS, 
+    RETRACT_ANALYSIS_RESULTS } from '../../../graphql/analyses.mutations';
+  import { IAnalysisResult, IQCLevel, IQCSet, ISample } from '../../../models/analysis';
 
-export default defineComponent({
-  name: 'qcset-detail',
-  setup() {
+  import * as shield from '../../../guards'
+
+
     let store = useStore();
     let route = useRoute();
 
@@ -617,7 +617,6 @@ export default defineComponent({
       }
     }
 
-
     // View selection
     let gridView = ref<boolean>(true);
     let view = ref<string>('grid');
@@ -659,33 +658,5 @@ export default defineComponent({
         }
       }
     }
-
-    return {
-      qcSet,
-      getResults,
-      check,
-      checkCheck,
-      toggleCheckAll,
-      allChecked,
-      isDisabledRowCheckBox,
-      isEditable,
-      cancelResults,
-      reInstateResults,
-      submitResults,
-      verifyResults,
-      retractResults,
-      retestResults,
-      can_submit,
-      can_retract,
-      can_verify,
-      can_retest,
-      can_reinstate,
-      gridView,
-      toggleView,
-    };
-  },
-});
-
-
 
 </script>

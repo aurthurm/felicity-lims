@@ -176,6 +176,7 @@ class Group(DBModel):
     permissions = relationship(
         "Permission", secondary=permission_groups, backref="groups", lazy="selectin"
     )
+    pages = Column(String, nullable=True)
     active = Column(Boolean(), default=True)
 
     @classmethod
@@ -226,3 +227,4 @@ class UserPreference(BaseAuditDBModel):
     async def update(self, obj_in: schemas.UserPreferenceUpdate) -> schemas.UserPreference:
         data = self._import(obj_in)
         return await super().update(**data)
+

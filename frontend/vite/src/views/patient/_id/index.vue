@@ -20,6 +20,7 @@
             <div>
               <span class="font-medium text-md">{{ patient?.dateOfBirth }}</span>
               <button
+                v-show="shield.hasRights(shield.actions.UPDATE, shield.objects.PATIENT)"
                 @click="showModal = true"
                 class="ml-4 inline-flex items-center justify-center w-8 h-8 mr-2 border-blue-500 border text-gray-900 transition-colors duration-150 bg-white rounded-full focus:outline-none hover:bg-gray-200"
               >
@@ -95,6 +96,8 @@
 
   import { ActionTypes } from '../../../store/modules/patient';
   import { IPatient } from '../../../models/patient';
+
+  import * as shield from '../../../guards'
 
   const route = useRoute();
   const store = useStore();

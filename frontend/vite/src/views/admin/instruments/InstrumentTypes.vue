@@ -84,14 +84,14 @@
 </template>
 
 <script setup lang="ts">
-  import modal from '../../../../components/SimpleModal.vue';
+  import modal from '../../../components/SimpleModal.vue';
 
   import { useMutation } from '@urql/vue';
   import { ref, reactive, computed } from 'vue';
   import { useStore } from 'vuex';
-  import { ActionTypes } from '../../../../store/modules/setup';
-  import { IInstrumentType } from '../../../../models/setup'
-  import { ADD_INSTRUMENT_TYPE, EDIT_INSTRUMENT_TYPE } from '../../../../graphql/instrument.mutations';
+  import { ActionTypes } from '../../../store/modules/setup';
+  import { IInstrumentType } from '../../../models/setup'
+  import { ADD_INSTRUMENT_TYPE, EDIT_INSTRUMENT_TYPE } from '../../../graphql/instrument.mutations';
 
   let store = useStore();
   
@@ -107,14 +107,14 @@
   const { executeMutation: updateInstrumentType } = useMutation(EDIT_INSTRUMENT_TYPE);
 
   function addInstrumentType(): void {
-    const payload = { name: instrumentType.name, keyword: instrumentType.keyword, description: instrumentType.description }
+    const payload = { name: instrumentType.name, description: instrumentType.description }
     createInstrumentType({ payload }).then((result) => {
       store.dispatch(ActionTypes.ADD_INSTRUMENT_TYPE, result);
     });
   }
 
   function editInstrumentType(): void {
-    const payload = { name: instrumentType.name, keyword: instrumentType.keyword, description: instrumentType.description }
+    const payload = { name: instrumentType.name, description: instrumentType.description }
     updateInstrumentType({ uid: instrumentType.uid, payload }).then((result) => {
       store.dispatch(ActionTypes.UPDATE_INSTRUMENT_TYPE, result);
     });

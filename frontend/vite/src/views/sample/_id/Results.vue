@@ -117,27 +117,27 @@
 
 <section class="my-4">
   <FButton 
-  v-show="state.can_cancel" 
+  v-show="shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) && state.can_cancel" 
   @click.prevent="cancelResults" 
   :color="'blue-500'">Cancel</FButton>
   <FButton 
-  v-show="state.can_reinstate" 
+  v-show="shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) && state.can_reinstate" 
   @click.prevent="reInstateResults" 
   :color="'red-500'">Re-Instate</FButton>
   <FButton 
-  v-show="state.can_submit" 
+  v-show="shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) && state.can_submit" 
   @click.prevent="submitResults" 
   :color="'red-500'">Submit</FButton>
   <FButton 
-  v-show="state.can_retract" 
+  v-show="shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) && state.can_retract" 
   @click.prevent="retractResults" 
   :color="'red-500'">Retract</FButton>
   <FButton 
-  v-show="state.can_verify" 
+  v-show="shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) && state.can_verify" 
   @click.prevent="verifyResults" 
   :color="'red-500'">Verify</FButton>
   <FButton 
-  v-show="state.can_retest" 
+  v-show="shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) && state.can_retest" 
   @click.prevent="retestResults" 
   :color="'red-500'">Retest</FButton>
 </section>
@@ -152,8 +152,11 @@
   import { ActionTypes } from '../../../store/modules/sample';
 
   import useAnalysisResults from '../../../modules/analysis'
-  import { IAnalysisInterim, IAnalysisProfile, IAnalysisResult, IAnalysisService, ISample } from '../../../models/analysis';
-import { isNullOrWs } from '../../../utils';
+  import useResultMutationComposable from '../../../modules/result_mutation'
+  import { IAnalysisProfile, IAnalysisResult, IAnalysisService, ISample } from '../../../models/analysis';
+  import { isNullOrWs } from '../../../utils';
+
+  import * as shield from '../../../guards'
 
   const route = useRoute();
   const store = useStore();
@@ -187,8 +190,10 @@ import { isNullOrWs } from '../../../utils';
     return results;
   }
 
+  const { mutateResults } = useResultMutationComposable()
   function prepareResults(): IAnalysisResult[] {
-    const results = getResultsChecked();
+    let results = getResultsChecked();
+    results = mutateResults(results);
     let ready: any[] = [];
     results?.forEach((result: IAnalysisResult) => ready.push({ uid: result.uid , result: result.result }))
     return ready;

@@ -12,11 +12,13 @@ class LaboratoryType:
     setup_name: str
     lab_name: str
     lab_manager_uid: Optional[str]
-    # lab_manager = relationship(User, backref="lab_manager")
+    lab_manager: Optional['UserType']
     email: Optional[str]
     email_cc: Optional[str]
     mobile_phone: Optional[str]
     business_phone: Optional[str]
+    address: Optional[str]
+    logo: Optional[str]
     #
     created_by_uid: Optional[int]
     created_by: Optional['UserType']
@@ -28,6 +30,12 @@ class LaboratoryType:
 
 @strawberry.type
 class LaboratorySettingType:
+    created_by_uid: Optional[int]
+    created_by: Optional['UserType']
+    created_at: Optional[datetime]
+    updated_by_uid: Optional[int]
+    updated_by: Optional['UserType']
+    updated_at: Optional[datetime]
     uid: int
     laboratory_uid: int
     laboratory: LaboratoryType
@@ -41,6 +49,7 @@ class LaboratorySettingType:
     default_theme: Optional[str] = None
     auto_receive_samples: Optional[bool] = True
     sticker_copies: Optional[int] = 2
+    #
 
 
 @strawberry.type

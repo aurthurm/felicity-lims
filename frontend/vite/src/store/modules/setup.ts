@@ -9,10 +9,16 @@ import {
   GET_ALL_INSTRUMENT_TYPES,
   GET_ALL_INSTRUMENTS,
 } from '../../graphql/instrument.queries';
-import {IInstrument, IInstrumentType, IManufacturer, IMethod, ISupplier} from '../../models/setup'
+import {
+  GET_LABORATORY,
+  GET_LABORATORY_SETTING
+} from '../../graphql/_queries';
+import {IInstrument, IInstrumentType, ILaboratory, ILaboratorySetting, IManufacturer, IMethod, ISupplier} from '../../models/setup'
 
 // state contract
 export interface IState {
+  laboratory?: ILaboratory;
+  laboratorySetting?: ILaboratorySetting;
   suppliers: ISupplier[];
   manufacturers: IManufacturer[];
   instrumentTypes: IInstrumentType[];
@@ -22,6 +28,8 @@ export interface IState {
 
 export const initialState = () => {
   return <IState>{
+    laboratory: undefined,
+    laboratorySetting: undefined,
     suppliers: [],
     manufacturers: [],
     instrumentTypes: [],
@@ -34,6 +42,12 @@ export const state: IState = initialState();
 
 export enum MutationTypes {
   RESET_STATE = 'RESET_STATE',
+
+  SET_LABORATORY = 'SET_LABORATORY',
+  UPDATE_LABORATORY = 'UPDATE_LABORATORY',
+
+  SET_LABORATORY_SETTING = 'SET_LABORATORY_SETTING',
+  UPDATE_LABORATORY_SETTING = 'UPDATE_LABORATORY_SETTING',
 
   SET_SUPPLIERS = 'SET_SUPPLIERS',
   ADD_SUPPLIER = 'ADD_SUPPLIER',
@@ -59,6 +73,12 @@ export enum MutationTypes {
 export enum ActionTypes {
   RESET_STATE = 'RESET_STATE',
 
+  FETCH_LABORATORY = 'FETCH_LABORATORY',
+  UPDATE_LABORATORY = 'UPDATE_LABORATORY',
+
+  FETCH_LABORATORY_SETTING = 'FETCH_LABORATORY_SETTING',
+  UPDATE_LABORATORY_SETTING = 'UPDATE_LABORATORY_SETTING',
+
   FETCH_SUPPLIERS = 'FETCH_SUPPLIERS',
   ADD_SUPPLIER = 'ADD_SUPPLIER',
   UPDATE_SUPPLIER = 'UPDATE_SUPPLIER',
@@ -82,6 +102,8 @@ export enum ActionTypes {
 
 // Getters
 export const getters = <GetterTree<IState, RootState>>{
+  getLaboratory: (state) => state.laboratory,
+  getLaboratorySetting: (state) => state.laboratorySetting,
   getSuppliers: (state) => state.suppliers,
   getManufacturers: (state) => state.manufacturers,
   getInstrumentTypes: (state) => state.instrumentTypes,
@@ -93,6 +115,23 @@ export const getters = <GetterTree<IState, RootState>>{
 export const mutations = <MutationTree<IState>>{
   [MutationTypes.RESET_STATE](state: IState): void {
     Object.assign(state, initialState());
+  },
+
+  // LABORATORY
+  [MutationTypes.SET_LABORATORY](state: IState, payload: any): void {
+    state.laboratory = payload;
+  },
+
+  [MutationTypes.UPDATE_LABORATORY](state: IState, payload: any): void {
+    state.laboratory = payload;
+  },
+
+  [MutationTypes.SET_LABORATORY_SETTING](state: IState, payload: any): void {
+    state.laboratorySetting = payload;
+  },
+
+  [MutationTypes.UPDATE_LABORATORY_SETTING](state: IState, payload: any): void {
+    state.laboratorySetting = payload;
   },
 
   // SUPPLIERS
@@ -173,6 +212,25 @@ export const mutations = <MutationTree<IState>>{
 export const actions = <ActionTree<IState, RootState>>{
   async [ActionTypes.RESET_STATE]({ commit }) {
     commit(MutationTypes.RESET_STATE);
+  },
+  
+  // LABORATORY
+  async [ActionTypes.FETCH_LABORATORY ]({ commit }){
+    await useQuery({ query: GET_LABORATORY })
+          .then(payload => commit(MutationTypes.SET_LABORATORY, payload.data.value.laboratory));
+  },
+
+  async [ActionTypes.UPDATE_LABORATORY]({ commit }, payload){
+    commit(MutationTypes.UPDATE_LABORATORY, payload.data.updateLaboratory);
+  },
+
+  async [ActionTypes.FETCH_LABORATORY_SETTING]({ commit }){
+    await useQuery({ query: GET_LABORATORY_SETTING })
+          .then(payload => commit(MutationTypes.SET_LABORATORY_SETTING, payload.data.value.laboratorySetting));
+  },
+
+  async [ActionTypes.UPDATE_LABORATORY_SETTING]({ commit }, payload){
+    commit(MutationTypes.UPDATE_LABORATORY_SETTING, payload.data.updateLaboratorySetting);
   },
   
   // SUPPLIERS

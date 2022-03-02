@@ -3,7 +3,9 @@
     <div class="flex justify-between">
       <div class="flex items-center content-between">
         <!-- <h1 class="h1 my-4 font-bold text-dark-700">Listing</h1> -->
-        <router-link  to="/patients/search"
+        <router-link  
+          v-show="shield.hasRights(shield.actions.CREATE, shield.objects.PATIENT)"
+          to="/patients/search"
           class="px-4 my-2 p-1 text-sm border-blue-500 border text-dark-700 transition-colors duration-150 rounded-lg focus:outline-none hover:bg-blue-500 hover:text-gray-100">
           Add Patient</router-link>
         <input
@@ -14,6 +16,7 @@
         />
       </div>
       <button
+        v-show="shield.hasRights(shield.actions.CREATE, shield.objects.PATIENT)"
         @click.prevent="quickRegistration"
           class="px-4 my-2 p-1 text-sm border-blue-500 border text-dark-700 transition-colors duration-150 rounded-lg focus:outline-none hover:bg-blue-500 hover:text-gray-100">
           Quick Registration</button>
@@ -79,6 +82,7 @@
                 <div>
                   <span class="font-medium text-md">{{ patientForm.dateOfBirth }}</span>
                   <button
+                    v-show="shield.hasRights(shield.actions.UPDATE, shield.objects.PATIENT)"
                     @click="showModal = true"
                     class="ml-4 inline-flex items-center justify-center w-8 h-8 mr-2 border-blue-500 border text-gray-900 transition-colors duration-150 bg-white rounded-full focus:outline-none hover:bg-gray-200"
                   >
@@ -194,6 +198,8 @@
   import { ActionTypes } from '../../store/modules/patient';
   import { ActionTypes as AdminActionTypes } from '../../store/modules/admin';
   import { IPatient } from '../../models/patient';
+
+  import * as shield from '../../guards'
 
   let store = useStore();
   let showModal = ref<boolean>(false);

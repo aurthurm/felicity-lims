@@ -1,7 +1,7 @@
 import { defineComponent, ref, computed } from 'vue';
 
-import tabSampleTypes from './comps/SampleTypes.vue'
-import tabContainerTypes from './comps/ContainerTypes.vue'
+import tabSampleTypes from './SampleTypes.vue'
+import tabContainerTypes from './ContainerTypes.vue'
 
 export default defineComponent({
   name: 'sample-conf',
@@ -12,7 +12,7 @@ export default defineComponent({
   setup() {
 
     let currentTab = ref<string>('sample-types');
-    const tabs: string[] = ['sample-types', 'container-types'];
+    const tabs: string[] = ['sample-types']; //  'container-types'
     let currentTabComponent = computed(() => 'tab-' + currentTab.value);
  
     return {

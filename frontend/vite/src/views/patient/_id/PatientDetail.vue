@@ -3,7 +3,9 @@
       <section class="col-span-12" >
 
         <section class="my-4">
-          <button class="px-2 py-1 mr-2 border-blue-500 border text-blue-500 rounded transition duration-300 hover:bg-blue-700 hover:text-white focus:outline-none"
+          <button 
+          v-show="shield.hasRights(shield.actions.UPDATE, shield.objects.PATIENT)"
+          class="px-2 py-1 mr-2 border-blue-500 border text-blue-500 rounded transition duration-300 hover:bg-blue-700 hover:text-white focus:outline-none"
           @click.prevent="addSample(patient)">Add Sample</button>
         </section>
 
@@ -52,45 +54,34 @@
 }
 </style>
 
-<script lang="ts">
-import tabSamples from '../../components/AnalyisRequestListing.vue';
-import tabCases from '../comps/CaseTable.vue';
-import tabLogs from '../../components/AuditLog.vue';
+<script setup lang="ts">
+  import tabSamples from '../../components/AnalyisRequestListing.vue';
+  import tabCases from '../comps/CaseTable.vue';
+  import tabLogs from '../../components/AuditLog.vue';
 
-import { defineComponent, ref, computed } from 'vue';
-import { useStore } from 'vuex';
-import { useRouter } from 'vue-router';
-import { IPatient } from '../../../models/patient';
+  import { ref, computed } from 'vue';
+  import { useStore } from 'vuex';
+  import { useRouter } from 'vue-router';
+  import { IPatient } from '../../../models/patient';
 
-export default defineComponent({
-  name: 'patient-detail',
-  components: {
-    tabSamples,
-    tabCases,
-    tabLogs,
-  },
-  setup() {
-    let store = useStore();
-    let router = useRouter();
+  import * as shield from '../../../guards'
 
-    let currentTab = ref('samples');
-    const tabs = ['samples', 'cases', 'logs'];
 
-    function addSample(patient: IPatient): void {
-      router?.push({
-          name: 'samples-add',
-          params: {
-              patientUid: patient.uid
-          }
-      })
-    }
+  let store = useStore();
+  let router = useRouter();
 
-    return {
-      tabs,
-      currentTab,
-      patient: computed(() => store.getters.getPatient),
-      addSample,
-    };
-  },
-});
+  let currentTab = ref('samples');
+  const tabs = ['samples', 'cases', 'logs'];
+
+  const patient = computed(() => store.getters.getPatient)
+
+  function addSample(patient: IPatient): void {
+    router?.push({
+        name: 'samples-add',
+        params: {
+            patientUid: patient.uid
+        }
+    })
+  }
+
 </script>

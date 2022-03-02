@@ -3,6 +3,7 @@
     <div class="flex items-center">
       <h1 class="h1 my-4 font-bold text-dark-700">Clients</h1>
         <button
+          v-show="shield.hasRights(shield.actions.CREATE, shield.objects.CLIENT)"
           class="p-2 my-2 ml-8 text-sm border-blue-500 border text-dark-700 transition-colors duration-150 rounded-lg focus:outline-none hover:bg-blue-500 hover:text-gray-100"
           @click="FormManager(true, 'client')"
         >
@@ -58,7 +59,6 @@
                     <div class="text-sm leading-5 text-blue-900">{{ client?.email }}</div>
                   </td>
                   <td class="px-1 py-1 whitespace-no-wrap text-right border-b border-gray-500 text-sm leading-5">
-                      <button class="px-2 py-1 mr-2 border-orange-500 border text-orange-500 rounded transition duration-300 hover:bg-orange-700 hover:text-white focus:outline-none">View</button>
                   </td>
               </tr>
             </tbody>
@@ -169,43 +169,28 @@
 </template>
 
 <style lang="postcss">
-.scroll-section {
-  height: 400px;
-}
 
-.tab-active {
-  border-bottom: 2px solid rgb(194, 193, 193);
-  color: rgb(37, 37, 37) !important;
-}
-
-.c-active {
-  background-color: lightblue;
-}
 </style>
 
-<script lang="ts">
-import { useMutation, useQuery } from '@urql/vue';
-import { useStore } from 'vuex';
-import { defineComponent, ref, reactive, computed } from 'vue';
+<script setup lang="ts">
+  import { useMutation, useQuery } from '@urql/vue';
+  import { useStore } from 'vuex';
+  import { defineComponent, ref, reactive, computed } from 'vue';
 
-import modal from '../../components/SimpleModal.vue';
-import { IClient } from '../../models/client';
-import { ADD_CLIENT, EDIT_CLIENT } from '../../graphql/clients.mutations';
-import {
-  FILTER_PROVINCES_BY_COUNTRY,
-  FILTER_DISTRICTS_BY_PROVINCE,
-} from '../../graphql/admin.queries';
+  import modal from '../../components/SimpleModal.vue';
+  import { IClient } from '../../models/client';
+  import { ADD_CLIENT, EDIT_CLIENT } from '../../graphql/clients.mutations';
+  import {
+    FILTER_PROVINCES_BY_COUNTRY,
+    FILTER_DISTRICTS_BY_PROVINCE,
+  } from '../../graphql/admin.queries';
 
-import { ActionTypes } from '../../store/modules/client';
-import { ActionTypes as AdminActionTypes } from '../../store/modules/admin';
-import { IDistrict, IProvince } from '../../models/location';
+  import { ActionTypes } from '../../store/modules/client';
+  import { ActionTypes as AdminActionTypes } from '../../store/modules/admin';
+  import { IDistrict, IProvince } from '../../models/location';
 
-export default defineComponent({
-  name: 'clients-conf',
-  components: {
-    modal,
-  },
-  setup() {
+  import * as shield from '../../guards'
+
     const store = useStore();
 
     let currentTab = ref<string>('samples');
@@ -235,8 +220,12 @@ export default defineComponent({
 
     let formTitle = ref<string>('');
 
-    store.dispatch(AdminActionTypes.FETCH_COUNTRIES);
     store.dispatch(ActionTypes.FETCH_CLIENTS, clientParams);
+    const clients = computed(() => store.getters.getClients)
+    const  clientCount = computed(() => store.getters.getClients?.length + " of " + store.getters.getClientCount + " clients")
+    
+    store.dispatch(AdminActionTypes.FETCH_COUNTRIES);
+     const countries = computed(() => store.getters.getCountries)
 
     const { executeMutation: createClient } = useMutation(ADD_CLIENT);
     const { executeMutation: updateClient } = useMutation(EDIT_CLIENT);
@@ -310,7 +299,7 @@ export default defineComponent({
       store.dispatch(ActionTypes.FETCH_CLIENTS, clientParams);
     }
 
-    function FormManager(create: boolean, target: string, obj: IClient = {}) {
+    function FormManager(create: boolean, target: string, obj: IClient = {} as IClient) {
       createItem.value = create;
       targetItem.value = target;
       formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + target.toUpperCase();
@@ -328,27 +317,4 @@ export default defineComponent({
       showClientModal.value = false;
     }
 
-    return {
-      showClientModal,
-      FormManager,
-      saveForm,
-      formTitle,
-      client,
-      clients: computed(() => store.getters.getClients),
-      clientCount: computed(() => store.getters.getClients?.length + " of " + store.getters.getClientCount + " clients"),
-      clientBatch,
-      pageInfo,
-      showMoreClients,
-      resetClient,
-      countries: computed(() => store.getters.getCountries),
-      countryUid,
-      provinceUid,
-      getProvinces,
-      provinces,
-      getDistricts,
-      districts,
-      searchClients
-    };
-  },
-});
 </script>

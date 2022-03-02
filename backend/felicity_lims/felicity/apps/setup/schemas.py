@@ -19,6 +19,7 @@ class LaboratoryBase(BaseModel):
     mobile_phone: Optional[str] = None
     business_phone: Optional[str] = None
     lab_manager_uid: Optional[int] = None
+    address: Optional[str] = ""
 
 
 # Properties to receive via API on creation

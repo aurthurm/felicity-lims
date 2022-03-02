@@ -193,6 +193,54 @@ export const EDIT_USER_AUTH = gql`
   }
 `;
 
+export const ADD_GROUP = gql`
+  mutation addGroup($payload: GroupInputType!) {
+    createGroup(payload: $payload) {
+      ... on GroupType {
+        __typename
+        uid
+        name
+        pages
+        permissions {
+          uid
+          action
+          target
+          active
+        }
+        active
+      }
+      ... on OperationError {
+        __typename
+        error
+        suggestion
+      }
+    }
+  }`;
+
+
+export const UPDATE_GROUP = gql`
+  mutation editGroup($uid: Int!, $payload: GroupInputType!) {
+    updateGroup(uid: $uid, payload: $payload) {
+      ... on GroupType {
+        __typename
+        uid
+        name
+        pages
+        permissions {
+          uid
+          action
+          target
+          active
+        }
+        active
+      }
+      ... on OperationError {
+        __typename
+        error
+        suggestion
+      }
+    }
+  }`;
 
 export const UPDATE_GROUP_PERMS = gql`
   mutation updateGroupsAndPermissions($groupUid: Int!, $permissionUid: Int!) {
@@ -201,7 +249,13 @@ export const UPDATE_GROUP_PERMS = gql`
         group {
           uid
           name
-          keyword
+          pages
+          permissions {
+            uid
+            action
+            target
+            active
+          }
           active
         }
         permission {
@@ -241,6 +295,55 @@ export const UPDATE_DEPARTMENT = gql`
       ... on DepartmentType {
         uid
         name
+      }
+      ... on OperationError {
+        __typename
+        error
+        suggestion
+      }
+    }
+  }`;
+
+
+export const UPDATE_LABORATOTY = gql`
+  mutation editLaboratory($uid: Int!, $payload: LaboratoryInputType!) {
+    updateLaboratory(uid: $uid, payload: $payload) {
+      ... on LaboratoryType {
+        uid
+        setupName
+        labName
+        labManagerUid
+        email
+        emailCc
+        mobilePhone
+        businessPhone
+        address
+        logo
+      }
+      ... on OperationError {
+        __typename
+        error
+        suggestion
+      }
+    }
+  }`;
+
+export const UPDATE_LABORATOTY_SETTING = gql`
+  mutation editLaboratorySetting($uid: Int!, $payload: LaboratorySettingInputType!) {
+    updateLaboratorySetting(uid: $uid, payload: $payload) {
+      ... on LaboratorySettingType {
+        uid
+        laboratoryUid
+        allowSelfVerification
+        allowPatientRegistration
+        allowSampleRegistration
+        allowWorksheetCreation
+        defaultRoute
+        passwordLifetime
+        inactivityLogOut
+        defaultTheme
+        autoReceiveSamples
+        stickerCopies
       }
       ... on OperationError {
         __typename

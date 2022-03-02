@@ -110,7 +110,6 @@ export const actions = <ActionTree<IState, RootState>>{
 
 };
 
-
 // checkTimeLeft() {   
 //   let auth = JSON.parse(localStorage.getItem('auth'))
 //   if (!auth) {

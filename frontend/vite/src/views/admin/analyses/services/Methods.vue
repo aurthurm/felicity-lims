@@ -50,7 +50,7 @@
 
 <script setup lang="ts">
   import modal from '../../../../components/SimpleModal.vue';
-  import MethodForm from '../../instruments/comps/MethodForm.vue';
+  import MethodForm from '../../instruments/MethodForm.vue';
   
   import { ref, toRefs, watch, PropType, reactive } from 'vue';
   import { useStore } from 'vuex';

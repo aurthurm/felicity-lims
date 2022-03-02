@@ -14,6 +14,7 @@
                 <span>{{ client?.name }}</span>
                 <div>
                   <button
+                    v-show="shield.hasRights(shield.actions.UPDATE, shield.objects.CLIENT)"
                     @click="FormManager(false, 'client', client)"
                     class="ml-4 inline-flex items-center justify-center w-8 h-8 mr-2 border-blue-500 border text-gray-900 transition-colors duration-150 bg-white rounded-full focus:outline-none hover:bg-gray-200"
                   >
@@ -131,144 +132,114 @@
 </template>
 
 <style lang="postcss">
-.scroll-section {
-  height: 400px;
-}
 
-.tab-active {
-  border-bottom: 2px solid rgb(194, 193, 193);
-  color: rgb(37, 37, 37) !important;
-}
-
-.c-active {
-  background-color: lightblue;
-}
 </style>
 
-<script lang="ts">
-import modal from '../../../components/SimpleModal.vue';
+<script setup lang="ts">
+  import modal from '../../../components/SimpleModal.vue';
 
-import { useMutation, useQuery } from '@urql/vue';
-import { useStore } from 'vuex';
-import { useRoute } from 'vue-router';
-import { defineComponent, ref, reactive, computed } from 'vue';
-import { ADD_CLIENT, EDIT_CLIENT } from '../../../graphql/clients.mutations';
-import {
-  FILTER_PROVINCES_BY_COUNTRY,
-  FILTER_DISTRICTS_BY_PROVINCE,
-} from '../../../graphql/admin.queries';
+  import { useMutation, useQuery } from '@urql/vue';
+  import { useStore } from 'vuex';
+  import { useRoute } from 'vue-router';
+  import { ref, reactive, computed } from 'vue';
+  import { ADD_CLIENT, EDIT_CLIENT } from '../../../graphql/clients.mutations';
+  import {
+    FILTER_PROVINCES_BY_COUNTRY,
+    FILTER_DISTRICTS_BY_PROVINCE,
+  } from '../../../graphql/admin.queries';
 
-import { ActionTypes } from '../../../store/modules/client';
-import { ActionTypes as AdminActionTypes } from '../../../store/modules/admin';
-import { IDistrict, IProvince } from '../../../models/location';
-import { IClient } from '../../../models/client';
+  import { ActionTypes } from '../../../store/modules/client';
+  import { ActionTypes as AdminActionTypes } from '../../../store/modules/admin';
+  import { IDistrict, IProvince } from '../../../models/location';
+  import { IClient } from '../../../models/client';
 
-export default defineComponent({
-  name: 'clients-listi',
-  components: {
-    modal,
-  },
-  setup() {
-    const store = useStore();
-    const route = useRoute();
+  import * as shield from '../../../guards'
 
-    let showClientModal = ref<boolean>(false);
-    let createItem = ref<boolean>(false);
-    let targetItem = ref<string>('');
+  const store = useStore();
+  const route = useRoute();
 
-    let provinces = ref<IProvince[]>([]);
-    let districts = ref<IDistrict[]>([]);
+  let showClientModal = ref<boolean>(false);
+  let createItem = ref<boolean>(false);
+  let targetItem = ref<string>('');
 
-    let countryUid = ref<number>();
-    let provinceUid = ref<number>();
-    let clientParams = reactive({ 
-      first: null, 
-      after: null,
-      text: null, 
-      sortBy: ["name"]
+  let provinces = ref<IProvince[]>([]);
+  let districts = ref<IDistrict[]>([]);
+
+  let countryUid = ref<number>();
+  let provinceUid = ref<number>();
+  let clientParams = reactive({ 
+    first: null, 
+    after: null,
+    text: null, 
+    sortBy: ["name"]
+  });
+
+  let formTitle = ref<string>('');
+
+  store.dispatch(ActionTypes.FETCH_CLIENT_BY_UID, +route.query.clientUid!)
+  let client = computed<IClient>(() => store.getters.getClient);
+
+  store.dispatch(AdminActionTypes.FETCH_COUNTRIES);
+  const countries = computed(() => store.getters.getCountries)
+  // store.dispatch(ActionTypes.FETCH_CLIENTS, clientParams);
+
+  const { executeMutation: createClient } = useMutation(ADD_CLIENT);
+  const { executeMutation: updateClient } = useMutation(EDIT_CLIENT);
+
+  const provincesfilter = useQuery({
+    query: FILTER_PROVINCES_BY_COUNTRY,
+    variables: { uid: countryUid },
+    pause: computed(() => countryUid !== null),
+    requestPolicy: 'network-only',
+  });
+
+  const districtsfilter = useQuery({
+    query: FILTER_DISTRICTS_BY_PROVINCE,
+    variables: { uid: provinceUid },
+    pause: computed(() => provinceUid !== null),
+    requestPolicy: 'network-only',
+  });
+
+  function addClient() {
+    createClient({ name: client.value.name, code: client.value.code, districtUid: client.value.districtUid }).then((result) => {
+      Object.assign(client, result.data.createClient.createClient);
     });
+  }
 
-    let formTitle = ref<string>('');
-
-    store.dispatch(ActionTypes.FETCH_CLIENT_BY_UID, +route.query.clientUid!)
-    let client = computed(() => store.getters.getClient) as IClient;
-
-    store.dispatch(AdminActionTypes.FETCH_COUNTRIES);
-    // store.dispatch(ActionTypes.FETCH_CLIENTS, clientParams);
-
-    const { executeMutation: createClient } = useMutation(ADD_CLIENT);
-    const { executeMutation: updateClient } = useMutation(EDIT_CLIENT);
-
-    const provincesfilter = useQuery({
-      query: FILTER_PROVINCES_BY_COUNTRY,
-      variables: { uid: countryUid },
-      pause: computed(() => countryUid !== null),
-      requestPolicy: 'network-only',
+  function editClient() {
+    updateClient({ uid: client.value.uid, name: client.value.name, code: client.value.code, districtUid: client.value.districtUid }).then((result) => {
+      Object.assign(client, result.data.updateClient.updateClient);
     });
+  }
 
-    const districtsfilter = useQuery({
-      query: FILTER_DISTRICTS_BY_PROVINCE,
-      variables: { uid: provinceUid },
-      pause: computed(() => provinceUid !== null),
-      requestPolicy: 'network-only',
+  function getProvinces(event: any) {
+    provincesfilter.executeQuery({requestPolicy: 'network-only'}).then(result => {
+      provinces.value = result.data.value?.provincesByCountryUid;
     });
+  }
 
-    function addClient() {
-      createClient({ name: client.name, code: client.code, districtUid: client.districtUid }).then((result) => {
-        Object.assign(client, result.data.createClient.createClient);
-      });
+  function getDistricts(event: any) {
+    districtsfilter.executeQuery({requestPolicy: 'network-only'}).then(result => {
+      districts.value = result.data.value?.districtsByProvinceUid;
+    });
+  }
+
+  function FormManager(create: boolean, target: string, obj: IClient = {} as IClient) {
+    createItem.value = create;
+    targetItem.value = target;
+    formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + target.toUpperCase();
+    if(target == "client") showClientModal.value = true;
+    if (create) {
+      if(target == "client") Object.assign(client, {} as IClient);
+    } else {
+      if(target == "client") Object.assign(client, { ...obj });
     }
+  }
 
-    function editClient() {
-      updateClient({ uid: client.uid, name: client.name, code: client.code, districtUid: client.districtUid }).then((result) => {
-        Object.assign(client, result.data.updateClient.updateClient);
-      });
-    }
+  function saveForm() {
+    if (createItem.value) addClient();
+    if (!createItem.value) editClient();
+    showClientModal.value = false;
+  }
 
-    function getProvinces(event: any) {
-      provincesfilter.executeQuery({requestPolicy: 'network-only'}).then(result => {
-        provinces.value = result.data.value?.provincesByCountryUid;
-      });
-    }
-
-    function getDistricts(event: any) {
-      districtsfilter.executeQuery({requestPolicy: 'network-only'}).then(result => {
-        districts.value = result.data.value?.districtsByProvinceUid;
-      });
-    }
-
-    function FormManager(create: boolean, target: string, obj: IClient = {}) {
-      createItem.value = create;
-      targetItem.value = target;
-      formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + target.toUpperCase();
-      if(target == "client") showClientModal.value = true;
-      if (create) {
-        if(target == "client") Object.assign(client, {} as IClient);
-      } else {
-        if(target == "client") Object.assign(client, { ...obj });
-      }
-    }
-
-    function saveForm() {
-      if (createItem.value) addClient();
-      if (!createItem.value) editClient();
-      showClientModal.value = false;
-    }
-
-    return {
-      showClientModal,
-      FormManager,
-      saveForm,
-      formTitle,
-      client,
-      countries: computed(() => store.getters.getCountries),
-      countryUid,
-      provinceUid,
-      getProvinces,
-      provinces,
-      getDistricts,
-      districts,
-    };
-  },
-});
 </script>

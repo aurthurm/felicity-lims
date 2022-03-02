@@ -208,14 +208,14 @@
 
 <script lang="ts">
 
-import modal from '../../../../components/SimpleModal.vue';
+import modal from '../../../components/SimpleModal.vue';
 
 import { defineComponent, ref, computed, reactive } from 'vue';
 import { useStore } from 'vuex';
 import { useMutation } from '@urql/vue';
-import { ActionTypes } from '../../../../store/actions';
-import { ADD_USER, EDIT_USER, ADD_USER_AUTH, EDIT_USER_AUTH  } from '../../../../graphql/_mutations';
-import { IUser, IUserAuth } from '../../../../models/auth';
+import { ActionTypes } from '../../../store/actions';
+import { ADD_USER, EDIT_USER, ADD_USER_AUTH, EDIT_USER_AUTH  } from '../../../graphql/_mutations';
+import { IUser, IUserAuth } from '../../../models/auth';
 
 interface IUserAuthForm extends IUser, IUserAuth {};
 

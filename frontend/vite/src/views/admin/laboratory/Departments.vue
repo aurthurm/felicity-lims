@@ -72,14 +72,14 @@
 
 
 <script lang="ts" scope="ts">
-import modal from '../../../../components/SimpleModal.vue';
+import modal from '../../../components/SimpleModal.vue';
 
 import { useMutation } from '@urql/vue';
 import { defineComponent, ref, reactive, computed } from 'vue';
 import { useStore } from 'vuex';
-import { ActionTypes } from '../../../../store/actions';
-import { ADD_DEPARTMENT, UPDATE_DEPARTMENT } from '../../../../graphql/_mutations';
-import { IDepartment } from '../../../../models/setup';
+import { ActionTypes } from '../../../store/actions';
+import { ADD_DEPARTMENT, UPDATE_DEPARTMENT } from '../../../graphql/_mutations';
+import { IDepartment } from '../../../models/setup';
 
 
 export default defineComponent({

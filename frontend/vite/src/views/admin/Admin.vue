@@ -31,7 +31,7 @@ export default defineComponent({
           { title: "Users, Groups", path: "/admin/users-conf", icon: "users"},
           { title: "Suppliers, Manufacturers", path: "/admin/suppliers-conf", icon: "caravan"},
           { title: "Instruments, Methods", path: "/admin/instruments-conf", icon: "laptop-medical"},
-          { title: "Sample Types, Containers", path: "/admin/sampletypes-conf", icon: "fill"},
+          { title: "Sample Types", path: "/admin/sampletypes-conf", icon: "fill"},
           { title: "Tests, Categories, Profiles, QC", path: "/admin/analyses-conf", icon: "microscope"},
           { title: "WorkSheet Templates", path: "/admin/worksheets-conf", icon: "grip-horizontal"},
           { title: "Email, SMS", path: "/admin/publication-conf", icon: "copy"},

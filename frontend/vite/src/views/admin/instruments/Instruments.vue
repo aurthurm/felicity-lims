@@ -169,14 +169,14 @@
 </template>
 
 <script setup lang="ts">
-  import modal from '../../../../components/SimpleModal.vue';
+  import modal from '../../../components/SimpleModal.vue';
 
   import { useMutation } from '@urql/vue';
   import { defineComponent, ref, reactive, computed } from 'vue';
   import { useStore } from 'vuex';
-  import { ActionTypes } from '../../../../store/modules/setup';
-  import { IInstrument } from '../../../../models/setup'
-  import { ADD_INSTRUMENT, EDIT_INSTRUMENT  } from '../../../../graphql/instrument.mutations';
+  import { ActionTypes } from '../../../store/modules/setup';
+  import { IInstrument } from '../../../models/setup'
+  import { ADD_INSTRUMENT, EDIT_INSTRUMENT  } from '../../../graphql/instrument.mutations';
 
   let store = useStore();
 

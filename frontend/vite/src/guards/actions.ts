@@ -61,7 +61,11 @@ mappings.set(
 );
 
 // add update, delete, verify, submit mappings
-function hasRights(userRole: string, objectName: string, action: string) {
+function hasRights(action: string, objectName: string, userRole: string = "") {
+  if (userRole.length === 0){
+    userRole = localStorage.getItem('fRole') as string;
+  }
+
   if (!userRole || !objectName) {
     return false;
   }

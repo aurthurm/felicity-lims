@@ -40,7 +40,9 @@
     </div>
 
     <hr>
-    <router-link to="/patients/search" class="px-2 py-1 border-blue-500 border text-blue-500 rounded transition duration-300 hover:bg-blue-700 hover:text-white focus:outline-none">Add Laboratory Request</router-link>
+      <router-link 
+      v-show="shield.hasRights(shield.actions.CREATE, shield.objects.SAMPLE)"
+      to="/patients/search" class="px-2 py-1 border-blue-500 border text-blue-500 rounded transition duration-300 hover:bg-blue-700 hover:text-white focus:outline-none">Add Laboratory Request</router-link>
     <hr>
 
     <!-- Sampe Table View -->
@@ -122,27 +124,30 @@
   <section class="flex justify-between items-center">
     <div>
          <button 
-         v-show="can_cancel" 
+         v-show="shield.hasRights(shield.actions.CANCEL, shield.objects.SAMPLE) && can_cancel" 
          @click.prevent="cancelSamples_()" 
          class="px-2 py-1 mr-2 border-blue-500 border text-blue-500 rounded transition duration-300 hover:bg-blue-700 hover:text-white focus:outline-none">Cancel</button>
          <button 
-         v-show="can_reinstate" 
+         v-show="shield.hasRights(shield.actions.CANCEL, shield.objects.SAMPLE) && can_reinstate" 
          @click.prevent="reInstateSamples_()" 
          class="px-2 py-1 mr-2 border-blue-500 border text-blue-500 rounded transition duration-300 hover:bg-blue-700 hover:text-white focus:outline-none">ReInstate</button>
          <button 
-         v-show="can_receive" 
+         v-show="shield.hasRights(shield.actions.CANCEL, shield.objects.SAMPLE) && can_receive" 
          @click.prevent="receiveSamples_()" 
          class="px-2 py-1 mr-2 border-blue-500 border text-blue-500 rounded transition duration-300 hover:bg-blue-700 hover:text-white focus:outline-none">Reveive</button>
-         <button v-show="can_reject" 
+         <button 
+         v-show="shield.hasRights(shield.actions.CANCEL, shield.objects.SAMPLE) && can_reject" 
          @click.prevent="prepareRejections()" 
           class="px-2 py-1 mr-2 border-blue-500 border text-blue-500 rounded transition duration-300 hover:bg-blue-700 hover:text-white focus:outline-none">Reject</button>
-         <button v-show="can_copy_to" class="px-2 py-1 mr-2 border-blue-500 border text-blue-500 rounded transition duration-300 hover:bg-blue-700 hover:text-white focus:outline-none">Copy to New</button>
          <button 
-         v-show="can_download" 
+         v-show="shield.hasRights(shield.actions.CANCEL, shield.objects.SAMPLE) && can_copy_to" 
+         class="px-2 py-1 mr-2 border-blue-500 border text-blue-500 rounded transition duration-300 hover:bg-blue-700 hover:text-white focus:outline-none">Copy to New</button>
+         <button 
+         v-show="shield.hasRights(shield.actions.CANCEL, shield.objects.SAMPLE) && can_download" 
          @click.prevent="downloadReports_()" 
          class="px-2 py-1 mr-2 border-blue-500 border text-blue-500 rounded transition duration-300 hover:bg-blue-700 hover:text-white focus:outline-none">Download</button>
          <button 
-         v-show="can_print" 
+         v-show="shield.hasRights(shield.actions.CANCEL, shield.objects.SAMPLE) && can_print" 
          @click.prevent="printReports_()" 
          class="px-2 py-1 mr-2 border-blue-500 border text-blue-500 rounded transition duration-300 hover:bg-blue-700 hover:text-white focus:outline-none">Print</button>
     </div>
@@ -193,6 +198,8 @@ import { IAnalysisProfile, IAnalysisService, ISample } from '../../models/analys
 import { ifZeroEmpty } from '../../utils'
 import useReportComposable from '../../modules/reports'; 
 import useSampleComposable from '../../modules/samples';
+
+import * as shield from '../../guards'
 
 export default defineComponent({
   name: "Samples",
@@ -376,6 +383,7 @@ export default defineComponent({
         const selection = getSamplesChecked();
         router.push({ name: "reject-samples", params: { samples: JSON.stringify(selection) }})
       },
+      shield
     };
   },
 });

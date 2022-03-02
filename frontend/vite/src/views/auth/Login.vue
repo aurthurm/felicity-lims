@@ -80,13 +80,22 @@ import { useStore } from 'vuex';
 import { useMutation } from '@urql/vue';
 import { AUTHENTICATE_USER } from '../../graphql/_mutations';
 import { ActionTypes } from '../../store/actions';
+import { ActionTypes as SetupActionTypes  } from '../../store/modules/setup';
 export default defineComponent({
   setup() {
     const router = useRouter();
     const store = useStore();
     store.dispatch(ActionTypes.LOG_OUT);
+    //
+    store.dispatch(ActionTypes.FETCH_USERS);
+    store.dispatch(ActionTypes.FETCH_DEPARTMENTS);
+    store.dispatch(ActionTypes.FETCH_GROUPS_AND_PERMISSIONS);
+    store.dispatch(SetupActionTypes.FETCH_LABORATORY);
+    store.dispatch(SetupActionTypes.FETCH_LABORATORY_SETTING);
+
     let userAuth = reactive<any>({ data: null, error: null });
     let form = reactive<any>({ username: null, password: null });
+
     const { executeMutation: authenticateUser } = useMutation(AUTHENTICATE_USER);
 
     function login() {

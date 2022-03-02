@@ -48,38 +48,19 @@
 }
 </style>
 
-<script lang="ts">
-import tabAssignSamples from './WorkSheetAssign.vue';
-import tabWorksheetResults from './WorkSheetResults.vue';
-import tabLogs from '../../components/AuditLog.vue';
+<script setup lang="ts">
+  import tabAssignSamples from './WorkSheetAssign.vue';
+  import tabWorksheetResults from './WorkSheetResults.vue';
+  import tabLogs from '../../components/AuditLog.vue';
 
-import { defineComponent, ref, computed } from 'vue';
-import { useStore } from 'vuex';
-import { IWorkSheet } from '../../../models/worksheet';
+  import { ref, computed } from 'vue';
+  import { useStore } from 'vuex';
+  import { IWorkSheet } from '../../../models/worksheet';
 
-export default defineComponent({
-  name: 'worksheet-detail',
-  components: {
-    tabAssignSamples,
-    tabWorksheetResults,
-    tabLogs,
-  },
-
-  setup() {
     let store = useStore();
 
     let currentTab = ref('detail');
     const tabs = ['detail', 'assign-samples', 'logs'];
-    let currentTabComponent = computed(() => 'tab-' + currentTab.value);
 
     const worksheet = computed<IWorkSheet>(() => store.getters.getWorkSheet)
-
-    return {
-      tabs,
-      currentTab,
-      currentTabComponent,
-      worksheet
-    };
-  },
-});
 </script>

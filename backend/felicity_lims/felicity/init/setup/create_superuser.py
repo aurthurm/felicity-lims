@@ -40,3 +40,13 @@ async def create_super_user() -> None:
 
             await superuser.link_auth(auth_uid=su_auth.uid)
             await superuser.propagate_user_type()
+
+    # initial user-preferences
+    preferences = models.UserPreference.get(user_uid=superuser.uid)
+    if not preferences:
+        pref_in = schemas.UserPreferenceCreate(
+            user_uid=superuser.uid,
+            expanded_menu=False,
+            theme="LIGHT"
+        )
+        await models.UserPreference.create(obj_in=pref_in)

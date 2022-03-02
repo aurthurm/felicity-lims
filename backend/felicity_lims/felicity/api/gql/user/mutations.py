@@ -8,12 +8,12 @@ from felicity.apps.user import models as user_models, schemas as user_schemas
 from felicity.core import security
 from felicity.core.config import settings
 from felicity.core.security import generate_password_reset_token
-from felicity.api.gql import MessageResponse, MessageType, OperationError
+from felicity.api.gql import MessageResponse, MessageType, OperationError, auth_from_info, verify_user_auth
 from felicity.api.gql.user.types import (
     AuthenticatedData,
     UpdatedGroupPerms,
     UserAuthType,
-    UserType,
+    UserType, GroupType,
 )
 
 logging.basicConfig(level=logging.INFO)
@@ -37,6 +37,19 @@ UpdatedGroupPermsResponse = strawberry.union(
     (UpdatedGroupPerms, OperationError),  # noqa
     description="",
 )
+
+GroupResponse = strawberry.union(
+    "GroupResponse",
+    (GroupType, OperationError),  # noqa
+    description="",
+)
+
+
+@strawberry.input
+class GroupInputType:
+    name: str
+    pages: str
+    active: bool = True
 
 
 def simple_task(message: str):
@@ -76,6 +89,17 @@ class UserMutations:
         }
         user_in = user_schemas.UserCreate(**user_in)
         user: user_models.User = await user_models.User.create(user_in=user_in)
+
+        # initial user-preferences
+        preferences = user_models.UserPreference.get(user_uid=user.uid)
+        if not preferences:
+            pref_in = user_schemas.UserPreferenceCreate(
+                user_uid=user.uid,
+                expanded_menu=False,
+                theme="LIGHT"
+            )
+            await user_models.UserPreference.create(obj_in=pref_in)
+
         if user_in.email:
             logger.info("Handle email sending in a standalone service")
         return UserType(**user.marshal_simple())
@@ -273,6 +297,61 @@ class UserMutations:
         return MessageType(msg)
 
     @strawberry.mutation
+    async def create_group(info, payload: GroupInputType) -> GroupResponse:
+
+        is_authenticated, felicity_user = await auth_from_info(info)
+        verify_user_auth(
+            is_authenticated,
+            felicity_user,
+            "Only Authenticated user can add user groups",
+        )
+
+        if not payload.name:
+            return OperationError(error="Name Required")
+
+        group = await user_models.Group.get(name=payload.name)
+        if group:
+            return OperationError(
+                error=f"Group with name {payload.name} already exists"
+            )
+
+        incoming = {
+            "keyword": payload.name.lower(),
+            # "created_by_uid": felicity_user.uid,
+            # "updated_by_uid": felicity_user.uid,
+        }
+        for k, v in payload.__dict__.items():
+            incoming[k] = v
+
+        group: user_models.Group = await user_models.Group.create(incoming)
+        return GroupType(**group.marshal_simple())
+
+    @strawberry.mutation
+    async def update_group(info, uid: int, payload: GroupInputType) -> GroupResponse:
+
+        is_authenticated, felicity_user = await auth_from_info(info)
+        verify_user_auth(
+            is_authenticated,
+            felicity_user,
+            "Only Authenticated user can update user groups",
+        )
+
+        group = await user_models.Group.get(uid=uid)
+        if not group:
+            return OperationError(error=f"Group with uid {uid} does not exist")
+
+        group_data = group.to_dict()
+        for field in group_data:
+            if field in payload.__dict__:
+                try:
+                    setattr(group, field, payload.__dict__[field])
+                except Exception as e:
+                    logger.warning(e)
+
+        group = await group.update(group.to_dict())
+        return GroupType(**group.marshal_simple())
+
+    @strawberry.mutation
     async def update_group_permissions(
         self, info, group_uid: int, permission_uid: int
     ) -> UpdatedGroupPermsResponse:
@@ -298,6 +377,3 @@ class UserMutations:
 
         ok = True
         return UpdatedGroupPerms(group=group, permission=permission)
-
-
-# Reset password is an api_endpoint since it will be a link

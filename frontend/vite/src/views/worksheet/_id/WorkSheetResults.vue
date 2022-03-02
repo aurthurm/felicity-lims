@@ -28,6 +28,7 @@
                 <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-black-500 tracking-wider">Analysis/Test</th>
                 <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-black-500 tracking-wider">Instrument</th>
                 <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-black-500 tracking-wider">Method</th>
+                <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-black-500 tracking-wider">Interim</th>
                 <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-black-500 tracking-wider">Result</th>
                 <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-black-500 tracking-wider">Unit</th>
                 <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-black-500 tracking-wider">Status</th>
@@ -78,6 +79,18 @@
                 <div >{{ result?.method?.name || "None"  }}</div>
                 </td>
                 <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
+                  <div  v-if="!isEditable(result) || result?.analysis?.interims?.length === 0" class="text-sm leading-5 text-blue-900"> --- </div>
+                  <label v-else class="block col-span-2 mb-2" >
+                      <select class="form-input mt-1 block w-full" v-model="result.result" @change="check(result)">
+                        <option value=""></option>
+                        <option  
+                        v-for="(interim, index) in result?.analysis?.interims"
+                        :key="interim.key"
+                        :value="interim.value" >{{ interim.value }}</option>
+                    </select>
+                  </label>
+                </td>
+                <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
                   <div  v-if="!isEditable(result)" >{{ result?.result  }}</div>
                   <label v-else-if="result?.analysis?.resultOptions?.length === 0" class="block" >
                     <input class="form-input mt-1 block w-full" v-model="result.result" @keyup="check(result)"/>
@@ -98,11 +111,7 @@
                 <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
                 <button type="button" class="bg-blue-400 text-white p-1 rounded leading-none">{{ result?.status || "unknown" }}</button>
                 </td>
-                <!-- <td class="px-1 py-1 whitespace-no-wrap text-right border-b border-gray-500 text-sm leading-5">
-                    <button class="px-2 py-1 mr-2 border-orange-500 border text-orange-500 rounded transition duration-300 hover:bg-orange-700 hover:text-white focus:outline-none">View</button>
-                    <button class="px-2 py-1 mr-2 border-blue-500 border text-blue-500 rounded transition duration-300 hover:bg-blue-700 hover:text-white focus:outline-none">Retract</button>
-                </td> -->
-            </tr>
+              </tr>
             </tbody>
         </table>
         </div>
@@ -110,19 +119,19 @@
 
     <section class="my-4">
       <button  
-      v-if="can_unassign"
+      v-show="shield.hasRights(shield.actions.CREATE, shield.objects.WORKSHEET) && can_unassign"
       @click.prevent="unAssignSamples()" class="px-2 py-1 mr-2 border-blue-500 border text-blue-500 rounded transition duration-300 hover:bg-blue-700 hover:text-white focus:outline-none">Un Assign</button>
       <button  
-      v-if="can_submit"
+      v-show="shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) && can_submit"
       @click.prevent="submitResults()" class="px-2 py-1 mr-2 border-blue-500 border text-blue-500 rounded transition duration-300 hover:bg-blue-700 hover:text-white focus:outline-none">Submit</button>
       <button  
-      v-if="can_retract"
+      v-show="shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) && can_retract"
       @click.prevent="retractResults()" class="px-2 py-1 mr-2 border-blue-500 border text-blue-500 rounded transition duration-300 hover:bg-blue-700 hover:text-white focus:outline-none">Retract</button>
       <button  
-      v-if="can_verify"
+      v-show="shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) && can_verify"
       @click.prevent="verifyResults()" class="px-2 py-1 mr-2 border-blue-500 border text-blue-500 rounded transition duration-300 hover:bg-blue-700 hover:text-white focus:outline-none">Verify</button>
       <button  
-      v-if="can_retest"
+      v-show="shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) && can_retest"
       @click.prevent="retestResults()" class="px-2 py-1 mr-2 border-blue-500 border text-blue-500 rounded transition duration-300 hover:bg-blue-700 hover:text-white focus:outline-none">Retest</button>
     </section>
 
@@ -140,6 +149,9 @@
   import { IAnalysisResult, IAnalysisService } from '../../../models/analysis';
   import useAnalysisComposable from '../../../modules/analysis';
   import useWorkSheetComposable from '../../../modules/worksheet'
+  import useResultMutationComposable from '../../../modules/result_mutation'
+
+  import * as shield from '../../../guards'
 
   const store = useStore();
 
@@ -220,8 +232,10 @@
     return false;
   }
 
+  const { mutateResults } = useResultMutationComposable()
   function prepareResults(): any[] {
-    const results = getResultsChecked();
+    let results = getResultsChecked();
+    results = mutateResults(results);
     let ready: IAnalysisResult[] = [];
     results?.forEach((result: IAnalysisResult) => ready.push({ uid: result.uid , result: result.result } as IAnalysisResult))
     return ready;

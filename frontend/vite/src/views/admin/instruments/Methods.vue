@@ -112,15 +112,15 @@
 </template>
 
 <script setup lang="ts">
-  import modal from '../../../../components/SimpleModal.vue';
+  import modal from '../../../components/SimpleModal.vue';
 
-  import MethodForm from '../../instruments/comps/MethodForm.vue';
+  import MethodForm from './MethodForm.vue';
   import { useMutation } from '@urql/vue';
-  import { defineComponent, ref, reactive, computed } from 'vue';
+  import { ref, reactive, computed } from 'vue';
   import { useStore } from 'vuex';
-  import { ActionTypes } from '../../../../store/modules/setup';
-  import { IMethod } from '../../../../models/setup'
-  import { ADD_METHOD, EDIT_METHOD  } from '../../../../graphql/instrument.mutations';
+  import { ActionTypes } from '../../../store/modules/setup';
+  import { IMethod } from '../../../models/setup'
+  import { ADD_METHOD, EDIT_METHOD  } from '../../../graphql/instrument.mutations';
 
   let store = useStore();
 

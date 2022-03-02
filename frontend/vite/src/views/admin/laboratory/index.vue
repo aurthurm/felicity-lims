@@ -24,19 +24,14 @@
   </div>
 </template>
 
-<style lang="postcss">
-.scroll-section {
-  height: 400px;
-}
+<script setup lang="ts">
+  import { ref, computed } from 'vue';
 
-.tab-active {
-  border-bottom: 2px solid rgb(194, 193, 193);
-  color: rgb(37, 37, 37) !important;
-}
+  import tabLaboratory from './Laboratory.vue'
+  import tabDepartments from './Departments.vue'
 
-.c-active {
-  background-color: lightblue;
-}
-</style>
 
-<script src="./laboratory.component.ts" lang="ts"></script>
+  let currentTab = ref<string>('laboratory');
+  const tabs: string[]= ['laboratory', 'departments'];
+  let currentTabComponent = computed(() => 'tab-' + currentTab.value);
+</script>

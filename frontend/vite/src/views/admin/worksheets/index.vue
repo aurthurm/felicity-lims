@@ -359,18 +359,18 @@
 </template>
 
 <style lang="postcss" scoped>
-.scroll-section {
-  height: 700px;
-}
+ .scroll-section {
+    height: 400px;
+  }
 
-.tab-active {
-  border-bottom: 2px solid rgb(194, 193, 193);
-  color: rgb(37, 37, 37) !important;
-}
+  .tab-active {
+    border-bottom: 2px solid rgb(194, 193, 193);
+    color: rgb(37, 37, 37) !important;
+  }
 
-.c-active {
-  background-color: lightblue;
-}
+  .c-active {
+    background-color: lightblue;
+  }
 </style>
 
 <script lang="ts">

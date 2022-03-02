@@ -74,6 +74,8 @@ class LaboratoryInputType:
     mobile_phone: Optional[str] = None
     business_phone: Optional[str] = None
     lab_manager_uid: Optional[int] = None
+    address: Optional[str] = None
+    logo: Optional[str] = None
 
 
 @strawberry.input
@@ -252,8 +254,8 @@ class SetupMutations:
                     logger.warning(e)
 
         obj_in = schemas.LaboratoryUpdate(**lab_setting.to_dict())
-        laboratory = await lab_setting.update(obj_in)
-        return LaboratorySettingType(**laboratory.marshal_simple())
+        lab_setting = await lab_setting.update(obj_in)
+        return LaboratorySettingType(**lab_setting.marshal_simple())
 
     @strawberry.mutation
     async def create_department(
