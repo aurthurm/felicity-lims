@@ -1,5 +1,12 @@
 import moment from 'moment';
+import CryptoJs from 'crypto-js';
 
+// https://www.aesencryptiononline.com/ to decrypto online
+export const encrypter = (data: any, key: string) => CryptoJs.AES.encrypt(JSON.stringify(data), key).toString()
+export const decrypter = (data: any, key: string) => {
+  if(!data) return {}
+  return JSON.parse(CryptoJs.AES.decrypt(data, key).toString(CryptoJs.enc.Utf8))
+}
 
 export const parseDate = function(str: any) {
     let date = moment(str);
@@ -137,3 +144,5 @@ export const stringifyNumber = (n: number):string => {
   if (n%10 === 0) return deca[Math.floor(n/10)-2] + 'ieth';
   return deca[Math.floor(n/10)-2] + 'y-' + special[n%10];
 }
+
+

@@ -63,6 +63,12 @@ export const GET_ALL_USERS = gql`
             uid
             name
             keyword
+            pages
+            permissions {
+              uid
+              action
+              target
+            }
           }
       }
     }

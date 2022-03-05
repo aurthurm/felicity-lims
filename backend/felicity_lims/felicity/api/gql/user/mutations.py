@@ -316,7 +316,7 @@ class UserMutations:
             )
 
         incoming = {
-            "keyword": payload.name.lower(),
+            "keyword": payload.name.upper(),
             # "created_by_uid": felicity_user.uid,
             # "updated_by_uid": felicity_user.uid,
         }
@@ -348,6 +348,8 @@ class UserMutations:
                 except Exception as e:
                     logger.warning(e)
 
+        setattr(group, "keyword", payload.__dict__["name"].upper())
+
         group = await group.update(group.to_dict())
         return GroupType(**group.marshal_simple())
 
@@ -358,22 +360,21 @@ class UserMutations:
         if not group_uid or not permission_uid:
             return OperationError(error="Group and Permission are required.")
 
-        permission = await user_models.Permission.get(uid=permission_uid)
-        if not permission:
-            return OperationError(
-                error=f"permission with uid {permission_uid} not found"
-            )
-
         group = await user_models.Group.get(uid=group_uid)
         if not group:
             return OperationError(error=f"group with uid {group_uid} not found")
 
-        print(dir(group.permissions))
-
-        if permission in group.permissions:
+        if permission_uid in [perm.uid for perm in group.permissions]:
+            permissions = filter(lambda p: p.uid == permission_uid, group.permissions)
+            permission = list(permissions)[0]
             group.permissions.remove(permission)
         else:
+            permission = await user_models.Permission.get(uid=permission_uid)
+            if not permission:
+                return OperationError(
+                    error=f"permission with uid {permission_uid} not found"
+                )
             group.permissions.append(permission)
+        await group.save()
 
-        ok = True
         return UpdatedGroupPerms(group=group, permission=permission)

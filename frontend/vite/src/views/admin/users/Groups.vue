@@ -109,7 +109,7 @@
                                       { 'text-gray-700 font-medium': false },
                                     ]"
                                   >
-                                    <label for="toggle" class="text-xs text-gray-700 mr-2">
+                                    <label for="toggle" class="text-xs text-gray-700 mr-2" @click="updateGroupPerms(userGroup, perm)">
                                       <div class="inline-block w-10 mr-2 align-middle transition duration-200 ease-in">
                                           <input 
                                           type="checkbox" 
@@ -244,14 +244,19 @@
       ...group, 
       pages: pgs?.split(",") || [],
     })
-    // groups.value?.forEach(item => {
-    //   item[1].forEach((grp: IGroup) => {
-    //     grp.checked = false;
-    //     if(service.profiles?.some(p => p.uid === userGroup.uid) || false) {
-    //       service.checked = true;
-    //     };
-    //   })
-    // })
+    console.log(userGroup?.permissions)
+    console.log(permissions.value)
+    permissions.value?.forEach(item => {
+      item[1].forEach((perm: IPermission) => {
+        perm.checked = false;
+        if(userGroup.permissions?.some(p => {
+          console.log(p, perm, (p?.uid === perm?.uid))
+          return (p?.uid == perm?.uid) || false;
+        })) {
+          perm.checked = true;
+        };
+      })
+    })
   }
   const { executeMutation: createGroup } = useMutation(ADD_GROUP);
   const { executeMutation: updateGroup } = useMutation(UPDATE_GROUP);
@@ -301,8 +306,9 @@
   
   const { executeMutation: updateGroupPermissions } = useMutation(UPDATE_GROUP_PERMS);
   function updateGroupPerms(group: IGroup, permission: IPermission): void {
-    updateGroupPermissions({  groupUid: group?.uid, permissionUid: permission?.uid }).then((result) => {
-      store.dispatch(ActionTypes.UPDATE_GROUPS_PERMISSIONS, result);
+    console.log(group.name, permission.action,permission.target)
+      updateGroupPermissions({  groupUid: group?.uid, permissionUid: permission?.uid }).then((result) => {
+        store.dispatch(ActionTypes.UPDATE_GROUPS_PERMISSIONS, result);
     });
   }
 

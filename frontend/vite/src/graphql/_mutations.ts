@@ -5,6 +5,7 @@ fragment GroupTypeFields on GroupType {
   uid
   name
   keyword
+  pages
 }`
 
 const PermissionTypeFields = gql`

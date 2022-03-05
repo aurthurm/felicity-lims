@@ -1,9 +1,10 @@
 import axios from 'axios';
+import { authFromStorage, authLogout } from './auth';
 
 import { REST_BASE_URL } from './conf'
 
 const getAuthHeaders = () => {
-  const token = localStorage.getItem('fwt');
+  const token = authFromStorage()?.token;
   if (token) {
     return {
       'Access-Control-Allow-Origin': '*',
@@ -16,16 +17,9 @@ const getAuthHeaders = () => {
       }),
     } 
   }
-  logout();
-};
 
-const logout = () => {
-  localStorage.removeItem("fwt");
-  localStorage.removeItem("fuser");
-  localStorage.removeItem("fuid");
-  localStorage.removeItem("fRole");
-  return
-}
+  authLogout();
+};
 
 const axiosInstance = axios.create({
   baseURL: REST_BASE_URL + "/api/v1/",

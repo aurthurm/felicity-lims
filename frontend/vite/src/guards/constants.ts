@@ -1,13 +1,4 @@
 
-const roles = {
-  ADMINISTRATOR: "ADMINISTRATOR",
-  LAB_MANAGER: "LAB_MANAGER",
-  SCIENTIST: "SCIENTIST",
-  TECHNOLOGIST: "TECHNOLOGIST", // Associates, lab technicians
-  LAB_HAND: "LAB_HAND",  // help, data entry, clerks, secretary etc
-  GUEST: "GUEST", // visitor - read only e,g cdc, auditors, etx
-};
-
 const objects = {
   PATIENT: "PATIENT",
   CLIENT: "CLIENT",
@@ -32,5 +23,5 @@ const actions = {
 };
 
 
-export { actions, roles, objects };
+export { actions, objects };
   

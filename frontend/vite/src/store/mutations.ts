@@ -26,7 +26,7 @@ export const mutations = <MutationTree<IState>>{
     state.auth = authData.user;
     state.token = authData.token;
     state.isAuthenticated = true;
-    if(state.auth) state.auth.role = "ADMINISTRATOR";
+    if(state.auth) state.auth.role = authData.user.groups[0]?.name;
   },
 
   [MutationTypes.SET_USERS](state: IState, payload): void {

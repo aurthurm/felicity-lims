@@ -22,6 +22,7 @@
     "@urql/vue": "0.6.1",
     "@vueform/multiselect": "^2.2.0",
     "axios": "^0.25.0",
+    "crypto-js": "^4.1.1",
     "graphql": "^15.4.0",
     "graphql-tag": "^2.11.0",
     "graphql-ws": "^5.5.5",

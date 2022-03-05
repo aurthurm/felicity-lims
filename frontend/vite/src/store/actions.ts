@@ -8,6 +8,7 @@ import { MutationTypes } from './mutations';
 import {
   GET_GROUPS_AND_PERMISSIONS, GET_ALL_USERS, GET_AUDIT_LOG_FOR_TARGET, GET_DEPARTMENTS
 } from '../graphql/_queries';
+import { authToStorage, authFromStorage, authLogout } from '../auth';
 
 export enum ActionTypes {
   RESET_STATE = 'RESET_STATE',
@@ -42,32 +43,17 @@ export const actions = <ActionTree<IState, RootState>>{
   // Auth
   async [ActionTypes.PERSIST_AUTH_DATA]({ commit }, payload) {
     const authData = payload.data.authenticateUser;
-    localStorage.setItem('fwt', authData.token); // Felicity Web Token
-    localStorage.setItem('fuser', authData.user?.firstName + " " + authData.user?.lastName); // Felicity User
-    localStorage.setItem('fuid', authData.user?.uid); // Felicity UserUid
-    localStorage.setItem('fRole', "ADMINISTRATOR"); // Felicity userRule
+    authToStorage(authData)
     await commit(MutationTypes.PERSIST_AUTH_DATA, authData);
   },
 
   async [ActionTypes.PERSIST_AUTH_FROM_LOCAL_STORAGE]({ commit }) {
-    const userUid = localStorage.getItem('fuid');
-    const authData = {
-      token: localStorage.getItem('fwt'),
-      user: {
-        uid: userUid ? +userUid : userUid,
-        fullName: localStorage.getItem('fuser'),
-        role: localStorage.getItem('fRole')
-      }
-    }
+    const authData = authFromStorage()
     await commit(MutationTypes.PERSIST_AUTH_DATA, authData);
   },
 
-
   async [ActionTypes.LOG_OUT]({ commit }) {
-    localStorage.removeItem("fwt");
-    localStorage.removeItem("fuser");
-    localStorage.removeItem("fuid");
-    localStorage.removeItem("fRole");
+    authLogout();
     commit(MutationTypes.RESET_STATE);
     return true
   },

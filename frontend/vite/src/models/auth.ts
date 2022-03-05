@@ -31,6 +31,7 @@ export interface IPermission {
     action?: string;
     target?: string;
     active?: boolean;
+    checked?: boolean;
 }
 
 export interface IGroup {

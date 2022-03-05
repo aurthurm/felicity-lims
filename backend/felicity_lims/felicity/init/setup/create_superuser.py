@@ -3,6 +3,7 @@ from typing import Optional
 
 from felicity.apps.user import models, schemas
 from felicity.core.config import settings
+from felicity.init.setup.groups_perms import FGroup
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -22,6 +23,12 @@ async def create_super_user() -> None:
             is_superuser=True,
         )
         superuser = await models.User.create(user_in=su_in)
+
+        admin_group = await models.Group.get(name=FGroup.ADMINISTRATOR)
+        if admin_group:
+            superuser.groups.append(admin_group)
+            await superuser.save()
+
         if not superuser:
             raise Exception("Failed to create superuser")
 
@@ -42,7 +49,7 @@ async def create_super_user() -> None:
             await superuser.propagate_user_type()
 
     # initial user-preferences
-    preferences = models.UserPreference.get(user_uid=superuser.uid)
+    preferences = await models.UserPreference.get(user_uid=superuser.uid)
     if not preferences:
         pref_in = schemas.UserPreferenceCreate(
             user_uid=superuser.uid,

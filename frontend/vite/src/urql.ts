@@ -7,6 +7,7 @@ import { GQL_BASE_URL, WS_BASE_URL } from './conf'
 
 import { createClient as createWSClient } from 'graphql-ws';
 import { SubscriptionClient } from 'subscriptions-transport-ws'
+import { authFromStorage, authLogout } from './auth';
 
 const subscriptionClient = new SubscriptionClient( WS_BASE_URL, { reconnect: true });
 
@@ -18,7 +19,7 @@ const wsClient = createWSClient({
 const getAuth = async ({ authState }) => {
 
   if (!authState) {
-    const token = localStorage.getItem('fwt');
+    const token = authFromStorage()?.token;
     if (token) {
       return { token };
     }
@@ -29,7 +30,7 @@ const getAuth = async ({ authState }) => {
     return { token: authState.token };
   }
 
-  logout();
+  authLogout();
 
   return null;
 };
@@ -66,14 +67,6 @@ const didAuthError = (error: any ) => {
   return error.graphQLErrors.some((e: any) => e.extensions?.code === 'FORBIDDEN');
 };
 
-const logout = () => {
-  localStorage.removeItem("fwt");
-  localStorage.removeItem("fuser");
-  localStorage.removeItem("fuid");
-  localStorage.removeItem("fRole");
-  location.reload();
-}
-
 const willAuthError = (authState: any) => {
   if (!authState || "/* JWT is expired */") return true;
   return false;
@@ -95,7 +88,8 @@ export const urqlClient = createClient({
           isAuthError = error.graphQLErrors.some(e => e.extensions?.code === 'FORBIDDEN');
         }
         if (isAuthError) {
-          logout();
+          console.log("isAuthError")
+          authLogout();
         }
       },
     }),
@@ -116,7 +110,7 @@ export const urqlClient = createClient({
     }),
   ],  
   fetchOptions: () => {
-    const token = localStorage.getItem('fwt');
+    const token = authFromStorage()?.token;
     return {
       headers: {
         'Access-Control-Allow-Origin': '*',

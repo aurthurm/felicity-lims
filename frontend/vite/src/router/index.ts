@@ -1,7 +1,5 @@
 import { RouteRecordRaw, createRouter, createWebHistory } from 'vue-router';
-import { PropType } from 'vue';
-import { canAccessPage, roles } from './../guards';
-import { pages } from './constants';
+import * as guards from './../guards';
 import adminRoutes from './admin';
 import patientRoutes from './patient';
 import clientRoutes from './client';
@@ -38,13 +36,16 @@ import AdminView from '../views/admin/index.vue';
 import PageNotFound from '../views/404.vue';
 import NotAuthorised from '../views/Restricted.vue';
 import { isTokenValid } from './checks';
+import { authFromStorage } from '../auth';
+
+const auth = authFromStorage();
 
 
 const routes: RouteRecordRaw[] = [
   // { path: '/', redirect: '/dashboard' },
   {
     path: '/dashboard',
-    name: pages.DASHBOARD,
+    name: guards.pages.DASHBOARD,
     component: DashBoardView,
     meta: {
       requiresAuth: true,
@@ -52,13 +53,13 @@ const routes: RouteRecordRaw[] = [
   },
   {
     path: '/auth',
-    name: pages.LOGIN,
+    name: guards.pages.LOGIN,
     component: LoginView,
     meta: { layout: 'empty' },
   },
   {
     path: '/patients',
-    name: pages.PATIENTS,
+    name: guards.pages.PATIENTS,
     component: PatientsView,
     children: patientRoutes,
     meta: {
@@ -67,7 +68,7 @@ const routes: RouteRecordRaw[] = [
   },
   {
     path: '/patients-compact',
-    name: pages.PATIENTS_COMPACT,
+    name: guards.pages.PATIENTS_COMPACT,
     component: PatientsCompact,
     meta: {
       requiresAuth: true,
@@ -75,7 +76,7 @@ const routes: RouteRecordRaw[] = [
   },
   {
     path: '/clients',
-    name: pages.CLIENTS,
+    name: guards.pages.CLIENTS,
     component: ClientsView,
     children: clientRoutes,
     meta: {
@@ -84,7 +85,7 @@ const routes: RouteRecordRaw[] = [
   },
   {
     path: '/samples',
-    name: pages.SAMPLES,
+    name: guards.pages.SAMPLES,
     component: SamplesView,
     children: [
       {
@@ -115,7 +116,7 @@ const routes: RouteRecordRaw[] = [
   },
   {
     path: '/quality-control',
-    name: pages.QC_SAMPLES,
+    name: guards.pages.QC_SAMPLES,
     component: QualityControlView,
     children: [
       {
@@ -151,7 +152,7 @@ const routes: RouteRecordRaw[] = [
   },
   {
     path: '/worksheets',
-    name: pages.WORKSHEETS,
+    name: guards.pages.WORKSHEETS,
     component: WorkSheetsView,
     children: [
       {
@@ -187,7 +188,7 @@ const routes: RouteRecordRaw[] = [
   },
   {
     path: '/kanban-boards',
-    name: pages.KANBAN_BOARD,
+    name: guards.pages.KANBAN_BOARD,
     component: KanBanView,
     children: [
       {
@@ -240,7 +241,7 @@ const routes: RouteRecordRaw[] = [
     },
   },
   {
-    name: pages.NOTICE_MANAGER,
+    name: guards.pages.NOTICE_MANAGER,
     path: '/notice-manager',
     component: NoticeAdminView,
     // children: [
@@ -259,7 +260,7 @@ const routes: RouteRecordRaw[] = [
   },
   {
     path: '/documents',
-    name: pages.MARKDOWN_DOCUMENTS,
+    name: guards.pages.MARKDOWN_DOCUMENTS,
     component: MarkDownView,
     children: [
       {
@@ -310,7 +311,7 @@ const routes: RouteRecordRaw[] = [
     },
   },
   {
-    name: pages.ADMINISTRATION,
+    name: guards.pages.ADMINISTRATION,
     path: '/admin',
     component: AdminView,
     children: adminRoutes,
@@ -320,7 +321,7 @@ const routes: RouteRecordRaw[] = [
     },
   },
   {
-    name: pages.FOUR_OR_FOUR,
+    name: guards.pages.FOUR_OR_FOUR,
     path: '/:pathMatch(.*)',
     component: PageNotFound,
     meta: {
@@ -328,7 +329,7 @@ const routes: RouteRecordRaw[] = [
     },
   },
   {
-    name: pages.NOT_AUTHORISED,
+    name: guards.pages.NOT_AUTHORISED,
     path: '/acced-denied',
     component: NotAuthorised,
     meta: {
@@ -345,19 +346,17 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
 
   if(to.path === '/') {
-    next({ name: pages.DASHBOARD });
+    next({ name: guards.pages.DASHBOARD });
     return;
   }
 
   if (to.matched.some((record) => record.meta.requiresAuth)) {
 
-    let token = localStorage.getItem('fwt');
-
-    if (!isTokenValid(token)) {
-      next({ name: pages.LOGIN });
+    if (!isTokenValid(auth.token!)) {
+      next({ name: guards.pages.LOGIN });
     } else {
       if(!hasAccess(to.matched[0].name)){  // to.matched[0] get outer page
-       next({ name: pages.NOT_AUTHORISED });
+       next({ name: guards.pages.NOT_AUTHORISED });
       } else {
         next();
       }
@@ -372,41 +371,40 @@ router.beforeEach((to, from, next) => {
 
 
 function hasAccess(page: any) {
-  const userRole = localStorage.getItem('fRole') || "";
 
   switch (page) {
-    case pages.DASHBOARD:
-      return canAccessPage(userRole, pages.DASHBOARD)
+    case guards.pages.DASHBOARD:
+      return guards.canAccessPage(guards.pages.DASHBOARD)
 
-    case pages.PATIENTS:
-      return canAccessPage(userRole, pages.PATIENTS)
+    case guards.pages.PATIENTS:
+      return guards.canAccessPage(guards.pages.PATIENTS)
       
-    case pages.PATIENTS_COMPACT:
-      return canAccessPage(userRole, pages.PATIENTS_COMPACT)
+    case guards.pages.PATIENTS_COMPACT:
+      return guards.canAccessPage(guards.pages.PATIENTS_COMPACT)
     
-    case pages.CLIENTS:
-      return canAccessPage(userRole, pages.CLIENTS)
+    case guards.pages.CLIENTS:
+      return guards.canAccessPage(guards.pages.CLIENTS)
     
-    case pages.SAMPLES:
-      return canAccessPage(userRole, pages.SAMPLES)
+    case guards.pages.SAMPLES:
+      return guards.canAccessPage(guards.pages.SAMPLES)
 
-    case pages.QC_SAMPLES:
-      return canAccessPage(userRole, pages.QC_SAMPLES)
+    case guards.pages.QC_SAMPLES:
+      return guards.canAccessPage(guards.pages.QC_SAMPLES)
       
-    case pages.WORKSHEETS:
-      return canAccessPage(userRole, pages.WORKSHEETS)
+    case guards.pages.WORKSHEETS:
+      return guards.canAccessPage(guards.pages.WORKSHEETS)
     
-    case pages.MARKDOWN_DOCUMENTS:
-      return canAccessPage(userRole, pages.MARKDOWN_DOCUMENTS)
+    case guards.pages.MARKDOWN_DOCUMENTS:
+      return guards.canAccessPage(guards.pages.MARKDOWN_DOCUMENTS)
     
-    case pages.KANBAN_BOARD:
-      return canAccessPage(userRole, pages.KANBAN_BOARD)
+    case guards.pages.KANBAN_BOARD:
+      return guards.canAccessPage(guards.pages.KANBAN_BOARD)
     
-    case pages.ADMINISTRATION:
-      return canAccessPage(userRole, pages.ADMINISTRATION)
+    case guards.pages.ADMINISTRATION:
+      return guards.canAccessPage(guards.pages.ADMINISTRATION)
   
-    case pages.NOTICE_MANAGER:
-      return canAccessPage(userRole, pages.NOTICE_MANAGER)
+    case guards.pages.NOTICE_MANAGER:
+      return guards.canAccessPage(guards.pages.NOTICE_MANAGER)
 
     default:
       return false;

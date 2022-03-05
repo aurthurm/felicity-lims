@@ -37,7 +37,7 @@
         <span>Notifications</span>
       </a>
       <router-link
-        v-show="canAccessPage(userRole, pages.ADMINISTRATION)"
+        v-show="guards.canAccessPage(guards.pages.ADMINISTRATION)"
         to="/admin"
         class="no-underline text-white opacity-50 flex items-center px-4 border-b border-transparent hover:opacity-100 md:hover:border-grey-dark"
         >
@@ -86,30 +86,17 @@
 </template>
 
 
-<script lang="ts">
-import { defineComponent, ref, computed } from 'vue';
-import { canAccessPage } from './../../../guards';
-import { pages } from "./../../../router/constants";
-import useNotificationComposable from './../../../modules/notification'
-export default defineComponent({
-  emits: ["openNotifications"],
-  setup(_, { emit }) {
-    const dropdownOpen = ref(false);
-    const isOpen = ref(false);
+<script setup lang="ts">
+  import { ref } from 'vue';
+  import useNotificationComposable from './../../../modules/notification'
 
-    const userFullName: string | null = localStorage.getItem('fuser');
+  import * as guards from './../../../guards';
 
+  const dropdownOpen = ref(false);
+  const isOpen = ref(false);
 
-    const {  showNotifications } = useNotificationComposable()
+  const userFullName: string | null = localStorage.getItem('fuser');
 
-    return {
-      pages, canAccessPage,
-      userRole: computed(() => localStorage.getItem('fRole') || "" ),
-      isOpen,
-      dropdownOpen,
-      userFullName,
-      showNotifications
-    };
-  },
-});
+  const {  showNotifications } = useNotificationComposable()
+
 </script>
