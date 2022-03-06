@@ -1,10 +1,13 @@
 import { authFromStorage } from "../auth";
 import { IGroup } from "../models/auth";
 
-function hasRights(action: string, objectName: string) {
+async function hasRights(action: string, objectName: string) {
 
-    const auth = authFromStorage();
+    const auth = await authFromStorage();
     const groups = auth?.user?.groups
+    
+    if(!groups || groups?.length == 0 ) return false
+
     const group = groups![0] as IGroup
 
     if (group) {

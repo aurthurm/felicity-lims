@@ -38,7 +38,7 @@ import NotAuthorised from '../views/Restricted.vue';
 import { isTokenValid } from './checks';
 import { authFromStorage } from '../auth';
 
-const auth = authFromStorage();
+
 
 
 const routes: RouteRecordRaw[] = [
@@ -343,7 +343,8 @@ const router = createRouter({
   routes,
 });
 
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
+  const auth = await authFromStorage();
 
   if(to.path === '/') {
     next({ name: guards.pages.DASHBOARD });

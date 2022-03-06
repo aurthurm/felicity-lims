@@ -1,6 +1,8 @@
 import Swal from 'sweetalert2';
 import JSConfetti from 'js-confetti'
 import { Notyf } from 'notyf';
+import { useMutation } from '@urql/vue';
+import { useStore } from 'vuex';
 
 const jsConfetti = new JSConfetti();
 
@@ -95,14 +97,30 @@ export default function useNotifyToast(){
       return gqlOpertionalErrorHandler(gqlResponseHandler(res))
     }
 
+    // --- exerimental
+    // example GQLMutation(
+    //    ADD_ANALYSIS_REQUEST, 
+    //    {uid:10, ...}, 
+    //    SampleActionTypes.ADD_ANALYSIS_REQUEST, 
+    //    'createAnalysisRequest'
+    // )
+    function GQLMutation(query, payload, dispatch, dataKey) {
+      const store = useStore();
+      const { executeMutation: mutator } = useMutation(query);
+      mutator(payload).then((result) => {
+        const data = gqlResponseHandler(result)
+        if(data) store.dispatch(dispatch, data[dataKey]);
+      });
+    }
+  
     // -- 
     return { 
         toastSuccess, toastInfo, toastWarning, toastError,
         swalSuccess, swalInfo, swalWarning, swalError,
-        gqlResponseHandler, gqlErrorHandler, gqlOpertionalErrorHandler, gqlAllErrorHandler
+        gqlResponseHandler, gqlErrorHandler, gqlOpertionalErrorHandler, gqlAllErrorHandler,
+        GQLMutation
     }
 }
-
 
 
 

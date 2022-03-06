@@ -1,8 +1,5 @@
-import { useStore } from "vuex"
 import useNotifyToast from "./alert_toast";
 import { IAnalysisResult } from "../models/analysis";
-
-const store = useStore();
 
 const { toastWarning } = useNotifyToast();
 

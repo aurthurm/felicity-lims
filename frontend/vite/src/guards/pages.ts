@@ -1,9 +1,12 @@
 import { authFromStorage } from "../auth";
 import { IGroup } from "../models/auth";
 
-function canAccessPage(pageName: string) {
-    const auth = authFromStorage();
+async function canAccessPage(pageName: string) {
+    const auth = await authFromStorage();
     const groups = auth?.user?.groups
+    
+    if(!groups || groups?.length == 0 ) return false
+
     const group = groups![0] as IGroup;
 
     if (group) {

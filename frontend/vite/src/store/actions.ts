@@ -19,6 +19,8 @@ export enum ActionTypes {
   FETCH_GROUPS_AND_PERMISSIONS = 'FETCH_GROUPS_AND_PERMISSIONS',
   FETCH_USERS = 'FETCH_USERS',
   UPDATE_GROUPS_PERMISSIONS = 'UPDATE_GROUPS_PERMISSIONS',
+  ADD_GROUP = 'ADD_GROUP',
+  UPDATE_GROUP = 'UPDATE_GROUP',
 
   FETCH_AUDIT_LOGS = 'FETCH_AUDIT_LOGS',
   RESET_AUDIT_LOGS = 'RESET_AUDIT_LOGS',
@@ -43,12 +45,12 @@ export const actions = <ActionTree<IState, RootState>>{
   // Auth
   async [ActionTypes.PERSIST_AUTH_DATA]({ commit }, payload) {
     const authData = payload.data.authenticateUser;
-    authToStorage(authData)
-    await commit(MutationTypes.PERSIST_AUTH_DATA, authData);
+    await authToStorage(authData)
+    return await commit(MutationTypes.PERSIST_AUTH_DATA, authData);
   },
 
   async [ActionTypes.PERSIST_AUTH_FROM_LOCAL_STORAGE]({ commit }) {
-    const authData = authFromStorage()
+    const authData = await authFromStorage()
     await commit(MutationTypes.PERSIST_AUTH_DATA, authData);
   },
 
@@ -62,6 +64,14 @@ export const actions = <ActionTree<IState, RootState>>{
   async [ActionTypes.FETCH_GROUPS_AND_PERMISSIONS]({ commit }) {
     await useQuery({ query: GET_GROUPS_AND_PERMISSIONS })
           .then(payload => commit(MutationTypes.SET_GROUPS_AND_PERMISSIONS, payload.data.value));
+  },
+
+  async [ActionTypes.ADD_GROUP]({ commit }, payload) {
+    commit(MutationTypes.ADD_GROUP, payload);
+  },
+
+  async [ActionTypes.UPDATE_GROUP]({ commit }, payload) {
+    commit(MutationTypes.UPDATE_GROUP, payload);
   },
 
   async [ActionTypes.UPDATE_GROUPS_PERMISSIONS]({ commit }, payload) {

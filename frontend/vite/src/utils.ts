@@ -2,10 +2,10 @@ import moment from 'moment';
 import CryptoJs from 'crypto-js';
 
 // https://www.aesencryptiononline.com/ to decrypto online
-export const encrypter = (data: any, key: string) => CryptoJs.AES.encrypt(JSON.stringify(data), key).toString()
-export const decrypter = (data: any, key: string) => {
+export const encrypter = async (data: any, key: string) => await CryptoJs.AES.encrypt(JSON.stringify(data), key).toString()
+export const decrypter = async (data: any, key: string) => {
   if(!data) return {}
-  return JSON.parse(CryptoJs.AES.decrypt(data, key).toString(CryptoJs.enc.Utf8))
+  return await JSON.parse(CryptoJs.AES.decrypt(data, key).toString(CryptoJs.enc.Utf8))
 }
 
 export const parseDate = function(str: any) {

@@ -254,7 +254,7 @@
     initialValues: {
       priority: 0,
       samples: [],
-    }
+    },
   });
 
   const { value: clientRequestId } = useField('clientRequestId');

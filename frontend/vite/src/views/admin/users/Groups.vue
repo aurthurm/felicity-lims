@@ -16,7 +16,7 @@
         <ul>
           <li 
           v-for="group in groups"
-          :key="group.uid"
+          :key="group?.uid"
           href="#"
           @click.prevent.stop="selectGroup(group)"
           :class="[
@@ -45,7 +45,7 @@
                   <hr>
                   <div div class="flex justify-start mt-2">
                     <h3 class="mr-2 text-gray-600 font-semibold">Pages: </h3>
-                    <span v-for="item in userGroup.pages" class="mr-2">{{ item?.toLowerCase() }} </span>
+                    <span v-for="item in userGroup?.pages" class="mr-2">{{ item?.toLowerCase() }} </span>
                   </div>
                 </section>
                 <div>
@@ -237,15 +237,12 @@
   const formAction = ref(true);
   let userGroup = reactive({}) as IGroup;
 
-
   function selectGroup(group: IGroup): void {
     const pgs = group.pages as string;
     Object.assign(userGroup, { 
       ...group, 
       pages: pgs?.split(",") || [],
     })
-    console.log(userGroup?.permissions)
-    console.log(permissions.value)
     permissions.value?.forEach(item => {
       item[1].forEach((perm: IPermission) => {
         perm.checked = false;
@@ -279,7 +276,7 @@
 
     if (formAction.value === true) {
       createGroup({  payload }).then((result) => {
-        store.dispatch(ActionTypes.UPDATE_GROUPS_PERMISSIONS, result);
+        store.dispatch(ActionTypes.ADD_GROUP, result?.data?.createGroup);
       });
     };
     if (formAction.value === false) {
@@ -287,7 +284,7 @@
         name: payload["name"],
         pages: payload["pages"],
       } }).then((result) => {
-        store.dispatch(ActionTypes.UPDATE_GROUPS_PERMISSIONS, result);
+        store.dispatch(ActionTypes.UPDATE_GROUP, result?.data?.updateGroup);
       });
     };
     showModal.value = false;
@@ -306,15 +303,9 @@
   
   const { executeMutation: updateGroupPermissions } = useMutation(UPDATE_GROUP_PERMS);
   function updateGroupPerms(group: IGroup, permission: IPermission): void {
-    console.log(group.name, permission.action,permission.target)
       updateGroupPermissions({  groupUid: group?.uid, permissionUid: permission?.uid }).then((result) => {
-        store.dispatch(ActionTypes.UPDATE_GROUPS_PERMISSIONS, result);
+        store.dispatch(ActionTypes.UPDATE_GROUP, result?.data?.updateGroupPermissions);
     });
   }
-
-  function belongsToGroup(group: IGroup, permission: IPermission): boolean {
-    return group?.permissions!.some(perm => perm?.uid === permission?.uid);
-  }
-
 
 </script>
