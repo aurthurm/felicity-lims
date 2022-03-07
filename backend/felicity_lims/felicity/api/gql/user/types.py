@@ -11,7 +11,6 @@ class UserAuthType:
     login_retry: int
     is_blocked: bool
     user_type: Optional[str]
-    bio: Optional[str]
     #
     created_at: Optional[datetime]
     creator_name: Optional[str]
@@ -53,6 +52,9 @@ class UserType:
     is_superuser: bool
     auth_uid: Optional[int]
     auth: Optional[UserAuthType]
+    bio: Optional[str]
+    avatar: Optional[str]
+    default_route: Optional[str]
     #
     created_at: Optional[datetime]
     creator_name: Optional[str]

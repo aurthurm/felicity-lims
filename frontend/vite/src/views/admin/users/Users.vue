@@ -217,7 +217,9 @@ import { ActionTypes } from '../../../store/actions';
 import { ADD_USER, EDIT_USER, ADD_USER_AUTH, EDIT_USER_AUTH  } from '../../../graphql/_mutations';
 import { IUser, IUserAuth } from '../../../models/auth';
 
-interface IUserAuthForm extends IUser, IUserAuth {};
+interface IUserAuthForm extends IUser, IUserAuth {
+  groupUid: number
+};
 
 export default defineComponent({
   name: "tab-users",
@@ -243,25 +245,32 @@ export default defineComponent({
     const { executeMutation: updateUserAuth } = useMutation(EDIT_USER_AUTH);
 
     function addUser(): void {
-      createUser(form).then((result) => {});
+      createUser(form).then((result) => {
+        store.dispatch(ActionTypes.ADD_USER, result?.data?.createUser);
+      });
     }
 
     function editUser(): void {
-      console.log(form)
-      updateUser(form).then((result) => {});
+      updateUser(form).then((result) => {
+        store.dispatch(ActionTypes.UPDATE_USER, result?.data?.updateUser);
+      });
     }
 
     function addUserAuth(): void {
-      createUserAuth(form).then((result) => {});
+      createUserAuth(form).then((result) => {
+        store.dispatch(ActionTypes.UPDATE_USER, result?.data?.createUserAuth);
+      });
     }
 
     function editUserAuth(): void {
-      updateUserAuth(form).then((result) => {});
+      updateUserAuth(form).then((result) => {
+        store.dispatch(ActionTypes.UPDATE_USER, result?.data?.updateUserAuth);
+      });
     }
 
     function userGroupsName(user: IUser): string {
         let groups: string[] = [];
-        user?.groups?.forEach(g => groups.push(g.name));
+        user?.groups?.forEach(g => groups.push(g?.name!));
         return groups.join(', ');
     }
 

@@ -18,6 +18,8 @@ export enum ActionTypes {
 
   FETCH_GROUPS_AND_PERMISSIONS = 'FETCH_GROUPS_AND_PERMISSIONS',
   FETCH_USERS = 'FETCH_USERS',
+  ADD_USER = 'ADD_USER',
+  UPDATE_USER = 'UPDATE_USER',
   UPDATE_GROUPS_PERMISSIONS = 'UPDATE_GROUPS_PERMISSIONS',
   ADD_GROUP = 'ADD_GROUP',
   UPDATE_GROUP = 'UPDATE_GROUP',
@@ -40,6 +42,14 @@ export const actions = <ActionTree<IState, RootState>>{
           .query( GET_ALL_USERS, { first: params?.first, after: params?.after, text: params?.text, sortBy: params?.sortBy })
           .toPromise()
           .then(result => commit(MutationTypes.SET_USERS, result.data.userAll))
+  },
+
+  async [ActionTypes.ADD_USER]({ commit }, payload) {
+    commit(MutationTypes.ADD_USER, payload);
+  },
+
+  async [ActionTypes.UPDATE_USER]({ commit }, payload) {
+    commit(MutationTypes.UPDATE_USER, payload);
   },
 
   // Auth

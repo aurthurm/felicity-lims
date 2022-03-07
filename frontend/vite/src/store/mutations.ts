@@ -6,6 +6,8 @@ export enum MutationTypes {
   RESET_STATE = 'RESET_STATE',
   PERSIST_AUTH_DATA = 'PERSIST_AUTH_DATA',
   SET_USERS = 'SET_USERS',
+  ADD_USER = 'ADD_USER',
+  UPDATE_USER = 'UPDATE_USER',
 
   SET_GROUPS_AND_PERMISSIONS = 'SET_GROUPS_AND_PERMISSIONS',
   UPDATE_GROUPS_PERMISSIONS = 'UPDATE_GROUPS_PERMISSIONS',
@@ -35,6 +37,15 @@ export const mutations = <MutationTree<IState>>{
 
   [MutationTypes.SET_USERS](state: IState, payload): void {
     state.users = payload.items
+  },
+
+  [MutationTypes.ADD_USER](state: IState, payload): void {
+    state.users?.push(payload)
+  },
+
+  [MutationTypes.UPDATE_USER](state: IState, payload): void {
+    const index = state.users?.findIndex(u => u.uid === payload?.uid);
+    if(index > -1) state!.users[index] = payload;
   },
 
   [MutationTypes.SET_GROUPS_AND_PERMISSIONS](state: IState, payload): void {

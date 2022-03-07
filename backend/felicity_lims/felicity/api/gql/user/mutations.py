@@ -67,6 +67,7 @@ class UserMutations:
         first_name: str,
         last_name: str,
         email: str,
+        group_uid: Optional[int] = None,
         open_reg: Optional[bool] = False,
     ) -> UserResponse:
         if open_reg and not settings.USERS_OPEN_REGISTRATION:
@@ -89,6 +90,10 @@ class UserMutations:
         }
         user_in = user_schemas.UserCreate(**user_in)
         user: user_models.User = await user_models.User.create(user_in=user_in)
+        if group_uid:
+            group = await user_models.Group.get(uid=group_uid)
+            user.groups.append(group)
+            user = await user.save()
 
         # initial user-preferences
         preferences = user_models.UserPreference.get(user_uid=user.uid)
@@ -140,6 +145,9 @@ class UserMutations:
         grp_ids = [grp.uid for grp in user.groups]
         if group_uid and group_uid not in grp_ids:
             group = await user_models.Group.get(uid=group_uid)
+            for grp in user.groups:
+                user.groups.remove(grp)
+            await user.save()
             user.groups = [group]
             user = await user.save()
 
@@ -148,7 +156,7 @@ class UserMutations:
     @strawberry.mutation
     async def create_user_auth(
         self, info, user_uid: int, user_name: str, password: str, passwordc: str
-    ) -> UserAuthResponse:
+    ) -> UserResponse:
 
         auth = await user_models.UserAuth.get_by_username(username=user_name)
         user = await user_models.User.get(uid=user_uid)
@@ -188,19 +196,21 @@ class UserMutations:
             await user.link_auth(auth_uid=auth.uid)
             time.sleep(1)
             await user.propagate_user_type()
-        return UserAuthType(**auth.marshal_simple(exclude=['hashed_password']))
+        # return UserAuthType(**auth.marshal_simple(exclude=['hashed_password']))
+        user = await user_models.User.get(uid=user.uid)
+        return UserType(**user.marshal_simple())
 
     @strawberry.mutation
     async def update_user_auth(
         self,
         info,
         user_uid: int,
-        username: Optional[str],
+        user_name: Optional[str],
         password: Optional[str],
         passwordc: Optional[str],
     ) -> UserResponse:
 
-        if not username or not password:
+        if not user_name or not password:
             return OperationError(error="Provide username and password to update")
 
         user = await user_models.User.get_one(uid=user_uid)
@@ -215,14 +225,15 @@ class UserMutations:
         auth = user.auth
         auth_in = user_schemas.AuthUpdate(**auth.to_dict())
 
-        if username:
-            username_taken = await user_models.UserAuth.get_by_username(
-                username=username
-            )
-            if username_taken:
-                return OperationError(error=f"The username {username} is already taken")
+        if user_name:
+            if user_name != auth.user_name:
+                username_taken = await user_models.UserAuth.get_by_username(
+                    username=user_name
+                )
+                if username_taken:
+                    return OperationError(error=f"The username {user_name} is already taken")
 
-            auth_in.user_name = username
+                auth_in.user_name = user_name
 
         if password:
             if len(password) < 5:
@@ -236,6 +247,7 @@ class UserMutations:
             auth_in.password = password
 
         await auth.update(auth_in)
+        user = await user_models.User.get(uid=user.uid)
         return UserType(**user.marshal_simple())
 
     @strawberry.mutation

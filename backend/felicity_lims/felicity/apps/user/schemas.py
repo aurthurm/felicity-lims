@@ -22,6 +22,8 @@ class UserBase(BaseModel):
     user_name: Optional[str] = None
     avatar: Optional[str] = None
     bio: Optional[str] = None
+    default_route: Optional[str] = None
+    groups: Optional["Group"] = []
 
 
 # Properties to receive via API on creation

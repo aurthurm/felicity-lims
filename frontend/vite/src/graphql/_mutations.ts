@@ -48,11 +48,12 @@ export const AUTHENTICATE_USER = gql`
 export const ADD_USER = gql`
   ${PermissionTypeFields}
   ${GroupTypeFields}
-  mutation addUser($firstName: String!, $lastName: String!, $email: String!) {
+  mutation addUser($firstName: String!, $lastName: String!, $email: String!, $groupUid: Int) {
     createUser(
     firstName: $firstName, 
     lastName: $lastName, 
     email: $email,
+    groupUid: $groupUid,
   ){
     ... on UserType {
       uid
@@ -130,6 +131,8 @@ export const EDIT_USER = gql`
 
 
 export const ADD_USER_AUTH = gql`
+${PermissionTypeFields}
+${GroupTypeFields}
   mutation addUserAuth($userUid: Int!, $userName: String!, $password: String!, $passwordc: String!) {
     createUserAuth(
       userUid: $userUid, 
@@ -137,12 +140,26 @@ export const ADD_USER_AUTH = gql`
       password: $password, 
       passwordc: $passwordc, 
     ){
-      ... on UserAuthType {
+      ... on UserType {
         uid
-        userName
-        userType
-        isBlocked
-        loginRetry
+        firstName
+        lastName
+        email
+        isActive
+        isSuperuser
+        mobilePhone
+        auth {
+          uid
+          userName
+          isBlocked
+          userType          
+        }
+        groups {
+          permissions {
+            ...PermissionTypeFields
+          }
+          ...GroupTypeFields
+        }
       }
       ... on OperationError {
         __typename
@@ -157,10 +174,10 @@ export const ADD_USER_AUTH = gql`
 export const EDIT_USER_AUTH = gql`
   ${PermissionTypeFields}
   ${GroupTypeFields}
-  mutation  editUserAuth($userUid: Int!, $username: String!, $password: String!, $passwordc: String!) {
+  mutation  editUserAuth($userUid: Int!, $userName: String!, $password: String!, $passwordc: String!) {
     updateUserAuth(
       userUid: $userUid, 
-      username: $username, 
+      userName: $userName, 
       password: $password, 
       passwordc: $passwordc, 
     ){
