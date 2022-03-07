@@ -487,9 +487,9 @@ class CountryInDB(CountryBaseInDB):
 
 # Shared properties
 class ProvinceBase(BaseModel):
-    name: Optional[str] = None
+    name: Optional[str]
+    country_uid: Optional[int]
     code: Optional[str] = None
-    country_uid: Optional[str] = None
     email: Optional[str] = None
     email_cc: Optional[str] = None
     consent_email: Optional[str] = None
@@ -532,9 +532,9 @@ class ProvinceInDB(ProvinceBaseInDB):
 
 # Shared properties
 class DistrictBase(BaseModel):
-    name: Optional[str] = None
+    name: Optional[str]
+    province_uid: Optional[int]
     code: Optional[str] = None
-    province_uid: Optional[str] = None
     email: Optional[str] = None
     email_cc: Optional[str] = None
     consent_email: Optional[str] = None

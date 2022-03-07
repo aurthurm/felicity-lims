@@ -147,9 +147,9 @@ class CountryInputType:
 
 @strawberry.input
 class ProvinceInputType:
-    name: Optional[str] = None
+    name: Optional[str]
+    country_uid: Optional[int]
     code: Optional[str] = None
-    country_uid: Optional[int] = None
     email: Optional[str] = None
     email_cc: Optional[str] = None
     mobile_phone: Optional[str] = None
@@ -160,8 +160,8 @@ class ProvinceInputType:
 @strawberry.input
 class DistrictInputType:
     name: str
+    province_uid: Optional[int]
     code: Optional[str] = None
-    province_uid: Optional[int] = None
     email: Optional[str] = None
     email_cc: Optional[str] = None
     mobile_phone: Optional[str] = None
