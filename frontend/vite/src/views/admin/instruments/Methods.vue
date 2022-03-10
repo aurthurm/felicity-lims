@@ -119,6 +119,7 @@
   import { ref, reactive, computed } from 'vue';
   import { useStore } from 'vuex';
   import { ActionTypes } from '../../../store/modules/setup';
+  import { ActionTypes as AnalysisActionTypes} from '../../../store/modules/analysis';
   import { IMethod } from '../../../models/setup'
   import { ADD_METHOD, EDIT_METHOD  } from '../../../graphql/instrument.mutations';
 
@@ -133,6 +134,10 @@
   const formAction = ref(true);
 
   let method = reactive({}) as IMethod;
+
+
+  const analysesParams = { first: 1000, after: "", text: "", sortBy: ["name"]}
+  store.dispatch(AnalysisActionTypes.FETCH_ANALYSES_SERVICES, analysesParams);
 
   store.dispatch(ActionTypes.FETCH_METHODS);  
   const methods = computed(() => store.getters.getMethods)  

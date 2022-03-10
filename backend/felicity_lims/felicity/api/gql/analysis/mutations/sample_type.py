@@ -31,6 +31,7 @@ SampleTypeResponse = strawberry.union(
 async def create_sample_type(info, payload: SampleTypeInputType) -> SampleTypeResponse:
 
     is_authenticated, felicity_user = await auth_from_info(info)
+    print(is_authenticated, felicity_user)
     verify_user_auth(
         is_authenticated,
         felicity_user,

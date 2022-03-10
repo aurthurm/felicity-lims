@@ -678,6 +678,46 @@ class SetupMutations:
 
         obj_in = schemas.MethodUpdate(**method.to_dict())
         method = await method.update(obj_in)
+
+        # instrument management
+        inst_uids = [inst.uid for inst in method.instruments]
+        for _inst in inst_uids:
+            if _inst not in payload.instruments:
+                instruments = filter(lambda i: i.uid == _inst, method.instruments)
+                instrument = list(instruments)[0]
+                method.instruments.remove(instrument)
+        for _inst in payload.instruments:
+            if _inst not in inst_uids:
+                instrument = await models.Instrument.get(uid=_inst)
+                method.instruments.append(instrument)
+        method = await method.save()
+
+        # manage analyses
+        all_analyses = await analysis_models.Analysis.all()
+        analyses = set()
+        for analysis in all_analyses:
+            for _meth in analysis.methods:
+                if _meth.uid == method.uid:
+                    analyses.add(analysis)
+
+        an_uids = [an.uid for an in analyses]
+        for _anal in an_uids:
+            if _anal not in payload.analyses:
+                analysis = filter(lambda a: a.uid == _anal, analyses)
+                analysis = list(analysis)[0]
+                for _method in analysis.methods:
+                    if _method.uid == method.uid:
+                        analysis.methods.remove(_method)
+                        await analysis.save()
+
+        for _anal in payload.analyses:
+            if _anal not in an_uids:
+                analysis = await analysis_models.Analysis.get(uid=_anal)
+                await analysis_models.Analysis.table_insert(
+                    table=analysis_models.analysis_method,
+                    mappings={"method_uid": method.uid, "analysis_uid": analysis.uid}
+                )
+
         return MethodType(**method.marshal_simple())
 
     @strawberry.mutation

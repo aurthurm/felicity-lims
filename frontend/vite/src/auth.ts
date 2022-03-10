@@ -1,6 +1,6 @@
 import { ENCRYPT_AUTH_KEY, STORAGE_AUTH_KEY, USER_GROUP_OVERRIDE } from "./conf";
 import { IUser } from "./models/auth";
-import { decrypter, encrypter } from "./utils"
+import { decrypter,decrypter2, encrypter } from "./utils"
 
 
 const authToStorage = async (data: any) => {
@@ -22,9 +22,24 @@ const authFromStorage = async (): Promise<{
     return data
 }
 
+const authFromStorage2 = (): {
+    token?: string,
+    tokenType?: string,
+    user?: IUser
+} => {
+    const data = decrypter2(localStorage.getItem(STORAGE_AUTH_KEY), ENCRYPT_AUTH_KEY);
+    if(USER_GROUP_OVERRIDE.length > 0) { 
+        data?.user?.groups?.forEach(group => {
+            group.name = USER_GROUP_OVERRIDE
+        })
+    }
+    return data
+
+}
+
 const authLogout = () => {
 
     localStorage.removeItem(STORAGE_AUTH_KEY);
 }
 
-export { authToStorage, authFromStorage, authLogout }
+export { authToStorage, authFromStorage,authFromStorage2, authLogout }

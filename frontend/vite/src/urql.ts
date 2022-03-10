@@ -7,7 +7,7 @@ import { GQL_BASE_URL, WS_BASE_URL } from './conf'
 
 import { createClient as createWSClient } from 'graphql-ws';
 import { SubscriptionClient } from 'subscriptions-transport-ws'
-import { authFromStorage, authLogout } from './auth';
+import { authFromStorage, authFromStorage2, authLogout } from './auth';
 
 const subscriptionClient = new SubscriptionClient( WS_BASE_URL, { reconnect: true });
 
@@ -19,9 +19,9 @@ const wsClient = createWSClient({
 const getAuth = async ({ authState }) => {
 
   if (!authState) {
-    const token = authFromStorage()?.token;
-    if (token) {
-      return { token };
+    const auth = await authFromStorage();
+    if (auth?.token) {
+      return { token: auth?.token };
     }
     return null;
   }
@@ -88,7 +88,6 @@ export const urqlClient = createClient({
           isAuthError = error.graphQLErrors.some(e => e.extensions?.code === 'FORBIDDEN');
         }
         if (isAuthError) {
-          console.log("isAuthError")
           authLogout();
         }
       },
@@ -110,16 +109,16 @@ export const urqlClient = createClient({
     }),
   ],  
   fetchOptions: () => {
-    const token = authFromStorage()?.token;
+    const auth = authFromStorage2();
     return {
       headers: {
         'Access-Control-Allow-Origin': '*',
         'Access-Control-Allow-Methods': 'GET, POST, PATCH, PUT, DELETE, OPTIONS',
         'Access-Control-Allow-Headers': 'Origin, Content-Type, X-Auth-Token',
-        ...(token && {
+        ...(auth?.token && {
           'x-felicity-user-id': "felicity-user",
           'x-felicity-role': "felicity-administrator",
-          'Authorization': `Bearer ${token}`
+          'Authorization': `Bearer ${auth?.token}`
         }),
       },
     };

@@ -7,6 +7,10 @@ export const decrypter = async (data: any, key: string) => {
   if(!data) return {}
   return await JSON.parse(CryptoJs.AES.decrypt(data, key).toString(CryptoJs.enc.Utf8))
 }
+export const decrypter2 = (data: any, key: string) => {
+  if(!data) return {}
+  return JSON.parse(CryptoJs.AES.decrypt(data, key).toString(CryptoJs.enc.Utf8))
+}
 
 export const parseDate = function(str: any) {
     let date = moment(str);

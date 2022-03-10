@@ -81,16 +81,8 @@
   const props = defineProps({
       method: Object as PropType<IMethod>,
       methodUid: Number,
-      analysis: {
-          type: Object as PropType<IAnalysisService>,
-          required: false,
-          default: () => ({}),
-      },
-      analysisUid: {
-          type: Number | undefined,
-          required: false,
-          default: undefined,
-      },
+      analysis: Object as PropType<IAnalysisService>,
+      analysisUid: Number,
   })
 
   const { method, analysis  } = toRefs(props);
@@ -103,22 +95,25 @@
 
   let store = useStore();
 
+  const analyses = computed<IAnalysisService[]>(() => store.getters.getAnalysesServicesSimple )
   let selectedAnalyses = ref<IAnalysisService[]>([]);
-  if(analysis.value?.uid !== undefined) {
+  if(analysis?.value?.uid !== undefined) {
     selectedAnalyses.value.push(analysis.value)
   } else {
-    const analysesParams = { first: 1000, after: "", text: "", sortBy: ["name"]}
-    store.dispatch(AnalysisActionTypes.FETCH_ANALYSES_SERVICES, analysesParams);
+    analyses.value?.forEach(an => {
+      if(an?.methods?.some(m => m.uid == method?.value?.uid)) {
+        selectedAnalyses.value.push(an)
+      }
+    })
   }
-  const analyses = computed<IAnalysisService[]>(() => store.getters.getAnalysesServicesSimple)
 
   store.dispatch(ActionTypes.FETCH_INSTRUMENTS);
   const instruments = computed<IInstrument[]>(() => store.getters.getInstruments)
   let selectedIntsruments = ref<IInstrument[]>([]);
   const getAnalMethInstruments = (): IInstrument[] => {
       const final: IInstrument[] = [];
-      method.value?.instruments?.forEach((instrument: any) => {
-          const exist = analysis.value?.instruments?.some(item => item?.uid === instrument?.uid);
+      method?.value?.instruments?.forEach((instrument: any) => {
+          const exist = analysis?.value?.instruments?.some(item => item?.uid === instrument?.uid);
           if (exist) {
             final.push(instrument);
           }
@@ -127,6 +122,9 @@
     return  final;
   }
   selectedIntsruments.value = getAnalMethInstruments()
+  if(method?.value?.uid !== undefined){
+    method?.value?.instruments?.forEach(inst => selectedIntsruments.value.push(inst))
+  }
 
   // store.dispatch(ActionTypes.FETCH_METHODS);
   // const methods = computed<IMethod[]>(() => store.getters.getMethods) 
