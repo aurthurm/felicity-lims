@@ -10,86 +10,41 @@
     </div>
     <hr />
 
-    <div class="grid grid-cols-12 gap-4 mt-2">
-      <section class="col-span-4 overflow-y-scroll overscroll-contain patient-scrol">
-        <ul>
-          <li 
-          v-for="inst in instruments"
-          :key="inst.uid"
-          href="#"
-          @click.prevent.stop="selectInstrument(inst)"
-          :class="[
-            'bg-white w-full p-1 mb-1 rounded',
-            { 'border-gray-100 bg-green-100': inst.uid === instrument.uid },
-          ]">
-            <a class="cursor-pointer">
-              <div class="flex-grow p-1">
-                <div class="font-medium text-gray-500 hover:text-gray-700 flex justify-between">
-                  <span>{{ inst.name }}</span>
-                  <span class="text-sm text-gray-500"></span>
-                </div>
-              </div>
-            </a>
-          </li>
-        </ul>
-      </section>
+    <div class="overflow-x-auto mt-4">
+      <div class="align-middle inline-block min-w-full shadow overflow-hidden bg-white shadow-dashboard px-2 pt-1 rounded-bl-lg rounded-br-lg">
+      <table class="min-w-full">
+          <thead>
+          <tr>
+              <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-black-500 tracking-wider">Name</th>
+              <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-black-500 tracking-wider">Type</th>
+              <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-black-500 tracking-wider">Manufacturer</th>
+              <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-black-500 tracking-wider">Supplier</th>
+              <th class="px-1 py-1 border-b-2 border-gray-300"></th>
+          </tr>
+          </thead>
+          <tbody class="bg-white">
+          <tr v-for="inst in instruments" :key="inst?.uid">
+              <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
+                <div class="text-sm leading-5 text-gray-800">{{ inst?.name }}</div>
+              </td>
+              <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
+                <div class="text-sm leading-5 text-gray-800">{{ inst?.instrumentType?.name }}</div>
+              </td>
+              <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
+                <div class="text-sm leading-5 text-blue-900">{{ inst?.manufacturer?.name }}</div>
+              </td>
+              <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
+                <div class="text-sm leading-5 text-blue-900">{{ inst?.supplier?.name }}</div>
+              </td>
+              <td class="px-1 py-1 whitespace-no-wrap text-right border-b border-gray-500 text-sm leading-5">
+                  <button @click="FormManager(false, inst)" class="px-2 py-1 mr-2 border-orange-500 border text-orange-500 rounded transition duration-300 hover:bg-orange-700 hover:text-white focus:outline-none">Edit</button>
+              </td>
+          </tr>
+          </tbody>
+      </table>
+      </div>
+  </div>
 
-      <section class="col-span-8"  v-if="instrument?.uid !== undefined">
-        <div class="bg-white rounded-lg shadow-sm hover:shadow-lg duration-500 px-4 sm:px-6 md:px-2 py-4" >
-          <div class="grid grid-cols-12 gap-3">
-            <div class="col-span-12 px-3 sm:px-0">
-              <div class="flex justify-between sm:text-sm md:text-md lg:text-lg text-gray-700 font-bold">
-                <span>{{ instrument?.name }}</span>
-                <div>
-                  <button
-                    @click="FormManager(false)"
-                    class="ml-4 inline-flex items-center justify-center w-8 h-8 mr-2 border-blue-500 border text-gray-900 transition-colors duration-150 bg-white rounded-full focus:outline-none hover:bg-gray-200"
-                  >
-                    <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20">
-                      <path
-                        d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"
-                      ></path>
-                    </svg>
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Sample and Case Data -->
-        <nav class="bg-white px-6 pt-2 shadow-md mt-2">
-          <div class="-mb-px flex justify-start">
-            <a
-              v-for="tab in tabs"
-              :key="tab"
-              :class="[
-                'no-underline text-gray-500 uppercase tracking-wide font-bold text-xs py-1 mr-8 tab',
-                { 'tab-active': currentTab === tab },
-              ]"
-              @click="currentTab = tab"
-              href="#"
-            >
-              {{ tab }}
-            </a>
-          </div>
-        </nav>
-
-        <section class="mt-2 p-2 bg-white">
-          <div v-if="currentTab === 'view'">
-            <h3>General</h3>
-            <hr> 
-            <input type="text">
-          </div>
-          <div v-else-if="currentTab === 'configs'">
-            <h3>Analyses</h3>
-            <hr>
-              <input type="text">
-          </div>
-        </section>
-
-      </section>
-    </div>
   </div>
 
   <!-- AnaltsisProfile Form Modal -->
@@ -206,25 +161,31 @@
   const { executeMutation: updateInstrument } = useMutation(EDIT_INSTRUMENT);
 
   function addInstrument(): void {
-    const payload = { name: instrument.name, keyword: instrument.keyword, description: instrument.description }
+    const payload = { 
+      name: instrument.name, 
+      keyword: instrument.keyword, 
+      description: instrument.description,
+      instrumentTypeUid: instrument.instrumentTypeUid,
+      manufacturerUid: instrument.manufacturerUid,
+      supplierUid: instrument.supplierUid,
+    }
     createInstrument({ payload }).then((result) => {
       store.dispatch(ActionTypes.ADD_INSTRUMENT, result);
     });
   }
 
   function editInstrument(): void {
-    const payload = { name: instrument.name, keyword: instrument.keyword, description: instrument.description }
+    const payload = { 
+      name: instrument.name, 
+      keyword: instrument.keyword, 
+      description: instrument.description,
+      instrumentTypeUid: instrument.instrumentTypeUid,
+      manufacturerUid: instrument.manufacturerUid,
+      supplierUid: instrument.supplierUid,
+    }
     updateInstrument({ uid: instrument.uid, payload }).then((result) => {
       store.dispatch(ActionTypes.UPDATE_INSTRUMENT, result);
     });
-  }
-
-  function selectInstrument(obj: IInstrument): void {
-    Object.assign(instrument, { ...obj})
-  }
-  
-  function resetInstrument(): void {
-    Object.assign(instrument, { ...({} as IInstrument)})
   }
 
   function FormManager(create: boolean, obj = {} as IInstrument): void {

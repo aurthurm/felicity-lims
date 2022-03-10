@@ -130,6 +130,14 @@ export const ADD_INSTRUMENT= gql`
         name
         description
         keyword
+        instrumentType {
+          uid
+          name
+        }
+        manufacturer {
+          uid
+          name
+        }
         supplier {
           uid
           name
@@ -154,6 +162,14 @@ export const EDIT_INSTRUMENT= gql`
         name
         description
         keyword
+        instrumentType {
+          uid
+          name
+        }
+        manufacturer {
+          uid
+          name
+        }
         supplier {
           uid
           name

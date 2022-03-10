@@ -72,7 +72,6 @@
   import { useMutation } from '@urql/vue';
   import { ref, reactive, computed, PropType, watch, toRefs } from 'vue';
   import { useStore } from 'vuex';
-  import { ActionTypes as AnalysisActionTypes} from '../../../store/modules/analysis';
   import { ActionTypes } from '../../../store/modules/setup';
   import { IInstrument, IMethod } from '../../../models/setup'
   import { ADD_METHOD, EDIT_METHOD  } from '../../../graphql/instrument.mutations';
