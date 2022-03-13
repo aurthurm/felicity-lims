@@ -140,6 +140,7 @@
       analyses: selectedAnalyses.value?.map((i) => i.uid),
     }
     createMethod({ payload }).then((result) => {
+      emit('close');
       store.dispatch(ActionTypes.ADD_METHOD, result);
     });
   }
@@ -153,6 +154,7 @@
       analyses: selectedAnalyses.value?.map((i) => i.uid),
     }
     updateMethod({ uid: form?.uid, payload }).then((result) => {
+      emit('close');
       store.dispatch(ActionTypes.UPDATE_METHOD, result);
     });
   }
@@ -160,7 +162,6 @@
   function saveForm():void {
     if (!method?.value?.uid) addMethod();
     if (method?.value?.uid) editMethod();
-    emit('close');
   }
 
 

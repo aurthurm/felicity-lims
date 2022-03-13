@@ -488,6 +488,20 @@ export const ADD_ANALYSIS_SERVICE= gql`
         sortKey
         description   
         categoryUid   
+        departmentUid
+        unitUid
+        unit {
+          uid
+          name
+        }
+        sampleTypes {
+          uid
+          name
+        }
+        methods {
+          uid
+          name
+        }
         resultOptions {
           uid
           optionKey
@@ -523,6 +537,20 @@ export const EDIT_ANALYSIS_SERVICE= gql`
         sortKey
         description   
         categoryUid   
+        departmentUid
+        unitUid
+        unit {
+          uid
+          name
+        }
+        sampleTypes {
+          uid
+          name
+        }
+        methods {
+          uid
+          name
+        }
         resultOptions {
           uid
           optionKey
@@ -557,6 +585,11 @@ export const ADD_ANALYSIS_PROFILE= gql`
         description
         keyword
         active
+        departmentUid
+        sampleTypes {
+          uid
+          name
+        }
         analyses {
           uid
           name
@@ -584,6 +617,11 @@ export const EDIT_ANALYSIS_PROFILE= gql`
         description
         keyword
         active
+        departmentUid
+        sampleTypes {
+          uid
+          name
+        }
         analyses {
           uid
           name
@@ -611,6 +649,10 @@ export const ADD_ANALYSIS_CATEGORY= gql`
         name
         active
         description
+        department {
+          uid
+          name
+        }
       }
 
       ... on OperationError {
@@ -631,6 +673,10 @@ export const EDIT_ANALYSIS_CATEGORY= gql`
         name
         active
         description
+        department {
+          uid
+          name
+        }
       }
   
       ... on OperationError {

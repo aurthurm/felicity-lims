@@ -178,6 +178,17 @@
             />
           </label>
           <label class="block col-span-2 mb-2">
+            <span class="text-gray-700">Sample Types</span>
+            <VueMultiselect
+            v-model="analysisProfile.sampleTypes"
+            :options="sampleTypes"
+            :multiple="true"
+            :searchable="true"
+            label="name"
+            track-by="uid">
+            </VueMultiselect>
+          </label>
+          <label class="block col-span-2 mb-2">
             <span class="text-gray-700">Description</span>
             <textarea
             cols="2"
@@ -185,6 +196,13 @@
               v-model="analysisProfile.description"
               placeholder="Description ..."
             />
+          </label>
+          <label class="block col-span-1 mb-2">
+            <span class="text-gray-700">Department</span>
+            <select class="form-select block w-full mt-1" v-model="analysisProfile.departmentUid">
+               <option></option>
+              <option v-for="department in departments" :key="department.uid" :value="department?.uid">{{ department.name }}</option>
+            </select>
           </label>
           <label for="toggle" class="text-xs text-gray-700 mr-4">Active
             <div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
@@ -211,111 +229,109 @@
 
 </template>
 
-<script lang="ts">
-import modal from '../../../components/SimpleModal.vue';
-import accordion from '../../../components/Accordion.vue';
+<script setup lang="ts">
+  import VueMultiselect from 'vue-multiselect';
+  import modal from '../../../components/SimpleModal.vue';
+  import accordion from '../../../components/Accordion.vue';
 
-import { useMutation } from '@urql/vue';
-import { defineComponent, ref, reactive, computed } from 'vue';
-import { useStore } from 'vuex';
-import { ActionTypes } from '../../../store/modules/analysis';
-import { IAnalysisProfile, IAnalysisService } from '../../../models/analysis';
-import { ADD_ANALYSIS_PROFILE, EDIT_ANALYSIS_PROFILE  } from '../../../graphql/analyses.mutations';
+  import { useMutation } from '@urql/vue';
+  import { ref, reactive, computed } from 'vue';
+  import { useStore } from 'vuex';
+  import { ActionTypes } from '../../../store/modules/analysis';
+  import { IAnalysisProfile, IAnalysisService } from '../../../models/analysis';
+  import { ADD_ANALYSIS_PROFILE, EDIT_ANALYSIS_PROFILE  } from '../../../graphql/analyses.mutations';
 
-export default defineComponent({
-  name: "tab-analyses-profiles",
-  components: {
-    accordion,
-    modal,
-  },
-  setup() {
-    let store = useStore();
+  let store = useStore();
 
-    // each tab if just gonna be forms with updatable values on button click
-    let currentTab = ref('view');
-    const tabs = ['view', 'analyses-services', 'financials'];
-    
-    let showModal = ref(false);
-    let formTitle = ref('');
-    const formAction = ref(true);
+  // each tab if just gonna be forms with updatable values on button click
+  let currentTab = ref('view');
+  const tabs = ['view', 'analyses-services', 'financials'];
+  
+  let showModal = ref(false);
+  let formTitle = ref('');
+  const formAction = ref(true);
 
-    let analysisProfile = reactive({}) as IAnalysisProfile;
+  let analysisProfile = reactive({}) as IAnalysisProfile;
 
-    store.dispatch(ActionTypes.FETCH_ANALYSES_PROFILES_AND_SERVICES);    
-    let analysesServices = computed<any[]>(() => store.getters.getAnalysesServices);
+  const sampleTypes = computed<any[]>(() => store.getters.getSampleTypes);
+  const departments = computed<any[]>(() => store.getters.getDepartments);
 
-    const { executeMutation: createAnalysisProfile } = useMutation(ADD_ANALYSIS_PROFILE);
-    const { executeMutation: updateAnalysisProfile } = useMutation(EDIT_ANALYSIS_PROFILE);
+  store.dispatch(ActionTypes.FETCH_ANALYSES_PROFILES_AND_SERVICES);    
+  let analysesServices = computed<any[]>(() => store.getters.getAnalysesServices);
+  const analysesProfiles = computed(() =>store.getters.getAnalysesProfiles)
 
-    function addAnalysisProfile(): void {
-      const payload = { name: analysisProfile.name, keyword: analysisProfile.keyword, description: analysisProfile.description, active: analysisProfile.active }
-      createAnalysisProfile({ payload }).then((result) => {
-       store.dispatch(ActionTypes.ADD_ANALYSES_PROFILE, result);
-      });
+  const { executeMutation: createAnalysisProfile } = useMutation(ADD_ANALYSIS_PROFILE);
+  const { executeMutation: updateAnalysisProfile } = useMutation(EDIT_ANALYSIS_PROFILE);
+
+  function addAnalysisProfile(): void {
+    const payload = { 
+      name: analysisProfile.name, 
+      keyword: analysisProfile.keyword, 
+      description: analysisProfile.description, 
+      departmentUid: analysisProfile.departmentUid, 
+      sampleTypes: analysisProfile.sampleTypes?.map(item => item.uid),
+      active: analysisProfile.active 
     }
+    createAnalysisProfile({ payload }).then((result) => {
+      store.dispatch(ActionTypes.ADD_ANALYSES_PROFILE, result);
+    });
+  }
 
-    function editAnalysisProfile(): void {
-      const payload = { name: analysisProfile.name, keyword: analysisProfile.keyword, description: analysisProfile.description, active: analysisProfile.active, services: analysisProfile.analyses }
-      updateAnalysisProfile({ uid: analysisProfile.uid, payload }).then((result) => {
-        store.dispatch(ActionTypes.UPDATE_ANALYSES_PROFILE, result);
-      });
+  function editAnalysisProfile(): void {
+    const payload = { 
+      name: analysisProfile.name, 
+      keyword: analysisProfile.keyword, 
+      description: analysisProfile.description, 
+      departmentUid: analysisProfile.departmentUid, 
+      active: analysisProfile.active, 
+      services: analysisProfile.analyses?.map(item => item.uid),
+      sampleTypes: analysisProfile.sampleTypes?.map(item => item.uid),
     }
+    updateAnalysisProfile({ uid: analysisProfile.uid, payload }).then((result) => {
+      store.dispatch(ActionTypes.UPDATE_ANALYSES_PROFILE, result);
+    });
+  }
 
-    function selectProfile(profile: IAnalysisProfile): void {
-      Object.assign(analysisProfile, { ...profile})
-      // hight services that fall into this profile
-      analysesServices.value?.forEach(item => {
-        item[1].forEach((service: IAnalysisService) => {
-          service.checked = false;
-          if(service.profiles?.some(p => p.uid === analysisProfile.uid) || false) {
-            service.checked = true;
-          };
-        })
+  function selectProfile(profile: IAnalysisProfile): void {
+    Object.assign(analysisProfile, { ...profile})
+    // hight services that fall into this profile
+    analysesServices.value?.forEach(item => {
+      item[1].forEach((service: IAnalysisService) => {
+        service.checked = false;
+        if(service.profiles?.some(p => p.uid === analysisProfile.uid) || false) {
+          service.checked = true;
+        };
       })
-    }
-    
-    function updateProfile(): void {
-      analysisProfile.analyses = [];
-      analysesServices.value?.forEach(item => {
-        item[1].forEach((service: IAnalysisService) => {
-          if(service.checked) {
-            analysisProfile.analyses!.push(service.uid);
-          };
-        })
+    })
+  }
+  
+  function updateProfile(): void {
+    analysisProfile.analyses = [];
+    analysesServices.value?.forEach(item => {
+      item[1].forEach((service: IAnalysisService) => {
+        if(service.checked) {
+          analysisProfile.analyses!.push(service.uid!);
+        };
       })
-      editAnalysisProfile();
-    }
+    })
+    editAnalysisProfile();
+  }
 
-    function FormManager(create: boolean, obj = {} as IAnalysisProfile): void {
-      formAction.value = create;
-      showModal.value = true;
-      formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "ANALYSES PROFILE";
-      if (create) {
-        Object.assign(analysisProfile, {} as IAnalysisProfile);
-      } else {
-        Object.assign(analysisProfile, { ...obj });
-      }
+  function FormManager(create: boolean, obj = {} as IAnalysisProfile): void {
+    formAction.value = create;
+    showModal.value = true;
+    formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "ANALYSES PROFILE";
+    if (create) {
+      Object.assign(analysisProfile, {} as IAnalysisProfile);
+    } else {
+      Object.assign(analysisProfile, { ...obj });
     }
+  }
 
-    function saveForm():void {
-      if (formAction.value === true) addAnalysisProfile();
-      if (formAction.value === false) editAnalysisProfile();
-      showModal.value = false;
-    }
+  function saveForm():void {
+    if (formAction.value === true) addAnalysisProfile();
+    if (formAction.value === false) editAnalysisProfile();
+    showModal.value = false;
+  }
 
-    return { 
-      showModal,
-      formTitle,
-      tabs,
-      currentTab,
-      analysesProfiles: computed(() =>store.getters.getAnalysesProfiles),
-      analysesServices,
-      selectProfile,
-      analysisProfile,
-      FormManager,
-      saveForm,
-      updateProfile,
-    };
-  },
-});
 </script>

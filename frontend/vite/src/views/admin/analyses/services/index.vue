@@ -7,12 +7,6 @@
         @click="FormManager(true)"
       >Add Analyses Service</button>
       <hr>
-      <!-- <input
-        class="w-64 h-10 ml-6 pl-4 pr-2 py-1 text-sm text-gray-700 placeholder-gray-600 border-1 border-gray-400 rounded-md  focus:placeholder-gray-500 focus:border-green-100 focus:outline-none focus:shadow-outline-purple form-input"
-        type="text" placeholder="Search ..." aria-label="Search"
-        @keyup="searchService($event)"
-        @focus="setServiceToNull()"
-      /> -->
     </div>
 
     <hr />
@@ -96,7 +90,7 @@
                   </div>
                   <div class="flex">
                     <span class="text-gray-800 text-sm font-medium w-16">Unit:</span>
-                    <span class="text-gray-600 text-sm md:text-md">{{ analysisService?.unit || '' }}</span>
+                    <span class="text-gray-600 text-sm md:text-md">{{ analysisService?.unit?.name }}</span>
                   </div>
                   <div class="flex">
                     <span class="text-gray-800 text-sm font-medium w-16">SortKey:</span>
@@ -105,12 +99,12 @@
                 </div>
                 <div class="col-span-1">
                   <div class="col-span-2 flex mt-2">
-                    <span class="text-gray-800 text-sm font-medium w-16 mr-2">Calculation:</span>
-                    <span class="text-gray-600 text-sm md:text-md">{{ analysisService?.unit || '---' }}</span>
+                    <span class="text-gray-800 text-sm font-medium w-28">Methods:</span>
+                    <span class="text-gray-600 text-sm md:text-md mr-2">{{ analysisService?.methods?.map(s => s.name)?.join(', ') }}</span>
                   </div>
                   <div class="col-span-2 flex mt-2">
-                    <span class="text-gray-800 text-sm font-medium w-16">Methods:</span>
-                    <span class="text-gray-600 text-sm md:text-md mr-2">{{ analysisService?.unit || '--, --' }}</span>
+                    <span class="text-gray-800 text-sm font-medium w-28">Sample Types:</span>
+                    <span class="text-gray-600 text-sm md:text-md mr-2">{{ analysisService?.sampleTypes?.map(s => s.name)?.join(', ') }}</span>
                   </div>
                 </div>
               </div>
@@ -160,9 +154,6 @@
         <div v-else-if="currentTab === 'specifications'">
           <analysis-specifications :analysis="analysisService" :analysisUid="analysisService?.uid"/>
         </div>
-        <div v-else-if="currentTab === 'methods'">
-           <analysis-methods :analysis="analysisService" :analysisUid="analysisService?.uid"/>
-        </div>
         <div v-else> <!-- fiancials -->
           <h3>Billing</h3>
           <hr>
@@ -182,16 +173,16 @@
 
     <template v-slot:body>
       <form action="post" class="p-1">
-        <div class="grid grid-cols-2 gap-x-4 mb-4">
-          <label class="block col-span-2 mb-2">
+        <div class="grid grid-cols-6 gap-x-4 mb-4">
+          <label class="block col-span-4 mb-2">
             <span class="text-gray-700">Analysis Service Name</span>
             <input
-              class="form-input mt-1 block w-full"
+              class="form-input mt-4 block w-full"
               v-model="analysisService.name"
               placeholder="Name ..."
             />
           </label>
-          <label class="block col-span-2 mb-2">
+          <label class="block col-span-1 mb-2">
             <span class="text-gray-700">keyword</span>
             <input
               class="form-input mt-1 block w-full"
@@ -199,7 +190,36 @@
               placeholder="Keyword ..."
             />
           </label>
-          <label class="block col-span-2 mb-2">
+          <label class="block col-span-1 mb-2">
+            <span class="text-gray-700">Unit</span>
+            <select class="form-select block w-full mt-1" v-model="analysisService.unitUid">
+               <option></option>
+              <option v-for="unit in units" :key="unit.uid" :value="unit?.uid">{{ unit.name }}</option>
+            </select>
+          </label>
+          <label class="block col-span-3 mb-2">
+            <span class="text-gray-700">Sample Types</span>
+            <VueMultiselect
+            v-model="analysisService.sampleTypes"
+            :options="sampleTypes"
+            :multiple="true"
+            :searchable="true"
+            label="name"
+            track-by="uid">
+            </VueMultiselect>
+          </label>
+          <label class="block col-span-3 mb-2">
+            <span class="text-gray-700">Methods</span>
+            <VueMultiselect
+            v-model="analysisService.methods"
+            :options="methods"
+            :multiple="true"
+            :searchable="true"
+            label="name"
+            track-by="uid">
+            </VueMultiselect>
+          </label>
+          <label class="block col-span-6 mb-2">
             <span class="text-gray-700">Description</span>
             <textarea
             cols="2"
@@ -208,14 +228,21 @@
               placeholder="Description ..."
             />
           </label>
-          <label class="block col-span-1 mb-2">
+          <label class="block col-span-2 mb-2">
+            <span class="text-gray-700">Department</span>
+            <select class="form-select block w-full mt-1" v-model="analysisService.departmentUid">
+               <option></option>
+              <option v-for="department in departments" :key="department.uid" :value="department?.uid">{{ department.name }}</option>
+            </select>
+          </label>
+          <label class="block col-span-2 mb-2">
             <span class="text-gray-700">Analysis Category</span>
             <select class="form-select block w-full mt-1" v-model="analysisService.categoryUid">
                <option></option>
               <option v-for="category in analysesCategories" :key="category.uid" :value="category?.uid">{{ category.name }}</option>
             </select>
           </label>
-          <label class="block col-span-1 mb-2">
+          <label class="block col-span-2 mb-2">
             <span class="text-gray-700">Sort Key</span>
             <input
               type="number" default="1"
@@ -224,25 +251,19 @@
             />
           </label>
           <div class="col-span-2 flex justify-between">
-            <label for="toggle" class="text-xs text-gray-700 mr-4">Active
-              <div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
-                  <input 
-                  type="checkbox" 
-                  name="toggle" id="toggleActive" 
-                  v-model="analysisService.active"
-                  class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer outline-none"/>
-                  <label for="toggleActive" class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer"></label>
-              </div>
+            <label class="block col-span-2 my-2">
+              <input
+                type="checkbox"
+                v-model="analysisService.active"
+              />
+              <span class="text-gray-700 ml-4">Active</span>
             </label>
-            <label for="toggle" class="text-xs text-gray-700 mr-4">Internal Use
-              <div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
-                  <input 
-                  type="checkbox" 
-                  name="toggle" id="toggleIUse" 
-                  v-model="analysisService.internalUse"
-                  class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer outline-none"/>
-                  <label for="toggleIUse" class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer"></label>
-              </div>
+            <label class="block col-span-2 my-2">
+              <input
+                type="checkbox"
+                v-model="analysisService.internalUse"
+              />
+              <span class="text-gray-700 ml-4">Internal Use</span>
             </label>
           </div>
         </div>
@@ -261,6 +282,7 @@
 </template>
 
 <script setup lang="ts">
+  import VueMultiselect from 'vue-multiselect';
   import modal from '../../../../components/SimpleModal.vue';
   import accordion from '../../../../components/Accordion.vue';
   import ResultOptions from './ResultOptions.vue';
@@ -269,17 +291,17 @@
   import AnalysisUncertainty from './Uncertainty.vue'
   import DetectionLimits from './DetectionLimit.vue'
   import AnalysisSpecifications from './Specifications.vue'
-  import AnalysisMethods from './Methods.vue'
 
   import { useMutation } from '@urql/vue';
   import { ref, reactive, computed } from 'vue';
   import { useStore } from 'vuex';
   import { ActionTypes } from '../../../../store/modules/analysis';
+  import { ActionTypes as SetupActionTypes } from '../../../../store/modules/setup';
   import { IAnalysisService } from '../../../../models/analysis';
   import { ADD_ANALYSIS_SERVICE, EDIT_ANALYSIS_SERVICE  } from '../../../../graphql/analyses.mutations';
 
   let currentTab = ref('general');
-  const tabs = ['general', 'uncertainities', 'result-options','interims','correction-factor', 'detection-limits', 'specifications', 'methods', 'financials'];
+  const tabs = ['general', 'uncertainities', 'result-options','interims','correction-factor', 'detection-limits', 'specifications', 'financials'];
 
   let store = useStore();
   
@@ -287,6 +309,16 @@
   let formTitle = ref('');
   let analysisService = reactive({}) as IAnalysisService;
   const formAction = ref(true);
+
+  const sampleTypes = computed<any[]>(() => store.getters.getSampleTypes);
+  const departments = computed<any[]>(() => store.getters.getDepartments);
+
+
+  store.dispatch(SetupActionTypes.FETCH_METHODS);
+  const methods = computed<any[]>(() => store.getters.getMethods);
+
+  store.dispatch(SetupActionTypes.FETCH_UNITS);    
+  const units = computed(() => store.getters.getUnits);
 
   store.dispatch(ActionTypes.FETCH_ANALYSES_CATEGORIES);
 
@@ -310,9 +342,13 @@
       keyword: analysisService.keyword, 
       description: analysisService.description, 
       categoryUid: analysisService.categoryUid, 
+      departmentUid: analysisService.departmentUid, 
+      unitUid: analysisService.unitUid,
       sortKey: analysisService.sortKey,
       active: analysisService.active, 
       internalUse: analysisService.internalUse, 
+      sampleTypes: analysisService.sampleTypes?.map(item => item.uid),
+      methods: analysisService.methods?.map(item => item.uid),
     }
     createAnalysisService({ payload }).then((result) => {
       store.dispatch(ActionTypes.ADD_ANALYSES_SERVICE, result);
@@ -324,10 +360,14 @@
       name: analysisService.name, 
       keyword: analysisService.keyword, 
       description: analysisService.description, 
+      departmentUid: analysisService.departmentUid, 
       categoryUid: analysisService.categoryUid, 
+      unitUid: analysisService.unitUid,
       sortKey: analysisService.sortKey,
       active: analysisService.active, 
       internalUse: analysisService.internalUse, 
+      sampleTypes: analysisService.sampleTypes?.map(item => item.uid),
+      methods: analysisService.methods?.map(item => item.uid),
     }
     updateAnalysisService({  uid: analysisService.uid,  payload }).then((result) => {
       store.dispatch(ActionTypes.UPDATE_ANALYSES_SERVICE, result);

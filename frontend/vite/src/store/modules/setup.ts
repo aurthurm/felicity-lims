@@ -8,12 +8,13 @@ import {
   GET_ALL_METHODS,
   GET_ALL_INSTRUMENT_TYPES,
   GET_ALL_INSTRUMENTS,
+  GET_ALL_UNITS,
 } from '../../graphql/instrument.queries';
 import {
   GET_LABORATORY,
   GET_LABORATORY_SETTING
 } from '../../graphql/_queries';
-import {IInstrument, IInstrumentType, ILaboratory, ILaboratorySetting, IManufacturer, IMethod, ISupplier} from '../../models/setup'
+import {IInstrument, IInstrumentType, ILaboratory, ILaboratorySetting, IManufacturer, IMethod, ISupplier, IUnit} from '../../models/setup'
 
 // state contract
 export interface IState {
@@ -24,6 +25,7 @@ export interface IState {
   instrumentTypes: IInstrumentType[];
   instruments: IInstrument[];
   methods: IMethod[];
+  units: IUnit[];
 }
 
 export const initialState = () => {
@@ -35,6 +37,7 @@ export const initialState = () => {
     instrumentTypes: [],
     instruments: [],
     methods: [],
+    units: [],
   };
 };
 
@@ -68,6 +71,10 @@ export enum MutationTypes {
   SET_METHODS = 'SET_METHODS',
   ADD_METHOD = 'ADD_METHOD',
   UPDATE_METHOD = 'UPDATE_METHOD',
+
+  SET_UNITS = 'SET_UNITS',
+  ADD_UNIT = 'ADD_UNIT',
+  UPDATE_UNIT = 'UPDATE_UNIT',
 }
 
 export enum ActionTypes {
@@ -98,6 +105,10 @@ export enum ActionTypes {
   FETCH_METHODS = 'FETCH_METHODS',
   ADD_METHOD = 'ADD_METHOD',
   UPDATE_METHOD = 'UPDATE_METHOD',
+
+  FETCH_UNITS = 'FETCH_UNITS',
+  ADD_UNIT = 'ADD_UNIT',
+  UPDATE_UNIT = 'UPDATE_UNIT',
 }
 
 // Getters
@@ -109,6 +120,7 @@ export const getters = <GetterTree<IState, RootState>>{
   getInstrumentTypes: (state) => state.instrumentTypes,
   getInstruments: (state) => state.instruments,
   getMethods: (state) => state.methods,
+  getUnits: (state) => state.units,
 };
 
 // Mutations
@@ -203,6 +215,20 @@ export const mutations = <MutationTree<IState>>{
 
   [MutationTypes.ADD_METHOD](state: IState, payload: IMethod): void {
     state.methods.push(payload);
+  },
+
+  // UNITS  
+  [MutationTypes.SET_UNITS](state: IState, payload: any): void {
+    state.units = payload;
+  },
+
+  [MutationTypes.UPDATE_UNIT](state: IState, payload: IUnit): void {
+    const index = state.units.findIndex(x => x.uid === payload.uid);
+    state!.units[index] = payload;
+  },
+
+  [MutationTypes.ADD_UNIT](state: IState, payload: IUnit): void {
+    state.units.push(payload);
   },
 
 
@@ -302,6 +328,20 @@ export const actions = <ActionTree<IState, RootState>>{
 
   async [ActionTypes.UPDATE_METHOD]({ commit }, payload){
     commit(MutationTypes.UPDATE_METHOD, payload.data.updateMethod);
+  },
+
+  // UNITS
+  async [ActionTypes.FETCH_UNITS]({ commit }){
+    await useQuery({ query: GET_ALL_UNITS })
+          .then(payload => commit(MutationTypes.SET_UNITS, payload.data.value.unitAll));
+  },
+
+  async [ActionTypes.ADD_UNIT]({ commit }, payload){
+    commit(MutationTypes.ADD_UNIT, payload.data.createUnit);
+  },
+
+  async [ActionTypes.UPDATE_UNIT]({ commit }, payload){
+    commit(MutationTypes.UPDATE_UNIT, payload.data.updateUnit);
   },
 
 };

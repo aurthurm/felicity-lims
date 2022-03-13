@@ -1,6 +1,6 @@
 import { IClient, IClientContact } from "./client";
 import { IPatient } from "./patient";
-import { IInstrument, IMethod, IUnit } from "./setup";
+import { IInstrument, IMethod, IUnit, IDepartment } from "./setup";
 
 export interface ISampleType {
     uid?: number;
@@ -15,7 +15,10 @@ export interface IAnalysisService {
     name?: string;
     keyword?: string;
     description?: string;
-    unit?: string;
+    unitUid?: number;
+    unit?: IUnit;
+    departmentUid?: number,
+    sampleTypes?: ISampleType[] | number[];
     profiles?: IAnalysisProfile[];
     category?: IAnalysisCategory;
     resultOptions?: IResultOption[];
@@ -25,7 +28,7 @@ export interface IAnalysisService {
     detectionLimits?: IAnalysisDetectionLimit[];
     uncertainties?: IAnalysisUncertainty[];
     instruments?: IInstrument[];
-    methods?: IMethod[];
+    methods?: IMethod[] | number[];
     categoryUid?: number,
     sortKey?: number;
     active?: boolean;
@@ -60,6 +63,8 @@ export interface IAnalysisCategory {
     uid?: number;
     name?: string;
     description?: string;
+    departmentUid?: number;
+    department?: IDepartment;
     active?: boolean;
 }
   
@@ -68,7 +73,9 @@ export interface IAnalysisProfile {
     name?: string;
     description?: string;
     keyword?: string,
+    departmentUid?: number,
     analyses?: IAnalysisService[] | number[];
+    sampleTypes?: ISampleType[] | number[];
     active?: boolean;
 }
 

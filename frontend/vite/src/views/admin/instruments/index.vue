@@ -25,6 +25,7 @@
         <tab-instrument-types v-if="currentTab === 'instrument-types'"/>
         <tab-instruments v-if="currentTab === 'instruments'"/>
         <tab-methods v-if="currentTab === 'methods'" />
+        <tab-units v-if="currentTab === 'units'" />
 
   </div>
 </template>
@@ -34,8 +35,9 @@
   import tabInstrumentTypes from './InstrumentTypes.vue'
   import tabInstruments from './Instruments.vue'
   import tabMethods from './Methods.vue'
+  import tabUnits from './Units.vue'
 
   let currentTab = ref('instruments');
-  const tabs = ['instrument-types', 'instruments', 'methods'];
+  const tabs = ['instrument-types', 'instruments', 'methods', 'units'];
   let currentTabComponent = computed(() => 'tab-' + currentTab.value);
 </script>

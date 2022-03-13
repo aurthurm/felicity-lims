@@ -26,7 +26,7 @@
                     </div>
                     </td>
                     <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-                    <div class="text-sm leading-5 text-blue-900">{{ category?.category }}</div>
+                    <div class="text-sm leading-5 text-blue-900">{{ category?.department?.name }}</div>
                     </td>
                     <td class="px-1 py-1 whitespace-no-wrap text-right border-b border-gray-500 text-sm leading-5">
                         <button @click="FormManager(false, category)" class="px-2 py-1 mr-2 border-orange-500 border text-orange-500 rounded transition duration-300 hover:bg-orange-700 hover:text-white focus:outline-none">Edit</button>
@@ -54,6 +54,13 @@
               v-model="form.name"
               placeholder="Name ..."
             />
+          </label>
+          <label class="block col-span-1 mb-2">
+            <span class="text-gray-700">Department</span>
+            <select class="form-select block w-full mt-1" v-model="form.departmentUid">
+               <option></option>
+              <option v-for="department in departments" :key="department.uid" :value="department?.uid">{{ department.name }}</option>
+            </select>
           </label>
           <label class="block col-span-2 mb-2">
             <span class="text-gray-700">Description</span>
@@ -94,74 +101,69 @@
   }
 </style>
 
-<script lang="ts" scope="ts">
-import modal from '../../../components/SimpleModal.vue';
+<script setup lang="ts">
+  import modal from '../../../components/SimpleModal.vue';
 
-import { useMutation } from '@urql/vue';
-import { defineComponent, ref, reactive, computed } from 'vue';
-import { useStore } from 'vuex';
-import { useRouter } from 'vue-router';
-import { ActionTypes,  } from '../../../store/modules/analysis';
-import { IAnalysisCategory } from '../../../models/analysis';
-import { ADD_ANALYSIS_CATEGORY, EDIT_ANALYSIS_CATEGORY  } from '../../../graphql/analyses.mutations';
+  import { useMutation } from '@urql/vue';
+  import { ref, reactive, computed } from 'vue';
+  import { useStore } from 'vuex';
+  import { ActionTypes,  } from '../../../store/modules/analysis';
+  import { IAnalysisCategory } from '../../../models/analysis';
+  import { ADD_ANALYSIS_CATEGORY, EDIT_ANALYSIS_CATEGORY  } from '../../../graphql/analyses.mutations';
 
+  const store = useStore();
+  
+  let showModal = ref(false);
+  let formTitle = ref('');
+  let form = reactive({} as IAnalysisCategory);
+  const formAction = ref(true);
 
-export default defineComponent({
-  name: "tab-analyses-categories",
-  components: {
-    modal,
-  },
-  setup() {
-    const store = useStore();
-    
-    let showModal = ref(false);
-    let formTitle = ref('');
-    let form = reactive({} as IAnalysisCategory);
-    const formAction = ref(true);
+  const departments = computed<any[]>(() => store.getters.getDepartments);
 
-    store.dispatch(ActionTypes.FETCH_ANALYSES_CATEGORIES);
-    const { executeMutation: createAnalysisCategory } = useMutation(ADD_ANALYSIS_CATEGORY);
-    const { executeMutation: updateAnalysisCategory } = useMutation(EDIT_ANALYSIS_CATEGORY);
+  store.dispatch(ActionTypes.FETCH_ANALYSES_CATEGORIES);
+  const analysesCategories= computed(() =>store.getters.getAnalysesCategories);
+  const { executeMutation: createAnalysisCategory } = useMutation(ADD_ANALYSIS_CATEGORY);
+  const { executeMutation: updateAnalysisCategory } = useMutation(EDIT_ANALYSIS_CATEGORY);
 
-    function addAnalysesCategory(): void {
-      const payload = { name: form.name, description: form.description, active: form.active }
-      createAnalysisCategory({ payload }).then((result) => {
-       store.dispatch(ActionTypes.ADD_ANALYSES_CATEGORY, result);
-      });
+  function addAnalysesCategory(): void {
+    const payload = { 
+      name: form.name, 
+      description: form.description, 
+      departmentUid: form.departmentUid,
+      active: form.active 
     }
+    createAnalysisCategory({ payload }).then((result) => {
+      store.dispatch(ActionTypes.ADD_ANALYSES_CATEGORY, result);
+    });
+  }
 
-    function editAnalysesCategory(): void {
-      const payload = { name: form.name, description: form.description, active: form.active }
-      updateAnalysisCategory({ uid: form.uid, payload }).then((result) => {
-        store.dispatch(ActionTypes.UPDATE_ANALYSES_CATEGORY, result);
-      });
+  function editAnalysesCategory(): void {
+    const payload = { 
+      name: form.name, 
+      description: form.description, 
+      departmentUid: form.departmentUid,
+      active: form.active 
     }
+    updateAnalysisCategory({ uid: form.uid, payload }).then((result) => {
+      store.dispatch(ActionTypes.UPDATE_ANALYSES_CATEGORY, result);
+    });
+  }
 
-    function FormManager(create: boolean, obj: IAnalysisCategory | null):void {
-      formAction.value = create;
-      showModal.value = true;
-      formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "ANALYSES CATEGORY";
-      if (create) {
-        Object.assign(form, {} as IAnalysisCategory);
-      } else {
-        Object.assign(form, { ...obj });
-      }
+  function FormManager(create: boolean, obj: IAnalysisCategory | null):void {
+    formAction.value = create;
+    showModal.value = true;
+    formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "ANALYSES CATEGORY";
+    if (create) {
+      Object.assign(form, {} as IAnalysisCategory);
+    } else {
+      Object.assign(form, { ...obj });
     }
+  }
 
-    function saveForm():void {
-      if (formAction.value === true) addAnalysesCategory();
-      if (formAction.value === false) editAnalysesCategory();
-      showModal.value = false;
-    }
+  function saveForm():void {
+    if (formAction.value === true) addAnalysesCategory();
+    if (formAction.value === false) editAnalysesCategory();
+    showModal.value = false;
+  }
 
-    return {
-      showModal, 
-      analysesCategories: computed(() =>store.getters.getAnalysesCategories),
-      FormManager,
-      form,
-      formTitle,
-      saveForm
-     };
-  },
-});
 </script>

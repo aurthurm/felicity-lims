@@ -129,6 +129,7 @@ import { IResultOption } from '../../../../models/analysis';
 
         function editResultOption(): void {
             const payload = { ...form };
+            delete payload['__typename']
             delete payload['uid']
 
             updateResultOption({ uid : form.uid,  payload }).then((result) => {

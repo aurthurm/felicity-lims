@@ -7,12 +7,6 @@
         @click="FormManager(true)"
       > Add Method</button>
       <hr>
-      <!-- <input
-        class="w-64 h-10 ml-6 pl-4 pr-2 py-1 text-sm text-gray-700 placeholder-gray-600 border-1 border-gray-400 rounded-md  focus:placeholder-gray-500 focus:border-green-100 focus:outline-none focus:shadow-outline-purple form-input"
-        type="text" placeholder="Search ..." aria-label="Search"
-        @keyup="searchProfile($event)"
-        @focus="setProfileToNull()"
-      /> -->
     </div>
     <hr />
 
@@ -55,7 +49,7 @@
     </template>
 
     <template v-slot:body>
-      <method-form :method="method" :methodUid="method?.uid" />
+      <method-form :method="method" :methodUid="method?.uid"  @close="showModal = false" />
     </template>
   </modal>
 

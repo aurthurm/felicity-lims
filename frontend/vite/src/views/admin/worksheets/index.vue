@@ -237,14 +237,14 @@
                 <input
                   class="form-input mt-1 block w-full"
                   v-model="workSheetTemplate.cols"
+                  @keyup="calculateRows()"
                   type="number"
-                  disabled
                 />
               </label>
               <label class="block col-span-1 mb-2">
                 <span class="text-gray-700">Rows</span>
                 <input
-                  class="form-input mt-1 block w-full"
+                  class="form-input mt-1 block w-full bg-gray-100"
                   v-model="workSheetTemplate.rows"
                   type="number"
                   disabled
@@ -256,7 +256,6 @@
                     type="checkbox" 
                     name="toggle" id="toggle" 
                     v-model="workSheetTemplate.rowWise"
-                    disabled
                     class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer outline-none"/>
                     <label for="toggle" class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer"></label>
                 </div>
@@ -373,202 +372,185 @@
   }
 </style>
 
-<script lang="ts">
-import modal from '../../../components/SimpleModal.vue';
+<script setup lang="ts">
+  import modal from '../../../components/SimpleModal.vue';
 
-import { useMutation } from '@urql/vue';
-import { useStore } from 'vuex';
-import { defineComponent, ref, reactive, computed } from 'vue';
+  import { useMutation } from '@urql/vue';
+  import { useStore } from 'vuex';
+  import { defineComponent, ref, reactive, computed } from 'vue';
 
-import { ADD_WORKSHEET_TEMPLATE, EDIT_WORKSHEET_TEMPLATE } from '../../../graphql/worksheet.mutations';
-import { ActionTypes } from '../../../store/modules/worksheet';
-import { IReserved, IWorkSheetTemplate } from '../../../models/worksheet';
-import { ActionTypes as AnalysisActionTypes } from '../../../store/modules/analysis';
-import { ActionTypes as SampleActionTypes} from '../../../store/modules/sample';
-import { ActionTypes as SetupActionTypes } from '../../../store/modules/setup';
-import { IAnalysisService, IQCLevel, IQCTemplate, ISampleType } from '../../../models/analysis';
-import { IInstrument } from '../../../models/setup';
+  import { ADD_WORKSHEET_TEMPLATE, EDIT_WORKSHEET_TEMPLATE } from '../../../graphql/worksheet.mutations';
+  import { ActionTypes } from '../../../store/modules/worksheet';
+  import { IReserved, IWorkSheetTemplate } from '../../../models/worksheet';
+  import { ActionTypes as AnalysisActionTypes } from '../../../store/modules/analysis';
+  import { ActionTypes as SampleActionTypes} from '../../../store/modules/sample';
+  import { ActionTypes as SetupActionTypes } from '../../../store/modules/setup';
+  import { IAnalysisService, IQCLevel, IQCTemplate, ISampleType } from '../../../models/analysis';
+  import { IInstrument } from '../../../models/setup';
 
-export default defineComponent({
-  name: 'worksheet-templates',
-  components: {
-    modal,
-  },
-  setup() {
-    const store = useStore();
+  const store = useStore();
 
-    let currentTab = ref<string>('preview');
-    const tabs: string[] = ['preview'];
-    let currentTabComponent = computed(() => 'tab-' + currentTab.value);
+  let currentTab = ref<string>('preview');
+  const tabs: string[] = ['preview'];
+  let currentTabComponent = computed(() => 'tab-' + currentTab.value);
 
-    let showModal = ref<boolean>(false);
-    let createItem = ref<any>(null);
-    let workSheetTemplate = reactive({}) as IWorkSheetTemplate;
-    let formTitle = ref<string>('');
+  let showModal = ref<boolean>(false);
+  let createItem = ref<any>(null);
+  let workSheetTemplate = reactive({}) as IWorkSheetTemplate;
+  let formTitle = ref<string>('');
 
-    let analysesParams = reactive({ 
-      first: undefined, 
-      after: "",
-      text: "", 
-      sortBy: ["name"]
+  let analysesParams = reactive({ 
+    first: undefined, 
+    after: "",
+    text: "", 
+    sortBy: ["name"]
+  });
+  store.dispatch(AnalysisActionTypes.FETCH_ANALYSES_SERVICES, analysesParams);
+  store.dispatch(SampleActionTypes.FETCH_SAMPLE_TYPES);
+  store.dispatch(SetupActionTypes.FETCH_INSTRUMENTS);
+  store.dispatch(AnalysisActionTypes.FETCH_ANALYSES_QC_TEMPLATES);
+  store.dispatch(AnalysisActionTypes.FETCH_QC_LEVELS);
+  store.dispatch(ActionTypes.FETCH_WORKSHEET_TEMPLATES);
+
+  const { executeMutation: createWorksheetTemplate } = useMutation(ADD_WORKSHEET_TEMPLATE);
+  const { executeMutation: updateWorksheetTemplate } = useMutation(EDIT_WORKSHEET_TEMPLATE);
+
+  const qcTemplates =  computed<IQCTemplate[]>(() => store.getters.getQCTemplates);
+  const workSheetTemplates = computed<IWorkSheetTemplate[]>(() => store.getters.getWorkSheetTemplates);
+
+  function addWorksheetTemplate() {
+    const payload = { 
+      name: workSheetTemplate.name,
+      sampleTypeUid: workSheetTemplate.sampleType!.uid,
+      instrumentUid: workSheetTemplate.instrument!.uid,
+      description: workSheetTemplate.description,
+      qcTemplateUid: workSheetTemplate.qcTemplateUid,
+      reserved: workSheetTemplate.reserved,
+      numberOfSamples: +workSheetTemplate.numberOfSamples!,
+      worksheetType: workSheetTemplate.worksheetType,
+      cols:  workSheetTemplate.cols,
+      rows:  workSheetTemplate.rows,
+      rowWise:  workSheetTemplate.rowWise,
+      analyses: workSheetTemplate.analyses![0]?.uid
+    }
+    createWorksheetTemplate({ payload }).then((result) => {
+      store.dispatch(ActionTypes.ADD_WORKSHEET_TEMPLATE, result)
     });
-    store.dispatch(AnalysisActionTypes.FETCH_ANALYSES_SERVICES, analysesParams);
-    store.dispatch(SampleActionTypes.FETCH_SAMPLE_TYPES);
-    store.dispatch(SetupActionTypes.FETCH_INSTRUMENTS);
-    store.dispatch(AnalysisActionTypes.FETCH_ANALYSES_QC_TEMPLATES);
-    store.dispatch(AnalysisActionTypes.FETCH_QC_LEVELS);
-    store.dispatch(ActionTypes.FETCH_WORKSHEET_TEMPLATES);
+  }
 
-    const { executeMutation: createWorksheetTemplate } = useMutation(ADD_WORKSHEET_TEMPLATE);
-    const { executeMutation: updateWorksheetTemplate } = useMutation(EDIT_WORKSHEET_TEMPLATE);
-
-    const qcTemplates =  computed<IQCTemplate[]>(() => store.getters.getQCTemplates);
-    const workSheetTemplates = computed<IWorkSheetTemplate[]>(() => store.getters.getWorkSheetTemplates);
-
-    function addWorksheetTemplate() {
-      const payload = { 
-        name: workSheetTemplate.name,
-        sampleTypeUid: workSheetTemplate.sampleType!.uid,
-        instrumentUid: workSheetTemplate.instrument!.uid,
-        description: workSheetTemplate.description,
-        qcTemplateUid: workSheetTemplate.qcTemplateUid,
-        reserved: workSheetTemplate.reserved,
-        numberOfSamples: +workSheetTemplate.numberOfSamples!,
-        worksheetType: workSheetTemplate.worksheetType,
-        cols:  workSheetTemplate.cols,
-        rows:  workSheetTemplate.rows,
-        rowWise:  workSheetTemplate.rowWise,
-        analyses: workSheetTemplate.analyses![0]?.uid
-      }
-      createWorksheetTemplate({ payload }).then((result) => {
-        store.dispatch(ActionTypes.ADD_WORKSHEET_TEMPLATE, result)
-      });
+  function editWorksheetTemplate() {
+    const payload = { 
+      name: workSheetTemplate.name,
+      sampleTypeUid: workSheetTemplate.sampleType!.uid,
+      instrumentUid: workSheetTemplate.instrument!.uid,
+      description: workSheetTemplate.description,
+      qcTemplateUid: workSheetTemplate.qcTemplateUid,
+      reserved: workSheetTemplate.reserved,
+      numberOfSamples: workSheetTemplate.numberOfSamples,
+      worksheetType: workSheetTemplate.worksheetType,
+      cols:  workSheetTemplate.cols,
+      rows:  workSheetTemplate.rows,
+      rowWise:  workSheetTemplate.rowWise,
+      analyses: workSheetTemplate.analyses![0]?.uid
     }
+    updateWorksheetTemplate({ uid: workSheetTemplate.uid, payload }).then((result) => {
+      store.dispatch(ActionTypes.UPDATE_WORKSHEET_TEMPLATE, result)
+    });
+  }
 
-    function editWorksheetTemplate() {
-      const payload = { 
-        name: workSheetTemplate.name,
-        sampleTypeUid: workSheetTemplate.sampleType!.uid,
-        instrumentUid: workSheetTemplate.instrument!.uid,
-        description: workSheetTemplate.description,
-        qcTemplateUid: workSheetTemplate.qcTemplateUid,
-        reserved: workSheetTemplate.reserved,
-        numberOfSamples: workSheetTemplate.numberOfSamples,
-        worksheetType: workSheetTemplate.worksheetType,
-        cols:  workSheetTemplate.cols,
-        rows:  workSheetTemplate.rows,
-        rowWise:  workSheetTemplate.rowWise,
-        analyses: workSheetTemplate.analyses![0]?.uid
-      }
-      updateWorksheetTemplate({ uid: workSheetTemplate.uid, payload }).then((result) => {
-        store.dispatch(ActionTypes.UPDATE_WORKSHEET_TEMPLATE, result)
-      });
-    }
-
-    function generatePreview(wst: IWorkSheetTemplate): IReserved[] {
-      let items:IReserved[] = [];
-      const indexes: number[] = Array.from({length: wst?.numberOfSamples! + wst?.reserved!?.length}, (x, i) => i + 1);
-      
-      indexes.forEach(i => {  
-          let item = {
-            position: i,
-            row: 1,
-            col: 1,
-            name:"sample",
-            sampleUid: undefined
-          };
-          if(wst?.reserved?.some(x => x.position === i)){
-            item.name ="control"
+  function generatePreview(wst: IWorkSheetTemplate): IReserved[] {
+    let items:IReserved[] = [];
+    const indexes: number[] = Array.from({length: wst?.numberOfSamples! + wst?.reserved!?.length}, (x, i) => i + 1);
+    
+    indexes.forEach(i => {  
+        let item = {
+          position: i,
+          row: 1,
+          col: 1,
+          name:"sample",
+          sampleUid: undefined
+        };
+        if(wst?.reserved?.some(x => x.position === i)){
+          item.name ="control"
+        }
+        wst?.reserved?.forEach((r: any) => {
+          if(r[1]?.position === i) {
+            item.name = r[1]?.name;
           }
-          wst?.reserved?.forEach((r: any) => {
-            if(r[1]?.position === i) {
-              item.name = r[1]?.name;
-            }
-          });
-          items.push(item as any)
-      });
+        });
+        items.push(item as any)
+    });
 
-      return items;
+    return items;
+  }
+
+  function calculateRows(): void {
+    if(workSheetTemplate.worksheetType == 'grid') {
+      workSheetTemplate.rows = Math.ceil((workSheetTemplate?.numberOfSamples! + (workSheetTemplate.reserved?.length | 0))/workSheetTemplate?.cols!);
+    }    
+  }
+
+  function selectWorkSheetTemplate(ws: IWorkSheetTemplate): void {
+    Object.assign(workSheetTemplate, ws);
+    const items = generatePreview(ws);
+    workSheetTemplate!.preview = items;
+  }
+
+  function addReserved(): void {
+    workSheetTemplate.reserved?.push({} as IReserved);
+    calculateRows()
+  }
+
+  function removeReserved(index: number): void {
+      workSheetTemplate.reserved?.splice(index, 1);
+  }
+
+  function appyQCTemplate(): void {
+    workSheetTemplate.reserved = [];
+    if(!(workSheetTemplate.qcTemplateUid)) return;
+    const template: IQCTemplate | undefined = qcTemplates.value?.find((item: IQCTemplate) => item.uid === workSheetTemplate.qcTemplateUid);
+    template?.qcLevels!.forEach((level, index) => {
+      workSheetTemplate.reserved?.push({ position: index + 1, levelUid: level.uid } as IReserved);
+    });
+    calculateRows()
+  } 
+
+  function changeWorkSheetType(event: any): void {
+    if(event.target.value == 'flat') {
+      workSheetTemplate.cols = undefined;
+      workSheetTemplate.rows = undefined;
     }
+  }
 
-    function selectWorkSheetTemplate(ws: IWorkSheetTemplate): void {
-      Object.assign(workSheetTemplate, ws);
-      const items = generatePreview(ws);
-      workSheetTemplate!.preview = items;
-      console.log(items);
+  function FormManager(create: boolean, obj = {} as IWorkSheetTemplate) {
+    createItem.value = create;
+    formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "WOKKSHEET TEMPLATE";
+    showModal.value = true;
+    if (create) {
+      let wst = {} as IWorkSheetTemplate;
+      wst.instrument = {} as IInstrument;
+      wst.sampleType = {} as ISampleType;
+      wst.analyses = [{} as IAnalysisService];
+      Object.assign(workSheetTemplate, { ...wst });
+    } else {
+      selectWorkSheetTemplate(obj)
     }
+  }
 
-    function addReserved(): void {
-      workSheetTemplate.reserved?.push({} as IReserved);
-    }
+  function saveForm() {
+    if (createItem.value) addWorksheetTemplate();
+    if (!createItem.value) editWorksheetTemplate();
+    showModal.value = false;
+  }
 
-    function removeReserved(index: number): void {
-        workSheetTemplate.reserved?.splice(index, 1);
-    }
 
-    function appyQCTemplate(): void {
-      workSheetTemplate.reserved = [];
-      if(!(workSheetTemplate.qcTemplateUid)) return;
-      const template: IQCTemplate | undefined = qcTemplates.value?.find((item: IQCTemplate) => item.uid === workSheetTemplate.qcTemplateUid);
-      template?.qcLevels!.forEach((level, index) => {
-        workSheetTemplate.reserved?.push({ position: index + 1, levelUid: level.uid } as IReserved);
-      });
-    } 
-
-    function changeWorkSheetType(event: any): void {
-      if(event.target.value == 'flat') {
-        workSheetTemplate.cols = undefined;
-        workSheetTemplate.rows = undefined;
-      }
-    }
-
-    function FormManager(create: boolean, obj = {} as IWorkSheetTemplate) {
-      createItem.value = create;
-      formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "WOKKSHEET TEMPLATE";
-      showModal.value = true;
-      if (create) {
-        let wst = {} as IWorkSheetTemplate;
-        wst.instrument = {} as IInstrument;
-        wst.sampleType = {} as ISampleType;
-        wst.analyses = [{} as IAnalysisService];
-        Object.assign(workSheetTemplate, { ...wst });
-      } else {
-        selectWorkSheetTemplate(obj)
-        console.log(obj);
-      }
-    }
-
-    function saveForm() {
-      console.log("save object ", workSheetTemplate);
-      if (createItem.value) addWorksheetTemplate();
-      if (!createItem.value) editWorksheetTemplate();
-      showModal.value = false;
-    }
-
-    return {
-      showModal,
-      tabs,
-      currentTab,
-      FormManager,
-      saveForm,
-      formTitle,
-      workSheetTemplates,
-      appyQCTemplate,
-      qcTemplates,
-      instruments: computed<IInstrument[]>(() => store.getters.getInstruments),
-      services: computed(() => {
+  const instruments= computed<IInstrument[]>(() => store.getters.getInstruments)
+  const services = computed(() => {
         const services: IAnalysisService[] = store.getters.getAnalysesServicesSimple;
         const forQC = services?.filter(service => service?.category?.name !== 'Quality Control');
         return forQC;
-      }),
-      qcLevels: computed<IQCLevel[]>(() => store.getters.getQCLevels),
-      sampleTypes: computed<ISampleType[]>(() => store.getters.getSampleTypes),
-      workSheetTemplate,
-      selectWorkSheetTemplate,
-      addReserved,
-      removeReserved,
-      changeWorkSheetType,
-    };
-  },
-});
+  })
+  const qcLevels = computed<IQCLevel[]>(() => store.getters.getQCLevels)
+  const sampleTypes = computed<ISampleType[]>(() => store.getters.getSampleTypes)
+
 </script>

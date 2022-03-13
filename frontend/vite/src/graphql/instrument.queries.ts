@@ -18,7 +18,6 @@ export const GET_ALL_SUPPLIERS = gql`
       }
   }`;
 
-
 export const GET_ALL_INSTRUMENT_TYPES = gql`
 query getAllInstrumentTypes {
   instrumentTypeAll {
@@ -76,8 +75,6 @@ export const GET_ALL_INSTRUMENTS = gql`
     }
 }`;
 
-
-
 export const GET_ALL_METHODS = gql`
     query getAllMethods {
       methodAll {
@@ -101,3 +98,12 @@ export const GET_ALL_METHODS = gql`
         }
       }
   }`;
+
+export const GET_ALL_UNITS = gql`
+  query getAllUnits {
+    unitAll {
+      uid
+      name
+      isSiUnit
+    }
+}`;

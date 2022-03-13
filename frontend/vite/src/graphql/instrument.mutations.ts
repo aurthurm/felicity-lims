@@ -39,7 +39,6 @@ export const EDIT_SUPPLIER= gql`
   }
 `;
 
-
 // MANUFACTURERS
 export const ADD_MANUFACTURER = gql`
   mutation AddManufacturer ($payload: ManufacturerInputType!) {
@@ -79,7 +78,6 @@ export const EDIT_MANUFACTURER = gql`
   }
 `;
 
-
 // INSTRUMENT TYPES
 export const ADD_INSTRUMENT_TYPE = gql`
   mutation AddInstrumentType ($payload: InstrumentTypeInputType!) {
@@ -118,7 +116,6 @@ export const EDIT_INSTRUMENT_TYPE = gql`
     }
   }
 `;
-
 
 // INSTRUMENT
 export const ADD_INSTRUMENT= gql`
@@ -185,7 +182,6 @@ export const EDIT_INSTRUMENT= gql`
   }
 `;
 
-
 // METHOD
 export const ADD_METHOD= gql`
   mutation AddMethod ($payload: MethodInputType!) {
@@ -218,6 +214,45 @@ export const EDIT_METHOD= gql`
         description
         keyword
   
+      }
+
+      ... on OperationError {
+        __typename
+        error
+        suggestion
+      }
+    }
+  }
+`;
+
+// UNIT
+export const ADD_UNIT= gql`
+  mutation AddUnit ($payload: UnitInputType!) {
+    createUnit(payload: $payload) {
+      ... on UnitType {
+        __typename
+        uid
+        name
+        isSiUnit
+      }
+
+      ... on OperationError {
+        __typename
+        error
+        suggestion
+      }
+    }
+  }
+`;
+
+export const EDIT_UNIT= gql`
+  mutation EditUnit ($uid: Int!, $payload: UnitInputType!) {
+    updateUnit(uid: $uid, payload: $payload){
+      ... on UnitType {
+        __typename
+        uid
+        name
+        isSiUnit
       }
 
       ... on OperationError {

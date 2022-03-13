@@ -20,7 +20,19 @@ export const GET_ALL_ANALYSES_SERVICES = gql`
         keyword
         active
         sortKey
+        description
         categoryUid
+        departmentUid
+        
+        unitUid
+        unit {
+          uid
+          name
+        }
+        sampleTypes {
+          uid
+          name
+        }
         specifications {
           uid
           analysisUid
@@ -124,6 +136,11 @@ export const GET_ALL_ANALYSES_PROFILES = gql`
           description
           keyword
           active
+          departmentUid
+          sampleTypes {
+            uid
+            name
+          }
           analyses {
             name
             keyword
@@ -142,6 +159,11 @@ export const GET_ALL_ANALYSES_PROFILES_AND_SERVICES = gql`
             description
             keyword
             active
+            departmentUid
+            sampleTypes {
+              uid
+              name
+            }
             analyses {
               uid
               name
@@ -156,8 +178,19 @@ export const GET_ALL_ANALYSES_PROFILES_AND_SERVICES = gql`
             name
             keyword
             active
+            description
             sortKey
             categoryUid
+            departmentUid
+            unitUid
+            unit {
+              uid
+              name
+            }
+            sampleTypes {
+              uid
+              name
+            }
             specifications {
               uid
               analysisUid
@@ -254,6 +287,11 @@ export const GET_ALL_ANALYSES_CATEGORIES = gql`
             name
             description
             active
+            departmentUid
+            department {
+              uid
+              name
+            }
         }
     }`;
 
