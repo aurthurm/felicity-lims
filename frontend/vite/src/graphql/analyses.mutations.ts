@@ -766,7 +766,11 @@ export const SUBMIT_ANALYSIS_RESULTS = gql`
           analysis {
             uid
             name
-            unit
+            unitUid
+            unit {
+              uid
+              name
+            }
             sortKey
             interims {
               uid
@@ -862,7 +866,11 @@ export const VERIFY_ANALYSIS_RESULTS = gql`
           analysis {
             uid
             name
-            unit
+            unitUid
+            unit {
+              uid
+              name
+            }
             sortKey
             interims {
               uid
@@ -918,7 +926,11 @@ export const RETRACT_ANALYSIS_RESULTS = gql`
           analysis {
             uid
             name
-            unit
+            unitUid
+            unit {
+              uid
+              name
+            }
             sortKey
             interims {
               uid
@@ -974,7 +986,11 @@ export const RETEST_ANALYSIS_RESULTS = gql`
           analysis {
             uid
             name
-            unit
+            unitUid
+            unit {
+              uid
+              name
+            }
             sortKey
             interims {
               uid

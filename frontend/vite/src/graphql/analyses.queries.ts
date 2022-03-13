@@ -23,7 +23,6 @@ export const GET_ALL_ANALYSES_SERVICES = gql`
         description
         categoryUid
         departmentUid
-        
         unitUid
         unit {
           uid
@@ -543,7 +542,11 @@ export const GET_ANALYSIS_RESULTS_BY_SAMPLE_UID = gql`
         analysis{
           uid
           name
-          unit
+          unitUid
+          unit {
+            uid
+            name
+          }
           sortKey
           interims {
             uid
@@ -819,7 +822,11 @@ export const GET_QC_SET_BY_UID = gql`
           analyses {
             uid
             name
-            unit
+            unitUid
+            unit {
+              uid
+              name
+            }
             resultOptions {
               uid
               optionKey
