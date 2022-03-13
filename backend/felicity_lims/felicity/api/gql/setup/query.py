@@ -5,7 +5,6 @@ import strawberry  # noqa
 from felicity.apps.setup import models
 from felicity.api.gql import PageInfo
 from felicity.api.gql.setup.types import (
-    SupplierType,
     ManufacturerType,
     CountryType,
     DepartmentType,
@@ -22,7 +21,12 @@ from felicity.api.gql.setup.types import (
     ProvinceCursorPage,
     ProvinceEdge,
     ProvinceType,
-    SupplierType, InstrumentTypeType, InstrumentTypeEdge, InstrumentTypeCursorPage, LaboratorySettingType,
+    SupplierType,
+    InstrumentTypeType,
+    InstrumentTypeEdge,
+    InstrumentTypeCursorPage,
+    LaboratorySettingType,
+    UnitType
 )
 from felicity.utils import has_value_or_is_truthy
 
@@ -46,6 +50,10 @@ async def get_all_manufacturers() -> List[ManufacturerType]:
 
 async def get_all_departments() -> List[DepartmentType]:
     return await models.Department.all()
+
+
+async def get_all_units() -> List[UnitType]:
+    return await models.Unit.all()
 
 
 async def get_all_instrument_types(
@@ -355,3 +363,10 @@ class SetupQuery:
     async def country_by_uid(self, info, uid: int) -> CountryType:
         country = await models.Country.find(uid)
         return country
+
+    unit_all: List[UnitType] = strawberry.field(resolver=get_all_units)
+
+    @strawberry.field
+    async def unit_by_uid(self, info, uid: int) -> UnitType:
+        unit = await models.Unit.find(uid)
+        return unit

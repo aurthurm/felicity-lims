@@ -1,5 +1,6 @@
 import logging
-from typing import Optional
+from dataclasses import field
+from typing import Optional, List
 
 import strawberry  # noqa
 from felicity.apps.analysis import schemas
@@ -20,8 +21,10 @@ AnalysisProfileResponse = strawberry.union(
 @strawberry.input
 class ProfileInputType:
     name: str
-    description: str
-    services: Optional[int] = None
+    description: str = ""
+    department_uid: Optional[int] = None
+    sample_types: Optional[List[int]] = field(default_factory=list)
+    services: Optional[List[int]] = field(default_factory=list)
     keyword: Optional[str] = None
     active: Optional[bool] = True
 
@@ -52,11 +55,20 @@ async def create_profile(info, payload: ProfileInputType) -> AnalysisProfileResp
     incoming = {
         "created_by_uid": felicity_user.uid,
         "updated_by_uid": felicity_user.uid,
-        **payload.__dict__,
     }
+    for k, v in payload.__dict__.items():
+        if k not in ['sample_types', 'services']:
+            incoming[k] = v
 
     obj_in = schemas.ProfileCreate(**incoming)
     profile: analysis_models.Profile = await analysis_models.Profile.create(obj_in)
+
+    if payload.sample_types:
+        for _uid in payload.sample_types:
+            st = await analysis_models.SampleType.get(uid=_uid)
+            profile.sample_types.append(st)
+        profile = await profile.save()
+
     return a_types.ProfileType(**profile.marshal_simple())
 
 
@@ -90,12 +102,22 @@ async def update_profile(
     profile_in = schemas.ProfileUpdate(**profile.to_dict())
     profile = await profile.update(profile_in)
 
-    profile.analyses.clear()
+    # Analyses management
     if payload.services:
+        profile.analyses.clear()
+        profile = await profile.save()
         for _uid in payload.services:
             anal = await analysis_models.Analysis.get(uid=_uid)
-            if anal not in profile.analyses:
-                profile.analyses.append(anal)
-    profile = await profile.save()
+            profile.analyses.append(anal)
+        profile = await profile.save()
+
+    # Sample Type management
+    if payload.sample_types:
+        profile.sample_types.clear()
+        profile = await profile.save()
+        for _uid in payload.sample_types:
+            st = await analysis_models.SampleType.get(uid=_uid)
+            profile.sample_types.append(st)
+        profile = await profile.save()
 
     return a_types.ProfileType(**profile.marshal_simple())

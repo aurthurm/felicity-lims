@@ -37,7 +37,7 @@ class CreateQCSetData:
 @strawberry.input
 class QCTemplateInputType:
     name: str
-    description: str
+    description: str = ""
     departments: Optional[List[int]] = None
     levels: List[int] = None
 
@@ -256,19 +256,21 @@ async def update_QC_template(
     qc_in = schemas.QCTemplateUpdate(**qc_template.to_dict())
     qc_template = await qc_template.update(qc_in)
 
-    qc_template.qc_levels.clear()
     if payload.levels:
+        qc_template.qc_levels.clear()
+        qc_template = await qc_template.save()
         for _uid in payload.levels:
             level = await qc_models.QCLevel.get(uid=_uid)
             if level not in qc_template.qc_levels:
                 qc_template.qc_levels.append(level)
-    qc_template = await qc_template.save()
+        qc_template = await qc_template.save()
 
-    qc_template.departments.clear()
     if payload.departments:
+        qc_template.departments.clear()
+        qc_template = await qc_template.save()
         for _uid in payload.departments:
             dept = await setup_models.Department.get(uid=_uid)
             if dept not in qc_template.departments:
                 qc_template.departments.append(dept)
-    qc_template = await qc_template.save()
+        qc_template = await qc_template.save()
     return a_types.QCTemplateType(**qc_template.marshal_simple())

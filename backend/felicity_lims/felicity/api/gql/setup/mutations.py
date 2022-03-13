@@ -96,34 +96,34 @@ class LaboratorySettingInputType:
 @strawberry.input
 class DepartmentInputType:
     name: str
-    description: Optional[str] = None
+    description: Optional[str] = ""
     code: Optional[str] = None
 
 
 @strawberry.input
 class SupplierInputType:
     name: str
-    description: Optional[str] = None
+    description: Optional[str] = ""
     code: Optional[str] = None
 
 
 @strawberry.input
 class ManufacturerInputType:
     name: str
-    description: Optional[str] = None
+    description: Optional[str] = ""
 
 
 @strawberry.input
 class InstrumentTypeInputType:
     name: str
-    description: Optional[str] = None
+    description: Optional[str] = ""
 
 
 @strawberry.input
 class InstrumentInputType:
     name: str
     keyword: str
-    description: Optional[str] = None
+    description: Optional[str] = ""
     instrument_type_uid: Optional[int] = None
     supplier_uid: Optional[int] = None
     manufacturer_uid: Optional[int] = None
@@ -135,7 +135,7 @@ class MethodInputType:
     instruments: Optional[List[int]] = field(default_factory=list)
     analyses: Optional[List[int]] = field(default_factory=list)
     keyword: Optional[str] = None
-    description: Optional[str] = None
+    description: Optional[str] = ""
 
 
 @strawberry.input
@@ -171,7 +171,7 @@ class DistrictInputType:
 
 @strawberry.input
 class UnitInputType:
-    name: int
+    name: str
     is_si_unit: bool
 
 

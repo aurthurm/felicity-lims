@@ -89,6 +89,8 @@ class AnalysisRequestType:
 class AnalysisCategoryType:
     uid: int
     name: str
+    department_uid: Optional[str]
+    department: Optional[DepartmentType]
     description: Optional[str]
     active: bool
     #
@@ -122,11 +124,15 @@ class AnalysisType:
     name: str
     description: Optional[str]
     keyword: Optional[str]
-    unit: Optional[str]
+    department_uid: Optional[str]
+    department: Optional[DepartmentType]
+    unit_uid: Optional[int]
+    unit: Optional[UnitType]
     sample_types: Optional[List[SampleTypeTyp]]
     category_uid: Optional[int]
     category: Optional[AnalysisCategoryType]
     interims: Optional[List['AnalysisInterimType']]
+    sample_types: Optional[List[SampleTypeTyp]]
     correction_factors: Optional[List['AnalysisCorrectionFactorType']]
     specifications: Optional[List['AnalysisSpecificationType']]
     detection_limits: Optional[List['AnalysisDetectionLimitType']]
@@ -136,6 +142,9 @@ class AnalysisType:
     methods: Optional[List[MethodType]]
     tat_length_minutes: int
     sort_key: int
+    precision: int
+    required_verifications: int
+    hidden: bool
     internal_use: bool
     active: bool
     #
@@ -153,8 +162,11 @@ class ProfileType:
     name: str
     description: Optional[str]
     keyword: Optional[str]
+    department_uid: Optional[str]
+    department: Optional[DepartmentType]
     tat_length_minutes: Optional[int]
     analyses: Optional[List[AnalysisType]]
+    sample_types: Optional[List[SampleTypeTyp]]
     active: bool
     #
     created_by_uid: Optional[int]

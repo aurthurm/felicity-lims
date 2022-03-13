@@ -51,7 +51,9 @@ class SampleTypeInDB(SampleTypeBaseInDB):
 
 # Shared properties
 class ProfileBase(BaseAuditModel):
-    name: Optional[str] = None
+    name: Optional[str]
+    analyses: Optional[List["Analysis"]]
+    sample_types: Optional[List[SampleType]]
     description: Optional[str] = None
     keyword: Optional[str] = None
     tat_length_minutes: Optional[int] = None
@@ -92,6 +94,7 @@ class ProfileInDB(ProfileBaseInDB):
 class AnalysisCategoryBase(BaseAuditModel):
     name: Optional[str] = None
     description: Optional[str] = None
+    department_uid: Optional[int] = None
     active: Optional[bool] = True
 
 

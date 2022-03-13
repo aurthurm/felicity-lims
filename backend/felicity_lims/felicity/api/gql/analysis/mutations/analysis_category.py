@@ -20,6 +20,7 @@ AnalysisCategoryResponse = strawberry.union(
 @strawberry.input
 class AnalysisCategoryInputType:
     name: str
+    department_uid: Optional[int] = None
     description: Optional[str] = None
     active: Optional[bool] = True
 

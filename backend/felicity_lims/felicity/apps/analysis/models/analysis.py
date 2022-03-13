@@ -41,6 +41,16 @@ class SampleType(BaseAuditDBModel):
 
 
 """
+ Many to Many Link between SampleType and Profile
+"""
+profile_sample_type = Table(
+    "profile_sample_type",
+    DBModel.metadata,
+    Column("sample_type_uid", ForeignKey("sampletype.uid"), primary_key=True),
+    Column("profile_uid", ForeignKey("profile.uid"), primary_key=True),
+)
+
+"""
 Many to Many Link between Analysis and SampleType
 """
 analysis_sample_type = Table(
@@ -86,6 +96,9 @@ class AnalysisCategory(BaseAuditDBModel):
         return await super().update(**data)
 
 
+
+
+
 class Profile(BaseAuditDBModel):
     """Grouped Analysis e.g FBC, U&E's, MCS ..."""
 
@@ -98,6 +111,12 @@ class Profile(BaseAuditDBModel):
         "Analysis",
         secondary=analysis_profile,
         back_populates="profiles",
+        lazy="selectin",
+    )
+    sample_types = relationship(
+        "SampleType",
+        secondary=profile_sample_type,
+        backref="profiles",
         lazy="selectin",
     )
     department_uid = Column(Integer, ForeignKey("department.uid"), nullable=True)

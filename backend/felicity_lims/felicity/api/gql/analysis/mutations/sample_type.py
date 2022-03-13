@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 class SampleTypeInputType:
     name: str
     abbr: str
-    description: Optional[str] = None
+    description: Optional[str] = ""
     internal_use: Optional[bool] = False
     active: Optional[bool] = True
 
