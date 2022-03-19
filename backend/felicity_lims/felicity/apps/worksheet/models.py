@@ -44,25 +44,6 @@ class WSBase(BaseAuditDBModel):
         return data
 
 
-"""
-Many to Many Link between WorkSheetTemplate and Profile
-"""
-worksheet_template_profile = Table(
-    "worksheet_template_profile",
-    DBModel.metadata,
-    Column("ws_template_uid", ForeignKey("worksheettemplate.uid"), primary_key=True),
-    Column("profile_uid", ForeignKey("profile.uid"), primary_key=True),
-)
-
-"""
-any to Many Link between WorkSheetTemplate and Analysis
-"""
-worksheet_template_analysis = Table(
-    "worksheet_template_analysis",
-    DBModel.metadata,
-    Column("ws_template_uid", ForeignKey("worksheettemplate.uid"), primary_key=True),
-    Column("analysis_uid", ForeignKey("analysis.uid"), primary_key=True),
-)
 
 """
 Many to Many Link between WorkSheetTemplate and QCLevel
@@ -84,12 +65,8 @@ class WorkSheetTemplate(WSBase):
 
     name = Column(String, unique=True, nullable=False)
     description = Column(String)
-    profiles = relationship(
-        analysis_models.Profile, secondary=worksheet_template_profile, lazy="selectin"
-    )
-    analyses = relationship(
-        analysis_models.Analysis, secondary=worksheet_template_analysis, lazy="selectin"
-    )
+    analysis_uid = Column(Integer, ForeignKey("analysis.uid"), nullable=True)
+    analysis = relationship(analysis_models.Analysis, lazy="selectin")
     qc_template_uid = Column(Integer, ForeignKey("qctemplate.uid"), nullable=True)
     qc_template = relationship(qc_models.QCTemplate, lazy="selectin")
     # to help cater for those created without template we also keep the qc_levels
@@ -111,39 +88,14 @@ class WorkSheetTemplate(WSBase):
         return await super().update(**data)
 
 
-"""
-Many to Many Link between WorkSheet and Profile
-"""
-worksheet_profile = Table(
-    "worksheet_profile",
-    DBModel.metadata,
-    Column("worksheet_uid", ForeignKey("worksheet.uid"), primary_key=True),
-    Column("profile_uid", ForeignKey("profile.uid"), primary_key=True),
-)
-
-"""
-Many to Many Link between WorkSheet and Analysis
-"""
-worksheet_analysis = Table(
-    "worksheet_analysis",
-    DBModel.metadata,
-    Column("worksheet_uid", ForeignKey("worksheet.uid"), primary_key=True),
-    Column("analysis_uid", ForeignKey("analysis.uid"), primary_key=True),
-)
-
-
 class WorkSheet(Auditable, WSBase):
     template_uid = Column(Integer, ForeignKey("worksheettemplate.uid"), nullable=False)
     template = relationship("WorkSheetTemplate", lazy="selectin")
     analyst_uid = Column(Integer, ForeignKey("user.uid"), nullable=False)
     analyst = relationship(User, foreign_keys=[analyst_uid], lazy="selectin")
     worksheet_id = Column(String, index=True, unique=True, nullable=False)
-    profiles = relationship(
-        analysis_models.Profile, secondary=worksheet_profile, lazy="selectin"
-    )
-    analyses = relationship(
-        analysis_models.Analysis, secondary=worksheet_analysis, lazy="selectin"
-    )
+    analysis_uid = Column(Integer, ForeignKey("analysis.uid"), nullable=True)
+    analysis = relationship(analysis_models.Analysis, lazy="selectin")
     instrument_uid = Column(Integer, ForeignKey("instrument.uid"), nullable=True)
     instrument = relationship(Instrument, backref="worksheets", lazy="selectin")
     sample_type_uid = Column(Integer, ForeignKey("sampletype.uid"), nullable=False)

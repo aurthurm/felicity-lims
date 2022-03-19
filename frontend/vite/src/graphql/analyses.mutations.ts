@@ -486,6 +486,10 @@ export const ADD_ANALYSIS_SERVICE= gql`
         name
         keyword
         sortKey
+        tatLengthMinutes
+        precision
+        requiredVerifications
+        selfVerification
         description   
         categoryUid   
         departmentUid
@@ -535,6 +539,10 @@ export const EDIT_ANALYSIS_SERVICE= gql`
         name
         keyword
         sortKey
+        tatLengthMinutes
+        precision
+        requiredVerifications
+        selfVerification
         description   
         categoryUid   
         departmentUid

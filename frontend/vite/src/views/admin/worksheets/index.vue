@@ -4,7 +4,7 @@
       <h1 class="h1 my-4 font-bold text-dark-700">WorkSheet Templates</h1>
         <button
           class="p-2 my-2 ml-8 text-sm border-blue-500 border text-dark-700 transition-colors duration-150 rounded-lg focus:outline-none hover:bg-blue-500 hover:text-gray-100"
-          @click="FormManager(true, {})"
+          @click="FormManager(true)"
         >
           Add Template
         </button>
@@ -66,8 +66,7 @@
                   <div class="flex">
                     <span class="text-gray-800 text-sm font-medium w-1/2">Analyses Service:</span>
                     <span
-                    class="text-gray-600 text-sm md:text-md ml-1"
-                    v-for="anal in  workSheetTemplate.analyses" :key="anal.uid">{{ anal?.name }},</span>
+                    class="text-gray-600 text-sm md:text-md ml-1">{{ workSheetTemplate?.analysis?.name }}</span>
                   </div>
                 </div>
                 <div class="col-span-1">
@@ -268,21 +267,21 @@
         <div class="grid grid-cols-3 gap-x-4 mb-4">
           <label class="block col-span-1 mb-2">
             <span class="text-gray-700">Instrument</span>
-            <select class="form-select block w-full mt-1" v-model="workSheetTemplate.instrument!.uid">
+            <select class="form-select block w-full mt-1" v-model="workSheetTemplate.instrumentUid">
               <option></option>
               <option v-for="instrument in instruments" :key="instrument.uid" :value="instrument.uid">{{ instrument.name }}</option>
             </select>
           </label>
           <label class="block col-span-1 mb-2">
             <span class="text-gray-700">SampleType</span>
-            <select class="form-select block w-full mt-1" v-model="workSheetTemplate.sampleType!.uid">
+            <select class="form-select block w-full mt-1" v-model="workSheetTemplate.sampleTypeUid">
                <option></option>
               <option v-for="stype in sampleTypes" :key="stype.uid" :value="stype.uid"> {{ stype.name }}</option>
             </select>
           </label>
           <label class="block col-span-1 mb-2">
             <span class="text-gray-700">Anslysis Service</span>
-            <select class="form-select block w-full mt-1" v-model="workSheetTemplate.analyses![0].uid">
+            <select class="form-select block w-full mt-1" v-model="workSheetTemplate.analysisUid">
                <option></option>
               <option v-for="service in services" :key="service.uid" :value="service.uid"> {{ service.name }}</option>
             </select>
@@ -377,7 +376,7 @@
 
   import { useMutation } from '@urql/vue';
   import { useStore } from 'vuex';
-  import { defineComponent, ref, reactive, computed } from 'vue';
+  import { ref, reactive, computed } from 'vue';
 
   import { ADD_WORKSHEET_TEMPLATE, EDIT_WORKSHEET_TEMPLATE } from '../../../graphql/worksheet.mutations';
   import { ActionTypes } from '../../../store/modules/worksheet';
@@ -421,8 +420,8 @@
   function addWorksheetTemplate() {
     const payload = { 
       name: workSheetTemplate.name,
-      sampleTypeUid: workSheetTemplate.sampleType!.uid,
-      instrumentUid: workSheetTemplate.instrument!.uid,
+      sampleTypeUid: workSheetTemplate.sampleTypeUid,
+      instrumentUid: workSheetTemplate.instrumentUid,
       description: workSheetTemplate.description,
       qcTemplateUid: workSheetTemplate.qcTemplateUid,
       reserved: workSheetTemplate.reserved,
@@ -431,7 +430,7 @@
       cols:  workSheetTemplate.cols,
       rows:  workSheetTemplate.rows,
       rowWise:  workSheetTemplate.rowWise,
-      analyses: workSheetTemplate.analyses![0]?.uid
+      analysisUid: workSheetTemplate.analysisUid
     }
     createWorksheetTemplate({ payload }).then((result) => {
       store.dispatch(ActionTypes.ADD_WORKSHEET_TEMPLATE, result)
@@ -441,8 +440,8 @@
   function editWorksheetTemplate() {
     const payload = { 
       name: workSheetTemplate.name,
-      sampleTypeUid: workSheetTemplate.sampleType!.uid,
-      instrumentUid: workSheetTemplate.instrument!.uid,
+      sampleTypeUid: workSheetTemplate.sampleTypeUid,
+      instrumentUid: workSheetTemplate.instrumentUid,
       description: workSheetTemplate.description,
       qcTemplateUid: workSheetTemplate.qcTemplateUid,
       reserved: workSheetTemplate.reserved,
@@ -451,7 +450,7 @@
       cols:  workSheetTemplate.cols,
       rows:  workSheetTemplate.rows,
       rowWise:  workSheetTemplate.rowWise,
-      analyses: workSheetTemplate.analyses![0]?.uid
+      analysisUid: workSheetTemplate.analysisUid
     }
     updateWorksheetTemplate({ uid: workSheetTemplate.uid, payload }).then((result) => {
       store.dispatch(ActionTypes.UPDATE_WORKSHEET_TEMPLATE, result)
@@ -530,7 +529,7 @@
       let wst = {} as IWorkSheetTemplate;
       wst.instrument = {} as IInstrument;
       wst.sampleType = {} as ISampleType;
-      wst.analyses = [{} as IAnalysisService];
+      wst.analysis = {} as IAnalysisService;
       Object.assign(workSheetTemplate, { ...wst });
     } else {
       selectWorkSheetTemplate(obj)

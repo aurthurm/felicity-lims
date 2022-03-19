@@ -15,10 +15,12 @@ export const ADD_WORKSHEET_TEMPLATE= gql`
       cols
       rowWise
       worksheetType
+      instrumentUid
       instrument {
         uid
         name
       }
+      sampleTypeUid
       sampleType {
         uid
         name
@@ -37,7 +39,8 @@ export const ADD_WORKSHEET_TEMPLATE= gql`
         uid
         level
       }
-      analyses {
+      analysisUid
+      analysis {
         uid
         name
       }
@@ -67,10 +70,12 @@ export const EDIT_WORKSHEET_TEMPLATE= gql`
       cols
       rowWise
       worksheetType
+      instrumentUid
       instrument {
         uid
         name
       }
+      sampleTypeUid
       sampleType {
         uid
         name
@@ -89,7 +94,8 @@ export const EDIT_WORKSHEET_TEMPLATE= gql`
         uid
         level
       }
-      analyses {
+      analysisUid
+      analysis {
         uid
         name
       }
@@ -125,11 +131,13 @@ export const ADD_WORKSHEET = gql`
             firstName
             lastName
           }
+          instrumentUid
           instrument {
             uid
             name
           }
-          analyses {
+          analysisUid
+          analysis {
             uid
             name
           }
@@ -156,14 +164,17 @@ export const WORKSHEET_UPDATE = gql`
         __typename
         uid
         numberOfSamples
+        sampleTypeUid
         sampleType {
           name
           name
         }
+        instrumentUid
         instrument {
           uid
           name
         }
+        templateUid
         template {
           uid
           name
@@ -188,14 +199,17 @@ export const EDIT_WORKSHEET_APPLY_TEMPLATE= gql`
         __typename
         uid
         numberOfSamples
+        sampleTypeUid
         sampleType {
           name
           name
         }
+        instrumentUid
         instrument {
           uid
           name
         }
+        templateUid
         template {
           uid
           name

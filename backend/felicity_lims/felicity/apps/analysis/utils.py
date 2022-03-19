@@ -1,5 +1,6 @@
 from typing import List
 import logging
+from datetime import datetime
 
 from felicity.apps.analysis import schemas
 from felicity.apps.analysis.models.analysis import SampleType
@@ -75,7 +76,69 @@ async def retest_from_result_uids(uids: List[int], user):
     return retests, originals
 
 
-async def verify__from_result_uids(uids: List[int], user):
+async def results_submitter(analysis_results: List[dict], submitter):
+
+    return_results = []
+
+    for _ar in analysis_results:
+        uid = _ar['uid']
+        a_result: AnalysisResult = await AnalysisResult.get(
+            uid=uid
+        )
+        if not a_result:
+            return Exception(f"AnalysisResult with uid {uid} not found")
+
+        # only submit results in pending state
+        if a_result.status not in [states.result.PENDING]:
+            return_results.append(a_result)
+            continue
+
+        analysis_result = a_result.to_dict(nested=False)
+        for field in analysis_result:
+            if field in _ar.keys():
+                try:
+                    setattr(a_result, field, _ar.get(field, None))
+                except AttributeError as e:
+                    logger.warning(e)
+
+        # No Empty Results
+        result = getattr(a_result, "result", None)
+        if not result or result.strip() == "" or len(result.strip()) == 0:
+            setattr(a_result, "result", None)
+        else:
+            setattr(a_result, "status", states.result.RESULTED)
+
+            # set submitter ad date_submitted
+            setattr(a_result, "submitted_by_uid", submitter.uid)
+            setattr(a_result, "date_submitted", datetime.now())
+
+            # set updated_by
+            try:
+                setattr(a_result, "updated_by_uid", submitter.uid)
+            except AttributeError:
+                pass
+
+        a_result_in = schemas.AnalysisResultUpdate(**a_result.to_dict())
+        a_result = await a_result.update(a_result_in)
+        
+        # Do Reflex Testing
+        logger.info(f"ReflexUtil .... running")
+        await ReflexUtil(analysis_result=a_result, user=submitter).do_reflex()
+        logger.info(f"ReflexUtil .... done")
+
+        # try to submit sample
+        if a_result.sample:
+            await a_result.sample.submit(submitted_by=submitter)
+
+        # try to submit associated worksheet
+        if a_result.worksheet_uid:
+            await a_result.worksheet.submit(submitter=submitter)
+
+        return_results.append(a_result)
+    return return_results
+
+
+async def verify_from_result_uids(uids: List[int], user):
     to_return = []
 
     for _ar_uid in uids:
@@ -88,10 +151,13 @@ async def verify__from_result_uids(uids: List[int], user):
         # No Empty Results
         status = getattr(a_result, "status", None)
         if status == states.result.RESULTED:
-            a_result = await a_result.verify(verifier=user)
-            logger.info(f"ReflexUtil .... running")
-            await ReflexUtil(analysis_result=a_result, user=user).do_reflex()
-            logger.info(f"ReflexUtil .... done")
+            _, a_result = await a_result.verify(verifier=user)
+            # Reflexing is done on result submission
+            # because of multiple number of verfications for some analytes
+            # if verified:
+            #     logger.info(f"ReflexUtil .... running")
+            #     await ReflexUtil(analysis_result=a_result, user=user).do_reflex()
+            #     logger.info(f"ReflexUtil .... done")
             to_return.append(a_result)
         else:
             continue

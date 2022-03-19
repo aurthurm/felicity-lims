@@ -140,13 +140,14 @@ class AnalysisType:
     result_options: Optional[List[ResultOptionType]]
     instruments: Optional[List[InstrumentType]]
     methods: Optional[List[MethodType]]
-    tat_length_minutes: int
-    sort_key: int
-    precision: int
-    required_verifications: int
-    hidden: bool
-    internal_use: bool
-    active: bool
+    tat_length_minutes: Optional[int]
+    sort_key: Optional[int]
+    precision: Optional[int]
+    required_verifications: Optional[int]
+    self_verification: Optional[bool]
+    hidden: Optional[bool]
+    internal_use: Optional[bool]
+    active: Optional[bool]
     #
     created_by_uid: Optional[int]
     created_by: Optional[UserType]

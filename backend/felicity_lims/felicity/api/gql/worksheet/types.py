@@ -7,7 +7,6 @@ import strawberry  # noqa
 from felicity.api.gql import PageInfo
 from felicity.api.gql.analysis.types.analysis import (
     AnalysisType,
-    ProfileType,
     QCLevelType,
     QCTemplateType,
     SampleTypeTyp,
@@ -37,8 +36,8 @@ class WorkSheetTemplateType:
     state: Optional[str]
     name: str
     description: Optional[str]
-    profiles: Optional[List[ProfileType]]
-    analyses: Optional[List[AnalysisType]]
+    analysis_uid: Optional[int]
+    analysis: Optional[AnalysisType]
     qc_template_uid: Optional[int]
     qc_template: Optional[QCTemplateType]
     qc_levels: Optional[List[QCLevelType]]
@@ -70,8 +69,8 @@ class WorkSheetType:
     analyst_uid: Optional[int]
     analyst: Optional[UserType]
     worksheet_id: str
-    profiles: Optional[List[ProfileType]]
-    analyses: Optional[List[AnalysisType]]
+    analysis_uid: Optional[int]
+    analysis: Optional[AnalysisType]
     instrument_uid: Optional[int]
     instrument: Optional[InstrumentType]
     sample_type_uid: Optional[int]

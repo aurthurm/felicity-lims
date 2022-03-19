@@ -214,6 +214,7 @@ class Analysis(BaseAuditDBModel):
     # precision -> decimal places to report
     precision = Column(Integer, nullable=True)
     required_verifications = Column(Integer, nullable=True, default=1)
+    self_verification = Column(Boolean(), default=False)
     hidden = Column(Boolean(), default=False)
     active = Column(Boolean(), default=False)
 

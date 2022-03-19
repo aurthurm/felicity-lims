@@ -55,6 +55,7 @@ class ProfileBase(BaseAuditModel):
     analyses: Optional[List["Analysis"]]
     sample_types: Optional[List[SampleType]]
     description: Optional[str] = None
+    department_uid: Optional[int] = None
     keyword: Optional[str] = None
     tat_length_minutes: Optional[int] = None
     active: Optional[bool] = True
@@ -141,6 +142,10 @@ class AnalysisBase(BaseAuditModel):
     category_uid: Optional[int]
     sort_key: Optional[int] = 0
     internal_use: Optional[bool] = False
+    tat_length_minutes: Optional[int] = None
+    precision: Optional[int] = None
+    required_verifications: int = 1
+    self_verification: Optional[bool] = False
     active: Optional[bool] = True
 
 
@@ -473,6 +478,7 @@ class SampleBase(BaseAuditModel):
     invalidated_by_uid: Optional[int] = None
     date_invalidated: Optional[datetime] = None
     internal_use: Optional[bool] = False
+    due_date: Optional[datetime] = None
     status: Optional[str] = None
 
 
@@ -554,7 +560,6 @@ class AnalysisResultBase(BaseAuditModel):
     analyst_uid: Optional[int] = None
     submitted_by_uid: Optional[int] = None
     date_submitted: Optional[datetime] = None
-    verified_by_uid: Optional[int] = None
     date_verified: Optional[datetime] = None
     invalidated_by_uid: Optional[int] = None
     date_invalidated: Optional[datetime] = None

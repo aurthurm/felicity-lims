@@ -21,10 +21,13 @@ export interface IWorkSheetTemplate {
     cols: number | undefined;
     rowWise: boolean;
     worksheetType: string;
+    instrumentUid: number;
     instrument: IInstrument;
+    sampleTypeUid: number;
     sampleType: ISampleType;
     description: string;
-    analyses: IAnalysisService[];
+    analysisUid: number;
+    analysis: IAnalysisService;
     state: string;
 }
 
@@ -40,9 +43,11 @@ export interface IWorkSheet {
     cols: number;
     rowWise: Boolean;
     worksheetType: string;
+    instrumentUid: number;
     instrument: IInstrument;
     description: string;
-    analyses: IAnalysisService[];
+    analysisUid: number;
+    analysis: IAnalysisService,
     state: string;
     assignedCount: number;
     analyst: any;

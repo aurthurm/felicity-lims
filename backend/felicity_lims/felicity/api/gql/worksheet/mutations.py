@@ -32,8 +32,8 @@ class ReservedInputType:
 class WorksheetTemplateInputType:
     name: str
     sample_type_uid: int
-    analyses: List[int]
     reserved: List[ReservedInputType]
+    analysis_uid: Optional[int] = None
     number_of_samples: Optional[int] = None
     instrument_uid: Optional[int] = None
     worksheet_type: Optional[str] = None
@@ -130,16 +130,7 @@ class WorkSheetMutations:
 
             incoming["reserved"] = positions
 
-        _analyses = []
-        if payload.analyses:
-            for _uid in payload.analyses:
-                a_uids = [an.uid for an in _analyses]
-                if _uid not in a_uids:
-                    anal = await analysis_models.Analysis.get(uid=_uid)
-                    _analyses.append(anal)
-
         wst_schema = schemas.WSTemplateCreate(**incoming)
-        wst_schema.analyses = _analyses
         wst_schema.qc_levels = _qc_levels
         wst: schemas.WorkSheetTemplate = await models.WorkSheetTemplate.create(
             wst_schema
@@ -161,7 +152,7 @@ class WorkSheetMutations:
 
         wst_data = ws_template.to_dict()
         for field in wst_data:
-            if field in payload.__dict__:
+            if field in payload.__dict__ and field not in ['reserved']:
                 try:
                     setattr(ws_template, field, payload.__dict__[field])
                 except AttributeError as e:
@@ -169,14 +160,16 @@ class WorkSheetMutations:
 
         _qc_levels = []
         if payload.qc_template_uid:
+            ws_template.qc_levels.clear()
+            ws_template = await ws_template.save()
             qc_template = await qc_models.QCTemplate.get(uid=payload.qc_template_uid)
-            if qc_template:
-                _qc_levels = qc_template.qc_levels
+            _qc_levels = qc_template.qc_levels
+            ws_template.qc_levels = qc_template.qc_levels
+            ws_template = await ws_template.save()
 
         if payload.reserved:
             positions = dict()
             for item in payload.reserved:
-                logger.info(item, positions)
                 positions[item.position] = item.__dict__
                 qc_level = await qc_models.QCLevel.get(uid=item.level_uid)
                 if qc_level not in _qc_levels:
@@ -185,21 +178,6 @@ class WorkSheetMutations:
 
         wst_schema = schemas.WSTemplateUpdate(**ws_template.to_dict())
         await ws_template.update(wst_schema)
-
-        _analyses = []
-        if payload.analyses:
-            for _uid in payload.analyses:
-                anal = await analysis_models.Analysis.get(uid=_uid)
-                if anal not in _analyses:
-                    _analyses.append(anal)
-
-        ws_template.analyses = []
-        ws_template.qc_levels = []
-        ws_template = await ws_template.save()
-
-        ws_template.analyses = _analyses
-        ws_template.qc_levels = _qc_levels
-        ws_template = await ws_template.save()
 
         return WorkSheetTemplateType(**ws_template.marshal_simple())
 
@@ -385,6 +363,7 @@ class WorkSheetMutations:
 
         incoming = {
             "template_uid": template_uid,
+            "analysis_uid":  ws_temp.analysis_uid,
             "instrument_uid": ws_temp.instrument_uid,
             "sample_type_uid": ws_temp.sample_type_uid,
             "reserved": ws_temp.reserved,
@@ -397,28 +376,7 @@ class WorkSheetMutations:
 
         ws_schema = schemas.WorkSheetUpdate(**incoming)
         ws = await ws.update(ws_schema)
-
-        # updated separately to avoid object already in session issue
-        _analyses = []
-        for anal in ws_temp.analyses:
-            anal_uids = [an.uid for an in _analyses]
-            if anal.uid not in anal_uids:
-                analysis = await analysis_models.Analysis.get(uid=anal.uid)
-                _analyses.append(analysis)
-
-        for anal in ws.analyses:
-            ws.analyses.remove(anal)
-        ws.analyses = []
-        await ws.save()
-
-        async with async_session_factory() as session:
-            stmt = (
-                models.worksheet_analysis.insert()
-            )
-            await session.execute(stmt, {"worksheet_uid": ws.uid, "analysis_uid": _analyses[0].uid})
-            await session.commit()
-            await session.flush()
-
+        
         # Add a job
         job_schema = job_schemas.JobCreate(
             action=actions.WS_ASSIGN,

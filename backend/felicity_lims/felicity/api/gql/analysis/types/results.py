@@ -26,10 +26,11 @@ class AnalysisResultType:
     analyst_uid: Optional[int]
     submitted_by_uid: Optional[int]
     date_submitted: Optional[datetime]
-    verified_by_uid: Optional[int]
+    verified_by: Optional[List[UserType]]
     date_verified: Optional[datetime]
     invalidated_by_uid: Optional[int]
-    date_invalidated: datetime
+    date_invalidated: Optional[datetime]
+    due_date: Optional[datetime]
     retest: bool
     parent_id: int
     parent: Optional["AnalysisResultType"]

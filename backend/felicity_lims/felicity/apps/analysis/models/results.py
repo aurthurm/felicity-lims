@@ -2,16 +2,27 @@ import logging
 from datetime import datetime
 from typing import List
 
-from felicity.apps import Auditable
+from felicity.apps import Auditable, DBModel
 from felicity.apps.analysis import conf, schemas
 from felicity.apps.common import BaseMPTT
 from felicity.database.session import async_session_factory
-from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, String
+from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, String, Table
 from sqlalchemy.orm import relationship
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+
+
+"""
+ Many to Many Link between AnalysisResult and User
+"""
+result_verification = Table(
+    "result_verification",
+    DBModel.metadata,
+    Column("result_uid", ForeignKey("analysisresult.uid"), primary_key=True),
+    Column("user_uid", ForeignKey("user.uid"), primary_key=True),
+)
 
 class AnalysisResult(Auditable, BaseMPTT):
     """Test/Analysis Result
@@ -41,8 +52,7 @@ class AnalysisResult(Auditable, BaseMPTT):
         "User", foreign_keys=[submitted_by_uid], lazy="selectin"
     )
     date_submitted = Column(DateTime, nullable=True)
-    verified_by_uid = Column(Integer, ForeignKey("user.uid"), nullable=True)
-    verified_by = relationship("User", foreign_keys=[verified_by_uid], lazy="selectin")
+    verified_by = relationship("User", secondary=result_verification, lazy="selectin")
     date_verified = Column(DateTime, nullable=True)
     invalidated_by_uid = Column(Integer, ForeignKey("user.uid"), nullable=True)
     invalidated_by = relationship(
@@ -57,8 +67,18 @@ class AnalysisResult(Auditable, BaseMPTT):
     retest = Column(Boolean(), default=False)
     reportable = Column(Boolean(), default=True)  # for retests or reflex
     status = Column(String, nullable=False)
+    due_date = Column(DateTime, nullable=True)
     # reflex level
     reflex_level = Column(Integer, nullable=True)
+    
+    
+    async def verifications(self):
+        if self.analysis.required_verifications:
+            required = self.analysis.required_verifications
+        else:
+            required = 1
+        current = len(self.verified_by)
+        return required, current
 
     async def retest_result(self, retested_by, next_action="verify"):
         retest = None
@@ -101,11 +121,19 @@ class AnalysisResult(Auditable, BaseMPTT):
         return await self.save()
 
     async def verify(self, verifier):
-        self.status = conf.states.result.VERIFIED
-        self.verified_by_uid = verifier.uid
-        self.date_verified = datetime.now()
+        verified = False
+        required, current = await self.verifications()
+        await AnalysisResult.table_insert(
+            table=result_verification,
+            mappings={"result_uid": self.uid, "user_uid": verifier.uid}
+        )
+        # self.verified_by.append(verifier)
         self.updated_by_uid = verifier.uid  # noqa
-        return await self.save()
+        if current < required and current + 1 == required:
+            self.status = conf.states.result.VERIFIED
+            self.date_verified = datetime.now()
+            verified = True
+        return verified, await self.save()
 
     async def retract(self, retracted_by):
         self.status = conf.states.result.RETRACTED
@@ -152,7 +180,7 @@ class AnalysisResult(Auditable, BaseMPTT):
     async def filter_for_worksheet(
         cls,
         analyses_status: str,
-        analyses_uids: List[int],
+        analysis_uid: int,
         sample_type_uid: List[int],
         limit: int,
     ) -> List[schemas.AnalysisResult]:
@@ -160,8 +188,7 @@ class AnalysisResult(Auditable, BaseMPTT):
         filters = {
             "status__exact": analyses_status,
             "assigned__exact": False,
-            # 'profiles__uid__in': [_p.uid for _p in ws.profiles], # ?? re-looking needed for profile based WS's
-            "analysis_uid__in": analyses_uids,
+            "analysis_uid__exact": analysis_uid,
             "sample___sample_type_uid__exact": sample_type_uid,
             "sample___status": conf.states.sample.RECEIVED,
         }

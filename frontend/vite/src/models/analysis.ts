@@ -33,6 +33,10 @@ export interface IAnalysisService {
     sortKey?: number;
     active?: boolean;
     internalUse?: boolean;
+    tatLengthMinutes: number;
+    precision: number;
+    requiredVerifications: number;
+    selfVerification: boolean;
     checked?: boolean;
 }
 

@@ -26,7 +26,9 @@ class AnalysisInputType:
     unit_uid: Optional[int] = None
     internal_use: Optional[bool] = False
     tat_length_minutes: int = None
-    unit: str = None
+    precision: int = None
+    required_verifications: int = 1
+    self_verification: Optional[bool] = False
     active: Optional[bool] = True
 
 

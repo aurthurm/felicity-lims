@@ -20,6 +20,10 @@ export const GET_ALL_ANALYSES_SERVICES = gql`
         keyword
         active
         sortKey
+        tatLengthMinutes
+        precision
+        requiredVerifications
+        selfVerification
         description
         categoryUid
         departmentUid
@@ -179,6 +183,10 @@ export const GET_ALL_ANALYSES_PROFILES_AND_SERVICES = gql`
             active
             description
             sortKey
+            tatLengthMinutes
+            precision
+            requiredVerifications
+            selfVerification
             categoryUid
             departmentUid
             unitUid
@@ -398,7 +406,11 @@ export const SAMPLES_FOR_REPORTS_BY_UIDS = gql`
       analysisResults {
         analysis {
           name
-          unit
+          unitUid
+          unit {
+            uid
+            name
+          }
         }
         uid
         result
@@ -757,7 +769,11 @@ export const GET_ALL_QC_SETS = gql`
           analyses {
             uid
             name
-            unit
+            unitUid
+            unit {
+              uid
+              name
+            }
             resultOptions {
               uid
               optionKey

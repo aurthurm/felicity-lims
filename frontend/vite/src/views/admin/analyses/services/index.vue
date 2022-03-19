@@ -55,10 +55,11 @@
               <!-- <div class="inline-block font-md text-medium mb-1"></div> -->
               <!-- Age -->
               <div class="grid grid-rows-2 mx-auto mb-1 py-3 w-4/5 2lg:w-3/5 rounded-md bg-green-400" >
+                <p class="font-bold">KEYWORD</p>
                 <div class="inline-block font-medium text-2xl text-white">
                   <i class="fa fa-exclamation-circle"></i>
                 </div>
-                <div class="inline-block font-medium text-white text-sm lg:text-md mt-2">{{ analysisService?.keyword }}</div>
+                <div class="inline-block font-medium text-white text-md mt-2">{{ analysisService?.keyword }}</div>
               </div>
             </div>
             <!-- Summary Column -->
@@ -85,26 +86,42 @@
                 <div class="col-span-1">
                   <!-- Client Details -->
                   <div class="flex">
-                    <span class="text-gray-800 text-sm font-medium w-16">Category:</span>
-                    <span class="text-gray-600 text-sm md:text-md">{{ analysisService?.category?.name || 'un-categprised' }}</span>
+                    <span class="text-gray-600 text-md font-bold w-52">Category:</span>
+                    <span class="text-gray-600 text-md">{{ analysisService?.category?.name || 'un-categprised' }}</span>
                   </div>
                   <div class="flex">
-                    <span class="text-gray-800 text-sm font-medium w-16">Unit:</span>
-                    <span class="text-gray-600 text-sm md:text-md">{{ analysisService?.unit?.name }}</span>
+                    <span class="text-gray-600 text-md font-bold w-52">Unit:</span>
+                    <span class="text-gray-600 text-md">{{ analysisService?.unit?.name }}</span>
                   </div>
                   <div class="flex">
-                    <span class="text-gray-800 text-sm font-medium w-16">SortKey:</span>
-                    <span class="text-gray-600 text-sm md:text-md">{{ analysisService?.sortKey || '---' }}</span>
+                    <span class="text-gray-600 text-md font-bold w-52">SortKey:</span>
+                    <span class="text-gray-600 text-md">{{ analysisService?.sortKey || '---' }}</span>
+                  </div>
+                  <div class="flex mt-2">
+                    <span class="text-gray-600 text-md font-bold w-52">TAT (minutes):</span>
+                    <span class="text-gray-600 text-md mr-2">{{ analysisService?.tatLengthMinutes }}</span>
+                  </div>
+                  <div class="flex mt-2">
+                    <span class="text-gray-600 text-md font-bold w-52">Precision (decimals):</span>
+                    <span class="text-gray-600 text-md mr-2">{{ analysisService?.precision }}</span>
                   </div>
                 </div>
                 <div class="col-span-1">
                   <div class="col-span-2 flex mt-2">
-                    <span class="text-gray-800 text-sm font-medium w-28">Methods:</span>
-                    <span class="text-gray-600 text-sm md:text-md mr-2">{{ analysisService?.methods?.map(s => s.name)?.join(', ') }}</span>
+                    <span class="text-gray-600 text-md font-bold w-52">Methods:</span>
+                    <span class="text-gray-600 text-md mr-2">{{ analysisService?.methods?.map(s => s.name)?.join(', ') }}</span>
                   </div>
                   <div class="col-span-2 flex mt-2">
-                    <span class="text-gray-800 text-sm font-medium w-28">Sample Types:</span>
-                    <span class="text-gray-600 text-sm md:text-md mr-2">{{ analysisService?.sampleTypes?.map(s => s.name)?.join(', ') }}</span>
+                    <span class="text-gray-600 text-md font-bold w-52">Sample Types:</span>
+                    <span class="text-gray-600 text-md mr-2">{{ analysisService?.sampleTypes?.map(s => s.name)?.join(', ') }}</span>
+                  </div>
+                  <div class="flex mt-2">
+                    <span class="text-gray-600 text-md font-bold w-52">Required verifications:</span>
+                    <span class="text-gray-600 text-md mr-2">{{ analysisService?.requiredVerifications }}</span>
+                  </div>
+                  <div class="col-span-4 flex mt-2">
+                    <span class="text-gray-600 text-md font-bold w-52">Allow self-verification:</span>
+                    <span class="text-gray-600 text-md mr-2">{{ analysisService?.selfVerification }}</span>
                   </div>
                 </div>
               </div>
@@ -250,13 +267,37 @@
               v-model="analysisService.sortKey"
             />
           </label>
+          <label class="block col-span-2 mb-2">
+            <span class="text-gray-700">TAT (minutes)</span>
+            <input
+              type="number" default="240"
+              class="form-input mt-1 block w-full"
+              v-model="analysisService.tatLengthMinutes"
+            />
+          </label>
+          <label class="block col-span-2 mb-2">
+            <span class="text-gray-700">Precision</span>
+            <input
+              type="number" default="4"
+              class="form-input mt-1 block w-full"
+              v-model="analysisService.precision"
+            />
+          </label>
+          <label class="block col-span-2 mb-2">
+            <span class="text-gray-700">Required veifications</span>
+            <input
+              type="number" default="1"
+              class="form-input mt-1 block w-full"
+              v-model="analysisService.requiredVerifications"
+            />
+          </label>
           <div class="col-span-2 flex justify-between">
             <label class="block col-span-2 my-2">
               <input
                 type="checkbox"
                 v-model="analysisService.active"
               />
-              <span class="text-gray-700 ml-4">Active</span>
+              <span class="text-gray-700 ml-4">Is Active</span>
             </label>
             <label class="block col-span-2 my-2">
               <input
@@ -264,6 +305,13 @@
                 v-model="analysisService.internalUse"
               />
               <span class="text-gray-700 ml-4">Internal Use</span>
+            </label>
+            <label class="block col-span-2 my-2">
+              <input
+                type="checkbox"
+                v-model="analysisService.selfVerification"
+              />
+              <span class="text-gray-700 ml-4">Allow Self Verifaction</span>
             </label>
           </div>
         </div>
@@ -349,6 +397,10 @@
       internalUse: analysisService.internalUse, 
       sampleTypes: analysisService.sampleTypes?.map(item => item.uid),
       methods: analysisService.methods?.map(item => item.uid),
+      tatLengthMinutes: analysisService.tatLengthMinutes,
+      precision: analysisService.precision,
+      requiredVerifications: analysisService.requiredVerifications,
+      selfVerification: analysisService.selfVerification,
     }
     createAnalysisService({ payload }).then((result) => {
       store.dispatch(ActionTypes.ADD_ANALYSES_SERVICE, result);
@@ -368,6 +420,10 @@
       internalUse: analysisService.internalUse, 
       sampleTypes: analysisService.sampleTypes?.map(item => item.uid),
       methods: analysisService.methods?.map(item => item.uid),
+      tatLengthMinutes: analysisService.tatLengthMinutes,
+      precision: analysisService.precision,
+      requiredVerifications: analysisService.requiredVerifications,
+      selfVerification: analysisService.selfVerification,
     }
     updateAnalysisService({  uid: analysisService.uid,  payload }).then((result) => {
       store.dispatch(ActionTypes.UPDATE_ANALYSES_SERVICE, result);

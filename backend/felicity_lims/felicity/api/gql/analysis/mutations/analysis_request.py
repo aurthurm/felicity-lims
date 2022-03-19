@@ -1,6 +1,7 @@
 import asyncio
 import logging
 from typing import List, Optional
+from datetime import datetime, timedelta
 
 import strawberry  # noqa
 from felicity.apps.analysis import schemas
@@ -160,6 +161,16 @@ async def create_analysis_request(
             if analysis not in _profiles_analyses:
                 analyses.append(analysis)
                 _profiles_analyses.add(analysis)
+        
+        # determine sample due date
+        tat_lengths = []
+        for anal in _profiles_analyses:
+            if anal.tat_length_minutes:
+                tat_lengths.append(anal.tat_length_minutes)
+        if tat_lengths:
+            minutes = max(tat_lengths)
+            sample_in["due_date"] = datetime.now() + timedelta(minutes=minutes)
+        
 
         sample_schema = schemas.SampleCreate(**sample_in)
         sample_schema.analyses = analyses
@@ -182,13 +193,22 @@ async def create_analysis_request(
         #     await result_models.AnalysisResult.create(a_result_schema)
 
         a_result_schema = schemas.AnalysisResultCreate(
-            sample_uid=sample.uid, status=states.result.PENDING, analysis_uid=None,
-            created_by_uid=felicity_user.uid, updated_by_uid=felicity_user.uid
+            sample_uid=sample.uid, 
+            status=states.result.PENDING, 
+            analysis_uid=None,
+            due_date=None,
+            created_by_uid=felicity_user.uid, 
+            updated_by_uid=felicity_user.uid,
         )
         result_schemas = []
         for _service in _profiles_analyses:
             result_schemas.append(
-                a_result_schema.copy(update={"analysis_uid": _service.uid})
+                a_result_schema.copy(
+                    update={
+                        "analysis_uid": _service.uid,
+                        "due_date": datetime.now() + timedelta(minutes=_service.tat_length_minutes) if _service.tat_length_minutes else None
+                    }
+                )
             )
         created = await result_models.AnalysisResult.bulk_create(result_schemas)
         logger.info(f"ReflexUtil .... set_reflex_actions ...")

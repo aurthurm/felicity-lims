@@ -13,16 +13,19 @@ export const GET_ALL_WORKSHEET_TEMPLATES = gql`
       cols
       rowWise
       worksheetType
+      instrumentUid
       instrument {
         uid
         name
       }
+      sampleTypeUid
       sampleType {
         uid
         name
       }
       description
-      analyses {
+      analysisUid
+      analysis {
         uid
         name
       }
@@ -60,7 +63,7 @@ export const GET_ALL_WORKSHEETS = gql`
             uid
             name
           }
-          analyses {
+          analysis {
             uid
             name
           }
@@ -104,7 +107,7 @@ export const GET_WORKSHEET_BY_UID = gql`
         uid
         name
       }
-      analyses {
+      analysis {
         uid
         name
       }

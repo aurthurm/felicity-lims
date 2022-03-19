@@ -108,8 +108,10 @@ async def update_profile(
         profile = await profile.save()
         for _uid in payload.services:
             anal = await analysis_models.Analysis.get(uid=_uid)
-            profile.analyses.append(anal)
-        profile = await profile.save()
+            await analysis_models.Analysis.table_insert(
+                table=analysis_models.analysis_profile,
+                mappings={"analysis_uid": anal.uid, "profile_uid": profile.uid}
+            )
 
     # Sample Type management
     if payload.sample_types:
@@ -118,6 +120,9 @@ async def update_profile(
         for _uid in payload.sample_types:
             st = await analysis_models.SampleType.get(uid=_uid)
             profile.sample_types.append(st)
-        profile = await profile.save()
+            await analysis_models.SampleType.table_insert(
+                table=analysis_models.profile_sample_type,
+                mappings={"sample_type_uid": st.uid, "profile_uid": profile.uid}
+            )
 
     return a_types.ProfileType(**profile.marshal_simple())

@@ -9,7 +9,7 @@ from felicity.apps.analysis.models import results as result_models
 from felicity.api.gql import OperationError, auth_from_info, verify_user_auth
 from felicity.api.gql.analysis.types import results as r_types
 from felicity.api.gql.permissions import CanVerifyAnalysisResult
-from felicity.apps.analysis.utils import verify__from_result_uids, retest_from_result_uids
+from felicity.apps.analysis.utils import verify_from_result_uids, retest_from_result_uids, results_submitter
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -45,62 +45,13 @@ async def submit_analysis_results(
         "Only Authenticated user can submit analysis results",
     )
 
-    return_results = []
-
     if len(analysis_results) == 0:
         return OperationError(error=f"No Results to update are provided!")
 
-    for _ar in analysis_results:
-        uid = _ar.uid
-        a_result: result_models.AnalysisResult = await result_models.AnalysisResult.get(
-            uid=uid
-        )
-        if not a_result:
-            return OperationError(error=f"AnalysisResult with uid {uid} not found")
-
-        # only submit results in pending state
-        if a_result.status not in [states.result.PENDING]:
-            return_results.append(a_result)
-            continue
-
-        analysis_result = a_result.to_dict(nested=False)
-        for field in analysis_result:
-            if field in _ar.__dict__.keys():
-                try:
-                    setattr(a_result, field, getattr(_ar, field, None))
-                except AttributeError as e:
-                    logger.warning(e)
-
-        # No Empty Results
-        result = getattr(a_result, "result", None)
-        if not result or result.strip() == "" or len(result.strip()) == 0:
-            setattr(a_result, "result", None)
-        else:
-            setattr(a_result, "status", states.result.RESULTED)
-
-            # set submitter ad date_submitted
-            setattr(a_result, "submitted_by_uid", felicity_user.uid)
-            setattr(a_result, "date_submitted", datetime.now())
-
-            # set updated_by
-            try:
-                setattr(a_result, "updated_by_uid", felicity_user.uid)
-            except AttributeError:
-                pass
-
-        a_result_in = schemas.AnalysisResultUpdate(**a_result.to_dict())
-        a_result = await a_result.update(a_result_in)
-
-        # try to submit sample
-        if a_result.sample:
-            await a_result.sample.submit(submitted_by=felicity_user)
-
-        # try to submit associated worksheet
-        if a_result.worksheet_uid:
-            await a_result.worksheet.submit(submitter=felicity_user)
-
-        return_results.append(a_result)
-    return ResultListingType(return_results)
+    an_results = [result.__dict__ for result in analysis_results]
+    return_results = await results_submitter(an_results, felicity_user)
+    
+    return ResultListingType(results=return_results)
 
 
 @strawberry.mutation(permission_classes=[CanVerifyAnalysisResult])
@@ -115,7 +66,7 @@ async def verify_analysis_results(info, analyses: List[int]) -> AnalysisResultRe
     if len(analyses) == 0:
         return OperationError(error=f"No analyses to verify are provided!")
 
-    return_results = await verify__from_result_uids(analyses, felicity_user)
+    return_results = await verify_from_result_uids(analyses, felicity_user)
 
     return ResultListingType(return_results)
 

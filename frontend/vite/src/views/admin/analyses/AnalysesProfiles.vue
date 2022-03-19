@@ -92,8 +92,8 @@
             <hr>
 
             <section class="col-span-4 overflow-y-scroll overscroll-contain analyses-scroll bg-white p-1">
-              <div class="grid grid-cols-2 gap-2 w-full">
-                <div class="col-span-1" v-for="category in analysesServices" :key="category[0]">
+              <div class="grid grid-cols-6 gap-2 w-full">
+                <div class="col-span-2" v-for="category in analysesServices" :key="category[0]">
                     <accordion >
                       <template v-slot:title>{{ category[0] }}</template>
                       <template v-slot:body>
@@ -102,7 +102,6 @@
                               <li 
                               v-for="service in category[1]" 
                               :key="service?.uid" class="cursor-pointer"
-                              @click.prevent="service.checked = !service?.checked"
                               :class="[
                                 { 'border-green-500 bg-gray-200 underline pl-3': false },
                               ]"
@@ -110,21 +109,17 @@
                                 <div class="flex-grow p-1">
                                   <div 
                                     :class="[
-                                    'font-medium text-gray-500 hover:text-gray-700 flex justify-between',
+                                    'font-medium text-gray-500 hover:text-gray-700',
                                       { 'text-gray-700 font-medium': false },
                                     ]"
                                   >
-                                    <label for="toggle" class="text-xs text-gray-700 mr-4">
-                                      <div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
-                                          <input 
-                                          type="checkbox" 
-                                          name="toggle"
-                                          v-model="service.checked"
-                                          class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer outline-none"/>
-                                          <label for="toggle" class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer"></label>
-                                      </div>
-                                    </label>
-                                    <span>{{ service?.name }}</span>
+                                    <input
+                                      type="checkbox"
+                                      :id="`toggle-${service?.uid}`"
+                                      class="form-control"
+                                      v-model="service.checked"
+                                    />
+                                    <label :for="`toggle-${service?.uid}`" class="text-gray-700 ml-4">{{ service?.name }}</label>
                                   </div>
                                 </div>
                                 <hr>
@@ -145,6 +140,7 @@
           <div v-else> <!-- fiancials -->
             <h3>Billing</h3>
             <hr>
+
           </div>
         </section>
 
@@ -306,14 +302,15 @@
   }
   
   function updateProfile(): void {
-    analysisProfile.analyses = [];
+    const analyses: IAnalysisService[] = [];
     analysesServices.value?.forEach(item => {
       item[1].forEach((service: IAnalysisService) => {
         if(service.checked) {
-          analysisProfile.analyses!.push(service.uid!);
+          analyses.push(service);
         };
       })
     })
+    analysisProfile.analyses = analyses;
     editAnalysisProfile();
   }
 
