@@ -124,8 +124,6 @@ async def create_analysis_request(
     )
     for s in payload.samples:
         _st_uid = s.sample_type
-        _profiles = s.profiles
-        _analyses = s.analyses
         stype = await analysis_models.SampleType.get(uid=_st_uid)
         if not stype:
             return OperationError(
@@ -146,7 +144,7 @@ async def create_analysis_request(
         analyses = []
         _profiles_analyses = set()
 
-        for p_uid in _profiles:
+        for p_uid in s.profiles:
             profile = await analysis_models.Profile.get_related(
                 related=["analyses"], uid=p_uid
             )
@@ -156,7 +154,7 @@ async def create_analysis_request(
                 _profiles_analyses.add(_an)
 
         # make sure the selected analyses are not part of the selected profiles
-        for a_uid in _analyses:
+        for a_uid in s.analyses:
             analysis = await analysis_models.Analysis.get(uid=a_uid)
             if analysis not in _profiles_analyses:
                 analyses.append(analysis)
@@ -171,13 +169,24 @@ async def create_analysis_request(
             minutes = max(tat_lengths)
             sample_in["due_date"] = datetime.now() + timedelta(minutes=minutes)
         
-
+        #
         sample_schema = schemas.SampleCreate(**sample_in)
-        sample_schema.analyses = analyses
-        sample_schema.profiles = profiles
         sample: analysis_models.Sample = await analysis_models.Sample.create(
             sample_schema
         )
+        
+        # 
+        for _prof in profiles:
+            await analysis_models.Sample.table_insert(
+                table=analysis_models.sample_profile,
+                mappings={"sample_uid": sample.uid, "profile_uid": _prof.uid}
+            )
+            
+        for _anal in analyses:
+            await analysis_models.Sample.table_insert(
+                table=analysis_models.sample_analysis,
+                mappings={"sample_uid": sample.uid, "analysis_uid": _anal.uid}
+            )
 
         # Attach Analysis result for each Analyses
         logger.info(

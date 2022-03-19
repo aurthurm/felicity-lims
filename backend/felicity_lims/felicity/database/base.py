@@ -15,6 +15,7 @@ from felicity.apps.analysis.models.qc import QCLevel  # noqa
 from felicity.apps.analysis.models.qc import QCSet  # noqa
 from felicity.apps.analysis.models.qc import QCTemplate  # noqa
 from felicity.apps.analysis.models.results import AnalysisResult  # noqa
+from felicity.apps.analysis.models.results import ResultMutation # noqa
 from felicity.apps.audit.models import AuditLog  # noqa
 from felicity.apps.client.models import Client  # noqa
 from felicity.apps.client.models import ClientContact  # noqa

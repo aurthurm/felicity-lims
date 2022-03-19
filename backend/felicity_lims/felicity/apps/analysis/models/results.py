@@ -2,7 +2,7 @@ import logging
 from datetime import datetime
 from typing import List
 
-from felicity.apps import Auditable, DBModel
+from felicity.apps import Auditable, DBModel, BaseAuditDBModel
 from felicity.apps.analysis import conf, schemas
 from felicity.apps.common import BaseMPTT
 from felicity.database.session import async_session_factory
@@ -216,3 +216,18 @@ class AnalysisResult(Auditable, BaseMPTT):
     ) -> schemas.AnalysisResult:
         data = self._import(obj_in)
         return await super().update(**data)
+
+
+class ResultMutation(BaseAuditDBModel):
+    """Result Mutations tracker
+    """
+    result_uid = Column(Integer, ForeignKey("analysisresult.uid"), nullable=False)
+    before = Column(String, nullable=False)
+    after = Column(String, nullable=False)
+    mutation = Column(String, nullable=False)
+    date = Column(DateTime, nullable=True)  
+    
+    @classmethod
+    async def create(cls, obj_in: dict):
+        data = cls._import(obj_in)
+        await super().create(**data)
