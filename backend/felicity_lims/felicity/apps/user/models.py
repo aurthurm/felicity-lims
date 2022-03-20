@@ -104,10 +104,13 @@ class User(AbstractBaseUser):
     groups = relationship(
         "Group", secondary=user_groups, back_populates="members", lazy="selectin"
     )
+    preference_uid = Column(Integer, ForeignKey("userpreference.uid"))
+    preference = relationship(
+        "UserPreference", foreign_keys=[preference_uid], lazy="selectin"
+    )
     avatar = Column(String, nullable=True)
     bio = Column(String, nullable=True)
     default_route = Column(Boolean(), nullable=True)
-
 
     @classmethod
     async def create(cls, user_in: schemas.UserCreate) -> schemas.User:
@@ -145,6 +148,13 @@ class User(AbstractBaseUser):
     async def link_auth(self, auth_uid):
         _update = {
             "auth_uid": auth_uid
+        }  # {**result.to_dict(), **{'auth_uid': auth_uid}}
+        update_in = schemas.UserUpdate(**_update)
+        await self.update(update_in)
+
+    async def link_preference(self, preference_uid):
+        _update = {
+            "preference_uid": preference_uid
         }  # {**result.to_dict(), **{'auth_uid': auth_uid}}
         update_in = schemas.UserUpdate(**_update)
         await self.update(update_in)
@@ -211,8 +221,7 @@ department_preference = Table(
 
 class UserPreference(BaseAuditDBModel):
     """Preferences for System Personalisation"""
-    user_uid = Column(Integer, ForeignKey("user.uid"))
-    user = relationship("User", foreign_keys=[user_uid], backref="preferences", lazy="joined")
+    user_uid = Column(Integer, nullable=True)
     expanded_menu = Column(Boolean(), default=False)
     departments = relationship(
         "Department", secondary=department_preference, lazy="selectin"

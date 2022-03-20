@@ -34,6 +34,7 @@ class UserCreate(UserBase):
 # Properties to receive via API on update
 class UserUpdate(UserBase):
     auth_uid: Optional[int] = None
+    preference_uid: Optional[int] = None
 
 
 class UserInDBBase(UserBase):
@@ -180,7 +181,6 @@ class GroupInDB(GroupInDBBase):
 #
 class UserPreferenceBase(BaseAuditModel):
     user_uid: int
-    user: Optional[User]
     expanded_menu: Optional[bool] = False
     departments: Optional[List['Department']]
     theme: Optional[str] = themes.LIGHT

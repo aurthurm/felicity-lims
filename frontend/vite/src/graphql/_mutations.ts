@@ -34,6 +34,15 @@ export const AUTHENTICATE_USER = gql`
             }
             ...GroupTypeFields
           }
+          preferenceUid
+          preference {
+            expandedMenu
+            theme
+            departments {
+              uid
+              name
+            }
+          }
         }
       }
       ... on OperationError {

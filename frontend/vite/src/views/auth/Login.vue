@@ -81,6 +81,8 @@ import { useMutation } from '@urql/vue';
 import { AUTHENTICATE_USER } from '../../graphql/_mutations';
 import { ActionTypes } from '../../store/actions';
 import { ActionTypes as SetupActionTypes  } from '../../store/modules/setup';
+import userPreferenceComposable from '../../modules/preferences'
+
 export default defineComponent({
   setup() {
     const router = useRouter();
@@ -98,12 +100,17 @@ export default defineComponent({
 
     const { executeMutation: authenticateUser } = useMutation(AUTHENTICATE_USER);
 
+    const { initPreferences } = userPreferenceComposable()
+
     function login() {
       authenticateUser({ username: form.username, password: form.password }).then((result) => {
         Object.assign(userAuth, result);
-        if(!result.error)  store.dispatch(ActionTypes.PERSIST_AUTH_DATA, result).then(_ => {
-          router.push({ name: "DASHBOARD" })
-        });
+        if(!result.error)  {
+          initPreferences(result?.data?.authenticateUser?.user?.preference);
+          store.dispatch(ActionTypes.PERSIST_AUTH_DATA, result).then(_ => {
+            router.push({ name: "DASHBOARD" })
+          });
+        }
       });
     }
 

@@ -1,6 +1,8 @@
 <template>
 
     document detail here 
+
+    
     <hr>
     <router-view />
     

@@ -6,12 +6,13 @@
 </template>
 
 <script lang="ts">
-  import { defineComponent, computed } from 'vue';
+  import { defineComponent, computed, onMounted } from 'vue';
   import { useRouter } from 'vue-router';
   import { useStore } from 'vuex';
   const defaultLayout = 'default';
   import { ActionTypes } from './store/actions'
   import useStreamComposable from './modules/stream'
+  import userPreferenceComposable from './modules/preferences'
 
   import {
     SUBSCRIBE_TO_ACTIVITY_STREAM
@@ -33,7 +34,14 @@
         return [response.newMessages, ...messages];
       })
 
+      const { loadPreferedTheme } = userPreferenceComposable()
+
+      onMounted(() => {
+        loadPreferedTheme()
+      })
+
       if (window.performance.getEntriesByType('navigation').map((nav: any) => nav.type).includes('reload')) {
+        loadPreferedTheme()
         store.dispatch(ActionTypes.PERSIST_AUTH_FROM_LOCAL_STORAGE)
       }
 

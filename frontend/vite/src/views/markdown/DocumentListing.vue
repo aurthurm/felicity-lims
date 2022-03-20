@@ -226,13 +226,15 @@ export default defineComponent({
     const { executeMutation: udateDocument } = useMutation(EDIT_MARKDOWN_DOCUMENT);
 
     function addDocument(): void {
-      createDocument({ name: form.name, departmentUid: form.departmentUid }).then((result) => {
+      const payload = { name: form.name, departmentUid: form.departmentUid }
+      createDocument({ payload }).then((result) => {
         store.dispatch(ActionTypes.ADD_DOCUMENT, result);
       });
     }
 
     function editDocument(): void {
-      udateDocument({ uid: form.uid, name: form.name, departmentUid: form.departmentUid }).then((result) => {
+      const payload = { name: form.name, departmentUid: form.departmentUid }
+      udateDocument({ uid: form.uid, payload }).then((result) => {
         store.dispatch(ActionTypes.UPDATE_DOCUMENT, result);
       });
     }

@@ -1,5 +1,4 @@
 import { createApp } from 'vue'
-import VueMarkdownIt from 'vue3-markdown-it';
 import urql from '@urql/vue';
 import VueSweetalert2 from 'vue-sweetalert2';
 import 'sweetalert2/dist/sweetalert2.min.css';
@@ -8,7 +7,6 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { library, dom } from '@fortawesome/fontawesome-svg-core'
 import { fas } from '@fortawesome/free-solid-svg-icons'
 import { fab } from '@fortawesome/free-brands-svg-icons'
-
 import LayoutDashboard from './views/layouts/LayoutDashboard.vue';
 import LayoutEmpty from './views/layouts/LayoutEmpty.vue';
 
@@ -30,7 +28,6 @@ app.component('default-layout', LayoutDashboard)
 app.component('empty-layout', LayoutEmpty)
 app.use(urql, urqlClient)  // { url: GQL_BASE_URL } replaces urqlClient
 app.use(VueSweetalert2)
-app.use(VueMarkdownIt)
 app.use(router)
 app.use(store)
 app.mount('#app')

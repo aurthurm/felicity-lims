@@ -36,11 +36,8 @@ export default function useAnalysisComposable(){
           if (result.isConfirmed) {
 
             _canceller({ analyses: uids }).then(resp => {
-              if(resp.error){
-                console.error(resp)
-                return
-              }
-              store.dispatch(ActionTypes.UPDATE_ANALYSIS_RESULTS_STATUS, resp.data.cancelAnalysisResults);
+              const data = gqlResponseHandler(resp)
+              store.dispatch(ActionTypes.UPDATE_ANALYSIS_RESULTS_STATUS, data.cancelAnalysisResults.results);
             });
 
             await Swal.fire(
@@ -74,7 +71,7 @@ export default function useAnalysisComposable(){
 
             _reinstater({ analyses: uids }).then(resp => {
               const data = gqlResponseHandler(resp)
-              store.dispatch(ActionTypes.UPDATE_ANALYSIS_RESULTS_STATUS, data?.reInstateAnalysisResults);
+              store.dispatch(ActionTypes.UPDATE_ANALYSIS_RESULTS_STATUS, data?.reInstateAnalysisResults.results);
             });
 
             await Swal.fire(
@@ -115,11 +112,8 @@ export default function useAnalysisComposable(){
           if (result.isConfirmed) {
 
             _submitter({ analysisResults: results }).then(resp => {
-              if(resp.error){
-                console.error(resp)
-                return
-              }
-              store.dispatch(ActionTypes.UPDATE_ANALYSIS_RESULTS, resp.data.submitAnalysisResults);
+              const data = gqlResponseHandler(resp)
+              store.dispatch(ActionTypes.UPDATE_ANALYSIS_RESULTS, data.submitAnalysisResults.results);
              })
 
             await Swal.fire(
@@ -152,11 +146,8 @@ export default function useAnalysisComposable(){
           if (result.isConfirmed) {
 
             _verifier({ analyses: uids }).then(resp => {
-              if(resp.error){
-                console.error(resp)
-                return
-              }
-              store.dispatch(ActionTypes.UPDATE_ANALYSIS_RESULTS, resp.data.verifyAnalysisResults);
+              const data = gqlResponseHandler(resp)
+              store.dispatch(ActionTypes.UPDATE_ANALYSIS_RESULTS, data.verifyAnalysisResults.results);
             });
 
             await Swal.fire(
@@ -189,11 +180,8 @@ export default function useAnalysisComposable(){
           if (result.isConfirmed) {
 
             _retracter({ analyses: uids }).then(resp => {
-              if(resp.error){
-                console.error(resp)
-                return
-              }
-              store.dispatch(ActionTypes.UPDATE_ANALYSIS_RESULTS, resp.data.retractAnalysisResults);
+              const data = gqlResponseHandler(resp)
+              store.dispatch(ActionTypes.UPDATE_ANALYSIS_RESULTS, data.retractAnalysisResults.results);
             });
 
             await Swal.fire(
@@ -226,11 +214,8 @@ export default function useAnalysisComposable(){
           if (result.isConfirmed) {
 
             _retester({ analyses: uids }).then(resp => {
-              if(resp.error){
-                console.error(resp)
-                return
-              }
-              store.dispatch(ActionTypes.UPDATE_ANALYSIS_RESULTS, resp.data.retestAnalysisResults);
+              const data = gqlResponseHandler(resp)
+              store.dispatch(ActionTypes.UPDATE_ANALYSIS_RESULTS, data.retestAnalysisResults.results);
             });
 
             await Swal.fire(

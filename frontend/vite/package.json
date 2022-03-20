@@ -9,6 +9,8 @@
   },
   "dependencies": {
     "@antv/g2": "^4.1.32",
+    "@ckeditor/ckeditor5-build-decoupled-document": "^33.0.0",
+    "@ckeditor/ckeditor5-vue": "^3.0.0",
     "@editorjs/editorjs": "^2.22.2",
     "@fortawesome/fontawesome-svg-core": "^1.2.36",
     "@fortawesome/free-brands-svg-icons": "^5.15.4",
@@ -16,7 +18,6 @@
     "@fortawesome/free-solid-svg-icons": "^5.15.4",
     "@fortawesome/vue-fontawesome": "^3.0.0-4",
     "@types/lodash-es": "^4.17.5",
-    "@types/markdown-it": "^12.0.1",
     "@urql/core": "2.3.6",
     "@urql/exchange-auth": "^0.1.7",
     "@urql/vue": "0.6.1",
@@ -30,7 +31,6 @@
     "jstat": "^1.9.5",
     "jwt-decode": "^3.1.2",
     "lodash-es": "^4.17.21",
-    "markdown-it": "^12.2.0",
     "mitt": "^3.0.0",
     "moment": "^2.29.1",
     "notyf": "^3.10.0",
@@ -47,7 +47,6 @@
     "vue-multiselect": "^3.0.0-alpha.2",
     "vue-router": "4.0.11",
     "vue-sweetalert2": "^5.0.2",
-    "vue3-markdown-it": "^1.0.9",
     "vuedraggable": "^4.1.0",
     "vuex": "^4.0.2",
     "yup": "^0.32.11"

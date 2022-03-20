@@ -2,6 +2,7 @@ from typing import List, Optional
 from datetime import datetime
 import strawberry  # noqa
 from felicity.api.gql import PageInfo
+import felicity.api.gql.setup.types
 
 
 @strawberry.type
@@ -48,6 +49,8 @@ class UserType:
     mobile_phone: Optional[str]
     business_phone: Optional[str]
     groups: Optional[List[GroupType]]
+    preference_uid: Optional[int]
+    preference: Optional["UserPreferenceType"]
     is_active: bool
     is_superuser: bool
     auth_uid: Optional[int]
@@ -90,3 +93,12 @@ class UserCursorPage:
     edges: Optional[List[UserEdge]]
     items: Optional[List[UserType]]
     total_count: int
+
+
+@strawberry.type
+class UserPreferenceType:
+    uid: int
+    user_uid: Optional[int]
+    expanded_menu: Optional[bool]
+    departments: Optional[List["felicity.api.gql.setup.types.DepartmentType"]]
+    theme: Optional[str]

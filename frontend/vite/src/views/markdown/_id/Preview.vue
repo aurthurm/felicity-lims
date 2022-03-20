@@ -15,7 +15,7 @@ export default defineComponent({
     return { 
       content:  computed(() => {
         let document = store.getters.getDocument;
-        return document.content
+        return document.content.toString();
       }),
     }
   }

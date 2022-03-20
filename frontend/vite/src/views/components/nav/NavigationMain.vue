@@ -28,6 +28,13 @@
         <font-awesome-icon icon="flag" class="mr-2" />
         <span>Activities</span>
       </a> -->
+      <span
+        @click="toggleTheme()"
+        class="no-underline text-white opacity-50 flex items-center px-4 border-b border-transparent hover:opacity-100 md:hover:border-grey-dark"
+        >
+        <font-awesome-icon :icon="theme?.icon" class="mr-2"/>
+        <span class="text-sm">{{ theme?.variant }} mode</span>
+      </span>  
       <a
         href="#"
         class="no-underline text-white opacity-50 flex items-center px-4 border-b border-transparent hover:opacity-100 md:hover:border-grey-dark"
@@ -43,7 +50,7 @@
         >
         <font-awesome-icon icon="cog" class="mr-2"/>
         <span class="text-sm">Settings</span>
-      </router-link>
+      </router-link>      
       <div class="flex text-right align-middle py-2">
         <div>
           <img
@@ -87,16 +94,21 @@
 
 
 <script setup lang="ts">
-  import { ref } from 'vue';
+  import { ref, onMounted } from 'vue';
   import useNotificationComposable from './../../../modules/notification'
-
+  import userPreferenceComposable from '../../../modules/preferences'
   import * as guards from './../../../guards';
 
   const dropdownOpen = ref(false);
+  const themeChange = ref(false);
   const isOpen = ref(false);
 
   const userFullName: string | null = localStorage.getItem('fuser');
 
   const {  showNotifications } = useNotificationComposable()
+
+  const { theme, toggleTheme, loadPreferedTheme } = userPreferenceComposable()
+
+  onMounted(() => loadPreferedTheme())
 
 </script>

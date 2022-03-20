@@ -84,7 +84,7 @@ export const mutations = <MutationTree<IState>>{
   },
 
   [MutationTypes.ADD_PATIENT](state: IState, payload: IPatient): void {
-    state.patients?.push(payload);
+    state.patients?.unshift(payload);
   },
 
   [MutationTypes.UPDATE_PATIENT](state: IState, payload: IPatient): void {
@@ -111,7 +111,7 @@ export const actions = <ActionTree<IState, RootState>>{
 
   async [ActionTypes.FETCH_PATIENTS]({ commit }, params){
     await urqlClient
-    .query( GET_ALL_PATIENTS, { first: params.first, after: params.after, text: params.text, sortBy: ["uid"] })
+    .query( GET_ALL_PATIENTS, { first: params.first, after: params.after, text: params.text, sortBy: ["-uid"] })
     .toPromise()
     .then(result => commit(MutationTypes.SET_PATIENTS, {
       patients: result.data.patientAll,
