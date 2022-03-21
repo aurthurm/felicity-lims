@@ -1,70 +1,66 @@
 <template>
-    <!-- <ckeditor 
-    :editor="editor" 
-    v-model="editorData" 
-    :config="editorConfig"
-    @ready="onReady"
-    @input="updateContent"></ckeditor> -->
     <div class="document-editor">
       <div class="document-editor__toolbar"></div>
-        <div class="document-editor__editable-container">
-            <div class="document-editor__editable">
-                <p>The initial editor data.</p>
+        <div class="document-editor__editable-container bg-gray-200">
+            <div class="document-editor__editable border-2 border-dotted border-red-500"></div>
+            <div class="absolute top-96 right-72">
+              
+                <div 
+                v-if="!dataSaved" 
+                class="flex items-center justify-center space-x-2 animate-ping my-4">
+                  <div class="w-2 h-2 bg-blue-400 rounded-full animate-pulse"></div>
+                  <div class="w-2 h-2 bg-green-400 rounded-full animate-bounce"></div>
+                  <div class="w-2 h-2 bg-red-400 rounded-full animate-pulse"></div>
+                </div>
+                <div v-else>
+                  <font-awesome-icon icon="check-circle" class="text-green-400" />
+                </div>
             </div>
         </div>
     </div>
 </template>
 
 <script lang="ts">
-import CKEditor from '@ckeditor/ckeditor5-vue'
-import DecoupledEditor from '@ckeditor/ckeditor5-build-decoupled-document'
-import { useMutation } from '@urql/vue';
-import { useStore } from 'vuex';
-import { defineComponent, ref, reactive, onMounted, computed, watch } from 'vue';
-import { EDIT_MARKDOWN_DOCUMENT } from '../../../graphql/markdown.mutations';
-import { ActionTypes } from '../../../store/modules/markdown';
+  import DecoupledEditor from '@ckeditor/ckeditor5-build-decoupled-document'
+  import { useMutation } from '@urql/vue';
+  import { useStore } from 'vuex';
+  import { defineComponent, ref, onMounted, computed, watch } from 'vue';
+  import { EDIT_MARKDOWN_DOCUMENT } from '../../../graphql/markdown.mutations';
 
-export default defineComponent({
-  name: "mark-down-docs",
-  components: {
-    ckeditor: CKEditor.component
-  },
-  data() {
-    return {
-      editor: DecoupledEditor,
-      editorData: "<p>Content of the editor.</p>",
-      editorConfig: {}
+  declare const window: Window &
+    typeof globalThis & {
+      editor: DecoupledEditor
     }
-  },
-  setup() {
+
+  export default defineComponent({
+    name: "document-editor",
+    setup() {
+
     const store = useStore();
     
     let timeout: any;
-    let loading = ref(true);
-    let documentX = reactive({}) as any;
-    let content = computed(() => store.getters.getDocument );
+    let dataSaved = ref(true);
+    let article = computed(() => store.getters.getDocument );
     const { executeMutation: udateDocument } = useMutation(EDIT_MARKDOWN_DOCUMENT);
 
     function editDocument(data: string): void {
-      const payload = { content: data, name: documentX.name, departmentUid: documentX.departmentUid}
-      udateDocument({ uid: documentX.uid, payload }).then((result) => {
-        console.log(result)
-        // store.dispatch(ActionTypes.SET_DOCUMENT, result);
+      const payload = { content: data, name: article.value.name, departmentUid: article.value.departmentUid}
+      udateDocument({ uid: article.value.uid, payload }).then((result) => {
+        dataSaved.value  = true
       });
     }
 
-    watch(() => content.value, (incoming, prev) => {
-      Object.assign(document, { ...incoming })
-      loading.value = false;
+    watch(() => article.value, (incoming, prev) => {
+      window.editor?.setData(article.value?.content)
     });
 
-    function updateContent(event: any): void {
-        // store.dispatch(ActionTypes.UPDATE_DOCUMENT_CONTENT, event.target.value)
-        // if (timeout) clearTimeout(timeout); 
-        // timeout = setTimeout(() => {
-        //   editDocument(event.target.value)
-        // }, 2000); 
-        console.log(event.target?.innerHTML)
+    function updateContent(): void {
+      dataSaved.value  = false
+      const data = window.editor?.getData()
+      if (timeout) clearTimeout(timeout); 
+      timeout = setTimeout(() => {
+        editDocument(data)
+      }, 2000); 
     }
 
     onMounted(() => {
@@ -73,6 +69,9 @@ export default defineComponent({
         .then( editor => {
             const toolbarContainer = document.querySelector('.document-editor__toolbar');
             toolbarContainer!.appendChild( editor.ui.view.toolbar.element );
+            editor?.model?.document?.on( 'change:data', () => {
+              updateContent()
+            });
             window.editor = editor;
         } )
         .catch( err => {
@@ -80,17 +79,7 @@ export default defineComponent({
         } );
     })
 
-    return { 
-      loading, 
-      document, 
-      updateContent, 
-      onReady: editor => {
-        editor.ui.getEditableElement().parentElement.insertBefore(
-            editor.ui.view.toolbar.element,
-            editor.ui.getEditableElement()
-        );
-      }
-    }
+    return { dataSaved }
   },
 });
 </script>
@@ -100,7 +89,7 @@ export default defineComponent({
   .document-editor {
       border: 1px solid var(--ck-color-base-border);
       border-radius: var(--ck-border-radius);
-      max-height: 700px;
+      max-height: 800px;
       display: flex;
       flex-flow: column nowrap;
   }
@@ -118,7 +107,7 @@ export default defineComponent({
 
   .document-editor__editable-container {
       padding: calc( 2 * var(--ck-spacing-large) );
-      background: var(--ck-color-base-foreground);
+      /* background: var(--ck-color-base-foreground); */
       overflow-y: scroll;
   }
 

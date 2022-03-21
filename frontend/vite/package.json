@@ -10,7 +10,6 @@
   "dependencies": {
     "@antv/g2": "^4.1.32",
     "@ckeditor/ckeditor5-build-decoupled-document": "^33.0.0",
-    "@ckeditor/ckeditor5-vue": "^3.0.0",
     "@editorjs/editorjs": "^2.22.2",
     "@fortawesome/fontawesome-svg-core": "^1.2.36",
     "@fortawesome/free-brands-svg-icons": "^5.15.4",

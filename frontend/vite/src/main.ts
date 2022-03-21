@@ -31,3 +31,4 @@ app.use(VueSweetalert2)
 app.use(router)
 app.use(store)
 app.mount('#app')
+
