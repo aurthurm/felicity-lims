@@ -24,7 +24,7 @@
   import DecoupledEditor from '@ckeditor/ckeditor5-build-decoupled-document'
   import { useMutation } from '@urql/vue';
   import { useStore } from 'vuex';
-  import { defineComponent, ref, onMounted, computed, watch } from 'vue';
+  import { defineComponent, ref, onMounted, onBeforeUnmount, onUnmounted, computed, watch } from 'vue';
   import { EDIT_MARKDOWN_DOCUMENT } from '../../../graphql/markdown.mutations';
 
   declare const window: Window &
@@ -78,6 +78,17 @@
             console.error( err );
         } );
     })
+
+    onBeforeUnmount(() => {
+      if(!dataSaved.value){
+        const data = window.editor?.getData();
+        if(data?.length > 1) {
+          editDocument(window.editor?.getData())
+        }
+      }
+    })
+
+    onUnmounted(() => window.editor.destroy())
 
     return { dataSaved }
   },
