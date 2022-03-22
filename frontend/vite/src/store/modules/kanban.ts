@@ -112,7 +112,7 @@ export const mutations = <MutationTree<IState>>{
 
   [MutationTypes.DELETE_BOARD](state: IState, boardUid: any): void {
     if(boardUid){
-      const index = state!.boards?.findIndex(x => parseInt(x.uid!) === parseInt(boardUid!));
+      const index = state!.boards?.findIndex(x => parseInt(x.uid! as any) === parseInt(boardUid!));
       if (index! > -1) {
         state!.boards!.splice(index!, 1);
       }
@@ -131,7 +131,7 @@ export const mutations = <MutationTree<IState>>{
 
   [MutationTypes.DELETE_BOARD_LISTING](state: IState, listingUid: any): void {
     if(listingUid){
-      const index = state!.board!.boardListings?.findIndex(x => parseInt(x.uid!) === parseInt(listingUid!));
+      const index = state!.board!.boardListings?.findIndex(x => parseInt(x.uid! as any) === parseInt(listingUid!));
       if (index! > -1) {
         state!.board!.boardListings!.splice(index!, 1);
       }
@@ -164,12 +164,12 @@ export const mutations = <MutationTree<IState>>{
 
     state!.board!.boardListings!.forEach(listing => {
       // remove old task
-      const index = listing?.listingTasks?.findIndex(x => parseInt(x.uid!) === parseInt(task.uid!));
+      const index = listing?.listingTasks?.findIndex(x => parseInt(x.uid! as any) === parseInt(task.uid!));
       if (index! > -1) {
         listing!.listingTasks!.splice(index!, 1);
       }
       // add task in new position
-      if(parseInt(listing?.uid!) === parseInt(task?.listingUid!)) {
+      if(parseInt(listing?.uid! as any) === parseInt(task?.listingUid!)) {
         listing?.listingTasks?.push(task);
       }
     })
@@ -178,7 +178,7 @@ export const mutations = <MutationTree<IState>>{
   [MutationTypes.DELETE_LISTING_TASK](state: IState, taskUid: any): void {
     if(taskUid){
       state!.board!.boardListings!.forEach(listing => {
-        const index = listing?.listingTasks?.findIndex(x => parseInt(x.uid!) === parseInt(taskUid!));
+        const index = listing?.listingTasks?.findIndex(x => parseInt(x.uid! as any) === parseInt(taskUid!));
         if (index! > -1) {
           listing!.listingTasks!.splice(index!, 1);
         }
@@ -202,12 +202,13 @@ export const mutations = <MutationTree<IState>>{
 
   //  TASKS COMMENTS
   [MutationTypes.ADD_TASK_COMMENT](state: IState, payload: IComment): void {
-    state.listingTask?.comments?.push(payload)
+    state.listingTask?.taskComments?.push(payload)
   },
 
   //  TASKS MILESTONES
   [MutationTypes.ADD_TASK_MILESTONE](state: IState, payload: IMileStone): void {
-    state.listingTask?.milestones?.push(payload)
+    state.listingTask?.taskMilestones?.push(payload)
+    console.log(state.listingTask)
   },
 
 };

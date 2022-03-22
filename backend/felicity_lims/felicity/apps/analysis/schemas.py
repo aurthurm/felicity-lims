@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import List, Optional
 
-from felicity.apps.common.schemas import BaseAuditModel
+from felicity.apps.common.schemas import BaseModel, BaseAuditModel
 from felicity.apps.setup.schemas import Department, Unit
 
 
@@ -130,6 +130,13 @@ class AnalysisCategoryInDB(AnalysisCategoryBaseInDB):
 # Analysis Schemas
 #
 
+
+class AnalysisBasicBase(BaseModel):
+    name: Optional[str] = None
+    keyword: Optional[str] = None
+
+
+
 # Shared properties
 class AnalysisBase(BaseAuditModel):
     name: Optional[str] = None
@@ -147,6 +154,13 @@ class AnalysisBase(BaseAuditModel):
     required_verifications: int = 1
     self_verification: Optional[bool] = False
     active: Optional[bool] = True
+
+
+class AnalysisBasic(AnalysisBasicBase):
+    uid: Optional[int] = None
+
+    class Config:
+        orm_mode = True
 
 
 class AnalysisBaseInDB(AnalysisBase):

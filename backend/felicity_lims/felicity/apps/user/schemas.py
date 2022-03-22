@@ -12,6 +12,12 @@ from felicity.apps.user.conf import themes
 # Shared properties
 
 
+class UserBasicBase(BaseModel):
+    first_name: Optional[str] = None
+    last_name: Optional[str] = None
+    user_name: Optional[str] = None
+
+
 class UserBase(BaseModel):
     email: Optional[EmailStr] = None
     is_active: Optional[bool] = True
@@ -45,8 +51,19 @@ class UserInDBBase(UserBase):
 
 
 # Additional properties to return via API
+class UserBasic(UserBasicBase):
+    uid: Optional[int] = None
+
+    class Config:
+        orm_mode = True
+
+
+# Additional properties to return via API
 class User(UserInDBBase):
     pass
+
+
+
 
 
 # Additional properties stored in DB

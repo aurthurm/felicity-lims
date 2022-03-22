@@ -341,17 +341,19 @@ class KanBanMutations:
 
         obj_in = schemas.ListingTaskUpdate(**task.to_dict())
         await task.update(obj_in)
-
-        _members = []
-        if payload.member_uids:
-            if len(payload.member_uids) > 0:
-                for member_uid in payload.member_uids:
-                    member = await user_models.User.get(uid=int(member_uid))
-                    _members.append(member)
-
-        task.members = _members
         task = await task.save()
 
+        if payload.member_uids:
+            task.members.clear()
+            await task.save()
+            for member_uid in payload.member_uids:
+                member = await user_models.User.get(uid=int(member_uid))
+                await models.ListingTask.table_insert(
+                    table=models.member_tasks,
+                    mappings={"task_uid": task.uid, "user_uid": member.uid}
+                )
+
+        task = await models.ListingTask.get(uid=task.uid)
         return types.ListingTaskType(**task.marshal_simple())
 
     @strawberry.mutation

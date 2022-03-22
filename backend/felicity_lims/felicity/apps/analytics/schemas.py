@@ -1,19 +1,25 @@
 from typing import List, Optional, Union
 from pydantic import BaseModel
 from datetime import datetime
-from felicity.apps.common.schemas import BaseAuditModel
-from felicity.apps.analysis.schemas import Analysis
+from felicity.apps.user.schemas import UserBasic
+from felicity.apps.analysis.schemas import AnalysisBasic
 from felicity.apps.analytics import conf
 
 
-class ReportMetaBase(BaseAuditModel):
+class ReportMetaBase(BaseModel):
     period_start: datetime
     period_end: datetime
     date_column: str
     sample_states: Optional[str]
     report_type: str = conf.report_types.LINE_LISTING
     status: Optional[str] = conf.report_states.PENDING
-    analyses: Optional[List[Analysis]] = None
+    analyses: Optional[List[AnalysisBasic]] = None
+    created_at: Optional[datetime] = None
+    created_by_uid: Optional[int] = None
+    created_by: Optional[UserBasic] = None  # noqa
+    updated_at: Optional[datetime] = None
+    updated_by_uid: Optional[int] = None
+    updated_by: Optional[UserBasic] = None  # noqa
 
 
 class ReportMeta(ReportMetaBase):
@@ -46,3 +52,4 @@ class ReportRequest(BaseModel):
     date_column: str
     period_start: datetime
     period_end: datetime
+

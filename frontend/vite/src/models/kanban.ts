@@ -19,8 +19,8 @@ export interface IComment {
     title: string;
     description: string;
     listingUid: number;
-    milestones: IMileStone[];
-    comments: IComment[];
+    taskMilestones: IMileStone[];
+    taskComments: IComment[];
     status: string;
     assignee: string;
     dueDate: string,
