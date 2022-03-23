@@ -25,14 +25,15 @@
       const store = useStore();
 
       const { initSubscriptions } = useStreamComposable()
+      
       initSubscriptions()
 
-       const result = useSubscription({
-        query: SUBSCRIBE_TO_ACTIVITY_STREAM
-      }, (messages = [], response:any) => {
-        console.log(messages, response)
-        return [response.newMessages, ...messages];
-      })
+      //  const result = useSubscription({
+      //   query: SUBSCRIBE_TO_ACTIVITY_STREAM
+      // }, (messages = [], response:any) => {
+      //   console.log(messages, response)
+      //   return [response.newMessages, ...messages];
+      // })
 
       const { loadPreferedTheme } = userPreferenceComposable()
 

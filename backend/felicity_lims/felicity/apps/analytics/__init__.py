@@ -54,6 +54,7 @@ class AnalyticsInit(Generic[ModelType]):
                 pt.first_name as "First Name",
                 pt.last_name as "Last Name",
                 pt.client_patient_id as "Client Patient Id",
+                cl.name as "Client",
                 pt.gender as "Gender",
                 pt.age as "Age",
                 pt.date_of_birth as "Date Of Birth",

@@ -12,8 +12,6 @@ from sqlalchemy.orm import relationship
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-
-
 """
  Many to Many Link between AnalysisResult and User
 """
@@ -23,6 +21,7 @@ result_verification = Table(
     Column("result_uid", ForeignKey("analysisresult.uid"), primary_key=True),
     Column("user_uid", ForeignKey("user.uid"), primary_key=True),
 )
+
 
 class AnalysisResult(Auditable, BaseMPTT):
     """Test/Analysis Result
@@ -70,8 +69,7 @@ class AnalysisResult(Auditable, BaseMPTT):
     due_date = Column(DateTime, nullable=True)
     # reflex level
     reflex_level = Column(Integer, nullable=True)
-    
-    
+
     async def verifications(self):
         if self.analysis.required_verifications:
             required = self.analysis.required_verifications
@@ -97,7 +95,7 @@ class AnalysisResult(Auditable, BaseMPTT):
 
             await self.hide_report()
             if next_action == "verify":
-                final = await self.verify(verifier=retested_by)
+                _, final = await self.verify(verifier=retested_by)
             elif next_action == "retract":
                 final = await self.retract(retracted_by=retested_by)
             else:
@@ -121,7 +119,7 @@ class AnalysisResult(Auditable, BaseMPTT):
         return await self.save()
 
     async def verify(self, verifier):
-        verified = False
+        is_verified = False
         required, current = await self.verifications()
         await AnalysisResult.table_insert(
             table=result_verification,
@@ -132,12 +130,15 @@ class AnalysisResult(Auditable, BaseMPTT):
         if current < required and current + 1 == required:
             self.status = conf.states.result.VERIFIED
             self.date_verified = datetime.now()
-            verified = True
-        return verified, await self.save()
+            is_verified = True
+        return is_verified, await self.save()
 
     async def retract(self, retracted_by):
+        await AnalysisResult.table_insert(
+            table=result_verification,
+            mappings={"result_uid": self.uid, "user_uid": retracted_by.uid}
+        )
         self.status = conf.states.result.RETRACTED
-        self.verified_by_uid = retracted_by.uid
         self.date_verified = datetime.now()
         self.updated_by_uid = retracted_by.uid  # noqa
         return await self.save()
@@ -178,11 +179,11 @@ class AnalysisResult(Auditable, BaseMPTT):
 
     @classmethod
     async def filter_for_worksheet(
-        cls,
-        analyses_status: str,
-        analysis_uid: int,
-        sample_type_uid: List[int],
-        limit: int,
+            cls,
+            analyses_status: str,
+            analysis_uid: int,
+            sample_type_uid: List[int],
+            limit: int,
     ) -> List[schemas.AnalysisResult]:
 
         filters = {
@@ -206,13 +207,13 @@ class AnalysisResult(Auditable, BaseMPTT):
 
     @classmethod
     async def create(
-        cls, obj_in: schemas.AnalysisResultCreate
+            cls, obj_in: schemas.AnalysisResultCreate
     ) -> schemas.AnalysisResult:
         data = cls._import(obj_in)
         return await super().create(**data)
 
     async def update(
-        self, obj_in: schemas.AnalysisResultUpdate
+            self, obj_in: schemas.AnalysisResultUpdate
     ) -> schemas.AnalysisResult:
         data = self._import(obj_in)
         return await super().update(**data)
@@ -225,8 +226,8 @@ class ResultMutation(BaseAuditDBModel):
     before = Column(String, nullable=False)
     after = Column(String, nullable=False)
     mutation = Column(String, nullable=False)
-    date = Column(DateTime, nullable=True)  
-    
+    date = Column(DateTime, nullable=True)
+
     @classmethod
     async def create(cls, obj_in: dict):
         data = cls._import(obj_in)

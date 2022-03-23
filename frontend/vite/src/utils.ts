@@ -90,12 +90,6 @@ export function addListsUnique(f: any[], s: any[], key: string): any[] {
   return deDuplicateArrayBy(c,key);
 }
 
-export default {
-    isNullOrWs,
-    parseUrlParams,
-    startsWith,
-};
-
 
 export const snakeToCamel = (val: any) => {
     const convert = (s: any) => s.replace(/(_\w)/g, (k: any) => k[1].toUpperCase());
@@ -150,3 +144,8 @@ export const stringifyNumber = (n: number):string => {
 }
 
 
+export default {
+  isNullOrWs,
+  parseUrlParams,
+  startsWith,
+};

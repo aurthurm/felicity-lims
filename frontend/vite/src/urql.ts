@@ -1,21 +1,45 @@
-import { createClient, defaultExchanges, dedupExchange, cacheExchange, fetchExchange, errorExchange, subscriptionExchange } from 'urql';
+import { 
+  createClient, 
+  defaultExchanges, 
+  dedupExchange, 
+  cacheExchange, 
+  fetchExchange, 
+  errorExchange, 
+  subscriptionExchange,
+  CombinedError,
+  Operation, 
+  Exchange
+} from 'urql';
 import { makeOperation } from '@urql/core';
 import { devtoolsExchange } from '@urql/devtools'
 import { authExchange } from '@urql/exchange-auth';
-
-import { GQL_BASE_URL, WS_BASE_URL } from './conf'
-
-import { createClient as createWSClient } from 'graphql-ws';
 import { SubscriptionClient } from 'subscriptions-transport-ws'
+import { pipe, tap } from 'wonka'
+
 import { authFromStorage, authFromStorage2, authLogout } from './auth';
+import { GQL_BASE_URL, WS_BASE_URL } from './conf'
+import useNotifyToast from './modules/alert_toast'
 
-const subscriptionClient = new SubscriptionClient( WS_BASE_URL, { reconnect: true });
+const { interceptResult, toastError } = useNotifyToast();
 
-const wsClient = createWSClient({
-  url: WS_BASE_URL,
+
+const subscriptionClient = new SubscriptionClient( WS_BASE_URL, { 
+  reconnect: true,
+  lazy: true,
+  connectionParams: () => {
+    const auth = authFromStorage2();
+    return {
+      headers: {
+        ...(auth?.token && {
+        'x-felicity-user-id': "felicity-user-x",
+        'x-felicity-role': "felicity-role-x",
+        'Authorization': `Bearer ${auth?.token}`
+      })
+      },
+    }
+  }, 
 });
 
-// 1. get auth data
 const getAuth = async ({ authState }) => {
 
   if (!authState) {
@@ -30,12 +54,14 @@ const getAuth = async ({ authState }) => {
     return { token: authState.token };
   }
 
+
+  toastError("Faied to get Auth Data. Login");
+
   authLogout();
 
   return null;
 };
 
-// 2. add auth to all requests
 const addAuthToOperation = ({ authState, operation }) => {
   if (!authState || !authState.token) {
     return operation;
@@ -59,7 +85,6 @@ const addAuthToOperation = ({ authState, operation }) => {
   });
 };
 
-
 const didAuthError = (error: any ) => {
   if(!error.graphQLErrors|| error.graphQLErrors.length ===0){
     return error.message == "[Network] Failed to fetch"
@@ -72,7 +97,13 @@ const willAuthError = (authState: any) => {
   return false;
 }
 
-// https://github.com/FormidableLabs/urql/tree/main/exchanges/auth#quick-start-guide
+const resultInterceptorExchange: Exchange = ({ forward }) => (ops$) => pipe(ops$, forward,
+  tap((operationResult) => {
+    console.log(operationResult)
+    interceptResult(operationResult)
+  }),
+);
+
 export const urqlClient = createClient({
   url: GQL_BASE_URL,
    ...(('process.env.DEV') && { exchanges: [devtoolsExchange, ...defaultExchanges] }),
@@ -80,14 +111,16 @@ export const urqlClient = createClient({
     dedupExchange,
     cacheExchange,
     errorExchange({
-      onError: error => {
+      onError: (error: CombinedError, operation: Operation) => {
         let isAuthError = false;
+
         if(!error.graphQLErrors || error.graphQLErrors.length ===0){
           isAuthError = error.message === "[Network] Failed to fetch";
         }else{
           isAuthError = error.graphQLErrors.some(e => e.extensions?.code === 'FORBIDDEN');
         }
         if (isAuthError) {
+          toastError("Unknown Network Error Encountered")
           authLogout();
         }
       },
@@ -98,13 +131,9 @@ export const urqlClient = createClient({
       didAuthError,
       getAuth,
     }),
+    resultInterceptorExchange,
     fetchExchange,
     subscriptionExchange({
-      // forwardSubscription: (operation) => ({
-      //   subscribe: (sink: any) => ({
-      //     unsubscribe: wsClient.subscribe(operation, sink),
-      //   }),
-      // }),
       forwardSubscription: operation => subscriptionClient.request(operation) as any
     }),
   ],  
@@ -116,8 +145,8 @@ export const urqlClient = createClient({
         'Access-Control-Allow-Methods': 'GET, POST, PATCH, PUT, DELETE, OPTIONS',
         'Access-Control-Allow-Headers': 'Origin, Content-Type, X-Auth-Token',
         ...(auth?.token && {
-          'x-felicity-user-id': "felicity-user",
-          'x-felicity-role': "felicity-administrator",
+          'x-felicity-user-id': "felicity-user-x",
+          'x-felicity-role': "felicity-role-x",
           'Authorization': `Bearer ${auth?.token}`
         }),
       },

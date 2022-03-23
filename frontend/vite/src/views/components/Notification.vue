@@ -20,7 +20,8 @@
             </button>
           </div>
 
-          <div class="w-full p-3 mt-4 bg-white rounded flex">
+          <div v-for="stream of streams" :key = "stream.uid"
+          class="w-full p-3 mt-4 bg-white rounded flex">
             <div
               tabindex="0"
               aria-label="heart icon"
@@ -41,12 +42,12 @@
             </div>
             <div class="pl-3">
               <p tabindex="0" class="focus:outline-none text-sm leading-none">
-                <span class="text-indigo-700">Skrilex</span> verified sample
-                <span class="text-indigo-700">WB21-34555</span>
+                <span class="text-indigo-700">{{ stream?.actor.firstName }} {{ stream?.actor.lastName }}</span> {{ stream.verb }} {{ stream.actionObjectType }}
+                <span class="text-indigo-700">{{ stream?.actionObject.sampleId }}</span>
               </p>
-              <p tabindex="0" class="focus:outline-none text-xs leading-3 pt-1 text-gray-500">
+              <!-- <p tabindex="0" class="focus:outline-none text-xs leading-3 pt-1 text-gray-500">
                 2 hours ago
-              </p>
+              </p> -->
             </div>
           </div>
 
@@ -85,11 +86,13 @@
 <script lang="ts">
   import { defineComponent, ref, watch } from 'vue';
   import useNotificationComposable from './../../modules/notification'
+  import useStreamComposable from './../../modules/stream'
 
   export default defineComponent({
     name: 'Notification',
     setup() {
       const { state, showNotifications } = useNotificationComposable()
+      const { streams } = useStreamComposable()
 
       let notification: any = ref(null)
       let checdiv: any = ref(null)
@@ -114,6 +117,7 @@
       })
       
       return {
+        streams,
         notification, checdiv,
         showNotifications,
       };

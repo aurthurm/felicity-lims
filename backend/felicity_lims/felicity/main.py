@@ -111,7 +111,7 @@ graphql_app = GraphQL(
 default_home_page(flims)
 flims.include_router(api_router, prefix=settings.API_V1_STR)
 flims.add_route("/felicity-gql", graphql_app)
-flims.add_websocket_route("/subscriptions", graphql_app, "felicity-subscriptions")
+flims.add_websocket_route("/felicity-gql", graphql_app, "felicity-subscriptions")
 
 resolve_root_dirs()
 flims.mount('/media', StaticFiles(directory="media"), name='media')

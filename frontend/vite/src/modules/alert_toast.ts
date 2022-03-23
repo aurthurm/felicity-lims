@@ -97,6 +97,9 @@ export default function useNotifyToast(){
       return gqlOpertionalErrorHandler(gqlResponseHandler(res))
     }
 
+    // GraphqlEchange result interceptor
+    const interceptResult = result => gqlAllErrorHandler(result)
+
     // --- exerimental
     // example GQLMutation(
     //    ADD_ANALYSIS_REQUEST, 
@@ -118,6 +121,7 @@ export default function useNotifyToast(){
         toastSuccess, toastInfo, toastWarning, toastError,
         swalSuccess, swalInfo, swalWarning, swalError,
         gqlResponseHandler, gqlErrorHandler, gqlOpertionalErrorHandler, gqlAllErrorHandler,
+        interceptResult,
         GQLMutation
     }
 }
