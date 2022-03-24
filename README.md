@@ -24,6 +24,7 @@ Felicity is the quality of being good, pleasant, or desirable.
  - Highly customizable and extensible
  - Micro kanban Project management
  - Experimental Document authoring using CKEditor 5: for SOP writing etc
+ - Customizable Role based permissions
 
 ## Installation
 
