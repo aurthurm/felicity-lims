@@ -19,7 +19,7 @@ Felicity is the quality of being good, pleasant, or desirable.
 ## Main Features
  - Sample status tracking
  - Flexible batched sample workflow
- - Quality control
+ - Quality Control - LJ Charts etc
  - Reporting
  - Highly customizable and extensible
  - Micro kanban Project management
