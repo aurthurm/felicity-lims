@@ -21,6 +21,9 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
+streamer = FelicityStreamer()
+
+
 class WSBase(BaseAuditDBModel):
     __abstract__ = True
     worksheet_type = Column(String)
@@ -42,7 +45,6 @@ class WSBase(BaseAuditDBModel):
         data["cols"] = self.cols
         data["row_wise"] = self.row_wise
         return data
-
 
 
 """
@@ -168,9 +170,7 @@ class WorkSheet(Auditable, WSBase):
                 self.updated_by_uid = submitter.uid  # noqa
                 self.submitted_by_uid = submitter.uid
                 saved = await self.save()
-                await FelicityStreamer.stream(
-                    saved, submitter, "submitted", "worksheet"
-                )
+                await streamer.stream(saved, submitter, "submitted", "worksheet")
                 return saved
         return self
 
@@ -188,9 +188,7 @@ class WorkSheet(Auditable, WSBase):
                 self.updated_by_uid = verified_by.uid  # noqa
                 self.verified_by_uid = verified_by.uid
                 saved = await self.save()
-                await FelicityStreamer.stream(
-                    saved, verified_by, "verified", "worksheet"
-                )
+                await streamer.stream(saved, verified_by, "verified", "worksheet")
                 return saved
         return self
 

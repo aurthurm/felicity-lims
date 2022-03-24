@@ -96,9 +96,6 @@ class AnalysisCategory(BaseAuditDBModel):
         return await super().update(**data)
 
 
-
-
-
 class Profile(BaseAuditDBModel):
     """Grouped Analysis e.g FBC, U&E's, MCS ..."""
 
@@ -650,6 +647,7 @@ class Sample(Auditable, BaseMPTT):
             self.status = states.sample.INVALIDATED
             self.invalidated_by_uid = invalidated_by.uid
             invalidated = await self.save()
+            await streamer.stream(invalidated, invalidated_by, "invalidated", "sample")
             return copy, invalidated
         return copy, self
 
@@ -660,7 +658,9 @@ class Sample(Auditable, BaseMPTT):
             self.rejection_reasons = reasons
             self.received_by_uid = rejected_by.uid
             self.updated_by_uid = rejected_by.uid  # noqa
-            return await self.save()
+            rejected = await self.save()
+            await streamer.stream(rejected, rejected_by, "rejected", "sample")
+            return rejected
         return self
 
     @classmethod

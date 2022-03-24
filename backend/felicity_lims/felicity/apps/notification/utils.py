@@ -1,16 +1,16 @@
 import logging
 from typing import Any
-
 from felicity.apps.common.channel import broadcast
-from felicity.apps.notification.models import ActivityStream
-from felicity.apps.notification.schemas import ActivityStreamCreate
+from felicity.apps.notification.models import ActivityStream, Notification
+from felicity.apps.notification.schemas import ActivityStreamCreate, NotificationCreate
+from felicity.apps.notification.conf import channels
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
 class FelicityStreamer:
-    """streams utils"""
+    """streams util"""
 
     @staticmethod
     async def stream(obj: Any, actor: Any, verb: str, object_type: str):
@@ -23,4 +23,30 @@ class FelicityStreamer:
             target_uid=None,
         )
         stream: ActivityStream = await ActivityStream.create(s_in)
-        await broadcast.publish("activities", stream)
+        await broadcast.publish(channels.ACTIVITIES, stream)
+
+
+class FelicityNotifier:
+    """simple notification util"""
+
+    @staticmethod
+    async def notify(message: str, departments: Any = None, groups: Any = None, users: Any = None):
+        n_in = NotificationCreate(
+            message=message,
+        )
+        notification: Notification = await Notification.create(n_in)
+        await broadcast.publish(channels.NOTIFICATIONS, notification)
+
+
+class ReportNotifier:
+    """generated report status"""
+
+    @staticmethod
+    async def notify(message: str, user: Any = None):
+        n_in = NotificationCreate(
+            message=message,
+        )
+        notification: Notification = await Notification.create(n_in)
+        notification.users = [user]
+        notification = await notification.save()
+        await broadcast.publish(channels.NOTIFICATIONS, notification)

@@ -13,3 +13,12 @@ class ActionObjects:
 
 
 action_objects = ActionObjects()
+
+
+class Channels:
+    ACTIVITIES = 'activities'
+    NOTIFICATIONS = 'notifications'
+    REPORTS = 'reports'
+
+
+channels = Channels()

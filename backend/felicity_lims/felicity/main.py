@@ -15,7 +15,7 @@ from starlette.authentication import (
     SimpleUser,
 )
 
-from fastapi import FastAPI, WebSocket
+from fastapi import FastAPI, WebSocket, Request
 from fastapi.staticfiles import StaticFiles
 
 from strawberry.asgi import GraphQL
@@ -24,6 +24,7 @@ from strawberry.subscriptions import GRAPHQL_TRANSPORT_WS_PROTOCOL, GRAPHQL_WS_P
 from felicity.api.rest.api_v1.api import api_router  # noqa
 from felicity.apps.common.channel import broadcast
 from felicity.apps.job.sched import felicity_halt_workforce, felicity_workforce_init
+from felicity.apps.notification.utils import FelicityStreamer, FelicityNotifier
 from felicity.core.config import settings  # noqa
 from felicity.core.repeater import repeat_every
 from felicity.api.gql.deps import get_current_active_user
@@ -102,6 +103,14 @@ if settings.BACKEND_CORS_ORIGINS:
     )
 
 flims.add_middleware(AuthenticationMiddleware, backend=FelicityAuthBackend())
+
+
+@flims.middleware("http")
+async def set_custom_attr(request: Request, call_next):
+    request.state.notifier = FelicityNotifier()
+    request.state.streamer = FelicityStreamer()
+    response = await call_next(request)
+    return response
 
 graphql_app = GraphQL(
     gql_schema,

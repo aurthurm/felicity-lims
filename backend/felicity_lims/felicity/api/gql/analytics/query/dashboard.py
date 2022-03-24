@@ -7,7 +7,7 @@ from felicity.apps.analysis.models.results import AnalysisResult
 from felicity.apps.worksheet.models import WorkSheet
 from felicity.apps.user.models import User
 from felicity.apps.setup.models import Instrument
-from felicity.apps.analytics import AnalyticsInit
+from felicity.apps.analytics import SampleAnalyticsInit
 from felicity.api.gql.analytics import types
 from felicity.utils import has_value_or_is_truthy
 
@@ -37,7 +37,7 @@ async def get_instrument(val):
 
 @strawberry.field
 async def test_stuff(info) -> types.Nothing:
-    analytics = AnalyticsInit(Sample)
+    analytics = SampleAnalyticsInit(Sample)
     columns, lines = await analytics.get_line_listing()
 
     # line = await analytics.get_line_listing_2()
@@ -58,7 +58,7 @@ async def test_stuff(info) -> types.Nothing:
 
 @strawberry.field
 async def count_sample_group_by_status(info) -> types.GroupedCounts:
-    analytics = AnalyticsInit(Sample)
+    analytics = SampleAnalyticsInit(Sample)
     results = await analytics.get_counts_group_by('status')
 
     stats = []
@@ -70,7 +70,7 @@ async def count_sample_group_by_status(info) -> types.GroupedCounts:
 
 @strawberry.field
 async def count_analyte_group_by_status(info) -> types.GroupedCounts:
-    analytics = AnalyticsInit(AnalysisResult)
+    analytics = SampleAnalyticsInit(AnalysisResult)
     results = await analytics.get_counts_group_by('status')
 
     stats = []
@@ -82,7 +82,7 @@ async def count_analyte_group_by_status(info) -> types.GroupedCounts:
 
 @strawberry.field
 async def count_worksheet_group_by_status(info) -> types.GroupedCounts:
-    analytics = AnalyticsInit(WorkSheet)
+    analytics = SampleAnalyticsInit(WorkSheet)
     results = await analytics.get_counts_group_by('state')
 
     stats = []
@@ -94,7 +94,7 @@ async def count_worksheet_group_by_status(info) -> types.GroupedCounts:
 
 @strawberry.field
 async def count_analyte_group_by_instrument(info) -> types.GroupedCounts:
-    analytics = AnalyticsInit(AnalysisResult)
+    analytics = SampleAnalyticsInit(AnalysisResult)
     results = await analytics.get_counts_group_by('instrument_uid')
 
     stats = []
@@ -106,7 +106,7 @@ async def count_analyte_group_by_instrument(info) -> types.GroupedCounts:
 
 @strawberry.field
 async def count_sample_group_by_action(info) -> types.GroupedData:
-    analytics = AnalyticsInit(Sample)
+    analytics = SampleAnalyticsInit(Sample)
     created = await analytics.get_counts_group_by('created_by_uid')
     submitted = await analytics.get_counts_group_by('submitted_by_uid')
     verified = await analytics.get_counts_group_by('verified_by_uid')
@@ -138,7 +138,7 @@ async def count_sample_group_by_action(info) -> types.GroupedData:
 
 @strawberry.field
 async def sample_process_performance(info, start_date: str, end_date: str) -> types.ProcessStatistics:
-    analytics = AnalyticsInit(Sample)
+    analytics = SampleAnalyticsInit(Sample)
     received_to_published = await analytics.get_sample_process_performance(
         start=('date_received', start_date),
         end=('date_published', end_date)
@@ -207,7 +207,7 @@ async def sample_process_performance(info, start_date: str, end_date: str) -> ty
 
 @strawberry.field
 async def analysis_process_performance(info, process: str, start_date: str, end_date: str) -> types.ProcessStatistics:
-    analytics = AnalyticsInit(Sample)
+    analytics = SampleAnalyticsInit(Sample)
     processes = [
         'received_to_published',
         'received_to_submitted',
@@ -260,7 +260,7 @@ async def analysis_process_performance(info, process: str, start_date: str, end_
 
 @strawberry.field
 async def sample_laggards(info) -> types.LaggardStatistics:
-    analytics = AnalyticsInit(Sample)
+    analytics = SampleAnalyticsInit(Sample)
     not_complete, complete = await analytics.get_laggards()
 
     final_data = []

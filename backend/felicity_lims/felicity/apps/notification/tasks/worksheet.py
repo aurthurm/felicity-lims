@@ -28,14 +28,6 @@ async def check_empty_worksheets():
     """
 
 
-async def check_over_due_analyses():
-    """Check Over-Due Analyses
-    @schedule: runs every morning 4:00 am
-    e.g.
-        there are 3456 analyses that are overdue
-    """
-
-
 # Management Like Notification
 async def worksheets_created():
     """Worksheets Created (today, yesterday)
