@@ -96,14 +96,11 @@ class UserMutations:
             user = await user.save()
 
         # initial user-preferences
-        preference = await user_models.UserPreference.get(user_uid=user.uid)
-        if not preference:
-            pref_in = user_schemas.UserPreferenceCreate(
-                user_uid=user.uid,
-                expanded_menu=False,
-                theme="LIGHT"
-            )
-            preference = await user_models.UserPreference.create(obj_in=pref_in)
+        pref_in = user_schemas.UserPreferenceCreate(
+            expanded_menu=False,
+            theme="LIGHT"
+        )
+        preference = await user_models.UserPreference.create(obj_in=pref_in)
         user = await user.link_preference(preference_uid=preference.uid)
 
         if user_in.email:

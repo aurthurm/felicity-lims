@@ -16,3 +16,6 @@ strawberry-graphql==0.93.4
 broadcaster~=0.2.0
 aiofiles==0.8.0
 pandas==1.3.5
+# testing
+pytest-asyncio
+httpx

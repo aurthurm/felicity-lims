@@ -197,7 +197,6 @@ class GroupInDB(GroupInDBBase):
 #  User Preferences
 #
 class UserPreferenceBase(BaseAuditModel):
-    user_uid: int
     expanded_menu: Optional[bool] = False
     departments: Optional[List['Department']]
     theme: Optional[str] = themes.LIGHT

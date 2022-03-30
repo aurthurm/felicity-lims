@@ -1,8 +1,8 @@
 """init
 
-Revision ID: 4aa53e8318cc
+Revision ID: 4ccf6eb96f6c
 Revises: 
-Create Date: 2022-03-03 10:27:40.548589
+Create Date: 2022-03-30 01:18:03.316575
 
 """
 from alembic import op
@@ -11,7 +11,7 @@ import sqlmodel
 from sqlalchemy.dialects import postgresql
 
 # revision identifiers, used by Alembic.
-revision = '4aa53e8318cc'
+revision = '4ccf6eb96f6c'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -98,6 +98,13 @@ def upgrade():
     )
     op.create_index(op.f('ix_userauth_uid'), 'userauth', ['uid'], unique=False)
     op.create_index(op.f('ix_userauth_user_name'), 'userauth', ['user_name'], unique=True)
+    op.create_table('userpreference',
+    sa.Column('uid', sa.Integer(), autoincrement=True, nullable=False),
+    sa.Column('expanded_menu', sa.Boolean(), nullable=True),
+    sa.Column('theme', sa.String(), nullable=True),
+    sa.PrimaryKeyConstraint('uid')
+    )
+    op.create_index(op.f('ix_userpreference_uid'), 'userpreference', ['uid'], unique=False)
     op.create_table('permission_groups',
     sa.Column('permission_uid', sa.Integer(), nullable=False),
     sa.Column('group_uid', sa.Integer(), nullable=False),
@@ -115,6 +122,7 @@ def upgrade():
     sa.Column('is_active', sa.Boolean(), nullable=True),
     sa.Column('is_superuser', sa.Boolean(), nullable=True),
     sa.Column('auth_uid', sa.Integer(), nullable=True),
+    sa.Column('preference_uid', sa.Integer(), nullable=True),
     sa.Column('avatar', sa.String(), nullable=True),
     sa.Column('bio', sa.String(), nullable=True),
     sa.Column('default_route', sa.Boolean(), nullable=True),
@@ -125,6 +133,7 @@ def upgrade():
     sa.Column('updator_name', sa.String(), nullable=True),
     sa.Column('updator_uid', sa.Integer(), nullable=True),
     sa.ForeignKeyConstraint(['auth_uid'], ['userauth.uid'], ),
+    sa.ForeignKeyConstraint(['preference_uid'], ['userpreference.uid'], ),
     sa.PrimaryKeyConstraint('uid')
     )
     op.create_index(op.f('ix_user_email'), 'user', ['email'], unique=True)
@@ -497,21 +506,6 @@ def upgrade():
     sa.ForeignKeyConstraint(['user_uid'], ['user.uid'], ),
     sa.PrimaryKeyConstraint('user_uid', 'group_uid')
     )
-    op.create_table('userpreference',
-    sa.Column('uid', sa.Integer(), autoincrement=True, nullable=False),
-    sa.Column('user_uid', sa.Integer(), nullable=True),
-    sa.Column('expanded_menu', sa.Boolean(), nullable=True),
-    sa.Column('theme', sa.String(), nullable=True),
-    sa.Column('created_at', sa.DateTime(), nullable=True),
-    sa.Column('created_by_uid', sa.Integer(), nullable=True),
-    sa.Column('updated_at', sa.DateTime(), nullable=True),
-    sa.Column('updated_by_uid', sa.Integer(), nullable=True),
-    sa.ForeignKeyConstraint(['created_by_uid'], ['user.uid'], ),
-    sa.ForeignKeyConstraint(['updated_by_uid'], ['user.uid'], ),
-    sa.ForeignKeyConstraint(['user_uid'], ['user.uid'], ),
-    sa.PrimaryKeyConstraint('uid')
-    )
-    op.create_index(op.f('ix_userpreference_uid'), 'userpreference', ['uid'], unique=False)
     op.create_table('activity_feed_subscription',
     sa.Column('activity_feed_uid', sa.Integer(), nullable=False),
     sa.Column('user_uid', sa.Integer(), nullable=False),
@@ -931,6 +925,7 @@ def upgrade():
     sa.Column('department_uid', sa.Integer(), nullable=True),
     sa.Column('precision', sa.Integer(), nullable=True),
     sa.Column('required_verifications', sa.Integer(), nullable=True),
+    sa.Column('self_verification', sa.Boolean(), nullable=True),
     sa.Column('hidden', sa.Boolean(), nullable=True),
     sa.Column('active', sa.Boolean(), nullable=True),
     sa.Column('created_at', sa.DateTime(), nullable=True),
@@ -1071,6 +1066,13 @@ def upgrade():
     sa.ForeignKeyConstraint(['method_uid'], ['method.uid'], ),
     sa.PrimaryKeyConstraint('method_uid', 'instrument_uid')
     )
+    op.create_table('profile_sample_type',
+    sa.Column('sample_type_uid', sa.Integer(), nullable=False),
+    sa.Column('profile_uid', sa.Integer(), nullable=False),
+    sa.ForeignKeyConstraint(['profile_uid'], ['profile.uid'], ),
+    sa.ForeignKeyConstraint(['sample_type_uid'], ['sampletype.uid'], ),
+    sa.PrimaryKeyConstraint('sample_type_uid', 'profile_uid')
+    )
     op.create_table('reflexbrain',
     sa.Column('uid', sa.Integer(), autoincrement=True, nullable=False),
     sa.Column('reflex_action_uid', sa.Integer(), nullable=False),
@@ -1155,34 +1157,6 @@ def upgrade():
     sa.PrimaryKeyConstraint('uid')
     )
     op.create_index(op.f('ix_storagesection_uid'), 'storagesection', ['uid'], unique=False)
-    op.create_table('worksheettemplate',
-    sa.Column('uid', sa.Integer(), autoincrement=True, nullable=False),
-    sa.Column('worksheet_type', sa.String(), nullable=True),
-    sa.Column('reserved', postgresql.JSONB(astext_type=sa.Text()), nullable=True),
-    sa.Column('plate', postgresql.JSONB(astext_type=sa.Text()), nullable=True),
-    sa.Column('number_of_samples', sa.Integer(), nullable=True),
-    sa.Column('rows', sa.Integer(), nullable=True),
-    sa.Column('cols', sa.Integer(), nullable=True),
-    sa.Column('row_wise', sa.Boolean(), nullable=True),
-    sa.Column('state', sa.String(), nullable=True),
-    sa.Column('name', sa.String(), nullable=False),
-    sa.Column('description', sa.String(), nullable=True),
-    sa.Column('qc_template_uid', sa.Integer(), nullable=True),
-    sa.Column('instrument_uid', sa.Integer(), nullable=True),
-    sa.Column('sample_type_uid', sa.Integer(), nullable=False),
-    sa.Column('created_at', sa.DateTime(), nullable=True),
-    sa.Column('created_by_uid', sa.Integer(), nullable=True),
-    sa.Column('updated_at', sa.DateTime(), nullable=True),
-    sa.Column('updated_by_uid', sa.Integer(), nullable=True),
-    sa.ForeignKeyConstraint(['created_by_uid'], ['user.uid'], ),
-    sa.ForeignKeyConstraint(['instrument_uid'], ['instrument.uid'], ),
-    sa.ForeignKeyConstraint(['qc_template_uid'], ['qctemplate.uid'], ),
-    sa.ForeignKeyConstraint(['sample_type_uid'], ['sampletype.uid'], ),
-    sa.ForeignKeyConstraint(['updated_by_uid'], ['user.uid'], ),
-    sa.PrimaryKeyConstraint('uid'),
-    sa.UniqueConstraint('name')
-    )
-    op.create_index(op.f('ix_worksheettemplate_uid'), 'worksheettemplate', ['uid'], unique=False)
     op.create_table('analysis_instrument',
     sa.Column('analysis_uid', sa.Integer(), nullable=False),
     sa.Column('instrument_uid', sa.Integer(), nullable=False),
@@ -1444,7 +1418,7 @@ def upgrade():
     sa.PrimaryKeyConstraint('uid')
     )
     op.create_index(op.f('ix_storagecontainer_uid'), 'storagecontainer', ['uid'], unique=False)
-    op.create_table('worksheet',
+    op.create_table('worksheettemplate',
     sa.Column('uid', sa.Integer(), autoincrement=True, nullable=False),
     sa.Column('worksheet_type', sa.String(), nullable=True),
     sa.Column('reserved', postgresql.JSONB(astext_type=sa.Text()), nullable=True),
@@ -1454,53 +1428,26 @@ def upgrade():
     sa.Column('cols', sa.Integer(), nullable=True),
     sa.Column('row_wise', sa.Boolean(), nullable=True),
     sa.Column('state', sa.String(), nullable=True),
-    sa.Column('template_uid', sa.Integer(), nullable=False),
-    sa.Column('analyst_uid', sa.Integer(), nullable=False),
-    sa.Column('worksheet_id', sa.String(), nullable=False),
+    sa.Column('name', sa.String(), nullable=False),
+    sa.Column('description', sa.String(), nullable=True),
+    sa.Column('analysis_uid', sa.Integer(), nullable=True),
+    sa.Column('qc_template_uid', sa.Integer(), nullable=True),
     sa.Column('instrument_uid', sa.Integer(), nullable=True),
     sa.Column('sample_type_uid', sa.Integer(), nullable=False),
-    sa.Column('assigned_count', sa.Integer(), nullable=False),
-    sa.Column('submitted_by_uid', sa.Integer(), nullable=True),
-    sa.Column('date_submitted', sa.DateTime(), nullable=True),
-    sa.Column('verified_by_uid', sa.Integer(), nullable=True),
-    sa.Column('date_verified', sa.DateTime(), nullable=True),
     sa.Column('created_at', sa.DateTime(), nullable=True),
     sa.Column('created_by_uid', sa.Integer(), nullable=True),
     sa.Column('updated_at', sa.DateTime(), nullable=True),
     sa.Column('updated_by_uid', sa.Integer(), nullable=True),
-    sa.ForeignKeyConstraint(['analyst_uid'], ['user.uid'], ),
+    sa.ForeignKeyConstraint(['analysis_uid'], ['analysis.uid'], ),
     sa.ForeignKeyConstraint(['created_by_uid'], ['user.uid'], ),
     sa.ForeignKeyConstraint(['instrument_uid'], ['instrument.uid'], ),
+    sa.ForeignKeyConstraint(['qc_template_uid'], ['qctemplate.uid'], ),
     sa.ForeignKeyConstraint(['sample_type_uid'], ['sampletype.uid'], ),
-    sa.ForeignKeyConstraint(['submitted_by_uid'], ['user.uid'], ),
-    sa.ForeignKeyConstraint(['template_uid'], ['worksheettemplate.uid'], ),
     sa.ForeignKeyConstraint(['updated_by_uid'], ['user.uid'], ),
-    sa.ForeignKeyConstraint(['verified_by_uid'], ['user.uid'], ),
-    sa.PrimaryKeyConstraint('uid')
+    sa.PrimaryKeyConstraint('uid'),
+    sa.UniqueConstraint('name')
     )
-    op.create_index(op.f('ix_worksheet_uid'), 'worksheet', ['uid'], unique=False)
-    op.create_index(op.f('ix_worksheet_worksheet_id'), 'worksheet', ['worksheet_id'], unique=True)
-    op.create_table('worksheet_template_analysis',
-    sa.Column('ws_template_uid', sa.Integer(), nullable=False),
-    sa.Column('analysis_uid', sa.Integer(), nullable=False),
-    sa.ForeignKeyConstraint(['analysis_uid'], ['analysis.uid'], ),
-    sa.ForeignKeyConstraint(['ws_template_uid'], ['worksheettemplate.uid'], ),
-    sa.PrimaryKeyConstraint('ws_template_uid', 'analysis_uid')
-    )
-    op.create_table('worksheet_template_profile',
-    sa.Column('ws_template_uid', sa.Integer(), nullable=False),
-    sa.Column('profile_uid', sa.Integer(), nullable=False),
-    sa.ForeignKeyConstraint(['profile_uid'], ['profile.uid'], ),
-    sa.ForeignKeyConstraint(['ws_template_uid'], ['worksheettemplate.uid'], ),
-    sa.PrimaryKeyConstraint('ws_template_uid', 'profile_uid')
-    )
-    op.create_table('worksheet_template_qc_level',
-    sa.Column('ws_template_uid', sa.Integer(), nullable=False),
-    sa.Column('qc_level_uid', sa.Integer(), nullable=False),
-    sa.ForeignKeyConstraint(['qc_level_uid'], ['qclevel.uid'], ),
-    sa.ForeignKeyConstraint(['ws_template_uid'], ['worksheettemplate.uid'], ),
-    sa.PrimaryKeyConstraint('ws_template_uid', 'qc_level_uid')
-    )
+    op.create_index(op.f('ix_worksheettemplate_uid'), 'worksheettemplate', ['uid'], unique=False)
     op.create_table('clientcontact',
     sa.Column('uid', sa.Integer(), autoincrement=True, nullable=False),
     sa.Column('first_name', sa.String(), nullable=True),
@@ -1603,19 +1550,50 @@ def upgrade():
     sa.PrimaryKeyConstraint('uid', 'task_uid')
     )
     op.create_index(op.f('ix_taskmilestone_uid'), 'taskmilestone', ['uid'], unique=False)
-    op.create_table('worksheet_analysis',
-    sa.Column('worksheet_uid', sa.Integer(), nullable=False),
-    sa.Column('analysis_uid', sa.Integer(), nullable=False),
+    op.create_table('worksheet',
+    sa.Column('uid', sa.Integer(), autoincrement=True, nullable=False),
+    sa.Column('worksheet_type', sa.String(), nullable=True),
+    sa.Column('reserved', postgresql.JSONB(astext_type=sa.Text()), nullable=True),
+    sa.Column('plate', postgresql.JSONB(astext_type=sa.Text()), nullable=True),
+    sa.Column('number_of_samples', sa.Integer(), nullable=True),
+    sa.Column('rows', sa.Integer(), nullable=True),
+    sa.Column('cols', sa.Integer(), nullable=True),
+    sa.Column('row_wise', sa.Boolean(), nullable=True),
+    sa.Column('state', sa.String(), nullable=True),
+    sa.Column('template_uid', sa.Integer(), nullable=False),
+    sa.Column('analyst_uid', sa.Integer(), nullable=False),
+    sa.Column('worksheet_id', sa.String(), nullable=False),
+    sa.Column('analysis_uid', sa.Integer(), nullable=True),
+    sa.Column('instrument_uid', sa.Integer(), nullable=True),
+    sa.Column('sample_type_uid', sa.Integer(), nullable=False),
+    sa.Column('assigned_count', sa.Integer(), nullable=False),
+    sa.Column('submitted_by_uid', sa.Integer(), nullable=True),
+    sa.Column('date_submitted', sa.DateTime(), nullable=True),
+    sa.Column('verified_by_uid', sa.Integer(), nullable=True),
+    sa.Column('date_verified', sa.DateTime(), nullable=True),
+    sa.Column('created_at', sa.DateTime(), nullable=True),
+    sa.Column('created_by_uid', sa.Integer(), nullable=True),
+    sa.Column('updated_at', sa.DateTime(), nullable=True),
+    sa.Column('updated_by_uid', sa.Integer(), nullable=True),
     sa.ForeignKeyConstraint(['analysis_uid'], ['analysis.uid'], ),
-    sa.ForeignKeyConstraint(['worksheet_uid'], ['worksheet.uid'], ),
-    sa.PrimaryKeyConstraint('worksheet_uid', 'analysis_uid')
+    sa.ForeignKeyConstraint(['analyst_uid'], ['user.uid'], ),
+    sa.ForeignKeyConstraint(['created_by_uid'], ['user.uid'], ),
+    sa.ForeignKeyConstraint(['instrument_uid'], ['instrument.uid'], ),
+    sa.ForeignKeyConstraint(['sample_type_uid'], ['sampletype.uid'], ),
+    sa.ForeignKeyConstraint(['submitted_by_uid'], ['user.uid'], ),
+    sa.ForeignKeyConstraint(['template_uid'], ['worksheettemplate.uid'], ),
+    sa.ForeignKeyConstraint(['updated_by_uid'], ['user.uid'], ),
+    sa.ForeignKeyConstraint(['verified_by_uid'], ['user.uid'], ),
+    sa.PrimaryKeyConstraint('uid')
     )
-    op.create_table('worksheet_profile',
-    sa.Column('worksheet_uid', sa.Integer(), nullable=False),
-    sa.Column('profile_uid', sa.Integer(), nullable=False),
-    sa.ForeignKeyConstraint(['profile_uid'], ['profile.uid'], ),
-    sa.ForeignKeyConstraint(['worksheet_uid'], ['worksheet.uid'], ),
-    sa.PrimaryKeyConstraint('worksheet_uid', 'profile_uid')
+    op.create_index(op.f('ix_worksheet_uid'), 'worksheet', ['uid'], unique=False)
+    op.create_index(op.f('ix_worksheet_worksheet_id'), 'worksheet', ['worksheet_id'], unique=True)
+    op.create_table('worksheet_template_qc_level',
+    sa.Column('ws_template_uid', sa.Integer(), nullable=False),
+    sa.Column('qc_level_uid', sa.Integer(), nullable=False),
+    sa.ForeignKeyConstraint(['qc_level_uid'], ['qclevel.uid'], ),
+    sa.ForeignKeyConstraint(['ws_template_uid'], ['worksheettemplate.uid'], ),
+    sa.PrimaryKeyConstraint('ws_template_uid', 'qc_level_uid')
     )
     op.create_table('analysisrequest',
     sa.Column('uid', sa.Integer(), autoincrement=True, nullable=False),
@@ -1703,7 +1681,6 @@ def upgrade():
     sa.Column('analyst_uid', sa.Integer(), nullable=True),
     sa.Column('submitted_by_uid', sa.Integer(), nullable=True),
     sa.Column('date_submitted', sa.DateTime(), nullable=True),
-    sa.Column('verified_by_uid', sa.Integer(), nullable=True),
     sa.Column('date_verified', sa.DateTime(), nullable=True),
     sa.Column('invalidated_by_uid', sa.Integer(), nullable=True),
     sa.Column('date_invalidated', sa.DateTime(), nullable=True),
@@ -1712,6 +1689,7 @@ def upgrade():
     sa.Column('retest', sa.Boolean(), nullable=True),
     sa.Column('reportable', sa.Boolean(), nullable=True),
     sa.Column('status', sa.String(), nullable=False),
+    sa.Column('due_date', sa.DateTime(), nullable=True),
     sa.Column('reflex_level', sa.Integer(), nullable=True),
     sa.Column('created_at', sa.DateTime(), nullable=True),
     sa.Column('created_by_uid', sa.Integer(), nullable=True),
@@ -1733,7 +1711,6 @@ def upgrade():
     sa.ForeignKeyConstraint(['sample_uid'], ['sample.uid'], ),
     sa.ForeignKeyConstraint(['submitted_by_uid'], ['user.uid'], ),
     sa.ForeignKeyConstraint(['updated_by_uid'], ['user.uid'], ),
-    sa.ForeignKeyConstraint(['verified_by_uid'], ['user.uid'], ),
     sa.ForeignKeyConstraint(['worksheet_uid'], ['worksheet.uid'], ),
     sa.PrimaryKeyConstraint('uid')
     )
@@ -1778,11 +1755,38 @@ def upgrade():
     sa.PrimaryKeyConstraint('uid')
     )
     op.create_index(op.f('ix_storageslot_uid'), 'storageslot', ['uid'], unique=False)
+    op.create_table('result_verification',
+    sa.Column('result_uid', sa.Integer(), nullable=False),
+    sa.Column('user_uid', sa.Integer(), nullable=False),
+    sa.ForeignKeyConstraint(['result_uid'], ['analysisresult.uid'], ),
+    sa.ForeignKeyConstraint(['user_uid'], ['user.uid'], ),
+    sa.PrimaryKeyConstraint('result_uid', 'user_uid')
+    )
+    op.create_table('resultmutation',
+    sa.Column('uid', sa.Integer(), autoincrement=True, nullable=False),
+    sa.Column('result_uid', sa.Integer(), nullable=False),
+    sa.Column('before', sa.String(), nullable=False),
+    sa.Column('after', sa.String(), nullable=False),
+    sa.Column('mutation', sa.String(), nullable=False),
+    sa.Column('date', sa.DateTime(), nullable=True),
+    sa.Column('created_at', sa.DateTime(), nullable=True),
+    sa.Column('created_by_uid', sa.Integer(), nullable=True),
+    sa.Column('updated_at', sa.DateTime(), nullable=True),
+    sa.Column('updated_by_uid', sa.Integer(), nullable=True),
+    sa.ForeignKeyConstraint(['created_by_uid'], ['user.uid'], ),
+    sa.ForeignKeyConstraint(['result_uid'], ['analysisresult.uid'], ),
+    sa.ForeignKeyConstraint(['updated_by_uid'], ['user.uid'], ),
+    sa.PrimaryKeyConstraint('uid')
+    )
+    op.create_index(op.f('ix_resultmutation_uid'), 'resultmutation', ['uid'], unique=False)
     # ### end Alembic commands ###
 
 
 def downgrade():
     # ### commands auto generated by Alembic - please adjust! ###
+    op.drop_index(op.f('ix_resultmutation_uid'), table_name='resultmutation')
+    op.drop_table('resultmutation')
+    op.drop_table('result_verification')
     op.drop_index(op.f('ix_storageslot_uid'), table_name='storageslot')
     op.drop_table('storageslot')
     op.drop_table('sample_rejection_reason')
@@ -1802,8 +1806,10 @@ def downgrade():
     op.drop_index(op.f('ix_analysisrequest_uid'), table_name='analysisrequest')
     op.drop_index(op.f('ix_analysisrequest_request_id'), table_name='analysisrequest')
     op.drop_table('analysisrequest')
-    op.drop_table('worksheet_profile')
-    op.drop_table('worksheet_analysis')
+    op.drop_table('worksheet_template_qc_level')
+    op.drop_index(op.f('ix_worksheet_worksheet_id'), table_name='worksheet')
+    op.drop_index(op.f('ix_worksheet_uid'), table_name='worksheet')
+    op.drop_table('worksheet')
     op.drop_index(op.f('ix_taskmilestone_uid'), table_name='taskmilestone')
     op.drop_table('taskmilestone')
     op.drop_index(op.f('ix_taskcomment_uid'), table_name='taskcomment')
@@ -1819,12 +1825,8 @@ def downgrade():
     op.drop_index(op.f('ix_clientcontact_first_name'), table_name='clientcontact')
     op.drop_index(op.f('ix_clientcontact_email'), table_name='clientcontact')
     op.drop_table('clientcontact')
-    op.drop_table('worksheet_template_qc_level')
-    op.drop_table('worksheet_template_profile')
-    op.drop_table('worksheet_template_analysis')
-    op.drop_index(op.f('ix_worksheet_worksheet_id'), table_name='worksheet')
-    op.drop_index(op.f('ix_worksheet_uid'), table_name='worksheet')
-    op.drop_table('worksheet')
+    op.drop_index(op.f('ix_worksheettemplate_uid'), table_name='worksheettemplate')
+    op.drop_table('worksheettemplate')
     op.drop_index(op.f('ix_storagecontainer_uid'), table_name='storagecontainer')
     op.drop_table('storagecontainer')
     op.drop_index(op.f('ix_resultoption_uid'), table_name='resultoption')
@@ -1857,8 +1859,6 @@ def downgrade():
     op.drop_table('analysis_profile')
     op.drop_table('analysis_method')
     op.drop_table('analysis_instrument')
-    op.drop_index(op.f('ix_worksheettemplate_uid'), table_name='worksheettemplate')
-    op.drop_table('worksheettemplate')
     op.drop_index(op.f('ix_storagesection_uid'), table_name='storagesection')
     op.drop_table('storagesection')
     op.drop_index(op.f('ix_stocktransaction_uid'), table_name='stocktransaction')
@@ -1869,6 +1869,7 @@ def downgrade():
     op.drop_table('stockadjustment')
     op.drop_index(op.f('ix_reflexbrain_uid'), table_name='reflexbrain')
     op.drop_table('reflexbrain')
+    op.drop_table('profile_sample_type')
     op.drop_table('method_instrument')
     op.drop_table('message_view')
     op.drop_table('message_delete')
@@ -1936,8 +1937,6 @@ def downgrade():
     op.drop_table('activity_stream_view')
     op.drop_table('activity_stream_feed')
     op.drop_table('activity_feed_subscription')
-    op.drop_index(op.f('ix_userpreference_uid'), table_name='userpreference')
-    op.drop_table('userpreference')
     op.drop_table('user_groups')
     op.drop_index(op.f('ix_unit_uid'), table_name='unit')
     op.drop_table('unit')
@@ -1999,6 +1998,8 @@ def downgrade():
     op.drop_index(op.f('ix_user_email'), table_name='user')
     op.drop_table('user')
     op.drop_table('permission_groups')
+    op.drop_index(op.f('ix_userpreference_uid'), table_name='userpreference')
+    op.drop_table('userpreference')
     op.drop_index(op.f('ix_userauth_user_name'), table_name='userauth')
     op.drop_index(op.f('ix_userauth_uid'), table_name='userauth')
     op.drop_table('userauth')

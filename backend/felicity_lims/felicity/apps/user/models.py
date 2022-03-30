@@ -219,9 +219,8 @@ department_preference = Table(
 )
 
 
-class UserPreference(BaseAuditDBModel):
+class UserPreference(DBModel):
     """Preferences for System Personalisation"""
-    user_uid = Column(Integer, nullable=True)
     expanded_menu = Column(Boolean(), default=False)
     departments = relationship(
         "Department", secondary=department_preference, lazy="selectin"

@@ -61,12 +61,12 @@ class StockProduct(BaseAuditDBModel):
     date_received = Column(DateTime, nullable=False)
     expiry_date = Column(DateTime, nullable=False)
     received_by_uid = Column(Integer, ForeignKey("user.uid"), nullable=True)
-    received_by = relationship("User", lazy="selectin")
+    received_by = relationship("User", foreign_keys=[received_by_uid], lazy="selectin")
 
 
 class StockOrder(BaseAuditDBModel):
     order_by_uid = Column(Integer, ForeignKey("user.uid"), nullable=True)
-    order_by = relationship("User", lazy="selectin")
+    order_by = relationship("User", foreign_keys=[order_by_uid], lazy="selectin")
     department_uid = Column(Integer, ForeignKey("department.uid"), nullable=True)
     department = relationship("Department", lazy="selectin")
     status = Column(String, nullable=False)
@@ -91,7 +91,7 @@ class StockTransaction(BaseAuditDBModel):
     department = relationship("Department", lazy="selectin")
     date_issued = Column(DateTime, nullable=False)
     transaction_by_uid = Column(Integer, ForeignKey("user.uid"), nullable=True)
-    transaction_by = relationship("User", lazy="selectin")
+    transaction_by = relationship("User", foreign_keys=[transaction_by_uid], lazy="selectin")
 
 
 class StockAdjustment(BaseAuditDBModel):
@@ -102,4 +102,4 @@ class StockAdjustment(BaseAuditDBModel):
     adjustment_date = Column(DateTime, nullable=False)
     remarks = Column(String, nullable=False)
     adjustment_by_uid = Column(Integer, ForeignKey("user.uid"), nullable=True)
-    adjustment_by = relationship("User", lazy="selectin")
+    adjustment_by = relationship("User", foreign_keys=[adjustment_by_uid], lazy="selectin")

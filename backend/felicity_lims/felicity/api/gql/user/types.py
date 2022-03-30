@@ -98,7 +98,6 @@ class UserCursorPage:
 @strawberry.type
 class UserPreferenceType:
     uid: int
-    user_uid: Optional[int]
     expanded_menu: Optional[bool]
     departments: Optional[List["felicity.api.gql.setup.types.DepartmentType"]]
     theme: Optional[str]

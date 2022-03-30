@@ -1,3 +1,8 @@
+from felicity.apps.user.models import Group  # noqa
+from felicity.apps.user.models import Permission  # noqa
+from felicity.apps.user.models import UserAuth  # noqa
+from felicity.apps.user.models import UserPreference  # noqa
+from felicity.apps.user.models import User  # noqa
 from felicity.apps.analysis.models.analysis import Analysis  # noqa
 from felicity.apps.analysis.models.analysis import AnalysisCorrectionFactor  # noqa
 from felicity.apps.analysis.models.analysis import AnalysisDetectionLimit  # noqa
@@ -43,7 +48,7 @@ from felicity.apps.setup.models import InstrumentCalibration  # noqa
 from felicity.apps.setup.models import CalibrationCertificate  # noqa
 from felicity.apps.setup.models import Unit  # noqa
 from felicity.apps.setup.models import Laboratory  # noqa
-from felicity.apps.setup.models import LaboratorySetting
+from felicity.apps.setup.models import LaboratorySetting  # noqa
 from felicity.apps.setup.models import Method  # noqa
 # from felicity.apps.setup.models import MethodValidation  # noqa
 from felicity.apps.setup.models import Province  # noqa
@@ -51,10 +56,6 @@ from felicity.apps.setup.models import Supplier  # noqa
 from felicity.apps.setup.models import Manufacturer  # noqa
 from felicity.apps.notification.models import ActivityFeed  # noqa
 from felicity.apps.notification.models import ActivityStream  # noqa
-from felicity.apps.user.models import Group  # noqa
-from felicity.apps.user.models import Permission  # noqa
-from felicity.apps.user.models import User  # noqa
-from felicity.apps.user.models import UserAuth  # noqa
 from felicity.apps.worksheet.models import WorkSheet  # noqa
 from felicity.apps.worksheet.models import WorkSheetTemplate  # noqa
 from felicity.apps.analytics.models import ReportMeta  # noqa

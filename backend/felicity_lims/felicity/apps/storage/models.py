@@ -49,7 +49,7 @@ class StorageSection(BaseAuditDBModel):
     name = Column(String, nullable=False)
     description = Column(String, nullable=False)
     storage_location_uid = Column(Integer, ForeignKey("storagelocation.uid"), nullable=False)
-    storage_location = relationship(StoreRoom, backref="storage_sections", lazy="selectin")
+    storage_location = relationship(StorageLocation, backref="storage_sections", lazy="selectin")
 
     @classmethod
     async def create(cls, obj_in: schemas.StorageSectionCreate) -> schemas.StorageSection:

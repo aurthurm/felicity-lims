@@ -41,21 +41,18 @@ async def create_super_user() -> None:
                 password=settings.FIRST_SUPERUSER_PASSWORD,
                 login_retry=0,
             )
-            su_auth = await models.UserAuth.create(sua_in)
+            su_auth = await models.UserAuth.create(sua_in)  # noqa
             if not su_auth:
                 raise Exception("Failed to add authentication to superuser")
 
             await superuser.link_auth(auth_uid=su_auth.uid)
             await superuser.propagate_user_type()
 
-    # initial user-preferences
-    preference = await models.UserPreference.get(user_uid=superuser.uid)
-    if not preference:
+        # initial user-preferences
         pref_in = schemas.UserPreferenceCreate(
-            user_uid=superuser.uid,
             expanded_menu=False,
             theme="light"
         )
         preference = await models.UserPreference.create(obj_in=pref_in)
-    logger.info(f"linking super user {superuser.uid} to preference {preference.uid}")
+        logger.info(f"linking super user {superuser.uid} to preference {preference.uid}")
     await superuser.link_preference(preference_uid=preference.uid)

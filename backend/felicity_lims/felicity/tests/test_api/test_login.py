@@ -1,0 +1,18 @@
+import json
+import pytest
+
+
+# @pytest.mark.anyio
+# async def test_create_job(client):
+#     data = {
+#         "title": "SDE super",
+#         "company": "doogle",
+#         "company_url": "www.doogle.com",
+#         "location": "USA,NY",
+#         "description": "python",
+#         "date_posted": "2022-03-20"
+#     }
+#     response = client.get("/jobs/create-job/", json.dumps(data))
+#     assert response.status_code == 200
+#     assert response.json()["company"] == "doogle"
+#     assert response.json()["description"] == "python"

@@ -299,7 +299,6 @@ class DBModel(AllFeaturesMixin):
 
         return to_update
 
-
     @classmethod
     async def table_insert(cls, table, mappings):
         """

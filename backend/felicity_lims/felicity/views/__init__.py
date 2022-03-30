@@ -13,7 +13,7 @@ def default_home_page(app: FastAPI):
                 <div class="btn-group">
                     <a href="/docs"><button>SwaggerUI</button></a>
                     <a href="/redoc"><button>Redoc</button></a>
-                    <a href="/felicity-gql"><button>Felicity GraphQL</button></a>
+                    <a href="/felicity-test_gql"><button>Felicity GraphQL</button></a>
                 </div>
             </body>
         </html>
