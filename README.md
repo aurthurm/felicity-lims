@@ -1,4 +1,4 @@
-# FELICITY LIMS
+# FELICITY LIMS (under active development)
 
 ![Screenshot1](https://user-images.githubusercontent.com/17094364/137630249-b84e5b1c-f525-4b0a-8d1e-1e2820910a5f.png)
 
@@ -19,11 +19,12 @@ Felicity is the quality of being good, pleasant, or desirable.
 ## Main Features
  - Sample status tracking
  - Flexible batched sample workflow
- - Quality control
+ - Quality Control - LJ Charts etc
  - Reporting
  - Highly customizable and extensible
  - Micro kanban Project management
- - Experimental Markdown Document manager
+ - Experimental Document authoring using CKEditor 5 for Lab QMS
+ - Customizable Role based permissions
 
 ## Installation
 
