@@ -16,7 +16,7 @@ import './assets/css/style.css'
 import App from './App.vue'
 import router from './router'
 import store from './store'
-import { GQL_BASE_URL } from './conf'
+import { createPinia } from 'pinia'
 import { urqlClient } from './urql'
 
 library.add(fas, fab)
@@ -26,9 +26,10 @@ const app = createApp(App)
 app.component('font-awesome-icon', FontAwesomeIcon)
 app.component('default-layout', LayoutDashboard)
 app.component('empty-layout', LayoutEmpty)
-app.use(urql, urqlClient)  // { url: GQL_BASE_URL } replaces urqlClient
+app.use(urql, urqlClient)
 app.use(VueSweetalert2)
 app.use(router)
 app.use(store)
+app.use(createPinia())
 app.mount('#app')
 

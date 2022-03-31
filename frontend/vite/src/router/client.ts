@@ -1,12 +1,8 @@
-import ClientsListing from '../views/client/Clients.vue';
-import ClientSingleView from '../views/client/_id/index.vue';
-import ClientDetail from '../views/client/_id/ClientDetail.vue';
-
 const clientRoutes = [
   {
     path: '',
     name: 'clients-listing',
-    component: ClientsListing,
+    component: () => import('../views/client/Clients.vue'),
     meta: {
       requiresAuth: true,
     },
@@ -14,12 +10,12 @@ const clientRoutes = [
   {
     path: 'single',
     name: 'client-single-view',
-    component: ClientSingleView,
+    component: () => import('../views/client/_id/index.vue'),
     children: [
       {
         path: '',
         name: 'client-detail',
-        component: ClientDetail,
+        component: () => import('../views/client/_id/ClientDetail.vue'),
         meta: {
           requiresAuth: true,
         },

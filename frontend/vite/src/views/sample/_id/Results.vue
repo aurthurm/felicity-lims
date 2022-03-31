@@ -152,7 +152,6 @@
   import { ActionTypes } from '../../../store/modules/sample';
 
   import useAnalysisResults from '../../../modules/analysis'
-  import useResultMutationComposable from '../../../modules/result_mutation'
   import { IAnalysisProfile, IAnalysisResult, IAnalysisService, ISample } from '../../../models/analysis';
   import { isNullOrWs } from '../../../utils';
 
@@ -190,10 +189,8 @@
     return results;
   }
 
-  const { mutateResults } = useResultMutationComposable()
   function prepareResults(): IAnalysisResult[] {
     let results = getResultsChecked();
-    results = mutateResults(results);
     let ready: any[] = [];
     results?.forEach((result: IAnalysisResult) => ready.push({ uid: result.uid , result: result.result }))
     return ready;

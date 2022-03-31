@@ -35,16 +35,10 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, ref } from 'vue';
-import { useRouter } from 'vue-router';
-import { pages } from "./../router/constants";
-export default defineComponent({
-  name: "404",
-  setup() {
-    const router = useRouter();
-    const goHome = () => router.push({ name: pages.DASHBOARD });
-    return { goHome };
-  },
-});
+<script setup lang="ts">
+  import { useRouter } from 'vue-router';
+  import { pages } from "./../router/constants";
+
+  const router = useRouter();
+  const goHome = () => router.push({ name: pages.DASHBOARD });
 </script>

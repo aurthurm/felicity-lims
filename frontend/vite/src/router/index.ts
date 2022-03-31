@@ -1,44 +1,11 @@
 import { RouteRecordRaw, createRouter, createWebHistory } from 'vue-router';
+import { defineAsyncComponent } from "vue"
 import * as guards from './../guards';
 import adminRoutes from './admin';
 import patientRoutes from './patient';
 import clientRoutes from './client';
-
-import LoginView from '../views/auth/Login.vue';
-import DashBoardView from '../views/dashboard/index.vue';
-import PatientsView from '../views/patient/index.vue';
-import PatientsCompact from '../views/patient/PatientsCompact.vue';
-import ClientsView from '../views/client/index.vue';
-import SamplesView from '../views/sample/index.vue';
-import RejectSamples from '../views/sample/RejectSamples.vue';
-import SamplesListing from '../views/components/SampleListing.vue';
-import QualityControlView from '../views/qcontrol/index.vue';
-import QualityControlListing from '../views/qcontrol/Listing.vue';
-import QCSetView from '../views/qcontrol/_id/index.vue';
-import QCSetDetail from '../views/qcontrol/_id/QCSet.vue';
-import WorkSheetsView from '../views/worksheet/index.vue';
-import WorkSheetListing from '../views/worksheet/WorkSheetListing.vue';
-import WorkSheetSingleView from '../views/worksheet/_id/index.vue';
-import WorkSheetDetail from '../views/worksheet/_id/WorkSheetDetail.vue';
-import KanBanView from '../views/kanban/index.vue';
-import KanBanBoards from '../views/kanban/Boards.vue'
-import KanBanBoardSingle from '../views/kanban/_id/index.vue'
-import KanBanBoardDetail from '../views/kanban/_id/Listings.vue'
-import KanBanTaskView from '../views/kanban/_id/task/index.vue'
-import KanBanTaskDetail from '../views/kanban/_id/task/Task.vue'
-import MarkDownView from '../views/markdown/index.vue';
-import MarkDownListing from '../views/markdown/DocumentListing.vue';
-import MarkDownDocumentSingle from '../views/markdown/_id/index.vue';
-import MarkDownDocumentView from '../views/markdown/_id/Document.vue';
-import NoticeAdminView  from '../views/notice/index.vue';
-import AboutView from '../views/About.vue';
-import AdminView from '../views/admin/index.vue';
-import PageNotFound from '../views/404.vue';
-import NotAuthorised from '../views/Restricted.vue';
 import { isTokenValid } from './checks';
 import { authFromStorage } from '../auth';
-
-
 
 
 const routes: RouteRecordRaw[] = [
@@ -46,7 +13,7 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/dashboard',
     name: guards.pages.DASHBOARD,
-    component: DashBoardView,
+    component: defineAsyncComponent(() => import('../views/dashboard/index.vue')),
     meta: {
       requiresAuth: true,
     },
@@ -54,13 +21,13 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/auth',
     name: guards.pages.LOGIN,
-    component: LoginView,
+    component: defineAsyncComponent(() => import('../views/auth/Login.vue')),
     meta: { layout: 'empty' },
   },
   {
     path: '/patients',
     name: guards.pages.PATIENTS,
-    component: PatientsView,
+    component: () => import('../views/patient/index.vue'),
     children: patientRoutes,
     meta: {
       requiresAuth: true,
@@ -69,7 +36,7 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/patients-compact',
     name: guards.pages.PATIENTS_COMPACT,
-    component: PatientsCompact,
+    component: defineAsyncComponent(() => import('../views/patient/PatientsCompact.vue')),
     meta: {
       requiresAuth: true,
     },
@@ -77,7 +44,7 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/clients',
     name: guards.pages.CLIENTS,
-    component: ClientsView,
+    component: () => import('../views/client/index.vue'),
     children: clientRoutes,
     meta: {
       requiresAuth: true,
@@ -86,12 +53,12 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/samples',
     name: guards.pages.SAMPLES,
-    component: SamplesView,
+    component: () => import('../views/sample/index.vue'),
     children: [
       {
         path: '',
         name: 'samples-listing',
-        component: SamplesListing,
+        component: () => import('../views/components/SampleListing.vue'),
         meta: {
           requiresAuth: true,
         },
@@ -99,12 +66,8 @@ const routes: RouteRecordRaw[] = [
       {
         path: 'rejections',
         name: 'reject-samples',
-        component: RejectSamples,
+        component: () => import('../views/sample/RejectSamples.vue'),
         props: true,
-        // props: (route) => ({
-        //   samples: Array as PropType<ISample[]>,
-        //   ...route.params
-        // }),
         meta: {
           requiresAuth: true,
         },
@@ -117,12 +80,12 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/quality-control',
     name: guards.pages.QC_SAMPLES,
-    component: QualityControlView,
+    component: () => import('../views/qcontrol/index.vue'),
     children: [
       {
         path: '',
         name: 'quality-control-listing',
-        component: QualityControlListing,
+        component: () => import('../views/qcontrol/Listing.vue'),
         meta: {
           requiresAuth: true,
         },
@@ -130,12 +93,12 @@ const routes: RouteRecordRaw[] = [
       {
         path: '/qc-set/:qcSetUid',
         name: 'qc-set-view',
-        component: QCSetView,
+        component: () => import('../views/qcontrol/_id/index.vue'),
         children: [
           {
             path: '',
             name: 'qc-set-detail',
-            component: QCSetDetail,
+            component: () => import('../views/qcontrol/_id/QCSet.vue'),
             meta: {
               requiresAuth: true,
             },
@@ -153,12 +116,12 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/worksheets',
     name: guards.pages.WORKSHEETS,
-    component: WorkSheetsView,
+    component: () => import('../views/worksheet/index.vue'),
     children: [
       {
         path: '',
         name: 'worksheet-listing',
-        component: WorkSheetListing,
+        component: () => import('../views/worksheet/WorkSheetListing.vue'),
         meta: {
           requiresAuth: true,
         },
@@ -166,12 +129,12 @@ const routes: RouteRecordRaw[] = [
       {
         path: ':workSheetUid',
         name: 'worksheet-single',
-        component: WorkSheetSingleView,
+        component: () => import('../views/worksheet/_id/index.vue'),
         children: [
           {
             path: '',
             name: 'worksheet-detail',
-            component: WorkSheetDetail,
+            component: () => import('../views/worksheet/_id/WorkSheetDetail.vue'),
             meta: {
               requiresAuth: true,
             },
@@ -189,12 +152,12 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/kanban-boards',
     name: guards.pages.KANBAN_BOARD,
-    component: KanBanView,
+    component: () => import('../views/kanban/index.vue'),
     children: [
       {
         path: '',
         name: 'kanban-boards',
-        component: KanBanBoards,
+        component: () => import('../views/kanban/Boards.vue'),
         meta: {
           requiresAuth: true,
         },
@@ -202,12 +165,12 @@ const routes: RouteRecordRaw[] = [
       {
         path: ':boardUid',
         name: 'board-single',
-        component: KanBanBoardSingle,
+        component: () => import('../views/kanban/_id/index.vue'),
         children: [
           {
             path: '',
             name: 'board-detail',
-            component: KanBanBoardDetail,
+            component: () => import('../views/kanban/_id/Listings.vue'),
             meta: {
               requiresAuth: true,
             },
@@ -215,7 +178,7 @@ const routes: RouteRecordRaw[] = [
           {
             path: 'task',
             name: 'board-task',
-            component: KanBanTaskView,
+            component: () => import('../views/kanban/_id/task/index.vue'),
             meta: {
               requiresAuth: true,
             },
@@ -223,7 +186,7 @@ const routes: RouteRecordRaw[] = [
               {
                 path: ':taskUid',
                 name: 'task-detail',
-                component: KanBanTaskDetail,
+                component: () => import('../views/kanban/_id/task/Task.vue'),
                 meta: {
                   requiresAuth: true,
                 },
@@ -243,17 +206,7 @@ const routes: RouteRecordRaw[] = [
   {
     name: guards.pages.NOTICE_MANAGER,
     path: '/notice-manager',
-    component: NoticeAdminView,
-    // children: [
-    //   {
-    //     path: '',
-    //     name: 'notice-home',
-    //     component: NoticeAdminView,
-    //     meta: {
-    //       requiresAuth: true,
-    //     },
-    //   },
-    // ],
+    component: () => import('../views/notice/index.vue'),
     meta: {
       requiresAuth: true,
     },
@@ -261,12 +214,12 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/documents',
     name: guards.pages.MARKDOWN_DOCUMENTS,
-    component: MarkDownView,
+    component: () => import('../views/markdown/index.vue'),
     children: [
       {
         path: '',
         name: 'document-listing',
-        component: MarkDownListing,
+        component: () => import('../views/markdown/DocumentListing.vue'),
         meta: {
           requiresAuth: true,
         },
@@ -274,12 +227,12 @@ const routes: RouteRecordRaw[] = [
       {
         path: ':documentUid',
         name: 'document-single-view',
-        component: MarkDownDocumentSingle,
+        component: () => import('../views/markdown/_id/index.vue'),
         children: [
           {
             path: '',
             name: 'document-detail',
-            component: MarkDownListing,
+            component: () => import('../views/markdown/DocumentListing.vue'),
             meta: {
               requiresAuth: true,
             },
@@ -287,7 +240,7 @@ const routes: RouteRecordRaw[] = [
           {
             path: 'view',
             name: 'document-viewer',
-            component: MarkDownDocumentView,
+            component: () => import('../views/markdown/_id/Document.vue'),
             meta: {
               requiresAuth: true,
             },
@@ -305,7 +258,7 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/about',
     name: 'About',
-    component: AboutView,
+    component: () => import('../views/About.vue'),
     meta: {
       requiresAuth: true,
     },
@@ -313,7 +266,7 @@ const routes: RouteRecordRaw[] = [
   {
     name: guards.pages.ADMINISTRATION,
     path: '/admin',
-    component: AdminView,
+    component: () => import('../views/admin/index.vue'),
     children: adminRoutes,
     meta: {
       requiresAuth: true,
@@ -323,7 +276,7 @@ const routes: RouteRecordRaw[] = [
   {
     name: guards.pages.FOUR_OR_FOUR,
     path: '/:pathMatch(.*)',
-    component: PageNotFound,
+    component: () => import('../views/404.vue'),
     meta: {
       layout: 'empty',
     },
@@ -331,7 +284,7 @@ const routes: RouteRecordRaw[] = [
   {
     name: guards.pages.NOT_AUTHORISED,
     path: '/acced-denied',
-    component: NotAuthorised,
+    component: () => import('../views/Restricted.vue'),
     meta: {
       layout: 'empty',
     },

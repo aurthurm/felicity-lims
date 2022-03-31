@@ -1,9 +1,9 @@
-import { authFromStorage } from "../auth";
+import { authFromStorage2 } from "../auth";
 import { IGroup } from "../models/auth";
 
-async function hasRights(action: string, objectName: string) {
+function hasRights(action: string, objectName: string) {
 
-    const auth = await authFromStorage();
+    const auth = authFromStorage2();
     const groups = auth?.user?.groups
     
     if(!groups || groups?.length == 0 ) return false

@@ -1,17 +1,8 @@
-import PatientsListing from '../views/patient/Patients.vue';
-import PatientsRegistration from '../views/patient/AddPatient.vue';
-import PatientSingleView from '../views/patient/_id/index.vue';
-import PatientDetail from '../views/patient/_id/PatientDetail.vue';
-import SamplesAdd from '../views/sample/SamplesAdd.vue';
-import SampleSingleView from '../views/sample/_id/index.vue';
-import SampleDetail from '../views/sample/_id/SampleDetail.vue';
-
-
 const patientRoutes = [
   {
     path: '',
     name: 'patients-listing',
-    component: PatientsListing,
+    component: () => import('../views/patient/Patients.vue'),
     meta: {
       requiresAuth: true,
     },
@@ -19,7 +10,7 @@ const patientRoutes = [
   {
     path: 'register',
     name: 'patients-register',
-    component: PatientsRegistration,
+    component: () => import('../views/patient/AddPatient.vue'),
     meta: {
       requiresAuth: true,
     },
@@ -27,7 +18,7 @@ const patientRoutes = [
   {
     path: 'search',
     name: 'patients-search',
-    component: PatientsListing,
+    component: () => import('../views/patient/Patients.vue'),
     meta: {
       requiresAuth: true,
     },
@@ -35,12 +26,12 @@ const patientRoutes = [
   {
     path: ':patientUid',
     name: 'patient',
-    component: PatientSingleView,
+    component: () => import('../views/patient/_id/index.vue'),
     children: [
       {
         path: '',
         name: 'patient-detail',
-        component: PatientDetail,
+        component: () => import('../views/patient/_id/PatientDetail.vue'),
         meta: {
           requiresAuth: true,
         },
@@ -48,7 +39,7 @@ const patientRoutes = [
       {
         path: 'add-sample',
         name: 'samples-add',
-        component: SamplesAdd,
+        component: () => import('../views/sample/SamplesAdd.vue'),
         meta: {
           requiresAuth: true,
         },
@@ -56,20 +47,12 @@ const patientRoutes = [
       {
         path: 'samples',
         name: 'patient-samples',
-        component: SampleSingleView,
+        component: () => import('../views/sample/_id/index.vue'),
         children: [
-          // {
-          //   path: '',
-          //   name: 'patient-samples',
-          //   component: SampleSingleView,
-          //   meta: {
-          //     requiresAuth: true,
-          //   },
-          // },
           {
             path: ':sampleUid',
             name: 'sample-detail',
-            component: SampleDetail,
+            component: () => import('../views/sample/_id/SampleDetail.vue'),
             meta: {
               requiresAuth: true,
             },

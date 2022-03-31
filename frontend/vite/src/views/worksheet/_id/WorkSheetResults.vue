@@ -149,7 +149,6 @@
   import { IAnalysisResult, IAnalysisService } from '../../../models/analysis';
   import useAnalysisComposable from '../../../modules/analysis';
   import useWorkSheetComposable from '../../../modules/worksheet'
-  import useResultMutationComposable from '../../../modules/result_mutation'
 
   import * as shield from '../../../guards'
 
@@ -232,10 +231,8 @@
     return false;
   }
 
-  const { mutateResults } = useResultMutationComposable()
   function prepareResults(): any[] {
     let results = getResultsChecked();
-    results = mutateResults(results);
     let ready: IAnalysisResult[] = [];
     results?.forEach((result: IAnalysisResult) => ready.push({ uid: result.uid , result: result.result } as IAnalysisResult))
     return ready;

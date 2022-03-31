@@ -34,7 +34,6 @@ const authFromStorage2 = (): {
         })
     }
     return data
-
 }
 
 const authLogout = () => {

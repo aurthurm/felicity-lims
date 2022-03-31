@@ -217,6 +217,9 @@ import { ActionTypes } from '../../../store/actions';
 import { ADD_USER, EDIT_USER, ADD_USER_AUTH, EDIT_USER_AUTH  } from '../../../graphql/_mutations';
 import { IUser, IUserAuth } from '../../../models/auth';
 
+import { useUserStore } from '../../../stores/users'
+
+
 interface IUserAuthForm extends IUser, IUserAuth {
   groupUid: number
 };
@@ -228,12 +231,18 @@ export default defineComponent({
   },
   setup() {
     let store = useStore();
+    const store2 = useUserStore()
 
     let showUserModal = ref<boolean>(false);
     let showUserAuthModal = ref<boolean>(false);
     let formTitle = ref<string>('');
     let form = reactive({}) as IUserAuthForm;
     const formAction = ref<boolean>(true);
+
+    store2.fetchUsers({})
+    store2.fetchGroupsAndPermissions()
+    console.log(store2.getUsers)
+    console.log(store2.users)
 
     store.dispatch(ActionTypes.FETCH_GROUPS_AND_PERMISSIONS);
     store.dispatch(ActionTypes.FETCH_USERS);
@@ -243,6 +252,7 @@ export default defineComponent({
     const { executeMutation: updateUser } = useMutation(EDIT_USER);
     const { executeMutation: createUserAuth } = useMutation(ADD_USER_AUTH);
     const { executeMutation: updateUserAuth } = useMutation(EDIT_USER_AUTH);
+
 
     function addUser(): void {
       createUser(form).then((result) => {

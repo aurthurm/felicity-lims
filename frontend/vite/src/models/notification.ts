@@ -15,7 +15,7 @@ export interface IAlert extends BaseNotification {}
 export interface IToast extends BaseNotification {}
 
 
-export interface INotification {
+export interface INotification extends BaseNotification{
   uid: number,
   message: string;
 }

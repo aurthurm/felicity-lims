@@ -12,7 +12,6 @@ import { clients } from './modules/client';
 import { patients } from './modules/patient';
 import { samples } from './modules/sample';
 import { analyses } from './modules/analysis';
-import { cases } from './modules/cases';
 import { worksheets } from './modules/worksheet';
 import { markdown } from './modules/markdown';
 import { kanban } from './modules/kanban';
@@ -30,7 +29,6 @@ export default createStore({
     patients,
     samples,
     analyses,
-    cases,
     worksheets,
     kanban,
     setup,
