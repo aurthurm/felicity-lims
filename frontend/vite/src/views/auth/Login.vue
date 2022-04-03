@@ -53,13 +53,6 @@
           </div>
         </div>
 
-        <div v-if="userAuth?.error?.message" class="flex items-center justify-center mt-3">
-          <span v-if="userAuth.loading">Loading ...</span>
-          <div v-else-if="userAuth.error" class="block text-red-500">
-            Ohh: {{ userAuth.error.message }}
-          </div>
-        </div>
-
         <div class="mt-6">
           <button
             type="submit"
@@ -73,52 +66,28 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, reactive } from 'vue';
-import { useRouter } from 'vue-router';
-import { useStore } from 'vuex';
-import { useMutation } from '@urql/vue';
-import { AUTHENTICATE_USER } from '../../graphql/_mutations';
-import { ActionTypes } from '../../store/actions';
-import { ActionTypes as SetupActionTypes  } from '../../store/modules/setup';
-import userPreferenceComposable from '../../modules/preferences'
+<script setup lang="ts">
+  import { reactive } from 'vue';
+  import { useRouter } from 'vue-router';
+  import { AUTHENTICATE_USER } from '../../graphql/_mutations';
+  import { useAuthStore } from '../../stores'
+  import { userPreferenceComposable, useApiUtil } from '../../composables'
 
-export default defineComponent({
-  setup() {
-    const router = useRouter();
-    const store = useStore();
-    store.dispatch(ActionTypes.LOG_OUT);
-    //
-    store.dispatch(ActionTypes.FETCH_USERS);
-    store.dispatch(ActionTypes.FETCH_DEPARTMENTS);
-    store.dispatch(ActionTypes.FETCH_GROUPS_AND_PERMISSIONS);
-    store.dispatch(SetupActionTypes.FETCH_LABORATORY);
-    store.dispatch(SetupActionTypes.FETCH_LABORATORY_SETTING);
+  const router = useRouter()
+  const authStore = useAuthStore()
+  const { initPreferences } = userPreferenceComposable()
+  const { withClientMutation } = useApiUtil()
 
-    let userAuth = reactive<any>({ data: null, error: null });
-    let form = reactive<any>({ username: null, password: null });
+  authStore.reset();
 
-    const { executeMutation: authenticateUser } = useMutation(AUTHENTICATE_USER);
+  let form = reactive<any>({ username: null, password: null });
 
-    const { initPreferences } = userPreferenceComposable()
+  function login() {
+    const payload = { username: form.username, password: form.password }
+    withClientMutation(AUTHENTICATE_USER, payload, "authenticateUser").then(res => {
+      initPreferences(res.user?.preference);
+      authStore.persistAuth(res).then(_ => router.push({ name: "DASHBOARD" }))
+    });
+  }
 
-    function login() {
-      authenticateUser({ username: form.username, password: form.password }).then((result) => {
-        Object.assign(userAuth, result);
-        if(!result.error)  {
-          initPreferences(result?.data?.authenticateUser?.user?.preference);
-          store.dispatch(ActionTypes.PERSIST_AUTH_DATA, result).then(_ => {
-            router.push({ name: "DASHBOARD" })
-          });
-        }
-      });
-    }
-
-    return {
-      form,
-      login,
-      userAuth,
-    };
-  },
-});
 </script>

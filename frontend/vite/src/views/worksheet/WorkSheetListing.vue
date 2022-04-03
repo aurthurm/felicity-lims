@@ -1,3 +1,114 @@
+<script setup lang="ts">
+  import modal from '../../components/SimpleModal.vue';
+
+  import { useMutation } from '@urql/vue';
+  import { ref, reactive, computed } from 'vue';
+  import { useRoute } from 'vue-router';
+  import { useWorksheetStore, useUserStore } from '../../stores';
+  import { useApiUtil } from '../../composables';
+  import { ADD_WORKSHEET } from '../../graphql/worksheet.mutations'
+  import { ifZeroEmpty } from '../../utils'
+  import { IWorkSheet, IWorkSheetForm } from '../../models/worksheet';
+  import { IAnalysisService } from '../../models/analysis';
+
+  import * as shield from '../../guards'
+  
+    const worksheetStore = useWorksheetStore();
+    const userStore = useUserStore()
+
+    const { withClientMutation } = useApiUtil()
+
+    const route = useRoute();
+    
+    let showModal = ref<boolean>(false);
+    let formTitle = ref<string>('');
+    let form = reactive<IWorkSheetForm>({ count: 1 } as IWorkSheetForm);
+    const formAction = ref<boolean>(true);
+    let pageInfo = computed(() => worksheetStore.getWorkSheetPageInfo)
+    let filterText = ref<string>("");
+    let filterStatus = ref<string>("open");
+
+    worksheetStore.removeWorksheet()   
+    
+    let workSheetBatch = ref<number>(25);
+    let workSheetParams = reactive({ 
+      first: workSheetBatch.value, 
+      after: "",
+      status: "", 
+      text: "", 
+      clientUid: +ifZeroEmpty(route?.query?.clientUid),
+      filterAction: false
+    });
+    worksheetStore.fetchWorkSheets(workSheetParams)
+    worksheetStore.fetchWorkSheetTemplates()
+    userStore.fetchUsers({})
+
+    // fetch instruments, analysts, methods
+    const woksheets = computed<IWorkSheet[]>(() => worksheetStore.getWorkSheets);
+    const workSheetTemplates = computed(() => worksheetStore.getWorkSheetTemplates)
+    const workSheetCount = computed(() => worksheetStore.getWorkSheets?.length + " of " + worksheetStore.getWorkSheetCount + " worksheets")
+
+    const { executeMutation: createWorkSheet } = useMutation(ADD_WORKSHEET);
+
+    function addWorksheet(): void {
+      form.count = +form.count;
+      withClientMutation(ADD_WORKSHEET, form, "createWorksheet")
+      .then((result) => {
+       worksheetStore.addWorksheet(result);
+       showModal.value = false;
+      });
+    }
+
+    function analysesText(analyses: IAnalysisService[]): string {
+        let names: string[] = [];
+        analyses?.forEach(a => names.push(a.name!));
+        return names?.join(', ');
+    }
+
+    function FormManager(create: boolean):void {
+      formAction.value = create;
+      showModal.value = true;
+      formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "WORKSHEET";
+      if (create) {
+        Object.assign(form, { count: 1 } as IWorkSheetForm);
+      } else {
+        console.log("This path is not possible !!!!!")
+      }
+    }
+
+    function saveForm():void {
+      if (formAction.value === true) addWorksheet();
+      showModal.value = false;
+    }
+
+    function showMoreWorkSheets(): void {
+      workSheetParams.first = +workSheetBatch.value;
+      workSheetParams.after = pageInfo?.value?.endCursor;
+      workSheetParams.text = filterText.value;
+      workSheetParams.status = filterStatus.value;
+      workSheetParams.filterAction = false;
+      worksheetStore.fetchWorkSheets(workSheetParams);
+    }
+
+    function filterWorkSheets(): void {
+      workSheetBatch.value = 25;
+      workSheetParams.first = 25;
+      workSheetParams.after = "";
+      workSheetParams.text = filterText.value;
+      workSheetParams.status = filterStatus.value;
+      workSheetParams.filterAction = true;
+      worksheetStore.fetchWorkSheets(workSheetParams);
+    }
+
+    const analysts = computed(() => userStore.getUsers)
+    const analystName = (analyst: any) => {
+          if(analyst?.auth?.userName) return analyst?.auth?.userName;
+          if(analyst?.firstName) return analyst.firstName + ' ' + analyst.lastName;
+          return "----";
+    }
+</script>
+
+
 <template>
   <h2>WORKSHEETS</h2>
   <div class="flex justify-between items-center">
@@ -186,108 +297,3 @@
 
 
 </template>
-
-<script setup lang="ts">
-  import modal from '../../components/SimpleModal.vue';
-
-  import { useMutation } from '@urql/vue';
-  import { ref, reactive, computed } from 'vue';
-  import { useRoute } from 'vue-router';
-  import { useStore } from 'vuex';
-  import { ActionTypes } from '../../store/modules/worksheet';
-  import { ActionTypes as BaseActionTypes } from '../../store/actions';
-  import { ADD_WORKSHEET } from '../../graphql/worksheet.mutations'
-  import { ifZeroEmpty } from '../../utils'
-  import { IWorkSheet, IWorkSheetForm } from '../../models/worksheet';
-  import { IAnalysisService } from '../../models/analysis';
-
-  import * as shield from '../../guards'
-  
-    const store = useStore();
-    const route = useRoute();
-    
-    let showModal = ref<boolean>(false);
-    let formTitle = ref<string>('');
-    let form = reactive<IWorkSheetForm>({ count: 1 } as IWorkSheetForm);
-    const formAction = ref<boolean>(true);
-    let pageInfo = computed(() => store.getters.getWorkSheetPageInfo)
-    let filterText = ref<string>("");
-    let filterStatus = ref<string>("open");
-
-    store.dispatch(ActionTypes.REMOVE_WORKSHEET)    
-    
-    let workSheetBatch = ref<number>(25);
-    let workSheetParams = reactive({ 
-      first: workSheetBatch.value, 
-      after: "",
-      status: "", 
-      text: "", 
-      clientUid: +ifZeroEmpty(route?.query?.clientUid),
-      filterAction: false
-    });
-    store.dispatch(ActionTypes.FETCH_WORKSHEETS, workSheetParams);
-    store.dispatch(ActionTypes.FETCH_WORKSHEET_TEMPLATES);
-    store.dispatch(BaseActionTypes.FETCH_USERS);
-    // fetch instruments, analysts, methods
-    const woksheets = computed<IWorkSheet[]>(() => store.getters.getWorkSheets);
-    const workSheetTemplates = computed(() => store.getters.getWorkSheetTemplates)
-    const workSheetCount = computed(() => store.getters.getWorkSheets?.length + " of " + store.getters.getWorkSheetCount + " worksheets")
-
-    const { executeMutation: createWorkSheet } = useMutation(ADD_WORKSHEET);
-
-    function addWorksheet(): void {
-      form.count = +form.count;
-      createWorkSheet(form).then((result) => {
-       store.dispatch(ActionTypes.ADD_WORKSHEET, result);
-       showModal.value = false;
-      });
-    }
-
-    function analysesText(analyses: IAnalysisService[]): string {
-        let names: string[] = [];
-        analyses?.forEach(a => names.push(a.name!));
-        return names?.join(', ');
-    }
-
-    function FormManager(create: boolean):void {
-      formAction.value = create;
-      showModal.value = true;
-      formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "WORKSHEET";
-      if (create) {
-        Object.assign(form, { count: 1 } as IWorkSheetForm);
-      } else {
-        console.log("This path is not possible !!!!!")
-      }
-    }
-
-    function saveForm():void {
-      if (formAction.value === true) addWorksheet();
-      showModal.value = false;
-    }
-
-    function showMoreWorkSheets(): void {
-      workSheetParams.first = +workSheetBatch.value;
-      workSheetParams.after = pageInfo?.value?.endCursor;
-      workSheetParams.text = filterText.value;
-      workSheetParams.status = filterStatus.value;
-      workSheetParams.filterAction = false;
-      store.dispatch(ActionTypes.FETCH_WORKSHEETS, workSheetParams);
-    }
-
-    function filterWorkSheets(): void {
-      workSheetBatch.value = 25;
-      workSheetParams.first = 25;
-      workSheetParams.after = "";
-      workSheetParams.text = filterText.value;
-      workSheetParams.status = filterStatus.value;
-      workSheetParams.filterAction = true;
-      store.dispatch(ActionTypes.FETCH_WORKSHEETS, workSheetParams);
-    }
-
-    const analysts = computed(() => store.getters.getUsers)
-    const analystName = (analyst: any) => {
-          if(analyst?.auth?.userName) return analyst?.auth?.userName;
-          if(analyst?.firstName) return analyst.firstName + ' ' + analyst.lastName;
-          return "----";
-    }
-</script>

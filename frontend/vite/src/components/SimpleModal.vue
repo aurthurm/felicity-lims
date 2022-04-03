@@ -45,28 +45,28 @@
 
 
 <script lang="ts">
-import { defineComponent, onMounted } from 'vue';
-export default defineComponent({
-  name: 'simple-modal',
-  props: {
-    contentWidth: String,
-  },
-  setup(props, { emit }) {
+  import { defineComponent, onMounted } from 'vue';
+  export default defineComponent({
+    name: 'simple-modal',
+    props: {
+      contentWidth: String,
+    },
+    setup(props, { emit }) {
 
-    onMounted(() => {
-      document.addEventListener("keydown", (e) => {
-        if (e.keyCode == 27) {
-            emit('close');
-        }
-      });
-    })
+      onMounted(() => {
+        document.addEventListener("keydown", (e) => {
+          if (e.keyCode == 27) {
+              emit('close');
+          }
+        });
+      })
 
-    return {}
-  },
-});
+      return {}
+    },
+  });
 </script>
 
-<style lang="postcss">
+<style lang="postcss" scoped>
 
 .modal-mask {
   position: fixed;

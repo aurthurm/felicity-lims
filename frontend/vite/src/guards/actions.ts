@@ -1,10 +1,10 @@
-import { authFromStorage2 } from "../auth";
+import { useAuthStore } from "../stores"
 import { IGroup } from "../models/auth";
 
 function hasRights(action: string, objectName: string) {
+  const authStore = useAuthStore();
 
-    const auth = authFromStorage2();
-    const groups = auth?.user?.groups
+  const groups = authStore.auth?.user?.groups
     
     if(!groups || groups?.length == 0 ) return false
 

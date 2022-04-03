@@ -103,6 +103,7 @@ export interface IQCTemplate {
     description?: string;  
     qcLevels?: IQCLevel[];
     departments?: any[];
+    category?: string,
 }
 
   export interface IResultOption {
@@ -129,6 +130,7 @@ export interface IQCTemplate {
   }
   
   export interface IAnalysisRequest {
+    uid?: number;
     clinicalData?: string;
     patient?: IPatient; 
     cientUid?: number; 
@@ -147,12 +149,12 @@ export interface IQCTemplate {
     name?: string; 
     samples?: ISample[];
     analytes?:IAnalysisService
-    created_by_uid?: number
-    created_by?: any
-    created_at?: string
-    updated_by_uid?: number
-    updated_by?: any
-    updated_at?: string
+    createdByUid?: number
+    createdBy?: any
+    createdAt?: string
+    updatedByUid?: number
+    updatedBy?: any
+    updatedAt?: string
   }
 
   export interface IRejectionReason {

@@ -3,12 +3,12 @@ import { GET_ALL_PATIENTS, SEARCH_PATIENTS, GET_PATIENT_BY_UID } from '../graphq
 import { addListsUnique } from '../utils';
 import { IPatient } from '../models/patient'
 
-import useApiUtil from '../modules/api_util'
+import { useApiUtil } from '../composables'
 
-const { withUseQuery } = useApiUtil()
+const { withClientQuery } = useApiUtil()
 
 
-export const useUserStore = defineStore('users', {
+export const usePatientStore = defineStore('patient', {
   state: () => {
       return {
         patients: [],
@@ -32,7 +32,7 @@ export const useUserStore = defineStore('users', {
   actions: {
 
     async fetchPatients(params){
-      await withUseQuery(GET_ALL_PATIENTS, { ...params, sortBy: ["-uid"] }, undefined)
+      await withClientQuery(GET_ALL_PATIENTS, { ...params, sortBy: ["-uid"] }, undefined)
       .then(payload => {
         const patients = payload.patientAll.items;
         if(params.filterAction){
@@ -55,11 +55,11 @@ export const useUserStore = defineStore('users', {
       this.patient = payload;
     },
     async fetchPtientByUid(uid){
-      await withUseQuery(GET_PATIENT_BY_UID, { uid }, "patientByUid")
+      await withClientQuery(GET_PATIENT_BY_UID, { uid }, "patientByUid")
       .then(payload => this.patient = payload)
     },
     async searchPatients(queryString: string){
-      await withUseQuery(SEARCH_PATIENTS, { queryString }, "patientSearch")
+      await withClientQuery(SEARCH_PATIENTS, { queryString }, "patientSearch")
         .then(payload => this.patients = payload)
     }
   

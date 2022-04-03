@@ -1,3 +1,30 @@
+<script setup lang="ts">
+  import modal from '../../../components/SimpleModal.vue';
+  import PatientForm from '../PatientForm.vue'
+
+  import { ref, computed} from 'vue';
+  import { useRoute } from 'vue-router';
+
+  import { usePatientStore } from '../../../stores';
+  import { IPatient } from '../../../models/patient';
+
+  import * as shield from '../../../guards'
+
+  const route = useRoute();
+  const patientStore = usePatientStore();
+
+  let showModal = ref<boolean>(false);  
+
+  patientStore.fetchPtientByUid(+route.params.patientUid)
+  let patient = computed(() => patientStore.getPatient);
+
+  const updatePatient = (res: IPatient) => {
+    patientStore.updatePatient(res)
+    showModal.value = false;
+  };
+</script>
+
+
 <template>
   <div class="">
     <div class="bg-white rounded-lg shadow-sm hover:shadow-lg duration-500 px-4 sm:px-6 md:px-2 py-4" >
@@ -85,30 +112,3 @@
   </modal>
 
 </template>
-
-<script setup lang="ts">
-  import modal from '../../../components/SimpleModal.vue';
-  import PatientForm from '../PatientForm.vue'
-
-  import { ref, computed} from 'vue';
-  import { useRoute } from 'vue-router';
-  import { useStore } from 'vuex';
-
-  import { ActionTypes } from '../../../store/modules/patient';
-  import { IPatient } from '../../../models/patient';
-
-  import * as shield from '../../../guards'
-
-  const route = useRoute();
-  const store = useStore();
-
-  let showModal = ref<boolean>(false);  
-
-  store.dispatch(ActionTypes.FETCH_PATIENT_BY_UID, +route.params.patientUid)
-  let patient = computed<IPatient>(() => store.getters.getPatient);
-
-  const updatePatient = (res: IPatient) => {
-    store.dispatch(ActionTypes.UPDATE_PATIENT, res)
-    showModal.value = false;
-  };
-</script>

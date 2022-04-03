@@ -7,10 +7,9 @@ import { IAnalysisResult } from '../models/analysis';
 import { IWorkSheetTemplate, IWorkSheet, IReserved } from '../models/worksheet';
 
 
-import useApiUtil from '../modules/api_util'
+import { useApiUtil } from '../composables'
 
-const { withUseQuery } = useApiUtil()
-
+const { withClientQuery } = useApiUtil()
 
 export const useWorksheetStore = defineStore('worksheet', {
   state: () => {
@@ -40,7 +39,7 @@ export const useWorksheetStore = defineStore('worksheet', {
 
   // WorkSheet Templates
   async fetchWorkSheetTemplates(){
-    await withUseQuery(GET_ALL_WORKSHEET_TEMPLATES, {}, "worksheetTemplateAll")
+    await withClientQuery(GET_ALL_WORKSHEET_TEMPLATES, {}, "worksheetTemplateAll")
           .then(payload => {
               payload?.forEach((template: IWorkSheetTemplate) => {
                 const data: any = template.reserved;
@@ -72,7 +71,7 @@ export const useWorksheetStore = defineStore('worksheet', {
 
   // WorkSheets
   async fetchWorkSheets(params){
-    await withUseQuery(GET_ALL_WORKSHEETS, params, undefined)
+    await withClientQuery(GET_ALL_WORKSHEETS, params, undefined)
           .then(payload => {
             const page = payload.worksheetAll
             const worksheets = page.items;
@@ -87,7 +86,7 @@ export const useWorksheetStore = defineStore('worksheet', {
           });
   },
   async fetchWorksheetByUid(uid: number){
-    await withUseQuery(GET_WORKSHEET_BY_UID, { uid }, "worksheetByUid")
+    await withClientQuery(GET_WORKSHEET_BY_UID, { uid }, "worksheetByUid")
           .then(payload => this.workSheet = sortAnalysisResults(payload));
   },
   addWorksheet(payload){

@@ -8,13 +8,14 @@ import {
   GET_ANALYSIS_REQUESTS_BY_CLIENT_UID,
   GET_ANALYSIS_RESULTS_BY_SAMPLE_UID,
   GET_ALL_QC_SETS, GET_QC_SET_BY_UID,
-  GET_SAMPLE_STATUS_BY_UID
+  GET_SAMPLE_STATUS_BY_UID,
+  GET_SAMPLE_BY_PARENT_ID
 } from '../graphql/analyses.queries';
 import { IAnalysisRequest, ISampleType, ISample, IAnalysisResult, IQCSet } from '../models/analysis';
 
-import useApiUtil from '../modules/api_util'
+import useApiUtil from '../composables/api_util'
 
-const { withUseQuery } = useApiUtil()
+const { withClientQuery } = useApiUtil()
 
 
 export const useSampleStore = defineStore('sample', {
@@ -25,6 +26,7 @@ export const useSampleStore = defineStore('sample', {
         sampleCount: 0,
         samplePageInfo: undefined,
         sample: undefined,
+        childSample: undefined,
         analysisRequests: [], // for patient detail
         analysisResults: [],
         qcSets: [],
@@ -37,6 +39,7 @@ export const useSampleStore = defineStore('sample', {
         sampleCount: number;
         samplePageInfo?: any;
         sample?: ISample;
+        childSample?: ISample;
         analysisRequests: IAnalysisRequest[];
         analysisResults: IAnalysisResult[];
         qcSets: IQCSet[];
@@ -52,6 +55,7 @@ export const useSampleStore = defineStore('sample', {
       getSampleCount: (state) => state.sampleCount,
       getSamplePageInfo: (state) => state.samplePageInfo,
       getSample: (state) => state.sample,
+      getSChildSample: (state) => state.childSample,
       getAnalysisRequests: (state) => state.analysisRequests,
       getAnalysisResults: (state) => state.analysisResults,
       getQCSets: (state) => state.qcSets,
@@ -63,7 +67,7 @@ export const useSampleStore = defineStore('sample', {
     
   // SAMPLE TYPES
   async fetchSampleTypes(){
-    await withUseQuery(GET_ALL_SAMPLE_TYPES, {}, "sampleTypeAll")
+    await withClientQuery(GET_ALL_SAMPLE_TYPES, {}, "sampleTypeAll")
           .then(payload => this.sampleTypes = payload);
   },
   updateSampleType(payload){
@@ -78,11 +82,14 @@ export const useSampleStore = defineStore('sample', {
   resetSamples() {
     this.samples = [];
   },
-  resetSample({ commit }) {
+  resetSample() {
     this.sample = undefined;
   },
+  resetChildSample() {
+    this.childSample = undefined;
+  },
   async fetchSamples(params){
-    await withUseQuery(GET_ALL_SAMPLES, params, undefined)
+    await withClientQuery(GET_ALL_SAMPLES, params, undefined)
     .then(payload => {
       const page = payload.sampleAll
       const samples = page.items;
@@ -107,7 +114,7 @@ export const useSampleStore = defineStore('sample', {
     }
   },
   async fetchSampleStatus(uid){
-    await withUseQuery(GET_SAMPLE_STATUS_BY_UID, { uid }, "sampleByUid", 'network-only')
+    await withClientQuery(GET_SAMPLE_STATUS_BY_UID, { uid }, "sampleByUid", 'network-only')
     .then(payload => {
       if(this.sample && payload.status){
         this.sample.status = payload.status;
@@ -119,14 +126,22 @@ export const useSampleStore = defineStore('sample', {
   updateSamplesStatus(samples){
     samples?.forEach(sample => this.updateSampleStatus(sample))
   },
+  fetchSampleByParentId(parentId){
+    withClientQuery(GET_SAMPLE_BY_PARENT_ID, { parentId }, "sampleByParentId")
+    .then(payload => {
+      if(payload?.length > 0) {
+        this.childSample = payload[0]
+      };
+    })
+  },
 
     // analysis request
   async fetchAnalysisRequestsForPatient(uid){
-    await withUseQuery(GET_ANALYSIS_REQUESTS_BY_PATIENT_UID, { uid }, "analysisRequestsByPatientUid")
+    await withClientQuery(GET_ANALYSIS_REQUESTS_BY_PATIENT_UID, { uid }, "analysisRequestsByPatientUid")
     .then(payload => this.analysisRequests = sortAnalysisRequests(payload))
   },
   async fetchAnalysisRequestsForClient(uid){
-    await withUseQuery(GET_ANALYSIS_REQUESTS_BY_CLIENT_UID, { uid }, "analysisRequestsByClientUid")
+    await withClientQuery(GET_ANALYSIS_REQUESTS_BY_CLIENT_UID, { uid }, "analysisRequestsByClientUid")
     .then(payload => this.analysisRequests = sortAnalysisRequests(payload))
   },
   addAnalysisRequest(payload){
@@ -136,7 +151,7 @@ export const useSampleStore = defineStore('sample', {
   // analysis results
   async fetchAnalysisResultsForSample(uid){
     if(!uid) return;
-    await withUseQuery( GET_ANALYSIS_RESULTS_BY_SAMPLE_UID, { uid }, undefined, 'network-only')
+    await withClientQuery( GET_ANALYSIS_RESULTS_BY_SAMPLE_UID, { uid }, undefined, 'network-only')
     .then(payload => {
       this.analysisResults = sortResults(payload.analysisResultBySampleUid)
 
@@ -170,7 +185,7 @@ export const useSampleStore = defineStore('sample', {
     this.qcSet = undefined;
   },
   async fetchQCSets(params){
-    await withUseQuery(GET_ALL_QC_SETS, params, undefined)
+    await withClientQuery(GET_ALL_QC_SETS, params, undefined)
           .then(payload => {
             const qcSets = payload.qcSetAll.items;
 
@@ -186,7 +201,7 @@ export const useSampleStore = defineStore('sample', {
           })
   },
   async fetchQCSetByUid(uid){
-    await withUseQuery(GET_QC_SET_BY_UID, { uid }, "qcSetByUid")
+    await withClientQuery(GET_QC_SET_BY_UID, { uid }, "qcSetByUid")
     .then(payload => this.qcSet = payload)
   },
   addQCSet(payload){

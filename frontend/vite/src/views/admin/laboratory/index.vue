@@ -1,3 +1,17 @@
+
+<script setup lang="ts">
+  import { ref, computed } from 'vue';
+
+  import tabLaboratory from './Laboratory.vue'
+  import tabDepartments from './Departments.vue'
+
+
+  let currentTab = ref<string>('laboratory');
+  const tabs: string[]= ['laboratory', 'departments'];
+  let currentTabComponent = computed(() => 'tab-' + currentTab.value);
+</script>
+
+
 <template>
   <div class="mt-4">
 
@@ -23,15 +37,3 @@
 
   </div>
 </template>
-
-<script setup lang="ts">
-  import { ref, computed } from 'vue';
-
-  import tabLaboratory from './Laboratory.vue'
-  import tabDepartments from './Departments.vue'
-
-
-  let currentTab = ref<string>('laboratory');
-  const tabs: string[]= ['laboratory', 'departments'];
-  let currentTabComponent = computed(() => 'tab-' + currentTab.value);
-</script>

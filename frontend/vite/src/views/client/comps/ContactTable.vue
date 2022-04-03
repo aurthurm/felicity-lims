@@ -1,3 +1,59 @@
+<script setup lang="ts">
+  import { computed, ref} from 'vue';
+  import { useRoute } from 'vue-router';
+  import modal from '../../../components/SimpleModal.vue'
+  import { ADD_CLIENT_CONTACT, EDIT_CLIENT_CONTACT } from '../../../graphql/clients.mutations';
+  import { useClientStore } from '../../../stores';
+  import { IClientContact } from '../../../models/client';
+  import { useApiUtil } from '../../../composables';
+  import * as shield from '../../../guards'
+
+  let clientStore = useClientStore();
+  let router = useRoute();
+  const { withClientMutation } = useApiUtil()
+  let formTitle = ref('');
+  let showContactModal = ref(false);
+  let createContact = ref(false);
+  let contact = ref();
+
+  const props = defineProps({
+    clientUid: Number,
+  })
+
+  // dispatch get contacts fo slients
+  clientStore.fetchClientContacts(+router.query.clientUid!)
+  const contacts = computed(() => clientStore.getClientContacts)
+  
+  function addClientContact() {
+    withClientMutation(ADD_CLIENT_CONTACT, {clientUid: +router.query.clientUid!, firstName: contact.value.firstName, mobilePhone: contact.value.mobilePhone, email: contact.value.email}, "createClientContact")
+    .then((res) => clientStore.addClientContact(res));
+  }
+
+  function editClientContact() {
+    withClientMutation(EDIT_CLIENT_CONTACT, { uid: contact.value.uid, firstName: contact.value.firstName, mobilePhone: contact.value.mobilePhone, email: contact.value.email}, "updateClientContact")
+    .then((res) => clientStore.updateClientContact(res));
+  }
+
+  function FormManager(create: boolean, obj: IClientContact = {} as IClientContact) {
+      createContact.value = create;
+      formTitle.value = (create ? 'CREATE' : 'EDIT') + " CONTACT";
+      showContactModal.value = true;
+      if (create) {
+          Object.assign(contact, {} as IClientContact);
+      } else {
+          Object.assign(contact.value, { ...obj });
+      }
+  }
+
+  function saveForm() {
+      if (createContact.value === true) addClientContact();
+      if (!createContact.value === true) editClientContact();
+      showContactModal.value = false;
+  }
+  
+</script>
+
+
 <template>
     <!-- Contacts Table View -->
     <div class="overflow-x-auto mt-4">
@@ -97,67 +153,3 @@
 
 </template>
 
-<script setup lang="ts">
-  import { useMutation } from '@urql/vue';
-  import { computed, ref} from 'vue';
-  import { useStore } from 'vuex';
-  import { useRoute } from 'vue-router';
-  import modal from '../../../components/SimpleModal.vue'
-  import { ADD_CLIENT_CONTACT, EDIT_CLIENT_CONTACT } from '../../../graphql/clients.mutations';
-  import { ActionTypes } from '../../../store/modules/client';
-  import { IClientContact } from '../../../models/client';
-  // import { IClientContact } from '../../../models/client';
-
-  import * as shield from '../../../guards'
-
-
-  let formTitle = ref('');
-  let showContactModal = ref(false);
-  let createContact = ref(false);
-  let store = useStore();
-  let router = useRoute();
-  let contact = ref();
-
-  const props = defineProps({
-    clientUid: Number,
-  })
-
-  // dispatch get contacts fo slients
-  store.dispatch(ActionTypes.FETCH_CLIENT_CONTACTS, +router.query.clientUid!)
-  const contacts = computed(() => store.getters.getClientContacts)
-
-  const { executeMutation: createClientContact } = useMutation(ADD_CLIENT_CONTACT);
-  const { executeMutation: updateClientContact } = useMutation(EDIT_CLIENT_CONTACT);
-  
-  function addClientContact() {
-    createClientContact({clientUid: +router.query.clientUid!, firstName: contact.value.firstName, mobilePhone: contact.value.mobilePhone, email: contact.value.email, }).then((result) => {
-      store.dispatch(ActionTypes.ADD_CREATED_CLIENT_CONTACT, result.data.createClientContact.clientContact);
-    });
-  }
-
-  function editClientContact() {
-    updateClientContact({ uid: contact.value.uid, firstName: contact.value.firstName, mobilePhone: contact.value.mobilePhone, email: contact.value.email,  }).then(
-      (result) => {
-        store.dispatch(ActionTypes.UPDATE_CREATED_CLIENT_CONTACT, result.data.updateClientContact.clientContact);
-      },
-    );
-  }
-
-  function FormManager(create: boolean, obj: IClientContact = {} as IClientContact) {
-      createContact.value = create;
-      formTitle.value = (create ? 'CREATE' : 'EDIT') + " CONTACT";
-      showContactModal.value = true;
-      if (create) {
-          Object.assign(contact, {} as IClientContact);
-      } else {
-          Object.assign(contact.value, { ...obj });
-      }
-  }
-
-  function saveForm() {
-      if (createContact.value === true) addClientContact();
-      if (!createContact.value === true) editClientContact();
-      showContactModal.value = false;
-  }
-  
-</script>

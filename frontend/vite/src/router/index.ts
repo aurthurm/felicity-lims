@@ -1,11 +1,10 @@
 import { RouteRecordRaw, createRouter, createWebHistory } from 'vue-router';
-import { defineAsyncComponent } from "vue"
 import * as guards from './../guards';
 import adminRoutes from './admin';
 import patientRoutes from './patient';
 import clientRoutes from './client';
 import { isTokenValid } from './checks';
-import { authFromStorage } from '../auth';
+import { useAuthStore } from '../stores';
 
 
 const routes: RouteRecordRaw[] = [
@@ -13,7 +12,7 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/dashboard',
     name: guards.pages.DASHBOARD,
-    component: defineAsyncComponent(() => import('../views/dashboard/index.vue')),
+    component: () => import('../views/dashboard/index.vue'),
     meta: {
       requiresAuth: true,
     },
@@ -21,7 +20,7 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/auth',
     name: guards.pages.LOGIN,
-    component: defineAsyncComponent(() => import('../views/auth/Login.vue')),
+    component: () => import('../views/auth/Login.vue'),
     meta: { layout: 'empty' },
   },
   {
@@ -36,7 +35,7 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/patients-compact',
     name: guards.pages.PATIENTS_COMPACT,
-    component: defineAsyncComponent(() => import('../views/patient/PatientsCompact.vue')),
+    component: () => import('../views/patient/PatientsCompact.vue'),
     meta: {
       requiresAuth: true,
     },
@@ -214,12 +213,12 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/documents',
     name: guards.pages.MARKDOWN_DOCUMENTS,
-    component: () => import('../views/markdown/index.vue'),
+    component: () => import('../views/document/index.vue'),
     children: [
       {
         path: '',
         name: 'document-listing',
-        component: () => import('../views/markdown/DocumentListing.vue'),
+        component: () => import('../views/document/DocumentListing.vue'),
         meta: {
           requiresAuth: true,
         },
@@ -227,12 +226,12 @@ const routes: RouteRecordRaw[] = [
       {
         path: ':documentUid',
         name: 'document-single-view',
-        component: () => import('../views/markdown/_id/index.vue'),
+        component: () => import('../views/document/_id/index.vue'),
         children: [
           {
             path: '',
             name: 'document-detail',
-            component: () => import('../views/markdown/DocumentListing.vue'),
+            component: () => import('../views/document/DocumentListing.vue'),
             meta: {
               requiresAuth: true,
             },
@@ -240,7 +239,7 @@ const routes: RouteRecordRaw[] = [
           {
             path: 'view',
             name: 'document-viewer',
-            component: () => import('../views/markdown/_id/Document.vue'),
+            component: () => import('../views/document/_id/Document.vue'),
             meta: {
               requiresAuth: true,
             },
@@ -297,7 +296,7 @@ const router = createRouter({
 });
 
 router.beforeEach(async (to, from, next) => {
-  const auth = await authFromStorage();
+  const authStore = useAuthStore()
 
   if(to.path === '/') {
     next({ name: guards.pages.DASHBOARD });
@@ -306,7 +305,7 @@ router.beforeEach(async (to, from, next) => {
 
   if (to.matched.some((record) => record.meta.requiresAuth)) {
 
-    if (!isTokenValid(auth.token!)) {
+    if (!isTokenValid(authStore.auth.token!)) {
       next({ name: guards.pages.LOGIN });
     } else {
       if(!hasAccess(to.matched[0].name)){  // to.matched[0] get outer page

@@ -1,6 +1,14 @@
-<style lang="postcss">
+<script setup lang="ts">
+  import { ref, computed } from 'vue';
+  import tabInstrumentTypes from './InstrumentTypes.vue'
+  import tabInstruments from './Instruments.vue'
+  import tabMethods from './Methods.vue'
+  import tabUnits from './Units.vue'
 
-</style>
+  let currentTab = ref('instruments');
+  const tabs = ['instrument-types', 'instruments', 'methods', 'units'];
+  let currentTabComponent = computed(() => 'tab-' + currentTab.value);
+</script>
 
 <template>
   <div class="mt-4">
@@ -30,14 +38,4 @@
   </div>
 </template>
 
-<script setup lang="ts">
-  import { ref, computed } from 'vue';
-  import tabInstrumentTypes from './InstrumentTypes.vue'
-  import tabInstruments from './Instruments.vue'
-  import tabMethods from './Methods.vue'
-  import tabUnits from './Units.vue'
 
-  let currentTab = ref('instruments');
-  const tabs = ['instrument-types', 'instruments', 'methods', 'units'];
-  let currentTabComponent = computed(() => 'tab-' + currentTab.value);
-</script>

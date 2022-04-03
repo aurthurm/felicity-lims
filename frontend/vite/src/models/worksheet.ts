@@ -1,4 +1,4 @@
-import { IInstrument } from './setup'
+import { IInstrument, IMethod } from './setup'
 import { IAnalysisService, IAnalysisResult, ISampleType } from './analysis'
 
 export interface IReserved {
@@ -38,6 +38,7 @@ export interface IWorkSheet {
     reserved: string[];
     plate: Map<string, string>;
     numberOfSamples: number;
+    analyses?: IAnalysisService[],
     analysisResults: IAnalysisResult[],
     rows: number;
     cols: number;
@@ -51,7 +52,10 @@ export interface IWorkSheet {
     state: string;
     assignedCount: number;
     analyst: any;
-    priority: number
+    priority: number,
+    methodUid?: number;
+    method?: IMethod;
+    template?: IWorkSheetTemplate
 
 }
   

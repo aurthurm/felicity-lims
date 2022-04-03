@@ -1,9 +1,71 @@
+
+
+<script setup lang="ts">
+  import modal from '../../components/SimpleModal.vue';
+  import BoardCard from '../components/BoardCard.vue';
+  import { IBoard } from '../../models/kanban';
+  import { ADD_BOARD, EDIT_BOARD } from '../../graphql/kanban.mutations';
+  import { ref, reactive, computed } from 'vue';
+  import { useKanbanStore, useSetupStore } from '../../stores';
+  import { useApiUtil } from '../../composables';
+
+  const kanbanStore = useKanbanStore()
+  const setupStore = useSetupStore()
+  const { withClientMutation } = useApiUtil()
+
+  let showModal = ref(false);
+  let movedObjectsIds = ref([]);
+  let moveTimeOut = ref(null);
+
+  // Modal Vars
+  let formTitle = ref<string>("")
+  let formAction = ref<boolean>(false);
+  let form = reactive<IBoard>({} as IBoard);
+
+  setupStore.fetchDepartments({})
+  kanbanStore.fetchBoards()
+
+  const boards = computed(() => kanbanStore.getBoards)
+  const departments = computed(() => setupStore.getDepartments)
+
+  function addBoard(): void {
+    const payload = { title: form.title, departmentUid: form.departmentUid, description: form.description };
+    withClientMutation(ADD_BOARD, { payload },"createBoard")
+    .then((result) => kanbanStore.addBoard(result));
+  }
+
+  function editBoard(): void {
+    const payload = {title: form.title, departmentUid: form.departmentUid, description: form.description}
+     withClientMutation(EDIT_BOARD, { uid: form.uid, payload },"updateBoard")
+    .then((result) => kanbanStore.updateBoard(result));
+  }
+
+  function FormManager(create: boolean, obj = {} as IBoard): void {
+    formAction.value = create;
+    showModal.value = true;
+    formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "BOARD";
+    if (create) {
+      Object.assign(form, {} as IBoard);
+    } else {
+      Object.assign(form, { ...obj });
+    }
+  }
+
+  function saveForm():void {
+    if (formAction.value === true) addBoard();
+    if (formAction.value === false) editBoard();
+    showModal.value = false;
+  }
+
+</script>
+
+
 <template>
     <div class="flex flex-items-center">
       <h1 class="h1 my-4 font-bold text-dark-700">BOARDS</h1>
         <button
           class="px-2 py-1 my-2 ml-8 text-sm border-blue-500 border text-dark-700 transition-colors duration-150 rounded-lg focus:outline-none hover:bg-blue-500 hover:text-gray-100"
-          @click="FormManager(true, {})"
+          @click="FormManager(true)"
         > Add Board</button>
     </div>
     <hr class="my-4">
@@ -66,90 +128,3 @@
 
 </template>
 
-<script lang="ts">
-import modal from '../../components/SimpleModal.vue';
-import BoardCard from '../components/BoardCard.vue';
-import { useStore } from 'vuex';
-import { useMutation } from '@urql/vue';
-import { ActionTypes } from '../../store/modules/kanban';
-import { IBoard } from '../../models/kanban';
-import { ActionTypes as BaseActionTypes } from '../../store/actions';
-import {ADD_BOARD, EDIT_BOARD } from '../../graphql/kanban.mutations';
-import { defineComponent, ref, reactive, computed } from 'vue';
-export default defineComponent({
-  name: "Kanban-Boards",
-  components: {
-    modal,
-    BoardCard
-  },
-  setup() {
-    let store = useStore();
-    let showModal = ref(false);
-    let movedObjectsIds = ref([]);
-    let moveTimeOut = ref(null);
-
-    // Modal Vars
-    let formTitle = ref<string>("")
-    let formAction = ref<boolean>(false);
-    let form = reactive<IBoard>({} as IBoard);
-
-    store.dispatch(BaseActionTypes.FETCH_DEPARTMENTS)
-    store.dispatch(ActionTypes.FETCH_BOARDS)
-
-    const { executeMutation: createBoard } = useMutation(ADD_BOARD);
-    const { executeMutation: updateBoard } = useMutation(EDIT_BOARD);
-
-    function addBoard(): void {
-      const payload = { title: form.title, departmentUid: form.departmentUid, description: form.description };
-      createBoard({ payload }).then((result) => {
-       store.dispatch(ActionTypes.ADD_BOARD, result);
-      });
-    }
-
-    function editBoard(): void {
-      const payload = {title: form.title, departmentUid: form.departmentUid, description: form.description}
-      updateBoard({ uid: form.uid, payload }).then((result) => {
-        // store.dispatch(ActionTypes.UPDATE_BOARD, result);
-      });
-    }
-
-    function FormManager(create: boolean, obj: IBoard): void {
-      formAction.value = create;
-      showModal.value = true;
-      formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "BOARD";
-      if (create) {
-        Object.assign(form, {} as IBoard);
-      } else {
-        Object.assign(form, { ...obj });
-      }
-    }
-
-    function saveForm():void {
-      if (formAction.value === true) addBoard();
-      if (formAction.value === false) editBoard();
-      showModal.value = false;
-    }
-
-    return { 
-      boards: computed(() => store.getters.getBoards),
-      showModal,
-      departments: computed(() => store.getters.getDepartments),
-      FormManager,
-      saveForm,
-      form,
-      formTitle,
-    }
-  },
-});
-</script>
-
-<style scoped>
-.column-width {
-  min-width: 320px;
-  width: 320px;
-}
-
-.ghost-card {
-  @apply border opacity-50 border-blue-500 bg-gray-200
-}
-</style>

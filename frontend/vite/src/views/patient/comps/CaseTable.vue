@@ -108,18 +108,6 @@
 
 </template>
 
-<script lang="ts">
-import {reactive, computed, ref, onMounted} from 'vue'
+<script setup lang="ts">
 
-export default {
-    name: "tab-cases",
-    props: {
-        client: Object,
-    },
-    setup(){
-        return {
-            
-        }
-    }
-}
 </script>

@@ -1,158 +1,13 @@
-<template>
- <div class="">
-
-   <hr class="mt-4">
-    <label for="toggle" class="text-medium text-gray-700 my-4">More Sample Detail
-      <div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
-          <input 
-          type="checkbox" 
-          name="toggle" id="toggle" 
-          v-model="viewDetail"
-          class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer outline-none"/>
-          <label for="toggle" class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer"></label>
-      </div>
-    </label>
-    <hr class="mb-4">
-
-      <!-- Sampe Table View -->
-    <div class="overflow-x-auto">
-        <div class="align-middle inline-block min-w-full shadow overflow-hidden bg-white shadow-dashboard px-2 pt-1 rounded-bl-lg rounded-br-lg">
-        <table class="min-w-full">
-            <thead>
-            <tr>
-                <th class="px-1 py-1 border-b-2 border-gray-300 text-left leading-4 text-black-500 tracking-wider">
-                    <input type="checkbox" class="" @change="toggleCheckAll()" v-model="allChecked" >
-                </th>
-                <th class="px-1 py-1 border-b-2 border-gray-300 text-left leading-4 text-black-500 tracking-wider"></th>
-                <th class="px-1 py-1 border-b-2 border-gray-300 text-left leading-4 text-black-500 tracking-wider">Sample ID</th>
-                <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-black-500 tracking-wider">Analysis/Test</th>
-                <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-black-500 tracking-wider">Instrument</th>
-                <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-black-500 tracking-wider">Method</th>
-                <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-black-500 tracking-wider">Interim</th>
-                <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-black-500 tracking-wider">Result</th>
-                <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-black-500 tracking-wider">Unit</th>
-                <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-black-500 tracking-wider">Status</th>
-                <!-- <th class="px-1 py-1 border-b-2 border-gray-300"></th> -->
-            </tr>
-            </thead>
-            <tbody class="bg-white">
-            <tr v-for="result in worksheet?.analysisResults" :key="result.uid" :class="[getResultRowColor(result)]">
-                <td>
-                    <input type="checkbox" class="" v-model="result.checked" @change="checkCheck()" :disabled="checkDisabled(result)">
-                </td>
-                <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-                    <span v-if="result?.sample?.priority! > 0"
-                    :class="[
-                        'font-small',
-                        { 'text-red-700': worksheet?.priority! > 1 },
-                    ]">
-                        <i class="fa fa-star"></i>
-                    </span>
-                </td>
-                <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-                  <div class="text-sm leading-5 text-gray-800 font-semibold">
-                    <router-link
-                     v-if="result?.sample?.analysisRequest?.patient?.uid" 
-                     :to="{ name: 'sample-detail', params: { patientUid: result?.sample?.analysisRequest?.patient?.uid, sampleUid: result?.sample?.uid  }}">{{ result?.sample?.sampleId }} </router-link>
-                     <div v-else>{{ result?.sample?.sampleId }}</div>
-                  </div>
-                  <span v-if="viewDetail">
-                    <span >
-                          {{ result?.sample?.qcLevel?.level }}
-                    </span>
-                    <div >
-                          {{ result?.sample?.analysisRequest?.patient?.firstName }}
-                          {{ result?.sample?.analysisRequest?.patient?.lastName }}
-                    </div>
-                    <div >
-                          {{ result?.sample?.analysisRequest?.client?.name }}
-                    </div>
-                  </span>
-                </td>
-                <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-                <div >{{ result?.analysis?.name }}</div>
-                </td>
-                <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-                <div >{{ result?.instrument?.name  || "None"  }}</div>
-                </td>
-                <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-                <div >{{ result?.method?.name || "None"  }}</div>
-                </td>
-                <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-                  <div  v-if="!isEditable(result) || result?.analysis?.interims?.length === 0" class="text-sm leading-5 text-blue-900"> --- </div>
-                  <label v-else class="block col-span-2 mb-2" >
-                      <select class="form-input mt-1 block w-full" v-model="result.result" @change="check(result)">
-                        <option value=""></option>
-                        <option  
-                        v-for="(interim, index) in result?.analysis?.interims"
-                        :key="interim.key"
-                        :value="interim.value" >{{ interim.value }}</option>
-                    </select>
-                  </label>
-                </td>
-                <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-                  <div  v-if="!isEditable(result)" >{{ result?.result  }}</div>
-                  <label v-else-if="result?.analysis?.resultOptions?.length === 0" class="block" >
-                    <input class="form-input mt-1 block w-full" v-model="result.result" @keyup="check(result)"/>
-                  </label>
-                  <label v-else class="block col-span-2 mb-2" >
-                      <select class="form-input mt-1 block w-full" v-model="result.result" @change="check(result)">
-                        <option value=""></option>
-                        <option  
-                        v-for="(option, index) in result?.analysis?.resultOptions"
-                        :key="option.optionKey"
-                        :value="option.value" >{{ option.value }}</option>
-                    </select>
-                  </label>
-                </td>
-                <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-                <div >{{ result?.analysis?.unit || "---"  }}</div>
-                </td>
-                <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-                <button type="button" class="bg-blue-400 text-white p-1 rounded leading-none">{{ result?.status || "unknown" }}</button>
-                </td>
-              </tr>
-            </tbody>
-        </table>
-        </div>
-    </div>
-
-    <section class="my-4">
-      <button  
-      v-show="shield.hasRights(shield.actions.CREATE, shield.objects.WORKSHEET) && can_unassign"
-      @click.prevent="unAssignSamples()" class="px-2 py-1 mr-2 border-blue-500 border text-blue-500 rounded transition duration-300 hover:bg-blue-700 hover:text-white focus:outline-none">Un Assign</button>
-      <button  
-      v-show="shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) && can_submit"
-      @click.prevent="submitResults()" class="px-2 py-1 mr-2 border-blue-500 border text-blue-500 rounded transition duration-300 hover:bg-blue-700 hover:text-white focus:outline-none">Submit</button>
-      <button  
-      v-show="shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) && can_retract"
-      @click.prevent="retractResults()" class="px-2 py-1 mr-2 border-blue-500 border text-blue-500 rounded transition duration-300 hover:bg-blue-700 hover:text-white focus:outline-none">Retract</button>
-      <button  
-      v-show="shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) && can_verify"
-      @click.prevent="verifyResults()" class="px-2 py-1 mr-2 border-blue-500 border text-blue-500 rounded transition duration-300 hover:bg-blue-700 hover:text-white focus:outline-none">Verify</button>
-      <button  
-      v-show="shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) && can_retest"
-      @click.prevent="retestResults()" class="px-2 py-1 mr-2 border-blue-500 border text-blue-500 rounded transition duration-300 hover:bg-blue-700 hover:text-white focus:outline-none">Retest</button>
-    </section>
-
-  </div>
-
-</template>
-
-
 <script setup lang="ts">
   import { ref, computed } from 'vue';
-
-  import { useStore } from 'vuex';
   import { isNullOrWs } from '../../../utils';
-  import { IWorkSheet } from '../../../models/worksheet';
   import { IAnalysisResult, IAnalysisService } from '../../../models/analysis';
-  import useAnalysisComposable from '../../../modules/analysis';
-  import useWorkSheetComposable from '../../../modules/worksheet'
+  import { useAnalysisComposable, useWorkSheetComposable } from '../../../composables';
+  import { useWorksheetStore } from '../../../stores';
 
   import * as shield from '../../../guards'
 
-  const store = useStore();
+  const worksheetStore = useWorksheetStore();
 
   let can_submit = ref<boolean>(false);
   let can_retract = ref<boolean>(false);
@@ -162,7 +17,7 @@
 
   let allChecked = ref<boolean>(false);
   let viewDetail = ref<boolean>(false);
-  let worksheet = computed<IWorkSheet>(()=> store.getters.getWorkSheet); 
+  let worksheet = computed(()=> worksheetStore.getWorkSheet); 
 
   function areAllChecked(): boolean {
     return worksheet.value?.analysisResults?.every(item => item.checked === true)!;
@@ -328,3 +183,146 @@
   const retestResults = () => retester_(getResultsUids());
 
 </script>
+
+
+<template>
+ <div class="">
+
+   <hr class="mt-4">
+    <label for="toggle" class="text-medium text-gray-700 my-4">More Sample Detail
+      <div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
+          <input 
+          type="checkbox" 
+          name="toggle" id="toggle" 
+          v-model="viewDetail"
+          class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer outline-none"/>
+          <label for="toggle" class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer"></label>
+      </div>
+    </label>
+    <hr class="mb-4">
+
+      <!-- Sampe Table View -->
+    <div class="overflow-x-auto">
+        <div class="align-middle inline-block min-w-full shadow overflow-hidden bg-white shadow-dashboard px-2 pt-1 rounded-bl-lg rounded-br-lg">
+        <table class="min-w-full">
+            <thead>
+            <tr>
+                <th class="px-1 py-1 border-b-2 border-gray-300 text-left leading-4 text-black-500 tracking-wider">
+                    <input type="checkbox" class="" @change="toggleCheckAll()" v-model="allChecked" >
+                </th>
+                <th class="px-1 py-1 border-b-2 border-gray-300 text-left leading-4 text-black-500 tracking-wider"></th>
+                <th class="px-1 py-1 border-b-2 border-gray-300 text-left leading-4 text-black-500 tracking-wider">Sample ID</th>
+                <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-black-500 tracking-wider">Analysis/Test</th>
+                <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-black-500 tracking-wider">Instrument</th>
+                <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-black-500 tracking-wider">Method</th>
+                <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-black-500 tracking-wider">Interim</th>
+                <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-black-500 tracking-wider">Result</th>
+                <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-black-500 tracking-wider">Unit</th>
+                <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-black-500 tracking-wider">Status</th>
+                <!-- <th class="px-1 py-1 border-b-2 border-gray-300"></th> -->
+            </tr>
+            </thead>
+            <tbody class="bg-white">
+            <tr v-for="result in worksheet?.analysisResults" :key="result.uid" :class="[getResultRowColor(result)]">
+                <td>
+                    <input type="checkbox" class="" v-model="result.checked" @change="checkCheck()" :disabled="checkDisabled(result)">
+                </td>
+                <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
+                    <span v-if="result?.sample?.priority! > 0"
+                    :class="[
+                        'font-small',
+                        { 'text-red-700': worksheet?.priority! > 1 },
+                    ]">
+                        <i class="fa fa-star"></i>
+                    </span>
+                </td>
+                <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
+                  <div class="text-sm leading-5 text-gray-800 font-semibold">
+                    <router-link
+                     v-if="result?.sample?.analysisRequest?.patient?.uid" 
+                     :to="{ name: 'sample-detail', params: { patientUid: result?.sample?.analysisRequest?.patient?.uid, sampleUid: result?.sample?.uid  }}">{{ result?.sample?.sampleId }} </router-link>
+                     <div v-else>{{ result?.sample?.sampleId }}</div>
+                  </div>
+                  <span v-if="viewDetail">
+                    <span >
+                          {{ result?.sample?.qcLevel?.level }}
+                    </span>
+                    <div >
+                          {{ result?.sample?.analysisRequest?.patient?.firstName }}
+                          {{ result?.sample?.analysisRequest?.patient?.lastName }}
+                    </div>
+                    <div >
+                          {{ result?.sample?.analysisRequest?.client?.name }}
+                    </div>
+                  </span>
+                </td>
+                <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
+                <div >{{ result?.analysis?.name }}</div>
+                </td>
+                <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
+                <div >{{ result?.instrument?.name  || "None"  }}</div>
+                </td>
+                <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
+                <div >{{ result?.method?.name || "None"  }}</div>
+                </td>
+                <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
+                  <div  v-if="!isEditable(result) || result?.analysis?.interims?.length === 0" class="text-sm leading-5 text-blue-900"> --- </div>
+                  <label v-else class="block col-span-2 mb-2" >
+                      <select class="form-input mt-1 block w-full" v-model="result.result" @change="check(result)">
+                        <option value=""></option>
+                        <option  
+                        v-for="(interim, index) in result?.analysis?.interims"
+                        :key="interim.key"
+                        :value="interim.value" >{{ interim.value }}</option>
+                    </select>
+                  </label>
+                </td>
+                <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
+                  <div  v-if="!isEditable(result)" >{{ result?.result  }}</div>
+                  <label v-else-if="result?.analysis?.resultOptions?.length === 0" class="block" >
+                    <input class="form-input mt-1 block w-full" v-model="result.result" @keyup="check(result)"/>
+                  </label>
+                  <label v-else class="block col-span-2 mb-2" >
+                      <select class="form-input mt-1 block w-full" v-model="result.result" @change="check(result)">
+                        <option value=""></option>
+                        <option  
+                        v-for="(option, index) in result?.analysis?.resultOptions"
+                        :key="option.optionKey"
+                        :value="option.value" >{{ option.value }}</option>
+                    </select>
+                  </label>
+                </td>
+                <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
+                <div >{{ result?.analysis?.unit || "---"  }}</div>
+                </td>
+                <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
+                <button type="button" class="bg-blue-400 text-white p-1 rounded leading-none">{{ result?.status || "unknown" }}</button>
+                </td>
+              </tr>
+            </tbody>
+        </table>
+        </div>
+    </div>
+
+    <section class="my-4">
+      <button  
+      v-show="shield.hasRights(shield.actions.CREATE, shield.objects.WORKSHEET) && can_unassign"
+      @click.prevent="unAssignSamples()" class="px-2 py-1 mr-2 border-blue-500 border text-blue-500 rounded transition duration-300 hover:bg-blue-700 hover:text-white focus:outline-none">Un Assign</button>
+      <button  
+      v-show="shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) && can_submit"
+      @click.prevent="submitResults()" class="px-2 py-1 mr-2 border-blue-500 border text-blue-500 rounded transition duration-300 hover:bg-blue-700 hover:text-white focus:outline-none">Submit</button>
+      <button  
+      v-show="shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) && can_retract"
+      @click.prevent="retractResults()" class="px-2 py-1 mr-2 border-blue-500 border text-blue-500 rounded transition duration-300 hover:bg-blue-700 hover:text-white focus:outline-none">Retract</button>
+      <button  
+      v-show="shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) && can_verify"
+      @click.prevent="verifyResults()" class="px-2 py-1 mr-2 border-blue-500 border text-blue-500 rounded transition duration-300 hover:bg-blue-700 hover:text-white focus:outline-none">Verify</button>
+      <button  
+      v-show="shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) && can_retest"
+      @click.prevent="retestResults()" class="px-2 py-1 mr-2 border-blue-500 border text-blue-500 rounded transition duration-300 hover:bg-blue-700 hover:text-white focus:outline-none">Retest</button>
+    </section>
+
+  </div>
+
+</template>
+

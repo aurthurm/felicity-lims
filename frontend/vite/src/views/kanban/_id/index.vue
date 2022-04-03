@@ -1,3 +1,64 @@
+<script setup lang="ts">
+  import modal from '../../../components/SimpleModal.vue';
+  import { reactive, computed, ref } from 'vue';
+  import { useRoute, useRouter } from 'vue-router';
+  import { ADD_BOARD_LISTING, DELETE_BOARD } from '../../../graphql/kanban.mutations';
+  import { IBoard, IListing } from '../../../models/kanban';
+  import { useKanbanStore } from '../../../stores';
+  import { useApiUtil } from '../../../composables';
+
+  const route = useRoute();
+  const router = useRouter();
+  const kanbanStore = useKanbanStore();
+  const { withClientMutation } = useApiUtil();
+
+  // Modal Vars
+  let showModal = ref<boolean>(false);
+  let formTitle = ref<string>("");
+  let form = reactive({} as IListing);
+
+  kanbanStore.resetBoard();
+  kanbanStore.fetchBoardByUid(+route.params.boardUid);
+  const board = computed(() => kanbanStore.getBoard );
+
+  function addBoardListing(): void {
+    const payload = { title: form.title, description: form.description, boardUid: board.value?.uid };
+    withClientMutation(ADD_BOARD_LISTING, { payload }, "createBoardListing")
+    .then((result) => kanbanStore.addBoardListing(result));
+  }
+
+  function FormManager(): void {
+    showModal.value = true;
+    formTitle.value = "ADD BOARD LISTING";
+    Object.assign(form, {} as IListing);
+  }
+
+  function saveForm():void {
+    addBoardListing();
+    showModal.value = false;
+  }
+
+  // Delete Board
+  function canDeleteBoard(board: IBoard): boolean {
+    if(board?.boardListings?.length === 0) return true;
+    let canDetele = true;
+    board?.boardListings?.forEach((listing: IListing) => {
+      if(listing?.listingTasks?.length! > 0) canDetele = false;
+    })
+    return canDetele
+  }
+
+  function deletekanBanBoard(board: IBoard): void {
+    withClientMutation(DELETE_BOARD, { uid: board?.uid }, "deleteBoard")
+    .then(result => {
+      kanbanStore.deleteBoard(result)
+      router.push({ name: "kanban-boards"});
+    }) 
+  }
+
+  const showAddList = computed(() => !route.path.includes("task") )
+</script>
+
 <template>
 
   <div class="flex justify-start">
@@ -5,8 +66,8 @@
       <div class="flex justify-between">
         <h2 class="h2 font-bold">BOARD: {{ board?.title || 'No title'}}</h2>
         <button 
-        v-show="canDeleteBoard(board)"
-        @click="deletekanBanBoard(board)" 
+        v-show="canDeleteBoard(board!)"
+        @click="deletekanBanBoard(board!)" 
         class="align-center p-1 text-red-600">
           <i class="fa fa-trash" aria-hidden="true"></i> Board
         </button>
@@ -69,86 +130,3 @@
   </modal>
 
 </template>
-
-<script lang="ts">
-import modal from '../../../components/SimpleModal.vue';
-import { defineComponent, reactive, computed, ref } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
-import { useStore } from 'vuex';
-import { useMutation } from '@urql/vue';
-import { ActionTypes } from '../../../store/modules/kanban';
-import { ADD_BOARD_LISTING, DELETE_BOARD } from '../../../graphql/kanban.mutations';
-import { IBoard, IListing } from '../../../models/kanban';
-
-export default defineComponent({
-  name: "kanaban-single",
-  components: {
-    modal,
-  },
-  setup() {
-    const route = useRoute();
-    const router = useRouter();
-    const store = useStore();
-
-    // Modal Vars
-    let showModal = ref<boolean>(false);
-    let formTitle = ref<string>("");
-    let form = reactive<IListing>({});
-
-    store.dispatch(ActionTypes.RESET_BOARD);
-    store.dispatch(ActionTypes.FETCH_BOARD_BY_UID, +route.params.boardUid);
-    const board = computed(() => store.getters.getBoard );
-    const { executeMutation: createBoardListing } = useMutation(ADD_BOARD_LISTING);
- 
-    function addBoardListing(): void {
-      const payload = { title: form.title, description: form.description, boardUid: board.value.uid };
-      createBoardListing({ payload }).then((result) => {
-       store.dispatch(ActionTypes.ADD_BOARD_LISTING, result);
-      });
-    }
-
-    function FormManager(): void {
-      showModal.value = true;
-      formTitle.value = "ADD BOARD LISTING";
-      Object.assign(form, {} as IListing);
-    }
-
-    function saveForm():void {
-      addBoardListing();
-      showModal.value = false;
-    }
-
-    // Delete Board
-    const { executeMutation: deleteBoard } = useMutation(DELETE_BOARD);
-
-    function canDeleteBoard(board: IBoard): boolean {
-      if(board?.boardListings?.length === 0) return true;
-      let canDetele = true;
-      board?.boardListings?.forEach((listing: IListing) => {
-        if(listing?.listingTasks?.length! > 0) canDetele = false;
-      })
-      return canDetele
-    }
-
-    function deletekanBanBoard(board: IBoard): void {
-      deleteBoard({ uid: board?.uid }).then(result => {
-        store.dispatch(ActionTypes.DELETE_BOARD, result);
-      })
-      router.push({ name: "kanban-boards"});
-    }
-
-
-    return { 
-      showAddList: computed(() => !route.path.includes("task") ),
-      board,
-      showModal,
-      FormManager,
-      saveForm,
-      form,
-      formTitle,
-      deletekanBanBoard,
-      canDeleteBoard
-    }
-  },
-});
-</script>

@@ -1,3 +1,72 @@
+<script setup lang="ts">
+  import modal from '../../../../components/SimpleModal.vue';
+  import { ref, reactive, toRefs, watch } from 'vue';
+  import { ADD_RESULT_OPTION, EDIT_RESULT_OPTION  } from '../../../../graphql/analyses.mutations';
+  import { IResultOption } from '../../../../models/analysis';
+  import { useAnalysisStore } from '../../../../stores';
+  import { useApiUtil } from '../../../../composables';
+
+  const analysisStore = useAnalysisStore()
+  const { withClientMutation } = useApiUtil()
+
+  const props = defineProps({
+      analysis: {
+          type: Object,
+          required: true,
+          default: () => ({}),
+      },
+      analysisUid: {
+          type: Number,
+          required: true,
+          default: 0,
+      },
+  })
+
+  const { analysis } = toRefs(props);
+  let showModal = ref(false);
+  let formTitle = ref('');
+  let form = reactive({}) as IResultOption;
+  const formAction = ref(true);
+
+  watch(() => props.analysisUid, (anal, prev) => {
+      console.log(analysis);
+  })
+
+  function addResultOption(): void {
+      form.optionKey = +form.optionKey!;
+      const payload = { ...form, analysisUid: analysis?.value?.uid }
+      withClientMutation(ADD_RESULT_OPTION, { payload }, "createResultOption")
+      .then((result) => analysisStore.addResultOption(result));
+  }
+
+  function editResultOption(): void {
+      const payload = { ...form };
+      delete payload['__typename']
+      delete payload['uid']
+
+      withClientMutation(EDIT_RESULT_OPTION, { uid : form.uid,  payload }, "updateResultOption")
+      .then((result) => analysisStore.updateResultOption(result));
+  }
+
+  function FormManager(create: boolean, obj = {} as IResultOption):void {
+      formAction.value = create;
+      showModal.value = true;
+      formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "RESULT OPTION";
+      if (create) {
+          Object.assign(form, { optionKey: null, value: null });
+      } else {
+          Object.assign(form, { ...obj });
+      }
+  }
+
+  function saveForm():void {
+      if (formAction.value === true) addResultOption();
+      if (formAction.value === false) editResultOption();
+      showModal.value = false;
+  }
+
+</script>
+
 <template>
      <button
         class="px-2 py-1 border-blue-500 border text-blue-500 rounded transition duration-300 hover:bg-blue-700 hover:text-white focus:outline-none"
@@ -77,92 +146,3 @@
 
 </template>
 
-<script lang="ts">
-    import modal from '../../../../components/SimpleModal.vue';
-    import { defineComponent, ref, reactive, toRefs, watch } from 'vue';
-    import { useMutation } from '@urql/vue';
-    import { useStore } from 'vuex';
-
-    import { ActionTypes } from '../../../../store/modules/analysis';
-    import { ADD_RESULT_OPTION, EDIT_RESULT_OPTION  } from '../../../../graphql/analyses.mutations';
-import { IResultOption } from '../../../../models/analysis';
-
-    export default defineComponent({
-    name: 'result-options',
-    components: {
-        modal,
-    },
-    props: {
-        analysis: {
-            type: Object,
-            required: true,
-            default: () => ({}),
-        },
-        analysisUid: {
-            type: Number,
-            required: true,
-            default: 0,
-        },
-    },
-    setup(props) {
-        let store = useStore();
-        const { analysis } = toRefs(props);
-        let showModal = ref(false);
-        let formTitle = ref('');
-        let form = reactive({}) as IResultOption;
-        const formAction = ref(true);
-
-        watch(() => props.analysisUid, (anal, prev) => {
-            console.log(analysis);
-        })
-
-        const { executeMutation: createResultOption } = useMutation(ADD_RESULT_OPTION);
-        const { executeMutation: updateResultOption } = useMutation(EDIT_RESULT_OPTION);
-
-        function addResultOption(): void {
-            form.optionKey = +form.optionKey!;
-            const payload = { ...form, analysisUid: analysis?.value?.uid }
-            createResultOption({ payload }).then((result) => {
-                store.dispatch(ActionTypes.ADD_RESULT_OPTION, result);
-            });
-        }
-
-        function editResultOption(): void {
-            const payload = { ...form };
-            delete payload['__typename']
-            delete payload['uid']
-
-            updateResultOption({ uid : form.uid,  payload }).then((result) => {
-                store.dispatch(ActionTypes.UPDATE_RESULT_OPTION, result);
-            });
-        }
-    
-        function FormManager(create: boolean, obj = {} as IResultOption):void {
-            formAction.value = create;
-            showModal.value = true;
-            formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "RESULT OPTION";
-            if (create) {
-                Object.assign(form, { optionKey: null, value: null });
-            } else {
-                Object.assign(form, { ...obj });
-            }
-        }
-
-        function saveForm():void {
-            if (formAction.value === true) addResultOption();
-            if (formAction.value === false) editResultOption();
-            showModal.value = false;
-        }
-
-
-        return {
-            analysis,
-            showModal,
-            form,
-            formTitle,
-            saveForm,
-            FormManager,
-        }
-    },
-    });
-</script>

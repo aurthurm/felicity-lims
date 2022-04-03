@@ -1,3 +1,110 @@
+<script setup lang="ts">
+  import modal from '../../../components/SimpleModal.vue';
+  import accordion from '../../../components/Accordion.vue';
+  import { ref,reactive, computed } from 'vue';
+  import { useSetupStore, useUserStore } from '../../../stores';
+  import { useApiUtil } from '../../../composables';
+  import { UPDATE_GROUP_PERMS, ADD_GROUP, UPDATE_GROUP } from '../../../graphql/_mutations';
+  import { IGroup, IPermission } from '../../../models/auth';
+
+  import * as shield from '../../../guards'
+  const pages = [
+    shield.pages.ADMINISTRATION,
+    shield.pages.DASHBOARD,
+    shield.pages.CLIENTS,
+    shield.pages.PATIENTS,
+    shield.pages.PATIENTS_COMPACT,
+    shield.pages.SAMPLES,
+    shield.pages.QC_SAMPLES,
+    shield.pages.WORKSHEETS,
+    shield.pages.NOTICE_MANAGER,
+    shield.pages.MARKDOWN_DOCUMENTS,
+    shield.pages.KANBAN_BOARD,
+  ]
+
+  let setupStore = useSetupStore();
+  let userStore = useUserStore()
+  const { withClientMutation } = useApiUtil()
+
+  userStore.fetchGroupsAndPermissions();
+  const groups = computed(() => userStore.getGroups)
+
+  // each tab if just gonna be forms with updatable values on button click
+  let currentTab = ref('permissions');
+  const tabs = ['permissions'];
+  
+  let showModal = ref(false);
+  let formTitle = ref('');
+  const formAction = ref(true);
+  let userGroup = reactive({}) as IGroup;
+
+  function selectGroup(group: IGroup): void {
+    const pgs = group.pages as string;
+    Object.assign(userGroup, { 
+      ...group, 
+      pages: pgs?.split(",") || [],
+    })
+    permissions.value?.forEach(item => {
+      item[1].forEach((perm: IPermission) => {
+        perm.checked = false;
+        if(userGroup.permissions?.some(p => {
+          console.log(p, perm, (p?.uid === perm?.uid))
+          return (p?.uid == perm?.uid) || false;
+        })) {
+          perm.checked = true;
+        };
+      })
+    })
+  }
+
+  function FormManager(create: boolean, obj = {} as IGroup): void {
+    formAction.value = create;
+    showModal.value = true;
+    formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "ANALYSES PROFILE";
+    if (create) {
+      Object.assign(userGroup, { name: "", pages: [] } as IGroup);
+    } else {
+      Object.assign(userGroup, { ...obj });
+    }
+  }
+
+  function saveForm():void {
+    const payload = { ...userGroup }
+    const pgs = payload["pages"] as string[];
+    payload['pages'] = pgs.join(',')
+
+    if (formAction.value === true) {
+      withClientMutation(ADD_GROUP, {  payload }, "createGroup")
+      .then((result) => userStore.addGroup(result));
+    }
+
+    if (formAction.value === false) {
+      withClientMutation(UPDATE_GROUP, {  uid: userGroup?.uid, payload: {
+        name: payload["name"],
+        pages: payload["pages"],
+      } }, "updateGroup").then((result) => userStore.updateGroup(result));
+    };
+    showModal.value = false;
+  
+  }
+
+  //
+  const groupBy = (xs, key):Map<any, any> => {
+    return xs?.reduce(function(rv, x) {
+      (rv[x[key]] = rv[x[key]] || []).push(x);
+      return rv;
+    }, {});
+  };
+
+  const permissions = computed(() => Array.from(Object.entries(groupBy(userStore.getPermissions, 'target'))))
+  
+  function updateGroupPerms(group: IGroup, permission: IPermission): void {
+      withClientMutation(UPDATE_GROUP_PERMS, {  groupUid: group?.uid, permissionUid: permission?.uid }, "updateGroupPermissions")
+      .then((result) => userStore.updateGroupsAndPermissions(result));
+  }
+
+</script>
+
 <template>
   <div class="">
     <div class="container w-full my-4">
@@ -195,117 +302,3 @@
   </modal>
 
 </template>
-
-<script setup lang="ts">
-  import modal from '../../../components/SimpleModal.vue';
-  import accordion from '../../../components/Accordion.vue';
-
-  import { ref,reactive, computed } from 'vue';
-  import { useStore } from 'vuex';
-  import { useMutation } from '@urql/vue';
-
-  import { ActionTypes } from '../../../store/actions';
-  import { UPDATE_GROUP_PERMS, ADD_GROUP, UPDATE_GROUP } from '../../../graphql/_mutations';
-  import { IGroup, IPermission } from '../../../models/auth';
-
-  import * as shield from '../../../guards'
-  const pages = [
-    shield.pages.ADMINISTRATION,
-    shield.pages.DASHBOARD,
-    shield.pages.CLIENTS,
-    shield.pages.PATIENTS,
-    shield.pages.PATIENTS_COMPACT,
-    shield.pages.SAMPLES,
-    shield.pages.QC_SAMPLES,
-    shield.pages.WORKSHEETS,
-    shield.pages.NOTICE_MANAGER,
-    shield.pages.MARKDOWN_DOCUMENTS,
-    shield.pages.KANBAN_BOARD,
-  ]
-
-  let store = useStore();
-
-  store.dispatch(ActionTypes.FETCH_GROUPS_AND_PERMISSIONS);
-  const groups = computed(() => store.getters.getGroups)
-
-  // each tab if just gonna be forms with updatable values on button click
-  let currentTab = ref('permissions');
-  const tabs = ['permissions'];
-  
-  let showModal = ref(false);
-  let formTitle = ref('');
-  const formAction = ref(true);
-  let userGroup = reactive({}) as IGroup;
-
-  function selectGroup(group: IGroup): void {
-    const pgs = group.pages as string;
-    Object.assign(userGroup, { 
-      ...group, 
-      pages: pgs?.split(",") || [],
-    })
-    permissions.value?.forEach(item => {
-      item[1].forEach((perm: IPermission) => {
-        perm.checked = false;
-        if(userGroup.permissions?.some(p => {
-          console.log(p, perm, (p?.uid === perm?.uid))
-          return (p?.uid == perm?.uid) || false;
-        })) {
-          perm.checked = true;
-        };
-      })
-    })
-  }
-  const { executeMutation: createGroup } = useMutation(ADD_GROUP);
-  const { executeMutation: updateGroup } = useMutation(UPDATE_GROUP);
-
-  function FormManager(create: boolean, obj = {} as IGroup): void {
-    formAction.value = create;
-    showModal.value = true;
-    formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "ANALYSES PROFILE";
-    if (create) {
-      Object.assign(userGroup, { name: "", pages: [] } as IGroup);
-    } else {
-      Object.assign(userGroup, { ...obj });
-    }
-  }
-
-  function saveForm():void {
-    const payload = { ...userGroup }
-    const pgs = payload["pages"] as string[];
-    payload['pages'] = pgs.join(',')
-
-    if (formAction.value === true) {
-      createGroup({  payload }).then((result) => {
-        store.dispatch(ActionTypes.ADD_GROUP, result?.data?.createGroup);
-      });
-    };
-    if (formAction.value === false) {
-      updateGroup({  uid: userGroup?.uid, payload: {
-        name: payload["name"],
-        pages: payload["pages"],
-      } }).then((result) => {
-        store.dispatch(ActionTypes.UPDATE_GROUP, result?.data?.updateGroup);
-      });
-    };
-    showModal.value = false;
-  
-  }
-
-  //
-  const groupBy = (xs, key):Map<any, any> => {
-    return xs?.reduce(function(rv, x) {
-      (rv[x[key]] = rv[x[key]] || []).push(x);
-      return rv;
-    }, {});
-  };
-
-  const permissions = computed(() => Array.from(Object.entries(groupBy(store.getters.getPermissions, 'target'))))
-  
-  const { executeMutation: updateGroupPermissions } = useMutation(UPDATE_GROUP_PERMS);
-  function updateGroupPerms(group: IGroup, permission: IPermission): void {
-      updateGroupPermissions({  groupUid: group?.uid, permissionUid: permission?.uid }).then((result) => {
-        store.dispatch(ActionTypes.UPDATE_GROUP, result?.data?.updateGroupPermissions);
-    });
-  }
-
-</script>

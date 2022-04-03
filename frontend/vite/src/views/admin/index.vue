@@ -1,3 +1,12 @@
+<script setup lang="ts">
+  import { computed } from 'vue';
+  import { useLocationStore } from '../../stores';
+  
+  const locationStore = useLocationStore()
+  const resetSelected = () => locationStore.updateConfRoute("");
+  const selectedRoute = computed(() => locationStore.getConfRoute)
+</script>
+
 <template>
   <div class="">
     <div class="flex justify-start">
@@ -13,18 +22,3 @@
     <router-view />
   </div>
 </template>
-
-<script lang="ts">
-import { defineComponent, computed } from 'vue';
-import { useStore } from 'vuex';
-import { ActionTypes } from '../../store/modules/admin';
-export default defineComponent({
-  name: "admin",
-  setup() {
-    const store = useStore();
-    const resetSelected = () => store.dispatch(ActionTypes.SET_CONF_ROUTE, "");
-    const selectedRoute = computed(() => store.getters.getConfRoute)
-    return { selectedRoute, resetSelected };
-  },
-});
-</script>

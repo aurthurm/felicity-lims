@@ -1,3 +1,52 @@
+<script setup lang="ts">
+  import modal from '../../../components/SimpleModal.vue';
+  import { ref, reactive, computed } from 'vue';
+  import { useSetupStore } from '../../../stores';
+  import { useApiUtil } from '../../../composables';
+  import { ISupplier } from '../../../models/setup'
+  import { ADD_SUPPLIER, EDIT_SUPPLIER } from '../../../graphql/instrument.mutations';
+
+  const setupStore = useSetupStore();
+  const { withClientMutation } = useApiUtil();
+  
+  let showModal = ref<boolean>(false);
+  let formTitle = ref<string>('');
+  let form = reactive({}) as ISupplier;
+  const formAction = ref<boolean>(true);
+
+  setupStore.fetchSuppliers();
+  const suppliers = computed(() => setupStore.getSuppliers)
+
+  function addSupplier(): void {
+    const payload = { name: form.name, description: form.description }
+    withClientMutation(ADD_SUPPLIER, { payload }, "createSupplier")
+    .then((result) => setupStore.addSupplier(result));
+  }
+
+  function editSupplier(): void {
+    const payload = { name: form.name, description: form.description }
+    withClientMutation(EDIT_SUPPLIER, { uid: form.uid, payload }, "updateSupplier")
+    .then((result) => setupStore.updateSupplier(result));
+  }
+
+  function FormManager(create: boolean, obj = {} as ISupplier):void {
+    formAction.value = create;
+    showModal.value = true;
+    formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "SUPPLIER";
+    if (create) {
+      Object.assign(form, {} as ISupplier);
+    } else {
+      Object.assign(form, { ...obj });
+    }
+  }
+
+  function saveForm():void {
+    if (formAction.value === true) addSupplier();
+    if (formAction.value === false) editSupplier();
+    showModal.value = false;
+  }
+</script>
+
 <template>
 
     <div class="container w-full my-4">
@@ -89,56 +138,3 @@
     background-color: #68D391;
   }
 </style>
-
-<script setup lang="ts">
-  import modal from '../../../components/SimpleModal.vue';
-  import { useMutation } from '@urql/vue';
-  import { defineComponent, ref, reactive, computed } from 'vue';
-  import { useStore } from 'vuex';
-  import { ActionTypes } from '../../../store/modules/setup';
-  import { ISupplier } from '../../../models/setup'
-  import { ADD_SUPPLIER, EDIT_SUPPLIER } from '../../../graphql/instrument.mutations';
-
-  const store = useStore();
-  
-  let showModal = ref<boolean>(false);
-  let formTitle = ref<string>('');
-  let form = reactive({}) as ISupplier;
-  const formAction = ref<boolean>(true);
-
-  store.dispatch(ActionTypes.FETCH_SUPPLIERS);
-  const suppliers = computed(() =>store.getters.getSuppliers)
-  const { executeMutation: createSupplier } = useMutation(ADD_SUPPLIER);
-  const { executeMutation: updateSupplier } = useMutation(EDIT_SUPPLIER);
-
-  function addSupplier(): void {
-    const payload = { name: form.name, abbr: form.abbr, description: form.description, active: form.active}
-    createSupplier({ payload }).then((result) => {
-      store.dispatch(ActionTypes.ADD_SUPPLIER, result);
-    });
-  }
-
-  function editSupplier(): void {
-    const payload = { name: form.name, abbr: form.abbr, description: form.description, active: form.active}
-    updateSupplier({ uid: form.uid, payload }).then((result) => {
-      store.dispatch(ActionTypes.UPDATE_SUPPLIER, result);
-    });
-  }
-
-  function FormManager(create: boolean, obj = {} as ISupplier):void {
-    formAction.value = create;
-    showModal.value = true;
-    formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "SUPPLIER";
-    if (create) {
-      Object.assign(form, {} as ISupplier);
-    } else {
-      Object.assign(form, { ...obj });
-    }
-  }
-
-  function saveForm():void {
-    if (formAction.value === true) addSupplier();
-    if (formAction.value === false) editSupplier();
-    showModal.value = false;
-  }
-</script>

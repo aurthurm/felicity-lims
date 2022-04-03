@@ -1,3 +1,70 @@
+<script setup lang="ts">
+  import modal from '../../../components/SimpleModal.vue';
+  import { ref, reactive, computed } from 'vue';
+  import { IQCTemplate, IQCLevel } from '../../../models/analysis';
+  import { ADD_QC_TEMPLATE, EDIT_QC_TEMPLATE  } from '../../../graphql/analyses.mutations';
+  import { useAnalysisStore } from '../../../stores';
+  import { useApiUtil } from '../../../composables';
+
+  const analysisStore = useAnalysisStore()
+  const { withClientMutation } = useApiUtil()
+  
+  let showModal = ref(false);
+  let formTitle = ref('');
+  let form = reactive({}) as IQCTemplate;
+  const formAction = ref(true);
+
+  analysisStore.fetchQCLevels();
+  analysisStore.fetchQCTemplates();
+
+  const qcTemplates = computed(() => analysisStore.getQCTemplates)
+  const qcLevels = computed(() => analysisStore.getQCLevels)
+
+  function addQCTemplate(): void {
+    const payload = { name: form.name, description: form.description, levels: levelsUids(form.qcLevels!), departments: form.departments }
+    withClientMutation(ADD_QC_TEMPLATE, { payload}, "createQcTemplate")
+    .then((result) => analysisStore.addQcTemplate(result));
+  }
+
+  function editQCTemplate(): void {
+    const payload = { name: form.name, description: form.description, levels: levelsUids(form.qcLevels!), departments: form.departments }
+    withClientMutation(EDIT_QC_TEMPLATE,{ uid: form.uid, payload }, "updateQcTemplate")
+    .then((result) => analysisStore.updateQcTemplate(result));
+  }
+
+  function levelsUids(levels: IQCLevel[]): number[] {
+    if (levels?.length <= 0 ) return [];
+    let qcLevels: number[] = [];
+    levels?.forEach(level => qcLevels.push(level.uid!));
+    return qcLevels;
+  }
+
+  function FormManager(create: boolean, obj = {} as IQCTemplate): void {
+    formAction.value = create;
+    showModal.value = true;
+    formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "QC Template";
+    if (create) {
+      Object.assign(form, { ...({} as IQCTemplate) });
+    } else {
+      Object.assign(form, { ...obj });
+    }
+  }
+
+  function levelsNames(levels: IQCLevel[]): string {
+    if (levels?.length <= 0 ) return '';
+    let qcLevels: string[] = [];
+    levels?.forEach(level => qcLevels.push(level.level!));
+    return qcLevels.join(", ");
+  }
+
+  function saveForm(): void {
+    if (formAction.value === true) addQCTemplate();
+    if (formAction.value === false) editQCTemplate();
+    showModal.value = false;
+  }
+
+</script>
+
 <template>
 
     <div class="container w-full my-4">
@@ -29,7 +96,7 @@
                     <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
                     <div class="flex items-center">
                         <div>
-                        <div class="text-sm leading-5 text-gray-800">{{ levelsNames(templt?.qcLevels) }}</div>
+                        <div class="text-sm leading-5 text-gray-800">{{ levelsNames(templt?.qcLevels!) }}</div>
                         </div>
                     </div>
                     </td>
@@ -101,90 +168,3 @@
 
 </template>
 
-<script lang="ts" scope="ts">
-import modal from '../../../components/SimpleModal.vue';
-
-import { useMutation } from '@urql/vue';
-import { defineComponent, ref, reactive, computed } from 'vue';
-import { useStore } from 'vuex';
-import { ActionTypes } from '../../../store/modules/analysis';
-import { IQCTemplate, IQCLevel } from '../../../models/analysis';
-import { ADD_QC_TEMPLATE, EDIT_QC_TEMPLATE  } from '../../../graphql/analyses.mutations';
-
-
-export default defineComponent({
-  name: "tab-quality-control-templates",
-  components: {
-    modal,
-  },
-  setup() {
-    const store = useStore();
-    
-    let showModal = ref(false);
-    let formTitle = ref('');
-    let form = reactive({}) as IQCTemplate;
-    const formAction = ref(true);
-
-    store.dispatch(ActionTypes.FETCH_QC_LEVELS);
-    store.dispatch(ActionTypes.FETCH_ANALYSES_QC_TEMPLATES);
-    const { executeMutation: createQCTemplate } = useMutation(ADD_QC_TEMPLATE);
-    const { executeMutation: updateQCTemplate } = useMutation(EDIT_QC_TEMPLATE);
-
-    function addQCTemplate(): void {
-      const payload = { name: form.name, description: form.description, levels: levelsUids(form.qcLevels!), departments: form.departments }
-      createQCTemplate({ payload}).then((result) => {
-       store.dispatch(ActionTypes.ADD_QC_TEMPLATE, result);
-      });
-    }
-
-    function editQCTemplate(): void {
-      const payload = { name: form.name, description: form.description, levels: levelsUids(form.qcLevels!), departments: form.departments }
-      updateQCTemplate({ uid: form.uid, payload }).then((result) => {
-        store.dispatch(ActionTypes.UPDATE_QC_TEMPLATE, result);
-      });
-    }
-
-    function levelsUids(levels: IQCLevel[]): number[] {
-      if (levels?.length <= 0 ) return [];
-      let qcLevels: number[] = [];
-      levels?.forEach(level => qcLevels.push(level.uid!));
-      return qcLevels;
-    }
-
-    function FormManager(create: boolean, obj = {} as IQCTemplate): void {
-      formAction.value = create;
-      showModal.value = true;
-      formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "QC Template";
-      if (create) {
-        Object.assign(form, { ...({} as IQCTemplate) });
-      } else {
-        Object.assign(form, { ...obj });
-      }
-    }
-
-    function levelsNames(levels: IQCLevel[]): string {
-      if (levels?.length <= 0 ) return '';
-      let qcLevels: string[] = [];
-      levels?.forEach(level => qcLevels.push(level.level!));
-      return qcLevels.join(", ");
-    }
-
-    function saveForm(): void {
-      if (formAction.value === true) addQCTemplate();
-      if (formAction.value === false) editQCTemplate();
-      showModal.value = false;
-    }
-
-    return {
-      showModal, 
-      levelsNames,
-      qcTemplates: computed(() => store.getters.getQCTemplates),
-      qcLevels: computed(() => store.getters.getQCLevels),
-      FormManager,
-      form,
-      formTitle,
-      saveForm
-     };
-  },
-});
-</script>

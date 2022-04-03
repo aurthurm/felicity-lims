@@ -1,3 +1,66 @@
+<script setup lang="ts">
+  import modal from '../../../components/SimpleModal.vue';
+  import { ref, reactive, computed } from 'vue';
+  import { IAnalysisCategory } from '../../../models/analysis';
+  import { ADD_ANALYSIS_CATEGORY, EDIT_ANALYSIS_CATEGORY  } from '../../../graphql/analyses.mutations';
+  import { useSetupStore, useAnalysisStore } from '../../../stores';
+  import { useApiUtil } from '../../../composables';
+
+  const analysisStore = useAnalysisStore()
+  const  setupStore = useSetupStore()
+  const { withClientMutation } = useApiUtil()
+  
+  let showModal = ref(false);
+  let formTitle = ref('');
+  let form = reactive({} as IAnalysisCategory);
+  const formAction = ref(true);
+
+  const departments = computed<any[]>(() => setupStore.getDepartments);
+
+  analysisStore.fetchAnalysesCategories();
+  const analysesCategories= computed(() => analysisStore.getAnalysesCategories);
+
+  function addAnalysesCategory(): void {
+    const payload = { 
+      name: form.name, 
+      description: form.description, 
+      departmentUid: form.departmentUid,
+      active: form.active 
+    }
+    withClientMutation(ADD_ANALYSIS_CATEGORY, { payload }, "createAnalysisCategory")
+    .then((result) => analysisStore.addAnalysisCategory(result));
+  }
+
+  function editAnalysesCategory(): void {
+    const payload = { 
+      name: form.name, 
+      description: form.description, 
+      departmentUid: form.departmentUid,
+      active: form.active 
+    }
+    withClientMutation(EDIT_ANALYSIS_CATEGORY, { uid: form.uid, payload }, "updateAnalysisCategory")
+    .then((result) => analysisStore.updateAnalysisCategory(result));
+  }
+
+  function FormManager(create: boolean, obj: IAnalysisCategory | null):void {
+    formAction.value = create;
+    showModal.value = true;
+    formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "ANALYSES CATEGORY";
+    if (create) {
+      Object.assign(form, {} as IAnalysisCategory);
+    } else {
+      Object.assign(form, { ...obj });
+    }
+  }
+
+  function saveForm():void {
+    if (formAction.value === true) addAnalysesCategory();
+    if (formAction.value === false) editAnalysesCategory();
+    showModal.value = false;
+  }
+
+</script>
+
 <template>
 
     <div class="container w-full my-4">
@@ -85,85 +148,3 @@
   </modal>
 
 </template>
-
-
-<style scoped>
-  /* CHECKBOX TOGGLE SWITCH */
-  /* @apply rules for documentation, these do not work as inline style */
-  .toggle-checkbox:checked {
-    @apply: right-0 border-green-400;
-    right: 0;
-    border-color: #68D391;
-  }
-  .toggle-checkbox:checked + .toggle-label {
-    @apply: bg-green-400;
-    background-color: #68D391;
-  }
-</style>
-
-<script setup lang="ts">
-  import modal from '../../../components/SimpleModal.vue';
-
-  import { useMutation } from '@urql/vue';
-  import { ref, reactive, computed } from 'vue';
-  import { useStore } from 'vuex';
-  import { ActionTypes,  } from '../../../store/modules/analysis';
-  import { IAnalysisCategory } from '../../../models/analysis';
-  import { ADD_ANALYSIS_CATEGORY, EDIT_ANALYSIS_CATEGORY  } from '../../../graphql/analyses.mutations';
-
-  const store = useStore();
-  
-  let showModal = ref(false);
-  let formTitle = ref('');
-  let form = reactive({} as IAnalysisCategory);
-  const formAction = ref(true);
-
-  const departments = computed<any[]>(() => store.getters.getDepartments);
-
-  store.dispatch(ActionTypes.FETCH_ANALYSES_CATEGORIES);
-  const analysesCategories= computed(() =>store.getters.getAnalysesCategories);
-  const { executeMutation: createAnalysisCategory } = useMutation(ADD_ANALYSIS_CATEGORY);
-  const { executeMutation: updateAnalysisCategory } = useMutation(EDIT_ANALYSIS_CATEGORY);
-
-  function addAnalysesCategory(): void {
-    const payload = { 
-      name: form.name, 
-      description: form.description, 
-      departmentUid: form.departmentUid,
-      active: form.active 
-    }
-    createAnalysisCategory({ payload }).then((result) => {
-      store.dispatch(ActionTypes.ADD_ANALYSES_CATEGORY, result);
-    });
-  }
-
-  function editAnalysesCategory(): void {
-    const payload = { 
-      name: form.name, 
-      description: form.description, 
-      departmentUid: form.departmentUid,
-      active: form.active 
-    }
-    updateAnalysisCategory({ uid: form.uid, payload }).then((result) => {
-      store.dispatch(ActionTypes.UPDATE_ANALYSES_CATEGORY, result);
-    });
-  }
-
-  function FormManager(create: boolean, obj: IAnalysisCategory | null):void {
-    formAction.value = create;
-    showModal.value = true;
-    formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "ANALYSES CATEGORY";
-    if (create) {
-      Object.assign(form, {} as IAnalysisCategory);
-    } else {
-      Object.assign(form, { ...obj });
-    }
-  }
-
-  function saveForm():void {
-    if (formAction.value === true) addAnalysesCategory();
-    if (formAction.value === false) editAnalysesCategory();
-    showModal.value = false;
-  }
-
-</script>

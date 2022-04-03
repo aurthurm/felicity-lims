@@ -1,3 +1,36 @@
+<script setup lang="ts">
+  import { ref, computed } from 'vue';
+
+  import tabAnalysesCategories from './AnalysesCategories.vue';
+  import tabAnalysesProfiles from './AnalysesProfiles.vue';
+  import tabAnalysesServices from './services/index.vue';
+  import tabQualityControlLevels from './QCLevels.vue';
+  import tabQualityControlTemplates from './QCTemplates.vue';
+  import tabRejectionReasons from './RejectionReasons.vue';
+
+  import { useSampleStore, useSetupStore } from '../../../stores';
+
+  const setupStore = useSetupStore()
+  const  sampleStore = useSampleStore()
+
+  let currentTab = ref('analyses-profiles');
+  const tabs = [
+    'analyses-profiles', 
+    'analyses-services', 
+    'analyses-categories', 
+    'quality-control-levels', 
+    'quality-control-templates',
+    'rejection-reasons',
+  ];
+  let currentTabComponent = computed(() => 'tab-' + currentTab.value);
+
+  sampleStore.fetchSampleTypes();    
+  setupStore.fetchDepartments({});   
+
+</script>
+
+
+
 <template>
   <div class="mt-4">
 
@@ -33,33 +66,3 @@
 
 </style>
 
-<script setup lang="ts">
-  import { ref, computed } from 'vue';
-  import { useStore } from 'vuex';
-
-  import tabAnalysesCategories from './AnalysesCategories.vue';
-  import tabAnalysesProfiles from './AnalysesProfiles.vue';
-  import tabAnalysesServices from './services/index.vue';
-  import tabQualityControlLevels from './QCLevels.vue';
-  import tabQualityControlTemplates from './QCTemplates.vue';
-  import tabRejectionReasons from './RejectionReasons.vue';
-
-  import { ActionTypes } from '../../../store/modules/sample'
-  import { ActionTypes as ActionActionTypes} from '../../../store/actions'
-
-  let currentTab = ref('analyses-profiles');
-  const tabs = [
-    'analyses-profiles', 
-    'analyses-services', 
-    'analyses-categories', 
-    'quality-control-levels', 
-    'quality-control-templates',
-    'rejection-reasons',
-  ];
-  let currentTabComponent = computed(() => 'tab-' + currentTab.value);
-
-  const store = useStore();
-  store.dispatch(ActionTypes.FETCH_SAMPLE_TYPES);    
-  store.dispatch(ActionActionTypes.FETCH_DEPARTMENTS);   
-
-</script>

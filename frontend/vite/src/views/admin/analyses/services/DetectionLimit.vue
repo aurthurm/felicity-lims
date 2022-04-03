@@ -1,3 +1,89 @@
+<script setup lang="ts">
+  import modal from '../../../../components/SimpleModal.vue';
+  import { computed, ref, reactive, toRefs, watch } from 'vue';
+  import { ADD_ANALYSIS_DETECTION_LIMIT, EDIT_ANALYSIS_DETECTION_LIMIT  } from '../../../../graphql/analyses.mutations';
+  import { IAnalysisDetectionLimit } from '../../../../models/analysis';
+  import { IInstrument, IMethod } from '../../../../models/setup';
+  import { useSetupStore, useAnalysisStore } from '../../../../stores';
+  import { useApiUtil } from '../../../../composables';
+
+  const analysisStore = useAnalysisStore()
+  const  setupStore = useSetupStore()
+  const { withClientMutation } = useApiUtil()
+
+  const props = defineProps({
+      analysis: {
+          type: Object,
+          required: true,
+          default: () => ({}),
+      },
+      analysisUid: {
+          type: Number,
+          required: true,
+          default: 0,
+      },
+  })
+
+  const { analysis } = toRefs(props);
+  let showModal = ref(false);
+  let formTitle = ref('');
+  let form = reactive({}) as IAnalysisDetectionLimit;
+  const formAction = ref(true);
+
+  watch(() => props.analysisUid, (anal, prev) => {
+      console.log(analysis);
+  })
+
+  setupStore.fetchInstruments();
+  const instruments = computed<IInstrument[]>(() => setupStore.getInstruments)
+
+  setupStore.fetchMethods();
+  const methods = computed<IMethod[]>(() => setupStore.getMethods)
+
+  function addAnalysisDetectionLimit(): void {
+      const payload = { ...form, analysisUid: analysis?.value?.uid }
+      withClientMutation(ADD_ANALYSIS_DETECTION_LIMIT, { payload }, "createAnalysisDetectionLimit")
+      .then((result) => analysisStore.addAnalysisDetectionLimit(result));
+  }
+
+  function editAnalysisDetectionLimit(): void {
+      const payload: any = { ...form };
+      delete payload['uid']
+      delete payload['__typename']
+
+      withClientMutation(EDIT_ANALYSIS_DETECTION_LIMIT, { uid : form.uid,  payload }, "updateAnalysisDetectionLimit")
+      .then((result) => analysisStore.updateAnalysisDetectionLimit(result));
+  }
+
+  function FormManager(create: boolean, obj = {} as IAnalysisDetectionLimit):void {
+      formAction.value = create;
+      showModal.value = true;
+      formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "ANALYSIS DETECTION_LIMIT";
+      if (create) {
+          Object.assign(form, { lowerLimit: null, upperLimit: null, instrumentUid: null , methodUid: null });
+      } else {
+          Object.assign(form, { ...obj });
+      }
+  }
+
+  function saveForm():void {
+      if (formAction.value === true) addAnalysisDetectionLimit();
+      if (formAction.value === false) editAnalysisDetectionLimit();
+      showModal.value = false;
+  }
+
+  const instrumentName = (uid: number): string => {
+    const index = instruments?.value?.findIndex(item => item.uid === uid)
+    return instruments?.value[index]?.name || "unknown";
+  }
+
+  const methodName = (uid: number): string => {
+    const index = methods?.value?.findIndex(item => item.uid === uid)
+    return methods?.value[index]?.name || "unknown";
+  }
+
+</script>
+
 <template>
      <button
         class="px-2 py-1 border-blue-500 border text-blue-500 rounded transition duration-300 hover:bg-blue-700 hover:text-white focus:outline-none"
@@ -103,93 +189,3 @@
 
 </template>
 
-<script setup lang="ts">
-  import modal from '../../../../components/SimpleModal.vue';
-  import { computed, ref, reactive, toRefs, watch } from 'vue';
-  import { useMutation } from '@urql/vue';
-  import { useStore } from 'vuex';
-
-  import { ActionTypes } from '../../../../store/modules/analysis';
-  import { ActionTypes as SetupActionTypes } from '../../../../store/modules/setup';
-  import { ADD_ANALYSIS_DETECTION_LIMIT, EDIT_ANALYSIS_DETECTION_LIMIT  } from '../../../../graphql/analyses.mutations';
-  import { IAnalysisDetectionLimit } from '../../../../models/analysis';
-  import { IInstrument, IMethod } from '../../../../models/setup';
-
-  const props = defineProps({
-      analysis: {
-          type: Object,
-          required: true,
-          default: () => ({}),
-      },
-      analysisUid: {
-          type: Number,
-          required: true,
-          default: 0,
-      },
-  })
-
-  let store = useStore();
-  const { analysis } = toRefs(props);
-  let showModal = ref(false);
-  let formTitle = ref('');
-  let form = reactive({}) as IAnalysisDetectionLimit;
-  const formAction = ref(true);
-
-  watch(() => props.analysisUid, (anal, prev) => {
-      console.log(analysis);
-  })
-
-  store.dispatch(SetupActionTypes.FETCH_INSTRUMENTS);
-  const instruments = computed<IInstrument[]>(() => store.getters.getInstruments)
-
-  store.dispatch(SetupActionTypes.FETCH_METHODS);
-  const methods = computed<IMethod[]>(() => store.getters.getMethods)
-
-  const { executeMutation: createAnalysisDetectionLimit } = useMutation(ADD_ANALYSIS_DETECTION_LIMIT);
-  const { executeMutation: updateAnalysisDetectionLimit } = useMutation(EDIT_ANALYSIS_DETECTION_LIMIT);
-
-  function addAnalysisDetectionLimit(): void {
-      const payload = { ...form, analysisUid: analysis?.value?.uid }
-      createAnalysisDetectionLimit({ payload }).then((result) => {
-          store.dispatch(ActionTypes.ADD_ANALYSIS_DETECTION_LIMIT, result);
-      });
-  }
-
-  function editAnalysisDetectionLimit(): void {
-      const payload: any = { ...form };
-      delete payload['uid']
-      delete payload['__typename']
-
-      updateAnalysisDetectionLimit({ uid : form.uid,  payload }).then((result) => {
-          store.dispatch(ActionTypes.UPDATE_ANALYSIS_DETECTION_LIMIT, result);
-      });
-  }
-
-  function FormManager(create: boolean, obj = {} as IAnalysisDetectionLimit):void {
-      formAction.value = create;
-      showModal.value = true;
-      formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "ANALYSIS DETECTION_LIMIT";
-      if (create) {
-          Object.assign(form, { lowerLimit: null, upperLimit: null, instrumentUid: null , methodUid: null });
-      } else {
-          Object.assign(form, { ...obj });
-      }
-  }
-
-  function saveForm():void {
-      if (formAction.value === true) addAnalysisDetectionLimit();
-      if (formAction.value === false) editAnalysisDetectionLimit();
-      showModal.value = false;
-  }
-
-  const instrumentName = (uid: number): string => {
-    const index = instruments?.value?.findIndex(item => item.uid === uid)
-    return instruments?.value[index]?.name || "unknown";
-  }
-
-  const methodName = (uid: number): string => {
-    const index = methods?.value?.findIndex(item => item.uid === uid)
-    return methods?.value[index]?.name || "unknown";
-  }
-
-</script>

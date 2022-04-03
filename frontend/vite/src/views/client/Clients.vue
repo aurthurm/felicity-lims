@@ -1,3 +1,114 @@
+
+<script setup lang="ts">
+  import { ref, reactive, computed } from 'vue';
+  import modal from '../../components/SimpleModal.vue';
+  import { IClient } from '../../models/client';
+  import { ADD_CLIENT, EDIT_CLIENT } from '../../graphql/clients.mutations';
+
+  import { useClientStore, useLocationStore } from '../../stores';
+  import { IDistrict, IProvince } from '../../models/location';
+  import { useApiUtil } from '../../composables';
+
+  import * as shield from '../../guards'
+
+  const clientStore = useClientStore()
+  const locationStore = useLocationStore()
+  const { withClientMutation } = useApiUtil()
+
+  let currentTab = ref<string>('samples');
+  const tabs: string[] = ['samples', 'contacts'];
+  let currentTabComponent = computed(() => 'tab-' + currentTab.value);
+
+  let showClientModal = ref<boolean>(false);
+  let createItem = ref<boolean>(false);
+  let targetItem = ref<string>('');
+
+  let provinces = ref<IProvince[]>([]);
+  let districts = ref<IDistrict[]>([]);
+
+  let client = reactive({}) as IClient;
+  const resetClient = () => Object.assign(client, {}) as IClient
+  let clientBatch = ref<number>(50)
+  let clientParams = reactive({ 
+    first: clientBatch.value, 
+    after: "",
+    text: "", 
+    sortBy: ["name"],
+    filterAction: false
+  });
+
+  let countryUid = ref<number>();
+  let provinceUid = ref<number>();
+
+  let formTitle = ref<string>('');
+
+  clientStore.fetchClients(clientParams);
+  const clients = computed(() => clientStore.getClients)
+  const  clientCount = computed(() => clientStore.getClients?.length + " of " + clientStore.getClientCount + " clients")
+  
+  locationStore.fetchCountries();
+  const countries = computed(() => locationStore.getCountries)
+
+  function addClient() {
+    withClientMutation(ADD_CLIENT, { name: client.name, code: client.code, districtUid: client.districtUid }, "createClient")
+    .then(res => clientStore.addClient(res))
+  }
+
+  function editClient() {
+    withClientMutation(EDIT_CLIENT, { uid: client.uid, name: client.name, code: client.code, districtUid: client.districtUid }, "updateClient")
+    .then(res => clientStore.updateClient(res))
+  }
+
+  function getProvinces(event: Event) {
+    locationStore.filterProvincesByCountry(countryUid.value!)
+  }
+
+  function getDistricts(event: Event) {
+    locationStore.filterDistrictsByProvince(provinceUid.value!)
+  }
+
+  let filterText = ref<string>('')
+  function searchClients(event: any){
+    filterText.value = event.target.value;
+    clientParams.first = 100;
+    clientParams.after = "";
+    clientParams.text = event.target.value;
+    clientParams.filterAction = true
+    clientStore.fetchClients(clientParams);
+  }
+
+  const pageInfo = computed(() => clientStore.getClientPageInfo);
+
+  function showMoreClients(): void {
+    clientParams.first = +clientBatch.value;
+    clientParams.after = pageInfo?.value?.endCursor;
+    clientParams.text = filterText.value;
+    clientParams.filterAction = false;
+    clientStore.fetchClients(clientParams);
+  }
+
+  function FormManager(create: boolean, target: string, obj: IClient = {} as IClient) {
+    createItem.value = create;
+    targetItem.value = target;
+    formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + target.toUpperCase();
+    if(target == "client") showClientModal.value = true;
+    if (create) {
+      if(target == "client") Object.assign(client, {} as IClient);
+    } else {
+      if(target == "client") Object.assign(client, { ...obj });
+    }
+  }
+
+  function saveForm() {
+    if (createItem.value) addClient();
+    if (!createItem.value) editClient();
+    showClientModal.value = false;
+  }
+
+</script>
+
+
+
 <template>
   <div class="">
     <div class="flex items-center">
@@ -53,7 +164,7 @@
                     <div class="text-sm leading-5 text-blue-900">{{ client?.district?.province?.name }}</div>
                   </td>
                   <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-                    <div class="text-sm leading-5 text-blue-900">{{ client?.mobile }}</div>
+                    <div class="text-sm leading-5 text-blue-900">{{ client?.mobilePhone }}</div>
                   </td>
                   <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
                     <div class="text-sm leading-5 text-blue-900">{{ client?.email }}</div>
@@ -172,149 +283,3 @@
 
 </style>
 
-<script setup lang="ts">
-  import { useMutation, useQuery } from '@urql/vue';
-  import { useStore } from 'vuex';
-  import { defineComponent, ref, reactive, computed } from 'vue';
-
-  import modal from '../../components/SimpleModal.vue';
-  import { IClient } from '../../models/client';
-  import { ADD_CLIENT, EDIT_CLIENT } from '../../graphql/clients.mutations';
-  import {
-    FILTER_PROVINCES_BY_COUNTRY,
-    FILTER_DISTRICTS_BY_PROVINCE,
-  } from '../../graphql/admin.queries';
-
-  import { ActionTypes } from '../../store/modules/client';
-  import { ActionTypes as AdminActionTypes } from '../../store/modules/admin';
-  import { IDistrict, IProvince } from '../../models/location';
-
-  import * as shield from '../../guards'
-
-    const store = useStore();
-
-    let currentTab = ref<string>('samples');
-    const tabs: string[] = ['samples', 'contacts'];
-    let currentTabComponent = computed(() => 'tab-' + currentTab.value);
-
-    let showClientModal = ref<boolean>(false);
-    let createItem = ref<boolean>(false);
-    let targetItem = ref<string>('');
-
-    let provinces = ref<IProvince[]>([]);
-    let districts = ref<IDistrict[]>([]);
-
-    let client = reactive({}) as IClient;
-    const resetClient = () => Object.assign(client, {}) as IClient
-    let clientBatch = ref<number>(50)
-    let clientParams = reactive({ 
-      first: clientBatch.value, 
-      after: "",
-      text: "", 
-      sortBy: ["name"],
-      filterAction: false
-    });
-
-    let countryUid = ref<number>();
-    let provinceUid = ref<number>();
-
-    let formTitle = ref<string>('');
-
-    store.dispatch(ActionTypes.FETCH_CLIENTS, clientParams);
-    const clients = computed(() => store.getters.getClients)
-    const  clientCount = computed(() => store.getters.getClients?.length + " of " + store.getters.getClientCount + " clients")
-    
-    store.dispatch(AdminActionTypes.FETCH_COUNTRIES);
-     const countries = computed(() => store.getters.getCountries)
-
-    const { executeMutation: createClient } = useMutation(ADD_CLIENT);
-    const { executeMutation: updateClient } = useMutation(EDIT_CLIENT);
-
-    const provincesfilter = useQuery({
-      query: FILTER_PROVINCES_BY_COUNTRY,
-      variables: { uid: countryUid },
-      pause: computed(() => countryUid !== undefined),
-      requestPolicy: 'network-only',
-    });
-
-    const districtsfilter = useQuery({
-      query: FILTER_DISTRICTS_BY_PROVINCE,
-      variables: { uid: provinceUid },
-      pause: computed(() => provinceUid !== undefined),
-      requestPolicy: 'network-only',
-    });
-
-    function addClient() {
-      createClient({ name: client.name, code: client.code, districtUid: client.districtUid }).then((result) => {
-        Object.assign(client, result.data.createClient.createClient);
-      });
-    }
-
-    function editClient() {
-      updateClient({ uid: client.uid, name: client.name, code: client.code, districtUid: client.districtUid }).then((result) => {
-        Object.assign(client, result.data.updateClient.updateClient);
-      });
-    }
-
-    function getProvinces(event: Event) {
-      provincesfilter.executeQuery({requestPolicy: 'network-only'}).then(result => {
-        provinces.value = result.data.value?.provincesByCountryUid;
-      });
-    }
-
-    function getDistricts(event: Event) {
-      districtsfilter.executeQuery({requestPolicy: 'network-only'}).then(result => {
-        districts.value = result.data.value?.districtsByProvinceUid;
-      });
-    }
-
-    function isClientSelected() {
-      return client.uid !== undefined;
-    }
-
-    let selectClient = (selected: IClient) => {
-        currentTab.value = 'samples';
-        Object.assign(client, { ...selected });
-        store.dispatch(ActionTypes.FETCH_CLIENT_CONTACTS, selected.uid);
-    };
-
-
-    let filterText = ref<string>('')
-    function searchClients(event: any){
-      filterText.value = event.target.value;
-      clientParams.first = 100;
-      clientParams.after = "";
-      clientParams.text = event.target.value;
-      clientParams.filterAction = true
-      store.dispatch(ActionTypes.FETCH_CLIENTS, clientParams);
-    }
-
-    const pageInfo = computed(() => store.getters.getClientPageInfo);
-
-    function showMoreClients(): void {
-      clientParams.first = +clientBatch.value;
-      clientParams.after = pageInfo?.value?.endCursor;
-      clientParams.text = filterText.value;
-      clientParams.filterAction = false;
-      store.dispatch(ActionTypes.FETCH_CLIENTS, clientParams);
-    }
-
-    function FormManager(create: boolean, target: string, obj: IClient = {} as IClient) {
-      createItem.value = create;
-      targetItem.value = target;
-      formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + target.toUpperCase();
-      if(target == "client") showClientModal.value = true;
-      if (create) {
-        if(target == "client") Object.assign(client, {} as IClient);
-      } else {
-        if(target == "client") Object.assign(client, { ...obj });
-      }
-    }
-
-    function saveForm() {
-      if (createItem.value) addClient();
-      if (!createItem.value) editClient();
-      showClientModal.value = false;
-    }
-
-</script>

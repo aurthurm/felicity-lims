@@ -1,3 +1,263 @@
+<script setup lang="ts">
+  import { ref, computed } from 'vue';
+  import { useRoute } from 'vue-router';
+  import { useSampleStore } from '../../../stores';
+  import { isNullOrWs } from '../../../utils';
+  import { useAnalysisComposable } from '../../../composables'
+  import { IAnalysisResult, IQCLevel, IQCSet, ISample } from '../../../models/analysis';
+
+  import * as shield from '../../../guards'
+
+  let sampleStore = useSampleStore();
+  let route = useRoute();
+
+  let can_submit = ref<boolean>(false);
+  let can_retract = ref<boolean>(false);
+  let can_verify = ref<boolean>(false);
+  let can_retest = ref<boolean>(false);
+  let can_reinstate = ref<boolean>(false);
+
+  let allChecked = ref<boolean>(false);
+
+  sampleStore.fetchQCSetByUid(+route.params.qcSetUid)
+
+  let qcSet = computed(() => {
+    let set = sampleStore.getQCSet as IQCSet;
+    if(!set) return;
+    let final = { levels: [], analytes: [] } as any;
+    set?.samples?.forEach(sample => {
+      if(!sample.assigned) {
+        if(!final.levels.some((l: IQCLevel) => l.uid == sample?.qcLevel?.uid)){
+          final.levels.push(sample?.qcLevel);
+        }
+        sample?.analysisResults?.forEach(result => {
+          if(!final.analytes.some((a: IAnalysisResult) => a.uid == result?.analysis?.uid)){
+            final.analytes.push(result?.analysis)
+          }
+          const index = final.analytes.findIndex((a: IAnalysisResult) => a.uid == result?.analysis?.uid);
+          if(final.analytes[index]["items"]){
+            if(!final.analytes[index]["items"]?.some((a: IAnalysisResult) => a.sampleUid === result.sampleUid)){
+              final.analytes[index]["items"].push({ ...result, sample }) 
+            }
+          } else {
+            final.analytes[index]["items"] = [{ ...result, sample }]
+          }
+        })
+      }
+    });
+
+    toggleView("grid");
+
+    return { 
+      levels: final.levels as IQCLevel[], 
+      analytes: final.analytes as any[],
+    };
+  });
+
+  function getResults(): IAnalysisResult[] {
+    let results: IAnalysisResult[] = [];
+    qcSet?.value!['analytes']?.forEach((analyte: any) => analyte["items"].forEach((result: IAnalysisResult) => results.push(result)))
+    return results;
+  }
+
+  function getAllAnalysisResults(): IAnalysisResult[] {
+    let results: IAnalysisResult[] = [];
+    if(!qcSet?.value!['analytes']) return [];
+    qcSet?.value['analytes']?.forEach(analyte => {
+      analyte?.items?.forEach((result: IAnalysisResult) => results.push(result))
+    })
+    return results;
+  }
+
+  function getResultsChecked(): IAnalysisResult[] {
+    let results: IAnalysisResult[] = [];
+    if(!qcSet?.value!['analytes']) return [];
+    qcSet?.value['analytes']?.forEach(analyte => {
+      analyte?.items?.forEach((result: IAnalysisResult) => {
+        if (result.checked) results.push(result);
+      })
+    })
+    return results;
+  }
+
+  function getResultsUids(): number[] {
+    const results = getResultsChecked();
+    let ready: number[] = [];
+    results?.forEach((result: IAnalysisResult) => ready.push(result.uid!))
+    return ready;
+  }
+
+  function resetAnalysesPermissions(): void {
+    // reset
+    can_submit.value = false;
+    can_retract.value = false;
+    can_verify.value = false;
+    can_retest.value = false;
+    can_reinstate.value = false;
+
+
+    const checked = getResultsChecked();
+    if(checked.length === 0) return;
+
+    // can reinstate
+    if(checked.every(result => result.status === 'cancelled')){
+      can_reinstate.value = true;
+    }
+
+
+    // can submit
+    if(checked.every(result => result.status === 'pending')){
+      can_submit.value = true;
+    }
+
+    // can verify/ retract/retest
+    if(checked.every(result => result.status === 'resulted')){
+      can_retract.value = true;
+      can_verify.value = true;
+      can_retest.value = true;
+    }
+  }
+
+  function areAllChecked(): Boolean {
+    const results = getAllAnalysisResults()
+    return results?.every(item => item.checked === true);
+  }
+
+  function check(result: IAnalysisResult): void {
+    result.checked = true;
+    resetAnalysesPermissions()
+  }
+
+  function unCheck(result: IAnalysisResult): void {
+    result.checked = false;
+    resetAnalysesPermissions()
+  }
+
+  function toggleCheckAll(): void {
+    const analysisResults = getResults();
+    analysisResults?.forEach((result: IAnalysisResult) => allChecked.value ? check(result) : unCheck(result));
+    resetAnalysesPermissions()
+  }
+
+  function checkCheck(): void {
+    if(areAllChecked()) {
+      allChecked.value = true;
+    } else {
+      allChecked.value = false;
+    }
+    resetAnalysesPermissions()
+  }
+
+  function editResult(result: any): void {
+    result.editable = true;
+  }
+
+  function isEditable(result: IAnalysisResult): Boolean {
+    if(result?.editable || isNullOrWs(result?.result)) {
+      if(['cancelled',"verified","retracted","to_be_verified"].includes(result.status!)){
+        result.editable = false
+        return false
+      }else{
+        editResult(result)
+        return true
+      }
+      return true
+    };
+    return false;
+  }
+
+  function isDisabledRowCheckBox(result: any): boolean {
+    switch (result?.status){
+      case "retracted":
+        return true;
+      case "verified":
+        if(result?.reportable === false){
+          return true;
+        } else {
+          return false;
+        }
+      default:
+        return false;
+    }
+  }
+
+  // Sample Actions
+  function prepareResults(): IAnalysisResult[] {
+    let results = getResultsChecked();
+    let ready: any[] = [];
+    results?.forEach((result: IAnalysisResult) => ready.push({ uid: result.uid , result: result.result }))
+    return ready;
+  } 
+
+    // _updateSample if state has changed
+  const _updateSample = async () => {
+    const sample = computed(() => sampleStore.getSample);
+    if(sample.value) {
+      sampleStore.fetchSampleStatus(sample?.value?.uid);
+    }
+  }
+    
+  let {
+    submitResults: submitter_,
+    cancelResults: canceller_,
+    reInstateResults: reInstater_,
+    verifyResults: verifier_,
+    retractResults: retracter_,
+    retestResults: retester_,
+  } = useAnalysisComposable()
+
+  const submitResults = () => submitter_(prepareResults()).then(_ => (_updateSample(), resetAnalysesPermissions()))
+  const cancelResults = () => canceller_(getResultsUids()).then(_ => (_updateSample(), resetAnalysesPermissions()))
+  const reInstateResults = () => reInstater_(getResultsUids()).then(_ => (_updateSample(), resetAnalysesPermissions()))
+  const verifyResults = () => verifier_(getResultsUids()).then(_ => (_updateSample(), resetAnalysesPermissions()))
+  const retractResults = () => retracter_(getResultsUids()).then(_ => (_updateSample(), resetAnalysesPermissions()))
+  const retestResults = () => retester_(getResultsUids()).then(_ => (_updateSample(), resetAnalysesPermissions()))
+  
+  // View selection
+  let gridView = ref<boolean>(true);
+  let view = ref<string>('grid');
+  let hasDuplicates = ref<boolean>(false);
+
+  function toggleView(choice: string): void {
+    let results: IAnalysisResult[]= []
+    let samples: ISample[] = []
+
+    let set = sampleStore.getQCSet;
+
+    // for all results in a sample
+    // if analyses is dublicated then a retract/retest has hapenned
+    set?.samples?.forEach((sample: ISample) => {
+      samples.push(sample)
+      if(!sample.assigned) {
+        sample?.analysisResults?.forEach((result: IAnalysisResult) => results.push(result))
+      }
+    });
+
+    for(let sample of samples){
+        const filtered: IAnalysisResult[] = results.filter(r => r.sampleUid === sample.uid);
+        let analysisUids:number[] = [];
+        filtered?.forEach(result => analysisUids.push(result.analysisUid!));
+        hasDuplicates.value = (new Set(analysisUids)).size !== analysisUids.length;
+        if(hasDuplicates.value === true) break;
+    }
+
+    if(hasDuplicates.value){
+      gridView.value = false;
+      view.value = 'list';
+    }else{
+      if(choice === 'grid') {
+        gridView.value = true;
+        view.value = 'grid';
+      } else {
+        gridView.value = false;
+        view.value = 'list';
+      }
+    }
+  }
+
+</script>
+
+
 <template>
   <hr>
   <div class="flex justify-end">
@@ -199,464 +459,3 @@
   </section>
 
 </template>
-
-<script setup lang="ts">
-  import { ref, computed } from 'vue';
-  import { useStore } from 'vuex';
-  import { useRoute } from 'vue-router';
-  import { useMutation } from '@urql/vue';
-  import { ActionTypes } from '../../../store/modules/sample';
-  import { isNullOrWs } from '../../../utils';
-  import Swal from 'sweetalert2';
-  import { 
-    CANCEL_ANALYSIS_RESULTS,
-    REINSTATE_ANALYSIS_RESULTS,
-    SUBMIT_ANALYSIS_RESULTS, 
-    VERIFY_ANALYSIS_RESULTS, 
-    RETEST_ANALYSIS_RESULTS, 
-    RETRACT_ANALYSIS_RESULTS } from '../../../graphql/analyses.mutations';
-  import { IAnalysisResult, IQCLevel, IQCSet, ISample } from '../../../models/analysis';
-
-  import * as shield from '../../../guards'
-
-
-    let store = useStore();
-    let route = useRoute();
-
-    let can_submit = ref<boolean>(false);
-    let can_retract = ref<boolean>(false);
-    let can_verify = ref<boolean>(false);
-    let can_retest = ref<boolean>(false);
-    let can_reinstate = ref<boolean>(false);
-
-    let allChecked = ref<boolean>(false);
-
-    store.dispatch(ActionTypes.FETCH_QC_SET_BY_UID, +route.params.qcSetUid)
-
-    let qcSet = computed(() => {
-      let set: IQCSet = store.getters.getQCSet;
-      if(!set) return;
-      let final = { levels: [], analytes: [] } as any;
-      set?.samples?.forEach(sample => {
-        if(!sample.assigned) {
-          if(!final.levels.some((l: IQCLevel) => l.uid == sample?.qcLevel?.uid)){
-            final.levels.push(sample?.qcLevel);
-          }
-          sample?.analysisResults?.forEach(result => {
-            if(!final.analytes.some((a: IAnalysisResult) => a.uid == result?.analysis?.uid)){
-              final.analytes.push(result?.analysis)
-            }
-            const index = final.analytes.findIndex((a: IAnalysisResult) => a.uid == result?.analysis?.uid);
-            if(final.analytes[index]["items"]){
-              if(!final.analytes[index]["items"]?.some((a: IAnalysisResult) => a.sampleUid === result.sampleUid)){
-                final.analytes[index]["items"].push({ ...result, sample }) 
-              }
-            } else {
-              final.analytes[index]["items"] = [{ ...result, sample }]
-            }
-          })
-        }
-      });
-
-      toggleView("grid");
-
-      return { 
-        levels: final.levels as IQCLevel[], 
-        analytes: final.analytes as any[],
-      };
-    });
-
-    function getResults(): IAnalysisResult[] {
-      let results: IAnalysisResult[] = [];
-      qcSet?.value!['analytes']?.forEach((analyte: any) => analyte["items"].forEach((result: IAnalysisResult) => results.push(result)))
-      return results;
-    }
-
-    function getAllAnalysisResults(): IAnalysisResult[] {
-      let results: IAnalysisResult[] = [];
-      if(!qcSet?.value!['analytes']) return [];
-      qcSet?.value['analytes']?.forEach(analyte => {
-        analyte?.items?.forEach((result: IAnalysisResult) => results.push(result))
-      })
-      return results;
-    }
-
-    function getResultsChecked(): IAnalysisResult[] {
-      let results: IAnalysisResult[] = [];
-      if(!qcSet?.value!['analytes']) return [];
-      qcSet?.value['analytes']?.forEach(analyte => {
-        analyte?.items?.forEach((result: IAnalysisResult) => {
-          if (result.checked) results.push(result);
-        })
-      })
-      return results;
-    }
-
-    function getResultsUids(): number[] {
-      const results = getResultsChecked();
-      let ready: number[] = [];
-      results?.forEach((result: IAnalysisResult) => ready.push(result.uid!))
-      return ready;
-    }
-
-    function checkUserActionPermissios(): void {
-      // reset
-      can_submit.value = false;
-      can_retract.value = false;
-      can_verify.value = false;
-      can_retest.value = false;
-      can_reinstate.value = false;
-
-
-      const checked = getResultsChecked();
-      if(checked.length === 0) return;
-
-      // can reinstate
-      if(checked.every(result => result.status === 'cancelled')){
-        can_reinstate.value = true;
-      }
-
-
-      // can submit
-      if(checked.every(result => result.status === 'pending')){
-        can_submit.value = true;
-      }
-
-      // can verify/ retract/retest
-      if(checked.every(result => result.status === 'resulted')){
-        can_retract.value = true;
-        can_verify.value = true;
-        can_retest.value = true;
-      }
-    }
-
-    function areAllChecked(): Boolean {
-      const results = getAllAnalysisResults()
-      return results?.every(item => item.checked === true);
-    }
-
-    function check(result: IAnalysisResult): void {
-      result.checked = true;
-      checkUserActionPermissios()
-    }
-
-    function unCheck(result: IAnalysisResult): void {
-      result.checked = false;
-      checkUserActionPermissios()
-    }
-
-    function toggleCheckAll(): void {
-      const analysisResults = getResults();
-      analysisResults?.forEach((result: IAnalysisResult) => allChecked.value ? check(result) : unCheck(result));
-      checkUserActionPermissios()
-    }
-
-    function checkCheck(): void {
-     if(areAllChecked()) {
-        allChecked.value = true;
-     } else {
-        allChecked.value = false;
-     }
-      checkUserActionPermissios()
-    }
-
-    function editResult(result: any): void {
-      result.editable = true;
-    }
-
-    function isEditable(result: IAnalysisResult): Boolean {
-      if(result?.editable || isNullOrWs(result?.result)) {
-        if(['cancelled',"verified","retracted","to_be_verified"].includes(result.status!)){
-          result.editable = false
-          return false
-        }else{
-          editResult(result)
-          return true
-        }
-        return true
-      };
-      return false;
-    }
-
-    function isDisabledRowCheckBox(result: any): boolean {
-      switch (result?.status){
-        case "retracted":
-          return true;
-        case "verified":
-          if(result?.reportable === false){
-            return true;
-          } else {
-            return false;
-          }
-        default:
-          return false;
-      }
-    }
-
-    const { executeMutation: cancelAnalysisResults } = useMutation(CANCEL_ANALYSIS_RESULTS);
-    const { executeMutation: reInstateAnalysisResults } = useMutation(REINSTATE_ANALYSIS_RESULTS);
-    const { executeMutation: submitAnalysisResults } = useMutation(SUBMIT_ANALYSIS_RESULTS);
-    const { executeMutation: verifyAnalysisResults } = useMutation(VERIFY_ANALYSIS_RESULTS);  
-    const { executeMutation: retestAnalysisResults } = useMutation(RETEST_ANALYSIS_RESULTS); 
-    const { executeMutation: retractAnalysisResults } = useMutation(RETRACT_ANALYSIS_RESULTS); 
-    
-    function submitAnalysesResults(results: any[]): void {
-      submitAnalysisResults({ analysisResults: results, }).then((result) => {
-       store.dispatch(ActionTypes.UPDATE_ANALYSIS_RESULTS, result);
-      });
-    }    
-
-    function submitResult(result: IAnalysisResult): void {
-      if(result.status !== "pending") return;
-      result.result = result.editResult;
-      submitAnalysesResults([{ uid: result.uid , result: result.result }])
-    }    
-    
-    function cancelAnalysesResults(analyses: number[]): void {
-      cancelAnalysisResults({ analyses }).then((result) => {
-      //  store.dispatch(ResultActionTypes.UPDATE_ANALYSIS_RESULTS, result);
-      });
-    }     
-    
-    function reInstateAnalysesResults(analyses: number[]): void {
-      reInstateAnalysisResults({ analyses }).then((result) => {
-      //  store.dispatch(ResultActionTypes.UPDATE_ANALYSIS_RESULTS, result);
-      });
-    }  
-    
-    function verifyAnalysesResults(analyses: number[]): void {
-      verifyAnalysisResults({ analyses }).then((result) => {
-      //  store.dispatch(ResultActionTypes.UPDATE_ANALYSIS_RESULTS, result);
-      });
-    }  
-    
-    function retractAnalysesResults(analyses: number[]): void {
-      retractAnalysisResults({ analyses }).then((result) => {
-      //  store.dispatch(ResultActionTypes.UPDATE_ANALYSIS_RESULTS, result);
-      });
-    }  
-    
-    function retestAnalysesResults(analyses: number[]): void {
-      retestAnalysisResults({ analyses }).then((result) => {
-      //  store.dispatch(ResultActionTypes.UPDATE_ANALYSIS_RESULTS, result);
-      });
-    }
-
-    function prepareResults(): IAnalysisResult[] {
-      const results = getResultsChecked();
-      let ready: IAnalysisResult[]= [];
-      results?.forEach(result => ready.push({ uid: result.uid , result: result.result }))
-      return ready;
-    }
-
-    const cancelResults = async () => {
-      try {
-        Swal.fire({
-          title: 'Are you sure?',
-          text: "You want to cancel these analytes",
-          icon: 'warning',
-          showCancelButton: true,
-          confirmButtonColor: '#3085d6',
-          cancelButtonColor: '#d33',
-          confirmButtonText: 'Yes, cancel now!',
-          cancelButtonText: 'No, do not cancel!',
-        }).then((result) => {
-          if (result.isConfirmed) {
-            cancelAnalysesResults(getResultsUids());
-
-            Swal.fire(
-              'Its Happening!',
-              'Your results have been cancelled.',
-              'success'
-            ).then(_ => location.reload())
-
-          }
-        })
-      } catch (error) {
-        console.log(error)
-      }
-    }
-
-    const reInstateResults = async () => {
-      try {
-        Swal.fire({
-          title: 'Are you sure?',
-          text: "You want to reinstate analystes",
-          icon: 'warning',
-          showCancelButton: true,
-          confirmButtonColor: '#3085d6',
-          cancelButtonColor: '#d33',
-          confirmButtonText: 'Yes, reinstate now!',
-          cancelButtonText: 'No, do not reinstate!',
-        }).then((result) => {
-          if (result.isConfirmed) {
-            reInstateAnalysesResults(getResultsUids());
-
-            Swal.fire(
-              'Its Happening!',
-              'Your analystes have been reinstated.',
-              'success'
-            ).then(_ => location.reload())
-
-          }
-        })
-      } catch (error) {
-        console.log(error)
-      }
-    }
-
-    const submitResults = async () => {
-      try {
-        Swal.fire({
-          title: 'Are you sure?',
-          text: "You want to submit these results",
-          icon: 'warning',
-          showCancelButton: true,
-          confirmButtonColor: '#3085d6',
-          cancelButtonColor: '#d33',
-          confirmButtonText: 'Yes, submit now!',
-          cancelButtonText: 'No, cancel submission!',
-        }).then((result) => {
-          if (result.isConfirmed) {
-            submitAnalysesResults(prepareResults());
-
-            Swal.fire(
-              'Its Happening!',
-              'Your results have been submitted.',
-              'success'
-            ).then(_ => location.reload())
-
-          }
-        })
-      } catch (error) {
-        console.log(error)
-      }
-    }
-
-    const verifyResults = async () => {
-      try {
-        Swal.fire({
-          title: 'Are you sure?',
-          text: "You want to verify these results",
-          icon: 'warning',
-          showCancelButton: true,
-          confirmButtonColor: '#3085d6',
-          cancelButtonColor: '#d33',
-          confirmButtonText: 'Yes, verify now!',
-          cancelButtonText: 'No, cancel verification!',
-        }).then((result) => {
-          if (result.isConfirmed) {
-            verifyAnalysesResults(getResultsUids());
-
-            Swal.fire(
-              'Its Happening!',
-              'Your results have been verified.',
-              'success'
-            ).then(_ => location.reload())
-
-          }
-        })
-      } catch (error) {
-        console.log(error)
-      }
-    }
-
-    const retractResults = async () => {
-      try {
-        Swal.fire({
-          title: 'Are you sure?',
-          text: "You want to retract these results",
-          icon: 'warning',
-          showCancelButton: true,
-          confirmButtonColor: '#3085d6',
-          cancelButtonColor: '#d33',
-          confirmButtonText: 'Yes, retract now!',
-          cancelButtonText: 'No, cancel retraction!',
-        }).then((result) => {
-          if (result.isConfirmed) {
-            retractAnalysesResults(getResultsUids());
-
-            Swal.fire(
-              'Its Happening!',
-              'Your results have been retracted.',
-              'success'
-            ).then(_ => location.reload())
-
-          }
-        })
-      } catch (error) {
-        console.log(error)
-      }
-    }
-
-    const retestResults = async () => {
-      try {
-        Swal.fire({
-          title: 'Are you sure?',
-          text: "You want to retest these results",
-          icon: 'warning',
-          showCancelButton: true,
-          confirmButtonColor: '#3085d6',
-          cancelButtonColor: '#d33',
-          confirmButtonText: 'Yes, retest now!',
-          cancelButtonText: 'No, cancel retesting!',
-        }).then((result) => {
-          if (result.isConfirmed) {
-            retestAnalysesResults(getResultsUids());
-
-            Swal.fire(
-              'Its Happening!',
-              'Your results have been retested.',
-              'success'
-            ).then(_ => location.reload())
-
-          }
-        })
-      } catch (error) {
-        console.log(error)
-      }
-    }
-
-    // View selection
-    let gridView = ref<boolean>(true);
-    let view = ref<string>('grid');
-    let hasDuplicates = ref<boolean>(false);
-
-    function toggleView(choice: string): void {
-      let results: IAnalysisResult[]= []
-      let samples: ISample[] = []
-
-      let set: IQCSet = store.getters.getQCSet;
-
-      // for all results in a sample
-      // if analyses is dublicated then a retract/retest has hapenned
-      set?.samples?.forEach((sample: ISample) => {
-        samples.push(sample)
-        if(!sample.assigned) {
-          sample?.analysisResults?.forEach((result: IAnalysisResult) => results.push(result))
-        }
-      });
-
-      for(let sample of samples){
-          const filtered: IAnalysisResult[] = results.filter(r => r.sampleUid === sample.uid);
-          let analysisUids:number[] = [];
-          filtered?.forEach(result => analysisUids.push(result.analysisUid!));
-          hasDuplicates.value = (new Set(analysisUids)).size !== analysisUids.length;
-          if(hasDuplicates.value === true) break;
-      }
-
-      if(hasDuplicates.value){
-        gridView.value = false;
-        view.value = 'list';
-      }else{
-        if(choice === 'grid') {
-          gridView.value = true;
-          view.value = 'grid';
-        } else {
-          gridView.value = false;
-          view.value = 'list';
-        }
-      }
-    }
-
-</script>

@@ -1,3 +1,53 @@
+<script setup lang="ts">
+  import Swal from 'sweetalert2';
+  import { ref, computed } from 'vue';
+  import { useWorksheetStore } from '../../../stores';
+  import { useApiUtil } from '../../../composables';
+  import { EDIT_WORKSHEET_APPLY_TEMPLATE } from '../../../graphql/worksheet.mutations';
+
+  import * as shield from '../../../guards'
+
+  const worksheetStore = useWorksheetStore();
+  const { withClientMutation } = useApiUtil()
+
+  const templateUid = ref<number>();
+
+  worksheetStore.fetchWorkSheetTemplates();
+  const worksheet = computed(()=> worksheetStore.getWorkSheet); 
+  const workSheetTemplates = computed(() => worksheetStore.getWorkSheetTemplates)
+
+const applyTemplate = async () => {
+    try {
+      Swal.fire({
+        title: 'Are you sure?',
+        text: "You want to apply this template to add samples?",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, apply now!',
+        cancelButtonText: 'No, cancel apply!',
+      }).then((result) => {
+        if (result.isConfirmed) {
+          
+          withClientMutation(EDIT_WORKSHEET_APPLY_TEMPLATE, { worksheetUid: worksheet?.value?.uid , templateUid: templateUid.value }, "updateWorksheetApplyTemplate")
+          .then((result) => console.log(result));
+
+          Swal.fire(
+            'Its Happening!',
+            'Template was applied!',
+            'success'
+          ).then(_ => location.reload())
+
+        }
+      })
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+</script>
+
 <template>
   <section>
     <hr>
@@ -23,54 +73,4 @@
 </template>
 
 
-<script setup lang="ts">
-  import Swal from 'sweetalert2';
-  import { ref, computed } from 'vue';
-  import { useStore } from 'vuex';
-  import { useMutation } from '@urql/vue';
-  import { ActionTypes } from '../../../store/modules/worksheet';
-  import { EDIT_WORKSHEET_APPLY_TEMPLATE } from '../../../graphql/worksheet.mutations';
 
-  import * as shield from '../../../guards'
-
-  const store = useStore();
-  const templateUid = ref<number>();
-
-  store.dispatch(ActionTypes.FETCH_WORKSHEET_TEMPLATES);
-  const worksheet = computed(()=> store.getters.getWorkSheet); 
-  const workSheetTemplates = computed(() => store.getters.getWorkSheetTemplates)
-
-  const { executeMutation: updateWorksheetApplyTemplate } = useMutation(EDIT_WORKSHEET_APPLY_TEMPLATE);
-
-  const applyTemplate = async () => {
-    try {
-      Swal.fire({
-        title: 'Are you sure?',
-        text: "You want to apply this template to add samples?",
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Yes, apply now!',
-        cancelButtonText: 'No, cancel apply!',
-      }).then((result) => {
-        if (result.isConfirmed) {
-          
-          updateWorksheetApplyTemplate({ worksheetUid: worksheet?.value?.uid , templateUid: templateUid.value }).then((result) => {
-            console.log(result)
-          });
-
-          Swal.fire(
-            'Its Happening!',
-            'Template was applied!',
-            'success'
-          ).then(_ => location.reload())
-
-        }
-      })
-    } catch (error) {
-      console.log(error)
-    }
-  }
-
-</script>

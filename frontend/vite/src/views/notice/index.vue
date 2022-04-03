@@ -1,3 +1,83 @@
+
+<script setup lang="ts">
+  import modal from '../../components/SimpleModal.vue';
+  import { ADD_NOTICE, EDIT_NOTICE, DELETE_NOTICE } from '../../graphql/notice.mutations';
+  import { onMounted, reactive, computed} from 'vue';
+  import { INotice } from '../../models/notice';
+
+  import { useNoticeStore, useSetupStore, useAuthStore } from '../../stores'
+  import { useApiUtil } from '../../composables'
+  import { IUser } from '../../models/auth';
+
+  let setupStore = useSetupStore();
+  const noticeStore = useNoticeStore()
+  const authStore = useAuthStore()
+  const { withClientMutation } = useApiUtil()
+
+  const modalState = reactive({
+    notice: {} as INotice,
+    title: "",
+    showModal: false,
+    newNotice: true
+  })
+
+  const user = computed(() => authStore?.auth?.user )
+
+  onMounted(async () => {
+    setupStore.fetchDepartments({});
+    await noticeStore.fetchMyNotices(user.value?.uid!)
+  })
+
+  function addNotice(): void {
+    withClientMutation(ADD_NOTICE, {
+      payload: { 
+        title: modalState.notice.title, 
+        body: modalState.notice.body,
+        expiry: modalState.notice.expiry,
+        groups: [],
+        departments: []
+      }
+    },"createNotice").then(payload => noticeStore.addNotice(payload));
+  }
+
+  function editNotice(): void {
+    withClientMutation(EDIT_NOTICE,{ 
+      uid: modalState.notice.uid,
+      payload: {
+        title: modalState.notice.title, 
+        body: modalState.notice.body,
+        expiry: modalState.notice.expiry,
+        groups: [],
+        departments: []
+      }
+    },"updateNotice").then(payload => noticeStore.updateNotice(payload));
+  }
+
+  function deleteNotice(uid: number): void {
+    withClientMutation(DELETE_NOTICE, { uid }, "deleteNotice")
+    .then(payload => noticeStore.deleteNotice(payload));
+  }
+
+  function FormManager(create: boolean, obj: INotice = {} as INotice):void {
+    modalState.newNotice = create;
+    modalState.showModal = true;
+    modalState.title = (create ? 'ADD' : 'EDIT') + ' ' + "Notice";
+    if (create) {
+      modalState.notice = {} as INotice;
+    } else {
+      modalState.notice = { ...obj };
+    }
+  }
+
+  function saveForm():void {
+    if (modalState.newNotice === true) addNotice();
+    if (modalState.newNotice === false) editNotice();
+    modalState.showModal = false;
+  }
+
+  const notices = computed<INotice[]>(() => noticeStore.getMyNotices(user.value?.uid))
+</script>
+
 <template>
 
     <h1 class="h1 my-4 font-bold text-dark-700 mr-4">Notice Manager</h1>
@@ -87,113 +167,3 @@
   </modal>
 
 </template>
-
-<script lang="ts">
-import modal from '../../components/SimpleModal.vue';
-import { useMutation } from '@urql/vue';
-import { useStore } from 'vuex'
-import { ActionTypes as DepartmentActionTypes } from '../../store/actions';
-import { ADD_NOTICE, EDIT_NOTICE, DELETE_NOTICE } from '../../graphql/notice.mutations';
-import { defineComponent, onMounted, reactive, computed} from 'vue';
-import { INotice } from '../../models/notice';
-
-import useNoticeComposable from '../../modules/notice'
-import useNotifyToast from '../../modules/alert_toast'
-import { IUser } from '../../models/auth';
-import { parseDate } from '../../utils'
-
-export default defineComponent({
-  name: "notice-manager",
-  components: {
-    modal,
-  },
-  setup() {
-    let store = useStore();
-
-    const { gqlResponseHandler, gqlOpertionalErrorHandler } = useNotifyToast()
-    const { _myNotices, fetchMyNotices, _addNotice, _updateNotice, _deleteNotice } = useNoticeComposable()
-    const modalState = reactive({
-      notice: {} as INotice,
-      title: "",
-      showModal: false,
-      newNotice: true
-    })
-
-    const user = computed<IUser>(() => store.getters.getAuth )
-
-    onMounted(async () => {
-      store.dispatch(DepartmentActionTypes.FETCH_DEPARTMENTS);
-      await fetchMyNotices(user.value?.uid)
-    })
-
-    const { executeMutation: createNotice } = useMutation(ADD_NOTICE);
-    const { executeMutation: udateNotice } = useMutation(EDIT_NOTICE);
-    const { executeMutation: noticeDeleter } = useMutation(DELETE_NOTICE);
-
-    function addNotice(): void {
-      createNotice({
-        payload: { 
-          title: modalState.notice.title, 
-          body: modalState.notice.body,
-          expiry: modalState.notice.expiry,
-          groups: [],
-          departments: []
-        }
-      }).then((res) => {
-        const data = gqlResponseHandler(res)
-        const createdNotice = gqlOpertionalErrorHandler(data?.createNotice)
-        if(createdNotice) _addNotice(createdNotice);
-      });
-    }
-
-    function editNotice(): void {
-      udateNotice({ 
-        uid: modalState.notice.uid,
-        payload: {
-          title: modalState.notice.title, 
-          body: modalState.notice.body,
-          expiry: modalState.notice.expiry,
-          groups: [],
-          departments: []
-        }
-      }).then((res) => {
-        const data = gqlResponseHandler(res)
-        _updateNotice(data?.updateNotice);
-      });
-    }
-
-    function deleteNotice(uid: number): void {
-      noticeDeleter({ uid }).then((res) => {
-        const data = gqlResponseHandler(res)
-        const deletedNotice = gqlOpertionalErrorHandler(data?.deleteNotice)
-        _deleteNotice(deletedNotice);
-      });
-    }
-
-    function FormManager(create: boolean, obj: INotice = {} as INotice):void {
-      modalState.newNotice = create;
-      modalState.showModal = true;
-      modalState.title = (create ? 'ADD' : 'EDIT') + ' ' + "Notice";
-      if (create) {
-        modalState.notice = {} as INotice;
-      } else {
-        modalState.notice = { ...obj };
-      }
-    }
-
-    function saveForm():void {
-      if (modalState.newNotice === true) addNotice();
-      if (modalState.newNotice === false) editNotice();
-      modalState.showModal = false;
-    }
-
-    return {
-      notices: computed<INotice[]>(() => _myNotices(user.value?.uid)),
-      modalState,
-      FormManager,
-      saveForm,
-      deleteNotice
-     };
-  },
-});
-</script>

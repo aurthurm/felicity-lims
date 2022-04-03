@@ -30,93 +30,80 @@
     </div>
 </template>
 
-<script lang="ts">
-import { computed, toRefs } from 'vue'
-import { useStore } from 'vuex';
-import { ActionTypes } from '../../store/actions'
-import { parseDate } from '../../utils'
+<script setup lang="ts">
+    import { computed, toRefs } from 'vue'
+    import { useUserStore, useAuditLogStore } from '../../stores'
+    import { parseDate } from '../../utils'
 
-export default {
-    name: "tab-logs",
-    props: {
+
+    const props =  defineProps({
         targetId: Number,
         targetType: String
-    },
-    setup(props){
-        const store = useStore();
+    })
+    const { targetType, targetId } = toRefs(props);
 
-        const { targetType, targetId } = toRefs(props);
+    const userStore = useUserStore();
+    const auditLogStore = useAuditLogStore();
 
-        store.dispatch(ActionTypes.FETCH_USERS)
-        store.dispatch(ActionTypes.RESET_AUDIT_LOGS)
-        store.dispatch(ActionTypes.FETCH_AUDIT_LOGS, { targetType: targetType.value, targetId: targetId.value })
+    userStore.fetchUsers({})
+    auditLogStore.$reset()
+    auditLogStore.fetchAuditLogs({ targetType: targetType, targetId: targetId })
 
-        let auditLogs = computed(() => store.getters.getAuditLogs)
-        let users = computed(() => store.getters.getUsers)
+    let auditLogs = computed(() => auditLogStore.getAuditLogs)
+    let users = computed(() => userStore.getUsers)
 
-        function translateUser(userId: any): string {
-            const user = users?.value?.find((u: any) => u['uid']?.toString() === userId?.toString())
-            if(!user) return '';
-            // console.log(user['firstName'], user['lastName'], user['auth']['userName'])
-            return user['auth']['userName']
-        }
-
-        function translateAction(action: number): string {
-            if(action === 1) return "created"
-            if(action === 2) return "updated"
-            if(action === 3) return "deleted"
-            return '';
-        }
-
-        function changes(log: any): any {
-            let trails = new Set();
-            
-            Object.entries(log?.stateBefore)?.map(([keyB, valueB]) => {
-                Object.entries(log?.stateAfter)?.map(([keyA, valueA]) => {
-                    if((keyB === keyA) && (valueB !== valueA)) {
-
-                        // dates parsing
-
-                        // user_uids translation
-                        if(keyA && keyA === 'updated_by_uid'){
-                            keyA = 'updated_by'
-                            valueB = translateUser(valueB)
-                            valueA = translateUser(valueA)
-                        }
-                        if(keyA && keyA === 'submitted_by_uid'){
-                            keyA = 'submitted_by'
-                            valueB = translateUser(valueB)
-                            valueA = translateUser(valueA)
-                        }
-                        if(keyA && keyA === 'verified_by_uid'){
-                            keyA = 'verified_by'
-                            valueB = translateUser(valueB)
-                            valueA = translateUser(valueA)
-                        }
-                        if(keyA && keyA === 'updated_at'){
-                            keyA = 'updated_on'
-                            valueB = parseDate(valueB)
-                            valueA = parseDate(valueA)
-                        }
-
-                        trails.add({
-                            key: keyA,
-                            old: valueB,
-                            new: valueA,
-                        })
-                    }
-                })
-            })
-            return trails;
-        }
-
-        return {
-            auditLogs,
-            changes,
-            parseDate,
-            translateUser,
-            translateAction
-        }
+    function translateUser(userId: any): string {
+        const user = users?.value?.find((u: any) => u['uid']?.toString() === userId?.toString())
+        if(!user) return '';
+        return (user as any)['auth']['userName']
     }
-}
+
+    function translateAction(action: number): string {
+        if(action === 1) return "created"
+        if(action === 2) return "updated"
+        if(action === 3) return "deleted"
+        return '';
+    }
+
+    function changes(log: any): any {
+        let trails = new Set();
+        
+        Object.entries(log?.stateBefore)?.map(([keyB, valueB]) => {
+            Object.entries(log?.stateAfter)?.map(([keyA, valueA]) => {
+                if((keyB === keyA) && (valueB !== valueA)) {
+                    
+                    // user_uids translation
+                    if(keyA && keyA === 'updated_by_uid'){
+                        keyA = 'updated_by'
+                        valueB = translateUser(valueB)
+                        valueA = translateUser(valueA)
+                    }
+                    if(keyA && keyA === 'submitted_by_uid'){
+                        keyA = 'submitted_by'
+                        valueB = translateUser(valueB)
+                        valueA = translateUser(valueA)
+                    }
+                    if(keyA && keyA === 'verified_by_uid'){
+                        keyA = 'verified_by'
+                        valueB = translateUser(valueB)
+                        valueA = translateUser(valueA)
+                    }
+                    if(keyA && keyA === 'updated_at'){
+                        keyA = 'updated_on'
+                        valueB = parseDate(valueB)
+                        valueA = parseDate(valueA)
+                    }
+
+                    trails.add({
+                        key: keyA,
+                        old: valueB,
+                        new: valueA,
+                    })
+                }
+            })
+        })
+        return trails;
+    }
+
+
 </script>

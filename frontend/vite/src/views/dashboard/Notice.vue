@@ -4,7 +4,7 @@
 
   <section class="flex justify-start w-full">
     <ul class="w-full">
-      <li v-for="(notice, index) in state.notices" :key="notice.uid"  class="w-full">
+      <li v-for="(notice, index) in noticeStore.notices" :key="notice.uid"  class="w-full">
         <accordion class="w-full">
           <template v-slot:title>
             <div class="flex justify-between w-full">
@@ -29,15 +29,14 @@
 
 <script setup lang="ts">
   import Accordion from '../../components/Accordion.vue'
-  import useNoticeComposable from '../../modules/notice'
-  import { useStore } from 'vuex'
+  import { useNoticeStore, useAuthStore } from '../../stores'
   import { onMounted } from 'vue'
 
-  const store = useStore();
-  const { state, fetchMyNotices } = useNoticeComposable();
+  const authStore = useAuthStore();
+  const noticeStore = useNoticeStore();
 
   onMounted(() => {
-    const user = store.getters.getAuth;
-    fetchMyNotices(user?.uid)
+    const user = authStore.auth?.user;
+    noticeStore.fetchMyNotices(user?.uid!)
   })
 </script>

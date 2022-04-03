@@ -1,3 +1,53 @@
+<script setup lang="ts">
+  import modal from '../../../components/SimpleModal.vue';
+  import { ref, reactive, computed } from 'vue';
+  import { IManufacturer } from '../../../models/setup'
+  import { ADD_MANUFACTURER, EDIT_MANUFACTURER } from '../../../graphql/instrument.mutations';
+  import { useSetupStore } from '../../../stores';
+  import { useApiUtil } from '../../../composables';
+
+  const setupStore = useSetupStore();
+  const { withClientMutation } = useApiUtil()
+  
+  let showModal = ref<boolean>(false);
+  let formTitle = ref<string>('');
+  let form = reactive({}) as IManufacturer;
+  const formAction = ref<boolean>(true);
+
+  setupStore.fetchManufacturers()
+  const manufacturers = computed(() => setupStore.getManufacturers)
+
+  function addManufacturer(): void {
+    const payload = { name: form.name, description: form.description}
+    withClientMutation(ADD_MANUFACTURER, { payload }, "createManufacturer")
+    .then((result) => setupStore.addManufacturer(result));
+  }
+
+  function editManufacturer(): void {
+    const payload = { name: form.name, description: form.description}
+    withClientMutation(EDIT_MANUFACTURER, { uid: form.uid, payload }, "updateManufacturer")
+    .then((result) => setupStore.updateManufacturer(result));
+  }
+
+  function FormManager(create: boolean, obj = {} as IManufacturer):void {
+    formAction.value = create;
+    showModal.value = true;
+    formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "MANUFACTURER";
+    if (create) {
+      Object.assign(form, {} as IManufacturer);
+    } else {
+      Object.assign(form, { ...obj });
+    }
+  }
+
+  function saveForm():void {
+    if (formAction.value === true) addManufacturer();
+    if (formAction.value === false) editManufacturer();
+    showModal.value = false;
+  }
+</script>
+
+
 <template>
 
     <div class="container w-full my-4">
@@ -80,65 +130,3 @@
 </template>
 
 
-<style scoped>
-  .toggle-checkbox:checked {
-    right: 0;
-    border-color: #68D391;
-  }
-  .toggle-checkbox:checked + .toggle-label {
-    background-color: #68D391;
-  }
-</style>
-
-<script setup lang="ts">
-  import modal from '../../../components/SimpleModal.vue';
-  import { useMutation } from '@urql/vue';
-  import { defineComponent, ref, reactive, computed } from 'vue';
-  import { useStore } from 'vuex';
-  import { ActionTypes } from '../../../store/modules/setup';
-  import { IManufacturer } from '../../../models/setup'
-  import { ADD_MANUFACTURER, EDIT_MANUFACTURER } from '../../../graphql/instrument.mutations';
-
-  const store = useStore();
-  
-  let showModal = ref<boolean>(false);
-  let formTitle = ref<string>('');
-  let form = reactive({}) as IManufacturer;
-  const formAction = ref<boolean>(true);
-
-  store.dispatch(ActionTypes.FETCH_MANUFACTURERS);
-  const manufacturers = computed(() =>store.getters.getManufacturers)
-  const { executeMutation: createManufacturer } = useMutation(ADD_MANUFACTURER);
-  const { executeMutation: updateManufacturer } = useMutation(EDIT_MANUFACTURER);
-
-  function addManufacturer(): void {
-    const payload = { name: form.name, abbr: form.abbr, description: form.description, active: form.active}
-    createManufacturer({ payload }).then((result) => {
-      store.dispatch(ActionTypes.ADD_MANUFACTURER, result);
-    });
-  }
-
-  function editManufacturer(): void {
-    const payload = { name: form.name, abbr: form.abbr, description: form.description, active: form.active}
-    updateManufacturer({ uid: form.uid, payload }).then((result) => {
-      store.dispatch(ActionTypes.UPDATE_MANUFACTURER, result);
-    });
-  }
-
-  function FormManager(create: boolean, obj = {} as IManufacturer):void {
-    formAction.value = create;
-    showModal.value = true;
-    formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "MANUFACTURER";
-    if (create) {
-      Object.assign(form, {} as IManufacturer);
-    } else {
-      Object.assign(form, { ...obj });
-    }
-  }
-
-  function saveForm():void {
-    if (formAction.value === true) addManufacturer();
-    if (formAction.value === false) editManufacturer();
-    showModal.value = false;
-  }
-</script>

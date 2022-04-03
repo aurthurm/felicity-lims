@@ -1,3 +1,11 @@
+<script setup lang="ts">
+  import { useRouter } from 'vue-router';
+  import { pages } from "./../router/constants";
+
+  const router = useRouter();
+  const goHome = () => router.push({ name: pages.DASHBOARD });
+</script>
+
 <template>
   <div class="flex justify-center items-center h-screen bg-gray-700 px-6">
     <div class="p-6 max-w-sm w-full bg-white shadow-md rounded-md">
@@ -35,10 +43,3 @@
   </div>
 </template>
 
-<script setup lang="ts">
-  import { useRouter } from 'vue-router';
-  import { pages } from "./../router/constants";
-
-  const router = useRouter();
-  const goHome = () => router.push({ name: pages.DASHBOARD });
-</script>

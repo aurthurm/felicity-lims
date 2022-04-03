@@ -2,7 +2,7 @@
   <h1 class="text-xl text-gray-700 font-semibold">Instrument Matrix / Load</h1>
   <hr class="my-2">
   <div class="flex justify-start">
-    <div v-for="instr in state.resourceStats?.value.instruments" :key="instr.group"
+    <div v-for="instr in state.resourceStats?.instruments" :key="instr.group"
      class="flex items-center bg-white shadow rounded px-6 pt-3 pb-5 border border-white mr-8">
       <span class="mr-4 font-bold text-gray-600 text-xl">{{ instrumentPerf(instr?.count) }}</span>
       <span class="font-semibold text-gray-400 text-l">{{ instr.group }}</span>
@@ -32,16 +32,18 @@
 </template>
 
 <script setup lang="ts">
+  import { storeToRefs } from 'pinia'
   import { onMounted} from 'vue'
   import { Chart } from '@antv/g2';
 
-  import useDashBoardComposable from '../../modules/dashboard';
+  import { useDashBoardStore } from '../../stores';
 
-  const { state, getResourceStats } = useDashBoardComposable()
+  const dashBoardStore = useDashBoardStore()
+  const { dashboard: state } = storeToRefs(dashBoardStore)
 
   onMounted(async () => { 
-    await getResourceStats()
-    state.resourceStats?.value.samples?.forEach(group => {
+    await dashBoardStore.getResourceStats()
+    state.value.resourceStats?.samples?.forEach(group => {
       let users: any[] = [];
       let total = 0; 
       group.counts?.forEach((sample: any) => total += sample.count);
@@ -58,7 +60,7 @@
 
   const instrumentPerf = (count: number) => {
     let total = 0; 
-    state.resourceStats?.value.instruments?.forEach((inst: any) => total += inst.count)
+    state.value.resourceStats?.instruments?.forEach((inst: any) => total += inst.count)
     const pct = (count/total)*100
     return pct.toFixed(2) + " %"
   }

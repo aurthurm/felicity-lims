@@ -8,7 +8,7 @@ export interface IClient extends ILocation {
 export interface IClientContact {
   uid: number;
   firstName: string;  
-  lastname: string;
+  lastName: string;
   email: string;
   emailCc: string[];
   consentEmail: boolean;

@@ -1,3 +1,52 @@
+<script setup lang="ts">
+  import modal from '../../../../components/SimpleModal.vue';
+  import { ref, reactive, computed } from 'vue';
+  import { useSampleStore } from '../../stores';
+  import { useApiUtil } from '../../composables';
+  import { ISampleType } from '../../models/analysis'
+  import { ADD_SAMPLE_TYPE, EDIT_SAMPLE_TYPE  } from '../../graphql/analyses.mutations';
+
+  const sampleStore = useSampleStore();
+  const { withClientMutation } = useApiUtil();
+  
+  let showModal = ref<boolean>(false);
+  let formTitle = ref<string>('');
+  let form = reactive({}) as ISampleType;
+  const formAction = ref<boolean>(true);
+
+  sampleStore.fetchSampleTypes();
+
+  function addSampleType(): void {
+    withClientMutation(ADD_SAMPLE_TYPE, { name: form.name, abbr: form.abbr, description: form.description, active: form.active }, "createSampleType")
+    .then((result) => sampleStore.addSampleType(result));
+  }
+
+  function editSampleType(): void {
+    withClientMutation(EDIT_SAMPLE_TYPE, { uid: form.uid, name: form.name, abbr: form.abbr, description: form.description, active: form.active }, "updateSampleType")
+    .then((result) => sampleStore.updateSampleType(result));
+  }
+
+  function FormManager(create: boolean, obj: ISampleType = {}):void {
+    formAction.value = create;
+    showModal.value = true;
+    formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "SAMPLE TYPE";
+    if (create) {
+      Object.assign(form, {} as ISampleType);
+    } else {
+      Object.assign(form, { ...obj });
+    }
+  }
+
+  function saveForm():void {
+    if (formAction.value === true) addSampleType();
+    if (formAction.value === false) editSampleType();
+    showModal.value = false;
+  }
+  
+  const sampleTypes = computed(() => sampleStore.getSampleTypes)
+</script>
+
+
 <template>
 
     <div class="container w-full my-4">
@@ -111,72 +160,3 @@
     background-color: #68D391;
   }
 </style>
-
-<script lang="ts">
-import modal from '../../../../components/SimpleModal.vue';
-
-import { useMutation } from '@urql/vue';
-import { defineComponent, ref, reactive, computed } from 'vue';
-import { useStore } from 'vuex';
-import { ActionTypes } from '../../store/modules/sample';
-import { ISampleType } from '../../models/analysis'
-import { ADD_SAMPLE_TYPE, EDIT_SAMPLE_TYPE  } from '../../graphql/analyses.mutations';
-
-
-export default defineComponent({
-  name: "tab-sample-types",
-  components: {
-    modal,
-  },
-  setup() {
-    const store = useStore();
-    
-    let showModal = ref<boolean>(false);
-    let formTitle = ref<string>('');
-    let form = reactive({}) as ISampleType;
-    const formAction = ref<boolean>(true);
-
-    store.dispatch(ActionTypes.FETCH_SAMPLE_TYPES);
-    const { executeMutation: createSampleType } = useMutation(ADD_SAMPLE_TYPE);
-    const { executeMutation: updateSampleType } = useMutation(EDIT_SAMPLE_TYPE);
-
-    function addSampleType(): void {
-      createSampleType({ name: form.name, abbr: form.abbr, description: form.description, active: form.active }).then((result) => {
-       store.dispatch(ActionTypes.ADD_SAMPLE_TYPE, result);
-      });
-    }
-
-    function editSampleType(): void {
-      updateSampleType({ uid: form.uid, name: form.name, abbr: form.abbr, description: form.description, active: form.active }).then((result) => {
-        store.dispatch(ActionTypes.UPDATE_SAMPLE_TYPE, result);
-      });
-    }
-
-    function FormManager(create: boolean, obj: ISampleType = {}):void {
-      formAction.value = create;
-      showModal.value = true;
-      formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "SAMPLE TYPE";
-      if (create) {
-        Object.assign(form, {} as ISampleType);
-      } else {
-        Object.assign(form, { ...obj });
-      }
-    }
-
-    function saveForm():void {
-      if (formAction.value === true) addSampleType();
-      if (formAction.value === false) editSampleType();
-      showModal.value = false;
-    }
-
-    return {
-      showModal, 
-      sampleTypes: computed(() =>store.getters.getSampleTypes),
-      FormManager,
-      form,
-      formTitle,
-      saveForm
-     };
-  },
-});
-</script>

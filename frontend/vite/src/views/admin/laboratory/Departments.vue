@@ -1,3 +1,47 @@
+<script setup lang="ts">
+  import modal from '../../../components/SimpleModal.vue';
+  import { ref, reactive, computed } from 'vue';
+  import { ADD_DEPARTMENT, UPDATE_DEPARTMENT } from '../../../graphql/_mutations';
+  import { IDepartment } from '../../../models/setup';
+
+  import { useSetupStore } from '../../../stores';
+  import { useApiUtil } from '../../../composables';
+
+  const setupStore = useSetupStore()
+  const { withClientMutation } = useApiUtil()
+  
+  let showModal = ref<boolean>(false);
+  let formTitle = ref<string>('');
+  let form = reactive({}) as IDepartment;
+  const formAction = ref(true);
+
+  setupStore.fetchDepartments({})
+  const departments = computed(() => setupStore.getDepartments)
+
+  function FormManager(create: boolean, obj: any):void {
+    formAction.value = create;
+    showModal.value = true;
+    formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "Department";
+    if (create) {
+      Object.assign(form, { ...(new Object()) });
+    } else {
+      Object.assign(form, { ...obj });
+    }
+  }
+
+  function saveForm():void {
+    if (formAction.value === true) {
+      withClientMutation(ADD_DEPARTMENT, { payload: { name: form.name } }, "createDepartment")
+      .then((result) => setupStore.addDepartment(result));
+    } else {
+      withClientMutation(UPDATE_DEPARTMENT, { uid: form.uid, payload: { name: form.name }},"updateDepartment")
+      .then((result) => setupStore.updateDepartment(result));
+    };
+    showModal.value = false;
+  }
+
+</script>
+
 <template>
 
     <div class="container w-full my-4">
@@ -69,73 +113,3 @@
   </modal>
 
 </template>
-
-
-<script lang="ts" scope="ts">
-import modal from '../../../components/SimpleModal.vue';
-
-import { useMutation } from '@urql/vue';
-import { defineComponent, ref, reactive, computed } from 'vue';
-import { useStore } from 'vuex';
-import { ActionTypes } from '../../../store/actions';
-import { ADD_DEPARTMENT, UPDATE_DEPARTMENT } from '../../../graphql/_mutations';
-import { IDepartment } from '../../../models/setup';
-
-
-export default defineComponent({
-  name: "tab-departments",
-  components: {
-    modal,
-  },
-  setup() {
-    const store = useStore();
-    
-    let showModal = ref<boolean>(false);
-    let formTitle = ref<string>('');
-    let form = reactive({}) as IDepartment;
-    const formAction = ref(true);
-
-    store.dispatch(ActionTypes.FETCH_DEPARTMENTS);
-    const { executeMutation: createDepartment } = useMutation(ADD_DEPARTMENT);
-    const { executeMutation: updateDepartment } = useMutation(UPDATE_DEPARTMENT);
-
-    function addDepartment(): void {
-      createDepartment({ payload: { name: form.name } }).then((result) => {
-        store.dispatch(ActionTypes.ADD_DEPARTMENT, result);
-      });
-    }
-
-    function editDepartment(): void {
-      updateDepartment({ uid: form.uid, payload: { name: form.name }}).then((result) => {
-        store.dispatch(ActionTypes.UPDATE_DEPARTMENT, result);
-      });
-    }
-
-    function FormManager(create: boolean, obj: any):void {
-      formAction.value = create;
-      showModal.value = true;
-      formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "Department";
-      if (create) {
-        Object.assign(form, { ...(new Object()) });
-      } else {
-        Object.assign(form, { ...obj });
-      }
-    }
-
-    function saveForm():void {
-      if (formAction.value === true) addDepartment();
-      if (formAction.value === false) editDepartment();
-      showModal.value = false;
-    }
-
-    return {
-      showModal, 
-      departments: computed(() =>store.getters.getDepartments),
-      FormManager,
-      form,
-      formTitle,
-      saveForm
-     };
-  },
-});
-</script>

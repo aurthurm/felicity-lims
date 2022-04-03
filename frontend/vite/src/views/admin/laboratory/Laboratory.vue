@@ -1,3 +1,54 @@
+<script setup lang="ts">
+  import { reactive, ref, computed, watch } from 'vue';
+  import { ILaboratory, ILaboratorySetting } from '../../../models/setup';
+  import { UPDATE_LABORATOTY, UPDATE_LABORATOTY_SETTING } from '../../../graphql/_mutations';
+  import { useUserStore, useSetupStore } from '../../../stores';
+  import { useApiUtil } from '../../../composables';
+
+  const userStore = useUserStore()
+  const setupStore = useSetupStore()
+  const { withClientMutation } = useApiUtil()
+
+  let currentTab = ref<string>('general-info');
+  const tabs: string[]= ['general-info', 'other-settings'];
+
+  let editDisabled = ref(true);
+
+  setupStore.fetchLaboratory()
+  const laboratory = computed(() => setupStore.getLaboratory)
+  const formLaboratory = reactive({ ...laboratory.value }) as ILaboratory
+
+  watch(() => laboratory.value?.uid, (anal, prev) => Object.assign(formLaboratory, laboratory.value))
+
+  const saveLaboratoryForm = () => {
+        const payload =  { ...formLaboratory };
+        delete payload['uid']
+        delete payload['__typename']
+        payload["labManagerUid"] = +payload["labManagerUid"]!
+        withClientMutation(UPDATE_LABORATOTY, { uid: formLaboratory.uid, payload}, "updateLaboratory")
+        .then((result) => setupStore.updateLaboratory(result));
+    }
+
+  setupStore.fetchLaboratorySetting()
+  const laboratorySetting = computed(() => setupStore.getLaboratorySetting)
+  const formSettings = reactive({ ...laboratorySetting.value }) as ILaboratorySetting
+
+  watch(() => laboratorySetting.value?.uid, (anal, prev) => Object.assign(formSettings, laboratorySetting.value))
+
+  const saveSettingForm = () => {
+        const payload = { ...formSettings }
+        delete payload['uid']
+        delete payload['__typename']
+        withClientMutation(UPDATE_LABORATOTY_SETTING, { uid: formSettings.uid, payload },"updateLaboratorySetting")
+        .then((result) => setupStore.updateLaboratorySetting(result));
+    }
+
+  userStore.fetchUsers({})
+  const users = computed(() => userStore.getUsers)
+
+</script>
+
+
 <template>
 
     <div class="container w-full my-4">
@@ -232,53 +283,3 @@
     </div>
 
 </template>
-
-<script setup lang="ts">
-  import { reactive, ref, computed, watch } from 'vue';
-  import { useStore } from 'vuex';
-  import { ILaboratory, ILaboratorySetting } from '../../../models/setup';
-  import { ActionTypes } from '../../../store/actions';
-  import { ActionTypes as SetupActionTypes} from '../../../store/modules/setup';
-  import { UPDATE_LABORATOTY, UPDATE_LABORATOTY_SETTING } from '../../../graphql/_mutations';
-  import { useMutation } from '@urql/vue';
-  
-  const store = useStore();
-
-  let currentTab = ref<string>('general-info');
-  const tabs: string[]= ['general-info', 'other-settings'];
-
-  let editDisabled = ref(true);
-
-  store.dispatch(SetupActionTypes.FETCH_LABORATORY)
-  const laboratory = computed<ILaboratory>(() => store.getters.getLaboratory)
-  const formLaboratory = reactive({ ...laboratory.value }) as ILaboratory
-  watch(() => laboratory.value?.uid, (anal, prev) => Object.assign(formLaboratory, laboratory.value))
-  const { executeMutation: updateLaboratory } = useMutation(UPDATE_LABORATOTY);
-  const saveLaboratoryForm = () => {
-      const payload =  { ...formLaboratory };
-      delete payload['uid']
-      delete payload['__typename']
-      payload["labManagerUid"] = +payload["labManagerUid"]!
-      updateLaboratory({ uid: formLaboratory.uid, payload}).then((result) => {
-        store.dispatch(SetupActionTypes.UPDATE_LABORATORY, result);
-      });
-  }
-
-  store.dispatch(SetupActionTypes.FETCH_LABORATORY_SETTING)
-  const laboratorySetting = computed<ILaboratorySetting>(() => store.getters.getLaboratorySetting)
-  const formSettings = reactive({ ...laboratorySetting.value }) as ILaboratorySetting
-  watch(() => laboratorySetting.value?.uid, (anal, prev) => Object.assign(formSettings, laboratorySetting.value))
-  const { executeMutation: updateLaboratorySetting } = useMutation(UPDATE_LABORATOTY_SETTING);
-  const saveSettingForm = () => {
-      const payload = { ...formSettings }
-      delete payload['uid']
-      delete payload['__typename']
-      updateLaboratorySetting({ uid: formSettings.uid, payload }).then((result) => {
-        store.dispatch(SetupActionTypes.UPDATE_LABORATORY_SETTING, result);
-      });
-  }
-
-  store.dispatch(ActionTypes.FETCH_USERS)
-  const users = computed(() => store.getters.getUsers)
-
-</script>

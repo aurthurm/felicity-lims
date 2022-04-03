@@ -1,3 +1,16 @@
+<script setup lang="ts">
+  import { ref, computed } from 'vue';
+
+  import tabSampleTypes from './SampleTypes.vue'
+  import tabContainerTypes from './ContainerTypes.vue'
+
+
+  let currentTab = ref<string>('sample-types');
+  const tabs: string[] = ['sample-types']; //  'container-types'
+  let currentTabComponent = computed(() => 'tab-' + currentTab.value);
+
+ </script>
+
 <template>
   <div class="mt-4">
 
@@ -24,9 +37,3 @@
   </div>
 
 </template>
-
-<style lang="postcss">
-
-</style>
-
-<script src="./sample.component.ts" lang="ts"></script>

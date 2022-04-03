@@ -1,6 +1,13 @@
-<style lang="postcss">
- 
-</style>
+
+<script setup lang="ts">
+  import { ref, computed } from 'vue';
+  import tabSuppliers from './Suppliers.vue'
+  import tabManufacturers from './Manufacturers.vue'
+
+  let currentTab = ref<string>('suppliers');
+  const tabs: string[] = ['suppliers', 'manufacturers'];
+  let currentTabComponent = computed(() => 'tab-' + currentTab.value);
+</script>
 
 <template>
   <div class="mt-4">
@@ -29,12 +36,3 @@
 
 </template>
 
-<script setup lang="ts">
-  import { ref, computed } from 'vue';
-  import tabSuppliers from './Suppliers.vue'
-  import tabManufacturers from './Manufacturers.vue'
-
-  let currentTab = ref<string>('suppliers');
-  const tabs: string[] = ['suppliers', 'manufacturers'];
-  let currentTabComponent = computed(() => 'tab-' + currentTab.value);
-</script>

@@ -11,7 +11,7 @@
               role="button"
               aria-label="close modal"
               class="focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 rounded-md cursor-pointer"
-              @click="showNotifications(false)"
+              @click="notificationStore.showNotifications(false)"
             >
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M18 6L6 18" stroke="#4B5563" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
@@ -20,7 +20,7 @@
             </button>
           </div>
 
-          <div v-for="stream of streams" :key = "stream.uid"
+          <div v-for="stream of streamStore.streams" :key = "stream.uid"
           class="w-full p-3 mt-4 bg-white rounded flex">
             <div
               tabindex="0"
@@ -85,19 +85,18 @@
 
 <script lang="ts">
   import { defineComponent, ref, watch } from 'vue';
-  import useNotificationComposable from './../../modules/notification'
-  import useStreamComposable from './../../modules/stream'
+  import { useNotificationStore, useStreamStore } from '../../stores'
 
   export default defineComponent({
     name: 'Notification',
     setup() {
-      const { state, showNotifications } = useNotificationComposable()
-      const { streams } = useStreamComposable()
+      const notificationStore = useNotificationStore()
+      const streamStore  = useStreamStore()
 
       let notification: any = ref(null)
       let checdiv: any = ref(null)
 
-      watch(() => state.show.value, (curr, _) => {
+      watch(() => notificationStore.show, (curr, _) => {
         console.log(curr)
 
         if (curr !== true) {
@@ -117,9 +116,9 @@
       })
       
       return {
-        streams,
+        notificationStore,
+        streamStore,
         notification, checdiv,
-        showNotifications,
       };
     },
   });

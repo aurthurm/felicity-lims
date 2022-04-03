@@ -32,35 +32,18 @@
 
 </style>
 
-<script lang="ts">
-import { useStore } from 'vuex';
-import { defineComponent, ref, computed } from 'vue';
+<script setup lang="ts">
+  import { ref, computed } from 'vue';
+  import { useClientStore } from '../../../stores';
+  import tabSamples from '../../components/SampleListing.vue';
+  import tabContacts from '../comps/ContactTable.vue';
 
+  const clientStore = useClientStore();
 
-import tabSamples from '../../components/SampleListing.vue';
-import tabContacts from '../comps/ContactTable.vue';
+  let currentTab = ref('samples');
+  const tabs = ['samples', 'contacts'];
+  let currentTabComponent = computed(() => 'tab-' + currentTab.value);
 
-export default defineComponent({
-  name: 'clients-detail',
-  components: {
-    tabSamples,
-    tabContacts,
-  },
-  setup() {
-    const store = useStore();
+  let client = computed(() => clientStore.getClient)
 
-    let currentTab = ref('samples');
-    const tabs = ['samples', 'contacts'];
-    let currentTabComponent = computed(() => 'tab-' + currentTab.value);
-
-    let client = computed(() => store.getters.getClient)
-
-    return {
-      tabs,
-      currentTab,
-      currentTabComponent,
-      client,
-    };
-  },
-});
 </script>

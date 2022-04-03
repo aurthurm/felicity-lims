@@ -1,3 +1,188 @@
+
+<script setup lang="ts">
+  import { reactive, computed, onMounted, PropType, toRefs } from 'vue';
+  import { useRouter, useRoute } from 'vue-router';
+  import { useQuery } from '@urql/vue';
+  import { IPatient } from '../../models/patient';
+  import {
+    FILTER_PROVINCES_BY_COUNTRY,
+    FILTER_DISTRICTS_BY_PROVINCE,
+  } from '../../graphql/admin.queries';
+  import { ADD_PATIENT, UPDATE_PATIENT } from '../../graphql/patient.mutations';
+
+  import { useClientStore, useLocationStore, usePatientStore } from '../../stores';
+  import { useApiUtil } from '../../composables';
+  import { IDistrict, IProvince } from '../../models/location';
+  import { IClient } from '../../models/client';
+  import { isNullOrWs } from '../../utils';
+  import { useNotifyToast } from '../../composables'
+
+  import { useField, useForm } from 'vee-validate';
+  import { object, string, boolean, number, date } from 'yup';
+
+  const props = defineProps({
+    patient: Object as PropType<IPatient>,
+    navigate: { 
+      type: Boolean,
+      default: false
+    },
+  })
+
+  const emit = defineEmits(['close'])
+
+  let clientStore = useClientStore();
+  let locationsStore = useLocationStore();
+  let patientStore = usePatientStore();
+  const { withClientMutation } = useApiUtil()
+  
+  let router = useRouter();
+  let route = useRoute();
+
+  const state = reactive({
+      genders: ["Male", "Female", "Missing", "Trans Gender"] as string[],
+      createAction: true,
+      countries: computed(() => locationsStore.getCountries),
+      provinces: [] as IProvince[],
+      districts: [] as IDistrict[],
+      clients: computed<IClient[]>(() => clientStore.getClients),
+  })
+
+  let clientParams = reactive({ 
+    first: undefined, 
+    after: "",
+    text: "", 
+    sortBy: ["name"],
+    filterAction: false
+  });
+
+  onMounted(async () => {
+    await locationsStore.fetchCountries();  
+    await clientStore.fetchClients(clientParams);
+  })
+
+  // Patient
+  const { patient, navigate } = toRefs(props);
+
+  const patientSchema = object({
+        uid: number(),
+        clientPatientId: string().required("Client Patient ID is Required"),
+        patientId: string().nullable(),
+        firstName: string().required("First Name is Required"),
+        middleName: string().nullable(),
+        lastName: string().required("Last Name is Required"),
+        clientUid: number().required("Client is Required"),
+        gender: string().required("Gender is Required"),
+        age: number().nullable(),
+        dateOfBirth: date().nullable(),
+        ageDobEstimated: boolean().nullable(),
+        phoneHome: string().nullable(),
+        phoneMobile: string().nullable(),
+        consentSms: boolean().nullable(),
+        districtUid: number().nullable(),
+        provinceUid: number().nullable(),
+        countryUid: number().nullable(),
+  })
+
+  const { handleSubmit, errors } = useForm({
+    validationSchema: patientSchema,
+    initialValues: {
+      uid: patient?.value?.uid,
+      clientPatientId: patient?.value?.clientPatientId || route?.query?.cpid as string,
+      patientId: patient?.value?.patientId,
+      firstName: patient?.value?.firstName,
+      middleName: patient?.value?.middleName,
+      lastName: patient?.value?.lastName,
+      clientUid: patient?.value?.clientUid,
+      gender: patient?.value?.gender,
+      age: patient?.value?.age,
+      dateOfBirth: !isNullOrWs(patient?.value?.dateOfBirth) ? new Date(patient?.value?.dateOfBirth!).toISOString().split("T")[0] : undefined,
+      ageDobEstimated: patient?.value?.ageDobEstimated,
+      phoneHome: patient?.value?.phoneHome,
+      phoneMobile: patient?.value?.phoneMobile,
+      consentSms: patient?.value?.consentSms,
+      districtUid: patient?.value?.client?.district?.uid,
+      provinceUid: patient?.value?.client?.district?.province?.uid,
+      countryUid: patient?.value?.client?.district?.province?.country?.uid
+    }
+  });
+
+  const { value: clientPatientId } = useField('clientPatientId');
+  const { value: firstName } = useField('firstName');
+  const { value: middleName } = useField('middleName');
+  const { value: lastName } = useField('lastName');
+  const { value: clientUid } = useField('clientUid');
+  const { value: gender } = useField('gender');
+  const { value: age } = useField('age');
+  const { value: dateOfBirth } = useField('dateOfBirth');
+  const { value: ageDobEstimated } = useField<boolean>('ageDobEstimated');
+  const { value: phoneMobile } = useField('phoneMobile');
+  const { value: consentSms } = useField<boolean>('consentSms');
+  const { value: districtUid } = useField('districtUid');
+  const { value: provinceUid } = useField('provinceUid');
+  const { value: countryUid } = useField('countryUid');
+
+  const submitPatientForm = handleSubmit((values) => {
+    if (!values.uid) addPatient(values as IPatient);
+    if (values.uid) updatePatient(values as IPatient);
+  });
+
+  //
+  function addPatient(payload: IPatient) {
+    withClientMutation(ADD_PATIENT, { 
+     payload: {
+      clientPatientId: payload.clientPatientId, 
+      firstName: payload.firstName,
+      middleName: payload.middleName, 
+      lastName: payload.lastName, 
+      age: payload.age,
+      gender: payload.gender, 
+      dateOfBirth: payload.dateOfBirth, 
+      ageDobEstimated: payload.ageDobEstimated,
+      clientUid: payload.clientUid, 
+      phoneMobile: payload.phoneMobile, 
+      consentSms: payload.consentSms,
+     } 
+    },"createPatient").then(result => {
+      patientStore.addPatient(result)
+      emit('close');
+      if(navigate.value === true) router.push({ name: "patient-detail", params: { patientUid: result.uid }});
+    });
+  }
+
+  function updatePatient(payload: IPatient) {
+    withClientMutation(UPDATE_PATIENT,{ 
+      uid: payload.uid,
+      payload: {
+        clientPatientId: payload.clientPatientId, 
+        firstName: payload.firstName,
+        middleName: payload.middleName, 
+        lastName: payload.lastName, 
+        age: payload.age,
+        gender: payload.gender, 
+        dateOfBirth: payload.dateOfBirth, 
+        ageDobEstimated: payload.ageDobEstimated,
+        clientUid: payload.clientUid, 
+        phoneMobile: payload.phoneMobile, 
+        consentSms: payload.consentSms, 
+      }
+    },"updatePatient").then(result => {
+      patientStore.updatePatient(result);
+      emit('close', result);
+    });
+  }
+
+  // Provinces
+  function getProvinces(event:any) {
+    locationsStore.filterProvincesByCountry(countryUid.value as number)
+  }
+
+  // Districts
+  function getDistricts(event: any) {
+    locationsStore.filterDistrictsByProvince(provinceUid.value as number)
+  }
+</script>
+
+
 <template>
     <form 
     @submit.prevent="submitPatientForm"
@@ -132,214 +317,3 @@
           <button type="submit" class="-mb-4 w-1/5 border border-green-500 bg-green-500 text-white rounded-md px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-green-600 focus:outline-none focus:shadow-outline"> Save Patient </button>
         </form>
 </template>
-
-<script setup lang="ts">
-  import { useMutation } from '@urql/vue';
-  import { reactive, computed, onMounted, PropType, toRefs } from 'vue';
-  import { useStore } from 'vuex';
-  import { useRouter, useRoute } from 'vue-router';
-  import { useQuery } from '@urql/vue';
-  import { IPatient } from '../../models/patient';
-  import {
-    FILTER_PROVINCES_BY_COUNTRY,
-    FILTER_DISTRICTS_BY_PROVINCE,
-  } from '../../graphql/admin.queries';
-  import { ADD_PATIENT, UPDATE_PATIENT } from '../../graphql/patient.mutations';
-
-  import { ActionTypes } from '../../store/modules/patient';
-  import { ActionTypes as ClientActionTypes } from '../../store/modules/client';
-  import { ActionTypes as AdminActionTypes } from '../../store/modules/admin';
-  import { IDistrict, IProvince } from '../../models/location';
-  import { IClient } from '../../models/client';
-  import { isNullOrWs } from '../../utils';
-  import useNotifyToast from '../../modules/alert_toast'
-
-  import { useField, useForm } from 'vee-validate';
-  import { object, string, boolean, number, date } from 'yup';
-
-  const props = defineProps({
-    patient: Object as PropType<IPatient>,
-    navigate: { 
-      type: Boolean,
-      default: false
-    },
-  })
-
-  const emit = defineEmits(['close'])
-
-  let store = useStore();
-  let router = useRouter();
-  let route = useRoute();
-
-  const state = reactive({
-      genders: ["Male", "Female", "Missing", "Trans Gender"] as string[],
-      createAction: true,
-      countries: computed(() => store.getters.getCountries),
-      provinces: [] as IProvince[],
-      districts: [] as IDistrict[],
-      clients: computed<IClient[]>(() => store.getters.getClients),
-  })
-
-  let clientParams = reactive({ 
-    first: undefined, 
-    after: "",
-    text: "", 
-    sortBy: ["name"],
-    filterAction: false
-  });
-
-  onMounted(async () => {
-    await store.dispatch(AdminActionTypes.FETCH_COUNTRIES);  
-    await store.dispatch(ClientActionTypes.FETCH_CLIENTS, clientParams);
-  })
-
-  // Patient
-  const { patient, navigate } = toRefs(props);
-
-  const patientSchema = object({
-        uid: number(),
-        clientPatientId: string().required("Client Patient ID is Required"),
-        patientId: string().nullable(),
-        firstName: string().required("First Name is Required"),
-        middleName: string().nullable(),
-        lastName: string().required("Last Name is Required"),
-        clientUid: number().required("Client is Required"),
-        gender: string().required("Gender is Required"),
-        age: number().nullable(),
-        dateOfBirth: date().nullable(),
-        ageDobEstimated: boolean().nullable(),
-        phoneHome: string().nullable(),
-        phoneMobile: string().nullable(),
-        consentSms: boolean().nullable(),
-        districtUid: number().nullable(),
-        provinceUid: number().nullable(),
-        countryUid: number().nullable(),
-  })
-
-  const { handleSubmit, errors } = useForm({
-    validationSchema: patientSchema,
-    initialValues: {
-      uid: patient?.value?.uid,
-      clientPatientId: patient?.value?.clientPatientId || route?.query?.cpid as string,
-      patientId: patient?.value?.patientId,
-      firstName: patient?.value?.firstName,
-      middleName: patient?.value?.middleName,
-      lastName: patient?.value?.lastName,
-      clientUid: patient?.value?.clientUid,
-      gender: patient?.value?.gender,
-      age: patient?.value?.age,
-      dateOfBirth: !isNullOrWs(patient?.value?.dateOfBirth) ? new Date(patient?.value?.dateOfBirth!).toISOString().split("T")[0] : undefined,
-      ageDobEstimated: patient?.value?.ageDobEstimated,
-      phoneHome: patient?.value?.phoneHome,
-      phoneMobile: patient?.value?.phoneMobile,
-      consentSms: patient?.value?.consentSms,
-      districtUid: patient?.value?.client?.district?.uid,
-      provinceUid: patient?.value?.client?.district?.province?.uid,
-      countryUid: patient?.value?.client?.district?.province?.country?.uid
-    }
-  });
-
-  const { value: clientPatientId } = useField('clientPatientId');
-  const { value: firstName } = useField('firstName');
-  const { value: middleName } = useField('middleName');
-  const { value: lastName } = useField('lastName');
-  const { value: clientUid } = useField('clientUid');
-  const { value: gender } = useField('gender');
-  const { value: age } = useField('age');
-  const { value: dateOfBirth } = useField('dateOfBirth');
-  const { value: ageDobEstimated } = useField<boolean>('ageDobEstimated');
-  const { value: phoneMobile } = useField('phoneMobile');
-  const { value: consentSms } = useField<boolean>('consentSms');
-  const { value: districtUid } = useField('districtUid');
-  const { value: provinceUid } = useField('provinceUid');
-  const { value: countryUid } = useField('countryUid');
-
-  const submitPatientForm = handleSubmit((values) => {
-    if (!values.uid) addPatient(values as IPatient);
-    if (values.uid) updatePatient(values as IPatient);
-  });
-
-  //
-  const { gqlResponseHandler } = useNotifyToast()
-
-  const { executeMutation: patientCreator } = useMutation(ADD_PATIENT);
-  function addPatient(payload: IPatient) {
-    patientCreator({ 
-     payload: {
-      clientPatientId: payload.clientPatientId, 
-      firstName: payload.firstName,
-      middleName: payload.middleName, 
-      lastName: payload.lastName, 
-      age: payload.age,
-      gender: payload.gender, 
-      dateOfBirth: payload.dateOfBirth, 
-      ageDobEstimated: payload.ageDobEstimated,
-      clientUid: payload.clientUid, 
-      phoneMobile: payload.phoneMobile, 
-      consentSms: payload.consentSms,
-     } 
-    }).then(result => {
-      const data = gqlResponseHandler(result)
-      if (data) {
-        store.dispatch(ActionTypes.ADD_PATIENT, data.createPatient);
-        emit('close');
-        if(navigate.value === true) router.push({ name: "patient-detail", params: { patientUid: data?.createPatient?.uid }});
-      }
-    });
-  }
-
-  const { executeMutation: patientUpdater } = useMutation(UPDATE_PATIENT);
-  function updatePatient(payload: IPatient) {
-    patientUpdater({ 
-      uid: payload.uid,
-      payload: {
-        clientPatientId: payload.clientPatientId, 
-        firstName: payload.firstName,
-        middleName: payload.middleName, 
-        lastName: payload.lastName, 
-        age: payload.age,
-        gender: payload.gender, 
-        dateOfBirth: payload.dateOfBirth, 
-        ageDobEstimated: payload.ageDobEstimated,
-        clientUid: payload.clientUid, 
-        phoneMobile: payload.phoneMobile, 
-        consentSms: payload.consentSms, 
-      }
-    }).then(result => {
-      const data = gqlResponseHandler(result)
-      if (data) {
-        store.dispatch(ActionTypes.UPDATE_PATIENT, data.updatePatient);
-        emit('close', data.updatePatient);
-      }
-    });
-  }
-
-  // Provinces
-  function getProvinces(event:any) {
-    provincesfilter.executeQuery({requestPolicy: 'network-only'}).then(result => {
-      state.provinces = result.data.value?.provincesByCountryUid;
-    });
-  }
-
-  const provincesfilter = useQuery({
-    query: FILTER_PROVINCES_BY_COUNTRY,
-    variables: { uid: countryUid },
-    pause: computed(() => isNullOrWs(countryUid) ),
-    requestPolicy: 'network-only',
-  });
-
-  // Districts
-  function getDistricts(event: any) {
-    districtsfilter.executeQuery({requestPolicy: 'network-only'}).then(result => {
-      state.districts = result.data.value?.districtsByProvinceUid;
-    });
-  }
-
-  const districtsfilter = useQuery({
-    query: FILTER_DISTRICTS_BY_PROVINCE,
-    variables: { uid: provinceUid },
-    pause: computed(() => isNullOrWs(provinceUid) ),
-    requestPolicy: 'network-only',
-  });
-
-</script>

@@ -1,3 +1,81 @@
+<script setup lang="ts">
+  import modal from '../../../components/SimpleModal.vue';
+  import { ref, reactive, computed } from 'vue';
+  import { IInstrument } from '../../../models/setup'
+  import { ADD_INSTRUMENT, EDIT_INSTRUMENT  } from '../../../graphql/instrument.mutations';
+  import { useUserStore, useSetupStore } from '../../../stores';
+  import { useApiUtil } from '../../../composables';
+
+  const userStore = useUserStore()
+  const setupStore = useSetupStore()
+  const { withClientMutation } = useApiUtil()
+
+  // each tab if just gonna be forms with updatable values on button click
+  let currentTab = ref('view');
+  const tabs = ['view', 'configs',];
+  
+  let showModal = ref(false);
+  let formTitle = ref('');
+  const formAction = ref(true);
+
+  let instrument = reactive({})  as IInstrument;
+
+  setupStore.fetchInstrumentTypes();    
+  const instrumentTypes = computed(() => setupStore.getInstrumentTypes)
+
+  setupStore.fetchInstruments();    
+  const instruments = computed(() => setupStore.getInstruments)
+
+  setupStore.fetchManufacturers();    
+  const manufacturers = computed(() => setupStore.getManufacturers)
+
+  setupStore.fetchSuppliers();    
+  const suppliers = computed(() => setupStore.getSuppliers)
+
+  function addInstrument(): void {
+    const payload = { 
+      name: instrument.name, 
+      keyword: instrument.keyword, 
+      description: instrument.description,
+      instrumentTypeUid: instrument.instrumentTypeUid,
+      manufacturerUid: instrument.manufacturerUid,
+      supplierUid: instrument.supplierUid,
+    }
+    withClientMutation(ADD_INSTRUMENT, { payload }, "createInstrument")
+    .then((result) => setupStore.addInstrument(result));
+  }
+
+  function editInstrument(): void {
+    const payload = { 
+      name: instrument.name, 
+      keyword: instrument.keyword, 
+      description: instrument.description,
+      instrumentTypeUid: instrument.instrumentTypeUid,
+      manufacturerUid: instrument.manufacturerUid,
+      supplierUid: instrument.supplierUid,
+    }
+    withClientMutation(EDIT_INSTRUMENT,{ uid: instrument.uid, payload },"updateInstrument")
+    .then((result) => setupStore.updateInstrument(result));
+  }
+
+  function FormManager(create: boolean, obj = {} as IInstrument): void {
+    formAction.value = create;
+    showModal.value = true;
+    formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "ANALYSES INSTRUMENT";
+    if (create) {
+      Object.assign(instrument, { ...({} as IInstrument) });
+    } else {
+      Object.assign(instrument, { ...obj });
+    }
+  }
+
+  function saveForm():void {
+    if (formAction.value === true) addInstrument();
+    if (formAction.value === false) editInstrument();
+    showModal.value = false;
+  }
+</script>
+
 <template>
   <div class="">
     <div class="container w-full my-4">
@@ -122,86 +200,3 @@
   </modal>
 
 </template>
-
-<script setup lang="ts">
-  import modal from '../../../components/SimpleModal.vue';
-
-  import { useMutation } from '@urql/vue';
-  import { defineComponent, ref, reactive, computed } from 'vue';
-  import { useStore } from 'vuex';
-  import { ActionTypes } from '../../../store/modules/setup';
-  import { IInstrument } from '../../../models/setup'
-  import { ADD_INSTRUMENT, EDIT_INSTRUMENT  } from '../../../graphql/instrument.mutations';
-
-  let store = useStore();
-
-  // each tab if just gonna be forms with updatable values on button click
-  let currentTab = ref('view');
-  const tabs = ['view', 'configs',];
-  
-  let showModal = ref(false);
-  let formTitle = ref('');
-  const formAction = ref(true);
-
-  let instrument = reactive({})  as IInstrument;
-
-  store.dispatch(ActionTypes.FETCH_INSTRUMENT_TYPES);    
-  const instrumentTypes = computed(() =>store.getters.getInstrumentTypes)
-
-  store.dispatch(ActionTypes.FETCH_INSTRUMENTS);    
-  const instruments = computed(() =>store.getters.getInstruments)
-
-  store.dispatch(ActionTypes.FETCH_MANUFACTURERS);    
-  const manufacturers = computed(() =>store.getters.getManufacturers)
-
-  store.dispatch(ActionTypes.FETCH_SUPPLIERS);    
-  const suppliers = computed(() =>store.getters.getSuppliers)
-
-  const { executeMutation: createInstrument } = useMutation(ADD_INSTRUMENT);
-  const { executeMutation: updateInstrument } = useMutation(EDIT_INSTRUMENT);
-
-  function addInstrument(): void {
-    const payload = { 
-      name: instrument.name, 
-      keyword: instrument.keyword, 
-      description: instrument.description,
-      instrumentTypeUid: instrument.instrumentTypeUid,
-      manufacturerUid: instrument.manufacturerUid,
-      supplierUid: instrument.supplierUid,
-    }
-    createInstrument({ payload }).then((result) => {
-      store.dispatch(ActionTypes.ADD_INSTRUMENT, result);
-    });
-  }
-
-  function editInstrument(): void {
-    const payload = { 
-      name: instrument.name, 
-      keyword: instrument.keyword, 
-      description: instrument.description,
-      instrumentTypeUid: instrument.instrumentTypeUid,
-      manufacturerUid: instrument.manufacturerUid,
-      supplierUid: instrument.supplierUid,
-    }
-    updateInstrument({ uid: instrument.uid, payload }).then((result) => {
-      store.dispatch(ActionTypes.UPDATE_INSTRUMENT, result);
-    });
-  }
-
-  function FormManager(create: boolean, obj = {} as IInstrument): void {
-    formAction.value = create;
-    showModal.value = true;
-    formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "ANALYSES INSTRUMENT";
-    if (create) {
-      Object.assign(instrument, { ...({} as IInstrument) });
-    } else {
-      Object.assign(instrument, { ...obj });
-    }
-  }
-
-  function saveForm():void {
-    if (formAction.value === true) addInstrument();
-    if (formAction.value === false) editInstrument();
-    showModal.value = false;
-  }
-</script>

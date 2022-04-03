@@ -1,13 +1,187 @@
+<script setup lang="ts">
+  import modal from '../../../../components/SimpleModal.vue';
+  import Accordion from '../../../../components/Accordion.vue';
+  import { ref, reactive, onMounted } from 'vue';
+  import { useRoute } from 'vue-router';
+  import { IReflexAction, IReflexBrain, 
+  IReflexBrainFinal, IReflexBrainCriteria, IReflexBrainAddition } from '../../../../models/reflex';
+  import { useApiUtil } from '../../../../composables'
+  import { useReflexStore, useAnalysisStore } from '../../../../stores'
+  import { 
+    ADD_REFLEX_ACTION,
+    EDIT_REFLEX_ACTION,
+    ADD_REFLEX_BRAIN,
+    EDIT_REFLEX_BRAIN
+  } from '../../../../graphql/reflex.mutations';
+  import { stringifyNumber } from '../../../../utils';
+  import { IAnalysisService, IResultOption } from '../../../../models/analysis';
+
+  
+  const reflexStore = useReflexStore();
+  const analysisStore = useAnalysisStore()
+    
+  const { withClientMutation } = useApiUtil();
+  
+  const route = useRoute();
+  
+  let showActionModal = ref<boolean>(false);
+  let formTitle = ref<string>('');
+  let actionForm = reactive({}) as IReflexAction;
+  const formAction = ref<boolean>(true);
+  
+  let showBrainModal = ref<boolean>(false);
+  let brainForm = reactive({
+    addNew: [],
+    analysesValues: [],
+    finalise: [],
+  }) as IReflexBrain;
+
+
+  onMounted(async () => {
+    reflexStore.fetchReflexRuleByUid(+route.params.uid);
+  })
+
+  const stringToNum = (num: number) => {
+    const asString = stringifyNumber(num);
+    return asString.charAt(0).toUpperCase() + asString.slice(1)
+  }
+
+  const analysesServices = analysisStore.getAnalysesServicesSimple;
+
+  function addReflexAction(): void {
+    const payload = {
+      reflexRuleUid: reflexStore.reflexRule?.uid,
+      level: actionForm.level, 
+      description: actionForm.description, 
+      analyses: actionForm.analyses
+    }
+    withClientMutation(ADD_REFLEX_ACTION, { payload }, "createReflexAction")
+    .then(payload => reflexStore.addReflexAction(payload))
+  }
+
+  function editReflexAction(): void {
+    const payload = {
+      reflexRuleUid: reflexStore.reflexRule?.uid,
+      level: actionForm.level, 
+      description: actionForm.description, 
+      analyses: actionForm.analyses
+    }
+    withClientMutation(EDIT_REFLEX_ACTION, { payload }, "updateReflexAction")
+    .then(payload => reflexStore.updateReflexAction(payload))
+  }
+
+  function reflexActionFormManager(create: boolean, obj: IReflexAction = {}):void {
+    formAction.value = create;
+    showActionModal.value = true;
+    formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "REFLEX ACTION";
+    if (create) {
+      Object.assign(actionForm, {} as IReflexAction);
+    } else {
+      let analyses: number[] = [];
+      obj.analyses?.forEach(analysis => analyses.push(analysis?.uid!))
+      Object.assign(actionForm, { ...obj, analyses });
+    }
+  }
+
+  function saveActionForm():void {
+    if (formAction.value === true) addReflexAction();
+    if (formAction.value === false) editReflexAction();
+    showActionModal.value = false;
+  }
+
+  // Reflex Brain
+  const forAction = ref<number>();
+
+  function addReflexBrain(): void {
+    const payload = {
+      ...brainForm,
+      reflexActionUid: forAction.value,
+    }
+    withClientMutation(ADD_REFLEX_BRAIN, { payload }, "createReflexBrain")
+    .then(payload => reflexStore.updateReflexBrain(payload))
+  }
+
+  function editReflexBrain(): void {
+    const payload = {
+      ...brainForm,
+      reflexActionUid: forAction.value,
+    }
+    withClientMutation(EDIT_REFLEX_BRAIN, { uid: brainForm.uid, payload }, "updateReflexBrain")
+    .then(payload => reflexStore.updateReflexBrain(payload))
+  }
+
+  function addCriteria(): void {
+    brainForm.analysesValues?.push({ operator: "eq"} as IReflexBrainCriteria)
+  }
+
+  function removeCriteria(index: number): void {
+    brainForm.analysesValues?.splice(index, 1);
+  }
+
+  let criteriaResultOptions = ref<IResultOption[]>([]);
+  function setCriteriaResultOptions(event: any, anal: IReflexBrainCriteria){
+    const analysis = analysesServices?.find((s: IAnalysisService) => s.uid === anal.analysisUid)
+    anal.value = undefined;
+    criteriaResultOptions.value = analysis?.resultOptions || [];
+  }
+  
+  function addNew(): void {
+    brainForm.addNew?.push({} as IReflexBrainAddition)
+  }
+
+  function removeNew(index: number): void {
+    brainForm.addNew?.splice(index, 1);
+  }
+
+  function addFinal(): void {
+    brainForm.finalise?.push({} as IReflexBrainFinal)
+  }
+
+  function removeFinal(index: number): void {
+    brainForm.finalise?.splice(index, 1);
+  }
+
+  let finalResultOptions = ref<IResultOption[]>([]);
+  function setFinalResultOptions(event: any, anal: IReflexBrainFinal){
+    const analysis = analysesServices?.find((s: IAnalysisService) => s.uid === anal.analysisUid)
+    anal.value = undefined;
+    finalResultOptions.value = analysis?.resultOptions || [];
+  }
+
+  function reflexBrainFormManager(create: boolean, obj: IReflexBrain = {}):void {
+    formAction.value = create;
+    showBrainModal.value = true;
+    formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "REFLEX BRAIN";
+    forAction.value = obj.uid;
+    if (create) {
+      Object.assign(brainForm, {} as IReflexBrain);
+    } else {
+      let crit: IReflexBrainCriteria[] = [];
+      let addN: IReflexBrainAddition[] = [];
+      let finl: IReflexBrainFinal[] = [];
+      console.log(obj)
+      Object.assign(brainForm, { ...obj });
+    }
+  }
+
+  function saveBrainForm():void {
+    if (formAction.value === true) addReflexBrain();
+    if (formAction.value === false) editReflexBrain();
+    showBrainModal.value = false;
+  }
+
+</script>
+
 <template>
-  <h3 class="mt-4 mb-2 text-xl text-gray-600 font-semibold  tracking-wide">{{state.reflexRule?.name}}</h3>
-  <p class="leading-2 text-md italic tracking-wide">{{ state.reflexRule?.description }}</p>
+  <h3 class="mt-4 mb-2 text-xl text-gray-600 font-semibold  tracking-wide">{{reflexStore.reflexRule?.name}}</h3>
+  <p class="leading-2 text-md italic tracking-wide">{{ reflexStore.reflexRule?.description }}</p>
   <hr>
 
   <button @click="reflexActionFormManager(true)"
     class="my-4 px-2 py-1 border-blue-500 border text-blue-500 rounded transition duration-300 hover:bg-blue-700 hover:text-white focus:outline-none">Add Reflex Action</button>
   <hr>
 
-  <section class="col-span-1" v-for="action in state.reflexRule?.reflexActions" :key="action?.uid">
+  <section class="col-span-1" v-for="action in reflexStore.reflexRule?.reflexActions" :key="action?.uid">
     <Accordion>
       <template v-slot:title>
         <span class="p-2" @click="reflexActionFormManager(false, action)"><font-awesome-icon icon="edit" class="text-md text-gray-400 mr-1" /></span>
@@ -354,191 +528,3 @@
     </template>
   </modal>
 </template>
-
-<script setup lang="ts">
-  import modal from '../../../../components/SimpleModal.vue';
-  import Accordion from '../../../../components/Accordion.vue';
-  import { ref, reactive, onMounted } from 'vue';
-  import { useStore } from 'vuex'
-  import { useMutation } from "@urql/vue"
-  import { useRoute } from 'vue-router';
-  import { IReflexAction, IReflexBrain, 
-  IReflexBrainFinal, IReflexBrainCriteria, IReflexBrainAddition } from '../../../../models/reflex';
-  import useNotifyToast from '../../../../modules/alert_toast'
-  import useReflexComposable from '../../../../modules/reflex'
-  import { 
-    ADD_REFLEX_ACTION,
-    EDIT_REFLEX_ACTION,
-    ADD_REFLEX_BRAIN,
-    EDIT_REFLEX_BRAIN
-  } from '../../../../graphql/reflex.mutations';
-  import { stringifyNumber } from '../../../../utils';
-import { IAnalysisService, IResultOption } from '../../../../models/analysis';
-
-  const { gqlAllErrorHandler } = useNotifyToast()
-  const { 
-    state, fetchReflexRuleByUid, _addReflexAction, _updateReflexAction, _addReflexBrain, _updateReflexBrain 
-  } = useReflexComposable();
-  const route = useRoute();
-  const  store = useStore();
-  
-  let showActionModal = ref<boolean>(false);
-  let formTitle = ref<string>('');
-  let actionForm = reactive({}) as IReflexAction;
-  const formAction = ref<boolean>(true);
-  
-  let showBrainModal = ref<boolean>(false);
-  let brainForm = reactive({
-    addNew: [],
-    analysesValues: [],
-    finalise: [],
-  }) as IReflexBrain;
-
-
-  onMounted(async () => {
-    fetchReflexRuleByUid(+route.params.uid);
-  })
-
-  const stringToNum = (num: number) => {
-    const asString = stringifyNumber(num);
-    return asString.charAt(0).toUpperCase() + asString.slice(1)
-  }
-
-  const analysesServices = store.getters.getAnalysesServicesSimple;
-
-  const { executeMutation: createReflexAction } = useMutation(ADD_REFLEX_ACTION);
-  const { executeMutation: updateReflexAction } = useMutation(EDIT_REFLEX_ACTION);
-
-  function addReflexAction(): void {
-    const payload = {
-      reflexRuleUid: state.reflexRule?.uid,
-      level: actionForm.level, 
-      description: actionForm.description, 
-      analyses: actionForm.analyses
-    }
-    createReflexAction({ payload }).then((result) => {
-      let data = gqlAllErrorHandler(result)
-      _addReflexAction(data.createReflexAction)
-    });
-  }
-
-  function editReflexAction(): void {
-    const payload = {
-      reflexRuleUid: state.reflexRule?.uid,
-      level: actionForm.level, 
-      description: actionForm.description, 
-      analyses: actionForm.analyses
-    }
-    updateReflexAction({ uid: actionForm.uid, payload }).then((result) => {
-      let data = gqlAllErrorHandler(result)
-      _updateReflexAction(data.updateReflexAction)
-    });
-  }
-
-  function reflexActionFormManager(create: boolean, obj: IReflexAction = {}):void {
-    formAction.value = create;
-    showActionModal.value = true;
-    formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "REFLEX ACTION";
-    if (create) {
-      Object.assign(actionForm, {} as IReflexAction);
-    } else {
-      let analyses: number[] = [];
-      obj.analyses?.forEach(analysis => analyses.push(analysis?.uid!))
-      Object.assign(actionForm, { ...obj, analyses });
-    }
-  }
-
-  function saveActionForm():void {
-    if (formAction.value === true) addReflexAction();
-    if (formAction.value === false) editReflexAction();
-    showActionModal.value = false;
-  }
-
-  // Reflex Brain
-  const forAction = ref<number>();
-  const { executeMutation: createReflexBrain } = useMutation(ADD_REFLEX_BRAIN);
-  const { executeMutation: updateReflexBrain } = useMutation(EDIT_REFLEX_BRAIN);
-
-  function addReflexBrain(): void {
-    const payload = {
-      ...brainForm,
-      reflexActionUid: forAction.value,
-    }
-    createReflexBrain({ payload }).then((result) => {
-      let data = gqlAllErrorHandler(result)
-      _addReflexBrain(data.createReflexBrain)
-    });
-  }
-
-  function editReflexBrain(): void {
-    const payload = {
-      ...brainForm,
-      reflexActionUid: forAction.value,
-    }
-    updateReflexBrain({ uid: brainForm.uid, payload }).then((result) => {
-      let data = gqlAllErrorHandler(result)
-      _updateReflexBrain(data.updateReflexBrain)
-    });
-  }
-
-  function addCriteria(): void {
-    brainForm.analysesValues?.push({ operator: "eq"} as IReflexBrainCriteria)
-  }
-
-  function removeCriteria(index: number): void {
-    brainForm.analysesValues?.splice(index, 1);
-  }
-
-  let criteriaResultOptions = ref<IResultOption[]>([]);
-  function setCriteriaResultOptions(event: any, anal: IReflexBrainCriteria){
-    const analysis: IAnalysisService = analysesServices?.find((s: IAnalysisService) => s.uid === anal.analysisUid)
-    anal.value = undefined;
-    criteriaResultOptions.value = analysis.resultOptions || [];
-  }
-  
-  function addNew(): void {
-    brainForm.addNew?.push({} as IReflexBrainAddition)
-  }
-
-  function removeNew(index: number): void {
-    brainForm.addNew?.splice(index, 1);
-  }
-
-  function addFinal(): void {
-    brainForm.finalise?.push({} as IReflexBrainFinal)
-  }
-
-  function removeFinal(index: number): void {
-    brainForm.finalise?.splice(index, 1);
-  }
-
-  let finalResultOptions = ref<IResultOption[]>([]);
-  function setFinalResultOptions(event: any, anal: IReflexBrainFinal){
-    const analysis: IAnalysisService = analysesServices?.find((s: IAnalysisService) => s.uid === anal.analysisUid)
-    anal.value = undefined;
-    finalResultOptions.value = analysis.resultOptions || [];
-  }
-
-  function reflexBrainFormManager(create: boolean, obj: IReflexBrain = {}):void {
-    formAction.value = create;
-    showBrainModal.value = true;
-    formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "REFLEX BRAIN";
-    forAction.value = obj.uid;
-    if (create) {
-      Object.assign(brainForm, {} as IReflexBrain);
-    } else {
-      let crit: IReflexBrainCriteria[] = [];
-      let addN: IReflexBrainAddition[] = [];
-      let finl: IReflexBrainFinal[] = [];
-      console.log(obj)
-      Object.assign(brainForm, { ...obj });
-    }
-  }
-
-  function saveBrainForm():void {
-    if (formAction.value === true) addReflexBrain();
-    if (formAction.value === false) editReflexBrain();
-    showBrainModal.value = false;
-  }
-
-</script>

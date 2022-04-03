@@ -1,3 +1,145 @@
+<script setup lang="ts">
+  import modal from '../../components/SimpleModal.vue';
+  import { ref, reactive, computed } from 'vue';
+  import { useSampleStore, useAnalysisStore, useSetupStore } from '../../stores';
+  import { IAnalysisProfile, IAnalysisService, IQCRequest, ISample } from '../../models/analysis';
+  import { ADD_QC_REQUEST } from '../../graphql/analyses.mutations';
+  import { useApiUtil } from '../../composables'
+
+  import * as shield from '../../guards'
+
+  const sampleStore = useSampleStore();
+  const analysisStore = useAnalysisStore();
+  const setupStore = useSetupStore();
+  const { withClientMutation } = useApiUtil()
+
+  let showModal = ref<boolean>(false);
+
+  let formAction = ref<boolean>(true);
+  let form = reactive({ 
+    departmentUid: undefined,
+    samples: [{}] as IQCRequest[]
+  });
+
+  let analysesParams = reactive({ 
+    first: undefined, 
+    after: "",
+    text: "", 
+    sortBy: ["name"]
+  });
+  analysisStore.fetchAnalysesServices(analysesParams);
+  analysisStore.fetchQCLevels()
+  analysisStore.fetchQCTemplates();
+  analysisStore.fetchAnalysesProfiles();
+  setupStore.fetchDepartments({});
+  sampleStore.resetQCSets()
+
+  let qcSetBatch = ref<number>(25);
+  let qcSetParams = reactive({ 
+    first: qcSetBatch.value, 
+    after: "",
+    text: "", 
+    sortBy: ["uid"],
+    filterAction: false
+  });
+  sampleStore.fetchQCSets(qcSetParams);
+
+  const analysesProfiles = computed<IAnalysisProfile[]>(() => analysisStore.getAnalysesProfiles);
+  const analysesServices = computed<IAnalysisService[]>(() => {
+    const services: IAnalysisService[] = analysisStore.getAnalysesServicesSimple;
+    let s = new Set<IAnalysisService>();
+    services.forEach((service: IAnalysisService) => {
+      if(service.profiles?.length === 0){
+        s.add(service)
+      }
+    })
+    return [...s];
+  });
+
+  function addQCRequest(): void {
+    withClientMutation(ADD_QC_REQUEST, { samples: form.samples }, "createQcSet")
+    .then((result) => sampleStore.addQCSet(result));
+  }
+
+  function addQCSet(): void {
+    form.samples?.push({} as IQCRequest);
+  }
+
+  function removeQCSet(index: number): void {
+      form.samples?.splice(index, 1);
+  }
+
+  function FormManager(create: boolean, obj: IQCRequest):void {
+    formAction.value = create;
+    showModal.value = true;
+    if (create) {
+      Object.assign(form, {} as IQCRequest);
+    } else {
+      Object.assign(form, { ...obj });
+    }
+  }
+
+  function saveForm(): void {
+    if (formAction.value === true) addQCRequest();
+    showModal.value = false;
+  }
+
+  const pageInfo = computed(() => sampleStore.getQCSetPageInfo);
+
+  function showMoreQCSets(): void {
+    qcSetParams.first = +qcSetBatch.value;
+    qcSetParams.after = pageInfo?.value?.endCursor;
+    qcSetParams.text = "";
+    qcSetParams.filterAction = false;
+    sampleStore.fetchQCSets(qcSetParams);
+  }
+
+  function qcSetSamples(samples: ISample[]): string {
+    let ids:string[] = [];
+    let levels:string[] = [];
+    samples?.forEach((sample: ISample) => {
+      let sampleId = sample?.sampleId + ' (' + sample.status + ')';
+      if(!ids.includes(sampleId)){
+        ids.push(sampleId)
+      }
+      let level = sample?.qcLevel?.level?.match(/\b([A-Z])/g)!.join('') + ' (' + sample.status + ')';
+      if(!levels.includes(level)){
+        levels.push(level)
+      }
+    })
+    return levels.join(', ');
+  }
+
+  function qcSetProfileAnalyses(samples: ISample[]): string {
+    let names: string[] = [];
+    samples?.forEach((sample: ISample) => {
+        sample.profiles!.forEach(p => {
+          if(!names.includes(p.name!)){
+            names.push(p.name!)
+          }
+        });
+    })
+    samples?.forEach(sample => {
+        sample.analyses!.forEach(a => {
+          if(!names.includes(a.name!)){
+            names.push(a.name!)
+          }
+        });
+    })
+    return names.join(', ');
+  }
+
+  const drillDown = ref(false)
+  const departments = computed(() => setupStore.getDepartments)
+  const qcTemplates = computed(() => analysisStore.getQCTemplates)
+  const qcLevels = computed(() => analysisStore.getQCLevels)
+  const qcSets = computed(() => sampleStore.getQCSets)
+  const qcSetCount = computed(() => sampleStore.getQCSets?.length + " of " + sampleStore.getQCSetCount + " QC Sets")
+</script>
+
+
+   
+
 <template>
   <div class="flex items-center justify-between">
     <h1 class="h1 font-bold text-dark-700">QC Analyses Requests</h1>
@@ -74,10 +216,10 @@
                   </div>
                 </td>
                 <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-                  <div class="text-sm leading-5 text-blue-900">{{ qcSetSamples(qcSet.samples) }}</div>
+                  <div class="text-sm leading-5 text-blue-900">{{ qcSetSamples(qcSet.samples!) }}</div>
                 </td>
                 <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-                  <div class="text-sm leading-5 text-blue-900">{{ qcSetProfileAnalyses(qcSet.samples) }}</div>
+                  <div class="text-sm leading-5 text-blue-900">{{ qcSetProfileAnalyses(qcSet.samples!) }}</div>
                 </td>
                 <td class="px-1 py-1 whitespace-no-wrap text-right border-b border-gray-500 text-sm leading-5">
                     <router-link 
@@ -245,149 +387,3 @@
 
 </template>
 
-
-
-<script setup lang="ts">
-  import modal from '../../components/SimpleModal.vue';
-  import { useMutation } from '@urql/vue';
-  import { ref, reactive, computed } from 'vue';
-  import { ActionTypes as SampleActionTypes } from '../../store/modules/sample';
-  import { useStore } from 'vuex';
-  import { ActionTypes } from '../../store/modules/analysis';
-  import { IAnalysisProfile, IAnalysisService, IQCRequest, ISample } from '../../models/analysis';
-  import { ADD_QC_REQUEST } from '../../graphql/analyses.mutations';
-  import { ActionTypes as SetUpActionTypes } from '../../store/actions';
-
-  import * as shield from '../../guards'
-
-  const store = useStore();
-
-  let showModal = ref<boolean>(false);
-
-  let formAction = ref<boolean>(true);
-  let form = reactive({ 
-    departmentUid: undefined,
-    samples: [{}] as IQCRequest[]
-  });
-
-  let analysesParams = reactive({ 
-    first: undefined, 
-    after: "",
-    text: "", 
-    sortBy: ["name"]
-  });
-  store.dispatch(ActionTypes.FETCH_ANALYSES_SERVICES, analysesParams);
-  store.dispatch(ActionTypes.FETCH_QC_LEVELS);
-  store.dispatch(ActionTypes.FETCH_ANALYSES_QC_TEMPLATES);
-  store.dispatch(ActionTypes.FETCH_ANALYSES_PROFILES);
-  store.dispatch(SetUpActionTypes.FETCH_DEPARTMENTS);
-  store.dispatch(SampleActionTypes.RESET_QC_SET)
-
-  let qcSetBatch = ref<number>(25);
-  let qcSetParams = reactive({ 
-    first: qcSetBatch.value, 
-    after: "",
-    text: "", 
-    sortBy: ["uid"],
-    filterAction: false
-  });
-  store.dispatch(SampleActionTypes.FETCH_QC_SETS, qcSetParams);
-
-  const analysesProfiles = computed<IAnalysisProfile[]>(() =>store.getters.getAnalysesProfiles);
-  const analysesServices = computed<IAnalysisService[]>(() => {
-    const services: IAnalysisService[] = store.getters.getgetAnalysesServicesSimple;
-    let s = new Set<IAnalysisService>();
-    services.forEach((service: IAnalysisService) => {
-      if(service.profiles?.length === 0){
-        s.add(service)
-      }
-    })
-    return [...s];
-  });
-
-  const { executeMutation: createQCRequest } = useMutation(ADD_QC_REQUEST);
-
-  function addQCRequest(): void {
-    createQCRequest({ samples: form.samples }).then((result) => {
-      store.dispatch(SampleActionTypes.ADD_QC_SETS, result);
-    });
-  }
-
-  function addQCSet(): void {
-    form.samples?.push({} as IQCRequest);
-  }
-
-  function removeQCSet(index: number): void {
-      form.samples?.splice(index, 1);
-  }
-
-  function FormManager(create: boolean, obj: IQCRequest):void {
-    formAction.value = create;
-    showModal.value = true;
-    if (create) {
-      Object.assign(form, {} as IQCRequest);
-    } else {
-      Object.assign(form, { ...obj });
-    }
-  }
-
-  function saveForm(): void {
-    if (formAction.value === true) addQCRequest();
-    showModal.value = false;
-  }
-
-  const pageInfo = computed(() => store.getters.getQCSetPageInfo);
-
-  function showMoreQCSets(): void {
-    qcSetParams.first = +qcSetBatch.value;
-    qcSetParams.after = pageInfo?.value?.endCursor;
-    qcSetParams.text = "";
-    qcSetParams.filterAction = false;
-    store.dispatch(SampleActionTypes.FETCH_QC_SETS, qcSetParams);
-  }
-
-  function qcSetSamples(samples: ISample[]): string {
-    let ids:string[] = [];
-    let levels:string[] = [];
-    samples?.forEach((sample: ISample) => {
-      let sampleId = sample?.sampleId + ' (' + sample.status + ')';
-      if(!ids.includes(sampleId)){
-        ids.push(sampleId)
-      }
-      let level = sample?.qcLevel?.level?.match(/\b([A-Z])/g)!.join('') + ' (' + sample.status + ')';
-      if(!levels.includes(level)){
-        levels.push(level)
-      }
-    })
-    return levels.join(', ');
-  }
-
-  function qcSetProfileAnalyses(samples: ISample[]): string {
-    let names: string[] = [];
-    samples?.forEach((sample: ISample) => {
-        sample.profiles!.forEach(p => {
-          if(!names.includes(p.name!)){
-            names.push(p.name!)
-          }
-        });
-    })
-    samples?.forEach(sample => {
-        sample.analyses!.forEach(a => {
-          if(!names.includes(a.name!)){
-            names.push(a.name!)
-          }
-        });
-    })
-    return names.join(', ');
-  }
-
-  const drillDown = ref(false)
-  const departments = computed(() => store.getters.getDepartments)
-  const qcTemplates = computed(() =>store.getters.getQCTemplates)
-  const qcLevels = computed(() => store.getters.getQCLevels)
-  const qcSets = computed(() => store.getters.getQCSets)
-  const qcSetCount = computed(() => store.getters.getQCSets?.length + " of " + store.getters.getQCSetCount + " QC Sets")
-</script>
-
-
-   

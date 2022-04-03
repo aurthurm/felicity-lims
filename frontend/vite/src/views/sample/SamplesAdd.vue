@@ -1,3 +1,152 @@
+<script setup lang="ts">
+  import { ref, reactive, computed } from 'vue';
+  import { useRouter } from 'vue-router';
+  import { useSampleStore, useAnalysisStore, useClientStore, usePatientStore } from '../../stores';
+  import { IAnalysisProfile, IAnalysisRequest, IAnalysisService, ISample, ISampleType } from '../../models/analysis';
+  import { ADD_ANALYSIS_REQUEST  } from '../../graphql/analyses.mutations';
+  import { isNullOrWs } from '../../utils';
+
+  import { useField, useForm } from 'vee-validate';
+  import { object, string, array, number } from 'yup';
+  import { IClient } from '../../models/client';
+  import { useApiUtil, useNotifyToast } from '../../composables'
+
+  const sampleStore = useSampleStore();
+  const patientStore = usePatientStore();
+  const analysisStore = useAnalysisStore();
+  const clientStore = useClientStore();
+  const router = useRouter();
+
+  const { withClientMutation } = useApiUtil()
+  const { swalError } = useNotifyToast()
+
+  // Patient
+  let patient = computed(() => patientStore.getPatient)
+ 
+  // Clients, Cient Contacts
+  let clientParams = reactive({ 
+    first: undefined, 
+    after: "",
+    text: "", 
+    sortBy: ["name"]
+  });
+  clientStore.fetchClients(clientParams);
+
+  const clients = computed(() => clientStore.getClients)
+
+  const client = ref<IClient>({} as IClient);
+
+  function getClientContacts(): void {
+    if(!isNullOrWs(clientName.value)) {
+      const clt = clientStore.getClientByName(clientName.value as string);
+      clientStore.fetchClientContacts(clt?.uid);
+      client.value = clt as IClient;
+    }
+  }
+  const clientContacts = computed(() => clientStore.getClientContacts);
+
+  // Sample Types
+  sampleStore.fetchSampleTypes();
+  const sampleTypes = computed(() => sampleStore.getSampleTypes);
+
+  // Analysis Services
+  let analysesParams = reactive({ 
+    first: undefined, 
+    after: "",
+    text: "", 
+    sortBy: ["name"]
+  });
+  analysisStore.fetchAnalysesServices(analysesParams);
+
+  const analysesServices = computed<IAnalysisService[]>(() => {
+    const services: IAnalysisService[] = analysisStore.getAnalysesServicesSimple;
+    let s = new Set<IAnalysisService>();
+    services.forEach((service: IAnalysisService, index: number) => {
+      if(service.profiles?.length === 0){
+        s.add(service)
+      }
+    })
+    return [...s];
+  });
+
+  // Analysis Profiles
+  analysisStore.fetchAnalysesProfiles();
+  const analysesProfiles = computed(() => analysisStore.getAnalysesProfiles);
+
+  // Analysis Request Form
+  const arSchema = object({
+    clientRequestId: string().required("Client Request ID is Required"),
+    clinicalData: string().nullable(),
+    clientName: string().required("Client is Required"),
+    clientContactUid: number().required("Client Contact is Required"),
+    samples: array().required().min(1, "Add at least 1 sample"),
+    priority: number(),
+  })
+
+  const { handleSubmit, errors } = useForm({
+    validationSchema: arSchema,
+    initialValues: {
+      priority: 0,
+      samples: [],
+    } as any,
+  });
+
+  const { value: clientRequestId } = useField('clientRequestId');
+  const { value: clinicalData } = useField<string>('clinicalData');
+  const { value: clientName } = useField('clientName');
+  const { value: clientContactUid } = useField('clientContactUid');
+  const { value: priority } = useField('priority');
+  const { value: samples } = useField<ISample[]>('samples');
+
+  const submitARForm = handleSubmit((values) => {
+
+    for(let sample of values.samples || []) {
+      if(typeof sample?.sampleType !== 'number') {
+        swalError("Samples must have sample types");
+        return;
+      }
+      if(sample?.analyses?.length <= 0 && sample?.profiles?.length <= 0) {
+        swalError("Samples must have either profiles/analyses or both");
+        return;
+      }
+    }
+
+    addAnalysesRequest(values as any)
+  });
+
+  // Analysis Request Add
+  function addAnalysesRequest(request: IAnalysisRequest): void {
+    const payload = { 
+      patientUid: patient.value?.uid, 
+      clientRequestId: request.clientRequestId, 
+      clinicalData: request.clinicalData, 
+      clientUid: client.value?.uid, 
+      clientContactUid: request.clientContactUid, 
+      samples: request.samples
+    }
+    withClientMutation(ADD_ANALYSIS_REQUEST, {payload}, "createAnalysisRequest")
+    .then((result) => {
+      sampleStore.addAnalysisRequest(result)
+      router.push({ name: "patient-detail", params: { patientUid: patient.value?.uid }});
+    });
+    
+  }
+
+  function addSample(): void {
+    const sample = {    
+      sampleType: {} as ISampleType,
+      profiles: [] as IAnalysisProfile[],
+      analyses: [] as IAnalysisService[],
+    } as ISample
+    samples.value.push(sample);
+  }
+
+  function removeSample(index: number): void {
+    samples.value.splice(index, 1);
+  }
+</script>
+
+
 <template>
 
   <div class="w-3/6 mt-4 py-4">
@@ -163,154 +312,3 @@
       </form>
   </div>
 </template>
-
-<script setup lang="ts">
-  import { useMutation } from '@urql/vue';
-  import { ref, reactive, computed } from 'vue';
-  import { useRouter } from 'vue-router';
-  import { useStore } from 'vuex';
-  import { ActionTypes as SampleActionTypes } from '../../store/modules/sample';
-  import { IAnalysisProfile, IAnalysisRequest, IAnalysisService, ISample, ISampleType } from '../../models/analysis';
-  import { ADD_ANALYSIS_REQUEST  } from '../../graphql/analyses.mutations';
-  import { ActionTypes } from '../../store/modules/analysis';
-  import { ActionTypes as ClientActionTypes } from '../../store/modules/client';
-  import { isNullOrWs } from '../../utils';
-
-  import { useField, useForm } from 'vee-validate';
-  import { object, string, array, number } from 'yup';
-  import { IClient } from '../../models/client';
-  import useNotifyToast from '../../modules/alert_toast'
-  
-  const store = useStore();
-  const router = useRouter();
-
-  const { gqlResponseHandler, swalError } = useNotifyToast()
-
-  // Patient
-  let patient = computed(() => store.getters.getPatient)
- 
-  // Clients, Cient Contacts
-  let clientParams = reactive({ 
-    first: undefined, 
-    after: "",
-    text: "", 
-    sortBy: ["name"]
-  });
-  store.dispatch(ClientActionTypes.FETCH_CLIENTS, clientParams);
-
-  const clients = computed(() => store.getters.getClients)
-
-  const client = ref({} as IClient);
-
-  function getClientContacts(): void {
-    if(!isNullOrWs(clientName.value)) {
-      const clt = store.getters.getClientByName(clientName.value);
-      store.dispatch(ClientActionTypes.FETCH_CLIENT_CONTACTS, clt?.uid);
-      client.value = clt;
-    }
-  }
-  const clientContacts = computed(() => store.getters.getClientContacts);
-
-  // Sample Types
-  store.dispatch(SampleActionTypes.FETCH_SAMPLE_TYPES);
-  const sampleTypes = computed(() => store.getters.getSampleTypes);
-
-  // Analysis Services
-  let analysesParams = reactive({ 
-    first: undefined, 
-    after: "",
-    text: "", 
-    sortBy: ["name"]
-  });
-  store.dispatch(ActionTypes.FETCH_ANALYSES_SERVICES, analysesParams);
-
-  const analysesServices = computed<IAnalysisService[]>(() => {
-    const services: IAnalysisService[] = store.getters.getAnalysesServicesSimple;
-    let s = new Set<IAnalysisService>();
-    services.forEach((service: IAnalysisService, index: number) => {
-      if(service.profiles?.length === 0){
-        s.add(service)
-      }
-    })
-    return [...s];
-  });
-
-  // Analysis Profiles
-  store.dispatch(ActionTypes.FETCH_ANALYSES_PROFILES);
-  const analysesProfiles = computed(() =>store.getters.getAnalysesProfiles);
-
-  // Analysis Request Form
-  const arSchema = object({
-    clientRequestId: string().required("Client Request ID is Required"),
-    clinicalData: string().nullable(),
-    clientName: string().required("Client is Required"),
-    clientContactUid: number().required("Client Contact is Required"),
-    samples: array().required().min(1, "Add at least 1 sample"),
-    priority: number(),
-  })
-
-  const { handleSubmit, errors } = useForm({
-    validationSchema: arSchema,
-    initialValues: {
-      priority: 0,
-      samples: [],
-    },
-  });
-
-  const { value: clientRequestId } = useField('clientRequestId');
-  const { value: clinicalData } = useField<string>('clinicalData');
-  const { value: clientName } = useField('clientName');
-  const { value: clientContactUid } = useField('clientContactUid');
-  const { value: priority } = useField('priority');
-  const { value: samples } = useField<ISample[]>('samples');
-
-  const submitARForm = handleSubmit((values) => {
-
-    for(let sample of values.samples || []) {
-      if(typeof sample?.sampleType !== 'number') {
-        swalError("Samples must have sample types");
-        return;
-      }
-      if(sample?.analyses?.length <= 0 && sample?.profiles?.length <= 0) {
-        swalError("Samples must have either profiles/analyses or both");
-        return;
-      }
-    }
-
-    addAnalysesRequest(values as any)
-  });
-
-  // Analysis Request Add
-  const { executeMutation: arCreator } = useMutation(ADD_ANALYSIS_REQUEST);
-
-  function addAnalysesRequest(request: IAnalysisRequest): void {
-    const payload = { 
-      patientUid: patient.value?.uid, 
-      clientRequestId: request.clientRequestId, 
-      clinicalData: request.clinicalData, 
-      clientUid: client.value?.uid, 
-      clientContactUid: request.clientContactUid, 
-      samples: request.samples
-    }
-    arCreator({payload}).then((result) => {
-      const data = gqlResponseHandler(result)
-      if(data) store.dispatch(SampleActionTypes.ADD_ANALYSIS_REQUEST, data.createAnalysisRequest);
-    });
-    router.push({ name: "patient-detail", params: { patientUid: patient.value?.uid }});
-  }
-
-  function addSample(): void {
-    const sample = {    
-      sampleType: {} as ISampleType,
-      profiles: [] as IAnalysisProfile[],
-      analyses: [] as IAnalysisService[],
-    } as ISample
-    samples.value.push(sample);
-  }
-
-  function removeSample(index: number): void {
-    samples.value.splice(index, 1);
-  }
-
-
-</script>

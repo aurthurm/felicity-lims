@@ -1,4 +1,4 @@
-import { createApp } from 'vue'
+import { createApp, markRaw } from 'vue'
 import urql from '@urql/vue';
 import VueSweetalert2 from 'vue-sweetalert2';
 import 'sweetalert2/dist/sweetalert2.min.css';
@@ -15,12 +15,16 @@ import './assets/css/style.css'
 
 import App from './App.vue'
 import router from './router'
-import store from './store'
 import { createPinia } from 'pinia'
 import { urqlClient } from './urql'
 
 library.add(fas, fab)
 dom.watch()
+
+const pinia = createPinia();
+pinia.use(({ store }) => {
+    store.$router = markRaw(router)
+});
 
 const app = createApp(App)
 app.component('font-awesome-icon', FontAwesomeIcon)
@@ -29,7 +33,6 @@ app.component('empty-layout', LayoutEmpty)
 app.use(urql, urqlClient)
 app.use(VueSweetalert2)
 app.use(router)
-app.use(store)
-app.use(createPinia())
+app.use(pinia)
 app.mount('#app')
 

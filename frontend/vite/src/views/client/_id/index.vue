@@ -1,3 +1,79 @@
+
+<script setup lang="ts">
+  import modal from '../../../components/SimpleModal.vue';
+  import { useRoute } from 'vue-router';
+  import { ref, computed } from 'vue';
+  import { ADD_CLIENT, EDIT_CLIENT } from '../../../graphql/clients.mutations';
+  import { useLocationStore, useClientStore } from '../../../stores';
+  import { IDistrict, IProvince } from '../../../models/location';
+  import { IClient } from '../../../models/client';
+  import { useApiUtil } from '../../../composables'
+
+  import * as shield from '../../../guards'
+
+  const locationStore = useLocationStore();
+  const clientStore = useClientStore()
+  const { withClientMutation } = useApiUtil()
+
+  const route = useRoute();
+
+  let showClientModal = ref<boolean>(false);
+  let createItem = ref<boolean>(false);
+  let targetItem = ref<string>('');
+
+  let provinces = ref<IProvince[]>([]);
+  let districts = ref<IDistrict[]>([]);
+
+  let countryUid = ref<number>();
+  let provinceUid = ref<number>();
+
+  let formTitle = ref<string>('');
+
+  clientStore.fetchClientByUid(+route.query.clientUid!)
+  const client = (clientStore.getClient)!;
+
+  locationStore.fetchCountries();
+  const countries = computed(() => locationStore.getCountries)
+
+  function addClient() {
+    withClientMutation(ADD_CLIENT, { name: client?.name, code: client?.code, districtUid: client?.districtUid }, "createClient")
+    .then((res) => clientStore.addClient(res));
+  }
+
+  function editClient() {
+    withClientMutation(EDIT_CLIENT, { uid: client?.uid, name: client?.name, code: client?.code, districtUid: client?.districtUid },"updateClient")
+    .then((result) => clientStore.updateClient(result));
+  }
+
+  function getProvinces(event: Event) {
+    locationStore.filterProvincesByCountry(countryUid.value!)
+  }
+
+  function getDistricts(event: Event) {
+    locationStore.filterDistrictsByProvince(provinceUid.value!)
+  }
+
+  function FormManager(create: boolean, target: string, obj: IClient = {} as IClient) {
+    createItem.value = create;
+    targetItem.value = target;
+    formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + target.toUpperCase();
+    if(target == "client") showClientModal.value = true;
+    if (create) {
+      if(target == "client") Object.assign(client, {} as IClient);
+    } else {
+      if(target == "client") Object.assign(client, { ...obj });
+    }
+  }
+
+  function saveForm() {
+    if (createItem.value) addClient();
+    if (!createItem.value) editClient();
+    showClientModal.value = false;
+  }
+
+</script>
+
+
 <template>
   <div class="">
 
@@ -130,116 +206,3 @@
     </template>
   </modal>
 </template>
-
-<style lang="postcss">
-
-</style>
-
-<script setup lang="ts">
-  import modal from '../../../components/SimpleModal.vue';
-
-  import { useMutation, useQuery } from '@urql/vue';
-  import { useStore } from 'vuex';
-  import { useRoute } from 'vue-router';
-  import { ref, reactive, computed } from 'vue';
-  import { ADD_CLIENT, EDIT_CLIENT } from '../../../graphql/clients.mutations';
-  import {
-    FILTER_PROVINCES_BY_COUNTRY,
-    FILTER_DISTRICTS_BY_PROVINCE,
-  } from '../../../graphql/admin.queries';
-
-  import { ActionTypes } from '../../../store/modules/client';
-  import { ActionTypes as AdminActionTypes } from '../../../store/modules/admin';
-  import { IDistrict, IProvince } from '../../../models/location';
-  import { IClient } from '../../../models/client';
-
-  import * as shield from '../../../guards'
-
-  const store = useStore();
-  const route = useRoute();
-
-  let showClientModal = ref<boolean>(false);
-  let createItem = ref<boolean>(false);
-  let targetItem = ref<string>('');
-
-  let provinces = ref<IProvince[]>([]);
-  let districts = ref<IDistrict[]>([]);
-
-  let countryUid = ref<number>();
-  let provinceUid = ref<number>();
-  let clientParams = reactive({ 
-    first: null, 
-    after: null,
-    text: null, 
-    sortBy: ["name"]
-  });
-
-  let formTitle = ref<string>('');
-
-  store.dispatch(ActionTypes.FETCH_CLIENT_BY_UID, +route.query.clientUid!)
-  let client = computed<IClient>(() => store.getters.getClient);
-
-  store.dispatch(AdminActionTypes.FETCH_COUNTRIES);
-  const countries = computed(() => store.getters.getCountries)
-  // store.dispatch(ActionTypes.FETCH_CLIENTS, clientParams);
-
-  const { executeMutation: createClient } = useMutation(ADD_CLIENT);
-  const { executeMutation: updateClient } = useMutation(EDIT_CLIENT);
-
-  const provincesfilter = useQuery({
-    query: FILTER_PROVINCES_BY_COUNTRY,
-    variables: { uid: countryUid },
-    pause: computed(() => countryUid !== null),
-    requestPolicy: 'network-only',
-  });
-
-  const districtsfilter = useQuery({
-    query: FILTER_DISTRICTS_BY_PROVINCE,
-    variables: { uid: provinceUid },
-    pause: computed(() => provinceUid !== null),
-    requestPolicy: 'network-only',
-  });
-
-  function addClient() {
-    createClient({ name: client.value.name, code: client.value.code, districtUid: client.value.districtUid }).then((result) => {
-      Object.assign(client, result.data.createClient.createClient);
-    });
-  }
-
-  function editClient() {
-    updateClient({ uid: client.value.uid, name: client.value.name, code: client.value.code, districtUid: client.value.districtUid }).then((result) => {
-      Object.assign(client, result.data.updateClient.updateClient);
-    });
-  }
-
-  function getProvinces(event: any) {
-    provincesfilter.executeQuery({requestPolicy: 'network-only'}).then(result => {
-      provinces.value = result.data.value?.provincesByCountryUid;
-    });
-  }
-
-  function getDistricts(event: any) {
-    districtsfilter.executeQuery({requestPolicy: 'network-only'}).then(result => {
-      districts.value = result.data.value?.districtsByProvinceUid;
-    });
-  }
-
-  function FormManager(create: boolean, target: string, obj: IClient = {} as IClient) {
-    createItem.value = create;
-    targetItem.value = target;
-    formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + target.toUpperCase();
-    if(target == "client") showClientModal.value = true;
-    if (create) {
-      if(target == "client") Object.assign(client, {} as IClient);
-    } else {
-      if(target == "client") Object.assign(client, { ...obj });
-    }
-  }
-
-  function saveForm() {
-    if (createItem.value) addClient();
-    if (!createItem.value) editClient();
-    showClientModal.value = false;
-  }
-
-</script>

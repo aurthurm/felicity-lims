@@ -1,3 +1,19 @@
+<script setup lang="ts">
+  import tabAssignSamples from './WorkSheetAssign.vue';
+  import tabWorksheetResults from './WorkSheetResults.vue';
+  import tabLogs from '../../components/AuditLog.vue';
+
+  import { ref, computed } from 'vue';
+  import { useWorksheetStore } from '../../../stores'
+
+  let worksheetStore = useWorksheetStore();
+
+  let currentTab = ref('detail');
+  const tabs = ['detail', 'assign-samples', 'logs'];
+
+  const worksheet = computed(() => worksheetStore.getWorkSheet)
+</script>
+
 <template>
   <div class="">
       <section class="col-span-12" >
@@ -35,32 +51,3 @@
   </div>
 
 </template>
-
-<style lang="postcss" scoped>
-.patient-scroll {
-  /* min-height: calc(100vh - 250px); */
-  min-height: 100%;
-}
-
-.tab-active {
-  border-bottom: 2px solid rgb(194, 193, 193);
-  color: rgb(37, 37, 37) !important;
-}
-</style>
-
-<script setup lang="ts">
-  import tabAssignSamples from './WorkSheetAssign.vue';
-  import tabWorksheetResults from './WorkSheetResults.vue';
-  import tabLogs from '../../components/AuditLog.vue';
-
-  import { ref, computed } from 'vue';
-  import { useStore } from 'vuex';
-  import { IWorkSheet } from '../../../models/worksheet';
-
-    let store = useStore();
-
-    let currentTab = ref('detail');
-    const tabs = ['detail', 'assign-samples', 'logs'];
-
-    const worksheet = computed<IWorkSheet>(() => store.getters.getWorkSheet)
-</script>

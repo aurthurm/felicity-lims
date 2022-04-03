@@ -1,3 +1,87 @@
+<script setup lang="ts">
+  import { ref, reactive, computed } from 'vue';
+  import tabSamples from '../components/AnalyisRequestListing.vue';
+  import tabCases from './comps/CaseTable.vue';
+  import tabLogs from '../components/AuditLog.vue';
+  import modal from '../../components/SimpleModal.vue';
+  import PatientForm from './PatientForm.vue';
+
+  import { useLocationStore, usePatientStore } from '../../stores';
+  import { IPatient } from '../../models/patient';
+
+  import * as shield from '../../guards'
+
+  let patientStore = usePatientStore();
+  let locationStore = useLocationStore();
+
+
+  let showModal = ref<boolean>(false);
+  let currentTab = ref<string>('samples');
+  const tabs: string[] = ['samples', 'cases', 'logs'];
+
+  let patientForm = reactive({}) as IPatient;
+
+  let patientParams = reactive({ 
+    first: 25, 
+    after: "",
+    text: "", 
+    sortBy: ["-uid"],
+    filterAction: false
+  });
+
+  const genders: string[] = ["Male", "Female", "Missing", "Trans Gender"]
+
+  locationStore.fetchCountries();    
+  patientStore.fetchPatients(patientParams);
+
+  const patients = computed(() => patientStore.getPatients )
+
+  function searchPatients(event: any) {
+    patientParams.first = 100;
+    patientParams.after = "";
+    patientParams.text = event.target.value;
+    patientParams.filterAction = true;
+    patientStore.fetchPatients(patientParams);
+  }
+
+  function isPatientSelected() {
+    return patientForm.patientId !== undefined;
+  }
+
+  let getPatientFullName = (pt: IPatient) => {
+    return pt.firstName + ' ' + pt.lastName;
+  };
+
+  let getGender = (pos: any) => genders[pos];
+
+  let selectPatient = (pt: IPatient) => {
+    Object.assign(patientForm, pt);
+  };
+
+  let setPatientToNull = () => {
+    Object.assign(patientForm, {});
+  };
+  
+  const quickRegistration = () => {
+    setPatientToNull();
+    showModal.value = true;
+  }
+
+  const updatePatient = (patient: IPatient) => {
+    selectPatient(patient);
+    showModal.value = false;
+  }
+</script>
+
+
+<style lang="postcss" scoped>
+.patient-scroll {
+  /* min-height: calc(100vh - 250px); */
+  min-height: 100%;
+}
+</style>
+
+
 <template>
   <div class="">
     <div class="flex justify-between">
@@ -177,85 +261,3 @@
   </modal>
 
 </template>
-
-<style lang="postcss" scoped>
-.patient-scroll {
-  /* min-height: calc(100vh - 250px); */
-  min-height: 100%;
-}
-</style>
-
-
-<script setup lang="ts">
-  import { ref, reactive, computed } from 'vue';
-  import { useStore } from 'vuex';
-  import tabSamples from '../components/AnalyisRequestListing.vue';
-  import tabCases from './comps/CaseTable.vue';
-  import tabLogs from '../components/AuditLog.vue';
-  import modal from '../../components/SimpleModal.vue';
-  import PatientForm from './PatientForm.vue';
-
-  import { ActionTypes } from '../../store/modules/patient';
-  import { ActionTypes as AdminActionTypes } from '../../store/modules/admin';
-  import { IPatient } from '../../models/patient';
-
-  import * as shield from '../../guards'
-
-  let store = useStore();
-  let showModal = ref<boolean>(false);
-  let currentTab = ref<string>('samples');
-  const tabs: string[] = ['samples', 'cases', 'logs'];
-
-  let patientForm = reactive({}) as IPatient;
-
-  let patientParams = reactive({ 
-    first: 25, 
-    after: "",
-    text: "", 
-    sortBy: ["-uid"],
-    filterAction: false
-  });
-
-  const genders: string[] = ["Male", "Female", "Missing", "Trans Gender"]
-
-  store.dispatch(AdminActionTypes.FETCH_COUNTRIES);    
-  store.dispatch(ActionTypes.FETCH_PATIENTS, patientParams);
-
-  const patients = computed(() => store.getters.getPatients )
-
-  function searchPatients(event: any) {
-    patientParams.first = 100;
-    patientParams.after = "";
-    patientParams.text = event.target.value;
-    patientParams.filterAction = true;
-    store.dispatch(ActionTypes.FETCH_PATIENTS, patientParams);
-  }
-
-  function isPatientSelected() {
-    return patientForm.patientId !== undefined;
-  }
-
-  let getPatientFullName = (pt: IPatient) => {
-    return pt.firstName + ' ' + pt.lastName;
-  };
-
-  let getGender = (pos: number) => genders[pos];
-
-  let selectPatient = (pt: IPatient) => {
-    Object.assign(patientForm, pt);
-  };
-
-  let setPatientToNull = () => {
-    Object.assign(patientForm, {});
-  };
-  
-  const quickRegistration = () => {
-    setPatientToNull();
-    showModal.value = true;
-  }
-
-  const updatePatient = (patient: IPatient) => {
-    selectPatient(patient);
-    showModal.value = false;
-  }
-</script>

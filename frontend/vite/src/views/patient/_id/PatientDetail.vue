@@ -1,3 +1,36 @@
+<script setup lang="ts">
+  import tabSamples from '../../components/AnalyisRequestListing.vue';
+  import tabCases from '../comps/CaseTable.vue';
+  import tabLogs from '../../components/AuditLog.vue';
+
+  import { ref, computed } from 'vue';
+  import { useRouter } from 'vue-router';
+  import { IPatient } from '../../../models/patient';
+  import { usePatientStore } from '../../../stores';
+
+  import * as shield from '../../../guards'
+
+
+  let patientStore = usePatientStore();
+  let router = useRouter();
+
+  let currentTab = ref('samples');
+  const tabs = ['samples', 'cases', 'logs'];
+
+  const patient = computed(() => patientStore.patient)
+
+  function addSample(patient: IPatient): void {
+    router?.push({
+        name: 'samples-add',
+        params: {
+            patientUid: patient.uid
+        }
+    })
+  }
+
+</script>
+
+
 <template>
   <div class="">
       <section class="col-span-12" >
@@ -6,7 +39,7 @@
           <button 
           v-show="shield.hasRights(shield.actions.UPDATE, shield.objects.PATIENT)"
           class="px-2 py-1 mr-2 border-blue-500 border text-blue-500 rounded transition duration-300 hover:bg-blue-700 hover:text-white focus:outline-none"
-          @click.prevent="addSample(patient)">Add Sample</button>
+          @click.prevent="addSample(patient!)">Add Sample</button>
         </section>
 
         <!-- Sample and Case Data -->
@@ -41,47 +74,3 @@
   </div>
 
 </template>
-
-<style lang="postcss" scoped>
-.patient-scroll {
-  /* min-height: calc(100vh - 250px); */
-  min-height: 100%;
-}
-
-.tab-active {
-  border-bottom: 2px solid rgb(194, 193, 193);
-  color: rgb(37, 37, 37) !important;
-}
-</style>
-
-<script setup lang="ts">
-  import tabSamples from '../../components/AnalyisRequestListing.vue';
-  import tabCases from '../comps/CaseTable.vue';
-  import tabLogs from '../../components/AuditLog.vue';
-
-  import { ref, computed } from 'vue';
-  import { useStore } from 'vuex';
-  import { useRouter } from 'vue-router';
-  import { IPatient } from '../../../models/patient';
-
-  import * as shield from '../../../guards'
-
-
-  let store = useStore();
-  let router = useRouter();
-
-  let currentTab = ref('samples');
-  const tabs = ['samples', 'cases', 'logs'];
-
-  const patient = computed(() => store.getters.getPatient)
-
-  function addSample(patient: IPatient): void {
-    router?.push({
-        name: 'samples-add',
-        params: {
-            patientUid: patient.uid
-        }
-    })
-  }
-
-</script>

@@ -15,20 +15,15 @@
     </li>
 </template>
 
-<script lang="ts">
-import { useStore } from 'vuex';
-import { ActionTypes } from '../../store/modules/admin';
-export default {
-  name: 'item-setting',
-  props: {
+<script setup lang="ts">
+    import { useLocationStore } from '../../stores';
+
+    const props = defineProps({
     title: String,
     path: String,
     icon: String,
-  },
-  setup() {
-    const store = useStore();
-    const select = (val: string) => store.dispatch(ActionTypes.SET_CONF_ROUTE, val);
-    return { select }
-  },
-}
+    })
+
+    const locationStore = useLocationStore();
+    const select = (val: string) => locationStore.updateConfRoute(val);
 </script>

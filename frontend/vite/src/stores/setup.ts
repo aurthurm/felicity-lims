@@ -19,9 +19,9 @@ import {
 } from '../models/setup'
 import { IDepartment } from '../models/setup'
 
-import useApiUtil from '../modules/api_util'
+import { useApiUtil } from '../composables'
 
-const { withUseQuery } = useApiUtil()
+const { withClientQuery } = useApiUtil()
 
 
 export const useSetupStore = defineStore('setup', {
@@ -62,7 +62,7 @@ export const useSetupStore = defineStore('setup', {
   actions: {
     // DEPARMENT
     async fetchDepartments(params){
-      await withUseQuery(GET_DEPARTMENTS, params, "departmentAll")
+      await withClientQuery(GET_DEPARTMENTS, params, "departmentAll")
             .then((depts: IDepartment[]) => this.departments = depts)
     },
     addDepartment(payload): void {
@@ -75,7 +75,7 @@ export const useSetupStore = defineStore('setup', {
 
     // LABORATORY
     async fetchLaboratory(){
-      await withUseQuery(GET_LABORATORY, {}, "laboratory")
+      await withClientQuery(GET_LABORATORY, {}, "laboratory")
             .then(payload => this.laboratory = payload);
     },
     updateLaboratory(payload: ILaboratory): void {
@@ -84,7 +84,7 @@ export const useSetupStore = defineStore('setup', {
 
     // LABORATORY SETTING
     async fetchLaboratorySetting() {
-      await withUseQuery(GET_LABORATORY_SETTING, {}, "laboratorySetting")
+      await withClientQuery(GET_LABORATORY_SETTING, {}, "laboratorySetting")
             .then(payload => this.laboratorySetting = payload);
     },
     updateLaboratorySetting(payload: ILaboratorySetting){
@@ -93,7 +93,7 @@ export const useSetupStore = defineStore('setup', {
 
     // SUPPLIERS
     async fetchSuppliers(){
-      await withUseQuery(GET_ALL_SUPPLIERS, {}, "supplierAll")
+      await withClientQuery(GET_ALL_SUPPLIERS, {}, "supplierAll")
             .then(payload => this.suppliers = payload);
     },
     addSupplier(payload): void {
@@ -106,20 +106,20 @@ export const useSetupStore = defineStore('setup', {
 
     // MAUFACTURERS
     async fetchManufacturers(){
-      await withUseQuery(GET_ALL_MANUFACTURERS, {}, "manufacturerAll")
+      await withClientQuery(GET_ALL_MANUFACTURERS, {}, "manufacturerAll")
             .then(payload => this.manufacturers = payload);
     },
     addManufacturer(payload){
       this.manufacturers.unshift(payload);
     },
-    updateMaufacturer(payload: IManufacturer){
+    updateManufacturer(payload: IManufacturer){
       const index = this.manufacturers?.findIndex(item => item.uid === payload?.uid);
       if(index > -1) this.manufacturers[index] = payload;
     },
 
     // INSTRUMENT TYOES
     async fetchInstrumentTypes(){
-      await withUseQuery(GET_ALL_INSTRUMENT_TYPES, {}, "instrumentTypeAll")
+      await withClientQuery(GET_ALL_INSTRUMENT_TYPES, {}, "instrumentTypeAll")
             .then(payload => this.instrumentTypes = payload);
     },
     addInstrumentType(payload){
@@ -132,7 +132,7 @@ export const useSetupStore = defineStore('setup', {
 
     // INSTRUMENTS
     async fetchInstruments(){
-      await withUseQuery(GET_ALL_INSTRUMENTS, {}, "instrumentAll")
+      await withClientQuery(GET_ALL_INSTRUMENTS, {}, "instrumentAll")
             .then(payload => this.instruments = payload);
     },
     addInstrument(payload){
@@ -145,7 +145,7 @@ export const useSetupStore = defineStore('setup', {
 
     // METHODS
     async fetchMethods(){
-      await withUseQuery(GET_ALL_METHODS, {}, "methodAll")
+      await withClientQuery(GET_ALL_METHODS, {}, "methodAll")
             .then(payload => this.methods = payload);
     },
     addMethod(payload){
@@ -158,7 +158,7 @@ export const useSetupStore = defineStore('setup', {
 
     // UNITS
     async fetchUnits(){
-      await withUseQuery(GET_ALL_UNITS, {}, "unitAll")
+      await withClientQuery(GET_ALL_UNITS, {}, "unitAll")
             .then(payload => this.units = payload);
     },
     addUnit(payload){

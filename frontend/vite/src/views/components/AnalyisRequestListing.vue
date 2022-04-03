@@ -74,44 +74,36 @@
 
 </template>
 
-<script lang="ts">
-import { computed, toRefs, watch} from 'vue'
-import { useStore } from 'vuex';
-import { IAnalysisRequest } from '../../models/analysis';
+<script setup lang="ts">
+    import { computed, toRefs, watch} from 'vue'
+    import { IAnalysisRequest } from '../../models/analysis';
 
-import { ActionTypes } from '../../store/modules/sample'
-export default {
-    name: "tab-samples",
-    props: {
+    import { useSampleStore } from '../../stores'
+
+    const props = defineProps({
         target: String,
         targetUid: Number
-    },
-    setup(props){
-        const store = useStore();
+    })
 
-        const { targetUid, target } = toRefs(props);
+    const { targetUid, target } = toRefs(props);
 
-        if(target?.value==='patient-samples') store.dispatch(ActionTypes.FETCH_ANALYSIS_REQUESTS_FOR_PATIENT, targetUid?.value);
-        if(target?.value==='client-samples') store.dispatch(ActionTypes.FETCH_ANALYSIS_REQUESTS_FOR_CLIENT, targetUid?.value);
+    const sampleStore = useSampleStore();
 
-        const analysisRequests = computed<IAnalysisRequest[]>(() => store.getters.getAnalysisRequests);
+    if(target?.value==='patient-samples') sampleStore.fetchAnalysisRequestsForPatient(targetUid?.value);
+    if(target?.value==='client-samples') sampleStore.fetchAnalysisRequestsForPatient(targetUid?.value);
 
-        watch(() => props.targetUid, (uid, prev) => {
-            if(target?.value==='patient-samples') store.dispatch(ActionTypes.FETCH_ANALYSIS_REQUESTS_FOR_PATIENT, uid);
-            if(target?.value==='client-samples') store.dispatch(ActionTypes.FETCH_ANALYSIS_REQUESTS_FOR_CLIENT, uid);
-        })
+    const analysisRequests = computed<IAnalysisRequest[]>(() => sampleStore.getAnalysisRequests);
 
-        function profileAnalysesText(profiles: any[], analyses: any[]): string {
-            let names: string[] = [];
-            profiles.forEach(p => names.push(p.name));
-            analyses.forEach(a => names.push(a.name));
-            return names.join(', ');
-        }
-            
-        return {
-            analysisRequests,
-            profileAnalysesText
-        }
+    watch(() => props.targetUid, (uid, prev) => {
+        if(target?.value==='patient-samples') sampleStore.fetchAnalysisRequestsForPatient(uid);
+        if(target?.value==='client-samples') sampleStore.fetchAnalysisRequestsForPatient(uid);
+    })
+
+    function profileAnalysesText(profiles: any[], analyses: any[]): string {
+        let names: string[] = [];
+        profiles.forEach(p => names.push(p.name));
+        analyses.forEach(a => names.push(a.name));
+        return names.join(', ');
     }
-}
+        
 </script>

@@ -1,7 +1,65 @@
+<script setup lang="ts">
+  import { toRefs, computed, onMounted, reactive} from 'vue';
+  import { IAnalysisProfile, IAnalysisService } from '../../models/analysis';
+  import  { useSampleComposable }  from '../../composables'
+  import { useAnalysisStore } from '../../stores';
+
+  const props = defineProps({
+      samples: {
+        type: String,
+        required: true,
+      }
+    })
+
+  const analysisStore = useAnalysisStore();
+  const { rejectSamples } = useSampleComposable(); 
+
+  const { samples } = toRefs(props);
+
+  const state = reactive({
+    rejections: [] as any[],
+  });
+
+  const ss = JSON.parse(samples.value)
+  let coll: any[] = [];
+  for(let ob of ss){
+    ob["reasons"] = []
+    ob["other"] = undefined
+    coll.push(ob);
+  }
+  state.rejections = coll;
+
+  onMounted(() => analysisStore.fetchRejectionReasons())
+
+  const profileAnalysesText = ((profiles: IAnalysisProfile[], analyses: IAnalysisService[]) => {
+    let names: string[] = [];
+    profiles?.forEach(p => names.push(p.name!));
+    analyses?.forEach(a => names.push(a.name!));
+    return names.join(', ');
+  })
+
+  const cascadeCopy = (sample: any) => {
+    state.rejections?.forEach(item => {
+      item.reasons = sample.reasons;
+      item.other = sample.other;
+    })
+  }
+
+  const rejectionReasons = computed(() => analysisStore.getRejectionReasons)
+  const rejectSamples_ = async () => {
+    const toReject:any[] = [];
+    state.rejections?.forEach(item => {
+      toReject.push({ uid: item?.uid, reasons: item?.reasons, other: item?.other })
+    })
+    await rejectSamples(toReject);
+  }
+</script>
+
+
 <template>
 
   <h4>Sample Rejection</h4>
-  <div v-for="(sample, index) in rejections" :key="index">
+  <div v-for="(sample, index) in state.rejections" :key="index">
     <hr class="my-4">
     <h2 class="text-gray-800 font-bold">{{ sample?.sampleId }} &rarr; {{ sample?.status }}</h2>
     <div class="grid grid-cols-12 gap-1 mt-2">
@@ -70,73 +128,7 @@
   </div>
 
   <button
-    v-if="rejections?.length > 0"
+    v-if="state.rejections?.length > 0"
     @click.prevent="rejectSamples_()"
     class="px-2 py-1 mr-2 border-red-500 border text-red-500 rounded transition duration-300 hover:bg-red-700 hover:text-white focus:outline-none">Reject Samples</button>
-
-
 </template>
-
-<script lang="ts">
-import { defineComponent, toRefs, computed, onMounted, reactive} from 'vue';
-import {useStore } from 'vuex';
-import { IAnalysisProfile, IAnalysisService } from '../../models/analysis';
-import  useSampleComposable  from '../../modules/samples'
-import { ActionTypes } from '../../store/modules/analysis';
-
-  export default defineComponent({
-    name: 'sample-rejection',
-    props: {
-      samples: {
-        type: String,
-        required: true,
-      }
-    },
-    setup(props) {
-      const store = useStore();
-      const { rejectSamples } = useSampleComposable(); 
-
-      const { samples } = toRefs(props);
-
-      const state = reactive({
-        rejections: [] as any[],
-      });
-
-      const ss = JSON.parse(samples.value)
-      let coll: any[] = [];
-      for(let ob of ss){
-        ob["reasons"] = []
-        ob["other"] = undefined
-        coll.push(ob);
-      }
-      state.rejections = coll;
-
-      onMounted(() => store.dispatch(ActionTypes.FETCH_REJECTION_REASONS))
-
-      return {
-        ...toRefs(state),
-        profileAnalysesText: ((profiles: IAnalysisProfile[], analyses: IAnalysisService[]) => {
-          let names: string[] = [];
-          profiles?.forEach(p => names.push(p.name!));
-          analyses?.forEach(a => names.push(a.name!));
-          return names.join(', ');
-        }),
-        cascadeCopy: (sample: any) => {
-          state.rejections?.forEach(item => {
-            item.reasons = sample.reasons;
-            item.other = sample.other;
-          })
-        }, 
-        rejectionReasons: computed(() =>store.getters.getRejectionReasons),
-        rejectSamples_: async () => {
-          const toReject:any[] = [];
-          state.rejections?.forEach(item => {
-            toReject.push({ uid: item?.uid, reasons: item?.reasons, other: item?.other })
-          })
-          await rejectSamples(toReject);
-        }
-      }
-    },
-  });
-
-</script>

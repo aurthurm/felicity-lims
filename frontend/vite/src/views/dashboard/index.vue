@@ -4,19 +4,19 @@
     <h1 class="text-2xl text-gray-800 font-bold">DashBoard</h1>
     <div class="flex justify-end align-items-center">
       <button 
-      v-for="(filter, index) in filters"
+      v-for="(filter, index) in state.filters"
       :key="index"
-      v-show="filter !== filters[filters.length-1]"
-      @click="setCurrentFilter(filter)"
+      v-show="filter !== state.filters[state.filters.length-1]"
+      @click="dashBoardStore.setCurrentFilter(filter)"
       type="button" 
       :class="[
        'px-2 py-1 mr-2 border-green-500 border text-green-500 rounded transition duration-300 hover:bg-green-700 hover:text-white focus:outline-none',
-       {'bg-green-700 text-white': currentFilter === filter }
+       {'bg-green-700 text-white': state.currentFilter === filter }
       ]">{{ filter }}</button>
 
       <button 
       @click="showModal = true"
-      class="ml-4 mr-1 px-2 py-1 border-gray-500 border text-gray-500 rounded transition duration-300 hover:bg-gray-700 hover:text-white focus:outline-none">{{ filterRange.from }} - {{ filterRange.to }}</button>
+      class="ml-4 mr-1 px-2 py-1 border-gray-500 border text-gray-500 rounded transition duration-300 hover:bg-gray-700 hover:text-white focus:outline-none">{{ state.filterRange.from }} - {{ state.filterRange.to }}</button>
       <button type="button" class="px-2 py-1 border-blue-500 border text-blue-500 rounded transition duration-300 hover:bg-blue-700 hover:text-white focus:outline-none">Apply</button>
     </div>
   </section>
@@ -26,13 +26,13 @@
     <nav class="bg-white px-6 pt-2 shadow-md mt-2">
         <div class="-mb-px flex justify-start">
         <a
-          v-for="tab in tabs"
+          v-for="tab in state.tabs"
           :key="tab"
           :class="[
             'no-underline text-gray-500 uppercase tracking-wide font-bold text-xs py-1 mr-8 tab',
-            { 'tab-active': currentTab === tab },
+            { 'tab-active': state.currentTab === tab },
           ]"
-          @click="setCurrentTab(tab)"
+          @click="dashBoardStore.setCurrentTab(tab)"
           href="#"
         >
           {{ tab }}
@@ -41,13 +41,13 @@
     </nav>
 
     <div class="pt-4">
-      <tab-overview v-if="currentTab === 'overview'" />
-      <tab-resource v-if="currentTab === 'resource'" />
-      <tab-laggard v-if="currentTab === 'laggard'" />
-      <tab-peformance v-if="currentTab === 'peformance'" />
-      <tab-tat v-if="currentTab === 'tat'" />
-      <tab-notice v-if="currentTab === 'notices'" />
-      <tab-line-listing v-if="currentTab === 'line-listing'" />
+      <tab-overview v-if="state.currentTab === 'overview'" />
+      <tab-resource v-if="state.currentTab === 'resource'" />
+      <tab-laggard v-if="state.currentTab === 'laggard'" />
+      <tab-peformance v-if="state.currentTab === 'peformance'" />
+      <tab-tat v-if="state.currentTab === 'tat'" />
+      <tab-notice v-if="state.currentTab === 'notices'" />
+      <tab-line-listing v-if="state.currentTab === 'line-listing'" />
     </div>
 
   </section>
@@ -68,7 +68,7 @@
               type="datetime-local"
               class="form-input mt-1 block w-full"
               autocomplete="off"
-              v-model="range.from"
+              v-model="localState.range.from"
               placeholder="Name ..."
             />
           </label>
@@ -77,7 +77,7 @@
             <input
               type="datetime-local"
               class="form-input mt-1 block w-full"
-              v-model="range.to"
+              v-model="localState.range.to"
               placeholder="Name ..."
             />
           </label>
@@ -97,46 +97,26 @@
 
 </template>
 
-<script lang="ts">
-import modal from '../../components/SimpleModal.vue';
-import { defineComponent, ref, reactive } from 'vue'
-import tabOverview from './Overview.vue';
-import tabLaggard from './Laggard.vue';
-import tabResource from './Resource.vue';
-import tabPeformance from './Peformance.vue';
-import tabTat from './Tat.vue';
-import tabLineListing from './LineListing.vue';
-import tabNotice from './Notice.vue';
+<script setup lang="ts">
+  import { storeToRefs } from 'pinia'
+  import { ref, reactive } from 'vue'
+  import tabOverview from './Overview.vue';
+  import tabLaggard from './Laggard.vue';
+  import tabResource from './Resource.vue';
+  import tabPeformance from './Peformance.vue';
+  import tabTat from './Tat.vue';
+  import tabLineListing from './LineListing.vue';
+  import modal from '../../components/SimpleModal.vue';
+  import tabNotice from './Notice.vue';
+  import { useDashBoardStore } from '../../stores/dashboard';
 
-import useDashBoardComposable from '../../modules/dashboard';
+  const dashBoardStore = useDashBoardStore()
+  const { dashboard: state } = storeToRefs(dashBoardStore)
 
-export default defineComponent({
-  name: "DashBoard",
-  components: {
-    modal,
-    tabOverview,
-    tabLaggard,
-    tabResource,
-    tabPeformance,
-    tabTat,
-    tabLineListing,
-    tabNotice
-  },
-  setup() {
-    const { state, setCurrentTab, setCurrentFilter, setFilterRange } = useDashBoardComposable()
+  const localState = reactive({
+    range: { from: "", to: "" }
+  })
+  let showModal = ref(false)
 
-    const localState = reactive({
-      range: { from: "", to: "" }
-    })
-    let showModal = ref(false)
-
-    return { 
-      ...state,
-      ...localState,
-      showModal,
-      setCurrentTab, setCurrentFilter,
-      setCustomRange: () => setFilterRange(localState.range.from, localState.range.to)
-    };
-  },
-});
+  const setCustomRange = () => dashBoardStore.setFilterRange(localState.range.from, localState.range.to)
 </script>

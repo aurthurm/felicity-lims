@@ -1,3 +1,52 @@
+<script setup lang="ts">
+  import modal from '../../../components/SimpleModal.vue';
+  import { ref, reactive, computed } from 'vue';
+  import { IQCLevel } from '../../../models/analysis';
+  import { ADD_QC_LEVEL, EDIT_QC_LEVEL  } from '../../../graphql/analyses.mutations';
+
+  import { useAnalysisStore } from '../../../stores';
+  import { useApiUtil } from '../../../composables';
+
+  const analysisStore = useAnalysisStore()
+  const { withClientMutation } = useApiUtil()
+  
+  let showModal = ref(false);
+  let formTitle = ref('');
+  let form = reactive({}) as IQCLevel;
+  const formAction = ref(true);
+
+  analysisStore.fetchQCLevels();
+  const qcLevels = computed(() => analysisStore.getQCLevels)
+
+  function addQCLevel(): void {
+    withClientMutation(ADD_QC_LEVEL, { level: form.level }, "createQcLevel")
+    .then((result) => analysisStore.addQcLevel(result));
+  }
+
+  function editQCLevel(): void {
+    withClientMutation(EDIT_QC_LEVEL,{ uid: form.uid, level: form.level },"updateQcLevel")
+    .then((result) => analysisStore.updateQcLevel(result));
+  }
+
+  function FormManager(create: boolean, obj: IQCLevel = {}):void {
+    formAction.value = create;
+    showModal.value = true;
+    formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "QC Level";
+    if (create) {
+      Object.assign(form, { ...({} as IQCLevel) });
+    } else {
+      Object.assign(form, { ...obj });
+    }
+  }
+
+  function saveForm():void {
+    console.log(form)
+    if (formAction.value === true) addQCLevel();
+    if (formAction.value === false) editQCLevel();
+    showModal.value = false;
+  }
+</script>
+
 <template>
 
     <div class="container w-full my-4">
@@ -81,73 +130,3 @@
   }
 </style>
 
-<script lang="ts" scope="ts">
-import modal from '../../../components/SimpleModal.vue';
-
-import { useMutation } from '@urql/vue';
-import { defineComponent, ref, reactive, computed } from 'vue';
-import { useStore } from 'vuex';
-import { useRouter } from 'vue-router';
-import { ActionTypes } from '../../../store/modules/analysis';
-import { IQCLevel } from '../../../models/analysis';
-import { ADD_QC_LEVEL, EDIT_QC_LEVEL  } from '../../../graphql/analyses.mutations';
-
-
-export default defineComponent({
-  name: "tab-quality-control-levels",
-  components: {
-    modal,
-  },
-  setup() {
-    const store = useStore();
-    
-    let showModal = ref(false);
-    let formTitle = ref('');
-    let form = reactive({}) as IQCLevel;
-    const formAction = ref(true);
-
-    store.dispatch(ActionTypes.FETCH_QC_LEVELS);
-    const { executeMutation: createQCLevel } = useMutation(ADD_QC_LEVEL);
-    const { executeMutation: updateQCLevel } = useMutation(EDIT_QC_LEVEL);
-
-    function addQCLevel(): void {
-      createQCLevel({ level: form.level }).then((result) => {
-       store.dispatch(ActionTypes.ADD_QC_LEVEL, result);
-      });
-    }
-
-    function editQCLevel(): void {
-      updateQCLevel({ uid: form.uid, level: form.level }).then((result) => {
-        store.dispatch(ActionTypes.UPDATE_QC_LEVEL, result);
-      });
-    }
-
-    function FormManager(create: boolean, obj: IQCLevel = {}):void {
-      formAction.value = create;
-      showModal.value = true;
-      formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "QC Level";
-      if (create) {
-        Object.assign(form, { ...({} as IQCLevel) });
-      } else {
-        Object.assign(form, { ...obj });
-      }
-    }
-
-    function saveForm():void {
-      console.log(form)
-      if (formAction.value === true) addQCLevel();
-      if (formAction.value === false) editQCLevel();
-      showModal.value = false;
-    }
-
-    return {
-      showModal, 
-      qcLevels: computed(() =>store.getters.getQCLevels),
-      FormManager,
-      form,
-      formTitle,
-      saveForm
-     };
-  },
-});
-</script>

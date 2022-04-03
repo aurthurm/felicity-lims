@@ -1,20 +1,15 @@
-const colors = require('tailwindcss/colors')
+const colors = require('tailwindcss/colors');
 
 module.exports = {
   darkMode: 'class',
-  future: {
-    removeDeprecatedGapUtilities: true,
-    purgeLayersByDefault: true,
-  },
-  purge: [
-    './index.html',
+  content: [
+    './src/**/*.{html,js,ts,vue}',
     './public/**/*.html',
-    './src/**/*.vue',
+    './index.html',
   ],
   prefix: '',
   important: false,
   separator: ':',
-  corePlugins: {},
   plugins: [
     require('@tailwindcss/custom-forms'),
   ],

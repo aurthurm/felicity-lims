@@ -1,3 +1,81 @@
+<script setup lang="ts">
+  import modal from '../../../../components/SimpleModal.vue';
+  import { computed, ref, reactive, toRefs, watch } from 'vue';
+  import { ADD_ANALYSIS_INTERIM, EDIT_ANALYSIS_INTERIM  } from '../../../../graphql/analyses.mutations';
+  import { IAnalysisInterim } from '../../../../models/analysis';
+  import { IInstrument } from '../../../../models/setup';
+  import { useSetupStore, useAnalysisStore } from '../../../../stores';
+  import { useApiUtil } from '../../../../composables';
+
+  const analysisStore = useAnalysisStore()
+  const setupStore = useSetupStore()
+  const { withClientMutation } = useApiUtil()
+
+  const props = defineProps({
+      analysis: {
+          type: Object,
+          required: true,
+          default: () => ({}),
+      },
+      analysisUid: {
+          type: Number,
+          required: true,
+          default: 0,
+      },
+  })
+
+  const { analysis } = toRefs(props);
+  let showModal = ref(false);
+  let formTitle = ref('');
+  let form = reactive({}) as IAnalysisInterim;
+  const formAction = ref(true);
+
+  watch(() => props.analysisUid, (anal, prev) => {
+  })
+
+  setupStore.fetchInstruments();
+  const instruments = computed<IInstrument[]>(() => setupStore.getInstruments)
+
+  function addAnalysisInterim(): void {
+      form.key = +form.key!;
+      const payload = { ...form, analysisUid: analysis?.value?.uid }
+      withClientMutation(ADD_ANALYSIS_INTERIM,{ payload },"createAnalysisInterim")
+      .then((result) => analysisStore.addAnalysisInterim(result));
+  }
+
+  function editAnalysisInterim(): void {
+      const payload: any = { ...form };
+      delete payload['uid']
+      delete payload['__typename']
+
+      withClientMutation(EDIT_ANALYSIS_INTERIM, { uid : form.uid,  payload }, "updateAnalysisInterim")
+      .then((result) => analysisStore.updateAnalysisInterim(result));
+  }
+
+  function FormManager(create: boolean, obj = {} as IAnalysisInterim):void {
+      formAction.value = create;
+      showModal.value = true;
+      formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "ANALYSIS INTERIM";
+      if (create) {
+          Object.assign(form, { key: null, value: null });
+      } else {
+          Object.assign(form, { ...obj });
+      }
+  }
+
+  function saveForm():void {
+      if (formAction.value === true) addAnalysisInterim();
+      if (formAction.value === false) editAnalysisInterim();
+      showModal.value = false;
+  }
+
+  const instrumentName = (uid: number): string => {
+    const index = instruments?.value?.findIndex(item => item.uid === uid)
+    return instruments?.value[index]?.name || "unknown";
+  }
+
+</script>
+
 <template>
      <button
         class="px-2 py-1 border-blue-500 border text-blue-500 rounded transition duration-300 hover:bg-blue-700 hover:text-white focus:outline-none"
@@ -90,85 +168,3 @@
 
 </template>
 
-<script setup lang="ts">
-  import modal from '../../../../components/SimpleModal.vue';
-  import { computed, ref, reactive, toRefs, watch } from 'vue';
-  import { useMutation } from '@urql/vue';
-  import { useStore } from 'vuex';
-
-  import { ActionTypes } from '../../../../store/modules/analysis';
-  import { ActionTypes as SetupActionTypes } from '../../../../store/modules/setup';
-  import { ADD_ANALYSIS_INTERIM, EDIT_ANALYSIS_INTERIM  } from '../../../../graphql/analyses.mutations';
-  import { IAnalysisInterim } from '../../../../models/analysis';
-import { IInstrument } from '../../../../models/setup';
-
-  const props = defineProps({
-      analysis: {
-          type: Object,
-          required: true,
-          default: () => ({}),
-      },
-      analysisUid: {
-          type: Number,
-          required: true,
-          default: 0,
-      },
-  })
-
-  let store = useStore();
-  const { analysis } = toRefs(props);
-  let showModal = ref(false);
-  let formTitle = ref('');
-  let form = reactive({}) as IAnalysisInterim;
-  const formAction = ref(true);
-
-  watch(() => props.analysisUid, (anal, prev) => {
-  })
-
-  store.dispatch(SetupActionTypes.FETCH_INSTRUMENTS);
-  const instruments = computed<IInstrument[]>(() => store.getters.getInstruments)
-
-  const { executeMutation: createAnalysisInterim } = useMutation(ADD_ANALYSIS_INTERIM);
-  const { executeMutation: updateAnalysisInterim } = useMutation(EDIT_ANALYSIS_INTERIM);
-
-  function addAnalysisInterim(): void {
-      form.key = +form.key!;
-      const payload = { ...form, analysisUid: analysis?.value?.uid }
-      createAnalysisInterim({ payload }).then((result) => {
-          store.dispatch(ActionTypes.ADD_ANALYSIS_INTERIM, result);
-      });
-  }
-
-  function editAnalysisInterim(): void {
-      const payload: any = { ...form };
-      delete payload['uid']
-      delete payload['__typename']
-
-      updateAnalysisInterim({ uid : form.uid,  payload }).then((result) => {
-          store.dispatch(ActionTypes.UPDATE_ANALYSIS_INTERIM, result);
-      });
-  }
-
-  function FormManager(create: boolean, obj = {} as IAnalysisInterim):void {
-      formAction.value = create;
-      showModal.value = true;
-      formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "ANALYSIS INTERIM";
-      if (create) {
-          Object.assign(form, { key: null, value: null });
-      } else {
-          Object.assign(form, { ...obj });
-      }
-  }
-
-  function saveForm():void {
-      if (formAction.value === true) addAnalysisInterim();
-      if (formAction.value === false) editAnalysisInterim();
-      showModal.value = false;
-  }
-
-  const instrumentName = (uid: number): string => {
-    const index = instruments?.value?.findIndex(item => item.uid === uid)
-    return instruments?.value[index]?.name || "unknown";
-  }
-
-</script>

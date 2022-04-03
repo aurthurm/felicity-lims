@@ -1,3 +1,53 @@
+<script setup lang="ts">
+  import modal from '../../../components/SimpleModal.vue';
+  import MethodForm from './MethodForm.vue';
+  import { ref, reactive, computed } from 'vue';
+  import { IMethod } from '../../../models/setup'
+  import { useAnalysisStore, useSetupStore } from '../../../stores';
+  import { useApiUtil } from '../../../composables';
+
+  const analysisStore = useAnalysisStore()
+  const setupStore = useSetupStore()
+  const { withClientMutation } = useApiUtil()
+  
+  let showModal = ref(false);
+  let formTitle = ref('');
+  const formAction = ref(true);
+
+  let method = reactive({}) as IMethod;
+
+
+  const analysesParams = { first: 1000, after: "", text: "", sortBy: ["name"]}
+  analysisStore.fetchAnalysesServices(analysesParams);
+  const analyses = computed(() => analysisStore.getAnalysesServicesSimple)  
+
+  setupStore.fetchMethods();  
+  const methods = computed(() => setupStore.getMethods)  
+
+  function FormManager(create: boolean, obj = {} as IMethod): void {
+    formAction.value = create;
+    showModal.value = true;
+    formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "ANALYSES METHOD";
+    if (create) {
+      Object.assign(method, { ...{} as IMethod });
+    } else {
+      Object.assign(method, { ...obj });
+    }
+  }
+
+  function getAnalyses(method :IMethod) {
+    let final: string[] = [];
+    analyses.value?.forEach(an => {
+      if(an?.methods?.some(m => m.uid == method?.uid)) {
+        final.push(an?.name!)
+      }
+    })
+    return final.join(', ');
+  }
+
+
+</script>
+
 <template>
   <div class="">
     <div class="container w-full my-4">
@@ -54,54 +104,3 @@
   </modal>
 
 </template>
-
-<script setup lang="ts">
-  import modal from '../../../components/SimpleModal.vue';
-
-  import MethodForm from './MethodForm.vue';
-  import { ref, reactive, computed } from 'vue';
-  import { useStore } from 'vuex';
-  import { ActionTypes } from '../../../store/modules/setup';
-  import { ActionTypes as AnalysisActionTypes} from '../../../store/modules/analysis';
-  import { IMethod } from '../../../models/setup'
-
-  let store = useStore();
-
-  
-  let showModal = ref(false);
-  let formTitle = ref('');
-  const formAction = ref(true);
-
-  let method = reactive({}) as IMethod;
-
-
-  const analysesParams = { first: 1000, after: "", text: "", sortBy: ["name"]}
-  store.dispatch(AnalysisActionTypes.FETCH_ANALYSES_SERVICES, analysesParams);
-  const analyses = computed(() => store.getters.getAnalysesServicesSimple)  
-
-  store.dispatch(ActionTypes.FETCH_METHODS);  
-  const methods = computed(() => store.getters.getMethods)  
-
-  function FormManager(create: boolean, obj = {} as IMethod): void {
-    formAction.value = create;
-    showModal.value = true;
-    formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "ANALYSES METHOD";
-    if (create) {
-      Object.assign(method, { ...{} as IMethod });
-    } else {
-      Object.assign(method, { ...obj });
-    }
-  }
-
-  function getAnalyses(method :IMethod) {
-    let final: string[] = [];
-    analyses.value?.forEach(an => {
-      if(an?.methods?.some(m => m.uid == method?.uid)) {
-        final.push(an?.name)
-      }
-    })
-    return final.join(', ');
-  }
-
-
-</script>

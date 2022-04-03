@@ -1,6 +1,5 @@
 import { defineStore } from 'pinia'
 import { ref, watch } from 'vue'
-import { useRouter } from 'vue-router';
 import { IUser } from "../models/auth";
 import { STORAGE_AUTH_KEY, USER_GROUP_OVERRIDE } from "../conf";
 
@@ -24,11 +23,16 @@ export const useAuthStore = defineStore('auth', () => {
 
     const resetState = () => auth.value = { ...initialState }
 
-    const logout = () => {
+    const reset = () => {
         localStorage.removeItem(STORAGE_AUTH_KEY)
         resetState()
-        const router = useRouter()
-        router.push({ name: 'login' })
+    }
+
+    const logout = () => {
+        localStorage.removeItem(STORAGE_AUTH_KEY)
+        reset()
+        location.replace("/auth")
+        // this.$router.push({ name: 'Home' }); 
     }
 
     const upsertPermission = () => {
@@ -42,22 +46,24 @@ export const useAuthStore = defineStore('auth', () => {
         auth.value = { ...auth.value, ...data, isAuthenticated: true }
         upsertPermission()
     } else {
-        logout()
+        // logout()
     }
 
     watch(auth, (authValue) => {
         if(authValue && authValue.user && authValue.token){
             localStorage.setItem(STORAGE_AUTH_KEY, JSON.stringify(authValue))
             upsertPermission()
-        } else {
-            logout()
         }
     })
 
-    const persistAuth = (data) => auth.value = data
+    const persistAuth = async (data): Promise<boolean> => {
+        auth.value = data
+        return true
+    }
 
     return { 
         auth, 
+        reset,
         persistAuth,
         logout
     }

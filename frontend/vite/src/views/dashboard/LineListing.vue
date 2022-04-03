@@ -166,7 +166,7 @@
   import { reactive, onMounted } from 'vue'
   import axios from '../../axios'
   import { REST_BASE_URL } from '../../conf'
-  import useNotifyToast from '../../modules/alert_toast'
+  import { useNotifyToast } from '../../composables'
   import { IReportListing } from '../../models/reports'
 
   const { toastSuccess, toastWarning } = useNotifyToast()

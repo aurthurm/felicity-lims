@@ -1,3 +1,56 @@
+<script setup lang="ts">
+  import modal from '../../../components/SimpleModal.vue';
+  import { ref, reactive, onMounted } from 'vue';
+  import { IReflexRule } from '../../../models/reflex';
+  import { useApiUtil } from '../../../composables'
+  import { useReflexStore } from '../../../stores'
+  import { 
+    ADD_REFLEX_RULE,
+    EDIT_REFLEX_RULE
+  } from '../../../graphql/reflex.mutations';
+
+  const { withClientMutation } = useApiUtil()
+  const reflexStore = useReflexStore();
+  
+  let showModal = ref<boolean>(false);
+  let formTitle = ref<string>('');
+  let form = reactive({}) as IReflexRule;
+  const formAction = ref<boolean>(true);
+
+  onMounted(async () => {
+    reflexStore.fetchAllReflexRules()
+  })
+
+  function addReflexRule(): void {
+    const payload = {name: form.name, description: form.description}
+    withClientMutation(ADD_REFLEX_RULE, payload, "createReflexRule")
+    .then(payload => reflexStore.addReflexRule(payload))
+  }
+
+  function editReflexRule(): void {
+    const payload = {name: form.name, description: form.description}
+    withClientMutation(EDIT_REFLEX_RULE, { uid: form.uid, payload }, "updateReflexRule")
+    .then(payload => reflexStore.updateReflexRule(payload))
+  }
+
+  function FormManager(create: boolean, obj = {} as IReflexRule):void {
+    formAction.value = create;
+    showModal.value = true;
+    formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "REFLEX RULE";
+    if (create) {
+      Object.assign(form, {} as IReflexRule);
+    } else {
+      Object.assign(form, { ...obj });
+    }
+  }
+
+  function saveForm():void {
+    if (formAction.value === true) addReflexRule();
+    if (formAction.value === false) editReflexRule();
+    showModal.value = false;
+  }
+</script>
+
 <template>
   <h4>Reflex Rules</h4>
 
@@ -18,7 +71,7 @@
             </tr>
             </thead>
             <tbody class="bg-white">
-            <tr v-for="rule in state.reflexRules" :key="rule?.uid">
+            <tr v-for="rule in reflexStore.reflexRules" :key="rule?.uid">
                 <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
                   <router-link 
                     :to="{ name:'reflex-detail', params: { uid: rule?.uid } }"
@@ -78,64 +131,3 @@
   </modal>
 
 </template>
-
-<script setup lang="ts">
-  import modal from '../../../components/SimpleModal.vue';
-  import { ref, reactive, onMounted } from 'vue';
-  import { useMutation } from "@urql/vue"
-  import { IReflexRule } from '../../../models/reflex';
-  import useNotifyToast from '../../../modules/alert_toast'
-  import useReflexComposable from '../../../modules/reflex'
-  import { 
-    ADD_REFLEX_RULE,
-    EDIT_REFLEX_RULE
-  } from '../../../graphql/reflex.mutations';
-
-  const { gqlAllErrorHandler } = useNotifyToast()
-  const { state, fetchAllReflexRules, _addReflexRule, _updateReflexRule } = useReflexComposable();
-  
-  let showModal = ref<boolean>(false);
-  let formTitle = ref<string>('');
-  let form = reactive({}) as IReflexRule;
-  const formAction = ref<boolean>(true);
-
-  onMounted(async () => {
-    fetchAllReflexRules()
-  })
-
-  const { executeMutation: createReflexRule } = useMutation(ADD_REFLEX_RULE);
-  const { executeMutation: updateReflexRule } = useMutation(EDIT_REFLEX_RULE);
-
-  function addReflexRule(): void {
-    const payload = {name: form.name, description: form.description}
-    createReflexRule({ payload }).then((result) => {
-      let data = gqlAllErrorHandler(result)
-      _addReflexRule(data.createReflexRule)
-    });
-  }
-
-  function editReflexRule(): void {
-    const payload = {name: form.name, description: form.description}
-    updateReflexRule({ uid: form.uid, payload }).then((result) => {
-      let data = gqlAllErrorHandler(result)
-      _updateReflexRule(data.updateReflexRule)
-    });
-  }
-
-  function FormManager(create: boolean, obj: IReflexRule = {}):void {
-    formAction.value = create;
-    showModal.value = true;
-    formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "REFLEX RULE";
-    if (create) {
-      Object.assign(form, {} as IReflexRule);
-    } else {
-      Object.assign(form, { ...obj });
-    }
-  }
-
-  function saveForm():void {
-    if (formAction.value === true) addReflexRule();
-    if (formAction.value === false) editReflexRule();
-    showModal.value = false;
-  }
-</script>

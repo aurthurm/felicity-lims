@@ -1,3 +1,26 @@
+<script setup lang="ts">
+  import { computed } from 'vue';
+  import { useRoute } from 'vue-router';
+  import { IAnalysisService } from '../../../models/analysis';
+  import { useWorksheetStore } from '../../../stores';
+
+  const route = useRoute();
+  const workshetStore = useWorksheetStore();
+
+  workshetStore.fetchWorksheetByUid(+route.params.workSheetUid)
+
+  function analysesText(analyses: IAnalysisService[]): string {
+      let names: string[] = [];
+      analyses?.forEach(a => names.push(a.name!));
+      return names.join(', ');
+  }
+
+  const worksheet = computed(() => {
+    const ws = workshetStore.getWorkSheet;
+    return ws;
+  })
+</script>
+
 <template>
 
   <div class="">
@@ -30,7 +53,7 @@
             <div class="col-span-1">
               <div class="flex">
                 <span class="text-gray-800 text-sm font-semibold w-1/6">Analyses:</span>
-                <span class="text-gray-600 text-sm md:text-md">{{ analysesText(worksheet?.analyses) }}</span>
+                <span class="text-gray-600 text-sm md:text-md">{{ analysesText(worksheet?.analyses!) }}</span>
               </div>
               <div class="flex">
                 <span class="text-gray-800 text-sm font-semibold w-1/6">Samples:</span>
@@ -52,34 +75,3 @@
 
 </template>
 
-<script lang="ts">
-import { defineComponent, computed } from 'vue';
-import { useRoute } from 'vue-router';
-import { useStore } from 'vuex';
-import { IAnalysisService } from '../../../models/analysis';
-import { ActionTypes } from '../../../store/modules/worksheet';
-
-export default defineComponent({
-  name: "worksheet-single",
-  setup() {
-    const route = useRoute();
-    const store = useStore();
-
-    store.dispatch(ActionTypes.FETCH_WORKSHEET_BY_UID, +route.params.workSheetUid)
-
-    function analysesText(analyses: IAnalysisService[]): string {
-        let names: string[] = [];
-        analyses?.forEach(a => names.push(a.name!));
-        return names.join(', ');
-    }
-
-    return { 
-      worksheet: computed(() => {
-        const ws = store.getters.getWorkSheet;
-        return ws;
-      }),
-      analysesText
-    };
-  },
-});
-</script>

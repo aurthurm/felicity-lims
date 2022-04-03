@@ -1,3 +1,53 @@
+<script setup lang="ts">
+  import modal from '../../../components/SimpleModal.vue';
+  import { reactive, computed } from 'vue';
+  import { IRejectionReason } from '../../../models/analysis';
+  import { ADD_REJECTION_REASON, EDIT_REJECTION_REASON } from '../../../graphql/analyses.mutations';
+
+  import { useAnalysisStore } from '../../../stores';
+  import { useApiUtil } from '../../../composables';
+
+  const analysisStore = useAnalysisStore()
+  const { withClientMutation } = useApiUtil()
+
+  const state = reactive({
+    showModal: false,
+    formTitle: '',
+    form: {} as IRejectionReason,
+    formAction: false,
+  })
+  
+  analysisStore.fetchRejectionReasons()
+  const rejectionReasons = computed(() => analysisStore.getRejectionReasons)
+
+  function addRejectionReason(): void {
+    withClientMutation(ADD_REJECTION_REASON, { reason: state.form.reason }, "createRejectionReason")
+    .then((result) => analysisStore.addRejectionReason(result));
+  }
+
+  function editRejectionReason(): void {
+    withClientMutation(EDIT_REJECTION_REASON, { uid: state.form.uid, reason: state.form.reason }, "updateRejectionReason")
+    .then((result) => analysisStore.updateRejectionReason(result));
+  }
+
+  function FormManager(create: boolean, obj: IRejectionReason = {} as IRejectionReason):void {
+    state.formAction = create;
+    state.showModal = true;
+    state.formTitle = (create ? 'CREATE' : 'EDIT') + ' ' + "QC Level";
+    if (create) {
+      state.form = {} as IRejectionReason
+    } else {
+      state.form = { ... obj };
+    }
+  }
+
+  function saveForm():void {
+    if (state.formAction === true) addRejectionReason();
+    if (state.formAction === false) editRejectionReason();
+    state.showModal = false;
+  }
+</script>
+
 <template>
 
     <div class="container w-full my-4">
@@ -35,9 +85,9 @@
     </div>
 
     <!-- Rejection Reason Form Modal -->
-  <modal v-if="showModal" @close="showModal = false">
+  <modal v-if="state.showModal" @close="state.showModal = false">
     <template v-slot:header>
-      <h3>{{ formTitle }}</h3>
+      <h3>{{ state.formTitle }}</h3>
     </template>
 
     <template v-slot:body>
@@ -47,7 +97,7 @@
             <span class="text-gray-700">Rejection Reason</span>
             <input
               class="form-input mt-1 block w-full"
-              v-model="form.reason"
+              v-model="state.form.reason"
               placeholder="Reason ..."
             />
           </label>
@@ -67,72 +117,3 @@
 </template>
 
 
-<script lang="ts" scope="ts">
-import modal from '../../../components/SimpleModal.vue';
-
-import { useMutation } from '@urql/vue';
-import { defineComponent, ref, reactive, computed, toRefs } from 'vue';
-import { useStore } from 'vuex';
-import { ActionTypes } from '../../../store/modules/analysis';
-import { IRejectionReason } from '../../../models/analysis';
-import { ADD_REJECTION_REASON, EDIT_REJECTION_REASON } from '../../../graphql/analyses.mutations';
-
-
-export default defineComponent({
-  name: "tab-rejection-reasons",
-  components: {
-    modal,
-  },
-  setup() {
-    const store = useStore();
-
-    const state = reactive({
-      showModal: false,
-      formTitle: '',
-      form: {} as IRejectionReason,
-      formAction: false,
-    })
-    
-
-    store.dispatch(ActionTypes.FETCH_REJECTION_REASONS);
-    const { executeMutation: createRejectionReason } = useMutation(ADD_REJECTION_REASON);
-    const { executeMutation: updateRejectionReason } = useMutation(EDIT_REJECTION_REASON);
-
-    function addRejectionReason(): void {
-      createRejectionReason({ reason: state.form.reason }).then((result) => {
-       store.dispatch(ActionTypes.ADD_REJECTION_REASON, result);
-      });
-    }
-
-    function editRejectionReason(): void {
-      updateRejectionReason({ uid: state.form.uid, reason: state.form.reason }).then((result) => {
-        store.dispatch(ActionTypes.UPDATE_REJECTION_REASON, result);
-      });
-    }
-
-    function FormManager(create: boolean, obj: IRejectionReason = {} as IRejectionReason):void {
-      state.formAction = create;
-      state.showModal = true;
-      state.formTitle = (create ? 'CREATE' : 'EDIT') + ' ' + "QC Level";
-      if (create) {
-        state.form = {} as IRejectionReason
-      } else {
-        state.form = { ... obj };
-      }
-    }
-
-    function saveForm():void {
-      if (state.formAction === true) addRejectionReason();
-      if (state.formAction === false) editRejectionReason();
-      state.showModal = false;
-    }
-
-    return {
-      ...toRefs(state), 
-      rejectionReasons: computed(() =>store.getters.getRejectionReasons),
-      FormManager,
-      saveForm
-     };
-  },
-});
-</script>

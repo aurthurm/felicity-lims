@@ -8,14 +8,11 @@
   </div>
 </template>
 
-<script lang="ts">
-export default {
-  name: "board-card",
-  props: {
+<script setup lang="ts">
+  const props = defineProps({
     board: {
       type: Object,
       default: () => ({})
     }
-  },
-};
+  })
 </script>

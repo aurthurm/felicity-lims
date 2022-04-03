@@ -1,3 +1,301 @@
+<script setup lang="ts">
+  import DecoupledEditor from '@ckeditor/ckeditor5-build-decoupled-document'
+  import { useRoute } from 'vue-router';
+  import { useMutation } from '@urql/vue';
+  import { useKanbanStore, useUserStore } from '../../../../stores';
+  import { useApiUtil } from '../../../../composables';
+  import { IBoard, IListing, IMileStone, ITask, } from '../../../../models/kanban';
+  import { 
+    ADD_TASK_COMMENT, 
+    ADD_TASK_MILESTONE,
+    EDIT_LISTING_TASK,
+    DELETE_LISTING_TASK,
+    DUPLICATE_LISTING_TASK} from '../../../../graphql/kanban.mutations';
+  import { ref, reactive, computed, onMounted, onUnmounted, onBeforeUnmount, watch } from 'vue';
+  import { parseDate } from '../../../../utils';
+  import Swal from 'sweetalert2';
+  import router from '../../../../router';
+
+  let kanbanStore = useKanbanStore();
+  let userStore = useUserStore();
+  let { withClientMutation } = useApiUtil()
+
+  let route = useRoute();
+
+  // Task Form
+  let showModal = ref<boolean>(false);
+
+  let taskFormTitle = ref<string>("");
+  let taskForm = reactive<ITask>({}as ITask);
+
+  userStore.fetchUsers({})
+  kanbanStore.resetListingTask()
+  kanbanStore.fetchListingTaskByUid(+route.params.taskUid)
+
+  const users = computed(() => userStore.getUsers)
+  const board = computed(() => kanbanStore.getBoard )
+
+  const kanBanTaskListing = computed(() => {
+    let b = kanbanStore.getBoard;
+    return b?.boardListings?.filter((l: IListing) => l?.uid == kanBanTask?.value?.listingUid)[0];
+  })
+
+  let kanBanTask = computed(() => kanbanStore.getListingTask);
+
+  const { executeMutation: updateListingTask } = useMutation(EDIT_LISTING_TASK);
+
+  function editListingTask(updateType: string, updateData: any): void {
+    const payload = { ...updateData };
+    delete payload['uid'];
+
+    updateListingTask({ uid: updateData.uid,  payload }).then((result) => {
+      if(updateType === 'moveTask') kanbanStore.moveListingTask(result);
+      if(updateType === 'updateTask') kanbanStore.updateListingTask(result);
+    });
+  }
+
+  let showTaskModal = ref<boolean>(false)
+  function TaskFormManager(listing: IListing): void {
+    showTaskModal.value = true;
+    taskFormTitle.value = "ADD " + listing.title + " LISTING";
+    Object.assign(taskForm, { listingUid: listing.uid });
+  }
+
+  function saveTaskForm():void {
+    // addListingTask();
+    showTaskModal.value = false;
+  }
+
+  // Move Task
+  const moveListingTask = async (task: ITask, event:any) => {
+    showModal.value = !showModal.value;
+    try {
+      Swal.fire({
+        title: 'Move Task',
+        text: task?.title,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, move now!',
+        cancelButtonText: 'No, cancel moving!',
+      }).then((result) => {
+        if (result.isConfirmed) {
+          editListingTask('moveTask', {
+            uid: task?.uid,
+            listingUid: +event?.target?.value
+          });
+        }
+      })
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  // update due dateOfBirth
+  function updateDueDate(task: ITask, event: any): void {
+    editListingTask('updateTask', {
+      uid: task?.uid,
+      dueDate: event?.target?.value
+    });
+  }
+
+  // Delete Task
+  const deleteTask = async (task: ITask) => {
+    showModal.value = !showModal.value;
+    try {
+      Swal.fire({
+        title: 'Delete Task!',
+        text: task?.title,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete now!',
+        cancelButtonText: 'No, cancel deleting!',
+      }).then((result) => {
+        if (result.isConfirmed) {
+          withClientMutation(DELETE_LISTING_TASK, { uid: task.uid }, "deleteListingTask")
+          .then(result => {
+            kanbanStore.deleteListingTask(result);
+            router.push({ name: "board-detail", params: { boardUid: +route.params.boardUid } });
+          });
+        }
+      })
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  // Duplicate Task
+  let dulicateTitle = ref('');
+
+  const duplicateTask = async (task: ITask) => {
+    showModal.value = !showModal.value;
+    try {
+      Swal.fire({
+        title: 'Duplicate Task to!',
+        text: dulicateTitle?.value,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, duplicate now!',
+        cancelButtonText: 'No, cancel duplication!',
+      }).then((result) => {
+        if (result.isConfirmed) {
+          withClientMutation(DUPLICATE_LISTING_TASK, { uid: task.uid, title: dulicateTitle?.value }, "duplicateListingTask")
+          .then(result => {
+            kanbanStore.duplicateListingTask(result);
+            router.push({ name: "board-detail", params: { boardUid: +route.params.boardUid } });
+          });
+        }
+      })
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  // View Task and Related Actions
+
+  // Task Comments
+  let showAddComment = ref(false);
+  function addTaskComment(task: ITask): void {
+    withClientMutation(ADD_TASK_COMMENT, { taskUid: task?.uid, comment: (window as any).commentEditor.getData() }, "createTaskComment")
+    .then((result) => {
+      kanbanStore.addTaskComment(result);
+      (window as any).commentEditor.setData("");
+    });
+  }
+
+  function saveTaskComment(task: any, create:boolean): void {
+    if(create) addTaskComment(task)
+  }
+
+  // Task Milestome
+  let showAddMilestone = ref(false);
+  let taskMilestone = reactive({}) as IMileStone;
+
+  function addTaskMilestone(task: ITask): void {
+    withClientMutation(ADD_TASK_MILESTONE,{ 
+      taskUid: task?.uid, 
+      title: taskMilestone?.title,
+      assigneeUid: taskMilestone?.assigneeUid,
+      done: taskMilestone?.done,
+    },"createTaskMilestone").then((result) => {
+      kanbanStore.addTaskMilestone(result);
+      taskMilestone.title = ""
+      taskMilestone.assigneeUid = undefined
+      taskMilestone.done = false
+    })
+  }
+
+  function saveTaskMilestone(task: any, create:boolean): void {
+    if(create) addTaskMilestone(task)
+  }
+
+  // Task Members
+  let showAddMember = ref<boolean>(false);
+  let newMember = ref<number>();
+
+  function addNewMember(task: ITask): void {
+    let uids:number[] = [];
+    task?.members?.forEach(member => uids.push(member?.uid));
+    uids.push(newMember?.value!);
+    editListingTask('updateTask', {
+      uid: task?.uid,
+      memberUids: uids
+    });
+    newMember.value = undefined;
+  }
+
+  // Task status
+  function toggleTaskStatus(task: ITask): void {
+    editListingTask('updateTask', {
+      uid: task?.uid,
+      complete: !task.complete
+    });
+  }
+
+  // Task Assignee
+  let newAssignee = ref('');
+  let changeAssignee = ref(false);
+  function assignTaskAssignee(task: ITask): void {
+    editListingTask('updateTask', {
+      uid: task?.uid,
+      assigneeUid: newAssignee?.value,
+    });
+    newAssignee.value = '';
+    changeAssignee.value = false;
+  }
+
+  // Editable task title and Description
+  let titleTimeOut: any;
+  function updateTaskTitle(task: ITask, event: any): void {
+    clearTimeout(titleTimeOut);
+    titleTimeOut = setTimeout(function(){ 
+      editListingTask('updateTask', {
+        uid: task?.uid,
+        title: event?.target?.value
+      });
+      }, 3000);
+  }
+
+  let descTimeOut: any;
+  let dataDesc = ref('');
+  function updateTaskDescription(): void {
+    dataDesc.value = (window as any).taskEditor.getData();
+    console.log()
+    clearTimeout(descTimeOut);
+    descTimeOut = setTimeout(function(){ 
+      updateListingTask({ uid: kanBanTask.value?.uid, payload: { description: dataDesc.value }})
+      }, 3000);
+  }
+
+  watch(() => kanBanTask.value, (incoming, prev) => {
+    if(incoming?.description != prev?.description){
+      (window as any).taskEditor?.setData(kanBanTask.value?.description)
+    }
+  });
+
+  onMounted(() => {
+    DecoupledEditor
+        .create( document.querySelector('.task-editor__editable'),{})
+        .then( editor => {
+            const toolbarContainer = document.querySelector('.task-editor__toolbar');
+            toolbarContainer!.appendChild( editor.ui.view.toolbar.element );
+            editor?.model?.document?.on( 'change:data', () => {
+              updateTaskDescription()
+            });
+            (window as any).taskEditor = editor;
+      } )
+      .catch( err => {
+          console.error( err );
+      } );
+
+    DecoupledEditor
+        .create( document.querySelector('.taskComment-editor__editable'),{})
+        .then( editor => {
+            const toolbarContainer = document.querySelector('.taskComment-editor__toolbar');
+            toolbarContainer!.appendChild( editor.ui.view.toolbar.element );
+            (window as any).commentEditor = editor;
+      } )
+      .catch( err => {
+          console.error( err );
+      } );
+  })
+
+  onBeforeUnmount(() => {
+    editListingTask('updateTask', {
+      uid: kanBanTask.value?.uid,
+      description: (window as any).taskEditor.getData()
+    });
+  })
+
+  onUnmounted(() => (window as any).taskEditor.destroy())
+</script>
+
+
 <style lang="css">
   .task-editor .ck-content,
   .task-editor .ck-heading-dropdown .ck-list .ck-button__label {
@@ -83,11 +381,11 @@
                 <div>
                   <span 
                   v-if="!kanBanTask?.complete"
-                  @dblclick="toggleTaskStatus(kanBanTask)"
+                  @dblclick="toggleTaskStatus(kanBanTask!)"
                   class="border border-green-500 text-green-500 rounded-md py-1 px-2  transition-colors duration-500 ease select-none hover:bg-green-500 hover:text-gray-100 focus:outline-none focus:shadow-outline">Open</span>
                   <span 
                   v-else
-                  @dblclick="toggleTaskStatus(kanBanTask)"
+                  @dblclick="toggleTaskStatus(kanBanTask!)"
                   class="border border-green-500 text-green-500 rounded-md py-1 px-2  transition-colors duration-500 ease select-none hover:bg-green-500 hover:text-gray-100 focus:outline-none focus:shadow-outline">Closed</span>
 
                   <span v-if="kanBanTask?.assigneeUid">
@@ -109,7 +407,7 @@
                       <select 
                       class="form-select ml-4"
                       v-model="newAssignee"
-                      @change="assignTaskAssignee(kanBanTask)">
+                      @change="assignTaskAssignee(kanBanTask!)">
                         <option></option>
                         <option v-for="user in users" :key="user?.uid" :value="user?.uid">@{{ user?.auth?.userName }}</option>
                       </select>
@@ -123,7 +421,7 @@
                 <section>
                   <input 
                   class="form-input mt-1 block w-full text-lg font-semibold rounded border-transparent focus:border-gray-100 focus:ring-0"
-                  @keyup="updateTaskTitle(kanBanTask, $event)" 
+                  @keyup="updateTaskTitle(kanBanTask!, $event)" 
                   :value="kanBanTask?.title"/>
                   <hr>  
                   <div 
@@ -249,7 +547,7 @@
                     <input 
                     type="datetime-local" 
                     class="bg-blue-100 rounded-md px-1" 
-                    @change="updateDueDate(kanBanTask,$event)"
+                    @change="updateDueDate(kanBanTask!, $event)"
                     :value="kanBanTask?.dueDate">
                   </span>
                 </div>
@@ -280,7 +578,7 @@
                       </label>
                       <button
                         type="button"
-                        @click.prevent="addNewMember(kanBanTask)"
+                        @click.prevent="addNewMember(kanBanTask!)"
                         class="border border-blue-500 text-blue-500 rounded-md p-1 ml-2 transition-colors duration-500 ease select-none hover:bg-blue-500 hover:text-gray-100 focus:outline-none focus:shadow-outline"
                       >Add</button>
                     </div>
@@ -297,7 +595,7 @@
                   <div class="text-lg font-semibold">Move Task</div>
                   <label class="block mb-2">
                     <select 
-                    @change="moveListingTask(kanBanTask, $event)"
+                    @change="moveListingTask(kanBanTask!, $event)"
                     class="form-select block w-full mt-1">
                         <option></option>
                         <option 
@@ -319,318 +617,17 @@
                     v-model="dulicateTitle"/>
                   </label>
                   <button 
-                  @click="duplicateTask(kanBanTask)"
+                  @click="duplicateTask(kanBanTask!)"
                   class="border border-green-500 text-green-500 rounded-md py-1 px-2  transition-colors duration-500 ease select-none hover:bg-green-500 hover:text-gray-100 focus:outline-none focus:shadow-outline">Duplicate</button>
                 </div>
                 <hr>
                 <div class="flex justify-between my-4">
                   <span class="text-lg font-semibold">Delete Task</span>
                   <button 
-                  @click="deleteTask(kanBanTask)"
+                  @click="deleteTask(kanBanTask!)"
                   class="border border-red-500 text-red-500 rounded-md py-1 px-2  transition-colors duration-500 ease select-none hover:bg-red-500 hover:text-gray-100 focus:outline-none focus:shadow-outline">Delete</button>
                 </div>
             </section>
         </div>
       </section>
 </template>
-
-<script setup lang="ts">
-  import DecoupledEditor from '@ckeditor/ckeditor5-build-decoupled-document'
-  import { useStore } from 'vuex';
-  import { useRoute } from 'vue-router';
-  import { useMutation } from '@urql/vue';
-  import { ActionTypes as AdminActionTypes } from '../../../../store/actions';
-  import { ActionTypes  } from '../../../../store/modules/kanban';
-  import { IBoard, IListing, IMileStone, ITask, } from '../../../../models/kanban';
-  import { 
-    ADD_TASK_COMMENT, 
-    ADD_TASK_MILESTONE,
-    EDIT_LISTING_TASK,
-    DELETE_LISTING_TASK,
-    DUPLICATE_LISTING_TASK} from '../../../../graphql/kanban.mutations';
-  import { ref, reactive, computed, onMounted, onUnmounted, onBeforeUnmount, watch } from 'vue';
-  import { parseDate } from '../../../../utils';
-  import Swal from 'sweetalert2';
-  import router from '../../../../router';
-
-  let store = useStore();
-  let route = useRoute();
-
-  // Task Form
-  let showModal = ref<boolean>(false);
-
-  let taskFormTitle = ref<string>("");
-  let taskForm = reactive<ITask>({}as ITask);
-
-  store.dispatch(AdminActionTypes.FETCH_USERS)
-  store.dispatch(ActionTypes.RESET_LISTING_TASK)
-  store.dispatch(ActionTypes.FETCH_LISTING_TASK_BY_UID, +route.params.taskUid)
-
-  const users = computed(() => store.getters.getUsers)
-  const board = computed(() => store.getters.getBoard )
-
-  const kanBanTaskListing = computed(() => {
-    let b: IBoard = store.getters.getBoard;
-    return b?.boardListings?.filter((l: IListing) => l?.uid == kanBanTask?.value?.listingUid)[0];
-  })
-
-  let kanBanTask = computed(() => store.getters.getListingTask);
-
-  console.log(kanBanTask.value)
-
-  const { executeMutation: updateListingTask } = useMutation(EDIT_LISTING_TASK);
-
-  function editListingTask(updateType: string, updateData: any): void {
-    const payload = { ...updateData };
-    delete payload['uid'];
-
-    updateListingTask({ uid: updateData.uid,  payload }).then((result) => {
-      if(updateType === 'moveTask') store.dispatch(ActionTypes.MOVE_LISTING_TASK, result);
-      if(updateType === 'updateTask') store.dispatch(ActionTypes.UPDATE_LISTING_TASK, result);
-    });
-  }
-
-  let showTaskModal = ref<boolean>(false)
-  function TaskFormManager(listing: IListing): void {
-    showTaskModal.value = true;
-    taskFormTitle.value = "ADD " + listing.title + " LISTING";
-    Object.assign(taskForm, { listingUid: listing.uid });
-  }
-
-  function saveTaskForm():void {
-    // addListingTask();
-    showTaskModal.value = false;
-  }
-
-  // Move Task
-  const moveListingTask = async (task: ITask, event:any) => {
-    showModal.value = !showModal.value;
-    try {
-      Swal.fire({
-        title: 'Move Task',
-        text: task?.title,
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Yes, move now!',
-        cancelButtonText: 'No, cancel moving!',
-      }).then((result) => {
-        if (result.isConfirmed) {
-          editListingTask('moveTask', {
-            uid: task?.uid,
-            listingUid: +event?.target?.value
-          });
-        }
-      })
-    } catch (error) {
-      console.log(error)
-    }
-  }
-
-  // update due dateOfBirth
-  function updateDueDate(task: ITask, event: any): void {
-    editListingTask('updateTask', {
-      uid: task?.uid,
-      dueDate: event?.target?.value
-    });
-  }
-
-  // Delete Task
-  const { executeMutation: deleteListingTask } = useMutation(DELETE_LISTING_TASK);
-
-  const deleteTask = async (task: ITask) => {
-    showModal.value = !showModal.value;
-    try {
-      Swal.fire({
-        title: 'Delete Task!',
-        text: task?.title,
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Yes, delete now!',
-        cancelButtonText: 'No, cancel deleting!',
-      }).then((result) => {
-        if (result.isConfirmed) {
-          deleteListingTask({ uid: task.uid }).then(result => {
-            store.dispatch(ActionTypes.DELETE_LISTING_TASK, result);
-            router.push({ name: "board-detail", params: { boardUid: +route.params.boardUid } });
-          });
-        }
-      })
-    } catch (error) {
-      console.log(error)
-    }
-  }
-
-  // Duplicate Task
-  const { executeMutation: duplicateListingTask } = useMutation(DUPLICATE_LISTING_TASK);
-
-  let dulicateTitle = ref('');
-
-  const duplicateTask = async (task: ITask) => {
-    showModal.value = !showModal.value;
-    try {
-      Swal.fire({
-        title: 'Duplicate Task to!',
-        text: dulicateTitle?.value,
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Yes, duplicate now!',
-        cancelButtonText: 'No, cancel duplication!',
-      }).then((result) => {
-        if (result.isConfirmed) {
-          duplicateListingTask({ uid: task.uid, title: dulicateTitle?.value }).then(result => {
-            store.dispatch(ActionTypes.DUPLICATE_LISTING_TASK, result);
-          });
-        }
-      })
-    } catch (error) {
-      console.log(error)
-    }
-  }
-
-  // View Task and Related Actions
-
-  // Task Comments
-  let showAddComment = ref(false);
-  const { executeMutation: createTaskComment } = useMutation(ADD_TASK_COMMENT);
-
-  function addTaskComment(task: ITask): void {
-    createTaskComment({ taskUid: task?.uid, comment: window.commentEditor.getData() }).then((result) => {
-      store.dispatch(ActionTypes.ADD_TASK_COMMENT, result);
-      window.commentEditor.setData("");
-    });
-  }
-
-  function saveTaskComment(task: any, create:boolean): void {
-    if(create) addTaskComment(task)
-  }
-
-  // Task Milestome
-  let showAddMilestone = ref(false);
-  let taskMilestone = reactive({}) as IMileStone;
-
-  const { executeMutation: createTaskMilestone } = useMutation(ADD_TASK_MILESTONE);
-
-  function addTaskMilestone(task: ITask): void {
-    createTaskMilestone({ 
-      taskUid: task?.uid, 
-      title: taskMilestone?.title,
-      assigneeUid: taskMilestone?.assigneeUid,
-      done: taskMilestone?.done,
-    }).then((result) => {
-      store.dispatch(ActionTypes.ADD_TASK_MILESTONE, result);
-      taskMilestone.title = ""
-      taskMilestone.assigneeUid = undefined
-      taskMilestone.done = false
-    })
-  }
-
-  function saveTaskMilestone(task: any, create:boolean): void {
-    if(create) addTaskMilestone(task)
-  }
-
-  // Task Members
-  let showAddMember = ref<boolean>(false);
-  let newMember = ref<number>();
-
-  function addNewMember(task: ITask): void {
-    let uids:number[] = [];
-    task?.members?.forEach(member => uids.push(member?.uid));
-    uids.push(newMember?.value!);
-    editListingTask('updateTask', {
-      uid: task?.uid,
-      memberUids: uids
-    });
-    newMember.value = undefined;
-  }
-
-  // Task status
-  function toggleTaskStatus(task: ITask): void {
-    editListingTask('updateTask', {
-      uid: task?.uid,
-      complete: !task.complete
-    });
-  }
-
-  // Task Assignee
-  let newAssignee = ref('');
-  let changeAssignee = ref(false);
-  function assignTaskAssignee(task: ITask): void {
-    editListingTask('updateTask', {
-      uid: task?.uid,
-      assigneeUid: newAssignee?.value,
-    });
-    newAssignee.value = '';
-    changeAssignee.value = false;
-  }
-
-  // Editable task title and Description
-  let titleTimeOut: any;
-  function updateTaskTitle(task: ITask, event: any): void {
-    clearTimeout(titleTimeOut);
-    titleTimeOut = setTimeout(function(){ 
-      editListingTask('updateTask', {
-        uid: task?.uid,
-        title: event?.target?.value
-      });
-      }, 3000);
-  }
-
-  let descTimeOut: any;
-  let dataDesc = ref('');
-  function updateTaskDescription(): void {
-    dataDesc.value = window.taskEditor.getData();
-    console.log()
-    clearTimeout(descTimeOut);
-    descTimeOut = setTimeout(function(){ 
-      updateListingTask({ uid: kanBanTask.value?.uid, payload: { description: dataDesc.value }})
-      }, 3000);
-  }
-
-  watch(() => kanBanTask.value, (incoming, prev) => {
-    if(incoming?.description != prev?.description){
-      window.taskEditor?.setData(kanBanTask.value.description)
-    }
-  });
-
-  onMounted(() => {
-    DecoupledEditor
-        .create( document.querySelector('.task-editor__editable'),{})
-        .then( editor => {
-            const toolbarContainer = document.querySelector('.task-editor__toolbar');
-            toolbarContainer!.appendChild( editor.ui.view.toolbar.element );
-            editor?.model?.document?.on( 'change:data', () => {
-              updateTaskDescription()
-            });
-            window.taskEditor = editor;
-      } )
-      .catch( err => {
-          console.error( err );
-      } );
-
-    DecoupledEditor
-        .create( document.querySelector('.taskComment-editor__editable'),{})
-        .then( editor => {
-            const toolbarContainer = document.querySelector('.taskComment-editor__toolbar');
-            toolbarContainer!.appendChild( editor.ui.view.toolbar.element );
-            window.commentEditor = editor;
-      } )
-      .catch( err => {
-          console.error( err );
-      } );
-  })
-
-  onBeforeUnmount(() => {
-    editListingTask('updateTask', {
-      uid: kanBanTask.value?.uid,
-      description: window.taskEditor.getData()
-    });
-  })
-
-  onUnmounted(() => window.taskEditor.destroy())
-</script>

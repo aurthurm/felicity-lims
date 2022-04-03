@@ -38,7 +38,7 @@
       <a
         href="#"
         class="no-underline text-white opacity-50 flex items-center px-4 border-b border-transparent hover:opacity-100 md:hover:border-grey-dark"
-        @click="showNotifications(true)"
+        @click="notificationStore.showNotifications(true)"
       >
         <font-awesome-icon icon="bell" class="mr-2" />
         <span>Notifications</span>
@@ -95,8 +95,8 @@
 
 <script setup lang="ts">
   import { ref, onMounted } from 'vue';
-  import useNotificationComposable from './../../../modules/notification'
-  import userPreferenceComposable from '../../../modules/preferences'
+  import { useNotificationStore } from '../../../stores/notification'
+  import { userPreferenceComposable } from '../../../composables'
   import * as guards from './../../../guards';
 
   const dropdownOpen = ref(false);
@@ -105,7 +105,7 @@
 
   const userFullName: string | null = localStorage.getItem('fuser');
 
-  const {  showNotifications } = useNotificationComposable()
+  const notificationStore = useNotificationStore()
 
   const { theme, toggleTheme, loadPreferedTheme } = userPreferenceComposable()
 

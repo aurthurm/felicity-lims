@@ -1,0 +1,90 @@
+import { defineStore } from 'pinia';
+import { IDistrict, IProvince, ICountry } from '../models/location'
+
+import {
+  GET_ALL_COUNTRIES,
+  FILTER_PROVINCES_BY_COUNTRY,
+  FILTER_DISTRICTS_BY_PROVINCE,
+} from '../graphql/admin.queries';
+
+import { useApiUtil } from '../composables'
+
+const { withClientQuery } = useApiUtil()
+
+export const useLocationStore = defineStore('location', { 
+  state: () => {
+    return {
+      countries: [],
+      provinces: [],
+      districts: [],
+      confRoute: "",
+     } as {
+      confRoute: string;
+      countries: ICountry[];
+      provinces: IProvince[];
+      districts: IDistrict[];
+    }
+  },
+  getters: {
+    getConfRoute: (state) => state.confRoute,
+    getCountries: (state) => state.countries,
+    getProvinces: (state) => state.provinces,
+    getDistricts: (state) => state.districts,
+  },
+  actions: {
+    updateConfRoute(val: string) {
+      this.confRoute = val;
+    },
+  
+    // COUNTRIES
+    async fetchCountries(){
+      await withClientQuery(GET_ALL_COUNTRIES,{}, "countryAll")
+            .then(payload => {
+              this.countries = payload
+              this.provinces = []
+            });
+    },
+    async addCountry(country: ICountry) {
+      this.countries.unshift(country);
+    },
+    updateCountry(payload: ICountry) {
+      const index = this.countries?.findIndex(item => item.uid === payload.uid);
+      if(index > -1) {
+        this.countries[index] = payload
+      }
+    },
+  
+    // PROVINCES
+    async filterProvincesByCountry(countryUid: number){
+      await withClientQuery(FILTER_PROVINCES_BY_COUNTRY, { uid: countryUid }, "provincesByCountryUid", 'network-only')
+        .then(payload => {
+          this.provinces = payload
+          this.districts = []
+        })
+    },
+    addProvince(payload: IProvince) {
+      this.provinces.unshift(payload)
+    },
+    updateProvince(payload: IProvince) {
+      const index = this.provinces?.findIndex(item => item.uid === payload.uid);
+      if(index > -1) {
+        this.provinces[index] = payload
+      }
+    },
+  
+    // DISTRICT
+    async filterDistrictsByProvince(provinceUid: number){
+      await withClientQuery(FILTER_DISTRICTS_BY_PROVINCE, { uid: provinceUid }, "districtsByProvinceUid", 'network-only')
+        .then(payload => this.districts = payload)
+    },
+    addDistrict(payload: IDistrict) {
+      this.districts.unshift(payload);
+    },
+    updateDistrict(payload: IDistrict) {
+      const index = this.districts?.findIndex(item => item.uid === payload.uid);
+      if(index > -1) {
+        this.districts[index] = payload
+      }
+    },
+  }
+})

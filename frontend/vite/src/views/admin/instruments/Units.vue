@@ -1,3 +1,54 @@
+<script setup lang="ts">
+  import modal from '../../../components/SimpleModal.vue';
+  import { ref, reactive, computed } from 'vue';
+  import { IUnit } from '../../../models/setup'
+  import { ADD_UNIT, EDIT_UNIT } from '../../../graphql/instrument.mutations';
+  import { useSetupStore } from '../../../stores';
+  import { useApiUtil } from '../../../composables';
+
+  const setupStore = useSetupStore()
+  const { withClientMutation } = useApiUtil()
+  
+  let showModal = ref(false);
+  let formTitle = ref('');
+  const formAction = ref(true);
+
+  setupStore.fetchUnits();    
+  const units = computed(() => setupStore.getUnits);
+
+  let unit = reactive({}) as IUnit;
+
+  function addUnit(): void {
+    const payload = { name: unit.name, isSiUnit: unit.isSiUnit == true }
+    withClientMutation(ADD_UNIT, { payload }, "createUnit")
+    .then((result) => setupStore.addUnit(result));
+  }
+
+  function editUnit(): void {
+    const payload = { name: unit.name, isSiUnit: unit.isSiUnit == true }
+    withClientMutation(EDIT_UNIT, { uid: unit.uid, payload }, "updateUnit")
+    .then((result) => setupStore.updateUnit(result));
+  }
+
+  function FormManager(create: boolean, obj = {} as IUnit): void {
+    formAction.value = create;
+    showModal.value = true;
+    formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "UNIT";
+    if (create) {
+      Object.assign(unit, { ...({} as IUnit) });
+    } else {
+      Object.assign(unit, { ...obj });
+    }
+  }
+
+  function saveForm():void {
+    if (formAction.value === true) addUnit();
+    if (formAction.value === false) editUnit();
+    showModal.value = false;
+  }
+  
+</script>
+
 <template>
   <div class="">
     <div class="container w-full my-4">
@@ -80,59 +131,3 @@
 
 </template>
 
-<script setup lang="ts">
-  import modal from '../../../components/SimpleModal.vue';
-
-  import { useMutation } from '@urql/vue';
-  import { ref, reactive, computed } from 'vue';
-  import { useStore } from 'vuex';
-  import { ActionTypes } from '../../../store/modules/setup';
-  import { IUnit } from '../../../models/setup'
-  import { ADD_UNIT, EDIT_UNIT } from '../../../graphql/instrument.mutations';
-
-  let store = useStore();
-  
-  let showModal = ref(false);
-  let formTitle = ref('');
-  const formAction = ref(true);
-
-  store.dispatch(ActionTypes.FETCH_UNITS);    
-  const units = computed(() => store.getters.getUnits);
-
-  let unit = reactive({}) as IUnit;
-
-  const { executeMutation: createUnit } = useMutation(ADD_UNIT);
-  const { executeMutation: updateUnit } = useMutation(EDIT_UNIT);
-
-  function addUnit(): void {
-    const payload = { name: unit.name, isSiUnit: unit.isSiUnit == true }
-    createUnit({ payload }).then((result) => {
-      store.dispatch(ActionTypes.ADD_UNIT, result);
-    });
-  }
-
-  function editUnit(): void {
-    const payload = { name: unit.name, isSiUnit: unit.isSiUnit == true }
-    updateUnit({ uid: unit.uid, payload }).then((result) => {
-      store.dispatch(ActionTypes.UPDATE_UNIT, result);
-    });
-  }
-
-  function FormManager(create: boolean, obj = {} as IUnit): void {
-    formAction.value = create;
-    showModal.value = true;
-    formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "UNIT";
-    if (create) {
-      Object.assign(unit, { ...({} as IUnit) });
-    } else {
-      Object.assign(unit, { ...obj });
-    }
-  }
-
-  function saveForm():void {
-    if (formAction.value === true) addUnit();
-    if (formAction.value === false) editUnit();
-    showModal.value = false;
-  }
-  
-</script>

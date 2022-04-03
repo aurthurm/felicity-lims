@@ -1,3 +1,61 @@
+<script setup lang="ts">
+  import modal from '../../../components/SimpleModal.vue';
+  import { ref, reactive, computed } from 'vue';
+  import { IInstrumentType } from '../../../models/setup'
+  import { ADD_INSTRUMENT_TYPE, EDIT_INSTRUMENT_TYPE } from '../../../graphql/instrument.mutations';
+  import { useSetupStore } from '../../../stores';
+  import { useApiUtil } from '../../../composables';
+
+  const setupStore = useSetupStore()
+  const { withClientMutation } = useApiUtil()
+  
+  let showModal = ref(false);
+  let formTitle = ref('');
+  const formAction = ref(true);
+
+  setupStore.fetchInstrumentTypes();    
+  const instrumentTypes = computed(() => setupStore.getInstrumentTypes);
+  let instrumentType = reactive({}) as IInstrumentType;
+
+  function addInstrumentType(): void {
+    const payload = { name: instrumentType.name, description: instrumentType.description }
+    withClientMutation(ADD_INSTRUMENT_TYPE, { payload }, "createInstrumentType")
+    .then((result) => setupStore.addInstrumentType(result));
+  }
+
+  function editInstrumentType(): void {
+    const payload = { name: instrumentType.name, description: instrumentType.description }
+    withClientMutation(EDIT_INSTRUMENT_TYPE, { uid: instrumentType.uid, payload }, "updateInstrumentType")
+    .then((result) => setupStore.updateInstrumentType(result));
+  }
+
+  function selectInstrumentType(obj: IInstrumentType): void {
+    Object.assign(instrumentType, { ...obj})
+  }
+  
+  function resetInstrumentType(): void {
+    Object.assign(instrumentType, { ...({} as IInstrumentType)})
+  }
+
+  function FormManager(create: boolean, obj = {} as IInstrumentType): void {
+    formAction.value = create;
+    showModal.value = true;
+    formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "INSTRUMENT TYPE";
+    if (create) {
+      Object.assign(instrumentType, { ...({} as IInstrumentType) });
+    } else {
+      Object.assign(instrumentType, { ...obj });
+    }
+  }
+
+  function saveForm():void {
+    if (formAction.value === true) addInstrumentType();
+    if (formAction.value === false) editInstrumentType();
+    showModal.value = false;
+  }
+  
+</script>
+
 <template>
   <div class="">
     <div class="container w-full my-4">
@@ -82,67 +140,3 @@
   </modal>
 
 </template>
-
-<script setup lang="ts">
-  import modal from '../../../components/SimpleModal.vue';
-
-  import { useMutation } from '@urql/vue';
-  import { ref, reactive, computed } from 'vue';
-  import { useStore } from 'vuex';
-  import { ActionTypes } from '../../../store/modules/setup';
-  import { IInstrumentType } from '../../../models/setup'
-  import { ADD_INSTRUMENT_TYPE, EDIT_INSTRUMENT_TYPE } from '../../../graphql/instrument.mutations';
-
-  let store = useStore();
-  
-  let showModal = ref(false);
-  let formTitle = ref('');
-  const formAction = ref(true);
-
-  store.dispatch(ActionTypes.FETCH_INSTRUMENT_TYPES);    
-  const instrumentTypes = computed(() =>store.getters.getInstrumentTypes);
-  let instrumentType = reactive({}) as IInstrumentType;
-
-  const { executeMutation: createInstrumentType } = useMutation(ADD_INSTRUMENT_TYPE);
-  const { executeMutation: updateInstrumentType } = useMutation(EDIT_INSTRUMENT_TYPE);
-
-  function addInstrumentType(): void {
-    const payload = { name: instrumentType.name, description: instrumentType.description }
-    createInstrumentType({ payload }).then((result) => {
-      store.dispatch(ActionTypes.ADD_INSTRUMENT_TYPE, result);
-    });
-  }
-
-  function editInstrumentType(): void {
-    const payload = { name: instrumentType.name, description: instrumentType.description }
-    updateInstrumentType({ uid: instrumentType.uid, payload }).then((result) => {
-      store.dispatch(ActionTypes.UPDATE_INSTRUMENT_TYPE, result);
-    });
-  }
-
-  function selectInstrumentType(obj: IInstrumentType): void {
-    Object.assign(instrumentType, { ...obj})
-  }
-  
-  function resetInstrumentType(): void {
-    Object.assign(instrumentType, { ...({} as IInstrumentType)})
-  }
-
-  function FormManager(create: boolean, obj = {} as IInstrumentType): void {
-    formAction.value = create;
-    showModal.value = true;
-    formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "INSTRUMENT TYPE";
-    if (create) {
-      Object.assign(instrumentType, { ...({} as IInstrumentType) });
-    } else {
-      Object.assign(instrumentType, { ...obj });
-    }
-  }
-
-  function saveForm():void {
-    if (formAction.value === true) addInstrumentType();
-    if (formAction.value === false) editInstrumentType();
-    showModal.value = false;
-  }
-  
-</script>

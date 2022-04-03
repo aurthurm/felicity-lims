@@ -16,24 +16,24 @@ import { authExchange } from '@urql/exchange-auth';
 import { SubscriptionClient } from 'subscriptions-transport-ws'
 import { pipe, tap } from 'wonka'
 
-import { authFromStorage, authFromStorage2, authLogout } from './auth';
+import { useAuthStore } from "./stores"
 import { GQL_BASE_URL, WS_BASE_URL } from './conf'
-import useNotifyToast from './modules/alert_toast'
+import { useNotifyToast } from './composables'
 
-const { interceptResult, toastError } = useNotifyToast();
+const { toastError } = useNotifyToast();
 
 
 const subscriptionClient = new SubscriptionClient( WS_BASE_URL, { 
   reconnect: true,
   lazy: true,
   connectionParams: () => {
-    const auth = authFromStorage2();
+    const authStore = useAuthStore();
     return {
       headers: {
-        ...(auth?.token && {
+        ...(authStore?.auth?.token && {
         'x-felicity-user-id': "felicity-user-x",
         'x-felicity-role': "felicity-role-x",
-        'Authorization': `Bearer ${auth?.token}`
+        'Authorization': `Bearer ${authStore?.auth?.token}`
       })
       },
     }
@@ -41,11 +41,11 @@ const subscriptionClient = new SubscriptionClient( WS_BASE_URL, {
 });
 
 const getAuth = async ({ authState }) => {
+  const authStore = useAuthStore();
 
   if (!authState) {
-    const auth = await authFromStorage();
-    if (auth?.token) {
-      return { token: auth?.token };
+    if (authStore?.auth?.token) {
+      return { token: authStore?.auth?.token };
     }
     return null;
   }
@@ -57,7 +57,7 @@ const getAuth = async ({ authState }) => {
 
   toastError("Faied to get Auth Data. Login");
 
-  authLogout();
+  authStore.logout();
 
   return null;
 };
@@ -98,10 +98,7 @@ const willAuthError = (authState: any) => {
 }
 
 const resultInterceptorExchange: Exchange = ({ forward }) => (ops$) => pipe(ops$, forward,
-  tap((operationResult) => {
-    console.log(operationResult)
-    interceptResult(operationResult)
-  }),
+  tap((operationResult) => {}),
 );
 
 export const urqlClient = createClient({
@@ -121,7 +118,7 @@ export const urqlClient = createClient({
         }
         if (isAuthError) {
           toastError("Unknown Network Error Encountered")
-          authLogout();
+          useAuthStore().logout();
         }
       },
     }),
@@ -138,16 +135,16 @@ export const urqlClient = createClient({
     }),
   ],  
   fetchOptions: () => {
-    const auth = authFromStorage2();
+    const authStore = useAuthStore();
     return {
       headers: {
         'Access-Control-Allow-Origin': '*',
         'Access-Control-Allow-Methods': 'GET, POST, PATCH, PUT, DELETE, OPTIONS',
         'Access-Control-Allow-Headers': 'Origin, Content-Type, X-Auth-Token',
-        ...(auth?.token && {
+        ...(authStore?.auth?.token && {
           'x-felicity-user-id': "felicity-user-x",
           'x-felicity-role': "felicity-role-x",
-          'Authorization': `Bearer ${auth?.token}`
+          'Authorization': `Bearer ${authStore?.auth?.token}`
         }),
       },
     };

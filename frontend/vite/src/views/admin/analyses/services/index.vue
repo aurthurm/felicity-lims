@@ -1,3 +1,120 @@
+<script setup lang="ts">
+  import VueMultiselect from 'vue-multiselect';
+  import modal from '../../../../components/SimpleModal.vue';
+  import accordion from '../../../../components/Accordion.vue';
+  import ResultOptions from './ResultOptions.vue';
+  import InterimFields from './InterimFields.vue'
+  import CorrectionFactor from './CorrectionFactor.vue'
+  import AnalysisUncertainty from './Uncertainty.vue'
+  import DetectionLimits from './DetectionLimit.vue'
+  import AnalysisSpecifications from './Specifications.vue'
+
+  import { ref, reactive, computed } from 'vue';
+  import { IAnalysisService } from '../../../../models/analysis';
+  import { ADD_ANALYSIS_SERVICE, EDIT_ANALYSIS_SERVICE  } from '../../../../graphql/analyses.mutations';
+  import { useSetupStore, useAnalysisStore, useSampleStore } from '../../../../stores';
+  import { useApiUtil } from '../../../../composables';
+
+  const analysisStore = useAnalysisStore()
+  const sampleStore = useSampleStore()
+  const  setupStore = useSetupStore()
+  const { withClientMutation } = useApiUtil()
+  let currentTab = ref('general');
+  const tabs = ['general', 'uncertainities', 'result-options','interims','correction-factor', 'detection-limits', 'specifications', 'financials'];
+  
+  let showModal = ref(false);
+  let formTitle = ref('');
+  let analysisService = reactive({}) as IAnalysisService;
+  const formAction = ref(true);
+
+  const sampleTypes = computed<any[]>(() => sampleStore.getSampleTypes);
+  const departments = computed<any[]>(() => setupStore.getDepartments);
+
+  setupStore.fetchMethods();
+  const methods = computed<any[]>(() => setupStore.getMethods);
+
+  setupStore.fetchUnits();    
+  const units = computed(() => setupStore.getUnits);
+
+  analysisStore.fetchAnalysesCategories();
+  const analysesCategories = computed(() => analysisStore.getAnalysesCategories)
+  const analysesServices = computed(() => analysisStore.getAnalysesServices)
+
+  let analysesParams = reactive({ 
+    first: undefined, 
+    after: "",
+    text: "", 
+    sortBy: ["name"]
+  });
+  analysisStore.fetchAnalysesServices(analysesParams);
+
+  function addAnalysisService(): void {
+    const payload = { 
+      name: analysisService.name, 
+      keyword: analysisService.keyword, 
+      description: analysisService.description, 
+      categoryUid: analysisService.categoryUid, 
+      departmentUid: analysisService.departmentUid, 
+      unitUid: analysisService.unitUid,
+      sortKey: analysisService.sortKey,
+      active: analysisService.active, 
+      internalUse: analysisService.internalUse, 
+      sampleTypes: analysisService.sampleTypes?.map(item => item.uid),
+      methods: analysisService.methods?.map(item => item.uid),
+      tatLengthMinutes: analysisService.tatLengthMinutes,
+      precision: analysisService.precision,
+      requiredVerifications: analysisService.requiredVerifications,
+      selfVerification: analysisService.selfVerification,
+    }
+    withClientMutation(ADD_ANALYSIS_SERVICE,{ payload }, "createAnalysis")
+    .then((result) => analysisStore.addAnalysesService(result));
+  }
+
+  function editAnalysisService(): void {
+    const payload = { 
+      name: analysisService.name, 
+      keyword: analysisService.keyword, 
+      description: analysisService.description, 
+      departmentUid: analysisService.departmentUid, 
+      categoryUid: analysisService.categoryUid, 
+      unitUid: analysisService.unitUid,
+      sortKey: analysisService.sortKey,
+      active: analysisService.active, 
+      internalUse: analysisService.internalUse, 
+      sampleTypes: analysisService.sampleTypes?.map(item => item.uid),
+      methods: analysisService.methods?.map(item => item.uid),
+      tatLengthMinutes: analysisService.tatLengthMinutes,
+      precision: analysisService.precision,
+      requiredVerifications: analysisService.requiredVerifications,
+      selfVerification: analysisService.selfVerification,
+    }
+    withClientMutation(EDIT_ANALYSIS_SERVICE, {  uid: analysisService.uid,  payload }, "updateAnalysis")
+    .then((result) => analysisStore.updateAnalysisService(result));
+  }
+
+  function selectAnalysisService(service: IAnalysisService):void {
+    Object.assign(analysisService, { ...service });
+  }
+
+  function FormManager(create: boolean, obj = {} as IAnalysisService):void {
+    formAction.value = create;
+    showModal.value = true;
+    formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "ANALYSES SERVICE";
+    if (create) {
+      Object.assign(analysisService, {} as IAnalysisService);
+    } else {
+      Object.assign(analysisService, { ...obj });
+    }
+  }
+
+  function saveForm():void {
+    if (formAction.value === true) addAnalysisService();
+    if (formAction.value === false) editAnalysisService();
+    showModal.value = false;
+  }
+
+</script>
+
 <template>
   <div class="">
     <div class="container w-full my-4">
@@ -329,126 +446,3 @@
 
 </template>
 
-<script setup lang="ts">
-  import VueMultiselect from 'vue-multiselect';
-  import modal from '../../../../components/SimpleModal.vue';
-  import accordion from '../../../../components/Accordion.vue';
-  import ResultOptions from './ResultOptions.vue';
-  import InterimFields from './InterimFields.vue'
-  import CorrectionFactor from './CorrectionFactor.vue'
-  import AnalysisUncertainty from './Uncertainty.vue'
-  import DetectionLimits from './DetectionLimit.vue'
-  import AnalysisSpecifications from './Specifications.vue'
-
-  import { useMutation } from '@urql/vue';
-  import { ref, reactive, computed } from 'vue';
-  import { useStore } from 'vuex';
-  import { ActionTypes } from '../../../../store/modules/analysis';
-  import { ActionTypes as SetupActionTypes } from '../../../../store/modules/setup';
-  import { IAnalysisService } from '../../../../models/analysis';
-  import { ADD_ANALYSIS_SERVICE, EDIT_ANALYSIS_SERVICE  } from '../../../../graphql/analyses.mutations';
-
-  let currentTab = ref('general');
-  const tabs = ['general', 'uncertainities', 'result-options','interims','correction-factor', 'detection-limits', 'specifications', 'financials'];
-
-  let store = useStore();
-  
-  let showModal = ref(false);
-  let formTitle = ref('');
-  let analysisService = reactive({}) as IAnalysisService;
-  const formAction = ref(true);
-
-  const sampleTypes = computed<any[]>(() => store.getters.getSampleTypes);
-  const departments = computed<any[]>(() => store.getters.getDepartments);
-
-
-  store.dispatch(SetupActionTypes.FETCH_METHODS);
-  const methods = computed<any[]>(() => store.getters.getMethods);
-
-  store.dispatch(SetupActionTypes.FETCH_UNITS);    
-  const units = computed(() => store.getters.getUnits);
-
-  store.dispatch(ActionTypes.FETCH_ANALYSES_CATEGORIES);
-
-  const analysesCategories = computed(() =>store.getters.getAnalysesCategories)
-  const analysesServices = computed(() =>store.getters.getAnalysesServices)
-
-  let analysesParams = reactive({ 
-    first: undefined, 
-    after: "",
-    text: "", 
-    sortBy: ["name"]
-  });
-  store.dispatch(ActionTypes.FETCH_ANALYSES_SERVICES, analysesParams);
-
-  const { executeMutation: createAnalysisService } = useMutation(ADD_ANALYSIS_SERVICE);
-  const { executeMutation: updateAnalysisService } = useMutation(EDIT_ANALYSIS_SERVICE);
-
-  function addAnalysisService(): void {
-    const payload = { 
-      name: analysisService.name, 
-      keyword: analysisService.keyword, 
-      description: analysisService.description, 
-      categoryUid: analysisService.categoryUid, 
-      departmentUid: analysisService.departmentUid, 
-      unitUid: analysisService.unitUid,
-      sortKey: analysisService.sortKey,
-      active: analysisService.active, 
-      internalUse: analysisService.internalUse, 
-      sampleTypes: analysisService.sampleTypes?.map(item => item.uid),
-      methods: analysisService.methods?.map(item => item.uid),
-      tatLengthMinutes: analysisService.tatLengthMinutes,
-      precision: analysisService.precision,
-      requiredVerifications: analysisService.requiredVerifications,
-      selfVerification: analysisService.selfVerification,
-    }
-    createAnalysisService({ payload }).then((result) => {
-      store.dispatch(ActionTypes.ADD_ANALYSES_SERVICE, result);
-    });
-  }
-
-  function editAnalysisService(): void {
-    const payload = { 
-      name: analysisService.name, 
-      keyword: analysisService.keyword, 
-      description: analysisService.description, 
-      departmentUid: analysisService.departmentUid, 
-      categoryUid: analysisService.categoryUid, 
-      unitUid: analysisService.unitUid,
-      sortKey: analysisService.sortKey,
-      active: analysisService.active, 
-      internalUse: analysisService.internalUse, 
-      sampleTypes: analysisService.sampleTypes?.map(item => item.uid),
-      methods: analysisService.methods?.map(item => item.uid),
-      tatLengthMinutes: analysisService.tatLengthMinutes,
-      precision: analysisService.precision,
-      requiredVerifications: analysisService.requiredVerifications,
-      selfVerification: analysisService.selfVerification,
-    }
-    updateAnalysisService({  uid: analysisService.uid,  payload }).then((result) => {
-      store.dispatch(ActionTypes.UPDATE_ANALYSES_SERVICE, result);
-    });
-  }
-
-  function selectAnalysisService(service: IAnalysisService):void {
-    Object.assign(analysisService, { ...service });
-  }
-
-  function FormManager(create: boolean, obj = {} as IAnalysisService):void {
-    formAction.value = create;
-    showModal.value = true;
-    formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "ANALYSES SERVICE";
-    if (create) {
-      Object.assign(analysisService, {} as IAnalysisService);
-    } else {
-      Object.assign(analysisService, { ...obj });
-    }
-  }
-
-  function saveForm():void {
-    if (formAction.value === true) addAnalysisService();
-    if (formAction.value === false) editAnalysisService();
-    showModal.value = false;
-  }
-
-</script>

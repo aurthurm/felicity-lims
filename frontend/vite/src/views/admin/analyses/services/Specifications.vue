@@ -1,3 +1,96 @@
+<script setup lang="ts">
+  import modal from '../../../../components/SimpleModal.vue';
+  import { computed, ref, reactive, toRefs, watch } from 'vue';
+  import { ADD_ANALYSIS_SPECIFICATION, EDIT_ANALYSIS_SPECIFICATION  } from '../../../../graphql/analyses.mutations';
+  import { IAnalysisSpecification } from '../../../../models/analysis';
+  import { IMethod } from '../../../../models/setup';
+  import { useSetupStore, useAnalysisStore } from '../../../../stores';
+  import { useApiUtil } from '../../../../composables';
+
+  const analysisStore = useAnalysisStore()
+  const  setupStore = useSetupStore()
+  const { withClientMutation } = useApiUtil()
+  
+  const props = defineProps({
+      analysis: {
+          type: Object,
+          required: true,
+          default: () => ({}),
+      },
+      analysisUid: {
+          type: Number,
+          required: true,
+          default: 0,
+      },
+  })
+
+  const { analysis } = toRefs(props);
+  let showModal = ref(false);
+  let formTitle = ref('');
+  let form = reactive({}) as IAnalysisSpecification;
+  const formAction = ref(true);
+
+  watch(() => props.analysisUid, (anal, prev) => {
+      console.log(analysis);
+  })
+
+  setupStore.fetchMethods();
+  const methods = computed<IMethod[]>(() => setupStore.getMethods)
+
+  function addAnalysisSpecification(): void {
+      const payload = { ...form, analysisUid: analysis?.value?.uid }
+      withClientMutation(ADD_ANALYSIS_SPECIFICATION, { payload }, "createAnalysisSpecification")
+      .then((result) => analysisStore.addAnalysisSpecification(result));
+  }
+
+  function editAnalysisSpecification(): void {
+      const payload: any = { ...form };
+      delete payload['uid']
+      delete payload['__typename']
+      delete payload['unit']
+
+      withClientMutation(EDIT_ANALYSIS_SPECIFICATION, { uid : form.uid,  payload }, "updateAnalysisSpecification")
+      .then((result) => analysisStore.updateAnalysisSpecification(result));
+  }
+
+  function FormManager(create: boolean, obj = {} as IAnalysisSpecification):void {
+      formAction.value = create;
+      showModal.value = true;
+      formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "ANALYSIS SPECIFICATION";
+      if (create) {
+          Object.assign(form, {
+            analysisUid: null,
+            min: null,
+            max: null,
+            minWarn: null,
+            maxWarn: null,
+            minReport: null,
+            maxReport: null,
+            warnValues: null,
+            warnReport: null,
+            gender: null,
+            ageMin: null,
+            ageMax: null,
+            methodUid: null,
+          });
+      } else {
+          Object.assign(form, { ...obj });
+      }
+  }
+
+  function saveForm():void {
+      if (formAction.value === true) addAnalysisSpecification();
+      if (formAction.value === false) editAnalysisSpecification();
+      showModal.value = false;
+  }
+
+  const methodName = (uid: number): string => {
+    const index = methods?.value?.findIndex(item => item.uid === uid)
+    return methods?.value[index]?.name as string;
+  }
+
+</script>
+
 <template>
      <button
         class="px-2 py-1 border-blue-500 border text-blue-500 rounded transition duration-300 hover:bg-blue-700 hover:text-white focus:outline-none"
@@ -218,100 +311,3 @@
 
 </template>
 
-<script setup lang="ts">
-  import modal from '../../../../components/SimpleModal.vue';
-  import { computed, ref, reactive, toRefs, watch } from 'vue';
-  import { useMutation } from '@urql/vue';
-  import { useStore } from 'vuex';
-
-  import { ActionTypes } from '../../../../store/modules/analysis';
-  import { ActionTypes as SetupActionTypes } from '../../../../store/modules/setup';
-  import { ADD_ANALYSIS_SPECIFICATION, EDIT_ANALYSIS_SPECIFICATION  } from '../../../../graphql/analyses.mutations';
-  import { IAnalysisSpecification } from '../../../../models/analysis';
-  import { IInstrument, IMethod } from '../../../../models/setup';
-
-  const props = defineProps({
-      analysis: {
-          type: Object,
-          required: true,
-          default: () => ({}),
-      },
-      analysisUid: {
-          type: Number,
-          required: true,
-          default: 0,
-      },
-  })
-
-  let store = useStore();
-  const { analysis } = toRefs(props);
-  let showModal = ref(false);
-  let formTitle = ref('');
-  let form = reactive({}) as IAnalysisSpecification;
-  const formAction = ref(true);
-
-  watch(() => props.analysisUid, (anal, prev) => {
-      console.log(analysis);
-  })
-
-  store.dispatch(SetupActionTypes.FETCH_METHODS);
-  const methods = computed<IMethod[]>(() => store.getters.getMethods)
-
-  const { executeMutation: createAnalysisSpecification } = useMutation(ADD_ANALYSIS_SPECIFICATION);
-  const { executeMutation: updateAnalysisSpecification } = useMutation(EDIT_ANALYSIS_SPECIFICATION);
-
-  function addAnalysisSpecification(): void {
-      const payload = { ...form, analysisUid: analysis?.value?.uid }
-      createAnalysisSpecification({ payload }).then((result) => {
-          store.dispatch(ActionTypes.ADD_ANALYSIS_SPECIFICATION, result);
-      });
-  }
-
-  function editAnalysisSpecification(): void {
-      const payload: any = { ...form };
-      delete payload['uid']
-      delete payload['__typename']
-      delete payload['unit']
-
-      updateAnalysisSpecification({ uid : form.uid,  payload }).then((result) => {
-          store.dispatch(ActionTypes.UPDATE_ANALYSIS_SPECIFICATION, result);
-      });
-  }
-
-  function FormManager(create: boolean, obj = {} as IAnalysisSpecification):void {
-      formAction.value = create;
-      showModal.value = true;
-      formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "ANALYSIS SPECIFICATION";
-      if (create) {
-          Object.assign(form, {
-            analysisUid: null,
-            min: null,
-            max: null,
-            minWarn: null,
-            maxWarn: null,
-            minReport: null,
-            maxReport: null,
-            warnValues: null,
-            warnReport: null,
-            gender: null,
-            ageMin: null,
-            ageMax: null,
-            methodUid: null,
-          });
-      } else {
-          Object.assign(form, { ...obj });
-      }
-  }
-
-  function saveForm():void {
-      if (formAction.value === true) addAnalysisSpecification();
-      if (formAction.value === false) editAnalysisSpecification();
-      showModal.value = false;
-  }
-
-  const methodName = (uid: number): string => {
-    const index = methods?.value?.findIndex(item => item.uid === uid)
-    return methods?.value[index]?.name;
-  }
-
-</script>
