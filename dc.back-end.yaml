@@ -23,7 +23,7 @@ services:
             - felicity_db
         networks:
             - felicitynet
-        command: bash -c "cd felicity_lims && ./felicity.sh"
+        command: bash -c "cd felicity_lims && alembic upgrade head && gunicorn --workers 4 --bind 0.0.0.0:8000 -k uvicorn.workers.UvicornWorker --reload felicity.main:flims"
 
     felicity_db:
         container_name: felicity_db
