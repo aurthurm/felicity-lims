@@ -1,0 +1,51 @@
+version: '3.5'
+
+services:
+
+    felicity_be:
+        container_name: felicity_be
+        restart: unless-stopped
+        build:
+            context: ./backend/
+        environment:
+            - POSTGRES_SERVER=felicity_db
+            - POSTGRES_DB=felicity_lims
+            - POSTGRES_USER=felicity
+            - POSTGRES_PASSWORD=felicity
+            - POSTGRES_HOST_AUTH_METHOD=trust
+        volumes:
+            - ./backend/:/app
+        expose:
+            - "8000"
+        ports:
+            - 8000:8000
+        depends_on:
+            - felicity_db
+        networks:
+            - felicitynet
+        command: bash -c "cd felicity_lims && ./felicity.sh"
+
+    felicity_db:
+        container_name: felicity_db
+        image: postgres:12
+        restart: unless-stopped
+        environment:
+            - POSTGRES_DB=felicity_lims
+            - POSTGRES_USER=felicity
+            - POSTGRES_PASSWORD=felicity
+            - POSTGRES_HOST_AUTH_METHOD=trust
+        volumes:
+            - ./postgres/init/:/docker-entrypoint-initdb.d/
+            - db-data:/var/lib/postgresql/data
+        ports:
+            - 5434:5432
+        networks:
+            - felicitynet
+
+volumes:
+    db-data:
+    pgadmin:
+
+networks:
+    felicitynet:
+        driver: bridge
