@@ -55,4 +55,4 @@ async def create_super_user() -> None:
         )
         preference = await models.UserPreference.create(obj_in=pref_in)
         logger.info(f"linking super user {superuser.uid} to preference {preference.uid}")
-    await superuser.link_preference(preference_uid=preference.uid)
+        await superuser.link_preference(preference_uid=preference.uid)

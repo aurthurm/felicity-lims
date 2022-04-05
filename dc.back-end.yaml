@@ -13,6 +13,7 @@ services:
             - POSTGRES_USER=felicity
             - POSTGRES_PASSWORD=felicity
             - POSTGRES_HOST_AUTH_METHOD=trust
+            - LOAD_SETUP_DATA=${LOAD_SETUP_DATA}
         volumes:
             - ./backend/:/app
         expose:
