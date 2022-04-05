@@ -2,7 +2,7 @@
   import modal from '../../../components/SimpleModal.vue';
   import accordion from '../../../components/Accordion.vue';
   import { ref,reactive, computed } from 'vue';
-  import { useSetupStore, useUserStore } from '../../../stores';
+  import { useUserStore } from '../../../stores';
   import { useApiUtil } from '../../../composables';
   import { UPDATE_GROUP_PERMS, ADD_GROUP, UPDATE_GROUP } from '../../../graphql/_mutations';
   import { IGroup, IPermission } from '../../../models/auth';
@@ -22,7 +22,6 @@
     shield.pages.KANBAN_BOARD,
   ]
 
-  let setupStore = useSetupStore();
   let userStore = useUserStore()
   const { withClientMutation } = useApiUtil()
 

@@ -157,7 +157,7 @@ class User(AbstractBaseUser):
             "preference_uid": preference_uid
         }  # {**result.to_dict(), **{'auth_uid': auth_uid}}
         update_in = schemas.UserUpdate(**_update)
-        await self.update(update_in)
+        return await self.update(update_in)
 
 
 class Permission(DBModel):

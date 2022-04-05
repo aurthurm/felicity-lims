@@ -63,8 +63,7 @@ export const useUserStore = defineStore('user', {
       if(index > -1) this.groups[index] = payload
     },
     updateGroupsAndPermissions(payload) {
-      const data = payload.data.updateGroupsAndPermissions
-      let group = data?.group
+      let group = payload?.group
       const index = this.groups?.findIndex(g => g.uid === group?.uid)
       if(index > -1){
         group.permissions = group?.permissions || []
