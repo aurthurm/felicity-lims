@@ -80,7 +80,7 @@ export const useKanbanStore = defineStore('kanban', {
       let board = this.board;
       this.board?.boardListings?.forEach((listing: IListing) => {
         if (listing.uid === payload?.listingUid) {
-          if(listing.listingTasks.length > 0) {
+          if(listing.listingTasks?.length > 0) {
             listing.listingTasks!.push(payload)
           } else {
             listing.listingTasks = [payload]

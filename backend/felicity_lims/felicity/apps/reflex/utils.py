@@ -87,7 +87,7 @@ class ReflexUtil:
             matches.append(True)
             criteria_values.remove((current_result.analysis_uid, current_result.result))
 
-        # check if avs have latest result matches from results pool
+        # check if avs have the latest result matches from results pool
         for _cv in _criteria_values:
             _anal = list(filter(
                 lambda res: res.analysis_uid == _cv[0],

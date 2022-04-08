@@ -22,25 +22,27 @@ export const useNoticeStore = defineStore('notice', {
     }),
     getters: {
         getNotices: (state) => state.notices,
-        getMyNotices: (state) => (uid) => state.notices.filter(n => n.createdByUid === uid),
+        getMyNotices: (state) => (uid) => state.notices?.filter(n => n.createdByUid === uid),
         getFilterBy: (state) => state.filterBy,
         getFilters: (state) => state.filters
     },
     actions: {
         async fetchMyNotices(uid: number){
             await withClientQuery(GET_NOTICES_BY_CREATOR, { uid }, "noticesByCreator")
-              .then(payload => this.notices = payload?.forEach(n => modifyExpiry(n)));
+              .then(payload => {
+                this.notices = payload?.map(n => modifyExpiry(n))
+              });
         },
         addNotice(notice: INotice){
-            this.notices.unshift(modifyExpiry(notice));
+            this.notices?.unshift(modifyExpiry(notice));
         },
         updateNotice(notice: INotice){
-            const index = this.notices.findIndex(x => x.uid === notice.uid);
+            const index = this.notices?.findIndex(x => x.uid === notice.uid);
             if(index > -1) this.notices[index] = modifyExpiry(notice);
         },
         deleteNotice(notice: INotice){
-            const index = this.notices.findIndex(x => x.uid === notice.uid);
-            if(index > -1) this.notices.splice(index,1);
+            const index = this.notices?.findIndex(x => x.uid === notice.uid);
+            if(index > -1) this.notices?.splice(index,1);
         }
 
     }

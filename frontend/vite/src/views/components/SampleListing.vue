@@ -236,7 +236,7 @@
     after: "",
     status: state.filterStatus, 
     text: "", 
-    sortBy: ["-created_at"],
+    sortBy: ["-uid"],
     clientUid: +ifZeroEmpty(route?.query?.clientUid),
     filterAction: false
   });

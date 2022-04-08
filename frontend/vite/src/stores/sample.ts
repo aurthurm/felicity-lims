@@ -88,6 +88,9 @@ export const useSampleStore = defineStore('sample', {
   resetChildSample() {
     this.childSample = undefined;
   },
+  setChildSample(sample) {
+    this.childSample = sample;
+  },
   async fetchSamples(params){
     await withClientQuery(GET_ALL_SAMPLES, params, undefined)
     .then(payload => {
@@ -159,6 +162,8 @@ export const useSampleStore = defineStore('sample', {
       sample.analyses = parseEdgeNodeToList(sample?.analyses) || [];
       sample.profiles = parseEdgeNodeToList(sample?.profiles) || [];
       this.sample = sample;
+
+    console.log (this.sample)
     })
   },
   updateAnalysesResults(payload: IAnalysisResult[]){

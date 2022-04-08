@@ -25,7 +25,7 @@ async def get_qc_sample_type():
 
 
 async def sample_search(
-    model, status: str, text: str, client_uid: int
+        model, status: str, text: str, client_uid: int
 ) -> List[schemas.SampleType]:
     """No pagination"""
     filters = []
@@ -77,7 +77,6 @@ async def retest_from_result_uids(uids: List[int], user):
 
 
 async def results_submitter(analysis_results: List[dict], submitter):
-
     return_results = []
 
     for _ar in analysis_results:
@@ -120,10 +119,10 @@ async def results_submitter(analysis_results: List[dict], submitter):
 
         a_result_in = schemas.AnalysisResultUpdate(**a_result.to_dict())
         a_result = await a_result.update(a_result_in)
-        
+
         # mutate result
         await result_mutator(a_result)
-        
+
         # Do Reflex Testing
         logger.info(f"ReflexUtil .... running")
         await ReflexUtil(analysis_result=a_result, user=submitter).do_reflex()
@@ -176,12 +175,9 @@ async def verify_from_result_uids(uids: List[int], user):
     return to_return
 
 
-
-
-
 async def result_mutator(result: AnalysisResult):
     result_in = result.result
-    
+
     correction_factors = result.analysis.correction_factors
     specifications = result.analysis.specifications
     detection_limits = result.analysis.detection_limits
@@ -196,7 +192,7 @@ async def result_mutator(result: AnalysisResult):
                     "before": result.result,
                     "after": result.result * cf.factor,
                     "mutation": f"Multiplied the result {result.result} with a correction factor of {cf.factor}",
-                    "date": datetime.now() 
+                    "date": datetime.now()
                 })
                 result.result = result.result * cf.factor
 
@@ -209,13 +205,13 @@ async def result_mutator(result: AnalysisResult):
                     "before": result.result,
                     "after": spec.min_report,
                     "mutation": f"Result was less than the minimun warning specification {spec.min_warn} and must be reported as {spec.min_report}",
-                    "date": datetime.now() 
+                    "date": datetime.now()
                 })
                 result.result = spec.min_report
-                
+
             elif result.result < spec.min:
                 result.result = result.result
-            
+
             # Max
             if result.result > spec.max_warn:
                 await ResultMutation.create(obj_in={
@@ -223,10 +219,10 @@ async def result_mutator(result: AnalysisResult):
                     "before": result.result,
                     "after": spec.max_report,
                     "mutation": f"Result was greater than the maximun warning specification {spec.max_warn} and must be reported as {spec.max_report}",
-                    "date": datetime.now() 
+                    "date": datetime.now()
                 })
                 result.result = spec.max_report
-                
+
             elif result.result > spec.max:
                 result.result = result.result
 
@@ -238,34 +234,32 @@ async def result_mutator(result: AnalysisResult):
                     "before": result.result,
                     "after": f"< {dlim.lower_limit}",
                     "mutation": f"Result fell below the Lower Detection Limit {dlim.lower_limit} and must be reported as < {dlim.lower_limit}",
-                    "date": datetime.now() 
+                    "date": datetime.now()
                 })
                 result.result = f"< {dlim.lower_limit}"
-                
+
             if result.result > dlim.upper_limit:
                 await ResultMutation.create(obj_in={
                     "result_uid": result.uid,
                     "before": result.result,
                     "after": f"> {dlim.upper_limit}",
                     "mutation": f"Result fell Above the Upper Detection Limit {dlim.upper_limit} and must be reported as > {spec.upper_limit}",
-                    "date": datetime.now() 
+                    "date": datetime.now()
                 })
                 result.result = f"> {dlim.upper_limit}"
-
 
         # uncertainty
         if isinstance(result.result, int):
             for uncert in uncertainties:
-                if result.result >= uncert.min and result.result <= uncert.max:
+                if uncert.min <= result.result <= uncert.max:
                     await ResultMutation.create(obj_in={
                         "result_uid": result.uid,
                         "before": result.result,
                         "after": f"{result.result} +/- {uncert.value}",
                         "mutation": f"Result fell inside the range [{uncert.min},{uncert.max}]  with an un uncertainty of +/- {uncert.value}",
-                        "date": datetime.now() 
+                        "date": datetime.now()
                     })
                     result.result = f"{result.result} +/- {uncert.value}"
-
 
     elif isinstance(result.result, str):
         for spec in specifications:
@@ -275,9 +269,9 @@ async def result_mutator(result: AnalysisResult):
                     "before": result.result,
                     "after": spec.warn_report,
                     "mutation": f"Result with specification (result ::equals:: {result.result}) must be reported as {spec.warn_report}",
-                    "date": datetime.now() 
+                    "date": datetime.now()
                 })
                 result.result = spec.warn_report
-                
+
     if result_in != result.result:
         await result.save()

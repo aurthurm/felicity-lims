@@ -1,4 +1,5 @@
 <script setup lang="ts">
+  import { storeToRefs } from "pinia"
   import { computed, reactive, watch } from 'vue';
   import { IAnalysisProfile, IAnalysisService, ISample } from '../../../models/analysis';
   import { useSampleComposable } from '../../../composables';
@@ -15,13 +16,16 @@
 
     const state = reactive({
       dropdownOpen: false,
-      sample: sampleStore.getSample,
-      childSample: sampleStore.getSChildSample,
     }); 
 
-    watch(() => state.sample, (sample, _) => {
-      if(!sample) return;
-      if(sample.status !== 'invalidated') {
+    const { sample, childSample } = storeToRefs(sampleStore)
+
+    console.log (sample)
+    console.log (childSample)
+
+    watch(() => sample, (sampleIn, _) => {
+      if(!sampleIn) return;
+      if(sampleIn?.value?.status !== 'invalidated') {
         sampleStore.resetChildSample()
         return
       };
@@ -36,46 +40,45 @@
     }
 
     const canReceive = computed(() => {
-      if(["due"].includes(state.sample?.status?.toLowerCase()!)) return true;
+      if(["due"].includes(sample?.value?.status?.toLowerCase()!)) return true;
       return false
     })
 
-    const receiveSample = async () => receiveSamples([state.sample?.uid!]),
+    const receiveSample = async () => receiveSamples([sample?.value?.uid!]),
     canCancel = computed(() => {
-      if(["received", "due"].includes(state.sample?.status?.toLowerCase()!)) return true;
+      if(["received", "due"].includes(sample?.value?.status?.toLowerCase()!)) return true;
       return false
     })
 
-    const cancelSample = async () => cancelSamples([state.sample?.uid!]),
+    const cancelSample = async () => cancelSamples([sample?.value?.uid!]),
     canReinstate = computed(() => {
-      if(["cancelled"].includes(state.sample?.status?.toLowerCase()!)) return true;
+      if(["cancelled"].includes(sample?.value?.status?.toLowerCase()!)) return true;
       return false
     })
 
-    const reInstateSample = async () => reInstateSamples([state.sample?.uid!]),
+    const reInstateSample = async () => reInstateSamples([sample?.value?.uid!]),
     canVerify = computed(() => {
-      if(state.sample?.status?.toLowerCase() === "to_be_verified") return true;
+      if(sample?.value?.status?.toLowerCase() === "to_be_verified") return true;
       return false
     })
 
-    const verifySample = async () => verifySamples([state.sample?.uid!]),
+    const verifySample = async () => verifySamples([sample?.value?.uid!]),
     canInvalidate = computed(() => {
-      if(state.sample?.status?.toLowerCase() === "published") return true;
+      if(sample?.value?.status?.toLowerCase() === "published") return true;
       return false
     })
 
-    const invalidateSample = async () => invalidateSamples([state.sample?.uid!]).then((res: ISample[]) => {
-      let inv = res?.filter(s => s.uid !== state.sample?.uid)
-      if(inv.length > 0) state.childSample = inv[0];
-
+    const invalidateSample = async () => invalidateSamples([sample?.value?.uid!]).then((res: ISample[]) => {
+      let inv = res?.filter(s => s.uid !== sample?.value?.uid)
+      if(inv.length > 0) sampleStore.setChildSample(inv[0]);
     })
 
     const canReject = computed(() => {
-      if(["received", "due"].includes(state.sample?.status?.toLowerCase()!)) return true;
+      if(["received", "due"].includes(sample?.value?.status?.toLowerCase()!)) return true;
       return false
     })
 
-    const rejectSample = async () =>  router.push({ name: "reject-samples", params: { samples: JSON.stringify([state.sample]) }})
+    const rejectSample = async () =>  router.push({ name: "reject-samples", params: { samples: JSON.stringify([sample?.value]) }})
 </script>
 
 
@@ -84,8 +87,8 @@
   <div class="flex justify-between">
     <h3 class="my-4 font-bold">Sample Detail</h3>
     <router-link
-      v-if="state.sample?.analysisRequest?.patient?.uid"
-     :to="{ name: 'patient-detail', params: { patientUid: state.sample?.analysisRequest?.patient?.uid } }" 
+      v-if="sample?.analysisRequest?.patient?.uid"
+     :to="{ name: 'patient-detail', params: { patientUid: sample?.analysisRequest?.patient?.uid } }" 
       class="p-2 my-2 text-sm border-blue-500 border text-dark-700 transition-colors duration-150 rounded-lg focus:outline-none hover:bg-blue-500 hover:text-gray-100">
       ... other samples
     </router-link>
@@ -99,34 +102,34 @@
       <div class="col-span-12 px-3 sm:px-0">
         <div class="mb-2 flex justify-between sm:text-sm md:text-md lg:text-lg text-gray-700 font-bold">
           <div>
-              <span v-if="state.sample?.priority! < 1"
+              <span v-if="sample?.priority! < 1"
                 :class="[
                     'font-small',
-                    { 'text-red-700': state.sample?.priority! < 1 },
+                    { 'text-red-700': sample?.priority! < 1 },
                 ]">
                     <i class="fa fa-star"></i>
               </span>
-              {{ state.sample?.sampleId }} 
+              {{ sample?.sampleId }} 
               <!-- <button
                 class="ml-4 text-xs inline-flex items-center justify-center w-6 h-6 mr-2 border-blue-500 border text-gray-900 transition-colors duration-150 bg-white rounded-full focus:outline-none hover:bg-gray-200"
               >
                 <i class="fa fa-pen"></i>
               </button> -->
-              <span v-if="state.sample?.analysisRequest?.patient?.uid && state.childSample?.uid">
+              <span v-if="sample?.analysisRequest?.patient?.uid && childSample?.uid">
                   <font-awesome-icon icon="angle-double-right" class="mx-2" />
-                  <router-link :to="{ name: 'sample-detail', params: { patientUid: state.sample?.analysisRequest?.patient?.uid, sampleUid: state.childSample?.uid } }" 
+                  <router-link :to="{ name: 'sample-detail', params: { patientUid: sample?.analysisRequest?.patient?.uid, sampleUid: childSample?.uid } }" 
                     class="p-2 my-2 text-sm border-blue-500 border text-dark-700 transition-colors duration-150 rounded-lg focus:outline-none hover:bg-blue-500 hover:text-gray-100">
-                    {{ state.childSample?.sampleId }}
+                    {{ childSample?.sampleId }}
                   </router-link>
               </span>
             </div>
-          <span>{{ profileAnalysesText(state.sample?.profiles!, state.sample?.analyses!) }}</span>
+          <span>{{ profileAnalysesText(sample?.profiles!, sample?.analyses!) }}</span>
           <!-- <button type="button" class="bg-blue-400 text-white p-1 rounded leading-none">{{ sample?.status }}</button> -->
           <div >
             <div
               @click="state.dropdownOpen = !state.dropdownOpen"
               class="hidden md:block md:flex md:items-center ml-2 mt-2" >
-              <button type="button" class="bg-blue-400 text-white p-1 rounded leading-none">{{ state.sample?.status }}</button>
+              <button type="button" class="bg-blue-400 text-white p-1 rounded leading-none">{{ sample?.status }}</button>
               <div class="ml-2"><font-awesome-icon icon="chevron-down" class="text-gray-400" /></div>
             </div>
             <div
@@ -175,22 +178,22 @@
             <!-- Client Details -->
             <div class="flex">
               <span class="text-gray-800 text-sm font-semibold w-1/6">Requests:</span>
-              <span class="text-gray-600 text-sm md:text-md">{{ profileAnalysesText(state.sample?.profiles!, state.sample?.analyses!) }}</span>
+              <span class="text-gray-600 text-sm md:text-md">{{ profileAnalysesText(sample?.profiles!, sample?.analyses!) }}</span>
             </div>
             <div class="flex">
               <span class="text-gray-800 text-sm font-semibold w-1/6">Client Request ID:</span>
-              <span class="text-gray-600 text-sm md:text-md">{{ state.sample?.analysisRequest?.clientRequestId }}</span>
+              <span class="text-gray-600 text-sm md:text-md">{{ sample?.analysisRequest?.clientRequestId }}</span>
             </div>
             <div class="flex">
               <span class="text-gray-800 text-sm font-semibold w-1/6">Sample Type:</span>
-              <span class="text-gray-600 text-sm md:text-md">{{ state.sample?.sampleType!.name }}</span>
+              <span class="text-gray-600 text-sm md:text-md">{{ sample?.sampleType!.name }}</span>
             </div>
           </div>
           <div class="col-span-1">
             <!-- Communication Details -->
             <div class="flex">
               <span class="text-gray-800 text-sm font-semibold w-1/6">Client:</span>
-              <span class="text-gray-600 text-sm md:text-md">{{ state.sample?.analysisRequest?.client?.name }}</span>
+              <span class="text-gray-600 text-sm md:text-md">{{ sample?.analysisRequest?.client?.name }}</span>
             </div>
             <div class="flex">
               <span class="text-gray-800 text-sm font-semibold w-1/6">Cliet Contact:</span>
@@ -203,11 +206,11 @@
   </div>
 
   <div 
-    v-show="state.sample?.status ==='rejected'"
+    v-show="sample?.status ==='rejected'"
     class="bg-red-200 rounded-sm shadow-md duration-500 px-4 sm:px-6 md:px-2 py-4 my-4" >
     <!-- <h3 clas="font-bold text-gray-800 text-md">This sample was rejected because of the following reason(s):</h3> -->
     <ul>
-      <li v-for="reason in state.sample?.rejectionReasons">{{ reason.reason }}</li>
+      <li v-for="reason in sample?.rejectionReasons">{{ reason.reason }}</li>
     </ul>
   </div>
 

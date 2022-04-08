@@ -47,7 +47,7 @@
 
     userStore.fetchUsers({})
     auditLogStore.$reset()
-    auditLogStore.fetchAuditLogs({ targetType: targetType, targetId: targetId })
+    auditLogStore.fetchAuditLogs({ targetType: targetType?.value, targetId: targetId?.value })
 
     let auditLogs = computed(() => auditLogStore.getAuditLogs)
     let users = computed(() => userStore.getUsers)
