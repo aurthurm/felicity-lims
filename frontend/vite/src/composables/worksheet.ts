@@ -23,7 +23,7 @@ export default function useWorkSheetComposable(){
           if (result.isConfirmed) {
 
             await withClientMutation(WORKSHEET_UPDATE, uids, "updateWorksheet")
-                  .then(payload => console.log(payload))
+                  .then(payload => {})
 
             Swal.fire(
               'Its Happening!',
@@ -34,7 +34,7 @@ export default function useWorkSheetComposable(){
           }
         })
       } catch (error) {
-        console.log(error)
+        
       }      
     }
 

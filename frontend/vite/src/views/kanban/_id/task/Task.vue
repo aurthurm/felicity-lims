@@ -88,7 +88,7 @@
         }
       })
     } catch (error) {
-      console.log(error)
+      
     }
   }
 
@@ -123,7 +123,7 @@
         }
       })
     } catch (error) {
-      console.log(error)
+      
     }
   }
 
@@ -152,7 +152,7 @@
         }
       })
     } catch (error) {
-      console.log(error)
+      
     }
   }
 
@@ -245,7 +245,6 @@
   let dataDesc = ref('');
   function updateTaskDescription(): void {
     dataDesc.value = (window as any).taskEditor.getData();
-    console.log()
     clearTimeout(descTimeOut);
     descTimeOut = setTimeout(function(){ 
       updateListingTask({ uid: kanBanTask.value?.uid, payload: { description: dataDesc.value }})

@@ -258,6 +258,7 @@ export const useAnalysisStore = defineStore('analysis', {
 })
 
 function groupByCategory(analyses: IAnalysisService[]): any {
+  if(analyses?.length > 0){
     const profiled = analyses?.reduce((r: any, obj) => {
     const key = obj?.category?.name || 'No Category';
     r[key] = r[key] || [];
@@ -265,4 +266,7 @@ function groupByCategory(analyses: IAnalysisService[]): any {
     return r;
   }, {});
   return Object.entries(profiled || {}).sort();
+  } else {
+    return []
+  }
 }

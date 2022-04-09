@@ -48,7 +48,7 @@ export default function useAnalysisComposable(){
           }
         })
       } catch (error) {
-        console.log(error)
+        
       }
     }
 
@@ -82,7 +82,7 @@ export default function useAnalysisComposable(){
           }
         })
       } catch (error) {
-        console.log(error)
+        
       }
     }
 
@@ -127,7 +127,7 @@ export default function useAnalysisComposable(){
           }
         })
       } catch (error) {
-        console.log(error)
+        
       }
     }
 
@@ -161,7 +161,7 @@ export default function useAnalysisComposable(){
           }
         })
       } catch (error) {
-        console.log(error)
+        
       }
     }
   
@@ -195,7 +195,7 @@ export default function useAnalysisComposable(){
           }
         })
       } catch (error) {
-        console.log(error)
+        
       }
     }
 
@@ -226,7 +226,7 @@ export default function useAnalysisComposable(){
           }
         })
       } catch (error) {
-        console.log(error)
+        
       }
     }
 

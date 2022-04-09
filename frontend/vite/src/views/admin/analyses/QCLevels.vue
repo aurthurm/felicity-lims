@@ -40,7 +40,6 @@
   }
 
   function saveForm():void {
-    console.log(form)
     if (formAction.value === true) addQCLevel();
     if (formAction.value === false) editQCLevel();
     showModal.value = false;

@@ -71,8 +71,6 @@
       formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "WORKSHEET";
       if (create) {
         Object.assign(form, { count: 1 } as IWorkSheetForm);
-      } else {
-        console.log("This path is not possible !!!!!")
       }
     }
 

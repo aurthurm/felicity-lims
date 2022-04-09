@@ -29,7 +29,7 @@
   const formAction = ref(true);
 
   watch(() => props.analysisUid, (anal, prev) => {
-      console.log(analysis);
+      
   })
 
   function addResultOption(): void {

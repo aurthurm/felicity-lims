@@ -1,3 +1,62 @@
+<script setup lang="ts">
+  import accordion from '../../components/Accordion.vue';
+  import { reactive, onMounted } from 'vue'
+  import axios from '../../axios'
+  import { REST_BASE_URL } from '../../conf'
+  import { useNotifyToast } from '../../composables'
+  import { IReportListing } from '../../models/reports'
+
+  const { toastSuccess, toastWarning } = useNotifyToast()
+
+  const state = reactive({
+    reports: [] as IReportListing[],
+    listingForm: {
+      report_type: "",
+      analyses_uids: [],
+      sample_states: [],
+      date_column: "",
+      period_start: "",
+      period_end: "",
+    } as IReportListing
+  })
+
+  onMounted(async () => {
+    await axios.get('reports').then(resp=> {
+      state.reports = resp.data
+    })
+  })
+
+  const saveListingForm = () => {
+    const request = {...state.listingForm }
+    axios.post('reports', request).then(resp => {
+      state.reports.push(resp.data);
+    })
+  }
+
+  const downloadReport = (report: any) => {
+    const link = document.createElement('a')
+    link.download = report.report_type + '-' + report.crated_at;
+    link.href = REST_BASE_URL + '/' + report.location;
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+  }
+
+  const deleteReport = (report: any) => {
+    axios.delete('reports/' + report.uid).then(resp => {
+      const data = resp.data;
+      const index = state.reports.findIndex(x => x.uid === data.uid);
+      if(index > -1) {
+        state!.reports.splice(index, 1);
+        toastSuccess(data.message)
+      } else {
+        toastWarning("Failed to remove report: Please tefresh your page")
+      }
+    })
+  }
+
+</script>
+
 <template>
 
   <accordion>
@@ -160,63 +219,3 @@
   </accordion>
 
 </template>
-
-<script setup lang="ts">
-  import accordion from '../../components/Accordion.vue';
-  import { reactive, onMounted } from 'vue'
-  import axios from '../../axios'
-  import { REST_BASE_URL } from '../../conf'
-  import { useNotifyToast } from '../../composables'
-  import { IReportListing } from '../../models/reports'
-
-  const { toastSuccess, toastWarning } = useNotifyToast()
-
-  const state = reactive({
-    reports: [] as IReportListing[],
-    listingForm: {
-      report_type: "",
-      analyses_uids: [],
-      sample_states: [],
-      date_column: "",
-      period_start: "",
-      period_end: "",
-    } as IReportListing
-  })
-
-  onMounted(async () => {
-    await axios.get('reports').then(resp=> {
-      state.reports = resp.data
-    })
-  })
-
-  const saveListingForm = () => {
-    const request = {...state.listingForm }
-    axios.post('reports', request).then(resp => {
-      state.reports.push(resp.data);
-    })
-  }
-
-  const downloadReport = (report: any) => {
-    const link = document.createElement('a')
-    link.download = report.report_type + '-' + report.crated_at;
-    link.href = REST_BASE_URL + '/' + report.location;
-    document.body.appendChild(link)
-    link.click()
-    document.body.removeChild(link)
-  }
-
-  const deleteReport = (report: any) => {
-    axios.delete('reports/' + report.uid).then(resp => {
-      const data = resp.data;
-      console.log(data)
-      const index = state.reports.findIndex(x => x.uid === data.uid);
-      if(index > -1) {
-        state!.reports.splice(index, 1);
-        toastSuccess(data.message)
-      } else {
-        toastWarning("Failed to remove report: Please tefresh your page")
-      }
-    })
-  }
-
-</script>

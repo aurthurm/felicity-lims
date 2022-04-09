@@ -121,8 +121,7 @@ class SampleAnalyticsInit(Generic[ModelType]):
             raise AttributeError(f"Model has no attr {group_by}")
 
         group_by = getattr(self.model, group_by)
-        stmt = select(group_by, func.count(self.model.uid).label('total')).filter(group_by is not None).group_by(
-            group_by)  # noqa
+        stmt = select(group_by, func.count(self.model.uid).label('total')).filter(group_by!=None).group_by(group_by)  # noqa
 
         async with async_session_factory() as session:
             result = await session.execute(stmt)

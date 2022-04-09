@@ -86,7 +86,6 @@
             // on either side of the mean 
             // obs["color"] = ERROR
             // obs["rule"]  = "4_1s"
-            // console.log(current ,"4_1s")
 
             // for one side of mead
             const x = [dataset[i][key],dataset[i-1][key],dataset[i-2][key],dataset[i-3][key]];
@@ -168,7 +167,6 @@
     });
 
     const west_gard = westGardRule(data, 'value');
-    console.log(west_gard);
     chart.data(west_gard.rules);
 
     chart.scale({

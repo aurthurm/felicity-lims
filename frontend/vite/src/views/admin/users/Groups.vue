@@ -47,7 +47,6 @@
       item[1].forEach((perm: IPermission) => {
         perm.checked = false;
         if(userGroup.permissions?.some(p => {
-          console.log(p, perm, (p?.uid === perm?.uid))
           return (p?.uid == perm?.uid) || false;
         })) {
           perm.checked = true;

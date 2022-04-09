@@ -97,8 +97,6 @@
       let checdiv: any = ref(null)
 
       watch(() => notificationStore.show, (curr, _) => {
-        console.log(curr)
-
         if (curr !== true) {
           notification.value?.classList.add("translate-x-full");
           notification.value?.classList.remove("translate-x-0");

@@ -175,7 +175,7 @@ export default function useReportComposable(){
           }
         })
       } catch (error) {
-        console.log(error)
+        
       }
     }
 

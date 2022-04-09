@@ -159,7 +159,6 @@
       let crit: IReflexBrainCriteria[] = [];
       let addN: IReflexBrainAddition[] = [];
       let finl: IReflexBrainFinal[] = [];
-      console.log(obj)
       Object.assign(brainForm, { ...obj });
     }
   }

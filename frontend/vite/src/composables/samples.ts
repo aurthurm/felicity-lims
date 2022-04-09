@@ -63,7 +63,7 @@ export default function useSampleComposable(){
           }
         })
       } catch (error) {
-        console.log(error)
+        
       }
     }
 
@@ -100,7 +100,7 @@ export default function useSampleComposable(){
           }
         })
       } catch (error) {
-        console.log(error)
+        
       }
     }
 
@@ -137,7 +137,7 @@ export default function useSampleComposable(){
           }
         })
       } catch (error) {
-        console.log(error)
+        
       }
     }
 
@@ -174,7 +174,7 @@ export default function useSampleComposable(){
           }
         })
       } catch (error) {
-        console.log(error)
+        
       }
     }
 
@@ -209,7 +209,7 @@ export default function useSampleComposable(){
           }
         })
       } catch (error) {
-        console.log(error)
+        
       }
     }
 
@@ -243,7 +243,7 @@ export default function useSampleComposable(){
           }
         })
       } catch (error) {
-        console.log(error)
+        
       }
     }
 
@@ -279,7 +279,7 @@ export default function useSampleComposable(){
           }
         })
       } catch (error) {
-        console.log(error)
+        
       }
       return invalidated;
     }

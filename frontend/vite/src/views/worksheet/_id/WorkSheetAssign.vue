@@ -31,7 +31,7 @@ const applyTemplate = async () => {
         if (result.isConfirmed) {
           
           withClientMutation(EDIT_WORKSHEET_APPLY_TEMPLATE, { worksheetUid: worksheet?.value?.uid , templateUid: templateUid.value }, "updateWorksheetApplyTemplate")
-          .then((result) => console.log(result));
+          .then((result) => {});
 
           Swal.fire(
             'Its Happening!',
@@ -42,7 +42,7 @@ const applyTemplate = async () => {
         }
       })
     } catch (error) {
-      console.log(error)
+      
     }
   }
 

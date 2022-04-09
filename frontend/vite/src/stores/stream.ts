@@ -22,7 +22,7 @@ export const useStreamStore = defineStore('stream', {
         subscribeToActivityStream(){
             pipe(
                 urqlClient.subscription(SUBSCRIBE_TO_ACTIVITY_STREAM, { }),
-                subscribe(result => (console.log('result', result), this.addStream(result.data?.latestStream), console.log(this.streams)))
+                subscribe(result => (this.addStream(result.data?.latestStream)))
               ).unsubscribe;
         }
     }

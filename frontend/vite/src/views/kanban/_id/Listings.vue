@@ -54,7 +54,7 @@
         setTimeout(function(){
           editListingTask('moveTask', {
             uid: element?.uid,
-            listingUid: +toUid,
+            payload: { listingUid: +toUid },
           });
         }, 500)
   }
@@ -72,6 +72,7 @@
   }
 
   function editListingTask(updateType: string, updateData: any): void {
+    
     withClientMutation(EDIT_LISTING_TASK, { ...updateData }, "updateListingTask")
     .then((result) => {
       if(updateType === 'moveTask') kanbanStore.moveListingTask(result);
@@ -123,19 +124,19 @@
                 :list="listing?.listingTasks" 
                 group="tasks" 
                 ghost-class="ghost-card" 
-                item-key="listing.title"
-                @start="drag=true" 
-                @end="drag=false"
+                itemKey="title"
                 :sort="true"
                 :move="checkMove"
                 >
                     <template #item="{element}" >
-                        <router-link :to="{ name: 'task-detail', params: { taskUid: element.uid }}">
-                          <task-card 
-                          :key="element.id" 
-                          :task="element" 
-                          class="mt-3 cursor-move"/>
-                        </router-link>
+                        <div>
+                          <router-link :to="{ name: 'task-detail', params: { taskUid: element.uid }}">
+                            <task-card 
+                            :key="element.id" 
+                            :task="element" 
+                            class="mt-3 cursor-move"/>
+                          </router-link>
+                        </div>
                     </template>
                     <template #header>
                       <div class="flex justify-start my-1">
