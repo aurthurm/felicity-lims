@@ -130,7 +130,11 @@ export const GET_WORKSHEET_BY_UID = gql`
         analysis {
           uid
           name
-          unit
+          unitUid
+          unit {
+            uid
+            name
+          }
           resultOptions {
             uid
             optionKey

@@ -75,7 +75,7 @@ export const useSampleStore = defineStore('sample', {
     if(index > -1) this.sampleTypes[index] = payload
   },
   addSampleType(payload ){
-    this.sampleTypes.unshift(payload);
+    this.sampleTypes?.unshift(payload);
   },
 
   // SAMPLES
@@ -148,7 +148,7 @@ export const useSampleStore = defineStore('sample', {
     .then(payload => this.analysisRequests = sortAnalysisRequests(payload))
   },
   addAnalysisRequest(payload){
-    this.analysisRequests.unshift(payload)
+    this.analysisRequests?.unshift(payload)
   },
 
   // analysis results
@@ -172,7 +172,7 @@ export const useSampleStore = defineStore('sample', {
       if(index > -1) {
         this.analysisResults[index] = result;
       } else {
-        this.analysisResults.push(result);
+        this.analysisResults?.push(result);
       }
     })
   },

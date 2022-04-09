@@ -1,3 +1,18 @@
+<script setup lang="ts">
+  import { storeToRefs } from 'pinia'
+  import { onMounted, watch } from 'vue'
+  import { useDashBoardStore } from '../../stores';
+
+  const dashBoardStore = useDashBoardStore()
+  const { dashboard: state } = storeToRefs(dashBoardStore)
+
+  onMounted(async () => dashBoardStore.getOverViewStats())
+
+  watch(() => state.value.filterRange.from, (filter, prev) => {
+    dashBoardStore.getOverViewStats();
+  })
+</script>
+
 <template>
 
   <h1 class="text-xl text-gray-700 font-semibold">Analyses Status</h1>
@@ -54,14 +69,3 @@
 
 </template>
 
-<script setup lang="ts">
-  import { storeToRefs } from 'pinia'
-  import { onMounted } from 'vue'
-  import { useDashBoardStore } from '../../stores';
-
-  const dashBoardStore = useDashBoardStore()
-  const { dashboard: state } = storeToRefs(dashBoardStore)
-
-  onMounted(async () => dashBoardStore.getOverViewStats())
-
-</script>

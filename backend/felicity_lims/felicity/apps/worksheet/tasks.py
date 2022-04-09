@@ -81,7 +81,7 @@ async def populate_worksheet_plate(job_uid: int):
     # get sample, filtered by analysis_service and Sample Type
     samples = await AnalysisResult.filter_for_worksheet(
         analyses_status=analysis_conf.states.result.PENDING,
-        analyses_uids=ws.analysisUid,
+        analysis_uid=ws.analysis_uid,
         sample_type_uid=ws.sample_type_uid,
         limit=ws.number_of_samples,
     )
@@ -228,7 +228,7 @@ async def setup_ws_quality_control(ws: models.WorkSheet):
                 # create results linkages
                 a_result_in = {
                     "sample_uid": sample.uid,
-                    "analysis_uid": ws.analysisUid,
+                    "analysis_uid": ws.analysis_uid,
                     "status": analysis_conf.states.result.PENDING,
                 }
                 a_result_schema = AnalysisResultCreate(**a_result_in)

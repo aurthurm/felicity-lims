@@ -79,6 +79,9 @@
   }
 
   function isEditable(result: IAnalysisResult): Boolean {
+    if(result.status !== "pending") {
+      return false
+    }
     if(result?.editable || isNullOrWs(result?.result)) {
       editResult(result)
       return true
@@ -158,7 +161,6 @@
       can_submit.value = true;
       can_unassign.value = true;
     }
-
     // can verify/ retract/ retest
     if(checked.every((result: IAnalysisResult) => result.status === 'resulted')){
       can_retract.value = true;
@@ -293,7 +295,7 @@
                   </label>
                 </td>
                 <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-                <div >{{ result?.analysis?.unit || "---"  }}</div>
+                <div >{{ result?.analysis?.unit?.name || "---"  }}</div>
                 </td>
                 <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
                 <button type="button" class="bg-blue-400 text-white p-1 rounded leading-none">{{ result?.status || "unknown" }}</button>
@@ -309,16 +311,16 @@
       v-show="shield.hasRights(shield.actions.CREATE, shield.objects.WORKSHEET) && can_unassign"
       @click.prevent="unAssignSamples()" class="px-2 py-1 mr-2 border-blue-500 border text-blue-500 rounded transition duration-300 hover:bg-blue-700 hover:text-white focus:outline-none">Un Assign</button>
       <button  
-      v-show="shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) && can_submit"
+      v-show="shield.hasRights(shield.actions.UPDATE, shield.objects.WORKSHEET) && can_submit"
       @click.prevent="submitResults()" class="px-2 py-1 mr-2 border-blue-500 border text-blue-500 rounded transition duration-300 hover:bg-blue-700 hover:text-white focus:outline-none">Submit</button>
       <button  
-      v-show="shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) && can_retract"
+      v-show="shield.hasRights(shield.actions.UPDATE, shield.objects.WORKSHEET) && can_retract"
       @click.prevent="retractResults()" class="px-2 py-1 mr-2 border-blue-500 border text-blue-500 rounded transition duration-300 hover:bg-blue-700 hover:text-white focus:outline-none">Retract</button>
       <button  
-      v-show="shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) && can_verify"
+      v-show="shield.hasRights(shield.actions.UPDATE, shield.objects.WORKSHEET) && can_verify"
       @click.prevent="verifyResults()" class="px-2 py-1 mr-2 border-blue-500 border text-blue-500 rounded transition duration-300 hover:bg-blue-700 hover:text-white focus:outline-none">Verify</button>
       <button  
-      v-show="shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) && can_retest"
+      v-show="shield.hasRights(shield.actions.UPDATE, shield.objects.WORKSHEET) && can_retest"
       @click.prevent="retestResults()" class="px-2 py-1 mr-2 border-blue-500 border text-blue-500 rounded transition duration-300 hover:bg-blue-700 hover:text-white focus:outline-none">Retest</button>
     </section>
 

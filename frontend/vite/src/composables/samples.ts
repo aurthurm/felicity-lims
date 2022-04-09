@@ -159,8 +159,8 @@ export default function useSampleComposable(){
             withClientMutation(PUBLISH_SAMPLES, { samples: uids }, "publishSamples")
             .then(resp => {
               if(resp.length <= 0) return;
-              _updateSamplesStatus(resp)
-              _updateSampleStatus(resp[0])
+              _updateSamplesStatus(resp.samples)
+              _updateSampleStatus(resp.samples[0])
               if(resp.length !== 1) return;
               _fetchAnalysesResultsFor(resp[0].uid)
             });

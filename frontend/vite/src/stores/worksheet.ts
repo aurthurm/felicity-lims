@@ -66,7 +66,7 @@ export const useWorksheetStore = defineStore('worksheet', {
     let new_res: IReserved[] = [];
     reserved?.forEach(item => new_res.push(item[1] as IReserved || {}));
     payload.reserved = new_res;
-    this.workSheetTemplates.push(payload);
+    this.workSheetTemplates?.push(payload);
   },
 
   // WorkSheets
@@ -85,15 +85,24 @@ export const useWorksheetStore = defineStore('worksheet', {
             this.workSheetPageInfo = page.worksheets?.pageInfo;
           });
   },
-  async fetchWorksheetByUid(uid: number){
-    await withClientQuery(GET_WORKSHEET_BY_UID, { uid }, "worksheetByUid")
+  async fetchWorksheetByUid(worksheetUid: number){
+    await withClientQuery(GET_WORKSHEET_BY_UID, { worksheetUid }, "worksheetByUid")
           .then(payload => this.workSheet = sortAnalysisResults(payload));
   },
   addWorksheet(payload){
-    this.workSheets.unshift(payload)
+    payload.worksheets?.forEach(worksheet => this.workSheets?.unshift(worksheet))
   },
   removeWorksheet(){
     this.workSheet = undefined
+  },
+  updateWorksheetResultsStatus(payload){
+    payload?.forEach(result => {
+      this.workSheet?.analysisResults.forEach((wsResult, index) => {
+        if(wsResult?.uid == result.uid) {
+          wsResult.status = result.status;
+        }
+      })
+    })
   },
   
   }

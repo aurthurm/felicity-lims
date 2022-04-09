@@ -47,7 +47,7 @@ export const usePatientStore = defineStore('patient', {
       });
     },
     addPatient(payload){
-      this.patients.unshift(payload);
+      this.patients?.unshift(payload);
     },
     updatePatient(payload) {
       const index = this.patients!.findIndex(pt => pt.uid === payload.uid)

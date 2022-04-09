@@ -122,7 +122,7 @@ export default function useReportComposable(){
           page.drawText(ifNoValEmpty(analyte?.instrument?.name), { x: leftColXL + colSpacer * 1, y: analysesTop - yDiff * index, size: 10, font: helvetica })
           page.drawText(ifNoValEmpty(analyte?.method?.name), { x: leftColXL + colSpacer * 2, y: analysesTop - yDiff * index, size: 10, font: helvetica })
           page.drawText(ifNoValEmpty(analyte?.result), { x: leftColXL + colSpacer * 3, y: analysesTop - yDiff * index, size: 10, font: helvetica })
-          page.drawText(ifNoValEmpty(analyte?.analysis?.unit), { x: leftColXL + colSpacer * 4, y: analysesTop - yDiff * index, size: 10, font: helvetica })
+          page.drawText(ifNoValEmpty(analyte?.analysis?.unit?.name), { x: leftColXL + colSpacer * 4, y: analysesTop - yDiff * index, size: 10, font: helvetica })
 
           if (yPos < 40) {
           page = template.addPage()
@@ -161,7 +161,7 @@ export default function useReportComposable(){
         }).then((result) => {
           if (result.isConfirmed) {
 
-            withClientQuery(SAMPLES_FOR_REPORTS_BY_UIDS, { uids:  reportUids }, "samplesByUids", 'network-only')
+            withClientQuery(SAMPLES_FOR_REPORTS_BY_UIDS, { uids }, "samplesByUids", 'network-only')
             .then(resp => {
               if(resp.length > 0) { generateReports(resp) }
             })

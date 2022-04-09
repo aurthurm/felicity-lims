@@ -188,7 +188,7 @@
               <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
               <div class="flex items-center">
                   <div>
-                  <div class="text-sm leading-5 text-gray-800 font-semibold">
+                  <div v-if="worksheet?.uid" class="text-sm leading-5 text-gray-800 font-semibold">
                     <router-link :to="{ name: 'worksheet-detail', params: { workSheetUid: worksheet?.uid  }}">{{ worksheet?.worksheetId }}</router-link>
                   </div>
                   </div>

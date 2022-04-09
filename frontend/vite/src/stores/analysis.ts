@@ -48,7 +48,7 @@ export const useAnalysisStore = defineStore('analysis', {
       this.analysesCategories[index] = payload;    
     },
     addAnalysisCategory(payload){
-      this.analysesCategories.unshift(payload)
+      this.analysesCategories?.unshift(payload)
     },
 
     // analysis services
@@ -61,7 +61,7 @@ export const useAnalysisStore = defineStore('analysis', {
       this.analysesServices[index] = payload;
     },
     addAnalysesService(payload){
-      this.analysesServices.unshift(payload)    
+      this.analysesServices?.unshift(payload)    
     },
     
     async fetchAnalysesProfilesAndServices(){
@@ -82,7 +82,7 @@ export const useAnalysisStore = defineStore('analysis', {
       this.analysesProfiles[index] = payload;
     },
     addAnalysisProfile(payload){
-      this.analysesProfiles.unshift(payload)
+      this.analysesProfiles?.unshift(payload)
     },
 
     // QC LEVELS
@@ -95,16 +95,17 @@ export const useAnalysisStore = defineStore('analysis', {
       this.qcLevels[index] = payload;
     },
     addQcLevel(payload){
-      this.qcLevels.unshift(payload)
+      this.qcLevels?.unshift(payload)
     },
 
     // analysis QC TEMPLATES
     async fetchQCTemplates(){
       await withClientQuery(GET_ALL_QC_TEMPLATES, {}, "qcTemplateAll")
             .then(payload => {
-              this.qcTemplates = payload.forEach((qcTemplate: IQCTemplate) => {
+              this.qcTemplates = payload.map((qcTemplate: IQCTemplate) => {
                 qcTemplate.qcLevels = qcTemplate?.qcLevels || [];
                 qcTemplate.departments = qcTemplate?.departments || [];
+                return qcTemplate
               })
             });
     },
@@ -117,7 +118,7 @@ export const useAnalysisStore = defineStore('analysis', {
     addQcTemplate(payload){
       payload.qcLevels = payload?.qcLevels || [];
       payload.departments = payload?.departments || [];
-      this.qcTemplates.unshift(payload);    
+      this.qcTemplates?.unshift(payload);    
     },
 
     // Result Options
@@ -251,7 +252,7 @@ export const useAnalysisStore = defineStore('analysis', {
       this.rejectionReasons[index] = payload;    
     },
     addRejectionReason(payload){
-      this.rejectionReasons.unshift(payload);    
+      this.rejectionReasons?.unshift(payload);    
     },
   }
 })

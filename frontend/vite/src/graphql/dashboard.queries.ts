@@ -46,10 +46,10 @@ export const GET_ANALYSIS_GROUP_BY_INSTRUMENT = gql`
 }`;
 
 export const GET_SAMPLE_PROCESS_PEFORMANCE = gql`
-  query sampleProcessPeformance {
+  query sampleProcessPeformance($startDate: String!, $endDate: String!){
     sampleProcessPerformance(
-      startDate: "10-20-2017",
-      endDate: "10-10-2022"
+      startDate: $startDate,
+      endDate: $endDate
     ) {
       __typename
       data {
@@ -66,11 +66,11 @@ export const GET_SAMPLE_PROCESS_PEFORMANCE = gql`
 }`;
 
 export const GET_ANALYSIS_PROCESS_PEFORMANCE = gql`
-  query getAnalysisProcessPeformance {
+  query getAnalysisProcessPeformance($process: String!, $startDate: String!, $endDate: String!) {
     analysisProcessPerformance(
-      process: "verified_to_published",
-      startDate: "10-20-2017",
-      endDate: "10-10-2022"
+      process: $process,
+      startDate: $startDate,
+      endDate: $endDate
     ) {
       __typename
       data {

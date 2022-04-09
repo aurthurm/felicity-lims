@@ -41,7 +41,7 @@ export const useUserStore = defineStore('user', {
         })
     },
     addUser(payload: IUser): void {
-      this.users.items.unshift(payload);
+      this.users.items?.unshift(payload);
     },
     updateUser(payload: IUser): void {
       const index = this.users.items.findIndex(user => user.uid === payload?.uid)
@@ -56,7 +56,7 @@ export const useUserStore = defineStore('user', {
       })
     },
     addGroup(payload: IGroup): void {
-      this.groups.unshift(payload);
+      this.groups?.unshift(payload);
     },
     updateGroup(payload: IGroup): void {
       const index = this.groups?.findIndex(group => group.uid === payload?.uid)

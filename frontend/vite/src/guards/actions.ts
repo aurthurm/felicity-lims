@@ -5,17 +5,18 @@ function hasRights(action: string, objectName: string) {
   const authStore = useAuthStore();
 
   const groups = authStore.auth?.user?.groups
-    
-    if(!groups || groups?.length == 0 ) return false
+  
+  if(!groups || groups?.length == 0 ) return false
 
-    const group = groups![0] as IGroup
+  const group = groups![0] as IGroup
 
-    if (group) {
-      if(group.permissions) {
-        return group.permissions?.some(perm => perm.action == action && perm.target == objectName);
-      }
-      return false
+
+  if (group) {
+    if(group.permissions) {
+      return group.permissions?.some(perm => perm.action == action && perm.target == objectName);
     }
+    return false
+  }
 
   return false;
 }

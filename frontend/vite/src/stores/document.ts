@@ -28,7 +28,7 @@ export const useDocumentStore = defineStore('document', {
             .then(payload => this.documents = payload)
     },
     addDocument(payload) {
-      this.documents.unshift(payload)
+      this.documents?.unshift(payload)
     },
     updateDocument(payload){
       this.document =  { ...this.document, ...payload }

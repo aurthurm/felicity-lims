@@ -83,7 +83,7 @@ class WorkSheetMutations:
         if (
                 not payload.name
                 or not payload.sample_type_uid
-                or not len(payload.analyses) > 0
+                or not payload.analysis_uid
         ):
             return OperationError(
                 error="Template name and sample type and analysis are mandatory"
@@ -225,7 +225,7 @@ class WorkSheetMutations:
         }
 
         ws_schema = schemas.WorkSheetCreate(**incoming)
-        ws_schema.analyses = ws_temp.analyses
+        ws_schema.analysis_uid = ws_temp.analysis_uid
         # ws_schema.qc_levels = ws_temp.qc_levels
 
         # Add a jobs

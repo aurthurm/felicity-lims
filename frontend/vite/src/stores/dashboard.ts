@@ -1,5 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref, watch } from "vue"
+import dayjs from 'dayjs'
+import quarterOfYear from 'dayjs/plugin/quarterOfYear'
 import {
     GET_SAMPLE_GROUP_BY_STATUS,
     GET_ANALYSIS_GROUP_BY_STATUS,
@@ -11,7 +13,6 @@ import {
     GET_SAMPLE_LAGGARDS,
 } from '../graphql/dashboard.queries'
 
-
 import { useApiUtil } from "../composables";
 const { withClientQuery } = useApiUtil();
 
@@ -19,21 +20,42 @@ interface GroupCount {
     group: string, 
     count: number,
 }
+interface ISampleCounts {
+    totalSamples: number;
+    totalLate: number;
+    totalNotLate: number;
+    processAverage: number;
+    avgExtraDays: number;
+}
+
+interface IAnalysisGroup extends ISampleCounts {
+    service: string
+}
+export interface IProcess {
+  process: string;
+  counts: ISampleCounts,
+  groups: IAnalysisGroup[],
+}
+
+dayjs.extend(quarterOfYear)
 
 export const useDashBoardStore = defineStore('dashboard', () => {
 
     const dashboard = ref({
         currentTab: 'overview',
         tabs: ['overview', 'resource', 'laggard', 'peformance', 'tat', 'notices', 'line-listing'],
+        showFilters: false,
         currentFilter: "Today",
         filterRange: { from: "", to: "" },
-        filters: ['Today', 'Yetserday', 'Week', 'Last Week', 'Month', 'Last Month', 'Quarter', 'Last Quarter', 'Year', 'All', 'custom-range'],
+        filters: ['Today', 'Yesterday', 'Week', 'Last Week', 'Month', 'Last Month', 'Quarter', 'Last Quarter', 'Year', 'All', 'custom-range'],
         overViewStats: { analyses: [] as GroupCount[], samples: [] as GroupCount[], worksheets: [] as GroupCount[] },
         resourceStats: { instruments: [] as GroupCount[], samples: [] as any[] },
-        peformanceStats: {} as any
+        peformanceStats: { sample: [] as IProcess[], analysis: [] as IProcess[] },
+        currentPeformance: "received_to_published",
+        performances: ["received_to_published", "received_to_submitted","submitted_to_verified", "verified_to_published"],
+        laggards: {} as any
     })
 
-  
     // get_OverViewStats
     const getOverViewStats = async () => {
         await countSamplesGroupsByStatus();
@@ -49,68 +71,139 @@ export const useDashBoardStore = defineStore('dashboard', () => {
 
     // GET_SAMPLE_GROUP_BY_STATUS
     const countSamplesGroupsByStatus = async () => {
-        withClientQuery(GET_SAMPLE_GROUP_BY_STATUS,{}, 'countSampleGroupByStatus', 'network-only')
+        const filters = { 
+            startDate: dashboard.value.filterRange.from,
+            endDate: dashboard.value.filterRange.to
+        }
+        withClientQuery(GET_SAMPLE_GROUP_BY_STATUS, filters , 'countSampleGroupByStatus', 'network-only')
         .then(payload => dashboard.value.overViewStats.samples = payload.data)
     }
 
     // GET_ANALYSIS_GROUP_BY_STATUS
     const countAnalysisGroupsByStatus = async () => {
-        withClientQuery(GET_ANALYSIS_GROUP_BY_STATUS,{}, 'countAnalyteGroupByStatus', 'network-only')
+        const filters = { 
+            startDate: dashboard.value.filterRange.from,
+            endDate: dashboard.value.filterRange.to
+        }
+        withClientQuery(GET_ANALYSIS_GROUP_BY_STATUS, filters , 'countAnalyteGroupByStatus', 'network-only')
         .then(payload => dashboard.value.overViewStats.analyses = payload.data)
     }
 
     // GET_WORKSHEET_GROUP_BY_STATUS
     const countWrksheetGroupsByStatus = async () => {
-        withClientQuery(GET_WORKSHEET_GROUP_BY_STATUS,{}, 'countWorksheetGroupByStatus', 'network-only')
+        const filters = { 
+            startDate: dashboard.value.filterRange.from,
+            endDate: dashboard.value.filterRange.to
+        }
+        withClientQuery(GET_WORKSHEET_GROUP_BY_STATUS,filters, 'countWorksheetGroupByStatus', 'network-only')
         .then(payload => dashboard.value.overViewStats.worksheets = payload.data)
     }
 
     // GET_ANALYSIS_GROUP_BY_INSTRUMENT
     const countAnalysisGroupsByInstrument = async () => {
-        withClientQuery(GET_ANALYSIS_GROUP_BY_INSTRUMENT,{}, 'countAnalyteGroupByInstrument', 'network-only')
+        const filters = { 
+            startDate: dashboard.value.filterRange.from,
+            endDate: dashboard.value.filterRange.to
+        }
+        withClientQuery(GET_ANALYSIS_GROUP_BY_INSTRUMENT,filters, 'countAnalyteGroupByInstrument', 'network-only')
         .then(payload => dashboard.value.resourceStats.instruments = payload.data)
     }
 
     // GET_SAMPLE_GROUPS_BY_ACTION
     const getSampleGroupByAction = async () => {
-        withClientQuery(GET_SAMPLE_GROUPS_BY_ACTION,{}, 'countSampleGroupByAction', 'network-only')
+        const filters = { 
+            startDate: dashboard.value.filterRange.from,
+            endDate: dashboard.value.filterRange.to
+        }
+        withClientQuery(GET_SAMPLE_GROUPS_BY_ACTION,filters, 'countSampleGroupByAction', 'network-only')
         .then(payload => dashboard.value.resourceStats.samples = payload.data)
     }
 
     // GET_SAMPLE_PROCESS_PEFORMANCE
     const getSampleProcessPeformance = async () => {
-        withClientQuery(GET_SAMPLE_PROCESS_PEFORMANCE,{}, 'sampleProcessPerformance', 'network-only')
-        .then(payload =>  dashboard.value.peformanceStats.samples = payload.data)
+        const filters = { 
+            startDate: dashboard.value.filterRange.from,
+            endDate: dashboard.value.filterRange.to
+        }
+        withClientQuery(GET_SAMPLE_PROCESS_PEFORMANCE,filters, 'sampleProcessPerformance', 'network-only')
+        .then(payload =>  dashboard.value.peformanceStats.sample = payload.data)
     }
 
     // GET_ANALYSIS_PROCESS_PEFORMANCE
     const getAnalysisProcessPeformance = async () => {
-        withClientQuery(GET_ANALYSIS_PROCESS_PEFORMANCE,{}, 'analysisProcessPerformance', 'network-only')
-        .then(payload =>  dashboard.value.peformanceStats.samples = payload.data)
+        const filters = { 
+            process: dashboard.value.currentPeformance,
+            startDate: dashboard.value.filterRange.from,
+            endDate: dashboard.value.filterRange.to
+        }
+        withClientQuery(GET_ANALYSIS_PROCESS_PEFORMANCE,filters, 'analysisProcessPerformance', 'network-only')
+        .then(payload =>  dashboard.value.peformanceStats.analysis = payload.data)
     }
 
     // GET_SAMPLE_LAGGARDS
-    const getSampleLagsards = async () => {
-        withClientQuery(GET_SAMPLE_LAGGARDS,{}, 'sampleLaggards', 'network-only')
-        .then(payload =>  dashboard.value.peformanceStats.samples = payload.data)
+    const getSampleLaggards = async () => {
+        const filters = { 
+            startDate: dashboard.value.filterRange.from,
+            endDate: dashboard.value.filterRange.to
+        }
+        withClientQuery(GET_SAMPLE_LAGGARDS,filters, 'sampleLaggards', 'network-only')
+        .then(payload =>  dashboard.value.laggards = payload.data)
     }
 
     const setCurrentTab = (tab: string) => dashboard.value.currentTab = tab;
     const setCurrentFilter = (filter: string) => dashboard.value.currentFilter = filter;
     const setFilterRange = (from: string, to: string) => {dashboard.value.filterRange.from = from;  dashboard.value.filterRange.to = to}
+    const setCurrentPeformance = (event: any) => {
+        dashboard.value.currentPeformance = event.target.value
+    };
 
     const calculateFilterRange = (filter: string): void => {
         if(filter === dashboard.value.filters[dashboard.value.filters.length -1]) return;
 
         switch (filter) {
+
             case 'Today':
-                setFilterRange(new Date().toLocaleDateString(), new Date().toLocaleDateString())
+                setFilterRange(dayjs().startOf('day').toISOString(), dayjs().endOf('day').toISOString())
                 break;
-        
+
+            case 'Yesterday':
+                setFilterRange(dayjs().startOf('day').subtract(1, 'day').toISOString(), dayjs().endOf('day').subtract(1, 'day').toISOString())
+                break;
+
+            case 'Week':
+                setFilterRange(dayjs().startOf('week').toISOString(), dayjs().endOf('week').toISOString())
+                break;
+
+            case 'Last Week':
+                setFilterRange(dayjs().startOf('week').subtract(1, 'week').toISOString(), dayjs().endOf('week').subtract(1, 'week').toISOString())
+                break;
+
+            case 'Month':
+                setFilterRange(dayjs().startOf('month').toISOString(), dayjs().endOf('month').toISOString())
+                break;
+
+            case 'Last Month':
+                setFilterRange(dayjs().startOf('month').subtract(1, 'month').toISOString(), dayjs().endOf('month').subtract(1, 'month').toISOString())
+                break;
+
+            case 'Quarter':
+                setFilterRange(dayjs().startOf('quarter').toISOString(), dayjs().endOf('quarter').toISOString())
+                break;
+
+            case 'Last Quarter':
+                setFilterRange(dayjs().startOf('quarter').subtract(1, 'quarter').toISOString(), dayjs().endOf('quarter').subtract(1, 'quarter').toISOString())
+                break;
+ 
+            case 'Year':
+                setFilterRange(dayjs().startOf('year').toISOString(), dayjs().endOf('year').toISOString())
+                break;
+
             default:
+                setFilterRange('', '')
                 break;
         }
     }
+    calculateFilterRange(dashboard.value.currentFilter);
 
     watch(() => dashboard.value.currentFilter, (filter, prev) => {
         calculateFilterRange(filter);
@@ -119,8 +212,8 @@ export const useDashBoardStore = defineStore('dashboard', () => {
     return { 
         dashboard,
         setCurrentTab, setCurrentFilter, setFilterRange,
-        getOverViewStats, getResourceStats
+        getOverViewStats, getResourceStats, getSampleLaggards,
+        getSampleProcessPeformance, getAnalysisProcessPeformance,
+        setCurrentPeformance
     }
 })
-
-

@@ -99,7 +99,7 @@
 
 <script setup lang="ts">
   import { storeToRefs } from 'pinia'
-  import { ref, reactive } from 'vue'
+  import { ref, reactive, onBeforeUnmount } from 'vue'
   import tabOverview from './Overview.vue';
   import tabLaggard from './Laggard.vue';
   import tabResource from './Resource.vue';

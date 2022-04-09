@@ -31,7 +31,7 @@ export const useReflexStore = defineStore('reflex', {
               .then(payload => this.reflexRule = payload);
         },
         addReflexRule(rr: IReflexRule){
-            this.reflexRules.unshift(rr)
+            this.reflexRules?.unshift(rr)
         },
         updateReflexRule(rr: IReflexRule){
             const index = this.reflexRules.findIndex(x => x.uid === rr.uid);

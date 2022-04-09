@@ -8,13 +8,14 @@ import {
   RETEST_ANALYSIS_RESULTS, 
   RETRACT_ANALYSIS_RESULTS } from '../graphql/analyses.mutations';
 
-import { useSampleStore } from '../stores';
+import { useSampleStore, useWorksheetStore } from '../stores';
 
 import useApiUtil from "./api_util";
 
 export default function useAnalysisComposable(){
 
     const sampleStore = useSampleStore();
+    const worksheetStore = useWorksheetStore();
     const { withClientMutation } = useApiUtil();
 
     // Cancell Analyses
@@ -33,7 +34,10 @@ export default function useAnalysisComposable(){
           if (result.isConfirmed) {
 
             withClientMutation(CANCEL_ANALYSIS_RESULTS, { analyses: uids }, "cancelAnalysisResults")
-            .then(resp => sampleStore.updateAnalysesResultsStatus(resp.results));
+            .then(resp => {
+                sampleStore.updateAnalysesResultsStatus(resp.results)
+                worksheetStore.updateWorksheetResultsStatus(resp.results)
+             });
 
             await Swal.fire(
               'Its Happening!',
@@ -64,7 +68,10 @@ export default function useAnalysisComposable(){
           if (result.isConfirmed) {
 
             withClientMutation(REINSTATE_ANALYSIS_RESULTS, { analyses: uids }, "reInstateAnalysisResults")
-            .then(resp => sampleStore.updateAnalysesResultsStatus(resp.results));
+            .then(resp => {
+                sampleStore.updateAnalysesResultsStatus(resp.results)
+                worksheetStore.updateWorksheetResultsStatus(resp.results)
+             });
 
             await Swal.fire(
               'Its Happening!',
@@ -84,7 +91,10 @@ export default function useAnalysisComposable(){
       if(result.status !== "pending") return;
       result.result = result.editResult;
        withClientMutation(SUBMIT_ANALYSIS_RESULTS, [{ uid: result.uid , result: result.result }], "submitAnalysisResults")
-      .then(resp => sampleStore.updateAnalysesResultsStatus(resp.results));
+      .then(resp => {
+                sampleStore.updateAnalysesResultsStatus(resp.results)
+                worksheetStore.updateWorksheetResultsStatus(resp.results)
+             });
     }     
 
     const submitResults = async (results: any[]) => {
@@ -103,7 +113,10 @@ export default function useAnalysisComposable(){
           if (result.isConfirmed) {
 
              withClientMutation(SUBMIT_ANALYSIS_RESULTS, { analysisResults: results }, "submitAnalysisResults")
-             .then(resp => sampleStore.updateAnalysesResultsStatus(resp.results));
+             .then(resp => {
+                sampleStore.updateAnalysesResultsStatus(resp.results)
+                worksheetStore.updateWorksheetResultsStatus(resp.results)
+             });
 
             await Swal.fire(
               'Its Happening!',
@@ -134,7 +147,10 @@ export default function useAnalysisComposable(){
           if (result.isConfirmed) {
 
             withClientMutation(VERIFY_ANALYSIS_RESULTS, { analyses: uids }, "verifyAnalysisResults")
-            .then(resp => sampleStore.updateAnalysesResultsStatus(resp.results));
+            .then(resp => {
+                sampleStore.updateAnalysesResultsStatus(resp.results)
+                worksheetStore.updateWorksheetResultsStatus(resp.results)
+             });
 
             await Swal.fire(
               'Its Happening!',
@@ -165,7 +181,10 @@ export default function useAnalysisComposable(){
           if (result.isConfirmed) {
 
             withClientMutation(RETRACT_ANALYSIS_RESULTS, { analyses: uids }, "retractAnalysisResults")
-            .then(resp => sampleStore.updateAnalysesResultsStatus(resp.results));
+            .then(resp => {
+                sampleStore.updateAnalysesResultsStatus(resp.results)
+                worksheetStore.updateWorksheetResultsStatus(resp.results)
+             });
 
             await Swal.fire(
               'Its Happening!',

@@ -17,7 +17,7 @@ export const useStreamStore = defineStore('stream', {
     },
     actions: {
         addStream(payload){
-            this.streams.unshift(payload)
+            this.streams?.unshift(payload)
         },
         subscribeToActivityStream(){
             pipe(

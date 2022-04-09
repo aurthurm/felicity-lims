@@ -121,7 +121,7 @@ class SampleAnalyticsInit(Generic[ModelType]):
             raise AttributeError(f"Model has no attr {group_by}")
 
         group_by = getattr(self.model, group_by)
-        stmt = select(group_by, func.count(self.model.uid).label('total')).filter(group_by != None).group_by(
+        stmt = select(group_by, func.count(self.model.uid).label('total')).filter(group_by is not None).group_by(
             group_by)  # noqa
 
         async with async_session_factory() as session:
@@ -141,9 +141,9 @@ class SampleAnalyticsInit(Generic[ModelType]):
         """
 
         start_column = start[0]
-        start_date = parser.parse(start[1])
+        start_date = parser.parse(start[1]).replace(tzinfo=None)
         end_column = end[0]
-        end_date = parser.parse(end[1])
+        end_date = parser.parse(end[1]).replace(tzinfo=None)
 
         if not all([start_column, start_date, end_column, end_date]):
             logger.warning(f"start and end process parameters are required and must be complete tuples")
@@ -203,9 +203,9 @@ class SampleAnalyticsInit(Generic[ModelType]):
         """
 
         start_column = start[0]
-        start_date = parser.parse(start[1])
+        start_date = parser.parse(start[1]).replace(tzinfo=None)
         end_column = end[0]
-        end_date = parser.parse(end[1])
+        end_date = parser.parse(end[1]).replace(tzinfo=None)
 
         if not all([start_column, start_date, end_column, end_date]):
             logger.warning(f"start and end process parameters are required and must be complete tuples")
@@ -282,7 +282,8 @@ class SampleAnalyticsInit(Generic[ModelType]):
                     due_date > date_published as late
                 from {self.table} {self.alias}
                 where
-                    status in ('due','received','to_be_verified', 'verified')
+                    status in ('due','received','to_be_verified', 'verified') and 
+                    due_date is not null
               ) as incomplete
         """
 
@@ -293,6 +294,7 @@ class SampleAnalyticsInit(Generic[ModelType]):
                 from {self.table} {self.alias}
                 where
                     status in ('published') and
+                    due_date is not null and 
                     due_date > date_published
             )
             select

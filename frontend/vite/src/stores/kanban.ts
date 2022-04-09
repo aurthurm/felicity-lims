@@ -36,7 +36,7 @@ export const useKanbanStore = defineStore('kanban', {
             .then(payload => this.boards = payload.items);
     },
     addBoard(payload){
-      this.boards.unshift(payload)
+      this.boards?.unshift(payload)
     },
     updateBoard(payload){
       this.board = payload;
@@ -97,7 +97,7 @@ export const useKanbanStore = defineStore('kanban', {
         // remove old payload
         const index = listing?.listingTasks?.findIndex(x => x.uid === payload.uid);
         if (index > -1) {
-          listing.listingTasks.splice(index, 1);
+          listing.listingTasks?.splice(index, 1);
         }
         // add payload in new position
         if(listing?.uid === payload?.listingUid) {
@@ -109,14 +109,14 @@ export const useKanbanStore = defineStore('kanban', {
       this.board?.boardListings!.forEach(listing => {
         const index = listing?.listingTasks?.findIndex(x => x.uid === uid);
         if (index > -1) {
-          listing.listingTasks.splice(index, 1);
+          listing.listingTasks?.splice(index, 1);
         }
       })    
     },
     duplicateListingTask(payload){
       this.board?.boardListings?.forEach((listing: IListing) => {
         if (listing.uid === payload.listingUid) {
-          listing.listingTasks.push(payload)
+          listing.listingTasks?.push(payload)
         }
       })
     },
