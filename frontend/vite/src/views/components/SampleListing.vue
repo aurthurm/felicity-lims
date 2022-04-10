@@ -1,3 +1,185 @@
+<script setup lang="ts">
+  import { reactive, computed } from 'vue';
+  import { useRoute, useRouter } from 'vue-router';
+  import { IAnalysisProfile, IAnalysisService, ISample } from '../../models/analysis';
+  import { ifZeroEmpty } from '../../utils'
+  import { useSampleStore, useAnalysisStore } from '../../stores'; 
+  import { useReportComposable, useSampleComposable } from '../../composables'; 
+
+  import * as shield from '../../guards'
+    
+  const sampleStore = useSampleStore();
+  const analysisStore = useAnalysisStore()
+
+  let route = useRoute();
+  let router = useRouter();
+
+  const state = reactive({
+    filterText: "",
+    filterStatus: "received",
+    sampleBatch: 50,
+    samples: computed<ISample[]>(() => sampleStore.getSamples ),
+    pageInfo: computed(() => sampleStore.getSamplePageInfo),
+    can_cancel:  false,
+    can_receive:  false,
+    can_reinstate:  false,
+    can_reject:  false,
+    can_copy_to:  false,
+    can_download: false,
+    can_print:  false,
+    allChecked: false,
+  })
+
+  // sampleStore.resetSamples();
+  sampleStore.fetchSampleTypes();
+
+  let analysesParams = reactive({ 
+    first: undefined, 
+    after: "",
+    text: "", 
+    sortBy: ["name"]
+  });
+  analysisStore.fetchAnalysesServices(analysesParams)
+  analysisStore.fetchAnalysesProfiles();
+
+  let sampleParams = reactive({ 
+    first: state.sampleBatch, 
+    after: "",
+    status: state.filterStatus, 
+    text: "", 
+    sortBy: ["-uid"],
+    clientUid: +ifZeroEmpty(route?.query?.clientUid),
+    filterAction: false
+  });
+  sampleStore.fetchSamples(sampleParams);
+
+  function profileAnalysesText(profiles: IAnalysisProfile[], analyses: IAnalysisService[]): string {
+      let names: string[]= [];
+      profiles.forEach(p => names.push(p.name!));
+      analyses.forEach(a => names.push(a.name!));
+      return names.join(', ');
+  }
+
+  function showMoreSamples(): void {
+    sampleParams.first = +state.sampleBatch;
+    sampleParams.after = state.pageInfo?.endCursor;
+    sampleParams.text = state.filterText;
+    sampleParams.status = state.filterStatus;
+    sampleParams.filterAction = false;
+    sampleStore.fetchSamples(sampleParams);
+  }
+
+  function filterSamples(): void {
+    state.sampleBatch = 50;
+    sampleParams.first = 50;
+    sampleParams.after = "";
+    sampleParams.text = state.filterText;
+    sampleParams.status = state.filterStatus;
+    sampleParams.filterAction = true;
+    sampleStore.fetchSamples(sampleParams);
+  }
+
+  // user actions perms
+  
+  function check(sample: ISample): void {
+    sample.checked = true;
+    checkUserActionPermissios()
+  }
+
+  function unCheck(sample: ISample): void {
+    sample.checked = false;
+    checkUserActionPermissios()
+  }
+
+  function toggleCheckAll(): void {
+    state.samples?.forEach((sample: ISample) => state.allChecked ? check(sample) : unCheck(sample));
+    checkUserActionPermissios()
+  }
+  
+  function areAllChecked(): Boolean {
+    return state.samples?.every((sample: ISample) => sample.checked === true);
+  }
+
+  function checkCheck(sample: ISample): void {
+    if(areAllChecked()) {
+      state.allChecked = true;
+    } else {
+      state.allChecked = false;
+    }
+    checkUserActionPermissios()
+  }
+
+  function getSamplesChecked(): ISample[] {
+    let box:ISample[] = [];
+    state.samples?.forEach((sample: ISample) => {
+      if (sample.checked) box.push(sample);
+    });
+    return box;
+  }
+
+  function checkUserActionPermissios(): void {
+    // reset
+    state.can_cancel = false;
+    state.can_receive = false;
+    state.can_reinstate = false;
+    state.can_download = false;
+    state.can_print = false;
+    state.can_reject = false;
+
+    const checked: ISample[] = getSamplesChecked();
+    if(checked.length === 0) return;
+
+    // can_receive
+    if(checked.every((sample: ISample) => sample.status === 'due')){
+      state.can_receive = true;
+    }
+
+    // can_cancel
+    if(checked.every((sample: ISample) => ["received", "due"].includes(sample.status!))){
+      state.can_cancel = true;
+      state.can_reject = true;
+    }
+
+    // can_reinstate
+    if(checked.every((sample: ISample) => sample.status === 'cancelled')){
+      state.can_reinstate = true;
+    }
+
+    // can_download
+    if(checked.every((sample: ISample) => ["verified", "published"].includes(sample.status!))){
+      state.can_download = true;
+    }
+
+    // can_print
+    if(checked.every((sample: ISample) => sample.status === 'verified')){
+      state.can_print = true;
+    }
+  }
+
+  function getSampleUids(): number[] {
+    const items: ISample[] = getSamplesChecked();
+    let ready: number[] = [];
+    items?.forEach(item => ready.push(item.uid!))
+    return ready;
+  }
+
+  //
+  const { cancelSamples, reInstateSamples, receiveSamples, publishSamples }  = useSampleComposable();
+  const { downloadReports } =  useReportComposable();
+  
+  const sampleCount = computed(() => sampleStore.getSamples?.length + " of " + sampleStore.getSampleCount + " samples")
+  const cancelSamples_ = async () => cancelSamples(getSampleUids())
+  const reInstateSamples_ = async () => reInstateSamples(getSampleUids())
+  const receiveSamples_ = async () => receiveSamples(getSampleUids())
+  const downloadReports_ = async () => await downloadReports(getSampleUids())
+  const printReports_ = async () => await publishSamples(getSampleUids())
+  const prepareRejections = async () => {
+      const selection = getSamplesChecked();
+      router.push({ name: "reject-samples", params: { samples: JSON.stringify(selection) }})
+    }
+</script>
+
+
 <template>
   <div class="">
     <div class="my-4 flex sm:flex-row flex-col">
@@ -187,183 +369,3 @@
   </div>
 </template>
 
-<script setup lang="ts">
-  import { reactive, computed } from 'vue';
-  import { useRoute, useRouter } from 'vue-router';
-  import { IAnalysisProfile, IAnalysisService, ISample } from '../../models/analysis';
-  import { ifZeroEmpty } from '../../utils'
-  import { useSampleStore, useAnalysisStore } from '../../stores'; 
-  import { useReportComposable, useSampleComposable } from '../../composables'; 
-
-  import * as shield from '../../guards'
-    
-  const sampleStore = useSampleStore();
-  const analysisStore = useAnalysisStore()
-
-  let route = useRoute();
-  let router = useRouter();
-
-  const state = reactive({
-    filterText: "",
-    filterStatus: "received",
-    sampleBatch: 50,
-    samples: computed<ISample[]>(() => sampleStore.getSamples ),
-    pageInfo: computed(() => sampleStore.getSamplePageInfo),
-    can_cancel:  false,
-    can_receive:  false,
-    can_reinstate:  false,
-    can_reject:  false,
-    can_copy_to:  false,
-    can_download: false,
-    can_print:  false,
-    allChecked: false,
-  })
-
-  sampleStore.resetSamples();
-  sampleStore.fetchSampleTypes();
-
-  let analysesParams = reactive({ 
-    first: undefined, 
-    after: "",
-    text: "", 
-    sortBy: ["name"]
-  });
-  analysisStore.fetchAnalysesServices(analysesParams)
-  analysisStore.fetchAnalysesProfiles();
-
-  let sampleParams = reactive({ 
-    first: state.sampleBatch, 
-    after: "",
-    status: state.filterStatus, 
-    text: "", 
-    sortBy: ["-uid"],
-    clientUid: +ifZeroEmpty(route?.query?.clientUid),
-    filterAction: false
-  });
-  sampleStore.fetchSamples(sampleParams);
-
-  function profileAnalysesText(profiles: IAnalysisProfile[], analyses: IAnalysisService[]): string {
-      let names: string[]= [];
-      profiles.forEach(p => names.push(p.name!));
-      analyses.forEach(a => names.push(a.name!));
-      return names.join(', ');
-  }
-
-  function showMoreSamples(): void {
-    sampleParams.first = +state.sampleBatch;
-    sampleParams.after = state.pageInfo?.endCursor;
-    sampleParams.text = state.filterText;
-    sampleParams.status = state.filterStatus;
-    sampleParams.filterAction = false;
-    sampleStore.fetchSamples(sampleParams);
-  }
-
-  function filterSamples(): void {
-    state.sampleBatch = 50;
-    sampleParams.first = 50;
-    sampleParams.after = "";
-    sampleParams.text = state.filterText;
-    sampleParams.status = state.filterStatus;
-    sampleParams.filterAction = true;
-    sampleStore.fetchSamples(sampleParams);
-  }
-
-  // user actions perms
-  
-  function check(sample: ISample): void {
-    sample.checked = true;
-    checkUserActionPermissios()
-  }
-
-  function unCheck(sample: ISample): void {
-    sample.checked = false;
-    checkUserActionPermissios()
-  }
-
-  function toggleCheckAll(): void {
-    state.samples?.forEach((sample: ISample) => state.allChecked ? check(sample) : unCheck(sample));
-    checkUserActionPermissios()
-  }
-  
-  function areAllChecked(): Boolean {
-    return state.samples?.every((sample: ISample) => sample.checked === true);
-  }
-
-  function checkCheck(sample: ISample): void {
-    if(areAllChecked()) {
-      state.allChecked = true;
-    } else {
-      state.allChecked = false;
-    }
-    checkUserActionPermissios()
-  }
-
-  function getSamplesChecked(): ISample[] {
-    let box:ISample[] = [];
-    state.samples?.forEach((sample: ISample) => {
-      if (sample.checked) box.push(sample);
-    });
-    return box;
-  }
-
-  function checkUserActionPermissios(): void {
-    // reset
-    state.can_cancel = false;
-    state.can_receive = false;
-    state.can_reinstate = false;
-    state.can_download = false;
-    state.can_print = false;
-    state.can_reject = false;
-
-    const checked: ISample[] = getSamplesChecked();
-    if(checked.length === 0) return;
-
-    // can_receive
-    if(checked.every((sample: ISample) => sample.status === 'due')){
-      state.can_receive = true;
-    }
-
-    // can_cancel
-    if(checked.every((sample: ISample) => ["received", "due"].includes(sample.status!))){
-      state.can_cancel = true;
-      state.can_reject = true;
-    }
-
-    // can_reinstate
-    if(checked.every((sample: ISample) => sample.status === 'cancelled')){
-      state.can_reinstate = true;
-    }
-
-    // can_download
-    if(checked.every((sample: ISample) => ["verified", "published"].includes(sample.status!))){
-      state.can_download = true;
-    }
-
-    // can_print
-    if(checked.every((sample: ISample) => sample.status === 'verified')){
-      state.can_print = true;
-    }
-  }
-
-  function getSampleUids(): number[] {
-    const items: ISample[] = getSamplesChecked();
-    let ready: number[] = [];
-    items?.forEach(item => ready.push(item.uid!))
-    return ready;
-  }
-
-  //
-  const { cancelSamples, reInstateSamples, receiveSamples, publishSamples }  = useSampleComposable();
-  const { downloadReports } =  useReportComposable();
-  
-  const sampleCount = computed(() => sampleStore.getSamples?.length + " of " + sampleStore.getSampleCount + " samples")
-  const cancelSamples_ = async () => cancelSamples(getSampleUids())
-  const reInstateSamples_ = async () => reInstateSamples(getSampleUids())
-  const receiveSamples_ = async () => receiveSamples(getSampleUids())
-  const downloadReports_ = async () => await downloadReports(getSampleUids())
-  const printReports_ = async () => await publishSamples(getSampleUids())
-  const prepareRejections = async () => {
-      const selection = getSamplesChecked();
-      router.push({ name: "reject-samples", params: { samples: JSON.stringify(selection) }})
-    }
-</script>

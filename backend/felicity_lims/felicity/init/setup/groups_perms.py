@@ -18,7 +18,7 @@ class FGroup:  # (KEYWORD, NAME)
 class FObject:
     PATIENT = "PATIENT"
     SAMPLE = "SAMPLE"
-    ANALYTE = "ANALYTE"
+    RESULT = "RESULT"
     WORKSHEET = "WORKSHEET"
     BOARD = "BOARD"
     DOCUMENT = "DOCUMENT"
@@ -74,6 +74,13 @@ permissions = {
             fg.LAB_HAND,
             fg.GUEST,
         ],
+        fo.RESULT: [
+            fg.ADMINISTRATOR,
+            fg.LAB_MANAGER,
+            fg.SCIENTIST,
+            fg.TECHNOLOGIST,
+            fg.GUEST,
+        ],
         fo.WORKSHEET: [
             fg.ADMINISTRATOR,
             fg.LAB_MANAGER,
@@ -85,22 +92,31 @@ permissions = {
     fa.UPDATE: {
         fo.PATIENT: [fg.LAB_HAND],
         fo.SAMPLE: [fg.LAB_HAND],
+        fo.RESULT: [fg.SCIENTIST, fg.TECHNOLOGIST],
         fo.WORKSHEET: [fg.SCIENTIST, fg.TECHNOLOGIST],
     },
     fa.SUBMIT: {
         fo.SAMPLE: [fg.SCIENTIST, fg.TECHNOLOGIST],
+        fo.RESULT: [fg.SCIENTIST, fg.TECHNOLOGIST],
         fo.WORKSHEET: [fg.SCIENTIST, fg.TECHNOLOGIST],
     },
     fa.VERIFY: {
         fo.SAMPLE: [fg.SCIENTIST, fg.TECHNOLOGIST],
+        fo.RESULT: [fg.SCIENTIST, fg.TECHNOLOGIST],
         fo.WORKSHEET: [fg.SCIENTIST, fg.TECHNOLOGIST],
     },
-    fa.CANCEL: {fo.SAMPLE: [fg.SCIENTIST, fg.TECHNOLOGIST, fg.LAB_HAND]},
+    fa.CANCEL: {
+        fo.SAMPLE: [fg.SCIENTIST, fg.TECHNOLOGIST, fg.LAB_HAND],
+        fo.RESULT: [fg.SCIENTIST, fg.TECHNOLOGIST],
+    },
     fa.RETEST: {
         fo.SAMPLE: [fg.SCIENTIST, fg.TECHNOLOGIST],
+        fo.RESULT: [fg.SCIENTIST, fg.TECHNOLOGIST],
         fo.WORKSHEET: [fg.SCIENTIST, fg.TECHNOLOGIST],
     },
-    fa.INVALIDATE: {fo.SAMPLE: [fg.SCIENTIST, fg.TECHNOLOGIST]},
+    fa.INVALIDATE: {
+        fo.SAMPLE: [fg.SCIENTIST, fg.TECHNOLOGIST],
+    },
     fa.DELETE: {
         fo.BOARD: [
             fg.ADMINISTRATOR,

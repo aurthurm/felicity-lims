@@ -57,7 +57,7 @@ export default function useApiUtil(){
     }
 
 
-    async function withClientQuery(query, variables, dataKey, requestPolicy: RequestPolicy = 'cache-and-network'): Promise<any> {
+    async function withClientQuery(query, variables, dataKey, requestPolicy: RequestPolicy = 'cache-first'): Promise<any> { // cache-and-network
       return await urqlClient
       .query(query, variables, { requestPolicy })
       .toPromise()
