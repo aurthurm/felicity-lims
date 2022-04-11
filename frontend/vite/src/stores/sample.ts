@@ -103,8 +103,8 @@ export const useSampleStore = defineStore('sample', {
         this.samples = addListsUnique(this.samples, samples, "uid");
       }
   
-      this.sampleCount = payload.samples?.totalCount;
-      this.samplePageInfo = payload.samples?.pageInfo;
+      this.sampleCount = page?.totalCount;
+      this.samplePageInfo = page?.pageInfo;
     })
   },
   addSamples(samples){
@@ -192,7 +192,8 @@ export const useSampleStore = defineStore('sample', {
   async fetchQCSets(params){
     await withClientQuery(GET_ALL_QC_SETS, params, undefined)
           .then(payload => {
-            const qcSets = payload.qcSetAll.items;
+            const page = payload.qcSetAll
+            const qcSets = page.items;
 
             if(params.filterAction){
               this.qcSets = [];
@@ -201,8 +202,8 @@ export const useSampleStore = defineStore('sample', {
               this.qcSets = addListsUnique(this.qcSets, qcSets, "uid");
             }
         
-            this.qcSetCount = payload.qcSets?.totalCount;
-            this.qcSetPageInfo = payload.qcSets?.pageInfo;
+            this.qcSetCount = page?.totalCount;
+            this.qcSetPageInfo = page?.pageInfo;
           })
   },
   async fetchQCSetByUid(uid){

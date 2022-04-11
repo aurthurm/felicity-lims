@@ -34,7 +34,8 @@ export const usePatientStore = defineStore('patient', {
     async fetchPatients(params){
       await withClientQuery(GET_ALL_PATIENTS, { ...params, sortBy: ["-uid"] }, undefined)
       .then(payload => {
-        const patients = payload.patientAll.items;
+        const page = payload.patientAll
+        const patients = page.items;
         if(params.filterAction){
           this.patients = [];
           this.patients = patients;
@@ -42,8 +43,8 @@ export const usePatientStore = defineStore('patient', {
           this.patients = addListsUnique(this.patients, patients, "uid");
         }
     
-        this.patientCount = payload.patients?.totalCount;
-        this.patientPageInfo = payload.patients?.pageInfo;
+        this.patientCount = page?.totalCount;
+        this.patientPageInfo = page?.pageInfo;
       });
     },
     addPatient(payload){

@@ -81,8 +81,8 @@ export const useWorksheetStore = defineStore('worksheet', {
             } else {
               this.workSheets = addListsUnique(this.workSheets, worksheets, "uid");
             }
-            this.workSheetCount = page.worksheets?.totalCount;
-            this.workSheetPageInfo = page.worksheets?.pageInfo;
+            this.workSheetCount = page?.totalCount;
+            this.workSheetPageInfo = page?.pageInfo;
           });
   },
   async fetchWorksheetByUid(worksheetUid: number){

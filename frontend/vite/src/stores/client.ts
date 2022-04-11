@@ -38,7 +38,8 @@ export const useClientStore = defineStore('client', {
     async fetchClients(params){
       await withClientQuery(GET_ALL_CLIENTS, params, undefined)
       .then(payload => {
-        const clients = payload.clientAll.items
+        const page = payload.clientAll
+        const clients = page.items
         if(params.filterAction){
           this.clients = [];
           this.clients = clients;
@@ -46,8 +47,8 @@ export const useClientStore = defineStore('client', {
           this.clients =  addListsUnique(this.clients!, clients, "uid");
         }
     
-        this.clientCount = payload.clients?.totalCount;
-        this.clientPageInfo = payload.clients?.pageInfo;
+        this.clientCount = page?.totalCount;
+        this.clientPageInfo = page?.pageInfo;
       })
     },
     async searchClients(queryString: string){
