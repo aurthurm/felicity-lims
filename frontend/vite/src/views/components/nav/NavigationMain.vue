@@ -1,3 +1,25 @@
+<script setup lang="ts">
+import { ref, onMounted } from "vue";
+import { useNotificationStore, useAuthStore } from "../../../stores";
+import { userPreferenceComposable } from "../../../composables";
+import * as guards from "./../../../guards";
+
+const dropdownOpen = ref(false);
+const themeChange = ref(false);
+const isOpen = ref(false);
+
+const userFullName: string | null = localStorage.getItem("fuser");
+
+const notificationStore = useNotificationStore();
+const authStore = useAuthStore();
+
+const { theme, toggleTheme, loadPreferedTheme } = userPreferenceComposable();
+
+onMounted(() => loadPreferedTheme());
+
+const showNotifications = (val) => notificationStore.showNotifications(val);
+</script>
+
 <template>
   <nav id="main-nav" class="flex items-center pr-4 bg-sky-800" role="navigation">
     <div class="flex-1 py-2">
@@ -37,7 +59,7 @@
       <a
         href="#"
         class="no-underline text-white opacity-50 flex items-center px-4 border-b border-transparent hover:opacity-100 md:hover:border-grey-dark"
-        @click="notificationStore.showNotifications(true)"
+        @click="showNotifications(true)"
       >
         <font-awesome-icon icon="bell" class="mr-2" />
         <span>Notifications</span>
@@ -92,23 +114,3 @@
     </div>
   </nav>
 </template>
-
-<script setup lang="ts">
-import { ref, onMounted } from "vue";
-import { useNotificationStore, useAuthStore } from "../../../stores";
-import { userPreferenceComposable } from "../../../composables";
-import * as guards from "./../../../guards";
-
-const dropdownOpen = ref(false);
-const themeChange = ref(false);
-const isOpen = ref(false);
-
-const userFullName: string | null = localStorage.getItem("fuser");
-
-const notificationStore = useNotificationStore();
-const authStore = useAuthStore();
-
-const { theme, toggleTheme, loadPreferedTheme } = userPreferenceComposable();
-
-onMounted(() => loadPreferedTheme());
-</script>

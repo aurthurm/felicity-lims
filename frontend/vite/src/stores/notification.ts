@@ -15,14 +15,14 @@ export const useNotificationStore = defineStore('notification', {
         show: false,
     } as {
         notifications: INotification[],
-        show: boolean
+        show: boolean,
     }),
     getters: {
         getNotifications: (state) => state.notifications,
-        show: (state) => state.show
+        getShow: (state) => state.show
     },
     actions: {
-        showNotifications(val) {
+        showNotifications(val: boolean) {
             this.show = val
         }
     }

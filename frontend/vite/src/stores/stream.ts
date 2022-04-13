@@ -20,6 +20,7 @@ export const useStreamStore = defineStore('stream', {
             this.streams?.unshift(payload)
         },
         subscribeToActivityStream(){
+            console.log("subscribeToActivityStream")
             pipe(
                 urqlClient.subscription(SUBSCRIBE_TO_ACTIVITY_STREAM, { }),
                 subscribe(result => (this.addStream(result.data?.latestStream)))
