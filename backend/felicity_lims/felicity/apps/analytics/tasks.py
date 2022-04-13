@@ -1,4 +1,6 @@
 import logging
+from pathlib import Path
+import pandas as pd
 
 from felicity.apps.analysis.models.analysis import Sample
 from felicity.apps.analytics import models, SampleAnalyticsInit
@@ -6,8 +8,7 @@ from felicity.apps.analytics import conf
 from felicity.apps.notification.utils import ReportNotifier
 from felicity.apps.job import models as job_models
 from felicity.apps.job import conf as job_conf
-from pathlib import Path
-import pandas as pd
+
 
 
 logging.basicConfig(level=logging.INFO)

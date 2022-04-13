@@ -526,6 +526,11 @@ class Sample(Auditable, BaseMPTT):
             return await self.save()
         return self
 
+    async def change_status(self, status, updated_by_uid):
+        self.status = status
+        self.updated_by_uid = updated_by_uid  # noqa
+        await self.save()
+
     async def extend_due_date(self, ext_minutes: int):
         self.due_date += timedelta(minutes=ext_minutes)
         return await self.save()

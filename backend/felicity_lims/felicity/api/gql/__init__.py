@@ -31,6 +31,11 @@ class MessageType:
 class OperationError:
     error: str
     suggestion: Optional[str] = ""
+    
+
+@strawberry.type
+class OperationSuccess:
+    message: str
 
 
 DeleteResponse = strawberry.union(

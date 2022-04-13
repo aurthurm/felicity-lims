@@ -184,6 +184,23 @@ export const useSampleStore = defineStore('sample', {
       }
     })
   },
+  backgroundProcessing(payload: any[], sampleUid: any){
+    payload?.forEach(result => {
+      const index = this.analysisResults.findIndex(x => x.uid === result.uid);
+      if(index > -1) {
+        this.analysisResults[index].status = "processing";
+      }
+    })
+    if(sampleUid){
+      if(this.sample?.uid === sampleUid){
+        this.sample!.status = "processing";
+      }
+      const index = this.samples.findIndex(x => x.uid === sampleUid);
+      if(index > -1) {
+        this.samples[index].status = "processing";
+      }
+    }
+  },
 
   // QC SETS
   resetQCSets(){

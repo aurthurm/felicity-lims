@@ -104,6 +104,24 @@ export const useWorksheetStore = defineStore('worksheet', {
       })
     })
   },
+  backgroundProcessing(payload, worksheetUid: any){
+    payload?.forEach(result => {
+      this.workSheet?.analysisResults.forEach((wsResult, index) => {
+        if(wsResult?.uid == result.uid) {
+          wsResult.status = "processing";
+        }
+      })
+    })
+    if(worksheetUid){
+      if(this.workSheet?.uid === worksheetUid){
+        this.workSheet!.state = "processing";
+      }
+      const index = this.workSheets.findIndex(x => x.uid === worksheetUid);
+      if(index > -1) {
+        this.workSheets[index].state = "processing";
+      }
+    }
+  },
   
   }
 })

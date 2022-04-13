@@ -1,5 +1,6 @@
 from felicity.database.base_class import DBModel
 from sqlalchemy import Column, Integer, String
+from sqlalchemy.dialects.postgresql import JSONB
 
 from . import conf, schemas
 
@@ -8,6 +9,7 @@ class Job(DBModel):
     action = Column(String)
     category = Column(String)
     priority = Column(Integer)
+    data = Column(JSONB)
     job_id = Column(Integer)
     creator_uid = Column(Integer)
     status = Column(String)

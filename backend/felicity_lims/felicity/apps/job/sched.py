@@ -4,9 +4,10 @@ import logging
 from apscheduler.events import EVENT_JOB_ERROR, EVENT_JOB_EXECUTED
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
-from felicity.apps.analytics.utils import generate_report
 from felicity.apps.job import conf as job_conf, models as job_models
 from felicity.apps.worksheet.tasks import populate_worksheet_plate
+from felicity.apps.analytics.tasks import generate_report
+from felicity.apps.analysis.tasks import submit_results, verify_results
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -50,8 +51,10 @@ def jobs_execution_listener(event):
         pass
 
 
-"""Plug in all job types here: 
-This where all the magic happens"""
+"""
+Plug in all job types below: 
+This is where all the magic happens
+"""
 
 
 async def run_jobs_if_exists():
@@ -72,6 +75,15 @@ async def run_jobs_if_exists():
             elif job.category == job_conf.categories.REPORT:
                 logging.warning(f"Running Task: {job.action}")
                 await generate_report(job.uid)
+            elif job.category == job_conf.categories.RESULT:
+                if job.action == job_conf.actions.RESULT_SUBMIT:
+                    logging.warning(f"Running Task: {job.action}")
+                    await submit_results(job.uid)
+                elif job.action == job_conf.actions.RESULT_VERIFY:
+                    logging.warning(f"Running Task: {job.action}")
+                    await verify_results(job.uid)
+                else:
+                    logging.warning(f"Unknown result job action: {job.action}")
             else:
                 logging.warning(f"Non categorised job found: {job.uid}")
 

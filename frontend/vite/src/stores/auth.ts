@@ -2,6 +2,8 @@ import { defineStore } from 'pinia'
 import { ref, watch } from 'vue'
 import { IUser } from "../models/auth";
 import { STORAGE_AUTH_KEY, USER_GROUP_OVERRIDE } from "../conf";
+import { useNotifyToast } from "../composables";
+const { toastInfo } = useNotifyToast();
 
 interface IAuth {
     token?: string,
@@ -29,6 +31,7 @@ export const useAuthStore = defineStore('auth', () => {
     }
 
     const logout = () => {
+        toastInfo("Good bye " + auth.value.user?.firstName)
         localStorage.removeItem(STORAGE_AUTH_KEY)
         reset()
         location.replace("/auth")

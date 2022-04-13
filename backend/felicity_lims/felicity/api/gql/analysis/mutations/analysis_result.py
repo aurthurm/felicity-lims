@@ -1,15 +1,20 @@
 import logging
-from datetime import datetime
+import json
 from typing import List, Optional
 
 import strawberry  # noqa
 from felicity.apps.analysis import schemas
 from felicity.apps.analysis.conf import states
+from felicity.apps.worksheet import models as ws_models
 from felicity.apps.analysis.models import results as result_models
-from felicity.api.gql import OperationError, auth_from_info, verify_user_auth
+from felicity.apps.analysis.models import analysis as analysis_models
+from felicity.api.gql import OperationError, OperationSuccess, auth_from_info, verify_user_auth
 from felicity.api.gql.analysis.types import results as r_types
 from felicity.api.gql.permissions import CanVerifyAnalysisResult
-from felicity.apps.analysis.utils import verify_from_result_uids, retest_from_result_uids, results_submitter
+from felicity.apps.analysis.utils import verify_from_result_uids, retest_from_result_uids
+from felicity.apps.job import models as job_models, schemas as job_schemas
+from felicity.apps.job.conf import actions, categories, priorities, states
+from felicity.apps.job.sched import felicity_resume_workforce
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -33,11 +38,20 @@ AnalysisResultResponse = strawberry.union(
     description="Union of possible outcomes when actioning samples",
 )
 
+AnalysisResultOperationResponse = strawberry.union(
+    "AnalysisResultSubmitResponse",
+    (OperationSuccess, OperationError),  # noqa
+    description="Union of possible outcomes when submitting/verifying results",
+)
+
 
 @strawberry.mutation
 async def submit_analysis_results(
-    info, analysis_results: List[ARResultInputType]
-) -> AnalysisResultResponse:
+    info, 
+    analysis_results: List[ARResultInputType],
+    source_object: str,
+    source_object_uid: int,
+) -> AnalysisResultOperationResponse:
     is_authenticated, felicity_user = await auth_from_info(info)
     verify_user_auth(
         is_authenticated,
@@ -49,13 +63,38 @@ async def submit_analysis_results(
         return OperationError(error=f"No Results to update are provided!")
 
     an_results = [result.__dict__ for result in analysis_results]
-    return_results = await results_submitter(an_results, felicity_user)
     
-    return ResultListingType(results=return_results)
+    # submit an results as jobs
+    job_schema = job_schemas.JobCreate(
+            action=actions.RESULT_SUBMIT,
+            category=categories.RESULT,
+            priority=priorities.MEDIUM,
+            job_id=0,
+            status=states.PENDING,
+            creator_uid=felicity_user.uid,
+            data=an_results
+        )
+
+    await job_models.Job.create(job_schema)
+    
+    if source_object == "worksheet" and source_object_uid:
+        ws = await ws_models.WorkSheet.get(uid=source_object_uid)
+        await ws.change_state("processing", felicity_user.uid)
+    elif source_object == "sample" and source_object_uid:
+        sa = await analysis_models.Sample.get(uid=source_object_uid)
+        await sa.change_status("processing", felicity_user.uid)
+        
+    felicity_resume_workforce()
+
+    return OperationSuccess(message="Your results are being submitted in the background.")
 
 
 @strawberry.mutation(permission_classes=[CanVerifyAnalysisResult])
-async def verify_analysis_results(info, analyses: List[int]) -> AnalysisResultResponse:
+async def verify_analysis_results(
+    info, analyses: List[int],
+    source_object: str,
+    source_object_uid: int,
+    ) -> AnalysisResultOperationResponse:
     is_authenticated, felicity_user = await auth_from_info(info)
     verify_user_auth(
         is_authenticated,
@@ -66,9 +105,28 @@ async def verify_analysis_results(info, analyses: List[int]) -> AnalysisResultRe
     if len(analyses) == 0:
         return OperationError(error=f"No analyses to verify are provided!")
 
-    return_results = await verify_from_result_uids(analyses, felicity_user)
+    job_schema = job_schemas.JobCreate(
+            action=actions.RESULT_VERIFY,
+            category=categories.RESULT,
+            priority=priorities.MEDIUM,
+            job_id=0,
+            status=states.PENDING,
+            creator_uid=felicity_user.uid,
+            data=analyses
+        )
 
-    return ResultListingType(return_results)
+    await job_models.Job.create(job_schema)
+    
+    if source_object == "worksheet" and source_object_uid:
+        ws = await ws_models.WorkSheet.get(uid=source_object_uid)
+        await ws.change_state("processing", felicity_user.uid)
+    elif source_object == "sample" and source_object_uid:
+        sa = await analysis_models.Sample.get(uid=source_object_uid)
+        await sa.change_status("processing", felicity_user.uid)
+        
+    felicity_resume_workforce()
+
+    return OperationSuccess(message="Your results are being verified in the background.")
 
 
 @strawberry.mutation

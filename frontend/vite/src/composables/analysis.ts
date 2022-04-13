@@ -11,12 +11,14 @@ import {
 import { useSampleStore, useWorksheetStore } from '../stores';
 
 import useApiUtil from "./api_util";
+import useNotifyToast from "./alert_toast";
 
 export default function useAnalysisComposable(){
 
     const sampleStore = useSampleStore();
     const worksheetStore = useWorksheetStore();
     const { withClientMutation } = useApiUtil();
+    const { toastInfo } = useNotifyToast()
 
     // Cancell Analyses
     const cancelResults = async (uids: number[]) => {
@@ -92,12 +94,13 @@ export default function useAnalysisComposable(){
       result.result = result.editResult;
        withClientMutation(SUBMIT_ANALYSIS_RESULTS, [{ uid: result.uid , result: result.result }], "submitAnalysisResults")
       .then(resp => {
-                sampleStore.updateAnalysesResultsStatus(resp.results)
-                worksheetStore.updateWorksheetResultsStatus(resp.results)
-             });
+        toastInfo(resp.message)
+        sampleStore.backgroundProcessing([{ uid: result.uid , result: result.result }], undefined)
+        worksheetStore.backgroundProcessing([{ uid: result.uid , result: result.result }], undefined)
+     });
     }     
 
-    const submitResults = async (results: any[]) => {
+    const submitResults = async (results: any[], sourceObject: string, sourceObjectUid: number) => {
 
       try {
         await Swal.fire({
@@ -112,10 +115,11 @@ export default function useAnalysisComposable(){
         }).then(async (result) => {
           if (result.isConfirmed) {
 
-             withClientMutation(SUBMIT_ANALYSIS_RESULTS, { analysisResults: results }, "submitAnalysisResults")
+             withClientMutation(SUBMIT_ANALYSIS_RESULTS, { analysisResults: results, sourceObject, sourceObjectUid }, "submitAnalysisResults")
              .then(resp => {
-                sampleStore.updateAnalysesResultsStatus(resp.results)
-                worksheetStore.updateWorksheetResultsStatus(resp.results)
+                toastInfo(resp.message)
+                sampleStore.backgroundProcessing(results, sourceObject === "sample" ? sourceObjectUid : undefined)
+                worksheetStore.backgroundProcessing(results, sourceObject === "worksheet" ? sourceObjectUid : undefined)
              });
 
             await Swal.fire(
@@ -132,7 +136,7 @@ export default function useAnalysisComposable(){
     }
 
     // Verify Analyses
-    const verifyResults = async (uids: number[]) => {
+    const verifyResults = async (uids: number[], sourceObject: string, sourceObjectUid: number) => {
       try {
         await Swal.fire({
           title: 'Are you sure?',
@@ -146,10 +150,12 @@ export default function useAnalysisComposable(){
         }).then(async (result) => {
           if (result.isConfirmed) {
 
-            withClientMutation(VERIFY_ANALYSIS_RESULTS, { analyses: uids }, "verifyAnalysisResults")
+            withClientMutation(VERIFY_ANALYSIS_RESULTS, { analyses: uids, sourceObject, sourceObjectUid }, "verifyAnalysisResults")
             .then(resp => {
-                sampleStore.updateAnalysesResultsStatus(resp.results)
-                worksheetStore.updateWorksheetResultsStatus(resp.results)
+              toastInfo(resp.message)
+              const data = uids.map(item => ({ uid: item }))
+              sampleStore.backgroundProcessing(data, sourceObject === "sample" ? sourceObjectUid : undefined)
+              worksheetStore.backgroundProcessing(data, sourceObject === "worksheet" ? sourceObjectUid : undefined)
              });
 
             await Swal.fire(

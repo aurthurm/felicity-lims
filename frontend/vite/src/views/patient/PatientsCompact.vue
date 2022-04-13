@@ -1,78 +1,76 @@
 <script setup lang="ts">
-  import { ref, reactive, computed } from 'vue';
-  import tabSamples from '../components/AnalyisRequestListing.vue';
-  import tabCases from './comps/CaseTable.vue';
-  import tabLogs from '../components/AuditLog.vue';
-  import modal from '../../components/SimpleModal.vue';
-  import PatientForm from './PatientForm.vue';
+import { ref, reactive, computed } from "vue";
+import tabSamples from "../components/AnalyisRequestListing.vue";
+import tabCases from "./comps/CaseTable.vue";
+import tabLogs from "../components/AuditLog.vue";
+import modal from "../../components/SimpleModal.vue";
+import PatientForm from "./PatientForm.vue";
 
-  import { useLocationStore, usePatientStore } from '../../stores';
-  import { IPatient } from '../../models/patient';
+import { useLocationStore, usePatientStore } from "../../stores";
+import { IPatient } from "../../models/patient";
 
-  import * as shield from '../../guards'
+import * as shield from "../../guards";
 
-  let patientStore = usePatientStore();
-  let locationStore = useLocationStore();
+let patientStore = usePatientStore();
+let locationStore = useLocationStore();
 
+let showModal = ref<boolean>(false);
+let currentTab = ref<string>("samples");
+const tabs: string[] = ["samples", "cases", "logs"];
 
-  let showModal = ref<boolean>(false);
-  let currentTab = ref<string>('samples');
-  const tabs: string[] = ['samples', 'cases', 'logs'];
+let patientForm = reactive({}) as IPatient;
 
-  let patientForm = reactive({}) as IPatient;
+let patientParams = reactive({
+  first: 25,
+  after: "",
+  text: "",
+  sortBy: ["-uid"],
+  filterAction: false,
+});
 
-  let patientParams = reactive({ 
-    first: 25, 
-    after: "",
-    text: "", 
-    sortBy: ["-uid"],
-    filterAction: false
-  });
+const genders: string[] = ["Male", "Female", "Missing", "Trans Gender"];
 
-  const genders: string[] = ["Male", "Female", "Missing", "Trans Gender"]
+locationStore.fetchCountries();
+patientStore.fetchPatients(patientParams);
 
-  locationStore.fetchCountries();    
+const patients = computed(() => patientStore.getPatients);
+
+function searchPatients(event: any) {
+  patientParams.first = 100;
+  patientParams.after = "";
+  patientParams.text = event.target.value;
+  patientParams.filterAction = true;
   patientStore.fetchPatients(patientParams);
+}
 
-  const patients = computed(() => patientStore.getPatients )
+function isPatientSelected() {
+  return patientForm.patientId !== undefined;
+}
 
-  function searchPatients(event: any) {
-    patientParams.first = 100;
-    patientParams.after = "";
-    patientParams.text = event.target.value;
-    patientParams.filterAction = true;
-    patientStore.fetchPatients(patientParams);
-  }
+let getPatientFullName = (pt: IPatient) => {
+  return pt.firstName + " " + pt.lastName;
+};
 
-  function isPatientSelected() {
-    return patientForm.patientId !== undefined;
-  }
+let getGender = (pos: any) => genders[pos];
 
-  let getPatientFullName = (pt: IPatient) => {
-    return pt.firstName + ' ' + pt.lastName;
-  };
+let selectPatient = (pt: IPatient) => {
+  Object.assign(patientForm, pt);
+};
 
-  let getGender = (pos: any) => genders[pos];
+let setPatientToNull = () => {
+  Object.assign(patientForm, {});
+};
 
-  let selectPatient = (pt: IPatient) => {
-    Object.assign(patientForm, pt);
-  };
+const quickRegistration = () => {
+  setPatientToNull();
+  showModal.value = true;
+};
 
-  let setPatientToNull = () => {
-    Object.assign(patientForm, {});
-  };
-  
-  const quickRegistration = () => {
-    setPatientToNull();
-    showModal.value = true;
-  }
-
-  const updatePatient = (patient: IPatient) => {
-    selectPatient(patient);
-    showModal.value = false;
-  }
+const updatePatient = (patient: IPatient) => {
+  selectPatient(patient);
+  showModal.value = false;
+};
 </script>
-
 
 <style lang="postcss" scoped>
 .patient-scroll {
@@ -81,20 +79,23 @@
 }
 </style>
 
-
 <template>
   <div class="">
     <div class="flex justify-between">
       <div class="flex items-center content-between">
         <!-- <h1 class="h1 my-4 font-bold text-dark-700">Listing</h1> -->
-        <router-link  
+        <router-link
           v-show="shield.hasRights(shield.actions.CREATE, shield.objects.PATIENT)"
           to="/patients/search"
-          class="px-4 my-2 p-1 text-sm border-blue-500 border text-dark-700 transition-colors duration-150 rounded-lg focus:outline-none hover:bg-blue-500 hover:text-gray-100">
-          Add Patient</router-link>
+          class="px-4 my-2 p-1 text-sm border-blue-500 border text-dark-700 transition-colors duration-150 rounded-sm focus:outline-none hover:bg-blue-500 hover:text-gray-100"
+        >
+          Add Patient</router-link
+        >
         <input
-          class="w-64 ml-6 pl-4 pr-2 py-1 text-sm text-gray-700 placeholder-gray-600 border-1 border-gray-400 rounded-md  focus:placeholder-gray-500 focus:border-green-100 focus:outline-none focus:shadow-outline-purple form-input"
-          type="text" placeholder="Search ..." aria-label="Search"
+          class="w-64 ml-6 pl-4 pr-2 py-1 text-sm text-gray-700 placeholder-gray-600 border-1 border-gray-400 rounded-sm focus:placeholder-gray-500 focus:border-green-100 focus:outline-none focus:shadow-outline-purple form-input"
+          type="text"
+          placeholder="Search ..."
+          aria-label="Search"
           @keyup="searchPatients($event)"
           @focus="setPatientToNull()"
         />
@@ -102,28 +103,34 @@
       <button
         v-show="shield.hasRights(shield.actions.CREATE, shield.objects.PATIENT)"
         @click.prevent="quickRegistration"
-          class="px-4 my-2 p-1 text-sm border-blue-500 border text-dark-700 transition-colors duration-150 rounded-lg focus:outline-none hover:bg-blue-500 hover:text-gray-100">
-          Quick Registration</button>
+        class="px-4 my-2 p-1 text-sm border-blue-500 border text-dark-700 transition-colors duration-150 rounded-sm focus:outline-none hover:bg-blue-500 hover:text-gray-100"
+      >
+        Quick Registration
+      </button>
     </div>
 
     <hr />
 
     <div class="grid grid-cols-12 gap-4 mt-2">
-      <section class="col-span-4 h-screen overflow-y-scroll overscroll-contain patient-scroll">
+      <section
+        class="col-span-4 h-screen overflow-y-scroll overscroll-contain patient-scroll"
+      >
         <a
           v-for="pt in patients"
           :key="pt.patientId"
           href="#"
           @click.prevent.stop="selectPatient(pt)"
           :class="[
-            'bg-white w-full flex items-center p-1 mb-1 rounded-xl shadow border',
+            'bg-white w-full flex items-center p-1 mb-1 rounded-sm shadow border',
             { 'border-green-500 bg-green-100': pt.uid === patientForm.uid },
           ]"
         >
           <div class="flex-grow p-1">
             <div class="font-semibold text-gray-700 flex justify-between">
               <span>{{ getPatientFullName(pt) }}</span>
-              <span class="text-sm text-gray-500">{{ pt.age }} yrs, {{ getGender(pt.gender) }}</span>
+              <span class="text-sm text-gray-500"
+                >{{ pt.age }} yrs, {{ getGender(pt.gender) }}</span
+              >
             </div>
             <div class="text-sm text-gray-500 flex justify-between">
               <span>{{ pt.patientId }}</span>
@@ -135,7 +142,7 @@
             </div>
           </div>
           <div class="p-2">
-            <span class="block h-4 w-4 bg-green-400 rounded-full bottom-0 right-0"></span>
+            <!-- <span class="block h-4 w-4 bg-green-400 rounded-full bottom-0 right-0"></span> -->
           </div>
         </a>
       </section>
@@ -148,13 +155,19 @@
           <div class="grid grid-cols-12 gap-3">
             <!-- Meta Column -->
             <div class="sm:col-span-2 text-center hidden sm:block">
-              <div class="inline-block font-md text-medium mb-2">{{ patientForm.patientId }}</div>
+              <div class="inline-block font-md text-medium mb-2">
+                {{ patientForm.patientId }}
+              </div>
               <!-- Age -->
               <div
                 class="grid grid-rows-2 mx-auto mb-1 py-1 w-4/5 2lg:w-3/5 rounded-md bg-green-400"
               >
-                <div class="inline-block font-medium text-2xl text-white">{{ patientForm.age }}</div>
-                <div class="inline-block font-medium text-white text-sm lg:text-md">Yrs Old</div>
+                <div class="inline-block font-medium text-2xl text-white">
+                  {{ patientForm.age }}
+                </div>
+                <div class="inline-block font-medium text-white text-sm lg:text-md">
+                  Yrs Old
+                </div>
               </div>
             </div>
             <!-- Summary Column -->
@@ -166,7 +179,9 @@
                 <div>
                   <span class="font-medium text-md">{{ patientForm.dateOfBirth }}</span>
                   <button
-                    v-show="shield.hasRights(shield.actions.UPDATE, shield.objects.PATIENT)"
+                    v-show="
+                      shield.hasRights(shield.actions.UPDATE, shield.objects.PATIENT)
+                    "
                     @click="showModal = true"
                     class="ml-4 inline-flex items-center justify-center w-8 h-8 mr-2 border-blue-500 border text-gray-900 transition-colors duration-150 bg-white rounded-full focus:outline-none hover:bg-gray-200"
                   >
@@ -176,9 +191,15 @@
                       ></path>
                     </svg>
                   </button>
-                  <router-link :to="{ name: 'patient-detail', params: { patientUid: patientForm.uid } }" 
-                  class="p-1 ml-2 border-white border text-gray-500 rounded transition duration-300 hover:border-blue-500 hover:text-blue-500 focus:outline-none">... more</router-link>
-                  </div>
+                  <router-link
+                    :to="{
+                      name: 'patient-detail',
+                      params: { patientUid: patientForm.uid },
+                    }"
+                    class="p-1 ml-2 border-white border text-gray-500 rounded transition duration-300 hover:border-blue-500 hover:text-blue-500 focus:outline-none"
+                    >... more</router-link
+                  >
+                </div>
               </div>
               <hr />
               <div class="grid grid-cols-2 mt-2">
@@ -206,7 +227,9 @@
                 <div class="col-span-1">
                   <!-- Identifiers -->
                   <div class="col-span-2 flex mt-2">
-                    <span class="text-gray-800 text-sm font-medium w-16">Client Patient ID</span>
+                    <span class="text-gray-800 text-sm font-medium w-16"
+                      >Client Patient ID</span
+                    >
                     <span class="text-gray-600 text-sm md:text-md">{{
                       patientForm.clientPatientId
                     }}</span>
@@ -234,14 +257,18 @@
             </a>
           </div>
         </nav>
-   
-        <tab-samples v-if="currentTab === 'samples'" target="patient-samples" :targetUid="patientForm.uid" />
-        <tab-cases v-if="currentTab === 'cases'" />
-         <tab-logs 
-          v-if="currentTab === 'logs'" 
-          targetType="patient"
-          :targetId="patientForm?.uid" />
 
+        <tab-samples
+          v-if="currentTab === 'samples'"
+          target="patient-samples"
+          :targetUid="patientForm.uid"
+        />
+        <tab-cases v-if="currentTab === 'cases'" />
+        <tab-logs
+          v-if="currentTab === 'logs'"
+          targetType="patient"
+          :targetId="patientForm?.uid"
+        />
       </section>
     </div>
   </div>
@@ -253,11 +280,7 @@
     </template>
 
     <template v-slot:body>
-      <PatientForm 
-      :patient="patientForm" 
-      :navigate="false"
-      @close="updatePatient" />
+      <PatientForm :patient="patientForm" :navigate="false" @close="updatePatient" />
     </template>
   </modal>
-
 </template>

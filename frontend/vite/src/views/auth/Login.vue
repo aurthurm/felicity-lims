@@ -1,8 +1,13 @@
 <template>
-  <div class="flex justify-center items-center h-screen bg-gray-700 px-6">
+  <div class="flex justify-center items-center h-screen bg-sky-800 px-6">
     <div class="p-6 max-w-sm w-full bg-white shadow-md rounded-md">
       <div class="flex justify-center items-center">
-        <svg class="h-10 w-10" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <svg
+          class="h-10 w-10"
+          viewBox="0 0 512 512"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
           <path
             d="M364.61 390.213C304.625 450.196 207.37 450.196 147.386 390.213C117.394 360.22 102.398 320.911 102.398 281.6C102.398 242.291 117.394 202.981 147.386 172.989C147.386 230.4 153.6 281.6 230.4 307.2C230.4 256 256 102.4 294.4 76.7999C320 128 334.618 142.997 364.608 172.989C394.601 202.981 409.597 242.291 409.597 281.6C409.597 320.911 394.601 360.22 364.61 390.213Z"
             fill="#4C51BF"
@@ -26,6 +31,7 @@
             type="text"
             class="form-input mt-1 block w-full rounded-md focus:border-indigo-600"
             v-model="form.username"
+            :disabled="loading"
           />
         </label>
 
@@ -35,6 +41,7 @@
             type="password"
             class="form-input mt-1 block w-full rounded-md focus:border-indigo-600"
             v-model="form.password"
+            :disabled="loading"
           />
         </label>
 
@@ -55,11 +62,13 @@
 
         <div class="mt-6">
           <button
+            v-if="!loading"
             type="submit"
-            class="py-2 px-4 text-center bg-indigo-600 rounded-md w-full text-white text-sm hover:bg-indigo-500"
+            class="py-2 px-4 text-center bg-sky-800 rounded-md w-full text-white text-sm hover:bg-sky-600"
           >
             Sign in
           </button>
+          <div v-else class="text-center">Signing you in ...</div>
         </div>
       </form>
     </div>
@@ -67,27 +76,31 @@
 </template>
 
 <script setup lang="ts">
-  import { reactive } from 'vue';
-  import { useRouter } from 'vue-router';
-  import { AUTHENTICATE_USER } from '../../graphql/_mutations';
-  import { useAuthStore } from '../../stores'
-  import { userPreferenceComposable, useApiUtil } from '../../composables'
+import { reactive, ref } from "vue";
+import { useRouter } from "vue-router";
+import { AUTHENTICATE_USER } from "../../graphql/_mutations";
+import { useAuthStore } from "../../stores";
+import { userPreferenceComposable, useApiUtil, useNotifyToast } from "../../composables";
 
-  const router = useRouter()
-  const authStore = useAuthStore()
-  const { initPreferences } = userPreferenceComposable()
-  const { withClientMutation } = useApiUtil()
+const router = useRouter();
+const authStore = useAuthStore();
+const { initPreferences } = userPreferenceComposable();
+const { withClientMutation } = useApiUtil();
+const { toastInfo } = useNotifyToast();
 
-  authStore.reset();
+authStore.reset();
+const loading = ref(false);
 
-  let form = reactive<any>({ username: null, password: null });
+let form = reactive<any>({ username: null, password: null });
 
-  function login() {
-    const payload = { username: form.username, password: form.password }
-    withClientMutation(AUTHENTICATE_USER, payload, "authenticateUser").then(res => {
-      initPreferences(res.user?.preference);
-      authStore.persistAuth(res).then(_ => router.push({ name: "DASHBOARD" }))
-    });
-  }
-
+function login() {
+  loading.value = true;
+  const payload = { username: form.username, password: form.password };
+  withClientMutation(AUTHENTICATE_USER, payload, "authenticateUser").then((res) => {
+    loading.value = false;
+    toastInfo("Welcome back " + res?.user?.firstName);
+    initPreferences(res.user?.preference);
+    authStore.persistAuth(res).then((_) => router.push({ name: "DASHBOARD" }));
+  });
+}
 </script>

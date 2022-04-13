@@ -736,53 +736,10 @@ mutation AddAnalysisRequest ($payload: AnalysisRequestInputType!) {
 
 // ANALYSIS RESULTS
 export const SUBMIT_ANALYSIS_RESULTS = gql`
-  mutation SubmitAnalysisResults ($analysisResults: [ARResultInputType!]!) {
-    submitAnalysisResults(analysisResults: $analysisResults){
-      ... on ResultListingType {
-        results {
-          uid
-          status
-          sampleUid
-          result
-          sample{
-            uid
-            sampleId
-            status
-            rejectionReasons {
-              uid
-              reason
-            }
-          }
-          analysisUid
-          analysis {
-            uid
-            name
-            unitUid
-            unit {
-              uid
-              name
-            }
-            sortKey
-            interims {
-              uid
-              key
-              value
-              analysisUid
-              instrumentUid
-            }
-            resultOptions {
-              uid
-              optionKey
-              value
-            }
-          }
-          retest
-          reportable
-          createdAt
-          createdByUid
-          updatedAt
-          updatedByUid
-        }
+  mutation SubmitAnalysisResults($analysisResults: [ARResultInputType!]!, $sourceObject: String!, $sourceObjectUid: Int!) {
+    submitAnalysisResults(analysisResults: $analysisResults, sourceObject: $sourceObject, sourceObjectUid: $sourceObjectUid){
+      ... on OperationSuccess {
+        message
       }
   
       ... on OperationError {
@@ -833,53 +790,10 @@ export const REINSTATE_ANALYSIS_RESULTS = gql`
 `;
 
 export const VERIFY_ANALYSIS_RESULTS = gql`
-  mutation VerifyAnalysisResults ($analyses: [Int!]!) {
-    verifyAnalysisResults(analyses: $analyses){
-      ... on ResultListingType {
-        results {
-          uid
-          status
-          sampleUid
-          result
-          sample{
-            uid
-            sampleId
-            status
-            rejectionReasons {
-              uid
-              reason
-            }
-          }
-          analysisUid
-          analysis {
-            uid
-            name
-            unitUid
-            unit {
-              uid
-              name
-            }
-            sortKey
-            interims {
-              uid
-              key
-              value
-              analysisUid
-              instrumentUid
-            }
-            resultOptions {
-              uid
-              optionKey
-              value
-            }
-          }
-          retest
-          reportable
-          createdAt
-          createdByUid
-          updatedAt
-          updatedByUid
-        }
+  mutation VerifyAnalysisResults ($analyses: [Int!]!, $sourceObject: String!, $sourceObjectUid: Int!) {
+    verifyAnalysisResults(analyses: $analyses, sourceObject: $sourceObject, sourceObjectUid: $sourceObjectUid){
+      ... on OperationSuccess {
+        message
       }
 
       ... on OperationError {

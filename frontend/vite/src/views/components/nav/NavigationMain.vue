@@ -1,6 +1,5 @@
 <template>
-  <nav id="main-nav" class="flex items-center pr-4 bg-gray-700" role="navigation">
-    
+  <nav id="main-nav" class="flex items-center pr-4 bg-sky-800" role="navigation">
     <div class="flex-1 py-2">
       <div class="relative w-full max-w-xl mr-6 focus-within:text-purple-500">
         <div class="absolute inset-y-0 flex items-center pl-2">
@@ -31,10 +30,10 @@
       <span
         @click="toggleTheme()"
         class="no-underline text-white opacity-50 flex items-center px-4 border-b border-transparent hover:opacity-100 md:hover:border-grey-dark"
-        >
-        <font-awesome-icon :icon="theme?.icon" class="mr-2"/>
+      >
+        <font-awesome-icon :icon="theme?.icon" class="mr-2" />
         <span class="text-sm">{{ theme?.variant }} mode</span>
-      </span>  
+      </span>
       <a
         href="#"
         class="no-underline text-white opacity-50 flex items-center px-4 border-b border-transparent hover:opacity-100 md:hover:border-grey-dark"
@@ -47,10 +46,10 @@
         v-show="guards.canAccessPage(guards.pages.ADMINISTRATION)"
         to="/admin"
         class="no-underline text-white opacity-50 flex items-center px-4 border-b border-transparent hover:opacity-100 md:hover:border-grey-dark"
-        >
-        <font-awesome-icon icon="cog" class="mr-2"/>
+      >
+        <font-awesome-icon icon="cog" class="mr-2" />
         <span class="text-sm">Settings</span>
-      </router-link>      
+      </router-link>
       <div class="flex text-right align-middle py-2">
         <div>
           <img
@@ -81,10 +80,12 @@
             v-show="dropdownOpen"
             class="absolute right-0 mt-4 py-2 w-48 bg-gray-700 rounded-md shadow-xl z-20"
           >
-            <router-link
-              to="/auth"
+            <li
+              @click="authStore.logout()"
               class="no-underline text-gray-500 py-1 opacity-50 flex items-center px-4 border-b border-transparent hover:opacity-100 md:hover:border-grey-dark hover:bg-gray-800 hover:text-gray-200"
-              >Log out</router-link>
+            >
+              Log out
+            </li>
           </div>
         </div>
       </div>
@@ -92,23 +93,22 @@
   </nav>
 </template>
 
-
 <script setup lang="ts">
-  import { ref, onMounted } from 'vue';
-  import { useNotificationStore } from '../../../stores/notification'
-  import { userPreferenceComposable } from '../../../composables'
-  import * as guards from './../../../guards';
+import { ref, onMounted } from "vue";
+import { useNotificationStore, useAuthStore } from "../../../stores";
+import { userPreferenceComposable } from "../../../composables";
+import * as guards from "./../../../guards";
 
-  const dropdownOpen = ref(false);
-  const themeChange = ref(false);
-  const isOpen = ref(false);
+const dropdownOpen = ref(false);
+const themeChange = ref(false);
+const isOpen = ref(false);
 
-  const userFullName: string | null = localStorage.getItem('fuser');
+const userFullName: string | null = localStorage.getItem("fuser");
 
-  const notificationStore = useNotificationStore()
+const notificationStore = useNotificationStore();
+const authStore = useAuthStore();
 
-  const { theme, toggleTheme, loadPreferedTheme } = userPreferenceComposable()
+const { theme, toggleTheme, loadPreferedTheme } = userPreferenceComposable();
 
-  onMounted(() => loadPreferedTheme())
-
+onMounted(() => loadPreferedTheme());
 </script>
