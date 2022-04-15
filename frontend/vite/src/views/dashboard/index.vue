@@ -10,14 +10,14 @@
       @click="dashBoardStore.setCurrentFilter(filter)"
       type="button" 
       :class="[
-       'px-2 py-1 mr-2 border-green-500 border text-green-500 rounded transition duration-300 hover:bg-green-700 hover:text-white focus:outline-none',
-       {'bg-green-700 text-white': state.currentFilter === filter }
+       'px-2 py-1 mr-2 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none',
+       {'bg-sky-800 text-white': state.currentFilter === filter }
       ]">{{ filter }}</button>
 
       <button 
       @click="showModal = true"
-      class="ml-4 mr-1 px-2 py-1 border-gray-500 border text-gray-500 rounded transition duration-300 hover:bg-gray-700 hover:text-white focus:outline-none">{{ state.filterRange.from }} - {{ state.filterRange.to }}</button>
-      <button type="button" class="px-2 py-1 border-blue-500 border text-blue-500 rounded transition duration-300 hover:bg-blue-700 hover:text-white focus:outline-none">Apply</button>
+      class="ml-4 mr-1 px-2 py-1 border-gray-500 border text-gray-500 rounded-sm transition duration-300 hover:bg-gray-700 hover:text-white focus:outline-none">{{ state.filterRange.from }} - {{ state.filterRange.to }}</button>
+      <button type="button" class="px-2 py-1 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none">Apply</button>
     </div>
   </section>
 
@@ -87,7 +87,7 @@
         <button
           type="button"
           @click.prevent="setCustomRange()"
-          class="-mb-4 w-full border border-green-500 bg-green-500 text-white rounded-md px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-green-600 focus:outline-none focus:shadow-outline"
+          class="-mb-4 w-full border border-sky-800 bg-sky-800 text-white rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-sky-800 focus:outline-none focus:shadow-outline"
         >
           Save Form
         </button>

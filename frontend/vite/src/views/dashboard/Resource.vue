@@ -132,7 +132,7 @@
   </div>
   <div v-else class="flex justify-start">
     <div v-for="instr in state.resourceStats?.instruments" :key="instr.group"
-     class="flex items-center bg-white shadow rounded px-6 pt-3 pb-5 border border-white mr-8">
+     class="flex items-center bg-white shadow rounded-sm px-6 pt-3 pb-5 border border-white mr-8">
       <span class="mr-4 font-bold text-gray-600 text-xl">{{ instrumentPerf(instr?.count) }}</span>
       <span class="font-semibold text-gray-400 text-l">{{ instr.group }}</span>
     </div>

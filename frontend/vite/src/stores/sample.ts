@@ -22,28 +22,46 @@ export const useSampleStore = defineStore('sample', {
   state: () => {
       return {
         sampleTypes: [],
+        fetchingSampleTypes: false,
         samples: [],
+        fetchingSamples: false,
         sampleCount: 0,
         samplePageInfo: undefined,
         sample: undefined,
+        fetchingSample: false,
         childSample: undefined,
+        fetchingChildSample: false,
+        fetchingSamplesStatuses: false,
         analysisRequests: [], // for patient detail
+        fetchingAnalysisRequests: false,
         analysisResults: [],
+        fetchingResults: false,
         qcSets: [],
+        fetchingQCSets: false,
         qcSet: undefined,
+        fetchingQCSet: false,
         qcSetCount: 0,
         qcSetPageInfo: undefined,
       } as {
         sampleTypes: ISampleType[];
+        fetchingSampleTypes: boolean;
         samples: ISample[];
+        fetchingSamples: boolean;
+        fetchingSamplesStatuses: boolean;
         sampleCount: number;
         samplePageInfo?: any;
         sample?: ISample;
+        fetchingSample: boolean;
         childSample?: ISample;
+        fetchingChildSample: boolean;
         analysisRequests: IAnalysisRequest[];
+        fetchingAnalysisRequests: boolean;
         analysisResults: IAnalysisResult[];
+        fetchingResults: boolean;
         qcSets: IQCSet[];
+        fetchingQCSets: boolean;
         qcSet?: IQCSet | null;
+        fetchingQCSet: boolean;
         qcSetCount: number;
         qcSetPageInfo: any;
       }
@@ -67,8 +85,12 @@ export const useSampleStore = defineStore('sample', {
     
   // SAMPLE TYPES
   async fetchSampleTypes(){
+    this.fetchingSampleTypes = true;
     await withClientQuery(GET_ALL_SAMPLE_TYPES, {}, "sampleTypeAll")
-          .then(payload => this.sampleTypes = payload);
+          .then(payload => {
+            this.fetchingSampleTypes = false;
+            this.sampleTypes = payload
+          }).catch(err => this.fetchingSampleTypes = false)
   },
   updateSampleType(payload){
     const index = this.sampleTypes.findIndex(item => item.uid === payload?.uid)
@@ -92,8 +114,10 @@ export const useSampleStore = defineStore('sample', {
     this.childSample = sample;
   },
   async fetchSamples(params){
+    this.fetchingSamples = true;
     await withClientQuery(GET_ALL_SAMPLES, params, undefined)
     .then(payload => {
+      this.fetchingSamples = false;
       const page = payload.sampleAll
       const samples = page.items;
 
@@ -105,7 +129,7 @@ export const useSampleStore = defineStore('sample', {
   
       this.sampleCount = page?.totalCount;
       this.samplePageInfo = page?.pageInfo;
-    })
+    }).catch(err => this.fetchingSamples = false)
   },
   addSamples(samples){
     this.samples = addListsUnique(this.samples, samples, "uid");
@@ -117,35 +141,54 @@ export const useSampleStore = defineStore('sample', {
     }
   },
   async fetchSampleStatus(uid){
+    if(!uid){ return }
+    this.fetchingSamplesStatuses = true;
     await withClientQuery(GET_SAMPLE_STATUS_BY_UID, { uid }, "sampleByUid", 'network-only')
     .then(payload => {
+      this.fetchingSamplesStatuses =false
       if(this.sample && payload.status){
         this.sample.status = payload.status;
       }
       // also update sample listing
       this.updateSampleStatus(payload)
-    })
+    }).catch(err => this.fetchingSamplesStatuses = false)
   }, 
   updateSamplesStatus(samples){
     samples?.forEach(sample => this.updateSampleStatus(sample))
   },
-  fetchSampleByParentId(parentId){
-    withClientQuery(GET_SAMPLE_BY_PARENT_ID, { parentId }, "sampleByParentId")
+  async fetchSampleByParentId(parentId){
+    if(!parentId) { return }
+    this.fetchingChildSample = true
+    await withClientQuery(GET_SAMPLE_BY_PARENT_ID, { parentId }, "sampleByParentId")
     .then(payload => {
+      this.fetchingChildSample = false
       if(payload?.length > 0) {
         this.childSample = payload[0]
       };
-    })
+    }).catch(err => this.fetchingChildSample = false)
   },
 
-    // analysis request
+  // analysis request
+  resetAnalysisRequests() {
+    this.analysisRequests = [];
+  },
   async fetchAnalysisRequestsForPatient(uid){
+    if(!uid){ return }
+    this.fetchingAnalysisRequests = true;
     await withClientQuery(GET_ANALYSIS_REQUESTS_BY_PATIENT_UID, { uid }, "analysisRequestsByPatientUid")
-    .then(payload => this.analysisRequests = sortAnalysisRequests(payload))
+    .then(payload => {
+      this.fetchingAnalysisRequests = false;
+      this.analysisRequests = sortAnalysisRequests(payload)
+    }).catch(err => this.fetchingAnalysisRequests = false)
   },
   async fetchAnalysisRequestsForClient(uid){
+    if(!uid){ return }
+    this.fetchingAnalysisRequests = true;
     await withClientQuery(GET_ANALYSIS_REQUESTS_BY_CLIENT_UID, { uid }, "analysisRequestsByClientUid")
-    .then(payload => this.analysisRequests = sortAnalysisRequests(payload))
+    .then(payload => {
+      this.fetchingAnalysisRequests = false;
+      this.analysisRequests = sortAnalysisRequests(payload)
+    }).catch(err => this.fetchingAnalysisRequests = false)
   },
   addAnalysisRequest(payload){
     this.analysisRequests?.unshift(payload)
@@ -154,8 +197,12 @@ export const useSampleStore = defineStore('sample', {
   // analysis results
   async fetchAnalysisResultsForSample(uid){
     if(!uid) return;
+    this.fetchingResults = true;
+    this.fetchingSample = true;
     await withClientQuery( GET_ANALYSIS_RESULTS_BY_SAMPLE_UID, { uid }, undefined, 'network-only')
     .then(payload => {
+      this.fetchingResults = false;
+      this.fetchingSample = false;
       this.analysisResults = sortResults(payload.analysisResultBySampleUid)
 
       const sample = payload.sampleByUid;
@@ -163,7 +210,9 @@ export const useSampleStore = defineStore('sample', {
       sample.profiles = parseEdgeNodeToList(sample?.profiles) || [];
       this.sample = sample;
 
-    console.log (this.sample)
+    }).catch(err =>  {
+      this.fetchingResults = false
+      this.fetchingSample = false;
     })
   },
   updateAnalysesResults(payload: IAnalysisResult[]){
@@ -207,8 +256,10 @@ export const useSampleStore = defineStore('sample', {
     this.qcSet = undefined;
   },
   async fetchQCSets(params){
+    this.fetchingQCSets = true;
     await withClientQuery(GET_ALL_QC_SETS, params, undefined)
           .then(payload => {
+            this.fetchingQCSets = false;
             const page = payload.qcSetAll
             const qcSets = page.items;
 
@@ -221,11 +272,16 @@ export const useSampleStore = defineStore('sample', {
         
             this.qcSetCount = page?.totalCount;
             this.qcSetPageInfo = page?.pageInfo;
-          })
+          }).catch(err => this.fetchingQCSets = false)
   },
   async fetchQCSetByUid(uid){
+    if(!uid){ return }
+    this.fetchingQCSet = true;
     await withClientQuery(GET_QC_SET_BY_UID, { uid }, "qcSetByUid")
-    .then(payload => this.qcSet = payload)
+    .then(payload => {
+      this.fetchingQCSet = false
+      this.qcSet = payload
+    }).catch(err => this.fetchingQCSet = false)
   },
   addQCSet(payload){
     this.qcSets = addListsUnique(this.qcSets, payload, "uid");

@@ -314,17 +314,17 @@ function toggleView(choice: string): void {
         <thead>
           <tr>
             <th
-              class="px-1 py-1 border-b-2 border-gray-300 text-left leading-4 text-black-500 tracking-wider"
+              class="px-1 py-1 border-b-2 border-gray-300 text-left leading-4 text-gray-800 tracking-wider"
             ></th>
             <th
-              class="px-1 py-1 border-b-2 border-gray-300 text-left leading-4 text-black-500 tracking-wider"
+              class="px-1 py-1 border-b-2 border-gray-300 text-left leading-4 text-gray-800 tracking-wider"
             >
               Analysis
             </th>
             <th
               v-for="level in qcSet?.levels"
               :key="level.uid"
-              class="px-1 py-1 border-b-2 border-gray-300 text-left leading-4 text-black-500 tracking-wider"
+              class="px-1 py-1 border-b-2 border-gray-300 text-left leading-4 text-gray-800 tracking-wider"
             >
               {{ level?.level }}
             </th>
@@ -353,7 +353,7 @@ function toggleView(choice: string): void {
                   :disabled="isDisabledRowCheckBox(result)"
                 />
                 <div>
-                  <div v-if="!isEditable(result)" class="text-sm leading-5 text-blue-900">
+                  <div v-if="!isEditable(result)" class="text-sm leading-5 text-sky-800">
                     {{ result?.result }}
                   </div>
                   <label
@@ -382,8 +382,8 @@ function toggleView(choice: string): void {
                       </option>
                     </select>
                   </label>
-                  <!-- <div class="text-sm italics text-blue-300"> {{ result?.sample?.qcLevel?.level }}</div> -->
-                  <div class="text-sm italics text-blue-600">{{ result?.status }}</div>
+                  <!-- <div class="text-sm italics text-sky-800"> {{ result?.sample?.qcLevel?.level }}</div> -->
+                  <div class="text-sm italics text-sky-800">{{ result?.status }}</div>
                 </div>
               </div>
             </td>
@@ -401,7 +401,7 @@ function toggleView(choice: string): void {
         <thead>
           <tr>
             <th
-              class="px-1 py-1 border-b-2 border-gray-300 text-left leading-4 text-black-500 tracking-wider"
+              class="px-1 py-1 border-b-2 border-gray-300 text-left leading-4 text-gray-800 tracking-wider"
             >
               <input
                 type="checkbox"
@@ -411,55 +411,55 @@ function toggleView(choice: string): void {
               />
             </th>
             <th
-              class="px-1 py-1 border-b-2 border-gray-300 text-left leading-4 text-black-500 tracking-wider"
+              class="px-1 py-1 border-b-2 border-gray-300 text-left leading-4 text-gray-800 tracking-wider"
             ></th>
             <th
-              class="px-1 py-1 border-b-2 border-gray-300 text-left leading-4 text-black-500 tracking-wider"
+              class="px-1 py-1 border-b-2 border-gray-300 text-left leading-4 text-gray-800 tracking-wider"
             >
               Analysis
             </th>
             <th
-              class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-black-500 tracking-wider"
+              class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider"
             >
               Methods
             </th>
             <th
-              class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-black-500 tracking-wider"
+              class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider"
             >
               Instrument
             </th>
             <th
-              class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-black-500 tracking-wider"
+              class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider"
             >
               Analyst
             </th>
             <th
-              class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-black-500 tracking-wider"
+              class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider"
             >
               Result
             </th>
             <th
-              class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-black-500 tracking-wider"
+              class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider"
             >
               Retest
             </th>
             <th
-              class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-black-500 tracking-wider"
+              class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider"
             >
               Submitted
             </th>
             <th
-              class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-black-500 tracking-wider"
+              class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider"
             >
               Due Date
             </th>
             <th
-              class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-black-500 tracking-wider"
+              class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider"
             >
               Status
             </th>
             <th
-              class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-black-500 tracking-wider"
+              class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider"
             >
               Reportable
             </th>
@@ -479,27 +479,27 @@ function toggleView(choice: string): void {
             </td>
             <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500"></td>
             <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-              <div class="text-sm leading-5 text-blue-900">
+              <div class="text-sm leading-5 text-sky-800">
                 {{ result.analysis?.name }}
               </div>
             </td>
             <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-              <div class="text-sm leading-5 text-blue-900">
+              <div class="text-sm leading-5 text-sky-800">
                 {{ result.method?.name || "None" }}
               </div>
             </td>
             <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-              <div class="text-sm leading-5 text-blue-900">
+              <div class="text-sm leading-5 text-sky-800">
                 {{ result.instrument?.name || "None" }}
               </div>
             </td>
             <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-              <div class="text-sm leading-5 text-blue-900">
+              <div class="text-sm leading-5 text-sky-800">
                 {{ result.analyst?.name || "moyoza" }}
               </div>
             </td>
             <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-              <div v-if="!isEditable(result)" class="text-sm leading-5 text-blue-900">
+              <div v-if="!isEditable(result)" class="text-sm leading-5 text-sky-800">
                 {{ result?.result }}
               </div>
               <label
@@ -530,35 +530,35 @@ function toggleView(choice: string): void {
               </label>
             </td>
             <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-              <div class="text-sm leading-5 text-blue-900">
-                <span v-if="result?.retest" class="text-green-500">
+              <div class="text-sm leading-5 text-sky-800">
+                <span v-if="result?.retest" class="text-sky-800">
                   <i class="fa fa-check-circle" aria-hidden="true"></i>
                 </span>
-                <span v-else class="text-red-500">
+                <span v-else class="text-orange-600">
                   <i class="fa fa-times-circle" aria-hidden="true"></i>
                 </span>
               </div>
             </td>
             <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-              <div class="text-sm leading-5 text-blue-900">2020-10-10</div>
+              <div class="text-sm leading-5 text-sky-800">2020-10-10</div>
             </td>
             <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-              <div class="text-sm leading-5 text-blue-900">2020-10-10</div>
+              <div class="text-sm leading-5 text-sky-800">2020-10-10</div>
             </td>
             <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
               <button
                 type="button"
-                class="bg-blue-400 text-white p-1 rounded leading-none"
+                class="bg-sky-800 text-white p-1rounded-smleading-none"
               >
                 {{ result.status }}
               </button>
             </td>
             <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-              <div class="text-sm leading-5 text-blue-900">
-                <span v-if="result?.reportable" class="text-green-500">
+              <div class="text-sm leading-5 text-sky-800">
+                <span v-if="result?.reportable" class="text-sky-800">
                   <i class="fa fa-thumbs-up" aria-hidden="true"></i>
                 </span>
-                <span v-else class="text-red-500">
+                <span v-else class="text-orange-600">
                   <i class="fa fa-thumbs-down" aria-hidden="true"></i>
                 </span>
               </div>
@@ -567,7 +567,7 @@ function toggleView(choice: string): void {
               class="px-1 py-1 whitespace-no-wrap text-right border-b border-gray-500 text-sm leading-5"
             >
               <!-- <button @click.prevent="submitResult(result)" 
-                            class="p-1 ml-2 border-white border text-gray-500 rounded transition duration-300 hover:border-blue-500 hover:text-blue-500 focus:outline-none">
+                            class="p-1 ml-2 border-white border text-gray-500rounded-smtransition duration-300 hover:border-sky-800 hover:text-sky-800 focus:outline-none">
                             submit
                           </button> -->
             </td>
@@ -581,7 +581,7 @@ function toggleView(choice: string): void {
     <button
       v-if="shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) && can_submit"
       @click.prevent="cancelResults()"
-      class="px-2 py-1 mr-2 border-blue-500 border text-blue-500 rounded transition duration-300 hover:bg-blue-700 hover:text-white focus:outline-none"
+      class="px-2 py-1 mr-2 border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
     >
       Cancel
     </button>
@@ -590,35 +590,35 @@ function toggleView(choice: string): void {
         shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) && can_reinstate
       "
       @click.prevent="reInstateResults()"
-      class="px-2 py-1 mr-2 border-blue-500 border text-blue-500 rounded transition duration-300 hover:bg-blue-700 hover:text-white focus:outline-none"
+      class="px-2 py-1 mr-2 border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
     >
       Re-Instate
     </button>
     <button
       v-if="shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) && can_submit"
       @click.prevent="submitResults()"
-      class="px-2 py-1 mr-2 border-blue-500 border text-blue-500 rounded transition duration-300 hover:bg-blue-700 hover:text-white focus:outline-none"
+      class="px-2 py-1 mr-2 border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
     >
       Submit
     </button>
     <button
       v-if="shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) && can_retract"
       @click.prevent="retractResults()"
-      class="px-2 py-1 mr-2 border-blue-500 border text-blue-500 rounded transition duration-300 hover:bg-blue-700 hover:text-white focus:outline-none"
+      class="px-2 py-1 mr-2 border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
     >
       Retract
     </button>
     <button
       v-if="shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) && can_verify"
       @click.prevent="verifyResults()"
-      class="px-2 py-1 mr-2 border-blue-500 border text-blue-500 rounded transition duration-300 hover:bg-blue-700 hover:text-white focus:outline-none"
+      class="px-2 py-1 mr-2 border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
     >
       Verify
     </button>
     <button
       v-if="shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) && can_retest"
       @click.prevent="retestResults()"
-      class="px-2 py-1 mr-2 border-blue-500 border text-blue-500 rounded transition duration-300 hover:bg-blue-700 hover:text-white focus:outline-none"
+      class="px-2 py-1 mr-2 border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
     >
       Retest
     </button>

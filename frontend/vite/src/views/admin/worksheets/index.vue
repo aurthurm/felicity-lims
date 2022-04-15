@@ -182,7 +182,7 @@
     <div class="flex items-center">
       <h1 class="h1 my-4 font-bold text-dark-700">WorkSheet Templates</h1>
         <button
-          class="p-2 my-2 ml-8 text-sm border-blue-500 border text-dark-700 transition-colors duration-150 rounded-lg focus:outline-none hover:bg-blue-500 hover:text-gray-100"
+          class="p-2 my-2 ml-8 text-sm border-sky-800 border text-dark-700 transition-colors duration-150 rounded-sm focus:outline-none hover:bg-sky-800 hover:text-gray-100"
           @click="FormManager(true)"
         >
           Add Template
@@ -196,7 +196,7 @@
           <div
             v-for="wst in workSheetTemplates"
             :key="wst.uid"
-            :class="workSheetTemplate?.uid === wst.uid ? 'bg-white w-full flex justify-between p-2 mb-1 rounded-xl shadow border c-active' : 'bg-white w-full flex justify-between p-2 mb-1 rounded-xl shadow border' "
+            :class="workSheetTemplate?.uid === wst.uid ? 'w-full flex justify-between p-2 mb-1 rounded-sm shadow border border-sky-800 bg-emerald-200' : 'bg-white w-full flex justify-between p-2 mb-1 rounded-sm shadow border' "
           >
             <a
               href="#"
@@ -215,7 +215,7 @@
       <section class="col-span-9 overflow-y-scroll overscroll-contain scroll-section" v-if="workSheetTemplate.uid">
 
         <!-- Listing Item Card -->
-        <div class="bg-white rounded-lg shadow-sm hover:shadow-lg duration-500 px-4 sm:px-6 md:px-2 py-4 " >
+        <div class="bg-white rounded-sm shadow-sm hover:shadow-lg duration-500 px-4 sm:px-6 md:px-2 py-4 " >
           <div class="grid grid-cols-12 gap-3">
             <!-- Summary Column -->
             <div class="col-span-12 px-3 sm:px-0">
@@ -224,7 +224,7 @@
                 <div>
                   <button
                     @click="FormManager(false, workSheetTemplate)"
-                    class="ml-4 inline-flex items-center justify-center w-8 h-8 mr-2 border-blue-500 border text-gray-900 transition-colors duration-150 bg-white rounded-full focus:outline-none hover:bg-gray-200"
+                    class="ml-4 inline-flex items-center justify-center w-8 h-8 mr-2 border-sky-800 border text-gray-900 transition-colors duration-150 bg-white rounded-full focus:outline-none hover:bg-gray-200"
                   >
                     <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20">
                       <path
@@ -319,8 +319,8 @@
                 <span 
                 :class="[
                 'col-span-5 my-1 p-1 text-white rounded-xl flex justify-center',
-                { 'bg-green-400': item.name !== 'sample' },
-                { 'bg-blue-400': item.name === 'sample' },
+                { 'bg-emerald-600': item.name !== 'sample' },
+                { 'bg-sky-800': item.name === 'sample' },
                 ]">{{ item.name }}</span>
               </div>
             </div>
@@ -335,8 +335,8 @@
                         <span 
                         :class="[
                         'my-1 p-1 text-white rounded-xl flex justify-center',
-                        { 'bg-green-400': workSheetTemplate?.preview![index*workSheetTemplate.cols! + col - 1]?.name !== 'sample' },
-                        { 'bg-blue-400': workSheetTemplate?.preview![index*workSheetTemplate.cols! + col - 1]?.name === 'sample' },
+                        { 'bg-emerald-600': workSheetTemplate?.preview![index*workSheetTemplate.cols! + col - 1]?.name !== 'sample' },
+                        { 'bg-sky-800': workSheetTemplate?.preview![index*workSheetTemplate.cols! + col - 1]?.name === 'sample' },
                         ]">({{ index*workSheetTemplate.cols! + col }})  {{ workSheetTemplate?.preview![index*workSheetTemplate.cols! + col - 1]?.name }}</span>
                       </div>
                     </div>
@@ -352,8 +352,8 @@
                           <span 
                           :class="[
                           'my-1 p-1 text-white rounded-xl flex justify-center',
-                          { 'bg-green-400': workSheetTemplate?.preview![index*workSheetTemplate.rows! + row - 1]?.name !== 'sample' },
-                          { 'bg-blue-400': workSheetTemplate?.preview![index*workSheetTemplate.rows! + row - 1]?.name === 'sample' },
+                          { 'bg-emerald-600': workSheetTemplate?.preview![index*workSheetTemplate.rows! + row - 1]?.name !== 'sample' },
+                          { 'bg-sky-800': workSheetTemplate?.preview![index*workSheetTemplate.rows! + row - 1]?.name === 'sample' },
                           ]">({{ index*workSheetTemplate.rows! + row }})  {{ workSheetTemplate?.preview![index*workSheetTemplate.rows! + row - 1]?.name }}</span>
                         </div>
                       </div>
@@ -388,7 +388,7 @@
           </label>
           <label class="block col-span-1 mb-2">
             <span class="text-gray-700">Number of Samples</span>
-            <span class="text-red-400 ml-2 italic">(less reserved)</span>
+            <span class="text-orange-600 ml-2 italic">(less reserved)</span>
             <input
               class="form-input mt-1 block w-full"
               v-model="workSheetTemplate.numberOfSamples"
@@ -481,12 +481,12 @@
                   </select>
                   <button
                     @click.prevent="appyQCTemplate()"
-                    class="px-2 py-1 ml-2 h-auto border-green-500 border text-green-500 rounded transition duration-300 hover:bg-green-700 hover:text-white focus:outline-none">Apply</button>
+                    class="px-2 py-1 ml-2 h-auto border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none">Apply</button>
                   </div>
                 </label>
                 <button
                 @click.prevent="addReserved()"
-                class="px-2 py-1 mr-2 border-green-500 border text-green-500 rounded transition duration-300 hover:bg-green-700 hover:text-white focus:outline-none">Add Reserve Slot</button>
+                class="px-2 py-1 mr-2 border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none">Add Reserve Slot</button>
             </div>
             <hr class="mb-4">
             <div v-for="(reserved, index) in workSheetTemplate.reserved" :key="index">
@@ -514,7 +514,7 @@
                     <div class="">
                         <button
                         @click.prevent="removeReserved(index)"
-                        class="px-2 py-1 mr-2 border-red-500 border text-red-500 rounded transition duration-300 hover:bg-red-700 hover:text-white focus:outline-none">Remove</button>
+                        class="px-2 py-1 mr-2 border-orange-600 border text-orange-600rounded-smtransition duration-300 hover:bg-orange-600 hover:text-white focus:outline-none">Remove</button>
                     </div>
                 </div>
                 <hr>
@@ -526,7 +526,7 @@
         <button
           type="button"
           @click.prevent="saveForm()"
-          class="-mb-4 w-full border border-green-500 bg-green-500 text-white rounded-md px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-green-600 focus:outline-none focus:shadow-outline"
+          class="-mb-4 w-full border border-sky-800 bg-sky-800 text-white rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-sky-800 focus:outline-none focus:shadow-outline"
         >
           Save Form
         </button>
@@ -537,7 +537,7 @@
 
 <style lang="postcss" scoped>
  .scroll-section {
-    height: 400px;
+    height: 700px;
   }
 
   .tab-active {
@@ -545,7 +545,4 @@
     color: rgb(37, 37, 37) !important;
   }
 
-  .c-active {
-    background-color: lightblue;
-  }
 </style>

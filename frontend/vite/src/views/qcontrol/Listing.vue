@@ -146,7 +146,7 @@
     <button 
     v-show="shield.hasRights(shield.actions.CREATE, shield.objects.SAMPLE)"
     type="button" 
-    class="border border-green-500 bg-green-500 text-white rounded-md px-2 py-1 m-2 transition-colors duration-500 ease select-none hover:bg-green-600 focus:outline-none focus:shadow-outline"
+    class="border border-sky-800 text-sky-800 rounded-sm px-2 py-1 m-2 transition-colors duration-500 ease select-none hover:bg-sky-800 hover:text-white focus:outline-none focus:shadow-outline"
     @click.prevent="showModal = !showModal">
       Add New QC Request
     </button>
@@ -157,7 +157,7 @@
         <div class="flex flex-row mb-1 sm:mb-0">
             <div class="relative">
                 <select
-                class="appearance-none h-full rounded-l border block  w-full bg-white border-gray-400 text-gray-700 py-2 px-4 pr-8 leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
+                class="appearance-none h-full rounded-l-sm border block  w-full bg-white border-gray-400 text-gray-700 py-2 px-4 pr-8 leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
                    <option value="">All</option>
                     <option value="pending">Pending</option>
                     <option value="resulted">Resulted</option>
@@ -182,10 +182,10 @@
             </span>
             <input placeholder="Search ..."
                 
-                class="appearance-none rounded-r rounded-l sm:rounded-l-none border border-gray-400 border-b block pl-8 pr-6 py-2 w-full bg-white text-sm placeholder-gray-400 text-gray-700 focus:bg-white focus:placeholder-gray-600 focus:text-gray-700 focus:outline-none" />
+                class="appearance-none rounded-r-sm rounded-l-sm sm:rounded-l-none border border-gray-400 border-b block pl-8 pr-6 py-2 w-full bg-white text-sm placeholder-gray-400 text-gray-700 focus:bg-white focus:placeholder-gray-600 focus:text-gray-700 focus:outline-none" />
       </div>
       <button
-        class="px-2 py-1 ml-2 border-blue-500 border text-blue-500 rounded transition duration-300 hover:bg-blue-700 hover:text-white focus:outline-none">
+        class="px-2 py-1 ml-2 border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none">
         Filter ...</button>
       
     </section> -->
@@ -195,10 +195,10 @@
         <table class="min-w-full">
             <thead>
             <tr>
-                <th class="px-1 py-1 border-b-2 border-gray-300 text-left leading-4 text-black-500 tracking-wider"></th>
-                <th class="px-1 py-1 border-b-2 border-gray-300 text-left leading-4 text-black-500 tracking-wider">Date Created</th>
-                <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-black-500 tracking-wider">QCSet (samples)</th>
-                <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-black-500 tracking-wider">Test(s)</th>
+                <th class="px-1 py-1 border-b-2 border-gray-300 text-left leading-4 text-gray-800 tracking-wider"></th>
+                <th class="px-1 py-1 border-b-2 border-gray-300 text-left leading-4 text-gray-800 tracking-wider">Date Created</th>
+                <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">QCSet (samples)</th>
+                <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">Test(s)</th>
                 <th class="px-1 py-1 border-b-2 border-gray-300"></th>
             </tr>
             </thead>
@@ -216,15 +216,15 @@
                   </div>
                 </td>
                 <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-                  <div class="text-sm leading-5 text-blue-900">{{ qcSetSamples(qcSet.samples!) }}</div>
+                  <div class="text-sm leading-5 text-sky-800">{{ qcSetSamples(qcSet.samples!) }}</div>
                 </td>
                 <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-                  <div class="text-sm leading-5 text-blue-900">{{ qcSetProfileAnalyses(qcSet.samples!) }}</div>
+                  <div class="text-sm leading-5 text-sky-800">{{ qcSetProfileAnalyses(qcSet.samples!) }}</div>
                 </td>
                 <td class="px-1 py-1 whitespace-no-wrap text-right border-b border-gray-500 text-sm leading-5">
                     <router-link 
                     :to="{ name:'qc-set-detail', params: { qcSetUid: qcSet.uid } }"
-                    class="px-2 py-1 mr-2 border-gray-500 border text-gray-500 rounded transition duration-300 hover:bg-gray-700 hover:text-white focus:outline-none">View Detail</router-link>
+                    class="px-2 py-1 mr-2 border-sky-800 border text-gray-500rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none">View Detail</router-link>
                 </td>
             </tr>
             </tbody>
@@ -238,11 +238,11 @@
         <button 
         @click.prevent="showMoreQCSets()"
         v-show="pageInfo?.hasNextPage"
-        class="px-2 py-1 mr-2 border-blue-500 border text-blue-500 rounded transition duration-300 hover:bg-blue-700 hover:text-white focus:outline-none"
+        class="px-2 py-1 mr-2 border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
         >Show More</button>
         <div class="flex flex-row mb-1 sm:mb-0">
             <div class="relative">
-                <select class="appearance-none h-full rounded-l border block  w-full bg-white border-gray-400 text-gray-700 py-2 px-4 pr-8 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                <select class="appearance-none h-full rounded-l-sm border block  w-full bg-white border-gray-400 text-gray-700 py-2 px-4 pr-8 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                 v-model="qcSetBatch" :disabled="!pageInfo?.hasNextPage">
                     <option value="25">25</option>
                     <option value="50">50</option>
@@ -263,13 +263,10 @@
         </div>
         <div class="block relative">
             <input :placeholder="qcSetCount"
-                class="appearance-none rounded-r rounded-l sm:rounded-l-none border border-gray-400 border-b block pl-8 pr-6 py-2 w-full bg-white text-sm placeholder-gray-400 text-gray-700 focus:bg-white focus:placeholder-gray-600 focus:text-gray-700 focus:outline-none" disabled/>
+                class="appearance-none rounded-r-sm rounded-l-sm sm:rounded-l-none border border-gray-400 border-b block pl-8 pr-6 py-2 w-full bg-white text-sm placeholder-gray-400 text-gray-700 focus:bg-white focus:placeholder-gray-600 focus:text-gray-700 focus:outline-none" disabled/>
         </div>
       </div>
     </section>
-
-
-
 
   <modal v-if="showModal" @close="showModal = false">
     <template v-slot:header>
@@ -298,14 +295,14 @@
             <hr>
             <div class="flex justify-between items-center py-2">
                 <h5>Process Control Samples</h5>
-                <span class="cursor-pointer text-xl text-blue-600"
+                <span class="cursor-pointer text-xl text-sky-800"
                 @click="drillDown = !drillDown">
                   <i class="fa fa-ellipsis-h" aria-hidden="true"></i>
                 </span>
                 <button
                 v-if="form.samples?.length < 20"
                 @click.prevent="addQCSet()"
-                class="px-2 py-1 mr-2 border-green-500 border text-green-500 rounded transition duration-300 hover:bg-green-700 hover:text-white focus:outline-none">Add QCSet</button>
+                class="px-2 py-1 mr-2 border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none">Add QCSet</button>
             </div>
             <hr class="mb-4">
             <div v-for="(sample, index) in form.samples" :key="index">
@@ -365,7 +362,7 @@
                     <div class="">
                         <button
                         @click.prevent="removeQCSet(index)"
-                        class="px-2 py-1 mr-2 border-red-500 border text-red-500 rounded transition duration-300 hover:bg-red-700 hover:text-white focus:outline-none">Remove</button>
+                        class="px-2 py-1 mr-2 border-orange-600 border text-orange-600rounded-smtransition duration-300 hover:bg-orange-600 hover:text-white focus:outline-none">Remove</button>
                     </div>
                 </div>
                 <hr>
@@ -376,7 +373,7 @@
         <button
           type="button"
           @click.prevent="saveForm()"
-          class="-mb-4 w-full border border-green-500 bg-green-500 text-white rounded-md px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-green-600 focus:outline-none focus:shadow-outline"
+          class="-mb-4 w-full border border-sky-800 bg-sky-800 text-white rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-sky-800 focus:outline-none focus:shadow-outline"
         >
           Save Form
         </button>

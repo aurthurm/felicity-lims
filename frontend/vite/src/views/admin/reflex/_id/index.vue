@@ -177,7 +177,7 @@
   <hr>
 
   <button @click="reflexActionFormManager(true)"
-    class="my-4 px-2 py-1 border-blue-500 border text-blue-500 rounded transition duration-300 hover:bg-blue-700 hover:text-white focus:outline-none">Add Reflex Action</button>
+    class="my-4 px-2 py-1 border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none">Add Reflex Action</button>
   <hr>
 
   <section class="col-span-1" v-for="action in reflexStore.reflexRule?.reflexActions" :key="action?.uid">
@@ -191,7 +191,7 @@
           <h4 class="text-l leading-4 italic">Reflex Action Brains</h4>
           <button 
             @click="reflexBrainFormManager(true, action)"
-            class="ml-4 px-2 py-1 border-blue-500 border text-blue-500 rounded transition duration-300 hover:bg-blue-700 hover:text-white focus:outline-none">
+            class="ml-4 px-2 py-1 border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none">
             Add Brain
           </button>
         </div>
@@ -303,7 +303,7 @@
         <button
           type="button"
           @click.prevent="saveActionForm()"
-          class="-mb-4 w-full border border-green-500 bg-green-500 text-white rounded-md px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-green-600 focus:outline-none focus:shadow-outline"
+          class="-mb-4 w-full border border-sky-800 bg-sky-800 text-white rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-sky-800 focus:outline-none focus:shadow-outline"
         >
           Save Form
         </button>
@@ -334,10 +334,10 @@
             <hr>
             <div class="flex justify-between items-center py-2">
                 <h5>Criteria</h5>
-                <span class="text-red-700"></span>
+                <span class="text-orange-600"></span>
                 <button
                 @click.prevent="addCriteria()"
-                class="px-2 py-1 mr-2 border-green-500 border text-green-500 rounded transition duration-300 hover:bg-green-700 hover:text-white focus:outline-none">Add Criteria</button>
+                class="px-2 py-1 mr-2 border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none">Add Criteria</button>
             </div>
             <hr class="mb-4">
 
@@ -397,7 +397,7 @@
                     <div class="">
                         <button
                         @click.prevent="removeCriteria(index)"
-                        class="px-2 py-1 mr-2 border-red-500 border text-red-500 rounded transition duration-300 hover:bg-red-700 hover:text-white focus:outline-none">Remove</button>
+                        class="px-2 py-1 mr-2 border-orange-600 border text-orange-600rounded-smtransition duration-300 hover:bg-orange-600 hover:text-white focus:outline-none">Remove</button>
                     </div>
                 </div>
                 <hr>
@@ -408,10 +408,10 @@
             <hr>
             <div class="flex justify-between items-center py-2">
                 <h5>Add New</h5>
-                <span class="text-red-700"></span>
+                <span class="text-orange-600"></span>
                 <button
                 @click.prevent="addNew()"
-                class="px-2 py-1 mr-2 border-green-500 border text-green-500 rounded transition duration-300 hover:bg-green-700 hover:text-white focus:outline-none">Add New</button>
+                class="px-2 py-1 mr-2 border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none">Add New</button>
             </div>
             <hr class="mb-4">
 
@@ -446,7 +446,7 @@
                     <div class="">
                         <button
                         @click.prevent="removeNew(index)"
-                        class="px-2 py-1 mr-2 border-red-500 border text-red-500 rounded transition duration-300 hover:bg-red-700 hover:text-white focus:outline-none">Remove</button>
+                        class="px-2 py-1 mr-2 border-orange-600 border text-orange-600rounded-smtransition duration-300 hover:bg-orange-600 hover:text-white focus:outline-none">Remove</button>
                     </div>
                 </div>
                 <hr>
@@ -457,10 +457,10 @@
             <hr>
             <div class="flex justify-between items-center py-2">
                 <h5>Finalize</h5>
-                <span class="text-red-700"></span>
+                <span class="text-orange-600"></span>
                 <button
                 @click.prevent="addFinal()"
-                class="px-2 py-1 mr-2 border-green-500 border text-green-500 rounded transition duration-300 hover:bg-green-700 hover:text-white focus:outline-none">Add Final</button>
+                class="px-2 py-1 mr-2 border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none">Add Final</button>
             </div>
             <hr class="mb-4">
 
@@ -507,7 +507,7 @@
                     <div class="">
                         <button
                         @click.prevent="removeFinal(index)"
-                        class="px-2 py-1 mr-2 border-red-500 border text-red-500 rounded transition duration-300 hover:bg-red-700 hover:text-white focus:outline-none">Remove</button>
+                        class="px-2 py-1 mr-2 border-orange-600 border text-orange-600rounded-smtransition duration-300 hover:bg-orange-600 hover:text-white focus:outline-none">Remove</button>
                     </div>
                 </div>
                 <hr>
@@ -519,7 +519,7 @@
         <button
           type="button"
           @click.prevent="saveBrainForm()"
-          class="-mb-4 w-full border border-green-500 bg-green-500 text-white rounded-md px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-green-600 focus:outline-none focus:shadow-outline"
+          class="-mb-4 w-full border border-sky-800 bg-sky-800 text-white rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-sky-800 focus:outline-none focus:shadow-outline"
         >
           Save Form
         </button>

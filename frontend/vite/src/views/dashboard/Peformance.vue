@@ -155,7 +155,7 @@
   <hr class="my-2">
   <div class="flex flex-wrap justify-start">
     <div class="mr-4 items-center content-center">
-      <div class="bg-white shadow rounded px-6 pt-3 pb-5 border border-white mr-8 text-center">
+      <div class="bg-white shadow rounded-sm px-6 pt-3 pb-5 border border-white mr-8 text-center">
         <div class="font-semibold text-gray-400 text-l">received to published</div>
         <div class="mr-4 font-bold text-gray-600 text-xl">{{ prRTP?.counts?.processAverage ?? 0 }} days</div>
       </div>
@@ -163,7 +163,7 @@
     </div>
 
     <div class="mr-4 items-center content-center">
-      <div class="bg-white shadow rounded px-6 pt-3 pb-5 border border-white mr-8 text-center">
+      <div class="bg-white shadow rounded-sm px-6 pt-3 pb-5 border border-white mr-8 text-center">
         <div class="font-semibold text-gray-400 text-l">received to submitted</div>
         <div class="mr-4 font-bold text-gray-600 text-xl">{{ prRTS?.counts?.processAverage ?? 0 }} days</div>
       </div>
@@ -171,7 +171,7 @@
     </div>
 
     <div class="mr-4 items-center content-center">
-      <div class="bg-white shadow rounded px-6 pt-3 pb-5 border border-white mr-8 text-center">
+      <div class="bg-white shadow rounded-sm px-6 pt-3 pb-5 border border-white mr-8 text-center">
         <div class="font-semibold text-gray-400 text-l">submitted to verified</div>
         <div class="mr-4 font-bold text-gray-600 text-xl">{{ prSTV?.counts?.processAverage ?? 0 }} days</div>
       </div>
@@ -179,7 +179,7 @@
     </div>
 
     <div class="mr-4 items-center content-center">
-      <div class="bg-white shadow rounded px-6 pt-3 pb-5 border border-white mr-8 text-center">
+      <div class="bg-white shadow rounded-sm px-6 pt-3 pb-5 border border-white mr-8 text-center">
         <div class="font-semibold text-gray-400 text-l">verified to published</div>
         <div class="mr-4 font-bold text-gray-600 text-xl">{{ prVTP?.counts?.processAverage ?? 0 }} days</div>
       </div>

@@ -83,7 +83,7 @@
     <h1 class="h1 my-4 font-bold text-dark-700 mr-4">Notice Manager</h1>
       <button
       @click.prevent="FormManager(true)"
-        class="px-4 my-2 p-1 text-sm border-blue-500 border text-dark-700 transition-colors duration-150 rounded-lg focus:outline-none hover:bg-blue-500 hover:text-gray-100">
+        class="px-4 my-2 p-1 text-sm border-sky-800 border text-dark-700 transition-colors duration-150 rounded-sm focus:outline-none hover:bg-sky-800 hover:text-gray-100">
         New Notice</button>
 
     <!-- Notice Table View -->
@@ -92,8 +92,8 @@
         <table class="min-w-full">
             <thead>
             <tr>
-                <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-black-500 tracking-wider">Notice Title</th>
-                <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-black-500 tracking-wider">Expiration</th>
+                <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">Notice Title</th>
+                <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">Expiration</th>
                 <th class="px-1 py-1 border-b-2 border-gray-300"></th>
             </tr>
             </thead>
@@ -108,9 +108,9 @@
                 </td>
                 <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">{{ notice.status }}</td>
                 <td class="px-1 py-1 whitespace-no-wrap text-right border-b border-gray-500 text-sm leading-5">
-                    <button class="px-2 py-1 mr-2 border-grey-500 border text-grey-500 rounded transition duration-300 hover:bg-gray-100 hover:text-black-700 focus:outline-none"
+                    <button class="px-2 py-1 mr-2 border-grey-500 border text-grey-500rounded-smtransition duration-300 hover:bg-gray-100 hover:text-black-700 focus:outline-none"
                     @click="FormManager(false, notice)">View/Edit</button>
-                    <button class="px-2 py-1 mr-2  ml-2 border-red-500 border text-red-500 rounded transition duration-300 hover:bg-red-100 hover:text-black-700 focus:outline-none"
+                    <button class="px-2 py-1 mr-2  ml-2 border-orange-600 border text-orange-600rounded-smtransition duration-300 hover:bg-orange-600 hover:text-black-700 focus:outline-none"
                     @click="deleteNotice(notice.uid)">Delete</button>
                 </td>
             </tr>
@@ -159,7 +159,7 @@
         <button
           type="button"
           @click.prevent="saveForm()"
-          class="-mb-4 w-full border border-green-500 bg-green-500 text-white rounded-md px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-green-600 focus:outline-none focus:shadow-outline">
+          class="-mb-4 w-full border border-sky-800 bg-sky-800 text-white rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-sky-800 focus:outline-none focus:shadow-outline">
           Save Form
         </button>
       </form>

@@ -63,7 +63,7 @@ const applyTemplate = async () => {
         <button 
         v-show="shield.hasRights(shield.actions.CREATE, shield.objects.WORKSHEET)"
         type="button" @click.prevent="applyTemplate()"
-          class="border border-green-400 bg-green-400 text-white rounded-md px-2 py-1 transition-colors duration-500 ease select-none hover:bg-green-600 focus:outline-none focus:shadow-outline">
+          class="border border-sky-800 bg-sky-800 text-white rounded-sm px-2 py-1 transition-colors duration-500 ease select-none hover:bg-sky-800 focus:outline-none focus:shadow-outline">
           Apply Template </button>
       </div>
     </form>

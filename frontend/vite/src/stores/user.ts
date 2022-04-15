@@ -20,12 +20,16 @@ export const useUserStore = defineStore('user', {
           users: {
             items: [],
           } as IUserPage, 
+          fetchingUsers: false,
           groups: [],
-          permissions: []
+          fetchingGroups: false,
+          permissions: [],
       } as {
-        users: IUserPage,
-        groups: IGroup[],
-        permissions: IPermission[],
+        users: IUserPage;
+        fetchingUsers: boolean;
+        groups: IGroup[];
+        fetchingGroups: boolean;
+        permissions: IPermission[];
       }
   },
   getters: {
@@ -35,10 +39,12 @@ export const useUserStore = defineStore('user', {
   },
   actions: {
     async fetchUsers(params){
+      this.fetchingUsers = true;
       await withClientQuery(GET_ALL_USERS, params, "userAll")
       .then((users: IUserPage) => {
-          this.users = users
-        })
+        this.fetchingUsers = false;
+        this.users = users
+      }).catch((err) => this.fetchingUsers = false)
     },
     addUser(payload: IUser): void {
       this.users.items?.unshift(payload);
@@ -49,11 +55,13 @@ export const useUserStore = defineStore('user', {
     },
 
     async fetchGroupsAndPermissions() {
+      this.fetchingGroups = true;
       await withClientQuery(GET_GROUPS_AND_PERMISSIONS, {}, undefined)
       .then((resp: any) => {
+        this.fetchingGroups = false;
         this.groups = resp.groupAll
         this.permissions = resp.permissionAll
-      })
+      }).catch(err => this.fetchingGroups = false)
     },
     addGroup(payload: IGroup): void {
       this.groups?.unshift(payload);

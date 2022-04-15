@@ -15,14 +15,20 @@ export const useLocationStore = defineStore('location', {
   state: () => {
     return {
       countries: [],
+      fetchingCountries: false,
       provinces: [],
+      fetchingProvinces: false,
       districts: [],
+      fetchingDstricts: false,
       confRoute: "",
      } as {
       confRoute: string;
       countries: ICountry[];
+      fetchingCountries: boolean,
       provinces: IProvince[];
+      fetchingProvinces: boolean,
       districts: IDistrict[];
+      fetchingDstricts: boolean,
     }
   },
   getters: {
@@ -38,11 +44,13 @@ export const useLocationStore = defineStore('location', {
   
     // COUNTRIES
     async fetchCountries(){
+      this.fetchingCountries= true;
       await withClientQuery(GET_ALL_COUNTRIES,{}, "countryAll")
             .then(payload => {
+              this.fetchingCountries= false;
               this.countries = payload
               this.provinces = []
-            });
+            }).catch(err => this.fetchingCountries = false);
     },
     async addCountry(country: ICountry) {
       this.countries.unshift(country);
@@ -56,11 +64,14 @@ export const useLocationStore = defineStore('location', {
   
     // PROVINCES
     async filterProvincesByCountry(countryUid: number){
+      if(!countryUid) { return }
+      this.fetchingProvinces = true;
       await withClientQuery(FILTER_PROVINCES_BY_COUNTRY, { uid: countryUid }, "provincesByCountryUid", 'network-only')
         .then(payload => {
+          this.fetchingProvinces = false;
           this.provinces = payload
           this.districts = []
-        })
+        }).catch(err => this.fetchingProvinces = false)
     },
     addProvince(payload: IProvince) {
       this.provinces.unshift(payload)
@@ -74,8 +85,13 @@ export const useLocationStore = defineStore('location', {
   
     // DISTRICT
     async filterDistrictsByProvince(provinceUid: number){
+      if(!provinceUid) { return }
+      this.fetchingDstricts = true
       await withClientQuery(FILTER_DISTRICTS_BY_PROVINCE, { uid: provinceUid }, "districtsByProvinceUid", 'network-only')
-        .then(payload => this.districts = payload)
+        .then(payload => {
+          this.fetchingDstricts = false
+          this.districts = payload
+        }).catch(err => this.fetchingDstricts = false)
     },
     addDistrict(payload: IDistrict) {
       this.districts.unshift(payload);

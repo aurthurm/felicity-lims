@@ -186,14 +186,14 @@
 <template>
     <form 
     @submit.prevent="submitPatientForm"
-    class="border-2 border-gray-900 border-dotted rounded p-4" 
+    class="border-2 border-gray-900 border-dotted rounded-sm px-4 py-8" 
     autocomplete="off">
 
           <label class="flex whitespace-nowrap w-full">
             <span class="text-gray-700 w-4/12">Patient Unique Identifier</span>
             <div class="w-full">
               <input class="form-input mt-1 block w-full" v-model="clientPatientId" placeholder="Patient Unique Identifier" />
-              <div class="text-red-700 w-4/12">{{ errors.clientPatientId }}</div>
+              <div class="text-orange-600 w-4/12">{{ errors.clientPatientId }}</div>
             </div>
           </label>
 
@@ -201,7 +201,7 @@
             <span class="text-gray-700 w-4/12">First Name</span>
             <div class="w-full">
               <input class="form-input mt-1 w-full" v-model="firstName" placeholder="First Name" />
-              <div class="text-red-700 w-4/12">{{ errors.firstName }}</div>
+              <div class="text-orange-600 w-4/12">{{ errors.firstName }}</div>
             </div>
           </label>
 
@@ -209,7 +209,7 @@
             <span class="text-gray-700 w-4/12">Middle Name</span>
             <div class="w-full">
               <input class="form-input mt-1 w-full" v-model="middleName" placeholder="Middle Name" />
-              <div class="text-red-700 w-4/12">{{ errors.middleName }}</div>
+              <div class="text-orange-600 w-4/12">{{ errors.middleName }}</div>
             </div>
           </label>
 
@@ -217,7 +217,7 @@
             <span class="text-gray-700 w-4/12">Last Name</span>
             <div class="w-full">
               <input class="form-input mt-1 w-full" v-model="lastName" placeholder="Last Name" />
-              <div class="text-red-700 w-4/12">{{ errors.lastName }}</div>
+              <div class="text-orange-600 w-4/12">{{ errors.lastName }}</div>
             </div>
           </label>
 
@@ -225,7 +225,7 @@
             <span class="text-gray-700 w-4/12">Age</span>
             <div class="w-full">
               <input class="form-input mt-1 w-full" type="number" v-model="age" placeholder="Age" />
-              <div class="text-red-700 w-4/12">{{ errors.age }}</div>
+              <div class="text-orange-600 w-4/12">{{ errors.age }}</div>
             </div>
           </label>
 
@@ -233,15 +233,15 @@
             <span class="text-gray-700 w-4/12">Date of Birth</span>
             <div class="w-full">
               <input class="form-input mt-1 w-full" type="date" v-model="dateOfBirth" placeholder="Date of Birth" />
-              <div class="text-red-700 w-4/12">{{ errors.dateOfBirth }}</div>
+              <div class="text-orange-600 w-4/12">{{ errors.dateOfBirth }}</div>
             </div>
           </label>
 
           <label class="flex whitespace-nowrap mb-2 w-full">
-            <span class="text-gray-700 w-3/12">Age/DOB Estimated?</span>
+            <span class="text-gray-700 w-4/12">Age/DOB Estimated?</span>
             <div class="w-full">
-              <input type="checkbox" class="form-checkbox text-green-500" v-model="ageDobEstimated" />
-              <div class="text-red-700 w-4/12">{{ errors.ageDobEstimated }}</div>
+              <input type="checkbox" class="form-checkbox text-sky-800" v-model="ageDobEstimated" />
+              <div class="text-orange-600 w-4/12">{{ errors.ageDobEstimated }}</div>
             </div>
           </label>
 
@@ -252,7 +252,7 @@
                 <option></option>
                 <option v-for="(sex, indx) in state.genders" :key="indx" :value="indx"> {{ sex }}</option>
               </select>
-              <div class="text-red-700 w-4/12">{{ errors.gender }}</div>
+              <div class="text-orange-600 w-4/12">{{ errors.gender }}</div>
             </div>
           </label>
 
@@ -260,15 +260,15 @@
             <span class="text-gray-700 w-4/12">Mobile Number</span>
             <div class="w-full">
               <input class="form-input mt-1 w-full"  v-model="phoneMobile" placeholder="Mobile Number" />
-              <div class="text-red-700 w-4/12">{{ errors.phoneMobile }}</div>
+              <div class="text-orange-600 w-4/12">{{ errors.phoneMobile }}</div>
             </div>
           </label>
 
           <label class="flex whitespace-nowrap mb-2 w-full">
-            <span class="text-gray-700 w-3/12">Consent to SMS</span>
+            <span class="text-gray-700 w-4/12">Consent to SMS</span>
             <div class="w-full">
-              <input type="checkbox" class="form-checkbox text-green-500" v-model="consentSms" />
-              <div class="text-red-700 w-4/12">{{ errors.consentSms }}</div>
+              <input type="checkbox" class="form-checkbox text-sky-800" v-model="consentSms" />
+              <div class="text-orange-600 w-4/12">{{ errors.consentSms }}</div>
             </div>
           </label>
 
@@ -280,7 +280,7 @@
                   <option></option>
                   <option v-for="client in state.clients" :key="client.uid" :value="client.uid">{{ client.name }}</option>
               </select>
-              <div class="text-red-700 w-4/12">{{ errors.clientUid }}</div>
+              <div class="text-orange-600 w-4/12">{{ errors.clientUid }}</div>
             </div>
           </label>
 
@@ -309,11 +309,11 @@
               </select>
             </label>
           </div>
-          <div class="text-red-700 w-4/12">{{ errors.countryUid }}</div>
-          <div class="text-red-700 w-4/12">{{ errors.provinceUid }}</div>
-          <div class="text-red-700 w-4/12">{{ errors.districtUid }}</div>
+          <div class="text-orange-600 w-4/12">{{ errors.countryUid }}</div>
+          <div class="text-orange-600 w-4/12">{{ errors.provinceUid }}</div>
+          <div class="text-orange-600 w-4/12">{{ errors.districtUid }}</div>
 
           <hr />
-          <button type="submit" class="-mb-4 w-1/5 border border-green-500 bg-green-500 text-white rounded-md px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-green-600 focus:outline-none focus:shadow-outline"> Save Patient </button>
+          <button type="submit" class="-mb-4 w-1/5 border border-sky-800 bg-sky-800 text-white rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-sky-800 focus:outline-none focus:shadow-outline"> Save Patient </button>
         </form>
 </template>

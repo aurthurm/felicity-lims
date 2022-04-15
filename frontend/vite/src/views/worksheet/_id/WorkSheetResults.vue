@@ -113,24 +113,24 @@ function getResultRowColor(result: any): string {
       return "bg-gray-300 text-sm italic text-gray-500";
     case "pending":
       if (result?.retest === true) {
-        return "bg-blue-100 text-sm leading-5 text-blue-900";
+        return "bg-sky-800 text-sm leading-5 text-sky-800";
       } else {
         return "";
       }
     case "resulted":
       if (result?.retest === true) {
-        return "bg-blue-100 text-sm leading-5 text-blue-900";
+        return "bg-sky-800 text-sm leading-5 text-sky-800";
       } else {
         return "";
       }
     case "verified":
       if (result?.retest === true) {
-        return "bg-blue-100 text-sm leading-5 text-blue-900";
+        return "bg-sky-800 text-sm leading-5 text-sky-800";
       } else {
         return "";
       }
     default:
-      return "text-sm leading-5 text-blue-900";
+      return "text-sm leading-5 text-sky-800";
   }
 }
 
@@ -222,7 +222,7 @@ const retestResults = () => retester_(getResultsUids());
           <thead>
             <tr>
               <th
-                class="px-1 py-1 border-b-2 border-gray-300 text-left leading-4 text-black-500 tracking-wider"
+                class="px-1 py-1 border-b-2 border-gray-300 text-left leading-4 text-gray-800 tracking-wider"
               >
                 <input
                   type="checkbox"
@@ -232,45 +232,45 @@ const retestResults = () => retester_(getResultsUids());
                 />
               </th>
               <th
-                class="px-1 py-1 border-b-2 border-gray-300 text-left leading-4 text-black-500 tracking-wider"
+                class="px-1 py-1 border-b-2 border-gray-300 text-left leading-4 text-gray-800 tracking-wider"
               ></th>
               <th
-                class="px-1 py-1 border-b-2 border-gray-300 text-left leading-4 text-black-500 tracking-wider"
+                class="px-1 py-1 border-b-2 border-gray-300 text-left leading-4 text-gray-800 tracking-wider"
               >
                 Sample ID
               </th>
               <th
-                class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-black-500 tracking-wider"
+                class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider"
               >
                 Analysis/Test
               </th>
               <th
-                class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-black-500 tracking-wider"
+                class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider"
               >
                 Instrument
               </th>
               <th
-                class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-black-500 tracking-wider"
+                class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider"
               >
                 Method
               </th>
               <th
-                class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-black-500 tracking-wider"
+                class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider"
               >
                 Interim
               </th>
               <th
-                class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-black-500 tracking-wider"
+                class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider"
               >
                 Result
               </th>
               <th
-                class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-black-500 tracking-wider"
+                class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider"
               >
                 Unit
               </th>
               <th
-                class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-black-500 tracking-wider"
+                class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider"
               >
                 Status
               </th>
@@ -297,7 +297,7 @@ const retestResults = () => retester_(getResultsUids());
                   v-if="result?.sample?.priority! > 0"
                   :class="[
                         'font-small',
-                        { 'text-red-700': worksheet?.priority! > 1 },
+                        { 'text-orange-600': worksheet?.priority! > 1 },
                     ]"
                 >
                   <i class="fa fa-star"></i>
@@ -343,7 +343,7 @@ const retestResults = () => retester_(getResultsUids());
               <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
                 <div
                   v-if="!isEditable(result) || result?.analysis?.interims?.length === 0"
-                  class="text-sm leading-5 text-blue-900"
+                  class="text-sm leading-5 text-sky-800"
                 >
                   ---
                 </div>
@@ -399,7 +399,7 @@ const retestResults = () => retester_(getResultsUids());
               <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
                 <button
                   type="button"
-                  class="bg-blue-400 text-white p-1 rounded leading-none"
+                  class="bg-sky-800 text-white py-1 px-2 rounded-sm leading-none"
                 >
                   {{ result?.status || "unknown" }}
                 </button>
@@ -417,7 +417,7 @@ const retestResults = () => retester_(getResultsUids());
           can_unassign
         "
         @click.prevent="unAssignSamples()"
-        class="px-2 py-1 mr-2 border-blue-500 border text-blue-500 rounded transition duration-300 hover:bg-blue-700 hover:text-white focus:outline-none"
+        class="px-2 py-1 mr-2 border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
       >
         Un Assign
       </button>
@@ -426,7 +426,7 @@ const retestResults = () => retester_(getResultsUids());
           shield.hasRights(shield.actions.UPDATE, shield.objects.WORKSHEET) && can_submit
         "
         @click.prevent="submitResults()"
-        class="px-2 py-1 mr-2 border-blue-500 border text-blue-500 rounded transition duration-300 hover:bg-blue-700 hover:text-white focus:outline-none"
+        class="px-2 py-1 mr-2 border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
       >
         Submit
       </button>
@@ -435,7 +435,7 @@ const retestResults = () => retester_(getResultsUids());
           shield.hasRights(shield.actions.UPDATE, shield.objects.WORKSHEET) && can_retract
         "
         @click.prevent="retractResults()"
-        class="px-2 py-1 mr-2 border-blue-500 border text-blue-500 rounded transition duration-300 hover:bg-blue-700 hover:text-white focus:outline-none"
+        class="px-2 py-1 mr-2 border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
       >
         Retract
       </button>
@@ -444,7 +444,7 @@ const retestResults = () => retester_(getResultsUids());
           shield.hasRights(shield.actions.UPDATE, shield.objects.WORKSHEET) && can_verify
         "
         @click.prevent="verifyResults()"
-        class="px-2 py-1 mr-2 border-blue-500 border text-blue-500 rounded transition duration-300 hover:bg-blue-700 hover:text-white focus:outline-none"
+        class="px-2 py-1 mr-2 border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
       >
         Verify
       </button>
@@ -453,7 +453,7 @@ const retestResults = () => retester_(getResultsUids());
           shield.hasRights(shield.actions.UPDATE, shield.objects.WORKSHEET) && can_retest
         "
         @click.prevent="retestResults()"
-        class="px-2 py-1 mr-2 border-blue-500 border text-blue-500 rounded transition duration-300 hover:bg-blue-700 hover:text-white focus:outline-none"
+        class="px-2 py-1 mr-2 border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
       >
         Retest
       </button>

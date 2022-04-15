@@ -24,41 +24,20 @@ const showNotifications = (val) => notificationStore.showNotifications(val);
   <nav id="main-nav" class="flex items-center pr-4 bg-sky-800" role="navigation">
     <div class="flex-1 py-2">
       <div class="relative w-full max-w-xl mr-6 focus-within:text-purple-500">
-        <div class="absolute inset-y-0 flex items-center pl-2">
-          <svg class="w-4 h-4" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20">
-            <path
-              fill-rule="evenodd"
-              d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
-              clip-rule="evenodd"
-            ></path>
-          </svg>
-        </div>
-        <input
-          class="w-full pl-8 pr-2 py-2 text-sm text-gray-700 placeholder-gray-600 bg-gray-100 border-0 rounded-md dark:placeholder-gray-500 dark:focus:shadow-outline-gray dark:focus:placeholder-gray-600 dark:bg-gray-700 dark:text-gray-200 focus:placeholder-gray-500 focus:bg-white focus:border-purple-300 focus:outline-none focus:shadow-outline-purple form-input"
-          type="text"
-          placeholder="Search ..."
-          aria-label="Search"
-        />
+
       </div>
     </div>
     <div class="flex">
-      <!-- <a
-        href="#"
-        class="no-underline text-white opacity-50 flex items-center px-4 border-b border-transparent hover:opacity-100 md:hover:border-grey-dark"
-      >
-        <font-awesome-icon icon="flag" class="mr-2" />
-        <span>Activities</span>
-      </a> -->
       <span
         @click="toggleTheme()"
-        class="no-underline text-white opacity-50 flex items-center px-4 border-b border-transparent hover:opacity-100 md:hover:border-grey-dark"
+        class="no-underline text-gray-100 opacity-50 flex items-center px-4 border-b border-transparent hover:opacity-100 md:hover:border-grey-dark"
       >
         <font-awesome-icon :icon="theme?.icon" class="mr-2" />
         <span class="text-sm">{{ theme?.variant }} mode</span>
       </span>
       <a
         href="#"
-        class="no-underline text-white opacity-50 flex items-center px-4 border-b border-transparent hover:opacity-100 md:hover:border-grey-dark"
+        class="no-underline text-gray-100 opacity-50 flex items-center px-4 border-b border-transparent hover:opacity-100 md:hover:border-grey-dark"
         @click="showNotifications(true)"
       >
         <font-awesome-icon icon="bell" class="mr-2" />
@@ -67,7 +46,7 @@ const showNotifications = (val) => notificationStore.showNotifications(val);
       <router-link
         v-show="guards.canAccessPage(guards.pages.ADMINISTRATION)"
         to="/admin"
-        class="no-underline text-white opacity-50 flex items-center px-4 border-b border-transparent hover:opacity-100 md:hover:border-grey-dark"
+        class="no-underline text-gray-100 opacity-50 flex items-center px-4 border-b border-transparent hover:opacity-100 md:hover:border-grey-dark"
       >
         <font-awesome-icon icon="cog" class="mr-2" />
         <span class="text-sm">Settings</span>
@@ -100,11 +79,11 @@ const showNotifications = (val) => notificationStore.showNotifications(val);
 
           <div
             v-show="dropdownOpen"
-            class="absolute right-0 mt-4 py-2 w-48 bg-gray-700 rounded-md shadow-xl z-20"
+            class="absolute right-0 mt-4 py-2 w-48 bg-sky-800 rounded-sm shadow-xl z-20"
           >
             <li
               @click="authStore.logout()"
-              class="no-underline text-gray-500 py-1 opacity-50 flex items-center px-4 border-b border-transparent hover:opacity-100 md:hover:border-grey-dark hover:bg-gray-800 hover:text-gray-200"
+              class="no-underline text-gray-100 py-1 opacity-80 flex items-center px-4 border-b border-transparent hover:bg-gray-800 hover:bg-opacity-25 hover:text-white"
             >
               Log out
             </li>

@@ -1,7 +1,7 @@
-
 <script setup lang="ts">
   import modal from '../../../components/SimpleModal.vue';
   import { useRoute } from 'vue-router';
+  import { storeToRefs } from 'pinia'
   import { ref, computed } from 'vue';
   import { ADD_CLIENT, EDIT_CLIENT } from '../../../graphql/clients.mutations';
   import { useLocationStore, useClientStore } from '../../../stores';
@@ -12,10 +12,11 @@
   import * as shield from '../../../guards'
 
   const locationStore = useLocationStore();
-  const clientStore = useClientStore()
   const { withClientMutation } = useApiUtil()
-
   const route = useRoute();
+
+  const clientStore = useClientStore()
+  const { client } = storeToRefs(clientStore)
 
   let showClientModal = ref<boolean>(false);
   let createItem = ref<boolean>(false);
@@ -30,18 +31,17 @@
   let formTitle = ref<string>('');
 
   clientStore.fetchClientByUid(+route.query.clientUid!)
-  const client = (clientStore.getClient)!;
 
   locationStore.fetchCountries();
   const countries = computed(() => locationStore.getCountries)
 
   function addClient() {
-    withClientMutation(ADD_CLIENT, { name: client?.name, code: client?.code, districtUid: client?.districtUid }, "createClient")
+    withClientMutation(ADD_CLIENT, { name: client?.value?.name, code: client?.value?.code, districtUid: client?.value?.districtUid }, "createClient")
     .then((res) => clientStore.addClient(res));
   }
 
   function editClient() {
-    withClientMutation(EDIT_CLIENT, { uid: client?.uid, name: client?.name, code: client?.code, districtUid: client?.districtUid },"updateClient")
+    withClientMutation(EDIT_CLIENT, { uid: client?.value?.uid, name: client?.value?.name, code: client?.value?.code, districtUid: client?.value?.districtUid },"updateClient")
     .then((result) => clientStore.updateClient(result));
   }
 
@@ -82,7 +82,7 @@
       <section class="col-span-12" >
 
         <!-- Listing Item Card -->
-        <div class="bg-white rounded-lg shadow-sm hover:shadow-lg duration-500 px-4 sm:px-6 md:px-2 py-4" >
+        <div class="bg-white rounded-sm shadow-sm hover:shadow-lg duration-500 px-4 sm:px-6 md:px-2 py-4" >
           <div class="grid grid-cols-12 gap-3">
             <!-- Summary Column -->
             <div class="col-span-12 px-3 sm:px-0">
@@ -92,7 +92,7 @@
                   <button
                     v-show="shield.hasRights(shield.actions.UPDATE, shield.objects.CLIENT)"
                     @click="FormManager(false, 'client', client)"
-                    class="ml-4 inline-flex items-center justify-center w-8 h-8 mr-2 border-blue-500 border text-gray-900 transition-colors duration-150 bg-white rounded-full focus:outline-none hover:bg-gray-200"
+                    class="ml-4 inline-flex items-center justify-center w-8 h-8 mr-2 border-sky-800 border text-gray-900 transition-colors duration-150 bg-white rounded-full focus:outline-none hover:bg-gray-200"
                   >
                     <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20">
                       <path
@@ -198,7 +198,7 @@
         <button
           type="button"
           @click.prevent="saveForm()"
-          class="-mb-4 w-full border border-green-500 bg-green-500 text-white rounded-md px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-green-600 focus:outline-none focus:shadow-outline"
+          class="-mb-4 w-full border border-sky-800 bg-sky-800 text-white rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-sky-800 focus:outline-none focus:shadow-outline"
         >
           Save Form
         </button>

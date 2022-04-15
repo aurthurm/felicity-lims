@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-white shadow rounded px-3 pt-3 pb-5 border border-white">
+  <div class="bg-white shadow rounded-sm px-3 pt-3 pb-5 border border-white">
     <div class="">
       <h3 class="h2 font-bold text-gray-600">{{ board?.title?.toUpperCase() }}</h3>
       <hr class="my-2">

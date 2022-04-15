@@ -34,8 +34,6 @@ export const useAuthStore = defineStore('auth', () => {
         toastInfo("Good bye " + auth.value.user?.firstName)
         localStorage.removeItem(STORAGE_AUTH_KEY)
         reset()
-        location.replace("/auth")
-        // this.$router.push({ name: 'Home' }); 
     }
 
     const upsertPermission = () => {
@@ -61,6 +59,7 @@ export const useAuthStore = defineStore('auth', () => {
 
     const persistAuth = async (data): Promise<boolean> => {
         auth.value = data
+        auth.value.isAuthenticated = true;
         return true
     }
 

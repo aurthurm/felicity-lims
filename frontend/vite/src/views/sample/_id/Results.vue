@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import FButton from "../../../components/Buttons/Button.vue";
+import LoadingMessage from "../../../components/Spinners/LoadingMessage.vue"
 import { onMounted, watch, reactive, computed } from "vue";
 import { useRoute } from "vue-router";
+import { storeToRefs } from "pinia";
 import { useSampleStore } from "../../../stores";
 
 import { useAnalysisComposable } from "../../../composables";
@@ -9,7 +11,6 @@ import {
   IAnalysisProfile,
   IAnalysisResult,
   IAnalysisService,
-  ISample,
 } from "../../../models/analysis";
 import { isNullOrWs } from "../../../utils";
 
@@ -17,6 +18,7 @@ import * as shield from "../../../guards";
 
 const route = useRoute();
 const sampleStore = useSampleStore();
+const { sample, analysisResults, fetchingResults } = storeToRefs(sampleStore)
 
 const state = reactive({
   can_submit: false,
@@ -26,8 +28,6 @@ const state = reactive({
   can_retest: false,
   can_reinstate: false,
   allChecked: false,
-  analysisResults: computed<IAnalysisResult[]>(() => sampleStore.getAnalysisResults),
-  sample: computed(() => sampleStore.getSample),
 });
 
 onMounted(() => sampleStore.fetchAnalysisResultsForSample(+route.params.sampleUid));
@@ -44,7 +44,7 @@ watch(
 
 function getResultsChecked(): any {
   let results: IAnalysisResult[] = [];
-  state.analysisResults?.forEach((result) => {
+  analysisResults?.value?.forEach((result) => {
     if (result.checked) results.push(result);
   });
   return results;
@@ -87,19 +87,19 @@ function unCheck(result: IAnalysisResult): void {
 }
 
 async function toggleCheckAll() {
-  await state.analysisResults?.forEach((result) =>
+  await analysisResults?.value?.forEach((result) =>
     state.allChecked ? check(result) : unCheck(result)
   );
   resetAnalysesPermissions();
 }
 
 async function unCheckAll() {
-  await state.analysisResults?.forEach((result) => unCheck(result));
+  await analysisResults?.value?.forEach((result) => unCheck(result));
   resetAnalysesPermissions();
 }
 
 function areAllChecked(): Boolean {
-  return state.analysisResults?.every((item: IAnalysisResult) => item.checked === true);
+  return analysisResults?.value?.every((item: IAnalysisResult) => item.checked === true);
 }
 
 function isDisabledRowCheckBox(result: any): boolean {
@@ -123,7 +123,7 @@ function editResult(result: any): void {
 }
 
 function isEditable(result: IAnalysisResult): Boolean {
-  if (state.sample?.status === "due") return false;
+  if (sample?.value?.status === "due") return false;
   if (result?.editable || isNullOrWs(result?.result)) {
     if (
       ["cancelled", "verified", "retracted", "to_be_verified"].includes(result.status!)
@@ -145,7 +145,7 @@ function getResultRowColor(result: any): string {
       return "bg-gray-300";
     case "verified":
       if (result?.reportable === false) {
-        return "bg-red-100";
+        return "bg-orange-600";
       } else {
         return "";
       }
@@ -224,7 +224,7 @@ let {
 } = useAnalysisComposable();
 
 const submitResults = () =>
-  submitter_(prepareResults(), "sample", state.sample?.uid!).then(
+  submitter_(prepareResults(), "sample", sample?.value?.uid!).then(
     (_) => (_updateSample(), resetAnalysesPermissions())
   );
 const cancelResults = () =>
@@ -234,7 +234,7 @@ const reInstateResults = () =>
     (_) => (_updateSample(), resetAnalysesPermissions())
   );
 const verifyResults = () =>
-  verifier_(getResultsUids(), "sample", state.sample?.uid!).then(
+  verifier_(getResultsUids(), "sample", sample?.value?.uid!).then(
     (_) => (_updateSample(), resetAnalysesPermissions())
   );
 const retractResults = () =>
@@ -252,11 +252,15 @@ const retestResults = () =>
     <div
       class="align-middle inline-block min-w-full shadow overflow-hidden bg-white shadow-dashboard px-2 pt-1 rounded-bl-lg rounded-br-lg"
     >
-      <table class="min-w-full">
+
+      <div v-if="fetchingResults" class="py-4 text-center">
+        <LoadingMessage message="Fetching analytes ..."/>
+      </div>
+      <table class="min-w-full" v-else>
         <thead>
           <tr>
             <th
-              class="px-1 py-1 border-b-2 border-gray-300 text-left leading-4 text-black-500 tracking-wider"
+              class="px-1 py-1 border-b-2 border-gray-300 text-left leading-4 text-gray-800 tracking-wider"
             >
               <input
                 type="checkbox"
@@ -266,67 +270,68 @@ const retestResults = () =>
               />
             </th>
             <th
-              class="px-1 py-1 border-b-2 border-gray-300 text-left leading-4 text-black-500 tracking-wider"
+              class="px-1 py-1 border-b-2 border-gray-300 text-left leading-4 text-gray-800 tracking-wider"
             ></th>
             <th
-              class="px-1 py-1 border-b-2 border-gray-300 text-left leading-4 text-black-500 tracking-wider"
+              class="px-1 py-1 border-b-2 border-gray-300 text-left leading-4 text-gray-800 tracking-wider"
             >
               Analysis
             </th>
             <th
-              class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-black-500 tracking-wider"
+              class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider"
             >
               Methods
             </th>
             <th
-              class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-black-500 tracking-wider"
+              class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider"
             >
               Instrument
             </th>
             <th
-              class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-black-500 tracking-wider"
+              class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider"
             >
               Analyst
             </th>
             <th
-              class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-black-500 tracking-wider"
+              class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider"
             >
               Interim
             </th>
             <th
-              class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-black-500 tracking-wider"
+              class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider"
             >
               Result
             </th>
             <th
-              class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-black-500 tracking-wider"
+              class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider"
             >
               Retest
             </th>
             <th
-              class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-black-500 tracking-wider"
+              class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider"
             >
               Submitted
             </th>
             <th
-              class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-black-500 tracking-wider"
+              class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider"
             >
               Due Date
             </th>
             <th
-              class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-black-500 tracking-wider"
+              class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider"
             >
               Status
             </th>
             <th
-              class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-black-500 tracking-wider"
+              class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider"
             >
               Reportable
             </th>
             <th class="px-1 py-1 border-b-2 border-gray-300"></th>
           </tr>
         </thead>
-        <tbody class="bg-white">
+        <tbody 
+        class="bg-white">
           <tr
             v-for="result in state.analysisResults"
             :key="result.uid"
@@ -343,29 +348,29 @@ const retestResults = () =>
             </td>
             <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500"></td>
             <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-              <div class="text-sm leading-5 text-blue-900 font-semibold">
+              <div class="text-sm leading-5 text-sky-800 font-semibold">
                 {{ result.analysis?.name }}
               </div>
             </td>
             <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-              <div class="text-sm leading-5 text-blue-900">
+              <div class="text-sm leading-5 text-sky-800">
                 {{ result.method?.name || "None" }}
               </div>
             </td>
             <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-              <div class="text-sm leading-5 text-blue-900">
+              <div class="text-sm leading-5 text-sky-800">
                 {{ result.instrument?.name || "None" }}
               </div>
             </td>
             <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-              <div class="text-sm leading-5 text-blue-900">
+              <div class="text-sm leading-5 text-sky-800">
                 {{ result.analyst?.name || "moyoza" }}
               </div>
             </td>
             <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
               <div
                 v-if="!isEditable(result) || result?.analysis?.interims?.length === 0"
-                class="text-sm leading-5 text-blue-900"
+                class="text-sm leading-5 text-sky-800"
               >
                 ---
               </div>
@@ -387,7 +392,7 @@ const retestResults = () =>
               </label>
             </td>
             <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-              <div v-if="!isEditable(result)" class="text-sm leading-5 text-blue-900">
+              <div v-if="!isEditable(result)" class="text-sm leading-5 text-sky-800">
                 {{ result?.result }}
               </div>
               <label
@@ -418,35 +423,35 @@ const retestResults = () =>
               </label>
             </td>
             <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-              <div class="text-sm leading-5 text-blue-900">
-                <span v-if="result?.retest" class="text-green-500">
+              <div class="text-sm leading-5 text-sky-800">
+                <span v-if="result?.retest" class="text-sky-800">
                   <i class="fa fa-check-circle" aria-hidden="true"></i>
                 </span>
-                <span v-else class="text-red-500">
+                <span v-else class="text-orange-600">
                   <i class="fa fa-times-circle" aria-hidden="true"></i>
                 </span>
               </div>
             </td>
             <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-              <div class="text-sm leading-5 text-blue-900">2020-10-10</div>
+              <div class="text-sm leading-5 text-sky-800">2020-10-10</div>
             </td>
             <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-              <div class="text-sm leading-5 text-blue-900">2020-10-10</div>
+              <div class="text-sm leading-5 text-sky-800">2020-10-10</div>
             </td>
             <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
               <button
                 type="button"
-                class="bg-blue-400 text-white p-1 rounded leading-none"
+                class="bg-sky-800 text-white px-2 py-1 rounded-sm leading-none"
               >
                 {{ result.status }}
               </button>
             </td>
             <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-              <div class="text-sm leading-5 text-blue-900">
-                <span v-if="result?.reportable" class="text-green-500">
+              <div class="text-sm leading-5 text-sky-800">
+                <span v-if="result?.reportable" class="text-emerald-600">
                   <i class="fa fa-thumbs-up" aria-hidden="true"></i>
                 </span>
-                <span v-else class="text-red-500">
+                <span v-else class="text-orange-600">
                   <i class="fa fa-thumbs-down" aria-hidden="true"></i>
                 </span>
               </div>
@@ -455,7 +460,7 @@ const retestResults = () =>
               class="px-1 py-1 whitespace-no-wrap text-right border-b border-gray-500 text-sm leading-5"
             >
               <!-- <button @click.prevent="submitResult(result)" 
-                            class="p-1 ml-2 border-white border text-gray-500 rounded transition duration-300 hover:border-blue-500 hover:text-blue-500 focus:outline-none">
+                            class="p-1 ml-2 border-white border text-gray-500rounded-smtransition duration-300 hover:border-sky-800 hover:text-sky-800 focus:outline-none">
                             submit
                           </button> -->
             </td>
@@ -471,7 +476,7 @@ const retestResults = () =>
         shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) && state.can_cancel
       "
       @click.prevent="cancelResults"
-      :color="'blue-500'"
+      :color="'sky-800'"
       >Cancel</FButton
     >
     <FButton
@@ -480,7 +485,7 @@ const retestResults = () =>
         state.can_reinstate
       "
       @click.prevent="reInstateResults"
-      :color="'red-500'"
+      :color="'orange-600'"
       >Re-Instate</FButton
     >
     <FButton
@@ -488,7 +493,7 @@ const retestResults = () =>
         shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) && state.can_submit
       "
       @click.prevent="submitResults"
-      :color="'red-500'"
+      :color="'orange-600'"
       >Submit</FButton
     >
     <FButton
@@ -497,7 +502,7 @@ const retestResults = () =>
         state.can_retract
       "
       @click.prevent="retractResults"
-      :color="'red-500'"
+      :color="'orange-600'"
       >Retract</FButton
     >
     <FButton
@@ -505,7 +510,7 @@ const retestResults = () =>
         shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) && state.can_verify
       "
       @click.prevent="verifyResults"
-      :color="'red-500'"
+      :color="'orange-600'"
       >Verify</FButton
     >
     <FButton
@@ -513,7 +518,7 @@ const retestResults = () =>
         shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) && state.can_retest
       "
       @click.prevent="retestResults"
-      :color="'red-500'"
+      :color="'orange-600'"
       >Retest</FButton
     >
   </section>

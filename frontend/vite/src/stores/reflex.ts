@@ -12,10 +12,14 @@ const { withClientQuery } = useApiUtil();
 export const useReflexStore = defineStore('reflex', { 
     state: () => ({
         reflexRules: [],
+        fetchingReflexRules: false,
         reflexRule: undefined,
+        fetchingReflexRule: false,
     } as {
         reflexRules: IReflexRule[],
+        fetchingReflexRules: boolean,
         reflexRule?: IReflexRule,
+        fetchingReflexRule: boolean,
     }),
     getters: {
         getReflexRules: (state) => state.reflexRules,
@@ -23,12 +27,20 @@ export const useReflexStore = defineStore('reflex', {
     },
     actions: {
         async fetchAllReflexRules(){
+            this.fetchingReflexRules = true;
             await withClientQuery(GET_ALL_REFLEX_RULES, {}, "reflexRuleAll")
-            .then(payload => this.reflexRules = payload.items);
+            .then(payload => {
+                this.fetchingReflexRules = false
+                this.reflexRules = payload.items
+            }).catch(err => this.fetchingReflexRules= false);
         },
         async fetchReflexRuleByUid(uid: number){
+            this.fetchingReflexRule = true
             await withClientQuery(GET_EFLEX_RULE_BY_UID, { uid }, "reflexRuleByUid")
-              .then(payload => this.reflexRule = payload);
+              .then(payload => {
+                  this.fetchingReflexRule = false
+                this.reflexRule = payload
+              }).catch(err => this.fetchingReflexRule= false);
         },
         addReflexRule(rr: IReflexRule){
             this.reflexRules?.unshift(rr)

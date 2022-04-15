@@ -161,7 +161,7 @@
                 class="form-input mt-1 block w-full"
                 v-model="clientRequestId"
                 placeholder="CRID ..."
-              /><div class="text-red-700 w-4/12">{{ errors.clientRequestId }}</div>
+              /><div class="text-orange-600 w-4/12">{{ errors.clientRequestId }}</div>
             </div>
           </label>
 
@@ -174,7 +174,7 @@
                 v-model="clinicalData"
                 placeholder="Clinical Data ..."
               />
-              <div class="text-red-700 w-4/12">{{ errors.clinicalData }}</div>
+              <div class="text-orange-600 w-4/12">{{ errors.clinicalData }}</div>
             </div>
           </label>
 
@@ -192,7 +192,7 @@
                   <option value="" />
                   <option v-for="client in clients" :key="client.uid" :value="client.name" :data-client="client"></option>
               </datalist>
-              <div class="text-red-700 w-4/12">{{ errors.clientName }}</div>
+              <div class="text-orange-600 w-4/12">{{ errors.clientName }}</div>
             </div>
           </label>
 
@@ -210,7 +210,7 @@
                     :key="contact.uid"
                     :value="contact.uid" >{{ contact.firstName }} {{ contact.lastName }}</option>
                 </select>
-                <div class="text-red-700 w-4/12">{{ errors.clientContactUid }}</div>
+                <div class="text-orange-600 w-4/12">{{ errors.clientContactUid }}</div>
               </div>
           </label>
 
@@ -224,7 +224,7 @@
                 class="form-input mt-1 block w-full"
                 v-model="priority"
               />
-              <div class="text-red-700 w-4/12">{{ errors.priority }}</div>
+              <div class="text-orange-600 w-4/12">{{ errors.priority }}</div>
             </div>
           </label>
 
@@ -234,11 +234,11 @@
             <hr>
             <div class="flex justify-between items-center py-2">
                 <h5>Samples</h5>
-                <span class="text-red-700">{{ errors.samples }}</span>
+                <span class="text-orange-600">{{ errors.samples }}</span>
                 <button
                 v-if="samples?.length !== 20"
                 @click.prevent="addSample()"
-                class="px-2 py-1 mr-2 border-green-500 border text-green-500 rounded transition duration-300 hover:bg-green-700 hover:text-white focus:outline-none">Add Sample</button>
+                class="px-2 py-1 mr-2 border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none">Add Sample</button>
             </div>
             <hr class="mb-4">
 
@@ -295,7 +295,7 @@
                     <div class="">
                         <button
                         @click.prevent="removeSample(index)"
-                        class="px-2 py-1 mr-2 border-red-500 border text-red-500 rounded transition duration-300 hover:bg-red-700 hover:text-white focus:outline-none">Remove</button>
+                        class="px-2 py-1 mr-2 border-orange-600 border text-orange-600rounded-smtransition duration-300 hover:bg-orange-600 hover:text-white focus:outline-none">Remove</button>
                     </div>
                 </div>
                 <hr>
@@ -305,7 +305,7 @@
         <hr />
         <button
           type="submit"
-          class="-mb-4 w-full border border-green-500 bg-green-500 text-white rounded-md px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-green-600 focus:outline-none focus:shadow-outline"
+          class="-mb-4 w-full border border-sky-800 bg-sky-800 text-white rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-sky-800 focus:outline-none focus:shadow-outline"
         >
           Save Form
         </button>

@@ -13,10 +13,12 @@ const { withClientQuery } = useApiUtil();
 export const useNoticeStore = defineStore('notice', { 
     state: () => ({
         notices: [],
+        fetchingNotices: false,
         filterBy: "all",
         filters: ['all', 'active', 'expired']
     } as {
         notices: INotice[],
+        fetchingNotices: boolean,
         filterBy: string,
         filters: string[]
     }),
@@ -28,10 +30,12 @@ export const useNoticeStore = defineStore('notice', {
     },
     actions: {
         async fetchMyNotices(uid: number){
+            this.fetchingNotices = true;
             await withClientQuery(GET_NOTICES_BY_CREATOR, { uid }, "noticesByCreator")
               .then(payload => {
+                this.fetchingNotices = false
                 this.notices = payload?.map(n => modifyExpiry(n))
-              });
+              }).catch(err => this.fetchingNotices = false);
         },
         addNotice(notice: INotice){
             this.notices?.unshift(modifyExpiry(notice));

@@ -106,12 +106,12 @@
     <div class="container w-full my-4">
       <hr>
       <button
-        class="px-2 py-1 border-blue-500 border text-blue-500 rounded transition duration-300 hover:bg-blue-700 hover:text-white focus:outline-none"
+        class="px-2 py-1 border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
         @click="FormManager(true)"
       > Add Analyses Profile </button>
       <hr>
       <!-- <input
-        class="w-64 h-10 ml-6 pl-4 pr-2 py-1 text-sm text-gray-700 placeholder-gray-600 border-1 border-gray-400 rounded-md  focus:placeholder-gray-500 focus:border-green-100 focus:outline-none focus:shadow-outline-purple form-input"
+        class="w-64 h-10 ml-6 pl-4 pr-2 py-1 text-sm text-gray-700 placeholder-gray-600 border-1 border-gray-400 rounded-sm  focus:placeholder-gray-500 focus:border-emerald-200 focus:outline-none focus:shadow-outline-purple form-input"
         type="text" placeholder="Search ..." aria-label="Search"
         @keyup="searchProfile($event)"
         @focus="setProfileToNull()"
@@ -129,7 +129,7 @@
           @click.prevent.stop="selectProfile(profile)"
           :class="[
             'bg-white w-full p-1 mb-1 rounded',
-            { 'border-gray-100 bg-green-100': profile?.uid === analysisProfile?.uid },
+            { 'border-gray-100 bg-emerald-200': profile?.uid === analysisProfile?.uid },
           ]">
             <a class="cursor-pointer">
               <div class="flex-grow p-1">
@@ -144,7 +144,7 @@
       </section>
 
       <section class="col-span-9"  v-if="analysisProfile?.uid !== undefined">
-        <div class="bg-white rounded-lg shadow-sm hover:shadow-lg duration-500 px-4 sm:px-6 md:px-2 py-4" >
+        <div class="bg-white rounded-sm shadow-sm hover:shadow-lg duration-500 px-4 sm:px-6 md:px-2 py-4" >
           <div class="grid grid-cols-12 gap-3">
             <div class="col-span-12 px-3 sm:px-0">
               <div class="flex justify-between sm:text-sm md:text-md lg:text-lg text-gray-700 font-bold">
@@ -152,7 +152,7 @@
                 <div>
                   <button
                     @click="FormManager(false)"
-                    class="ml-4 inline-flex items-center justify-center w-8 h-8 mr-2 border-blue-500 border text-gray-900 transition-colors duration-150 bg-white rounded-full focus:outline-none hover:bg-gray-200"
+                    class="ml-4 inline-flex items-center justify-center w-8 h-8 mr-2 border-sky-800 border text-gray-900 transition-colors duration-150 bg-white rounded-full focus:outline-none hover:bg-gray-200"
                   >
                     <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20">
                       <path
@@ -206,7 +206,7 @@
                               v-for="service in category[1]" 
                               :key="service?.uid" class="cursor-pointer"
                               :class="[
-                                { 'border-green-500 bg-gray-200 underline pl-3': false },
+                                { 'border-sky-800 bg-gray-200 underline pl-3': false },
                               ]"
                               >
                                 <div class="flex-grow p-1">
@@ -234,7 +234,7 @@
                 </div>
               </div>
               <button
-              class="px-2 py-1 border-blue-500 border text-blue-500 rounded transition duration-300 hover:bg-blue-700 hover:text-white focus:outline-none"
+              class="px-2 py-1 border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
               @click="updateProfile()"
             > Update Analtsis Profile </button>
             </section>
@@ -318,7 +318,7 @@
         <button
           type="button"
           @click.prevent="saveForm()"
-          class="-mb-4 w-full border border-green-500 bg-green-500 text-white rounded-md px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-green-600 focus:outline-none focus:shadow-outline"
+          class="-mb-4 w-full border border-sky-800 bg-sky-800 text-white rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-sky-800 focus:outline-none focus:shadow-outline"
         >
           Save Form
         </button>

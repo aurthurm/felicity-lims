@@ -179,18 +179,18 @@
     <div class="document-editor">
       <div class="document-editor__toolbar"></div>
         <div class="document-editor__editable-container bg-gray-200">
-            <div class="document-editor__editable border-2 border-dotted border-red-500"></div>
+            <div class="document-editor__editable border-2 border-dotted border-orange-600"></div>
             <div class="absolute top-96 right-72">
               
                 <div 
                 v-if="!dataSaved" 
                 class="flex items-center justify-center space-x-2 animate-ping my-4">
-                  <div class="w-2 h-2 bg-blue-400 rounded-full animate-pulse"></div>
-                  <div class="w-2 h-2 bg-green-400 rounded-full animate-bounce"></div>
-                  <div class="w-2 h-2 bg-red-400 rounded-full animate-pulse"></div>
+                  <div class="w-2 h-2 bg-sky-800 rounded-full animate-pulse"></div>
+                  <div class="w-2 h-2 bg-sky-800 rounded-full animate-bounce"></div>
+                  <div class="w-2 h-2 bg-orange-600 rounded-full animate-pulse"></div>
                 </div>
                 <div v-else>
-                  <font-awesome-icon icon="check-circle" class="text-green-400" />
+                  <font-awesome-icon icon="check-circle" class="text-sky-800" />
                 </div>
             </div>
         </div>

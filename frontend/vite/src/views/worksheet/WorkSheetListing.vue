@@ -114,7 +114,7 @@
         <div class="flex flex-row mb-1 sm:mb-0">
             <div class="relative">
                 <select v-model="filterStatus"
-                class="appearance-none h-full rounded-l border block  w-full bg-white border-gray-400 text-gray-700 py-2 px-4 pr-8 leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
+                class="appearance-none h-full rounded-l-sm border block  w-full bg-white border-gray-400 text-gray-700 py-2 px-4 pr-8 leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
                   <option value="">All</option>
                     <option value="open">Open</option>
                     <option value="to_be_verified">To be Verified</option>
@@ -139,9 +139,9 @@
             </span>
             <input placeholder="Search ..."
                 v-model="filterText"
-                class="appearance-none rounded-r rounded-l sm:rounded-l-none border border-gray-400 border-b block pl-8 pr-6 py-2 w-full bg-white text-sm placeholder-gray-400 text-gray-700 focus:bg-white focus:placeholder-gray-600 focus:text-gray-700 focus:outline-none" />
+                class="appearance-none rounded-r-sm rounded-l-sm sm:rounded-l-none border border-gray-400 border-b block pl-8 pr-6 py-2 w-full bg-white text-sm placeholder-gray-400 text-gray-700 focus:bg-white focus:placeholder-gray-600 focus:text-gray-700 focus:outline-none" />
         </div><button @click.prevent="filterWorkSheets()"
-      class="px-2 py-1 ml-2 border-blue-500 border text-blue-500 rounded transition duration-300 hover:bg-blue-700 hover:text-white focus:outline-none">Filter ...</button>
+      class="px-2 py-1 ml-2 border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none">Filter ...</button>
     </div>
 
     <!-- <div v-show="hasRights(userRole, objects.WORKSHEET, actions.CREATE)"> -->
@@ -149,7 +149,7 @@
       <button
       v-show="shield.hasRights(shield.actions.CREATE, shield.objects.WORKSHEET)"
       @click.prevent="FormManager(true)"
-      class="p-2 h-10 border-blue-500 border text-blue-500 rounded transition duration-300 hover:bg-blue-700 hover:text-white focus:outline-none">Add WorkSheet</button>
+      class="p-2 h-10 border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none">Add WorkSheet</button>
     </div>
   </div>
 
@@ -160,13 +160,13 @@
       <table class="min-w-full">
           <thead>
           <tr>
-              <th class="px-1 py-1 border-b-2 border-gray-300 text-left leading-4 text-black-500 tracking-wider"></th>
-              <th class="px-1 py-1 border-b-2 border-gray-300 text-left leading-4 text-black-500 tracking-wider">WorkSheet ID</th>
-              <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-black-500 tracking-wider">Analysis/Test</th>
-              <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-black-500 tracking-wider">Samples</th>
-              <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-black-500 tracking-wider">Instrument</th>
-              <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-black-500 tracking-wider">Analyst</th>
-              <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-black-500 tracking-wider">Status</th>
+              <th class="px-1 py-1 border-b-2 border-gray-300 text-left leading-4 text-gray-800 tracking-wider"></th>
+              <th class="px-1 py-1 border-b-2 border-gray-300 text-left leading-4 text-gray-800 tracking-wider">WorkSheet ID</th>
+              <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">Analysis/Test</th>
+              <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">Samples</th>
+              <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">Instrument</th>
+              <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">Analyst</th>
+              <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">Status</th>
               <th class="px-1 py-1 border-b-2 border-gray-300"></th>
           </tr>
           </thead>
@@ -178,7 +178,7 @@
                   <!-- <span v-if="worksheet.priority > 1"
                   :class="[
                       'font-small',
-                      { 'text-red-700': worksheet.priority > 1 },
+                      { 'text-orange-600': worksheet.priority > 1 },
                   ]">
                       <i class="fa fa-star"></i>
                   </span> -->
@@ -193,23 +193,25 @@
               </div>
               </td>
               <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-              <div class="text-sm leading-5 text-blue-900">{{ analysesText(worksheet?.analyses!) }}</div>
+              <div class="text-sm leading-5 text-sky-800">{{ analysesText(worksheet?.analyses!) }}</div>
               </td>
               <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-              <div class="text-sm leading-5 text-blue-900">{{ worksheet?.assignedCount }}</div>
+              <div class="text-sm leading-5 text-sky-800">{{ worksheet?.assignedCount }}</div>
               </td>
               <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-              <div class="text-sm leading-5 text-blue-900">{{ worksheet?.instrument?.name || "None" }}</div>
+              <div class="text-sm leading-5 text-sky-800">{{ worksheet?.instrument?.name || "None" }}</div>
               </td>
               <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-              <div class="text-sm leading-5 text-blue-900">{{ analystName(worksheet?.analyst) }}</div>
+              <div class="text-sm leading-5 text-sky-800">{{ analystName(worksheet?.analyst) }}</div>
               </td>
               <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-              <button type="button" class="bg-blue-400 text-white p-1 rounded leading-none">{{ worksheet?.state || "unknown" }}</button>
+              <button type="button" class="bg-sky-800 text-white py-1 px-2 rounded-sm leading-none">{{ worksheet?.state || "unknown" }}</button>
               </td>
               <td class="px-1 py-1 whitespace-no-wrap text-right border-b border-gray-500 text-sm leading-5">
-                  <!-- <button class="px-2 py-1 mr-2 border-orange-500 border text-orange-500 rounded transition duration-300 hover:bg-orange-700 hover:text-white focus:outline-none">View</button> -->
-                  <button class="px-2 py-1 mr-2 border-blue-500 border text-blue-500 rounded transition duration-300 hover:bg-blue-700 hover:text-white focus:outline-none">View</button>
+                  <router-link 
+                  :to="{ name: 'worksheet-detail', params: { workSheetUid: worksheet?.uid  }}"
+                  class="px-2 py-1 mr-2 border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
+                  >View</router-link>
               </td>
           </tr>
           </tbody>
@@ -223,11 +225,11 @@
       <button 
       @click.prevent="showMoreWorkSheets()"
       v-show="pageInfo?.hasNextPage"
-      class="px-2 py-1 mr-2 border-blue-500 border text-blue-500 rounded transition duration-300 hover:bg-blue-700 hover:text-white focus:outline-none"
+      class="px-2 py-1 mr-2 border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
       >Show More</button>
       <div class="flex flex-row mb-1 sm:mb-0">
           <div class="relative">
-              <select class="appearance-none h-full rounded-l border block  w-full bg-white border-gray-400 text-gray-700 py-2 px-4 pr-8 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+              <select class="appearance-none h-full rounded-l-sm border block  w-full bg-white border-gray-400 text-gray-700 py-2 px-4 pr-8 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                v-model="workSheetBatch" :disabled="!pageInfo?.hasNextPage">
                   <option value="25">25</option>
                   <option value="50">50</option>
@@ -245,7 +247,7 @@
       </div>
       <div class="block relative">
           <input :placeholder="workSheetCount"
-              class="appearance-none rounded-r rounded-l sm:rounded-l-none border border-gray-400 border-b block pl-8 pr-6 py-2 w-full bg-white text-sm placeholder-gray-400 text-gray-700 focus:bg-white focus:placeholder-gray-600 focus:text-gray-700 focus:outline-none" disabled/>
+              class="appearance-none rounded-r-sm rounded-l-sm sm:rounded-l-none border border-gray-400 border-b block pl-8 pr-6 py-2 w-full bg-white text-sm placeholder-gray-400 text-gray-700 focus:bg-white focus:placeholder-gray-600 focus:text-gray-700 focus:outline-none" disabled/>
       </div>
     </div>
   </section>
@@ -285,7 +287,7 @@
         <button
           type="button"
           @click.prevent="saveForm()"
-          class="-mb-4 w-full border border-green-500 bg-green-500 text-white rounded-md px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-green-600 focus:outline-none focus:shadow-outline"
+          class="-mb-4 w-full border border-sky-800 bg-sky-800 text-white rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-sky-800 focus:outline-none focus:shadow-outline"
         >
           Save Form
         </button>

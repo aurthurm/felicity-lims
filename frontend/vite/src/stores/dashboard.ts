@@ -49,24 +49,41 @@ export const useDashBoardStore = defineStore('dashboard', () => {
         filterRange: { from: "", to: "" },
         filters: ['Today', 'Yesterday', 'Week', 'Last Week', 'Month', 'Last Month', 'Quarter', 'Last Quarter', 'Year', 'All', 'custom-range'],
         overViewStats: { analyses: [] as GroupCount[], samples: [] as GroupCount[], worksheets: [] as GroupCount[] },
+        fetchingOverViewStats: false,
         resourceStats: { instruments: [] as GroupCount[], samples: [] as any[] },
+        fetchingResourceStats: false,
         peformanceStats: { sample: [] as IProcess[], analysis: [] as IProcess[] },
+        fetchingSampePeformanceStats: false,
+        fetchingAnalysisPeformanceStats: false,
         currentPeformance: "received_to_published",
         performances: ["received_to_published", "received_to_submitted","submitted_to_verified", "verified_to_published"],
-        laggards: {} as any
+        laggards: {} as any,
+        fetchingLaggards: false
     })
 
     // get_OverViewStats
     const getOverViewStats = async () => {
-        await countSamplesGroupsByStatus();
-        await countAnalysisGroupsByStatus();
-        await countWrksheetGroupsByStatus();
+        dashboard.value.fetchingOverViewStats = true;
+        try {
+            await countSamplesGroupsByStatus();
+            await countAnalysisGroupsByStatus();
+            await countWrksheetGroupsByStatus();
+        } catch (error) {
+            dashboard.value.fetchingOverViewStats = false;
+        }
+        dashboard.value.fetchingOverViewStats = false;
     }
 
     // get_PeformanceStats
     const getResourceStats = async () => {
-        await countAnalysisGroupsByInstrument();
-        await getSampleGroupByAction();
+        dashboard.value.fetchingResourceStats = true;
+        try {
+            await countAnalysisGroupsByInstrument();
+            await getSampleGroupByAction();
+        } catch (error) {
+            dashboard.value.fetchingResourceStats = false;
+        }
+        dashboard.value.fetchingResourceStats = false;
     }
 
     // GET_SAMPLE_GROUP_BY_STATUS
@@ -75,7 +92,7 @@ export const useDashBoardStore = defineStore('dashboard', () => {
             startDate: dashboard.value.filterRange.from,
             endDate: dashboard.value.filterRange.to
         }
-        withClientQuery(GET_SAMPLE_GROUP_BY_STATUS, filters , 'countSampleGroupByStatus', 'network-only')
+       await  withClientQuery(GET_SAMPLE_GROUP_BY_STATUS, filters , 'countSampleGroupByStatus', 'network-only')
         .then(payload => dashboard.value.overViewStats.samples = payload.data)
     }
 
@@ -85,7 +102,7 @@ export const useDashBoardStore = defineStore('dashboard', () => {
             startDate: dashboard.value.filterRange.from,
             endDate: dashboard.value.filterRange.to
         }
-        withClientQuery(GET_ANALYSIS_GROUP_BY_STATUS, filters , 'countAnalyteGroupByStatus', 'network-only')
+        await withClientQuery(GET_ANALYSIS_GROUP_BY_STATUS, filters , 'countAnalyteGroupByStatus', 'network-only')
         .then(payload => dashboard.value.overViewStats.analyses = payload.data)
     }
 
@@ -95,7 +112,7 @@ export const useDashBoardStore = defineStore('dashboard', () => {
             startDate: dashboard.value.filterRange.from,
             endDate: dashboard.value.filterRange.to
         }
-        withClientQuery(GET_WORKSHEET_GROUP_BY_STATUS,filters, 'countWorksheetGroupByStatus', 'network-only')
+        await withClientQuery(GET_WORKSHEET_GROUP_BY_STATUS,filters, 'countWorksheetGroupByStatus', 'network-only')
         .then(payload => dashboard.value.overViewStats.worksheets = payload.data)
     }
 
@@ -105,7 +122,7 @@ export const useDashBoardStore = defineStore('dashboard', () => {
             startDate: dashboard.value.filterRange.from,
             endDate: dashboard.value.filterRange.to
         }
-        withClientQuery(GET_ANALYSIS_GROUP_BY_INSTRUMENT,filters, 'countAnalyteGroupByInstrument', 'network-only')
+        await withClientQuery(GET_ANALYSIS_GROUP_BY_INSTRUMENT,filters, 'countAnalyteGroupByInstrument', 'network-only')
         .then(payload => dashboard.value.resourceStats.instruments = payload.data)
     }
 
@@ -115,7 +132,7 @@ export const useDashBoardStore = defineStore('dashboard', () => {
             startDate: dashboard.value.filterRange.from,
             endDate: dashboard.value.filterRange.to
         }
-        withClientQuery(GET_SAMPLE_GROUPS_BY_ACTION,filters, 'countSampleGroupByAction', 'network-only')
+        await withClientQuery(GET_SAMPLE_GROUPS_BY_ACTION,filters, 'countSampleGroupByAction', 'network-only')
         .then(payload => dashboard.value.resourceStats.samples = payload.data)
     }
 
@@ -125,8 +142,12 @@ export const useDashBoardStore = defineStore('dashboard', () => {
             startDate: dashboard.value.filterRange.from,
             endDate: dashboard.value.filterRange.to
         }
-        withClientQuery(GET_SAMPLE_PROCESS_PEFORMANCE,filters, 'sampleProcessPerformance', 'network-only')
-        .then(payload =>  dashboard.value.peformanceStats.sample = payload.data)
+        dashboard.value.fetchingAnalysisPeformanceStats = true
+        await withClientQuery(GET_SAMPLE_PROCESS_PEFORMANCE,filters, 'sampleProcessPerformance', 'network-only')
+        .then(payload =>  {
+            dashboard.value.fetchingAnalysisPeformanceStats = false
+            dashboard.value.peformanceStats.sample = payload.data
+        }).catch(err => dashboard.value.fetchingAnalysisPeformanceStats = false)
     }
 
     // GET_ANALYSIS_PROCESS_PEFORMANCE
@@ -136,8 +157,12 @@ export const useDashBoardStore = defineStore('dashboard', () => {
             startDate: dashboard.value.filterRange.from,
             endDate: dashboard.value.filterRange.to
         }
-        withClientQuery(GET_ANALYSIS_PROCESS_PEFORMANCE,filters, 'analysisProcessPerformance', 'network-only')
-        .then(payload =>  dashboard.value.peformanceStats.analysis = payload.data)
+        dashboard.value.fetchingSampePeformanceStats = true
+        await withClientQuery(GET_ANALYSIS_PROCESS_PEFORMANCE,filters, 'analysisProcessPerformance', 'network-only')
+        .then(payload => {
+            dashboard.value.fetchingSampePeformanceStats = false
+            dashboard.value.peformanceStats.analysis = payload.data
+        }).catch(err => dashboard.value.fetchingSampePeformanceStats = false)
     }
 
     // GET_SAMPLE_LAGGARDS
@@ -146,8 +171,12 @@ export const useDashBoardStore = defineStore('dashboard', () => {
             startDate: dashboard.value.filterRange.from,
             endDate: dashboard.value.filterRange.to
         }
-        withClientQuery(GET_SAMPLE_LAGGARDS,filters, 'sampleLaggards', 'network-only')
-        .then(payload =>  dashboard.value.laggards = payload.data)
+        dashboard.value.fetchingLaggards = true;
+        await withClientQuery(GET_SAMPLE_LAGGARDS,filters, 'sampleLaggards', 'network-only')
+        .then(payload => {
+            dashboard.value.laggards = payload.data
+            dashboard.value.fetchingLaggards = false;
+        }).catch(err => dashboard.value.fetchingLaggards = false)
     }
 
     const setCurrentTab = (tab: string) => dashboard.value.currentTab = tab;

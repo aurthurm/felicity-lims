@@ -12,7 +12,7 @@
                 <span class="inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white bg-gray-600 rounded-full">{{ index + 1}} </span>
                 <span class="ml-4">{{ notice.title }}</span>
               </div>
-              <div class="text-sm font-semibold italic text-red-500">
+              <div class="text-sm font-semibold italic text-orange-600">
                 {{ notice.status }}
               </div>
             </div>

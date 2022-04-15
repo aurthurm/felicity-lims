@@ -93,7 +93,7 @@
 
 <template>
      <button
-        class="px-2 py-1 border-blue-500 border text-blue-500 rounded transition duration-300 hover:bg-blue-700 hover:text-white focus:outline-none"
+        class="px-2 py-1 border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
         @click="FormManager(true)"
       >Add Specification</button>
     <hr class="mt-2">
@@ -102,14 +102,14 @@
         <table class="min-w-full">
             <thead>
             <tr>
-                <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-red-500 tracking-wider">Min Report</th>
+                <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-orange-600 tracking-wider">Min Report</th>
                 <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-amber-500 tracking-wider">Min Warn</th>
-                <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-green-500 tracking-wider">Min</th>
-                <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-green-500 tracking-wider">Max</th>
+                <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-sky-800 tracking-wider">Min</th>
+                <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-sky-800 tracking-wider">Max</th>
                 <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-amber-500 tracking-wider">Max Warn</th>
-                <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-red-500 tracking-wider">Max Report</th>
-                <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-blue-500 tracking-wider">Warn Texts</th>
-                <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-blue-500 tracking-wider">Text Report</th>
+                <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-orange-600 tracking-wider">Max Report</th>
+                <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-sky-800 tracking-wider">Warn Texts</th>
+                <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-sky-800 tracking-wider">Text Report</th>
                 <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-black tracking-wider">Method</th>
                 <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-black tracking-wider">Gender</th>
                 <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-black tracking-wider">Age Min</th>
@@ -120,28 +120,28 @@
             <tbody class="bg-white">
             <tr v-for="specification in analysis?.specifications"  :key="specification?.uid">
                 <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-                  <div class="text-sm leading-5 text-red-500">{{ specification.minReport  }}</div>
+                  <div class="text-sm leading-5 text-orange-600">{{ specification.minReport  }}</div>
                 </td>
                 <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
                   <div class="text-sm leading-5 text-amber-500">{{ specification.minWarn  }}</div>
                 </td>
                 <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-                  <div class="text-sm leading-5 text-green-500">{{ specification.min  }}</div>
+                  <div class="text-sm leading-5 text-sky-800">{{ specification.min  }}</div>
                 </td>
                 <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-                  <div class="text-sm leading-5 text-green-500">{{ specification.max  }}</div>
+                  <div class="text-sm leading-5 text-sky-800">{{ specification.max  }}</div>
                 </td>
                 <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
                   <div class="text-sm leading-5 text-amber-500">{{ specification.maxWarn }}</div>
                 </td>
                 <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-                  <div class="text-sm leading-5 text-red-500">{{ specification.maxReport  }}</div>
+                  <div class="text-sm leading-5 text-orange-600">{{ specification.maxReport  }}</div>
                 </td>
                 <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-                  <div class="text-sm leading-5 text-blue-500">{{ specification.warnValues  }}</div>
+                  <div class="text-sm leading-5 text-sky-800">{{ specification.warnValues  }}</div>
                 </td>
                 <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-                  <div class="text-sm leading-5 text-blue-500">{{ specification.warnReport  }}</div>
+                  <div class="text-sm leading-5 text-sky-800">{{ specification.warnReport  }}</div>
                 </td>
                 <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
                   <div class="text-sm leading-5 text-black">{{ methodName(specification?.methodUid) }}</div>
@@ -156,7 +156,7 @@
                   <div class="text-sm leading-5 text-black">{{ specification.ageMax  }}</div>
                 </td>
                 <td class="px-1 py-1 whitespace-no-wrap text-right border-b border-gray-500 text-sm leading-5">
-                    <button @click="FormManager(false, specification)" class="px-2 py-1 mr-2 border-orange-500 border text-orange-500 rounded transition duration-300 hover:bg-orange-700 hover:text-white focus:outline-none">Edit</button>
+                    <button @click="FormManager(false, specification)" class="px-2 py-1 mr-2 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none">Edit</button>
                 </td>
             </tr>
             </tbody>
@@ -176,7 +176,7 @@
         <hr class="mb-4">
         <div class="grid grid-cols-6 gap-x-4 mb-4">
           <label class="block col-span-1 mb-2">
-            <span class="text-red-500">Min Report</span>
+            <span class="text-orange-600">Min Report</span>
             <input
              type="text"
               class="form-input mt-1 block w-full"
@@ -194,7 +194,7 @@
             />
           </label>
           <label class="block col-span-1 mb-2">
-            <span class="text-green-500">Min</span>
+            <span class="text-sky-800">Min</span>
             <input
              type="number"
               class="form-input mt-1 block w-full"
@@ -203,7 +203,7 @@
             />
           </label>
           <label class="block col-span-1 mb-2">
-            <span class="text-green-500">Max</span>
+            <span class="text-sky-800">Max</span>
             <input
              type="number"
               class="form-input mt-1 block w-full"
@@ -221,7 +221,7 @@
             />
           </label>
           <label class="block col-span-1 mb-2">
-            <span class="text-red-500">Max Report</span>
+            <span class="text-orange-600">Max Report</span>
             <input
              type="text"
               class="form-input mt-1 block w-full"
@@ -234,7 +234,7 @@
         <hr class="mb-4">
         <div class="grid grid-cols-2 gap-x-4 mb-4">
           <label class="block col-span-1 mb-2" >
-            <span class="text-blue-500 w-4/12">Textual Results (comma seperated)</span>
+            <span class="text-sky-800 w-4/12">Textual Results (comma seperated)</span>
             <div class="w-full">
             <input
              type="text"
@@ -245,7 +245,7 @@
             </div>
           </label>
           <label class="block col-span-1 mb-2" >
-            <span class="text-blue-500 w-4/12">Report Message</span>
+            <span class="text-sky-800 w-4/12">Report Message</span>
             <div class="w-full">
             <input
              type="text"
@@ -301,7 +301,7 @@
         <button
           type="button"
           @click.prevent="saveForm()"
-          class="-mb-4 w-full border border-green-500 bg-green-500 text-white rounded-md px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-green-600 focus:outline-none focus:shadow-outline"
+          class="-mb-4 w-full border border-sky-800 bg-sky-800 text-white rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-sky-800 focus:outline-none focus:shadow-outline"
         >
           Save Form
         </button>

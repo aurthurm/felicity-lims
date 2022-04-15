@@ -1,3 +1,20 @@
+<script setup lang="ts">
+  import { ref, computed } from 'vue';
+  import { useClientStore } from '../../../stores';
+  import tabSamples from '../../components/SampleListing.vue';
+  import tabContacts from '../comps/ContactTable.vue';
+
+  const clientStore = useClientStore();
+
+  let currentTab = ref('samples');
+  const tabs = ['samples', 'contacts'];
+  let currentTabComponent = computed(() => 'tab-' + currentTab.value);
+
+  let client = computed(() => clientStore.getClient)
+
+</script>
+
+
 <template>
 
   <section class="col-span-12" >
@@ -31,19 +48,3 @@
 <style lang="postcss">
 
 </style>
-
-<script setup lang="ts">
-  import { ref, computed } from 'vue';
-  import { useClientStore } from '../../../stores';
-  import tabSamples from '../../components/SampleListing.vue';
-  import tabContacts from '../comps/ContactTable.vue';
-
-  const clientStore = useClientStore();
-
-  let currentTab = ref('samples');
-  const tabs = ['samples', 'contacts'];
-  let currentTabComponent = computed(() => 'tab-' + currentTab.value);
-
-  let client = computed(() => clientStore.getClient)
-
-</script>

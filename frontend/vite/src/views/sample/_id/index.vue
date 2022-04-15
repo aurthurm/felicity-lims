@@ -1,4 +1,5 @@
 <script setup lang="ts">
+  import LoadingMessage from "../../../components/Spinners/LoadingMessage.vue"
   import { storeToRefs } from "pinia"
   import { computed, reactive, watch } from 'vue';
   import { IAnalysisProfile, IAnalysisService, ISample } from '../../../models/analysis';
@@ -18,10 +19,7 @@
       dropdownOpen: false,
     }); 
 
-    const { sample, childSample } = storeToRefs(sampleStore)
-
-    console.log (sample)
-    console.log (childSample)
+    const { sample, childSample, fetchingResults } = storeToRefs(sampleStore)
 
     watch(() => sample, (sampleIn, _) => {
       if(!sampleIn) return;
@@ -89,15 +87,18 @@
     <router-link
       v-if="sample?.analysisRequest?.patient?.uid"
      :to="{ name: 'patient-detail', params: { patientUid: sample?.analysisRequest?.patient?.uid } }" 
-      class="p-2 my-2 text-sm border-blue-500 border text-dark-700 transition-colors duration-150 rounded-lg focus:outline-none hover:bg-blue-500 hover:text-gray-100">
+      class="p-2 my-2 text-sm border-sky-800 border text-dark-700 transition-colors duration-150 rounded-sm focus:outline-none hover:bg-sky-800 hover:text-gray-100">
       ... other samples
     </router-link>
   </div>
 
   <hr>
 
-  <div class="bg-white rounded-lg shadow-sm hover:shadow-lg duration-500 px-4 sm:px-6 md:px-2 py-4" >
-    <div class="grid grid-cols-12 gap-3">
+  <div class="bg-white rounded-sm shadow-sm hover:shadow-lg duration-500 px-4 sm:px-6 md:px-2 py-4" >
+    <div v-if="fetchingResults" class="py-4 text-center">
+      <LoadingMessage message="Fetching sample details ..."/>
+    </div>
+    <div class="grid grid-cols-12 gap-3" v-else>
       <!-- Summary Column -->
       <div class="col-span-12 px-3 sm:px-0">
         <div class="mb-2 flex justify-between sm:text-sm md:text-md lg:text-lg text-gray-700 font-bold">
@@ -105,31 +106,31 @@
               <span v-if="sample?.priority! < 1"
                 :class="[
                     'font-small',
-                    { 'text-red-700': sample?.priority! < 1 },
+                    { 'text-orange-600': sample?.priority! < 1 },
                 ]">
                     <i class="fa fa-star"></i>
               </span>
               {{ sample?.sampleId }} 
               <!-- <button
-                class="ml-4 text-xs inline-flex items-center justify-center w-6 h-6 mr-2 border-blue-500 border text-gray-900 transition-colors duration-150 bg-white rounded-full focus:outline-none hover:bg-gray-200"
+                class="ml-4 text-xs inline-flex items-center justify-center w-6 h-6 mr-2 border-sky-800 border text-gray-900 transition-colors duration-150 bg-white rounded-full focus:outline-none hover:bg-gray-200"
               >
                 <i class="fa fa-pen"></i>
               </button> -->
               <span v-if="sample?.analysisRequest?.patient?.uid && childSample?.uid">
                   <font-awesome-icon icon="angle-double-right" class="mx-2" />
                   <router-link :to="{ name: 'sample-detail', params: { patientUid: sample?.analysisRequest?.patient?.uid, sampleUid: childSample?.uid } }" 
-                    class="p-2 my-2 text-sm border-blue-500 border text-dark-700 transition-colors duration-150 rounded-lg focus:outline-none hover:bg-blue-500 hover:text-gray-100">
+                    class="p-2 my-2 text-sm border-sky-800 border text-dark-700 transition-colors duration-150 rounded-sm focus:outline-none hover:bg-sky-800 hover:text-gray-100">
                     {{ childSample?.sampleId }}
                   </router-link>
               </span>
             </div>
           <span>{{ profileAnalysesText(sample?.profiles!, sample?.analyses!) }}</span>
-          <!-- <button type="button" class="bg-blue-400 text-white p-1 rounded leading-none">{{ sample?.status }}</button> -->
+          <!-- <button type="button" class="bg-sky-800 text-white p-1rounded-smleading-none">{{ sample?.status }}</button> -->
           <div >
             <div
               @click="state.dropdownOpen = !state.dropdownOpen"
               class="hidden md:block md:flex md:items-center ml-2 mt-2" >
-              <button type="button" class="bg-blue-400 text-white p-1 rounded leading-none">{{ sample?.status }}</button>
+              <button type="button" class="bg-sky-800 text-white px-2 py-1 rounded-sm leading-none">{{ sample?.status }}</button>
               <div class="ml-2"><font-awesome-icon icon="chevron-down" class="text-gray-400" /></div>
             </div>
             <div
@@ -138,31 +139,31 @@
               class="fixed inset-0 h-full w-full z-10" ></div>
             <div
               v-show="state.dropdownOpen"
-              class="absolute mt-4 py-0 bg-gray-300 rounded-md shadow-xl z-20" >
+              class="absolute mt-4 py-0 bg-gray-300 rounded-sm shadow-xl z-20" >
               <div
                 v-show="canReceive"
                 @click="receiveSample()"
-                class="no-underline text-gray-900 py-0 opacity-60 px-4 border-b border-transparent hover:opacity-100 md:hover:border-grey-dark hover:bg-blue-400 hover:text-white"
+                class="no-underline text-gray-900 py-0 opacity-60 px-4 border-b border-transparent hover:opacity-100 md:hover:border-grey-dark hover:bg-sky-800 hover:text-white"
                 >Receive</div>
               <div
                 v-show="canVerify"
                 @click="verifySample()"
-                class="no-underline text-gray-900 py-0 opacity-60 px-4 border-b border-transparent hover:opacity-100 md:hover:border-grey-dark hover:bg-blue-400 hover:text-white"
+                class="no-underline text-gray-900 py-0 opacity-60 px-4 border-b border-transparent hover:opacity-100 md:hover:border-grey-dark hover:bg-sky-800 hover:text-white"
                 >Verify</div>
               <div
                 v-show="canReject"
                 @click="rejectSample()"
-                class="no-underline text-gray-900 py-0 opacity-60 px-4 border-b border-transparent hover:opacity-100 md:hover:border-grey-dark hover:bg-red-400 hover:text-white"
+                class="no-underline text-gray-900 py-0 opacity-60 px-4 border-b border-transparent hover:opacity-100 md:hover:border-grey-dark hover:bg-orange-600 hover:text-white"
                 >Reject</div>
               <div
                 v-show="canCancel"
                 @click="cancelSample()"
-                class="no-underline text-gray-900 py-0 opacity-60 px-4 border-b border-transparent hover:opacity-100 md:hover:border-grey-dark hover:bg-red-400 hover:text-white"
+                class="no-underline text-gray-900 py-0 opacity-60 px-4 border-b border-transparent hover:opacity-100 md:hover:border-grey-dark hover:bg-orange-600 hover:text-white"
                 >Cancel</div>
               <div
                 v-show="canReinstate"
                 @click="reInstateSample()"
-                class="no-underline text-gray-900 py-0 opacity-60 px-4 border-b border-transparent hover:opacity-100 md:hover:border-grey-dark hover:bg-red-400 hover:text-white"
+                class="no-underline text-gray-900 py-0 opacity-60 px-4 border-b border-transparent hover:opacity-100 md:hover:border-grey-dark hover:bg-orange-600 hover:text-white"
                 >Reinstate</div>
               <div
                 v-show="canInvalidate"
@@ -207,7 +208,7 @@
 
   <div 
     v-show="sample?.status ==='rejected'"
-    class="bg-red-200 rounded-sm shadow-md duration-500 px-4 sm:px-6 md:px-2 py-4 my-4" >
+    class="bg-orange-600 rounded-sm shadow-md duration-500 px-4 sm:px-6 md:px-2 py-4 my-4" >
     <!-- <h3 clas="font-bold text-gray-800 text-md">This sample was rejected because of the following reason(s):</h3> -->
     <ul>
       <li v-for="reason in sample?.rejectionReasons">{{ reason.reason }}</li>

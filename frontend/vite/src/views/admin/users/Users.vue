@@ -120,7 +120,7 @@
         <hr>
         <div class="flex justify-between items-center">
           <h3>Users</h3>
-          <button @click="UserFormManager(true)" class="px-2 py-1 ml-2 border-blue-500 border text-blue-500 rounded transition duration-300 hover:bg-blue-700 hover:text-white focus:outline-none">Add User/Lab Contact</button>
+          <button @click="UserFormManager(true)" class="px-2 py-1 ml-2 border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none">Add User/Lab Contact</button>
         </div>
         <hr>
         
@@ -129,14 +129,14 @@
             <table class="min-w-full">
                 <thead>
                 <tr>
-                    <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-black-500 tracking-wider">First Name</th>
-                    <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-black-500 tracking-wider">Last Name</th>
-                    <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-black-500 tracking-wider">Email Adress</th>
-                    <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-black-500 tracking-wider">Active</th>
-                    <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-black-500 tracking-wider">Groups</th>
-                    <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-black-500 tracking-wider">Username</th>
-                    <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-black-500 tracking-wider">User Type</th>
-                    <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-black-500 tracking-wider">Blocked</th>
+                    <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">First Name</th>
+                    <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">Last Name</th>
+                    <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">Email Adress</th>
+                    <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">Active</th>
+                    <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">Groups</th>
+                    <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">Username</th>
+                    <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">User Type</th>
+                    <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">Blocked</th>
                     <th class="px-1 py-1 border-b-2 border-gray-300"></th>
                 </tr>
                 </thead>
@@ -148,45 +148,45 @@
                       </div>
                     </td>
                     <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-                      <div class="text-sm leading-5 text-blue-900">{{ user.lastName }}</div>
+                      <div class="text-sm leading-5 text-sky-800">{{ user.lastName }}</div>
                     </td>
                     <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-                      <div class="text-sm leading-5 text-blue-900">{{ user.email }}</div>
+                      <div class="text-sm leading-5 text-sky-800">{{ user.email }}</div>
                     </td>
                     <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
                         <span class=""
                           :class="[
                             'block h-4 w-4 rounded-full bottom-0 right-0',
-                            user?.isActive ? 'bg-green-400' : 'bg-red-400' ,
+                            user?.isActive ? 'bg-emerald-600' : 'bg-orange-600' ,
                           ]"
                         ></span>
                     </td>
                     <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-                      <div class="text-sm leading-5 text-blue-900">{{ userGroupsName(user) }}</div>
+                      <div class="text-sm leading-5 text-sky-800">{{ userGroupsName(user) }}</div>
                     </td>
                     <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-                      <div class="text-sm leading-5 text-blue-900">{{ user?.auth?.userName }}</div>
+                      <div class="text-sm leading-5 text-sky-800">{{ user?.auth?.userName }}</div>
                     </td>
                     <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-                      <div class="text-sm leading-5 text-blue-900">{{ user?.auth?.userType }}</div>
+                      <div class="text-sm leading-5 text-sky-800">{{ user?.auth?.userType }}</div>
                     </td>
                     <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
                         <span
                           v-if="user?.auth"
                           :class="[
                             'block h-4 w-4 rounded-full bottom-0 right-0',
-                            !user?.auth?.isBlocked ? 'bg-green-400' : 'bg-red-400' ,
+                            !user?.auth?.isBlocked ? 'bg-emerald-600' : 'bg-orange-600' ,
                           ]"
                         ></span>
                     </td>
                     <td class="px-1 py-1 whitespace-no-wrap text-right border-b border-gray-500 text-sm leading-5">
-                        <button @click="UserFormManager(false, user)" class="px-2 py-1 mr-2 border-orange-500 border text-orange-500 rounded transition duration-300 hover:bg-orange-700 hover:text-white focus:outline-none">Edit User</button>
+                        <button @click="UserFormManager(false, user)" class="px-2 py-1 mr-2 border-orange-500 border text-orange-500 rounded-sm transition duration-300 hover:bg-orange-700 hover:text-white focus:outline-none">Edit User</button>
                         <button
                         v-if="!user?.auth"
-                         @click="UserAuthFormManager(true, user)" class="px-2 py-1 mr-2 border-orange-500 border text-orange-500 rounded transition duration-300 hover:bg-orange-700 hover:text-white focus:outline-none">Add Auth</button>
+                         @click="UserAuthFormManager(true, user)" class="px-2 py-1 mr-2 border-orange-500 border text-orange-500 rounded-sm transition duration-300 hover:bg-orange-700 hover:text-white focus:outline-none">Add Auth</button>
                                                  <button
                         v-if="user?.auth"
-                         @click="UserAuthFormManager(false, user)" class="px-2 py-1 mr-2 border-orange-500 border text-orange-500 rounded transition duration-300 hover:bg-orange-700 hover:text-white focus:outline-none">Edit Auth</button>
+                         @click="UserAuthFormManager(false, user)" class="px-2 py-1 mr-2 border-orange-500 border text-orange-500 rounded-sm transition duration-300 hover:bg-orange-700 hover:text-white focus:outline-none">Edit Auth</button>
                     </td>
                 </tr>
                 </tbody>
@@ -254,7 +254,7 @@
         <button
           type="button"
           @click.prevent="saveUserForm()"
-          class="-mb-4 w-full border border-green-500 bg-green-500 text-white rounded-md px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-green-600 focus:outline-none focus:shadow-outline"
+          class="-mb-4 w-full border border-sky-800 bg-sky-800 text-white rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-sky-800 focus:outline-none focus:shadow-outline"
         >
           Save Form
         </button>
@@ -311,7 +311,7 @@
         <button
           type="button"
           @click.prevent="saveUserAuthForm()"
-          class="-mb-4 w-full border border-green-500 bg-green-500 text-white rounded-md px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-green-600 focus:outline-none focus:shadow-outline"
+          class="-mb-4 w-full border border-sky-800 bg-sky-800 text-white rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-sky-800 focus:outline-none focus:shadow-outline"
         >
           Save Form
         </button>

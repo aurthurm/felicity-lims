@@ -167,7 +167,7 @@
       <section class="col-span-3">
         Countries
         <button
-          class="p-2 my-2 ml-8 text-sm border-blue-500 border text-dark-700 transition-colors duration-150 rounded-lg focus:outline-none hover:bg-blue-500 hover:text-gray-100"
+          class="p-2 my-2 ml-8 text-sm border-sky-800 border text-dark-700 transition-colors duration-150 rounded-sm focus:outline-none hover:bg-sky-800 hover:text-gray-100"
           @click="FormManager(true, 'country')"
         >
           Add Country
@@ -176,7 +176,7 @@
           <div
             v-for="c in countries"
             :key="c.uid"
-            :class="country?.uid === c.uid ? 'bg-white w-full flex justify-between p-2 mb-1 rounded-l shadow border c-active' : 'bg-white w-full flex justify-between p-2 mb-1 rounded-l shadow border' "
+            :class="country?.uid === c.uid ? 'bg-white w-full flex justify-between p-2 mb-1 rounded-l-sm shadow border c-active' : 'bg-white w-full flex justify-between p-2 mb-1 rounded-l-sm shadow border' "
           >
             <a
               href="#"
@@ -195,7 +195,7 @@
       <section class="col-span-4" v-if="isCountrySelected()">
         Provinces
         <button
-          class="p-2 my-2 ml-8 text-sm border-blue-500 border text-dark-700 transition-colors duration-150 rounded-lg focus:outline-none hover:bg-blue-500 hover:text-gray-100"
+          class="p-2 my-2 ml-8 text-sm border-sky-800 border text-dark-700 transition-colors duration-150 rounded-sm focus:outline-none hover:bg-sky-800 hover:text-gray-100"
           @click="FormManager(true, 'province')"
         >
           Add Province
@@ -204,7 +204,7 @@
           <div
             v-for="p in provinces"
             :key="p.uid"
-            :class="province?.uid === p.uid ? 'bg-white w-full flex justify-between p-2 mb-1 rounded-l shadow border c-active' : 'bg-white w-full flex justify-between p-2 mb-1 rounded-l shadow border' "
+            :class="province?.uid === p.uid ? 'bg-white w-full flex justify-between p-2 mb-1 rounded-l-sm shadow border c-active' : 'bg-white w-full flex justify-between p-2 mb-1 rounded-l-sm shadow border' "
           >
             <a
               href="#"
@@ -224,7 +224,7 @@
       <section class="col-span-5" v-if="isProvinceSelected()">
         Districts
         <button
-          class="p-2 my-2 ml-8 text-sm border-blue-500 border text-dark-700 transition-colors duration-150 rounded-lg focus:outline-none hover:bg-blue-500 hover:text-gray-100"
+          class="p-2 my-2 ml-8 text-sm border-sky-800 border text-dark-700 transition-colors duration-150 rounded-sm focus:outline-none hover:bg-sky-800 hover:text-gray-100"
           @click="FormManager(true, 'district')"
         >
           Add District
@@ -233,7 +233,7 @@
           <div
             v-for="d in districts"
             :key="d.uid"
-            :class="district?.uid === d.uid ? 'bg-white w-full flex justify-between p-2 mb-1 rounded-l shadow border c-active' : 'bg-white w-full flex justify-between p-2 mb-1 rounded-l shadow border' "
+            :class="district?.uid === d.uid ? 'bg-white w-full flex justify-between p-2 mb-1 rounded-l-sm shadow border c-active' : 'bg-white w-full flex justify-between p-2 mb-1 rounded-l-sm shadow border' "
           >
             <a
               href="#"
@@ -281,7 +281,7 @@
         <button
           type="button"
           @click.prevent="saveForm()"
-          class="-mb-4 w-full border border-green-500 bg-green-500 text-white rounded-md px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-green-600 focus:outline-none focus:shadow-outline"
+          class="-mb-4 w-full border border-sky-800 bg-sky-800 text-white rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-sky-800 focus:outline-none focus:shadow-outline"
         >
           Save Form
         </button>

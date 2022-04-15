@@ -109,7 +109,7 @@
 }
 
 .ghost-card {
-  @apply border opacity-50 border-blue-500 bg-gray-200
+  @apply border opacity-50 border-sky-800 bg-gray-200
 }
 </style>
 
@@ -117,7 +117,7 @@
 <template>
     <div class="flex justify-start">
         <div class="h-tasks flex overflow-x-scroll py-2">
-            <div v-for="listing in board?.boardListings" :key="listing?.title" class="bg-gray-100 px-3 py-3 column-width rounded mr-4">
+            <div v-for="listing in board?.boardListings" :key="listing?.title" class="bg-gray-100 px-3 py-3 column-width rounded-sm mr-4">
                 <h4 class="h4 text-gray-600 font-bold font-sans tracking-wide text-medium" :data-listing="listing?.uid">{{listing?.title}}</h4>
                 <p class="h4 text-gray-500 font-normal italic font-sans tracking-wide text-small">{{listing?.description}}</p>
                 <draggable 
@@ -140,13 +140,13 @@
                     </template>
                     <template #header>
                       <div class="flex justify-start my-1">
-                        <button @click="TaskFormManager(listing)" class="align-center p-1">
+                        <button @click="TaskFormManager(listing)" class="align-center py-1 px-2 border hover:border-sky-800">
                           <i class="fa fa-plus-circle" aria-hidden="true"></i> Task
                         </button>
                         <button 
                         v-show="listing?.listingTasks?.length === 0"
                         @click="deleteListing(listing)" 
-                        class="align-center p-1 ml-8 text-red-600">
+                        class="align-center py-1 px-2 ml-8 text-orange-600 border hover:border-orange-600">
                           <i class="fa fa-trash" aria-hidden="true"></i> Listing
                         </button>
                       </div>
@@ -189,7 +189,7 @@
         <button
           type="button"
           @click.prevent="saveTaskForm()"
-          class="-mb-4 w-full border border-green-500 bg-green-500 text-white rounded-md px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-green-600 focus:outline-none focus:shadow-outline"
+          class="-mb-4 w-full border border-sky-800 bg-sky-800 text-white rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-sky-800 focus:outline-none focus:shadow-outline"
         >
           Save Form
         </button>

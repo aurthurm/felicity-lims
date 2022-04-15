@@ -14,14 +14,20 @@ export const useClientStore = defineStore('client', {
   state: () => { 
     return {
       clients: [],
+      fetchingClients: false,
       client: undefined,
+      fetchingClient: false,
       clientContacts: [],
+      fetchingClientContacts: false,
       clientCount: 0,
       clientPageInfo: undefined,
     } as {
       clients: IClient[];
+      fetchingClients: boolean;
       client?: IClient;
+      fetchingClient: boolean;
       clientContacts: IClientContact[];
+      fetchingClientContacts: boolean;
       clientCount?: number;
       clientPageInfo?: any;
     }
@@ -36,8 +42,10 @@ export const useClientStore = defineStore('client', {
   },
   actions: {
     async fetchClients(params){
+      this.fetchingClients = true;
       await withClientQuery(GET_ALL_CLIENTS, params, undefined)
       .then(payload => {
+        this.fetchingClients = false;
         const page = payload.clientAll
         const clients = page.items
         if(params.filterAction){
@@ -49,15 +57,24 @@ export const useClientStore = defineStore('client', {
     
         this.clientCount = page?.totalCount;
         this.clientPageInfo = page?.pageInfo;
-      })
+      }).catch(err => this.fetchingClients = false)
     },
     async searchClients(queryString: string){
+      this.fetchingClients = true;
       await withClientQuery(SEARCH_CLIENTS, { queryString }, "clientSearch")
-        .then(payload => this.clients = payload)
+        .then(payload => {
+          this.fetchingClients = false;
+          this.clients = payload
+        }).catch(err => this.fetchingClients = false)
     },
     async fetchClientByUid(uid){
+      if(!uid){ return }
+      this.fetchingClient = true
       await withClientQuery(GET_CLIENT_BY_UID, { uid },"clientByUid")
-      .then(payload => this.client = payload)
+      .then(payload => {
+        this.fetchingClient = false
+        this.client = payload
+      }).catch(err => this.fetchingClient = false)
     },
     addClient(payload: IClient) {
       this.clients?.unshift(payload);
@@ -67,8 +84,13 @@ export const useClientStore = defineStore('client', {
     },
   
     async fetchClientContacts(clientUid){
+      if(!clientUid){ return }
+      this.fetchingClientContacts = true
       await withClientQuery(GET_CLIENT_CONTACTS_BY_CLIENT_UID, { clientUid }, "clientContactByClientUid")
-      .then(payload =>  this.clientContacts = payload)
+      .then(payload =>  {
+        this.fetchingClientContacts = false
+        this.clientContacts = payload
+      }).catch(err => this.fetchingClientContacts = false)
     },
     addClientContact(payload: IClientContact) {
       this.clientContacts?.unshift(payload);

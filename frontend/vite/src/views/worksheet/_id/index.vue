@@ -24,12 +24,12 @@
 <template>
 
   <div class="">
-    <div class="bg-white rounded-lg shadow-sm hover:shadow-lg duration-500 px-4 py-4" >
+    <div class="bg-white rounded-sm shadow-sm hover:shadow-lg duration-500 px-4 py-4" >
       <div class="grid grid-cols-12 gap-1">
         <!-- Meta Column -->
         <div class="col-span-12 flex justify-between font-bold text-medium mb-2">
           <h3>{{ worksheet?.worksheetId }}</h3>
-          <button type="button" class="bg-blue-400 text-white p-1 rounded leading-none">{{ worksheet?.state || "unknown" }}</button>
+          <button type="button" class="bg-sky-800 text-white px-2 py-1 rounded-sm leading-none">{{ worksheet?.state || "unknown" }}</button>
         </div>
         <!-- Summary Column -->
         <div class="col-span-12  sm:col-end-13 px-3 sm:px-0">

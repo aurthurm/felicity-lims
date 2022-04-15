@@ -30,22 +30,36 @@ export const useSetupStore = defineStore('setup', {
         laboratory: undefined,
         laboratorySetting: undefined,
         departments: [], 
+        fetchingDepartments: false,
         suppliers: [],
+        fetchingSuppliers: false,
         manufacturers: [],
+        fetchingManufacturers: false,
         instrumentTypes: [],
+        fetchingInstrumentTypes: false,
         instruments: [],
+        fetchingInstruments: false,
         methods: [],
+        fetchingMethods: false,
         units: [],
+        fetchingUnits: false,
       } as {
         laboratory?: ILaboratory;
         laboratorySetting?: ILaboratorySetting;
-        departments: IDepartment[], 
+        departments: IDepartment[];
+        fetchingDepartments: boolean;
         suppliers: ISupplier[];
+        fetchingSuppliers: boolean;
         manufacturers: IManufacturer[];
+        fetchingManufacturers: boolean;
         instrumentTypes: IInstrumentType[];
+        fetchingInstrumentTypes: boolean;
         instruments: IInstrument[];
+        fetchingInstruments: boolean;
         methods: IMethod[];
+        fetchingMethods: boolean;
         units: IUnit[];
+        fetchingUnits: boolean;
       }
   },
   getters: {  
@@ -62,8 +76,12 @@ export const useSetupStore = defineStore('setup', {
   actions: {
     // DEPARMENT
     async fetchDepartments(params){
+      this.fetchingDepartments = true;
       await withClientQuery(GET_DEPARTMENTS, params, "departmentAll")
-            .then((depts: IDepartment[]) => this.departments = depts)
+            .then((depts: IDepartment[]) => {
+              this.fetchingDepartments= false
+              this.departments = depts
+            }).catch((err) => this.fetchingDepartments=false)
     },
     addDepartment(payload): void {
       this.departments?.unshift(payload);
@@ -93,8 +111,12 @@ export const useSetupStore = defineStore('setup', {
 
     // SUPPLIERS
     async fetchSuppliers(){
+      this.fetchingSuppliers = true;
       await withClientQuery(GET_ALL_SUPPLIERS, {}, "supplierAll")
-            .then(payload => this.suppliers = payload);
+            .then(payload => {
+              this.fetchingSuppliers = false;
+              this.suppliers = payload
+            }).catch(err => this.fetchingSuppliers = false);
     },
     addSupplier(payload): void {
       this.suppliers?.unshift(payload)
@@ -106,8 +128,12 @@ export const useSetupStore = defineStore('setup', {
 
     // MAUFACTURERS
     async fetchManufacturers(){
+      this.fetchingManufacturers = true;
       await withClientQuery(GET_ALL_MANUFACTURERS, {}, "manufacturerAll")
-            .then(payload => this.manufacturers = payload);
+            .then(payload => {
+              this.fetchingManufacturers = false;
+              this.manufacturers = payload
+            }).catch(err => this.fetchingManufacturers=false);
     },
     addManufacturer(payload){
       this.manufacturers?.unshift(payload);
@@ -119,8 +145,12 @@ export const useSetupStore = defineStore('setup', {
 
     // INSTRUMENT TYOES
     async fetchInstrumentTypes(){
+      this.fetchingInstrumentTypes = true;
       await withClientQuery(GET_ALL_INSTRUMENT_TYPES, {}, "instrumentTypeAll")
-            .then(payload => this.instrumentTypes = payload?.items);
+            .then(payload => {
+              this.fetchingInstrumentTypes = false;
+              this.instrumentTypes = payload?.items
+            }).catch(err => this.fetchingInstrumentTypes=false);
     },
     addInstrumentType(payload){
       this.instrumentTypes?.unshift(payload);
@@ -132,10 +162,12 @@ export const useSetupStore = defineStore('setup', {
 
     // INSTRUMENTS
     async fetchInstruments(){
+      this.fetchingInstruments  = false
       await withClientQuery(GET_ALL_INSTRUMENTS, {}, "instrumentAll")
             .then(payload => {
+              this.fetchingInstruments = false
               this.instruments = payload?.items
-            });
+            }).catch(err => this.fetchingInstruments=false);
     },
     addInstrument(payload){
       this.instruments?.unshift(payload);
@@ -147,8 +179,12 @@ export const useSetupStore = defineStore('setup', {
 
     // METHODS
     async fetchMethods(){
+      this.fetchingMethods = true
       await withClientQuery(GET_ALL_METHODS, {}, "methodAll")
-            .then(payload => this.methods = payload?.items);
+            .then(payload => {
+              this.fetchingMethods = false
+              this.methods = payload?.items
+            }).catch(err => this.fetchingMethods=false);
     },
     addMethod(payload){
       this.methods?.unshift(payload);
@@ -160,8 +196,12 @@ export const useSetupStore = defineStore('setup', {
 
     // UNITS
     async fetchUnits(){
+      this.fetchingUnits = true
       await withClientQuery(GET_ALL_UNITS, {}, "unitAll")
-            .then(payload => this.units = payload);
+            .then(payload => {
+              this.fetchingUnits = false
+              this.units = payload
+            }).catch(err => this.fetchingUnits = false);
     },
     addUnit(payload){
       this.units?.unshift(payload);

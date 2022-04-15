@@ -48,7 +48,7 @@ watch(
           <button
             role="button"
             aria-label="close modal"
-            class="focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 rounded-md cursor-pointer"
+            class="focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 rounded-sm cursor-pointer"
             @click="notificationStore.showNotifications(false)"
           >
             <svg
@@ -79,7 +79,7 @@ watch(
         <div
           v-for="stream of streamStore.streams"
           :key="stream.uid"
-          class="w-full p-3 mt-4 bg-white rounded flex"
+          class="w-full p-3 mt-4 bg-whiterounded-smflex"
         >
           <div
             tabindex="0"
@@ -120,12 +120,12 @@ watch(
           </div>
         </div>
 
-        <div class="w-full p-3 mt-8 bg-green-100 rounded flex items-center">
+        <div class="w-full p-3 mt-8 bg-emerald-200rounded-smflex items-center">
           <div
             tabindex="0"
             aria-label="success icon"
             role="img"
-            class="focus:outline-none w-8 h-8 border rounded-full border-green-200 flex flex-shrink-0 items-center justify-center"
+            class="focus:outline-none w-8 h-8 border rounded-full border-emerald-200 flex flex-shrink-0 items-center justify-center"
           >
             <svg
               width="16"
@@ -144,7 +144,7 @@ watch(
             <div class="flex items-center">
               <p
                 tabindex="0"
-                class="focus:outline-none text-sm leading-none text-green-700"
+                class="focus:outline-none text-sm leading-none text-sky-800"
               >
                 Design sprint completed
               </p>

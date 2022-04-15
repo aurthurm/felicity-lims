@@ -64,7 +64,7 @@
     <div class="flex flex-items-center">
       <h1 class="h1 my-4 font-bold text-dark-700">BOARDS</h1>
         <button
-          class="px-2 py-1 my-2 ml-8 text-sm border-blue-500 border text-dark-700 transition-colors duration-150 rounded-lg focus:outline-none hover:bg-blue-500 hover:text-gray-100"
+          class="px-2 py-1 my-2 ml-8 text-sm border-sky-800 border text-dark-700 transition-colors duration-150 rounded-sm focus:outline-none hover:bg-sky-800 hover:text-gray-100"
           @click="FormManager(true)"
         > Add Board</button>
     </div>
@@ -76,7 +76,6 @@
         </router-link>
       </span>
     </div>
-
 
   <!-- Board Modal -->
   <modal v-if="showModal" @close="showModal = false" :contentWidth="'w-1/3'">
@@ -118,7 +117,7 @@
         <button
           type="button"
           @click.prevent="saveForm()"
-          class="-mb-4 w-full border border-green-500 bg-green-500 text-white rounded-md px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-green-600 focus:outline-none focus:shadow-outline"
+          class="-mb-4 w-full border border-sky-800 bg-sky-800 text-white rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-sky-800 focus:outline-none focus:shadow-outline"
         >
           Save Form
         </button>

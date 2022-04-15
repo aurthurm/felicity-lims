@@ -15,13 +15,17 @@ export const useWorksheetStore = defineStore('worksheet', {
   state: () => {
       return {
         workSheetTemplates: [],
+        fetchingWorkSheetTemplates: false,
         workSheets: [],
+        fetchingWorkSheets: false,
         workSheet: undefined,
         workSheetCount: 0,
         workSheetPageInfo: undefined,
       } as {
         workSheetTemplates: IWorkSheetTemplate[];
+        fetchingWorkSheetTemplates: boolean;
         workSheets: IWorkSheet[];
+        fetchingWorkSheets: boolean;
         workSheet?: IWorkSheet;
         workSheetCount: number;
         workSheetPageInfo?: any;
@@ -39,8 +43,10 @@ export const useWorksheetStore = defineStore('worksheet', {
 
   // WorkSheet Templates
   async fetchWorkSheetTemplates(){
+    this.fetchingWorkSheetTemplates = true;
     await withClientQuery(GET_ALL_WORKSHEET_TEMPLATES, {}, "worksheetTemplateAll")
           .then(payload => {
+            this.fetchingWorkSheetTemplates = false;
               payload?.forEach((template: IWorkSheetTemplate) => {
                 const data: any = template.reserved;
                 const reserved = Object.entries(parseData(data)) as any[];
@@ -49,7 +55,7 @@ export const useWorksheetStore = defineStore('worksheet', {
                 template.reserved = new_res;
               });
               this.workSheetTemplates = payload;
-          });
+          }).catch(err => this.fetchingWorkSheetTemplates = false);
   },
   updateWorksheetTemplate(payload){
     const index = this.workSheetTemplates.findIndex(x => x.uid === payload.uid);
@@ -71,8 +77,10 @@ export const useWorksheetStore = defineStore('worksheet', {
 
   // WorkSheets
   async fetchWorkSheets(params){
+    this.fetchingWorkSheets = true;
     await withClientQuery(GET_ALL_WORKSHEETS, params, undefined)
           .then(payload => {
+            this.fetchingWorkSheets = false;
             const page = payload.worksheetAll
             const worksheets = page.items;
             if(params.filterAction){
@@ -83,7 +91,7 @@ export const useWorksheetStore = defineStore('worksheet', {
             }
             this.workSheetCount = page?.totalCount;
             this.workSheetPageInfo = page?.pageInfo;
-          });
+          }).catch(err => this.fetchingWorkSheets = false);
   },
   async fetchWorksheetByUid(worksheetUid: number){
     await withClientQuery(GET_WORKSHEET_BY_UID, { worksheetUid }, "worksheetByUid")

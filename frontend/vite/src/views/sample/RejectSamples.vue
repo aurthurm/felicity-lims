@@ -130,5 +130,5 @@
   <button
     v-if="state.rejections?.length > 0"
     @click.prevent="rejectSamples_()"
-    class="px-2 py-1 mr-2 border-red-500 border text-red-500 rounded transition duration-300 hover:bg-red-700 hover:text-white focus:outline-none">Reject Samples</button>
+    class="px-2 py-1 mr-2 border-orange-600 border text-orange-600rounded-smtransition duration-300 hover:bg-orange-600 hover:text-white focus:outline-none">Reject Samples</button>
 </template>

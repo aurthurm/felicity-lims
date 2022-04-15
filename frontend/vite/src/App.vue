@@ -1,11 +1,23 @@
 <script setup lang="ts">
-  import { computed, onMounted } from 'vue';
+  import { computed, onMounted, watch } from 'vue';
   import { useRouter } from 'vue-router';
-  import { useStreamStore } from './stores'
+  import { useStreamStore, useAuthStore } from './stores'
   import { userPreferenceComposable } from './composables'
 
-  const streamStore = useStreamStore()
+  const { currentRoute, push } = useRouter();
+  const authStore = useAuthStore()
 
+  if(!authStore.auth.isAuthenticated){
+    push({ name: "LOGIN" })
+  }
+
+  watch(() => authStore.auth.isAuthenticated, (isAuthenticated) => {
+    if(!isAuthenticated){
+      push({ name: "LOGIN" })
+    }
+  })
+
+  const streamStore = useStreamStore()
   const { loadPreferedTheme } = userPreferenceComposable()
 
   onMounted(() => {
@@ -17,7 +29,7 @@
     loadPreferedTheme()
   }
 
-  const { currentRoute } = useRouter();
+  
   const defaultLayout = 'default';
   const layout = computed(() => `${currentRoute.value.meta.layout || defaultLayout}-layout`);
 

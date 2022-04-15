@@ -19,9 +19,9 @@
                             <span class="text-sm text-gray-600 italic">{{trail?.key}}</span>
                         </span>
                         <span class="col-span-3">
-                            <span class="text-muted text-xs text-red-400">{{trail?.old}}</span> 
+                            <span class="text-muted text-xs text-orange-600">{{trail?.old}}</span> 
                             &rarr; 
-                            <span class="text-muted text-xs text-green-400">{{trail?.new}}</span>
+                            <span class="text-muted text-xs text-sky-800">{{trail?.new}}</span>
                         </span>
                     </div>
                 </div>

@@ -14,12 +14,18 @@ export const useKanbanStore = defineStore('kanban', {
   state: () => {
     return {
       boards: [],
+      fetchingBoards: false,
       board: undefined,
+      fetchingBoard: false,
       listingTask: undefined,
+      fetchingListingTask: false,
     } as {
       boards: IBoard[];
+      fetchingBoards: boolean;
       board?: IBoard;
+      fetchingBoard: boolean;
       listingTask?: ITask;
+      fetchingListingTask?: boolean;
     }
   },
   getters: {
@@ -32,8 +38,12 @@ export const useKanbanStore = defineStore('kanban', {
       this.board = undefined;
     },
     async fetchBoards(){
+      this.fetchingBoards = true;
       await withClientQuery(GET_ALL_BOARDS, {}, "boardAll")
-            .then(payload => this.boards = payload.items);
+            .then(payload => {
+              this.fetchingBoards = false
+              this.boards = payload.items
+            }).catch(err => this.fetchingBoards = false);
     },
     addBoard(payload){
       this.boards?.unshift(payload)
@@ -46,8 +56,13 @@ export const useKanbanStore = defineStore('kanban', {
       }
     },
     async fetchBoardByUid(uid){
+      if(!uid){ return }
+      this.fetchingBoard = true;
       await withClientQuery(GET_BOARD_BY_UID, { uid }, "boardByUid")
-      .then(payload => this.board = payload)
+      .then(payload => {
+        this.fetchingBoard = false
+        this.board = payload
+      }).catch(err => this.fetchingBoard = false)
     },
     deleteBoard(uid){
       const index = this.boards?.findIndex(item => item.uid === uid);
@@ -89,8 +104,13 @@ export const useKanbanStore = defineStore('kanban', {
       })
     },
     async fetchListingTaskByUid(uid){
+      if(!uid){ return }
+      this.fetchingListingTask = true
       await withClientQuery(GET_LISTING_TASK_BY_UID, { uid }, "listingTaskByUid")
-      .then(payload => this.listingTask = payload)
+      .then(payload => {
+        this.fetchingListingTask = false
+        this.listingTask = payload
+      }).catch(err => this.fetchingListingTask = false)
     },
     moveListingTask(payload){
       this.board?.boardListings?.forEach(listing => {
@@ -106,6 +126,7 @@ export const useKanbanStore = defineStore('kanban', {
       })    
     },
     deleteListingTask(uid){
+      if(!uid){ return }
       this.board?.boardListings!.forEach(listing => {
         const index = listing?.listingTasks?.findIndex(x => x.uid === uid);
         if (index > -1) {

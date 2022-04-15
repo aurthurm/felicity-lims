@@ -196,7 +196,7 @@
   <h1 class="text-xl text-gray-700 font-semibold">Delayed and incomplete</h1>
   <hr class="my-2">
   <div class="flex justify-start items-center">
-    <div class="content-middle bg-white shadow rounded px-6 pt-3 pb-5 border border-white mr-8 text-center">
+    <div class="content-middle bg-white shadow rounded-sm px-6 pt-3 pb-5 border border-white mr-8 text-center">
       <div class="mr-4 font-bold text-gray-600 text-2xl">{{ totalIncompleteDAI }}</div>
       <div class="font-semibold text-gray-400 text-l">Already Delayed</div>
     </div>
@@ -213,7 +213,7 @@
   <h1 class="mt-4 text-xl text-gray-700 font-semibold">Authosised already delayed</h1>
   <hr class="my-2">
   <div class="flex justify-start items-center">
-    <div class="content-middle bg-white shadow rounded px-6 pt-3 pb-5 border border-white mr-8 text-center">
+    <div class="content-middle bg-white shadow rounded-sm px-6 pt-3 pb-5 border border-white mr-8 text-center">
       <div class="mr-4 font-bold text-gray-600 text-2xl">{{ totalIncompleteAAD }}</div>
       <div class="font-semibold text-gray-400 text-l">Released as Delayed</div>
     </div>

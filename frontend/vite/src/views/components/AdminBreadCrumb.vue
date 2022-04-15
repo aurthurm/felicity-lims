@@ -1,7 +1,7 @@
 <template>
     <li class="col-span-4 border-gray-400" @click="select(title!)">
         <router-link :to="path" class="no-underline">
-            <div class="shadow border select-none cursor-pointer bg-white dark:bg-gray-800 rounded-md flex flex-1 items-center p-4">
+            <div class="shadow border select-none cursor-pointer bg-white dark:bg-gray-800 rounded-sm flex flex-1 items-center p-4">
                 <div class="mr-4">
                     <font-awesome-icon :icon="icon" />
                 </div>

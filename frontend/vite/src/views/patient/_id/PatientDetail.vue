@@ -2,8 +2,8 @@
   import tabSamples from '../../components/AnalyisRequestListing.vue';
   import tabCases from '../comps/CaseTable.vue';
   import tabLogs from '../../components/AuditLog.vue';
-
-  import { ref, computed } from 'vue';
+  import { storeToRefs } from 'pinia'
+  import { ref } from 'vue';
   import { useRouter } from 'vue-router';
   import { IPatient } from '../../../models/patient';
   import { usePatientStore } from '../../../stores';
@@ -14,10 +14,10 @@
   let patientStore = usePatientStore();
   let router = useRouter();
 
+  const { patient } = storeToRefs(patientStore)
+
   let currentTab = ref('samples');
   const tabs = ['samples', 'cases', 'logs'];
-
-  const patient = computed(() => patientStore.patient)
 
   function addSample(patient: IPatient): void {
     router?.push({
@@ -38,7 +38,7 @@
         <section class="my-4">
           <button 
           v-show="shield.hasRights(shield.actions.UPDATE, shield.objects.PATIENT)"
-          class="px-2 py-1 mr-2 border-blue-500 border text-blue-500 rounded transition duration-300 hover:bg-blue-700 hover:text-white focus:outline-none"
+          class="px-2 py-1 mr-2 border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
           @click.prevent="addSample(patient!)">Add Sample</button>
         </section>
 

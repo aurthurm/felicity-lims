@@ -371,7 +371,7 @@
 
         <div>
           <span class="italic">in &rarr;</span>  
-          <span class="ml-2 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-gray-100 bg-blue-600 rounded"> {{ kanBanTaskListing?.title }}</span>
+          <span class="ml-2 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-gray-100 bg-sky-800 rounded"> {{ kanBanTaskListing?.title }}</span>
         </div>
 
         <div class="grid grid-cols-3 gap-4">
@@ -381,11 +381,11 @@
                   <span 
                   v-if="!kanBanTask?.complete"
                   @dblclick="toggleTaskStatus(kanBanTask!)"
-                  class="border border-green-500 text-green-500 rounded-md py-1 px-2  transition-colors duration-500 ease select-none hover:bg-green-500 hover:text-gray-100 focus:outline-none focus:shadow-outline">Open</span>
+                  class="border border-sky-800 text-sky-800 rounded-sm py-1 px-2  transition-colors duration-500 ease select-none hover:bg-sky-800 hover:text-gray-100 focus:outline-none focus:shadow-outline">Open</span>
                   <span 
                   v-else
                   @dblclick="toggleTaskStatus(kanBanTask!)"
-                  class="border border-green-500 text-green-500 rounded-md py-1 px-2  transition-colors duration-500 ease select-none hover:bg-green-500 hover:text-gray-100 focus:outline-none focus:shadow-outline">Closed</span>
+                  class="border border-sky-800 text-sky-800 rounded-sm py-1 px-2  transition-colors duration-500 ease select-none hover:bg-sky-800 hover:text-gray-100 focus:outline-none focus:shadow-outline">Closed</span>
 
                   <span v-if="kanBanTask?.assigneeUid">
                     <span 
@@ -396,7 +396,7 @@
                   <button
                     type="button"
                     @click="changeAssignee = !changeAssignee"
-                    class="ml-4 text-blue-500 rounded-md py-1 px-1  transition-colors duration-500 ease select-none hover:bg-blue-500 hover:text-gray-100 focus:outline-none focus:shadow-outline"
+                    class="ml-4 text-sky-800 rounded-sm py-1 px-1  transition-colors duration-500 ease select-none hover:bg-sky-800 hover:text-gray-100 focus:outline-none focus:shadow-outline"
                     ><i class="fas fa-exchange-alt" aria-hidden="true"></i></button>
 
                   <span>
@@ -419,13 +419,13 @@
               <div class="pr-2 overflow-y-scroll pt-4" style="height: 65vh">
                 <section>
                   <input 
-                  class="form-input mt-1 block w-full text-lg font-semibold rounded border-transparent focus:border-gray-100 focus:ring-0"
+                  class="form-input mt-1 block w-full text-lg font-semiboldrounded-smborder-transparent focus:border-gray-100 focus:ring-0"
                   @keyup="updateTaskTitle(kanBanTask!, $event)" 
                   :value="kanBanTask?.title"/>
                   <hr>  
                   <div 
                   id="taskDescription"
-                  class="form-input rounded border-transparent focus:border-gray-100 focus:ring-0 font-medium tracking-wide text-gray-600 w-full p-2" 
+                  class="form-inputrounded-smborder-transparent focus:border-gray-100 focus:ring-0 font-medium tracking-wide text-gray-600 w-full p-2" 
                   contenteditable>
                   <div class="taskDescriptionPanel"></div>
                   </div>
@@ -433,7 +433,7 @@
                   <div class="task-editor">
                     <div class="task-editor__toolbar"></div>
                       <div class="task-editor__editable-container bg-gray-200">
-                          <div class="task-editor__editable border-2 border-dotted border-red-500"></div>
+                          <div class="task-editor__editable border-2 border-dotted border-orange-600"></div>
                       </div>
                   </div>
 
@@ -448,14 +448,14 @@
                     <button
                       type="button"
                     @click.prevent="showAddMilestone = !showAddMilestone"
-                      class="text-blue-500 rounded-md py-1 px-2  transition-colors duration-500 ease select-none hover:bg-blue-500 hover:text-gray-100 focus:outline-none focus:shadow-outline"
+                      class="text-sky-800 rounded-sm py-1 px-2  transition-colors duration-500 ease select-none hover:bg-sky-800 hover:text-gray-100 focus:outline-none focus:shadow-outline"
                     ><i class="fas fa-plus" aria-hidden="true"></i></button>
                   </h4>
 
                 <form 
                 v-show="showAddMilestone"
                 action="post" 
-                class="flex items-center justify-between border-2 border-gray-200 border-dotted rounded p-1" 
+                class="flex items-center justify-between border-2 border-gray-200 border-dottedrounded-smp-1" 
                 autocomplete="off">
                     <div class="flex justify-between mb-2">
                       <label class="flex items-center w-3/6">
@@ -471,13 +471,13 @@
                       </label>
                       <label class="flex items-center 1/6">
                         <span class="mx-2">Done</span>
-                        <input type="checkbox" class="form-checkbox text-green-500" v-model="taskMilestone.done" />
+                        <input type="checkbox" class="form-checkbox text-sky-800" v-model="taskMilestone.done" />
                       </label>
                     </div>
                     <button
                       type="button"
                       @click.prevent="saveTaskMilestone(kanBanTask, true)"
-                      class="border border-blue-500 text-blue-500 rounded-md py-1 px-2  transition-colors duration-500 ease select-none hover:bg-blue-500 hover:text-gray-100 focus:outline-none focus:shadow-outline"
+                      class="border border-sky-800 text-sky-800 rounded-sm py-1 px-2  transition-colors duration-500 ease select-none hover:bg-sky-800 hover:text-gray-100 focus:outline-none focus:shadow-outline"
                     >Save</button>
                   </form>
 
@@ -485,10 +485,10 @@
                   v-for="milestone in kanBanTask?.taskMilestones"
                   :key="milestone?.uid"
                   class="my-1 tracking-wide text-gray-500">
-                      <span class="mr-2 text-green-600">-</span>
+                      <span class="mr-2 text-sky-800">-</span>
                       <span>{{ milestone?.title }}</span>
-                      <span v-if="milestone?.done" class="mx-2 text-green-600"><i class="fas fa-check"></i></span>
-                      <span v-else="milestone?.done" class="mx-2 text-red-600"><i class="fas fa-times"></i></span>
+                      <span v-if="milestone?.done" class="mx-2 text-sky-800"><i class="fas fa-check"></i></span>
+                      <span v-else="milestone?.done" class="mx-2 text-orange-600"><i class="fas fa-times"></i></span>
                       <span v-if="milestone?.assignee?.auth?.userName">@{{ milestone?.assignee?.auth?.userName }}</span>
                   </div>
                 </section>
@@ -499,7 +499,7 @@
                     <button
                       type="button"
                     @click.prevent="showAddComment = !showAddComment"
-                      class=" text-blue-500 rounded-md py-1 px-2  transition-colors duration-500 ease select-none hover:bg-blue-500 hover:text-gray-100 focus:outline-none focus:shadow-outline"
+                      class=" text-sky-800 rounded-sm py-1 px-2  transition-colors duration-500 ease select-none hover:bg-sky-800 hover:text-gray-100 focus:outline-none focus:shadow-outline"
                     ><i class="fas fa-plus" aria-hidden="true"></i></button>
                   </h4>
                   <div 
@@ -516,12 +516,12 @@
                         <div class="taskComment-editor">
                           <div class="taskComment-editor__toolbar"></div>
                             <div class="taskComment-editor__editable-container bg-gray-200">
-                                <div class="taskComment-editor__editable border-2 border-dotted border-red-500"></div>
+                                <div class="taskComment-editor__editable border-2 border-dotted border-orange-600"></div>
                             </div>
                         </div>
                       <button 
                       @click="saveTaskComment(kanBanTask, true)"
-                      class="border border-blue-500 text-blue-500 rounded-md py-1 px-2 mt-4 transition-colors duration-500 ease select-none hover:bg-blue-500 hover:text-gray-100 focus:outline-none focus:shadow-outline">Add Comment</button>
+                      class="border border-sky-800 text-sky-800 rounded-sm py-1 px-2 mt-4 transition-colors duration-500 ease select-none hover:bg-sky-800 hover:text-gray-100 focus:outline-none focus:shadow-outline">Add Comment</button>
                   </div>
                   <div>
                     <div 
@@ -545,7 +545,7 @@
                   <span>
                     <input 
                     type="datetime-local" 
-                    class="bg-blue-100 rounded-md px-1" 
+                    class="bg-sky-800 rounded-sm px-1" 
                     @change="updateDueDate(kanBanTask!, $event)"
                     :value="kanBanTask?.dueDate">
                   </span>
@@ -557,14 +557,14 @@
                     <button
                       type="button"
                       @click.prevent="showAddMember = !showAddMember"
-                      class="text-blue-500 rounded-md py-1 px-1  transition-colors duration-500 ease select-none hover:bg-blue-500 hover:text-gray-100 focus:outline-none focus:shadow-outline"
+                      class="text-sky-800 rounded-sm py-1 px-1  transition-colors duration-500 ease select-none hover:bg-sky-800 hover:text-gray-100 focus:outline-none focus:shadow-outline"
                       ><i class="fas fa-plus" aria-hidden="true"></i></button>
                   </div>
 
                 <form 
                 v-show="showAddMember"
                 action="post" 
-                class="border-2 border-gray-200 border-dotted rounded p-1" 
+                class="border-2 border-gray-200 border-dottedrounded-smp-1" 
                 autocomplete="off">
                     <div class="flex justify-start">
                       <label class="block w-3/5" >
@@ -578,7 +578,7 @@
                       <button
                         type="button"
                         @click.prevent="addNewMember(kanBanTask!)"
-                        class="border border-blue-500 text-blue-500 rounded-md p-1 ml-2 transition-colors duration-500 ease select-none hover:bg-blue-500 hover:text-gray-100 focus:outline-none focus:shadow-outline"
+                        class="border border-sky-800 text-sky-800 rounded-sm p-1 ml-2 transition-colors duration-500 ease select-none hover:bg-sky-800 hover:text-gray-100 focus:outline-none focus:shadow-outline"
                       >Add</button>
                     </div>
                   </form>
@@ -617,14 +617,14 @@
                   </label>
                   <button 
                   @click="duplicateTask(kanBanTask!)"
-                  class="border border-green-500 text-green-500 rounded-md py-1 px-2  transition-colors duration-500 ease select-none hover:bg-green-500 hover:text-gray-100 focus:outline-none focus:shadow-outline">Duplicate</button>
+                  class="border border-sky-800 text-sky-800 rounded-sm py-1 px-2  transition-colors duration-500 ease select-none hover:bg-sky-800 hover:text-gray-100 focus:outline-none focus:shadow-outline">Duplicate</button>
                 </div>
                 <hr>
                 <div class="flex justify-between my-4">
                   <span class="text-lg font-semibold">Delete Task</span>
                   <button 
                   @click="deleteTask(kanBanTask!)"
-                  class="border border-red-500 text-red-500 rounded-md py-1 px-2  transition-colors duration-500 ease select-none hover:bg-red-500 hover:text-gray-100 focus:outline-none focus:shadow-outline">Delete</button>
+                  class="border border-orange-600 text-orange-600 rounded-sm py-1 px-2  transition-colors duration-500 ease select-none hover:bg-orange-600 hover:text-gray-100 focus:outline-none focus:shadow-outline">Delete</button>
                 </div>
             </section>
         </div>

@@ -1,6 +1,7 @@
-
 <script setup lang="ts">
+  import LoadingMessage from "../../components/Spinners/LoadingMessage.vue"
   import { ref, reactive, computed } from 'vue';
+  import { storeToRefs } from 'pinia'
   import { useRouter  } from 'vue-router';
   import { ADD_PATIENT } from '../../graphql/patient.mutations';
   import { usePatientStore, useLocationStore, useClientStore} from '../../stores';
@@ -16,6 +17,7 @@
   let router = useRouter();
 
   const { withClientMutation } = useApiUtil()
+  const { patients, fetchingPatients } = storeToRefs(patientStore)
 
   let createAction = ref<boolean>(true);
   let showModal = ref<boolean>(false);
@@ -45,7 +47,6 @@
     filterAction: false
   }); 
   patientStore.fetchPatients(patientParams);
-  const patients = computed(() => patientStore.getPatients)
   const patientCount = computed(() => patientStore.getPatients?.length + " of " + patientStore.getPatientCount + " patients")
   
   clientStore.fetchClients({})
@@ -132,7 +133,7 @@
 
     <div>
       <input
-        class="w-1/4 pl-4 h-10 pr-2 py-1 my-4 text-sm text-gray-700 placeholder-gray-600 border-1 border-gray-400 rounded-md  focus:placeholder-gray-500 focus:border-green-100 focus:outline-none focus:shadow-outline-purple form-input"
+        class="w-1/4 px-4 h-10  py-1 my-4 text-sm text-gray-800 placeholder-gray-400 border-1 border-gray-400 rounded-sm focus:placeholder-gray-500 focus:border-sky-800 focus:outline-none focus:shadow-outline-purple form-input"
         type="text" placeholder="Patient Search ..." aria-label="Search"
         v-model="patientSearch"
         @keyup="searchPatients($event)"
@@ -143,18 +144,18 @@
 
     <!-- Patients Table View -->
     <div class="overflow-x-auto my-4">
-        <div class="align-middle inline-block min-w-full shadow overflow-hidden bg-white shadow-dashboard px-2 pt-1 rounded-bl-lg rounded-br-lg">
+        <div class="align-middle inline-block min-w-full shadow overflow-hidden bg-white shadow-dashboard px-2 pt-1 rounded-bl-sm rounded-br-sm">
         <table class="min-w-full">
             <thead>
             <tr>
-                <th class="px-1 py-1 border-b-2 border-gray-300 text-left leading-4 text-black-500 tracking-wider">PatientID</th>
-                <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-black-500 tracking-wider">Full Name</th>
-                <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-black-500 tracking-wider">Age</th>
-                <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-black-500 tracking-wider">Gender</th>
-                <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-black-500 tracking-wider">Client Patient Id</th>
-                <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-black-500 tracking-wider">Province</th>
-                <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-black-500 tracking-wider">District</th>
-                <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-black-500 tracking-wider">Client</th>
+                <th class="px-1 py-1 border-b-2 border-gray-300 text-left leading-4 text-gray-800 tracking-wider">PatientID</th>
+                <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">Full Name</th>
+                <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">Age</th>
+                <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">Gender</th>
+                <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">Client Patient Id</th>
+                <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">Province</th>
+                <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">District</th>
+                <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">Client</th>
                 <th class="px-1 py-1 border-b-2 border-gray-300"></th>
             </tr>
             </thead>
@@ -164,40 +165,43 @@
               :key="pt.patientId">
                   <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
                     <router-link :to="{ name: 'patient-detail', params: { patientUid: pt?.uid } }" 
-                      class="p-1 ml-2 border-white border text-gray-500 rounded transition duration-300 hover:border-blue-500 hover:text-blue-500 focus:outline-none">{{ pt.patientId }}</router-link>
+                      class="p-1 ml-2 border-white border text-gray-500rounded-smtransition duration-300 hover:border-sky-800 hover:text-sky-800 focus:outline-none">{{ pt.patientId }}</router-link>
                   </td>
                   <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
                     <router-link :to="{ name: 'patient-detail', params: { patientUid: pt?.uid } }" 
-                      class="p-1 ml-2 border-white border text-gray-500 rounded transition duration-300 hover:border-blue-500 hover:text-blue-500 focus:outline-none">{{ getPatientFullName(pt) }}</router-link>
+                      class="p-1 ml-2 border-white border text-gray-500rounded-smtransition duration-300 hover:border-sky-800 hover:text-sky-800 focus:outline-none">{{ getPatientFullName(pt) }}</router-link>
                   </td>
                   <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-                  <div class="text-sm leading-5 text-blue-900">{{ pt.age }} yrs</div>
+                  <div class="text-sm leading-5 text-sky-800">{{ pt.age }} yrs</div>
                   </td>
                   <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-                  <div class="text-sm leading-5 text-blue-900">{{ getGender(pt.gender) }}</div>
+                  <div class="text-sm leading-5 text-sky-800">{{ getGender(pt.gender) }}</div>
                   </td>
                   <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-                  <div class="text-sm leading-5 text-blue-900">{{ pt.clientPatientId }}</div>
+                  <div class="text-sm leading-5 text-sky-800">{{ pt.clientPatientId }}</div>
                   </td>
                   <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-                  <div class="text-sm leading-5 text-blue-900">{{ pt?.client?.district?.province?.name }}</div>
+                  <div class="text-sm leading-5 text-sky-800">{{ pt?.client?.district?.province?.name }}</div>
                   </td>
                   <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-                  <div class="text-sm leading-5 text-blue-900">{{ pt?.client?.district?.name }}</div>
+                  <div class="text-sm leading-5 text-sky-800">{{ pt?.client?.district?.name }}</div>
                   </td>
                   <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-                  <div class="text-sm leading-5 text-blue-900">{{ pt?.client?.name }}</div>
+                  <div class="text-sm leading-5 text-sky-800">{{ pt?.client?.name }}</div>
                   </td>
     
                   <td class="px-1 py-1 whitespace-no-wrap text-right border-b border-gray-500 text-sm leading-5">
                     <a 
                       v-show="shield.hasRights(shield.actions.CREATE, shield.objects.SAMPLE)"
                       @click.prevent="addSample(pt)"
-                      class="px-2 py-1 mr-2 border-blue-500 border text-blue-500 rounded transition duration-300 hover:bg-blue-700 hover:text-white focus:outline-none">Add Analysis Request</a >
+                      class="px-2 py-1 mr-2 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none">Add Analysis Request</a >
                   </td>
               </tr>
             </tbody>
         </table>
+        <div v-if="fetchingPatients" class="py-4 text-center">
+            <LoadingMessage message="Fetching patients ..."/>
+        </div>
         </div>
     </div>
 
@@ -205,15 +209,15 @@
     <section class="flex justify-between">
       <div>
         <div class="flex content-start items-center">
-          <span class="text-blue-500"><i class="fas fa-info-circle"></i></span>
-          <p class="ml-2 italic text-red-500">Click register when you dont find your patient during search*</p>
+          <span class="text-sky-800"><i class="fas fa-info-circle"></i></span>
+          <p class="ml-2 italic text-orange-600">Click register when you dont find your patient during search*</p>
         </div>
         <hr class="my-2">
 
         <router-link
           v-show="shield.hasRights(shield.actions.CREATE, shield.objects.PATIENT)"
           :to="{ name: 'patients-register', query: { cpid: patientSearch } }"
-          class="px-4 p-1 text-sm border-blue-500 border text-dark-700 transition-colors duration-150 rounded focus:outline-none hover:bg-blue-500 hover:text-gray-100">
+          class="px-4 p-1 text-sm border-sky-800 border text-dark-700 transition-colors duration-150 rounded-sm focus:outline-none hover:bg-sky-800 hover:text-gray-100">
           Register New Patiet
         </router-link>
       </div>
@@ -223,11 +227,11 @@
           <button 
           @click.prevent="showMorePatients()"
           v-show="pageInfo?.hasNextPage"
-          class="px-2 py-1 mr-2 border-blue-500 border text-blue-500 rounded transition duration-300 hover:bg-blue-700 hover:text-white focus:outline-none"
+          class="px-2 py-1 mr-2 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
           >Show More</button>
           <div class="flex flex-row mb-1 sm:mb-0">
               <div class="relative">
-                  <select class="appearance-none h-full rounded-l border block  w-full bg-white border-gray-400 text-gray-700 py-2 px-4 pr-8 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                  <select class="appearance-none h-full rounded-sm border block  w-full bg-white border-gray-400 text-gray-700 py-2 px-4 pr-8 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                   v-model="patientBatch" :disabled="!pageInfo?.hasNextPage">
                       <option value="25">25</option>
                       <option value="50">50</option>
@@ -248,7 +252,7 @@
           </div>
           <div class="block relative">
               <input :placeholder="patientCount"
-                  class="appearance-none rounded-r rounded-l sm:rounded-l-none border border-gray-400 border-b block pl-8 pr-6 py-2 w-full bg-white text-sm placeholder-gray-400 text-gray-700 focus:bg-white focus:placeholder-gray-600 focus:text-gray-700 focus:outline-none" disabled/>
+                  class="appearance-none rounded-r-sm rounded-l-sm sm:rounded-l-none border border-gray-400 border-b block pl-8 pr-6 py-2 w-full bg-white text-sm placeholder-gray-400 text-gray-700 focus:bg-white focus:placeholder-gray-600 focus:text-gray-700 focus:outline-none" disabled/>
           </div>
         </div>
       </section>

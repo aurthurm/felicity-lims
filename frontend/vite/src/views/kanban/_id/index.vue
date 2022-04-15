@@ -68,7 +68,7 @@
         <button 
         v-show="canDeleteBoard(board!)"
         @click="deletekanBanBoard(board!)" 
-        class="align-center p-1 text-red-600">
+        class="align-center p-1 text-orange-600">
           <i class="fa fa-trash" aria-hidden="true"></i> Board
         </button>
       </div>
@@ -79,7 +79,7 @@
     <div class="ml-4">
         <button 
         v-show="showAddList"
-        class="mt-6 border border-gray-900 border-dashed rounded py-2 px-2 text-gray-500"
+        class="mt-6 border border-sky-800 border-dashedrounded-smpy-2 px-2 text-sky-800 hover:text-white hover:bg-sky-800"
         @click.prevent="FormManager()">
           <i class="fa fa-plus-circle" aria-hidden="true"></i> Listing
         </button>
@@ -121,7 +121,7 @@
         <button
           type="button"
           @click.prevent="saveForm()"
-          class="-mb-4 w-full border border-green-500 bg-green-500 text-white rounded-md px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-green-600 focus:outline-none focus:shadow-outline"
+          class="-mb-4 w-full border border-sky-800 bg-sky-800 text-white rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-sky-800 focus:outline-none focus:shadow-outline"
         >
           Save Form
         </button>

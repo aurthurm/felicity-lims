@@ -30,7 +30,10 @@
     allChecked: false,
   })
 
-  // sampleStore.resetSamples();
+  if(route?.query?.clientUid){
+    sampleStore.resetSamples();
+  }
+  
   sampleStore.fetchSampleTypes();
 
   let analysesParams = reactive({ 
@@ -186,7 +189,7 @@
         <div class="flex flex-row mb-1 sm:mb-0">
             <div class="relative">
                 <select v-model="state.filterStatus"
-                class="appearance-none h-full rounded-l border block  w-full bg-white border-gray-400 text-gray-700 py-2 px-4 pr-8 leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
+                class="appearance-none h-full rounded-l-sm border block  w-full bg-white border-gray-400 text-gray-700 py-2 px-4 pr-8 leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
                    <option value="">All</option>
                     <option value="due">Due</option>
                     <option value="received">Received</option>
@@ -215,16 +218,16 @@
             </span>
             <input placeholder="Search ..."
                 v-model="state.filterText"
-                class="appearance-none rounded-r rounded-l sm:rounded-l-none border border-gray-400 border-b block pl-8 pr-6 py-2 w-full bg-white text-sm placeholder-gray-400 text-gray-700 focus:bg-white focus:placeholder-gray-600 focus:text-gray-700 focus:outline-none" />
+                class="appearance-none rounded-r-sm rounded-l-sm sm:rounded-l-none border border-gray-400 border-b block pl-8 pr-6 py-2 w-full bg-white text-sm placeholder-gray-400 text-gray-700 focus:bg-white focus:placeholder-gray-600 focus:text-gray-700 focus:outline-none" />
         </div><button @click.prevent="filterSamples()"
-      class="px-2 py-1 ml-2 border-blue-500 border text-blue-500 rounded transition duration-300 hover:bg-blue-700 hover:text-white focus:outline-none">Filter ...</button>
+      class="px-2 py-1 ml-2 border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none">Filter ...</button>
       
     </div>
 
     <hr>
       <router-link 
       v-show="shield.hasRights(shield.actions.CREATE, shield.objects.SAMPLE)"
-      to="/patients/search" class="px-2 py-1 border-blue-500 border text-blue-500 rounded transition duration-300 hover:bg-blue-700 hover:text-white focus:outline-none">Add Laboratory Request</router-link>
+      to="/patients/search" class="px-2 py-1 border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none">Add Laboratory Request</router-link>
     <hr>
 
     <!-- Sampe Table View -->
@@ -233,18 +236,18 @@
         <table class="min-w-full">
             <thead>
             <tr>
-                <th class="px-1 py-1 border-b-2 border-gray-300 text-left leading-4 text-black-500 tracking-wider">
+                <th class="px-1 py-1 border-b-2 border-gray-300 text-left leading-4 text-gray-800 tracking-wider">
                     <input type="checkbox" @change="toggleCheckAll()" v-model="state.allChecked">
                 </th>
-                <th class="px-1 py-1 border-b-2 border-gray-300 text-left leading-4 text-black-500 tracking-wider"></th>
-                <th class="px-1 py-1 border-b-2 border-gray-300 text-left leading-4 text-black-500 tracking-wider">Sampe ID</th>
-                <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-black-500 tracking-wider">Test(s)</th>
-                <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-black-500 tracking-wider">Patient</th>
-                <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-black-500 tracking-wider">Client Patient ID</th>
-                <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-black-500 tracking-wider">Client</th>
-                <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-black-500 tracking-wider">Created</th>
-                <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-black-500 tracking-wider">Creator</th>
-                <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-black-500 tracking-wider">Status</th>
+                <th class="px-1 py-1 border-b-2 border-gray-300 text-left leading-4 text-gray-800 tracking-wider"></th>
+                <th class="px-1 py-1 border-b-2 border-gray-300 text-left leading-4 text-gray-800 tracking-wider">Sampe ID</th>
+                <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">Test(s)</th>
+                <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">Patient</th>
+                <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">Client Patient ID</th>
+                <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">Client</th>
+                <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">Created</th>
+                <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">Creator</th>
+                <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">Status</th>
                 <th class="px-1 py-1 border-b-2 border-gray-300"></th>
             </tr>
             </thead>
@@ -259,7 +262,7 @@
                       <span v-if="sample.priority! > 1"
                       :class="[
                           'font-small',
-                          { 'text-red-700': sample.priority! > 1 },
+                          { 'text-orange-600': sample.priority! > 1 },
                       ]">
                           <i class="fa fa-star"></i>
                       </span>
@@ -272,29 +275,31 @@
                   </div>
                   </td>
                   <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-                  <div class="text-sm leading-5 text-blue-900">{{ profileAnalysesText(sample.profiles!, sample.analyses!) }}</div>
+                  <div class="text-sm leading-5 text-sky-800">{{ profileAnalysesText(sample.profiles!, sample.analyses!) }}</div>
                   </td>
                   <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-                  <div class="text-sm leading-5 text-blue-900">{{ sample?.analysisRequest?.patient?.firstName }} {{ sample?.analysisRequest?.patient?.lastName }}</div>
+                  <div class="text-sm leading-5 text-sky-800">{{ sample?.analysisRequest?.patient?.firstName }} {{ sample?.analysisRequest?.patient?.lastName }}</div>
                   </td>
                   <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-                  <div class="text-sm leading-5 text-blue-900">{{ sample?.analysisRequest?.patient?.clientPatientId }}</div>
+                  <div class="text-sm leading-5 text-sky-800">{{ sample?.analysisRequest?.patient?.clientPatientId }}</div>
                   </td>
                   <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-                  <div class="text-sm leading-5 text-blue-900">{{ sample?.analysisRequest?.client?.name }}</div>
+                  <div class="text-sm leading-5 text-sky-800">{{ sample?.analysisRequest?.client?.name }}</div>
                   </td>
                   <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-                  <div class="text-sm leading-5 text-blue-900">10/10/2020</div>
+                  <div class="text-sm leading-5 text-sky-800">10/10/2020</div>
                   </td>
                   <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-                  <div class="text-sm leading-5 text-blue-900">Amos T ...</div>
+                  <div class="text-sm leading-5 text-sky-800">Amos T ...</div>
                   </td>
                   <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-                  <button type="button" class="bg-blue-400 text-white p-1 rounded leading-none">{{ sample.status }}</button>
+                    <button type="button" class="bg-sky-800 text-white py-1 px-2 rounded-sm leading-none">{{ sample.status }}</button>
                   </td>
                   <td class="px-1 py-1 whitespace-no-wrap text-right border-b border-gray-500 text-sm leading-5">
-                      <!-- <button class="px-2 py-1 mr-2 border-orange-500 border text-orange-500 rounded transition duration-300 hover:bg-orange-700 hover:text-white focus:outline-none">View</button> -->
-                      <button class="px-2 py-1 mr-2 border-blue-500 border text-blue-500 rounded transition duration-300 hover:bg-blue-700 hover:text-white focus:outline-none">View</button>
+                      <router-link 
+                      :to="{ name: 'sample-detail', params: { patientUid: sample?.analysisRequest?.patient?.uid, sampleUid:sample?.uid  }}"
+                      class="px-2 py-1 border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
+                      >View</router-link>
                   </td>
               </tr>
             </tbody>
@@ -308,40 +313,40 @@
          <button 
          v-show="shield.hasRights(shield.actions.CANCEL, shield.objects.SAMPLE) && state.can_cancel" 
          @click.prevent="cancelSamples_()" 
-         class="px-2 py-1 mr-2 border-blue-500 border text-blue-500 rounded transition duration-300 hover:bg-blue-700 hover:text-white focus:outline-none">Cancel</button>
+         class="px-2 py-1 mr-2 border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none">Cancel</button>
          <button 
          v-show="shield.hasRights(shield.actions.CANCEL, shield.objects.SAMPLE) && state.can_reinstate" 
          @click.prevent="reInstateSamples_()" 
-         class="px-2 py-1 mr-2 border-blue-500 border text-blue-500 rounded transition duration-300 hover:bg-blue-700 hover:text-white focus:outline-none">ReInstate</button>
+         class="px-2 py-1 mr-2 border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none">ReInstate</button>
          <button 
          v-show="shield.hasRights(shield.actions.CANCEL, shield.objects.SAMPLE) && state.can_receive" 
          @click.prevent="receiveSamples_()" 
-         class="px-2 py-1 mr-2 border-blue-500 border text-blue-500 rounded transition duration-300 hover:bg-blue-700 hover:text-white focus:outline-none">Reveive</button>
+         class="px-2 py-1 mr-2 border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none">Reveive</button>
          <button 
          v-show="shield.hasRights(shield.actions.CANCEL, shield.objects.SAMPLE) && state.can_reject" 
          @click.prevent="prepareRejections()" 
-          class="px-2 py-1 mr-2 border-blue-500 border text-blue-500 rounded transition duration-300 hover:bg-blue-700 hover:text-white focus:outline-none">Reject</button>
+          class="px-2 py-1 mr-2 border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none">Reject</button>
          <button 
          v-show="shield.hasRights(shield.actions.CANCEL, shield.objects.SAMPLE) && state.can_copy_to" 
-         class="px-2 py-1 mr-2 border-blue-500 border text-blue-500 rounded transition duration-300 hover:bg-blue-700 hover:text-white focus:outline-none">Copy to New</button>
+         class="px-2 py-1 mr-2 border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none">Copy to New</button>
          <button 
          v-show="shield.hasRights(shield.actions.CANCEL, shield.objects.SAMPLE) && state.can_download" 
          @click.prevent="downloadReports_()" 
-         class="px-2 py-1 mr-2 border-blue-500 border text-blue-500 rounded transition duration-300 hover:bg-blue-700 hover:text-white focus:outline-none">Download</button>
+         class="px-2 py-1 mr-2 border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none">Download</button>
          <button 
          v-show="shield.hasRights(shield.actions.CANCEL, shield.objects.SAMPLE) && state.can_print" 
          @click.prevent="printReports_()" 
-         class="px-2 py-1 mr-2 border-blue-500 border text-blue-500 rounded transition duration-300 hover:bg-blue-700 hover:text-white focus:outline-none">Print</button>
+         class="px-2 py-1 mr-2 border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none">Print</button>
     </div>
     <div class="my-4 flex sm:flex-row flex-col">
       <button 
       @click.prevent="showMoreSamples()"
       v-show="state.pageInfo?.hasNextPage"
-      class="px-2 py-1 mr-2 border-blue-500 border text-blue-500 rounded transition duration-300 hover:bg-blue-700 hover:text-white focus:outline-none"
+      class="px-2 py-1 mr-2 border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
       >Show More</button>
       <div class="flex flex-row mb-1 sm:mb-0">
           <div class="relative">
-              <select class="appearance-none h-full rounded-l border block  w-full bg-white border-gray-400 text-gray-700 py-2 px-4 pr-8 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+              <select class="appearance-none h-full rounded-l-sm border block  w-full bg-white border-gray-400 text-gray-700 py-2 px-4 pr-8 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                v-model="state.sampleBatch" :disabled="!state.pageInfo?.hasNextPage">
                   <option value="25">25</option>
                   <option value="50">50</option>
@@ -362,7 +367,7 @@
       </div>
       <div class="block relative">
           <input :placeholder="sampleCount"
-              class="appearance-none rounded-r rounded-l sm:rounded-l-none border border-gray-400 border-b block pl-8 pr-6 py-2 w-full bg-white text-sm placeholder-gray-400 text-gray-700 focus:bg-white focus:placeholder-gray-600 focus:text-gray-700 focus:outline-none" disabled/>
+              class="appearance-none rounded-r-sm rounded-l-sm sm:rounded-l-none border border-gray-400 border-b block pl-8 pr-6 py-2 w-full bg-white text-sm placeholder-gray-400 text-gray-700 focus:bg-white focus:placeholder-gray-600 focus:text-gray-700 focus:outline-none" disabled/>
       </div>
     </div>
   </section>

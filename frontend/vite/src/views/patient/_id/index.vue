@@ -1,9 +1,11 @@
 <script setup lang="ts">
+  import LoadingMessage from "../../../components/Spinners/LoadingMessage.vue"
   import modal from '../../../components/SimpleModal.vue';
   import PatientForm from '../PatientForm.vue'
 
-  import { ref, computed} from 'vue';
+  import { ref } from 'vue';
   import { useRoute } from 'vue-router';
+  import { storeToRefs } from 'pinia'
 
   import { usePatientStore } from '../../../stores';
   import { IPatient } from '../../../models/patient';
@@ -13,10 +15,11 @@
   const route = useRoute();
   const patientStore = usePatientStore();
 
+  const { patient, fetchingPatient } = storeToRefs(patientStore)
+
   let showModal = ref<boolean>(false);  
 
   patientStore.fetchPtientByUid(+route.params.patientUid)
-  let patient = computed(() => patientStore.getPatient);
 
   const updatePatient = (res: IPatient) => {
     patientStore.updatePatient(res)
@@ -27,14 +30,17 @@
 
 <template>
   <div class="">
-    <div class="bg-white rounded-lg shadow-sm hover:shadow-lg duration-500 px-4 sm:px-6 md:px-2 py-4" >
-      <div class="grid grid-cols-12 gap-3">
+    <div class="bg-white rounded-sm shadow-sm hover:shadow-lg duration-500 px-4 sm:px-6 md:px-2 py-4" >
+      <div v-if="fetchingPatient" class="py-4 text-center">
+        <LoadingMessage message="Fetching patient details ..."/>
+      </div>
+      <div class="grid grid-cols-12 gap-3" v-else>
         <!-- Meta Column -->
         <div class="sm:col-span-2 text-center hidden sm:block">
           <div class="inline-block font-bold text-medium mb-2">{{ patient?.patientId }}</div>
           <!-- Age -->
           <div
-            class="grid grid-rows-2 mx-auto mb-1 py-1 w-4/5 2lg:w-3/5 rounded-md bg-green-400"
+            class="grid grid-rows-2 mx-auto mb-1 py-1 w-4/5 2lg:w-3/5 rounded-sm bg-sky-800"
           >
             <div class="inline-block font-bold text-2xl text-white">{{ patient?.age }}</div>
             <div class="inline-block font-semibold text-white text-sm lg:text-md">Yrs Old</div>
@@ -49,7 +55,7 @@
               <button
                 v-show="shield.hasRights(shield.actions.UPDATE, shield.objects.PATIENT)"
                 @click="showModal = true"
-                class="ml-4 inline-flex items-center justify-center w-8 h-8 mr-2 border-blue-500 border text-gray-900 transition-colors duration-150 bg-white rounded-full focus:outline-none hover:bg-gray-200"
+                class="ml-4 inline-flex items-center justify-center w-8 h-8 mr-2 border-sky-800 border text-gray-900 transition-colors duration-150 bg-white rounded-full focus:outline-none hover:bg-gray-200"
               >
                 <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20">
                   <path
