@@ -19,7 +19,9 @@
       dropdownOpen: false,
     }); 
 
-    const { sample, childSample, fetchingResults } = storeToRefs(sampleStore)
+    const { sample, fetchingSample, childSample } = storeToRefs(sampleStore)
+
+    sampleStore.fetchSampleByUid(+route.params.sampleUid)
 
     watch(() => sample, (sampleIn, _) => {
       if(!sampleIn) return;
@@ -95,7 +97,7 @@
   <hr>
 
   <div class="bg-white rounded-sm shadow-sm hover:shadow-lg duration-500 px-4 sm:px-6 md:px-2 py-4" >
-    <div v-if="fetchingResults" class="py-4 text-center">
+    <div v-if="fetchingSample" class="py-4 text-center">
       <LoadingMessage message="Fetching sample details ..."/>
     </div>
     <div class="grid grid-cols-12 gap-3" v-else>

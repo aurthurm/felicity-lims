@@ -1,6 +1,8 @@
 <script setup lang="ts">
+  import LoadingMessage from "../../components/Spinners/LoadingMessage.vue"
   import modal from '../../components/SimpleModal.vue';
   import { ref, reactive, computed } from 'vue';
+  import { storeToRefs } from 'pinia'
   import { useSampleStore, useAnalysisStore, useSetupStore } from '../../stores';
   import { IAnalysisProfile, IAnalysisService, IQCRequest, ISample } from '../../models/analysis';
   import { ADD_QC_REQUEST } from '../../graphql/analyses.mutations';
@@ -12,6 +14,8 @@
   const analysisStore = useAnalysisStore();
   const setupStore = useSetupStore();
   const { withClientMutation } = useApiUtil()
+
+  const { qcSets, fetchingQCSets } = storeToRefs(sampleStore)
 
   let showModal = ref<boolean>(false);
 
@@ -133,7 +137,6 @@
   const departments = computed(() => setupStore.getDepartments)
   const qcTemplates = computed(() => analysisStore.getQCTemplates)
   const qcLevels = computed(() => analysisStore.getQCLevels)
-  const qcSets = computed(() => sampleStore.getQCSets)
   const qcSetCount = computed(() => sampleStore.getQCSets?.length + " of " + sampleStore.getQCSetCount + " QC Sets")
 </script>
 
@@ -229,6 +232,9 @@
             </tr>
             </tbody>
         </table>
+        <div v-if="fetchingQCSets" class="py-4 text-center">
+          <LoadingMessage message="Fetching QCSets ..." />
+        </div>
         </div>
     </section>
 

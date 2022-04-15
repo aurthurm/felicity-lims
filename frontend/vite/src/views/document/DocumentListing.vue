@@ -1,5 +1,6 @@
-
 <script setup lang="ts">
+  import LoadingMessage from "../../components/Spinners/LoadingMessage.vue"
+  import { storeToRefs } from 'pinia'
   import modal from '../../components/SimpleModal.vue';
   import { useSetupStore, useDocumentStore } from '../../stores';
   import { useApiUtil } from '../../composables';
@@ -10,6 +11,8 @@
   let documentStore = useDocumentStore();
   const  { withClientMutation } = useApiUtil();
 
+  const { documents, fetchingDocuments } = storeToRefs(documentStore)
+
   let showModal = ref<boolean>(false);
   let formTitle = ref<string>('');
   let form = reactive({}) as any;
@@ -19,7 +22,6 @@
   documentStore.fetchDocuments();
 
   const departments = computed(() => setupStore.getDepartments)
-  const documents = computed(() => documentStore.getDocuments)
 
   function addDocument(): void {
     const payload = { name: form.name, departmentUid: form.departmentUid }
@@ -163,7 +165,7 @@
                   <div class="text-sm leading-5 text-sky-800">{{ document?.version }}</div>
                 </td>
                 <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-                  <button type="button" class="bg-sky-800 text-white p-1rounded-smleading-none">{{ document?.status }}</button>
+                  <button type="button" class="bg-sky-800 text-white py-1 px-2 rounded-sm leading-none">{{ document?.status }}</button>
                 </td>
                 <td class="px-1 py-1 whitespace-no-wrap text-right border-b border-gray-500 text-sm leading-5">
                     <button class="px-2 py-1 mr-2 border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none">View</button>
@@ -173,6 +175,9 @@
             </tr>
             </tbody>
         </table>
+        <div v-if="fetchingDocuments" class="py-4 text-center">
+          <LoadingMessage message="Fetching documents ..." />
+        </div>
         </div>
     </div>
 

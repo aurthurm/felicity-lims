@@ -1,3 +1,22 @@
+<script lang="ts" setup>
+  import LoadingMessage from "../../components/Spinners/LoadingMessage.vue"
+  import { reactive, ref } from "vue";
+  import { useAuthStore } from "../../stores";
+  import { storeToRefs } from 'pinia'
+
+  const authStore = useAuthStore();
+  const { auth } = storeToRefs(authStore);
+
+  authStore.reset();
+  const loading = ref(false);
+
+  let form = reactive<any>({ username: null, password: null });
+
+  function login() {
+    authStore.authenticate(form)
+  }
+</script>
+
 <template>
   <div class="flex justify-center items-center h-screen bg-sky-800 px-6">
     <div class="p-6 max-w-sm w-full bg-white shadow-md rounded-sm">
@@ -29,9 +48,9 @@
           <span class="text-gray-700 text-sm">Username</span>
           <input
             type="text"
-            class="form-input mt-1 block w-full rounded-sm focus:border-indigo-600"
+            class="form-input mt-1 block w-full rounded-sm focus:border-sky-800"
             v-model="form.username"
-            :disabled="loading"
+            :disabled="auth.authenticating"
           />
         </label>
 
@@ -39,16 +58,16 @@
           <span class="text-gray-700 text-sm">Password</span>
           <input
             type="password"
-            class="form-input mt-1 block w-full rounded-sm focus:border-indigo-600"
+            class="form-input mt-1 block w-full rounded-sm focus:border-sky-800"
             v-model="form.password"
-            :disabled="loading"
+            :disabled="auth.authenticating"
           />
         </label>
 
         <div class="flex justify-between items-center mt-4">
           <div>
             <label class="inline-flex items-center">
-              <input type="checkbox" class="form-checkbox text-indigo-600" />
+              <input type="checkbox" class="form-checkbox text-sky-800" />
               <span class="mx-2 text-gray-600 text-sm">Remember me</span>
             </label>
           </div>
@@ -62,45 +81,18 @@
 
         <div class="mt-6">
           <button
-            v-if="!loading"
+            v-if="!auth.authenticating"
             type="submit"
-            class="py-2 px-4 text-center bg-sky-800 rounded-sm w-full text-white text-sm hover:bg-sky-600"
+            class="py-2 px-4 text-center bg-sky-800 rounded-sm w-full text-white text-sm hover:bg-sky-800"
           >
             Sign in
           </button>
-          <div v-else class="text-center">Signing you in ...</div>
+          <div v-else class="text-center">
+            <LoadingMessage message="Signing you in ..."/>
+          </div>
         </div>
       </form>
     </div>
   </div>
 </template>
 
-<script setup lang="ts">
-import { reactive, ref } from "vue";
-import { useRouter } from "vue-router";
-import { AUTHENTICATE_USER } from "../../graphql/_mutations";
-import { useAuthStore } from "../../stores";
-import { userPreferenceComposable, useApiUtil, useNotifyToast } from "../../composables";
-
-const router = useRouter();
-const authStore = useAuthStore();
-const { initPreferences } = userPreferenceComposable();
-const { withClientMutation } = useApiUtil();
-const { toastInfo } = useNotifyToast();
-
-authStore.reset();
-const loading = ref(false);
-
-let form = reactive<any>({ username: null, password: null });
-
-function login() {
-  loading.value = true;
-  const payload = { username: form.username, password: form.password };
-  withClientMutation(AUTHENTICATE_USER, payload, "authenticateUser").then((res) => {
-    loading.value = false;
-    toastInfo("Welcome back " + res?.user?.firstName);
-    initPreferences(res.user?.preference);
-    authStore.persistAuth(res).then((_) => router.push({ name: "DASHBOARD" }));
-  });
-}
-</script>

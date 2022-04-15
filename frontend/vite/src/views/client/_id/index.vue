@@ -1,4 +1,5 @@
 <script setup lang="ts">
+  import LoadingMessage from "../../../components/Spinners/LoadingMessage.vue"
   import modal from '../../../components/SimpleModal.vue';
   import { useRoute } from 'vue-router';
   import { storeToRefs } from 'pinia'
@@ -16,7 +17,7 @@
   const route = useRoute();
 
   const clientStore = useClientStore()
-  const { client } = storeToRefs(clientStore)
+  const { client, fetchingClient } = storeToRefs(clientStore)
 
   let showClientModal = ref<boolean>(false);
   let createItem = ref<boolean>(false);
@@ -83,7 +84,10 @@
 
         <!-- Listing Item Card -->
         <div class="bg-white rounded-sm shadow-sm hover:shadow-lg duration-500 px-4 sm:px-6 md:px-2 py-4" >
-          <div class="grid grid-cols-12 gap-3">
+          <div v-if="fetchingClient" class="py-4 text-center">
+            <LoadingMessage message="Fetching client metadata ..." />
+          </div>
+          <div class="grid grid-cols-12 gap-3" v-else>
             <!-- Summary Column -->
             <div class="col-span-12 px-3 sm:px-0">
               <div class="flex justify-between sm:text-sm md:text-md lg:text-lg text-gray-700 font-bold">

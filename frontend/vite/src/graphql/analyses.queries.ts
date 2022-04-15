@@ -474,8 +474,6 @@ query getAnalysesRequestsByPatientUid($uid: Int!) {
 }`;
 
 
-
-
 export const GET_ANALYSIS_REQUESTS_BY_CLIENT_UID = gql`
 query getAnalysesRequestsByClientUid($uid: Int!) {
   analysisRequestsByClientUid(uid: $uid) {
@@ -524,8 +522,6 @@ query getAnalysesRequestsByClientUid($uid: Int!) {
 
 }`;
 
-
-
 export const GET_ANALYSIS_RESULTS_BY_SAMPLE_UID = gql`
   query getAnalysesResultsBySampleUid($uid: Int!) {
     analysisResultBySampleUid(uid: $uid) {
@@ -551,7 +547,7 @@ export const GET_ANALYSIS_RESULTS_BY_SAMPLE_UID = gql`
           }
         }
         analysisUid
-        analysis{
+        analysis {
           uid
           name
           unitUid
@@ -580,49 +576,8 @@ export const GET_ANALYSIS_RESULTS_BY_SAMPLE_UID = gql`
         updatedAt
         updatedByUid
       }
-
-      sampleByUid(uid: $uid){
-        uid
-        analysisRequest {
-            uid
-            clientRequestId
-            patient {
-                uid
-                firstName
-                lastName
-                clientPatientId
-                gender
-                dateOfBirth
-                age
-                ageDobEstimated
-                consentSms
-            }
-            client {
-                uid
-                name
-            }
-        }
-        sampleType {
-            uid
-            name
-        }
-        sampleId
-        priority
-        status
-        rejectionReasons{
-          uid
-          reason
-        }
-        analyses {
-            uid
-            name
-        }
-        profiles {
-          uid
-          name
-        }
-      }
 }`;
+
 
 export const GET_SAMPLE_BY_UID = gql`
   query getSampleByUid($uid: Int!) {

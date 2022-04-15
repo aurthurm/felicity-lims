@@ -11,7 +11,8 @@ import {
 export const useAuditLogStore = defineStore('auditlog', {
   state: () => {
       return {
-          auditLogs: [] as any as any[]
+          auditLogs: [] as any as any[],
+          fetchingAudits: false,
       }
   },
   getters: {
@@ -19,10 +20,16 @@ export const useAuditLogStore = defineStore('auditlog', {
   },
   actions: {
     async fetchAuditLogs(params){
+      this.fetchingAudits = true;
       await withClientQuery(GET_AUDIT_LOG_FOR_TARGET, params, "auditLogsFilter")
-      .then(logs => {
-          this.auditLogs = logs
-        })
+      .then(payload => {
+          this.fetchingAudits = false
+          this.auditLogs = payload?.map(logs=> {
+            logs.stateAfter = JSON.parse(logs?.stateAfter)
+            logs.stateBefore = JSON.parse(logs?.stateBefore)
+            return logs
+          })
+        }).catch(err => this.fetchingAudits = false)
     },
   
   }

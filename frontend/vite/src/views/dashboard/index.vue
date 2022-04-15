@@ -10,7 +10,7 @@
       @click="dashBoardStore.setCurrentFilter(filter)"
       type="button" 
       :class="[
-       'px-2 py-1 mr-2 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none',
+       'px-2 py-1 mr-2 border-gray-800 border text-gray-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none',
        {'bg-sky-800 text-white': state.currentFilter === filter }
       ]">{{ filter }}</button>
 

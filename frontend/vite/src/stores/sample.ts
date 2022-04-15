@@ -8,6 +8,7 @@ import {
   GET_ANALYSIS_REQUESTS_BY_CLIENT_UID,
   GET_ANALYSIS_RESULTS_BY_SAMPLE_UID,
   GET_ALL_QC_SETS, GET_QC_SET_BY_UID,
+  GET_SAMPLE_BY_UID,
   GET_SAMPLE_STATUS_BY_UID,
   GET_SAMPLE_BY_PARENT_ID
 } from '../graphql/analyses.queries';
@@ -131,6 +132,18 @@ export const useSampleStore = defineStore('sample', {
       this.samplePageInfo = page?.pageInfo;
     }).catch(err => this.fetchingSamples = false)
   },
+  async fetchSampleByUid(uid){
+    if(!uid) return;
+    this.fetchingSample = true;
+    await withClientQuery( GET_SAMPLE_BY_UID, { uid }, "sampleByUid", 'network-only')
+    .then(payload => {
+      this.fetchingSample = false;
+      payload.analyses = parseEdgeNodeToList(payload?.analyses) || [];
+      payload.profiles = parseEdgeNodeToList(payload?.profiles) || [];
+      this.sample = payload;
+
+    }).catch(err => this.fetchingSample = false)
+  },
   addSamples(samples){
     this.samples = addListsUnique(this.samples, samples, "uid");
   }, 
@@ -198,22 +211,13 @@ export const useSampleStore = defineStore('sample', {
   async fetchAnalysisResultsForSample(uid){
     if(!uid) return;
     this.fetchingResults = true;
-    this.fetchingSample = true;
-    await withClientQuery( GET_ANALYSIS_RESULTS_BY_SAMPLE_UID, { uid }, undefined, 'network-only')
+    await withClientQuery( GET_ANALYSIS_RESULTS_BY_SAMPLE_UID, { uid }, "analysisResultBySampleUid", 'network-only')
     .then(payload => {
       this.fetchingResults = false;
-      this.fetchingSample = false;
-      this.analysisResults = sortResults(payload.analysisResultBySampleUid)
-
-      const sample = payload.sampleByUid;
-      sample.analyses = parseEdgeNodeToList(sample?.analyses) || [];
-      sample.profiles = parseEdgeNodeToList(sample?.profiles) || [];
-      this.sample = sample;
-
-    }).catch(err =>  {
-      this.fetchingResults = false
-      this.fetchingSample = false;
-    })
+      console.log(payload)
+      this.analysisResults = sortResults(payload)
+      console.log(this.analysisResults)
+    }).catch(err => this.fetchingResults = false)
   },
   updateAnalysesResults(payload: IAnalysisResult[]){
     payload?.forEach(result => {

@@ -1,22 +1,23 @@
 <script setup lang="ts">
+  import LoadingMessage from "../../components/Spinners/LoadingMessage.vue"
   import modal from '../../components/SimpleModal.vue';
-
-  import { useMutation } from '@urql/vue';
   import { ref, reactive, computed } from 'vue';
+  import { storeToRefs } from 'pinia'
   import { useRoute } from 'vue-router';
   import { useWorksheetStore, useUserStore } from '../../stores';
   import { useApiUtil } from '../../composables';
   import { ADD_WORKSHEET } from '../../graphql/worksheet.mutations'
   import { ifZeroEmpty } from '../../utils'
-  import { IWorkSheet, IWorkSheetForm } from '../../models/worksheet';
+  import { IWorkSheetForm } from '../../models/worksheet';
   import { IAnalysisService } from '../../models/analysis';
 
   import * as shield from '../../guards'
   
     const worksheetStore = useWorksheetStore();
     const userStore = useUserStore()
-
     const { withClientMutation } = useApiUtil()
+
+    const { workSheets, fetchingWorkSheets, workSheetTemplates } = storeToRefs(worksheetStore)
 
     const route = useRoute();
     
@@ -44,12 +45,7 @@
     userStore.fetchUsers({})
 
     // fetch instruments, analysts, methods
-    const woksheets = computed<IWorkSheet[]>(() => worksheetStore.getWorkSheets);
-    const workSheetTemplates = computed(() => worksheetStore.getWorkSheetTemplates)
     const workSheetCount = computed(() => worksheetStore.getWorkSheets?.length + " of " + worksheetStore.getWorkSheetCount + " worksheets")
-
-    const { executeMutation: createWorkSheet } = useMutation(ADD_WORKSHEET);
-
     function addWorksheet(): void {
       form.count = +form.count;
       withClientMutation(ADD_WORKSHEET, form, "createWorksheet")
@@ -172,7 +168,7 @@
           </thead>
           <tbody class="bg-white">
           <tr
-              v-for="worksheet in woksheets" :key="worksheet?.uid"
+              v-for="worksheet in workSheets" :key="worksheet?.uid"
           >
               <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
                   <!-- <span v-if="worksheet.priority > 1"
@@ -216,6 +212,9 @@
           </tr>
           </tbody>
       </table>
+      <div v-if="fetchingWorkSheets" class="py-4 text-center">
+        <LoadingMessage message="Fetching worksheets ..." />
+      </div>
       </div>
   </div>
 

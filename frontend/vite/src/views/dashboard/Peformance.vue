@@ -1,19 +1,22 @@
 <script lang="ts" setup>
+  import LoadingMessage from "../../components/Spinners/LoadingMessage.vue"
   import { storeToRefs } from 'pinia'
   import { onMounted, watch,  ref } from 'vue'
   import { Chart } from '@antv/g2';
+  import { Bar } from '@antv/g2plot';
   import { useDashBoardStore } from '../../stores';
   import { IProcess } from '../../stores/dashboard';
 
   const dashBoardStore = useDashBoardStore()
-  const { dashboard: state } = storeToRefs(dashBoardStore)
+  const { dashboard } = storeToRefs(dashBoardStore)
 
   onMounted(() => {
     dashBoardStore.getSampleProcessPeformance()
     dashBoardStore.getAnalysisProcessPeformance()
   })
 
-  watch(() => state.value.filterRange.from, (filter, prev) => {
+  watch(() => dashboard.value.filterRange.from, (filter, prev) => {
+    resetSampleGraphs()
     dashBoardStore.getSampleProcessPeformance()
   })
 
@@ -21,7 +24,8 @@
   const prRTS = ref({} as IProcess)
   const prSTV = ref({} as IProcess)
   const prVTP = ref({} as IProcess)
-  watch(() => state.value.peformanceStats.sample, (processes, prev) => {
+
+  watch(() => dashboard.value.peformanceStats.sample, (processes, prev) => {
     processes?.forEach(process => {
       const donutData = [
         { item: 'On-Time', count: process?.counts?.totalNotLate, percent: (process?.counts?.totalNotLate/process?.counts?.totalSamples) * 100 },
@@ -51,51 +55,41 @@
     })
   })
 
-
   const analProcess = ref({} as IProcess)
-  watch(() => state.value.currentPeformance, (process, prev) => {
+  watch(() => dashboard.value.currentPeformance, (process, prev) => {
+    resetAPGraphs()
     dashBoardStore.getAnalysisProcessPeformance()
   })
-  watch(() => state.value.peformanceStats.analysis, (process, prev) => {
+  watch(() => dashboard.value.peformanceStats.analysis, (process, prev) => {
     analProcess.value = process[0]
-    const services = [
-      { analysis: 'Viral Load', value: 27 },
-      { analysis: 'RBC', value: 74 },
-      { analysis: 'PLt', value: 13 },
-    ];
+    const services: any[] = [];
     process[0]?.groups?.forEach(group => {
-      services.push({ analysis: group?.service, value: group?.processAverage })
+      services.push({ analysis: group?.service, value: group?.processAverage, total: group?.totalSamples})
     })
     plotAnalyses(services, 'process-service')
   })
 
   const plotAnalyses = (data:any, elem: string) => {
-    const chart = new Chart({
-      container: elem,
-      autoFit: true,
-      height: 300,
+    const barPlot = new Bar(elem, {
+      data,
+      xField: 'value',
+      yField: 'analysis',
+      seriesField: '',
+      meta: {
+        analysis: {
+          alias: 'Analysis',
+        },
+        value: {
+          alias: 'process average in days',
+        },
+      }, 
+      label: {
+        position: 'middle', // 'left', 'middle', 'right'
+      },
+      minBarWidth: 5,
+      maxBarWidth: 20,
     });
-
-    chart.data(data);
-
-    chart.tooltip({
-      showMarkers: false,
-    });
-
-    chart.coordinate().transpose();
-    chart
-      .interval()
-      .position('analysis*value')
-      .state({
-        selected: {
-          style: {
-            fill: '#E8684A',
-          }
-        }
-      });
-
-    chart.interaction('element-selected');
-    chart.render();
+    barPlot.render();
   }
 
   const plotLateDonut = (data: any, elem: string) => {
@@ -147,19 +141,38 @@
     chart.render()
   }
 
+  const resetAPGraphs = () => {
+    document.getElementById('ap-graphs')!.innerHTML = ""
+    document.getElementById('ap-graphs')!.innerHTML = `<div id="process-service" class="mt-3"></div>`
+  }
+  const resetSampleGraphs = () => {
+    document.getElementById('rtp-graph')!.innerHTML = ""
+    document.getElementById('rtp-graph')!.innerHTML = `<div id="process-rtp" class="mt-3"></div>`
+    document.getElementById('rts-graph')!.innerHTML = ""
+    document.getElementById('rts-graph')!.innerHTML = `<div id="process-rts" class="mt-3"></div>`
+    document.getElementById('stv-graph')!.innerHTML = ""
+    document.getElementById('stv-graph')!.innerHTML = `<div id="process-stv" class="mt-3"></div>`
+    document.getElementById('vtp-graph')!.innerHTML = ""
+    document.getElementById('vtp-graph')!.innerHTML = `<div id="process-vtp" class="mt-3"></div>`
+  }
 </script>
 
 
 <template>
   <h1 class="text-xl text-gray-700 font-semibold">Process peformance for samples in average days</h1>
   <hr class="my-2">
+  <div v-if="dashboard.fetchingSampePeformanceStats" class="text-start my-4 w-100">
+    <LoadingMessage message="fetching updated sample peformance stats ..." />
+  </div>
   <div class="flex flex-wrap justify-start">
     <div class="mr-4 items-center content-center">
       <div class="bg-white shadow rounded-sm px-6 pt-3 pb-5 border border-white mr-8 text-center">
         <div class="font-semibold text-gray-400 text-l">received to published</div>
         <div class="mr-4 font-bold text-gray-600 text-xl">{{ prRTP?.counts?.processAverage ?? 0 }} days</div>
       </div>
-      <div id="process-rtp" class="mt-3"></div>
+      <div id="rtp-graph">
+        <div id="process-rtp" class="mt-3"></div>
+      </div>
     </div>
 
     <div class="mr-4 items-center content-center">
@@ -167,7 +180,9 @@
         <div class="font-semibold text-gray-400 text-l">received to submitted</div>
         <div class="mr-4 font-bold text-gray-600 text-xl">{{ prRTS?.counts?.processAverage ?? 0 }} days</div>
       </div>
-      <div id="process-rts" class="mt-3"></div>
+      <div id="rts-graph">
+        <div id="process-rts" class="mt-3"></div>
+      </div>
     </div>
 
     <div class="mr-4 items-center content-center">
@@ -175,7 +190,9 @@
         <div class="font-semibold text-gray-400 text-l">submitted to verified</div>
         <div class="mr-4 font-bold text-gray-600 text-xl">{{ prSTV?.counts?.processAverage ?? 0 }} days</div>
       </div>
-      <div id="process-stv" class="mt-3"></div>
+      <div id="stv-graph">
+        <div id="process-stv" class="mt-3"></div>
+      </div>
     </div>
 
     <div class="mr-4 items-center content-center">
@@ -183,7 +200,9 @@
         <div class="font-semibold text-gray-400 text-l">verified to published</div>
         <div class="mr-4 font-bold text-gray-600 text-xl">{{ prVTP?.counts?.processAverage ?? 0 }} days</div>
       </div>
-      <div id="process-vtp" class="mt-3"></div>
+      <div id="vtp-graph">
+        <div id="process-vtp" class="mt-3"></div>
+      </div>
     </div>
   </div>
 
@@ -191,13 +210,18 @@
     <span>Process peformance by anayses service</span>
     <select name="" id="" class="ml-8 p-1" @change="dashBoardStore.setCurrentPeformance($event)">
       <option 
-      v-for="performance in state.performances" :key="performance"
+      v-for="performance in dashboard.performances" :key="performance"
       :value="performance"
-      :selected="performance === state.currentPeformance"
+      :selected="performance === dashboard.currentPeformance"
       >{{ performance }}</option>
     </select>
   </h1>
   <hr class="my-2">
-  <div id="process-service" class="mt-3"></div>
+  <div v-if="dashboard.fetchingAnalysisPeformanceStats" class="text-start my-4 w-100">
+    <LoadingMessage message="fetching analysis peformance stats ..." />
+  </div>
+  <div id="ap-graphs">
+    <div id="process-service" class="mt-3"></div>
+  </div>
 
 </template>

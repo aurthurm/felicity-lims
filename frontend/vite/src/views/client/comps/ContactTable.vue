@@ -1,4 +1,6 @@
 <script setup lang="ts">
+  import LoadingMessage from "../../../components/Spinners/LoadingMessage.vue"
+  import { storeToRefs } from 'pinia'
   import { computed, ref} from 'vue';
   import { useRoute } from 'vue-router';
   import modal from '../../../components/SimpleModal.vue'
@@ -11,6 +13,9 @@
   let clientStore = useClientStore();
   let router = useRoute();
   const { withClientMutation } = useApiUtil()
+
+  const { clientContacts, fetchingClientContacts } = storeToRefs(clientStore)
+
   let formTitle = ref('');
   let showContactModal = ref(false);
   let createContact = ref(false);
@@ -22,7 +27,6 @@
 
   // dispatch get contacts fo slients
   clientStore.fetchClientContacts(+router.query.clientUid!)
-  const contacts = computed(() => clientStore.getClientContacts)
   
   function addClientContact() {
     withClientMutation(ADD_CLIENT_CONTACT, {clientUid: +router.query.clientUid!, firstName: contact.value.firstName, mobilePhone: contact.value.mobilePhone, email: contact.value.email}, "createClientContact")
@@ -73,7 +77,7 @@
             </tr>
             </thead>
             <tbody class="bg-white">
-            <tr v-for="cont in contacts"  :key="cont.uid">
+            <tr v-for="cont in clientContacts"  :key="cont.uid">
                 <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
                 <div class="flex items-center">
                     <div>
@@ -95,7 +99,10 @@
             </tr>
             </tbody>
         </table>
+        <div v-if="fetchingClientContacts" class="py-4 text-center">
+          <LoadingMessage message="Fetching client contacts ..." />
         </div>
+      </div>
     </div>
 
 

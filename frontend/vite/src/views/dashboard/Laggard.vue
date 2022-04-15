@@ -1,11 +1,12 @@
 <script lang="ts" setup>
+  import LoadingMessage from "../../components/Spinners/LoadingMessage.vue"
   import { storeToRefs } from 'pinia'
   import { onMounted, watch,  ref } from 'vue'
   import { Chart } from '@antv/g2';
   import { useDashBoardStore } from '../../stores';
 
   const dashBoardStore = useDashBoardStore()
-  const { dashboard: state } = storeToRefs(dashBoardStore)
+  const { dashboard } = storeToRefs(dashBoardStore)
 
   const totalIncompleteDAI = ref(0)
   const totalIncompleteAAD = ref(0)
@@ -14,13 +15,13 @@
     dashBoardStore.getSampleLaggards()
   })
 
-  watch(() => state.value.filterRange.from, (filter, prev) => {
+  watch(() => dashboard.value.filterRange.from, (filter, prev) => {
     resetLateActive()
     resetLateAuth()
     dashBoardStore.getSampleLaggards();
   })
 
-  watch(() => state.value.laggards, (laggards, prev) => {
+  watch(() => dashboard.value.laggards, (laggards, prev) => {
     const dai = laggards?.filter(laggard => laggard?.category === "delayed_and_incomplete")[0]
     const aad = laggards?.filter(laggard => laggard?.category === "authorised_already_delayed")[0]
 
@@ -193,38 +194,43 @@
 
 <template>
     
-  <h1 class="text-xl text-gray-700 font-semibold">Delayed and incomplete</h1>
-  <hr class="my-2">
-  <div class="flex justify-start items-center">
-    <div class="content-middle bg-white shadow rounded-sm px-6 pt-3 pb-5 border border-white mr-8 text-center">
-      <div class="mr-4 font-bold text-gray-600 text-2xl">{{ totalIncompleteDAI }}</div>
-      <div class="font-semibold text-gray-400 text-l">Already Delayed</div>
-    </div>
-    <div id="late-active" class="flex justify-start items-center ms-8">
-      <div class="me-8">
-        <div id="late-active-donut"></div>
-      </div>
-      <div>
-        <div id="late-active-since"></div>
-      </div>
-    </div>
+  <div v-if="dashboard.fetchingLaggards" class="text-start my-4 w-100">
+    <LoadingMessage message="fetching laggard stats ..." />
   </div>
-    
-  <h1 class="mt-4 text-xl text-gray-700 font-semibold">Authosised already delayed</h1>
-  <hr class="my-2">
-  <div class="flex justify-start items-center">
-    <div class="content-middle bg-white shadow rounded-sm px-6 pt-3 pb-5 border border-white mr-8 text-center">
-      <div class="mr-4 font-bold text-gray-600 text-2xl">{{ totalIncompleteAAD }}</div>
-      <div class="font-semibold text-gray-400 text-l">Released as Delayed</div>
-    </div>
-    <div id="late-auth" class="flex justify-start items-center ms-8">
-      <div class="me-8">
-        <div id="late-auth-donut"></div>
+  <section>
+    <h1 class="text-xl text-gray-700 font-semibold">Delayed and incomplete</h1>
+    <hr class="my-2">
+    <div class="flex justify-start items-center">
+      <div class="content-middle bg-white shadow rounded-sm px-6 pt-3 pb-5 border border-white mr-8 text-center">
+        <div class="mr-4 font-bold text-gray-600 text-2xl">{{ totalIncompleteDAI }}</div>
+        <div class="font-semibold text-gray-400 text-l">Already Delayed</div>
       </div>
-      <div>
-        <div id="late-auth-since"></div>
+      <div id="late-active" class="flex justify-start items-center ms-8">
+        <div class="me-8">
+          <div id="late-active-donut"></div>
+        </div>
+        <div>
+          <div id="late-active-since"></div>
+        </div>
       </div>
     </div>
-  </div>
+      
+    <h1 class="mt-4 text-xl text-gray-700 font-semibold">Authosised already delayed</h1>
+    <hr class="my-2">
+    <div class="flex justify-start items-center">
+      <div class="content-middle bg-white shadow rounded-sm px-6 pt-3 pb-5 border border-white mr-8 text-center">
+        <div class="mr-4 font-bold text-gray-600 text-2xl">{{ totalIncompleteAAD }}</div>
+        <div class="font-semibold text-gray-400 text-l">Released as Delayed</div>
+      </div>
+      <div id="late-auth" class="flex justify-start items-center ms-8">
+        <div class="me-8">
+          <div id="late-auth-donut"></div>
+        </div>
+        <div>
+          <div id="late-auth-since"></div>
+        </div>
+      </div>
+    </div>
+  </section>
 
 </template>

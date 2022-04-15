@@ -1,5 +1,7 @@
 <script setup lang="ts">
+  import LoadingMessage from "../../components/Spinners/LoadingMessage.vue"
   import { reactive, computed } from 'vue';
+  import { storeToRefs } from 'pinia'
   import { useRoute, useRouter } from 'vue-router';
   import { IAnalysisProfile, IAnalysisService, ISample } from '../../models/analysis';
   import { ifZeroEmpty } from '../../utils'
@@ -11,6 +13,8 @@
   const sampleStore = useSampleStore();
   const analysisStore = useAnalysisStore()
 
+  const { samplePageInfo, fetchingSamples } = storeToRefs(sampleStore)
+
   let route = useRoute();
   let router = useRouter();
 
@@ -19,7 +23,6 @@
     filterStatus: "received",
     sampleBatch: 50,
     samples: computed<ISample[]>(() => sampleStore.getSamples ),
-    pageInfo: computed(() => sampleStore.getSamplePageInfo),
     can_cancel:  false,
     can_receive:  false,
     can_reinstate:  false,
@@ -65,7 +68,7 @@
 
   function showMoreSamples(): void {
     sampleParams.first = +state.sampleBatch;
-    sampleParams.after = state.pageInfo?.endCursor;
+    sampleParams.after = samplePageInfo?.value?.endCursor;
     sampleParams.text = state.filterText;
     sampleParams.status = state.filterStatus;
     sampleParams.filterAction = false;
@@ -304,6 +307,9 @@
               </tr>
             </tbody>
         </table>
+        <div v-if="fetchingSamples" class="py-4 text-center">
+          <LoadingMessage message="Fetching samples ..." />
+        </div>
         </div>
     </div>
 

@@ -2,14 +2,19 @@ import { defineStore } from 'pinia'
 import { ref, watch } from 'vue'
 import { IUser } from "../models/auth";
 import { STORAGE_AUTH_KEY, USER_GROUP_OVERRIDE } from "../conf";
-import { useNotifyToast } from "../composables";
+import { AUTHENTICATE_USER } from "../graphql/_mutations";
+import { useNotifyToast, useApiUtil, userPreferenceComposable } from "../composables";
+
+const { withClientMutation } = useApiUtil();
 const { toastInfo } = useNotifyToast();
+const { initPreferences } = userPreferenceComposable()
 
 interface IAuth {
     token?: string,
     tokenType?: string,
     user?: IUser,
-    isAuthenticated: boolean
+    isAuthenticated: boolean,
+    authenticating: boolean,
 }
 
 export const useAuthStore = defineStore('auth', () => {
@@ -18,10 +23,11 @@ export const useAuthStore = defineStore('auth', () => {
         user: undefined,        
         token: "",
         tokenType: "",
-        isAuthenticated: false
+        isAuthenticated: false,
+        authenticating: false
     }
 
-    const auth = ref({ ...initialState })
+    const auth = ref({ ...initialState });
 
     const resetState = () => auth.value = { ...initialState }
 
@@ -44,7 +50,7 @@ export const useAuthStore = defineStore('auth', () => {
 
     if(localStorage.getItem(STORAGE_AUTH_KEY)){
         const data = JSON.parse(localStorage.getItem(STORAGE_AUTH_KEY)!)
-        auth.value = { ...auth.value, ...data, isAuthenticated: true }
+        auth.value = { ...auth.value, ...data, isAuthenticated: true, authenticating: false }
         upsertPermission()
     } else {
         // logout()
@@ -57,14 +63,25 @@ export const useAuthStore = defineStore('auth', () => {
         }
     })
 
-    const persistAuth = async (data): Promise<boolean> => {
+    const persistAuth = async (data) => {
         auth.value = data
         auth.value.isAuthenticated = true;
-        return true
+        auth.value.authenticating = false
+    }
+
+    const authenticate = async (payload) => {
+        auth.value.authenticating = true
+        await withClientMutation(AUTHENTICATE_USER, payload, "authenticateUser").then((res) => {
+            toastInfo("Welcome back " + res?.user?.firstName);
+            initPreferences(res.user?.preference);
+            persistAuth(res)
+            // .then((_) => router.push({ name: "DASHBOARD" }));
+        }).catch(err => auth.value.authenticating = false);
     }
 
     return { 
         auth, 
+        authenticate,
         reset,
         persistAuth,
         logout

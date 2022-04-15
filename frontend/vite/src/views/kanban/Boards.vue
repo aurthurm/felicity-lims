@@ -1,6 +1,6 @@
-
-
 <script setup lang="ts">
+  import LoadingMessage from "../../components/Spinners/LoadingMessage.vue"
+  import { storeToRefs } from 'pinia'
   import modal from '../../components/SimpleModal.vue';
   import BoardCard from '../components/BoardCard.vue';
   import { IBoard } from '../../models/kanban';
@@ -12,6 +12,8 @@
   const kanbanStore = useKanbanStore()
   const setupStore = useSetupStore()
   const { withClientMutation } = useApiUtil()
+
+  const { boards, fetchingBoards  } = storeToRefs(kanbanStore)
 
   let showModal = ref(false);
   let movedObjectsIds = ref([]);
@@ -25,7 +27,6 @@
   setupStore.fetchDepartments({})
   kanbanStore.fetchBoards()
 
-  const boards = computed(() => kanbanStore.getBoards)
   const departments = computed(() => setupStore.getDepartments)
 
   function addBoard(): void {
@@ -70,11 +71,16 @@
     </div>
     <hr class="my-4">
     <div class="grid grid-cols-4 gap-4">
-      <span v-for="board in boards" :key="board?.title">
-        <router-link :to="{ name: 'board-detail', params: { boardUid: board?.uid }}">
-          <BoardCard  :board="board" class="col-span-1"/>
-        </router-link>
-      </span>
+      <div v-if="fetchingBoards" class="py-4 text-start">
+        <LoadingMessage message="Fetching kaban boards ..." />
+      </div>
+      <div v-else>
+        <div v-for="board in boards" :key="board?.title">
+          <router-link :to="{ name: 'board-detail', params: { boardUid: board?.uid }}">
+            <BoardCard  :board="board" class="col-span-1"/>
+          </router-link>
+        </div>
+      </div>
     </div>
 
   <!-- Board Modal -->

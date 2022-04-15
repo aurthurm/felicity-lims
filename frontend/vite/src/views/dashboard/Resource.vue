@@ -1,5 +1,5 @@
-
 <script setup lang="ts">
+  import LoadingMessage from "../../components/Spinners/LoadingMessage.vue"
   import { storeToRefs } from 'pinia'
   import { onMounted, watch} from 'vue'
   import { Chart } from '@antv/g2';
@@ -7,19 +7,19 @@
   import { useDashBoardStore } from '../../stores';
 
   const dashBoardStore = useDashBoardStore()
-  const { dashboard: state } = storeToRefs(dashBoardStore)
+  const { dashboard } = storeToRefs(dashBoardStore)
 
   onMounted(async () => { 
     dashBoardStore.getResourceStats()
   })
 
-  watch(() => state.value.filterRange.from, (filter, prev) => {
+  watch(() => dashboard.value.filterRange.from, (filter, prev) => {
     resetUserMatrix()
     dashBoardStore.getResourceStats();
   })
 
-  watch(() => state.value.resourceStats?.samples, (samples, prev) => {
-    state.value.resourceStats?.samples?.forEach(group => {
+  watch(() => dashboard.value.resourceStats?.samples, (samples, prev) => {
+    dashboard.value.resourceStats?.samples?.forEach(group => {
       let users: any[] = [];
       let total = 0; 
       group.counts?.forEach((sample: any) => total += sample.count);
@@ -36,7 +36,7 @@
 
   const instrumentPerf = (count: number) => {
     let total = 0; 
-    state.value.resourceStats?.instruments?.forEach((inst: any) => total += inst.count)
+    dashboard.value.resourceStats?.instruments?.forEach((inst: any) => total += inst.count)
     const pct = (count/total)*100
     return pct.toFixed(2) + " %"
   }
@@ -125,34 +125,41 @@
 </script>
 
 <template>
-  <h1 class="text-xl text-gray-700 font-semibold">Instrument Matrix / Load</h1>
-  <hr class="my-2">
-  <div v-if="state.resourceStats?.instruments?.length === 0">
-    NO DATA
-  </div>
-  <div v-else class="flex justify-start">
-    <div v-for="instr in state.resourceStats?.instruments" :key="instr.group"
-     class="flex items-center bg-white shadow rounded-sm px-6 pt-3 pb-5 border border-white mr-8">
-      <span class="mr-4 font-bold text-gray-600 text-xl">{{ instrumentPerf(instr?.count) }}</span>
-      <span class="font-semibold text-gray-400 text-l">{{ instr.group }}</span>
-    </div>
-  </div>
 
-  <h1 class="mt-4 text-xl text-gray-700 font-semibold">User Load / Matrix</h1>
-  <hr class="my-2">
-  <div class="flex flex-wrap justify-start" id="user-matrix">
-      <div>
-        <div id="registration"></div>
-      </div>
-      <div>
-        <div id="submission"></div>
-      </div>
-      <div>
-        <div id="verification"></div>
-      </div>
-      <div>
-        <div id="publication"></div>
-      </div>
+  <div v-if="dashboard.fetchingResourceStats" class="text-start my-4 w-100">
+    <LoadingMessage message="fetching resource stats ..." />
   </div>
+  <section>
+    <h1 class="text-xl text-gray-700 font-semibold">Instrument Matrix / Load</h1>
+    <hr class="my-2">
+    <div v-if="dashboard.resourceStats?.instruments?.length === 0">
+      NO DATA
+    </div>
+    <div v-else class="flex justify-start">
+      <div v-for="instr in dashboard.resourceStats?.instruments" :key="instr.group"
+      class="flex items-center bg-white shadow rounded-sm px-6 pt-3 pb-5 border border-white mr-8">
+        <span class="mr-4 font-bold text-gray-600 text-xl">{{ instrumentPerf(instr?.count) }}</span>
+        <span class="font-semibold text-gray-400 text-l">{{ instr.group }}</span>
+      </div>
+    </div>
+
+    <h1 class="mt-4 text-xl text-gray-700 font-semibold">User Load / Matrix</h1>
+    <hr class="my-2">
+    <div class="flex flex-wrap justify-start" id="user-matrix">
+        <div>
+          <div id="registration"></div>
+        </div>
+        <div>
+          <div id="submission"></div>
+        </div>
+        <div>
+          <div id="verification"></div>
+        </div>
+        <div>
+          <div id="publication"></div>
+        </div>
+    </div>
+  </section>
+
 
 </template>

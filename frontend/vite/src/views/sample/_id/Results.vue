@@ -333,7 +333,7 @@ const retestResults = () =>
         <tbody 
         class="bg-white">
           <tr
-            v-for="result in state.analysisResults"
+            v-for="result in analysisResults"
             :key="result.uid"
             :class="[getResultRowColor(result)]"
           >

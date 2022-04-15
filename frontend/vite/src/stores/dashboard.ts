@@ -142,12 +142,12 @@ export const useDashBoardStore = defineStore('dashboard', () => {
             startDate: dashboard.value.filterRange.from,
             endDate: dashboard.value.filterRange.to
         }
-        dashboard.value.fetchingAnalysisPeformanceStats = true
+        dashboard.value.fetchingSampePeformanceStats = true
         await withClientQuery(GET_SAMPLE_PROCESS_PEFORMANCE,filters, 'sampleProcessPerformance', 'network-only')
         .then(payload =>  {
-            dashboard.value.fetchingAnalysisPeformanceStats = false
+            dashboard.value.fetchingSampePeformanceStats = false
             dashboard.value.peformanceStats.sample = payload.data
-        }).catch(err => dashboard.value.fetchingAnalysisPeformanceStats = false)
+        }).catch(err => dashboard.value.fetchingSampePeformanceStats = false)
     }
 
     // GET_ANALYSIS_PROCESS_PEFORMANCE
@@ -157,12 +157,12 @@ export const useDashBoardStore = defineStore('dashboard', () => {
             startDate: dashboard.value.filterRange.from,
             endDate: dashboard.value.filterRange.to
         }
-        dashboard.value.fetchingSampePeformanceStats = true
+        dashboard.value.fetchingAnalysisPeformanceStats = true
         await withClientQuery(GET_ANALYSIS_PROCESS_PEFORMANCE,filters, 'analysisProcessPerformance', 'network-only')
         .then(payload => {
-            dashboard.value.fetchingSampePeformanceStats = false
+            dashboard.value.fetchingAnalysisPeformanceStats = false
             dashboard.value.peformanceStats.analysis = payload.data
-        }).catch(err => dashboard.value.fetchingSampePeformanceStats = false)
+        }).catch(err => dashboard.value.fetchingAnalysisPeformanceStats = false)
     }
 
     // GET_SAMPLE_LAGGARDS

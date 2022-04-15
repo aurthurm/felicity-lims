@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@antv/g2": "^4.1.49",
+    "@antv/g2plot": "^2.4.15",
     "@ckeditor/ckeditor5-build-decoupled-document": "^33.0.0",
     "@editorjs/editorjs": "^2.23.2",
     "@fortawesome/fontawesome-svg-core": "^6.1.1",

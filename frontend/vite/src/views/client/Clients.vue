@@ -1,6 +1,8 @@
 
 <script setup lang="ts">
+  import LoadingMessage from "../../components/Spinners/LoadingMessage.vue"
   import { ref, reactive, computed } from 'vue';
+  import { storeToRefs  } from "pinia";
   import modal from '../../components/SimpleModal.vue';
   import { IClient } from '../../models/client';
   import { ADD_CLIENT, EDIT_CLIENT } from '../../graphql/clients.mutations';
@@ -14,6 +16,9 @@
   const clientStore = useClientStore()
   const locationStore = useLocationStore()
   const { withClientMutation } = useApiUtil()
+
+  const { countries } = storeToRefs(locationStore)
+  const { clients, clientPageInfo, fetchingClients } = storeToRefs(clientStore)
 
   let currentTab = ref<string>('samples');
   const tabs: string[] = ['samples', 'contacts'];
@@ -43,11 +48,9 @@
   let formTitle = ref<string>('');
 
   clientStore.fetchClients(clientParams);
-  const clients = computed(() => clientStore.getClients)
   const  clientCount = computed(() => clientStore.getClients?.length + " of " + clientStore.getClientCount + " clients")
   
   locationStore.fetchCountries();
-  const countries = computed(() => locationStore.getCountries)
 
   function addClient() {
     withClientMutation(ADD_CLIENT, { name: client.name, code: client.code, districtUid: client.districtUid }, "createClient")
@@ -77,11 +80,9 @@
     clientStore.fetchClients(clientParams);
   }
 
-  const pageInfo = computed(() => clientStore.getClientPageInfo);
-
   function showMoreClients(): void {
     clientParams.first = +clientBatch.value;
-    clientParams.after = pageInfo?.value?.endCursor;
+    clientParams.after = clientPageInfo?.value?.endCursor;
     clientParams.text = filterText.value;
     clientParams.filterAction = false;
     clientStore.fetchClients(clientParams);
@@ -174,6 +175,9 @@
               </tr>
             </tbody>
         </table>
+        <div v-if="fetchingClients" class="py-4 text-center">
+          <LoadingMessage message="Fetching clients ..." />
+        </div>
         </div>
     </div>
 

@@ -11,9 +11,11 @@
     push({ name: "LOGIN" })
   }
 
-  watch(() => authStore.auth.isAuthenticated, (isAuthenticated) => {
-    if(!isAuthenticated){
+  watch(() => authStore.auth.isAuthenticated, (newAuth, oldAuth) => {
+    if(!newAuth){
       push({ name: "LOGIN" })
+    } else {
+      push({ name: "DASHBOARD" })
     }
   })
 
