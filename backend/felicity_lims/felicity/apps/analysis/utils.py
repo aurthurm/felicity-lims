@@ -243,7 +243,7 @@ async def result_mutator(result: AnalysisResult):
                     "result_uid": result.uid,
                     "before": result.result,
                     "after": f"> {dlim.upper_limit}",
-                    "mutation": f"Result fell Above the Upper Detection Limit {dlim.upper_limit} and must be reported as > {spec.upper_limit}",
+                    "mutation": f"Result fell Above the Upper Detection Limit {dlim.upper_limit} and must be reported as > {dlim.upper_limit}",
                     "date": datetime.now()
                 })
                 result.result = f"> {dlim.upper_limit}"

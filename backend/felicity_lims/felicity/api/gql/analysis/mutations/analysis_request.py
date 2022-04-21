@@ -137,7 +137,7 @@ async def create_analysis_request(
             "sample_type_uid": _st_uid,
             "sample_id": None,
             "priority": payload.priority,
-            "status": states.sample.RECEIVED,
+            "status": states.sample.DUE,
         }
 
         profiles = []
@@ -174,6 +174,7 @@ async def create_analysis_request(
         sample: analysis_models.Sample = await analysis_models.Sample.create(
             sample_schema
         )
+        await sample.receive(received_by=felicity_user)
         
         # 
         for _prof in profiles:

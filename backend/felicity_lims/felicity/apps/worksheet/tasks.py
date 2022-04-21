@@ -1,5 +1,7 @@
 import logging
 import time
+from typing import List
+from datetime import datetime
 
 from felicity.apps.analysis import conf as analysis_conf
 from felicity.apps.analysis.models.analysis import Sample
@@ -79,7 +81,7 @@ async def populate_worksheet_plate(job_uid: int):
 
     logger.info(f"Filtering samples by template criteria ...")
     # get sample, filtered by analysis_service and Sample Type
-    samples = await AnalysisResult.filter_for_worksheet(
+    samples: List[AnalysisResult] = await AnalysisResult.filter_for_worksheet(
         analyses_status=analysis_conf.states.result.PENDING,
         analysis_uid=ws.analysis_uid,
         sample_type_uid=ws.sample_type_uid,

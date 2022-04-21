@@ -1,6 +1,6 @@
 import logging
 from base64 import b64decode, b64encode
-from typing import Any, AsyncIterator, Dict, List, Optional, TypeVar
+from typing import Any, AsyncIterator, Dict, List, Optional, TypeVar, Union
 import re
 from felicity.database.async_mixins import (
     AllFeaturesMixin,
@@ -332,7 +332,7 @@ class DBModel(AllFeaturesMixin):
         return found
 
     @classmethod
-    def _import(cls, schema_in: InDBSchemaType):
+    def _import(cls, schema_in: Union[InDBSchemaType, Dict]):
         """Convert Pydantic schema to dict"""
         if isinstance(schema_in, dict):
             return schema_in

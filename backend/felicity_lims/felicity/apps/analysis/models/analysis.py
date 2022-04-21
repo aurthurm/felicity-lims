@@ -1,5 +1,6 @@
 import logging
 from datetime import datetime, timedelta
+from typing import List, Union, Any
 
 from felicity.apps import Auditable, BaseAuditDBModel, DBModel
 from felicity.apps.analysis import schemas
@@ -84,13 +85,13 @@ class AnalysisCategory(BaseAuditDBModel):
 
     @classmethod
     async def create(
-        cls, obj_in: schemas.AnalysisCategoryCreate
+            cls, obj_in: schemas.AnalysisCategoryCreate
     ) -> schemas.AnalysisCategory:
         data = cls._import(obj_in)
         return await super().create(**data)
 
     async def update(
-        self, obj_in: schemas.AnalysisCategoryUpdate
+            self, obj_in: schemas.AnalysisCategoryUpdate
     ) -> schemas.AnalysisCategory:
         data = self._import(obj_in)
         return await super().update(**data)
@@ -104,7 +105,7 @@ class Profile(BaseAuditDBModel):
     keyword = Column(String, nullable=True, unique=True)
     tat_length_minutes = Column(Integer, nullable=True)
     active = Column(Boolean(), default=False)
-    analyses = relationship(
+    analyses: List["Analysis"] = relationship(
         "Analysis",
         secondary=analysis_profile,
         back_populates="profiles",
@@ -141,6 +142,7 @@ class Profile(BaseAuditDBModel):
     async def update(self, obj_in: schemas.ProfileUpdate) -> schemas.Profile:
         data = self._import(obj_in)
         return await super().update(**data)
+
 
 """
  Many to Many Link between Analyses and Method
@@ -372,7 +374,7 @@ class AnalysisRequest(BaseAuditDBModel):
 
     @classmethod
     async def create(
-        cls, obj_in: schemas.AnalysisRequestCreate
+            cls, obj_in: schemas.AnalysisRequestCreate
     ) -> schemas.AnalysisRequest:
         data = cls._import(obj_in)
         data["request_id"] = (await IdSequence.get_next_number("AR"))[1]
@@ -441,10 +443,10 @@ class Sample(Auditable, BaseMPTT):
     sample_type_uid = Column(Integer, ForeignKey("sampletype.uid"), nullable=False)
     sample_type = relationship("SampleType", backref="samples", lazy="selectin")
     sample_id = Column(String, index=True, unique=True, nullable=True)
-    profiles = relationship(
+    profiles: List[Profile] = relationship(
         Profile, secondary=sample_profile, backref="samples", lazy="selectin"
     )
-    analyses = relationship(
+    analyses: List[Analysis] = relationship(
         Analysis, secondary=sample_analysis, backref="samples", lazy="selectin"
     )
     analysis_results = relationship(
@@ -503,7 +505,7 @@ class Sample(Auditable, BaseMPTT):
         ]
 
     async def update_due_date(self, reset: bool = False):
-        tats = []
+        tats: List[Union[int, Any]] = []
         length: int = 0
         for anal in self.analyses:
             tats.append(anal.tat_length_minutes)
@@ -690,7 +692,6 @@ class Sample(Auditable, BaseMPTT):
         data["analyses"] = self.analyses
         data["parent_id"] = self.uid
         return await super().create(**data)
-
 
 # @event.listens_for(Sample, "after_update")
 # def stream_sample_verified_models(mapper, connection, target): # noqa
