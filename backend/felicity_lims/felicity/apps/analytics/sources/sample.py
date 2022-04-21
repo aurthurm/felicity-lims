@@ -1,5 +1,4 @@
-from typing import Tuple, Type, TypeVar, Generic, List
-from datetime import datetime
+from typing import Tuple, Type, TypeVar, Generic, List, Optional
 import logging
 from dateutil import parser
 
@@ -43,11 +42,6 @@ class SampleAnalyticsInit(Generic[ModelType]):
         else:
             statuses = ('', '')  # noqa
 
-        logger.info(f"analysis_uids: {analysis_uids}")
-        logger.info(f"an_uids: {an_uids}")
-        logger.info(f"sample_states: {sample_states}")
-        logger.info(f"statuses: {statuses}")
-
         stmt = text(f"""
             select 
                 pt.patient_id as "Patient Id",
@@ -90,8 +84,6 @@ class SampleAnalyticsInit(Generic[ModelType]):
                 sa.status in {statuses}
         """)
 
-        logger.info(stmt)
-
         async with async_session_factory() as session:
             result = await session.execute(stmt, {
                 "sd": start_date,
@@ -103,30 +95,48 @@ class SampleAnalyticsInit(Generic[ModelType]):
 
     async def get_line_listing_2(self):
         stmt = self.model.with_joined('analysis_results', 'analyses', 'analysis_request')
-
-        logger.info(stmt)
-
         async with async_session_factory() as session:
             result = await session.execute(stmt.limit(10))
 
-        logger.info(result)
-        logger.info(result.scalars().all())
+        # logger.info(result)
+        # logger.info(result.scalars().all())
 
         return None, None
 
-    async def get_counts_group_by(self, group_by: str):
-
+    async def get_counts_group_by(self, group_by: str, start: Optional[Tuple[str, str]], end: Optional[Tuple[str, str]]):  # noqa
         if not hasattr(self.model, group_by):
             logger.warning(f"Model has no attr {group_by}")
             raise AttributeError(f"Model has no attr {group_by}")
-
         group_by = getattr(self.model, group_by)
-        stmt = select(group_by, func.count(self.model.uid).label('total')).filter(group_by!=None).group_by(group_by)  # noqa
+
+        stmt = select(group_by, func.count(self.model.uid).label('total')).filter(group_by != None)  # noqa
+
+        if start[1]:
+            start_column = start[0]
+            start_date = parser.parse(start[1]).replace(tzinfo=None)
+            if not hasattr(self.model, start_column):
+                logger.warning(f"Model has no attr {start_column}")
+                raise AttributeError(f"Model has no attr {start_column}")
+            start_column = getattr(self.model, start_column)
+            stmt = stmt.filter(start_column >= start_date)
+
+        if end[1]:
+            end_column = end[0]
+            end_date = parser.parse(end[1]).replace(tzinfo=None)
+            if not hasattr(self.model, end_column):
+                logger.warning(f"Model has no attr {end_column}")
+                raise AttributeError(f"Model has no attr {end_column}")
+            end_column = getattr(self.model, end_column)
+            stmt = stmt.filter(end_column <= end_date)
+
+        stmt = stmt.group_by(group_by)
+
+        print(stmt)
 
         async with async_session_factory() as session:
             result = await session.execute(stmt)
 
-        return result.all()  # scalars drops total
+        return result.all()
 
     async def get_sample_process_performance(self, start: Tuple[str, str], end: Tuple[str, str]):
         """
@@ -252,8 +262,6 @@ class SampleAnalyticsInit(Generic[ModelType]):
         """
 
         stmt = text(raw_sql)  # noqa:
-
-        logger.info(stmt)
 
         async with async_session_factory() as session:
             result = await session.execute(stmt, {"sd": start_date, "ed": end_date})

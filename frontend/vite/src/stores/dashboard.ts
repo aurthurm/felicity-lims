@@ -45,14 +45,25 @@ export const useDashBoardStore = defineStore('dashboard', () => {
         currentTab: 'overview',
         tabs: ['overview', 'resource', 'laggard', 'peformance', 'tat', 'notices', 'line-listing'],
         showFilters: false,
-        currentFilter: "Today",
         filterRange: { from: "", to: "" },
-        filters: ['Today', 'Yesterday', 'Week', 'Last Week', 'Month', 'Last Month', 'Quarter', 'Last Quarter', 'Year', 'All', 'custom-range'],
-        overViewStats: { analyses: [] as GroupCount[], samples: [] as GroupCount[], worksheets: [] as GroupCount[] },
+        currentFilter: "T",
+        filters: ['T', 'Y', 'TW', 'LW', 'TM', 'LM', 'TQ', 'LQ', 'TY'],
+        overViewStats: { 
+            analyses: [] as GroupCount[], 
+            samples: [] as GroupCount[], 
+            worksheets: [] as GroupCount[] 
+        },
         fetchingOverViewStats: false,
-        resourceStats: { instruments: [] as GroupCount[], samples: [] as any[] },
+        resourceStats: { 
+            instruments: [] as GroupCount[], samples: [] as any[] 
+        },
         fetchingResourceStats: false,
-        peformanceStats: { sample: [] as IProcess[], analysis: [] as IProcess[] },
+        peformancePeriods: [30, 60, 90, 180, 365],
+        currentPeformancePeriod: 30,
+        peformanceStats: { 
+            sample: [] as IProcess[], 
+            analysis: [] as IProcess[] 
+        },
         fetchingSampePeformanceStats: false,
         fetchingAnalysisPeformanceStats: false,
         currentPeformance: "received_to_published",
@@ -139,8 +150,8 @@ export const useDashBoardStore = defineStore('dashboard', () => {
     // GET_SAMPLE_PROCESS_PEFORMANCE
     const getSampleProcessPeformance = async () => {
         const filters = { 
-            startDate: dashboard.value.filterRange.from,
-            endDate: dashboard.value.filterRange.to
+            startDate: dayjs().startOf('day').subtract(dashboard.value.currentPeformancePeriod, 'day').toISOString(),
+            endDate: dayjs().endOf('day').toISOString()
         }
         dashboard.value.fetchingSampePeformanceStats = true
         await withClientQuery(GET_SAMPLE_PROCESS_PEFORMANCE,filters, 'sampleProcessPerformance', 'network-only')
@@ -154,8 +165,8 @@ export const useDashBoardStore = defineStore('dashboard', () => {
     const getAnalysisProcessPeformance = async () => {
         const filters = { 
             process: dashboard.value.currentPeformance,
-            startDate: dashboard.value.filterRange.from,
-            endDate: dashboard.value.filterRange.to
+            startDate: dayjs().startOf('day').subtract(dashboard.value.currentPeformancePeriod, 'day').toISOString(),
+            endDate: dayjs().endOf('day').toISOString()
         }
         dashboard.value.fetchingAnalysisPeformanceStats = true
         await withClientQuery(GET_ANALYSIS_PROCESS_PEFORMANCE,filters, 'analysisProcessPerformance', 'network-only')
@@ -167,12 +178,8 @@ export const useDashBoardStore = defineStore('dashboard', () => {
 
     // GET_SAMPLE_LAGGARDS
     const getSampleLaggards = async () => {
-        const filters = { 
-            startDate: dashboard.value.filterRange.from,
-            endDate: dashboard.value.filterRange.to
-        }
         dashboard.value.fetchingLaggards = true;
-        await withClientQuery(GET_SAMPLE_LAGGARDS,filters, 'sampleLaggards', 'network-only')
+        await withClientQuery(GET_SAMPLE_LAGGARDS, {}, 'sampleLaggards', 'network-only')
         .then(payload => {
             dashboard.value.laggards = payload.data
             dashboard.value.fetchingLaggards = false;
@@ -185,50 +192,53 @@ export const useDashBoardStore = defineStore('dashboard', () => {
     const setCurrentPeformance = (event: any) => {
         dashboard.value.currentPeformance = event.target.value
     };
+    const setCurrentPeformancePeriod = (event: any) => {
+        const period: number = +event.target.value
+        dashboard.value.currentPeformancePeriod = period
+    };
+    const setShowFilters = (show: boolean) => dashboard.value.showFilters = show;
 
     const calculateFilterRange = (filter: string): void => {
-        if(filter === dashboard.value.filters[dashboard.value.filters.length -1]) return;
-
         switch (filter) {
 
-            case 'Today':
+            case 'T':
                 setFilterRange(dayjs().startOf('day').toISOString(), dayjs().endOf('day').toISOString())
                 break;
 
-            case 'Yesterday':
+            case 'Y':
                 setFilterRange(dayjs().startOf('day').subtract(1, 'day').toISOString(), dayjs().endOf('day').subtract(1, 'day').toISOString())
                 break;
 
-            case 'Week':
+            case 'TW':
                 setFilterRange(dayjs().startOf('week').toISOString(), dayjs().endOf('week').toISOString())
                 break;
 
-            case 'Last Week':
+            case 'LW':
                 setFilterRange(dayjs().startOf('week').subtract(1, 'week').toISOString(), dayjs().endOf('week').subtract(1, 'week').toISOString())
                 break;
 
-            case 'Month':
+            case 'TM':
                 setFilterRange(dayjs().startOf('month').toISOString(), dayjs().endOf('month').toISOString())
                 break;
 
-            case 'Last Month':
+            case 'LM':
                 setFilterRange(dayjs().startOf('month').subtract(1, 'month').toISOString(), dayjs().endOf('month').subtract(1, 'month').toISOString())
                 break;
 
-            case 'Quarter':
+            case 'TQ':
                 setFilterRange(dayjs().startOf('quarter').toISOString(), dayjs().endOf('quarter').toISOString())
                 break;
 
-            case 'Last Quarter':
+            case 'LQ':
                 setFilterRange(dayjs().startOf('quarter').subtract(1, 'quarter').toISOString(), dayjs().endOf('quarter').subtract(1, 'quarter').toISOString())
                 break;
  
-            case 'Year':
+            case 'TY':
                 setFilterRange(dayjs().startOf('year').toISOString(), dayjs().endOf('year').toISOString())
                 break;
 
             default:
-                setFilterRange('', '')
+                alert("Unknown Range Selected")
                 break;
         }
     }
@@ -239,10 +249,10 @@ export const useDashBoardStore = defineStore('dashboard', () => {
     })
     
     return { 
-        dashboard,
+        dashboard, setShowFilters,
         setCurrentTab, setCurrentFilter, setFilterRange,
         getOverViewStats, getResourceStats, getSampleLaggards,
         getSampleProcessPeformance, getAnalysisProcessPeformance,
-        setCurrentPeformance
+        setCurrentPeformance, setCurrentPeformancePeriod
     }
 })

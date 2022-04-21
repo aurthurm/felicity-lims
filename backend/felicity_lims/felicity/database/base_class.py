@@ -389,7 +389,7 @@ class DBModel(AllFeaturesMixin):
         stmt = cls.where(**kwargs)
         async with async_session_factory() as session:
             results = await session.execute(stmt)
-        return results.scalars().all()
+        return results.unique().scalars().all()
 
     @classmethod
     async def count_where(cls, filters):

@@ -23,7 +23,7 @@ async def initialize_felicity() -> bool:
     logger.info("Initializing Felicity LIMS ...")
 
     # Initial Data pre population
-    await create_laboratory()
+    await create_laboratory("Felicity Labs")
     await create_groups()
     await create_permissions()
     await set_default_group_permissions()

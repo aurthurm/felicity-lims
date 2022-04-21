@@ -17,6 +17,7 @@ class States:
             "cancelled"
         )  # samples that are no longer required <in other words deleted>
         REJECTED = "rejected"  # samples rejected for no conformance reasons
+        PROCESSING = "processing"
 
     class Result:
         PENDING = "pending"  # analytes that are pending results

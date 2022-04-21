@@ -288,6 +288,14 @@ const routes: RouteRecordRaw[] = [
       layout: 'empty',
     },
   },
+  {
+    path: '/installation',
+    name: guards.pages.INSTALLATION,
+    component: () => import('../views/install/index.vue'),
+    meta: {
+      layout: 'empty'
+    }
+  }
 ];
 
 const router = createRouter({

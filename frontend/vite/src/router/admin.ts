@@ -105,6 +105,14 @@ const adminRoutes = [
       requiresAuth: true,
     },
   },
+  {
+    path: 'setup-data-conf',
+    name: 'setup-data-conf',
+    component: () => import('../views/admin/data-load/index.vue'),
+    meta: {
+      requiresAuth: true,
+    },
+  },
 ];
 
 export default adminRoutes;

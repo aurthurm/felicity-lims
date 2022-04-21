@@ -1,7 +1,7 @@
 import axios from 'axios';
-import { useAuthStore } from "./stores"
+import { useAuthStore } from "../stores"
 
-import { REST_BASE_URL } from './conf'
+import { REST_BASE_URL } from '../conf'
 
 const getAuthHeaders = async () => {
 

@@ -88,20 +88,21 @@ async def create_clients() -> None:
             await client_models.ClientContact.create(cc_in)
 
 
-async def create_laboratory() -> None:
+async def create_laboratory(name: str) -> None:
     logger.info(f"Setting up the laboratory .....")
 
     with open(settings.BASE_DIR + "/init/setup/data/laboratory.json", "r") as json_file:
         data = json.load(json_file)
 
-    l_name = data.get("laboratory_name", "Felicity Labs")
+    if not name:
+        name = data.get("laboratory_name", "Felicity Labs")
     laboratory: Optional[models.Laboratory] = await models.Laboratory.get_by_setup_name(
         "felicity"
     )
     if not laboratory:
         lab_in = schemas.LaboratoryCreate(
             setup_name="felicity",
-            lab_name=l_name,
+            lab_name=name,
             email=None,
             email_cc=None,
             mobile_phone=None,

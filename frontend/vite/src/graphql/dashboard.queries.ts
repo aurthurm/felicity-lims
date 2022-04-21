@@ -35,8 +35,8 @@ export const GET_WORKSHEET_GROUP_BY_STATUS = gql`
 }`;
 
 export const GET_ANALYSIS_GROUP_BY_INSTRUMENT = gql`
-  query getAnalysisGroupByInstrument {
-    countAnalyteGroupByInstrument {
+  query getAnalysisGroupByInstrument($startDate: String!, $endDate: String!) {
+    countAnalyteGroupByInstrument(startDate: $startDate,endDate: $endDate) {
       data {
         __typename
         group
@@ -47,10 +47,7 @@ export const GET_ANALYSIS_GROUP_BY_INSTRUMENT = gql`
 
 export const GET_SAMPLE_PROCESS_PEFORMANCE = gql`
   query sampleProcessPeformance($startDate: String!, $endDate: String!){
-    sampleProcessPerformance(
-      startDate: $startDate,
-      endDate: $endDate
-    ) {
+    sampleProcessPerformance(startDate: $startDate,endDate: $endDate) {
       __typename
       data {
         process
@@ -89,8 +86,8 @@ export const GET_ANALYSIS_PROCESS_PEFORMANCE = gql`
 
 
 export const GET_SAMPLE_GROUPS_BY_ACTION = gql`
-  query sampleGroupByAction {
-    countSampleGroupByAction {
+  query sampleGroupByAction($startDate: String!, $endDate: String!) {
+    countSampleGroupByAction(startDate: $startDate, endDate: $endDate) {
       __typename
       data {
         __typename

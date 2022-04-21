@@ -27,6 +27,7 @@ class WSStates(object):
         "to_be_verified"
     )  # worksheets whose analytes are results but not all approved/verified
     VERIFIED = "verified"  # worksheets where all analytes are approved/verified
+    PROCESSING = "processing"
 
 
 worksheet_states = WSStates()

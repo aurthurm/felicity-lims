@@ -18,7 +18,7 @@ from felicity.utils.email.email import send_reset_password_email
 router = APIRouter()
 
 
-@router.post("/login/access-token", response_model=core_schemas.Token)
+@router.post("/access-token", response_model=core_schemas.Token)
 async def login_access_token(
     form_data: OAuth2PasswordRequestForm = Depends()
 ) -> Any:
@@ -41,8 +41,8 @@ async def login_access_token(
     }
 
 
-@router.post("/login/test-token", response_model=schemas.User)
-def test_token(current_user: models.User = Depends(deps.get_current_user)) -> Any:
+@router.post("/test-token", response_model=schemas.User)
+def me(current_user: models.User = Depends(deps.get_current_user)) -> Any:
     """
     Test access token
     """

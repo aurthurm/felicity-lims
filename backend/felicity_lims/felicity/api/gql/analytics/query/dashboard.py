@@ -1,5 +1,7 @@
 import io
 import logging
+from typing import Optional
+
 import strawberry  # noqa
 import pandas as pd
 from felicity.apps.analysis.models.analysis import Sample
@@ -59,7 +61,7 @@ async def test_stuff(info) -> types.Nothing:
 @strawberry.field
 async def count_sample_group_by_status(info) -> types.GroupedCounts:
     analytics = SampleAnalyticsInit(Sample)
-    results = await analytics.get_counts_group_by('status')
+    results = await analytics.get_counts_group_by('status', ("", ""), ("", ""))
 
     stats = []
     for row in results:
@@ -71,7 +73,7 @@ async def count_sample_group_by_status(info) -> types.GroupedCounts:
 @strawberry.field
 async def count_analyte_group_by_status(info) -> types.GroupedCounts:
     analytics = SampleAnalyticsInit(AnalysisResult)
-    results = await analytics.get_counts_group_by('status')
+    results = await analytics.get_counts_group_by('status', ("", ""), ("", ""))
 
     stats = []
     for row in results:
@@ -83,7 +85,7 @@ async def count_analyte_group_by_status(info) -> types.GroupedCounts:
 @strawberry.field
 async def count_worksheet_group_by_status(info) -> types.GroupedCounts:
     analytics = SampleAnalyticsInit(WorkSheet)
-    results = await analytics.get_counts_group_by('state')
+    results = await analytics.get_counts_group_by('state', ("", ""), ("", ""))
 
     stats = []
     for row in results:
@@ -93,9 +95,17 @@ async def count_worksheet_group_by_status(info) -> types.GroupedCounts:
 
 
 @strawberry.field
-async def count_analyte_group_by_instrument(info) -> types.GroupedCounts:
+async def count_analyte_group_by_instrument(
+        info,
+        start_date: Optional[str] = None,
+        end_date: Optional[str] = None
+) -> types.GroupedCounts:
     analytics = SampleAnalyticsInit(AnalysisResult)
-    results = await analytics.get_counts_group_by('instrument_uid')
+    results = await analytics.get_counts_group_by(
+        'instrument_uid',
+        ("date_submitted", start_date),
+        ("date_submitted", end_date)
+    )
 
     stats = []
     for row in results:
@@ -105,12 +115,32 @@ async def count_analyte_group_by_instrument(info) -> types.GroupedCounts:
 
 
 @strawberry.field
-async def count_sample_group_by_action(info) -> types.GroupedData:
+async def count_sample_group_by_action(
+        info,
+        start_date: Optional[str] = None,
+        end_date: Optional[str] = None
+) -> types.GroupedData:
     analytics = SampleAnalyticsInit(Sample)
-    created = await analytics.get_counts_group_by('created_by_uid')
-    submitted = await analytics.get_counts_group_by('submitted_by_uid')
-    verified = await analytics.get_counts_group_by('verified_by_uid')
-    published = await analytics.get_counts_group_by('published_by_uid')
+    created = await analytics.get_counts_group_by(
+        'created_by_uid',
+        ('created_at', start_date),
+        ('created_at', end_date)
+    )
+    submitted = await analytics.get_counts_group_by(
+        'submitted_by_uid',
+        ('date_submitted', start_date),
+        ('date_submitted', end_date)
+    )
+    verified = await analytics.get_counts_group_by(
+        'verified_by_uid',
+        ('date_verified', start_date),
+        ('date_verified', end_date)
+    )
+    published = await analytics.get_counts_group_by(
+        'published_by_uid',
+        ('date_published', start_date),
+        ('date_published', end_date)
+    )
 
     stats = []
     registration = types.GroupData(group="registration", counts=[])

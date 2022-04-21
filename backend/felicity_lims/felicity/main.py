@@ -104,7 +104,6 @@ if settings.BACKEND_CORS_ORIGINS:
 
 flims.add_middleware(AuthenticationMiddleware, backend=FelicityAuthBackend())
 
-
 @flims.middleware("http")
 async def set_custom_attr(request: Request, call_next):
     request.state.notifier = FelicityNotifier()
