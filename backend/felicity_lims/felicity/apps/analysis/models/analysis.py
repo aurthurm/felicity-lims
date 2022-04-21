@@ -600,8 +600,10 @@ class Sample(Auditable, BaseMPTT):
             states.result.VERIFIED,
         ]
         analysis_results = await self.get_analysis_results()
+        logger.info(analysis_results)
         match = all([(sibling.status in statuses) for sibling in analysis_results])
-        if match and self.status == states.sample.RECEIVED:
+        logger.info(match)
+        if match and self.status in [states.sample.RECEIVED, states.sample.PROCESSING]:
             self.status = states.sample.TO_BE_VERIFIED
             self.submitted_by_uid = submitted_by.uid
             self.date_submitted = datetime.now()
@@ -627,7 +629,7 @@ class Sample(Auditable, BaseMPTT):
         ]
         analysis_results = await self.get_analysis_results()
         match = all([(sibling.status in statuses) for sibling in analysis_results])
-        if match and self.status == states.sample.TO_BE_VERIFIED:
+        if match and self.status in[states.sample.TO_BE_VERIFIED, states.sample.PROCESSING]:
             self.status = states.sample.VERIFIED
             self.verified_by_uid = verified_by.uid
             self.date_verified = datetime.now()

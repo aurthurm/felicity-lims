@@ -4,9 +4,11 @@ import { reactive, onMounted } from "vue";
 import axios from "../../axios/with-auth";
 import { REST_BASE_URL } from "../../conf";
 import { useNotifyToast } from "../../composables";
+import { useAnalysisStore } from "../../stores";
 import { IReportListing } from "../../models/reports";
 
 const { toastSuccess, toastWarning } = useNotifyToast();
+const analysisStore = useAnalysisStore();
 
 const state = reactive({
   reports: [] as IReportListing[],
@@ -21,6 +23,12 @@ const state = reactive({
 });
 
 onMounted(async () => {
+  analysisStore.fetchAnalysesServices({
+    first: undefined,
+    after: "",
+    text: "",
+    sortBy: ["name"],
+  });
   await axios.get("reports").then((resp) => {
     state.reports = resp.data;
   });
@@ -197,8 +205,13 @@ const deleteReport = (report: any) => {
                 class="form-input mt-1 block w-full"
                 multiple
               >
-                <option value=""></option>
-                <option value="1">EID</option>
+                <option
+                  v-for="service in analysisStore.analysesServices"
+                  :key="service.uid"
+                  :value="service.uid"
+                >
+                  {{ service.name }}
+                </option>
               </select>
             </label>
             <label class="block col-span-1 mb-2">

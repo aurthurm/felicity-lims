@@ -214,9 +214,7 @@ export const useSampleStore = defineStore('sample', {
     await withClientQuery( GET_ANALYSIS_RESULTS_BY_SAMPLE_UID, { uid }, "analysisResultBySampleUid", 'network-only')
     .then(payload => {
       this.fetchingResults = false;
-      console.log(payload)
       this.analysisResults = sortResults(payload)
-      console.log(this.analysisResults)
     }).catch(err => this.fetchingResults = false)
   },
   updateAnalysesResults(payload: IAnalysisResult[]){

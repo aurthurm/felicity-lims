@@ -10,7 +10,6 @@ function hasRights(action: string, objectName: string) {
 
   const group = groups![0] as IGroup
 
-
   if (group) {
     if(group.permissions) {
       return group.permissions?.some(perm => perm.action == action && perm.target == objectName);

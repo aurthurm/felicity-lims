@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import FButton from "../../../components/Buttons/Button.vue";
-import LoadingMessage from "../../../components/Spinners/LoadingMessage.vue"
+import LoadingMessage from "../../../components/Spinners/LoadingMessage.vue";
 import { onMounted, watch, reactive, computed } from "vue";
 import { useRoute } from "vue-router";
 import { storeToRefs } from "pinia";
@@ -18,7 +18,7 @@ import * as shield from "../../../guards";
 
 const route = useRoute();
 const sampleStore = useSampleStore();
-const { sample, analysisResults, fetchingResults } = storeToRefs(sampleStore)
+const { sample, analysisResults, fetchingResults } = storeToRefs(sampleStore);
 
 const state = reactive({
   can_submit: false,
@@ -252,9 +252,8 @@ const retestResults = () =>
     <div
       class="align-middle inline-block min-w-full shadow overflow-hidden bg-white shadow-dashboard px-2 pt-1 rounded-bl-lg rounded-br-lg"
     >
-
       <div v-if="fetchingResults" class="py-4 text-center">
-        <LoadingMessage message="Fetching analytes ..."/>
+        <LoadingMessage message="Fetching analytes ..." />
       </div>
       <table class="min-w-full" v-else>
         <thead>
@@ -330,8 +329,7 @@ const retestResults = () =>
             <th class="px-1 py-1 border-b-2 border-gray-300"></th>
           </tr>
         </thead>
-        <tbody 
-        class="bg-white">
+        <tbody class="bg-white">
           <tr
             v-for="result in analysisResults"
             :key="result.uid"
