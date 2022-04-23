@@ -41,12 +41,6 @@ export default function useAnalysisComposable(){
                 worksheetStore.updateWorksheetResultsStatus(resp.results)
              });
 
-            await Swal.fire(
-              'Its Happening!',
-              'Your results have been cancelled.',
-              'success'
-            ).then(_ => {})
-
           }
         })
       } catch (error) {
@@ -74,12 +68,6 @@ export default function useAnalysisComposable(){
                 sampleStore.updateAnalysesResultsStatus(resp.results)
                 worksheetStore.updateWorksheetResultsStatus(resp.results)
              });
-
-            await Swal.fire(
-              'Its Happening!',
-              'Your analystes have been reinstated.',
-              'success'
-            ).then(_ => {})
 
           }
         })
@@ -122,12 +110,6 @@ export default function useAnalysisComposable(){
                 worksheetStore.backgroundProcessing(results, sourceObject === "worksheet" ? sourceObjectUid : undefined)
              });
 
-            await Swal.fire(
-              'Its Happening!',
-              'Your results have been submitted.',
-              'success'
-            ).then(_ => {})
-
           }
         })
       } catch (error) {
@@ -135,18 +117,18 @@ export default function useAnalysisComposable(){
       }
     }
 
-    // Verify Analyses
-    const verifyResults = async (uids: number[], sourceObject: string, sourceObjectUid: number) => {
+    // Approve Analyses
+    const approveResults = async (uids: number[], sourceObject: string, sourceObjectUid: number) => {
       try {
         await Swal.fire({
           title: 'Are you sure?',
-          text: "You want to verify these results",
+          text: "You want to approve these results",
           icon: 'warning',
           showCancelButton: true,
           confirmButtonColor: '#3085d6',
           cancelButtonColor: '#d33',
-          confirmButtonText: 'Yes, verify now!',
-          cancelButtonText: 'No, cancel verification!',
+          confirmButtonText: 'Yes, approve now!',
+          cancelButtonText: 'No, cancel approval!',
         }).then(async (result) => {
           if (result.isConfirmed) {
 
@@ -157,12 +139,6 @@ export default function useAnalysisComposable(){
               sampleStore.backgroundProcessing(data, sourceObject === "sample" ? sourceObjectUid : undefined)
               worksheetStore.backgroundProcessing(data, sourceObject === "worksheet" ? sourceObjectUid : undefined)
              });
-
-            await Swal.fire(
-              'Its Happening!',
-              'Your results have been verified.',
-              'success'
-            ).then(_ =>  {})
 
           }
         })
@@ -192,12 +168,6 @@ export default function useAnalysisComposable(){
                 worksheetStore.updateWorksheetResultsStatus(resp.results)
              });
 
-            await Swal.fire(
-              'Its Happening!',
-              'Your results have been retracted.',
-              'success'
-            ).then(_ => {})
-
           }
         })
       } catch (error) {
@@ -223,12 +193,6 @@ export default function useAnalysisComposable(){
             withClientMutation(RETEST_ANALYSIS_RESULTS, { analyses: uids }, "retestAnalysisResults")
             .then(resp => sampleStore.updateAnalysesResults(resp.results));
 
-            await Swal.fire(
-              'Its Happening!',
-              'Your results have been retested.',
-              'success'
-            ).then(_ => {})
-
           }
         })
       } catch (error) {
@@ -241,7 +205,7 @@ export default function useAnalysisComposable(){
       submitResults,
       cancelResults,
       reInstateResults,
-      verifyResults,
+      approveResults,
       retractResults,
       retestResults,
     }

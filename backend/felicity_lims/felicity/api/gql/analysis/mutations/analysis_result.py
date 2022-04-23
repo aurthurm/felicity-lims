@@ -5,7 +5,10 @@ from typing import List, Optional
 import strawberry  # noqa
 from felicity.apps.analysis import schemas
 from felicity.apps.analysis.conf import states
-from felicity.apps.worksheet import models as ws_models
+from felicity.apps.worksheet import (
+    models as ws_models,
+    conf as ws_conf
+)
 from felicity.apps.analysis.models import results as result_models
 from felicity.apps.analysis.models import analysis as analysis_models
 from felicity.api.gql import OperationError, OperationSuccess, auth_from_info, verify_user_auth
@@ -79,10 +82,10 @@ async def submit_analysis_results(
     
     if source_object == "worksheet" and source_object_uid:
         ws = await ws_models.WorkSheet.get(uid=source_object_uid)
-        await ws.change_state("processing", felicity_user.uid)
-    elif source_object == "sample" and source_object_uid:
-        sa = await analysis_models.Sample.get(uid=source_object_uid)
-        await sa.change_status("processing", felicity_user.uid)
+        await ws.change_state(ws_conf.worksheet_states.SUBMITTING, felicity_user.uid)
+    # elif source_object == "sample" and source_object_uid:
+    #     sa = await analysis_models.Sample.get(uid=source_object_uid)
+    #     await sa.change_status("processing", felicity_user.uid)
         
     felicity_resume_workforce()
 
@@ -119,10 +122,10 @@ async def verify_analysis_results(
     
     if source_object == "worksheet" and source_object_uid:
         ws = await ws_models.WorkSheet.get(uid=source_object_uid)
-        await ws.change_state("processing", felicity_user.uid)
-    elif source_object == "sample" and source_object_uid:
-        sa = await analysis_models.Sample.get(uid=source_object_uid)
-        await sa.change_status("processing", felicity_user.uid)
+        await ws.change_state(ws_conf.worksheet_states.APPROVING, felicity_user.uid)
+    # elif source_object == "sample" and source_object_uid:
+    #     sa = await analysis_models.Sample.get(uid=source_object_uid)
+    #     await sa.change_status("APPROVING", felicity_user.uid)
         
     felicity_resume_workforce()
 
@@ -208,6 +211,11 @@ async def cancel_analysis_results(info, analyses: List[int]) -> AnalysisResultRe
         )
         if not a_result:
             return OperationError(error=f"AnalysisResult with uid {_ar_uid} not found")
+
+        # must not belong to a worksheet
+        if a_result.assigned:
+            return_results.append(a_result)
+            continue
 
         a_result = await a_result.cancel(cancelled_by=felicity_user)
         if a_result:

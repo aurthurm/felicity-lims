@@ -11,7 +11,7 @@ const worksheetStore = useWorksheetStore();
 
 let can_submit = ref<boolean>(false);
 let can_retract = ref<boolean>(false);
-let can_verify = ref<boolean>(false);
+let can_approve = ref<boolean>(false);
 let can_retest = ref<boolean>(false);
 let can_unassign = ref<boolean>(false);
 
@@ -50,7 +50,7 @@ function check(result: IAnalysisResult): void {
 }
 
 function checkDisabled(result: IAnalysisResult): boolean {
-  return ["retracted", "verified"].includes(result.status!);
+  return ["retracted", "approved"].includes(result.status!);
 }
 
 function unCheck(result: IAnalysisResult): void {
@@ -123,7 +123,7 @@ function getResultRowColor(result: any): string {
       } else {
         return "";
       }
-    case "verified":
+    case "approved":
       if (result?.retest === true) {
         return "bg-sky-800 text-sm leading-5 text-sky-800";
       } else {
@@ -138,7 +138,7 @@ function isDisabledRowCheckBox(result: any): boolean {
   switch (result?.status) {
     case "retracted":
       return true;
-    case "verified":
+    case "approved":
       if (result?.reportable === false) {
         return true;
       } else {
@@ -154,7 +154,7 @@ function checkUserActionPermissios(): void {
   can_submit.value = false;
   can_unassign.value = false;
   can_retract.value = false;
-  can_verify.value = false;
+  can_approve.value = false;
   can_retest.value = false;
 
   const checked = getResultsChecked();
@@ -168,14 +168,14 @@ function checkUserActionPermissios(): void {
   // can verify/ retract/ retest
   if (checked.every((result: IAnalysisResult) => result.status === "resulted")) {
     can_retract.value = true;
-    can_verify.value = true;
+    can_approve.value = true;
     can_retest.value = true;
   }
 }
 
 const {
   submitResults: submitter_,
-  verifyResults: verifier_,
+  approveResults: approver_,
   retractResults: retracter_,
   retestResults: retester_,
 } = useAnalysisComposable();
@@ -184,8 +184,8 @@ const { unAssignSamples: unassinger_ } = useWorkSheetComposable();
 const unAssignSamples = () => unassinger_(getResultsUids());
 const submitResults = () =>
   submitter_(prepareResults(), "worksheet", worksheet.value?.uid!);
-const verifyResults = () =>
-  verifier_(getResultsUids(), "worksheet", worksheet.value?.uid!);
+const approveResults = () =>
+  approver_(getResultsUids(), "worksheet", worksheet.value?.uid!);
 const retractResults = () => retracter_(getResultsUids());
 const retestResults = () => retester_(getResultsUids());
 </script>
@@ -441,12 +441,12 @@ const retestResults = () => retester_(getResultsUids());
       </button>
       <button
         v-show="
-          shield.hasRights(shield.actions.UPDATE, shield.objects.WORKSHEET) && can_verify
+          shield.hasRights(shield.actions.UPDATE, shield.objects.WORKSHEET) && can_approve
         "
-        @click.prevent="verifyResults()"
+        @click.prevent="approveResults()"
         class="px-2 py-1 mr-2 border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
       >
-        Verify
+        Approve
       </button>
       <button
         v-show="

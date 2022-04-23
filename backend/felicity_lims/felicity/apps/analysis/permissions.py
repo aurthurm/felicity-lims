@@ -1,8 +1,13 @@
+import logging
 from typing import List, Union, TYPE_CHECKING, Tuple, Optional
 
 from .models.analysis import Sample
 from .models.results import AnalysisResult
 from felicity.apps.setup.models.setup import Laboratory, LaboratorySetting
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
 
 if TYPE_CHECKING:
     from ..user.models import User

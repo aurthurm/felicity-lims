@@ -133,10 +133,10 @@ class WorkSheet(Auditable, WSBase):
         count = len(analysis_results)
         self.assigned_count = count
         if count == 0:
-            self.state = conf.worksheet_states.PENDING_ASSIGNMENT
+            self.state = conf.worksheet_states.EMPTY
 
-        if count > 0 and self.state == conf.worksheet_states.PENDING_ASSIGNMENT:
-            self.state = conf.worksheet_states.OPEN
+        if count > 0 and self.state == conf.worksheet_states.EMPTY:
+            self.state = conf.worksheet_states.PENDING
 
         await self.save()
 
@@ -148,7 +148,7 @@ class WorkSheet(Auditable, WSBase):
     async def has_processed_samples(self):
         states = [
             analysis_conf.states.result.RESULTED,
-            analysis_conf.states.result.VERIFIED,
+            analysis_conf.states.result.APPROVED,
         ]
 
         results, qc_results = await self.get_analysis_results()
@@ -157,16 +157,16 @@ class WorkSheet(Auditable, WSBase):
         return processed
 
     async def submit(self, submitter):
-        if self.state != conf.worksheet_states.TO_BE_VERIFIED:
+        if self.state != conf.worksheet_states.AWAITING:
             states = [
                 analysis_conf.states.result.RESULTED,
-                analysis_conf.states.result.VERIFIED,
+                analysis_conf.states.result.APPROVED,
             ]
 
             results, qc_results = await self.get_analysis_results()
             analysis_results = results + qc_results
             if all([res.status in states for res in analysis_results]):
-                self.state = conf.worksheet_states.TO_BE_VERIFIED
+                self.state = conf.worksheet_states.AWAITING
                 self.updated_by_uid = submitter.uid  # noqa
                 self.submitted_by_uid = submitter.uid
                 saved = await self.save()
@@ -175,16 +175,16 @@ class WorkSheet(Auditable, WSBase):
         return self
 
     async def verify(self, verified_by):
-        if self.state != conf.worksheet_states.VERIFIED:
+        if self.state != conf.worksheet_states.APPROVED:
             states = [
-                analysis_conf.states.result.VERIFIED,
+                analysis_conf.states.result.APPROVED,
                 analysis_conf.states.result.RETRACTED,
             ]
 
             results, qc_results = await self.get_analysis_results()
             analysis_results = results + qc_results
             if all([res.status in states for res in analysis_results]):
-                self.state = conf.worksheet_states.VERIFIED
+                self.state = conf.worksheet_states.APPROVED
                 self.updated_by_uid = verified_by.uid  # noqa
                 self.verified_by_uid = verified_by.uid
                 saved = await self.save()

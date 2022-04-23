@@ -46,8 +46,8 @@ async def populate_worksheet_plate(job_uid: int):
 
     # Don't handle processed worksheets
     if ws.state in [
-        conf.worksheet_states.TO_BE_VERIFIED,
-        conf.worksheet_states.VERIFIED,
+        conf.worksheet_states.AWAITING,
+        conf.worksheet_states.APPROVED,
     ]:
         await job.change_status(
             new_status=job_states.FAILED,
@@ -154,9 +154,9 @@ async def populate_worksheet_plate(job_uid: int):
 
     await ws.reset_assigned_count()
     if ws.assigned_count > 0:
-        if not ws.state == conf.worksheet_states.OPEN:
+        if not ws.state == conf.worksheet_states.PENDING:
             await ws.change_state(
-                state=conf.worksheet_states.OPEN, updated_by_uid=job.creator_uid
+                state=conf.worksheet_states.PENDING, updated_by_uid=job.creator_uid
             )
 
     if True:  # ?? maybe allow user to choose whether to add qc samples or not

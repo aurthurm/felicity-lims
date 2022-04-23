@@ -128,7 +128,7 @@ class AnalysisResult(Auditable, BaseMPTT):
         # self.verified_by.append(verifier)
         self.updated_by_uid = verifier.uid  # noqa
         if current < required and current + 1 == required:
-            self.status = conf.states.result.VERIFIED
+            self.status = conf.states.result.APPROVED
             self.date_verified = datetime.now()
             is_verified = True
         return is_verified, await self.save()
@@ -155,7 +155,7 @@ class AnalysisResult(Auditable, BaseMPTT):
     async def re_instate(self, re_instated_by):
         if self.sample.status not in [
             conf.states.sample.RECEIVED,
-            conf.states.sample.DUE,
+            conf.states.sample.EXPECTED,
         ]:
             raise Exception(
                 "You can only reinstate analytes of due and received samples"

@@ -1,4 +1,5 @@
 import { urqlClient } from '../urql';
+import { ref } from 'vue'
 import { RequestPolicy } from '@urql/vue';
 import useNotifyToast from './alert_toast'
 
@@ -6,6 +7,9 @@ const {
   toastSuccess, toastInfo, toastWarning, toastError,
   swalSuccess, swalInfo, swalWarning, swalError 
 } = useNotifyToast()
+
+
+const errors = ref<any[]>([]);
 
 
 export default function useApiUtil(){
@@ -26,12 +30,16 @@ export default function useApiUtil(){
     }
 
     const gqlResponseHandler = (res: any):any => {
-      if(res.error) gqlErrorHandler(res.error);
+      if(res.error) {
+        errors.value.unshift(res.error)
+        gqlErrorHandler(res.error);
+      }
       return res.data;
     }
 
     const gqlOpertionalErrorHandler = (res: any):any => {
       if(res?.__typename && res?.__typename === 'OperationError') {
+        errors.value.unshift(res)
         swalError(res.error + "\n" + res.suggestion);
         return;
       };
@@ -55,7 +63,6 @@ export default function useApiUtil(){
         }
       })
     }
-
 
     async function withClientQuery(query, variables, dataKey, requestPolicy: RequestPolicy = 'cache-first'): Promise<any> { // cache-and-network
       return await urqlClient

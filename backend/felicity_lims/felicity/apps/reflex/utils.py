@@ -174,7 +174,7 @@ class ReflexUtil:
             date_submitted=datetime.now(),
             verified_by_uid=self.user.uid,
             date_verified=datetime.now(),
-            status=conf.states.result.VERIFIED,
+            status=conf.states.result.APPROVED,
             retest=False,
             reportable=True,
             reflex_level=None

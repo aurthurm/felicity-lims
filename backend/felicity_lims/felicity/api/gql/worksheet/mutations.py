@@ -16,7 +16,6 @@ from felicity.apps.worksheet import conf, models, schemas
 from felicity.api.gql import OperationError, auth_from_info, verify_user_auth
 from felicity.api.gql.worksheet.types import WorkSheetTemplateType, WorkSheetType
 from felicity.utils import has_value_or_is_truthy
-from felicity.database.session import async_session_factory
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -132,7 +131,7 @@ class WorkSheetMutations:
 
         wst_schema = schemas.WSTemplateCreate(**incoming)
         wst_schema.qc_levels = _qc_levels
-        wst: schemas.WorkSheetTemplate = await models.WorkSheetTemplate.create(
+        wst: schemas.WSTemplate = await models.WorkSheetTemplate.create(
             wst_schema
         )
 
@@ -219,7 +218,7 @@ class WorkSheetMutations:
             "rows": ws_temp.rows,
             "cols": ws_temp.cols,
             "row_wise": ws_temp.row_wise,
-            "state": conf.worksheet_states.PENDING_ASSIGNMENT,
+            "state": conf.worksheet_states.EMPTY,
             "created_by_uid": felicity_user.uid,
             "updated_by_uid": felicity_user.uid,
         }
@@ -227,22 +226,6 @@ class WorkSheetMutations:
         ws_schema = schemas.WorkSheetCreate(**incoming)
         ws_schema.analysis_uid = ws_temp.analysis_uid
         # ws_schema.qc_levels = ws_temp.qc_levels
-
-        # Add a jobs
-        # worksheets: List[models.WorkSheet] = []
-        # for i in list(range(count)):
-        #     ws = await models.WorkSheet.create(ws_schema)
-        #     worksheets.append(ws)
-        #     job_schema = job_schemas.JobCreate(
-        #         action=actions.WS_ASSIGN,
-        #         category=categories.WORKSHEET,
-        #         priority=priorities.MEDIUM,
-        #         job_id=ws.uid,
-        #         status=states.PENDING
-        #     )
-        #     job = await job_models.Job.create(job_schema)
-        #     felicity_resume_workforce()
-        #     # await tasks.populate_worksheet_plate(job.uid)
 
         worksheet_schemas = [
             ws_schema.copy(
@@ -259,6 +242,7 @@ class WorkSheetMutations:
             category=categories.WORKSHEET,
             priority=priorities.MEDIUM,
             job_id=None,
+            creator_uid=felicity_user.uid,
             status=states.PENDING,
         )
         j_schemas = []
@@ -315,12 +299,11 @@ class WorkSheetMutations:
         if action and samples:
             if action == actions.WS_UN_ASSIGN:
                 for res_uid in samples:
-                    result = await result_models.AnalysisResult.get(uid=res_uid)
+                    result = await result_models.AnalysisResult.get(uids=res_uid)
                     if not result:
                         continue
-                    if (
-                            not result.sample.qc_level_uid
-                    ):  # skip un assign of quality control samples
+                    # skip un assign of quality control samples
+                    if not result.sample.qc_level_uid:
                         result.un_assign()
                 await worksheet.reset_assigned_count()
         else:
@@ -371,7 +354,7 @@ class WorkSheetMutations:
             "rows": ws_temp.rows,
             "cols": ws_temp.cols,
             "row_wise": ws_temp.row_wise,
-            "state": conf.worksheet_states.PENDING_ASSIGNMENT,
+            "state": conf.worksheet_states.EMPTY,
         }
 
         ws_schema = schemas.WorkSheetUpdate(**incoming)

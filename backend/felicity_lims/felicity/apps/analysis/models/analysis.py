@@ -558,7 +558,7 @@ class Sample(Auditable, BaseMPTT):
         return await AnalysisResult.get_all(sample_uid=self.uid)
 
     async def receive(self, received_by):
-        if self.status in [states.sample.DUE]:
+        if self.status in [states.sample.EXPECTED]:
             self.status = states.sample.RECEIVED
             self.received_by_uid = received_by.uid
             self.date_received = datetime.now()
@@ -568,7 +568,7 @@ class Sample(Auditable, BaseMPTT):
 
     async def cancel(self, cancelled_by):
         analysis_results = await self.get_analysis_results()
-        if self.status in [states.sample.RECEIVED, states.sample.DUE]:
+        if self.status in [states.sample.RECEIVED, states.sample.EXPECTED]:
             for result in analysis_results:
                 await result.cancel(cancelled_by=cancelled_by)
             self.status = states.sample.CANCELLED
@@ -581,7 +581,7 @@ class Sample(Auditable, BaseMPTT):
     async def re_instate(self, re_instated_by):
         analysis_results = await self.get_analysis_results()
         if self.status in [states.sample.CANCELLED]:
-            # A better way is to go to audit log and retrieve previous state especially for  DUE
+            # A better way is to go to audit log and retrieve previous state
             # rather than transitioning all to RECEIVED
             self.status = states.sample.RECEIVED
             self.cancelled_by_uid = None
@@ -597,14 +597,14 @@ class Sample(Auditable, BaseMPTT):
         statuses = [
             states.result.RESULTED,
             states.result.RETRACTED,
-            states.result.VERIFIED,
+            states.result.APPROVED,
         ]
         analysis_results = await self.get_analysis_results()
         logger.info(analysis_results)
         match = all([(sibling.status in statuses) for sibling in analysis_results])
         logger.info(match)
-        if match and self.status in [states.sample.RECEIVED, states.sample.PROCESSING]:
-            self.status = states.sample.TO_BE_VERIFIED
+        if match and self.status in [states.sample.RECEIVED]:
+            self.status = states.sample.AWAITING
             self.submitted_by_uid = submitted_by.uid
             self.date_submitted = datetime.now()
             self.updated_by_uid = submitted_by.uid  # noqa
@@ -623,24 +623,24 @@ class Sample(Auditable, BaseMPTT):
 
     async def verify(self, verified_by):
         statuses = [
-            states.result.VERIFIED,
+            states.result.APPROVED,
             states.result.RETRACTED,
             states.result.CANCELLED,
         ]
         analysis_results = await self.get_analysis_results()
         match = all([(sibling.status in statuses) for sibling in analysis_results])
-        if match and self.status in[states.sample.TO_BE_VERIFIED, states.sample.PROCESSING]:
-            self.status = states.sample.VERIFIED
+        if match and self.status in [states.sample.AWAITING]:
+            self.status = states.sample.APPROVED
             self.verified_by_uid = verified_by.uid
             self.date_verified = datetime.now()
             self.updated_by_uid = verified_by.uid  # noqa
             saved = await self.save()
-            await streamer.stream(saved, verified_by, "verified", "sample")
+            await streamer.stream(saved, verified_by, "approved", "sample")
             return saved
         return self
 
     async def publish(self, published_by):
-        if self.status == states.sample.VERIFIED:
+        if self.status == states.sample.APPROVED:
             self.status = states.sample.PUBLISHED
             self.published_by_uid = published_by.uid
             self.date_published = datetime.now()
@@ -649,7 +649,7 @@ class Sample(Auditable, BaseMPTT):
         return self
 
     async def invalidate(self, invalidated_by) -> (schemas.Sample, schemas.Sample):
-        statuses = [states.sample.VERIFIED, states.sample.PUBLISHED]
+        statuses = [states.sample.APPROVED, states.sample.PUBLISHED]
         copy = None
         if self.status in statuses:
             copy = await self.duplicate_unique()
@@ -661,7 +661,7 @@ class Sample(Auditable, BaseMPTT):
         return copy, self
 
     async def reject(self, reasons, rejected_by):
-        statuses = [states.sample.RECEIVED, states.sample.DUE]
+        statuses = [states.sample.RECEIVED, states.sample.EXPECTED]
         if self.status in statuses:
             self.status = states.sample.REJECTED
             self.rejection_reasons = reasons

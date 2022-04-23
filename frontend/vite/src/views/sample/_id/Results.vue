@@ -24,7 +24,7 @@ const state = reactive({
   can_submit: false,
   can_cancel: false,
   can_retract: false,
-  can_verify: false,
+  can_approve: false,
   can_retest: false,
   can_reinstate: false,
   allChecked: false,
@@ -106,7 +106,7 @@ function isDisabledRowCheckBox(result: any): boolean {
   switch (result?.status) {
     case "retracted":
       return true;
-    case "verified":
+    case "aproved":
       if (result?.reportable === false) {
         return true;
       } else {
@@ -123,17 +123,15 @@ function editResult(result: any): void {
 }
 
 function isEditable(result: IAnalysisResult): Boolean {
-  if (sample?.value?.status === "due") return false;
+  if (sample?.value?.status !== "received") {
+    return false;
+  }
+  if (result.status !== "pending") {
+    return false;
+  }
   if (result?.editable || isNullOrWs(result?.result)) {
-    if (
-      ["cancelled", "verified", "retracted", "to_be_verified"].includes(result.status!)
-    ) {
-      result.editable = false;
-      return false;
-    } else {
-      editResult(result);
-      return true;
-    }
+    editResult(result);
+    return true;
   }
   return false;
 }
@@ -143,7 +141,7 @@ function getResultRowColor(result: any): string {
   switch (result?.status) {
     case "retracted":
       return "bg-gray-300";
-    case "verified":
+    case "aproved":
       if (result?.reportable === false) {
         return "bg-orange-600";
       } else {
@@ -160,7 +158,7 @@ function resetAnalysesPermissions(): void {
   state.can_cancel = false;
   state.can_submit = false;
   state.can_retract = false;
-  state.can_verify = false;
+  state.can_approve = false;
   state.can_retest = false;
   state.can_reinstate = false;
 
@@ -190,7 +188,7 @@ function resetAnalysesPermissions(): void {
   // can verify/retract/retest
   if (checked.every((result: IAnalysisResult) => result.status === "resulted")) {
     state.can_retract = true;
-    state.can_verify = true;
+    state.can_approve = true;
     state.can_retest = true;
   }
 }
@@ -218,29 +216,35 @@ let {
   submitResults: submitter_,
   cancelResults: canceller_,
   reInstateResults: reInstater_,
-  verifyResults: verifier_,
+  approveResults: approver_,
   retractResults: retracter_,
   retestResults: retester_,
 } = useAnalysisComposable();
 
 const submitResults = () =>
-  submitter_(prepareResults(), "sample", sample?.value?.uid!).then(
-    (_) => (_updateSample(), resetAnalysesPermissions())
-  );
+  submitter_(prepareResults(), "sample", sample?.value?.uid!)
+    .then(() => _updateSample())
+    .finally(() => resetAnalysesPermissions());
 const cancelResults = () =>
-  canceller_(getResultsUids()).then((_) => (_updateSample(), resetAnalysesPermissions()));
+  canceller_(getResultsUids())
+    .then(() => _updateSample())
+    .finally(() => resetAnalysesPermissions());
 const reInstateResults = () =>
-  reInstater_(getResultsUids()).then(
-    (_) => (_updateSample(), resetAnalysesPermissions())
-  );
-const verifyResults = () =>
-  verifier_(getResultsUids(), "sample", sample?.value?.uid!).then(
-    (_) => (_updateSample(), resetAnalysesPermissions())
-  );
+  reInstater_(getResultsUids())
+    .then(() => _updateSample())
+    .finally(() => resetAnalysesPermissions());
+const approveResults = () =>
+  approver_(getResultsUids(), "sample", sample?.value?.uid!)
+    .then(() => _updateSample())
+    .finally(() => resetAnalysesPermissions());
 const retractResults = () =>
-  retracter_(getResultsUids()).then((_) => (_updateSample(), resetAnalysesPermissions()));
+  retracter_(getResultsUids())
+    .then(() => _updateSample())
+    .finally(() => resetAnalysesPermissions());
 const retestResults = () =>
-  retester_(getResultsUids()).then((_) => (_updateSample(), resetAnalysesPermissions()));
+  retester_(getResultsUids())
+    .then(() => _updateSample())
+    .finally(() => resetAnalysesPermissions());
 </script>
 
 <template>
@@ -505,9 +509,10 @@ const retestResults = () =>
     >
     <FButton
       v-show="
-        shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) && state.can_verify
+        shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) &&
+        state.can_approve
       "
-      @click.prevent="verifyResults"
+      @click.prevent="approveResults"
       :color="'orange-600'"
       >Verify</FButton
     >

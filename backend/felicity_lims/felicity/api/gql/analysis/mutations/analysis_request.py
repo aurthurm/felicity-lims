@@ -137,7 +137,7 @@ async def create_analysis_request(
             "sample_type_uid": _st_uid,
             "sample_id": None,
             "priority": payload.priority,
-            "status": states.sample.DUE,
+            "status": states.sample.EXPECTED,
         }
 
         profiles = []
@@ -174,34 +174,29 @@ async def create_analysis_request(
         sample: analysis_models.Sample = await analysis_models.Sample.create(
             sample_schema
         )
+
+        # auto receive samples
+        # ?? workflow based check needed
         await sample.receive(received_by=felicity_user)
         
-        # 
+        # link sample to provided profiles
         for _prof in profiles:
             await analysis_models.Sample.table_insert(
                 table=analysis_models.sample_profile,
                 mappings={"sample_uid": sample.uid, "profile_uid": _prof.uid}
             )
-            
+
+        # link sample to provided services
         for _anal in analyses:
             await analysis_models.Sample.table_insert(
                 table=analysis_models.sample_analysis,
                 mappings={"sample_uid": sample.uid, "analysis_uid": _anal.uid}
             )
 
-        # Attach Analysis result for each Analyses
+        # create and attach result objects for each Analyses
         logger.info(
             f"Adding {len(_profiles_analyses)} service results to the sample {sample.sample_id}"
         )
-        # for _service in _profiles_analyses:
-        #     a_result_in = {
-        #         'sample_uid': sample.uid,
-        #         'analysis_uid': _service.uid,
-        #         'status': states.result.PENDING
-        #     }
-        #     a_result_schema = schemas.AnalysisResultCreate(**a_result_in)
-        #     await result_models.AnalysisResult.create(a_result_schema)
-
         a_result_schema = schemas.AnalysisResultCreate(
             sample_uid=sample.uid, 
             status=states.result.PENDING, 
@@ -221,65 +216,18 @@ async def create_analysis_request(
                 )
             )
         created = await result_models.AnalysisResult.bulk_create(result_schemas)
+
+        # initialise reflex action if exist
         logger.info(f"ReflexUtil .... set_reflex_actions ...")
         await ReflexUtil.set_reflex_actions(created)
 
+    # ! paramount !
     await asyncio.sleep(1)
+
     analysis_request = await analysis_models.AnalysisRequest.get_related(
         uid=analysis_request.uid, related=["samples"]
     )
     return a_types.AnalysisRequestWithSamples(**analysis_request.marshal_simple())
-
-
-# @strawberry.mutation
-# async def update_analysis_request(self, info, uid: int, patient_uid: Optional[int] = None,
-#                                   client_uid: Optional[int] = None,
-#                                   client_request_id: Optional[str] = None,
-#                                   internal_use: Optional[bool] = False) -> a_types.AnalysisRequestWithSamples:
-#     inspector = inspect.getargvalues(inspect.currentframe())
-#     passed_args = get_passed_args(inspector)
-#
-#     is_authenticated, felicity_user = await auth_from_info(info)
-#     verify_user_auth(is_authenticated, felicity_user, "Only Authenticated user can update analysis requests")
-#
-#     analysis_request = await analysis_models.AnalysisRequest.get(uid=uid)
-#     if not analysis_request:
-#         raise Exception(f"AnalysisRequest with uid {uid} does not exist")
-#
-#     ar_data = analysis_request.to_dict()
-#     for field in ar_data:
-#         if field in passed_args:
-#             try:
-#                 setattr(analysis_request, field, passed_args[field])
-#             except AttributeError as e:
-#                 logger.warning(e)
-#
-#     ar_in = schemas.AnalysisRequestUpdate(**analysis_request.to_dict())
-#     analysis_request = await analysis_request.update(ar_in)
-#     return analysis_request
-
-
-# @strawberry.mutation
-# async def update_sample(self, info, uid: int, sampletype_uid: Optional[int] = None, profiles: List[int] = None,
-#                         analyses: List[int] = None, internal_use: Optional[bool] = False,
-#                         cancel: Optional[bool] = False) -> a_types.SampleType:
-#     inspector = inspect.getargvalues(inspect.currentframe())
-#     passed_args = get_passed_args(inspector)
-#
-#     is_authenticated, felicity_user = await auth_from_info(info)
-#     verify_user_auth(is_authenticated, felicity_user, "Only Authenticated user can update samples")
-#
-#     sample = await analysis_models.Sample.get(uid=uid)
-#     if not sample:
-#         raise Exception(f"Sample with uid {uid} not found")
-#
-#     if passed_args.get('cancel'):
-#         await sample.cancel()
-#     else:
-#         # TODO: remove/change profile/analyses if no results yet
-#         pass
-#
-#     return sample
 
 
 @strawberry.mutation
@@ -298,6 +246,13 @@ async def cancel_samples(info, samples: List[int]) -> ResultedSampleActionRespon
         sample: analysis_models.Sample = await analysis_models.Sample.get(uid=_sa_uid)
         if not sample:
             return OperationError(error=f"Sample with uid {_sa_uid} not found")
+
+        # only samples with unassigned analyses can be cancelled
+        analysis_results = await sample.get_analysis_results()
+        match = [result.assigned for result in analysis_results]
+        if not all(match):
+            return_samples.append(sample)
+            continue
 
         sample = await sample.cancel(cancelled_by=felicity_user)
         if sample:

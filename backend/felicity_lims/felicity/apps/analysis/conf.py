@@ -5,19 +5,19 @@ This file is part of Felicity LIMS Software
 
 class States:
     class Sample:
-        DUE = "due"  # registered but not yet received in the laboratory for processing
+        SCHEDULED = "scheduled"  # scheduled for collection
+        EXPECTED = "expected"  # not yet received in the laboratory
         RECEIVED = (
             "received"
-        )  # samples received in the laboratory and ready for processing
-        TO_BE_VERIFIED = "to_be_verified"  # 'un-authorised'
-        VERIFIED = "verified"  # samples that are authorised for release
-        PUBLISHED = "published"  # printed samples
-        INVALIDATED = "invalidated"  # once verified samples with erroneous results
+        )  # received in the laboratory and ready for processing
+        AWAITING = "awaiting"  # pending approval
+        APPROVED = "approved"  # authorised for release
+        PUBLISHED = "published"  # printed samples, ready for dispatch
+        INVALIDATED = "invalidated"  # approval condemnation
         CANCELLED = (
             "cancelled"
-        )  # samples that are no longer required <in other words deleted>
-        REJECTED = "rejected"  # samples rejected for no conformance reasons
-        PROCESSING = "processing"
+        )  # no longer required <in other words deleted>
+        REJECTED = "rejected"  # declined for no conformance reasons
 
     class Result:
         PENDING = "pending"  # analytes that are pending results
@@ -28,7 +28,7 @@ class States:
         CANCELLED = (
             "cancelled"
         )  # analytes that are no longer required <in other words deleted>
-        VERIFIED = "verified"  # analytes that are authorised/approved
+        APPROVED = "approved"  # analytes that are authorised/approved
 
     def __init__(self):
         self.sample = self.Sample()
@@ -41,7 +41,8 @@ states = States()
 class Priorities(object):
     class Sample:
         NORMAL = 0
-        HIGH = 1
+        MEDIUM = 1
+        HIGH = 2
 
     def __init__(self):
         self.sample = self.Sample()

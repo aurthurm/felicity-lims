@@ -154,12 +154,6 @@ async def verify_from_result_uids(uids: List[int], user):
         status = getattr(a_result, "status", None)
         if status == states.result.RESULTED:
             _, a_result = await a_result.verify(verifier=user)
-            # Reflexing is done on result submission
-            # because of multiple number of verfications for some analytes
-            # if verified:
-            #     logger.info(f"ReflexUtil .... running")
-            #     await ReflexUtil(analysis_result=a_result, user=user).do_reflex()
-            #     logger.info(f"ReflexUtil .... done")
             to_return.append(a_result)
         else:
             continue
