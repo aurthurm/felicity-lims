@@ -8,9 +8,9 @@ import { useWorksheetStore, useUserStore } from "../../stores";
 import { useApiUtil } from "../../composables";
 import { ADD_WORKSHEET } from "../../graphql/worksheet.mutations";
 import { ifZeroEmpty } from "../../utils";
-import { IWorkSheetForm } from "../../models/worksheet";
 import { IAnalysisService } from "../../models/analysis";
-
+import { useField, useForm } from "vee-validate";
+import { object, string, number } from "yup";
 import * as shield from "../../guards";
 
 const worksheetStore = useWorksheetStore();
@@ -24,9 +24,6 @@ const { workSheets, fetchingWorkSheets, workSheetTemplates } = storeToRefs(
 const route = useRoute();
 
 let showModal = ref<boolean>(false);
-let formTitle = ref<string>("");
-let form = reactive<IWorkSheetForm>({ count: 1 } as IWorkSheetForm);
-const formAction = ref<boolean>(true);
 let pageInfo = computed(() => worksheetStore.getWorkSheetPageInfo);
 let filterText = ref<string>("");
 let filterStatus = ref<string>("pending");
@@ -54,32 +51,41 @@ const workSheetCount = computed(
     worksheetStore.getWorkSheetCount +
     " worksheets"
 );
-function addWorksheet(): void {
-  form.count = +form.count;
-  withClientMutation(ADD_WORKSHEET, form, "createWorksheet").then((result) => {
+
+const worksheetSchema = object({
+  analystUid: number().required("Analyst is Required").typeError("Analyst is Required"),
+  templateUid: number().typeError("Worksheet Template is required"),
+  instrumentUid: number(),
+  count: number().typeError("Required number of worksheets must be defined"),
+});
+
+const { handleSubmit, errors } = useForm({
+  validationSchema: worksheetSchema,
+  initialValues: {
+    count: 1,
+    analystUid: undefined,
+    templateUid: undefined,
+    instrumentUid: undefined,
+  },
+});
+
+const { value: count } = useField("count");
+const { value: analystUid } = useField("analystUid");
+const { value: templateUid } = useField("templateUid");
+const { value: instrumentUid } = useField("instrumentUid");
+
+const saveForm = handleSubmit((values) => {
+  showModal.value = false;
+  withClientMutation(ADD_WORKSHEET, values, "createWorksheet").then((result) => {
     worksheetStore.addWorksheet(result);
     showModal.value = false;
   });
-}
+});
 
 function analysesText(analyses: IAnalysisService[]): string {
   let names: string[] = [];
   analyses?.forEach((a) => names.push(a.name!));
   return names?.join(", ");
-}
-
-function FormManager(create: boolean): void {
-  formAction.value = create;
-  showModal.value = true;
-  formTitle.value = (create ? "CREATE" : "EDIT") + " " + "WORKSHEET";
-  if (create) {
-    Object.assign(form, { count: 1 } as IWorkSheetForm);
-  }
-}
-
-function saveForm(): void {
-  if (formAction.value === true) addWorksheet();
-  showModal.value = false;
 }
 
 function showMoreWorkSheets(): void {
@@ -166,7 +172,7 @@ const analystName = (analyst: any) => {
     <div>
       <button
         v-show="shield.hasRights(shield.actions.CREATE, shield.objects.WORKSHEET)"
-        @click.prevent="FormManager(true)"
+        @click.prevent="showModal = true"
         class="p-2 h-10 border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
       >
         Add WorkSheet
@@ -347,7 +353,19 @@ const analystName = (analyst: any) => {
   <!-- Location Edit Form Modal -->
   <modal v-if="showModal" @close="showModal = false">
     <template v-slot:header>
-      <h3>{{ formTitle }}</h3>
+      <div>
+        <h3>Create Worksheet</h3>
+        <hr />
+        <ul>
+          <li
+            v-for="(error, idx) in Object.values(errors)"
+            :key="idx"
+            class="text-orange-600"
+          >
+            {{ error }}
+          </li>
+        </ul>
+      </div>
     </template>
 
     <template v-slot:body>
@@ -355,8 +373,7 @@ const analystName = (analyst: any) => {
         <div class="grid grid-cols-3 gap-x-4 mb-4">
           <label class="block col-span-1 mb-2">
             <span class="text-gray-700">Analyst</span>
-            <select class="form-select block w-full mt-1" v-model="form.analystUid">
-              <option></option>
+            <select class="form-select block w-full mt-1" v-model="analystUid">
               <option v-for="analyst in analysts" :key="analyst.uid" :value="analyst.uid">
                 {{ analystName(analyst) }}
               </option>
@@ -364,8 +381,8 @@ const analystName = (analyst: any) => {
           </label>
           <label class="block col-span-1 mb-2">
             <span class="text-gray-700">Worksheet Template</span>
-            <select class="form-select block w-full mt-1" v-model="form.templateUid">
-              <option></option>
+            <select class="form-select block w-full mt-1" v-model="templateUid">
+              <option value="undefined"></option>
               <option
                 v-for="template in workSheetTemplates"
                 :key="template.uid"
@@ -380,9 +397,8 @@ const analystName = (analyst: any) => {
             <input
               type="number"
               class="form-input mt-1 block w-full"
-              v-model="form.count"
+              v-model="count"
               min="1"
-              default-value="1"
             />
           </label>
         </div>

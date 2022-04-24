@@ -10,7 +10,7 @@ export interface IPatient {
     lastName: string;
     client: IClient;
     clientUid: number;
-    gender?: string | number;
+    gender: string;
     age: number;
     dateOfBirth: Date;
     ageDobEstimated: boolean;

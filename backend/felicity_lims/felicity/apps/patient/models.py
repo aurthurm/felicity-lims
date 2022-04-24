@@ -21,7 +21,7 @@ class Patient(Auditable):
     first_name = Column(String, nullable=False)
     middle_name = Column(String, nullable=True)
     last_name = Column(String, nullable=False)
-    gender = Column(Integer, nullable=False, default=2)
+    gender = Column(String, nullable=False)
     age = Column(Integer, nullable=True)
     date_of_birth = Column(DateTime, nullable=True)
     age_dob_estimated = Column(Boolean(), default=False)
@@ -33,13 +33,6 @@ class Patient(Auditable):
     # status
     internal_use = Column(Boolean(), default=False)  # e.g Test Patient
     active = Column(Boolean(), default=True)
-
-    @property
-    def get_gender(self):
-        genders = ["Male", "Female", "Missing", "Trans Gender"]
-        if not isinstance(self.gender, int) or self.gender > 3 or self.gender < 0:
-            return genders[2]
-        return genders[self.gender]
 
     @property
     def full_name(self):

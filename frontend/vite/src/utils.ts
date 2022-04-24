@@ -15,7 +15,7 @@ export const decrypter2 = (data: any, key: string) => {
 export const parseDate = function(str: any) {
     let date = moment(str);
     if(date.isValid()) {
-        return date.format('MMMM Do YYYY, h:mm:ss a');
+        return date.format('Do MMMM YYYY, h:mm:ss a');
     }
     return str;
 }
@@ -45,6 +45,12 @@ const isValidJson = function(str: any) {
     }
     return true;
 };
+
+export const isEmptyObject = (obj: any) => {
+  return obj 
+  && Object.keys(obj).length === 0
+  && Object.getPrototypeOf(obj) === Object.prototype
+}
 
 export const parseData = function(data: any) {
     if (!data) return {};

@@ -1,25 +1,38 @@
 <script lang="ts" setup>
 import LoadingMessage from "../../components/Spinners/LoadingMessage.vue";
-import { reactive, ref } from "vue";
+import { ref } from "vue";
 import axios from "../../axios/no-auth";
 import { useRouter } from "vue-router";
+import { useField, useForm } from "vee-validate";
+import { object, string } from "yup";
 
 const router = useRouter();
 const loading = ref(false);
 
-let form = reactive<any>({ name: null });
+const installSchema = object({
+  name: string().required("Laboratory Name is Required"),
+});
 
-function initInstall() {
+const { handleSubmit, errors } = useForm({
+  validationSchema: installSchema,
+  initialValues: {
+    name: "Felicity Labs",
+  },
+});
+
+const { value: name } = useField("name");
+
+const initInstall = handleSubmit((values) => {
   loading.value = true;
   axios
-    .post("setup/installation/", form)
+    .post("setup/installation/", values)
     .then((resp) => {
       if (resp.data.installed) {
         router.push({ name: "LOGIN" });
       }
     })
     .finally(() => (loading.value = false));
-}
+});
 </script>
 
 <template>
@@ -54,9 +67,10 @@ function initInstall() {
           <input
             type="text"
             class="form-input mt-1 block w-full rounded-sm focus:border-sky-800"
-            v-model="form.name"
+            v-model="name"
             :disabled="loading"
           />
+          <div class="text-orange-600 w-4/12">{{ errors.name }}</div>
         </label>
 
         <div class="mt-6">

@@ -4,7 +4,7 @@ import { reactive, computed } from "vue";
 import { storeToRefs } from "pinia";
 import { useRoute, useRouter } from "vue-router";
 import { IAnalysisProfile, IAnalysisService, ISample } from "../../models/analysis";
-import { ifZeroEmpty } from "../../utils";
+import { ifZeroEmpty, parseDate } from "../../utils";
 import { useSampleStore, useAnalysisStore } from "../../stores";
 import { useReportComposable, useSampleComposable } from "../../composables";
 
@@ -387,10 +387,14 @@ const prepareRejections = async () => {
                 </div>
               </td>
               <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-                <div class="text-sm leading-5 text-sky-800">10/10/2020</div>
+                <div class="text-sm leading-5 text-sky-800">
+                  {{ parseDate(sample?.createdAt) }}
+                </div>
               </td>
               <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-                <div class="text-sm leading-5 text-sky-800">Amos T ...</div>
+                <div class="text-sm leading-5 text-sky-800">
+                  {{ sample?.createdBy?.firstName }}
+                </div>
               </td>
               <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
                 <button

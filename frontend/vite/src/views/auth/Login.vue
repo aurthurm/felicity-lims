@@ -1,20 +1,31 @@
 <script lang="ts" setup>
-  import LoadingMessage from "../../components/Spinners/LoadingMessage.vue"
-  import { reactive, ref } from "vue";
-  import { useAuthStore } from "../../stores";
-  import { storeToRefs } from 'pinia'
+import LoadingMessage from "../../components/Spinners/LoadingMessage.vue";
+import { useAuthStore } from "../../stores";
+import { storeToRefs } from "pinia";
 
-  const authStore = useAuthStore();
-  const { auth } = storeToRefs(authStore);
+import { useField, useForm } from "vee-validate";
+import { object, string } from "yup";
 
-  authStore.reset();
-  const loading = ref(false);
+const authStore = useAuthStore();
+const { auth } = storeToRefs(authStore);
 
-  let form = reactive<any>({ username: null, password: null });
+authStore.reset();
 
-  function login() {
-    authStore.authenticate(form)
-  }
+const authSchema = object({
+  username: string().required("Username is Required"),
+  password: string().required("Password is Required"),
+});
+
+const { handleSubmit, errors } = useForm({
+  validationSchema: authSchema,
+});
+
+const { value: username } = useField("username");
+const { value: password } = useField("password");
+
+const login = handleSubmit((values) => {
+  authStore.authenticate(values);
+});
 </script>
 
 <template>
@@ -49,9 +60,10 @@
           <input
             type="text"
             class="form-input mt-1 block w-full rounded-sm focus:border-sky-800"
-            v-model="form.username"
+            v-model="username"
             :disabled="auth.authenticating"
           />
+          <div class="text-orange-600 w-4/12">{{ errors.username }}</div>
         </label>
 
         <label class="block mt-3">
@@ -59,9 +71,10 @@
           <input
             type="password"
             class="form-input mt-1 block w-full rounded-sm focus:border-sky-800"
-            v-model="form.password"
+            v-model="password"
             :disabled="auth.authenticating"
           />
+          <div class="text-orange-600 w-4/12">{{ errors.password }}</div>
         </label>
 
         <div class="flex justify-between items-center mt-4">
@@ -88,11 +101,10 @@
             Sign in
           </button>
           <div v-else class="text-center">
-            <LoadingMessage message="Signing you in ..."/>
+            <LoadingMessage message="Signing you in ..." />
           </div>
         </div>
       </form>
     </div>
   </div>
 </template>
-

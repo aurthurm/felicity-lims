@@ -20,6 +20,8 @@ class ReflexUtil:
         self.analysis: Analysis = analysis_result.analysis
         self.user = user
 
+    # TODO: apply set_reflex_actions for already created analyses
+
     @classmethod
     async def set_reflex_actions(cls, analysis_results: List[AnalysisResult]):
         """Prepares an analysis result for reflex testing"""

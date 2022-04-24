@@ -18,7 +18,7 @@ class PatientBase(BaseAuditModel):
     first_name: Optional[str] = None
     middle_name: Optional[str] = None
     last_name: Optional[str] = None
-    gender: Optional[int] = 2
+    gender: Optional[str] = None
     age: Optional[int] = None
     date_of_birth: Optional[datetime] = None
     age_dob_estimated: Optional[bool] = None

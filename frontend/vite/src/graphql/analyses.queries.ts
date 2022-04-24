@@ -315,6 +315,15 @@ export const GET_ALL_SAMPLES = gql`
             }
           items {
             uid
+            createdByUid
+            createdBy {
+              firstName
+              lastName
+              auth {
+                userName
+              }
+            }
+            createdAt
             analysisRequest {
                 uid
                 clientRequestId
@@ -362,6 +371,15 @@ export const SAMPLES_FOR_REPORTS_BY_UIDS = gql`
   query getSamplesByUids($uids: [Int!]) {
     samplesByUids(sampleUids:$uids){
       uid
+      createdByUid
+      createdBy {
+        firstName
+        lastName
+        auth {
+          userName
+        }
+      }
+      createdAt
       analysisRequest {
         requestId
         patient {
@@ -449,6 +467,15 @@ query getAnalysesRequestsByPatientUid($uid: Int!) {
     }
     samples {
       uid
+      createdByUid
+      createdBy {
+        firstName
+        lastName
+        auth {
+          userName
+        }
+      }
+      createdAt
       sampleType {
         uid
         name
@@ -497,6 +524,15 @@ query getAnalysesRequestsByClientUid($uid: Int!) {
     }
     samples {
       uid
+      createdByUid
+      createdBy {
+        firstName
+        lastName
+        auth {
+          userName
+        }
+      }
+      createdAt
       sampleType {
         uid
         name
@@ -583,6 +619,15 @@ export const GET_SAMPLE_BY_UID = gql`
   query getSampleByUid($uid: Int!) {
       sampleByUid(uid: $uid){
         uid
+        createdByUid
+        createdBy {
+          firstName
+          lastName
+          auth {
+            userName
+          }
+        }
+        createdAt
         analysisRequest {
             uid
             clientRequestId
@@ -687,6 +732,14 @@ export const GET_ALL_QC_SETS = gql`
           uid
           sampleId
           status
+          createdByUid
+          createdBy {
+            firstName
+            lastName
+            auth {
+              userName
+            }
+          }
           createdAt
           updatedAt
           assigned

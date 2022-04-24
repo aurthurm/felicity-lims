@@ -1,128 +1,123 @@
 <script setup lang="ts">
-  import LoadingMessage from "../../components/Spinners/LoadingMessage.vue"
-  import { storeToRefs } from 'pinia'
-  import modal from '../../components/SimpleModal.vue';
-  import { ADD_NOTICE, EDIT_NOTICE, DELETE_NOTICE } from '../../graphql/notice.mutations';
-  import { onMounted, reactive, computed} from 'vue';
-  import { INotice } from '../../models/notice';
+import LoadingMessage from "../../components/Spinners/LoadingMessage.vue";
+import NoticeForm from "./NoticeForm.vue";
+import { storeToRefs } from "pinia";
+import modal from "../../components/SimpleModal.vue";
+import { DELETE_NOTICE } from "../../graphql/notice.mutations";
+import { onMounted, reactive, computed } from "vue";
+import { INotice } from "../../models/notice";
+import { useNoticeStore, useSetupStore, useAuthStore } from "../../stores";
+import { useApiUtil } from "../../composables";
 
-  import { useNoticeStore, useSetupStore, useAuthStore } from '../../stores'
-  import { useApiUtil } from '../../composables'
+let setupStore = useSetupStore();
+const noticeStore = useNoticeStore();
+const authStore = useAuthStore();
+const { withClientMutation } = useApiUtil();
 
-  let setupStore = useSetupStore();
-  const noticeStore = useNoticeStore()
-  const authStore = useAuthStore()
-  const { withClientMutation } = useApiUtil()
+const { fetchingNotices } = storeToRefs(noticeStore);
 
-  const { fetchingNotices } = storeToRefs(noticeStore)
+const modalState = reactive({
+  notice: {} as INotice,
+  title: "",
+  showModal: false,
+  newNotice: true,
+});
 
-  const modalState = reactive({
-    notice: {} as INotice,
-    title: "",
-    showModal: false,
-    newNotice: true
-  })
+const user = computed(() => authStore?.auth?.user);
 
-  const user = computed(() => authStore?.auth?.user )
+onMounted(async () => {
+  setupStore.fetchDepartments({});
+  await noticeStore.fetchMyNotices(user.value?.uid!);
+});
 
-  onMounted(async () => {
-    setupStore.fetchDepartments({});
-    await noticeStore.fetchMyNotices(user.value?.uid!)
-  })
+function deleteNotice(uid: number): void {
+  withClientMutation(DELETE_NOTICE, { uid }, "deleteNotice").then((payload) =>
+    noticeStore.deleteNotice(payload)
+  );
+}
 
-  function addNotice(): void {
-    withClientMutation(ADD_NOTICE, {
-      payload: { 
-        title: modalState.notice.title, 
-        body: modalState.notice.body,
-        expiry: modalState.notice.expiry,
-        groups: [],
-        departments: []
-      }
-    },"createNotice").then(payload => noticeStore.addNotice(payload));
+function FormManager(create: boolean, obj: INotice = {} as INotice): void {
+  modalState.showModal = true;
+  modalState.title = (create ? "ADD" : "EDIT") + " " + "Notice";
+  if (create) {
+    modalState.notice = {} as INotice;
+  } else {
+    modalState.notice = { ...obj };
   }
+}
 
-  function editNotice(): void {
-    withClientMutation(EDIT_NOTICE,{ 
-      uid: modalState.notice.uid,
-      payload: {
-        title: modalState.notice.title, 
-        body: modalState.notice.body,
-        expiry: modalState.notice.expiry,
-        groups: [],
-        departments: []
-      }
-    },"updateNotice").then(payload => noticeStore.updateNotice(payload));
-  }
-
-  function deleteNotice(uid: number): void {
-    withClientMutation(DELETE_NOTICE, { uid }, "deleteNotice")
-    .then(payload => noticeStore.deleteNotice(payload));
-  }
-
-  function FormManager(create: boolean, obj: INotice = {} as INotice):void {
-    modalState.newNotice = create;
-    modalState.showModal = true;
-    modalState.title = (create ? 'ADD' : 'EDIT') + ' ' + "Notice";
-    if (create) {
-      modalState.notice = {} as INotice;
-    } else {
-      modalState.notice = { ...obj };
-    }
-  }
-
-  function saveForm():void {
-    if (modalState.newNotice === true) addNotice();
-    if (modalState.newNotice === false) editNotice();
-    modalState.showModal = false;
-  }
-
-  const notices = computed<INotice[]>(() => noticeStore.getMyNotices(user.value?.uid))
+const notices = computed<INotice[]>(() => noticeStore.getMyNotices(user.value?.uid));
 </script>
 
 <template>
+  <h1 class="h1 my-4 font-bold text-dark-700 mr-4">Notice Manager</h1>
+  <button
+    @click.prevent="FormManager(true)"
+    class="px-4 my-2 p-1 text-sm border-sky-800 border text-dark-700 transition-colors duration-150 rounded-sm focus:outline-none hover:bg-sky-800 hover:text-gray-100"
+  >
+    New Notice
+  </button>
 
-    <h1 class="h1 my-4 font-bold text-dark-700 mr-4">Notice Manager</h1>
-      <button
-      @click.prevent="FormManager(true)"
-        class="px-4 my-2 p-1 text-sm border-sky-800 border text-dark-700 transition-colors duration-150 rounded-sm focus:outline-none hover:bg-sky-800 hover:text-gray-100">
-        New Notice</button>
-
-    <!-- Notice Table View -->
-    <div class="overflow-x-auto mt-4">
-        <div class="align-middle inline-block min-w-full shadow overflow-hidden bg-white shadow-dashboard px-2 pt-1 rounded-bl-lg rounded-br-lg">
-        <table class="min-w-full">
-            <thead>
-            <tr>
-                <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">Notice Title</th>
-                <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">Expiration</th>
-                <th class="px-1 py-1 border-b-2 border-gray-300"></th>
-            </tr>
-            </thead>
-            <tbody class="bg-white">
-              <tr v-for="notice in notices" :key="notice.uid">
-                  <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-                    <div class="flex items-center">
-                        <div class="text-sm leading-5 text-gray-800" @click="FormManager(false, notice)">
-                          {{ notice.title }}
-                        </div>
-                    </div>
-                  </td>
-                  <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">{{ notice.status }}</td>
-                  <td class="px-1 py-1 whitespace-no-wrap text-right border-b border-gray-500 text-sm leading-5">
-                      <button class="px-2 py-1 mr-2 border-grey-500 border text-grey-500rounded-smtransition duration-300 hover:bg-gray-100 hover:text-black-700 focus:outline-none"
-                      @click="FormManager(false, notice)">View/Edit</button>
-                      <button class="px-2 py-1 mr-2  ml-2 border-orange-600 border text-orange-600rounded-smtransition duration-300 hover:bg-orange-600 hover:text-black-700 focus:outline-none"
-                      @click="deleteNotice(notice.uid)">Delete</button>
-                  </td>
-              </tr>
-            </tbody>
-        </table>
-        <div v-if="fetchingNotices" class="py-4 text-center">
-          <LoadingMessage message="Fetching notices ..." />
-        </div>
-        </div>
+  <!-- Notice Table View -->
+  <div class="overflow-x-auto mt-4">
+    <div
+      class="align-middle inline-block min-w-full shadow overflow-hidden bg-white shadow-dashboard px-2 pt-1 rounded-bl-lg rounded-br-lg"
+    >
+      <table class="min-w-full">
+        <thead>
+          <tr>
+            <th
+              class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider"
+            >
+              Notice Title
+            </th>
+            <th
+              class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider"
+            >
+              Expiration
+            </th>
+            <th class="px-1 py-1 border-b-2 border-gray-300"></th>
+          </tr>
+        </thead>
+        <tbody class="bg-white">
+          <tr v-for="notice in notices" :key="notice.uid">
+            <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
+              <div class="flex items-center">
+                <div
+                  class="text-sm leading-5 text-gray-800"
+                  @click="FormManager(false, notice)"
+                >
+                  {{ notice.title }}
+                </div>
+              </div>
+            </td>
+            <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
+              {{ notice.status }}
+            </td>
+            <td
+              class="px-1 py-1 whitespace-no-wrap text-right border-b border-gray-500 text-sm leading-5"
+            >
+              <button
+                class="px-2 py-1 mr-2 border-grey-500 border text-grey-500rounded-smtransition duration-300 hover:bg-gray-100 hover:text-black-700 focus:outline-none"
+                @click="FormManager(false, notice)"
+              >
+                View/Edit
+              </button>
+              <button
+                class="px-2 py-1 mr-2 ml-2 border-orange-600 border text-orange-600rounded-smtransition duration-300 hover:bg-orange-600 hover:text-black-700 focus:outline-none"
+                @click="deleteNotice(notice.uid)"
+              >
+                Delete
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <div v-if="fetchingNotices" class="py-4 text-center">
+        <LoadingMessage message="Fetching notices ..." />
+      </div>
     </div>
+  </div>
 
   <!-- Notice Form Modal -->
   <modal v-if="modalState.showModal" @close="modalState.showModal = false">
@@ -131,44 +126,7 @@
     </template>
 
     <template v-slot:body>
-      <form action="post" class="p-1">
-        <div class="grid grid-cols-2 gap-x-4 mb-4">
-          <label class="block col-span-2 mb-2">
-            <span class="text-gray-700">Title</span>
-            <input
-              class="form-input mt-1 block w-full"
-              v-model="modalState.notice.title"
-              placeholder="Name ..."
-            />
-          </label>
-          <label class="block col-span-2 mb-2">
-            <span class="text-gray-700">Body</span>
-              <textarea
-                class="form-input mt-1 block w-full"
-                rows="5"
-                v-model="modalState.notice.body"
-                placeholder="Name ..."
-              />
-          </label>
-          <label class="block col-span-2 mb-2">
-            <span class="text-gray-700">Expiration</span>
-            <input
-              class="form-input mt-1 block w-full"
-              type="datetime-local"
-              v-model="modalState.notice.expiry"
-              placeholder="Name ..."
-            />
-          </label>
-        </div>
-        <hr />
-        <button
-          type="button"
-          @click.prevent="saveForm()"
-          class="-mb-4 w-full border border-sky-800 bg-sky-800 text-white rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-sky-800 focus:outline-none focus:shadow-outline">
-          Save Form
-        </button>
-      </form>
+      <NoticeForm :notice="modalState.notice" @close="modalState.showModal = false" />
     </template>
   </modal>
-
 </template>

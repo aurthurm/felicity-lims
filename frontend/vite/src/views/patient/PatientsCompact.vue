@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import LoadingMessage from "../../components/Spinners/LoadingMessage.vue"
+import LoadingMessage from "../../components/Spinners/LoadingMessage.vue";
 import { ref, reactive } from "vue";
-import { storeToRefs } from "pinia"
+import { storeToRefs } from "pinia";
 import tabSamples from "../components/AnalyisRequestListing.vue";
 import tabCases from "./comps/CaseTable.vue";
 import tabLogs from "../components/AuditLog.vue";
@@ -16,7 +16,7 @@ import * as shield from "../../guards";
 let patientStore = usePatientStore();
 let locationStore = useLocationStore();
 
-const { patients, fetchingPatients } = storeToRefs(patientStore)
+const { patients, fetchingPatients } = storeToRefs(patientStore);
 
 let showModal = ref<boolean>(false);
 let currentTab = ref<string>("samples");
@@ -117,41 +117,44 @@ const updatePatient = (patient: IPatient) => {
       <section
         class="col-span-4 h-screen overflow-y-scroll overscroll-contain patient-scroll"
       >
-        <div v-if="fetchingPatients" class="py-4 text-center bg-white w-full mb-1 rounded-sm shadow border">
-          <LoadingMessage message="Fetching patients ..."/>
+        <div
+          v-if="fetchingPatients"
+          class="py-4 text-center bg-white w-full mb-1 rounded-sm shadow border"
+        >
+          <LoadingMessage message="Fetching patients ..." />
         </div>
         <div v-else>
-            <a
-              v-for="pt in patients"
-              :key="pt.patientId"
-              href="#"
-              @click.prevent.stop="selectPatient(pt)"
-              :class="[
-                'bg-white w-full flex items-center p-1 mb-1 rounded-sm shadow border',
-                { 'border-sky-800 bg-emerald-200': pt.uid === patientForm.uid },
-              ]"
-            >
-              <div class="flex-grow p-1">
-                <div class="font-semibold text-gray-800 flex justify-between">
-                  <span>{{ getPatientFullName(pt) }}</span>
-                  <span class="text-sm text-gray-500"
-                    >{{ pt.age }} yrs, {{ getGender(pt.gender) }}</span
-                  >
-                </div>
-                <div class="text-sm text-gray-500 flex justify-between">
-                  <span>{{ pt.patientId }}</span>
-                  <span>{{ pt.clientPatientId }}</span>
-                </div>
-                <div class="text-sm text-gray-500 flex justify-between">
-                  <span>{{ pt?.client?.district?.province?.name }}</span>
-                  <span>{{ pt?.client?.name }}</span>
-                </div>
+          <a
+            v-for="pt in patients"
+            :key="pt.patientId"
+            href="#"
+            @click.prevent.stop="selectPatient(pt)"
+            :class="[
+              'bg-white w-full flex items-center p-1 mb-1 rounded-sm shadow border',
+              { 'border-sky-800 bg-emerald-200': pt.uid === patientForm.uid },
+            ]"
+          >
+            <div class="flex-grow p-1">
+              <div class="font-semibold text-gray-800 flex justify-between">
+                <span>{{ getPatientFullName(pt) }}</span>
+                <span class="text-sm text-gray-500"
+                  >{{ pt.age }} yrs, {{ getGender(pt.gender) }}</span
+                >
               </div>
-              <div class="p-2">
-                <!-- <span class="block h-4 w-4 bg-sky-800 rounded-full bottom-0 right-0"></span> -->
+              <div class="text-sm text-gray-500 flex justify-between">
+                <span>{{ pt.patientId }}</span>
+                <span>{{ pt.clientPatientId }}</span>
               </div>
-            </a>
-          </div>
+              <div class="text-sm text-gray-500 flex justify-between">
+                <span>{{ pt?.client?.district?.province?.name }}</span>
+                <span>{{ pt?.client?.name }}</span>
+              </div>
+            </div>
+            <div class="p-2">
+              <!-- <span class="block h-4 w-4 bg-sky-800 rounded-full bottom-0 right-0"></span> -->
+            </div>
+          </a>
+        </div>
       </section>
 
       <section class="col-span-8" v-if="isPatientSelected()">

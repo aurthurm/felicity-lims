@@ -17,7 +17,7 @@ class PatientType:
     first_name: Optional[str]
     middle_name: Optional[str]
     last_name: Optional[str]
-    gender: Optional[int]
+    gender: Optional[str]
     age: Optional[int]
     date_of_birth: Optional[datetime]
     age_dob_estimated: bool
