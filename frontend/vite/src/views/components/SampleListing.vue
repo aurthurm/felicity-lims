@@ -211,10 +211,10 @@ const prepareRejections = async () => {
             class="appearance-none h-full rounded-l-sm border block w-full bg-white border-gray-400 text-gray-700 py-2 px-4 pr-8 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
           >
             <option value="">All</option>
-            <option value="expected">Due</option>
+            <option value="expected">Expected</option>
             <option value="received">Received</option>
             <option value="awaiting">Awaiting</option>
-            <option value="approved">Verified</option>
+            <option value="approved">Approved</option>
             <option value="published">Published</option>
             <option value="invalidated">Invalidated</option>
             <option value="cancelled">Cancelled</option>

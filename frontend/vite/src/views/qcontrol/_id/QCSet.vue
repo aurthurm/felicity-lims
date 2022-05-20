@@ -215,7 +215,7 @@ let {
   submitResults: submitter_,
   cancelResults: canceller_,
   reInstateResults: reInstater_,
-  verifyResults: verifier_,
+  approveResults: verifier_,
   retractResults: retracter_,
   retestResults: retester_,
 } = useAnalysisComposable();

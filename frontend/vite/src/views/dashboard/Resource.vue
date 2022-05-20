@@ -19,6 +19,7 @@ const setCustomRange = () =>
   dashBoardStore.setFilterRange(localState.range.from, localState.range.to);
 
 onMounted(async () => {
+  resetUserMatrix();
   dashBoardStore.setShowFilters(true);
   dashBoardStore.getResourceStats();
 });

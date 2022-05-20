@@ -600,9 +600,7 @@ class Sample(Auditable, BaseMPTT):
             states.result.APPROVED,
         ]
         analysis_results = await self.get_analysis_results()
-        logger.info(analysis_results)
         match = all([(sibling.status in statuses) for sibling in analysis_results])
-        logger.info(match)
         if match and self.status in [states.sample.RECEIVED]:
             self.status = states.sample.AWAITING
             self.submitted_by_uid = submitted_by.uid
@@ -611,6 +609,15 @@ class Sample(Auditable, BaseMPTT):
             saved = await self.save()
             await streamer.stream(saved, submitted_by, "submitted", "sample")
             return saved
+        return self
+
+    async def un_submit(self):
+        if self.status == states.sample.AWAITING:
+            self.status = states.sample.RECEIVED
+            self.submitted_by_uid = None
+            self.date_submitted = None
+            self.updated_by_uid = None  # noqa
+            return await self.save()
         return self
 
     async def assign(self):

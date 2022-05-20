@@ -26,18 +26,25 @@ const state = reactive({
 });
 
 const { sample, fetchingSample, childSample } = storeToRefs(sampleStore);
-
 sampleStore.fetchSampleByUid(+route.params.sampleUid);
 
 watch(
-  () => sample,
-  (sampleIn, _) => {
-    if (!sampleIn) return;
-    if (sampleIn?.value?.status !== "invalidated") {
+  () => sample?.value?.status,
+  (statusIn, _) => {
+    if (!statusIn) return;
+    if (statusIn !== "invalidated") {
       sampleStore.resetChildSample();
       return;
+    } else {
+      sampleStore.fetchSampleByParentId(+route.params.sampleUid);
     }
-    sampleStore.fetchSampleByParentId(+route.params.sampleUid);
+  }
+);
+
+watch(
+  () => route.params.sampleUid,
+  (sampleUid, prev) => {
+    sampleStore.fetchSampleByUid(+sampleUid);
   }
 );
 

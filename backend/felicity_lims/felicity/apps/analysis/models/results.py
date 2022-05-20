@@ -101,6 +101,9 @@ class AnalysisResult(Auditable, BaseMPTT):
             else:
                 final = self
 
+            # transition sample back to received state
+            await self.sample.un_submit()
+
             return retest, final
         return retest, self
 

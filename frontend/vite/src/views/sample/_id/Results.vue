@@ -40,8 +40,6 @@ watch(
   }
 );
 
-// store.dispatch(ActionTypes.FETCH_ANALYSIS_RESULTS_FOR_SAMPLE, +route.params.sampleUid)
-
 function getResultsChecked(): any {
   let results: IAnalysisResult[] = [];
   analysisResults?.value?.forEach((result) => {
