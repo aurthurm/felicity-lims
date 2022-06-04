@@ -39,7 +39,7 @@ async def create_result_option(
     if not payload.analysis_uid:
         return OperationError(error="Analysis to attach Result Option Required")
 
-    if not payload.option_key or not payload.value:
+    if not isinstance(payload.option_key, int) or not payload.value:
         return OperationError(error="Result option key and value Required")
 
     analysis = await analysis_models.Analysis.get(uid=payload.analysis_uid)
