@@ -667,11 +667,10 @@ class Sample(Auditable, BaseMPTT):
             return copy, invalidated
         return copy, self
 
-    async def reject(self, reasons, rejected_by):
+    async def reject(self, rejected_by):
         statuses = [states.sample.RECEIVED, states.sample.EXPECTED]
         if self.status in statuses:
             self.status = states.sample.REJECTED
-            self.rejection_reasons = reasons
             self.received_by_uid = rejected_by.uid
             self.updated_by_uid = rejected_by.uid  # noqa
             rejected = await self.save()

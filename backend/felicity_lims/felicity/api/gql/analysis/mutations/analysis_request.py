@@ -250,7 +250,7 @@ async def cancel_samples(info, samples: List[int]) -> ResultedSampleActionRespon
         # only samples with unassigned analyses can be cancelled
         analysis_results = await sample.get_analysis_results()
         match = [result.assigned for result in analysis_results]
-        if not all(match):
+        if any(match):
             return_samples.append(sample)
             continue
 
@@ -356,22 +356,29 @@ async def reject_samples(
         if not sample:
             return OperationError(error=f"Sample with uid {_sam.uid} not found")
 
-        reasons = []
         for re_uid in _sam.reasons:
             reason = await analysis_models.RejectionReason.get(uid=re_uid)
             if not reason:
                 return OperationError(
                     error=f"RejectionReason with uid {re_uid} not found"
                 )
-            reasons.append(reason)
 
-        sample = await sample.reject(reasons=reasons, rejected_by=felicity_user)
-        if sample:
-            return_samples.append(sample)
+            # TODO: Transactions
+            sample = await sample.reject(rejected_by=felicity_user)
+            await analysis_models.Sample.table_insert(
+                analysis_models.sample_rejection_reason,
+                {
+                    "sample_uid": sample.uid,
+                    "rejection_reason_uid": reason.uid
+                }
+            )
 
-        if sample.status == states.sample.REJECTED:
-            for analyte in sample.analysis_results:
-                await analyte.cancel(cancelled_by=felicity_user)
+            if sample:
+                return_samples.append(sample)
+
+                if sample.status == states.sample.REJECTED:
+                    for analyte in sample.analysis_results:
+                        await analyte.cancel(cancelled_by=felicity_user)
 
     return SampleListingType(return_samples)
 
