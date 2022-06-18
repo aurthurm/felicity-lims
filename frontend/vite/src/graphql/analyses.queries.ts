@@ -615,6 +615,54 @@ export const GET_ANALYSIS_RESULTS_BY_SAMPLE_UID = gql`
 }`;
 
 
+export const GET_ANALYSIS_RESULTS_FOR_WS_ASSIGN = gql`
+  query getAnalysesResultsForWsAssign(
+    $first: Int!, 
+    $after: String, 
+    $text: String!, 
+    $sortBy: [String!],
+    $analysisUid: Int!, 
+    $sampleTypeUid: Int!
+    ) {
+    analysisResultsForWsAssign(
+      pageSize: $first, 
+      afterCursor: $after, 
+      text: $text, 
+      sortBy: $sortBy,
+      analysisUid: $analysisUid, 
+      sampleTypeUid: $sampleTypeUid 
+      ){
+      totalCount
+      pageInfo {
+        hasNextPage
+        hasPreviousPage
+        startCursor
+        endCursor
+      }
+     items {
+        uid
+        assigned
+        sampleUid
+        sample {
+          sampleId
+          priority
+          status
+          dateReceived
+          createdAt
+          sampleType {
+            name
+          }
+        }
+        status
+        analysisUid
+        analysis {
+          name
+        }
+    } 
+    }
+}`;
+
+
 export const GET_SAMPLE_BY_UID = gql`
   query getSampleByUid($uid: Int!) {
       sampleByUid(uid: $uid){

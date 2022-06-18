@@ -9,6 +9,7 @@ from felicity.apps.analysis.models import (
     results as r_models,
 )
 from felicity.apps.analysis.utils import sample_search
+from felicity.apps.analysis import conf as analysis_conf
 from felicity.api.gql import PageInfo
 from felicity.api.gql.analysis.types import results as r_types
 from felicity.api.gql.analysis.types import analysis as a_types
@@ -256,6 +257,59 @@ class AnalysisQuery:
         self, info, uid: int
     ) -> List[r_types.AnalysisResultType]:
         return await r_models.AnalysisResult.get_all(sample_uid__exact=uid)
+
+    @strawberry.field
+    async def analysis_results_for_ws_assign(
+        self,
+        info,
+        page_size: Optional[int] = None,
+        after_cursor: Optional[str] = None,
+        before_cursor: Optional[str] = None,
+        text: Optional[str] = None,
+        sort_by: Optional[List[str]] = None,
+        analysis_uid: Optional[int] = None,
+        sample_type_uid: Optional[int] = None,
+    ) -> r_types.AnalysisResultCursorPage:
+
+        filters = [{"assigned": False}]
+        _or_text_ = {}
+        if has_value_or_is_truthy(text):
+            arg_list = ["sample___sample_id__ilike"]
+            for _arg in arg_list:
+                _or_text_[_arg] = f"%{text}%"
+
+            text_filters = {sa.or_: _or_text_}
+            filters.append(text_filters)
+
+        if analysis_uid:
+            filters.append({"analysis_uid": analysis_uid})
+
+        if sample_type_uid:
+            filters.append({"sample___sample_type_uid": sample_type_uid})
+
+        filters.append({"sample___status": analysis_conf.states.sample.RECEIVED})
+        filters.append({"status": analysis_conf.states.result.PENDING})
+
+        if not sort_by:
+            sort_by = ['-sample___priority', 'sample___uid']
+
+        page = await r_models.AnalysisResult.paginate_with_cursors(
+            page_size=page_size,
+            after_cursor=after_cursor,
+            before_cursor=before_cursor,
+            filters=filters,
+            sort_by=sort_by,
+            get_related="sample"
+        )
+
+        total_count: int = page.total_count
+        edges: List[r_types.AnalysisResultEdge[r_types.AnalysisType]] = page.edges
+        items: List[r_types.AnalysisResultType] = page.items
+        page_info: PageInfo = page.page_info
+
+        return r_types.AnalysisResultCursorPage(
+            total_count=total_count, edges=edges, items=items, page_info=page_info
+        )
 
     @strawberry.field
     async def analysis_interim_all(self, info) -> List[a_types.AnalysisInterimType]:

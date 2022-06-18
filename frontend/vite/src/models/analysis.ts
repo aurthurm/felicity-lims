@@ -127,6 +127,13 @@ export interface IQCTemplate {
     status?: string;
     priority?: number;
     checked?: boolean;
+    dateReceived?:string;
+    createdByUid?: number
+    createdBy?: any
+    createdAt?: string
+    updatedByUid?: number
+    updatedBy?: any
+    updatedAt?: string
   }
   
   export interface IAnalysisRequest {

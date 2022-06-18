@@ -1,3 +1,4 @@
+import json
 import logging
 from typing import List, Optional
 
@@ -372,5 +373,49 @@ class WorkSheetMutations:
         await job_models.Job.create(job_schema)
         felicity_resume_workforce()
         # await tasks.populate_worksheet_plate(job.uid)
+
+        return WorkSheetType(**ws.marshal_simple())
+
+    @strawberry.mutation
+    async def update_worksheet_manual_assign(
+            self, info, uid: int, analyses_uids: List[int], qc_template_uid: Optional[int] = None,
+    ) -> WorkSheetResponse:
+
+        is_authenticated, felicity_user = await auth_from_info(info)
+        verify_user_auth(
+            is_authenticated,
+            felicity_user,
+            "Only Authenticated user can update worksheets",
+        )
+
+        if not len(analyses_uids) > 0:
+            return OperationError(error="Analyses for assignment are required")
+
+        if not uid:
+            return OperationError(error="Worksheet uid is required")
+
+        ws = await models.WorkSheet.get(uid=uid)
+        if not ws:
+            return OperationError(error=f"WorkSheet {uid} does not exist")
+
+        # incoming = {}
+        # ws_schema = schemas.WorkSheetUpdate(**incoming)
+        # ws = await ws.update(ws_schema)
+
+        # Add a job
+        job_schema = job_schemas.JobCreate(
+            action=actions.WS_MANUAL_ASSIGN,
+            category=categories.WORKSHEET,
+            priority=priorities.MEDIUM,
+            creator_uid=felicity_user.uid,
+            job_id=ws.uid,
+            status=states.PENDING,
+            data={
+                'qc_template_uid': qc_template_uid,
+                'analyses_uids': analyses_uids,
+            }
+        )
+        await job_models.Job.create(job_schema)
+        felicity_resume_workforce()
 
         return WorkSheetType(**ws.marshal_simple())

@@ -224,3 +224,38 @@ export const EDIT_WORKSHEET_APPLY_TEMPLATE= gql`
       }
   }
 }`;
+
+
+export const WORKSHEET_MANUAL_ASSIGN= gql`
+  mutation ManualyAssignWorsheet($uid:Int!, $qcTemplateUid: Int!, $analysesUids: [Int!]!){
+    updateWorksheetManualAssign(uid: $uid, qcTemplateUid: $qcTemplateUid, analysesUids: $analysesUids)
+  {
+      ... on WorkSheetType {
+        __typename
+        uid
+        numberOfSamples
+        sampleTypeUid
+        sampleType {
+          name
+          name
+        }
+        instrumentUid
+        instrument {
+          uid
+          name
+        }
+        templateUid
+        template {
+          uid
+          name
+        }
+        plate
+      }
+
+      ... on OperationError {
+        __typename
+        error
+        suggestion
+      }
+  }
+}`;

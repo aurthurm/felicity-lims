@@ -424,7 +424,19 @@ class DBModel(AllFeaturesMixin):
         return search
 
     @classmethod
-    async def get_by_uids(cls, uids: List[Any]) -> AsyncIterator[Any]:
+    async def get_by_uids(cls, uids: List[Any]):
+
+        stmt = (
+            select(cls).where(cls.uid.in_(uids))  # type: ignore
+        )
+
+        async with async_session_factory() as session:
+            results = await session.execute(stmt.order_by(cls.uid))
+            
+        return results.scalars().all()
+
+    @classmethod
+    async def stream_by_uids(cls, uids: List[Any]) -> AsyncIterator[Any]:
 
         stmt = (
             select(cls).where(cls.uid.in_(uids))  # type: ignore

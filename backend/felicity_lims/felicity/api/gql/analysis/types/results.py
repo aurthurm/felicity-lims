@@ -66,6 +66,20 @@ class SampleCursorPage:
 
 
 @strawberry.type
+class AnalysisResultEdge:
+    cursor: str
+    node: AnalysisResultType
+
+
+@strawberry.type
+class AnalysisResultCursorPage:
+    page_info: PageInfo
+    edges: Optional[List[AnalysisResultEdge]]
+    items: Optional[List[AnalysisResultType]]
+    total_count: int
+
+
+@strawberry.type
 class QCSetWithSamples(QCSetType):
     samples: Optional[List[SamplesWithResults]]
 

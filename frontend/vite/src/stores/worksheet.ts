@@ -2,6 +2,7 @@ import { defineStore } from 'pinia'
 import {
   GET_ALL_WORKSHEET_TEMPLATES, GET_ALL_WORKSHEETS, GET_WORKSHEET_BY_UID
 } from '../graphql/worksheet.queries';
+import { GET_ANALYSIS_RESULTS_FOR_WS_ASSIGN } from '../graphql/analyses.queries';
 import { parseData, keysToCamel, addListsUnique } from '../utils';
 import { IAnalysisResult } from '../models/analysis';
 import { IWorkSheetTemplate, IWorkSheet, IReserved } from '../models/worksheet';
@@ -21,6 +22,10 @@ export const useWorksheetStore = defineStore('worksheet', {
         workSheet: undefined,
         workSheetCount: 0,
         workSheetPageInfo: undefined,
+        fetchingAnalysisResults: false,
+        analysisResults: [], // for WS Assign
+        analysisResultCount: 0,
+        analysisResultPageInfo: undefined,
       } as {
         workSheetTemplates: IWorkSheetTemplate[];
         fetchingWorkSheetTemplates: boolean;
@@ -29,6 +34,10 @@ export const useWorksheetStore = defineStore('worksheet', {
         workSheet?: IWorkSheet;
         workSheetCount: number;
         workSheetPageInfo?: any;
+        fetchingAnalysisResults?: boolean;
+        analysisResults: IAnalysisResult[];
+        analysisResultCount: number;
+        analysisResultPageInfo?: any;
       }
   },
   getters: {
@@ -38,6 +47,9 @@ export const useWorksheetStore = defineStore('worksheet', {
     getWorkSheetByUid: (state) => (uid: number) => state.workSheets?.find(ws => ws.uid === uid),
     getWorkSheetCount: (state) => state.workSheetCount,
     getWorkSheetPageInfo: (state) => state.workSheetPageInfo,
+    getAnalysisResults: (state) => state.analysisResults,
+    getAnalysisResultCount: (state) => state.analysisResultCount,
+    getAnalysisResultPageInfo: (state) => state.analysisResultPageInfo,
   },
   actions: {
 
@@ -130,6 +142,25 @@ export const useWorksheetStore = defineStore('worksheet', {
       }
     }
   },
+
+  // Analyses for WS Assign
+  async fetchForWorkSheetsAssign(params){
+    this.fetchingAnalysisResults = true;
+    await withClientQuery(GET_ANALYSIS_RESULTS_FOR_WS_ASSIGN, params, undefined)
+          .then(payload => {
+            this.fetchingAnalysisResults = false;
+            const page = payload.analysisResultsForWsAssign
+            const results = page.items;
+            if(params.filterAction){
+              this.analysisResults = [];
+              this.analysisResults = results;
+            } else {
+              this.analysisResults = results; // addListsUnique(this.analysisResults, results, "uid");
+            }
+            this.analysisResultCount = page?.totalCount;
+            this.analysisResultPageInfo = page?.pageInfo;
+          }).catch(err => this.fetchingAnalysisResults = false);
+    },
   
   }
 })
