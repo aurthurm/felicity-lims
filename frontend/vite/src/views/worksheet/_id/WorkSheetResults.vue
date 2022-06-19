@@ -1,13 +1,18 @@
 <script setup lang="ts">
-import { ref, computed } from "vue";
+import FButton from "../../../components/Buttons/Button.vue";
+import { useRoute } from "vue-router";
+import { ref, computed, reactive } from "vue";
 import { isNullOrWs } from "../../../utils";
 import { IAnalysisResult, IAnalysisService } from "../../../models/analysis";
 import { useAnalysisComposable, useWorkSheetComposable } from "../../../composables";
-import { useWorksheetStore } from "../../../stores";
+import { useWorksheetStore, useSetupStore, useUserStore } from "../../../stores";
 
 import * as shield from "../../../guards";
 
 const worksheetStore = useWorksheetStore();
+const setupStore = useSetupStore();
+const userStore = useUserStore();
+const route = useRoute();
 
 let can_submit = ref<boolean>(false);
 let can_retract = ref<boolean>(false);
@@ -18,6 +23,32 @@ let can_unassign = ref<boolean>(false);
 let allChecked = ref<boolean>(false);
 let viewDetail = ref<boolean>(false);
 let worksheet = computed(() => worksheetStore.getWorkSheet);
+
+const refresh = () => {
+  worksheetStore.fetchWorksheetByUid(+route.params.workSheetUid);
+};
+
+//
+userStore.fetchUsers({});
+setupStore.fetchInstruments();
+setupStore.fetchMethods();
+const form = reactive({
+  analystUid: undefined,
+  instrumentUid: undefined,
+  methodUid: undefined,
+});
+
+const applying = ref<boolean>(false);
+const applyChanges = () => {
+  applying.value = true;
+  worksheetStore
+    .updateWorksheet({ worksheetUid: +route.params.workSheetUid, ...form })
+    .then(() => {
+      applying.value = false;
+      refresh();
+    });
+};
+//
 
 function areAllChecked(): boolean {
   return worksheet.value?.analysisResults?.every((item) => item.checked === true)!;
@@ -193,24 +224,94 @@ const retestResults = () => retester_(getResultsUids());
 <template>
   <div class="">
     <hr class="mt-4" />
-    <label for="toggle" class="text-medium text-gray-700 my-4"
-      >More Sample Detail
-      <div
-        class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in"
-      >
-        <input
-          type="checkbox"
-          name="toggle"
-          id="toggle"
-          v-model="viewDetail"
-          class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer outline-none"
-        />
-        <label
-          for="toggle"
-          class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer"
-        ></label>
+    <div class="flex justify-between items-center">
+      <label for="toggle" class="text-medium text-gray-700 my-4"
+        >More Sample Detail
+        <div
+          class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in"
+        >
+          <input
+            type="checkbox"
+            name="toggle"
+            id="toggle"
+            v-model="viewDetail"
+            class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer outline-none"
+          />
+          <label
+            for="toggle"
+            class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer"
+          ></label>
+        </div>
+      </label>
+
+      <form action="post" class="p-1" v-show="!applying">
+        <div class="flex justify-start items-center mb-4">
+          <label class="flex justify-between items-center">
+            <span class="text-gray-700 mr-2">Analyst</span>
+            <select
+              name="instrument_uid"
+              v-model="form.analystUid"
+              class="form-input mt-1 block w-full py-1"
+            >
+              <option
+                v-for="user in userStore.users.items"
+                :key="user.uid"
+                :value="user.uid"
+              >
+                {{ user.firstName }} {{ user.lastName }}
+              </option>
+            </select>
+          </label>
+          <label class="flex justify-between items-center ml-4">
+            <span class="text-gray-700 mr-2">Instrument</span>
+            <select
+              name="instrument_uid"
+              v-model="form.instrumentUid"
+              class="form-input mt-1 block w-full py-1"
+            >
+              <option
+                v-for="instrument in setupStore.instruments"
+                :key="instrument.uid"
+                :value="instrument.uid"
+              >
+                {{ instrument.name }}
+              </option>
+            </select>
+          </label>
+          <label class="flex justify-between items-center ml-4">
+            <span class="text-gray-700 mr-2">Method</span>
+            <select
+              name="method_uid"
+              v-model="form.methodUid"
+              class="form-input mt-1 block w-full py-1"
+            >
+              <option
+                v-for="method in setupStore.methods"
+                :key="method.uid"
+                :value="method.uid"
+              >
+                {{ method.name }}
+              </option>
+            </select>
+          </label>
+          <div class="ml-6 mt-2">
+            <FButton @click.prevent="applyChanges()" :color="'sky-800'" class="p-1"
+              >Apply</FButton
+            >
+          </div>
+        </div>
+      </form>
+      <p v-show="applying">updating ...</p>
+
+      <div>
+        <button
+          @click.prevent="refresh()"
+          class="px-1 py-1 mr-2 border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
+        >
+          Refresh
+        </button>
       </div>
-    </label>
+    </div>
     <hr class="mb-4" />
 
     <!-- Sampe Table View -->

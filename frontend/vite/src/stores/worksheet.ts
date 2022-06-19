@@ -2,6 +2,10 @@ import { defineStore } from 'pinia'
 import {
   GET_ALL_WORKSHEET_TEMPLATES, GET_ALL_WORKSHEETS, GET_WORKSHEET_BY_UID
 } from '../graphql/worksheet.queries';
+import {
+  WORKSHEET_UPDATE
+} from '../graphql/worksheet.mutations';
+
 import { GET_ANALYSIS_RESULTS_FOR_WS_ASSIGN } from '../graphql/analyses.queries';
 import { parseData, keysToCamel, addListsUnique } from '../utils';
 import { IAnalysisResult } from '../models/analysis';
@@ -10,7 +14,7 @@ import { IWorkSheetTemplate, IWorkSheet, IReserved } from '../models/worksheet';
 
 import { useApiUtil } from '../composables'
 
-const { withClientQuery } = useApiUtil()
+const { withClientQuery, withClientMutation } = useApiUtil()
 
 export const useWorksheetStore = defineStore('worksheet', {
   state: () => {
@@ -114,6 +118,12 @@ export const useWorksheetStore = defineStore('worksheet', {
   },
   removeWorksheet(){
     this.workSheet = undefined
+  },
+  async updateWorksheet(payload){
+    await withClientMutation(WORKSHEET_UPDATE, payload, "updateWorksheet")
+          .then(payload => {
+            console.log(payload)
+          });
   },
   updateWorksheetResultsStatus(payload){
     payload?.forEach(result => {

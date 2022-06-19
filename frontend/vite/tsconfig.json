@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "strict": true,
-    "jsx": "vue",
+    "jsx": "preserve", // "vue"
     "outDir": "./dist",
     "target": "esnext", // es2017, esnext,es6
     "module": "esnext", // commonjs, es6

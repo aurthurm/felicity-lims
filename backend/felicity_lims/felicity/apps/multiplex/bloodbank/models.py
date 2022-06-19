@@ -16,7 +16,7 @@
 """Samples
     up to 4
     type : Whole Blood
-    label: mother
+    label: mother/baby
 """
 
 """ABO Rhesus

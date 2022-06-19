@@ -155,10 +155,9 @@ export const ADD_WORKSHEET = gql`
   }`;
 
 
-
 export const WORKSHEET_UPDATE = gql`
-  mutation UpdateWorkSheet ($worksheetUid:Int!, $analystUid: Int, $action: String, $samples: [Int!]!) {
-    updateWorksheet(worksheetUid: $worksheetUid, analystUid: $analystUid, action: $action, samples: $samples )
+  mutation UpdateWorkSheet ($worksheetUid:Int!, $analystUid: Int, $instrumentUid: Int, $methodUid: Int, $action: String, $samples: [Int!]) {
+    updateWorksheet(worksheetUid: $worksheetUid, analystUid: $analystUid, instrumentUid:  $instrumentUid, methodUid: $methodUid, action: $action, samples: $samples )
     {
       ... on WorkSheetType {
         __typename

@@ -64,9 +64,19 @@ const filterForm = reactive({
 });
 
 const allChecked = ref(false);
-const analysisResults = computed(() => worksheetStore.getAnalysisResults);
+const analysisResults = computed(() => {
+  const results = checkedAnalyses;
+  const incoming = worksheetStore.getAnalysisResults;
+  incoming?.forEach((result) => {
+    if (!results?.some((item) => item.uid === result.uid)) {
+      results.push(result);
+    }
+  });
+  return results;
+});
 
 const filterAnalysis = () => {
+  getResultsChecked();
   worksheetStore.fetchForWorkSheetsAssign({
     first: 50,
     after: "",
@@ -109,11 +119,14 @@ const assignToWorkSheet = () => {
 };
 
 // Analysis CheckMark Management
+let checkedAnalyses: IAnalysisResult[] = [];
+
 function getResultsChecked(): any {
   let results: IAnalysisResult[] = [];
   analysisResults?.value?.forEach((result) => {
     if (result.checked) results.push(result);
   });
+  checkedAnalyses = results;
   return results;
 }
 

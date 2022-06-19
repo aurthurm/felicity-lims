@@ -13,6 +13,7 @@ from felicity.apps.job import models as job_models, schemas as job_schemas
 from felicity.apps.job.conf import actions, categories, priorities, states
 from felicity.apps.job.sched import felicity_resume_workforce
 from felicity.apps.user import models as user_models
+from felicity.apps.setup import models as setup_models
 from felicity.apps.worksheet import conf, models, schemas
 from felicity.api.gql import OperationError, auth_from_info, verify_user_auth
 from felicity.api.gql.worksheet.types import WorkSheetTemplateType, WorkSheetType
@@ -263,9 +264,11 @@ class WorkSheetMutations:
             self,
             info,
             worksheet_uid: int,
-            analyst_uid: Optional[int],
-            action: Optional[str],
-            samples: List[int],
+            analyst_uid: Optional[int] = None,
+            instrument_uid: Optional[int] = None,
+            method_uid: Optional[int] = None,
+            action: Optional[str] = None,
+            samples: Optional[List[int]] = None,
     ) -> WorkSheetResponse:  # noqa
 
         is_authenticated, felicity_user = await auth_from_info(info)
@@ -286,16 +289,41 @@ class WorkSheetMutations:
                 error=f"WorkSheet Template {worksheet_uid} does not exist"
             )
 
+        incoming = {}
+        result_update = {}
         if analyst_uid:
             analyst = await user_models.User.get(uid=analyst_uid)
             if not analyst:
                 return OperationError(
                     error=f"Selected Analyst {analyst_uid} does not exist"
                 )
+            incoming['analyst_uid'] = analyst_uid
 
-            incoming = {"analyst_uid": analyst_uid}
+        if instrument_uid:
+            instrument = await setup_models.Instrument.get(uid=instrument_uid)
+            if not instrument:
+                return OperationError(
+                    error=f"Selected Instrument {instrument_uid} does not exist"
+                )
+            incoming['instrument_uid'] = instrument_uid
+            result_update['instrument_uid'] = instrument_uid
+
+        if method_uid:
+            method = await setup_models.Method.get(uid=method_uid)
+            if not method:
+                return OperationError(
+                    error=f"Selected Method {instrument_uid} does not exist"
+                )
+            result_update['method_uid'] = method_uid
+
+        if incoming:
             ws_schema = schemas.WorkSheetUpdate(**incoming)
-            worksheet = await models.WorkSheet.update(ws_schema)
+            worksheet = await worksheet.update(ws_schema)
+
+        if result_update:
+            # update analysis results with updated instrument and methods
+            for result in worksheet.analysis_results:
+                await result.update(result_update)
 
         if action and samples:
             if action == actions.WS_UN_ASSIGN:
@@ -307,8 +335,6 @@ class WorkSheetMutations:
                     if not result.sample.qc_level_uid:
                         result.un_assign()
                 await worksheet.reset_assigned_count()
-        else:
-            pass
 
         return WorkSheetType(**worksheet.marshal_simple())
 
