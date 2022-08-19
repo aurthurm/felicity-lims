@@ -225,7 +225,7 @@ const analystName = (analyst: any) => {
           </tr>
         </thead>
         <tbody class="bg-white">
-          <tr v-for="worksheet in workSheets" :key="worksheet?.uid">
+          <tr v-for="worksheet in workSheets" :key="worksheet?.uid" v-motion-slide-right>
             <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
               <!-- <span v-if="worksheet.priority > 1"
                   :class="[
@@ -255,7 +255,7 @@ const analystName = (analyst: any) => {
             </td>
             <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
               <div class="text-sm leading-5 text-sky-800">
-                {{ analysesText(worksheet?.analyses!) }}
+                {{ worksheet?.analysis?.name }}
               </div>
             </td>
             <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">

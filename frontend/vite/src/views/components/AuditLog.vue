@@ -13,11 +13,11 @@ const { targetType, targetId } = toRefs(props);
 
 const userStore = useUserStore();
 const auditLogStore = useAuditLogStore();
+auditLogStore.restLogs();
 
 const { auditLogs, fetchingAudits } = storeToRefs(auditLogStore);
 
 userStore.fetchUsers({});
-auditLogStore.$reset();
 auditLogStore.fetchAuditLogs({
   targetType: targetType?.value,
   targetId: targetId?.value,
@@ -42,7 +42,6 @@ function translateAction(action: number): string {
 
 function changes(log: any): any {
   let trails = new Set();
-  console.log(log);
   Object.entries(log?.stateBefore)?.map(([keyB, valueB]) => {
     Object.entries(log?.stateAfter)?.map(([keyA, valueA]) => {
       if (keyB === keyA && valueB !== valueA) {
@@ -99,7 +98,15 @@ function changes(log: any): any {
     <div v-if="fetchingAudits" class="py-4 text-center">
       <LoadingMessage message="Fetching audit logs ..." />
     </div>
-    <ul class="list-none m-0 p-0" v-else>
+    <ul
+      v-motion
+      :initial="{ opacity: 0, y: 100 }"
+      :enter="{ opacity: 1, y: 0, scale: 1 }"
+      :variants="{ custom: { scale: 2 } }"
+      :delay="200"
+      class="list-none m-0 p-0"
+      v-else
+    >
       <li v-for="log in auditLogs" :key="log.uid" class="mb-2">
         <div class="flex items-center mb-1">
           <div

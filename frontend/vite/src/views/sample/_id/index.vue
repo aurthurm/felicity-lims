@@ -126,6 +126,7 @@ const rejectSample = async () =>
 
   <div
     class="bg-white rounded-sm shadow-sm hover:shadow-lg duration-500 px-4 sm:px-6 md:px-2 py-4"
+    v-motion-slide-right
   >
     <div v-if="fetchingSample" class="py-4 text-center">
       <LoadingMessage message="Fetching sample details ..." />

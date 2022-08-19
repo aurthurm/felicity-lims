@@ -1,5 +1,6 @@
 import { createApp, markRaw } from 'vue'
 import urql from '@urql/vue';
+import { MotionPlugin } from '@vueuse/motion'
 import VueSweetalert2 from 'vue-sweetalert2';
 import 'sweetalert2/dist/sweetalert2.min.css';
 import 'notyf/notyf.min.css';
@@ -32,6 +33,7 @@ app.component('default-layout', LayoutDashboard)
 app.component('empty-layout', LayoutEmpty)
 app.use(urql, urqlClient)
 app.use(VueSweetalert2)
+app.use(MotionPlugin)
 app.use(router)
 app.use(pinia)
 app.mount('#app')

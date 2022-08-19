@@ -178,7 +178,7 @@ async def result_mutator(result: AnalysisResult):
     uncertainties = result.analysis.uncertainties
 
     if isinstance(result.result, int):
-        # Corection factor
+        # Correction factor
         for cf in correction_factors:
             if cf.instrument_uid == result.instrument_uid and cf.method_uid == result.method_uid:
                 await ResultMutation.create(obj_in={

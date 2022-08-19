@@ -336,6 +336,7 @@ const retestResults = () =>
             v-for="result in analysisResults"
             :key="result.uid"
             :class="[getResultRowColor(result)]"
+            v-motion-slide-right
           >
             <td>
               <input
@@ -475,6 +476,7 @@ const retestResults = () =>
       v-show="
         shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) && state.can_cancel
       "
+      key="cancel"
       @click.prevent="cancelResults"
       :color="'sky-800'"
       >Cancel</FButton
@@ -484,6 +486,7 @@ const retestResults = () =>
         shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) &&
         state.can_reinstate
       "
+      key="reinstate"
       @click.prevent="reInstateResults"
       :color="'orange-600'"
       >Re-Instate</FButton
@@ -492,6 +495,7 @@ const retestResults = () =>
       v-show="
         shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) && state.can_submit
       "
+      key="submit"
       @click.prevent="submitResults"
       :color="'orange-600'"
       >Submit</FButton
@@ -501,6 +505,7 @@ const retestResults = () =>
         shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) &&
         state.can_retract
       "
+      key="retract"
       @click.prevent="retractResults"
       :color="'orange-600'"
       >Retract</FButton
@@ -510,6 +515,7 @@ const retestResults = () =>
         shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) &&
         state.can_approve
       "
+      key="verify"
       @click.prevent="approveResults"
       :color="'orange-600'"
       >Verify</FButton
@@ -518,6 +524,7 @@ const retestResults = () =>
       v-show="
         shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) && state.can_retest
       "
+      key="retest"
       @click.prevent="retestResults"
       :color="'orange-600'"
       >Retest</FButton

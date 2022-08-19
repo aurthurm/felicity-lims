@@ -224,7 +224,7 @@ const retestResults = () => retester_(getResultsUids());
 <template>
   <div class="">
     <hr class="mt-4" />
-    <div class="flex justify-between items-center">
+    <div class="flex justify-between items-center" v-motion-slide-left>
       <label for="toggle" class="text-medium text-gray-700 my-4"
         >More Sample Detail
         <div
@@ -383,6 +383,7 @@ const retestResults = () => retester_(getResultsUids());
               v-for="result in worksheet?.analysisResults"
               :key="result.uid"
               :class="[getResultRowColor(result)]"
+              v-motion-slide-right
             >
               <td>
                 <input

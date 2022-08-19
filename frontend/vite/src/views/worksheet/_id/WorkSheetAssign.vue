@@ -167,7 +167,7 @@ function areAllChecked(): Boolean {
 <template>
   <section>
     <hr />
-    <form action="post" class="mt-4">
+    <form action="post" class="mt-4" v-motion-slide-right>
       <div class="flex justify-start items-center mr-4">
         <span class="text-gray-700">Worksheet Template</span>
         <label class="block mx-4">
@@ -199,7 +199,7 @@ function areAllChecked(): Boolean {
   <hr class="mb-4 mt-2" />
 
   <div class="overflow-x-auto mt-4">
-    <form action="post" class="p-1">
+    <form action="post" class="p-1" v-motion-slide-left>
       <div class="flex justify-start mb-4">
         <label class="flex justify-between items-center">
           <span class="text-gray-700 mr-2">SampleType</span>
@@ -291,7 +291,7 @@ function areAllChecked(): Boolean {
             </th>
           </tr>
         </thead>
-        <tbody class="bg-white">
+        <tbody class="bg-white" v-motion-slide-right>
           <tr v-for="analysisResult in analysisResults" :key="analysisResult?.uid">
             <td>
               <input

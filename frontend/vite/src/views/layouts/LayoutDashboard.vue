@@ -18,9 +18,7 @@
 </template>
 
 <script setup lang="ts">
-import { defineComponent, ref } from "vue";
 import SideBar from "../components/nav/NavigationAside.vue";
 import HeaderMain from "../components/nav/NavigationMain.vue";
-import FooterMain from "../components/FooterMain.vue";
 import Notification from "../components/Notification.vue";
 </script>

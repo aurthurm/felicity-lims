@@ -94,7 +94,7 @@ function profileAnalysesText(profiles: any[], analyses: any[]): string {
           </tr>
         </thead>
         <tbody class="bg-white" v-for="request in analysisRequests" :key="request.uid">
-          <tr class="bg-gray-200">
+          <tr class="bg-gray-200" v-motion-slide-left>
             <td
               colspan="10"
               class="px-1 py-1 whitespace-no-wrap border-b border-gray-400"
@@ -106,7 +106,7 @@ function profileAnalysesText(profiles: any[], analyses: any[]): string {
               </div>
             </td>
           </tr>
-          <tr v-for="sample in request.samples" :key="sample.uid">
+          <tr v-for="sample in request.samples" :key="sample.uid" v-motion-slide-right>
             <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
               <span
                 v-if="sample.priority! < 1"

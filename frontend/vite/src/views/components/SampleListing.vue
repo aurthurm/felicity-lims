@@ -330,7 +330,7 @@ const prepareRejections = async () => {
             </tr>
           </thead>
           <tbody class="bg-white" v-if="state.samples?.length > 0">
-            <tr v-for="sample in state.samples" :key="sample.uid">
+            <tr v-for="sample in state.samples" :key="sample.uid" v-motion-slide-right>
               <td>
                 <input
                   type="checkbox"

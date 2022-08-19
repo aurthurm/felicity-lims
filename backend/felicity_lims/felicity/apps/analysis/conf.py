@@ -17,7 +17,7 @@ class States:
         CANCELLED = (
             "cancelled"
         )  # no longer required <in other words deleted>
-        REJECTED = "rejected"  # declined for no conformance reasons
+        REJECTED = "rejected"  # declined for non conformance reasons
 
     class Result:
         PENDING = "pending"  # analytes that are pending results

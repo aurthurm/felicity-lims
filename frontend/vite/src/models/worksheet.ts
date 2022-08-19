@@ -38,7 +38,6 @@ export interface IWorkSheet {
     reserved: string[];
     plate: Map<string, string>;
     numberOfSamples: number;
-    analyses?: IAnalysisService[],
     analysisResults: IAnalysisResult[],
     rows: number;
     cols: number;

@@ -115,6 +115,11 @@ const updatePatient = (patient: IPatient) => {
 
     <div class="grid grid-cols-12 gap-4 mt-2">
       <section
+        v-motion
+        :initial="{ opacity: 0, y: 100 }"
+        :enter="{ opacity: 1, y: 0, scale: 1 }"
+        :variants="{ custom: { scale: 2 } }"
+        :delay="400"
         class="col-span-4 h-screen overflow-y-scroll overscroll-contain patient-scroll"
       >
         <div
@@ -128,7 +133,7 @@ const updatePatient = (patient: IPatient) => {
             v-for="pt in patients"
             :key="pt.patientId"
             href="#"
-            @click.prevent.stop="selectPatient(pt)"
+            @click="selectPatient(pt)"
             :class="[
               'bg-white w-full flex items-center p-1 mb-1 rounded-sm shadow border',
               { 'border-sky-800 bg-emerald-200': pt.uid === patientForm.uid },
@@ -157,7 +162,15 @@ const updatePatient = (patient: IPatient) => {
         </div>
       </section>
 
-      <section class="col-span-8" v-if="isPatientSelected()">
+      <section
+        v-if="isPatientSelected()"
+        v-motion
+        :initial="{ opacity: 0, y: -100 }"
+        :enter="{ opacity: 1, y: 0, scale: 1 }"
+        :variants="{ custom: { scale: 2 } }"
+        :delay="400"
+        class="col-span-8"
+      >
         <!-- Question Listing Item Card -->
         <div
           class="bg-white rounded-sm shadow-sm hover:shadow-lg duration-500 px-4 sm:px-6 md:px-2 py-4"
@@ -281,16 +294,16 @@ const updatePatient = (patient: IPatient) => {
         />
       </section>
     </div>
+
+    <!-- Patient Edit Form Modal -->
+    <modal v-if="showModal" @close="showModal = false" :contentWidth="'w-3/6'">
+      <template v-slot:header>
+        <h3>Patient Form</h3>
+      </template>
+
+      <template v-slot:body>
+        <PatientForm :patient="patientForm" :navigate="false" @close="updatePatient" />
+      </template>
+    </modal>
   </div>
-
-  <!-- Patient Edit Form Modal -->
-  <modal v-if="showModal" @close="showModal = false" :contentWidth="'w-3/6'">
-    <template v-slot:header>
-      <h3>Patient Form</h3>
-    </template>
-
-    <template v-slot:body>
-      <PatientForm :patient="patientForm" :navigate="false" @close="updatePatient" />
-    </template>
-  </modal>
 </template>

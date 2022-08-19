@@ -77,7 +77,7 @@ class ReflexUtil:
 
         matches = []
 
-        # current result has to be one of the analysis values
+        # 1. the current result must one of the analysis values
         criteria_values = [(criteria.analysis_uid, criteria.value) for criteria in analyses_values]
         _criteria_values = criteria_values
         logger.info(f"Reflex criteria_values: {criteria_values}")
@@ -89,7 +89,7 @@ class ReflexUtil:
             matches.append(True)
             criteria_values.remove((current_result.analysis_uid, current_result.result))
 
-        # check if avs have the latest result matches from results pool
+        # 2. check for more result matched between the analysis values and results pool
         for _cv in _criteria_values:
             _anal = list(filter(
                 lambda res: res.analysis_uid == _cv[0],
@@ -106,6 +106,7 @@ class ReflexUtil:
             else:
                 matches.append(False)
 
+        # 3. If brain criteria expectations are met then take action
         logger.info(f"matches: {matches}")
         if all(matches):
             logger.info(f"matches found")
