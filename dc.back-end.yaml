@@ -17,14 +17,14 @@ services:
         volumes:
             - ./backend/:/app
         expose:
-            - "7000"
+            - 7000
         ports:
             - 7000:7000
         depends_on:
             - felicity_db
         networks:
             - felicitynet
-        command: bash -c "cd felicity_lims && alembic upgrade head && uvicorn felicity.main:flims --port 7000"
+        command: bash -c "cd felicity_lims && alembic upgrade head && uvicorn felicity.main:flims --host 0.0.0.0 --port 7000"
         #command: bash -c "cd felicity_lims && gunicorn --workers 4 --bind 0.0.0.0:7000 -k uvicorn.workers.UvicornWorker --reload felicity.main:flims"
 
     felicity_db:
