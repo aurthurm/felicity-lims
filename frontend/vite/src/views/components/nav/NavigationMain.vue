@@ -72,7 +72,7 @@ const showNotifications = (val) => notificationStore.showNotifications(val);
           <div
             v-show="dropdownOpen"
             @click="dropdownOpen = false"
-            class="fixed inset-0 h-full w-full z-50"
+            class="fixed inset-0 h-full w-full z-100"
           ></div>
 
           <div

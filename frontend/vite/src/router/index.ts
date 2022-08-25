@@ -8,7 +8,6 @@ import { useAuthStore } from '../stores';
 
 
 const routes: RouteRecordRaw[] = [
-  // { path: '/', redirect: '/dashboard' },
   {
     path: '/dashboard',
     name: guards.pages.DASHBOARD,
@@ -325,6 +324,15 @@ router.beforeEach(async (to, from, next) => {
     }
 
   } else {
+
+    if(to.path === '/auth') {
+      const isValid = isTokenValid(authStore.auth.token!)
+      console.log(isValid)
+      if (isValid) {
+        next({ name: guards.pages.DASHBOARD })
+      };
+    }
+
     next();
   }
 
