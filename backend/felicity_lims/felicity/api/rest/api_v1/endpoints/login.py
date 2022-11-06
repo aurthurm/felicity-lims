@@ -8,24 +8,20 @@ from felicity.apps.common import schemas as core_schemas
 from felicity.apps.user import models, schemas
 from felicity.core import security
 from felicity.core.config import settings
-from felicity.core.security import (
-    generate_password_reset_token,
-    get_password_hash,
-    verify_password_reset_token,
-)
-from felicity.utils.email.email import send_reset_password_email
+from felicity.core.security import (get_password_hash,
+                                    verify_password_reset_token)
 
 router = APIRouter()
 
 
 @router.post("/access-token", response_model=core_schemas.Token)
-async def login_access_token(
-    form_data: OAuth2PasswordRequestForm = Depends()
-) -> Any:
+async def login_access_token(form_data: OAuth2PasswordRequestForm = Depends()) -> Any:
     """
     OAuth2 compatible token login, get an access token for future requests
     """
-    auth = await models.UserAuth.authenticate(self=models.UserAuth, username=form_data.username, password=form_data.password)
+    auth = await models.UserAuth.authenticate(
+        self=models.UserAuth, username=form_data.username, password=form_data.password
+    )
     if not auth:
         raise HTTPException(status_code=400, detail="Incorrect username or password")
     else:
@@ -69,10 +65,7 @@ async def recover_password(email: str) -> Any:
 
 
 @router.post("/reset-password/", response_model=core_schemas.Msg)
-async def reset_password(
-    token: str = Body(...),
-    new_password: str = Body(...),
-) -> Any:
+async def reset_password(token: str = Body(...), new_password: str = Body(...)) -> Any:
     """
     Reset password
     """

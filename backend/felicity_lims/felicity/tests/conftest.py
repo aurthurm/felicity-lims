@@ -1,16 +1,11 @@
-from typing import Any
-from typing import Generator
+from typing import Any, Generator
 
-import pytest
 import pytest_asyncio
-from httpx import AsyncClient
 from fastapi import FastAPI
-from sqlalchemy import create_engine
-
 from felicity.core.config import settings
-from felicity.database.base import DBModel
-from felicity.database.session import async_engine
 from felicity.main import flims
+from httpx import AsyncClient
+from sqlalchemy import create_engine
 
 engine = create_engine(settings.SQLALCHEMY_ASYNC_DATABASE_URI)
 
@@ -36,14 +31,14 @@ async def appX() -> Generator[FastAPI, Any, None]:
     import os, inspect
 
     this_file_directory = os.path.dirname(os.path.abspath(inspect.stack()[0][1]))
-    root_directory = os.path.join(this_file_directory, '../..')
-    alembic_directory = os.path.join(root_directory, 'migrations')
-    ini_path = os.path.join(root_directory, 'alembic.ini')
+    root_directory = os.path.join(this_file_directory, "../..")
+    alembic_directory = os.path.join(root_directory, "migrations")
+    ini_path = os.path.join(root_directory, "alembic.ini")
 
     config = Config(ini_path)
-    config.set_main_option('script_location', alembic_directory)
+    config.set_main_option("script_location", alembic_directory)
 
-    command.upgrade(config, 'head')
+    command.upgrade(config, "head")
 
     yield flims
 

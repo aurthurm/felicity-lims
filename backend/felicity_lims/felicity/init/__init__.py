@@ -1,7 +1,11 @@
 import logging
 
 from felicity.init.setup.create_superuser import create_super_user
-from felicity.init.setup.groups_perms import create_groups, create_permissions, set_default_group_permissions
+from felicity.init.setup.groups_perms import (
+    create_groups,
+    create_permissions,
+    set_default_group_permissions,
+)
 from felicity.init.setup.setup_laboratory import (
     create_geographies,
     create_clients,

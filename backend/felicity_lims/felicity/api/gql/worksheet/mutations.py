@@ -1,22 +1,21 @@
-import json
 import logging
 from typing import List, Optional
 
 import strawberry  # noqa
-from felicity.apps.analysis.models import (
-    analysis as analysis_models,
-    qc as qc_models,
-    results as result_models,
-)
+from felicity.api.gql import OperationError, auth_from_info, verify_user_auth
+from felicity.api.gql.worksheet.types import (WorkSheetTemplateType,
+                                              WorkSheetType)
+from felicity.apps.analysis.models import analysis as analysis_models
+from felicity.apps.analysis.models import qc as qc_models
+from felicity.apps.analysis.models import results as result_models
 from felicity.apps.common.models import IdSequence
-from felicity.apps.job import models as job_models, schemas as job_schemas
+from felicity.apps.job import models as job_models
+from felicity.apps.job import schemas as job_schemas
 from felicity.apps.job.conf import actions, categories, priorities, states
 from felicity.apps.job.sched import felicity_resume_workforce
-from felicity.apps.user import models as user_models
 from felicity.apps.setup import models as setup_models
+from felicity.apps.user import models as user_models
 from felicity.apps.worksheet import conf, models, schemas
-from felicity.api.gql import OperationError, auth_from_info, verify_user_auth
-from felicity.api.gql.worksheet.types import WorkSheetTemplateType, WorkSheetType
 from felicity.utils import has_value_or_is_truthy
 
 logging.basicConfig(level=logging.INFO)
@@ -71,7 +70,7 @@ WorkSheetResponse = strawberry.union(
 class WorkSheetMutations:
     @strawberry.mutation
     async def create_worksheet_template(
-            self, info, payload: WorksheetTemplateInputType
+        self, info, payload: WorksheetTemplateInputType
     ) -> WorkSheetTemplateResponse:
 
         is_authenticated, felicity_user = await auth_from_info(info)
@@ -81,11 +80,7 @@ class WorkSheetMutations:
             "Only Authenticated user can create worksheet templates",
         )
 
-        if (
-                not payload.name
-                or not payload.sample_type_uid
-                or not payload.analysis_uid
-        ):
+        if not payload.name or not payload.sample_type_uid or not payload.analysis_uid:
             return OperationError(
                 error="Template name and sample type and analysis are mandatory"
             )
@@ -133,15 +128,13 @@ class WorkSheetMutations:
 
         wst_schema = schemas.WSTemplateCreate(**incoming)
         wst_schema.qc_levels = _qc_levels
-        wst: schemas.WSTemplate = await models.WorkSheetTemplate.create(
-            wst_schema
-        )
+        wst: schemas.WSTemplate = await models.WorkSheetTemplate.create(wst_schema)
 
         return WorkSheetTemplateType(**wst.marshal_simple())
 
     @strawberry.mutation
     async def update_worksheet_template(
-            self, uid: int, payload: WorksheetTemplateInputType
+        self, uid: int, payload: WorksheetTemplateInputType
     ) -> WorkSheetTemplateResponse:
 
         if not uid:
@@ -153,7 +146,7 @@ class WorkSheetMutations:
 
         wst_data = ws_template.to_dict()
         for field in wst_data:
-            if field in payload.__dict__ and field not in ['reserved']:
+            if field in payload.__dict__ and field not in ["reserved"]:
                 try:
                     setattr(ws_template, field, payload.__dict__[field])
                 except AttributeError as e:
@@ -184,7 +177,7 @@ class WorkSheetMutations:
 
     @strawberry.mutation
     async def create_worksheet(
-            self, info, template_uid: int, analyst_uid: int, count: Optional[int] = 1
+        self, info, template_uid: int, analyst_uid: int, count: Optional[int] = 1
     ) -> WorkSheetsResponse:
 
         is_authenticated, felicity_user = await auth_from_info(info)
@@ -261,14 +254,14 @@ class WorkSheetMutations:
 
     @strawberry.mutation
     async def update_worksheet(
-            self,
-            info,
-            worksheet_uid: int,
-            analyst_uid: Optional[int] = None,
-            instrument_uid: Optional[int] = None,
-            method_uid: Optional[int] = None,
-            action: Optional[str] = None,
-            samples: Optional[List[int]] = None,
+        self,
+        info,
+        worksheet_uid: int,
+        analyst_uid: Optional[int] = None,
+        instrument_uid: Optional[int] = None,
+        method_uid: Optional[int] = None,
+        action: Optional[str] = None,
+        samples: Optional[List[int]] = None,
     ) -> WorkSheetResponse:  # noqa
 
         is_authenticated, felicity_user = await auth_from_info(info)
@@ -297,7 +290,7 @@ class WorkSheetMutations:
                 return OperationError(
                     error=f"Selected Analyst {analyst_uid} does not exist"
                 )
-            incoming['analyst_uid'] = analyst_uid
+            incoming["analyst_uid"] = analyst_uid
 
         if instrument_uid:
             instrument = await setup_models.Instrument.get(uid=instrument_uid)
@@ -305,8 +298,8 @@ class WorkSheetMutations:
                 return OperationError(
                     error=f"Selected Instrument {instrument_uid} does not exist"
                 )
-            incoming['instrument_uid'] = instrument_uid
-            result_update['instrument_uid'] = instrument_uid
+            incoming["instrument_uid"] = instrument_uid
+            result_update["instrument_uid"] = instrument_uid
 
         if method_uid:
             method = await setup_models.Method.get(uid=method_uid)
@@ -314,7 +307,7 @@ class WorkSheetMutations:
                 return OperationError(
                     error=f"Selected Method {instrument_uid} does not exist"
                 )
-            result_update['method_uid'] = method_uid
+            result_update["method_uid"] = method_uid
 
         if incoming:
             ws_schema = schemas.WorkSheetUpdate(**incoming)
@@ -340,7 +333,7 @@ class WorkSheetMutations:
 
     @strawberry.mutation
     async def update_worksheet_apply_template(
-            self, info, template_uid: int, worksheet_uid: int
+        self, info, template_uid: int, worksheet_uid: int
     ) -> WorkSheetResponse:
 
         is_authenticated, felicity_user = await auth_from_info(info)
@@ -368,12 +361,12 @@ class WorkSheetMutations:
             return OperationError(
                 error=f"Worksheet has {ws.assigned_count} assigned samples. You can not apply a different template",
                 suggestion="Un-assign contained samples first and you will be able to apply any template of your "
-                           "choosing "
+                "choosing ",
             )
 
         incoming = {
             "template_uid": template_uid,
-            "analysis_uid":  ws_temp.analysis_uid,
+            "analysis_uid": ws_temp.analysis_uid,
             "instrument_uid": ws_temp.instrument_uid,
             "sample_type_uid": ws_temp.sample_type_uid,
             "reserved": ws_temp.reserved,
@@ -386,7 +379,7 @@ class WorkSheetMutations:
 
         ws_schema = schemas.WorkSheetUpdate(**incoming)
         ws = await ws.update(ws_schema)
-        
+
         # Add a job
         job_schema = job_schemas.JobCreate(
             action=actions.WS_ASSIGN,
@@ -404,7 +397,11 @@ class WorkSheetMutations:
 
     @strawberry.mutation
     async def update_worksheet_manual_assign(
-            self, info, uid: int, analyses_uids: List[int], qc_template_uid: Optional[int] = None,
+        self,
+        info,
+        uid: int,
+        analyses_uids: List[int],
+        qc_template_uid: Optional[int] = None,
     ) -> WorkSheetResponse:
 
         is_authenticated, felicity_user = await auth_from_info(info)
@@ -436,10 +433,7 @@ class WorkSheetMutations:
             creator_uid=felicity_user.uid,
             job_id=ws.uid,
             status=states.PENDING,
-            data={
-                'qc_template_uid': qc_template_uid,
-                'analyses_uids': analyses_uids,
-            }
+            data={"qc_template_uid": qc_template_uid, "analyses_uids": analyses_uids},
         )
         await job_models.Job.create(job_schema)
         felicity_resume_workforce()

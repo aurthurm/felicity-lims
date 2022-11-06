@@ -1,13 +1,11 @@
-from typing import Any, Optional
 import logging
-from pydantic import BaseModel
+from typing import Any, Optional
+
 from fastapi import APIRouter
 from felicity.apps.setup import models, schemas
-from felicity.init import (
-    create_laboratory,
-    create_super_user,
-    initialize_felicity
-)
+from felicity.init import (create_laboratory, create_super_user,
+                           initialize_felicity)
+from pydantic import BaseModel
 
 router = APIRouter()
 
@@ -22,7 +20,7 @@ class InstallResponse(BaseModel):
 
 
 class LabNameIn(BaseModel):
-    name:  str
+    name: str
 
 
 class SetupResponse(BaseModel):
@@ -54,7 +52,7 @@ async def register_laboratory(*, form: LabNameIn) -> Any:
         return {
             "laboratory": None,
             "installed": False,
-            "message": f"Failed to create a superuser: {e}"
+            "message": f"Failed to create a superuser: {e}",
         }
 
     laboratory = await models.Laboratory.get_by_setup_name("felicity")
@@ -71,11 +69,7 @@ async def register_laboratory(*, form: LabNameIn) -> Any:
         installed = True
         message = "An installed Laboratory instance already exists"
 
-    return {
-        "laboratory": laboratory,
-        "installed": installed,
-        "message": message
-    }
+    return {"laboratory": laboratory, "installed": installed, "message": message}
 
 
 @router.post("/load-default-setup", response_model=SetupResponse)
@@ -86,15 +80,9 @@ async def load_setup_data() -> Any:
     try:
         await initialize_felicity()
     except Exception as e:
-        return {
-            "success": False,
-            "message": f"Failed to load setup data: {e}"
-        }
+        return {"success": False, "message": f"Failed to load setup data: {e}"}
 
-    return {
-        "success": True,
-        "message": "Setup data was successfully loaded"
-    }
+    return {"success": True, "message": "Setup data was successfully loaded"}
 
 
 # TODO: UPLOAD SETUP DATA VIA CSV

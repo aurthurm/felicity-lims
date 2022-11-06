@@ -31,7 +31,7 @@ class MessageType:
 class OperationError:
     error: str
     suggestion: Optional[str] = ""
-    
+
 
 @strawberry.type
 class OperationSuccess:
@@ -59,7 +59,7 @@ def same_origin(request):
     return request.headers.get("sec-fetch-site", "unknown") == "same-origin"
 
 
-async def auth_from_info(info) -> Tuple[bool,Optional[User]]:
+async def auth_from_info(info) -> Tuple[bool, Optional[User]]:
     is_auth = is_authenticated(info.context["request"])
 
     try:

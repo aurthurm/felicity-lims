@@ -1,5 +1,6 @@
-from typing import Optional
 from datetime import datetime
+from typing import Optional
+
 from felicity.apps.common.schemas import BaseAuditModel
 from felicity.apps.setup.schemas import Department, Supplier
 from felicity.apps.storage.schemas import StoreRoom
@@ -11,6 +12,7 @@ from felicity.apps.user.schemas import User
 #
 class StockItemBase(BaseAuditModel):
     """StockItem Standardization"""
+
     name: Optional[str] = None
     description: Optional[str] = None
     department_uid: Optional[int] = None
@@ -39,6 +41,7 @@ class StockCategoryBase(BaseAuditModel):
     """StockCategory
     Consumable, Reagents, Durables
     """
+
     name: Optional[str] = None
     description: Optional[str] = None
 
@@ -64,6 +67,7 @@ class StockCategoryUpdate(StockCategoryBase):
 class HazardBase(BaseAuditModel):
     """Hazard
     """
+
     name: Optional[str] = None
     description: Optional[str] = None
 

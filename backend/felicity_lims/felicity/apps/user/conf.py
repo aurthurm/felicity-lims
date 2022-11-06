@@ -7,8 +7,8 @@ LABORATORY_CONTACT = "lcuser"
 
 
 class Themes:
-    DARK = 'dark'
-    LIGHT = 'light'
+    DARK = "dark"
+    LIGHT = "light"
 
 
 themes = Themes()

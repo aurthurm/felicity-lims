@@ -13,12 +13,8 @@ from sqlalchemy.orm.util import AliasedClass
 from sqlalchemy.sql import extract, operators
 
 # noinspection PyProtectedMember
-from .eagerload import (
-    SUBQUERY,
-    EagerLoadMixin,
-    _eager_expr_from_flat_schema,
-    _flatten_schema,
-)
+from .eagerload import (SUBQUERY, EagerLoadMixin, _eager_expr_from_flat_schema,
+                        _flatten_schema)
 from .inspection import InspectionMixin
 from .utils import classproperty
 

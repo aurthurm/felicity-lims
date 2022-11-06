@@ -1,9 +1,8 @@
 from datetime import datetime
 from typing import List, Optional
 
-from felicity.apps.common.schemas import BaseModel, BaseAuditModel
+from felicity.apps.common.schemas import BaseAuditModel, BaseModel
 from felicity.apps.setup.schemas import Department, Unit
-
 
 #
 # SampleType Schemas
@@ -134,7 +133,6 @@ class AnalysisCategoryInDB(AnalysisCategoryBaseInDB):
 class AnalysisBasicBase(BaseModel):
     name: Optional[str] = None
     keyword: Optional[str] = None
-
 
 
 # Shared properties

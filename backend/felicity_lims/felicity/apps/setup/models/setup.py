@@ -2,7 +2,8 @@ from felicity.apps import BaseAuditDBModel, DBModel
 from felicity.apps.common.models import IdSequence
 from felicity.apps.setup import schemas
 from felicity.apps.user.models import User
-from sqlalchemy import Column, ForeignKey, Integer, String, Table, Boolean, DateTime
+from sqlalchemy import (Boolean, Column, DateTime, ForeignKey, Integer, String,
+                        Table)
 from sqlalchemy.orm import relationship
 
 
@@ -56,11 +57,15 @@ class LaboratorySetting(BaseAuditDBModel):
     sticker_copies = Column(Integer, nullable=True)
 
     @classmethod
-    async def create(cls, obj_in: schemas.LaboratorySettingCreate) -> schemas.LaboratorySetting:
+    async def create(
+        cls, obj_in: schemas.LaboratorySettingCreate
+    ) -> schemas.LaboratorySetting:
         data = cls._import(obj_in)
         return await super().create(**data)
 
-    async def update(self, obj_in: schemas.LaboratorySettingUpdate) -> schemas.LaboratorySetting:
+    async def update(
+        self, obj_in: schemas.LaboratorySettingUpdate
+    ) -> schemas.LaboratorySetting:
         data = self._import(obj_in)
         return await super().update(**data)
 
@@ -161,13 +166,13 @@ class InstrumentType(BaseAuditDBModel):
 
     @classmethod
     async def create(
-            cls, obj_in: schemas.InstrumentTypeCreate
+        cls, obj_in: schemas.InstrumentTypeCreate
     ) -> schemas.InstrumentType:
         data = cls._import(obj_in)
         return await super().create(**data)
 
     async def update(
-            self, obj_in: schemas.InstrumentTypeUpdate
+        self, obj_in: schemas.InstrumentTypeUpdate
     ) -> schemas.InstrumentType:
         data = self._import(obj_in)
         return await super().update(**data)
@@ -179,16 +184,18 @@ class Instrument(BaseAuditDBModel):
     name = Column(String, nullable=False)
     description = Column(String, nullable=True)
     keyword = Column(String, nullable=True)
-    instrument_type_uid = Column(Integer, ForeignKey("instrumenttype.uid"), nullable=True)
+    instrument_type_uid = Column(
+        Integer, ForeignKey("instrumenttype.uid"), nullable=True
+    )
     instrument_type = relationship("InstrumentType", lazy="selectin")
     supplier_uid = Column(Integer, ForeignKey("supplier.uid"), nullable=True)
     supplier = relationship(Supplier, backref="instruments", lazy="selectin")
     manufacturer_uid = Column(Integer, ForeignKey("manufacturer.uid"), nullable=True)
-    manufacturer = relationship("Manufacturer", backref="manufacturers", lazy="selectin")
+    manufacturer = relationship(
+        "Manufacturer", backref="manufacturers", lazy="selectin"
+    )
     methods = relationship(
-        "Method",
-        secondary=method_instrument,
-        back_populates="instruments",
+        "Method", secondary=method_instrument, back_populates="instruments"
     )
 
     @classmethod
@@ -203,6 +210,7 @@ class Instrument(BaseAuditDBModel):
 
 class InstrumentCalibration(BaseAuditDBModel):
     """Instrument Caliberation Task"""
+
     instrument_uid = Column(Integer, ForeignKey("instrument.uid"), nullable=True)
     instrument = relationship("Instrument", lazy="selectin")
     calibration_id = Column(String, index=True, unique=True, nullable=False)
@@ -217,18 +225,23 @@ class InstrumentCalibration(BaseAuditDBModel):
     remarks = Column(String, nullable=True)
 
     @classmethod
-    async def create(cls, obj_in: schemas.InstrumentCalibrationCreate) -> schemas.InstrumentCalibration:
+    async def create(
+        cls, obj_in: schemas.InstrumentCalibrationCreate
+    ) -> schemas.InstrumentCalibration:
         data = cls._import(obj_in)
         data["calibration_id"] = (await IdSequence.get_next_number("ICAL"))[1]
         return await super().create(**data)
 
-    async def update(self, obj_in: schemas.InstrumentCalibrationUpdate) -> schemas.InstrumentCalibration:
+    async def update(
+        self, obj_in: schemas.InstrumentCalibrationUpdate
+    ) -> schemas.InstrumentCalibration:
         data = self._import(obj_in)
         return await super().update(**data)
 
 
 class CalibrationCertificate(BaseAuditDBModel):
     """Instrument Calibration Certificate"""
+
     instrument_uid = Column(Integer, ForeignKey("instrument.uid"), nullable=True)
     instrument = relationship("Instrument", lazy="selectin")
     certificate_code = Column(String, index=True, unique=True, nullable=False)
@@ -242,17 +255,22 @@ class CalibrationCertificate(BaseAuditDBModel):
     remarks = Column(String, nullable=True)
 
     @classmethod
-    async def create(cls, obj_in: schemas.CalibrationCertificateCreate) -> schemas.CalibrationCertificate:
+    async def create(
+        cls, obj_in: schemas.CalibrationCertificateCreate
+    ) -> schemas.CalibrationCertificate:
         data = cls._import(obj_in)
         return await super().create(**data)
 
-    async def update(self, obj_in: schemas.CalibrationCertificateUpdate) -> schemas.CalibrationCertificate:
+    async def update(
+        self, obj_in: schemas.CalibrationCertificateUpdate
+    ) -> schemas.CalibrationCertificate:
         data = self._import(obj_in)
         return await super().update(**data)
 
 
 class Unit(BaseAuditDBModel):
     """Unit for analyte measurement"""
+
     name = Column(String, nullable=False)
     # SI/Traditional Unit
     is_si_unit = Column(Boolean(), default=False)

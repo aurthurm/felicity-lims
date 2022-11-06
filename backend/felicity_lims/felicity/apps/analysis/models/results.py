@@ -2,11 +2,12 @@ import logging
 from datetime import datetime
 from typing import List
 
-from felicity.apps import Auditable, DBModel, BaseAuditDBModel
+from felicity.apps import Auditable, BaseAuditDBModel, DBModel
 from felicity.apps.analysis import conf, schemas
 from felicity.apps.common import BaseMPTT
 from felicity.database.session import async_session_factory
-from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, String, Table
+from sqlalchemy import (Boolean, Column, DateTime, ForeignKey, Integer, String,
+                        Table)
 from sqlalchemy.orm import relationship
 
 logging.basicConfig(level=logging.INFO)
@@ -126,7 +127,7 @@ class AnalysisResult(Auditable, BaseMPTT):
         required, current = await self.verifications()
         await AnalysisResult.table_insert(
             table=result_verification,
-            mappings={"result_uid": self.uid, "user_uid": verifier.uid}
+            mappings={"result_uid": self.uid, "user_uid": verifier.uid},
         )
         # self.verified_by.append(verifier)
         self.updated_by_uid = verifier.uid  # noqa
@@ -139,7 +140,7 @@ class AnalysisResult(Auditable, BaseMPTT):
     async def retract(self, retracted_by):
         await AnalysisResult.table_insert(
             table=result_verification,
-            mappings={"result_uid": self.uid, "user_uid": retracted_by.uid}
+            mappings={"result_uid": self.uid, "user_uid": retracted_by.uid},
         )
         self.status = conf.states.result.RETRACTED
         self.date_verified = datetime.now()
@@ -182,11 +183,11 @@ class AnalysisResult(Auditable, BaseMPTT):
 
     @classmethod
     async def filter_for_worksheet(
-            cls,
-            analyses_status: str,
-            analysis_uid: int,
-            sample_type_uid: List[int],
-            limit: int,
+        cls,
+        analyses_status: str,
+        analysis_uid: int,
+        sample_type_uid: List[int],
+        limit: int,
     ) -> List[schemas.AnalysisResult]:
 
         filters = {
@@ -210,13 +211,13 @@ class AnalysisResult(Auditable, BaseMPTT):
 
     @classmethod
     async def create(
-            cls, obj_in: schemas.AnalysisResultCreate
+        cls, obj_in: schemas.AnalysisResultCreate
     ) -> schemas.AnalysisResult:
         data = cls._import(obj_in)
         return await super().create(**data)
 
     async def update(
-            self, obj_in: schemas.AnalysisResultUpdate
+        self, obj_in: schemas.AnalysisResultUpdate
     ) -> schemas.AnalysisResult:
         data = self._import(obj_in)
         return await super().update(**data)
@@ -225,6 +226,7 @@ class AnalysisResult(Auditable, BaseMPTT):
 class ResultMutation(BaseAuditDBModel):
     """Result Mutations tracker
     """
+
     result_uid = Column(Integer, ForeignKey("analysisresult.uid"), nullable=False)
     before = Column(String, nullable=False)
     after = Column(String, nullable=False)

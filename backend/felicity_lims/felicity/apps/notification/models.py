@@ -167,7 +167,7 @@ class ActivityStream(BaseAuditDBModel):
             action_object_uid=obj.uid,
             target_uid=None,
         )
-        _stream = await cls.create(s_in)
+        await cls.create(s_in)
 
 
 """Simple Notifications"""

@@ -1,8 +1,9 @@
-from typing import List, Optional
 from datetime import datetime
+from typing import List, Optional
+
+import felicity.api.gql.setup.types
 import strawberry  # noqa
 from felicity.api.gql import PageInfo
-import felicity.api.gql.setup.types
 
 
 @strawberry.type

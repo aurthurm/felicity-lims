@@ -1,21 +1,19 @@
 import asyncio
 import logging
-from typing import List, Optional
 from datetime import datetime, timedelta
+from typing import List, Optional
 
 import strawberry  # noqa
+from felicity.api.gql import OperationError, auth_from_info, verify_user_auth
+from felicity.api.gql.analysis.types import analysis as a_types
+from felicity.api.gql.analysis.types import results as r_types
+from felicity.api.gql.permissions import CanVerifySample
 from felicity.apps.analysis import schemas
 from felicity.apps.analysis.conf import priorities, states
-from felicity.apps.analysis.models import (
-    analysis as analysis_models,
-    results as result_models,
-)
+from felicity.apps.analysis.models import analysis as analysis_models
+from felicity.apps.analysis.models import results as result_models
 from felicity.apps.client import models as ct_models
 from felicity.apps.patient import models as pt_models
-from felicity.api.gql import OperationError, auth_from_info, verify_user_auth
-from felicity.api.gql.analysis.types import results as r_types
-from felicity.api.gql.analysis.types import analysis as a_types
-from felicity.api.gql.permissions import CanVerifySample
 from felicity.apps.reflex.utils import ReflexUtil
 
 logging.basicConfig(level=logging.INFO)
@@ -81,7 +79,7 @@ class AnalysisRequestInputType:
 
 @strawberry.mutation
 async def create_analysis_request(
-        info, payload: AnalysisRequestInputType
+    info, payload: AnalysisRequestInputType
 ) -> AnalysisRequestResponse:
     logger.info("Received request to create analysis request")
 
@@ -159,7 +157,7 @@ async def create_analysis_request(
             if analysis not in _profiles_analyses:
                 analyses.append(analysis)
                 _profiles_analyses.add(analysis)
-        
+
         # determine sample due date
         tat_lengths = []
         for anal in _profiles_analyses:
@@ -168,7 +166,7 @@ async def create_analysis_request(
         if tat_lengths:
             minutes = max(tat_lengths)
             sample_in["due_date"] = datetime.now() + timedelta(minutes=minutes)
-        
+
         #
         sample_schema = schemas.SampleCreate(**sample_in)
         sample: analysis_models.Sample = await analysis_models.Sample.create(
@@ -178,19 +176,19 @@ async def create_analysis_request(
         # auto receive samples
         # ?? workflow based check needed
         await sample.receive(received_by=felicity_user)
-        
+
         # link sample to provided profiles
         for _prof in profiles:
             await analysis_models.Sample.table_insert(
                 table=analysis_models.sample_profile,
-                mappings={"sample_uid": sample.uid, "profile_uid": _prof.uid}
+                mappings={"sample_uid": sample.uid, "profile_uid": _prof.uid},
             )
 
         # link sample to provided services
         for _anal in analyses:
             await analysis_models.Sample.table_insert(
                 table=analysis_models.sample_analysis,
-                mappings={"sample_uid": sample.uid, "analysis_uid": _anal.uid}
+                mappings={"sample_uid": sample.uid, "analysis_uid": _anal.uid},
             )
 
         # create and attach result objects for each Analyses
@@ -198,11 +196,11 @@ async def create_analysis_request(
             f"Adding {len(_profiles_analyses)} service results to the sample {sample.sample_id}"
         )
         a_result_schema = schemas.AnalysisResultCreate(
-            sample_uid=sample.uid, 
-            status=states.result.PENDING, 
+            sample_uid=sample.uid,
+            status=states.result.PENDING,
             analysis_uid=None,
             due_date=None,
-            created_by_uid=felicity_user.uid, 
+            created_by_uid=felicity_user.uid,
             updated_by_uid=felicity_user.uid,
         )
         result_schemas = []
@@ -211,7 +209,10 @@ async def create_analysis_request(
                 a_result_schema.copy(
                     update={
                         "analysis_uid": _service.uid,
-                        "due_date": datetime.now() + timedelta(minutes=_service.tat_length_minutes) if _service.tat_length_minutes else None
+                        "due_date": datetime.now()
+                        + timedelta(minutes=_service.tat_length_minutes)
+                        if _service.tat_length_minutes
+                        else None,
                     }
                 )
             )
@@ -339,7 +340,7 @@ async def verify_samples(info, samples: List[int]) -> SampleActionResponse:
 
 @strawberry.mutation
 async def reject_samples(
-        info, samples: List[SampleRejectInputType]
+    info, samples: List[SampleRejectInputType]
 ) -> SampleActionResponse:
     is_authenticated, felicity_user = await auth_from_info(info)
     verify_user_auth(
@@ -367,10 +368,7 @@ async def reject_samples(
             sample = await sample.reject(rejected_by=felicity_user)
             await analysis_models.Sample.table_insert(
                 analysis_models.sample_rejection_reason,
-                {
-                    "sample_uid": sample.uid,
-                    "rejection_reason_uid": reason.uid
-                }
+                {"sample_uid": sample.uid, "rejection_reason_uid": reason.uid},
             )
 
             if sample:

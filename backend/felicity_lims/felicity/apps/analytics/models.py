@@ -1,11 +1,10 @@
-from typing import Optional, Union
+from typing import Union
 
 from felicity.apps import BaseAuditDBModel
-from sqlalchemy import Column, DateTime, String, Table, ForeignKey
-from sqlalchemy.orm import relationship, backref
+from sqlalchemy import Column, DateTime, ForeignKey, String, Table
+from sqlalchemy.orm import relationship
 
 from . import conf, schemas
-
 
 """
 Many to Many Link between ReportMeta and Analysis
@@ -20,12 +19,9 @@ analysis_reports = Table(
 
 class ReportMeta(BaseAuditDBModel):
     """Generated Reports Metadata"""
+
     report_type = Column(String)
-    analyses = relationship(
-        "Analysis",
-        secondary=analysis_reports,
-        lazy="selectin"
-    )
+    analyses = relationship("Analysis", secondary=analysis_reports, lazy="selectin")
     period_start = Column(DateTime)
     period_end = Column(DateTime)
     date_column = Column(String)
@@ -34,7 +30,7 @@ class ReportMeta(BaseAuditDBModel):
     status = Column(String)
     sample_states = Column(String)
 
-    async def set_final(self,  status: str, location: Union[str, None] = None):
+    async def set_final(self, status: str, location: Union[str, None] = None):
         if self.status != conf.report_states.READY:
             self.location = location
             self.status = status

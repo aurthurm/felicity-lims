@@ -2,7 +2,7 @@ import logging
 
 from felicity.apps import Auditable, DBModel
 from felicity.apps.reflex import schemas
-from sqlalchemy import Column, Table, ForeignKey, Integer, String
+from sqlalchemy import Column, ForeignKey, Integer, String, Table
 from sqlalchemy.orm import relationship
 
 logging.basicConfig(level=logging.INFO)
@@ -12,7 +12,9 @@ logger = logging.getLogger(__name__)
 class ReflexRule(Auditable):
     name = Column(String, index=True, unique=True, nullable=False)
     description = Column(String, nullable=False)
-    reflex_actions = relationship("ReflexAction", back_populates="reflex_rule", lazy="selectin")
+    reflex_actions = relationship(
+        "ReflexAction", back_populates="reflex_rule", lazy="selectin"
+    )
 
     @classmethod
     async def create(cls, obj_in: schemas.ReflexRuleCreate) -> schemas.ReflexRule:
@@ -28,17 +30,22 @@ class ReflexBrainAddition(DBModel):
     """Many to Many Link between ReflexBrain and Analysis
     with extra data for additions
     """
+
     analysis_uid = Column(Integer, ForeignKey("analysis.uid"), primary_key=True)
     analysis = relationship("Analysis", lazy="selectin")
     reflex_brain_uid = Column(Integer, ForeignKey("reflexbrain.uid"), primary_key=True)
     count = Column(Integer, default=1)
 
     @classmethod
-    async def create(cls, obj_in: schemas.ReflexBrainAdditionCreate) -> schemas.ReflexBrainAddition:
+    async def create(
+        cls, obj_in: schemas.ReflexBrainAdditionCreate
+    ) -> schemas.ReflexBrainAddition:
         data = cls._import(obj_in)
         return await super().create(**data)
 
-    async def update(self, obj_in: schemas.ReflexBrainAdditionUpdate) -> schemas.ReflexBrainAddition:
+    async def update(
+        self, obj_in: schemas.ReflexBrainAdditionUpdate
+    ) -> schemas.ReflexBrainAddition:
         data = self._import(obj_in)
         return await super().update(**data)
 
@@ -47,17 +54,22 @@ class ReflexBrainFinal(DBModel):
     """Many to Many Link between ReflexBrain and Analysis
     with extra data for finalize where necessary
     """
+
     analysis_uid = Column(Integer, ForeignKey("analysis.uid"), primary_key=True)
     analysis = relationship("Analysis", lazy="selectin")
     reflex_brain_uid = Column(Integer, ForeignKey("reflexbrain.uid"), primary_key=True)
     value = Column(String)
 
     @classmethod
-    async def create(cls, obj_in: schemas.ReflexBrainFinalCreate) -> schemas.ReflexBrainFinal:
+    async def create(
+        cls, obj_in: schemas.ReflexBrainFinalCreate
+    ) -> schemas.ReflexBrainFinal:
         data = cls._import(obj_in)
         return await super().create(**data)
 
-    async def update(self, obj_in: schemas.ReflexBrainFinalUpdate) -> schemas.ReflexBrainFinal:
+    async def update(
+        self, obj_in: schemas.ReflexBrainFinalUpdate
+    ) -> schemas.ReflexBrainFinal:
         data = self._import(obj_in)
         return await super().update(**data)
 
@@ -67,6 +79,7 @@ class ReflexBrainCriteria(DBModel):
     with extra data for criteria/decision making
     operators: =, !=, >, >=, <, <=
     """
+
     analysis_uid = Column(Integer, ForeignKey("analysis.uid"), primary_key=True)
     analysis = relationship("Analysis", lazy="selectin")
     reflex_brain_uid = Column(Integer, ForeignKey("reflexbrain.uid"), primary_key=True)
@@ -74,18 +87,26 @@ class ReflexBrainCriteria(DBModel):
     value = Column(String)
 
     @classmethod
-    async def create(cls, obj_in: schemas.ReflexBrainCriteriaCreate) -> schemas.ReflexBrainCriteria:
+    async def create(
+        cls, obj_in: schemas.ReflexBrainCriteriaCreate
+    ) -> schemas.ReflexBrainCriteria:
         data = cls._import(obj_in)
         return await super().create(**data)
 
-    async def update(self, obj_in: schemas.ReflexBrainCriteriaUpdate) -> schemas.ReflexBrainCriteria:
+    async def update(
+        self, obj_in: schemas.ReflexBrainCriteriaUpdate
+    ) -> schemas.ReflexBrainCriteria:
         data = self._import(obj_in)
         return await super().update(**data)
 
 
 class ReflexBrain(Auditable):
-    reflex_action_uid = Column(Integer, ForeignKey("reflexaction.uid"), nullable=False, default=1)
-    reflex_action = relationship("ReflexAction", back_populates="brains", lazy="selectin")
+    reflex_action_uid = Column(
+        Integer, ForeignKey("reflexaction.uid"), nullable=False, default=1
+    )
+    reflex_action = relationship(
+        "ReflexAction", back_populates="brains", lazy="selectin"
+    )
     description = Column(String, nullable=True)
     analyses_values = relationship(ReflexBrainCriteria, lazy="selectin")
     add_new = relationship(ReflexBrainAddition, lazy="selectin")
@@ -116,12 +137,16 @@ class ReflexAction(Auditable):
     level = Column(Integer, nullable=False, default=1)
     description = Column(String, nullable=False)
     # triggers
-    analyses = relationship("Analysis", secondary=reflex_action_analysis, lazy="selectin")
+    analyses = relationship(
+        "Analysis", secondary=reflex_action_analysis, lazy="selectin"
+    )
     sample_type_uid = Column(Integer, ForeignKey("sampletype.uid"), nullable=True)
     sample_type = relationship("SampleType", lazy="selectin")
     # --
     reflex_rule_uid = Column(Integer, ForeignKey("reflexrule.uid"), nullable=False)
-    reflex_rule = relationship("ReflexRule", back_populates="reflex_actions", lazy="selectin")
+    reflex_rule = relationship(
+        "ReflexRule", back_populates="reflex_actions", lazy="selectin"
+    )
     # --
     brains = relationship(ReflexBrain, back_populates="reflex_action", lazy="selectin")
 

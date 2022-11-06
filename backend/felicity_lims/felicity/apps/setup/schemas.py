@@ -1,8 +1,8 @@
-from typing import Optional, List
 from datetime import datetime
-from pydantic import BaseModel, EmailStr
-from felicity.apps.common.schemas import BaseAuditModel
+from typing import List, Optional
 
+from felicity.apps.common.schemas import BaseAuditModel
+from pydantic import BaseModel, EmailStr
 
 #
 #  Laboratory
@@ -167,9 +167,9 @@ class InstrumentBase(BaseModel):
     instrument_type_uid: int = None
     instrument_type: Optional[InstrumentType]
     manufacturer_uid: int = None
-    manufacturer: Optional['Manufacturer']
+    manufacturer: Optional["Manufacturer"]
     supplier_uid: int = None
-    supplier: Optional['Supplier']
+    supplier: Optional["Supplier"]
 
 
 # Properties to receive via API on creation

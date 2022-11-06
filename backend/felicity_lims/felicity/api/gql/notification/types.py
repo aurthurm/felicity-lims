@@ -2,12 +2,12 @@ from datetime import datetime
 from typing import List, Optional, Union
 
 import strawberry  # noqa
-from felicity.apps.analysis.models.analysis import Sample
-from felicity.apps.worksheet.models import WorkSheet
 from felicity.api.gql.analysis.types.analysis import SampleType
-from felicity.api.gql.worksheet.types import WorkSheetType
 from felicity.api.gql.setup.types import DepartmentType
 from felicity.api.gql.user.types import GroupType, UserType
+from felicity.api.gql.worksheet.types import WorkSheetType
+from felicity.apps.analysis.models.analysis import Sample
+from felicity.apps.worksheet.models import WorkSheet
 
 
 @strawberry.type
@@ -47,7 +47,7 @@ class ActivityStreamType:
 
     @strawberry.field
     async def action_object(
-            self, info
+        self, info
     ) -> Union[WorkSheetType, SampleType, UnknownObjectType]:
         if self.action_object_type == "sample":
             sample = await Sample.get(uid=self.action_object_uid)

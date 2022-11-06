@@ -3,11 +3,12 @@ import logging
 
 from apscheduler.events import EVENT_JOB_ERROR, EVENT_JOB_EXECUTED
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
-
-from felicity.apps.job import conf as job_conf, models as job_models
-from felicity.apps.worksheet.tasks import populate_worksheet_plate, populate_worksheet_plate_manually
-from felicity.apps.analytics.tasks import generate_report
 from felicity.apps.analysis.tasks import submit_results, verify_results
+from felicity.apps.analytics.tasks import generate_report
+from felicity.apps.job import conf as job_conf
+from felicity.apps.job import models as job_models
+from felicity.apps.worksheet.tasks import (populate_worksheet_plate,
+                                           populate_worksheet_plate_manually)
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

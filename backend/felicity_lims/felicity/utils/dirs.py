@@ -1,6 +1,6 @@
-from pathlib import Path
-from distutils import dir_util
 from datetime import datetime
+from distutils import dir_util
+from pathlib import Path
 
 
 def deleteFile(file_name: str) -> bool:
@@ -16,7 +16,7 @@ def resolve_media_dirs_for(target: str) -> str:
     """
     Creates directories if not exist
     """
-    str_path = 'media/' + target + '/' + datetime.now().strftime("%Y/%m/%d") + "/"
+    str_path = "media/" + target + "/" + datetime.now().strftime("%Y/%m/%d") + "/"
     path = Path(str_path)
     if not path.is_dir():
         dir_util.mkpath(str_path)

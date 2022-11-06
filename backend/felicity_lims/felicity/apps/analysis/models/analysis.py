@@ -1,6 +1,6 @@
 import logging
 from datetime import datetime, timedelta
-from typing import List, Union, Any
+from typing import Any, List, Union
 
 from felicity.apps import Auditable, BaseAuditDBModel, DBModel
 from felicity.apps.analysis import schemas
@@ -10,10 +10,11 @@ from felicity.apps.client import models as ct_models
 from felicity.apps.common import BaseMPTT
 from felicity.apps.common.models import IdSequence
 from felicity.apps.common.utils import sequencer
-from felicity.apps.patient import models as pt_models
 from felicity.apps.notification.utils import FelicityStreamer
+from felicity.apps.patient import models as pt_models
 from felicity.apps.user.models import User
-from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, String, Table, Float
+from sqlalchemy import (Boolean, Column, DateTime, Float, ForeignKey, Integer,
+                        String, Table)
 from sqlalchemy.orm import relationship
 
 logging.basicConfig(level=logging.INFO)
@@ -85,13 +86,13 @@ class AnalysisCategory(BaseAuditDBModel):
 
     @classmethod
     async def create(
-            cls, obj_in: schemas.AnalysisCategoryCreate
+        cls, obj_in: schemas.AnalysisCategoryCreate
     ) -> schemas.AnalysisCategory:
         data = cls._import(obj_in)
         return await super().create(**data)
 
     async def update(
-            self, obj_in: schemas.AnalysisCategoryUpdate
+        self, obj_in: schemas.AnalysisCategoryUpdate
     ) -> schemas.AnalysisCategory:
         data = self._import(obj_in)
         return await super().update(**data)
@@ -112,10 +113,7 @@ class Profile(BaseAuditDBModel):
         lazy="selectin",
     )
     sample_types = relationship(
-        "SampleType",
-        secondary=profile_sample_type,
-        backref="profiles",
-        lazy="selectin",
+        "SampleType", secondary=profile_sample_type, backref="profiles", lazy="selectin"
     )
     department_uid = Column(Integer, ForeignKey("department.uid"), nullable=True)
     department = relationship("Department", lazy="selectin")
@@ -175,9 +173,7 @@ class Analysis(BaseAuditDBModel):
     unit_uid = Column(Integer, ForeignKey("unit.uid"), nullable=True)
     unit = relationship("Unit", lazy="selectin")
     profiles = relationship(
-        "Profile",
-        secondary=analysis_profile,
-        back_populates="analyses",
+        "Profile", secondary=analysis_profile, back_populates="analyses"
     )
     sample_types = relationship(
         "SampleType",
@@ -186,22 +182,24 @@ class Analysis(BaseAuditDBModel):
         lazy="selectin",
     )
     instruments = relationship(
-        "Instrument",
-        secondary=analysis_instrument,
-        backref="analyses",
-        lazy="selectin",
+        "Instrument", secondary=analysis_instrument, backref="analyses", lazy="selectin"
     )
     methods = relationship(
-        "Method",
-        secondary=analysis_method,
-        backref="analyses",
-        lazy="selectin",
+        "Method", secondary=analysis_method, backref="analyses", lazy="selectin"
     )
     interims = relationship("AnalysisInterim", backref="analysis", lazy="selectin")
-    correction_factors = relationship("AnalysisCorrectionFactor", backref="analysis", lazy="selectin")
-    specifications = relationship("AnalysisSpecification", backref="analysis", lazy="selectin")
-    detection_limits = relationship("AnalysisDetectionLimit", backref="analysis", lazy="selectin")
-    uncertainties = relationship("AnalysisUncertainty", backref="analysis", lazy="selectin")
+    correction_factors = relationship(
+        "AnalysisCorrectionFactor", backref="analysis", lazy="selectin"
+    )
+    specifications = relationship(
+        "AnalysisSpecification", backref="analysis", lazy="selectin"
+    )
+    detection_limits = relationship(
+        "AnalysisDetectionLimit", backref="analysis", lazy="selectin"
+    )
+    uncertainties = relationship(
+        "AnalysisUncertainty", backref="analysis", lazy="selectin"
+    )
     result_options = relationship("ResultOption", backref="analyses", lazy="selectin")
     category_uid = Column(Integer, ForeignKey("analysiscategory.uid"))
     category = relationship(AnalysisCategory, backref="analyses", lazy="selectin")
@@ -229,6 +227,7 @@ class Analysis(BaseAuditDBModel):
 
 class AnalysisInterim(BaseAuditDBModel):
     """Analysis Interim Result Field"""
+
     key = Column(Integer, nullable=False)
     value = Column(String, nullable=False)
     analysis_uid = Column(Integer, ForeignKey("analysis.uid"), nullable=True)
@@ -236,34 +235,44 @@ class AnalysisInterim(BaseAuditDBModel):
     instrument = relationship("Instrument")
 
     @classmethod
-    async def create(cls, obj_in: schemas.AnalysisInterimCreate) -> schemas.AnalysisInterim:
+    async def create(
+        cls, obj_in: schemas.AnalysisInterimCreate
+    ) -> schemas.AnalysisInterim:
         data = cls._import(obj_in)
         return await super().create(**data)
 
-    async def update(self, obj_in: schemas.AnalysisInterimUpdate) -> schemas.AnalysisInterim:
+    async def update(
+        self, obj_in: schemas.AnalysisInterimUpdate
+    ) -> schemas.AnalysisInterim:
         data = self._import(obj_in)
         return await super().update(**data)
 
 
 class AnalysisCorrectionFactor(BaseAuditDBModel):
     """Analysis Correction Factor"""
+
     factor = Column(Float, nullable=False)
     analysis_uid = Column(Integer, ForeignKey("analysis.uid"), nullable=True)
     instrument_uid = Column(Integer, ForeignKey("instrument.uid"), nullable=True)
     method_uid = Column(Integer, ForeignKey("method.uid"), nullable=True)
 
     @classmethod
-    async def create(cls, obj_in: schemas.AnalysisCorrectionFactorCreate) -> schemas.AnalysisCorrectionFactor:
+    async def create(
+        cls, obj_in: schemas.AnalysisCorrectionFactorCreate
+    ) -> schemas.AnalysisCorrectionFactor:
         data = cls._import(obj_in)
         return await super().create(**data)
 
-    async def update(self, obj_in: schemas.AnalysisCorrectionFactorUpdate) -> schemas.AnalysisCorrectionFactor:
+    async def update(
+        self, obj_in: schemas.AnalysisCorrectionFactorUpdate
+    ) -> schemas.AnalysisCorrectionFactor:
         data = self._import(obj_in)
         return await super().update(**data)
 
 
 class AnalysisDetectionLimit(BaseAuditDBModel):
     """Analysis Detection Limit"""
+
     lower_limit = Column(Float, nullable=False)
     upper_limit = Column(Float, nullable=False)
     analysis_uid = Column(Integer, ForeignKey("analysis.uid"), nullable=True)
@@ -271,11 +280,15 @@ class AnalysisDetectionLimit(BaseAuditDBModel):
     method_uid = Column(Integer, ForeignKey("method.uid"), nullable=True)
 
     @classmethod
-    async def create(cls, obj_in: schemas.AnalysisDetectionLimitCreate) -> schemas.AnalysisDetectionLimit:
+    async def create(
+        cls, obj_in: schemas.AnalysisDetectionLimitCreate
+    ) -> schemas.AnalysisDetectionLimit:
         data = cls._import(obj_in)
         return await super().create(**data)
 
-    async def update(self, obj_in: schemas.AnalysisDetectionLimitUpdate) -> schemas.AnalysisDetectionLimit:
+    async def update(
+        self, obj_in: schemas.AnalysisDetectionLimitUpdate
+    ) -> schemas.AnalysisDetectionLimit:
         data = self._import(obj_in)
         return await super().update(**data)
 
@@ -284,6 +297,7 @@ class AnalysisUncertainty(BaseAuditDBModel):
     """Analysis Measurment Uncertainty
     If value is within the the range min.max then result becomes a range (result +/- value)
     """
+
     min = Column(Float, nullable=False)
     max = Column(Float, nullable=False)
     value = Column(Float, nullable=False)
@@ -292,17 +306,22 @@ class AnalysisUncertainty(BaseAuditDBModel):
     method_uid = Column(Integer, ForeignKey("method.uid"), nullable=True)
 
     @classmethod
-    async def create(cls, obj_in: schemas.AnalysisUncertaintyCreate) -> schemas.AnalysisUncertainty:
+    async def create(
+        cls, obj_in: schemas.AnalysisUncertaintyCreate
+    ) -> schemas.AnalysisUncertainty:
         data = cls._import(obj_in)
         return await super().create(**data)
 
-    async def update(self, obj_in: schemas.AnalysisUncertaintyUpdate) -> schemas.AnalysisUncertainty:
+    async def update(
+        self, obj_in: schemas.AnalysisUncertaintyUpdate
+    ) -> schemas.AnalysisUncertainty:
         data = self._import(obj_in)
         return await super().update(**data)
 
 
 class AnalysisSpecification(BaseAuditDBModel):
     """Analysis Specification Ranges"""
+
     analysis_uid = Column(Integer, ForeignKey("analysis.uid"), nullable=True)
     unit_uid = Column(Integer, ForeignKey("unit.uid"), nullable=True)
     unit = relationship("Unit", lazy="selectin")
@@ -330,11 +349,15 @@ class AnalysisSpecification(BaseAuditDBModel):
     age_max = Column(Integer, nullable=True)
 
     @classmethod
-    async def create(cls, obj_in: schemas.AnalysisSpecificationCreate) -> schemas.AnalysisSpecification:
+    async def create(
+        cls, obj_in: schemas.AnalysisSpecificationCreate
+    ) -> schemas.AnalysisSpecification:
         data = cls._import(obj_in)
         return await super().create(**data)
 
-    async def update(self, obj_in: schemas.AnalysisSpecificationUpdate) -> schemas.AnalysisSpecification:
+    async def update(
+        self, obj_in: schemas.AnalysisSpecificationUpdate
+    ) -> schemas.AnalysisSpecification:
         data = self._import(obj_in)
         return await super().update(**data)
 
@@ -374,7 +397,7 @@ class AnalysisRequest(BaseAuditDBModel):
 
     @classmethod
     async def create(
-            cls, obj_in: schemas.AnalysisRequestCreate
+        cls, obj_in: schemas.AnalysisRequestCreate
     ) -> schemas.AnalysisRequest:
         data = cls._import(obj_in)
         data["request_id"] = (await IdSequence.get_next_number("AR"))[1]
@@ -422,11 +445,15 @@ class RejectionReason(BaseAuditDBModel):
     reason = Column(String, nullable=False)
 
     @classmethod
-    async def create(cls, obj_in: schemas.RejectionReasonCreate) -> schemas.RejectionReason:
+    async def create(
+        cls, obj_in: schemas.RejectionReasonCreate
+    ) -> schemas.RejectionReason:
         data = cls._import(obj_in)
         return await super().create(**data)
 
-    async def update(self, obj_in: schemas.RejectionReasonUpdate) -> schemas.RejectionReason:
+    async def update(
+        self, obj_in: schemas.RejectionReasonUpdate
+    ) -> schemas.RejectionReason:
         data = self._import(obj_in)
         return await super().update(**data)
 
@@ -700,6 +727,7 @@ class Sample(Auditable, BaseMPTT):
         data["analyses"] = self.analyses
         data["parent_id"] = self.uid
         return await super().create(**data)
+
 
 # @event.listens_for(Sample, "after_update")
 # def stream_sample_verified_models(mapper, connection, target): # noqa

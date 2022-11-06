@@ -1,8 +1,8 @@
 from typing import List, Optional
 
 import strawberry  # noqa
-from felicity.apps.noticeboard import models
 from felicity.api.gql.noticeboard.types import NoticeType
+from felicity.apps.noticeboard import models
 
 
 @strawberry.type

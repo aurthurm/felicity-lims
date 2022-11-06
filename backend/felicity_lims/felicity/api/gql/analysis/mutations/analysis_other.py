@@ -2,10 +2,10 @@ import logging
 from typing import Optional
 
 import strawberry  # noqa
-from felicity.apps.analysis import schemas
-from felicity.apps.analysis.models import analysis as analysis_models
 from felicity.api.gql import OperationError, auth_from_info, verify_user_auth
 from felicity.api.gql.analysis.types import analysis as a_types
+from felicity.apps.analysis import schemas
+from felicity.apps.analysis.models import analysis as analysis_models
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -64,32 +64,44 @@ class AnalysisSpecificationInput:
     unit_uid: Optional[int] = None
 
 
-AnalysisInterimResponse = strawberry.union("AnalysisInterimResponse",
-                                           (a_types.AnalysisInterimType, OperationError),  # noqa
-                                           description=""
-                                           )
-AnalysisCorrectionFactorResponse = strawberry.union("AnalysisCorrectionFactorResponse",
-                                           (a_types.AnalysisCorrectionFactorType, OperationError),  # noqa
-                                           description=""
-                                           )
-AnalysisDetectionLimitResponse = strawberry.union("AnalysisDetectionLimitResponse",
-                                           (a_types.AnalysisDetectionLimitType, OperationError),  # noqa
-                                           description=""
-                                           )
-AnalysisUncertaintyResponse = strawberry.union("AnalysisUncertaintyResponse",
-                                           (a_types.AnalysisUncertaintyType, OperationError),  # noqa
-                                           description=""
-                                           )
-AnalysisSpecificationResponse = strawberry.union("AnalysisSpecificationResponse",
-                                           (a_types.AnalysisSpecificationType, OperationError),  # noqa
-                                           description=""
-                                           )
+AnalysisInterimResponse = strawberry.union(
+    "AnalysisInterimResponse",
+    (a_types.AnalysisInterimType, OperationError),  # noqa
+    description="",
+)
+AnalysisCorrectionFactorResponse = strawberry.union(
+    "AnalysisCorrectionFactorResponse",
+    (a_types.AnalysisCorrectionFactorType, OperationError),  # noqa
+    description="",
+)
+AnalysisDetectionLimitResponse = strawberry.union(
+    "AnalysisDetectionLimitResponse",
+    (a_types.AnalysisDetectionLimitType, OperationError),  # noqa
+    description="",
+)
+AnalysisUncertaintyResponse = strawberry.union(
+    "AnalysisUncertaintyResponse",
+    (a_types.AnalysisUncertaintyType, OperationError),  # noqa
+    description="",
+)
+AnalysisSpecificationResponse = strawberry.union(
+    "AnalysisSpecificationResponse",
+    (a_types.AnalysisSpecificationType, OperationError),  # noqa
+    description="",
+)
+
 
 @strawberry.mutation
-async def create_analysis_interim(info, payload: AnalysisInterimInput) -> AnalysisInterimResponse:
+async def create_analysis_interim(
+    info, payload: AnalysisInterimInput
+) -> AnalysisInterimResponse:
 
     is_authenticated, felicity_user = await auth_from_info(info)
-    verify_user_auth(is_authenticated, felicity_user, "Only Authenticated user can add analysis interims")
+    verify_user_auth(
+        is_authenticated,
+        felicity_user,
+        "Only Authenticated user can add analysis interims",
+    )
 
     incoming = {
         "created_by_uid": felicity_user.uid,
@@ -99,15 +111,23 @@ async def create_analysis_interim(info, payload: AnalysisInterimInput) -> Analys
         incoming[k] = v
 
     obj_in = schemas.AnalysisInterimCreate(**incoming)
-    interim: analysis_models.AnalysisInterim = await analysis_models.AnalysisInterim.create(obj_in)
+    interim: analysis_models.AnalysisInterim = await analysis_models.AnalysisInterim.create(
+        obj_in
+    )
     return a_types.AnalysisInterimType(**interim.marshal_simple())
 
 
 @strawberry.mutation
-async def update_analysis_interim(info, uid: int, payload: AnalysisInterimInput) -> AnalysisInterimResponse:
+async def update_analysis_interim(
+    info, uid: int, payload: AnalysisInterimInput
+) -> AnalysisInterimResponse:
 
     is_authenticated, felicity_user = await auth_from_info(info)
-    verify_user_auth(is_authenticated, felicity_user, "Only Authenticated user can update analysis interims")
+    verify_user_auth(
+        is_authenticated,
+        felicity_user,
+        "Only Authenticated user can update analysis interims",
+    )
 
     interim = await analysis_models.AnalysisInterim.get(uid=uid)
     if not interim:
@@ -129,10 +149,16 @@ async def update_analysis_interim(info, uid: int, payload: AnalysisInterimInput)
 
 
 @strawberry.mutation
-async def create_analysis_correction_factor(info, payload: AnalysisCorrectionFactorInput) -> AnalysisCorrectionFactorResponse:
+async def create_analysis_correction_factor(
+    info, payload: AnalysisCorrectionFactorInput
+) -> AnalysisCorrectionFactorResponse:
 
     is_authenticated, felicity_user = await auth_from_info(info)
-    verify_user_auth(is_authenticated, felicity_user, "Only Authenticated user can add analysis correction factors")
+    verify_user_auth(
+        is_authenticated,
+        felicity_user,
+        "Only Authenticated user can add analysis correction factors",
+    )
 
     incoming = {
         "created_by_uid": felicity_user.uid,
@@ -142,15 +168,23 @@ async def create_analysis_correction_factor(info, payload: AnalysisCorrectionFac
         incoming[k] = v
 
     obj_in = schemas.AnalysisCorrectionFactorCreate(**incoming)
-    correction_factor: analysis_models.AnalysisCorrectionFactor = await analysis_models.AnalysisCorrectionFactor.create(obj_in)
+    correction_factor: analysis_models.AnalysisCorrectionFactor = await analysis_models.AnalysisCorrectionFactor.create(
+        obj_in
+    )
     return a_types.AnalysisCorrectionFactorType(**correction_factor.marshal_simple())
 
 
 @strawberry.mutation
-async def update_analysis_correction_factor(info, uid: int, payload: AnalysisCorrectionFactorInput) -> AnalysisCorrectionFactorResponse:
+async def update_analysis_correction_factor(
+    info, uid: int, payload: AnalysisCorrectionFactorInput
+) -> AnalysisCorrectionFactorResponse:
 
     is_authenticated, felicity_user = await auth_from_info(info)
-    verify_user_auth(is_authenticated, felicity_user, "Only Authenticated user can update analysis correction factors")
+    verify_user_auth(
+        is_authenticated,
+        felicity_user,
+        "Only Authenticated user can update analysis correction factors",
+    )
 
     correction_factor = await analysis_models.AnalysisCorrectionFactor.get(uid=uid)
     if not correction_factor:
@@ -166,16 +200,24 @@ async def update_analysis_correction_factor(info, uid: int, payload: AnalysisCor
             except AttributeError as e:
                 logger.warning(e)
 
-    analysis_in = schemas.AnalysisCorrectionFactorUpdate(**correction_factor.to_dict(nested=False))
+    analysis_in = schemas.AnalysisCorrectionFactorUpdate(
+        **correction_factor.to_dict(nested=False)
+    )
     correction_factor = await correction_factor.update(analysis_in)
     return a_types.AnalysisCorrectionFactorType(**correction_factor.marshal_simple())
 
 
 @strawberry.mutation
-async def create_analysis_detection_limit(info, payload: AnalysisDetectionLimitInput) -> AnalysisDetectionLimitResponse:
+async def create_analysis_detection_limit(
+    info, payload: AnalysisDetectionLimitInput
+) -> AnalysisDetectionLimitResponse:
 
     is_authenticated, felicity_user = await auth_from_info(info)
-    verify_user_auth(is_authenticated, felicity_user, "Only Authenticated user can add analysis detection limits")
+    verify_user_auth(
+        is_authenticated,
+        felicity_user,
+        "Only Authenticated user can add analysis detection limits",
+    )
 
     incoming = {
         "created_by_uid": felicity_user.uid,
@@ -185,15 +227,23 @@ async def create_analysis_detection_limit(info, payload: AnalysisDetectionLimitI
         incoming[k] = v
 
     obj_in = schemas.AnalysisDetectionLimitCreate(**incoming)
-    detection_limit: analysis_models.AnalysisDetectionLimit = await analysis_models.AnalysisDetectionLimit.create(obj_in)
+    detection_limit: analysis_models.AnalysisDetectionLimit = await analysis_models.AnalysisDetectionLimit.create(
+        obj_in
+    )
     return a_types.AnalysisDetectionLimitType(**detection_limit.marshal_simple())
 
 
 @strawberry.mutation
-async def update_analysis_detection_limit(info, uid: int, payload: AnalysisDetectionLimitInput) -> AnalysisDetectionLimitResponse:
+async def update_analysis_detection_limit(
+    info, uid: int, payload: AnalysisDetectionLimitInput
+) -> AnalysisDetectionLimitResponse:
 
     is_authenticated, felicity_user = await auth_from_info(info)
-    verify_user_auth(is_authenticated, felicity_user, "Only Authenticated user can update analysis interims")
+    verify_user_auth(
+        is_authenticated,
+        felicity_user,
+        "Only Authenticated user can update analysis interims",
+    )
 
     detection_limit = await analysis_models.AnalysisDetectionLimit.get(uid=uid)
     if not detection_limit:
@@ -209,16 +259,24 @@ async def update_analysis_detection_limit(info, uid: int, payload: AnalysisDetec
             except AttributeError as e:
                 logger.warning(e)
 
-    analysis_in = schemas.AnalysisDetectionLimitUpdate(**detection_limit.to_dict(nested=False))
+    analysis_in = schemas.AnalysisDetectionLimitUpdate(
+        **detection_limit.to_dict(nested=False)
+    )
     detection_limit = await detection_limit.update(analysis_in)
     return a_types.AnalysisDetectionLimitType(**detection_limit.marshal_simple())
 
 
 @strawberry.mutation
-async def create_analysis_uncertainty(info, payload: AnalysisUncertaintyInput) -> AnalysisUncertaintyResponse:
+async def create_analysis_uncertainty(
+    info, payload: AnalysisUncertaintyInput
+) -> AnalysisUncertaintyResponse:
 
     is_authenticated, felicity_user = await auth_from_info(info)
-    verify_user_auth(is_authenticated, felicity_user, "Only Authenticated user can add analysis uncertainties")
+    verify_user_auth(
+        is_authenticated,
+        felicity_user,
+        "Only Authenticated user can add analysis uncertainties",
+    )
 
     incoming = {
         "created_by_uid": felicity_user.uid,
@@ -228,15 +286,23 @@ async def create_analysis_uncertainty(info, payload: AnalysisUncertaintyInput) -
         incoming[k] = v
 
     obj_in = schemas.AnalysisUncertaintyCreate(**incoming)
-    uncertainty: analysis_models.AnalysisUncertainty = await analysis_models.AnalysisUncertainty.create(obj_in)
+    uncertainty: analysis_models.AnalysisUncertainty = await analysis_models.AnalysisUncertainty.create(
+        obj_in
+    )
     return a_types.AnalysisUncertaintyType(**uncertainty.marshal_simple())
 
 
 @strawberry.mutation
-async def update_analysis_uncertainty(info, uid: int, payload: AnalysisUncertaintyInput) -> AnalysisUncertaintyResponse:
+async def update_analysis_uncertainty(
+    info, uid: int, payload: AnalysisUncertaintyInput
+) -> AnalysisUncertaintyResponse:
 
     is_authenticated, felicity_user = await auth_from_info(info)
-    verify_user_auth(is_authenticated, felicity_user, "Only Authenticated user can update analysis interims")
+    verify_user_auth(
+        is_authenticated,
+        felicity_user,
+        "Only Authenticated user can update analysis interims",
+    )
 
     uncertainty = await analysis_models.AnalysisUncertainty.get(uid=uid)
     if not uncertainty:
@@ -258,15 +324,21 @@ async def update_analysis_uncertainty(info, uid: int, payload: AnalysisUncertain
 
 
 @strawberry.mutation
-async def create_analysis_specification(info, payload: AnalysisSpecificationInput) -> AnalysisSpecificationResponse:
+async def create_analysis_specification(
+    info, payload: AnalysisSpecificationInput
+) -> AnalysisSpecificationResponse:
 
     is_authenticated, felicity_user = await auth_from_info(info)
-    verify_user_auth(is_authenticated, felicity_user, "Only Authenticated user can add analysis specifications")
+    verify_user_auth(
+        is_authenticated,
+        felicity_user,
+        "Only Authenticated user can add analysis specifications",
+    )
 
     if not payload.min and not payload.warn_values:
         return OperationError(
             error=f"Specification can not be empty",
-            suggestion="Provide values for either numeric or texual specification based on expected result type"
+            suggestion="Provide values for either numeric or texual specification based on expected result type",
         )
 
     incoming = {
@@ -277,15 +349,23 @@ async def create_analysis_specification(info, payload: AnalysisSpecificationInpu
         incoming[k] = v
 
     obj_in = schemas.AnalysisSpecificationCreate(**incoming)
-    specification: analysis_models.AnalysisSpecification = await analysis_models.AnalysisSpecification.create(obj_in)
+    specification: analysis_models.AnalysisSpecification = await analysis_models.AnalysisSpecification.create(
+        obj_in
+    )
     return a_types.AnalysisSpecificationType(**specification.marshal_simple())
 
 
 @strawberry.mutation
-async def update_analysis_specification(info, uid: int, payload: AnalysisSpecificationInput) -> AnalysisSpecificationResponse:
+async def update_analysis_specification(
+    info, uid: int, payload: AnalysisSpecificationInput
+) -> AnalysisSpecificationResponse:
 
     is_authenticated, felicity_user = await auth_from_info(info)
-    verify_user_auth(is_authenticated, felicity_user, "Only Authenticated user can update analysis specifications")
+    verify_user_auth(
+        is_authenticated,
+        felicity_user,
+        "Only Authenticated user can update analysis specifications",
+    )
 
     specification = await analysis_models.AnalysisSpecification.get(uid=uid)
     if not specification:
@@ -301,6 +381,8 @@ async def update_analysis_specification(info, uid: int, payload: AnalysisSpecifi
             except AttributeError as e:
                 logger.warning(e)
 
-    analysis_in = schemas.AnalysisSpecificationUpdate(**specification.to_dict(nested=False))
+    analysis_in = schemas.AnalysisSpecificationUpdate(
+        **specification.to_dict(nested=False)
+    )
     specification = await specification.update(analysis_in)
     return a_types.AnalysisSpecificationType(**specification.marshal_simple())

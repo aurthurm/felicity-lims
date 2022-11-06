@@ -1,9 +1,10 @@
-from typing import List, Optional, Union
-from pydantic import BaseModel
 from datetime import datetime
-from felicity.apps.user.schemas import UserBasic
+from typing import List, Optional, Union
+
 from felicity.apps.analysis.schemas import AnalysisBasic
 from felicity.apps.analytics import conf
+from felicity.apps.user.schemas import UserBasic
+from pydantic import BaseModel
 
 
 class ReportMetaBase(BaseModel):
@@ -52,4 +53,3 @@ class ReportRequest(BaseModel):
     date_column: str
     period_start: datetime
     period_end: datetime
-

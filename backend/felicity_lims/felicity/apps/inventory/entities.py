@@ -1,11 +1,11 @@
-from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, Float, DateTime
-from sqlalchemy.orm import relationship
-
 from felicity.apps import BaseAuditDBModel
+from sqlalchemy import Column, DateTime, Float, ForeignKey, Integer, String
+from sqlalchemy.orm import relationship
 
 
 class StockItem(BaseAuditDBModel):
     """StockItem Standardization"""
+
     name = Column(String, nullable=False)
     description = Column(String, nullable=False)
     department_uid = Column(Integer, ForeignKey("department.uid"), nullable=True)
@@ -16,6 +16,7 @@ class StockCategory(BaseAuditDBModel):
     """StockCategory
     Consumable, Reagents, Durables
     """
+
     name = Column(String, nullable=False)
     description = Column(String, nullable=False)
 
@@ -23,6 +24,7 @@ class StockCategory(BaseAuditDBModel):
 class Hazard(BaseAuditDBModel):
     """Hazard
     """
+
     name = Column(String, nullable=False)
     description = Column(String, nullable=False)
 
@@ -91,7 +93,9 @@ class StockTransaction(BaseAuditDBModel):
     department = relationship("Department", lazy="selectin")
     date_issued = Column(DateTime, nullable=False)
     transaction_by_uid = Column(Integer, ForeignKey("user.uid"), nullable=True)
-    transaction_by = relationship("User", foreign_keys=[transaction_by_uid], lazy="selectin")
+    transaction_by = relationship(
+        "User", foreign_keys=[transaction_by_uid], lazy="selectin"
+    )
 
 
 class StockAdjustment(BaseAuditDBModel):
@@ -102,4 +106,6 @@ class StockAdjustment(BaseAuditDBModel):
     adjustment_date = Column(DateTime, nullable=False)
     remarks = Column(String, nullable=False)
     adjustment_by_uid = Column(Integer, ForeignKey("user.uid"), nullable=True)
-    adjustment_by = relationship("User", foreign_keys=[adjustment_by_uid], lazy="selectin")
+    adjustment_by = relationship(
+        "User", foreign_keys=[adjustment_by_uid], lazy="selectin"
+    )

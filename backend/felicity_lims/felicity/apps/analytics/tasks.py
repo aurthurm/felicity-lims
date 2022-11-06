@@ -1,15 +1,12 @@
 import logging
 from pathlib import Path
+
 import pandas as pd
-
 from felicity.apps.analysis.models.analysis import Sample
-from felicity.apps.analytics import models, SampleAnalyticsInit
-from felicity.apps.analytics import conf
-from felicity.apps.notification.utils import ReportNotifier
-from felicity.apps.job import models as job_models
+from felicity.apps.analytics import SampleAnalyticsInit, conf, models
 from felicity.apps.job import conf as job_conf
-
-
+from felicity.apps.job import models as job_models
+from felicity.apps.notification.utils import ReportNotifier
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -23,8 +20,7 @@ async def generate_report(job_uid: str):
     if report.status != conf.report_states.PENDING:
         await job.change_status(new_status=job_conf.states.FAILED)
         await report_notifier.notify(
-            f"Failed to generate {report.report_type} report",
-            report.created_by
+            f"Failed to generate {report.report_type} report", report.created_by
         )
         return
 
@@ -32,7 +28,7 @@ async def generate_report(job_uid: str):
     columns, lines = await analytics.get_line_listing(
         period_start=report.period_start,
         period_end=report.period_end,
-        sample_states=report.sample_states.split(', '),
+        sample_states=report.sample_states.split(", "),
         date_column=report.date_column,
         analysis_uids=[an.uid for an in report.analyses],
     )
@@ -48,7 +44,7 @@ async def generate_report(job_uid: str):
         await report.set_final(location=None, status=conf.report_states.FAILED)
         await report_notifier.notify(
             f"Error encountered: Failed to save generated {report.report_type} report: {e}",
-            report.created_by
+            report.created_by,
         )
         return
 
@@ -60,7 +56,7 @@ async def generate_report(job_uid: str):
         await report.set_final(status=conf.report_states.FAILED, location=None)
         await report_notifier.notify(
             f"File access error: Failed to access generated {report.report_type} report",
-            report.created_by
+            report.created_by,
         )
         return False
 
@@ -68,6 +64,6 @@ async def generate_report(job_uid: str):
     await report.set_final(location=file_name, status=conf.report_states.READY)
     await report_notifier.notify(
         f"Your {report.report_type} report was successfully generated",
-        report.created_by
+        report.created_by,
     )
     return True

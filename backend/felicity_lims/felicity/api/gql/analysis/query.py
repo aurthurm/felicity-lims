@@ -3,16 +3,14 @@ from typing import List, Optional
 
 import sqlalchemy as sa
 import strawberry  # noqa
-from felicity.apps.analysis.models import (
-    analysis as a_models,
-    qc as qc_models,
-    results as r_models,
-)
-from felicity.apps.analysis.utils import sample_search
-from felicity.apps.analysis import conf as analysis_conf
 from felicity.api.gql import PageInfo
-from felicity.api.gql.analysis.types import results as r_types
 from felicity.api.gql.analysis.types import analysis as a_types
+from felicity.api.gql.analysis.types import results as r_types
+from felicity.apps.analysis import conf as analysis_conf
+from felicity.apps.analysis.models import analysis as a_models
+from felicity.apps.analysis.models import qc as qc_models
+from felicity.apps.analysis.models import results as r_models
+from felicity.apps.analysis.utils import sample_search
 from felicity.utils import has_value_or_is_truthy
 
 logging.basicConfig(level=logging.INFO)
@@ -165,7 +163,7 @@ class AnalysisQuery:
             before_cursor=before_cursor,
             filters=filters,
             sort_by=sort_by,
-            get_related="profiles"
+            get_related="profiles",
         )
 
         total_count: int = page.total_count
@@ -291,7 +289,7 @@ class AnalysisQuery:
         filters.append({"status": analysis_conf.states.result.PENDING})
 
         if not sort_by:
-            sort_by = ['-sample___priority', 'sample___uid']
+            sort_by = ["-sample___priority", "sample___uid"]
 
         page = await r_models.AnalysisResult.paginate_with_cursors(
             page_size=page_size,
@@ -299,7 +297,7 @@ class AnalysisQuery:
             before_cursor=before_cursor,
             filters=filters,
             sort_by=sort_by,
-            get_related="sample"
+            get_related="sample",
         )
 
         total_count: int = page.total_count
@@ -316,39 +314,57 @@ class AnalysisQuery:
         return await a_models.AnalysisInterim.all()
 
     @strawberry.field
-    async def analysis_interim_by_uid(self, info, uid: int) -> a_types.AnalysisInterimType:
+    async def analysis_interim_by_uid(
+        self, info, uid: int
+    ) -> a_types.AnalysisInterimType:
         return await a_models.AnalysisInterim.get(uid=uid)
 
     @strawberry.field
-    async def analysis_correction_factor_all(self, info) -> List[a_types.AnalysisCorrectionFactorType]:
+    async def analysis_correction_factor_all(
+        self, info
+    ) -> List[a_types.AnalysisCorrectionFactorType]:
         return await a_models.AnalysisCorrectionFactor.all()
 
     @strawberry.field
-    async def analysis_correction_factor_by_uid(self, info, uid: int) -> a_types.AnalysisCorrectionFactorType:
+    async def analysis_correction_factor_by_uid(
+        self, info, uid: int
+    ) -> a_types.AnalysisCorrectionFactorType:
         return await a_models.AnalysisCorrectionFactor.get(uid=uid)
 
     @strawberry.field
-    async def analysis_uncertainty_all(self, info) -> List[a_types.AnalysisUncertaintyType]:
+    async def analysis_uncertainty_all(
+        self, info
+    ) -> List[a_types.AnalysisUncertaintyType]:
         return await a_models.AnalysisUncertainty.all()
 
     @strawberry.field
-    async def analysis_uncertainty_by_uid(self, info, uid: int) -> a_types.AnalysisUncertaintyType:
+    async def analysis_uncertainty_by_uid(
+        self, info, uid: int
+    ) -> a_types.AnalysisUncertaintyType:
         return await a_models.AnalysisUncertainty.get(uid=uid)
 
     @strawberry.field
-    async def analysis_detection_limit_all(self, info) -> List[a_types.AnalysisDetectionLimitType]:
+    async def analysis_detection_limit_all(
+        self, info
+    ) -> List[a_types.AnalysisDetectionLimitType]:
         return await a_models.AnalysisDetectionLimit.all()
 
     @strawberry.field
-    async def analysis_detection_limit_by_uid(self, info, uid: int) -> a_types.AnalysisDetectionLimitType:
+    async def analysis_detection_limit_by_uid(
+        self, info, uid: int
+    ) -> a_types.AnalysisDetectionLimitType:
         return await a_models.AnalysisUncertainty.get(uid=uid)
 
     @strawberry.field
-    async def analysis_specification_all(self, info) -> List[a_types.AnalysisSpecificationType]:
+    async def analysis_specification_all(
+        self, info
+    ) -> List[a_types.AnalysisSpecificationType]:
         return await a_models.AnalysisSpecification.all()
 
     @strawberry.field
-    async def analysis_specification_uid(self, info, uid: int) -> a_types.AnalysisSpecificationType:
+    async def analysis_specification_uid(
+        self, info, uid: int
+    ) -> a_types.AnalysisSpecificationType:
         return await a_models.AnalysisSpecification.get(uid=uid)
 
     @strawberry.field

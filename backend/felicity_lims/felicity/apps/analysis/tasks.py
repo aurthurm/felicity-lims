@@ -1,10 +1,10 @@
 import logging
 
-from felicity.apps.user import models as user_models
 from felicity.apps.analysis import utils
 from felicity.apps.job import models as job_models
 from felicity.apps.job.conf import states as job_states
 from felicity.apps.notification.utils import ReportNotifier
+from felicity.apps.user import models as user_models
 
 report_notifier = ReportNotifier()
 
@@ -22,24 +22,21 @@ async def submit_results(job_uid: int):
         return
 
     await job.change_status(new_status=job_states.RUNNING)
-    
+
     user = await user_models.User.get(uid=job.creator_uid)
 
     try:
         user = user
         await utils.results_submitter(job.data, user)
         await job.change_status(new_status=job_states.FINISHED)
-        await report_notifier.notify(
-            f"Your results were successfully submitted",
-            user
-        )
+        await report_notifier.notify(f"Your results were successfully submitted", user)
     except Exception as e:
         await job.change_status(new_status=job_states.FAILED)
         await report_notifier.notify(
             f"Failed to submit results in job with uid: {job.uid} with error: {str(e)}",
-            user
+            user,
         )
-        
+
 
 async def verify_results(job_uid: int):
     logger.info(f"starting job {job_uid} ....")
@@ -51,20 +48,17 @@ async def verify_results(job_uid: int):
         return
 
     await job.change_status(new_status=job_states.RUNNING)
-    
+
     user = await user_models.User.get(uid=job.creator_uid)
 
     try:
         user = user
         await utils.verify_from_result_uids(job.data, user)
         await job.change_status(new_status=job_states.FINISHED)
-        await report_notifier.notify(
-            f"Your results were successfully verified",
-            user
-        )
+        await report_notifier.notify(f"Your results were successfully verified", user)
     except Exception as e:
         await job.change_status(new_status=job_states.FAILED)
         await report_notifier.notify(
             f"Failed to verify results in job with uid: {job.uid} with error: {str(e)}",
-            user
+            user,
         )

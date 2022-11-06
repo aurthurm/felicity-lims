@@ -1,7 +1,8 @@
 import os
 from typing import Any, Dict, List, Optional, Union
 
-from pydantic import AnyHttpUrl, AnyUrl, BaseSettings, EmailStr, HttpUrl, validator
+from pydantic import (AnyHttpUrl, AnyUrl, BaseSettings, EmailStr, HttpUrl,
+                      validator)
 
 
 def getenv_boolean(var_name, default_value=False):
@@ -36,7 +37,10 @@ class Settings(BaseSettings):
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 16
     SERVER_NAME: str = getenv_value("SERVER_NAME", "felicity")
     SERVER_HOST: AnyHttpUrl = getenv_value("SERVER_HOST", "https://localhost")
-    BACKEND_CORS_ORIGINS: List[AnyHttpUrl] = ["http://localhost:3000", "http://0.0.0.0:8080"]
+    BACKEND_CORS_ORIGINS: List[AnyHttpUrl] = [
+        "http://localhost:3000",
+        "http://0.0.0.0:8080",
+    ]
 
     @validator("BACKEND_CORS_ORIGINS", pre=True)
     def assemble_cors_origins(cls, v: Union[str, List[str]]) -> Union[List[str], str]:

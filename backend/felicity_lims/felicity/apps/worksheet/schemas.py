@@ -3,7 +3,6 @@ from typing import Dict, List, Optional
 from felicity.apps.analysis.schemas import AnalysisBaseInDB, QCLevelInDB
 from pydantic import BaseModel
 
-
 #
 # WorkSheet Schemas
 #

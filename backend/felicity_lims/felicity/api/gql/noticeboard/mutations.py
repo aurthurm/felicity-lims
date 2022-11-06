@@ -2,15 +2,10 @@ import logging
 from typing import List, Optional
 
 import strawberry  # noqa
-from felicity.apps.noticeboard import models, schemas
-from felicity.api.gql import (
-    DeletedItem,
-    DeleteResponse,
-    OperationError,
-    auth_from_info,
-    verify_user_auth,
-)
+from felicity.api.gql import (DeletedItem, DeleteResponse, OperationError,
+                              auth_from_info, verify_user_auth)
 from felicity.api.gql.noticeboard.types import NoticeType
+from felicity.apps.noticeboard import models, schemas
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

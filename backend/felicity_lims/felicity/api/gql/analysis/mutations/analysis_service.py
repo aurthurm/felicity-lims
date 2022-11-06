@@ -3,11 +3,11 @@ from dataclasses import field
 from typing import List, Optional
 
 import strawberry  # noqa
-from felicity.apps.analysis import schemas
-from felicity.apps.setup.models import Method
-from felicity.apps.analysis.models import analysis as analysis_models
 from felicity.api.gql import OperationError, auth_from_info, verify_user_auth
 from felicity.api.gql.analysis.types import analysis as a_types
+from felicity.apps.analysis import schemas
+from felicity.apps.analysis.models import analysis as analysis_models
+from felicity.apps.setup.models import Method
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -32,41 +32,38 @@ class AnalysisInputType:
     active: Optional[bool] = True
 
 
-ProfilesServiceResponse = strawberry.union("ProfilesServiceResponse",
-                                           (a_types.AnalysisWithProfiles, OperationError),  # noqa
-                                           description=""
-                                           )
+ProfilesServiceResponse = strawberry.union(
+    "ProfilesServiceResponse",
+    (a_types.AnalysisWithProfiles, OperationError),  # noqa
+    description="",
+)
 
 
 @strawberry.mutation
 async def create_analysis(info, payload: AnalysisInputType) -> ProfilesServiceResponse:
 
     is_authenticated, felicity_user = await auth_from_info(info)
-    verify_user_auth(is_authenticated, felicity_user, "Only Authenticated user can create analysis")
+    verify_user_auth(
+        is_authenticated, felicity_user, "Only Authenticated user can create analysis"
+    )
 
     if not payload.name or not payload.description:
-        return OperationError(
-            error="Name and Description are mandatory"
-        )
+        return OperationError(error="Name and Description are mandatory")
 
     exists = await analysis_models.Analysis.get(name=payload.name)
     if exists:
-        return OperationError(
-            error=f"A analysis named {payload.name} already exists"
-        )
+        return OperationError(error=f"A analysis named {payload.name} already exists")
 
     exists = await analysis_models.Analysis.get(keyword=payload.keyword)
     if exists:
-        return OperationError(
-            error=f"Analysis Keyword {payload.keyword} is not unique"
-        )
+        return OperationError(error=f"Analysis Keyword {payload.keyword} is not unique")
 
     incoming = {
         "created_by_uid": felicity_user.uid,
         "updated_by_uid": felicity_user.uid,
     }
     for k, v in payload.__dict__.items():
-        if k not in ['sample_types']:
+        if k not in ["sample_types"]:
             incoming[k] = v
 
     obj_in = schemas.AnalysisCreate(**incoming)
@@ -90,10 +87,14 @@ async def create_analysis(info, payload: AnalysisInputType) -> ProfilesServiceRe
 
 
 @strawberry.mutation
-async def update_analysis(info, uid: int, payload: AnalysisInputType) -> ProfilesServiceResponse:
+async def update_analysis(
+    info, uid: int, payload: AnalysisInputType
+) -> ProfilesServiceResponse:
 
     is_authenticated, felicity_user = await auth_from_info(info)
-    verify_user_auth(is_authenticated, felicity_user, "Only Authenticated user can update analysis")
+    verify_user_auth(
+        is_authenticated, felicity_user, "Only Authenticated user can update analysis"
+    )
 
     analysis = await analysis_models.Analysis.get(uid=uid)
     if not analysis:
@@ -127,10 +128,7 @@ async def update_analysis(info, uid: int, payload: AnalysisInputType) -> Profile
             meth = await Method.get(uid=_uid)
             await Method.table_insert(
                 table=analysis_models.analysis_method,
-                mappings={
-                    "method_uid": meth.uid,
-                    "analysis_uid": analysis.uid
-                }
+                mappings={"method_uid": meth.uid, "analysis_uid": analysis.uid},
             )
         analysis = await analysis.get(uid=analysis.uid)
 

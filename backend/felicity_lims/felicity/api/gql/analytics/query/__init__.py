@@ -9,7 +9,7 @@ from .dashboard import (
     sample_process_performance,
     analysis_process_performance,
     sample_laggards,
-    test_stuff
+    test_stuff,
 )
 
 
@@ -24,6 +24,6 @@ AnalyticsQuery = create_type(
         sample_process_performance,
         analysis_process_performance,
         sample_laggards,
-        test_stuff
+        test_stuff,
     ],
 )

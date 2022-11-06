@@ -1,14 +1,10 @@
 import base64
 import binascii
 
-from starlette.authentication import AuthCredentials  # UnauthenticatedUser,
-from starlette.authentication import (
-    AuthenticationBackend,
-    AuthenticationError,
-    SimpleUser,
-)
-
 from felicity.api.gql.deps import get_current_active_user
+from starlette.authentication import AuthCredentials  # UnauthenticatedUser,
+from starlette.authentication import (AuthenticationBackend,
+                                      AuthenticationError, SimpleUser)
 
 
 class FelicityAuthBackend(AuthenticationBackend):
@@ -36,4 +32,3 @@ class FelicityAuthBackend(AuthenticationBackend):
 
         except (ValueError, UnicodeDecodeError, binascii.Error) as exc:
             raise AuthenticationError(f"Invalid auth credentials: {exc}")
-

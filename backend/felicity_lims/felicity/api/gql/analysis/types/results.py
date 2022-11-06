@@ -3,7 +3,8 @@ from typing import List, Optional
 
 import strawberry  # noqa
 from felicity.api.gql import PageInfo
-from felicity.api.gql.analysis.types.analysis import AnalysisType, QCSetType, SampleType
+from felicity.api.gql.analysis.types.analysis import (AnalysisType, QCSetType,
+                                                      SampleType)
 from felicity.api.gql.setup.types import InstrumentType, MethodType
 from felicity.api.gql.user.types import UserType
 
@@ -43,7 +44,6 @@ class AnalysisResultType:
     updated_by_uid: Optional[int]
     updated_by: Optional[UserType]
     updated_at: Optional[datetime]
-
 
 
 @strawberry.type

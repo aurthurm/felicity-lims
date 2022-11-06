@@ -2,36 +2,34 @@ import logging
 from typing import Dict, Optional
 
 import strawberry  # noqa
-from felicity.apps.client import models, schemas
 from felicity.api.gql import OperationError, auth_from_info, verify_user_auth
 from felicity.api.gql.client.types import ClientContactType, ClientType
+from felicity.apps.client import models, schemas
 from strawberry.types import Info  # noqa
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-ClientResponse = strawberry.union("ClientResponse",
-                                  (ClientType, OperationError),  # noqa
-                                  description=""
-                                  )
+ClientResponse = strawberry.union(
+    "ClientResponse", (ClientType, OperationError), description=""  # noqa
+)
 
-ClientContactResponse = strawberry.union("ClientContactResponse",
-                                         (ClientContactType, OperationError),  # noqa
-                                         description=""
-                                         )
+ClientContactResponse = strawberry.union(
+    "ClientContactResponse", (ClientContactType, OperationError), description=""  # noqa
+)
 
 
 @strawberry.input
 class ClientInputType:
     name: str
     code: str
-    district_uid: Optional[int] = None,
+    district_uid: Optional[int] = None
     email: Optional[str] = None
-    email_cc: Optional[str] = None,
+    email_cc: Optional[str] = None
     consent_email: Optional[bool] = False
-    phone_mobile: Optional[str] = None,
+    phone_mobile: Optional[str] = None
     phone_business: Optional[str] = None
-    consent_sms: Optional[bool] = False,
+    consent_sms: Optional[bool] = False
     internal_use: Optional[bool] = False
     active: Optional[bool] = True
 
@@ -51,10 +49,16 @@ class ClientContactInputType:
 @strawberry.type
 class ClientMutations:
     @strawberry.mutation
-    async def create_client(self, info: Info, payload: ClientInputType) -> ClientResponse:
+    async def create_client(
+        self, info: Info, payload: ClientInputType
+    ) -> ClientResponse:
 
         is_authenticated, felicity_user = await auth_from_info(info)
-        verify_user_auth(is_authenticated, felicity_user, "Only Authenticated user can create clients")
+        verify_user_auth(
+            is_authenticated,
+            felicity_user,
+            "Only Authenticated user can create clients",
+        )
 
         if not payload.code or not payload.name:
             return OperationError(
@@ -79,15 +83,19 @@ class ClientMutations:
         return client
 
     @strawberry.mutation
-    async def update_client(self, info, uid: int, payload: ClientInputType) -> ClientResponse:
+    async def update_client(
+        self, info, uid: int, payload: ClientInputType
+    ) -> ClientResponse:
 
         is_authenticated, felicity_user = await auth_from_info(info)
-        verify_user_auth(is_authenticated, felicity_user, "Only Authenticated user can update clients")
+        verify_user_auth(
+            is_authenticated,
+            felicity_user,
+            "Only Authenticated user can update clients",
+        )
 
         if not uid:
-            return OperationError(
-                error="No uid provided to identify update obj"
-            )
+            return OperationError(error="No uid provided to identify update obj")
 
         client = await models.Client.get(uid=uid)
         if not client:
@@ -107,15 +115,19 @@ class ClientMutations:
         return client
 
     @strawberry.mutation
-    async def create_client_contact(self, info, payload: ClientContactInputType) -> ClientContactResponse:
+    async def create_client_contact(
+        self, info, payload: ClientContactInputType
+    ) -> ClientContactResponse:
 
         is_authenticated, felicity_user = await auth_from_info(info)
-        verify_user_auth(is_authenticated, felicity_user, "Only Authenticated user can create client contacts")
+        verify_user_auth(
+            is_authenticated,
+            felicity_user,
+            "Only Authenticated user can create client contacts",
+        )
 
         if not payload.client_uid or not payload.first_name:
-            return OperationError(
-                error="Please Provide a first_name and a client uid"
-            )
+            return OperationError(error="Please Provide a first_name and a client uid")
 
         client_exists = await models.Client.get(uid=payload.client_uid)
         if not client_exists:
@@ -123,7 +135,9 @@ class ClientMutations:
                 error=f"Client with uid {payload.client_uid} does not exist"
             )
 
-        contact_exists = await models.ClientContact.get_all(client_uid=payload.client_uid, first_name=payload.first_name)   # noqa
+        contact_exists = await models.ClientContact.get_all(
+            client_uid=payload.client_uid, first_name=payload.first_name
+        )  # noqa
         logger.warning(contact_exists)
         if contact_exists:
             return OperationError(
@@ -142,15 +156,19 @@ class ClientMutations:
         return client_contact
 
     @strawberry.mutation
-    async def update_client_contact(self, info, uid: int, payload: ClientContactInputType) -> ClientContactResponse:
+    async def update_client_contact(
+        self, info, uid: int, payload: ClientContactInputType
+    ) -> ClientContactResponse:
 
         is_authenticated, felicity_user = await auth_from_info(info)
-        verify_user_auth(is_authenticated, felicity_user, "Only Authenticated user can update client contacts")
+        verify_user_auth(
+            is_authenticated,
+            felicity_user,
+            "Only Authenticated user can update client contacts",
+        )
 
         if not uid:
-            return OperationError(
-                error="No uid provided to identify update obj"
-            )
+            return OperationError(error="No uid provided to identify update obj")
 
         client_contact = await models.ClientContact.get(uid=uid)
         if not client_contact:

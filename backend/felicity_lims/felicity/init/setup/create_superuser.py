@@ -49,10 +49,9 @@ async def create_super_user() -> None:
             await superuser.propagate_user_type()
 
         # initial user-preferences
-        pref_in = schemas.UserPreferenceCreate(
-            expanded_menu=False,
-            theme="light"
-        )
+        pref_in = schemas.UserPreferenceCreate(expanded_menu=False, theme="light")
         preference = await models.UserPreference.create(obj_in=pref_in)
-        logger.info(f"linking super user {superuser.uid} to preference {preference.uid}")
+        logger.info(
+            f"linking super user {superuser.uid} to preference {preference.uid}"
+        )
         await superuser.link_preference(preference_uid=preference.uid)

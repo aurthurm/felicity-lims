@@ -1,12 +1,12 @@
 import logging
 from dataclasses import field
-from typing import Optional, List
+from typing import List, Optional
 
 import strawberry  # noqa
-from felicity.apps.analysis import schemas
-from felicity.apps.analysis.models import analysis as analysis_models
 from felicity.api.gql import OperationError, auth_from_info, verify_user_auth
 from felicity.api.gql.analysis.types import analysis as a_types
+from felicity.apps.analysis import schemas
+from felicity.apps.analysis.models import analysis as analysis_models
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -57,7 +57,7 @@ async def create_profile(info, payload: ProfileInputType) -> AnalysisProfileResp
         "updated_by_uid": felicity_user.uid,
     }
     for k, v in payload.__dict__.items():
-        if k not in ['sample_types', 'services']:
+        if k not in ["sample_types", "services"]:
             incoming[k] = v
 
     obj_in = schemas.ProfileCreate(**incoming)
@@ -110,7 +110,7 @@ async def update_profile(
             anal = await analysis_models.Analysis.get(uid=_uid)
             await analysis_models.Analysis.table_insert(
                 table=analysis_models.analysis_profile,
-                mappings={"analysis_uid": anal.uid, "profile_uid": profile.uid}
+                mappings={"analysis_uid": anal.uid, "profile_uid": profile.uid},
             )
 
     # Sample Type management
@@ -122,7 +122,7 @@ async def update_profile(
             profile.sample_types.append(st)
             await analysis_models.SampleType.table_insert(
                 table=analysis_models.profile_sample_type,
-                mappings={"sample_type_uid": st.uid, "profile_uid": profile.uid}
+                mappings={"sample_type_uid": st.uid, "profile_uid": profile.uid},
             )
 
     return a_types.ProfileType(**profile.marshal_simple())

@@ -1,6 +1,6 @@
 import logging
 
-from felicity.apps import Auditable, DBModel
+from felicity.apps import Auditable
 from felicity.apps.client.models import Client
 from felicity.apps.common.models import IdSequence
 from felicity.apps.patient import schemas

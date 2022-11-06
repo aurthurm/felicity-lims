@@ -1,35 +1,33 @@
-
 import json
 import logging
 from typing import List
 
-
+from fastapi import FastAPI, Request, WebSocket
+from fastapi.staticfiles import StaticFiles
+from felicity.api.gql.schema import gql_schema  # noqa
+from felicity.api.rest.api_v1.api import api_router  # noqa
+from felicity.apps.common.channel import broadcast
+from felicity.apps.job.sched import (felicity_halt_workforce,
+                                     felicity_workforce_init)
+from felicity.apps.notification.utils import FelicityNotifier, FelicityStreamer
+from felicity.core.config import settings  # noqa
+from felicity.core.repeater import repeat_every
+from felicity.init import initialize_felicity  # noqa
+from felicity.middlewares.auth_backend import FelicityAuthBackend
+from felicity.utils.dirs import resolve_root_dirs
+from felicity.views import default_home_page
 from starlette.concurrency import run_until_first_complete
 from starlette.middleware.authentication import AuthenticationMiddleware
 from starlette.middleware.cors import CORSMiddleware
-
-from fastapi import FastAPI, WebSocket, Request
-from fastapi.staticfiles import StaticFiles
-
 from strawberry.asgi import GraphQL
-from strawberry.subscriptions import GRAPHQL_TRANSPORT_WS_PROTOCOL, GRAPHQL_WS_PROTOCOL
+from strawberry.subscriptions import (GRAPHQL_TRANSPORT_WS_PROTOCOL,
+                                      GRAPHQL_WS_PROTOCOL)
 
-from felicity.api.rest.api_v1.api import api_router  # noqa
-from felicity.apps.common.channel import broadcast
-from felicity.apps.job.sched import felicity_halt_workforce, felicity_workforce_init
-from felicity.apps.notification.utils import FelicityStreamer, FelicityNotifier
-from felicity.core.config import settings  # noqa
-from felicity.core.repeater import repeat_every
-from felicity.api.gql.schema import gql_schema  # noqa
-from felicity.utils.dirs import resolve_root_dirs
-from felicity.views import default_home_page
-from felicity.init import initialize_felicity  # noqa
-from felicity.core.config import settings
-from felicity.middlewares.auth_backend import FelicityAuthBackend
-
-
-uvicorn_error = logging.getLogger("uvicorn.error")
-uvicorn_error.propagate = False
+# uvicorn_error = logging.getLogger("uvicorn.error")
+# uvicorn_error.propagate = False
+# logging.getLogger("uvicorn").handlers.clear()
+# logging.getLogger("uvicorn").removeHandler(logging.getLogger("uvicorn").handlers[0])
+# or more so https://pawamoy.github.io/posts/unify-logging-for-a-gunicorn-uvicorn-app/
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -74,12 +72,14 @@ if settings.BACKEND_CORS_ORIGINS:
 
 flims.add_middleware(AuthenticationMiddleware, backend=FelicityAuthBackend())
 
+
 @flims.middleware("http")
 async def set_custom_attr(request: Request, call_next):
     request.state.notifier = FelicityNotifier()
     request.state.streamer = FelicityStreamer()
     response = await call_next(request)
     return response
+
 
 graphql_app = GraphQL(
     gql_schema,
@@ -92,7 +92,7 @@ flims.add_route("/felicity-gql", graphql_app)
 flims.add_websocket_route("/felicity-gql", graphql_app, "felicity-subscriptions")
 
 resolve_root_dirs()
-flims.mount('/media', StaticFiles(directory="media"), name='media')
+flims.mount("/media", StaticFiles(directory="media"), name="media")
 
 
 class ConnectionManager:

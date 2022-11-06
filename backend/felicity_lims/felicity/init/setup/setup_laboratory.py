@@ -2,7 +2,8 @@ import json
 import logging
 from typing import Optional
 
-from felicity.apps.client import models as client_models, schemas as client_schemas
+from felicity.apps.client import models as client_models
+from felicity.apps.client import schemas as client_schemas
 from felicity.apps.setup import models, schemas
 from felicity.core.config import settings
 

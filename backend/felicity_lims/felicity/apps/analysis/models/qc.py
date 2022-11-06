@@ -3,7 +3,8 @@ import logging
 from felicity.apps import BaseAuditDBModel, DBModel
 from felicity.apps.analysis import schemas
 from felicity.apps.setup.models.setup import Department
-from sqlalchemy import Column, ForeignKey, String, Table, Boolean, Float, Integer, DateTime
+from sqlalchemy import (Boolean, Column, DateTime, Float, ForeignKey, Integer,
+                        String, Table)
 from sqlalchemy.orm import relationship
 
 logging.basicConfig(level=logging.INFO)
@@ -47,9 +48,12 @@ class QCReference(BaseAuditDBModel):
               InActive awaiting activation
               Depleted
     """
+
     name = Column(String, nullable=False)
     description = Column(String, nullable=False)
-    analyses = relationship("Analysis", secondary=qc_reference_analysis, lazy="selectin")
+    analyses = relationship(
+        "Analysis", secondary=qc_reference_analysis, lazy="selectin"
+    )
     department_uid = Column(Integer, ForeignKey("department.uid"), nullable=True)
     department = relationship("Department", lazy="selectin")
     is_string_result = Column(Boolean, nullable=True)
@@ -79,6 +83,7 @@ class QCLevel(BaseAuditDBModel):
     - HIV Low Positive Control
     - HIV High Positive Control
     """
+
     level = Column(String, nullable=False)
     # department_uid = Column(Integer, ForeignKey("department.uid"), nullable=True)
     # department = relationship(

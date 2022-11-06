@@ -1,11 +1,12 @@
-from typing import List
 import logging
 from datetime import datetime
+from typing import List
 
 from felicity.apps.analysis import schemas
-from felicity.apps.analysis.models.analysis import SampleType
-from felicity.apps.analysis.models.results import AnalysisResult, ResultMutation
 from felicity.apps.analysis.conf import states
+from felicity.apps.analysis.models.analysis import SampleType
+from felicity.apps.analysis.models.results import (AnalysisResult,
+                                                   ResultMutation)
 from felicity.apps.reflex.utils import ReflexUtil
 from felicity.utils import has_value_or_is_truthy
 from sqlalchemy import or_
@@ -25,7 +26,7 @@ async def get_qc_sample_type():
 
 
 async def sample_search(
-        model, status: str, text: str, client_uid: int
+    model, status: str, text: str, client_uid: int
 ) -> List[schemas.SampleType]:
     """No pagination"""
     filters = []
@@ -61,9 +62,7 @@ async def retest_from_result_uids(uids: List[int], user):
     retests = []
 
     for _ar_uid in uids:
-        a_result: AnalysisResult = await AnalysisResult.get(
-            uid=_ar_uid
-        )
+        a_result: AnalysisResult = await AnalysisResult.get(uid=_ar_uid)
         if not a_result:
             raise Exception(f"AnalysisResult with uid {_ar_uid} not found")
 
@@ -80,10 +79,8 @@ async def results_submitter(analysis_results: List[dict], submitter):
     return_results = []
 
     for _ar in analysis_results:
-        uid = _ar['uid']
-        a_result: AnalysisResult = await AnalysisResult.get(
-            uid=uid
-        )
+        uid = _ar["uid"]
+        a_result: AnalysisResult = await AnalysisResult.get(uid=uid)
         if not a_result:
             return Exception(f"AnalysisResult with uid {uid} not found")
 
@@ -144,9 +141,7 @@ async def verify_from_result_uids(uids: List[int], user):
     to_return = []
 
     for _ar_uid in uids:
-        a_result: AnalysisResult = await AnalysisResult.get(
-            uid=_ar_uid
-        )
+        a_result: AnalysisResult = await AnalysisResult.get(uid=_ar_uid)
         if not a_result:
             raise Exception(f"AnalysisResult with uid {_ar_uid} not found")
 
@@ -180,27 +175,34 @@ async def result_mutator(result: AnalysisResult):
     if isinstance(result.result, int):
         # Correction factor
         for cf in correction_factors:
-            if cf.instrument_uid == result.instrument_uid and cf.method_uid == result.method_uid:
-                await ResultMutation.create(obj_in={
-                    "result_uid": result.uid,
-                    "before": result.result,
-                    "after": result.result * cf.factor,
-                    "mutation": f"Multiplied the result {result.result} with a correction factor of {cf.factor}",
-                    "date": datetime.now()
-                })
+            if (
+                cf.instrument_uid == result.instrument_uid
+                and cf.method_uid == result.method_uid
+            ):
+                await ResultMutation.create(
+                    obj_in={
+                        "result_uid": result.uid,
+                        "before": result.result,
+                        "after": result.result * cf.factor,
+                        "mutation": f"Multiplied the result {result.result} with a correction factor of {cf.factor}",
+                        "date": datetime.now(),
+                    }
+                )
                 result.result = result.result * cf.factor
 
         # Specifications: Take more priority than DL
         for spec in specifications:
             # Min
             if result.result < spec.min_warn:
-                await ResultMutation.create(obj_in={
-                    "result_uid": result.uid,
-                    "before": result.result,
-                    "after": spec.min_report,
-                    "mutation": f"Result was less than the minimun warning specification {spec.min_warn} and must be reported as {spec.min_report}",
-                    "date": datetime.now()
-                })
+                await ResultMutation.create(
+                    obj_in={
+                        "result_uid": result.uid,
+                        "before": result.result,
+                        "after": spec.min_report,
+                        "mutation": f"Result was less than the minimun warning specification {spec.min_warn} and must be reported as {spec.min_report}",
+                        "date": datetime.now(),
+                    }
+                )
                 result.result = spec.min_report
 
             elif result.result < spec.min:
@@ -208,13 +210,15 @@ async def result_mutator(result: AnalysisResult):
 
             # Max
             if result.result > spec.max_warn:
-                await ResultMutation.create(obj_in={
-                    "result_uid": result.uid,
-                    "before": result.result,
-                    "after": spec.max_report,
-                    "mutation": f"Result was greater than the maximun warning specification {spec.max_warn} and must be reported as {spec.max_report}",
-                    "date": datetime.now()
-                })
+                await ResultMutation.create(
+                    obj_in={
+                        "result_uid": result.uid,
+                        "before": result.result,
+                        "after": spec.max_report,
+                        "mutation": f"Result was greater than the maximun warning specification {spec.max_warn} and must be reported as {spec.max_report}",
+                        "date": datetime.now(),
+                    }
+                )
                 result.result = spec.max_report
 
             elif result.result > spec.max:
@@ -223,48 +227,56 @@ async def result_mutator(result: AnalysisResult):
         # Detection Limit Check
         for dlim in detection_limits:
             if result.result < dlim.lower_limit:
-                await ResultMutation.create(obj_in={
-                    "result_uid": result.uid,
-                    "before": result.result,
-                    "after": f"< {dlim.lower_limit}",
-                    "mutation": f"Result fell below the Lower Detection Limit {dlim.lower_limit} and must be reported as < {dlim.lower_limit}",
-                    "date": datetime.now()
-                })
+                await ResultMutation.create(
+                    obj_in={
+                        "result_uid": result.uid,
+                        "before": result.result,
+                        "after": f"< {dlim.lower_limit}",
+                        "mutation": f"Result fell below the Lower Detection Limit {dlim.lower_limit} and must be reported as < {dlim.lower_limit}",
+                        "date": datetime.now(),
+                    }
+                )
                 result.result = f"< {dlim.lower_limit}"
 
             if result.result > dlim.upper_limit:
-                await ResultMutation.create(obj_in={
-                    "result_uid": result.uid,
-                    "before": result.result,
-                    "after": f"> {dlim.upper_limit}",
-                    "mutation": f"Result fell Above the Upper Detection Limit {dlim.upper_limit} and must be reported as > {dlim.upper_limit}",
-                    "date": datetime.now()
-                })
+                await ResultMutation.create(
+                    obj_in={
+                        "result_uid": result.uid,
+                        "before": result.result,
+                        "after": f"> {dlim.upper_limit}",
+                        "mutation": f"Result fell Above the Upper Detection Limit {dlim.upper_limit} and must be reported as > {dlim.upper_limit}",
+                        "date": datetime.now(),
+                    }
+                )
                 result.result = f"> {dlim.upper_limit}"
 
         # uncertainty
         if isinstance(result.result, int):
             for uncert in uncertainties:
                 if uncert.min <= result.result <= uncert.max:
-                    await ResultMutation.create(obj_in={
-                        "result_uid": result.uid,
-                        "before": result.result,
-                        "after": f"{result.result} +/- {uncert.value}",
-                        "mutation": f"Result fell inside the range [{uncert.min},{uncert.max}]  with an un uncertainty of +/- {uncert.value}",
-                        "date": datetime.now()
-                    })
+                    await ResultMutation.create(
+                        obj_in={
+                            "result_uid": result.uid,
+                            "before": result.result,
+                            "after": f"{result.result} +/- {uncert.value}",
+                            "mutation": f"Result fell inside the range [{uncert.min},{uncert.max}]  with an un uncertainty of +/- {uncert.value}",
+                            "date": datetime.now(),
+                        }
+                    )
                     result.result = f"{result.result} +/- {uncert.value}"
 
     elif isinstance(result.result, str):
         for spec in specifications:
             if result.result in spec.warn_values.split(","):
-                await ResultMutation.create(obj_in={
-                    "result_uid": result.uid,
-                    "before": result.result,
-                    "after": spec.warn_report,
-                    "mutation": f"Result with specification (result ::equals:: {result.result}) must be reported as {spec.warn_report}",
-                    "date": datetime.now()
-                })
+                await ResultMutation.create(
+                    obj_in={
+                        "result_uid": result.uid,
+                        "before": result.result,
+                        "after": spec.warn_report,
+                        "mutation": f"Result with specification (result ::equals:: {result.result}) must be reported as {spec.warn_report}",
+                        "date": datetime.now(),
+                    }
+                )
                 result.result = spec.warn_report
 
     if result_in != result.result:

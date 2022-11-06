@@ -1,15 +1,12 @@
 import logging
-from typing import Dict, Optional, List
+from typing import Dict, List, Optional
 
 import strawberry  # noqa
-from felicity.apps.reflex import models, schemas
-from felicity.apps.analysis.models import analysis as analysis_models
 from felicity.api.gql import OperationError, auth_from_info, verify_user_auth
-from felicity.api.gql.reflex.types import (
-    ReflexRuleType, ReflexActionType, ReflexBrainType,
-    ReflexBrainFinalType, ReflexBrainAdditionType, ReflexBrainCriteriaType
-)
-from felicity.database.session import async_session_factory
+from felicity.api.gql.reflex.types import (ReflexActionType, ReflexBrainType,
+                                           ReflexRuleType)
+from felicity.apps.analysis.models import analysis as analysis_models
+from felicity.apps.reflex import models, schemas
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -21,10 +18,9 @@ class ReflexRuleInput:
     description: str
 
 
-ReflexRuleResponse = strawberry.union("ReflexRuleResponse",
-                                      (ReflexRuleType, OperationError),  # noqa
-                                      description=""
-                                      )
+ReflexRuleResponse = strawberry.union(
+    "ReflexRuleResponse", (ReflexRuleType, OperationError), description=""  # noqa
+)
 
 
 @strawberry.input
@@ -36,10 +32,9 @@ class ReflexActionInput:
     sample_type_uid: Optional[int] = None
 
 
-ReflexActionResponse = strawberry.union("ReflexActionResponse",
-                                        (ReflexActionType, OperationError),  # noqa
-                                        description=""
-                                        )
+ReflexActionResponse = strawberry.union(
+    "ReflexActionResponse", (ReflexActionType, OperationError), description=""  # noqa
+)
 
 
 @strawberry.input
@@ -70,34 +65,35 @@ class ReflexBrainInput:
     finalise: Optional[List[ReflexFinalInput]] = None
 
 
-ReflexBrainResponse = strawberry.union("ReflexBrainResponse",
-                                       (ReflexBrainType, OperationError),  # noqa
-                                       description=""
-                                       )
+ReflexBrainResponse = strawberry.union(
+    "ReflexBrainResponse", (ReflexBrainType, OperationError), description=""  # noqa
+)
 
 
 @strawberry.type
 class ReflexRuleMutations:
     @strawberry.mutation
-    async def create_reflex_rule(self, info, payload: ReflexRuleInput) -> ReflexRuleResponse:
+    async def create_reflex_rule(
+        self, info, payload: ReflexRuleInput
+    ) -> ReflexRuleResponse:
 
         is_authenticated, felicity_user = await auth_from_info(info)
-        verify_user_auth(is_authenticated, felicity_user, "Only Authenticated user can add reflex rules")
+        verify_user_auth(
+            is_authenticated,
+            felicity_user,
+            "Only Authenticated user can add reflex rules",
+        )
 
         if not payload.name or not payload.description:
-            return OperationError(
-                error="Name and Description are required"
-            )
+            return OperationError(error="Name and Description are required")
 
         exists = await models.ReflexRule.get(name=payload.name)
         if exists:
-            return OperationError(
-                error=f"Reflex Rule name must be unique"
-            )
+            return OperationError(error=f"Reflex Rule name must be unique")
 
         incoming: Dict = {
             "created_by_uid": felicity_user.uid,
-            "updated_by_uid": felicity_user.uid
+            "updated_by_uid": felicity_user.uid,
         }
         for k, v in payload.__dict__.items():
             incoming[k] = v
@@ -107,15 +103,19 @@ class ReflexRuleMutations:
         return ReflexRuleType(**reflex.marshal_simple())
 
     @strawberry.mutation
-    async def update_reflex_rule(self, info, uid: int, payload: ReflexRuleInput) -> ReflexRuleResponse:
+    async def update_reflex_rule(
+        self, info, uid: int, payload: ReflexRuleInput
+    ) -> ReflexRuleResponse:
 
         is_authenticated, felicity_user = await auth_from_info(info)
-        verify_user_auth(is_authenticated, felicity_user, "Only Authenticated user can update reflex rules")
+        verify_user_auth(
+            is_authenticated,
+            felicity_user,
+            "Only Authenticated user can update reflex rules",
+        )
 
         if not uid:
-            return OperationError(
-                error="No uid provided to identify update obj"
-            )
+            return OperationError(error="No uid provided to identify update obj")
 
         reflex_rule: models.ReflexRule = await models.ReflexRule.get(uid=uid)
         if not reflex_rule:
@@ -138,24 +138,32 @@ class ReflexRuleMutations:
         return ReflexRuleType(**reflex_rule.marshal_simple())
 
     @strawberry.mutation
-    async def create_reflex_action(self, info, payload: ReflexActionInput) -> ReflexActionResponse:
+    async def create_reflex_action(
+        self, info, payload: ReflexActionInput
+    ) -> ReflexActionResponse:
 
         is_authenticated, felicity_user = await auth_from_info(info)
-        verify_user_auth(is_authenticated, felicity_user, "Only Authenticated user can add reflex actions")
+        verify_user_auth(
+            is_authenticated,
+            felicity_user,
+            "Only Authenticated user can add reflex actions",
+        )
 
-        if not len(payload.analyses) > 0 or not payload.level or not payload.description:
-            return OperationError(
-                error="Anaysis, Level and description are required"
-            )
+        if (
+            not len(payload.analyses) > 0
+            or not payload.level
+            or not payload.description
+        ):
+            return OperationError(error="Anaysis, Level and description are required")
 
         incoming: Dict = {
             "created_by_uid": felicity_user.uid,
-            "updated_by_uid": felicity_user.uid
+            "updated_by_uid": felicity_user.uid,
         }
         for k, v in payload.__dict__.items():
             incoming[k] = v
 
-        del incoming['analyses']
+        del incoming["analyses"]
 
         obj_in = schemas.ReflexActionCreate(**incoming)
 
@@ -169,15 +177,19 @@ class ReflexRuleMutations:
         return ReflexActionType(**action.marshal_simple())
 
     @strawberry.mutation
-    async def update_reflex_action(self, info, uid: int, payload: ReflexActionInput) -> ReflexActionResponse:
+    async def update_reflex_action(
+        self, info, uid: int, payload: ReflexActionInput
+    ) -> ReflexActionResponse:
 
         is_authenticated, felicity_user = await auth_from_info(info)
-        verify_user_auth(is_authenticated, felicity_user, "Only Authenticated user can add reflex actions")
+        verify_user_auth(
+            is_authenticated,
+            felicity_user,
+            "Only Authenticated user can add reflex actions",
+        )
 
         if not uid:
-            return OperationError(
-                error="No uid provided to identify update obj"
-            )
+            return OperationError(error="No uid provided to identify update obj")
 
         reflex_action: models.ReflexAction = await models.ReflexAction.get(uid=uid)
         if not reflex_action:
@@ -206,21 +218,25 @@ class ReflexRuleMutations:
         return ReflexActionType(**reflex_action.marshal_simple())
 
     @strawberry.mutation
-    async def create_reflex_brain(self, info, payload: ReflexBrainInput) -> ReflexBrainResponse:
+    async def create_reflex_brain(
+        self, info, payload: ReflexBrainInput
+    ) -> ReflexBrainResponse:
 
         is_authenticated, felicity_user = await auth_from_info(info)
-        verify_user_auth(is_authenticated, felicity_user, "Only Authenticated user can add reflex brains")
+        verify_user_auth(
+            is_authenticated,
+            felicity_user,
+            "Only Authenticated user can add reflex brains",
+        )
 
         if not payload.description:
-            return OperationError(
-                error="Description are required"
-            )
+            return OperationError(error="Description are required")
 
         incoming: Dict = {
             "reflex_action_uid": payload.reflex_action_uid,
             "description": payload.description,
             "created_by_uid": felicity_user.uid,
-            "updated_by_uid": felicity_user.uid
+            "updated_by_uid": felicity_user.uid,
         }
         obj_in = schemas.ReflexBrainCreate(**incoming)
 
@@ -259,21 +275,24 @@ class ReflexRuleMutations:
 
         await brain.save()
         brain = await models.ReflexBrain.get_related(
-            related=['add_new.analysis','analyses_values.analysis'],
-            uid=brain.uid
+            related=["add_new.analysis", "analyses_values.analysis"], uid=brain.uid
         )
         return ReflexBrainType(**brain.marshal_simple())
 
     @strawberry.mutation
-    async def update_reflex_brain(self, info, uid: int, payload: ReflexBrainInput) -> ReflexBrainResponse:
+    async def update_reflex_brain(
+        self, info, uid: int, payload: ReflexBrainInput
+    ) -> ReflexBrainResponse:
 
         is_authenticated, felicity_user = await auth_from_info(info)
-        verify_user_auth(is_authenticated, felicity_user, "Only Authenticated user can add reflex brains")
+        verify_user_auth(
+            is_authenticated,
+            felicity_user,
+            "Only Authenticated user can add reflex brains",
+        )
 
         if not uid:
-            return OperationError(
-                error="No uid provided to identify update obj"
-            )
+            return OperationError(error="No uid provided to identify update obj")
 
         reflex_brain: models.ReflexBrain = await models.ReflexBrain.get(uid=uid)
         if not reflex_brain:

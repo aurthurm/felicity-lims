@@ -6,7 +6,7 @@ from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, Table
 from sqlalchemy.orm import backref, relationship
 
 from . import conf
-from .abstract import AbstractAuth, AbstractBaseUser, DBModel, BaseAuditDBModel, schemas
+from .abstract import AbstractAuth, AbstractBaseUser, DBModel, schemas
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -221,6 +221,7 @@ department_preference = Table(
 
 class UserPreference(DBModel):
     """Preferences for System Personalisation"""
+
     expanded_menu = Column(Boolean(), default=False)
     departments = relationship(
         "Department", secondary=department_preference, lazy="selectin"
@@ -228,11 +229,14 @@ class UserPreference(DBModel):
     theme = Column(String, default=conf.themes.LIGHT)  # dark, light
 
     @classmethod
-    async def create(cls, obj_in: schemas.UserPreferenceCreate) -> schemas.UserPreference:
+    async def create(
+        cls, obj_in: schemas.UserPreferenceCreate
+    ) -> schemas.UserPreference:
         data = cls._import(obj_in)
         return await super().create(**data)
 
-    async def update(self, obj_in: schemas.UserPreferenceUpdate) -> schemas.UserPreference:
+    async def update(
+        self, obj_in: schemas.UserPreferenceUpdate
+    ) -> schemas.UserPreference:
         data = self._import(obj_in)
         return await super().update(**data)
-

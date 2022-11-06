@@ -1,13 +1,13 @@
-from typing import Tuple, Type, TypeVar, Generic, List, Optional
 import logging
+from typing import Generic, List, Optional, Tuple, Type, TypeVar
+
 from dateutil import parser
 
+from felicity.database.base_class import DBModel
+from felicity.database.session import async_session_factory
 from sqlalchemy import text
 from sqlalchemy.future import select
 from sqlalchemy.sql import func
-
-from felicity.database.session import async_session_factory
-from felicity.database.base_class import DBModel
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -21,8 +21,14 @@ class SampleAnalyticsInit(Generic[ModelType]):
         self.table = model.__tablename__
         self.alias = model.__tablename__ + "_tbl"
 
-    async def get_line_listing(self, period_start: str, period_end: str, sample_states: List[str],
-                               date_column: str, analysis_uids: List[int]):
+    async def get_line_listing(
+        self,
+        period_start: str,
+        period_end: str,
+        sample_states: List[str],
+        date_column: str,
+        analysis_uids: List[int],
+    ):
         start_date = parser.parse(str(period_start))
         end_date = parser.parse(str(period_end))
 
@@ -40,9 +46,10 @@ class SampleAnalyticsInit(Generic[ModelType]):
                 statuses.append(sample_states[0])
             statuses = tuple(statuses)
         else:
-            statuses = ('', '')  # noqa
+            statuses = ("", "")  # noqa
 
-        stmt = text(f"""
+        stmt = text(
+            f"""
             select 
                 pt.patient_id as "Patient Id",
                 pt.first_name as "First Name",
@@ -82,34 +89,41 @@ class SampleAnalyticsInit(Generic[ModelType]):
                 sa.{date_column} <= :ed and 
                 an.uid in {an_uids} and
                 sa.status in {statuses}
-        """)
+        """
+        )
 
         async with async_session_factory() as session:
-            result = await session.execute(stmt, {
-                "sd": start_date,
-                "ed": end_date,
-            })
+            result = await session.execute(stmt, {"sd": start_date, "ed": end_date})
 
         # columns result.keys()/result._metadata.keys
         return result.keys(), result.all()
 
     async def get_line_listing_2(self):
-        stmt = self.model.with_joined('analysis_results', 'analyses', 'analysis_request')
+        stmt = self.model.with_joined(
+            "analysis_results", "analyses", "analysis_request"
+        )
         async with async_session_factory() as session:
-            result = await session.execute(stmt.limit(10))
+            await session.execute(stmt.limit(10))
 
         # logger.info(result)
         # logger.info(result.scalars().all())
 
         return None, None
 
-    async def get_counts_group_by(self, group_by: str, start: Optional[Tuple[str, str]], end: Optional[Tuple[str, str]]):  # noqa
+    async def get_counts_group_by(
+        self,
+        group_by: str,
+        start: Optional[Tuple[str, str]],
+        end: Optional[Tuple[str, str]],
+    ):  # noqa
         if not hasattr(self.model, group_by):
             logger.warning(f"Model has no attr {group_by}")
             raise AttributeError(f"Model has no attr {group_by}")
         group_by = getattr(self.model, group_by)
 
-        stmt = select(group_by, func.count(self.model.uid).label('total')).filter(group_by != None)  # noqa
+        stmt = select(group_by, func.count(self.model.uid).label("total")).filter(
+            group_by != None
+        )  # noqa
 
         if start[1]:
             start_column = start[0]
@@ -136,7 +150,9 @@ class SampleAnalyticsInit(Generic[ModelType]):
 
         return result.all()
 
-    async def get_sample_process_performance(self, start: Tuple[str, str], end: Tuple[str, str]):
+    async def get_sample_process_performance(
+        self, start: Tuple[str, str], end: Tuple[str, str]
+    ):
         """
         :param start: process start Tuple[str::Column, str::Date]
         :param end:  process end Tuple[str::Column, str::Date]
@@ -153,8 +169,12 @@ class SampleAnalyticsInit(Generic[ModelType]):
         end_date = parser.parse(end[1]).replace(tzinfo=None)
 
         if not all([start_column, start_date, end_column, end_date]):
-            logger.warning(f"start and end process parameters are required and must be complete tuples")
-            raise Exception(f"start and end process parameters are required and must be complete tuples")
+            logger.warning(
+                f"start and end process parameters are required and must be complete tuples"
+            )
+            raise Exception(
+                f"start and end process parameters are required and must be complete tuples"
+            )
 
         if not hasattr(self.model, start_column):
             logger.warning(f"Model has no attr {start_column}")
@@ -164,9 +184,13 @@ class SampleAnalyticsInit(Generic[ModelType]):
             logger.warning(f"Model has no attr {end_column}")
             raise AttributeError(f"Model has no attr {end_column}")
 
-        if self.table != 'sample':
-            logger.warning(f"analysis_process_performance must have sample as root table")
-            raise Exception(f"analysis_process_performance must have sample as root table")
+        if self.table != "sample":
+            logger.warning(
+                f"analysis_process_performance must have sample as root table"
+            )
+            raise Exception(
+                f"analysis_process_performance must have sample as root table"
+            )
 
         raw_sql = f"""
             select 
@@ -198,7 +222,9 @@ class SampleAnalyticsInit(Generic[ModelType]):
 
         return result.all()
 
-    async def get_analysis_process_performance(self, start: Tuple[str, str], end: Tuple[str, str]):
+    async def get_analysis_process_performance(
+        self, start: Tuple[str, str], end: Tuple[str, str]
+    ):
         """
         :param start: process start Tuple[str::Column, str::Date]
         :param end:  process end Tuple[str::Column, str::Date]
@@ -215,8 +241,12 @@ class SampleAnalyticsInit(Generic[ModelType]):
         end_date = parser.parse(end[1]).replace(tzinfo=None)
 
         if not all([start_column, start_date, end_column, end_date]):
-            logger.warning(f"start and end process parameters are required and must be complete tuples")
-            raise Exception(f"start and end process parameters are required and must be complete tuples")
+            logger.warning(
+                f"start and end process parameters are required and must be complete tuples"
+            )
+            raise Exception(
+                f"start and end process parameters are required and must be complete tuples"
+            )
 
         if not hasattr(self.model, start_column):
             logger.warning(f"Model has no attr {start_column}")
@@ -226,9 +256,13 @@ class SampleAnalyticsInit(Generic[ModelType]):
             logger.warning(f"Model has no attr {end_column}")
             raise AttributeError(f"Model has no attr {end_column}")
 
-        if self.table != 'sample':
-            logger.warning(f"analysis_process_performance must have sample as root table")
-            raise Exception(f"analysis_process_performance must have sample as root table")
+        if self.table != "sample":
+            logger.warning(
+                f"analysis_process_performance must have sample as root table"
+            )
+            raise Exception(
+                f"analysis_process_performance must have sample as root table"
+            )
 
         raw_sql = f"""
             select 

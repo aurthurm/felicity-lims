@@ -1,19 +1,18 @@
 import logging
 from base64 import b64decode, b64encode
 from typing import Any, AsyncIterator, Dict, List, Optional, TypeVar, Union
-import re
-from felicity.database.async_mixins import (
-    AllFeaturesMixin,
-    ModelNotFoundError,
-    smart_query,
-)
+
+from felicity.database.async_mixins import (AllFeaturesMixin,
+                                            ModelNotFoundError, smart_query)
 from felicity.database.paginator.cursor import EdgeNode, PageCursor, PageInfo
 from felicity.database.session import async_session_factory
 from felicity.utils import has_value_or_is_truthy
 from pydantic import BaseModel as PydanticBaseModel
-from sqlalchemy import Column, Integer, or_ as sa_or_, update
+from sqlalchemy import Column, Integer
+from sqlalchemy import or_ as sa_or_
+from sqlalchemy import update
 from sqlalchemy.future import select
-from sqlalchemy.orm import as_declarative, declared_attr, selectinload, join
+from sqlalchemy.orm import as_declarative, declared_attr, selectinload
 from sqlalchemy.sql import func
 
 InDBSchemaType = TypeVar("InDBSchemaType", bound=PydanticBaseModel)
@@ -34,27 +33,6 @@ event.listen(MyBaseMixin, 'before_update', get_updated_by_id, propagate=True)
 """
 
 
-# noinspection PyPep8Naming
-class classproperty(object):
-    """
-    @property for @classmethod
-    taken from http://stackoverflow.com/a/13624858
-    """
-
-    def __init__(self, fget):
-        self.fget = fget
-
-    def __get__(self, owner_self, owner_cls):
-        return self.fget(owner_cls)
-
-
-# return dict((key, value) for key, value in f.__dict__.items() if not callable(value) and not key.startswith('__'))
-# vars(), dir()
-# json.loads(json.dumps(self, default=lambda o: o.__dict__))
-# dict((key, getattr(x, key)) for key in dir(x) if key not in dir(x.__class__))
-# if not name.startswith('__') and not inspect.ismethod(value):
-
-
 # Enhanced Base Model Class with some django-like super powers
 @as_declarative()
 class DBModel(AllFeaturesMixin):
@@ -67,7 +45,9 @@ class DBModel(AllFeaturesMixin):
     # triggering an expired load
     __mapper_args__ = {"eager_defaults": True}
 
-    uid = Column(Integer, primary_key=True, index=True, nullable=False, autoincrement=True)
+    uid = Column(
+        Integer, primary_key=True, index=True, nullable=False, autoincrement=True
+    )
 
     # uid = Column(UUID(), default=uuid.uuid4, primary_key=True, unique=True, nullable=False)
 
@@ -76,7 +56,9 @@ class DBModel(AllFeaturesMixin):
     def __tablename__(cls) -> str:
         # from CamelCase to table camel_case
         # return '_'.join(re.sub('([A-Z][a-z]+)', r' \1', re.sub('([A-Z]+)', r' \1', cls.__name__)).split()).lower()
+
         # from CamelCase to table camelcase
+
         return cls.__name__.lower()
 
     def marshal_simple(self, exclude=None):
@@ -110,7 +92,7 @@ class DBModel(AllFeaturesMixin):
             return {
                 k: self.marshal_nested(v)
                 for k, v in obj.__dict__.items()
-                if not callable(v) and not k.startswith('_')
+                if not callable(v) and not k.startswith("_")
             }
         else:
             return obj
@@ -118,7 +100,7 @@ class DBModel(AllFeaturesMixin):
     @classmethod
     async def all_by_page(cls, page: int = 1, limit: int = 20, **kwargs) -> Dict:
         start = (page - 1) * limit
-        end = start + limit
+        start + limit
 
         stmt = cls.where(**kwargs).limit(limit).offset(start)
         async with async_session_factory() as session:
@@ -181,8 +163,9 @@ class DBModel(AllFeaturesMixin):
         if result:
             return result
         else:
-            raise ModelNotFoundError("{} with uid '{}' was not found"
-                                     .format(cls.__name__, id_))
+            raise ModelNotFoundError(
+                "{} with uid '{}' was not found".format(cls.__name__, id_)
+            )
 
     @classmethod
     async def get(cls, **kwargs):
@@ -264,11 +247,12 @@ class DBModel(AllFeaturesMixin):
         ?? there must be zero many to many relations
         """
         from sqlalchemy.sql.expression import bindparam
+
         to_update = [cls._import(data) for data in mappings]
         for item in to_update:
             item["_uid"] = item["uid"]
 
-        query = update(cls).where(cls.uid == bindparam('_uid'))
+        query = update(cls).where(cls.uid == bindparam("_uid"))
 
         binds = {}
         for key in to_update[0]:
@@ -306,9 +290,7 @@ class DBModel(AllFeaturesMixin):
         e.g {'name': 34, 'day': "fff"}
         """
         async with async_session_factory() as session:
-            stmt = (
-                table.insert()
-            )
+            stmt = table.insert()
             await session.execute(stmt, mappings)
             await session.commit()
             await session.flush()
@@ -318,7 +300,7 @@ class DBModel(AllFeaturesMixin):
         """Return the first value in database based on given args.
         """
         try:
-            del kwargs['related']
+            del kwargs["related"]
         except KeyError:
             pass
 
@@ -347,7 +329,7 @@ class DBModel(AllFeaturesMixin):
                 session.add(self)
                 await session.flush()
                 await session.commit()
-            except Exception as e:
+            except Exception:
                 await session.rollback()
                 raise
         return self
@@ -359,7 +341,7 @@ class DBModel(AllFeaturesMixin):
             try:
                 await session.flush()
                 await session.commit()
-            except Exception as e:
+            except Exception:
                 await session.rollback()
                 raise
         return self
@@ -371,7 +353,7 @@ class DBModel(AllFeaturesMixin):
                 session.add_all(items)
                 await session.flush()
                 await session.commit()
-            except Exception as e:
+            except Exception:
                 await session.rollback()
                 raise
         return items
@@ -416,7 +398,9 @@ class DBModel(AllFeaturesMixin):
     async def fulltext_search(cls, search_string, field):
         """Full-text Search with PostgreSQL"""
         stmt = select(cls).filter(
-            func.to_tsvector('english', getattr(cls, field)).match(search_string, postgresql_regconfig='english')
+            func.to_tsvector("english", getattr(cls, field)).match(
+                search_string, postgresql_regconfig="english"
+            )
         )
         async with async_session_factory() as session:
             results = await session.execute(stmt)
@@ -426,21 +410,17 @@ class DBModel(AllFeaturesMixin):
     @classmethod
     async def get_by_uids(cls, uids: List[Any]):
 
-        stmt = (
-            select(cls).where(cls.uid.in_(uids))  # type: ignore
-        )
+        stmt = select(cls).where(cls.uid.in_(uids))  # type: ignore
 
         async with async_session_factory() as session:
             results = await session.execute(stmt.order_by(cls.uid))
-            
+
         return results.scalars().all()
 
     @classmethod
     async def stream_by_uids(cls, uids: List[Any]) -> AsyncIterator[Any]:
 
-        stmt = (
-            select(cls).where(cls.uid.in_(uids))  # type: ignore
-        )
+        stmt = select(cls).where(cls.uid.in_(uids))  # type: ignore
 
         async with async_session_factory() as session:
             stream = await session.stream(stmt.order_by(cls.uid))
@@ -463,9 +443,15 @@ class DBModel(AllFeaturesMixin):
         return [dict(record) for record in records]
 
     @classmethod
-    async def paginate_with_cursors(cls, page_size: int = None, after_cursor: Any = None, before_cursor: Any = None,
-                                    filters: Any = None, sort_by: List[str] = None,
-                                    get_related: str = None) -> PageCursor:
+    async def paginate_with_cursors(
+        cls,
+        page_size: int = None,
+        after_cursor: Any = None,
+        before_cursor: Any = None,
+        filters: Any = None,
+        sort_by: List[str] = None,
+        get_related: str = None,
+    ) -> PageCursor:
         if not filters:
             filters = {}
 
@@ -475,18 +461,15 @@ class DBModel(AllFeaturesMixin):
 
         cursor_limit = {}
         if has_value_or_is_truthy(after_cursor):
-            cursor_limit = {'uid__gt': cls.decode_cursor(after_cursor)}
+            cursor_limit = {"uid__gt": cls.decode_cursor(after_cursor)}
 
         if has_value_or_is_truthy(before_cursor):
-            cursor_limit = {'uid__lt': cls.decode_cursor(before_cursor)}
+            cursor_limit = {"uid__lt": cls.decode_cursor(before_cursor)}
 
         # add paging filters
         _filters = None
         if isinstance(filters, dict):
-            _filters = [
-                {sa_or_: cursor_limit},
-                filters
-            ] if cursor_limit else filters
+            _filters = [{sa_or_: cursor_limit}, filters] if cursor_limit else filters
         elif isinstance(filters, list):
             _filters = filters
             if cursor_limit:
@@ -512,21 +495,25 @@ class DBModel(AllFeaturesMixin):
             qs = []
             items = []
 
-        has_additional = len(items) == page_size if page_size else True  # len(qs) > len(items)s
+        has_additional = (
+            len(items) == page_size if page_size else True
+        )  # len(qs) > len(items)s
         page_info = {
-            'start_cursor': cls.encode_cursor(items[0].uid) if items else None,
-            'end_cursor': cls.encode_cursor(items[-1].uid) if items else None,
+            "start_cursor": cls.encode_cursor(items[0].uid) if items else None,
+            "end_cursor": cls.encode_cursor(items[-1].uid) if items else None,
         }
         if page_size is not None:
-            page_info['has_next_page'] = has_additional
-            page_info['has_previous_page'] = bool(after_cursor)
+            page_info["has_next_page"] = has_additional
+            page_info["has_previous_page"] = bool(after_cursor)
 
-        return PageCursor(**{
-            'total_count': total_count,
-            'edges': cls.build_edges(items=items),
-            'items': items,
-            'page_info': cls.build_page_info(**page_info)
-        })
+        return PageCursor(
+            **{
+                "total_count": total_count,
+                "edges": cls.build_edges(items=items),
+                "items": items,
+                "page_info": cls.build_page_info(**page_info),
+            }
+        )
 
     @classmethod
     def build_edges(cls, items: List[Any]) -> List[EdgeNode]:
@@ -536,29 +523,33 @@ class DBModel(AllFeaturesMixin):
 
     @classmethod
     def build_node(cls, item: Any) -> EdgeNode:
-        return EdgeNode(**{
-            'cursor': cls.encode_cursor(item.uid),
-            'node': item
-        })
+        return EdgeNode(**{"cursor": cls.encode_cursor(item.uid), "node": item})
 
     @classmethod
-    def build_page_info(cls, start_cursor: str = None, end_cursor: str = None,
-                        has_next_page: bool = False, has_previous_page: bool = False) -> PageInfo:
-        return PageInfo(**{
-            'start_cursor': start_cursor,
-            'end_cursor': end_cursor,
-            'has_next_page': has_next_page,
-            'has_previous_page': has_previous_page
-        })
+    def build_page_info(
+        cls,
+        start_cursor: str = None,
+        end_cursor: str = None,
+        has_next_page: bool = False,
+        has_previous_page: bool = False,
+    ) -> PageInfo:
+        return PageInfo(
+            **{
+                "start_cursor": start_cursor,
+                "end_cursor": end_cursor,
+                "has_next_page": has_next_page,
+                "has_previous_page": has_previous_page,
+            }
+        )
 
     @classmethod
     def decode_cursor(cls, cursor):
-        decoded = b64decode(cursor.encode('ascii')).decode('utf8')
+        decoded = b64decode(cursor.encode("ascii")).decode("utf8")
         try:
             return int(decoded)
-        except Exception as e:
+        except Exception:
             return decoded
 
     @classmethod
     def encode_cursor(cls, identifier: Any):
-        return b64encode(str(identifier).encode('utf8')).decode('ascii')
+        return b64encode(str(identifier).encode("utf8")).decode("ascii")

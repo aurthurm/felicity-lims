@@ -7,16 +7,12 @@ class States:
     class Sample:
         SCHEDULED = "scheduled"  # scheduled for collection
         EXPECTED = "expected"  # not yet received in the laboratory
-        RECEIVED = (
-            "received"
-        )  # received in the laboratory and ready for processing
+        RECEIVED = "received"  # received in the laboratory and ready for processing
         AWAITING = "awaiting"  # pending approval
         APPROVED = "approved"  # authorised for release
         PUBLISHED = "published"  # printed samples, ready for dispatch
         INVALIDATED = "invalidated"  # approval condemnation
-        CANCELLED = (
-            "cancelled"
-        )  # no longer required <in other words deleted>
+        CANCELLED = "cancelled"  # no longer required <in other words deleted>
         REJECTED = "rejected"  # declined for non conformance reasons
 
     class Result:

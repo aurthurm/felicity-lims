@@ -1,5 +1,5 @@
 import logging
-from typing import Optional, List
+from typing import List, Optional
 
 from felicity.apps import BaseAuditDBModel, DBModel
 from felicity.apps.setup.models import Department
@@ -49,10 +49,14 @@ class Notice(BaseAuditDBModel):
     departments: Optional[List[Department]] = relationship(
         "Department", secondary=department_notice, lazy="selectin"
     )
-    groups: Optional[List[Group]] = relationship("Group", secondary=group_notice, lazy="selectin")
+    groups: Optional[List[Group]] = relationship(
+        "Group", secondary=group_notice, lazy="selectin"
+    )
     title: str = Column(String, nullable=False)
     body: str = Column(String, nullable=False)
-    viewers: Optional[List[User]] = relationship("User", secondary=notice_view, lazy="selectin")
+    viewers: Optional[List[User]] = relationship(
+        "User", secondary=notice_view, lazy="selectin"
+    )
     expiry: bool = Column(DateTime, nullable=False)
 
     @classmethod

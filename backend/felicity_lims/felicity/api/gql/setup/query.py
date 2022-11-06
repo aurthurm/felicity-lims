@@ -2,32 +2,21 @@ from typing import List, Optional
 
 import sqlalchemy as sa
 import strawberry  # noqa
-from felicity.apps.setup import models
 from felicity.api.gql import PageInfo
-from felicity.api.gql.setup.types import (
-    ManufacturerType,
-    CountryType,
-    DepartmentType,
-    DistrictCursorPage,
-    DistrictEdge,
-    DistrictType,
-    InstrumentCursorPage,
-    InstrumentEdge,
-    InstrumentType,
-    LaboratoryType,
-    MethodCursorPage,
-    MethodEdge,
-    MethodType,
-    ProvinceCursorPage,
-    ProvinceEdge,
-    ProvinceType,
-    SupplierType,
-    InstrumentTypeType,
-    InstrumentTypeEdge,
-    InstrumentTypeCursorPage,
-    LaboratorySettingType,
-    UnitType
-)
+from felicity.api.gql.setup.types import (CountryType, DepartmentType,
+                                          DistrictCursorPage, DistrictEdge,
+                                          DistrictType, InstrumentCursorPage,
+                                          InstrumentEdge, InstrumentType,
+                                          InstrumentTypeCursorPage,
+                                          InstrumentTypeEdge,
+                                          InstrumentTypeType,
+                                          LaboratorySettingType,
+                                          LaboratoryType, ManufacturerType,
+                                          MethodCursorPage, MethodEdge,
+                                          MethodType, ProvinceCursorPage,
+                                          ProvinceEdge, ProvinceType,
+                                          SupplierType, UnitType)
+from felicity.apps.setup import models
 from felicity.utils import has_value_or_is_truthy
 
 
@@ -69,10 +58,7 @@ async def get_all_instrument_types(
 
     _or_ = dict()
     if has_value_or_is_truthy(text):
-        arg_list = [
-            "name__ilike",
-            "description__ilike",
-        ]
+        arg_list = ["name__ilike", "description__ilike"]
         for _arg in arg_list:
             _or_[_arg] = f"%{text}%"
 
@@ -130,7 +116,7 @@ async def get_all_instruments(
         before_cursor=before_cursor,
         filters=filters,
         sort_by=sort_by,
-        get_related="methods"
+        get_related="methods",
     )
 
     total_count: int = page.total_count
@@ -168,7 +154,7 @@ async def get_all_methods(
         before_cursor=before_cursor,
         filters=filters,
         sort_by=sort_by,
-        get_related="instruments"
+        get_related="instruments",
     )
 
     total_count: int = page.total_count
@@ -277,15 +263,15 @@ async def get_all_countries() -> List[CountryType]:
 
 @strawberry.type
 class SetupQuery:
-    laboratory: LaboratoryType = strawberry.field(
-        resolver=get_laboratory
-    )
+    laboratory: LaboratoryType = strawberry.field(resolver=get_laboratory)
 
     laboratory_setting: LaboratorySettingType = strawberry.field(
         resolver=get_laboratory_setting
     )
 
-    manufacturer_all: List[ManufacturerType] = strawberry.field(resolver=get_all_manufacturers)
+    manufacturer_all: List[ManufacturerType] = strawberry.field(
+        resolver=get_all_manufacturers
+    )
 
     @strawberry.field
     async def manufacturer_by_uid(self, info, uid: int) -> ManufacturerType:

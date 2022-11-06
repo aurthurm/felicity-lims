@@ -1,10 +1,8 @@
 from typing import List, Optional
-from datetime import datetime
 
-from felicity.apps.common.schemas import BaseModel, BaseAuditModel
-from pydantic import EmailStr
+from felicity.apps.common.schemas import BaseAuditModel, BaseModel
 from felicity.apps.user.conf import themes
-
+from pydantic import EmailStr
 
 #
 #  Permission Schema
@@ -88,7 +86,7 @@ class GroupInDB(GroupInDBBase):
 #
 class UserPreferenceBase(BaseAuditModel):
     expanded_menu: Optional[bool] = False
-    departments: Optional[List['Department']]
+    departments: Optional[List["Department"]]
     theme: Optional[str] = themes.LIGHT
 
 

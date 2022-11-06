@@ -1,8 +1,7 @@
 from typing import Optional
 
-from pydantic import BaseModel
 from felicity.apps.analysis import schemas as s_schemas
-
+from pydantic import BaseModel
 
 #
 # StoreRoom Schemas

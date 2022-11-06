@@ -3,14 +3,11 @@ from datetime import datetime
 from typing import Any, List, NewType, Optional
 
 import strawberry  # noqa
-
 from felicity.api.gql import PageInfo
-from felicity.api.gql.analysis.types.analysis import (
-    AnalysisType,
-    QCLevelType,
-    QCTemplateType,
-    SampleTypeTyp,
-)
+from felicity.api.gql.analysis.types.analysis import (AnalysisType,
+                                                      QCLevelType,
+                                                      QCTemplateType,
+                                                      SampleTypeTyp)
 from felicity.api.gql.analysis.types.results import AnalysisResultType
 from felicity.api.gql.setup.types import InstrumentType
 from felicity.api.gql.user.types import UserType

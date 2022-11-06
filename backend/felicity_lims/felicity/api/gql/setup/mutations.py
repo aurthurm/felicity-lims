@@ -1,22 +1,21 @@
 import logging
 from dataclasses import field
-from typing import Dict, Optional, List
 from datetime import datetime
+from typing import Dict, List, Optional
+
 import strawberry  # noqa
+from felicity.api.gql import OperationError
+from felicity.api.gql.setup.types import (CalibrationCertificateType,
+                                          CountryType, DepartmentType,
+                                          DistrictType,
+                                          InstrumentCalibrationType,
+                                          InstrumentType, InstrumentTypeType,
+                                          LaboratorySettingType,
+                                          LaboratoryType, ManufacturerType,
+                                          MethodType, ProvinceType,
+                                          SupplierType, UnitType)
 from felicity.apps.analysis.models import analysis as analysis_models
 from felicity.apps.setup import models, schemas
-from felicity.api.gql import OperationError
-from felicity.api.gql.setup.types import (
-    CountryType,
-    DepartmentType,
-    DistrictType,
-    InstrumentType,
-    LaboratoryType,
-    MethodType,
-    ProvinceType,
-    SupplierType, ManufacturerType, InstrumentTypeType, UnitType, InstrumentCalibrationType, CalibrationCertificateType,
-    LaboratorySettingType,
-)
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -25,10 +24,14 @@ LaboratoryResponse = strawberry.union(
     "LaboratoryResponse", (LaboratoryType, OperationError), description=""  # noqa
 )
 LaboratorySettingResponse = strawberry.union(
-    "LaboratorySettingResponse", (LaboratorySettingType, OperationError), description=""  # noqa
+    "LaboratorySettingResponse",
+    (LaboratorySettingType, OperationError),
+    description="",  # noqa
 )
 InstrumentTypeResponse = strawberry.union(
-    "InstrumentTypeResponse", (InstrumentTypeType, OperationError), description="" # noqa
+    "InstrumentTypeResponse",
+    (InstrumentTypeType, OperationError),
+    description="",  # noqa
 )
 InstrumentResponse = strawberry.union(
     "InstrumentResponse", (InstrumentType, OperationError), description=""  # noqa
@@ -55,13 +58,17 @@ DepartmentResponse = strawberry.union(
     "DepartmentResponse", (DepartmentType, OperationError), description=""  # noqa
 )
 UnitResponse = strawberry.union(
-    "UnitResponse", (UnitType, OperationError), description="" # noqa
+    "UnitResponse", (UnitType, OperationError), description=""  # noqa
 )
 InstrumentCalibrationResponse = strawberry.union(
-    "InstrumentCalibrationResponse", (InstrumentCalibrationType, OperationError), description="" # noqa
+    "InstrumentCalibrationResponse",
+    (InstrumentCalibrationType, OperationError),
+    description="",  # noqa
 )
 CalibrationCertificateResponse = strawberry.union(
-    "CalibrationCertificateResponse", (CalibrationCertificateType, OperationError), description="" # noqa
+    "CalibrationCertificateResponse",
+    (CalibrationCertificateType, OperationError),
+    description="",  # noqa
 )
 
 
@@ -522,7 +529,9 @@ class SetupMutations:
             incoming[k] = v
 
         obj_in = schemas.InstrumentCalibrationCreate(**incoming)
-        calib: models.InstrumentCalibration = await models.InstrumentCalibration.create(obj_in)
+        calib: models.InstrumentCalibration = await models.InstrumentCalibration.create(
+            obj_in
+        )
         return InstrumentCalibrationType(**calib.marshal_simple())
 
     @strawberry.mutation
@@ -561,7 +570,9 @@ class SetupMutations:
             incoming[k] = v
 
         obj_in = schemas.CalibrationCertificateCreate(**incoming)
-        certificate: models.CalibrationCertificate = await models.CalibrationCertificate.create(obj_in)
+        certificate: models.CalibrationCertificate = await models.CalibrationCertificate.create(
+            obj_in
+        )
         return CalibrationCertificateType(**certificate.marshal_simple())
 
     @strawberry.mutation
@@ -611,7 +622,7 @@ class SetupMutations:
 
         incoming = {}
         for k, v in payload.__dict__.items():
-            if k not in ['instruments', 'analyses']:
+            if k not in ["instruments", "analyses"]:
                 incoming[k] = v
 
         obj_in = schemas.MethodCreate(**incoming)
@@ -624,7 +635,10 @@ class SetupMutations:
                 _instruments.add(instrument)
                 await models.Method.table_insert(
                     table=models.method_instrument,
-                    mappings={"method_uid": method.uid, "instrument_uid": instrument.uid}
+                    mappings={
+                        "method_uid": method.uid,
+                        "instrument_uid": instrument.uid,
+                    },
                 )
 
         for a_uid in payload.analyses:
@@ -633,7 +647,7 @@ class SetupMutations:
             if method.uid not in meth_uids:
                 await analysis_models.Analysis.table_insert(
                     table=analysis_models.analysis_method,
-                    mappings={"method_uid": method.uid, "analysis_uid": analysis.uid}
+                    mappings={"method_uid": method.uid, "analysis_uid": analysis.uid},
                 )
 
             for inst in method.instruments:
@@ -642,10 +656,13 @@ class SetupMutations:
                     analysis.instruments.append(inst)
                     await analysis_models.Analysis.table_insert(
                         table=analysis_models.analysis_instrument,
-                        mappings={"instrument_uid": inst.uid, "analysis_uid": analysis.uid}
+                        mappings={
+                            "instrument_uid": inst.uid,
+                            "analysis_uid": analysis.uid,
+                        },
                     )
 
-        return MethodType(**method.marshal_simple(exclude=['instruments', 'analyses']))
+        return MethodType(**method.marshal_simple(exclude=["instruments", "analyses"]))
 
     @strawberry.mutation
     async def update_method(
@@ -715,7 +732,7 @@ class SetupMutations:
                 analysis = await analysis_models.Analysis.get(uid=_anal)
                 await analysis_models.Analysis.table_insert(
                     table=analysis_models.analysis_method,
-                    mappings={"method_uid": method.uid, "analysis_uid": analysis.uid}
+                    mappings={"method_uid": method.uid, "analysis_uid": analysis.uid},
                 )
 
         return MethodType(**method.marshal_simple())
@@ -863,18 +880,14 @@ class SetupMutations:
         return DistrictType(**district.marshal_simple())
 
     @strawberry.mutation
-    async def create_unit(
-        self, info, payload: UnitInputType
-    ) -> UnitResponse:  # noqa
+    async def create_unit(self, info, payload: UnitInputType) -> UnitResponse:  # noqa
 
         if not payload.name:
             return OperationError(error="Unit name is required")
 
         exists = await models.Unit.get(name=payload.name)
         if exists:
-            return OperationError(
-                error=f"A Unit named {payload.name} already exists"
-            )
+            return OperationError(error=f"A Unit named {payload.name} already exists")
 
         incoming: Dict = dict()
         for k, v in payload.__dict__.items():

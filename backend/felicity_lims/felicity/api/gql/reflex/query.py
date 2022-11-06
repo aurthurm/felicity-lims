@@ -2,9 +2,10 @@ from typing import List, Optional
 
 import sqlalchemy as sa
 import strawberry  # noqa
-from felicity.apps.reflex import models
 from felicity.api.gql import PageInfo
-from felicity.api.gql.reflex.types import ReflexRuleCursorPage, ReflexRuleEdge, ReflexRuleType
+from felicity.api.gql.reflex.types import (ReflexRuleCursorPage,
+                                           ReflexRuleEdge, ReflexRuleType)
+from felicity.apps.reflex import models
 from felicity.utils import has_value_or_is_truthy
 
 
@@ -24,10 +25,7 @@ class ReflexRuleQuery:
 
         _or_ = dict()
         if has_value_or_is_truthy(text):
-            arg_list = [
-                "name__ilike",
-                "description__ilike",
-            ]
+            arg_list = ["name__ilike", "description__ilike"]
             for _arg in arg_list:
                 _or_[_arg] = f"%{text}%"
 

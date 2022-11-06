@@ -1,6 +1,7 @@
-from typing import List, Optional
-from datetime import datetime
 from dataclasses import field
+from datetime import datetime
+from typing import List, Optional
+
 import strawberry  # noqa
 from felicity.api.gql import PageInfo
 from felicity.api.gql.user.types import UserType
@@ -12,7 +13,7 @@ class LaboratoryType:
     setup_name: str
     lab_name: str
     lab_manager_uid: Optional[str]
-    lab_manager: Optional['UserType']
+    lab_manager: Optional["UserType"]
     email: Optional[str]
     email_cc: Optional[str]
     mobile_phone: Optional[str]
@@ -21,20 +22,20 @@ class LaboratoryType:
     logo: Optional[str]
     #
     created_by_uid: Optional[int]
-    created_by: Optional['UserType']
+    created_by: Optional["UserType"]
     created_at: Optional[datetime]
     updated_by_uid: Optional[int]
-    updated_by: Optional['UserType']
+    updated_by: Optional["UserType"]
     updated_at: Optional[datetime]
 
 
 @strawberry.type
 class LaboratorySettingType:
     created_by_uid: Optional[int]
-    created_by: Optional['UserType']
+    created_by: Optional["UserType"]
     created_at: Optional[datetime]
     updated_by_uid: Optional[int]
-    updated_by: Optional['UserType']
+    updated_by: Optional["UserType"]
     updated_at: Optional[datetime]
     uid: int
     laboratory_uid: int
@@ -59,10 +60,10 @@ class SupplierType:
     description: Optional[str]
     #
     created_by_uid: Optional[int]
-    created_by: Optional['UserType']
+    created_by: Optional["UserType"]
     created_at: Optional[datetime]
     updated_by_uid: Optional[int]
-    updated_by: Optional['UserType']
+    updated_by: Optional["UserType"]
     updated_at: Optional[datetime]
 
 
@@ -73,10 +74,10 @@ class ManufacturerType:
     description: Optional[str]
     #
     created_by_uid: Optional[int]
-    created_by: Optional['UserType']
+    created_by: Optional["UserType"]
     created_at: Optional[datetime]
     updated_by_uid: Optional[int]
-    updated_by: Optional['UserType']
+    updated_by: Optional["UserType"]
     updated_at: Optional[datetime]
 
 
@@ -87,10 +88,10 @@ class InstrumentTypeType:
     description: Optional[str]
     #
     created_by_uid: Optional[int]
-    created_by: Optional['UserType']
+    created_by: Optional["UserType"]
     created_at: Optional[datetime]
     updated_by_uid: Optional[int]
-    updated_by: Optional['UserType']
+    updated_by: Optional["UserType"]
     updated_at: Optional[datetime]
 
 
@@ -116,10 +117,10 @@ class UnitType:
     is_si_unit: bool
     #
     created_by_uid: Optional[int]
-    created_by: Optional['UserType']
+    created_by: Optional["UserType"]
     created_at: Optional[datetime]
     updated_by_uid: Optional[int]
-    updated_by: Optional['UserType']
+    updated_by: Optional["UserType"]
     updated_at: Optional[datetime]
 
 
@@ -137,10 +138,10 @@ class InstrumentType:
     instrument_type: Optional[InstrumentTypeType]
     #
     created_by_uid: Optional[int]
-    created_by: Optional['UserType']
+    created_by: Optional["UserType"]
     created_at: Optional[datetime]
     updated_by_uid: Optional[int]
-    updated_by: Optional['UserType']
+    updated_by: Optional["UserType"]
     updated_at: Optional[datetime]
     methods: Optional[List["MethodType"]] = field(default_factory=list)
 
@@ -200,10 +201,10 @@ class DepartmentType:
     code: Optional[str]
     #
     created_by_uid: Optional[int]
-    created_by: Optional['UserType']
+    created_by: Optional["UserType"]
     created_at: Optional[datetime]
     updated_by_uid: Optional[int]
-    updated_by: Optional['UserType']
+    updated_by: Optional["UserType"]
     updated_at: Optional[datetime]
 
 
@@ -215,10 +216,10 @@ class MethodType:
     keyword: Optional[str]
     #
     created_by_uid: Optional[int]
-    created_by: Optional['UserType']
+    created_by: Optional["UserType"]
     created_at: Optional[datetime]
     updated_by_uid: Optional[int]
-    updated_by: Optional['UserType']
+    updated_by: Optional["UserType"]
     updated_at: Optional[datetime]
     instruments: Optional[List["InstrumentType"]] = field(default_factory=list)
 
@@ -246,10 +247,10 @@ class CountryType:
     active: Optional[str]
     #
     created_by_uid: Optional[int]
-    created_by: Optional['UserType']
+    created_by: Optional["UserType"]
     created_at: Optional[datetime]
     updated_by_uid: Optional[int]
-    updated_by: Optional['UserType']
+    updated_by: Optional["UserType"]
     updated_at: Optional[datetime]
 
 
@@ -267,10 +268,10 @@ class ProvinceType:
     country: Optional[CountryType]
     #
     created_by_uid: Optional[int]
-    created_by: Optional['UserType']
+    created_by: Optional["UserType"]
     created_at: Optional[datetime]
     updated_by_uid: Optional[int]
-    updated_by: Optional['UserType']
+    updated_by: Optional["UserType"]
     updated_at: Optional[datetime]
 
 
@@ -303,10 +304,10 @@ class DistrictType:
     province: Optional[ProvinceType]
     #
     created_by_uid: Optional[int]
-    created_by: Optional['UserType']
+    created_by: Optional["UserType"]
     created_at: Optional[datetime]
     updated_by_uid: Optional[int]
-    updated_by: Optional['UserType']
+    updated_by: Optional["UserType"]
     updated_at: Optional[datetime]
 
 

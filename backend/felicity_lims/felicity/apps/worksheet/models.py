@@ -3,17 +3,16 @@ from typing import List
 
 from felicity.apps import Auditable, BaseAuditDBModel, DBModel
 from felicity.apps.analysis import conf as analysis_conf
-from felicity.apps.analysis.models import (
-    analysis as analysis_models,
-    qc as qc_models,
-    results as result_models,
-)
+from felicity.apps.analysis.models import analysis as analysis_models
+from felicity.apps.analysis.models import qc as qc_models
+from felicity.apps.analysis.models import results as result_models
 from felicity.apps.common.models import IdSequence
-from felicity.apps.setup.models.setup import Instrument
 from felicity.apps.notification.utils import FelicityStreamer
+from felicity.apps.setup.models.setup import Instrument
 from felicity.apps.user.models import User
 from felicity.apps.worksheet import conf, schemas
-from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, String, Table
+from sqlalchemy import (Boolean, Column, DateTime, ForeignKey, Integer, String,
+                        Table)
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import relationship
 

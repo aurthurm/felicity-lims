@@ -5,7 +5,8 @@ import strawberry  # noqa
 from felicity.api.gql import PageInfo
 from felicity.api.gql.client.types import ClientType
 from felicity.api.gql.patient.types import PatientType
-from felicity.api.gql.setup.types import DepartmentType, UnitType, MethodType, InstrumentType
+from felicity.api.gql.setup.types import (DepartmentType, InstrumentType,
+                                          MethodType, UnitType)
 from felicity.api.gql.user.types import UserType
 
 
@@ -131,12 +132,12 @@ class AnalysisType:
     sample_types: Optional[List[SampleTypeTyp]]
     category_uid: Optional[int]
     category: Optional[AnalysisCategoryType]
-    interims: Optional[List['AnalysisInterimType']]
+    interims: Optional[List["AnalysisInterimType"]]
     sample_types: Optional[List[SampleTypeTyp]]
-    correction_factors: Optional[List['AnalysisCorrectionFactorType']]
-    specifications: Optional[List['AnalysisSpecificationType']]
-    detection_limits: Optional[List['AnalysisDetectionLimitType']]
-    uncertainties: Optional[List['AnalysisUncertaintyType']]
+    correction_factors: Optional[List["AnalysisCorrectionFactorType"]]
+    specifications: Optional[List["AnalysisSpecificationType"]]
+    detection_limits: Optional[List["AnalysisDetectionLimitType"]]
+    uncertainties: Optional[List["AnalysisUncertaintyType"]]
     result_options: Optional[List[ResultOptionType]]
     instruments: Optional[List[InstrumentType]]
     methods: Optional[List[MethodType]]

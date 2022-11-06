@@ -2,11 +2,8 @@ from asyncio import current_task
 from typing import AsyncGenerator
 
 from felicity.core.config import settings
-from sqlalchemy.ext.asyncio import (
-    AsyncSession,
-    async_scoped_session,
-    create_async_engine,
-)
+from sqlalchemy.ext.asyncio import (AsyncSession, async_scoped_session,
+                                    create_async_engine)
 from sqlalchemy.orm import sessionmaker
 
 async_engine = create_async_engine(

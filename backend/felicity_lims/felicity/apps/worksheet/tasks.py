@@ -1,4 +1,3 @@
-import json
 import logging
 import time
 from typing import List
@@ -7,11 +6,8 @@ from felicity.apps.analysis import conf as analysis_conf
 from felicity.apps.analysis.models.analysis import Sample
 from felicity.apps.analysis.models.qc import QCSet, QCTemplate
 from felicity.apps.analysis.models.results import AnalysisResult
-from felicity.apps.analysis.schemas import (
-    AnalysisResultCreate,
-    QCSetCreate,
-    SampleCreate,
-)
+from felicity.apps.analysis.schemas import (AnalysisResultCreate, QCSetCreate,
+                                            SampleCreate)
 from felicity.apps.analysis.utils import get_qc_sample_type
 from felicity.apps.job import models as job_models
 from felicity.apps.job.conf import states as job_states
@@ -45,10 +41,7 @@ async def populate_worksheet_plate(job_uid: int):
     await ws.reset_assigned_count()
 
     # Don't handle processed worksheets
-    if ws.state in [
-        conf.worksheet_states.AWAITING,
-        conf.worksheet_states.APPROVED,
-    ]:
+    if ws.state in [conf.worksheet_states.AWAITING, conf.worksheet_states.APPROVED]:
         await job.change_status(
             new_status=job_states.FAILED,
             change_reason=f"WorkSheet {ws_uid} - is already processed",
@@ -145,7 +138,7 @@ async def populate_worksheet_plate(job_uid: int):
         logger.info(f"empty_positions: {empty_positions}")
 
         # balance sample count to avoid a key error
-        samples = samples[:len(empty_positions)]
+        samples = samples[: len(empty_positions)]
 
         for key in list(range(len(samples))):
             await samples[key].assign(ws.uid, empty_positions[key], ws.instrument_uid)
@@ -335,10 +328,7 @@ async def populate_worksheet_plate_manually(job_uid: int):
     await ws.reset_assigned_count()
 
     # Don't handle processed worksheets
-    if ws.state in [
-        conf.worksheet_states.AWAITING,
-        conf.worksheet_states.APPROVED,
-    ]:
+    if ws.state in [conf.worksheet_states.AWAITING, conf.worksheet_states.APPROVED]:
         await job.change_status(
             new_status=job_states.FAILED,
             change_reason=f"WorkSheet {ws_uid} - is already processed",
@@ -361,15 +351,17 @@ async def populate_worksheet_plate_manually(job_uid: int):
 
     logger.info(f"Fetching samples with uids ... {data['analyses_uids']}")
     # get sample, filtered by analysis_service and Sample Type
-    samples: List[AnalysisResult] = await AnalysisResult.get_by_uids(uids=data['analyses_uids'])
+    samples: List[AnalysisResult] = await AnalysisResult.get_by_uids(
+        uids=data["analyses_uids"]
+    )
 
     obtained_count = len(samples)
     logger.info(f"Acquired {obtained_count} samples for assignment ...")
 
     reserved = [int(r) for r in list(ws.reserved.keys())]
     if not reserved:
-        if data['qc_template_uid']:
-            qc_template = await QCTemplate.get(uid=data['qc_template_uid'])
+        if data["qc_template_uid"]:
+            qc_template = await QCTemplate.get(uid=data["qc_template_uid"])
             reserved = list(range(1, len(qc_template.qc_levels) + 1))
 
     if ws.assigned_count == 0:
@@ -407,16 +399,14 @@ async def populate_worksheet_plate_manually(job_uid: int):
 
         # fill in empty positions
         empty_positions = sorted(empty_positions)
-        samples = sorted(
-            samples, key=lambda s: s.uid, reverse=True
-        )
+        samples = sorted(samples, key=lambda s: s.uid, reverse=True)
 
         logger.info(f"samples: {samples}")
         logger.info(f"assigned_positions: {assigned_positions}")
         logger.info(f"empty_positions: {empty_positions}")
 
         # balance sample count to avoid a key error
-        samples = samples[:len(empty_positions)]
+        samples = samples[: len(empty_positions)]
 
         for key in list(range(len(samples))):
             await samples[key].assign(ws.uid, empty_positions[key], ws.instrument_uid)
@@ -432,7 +422,7 @@ async def populate_worksheet_plate_manually(job_uid: int):
 
     if True:  # ?? maybe allow user to choose whether to add qc samples or not
 
-        await setup_ws_quality_control_manually(ws, data['qc_template_uid'])
+        await setup_ws_quality_control_manually(ws, data["qc_template_uid"])
 
     await job.change_status(new_status=job_states.FINISHED)
     logger.info(f"Done !! Job {job_uid} was executed successfully :)")

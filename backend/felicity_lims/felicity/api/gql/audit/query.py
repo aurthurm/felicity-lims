@@ -1,8 +1,8 @@
 from typing import List
 
 import strawberry  # noqa
-from felicity.apps.audit.models import AuditLog
 from felicity.api.gql.audit.types import AuditLogType
+from felicity.apps.audit.models import AuditLog
 
 
 @strawberry.type

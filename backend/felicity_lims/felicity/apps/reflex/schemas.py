@@ -1,8 +1,7 @@
-from typing import Optional, List
+from typing import List, Optional
 
+from felicity.apps.analysis.schemas import Analysis, SampleType
 from felicity.apps.common.schemas import BaseAuditModel
-from felicity.apps.analysis.schemas import SampleType, Analysis
-
 
 #
 #  ReflexRule Schema

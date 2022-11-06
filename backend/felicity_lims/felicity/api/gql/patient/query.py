@@ -2,9 +2,10 @@ from typing import List, Optional
 
 import sqlalchemy as sa
 import strawberry  # noqa
-from felicity.apps.patient import models
 from felicity.api.gql import PageInfo
-from felicity.api.gql.patient.types import PatientCursorPage, PatientEdge, PatientType
+from felicity.api.gql.patient.types import (PatientCursorPage, PatientEdge,
+                                            PatientType)
+from felicity.apps.patient import models
 from felicity.utils import has_value_or_is_truthy
 
 

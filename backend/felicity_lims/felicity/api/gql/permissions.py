@@ -2,11 +2,9 @@ import logging
 
 from strawberry.permission import BasePermission
 
-from ...apps.analysis.models import analysis as analysis_models
-from ...apps.analysis.models import results as result_models
-from ...apps.analysis.permissions import check_result_verification
-from ...apps.analysis.permissions import check_sample_verification
 from . import auth_from_info
+from ...apps.analysis.permissions import (check_result_verification,
+                                          check_sample_verification)
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -58,18 +56,20 @@ class CanVerifySample(BasePermission):
 
         if not user.is_active:
             return False
-        
+
         try:
-            samples = kwargs.get('samples', [])
+            samples = kwargs.get("samples", [])
         except KeyError:
             samples = []
 
-        _, restricted, message, suggestion = await check_sample_verification(samples, user)
-        
+        _, restricted, message, suggestion = await check_sample_verification(
+            samples, user
+        )
+
         if restricted:
-            self.message = message + ' ' + suggestion
-            return False  
-        
+            self.message = message + " " + suggestion
+            return False
+
         return True
 
 
@@ -84,16 +84,18 @@ class CanVerifyAnalysisResult(BasePermission):
 
         if not user.is_active:
             return False
-        
+
         try:
-            analyses = kwargs.get('analyses', [])
+            analyses = kwargs.get("analyses", [])
         except KeyError:
             analyses = []
 
-        _, restricted, message, suggestion = await check_result_verification(analyses, user)
-        
+        _, restricted, message, suggestion = await check_result_verification(
+            analyses, user
+        )
+
         if restricted:
-            self.message = message + ' ' + suggestion
-            return False       
-        
+            self.message = message + " " + suggestion
+            return False
+
         return True

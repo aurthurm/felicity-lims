@@ -1,11 +1,15 @@
 import multiprocessing
 import os
+
 from dotenv import load_dotenv
+
 load_dotenv()
 
 name = "gunicorn config for Felicity LiMS systemd daemon"
 accesslog = "/home/aurthur/Development/Python/felicity/felicity_lims/backend/gunicorn-access.log"
-errorlog = "/home/aurthur/Development/Python/felicity/felicity_lims/backend/gunicorn-error.log"
+errorlog = (
+    "/home/aurthur/Development/Python/felicity/felicity_lims/backend/gunicorn-error.log"
+)
 
 bind = "0.0.0.0:8000"
 

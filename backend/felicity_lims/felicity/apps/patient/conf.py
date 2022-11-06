@@ -6,6 +6,7 @@ This file is part of Felicity LIMS Software
 class Genders(object):
     """Gender
     """
+
     MALE = "Male"
     FEMALE = "Female"
     MISSING = "Missing"
@@ -13,4 +14,3 @@ class Genders(object):
 
 
 genders = Genders()
-

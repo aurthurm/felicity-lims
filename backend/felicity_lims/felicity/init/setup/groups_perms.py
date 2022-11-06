@@ -114,9 +114,7 @@ permissions = {
         fo.RESULT: [fg.SCIENTIST, fg.TECHNOLOGIST],
         fo.WORKSHEET: [fg.SCIENTIST, fg.TECHNOLOGIST],
     },
-    fa.INVALIDATE: {
-        fo.SAMPLE: [fg.SCIENTIST, fg.TECHNOLOGIST],
-    },
+    fa.INVALIDATE: {fo.SAMPLE: [fg.SCIENTIST, fg.TECHNOLOGIST]},
     fa.DELETE: {
         fo.BOARD: [
             fg.ADMINISTRATOR,

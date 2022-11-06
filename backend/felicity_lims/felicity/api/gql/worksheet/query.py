@@ -3,14 +3,12 @@ from typing import List, Optional
 
 import sqlalchemy as sa
 import strawberry  # noqa
-from felicity.apps.worksheet import models as ws_models
 from felicity.api.gql import PageInfo
-from felicity.api.gql.worksheet.types import (
-    WorkSheetCursorPage,
-    WorkSheetEdge,
-    WorkSheetTemplateType,
-    WorkSheetType,
-)
+from felicity.api.gql.worksheet.types import (WorkSheetCursorPage,
+                                              WorkSheetEdge,
+                                              WorkSheetTemplateType,
+                                              WorkSheetType)
+from felicity.apps.worksheet import models as ws_models
 from felicity.utils import has_value_or_is_truthy
 
 logging.basicConfig(level=logging.INFO)

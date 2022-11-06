@@ -4,17 +4,16 @@ from datetime import timedelta
 from typing import Optional
 
 import strawberry  # noqa
-from felicity.apps.user import models as user_models, schemas as user_schemas
+from felicity.api.gql import (MessageResponse, MessageType, OperationError,
+                              auth_from_info, verify_user_auth)
+from felicity.api.gql.user.types import (AuthenticatedData, GroupType,
+                                         UpdatedGroupPerms, UserAuthType,
+                                         UserType)
+from felicity.apps.user import models as user_models
+from felicity.apps.user import schemas as user_schemas
 from felicity.core import security
 from felicity.core.config import settings
 from felicity.core.security import generate_password_reset_token
-from felicity.api.gql import MessageResponse, MessageType, OperationError, auth_from_info, verify_user_auth
-from felicity.api.gql.user.types import (
-    AuthenticatedData,
-    UpdatedGroupPerms,
-    UserAuthType,
-    UserType, GroupType,
-)
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -39,9 +38,7 @@ UpdatedGroupPermsResponse = strawberry.union(
 )
 
 GroupResponse = strawberry.union(
-    "GroupResponse",
-    (GroupType, OperationError),  # noqa
-    description="",
+    "GroupResponse", (GroupType, OperationError), description=""  # noqa
 )
 
 
@@ -96,10 +93,7 @@ class UserMutations:
             user = await user.save()
 
         # initial user-preferences
-        pref_in = user_schemas.UserPreferenceCreate(
-            expanded_menu=False,
-            theme="LIGHT"
-        )
+        pref_in = user_schemas.UserPreferenceCreate(expanded_menu=False, theme="LIGHT")
         preference = await user_models.UserPreference.create(obj_in=pref_in)
         user = await user.link_preference(preference_uid=preference.uid)
 
@@ -190,7 +184,9 @@ class UserMutations:
                 "is_blocked": False,
             }
             auth_schema = user_schemas.AuthCreate(**auth_in)
-            auth: user_models.UserAuth = await user_models.UserAuth.create(auth_schema)  # noqa
+            auth: user_models.UserAuth = await user_models.UserAuth.create(
+                auth_schema
+            )  # noqa
             await user.link_auth(auth_uid=auth.uid)
             time.sleep(1)
             await user.propagate_user_type()
@@ -229,7 +225,9 @@ class UserMutations:
                     username=user_name
                 )
                 if username_taken:
-                    return OperationError(error=f"The username {user_name} is already taken")
+                    return OperationError(
+                        error=f"The username {user_name} is already taken"
+                    )
 
                 auth_in.user_name = user_name
 

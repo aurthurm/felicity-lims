@@ -1,8 +1,9 @@
-from typing import List
 import logging
 from datetime import datetime
+from typing import List
+
+from felicity.apps.analysis.models.analysis import Analysis, Sample
 from felicity.apps.analysis.models.results import AnalysisResult, conf, schemas
-from felicity.apps.analysis.models.analysis import Sample, Analysis
 from felicity.apps.reflex import models as reflex_models
 
 logging.basicConfig(level=logging.INFO)
@@ -28,19 +29,28 @@ class ReflexUtil:
         for result in analysis_results:
             logger.info(f"set_reflex_actions for : {result}")
             filters = {"analyses___uid": result.analysis_uid, "level": 1}
-            action: reflex_models.ReflexAction = await reflex_models.ReflexAction.get(**filters)
+            action: reflex_models.ReflexAction = await reflex_models.ReflexAction.get(
+                **filters
+            )
             if action:
                 result.reflex_level = 1
                 await result.save()
                 logger.info(f"set_reflex_actions done")
 
     async def do_reflex(self):
-        logger.info(f"do_reflex level: {self.analysis_result.reflex_level} <> SampleId {self.sample.sample_id}")
+        logger.info(
+            f"do_reflex level: {self.analysis_result.reflex_level} <> SampleId {self.sample.sample_id}"
+        )
         if not self.analysis_result.reflex_level:
             return
 
-        filters = {"analyses___uid": self.analysis.uid, "level": self.analysis_result.reflex_level}
-        action: reflex_models.ReflexAction = await reflex_models.ReflexAction.get(**filters)
+        filters = {
+            "analyses___uid": self.analysis.uid,
+            "level": self.analysis_result.reflex_level,
+        }
+        action: reflex_models.ReflexAction = await reflex_models.ReflexAction.get(
+            **filters
+        )
         if not action:
             logger.info(f"No reflex action found for analysis: {self.analysis.name}")
             return
@@ -78,23 +88,26 @@ class ReflexUtil:
         matches = []
 
         # 1. the current result must one of the analysis values
-        criteria_values = [(criteria.analysis_uid, criteria.value) for criteria in analyses_values]
+        criteria_values = [
+            (criteria.analysis_uid, criteria.value) for criteria in analyses_values
+        ]
         _criteria_values = criteria_values
         logger.info(f"Reflex criteria_values: {criteria_values}")
         if (current_result.analysis_uid, current_result.result) not in criteria_values:
-            logger.info(f"{(current_result.analysis_uid, current_result.result)} not in criteria_values")
+            logger.info(
+                f"{(current_result.analysis_uid, current_result.result)} not in criteria_values"
+            )
             return
         else:
-            logger.info(f"{(current_result.analysis_uid, current_result.result)} in avs")
+            logger.info(
+                f"{(current_result.analysis_uid, current_result.result)} in avs"
+            )
             matches.append(True)
             criteria_values.remove((current_result.analysis_uid, current_result.result))
 
         # 2. check for more result matched between the analysis values and results pool
         for _cv in _criteria_values:
-            _anal = list(filter(
-                lambda res: res.analysis_uid == _cv[0],
-                results_pool
-            ))
+            _anal = list(filter(lambda res: res.analysis_uid == _cv[0], results_pool))
             # get latest
             _anal = sorted(_anal, key=lambda x: x.created_at)
             logger.info(f"_anal: {_anal}")
@@ -131,11 +144,13 @@ class ReflexUtil:
             analysis_uid = self.analysis.uid
             results: List[AnalysisResult] = await self.sample.get_analysis_results()
             # get siblings and exclude current analysis
-            self._siblings = list(filter(
-                lambda result:
-                result.analysis_uid == analysis_uid and result.uid != self.analysis_result.uid,
-                results
-            ))
+            self._siblings = list(
+                filter(
+                    lambda result: result.analysis_uid == analysis_uid
+                    and result.uid != self.analysis_result.uid,
+                    results,
+                )
+            )
         return self._siblings
 
     async def cousins(self):
@@ -146,7 +161,9 @@ class ReflexUtil:
         if self._cousins is None:
             analysis_uid = self.analysis.uid
             results: List[AnalysisResult] = await self.sample.get_analysis_results()
-            self._cousins = list(filter(lambda result: result.analysis_uid != analysis_uid, results))
+            self._cousins = list(
+                filter(lambda result: result.analysis_uid != analysis_uid, results)
+            )
         return self._cousins
 
     async def create_analyte_for(self, analysis_uid) -> AnalysisResult:
@@ -161,7 +178,7 @@ class ReflexUtil:
             "method_uid": self.analysis_result.method_uid,
             "parent_id": self.analysis_result.uid,
             "retest": True,
-            "reflex_level": self.analysis_result.reflex_level + 1
+            "reflex_level": self.analysis_result.reflex_level + 1,
         }
         a_result_schema = schemas.AnalysisResultCreate(**a_result_in)
         retest = await AnalysisResult.create(a_result_schema)
@@ -180,7 +197,7 @@ class ReflexUtil:
             status=conf.states.result.APPROVED,
             retest=False,
             reportable=True,
-            reflex_level=None
+            reflex_level=None,
         )
         final = await retest.update(res_in)
         return final
