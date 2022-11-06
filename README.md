@@ -22,8 +22,6 @@ Felicity is the quality of being good, pleasant, or desirable.
  - Quality Control - LJ Charts etc
  - Reporting
  - Highly customizable and extensible
- - Micro kanban Project management
- - Experimental Document authoring using CKEditor 5 for Lab QMS
  - Customizable Role based permissions
 
 ## Installation
