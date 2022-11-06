@@ -43,7 +43,7 @@ export const useDashBoardStore = defineStore('dashboard', () => {
 
     const dashboard = ref({
         currentTab: 'overview',
-        tabs: ['overview', 'resource', 'laggard', 'peformance', 'tat', 'notices', 'line-listing'],
+        tabs: ['overview', 'resource', 'laggard', 'peformance', 'notices', 'line-listing'], // 'tat'
         showFilters: false,
         filterRange: { from: "", to: "" },
         currentFilter: "T",

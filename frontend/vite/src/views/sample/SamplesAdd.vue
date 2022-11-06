@@ -10,6 +10,7 @@
   import { object, string, array, number } from 'yup';
   import { IClient } from '../../models/client';
   import { useApiUtil, useNotifyToast } from '../../composables'
+import LoadingMessage from '../../components/Spinners/LoadingMessage.vue';
 
   const sampleStore = useSampleStore();
   const patientStore = usePatientStore();
@@ -74,6 +75,7 @@
   const analysesProfiles = computed(() => analysisStore.getAnalysesProfiles);
 
   // Analysis Request Form
+  const arSaving = ref(false);
   const arSchema = object({
     clientRequestId: string().required("Client Request ID is Required"),
     clinicalData: string().nullable(),
@@ -99,6 +101,7 @@
   const { value: samples } = useField<ISample[]>('samples');
 
   const submitARForm = handleSubmit((values) => {
+    arSaving.value = true;
 
     for(let sample of values.samples || []) {
       if(typeof sample?.sampleType !== 'number') {
@@ -126,8 +129,10 @@
     }
     withClientMutation(ADD_ANALYSIS_REQUEST, {payload}, "createAnalysisRequest")
     .then((result) => {
-      sampleStore.addAnalysisRequest(result)
+      sampleStore.addAnalysisRequest(result);
       router.push({ name: "patient-detail", params: { patientUid: patient.value?.uid }});
+    }).finally(() => {
+      arSaving.value = false;
     });
     
   }
@@ -304,11 +309,15 @@
         </section>
         <hr />
         <button
+          v-if="!arSaving"
           type="submit"
           class="-mb-4 w-full border border-sky-800 bg-sky-800 text-white rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-sky-800 focus:outline-none focus:shadow-outline"
         >
-          Save Form
+          Add Sample(s)
         </button>
+        <div v-else class="py-4 text-center">
+          <LoadingMessage message="Adding Samples ..." />
+        </div>
       </form>
   </div>
 </template>
