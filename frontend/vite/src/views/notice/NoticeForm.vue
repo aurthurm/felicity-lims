@@ -21,7 +21,6 @@ const noticeStore = useNoticeStore();
 // Notice
 const { notice } = toRefs(props);
 
-console.log(notice);
 
 const noticeSchema = object({
   uid: number(),

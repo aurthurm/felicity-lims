@@ -88,7 +88,6 @@ const filterAnalysis = () => {
 
 const assignToWorkSheet = () => {
   const selected = getResultsUids();
-  console.log(qcTemplateUid.value, selected);
 
   try {
     Swal.fire({
@@ -111,7 +110,6 @@ const assignToWorkSheet = () => {
           },
           "updateWorksheetApplyTemplate"
         ).then((result) => {
-          console.log(result);
         });
       }
     });

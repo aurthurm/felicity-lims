@@ -131,8 +131,6 @@ class SampleAnalyticsInit(Generic[ModelType]):
 
         stmt = stmt.group_by(group_by)
 
-        print(stmt)
-
         async with async_session_factory() as session:
             result = await session.execute(stmt)
 

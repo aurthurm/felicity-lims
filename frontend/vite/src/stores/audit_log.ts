@@ -33,7 +33,6 @@ export const useAuditLogStore = defineStore('auditlog', {
     },
     async restLogs(){
       this.auditLogs = [];
-      console.log("done resseting")
     },
   }
 })

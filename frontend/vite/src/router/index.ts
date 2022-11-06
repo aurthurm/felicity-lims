@@ -229,7 +229,6 @@ router.beforeEach(async (to, from, next) => {
 
     if(to.path === '/auth') {
       const isValid = isTokenValid(authStore.auth.token!)
-      console.log(isValid)
       if (isValid) {
         next({ name: guards.pages.DASHBOARD })
       };

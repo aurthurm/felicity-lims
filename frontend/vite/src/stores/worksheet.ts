@@ -122,7 +122,6 @@ export const useWorksheetStore = defineStore('worksheet', {
   async updateWorksheet(payload){
     await withClientMutation(WORKSHEET_UPDATE, payload, "updateWorksheet")
           .then(payload => {
-            console.log(payload)
           });
   },
   updateWorksheetResultsStatus(payload){
