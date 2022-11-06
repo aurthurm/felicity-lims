@@ -1,5 +1,4 @@
-import base64
-import binascii
+
 import json
 import logging
 from typing import List
@@ -8,12 +7,6 @@ from typing import List
 from starlette.concurrency import run_until_first_complete
 from starlette.middleware.authentication import AuthenticationMiddleware
 from starlette.middleware.cors import CORSMiddleware
-from starlette.authentication import AuthCredentials  # UnauthenticatedUser,
-from starlette.authentication import (
-    AuthenticationBackend,
-    AuthenticationError,
-    SimpleUser,
-)
 
 from fastapi import FastAPI, WebSocket, Request
 from fastapi.staticfiles import StaticFiles
@@ -27,42 +20,19 @@ from felicity.apps.job.sched import felicity_halt_workforce, felicity_workforce_
 from felicity.apps.notification.utils import FelicityStreamer, FelicityNotifier
 from felicity.core.config import settings  # noqa
 from felicity.core.repeater import repeat_every
-from felicity.api.gql.deps import get_current_active_user
 from felicity.api.gql.schema import gql_schema  # noqa
 from felicity.utils.dirs import resolve_root_dirs
 from felicity.views import default_home_page
 from felicity.init import initialize_felicity  # noqa
 from felicity.core.config import settings
+from felicity.middlewares.auth_backend import FelicityAuthBackend
+
+
+uvicorn_error = logging.getLogger("uvicorn.error")
+uvicorn_error.propagate = False
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
-
-
-class FelicityAuthBackend(AuthenticationBackend):
-    async def authenticate(self, request):
-        if "Authorization" not in request.headers:
-            return
-
-        auth = request.headers["Authorization"]
-        try:
-            scheme, credentials = auth.split()
-            if scheme.lower() == "basic":
-                decoded = base64.b64decode(credentials).decode("ascii")
-                username, _, password = decoded.partition(":")
-                # TODO: You'd want to verify the username and password here if needed
-            elif scheme.lower() == "bearer":
-                """"get is active user from token"""
-                user = await get_current_active_user(credentials)
-                username, _, password = user.auth.user_name, None, None
-            else:
-                raise AuthenticationError(
-                    f"UnKnown Authentication Backend: {scheme.lower()}"
-                )
-
-            return AuthCredentials(["authenticated"]), SimpleUser(username)
-
-        except (ValueError, UnicodeDecodeError, binascii.Error) as exc:
-            raise AuthenticationError(f"Invalid auth credentials: {exc}")
 
 
 flims = FastAPI(
