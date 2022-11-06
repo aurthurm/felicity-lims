@@ -5,8 +5,6 @@ const objects = {
   SAMPLE: "SAMPLE",
   RESULT: "RESULT",
   WORKSHEET: "WORKSHEET",
-  BOARD: "BOARD",
-  DOCUMENT: "DOCUMENT",
 }
 
 // Actions that can be effected on objects

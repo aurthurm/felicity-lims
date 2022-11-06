@@ -89,26 +89,6 @@
           <span v-else class="tooltip">QControl</span>
         </router-link>
         <router-link
-          v-show="guards.canAccessPage(guards.pages.KANBAN_BOARD)"
-          to="/kanban-boards"
-          id="kanban-link"
-          class="flex items-center has-tooltip mt-1 py-2 px-6 text-gray-100 hover:bg-gray-800 hover:bg-opacity-25 hover:text-white border-l-4 border-gray-800"
-        >
-          <span class="mr-4"><font-awesome-icon icon="tasks" /></span>
-          <span v-if="viewNavText">Boards</span>
-          <span v-else class="tooltip">Boards</span>
-        </router-link>
-        <router-link
-          v-show="guards.canAccessPage(guards.pages.MARKDOWN_DOCUMENTS)"
-          to="/documents"
-          id="markdown-link"
-          class="flex items-center has-tooltip mt-1 py-2 px-6 text-gray-100 hover:bg-gray-800 hover:bg-opacity-25 hover:text-white border-l-4 border-gray-800"
-        >
-          <span class="mr-4"><font-awesome-icon icon="book" /></span>
-          <span v-if="viewNavText">Documents</span>
-          <span v-else class="tooltip">Documents</span>
-        </router-link>
-        <router-link
           v-show="guards.canAccessPage(guards.pages.NOTICE_MANAGER)"
           to="/notice-manager"
           id="markdown-link"

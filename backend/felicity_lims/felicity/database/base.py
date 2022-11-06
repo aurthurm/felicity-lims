@@ -26,15 +26,6 @@ from felicity.apps.client.models import Client  # noqa
 from felicity.apps.client.models import ClientContact  # noqa
 from felicity.apps.common.models import IdSequence  # noqa
 from felicity.apps.job.models import Job  # noqa
-from felicity.apps.kanban.models import Board  # noqa
-from felicity.apps.kanban.models import BoardListing  # noqa
-from felicity.apps.kanban.models import ListingTask  # noqa
-from felicity.apps.kanban.models import TaskComment  # noqa
-from felicity.apps.kanban.models import TaskMilestone  # noqa
-from felicity.apps.kanban.models import TaskTag  # noqa
-from felicity.apps.markdown.models import Document  # noqa
-from felicity.apps.markdown.models import DocumentCategory  # noqa
-from felicity.apps.markdown.models import DocumentTag  # noqa
 from felicity.apps.messaging.models import Message  # noqa
 from felicity.apps.noticeboard.models import Notice  # noqa
 from felicity.apps.notification.models import Notification  # noqa

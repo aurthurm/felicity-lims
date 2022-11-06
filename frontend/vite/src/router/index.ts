@@ -148,107 +148,9 @@ const routes: RouteRecordRaw[] = [
     },
   },
   {
-    path: '/kanban-boards',
-    name: guards.pages.KANBAN_BOARD,
-    component: () => import('../views/kanban/index.vue'),
-    children: [
-      {
-        path: '',
-        name: 'kanban-boards',
-        component: () => import('../views/kanban/Boards.vue'),
-        meta: {
-          requiresAuth: true,
-        },
-      },
-      {
-        path: ':boardUid',
-        name: 'board-single',
-        component: () => import('../views/kanban/_id/index.vue'),
-        children: [
-          {
-            path: '',
-            name: 'board-detail',
-            component: () => import('../views/kanban/_id/Listings.vue'),
-            meta: {
-              requiresAuth: true,
-            },
-          },
-          {
-            path: 'task',
-            name: 'board-task',
-            component: () => import('../views/kanban/_id/task/index.vue'),
-            meta: {
-              requiresAuth: true,
-            },
-            children: [
-              {
-                path: ':taskUid',
-                name: 'task-detail',
-                component: () => import('../views/kanban/_id/task/Task.vue'),
-                meta: {
-                  requiresAuth: true,
-                },
-              },
-            ],
-          },
-        ],
-        meta: {
-          requiresAuth: true,
-        },
-      }
-    ],
-    meta: {
-      requiresAuth: true,
-    },
-  },
-  {
     name: guards.pages.NOTICE_MANAGER,
     path: '/notice-manager',
     component: () => import('../views/notice/index.vue'),
-    meta: {
-      requiresAuth: true,
-    },
-  },
-  {
-    path: '/documents',
-    name: guards.pages.MARKDOWN_DOCUMENTS,
-    component: () => import('../views/document/index.vue'),
-    children: [
-      {
-        path: '',
-        name: 'document-listing',
-        component: () => import('../views/document/DocumentListing.vue'),
-        meta: {
-          requiresAuth: true,
-        },
-      },
-      {
-        path: ':documentUid',
-        name: 'document-single-view',
-        component: () => import('../views/document/_id/index.vue'),
-        children: [
-          {
-            path: '',
-            name: 'document-detail',
-            component: () => import('../views/document/DocumentListing.vue'),
-            meta: {
-              requiresAuth: true,
-            },
-          },
-          {
-            path: 'view',
-            name: 'document-viewer',
-            component: () => import('../views/document/_id/Document.vue'),
-            meta: {
-              requiresAuth: true,
-            },
-          }
-        ],
-        meta: {
-          requiresAuth: true,
-        },
-      }
-    ],
     meta: {
       requiresAuth: true,
     },
@@ -362,12 +264,6 @@ function hasAccess(page: any) {
       
     case guards.pages.WORKSHEETS:
       return guards.canAccessPage(guards.pages.WORKSHEETS)
-    
-    case guards.pages.MARKDOWN_DOCUMENTS:
-      return guards.canAccessPage(guards.pages.MARKDOWN_DOCUMENTS)
-    
-    case guards.pages.KANBAN_BOARD:
-      return guards.canAccessPage(guards.pages.KANBAN_BOARD)
     
     case guards.pages.ADMINISTRATION:
       return guards.canAccessPage(guards.pages.ADMINISTRATION)

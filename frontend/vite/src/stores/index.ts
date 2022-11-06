@@ -3,8 +3,6 @@ import { useAuditLogStore } from "./audit_log"
 import { useAuthStore } from "./auth"
 import { useClientStore } from "./client"
 import { useDashBoardStore } from "./dashboard"
-import { useDocumentStore } from "./document"
-import { useKanbanStore } from "./kanban"
 import { useLocationStore } from "./location"
 import { useNoticeStore } from "./notice"
 import { useNotificationStore } from "./notification"
@@ -23,8 +21,6 @@ export {
     useAuthStore,
     useClientStore,
     useDashBoardStore,
-    useDocumentStore,
-    useKanbanStore,
     useLocationStore,
     useNoticeStore,
     useNotificationStore,
