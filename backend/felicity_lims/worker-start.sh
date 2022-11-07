@@ -1,6 +1,5 @@
 #! /usr/bin/env bash
 set -e
 
-python /felicity_lims/felicity/celeryworker_pre_start.py
-
-celery worker -A app.worker -l info -Q main-queue -c 1
+# celery worker -A felicity.worker -l info -Q main-queue -c 1
+celery -A felicity.worker worker -l info -Q main-queue -c 1

@@ -23,6 +23,8 @@ apscheduler = "^3.7.0"
 pytest = "^5.4.1"
 asyncpg = "^0.24.0"
 sqlmodel = "^0.0.4"
+jinja2 = "^3.2.1"
+celery = "^5.2.7"
 
 [tool.poetry.dev-dependencies]
 mypy = "^0.770"

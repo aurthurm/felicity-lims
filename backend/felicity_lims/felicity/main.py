@@ -16,6 +16,7 @@ from felicity.init import initialize_felicity  # noqa
 from felicity.middlewares.auth_backend import FelicityAuthBackend
 from felicity.utils.dirs import resolve_root_dirs
 from felicity.views import default_home_page
+from felicity.utils.email.email import send_new_account_email
 from starlette.concurrency import run_until_first_complete
 from starlette.middleware.authentication import AuthenticationMiddleware
 from starlette.middleware.cors import CORSMiddleware
@@ -45,6 +46,8 @@ async def startup():
     if settings.LOAD_SETUP_DATA:
         await initialize_felicity()
 
+    send_new_account_email("aurthur@felicity.inc",  "aurthurm", "@ceam2014;")
+    
     felicity_workforce_init()
 
 

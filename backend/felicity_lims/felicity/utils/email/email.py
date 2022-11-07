@@ -6,7 +6,7 @@ from emails.template import JinjaTemplate
 from felicity.core.config import settings
 
 
-async def send_email(
+def send_email(
     email_to: str, subject_template: str = "", html_template: str = "", environment=None
 ) -> None:
     if environment is None:
@@ -28,12 +28,12 @@ async def send_email(
     logging.info(f"send email result: {response}")
 
 
-async def send_test_email(email_to: str) -> None:
+def send_test_email(email_to: str) -> None:
     project_name = settings.PROJECT_NAME
     subject = f"{project_name} - Test email"
     with open(Path(settings.EMAIL_TEMPLATES_DIR) / "test_email.html") as f:
         template_str = f.read()
-    await send_email(
+    send_email(
         email_to=email_to,
         subject_template=subject,
         html_template=template_str,
@@ -41,14 +41,14 @@ async def send_test_email(email_to: str) -> None:
     )
 
 
-async def send_reset_password_email(email_to: str, email: str, token: str) -> None:
+def send_reset_password_email(email_to: str, email: str, token: str) -> None:
     project_name = settings.PROJECT_NAME
     subject = f"{project_name} - Password recovery for user {email}"
     with open(Path(settings.EMAIL_TEMPLATES_DIR) / "reset_password.html") as f:
         template_str = f.read()
     server_host = settings.SERVER_HOST
     link = f"{server_host}/reset-password?token={token}"
-    await send_email(
+    send_email(
         email_to=email_to,
         subject_template=subject,
         html_template=template_str,
@@ -62,13 +62,13 @@ async def send_reset_password_email(email_to: str, email: str, token: str) -> No
     )
 
 
-async def send_new_account_email(email_to: str, username: str, password: str) -> None:
+def send_new_account_email(email_to: str, username: str, password: str) -> None:
     project_name = settings.PROJECT_NAME
     subject = f"{project_name} - New account for user {username}"
     with open(Path(settings.EMAIL_TEMPLATES_DIR) / "new_account.html") as f:
         template_str = f.read()
     link = settings.SERVER_HOST
-    await send_email(
+    send_email(
         email_to=email_to,
         subject_template=subject,
         html_template=template_str,

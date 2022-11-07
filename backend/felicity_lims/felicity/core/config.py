@@ -92,13 +92,13 @@ class Settings(BaseSettings):
             path=f"/{values.get('POSTGRES_DB') or ''}",
         )
 
-    SMTP_TLS: bool = getenv_boolean("SMTP_TLS", True)
-    SMTP_PORT: Optional[int] = None
-    SMTP_HOST: Optional[str] = None
-    SMTP_USER: Optional[str] = None
-    SMTP_PASSWORD: Optional[str] = None
-    EMAILS_FROM_EMAIL: Optional[EmailStr] = None
-    EMAILS_FROM_NAME: Optional[str] = None
+    SMTP_TLS: bool = getenv_boolean("SMTP_TLS", False)
+    SMTP_PORT: Optional[int] = getenv_value("SMTP_PORT", 1025)
+    SMTP_HOST: Optional[str] = getenv_value("SMTP_HOST", "localhost")
+    SMTP_USER: Optional[str] = getenv_value("SMTP_USER", "")
+    SMTP_PASSWORD: Optional[str] = getenv_value("SMTP_PASSWORD", "")
+    EMAILS_FROM_EMAIL: Optional[EmailStr] = getenv_value("EMAILS_FROM_EMAIL", "felicity@felicity.labs")
+    EMAILS_FROM_NAME: Optional[str] = getenv_value("EMAILS_FROM_NAME", "felicity")
 
     @validator("EMAILS_FROM_NAME")
     def get_project_name(cls, v: Optional[str], values: Dict[str, Any]) -> str:

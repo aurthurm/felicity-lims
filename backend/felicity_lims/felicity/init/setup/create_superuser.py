@@ -4,6 +4,7 @@ from typing import Optional
 from felicity.apps.user import models, schemas
 from felicity.core.config import settings
 from felicity.init.setup.groups_perms import FGroup
+from felicity.utils.email.email import send_new_account_email
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -55,3 +56,5 @@ async def create_super_user() -> None:
             f"linking super user {superuser.uid} to preference {preference.uid}"
         )
         await superuser.link_preference(preference_uid=preference.uid)
+        
+        send_new_account_email(settings.FIRST_SUPERUSER_EMAIL,  settings.FIRST_SEPERUSER_USERNAME, settings.FIRST_SUPERUSER_PASSWORD)
