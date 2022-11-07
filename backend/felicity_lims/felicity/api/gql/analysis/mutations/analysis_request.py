@@ -259,7 +259,7 @@ async def cancel_samples(info, samples: List[int]) -> ResultedSampleActionRespon
         if sample:
             return_samples.append(sample)
 
-    return ResultedSampleListingType(return_samples)
+    return ResultedSampleListingType(samples=return_samples)
 
 
 @strawberry.mutation
@@ -285,7 +285,7 @@ async def re_instate_samples(info, samples: List[int]) -> ResultedSampleActionRe
         if sample:
             return_samples.append(sample)
 
-    return ResultedSampleListingType(return_samples)
+    return ResultedSampleListingType(samples=return_samples)
 
 
 @strawberry.mutation
@@ -311,7 +311,7 @@ async def receive_samples(info, samples: List[int]) -> ResultedSampleActionRespo
         if sample:
             return_samples.append(sample)
 
-    return ResultedSampleListingType(return_samples)
+    return ResultedSampleListingType(samples=return_samples)
 
 
 @strawberry.mutation(permission_classes=[CanVerifySample])
@@ -335,7 +335,7 @@ async def verify_samples(info, samples: List[int]) -> SampleActionResponse:
         if sample:
             return_samples.append(sample)
 
-    return SampleListingType(return_samples)
+    return SampleListingType(samples=return_samples)
 
 
 @strawberry.mutation
@@ -378,7 +378,7 @@ async def reject_samples(
                     for analyte in sample.analysis_results:
                         await analyte.cancel(cancelled_by=felicity_user)
 
-    return SampleListingType(return_samples)
+    return SampleListingType(samples=return_samples)
 
 
 @strawberry.mutation
@@ -404,7 +404,7 @@ async def publish_samples(info, samples: List[int]) -> SampleActionResponse:
         if sample:
             return_samples.append(sample)
 
-    return SampleListingType(return_samples)
+    return SampleListingType(samples=return_samples)
 
 
 @strawberry.mutation
@@ -457,4 +457,4 @@ async def invalidate_samples(info, samples: List[int]) -> SampleActionResponse:
                 a_result_schema = schemas.AnalysisResultCreate(**a_result_in)
                 await result_models.AnalysisResult.create(a_result_schema)
 
-    return SampleListingType(return_samples)
+    return SampleListingType(samples=return_samples)

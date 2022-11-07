@@ -6,12 +6,14 @@ from felicity.api.gql import (OperationError, OperationSuccess, auth_from_info,
                               verify_user_auth)
 from felicity.api.gql.analysis.types import results as r_types
 from felicity.api.gql.permissions import CanVerifyAnalysisResult
-from felicity.apps.analysis.conf import states
+from felicity.apps.analysis.conf import states as analysis_states
 from felicity.apps.analysis.models import results as result_models
 from felicity.apps.analysis.utils import retest_from_result_uids
 from felicity.apps.job import models as job_models
 from felicity.apps.job import schemas as job_schemas
-from felicity.apps.job.conf import actions, categories, priorities, states
+from felicity.apps.job.conf import (
+    actions, categories, priorities, states as job_states
+)
 from felicity.apps.job.sched import felicity_resume_workforce
 from felicity.apps.worksheet import conf as ws_conf
 from felicity.apps.worksheet import models as ws_models
@@ -47,10 +49,10 @@ AnalysisResultOperationResponse = strawberry.union(
 
 @strawberry.mutation
 async def submit_analysis_results(
-    info,
-    analysis_results: List[ARResultInputType],
-    source_object: str,
-    source_object_uid: int,
+        info,
+        analysis_results: List[ARResultInputType],
+        source_object: str,
+        source_object_uid: int,
 ) -> AnalysisResultOperationResponse:
     is_authenticated, felicity_user = await auth_from_info(info)
     verify_user_auth(
@@ -64,13 +66,18 @@ async def submit_analysis_results(
 
     an_results = [result.__dict__ for result in analysis_results]
 
+    # set status of these analysis_results to SUBMITTING
+    await result_models.AnalysisResult.bulk_update_with_mappings([
+        {'uid': _ar["uid"], "status": analysis_states.result.SUBMITTING} for _ar in an_results
+    ])
+
     # submit an results as jobs
     job_schema = job_schemas.JobCreate(
         action=actions.RESULT_SUBMIT,
         category=categories.RESULT,
         priority=priorities.MEDIUM,
         job_id=0,
-        status=states.PENDING,
+        status=job_states.PENDING,
         creator_uid=felicity_user.uid,
         data=an_results,
     )
@@ -93,7 +100,7 @@ async def submit_analysis_results(
 
 @strawberry.mutation(permission_classes=[CanVerifyAnalysisResult])
 async def verify_analysis_results(
-    info, analyses: List[int], source_object: str, source_object_uid: int
+        info, analyses: List[int], source_object: str, source_object_uid: int
 ) -> AnalysisResultOperationResponse:
     is_authenticated, felicity_user = await auth_from_info(info)
     verify_user_auth(
@@ -105,12 +112,17 @@ async def verify_analysis_results(
     if len(analyses) == 0:
         return OperationError(error=f"No analyses to verify are provided!")
 
+    # set status of these analysis_results to PROCESSING
+    await result_models.AnalysisResult.bulk_update_with_mappings([
+        {'uid': uid, "status": analysis_states.result.APPROVING} for uid in analyses
+    ])
+
     job_schema = job_schemas.JobCreate(
         action=actions.RESULT_VERIFY,
         category=categories.RESULT,
         priority=priorities.MEDIUM,
         job_id=0,
-        status=states.PENDING,
+        status=job_states.PENDING,
         creator_uid=felicity_user.uid,
         data=analyses,
     )
@@ -174,7 +186,6 @@ async def retract_analysis_results(info, analyses: List[int]) -> AnalysisResultR
 
 @strawberry.mutation
 async def retest_analysis_results(info, analyses: List[int]) -> AnalysisResultResponse:
-
     is_authenticated, felicity_user = await auth_from_info(info)
     verify_user_auth(
         is_authenticated,
@@ -225,9 +236,8 @@ async def cancel_analysis_results(info, analyses: List[int]) -> AnalysisResultRe
 
 @strawberry.mutation
 async def re_instate_analysis_results(
-    info, analyses: List[int]
+        info, analyses: List[int]
 ) -> AnalysisResultResponse:
-
     is_authenticated, felicity_user = await auth_from_info(info)
     verify_user_auth(
         is_authenticated,

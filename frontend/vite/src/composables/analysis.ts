@@ -83,8 +83,8 @@ export default function useAnalysisComposable(){
        withClientMutation(SUBMIT_ANALYSIS_RESULTS, [{ uid: result.uid , result: result.result }], "submitAnalysisResults")
       .then(resp => {
         toastInfo(resp.message)
-        sampleStore.backgroundProcessing([{ uid: result.uid , result: result.result }], undefined)
-        worksheetStore.backgroundProcessing([{ uid: result.uid , result: result.result }], undefined)
+        sampleStore.backgroundProcessing([{ uid: result.uid , result: result.result }], undefined, 'submitting')
+        worksheetStore.backgroundProcessing([{ uid: result.uid , result: result.result }], undefined, 'submitting')
      });
     }     
 
@@ -106,8 +106,8 @@ export default function useAnalysisComposable(){
              withClientMutation(SUBMIT_ANALYSIS_RESULTS, { analysisResults: results, sourceObject, sourceObjectUid }, "submitAnalysisResults")
              .then(resp => {
                 toastInfo(resp.message)
-                sampleStore.backgroundProcessing(results, sourceObject === "sample" ? sourceObjectUid : undefined)
-                worksheetStore.backgroundProcessing(results, sourceObject === "worksheet" ? sourceObjectUid : undefined)
+                sampleStore.backgroundProcessing(results, sourceObject === "sample" ? sourceObjectUid : undefined, 'submitting')
+                worksheetStore.backgroundProcessing(results, sourceObject === "worksheet" ? sourceObjectUid : undefined, 'submitting')
              });
 
           }
@@ -136,8 +136,8 @@ export default function useAnalysisComposable(){
             .then(resp => {
               toastInfo(resp.message)
               const data = uids.map(item => ({ uid: item }))
-              sampleStore.backgroundProcessing(data, sourceObject === "sample" ? sourceObjectUid : undefined)
-              worksheetStore.backgroundProcessing(data, sourceObject === "worksheet" ? sourceObjectUid : undefined)
+              sampleStore.backgroundProcessing(data, sourceObject === "sample" ? sourceObjectUid : undefined, 'approving')
+              worksheetStore.backgroundProcessing(data, sourceObject === "worksheet" ? sourceObjectUid : undefined, 'approving')
              });
 
           }

@@ -17,6 +17,7 @@ class States:
 
     class Result:
         PENDING = "pending"  # analytes that are pending results
+        SUBMITTING = "submitting"
         RESULTED = (
             "resulted"
         )  # analytes that have results but not approved yet. 'to_be_verified' / 'un-authorised'
@@ -24,6 +25,7 @@ class States:
         CANCELLED = (
             "cancelled"
         )  # analytes that are no longer required <in other words deleted>
+        APPROVING = "approving"
         APPROVED = "approved"  # analytes that are authorised/approved
 
     def __init__(self):

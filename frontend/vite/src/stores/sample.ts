@@ -235,20 +235,20 @@ export const useSampleStore = defineStore('sample', {
       }
     })
   },
-  backgroundProcessing(payload: any[], sampleUid: any){
+  backgroundProcessing(payload: any[], sampleUid: any, process){
     payload?.forEach(result => {
       const index = this.analysisResults.findIndex(x => x.uid === result.uid);
       if(index > -1) {
-        this.analysisResults[index].status = "processing";
+        this.analysisResults[index].status = process;
       }
     })
     if(sampleUid){
       if(this.sample?.uid === sampleUid){
-        this.sample!.status = "processing";
+        this.sample!.status = process;
       }
       const index = this.samples.findIndex(x => x.uid === sampleUid);
       if(index > -1) {
-        this.samples[index].status = "processing";
+        this.samples[index].status = process;
       }
     }
   },

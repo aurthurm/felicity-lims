@@ -122,7 +122,7 @@ class SampleAnalyticsInit(Generic[ModelType]):
         group_by = getattr(self.model, group_by)
 
         stmt = select(group_by, func.count(self.model.uid).label("total")).filter(
-            group_by != None
+            group_by is not None
         )  # noqa
 
         if start[1]:

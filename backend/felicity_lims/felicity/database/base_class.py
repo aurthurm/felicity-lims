@@ -33,7 +33,7 @@ event.listen(MyBaseMixin, 'before_update', get_updated_by_id, propagate=True)
 """
 
 
-# Enhanced Base Model Class with some django-like super powers
+# Enhanced Base Model Class with some django-like super-powers
 @as_declarative()
 class DBModel(AllFeaturesMixin):
     __name__: str
@@ -41,7 +41,7 @@ class DBModel(AllFeaturesMixin):
 
     # __mapper_args__ :
     # required in order to access columns with server defaults
-    # or SQL expression defaults, subsequent to a flush, without
+    # or SQL expression defaults, after a flush, without
     # triggering an expired load
     __mapper_args__ = {"eager_defaults": True}
 
@@ -100,7 +100,6 @@ class DBModel(AllFeaturesMixin):
     @classmethod
     async def all_by_page(cls, page: int = 1, limit: int = 20, **kwargs) -> Dict:
         start = (page - 1) * limit
-        start + limit
 
         stmt = cls.where(**kwargs).limit(limit).offset(start)
         async with async_session_factory() as session:
@@ -240,12 +239,16 @@ class DBModel(AllFeaturesMixin):
         return updated
 
     @classmethod
-    async def bulk_update_with_mappings(cls, mappings: List):
+    async def bulk_update_with_mappings(cls, mappings: List) -> None:
         """
         @param mappings a List of dictionary update values with pks.
         e.g [{'uid': 34, update_values}, ...]
-        ?? there must be zero many to many relations
+        ?? there must be zero many-to-many relations
+        NB: Function does not return anything
         """
+        if len(mappings) == 0:
+            return
+
         from sqlalchemy.sql.expression import bindparam
 
         to_update = [cls._import(data) for data in mappings]
@@ -262,11 +265,9 @@ class DBModel(AllFeaturesMixin):
         stmt = query.values(binds).execution_options(synchronize_session="fetch")
 
         async with async_session_factory() as session:
-            results = await session.execute(stmt, to_update)
+            await session.execute(stmt, to_update)
             await session.flush()
             await session.commit()
-
-        return results.scalars.all()
 
     @classmethod
     async def bulk_update_with_mappings_not_working(cls, mappings: List):

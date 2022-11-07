@@ -84,8 +84,8 @@ async def results_submitter(analysis_results: List[dict], submitter):
         if not a_result:
             return Exception(f"AnalysisResult with uid {uid} not found")
 
-        # only submit results in pending state
-        if a_result.status not in [states.result.PENDING]:
+        # only submit results in pending/submitting state
+        if a_result.status not in [states.result.PENDING, states.result.SUBMITTING]:
             return_results.append(a_result)
             continue
 
@@ -147,7 +147,7 @@ async def verify_from_result_uids(uids: List[int], user):
 
         # No Empty Results
         status = getattr(a_result, "status", None)
-        if status == states.result.RESULTED:
+        if status in [states.result.RESULTED, states.result.APPROVING]:
             _, a_result = await a_result.verify(verifier=user)
             to_return.append(a_result)
         else:

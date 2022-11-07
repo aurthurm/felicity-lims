@@ -133,21 +133,21 @@ export const useWorksheetStore = defineStore('worksheet', {
       })
     })
   },
-  backgroundProcessing(payload, worksheetUid: any){
+  backgroundProcessing(payload, worksheetUid: any, process){
     payload?.forEach(result => {
       this.workSheet?.analysisResults.forEach((wsResult, index) => {
         if(wsResult?.uid == result.uid) {
-          wsResult.status = "processing";
+          wsResult.status = process;
         }
       })
     })
     if(worksheetUid){
       if(this.workSheet?.uid === worksheetUid){
-        this.workSheet!.state = "processing";
+        this.workSheet!.state = process;
       }
       const index = this.workSheets.findIndex(x => x.uid === worksheetUid);
       if(index > -1) {
-        this.workSheets[index].state = "processing";
+        this.workSheets[index].state = process;
       }
     }
   },
