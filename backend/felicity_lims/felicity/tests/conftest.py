@@ -55,6 +55,11 @@ async def initialise():
 
 
 @pytest_asyncio.fixture(scope="function")
+async def client_root() -> Generator[AsyncClient, Any, None]:
+    async with AsyncClient(app=flims, base_url="http://localhost:8080") as clt:
+        yield clt
+
+@pytest_asyncio.fixture(scope="function")
 async def client() -> Generator[AsyncClient, Any, None]:
     async with AsyncClient(app=flims, base_url="http://localhost:8080/api/v1") as clt:
         yield clt

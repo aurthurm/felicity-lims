@@ -24,6 +24,7 @@ async def generate_report(job_uid: str):
         )
         return
 
+    await job.change_status(new_status=job_conf.states.RUNNING)
     analytics = SampleAnalyticsInit(Sample)
     columns, lines = await analytics.get_line_listing(
         period_start=report.period_start,
