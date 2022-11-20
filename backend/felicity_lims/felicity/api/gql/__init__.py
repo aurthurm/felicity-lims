@@ -81,12 +81,14 @@ async def auth_from_info(info) -> Tuple[bool, Optional[User]]:
     return is_auth, user
 
 
-def verify_user_auth(is_auth: bool = False, user=None, err_msg: str = None):
+def verify_user_auth(is_auth: bool = False, user=None, err_msg: str = None) -> Tuple[bool, Optional[OperationError]]:
     if not is_auth:
-        return OperationError(error=f"{err_msg}", suggestion="Try to login again")
+        return False, OperationError(error=f"{err_msg}", suggestion="Try to login again")
 
     if not user:
-        return OperationError(
+        return False, OperationError(
             error="Failed to acquire authenticated user",
             suggestion="refresh your page. If error persists, logout and login again",
         )
+    return True, None
+

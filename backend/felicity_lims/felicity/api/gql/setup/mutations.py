@@ -631,6 +631,8 @@ class SetupMutations:
         _instruments = set()
         for i_uid in payload.instruments:
             instrument = await models.Instrument.get(uid=i_uid)
+            if not instrument:
+                return OperationError(error=f"An instrument with uid {i_uid} does not exist")
             if instrument not in _instruments:
                 _instruments.add(instrument)
                 await models.Method.table_insert(

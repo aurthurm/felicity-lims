@@ -168,7 +168,7 @@ class DBModel(AllFeaturesMixin):
 
     @classmethod
     async def get(cls, **kwargs):
-        """Return the the first value in database based on given args.
+        """Return the first value in database based on given args.
         Example:
             User.get(id=5)
         """

@@ -222,27 +222,27 @@ let {
 const submitResults = () =>
   submitter_(prepareResults(), "sample", sample?.value?.uid!)
     .then(() => _updateSample())
-    .finally(() => resetAnalysesPermissions());
+    .finally(() => unCheckAll());
 const cancelResults = () =>
   canceller_(getResultsUids())
     .then(() => _updateSample())
-    .finally(() => resetAnalysesPermissions());
+    .finally(() => unCheckAll());
 const reInstateResults = () =>
   reInstater_(getResultsUids())
     .then(() => _updateSample())
-    .finally(() => resetAnalysesPermissions());
+    .finally(() => unCheckAll());
 const approveResults = () =>
   approver_(getResultsUids(), "sample", sample?.value?.uid!)
     .then(() => _updateSample())
-    .finally(() => resetAnalysesPermissions());
+    .finally(() => unCheckAll());
 const retractResults = () =>
   retracter_(getResultsUids())
     .then(() => _updateSample())
-    .finally(() => resetAnalysesPermissions());
+    .finally(() => unCheckAll());
 const retestResults = () =>
   retester_(getResultsUids())
     .then(() => _updateSample())
-    .finally(() => resetAnalysesPermissions());
+    .finally(() => unCheckAll());
 </script>
 
 <template>

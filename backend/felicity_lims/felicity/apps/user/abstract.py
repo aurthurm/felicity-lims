@@ -4,7 +4,7 @@ from fastapi.encoders import jsonable_encoder
 from felicity.apps import BaseAuditDBModel  # noqa
 from felicity.apps import DBModel
 from felicity.apps.user import schemas
-from felicity.core.security import get_password_hash
+from felicity.core.security import get_password_hash, password_check
 from sqlalchemy import Boolean, Column, DateTime, Integer, String
 from sqlalchemy.ext.declarative import declared_attr
 
@@ -110,6 +110,9 @@ class AbstractAuth(SimpleAuditMixin, DBModel):
         by_username = await cls.get_by_username(auth_in.user_name)
         if by_username:
             raise Exception("Username already exist")
+        policy = password_check(auth_in.password, auth_in.user_name)
+        if not policy['password_ok']:
+            raise Exception(policy['message'])
         hashed_password = get_password_hash(auth_in.password)
         data = cls._import(auth_in)
         del data["password"]
@@ -121,6 +124,9 @@ class AbstractAuth(SimpleAuditMixin, DBModel):
         update_data = self._import(auth_in)
 
         if "password" in update_data:
+            policy = password_check(auth_in.password, auth_in.user_name)
+            if not policy['password_ok']:
+                raise Exception(policy['message'])
             hashed_password = get_password_hash(update_data["password"])
             del update_data["password"]
             update_data["hashed_password"] = hashed_password

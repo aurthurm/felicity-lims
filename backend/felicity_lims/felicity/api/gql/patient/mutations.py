@@ -39,11 +39,13 @@ class PatientMutations:
     async def create_patient(self, info, payload: PatientInputType) -> PatientResponse:
 
         is_authenticated, felicity_user = await auth_from_info(info)
-        verify_user_auth(
+        auth_success, auth_error = verify_user_auth(
             is_authenticated,
             felicity_user,
             "Only Authenticated user can create patients",
         )
+        if not auth_success:
+            return auth_error
 
         if (
             not payload.client_patient_id

@@ -64,11 +64,20 @@ async def create_profile(info, payload: ProfileInputType) -> AnalysisProfileResp
     profile: analysis_models.Profile = await analysis_models.Profile.create(obj_in)
 
     if payload.sample_types:
-        for _uid in payload.sample_types:
-            st = await analysis_models.SampleType.get(uid=_uid)
-            profile.sample_types.append(st)
-        profile = await profile.save()
+        for _st_uid in payload.sample_types:
+            await analysis_models.Profile.table_insert(
+                table=analysis_models.profile_sample_type,
+                mappings={"sample_type_uid": _st_uid, "profile_uid": profile.uid},
+            )
 
+    if payload.services:
+        for service_uid in payload.services:
+            await analysis_models.Analysis.table_insert(
+                table=analysis_models.analysis_profile,
+                mappings={"analysis_uid": service_uid, "profile_uid": profile.uid},
+            )
+
+    profile = await analysis_models.Profile.get(uid=profile.uid)
     return a_types.ProfileType(**profile.marshal_simple())
 
 

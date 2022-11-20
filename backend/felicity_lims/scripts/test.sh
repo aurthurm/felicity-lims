@@ -3,4 +3,6 @@
 set -e
 set -x
 
-pytest --cov=app --cov-report=term-missing felicity/tests "${@}"
+export TESTING=True
+pytest felicity/tests --asyncio-mode=strict "${@}"
+export TESTING=False

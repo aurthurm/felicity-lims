@@ -70,18 +70,21 @@ async def create_analysis(info, payload: AnalysisInputType) -> ProfilesServiceRe
     analysis: analysis_models.Analysis = await analysis_models.Analysis.create(obj_in)
 
     if payload.sample_types:
-        for uid in payload.sample_types:
-            st = await analysis_models.SampleType.get(uid=uid)
-            analysis.sample_types.append(st)
-        analysis = await analysis.save()
+        for st_uid in payload.sample_types:
+            await analysis_models.Analysis.table_insert(
+                table=analysis_models.analysis_sample_type,
+                mappings={"sample_type_uid": st_uid, "analysis_uid": analysis.uid},
+            )
 
     if payload.methods:
-        for uid in payload.methods:
-            meth = await Method.get(uid=uid)
-            analysis.methods.append(meth)
-        analysis = await analysis.save()
+        for m_uid in payload.methods:
+            await analysis_models.Analysis.table_insert(
+                table=analysis_models.analysis_method,
+                mappings={"method_uid": m_uid, "analysis_uid": analysis.uid},
+            )
 
-    profiles = analysis_models.Profile.get_all(analyses___uid=analysis.uid)
+    analysis = await analysis_models.Analysis.get(uid=analysis.uid)
+    profiles = await analysis_models.Profile.get_all(analyses___uid=analysis.uid)
 
     return a_types.AnalysisWithProfiles(**analysis.marshal_simple(), profiles=profiles)
 

@@ -9,7 +9,8 @@ from felicity.apps.user import models, schemas
 from felicity.core import security
 from felicity.core.config import settings
 from felicity.core.security import (get_password_hash,
-                                    verify_password_reset_token)
+                                    verify_password_reset_token, generate_password_reset_token)
+from felicity.utils.email.email import send_reset_password_email
 
 router = APIRouter()
 
@@ -57,22 +58,22 @@ async def recover_password(email: str) -> Any:
             status_code=404,
             detail="The user with this username does not exist in the system.",
         )
-    # password_reset_token = generate_password_reset_token(email=email)
-    # await send_reset_password_email(
-    #     email_to=user.email, email=email, token=password_reset_token
-    # )
+    password_reset_token = generate_password_reset_token(email=email)
+    send_reset_password_email(
+        email_to=user.email, email=email, token=password_reset_token
+    )
     return {"msg": "Password recovery email sent"}
 
 
-@router.post("/reset-password/", response_model=core_schemas.Msg)
+@router.post("/reset-password", response_model=core_schemas.Msg)
 async def reset_password(token: str = Body(...), new_password: str = Body(...)) -> Any:
     """
     Reset password
     """
-    email = verify_password_reset_token(token)
-    if not email:
+    user_id = verify_password_reset_token(token)
+    if not user_id:
         raise HTTPException(status_code=400, detail="Invalid token")
-    user = await models.User.get_by_email(email=email)
+    user = await models.User.get(uid=int(user_id))
     if not user:
         raise HTTPException(
             status_code=404,

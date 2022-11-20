@@ -26,7 +26,6 @@ async def submit_results(job_uid: int):
     user = await user_models.User.get(uid=job.creator_uid)
 
     try:
-        user = user
         await utils.results_submitter(job.data, user)
         await job.change_status(new_status=job_states.FINISHED)
         await report_notifier.notify(f"Your results were successfully submitted", user)

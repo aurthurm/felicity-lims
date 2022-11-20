@@ -1,0 +1,36 @@
+import pytest
+from felicity.core.config import settings
+import logging
+from felicity.tests.utils.user import add_user_mutation, add_auth_mutation, make_username, make_password
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+
+@pytest.mark.asyncio
+@pytest.mark.order(1)
+async def test_check_installation(client):
+    response = await client.get("/setup/installation")
+    logger.info(f"reset-password response: {response} {response.json()}")
+    assert response.status_code == 200
+    logger.info(f"reset-password response: {response} {response.json()}")
+    _data = response.json()
+    assert _data["laboratory"] is None
+    assert _data["installed"] is False
+    assert _data["message"] == "Laboratory installation required"
+
+
+@pytest.mark.asyncio
+@pytest.mark.order(2)
+async def test_install(client):
+    response = await client.post("/setup/installation", json={
+        "name": "Test Laboratory"
+    })
+    logger.info(f"reset-password response: {response} {response.json()}")
+    assert response.status_code == 200
+    logger.info(f"reset-password response: {response} {response.json()}")
+    assert response.json()["installed"] is True
+    assert response.json()["installed"] is True
+    assert response.json()["laboratory"]["setup_name"] == "felicity"
+    assert response.json()["laboratory"]["lab_name"] == "Test Laboratory"
+    assert response.json()["message"] == "Your Laboratory was successfully installed"

@@ -1,0 +1,51 @@
+import pytest
+import logging
+import random
+from faker import  Faker
+
+from felicity.apps.patient.conf import genders
+from felicity.tests.utils.patient import add_patient_query
+fake_engine = Faker()
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+
+@pytest.mark.asyncio
+@pytest.mark.order(30)
+async def test_register_patient(gql_client, auth_data):
+    patient = {
+                'clientPatientId': fake_engine.ssn(),
+                'firstName': fake_engine.first_name(),
+                'middleName': fake_engine.first_name(),
+                'lastName': fake_engine.last_name(),
+                'age': random.randint(1, 90),
+                'gender': random.choice([genders.MALE, genders.FEMALE,genders.TRANS_GENDER, genders.MISSING]),
+                'dateOfBirth': str(fake_engine.date_time()),
+                'ageDobEstimated': fake_engine.boolean(),
+                'clientUid': 1,
+                'phoneMobile': fake_engine.phone_number(),
+                'phoneHome': fake_engine.phone_number(),
+                'consentSms': fake_engine.boolean(),
+    }
+    response = await gql_client.post('/felicity-gql', json={
+        "query": add_patient_query,
+        "variables": {
+            "payload": patient
+        }
+    }, headers=auth_data['headers'])
+
+    logger.info(f"register_patient response: {response} {response.json()}")
+
+    assert response.status_code == 200
+    _patient = response.json()["data"]["createPatient"]
+    assert _patient["uid"] == 1
+    assert _patient["clientPatientId"] == patient["clientPatientId"]
+    assert _patient["firstName"] == patient["firstName"]
+    assert _patient["lastName"] == patient["lastName"]
+    assert _patient["age"] == patient["age"]
+    assert _patient["gender"] == patient["gender"]
+    assert _patient["dateOfBirth"][:10] == patient["dateOfBirth"][:10]
+    assert _patient["clientUid"] == patient["clientUid"]
+    assert _patient["phoneMobile"] == patient["phoneMobile"]
+    assert _patient["consentSms"] == patient["consentSms"]

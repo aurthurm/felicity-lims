@@ -57,4 +57,10 @@ async def create_super_user() -> None:
         )
         await superuser.link_preference(preference_uid=preference.uid)
         
-        send_new_account_email(settings.FIRST_SUPERUSER_EMAIL,  settings.FIRST_SEPERUSER_USERNAME, settings.FIRST_SUPERUSER_PASSWORD)
+        send_new_account_email(
+            settings.FIRST_SUPERUSER_EMAIL,
+            settings.FIRST_SEPERUSER_USERNAME,
+            settings.FIRST_SUPERUSER_PASSWORD
+        )
+
+    logger.info(f"Done Setting up first superuser {superuser.marshal_simple()}")

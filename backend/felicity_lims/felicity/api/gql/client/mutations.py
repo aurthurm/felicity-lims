@@ -54,11 +54,13 @@ class ClientMutations:
     ) -> ClientResponse:
 
         is_authenticated, felicity_user = await auth_from_info(info)
-        verify_user_auth(
+        success, auth_err = verify_user_auth(
             is_authenticated,
             felicity_user,
             "Only Authenticated user can create clients",
         )
+        if not success:
+            return auth_err
 
         if not payload.code or not payload.name:
             return OperationError(
@@ -79,8 +81,8 @@ class ClientMutations:
             incoming[k] = v
 
         obj_in = schemas.ClientCreate(**incoming)
-        client = await models.Client.create(obj_in)
-        return client
+        client: models.Client = await models.Client.create(obj_in)
+        return ClientType(**client.marshal_simple())
 
     @strawberry.mutation
     async def update_client(
@@ -112,7 +114,7 @@ class ClientMutations:
                     logger.warning(f"failed to set attribute {field}: {e}")
         obj_in = schemas.ClientUpdate(**client.to_dict())
         client = await client.update(obj_in)
-        return client
+        return ClientType(**client.marshal_simple())
 
     @strawberry.mutation
     async def create_client_contact(
@@ -152,8 +154,8 @@ class ClientMutations:
             incoming[k] = v
 
         obj_in = schemas.ClientContactCreate(**incoming)
-        client_contact = await models.ClientContact.create(obj_in)
-        return client_contact
+        client_contact: models.ClientContact = await models.ClientContact.create(obj_in)
+        return ClientContactType(**client_contact.marshal_simple())
 
     @strawberry.mutation
     async def update_client_contact(
@@ -185,4 +187,4 @@ class ClientMutations:
                     logger.warning(f"failed to set attribute {field}: {e}")
         obj_in = schemas.ClientContactUpdate(**client_contact.to_dict())
         client_contact = await client_contact.update(obj_in)
-        return client_contact
+        return ClientContactType(**client_contact.marshal_simple())

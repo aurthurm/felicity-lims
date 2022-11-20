@@ -12,8 +12,8 @@
    sample type panel e.g Urine Drugs
    diagnosis panel e.g Burns Drugs
 """
-"""Panel Category e.g By Orgnism, By sample Type, ..."""
 
+"""Panel Category e.g By Orgnism, By sample Type, ..."""
 
 """ 
 Gram Reaction

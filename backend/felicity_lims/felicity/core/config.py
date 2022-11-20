@@ -41,6 +41,8 @@ class Settings(BaseSettings):
         "http://localhost:3000",
         "http://0.0.0.0:8080",
     ]
+    TESTING = getenv_boolean("TESTING", False)
+    RETAIN_TESTING_DB_DATA = getenv_boolean("RETAIN_TESTING_DB_DATA", True)
 
     @validator("BACKEND_CORS_ORIGINS", pre=True)
     def assemble_cors_origins(cls, v: Union[str, List[str]]) -> Union[List[str], str]:
@@ -65,6 +67,8 @@ class Settings(BaseSettings):
     POSTGRES_DB: str = getenv_value("POSTGRES_DB", "felicity_lims")
     SQLALCHEMY_DATABASE_URI: Optional[PostgresDsn] = None
     SQLALCHEMY_ASYNC_DATABASE_URI: Optional[PostgresDsn] = None
+    SQLALCHEMY_TEST_DATABASE_URI: Optional[PostgresDsn] = None
+    SQLALCHEMY_TEST_ASYNC_DATABASE_URI: Optional[PostgresDsn] = None
 
     @validator("SQLALCHEMY_DATABASE_URI", pre=True)
     def assemble_db_connection(cls, v: Optional[str], values: Dict[str, Any]) -> Any:
@@ -80,7 +84,7 @@ class Settings(BaseSettings):
 
     @validator("SQLALCHEMY_ASYNC_DATABASE_URI", pre=True)
     def assemble_async_db_connection(
-        cls, v: Optional[str], values: Dict[str, Any]
+            cls, v: Optional[str], values: Dict[str, Any]
     ) -> Any:
         if isinstance(v, str):
             return v
@@ -90,6 +94,32 @@ class Settings(BaseSettings):
             password=values.get("POSTGRES_PASSWORD"),
             host=values.get("POSTGRES_SERVER"),
             path=f"/{values.get('POSTGRES_DB') or ''}",
+        )
+
+    @validator("SQLALCHEMY_TEST_DATABASE_URI", pre=True)
+    def assemble_test_db_connection(cls, v: Optional[str], values: Dict[str, Any]) -> Any:
+        if isinstance(v, str):
+            return v
+        return PostgresDsn.build(
+            scheme="postgresql",
+            user=values.get("POSTGRES_USER"),
+            password=values.get("POSTGRES_PASSWORD"),
+            host=values.get("POSTGRES_SERVER"),
+            path=f"/test_{values.get('POSTGRES_DB') or ''}",
+        )
+
+    @validator("SQLALCHEMY_TEST_ASYNC_DATABASE_URI", pre=True)
+    def assemble_async_test_db_connection(
+            cls, v: Optional[str], values: Dict[str, Any]
+    ) -> Any:
+        if isinstance(v, str):
+            return v
+        return PostgresDsn.build(
+            scheme="postgresql+asyncpg",
+            user=values.get("POSTGRES_USER"),
+            password=values.get("POSTGRES_PASSWORD"),
+            host=values.get("POSTGRES_SERVER"),
+            path=f"/test_{values.get('POSTGRES_DB') or ''}",
         )
 
     SMTP_TLS: bool = getenv_boolean("SMTP_TLS", False)
@@ -123,7 +153,7 @@ class Settings(BaseSettings):
         "FIRST_SUPERUSER", "admin@felicitylabs.com"
     )
     FIRST_SEPERUSER_USERNAME: str = getenv_value("FIRST_SEPERUSER_USERNAME", "admin")
-    FIRST_SUPERUSER_PASSWORD: str = getenv_value("FIRST_SUPERUSER_PASSWORD", "admin")
+    FIRST_SUPERUSER_PASSWORD: str = getenv_value("FIRST_SUPERUSER_PASSWORD", "!Felicity#100")
     USERS_OPEN_REGISTRATION: bool = False
 
     LOAD_SETUP_DATA = getenv_boolean("LOAD_SETUP_DATA", False)

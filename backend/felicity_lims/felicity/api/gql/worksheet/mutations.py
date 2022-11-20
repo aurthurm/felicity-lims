@@ -99,7 +99,7 @@ class WorkSheetMutations:
 
         incoming = {
             "created_by_uid": felicity_user.uid,
-            "updated_by_uid": felicity_user.uid,
+            "updated_by_uid": felicity_user.uid
         }
         for k, v in payload.__dict__.items():
             if has_value_or_is_truthy(v):
@@ -250,7 +250,7 @@ class WorkSheetMutations:
         # to get lazy loads working otherwise return WorksheetListingType(worksheets)
         to_send = [models.WorkSheet.get(uid=ws.uid) for ws in worksheets]
 
-        return WorksheetListingType(to_send)
+        return WorksheetListingType(worksheets=to_send)
 
     @strawberry.mutation
     async def update_worksheet(

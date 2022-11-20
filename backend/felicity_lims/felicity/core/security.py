@@ -1,9 +1,15 @@
 from datetime import datetime, timedelta
 from typing import Any, Optional, Union
+import re
+import logging
+from difflib import SequenceMatcher
 
 from felicity.core.config import settings
 from jose import jwt
 from passlib.context import CryptContext
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
@@ -21,7 +27,7 @@ def get_password_hash(password: str) -> str:
 
 #  JWTokens
 def create_access_token(
-    subject: Union[str, Any], expires_delta: timedelta = None
+        subject: Union[str, Any], expires_delta: timedelta = None
 ) -> str:
     if expires_delta:
         expire = datetime.utcnow() + expires_delta
@@ -49,6 +55,86 @@ def generate_password_reset_token(email: str) -> str:
 def verify_password_reset_token(token: str) -> Optional[str]:
     try:
         decoded_token = jwt.decode(token, settings.SECRET_KEY, algorithms=["HS256"])
-        return decoded_token["email"]
+        logger.info(f"decoded_token: {decoded_token}")
+        return decoded_token["sub"]
     except jwt.JWTError:
         return None
+
+
+def password_similarity(username: str, password: str, max_similarity=0.7):
+    """
+    check is the similarity between the password and username
+    ratio > max_similarity is similar
+    ratio <= max_similarity is not similar
+    """
+    ratio = SequenceMatcher(None, username, password).ratio()
+    return True if ratio > max_similarity else False, ratio
+
+
+def format_password_message(old: str, new:str):
+    if not old:
+        return new
+    return f"{old}, {new}"
+
+
+def password_check(password, username):
+    """
+    Verify the strength of 'password'
+    Returns a dict indicating the wrong criteria
+    A password is considered strong if:
+        8 characters length or more
+        1 digit or more
+        1 symbol or more
+        1 uppercase letter or more
+        1 lowercase letter or more
+        not similar to username
+    """
+
+    # calculating the length
+    length_error = len(password) < 8
+
+    # searching for digits
+    digit_error = re.search(r"\d", password) is None
+
+    # searching for uppercase
+    uppercase_error = re.search(r"[A-Z]", password) is None
+
+    # searching for lowercase
+    lowercase_error = re.search(r"[a-z]", password) is None
+
+    # searching for symbols
+    symbol_error = re.search(r"\W", password) is None
+
+    # similarity error
+    similar_error = password_similarity(username, password)[0]
+
+    # overall result
+    password_ok = not (
+            length_error or digit_error or uppercase_error or
+            lowercase_error or symbol_error or similar_error
+    )
+    message = ""
+    if not password_ok:
+        if length_error:
+            message = format_password_message(message, "Password must not be less than 8 characters long ")
+        if digit_error:
+            message = format_password_message(message, "Password must contain at least a digit")
+        if uppercase_error:
+            message = format_password_message(message, "Password must contain upper case letters")
+        if lowercase_error:
+            message = format_password_message(message, "Password must contain lowercase letters")
+        if symbol_error:
+            message = format_password_message(message, "Password must contain symbols")
+        if similar_error:
+            message = format_password_message(message, "Password is too similar to your username")
+
+    return {
+        'password_ok': password_ok,
+        'length_error': length_error,
+        'digit_error': digit_error,
+        'uppercase_error': uppercase_error,
+        'lowercase_error': lowercase_error,
+        'symbol_error': symbol_error,
+        "similar_error": similar_error,
+        "message": message
+    }

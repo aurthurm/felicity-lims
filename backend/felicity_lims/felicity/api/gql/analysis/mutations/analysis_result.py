@@ -181,7 +181,7 @@ async def retract_analysis_results(info, analyses: List[int]) -> AnalysisResultR
 
         # add original
         return_results.append(a_result)
-    return ResultListingType(return_results)
+    return ResultListingType(results=return_results)
 
 
 @strawberry.mutation
@@ -198,7 +198,7 @@ async def retest_analysis_results(info, analyses: List[int]) -> AnalysisResultRe
 
     retests, originals = await retest_from_result_uids(analyses, felicity_user)
 
-    return ResultListingType(retests + originals)
+    return ResultListingType(results=retests + originals)
 
 
 @strawberry.mutation
@@ -231,7 +231,7 @@ async def cancel_analysis_results(info, analyses: List[int]) -> AnalysisResultRe
         if a_result:
             return_results.append(a_result)
 
-    return ResultListingType(return_results)
+    return ResultListingType(results=return_results)
 
 
 @strawberry.mutation
@@ -261,4 +261,4 @@ async def re_instate_analysis_results(
         if a_result:
             return_results.append(a_result)
 
-    return ResultListingType(return_results)
+    return ResultListingType(results=return_results)

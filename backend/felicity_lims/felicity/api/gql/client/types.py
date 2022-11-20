@@ -1,9 +1,9 @@
 from typing import List, Optional
-
+from datetime import datetime
 import strawberry  # noqa
 from felicity.api.gql import PageInfo
 from felicity.api.gql.setup.types import DistrictType, ProvinceType
-from felicity.api.gql.user.types import UserAuthType
+from felicity.api.gql.user.types import UserAuthType, UserType
 
 
 @strawberry.type
@@ -23,6 +23,13 @@ class ClientType:
     consent_sms: bool
     internal_use: bool
     active: bool
+    #
+    created_by_uid: Optional[int]
+    created_by: Optional[UserType]
+    created_at: Optional[datetime]
+    updated_by_uid: Optional[int]
+    updated_by: Optional[UserType]
+    updated_at: Optional[datetime]
 
 
 @strawberry.type
@@ -41,6 +48,13 @@ class ClientContactType:
     consent_sms: bool
     client_uid: int
     client: Optional[ClientType]
+    #
+    created_by_uid: Optional[int]
+    created_by: Optional[UserType]
+    created_at: Optional[datetime]
+    updated_by_uid: Optional[int]
+    updated_by: Optional[UserType]
+    updated_at: Optional[datetime]
 
 
 #  relay paginations
