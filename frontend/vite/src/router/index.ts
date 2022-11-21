@@ -3,11 +3,22 @@ import * as guards from './../guards';
 import adminRoutes from './admin';
 import patientRoutes from './patient';
 import clientRoutes from './client';
+import sampleRoutes from './samples';
+import qualityRoutes from './quality';
+import worksheetRoutes from './worksheet'
 import { isTokenValid } from './checks';
 import { useAuthStore } from '../stores';
 
 
 const routes: RouteRecordRaw[] = [
+  {
+    path: '/',
+    name: "redirect",
+    component: () => import('../views/Blank.vue'),
+    meta: {
+      requiresAuth: true,
+    },
+  },
   {
     path: '/dashboard',
     name: guards.pages.DASHBOARD,
@@ -52,25 +63,7 @@ const routes: RouteRecordRaw[] = [
     path: '/samples',
     name: guards.pages.SAMPLES,
     component: () => import('../views/sample/index.vue'),
-    children: [
-      {
-        path: '',
-        name: 'samples-listing',
-        component: () => import('../views/components/SampleListing.vue'),
-        meta: {
-          requiresAuth: true,
-        },
-      },
-      {
-        path: 'rejections',
-        name: 'reject-samples',
-        component: () => import('../views/sample/RejectSamples.vue'),
-        props: true,
-        meta: {
-          requiresAuth: true,
-        },
-      },
-    ],
+    children: sampleRoutes,
     meta: {
       requiresAuth: true,
     },
@@ -79,34 +72,7 @@ const routes: RouteRecordRaw[] = [
     path: '/quality-control',
     name: guards.pages.QC_SAMPLES,
     component: () => import('../views/qcontrol/index.vue'),
-    children: [
-      {
-        path: '',
-        name: 'quality-control-listing',
-        component: () => import('../views/qcontrol/Listing.vue'),
-        meta: {
-          requiresAuth: true,
-        },
-      },
-      {
-        path: '/qc-set/:qcSetUid',
-        name: 'qc-set-view',
-        component: () => import('../views/qcontrol/_id/index.vue'),
-        children: [
-          {
-            path: '',
-            name: 'qc-set-detail',
-            component: () => import('../views/qcontrol/_id/QCSet.vue'),
-            meta: {
-              requiresAuth: true,
-            },
-          },
-        ],
-        meta: {
-          requiresAuth: true,
-        },
-      },
-    ],
+    children: qualityRoutes,
     meta: {
       requiresAuth: true,
     },
@@ -115,34 +81,7 @@ const routes: RouteRecordRaw[] = [
     path: '/worksheets',
     name: guards.pages.WORKSHEETS,
     component: () => import('../views/worksheet/index.vue'),
-    children: [
-      {
-        path: '',
-        name: 'worksheet-listing',
-        component: () => import('../views/worksheet/WorkSheetListing.vue'),
-        meta: {
-          requiresAuth: true,
-        },
-      },
-      {
-        path: ':workSheetUid',
-        name: 'worksheet-single',
-        component: () => import('../views/worksheet/_id/index.vue'),
-        children: [
-          {
-            path: '',
-            name: 'worksheet-detail',
-            component: () => import('../views/worksheet/_id/WorkSheetDetail.vue'),
-            meta: {
-              requiresAuth: true,
-            },
-          }
-        ],
-        meta: {
-          requiresAuth: true,
-        },
-      },
-    ],
+    children: worksheetRoutes,
     meta: {
       requiresAuth: true,
     },
@@ -204,41 +143,31 @@ const router = createRouter({
   routes,
 });
 
-router.beforeEach(async (to, from, next) => {
+router.beforeEach(async (to, from) => {
   const authStore = useAuthStore()
 
-  if(to.path === '/') {
-    next({ name: guards.pages.DASHBOARD });
-    return;
-  }
-
   if (to.matched.some((record) => record.meta.requiresAuth)) {
-
     if (!isTokenValid(authStore.auth.token!)) {
-      next({ name: guards.pages.LOGIN });
-    } else {
-      if(!hasAccess(to.matched[0].name)){  // to.matched[0] get outer page
-       next({ name: guards.pages.NOT_AUTHORISED });
-      } else {
-        next();
-      }
+      return { name: guards.pages.LOGIN }
+    }
 
+    if (to.path === '/') {
+      return { name: guards.pages.DASHBOARD }
+    }
+
+    if(!hasAccess(to.matched[0].name)) {
+      return { name: guards.pages.NOT_AUTHORISED }
     }
 
   } else {
-
     if(to.path === '/auth') {
-      const isValid = isTokenValid(authStore.auth.token!)
-      if (isValid) {
-        next({ name: guards.pages.DASHBOARD })
+      if (isTokenValid(authStore.auth.token!)) {
+       return { name: guards.pages.DASHBOARD }
       };
     }
-
-    next();
   }
 
-});
-
+})
 
 function hasAccess(page: any) {
 
