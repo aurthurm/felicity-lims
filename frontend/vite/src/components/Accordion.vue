@@ -25,6 +25,5 @@
   import { ref } from 'vue';
 
   let show = ref(false);
-
 </script>
 

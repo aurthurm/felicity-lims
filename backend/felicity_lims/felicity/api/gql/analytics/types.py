@@ -1,6 +1,9 @@
 from typing import List, Optional
-
+from datetime import datetime
 import strawberry  # noqa
+
+from felicity.api.gql.analysis.types.analysis import AnalysisType
+from felicity.api.gql.user.types import UserType
 
 
 @strawberry.type
@@ -73,3 +76,23 @@ class LaggardData:
 @strawberry.type
 class LaggardStatistics:
     data: List[LaggardData]
+
+
+@strawberry.type
+class ReportMetaType:
+    uid: int
+    period_start: datetime
+    period_end: datetime
+    date_column: str
+    location: Optional[str]
+    sample_states: Optional[str]
+    report_type: str
+    status: Optional[str]
+    temp: Optional[str]
+    analyses: Optional[List[AnalysisType]]
+    created_at: Optional[datetime]
+    created_by_uid: Optional[int]
+    created_by: Optional[UserType]
+    updated_at: Optional[datetime]
+    updated_by_uid: Optional[int]
+    updated_by: Optional[UserType]

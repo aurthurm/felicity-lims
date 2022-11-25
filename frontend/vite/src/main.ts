@@ -28,6 +28,7 @@ pinia.use(({ store }) => {
 });
 
 const app = createApp(App)
+app.use(pinia)
 app.component('font-awesome-icon', FontAwesomeIcon)
 app.component('default-layout', LayoutDashboard)
 app.component('empty-layout', LayoutEmpty)
@@ -35,6 +36,5 @@ app.use(urql, urqlClient)
 app.use(VueSweetalert2)
 app.use(MotionPlugin)
 app.use(router)
-app.use(pinia)
 app.mount('#app')
 

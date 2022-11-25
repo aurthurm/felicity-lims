@@ -66,6 +66,11 @@ subscription getSystemActivity {
         result
         status
       }
+      ...on ReportMetaType {
+        uid
+        status
+        location
+      }
     }
     targetUid
     verb

@@ -6,12 +6,13 @@ from felicity.apps.analysis.models.analysis import Sample
 from felicity.apps.analytics import SampleAnalyticsInit, conf, models
 from felicity.apps.job import conf as job_conf
 from felicity.apps.job import models as job_models
-from felicity.apps.notification.utils import ReportNotifier
+from felicity.apps.notification.utils import ReportNotifier, FelicityStreamer
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 report_notifier = ReportNotifier()
+streamer = FelicityStreamer()
 
 
 async def generate_report(job_uid: str):
@@ -67,4 +68,5 @@ async def generate_report(job_uid: str):
         f"Your {report.report_type} report was successfully generated",
         report.created_by,
     )
+    await streamer.stream(report, report.created_by, "generated", "report")
     return True

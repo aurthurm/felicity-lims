@@ -1,26 +1,25 @@
 import axios from 'axios';
-import { useAuthStore } from "../stores"
+import { getAuthData, authLogout } from "../auth"
 
 import { REST_BASE_URL } from '../conf'
 
 const getAuthHeaders = async () => {
 
-  const authStore = useAuthStore();
+  const authData = getAuthData();
 
-  if (authStore?.auth?.token) {
+  if (authData?.auth?.token) {
     return {
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Methods': 'GET, POST, PATCH, PUT, DELETE, OPTIONS',
       'Access-Control-Allow-Headers': 'Origin, Content-Type, X-Auth-Token',
-      ...(authStore?.auth?.token && {
+      ...(authData?.auth?.token && {
         'x-felicity-user-id': "felicity-user",
         'x-felicity-role': "felicity-administrator",
-        'Authorization': `Bearer ${authStore?.auth?.token}`
+        'Authorization': `Bearer ${authData?.auth?.token}`
       }),
     } 
   }
-
-  authStore.logout();
+  authLogout();
 };
 
 const axiosInstance = axios.create({

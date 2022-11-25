@@ -1,17 +1,15 @@
 <script setup lang="ts">
 import accordion from "../../components/Accordion.vue";
 import { reactive, onMounted } from "vue";
-import axios from "../../axios/with-auth";
 import { REST_BASE_URL } from "../../conf";
-import { useNotifyToast } from "../../composables";
 import { useAnalysisStore } from "../../stores";
 import { IReportListing } from "../../models/reports";
+import useAnalyticsComposable from "../../composables/analytics"
 
-const { toastSuccess, toastWarning } = useNotifyToast();
 const analysisStore = useAnalysisStore();
+const { reports, fetchReports, generateReport, deleteReport  } = useAnalyticsComposable()
 
 const state = reactive({
-  reports: [] as IReportListing[],
   listingForm: {
     report_type: "",
     analyses_uids: [],
@@ -29,17 +27,10 @@ onMounted(async () => {
     text: "",
     sortBy: ["name"],
   });
-  await axios.get("reports").then((resp) => {
-    state.reports = resp.data;
-  });
+  await fetchReports();
 });
 
-const saveListingForm = () => {
-  const request = { ...state.listingForm };
-  axios.post("reports", request).then((resp) => {
-    state.reports.push(resp.data);
-  });
-};
+const saveListingForm = () => generateReport({ ...state.listingForm });
 
 const downloadReport = (report: any) => {
   const link = document.createElement("a");
@@ -49,19 +40,6 @@ const downloadReport = (report: any) => {
   link.click();
   document.body.removeChild(link);
 };
-
-const deleteReport = (report: any) => {
-  axios.delete("reports/" + report.uid).then((resp) => {
-    const data = resp.data;
-    const index = state.reports.findIndex((x) => x.uid === data.uid);
-    if (index > -1) {
-      state!.reports.splice(index, 1);
-      toastSuccess(data.message);
-    } else {
-      toastWarning("Failed to remove report: Please refresh your page");
-    }
-  });
-};
 </script>
 
 <template>
@@ -70,7 +48,7 @@ const deleteReport = (report: any) => {
     <template v-slot:body>
       <div class="overflow-x-auto mt-4">
         <div
-          v-if="state.reports?.length > 0"
+          v-if="reports?.length > 0"
           class="align-middle inline-block min-w-full shadow overflow-hidden bg-white shadow-dashboard px-2 pt-1 rounded-bl-sm rounded-br-sm"
         >
           <table class="min-w-full">
@@ -115,7 +93,7 @@ const deleteReport = (report: any) => {
               </tr>
             </thead>
             <tbody class="bg-white">
-              <tr v-for="report in state.reports" :key="report.uid">
+              <tr v-for="report in reports" :key="report.uid">
                 <td>
                   <input type="checkbox" />
                 </td>

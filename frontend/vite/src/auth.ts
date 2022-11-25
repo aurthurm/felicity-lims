@@ -37,8 +37,18 @@ const authFromStorage2 = (): {
 }
 
 const authLogout = () => {
-
     localStorage.removeItem(STORAGE_AUTH_KEY);
 }
 
-export { authToStorage, authFromStorage,authFromStorage2, authLogout }
+
+const getAuthData = () => {
+    let data: any = {};
+    if(localStorage.getItem(STORAGE_AUTH_KEY)){
+        const auth = JSON.parse(localStorage.getItem(STORAGE_AUTH_KEY)!)
+        data = { auth }
+    }
+    return data;
+}
+
+
+export { authToStorage, authFromStorage,authFromStorage2, authLogout, getAuthData }

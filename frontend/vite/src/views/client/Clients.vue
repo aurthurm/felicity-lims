@@ -82,7 +82,7 @@
 
   function showMoreClients(): void {
     clientParams.first = +clientBatch.value;
-    clientParams.after = clientPageInfo?.value?.endCursor;
+    clientParams.after = clientPageInfo?.value?.endCursor!;
     clientParams.text = filterText.value;
     clientParams.filterAction = false;
     clientStore.fetchClients(clientParams);
@@ -186,11 +186,11 @@
       <div class="my-4 flex sm:flex-row flex-col">
         <button @click.prevent="showMoreClients()"
         class="px-2 py-1 mr-2 border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
-        :disabled="!pageInfo?.hasNextPage">Show More</button>
+        :disabled="!clientPageInfo?.hasNextPage">Show More</button>
         <div class="flex flex-row mb-1 sm:mb-0">
             <div class="relative">
                 <select class="appearance-none h-full rounded-l-sm border block  w-full bg-white border-gray-400 text-gray-700 py-2 px-4 pr-8 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                v-model="clientBatch" :disabled="!pageInfo?.hasNextPage">
+                v-model="clientBatch" :disabled="!clientPageInfo?.hasNextPage">
                     <option value="25">25</option>
                     <option value="50">50</option>
                     <option value="100">100</option>

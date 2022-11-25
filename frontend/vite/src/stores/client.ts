@@ -5,6 +5,7 @@ import { GET_ALL_CLIENTS,
   GET_CLIENT_BY_UID } from '../graphql/clients.queries';
 import { addListsUnique } from '../utils';
 import { IClient, IClientContact } from '../models/client'
+import { IPageInfo } from '../models/pagination'
 
 import { useApiUtil } from '../composables'
 
@@ -20,7 +21,7 @@ export const useClientStore = defineStore('client', {
       clientContacts: [],
       fetchingClientContacts: false,
       clientCount: 0,
-      clientPageInfo: undefined,
+      clientPageInfo: {},
     } as {
       clients: IClient[];
       fetchingClients: boolean;
@@ -29,7 +30,7 @@ export const useClientStore = defineStore('client', {
       clientContacts: IClientContact[];
       fetchingClientContacts: boolean;
       clientCount?: number;
-      clientPageInfo?: any;
+      clientPageInfo?: IPageInfo;
     }
   },
   getters: {

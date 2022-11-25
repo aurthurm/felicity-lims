@@ -16,7 +16,7 @@ import { authExchange } from '@urql/exchange-auth';
 import { SubscriptionClient } from 'subscriptions-transport-ws'
 import { pipe, tap } from 'wonka'
 
-import { useAuthStore } from "./stores"
+import { getAuthData, authLogout } from "./auth"
 import { GQL_BASE_URL, WS_BASE_URL } from './conf'
 import { useNotifyToast } from './composables'
 
@@ -27,13 +27,13 @@ const subscriptionClient = new SubscriptionClient( WS_BASE_URL, {
   reconnect: true,
   lazy: true,
   connectionParams: () => {
-    const authStore = useAuthStore();
+    const authData = getAuthData();
     return {
       headers: {
-        ...(authStore?.auth?.token && {
+        ...(authData?.auth?.token && {
         'x-felicity-user-id': "felicity-user-x",
         'x-felicity-role': "felicity-role-x",
-        'Authorization': `Bearer ${authStore?.auth?.token}`
+        'Authorization': `Bearer ${authData?.auth?.token}`
       })
       },
     }
@@ -41,11 +41,11 @@ const subscriptionClient = new SubscriptionClient( WS_BASE_URL, {
 });
 
 const getAuth = async ({ authState }) => {
-  const authStore = useAuthStore();
+  const authData = getAuthData();
 
   if (!authState) {
-    if (authStore?.auth?.token) {
-      return { token: authStore?.auth?.token };
+    if (authData?.auth?.token) {
+      return { token: authData?.auth?.token };
     }
     return null;
   }
@@ -57,7 +57,7 @@ const getAuth = async ({ authState }) => {
 
   toastError("Faied to get Auth Data. Login");
 
-  authStore.logout();
+  authLogout();
 
   return null;
 };
@@ -118,7 +118,7 @@ export const urqlClient = createClient({
         }
         if (isAuthError) {
           toastError("Unknown Network Error Encountered")
-          useAuthStore().logout();
+          authLogout();
         }
       },
     }),
@@ -135,16 +135,16 @@ export const urqlClient = createClient({
     }),
   ],  
   fetchOptions: () => {
-    const authStore = useAuthStore();
+    const authData = getAuthData();
     return {
       headers: {
         'Access-Control-Allow-Origin': '*',
         'Access-Control-Allow-Methods': 'GET, POST, PATCH, PUT, DELETE, OPTIONS',
         'Access-Control-Allow-Headers': 'Origin, Content-Type, X-Auth-Token',
-        ...(authStore?.auth?.token && {
+        ...(authData?.auth?.token && {
           'x-felicity-user-id': "felicity-user-x",
           'x-felicity-role': "felicity-role-x",
-          'Authorization': `Bearer ${authStore?.auth?.token}`
+          'Authorization': `Bearer ${authData?.auth?.token}`
         }),
       },
     };

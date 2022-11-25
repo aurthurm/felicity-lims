@@ -5,6 +5,7 @@ import userPreferenceComposable from "./preferences"
 import useReportComposable from "./reports"
 import useSampleComposable from "./samples"
 import useWorkSheetComposable from "./worksheet"
+// import useAnalyticsComposable from "./analytics"
 
 export {
     useNotifyToast,
@@ -13,5 +14,6 @@ export {
     userPreferenceComposable,
     useReportComposable,
     useSampleComposable,
-    useWorkSheetComposable
+    useWorkSheetComposable,
+    // useAnalyticsComposable
 }

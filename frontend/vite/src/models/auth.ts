@@ -14,6 +14,9 @@ export interface IUser {
     isSuperuser?: boolean;
     authUid?: number;
     auth?: IUserAuth;
+    // for API axios
+    first_name?: string;
+    last_name?: string;
 }
 
 export interface IUserAuth {

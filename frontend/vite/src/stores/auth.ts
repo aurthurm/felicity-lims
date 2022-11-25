@@ -38,7 +38,6 @@ export const useAuthStore = defineStore('auth', () => {
 
     const logout = () => {
         toastInfo("Good bye " + auth.value.user?.firstName)
-        localStorage.removeItem(STORAGE_AUTH_KEY)
         reset()
     }
 

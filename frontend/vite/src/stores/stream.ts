@@ -6,6 +6,7 @@ import {
 import { pipe, subscribe } from 'wonka';
 import { useWorksheetStore } from './worksheet'
 import { useSampleStore } from './sample'
+import useAnalyticsComposable from '../composables/analytics';
 
 
 export const useStreamStore = defineStore('stream', { 
@@ -19,17 +20,22 @@ export const useStreamStore = defineStore('stream', {
     },
     actions: {
         addStream(payload){
+            const { updateReport } = useAnalyticsComposable()
             const wsStore = useWorksheetStore()
             const sampleStore = useSampleStore() 
 
             this.streams?.unshift(payload);
-            
+
             if(payload.actionObjectType === "sample"){
                 sampleStore.updateSampleStatus(payload.actionObject)            
             }
 
             if(payload.actionObjectType === "worksheet"){
                 wsStore.updateWorksheetStatus(payload.actionObject)
+            }
+
+            if(payload.actionObjectType === "report"){
+                updateReport(payload.actionObject)
             }
 
             if(payload.actionObjectType === "result"){
