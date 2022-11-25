@@ -3,10 +3,12 @@ from typing import List, Optional, Union
 
 import strawberry  # noqa
 from felicity.api.gql.analysis.types.analysis import SampleType
+from felicity.api.gql.analysis.types.results import AnalysisResultType
 from felicity.api.gql.setup.types import DepartmentType
 from felicity.api.gql.user.types import GroupType, UserType
 from felicity.api.gql.worksheet.types import WorkSheetType
 from felicity.apps.analysis.models.analysis import Sample
+from felicity.apps.analysis.models.results import AnalysisResult
 from felicity.apps.worksheet.models import WorkSheet
 
 
@@ -17,7 +19,7 @@ class UnknownObjectType:
 
 actionObject = strawberry.union(
     "actionObject",
-    [WorkSheetType, SampleType],
+    [WorkSheetType, SampleType, AnalysisResultType],
     description="Union of possible object types for streams",
 )
 
@@ -48,7 +50,7 @@ class ActivityStreamType:
     @strawberry.field
     async def action_object(
         self, info
-    ) -> Union[WorkSheetType, SampleType, UnknownObjectType]:
+    ) -> Union[WorkSheetType, SampleType, AnalysisResultType, UnknownObjectType]:
         if self.action_object_type == "sample":
             sample = await Sample.get(uid=self.action_object_uid)
             return SampleType(
@@ -61,6 +63,12 @@ class ActivityStreamType:
         if self.action_object_type == "worksheet":
             ws = await WorkSheet.get(uid=self.action_object_uid)
             return WorkSheetType(**ws.marshal_simple())
+
+        if self.action_object_type == "result":
+            result = await AnalysisResult.get(uid=self.action_object_uid)
+            return AnalysisResultType(**result.marshal_simple(
+                exclude=["right", "left", "tree_id", "level", "worksheet"]
+            ), parent=None)
 
         return UnknownObjectType(
             message=f"Please provide a resolver for object of type {self.action_object_type}"

@@ -177,3 +177,9 @@ async def set_default_group_permissions() -> None:
                     if group.name == FGroup.ADMINISTRATOR:
                         group.pages += ", ADMINISTRATION"
                     await group.save()
+
+
+async def setup_default_permissions() -> None:
+    await create_groups()
+    await create_permissions()
+    await set_default_group_permissions()

@@ -219,8 +219,8 @@ class Notification(BaseAuditDBModel):
     messages to notify users about something important
     examples:
         32 samples are due in 4 days, today, etc ....
-        7 open worksheets have been lying idle for 3 weeks plus with 137 samples past their duw date.
-        2 worksheets have no samples, consider deleting them to avoid cluttering your dashboard
+        7 open worksheets have been lying idle for 3 weeks including 137 samples past their due date.
+        2 worksheets have no samples, consider populating or deleting them to avoid cluttering your dashboard
         ...
     """
 

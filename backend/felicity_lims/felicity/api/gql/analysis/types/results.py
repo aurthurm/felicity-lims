@@ -25,15 +25,21 @@ class AnalysisResultType:
     method: Optional[MethodType]
     result: Optional[str]
     analyst_uid: Optional[int]
+    analyst: Optional[UserType]
     submitted_by_uid: Optional[int]
+    submitted_by: Optional[UserType]
     date_submitted: Optional[datetime]
     verified_by: Optional[List[UserType]]
     date_verified: Optional[datetime]
+    invalidated_by: Optional[UserType]
     invalidated_by_uid: Optional[int]
     date_invalidated: Optional[datetime]
     due_date: Optional[datetime]
+    date_cancelled: Optional[datetime]
+    cancelled_by_uid: Optional[int]
+    cancelled_by: Optional[UserType]
     retest: bool
-    parent_id: int
+    parent_id: Optional[int]
     parent: Optional["AnalysisResultType"]
     reportable: bool
     status: Optional[str]

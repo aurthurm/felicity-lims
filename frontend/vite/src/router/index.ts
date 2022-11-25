@@ -13,11 +13,7 @@ import { useAuthStore } from '../stores';
 const routes: RouteRecordRaw[] = [
   {
     path: '/',
-    name: "redirect",
-    component: () => import('../views/Blank.vue'),
-    meta: {
-      requiresAuth: true,
-    },
+    redirect: { name: guards.pages.DASHBOARD },
   },
   {
     path: '/dashboard',
@@ -151,9 +147,9 @@ router.beforeEach(async (to, from) => {
       return { name: guards.pages.LOGIN }
     }
 
-    if (to.path === '/') {
-      return { name: guards.pages.DASHBOARD }
-    }
+    // if (to.path === '/') {
+    //   return { name: guards.pages.DASHBOARD }
+    // }
 
     if(!hasAccess(to.matched[0].name)) {
       return { name: guards.pages.NOT_AUTHORISED }

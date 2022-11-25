@@ -121,8 +121,16 @@ export const useWorksheetStore = defineStore('worksheet', {
   },
   async updateWorksheet(payload){
     await withClientMutation(WORKSHEET_UPDATE, payload, "updateWorksheet")
-          .then(payload => {
-          });
+          .then(payload => {});
+  },
+  updateWorksheetStatus(worksheet: any){
+    const index = this.workSheets.findIndex(x => x.uid === worksheet.uid);
+    if(index > -1) {
+      this.workSheets[index].state = worksheet.state;
+    }
+    if(this.workSheet?.uid === worksheet.uid) {
+      this.workSheet!.state = worksheet.state;
+    }
   },
   updateWorksheetResultsStatus(payload){
     payload?.forEach(result => {
@@ -169,6 +177,16 @@ export const useWorksheetStore = defineStore('worksheet', {
             this.analysisResultCount = page?.totalCount;
             this.analysisResultPageInfo = page?.pageInfo;
           }).catch(err => this.fetchingAnalysisResults = false);
+    },
+
+    // analysis results
+    updateAnalysesResults(payload: IAnalysisResult[]){
+      payload?.forEach(result => {
+        const index = this.analysisResults.findIndex(x => x.uid === result.uid);
+        if(index > -1) {
+          this.analysisResults[index] = { ...this.analysisResults[index], ...result};
+        }
+      })
     },
   
   }

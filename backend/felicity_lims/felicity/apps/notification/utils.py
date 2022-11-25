@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 
 
 class FelicityStreamer:
-    """streams util"""
+    """activity streams helper util"""
 
     @staticmethod
     async def stream(obj: Any, actor: Any, verb: str, object_type: str):
@@ -29,7 +29,7 @@ class FelicityStreamer:
 
 
 class FelicityNotifier:
-    """simple notification util"""
+    """simple notification stream util util"""
 
     @staticmethod
     async def notify(

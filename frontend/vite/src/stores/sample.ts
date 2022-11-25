@@ -152,6 +152,9 @@ export const useSampleStore = defineStore('sample', {
     if(index > -1) {
       this.samples[index].status = sample.status;
     }
+    if (this.sample?.uid === sample.uid) {
+      this.sample!.status = sample.status
+    }
   },
   async fetchSampleStatus(uid){
     if(!uid){ return }

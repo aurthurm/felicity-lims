@@ -7,12 +7,15 @@ from felicity.apps.analysis.conf import states
 from felicity.apps.analysis.models.analysis import SampleType
 from felicity.apps.analysis.models.results import (AnalysisResult,
                                                    ResultMutation)
+from felicity.apps.notification.utils import FelicityStreamer
 from felicity.apps.reflex.utils import ReflexUtil
 from felicity.utils import has_value_or_is_truthy
 from sqlalchemy import or_
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
+streamer = FelicityStreamer()
 
 
 async def get_qc_sample_type():
@@ -120,6 +123,9 @@ async def results_submitter(analysis_results: List[dict], submitter):
         # mutate result
         await result_mutator(a_result)
 
+        if a_result.status == states.result.RESULTED:
+            await streamer.stream(a_result, submitter, "submitted", "result")
+
         # Do Reflex Testing
         logger.info(f"ReflexUtil .... running")
         await ReflexUtil(analysis_result=a_result, user=submitter).do_reflex()
@@ -150,6 +156,9 @@ async def verify_from_result_uids(uids: List[int], user):
         if status in [states.result.RESULTED, states.result.APPROVING]:
             _, a_result = await a_result.verify(verifier=user)
             to_return.append(a_result)
+
+            if a_result.status == states.result.APPROVED:
+                await streamer.stream(a_result, user, "approved", "result")
         else:
             continue
 
@@ -280,4 +289,4 @@ async def result_mutator(result: AnalysisResult):
                 result.result = spec.warn_report
 
     if result_in != result.result:
-        await result.save()
+        result = await result.save()

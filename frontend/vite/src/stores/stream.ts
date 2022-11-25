@@ -4,6 +4,8 @@ import {
     SUBSCRIBE_TO_ACTIVITY_STREAM
 } from '../graphql/stream.subscriptions';
 import { pipe, subscribe } from 'wonka';
+import { useWorksheetStore } from './worksheet'
+import { useSampleStore } from './sample'
 
 
 export const useStreamStore = defineStore('stream', { 
@@ -17,12 +19,34 @@ export const useStreamStore = defineStore('stream', {
     },
     actions: {
         addStream(payload){
-            this.streams?.unshift(payload)
+            const wsStore = useWorksheetStore()
+            const sampleStore = useSampleStore() 
+
+            this.streams?.unshift(payload);
+            
+            if(payload.actionObjectType === "sample"){
+                sampleStore.updateSampleStatus(payload.actionObject)            
+            }
+
+            if(payload.actionObjectType === "worksheet"){
+                wsStore.updateWorksheetStatus(payload.actionObject)
+            }
+
+            if(payload.actionObjectType === "result"){
+                sampleStore.updateAnalysesResultsStatus([payload.actionObject])
+                wsStore.updateAnalysesResults([payload.actionObject])
+            }
         },
         subscribeToActivityStream(){
             pipe(
                 urqlClient.subscription(SUBSCRIBE_TO_ACTIVITY_STREAM, { }),
-                subscribe(result => (this.addStream(result.data?.latestStream)))
+                subscribe(result => {
+                    if(result.data?.latestActivity) {
+                        this.addStream(result.data?.latestActivity)
+                    } else {
+                        console.log("empty stream received")
+                    }
+                })
               ).unsubscribe;
         }
     }

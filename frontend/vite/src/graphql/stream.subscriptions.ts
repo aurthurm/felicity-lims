@@ -34,8 +34,8 @@ export const SUBSCRIBE_TO_TEST_STREAM = gql`
 
 
 export const SUBSCRIBE_TO_ACTIVITY_STREAM = gql`
-subscription getTestingStream {
-  latestStream {
+subscription getSystemActivity {
+  latestActivity {
     uid
     actorUid
     actor{
@@ -50,6 +50,7 @@ subscription getTestingStream {
       ...on SampleType {
         uid
         sampleId
+        status
         analysisRequest {
           patientUid
         }
@@ -57,6 +58,13 @@ subscription getTestingStream {
       ...on WorkSheetType {
         uid
         worksheetId
+        state
+      }
+      ...on AnalysisResultType {
+        uid
+        sampleUid
+        result
+        status
       }
     }
     targetUid

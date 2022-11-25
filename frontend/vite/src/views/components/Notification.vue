@@ -78,7 +78,7 @@ watch(
 
         <div
           v-for="stream of streamStore.streams"
-          :key="stream.uid"
+          :key="stream?.uid"
           class="w-full p-3 mt-4 bg-whiterounded-smflex"
         >
           <div

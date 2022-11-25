@@ -12,7 +12,7 @@
   let currentTab = ref<string>('general-info');
   const tabs: string[]= ['general-info', 'other-settings'];
 
-  let editDisabled = ref(true);
+  let editDisabled = ref(false);
 
   setupStore.fetchLaboratory()
   const laboratory = computed(() => setupStore.getLaboratory)

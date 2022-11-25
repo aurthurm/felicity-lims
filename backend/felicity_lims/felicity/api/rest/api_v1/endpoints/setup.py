@@ -3,8 +3,8 @@ from typing import Any, Optional
 
 from fastapi import APIRouter
 from felicity.apps.setup import models, schemas
-from felicity.init import (create_laboratory, create_super_user,
-                           initialize_felicity)
+from felicity.init import (create_laboratory, create_super_user, setup_default_permissions,
+                           initialize_felicity, init_id_sequence)
 from pydantic import BaseModel
 
 router = APIRouter()
@@ -53,6 +53,24 @@ async def register_laboratory(*, form: LabNameIn) -> Any:
             "laboratory": None,
             "installed": False,
             "message": f"Failed to create a superuser: {e}",
+        }
+
+    try:
+        await setup_default_permissions()
+    except Exception as e:
+        return {
+            "laboratory": None,
+            "installed": False,
+            "message": f"Failed to create a default permissions: {e}",
+        }
+
+    try:
+        await init_id_sequence()
+    except Exception as e:
+        return {
+            "laboratory": None,
+            "installed": False,
+            "message": f"Failed to initialise id sequence: {e}",
         }
 
     laboratory = await models.Laboratory.get_by_setup_name("felicity")

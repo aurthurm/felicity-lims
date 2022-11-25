@@ -13,14 +13,9 @@ logger = logging.getLogger(__name__)
 
 @strawberry.type
 class StreamSubscription:
-    @strawberry.subscription
-    async def count(self, target: int = 100) -> int:
-        for i in range(target):
-            yield i
-            await asyncio.sleep(0.5)
 
     @strawberry.subscription
-    async def latest_stream(self) -> AsyncGenerator[ActivityStreamType, None]:  # noqa
+    async def latest_activity(self) -> AsyncGenerator[ActivityStreamType, None]:  # noqa
         subscriber: Subscriber
         async with broadcast.subscribe(channel="activities") as subscriber:
             logger.info("Subscribed")
@@ -33,7 +28,7 @@ class StreamSubscription:
                 logger.info("Unsubscribed")
 
     @strawberry.subscription
-    async def test_stream(self) -> AsyncGenerator[ActivityStreamType, None]:  # noqa
+    async def stream_all(self) -> AsyncGenerator[ActivityStreamType, None]:  # noqa
         streams = await ActivityStream.all()
         for stream in streams:
             yield stream
