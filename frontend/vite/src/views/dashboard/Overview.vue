@@ -21,10 +21,12 @@ watch(
 </script>
 
 <template>
+
   <div v-if="dashboard.fetchingOverViewStats" class="text-start my-4 w-100">
     <LoadingMessage message="fetching updated overview stats ..." />
   </div>
   <section>
+  
     <h1 class="text-xl text-gray-700 font-semibold">Analyses Status</h1>
     <hr class="my-2" />
 
@@ -38,6 +40,7 @@ watch(
         <span class="font-semibold text-gray-400 text-l">{{ analyte.group }}</span>
       </div>
     </div>
+    <p v-if="!dashboard.overViewStats?.analyses?.length" class="my-4">I did not find any analyses indicators to show</p>
 
     <h1 class="mt-4 text-xl text-gray-700 font-semibold">Sample Status</h1>
     <hr class="my-2" />
@@ -51,6 +54,7 @@ watch(
         <span class="font-semibold text-gray-400 text-l">{{ sample.group }}</span>
       </div>
     </div>
+    <p v-if="!dashboard.overViewStats?.samples?.length" class="my-4">I did not find any sample indicators to show</p>
 
     <h1 class="mt-4 text-xl text-gray-700 font-semibold">WorkSheet Status</h1>
     <hr class="my-2" />
@@ -64,34 +68,20 @@ watch(
         <span class="font-semibold text-gray-400 text-l">{{ worksheet.group }}</span>
       </div>
     </div>
+    <p v-if="!dashboard.overViewStats?.worksheets?.length" class="my-4">I did not find any worksheet indicators to show</p>
 
-    <h1 class="mt-4 text-xl text-gray-700 font-semibold">Other Status</h1>
+    <h1 class="mt-4 text-xl text-gray-700 font-semibold">Extras</h1>
     <hr class="my-2" />
     <div class="flex justify-start">
       <div
+        v-for="extra in dashboard.overViewStats?.extras"
+        :key="extra.group"
         class="flex items-center bg-white shadow rounded-sm px-6 pt-3 pb-5 border border-white mr-8"
       >
-        <span class="mr-4 font-bold text-gray-600 text-xl">1345</span>
-        <span class="font-semibold text-gray-400 text-l">cancelled samples</span>
+        <span class="mr-4 font-bold text-gray-600 text-xl">{{ extra.count }}</span>
+        <span class="font-semibold text-gray-400 text-l">{{ extra.group }}</span>
       </div>
-      <div
-        class="flex items-center bg-white shadow rounded-sm px-6 pt-3 pb-5 border border-white mr-8"
-      >
-        <span class="mr-4 font-bold text-gray-600 text-xl">1345</span>
-        <span class="font-semibold text-gray-400 text-l">rejected samples</span>
-      </div>
-      <div
-        class="flex items-center bg-white shadow rounded-sm px-6 pt-3 pb-5 border border-white mr-8"
-      >
-        <span class="mr-4 font-bold text-gray-600 text-xl">1345</span>
-        <span class="font-semibold text-gray-400 text-l">invalidated samples</span>
-      </div>
-      <div
-        class="flex items-center bg-white shadow rounded-sm px-6 pt-3 pb-5 border border-white mr-8"
-      >
-        <span class="mr-4 font-bold text-gray-600 text-xl">1345</span>
-        <span class="font-semibold text-gray-400 text-l">retested analytes</span>
-      </div>
+      <p v-if="!dashboard.overViewStats?.extras?.length" class="my-4">I did not find any extra indicators to show</p>
     </div>
   </section>
 </template>

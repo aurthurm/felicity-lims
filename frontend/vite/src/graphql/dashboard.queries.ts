@@ -12,6 +12,18 @@ export const GET_SAMPLE_GROUP_BY_STATUS = gql`
     }
 }`;
 
+
+export const GET_EXTRAS_GROUP_BY_STATUS = gql`
+  query getExtrasGroupByStatus {
+    countExtrasGroupByStatus {
+      data {
+        __typename
+        group
+        count
+      }
+    }
+}`;
+
 export const GET_ANALYSIS_GROUP_BY_STATUS = gql`
   query getAnalysisGroupByStatus {
     countAnalyteGroupByStatus {

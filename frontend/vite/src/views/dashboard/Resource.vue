@@ -143,8 +143,7 @@ const resetUserMatrix = () => {
 
 <template>
   <section class="flex justify-between">
-    <h1 class="text-2xl text-gray-800 font-bold">DashBoard</h1>
-    <div class="flex justify-end align-items-center" v-show="dashboard.showFilters">
+    <div class="flex justify-end align-items-center mt-4 mb-8" v-show="dashboard.showFilters">
       <button
         v-for="(filter, index) in dashboard.filters"
         :key="index"
@@ -194,7 +193,7 @@ const resetUserMatrix = () => {
       </div>
     </div>
 
-    <h1 class="mt-4 text-xl text-gray-700 font-semibold">User Load / Matrix</h1>
+    <h1 class="mt-8 text-xl text-gray-700 font-semibold">User Matrix / Load</h1>
     <hr class="my-2" />
     <div class="flex flex-wrap justify-start" id="user-matrix">
       <div>
@@ -212,7 +211,7 @@ const resetUserMatrix = () => {
     </div>
   </section>
 
-  <!-- Custome Date Range Modal -->
+  <!-- Custome Dat Range Modal -->
   <modal v-if="showModal" @close="showModal = false" :contentWidth="'w-1/4'">
     <template v-slot:header>
       <h3>Custom Filter Date Range</h3>

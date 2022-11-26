@@ -6,11 +6,13 @@ import pandas as pd
 import strawberry  # noqa
 from felicity.api.gql.analytics import types
 from felicity.apps.analysis.models.analysis import Sample
+from felicity.apps.analysis.conf import states
 from felicity.apps.analysis.models.results import AnalysisResult
 from felicity.apps.analytics import SampleAnalyticsInit
 from felicity.apps.setup.models import Instrument
 from felicity.apps.user.models import User
 from felicity.apps.worksheet.models import WorkSheet
+from felicity.apps.worksheet.conf import worksheet_states
 from felicity.utils import has_value_or_is_truthy
 
 logging.basicConfig(level=logging.INFO)
@@ -38,30 +40,16 @@ async def get_instrument(val):
 
 
 @strawberry.field
-async def test_stuff(info) -> types.Nothing:
-    analytics = SampleAnalyticsInit(Sample)
-    columns, lines = await analytics.get_line_listing()
-
-    # line = await analytics.get_line_listing_2()
-
-    data_list = [line for line in lines]
-
-    df = pd.DataFrame(data_list, columns=columns)
-
-    df.to_csv("data.csv", index=False)
-    s_buffer = io.StringIO()
-    df.to_csv(s_buffer, index=False)
-    s_buffer.seek(0)
-
-    # json.dumps([(dict(row.items())) for row in rs]) to json
-
-    return types.Nothing(data="")
-
-
-@strawberry.field
 async def count_sample_group_by_status(info) -> types.GroupedCounts:
     analytics = SampleAnalyticsInit(Sample)
-    results = await analytics.get_counts_group_by("status", ("", ""), ("", ""))
+    state_in = [
+        states.sample.SCHEDULED,
+        states.sample.EXPECTED,
+        states.sample.RECEIVED,
+        states.sample.AWAITING,
+        states.sample.APPROVED,
+    ]
+    results = await analytics.get_counts_group_by("status", ("", ""), ("", ""), state_in)
 
     stats = []
     for row in results:
@@ -73,7 +61,11 @@ async def count_sample_group_by_status(info) -> types.GroupedCounts:
 @strawberry.field
 async def count_analyte_group_by_status(info) -> types.GroupedCounts:
     analytics = SampleAnalyticsInit(AnalysisResult)
-    results = await analytics.get_counts_group_by("status", ("", ""), ("", ""))
+    state_in = [
+        states.result.PENDING,
+        states.result.RESULTED,
+    ]
+    results = await analytics.get_counts_group_by("status", ("", ""), ("", ""), state_in)
 
     stats = []
     for row in results:
@@ -81,11 +73,48 @@ async def count_analyte_group_by_status(info) -> types.GroupedCounts:
 
     return types.GroupedCounts(data=stats)
 
+@strawberry.field
+async def count_extras_group_by_status(info) -> types.GroupedCounts:
+    sample_analytics = SampleAnalyticsInit(Sample)
+    sample_states = [
+        states.sample.CANCELLED,
+        states.sample.REJECTED,
+        states.sample.INVALIDATED,
+    ]
+    sample_results = await sample_analytics.get_counts_group_by("status", ("", ""), ("", ""), sample_states)
+
+    result_analytics = SampleAnalyticsInit(AnalysisResult)
+    result_states = [
+        states.result.RETRACTED,
+    ]
+    result_results = await result_analytics.get_counts_group_by("status", ("", ""), ("", ""), result_states)
+
+    retests = await result_analytics.count_analyses_retests(("", ""), ("", ""))
+
+    stats = []
+    for s_row in sample_results:
+        stats.append(types.GroupCount(group=f"sample {group_exists(s_row[0])}", count=s_row[1]))
+
+    for r_row in result_results:
+        stats.append(types.GroupCount(group=f"analysis {group_exists(r_row[0])}", count=r_row[1]))
+
+    if retests:
+        val = retests[0][0]
+        if val > 0:
+            stats.append(types.GroupCount(group="analysis retested", count=val))
+
+    return types.GroupedCounts(data=stats)
+
 
 @strawberry.field
 async def count_worksheet_group_by_status(info) -> types.GroupedCounts:
     analytics = SampleAnalyticsInit(WorkSheet)
-    results = await analytics.get_counts_group_by("state", ("", ""), ("", ""))
+    state_in = [
+        worksheet_states.EMPTY,
+        worksheet_states.AWAITING,
+        worksheet_states.PENDING
+    ]
+    results = await analytics.get_counts_group_by("state", ("", ""), ("", ""), state_in)
 
     stats = []
     for row in results:

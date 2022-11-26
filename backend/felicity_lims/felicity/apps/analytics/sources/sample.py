@@ -115,6 +115,7 @@ class SampleAnalyticsInit(Generic[ModelType]):
         group_by: str,
         start: Optional[Tuple[str, str]],
         end: Optional[Tuple[str, str]],
+        group_in: Optional[List[str]] = None
     ):  # noqa
         if not hasattr(self.model, group_by):
             logger.warning(f"Model has no attr {group_by}")
@@ -143,12 +144,43 @@ class SampleAnalyticsInit(Generic[ModelType]):
             end_column = getattr(self.model, end_column)
             stmt = stmt.filter(end_column <= end_date)
 
+        if group_in:
+            stmt = stmt.filter(group_by.in_(group_in))
+
         stmt = stmt.group_by(group_by)
 
         async with async_session_factory() as session:
             result = await session.execute(stmt)
 
         return result.all()
+
+    async def count_analyses_retests(self, start: Tuple[str, str], end: Tuple[str, str]):
+        retest = getattr(self.model, "retest")
+        stmt = select(func.count(self.model.uid).label("total")).filter(retest == True)
+
+        if start[1]:
+            start_column = start[0]
+            start_date = parser.parse(start[1]).replace(tzinfo=None)
+            if not hasattr(self.model, start_column):
+                logger.warning(f"Model has no attr {start_column}")
+                raise AttributeError(f"Model has no attr {start_column}")
+            start_column = getattr(self.model, start_column)
+            stmt = stmt.filter(start_column >= start_date)
+
+        if end[1]:
+            end_column = end[0]
+            end_date = parser.parse(end[1]).replace(tzinfo=None)
+            if not hasattr(self.model, end_column):
+                logger.warning(f"Model has no attr {end_column}")
+                raise AttributeError(f"Model has no attr {end_column}")
+            end_column = getattr(self.model, end_column)
+            stmt = stmt.filter(end_column <= end_date)
+
+        async with async_session_factory() as session:
+            result = await session.execute(stmt)
+
+        return result.all()
+
 
     async def get_sample_process_performance(
         self, start: Tuple[str, str], end: Tuple[str, str]

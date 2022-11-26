@@ -6,6 +6,7 @@ import {
     GET_SAMPLE_GROUP_BY_STATUS,
     GET_ANALYSIS_GROUP_BY_STATUS,
     GET_WORKSHEET_GROUP_BY_STATUS,
+    GET_EXTRAS_GROUP_BY_STATUS,
     GET_ANALYSIS_GROUP_BY_INSTRUMENT,
     GET_SAMPLE_PROCESS_PEFORMANCE,
     GET_ANALYSIS_PROCESS_PEFORMANCE,
@@ -51,6 +52,7 @@ export const useDashBoardStore = defineStore('dashboard', () => {
         overViewStats: { 
             analyses: [] as GroupCount[], 
             samples: [] as GroupCount[], 
+            extras: [] as GroupCount[],
             worksheets: [] as GroupCount[] 
         },
         fetchingOverViewStats: false,
@@ -79,6 +81,7 @@ export const useDashBoardStore = defineStore('dashboard', () => {
             await countSamplesGroupsByStatus();
             await countAnalysisGroupsByStatus();
             await countWrksheetGroupsByStatus();
+            await countExtrasGroupsByStatus();
         } catch (error) {
             dashboard.value.fetchingOverViewStats = false;
         }
@@ -125,6 +128,16 @@ export const useDashBoardStore = defineStore('dashboard', () => {
         }
         await withClientQuery(GET_WORKSHEET_GROUP_BY_STATUS,filters, 'countWorksheetGroupByStatus', 'network-only')
         .then(payload => dashboard.value.overViewStats.worksheets = payload.data)
+    }
+
+    // GET_extras_GROUP_BY_STATUS
+    const countExtrasGroupsByStatus = async () => {
+        const filters = { 
+            startDate: dashboard.value.filterRange.from,
+            endDate: dashboard.value.filterRange.to
+        }
+       await  withClientQuery(GET_EXTRAS_GROUP_BY_STATUS, filters , 'countExtrasGroupByStatus', 'network-only')
+        .then(payload => dashboard.value.overViewStats.extras = payload.data)
     }
 
     // GET_ANALYSIS_GROUP_BY_INSTRUMENT
