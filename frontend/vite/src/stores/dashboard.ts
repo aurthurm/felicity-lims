@@ -13,6 +13,7 @@ import {
     GET_SAMPLE_GROUPS_BY_ACTION,
     GET_SAMPLE_LAGGARDS,
 } from '../graphql/dashboard.queries'
+import { mapOrder } from '../utils'
 
 import { useApiUtil } from "../composables";
 const { withClientQuery } = useApiUtil();
@@ -107,7 +108,7 @@ export const useDashBoardStore = defineStore('dashboard', () => {
             endDate: dashboard.value.filterRange.to
         }
        await  withClientQuery(GET_SAMPLE_GROUP_BY_STATUS, filters , 'countSampleGroupByStatus', 'network-only')
-        .then(payload => dashboard.value.overViewStats.samples = payload.data)
+        .then(payload => dashboard.value.overViewStats.samples = mapOrder(payload.data, ["scheduled","expected","received", "awaiting", "approved"], "group"))
     }
 
     // GET_ANALYSIS_GROUP_BY_STATUS
@@ -117,7 +118,7 @@ export const useDashBoardStore = defineStore('dashboard', () => {
             endDate: dashboard.value.filterRange.to
         }
         await withClientQuery(GET_ANALYSIS_GROUP_BY_STATUS, filters , 'countAnalyteGroupByStatus', 'network-only')
-        .then(payload => dashboard.value.overViewStats.analyses = payload.data)
+        .then(payload => dashboard.value.overViewStats.analyses = mapOrder(payload.data, ["pending","resulted"], "group"))
     }
 
     // GET_WORKSHEET_GROUP_BY_STATUS
@@ -127,7 +128,7 @@ export const useDashBoardStore = defineStore('dashboard', () => {
             endDate: dashboard.value.filterRange.to
         }
         await withClientQuery(GET_WORKSHEET_GROUP_BY_STATUS,filters, 'countWorksheetGroupByStatus', 'network-only')
-        .then(payload => dashboard.value.overViewStats.worksheets = payload.data)
+        .then(payload => dashboard.value.overViewStats.worksheets = mapOrder(payload.data, ["empty","awaiting","pending"], "group"))
     }
 
     // GET_extras_GROUP_BY_STATUS
@@ -137,7 +138,7 @@ export const useDashBoardStore = defineStore('dashboard', () => {
             endDate: dashboard.value.filterRange.to
         }
        await  withClientQuery(GET_EXTRAS_GROUP_BY_STATUS, filters , 'countExtrasGroupByStatus', 'network-only')
-        .then(payload => dashboard.value.overViewStats.extras = payload.data)
+        .then(payload => dashboard.value.overViewStats.extras = mapOrder(payload.data, ["sample cancelled", "sample rejected", "sample invalidated", "analysis retracted", "analysis retested"], "group"))
     }
 
     // GET_ANALYSIS_GROUP_BY_INSTRUMENT

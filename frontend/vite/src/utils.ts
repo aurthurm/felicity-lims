@@ -149,9 +149,29 @@ export const stringifyNumber = (n: number):string => {
   return deca[Math.floor(n/10)-2] + 'y-' + special[n%10];
 }
 
+/**
+ * Sort array of objects based on another array
+ */
+
+export const mapOrder = (array, order, key) => {
+  
+ return  array.sort( function (a, b) {
+    var A = a[key], B = b[key];
+    
+    if (order.indexOf(A) > order.indexOf(B)) {
+      return 1;
+    } else {
+      return -1;
+    }
+    
+  });
+  
+};
+
 
 export default {
   isNullOrWs,
   parseUrlParams,
   startsWith,
+  mapOrder,
 };
