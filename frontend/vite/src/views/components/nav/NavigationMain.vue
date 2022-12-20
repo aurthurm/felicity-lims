@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed } from "vue";
 import { useNotificationStore, useAuthStore } from "../../../stores";
 import { userPreferenceComposable } from "../../../composables";
 import * as guards from "./../../../guards";
@@ -8,14 +8,15 @@ const dropdownOpen = ref(false);
 const themeChange = ref(false);
 const isOpen = ref(false);
 
-const userFullName: string | null = localStorage.getItem("fuser");
-
 const notificationStore = useNotificationStore();
 const authStore = useAuthStore();
-
 const { theme, toggleTheme, loadPreferedTheme } = userPreferenceComposable();
 
 onMounted(() => loadPreferedTheme());
+
+const userFullName = computed(
+  () => `${authStore.auth?.user?.firstName} ${authStore.auth?.user?.lastName}`
+);
 
 const showNotifications = (val) => notificationStore.showNotifications(val);
 </script>
@@ -50,20 +51,17 @@ const showNotifications = (val) => notificationStore.showNotifications(val);
         <span class="text-sm">Settings</span>
       </router-link>
       <div class="flex text-right align-middle py-2">
-        <div>
-          <img
-            class="inline-block h-10 w-10 rounded-full border-2 border-gray-400 hover:border-gray-300 focus:border-gray-300 focus:outline-none"
-            src="https://avatars0.githubusercontent.com/u/17094364?s=460&amp;v=4"
-            alt=""
-          />
-        </div>
-
+        <span
+          class="flex justify-center items-center h-8 w-8 rounded-full border-2 border-gray-400 hover:border-gray-300 focus:border-gray-300 focus:outline-none text-white"
+        >
+          <font-awesome-icon icon="user" />
+        </span>
         <div class="relative">
           <div
             @click="dropdownOpen = !dropdownOpen"
-            class="hidden md:block md:flex md:items-center ml-2 mt-2"
+            class="hidden md:block md:flex md:items-center ml-2 mt-1"
           >
-            <span class="text-white text-sm mr-1">{{ userFullName }}</span>
+            <span class="text-white text-sm mr-2">{{ userFullName }}</span>
             <div>
               <font-awesome-icon icon="chevron-down" class="text-gray-400" />
             </div>
