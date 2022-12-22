@@ -47,7 +47,7 @@ export const useDashBoardStore = defineStore('dashboard', () => {
         currentTab: 'overview',
         tabs: ['overview', 'resource', 'laggard', 'peformance', 'notices', 'line-listing'], // 'tat'
         showFilters: false,
-        filterRange: { from: "", to: "" },
+        filterRange: { from: "", fromIso: "", to: "", toIso: "" },
         currentFilter: "T",
         filters: ['T', 'Y', 'TW', 'LW', 'TM', 'LM', 'TQ', 'LQ', 'TY'],
         overViewStats: { 
@@ -74,6 +74,19 @@ export const useDashBoardStore = defineStore('dashboard', () => {
         laggards: {} as any,
         fetchingLaggards: false
     })
+
+    const filterToolTip = (filter: string): string => {
+        if(filter === 'T') return "Today";
+        if(filter === 'Y') return "Yesterday";
+        if(filter === 'TW') return "This Week";
+        if(filter === 'LW') return "Last Week";
+        if(filter === 'TM') return "This Month";
+        if(filter === 'LM') return "Last Month";
+        if(filter === 'TQ') return "This Quarter";
+        if(filter === 'LQ') return "Last Quarter";
+        if(filter === 'TY') return "This Year";
+        return "Unknown Filter";
+    }
 
     // get_OverViewStats
     const getOverViewStats = async () => {
@@ -104,8 +117,8 @@ export const useDashBoardStore = defineStore('dashboard', () => {
     // GET_SAMPLE_GROUP_BY_STATUS
     const countSamplesGroupsByStatus = async () => {
         const filters = { 
-            startDate: dashboard.value.filterRange.from,
-            endDate: dashboard.value.filterRange.to
+            startDate: dashboard.value.filterRange.fromIso,
+            endDate: dashboard.value.filterRange.toIso
         }
        await  withClientQuery(GET_SAMPLE_GROUP_BY_STATUS, filters , 'countSampleGroupByStatus', 'network-only')
         .then(payload => dashboard.value.overViewStats.samples = mapOrder(payload.data, ["scheduled","expected","received", "awaiting", "approved"], "group"))
@@ -114,8 +127,8 @@ export const useDashBoardStore = defineStore('dashboard', () => {
     // GET_ANALYSIS_GROUP_BY_STATUS
     const countAnalysisGroupsByStatus = async () => {
         const filters = { 
-            startDate: dashboard.value.filterRange.from,
-            endDate: dashboard.value.filterRange.to
+            startDate: dashboard.value.filterRange.fromIso,
+            endDate: dashboard.value.filterRange.toIso
         }
         await withClientQuery(GET_ANALYSIS_GROUP_BY_STATUS, filters , 'countAnalyteGroupByStatus', 'network-only')
         .then(payload => dashboard.value.overViewStats.analyses = mapOrder(payload.data, ["pending","resulted"], "group"))
@@ -124,8 +137,8 @@ export const useDashBoardStore = defineStore('dashboard', () => {
     // GET_WORKSHEET_GROUP_BY_STATUS
     const countWrksheetGroupsByStatus = async () => {
         const filters = { 
-            startDate: dashboard.value.filterRange.from,
-            endDate: dashboard.value.filterRange.to
+            startDate: dashboard.value.filterRange.fromIso,
+            endDate: dashboard.value.filterRange.toIso
         }
         await withClientQuery(GET_WORKSHEET_GROUP_BY_STATUS,filters, 'countWorksheetGroupByStatus', 'network-only')
         .then(payload => dashboard.value.overViewStats.worksheets = mapOrder(payload.data, ["empty","awaiting","pending"], "group"))
@@ -134,8 +147,8 @@ export const useDashBoardStore = defineStore('dashboard', () => {
     // GET_extras_GROUP_BY_STATUS
     const countExtrasGroupsByStatus = async () => {
         const filters = { 
-            startDate: dashboard.value.filterRange.from,
-            endDate: dashboard.value.filterRange.to
+            startDate: dashboard.value.filterRange.fromIso,
+            endDate: dashboard.value.filterRange.toIso
         }
        await  withClientQuery(GET_EXTRAS_GROUP_BY_STATUS, filters , 'countExtrasGroupByStatus', 'network-only')
         .then(payload => dashboard.value.overViewStats.extras = mapOrder(payload.data, ["sample cancelled", "sample rejected", "sample invalidated", "analysis retracted", "analysis retested"], "group"))
@@ -144,8 +157,8 @@ export const useDashBoardStore = defineStore('dashboard', () => {
     // GET_ANALYSIS_GROUP_BY_INSTRUMENT
     const countAnalysisGroupsByInstrument = async () => {
         const filters = { 
-            startDate: dashboard.value.filterRange.from,
-            endDate: dashboard.value.filterRange.to
+            startDate: dashboard.value.filterRange.fromIso,
+            endDate: dashboard.value.filterRange.toIso
         }
         await withClientQuery(GET_ANALYSIS_GROUP_BY_INSTRUMENT,filters, 'countAnalyteGroupByInstrument', 'network-only')
         .then(payload => dashboard.value.resourceStats.instruments = payload.data)
@@ -154,8 +167,8 @@ export const useDashBoardStore = defineStore('dashboard', () => {
     // GET_SAMPLE_GROUPS_BY_ACTION
     const getSampleGroupByAction = async () => {
         const filters = { 
-            startDate: dashboard.value.filterRange.from,
-            endDate: dashboard.value.filterRange.to
+            startDate: dashboard.value.filterRange.fromIso,
+            endDate: dashboard.value.filterRange.toIso
         }
         await withClientQuery(GET_SAMPLE_GROUPS_BY_ACTION,filters, 'countSampleGroupByAction', 'network-only')
         .then(payload => dashboard.value.resourceStats.samples = payload.data)
@@ -202,7 +215,12 @@ export const useDashBoardStore = defineStore('dashboard', () => {
 
     const setCurrentTab = (tab: string) => dashboard.value.currentTab = tab;
     const setCurrentFilter = (filter: string) => dashboard.value.currentFilter = filter;
-    const setFilterRange = (from: string, to: string) => {dashboard.value.filterRange.from = from;  dashboard.value.filterRange.to = to}
+    const setFilterRange = (from, to) => {
+        dashboard.value.filterRange.from = from.toDate().toLocaleDateString();  
+        dashboard.value.filterRange.fromIso = from.toISOString(); 
+        dashboard.value.filterRange.to = to.toDate().toLocaleDateString();
+        dashboard.value.filterRange.toIso = to.toISOString();
+    }
     const setCurrentPeformance = (event: any) => {
         dashboard.value.currentPeformance = event.target.value
     };
@@ -216,39 +234,39 @@ export const useDashBoardStore = defineStore('dashboard', () => {
         switch (filter) {
 
             case 'T':
-                setFilterRange(dayjs().startOf('day').toISOString(), dayjs().endOf('day').toISOString())
+                setFilterRange(dayjs().startOf('day'), dayjs().endOf('day'))
                 break;
 
             case 'Y':
-                setFilterRange(dayjs().startOf('day').subtract(1, 'day').toISOString(), dayjs().endOf('day').subtract(1, 'day').toISOString())
+                setFilterRange(dayjs().startOf('day').subtract(1, 'day'), dayjs().endOf('day').subtract(1, 'day'))
                 break;
 
             case 'TW':
-                setFilterRange(dayjs().startOf('week').toISOString(), dayjs().endOf('week').toISOString())
+                setFilterRange(dayjs().startOf('week'), dayjs().endOf('week'))
                 break;
 
             case 'LW':
-                setFilterRange(dayjs().startOf('week').subtract(1, 'week').toISOString(), dayjs().endOf('week').subtract(1, 'week').toISOString())
+                setFilterRange(dayjs().startOf('week').subtract(1, 'week'), dayjs().endOf('week').subtract(1, 'week'))
                 break;
 
             case 'TM':
-                setFilterRange(dayjs().startOf('month').toISOString(), dayjs().endOf('month').toISOString())
+                setFilterRange(dayjs().startOf('month'), dayjs().endOf('month'))
                 break;
 
             case 'LM':
-                setFilterRange(dayjs().startOf('month').subtract(1, 'month').toISOString(), dayjs().endOf('month').subtract(1, 'month').toISOString())
+                setFilterRange(dayjs().startOf('month').subtract(1, 'month'), dayjs().endOf('month').subtract(1, 'month'))
                 break;
 
             case 'TQ':
-                setFilterRange(dayjs().startOf('quarter').toISOString(), dayjs().endOf('quarter').toISOString())
+                setFilterRange(dayjs().startOf('quarter'), dayjs().endOf('quarter'))
                 break;
 
             case 'LQ':
-                setFilterRange(dayjs().startOf('quarter').subtract(1, 'quarter').toISOString(), dayjs().endOf('quarter').subtract(1, 'quarter').toISOString())
+                setFilterRange(dayjs().startOf('quarter').subtract(1, 'quarter'), dayjs().endOf('quarter').subtract(1, 'quarter'))
                 break;
  
             case 'TY':
-                setFilterRange(dayjs().startOf('year').toISOString(), dayjs().endOf('year').toISOString())
+                setFilterRange(dayjs().startOf('year'), dayjs().endOf('year'))
                 break;
 
             default:
@@ -263,7 +281,7 @@ export const useDashBoardStore = defineStore('dashboard', () => {
     })
     
     return { 
-        dashboard, setShowFilters,
+        dashboard, setShowFilters, filterToolTip,
         setCurrentTab, setCurrentFilter, setFilterRange,
         getOverViewStats, getResourceStats, getSampleLaggards,
         getSampleProcessPeformance, getAnalysisProcessPeformance,

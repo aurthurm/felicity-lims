@@ -132,15 +132,6 @@ export const useWorksheetStore = defineStore('worksheet', {
       this.workSheet!.state = worksheet.state;
     }
   },
-  updateWorksheetResultsStatus(payload){
-    payload?.forEach(result => {
-      this.workSheet?.analysisResults.forEach((wsResult, index) => {
-        if(wsResult?.uid == result.uid) {
-          wsResult.status = result.status;
-        }
-      })
-    })
-  },
   backgroundProcessing(payload, worksheetUid: any, process){
     payload?.forEach(result => {
       this.workSheet?.analysisResults.forEach((wsResult, index) => {
@@ -180,6 +171,15 @@ export const useWorksheetStore = defineStore('worksheet', {
     },
 
     // analysis results
+    updateWorksheetResultsStatus(payload){
+      payload?.forEach(result => {
+        this.workSheet?.analysisResults.forEach((wsResult, index) => {
+          if(wsResult?.uid == result.uid) {
+            wsResult.status = result.status;
+          }
+        })
+      })
+    },
     updateAnalysesResults(payload: IAnalysisResult[]){
       payload?.forEach(result => {
         const index = this.analysisResults.findIndex(x => x.uid === result.uid);

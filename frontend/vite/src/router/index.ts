@@ -16,18 +16,26 @@ const routes: RouteRecordRaw[] = [
     redirect: { name: guards.pages.DASHBOARD },
   },
   {
-    path: '/dashboard',
-    name: guards.pages.DASHBOARD,
-    component: () => import('../views/dashboard/index.vue'),
+    path: '/installation',
+    name: guards.pages.INSTALLATION,
+    component: () => import('../views/install/index.vue'),
     meta: {
-      requiresAuth: true,
-    },
+      layout: 'empty'
+    }
   },
   {
     path: '/auth',
     name: guards.pages.LOGIN,
     component: () => import('../views/auth/Login.vue'),
     meta: { layout: 'empty' },
+  },
+  {
+    path: '/dashboard',
+    name: guards.pages.DASHBOARD,
+    component: () => import('../views/dashboard/index.vue'),
+    meta: {
+      requiresAuth: true,
+    },
   },
   {
     path: '/patients',
@@ -83,17 +91,9 @@ const routes: RouteRecordRaw[] = [
     },
   },
   {
-    name: guards.pages.NOTICE_MANAGER,
     path: '/notice-manager',
+    name: guards.pages.NOTICE_MANAGER,
     component: () => import('../views/notice/index.vue'),
-    meta: {
-      requiresAuth: true,
-    },
-  },
-  {
-    path: '/about',
-    name: 'About',
-    component: () => import('../views/About.vue'),
     meta: {
       requiresAuth: true,
     },
@@ -109,11 +109,11 @@ const routes: RouteRecordRaw[] = [
     },
   },
   {
-    name: guards.pages.FOUR_OR_FOUR,
-    path: '/:pathMatch(.*)',
-    component: () => import('../views/404.vue'),
+    path: '/about',
+    name: 'About',
+    component: () => import('../views/About.vue'),
     meta: {
-      layout: 'empty',
+      requiresAuth: true,
     },
   },
   {
@@ -125,13 +125,13 @@ const routes: RouteRecordRaw[] = [
     },
   },
   {
-    path: '/installation',
-    name: guards.pages.INSTALLATION,
-    component: () => import('../views/install/index.vue'),
+    name: guards.pages.FOUR_OR_FOUR,
+    path: '/:pathMatch(.*)',
+    component: () => import('../views/404.vue'),
     meta: {
-      layout: 'empty'
-    }
-  }
+      layout: 'empty',
+    },
+  },
 ];
 
 const router = createRouter({

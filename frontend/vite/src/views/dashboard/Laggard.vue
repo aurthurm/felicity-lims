@@ -31,12 +31,18 @@ watch(
       {
         item: "On-Time",
         count: dai?.counts?.totalDelayed,
-        percent: (dai?.counts?.totalDelayed / dai?.counts?.totalIncomplete) * 100,
+        percent:
+          dai?.counts?.totalIncomplete > 0
+            ? (dai?.counts?.totalDelayed / dai?.counts?.totalIncomplete) * 100
+            : 0,
       },
       {
         item: "Delayed",
         count: dai?.counts?.totalNotDelayed,
-        percent: (dai?.counts?.totalNotDelayed / dai?.counts?.totalIncomplete) * 100,
+        percent:
+          dai?.counts?.totalIncomplete > 0
+            ? (dai?.counts?.totalNotDelayed / dai?.counts?.totalIncomplete) * 100
+            : 0,
       },
     ];
     plotLateDonut(donutData, "late-active-donut");
@@ -60,12 +66,18 @@ watch(
       {
         item: "On-Time",
         count: aad?.counts?.totalDelayed,
-        percent: (aad?.counts?.totalDelayed / aad?.counts?.totalIncomplete) * 100,
+        percent:
+          aad?.counts?.totalIncomplete > 0
+            ? (aad?.counts?.totalDelayed / aad?.counts?.totalIncomplete) * 100
+            : 0,
       },
       {
         item: "Delayed",
         count: aad?.counts?.totalNotDelayed,
-        percent: (aad?.counts?.totalNotDelayed / aad?.counts?.totalIncomplete) * 100,
+        percent:
+          aad?.counts?.totalIncomplete > 0
+            ? (aad?.counts?.totalNotDelayed / aad?.counts?.totalIncomplete) * 100
+            : 0,
       },
     ];
     plotLateDonut(donutData2, "late-auth-donut");

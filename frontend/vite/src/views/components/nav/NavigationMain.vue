@@ -27,13 +27,13 @@ const showNotifications = (val) => notificationStore.showNotifications(val);
       <div class="relative w-full max-w-xl mr-6 focus-within:text-purple-500"></div>
     </div>
     <div class="flex">
-      <span
+      <!-- <span
         @click="toggleTheme()"
         class="no-underline text-gray-100 opacity-50 flex items-center px-4 border-b border-transparent hover:opacity-100 md:hover:border-grey-dark"
       >
         <font-awesome-icon :icon="theme?.icon" class="mr-2" />
         <span class="text-sm">{{ theme?.variant }} mode</span>
-      </span>
+      </span> -->
       <a
         href="#"
         class="no-underline text-gray-100 opacity-50 flex items-center px-4 border-b border-transparent hover:opacity-100 md:hover:border-grey-dark"

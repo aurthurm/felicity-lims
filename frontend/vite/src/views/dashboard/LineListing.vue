@@ -4,10 +4,10 @@ import { reactive, onMounted } from "vue";
 import { REST_BASE_URL } from "../../conf";
 import { useAnalysisStore } from "../../stores";
 import { IReportListing } from "../../models/reports";
-import useAnalyticsComposable from "../../composables/analytics"
+import useAnalyticsComposable from "../../composables/analytics";
 
 const analysisStore = useAnalysisStore();
-const { reports, fetchReports, generateReport, deleteReport  } = useAnalyticsComposable()
+const { reports, fetchReports, generateReport, deleteReport } = useAnalyticsComposable();
 
 const state = reactive({
   listingForm: {
@@ -162,7 +162,7 @@ const downloadReport = (report: any) => {
   <accordion>
     <template v-slot:title>Listing Report Request</template>
     <template v-slot:body>
-      <div class="overflow-x-auto mt-4">
+      <div class="mt-4">
         <form action="post" class="p-1">
           <div class="grid grid-cols-3 gap-x-4 mb-4">
             <label class="block col-span-1 mb-2">

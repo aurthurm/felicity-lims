@@ -10,9 +10,9 @@
       <router-link
         to="/"
         id="brand"
-        class="flex items-center md:w-auto pl-6 py-2 text-white"
+        class="flex items-center md:w-auto pl-6 pt-2 pb-1 text-white"
       >
-        <font-awesome-icon icon="meteor" class="text-4xl" />
+        <font-awesome-icon icon="meteor" class="text-3xl" />
         <h1 v-if="viewNavText" class="text-left text-2xl font-medium mx-2">
           Felicity LIMS
         </h1>
@@ -22,7 +22,7 @@
           v-show="guards.canAccessPage(guards.pages.DASHBOARD)"
           to="/dashboard"
           id="dashboard-link"
-          class="flex items-center has-tooltip mt-1 py-2 px-6 text-gray-100 hover:bg-gray-800 hover:bg-opacity-25 hover:text-white border-l-4 border-gray-800"
+          class="flex items-center has-tooltip mt-1 p-2 px-6 text-gray-100 hover:bg-gray-800 hover:bg-opacity-25 hover:text-white border-l-4 border-gray-800"
         >
           <span class="mr-4"><font-awesome-icon icon="tachometer-alt" /></span>
           <span v-if="viewNavText">Dashboard</span>
@@ -78,7 +78,7 @@
           <span v-if="viewNavText">WorkSheets</span>
           <span v-else class="tooltip">WorkSheets</span>
         </router-link>
-        <router-link
+        <!-- <router-link
           v-show="guards.canAccessPage(guards.pages.QC_SAMPLES)"
           to="/quality-control"
           id="markdown-link"
@@ -87,7 +87,7 @@
           <span class="mr-4"><font-awesome-icon icon="anchor" /></span>
           <span v-if="viewNavText">QControl</span>
           <span v-else class="tooltip">QControl</span>
-        </router-link>
+        </router-link> -->
         <router-link
           v-show="guards.canAccessPage(guards.pages.NOTICE_MANAGER)"
           to="/notice-manager"

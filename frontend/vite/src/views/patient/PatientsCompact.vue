@@ -264,13 +264,13 @@ const updatePatient = (patient: IPatient) => {
         </div>
 
         <!-- Sample and Case Data -->
-        <nav class="bg-white px-6 pt-2 shadow-md mt-2">
+        <nav class="bg-white shadow-md mt-2">
           <div class="-mb-px flex justify-start">
             <a
               v-for="tab in tabs"
               :key="tab"
               :class="[
-                'no-underline text-gray-500 uppercase tracking-wide font-bold text-xs py-1 mr-8 tab',
+                'no-underline text-gray-500 uppercase tracking-wide font-bold text-xs py-1 px-4 tab',
                 { 'tab-active': currentTab === tab },
               ]"
               @click="currentTab = tab"

@@ -34,7 +34,7 @@
     {"name": "AST", "description": "Aspartate Aminotransferase", "keyword": "ast", "sort_key": 3, "active": 1},
     {"name": "ALB", "description": "Albumin", "keyword": "alb", "sort_key": 4, "active": 1},
     {"name": "T-PROT", "description": "Total Protein", "keyword": "t-prot", "sort_key": 5, "active": 1},
-    {"name": "GGT", "description": "Gama Glutamyl Transferese", "keyword": "alb", "sort_key": 6, "active": 1},
+    {"name": "GGT", "description": "Gama Glutamyl Transferese", "keyword": "ggt", "sort_key": 6, "active": 1},
     {"name": "D-BIL", "description": "Direct Bilirubin", "keyword": "d-bil", "sort_key": 7, "active": 1},
     {"name": "T-BIL", "description": "Total Bilirubin", "keyword": "t-bil", "sort_key": 8, "active": 1},
 

@@ -79,20 +79,14 @@ watch(
         <div
           v-for="stream of streamStore.streams"
           :key="stream?.uid"
-          class="w-full p-3 mt-4 bg-whiterounded-smflex"
+          class="w-full my-1 py-1 px-2 bg-white rounded-lg shadow-lg flex items-center"
         >
           <div
             tabindex="0"
             aria-label="heart icon"
             role="img"
-            class="focus:outline-none w-8 h-8 border rounded-full border-gray-200 flex items-center justify-center"
+            class="focus:outline-none w-6 h-6 border rounded-full border-gray-200 flex items-center justify-center"
           >
-            <!-- <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path
-                  d="M8.00059 3.01934C9.56659 1.61334 11.9866 1.66 13.4953 3.17134C15.0033 4.68334 15.0553 7.09133 13.6526 8.662L7.99926 14.3233L2.34726 8.662C0.944589 7.09133 0.997256 4.67934 2.50459 3.17134C4.01459 1.662 6.42992 1.61134 8.00059 3.01934Z"
-                  fill="#EF4444"
-                />
-              </svg> -->
             <svg
               width="16"
               height="16"
@@ -106,52 +100,18 @@ watch(
               />
             </svg>
           </div>
-          <div class="pl-3">
+          <div class="pl-2">
             <p tabindex="0" class="focus:outline-none text-sm leading-none">
-              <span class="text-indigo-700"
-                >{{ stream?.actor.firstName }} {{ stream?.actor.lastName }}</span
-              >
-              {{ stream.verb }} {{ stream.actionObjectType }}
-              <span class="text-indigo-700">{{ stream?.actionObject.sampleId }}</span>
+              <span class="text-indigo-700">{{ stream?.actor.firstName }} {{ stream?.actor.lastName }}</span>
+              <span class="mx-1 text-red-500 italic">{{ stream.verb }}</span> 
+              <span class="mr-1 text-gray-500">{{ stream.actionObjectType }}</span> 
+              <span class="text-indigo-700 font-semibold text-sm">{{ stream?.actionObject.sampleId ?? stream?.actionObject.sampleUid ?? stream?.actionObject.worksheetId }}</span>
             </p>
             <!-- <p tabindex="0" class="focus:outline-none text-xs leading-3 pt-1 text-gray-500">
                 2 hours ago
               </p> -->
           </div>
         </div>
-
-        <div class="w-full p-3 mt-8 bg-emerald-200rounded-smflex items-center">
-          <div
-            tabindex="0"
-            aria-label="success icon"
-            role="img"
-            class="focus:outline-none w-8 h-8 border rounded-full border-emerald-200 flex flex-shrink-0 items-center justify-center"
-          >
-            <svg
-              width="16"
-              height="16"
-              viewBox="0 0 16 16"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M6.66674 10.1147L12.7947 3.98599L13.7381 4.92866L6.66674 12L2.42407 7.75733L3.36674 6.81466L6.66674 10.1147Z"
-                fill="#047857"
-              />
-            </svg>
-          </div>
-          <div class="pl-3 w-full">
-            <div class="flex items-center">
-              <p
-                tabindex="0"
-                class="focus:outline-none text-sm leading-none text-sky-800"
-              >
-                Design sprint completed
-              </p>
-            </div>
-          </div>
-        </div>
-
         <div class="flex items-center justiyf-between">
           <hr class="w-full" />
           <p

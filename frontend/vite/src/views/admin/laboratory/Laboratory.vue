@@ -59,7 +59,7 @@
               v-for="tab in tabs"
               :key="tab"
               :class="[
-                'no-underline text-gray-500 uppercase tracking-wide font-bold text-xs py-1 mr-8 tab',
+                'no-underline text-gray-500 uppercase tracking-wide font-bold text-xs py-1 px-4 tab',
                 { 'tab-active': currentTab === tab },
               ]"
               @click="currentTab = tab"

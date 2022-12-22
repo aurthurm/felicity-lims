@@ -53,7 +53,7 @@ async def get_all_instrument_types(
     before_cursor: Optional[str] = None,
     text: Optional[str] = None,
     sort_by: Optional[List[str]] = None,
-) -> InstrumentCursorPage:
+) -> InstrumentTypeCursorPage:
     filters = {}
 
     _or_ = dict()
@@ -294,7 +294,7 @@ class SetupQuery:
         query = await models.Department.get(uid=uid)
         return query
 
-    instrument_type_all: List[InstrumentTypeType] = strawberry.field(
+    instrument_type_all: InstrumentTypeCursorPage = strawberry.field(
         resolver=get_all_instrument_types
     )
 

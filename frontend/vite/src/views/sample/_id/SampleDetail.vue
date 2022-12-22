@@ -17,13 +17,13 @@ let currentTabComponent = computed(() => "tab-" + state.currentTab);
 
 <template>
   <section class="col-span-12">
-    <nav class="bg-white px-6 pt-2 shadow-md mt-2" v-motion-slide-left>
+    <nav class="bg-white shadow-md mt-2" v-motion-slide-left>
       <div class="-mb-px flex justify-start">
         <a
           v-for="tab in state.tabs"
           :key="tab"
           :class="[
-            'no-underline text-gray-500 uppercase tracking-wide font-bold text-xs py-1 mr-8 tab',
+            'no-underline text-gray-500 uppercase tracking-wide font-bold text-xs py-1 px-4 tab',
             { 'tab-active': state.currentTab === tab },
           ]"
           @click="state.currentTab = tab"

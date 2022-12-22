@@ -1,16 +1,18 @@
 import { createApp, markRaw } from 'vue'
-import urql from '@urql/vue';
+import urql from '@urql/vue'
 import { MotionPlugin } from '@vueuse/motion'
-import VueSweetalert2 from 'vue-sweetalert2';
-import 'sweetalert2/dist/sweetalert2.min.css';
-import 'notyf/notyf.min.css';
+import VueSweetalert2 from 'vue-sweetalert2'
+import FloatingVue from 'floating-vue'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { library, dom } from '@fortawesome/fontawesome-svg-core'
 import { fas } from '@fortawesome/free-solid-svg-icons'
 import { fab } from '@fortawesome/free-brands-svg-icons'
-import LayoutDashboard from './views/layouts/LayoutDashboard.vue';
-import LayoutEmpty from './views/layouts/LayoutEmpty.vue';
+import LayoutDashboard from './views/layouts/LayoutDashboard.vue'
+import LayoutEmpty from './views/layouts/LayoutEmpty.vue'
 
+import 'floating-vue/dist/style.css'
+import 'sweetalert2/dist/sweetalert2.min.css'
+import 'notyf/notyf.min.css'
 import './index.css'
 import './assets/css/style.css'
 
@@ -34,7 +36,11 @@ app.component('default-layout', LayoutDashboard)
 app.component('empty-layout', LayoutEmpty)
 app.use(urql, urqlClient)
 app.use(VueSweetalert2)
+app.use(FloatingVue)
 app.use(MotionPlugin)
 app.use(router)
 app.mount('#app')
 
+
+
+app.use(FloatingVue)

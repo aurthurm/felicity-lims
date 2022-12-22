@@ -33,11 +33,11 @@
 
 
 # FelicityMeta will be implemented in NESTJS, NEXTJS, mongodb
-CodeSystem:
-    name
-
-CodeSystemInterOp:
-    codeSystem:
-    codeSystemId:
-    internalObjectId:
-    internalObject:
+# CodeSystem:
+#     name
+#
+# CodeSystemInterOp:
+#     codeSystem:
+#     codeSystemId:
+#     internalObjectId:
+#     internalObject:

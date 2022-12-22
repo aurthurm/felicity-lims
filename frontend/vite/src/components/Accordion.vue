@@ -2,12 +2,16 @@
   <transition name="accordion">
     <div class="rounded-sm my-1">
       <div class="border border-b-1 bg-gray-100 px-4 p-2">
-        <button @click="show=!show" class="w-full flex justify-between text-gray-800 font-bold hover:underline focus:outline-none" type="button">
-         <span class="w-full text-left">
-           <slot name="title">Accordion Title</slot>
-         </span>
-         <span class="ml-2">
-           <i class="fa fa-chevron-down"></i>
+        <button
+          @click="show = !show"
+          class="w-full flex justify-between text-gray-800 font-bold hover:underline focus:outline-none"
+          type="button"
+        >
+          <span class="w-full text-left">
+            <slot name="title">Accordion Title</slot>
+          </span>
+          <span class="ml-2">
+            <i class="fa fa-chevron-down"></i>
           </span>
         </button>
       </div>
@@ -18,12 +22,13 @@
   </transition>
 </template>
 
-<style lang="postcss">
-</style>
+<style lang="postcss"></style>
 
 <script setup lang="ts">
-  import { ref } from 'vue';
+import { ref } from "vue";
+const props = defineProps({
+  show: Boolean,
+});
 
-  let show = ref(false);
+let show = ref(false);
 </script>
-

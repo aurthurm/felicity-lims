@@ -4,6 +4,7 @@ import { storeToRefs } from "pinia";
 import { onMounted, watch, reactive, ref } from "vue";
 import { Chart } from "@antv/g2";
 import modal from "../../components/SimpleModal.vue";
+import dayjs from "dayjs";
 
 import { useDashBoardStore } from "../../stores";
 
@@ -15,8 +16,10 @@ const localState = reactive({
 });
 let showModal = ref(false);
 
-const setCustomRange = () =>
-  dashBoardStore.setFilterRange(localState.range.from, localState.range.to);
+const setCustomRange = () => {
+  dashBoardStore.setFilterRange(dayjs(localState.range.from), dayjs(localState.range.to));
+  showModal.value = false;
+};
 
 onMounted(async () => {
   resetUserMatrix();
@@ -143,20 +146,28 @@ const resetUserMatrix = () => {
 
 <template>
   <section class="flex justify-between">
-    <div class="flex justify-end align-items-center mt-4 mb-8" v-show="dashboard.showFilters">
-      <button
+    <div
+      class="flex justify-end align-items-center mt-4 mb-8"
+      v-show="dashboard.showFilters"
+    >
+      <VTooltip
         v-for="(filter, index) in dashboard.filters"
         :key="index"
         v-show="filter !== dashboard.filters[dashboard.filters.length]"
-        @click="dashBoardStore.setCurrentFilter(filter)"
-        type="button"
-        :class="[
-          'px-2 py-1 mr-2 border-gray-800 border text-gray-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none',
-          { 'bg-sky-800 text-white': dashboard.currentFilter === filter },
-        ]"
+        :placements="['right-start']"
       >
-        {{ filter }}
-      </button>
+        <button
+          @click="dashBoardStore.setCurrentFilter(filter)"
+          type="button"
+          :class="[
+            'px-2 py-1 mr-2 border-gray-800 border text-gray-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none',
+            { 'bg-sky-800 text-white': dashboard.currentFilter === filter },
+          ]"
+        >
+          {{ filter }}
+        </button>
+        <template #popper>{{ dashBoardStore.filterToolTip(filter) }}</template>
+      </VTooltip>
 
       <button
         @click="showModal = true"
@@ -164,12 +175,12 @@ const resetUserMatrix = () => {
       >
         {{ dashboard.filterRange.from }} - {{ dashboard.filterRange.to }}
       </button>
-      <button
+      <!-- <button
         type="button"
         class="px-2 py-1 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
       >
         Apply
-      </button>
+      </button> -->
     </div>
   </section>
 

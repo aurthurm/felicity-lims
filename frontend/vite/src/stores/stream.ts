@@ -27,7 +27,7 @@ export const useStreamStore = defineStore('stream', {
             this.streams?.unshift(payload);
 
             if(payload.actionObjectType === "sample"){
-                sampleStore.updateSampleStatus(payload.actionObject)            
+                sampleStore.updateSampleStatus(payload.actionObject)        
             }
 
             if(payload.actionObjectType === "worksheet"){
@@ -40,7 +40,8 @@ export const useStreamStore = defineStore('stream', {
 
             if(payload.actionObjectType === "result"){
                 sampleStore.updateAnalysesResultsStatus([payload.actionObject])
-                wsStore.updateAnalysesResults([payload.actionObject])
+                wsStore.updateWorksheetResultsStatus([payload.actionObject])    
+                // wsStore.updateAnalysesResults([payload.actionObject])
             }
         },
         subscribeToActivityStream(){
