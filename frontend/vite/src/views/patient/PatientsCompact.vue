@@ -26,7 +26,7 @@ let patientForm = reactive({}) as IPatient;
 
 let patientParams = reactive({
   first: 25,
-  after: "",
+  before: "",
   text: "",
   sortBy: ["-uid"],
   filterAction: false,
@@ -39,7 +39,7 @@ patientStore.fetchPatients(patientParams);
 
 function searchPatients(event: any) {
   patientParams.first = 100;
-  patientParams.after = "";
+  patientParams.before = "";
   patientParams.text = event.target.value;
   patientParams.filterAction = true;
   patientStore.fetchPatients(patientParams);

@@ -23,6 +23,7 @@ const state = reactive({
   filterStatus: "received",
   sampleBatch: 50,
   samples: computed<ISample[]>(() => sampleStore.getSamples),
+  pageInfo: computed(() => sampleStore.getSamplePageInfo),
   can_cancel: false,
   can_receive: false,
   can_reinstate: false,
@@ -50,7 +51,7 @@ analysisStore.fetchAnalysesProfiles();
 
 let sampleParams = reactive({
   first: state.sampleBatch,
-  after: "",
+  before: "",
   status: state.filterStatus,
   text: "",
   sortBy: ["-uid"],
@@ -71,7 +72,7 @@ function profileAnalysesText(
 
 function showMoreSamples(): void {
   sampleParams.first = +state.sampleBatch;
-  sampleParams.after = samplePageInfo?.value?.endCursor;
+  sampleParams.before = samplePageInfo?.value?.endCursor;
   sampleParams.text = state.filterText;
   sampleParams.status = state.filterStatus;
   sampleParams.filterAction = false;
@@ -81,7 +82,7 @@ function showMoreSamples(): void {
 function filterSamples(): void {
   state.sampleBatch = 50;
   sampleParams.first = 50;
-  sampleParams.after = "";
+  sampleParams.before = "";
   sampleParams.text = state.filterText;
   sampleParams.status = state.filterStatus;
   sampleParams.filterAction = true;

@@ -304,8 +304,8 @@ export const GET_ALL_ANALYSES_CATEGORIES = gql`
 
 
 export const GET_ALL_SAMPLES = gql`
-    query getAllSamples($first: Int!, $after: String, $status: String!, $text: String!, $clientUid: Int!, $sortBy: [String!]) {
-        sampleAll(pageSize: $first, afterCursor: $after, status: $status, text: $text, clientUid: $clientUid, sortBy: $sortBy) {
+    query getAllSamples($first: Int!, $after: String, $before: String, $status: String!, $text: String!, $clientUid: Int!, $sortBy: [String!]) {
+        sampleAll(pageSize: $first, afterCursor: $after, beforeCursor: $before, status: $status, text: $text, clientUid: $clientUid, sortBy: $sortBy) {
           totalCount
         	pageInfo {
               hasNextPage

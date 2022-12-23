@@ -38,7 +38,7 @@
     first: clientBatch.value, 
     after: "",
     text: "", 
-    sortBy: ["name"],
+    sortBy: ["uid"],
     filterAction: false
   });
 

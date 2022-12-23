@@ -41,9 +41,9 @@
   locationsStore.fetchCountries()  
   let patientParams = reactive({ 
     first: patientBatch.value, 
-    after: "",
+    before: "",
     text: "", 
-    sortBy: ["uid"],
+    sortBy: ["-uid"],
     filterAction: false
   }); 
   patientStore.fetchPatients(patientParams);
@@ -73,7 +73,7 @@
   function searchPatients(event: any): void {
     filterText.value = event.target.value;
     patientParams.first = 100;
-    patientParams.after = "";
+    patientParams.before = "";
     patientParams.text = event.target.value;
     patientParams.filterAction = true;
     patientStore.fetchPatients(patientParams);
@@ -83,7 +83,7 @@
 
   function showMorePatients(): void {
     patientParams.first = +patientBatch.value;
-    patientParams.after = pageInfo?.value?.endCursor;
+    patientParams.before = pageInfo?.value?.endCursor;
     patientParams.text = filterText.value;
     patientParams.filterAction = false;
     patientStore.fetchPatients(patientParams);

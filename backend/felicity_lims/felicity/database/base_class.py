@@ -443,6 +443,9 @@ class DBModel(AllFeaturesMixin):
             return dict(records)
         return [dict(record) for record in records]
 
+
+# https://engage.so/blog/a-deep-dive-into-offset-and-cursor-based-pagination-in-mongodb/
+    # https://medium.com/swlh/how-to-implement-cursor-pagination-like-a-pro-513140b65f32
     @classmethod
     async def paginate_with_cursors(
         cls,

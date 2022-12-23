@@ -33,10 +33,10 @@ worksheetStore.removeWorksheet();
 let workSheetBatch = ref<number>(25);
 let workSheetParams = reactive({
   first: workSheetBatch.value,
-  after: "",
+  before: "",
   status: "",
   text: "",
-  clientUid: +ifZeroEmpty(route?.query?.clientUid),
+  sort: ["-uid"],
   filterAction: false,
 });
 worksheetStore.fetchWorkSheets(workSheetParams);
@@ -90,7 +90,7 @@ function analysesText(analyses: IAnalysisService[]): string {
 
 function showMoreWorkSheets(): void {
   workSheetParams.first = +workSheetBatch.value;
-  workSheetParams.after = pageInfo?.value?.endCursor;
+  workSheetParams.before = pageInfo?.value?.endCursor;
   workSheetParams.text = filterText.value;
   workSheetParams.status = filterStatus.value;
   workSheetParams.filterAction = false;
@@ -100,7 +100,7 @@ function showMoreWorkSheets(): void {
 function filterWorkSheets(): void {
   workSheetBatch.value = 25;
   workSheetParams.first = 25;
-  workSheetParams.after = "";
+  workSheetParams.before = "";
   workSheetParams.text = filterText.value;
   workSheetParams.status = filterStatus.value;
   workSheetParams.filterAction = true;
