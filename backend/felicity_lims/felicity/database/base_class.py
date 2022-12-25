@@ -443,18 +443,18 @@ class DBModel(AllFeaturesMixin):
             return dict(records)
         return [dict(record) for record in records]
 
-
-# https://engage.so/blog/a-deep-dive-into-offset-and-cursor-based-pagination-in-mongodb/
+    # https://engage.so/blog/a-deep-dive-into-offset-and-cursor-based-pagination-in-mongodb/
     # https://medium.com/swlh/how-to-implement-cursor-pagination-like-a-pro-513140b65f32
+
     @classmethod
     async def paginate_with_cursors(
-        cls,
-        page_size: int = None,
-        after_cursor: Any = None,
-        before_cursor: Any = None,
-        filters: Any = None,
-        sort_by: List[str] = None,
-        get_related: str = None,
+            cls,
+            page_size: int = None,
+            after_cursor: Any = None,
+            before_cursor: Any = None,
+            filters: Any = None,
+            sort_by: List[str] = None,
+            get_related: str = None,
     ) -> PageCursor:
         if not filters:
             filters = {}
@@ -531,11 +531,11 @@ class DBModel(AllFeaturesMixin):
 
     @classmethod
     def build_page_info(
-        cls,
-        start_cursor: str = None,
-        end_cursor: str = None,
-        has_next_page: bool = False,
-        has_previous_page: bool = False,
+            cls,
+            start_cursor: str = None,
+            end_cursor: str = None,
+            has_next_page: bool = False,
+            has_previous_page: bool = False,
     ) -> PageInfo:
         return PageInfo(
             **{
