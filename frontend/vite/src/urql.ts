@@ -40,6 +40,7 @@ const subscriptionClient = new SubscriptionClient( WS_BASE_URL, {
   }, 
 });
 
+
 const getAuth = async ({ authState }) => {
   const authData = getAuthData();
 

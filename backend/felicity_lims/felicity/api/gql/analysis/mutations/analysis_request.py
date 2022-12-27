@@ -174,7 +174,7 @@ async def create_analysis_request(
         )
 
         # auto receive samples
-        # ?? workflow based check needed
+        # ?? sample_workflow based check needed
         await sample.receive(received_by=felicity_user)
 
         # link sample to provided profiles

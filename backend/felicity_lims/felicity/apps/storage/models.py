@@ -22,7 +22,7 @@ class StoreRoom(BaseAuditDBModel):
 
 class StorageLocation(BaseAuditDBModel):
     """Storage Location
-    e.g: Fridge, CupBoard, Box, etc
+    e.g: Fridge, CupBoard, Floor, Box, etc
     """
 
     name = Column(String, nullable=False)
@@ -32,13 +32,13 @@ class StorageLocation(BaseAuditDBModel):
 
     @classmethod
     async def create(
-        cls, obj_in: schemas.StorageLocationCreate
+            cls, obj_in: schemas.StorageLocationCreate
     ) -> schemas.StorageLocation:
         data = cls._import(obj_in)
         return await super().create(**data)
 
     async def update(
-        self, obj_in: schemas.StorageLocationUpdate
+            self, obj_in: schemas.StorageLocationUpdate
     ) -> schemas.StorageLocation:
         data = self._import(obj_in)
         return await super().update(**data)
@@ -60,45 +60,47 @@ class StorageSection(BaseAuditDBModel):
 
     @classmethod
     async def create(
-        cls, obj_in: schemas.StorageSectionCreate
+            cls, obj_in: schemas.StorageSectionCreate
     ) -> schemas.StorageSection:
         data = cls._import(obj_in)
         return await super().create(**data)
 
     async def update(
-        self, obj_in: schemas.StorageSectionUpdate
+            self, obj_in: schemas.StorageSectionUpdate
     ) -> schemas.StorageSection:
         data = self._import(obj_in)
         return await super().update(**data)
 
 
 class StorageContainer(BaseAuditDBModel):
-    """Storage Container
+    """Storage Carrier
     e.g: Sample K-Lite, etc
     """
 
     name = Column(String, nullable=False)
+    description = Column(String, nullable=False)
     storage_section_uid = Column(
         Integer, ForeignKey("storagesection.uid"), nullable=False
     )
     storage_section = relationship(
         StorageSection, backref="storage_containers", lazy="selectin"
     )
+    slots = Column(Integer, nullable=False, default=0)
     grid = Column(Boolean(), default=True)
     row_wise = Column(Boolean(), default=True)
-    columns = Column(Integer, nullable=False)
-    rows = Column(Integer, nullable=False)
+    cols = Column(Integer, nullable=True)
+    rows = Column(Integer, nullable=True)
+    samples = relationship("Sample", back_populates="storage_container", lazy="selectin")
 
     @classmethod
     async def create(
-        cls, obj_in: schemas.StorageContainerCreate
+            cls, obj_in: schemas.StorageContainerCreate
     ) -> schemas.StorageContainer:
-
         data = cls._import(obj_in)
         return await super().create(**data)
 
     async def update(
-        self, obj_in: schemas.StorageContainerUpdate
+            self, obj_in: schemas.StorageContainerUpdate
     ) -> schemas.StorageContainer:
         data = self._import(obj_in)
         return await super().update(**data)
@@ -115,13 +117,12 @@ class StorageSlot(BaseAuditDBModel):
     storage_container = relationship(
         StorageContainer, backref="storage_slots", lazy="selectin"
     )
-    position = Column(String, nullable=False)
-    sample_uid = Column(Integer, ForeignKey("sample.uid"), nullable=True)
-    sample = relationship("Sample", backref="storage_slots", lazy="selectin")
+    position = Column(Integer, nullable=False)
+    position_label = Column(String, nullable=True)
+    sample = relationship("Sample", back_populates="storage_slot", lazy="selectin")
 
     @classmethod
     async def create(cls, obj_in: schemas.StorageSlotCreate) -> schemas.StorageSlot:
-
         data = cls._import(obj_in)
         return await super().create(**data)
 

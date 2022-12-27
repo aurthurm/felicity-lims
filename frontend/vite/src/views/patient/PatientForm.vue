@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import VueMultiselect from "vue-multiselect";
 import { reactive, computed, onMounted, PropType, toRefs } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import { IPatient } from "../../models/patient";
@@ -63,7 +64,7 @@ const patientSchema = object({
   firstName: string().required("First Name is Required"),
   middleName: string().nullable(),
   lastName: string().required("Last Name is Required"),
-  clientUid: number().required("Client is Required"),
+  client: object().required("Client is Required"),
   gender: string().required("Gender is Required"),
   age: number().nullable(),
   dateOfBirth: date().nullable(),
@@ -85,7 +86,7 @@ const { handleSubmit, errors } = useForm({
     firstName: patient?.value?.firstName,
     middleName: patient?.value?.middleName,
     lastName: patient?.value?.lastName,
-    clientUid: patient?.value?.clientUid,
+    client: patient?.value?.client,
     gender: patient?.value?.gender,
     age: patient?.value?.age,
     dateOfBirth: !isNullOrWs(patient?.value?.dateOfBirth)
@@ -95,17 +96,17 @@ const { handleSubmit, errors } = useForm({
     phoneHome: patient?.value?.phoneHome,
     phoneMobile: patient?.value?.phoneMobile,
     consentSms: patient?.value?.consentSms,
-    districtUid: patient?.value?.client?.district?.uid,
-    provinceUid: patient?.value?.client?.district?.province?.uid,
-    countryUid: patient?.value?.client?.district?.province?.country?.uid,
-  },
+    districtUid: patient?.value?.districtUid,
+    provinceUid: patient?.value?.provinceUid,
+    countryUid: patient?.value?.countryUid,
+  } as any,
 });
 
 const { value: clientPatientId } = useField("clientPatientId");
 const { value: firstName } = useField("firstName");
 const { value: middleName } = useField("middleName");
 const { value: lastName } = useField("lastName");
-const { value: clientUid } = useField("clientUid");
+const { value: client } = useField<IClient>("client");
 const { value: gender } = useField("gender");
 const { value: age } = useField("age");
 const { value: dateOfBirth } = useField("dateOfBirth");
@@ -117,6 +118,7 @@ const { value: provinceUid } = useField("provinceUid");
 const { value: countryUid } = useField("countryUid");
 
 const submitPatientForm = handleSubmit((values) => {
+  console.log(values);
   if (!values.uid) addPatient(values as IPatient);
   if (values.uid) updatePatient(values as IPatient);
 });
@@ -135,7 +137,7 @@ function addPatient(payload: IPatient) {
         gender: payload.gender,
         dateOfBirth: payload.dateOfBirth,
         ageDobEstimated: payload.ageDobEstimated,
-        clientUid: payload.clientUid,
+        clientUid: payload.client.uid,
         phoneMobile: payload.phoneMobile,
         consentSms: payload.consentSms,
       },
@@ -163,7 +165,7 @@ function updatePatient(payload: IPatient) {
         gender: payload.gender,
         dateOfBirth: payload.dateOfBirth,
         ageDobEstimated: payload.ageDobEstimated,
-        clientUid: payload.clientUid,
+        clientUid: payload.client.uid,
         phoneMobile: payload.phoneMobile,
         consentSms: payload.consentSms,
       },
@@ -312,16 +314,19 @@ function getDistricts(event: any) {
     </label>
 
     <!-- other identifiers: passport, client pid, national id -->
-    <label class="flex whitespace-nowrap w-full">
+    <label class="flex whitespace-nowrap mb-2 w-full">
       <span class="text-gray-700 w-4/12">Primary Referrer</span>
       <div class="w-full">
-        <select class="form-select mt-1 w-full" v-model="clientUid">
-          <option></option>
-          <option v-for="client in state.clients" :key="client.uid" :value="client.uid">
-            {{ client.name }}
-          </option>
-        </select>
-        <div class="text-orange-600 w-4/12">{{ errors.clientUid }}</div>
+        <VueMultiselect
+          placeholder="Select a Primary Referrer"
+          v-model="client"
+          :options="state.clients"
+          :searchable="true"
+          label="name"
+          track-by="uid"
+        >
+        </VueMultiselect>
+        <div class="text-orange-600 w-4/12">{{ errors.client }}</div>
       </div>
     </label>
 
@@ -389,3 +394,5 @@ function getDistricts(event: any) {
     </button>
   </form>
 </template>
+
+<style src="vue-multiselect/dist/vue-multiselect.css"></style>

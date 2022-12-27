@@ -514,6 +514,15 @@ class Sample(Auditable, BaseMPTT):
     qc_set = relationship(QCSet, back_populates="samples", lazy="selectin")
     qc_level_uid = Column(Integer, ForeignKey("qclevel.uid"), nullable=True)
     qc_level = relationship(QCLevel, backref="qc_samples", lazy="selectin")
+    # storage -> biobanks
+    storage_container_uid = Column(Integer, ForeignKey("storagecontainer.uid"), nullable=True)
+    storage_container = relationship(
+        "StorageContainer", back_populates="samples", lazy="selectin"
+    )
+    storage_slot_uid = Column(Integer, ForeignKey("storageslot.uid"), nullable=True)
+    storage_slot = relationship(
+        "StorageSlot", back_populates="sample", lazy="selectin"
+    )
 
     @staticmethod
     def copy_include_keys():

@@ -4,11 +4,33 @@ import random
 from faker import  Faker
 
 from felicity.apps.patient.conf import genders
-from felicity.tests.utils.patient import add_patient_query
 fake_engine = Faker()
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
+
+add_patient_query = """
+  mutation AddPatient($payload: PatientInputType!){
+  createPatient(payload: $payload) {
+    ... on PatientType {
+        uid
+        clientPatientId
+        firstName
+        lastName
+        age
+        gender
+        dateOfBirth
+        clientUid
+        phoneMobile
+        consentSms   
+    }
+    ... on OperationError {
+        error
+    }
+  }
+}
+"""
 
 
 @pytest.mark.asyncio

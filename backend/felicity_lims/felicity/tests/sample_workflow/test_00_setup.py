@@ -1,7 +1,5 @@
 import pytest
-from felicity.core.config import settings
 import logging
-from felicity.tests.utils.user import add_user_mutation, add_auth_mutation, make_username, make_password
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -33,4 +31,4 @@ async def test_install(client):
     assert response.json()["installed"] is True
     assert response.json()["laboratory"]["setup_name"] == "felicity"
     assert response.json()["laboratory"]["lab_name"] == "Test Laboratory"
-    assert response.json()["message"] == "Your Laboratory was successfully installed"
+    assert response.json()["message"] == "installation success"

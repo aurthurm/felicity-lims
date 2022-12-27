@@ -43,8 +43,8 @@ const { handleSubmit, errors } = useForm({
   },
 });
 
-const { value: title } = useField("title");
-const { value: body } = useField("body");
+const { value: title } = useField<string>("title");
+const { value: body } = useField<string>("body");
 const { value: expiry } = useField("expiry");
 const { value: groups } = useField<number[]>("groups");
 const { value: departments } = useField<number[]>("departments");

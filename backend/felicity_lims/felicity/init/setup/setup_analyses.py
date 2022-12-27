@@ -4,11 +4,11 @@ from datetime import datetime
 from typing import Optional
 
 from felicity.apps.analysis.models.analysis import (Analysis, AnalysisCategory,
-                                                    Profile, SampleType)
+                                                    Profile, SampleType, RejectionReason)
 from felicity.apps.analysis.models.qc import QCLevel
 from felicity.apps.analysis.schemas import (AnalysisCategoryCreate,
                                             AnalysisCreate, ProfileCreate,
-                                            QCLevelCreate, SampleTypeCreate)
+                                            QCLevelCreate, SampleTypeCreate, RejectionReasonCreate)
 from felicity.apps.common.models import IdSequence
 from felicity.core.config import settings
 from felicity.database.session import async_session_factory
@@ -138,3 +138,17 @@ async def create_analyses_services_and_profiles() -> None:
                             await session.commit()
                         except Exception:  # noqa
                             await session.rollback()
+
+
+async def create_rejection_reasons() -> None:
+    logger.info(f"Setting up rejection reasons .....")
+
+    with open(settings.BASE_DIR + "/init/setup/data/analyses.json", "r") as json_file:
+        data = json.load(json_file)
+    rejection_reasons = data.get("rejection_reasons", [])
+
+    for _rr in rejection_reasons:
+        reason = await RejectionReason.get(reason=_rr)
+        if not reason:
+            rr_in = RejectionReasonCreate(reason=_rr)
+            await RejectionReason.create(rr_in)

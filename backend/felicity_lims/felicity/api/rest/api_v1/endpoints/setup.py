@@ -3,8 +3,7 @@ from typing import Any, Optional
 
 from fastapi import APIRouter
 from felicity.apps.setup import models, schemas
-from felicity.init import (create_laboratory, create_super_user, setup_default_permissions,
-                           initialize_felicity, init_id_sequence)
+from felicity.init import (requisite_setup, default_setup)
 from pydantic import BaseModel
 
 router = APIRouter()
@@ -44,50 +43,21 @@ async def laboratory_lookup() -> Any:
 @router.post("/installation", response_model=InstallResponse)
 async def register_laboratory(*, form: LabNameIn) -> Any:
     """
-    Install a laboratory and initialise departments
+    Install a laboratory and initialise departments example post: curl -X POST
+    http://localhost:8000/api/v1/setup/installation -d '{"name":"Felicity Lims"}' -H "Content-Type: application/json"
     """
-    try:
-        await create_super_user()
-    except Exception as e:
-        return {
-            "laboratory": None,
-            "installed": False,
-            "message": f"Failed to create a superuser: {e}",
-        }
 
     try:
-        await setup_default_permissions()
+        await requisite_setup(form.name)
     except Exception as e:
         return {
             "laboratory": None,
             "installed": False,
-            "message": f"Failed to create a default permissions: {e}",
-        }
-
-    try:
-        await init_id_sequence()
-    except Exception as e:
-        return {
-            "laboratory": None,
-            "installed": False,
-            "message": f"Failed to initialise id sequence: {e}",
+            "message": f"Failed to load requisite setup: {e}",
         }
 
     laboratory = await models.Laboratory.get_by_setup_name("felicity")
-    installed = False
-    if not laboratory:
-        await create_laboratory(form.name)
-        laboratory = await models.Laboratory.get_by_setup_name("felicity")
-        if laboratory:
-            message = "Your Laboratory was successfully installed"
-            installed = True
-        else:
-            message = "Installation Failed"
-    else:
-        installed = True
-        message = "An installed Laboratory instance already exists"
-
-    return {"laboratory": laboratory, "installed": installed, "message": message}
+    return {"laboratory": laboratory, "installed": True, "message": "installation success"}
 
 
 @router.post("/load-default-setup", response_model=SetupResponse)
@@ -96,7 +66,7 @@ async def load_setup_data() -> Any:
     Run initial setup to load setup data
     """
     try:
-        await initialize_felicity()
+        await default_setup()
     except Exception as e:
         return {"success": False, "message": f"Failed to load setup data: {e}"}
 

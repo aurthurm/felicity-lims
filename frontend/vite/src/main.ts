@@ -40,7 +40,3 @@ app.use(FloatingVue)
 app.use(MotionPlugin)
 app.use(router)
 app.mount('#app')
-
-
-
-app.use(FloatingVue)

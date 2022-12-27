@@ -74,7 +74,7 @@ async def test_add_worksheet_template(gql_client, auth_data):
         "rows": 1,
         "cols": 1,
         "rowWise": False,
-        "description": "Run Batch VL tests tat match this workflow setup",
+        "description": "Run Batch VL tests tat match this sample_workflow setup",
         "instrumentUid": 1,
         "reserved": []
     }

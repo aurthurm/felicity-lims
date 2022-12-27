@@ -239,6 +239,9 @@ class SampleType:  # for Sample
     qc_set: Optional[QCSetType]
     qc_level_uid: Optional[int]
     qc_level: Optional[QCLevelType]
+    # Bio Banking
+    storage_container_uid: Optional[int]
+    storage_slot_uid: Optional[int]
     #
     created_by_uid: Optional[int]
     created_by: Optional[UserType]

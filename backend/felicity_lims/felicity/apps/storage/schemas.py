@@ -3,6 +3,7 @@ from typing import Optional
 from felicity.apps.analysis import schemas as s_schemas
 from pydantic import BaseModel
 
+
 #
 # StoreRoom Schemas
 #
@@ -67,8 +68,8 @@ class StorageLocationUpdate(StorageLocationBase):
 class StorageSectionBase(BaseModel):
     name: Optional[str] = None
     description: Optional[str] = None
-    store_room_uid: int
-    store_room: Optional[StoreRoom]
+    storage_location_uid: int
+    storage_location: Optional[StorageLocation]
 
 
 class StorageSection(StorageSectionBase):
@@ -87,7 +88,6 @@ class StorageSectionCreate(StorageSectionBase):
 class StorageSectionUpdate(StorageSectionBase):
     pass
 
-
 #
 # StorageContainer Schemas
 #
@@ -100,8 +100,9 @@ class StorageContainerBase(BaseModel):
     storage_section: Optional[StorageSection]
     grid: bool = True
     row_wise: bool = True
-    columns: Optional[int]
+    cols: Optional[int]
     rows: Optional[int]
+    slots: Optional[int] = 0
 
 
 class StorageContainer(StorageContainerBase):
@@ -129,9 +130,8 @@ class StorageContainerUpdate(StorageContainerBase):
 class StorageSlotBase(BaseModel):
     storage_container_uid: int
     storage_container: Optional[StorageContainer]
-    position: int
-    sample_uid: Optional[int] = None
-    sample: Optional[s_schemas.Sample]
+    position: str
+    position_label: str = None
 
 
 class StorageSlot(StorageSlotBase):

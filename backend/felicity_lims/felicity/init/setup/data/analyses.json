@@ -5,6 +5,7 @@
     {"name": "QC Sample", "description": "QC Sample", "abbr": "QCS", "active": 1 },
     {"name": "Whole Blood", "description": "Whole Blood", "abbr": "WB", "active": 1 },
     {"name": "Blood Plasma", "description": "Blood Plasma", "abbr": "BP", "active": 1 },
+    {"name": "Blood Serum", "description": "Blood Serum", "abbr": "BS", "active": 1 },
     {"name": "Dried Blood Spot", "description": "Dried Blood Spot", "abbr": "DBS", "active": 1 },
     {"name": "Urine", "description": "Urine", "abbr": "BV", "active": 1 },
     {"name": "Stool", "description": "Stool", "abbr": "BG", "active": 1 },
@@ -12,7 +13,9 @@
     {"name": "Cerebral Spinal Fluid", "description": "Cerebral Spinal Fluid", "abbr": "CSF", "active": 0 },
     {"name": "Nasal-Pharyngeal Swab", "description": "Nasal-Pharyngeal Swab", "abbr": "NPS", "active": 1 },
     {"name": "Oral-Pharyngeal Swab", "description": "Oral-Pharyngeal Swab", "abbr": "OPS", "active": 0 },
-    {"name": "Pus Swab", "description": "Pus Swab", "abbr": "PS", "active": 0 }
+    {"name": "Pus Swab", "description": "Pus Swab", "abbr": "PS", "active": 0 },
+    {"name": "Arterial Blood", "description": "Arterial Blood", "abbr": "AB", "active": 0 },
+    {"name": "Venous Blood", "description": "Vernous Blood", "abbr": "VB", "active": 0 }
   ],
   "analyses": [
     {"name": "HIV", "description": "Human Immune Virus", "keyword": "hiv", "sort_key": 1, "active": 1},
