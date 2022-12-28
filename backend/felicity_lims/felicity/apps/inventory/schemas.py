@@ -186,7 +186,7 @@ class StockOrderBase(BaseAuditModel):
     order_by: Optional[User] = None
     department_uid: Optional[int] = None
     department: Optional[Department] = None
-    status: Optional[str] = False
+    status: Optional[str] = None
     order_number: Optional[str] = None
 
 

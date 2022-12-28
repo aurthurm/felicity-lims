@@ -23,6 +23,8 @@ from felicity.api.gql.worksheet.mutations import WorkSheetMutations
 from felicity.api.gql.worksheet.query import WorkSheetQuery
 from felicity.api.gql.storage.mutations import StorageMutations
 from felicity.api.gql.storage.query import StorageQuery
+from felicity.api.gql.inventory.mutations import InventoryMutations
+from felicity.api.gql.inventory.query import InventoryQuery
 
 
 @strawberry.type
@@ -40,6 +42,7 @@ class Query(
     AnalyticsQuery,
     ReflexRuleQuery,
     StorageQuery,
+    InventoryQuery,
 ):
     pass
 
@@ -56,6 +59,7 @@ class Mutation(
     NoticeMutations,
     ReflexRuleMutations,
     StorageMutations,
+    InventoryMutations,
 ):
     pass
 
