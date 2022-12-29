@@ -708,13 +708,11 @@ class InventoryMutations:
         product = await models.StockProduct.get(uid=stock_transaction.product_uid)
 
         # Transact
-        test_value = product.remaining
-        test_value -= stock_transaction.issued
-        if test_value < 0:
+        remaining = product.remaining - stock_transaction.issued
+        if remaining < 0:
             await stock_transaction.update({'remarks': "Sustained: Sorry you cannot issue beyond whats available"}) # noqa
             return OperationError(error=f"Sorry you cannot issue beyond whats available")
         else:
-            remaining = product.remaining - stock_transaction.issued
             await product.update({'remaining': remaining})
 
         return types.StockTransactionType(**stock_transaction.marshal_simple())
@@ -748,13 +746,11 @@ class InventoryMutations:
             remaining = product.remaining + stock_adjustment.adjust
             await product.update({'remaining': remaining})
         else:
-            test_value = product.remaining
-            test_value -= stock_adjustment.adjust
-            if test_value < 0:
+            remaining = product.remaining - stock_adjustment.adjust
+            if remaining < 0:
                 await stock_adjustment.update({'remarks': "Sustained: Sorry you cant transact beyond what you have"}) # noqa
                 return OperationError(error='Sorry you cant transact beyond what you have')
             else:
-                remaining = product.remaining - stock_adjustment.adjust
                 await product.update({'remaining': remaining})
 
         return types.StockAdjustmentType(**stock_adjustment.marshal_simple())
