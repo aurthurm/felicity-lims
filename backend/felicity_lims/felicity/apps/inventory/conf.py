@@ -72,8 +72,9 @@ adjust = Adjust()
 
 class OrderStates:
     PREPARATION = "preparation"
-    PENDING = "pending"
-    PROCESSED = "processed"
+    SUBMITTED = "submitted"  # for approval
+    PENDING = "pending"  # approved and pending issue
+    PROCESSED = "processed"  # issued
     DECLINED = "declined"
 
 

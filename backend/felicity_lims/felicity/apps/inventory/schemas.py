@@ -188,6 +188,7 @@ class StockOrderBase(BaseAuditModel):
     department: Optional[Department] = None
     status: Optional[str] = None
     order_number: Optional[str] = None
+    remarks: Optional[str] = None
 
 
 class StockOrder(StockOrderBase):
@@ -215,6 +216,7 @@ class StockOrderProductBase(BaseAuditModel):
     order: Optional[StockOrder] = None
     price: Optional[float] = None
     quantity: Optional[int] = None
+    remarks: Optional[str] = None
 
 
 class StockOrderProduct(StockOrderProductBase):

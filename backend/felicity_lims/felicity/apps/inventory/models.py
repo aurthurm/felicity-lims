@@ -4,6 +4,7 @@ from sqlalchemy.orm import relationship
 
 from felicity.apps.common.models import IdSequence
 from felicity.apps.inventory import schemas
+from felicity.apps.inventory.conf import order_states
 
 
 class StockItem(BaseAuditDBModel):
@@ -137,11 +138,12 @@ class StockOrder(BaseAuditDBModel):
     department = relationship("Department", lazy="selectin")
     status = Column(String, nullable=False)
     order_number = Column(String, nullable=False)
+    remarks = Column(String, nullable=True)
 
     @classmethod
     async def create(cls, obj_in: schemas.StockOrderCreate) -> schemas.StockOrder:
         data = cls._import(obj_in)
-        data["status"] = "created"
+        data["status"] = order_states.PREPARATION
         data["order_number"] = (await IdSequence.get_next_number("SON"))[1]
         return await super().create(**data)
 
@@ -157,6 +159,7 @@ class StockOrderProduct(BaseAuditDBModel):
     order = relationship("StockOrder", lazy="selectin")
     price = Column(Float, nullable=False)
     quantity = Column(Integer, nullable=False)
+    remarks = Column(String, nullable=True)
 
     @classmethod
     async def create(

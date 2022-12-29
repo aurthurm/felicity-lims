@@ -147,6 +147,7 @@ class StockOrderType:
     department_uid: Optional[int]
     department: Optional[DepartmentType]
     status: Optional[str]
+    remarks: Optional[str]
     order_number: Optional[str]
     created_at: Optional[datetime]
     created_by_uid: Optional[int]
