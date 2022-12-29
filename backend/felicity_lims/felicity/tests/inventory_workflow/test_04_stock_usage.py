@@ -9,6 +9,7 @@ get_all_stocks_product_query = """
       stockProductAll {
         totalCount
         items {
+            uid
             name
             quantityReceived
             remaining
@@ -64,9 +65,9 @@ async def test_stock_adjustments(gql_client, auth_data):
     logger.info(f"stocks_response: {stocks_response} {stocks_response.json()}")
     assert stocks_response.status_code == 200
     spa = stocks_response.json()["data"]["stockProductAll"]
-    assert spa["totalCount"] == 1
-    assert len(spa["items"]) == 1
-    less_product = spa["items"][0]
+    assert spa["totalCount"] == 5
+    assert len(spa["items"]) == 5
+    less_product = sorted(spa["items"], key=lambda d: d["uid"], reverse=False)[0]
     assert less_product["remaining"] == less_product["quantityReceived"] - data["adjust"]
 
     # Addition adjustment
@@ -98,9 +99,9 @@ async def test_stock_adjustments(gql_client, auth_data):
     logger.info(f"stocks_response: {new_stocks_response} {new_stocks_response.json()}")
     assert new_stocks_response.status_code == 200
     new_spa = new_stocks_response.json()["data"]["stockProductAll"]
-    assert new_spa["totalCount"] == 1
-    assert len(new_spa["items"]) == 1
-    new_product = new_spa["items"][0]
+    assert new_spa["totalCount"] == 5
+    assert len(new_spa["items"]) == 5
+    new_product = sorted(new_spa["items"], key=lambda d: d["uid"], reverse=False)[0]
     assert new_product["remaining"] == (less_product["remaining"] + new_data["adjust"])
 
 
@@ -147,7 +148,7 @@ async def test_stock_transaction(gql_client, auth_data):
     logger.info(f"stocks_response: {stocks_response} {stocks_response.json()}")
     assert stocks_response.status_code == 200
     spa = stocks_response.json()["data"]["stockProductAll"]
-    assert spa["totalCount"] == 1
-    assert len(spa["items"]) == 1
-    product = spa["items"][0]
+    assert spa["totalCount"] == 5
+    assert len(spa["items"]) == 5
+    product = sorted(spa["items"], key=lambda d: d["uid"], reverse=False)[0]
     assert product["remaining"] == 4

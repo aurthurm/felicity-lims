@@ -44,24 +44,26 @@ async def test_add_stock_product(gql_client, auth_data):
         "quantityReceived": 10,
         "minimumLevel": 2,
     }
-    response = await gql_client.post('/felicity-gql', json={
-        "query": add_stock_product_mutation,
-        "variables": {
-            "payload": stock_product
-        }
-    }, headers=auth_data['headers'])
+    for idx, item in enumerate(["Stromatolyser FB", "Petri Dish", "Pipette", "S-Tube", "Blood Culture Bottle"]):
+        stock_product["name"] = item
+        response = await gql_client.post('/felicity-gql', json={
+            "query": add_stock_product_mutation,
+            "variables": {
+                "payload": stock_product
+            }
+        }, headers=auth_data['headers'])
 
-    logger.info(f"register stock product response: {response} {response.json()}")
+        logger.info(f"register stock product response: {response} {response.json()}")
 
-    assert response.status_code == 200
-    data = response.json()["data"]["createStockProduct"]
-    assert data["uid"] == 1
-    assert data["name"] == stock_product["name"]
-    assert data["categoryUid"] == stock_product["categoryUid"]
-    assert data["hazardUid"] == stock_product["hazardUid"]
-    assert data["storeRoomUid"] == stock_product["storeRoomUid"]
-    assert data["lotNumber"] == stock_product["lotNumber"]
-    assert data["batch"] == stock_product["batch"]
-    assert data["quantityReceived"] == stock_product["quantityReceived"]
-    assert data["minimumLevel"] == stock_product["minimumLevel"]
-    assert data["remaining"] == stock_product["quantityReceived"]
+        assert response.status_code == 200
+        data = response.json()["data"]["createStockProduct"]
+        assert data["uid"] == idx + 1
+        assert data["name"] == stock_product["name"]
+        assert data["categoryUid"] == stock_product["categoryUid"]
+        assert data["hazardUid"] == stock_product["hazardUid"]
+        assert data["storeRoomUid"] == stock_product["storeRoomUid"]
+        assert data["lotNumber"] == stock_product["lotNumber"]
+        assert data["batch"] == stock_product["batch"]
+        assert data["quantityReceived"] == stock_product["quantityReceived"]
+        assert data["minimumLevel"] == stock_product["minimumLevel"]
+        assert data["remaining"] == stock_product["quantityReceived"]

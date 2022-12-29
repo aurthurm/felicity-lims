@@ -585,7 +585,7 @@ class InventoryMutations:
                 )
                 await models.StockOrderProduct.create(op_in)
             else:  # update existing products
-                so_product = await models.StockOrderProduct.get_all(product_uid=prod.product_uid, order_uid=uid)
+                so_product = await models.StockOrderProduct.get(product_uid=prod.product_uid, order_uid=uid)
                 await so_product.update({'quantity': prod.quantity})
 
         # delete removed products
