@@ -31,7 +31,7 @@
     "./src/**/*.vue",
     "src/App.tsx",
     "src/orig.tsx"
-, "src/views/admin/inventory/index.vue"  ],
+, "src/views/admin/inventory/index.vue", "src/views/admin/storage/Index.tsx"  ],
   "types": [
     "vue-sweetalert2",
     "vite/client",

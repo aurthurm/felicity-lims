@@ -66,7 +66,7 @@ async def test_create_stock_order(gql_client, auth_data):
     order_line = response.json()["data"]["createStockOrder"]
     order = order_line["stockOrder"]
     assert order["uid"] == 1
-    assert order["orderNumber"] == "SON22-00006"
+    assert order["orderNumber"] == "SON23-00006"
     assert order["status"] == "preparation"
     order_products = order_line["orderProducts"]
     assert len(order_products) == 5
@@ -122,7 +122,7 @@ async def test_update_stock_order(gql_client, auth_data):
     order_line = response.json()["data"]["updateStockOrder"]
     order = order_line["stockOrder"]
     assert order["uid"] == 1
-    assert order["orderNumber"] == "SON22-00006"
+    assert order["orderNumber"] == "SON23-00006"
     assert order["status"] == "preparation"
     order_products = order_line["orderProducts"]
     assert len(order_products) == 4

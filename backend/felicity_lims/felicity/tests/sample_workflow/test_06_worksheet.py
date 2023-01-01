@@ -283,7 +283,7 @@ async def test_get_worksheet_by_uid(gql_client, auth_data):
     assert response.status_code == 200
     _data = response.json()["data"]["worksheetByUid"]
     assert _data["uid"] == 1
-    assert _data["worksheetId"] == "WS22-00006"
+    assert _data["worksheetId"] == "WS23-00006"
     assert _data["numberOfSamples"] == 21
     assert _data["assignedCount"] == 5
     assert _data["state"] == "pending"
