@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "strict": true,
-    "jsx": "preserve", // "vue"
+    "jsx": "preserve", // "vue", 'preserve', 'react'
     "outDir": "./dist",
     "target": "esnext", // es2017, esnext,es6
     "module": "esnext", // commonjs, es6
@@ -31,7 +31,7 @@
     "./src/**/*.vue",
     "src/App.tsx",
     "src/orig.tsx"
-  ],
+, "src/views/admin/inventory/index.vue"  ],
   "types": [
     "vue-sweetalert2",
     "vite/client",

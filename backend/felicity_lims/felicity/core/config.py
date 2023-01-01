@@ -39,6 +39,7 @@ class Settings(BaseSettings):
     SERVER_HOST: AnyHttpUrl = getenv_value("SERVER_HOST", "https://localhost")
     BACKEND_CORS_ORIGINS: List[AnyHttpUrl] = [
         "http://localhost:3000",
+        "http://localhost:5173",
         "http://0.0.0.0:8080",
     ]
     TESTING = getenv_boolean("TESTING", False)

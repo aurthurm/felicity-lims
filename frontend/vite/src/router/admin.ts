@@ -1,3 +1,5 @@
+import { InventoryHome } from '../views/admin/inventory/Index'
+
 const adminRoutes = [
   {
     path: '',
@@ -101,6 +103,22 @@ const adminRoutes = [
           },
         }
     ],
+    meta: {
+      requiresAuth: true,
+    },
+  },
+  {
+    path: 'inventory-conf',
+    name: 'inventory-conf',
+    component: InventoryHome,// () => import('../views/admin/inventory/Index'),
+    meta: {
+      requiresAuth: true,
+    },
+  },
+  {
+    path: 'storage-conf',
+    name: 'storage-conf',
+    component: () => import('../views/admin/storage/index.vue'),
     meta: {
       requiresAuth: true,
     },

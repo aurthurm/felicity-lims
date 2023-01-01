@@ -1,73 +1,70 @@
 <template>
-    <div class="modal-mask">
-      <div class="modal-wrapper" @click="$emit('close')">
-        <div 
-          @click.stop
-         :class="[
-                'modal-container max-h-screen overflow-y-scroll',
-                contentWidth ? contentWidth : 'w-3/4',
-              ]">
+  <div class="modal-mask">
+    <div class="modal-wrapper" @click="$emit('close')">
+      <div
+        @click.stop
+        :class="[
+          'modal-container max-h-screen overflow-y-scroll',
+          contentWidth ? contentWidth : 'w-3/4',
+        ]"
+      >
+        <div class="modal-header">
+          <div class="flex justify-between">
+            <slot name="header">default header</slot>
+            <button
+              @click="$emit('close')"
+              class="ml-4 inline-flex items-center justify-center w-8 h-8 mr-2 text-red-500 transition-colors duration-150 bg-white rounded-full border-red-200 border focus:outline-none hover:border-red-500"
+            >
+              <font-awesome-icon icon="times" />
+            </button>
+          </div>
+        </div>
+        <hr />
 
-          <div class="modal-header">
-            <div class="flex justify-between">
-              <slot name="header">
-                default header
-              </slot>
-              <button @click="$emit('close')" class="ml-4 inline-flex items-center justify-center w-8 h-8 mr-2  text-red-500 transition-colors duration-150 bg-white rounded-full border-red-200 border focus:outline-none hover:border-red-500">
-                 <font-awesome-icon icon="times" />
-              </button> 
+        <div class="modal-body">
+          <slot name="body">default body</slot>
+        </div>
+
+        <hr />
+        <div class="modal-footer">
+          <slot name="footer">
+            <div class="flex justify-end">
+              <button
+                class="modal-default-button text-red-500 border-red-200 border rounded py-1 px-2 transition-colors hover:outline-none hover:border-red-500"
+                @click="$emit('close')"
+              >
+                Cancel
+              </button>
             </div>
-          </div>
-          <hr>
-
-          <div class="modal-body">
-            <slot name="body">
-              default body
-            </slot>
-          </div>
-          
-          <hr>
-          <div class="modal-footer">
-            <slot name="footer">
-              <div class="flex justify-end">
-                <button class="modal-default-button text-red-500 border-red-200 border rounded py-1 px-2 transition-colors hover:outline-none hover:border-red-500" 
-                @click="$emit('close')">
-                  Cancel
-                </button>
-              </div>
-            </slot>
-          </div>
-          
+          </slot>
         </div>
       </div>
     </div>
+  </div>
 </template>
 
-
 <script lang="ts">
-  import { defineComponent, onMounted } from 'vue';
-  export default defineComponent({
-    name: 'simple-modal',
-    props: {
-      contentWidth: String,
-    },
-    setup(props, { emit }) {
+import { defineComponent, onMounted } from "vue";
+export default defineComponent({
+  name: "simple-modal",
+  props: {
+    contentWidth: String,
+  },
+  setup(props, { emit }) {
+    onMounted(() => {
+      document.addEventListener("keydown", (e) => {
+        if (e.keyCode == 27) {
+          emit("close");
+        }
+      });
+    });
 
-      onMounted(() => {
-        document.addEventListener("keydown", (e) => {
-          if (e.keyCode == 27) {
-              emit('close');
-          }
-        });
-      })
-
-      return {}
-    },
-  });
+    return {};
+  },
+});
 </script>
 
 <style lang="postcss" scoped>
-
 .modal-mask {
   position: fixed;
   z-index: 9998;
@@ -123,6 +120,4 @@
   -webkit-transform: scale(1.1);
   transform: scale(1.1);
 }
-
 </style>
-

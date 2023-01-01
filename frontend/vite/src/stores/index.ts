@@ -14,6 +14,8 @@ import { useStreamStore } from "./stream"
 import { useToastStore } from "./toast"
 import { useUserStore } from "./user"
 import { useWorksheetStore } from "./worksheet"
+import { useInventoryStore } from "./inventory"
+import { useStorageStore } from "./storage"
 
 export {
     useAnalysisStore,
@@ -32,4 +34,6 @@ export {
     useToastStore,
     useUserStore,
     useWorksheetStore,
+    useInventoryStore,
+    useStorageStore,
 }

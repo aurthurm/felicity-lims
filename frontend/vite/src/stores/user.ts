@@ -10,16 +10,14 @@ import {
 } from '../graphql/_queries';
 
 
-interface IUserPage extends IPagination {
-  items: IUser[],
-}
+interface IUserPage extends IPagination<IUser> {}
 
 export const useUserStore = defineStore('user', {
   state: () => {
       return {
           users: {
-            items: [],
-          } as IUserPage, 
+            items: []
+          }, 
           fetchingUsers: false,
           groups: [],
           fetchingGroups: false,
@@ -50,8 +48,8 @@ export const useUserStore = defineStore('user', {
       this.users.items?.unshift(payload);
     },
     updateUser(payload: IUser): void {
-      const index = this.users.items.findIndex(user => user.uid === payload?.uid)
-      if(index > -1) this.users.items[index] = payload
+      const index = this.users.items?.findIndex(user => user.uid === payload?.uid)
+      if(index && index > -1) this.users.items![index] = payload
     },
 
     async fetchGroupsAndPermissions() {

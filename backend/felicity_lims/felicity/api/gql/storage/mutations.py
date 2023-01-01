@@ -81,7 +81,6 @@ class StoredSamplesType:
     storage_container: Optional[types.StorageContainerType]
 
 
-
 StoreSampleResponse = strawberry.union(
     "StoreSampleResponse", (StoredSamplesType, OperationError), description=""  # noqa
 )
@@ -436,10 +435,10 @@ class StorageMutations:
 
         obj_in = schemas.StorageSlotUpdate(**storage_slot.to_dict())
         storage_slot = await storage_slot.update(obj_in)
-        return types.StorageSlotType(**storage_slot.marshal_simple()) \
+        return types.StorageSlotType(**storage_slot.marshal_simple())
 
-    @ strawberry.mutation
-    async def store_samples( info, payload: StoreSamplesInputType) -> StoreSampleResponse:
+    @strawberry.mutation
+    async def store_samples(info, payload: StoreSamplesInputType) -> StoreSampleResponse:
         is_authenticated, felicity_user = await auth_from_info(info)
         verify_user_auth(
             is_authenticated,

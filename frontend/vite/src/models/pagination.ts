@@ -5,8 +5,14 @@ export interface IPageInfo {
   startCursor?: string,
 }
 
-export interface IPagination {
-  items?: any[],
+export interface IPagination<T> {
+  items?: T[],
   totalCount?: number,
   pageInfo?: IPageInfo,
 }
+
+export interface IPaginationMeta {
+  totalCount?: number,
+  pageInfo?: IPageInfo,
+}
+
