@@ -88,7 +88,7 @@ export interface IStorageSlot {
     storageContainer?: IStorageContainer;
     position?: String;
     positionLabel?: String;
-    sample?: ISample[];
+    sample?: ISample;
     createdAt?: Date;
     createdByUid?: number;
     createdBy?: IUser;

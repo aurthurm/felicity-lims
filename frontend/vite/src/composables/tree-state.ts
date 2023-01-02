@@ -5,6 +5,7 @@ const tags = {
   storageLocation: "storage-location",
   storageSection: "storage-section",
   storageContainer: "storage-container",
+  containerView: "container-view",
 }
 
 const state = reactive<ITreeData>({
@@ -39,41 +40,10 @@ export default function useTreeStateComposable() {
       if (activeTree.tag === tags.storageContainer) {
         state.activePath = {...state.activePath, container: activeTree.uid}
       }
-      // _openTree(activeTree)
-      _closeTrees(activeTree)
+      _openTree(activeTree)
     }
     
     const _openTree = (activeTree: IStoreRoom | IStorageLocation | IStorageSection | IStorageContainer): void => {
-      if (activeTree.tag === tags.storeRoom) {
-        const index = state.treeData.findIndex(x => x.uid === activeTree.uid)
-        if(index > -1){
-          state.treeData[index] = {...state.treeData[index], isOpen: !state.treeData[index].isOpen ?? true}
-        }
-      }
-      if (activeTree.tag === tags.storageLocation) {
-        state.treeData.map(room => {
-          const index = room.children?.findIndex(x => x.uid === activeTree.uid) ?? -1
-          if(index > -1) {
-            room.children![index] = {...room.children![index], isOpen: !room.children![index].isOpen ?? true}
-          }  
-          return room;     
-        })
-      }
-      if (activeTree.tag === tags.storageSection) {
-        state.treeData.map(room => {
-          room.children?.map(location => {
-            const index = location.children?.findIndex(x => x.uid === activeTree.uid) ?? -1
-            if(index > -1) {
-              location.children![index] = {...location.children![index], isOpen: !location.children![index].isOpen ?? true}
-            }             
-            return location;
-          })  
-          return room;
-        })        
-      }
-    }
-    
-    const _closeTrees = (activeTree: IStoreRoom | IStorageLocation | IStorageSection | IStorageContainer): void => {
       if (activeTree.tag === tags.storeRoom) {
         state.treeData = [...state.treeData.map(room => {
           if(room.uid !== activeTree.uid){

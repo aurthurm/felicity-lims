@@ -1,5 +1,7 @@
-import { defineComponent, computed, reactive, toRefs } from 'vue'
+import { defineComponent, computed, reactive, toRefs, ref, watch } from 'vue'
 import Modal from '../../../components/SimpleModal.vue';
+import { ContainerColumn } from './ContainerColumn'
+import { ContainerGrid } from './ContainerGrid'
 import TreeItem from './TreeItem.vue'
 import useTreeStateComposable from '../../../composables/tree-state'
 import { IStorageContainer, IStorageLocation, IStorageSection, IStoreRoom } from '../../../models/storage'
@@ -18,7 +20,13 @@ const StorageHome = defineComponent({
     const { withClientMutation } = useApiUtil()
 
     storageStore.fetchStorageTree();
-    
+    watch(() => activeTree.value, (treeIn, _) => {
+        if (!treeIn) return;
+        if (treeIn.tag === tags.storageContainer) {
+          storageStore.fetchStorageContainer(treeIn.uid!)
+        } 
+    })
+
     const nextTreeType = computed(() => {
       if(activeTree.value?.tag === tags.storeRoom){
         return tags.storageLocation;
@@ -28,6 +36,9 @@ const StorageHome = defineComponent({
       }
       if(activeTree.value?.tag === tags.storageSection){
         return tags.storageContainer;
+      }
+      if(activeTree.value?.tag === tags.storageContainer){
+        return tags.containerView;
       }
       return null;
     })
@@ -213,8 +224,16 @@ const StorageHome = defineComponent({
       }
     }
 
+    //
+    let currentTab = ref("column-view");
+    const tabs = computed(() => {
+      const cont = storageStore.getStorageContainer;
+      return cont?.grid ? ["column-view", "grid-view"] : ["column-view"]
+    });
+
     return { 
       ...toRefs(state), treeData, activeTree, nextTreeType, tags, 
+      currentTab, tabs,
       saveStoreRoomForm, roomFormManager,
       locationFormManager, saveLocationForm, 
       saveStorageSectionForm, sectionFormManager,
@@ -234,7 +253,7 @@ const StorageHome = defineComponent({
               {this.treeData.map(_tree => <TreeItem tree={_tree} />)}
             </ul>
           </div>
-          <div className="col-span-6 pt-4">
+          <div className="col-span-7 pt-4">
             <div class="mb-2">
               Selected: {this.activeTree.name}
             </div>
@@ -251,11 +270,36 @@ const StorageHome = defineComponent({
               {this.nextTreeType === this.tags.storageContainer ? (<>
                 <button onClick={() => this.containerFormManager(true, null)}
                 class="px-2 py-1 border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none">Add Storage Container</button>
+                
+                </>) : null}
+              {this.nextTreeType === this.tags.containerView ? (<>
+                <div>
+                  <div class="mt-4">
+                      <nav class="bg-white shadow-sm my-2">
+                          <div class="-mb-px flex justify-start">
+                              {this.tabs.map(tab => {
+                                  return <a key={tab} class={[
+                                      'no-underline text-gray-500 uppercase tracking-wide font-bold text-xs py-1 px-4 tab',
+                                      { 'tab-active': this.currentTab === tab },
+                                  ]}
+                                  onClick={() => this.currentTab = tab}
+                                  href="#"
+                                  role="tab"
+                                  >
+                                      { tab }
+                                  </a>
+                              })}                    
+                          </div>
+                      </nav>
+                      {this.currentTab === 'column-view' ? <ContainerColumn  /> : null}
+                      {this.currentTab === 'grid-view' ? <ContainerGrid /> : null}
+                  </div>
+                </div>
                 </>) : null}
             </div>
             <hr />
           </div>
-          <div className="col-span-4">
+          <div className="col-span-3">
             properties of a selected container slot
             actions etc
           </div>

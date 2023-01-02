@@ -119,7 +119,7 @@ class StorageSlot(BaseAuditDBModel):
     )
     position = Column(Integer, nullable=False)
     position_label = Column(String, nullable=True)
-    sample = relationship("Sample", back_populates="storage_slot", lazy="selectin")
+    sample = relationship("Sample", back_populates="storage_slot", uselist=False, lazy="selectin")
 
     @classmethod
     async def create(cls, obj_in: schemas.StorageSlotCreate) -> schemas.StorageSlot:

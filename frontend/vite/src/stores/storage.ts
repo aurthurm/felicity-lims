@@ -2,7 +2,7 @@ import { defineStore } from 'pinia'
 
 import { useApiUtil, useTreeStateComposable } from '../composables'
 import { IStorageContainer, IStorageLocation, IStorageSection, IStorageSlot, IStoreRoom } from '../models/storage';
-import { GET_STORAGE_TREE, GET_ALL_STORAGE_CONTAINERS, GET_ALL_STORAGE_LOCATIONS, GET_ALL_STORAGE_SECTIONS, GET_ALL_STORE_ROOMS } from '../graphql/storage.queries';
+import { GET_STORAGE_TREE, GET_ALL_STORAGE_CONTAINERS, GET_ALL_STORAGE_LOCATIONS, GET_ALL_STORAGE_SECTIONS, GET_ALL_STORE_ROOMS, GET_STORAGE_CONTAINER_BY_UID } from '../graphql/storage.queries';
 
 const { withClientQuery } = useApiUtil()
 const { setTree } = useTreeStateComposable()
@@ -20,6 +20,8 @@ export const useStorageStore = defineStore('storage', {
         fetchingStorageSections: false,
         storageContainers: [],
         fetchingStorageContainers: false,
+        storageContainer: undefined,
+        fetchingStorageContainer: false,
         storageSlots: [],
         fetchingStorageSlots: false,
       } as {
@@ -33,6 +35,8 @@ export const useStorageStore = defineStore('storage', {
         fetchingStorageSections: boolean,
         storageContainers: IStorageContainer[],
         fetchingStorageContainers: boolean,
+        storageContainer?: IStorageContainer,
+        fetchingStorageContainer: boolean,
         storageSlots: IStorageSlot[],
         fetchingStorageSlots: boolean,
       }
@@ -43,6 +47,7 @@ export const useStorageStore = defineStore('storage', {
     getStorageLocations: (state) => state.storageLocations,
     getStorageSection: (state) => state.storageSections,
     getStorageContainers: (state) => state.storageContainers,
+    getStorageContainer: (state) => state.storageContainer,
     getStorageSlots: (state) => state.storageSlots,
   },
   actions: {
@@ -123,6 +128,21 @@ export const useStorageStore = defineStore('storage', {
     updateStorageContainer(payload: IStorageContainer): void {
       const index = this.storageContainers?.findIndex(item => item.uid === payload?.uid);
       if(index > -1) this.storageContainers[index] = payload;
+    },
+
+    async fetchStorageContainer(uid: number){
+      if(!uid) return;
+      this.fetchingStorageContainer = true;
+      await withClientQuery( GET_STORAGE_CONTAINER_BY_UID, { uid }, "storageContainerByUid", 'network-only')
+      .then(payload => {
+        this.fetchingStorageContainer = false;
+        this.storageContainer = payload;
+  
+      }).catch(err => this.fetchingStorageContainer = false)
+    },
+
+    resetStorageContainer(): void {
+      this.storageContainer = undefined;
     },
 
     // storageSlots

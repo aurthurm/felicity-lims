@@ -100,15 +100,20 @@ export const GET_STORAGE_CONTAINER_BY_UID = gql`
         description
         storageSectionUid
         grid
-        row_wise
+        rowWise
         cols
         rows
         slots
         storageSlots{
             uid
             position
+            positionLabel
+            sample {
+              uid
+              sampleId
+            }
         }
-        samples{
+        samples {
             uid
             sampleId
         }
