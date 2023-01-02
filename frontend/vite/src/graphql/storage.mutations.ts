@@ -85,14 +85,18 @@ mutation EditStorageLocation ($uid: Int!, $payload: StorageLocationInputType!) {
 
 // storage section
 export const ADD_STORAGE_SECTION= gql`
-mutation AddHazard ($payload: HazardInputType!) {
-  createHazard(payload: $payload){
-    ... on HazardType {
+mutation AddStorageSection ($payload: StorageSectionInputType!) {
+  createStorageSection(payload: $payload){
+    ... on StorageSectionType {
       __typename
       uid
       name
       description
       storageLocationUid
+      storageLocation {
+        uid
+        storeRoomUid
+      }
     }
 
     ... on OperationError {
@@ -105,15 +109,18 @@ mutation AddHazard ($payload: HazardInputType!) {
 `;
 
 export const EDIT_STORAGE_SECTION= gql`
-mutation EditHazard ($uid: Int!, $payload: HazardInputType!) {
-  updateHazard(uid: $uid, payload: $payload){
-    ... on HazardType {
+mutation EditStorageSection ($uid: Int!, $payload: StorageSectionInputType!) {
+  updateStorageSection(uid: $uid, payload: $payload){
+    ... on StorageSectionType {
       __typename
       uid
       name
       description
       storageLocationUid
-
+      storageLocation {
+        uid
+        storeRoomUid
+      }
     }
 
     ... on OperationError {
@@ -136,8 +143,16 @@ mutation AddStorageContainer ($payload: StorageContainerInputType!) {
         name
         description
         storageSectionUid
+        storageSection {
+          uid
+          storageLocationUid
+          storageLocation {
+            uid
+            storeRoomUid
+          }
+        }
         grid
-        row_wise
+        rowWise
         cols
         rows
         slots
@@ -169,8 +184,16 @@ mutation EditStorageContainer ($uid: Int!, $payload: StorageContainerInputType!)
         name
         description
         storageSectionUid
+        storageSection {
+          uid
+          storageLocationUid
+          storageLocation {
+            uid
+            storeRoomUid
+          }
+        }
         grid
-        row_wise
+        rowWise
         cols
         rows
         slots

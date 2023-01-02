@@ -328,11 +328,11 @@ class StorageMutations:
                 for i in list(range(payload.slots))
             ]
 
-            storage_slots = await models.StorageSlot.bulk_create(slot_schemas)
+            await models.StorageSlot.bulk_create(slot_schemas)
             logger.info(f"StorageSlot Bulk create: {storage_slots}")
 
         storage_container = await models.StorageContainer.get(uid=storage_container.uid)
-        return types.StorageContainerType(**storage_container.marshal_simple(), storage_slots=storage_slots)
+        return types.StorageContainerType(**storage_container.marshal_simple())
 
     @strawberry.mutation
     async def update_storage_container(

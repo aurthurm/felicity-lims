@@ -1,14 +1,17 @@
 import { defineStore } from 'pinia'
 
-import { useApiUtil } from '../composables'
+import { useApiUtil, useTreeStateComposable } from '../composables'
 import { IStorageContainer, IStorageLocation, IStorageSection, IStorageSlot, IStoreRoom } from '../models/storage';
-import { GET_ALL_STORAGE_CONTAINERS, GET_ALL_STORAGE_LOCATIONS, GET_ALL_STORAGE_SECTIONS, GET_ALL_STORE_ROOMS } from '../graphql/storage.queries';
+import { GET_STORAGE_TREE, GET_ALL_STORAGE_CONTAINERS, GET_ALL_STORAGE_LOCATIONS, GET_ALL_STORAGE_SECTIONS, GET_ALL_STORE_ROOMS } from '../graphql/storage.queries';
 
 const { withClientQuery } = useApiUtil()
-
+const { setTree } = useTreeStateComposable()
+ 
 export const useStorageStore = defineStore('storage', {
   state: () => {
       return {
+        tree: [],
+        fetchingTree: false,
         storeRooms: [], 
         fetchingStoreRooms: false,
         storageLocations: [],
@@ -20,6 +23,8 @@ export const useStorageStore = defineStore('storage', {
         storageSlots: [],
         fetchingStorageSlots: false,
       } as {
+        tree: IStoreRoom[],
+        fetchingTree: boolean,
         storeRooms: IStoreRoom[], 
         fetchingStoreRooms: boolean,
         storageLocations: IStorageLocation[],
@@ -33,6 +38,7 @@ export const useStorageStore = defineStore('storage', {
       }
   },
   getters: {  
+    getStorageTree: (state) => state.tree,
     getStoreRooms: (state) => state.storeRooms,
     getStorageLocations: (state) => state.storageLocations,
     getStorageSection: (state) => state.storageSections,
@@ -40,6 +46,17 @@ export const useStorageStore = defineStore('storage', {
     getStorageSlots: (state) => state.storageSlots,
   },
   actions: {
+    // Tree
+    async fetchStorageTree(){
+      this.fetchingTree = true;
+      await withClientQuery(GET_STORAGE_TREE, {}, "storeRoomAll")
+            .then((tree: IStoreRoom[]) => {
+              this.fetchingTree = false;
+              this.tree = tree
+              setTree(tree)
+            }).catch((err) => this.fetchingTree = false)
+    },
+
     // storeRooms
     async fetchStoreRooms(){
       this.fetchingStoreRooms = true;

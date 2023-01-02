@@ -5,12 +5,16 @@ export interface IStoreRoom {
     uid?: number;
     name?: String;
     description?: String;
-    created_at?: Date;
-    created_by_uid?: number;
-    created_by?: IUser;
-    updated_at?: Date;
-    updated_by_uid?: number;
-    updated_by?: IUser;
+    createdAt?: Date;
+    createdByUid?: number;
+    createdBy?: IUser;
+    updatedAt?: Date;
+    updatedByUid?: number;
+    updatedBy?: IUser;
+    children?: IStorageLocation[];
+    tag?: string;
+    isOpen?: boolean;
+    isFolder?: boolean;
 }
 
 
@@ -18,14 +22,18 @@ export interface IStorageLocation {
     uid?: number;
     name?: String;
     description?: String;
-    store_room_uid?: number;
-    store_room?: IStoreRoom;
-    created_at?: Date;
-    created_by_uid?: number;
-    created_by?: IUser;
-    updated_at?: Date;
-    updated_by_uid?: number;
-    updated_by?: IUser;
+    storeRoomUid?: number;
+    storeRoom?: IStoreRoom;
+    createdAt?: Date;
+    createdByUid?: number;
+    createdBy?: IUser;
+    updatedAt?: Date;
+    updatedByUid?: number;
+    updatedBy?: IUser;
+    children?: IStorageSection[], 
+    tag?: string,
+    isOpen?: boolean;
+    isFolder?: boolean;
 }
 
 
@@ -33,14 +41,18 @@ export interface IStorageSection {
     uid?: number;
     name?: String;
     description?: String;
-    storage_location_uid?: number;
-    storage_location?: IStorageLocation;
-    created_at?: Date;
-    created_by_uid?: number;
-    created_by?: IUser;
-    updated_at?: Date;
-    updated_by_uid?: number;
-    updated_by?: IUser;
+    storageLocationUid?: number;
+    storageLocation?: IStorageLocation;
+    createdAt?: Date;
+    createdByUid?: number;
+    createdBy?: IUser;
+    updatedAt?: Date;
+    updatedByUid?: number;
+    updatedBy?: IUser;
+    children?: IStorageContainer[], 
+    tag?: string,
+    isOpen?: boolean;
+    isFolder?: boolean;
 }
 
 
@@ -48,35 +60,55 @@ export interface IStorageContainer {
     uid?: number;
     name?: String;
     description?: String;
-    storage_section_uid?: number;
-    storage_section?: IStorageSection;
+    storageSectionUid?: number;
+    storageSection?: IStorageSection;
     grid?: boolean;
-    row_wise?: boolean;
+    rowWise?: boolean;
     cols?: number;
     rows?: number;
     slots?: number;
-    storage_slots?: IStorageSlot[];
+    storageSlots?: IStorageSlot[];
     samples?: ISample[];
-    created_at?: Date;
-    created_by_uid?: number;
-    created_by?: IUser;
-    updated_at?: Date;
-    updated_by_uid?: number;
-    updated_by?: IUser;
+    createdAt?: Date;
+    createdByUid?: number;
+    createdBy?: IUser;
+    updatedAt?: Date;
+    updatedByUid?: number;
+    updatedBy?: IUser;
+    tag?: string,
+    children: IStorageSlot[],
+    isOpen?: boolean;
+    isFolder?: boolean;
 }
 
 
 export interface IStorageSlot {
     uid?: number;
-    storage_container_uid?: number;
-    storage_container?: IStorageContainer;
+    storageContainerUid?: number;
+    storageContainer?: IStorageContainer;
     position?: String;
-    position_label?: String;
+    positionLabel?: String;
     sample?: ISample[];
-    created_at?: Date;
-    created_by_uid?: number;
-    created_by?: IUser;
-    updated_at?: Date;
-    updated_by_uid?: number;
-    updated_by?: IUser;
+    createdAt?: Date;
+    createdByUid?: number;
+    createdBy?: IUser;
+    updatedAt?: Date;
+    updatedByUid?: number;
+    updatedBy?: IUser;
+}
+
+
+
+
+interface IActivePath {
+    room?: number,
+    location?: number,
+    section?: number,
+    container?: number,
+}
+
+export interface ITreeData {
+  treeData: IStoreRoom[]  
+  activePath: IActivePath, 
+  activeTree: IStoreRoom | IStorageLocation | IStorageSection | IStorageContainer
 }

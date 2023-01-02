@@ -145,3 +145,36 @@ export const GET_STORAGE_SLOT_BY_UID = gql`
         }
     }
 }`;
+
+
+// tree
+export const GET_STORAGE_TREE = gql`
+query {
+  storeRoomAll {
+    uid
+    name
+    description
+    tag
+    children {
+      uid
+      name
+      description
+      tag
+      children {  
+        uid
+        name
+        description
+        tag
+        children {  
+          uid
+          name
+          description
+          tag
+        }      
+      }
+    }
+  }
+}`;
+
+
+
