@@ -1,6 +1,8 @@
+import { number } from "yup";
 import { IClient, IClientContact } from "./client";
 import { IPatient } from "./patient";
 import { IInstrument, IMethod, IUnit, IDepartment } from "./setup";
+import { IStorageContainer, IStorageSlot } from "./storage";
 
 export interface ISampleType {
     uid?: number;
@@ -128,6 +130,10 @@ export interface IQCTemplate {
     priority?: number;
     checked?: boolean;
     dateReceived?:string;
+    storageContainerUid: number;
+    storageContainer: IStorageContainer;
+    storageSlotUid: number;
+    storageSlot: IStorageSlot;
     createdByUid?: number
     createdBy?: any
     createdAt?: string

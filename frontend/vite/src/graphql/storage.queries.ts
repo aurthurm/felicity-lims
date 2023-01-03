@@ -84,10 +84,6 @@ export const GET_ALL_STORAGE_CONTAINERS = gql`
             uid
             position
         }
-        samples{
-            uid
-            sampleId
-        }
       }
   }`;
 
@@ -108,14 +104,6 @@ export const GET_STORAGE_CONTAINER_BY_UID = gql`
             uid
             position
             positionLabel
-            sample {
-              uid
-              sampleId
-            }
-        }
-        samples {
-            uid
-            sampleId
         }
     }
 }`;
@@ -129,10 +117,6 @@ export const GET_ALL_STORAGE_SLOTS = gql`
         storageContainerUid
         position
         positionLabel
-        sample {
-            uid
-            sampleId
-        }
       }
   }`;
 
@@ -144,10 +128,6 @@ export const GET_STORAGE_SLOT_BY_UID = gql`
         storageContainerUid
         position
         positionLabel
-        sample {
-            uid
-            sampleId
-        }
     }
 }`;
 

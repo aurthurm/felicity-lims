@@ -350,6 +350,14 @@ export const GET_ALL_SAMPLES = gql`
             sampleId
             priority
             status
+            storageSlotUid
+            storageSlot {
+              uid
+              storageContainerUid
+              position
+              positionLabel              
+            }
+            storageContainerUid
             analyses {
                 uid
                 name
@@ -483,6 +491,14 @@ query getAnalysesRequestsByPatientUid($uid: Int!) {
       sampleId
       priority
       status
+      storageSlotUid
+      storageSlot {
+        uid
+        storageContainerUid
+        position
+        positionLabel              
+      }
+      storageContainerUid
       analyses {
         uid
         name
@@ -540,6 +556,14 @@ query getAnalysesRequestsByClientUid($uid: Int!) {
       sampleId
       priority
       status
+      storageSlotUid
+      storageSlot {
+        uid
+        storageContainerUid
+        position
+        positionLabel              
+      }
+      storageContainerUid
       rejectionReasons{
         uid
         reason
@@ -702,6 +726,14 @@ export const GET_SAMPLE_BY_UID = gql`
         sampleId
         priority
         status
+        storageSlotUid
+        storageSlot {
+          uid
+          storageContainerUid
+          position
+          positionLabel              
+        }
+        storageContainerUid
         analyses {
             uid
             name

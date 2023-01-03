@@ -13,9 +13,7 @@
         class="flex items-center md:w-auto pl-6 pt-2 pb-1 text-white"
       >
         <font-awesome-icon icon="meteor" class="text-3xl" />
-        <h1 v-if="viewNavText" class="text-left text-2xl font-medium mx-2">
-          Felicity LIMS
-        </h1>
+        <h1 v-if="viewNavText" class="text-left text-2xl font-medium mx-2">Felicity</h1>
       </router-link>
       <nav id="aside-nav" class="" role="navigation">
         <router-link

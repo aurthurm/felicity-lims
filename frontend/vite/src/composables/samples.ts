@@ -9,12 +9,14 @@ import {
   VERIFY_SAMPLES,
   REJECT_SAMPLES,
 } from '../graphql/analyses.mutations';
-import { useSampleStore } from '../stores';
+import { STORE_SAMPLES } from '../graphql/storage.mutations'
+import { useSampleStore, useStorageStore } from '../stores';
 import { ISample } from '../models/analysis';
 import useApiUtil from "./api_util";
 
 export default function useSampleComposable(){
 
+    const storageStore = useStorageStore();
     const sampleStore = useSampleStore();
     const { withClientMutation } = useApiUtil();
 
@@ -284,6 +286,45 @@ export default function useSampleComposable(){
       return invalidated;
     }
 
+    // store samples
+    const storeSamples = async (storageParams): Promise<ISample[]> => {
+      let stored: ISample[] = [];
+      try {
+        await Swal.fire({
+          title: 'Are you sure?',
+          text: "You want to store these samples",
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Yes, store now!',
+          cancelButtonText: 'No, do not store!',
+        }).then(async (result) => {
+          if (result.isConfirmed) {
+
+            withClientMutation(STORE_SAMPLES, { payload: storageParams }, "storeSamples")
+            .then(resp => {
+              if(resp.length <= 0) return;
+              // _updateSamplesStatus(resp)
+              // _updateSampleStatus(resp[0])
+              console.log(resp);
+            });
+
+            await Swal.fire(
+              'Its Happening!',
+              'Your sample(s) have been added to storage.',
+              'success'
+            ).then(_ => {})
+
+          }
+        })
+      } catch (error) {
+        
+      }
+      return stored;
+    }
+
+
     return {
       ...toRefs(state),
       cancelSamples,
@@ -293,5 +334,6 @@ export default function useSampleComposable(){
       publishSamples,
       invalidateSamples,
       rejectSamples,
+      storeSamples,
     }
   }

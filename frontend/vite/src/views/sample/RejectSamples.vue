@@ -4,23 +4,14 @@ import { IAnalysisProfile, IAnalysisService } from "../../models/analysis";
 import { useSampleComposable } from "../../composables";
 import { useAnalysisStore } from "../../stores";
 
-const props = defineProps({
-  samples: {
-    type: String,
-    required: true,
-  },
-});
-
 const analysisStore = useAnalysisStore();
 const { rejectSamples } = useSampleComposable();
-
-const { samples } = toRefs(props);
 
 const state = reactive({
   rejections: [] as any[],
 });
 
-const ss = JSON.parse(samples.value);
+const ss = JSON.parse(window.history.state.samples);
 let coll: any[] = [];
 for (let ob of ss) {
   ob["reasons"] = [];

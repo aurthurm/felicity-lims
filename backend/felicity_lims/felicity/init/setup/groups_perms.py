@@ -20,8 +20,6 @@ class FObject:
     SAMPLE = "SAMPLE"
     RESULT = "RESULT"
     WORKSHEET = "WORKSHEET"
-    BOARD = "BOARD"
-    DOCUMENT = "DOCUMENT"
 
 
 class FAction:
@@ -115,22 +113,6 @@ permissions = {
         fo.WORKSHEET: [fg.SCIENTIST, fg.TECHNOLOGIST],
     },
     fa.INVALIDATE: {fo.SAMPLE: [fg.SCIENTIST, fg.TECHNOLOGIST]},
-    fa.DELETE: {
-        fo.BOARD: [
-            fg.ADMINISTRATOR,
-            fg.LAB_MANAGER,
-            fg.SCIENTIST,
-            fg.TECHNOLOGIST,
-            fg.LAB_HAND,
-        ],
-        fo.DOCUMENT: [
-            fg.ADMINISTRATOR,
-            fg.LAB_MANAGER,
-            fg.SCIENTIST,
-            fg.TECHNOLOGIST,
-            fg.LAB_HAND,
-        ],
-    },
 }
 
 

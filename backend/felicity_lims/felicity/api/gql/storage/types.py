@@ -3,7 +3,6 @@ from typing import List, Optional
 
 import strawberry  # noqa
 
-from felicity.api.gql.analysis.types.analysis import SampleType
 from felicity.api.gql.user.types import UserType
 from felicity.apps.storage import models
 
@@ -75,7 +74,7 @@ class StorageSectionType:
     @strawberry.field
     async def children(self, info) -> List[Optional['StorageContainerType']]:
         storage_container = await models.StorageContainer.get_all(storage_section_uid=self.uid)
-        return [StorageContainerType(**sc.marshal_simple()) for sc in storage_container]
+        return [StorageContainerType(**sc.marshal_simple(exclude=["samples"])) for sc in storage_container]
 
 
 @strawberry.type
@@ -90,7 +89,6 @@ class StorageContainerType:
     cols: Optional[int]
     rows: Optional[int]
     slots: Optional[int]
-    samples: Optional[List[Optional[SampleType]]]
     created_at: Optional[datetime]
     created_by_uid: Optional[int]
     created_by: Optional[UserType]
@@ -115,7 +113,6 @@ class StorageSlotType:
     storage_container: Optional[StorageContainerType]
     position: Optional[str]
     position_label: Optional[str]
-    sample: Optional[SampleType]
     created_at: Optional[datetime]
     created_by_uid: Optional[int]
     created_by: Optional[UserType]

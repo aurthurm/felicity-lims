@@ -31,6 +31,7 @@ const state = reactive({
   can_copy_to: false,
   can_download: false,
   can_print: false,
+  can_store: false,
   allChecked: false,
 });
 
@@ -137,6 +138,7 @@ function checkUserActionPermissios(): void {
   state.can_download = false;
   state.can_print = false;
   state.can_reject = false;
+  state.can_store = false;
 
   const checked: ISample[] = getSamplesChecked();
   if (checked.length === 0) return;
@@ -152,6 +154,9 @@ function checkUserActionPermissios(): void {
   ) {
     state.can_cancel = true;
     state.can_reject = true;
+    if (checked.every((s) => s.storageSlotUid === null)) {
+      state.can_store = true;
+    }
   }
 
   // can_reinstate
@@ -198,7 +203,11 @@ const downloadReports_ = async () => await downloadReports(getSampleUids());
 const printReports_ = async () => await publishSamples(getSampleUids());
 const prepareRejections = async () => {
   const selection = getSamplesChecked();
-  router.push({ name: "reject-samples", params: { samples: JSON.stringify(selection) } });
+  router.push({ name: "reject-samples", state: { samples: JSON.stringify(selection) } });
+};
+const prepareStorages = async () => {
+  const selection = getSamplesChecked();
+  router.push({ name: "store-samples", state: { samples: JSON.stringify(selection) } });
 };
 </script>
 
@@ -339,15 +348,17 @@ const prepareRejections = async () => {
                   @change="checkCheck(sample)"
                 />
               </td>
-              <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
+              <td
+                class="px-1 py-1 flex gap-1 whitespace-no-wrap border-b border-gray-500"
+              >
                 <span
                   v-if="sample.priority! > 1"
-                  :class="[
-                          'font-small',
-                          { 'text-orange-600': sample.priority! > 1 },
-                      ]"
+                  :class="['text-xs',{ 'text-orange-600': sample.priority! > 1 }]"
                 >
                   <i class="fa fa-star"></i>
+                </span>
+                <span v-if="sample.storageSlotUid! !== null" class="text-xs">
+                  <i class="fa fa-briefcase"></i>
                 </span>
               </td>
               <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
@@ -460,6 +471,16 @@ const prepareRejections = async () => {
           class="px-2 py-1 mr-2 border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
         >
           Reveive
+        </button>
+        <button
+          v-show="
+            shield.hasRights(shield.actions.CANCEL, shield.objects.SAMPLE) &&
+            state.can_store
+          "
+          @click.prevent="prepareStorages()"
+          class="px-2 py-1 mr-2 border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
+        >
+          Store
         </button>
         <button
           v-show="

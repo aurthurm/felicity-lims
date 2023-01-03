@@ -16,6 +16,15 @@ const sampleRoutes = [
           requiresAuth: true,
         },
       },
+      {
+        path: 'add-to-storage',
+        name: 'store-samples',
+        component: () => import('../views/sample/StoreSamples.vue'),
+        props: true,
+        meta: {
+          requiresAuth: true,
+        },
+      },
   ];
   
 export default sampleRoutes;

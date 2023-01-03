@@ -1,3 +1,4 @@
+import typing
 from datetime import datetime
 from typing import List, Optional
 
@@ -7,6 +8,7 @@ from felicity.api.gql.client.types import ClientType
 from felicity.api.gql.patient.types import PatientType
 from felicity.api.gql.setup.types import (DepartmentType, InstrumentType,
                                           MethodType, UnitType)
+from felicity.api.gql.storage.types import StorageContainerType, StorageSlotType
 from felicity.api.gql.user.types import UserType
 
 
@@ -241,7 +243,9 @@ class SampleType:  # for Sample
     qc_level: Optional[QCLevelType]
     # Bio Banking
     storage_container_uid: Optional[int]
+    storage_container: Optional[StorageContainerType]
     storage_slot_uid: Optional[int]
+    storage_slot: Optional[StorageSlotType]
     #
     created_by_uid: Optional[int]
     created_by: Optional[UserType]
