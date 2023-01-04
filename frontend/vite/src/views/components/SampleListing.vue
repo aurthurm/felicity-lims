@@ -348,18 +348,18 @@ const prepareStorages = async () => {
                   @change="checkCheck(sample)"
                 />
               </td>
-              <td
-                class="px-1 py-1 flex gap-1 whitespace-no-wrap border-b border-gray-500"
-              >
-                <span
-                  v-if="sample.priority! > 1"
-                  :class="['text-xs',{ 'text-orange-600': sample.priority! > 1 }]"
-                >
-                  <i class="fa fa-star"></i>
-                </span>
-                <span v-if="sample.storageSlotUid! !== null" class="text-xs">
-                  <i class="fa fa-briefcase"></i>
-                </span>
+              <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
+                <div class="flex gap-1 text-xs opacity-40">
+                  <span
+                    v-if="sample.priority! > 1"
+                    :class="[{ 'text-orange-600': sample.priority! > 1 }]"
+                  >
+                    <i class="fa fa-star"></i>
+                  </span>
+                  <span v-if="sample.storageSlotUid! !== null">
+                    <i class="fa fa-briefcase"></i>
+                  </span>
+                </div>
               </td>
               <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
                 <div class="flex items-center">

@@ -278,6 +278,16 @@ mutation StoreSamples ($payload: StoreSamplesInputType!) {
         samples {
             uid
             sampleId
+            priority
+            status
+            storageSlotUid
+            storageSlot {
+              uid
+              storageContainerUid
+              position
+              positionLabel              
+            }
+            storageContainerUid
         }
         storageContainer {
             uid

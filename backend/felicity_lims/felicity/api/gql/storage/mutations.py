@@ -465,6 +465,9 @@ class StorageMutations:
 
         empty_slots = sorted(empty_slots, key=lambda s: s.uid, reverse=False)
 
+        if len(samples) > len(empty_slots):
+            return OperationError(error=f"No enough empty slots ({len(empty_slots)}) to store samples ({len(samples)})")
+
         await an_models.Sample.bulk_update_with_mappings([
             {
                 'uid': _sample.uid,

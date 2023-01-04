@@ -37,17 +37,24 @@ export default function useApiUtil(){
       return res.data;
     }
 
-    const gqlOpertionalErrorHandler = (res: any):any => {
-      if(res?.__typename && res?.__typename === 'OperationError') {
-        errors.value.unshift(res)
-        swalError(res.error + "\n" + res.suggestion);
-        return;
-      };
-      return res;
+    const gqlOpertionalErrorHandler = (payload: any, key: string):any => {
+      if(payload.hasOwnProperty(key)) {
+        const res = payload[key]
+        if(res?.__typename && res?.__typename === 'OperationError') {
+          errors.value.unshift(res)
+          console.log("swalError")
+          swalError(res.error + "\n" + res.suggestion);
+          return;
+        } else {
+          toastInfo("operation success");
+          // instread of this which is not good. maybe create some dots status bar that appear green for success and red for error
+        };
+      }
+      return payload;
     }
 
-    const GQLResponseInterceptor = (res: any): any => {
-      return gqlOpertionalErrorHandler(gqlResponseHandler(res))
+    const GQLResponseInterceptor = (res: any,key: string): any => {
+      return gqlOpertionalErrorHandler(gqlResponseHandler(res), key)
     }
 
     async function withClientMutation(query, payload, dataKey): Promise<any> {
@@ -55,7 +62,7 @@ export default function useApiUtil(){
       .mutation(query, payload)
       .toPromise()
       .then(result => {
-        const data = GQLResponseInterceptor(result)
+        const data = GQLResponseInterceptor(result, dataKey)
         if(dataKey){
           return data[dataKey]
         } else {
@@ -69,7 +76,7 @@ export default function useApiUtil(){
       .query(query, variables, { requestPolicy })
       .toPromise()
       .then(result => {
-        const data = GQLResponseInterceptor(result)
+        const data = GQLResponseInterceptor(result, dataKey)
         if(dataKey){
           return data[dataKey]
         } else {
