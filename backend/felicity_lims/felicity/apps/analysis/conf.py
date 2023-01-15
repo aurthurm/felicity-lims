@@ -14,6 +14,7 @@ class States:
         INVALIDATED = "invalidated"  # approval condemnation
         CANCELLED = "cancelled"  # no longer required <in other words deleted>
         REJECTED = "rejected"  # declined for non conformance reasons
+        STORED = "stored"  # samples in storage
 
     class Result:
         PENDING = "pending"  # analytes that are pending results

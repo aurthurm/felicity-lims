@@ -5,6 +5,7 @@ import strawberry  # noqa
 from felicity.api.gql import OperationError, auth_from_info, verify_user_auth, OperationSuccess
 from felicity.apps.storage import models, schemas
 from felicity.api.gql.storage import types
+from felicity.apps.analysis.conf import states as analysis_states
 from felicity.apps.analysis.models import analysis as an_models
 from felicity.api.gql.analysis.types.analysis import SampleType
 
@@ -63,22 +64,9 @@ class StorageContainerInputType:
     slots: Optional[int] = 0
 
 
-StorageSlotResponse = strawberry.union(
-    "StorageSlotResponse", (types.StorageSlotType, OperationError), description=""  # noqa
-)
-
-
-@strawberry.input
-class StorageSlotInputType:
-    storage_container_uid: int
-    position: int
-    sample_uid: Optional[int]
-
-
 @strawberry.type
 class StoredSamplesType:
     samples: List[SampleType]
-    storage_container: Optional[types.StorageContainerType]
 
 
 StoreSampleResponse = strawberry.union(
@@ -88,7 +76,9 @@ StoreSampleResponse = strawberry.union(
 
 @strawberry.input
 class StoreSamplesInputType:
-    sample_uids: List[int]
+    sample_uid: int
+    storage_slot: str
+    storage_slot_index: int
     storage_container_uid: int
 
 
@@ -303,6 +293,7 @@ class StorageMutations:
         incoming: Dict = {
             "created_by_uid": felicity_user.uid,
             "updated_by_uid": felicity_user.uid,
+            "stored_count": 0
         }
         for k, v in payload.__dict__.items():
             incoming[k] = v
@@ -310,29 +301,8 @@ class StorageMutations:
         obj_in = schemas.StorageContainerCreate(**incoming)
         storage_container: models.StorageContainer = await models.StorageContainer.create(obj_in)
 
-        # Add slots
-        storage_slots: models.StorageSlot = None
-        if payload.slots > 0:
-            slot_in: Dict = {
-                "storage_container_uid": storage_container.uid,
-                "created_by_uid": felicity_user.uid,
-                "updated_by_uid": felicity_user.uid,
-                "position": 0
-            }
-            slot_schema = schemas.StorageSlotCreate(**slot_in)
-
-            slot_schemas = [
-                slot_schema.copy(
-                    update={"position": i + 1}
-                )
-                for i in list(range(payload.slots))
-            ]
-
-            await models.StorageSlot.bulk_create(slot_schemas)
-            logger.info(f"StorageSlot Bulk create: {storage_slots}")
-
         storage_container = await models.StorageContainer.get(uid=storage_container.uid)
-        return types.StorageContainerType(**storage_container.marshal_simple())
+        return types.StorageContainerType(**storage_container.marshal_simple(exclude=["samples"]))
 
     @strawberry.mutation
     async def update_storage_container(
@@ -367,78 +337,10 @@ class StorageMutations:
 
         obj_in = schemas.StorageContainerUpdate(**storage_container.to_dict())
         storage_container = await storage_container.update(obj_in)
-        return types.StorageContainerType(**storage_container.marshal_simple())
+        return types.StorageContainerType(**storage_container.marshal_simple(exclude=["samples"]))
 
     @strawberry.mutation
-    async def create_storage_slots(self, info, payload: StorageSlotInputType) -> StorageSlotResponse:
-        is_authenticated, felicity_user = await auth_from_info(info)
-        auth_success, auth_error = verify_user_auth(
-            is_authenticated,
-            felicity_user,
-            "Only Authenticated user can create storage slots",
-        )
-        if not auth_success:
-            return auth_error
-
-        storage_container = await models.StorageContainer.get(uid=payload.storage_container_uid)
-        if not storage_container:
-            return OperationError(error=f"StorageContainer with uid {payload.storage_container_uid} does not exists")
-
-        exists = await models.StorageSlot.where(**{
-            "position": payload.position,
-            "storage_container_uid": storage_container.uid
-        })
-        if exists:
-            return OperationError(error=f"StorageSlot with this position already exists for this storage container")
-
-        incoming: Dict = {
-            "created_by_uid": felicity_user.uid,
-            "updated_by_uid": felicity_user.uid,
-        }
-        for k, v in payload.__dict__.items():
-            incoming[k] = v
-
-        obj_in = schemas.StorageSlotCreate(**incoming)
-        storage_slot: models.StorageSlot = await models.StorageSlot.create(obj_in)
-        return types.StorageSlotType(**storage_slot.marshal_simple())
-
-    @strawberry.mutation
-    async def update_storage_slot(
-            self, info, uid: int, payload: StorageSlotInputType
-    ) -> StorageSlotResponse:
-
-        is_authenticated, felicity_user = await auth_from_info(info)
-        verify_user_auth(
-            is_authenticated,
-            felicity_user,
-            "Only Authenticated user can update storage slots",
-        )
-
-        if not uid:
-            return OperationError(error="No uid provided to identity update obj")
-
-        storage_slot: models.StorageSlot = await models.StorageSlot.get(uid=uid)
-        if not storage_slot:
-            return OperationError(
-                error=f"StorageSlot with uid {uid} not found. Cannot update obj ..."
-            )
-
-        obj_data = storage_slot.to_dict()
-        for field in obj_data:
-            if field in payload.__dict__:
-                try:
-                    setattr(storage_slot, field, payload.__dict__[field])
-                except Exception as e:  # noqa
-                    pass
-
-        setattr(storage_slot, "updated_by_uid", felicity_user.uid)
-
-        obj_in = schemas.StorageSlotUpdate(**storage_slot.to_dict())
-        storage_slot = await storage_slot.update(obj_in)
-        return types.StorageSlotType(**storage_slot.marshal_simple())
-
-    @strawberry.mutation
-    async def store_samples(info, payload: StoreSamplesInputType) -> StoreSampleResponse:
+    async def store_samples(info, payload: List[StoreSamplesInputType]) -> StoreSampleResponse:
         is_authenticated, felicity_user = await auth_from_info(info)
         verify_user_auth(
             is_authenticated,
@@ -446,36 +348,63 @@ class StorageMutations:
             "Only Authenticated user can submit analysis results",
         )
 
-        if len(payload.sample_uids) == 0:
+        if len(payload) == 0:
             return OperationError(error=f"No Samples to store are provided!")
 
-        samples = await an_models.Sample.get_by_uids(uids=payload.sample_uids)
-        samples = sorted(samples, key=lambda s: s.uid, reverse=False)
+        # group by container
+        container_uids = set()
+        for s_item in payload:
+            container_uids.add(s_item.storage_container_uid)
 
-        storage_container = await models.StorageContainer.get(uid=payload.storage_container_uid)
-        storage_slots = await models.StorageSlot.get_all(storage_container_uid=payload.storage_container_uid)
+        for container_uid in container_uids:
+            sample_data = list(filter(lambda x: x.storage_container_uid == container_uid, payload))
+            samples = await an_models.Sample.get_by_uids(uids=[s.sample_uid for s in sample_data])
+            container = await models.StorageContainer.get(uid=container_uid)
 
-        stored_samples = await an_models.Sample.get_all(storage_container_uid=payload.storage_container_uid)
-        stored_slots = [_sampl.storage_slot_uid for _sampl in stored_samples]
+            available = container.slots - container.stored_count
+            if len(samples) > available:
+                return OperationError(
+                    error=f"Selected samples ({len(samples)}) is more than available slots ({available})")
 
-        empty_slots = []
-        for _ss in storage_slots:
-            if not _ss.uid in stored_slots:
-                empty_slots.append(_ss)
+            mappings = []
+            for idx, _sample in enumerate(samples):
+                sample_datum = list(filter(lambda x: x.sample_uid == _sample.uid, sample_data))[0]
+                mappings.append({
+                    'uid': _sample.uid,
+                    'storage_container_uid': container_uid,
+                    'storage_slot': sample_datum.storage_slot,
+                    'storage_slot_index': sample_datum.storage_slot_index,
+                    'status': analysis_states.sample.STORED
+                })
 
-        empty_slots = sorted(empty_slots, key=lambda s: s.uid, reverse=False)
+            await an_models.Sample.bulk_update_with_mappings(mappings)
 
-        if len(samples) > len(empty_slots):
-            return OperationError(error=f"No enough empty slots ({len(empty_slots)}) to store samples ({len(samples)})")
+        samples = await an_models.Sample.get_by_uids(uids=[s.sample_uid for s in payload])
+
+        return StoredSamplesType(samples=samples)
+
+    @strawberry.mutation
+    async def recover_samples(info, sample_uids: List[int]) -> StoreSampleResponse:
+        is_authenticated, felicity_user = await auth_from_info(info)
+        verify_user_auth(
+            is_authenticated,
+            felicity_user,
+            "Only Authenticated user can recover stored samples",
+        )
+
+        if len(sample_uids) == 0:
+            return OperationError(error=f"No Samples to recover are provided!")
+
+        samples = await an_models.Sample.get_by_uids(uids=sample_uids)
 
         await an_models.Sample.bulk_update_with_mappings([
             {
                 'uid': _sample.uid,
-                'storage_container_uid': payload.storage_container_uid,
-                'storage_slot_uid': empty_slots[idx].uid
+                'storage_container_uid': None,
+                'storage_slot': None,
+                'status': analysis_states.sample.RECEIVED
             } for idx, _sample in enumerate(samples)
         ])
 
-        samples = await an_models.Sample.get_by_uids(uids=payload.sample_uids)
-
-        return StoredSamplesType(samples=samples, storage_container=storage_container)
+        samples = await an_models.Sample.get_by_uids(uids=sample_uids)
+        return StoredSamplesType(samples=samples, storage_container=None)

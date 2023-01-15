@@ -38,11 +38,3 @@ class StorageQuery:
     @strawberry.field
     async def storage_container_by_uid(self, info, uid: int) -> Optional[types.StorageContainerType]:
         return await models.StorageContainer.get(uid=uid)
-
-    @strawberry.field
-    async def storage_slots(self, info, storage_container_uid: int) -> List[types.StorageSlotType]:
-        return await models.StorageSlot.get_all(storage_container_uid=storage_container_uid)
-
-    @strawberry.field
-    async def storage_slot_by_uid(self, info, uid: int) -> Optional[types.StorageSlotType]:
-        return await models.StorageSlot.get(uid=uid)

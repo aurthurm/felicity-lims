@@ -89,6 +89,7 @@ class StorageContainerType:
     cols: Optional[int]
     rows: Optional[int]
     slots: Optional[int]
+    stored_count: Optional[int]
     created_at: Optional[datetime]
     created_by_uid: Optional[int]
     created_by: Optional[UserType]
@@ -99,23 +100,3 @@ class StorageContainerType:
     @strawberry.field
     async def tag(self, info) -> str:
         return "storage-container"
-
-    @strawberry.field
-    async def storage_slots(self, info) -> List[Optional['StorageSlotType']]:
-        storage_slots = await models.StorageSlot.get_all(storage_container_uid=self.uid)
-        return [StorageSlotType(**sl.marshal_simple()) for sl in storage_slots]
-
-
-@strawberry.type
-class StorageSlotType:
-    uid: int
-    storage_container_uid: int
-    storage_container: Optional[StorageContainerType]
-    position: Optional[str]
-    position_label: Optional[str]
-    created_at: Optional[datetime]
-    created_by_uid: Optional[int]
-    created_by: Optional[UserType]
-    updated_at: Optional[datetime]
-    updated_by_uid: Optional[int]
-    updated_by: Optional[UserType]

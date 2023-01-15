@@ -156,14 +156,6 @@ mutation AddStorageContainer ($payload: StorageContainerInputType!) {
         cols
         rows
         slots
-        storageSlots{
-            uid
-            position
-        }
-        samples{
-            uid
-            sampleId
-        }
     }
 
     ... on OperationError {
@@ -197,65 +189,6 @@ mutation EditStorageContainer ($uid: Int!, $payload: StorageContainerInputType!)
         cols
         rows
         slots
-        storageSlots{
-            uid
-            position
-        }
-        samples{
-            uid
-            sampleId
-        }
-
-    }
-
-    ... on OperationError {
-      __typename
-      error
-      suggestion
-    }
-  }
-}
-`;
-
-
-// storage slots
-export const ADD_STORAGE_SLOT= gql`
-mutation AddStorageSlot ($payload: StorageSlotInputType!) {
-  createStorageSlot(payload: $payload){
-    ... on StorageSlotType {
-        __typename    
-        uid  
-        storageContainerUid
-        position
-        positionLabel
-        sample {
-            uid
-            sampleId
-        }
-    }
-
-    ... on OperationError {
-      __typename
-      error
-      suggestion
-    }
-  }
-}
-`;
-
-export const EDIT_STORAGE_SLOT= gql`
-mutation EditStorageSlot ($uid: Int!, $payload: StorageSlotInputType!) {
-  updateStorageSlot(uid: $uid, payload: $payload){
-    ... on StorageSlotType {
-        __typename    
-        uid  
-        storageContainerUid
-        position
-        positionLabel
-        sample {
-            uid
-            sampleId
-        }
 
     }
 
@@ -271,7 +204,7 @@ mutation EditStorageSlot ($uid: Int!, $payload: StorageSlotInputType!) {
 
 // sample storage
 export const STORE_SAMPLES= gql`
-mutation StoreSamples ($payload: StoreSamplesInputType!) {
+mutation StoreSamples ($payload: [StoreSamplesInputType!]!) {
   storeSamples(payload: $payload){
     ... on StoredSamplesType {
         __typename    
@@ -280,17 +213,31 @@ mutation StoreSamples ($payload: StoreSamplesInputType!) {
             sampleId
             priority
             status
-            storageSlotUid
-            storageSlot {
-              uid
-              storageContainerUid
-              position
-              positionLabel              
-            }
+            storageSlot
             storageContainerUid
         }
-        storageContainer {
+    }
+
+    ... on OperationError {
+      __typename
+      error
+      suggestion
+    }
+  }
+}
+`;
+
+
+export const RECOVER_SAMPLES= gql`
+mutation RecoverSamples ($sampleUids: [Int!]!) {
+  recoverSamples(sampleUids: $sampleUids){
+    ... on StoredSamplesType {
+        __typename    
+        samples {
             uid
+            status
+            storageSlot
+            storageContainerUid
         }
     }
 

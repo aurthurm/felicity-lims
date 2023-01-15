@@ -32,12 +32,6 @@ class AnalysisResult(Auditable, BaseMPTT):
 
     sample_uid = Column(Integer, ForeignKey("sample.uid"), nullable=False)
     sample = relationship("Sample", back_populates="analysis_results", lazy="selectin")
-    worksheet_uid = Column(Integer, ForeignKey("worksheet.uid"), nullable=True)
-    worksheet = relationship(
-        "WorkSheet", back_populates="analysis_results", lazy="selectin"
-    )
-    worksheet_position = Column(Integer, nullable=True)
-    assigned = Column(Boolean(), default=False)
     analysis_uid = Column(Integer, ForeignKey("analysis.uid"), nullable=False)
     analysis = relationship("Analysis", backref="analysis_results", lazy="selectin")
     instrument_uid = Column(Integer, ForeignKey("instrument.uid"), nullable=True)
@@ -70,6 +64,13 @@ class AnalysisResult(Auditable, BaseMPTT):
     due_date = Column(DateTime, nullable=True)
     # reflex level
     reflex_level = Column(Integer, nullable=True)
+    # worksheet
+    worksheet_uid = Column(Integer, ForeignKey("worksheet.uid"), nullable=True)
+    worksheet = relationship(
+        "WorkSheet", back_populates="analysis_results", lazy="selectin"
+    )
+    worksheet_position = Column(Integer, nullable=True)
+    assigned = Column(Boolean(), default=False)
 
     async def verifications(self):
         if self.analysis.required_verifications:
@@ -156,8 +157,8 @@ class AnalysisResult(Auditable, BaseMPTT):
             return await self.save()
         return None
 
-    async def re_instate(self, re_instated_by):
-        if self.sample.status not in [
+    async def re_instate(self, sample, re_instated_by):
+        if sample.status not in [
             conf.states.sample.RECEIVED,
             conf.states.sample.EXPECTED,
         ]:

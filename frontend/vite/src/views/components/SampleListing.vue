@@ -32,6 +32,7 @@ const state = reactive({
   can_download: false,
   can_print: false,
   can_store: false,
+  can_recover: false,
   allChecked: false,
 });
 
@@ -102,6 +103,11 @@ function unCheck(sample: ISample): void {
   checkUserActionPermissios();
 }
 
+async function unCheckAll() {
+  await state.samples?.forEach((sample) => unCheck(sample));
+  checkUserActionPermissios();
+}
+
 function toggleCheckAll(): void {
   state.samples?.forEach((sample: ISample) =>
     state.allChecked ? check(sample) : unCheck(sample)
@@ -139,6 +145,7 @@ function checkUserActionPermissios(): void {
   state.can_print = false;
   state.can_reject = false;
   state.can_store = false;
+  state.can_recover = false;
 
   const checked: ISample[] = getSamplesChecked();
   if (checked.length === 0) return;
@@ -154,9 +161,15 @@ function checkUserActionPermissios(): void {
   ) {
     state.can_cancel = true;
     state.can_reject = true;
-    if (checked.every((s) => s.storageSlotUid === null)) {
-      state.can_store = true;
-    }
+  }
+
+  // can_store;
+  if (checked.every((sample: ISample) => ["received"].includes(sample.status!))) {
+    state.can_store = true;
+  }
+
+  if (checked.every((sample: ISample) => ["stored"].includes(sample.status!))) {
+    state.can_recover = true;
   }
 
   // can_reinstate
@@ -190,17 +203,23 @@ const {
   reInstateSamples,
   receiveSamples,
   publishSamples,
+  recoverSamples,
 } = useSampleComposable();
 const { downloadReports } = useReportComposable();
 
 const sampleCount = computed(
   () => sampleStore.getSamples?.length + " of " + sampleStore.getSampleCount + " samples"
 );
-const cancelSamples_ = async () => cancelSamples(getSampleUids());
-const reInstateSamples_ = async () => reInstateSamples(getSampleUids());
-const receiveSamples_ = async () => receiveSamples(getSampleUids());
-const downloadReports_ = async () => await downloadReports(getSampleUids());
-const printReports_ = async () => await publishSamples(getSampleUids());
+const cancelSamples_ = async () =>
+  cancelSamples(getSampleUids()).finally(() => unCheckAll());
+const reInstateSamples_ = async () =>
+  reInstateSamples(getSampleUids()).finally(() => unCheckAll());
+const receiveSamples_ = async () =>
+  receiveSamples(getSampleUids()).finally(() => unCheckAll());
+const downloadReports_ = async () =>
+  await downloadReports(getSampleUids()).finally(() => unCheckAll());
+const printReports_ = async () =>
+  await publishSamples(getSampleUids()).finally(() => unCheckAll());
 const prepareRejections = async () => {
   const selection = getSamplesChecked();
   router.push({ name: "reject-samples", state: { samples: JSON.stringify(selection) } });
@@ -209,6 +228,8 @@ const prepareStorages = async () => {
   const selection = getSamplesChecked();
   router.push({ name: "store-samples", state: { samples: JSON.stringify(selection) } });
 };
+const recoverSamples_ = async () =>
+  recoverSamples(getSampleUids()).finally(() => unCheckAll());
 </script>
 
 <template>
@@ -229,6 +250,7 @@ const prepareStorages = async () => {
             <option value="invalidated">Invalidated</option>
             <option value="cancelled">Cancelled</option>
             <option value="rejected">Rejected</option>
+            <option value="stored">Stored</option>
           </select>
           <div
             class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700"
@@ -356,7 +378,7 @@ const prepareStorages = async () => {
                   >
                     <i class="fa fa-star"></i>
                   </span>
-                  <span v-if="sample.storageSlotUid! !== null">
+                  <span v-if="sample.status === 'stored'">
                     <i class="fa fa-briefcase"></i>
                   </span>
                 </div>
@@ -485,6 +507,16 @@ const prepareStorages = async () => {
         <button
           v-show="
             shield.hasRights(shield.actions.CANCEL, shield.objects.SAMPLE) &&
+            state.can_recover
+          "
+          @click.prevent="recoverSamples_()"
+          class="px-2 py-1 mr-2 border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
+        >
+          Recover
+        </button>
+        <button
+          v-show="
+            shield.hasRights(shield.actions.CANCEL, shield.objects.SAMPLE) &&
             state.can_reject
           "
           @click.prevent="prepareRejections()"
@@ -492,7 +524,7 @@ const prepareStorages = async () => {
         >
           Reject
         </button>
-        <button
+        <!-- <button
           v-show="
             shield.hasRights(shield.actions.CANCEL, shield.objects.SAMPLE) &&
             state.can_copy_to
@@ -500,7 +532,7 @@ const prepareStorages = async () => {
           class="px-2 py-1 mr-2 border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
         >
           Copy to New
-        </button>
+        </button> -->
         <button
           v-show="
             shield.hasRights(shield.actions.CANCEL, shield.objects.SAMPLE) &&

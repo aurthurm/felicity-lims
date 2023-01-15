@@ -88,6 +88,7 @@ class StorageSectionCreate(StorageSectionBase):
 class StorageSectionUpdate(StorageSectionBase):
     pass
 
+
 #
 # StorageContainer Schemas
 #
@@ -98,11 +99,12 @@ class StorageContainerBase(BaseModel):
     description: Optional[str] = None
     storage_section_uid: int
     storage_section: Optional[StorageSection]
-    grid: bool = True
-    row_wise: bool = True
+    grid: bool = False
+    row_wise: bool = False
     cols: Optional[int]
     rows: Optional[int]
     slots: Optional[int] = 0
+    stored_count: Optional[int] = 0
 
 
 class StorageContainer(StorageContainerBase):
@@ -119,33 +121,4 @@ class StorageContainerCreate(StorageContainerBase):
 
 # Properties to receive via API on update
 class StorageContainerUpdate(StorageContainerBase):
-    pass
-
-
-#
-# StorageSlot Schemas
-#
-
-# Shared properties
-class StorageSlotBase(BaseModel):
-    storage_container_uid: int
-    storage_container: Optional[StorageContainer]
-    position: str
-    position_label: str = None
-
-
-class StorageSlot(StorageSlotBase):
-    uid: Optional[int] = None
-
-    class Config:
-        orm_mode = True
-
-
-# Properties to receive via API on creation
-class StorageSlotCreate(StorageSlotBase):
-    pass
-
-
-# Properties to receive via API on update
-class StorageSlotUpdate(StorageSlotBase):
     pass

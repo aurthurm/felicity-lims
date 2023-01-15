@@ -479,9 +479,9 @@ class Sample(Auditable, BaseMPTT):
     analysis_results = relationship(
         "AnalysisResult", back_populates="sample", lazy="selectin"
     )
+    assigned = Column(Boolean(), default=False)
     priority = Column(Integer, nullable=False, default=0)
     status = Column(String, nullable=False)
-    assigned = Column(Boolean(), default=False)
     received_by_uid = Column(Integer, ForeignKey("user.uid"), nullable=True)
     received_by = relationship(User, foreign_keys=[received_by_uid], lazy="selectin")
     date_received = Column(DateTime, nullable=True)
@@ -514,15 +514,13 @@ class Sample(Auditable, BaseMPTT):
     qc_set = relationship(QCSet, back_populates="samples", lazy="selectin")
     qc_level_uid = Column(Integer, ForeignKey("qclevel.uid"), nullable=True)
     qc_level = relationship(QCLevel, backref="qc_samples", lazy="selectin")
-    # storage -> biobanks
+    # storage -> bio bank
     storage_container_uid = Column(Integer, ForeignKey("storagecontainer.uid"), nullable=True)
     storage_container = relationship(
         "StorageContainer", back_populates="samples", lazy="selectin"
     )
-    storage_slot_uid = Column(Integer, ForeignKey("storageslot.uid"), nullable=True)
-    storage_slot = relationship(
-        "StorageSlot", back_populates="sample", lazy="selectin"
-    )
+    storage_slot = Column(String, nullable=True)
+    storage_slot_index = Column(Integer, nullable=True)
 
     @staticmethod
     def copy_include_keys():
@@ -625,7 +623,7 @@ class Sample(Auditable, BaseMPTT):
             self.updated_by_uid = re_instated_by.uid  # noqa
             sample = await self.save()
             for result in analysis_results:
-                await result.re_instate(re_instated_by=re_instated_by)
+                await result.re_instate(sample, re_instated_by=re_instated_by)
             return sample
         return self
 
@@ -712,6 +710,16 @@ class Sample(Auditable, BaseMPTT):
             rejected = await self.save()
             await streamer.stream(rejected, rejected_by, "rejected", "sample")
             return rejected
+        return self
+
+    async def recover(self):
+        statuses = [states.sample.STORED]
+        if self.status in statuses:
+            self.status = states.sample.RECEIVED
+            self.storage_container_uid = None
+            self.storage_slot_uid = None
+            recovered = await self.save()
+            return recovered
         return self
 
     @classmethod

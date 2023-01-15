@@ -67,7 +67,7 @@ export interface IStorageContainer {
     cols?: number;
     rows?: number;
     slots?: number;
-    storageSlots?: IStorageSlot[];
+    storedCount?: number;
     samples?: ISample[];
     createdAt?: Date;
     createdByUid?: number;
@@ -76,28 +76,9 @@ export interface IStorageContainer {
     updatedByUid?: number;
     updatedBy?: IUser;
     tag?: string,
-    children: IStorageSlot[],
     isOpen?: boolean;
     isFolder?: boolean;
 }
-
-
-export interface IStorageSlot {
-    uid?: number;
-    storageContainerUid?: number;
-    storageContainer?: IStorageContainer;
-    position?: String;
-    positionLabel?: String;
-    sample?: ISample;
-    createdAt?: Date;
-    createdByUid?: number;
-    createdBy?: IUser;
-    updatedAt?: Date;
-    updatedByUid?: number;
-    updatedBy?: IUser;
-}
-
-
 
 
 interface IActivePath {

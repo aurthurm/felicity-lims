@@ -1,7 +1,10 @@
-from felicity.apps import BaseAuditDBModel
-from felicity.apps.storage import schemas
+from typing import List
 from sqlalchemy import Boolean, Column, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
+
+from felicity.apps import BaseAuditDBModel
+from felicity.apps.storage import schemas
+from felicity.apps.analysis.models.analysis import Sample
 
 
 class StoreRoom(BaseAuditDBModel):
@@ -85,12 +88,22 @@ class StorageContainer(BaseAuditDBModel):
     storage_section = relationship(
         StorageSection, backref="storage_containers", lazy="selectin"
     )
-    slots = Column(Integer, nullable=False, default=0)
+    slots = Column(Integer, nullable=False, default=0)  # number of samples
     grid = Column(Boolean(), default=True)
-    row_wise = Column(Boolean(), default=True)
+    row_wise = Column(Boolean(), default=False)
     cols = Column(Integer, nullable=True)
     rows = Column(Integer, nullable=True)
-    samples = relationship("Sample", back_populates="storage_container", lazy="selectin")
+    samples = relationship('Sample', back_populates="storage_container", lazy="selectin")
+    stored_count = Column(Integer, nullable=False, default=0)
+
+    async def get_samples(self) -> List[Sample]:
+        return await Sample.get_all(storage_container_uid=self.uid)
+
+    async def reset_stored_count(self) -> None:
+        samples = await self.get_samples()
+        count = len(samples)
+        self.stored_count = count
+        await self.save()
 
     @classmethod
     async def create(
@@ -102,30 +115,5 @@ class StorageContainer(BaseAuditDBModel):
     async def update(
             self, obj_in: schemas.StorageContainerUpdate
     ) -> schemas.StorageContainer:
-        data = self._import(obj_in)
-        return await super().update(**data)
-
-
-class StorageSlot(BaseAuditDBModel):
-    """Storage Container Sample Slot
-    e.g: Sample K-Lite, etc
-    """
-
-    storage_container_uid = Column(
-        Integer, ForeignKey("storagecontainer.uid"), nullable=False
-    )
-    storage_container = relationship(
-        StorageContainer, backref="storage_slots", lazy="selectin"
-    )
-    position = Column(Integer, nullable=False)
-    position_label = Column(String, nullable=True)
-    sample = relationship("Sample", back_populates="storage_slot", uselist=False, lazy="selectin")
-
-    @classmethod
-    async def create(cls, obj_in: schemas.StorageSlotCreate) -> schemas.StorageSlot:
-        data = cls._import(obj_in)
-        return await super().create(**data)
-
-    async def update(self, obj_in: schemas.StorageSlotUpdate) -> schemas.StorageSlot:
         data = self._import(obj_in)
         return await super().update(**data)

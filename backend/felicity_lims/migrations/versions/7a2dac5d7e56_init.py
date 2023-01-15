@@ -1,8 +1,8 @@
-"""starter
+"""init
 
-Revision ID: 32d3c81fa720
+Revision ID: 7a2dac5d7e56
 Revises: 
-Create Date: 2022-12-27 22:10:04.803542
+Create Date: 2023-01-14 08:54:06.352621
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 from sqlalchemy.dialects import postgresql
 
 # revision identifiers, used by Alembic.
-revision = '32d3c81fa720'
+revision = '7a2dac5d7e56'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -768,6 +768,7 @@ def upgrade():
     sa.Column('department_uid', sa.Integer(), nullable=True),
     sa.Column('status', sa.String(), nullable=False),
     sa.Column('order_number', sa.String(), nullable=False),
+    sa.Column('remarks', sa.String(), nullable=True),
     sa.Column('created_at', sa.DateTime(), nullable=True),
     sa.Column('created_by_uid', sa.Integer(), nullable=True),
     sa.Column('updated_at', sa.DateTime(), nullable=True),
@@ -787,17 +788,17 @@ def upgrade():
     sa.Column('category_uid', sa.Integer(), nullable=True),
     sa.Column('hazard_uid', sa.Integer(), nullable=True),
     sa.Column('store_room_uid', sa.Integer(), nullable=True),
-    sa.Column('lot_number', sa.String(), nullable=False),
-    sa.Column('batch', sa.String(), nullable=False),
-    sa.Column('size', sa.Float(), nullable=False),
+    sa.Column('lot_number', sa.String(), nullable=True),
+    sa.Column('batch', sa.String(), nullable=True),
+    sa.Column('size', sa.Float(), nullable=True),
     sa.Column('unit_uid', sa.Integer(), nullable=True),
     sa.Column('packaging_uid', sa.Integer(), nullable=True),
-    sa.Column('price', sa.Float(), nullable=False),
+    sa.Column('price', sa.Float(), nullable=True),
     sa.Column('quantity_received', sa.Integer(), nullable=False),
-    sa.Column('minimum_level', sa.Integer(), nullable=False),
-    sa.Column('remaining', sa.Integer(), nullable=False),
+    sa.Column('minimum_level', sa.Integer(), nullable=True),
+    sa.Column('remaining', sa.Integer(), nullable=True),
     sa.Column('date_received', sa.DateTime(), nullable=False),
-    sa.Column('expiry_date', sa.DateTime(), nullable=False),
+    sa.Column('expiry_date', sa.DateTime(), nullable=True),
     sa.Column('received_by_uid', sa.Integer(), nullable=True),
     sa.Column('created_at', sa.DateTime(), nullable=True),
     sa.Column('created_by_uid', sa.Integer(), nullable=True),
@@ -1002,6 +1003,7 @@ def upgrade():
     sa.Column('order_uid', sa.Integer(), nullable=True),
     sa.Column('price', sa.Float(), nullable=False),
     sa.Column('quantity', sa.Integer(), nullable=False),
+    sa.Column('remarks', sa.String(), nullable=True),
     sa.Column('created_at', sa.DateTime(), nullable=True),
     sa.Column('created_by_uid', sa.Integer(), nullable=True),
     sa.Column('updated_at', sa.DateTime(), nullable=True),
@@ -1280,6 +1282,7 @@ def upgrade():
     sa.Column('row_wise', sa.Boolean(), nullable=True),
     sa.Column('cols', sa.Integer(), nullable=True),
     sa.Column('rows', sa.Integer(), nullable=True),
+    sa.Column('stored_count', sa.Integer(), nullable=False),
     sa.Column('created_at', sa.DateTime(), nullable=True),
     sa.Column('created_by_uid', sa.Integer(), nullable=True),
     sa.Column('updated_at', sa.DateTime(), nullable=True),
@@ -1294,7 +1297,6 @@ def upgrade():
     sa.Column('uid', sa.Integer(), autoincrement=True, nullable=False),
     sa.Column('worksheet_type', sa.String(), nullable=True),
     sa.Column('reserved', postgresql.JSONB(astext_type=sa.Text()), nullable=True),
-    sa.Column('plate', postgresql.JSONB(astext_type=sa.Text()), nullable=True),
     sa.Column('number_of_samples', sa.Integer(), nullable=True),
     sa.Column('rows', sa.Integer(), nullable=True),
     sa.Column('cols', sa.Integer(), nullable=True),
@@ -1377,26 +1379,10 @@ def upgrade():
     op.create_index(op.f('ix_patient_client_patient_id'), 'patient', ['client_patient_id'], unique=True)
     op.create_index(op.f('ix_patient_patient_id'), 'patient', ['patient_id'], unique=True)
     op.create_index(op.f('ix_patient_uid'), 'patient', ['uid'], unique=False)
-    op.create_table('storageslot',
-    sa.Column('uid', sa.Integer(), autoincrement=True, nullable=False),
-    sa.Column('storage_container_uid', sa.Integer(), nullable=False),
-    sa.Column('position', sa.Integer(), nullable=False),
-    sa.Column('position_label', sa.String(), nullable=True),
-    sa.Column('created_at', sa.DateTime(), nullable=True),
-    sa.Column('created_by_uid', sa.Integer(), nullable=True),
-    sa.Column('updated_at', sa.DateTime(), nullable=True),
-    sa.Column('updated_by_uid', sa.Integer(), nullable=True),
-    sa.ForeignKeyConstraint(['created_by_uid'], ['user.uid'], ),
-    sa.ForeignKeyConstraint(['storage_container_uid'], ['storagecontainer.uid'], ),
-    sa.ForeignKeyConstraint(['updated_by_uid'], ['user.uid'], ),
-    sa.PrimaryKeyConstraint('uid')
-    )
-    op.create_index(op.f('ix_storageslot_uid'), 'storageslot', ['uid'], unique=False)
     op.create_table('worksheet',
     sa.Column('uid', sa.Integer(), autoincrement=True, nullable=False),
     sa.Column('worksheet_type', sa.String(), nullable=True),
     sa.Column('reserved', postgresql.JSONB(astext_type=sa.Text()), nullable=True),
-    sa.Column('plate', postgresql.JSONB(astext_type=sa.Text()), nullable=True),
     sa.Column('number_of_samples', sa.Integer(), nullable=True),
     sa.Column('rows', sa.Integer(), nullable=True),
     sa.Column('cols', sa.Integer(), nullable=True),
@@ -1462,9 +1448,9 @@ def upgrade():
     sa.Column('analysis_request_uid', sa.Integer(), nullable=True),
     sa.Column('sample_type_uid', sa.Integer(), nullable=False),
     sa.Column('sample_id', sa.String(), nullable=True),
+    sa.Column('assigned', sa.Boolean(), nullable=True),
     sa.Column('priority', sa.Integer(), nullable=False),
     sa.Column('status', sa.String(), nullable=False),
-    sa.Column('assigned', sa.Boolean(), nullable=True),
     sa.Column('received_by_uid', sa.Integer(), nullable=True),
     sa.Column('date_received', sa.DateTime(), nullable=True),
     sa.Column('submitted_by_uid', sa.Integer(), nullable=True),
@@ -1482,7 +1468,7 @@ def upgrade():
     sa.Column('qc_set_uid', sa.Integer(), nullable=True),
     sa.Column('qc_level_uid', sa.Integer(), nullable=True),
     sa.Column('storage_container_uid', sa.Integer(), nullable=True),
-    sa.Column('storage_slot_uid', sa.Integer(), nullable=True),
+    sa.Column('storage_slot', sa.String(), nullable=True),
     sa.Column('created_at', sa.DateTime(), nullable=True),
     sa.Column('created_by_uid', sa.Integer(), nullable=True),
     sa.Column('updated_at', sa.DateTime(), nullable=True),
@@ -1503,7 +1489,6 @@ def upgrade():
     sa.ForeignKeyConstraint(['received_by_uid'], ['user.uid'], ),
     sa.ForeignKeyConstraint(['sample_type_uid'], ['sampletype.uid'], ),
     sa.ForeignKeyConstraint(['storage_container_uid'], ['storagecontainer.uid'], ),
-    sa.ForeignKeyConstraint(['storage_slot_uid'], ['storageslot.uid'], ),
     sa.ForeignKeyConstraint(['submitted_by_uid'], ['user.uid'], ),
     sa.ForeignKeyConstraint(['updated_by_uid'], ['user.uid'], ),
     sa.ForeignKeyConstraint(['verified_by_uid'], ['user.uid'], ),
@@ -1517,9 +1502,6 @@ def upgrade():
     op.create_table('analysisresult',
     sa.Column('uid', sa.Integer(), autoincrement=True, nullable=False),
     sa.Column('sample_uid', sa.Integer(), nullable=False),
-    sa.Column('worksheet_uid', sa.Integer(), nullable=True),
-    sa.Column('worksheet_position', sa.Integer(), nullable=True),
-    sa.Column('assigned', sa.Boolean(), nullable=True),
     sa.Column('analysis_uid', sa.Integer(), nullable=False),
     sa.Column('instrument_uid', sa.Integer(), nullable=True),
     sa.Column('method_uid', sa.Integer(), nullable=True),
@@ -1537,6 +1519,9 @@ def upgrade():
     sa.Column('status', sa.String(), nullable=False),
     sa.Column('due_date', sa.DateTime(), nullable=True),
     sa.Column('reflex_level', sa.Integer(), nullable=True),
+    sa.Column('worksheet_uid', sa.Integer(), nullable=True),
+    sa.Column('worksheet_position', sa.Integer(), nullable=True),
+    sa.Column('assigned', sa.Boolean(), nullable=True),
     sa.Column('created_at', sa.DateTime(), nullable=True),
     sa.Column('created_by_uid', sa.Integer(), nullable=True),
     sa.Column('updated_at', sa.DateTime(), nullable=True),
@@ -1638,8 +1623,6 @@ def downgrade():
     op.drop_index(op.f('ix_worksheet_worksheet_id'), table_name='worksheet')
     op.drop_index(op.f('ix_worksheet_uid'), table_name='worksheet')
     op.drop_table('worksheet')
-    op.drop_index(op.f('ix_storageslot_uid'), table_name='storageslot')
-    op.drop_table('storageslot')
     op.drop_index(op.f('ix_patient_uid'), table_name='patient')
     op.drop_index(op.f('ix_patient_patient_id'), table_name='patient')
     op.drop_index(op.f('ix_patient_client_patient_id'), table_name='patient')

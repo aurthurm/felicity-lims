@@ -350,13 +350,7 @@ export const GET_ALL_SAMPLES = gql`
             sampleId
             priority
             status
-            storageSlotUid
-            storageSlot {
-              uid
-              storageContainerUid
-              position
-              positionLabel              
-            }
+            storageSlot
             storageContainerUid
             analyses {
                 uid
@@ -491,13 +485,7 @@ query getAnalysesRequestsByPatientUid($uid: Int!) {
       sampleId
       priority
       status
-      storageSlotUid
-      storageSlot {
-        uid
-        storageContainerUid
-        position
-        positionLabel              
-      }
+      storageSlot
       storageContainerUid
       analyses {
         uid
@@ -556,13 +544,7 @@ query getAnalysesRequestsByClientUid($uid: Int!) {
       sampleId
       priority
       status
-      storageSlotUid
-      storageSlot {
-        uid
-        storageContainerUid
-        position
-        positionLabel              
-      }
+      storageSlot
       storageContainerUid
       rejectionReasons{
         uid
@@ -726,13 +708,7 @@ export const GET_SAMPLE_BY_UID = gql`
         sampleId
         priority
         status
-        storageSlotUid
-        storageSlot {
-          uid
-          storageContainerUid
-          position
-          positionLabel              
-        }
+        storageSlot 
         storageContainerUid
         analyses {
             uid
@@ -764,6 +740,20 @@ export const GET_SAMPLE_BY_PARENT_ID = gql`
         uid
         sampleId
         status
+      }
+}`;
+
+export const GET_SAMPLES_BY_STORAGE_CONTAINER_UID = gql`
+  query getSamplesByStorageContainerUid($uid: Int!) {
+    samplesByStorageContainerUid(uid: $uid){
+        uid
+        sampleId
+        storageSlot
+        storageSlotIndex
+        status
+        analysisRequest {
+          clientRequestId
+        }
       }
 }`;
 

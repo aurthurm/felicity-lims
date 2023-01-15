@@ -65,7 +65,6 @@ from felicity.apps.setup.models import Unit  # noqa
 from felicity.apps.storage.models import StorageContainer  # noqa
 from felicity.apps.storage.models import StorageLocation  # noqa
 from felicity.apps.storage.models import StorageSection  # noqa
-from felicity.apps.storage.models import StorageSlot  # noqa
 from felicity.apps.storage.models import StoreRoom  # noqa
 from felicity.apps.user.models import Group  # noqa
 from felicity.apps.user.models import Permission  # noqa

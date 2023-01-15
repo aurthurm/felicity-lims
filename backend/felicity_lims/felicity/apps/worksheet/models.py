@@ -27,23 +27,11 @@ class WSBase(BaseAuditDBModel):
     __abstract__ = True
     worksheet_type = Column(String)
     reserved = Column(JSONB)
-    plate = Column(JSONB)
     number_of_samples = Column(Integer)
     rows = Column(Integer)
     cols = Column(Integer)
     row_wise = Column(Boolean(), default=False)
     state = Column(String)
-
-    def plate_values(self):
-        """Values for the WS plate creator"""
-        data = dict()
-        data["reserved"] = self.reserved
-        data["n_samples"] = self.number_of_samples
-        data["t_type"] = self.worksheet_type
-        data["rows"] = self.rows
-        data["cols"] = self.cols
-        data["row_wise"] = self.row_wise
-        return data
 
 
 """
@@ -190,10 +178,6 @@ class WorkSheet(Auditable, WSBase):
                 await streamer.stream(saved, verified_by, "verified", "worksheet")
                 return saved
         return self
-
-    async def set_plate(self, fill):
-        self.plate = fill
-        await self.save()
 
     @classmethod
     async def create(cls, obj_in: schemas.WorkSheetCreate) -> schemas.WorkSheet:

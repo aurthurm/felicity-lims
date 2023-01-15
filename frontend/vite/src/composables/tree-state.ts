@@ -25,8 +25,14 @@ export default function useTreeStateComposable() {
       state.treeData = treeData
     };
 
+    const resetActiveTree =() => {
+      state.activeTree = {};
+      state.activePath = {};
+    }
+
     const setActiveTree = (activeTree: IStoreRoom | IStorageLocation | IStorageSection | IStorageContainer): void => {
       state.activeTree = activeTree;
+
 
       if (activeTree.tag === tags.storeRoom) {
         state.activePath = {...state.activePath, room: activeTree.uid, location: undefined, section: undefined, container: undefined}
@@ -124,6 +130,7 @@ export default function useTreeStateComposable() {
       tags,
       setTree,
       setActiveTree,
+      resetActiveTree,
       newStoreRoom,
       newStorageLocation,
       newStorageSection,

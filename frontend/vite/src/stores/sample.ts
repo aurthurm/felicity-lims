@@ -147,6 +147,9 @@ export const useSampleStore = defineStore('sample', {
   addSamples(samples){
     this.samples = addListsUnique(this.samples, samples, "uid");
   }, 
+  updateSamplesStatus(samples){
+    samples?.forEach(sample => this.updateSampleStatus(sample))
+  },
   updateSampleStatus(sample){
     const index = this.samples.findIndex(x => x.uid === sample.uid);
     if(index > -1) {
@@ -154,6 +157,18 @@ export const useSampleStore = defineStore('sample', {
     }
     if (this.sample?.uid === sample.uid) {
       this.sample!.status = sample.status
+    }
+  },
+  updateSamples(samples){
+    samples?.forEach(sample => this.updateSample(sample))
+  },
+  updateSample(sample){
+    const index = this.samples.findIndex(x => x.uid === sample.uid);
+    if(index > -1) {
+      this.samples[index] = {...this.samples[index], ...sample};
+    }
+    if (this.sample?.uid === sample.uid) {
+      this.sample = {...this.samples, ...sample};
     }
   },
   async fetchSampleStatus(uid){
@@ -169,9 +184,6 @@ export const useSampleStore = defineStore('sample', {
       this.updateSampleStatus(payload)
     }).catch(err => this.fetchingSamplesStatuses = false)
   }, 
-  updateSamplesStatus(samples){
-    samples?.forEach(sample => this.updateSampleStatus(sample))
-  },
   async fetchSampleByParentId(parentId){
     if(!parentId) { return }
     this.fetchingChildSample = true

@@ -46,7 +46,7 @@ export default function useApiUtil(){
           swalError(res.error + "\n" + res.suggestion);
           return;
         } else {
-          toastInfo("operation success");
+          // toastInfo("operation success");
           // instread of this which is not good. maybe create some dots status bar that appear green for success and red for error
         };
       }

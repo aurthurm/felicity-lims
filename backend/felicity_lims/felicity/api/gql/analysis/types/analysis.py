@@ -8,7 +8,7 @@ from felicity.api.gql.client.types import ClientType
 from felicity.api.gql.patient.types import PatientType
 from felicity.api.gql.setup.types import (DepartmentType, InstrumentType,
                                           MethodType, UnitType)
-from felicity.api.gql.storage.types import StorageContainerType, StorageSlotType
+from felicity.api.gql.storage.types import StorageContainerType
 from felicity.api.gql.user.types import UserType
 
 
@@ -244,8 +244,8 @@ class SampleType:  # for Sample
     # Bio Banking
     storage_container_uid: Optional[int]
     storage_container: Optional[StorageContainerType]
-    storage_slot_uid: Optional[int]
-    storage_slot: Optional[StorageSlotType]
+    storage_slot: Optional[str]
+    storage_slot_index: Optional[int]
     #
     created_by_uid: Optional[int]
     created_by: Optional[UserType]

@@ -115,6 +115,13 @@ class AnalysisQuery:
         return await a_models.Sample.get_all(uid__in=sample_uids)
 
     @strawberry.field
+    async def samples_by_storage_container_uid(
+        self, info, uid: int
+    ) -> List[a_types.SampleType]:
+        """Retrieve stored samples for a given container uid"""
+        return await a_models.Sample.get_all(storage_container_uid=uid)
+
+    @strawberry.field
     async def profile_all(self, info) -> List[a_types.ProfileType]:
         return await a_models.Profile.all()
 

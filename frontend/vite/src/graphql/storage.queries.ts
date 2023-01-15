@@ -80,10 +80,6 @@ export const GET_ALL_STORAGE_CONTAINERS = gql`
         cols
         rows
         slots
-        storageSlots{
-            uid
-            position
-        }
       }
   }`;
 
@@ -100,34 +96,6 @@ export const GET_STORAGE_CONTAINER_BY_UID = gql`
         cols
         rows
         slots
-        storageSlots{
-            uid
-            position
-            positionLabel
-        }
-    }
-}`;
-
-
-// storage slots
-export const GET_ALL_STORAGE_SLOTS = gql`
-    query getAllStorageSlots($storageContainerUid: Int!) {
-      storageSlotAll(storageContainerUid: $storageContainerUid) {
-        uid  
-        storageContainerUid
-        position
-        positionLabel
-      }
-  }`;
-
-
-export const GET_STORAGE_SLOT_BY_UID = gql`
-  query getStorageSlotByUid($uid: Int!) {
-    storageSlotByUid(uid: $uid){
-        uid  
-        storageContainerUid
-        position
-        positionLabel
     }
 }`;
 

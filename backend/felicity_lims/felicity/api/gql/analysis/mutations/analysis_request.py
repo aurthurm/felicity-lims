@@ -274,7 +274,7 @@ async def re_instate_samples(info, samples: List[int]) -> ResultedSampleActionRe
     return_samples = []
 
     if len(samples) == 0:
-        return OperationError(error=f"No Samples to cancel are provided!")
+        return OperationError(error=f"No Samples to re instate are provided!")
 
     for _sa_uid in samples:
         sample: analysis_models.Sample = await analysis_models.Sample.get(uid=_sa_uid)
