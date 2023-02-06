@@ -515,6 +515,12 @@ class Sample(Auditable, BaseMPTT):
     qc_level_uid = Column(Integer, ForeignKey("qclevel.uid"), nullable=True)
     qc_level = relationship(QCLevel, backref="qc_samples", lazy="selectin")
     # storage -> bio bank
+    stored_by_uid = Column(Integer, ForeignKey("user.uid"), nullable=True)
+    stored_by = relationship(
+        "User", foreign_keys=[stored_by_uid], lazy="selectin"
+    )
+    date_stored = Column(DateTime, nullable=True)
+    date_retrieved_from_storage = Column(DateTime, nullable=True)
     storage_container_uid = Column(Integer, ForeignKey("storagecontainer.uid"), nullable=True)
     storage_container = relationship(
         "StorageContainer", back_populates="samples", lazy="selectin"
@@ -693,7 +699,7 @@ class Sample(Auditable, BaseMPTT):
         statuses = [states.sample.APPROVED, states.sample.PUBLISHED]
         copy = None
         if self.status in statuses:
-            copy = await self.duplicate_unique()
+            copy = await self.duplicate_unique(invalidated_by)
             self.status = states.sample.INVALIDATED
             self.invalidated_by_uid = invalidated_by.uid
             invalidated = await self.save()
@@ -712,12 +718,25 @@ class Sample(Auditable, BaseMPTT):
             return rejected
         return self
 
+    async def store(self, stored_by):
+        statuses = [states.sample.RECEIVED]
+        if self.status in statuses:
+            self.status = states.sample.STORED
+            self.stored_by = stored_by.uid
+            self.updated_by_uid = rejected_by.uid  # noqa
+            stored = await self.save()
+            await streamer.stream(stored, stored_by, "stored", "sample")
+            return stored
+        return self
+
     async def recover(self):
         statuses = [states.sample.STORED]
         if self.status in statuses:
             self.status = states.sample.RECEIVED
             self.storage_container_uid = None
-            self.storage_slot_uid = None
+            self.storage_slot = None
+            self.storage_slot_index = None
+            self.date_retrieved_from_storage = datetime.now()
             recovered = await self.save()
             return recovered
         return self
@@ -733,7 +752,7 @@ class Sample(Auditable, BaseMPTT):
         data = self._import(obj_in)
         return await super().update(**data)
 
-    async def duplicate_unique(self) -> schemas.Sample:
+    async def duplicate_unique(self, duplicator) -> schemas.Sample:
         data = self.to_dict(nested=False)
         data["sample_id"] = self.copy_sample_id_unique()
         for key, _ in list(data.items()):
@@ -743,7 +762,20 @@ class Sample(Auditable, BaseMPTT):
         data["profiles"] = self.profiles
         data["analyses"] = self.analyses
         data["parent_id"] = self.uid
+        data["created_by_uid"] = duplicator.uid
         return await super().create(**data)
+
+    async def clone_afresh(self, cloner) -> schemas.Sample:
+        data = self.to_dict(nested=False)
+        for key, _ in list(data.items()):
+            if key not in self.copy_include_keys():
+                del data[key]
+        data["status"] = states.sample.RECEIVED
+        data["profiles"] = self.profiles
+        data["analyses"] = self.analyses
+        data["parent_id"] = self.uid
+        data["created_by_uid"] = cloner.uid
+        return await self.create(obj_in=data)
 
 
 # @event.listens_for(Sample, "after_update")

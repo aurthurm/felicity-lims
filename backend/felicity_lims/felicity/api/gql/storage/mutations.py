@@ -7,6 +7,7 @@ from felicity.apps.storage import models, schemas
 from felicity.api.gql.storage import types
 from felicity.apps.analysis.conf import states as analysis_states
 from felicity.apps.analysis.models import analysis as an_models
+from felicity.apps.analysis import schemas as an_schemas
 from felicity.api.gql.analysis.types.analysis import SampleType
 
 logging.basicConfig(level=logging.INFO)
@@ -359,25 +360,25 @@ class StorageMutations:
         for container_uid in container_uids:
             sample_data = list(filter(lambda x: x.storage_container_uid == container_uid, payload))
             samples = await an_models.Sample.get_by_uids(uids=[s.sample_uid for s in sample_data])
-            container = await models.StorageContainer.get(uid=container_uid)
+            container: models.StorageContainer = await models.StorageContainer.get(uid=container_uid)
 
-            available = container.slots - container.stored_count
-            if len(samples) > available:
+            if len(samples) > container.slots:
                 return OperationError(
-                    error=f"Selected samples ({len(samples)}) is more than available slots ({available})")
+                    error=f"Selected samples ({len(samples)}) is more than available slots ({container.slots})")
 
-            mappings = []
             for idx, _sample in enumerate(samples):
                 sample_datum = list(filter(lambda x: x.sample_uid == _sample.uid, sample_data))[0]
-                mappings.append({
-                    'uid': _sample.uid,
+                storage_object = {
                     'storage_container_uid': container_uid,
                     'storage_slot': sample_datum.storage_slot,
                     'storage_slot_index': sample_datum.storage_slot_index,
-                    'status': analysis_states.sample.STORED
-                })
+                    'status': analysis_states.sample.STORED,
+                    'stored_by_uid': felicity_user.uid
+                }
+                print(storage_object)
+                await _sample.update(obj_in=storage_object)
 
-            await an_models.Sample.bulk_update_with_mappings(mappings)
+            await container.reset_stored_count()
 
         samples = await an_models.Sample.get_by_uids(uids=[s.sample_uid for s in payload])
 
@@ -407,4 +408,4 @@ class StorageMutations:
         ])
 
         samples = await an_models.Sample.get_by_uids(uids=sample_uids)
-        return StoredSamplesType(samples=samples, storage_container=None)
+        return StoredSamplesType(samples=samples)

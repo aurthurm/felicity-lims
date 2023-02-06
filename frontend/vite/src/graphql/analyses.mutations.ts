@@ -64,6 +64,42 @@ export const REINSTATE_SAMPLES = gql`
   }
 `;
 
+export const CLONE_SAMPLES = gql`
+  mutation CloneSamples ($samples: [Int!]!) {
+    cloneSamples(samples: $samples){
+      ... on SampleListingType{
+        __typename
+        samples {       
+          uid
+          parentId
+          sampleType {
+            uid
+            name
+          }
+          sampleId
+          priority
+          status
+          analyses {
+            uid
+            name
+            sortKey
+          }
+          profiles {
+            uid
+            name
+          }
+        }
+      }
+
+      ... on OperationError {
+        __typename
+        error
+        suggestion
+      }
+    }
+  }
+`;
+
 export const CANCEL_SAMPLES = gql`
   mutation CancelSamples ($samples: [Int!]!) {
     cancelSamples(samples: $samples){

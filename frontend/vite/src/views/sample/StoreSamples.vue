@@ -7,7 +7,6 @@ import useTreeStateComposable from "../../composables/tree-state";
 import { useField, useForm } from "vee-validate";
 import { object, array } from "yup";
 import { storgeSlotMapper } from "../../utils";
-import { sample } from "wonka";
 
 interface ISampleData {
   sampleUid?: number;
@@ -64,18 +63,22 @@ const prepareSlots = () => {
     storageContainer.value?.rows ?? 1,
     !storageContainer.value?.grid,
     storageContainer.value?.rowWise! ?? false
-  );
+  ).map((s) => ({ ...s, storageContainerUid: storageContainer.value?.uid }));
+
   slots.forEach((slot) => {
-    //
-    const filtrate = samples.filter((s) => s.storageSlotIndex === slot.storageSlotIndex);
+    const filtrate = samples.filter(
+      (s) =>
+        s.storageSlotIndex === slot.storageSlotIndex &&
+        s.storageContainerUid === slot.storageContainerUid
+    );
     if (filtrate.length > 0) {
+      console.log(filtrate, slot);
       slot = { ...slot, sampleUid: filtrate[0].uid };
       assignedUids.push(slot.sampleUid.toString());
     }
     //
     samplesData.value.push({
       sampleUid: undefined,
-      storageContainerUid: storageContainer.value?.uid,
       ...slot,
     });
   });
@@ -107,7 +110,10 @@ const removeSample = (uid) => {
 
 const submitForm = handleSubmit(async (values) => {
   const data = values.samples.filter((s) => s.sampleUid);
-  await storeSamples(data).then((t) => console.log(t));
+  await storeSamples(data).then(async (t) => {
+    await storageSrore.fetchStorageContainer(data[0].storageContainerUid!);
+    prepareSlots();
+  });
 });
 </script>
 

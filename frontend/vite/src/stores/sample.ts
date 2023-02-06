@@ -147,6 +147,17 @@ export const useSampleStore = defineStore('sample', {
   addSamples(samples){
     this.samples = addListsUnique(this.samples, samples, "uid");
   }, 
+  addSampleClones(clones){
+    clones = clones.map(cl => {
+      let cloned = cl;
+      const idx = this.samples.findIndex(s => s.uid === cl.parentId)
+      if(idx > -1){
+        cloned = {...this.samples[idx], ...cl}
+      }
+      return cloned;
+    })
+    this.samples = [...clones, ...this.samples];
+  }, 
   updateSamplesStatus(samples){
     samples?.forEach(sample => this.updateSampleStatus(sample))
   },
@@ -168,7 +179,7 @@ export const useSampleStore = defineStore('sample', {
       this.samples[index] = {...this.samples[index], ...sample};
     }
     if (this.sample?.uid === sample.uid) {
-      this.sample = {...this.samples, ...sample};
+      this.sample = {...this.sample, ...sample};
     }
   },
   async fetchSampleStatus(uid){

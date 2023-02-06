@@ -1,7 +1,7 @@
 import asyncio
 import logging
 from datetime import datetime, timedelta
-from typing import List, Optional
+from typing import List, Optional, Union
 
 import strawberry  # noqa
 from felicity.api.gql import OperationError, auth_from_info, verify_user_auth
@@ -55,7 +55,7 @@ ResultedSampleActionResponse = strawberry.union(
 
 @strawberry.type
 class SampleListingType:
-    samples: List[r_types.SamplesWithResults]
+    samples: List[r_types.SampleType]
 
 
 SampleActionResponse = strawberry.union(
@@ -79,7 +79,7 @@ class AnalysisRequestInputType:
 
 @strawberry.mutation
 async def create_analysis_request(
-    info, payload: AnalysisRequestInputType
+        info, payload: AnalysisRequestInputType
 ) -> AnalysisRequestResponse:
     logger.info("Received request to create analysis request")
 
@@ -210,7 +210,7 @@ async def create_analysis_request(
                     update={
                         "analysis_uid": _service.uid,
                         "due_date": datetime.now()
-                        + timedelta(minutes=_service.tat_length_minutes)
+                                    + timedelta(minutes=_service.tat_length_minutes)
                         if _service.tat_length_minutes
                         else None,
                     }
@@ -229,6 +229,48 @@ async def create_analysis_request(
         uid=analysis_request.uid, related=["samples"]
     )
     return a_types.AnalysisRequestWithSamples(**analysis_request.marshal_simple())
+
+
+@strawberry.mutation
+async def clone_samples(info, samples: List[int]) -> SampleActionResponse:
+    is_authenticated, felicity_user = await auth_from_info(info)
+    verify_user_auth(
+        is_authenticated, felicity_user, "Only Authenticated user can clone samples"
+    )
+
+    if len(samples) == 0:
+        return OperationError(error=f"No Samples to clone are provided!")
+
+    clones = []
+    to_clone: List[analysis_models.Sample] = await analysis_models.Sample.get_by_uids(uids=samples)
+    for _, _sample in enumerate(to_clone):
+        clone = await _sample.clone_afresh(felicity_user)
+
+        if clone:
+            clones.append(clone)
+
+            # create associated analysis
+            _profiles_analyses = set()
+
+            for _prof in clone.profiles:
+                analyses_ = _prof.analyses
+                for _an in analyses_:
+                    _profiles_analyses.add(_an)
+
+            for _anal in clone.analyses:
+                if _anal not in _profiles_analyses:
+                    _profiles_analyses.add(_anal)
+
+            for _service in _profiles_analyses:
+                a_result_in = {
+                    "sample_uid": clone.uid,
+                    "analysis_uid": _service.uid,
+                    "status": states.result.PENDING,
+                }
+                a_result_schema = schemas.AnalysisResultCreate(**a_result_in)
+                await result_models.AnalysisResult.create(a_result_schema)
+
+    return SampleListingType(samples=clones)
 
 
 @strawberry.mutation
@@ -340,7 +382,7 @@ async def verify_samples(info, samples: List[int]) -> SampleActionResponse:
 
 @strawberry.mutation
 async def reject_samples(
-    info, samples: List[SampleRejectInputType]
+        info, samples: List[SampleRejectInputType]
 ) -> SampleActionResponse:
     is_authenticated, felicity_user = await auth_from_info(info)
     verify_user_auth(

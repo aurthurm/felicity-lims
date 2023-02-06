@@ -750,6 +750,7 @@ export const GET_SAMPLES_BY_STORAGE_CONTAINER_UID = gql`
         sampleId
         storageSlot
         storageSlotIndex
+        storageContainerUid
         status
         analysisRequest {
           clientRequestId

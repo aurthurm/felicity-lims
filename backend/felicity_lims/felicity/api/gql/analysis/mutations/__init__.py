@@ -10,6 +10,7 @@ from .analysis_request import (
     create_analysis_request,
     # update_analysis_request,
     # update_sample,
+    clone_samples,
     cancel_samples,
     re_instate_samples,
     receive_samples,
@@ -46,7 +47,6 @@ from .quality_control import (
     update_QC_template,
 )
 
-
 AnalysisMutations = create_type(
     "Mutation",
     [
@@ -75,6 +75,7 @@ AnalysisMutations = create_type(
         update_analysis_specification,
         # update_analysis_request,
         # update_sample,
+        clone_samples,
         cancel_samples,
         re_instate_samples,
         receive_samples,

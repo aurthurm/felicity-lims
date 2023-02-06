@@ -12,10 +12,9 @@ add_storage_container_query = """
         name
         description
         storageSectionUid
-        storageSlots {
-          uid
-          position
-        }
+        slots
+        rows
+        cols
     }
     ... on OperationError {
         error
@@ -48,4 +47,4 @@ async def test_add_storage_container(gql_client, auth_data):
     assert _st_c["uid"] == 1
     assert _st_c["name"] == storage_container["name"]
     assert _st_c["storageSectionUid"] == 1
-    assert len(_st_c["storageSlots"]) == storage_container["slots"]
+    assert _st_c["slots"] == storage_container["slots"]

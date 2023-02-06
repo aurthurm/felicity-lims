@@ -19,6 +19,7 @@ const {
   receiveSamples,
   invalidateSamples,
   verifySamples,
+  recoverSamples,
 } = useSampleComposable();
 
 const state = reactive({
@@ -105,6 +106,13 @@ const rejectSample = async () =>
     name: "reject-samples",
     params: { samples: JSON.stringify([sample?.value]) },
   });
+
+const canRecover = computed(() => {
+  if (["stored"].includes(sample?.value?.status?.toLowerCase()!)) return true;
+  return false;
+});
+
+const recoverSample = async () => recoverSamples([sample?.value?.uid!]);
 </script>
 
 <template>
@@ -237,6 +245,13 @@ const rejectSample = async () =>
               >
                 Invalidate
               </div>
+              <div
+                v-show="canRecover"
+                @click="recoverSample()"
+                class="no-underline text-gray-900 py-0 opacity-60 px-4 border-b border-transparent hover:opacity-100 md:hover:border-grey-dark hover:bg-gray-400 hover:text-white"
+              >
+                Recover
+              </div>
             </div>
           </div>
         </div>
@@ -261,10 +276,9 @@ const rejectSample = async () =>
             </div>
             <div class="flex">
               <span class="text-gray-800 text-sm font-semibold w-1/6">Sample Type:</span>
-              <span
-                class="text-gray-600 text-sm md:text-md"
-                >{{ sample?.sampleType!.name }}</span
-              >
+              <span class="text-gray-600 text-sm md:text-md">{{
+                sample?.sampleType?.name
+              }}</span>
             </div>
           </div>
           <div class="col-span-1">

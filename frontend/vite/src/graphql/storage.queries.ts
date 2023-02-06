@@ -96,6 +96,7 @@ export const GET_STORAGE_CONTAINER_BY_UID = gql`
         cols
         rows
         slots
+        storedCount
     }
 }`;
 

@@ -19,7 +19,6 @@ async def test_add_worksheet_template(gql_client, auth_data):
               uid
               name
               reserved
-              plate
               numberOfSamples
               rows
               cols

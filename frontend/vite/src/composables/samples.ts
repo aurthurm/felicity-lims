@@ -4,6 +4,7 @@ import {
   REINSTATE_SAMPLES,
   RECEIVE_SAMPLES,
   CANCEL_SAMPLES,
+  CLONE_SAMPLES,
   PUBLISH_SAMPLES,
   INVALIDATE_SAMPLES,
   VERIFY_SAMPLES,
@@ -25,8 +26,8 @@ export default function useSampleComposable(){
 
     const _updateSamplesStatus = async (samples: ISample[]) => sampleStore.updateSamplesStatus(samples);
     const _updateSampleStatus = async (sample: ISample) => sampleStore.updateSampleStatus(sample);
-    const _updateSample = async (sample: ISample) => sampleStore.updateSample(sample)
     const _updateSamples = async (samples: ISample[]) => sampleStore.updateSamples(samples)
+    const _addSampleClones = async (samples: ISample[]) => sampleStore.addSampleClones(samples)
 
     const  _fetchAnalysesResultsFor = async (uid: number) => {
       if(!uid) return; 
@@ -60,6 +61,40 @@ export default function useSampleComposable(){
             await Swal.fire(
               'Its Happening!',
               'Your samples have been cancelled.',
+              'success'
+            ).then(_ => {})
+
+          }
+        })
+      } catch (error) {
+        
+      }
+    }
+
+    // CLONE_SAMPLES
+    const cloneSamples = async (uids: number[]) => {
+      try {
+        await Swal.fire({
+          title: 'Are you sure?',
+          text: "You want to clone these samples",
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Yes, cancel now!',
+          cancelButtonText: 'No, do not clone!',
+        }).then(async (result) => {
+          if (result.isConfirmed) {
+
+            withClientMutation(CLONE_SAMPLES, { samples: uids }, "cloneSamples")
+            .then(resp => {
+              if(resp.samples.length <= 0) return;
+              _addSampleClones(resp.samples)
+            });
+
+            await Swal.fire(
+              'Its Happening!',
+              'Your samples have been cloned.',
               'success'
             ).then(_ => {})
 
@@ -161,9 +196,9 @@ export default function useSampleComposable(){
 
             withClientMutation(RECOVER_SAMPLES, { sampleUids }, "recoverSamples")
             .then(resp => {
+              console.log(resp)
               if(resp.length <= 0) return;
               _updateSamples(resp.samples)
-              _updateSample(resp.samples[0])
               if(resp.samples.length !== 1) return;
               _fetchAnalysesResultsFor(resp.samples[0].uid)
             });
@@ -372,5 +407,6 @@ export default function useSampleComposable(){
       invalidateSamples,
       rejectSamples,
       storeSamples,
+      cloneSamples
     }
   }

@@ -185,13 +185,15 @@ export const storgeSlotMapper = (colNum: number, rowNum: number, isColumn: boole
     }));
   } else {
     const data: any[] = [];
+    let i = 1;
     if(byRow){
       columns.forEach((column, cIdx) => {
         rows.forEach(row => {
           data.push({
             storageSlot: column + row.toString(),
-            storageSlotIndex: row*(cIdx + 1),
+            storageSlotIndex: i,
           })
+          i++;
         })
       })
     } else {
@@ -199,8 +201,9 @@ export const storgeSlotMapper = (colNum: number, rowNum: number, isColumn: boole
         columns.forEach((column, cIdx) => {
           data.push({
             storageSlot: column + row.toString(),
-            storageSlotIndex: row*(cIdx + 1),
+            storageSlotIndex: i,
           })
+          i++;
         })
       })
     }

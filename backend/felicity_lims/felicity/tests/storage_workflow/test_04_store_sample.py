@@ -93,13 +93,14 @@ async def test_add_sample_to_storage(gql_client, auth_data):
     sample_uids = [sample["uid"] for sample in selected_samples]
 
     store_samples_query = """
-        mutation SampleStorage($payload: StoreSamplesInputType!){
+        mutation SampleStorage($payload: [StoreSamplesInputType!]!){
           storeSamples(payload: $payload) {
             ... on StoredSamplesType {
               samples {
                 sampleId
                 storageContainerUid
-                storageSlotUid
+                storageSlot
+                storageSlotIndex
                 status
               }
             }
@@ -110,10 +111,15 @@ async def test_add_sample_to_storage(gql_client, auth_data):
         }
     """
 
-    store_samples_data = {
-        "storageContainerUid": 1,
-        "sampleUids": sample_uids
-    }
+    store_samples_data = []
+    for idx, suid in enumerate(sample_uids):
+        store_samples_data.append({
+            "storageContainerUid": 1,
+            "storageSlot": str(idx),
+            "storageSlotIndex": idx,
+            "sampleUid": suid
+        })
+
     response = await gql_client.post('/felicity-gql', json={
         "query": store_samples_query,
         "variables": {
@@ -127,5 +133,5 @@ async def test_add_sample_to_storage(gql_client, auth_data):
     _data = response.json()["data"]["storeSamples"]
     assert len(_data["samples"]) == 5
     for sample in _data["samples"]:
-        assert sample["storageSlotUid"] is not None
+        assert sample["storageSlot"] is not None
         assert sample["storageContainerUid"] == 1

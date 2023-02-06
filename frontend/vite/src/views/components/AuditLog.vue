@@ -80,7 +80,7 @@ function changes(log: any): any {
         trails.add({
           key: keyA,
           old: (valueB as any)?.length > 0 ? valueB : "None",
-          new: (valueA as any)?.length > 0 ? valueA : "None",
+          new: (valueA as any)?.toString()?.length > 0 ? valueA : "None",
         });
       }
     });

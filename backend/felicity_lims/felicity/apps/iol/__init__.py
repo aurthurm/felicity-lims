@@ -22,8 +22,6 @@
 
 """Terminology Service"""
 
-
-
 # maybe make these standalone
 # reasoning is there all communications will probably come via iol and terminology service
 

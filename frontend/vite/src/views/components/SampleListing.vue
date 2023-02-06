@@ -146,6 +146,7 @@ function checkUserActionPermissios(): void {
   state.can_reject = false;
   state.can_store = false;
   state.can_recover = false;
+  state.can_copy_to = false;
 
   const checked: ISample[] = getSamplesChecked();
   if (checked.length === 0) return;
@@ -166,6 +167,7 @@ function checkUserActionPermissios(): void {
   // can_store;
   if (checked.every((sample: ISample) => ["received"].includes(sample.status!))) {
     state.can_store = true;
+    state.can_copy_to = true;
   }
 
   if (checked.every((sample: ISample) => ["stored"].includes(sample.status!))) {
@@ -182,6 +184,7 @@ function checkUserActionPermissios(): void {
     checked.every((sample: ISample) => ["approved", "published"].includes(sample.status!))
   ) {
     state.can_download = true;
+    state.can_copy_to = true;
   }
 
   // can_print
@@ -204,12 +207,16 @@ const {
   receiveSamples,
   publishSamples,
   recoverSamples,
+  cloneSamples,
 } = useSampleComposable();
 const { downloadReports } = useReportComposable();
 
 const sampleCount = computed(
   () => sampleStore.getSamples?.length + " of " + sampleStore.getSampleCount + " samples"
 );
+
+const cloneSamples_ = async () =>
+  cloneSamples(getSampleUids()).finally(() => unCheckAll());
 const cancelSamples_ = async () =>
   cancelSamples(getSampleUids()).finally(() => unCheckAll());
 const reInstateSamples_ = async () =>
@@ -524,15 +531,16 @@ const recoverSamples_ = async () =>
         >
           Reject
         </button>
-        <!-- <button
+        <button
           v-show="
             shield.hasRights(shield.actions.CANCEL, shield.objects.SAMPLE) &&
             state.can_copy_to
           "
+          @click.prevent="cloneSamples_()"
           class="px-2 py-1 mr-2 border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
         >
           Copy to New
-        </button> -->
+        </button>
         <button
           v-show="
             shield.hasRights(shield.actions.CANCEL, shield.objects.SAMPLE) &&

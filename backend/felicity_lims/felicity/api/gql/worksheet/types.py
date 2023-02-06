@@ -25,7 +25,6 @@ class WorkSheetTemplateType:
     uid: int
     worksheet_type: str
     reserved: Optional[JSONScalar]
-    plate: Optional[JSONScalar]
     number_of_samples: Optional[int]
     rows: Optional[int]
     cols: Optional[int]
