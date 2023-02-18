@@ -352,6 +352,22 @@ export const GET_ALL_SAMPLES = gql`
             status
             storageSlot
             storageContainerUid
+            storageContainer {
+              uid
+              name
+              storageSection {
+                uid
+                name
+                storageLocation {
+                  uid
+                  name
+                  storeRoom {
+                    uid
+                    name
+                  }
+                }
+              }
+            }
             analyses {
                 uid
                 name
@@ -487,6 +503,24 @@ query getAnalysesRequestsByPatientUid($uid: Int!) {
       status
       storageSlot
       storageContainerUid
+            storageSlot
+            storageContainerUid
+            storageContainer {
+              uid
+              name
+              storageSection {
+                uid
+                name
+                storageLocation {
+                  uid
+                  name
+                  storeRoom {
+                    uid
+                    name
+                  }
+                }
+              }
+            }
       analyses {
         uid
         name
@@ -546,6 +580,24 @@ query getAnalysesRequestsByClientUid($uid: Int!) {
       status
       storageSlot
       storageContainerUid
+            storageSlot
+            storageContainerUid
+            storageContainer {
+              uid
+              name
+              storageSection {
+                uid
+                name
+                storageLocation {
+                  uid
+                  name
+                  storeRoom {
+                    uid
+                    name
+                  }
+                }
+              }
+            }
       rejectionReasons{
         uid
         reason
@@ -710,6 +762,24 @@ export const GET_SAMPLE_BY_UID = gql`
         status
         storageSlot 
         storageContainerUid
+            storageSlot
+            storageContainerUid
+            storageContainer {
+              uid
+              name
+              storageSection {
+                uid
+                name
+                storageLocation {
+                  uid
+                  name
+                  storeRoom {
+                    uid
+                    name
+                  }
+                }
+              }
+            }
         analyses {
             uid
             name
@@ -735,8 +805,8 @@ export const GET_SAMPLE_STATUS_BY_UID = gql`
 }`;
 
 export const GET_SAMPLE_BY_PARENT_ID = gql`
-  query getSampleParentId($parentId: Int!) {
-      sampleByParentId(parentId: $parentId){
+  query getSampleParentId($parentId: Int!, $text: String) {
+      sampleByParentId(parentId: $parentId, text:$text){
         uid
         sampleId
         status

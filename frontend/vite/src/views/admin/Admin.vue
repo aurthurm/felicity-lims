@@ -31,7 +31,6 @@ const configs = ref([
   { title: "Reflex Rules", path: "/admin/reflex-rule-conf", icon: "code-branch" },
   { title: "Load Setup Data", path: "/admin/setup-data-conf", icon: "database" },
   { title: "Inventory Mgt", path: "/admin/inventory-conf", icon: "database" },
-  { title: "Bio-Banking", path: "/admin/storage-conf", icon: "database" },
 ]);
 </script>
 

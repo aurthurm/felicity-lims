@@ -1,6 +1,5 @@
 <script setup>
-import { computed } from "vue";
-import useTreeStateComposable from "../../../composables/tree-state";
+import useTreeStateComposable from "../../composables/tree-state";
 
 const props = defineProps({
   tree: Object,

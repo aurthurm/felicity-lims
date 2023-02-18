@@ -246,6 +246,10 @@ class SampleType:  # for Sample
     storage_container: Optional[StorageContainerType]
     storage_slot: Optional[str]
     storage_slot_index: Optional[int]
+    stored_by_uid: Optional[int]
+    stored_by: Optional[UserType]
+    date_stored: Optional[datetime]
+    date_retrieved_from_storage: Optional[datetime]
     #
     created_by_uid: Optional[int]
     created_by: Optional[UserType]

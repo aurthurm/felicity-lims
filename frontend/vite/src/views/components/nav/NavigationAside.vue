@@ -1,3 +1,29 @@
+<script setup lang="ts">
+import { ref } from "vue";
+
+import * as guards from "./../../../guards";
+
+let viewNavText = ref(false);
+
+function toggleNavText(): void {
+  viewNavText.value = !viewNavText.value;
+}
+</script>
+
+<style scoped>
+.router-link-active {
+  @apply bg-gray-800 bg-opacity-25 text-gray-100 border-l-4 border-gray-100;
+}
+
+.tooltip {
+  @apply invisible absolute;
+}
+
+.has-tooltip:hover .tooltip {
+  @apply visible z-50 mt-10 left-16 bg-gray-800 text-gray-200 p-1 rounded;
+}
+</style>
+
 <template>
   <div class="mx-auto flex flex-col items-center h-full">
     <div class="flex-none relative">
@@ -79,7 +105,7 @@
         <!-- <router-link
           v-show="guards.canAccessPage(guards.pages.QC_SAMPLES)"
           to="/quality-control"
-          id="markdown-link"
+          id="quality-control-link"
           class="flex items-center has-tooltip mt-1 py-2 px-6 text-gray-100 hover:bg-gray-800 hover:bg-opacity-25 hover:text-white border-l-4 border-gray-800"
         >
           <span class="mr-4"><font-awesome-icon icon="anchor" /></span>
@@ -89,12 +115,22 @@
         <router-link
           v-show="guards.canAccessPage(guards.pages.NOTICE_MANAGER)"
           to="/notice-manager"
-          id="markdown-link"
+          id="notice-manager-link"
           class="flex items-center has-tooltip mt-1 py-2 px-6 text-gray-100 hover:bg-gray-800 hover:bg-opacity-25 hover:text-white border-l-4 border-gray-800"
         >
           <span class="mr-4"><font-awesome-icon icon="bell" /></span>
           <span v-if="viewNavText">NoticeManager</span>
           <span v-else class="tooltip">NoticeManager</span>
+        </router-link>
+        <router-link
+          v-show="guards.canAccessPage(guards.pages.BIO_BANKING)"
+          to="/bio-banking"
+          id="bio-banking-link"
+          class="flex items-center has-tooltip mt-1 py-2 px-6 text-gray-100 hover:bg-gray-800 hover:bg-opacity-25 hover:text-white border-l-4 border-gray-800"
+        >
+          <span class="mr-4"><font-awesome-icon icon="database" /></span>
+          <span v-if="viewNavText">BioBanking</span>
+          <span v-else class="tooltip">BioBanking</span>
         </router-link>
       </nav>
     </div>
@@ -111,36 +147,3 @@
     </footer>
   </div>
 </template>
-
-<style scoped>
-/* #asideFooter {
-    position:fixed;
-    margin: 0 auto;
-    width: 100%;
-    bottom: 0;
-} */
-
-.router-link-active {
-  @apply bg-gray-800 bg-opacity-25 text-gray-100 border-l-4 border-gray-100;
-}
-
-.tooltip {
-  @apply invisible absolute;
-}
-
-.has-tooltip:hover .tooltip {
-  @apply visible z-50 mt-10 left-16 bg-gray-800 text-gray-200 p-1 rounded;
-}
-</style>
-
-<script setup lang="ts">
-import { ref } from "vue";
-
-import * as guards from "./../../../guards";
-
-let viewNavText = ref(false);
-
-function toggleNavText(): void {
-  viewNavText.value = !viewNavText.value;
-}
-</script>

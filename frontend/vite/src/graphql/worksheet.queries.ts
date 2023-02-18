@@ -7,7 +7,6 @@ export const GET_ALL_WORKSHEET_TEMPLATES = gql`
       uid
       name
       reserved
-      plate
       numberOfSamples
       rows
       cols
@@ -111,7 +110,6 @@ export const GET_WORKSHEET_BY_UID = gql`
         uid
         name
       }
-      plate
       analysisResults {
         uid
         result

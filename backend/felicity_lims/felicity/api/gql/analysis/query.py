@@ -102,10 +102,15 @@ class AnalysisQuery:
 
     @strawberry.field
     async def sample_by_parent_id(
-        self, info, parent_id: int
+        self, info, parent_id: int, text: Optional[str] = None
     ) -> List[a_types.SampleType]:
         """Retrieve associated invalidated parent - children relationship by mptt parent_id"""
-        return await a_models.Sample.get_all(parent_id=parent_id)
+        samples: list[a_models.Sample] = await a_models.Sample.get_all(parent_id=parent_id)
+
+        if text == "repeat":  # created by invalidation hence they contain "_R0"
+            return list(filter(lambda x: "_R0" in x.sample_id, samples))
+
+        return samples
 
     @strawberry.field
     async def samples_by_uids(

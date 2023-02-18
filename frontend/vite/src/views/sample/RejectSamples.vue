@@ -1,17 +1,21 @@
 <script setup lang="ts">
-import { toRefs, computed, onMounted, reactive } from "vue";
+import { computed, onMounted, reactive } from "vue";
 import { IAnalysisProfile, IAnalysisService } from "../../models/analysis";
 import { useSampleComposable } from "../../composables";
 import { useAnalysisStore } from "../../stores";
+import { useRoute, useRouter } from "vue-router";
+const route = useRoute();
+const router = useRouter();
 
 const analysisStore = useAnalysisStore();
 const { rejectSamples } = useSampleComposable();
 
+const routerState = router.options.history.state;
 const state = reactive({
   rejections: [] as any[],
 });
 
-const ss = JSON.parse(window.history.state.samples);
+const ss = JSON.parse(window.history.state.samples); // routerState.samples
 let coll: any[] = [];
 for (let ob of ss) {
   ob["reasons"] = [];
@@ -45,7 +49,18 @@ const rejectSamples_ = async () => {
   state.rejections?.forEach((item) => {
     toReject.push({ uid: item?.uid, reasons: item?.reasons, other: item?.other });
   });
-  await rejectSamples(toReject);
+  await rejectSamples(toReject).then((done) => {
+    console.log(
+      toReject.length,
+      routerState.back?.toString(),
+      routerState.back?.toString().includes("patient/")
+    );
+    if (toReject.length == 1 && routerState.back?.toString().includes("patient")) {
+      router.push({ path: routerState.back.toString() });
+    } else {
+      router.push({ name: "samples-listing" });
+    }
+  });
 };
 </script>
 

@@ -26,7 +26,7 @@ const state = reactive({
   dropdownOpen: false,
 });
 
-const { sample, fetchingSample, childSample } = storeToRefs(sampleStore);
+const { sample, fetchingSample, repeatSample } = storeToRefs(sampleStore);
 sampleStore.fetchSampleByUid(+route.params.sampleUid);
 
 watch(
@@ -34,10 +34,10 @@ watch(
   (statusIn, _) => {
     if (!statusIn) return;
     if (statusIn !== "invalidated") {
-      sampleStore.resetChildSample();
+      sampleStore.resetRepeatSample();
       return;
     } else {
-      sampleStore.fetchSampleByParentId(+route.params.sampleUid);
+      sampleStore.fetchRepeatSampleByParentId(+route.params.sampleUid);
     }
   }
 );
@@ -92,7 +92,7 @@ const verifySample = async () => verifySamples([sample?.value?.uid!]),
 const invalidateSample = async () =>
   invalidateSamples([sample?.value?.uid!]).then((res: ISample[]) => {
     let inv = res?.filter((s) => s.uid !== sample?.value?.uid);
-    if (inv.length > 0) sampleStore.setChildSample(inv[0]);
+    if (inv.length > 0) sampleStore.setRepeatSample(inv[0]);
   });
 
 const canReject = computed(() => {
@@ -113,6 +113,11 @@ const canRecover = computed(() => {
 });
 
 const recoverSample = async () => recoverSamples([sample?.value?.uid!]);
+
+// sample storage
+const goToStorage = async (sample: ISample) => {
+  router.push({ path: "/bio-banking", state: { sample: JSON.stringify(sample) } });
+};
 </script>
 
 <template>
@@ -161,19 +166,19 @@ const recoverSample = async () => recoverSamples([sample?.value?.uid!]);
               >
                 <i class="fa fa-pen"></i>
               </button> -->
-            <span v-if="sample?.analysisRequest?.patient?.uid && childSample?.uid">
+            <span v-if="sample?.analysisRequest?.patient?.uid && repeatSample?.uid">
               <font-awesome-icon icon="angle-double-right" class="mx-2" />
               <router-link
                 :to="{
                   name: 'sample-detail',
                   params: {
                     patientUid: sample?.analysisRequest?.patient?.uid,
-                    sampleUid: childSample?.uid,
+                    sampleUid: repeatSample?.uid,
                   },
                 }"
                 class="p-2 my-2 text-sm border-sky-800 border text-dark-700 transition-colors duration-150 rounded-sm focus:outline-none hover:bg-sky-800 hover:text-gray-100"
               >
-                {{ childSample?.sampleId }}
+                {{ repeatSample?.sampleId }}
               </router-link>
             </span>
           </div>
@@ -297,6 +302,30 @@ const recoverSample = async () => recoverSamples([sample?.value?.uid!]);
             </div>
           </div>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <div
+    v-show="sample?.status === 'stored'"
+    class="bg-blue-300 rounded-sm shadow-md duration-500 px-4 sm:px-6 md:px-2 py-4 my-4"
+  >
+    <div class="flex">
+      <div class="mr-4 font-semibold">Storage:</div>
+      <!--  -->
+      <div class="hover:underline hover:cursor-pointer" @click="goToStorage(sample!)">
+        <span
+          >{{
+            sample?.storageContainer?.storageSection?.storageLocation?.storeRoom?.name
+          }}
+          &rsaquo;
+        </span>
+        <span
+          >{{ sample?.storageContainer?.storageSection?.storageLocation?.name }} &rsaquo;
+        </span>
+        <span>{{ sample?.storageContainer?.storageSection?.name }} &rsaquo; </span>
+        <span>{{ sample?.storageContainer?.name }} &rsaquo; </span>
+        <span>{{ sample?.storageSlot }}</span>
       </div>
     </div>
   </div>

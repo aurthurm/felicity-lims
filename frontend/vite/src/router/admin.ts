@@ -1,5 +1,4 @@
 import { InventoryHome } from '../views/admin/inventory/Index'
-import { StorageHome } from '../views/admin/storage/Index'
 
 const adminRoutes = [
   {
@@ -112,14 +111,6 @@ const adminRoutes = [
     path: 'inventory-conf',
     name: 'inventory-conf',
     component: InventoryHome,// () => import('../views/admin/inventory/Index'),
-    meta: {
-      requiresAuth: true,
-    },
-  },
-  {
-    path: 'storage-conf',
-    name: 'storage-conf',
-    component: StorageHome, // () => import('../views/admin/storage/index.tsx'),
     meta: {
       requiresAuth: true,
     },

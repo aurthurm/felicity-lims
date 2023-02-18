@@ -234,8 +234,8 @@ export default function useSampleComposable(){
             withClientMutation(PUBLISH_SAMPLES, { samples: uids }, "publishSamples")
             .then(resp => {
               if(resp.samples.length <= 0) return;
-              _updateSamplesStatus(resp.samples.samples)
-              _updateSampleStatus(resp.samples.samples[0])
+              _updateSamplesStatus(resp.samples)
+              _updateSampleStatus(resp.samples[0])
               if(resp.samples.length !== 1) return;
               _fetchAnalysesResultsFor(resp.samples[0].uid)
             });
@@ -290,6 +290,7 @@ export default function useSampleComposable(){
 
     // reject sample(s)
     const rejectSamples = async (samples: any[]) => {
+      let rejected = false;
       try {
         await Swal.fire({
           title: 'Are you sure?',
@@ -305,6 +306,7 @@ export default function useSampleComposable(){
 
             withClientMutation(REJECT_SAMPLES, { samples }, "rejectSamples")
             .then(resp => {
+              rejected = true;
               if(resp.samples.length <= 0) return;
               _updateSamplesStatus(resp.samples)
             });
@@ -320,6 +322,7 @@ export default function useSampleComposable(){
       } catch (error) {
         
       }
+      return rejected;
     }
 
     // invalidate sample

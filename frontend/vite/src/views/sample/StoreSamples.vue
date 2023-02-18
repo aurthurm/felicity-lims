@@ -2,7 +2,7 @@
 import { computed, watch, onMounted } from "vue";
 import { useSampleComposable } from "../../composables";
 import { useStorageStore } from "../../stores";
-import TreeItem from "../admin/storage/TreeItem.vue";
+import TreeItem from "../components/TreeItem.vue";
 import useTreeStateComposable from "../../composables/tree-state";
 import { useField, useForm } from "vee-validate";
 import { object, array } from "yup";

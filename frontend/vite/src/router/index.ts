@@ -8,6 +8,7 @@ import qualityRoutes from './quality';
 import worksheetRoutes from './worksheet'
 import { isTokenValid } from './checks';
 import { useAuthStore } from '../stores';
+import { StorageHome } from '../views/storage/Index'
 
 
 const routes: RouteRecordRaw[] = [
@@ -86,6 +87,14 @@ const routes: RouteRecordRaw[] = [
     name: guards.pages.WORKSHEETS,
     component: () => import('../views/worksheet/index.vue'),
     children: worksheetRoutes,
+    meta: {
+      requiresAuth: true,
+    },
+  },
+  {
+    path: '/bio-banking',
+    name: guards.pages.BIO_BANKING,
+    component: StorageHome, // () => import('../views/admin/storage/index.tsx'),
     meta: {
       requiresAuth: true,
     },
@@ -194,6 +203,9 @@ function hasAccess(page: any) {
   
     case guards.pages.NOTICE_MANAGER:
       return guards.canAccessPage(guards.pages.NOTICE_MANAGER)
+  
+    case guards.pages.BIO_BANKING:
+      return guards.canAccessPage(guards.pages.BIO_BANKING)
 
     default:
       return false;

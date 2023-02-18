@@ -51,6 +51,7 @@ export default function useTreeStateComposable() {
     
     const _openTree = (activeTree: IStoreRoom | IStorageLocation | IStorageSection | IStorageContainer): void => {
       if (activeTree.tag === tags.storeRoom) {
+        console.log(tags.storeRoom, activeTree.uid, state.treeData)
         state.treeData = [...state.treeData.map(room => {
           if(room.uid !== activeTree.uid){
             room = {...room, children: room.children?.map(location => {              
@@ -63,6 +64,7 @@ export default function useTreeStateComposable() {
         })]
       }
       if (activeTree.tag === tags.storageLocation) {
+        console.log(tags.storageLocation, activeTree.uid, state.treeData)
         state.treeData = [...state.treeData.map(room => ({...room, children: room.children?.map(location => {
           if(location.uid !== activeTree.uid){
             location = {...location, children: location.children?.map(section => ({...section, isOpen: false})), isOpen: false}
@@ -73,7 +75,7 @@ export default function useTreeStateComposable() {
         })}))]
       }
       if(activeTree.tag === tags.storageSection){
-        console.log(tags.storageSection)
+        console.log(tags.storageSection, activeTree.uid, state.treeData)
         state.treeData = [...state.treeData.map(room => ({...room, children: room.children?.map(location => ({...location, children: location.children?.map(section => {
           if(section.uid !== activeTree.uid){
             section = {...section, isOpen: false }

@@ -9,7 +9,6 @@ export const ADD_WORKSHEET_TEMPLATE= gql`
       uid
       name
       reserved
-      plate
       numberOfSamples
       rows
       cols
@@ -64,7 +63,6 @@ export const EDIT_WORKSHEET_TEMPLATE= gql`
       uid
       name
       reserved
-      plate
       numberOfSamples
       rows
       cols
@@ -178,7 +176,6 @@ export const WORKSHEET_UPDATE = gql`
           uid
           name
         }
-        plate
       }
 
       ... on OperationError {
@@ -213,7 +210,6 @@ export const EDIT_WORKSHEET_APPLY_TEMPLATE= gql`
           uid
           name
         }
-        plate
       }
 
       ... on OperationError {
@@ -248,7 +244,6 @@ export const WORKSHEET_MANUAL_ASSIGN= gql`
           uid
           name
         }
-        plate
       }
 
       ... on OperationError {

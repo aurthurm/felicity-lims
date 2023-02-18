@@ -91,6 +91,15 @@ function filterSamples(): void {
   sampleStore.fetchSamples(sampleParams);
 }
 
+// sample tooltip
+const sampleToolTip = (sample: ISample) => {
+  const sc = sample?.storageContainer;
+  const ss = sc?.storageSection;
+  const sl = ss?.storageLocation;
+  const sr = sl?.storeRoom;
+  return `${sr?.name} > ${sl?.name} > ${ss?.name} > ${sc?.name} > ${sample?.storageSlot}`;
+};
+
 // user actions perms
 
 function check(sample: ISample): void {
@@ -385,7 +394,10 @@ const recoverSamples_ = async () =>
                   >
                     <i class="fa fa-star"></i>
                   </span>
-                  <span v-if="sample.status === 'stored'">
+                  <span
+                    v-if="sample.status === 'stored'"
+                    v-tooltip="sampleToolTip(sample)"
+                  >
                     <i class="fa fa-briefcase"></i>
                   </span>
                 </div>

@@ -67,8 +67,9 @@ export const useAnalysisStore = defineStore('analysis', {
     async fetchAnalysesProfilesAndServices(){
       await withClientQuery(GET_ALL_ANALYSES_PROFILES_AND_SERVICES, {}, undefined)
             .then(payload => {
+              console.log(payload)
               this.analysesProfiles = payload.profileAll;
-              this.analysesServices = payload.analysisAll;
+              this.analysesServices = payload.analysisAll?.items;
             });
     },
 

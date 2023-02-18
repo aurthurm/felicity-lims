@@ -132,8 +132,8 @@ export interface IQCTemplate {
     dateReceived?:string;
     storageContainerUid: number;
     storageContainer: IStorageContainer;
-    storageSlotUid: number;
-    storageSlot: IStorageSlot;
+    storageSlotIndex: number;
+    storageSlot: string;
     createdByUid?: number
     createdBy?: any
     createdAt?: string
