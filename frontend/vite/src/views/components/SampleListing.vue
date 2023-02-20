@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import LoadingMessage from "../../components/Spinners/LoadingMessage.vue";
-import { reactive, computed } from "vue";
+import DataTable from "../../components/datatable/DataTable.vue";
+import { h, ref, reactive, computed } from "vue";
+import { RouterLink } from "vue-router";
 import { storeToRefs } from "pinia";
 import { useRoute, useRouter } from "vue-router";
 import { IAnalysisProfile, IAnalysisService, ISample } from "../../models/analysis";
@@ -19,11 +20,6 @@ let route = useRoute();
 let router = useRouter();
 
 const state = reactive({
-  filterText: "",
-  filterStatus: "received",
-  sampleBatch: 50,
-  samples: computed<ISample[]>(() => sampleStore.getSamples),
-  pageInfo: computed(() => sampleStore.getSamplePageInfo),
   can_cancel: false,
   can_receive: false,
   can_reinstate: false,
@@ -33,8 +29,167 @@ const state = reactive({
   can_print: false,
   can_store: false,
   can_recover: false,
-  allChecked: false,
 });
+
+// samples
+const samples = computed<ISample[]>(() => sampleStore.getSamples);
+const filterOptions = ref([
+  { name: "All", value: "" },
+  { name: "expected", value: "expected" },
+  { name: "received", value: "received" },
+  { name: "awaiting", value: "awaiting" },
+  { name: "approved", value: "approved" },
+  { name: "published", value: "published" },
+  { name: "invalidated", value: "invalidated" },
+  { name: "cancelled", value: "cancelled" },
+  { name: "rejected", value: "rejected" },
+  { name: "stored", value: "stored" },
+]);
+
+const tableColumns = ref([
+  {
+    name: "UID",
+    value: "uid",
+    sortable: true,
+    sortBy: "asc",
+    defaultSort: true,
+    showInToggler: false,
+    hidden: true,
+  },
+  {
+    name: "",
+    value: "",
+    sortable: false,
+    showInToggler: false,
+    hidden: false,
+    customRender: function (sample, _) {
+      return h("div", [
+        sample.priority! > 1
+          ? h(
+              "span",
+              { class: [{ "text-orange-600": sample.priority! > 1 }] },
+              h("i", { class: "fa fa-star" })
+            )
+          : "",
+        sample.status === "stored" ? h("span", h("i", { class: "fa-briefcase" })) : "",
+      ]);
+    },
+  },
+  {
+    name: "Sampe ID",
+    value: "sampleId",
+    sortable: true,
+    sortBy: "asc",
+    hidden: false,
+    customRender: function (sample, _) {
+      return h(RouterLink, {
+        to: {
+          name: "sample-detail",
+          params: {
+            patientUid: sample?.analysisRequest?.patient?.uid,
+            sampleUid: sample?.uid,
+          },
+        },
+        innerHTML: sample?.sampleId,
+      });
+    },
+  },
+  {
+    name: "Test(s)",
+    value: "",
+    sortable: false,
+    sortBy: "asc",
+    hidden: false,
+    customRender: function (sample, _) {
+      return h(
+        "span",
+        {
+          innerHTML: profileAnalysesText(sample["profiles"], sample["analyses"]),
+        },
+        []
+      );
+    },
+  },
+  {
+    name: "Patient",
+    value: "",
+    sortable: false,
+    sortBy: "asc",
+    hidden: false,
+    customRender: function (sample, _) {
+      const firstName = "analysisRequest.patient.firstName"
+        .split(".")
+        .reduce((acc, val) => acc?.[val], sample);
+      const lasstName = "analysisRequest.patient.lastName"
+        .split(".")
+        .reduce((acc, val) => acc?.[val], sample);
+      return h(
+        "span",
+        {
+          innerHTML: `${firstName} ${lasstName}`,
+        },
+        []
+      );
+    },
+  },
+  {
+    name: "Client Patient ID",
+    value: "analysisRequest.patient.clientPatientId",
+    sortable: false,
+    sortBy: "asc",
+    hidden: false,
+  },
+  {
+    name: "Client",
+    value: "analysisRequest.client.name",
+    sortable: false,
+    sortBy: "asc",
+    hidden: false,
+  },
+  {
+    name: "Created",
+    value: "createdAt",
+    sortable: false,
+    sortBy: "asc",
+    hidden: false,
+    customRender: function (sample, column) {
+      const value = column.value.split(".").reduce((acc, val) => acc?.[val], sample);
+      return h(
+        "span",
+        {
+          innerHTML: parseDate(value),
+        },
+        []
+      );
+    },
+  },
+  {
+    name: "Creator",
+    value: "createdBy.firstName",
+    sortable: false,
+    sortBy: "asc",
+    hidden: false,
+  },
+  {
+    name: "Status",
+    value: "status",
+    sortable: false,
+    sortBy: "asc",
+    hidden: false,
+    customRender: function (sample, column) {
+      const value = column.value.split(".").reduce((acc, val) => acc?.[val], sample);
+      return h(
+        "button",
+        {
+          type: "button",
+          class: "bg-sky-800 text-white py-1 px-2 rounded-sm leading-none",
+          innerHTML: value,
+        },
+        []
+      );
+    },
+  },
+]);
 
 if (route?.query?.clientUid) {
   sampleStore.resetSamples();
@@ -51,17 +206,6 @@ let analysesParams = reactive({
 analysisStore.fetchAnalysesServices(analysesParams);
 analysisStore.fetchAnalysesProfiles();
 
-let sampleParams = reactive({
-  first: state.sampleBatch,
-  before: "",
-  status: state.filterStatus,
-  text: "",
-  sortBy: ["-uid"],
-  clientUid: +ifZeroEmpty(route?.query?.clientUid),
-  filterAction: false,
-});
-sampleStore.fetchSamples(sampleParams);
-
 function profileAnalysesText(
   profiles: IAnalysisProfile[],
   analyses: IAnalysisService[]
@@ -72,21 +216,31 @@ function profileAnalysesText(
   return names.join(", ");
 }
 
-function showMoreSamples(): void {
-  sampleParams.first = +state.sampleBatch;
-  sampleParams.before = samplePageInfo?.value?.endCursor;
-  sampleParams.text = state.filterText;
-  sampleParams.status = state.filterStatus;
+let sampleParams = reactive({
+  first: 50,
+  before: "",
+  status: "received",
+  text: "",
+  sortBy: ["-uid"],
+  clientUid: +ifZeroEmpty(route?.query?.clientUid),
+  filterAction: false,
+});
+sampleStore.fetchSamples(sampleParams);
+
+function showMoreSamples(opts: any): void {
+  sampleParams.first = opts.fetchCount;
+  sampleParams.before = samplePageInfo?.value?.endCursor ?? "";
+  sampleParams.text = opts.filterText;
+  sampleParams.status = opts.filterStatus;
   sampleParams.filterAction = false;
   sampleStore.fetchSamples(sampleParams);
 }
 
-function filterSamples(): void {
-  state.sampleBatch = 50;
+function filterSamples(opts: any): void {
   sampleParams.first = 50;
   sampleParams.before = "";
-  sampleParams.text = state.filterText;
-  sampleParams.status = state.filterStatus;
+  sampleParams.text = opts.filterText;
+  sampleParams.status = opts.filterStatus;
   sampleParams.filterAction = true;
   sampleStore.fetchSamples(sampleParams);
 }
@@ -102,44 +256,44 @@ const sampleToolTip = (sample: ISample) => {
 
 // user actions perms
 
-function check(sample: ISample): void {
-  sample.checked = true;
+const allChecked = ref(false);
+function toggleCheckAll(opts: any): void {
+  samples.value?.forEach((sample: ISample) => (sample.checked = opts.checked));
+  allChecked.value = opts.checked;
   checkUserActionPermissios();
 }
 
-function unCheck(sample: ISample): void {
-  sample.checked = false;
-  checkUserActionPermissios();
-}
-
-async function unCheckAll() {
-  await state.samples?.forEach((sample) => unCheck(sample));
-  checkUserActionPermissios();
-}
-
-function toggleCheckAll(): void {
-  state.samples?.forEach((sample: ISample) =>
-    state.allChecked ? check(sample) : unCheck(sample)
-  );
-  checkUserActionPermissios();
-}
-
-function areAllChecked(): Boolean {
-  return state.samples?.every((sample: ISample) => sample.checked === true);
-}
-
-function checkCheck(sample: ISample): void {
+function toggleCheck(sample: ISample): void {
+  const index = samples.value.findIndex((s) => s.uid === sample.uid);
+  samples.value[index].checked = sample.checked;
   if (areAllChecked()) {
-    state.allChecked = true;
+    allChecked.value = true;
   } else {
-    state.allChecked = false;
+    allChecked.value = false;
   }
   checkUserActionPermissios();
 }
 
+function unCheck(sample: ISample): void {
+  const index = samples.value.findIndex((s) => s.uid === sample.uid);
+  samples.value[index].checked = false;
+  allChecked.value = false;
+  checkUserActionPermissios();
+}
+
+async function unCheckAll() {
+  samples.value?.forEach((sample: ISample) => (sample.checked = false));
+  allChecked.value = false;
+  checkUserActionPermissios();
+}
+
+function areAllChecked(): Boolean {
+  return samples.value?.every((sample: ISample) => sample.checked === true);
+}
+
 function getSamplesChecked(): ISample[] {
   let box: ISample[] = [];
-  state.samples?.forEach((sample: ISample) => {
+  samples.value?.forEach((sample: ISample) => {
     if (sample.checked) box.push(sample);
   });
   return box;
@@ -220,7 +374,7 @@ const {
 } = useSampleComposable();
 const { downloadReports } = useReportComposable();
 
-const sampleCount = computed(
+const countNone = computed(
   () => sampleStore.getSamples?.length + " of " + sampleStore.getSampleCount + " samples"
 );
 
@@ -249,239 +403,38 @@ const recoverSamples_ = async () =>
 </script>
 
 <template>
-  <div class="">
-    <div class="my-4 flex sm:flex-row flex-col">
-      <div class="flex flex-row mb-1 sm:mb-0">
-        <div class="relative">
-          <select
-            v-model="state.filterStatus"
-            class="appearance-none h-full rounded-l-sm border block w-full bg-white border-gray-400 text-gray-700 py-2 px-4 pr-8 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-          >
-            <option value="">All</option>
-            <option value="expected">Expected</option>
-            <option value="received">Received</option>
-            <option value="awaiting">Awaiting</option>
-            <option value="approved">Approved</option>
-            <option value="published">Published</option>
-            <option value="invalidated">Invalidated</option>
-            <option value="cancelled">Cancelled</option>
-            <option value="rejected">Rejected</option>
-            <option value="stored">Stored</option>
-          </select>
-          <div
-            class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700"
-          >
-            <svg
-              class="fill-current h-4 w-4"
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 20 20"
-            >
-              <path
-                d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"
-              />
-            </svg>
-          </div>
-        </div>
-      </div>
-      <div class="block relative">
-        <span class="h-full absolute inset-y-0 left-0 flex items-center pl-2">
-          <svg viewBox="0 0 24 24" class="h-4 w-4 fill-current text-gray-500">
-            <path
-              d="M10 4a6 6 0 100 12 6 6 0 000-12zm-8 6a8 8 0 1114.32 4.906l5.387 5.387a1 1 0 01-1.414 1.414l-5.387-5.387A8 8 0 012 10z"
-            ></path>
-          </svg>
-        </span>
-        <input
-          placeholder="Search ..."
-          v-model="state.filterText"
-          class="appearance-none rounded-r-sm rounded-l-sm sm:rounded-l-none border border-gray-400 border-b block pl-8 pr-6 py-2 w-full bg-white text-sm placeholder-gray-400 text-gray-700 focus:bg-white focus:placeholder-gray-600 focus:text-gray-700 focus:outline-none"
-        />
-      </div>
-      <button
-        @click.prevent="filterSamples()"
-        class="px-2 py-1 ml-2 border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
-      >
-        Filter ...
-      </button>
-    </div>
-
-    <hr />
+  <div class="mb-4 flex justify-end">
     <router-link
       v-show="shield.hasRights(shield.actions.CREATE, shield.objects.SAMPLE)"
       to="/patients/search"
       class="px-2 py-1 border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
       >Add Laboratory Request</router-link
     >
-    <hr />
-
-    <!-- Sampe Table View -->
-    <div class="overflow-x-auto mt-4">
-      <div
-        class="align-middle inline-block min-w-full shadow overflow-hidden bg-white shadow-dashboard px-2 pt-1 rounded-bl-lg rounded-br-lg"
-      >
-        <table class="min-w-full">
-          <thead>
-            <tr>
-              <th
-                class="px-1 py-1 border-b-2 border-gray-300 text-left leading-4 text-gray-800 tracking-wider"
-              >
-                <input
-                  type="checkbox"
-                  @change="toggleCheckAll()"
-                  v-model="state.allChecked"
-                />
-              </th>
-              <th
-                class="px-1 py-1 border-b-2 border-gray-300 text-left leading-4 text-gray-800 tracking-wider"
-              ></th>
-              <th
-                class="px-1 py-1 border-b-2 border-gray-300 text-left leading-4 text-gray-800 tracking-wider"
-              >
-                Sampe ID
-              </th>
-              <th
-                class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider"
-              >
-                Test(s)
-              </th>
-              <th
-                class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider"
-              >
-                Patient
-              </th>
-              <th
-                class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider"
-              >
-                Client Patient ID
-              </th>
-              <th
-                class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider"
-              >
-                Client
-              </th>
-              <th
-                class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider"
-              >
-                Created
-              </th>
-              <th
-                class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider"
-              >
-                Creator
-              </th>
-              <th
-                class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider"
-              >
-                Status
-              </th>
-              <th class="px-1 py-1 border-b-2 border-gray-300"></th>
-            </tr>
-          </thead>
-          <tbody class="bg-white" v-if="state.samples?.length > 0">
-            <tr v-for="sample in state.samples" :key="sample.uid" v-motion-slide-right>
-              <td>
-                <input
-                  type="checkbox"
-                  v-model="sample.checked"
-                  @change="checkCheck(sample)"
-                />
-              </td>
-              <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-                <div class="flex gap-1 text-xs opacity-40">
-                  <span
-                    v-if="sample.priority! > 1"
-                    :class="[{ 'text-orange-600': sample.priority! > 1 }]"
-                  >
-                    <i class="fa fa-star"></i>
-                  </span>
-                  <span
-                    v-if="sample.status === 'stored'"
-                    v-tooltip="sampleToolTip(sample)"
-                  >
-                    <i class="fa fa-briefcase"></i>
-                  </span>
-                </div>
-              </td>
-              <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-                <div class="flex items-center">
-                  <div class="text-sm leading-5 text-gray-800">
-                    <router-link
-                      :to="{
-                        name: 'sample-detail',
-                        params: {
-                          patientUid: sample?.analysisRequest?.patient?.uid,
-                          sampleUid: sample?.uid,
-                        },
-                      }"
-                      >{{ sample.sampleId }}</router-link
-                    >
-                  </div>
-                </div>
-              </td>
-              <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-                <div class="text-sm leading-5 text-sky-800">
-                  {{ profileAnalysesText(sample.profiles!, sample.analyses!) }}
-                </div>
-              </td>
-              <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-                <div class="text-sm leading-5 text-sky-800">
-                  {{ sample?.analysisRequest?.patient?.firstName }}
-                  {{ sample?.analysisRequest?.patient?.lastName }}
-                </div>
-              </td>
-              <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-                <div class="text-sm leading-5 text-sky-800">
-                  {{ sample?.analysisRequest?.patient?.clientPatientId }}
-                </div>
-              </td>
-              <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-                <div class="text-sm leading-5 text-sky-800">
-                  {{ sample?.analysisRequest?.client?.name }}
-                </div>
-              </td>
-              <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-                <div class="text-sm leading-5 text-sky-800">
-                  {{ parseDate(sample?.createdAt) }}
-                </div>
-              </td>
-              <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-                <div class="text-sm leading-5 text-sky-800">
-                  {{ sample?.createdBy?.firstName }}
-                </div>
-              </td>
-              <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-                <button
-                  type="button"
-                  class="bg-sky-800 text-white py-1 px-2 rounded-sm leading-none"
-                >
-                  {{ sample.status }}
-                </button>
-              </td>
-              <td
-                class="px-1 py-1 whitespace-no-wrap text-right border-b border-gray-500 text-sm leading-5"
-              >
-                <router-link
-                  :to="{
-                    name: 'sample-detail',
-                    params: {
-                      patientUid: sample?.analysisRequest?.patient?.uid,
-                      sampleUid: sample?.uid,
-                    },
-                  }"
-                  class="px-2 py-1 border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
-                  >View</router-link
-                >
-              </td>
-            </tr>
-          </tbody>
-        </table>
-        <div v-if="fetchingSamples" class="py-4 text-center">
-          <LoadingMessage message="Fetching samples ..." />
-        </div>
-      </div>
-    </div>
-
-    <section class="flex justify-between items-center">
+  </div>
+  <hr />
+  <DataTable
+    :columns="tableColumns"
+    :data="samples"
+    :toggleColumns="true"
+    :loading="fetchingSamples"
+    :paginable="true"
+    :pageMeta="{
+      fetchCount: sampleParams.first,
+      hasNextPage: samplePageInfo?.hasNextPage,
+      countNone,
+    }"
+    :searchable="true"
+    :searchMeta="{
+      defaultFilter: sampleParams.status,
+      filters: filterOptions,
+    }"
+    :allChecked="allChecked"
+    @onSearch="filterSamples"
+    @onPaginate="showMoreSamples"
+    @onCheck="toggleCheck"
+    @onCheckAll="toggleCheckAll"
+  >
+    <template v-slot:footer>
       <div>
         <button
           v-show="
@@ -574,53 +527,6 @@ const recoverSamples_ = async () =>
           Print
         </button>
       </div>
-      <div class="my-4 flex sm:flex-row flex-col">
-        <button
-          @click.prevent="showMoreSamples()"
-          v-show="state.pageInfo?.hasNextPage"
-          class="px-2 py-1 mr-2 border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
-        >
-          Show More
-        </button>
-        <div class="flex flex-row mb-1 sm:mb-0">
-          <div class="relative">
-            <select
-              class="appearance-none h-full rounded-l-sm border block w-full bg-white border-gray-400 text-gray-700 py-2 px-4 pr-8 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-              v-model="state.sampleBatch"
-              :disabled="!state.pageInfo?.hasNextPage"
-            >
-              <option value="25">25</option>
-              <option value="50">50</option>
-              <option value="100">100</option>
-              <option value="250">250</option>
-              <option value="500">500</option>
-              <option value="1000">1000</option>
-              <option value="5000">5000</option>
-              <option value="10000">10000</option>
-            </select>
-            <div
-              class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700"
-            >
-              <svg
-                class="fill-current h-4 w-4"
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 20 20"
-              >
-                <path
-                  d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"
-                />
-              </svg>
-            </div>
-          </div>
-        </div>
-        <div class="block relative">
-          <input
-            :placeholder="sampleCount"
-            class="appearance-none rounded-r-sm rounded-l-sm sm:rounded-l-none border border-gray-400 border-b block pl-8 pr-6 py-2 w-full bg-white text-sm placeholder-gray-400 text-gray-700 focus:bg-white focus:placeholder-gray-600 focus:text-gray-700 focus:outline-none"
-            disabled
-          />
-        </div>
-      </div>
-    </section>
-  </div>
+    </template>
+  </DataTable>
 </template>

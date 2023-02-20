@@ -118,6 +118,13 @@ const routes: RouteRecordRaw[] = [
     },
   },
   {
+    path: '/experiment',
+    name: "experiment",
+    component: () => import('../views/experiment/index.vue'),    meta: {
+      requiresAuth: true,
+    },
+  },
+  {
     path: '/about',
     name: 'About',
     component: () => import('../views/About.vue'),
@@ -206,6 +213,9 @@ function hasAccess(page: any) {
   
     case guards.pages.BIO_BANKING:
       return guards.canAccessPage(guards.pages.BIO_BANKING)
+  
+    case "experiment":
+      return true;
 
     default:
       return false;

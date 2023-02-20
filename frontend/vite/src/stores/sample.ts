@@ -20,6 +20,9 @@ import {
   IAnalysisResult,
   IQCSet,
 } from "../models/analysis";
+import {
+  IPageInfo
+} from "../models/pagination"
 
 import useApiUtil from "../composables/api_util";
 
@@ -56,7 +59,7 @@ export const useSampleStore = defineStore("sample", {
       fetchingSamples: boolean;
       fetchingSamplesStatuses: boolean;
       sampleCount: number;
-      samplePageInfo?: any;
+      samplePageInfo?: IPageInfo;
       sample?: ISample;
       fetchingSample: boolean;
       repeatSample?: ISample;
@@ -70,7 +73,7 @@ export const useSampleStore = defineStore("sample", {
       qcSet?: IQCSet | null;
       fetchingQCSet: boolean;
       qcSetCount: number;
-      qcSetPageInfo: any;
+      qcSetPageInfo: IPageInfo;
     };
   },
   getters: {
