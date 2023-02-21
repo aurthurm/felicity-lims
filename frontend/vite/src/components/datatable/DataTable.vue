@@ -120,7 +120,7 @@ const toCapitalize = (str) => {
   <div class="relative">
     <div
       v-if="loading"
-      class="absolute bg-red-400 bg-opacity-60 z-10 h-full w-full flex items-center justify-center"
+      class="absolute bg-black bg-opacity-60 z-10 h-full w-full flex items-center justify-center"
     >
       <div class="flex items-center">
         <svg
