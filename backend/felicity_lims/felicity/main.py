@@ -54,7 +54,7 @@ async def startup():
     send_new_account_email("aurthur@felicity.inc", "aurthurm", "@ceam2014;")
 
     felicity_workforce_init()
-    await impress_results(9)
+    # await impress_results("sample_uid_here")
 
 
 @flims.on_event("startup")

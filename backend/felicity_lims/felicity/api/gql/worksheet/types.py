@@ -1,6 +1,5 @@
-import json
 from datetime import datetime
-from typing import Any, List, NewType, Optional
+from typing import List, Optional
 
 import strawberry  # noqa
 from felicity.api.gql import PageInfo
@@ -10,15 +9,8 @@ from felicity.api.gql.analysis.types.analysis import (AnalysisType,
                                                       SampleTypeTyp)
 from felicity.api.gql.analysis.types.results import AnalysisResultType
 from felicity.api.gql.setup.types import InstrumentType
+from felicity.api.gql.types import JSONScalar
 from felicity.api.gql.user.types import UserType
-
-JSONScalar = strawberry.scalar(
-    NewType("JSONScalar", Any),
-    serialize=lambda v: v,
-    parse_value=lambda v: json.loads(v),
-    description="json field",
-)
-
 
 @strawberry.type
 class WorkSheetTemplateType:

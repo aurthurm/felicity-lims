@@ -232,6 +232,10 @@ class SampleType:  # for Sample
     cancelled_by_uid: Optional[int]
     cancelled_by: Optional[UserType]
     date_cancelled: Optional[datetime]
+    printed: Optional[bool]
+    date_printed: Optional[datetime]
+    printed_by_uid: Optional[int]
+    printed_by: Optional[UserType]
     due_date: Optional[datetime]
     rejection_reasons: Optional[List[RejectionReasonType]]
     internal_use: bool

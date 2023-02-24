@@ -25,6 +25,7 @@ from felicity.api.gql.storage.mutations import StorageMutations
 from felicity.api.gql.storage.query import StorageQuery
 from felicity.api.gql.inventory.mutations import InventoryMutations
 from felicity.api.gql.inventory.query import InventoryQuery
+from felicity.api.gql.impress.query import ReportImpressQuery
 
 
 @strawberry.type
@@ -43,6 +44,7 @@ class Query(
     ReflexRuleQuery,
     StorageQuery,
     InventoryQuery,
+    ReportImpressQuery,
 ):
     pass
 
