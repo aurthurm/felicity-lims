@@ -1,6 +1,6 @@
 import logging
 
-from felicity.init.setup.create_superuser import create_super_user
+from felicity.init.setup.create_superuser import create_super_user, create_daemon_user
 from felicity.init.setup.groups_perms import setup_default_permissions
 from felicity.init.setup.setup_laboratory import (
     create_geographies,
@@ -24,6 +24,7 @@ async def requisite_setup(lab_name="Felicity Labs") -> bool:
     logger.info("Loading requisite setup ...")
 
     await create_laboratory(lab_name)
+    await create_daemon_user()
     await create_super_user()
     await setup_default_permissions()
     await init_id_sequence()

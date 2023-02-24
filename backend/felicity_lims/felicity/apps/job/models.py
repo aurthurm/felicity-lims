@@ -16,10 +16,9 @@ class Job(DBModel):
     reason = Column(String)
 
     async def change_status(self, new_status, change_reason=""):
-        if new_status != conf.states.FINISHED:
-            self.status = new_status
-            self.reason = change_reason
-            await self.save()
+        self.status = new_status
+        self.reason = change_reason
+        await self.save()
 
     async def increase_priority(self):
         if self.priority < conf.priorities.HIGH:
@@ -33,12 +32,11 @@ class Job(DBModel):
 
     @classmethod
     async def fetch_sorted(cls):
-        exclude = [conf.states.FINISHED, conf.states.FAILED]
-        jobs = await Job.where(status__notin=exclude).sort("-priority").all()
         _jobs = Job.smart_query(
-            filters={"status__notin": [conf.states.FINISHED, conf.states.FAILED]},
+            filters={"status__notin": [conf.states.FINISHED, conf.states.FAILED, conf.states.RUNNING]},
             sort_attrs=["-priority"],
         )
+        jobs = await Job.from_smart_query(_jobs)
         return jobs
 
     @classmethod

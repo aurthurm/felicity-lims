@@ -10,7 +10,9 @@ import { GET_ANALYSIS_RESULTS_FOR_WS_ASSIGN } from '../graphql/analyses.queries'
 import { parseData, keysToCamel, addListsUnique } from '../utils';
 import { IAnalysisResult } from '../models/analysis';
 import { IWorkSheetTemplate, IWorkSheet, IReserved } from '../models/worksheet';
-
+import {
+  IPageInfo
+} from "../models/pagination"
 
 import { useApiUtil } from '../composables'
 
@@ -37,11 +39,11 @@ export const useWorksheetStore = defineStore('worksheet', {
         fetchingWorkSheets: boolean;
         workSheet?: IWorkSheet;
         workSheetCount: number;
-        workSheetPageInfo?: any;
+        workSheetPageInfo?: IPageInfo
         fetchingAnalysisResults?: boolean;
         analysisResults: IAnalysisResult[];
         analysisResultCount: number;
-        analysisResultPageInfo?: any;
+        analysisResultPageInfo?: IPageInfo
       }
   },
   getters: {

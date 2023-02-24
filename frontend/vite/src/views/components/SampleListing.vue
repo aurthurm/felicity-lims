@@ -27,6 +27,7 @@ const state = reactive({
   can_copy_to: false,
   can_download: false,
   can_print: false,
+  can_publish: false,
   can_store: false,
   can_recover: false,
 });
@@ -305,6 +306,7 @@ function checkUserActionPermissios(): void {
   state.can_receive = false;
   state.can_reinstate = false;
   state.can_download = false;
+  state.can_publish = false;
   state.can_print = false;
   state.can_reject = false;
   state.can_store = false;
@@ -346,13 +348,18 @@ function checkUserActionPermissios(): void {
   if (
     checked.every((sample: ISample) => ["approved", "published"].includes(sample.status!))
   ) {
-    state.can_download = true;
     state.can_copy_to = true;
   }
 
   // can_print
   if (checked.every((sample: ISample) => sample.status === "approved")) {
+    state.can_publish = true;
+  }
+
+  // can_print
+  if (checked.every((sample: ISample) => sample.status === "published")) {
     state.can_print = true;
+    state.can_download = true;
   }
 }
 
@@ -368,6 +375,7 @@ const {
   cancelSamples,
   reInstateSamples,
   receiveSamples,
+  printSamples,
   publishSamples,
   recoverSamples,
   cloneSamples,
@@ -388,8 +396,10 @@ const receiveSamples_ = async () =>
   receiveSamples(getSampleUids()).finally(() => unCheckAll());
 const downloadReports_ = async () =>
   await downloadReports(getSampleUids()).finally(() => unCheckAll());
-const printReports_ = async () =>
+const publishReports_ = async () =>
   await publishSamples(getSampleUids()).finally(() => unCheckAll());
+const printReports_ = async () =>
+  await printSamples(getSampleUids()).finally(() => unCheckAll());
 const prepareRejections = async () => {
   const selection = getSamplesChecked();
   router.push({ name: "reject-samples", state: { samples: JSON.stringify(selection) } });
@@ -424,10 +434,12 @@ const recoverSamples_ = async () =>
       countNone,
     }"
     :searchable="true"
-    :searchMeta="{
+    :filterable="true"
+    :filterMeta="{
       defaultFilter: sampleParams.status,
       filters: filterOptions,
     }"
+    :selectable="true"
     :allChecked="allChecked"
     @onSearch="filterSamples"
     @onPaginate="showMoreSamples"
@@ -515,6 +527,16 @@ const recoverSamples_ = async () =>
           class="px-2 py-1 mr-2 border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
         >
           Download
+        </button>
+        <button
+          v-show="
+            shield.hasRights(shield.actions.CANCEL, shield.objects.SAMPLE) &&
+            state.can_publish
+          "
+          @click.prevent="publishReports_()"
+          class="px-2 py-1 mr-2 border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
+        >
+          Publish
         </button>
         <button
           v-show="

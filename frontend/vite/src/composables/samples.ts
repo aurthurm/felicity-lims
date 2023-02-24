@@ -5,6 +5,7 @@ import {
   RECEIVE_SAMPLES,
   CANCEL_SAMPLES,
   CLONE_SAMPLES,
+  PRINT_SAMPLES,
   PUBLISH_SAMPLES,
   INVALIDATE_SAMPLES,
   VERIFY_SAMPLES,
@@ -221,7 +222,7 @@ export default function useSampleComposable(){
       try {
         await Swal.fire({
           title: 'Are you sure?',
-          text: "You want to flag as printed",
+          text: "You want to publish samples",
           icon: 'warning',
           showCancelButton: true,
           confirmButtonColor: '#3085d6',
@@ -242,7 +243,44 @@ export default function useSampleComposable(){
 
             await Swal.fire(
               'Its Happening!',
-              'Your sample have been published.',
+              'Your sample were submitted for impress',
+              'success'
+            ).then(_ => {})
+
+          }
+        })
+      } catch (error) {
+        
+      }
+    }
+
+    // PRINT_SAMPLES
+    const printSamples = async (uids: number[]) => {
+      try {
+        await Swal.fire({
+          title: 'Are you sure?',
+          text: "You want to flag as printed",
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Yes, flag now!',
+          cancelButtonText: 'No, do not flag!',
+        }).then(async (result) => {
+          if (result.isConfirmed) {
+
+            withClientMutation(PRINT_SAMPLES, { samples: uids }, "printSamples")
+            .then(resp => {
+              if(resp.samples.length <= 0) return;
+              _updateSamplesStatus(resp.samples)
+              _updateSampleStatus(resp.samples[0])
+              if(resp.samples.length !== 1) return;
+              _fetchAnalysesResultsFor(resp.samples[0].uid)
+            });
+
+            await Swal.fire(
+              'Its Happening!',
+              'Your sample have been marked as printed.',
               'success'
             ).then(_ => {})
 
@@ -406,6 +444,7 @@ export default function useSampleComposable(){
       receiveSamples,
       recoverSamples,
       verifySamples,
+      printSamples,
       publishSamples,
       invalidateSamples,
       rejectSamples,

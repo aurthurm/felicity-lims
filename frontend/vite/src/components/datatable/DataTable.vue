@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, toRef, reactive, watchEffect } from "vue";
+import { ref, toRef, reactive } from "vue";
 
 interface IDataTableColumns {
   name: string;
@@ -32,7 +32,9 @@ interface DataTableProps {
   paginable?: boolean;
   pageMeta?: DataTablePagination;
   searchable?: boolean;
-  searchMeta?: DataTableSearch;
+  filterable?: boolean;
+  selectable?: boolean;
+  filterMeta?: DataTableSearch;
   allChecked?: boolean;
 }
 
@@ -47,14 +49,24 @@ const toggleColumn = (colIdx: number) => {
 };
 
 // Search
-const filterStatus = ref(props.searchMeta?.defaultFilter ?? "");
+const filterStatus = ref(props.filterMeta?.defaultFilter ?? "");
 const filterText = ref("");
-const filterEntries = () => {
+const searchEntries = () => {
   emit("onSearch", {
     sorting,
     filterStatus: filterStatus.value,
     filterText: filterText.value,
   });
+};
+const searchKeyUp = () => {
+  emit("onSearchKeyUp", {
+    sorting,
+    filterStatus: filterStatus.value,
+    filterText: filterText.value,
+  });
+};
+const searchFocus = () => {
+  emit("onSearchFocus", {});
 };
 
 // Pagination
@@ -90,6 +102,8 @@ const emit = defineEmits([
   "onSort",
   "onPaginate",
   "onSearch",
+  "onSearchKeyUp",
+  "onSearchFocus",
   "onCheck",
   "onCheckAll",
   "onFetch",
@@ -145,14 +159,14 @@ const toCapitalize = (str) => {
       <section class="my-2 flex justify-between items-center">
         <div>
           <div v-if="searchable" class="flex sm:flex-row flex-col">
-            <div class="flex flex-row mb-1 sm:mb-0">
+            <div class="flex flex-row mb-1 sm:mb-0" v-if="filterable">
               <div class="relative">
                 <select
                   v-model="filterStatus"
                   class="appearance-none h-full rounded-l-sm border block w-full bg-white border-gray-400 text-gray-700 py-2 px-4 pr-8 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                 >
                   <option
-                    v-for="filterValue in searchMeta?.filters"
+                    v-for="filterValue in filterMeta?.filters"
                     :key="filterValue.value"
                     :value="filterValue.value"
                   >
@@ -186,10 +200,12 @@ const toCapitalize = (str) => {
                 placeholder="Search ..."
                 v-model="filterText"
                 class="appearance-none rounded-r-sm rounded-l-sm sm:rounded-l-none border border-gray-400 border-b block pl-8 pr-6 py-2 w-full bg-white text-sm placeholder-gray-400 text-gray-700 focus:bg-white focus:placeholder-gray-600 focus:text-gray-700 focus:outline-none"
+                @keyup="searchKeyUp()"
+                @focus="searchFocus()"
               />
             </div>
             <button
-              @click.prevent="filterEntries()"
+              @click.prevent="searchEntries()"
               class="px-2 py-1 ml-2 border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
             >
               Search
@@ -249,6 +265,7 @@ const toCapitalize = (str) => {
         <thead>
           <tr>
             <th
+              v-if="selectable"
               class="px-1 py-1 border-b-2 border-gray-300 text-left leading-4 text-gray-800 tracking-wider"
             >
               <input type="checkbox" :checked="allChecked" @click="(e) => checkAll(e)" />
@@ -283,7 +300,10 @@ const toCapitalize = (str) => {
         </thead>
         <tbody class="bg-white">
           <tr v-for="(entry, entryIdx) in entries" :key="entryIdx">
-            <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
+            <td
+              v-if="selectable"
+              class="px-1 py-1 whitespace-no-wrap border-b border-gray-500"
+            >
               <input
                 type="checkbox"
                 :checked="entry.checked"
@@ -307,41 +327,45 @@ const toCapitalize = (str) => {
       <section class="flex justify-between my-4">
         <div><slot name="footer"></slot></div>
         <div v-if="paginable" class="flex sm:flex-row flex-col">
-          <button
-            v-show="pageMeta?.hasNextPage"
-            class="px-2 py-1 mr-2 border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
-            @click.prevent="paginate"
-          >
-            Show More
-          </button>
-          <div class="flex flex-row mb-1 sm:mb-0">
-            <div class="relative">
-              <select
-                class="appearance-none h-full rounded-l-sm border block w-full bg-white border-gray-400 text-gray-700 py-2 px-4 pr-8 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                v-model.number="fetchCount"
-                :disabled="!pageMeta?.hasNextPage"
-              >
-                <option value="25">25</option>
-                <option value="50">50</option>
-                <option value="100">100</option>
-                <option value="250">250</option>
-                <option value="500">500</option>
-                <option value="1000">1000</option>
-                <option value="5000">5000</option>
-                <option value="10000">10000</option>
-              </select>
-              <div
-                class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700"
-              >
-                <svg
-                  class="fill-current h-4 w-4"
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 20 20"
+          <div>
+            <button
+              v-show="pageMeta?.hasNextPage"
+              class="px-2 py-1 mr-2 border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
+              @click.prevent="paginate"
+            >
+              Show More
+            </button>
+          </div>
+          <div>
+            <div class="flex flex-row mb-1 sm:mb-0">
+              <div class="relative">
+                <select
+                  class="appearance-none h-full rounded-l-sm border block w-full bg-white border-gray-400 text-gray-700 py-2 px-4 pr-8 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                  v-model.number="fetchCount"
+                  :disabled="!pageMeta?.hasNextPage"
                 >
-                  <path
-                    d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"
-                  />
-                </svg>
+                  <option value="25">25</option>
+                  <option value="50">50</option>
+                  <option value="100">100</option>
+                  <option value="250">250</option>
+                  <option value="500">500</option>
+                  <option value="1000">1000</option>
+                  <option value="5000">5000</option>
+                  <option value="10000">10000</option>
+                </select>
+                <div
+                  class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700"
+                >
+                  <svg
+                    class="fill-current h-4 w-4"
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 20 20"
+                  >
+                    <path
+                      d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"
+                    />
+                  </svg>
+                </div>
               </div>
             </div>
           </div>

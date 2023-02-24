@@ -482,6 +482,7 @@ class Sample(Auditable, BaseMPTT):
     assigned = Column(Boolean(), default=False)
     priority = Column(Integer, nullable=False, default=0)
     status = Column(String, nullable=False)
+    date_collected = Column(DateTime, nullable=True)
     received_by_uid = Column(Integer, ForeignKey("user.uid"), nullable=True)
     received_by = relationship(User, foreign_keys=[received_by_uid], lazy="selectin")
     date_received = Column(DateTime, nullable=True)
@@ -494,6 +495,10 @@ class Sample(Auditable, BaseMPTT):
     published_by_uid = Column(Integer, ForeignKey("user.uid"), nullable=True)
     published_by = relationship(User, foreign_keys=[published_by_uid], lazy="selectin")
     date_published = Column(DateTime, nullable=True)
+    printed = Column(Boolean(), default=False)
+    printed_by_uid = Column(Integer, ForeignKey("user.uid"), nullable=True)
+    printed_by = relationship(User, foreign_keys=[printed_by_uid], lazy="selectin")
+    date_printed = Column(DateTime, nullable=True)
     invalidated_by_uid = Column(Integer, ForeignKey("user.uid"), nullable=True)
     invalidated_by = relationship(
         User, foreign_keys=[invalidated_by_uid], lazy="selectin"
@@ -527,6 +532,7 @@ class Sample(Auditable, BaseMPTT):
     )
     storage_slot = Column(String, nullable=True)
     storage_slot_index = Column(Integer, nullable=True)
+
 
     @staticmethod
     def copy_include_keys():
@@ -687,11 +693,20 @@ class Sample(Auditable, BaseMPTT):
         return self
 
     async def publish(self, published_by):
-        if self.status == states.sample.APPROVED:
+        if self.status in [states.sample.APPROVED, states.sample.PUBLISHING]:
             self.status = states.sample.PUBLISHED
             self.published_by_uid = published_by.uid
             self.date_published = datetime.now()
             self.updated_by_uid = published_by.uid  # noqa
+            return await self.save()
+        return self
+
+    async def print(self, printed_by):
+        if self.status == states.sample.PUBLISHED:
+            self.printed = True
+            self.printed_by_uid = printed_by.uid
+            self.date_printed = datetime.now()
+            self.updated_by_uid = printed_by.uid  # noqa
             return await self.save()
         return self
 

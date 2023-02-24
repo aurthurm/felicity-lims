@@ -140,10 +140,27 @@ export const RECEIVE_SAMPLES = gql`
   }
 `;
 
-
 export const PUBLISH_SAMPLES = gql`
   mutation PublishSamples ($samples: [Int!]!) {
     publishSamples(samples: $samples){
+      ... on OperationSuccess {
+        __typename
+        message
+      }
+
+      ... on OperationError {
+        __typename
+        error
+        suggestion
+      }
+    }
+  }
+`;
+
+
+export const PRINT_SAMPLES = gql`
+  mutation PrintSamples ($samples: [Int!]!) {
+    printSamples(samples: $samples){
       ... on SampleListingType{
         __typename
         samples {

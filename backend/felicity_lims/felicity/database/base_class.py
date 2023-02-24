@@ -375,6 +375,12 @@ class DBModel(AllFeaturesMixin):
         return results.unique().scalars().all()
 
     @classmethod
+    async def from_smart_query(cls, query):
+        async with async_session_factory() as session:
+            results = await session.execute(query)
+        return results.unique().scalars().all()
+
+    @classmethod
     async def count_where(cls, filters):
         """
         :param filters:

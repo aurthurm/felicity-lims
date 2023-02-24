@@ -50,6 +50,12 @@ MessageResponse = strawberry.union(
     description="Union of possible outcomes when deleting some object",
 )
 
+SuccessErrorResponse = strawberry.union(
+    "SuccessErrorResponse",
+    (OperationSuccess, OperationError),
+    description="Union of possible outcomes when deleting some object",
+)
+
 
 def is_authenticated(request):
     return request.user.is_authenticated
@@ -91,4 +97,3 @@ def verify_user_auth(is_auth: bool = False, user=None, err_msg: str = None) -> T
             suggestion="refresh your page. If error persists, logout and login again",
         )
     return True, None
-

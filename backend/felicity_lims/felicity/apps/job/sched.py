@@ -5,6 +5,7 @@ from apscheduler.events import EVENT_JOB_ERROR, EVENT_JOB_EXECUTED
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from felicity.apps.analysis.tasks import submit_results, verify_results
 from felicity.apps.analytics.tasks import generate_report
+from felicity.apps.impress.tasks import impress_results, prepare_for_impress
 from felicity.apps.job import conf as job_conf
 from felicity.apps.job import models as job_models
 from felicity.apps.worksheet.tasks import (populate_worksheet_plate,
@@ -52,20 +53,13 @@ def jobs_execution_listener(event):
         pass
 
 
-"""
-Plug in all job types below: 
-This is where all the magic happens
-"""
-
-
 async def run_jobs_if_exists():
-    jobs = await job_models.Job.get_all(status__exact=job_conf.states.PENDING)
+    jobs = await job_models.Job.fetch_sorted()
 
     logging.info(f"There are {len(jobs)} Jobs pending running.")
     if len(jobs) == 0:
         felicity_pause_workforce()
     else:
-        jobs = sorted(jobs, key=lambda j: j.uid)
         for job in jobs:
             if job.category == job_conf.categories.WORKSHEET:
                 if job.action == job_conf.actions.WS_ASSIGN:
@@ -79,6 +73,10 @@ async def run_jobs_if_exists():
             elif job.category == job_conf.categories.REPORT:
                 logging.warning(f"Running Task: {job.action}")
                 await generate_report(job.uid)
+            elif job.category == job_conf.categories.IMPRESS:
+                logging.warning(f"Running Task: {job.action}")
+                await impress_results(job.uid)
+                # felicity_resume_workforce()
             elif job.category == job_conf.categories.RESULT:
                 if job.action == job_conf.actions.RESULT_SUBMIT:
                     logging.warning(f"Running Task: {job.action}")
@@ -96,6 +94,9 @@ def felicity_workforce_init():
     logging.info(f"Initialising felicity workforce ...")
     scheduler.add_job(
         func=run_jobs_if_exists, trigger="interval", seconds=5, id="felicity_wf"
+    )
+    scheduler.add_job(
+        func=prepare_for_impress, trigger="interval", seconds=60 * 60, id="felicity_impress"
     )
     scheduler.add_listener(
         jobs_execution_listener, EVENT_JOB_EXECUTED | EVENT_JOB_ERROR

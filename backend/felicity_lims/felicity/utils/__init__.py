@@ -40,3 +40,7 @@ def has_value_or_is_truthy(val) -> bool:  # noqa
         if not val.strip():
             return False
     return True
+
+
+def to_text(val) -> str:  # noqa
+    return str(val)

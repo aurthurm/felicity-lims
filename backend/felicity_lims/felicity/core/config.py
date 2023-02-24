@@ -156,6 +156,11 @@ class Settings(BaseSettings):
     )
     FIRST_SEPERUSER_USERNAME: str = getenv_value("FIRST_SEPERUSER_USERNAME", "admin")
     FIRST_SUPERUSER_PASSWORD: str = getenv_value("FIRST_SUPERUSER_PASSWORD", "!Felicity#100")
+    # Reserved System User
+    SYSTEM_DAEMONUSER_EMAIL: EmailStr = "system_daemon@system.daemon"
+    SYSTEM_DAEMONUSER_USERNAME: str = "system_daemon"
+    SYSTEM_DAEMONUSER_PASSWORD: str = "!System@Daemon#100"
+    #
     USERS_OPEN_REGISTRATION: bool = False
 
     LOAD_SETUP_DATA = getenv_boolean("LOAD_SETUP_DATA", False)

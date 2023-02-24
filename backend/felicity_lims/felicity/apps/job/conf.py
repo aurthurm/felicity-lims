@@ -29,6 +29,7 @@ class Actions(object):
     RESULT_VERIFY = "result_verify"
     RESULT_SUBMIT = "result_submit"
     GENERATE_REPORT = "generate_report"
+    IMPRESS_REPORT = "impress_report"
 
 
 actions = Actions()
@@ -38,6 +39,7 @@ class Categories(object):
     WORKSHEET = "worksheet"
     RESULT = "result"
     REPORT = "report"
+    IMPRESS = "impress"
 
 
 categories = Categories()

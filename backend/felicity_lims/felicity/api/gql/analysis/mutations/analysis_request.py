@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 from typing import List, Optional, Union
 
 import strawberry  # noqa
-from felicity.api.gql import OperationError, auth_from_info, verify_user_auth
+from felicity.api.gql import OperationError, SuccessErrorResponse, auth_from_info, verify_user_auth, OperationSuccess
 from felicity.api.gql.analysis.types import analysis as a_types
 from felicity.api.gql.analysis.types import results as r_types
 from felicity.api.gql.permissions import CanVerifySample
@@ -15,6 +15,12 @@ from felicity.apps.analysis.models import results as result_models
 from felicity.apps.client import models as ct_models
 from felicity.apps.patient import models as pt_models
 from felicity.apps.reflex.utils import ReflexUtil
+from felicity.apps.job import models as job_models
+from felicity.apps.job import schemas as job_schemas
+from felicity.apps.job.conf import (
+    actions, categories, priorities, states as job_states
+)
+from felicity.apps.job.sched import felicity_resume_workforce
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -74,7 +80,7 @@ class AnalysisRequestInputType:
     samples: List[ARSampleInputType] = None
     client_request_id: Optional[str] = None
     internal_use: Optional[bool] = False
-    priority: int = priorities.sample.NORMAL
+    priority: int = priorities.NORMAL
 
 
 @strawberry.mutation
@@ -424,25 +430,61 @@ async def reject_samples(
 
 
 @strawberry.mutation
-async def publish_samples(info, samples: List[int]) -> SampleActionResponse:
+async def publish_samples(info, samples: List[int]) -> SuccessErrorResponse:
     is_authenticated, felicity_user = await auth_from_info(info)
     verify_user_auth(
         is_authenticated,
         felicity_user,
-        "Only Authenticated user can re publish samples",
+        "Only Authenticated user can impress samples",
+    )
+
+    if len(samples) == 0:
+        return OperationError(error=f"No samples to impress are provided!")
+
+    # set status of these samples to PROCESSING
+    await analysis_models.Sample.bulk_update_with_mappings([
+        {'uid': uid, "status": states.sample.PUBLISHING} for uid in samples
+    ])
+
+    job_schema = job_schemas.JobCreate(
+        action=actions.IMPRESS_REPORT,
+        category=categories.IMPRESS,
+        priority=priorities.NORMAL,
+        job_id=0,
+        status=job_states.PENDING,
+        creator_uid=felicity_user.uid,
+        data=samples,
+    )
+
+    await job_models.Job.create(job_schema)
+
+    felicity_resume_workforce()
+
+    return OperationSuccess(
+        message="Your results are being published in the background."
+    )
+
+
+@strawberry.mutation
+async def print_samples(info, samples: List[int]) -> SampleActionResponse:
+    is_authenticated, felicity_user = await auth_from_info(info)
+    verify_user_auth(
+        is_authenticated,
+        felicity_user,
+        "Only Authenticated user can re print samples",
     )
 
     return_samples = []
 
     if len(samples) == 0:
-        return OperationError(error=f"No Samples to publish are provided!")
+        return OperationError(error=f"No Samples to print are provided!")
 
     for _sa_uid in samples:
         sample: analysis_models.Sample = await analysis_models.Sample.get(uid=_sa_uid)
         if not sample:
             return OperationError(error=f"Sample with uid {_sa_uid} not found")
 
-        sample = await sample.publish(published_by=felicity_user)
+        sample = await sample.print(printed_by=felicity_user)
         if sample:
             return_samples.append(sample)
 

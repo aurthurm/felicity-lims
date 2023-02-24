@@ -213,6 +213,7 @@ class SampleType:  # for Sample
     priority: int
     status: str
     assigned: bool
+    date_collected: Optional[datetime]
     submitted_by_uid: Optional[int]
     submitted_by: Optional[UserType]
     date_submitted: Optional[datetime]

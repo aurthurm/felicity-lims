@@ -17,6 +17,7 @@ from .analysis_request import (
     verify_samples,
     reject_samples,
     publish_samples,
+    print_samples,
     invalidate_samples,
 )
 from .analysis_result import (
@@ -82,6 +83,7 @@ AnalysisMutations = create_type(
         verify_samples,
         reject_samples,
         publish_samples,
+        print_samples,
         invalidate_samples,
         submit_analysis_results,
         verify_analysis_results,

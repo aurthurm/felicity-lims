@@ -1,8 +1,9 @@
-"""init
+"""init'
 
-Revision ID: 7a2dac5d7e56
+
+Revision ID: 03efc5f402ef
 Revises: 
-Create Date: 2023-01-14 08:54:06.352621
+Create Date: 2023-02-24 00:59:11.532213
 
 """
 from alembic import op
@@ -10,7 +11,7 @@ import sqlalchemy as sa
 from sqlalchemy.dialects import postgresql
 
 # revision identifiers, used by Alembic.
-revision = '7a2dac5d7e56'
+revision = '03efc5f402ef'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -1451,6 +1452,7 @@ def upgrade():
     sa.Column('assigned', sa.Boolean(), nullable=True),
     sa.Column('priority', sa.Integer(), nullable=False),
     sa.Column('status', sa.String(), nullable=False),
+    sa.Column('date_collected', sa.DateTime(), nullable=True),
     sa.Column('received_by_uid', sa.Integer(), nullable=True),
     sa.Column('date_received', sa.DateTime(), nullable=True),
     sa.Column('submitted_by_uid', sa.Integer(), nullable=True),
@@ -1459,6 +1461,9 @@ def upgrade():
     sa.Column('date_verified', sa.DateTime(), nullable=True),
     sa.Column('published_by_uid', sa.Integer(), nullable=True),
     sa.Column('date_published', sa.DateTime(), nullable=True),
+    sa.Column('printed', sa.Boolean(), nullable=True),
+    sa.Column('printed_by_uid', sa.Integer(), nullable=True),
+    sa.Column('date_printed', sa.DateTime(), nullable=True),
     sa.Column('invalidated_by_uid', sa.Integer(), nullable=True),
     sa.Column('date_invalidated', sa.DateTime(), nullable=True),
     sa.Column('cancelled_by_uid', sa.Integer(), nullable=True),
@@ -1467,8 +1472,12 @@ def upgrade():
     sa.Column('due_date', sa.DateTime(), nullable=True),
     sa.Column('qc_set_uid', sa.Integer(), nullable=True),
     sa.Column('qc_level_uid', sa.Integer(), nullable=True),
+    sa.Column('stored_by_uid', sa.Integer(), nullable=True),
+    sa.Column('date_stored', sa.DateTime(), nullable=True),
+    sa.Column('date_retrieved_from_storage', sa.DateTime(), nullable=True),
     sa.Column('storage_container_uid', sa.Integer(), nullable=True),
     sa.Column('storage_slot', sa.String(), nullable=True),
+    sa.Column('storage_slot_index', sa.Integer(), nullable=True),
     sa.Column('created_at', sa.DateTime(), nullable=True),
     sa.Column('created_by_uid', sa.Integer(), nullable=True),
     sa.Column('updated_at', sa.DateTime(), nullable=True),
@@ -1483,12 +1492,14 @@ def upgrade():
     sa.ForeignKeyConstraint(['created_by_uid'], ['user.uid'], ),
     sa.ForeignKeyConstraint(['invalidated_by_uid'], ['user.uid'], ),
     sa.ForeignKeyConstraint(['parent_id'], ['sample.uid'], ondelete='CASCADE'),
+    sa.ForeignKeyConstraint(['printed_by_uid'], ['user.uid'], ),
     sa.ForeignKeyConstraint(['published_by_uid'], ['user.uid'], ),
     sa.ForeignKeyConstraint(['qc_level_uid'], ['qclevel.uid'], ),
     sa.ForeignKeyConstraint(['qc_set_uid'], ['qcset.uid'], ),
     sa.ForeignKeyConstraint(['received_by_uid'], ['user.uid'], ),
     sa.ForeignKeyConstraint(['sample_type_uid'], ['sampletype.uid'], ),
     sa.ForeignKeyConstraint(['storage_container_uid'], ['storagecontainer.uid'], ),
+    sa.ForeignKeyConstraint(['stored_by_uid'], ['user.uid'], ),
     sa.ForeignKeyConstraint(['submitted_by_uid'], ['user.uid'], ),
     sa.ForeignKeyConstraint(['updated_by_uid'], ['user.uid'], ),
     sa.ForeignKeyConstraint(['verified_by_uid'], ['user.uid'], ),
@@ -1549,6 +1560,29 @@ def upgrade():
     op.create_index(op.f('ix_analysisresult_lft'), 'analysisresult', ['lft'], unique=False)
     op.create_index(op.f('ix_analysisresult_rgt'), 'analysisresult', ['rgt'], unique=False)
     op.create_index(op.f('ix_analysisresult_uid'), 'analysisresult', ['uid'], unique=False)
+    op.create_table('reportimpress',
+    sa.Column('uid', sa.Integer(), autoincrement=True, nullable=False),
+    sa.Column('state', sa.String(), nullable=True),
+    sa.Column('sample_uid', sa.Integer(), nullable=False),
+    sa.Column('json_content', postgresql.JSONB(astext_type=sa.Text()), nullable=True),
+    sa.Column('pdf_content', sa.LargeBinary(), nullable=True),
+    sa.Column('email_required', sa.Boolean(), nullable=True),
+    sa.Column('email_sent', sa.Boolean(), nullable=True),
+    sa.Column('sms_required', sa.Boolean(), nullable=True),
+    sa.Column('sms_sent', sa.Boolean(), nullable=True),
+    sa.Column('generated_by_uid', sa.Integer(), nullable=True),
+    sa.Column('date_generated', sa.DateTime(), nullable=True),
+    sa.Column('created_at', sa.DateTime(), nullable=True),
+    sa.Column('created_by_uid', sa.Integer(), nullable=True),
+    sa.Column('updated_at', sa.DateTime(), nullable=True),
+    sa.Column('updated_by_uid', sa.Integer(), nullable=True),
+    sa.ForeignKeyConstraint(['created_by_uid'], ['user.uid'], ),
+    sa.ForeignKeyConstraint(['generated_by_uid'], ['user.uid'], ),
+    sa.ForeignKeyConstraint(['sample_uid'], ['sample.uid'], ),
+    sa.ForeignKeyConstraint(['updated_by_uid'], ['user.uid'], ),
+    sa.PrimaryKeyConstraint('uid')
+    )
+    op.create_index(op.f('ix_reportimpress_uid'), 'reportimpress', ['uid'], unique=False)
     op.create_table('sample_analysis',
     sa.Column('sample_uid', sa.Integer(), nullable=False),
     sa.Column('analysis_uid', sa.Integer(), nullable=False),
@@ -1605,6 +1639,8 @@ def downgrade():
     op.drop_table('sample_rejection_reason')
     op.drop_table('sample_profile')
     op.drop_table('sample_analysis')
+    op.drop_index(op.f('ix_reportimpress_uid'), table_name='reportimpress')
+    op.drop_table('reportimpress')
     op.drop_index(op.f('ix_analysisresult_uid'), table_name='analysisresult')
     op.drop_index(op.f('ix_analysisresult_rgt'), table_name='analysisresult')
     op.drop_index(op.f('ix_analysisresult_lft'), table_name='analysisresult')

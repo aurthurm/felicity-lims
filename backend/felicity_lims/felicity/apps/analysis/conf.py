@@ -10,6 +10,7 @@ class States:
         RECEIVED = "received"  # received in the laboratory and ready for processing
         AWAITING = "awaiting"  # pending approval
         APPROVED = "approved"  # authorised for release
+        PUBLISHING = "publishing"  # printed samples, ready for dispatch
         PUBLISHED = "published"  # printed samples, ready for dispatch
         INVALIDATED = "invalidated"  # approval condemnation
         CANCELLED = "cancelled"  # no longer required <in other words deleted>

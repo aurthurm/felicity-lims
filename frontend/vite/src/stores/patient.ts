@@ -2,6 +2,9 @@ import { defineStore } from 'pinia'
 import { GET_ALL_PATIENTS, SEARCH_PATIENTS, GET_PATIENT_BY_UID } from '../graphql/patient.queries';
 import { addListsUnique } from '../utils';
 import { IPatient } from '../models/patient'
+import {
+  IPageInfo
+} from "../models/pagination"
 
 import { useApiUtil } from '../composables'
 
@@ -23,7 +26,7 @@ export const usePatientStore = defineStore('patient', {
         patient?: IPatient;
         fetchingPatient: boolean;
         patientCount?: number;
-        patientPageInfo?: any
+        patientPageInfo?: IPageInfo
       }
   },
   getters: {

@@ -7,6 +7,7 @@ from fastapi.staticfiles import StaticFiles
 from felicity.api.gql.schema import gql_schema  # noqa
 from felicity.api.rest.api_v1.api import api_router  # noqa
 from felicity.apps.common.channel import broadcast
+from felicity.apps.impress.tasks import impress_results
 from felicity.apps.job.sched import (felicity_halt_workforce,
                                      felicity_workforce_init)
 from felicity.apps.notification.utils import FelicityNotifier, FelicityStreamer
@@ -33,14 +34,15 @@ from strawberry.subscriptions import (GRAPHQL_TRANSPORT_WS_PROTOCOL,
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-
 flims = FastAPI(
     title=settings.PROJECT_NAME, openapi_url=f"{settings.API_V1_STR}/openapi.json"
 )
 
+
 @flims.get("/check")
 async def root():
     return {"message": "Tomato"}
+
 
 @flims.on_event("startup")
 async def startup():
@@ -49,9 +51,10 @@ async def startup():
     if settings.LOAD_SETUP_DATA:
         await initialize_felicity()
 
-    send_new_account_email("aurthur@felicity.inc",  "aurthurm", "@ceam2014;")
-    
+    send_new_account_email("aurthur@felicity.inc", "aurthurm", "@ceam2014;")
+
     felicity_workforce_init()
+    await impress_results(9)
 
 
 @flims.on_event("startup")
