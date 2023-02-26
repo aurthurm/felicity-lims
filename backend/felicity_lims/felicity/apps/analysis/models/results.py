@@ -108,7 +108,6 @@ class AnalysisResult(Auditable, BaseMPTT):
 
             # transition sample back to received state
             await self.sample.un_submit()
-
             return retest, final
         return retest, self
 
@@ -117,18 +116,14 @@ class AnalysisResult(Auditable, BaseMPTT):
         self.assigned = True
         self.worksheet_position = position
         self.instrument_uid = instrument_uid if instrument_uid else None
-        final = await self.save()
-        await streamer.stream(final, None, "assigned", "result")
-        return final
+        return await self.save()
 
     async def un_assign(self):
         self.worksheet_uid = None
         self.assigned = False
         self.worksheet_position = None
         self.instrument_uid = None
-        final = await self.save()
-        await streamer.stream(final, None, "unassigned", "result")
-        return final
+        return await self.save()
 
     async def verify(self, verifier):
         is_verified = False
