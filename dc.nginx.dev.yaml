@@ -10,6 +10,8 @@ services:
             - ./services/nginx:/etc/nginx/conf.d
         depends_on:
             - felicity_fe
+        networks:
+            - felicitynet
 
     felicity_fe:
         container_name: felicity_fe
@@ -24,7 +26,7 @@ services:
             - felicity_be
         networks:
             - felicitynet
-        command: bash -c "cd vite && yarn dev --host"
+        command: bash -c "cd vite && pnpm dev --host --port 3000"
 
     felicity_be:
         container_name: felicity_be

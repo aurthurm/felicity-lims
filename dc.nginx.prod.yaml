@@ -1,24 +1,15 @@
 version: '3.5'
 
 services:
-    felicity_proxy:  # new
-        build:
-          context: ./services/traefik
-          dockerfile: Dockerfile.traefik
+    felicity_proxy:
+        container_name: felicity_proxy
+        image: nginx:latest
         ports:
-          - 80:80
-          - 443:443
+            - "80:80"
         volumes:
-          - "/var/run/docker.sock:/var/run/docker.sock:ro"
-          - "./traefik-public-certificates:/certificates"
-        labels:
-          - "traefik.enable=true"
-          - "traefik.http.routers.dashboard.rule=Host(`dashboard.felicity.com`) && (PathPrefix(`/`)"
-          - "traefik.http.routers.dashboard.tls=true"
-          - "traefik.http.routers.dashboard.tls.certresolver=letsencrypt"
-          - "traefik.http.routers.dashboard.service=api@internal"
-          - "traefik.http.routers.dashboard.middlewares=auth"
-          - "traefik.http.middlewares.auth.basicauth.users=testuser:$$apr1$$jIKW.bdS$$eKXe4Lxjgy/rH65wP1iQe1"
+            - ./services/nginx:/etc/nginx/conf.d
+        depends_on:
+            - felicity_fe
 
     felicity_fe:
         container_name: felicity_fe
@@ -33,13 +24,7 @@ services:
             - felicity_be
         networks:
             - felicitynet
-        command: bash -c "cd vite && yarn dev --host"
-        labels:
-          - "traefik.enable=true"
-          - "traefik.http.routers.frontend.rule=Host(`frontend.felicity.com`)"
-          - "traefik.http.routers.frontend.tls=true"
-          - "traefik.http.routers.frontend.tls.certresolver=letsencrypt"
-          - "traefik.http.services.frontend.loadbalancer.server.port=3000"
+        command: bash -c "cd vite && pnpm dev --host --port 3000"
 
     felicity_be:
         container_name: felicity_be
@@ -55,6 +40,8 @@ services:
             - DATABASE_URL=postgresql://felicity:felicity@felicity_db:5432/felicity_lims
         volumes:
             - ./backend/:/app
+        expose:
+            - "8000"
         ports:
             - 8000:8000
         depends_on:
@@ -62,12 +49,6 @@ services:
         networks:
             - felicitynet
         command: bash -c "cd felicity_lims && ./felicity.sh"
-        labels:
-          - "traefik.enable=true"
-          - "traefik.http.routers.backend.rule=Host(`backend.felicity.com`)"
-          - "traefik.http.routers.backend.tls=true"
-          - "traefik.http.routers.backend.tls.certresolver=letsencrypt"
-          - "traefik.http.services.backend.loadbalancer.server.port=8000"
 
     felicity_db:
         container_name: felicity_db
@@ -86,8 +67,8 @@ services:
         networks:
             - felicitynet
 
-    felicity_pgadmin:
-        container_name: felicity_pgadmin
+    pgadmin:
+        container_name: felicity.pgadmin
         image: dpage/pgadmin4
         environment:
             PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-admin@pgadmin.org}
@@ -101,17 +82,10 @@ services:
         restart: unless-stopped
         depends_on:
             - felicity_db
-        labels:
-          - "traefik.enable=true"
-          - "traefik.http.routers.pgadmin.rule=Host(`pgadmin.felicity.com`)"
-          - "traefik.http.routers.pgadmin.tls=true"
-          - "traefik.http.routers.pgadmin.tls.certresolver=letsencrypt"
-          - "traefik.http.services.pgadmin.loadbalancer.server.port=80"
 
 volumes:
     db-data:
     pgadmin:
-    traefik-public-certificates:
 
 networks:
     felicitynet:

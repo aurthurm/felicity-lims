@@ -56,7 +56,7 @@ services:
         command: bash -c "cd vite && pnpm dev --host --port 3000"
         labels:
             - "traefik.enable=true"
-            - "traefik.http.routers.frontend.rule=Host(`frontend.frontend.com`)"
+            - "traefik.http.routers.frontend.rule=Host(`frontend.felicity.com`)"
             - "traefik.http.routers.frontend.entrypoints=web"
             - "traefik.http.services.frontend.loadbalancer.server.port=3000"
 

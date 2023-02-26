@@ -5,10 +5,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9f590b69-f929-45a1-8512-12ed6efbf028" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/dc.nginx.dev.yaml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/felicity_lims/felicity/core/config.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/felicity_lims/felicity/core/config.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dc.nginx.dev.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/dc.nginx.dev.yaml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/dc.nginx.prod.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/dc.nginx.prod.yaml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/dc.traefik.dev.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/dc.traefik.dev.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dc.traefik.prod.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/dc.traefik.prod.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/nginx/default.conf" beforeDir="false" afterPath="$PROJECT_DIR$/services/nginx/default.conf" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
