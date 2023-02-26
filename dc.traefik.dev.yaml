@@ -1,45 +1,17 @@
 version: '3.5'
 
 services:
-    felicity_proxy:  # new
-        build:
-          context: ./services/traefik
-          dockerfile: Dockerfile.traefik
-        ports:
-          - 80:80
-          - 443:443
-        volumes:
-          - "/var/run/docker.sock:/var/run/docker.sock:ro"
-          - "./traefik-public-certificates:/certificates"
-        labels:
-          - "traefik.enable=true"
-          - "traefik.http.routers.dashboard.rule=Host(`felicity-dashboard.felicity.com`) && (PathPrefix(`/`)"
-          - "traefik.http.routers.dashboard.tls=true"
-          - "traefik.http.routers.dashboard.tls.certresolver=letsencrypt"
-          - "traefik.http.routers.dashboard.service=api@internal"
-          - "traefik.http.routers.dashboard.middlewares=auth"
-          - "traefik.http.middlewares.auth.basicauth.users=testuser:$$apr1$$jIKW.bdS$$eKXe4Lxjgy/rH65wP1iQe1"
-
-    felicity_fe:
-        container_name: felicity_fe
-        restart: unless-stopped
-        build:
-            context: ./frontend
-        volumes:
-            - ./frontend:/app
-        ports:
-            - "3000:3000"
-        depends_on:
-            - felicity_be
+    felicity_proxy:
+        image: traefik:v2.9
+        container_name: felicity_proxy
         networks:
             - felicitynet
-        command: bash -c "cd vite && yarn dev --host"
-        labels:
-          - "traefik.enable=true"
-          - "traefik.http.routers.felicity-frontend.rule=Host(`felicity-frontend.felicity.com`)"
-          - "traefik.http.routers.felicity-frontend.tls=true"
-          - "traefik.http.routers.felicity-frontend.tls.certresolver=letsencrypt"
-          - "traefik.http.services.felicity-frontend.loadbalancer.server.port=3000"
+        ports:
+            - 85:80
+            - 8085:8080
+        volumes:
+            - "./services/traefik/traefik.dev.toml:/etc/traefik/traefik.toml"
+            - "/var/run/docker.sock:/var/run/docker.sock:ro"
 
     felicity_be:
         container_name: felicity_be
@@ -56,18 +28,37 @@ services:
         volumes:
             - ./backend/:/app
         ports:
-            - 8000:8000
+            - "8000:8000"
         depends_on:
             - felicity_db
         networks:
             - felicitynet
         command: bash -c "cd felicity_lims && ./felicity.sh"
         labels:
-          - "traefik.enable=true"
-          - "traefik.http.routers.felicity-backend.rule=Host(`felicity-backend.felicity.com`)"
-          - "traefik.http.routers.felicity-backend.tls=true"
-          - "traefik.http.routers.felicity-backend.tls.certresolver=letsencrypt"
-          - "traefik.http.services.felicity-backend.loadbalancer.server.port=8000"
+            - "traefik.enable=true"
+            - "traefik.http.routers.backend.rule=Host(`backend.felicity.com`)"
+            - "traefik.http.routers.backend.entrypoints=web"
+            - "traefik.http.services.backend.loadbalancer.server.port=8000"
+
+    felicity_fe:
+        container_name: felicity_fe
+        restart: unless-stopped
+        build:
+            context: ./frontend
+        volumes:
+            - ./frontend:/app
+        ports:
+            - "3000:3000"
+        depends_on:
+            - felicity_be
+        networks:
+            - felicitynet
+        command: bash -c "cd vite && pnpm dev --host --port 3000"
+        labels:
+            - "traefik.enable=true"
+            - "traefik.http.routers.frontend.rule=Host(`frontend.frontend.com`)"
+            - "traefik.http.routers.frontend.entrypoints=web"
+            - "traefik.http.services.frontend.loadbalancer.server.port=3000"
 
     felicity_db:
         container_name: felicity_db
@@ -102,17 +93,17 @@ services:
         depends_on:
             - felicity_db
         labels:
-          - "traefik.enable=true"
-          - "traefik.http.routers.felicity-pgadmin.rule=Host(`felicity-pgadmin.felicity.com`)"
-          - "traefik.http.routers.felicity-pgadmin.tls=true"
-          - "traefik.http.routers.felicity-pgadmin.tls.certresolver=letsencrypt"
-          - "traefik.http.services.felicity-pgadmin.loadbalancer.server.port=80"
+            - "traefik.enable=true"
+            - "traefik.http.routers.pgadmin.rule=Host(`pgadmin.felicity.com`)"
+            - "traefik.http.routers.pgadmin.entrypoints=web"
+            - "traefik.http.services.pgadmin.loadbalancer.server.port=80"
 
 volumes:
     db-data:
     pgadmin:
-    traefik-public-certificates:
 
 networks:
     felicitynet:
         driver: bridge
+        external: false
+        name: felicitynet
