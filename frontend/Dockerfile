@@ -1,5 +1,11 @@
 FROM node:latest
 ENV HOST 0.0.0.0
-COPY ./vite /app
+RUN npm i -g pnpm
+
 WORKDIR /app
-RUN yarn install
+
+COPY ./vite/package.json /app/
+COPY ./vite/pnpm-lock.yaml /app/
+RUN pnpm install
+
+COPY ./vite /app

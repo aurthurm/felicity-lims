@@ -42,6 +42,7 @@ class Settings(BaseSettings):
         "http://localhost:3000",
         "http://localhost:5173",
         "http://0.0.0.0:8080",
+        "http://felicity:3000",
     ]
     TESTING = getenv_boolean("TESTING", False)
     RETAIN_TESTING_DB_DATA = getenv_boolean("RETAIN_TESTING_DB_DATA", True)

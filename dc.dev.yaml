@@ -2,6 +2,21 @@ version: '3.5'
 
 services:
 
+    felicity_fe:
+        container_name: felicity_fe
+        restart: unless-stopped
+        build:
+            context: ./frontend
+        volumes:
+            - ./frontend:/app
+        ports:
+            - "3000:3000"
+        depends_on:
+            - felicity_be
+        networks:
+            - felicitynet
+        command: bash -c "cd vite && pnpm dev --host --port 3000"
+
     felicity_be:
         container_name: felicity_be
         restart: unless-stopped
@@ -24,8 +39,7 @@ services:
             - felicity_db
         networks:
             - felicitynet
-        #command: bash -c "cd felicity_lims && alembic upgrade head && uvicorn felicity.main:flims --host 0.0.0.0 --port 7000"
-        command: bash -c "cd felicity_lims && alembic upgrade head && ./runtests.sh && ./runserver.sh"
+        command: bash -c "cd felicity_lims && ./felicity.sh"
 
     felicity_db:
         container_name: felicity_db
