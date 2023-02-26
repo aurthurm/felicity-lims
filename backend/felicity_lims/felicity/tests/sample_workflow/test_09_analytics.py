@@ -36,7 +36,7 @@ async def test_generate_report(client, auth_data):
     assert _data["analyses"][0]["uid"] == 1
 
     # prepare for next test
-    await generate_report(6)
+    await generate_report(7)
 
 
 @pytest.mark.asyncio
@@ -55,4 +55,4 @@ async def test_fetch_reports(client, client_root, auth_data):
     d_data = await client_root.get(f"/{_report['location']}")
     assert d_data.status_code == 200
     data = pd.read_csv(io.StringIO(d_data.content.decode("utf-8")), header=0)
-    assert data.shape[0] == 6 # include header row
+    assert data.shape[0] == 6  # include header row

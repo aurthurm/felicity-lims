@@ -164,7 +164,7 @@ export default function useAnalysisComposable(){
 
             withClientMutation(RETRACT_ANALYSIS_RESULTS, { analyses: uids }, "retractAnalysisResults")
             .then(resp => {
-                sampleStore.updateAnalysesResultsStatus(resp.results)
+                sampleStore.updateAnalysesResults(resp.results)
                 worksheetStore.updateWorksheetResultsStatus(resp.results)
              });
 

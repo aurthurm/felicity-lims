@@ -56,6 +56,7 @@ async def verify_results(job_uid: int):
         await job.change_status(new_status=job_states.FINISHED)
         await report_notifier.notify(f"Your results were successfully verified", user)
     except Exception as e:
+        logger.debug(f"Exception ....... {e}")
         await job.change_status(new_status=job_states.FAILED)
         await report_notifier.notify(
             f"Failed to verify results in job with uid: {job.uid} with error: {str(e)}",

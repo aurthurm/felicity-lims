@@ -11,15 +11,20 @@ import {
   VERIFY_SAMPLES,
   REJECT_SAMPLES,
 } from '../graphql/analyses.mutations';
+import { 
+  DOWNLOAD_IMPRESS, DOWNLOAD_IMPRESS_SAMPLES
+} from '../graphql/analyses.queries';
 import { RECOVER_SAMPLES, STORE_SAMPLES } from '../graphql/storage.mutations'
 import { useSampleStore } from '../stores';
 import { ISample } from '../models/analysis';
 import useApiUtil from "./api_util";
+import useNotifyToast from './alert_toast';
 
 export default function useSampleComposable(){
 
     const sampleStore = useSampleStore();
-    const { withClientMutation } = useApiUtil();
+    const { withClientMutation, withClientQuery } = useApiUtil();
+    const { toastInfo } = useNotifyToast()
 
     const state = reactive({
       samples: computed(() => sampleStore.getSamples ),
@@ -218,7 +223,7 @@ export default function useSampleComposable(){
     }
 
     // PUBLISH_SAMPLES
-    const publishSamples = async (uids: number[]) => {
+    const publishSamples = async (samples: any[]) => {
       try {
         await Swal.fire({
           title: 'Are you sure?',
@@ -227,18 +232,14 @@ export default function useSampleComposable(){
           showCancelButton: true,
           confirmButtonColor: '#3085d6',
           cancelButtonColor: '#d33',
-          confirmButtonText: 'Yes, flag now!',
-          cancelButtonText: 'No, do not flag!',
+          confirmButtonText: 'Yes, publish now!',
+          cancelButtonText: 'No, do not publish!',
         }).then(async (result) => {
           if (result.isConfirmed) {
 
-            withClientMutation(PUBLISH_SAMPLES, { samples: uids }, "publishSamples")
+            withClientMutation(PUBLISH_SAMPLES, { samples }, "publishSamples")
             .then(resp => {
-              if(resp.samples.length <= 0) return;
-              _updateSamplesStatus(resp.samples)
-              _updateSampleStatus(resp.samples[0])
-              if(resp.samples.length !== 1) return;
-              _fetchAnalysesResultsFor(resp.samples[0].uid)
+              toastInfo(resp.message)
             });
 
             await Swal.fire(
@@ -253,6 +254,80 @@ export default function useSampleComposable(){
         
       }
     }
+
+
+    // DOWNLOAD_IMPRESS by SAMPLES
+    const downloadSamplesImpress = async (uids: number[]) => {
+      try {
+        await Swal.fire({
+          title: 'Are you sure?',
+          text: "You want to download pdfs",
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Yes, download now!',
+          cancelButtonText: 'No, do not download!',
+        }).then(async (result) => {
+          if (result.isConfirmed) {
+
+            withClientQuery(DOWNLOAD_IMPRESS_SAMPLES, { uids }, "impressReportsDownload")
+            .then(resp => {
+              const tempLink = document.createElement('a');
+              tempLink.href = `data:application/pdf;base64,${resp}`;
+              tempLink.setAttribute('download', 'impress-report.pdf');
+              tempLink.click();
+            });
+
+            await Swal.fire(
+              'Its Happening!',
+              'Downloading .....',
+              'success'
+            ).then(_ => {})
+
+          }
+        })
+      } catch (error) {
+        
+      }
+    }
+
+    // DOWNLOAD_IMPRESS
+    const downloadImpress = async (uid) => {
+      try {
+        await Swal.fire({
+          title: 'Are you sure?',
+          text: "You want to download this report",
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Yes, download now!',
+          cancelButtonText: 'No, do not download!',
+        }).then(async (result) => {
+          if (result.isConfirmed) {
+
+            withClientQuery(DOWNLOAD_IMPRESS, { uid }, "impressReportDownload")
+            .then(resp => {
+              const tempLink = document.createElement('a');
+              tempLink.href = `data:application/pdf;base64,${resp}`;
+              tempLink.setAttribute('download', 'impress-report.pdf');
+              tempLink.click();
+            });
+
+            await Swal.fire(
+              'Its Happening!',
+              'Downloading .....',
+              'success'
+            ).then(_ => {})
+
+          }
+        })
+      } catch (error) {
+        
+      }
+    }
+
 
     // PRINT_SAMPLES
     const printSamples = async (uids: number[]) => {
@@ -446,6 +521,8 @@ export default function useSampleComposable(){
       verifySamples,
       printSamples,
       publishSamples,
+      downloadSamplesImpress,
+      downloadImpress,
       invalidateSamples,
       rejectSamples,
       storeSamples,

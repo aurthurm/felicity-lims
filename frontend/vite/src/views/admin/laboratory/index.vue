@@ -21,7 +21,7 @@
               v-for="tab in tabs"
               :key="tab"
               :class="[
-                'no-underline text-gray-500 uppercase tracking-wide font-bold text-xs py-1 px-4 tab',
+                'no-underline text-gray-500 uppercase tracking-wide font-bold text-xs py-1 px-4 tab hover:bg-sky-100 hover:text-sky-800',
                 { 'tab-active': currentTab === tab },
               ]"
               @click="currentTab = tab"

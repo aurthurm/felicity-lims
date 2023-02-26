@@ -1,7 +1,6 @@
 import logging
 from typing import List
 from datetime import datetime
-import json
 from felicity.apps.analysis.models.analysis import Sample
 from felicity.apps.analysis.conf import states
 from felicity.apps.impress.models import ReportImpress
@@ -46,19 +45,35 @@ async def harvest_sample_metadata():
     logger.info(d)
 
 
-async def impress_from_sample_uids(uids: List[int], user):
+async def impress_samples(sample_meta: List[any], user):
     to_return = []
 
-    for _sa_uid in uids:
-        sample = await Sample.get(uid=_sa_uid)
+    for s_meta in sample_meta:
+        sample = await Sample.get(uid=s_meta.get("uid"))
         logger.info(f"sample {sample} {sample.status}")
-        if sample.status in [states.sample.APPROVED, states.sample.PUBLISHING]:
+        if sample.status in [
+            states.sample.RECEIVED,
+            states.sample.AWAITING,
+            states.sample.APPROVED,
+            states.sample.PUBLISHING,
+            states.sample.PUBLISHED
+        ]:
             impress_meta = impress_marshaller(sample)
+
+            report_state = "Unknown"
+            action = s_meta.get("action")
+            if action == "publish":
+                report_state = "Final Report"
+            if action == "re-publish":
+                report_state = "Final Report -- republish"
+            if action == "pre-publish":
+                report_state = "Preliminary Report"
+
             impress_engine = FelicityImpress()
-            sample_pdf = await impress_engine.generate(impress_meta)
+            sample_pdf = await impress_engine.generate(impress_meta, report_state)
 
             sc_in = ReportImpressCreate(**{
-                "state": "final",
+                "state": report_state,
                 "sample_uid": sample.uid,
                 "json_content": impress_meta,
                 "pdf_content": sample_pdf,
@@ -71,12 +86,13 @@ async def impress_from_sample_uids(uids: List[int], user):
             })
 
             await ReportImpress.create(sc_in)
-            published = await sample.publish(published_by=user)
-            logger.info(f"sample {sample.sample_id} has been impressed.")
-            to_return.append(published)
+            if action != "pre-publish":
+                sample = await sample.publish(published_by=user)
 
-            if published.status == states.sample.PUBLISHED:
-                await streamer.stream(sample, user, "published", "sample")
+            logger.info(f"sample {sample.sample_id} has been impressed.")
+            to_return.append(sample)
+
+            await streamer.stream(sample, user, "published", "sample")
         else:
             continue
 

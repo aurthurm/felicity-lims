@@ -7,7 +7,7 @@ from felicity.apps.analysis.models.analysis import Sample
 
 import logging
 
-from felicity.apps.impress.reports.utils import get_from_nested
+from felicity.apps.impress.reports.utils import get_from_nested, strtobool
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -69,7 +69,7 @@ class FelicityImpress:
         self.pdf.set_text_color(0, 0, 0)
         self.pdf.set_font("Helvetica", "", 10)
 
-    async def _add_sample(self, sample: dict):
+    async def _add_sample(self, sample: dict, report_state):
         profiles = [get_from_nested(p, "name") for p in get_from_nested(sample, "profiles")]
         analyses = [get_from_nested(p, "name") for p in get_from_nested(sample, "analyses")]
         self._add_page()
@@ -78,8 +78,12 @@ class FelicityImpress:
         # self._style_heading_1()
         # self.pdf.text(self.margin_left, self.margin_top, "Felicity Patient Report")
 
+        heading_top = self.margin_top + 15
+        self._style_heading_1()
+        self.pdf.text(self.margin_left, heading_top, report_state)
+
         # Patient Details Column
-        patient_top = self.margin_top + 15
+        patient_top = heading_top + 15
         left_col_xl = self.margin_left
         left_col_xv = left_col_xl + 40
 
@@ -171,6 +175,7 @@ class FelicityImpress:
         self._style_text()
 
         analyses_results = get_from_nested(sample, "analysis_results")
+        analyses_results = list(filter(lambda r: strtobool(get_from_nested(r, "reportable")), analyses_results))
         count = 0
         for result in analyses_results:
             y_pos = results_top + self.y_diff * (count + 2)
@@ -190,9 +195,9 @@ class FelicityImpress:
 
         return self.pdf
 
-    async def generate(self, sample: dict):
+    async def generate(self, sample: dict, report_state="final"):
         sample_id = get_from_nested(sample, 'sample_id')
-        pdf = await self._add_sample(sample)
+        pdf = await self._add_sample(sample, report_state)
         # another = pdf
         # another.output(f"{sample_id}.pdf")
         return pdf.output()

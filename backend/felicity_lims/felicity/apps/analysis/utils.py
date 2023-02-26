@@ -156,9 +156,6 @@ async def verify_from_result_uids(uids: List[int], user):
         if status in [states.result.RESULTED, states.result.APPROVING]:
             _, a_result = await a_result.verify(verifier=user)
             to_return.append(a_result)
-
-            if a_result.status == states.result.APPROVED:
-                await streamer.stream(a_result, user, "approved", "result")
         else:
             continue
 

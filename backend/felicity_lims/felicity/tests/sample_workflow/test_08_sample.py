@@ -1,6 +1,8 @@
 import pytest
 import logging
 
+from felicity.apps.impress.tasks import impress_results
+
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
@@ -9,14 +11,11 @@ logger = logging.getLogger(__name__)
 @pytest.mark.order(90)
 async def test_sample_publish(gql_client, auth_data):
     add_gql = """
-       mutation PublishSamples ($samples: [Int!]!) {
+       mutation PublishSamples ($samples: [SamplePublishInputType!]!) {
         publishSamples(samples: $samples){
-          ... on SampleListingType{
+          ... on OperationSuccess{
             __typename
-            samples {
-              uid
-              status
-            }
+            message
           }
 
           ... on OperationError {
@@ -31,7 +30,13 @@ async def test_sample_publish(gql_client, auth_data):
     response = await gql_client.post('/felicity-gql', json={
         "query": add_gql,
         "variables": {
-            "samples": [1,2,3,4,5],
+            "samples": [
+                {"uid": 1, "action": "publish"},
+                {"uid": 2, "action": "publish"},
+                {"uid": 3, "action": "publish"},
+                {"uid": 4, "action": "publish"},
+                {"uid": 5, "action": "publish"}
+            ],
         }
     }, headers=auth_data['headers'])
 
@@ -39,10 +44,10 @@ async def test_sample_publish(gql_client, auth_data):
 
     assert response.status_code == 200
     _data = response.json()["data"]["publishSamples"]
-    assert len(_data["samples"]) == 5
-    for _, sample in enumerate(_data["samples"]):
-        assert sample["uid"] is not None
-        assert sample["status"] == "published"
+    assert _data["message"] == "Your results are being published in the background."
+
+    # process job for the next test
+    await impress_results(6)
 
 
 @pytest.mark.asyncio

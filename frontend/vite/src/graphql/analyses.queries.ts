@@ -324,6 +324,15 @@ export const GET_ALL_SAMPLES = gql`
               }
             }
             createdAt
+            dateCollected
+            dateReceived
+            dateSubmitted
+            dateVerified
+            datePublished
+            datePrinted
+            dateStored
+            printed
+            dueDate
             analysisRequest {
                 uid
                 clientRequestId
@@ -341,6 +350,13 @@ export const GET_ALL_SAMPLES = gql`
                 client {
                     uid
                     name
+                    code
+                    district {
+                      name
+                      province {
+                        name
+                      }
+                    }
                 }
             }
             sampleType {
@@ -385,82 +401,6 @@ export const GET_ALL_SAMPLES = gql`
         }
     }`;
 
-export const SAMPLES_FOR_REPORTS_BY_UIDS = gql`
-  query getSamplesByUids($uids: [Int!]) {
-    samplesByUids(sampleUids:$uids){
-      uid
-      createdByUid
-      createdBy {
-        firstName
-        lastName
-        auth {
-          userName
-        }
-      }
-      createdAt
-      analysisRequest {
-        requestId
-        patient {
-          uid
-          patientId
-          firstName
-          lastName
-          dateOfBirth
-          age
-        }
-        client {
-          name
-          email
-          phoneMobile
-        }
-      }
-      sampleType {
-        name
-      }
-      sampleId
-      status
-      rejectionReasons{
-        uid
-        reason
-      }
-      dateVerified
-      verifiedBy {
-        firstName
-        lastName
-        auth {
-          userName
-        }
-      }
-      dateSubmitted
-      submittedBy {
-        firstName
-        lastName
-        auth {
-          userName
-        }
-      }
-      analysisResults {
-        analysis {
-          name
-          unitUid
-          unit {
-            uid
-            name
-          }
-        }
-        uid
-        result
-        instrument {
-          name
-        }
-        method {
-          name
-        }
-        reportable
-        retest
-      }
-    }
-}`;
 
 export const GET_ANALYSIS_REQUESTS_BY_PATIENT_UID = gql`
 query getAnalysesRequestsByPatientUid($uid: Int!) {
@@ -1026,4 +966,35 @@ export const GET_ALL_REJECTION_REASONS = gql`
     }
 }`;
 
+export const GET_IMPRESS_META = gql`
+  query impressMeta ($uids: [Int!]!) {
+    impressReportsMeta(uids: $uids) {
+      uid
+      state
+      sampleUid
+      jsonContent
+      emailRequired
+      emailSent
+      smsRequired
+      smsSent
+      generatedByUid
+      generatedBy {
+        firstName
+        lastName
+      }
+      dateGenerated
+    }
+  }
+`;
 
+export const DOWNLOAD_IMPRESS_SAMPLES = gql`
+  query impressReports ($uids: [Int!]!) {
+    impressReportsDownload(uids: $uids)
+  }
+`;
+
+export const DOWNLOAD_IMPRESS = gql`
+  query impressReport ($uid: Int!) {
+    impressReportDownload(uid: $uid)
+  }
+`;

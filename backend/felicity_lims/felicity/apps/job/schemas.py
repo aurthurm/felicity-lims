@@ -1,4 +1,4 @@
-from typing import Dict, List, Optional, Union
+from typing import Dict, List, Optional, Union, Any
 
 from pydantic import BaseModel
 
@@ -12,7 +12,7 @@ class JobBase(BaseModel):
     action: Optional[str] = None
     category: Optional[str] = categories.WORKSHEET
     priority: Optional[int] = priorities.NORMAL
-    data: Optional[Union[Dict, List]] = None
+    data: Optional[Any] = None
     job_id: Optional[int] = None
     status: Optional[str] = states.PENDING
     reason: Optional[str] = None

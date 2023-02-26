@@ -141,7 +141,7 @@ export const RECEIVE_SAMPLES = gql`
 `;
 
 export const PUBLISH_SAMPLES = gql`
-  mutation PublishSamples ($samples: [Int!]!) {
+  mutation PublishSamples ($samples: [SamplePublishInputType!]!) {
     publishSamples(samples: $samples){
       ... on OperationSuccess {
         __typename

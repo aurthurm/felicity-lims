@@ -21,7 +21,7 @@ import {
   IQCSet,
 } from "../models/analysis";
 import {
-  IPageInfo
+  IPageInfo, IPaginationMeta
 } from "../models/pagination"
 
 import useApiUtil from "../composables/api_util";
@@ -73,7 +73,7 @@ export const useSampleStore = defineStore("sample", {
       qcSet?: IQCSet | null;
       fetchingQCSet: boolean;
       qcSetCount: number;
-      qcSetPageInfo: IPageInfo;
+      qcSetPageInfo?: IPaginationMeta;
     };
   },
   getters: {
@@ -297,7 +297,7 @@ export const useSampleStore = defineStore("sample", {
       payload?.forEach((result) => {
         const index = this.analysisResults.findIndex((x) => x.uid === result.uid);
         if (index > -1) {
-          this.analysisResults[index] = result;
+          this.analysisResults[index] = {...this.analysisResults[index], ...result};
         } else {
           this.analysisResults?.push(result);
         }

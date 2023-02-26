@@ -35,7 +35,7 @@ async def impress_results(job_uid: int):
 
     try:
         user = user
-        await utils.impress_from_sample_uids(job.data, user)
+        await utils.impress_samples(job.data, user)
         await job.change_status(new_status=job_states.FINISHED)
         await report_notifier.notify(f"Your results were successfully published", user)
     except Exception as e:

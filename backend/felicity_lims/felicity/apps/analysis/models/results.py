@@ -8,10 +8,13 @@ from felicity.apps.common import BaseMPTT
 from felicity.database.session import async_session_factory
 from sqlalchemy import (Boolean, Column, DateTime, ForeignKey, Integer, String,
                         Table)
+from felicity.apps.notification.utils import FelicityStreamer
 from sqlalchemy.orm import relationship
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
+streamer = FelicityStreamer()
 
 """
  Many to Many Link between AnalysisResult and User
@@ -114,14 +117,18 @@ class AnalysisResult(Auditable, BaseMPTT):
         self.assigned = True
         self.worksheet_position = position
         self.instrument_uid = instrument_uid if instrument_uid else None
-        return await self.save()
+        final = await self.save()
+        await streamer.stream(final, None, "assigned", "result")
+        return final
 
     async def un_assign(self):
         self.worksheet_uid = None
         self.assigned = False
         self.worksheet_position = None
         self.instrument_uid = None
-        return await self.save()
+        final = await self.save()
+        await streamer.stream(final, None, "unassigned", "result")
+        return final
 
     async def verify(self, verifier):
         is_verified = False
@@ -136,7 +143,10 @@ class AnalysisResult(Auditable, BaseMPTT):
             self.status = conf.states.result.APPROVED
             self.date_verified = datetime.now()
             is_verified = True
-        return is_verified, await self.save()
+        final = await self.save()
+        if final.status == conf.states.result.APPROVED:
+            await streamer.stream(final, verifier, "approved", "result")
+        return is_verified, final
 
     async def retract(self, retracted_by):
         await AnalysisResult.table_insert(
@@ -146,7 +156,10 @@ class AnalysisResult(Auditable, BaseMPTT):
         self.status = conf.states.result.RETRACTED
         self.date_verified = datetime.now()
         self.updated_by_uid = retracted_by.uid  # noqa
-        return await self.save()
+        final = await self.save()
+        if final.status == conf.states.result.RETRACTED:
+            await streamer.stream(final, retracted_by, "retracted", "result")
+        return final
 
     async def cancel(self, cancelled_by):
         if self.status in [conf.states.result.PENDING]:
@@ -154,8 +167,10 @@ class AnalysisResult(Auditable, BaseMPTT):
             self.cancelled_by_uid = cancelled_by.uid
             self.date_cancelled = datetime.now()
             self.updated_by_uid = cancelled_by.uid  # noqa
-            return await self.save()
-        return None
+        final = await self.save()
+        if final.status == conf.states.result.CANCELLED:
+            await streamer.stream(final, cancelled_by, "cancelled", "result")
+        return final
 
     async def re_instate(self, sample, re_instated_by):
         if sample.status not in [
@@ -171,8 +186,10 @@ class AnalysisResult(Auditable, BaseMPTT):
             self.cancelled_by_uid = None
             self.date_cancelled = None
             self.updated_by_uid = re_instated_by.uid  # noqa
-            return await self.save()
-        return None
+        final = await self.save()
+        if final.status == conf.states.result.PENDING:
+            await streamer.stream(final, re_instated_by, "reinstated", "result")
+        return final
 
     async def change_status(self, status):
         self.status = status

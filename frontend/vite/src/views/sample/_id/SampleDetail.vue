@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import tabResults from "./Results.vue";
+import tabImpress from "./Impress.vue";
 import tabLogs from "../../components/AuditLog.vue";
 import { ref, computed, reactive } from "vue";
 import { useSampleStore } from "../../../stores";
@@ -8,7 +9,7 @@ const sampleStore = useSampleStore();
 
 const state = reactive({
   currentTab: ref("analysis-results"),
-  tabs: ["analysis-results", "logs"],
+  tabs: ["analysis-results", "logs", "impress-reports"],
   sample: computed(() => sampleStore.getSample),
 });
 
@@ -23,7 +24,7 @@ let currentTabComponent = computed(() => "tab-" + state.currentTab);
           v-for="tab in state.tabs"
           :key="tab"
           :class="[
-            'no-underline text-gray-500 uppercase tracking-wide font-bold text-xs py-1 px-4 tab',
+            'no-underline text-gray-500 uppercase tracking-wide font-bold text-xs py-1 px-4 tab hover:bg-sky-100 hover:text-sky-800',
             { 'tab-active': state.currentTab === tab },
           ]"
           @click="state.currentTab = tab"
@@ -41,6 +42,7 @@ let currentTabComponent = computed(() => "tab-" + state.currentTab);
         targetType="sample"
         :targetId="state.sample?.uid"
       />
+      <tab-impress v-if="state.currentTab === 'impress-reports'" />
     </div>
   </section>
 </template>

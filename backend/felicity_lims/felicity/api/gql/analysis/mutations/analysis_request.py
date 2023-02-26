@@ -12,6 +12,7 @@ from felicity.apps.analysis import schemas
 from felicity.apps.analysis.conf import priorities, states
 from felicity.apps.analysis.models import analysis as analysis_models
 from felicity.apps.analysis.models import results as result_models
+from felicity.apps.notification.utils import FelicityStreamer
 from felicity.apps.client import models as ct_models
 from felicity.apps.patient import models as pt_models
 from felicity.apps.reflex.utils import ReflexUtil
@@ -21,6 +22,8 @@ from felicity.apps.job.conf import (
     actions, categories, priorities, states as job_states
 )
 from felicity.apps.job.sched import felicity_resume_workforce
+
+streamer = FelicityStreamer()
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -38,6 +41,12 @@ class SampleRejectInputType:
     uid: int
     reasons: List[int]
     other: Optional[str] = ""
+
+
+@strawberry.input
+class SamplePublishInputType:
+    uid: int
+    action: str = ""
 
 
 AnalysisRequestResponse = strawberry.union(
@@ -430,7 +439,7 @@ async def reject_samples(
 
 
 @strawberry.mutation
-async def publish_samples(info, samples: List[int]) -> SuccessErrorResponse:
+async def publish_samples(info, samples: List[SamplePublishInputType]) -> SuccessErrorResponse:
     is_authenticated, felicity_user = await auth_from_info(info)
     verify_user_auth(
         is_authenticated,
@@ -441,11 +450,14 @@ async def publish_samples(info, samples: List[int]) -> SuccessErrorResponse:
     if len(samples) == 0:
         return OperationError(error=f"No samples to impress are provided!")
 
-    # set status of these samples to PROCESSING
+    # set status of these samples to PUBLISHING for those whose action is "publish" !important
+    final_publish = list(filter(lambda p: p.action == "publish", samples))
+    not_final = list(filter(lambda p: p.action != "publish", samples))
     await analysis_models.Sample.bulk_update_with_mappings([
-        {'uid': uid, "status": states.sample.PUBLISHING} for uid in samples
+        {'uid': sample.uid, "status": states.sample.PUBLISHING} for sample in final_publish
     ])
 
+    data = [{"uid": s.uid, "action": s.action} for s in samples]
     job_schema = job_schemas.JobCreate(
         action=actions.IMPRESS_REPORT,
         category=categories.IMPRESS,
@@ -453,12 +465,18 @@ async def publish_samples(info, samples: List[int]) -> SuccessErrorResponse:
         job_id=0,
         status=job_states.PENDING,
         creator_uid=felicity_user.uid,
-        data=samples,
+        data=data,
     )
 
     await job_models.Job.create(job_schema)
 
     felicity_resume_workforce()
+
+    # !important for frontend
+    # unfreeze frontend and return sample to original state since it is a non final publish
+    ns_samples = await analysis_models.Sample.get_by_uids([nf.uid for nf in not_final])
+    for sample in ns_samples:
+        await streamer.stream(sample, felicity_user, sample.status, "sample")
 
     return OperationSuccess(
         message="Your results are being published in the background."

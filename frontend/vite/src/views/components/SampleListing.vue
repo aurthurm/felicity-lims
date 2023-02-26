@@ -7,7 +7,7 @@ import { useRoute, useRouter } from "vue-router";
 import { IAnalysisProfile, IAnalysisService, ISample } from "../../models/analysis";
 import { ifZeroEmpty, parseDate } from "../../utils";
 import { useSampleStore, useAnalysisStore } from "../../stores";
-import { useReportComposable, useSampleComposable } from "../../composables";
+import { useSampleComposable } from "../../composables";
 
 import * as shield from "../../guards";
 
@@ -96,6 +96,13 @@ const tableColumns = ref([
     },
   },
   {
+    name: "Sample Type",
+    value: "sampleType.name",
+    sortable: false,
+    sortBy: "asc",
+    hidden: true,
+  },
+  {
     name: "Test(s)",
     value: "",
     sortable: false,
@@ -134,6 +141,20 @@ const tableColumns = ref([
     },
   },
   {
+    name: "Gender",
+    value: "analysisRequest.patient.gender",
+    sortable: false,
+    sortBy: "asc",
+    hidden: true,
+  },
+  {
+    name: "Age",
+    value: "analysisRequest.patient.age",
+    sortable: false,
+    sortBy: "asc",
+    hidden: true,
+  },
+  {
     name: "Client Patient ID",
     value: "analysisRequest.patient.clientPatientId",
     sortable: false,
@@ -148,11 +169,56 @@ const tableColumns = ref([
     hidden: false,
   },
   {
-    name: "Created",
-    value: "createdAt",
+    name: "Client Code",
+    value: "analysisRequest.client.code",
+    sortable: false,
+    sortBy: "asc",
+    hidden: true,
+  },
+  {
+    name: "Province",
+    value: "analysisRequest.client.district.province.name",
+    sortable: false,
+    sortBy: "asc",
+    hidden: true,
+  },
+  {
+    name: "District",
+    value: "analysisRequest.client.district.name",
+    sortable: false,
+    sortBy: "asc",
+    hidden: true,
+  },
+  {
+    name: "Client Request Id",
+    value: "analysisRequest.clientRequestId",
     sortable: false,
     sortBy: "asc",
     hidden: false,
+  },
+  {
+    name: "Date Collected",
+    value: "dateCollected",
+    sortable: false,
+    sortBy: "asc",
+    hidden: true,
+    customRender: function (sample, column) {
+      const value = column.value.split(".").reduce((acc, val) => acc?.[val], sample);
+      return h(
+        "span",
+        {
+          innerHTML: parseDate(value),
+        },
+        []
+      );
+    },
+  },
+  {
+    name: "Date Created",
+    value: "createdAt",
+    sortable: false,
+    sortBy: "asc",
+    hidden: true,
     customRender: function (sample, column) {
       const value = column.value.split(".").reduce((acc, val) => acc?.[val], sample);
       return h(
@@ -170,6 +236,98 @@ const tableColumns = ref([
     sortable: false,
     sortBy: "asc",
     hidden: false,
+  },
+  {
+    name: "Date Received",
+    value: "dateReceived",
+    sortable: false,
+    sortBy: "asc",
+    hidden: true,
+    customRender: function (sample, column) {
+      const value = column.value.split(".").reduce((acc, val) => acc?.[val], sample);
+      return h(
+        "span",
+        {
+          innerHTML: parseDate(value),
+        },
+        []
+      );
+    },
+  },
+  {
+    name: "Date Submitted",
+    value: "dateSubmitted",
+    sortable: false,
+    sortBy: "asc",
+    hidden: true,
+    customRender: function (sample, column) {
+      const value = column.value.split(".").reduce((acc, val) => acc?.[val], sample);
+      return h(
+        "span",
+        {
+          innerHTML: parseDate(value),
+        },
+        []
+      );
+    },
+  },
+  {
+    name: "Date Verified",
+    value: "dateVerified",
+    sortable: false,
+    sortBy: "asc",
+    hidden: true,
+    customRender: function (sample, column) {
+      const value = column.value.split(".").reduce((acc, val) => acc?.[val], sample);
+      return h(
+        "span",
+        {
+          innerHTML: parseDate(value),
+        },
+        []
+      );
+    },
+  },
+  {
+    name: "Date Published",
+    value: "datePublished",
+    sortable: false,
+    sortBy: "asc",
+    hidden: true,
+    customRender: function (sample, column) {
+      const value = column.value.split(".").reduce((acc, val) => acc?.[val], sample);
+      return h(
+        "span",
+        {
+          innerHTML: parseDate(value),
+        },
+        []
+      );
+    },
+  },
+  {
+    name: "Date Printed",
+    value: "datePrinted",
+    sortable: false,
+    sortBy: "asc",
+    hidden: true,
+    customRender: function (sample, column) {
+      const value = column.value.split(".").reduce((acc, val) => acc?.[val], sample);
+      return h(
+        "span",
+        {
+          innerHTML: parseDate(value),
+        },
+        []
+      );
+    },
+  },
+  {
+    name: "Printed",
+    value: "printed",
+    sortable: false,
+    sortBy: "asc",
+    hidden: true,
   },
   {
     name: "Status",
@@ -376,11 +534,11 @@ const {
   reInstateSamples,
   receiveSamples,
   printSamples,
+  downloadSamplesImpress,
   publishSamples,
   recoverSamples,
   cloneSamples,
 } = useSampleComposable();
-const { downloadReports } = useReportComposable();
 
 const countNone = computed(
   () => sampleStore.getSamples?.length + " of " + sampleStore.getSampleCount + " samples"
@@ -388,18 +546,27 @@ const countNone = computed(
 
 const cloneSamples_ = async () =>
   cloneSamples(getSampleUids()).finally(() => unCheckAll());
+
 const cancelSamples_ = async () =>
   cancelSamples(getSampleUids()).finally(() => unCheckAll());
+
 const reInstateSamples_ = async () =>
   reInstateSamples(getSampleUids()).finally(() => unCheckAll());
+
 const receiveSamples_ = async () =>
   receiveSamples(getSampleUids()).finally(() => unCheckAll());
-const downloadReports_ = async () =>
-  await downloadReports(getSampleUids()).finally(() => unCheckAll());
-const publishReports_ = async () =>
-  await publishSamples(getSampleUids()).finally(() => unCheckAll());
+
+const publishReports_ = async () => {
+  const samples = getSampleUids().map((uid) => ({ uid, action: "publish" }));
+  await publishSamples(samples).finally(() => unCheckAll());
+};
+
 const printReports_ = async () =>
   await printSamples(getSampleUids()).finally(() => unCheckAll());
+
+const impressDownload_ = async () =>
+  await downloadSamplesImpress(getSampleUids()).finally(() => unCheckAll());
+
 const prepareRejections = async () => {
   const selection = getSamplesChecked();
   router.push({ name: "reject-samples", state: { samples: JSON.stringify(selection) } });
@@ -523,7 +690,7 @@ const recoverSamples_ = async () =>
             shield.hasRights(shield.actions.CANCEL, shield.objects.SAMPLE) &&
             state.can_download
           "
-          @click.prevent="downloadReports_()"
+          @click.prevent="impressDownload_()"
           class="px-2 py-1 mr-2 border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
         >
           Download

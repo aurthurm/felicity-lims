@@ -8,6 +8,8 @@ from felicity.api.gql.analysis.types import results as r_types
 from felicity.api.gql.permissions import CanVerifyAnalysisResult
 from felicity.apps.analysis.conf import states as analysis_states
 from felicity.apps.analysis.models import results as result_models
+from felicity.apps.analysis.models import analysis as analysis_models
+from felicity.apps.notification.utils import FelicityStreamer
 from felicity.apps.analysis.utils import retest_from_result_uids
 from felicity.apps.job import models as job_models
 from felicity.apps.job import schemas as job_schemas
@@ -17,6 +19,8 @@ from felicity.apps.job.conf import (
 from felicity.apps.job.sched import felicity_resume_workforce
 from felicity.apps.worksheet import conf as ws_conf
 from felicity.apps.worksheet import models as ws_models
+
+streamer = FelicityStreamer()
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -168,6 +172,10 @@ async def retract_analysis_results(info, analyses: List[int]) -> AnalysisResultR
             retested_by=felicity_user, next_action="retract"
         )
 
+        # monkeypatch -> notify of sample state
+        sample = await analysis_models.Sample.get(uid=a_result.sample_uid)
+        await streamer.stream(sample, felicity_user, sample.status, "sample")
+
         # if in worksheet then keep add retest to ws
         if a_result.worksheet_uid:
             retest.worksheet_uid = a_result.worksheet_uid
@@ -197,6 +205,11 @@ async def retest_analysis_results(info, analyses: List[int]) -> AnalysisResultRe
         return OperationError(error=f"No analyses to Retest are provided!")
 
     retests, originals = await retest_from_result_uids(analyses, felicity_user)
+
+    # monkeypatch -> notify of sample state
+    for result in originals:
+        sample = await analysis_models.Sample.get(uid=result.sample_uid)
+        await streamer.stream(sample, felicity_user, sample.status, "sample")
 
     return ResultListingType(results=retests + originals)
 

@@ -10,6 +10,7 @@ from felicity.api.gql.user.types import UserType
 
 @strawberry.type
 class ReportImpressType:
+    uid: int
     state: Optional[str]
     sample_uid: Optional[int]
     sample: Optional[SampleType]

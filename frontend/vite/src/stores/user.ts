@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { IGroup, IPermission, IUser } from '../models/auth'
-import { IPagination } from '../models/pagination'
+import { IPagination, IPageInfo } from '../models/pagination'
 import { useApiUtil } from '../composables'
 
 const { withClientQuery } = useApiUtil()
@@ -15,15 +15,17 @@ interface IUserPage extends IPagination<IUser> {}
 export const useUserStore = defineStore('user', {
   state: () => {
       return {
-          users: {
-            items: []
-          }, 
+          users: [], 
+          usersPageInfo: undefined,
+          usersTotalCount: 0,
           fetchingUsers: false,
           groups: [],
           fetchingGroups: false,
           permissions: [],
       } as {
-        users: IUserPage;
+        users: IUser[];
+        usersPageInfo?: IPageInfo;
+        usersTotalCount?: number;
         fetchingUsers: boolean;
         groups: IGroup[];
         fetchingGroups: boolean;
@@ -31,7 +33,8 @@ export const useUserStore = defineStore('user', {
       }
   },
   getters: {
-      getUsers: (state) => state.users.items,
+      getUsers: (state) => state.users,
+      getSamplePageInfo: (state) => state.usersPageInfo,
       getGroups: (state) => state.groups,
       getPermissions: (state) => state.permissions,
   },
@@ -41,15 +44,17 @@ export const useUserStore = defineStore('user', {
       await withClientQuery(GET_ALL_USERS, params, "userAll")
       .then((users: IUserPage) => {
         this.fetchingUsers = false;
-        this.users = users
+        this.users = users.items?.filter(user => user.email != "system_daemon@system.daemon") ?? []
+        this.usersTotalCount = users.totalCount
+        this.usersPageInfo = users.pageInfo
       }).catch((err) => this.fetchingUsers = false)
     },
     addUser(payload: IUser): void {
-      this.users.items?.unshift(payload);
+      this.users?.unshift(payload);
     },
     updateUser(payload: IUser): void {
-      const index = this.users.items?.findIndex(user => user.uid === payload?.uid)
-      if(index && index > -1) this.users.items![index] = payload
+      const index = this.users?.findIndex(user => user.uid === payload?.uid)
+      if(index && index > -1) this.users[index] = payload
     },
 
     async fetchGroupsAndPermissions() {

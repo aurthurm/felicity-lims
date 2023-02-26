@@ -253,11 +253,7 @@ const retestResults = () => retester_(getResultsUids());
               v-model="form.analystUid"
               class="form-input mt-1 block w-full py-1"
             >
-              <option
-                v-for="user in userStore.users.items"
-                :key="user.uid"
-                :value="user.uid"
-              >
+              <option v-for="user in userStore.users" :key="user.uid" :value="user.uid">
                 {{ user.firstName }} {{ user.lastName }}
               </option>
             </select>
@@ -444,7 +440,9 @@ const retestResults = () => retester_(getResultsUids());
               </td>
               <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
                 <div
-                  v-if="!isEditable(result) || result?.analysis?.interims?.length === 0"
+                  v-if="
+                    !isEditable(result) || (result?.analysis?.interims?.length ?? 0) === 0
+                  "
                   class="text-sm leading-5 text-sky-800"
                 >
                   ---

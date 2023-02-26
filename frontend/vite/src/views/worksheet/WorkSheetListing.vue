@@ -198,6 +198,19 @@ const countNone = computed(
 </script>
 
 <template>
+  <div class="flex justify-between items-center">
+    <h2>WORKSHEETS</h2>
+    <!-- <div v-show="hasRights(userRole, objects.WORKSHEET, actions.CREATE)"> -->
+    <div>
+      <button
+        v-show="shield.hasRights(shield.actions.CREATE, shield.objects.WORKSHEET)"
+        @click.prevent="showModal = true"
+        class="p-2 h-10 border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
+      >
+        Add WorkSheet
+      </button>
+    </div>
+  </div>
   <DataTable
     :columns="tableColumns"
     :data="workSheets"

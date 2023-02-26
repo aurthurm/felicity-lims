@@ -196,7 +196,7 @@ const updatePatient = (patient: IPatient) => {
             <!-- Summary Column -->
             <div class="col-span-12 sm:col-start-3 sm:col-end-13 px-3 sm:px-0">
               <div
-                class="flex justify-between sm:text-sm md:text-md lg:text-lg text-gray-700 font-bold"
+                class="flex justify-between items-center mb-2 sm:text-sm md:text-md lg:text-lg text-gray-700 font-bold"
               >
                 <span>{{ getPatientFullName(patientForm) }}</span>
                 <div>
@@ -206,22 +206,19 @@ const updatePatient = (patient: IPatient) => {
                       shield.hasRights(shield.actions.UPDATE, shield.objects.PATIENT)
                     "
                     @click="showModal = true"
-                    class="ml-4 inline-flex items-center justify-center w-8 h-8 mr-2 border-sky-800 border text-gray-900 transition-colors duration-150 bg-white rounded-full focus:outline-none hover:bg-gray-200"
+                    class="p-1 ml-2 border-white border text-gray-500 text-md rounded-sm transition duration-300 hover:border-sky-800 hover:text-sky-800 focus:outline-none"
                   >
-                    <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20">
-                      <path
-                        d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"
-                      ></path>
-                    </svg>
+                    <font-awesome-icon icon="fa-edit" />
                   </button>
                   <router-link
                     :to="{
                       name: 'patient-detail',
                       params: { patientUid: patientForm.uid },
                     }"
-                    class="p-1 ml-2 border-white border text-gray-500rounded-smtransition duration-300 hover:border-sky-800 hover:text-sky-800 focus:outline-none"
-                    >... more</router-link
+                    class="p-1 ml-2 border-white border text-gray-500 rounded-sm transition duration-300 hover:border-sky-800 hover:text-sky-800 focus:outline-none"
                   >
+                    <font-awesome-icon icon="fa-left-right" />
+                  </router-link>
                 </div>
               </div>
               <hr />
@@ -270,7 +267,7 @@ const updatePatient = (patient: IPatient) => {
               v-for="tab in tabs"
               :key="tab"
               :class="[
-                'no-underline text-gray-500 uppercase tracking-wide font-bold text-xs py-1 px-4 tab',
+                'no-underline text-gray-500 uppercase tracking-wide font-bold text-xs py-1 px-4 tab hover:bg-sky-100 hover:text-sky-800 hover:bg-sky-100 hover:text-sky-800',
                 { 'tab-active': currentTab === tab },
               ]"
               @click="currentTab = tab"

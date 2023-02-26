@@ -212,7 +212,6 @@ async def test_get_worksheet_by_uid(gql_client, auth_data):
             uid
             name
           }
-          plate
           analysisResults {
             uid
             result

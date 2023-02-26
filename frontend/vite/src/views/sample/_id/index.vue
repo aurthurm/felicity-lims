@@ -18,6 +18,7 @@ const {
   reInstateSamples,
   receiveSamples,
   invalidateSamples,
+  publishSamples,
   verifySamples,
   recoverSamples,
 } = useSampleComposable();
@@ -89,6 +90,37 @@ const verifySample = async () => verifySamples([sample?.value?.uid!]),
     return false;
   });
 
+const publishText = computed(() => {
+    if (["approved"].includes(sample?.value?.status?.toLowerCase()!)) return "Publish";
+    if (["published"].includes(sample?.value?.status?.toLowerCase()!))
+      return "Re publish";
+    return "Pre publish";
+  }),
+  canPublish = computed(() => {
+    if (
+      ["awaiting", "approved", "published"].includes(
+        sample?.value?.status?.toLowerCase()!
+      )
+    )
+      return true;
+    const results = sampleStore.analysisResults;
+    if (
+      sample?.value?.status?.toLowerCase() === "received" &&
+      results?.some((r) => ["approved"].includes(r.status?.toLowerCase() ?? ""))
+    ) {
+      return true;
+    }
+    return false;
+  }),
+  publishSample = async () => {
+    const action = publishText.value.startsWith("Pre")
+      ? "pre-publish"
+      : publishText.value.startsWith("Re")
+      ? "re-publish"
+      : "publish";
+    publishSamples([{ uid: sample?.value?.uid, action }]);
+  };
+
 const invalidateSample = async () =>
   invalidateSamples([sample?.value?.uid!]).then((res: ISample[]) => {
     let inv = res?.filter((s) => s.uid !== sample?.value?.uid);
@@ -96,23 +128,21 @@ const invalidateSample = async () =>
   });
 
 const canReject = computed(() => {
-  if (["received", "expected"].includes(sample?.value?.status?.toLowerCase()!))
-    return true;
-  return false;
-});
-
-const rejectSample = async () =>
-  router.push({
-    name: "reject-samples",
-    params: { samples: JSON.stringify([sample?.value]) },
-  });
+    if (["received", "expected"].includes(sample?.value?.status?.toLowerCase()!))
+      return true;
+    return false;
+  }),
+  rejectSample = async () =>
+    router.push({
+      name: "reject-samples",
+      params: { samples: JSON.stringify([sample?.value]) },
+    });
 
 const canRecover = computed(() => {
-  if (["stored"].includes(sample?.value?.status?.toLowerCase()!)) return true;
-  return false;
-});
-
-const recoverSample = async () => recoverSamples([sample?.value?.uid!]);
+    if (["stored"].includes(sample?.value?.status?.toLowerCase()!)) return true;
+    return false;
+  }),
+  recoverSample = async () => recoverSamples([sample?.value?.uid!]);
 
 // sample storage
 const goToStorage = async (sample: ISample) => {
@@ -242,6 +272,13 @@ const goToStorage = async (sample: ISample) => {
                 class="no-underline text-gray-900 py-0 opacity-60 px-4 border-b border-transparent hover:opacity-100 md:hover:border-grey-dark hover:bg-orange-600 hover:text-white"
               >
                 Reinstate
+              </div>
+              <div
+                v-show="canPublish"
+                @click="publishSample()"
+                class="no-underline text-gray-900 py-0 opacity-60 px-4 border-b border-transparent hover:opacity-100 md:hover:border-grey-dark hover:bg-gray-400 hover:text-white"
+              >
+                {{ publishText }}
               </div>
               <div
                 v-show="canInvalidate"

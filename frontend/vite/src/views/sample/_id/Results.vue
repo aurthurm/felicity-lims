@@ -104,12 +104,11 @@ function isDisabledRowCheckBox(result: any): boolean {
   switch (result?.status) {
     case "retracted":
       return true;
-    case "aproved":
-      if (result?.reportable === false) {
-        return true;
-      } else {
-        return false;
-      }
+    case "approved":
+      return true;
+    case "cancelled":
+      if (sample?.value?.status !== "received") return true;
+      return false;
     default:
       return false;
   }
@@ -223,22 +222,27 @@ const submitResults = () =>
   submitter_(prepareResults(), "sample", sample?.value?.uid!)
     .then(() => _updateSample())
     .finally(() => unCheckAll());
+
 const cancelResults = () =>
   canceller_(getResultsUids())
     .then(() => _updateSample())
     .finally(() => unCheckAll());
+
 const reInstateResults = () =>
   reInstater_(getResultsUids())
     .then(() => _updateSample())
     .finally(() => unCheckAll());
+
 const approveResults = () =>
   approver_(getResultsUids(), "sample", sample?.value?.uid!)
     .then(() => _updateSample())
     .finally(() => unCheckAll());
+
 const retractResults = () =>
   retracter_(getResultsUids())
     .then(() => _updateSample())
     .finally(() => unCheckAll());
+
 const retestResults = () =>
   retester_(getResultsUids())
     .then(() => _updateSample())
@@ -341,11 +345,20 @@ const retestResults = () =>
             <td>
               <input
                 type="checkbox"
-                class=""
+                class="border-red-500"
                 v-model="result.checked"
                 @change="checkCheck(result)"
                 :disabled="isDisabledRowCheckBox(result)"
-              />
+              /><font-awesome-icon
+                v-if="result.status === 'pending'"
+                icon="fa-question"
+                class="ml-1 text-xs"
+              ></font-awesome-icon>
+              <font-awesome-icon
+                v-if="result.status === 'resulted'"
+                icon="fa-question"
+                class="ml-1 text-xs text-orange"
+              ></font-awesome-icon>
             </td>
             <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500"></td>
             <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">

@@ -644,6 +644,7 @@ class Sample(Auditable, BaseMPTT):
             states.result.RESULTED,
             states.result.RETRACTED,
             states.result.APPROVED,
+            states.result.CANCELLED,
         ]
         analysis_results = await self.get_analysis_results()
         match = all([(sibling.status in statuses) for sibling in analysis_results])
