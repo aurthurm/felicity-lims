@@ -9,6 +9,7 @@ import worksheetRoutes from './worksheet'
 import { isTokenValid } from './checks';
 import { useAuthStore } from '../stores';
 import { StorageHome } from '../views/storage/Index'
+import { InventoryHome } from '../views/inventory/Index'
 
 
 const routes: RouteRecordRaw[] = [
@@ -95,6 +96,14 @@ const routes: RouteRecordRaw[] = [
     path: '/bio-banking',
     name: guards.pages.BIO_BANKING,
     component: StorageHome, // () => import('../views/admin/storage/index.tsx'),
+    meta: {
+      requiresAuth: true,
+    },
+  },
+  {
+    path: '/inventory',
+    name: guards.pages.INVENTORY,
+    component: InventoryHome,
     meta: {
       requiresAuth: true,
     },
@@ -214,6 +223,9 @@ function hasAccess(page: any) {
     case guards.pages.BIO_BANKING:
       return guards.canAccessPage(guards.pages.BIO_BANKING)
   
+    case guards.pages.INVENTORY:
+      return guards.canAccessPage(guards.pages.INVENTORY)
+
     case "experiment":
       return true;
 

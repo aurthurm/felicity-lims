@@ -5,18 +5,45 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9f590b69-f929-45a1-8512-12ed6efbf028" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/backend/felicity_lims/felicity/core/snowflake/one.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/felicity_lims/felicity/core/snowflake/three.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/felicity_lims/felicity/core/snowflake/two.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/felicity_lims/felicity/core/config.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/felicity_lims/felicity/core/config.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dc.nginx.dev.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/dc.nginx.dev.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dc.nginx.prod.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/dc.nginx.prod.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dc.traefik.dev.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/dc.traefik.dev.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dc.traefik.prod.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/dc.traefik.prod.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/nginx/default.conf" beforeDir="false" afterPath="$PROJECT_DIR$/services/nginx/default.conf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/vite/src/router/constants.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/vite/src/router/constants.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/vite/src/router/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/vite/src/router/index.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/vite/src/views/admin/analyses/AnalysesProfiles.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/vite/src/views/admin/analyses/AnalysesProfiles.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/vite/src/views/admin/analyses/index.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/vite/src/views/admin/analyses/index.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/vite/src/views/admin/analyses/services/index.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/vite/src/views/admin/analyses/services/index.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/vite/src/views/admin/instruments/index.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/vite/src/views/admin/instruments/index.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/vite/src/views/admin/inventory/Index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/vite/src/views/admin/inventory/Index.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/vite/src/views/admin/laboratory/Laboratory.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/vite/src/views/admin/laboratory/Laboratory.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/vite/src/views/admin/laboratory/index.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/vite/src/views/admin/laboratory/index.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/vite/src/views/admin/sample/index.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/vite/src/views/admin/sample/index.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/vite/src/views/admin/suppliers/index.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/vite/src/views/admin/suppliers/index.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/vite/src/views/admin/users/Groups.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/vite/src/views/admin/users/Groups.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/vite/src/views/admin/users/index.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/vite/src/views/admin/users/index.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/vite/src/views/admin/worksheets/index.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/vite/src/views/admin/worksheets/index.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/vite/src/views/client/_id/ClientDetail.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/vite/src/views/client/_id/ClientDetail.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/vite/src/views/components/nav/NavigationAside.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/vite/src/views/components/nav/NavigationAside.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/vite/src/views/dashboard/index.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/vite/src/views/dashboard/index.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/vite/src/views/patient/PatientsCompact.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/vite/src/views/patient/PatientsCompact.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/vite/src/views/patient/_id/PatientDetail.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/vite/src/views/patient/_id/PatientDetail.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/vite/src/views/sample/_id/SampleDetail.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/vite/src/views/sample/_id/SampleDetail.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/vite/src/views/storage/ContainerView.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/vite/src/views/storage/ContainerView.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/vite/src/views/storage/Index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/vite/src/views/storage/Index.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/vite/src/views/worksheet/_id/WorkSheetDetail.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/vite/src/views/worksheet/_id/WorkSheetDetail.vue" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -34,12 +61,13 @@
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "last_opened_file_path": "/home/aurthur/Development/Python/felicity/felicity-lims",
-    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable"
+    "last_opened_file_path": "/home/aurthur/Development/Python/felicity/felicity-lims/backend/felicity_lims/felicity/core/snowflake",
+    "settings.editor.selected.configurable": "preferences.lookFeel"
   }
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/backend/felicity_lims/felicity/core/snowflake" />
       <recent name="$PROJECT_DIR$" />
       <recent name="$PROJECT_DIR$/frontend/vite" />
     </key>

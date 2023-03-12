@@ -57,7 +57,7 @@ const StorageHome = defineComponent({
         if (!dataIn) return;
         const routerState = router?.options?.history?.state;
         if (routerState?.sample) {
-          const sample = JSON.parse(routerState?.sample);
+          const sample = JSON.parse(routerState?.sample as string);
           const sc = sample?.storageContainer;
           const ss = sc?.storageSection;
           const sl = ss?.storageLocation;
