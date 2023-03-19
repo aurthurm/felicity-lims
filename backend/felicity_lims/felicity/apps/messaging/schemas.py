@@ -2,8 +2,8 @@ from typing import List, Optional
 
 from felicity.apps.common.schemas import BaseAuditModel
 from felicity.apps.user.schemas import User
-
 from felicity.core.uid_gen import FelicityIDType
+
 
 #
 # Message Schemas

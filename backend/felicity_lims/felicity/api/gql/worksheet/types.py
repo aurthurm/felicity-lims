@@ -12,9 +12,9 @@ from felicity.api.gql.analysis.types.analysis import (
 )
 from felicity.api.gql.analysis.types.results import AnalysisResultType
 from felicity.api.gql.setup.types import InstrumentType
-from felicity.core.uid_gen import FelicityID
 from felicity.api.gql.types import JSONScalar
 from felicity.api.gql.user.types import UserType
+from felicity.core.uid_gen import FelicityID
 
 
 @strawberry.type

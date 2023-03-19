@@ -5,8 +5,8 @@ import strawberry  # noqa
 
 from felicity.api.gql import PageInfo
 from felicity.api.gql.inventory import types
-from felicity.core.uid_gen import FelicityID
 from felicity.apps.inventory import models
+from felicity.core.uid_gen import FelicityID
 from felicity.utils import has_value_or_is_truthy
 
 

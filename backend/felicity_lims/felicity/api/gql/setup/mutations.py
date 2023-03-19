@@ -22,9 +22,9 @@ from felicity.api.gql.setup.types import (
     SupplierType,
     UnitType,
 )
-from felicity.core.uid_gen import FelicityID
 from felicity.apps.analysis.models import analysis as analysis_models
 from felicity.apps.setup import models, schemas
+from felicity.core.uid_gen import FelicityID
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

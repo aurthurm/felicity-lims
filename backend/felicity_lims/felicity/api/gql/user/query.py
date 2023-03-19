@@ -4,7 +4,6 @@ import sqlalchemy as sa
 import strawberry  # noqa
 
 from felicity.api.gql import PageInfo, deps
-from felicity.core.uid_gen import FelicityID
 from felicity.api.gql.user.types import (
     GroupType,
     PermissionType,
@@ -13,6 +12,7 @@ from felicity.api.gql.user.types import (
     UserType,
 )
 from felicity.apps.user import models as user_models
+from felicity.core.uid_gen import FelicityID
 from felicity.utils import has_value_or_is_truthy
 
 
@@ -82,5 +82,7 @@ class UserQuery:
         return await user_models.Permission.all()
 
     @strawberry.field
-    async def permission_by_uid(self, info, uid: FelicityID) -> Optional[PermissionType]:
+    async def permission_by_uid(
+        self, info, uid: FelicityID
+    ) -> Optional[PermissionType]:
         return await user_models.Permission.get(uid=uid)

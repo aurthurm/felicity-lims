@@ -7,8 +7,8 @@ from PyPDF2 import PdfWriter
 
 from felicity.api.gql.impress.types import ReportImpressType
 from felicity.api.gql.types import BytesScalar
-from felicity.core.uid_gen import FelicityID
 from felicity.apps.impress.models import ReportImpress
+from felicity.core.uid_gen import FelicityID
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -66,7 +66,9 @@ class ReportImpressQuery:
         return out_stream
 
     @strawberry.field
-    async def impress_report_download(self, info, uid: FelicityID) -> BytesScalar | None:
+    async def impress_report_download(
+        self, info, uid: FelicityID
+    ) -> BytesScalar | None:
         report = await ReportImpress.get(uid=uid)
 
         if not report:

@@ -9,8 +9,8 @@ from felicity.api.gql.reflex.types import (
     ReflexRuleEdge,
     ReflexRuleType,
 )
-from felicity.core.uid_gen import FelicityID
 from felicity.apps.reflex import models
+from felicity.core.uid_gen import FelicityID
 from felicity.utils import has_value_or_is_truthy
 
 
@@ -54,5 +54,7 @@ class ReflexRuleQuery:
         )
 
     @strawberry.field
-    async def reflex_rule_by_uid(self, info, uid: FelicityID) -> Optional[ReflexRuleType]:
+    async def reflex_rule_by_uid(
+        self, info, uid: FelicityID
+    ) -> Optional[ReflexRuleType]:
         return await models.ReflexRule.get(uid=uid)

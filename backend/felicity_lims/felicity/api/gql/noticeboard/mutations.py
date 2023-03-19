@@ -11,8 +11,8 @@ from felicity.api.gql import (
     verify_user_auth,
 )
 from felicity.api.gql.noticeboard.types import NoticeType
-from felicity.core.uid_gen import FelicityID
 from felicity.apps.noticeboard import models, schemas
+from felicity.core.uid_gen import FelicityID
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

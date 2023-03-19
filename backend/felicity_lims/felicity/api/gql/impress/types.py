@@ -5,8 +5,8 @@ import strawberry  # noqa
 
 from felicity.api.gql.analysis.types.analysis import SampleType
 from felicity.api.gql.types import BytesScalar, JSONScalar
-from felicity.core.uid_gen import FelicityID
 from felicity.api.gql.user.types import UserType
+from felicity.core.uid_gen import FelicityID
 
 
 @strawberry.type

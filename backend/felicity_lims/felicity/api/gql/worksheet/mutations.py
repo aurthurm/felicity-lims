@@ -4,7 +4,6 @@ from typing import List, Optional
 import strawberry  # noqa
 
 from felicity.api.gql import OperationError, auth_from_info, verify_user_auth
-from felicity.core.uid_gen import FelicityID
 from felicity.api.gql.worksheet.types import WorkSheetTemplateType, WorkSheetType
 from felicity.apps.analysis.models import analysis as analysis_models
 from felicity.apps.analysis.models import qc as qc_models
@@ -17,6 +16,7 @@ from felicity.apps.job.sched import felicity_resume_workforce
 from felicity.apps.setup import models as setup_models
 from felicity.apps.user import models as user_models
 from felicity.apps.worksheet import conf, models, schemas
+from felicity.core.uid_gen import FelicityID
 from felicity.utils import has_value_or_is_truthy
 
 logging.basicConfig(level=logging.INFO)
@@ -178,7 +178,11 @@ class WorkSheetMutations:
 
     @strawberry.mutation
     async def create_worksheet(
-        self, info, template_uid: FelicityID, analyst_uid: FelicityID, count: Optional[int] = 1
+        self,
+        info,
+        template_uid: FelicityID,
+        analyst_uid: FelicityID,
+        count: Optional[int] = 1,
     ) -> WorkSheetsResponse:
 
         is_authenticated, felicity_user = await auth_from_info(info)

@@ -15,8 +15,8 @@ from felicity.apps.analysis.utils import get_qc_sample_type
 from felicity.apps.job import models as job_models
 from felicity.apps.job.conf import states as job_states
 from felicity.apps.worksheet import conf, models
-
 from felicity.core.uid_gen import FelicityIDType
+
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 

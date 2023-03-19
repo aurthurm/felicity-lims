@@ -9,9 +9,9 @@ from felicity.api.gql.reflex.types import (
     ReflexBrainType,
     ReflexRuleType,
 )
-from felicity.core.uid_gen import FelicityID
 from felicity.apps.analysis.models import analysis as analysis_models
 from felicity.apps.reflex import models, schemas
+from felicity.core.uid_gen import FelicityID
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

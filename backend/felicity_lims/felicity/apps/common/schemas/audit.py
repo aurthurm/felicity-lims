@@ -2,6 +2,7 @@ from datetime import datetime
 from typing import Optional
 
 from pydantic import BaseModel
+
 from felicity.core.uid_gen import FelicityIDType
 
 

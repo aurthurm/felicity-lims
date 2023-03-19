@@ -6,8 +6,8 @@ import strawberry  # noqa
 from felicity.api.gql import PageInfo
 from felicity.api.gql.setup.types import DepartmentType, SupplierType
 from felicity.api.gql.storage.types import StoreRoomType
-from felicity.core.uid_gen import FelicityID
 from felicity.api.gql.user.types import UserType
+from felicity.core.uid_gen import FelicityID
 
 
 @strawberry.type

@@ -109,7 +109,9 @@ class StockProduct(BaseAuditDBModel):
     size = Column(Float, nullable=True)
     unit_uid = Column(FelicitySAID, ForeignKey("stockunit.uid"), nullable=True)
     unit = relationship("StockUnit", lazy="selectin")
-    packaging_uid = Column(FelicitySAID, ForeignKey("stockpackaging.uid"), nullable=True)
+    packaging_uid = Column(
+        FelicitySAID, ForeignKey("stockpackaging.uid"), nullable=True
+    )
     packaging = relationship("StockPackaging", lazy="selectin")
     price = Column(Float, nullable=True)
     quantity_received = Column(Integer, nullable=False)

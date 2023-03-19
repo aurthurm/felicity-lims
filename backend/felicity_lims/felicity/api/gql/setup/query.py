@@ -28,8 +28,8 @@ from felicity.api.gql.setup.types import (
     SupplierType,
     UnitType,
 )
-from felicity.core.uid_gen import FelicityID
 from felicity.apps.setup import models
+from felicity.core.uid_gen import FelicityID
 from felicity.utils import has_value_or_is_truthy
 
 
@@ -340,7 +340,9 @@ class SetupQuery:
         return district
 
     @strawberry.field
-    async def districts_by_province_uid(self, info, uid: FelicityID) -> List[DistrictType]:
+    async def districts_by_province_uid(
+        self, info, uid: FelicityID
+    ) -> List[DistrictType]:
         districts = await models.District.get_all(province_uid__exact=uid)
         return districts
 
@@ -352,7 +354,9 @@ class SetupQuery:
         return province
 
     @strawberry.field
-    async def provinces_by_country_uid(self, info, uid: FelicityID) -> List[ProvinceType]:
+    async def provinces_by_country_uid(
+        self, info, uid: FelicityID
+    ) -> List[ProvinceType]:
         provinces = await models.Province.get_all(country_uid__exact=uid)
         return provinces
 

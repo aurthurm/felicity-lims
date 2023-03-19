@@ -12,9 +12,9 @@ from felicity.api.gql import (
     verify_user_auth,
 )
 from felicity.api.gql.messaging.types import MessageType
-from felicity.core.uid_gen import FelicityID
 from felicity.apps.messaging import models, schemas
 from felicity.apps.user.models import User
+from felicity.core.uid_gen import FelicityID
 from felicity.utils import get_passed_args
 
 logging.basicConfig(level=logging.INFO)

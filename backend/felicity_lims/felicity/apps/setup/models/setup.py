@@ -191,7 +191,9 @@ class Instrument(BaseAuditDBModel):
     instrument_type = relationship("InstrumentType", lazy="selectin")
     supplier_uid = Column(FelicitySAID, ForeignKey("supplier.uid"), nullable=True)
     supplier = relationship(Supplier, backref="instruments", lazy="selectin")
-    manufacturer_uid = Column(FelicitySAID, ForeignKey("manufacturer.uid"), nullable=True)
+    manufacturer_uid = Column(
+        FelicitySAID, ForeignKey("manufacturer.uid"), nullable=True
+    )
     manufacturer = relationship(
         "Manufacturer", backref="manufacturers", lazy="selectin"
     )

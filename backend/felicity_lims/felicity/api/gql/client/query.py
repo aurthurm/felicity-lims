@@ -10,8 +10,8 @@ from felicity.api.gql.client.types import (
     ClientEdge,
     ClientType,
 )
-from felicity.core.uid_gen import FelicityID
 from felicity.apps.client import models
+from felicity.core.uid_gen import FelicityID
 from felicity.utils import has_value_or_is_truthy
 
 

@@ -11,7 +11,6 @@ from felicity.api.gql import (
 )
 from felicity.api.gql.analysis.types import results as r_types
 from felicity.api.gql.permissions import CanVerifyAnalysisResult
-from felicity.core.uid_gen import FelicityID
 from felicity.apps.analysis.conf import states as analysis_states
 from felicity.apps.analysis.models import analysis as analysis_models
 from felicity.apps.analysis.models import results as result_models
@@ -24,6 +23,7 @@ from felicity.apps.job.sched import felicity_resume_workforce
 from felicity.apps.notification.utils import FelicityStreamer
 from felicity.apps.worksheet import conf as ws_conf
 from felicity.apps.worksheet import models as ws_models
+from felicity.core.uid_gen import FelicityID
 
 streamer = FelicityStreamer()
 

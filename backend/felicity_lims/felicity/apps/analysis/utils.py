@@ -10,8 +10,8 @@ from felicity.apps.analysis.models.analysis import SampleType
 from felicity.apps.analysis.models.results import AnalysisResult, ResultMutation
 from felicity.apps.notification.utils import FelicityStreamer
 from felicity.apps.reflex.utils import ReflexUtil
-from felicity.utils import has_value_or_is_truthy
 from felicity.core.uid_gen import FelicityIDType
+from felicity.utils import has_value_or_is_truthy
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

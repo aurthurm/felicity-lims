@@ -2,8 +2,8 @@ from typing import List, Optional
 
 from felicity.apps.analysis.schemas import Analysis, SampleType
 from felicity.apps.common.schemas import BaseAuditModel
-
 from felicity.core.uid_gen import FelicityIDType
+
 #
 #  ReflexRule Schema
 #

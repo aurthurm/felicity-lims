@@ -7,12 +7,12 @@ import strawberry  # noqa
 from felicity.api.gql import PageInfo
 from felicity.api.gql.analysis.types import analysis as a_types
 from felicity.api.gql.analysis.types import results as r_types
-from felicity.core.uid_gen import FelicityID
 from felicity.apps.analysis import conf as analysis_conf
 from felicity.apps.analysis.models import analysis as a_models
 from felicity.apps.analysis.models import qc as qc_models
 from felicity.apps.analysis.models import results as r_models
 from felicity.apps.analysis.utils import sample_search
+from felicity.core.uid_gen import FelicityID
 from felicity.utils import has_value_or_is_truthy
 
 logging.basicConfig(level=logging.INFO)

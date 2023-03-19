@@ -12,8 +12,8 @@ from felicity.apps.notification.utils import ReportNotifier
 from felicity.apps.user import models as user_models
 from felicity.apps.user.models import User
 from felicity.core.config import settings
-
 from felicity.core.uid_gen import FelicityIDType
+
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 

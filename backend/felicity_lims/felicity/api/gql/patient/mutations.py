@@ -6,9 +6,9 @@ import strawberry  # noqa
 
 from felicity.api.gql import OperationError, auth_from_info, verify_user_auth
 from felicity.api.gql.patient.types import PatientType
-from felicity.core.uid_gen import FelicityID
 from felicity.apps.client import models as client_models
 from felicity.apps.patient import models, schemas
+from felicity.core.uid_gen import FelicityID
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

@@ -45,7 +45,11 @@ class DBModel(AllFeaturesMixin):
     __mapper_args__ = {"eager_defaults": True}
 
     uid = Column(
-        FelicitySAID, primary_key=True, index=True, nullable=False, default=get_flake_uid
+        FelicitySAID,
+        primary_key=True,
+        index=True,
+        nullable=False,
+        default=get_flake_uid,
     )
 
     @declared_attr

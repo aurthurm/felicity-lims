@@ -5,8 +5,8 @@ import strawberry  # noqa
 
 from felicity.api.gql import PageInfo
 from felicity.api.gql.patient.types import PatientCursorPage, PatientEdge, PatientType
-from felicity.core.uid_gen import FelicityID
 from felicity.apps.patient import models
+from felicity.core.uid_gen import FelicityID
 from felicity.utils import has_value_or_is_truthy
 
 

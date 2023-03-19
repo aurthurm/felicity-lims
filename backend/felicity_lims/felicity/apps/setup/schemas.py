@@ -3,8 +3,8 @@ from typing import List, Optional
 
 from pydantic import BaseModel, EmailStr
 
-from felicity.core.uid_gen import FelicityIDType
 from felicity.apps.common.schemas import BaseAuditModel
+from felicity.core.uid_gen import FelicityIDType
 
 #
 #  Laboratory

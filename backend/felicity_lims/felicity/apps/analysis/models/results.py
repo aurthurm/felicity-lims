@@ -4,13 +4,12 @@ from typing import List
 
 from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, String, Table
 from sqlalchemy.orm import relationship
-from felicity.core.uid_gen import FelicityIDType
 
 from felicity.apps import Auditable, BaseAuditDBModel, DBModel
 from felicity.apps.analysis import conf, schemas
 from felicity.apps.common import BaseMPTT
 from felicity.apps.notification.utils import FelicityStreamer
-from felicity.core.uid_gen import FelicitySAID
+from felicity.core.uid_gen import FelicityIDType, FelicitySAID
 from felicity.database.session import async_session_factory
 
 logging.basicConfig(level=logging.INFO)

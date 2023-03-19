@@ -6,8 +6,8 @@ from strawberry.types import Info  # noqa
 
 from felicity.api.gql import OperationError, auth_from_info, verify_user_auth
 from felicity.api.gql.client.types import ClientContactType, ClientType
-from felicity.core.uid_gen import FelicityID
 from felicity.apps.client import models, schemas
+from felicity.core.uid_gen import FelicityID
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

@@ -7,13 +7,13 @@ from felicity.api.gql.analysis.types.analysis import SampleType
 from felicity.api.gql.analysis.types.results import AnalysisResultType
 from felicity.api.gql.analytics.types import ReportMetaType
 from felicity.api.gql.setup.types import DepartmentType
-from felicity.core.uid_gen import FelicityID
 from felicity.api.gql.user.types import GroupType, UserType
 from felicity.api.gql.worksheet.types import WorkSheetType
 from felicity.apps.analysis.models.analysis import Sample
 from felicity.apps.analysis.models.results import AnalysisResult
 from felicity.apps.analytics.models import ReportMeta
 from felicity.apps.worksheet.models import WorkSheet
+from felicity.core.uid_gen import FelicityID
 
 
 @strawberry.type

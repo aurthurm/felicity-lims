@@ -4,8 +4,8 @@ from typing import List, Optional
 import strawberry  # noqa
 
 from felicity.api.gql.analysis.types.analysis import AnalysisType
-from felicity.core.uid_gen import FelicityID
 from felicity.api.gql.user.types import UserType
+from felicity.core.uid_gen import FelicityID
 
 
 @strawberry.type

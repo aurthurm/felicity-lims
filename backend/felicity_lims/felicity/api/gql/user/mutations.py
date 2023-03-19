@@ -12,7 +12,6 @@ from felicity.api.gql import (
     auth_from_info,
     verify_user_auth,
 )
-from felicity.core.uid_gen import FelicityID
 from felicity.api.gql.user.types import (
     AuthenticatedData,
     GroupType,
@@ -25,6 +24,7 @@ from felicity.apps.user import schemas as user_schemas
 from felicity.core import security
 from felicity.core.config import settings
 from felicity.core.security import generate_password_reset_token
+from felicity.core.uid_gen import FelicityID
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -346,7 +346,9 @@ class UserMutations:
         return GroupType(**group.marshal_simple())
 
     @strawberry.mutation
-    async def update_group(info, uid: FelicityID, payload: GroupInputType) -> GroupResponse:
+    async def update_group(
+        info, uid: FelicityID, payload: GroupInputType
+    ) -> GroupResponse:
 
         is_authenticated, felicity_user = await auth_from_info(info)
         verify_user_auth(
