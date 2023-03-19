@@ -3,6 +3,7 @@ from pathlib import Path
 
 import emails
 from emails.template import JinjaTemplate
+
 from felicity.core.config import settings
 
 

@@ -2,9 +2,14 @@ import logging
 from typing import Dict, List, Optional
 
 import strawberry  # noqa
+
 from felicity.api.gql import OperationError, auth_from_info, verify_user_auth
-from felicity.api.gql.reflex.types import (ReflexActionType, ReflexBrainType,
-                                           ReflexRuleType)
+from felicity.api.gql.reflex.types import (
+    ReflexActionType,
+    ReflexBrainType,
+    ReflexRuleType,
+)
+from felicity.core.uid_gen import FelicityID
 from felicity.apps.analysis.models import analysis as analysis_models
 from felicity.apps.reflex import models, schemas
 
@@ -28,8 +33,8 @@ class ReflexActionInput:
     level: int
     description: str
     analyses: List[int]
-    reflex_rule_uid: int
-    sample_type_uid: Optional[int] = None
+    reflex_rule_uid: FelicityID
+    sample_type_uid: Optional[FelicityID] = None
 
 
 ReflexActionResponse = strawberry.union(
@@ -39,26 +44,26 @@ ReflexActionResponse = strawberry.union(
 
 @strawberry.input
 class ReflexCriteriaInput:
-    analysis_uid: int
+    analysis_uid: FelicityID
     operator: str
     value: str
 
 
 @strawberry.input
 class ReflexAddNewInput:
-    analysis_uid: int
+    analysis_uid: FelicityID
     count: int
 
 
 @strawberry.input
 class ReflexFinalInput:
-    analysis_uid: int
+    analysis_uid: FelicityID
     value: str
 
 
 @strawberry.input
 class ReflexBrainInput:
-    reflex_action_uid: int
+    reflex_action_uid: FelicityID
     description: str
     analyses_values: Optional[List[ReflexCriteriaInput]] = None
     add_new: Optional[List[ReflexAddNewInput]] = None
@@ -104,7 +109,7 @@ class ReflexRuleMutations:
 
     @strawberry.mutation
     async def update_reflex_rule(
-        self, info, uid: int, payload: ReflexRuleInput
+        self, info, uid: FelicityID, payload: ReflexRuleInput
     ) -> ReflexRuleResponse:
 
         is_authenticated, felicity_user = await auth_from_info(info)
@@ -178,7 +183,7 @@ class ReflexRuleMutations:
 
     @strawberry.mutation
     async def update_reflex_action(
-        self, info, uid: int, payload: ReflexActionInput
+        self, info, uid: FelicityID, payload: ReflexActionInput
     ) -> ReflexActionResponse:
 
         is_authenticated, felicity_user = await auth_from_info(info)
@@ -281,7 +286,7 @@ class ReflexRuleMutations:
 
     @strawberry.mutation
     async def update_reflex_brain(
-        self, info, uid: int, payload: ReflexBrainInput
+        self, info, uid: FelicityID, payload: ReflexBrainInput
     ) -> ReflexBrainResponse:
 
         is_authenticated, felicity_user = await auth_from_info(info)

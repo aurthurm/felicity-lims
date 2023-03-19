@@ -1,11 +1,12 @@
 import logging
 
+from sqlalchemy import Boolean, Column, DateTime, Float, ForeignKey, String, Table
+from sqlalchemy.orm import relationship
+
 from felicity.apps import BaseAuditDBModel, DBModel
 from felicity.apps.analysis import schemas
 from felicity.apps.setup.models.setup import Department
-from sqlalchemy import (Boolean, Column, DateTime, Float, ForeignKey, Integer,
-                        String, Table)
-from sqlalchemy.orm import relationship
+from felicity.core.uid_gen import FelicitySAID
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -13,7 +14,7 @@ logger = logging.getLogger(__name__)
 
 class QCSet(BaseAuditDBModel):
     """A Set/Group of QC Samples that are run together.
-     - e.g a Viral Load Rack the QCLevels are a set i.e Negative Control, Low Pos Control, High Pos Control
+    - e.g a Viral Load Rack the QCLevels are a set i.e Negative Control, Low Pos Control, High Pos Control
     """
 
     name = Column(String, nullable=False)
@@ -54,7 +55,7 @@ class QCReference(BaseAuditDBModel):
     analyses = relationship(
         "Analysis", secondary=qc_reference_analysis, lazy="selectin"
     )
-    department_uid = Column(Integer, ForeignKey("department.uid"), nullable=True)
+    department_uid = Column(FelicitySAID, ForeignKey("department.uid"), nullable=True)
     department = relationship("Department", lazy="selectin")
     is_string_result = Column(Boolean, nullable=True)
     # string results
@@ -85,7 +86,7 @@ class QCLevel(BaseAuditDBModel):
     """
 
     level = Column(String, nullable=False)
-    # department_uid = Column(Integer, ForeignKey("department.uid"), nullable=True)
+    # department_uid = Column(FelicitySAID, ForeignKey("department.uid"), nullable=True)
     # department = relationship(
     #     "Department", lazy="selectin"
     # )

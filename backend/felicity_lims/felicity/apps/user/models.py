@@ -1,9 +1,11 @@
 import logging
 
+from sqlalchemy import Boolean, Column, ForeignKey, String, Table
+from sqlalchemy.orm import backref, relationship
+
 from felicity.apps.common.utils import is_valid_email
 from felicity.core.security import verify_password
-from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, Table
-from sqlalchemy.orm import backref, relationship
+from felicity.core.uid_gen import FelicitySAID
 
 from . import conf
 from .abstract import AbstractAuth, AbstractBaseUser, DBModel, schemas
@@ -95,7 +97,7 @@ permission_groups = Table(
 
 
 class User(AbstractBaseUser):
-    auth_uid = Column(Integer, ForeignKey("userauth.uid"))
+    auth_uid = Column(FelicitySAID, ForeignKey("userauth.uid"))
     auth = relationship(
         "UserAuth",
         backref=backref(conf.LABORATORY_CONTACT, uselist=False),
@@ -104,7 +106,7 @@ class User(AbstractBaseUser):
     groups = relationship(
         "Group", secondary=user_groups, back_populates="members", lazy="selectin"
     )
-    preference_uid = Column(Integer, ForeignKey("userpreference.uid"))
+    preference_uid = Column(FelicitySAID, ForeignKey("userpreference.uid"))
     preference = relationship(
         "UserPreference", foreign_keys=[preference_uid], lazy="selectin"
     )

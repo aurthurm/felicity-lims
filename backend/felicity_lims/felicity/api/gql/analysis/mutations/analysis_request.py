@@ -1,27 +1,34 @@
 import asyncio
 import logging
 from datetime import datetime, timedelta
-from typing import List, Optional, Union
+from typing import List, Optional
 
 import strawberry  # noqa
-from felicity.api.gql import OperationError, SuccessErrorResponse, auth_from_info, verify_user_auth, OperationSuccess
+
+from felicity.api.gql import (
+    OperationError,
+    OperationSuccess,
+    SuccessErrorResponse,
+    auth_from_info,
+    verify_user_auth,
+)
 from felicity.api.gql.analysis.types import analysis as a_types
 from felicity.api.gql.analysis.types import results as r_types
 from felicity.api.gql.permissions import CanVerifySample
+from felicity.core.uid_gen import FelicityID
 from felicity.apps.analysis import schemas
 from felicity.apps.analysis.conf import priorities, states
 from felicity.apps.analysis.models import analysis as analysis_models
 from felicity.apps.analysis.models import results as result_models
-from felicity.apps.notification.utils import FelicityStreamer
 from felicity.apps.client import models as ct_models
-from felicity.apps.patient import models as pt_models
-from felicity.apps.reflex.utils import ReflexUtil
 from felicity.apps.job import models as job_models
 from felicity.apps.job import schemas as job_schemas
-from felicity.apps.job.conf import (
-    actions, categories, priorities, states as job_states
-)
+from felicity.apps.job.conf import actions, categories, priorities
+from felicity.apps.job.conf import states as job_states
 from felicity.apps.job.sched import felicity_resume_workforce
+from felicity.apps.notification.utils import FelicityStreamer
+from felicity.apps.patient import models as pt_models
+from felicity.apps.reflex.utils import ReflexUtil
 
 streamer = FelicityStreamer()
 
@@ -31,21 +38,21 @@ logger = logging.getLogger(__name__)
 
 @strawberry.input
 class ARSampleInputType:
-    sample_type: int
-    profiles: List[int]
-    analyses: List[int]
+    sample_type: FelicityID
+    profiles: List[FelicityID]
+    analyses: List[FelicityID]
 
 
 @strawberry.input
 class SampleRejectInputType:
-    uid: int
+    uid: FelicityID
     reasons: List[int]
     other: Optional[str] = ""
 
 
 @strawberry.input
 class SamplePublishInputType:
-    uid: int
+    uid: FelicityID
     action: str = ""
 
 
@@ -82,9 +89,9 @@ SampleActionResponse = strawberry.union(
 
 @strawberry.input
 class AnalysisRequestInputType:
-    patient_uid: int
-    client_uid: int
-    clientContactUid: int
+    patient_uid: FelicityID
+    client_uid: FelicityID
+    client_contact_uid: FelicityID
     clinicalData: Optional[str] = ""
     samples: List[ARSampleInputType] = None
     client_request_id: Optional[str] = None
@@ -94,7 +101,7 @@ class AnalysisRequestInputType:
 
 @strawberry.mutation
 async def create_analysis_request(
-        info, payload: AnalysisRequestInputType
+    info, payload: AnalysisRequestInputType
 ) -> AnalysisRequestResponse:
     logger.info("Received request to create analysis request")
 
@@ -127,8 +134,8 @@ async def create_analysis_request(
     }
 
     obj_in = schemas.AnalysisRequestCreate(**incoming)
-    analysis_request: analysis_models.AnalysisRequest = await analysis_models.AnalysisRequest.create(
-        obj_in
+    analysis_request: analysis_models.AnalysisRequest = (
+        await analysis_models.AnalysisRequest.create(obj_in)
     )
 
     # 1. create samples
@@ -225,7 +232,7 @@ async def create_analysis_request(
                     update={
                         "analysis_uid": _service.uid,
                         "due_date": datetime.now()
-                                    + timedelta(minutes=_service.tat_length_minutes)
+                        + timedelta(minutes=_service.tat_length_minutes)
                         if _service.tat_length_minutes
                         else None,
                     }
@@ -257,7 +264,9 @@ async def clone_samples(info, samples: List[int]) -> SampleActionResponse:
         return OperationError(error=f"No Samples to clone are provided!")
 
     clones = []
-    to_clone: List[analysis_models.Sample] = await analysis_models.Sample.get_by_uids(uids=samples)
+    to_clone: List[analysis_models.Sample] = await analysis_models.Sample.get_by_uids(
+        uids=samples
+    )
     for _, _sample in enumerate(to_clone):
         clone = await _sample.clone_afresh(felicity_user)
 
@@ -397,7 +406,7 @@ async def verify_samples(info, samples: List[int]) -> SampleActionResponse:
 
 @strawberry.mutation
 async def reject_samples(
-        info, samples: List[SampleRejectInputType]
+    info, samples: List[SampleRejectInputType]
 ) -> SampleActionResponse:
     is_authenticated, felicity_user = await auth_from_info(info)
     verify_user_auth(
@@ -439,7 +448,9 @@ async def reject_samples(
 
 
 @strawberry.mutation
-async def publish_samples(info, samples: List[SamplePublishInputType]) -> SuccessErrorResponse:
+async def publish_samples(
+    info, samples: List[SamplePublishInputType]
+) -> SuccessErrorResponse:
     is_authenticated, felicity_user = await auth_from_info(info)
     verify_user_auth(
         is_authenticated,
@@ -453,9 +464,12 @@ async def publish_samples(info, samples: List[SamplePublishInputType]) -> Succes
     # set status of these samples to PUBLISHING for those whose action is "publish" !important
     final_publish = list(filter(lambda p: p.action == "publish", samples))
     not_final = list(filter(lambda p: p.action != "publish", samples))
-    await analysis_models.Sample.bulk_update_with_mappings([
-        {'uid': sample.uid, "status": states.sample.PUBLISHING} for sample in final_publish
-    ])
+    await analysis_models.Sample.bulk_update_with_mappings(
+        [
+            {"uid": sample.uid, "status": states.sample.PUBLISHING}
+            for sample in final_publish
+        ]
+    )
 
     data = [{"uid": s.uid, "action": s.action} for s in samples]
     job_schema = job_schemas.JobCreate(

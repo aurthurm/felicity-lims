@@ -1,11 +1,7 @@
 # coding: utf-8
-from typing import List
+import logging
 
 from fpdf import FPDF
-
-from felicity.apps.analysis.models.analysis import Sample
-
-import logging
 
 from felicity.apps.impress.reports.utils import get_from_nested, strtobool
 
@@ -37,7 +33,7 @@ class PDF(FPDF):
 
 class FelicityImpress:
     def __init__(self):
-        self.pdf = PDF(orientation='P', unit='mm', format='A4')
+        self.pdf = PDF(orientation="P", unit="mm", format="A4")
         self.pdf.set_font("Helvetica")
         self.pdf.set_page_background((255, 255, 255))
         self.pdf_w = 210
@@ -70,8 +66,12 @@ class FelicityImpress:
         self.pdf.set_font("Helvetica", "", 10)
 
     async def _add_sample(self, sample: dict, report_state):
-        profiles = [get_from_nested(p, "name") for p in get_from_nested(sample, "profiles")]
-        analyses = [get_from_nested(p, "name") for p in get_from_nested(sample, "analyses")]
+        profiles = [
+            get_from_nested(p, "name") for p in get_from_nested(sample, "profiles")
+        ]
+        analyses = [
+            get_from_nested(p, "name") for p in get_from_nested(sample, "analyses")
+        ]
         self._add_page()
 
         # Felicity Health Report
@@ -95,19 +95,37 @@ class FelicityImpress:
 
         # First Name
         self.pdf.text(left_col_xl, patient_top + self.y_diff * 1, "First Name")
-        self.pdf.text(left_col_xv, patient_top + self.y_diff * 1, get_from_nested(patient, "first_name"))
+        self.pdf.text(
+            left_col_xv,
+            patient_top + self.y_diff * 1,
+            get_from_nested(patient, "first_name"),
+        )
         # Last Name
         self.pdf.text(left_col_xl, patient_top + self.y_diff * 2, "Last Name")
-        self.pdf.text(left_col_xv, patient_top + self.y_diff * 2, get_from_nested(patient, "last_name"))
+        self.pdf.text(
+            left_col_xv,
+            patient_top + self.y_diff * 2,
+            get_from_nested(patient, "last_name"),
+        )
         # Gender
         self.pdf.text(left_col_xl, patient_top + self.y_diff * 3, "Gender")
-        self.pdf.text(left_col_xv, patient_top + self.y_diff * 3, get_from_nested(patient, "gender"))
+        self.pdf.text(
+            left_col_xv,
+            patient_top + self.y_diff * 3,
+            get_from_nested(patient, "gender"),
+        )
         # Age
         self.pdf.text(left_col_xl, patient_top + self.y_diff * 4, "Age")
-        self.pdf.text(left_col_xv, patient_top + self.y_diff * 4, get_from_nested(patient, "age"))
+        self.pdf.text(
+            left_col_xv, patient_top + self.y_diff * 4, get_from_nested(patient, "age")
+        )
         # D.O.B
         self.pdf.text(left_col_xl, patient_top + self.y_diff * 5, "D.O.B")
-        self.pdf.text(left_col_xv, patient_top + self.y_diff * 5, get_from_nested(patient, "date_of_birth"))
+        self.pdf.text(
+            left_col_xv,
+            patient_top + self.y_diff * 5,
+            get_from_nested(patient, "date_of_birth"),
+        )
 
         # Client Details Column
         right_col_xl = self.pdf_w / 2
@@ -117,17 +135,30 @@ class FelicityImpress:
 
         # Client Patient Id
         self.pdf.text(right_col_xl, patient_top + self.y_diff * 1, "Client Patient Id:")
-        self.pdf.text(right_col_xv, patient_top + self.y_diff * 1, get_from_nested(sample, "analysis_request"
-                                                                                           ".client_request_id"))
+        self.pdf.text(
+            right_col_xv,
+            patient_top + self.y_diff * 1,
+            get_from_nested(sample, "analysis_request" ".client_request_id"),
+        )
         # Client Name
         self.pdf.text(right_col_xl, patient_top + self.y_diff * 2, "Client Name:")
-        self.pdf.text(right_col_xv, patient_top + self.y_diff * 2, get_from_nested(client, "name"))
+        self.pdf.text(
+            right_col_xv, patient_top + self.y_diff * 2, get_from_nested(client, "name")
+        )
         # Client Phone
         self.pdf.text(right_col_xl, patient_top + self.y_diff * 3, "Client Phone:")
-        self.pdf.text(right_col_xv, patient_top + self.y_diff * 3, get_from_nested(client, "phone_mobile"))
+        self.pdf.text(
+            right_col_xv,
+            patient_top + self.y_diff * 3,
+            get_from_nested(client, "phone_mobile"),
+        )
         # Client Email
         self.pdf.text(right_col_xl, patient_top + self.y_diff * 4, "Client Email:")
-        self.pdf.text(right_col_xv, patient_top + self.y_diff * 4, get_from_nested(client, "email"))
+        self.pdf.text(
+            right_col_xv,
+            patient_top + self.y_diff * 4,
+            get_from_nested(client, "email"),
+        )
 
         # Sample Details Section
         sample_top = patient_top + self.y_diff * 7
@@ -137,23 +168,43 @@ class FelicityImpress:
         self._style_text()
         # Sample ID
         self.pdf.text(left_col_xl, sample_top + self.y_diff * 1, "Sample ID:")
-        self.pdf.text(left_col_xv, sample_top + self.y_diff * 1, get_from_nested(sample, "sample_id"))
+        self.pdf.text(
+            left_col_xv,
+            sample_top + self.y_diff * 1,
+            get_from_nested(sample, "sample_id"),
+        )
         # Sample Type
         self.pdf.text(left_col_xl, sample_top + self.y_diff * 2, "Sample Type:")
-        self.pdf.text(left_col_xv, sample_top + self.y_diff * 2, get_from_nested(sample, "sample_type.name"))
+        self.pdf.text(
+            left_col_xv,
+            sample_top + self.y_diff * 2,
+            get_from_nested(sample, "sample_type.name"),
+        )
         # Test(s)
         self.pdf.text(left_col_xl, sample_top + self.y_diff * 3, "Tests:")
         self.pdf.text(left_col_xv, sample_top + self.y_diff * 3, ", ".join(analyses))
         #
         # Date Collected
         self.pdf.text(right_col_xl, sample_top + self.y_diff * 1, "Date Collected:")
-        self.pdf.text(right_col_xv, sample_top + self.y_diff * 1, get_from_nested(sample, "date_collected"))
+        self.pdf.text(
+            right_col_xv,
+            sample_top + self.y_diff * 1,
+            get_from_nested(sample, "date_collected"),
+        )
         # Date Received
         self.pdf.text(right_col_xl, sample_top + self.y_diff * 2, "Date Received:")
-        self.pdf.text(right_col_xv, sample_top + self.y_diff * 2, get_from_nested(sample, "date_received"))
+        self.pdf.text(
+            right_col_xv,
+            sample_top + self.y_diff * 2,
+            get_from_nested(sample, "date_received"),
+        )
         # Date Published
         self.pdf.text(right_col_xl, sample_top + self.y_diff * 3, "Date Published:")
-        self.pdf.text(right_col_xv, sample_top + self.y_diff * 3, get_from_nested(sample, "date_published"))
+        self.pdf.text(
+            right_col_xv,
+            sample_top + self.y_diff * 3,
+            get_from_nested(sample, "date_published"),
+        )
 
         # Analyses Results Section
         results_top = sample_top + self.y_diff * 5
@@ -166,25 +217,57 @@ class FelicityImpress:
         self._style_heading_3()
         self.pdf.text(left_col_xl, results_top, "Analyses Results:")
         self._style_heading_4()
-        self.pdf.text(left_col_xl + column_width * 0, results_top + self.y_diff * 1, "Analysis")
-        self.pdf.text(left_col_xl + column_width * 1, results_top + self.y_diff * 1, "Instrument")
-        self.pdf.text(left_col_xl + column_width * 2, results_top + self.y_diff * 1, "Method")
-        self.pdf.text(left_col_xl + column_width * 3, results_top + self.y_diff * 1, "Result")
-        self.pdf.text(left_col_xl + column_width * 4, results_top + self.y_diff * 1, "Unit")
+        self.pdf.text(
+            left_col_xl + column_width * 0, results_top + self.y_diff * 1, "Analysis"
+        )
+        self.pdf.text(
+            left_col_xl + column_width * 1, results_top + self.y_diff * 1, "Instrument"
+        )
+        self.pdf.text(
+            left_col_xl + column_width * 2, results_top + self.y_diff * 1, "Method"
+        )
+        self.pdf.text(
+            left_col_xl + column_width * 3, results_top + self.y_diff * 1, "Result"
+        )
+        self.pdf.text(
+            left_col_xl + column_width * 4, results_top + self.y_diff * 1, "Unit"
+        )
 
         self._style_text()
 
         analyses_results = get_from_nested(sample, "analysis_results")
-        analyses_results = list(filter(lambda r: strtobool(get_from_nested(r, "reportable")), analyses_results))
+        analyses_results = list(
+            filter(
+                lambda r: strtobool(get_from_nested(r, "reportable")), analyses_results
+            )
+        )
         count = 0
         for result in analyses_results:
             y_pos = results_top + self.y_diff * (count + 2)
 
-            self.pdf.text(left_col_xl + column_width * 0, y_pos, get_from_nested(result, "analysis.name"))
-            self.pdf.text(left_col_xl + column_width * 1, y_pos, get_from_nested(result, "instrument.name"))
-            self.pdf.text(left_col_xl + column_width * 2, y_pos, get_from_nested(result, "method.name"))
-            self.pdf.text(left_col_xl + column_width * 3, y_pos, get_from_nested(result, "result"))
-            self.pdf.text(left_col_xl + column_width * 4, y_pos, get_from_nested(result, "analysis.unit.name"))
+            self.pdf.text(
+                left_col_xl + column_width * 0,
+                y_pos,
+                get_from_nested(result, "analysis.name"),
+            )
+            self.pdf.text(
+                left_col_xl + column_width * 1,
+                y_pos,
+                get_from_nested(result, "instrument.name"),
+            )
+            self.pdf.text(
+                left_col_xl + column_width * 2,
+                y_pos,
+                get_from_nested(result, "method.name"),
+            )
+            self.pdf.text(
+                left_col_xl + column_width * 3, y_pos, get_from_nested(result, "result")
+            )
+            self.pdf.text(
+                left_col_xl + column_width * 4,
+                y_pos,
+                get_from_nested(result, "analysis.unit.name"),
+            )
 
             if y_pos >= (self.pdf_h - self.margin_top * 3):
                 self._add_page()
@@ -196,7 +279,7 @@ class FelicityImpress:
         return self.pdf
 
     async def generate(self, sample: dict, report_state="final"):
-        sample_id = get_from_nested(sample, 'sample_id')
+        get_from_nested(sample, "sample_id")
         pdf = await self._add_sample(sample, report_state)
         # another = pdf
         # another.output(f"{sample_id}.pdf")

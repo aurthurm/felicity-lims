@@ -1,6 +1,10 @@
 import logging
 from typing import List
 
+from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, String, Table
+from sqlalchemy.dialects.postgresql import JSONB
+from sqlalchemy.orm import relationship
+
 from felicity.apps import Auditable, BaseAuditDBModel, DBModel
 from felicity.apps.analysis import conf as analysis_conf
 from felicity.apps.analysis.models import analysis as analysis_models
@@ -11,10 +15,7 @@ from felicity.apps.notification.utils import FelicityStreamer
 from felicity.apps.setup.models.setup import Instrument
 from felicity.apps.user.models import User
 from felicity.apps.worksheet import conf, schemas
-from sqlalchemy import (Boolean, Column, DateTime, ForeignKey, Integer, String,
-                        Table)
-from sqlalchemy.dialects.postgresql import JSONB
-from sqlalchemy.orm import relationship
+from felicity.core.uid_gen import FelicitySAID
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -54,17 +55,17 @@ class WorkSheetTemplate(WSBase):
 
     name = Column(String, unique=True, nullable=False)
     description = Column(String)
-    analysis_uid = Column(Integer, ForeignKey("analysis.uid"), nullable=True)
+    analysis_uid = Column(FelicitySAID, ForeignKey("analysis.uid"), nullable=True)
     analysis = relationship(analysis_models.Analysis, lazy="selectin")
-    qc_template_uid = Column(Integer, ForeignKey("qctemplate.uid"), nullable=True)
+    qc_template_uid = Column(FelicitySAID, ForeignKey("qctemplate.uid"), nullable=True)
     qc_template = relationship(qc_models.QCTemplate, lazy="selectin")
     # to help cater for those created without template we also keep the qc_levels
     qc_levels = relationship(
         qc_models.QCLevel, secondary=worksheet_template_qc_level, lazy="selectin"
     )
-    instrument_uid = Column(Integer, ForeignKey("instrument.uid"), nullable=True)
+    instrument_uid = Column(FelicitySAID, ForeignKey("instrument.uid"), nullable=True)
     instrument = relationship(Instrument, lazy="selectin")
-    sample_type_uid = Column(Integer, ForeignKey("sampletype.uid"), nullable=False)
+    sample_type_uid = Column(FelicitySAID, ForeignKey("sampletype.uid"), nullable=False)
     sample_type = relationship(analysis_models.SampleType, lazy="selectin")
 
     @classmethod
@@ -78,26 +79,28 @@ class WorkSheetTemplate(WSBase):
 
 
 class WorkSheet(Auditable, WSBase):
-    template_uid = Column(Integer, ForeignKey("worksheettemplate.uid"), nullable=False)
+    template_uid = Column(
+        FelicitySAID, ForeignKey("worksheettemplate.uid"), nullable=False
+    )
     template = relationship("WorkSheetTemplate", lazy="selectin")
-    analyst_uid = Column(Integer, ForeignKey("user.uid"), nullable=False)
+    analyst_uid = Column(FelicitySAID, ForeignKey("user.uid"), nullable=False)
     analyst = relationship(User, foreign_keys=[analyst_uid], lazy="selectin")
     worksheet_id = Column(String, index=True, unique=True, nullable=False)
-    analysis_uid = Column(Integer, ForeignKey("analysis.uid"), nullable=True)
+    analysis_uid = Column(FelicitySAID, ForeignKey("analysis.uid"), nullable=True)
     analysis = relationship(analysis_models.Analysis, lazy="selectin")
-    instrument_uid = Column(Integer, ForeignKey("instrument.uid"), nullable=True)
+    instrument_uid = Column(FelicitySAID, ForeignKey("instrument.uid"), nullable=True)
     instrument = relationship(Instrument, backref="worksheets", lazy="selectin")
-    sample_type_uid = Column(Integer, ForeignKey("sampletype.uid"), nullable=False)
+    sample_type_uid = Column(FelicitySAID, ForeignKey("sampletype.uid"), nullable=False)
     sample_type = relationship(analysis_models.SampleType, lazy="selectin")
     assigned_count = Column(Integer, nullable=False, default=0)
     analysis_results = relationship(
         "AnalysisResult", back_populates="worksheet", lazy="selectin"
     )
     #
-    submitted_by_uid = Column(Integer, ForeignKey("user.uid"), nullable=True)
+    submitted_by_uid = Column(FelicitySAID, ForeignKey("user.uid"), nullable=True)
     submitted_by = relationship(User, foreign_keys=[submitted_by_uid], lazy="selectin")
     date_submitted = Column(DateTime, nullable=True)
-    verified_by_uid = Column(Integer, ForeignKey("user.uid"), nullable=True)
+    verified_by_uid = Column(FelicitySAID, ForeignKey("user.uid"), nullable=True)
     verified_by = relationship(User, foreign_keys=[verified_by_uid], lazy="selectin")
     date_verified = Column(DateTime, nullable=True)
 

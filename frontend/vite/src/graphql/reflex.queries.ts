@@ -19,7 +19,7 @@ export const GET_ALL_REFLEX_RULES = gql`
 
 
 export const GET_EFLEX_RULE_BY_UID = gql`
-  query getReflexRuleByUid($uid: Int!) {
+  query getReflexRuleByUid($uid: FelicityID!) {
     reflexRuleByUid(uid: $uid){
       uid
       name

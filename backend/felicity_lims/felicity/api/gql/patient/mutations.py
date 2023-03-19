@@ -3,8 +3,10 @@ from datetime import datetime
 from typing import Dict, Optional
 
 import strawberry  # noqa
+
 from felicity.api.gql import OperationError, auth_from_info, verify_user_auth
 from felicity.api.gql.patient.types import PatientType
+from felicity.core.uid_gen import FelicityID
 from felicity.apps.client import models as client_models
 from felicity.apps.patient import models, schemas
 
@@ -21,7 +23,7 @@ class PatientInputType:
     client_patient_id: str
     first_name: str
     last_name: str
-    client_uid: int
+    client_uid: FelicityID
     gender: str
     middle_name: Optional[str] = None
     age: Optional[int] = None
@@ -80,7 +82,7 @@ class PatientMutations:
 
     @strawberry.mutation
     async def update_patient(
-        self, info, uid: int, payload: PatientInputType
+        self, info, uid: FelicityID, payload: PatientInputType
     ) -> PatientResponse:
 
         is_authenticated, felicity_user = await auth_from_info(info)

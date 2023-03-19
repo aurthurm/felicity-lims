@@ -1,11 +1,13 @@
+import io
 import logging
 from typing import List
-from PyPDF2 import PdfWriter
+
 import strawberry  # noqa
-import io
+from PyPDF2 import PdfWriter
 
 from felicity.api.gql.impress.types import ReportImpressType
 from felicity.api.gql.types import BytesScalar
+from felicity.core.uid_gen import FelicityID
 from felicity.apps.impress.models import ReportImpress
 
 logging.basicConfig(level=logging.INFO)
@@ -15,11 +17,15 @@ logger = logging.getLogger(__name__)
 @strawberry.type
 class ReportImpressQuery:
     @strawberry.field
-    async def impress_reports_meta(self, info, uids: List[int]) -> List[ReportImpressType]:
+    async def impress_reports_meta(
+        self, info, uids: List[FelicityID]
+    ) -> List[ReportImpressType]:
         return await ReportImpress.get_all(sample_uid__in=uids)
 
     @strawberry.field
-    async def impress_reports_download(self, info, uids: List[int]) -> BytesScalar | None:
+    async def impress_reports_download(
+        self, info, uids: List[FelicityID]
+    ) -> BytesScalar | None:
         """Fetch Latest report given sample id"""
         items = await ReportImpress.get_all(sample_uid__in=uids)
 
@@ -33,7 +39,9 @@ class ReportImpressQuery:
 
         reports = []
         for suid in uids:
-            _report = _first_of(_sorter(list(filter(lambda x: x.sample_uid == suid, items))))
+            _report = _first_of(
+                _sorter(list(filter(lambda x: x.sample_uid == suid, items)))
+            )
             if _report:
                 reports.append(_report)
 
@@ -58,7 +66,7 @@ class ReportImpressQuery:
         return out_stream
 
     @strawberry.field
-    async def impress_report_download(self, info, uid: int) -> BytesScalar | None:
+    async def impress_report_download(self, info, uid: FelicityID) -> BytesScalar | None:
         report = await ReportImpress.get(uid=uid)
 
         if not report:

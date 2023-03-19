@@ -1,8 +1,10 @@
 from typing import List, Optional
 
+from pydantic import EmailStr
+
 from felicity.apps.common.schemas import BaseAuditModel, BaseModel
 from felicity.apps.user.conf import themes
-from pydantic import EmailStr
+from felicity.core.uid_gen import FelicityIDType
 
 #
 #  Permission Schema
@@ -22,11 +24,11 @@ class PermissionCreate(PermissionBase):
 
 # Properties to receive via API on update
 class PermissionUpdate(PermissionBase):
-    uid: Optional[int] = None
+    uid: Optional[FelicityIDType] = None
 
 
 class PermissionInDBBase(PermissionBase):
-    uid: Optional[int] = None
+    uid: Optional[FelicityIDType] = None
 
     class Config:
         orm_mode = True
@@ -61,11 +63,11 @@ class GroupCreate(GroupBase):
 
 # Properties to receive via API on update
 class GroupUpdate(GroupBase):
-    uid: Optional[int] = None
+    uid: Optional[FelicityIDType] = None
 
 
 class GroupInDBBase(GroupBase):
-    uid: Optional[int] = None
+    uid: Optional[FelicityIDType] = None
 
     class Config:
         orm_mode = True
@@ -91,7 +93,7 @@ class UserPreferenceBase(BaseAuditModel):
 
 
 class UserPreference(UserPreferenceBase):
-    uid: Optional[int] = None
+    uid: Optional[FelicityIDType] = None
 
     class Config:
         orm_mode = True
@@ -139,12 +141,12 @@ class UserCreate(UserBase):
 
 # Properties to receive via API on update
 class UserUpdate(UserBase):
-    auth_uid: Optional[int] = None
-    preference_uid: Optional[int] = None
+    auth_uid: Optional[FelicityIDType] = None
+    preference_uid: Optional[FelicityIDType] = None
 
 
 class UserInDBBase(UserBase):
-    uid: Optional[int] = None
+    uid: Optional[FelicityIDType] = None
 
     class Config:
         orm_mode = True
@@ -152,7 +154,7 @@ class UserInDBBase(UserBase):
 
 # Additional properties to return via API
 class UserBasic(UserBasicBase):
-    uid: Optional[int] = None
+    uid: Optional[FelicityIDType] = None
 
     class Config:
         orm_mode = True
@@ -196,7 +198,7 @@ class AuthUpdate(AuthBase):
 
 
 class AuthInDBBase(AuthBase):
-    uid: Optional[int] = None
+    uid: Optional[FelicityIDType] = None
 
     class Config:
         orm_mode = True

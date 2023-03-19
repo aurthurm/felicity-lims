@@ -1,6 +1,8 @@
-from felicity.database.base_class import DBModel
 from sqlalchemy import Column, Integer, String
 from sqlalchemy.dialects.postgresql import JSONB
+
+from felicity.core.uid_gen import FelicitySAID
+from felicity.database.base_class import DBModel
 
 from . import conf, schemas
 
@@ -10,8 +12,8 @@ class Job(DBModel):
     category = Column(String)
     priority = Column(Integer)
     data = Column(JSONB)
-    job_id = Column(Integer)
-    creator_uid = Column(Integer)
+    job_id = Column(FelicitySAID)
+    creator_uid = Column(FelicitySAID)
     status = Column(String)
     reason = Column(String)
 
@@ -33,7 +35,13 @@ class Job(DBModel):
     @classmethod
     async def fetch_sorted(cls):
         _jobs = Job.smart_query(
-            filters={"status__notin": [conf.states.FINISHED, conf.states.FAILED, conf.states.RUNNING]},
+            filters={
+                "status__notin": [
+                    conf.states.FINISHED,
+                    conf.states.FAILED,
+                    conf.states.RUNNING,
+                ]
+            },
             sort_attrs=["-priority"],
         )
         jobs = await Job.from_smart_query(_jobs)

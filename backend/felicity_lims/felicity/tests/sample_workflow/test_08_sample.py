@@ -1,5 +1,6 @@
-import pytest
 import logging
+
+import pytest
 
 from felicity.apps.impress.tasks import impress_results
 
@@ -27,18 +28,22 @@ async def test_sample_publish(gql_client, auth_data):
       }
     """
 
-    response = await gql_client.post('/felicity-gql', json={
-        "query": add_gql,
-        "variables": {
-            "samples": [
-                {"uid": 1, "action": "publish"},
-                {"uid": 2, "action": "publish"},
-                {"uid": 3, "action": "publish"},
-                {"uid": 4, "action": "publish"},
-                {"uid": 5, "action": "publish"}
-            ],
-        }
-    }, headers=auth_data['headers'])
+    response = await gql_client.post(
+        "/felicity-gql",
+        json={
+            "query": add_gql,
+            "variables": {
+                "samples": [
+                    {"uid": 1, "action": "publish"},
+                    {"uid": 2, "action": "publish"},
+                    {"uid": 3, "action": "publish"},
+                    {"uid": 4, "action": "publish"},
+                    {"uid": 5, "action": "publish"},
+                ],
+            },
+        },
+        headers=auth_data["headers"],
+    )
 
     logger.info(f"publishing samples response: {response} {response.json()}")
 
@@ -74,12 +79,16 @@ async def test_sample_invalidate(gql_client, auth_data):
       }
     """
 
-    response = await gql_client.post('/felicity-gql', json={
-        "query": add_gql,
-        "variables": {
-            "samples": [1],
-        }
-    }, headers=auth_data['headers'])
+    response = await gql_client.post(
+        "/felicity-gql",
+        json={
+            "query": add_gql,
+            "variables": {
+                "samples": [1],
+            },
+        },
+        headers=auth_data["headers"],
+    )
 
     logger.info(f"publishing samples response: {response} {response.json()}")
 
@@ -87,9 +96,9 @@ async def test_sample_invalidate(gql_client, auth_data):
     _data = response.json()["data"]["invalidateSamples"]
     assert len(_data["samples"]) == 2
     for _, sample in enumerate(_data["samples"]):
-        if sample['uid'] == 1:
-            assert sample['status'] == "invalidated"
-            assert sample['sampleId'].endswith("_R01") is False
+        if sample["uid"] == 1:
+            assert sample["status"] == "invalidated"
+            assert sample["sampleId"].endswith("_R01") is False
         else:
-            assert sample['status'] == "received"
-            assert sample['sampleId'].endswith("_R01") is True
+            assert sample["status"] == "received"
+            assert sample["sampleId"].endswith("_R01") is True

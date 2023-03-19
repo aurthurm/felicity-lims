@@ -1,6 +1,7 @@
+import base64
 import json
 from typing import Any, NewType
-import base64
+
 import strawberry
 
 JSONScalar = strawberry.scalar(
@@ -14,7 +15,7 @@ JSONScalar = strawberry.scalar(
 class BytesEncoder(json.JSONEncoder):
     def default(self, obj):
         if isinstance(obj, bytes):
-            return obj.decode('utf-8')
+            return obj.decode("utf-8")
         return json.JSONEncoder.default(self, obj)
 
 

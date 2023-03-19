@@ -1,9 +1,11 @@
 import logging
 
+from sqlalchemy import Boolean, Column, ForeignKey, String
+from sqlalchemy.orm import relationship
+
 from felicity.apps import BaseAuditDBModel
 from felicity.apps.setup import schemas
-from sqlalchemy import Boolean, Column, ForeignKey, Integer, String
-from sqlalchemy.orm import relationship
+from felicity.core.uid_gen import FelicitySAID
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -21,7 +23,7 @@ class LocationBase(BaseAuditDBModel):
 
 
 class District(LocationBase):
-    province_uid = Column(Integer, ForeignKey("province.uid"))
+    province_uid = Column(FelicitySAID, ForeignKey("province.uid"))
     province = relationship("Province", backref="districts", lazy="selectin")
 
     @classmethod
@@ -40,7 +42,7 @@ class District(LocationBase):
 
 
 class Province(LocationBase):
-    country_uid = Column(Integer, ForeignKey("country.uid"))
+    country_uid = Column(FelicitySAID, ForeignKey("country.uid"))
     country = relationship("Country", backref="provinces", lazy="selectin")
 
     @classmethod

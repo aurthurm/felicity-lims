@@ -1,6 +1,7 @@
 import logging
 
 import strawberry  # noqa
+
 from felicity.api.gql.analytics import types
 from felicity.apps.analysis.models.analysis import Sample
 from felicity.apps.analytics import SampleAnalyticsInit

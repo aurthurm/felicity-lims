@@ -2,8 +2,10 @@ import logging
 from typing import Optional
 
 import strawberry  # noqa
+
 from felicity.api.gql import OperationError, auth_from_info, verify_user_auth
 from felicity.api.gql.analysis.types import analysis as a_types
+from felicity.core.uid_gen import FelicityID
 from felicity.apps.analysis import schemas
 from felicity.apps.analysis.models import analysis as analysis_models
 
@@ -20,7 +22,7 @@ AnalysisCategoryResponse = strawberry.union(
 @strawberry.input
 class AnalysisCategoryInputType:
     name: str
-    department_uid: Optional[int] = None
+    department_uid: Optional[FelicityID] = None
     description: Optional[str] = None
     active: Optional[bool] = True
 
@@ -58,15 +60,15 @@ async def create_analysis_category(
         incoming[k] = v
 
     obj_in = schemas.AnalysisCategoryCreate(**incoming)
-    analysis_category: analysis_models.AnalysisCategory = await analysis_models.AnalysisCategory.create(
-        obj_in
+    analysis_category: analysis_models.AnalysisCategory = (
+        await analysis_models.AnalysisCategory.create(obj_in)
     )
     return a_types.AnalysisCategoryType(**analysis_category.marshal_simple())
 
 
 @strawberry.mutation
 async def update_analysis_category(
-    self, info, uid: int, payload: AnalysisCategoryInputType
+    self, info, uid: FelicityID, payload: AnalysisCategoryInputType
 ) -> AnalysisCategoryResponse:  # noqa
 
     is_authenticated, felicity_user = await auth_from_info(info)

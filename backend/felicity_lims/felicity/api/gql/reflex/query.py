@@ -2,9 +2,14 @@ from typing import List, Optional
 
 import sqlalchemy as sa
 import strawberry  # noqa
+
 from felicity.api.gql import PageInfo
-from felicity.api.gql.reflex.types import (ReflexRuleCursorPage,
-                                           ReflexRuleEdge, ReflexRuleType)
+from felicity.api.gql.reflex.types import (
+    ReflexRuleCursorPage,
+    ReflexRuleEdge,
+    ReflexRuleType,
+)
+from felicity.core.uid_gen import FelicityID
 from felicity.apps.reflex import models
 from felicity.utils import has_value_or_is_truthy
 
@@ -49,5 +54,5 @@ class ReflexRuleQuery:
         )
 
     @strawberry.field
-    async def reflex_rule_by_uid(self, info, uid: int) -> Optional[ReflexRuleType]:
+    async def reflex_rule_by_uid(self, info, uid: FelicityID) -> Optional[ReflexRuleType]:
         return await models.ReflexRule.get(uid=uid)

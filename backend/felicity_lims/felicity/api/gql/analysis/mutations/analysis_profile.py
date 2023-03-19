@@ -3,8 +3,10 @@ from dataclasses import field
 from typing import List, Optional
 
 import strawberry  # noqa
+
 from felicity.api.gql import OperationError, auth_from_info, verify_user_auth
 from felicity.api.gql.analysis.types import analysis as a_types
+from felicity.core.uid_gen import FelicityID
 from felicity.apps.analysis import schemas
 from felicity.apps.analysis.models import analysis as analysis_models
 
@@ -22,7 +24,7 @@ AnalysisProfileResponse = strawberry.union(
 class ProfileInputType:
     name: str
     description: str = ""
-    department_uid: Optional[int] = None
+    department_uid: Optional[FelicityID] = None
     sample_types: Optional[List[int]] = field(default_factory=list)
     services: Optional[List[int]] = field(default_factory=list)
     keyword: Optional[str] = None
@@ -83,7 +85,7 @@ async def create_profile(info, payload: ProfileInputType) -> AnalysisProfileResp
 
 @strawberry.mutation
 async def update_profile(
-    info, uid: int, payload: ProfileInputType
+    info, uid: FelicityID, payload: ProfileInputType
 ) -> AnalysisProfileResponse:
 
     is_authenticated, felicity_user = await auth_from_info(info)

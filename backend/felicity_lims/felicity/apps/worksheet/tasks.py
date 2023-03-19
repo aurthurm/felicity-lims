@@ -6,18 +6,22 @@ from felicity.apps.analysis import conf as analysis_conf
 from felicity.apps.analysis.models.analysis import Sample
 from felicity.apps.analysis.models.qc import QCSet, QCTemplate
 from felicity.apps.analysis.models.results import AnalysisResult
-from felicity.apps.analysis.schemas import (AnalysisResultCreate, QCSetCreate,
-                                            SampleCreate)
+from felicity.apps.analysis.schemas import (
+    AnalysisResultCreate,
+    QCSetCreate,
+    SampleCreate,
+)
 from felicity.apps.analysis.utils import get_qc_sample_type
 from felicity.apps.job import models as job_models
 from felicity.apps.job.conf import states as job_states
 from felicity.apps.worksheet import conf, models
 
+from felicity.core.uid_gen import FelicityIDType
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
-async def populate_worksheet_plate(job_uid: int):
+async def populate_worksheet_plate(job_uid: FelicityIDType):
     logger.info(f"starting job {job_uid} ....")
     job = await job_models.Job.get(uid=job_uid)
     if not job:
@@ -304,7 +308,7 @@ async def setup_ws_quality_control_manually(ws: models.WorkSheet, qc_template_ui
                 await ar.assign(ws.uid, position, ws.instrument_uid)
 
 
-async def populate_worksheet_plate_manually(job_uid: int):
+async def populate_worksheet_plate_manually(job_uid: FelicityIDType):
     logger.info(f"starting job {job_uid} ....")
     job = await job_models.Job.get(uid=job_uid)
     if not job:

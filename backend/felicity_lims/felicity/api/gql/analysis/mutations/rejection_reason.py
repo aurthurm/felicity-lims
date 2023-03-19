@@ -1,8 +1,10 @@
 import logging
 
 import strawberry  # noqa
+
 from felicity.api.gql import OperationError, auth_from_info, verify_user_auth
 from felicity.api.gql.analysis.types import analysis as a_types
+from felicity.core.uid_gen import FelicityID
 from felicity.apps.analysis import schemas
 from felicity.apps.analysis.models import analysis as analysis_models
 
@@ -42,15 +44,15 @@ async def create_rejection_reason(info, reason: str) -> RejectionReasonResponse:
     }
 
     obj_in = schemas.RejectionReasonCreate(**incoming)
-    rejection_reason: analysis_models.RejectionReason = await analysis_models.RejectionReason.create(
-        obj_in
+    rejection_reason: analysis_models.RejectionReason = (
+        await analysis_models.RejectionReason.create(obj_in)
     )
     return a_types.RejectionReasonType(**rejection_reason.marshal_simple())
 
 
 @strawberry.mutation
 async def update_rejection_reason(
-    info, uid: int, reason: str
+    info, uid: FelicityID, reason: str
 ) -> RejectionReasonResponse:
     is_authenticated, felicity_user = await auth_from_info(info)
     verify_user_auth(

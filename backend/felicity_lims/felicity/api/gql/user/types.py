@@ -1,14 +1,16 @@
 from datetime import datetime
 from typing import List, Optional
 
-import felicity.api.gql.setup.types
 import strawberry  # noqa
+
+import felicity.api.gql.setup.types
 from felicity.api.gql import PageInfo
+from felicity.core.uid_gen import FelicityID
 
 
 @strawberry.type
 class UserAuthType:
-    uid: int
+    uid: FelicityID
     user_name: str
     login_retry: int
     is_blocked: bool
@@ -16,15 +18,15 @@ class UserAuthType:
     #
     created_at: Optional[datetime]
     creator_name: Optional[str]
-    creator_uid: Optional[int]
+    creator_uid: Optional[FelicityID]
     updated_at: Optional[datetime]
     updator_name: Optional[str]
-    updator_uid: Optional[int]
+    updator_uid: Optional[FelicityID]
 
 
 @strawberry.type
 class PermissionType:
-    uid: int
+    uid: FelicityID
     action: Optional[str]
     target: Optional[str]
     active: Optional[bool]
@@ -32,7 +34,7 @@ class PermissionType:
 
 @strawberry.type
 class GroupType:
-    uid: int
+    uid: FelicityID
     name: Optional[str]
     keyword: Optional[str]
     members: Optional[List["UserType"]]
@@ -43,18 +45,18 @@ class GroupType:
 
 @strawberry.type
 class UserType:
-    uid: int
+    uid: FelicityID
     first_name: Optional[str]
     last_name: Optional[str]
     email: Optional[str]
     mobile_phone: Optional[str]
     business_phone: Optional[str]
     groups: Optional[List[GroupType]]
-    preference_uid: Optional[int]
+    preference_uid: Optional[FelicityID]
     preference: Optional["UserPreferenceType"]
     is_active: bool
     is_superuser: bool
-    auth_uid: Optional[int]
+    auth_uid: Optional[FelicityID]
     auth: Optional[UserAuthType]
     bio: Optional[str]
     avatar: Optional[str]
@@ -62,10 +64,10 @@ class UserType:
     #
     created_at: Optional[datetime]
     creator_name: Optional[str]
-    creator_uid: Optional[int]
+    creator_uid: Optional[FelicityID]
     updated_at: Optional[datetime]
     updator_name: Optional[str]
-    updator_uid: Optional[int]
+    updator_uid: Optional[FelicityID]
 
 
 @strawberry.type
@@ -98,7 +100,7 @@ class UserCursorPage:
 
 @strawberry.type
 class UserPreferenceType:
-    uid: int
+    uid: FelicityID
     expanded_menu: Optional[bool]
     departments: Optional[List["felicity.api.gql.setup.types.DepartmentType"]]
     theme: Optional[str]

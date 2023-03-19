@@ -1,17 +1,18 @@
-from typing import Any, Generator
-import logging
 import asyncio
+import logging
+import random
+from typing import Any, Generator
+
 import pytest_asyncio
+from faker import Faker
 from httpx import AsyncClient
 from sqlalchemy import create_engine
-from faker import Faker
-import random
 
 from felicity.apps.job.sched import felicity_workforce_init
-from felicity.main import flims
 from felicity.core.config import settings
 from felicity.database.base_class import DBModel
 from felicity.init.setup.create_superuser import create_super_user
+from felicity.main import flims
 
 fake_engine = Faker()
 
@@ -59,6 +60,7 @@ async def client_root() -> Generator[AsyncClient, Any, None]:
     async with AsyncClient(app=flims, base_url="http://localhost:8080") as clt:
         yield clt
 
+
 @pytest_asyncio.fixture(scope="function")
 async def client() -> Generator[AsyncClient, Any, None]:
     async with AsyncClient(app=flims, base_url="http://localhost:8080/api/v1") as clt:
@@ -73,24 +75,50 @@ async def gql_client() -> Generator[AsyncClient, Any, None]:
 
 @pytest_asyncio.fixture(autouse=True)
 async def auth_data(client):
-    superuser = {"username": settings.FIRST_SEPERUSER_USERNAME, "password": settings.FIRST_SUPERUSER_PASSWORD}
+    superuser = {
+        "username": settings.FIRST_SEPERUSER_USERNAME,
+        "password": settings.FIRST_SUPERUSER_PASSWORD,
+    }
     response = await client.post("/login/access-token", data=superuser)
     return {
         "token": response.json()["access_token"],
-        "headers": {
-            "Authorization": f"bearer {response.json()['access_token']}"
-        }
+        "headers": {"Authorization": f"bearer {response.json()['access_token']}"},
     }
 
 
 @pytest_asyncio.fixture(autouse=True)
 async def users():
     return [
-        {'firstName': "Daniel", 'lastName': "Diesel", 'email': f"daniel@felcity.com", 'openReg': False},
-        {'firstName': "Brian", 'lastName': "Moyo", 'email': f"brian@felcity.com", 'openReg': False},
-        {'firstName': "Teddy", 'lastName': "Estat", 'email': f"teddy@felcity.com", 'openReg': False},
-        {'firstName': "Samantha", 'lastName': "Mapako", 'email': f"samantha@felcity.com", 'openReg': False},
-        {'firstName': "Peter", 'lastName': "Tosh", 'email': f"peter@felcity.com", 'openReg': False}
+        {
+            "firstName": "Daniel",
+            "lastName": "Diesel",
+            "email": f"daniel@felcity.com",
+            "openReg": False,
+        },
+        {
+            "firstName": "Brian",
+            "lastName": "Moyo",
+            "email": f"brian@felcity.com",
+            "openReg": False,
+        },
+        {
+            "firstName": "Teddy",
+            "lastName": "Estat",
+            "email": f"teddy@felcity.com",
+            "openReg": False,
+        },
+        {
+            "firstName": "Samantha",
+            "lastName": "Mapako",
+            "email": f"samantha@felcity.com",
+            "openReg": False,
+        },
+        {
+            "firstName": "Peter",
+            "lastName": "Tosh",
+            "email": f"peter@felcity.com",
+            "openReg": False,
+        },
     ]
 
 
@@ -98,19 +126,20 @@ async def users():
 async def patients():
     return [
         {
-            'payload': {
-                'clientPatientId': fake_engine.ssn(),
-                'firstName': fake_engine.first_name(),
-                'middleName': fake_engine.first_name(),
-                'lastName': fake_engine.last_name(),
-                'age': random.randint(1, 90),
-                'gender': random.choice([1, 2, 3]),
-                'dateOfBirth': str(fake_engine.date_time()),
-                'ageDobEstimated': fake_engine.boolean(),
-                'clientUid': random.randint(1, 2),
-                'phoneMobile': fake_engine.phone_number(),
-                'phoneHome': fake_engine.phone_number(),
-                'consentSms': fake_engine.boolean(),
+            "payload": {
+                "clientPatientId": fake_engine.ssn(),
+                "firstName": fake_engine.first_name(),
+                "middleName": fake_engine.first_name(),
+                "lastName": fake_engine.last_name(),
+                "age": random.randint(1, 90),
+                "gender": random.choice([1, 2, 3]),
+                "dateOfBirth": str(fake_engine.date_time()),
+                "ageDobEstimated": fake_engine.boolean(),
+                "clientUid": random.randint(1, 2),
+                "phoneMobile": fake_engine.phone_number(),
+                "phoneHome": fake_engine.phone_number(),
+                "consentSms": fake_engine.boolean(),
             }
-        } for i in range(1)
+        }
+        for i in range(1)
     ]

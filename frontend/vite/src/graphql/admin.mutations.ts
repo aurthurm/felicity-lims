@@ -19,7 +19,7 @@ export const ADD_COUNTRY = gql`
 `;
 
 export const UPDATE_COUNTRY = gql`
-  mutation editCountry($uid: Int!, $payload: CountryInputType!) {
+  mutation editCountry($uid: FelicityID!, $payload: CountryInputType!) {
     updateCountry(uid: $uid, payload: $payload) {
       ... on CountryType {
         __typename
@@ -56,7 +56,7 @@ export const ADD_PROVINCE = gql`
 `;
 
 export const UPDATE_PROVINCE = gql`
-  mutation editProvince($uid: Int!, $payload: ProvinceInputType!) {
+  mutation editProvince($uid: FelicityID!, $payload: ProvinceInputType!) {
     updateProvince(uid: $uid, payload: $payload) {
       ... on ProvinceType {
         __typename
@@ -95,7 +95,7 @@ export const ADD_DISTRICT = gql`
 
 
 export const UPDATE_DISTRICT = gql`
-  mutation editDistrict($uid: Int!, $payload: DistrictInputType!) {
+  mutation editDistrict($uid: FelicityID!, $payload: DistrictInputType!) {
     updateDistrict(uid: $uid, payload: $payload) {
       ... on DistrictType {
         __typename

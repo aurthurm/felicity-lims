@@ -41,7 +41,7 @@ export default function useSampleComposable(){
     }
 
     // CANCEL_SAMPLES
-    const cancelSamples = async (uids: number[]) => {
+    const cancelSamples = async (uids: string[]) => {
       try {
         await Swal.fire({
           title: 'Are you sure?',
@@ -78,7 +78,7 @@ export default function useSampleComposable(){
     }
 
     // CLONE_SAMPLES
-    const cloneSamples = async (uids: number[]) => {
+    const cloneSamples = async (uids: string[]) => {
       try {
         await Swal.fire({
           title: 'Are you sure?',
@@ -112,7 +112,7 @@ export default function useSampleComposable(){
     }
 
     // REINSTATE_SAMPLES
-    const reInstateSamples = async (uids: number[]) => {
+    const reInstateSamples = async (uids: string[]) => {
       try {
         await Swal.fire({
           title: 'Are you sure?',
@@ -149,7 +149,7 @@ export default function useSampleComposable(){
     }
 
     // RECEIVE_SAMPLES
-    const receiveSamples = async (uids: number[]) => {
+    const receiveSamples = async (uids: string[]) => {
       try {
         await Swal.fire({
           title: 'Are you sure?',
@@ -186,7 +186,7 @@ export default function useSampleComposable(){
     }
 
     // RECOVER
-    const recoverSamples = async (sampleUids: number[]) => {
+    const recoverSamples = async (sampleUids: string[]) => {
       try {
         await Swal.fire({
           title: 'Are you sure?',
@@ -257,7 +257,7 @@ export default function useSampleComposable(){
 
 
     // DOWNLOAD_IMPRESS by SAMPLES
-    const downloadSamplesImpress = async (uids: number[]) => {
+    const downloadSamplesImpress = async (uids: string[]) => {
       try {
         await Swal.fire({
           title: 'Are you sure?',
@@ -330,7 +330,7 @@ export default function useSampleComposable(){
 
 
     // PRINT_SAMPLES
-    const printSamples = async (uids: number[]) => {
+    const printSamples = async (uids: string[]) => {
       try {
         await Swal.fire({
           title: 'Are you sure?',
@@ -367,7 +367,7 @@ export default function useSampleComposable(){
     }
 
     // verify sample(s) incase it did not auto transition
-    const verifySamples = async (uids: number[]) => {
+    const verifySamples = async (uids: string[]) => {
       try {
         await Swal.fire({
           title: 'Are you sure?',
@@ -439,7 +439,7 @@ export default function useSampleComposable(){
     }
 
     // invalidate sample
-    const invalidateSamples = async (uids: number[]): Promise<ISample[]> => {
+    const invalidateSamples = async (uids: string[]): Promise<ISample[]> => {
       let invalidated: ISample[] = [];
       try {
         await Swal.fire({

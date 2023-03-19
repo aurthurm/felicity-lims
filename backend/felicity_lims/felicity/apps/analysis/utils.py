@@ -2,15 +2,16 @@ import logging
 from datetime import datetime
 from typing import List
 
+from sqlalchemy import or_
+
 from felicity.apps.analysis import schemas
 from felicity.apps.analysis.conf import states
 from felicity.apps.analysis.models.analysis import SampleType
-from felicity.apps.analysis.models.results import (AnalysisResult,
-                                                   ResultMutation)
+from felicity.apps.analysis.models.results import AnalysisResult, ResultMutation
 from felicity.apps.notification.utils import FelicityStreamer
 from felicity.apps.reflex.utils import ReflexUtil
 from felicity.utils import has_value_or_is_truthy
-from sqlalchemy import or_
+from felicity.core.uid_gen import FelicityIDType
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -29,7 +30,7 @@ async def get_qc_sample_type():
 
 
 async def sample_search(
-    model, status: str, text: str, client_uid: int
+    model, status: str, text: str, client_uid: FelicityIDType
 ) -> List[schemas.SampleType]:
     """No pagination"""
     filters = []
@@ -60,7 +61,7 @@ async def sample_search(
     return (await model.session.execute(stmt)).scalars().all()
 
 
-async def retest_from_result_uids(uids: List[int], user):
+async def retest_from_result_uids(uids: List[FelicityIDType], user):
     originals = []
     retests = []
 
@@ -143,7 +144,7 @@ async def results_submitter(analysis_results: List[dict], submitter):
     return return_results
 
 
-async def verify_from_result_uids(uids: List[int], user):
+async def verify_from_result_uids(uids: List[FelicityIDType], user):
     to_return = []
 
     for _ar_uid in uids:

@@ -1,11 +1,13 @@
 import logging
 
+from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, String
+from sqlalchemy.orm import relationship
+
 from felicity.apps import Auditable
 from felicity.apps.client.models import Client
 from felicity.apps.common.models import IdSequence
 from felicity.apps.patient import schemas
-from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, String
-from sqlalchemy.orm import relationship
+from felicity.core.uid_gen import FelicitySAID
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -15,7 +17,7 @@ class Patient(Auditable):
     # Identification
     client_patient_id = Column(String, index=True, unique=True, nullable=False)
     patient_id = Column(String, index=True, unique=True, nullable=True)
-    client_uid = Column(Integer, ForeignKey("client.uid"), nullable=True)
+    client_uid = Column(FelicitySAID, ForeignKey("client.uid"), nullable=True)
     client = relationship(Client, backref="patients", lazy="selectin")
     # Details
     first_name = Column(String, nullable=False)

@@ -1,138 +1,143 @@
-import typing
 from datetime import datetime
-from typing import List, Optional
+from typing import List, Optional, Any
 
 import strawberry  # noqa
+
 from felicity.api.gql import PageInfo
 from felicity.api.gql.client.types import ClientType
 from felicity.api.gql.patient.types import PatientType
-from felicity.api.gql.setup.types import (DepartmentType, InstrumentType,
-                                          MethodType, UnitType)
+from felicity.api.gql.setup.types import (
+    DepartmentType,
+    InstrumentType,
+    MethodType,
+    UnitType,
+)
 from felicity.api.gql.storage.types import StorageContainerType
+from felicity.core.uid_gen import FelicityID
 from felicity.api.gql.user.types import UserType
 
 
 @strawberry.type
 class SampleTypeTyp:
-    uid: int
+    uid: FelicityID
     name: str
     description: Optional[str]
     active: bool
     internal_use: bool
     abbr: str
     #
-    created_by_uid: Optional[int]
+    created_by_uid: Optional[FelicityID]
     created_by: Optional[UserType]
     created_at: Optional[datetime]
-    updated_by_uid: Optional[int]
+    updated_by_uid: Optional[FelicityID]
     updated_by: Optional[UserType]
     updated_at: Optional[datetime]
 
 
 @strawberry.type
 class QCLevelType:
-    uid: int
+    uid: FelicityID
     level: str
     #
-    created_by_uid: Optional[int]
+    created_by_uid: Optional[FelicityID]
     created_by: Optional[UserType]
     created_at: Optional[datetime]
-    updated_by_uid: Optional[int]
+    updated_by_uid: Optional[FelicityID]
     updated_by: Optional[UserType]
     updated_at: Optional[datetime]
 
 
 @strawberry.type
 class QCSetType:
-    uid: int
+    uid: FelicityID
     name: str
     note: str
     #
-    created_by_uid: Optional[int]
+    created_by_uid: Optional[FelicityID]
     created_by: Optional[UserType]
     created_at: Optional[datetime]
-    updated_by_uid: Optional[int]
+    updated_by_uid: Optional[FelicityID]
     updated_by: Optional[UserType]
     updated_at: Optional[datetime]
 
 
 @strawberry.type
 class RejectionReasonType:
-    uid: int
+    uid: FelicityID
     reason: str
     #
-    created_by_uid: Optional[int]
+    created_by_uid: Optional[FelicityID]
     created_by: Optional[UserType]
     created_at: Optional[datetime]
-    updated_by_uid: Optional[int]
+    updated_by_uid: Optional[FelicityID]
     updated_by: Optional[UserType]
     updated_at: Optional[datetime]
 
 
 @strawberry.type
 class AnalysisRequestType:
-    uid: int
-    patient_uid: int
+    uid: FelicityID
+    patient_uid: FelicityID
     patient: PatientType
-    client_uid: int
+    client_uid: FelicityID
     client: ClientType
     request_id: str
     client_request_id: str
     internal_use: bool
     #
-    created_by_uid: Optional[int]
+    created_by_uid: Optional[FelicityID]
     created_by: Optional[UserType]
     created_at: Optional[datetime]
-    updated_by_uid: Optional[int]
+    updated_by_uid: Optional[FelicityID]
     updated_by: Optional[UserType]
     updated_at: Optional[datetime]
 
 
 @strawberry.type
 class AnalysisCategoryType:
-    uid: int
+    uid: FelicityID
     name: str
     department_uid: Optional[str]
     department: Optional[DepartmentType]
     description: Optional[str]
     active: bool
     #
-    created_by_uid: Optional[int]
+    created_by_uid: Optional[FelicityID]
     created_by: Optional[UserType]
     created_at: Optional[datetime]
-    updated_by_uid: Optional[int]
+    updated_by_uid: Optional[FelicityID]
     updated_by: Optional[UserType]
     updated_at: Optional[datetime]
 
 
 @strawberry.type
 class ResultOptionType:
-    uid: int
+    uid: FelicityID
     option_key: int
     value: str
-    analysis_uid: int
+    analysis_uid: FelicityID
     # analysis: Optional['AnalysisType']
     #
-    created_by_uid: Optional[int]
+    created_by_uid: Optional[FelicityID]
     created_by: Optional[UserType]
     created_at: Optional[datetime]
-    updated_by_uid: Optional[int]
+    updated_by_uid: Optional[FelicityID]
     updated_by: Optional[UserType]
     updated_at: Optional[datetime]
 
 
 @strawberry.type
 class AnalysisType:
-    uid: int
+    uid: FelicityID
     name: str
     description: Optional[str]
     keyword: Optional[str]
     department_uid: Optional[str]
     department: Optional[DepartmentType]
-    unit_uid: Optional[int]
+    unit_uid: Optional[FelicityID]
     unit: Optional[UnitType]
     sample_types: Optional[List[SampleTypeTyp]]
-    category_uid: Optional[int]
+    category_uid: Optional[FelicityID]
     category: Optional[AnalysisCategoryType]
     interims: Optional[List["AnalysisInterimType"]]
     sample_types: Optional[List[SampleTypeTyp]]
@@ -152,17 +157,17 @@ class AnalysisType:
     internal_use: Optional[bool]
     active: Optional[bool]
     #
-    created_by_uid: Optional[int]
+    created_by_uid: Optional[FelicityID]
     created_by: Optional[UserType]
     created_at: Optional[datetime]
-    updated_by_uid: Optional[int]
+    updated_by_uid: Optional[FelicityID]
     updated_by: Optional[UserType]
     updated_at: Optional[datetime]
 
 
 @strawberry.type
 class ProfileType:
-    uid: int
+    uid: FelicityID
     name: str
     description: Optional[str]
     keyword: Optional[str]
@@ -173,10 +178,10 @@ class ProfileType:
     sample_types: Optional[List[SampleTypeTyp]]
     active: bool
     #
-    created_by_uid: Optional[int]
+    created_by_uid: Optional[FelicityID]
     created_by: Optional[UserType]
     created_at: Optional[datetime]
-    updated_by_uid: Optional[int]
+    updated_by_uid: Optional[FelicityID]
     updated_by: Optional[UserType]
     updated_at: Optional[datetime]
 
@@ -202,10 +207,10 @@ class AnalysisCursorPage:
 
 @strawberry.type
 class SampleType:  # for Sample
-    uid: int
-    analysis_request_uid: int
+    uid: FelicityID
+    analysis_request_uid: FelicityID
     analysis_request: Optional[AnalysisRequestType]
-    sample_type_uid: int
+    sample_type_uid: FelicityID
     sample_type: Optional[SampleTypeTyp]
     sample_id: str
     profiles: Optional[List[ProfileType]]
@@ -214,27 +219,27 @@ class SampleType:  # for Sample
     status: str
     assigned: bool
     date_collected: Optional[datetime]
-    submitted_by_uid: Optional[int]
+    submitted_by_uid: Optional[FelicityID]
     submitted_by: Optional[UserType]
     date_submitted: Optional[datetime]
-    verified_by_uid: Optional[int]
+    verified_by_uid: Optional[FelicityID]
     verified_by: Optional[UserType]
     date_verified: Optional[datetime]
-    invalidated_by_uid: Optional[int]
+    invalidated_by_uid: Optional[FelicityID]
     invalidated_by: Optional[UserType]
     date_invalidated: Optional[datetime]
-    received_by_uid: Optional[int]
+    received_by_uid: Optional[FelicityID]
     received_by: Optional[UserType]
     date_received: Optional[datetime]
-    published_by_uid: Optional[int]
+    published_by_uid: Optional[FelicityID]
     published_by: Optional[UserType]
     date_published: Optional[datetime]
-    cancelled_by_uid: Optional[int]
+    cancelled_by_uid: Optional[FelicityID]
     cancelled_by: Optional[UserType]
     date_cancelled: Optional[datetime]
     printed: Optional[bool]
     date_printed: Optional[datetime]
-    printed_by_uid: Optional[int]
+    printed_by_uid: Optional[FelicityID]
     printed_by: Optional[UserType]
     due_date: Optional[datetime]
     rejection_reasons: Optional[List[RejectionReasonType]]
@@ -242,24 +247,24 @@ class SampleType:  # for Sample
     parent_id: Optional[int]
     parent: Optional["SampleType"]
     # QC Samples
-    qc_set_uid: Optional[int]
+    qc_set_uid: Optional[FelicityID]
     qc_set: Optional[QCSetType]
-    qc_level_uid: Optional[int]
+    qc_level_uid: Optional[FelicityID]
     qc_level: Optional[QCLevelType]
     # Bio Banking
-    storage_container_uid: Optional[int]
+    storage_container_uid: Optional[FelicityID]
     storage_container: Optional[StorageContainerType]
     storage_slot: Optional[str]
     storage_slot_index: Optional[int]
-    stored_by_uid: Optional[int]
+    stored_by_uid: Optional[FelicityID]
     stored_by: Optional[UserType]
     date_stored: Optional[datetime]
     date_retrieved_from_storage: Optional[datetime]
     #
-    created_by_uid: Optional[int]
+    created_by_uid: Optional[FelicityID]
     created_by: Optional[UserType]
     created_at: Optional[datetime]
-    updated_by_uid: Optional[int]
+    updated_by_uid: Optional[FelicityID]
     updated_by: Optional[UserType]
     updated_at: Optional[datetime]
 
@@ -285,91 +290,91 @@ class AnalysisRequestCursorPage:
 
 @strawberry.type
 class QCTemplateType:
-    uid: int
+    uid: FelicityID
     name: str
     description: Optional[str]
     departments: List[DepartmentType]
     qc_levels: List[QCLevelType]
     #
-    created_by_uid: Optional[int]
+    created_by_uid: Optional[FelicityID]
     created_by: Optional[UserType]
     created_at: Optional[datetime]
-    updated_by_uid: Optional[int]
+    updated_by_uid: Optional[FelicityID]
     updated_by: Optional[UserType]
     updated_at: Optional[datetime]
 
 
 @strawberry.type
 class AnalysisInterimType:
-    uid: int
+    uid: FelicityID
     key: int
     value: str
-    analysis_uid: int
-    instrument_uid: int
+    analysis_uid: FelicityID
+    instrument_uid: FelicityID
     #
-    created_by_uid: Optional[int]
+    created_by_uid: Optional[FelicityID]
     created_by: Optional[UserType]
     created_at: Optional[datetime]
-    updated_by_uid: Optional[int]
+    updated_by_uid: Optional[FelicityID]
     updated_by: Optional[UserType]
     updated_at: Optional[datetime]
 
 
 @strawberry.type
 class AnalysisCorrectionFactorType:
-    uid: int
+    uid: FelicityID
     factor: float
-    analysis_uid: int
-    instrument_uid: int
-    method_uid: int
+    analysis_uid: FelicityID
+    instrument_uid: FelicityID
+    method_uid: FelicityID
     #
-    created_by_uid: Optional[int]
+    created_by_uid: Optional[FelicityID]
     created_by: Optional[UserType]
     created_at: Optional[datetime]
-    updated_by_uid: Optional[int]
+    updated_by_uid: Optional[FelicityID]
     updated_by: Optional[UserType]
     updated_at: Optional[datetime]
 
 
 @strawberry.type
 class AnalysisDetectionLimitType:
-    uid: int
+    uid: FelicityID
     lower_limit: float
     upper_limit: float
-    analysis_uid: int
-    instrument_uid: int
-    method_uid: int
+    analysis_uid: FelicityID
+    instrument_uid: FelicityID
+    method_uid: FelicityID
     #
-    created_by_uid: Optional[int]
+    created_by_uid: Optional[FelicityID]
     created_by: Optional[UserType]
     created_at: Optional[datetime]
-    updated_by_uid: Optional[int]
+    updated_by_uid: Optional[FelicityID]
     updated_by: Optional[UserType]
     updated_at: Optional[datetime]
 
 
 @strawberry.type
 class AnalysisUncertaintyType:
-    uid: int
+    uid: FelicityID
     min: float
     max: float
     value: float
-    analysis_uid: int
-    instrument_uid: int
-    method_uid: int
+    analysis_uid: FelicityID
+    instrument_uid: FelicityID
+    method_uid: FelicityID
     #
-    created_by_uid: Optional[int]
+    created_by_uid: Optional[FelicityID]
     created_by: Optional[UserType]
     created_at: Optional[datetime]
-    updated_by_uid: Optional[int]
+    updated_by_uid: Optional[FelicityID]
     updated_by: Optional[UserType]
     updated_at: Optional[datetime]
 
 
 @strawberry.type
 class AnalysisSpecificationType:
-    uid: int
-    analysis_uid: int
+    uid: FelicityID
+    analysis_uid: FelicityID
     min: Optional[float]
     max: Optional[float]
     min_warn: Optional[float]
@@ -381,13 +386,13 @@ class AnalysisSpecificationType:
     gender: Optional[str]
     age_min: Optional[int]
     age_max: Optional[int]
-    method_uid: Optional[int]
-    unit_uid: Optional[int]
+    method_uid: Optional[FelicityID]
+    unit_uid: Optional[FelicityID]
     unit: Optional[UnitType]
     #
-    created_by_uid: Optional[int]
+    created_by_uid: Optional[FelicityID]
     created_by: Optional[UserType]
     created_at: Optional[datetime]
-    updated_by_uid: Optional[int]
+    updated_by_uid: Optional[FelicityID]
     updated_by: Optional[UserType]
     updated_at: Optional[datetime]

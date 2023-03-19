@@ -1,19 +1,19 @@
 import logging
 
-from felicity.init.setup.create_superuser import create_super_user, create_daemon_user
+from felicity.init.setup.create_superuser import create_daemon_user, create_super_user
 from felicity.init.setup.groups_perms import setup_default_permissions
-from felicity.init.setup.setup_laboratory import (
-    create_geographies,
-    create_clients,
-    create_laboratory,
-)
 from felicity.init.setup.setup_analyses import (
-    create_qc_levels,
+    create_analyses_services_and_profiles,
     create_categories,
+    create_qc_levels,
+    create_rejection_reasons,
     create_sample_types,
     init_id_sequence,
-    create_analyses_services_and_profiles,
-    create_rejection_reasons
+)
+from felicity.init.setup.setup_laboratory import (
+    create_clients,
+    create_geographies,
+    create_laboratory,
 )
 
 logging.basicConfig(level=logging.INFO)

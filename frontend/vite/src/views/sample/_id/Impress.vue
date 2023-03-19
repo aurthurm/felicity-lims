@@ -18,7 +18,7 @@ onMounted(() => {
   loadongMeta.value = true;
   withClientQuery(
     GET_IMPRESS_META,
-    { uids: [+route?.params?.sampleUid] },
+    { uids: [route?.params?.sampleUid] },
     "impressReportsMeta"
   )
     .then((resp) => {

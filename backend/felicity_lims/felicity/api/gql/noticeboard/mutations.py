@@ -2,9 +2,16 @@ import logging
 from typing import List, Optional
 
 import strawberry  # noqa
-from felicity.api.gql import (DeletedItem, DeleteResponse, OperationError,
-                              auth_from_info, verify_user_auth)
+
+from felicity.api.gql import (
+    DeletedItem,
+    DeleteResponse,
+    OperationError,
+    auth_from_info,
+    verify_user_auth,
+)
 from felicity.api.gql.noticeboard.types import NoticeType
+from felicity.core.uid_gen import FelicityID
 from felicity.apps.noticeboard import models, schemas
 
 logging.basicConfig(level=logging.INFO)
@@ -79,7 +86,7 @@ class NoticeMutations:
 
     @strawberry.mutation
     async def update_notice(
-        self, info, uid: int, payload: NoticeInputType
+        self, info, uid: FelicityID, payload: NoticeInputType
     ) -> NoticeResponse:
 
         is_authenticated, felicity_user = await auth_from_info(info)
@@ -127,7 +134,7 @@ class NoticeMutations:
         return NoticeType(**notice.marshal_simple())
 
     @strawberry.mutation
-    async def view_notice(self, info, uid: int, viewer: int) -> NoticeType:
+    async def view_notice(self, info, uid: FelicityID, viewer: int) -> NoticeType:
 
         is_authenticated, felicity_user = await auth_from_info(info)
         verify_user_auth(
@@ -146,7 +153,7 @@ class NoticeMutations:
         return NoticeType(**notice.marshal_simple())
 
     @strawberry.mutation
-    async def delete_notice(self, info, uid: int) -> DeleteResponse:
+    async def delete_notice(self, info, uid: FelicityID) -> DeleteResponse:
 
         is_authenticated, felicity_user = await auth_from_info(info)
         verify_user_auth(

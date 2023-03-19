@@ -138,7 +138,7 @@ function toggleNavText(): void {
           id="inventory-link"
           class="flex items-center has-tooltip mt-1 py-2 px-6 text-gray-100 hover:bg-gray-800 hover:bg-opacity-25 hover:text-white border-l-4 border-gray-800"
         >
-          <span class="mr-4"><font-awesome-icon icon="fa-inventory" /></span>
+          <span class="mr-4"><font-awesome-icon icon="fa-solid fa-boxes-stacked" /></span>
           <span v-if="viewNavText">Inventory</span>
           <span v-else class="tooltip">Inventory</span>
         </router-link>

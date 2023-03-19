@@ -1,5 +1,6 @@
-import pytest
 import logging
+
+import pytest
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -26,16 +27,15 @@ async def test_add_sample_type(gql_client, auth_data):
         }
     """
     sample_type = {
-                'name': "Whole Blood",
-                'abbr': "WB",
-                'active': True,
+        "name": "Whole Blood",
+        "abbr": "WB",
+        "active": True,
     }
-    response = await gql_client.post('/felicity-gql', json={
-        "query": add_gql,
-        "variables": {
-            "payload": sample_type
-        }
-    }, headers=auth_data['headers'])
+    response = await gql_client.post(
+        "/felicity-gql",
+        json={"query": add_gql, "variables": {"payload": sample_type}},
+        headers=auth_data["headers"],
+    )
 
     logger.info(f"add sample type response: {response} {response.json()}")
 
@@ -67,15 +67,14 @@ async def test_add_instrument(gql_client, auth_data):
         }
     """
     instrument = {
-                'name': "Roche Cobas Ampliprep, Taqman 96",
-                'keyword': "HICAP96",
+        "name": "Roche Cobas Ampliprep, Taqman 96",
+        "keyword": "HICAP96",
     }
-    response = await gql_client.post('/felicity-gql', json={
-        "query": add_gql,
-        "variables": {
-            "payload": instrument
-        }
-    }, headers=auth_data['headers'])
+    response = await gql_client.post(
+        "/felicity-gql",
+        json={"query": add_gql, "variables": {"payload": instrument}},
+        headers=auth_data["headers"],
+    )
 
     logger.info(f"add instrument response: {response} {response.json()}")
 
@@ -105,17 +104,12 @@ async def test_add_method(gql_client, auth_data):
           }
         }
     """
-    method = {
-        'name': "RT PCR",
-        'keyword': "RTPCT",
-        "instruments": [1]
-    }
-    response = await gql_client.post('/felicity-gql', json={
-        "query": add_gql,
-        "variables": {
-            "payload": method
-        }
-    }, headers=auth_data['headers'])
+    method = {"name": "RT PCR", "keyword": "RTPCT", "instruments": [1]}
+    response = await gql_client.post(
+        "/felicity-gql",
+        json={"query": add_gql, "variables": {"payload": method}},
+        headers=auth_data["headers"],
+    )
 
     logger.info(f"add method response: {response} {response.json()}")
 
@@ -182,21 +176,20 @@ async def test_add_analysis_service(gql_client, auth_data):
       }
     """
     analysis_service = {
-        'name': "HIV Viral Load",
-        'description': "A test used to detect the peron's viral load",
-        'keyword': "HVL",
+        "name": "HIV Viral Load",
+        "description": "A test used to detect the peron's viral load",
+        "keyword": "HVL",
         "sortKey": 1,
         "sampleTypes": [1],
         "methods": [1],
         "requiredVerifications": 1,
-        "selfVerification": False
+        "selfVerification": False,
     }
-    response = await gql_client.post('/felicity-gql', json={
-        "query": add_gql,
-        "variables": {
-            "payload": analysis_service
-        }
-    }, headers=auth_data['headers'])
+    response = await gql_client.post(
+        "/felicity-gql",
+        json={"query": add_gql, "variables": {"payload": analysis_service}},
+        headers=auth_data["headers"],
+    )
 
     logger.info(f"add analysis service response: {response} {response.json()}")
 
@@ -246,19 +239,18 @@ async def test_add_analysis_profile(gql_client, auth_data):
       }
     """
     analysis_profile = {
-        'name': "HIV Viral Load",
-        'description': "Lets detect a peron's viral load",
-        'keyword': "HVL",
+        "name": "HIV Viral Load",
+        "description": "Lets detect a peron's viral load",
+        "keyword": "HVL",
         "sampleTypes": [1],
         "services": [1],
-        "active": True
+        "active": True,
     }
-    response = await gql_client.post('/felicity-gql', json={
-        "query": add_gql,
-        "variables": {
-            "payload": analysis_profile
-        }
-    }, headers=auth_data['headers'])
+    response = await gql_client.post(
+        "/felicity-gql",
+        json={"query": add_gql, "variables": {"payload": analysis_profile}},
+        headers=auth_data["headers"],
+    )
 
     logger.info(f"add analysis profile response: {response} {response.json()}")
 

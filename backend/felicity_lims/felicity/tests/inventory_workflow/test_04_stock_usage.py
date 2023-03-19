@@ -1,5 +1,6 @@
-import pytest
 import logging
+
+import pytest
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -38,17 +39,19 @@ async def test_stock_adjustments(gql_client, auth_data):
     """
 
     stock_adjustment = {
-        'productUid': 1,
+        "productUid": 1,
         "adjust": 3,
         "adjustmentType": "lost",
-        "remarks": "These items were lost"
+        "remarks": "These items were lost",
     }
-    response = await gql_client.post('/felicity-gql', json={
-        "query": add_stock_adjustment_mutation,
-        "variables": {
-            "payload": stock_adjustment
-        }
-    }, headers=auth_data['headers'])
+    response = await gql_client.post(
+        "/felicity-gql",
+        json={
+            "query": add_stock_adjustment_mutation,
+            "variables": {"payload": stock_adjustment},
+        },
+        headers=auth_data["headers"],
+    )
 
     logger.info(f"register stock adjustment response: {response} {response.json()}")
 
@@ -58,9 +61,13 @@ async def test_stock_adjustments(gql_client, auth_data):
     assert data["adjust"] == stock_adjustment["adjust"]
     assert data["adjustmentType"] == stock_adjustment["adjustmentType"]
 
-    stocks_response = await gql_client.post('/felicity-gql', json={
-        "query": get_all_stocks_product_query,
-    }, headers=auth_data['headers'])
+    stocks_response = await gql_client.post(
+        "/felicity-gql",
+        json={
+            "query": get_all_stocks_product_query,
+        },
+        headers=auth_data["headers"],
+    )
 
     logger.info(f"stocks_response: {stocks_response} {stocks_response.json()}")
     assert stocks_response.status_code == 200
@@ -68,23 +75,29 @@ async def test_stock_adjustments(gql_client, auth_data):
     assert spa["totalCount"] == 5
     assert len(spa["items"]) == 5
     less_product = sorted(spa["items"], key=lambda d: d["uid"], reverse=False)[0]
-    assert less_product["remaining"] == less_product["quantityReceived"] - data["adjust"]
+    assert (
+        less_product["remaining"] == less_product["quantityReceived"] - data["adjust"]
+    )
 
     # Addition adjustment
     new_stock_adjustment = {
-        'productUid': 1,
+        "productUid": 1,
         "adjust": 2,
         "adjustmentType": "transfer in",
-        "remarks": "Recovered property"
+        "remarks": "Recovered property",
     }
-    new_response = await gql_client.post('/felicity-gql', json={
-        "query": add_stock_adjustment_mutation,
-        "variables": {
-            "payload": new_stock_adjustment
-        }
-    }, headers=auth_data['headers'])
+    new_response = await gql_client.post(
+        "/felicity-gql",
+        json={
+            "query": add_stock_adjustment_mutation,
+            "variables": {"payload": new_stock_adjustment},
+        },
+        headers=auth_data["headers"],
+    )
 
-    logger.info(f"register stock adjustment response: {new_response} {new_response.json()}")
+    logger.info(
+        f"register stock adjustment response: {new_response} {new_response.json()}"
+    )
 
     assert new_response.status_code == 200
     new_data = new_response.json()["data"]["createStockAdjustment"]
@@ -92,9 +105,13 @@ async def test_stock_adjustments(gql_client, auth_data):
     assert new_data["adjust"] == new_stock_adjustment["adjust"]
     assert new_data["adjustmentType"] == new_stock_adjustment["adjustmentType"]
 
-    new_stocks_response = await gql_client.post('/felicity-gql', json={
-        "query": get_all_stocks_product_query,
-    }, headers=auth_data['headers'])
+    new_stocks_response = await gql_client.post(
+        "/felicity-gql",
+        json={
+            "query": get_all_stocks_product_query,
+        },
+        headers=auth_data["headers"],
+    )
 
     logger.info(f"stocks_response: {new_stocks_response} {new_stocks_response.json()}")
     assert new_stocks_response.status_code == 200
@@ -124,15 +141,17 @@ async def test_stock_transaction(gql_client, auth_data):
     """
 
     stock_transaction = {
-        'productUid': 1,
+        "productUid": 1,
         "issued": 5,
     }
-    response = await gql_client.post('/felicity-gql', json={
-        "query": add_stock_transaction_mutation,
-        "variables": {
-            "payload": stock_transaction
-        }
-    }, headers=auth_data['headers'])
+    response = await gql_client.post(
+        "/felicity-gql",
+        json={
+            "query": add_stock_transaction_mutation,
+            "variables": {"payload": stock_transaction},
+        },
+        headers=auth_data["headers"],
+    )
 
     logger.info(f"register stock transaction response: {response} {response.json()}")
 
@@ -141,9 +160,13 @@ async def test_stock_transaction(gql_client, auth_data):
     assert data["uid"] == 1
     assert data["issued"] == stock_transaction["issued"]
 
-    stocks_response = await gql_client.post('/felicity-gql', json={
-        "query": get_all_stocks_product_query,
-    }, headers=auth_data['headers'])
+    stocks_response = await gql_client.post(
+        "/felicity-gql",
+        json={
+            "query": get_all_stocks_product_query,
+        },
+        headers=auth_data["headers"],
+    )
 
     logger.info(f"stocks_response: {stocks_response} {stocks_response.json()}")
     assert stocks_response.status_code == 200

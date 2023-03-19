@@ -1,11 +1,13 @@
+from sqlalchemy import Boolean, Column, ForeignKey, String
+from sqlalchemy.orm import backref, relationship
+
 from felicity.apps import BaseAuditDBModel
 from felicity.apps.client import schemas
 from felicity.apps.setup.models import District, Province
 from felicity.apps.user import conf
 from felicity.apps.user.abstract import AbstractBaseUser
 from felicity.apps.user.models import UserAuth
-from sqlalchemy import Boolean, Column, ForeignKey, Integer, String
-from sqlalchemy.orm import backref, relationship
+from felicity.core.uid_gen import FelicitySAID
 
 
 class Client(BaseAuditDBModel):
@@ -13,9 +15,9 @@ class Client(BaseAuditDBModel):
 
     name = Column(String, nullable=False)
     code = Column(String, index=True, unique=True, nullable=False)
-    district_uid = Column(Integer, ForeignKey("district.uid"), nullable=True)
+    district_uid = Column(FelicitySAID, ForeignKey("district.uid"), nullable=True)
     district = relationship(District, backref="clients", lazy="selectin")
-    province_uid = Column(Integer, ForeignKey("province.uid"), nullable=True)
+    province_uid = Column(FelicitySAID, ForeignKey("province.uid"), nullable=True)
     province = relationship(Province, backref="clients", lazy="selectin")
     email = Column(String, nullable=True)
     email_cc = Column(String, nullable=True)
@@ -59,13 +61,20 @@ class Client(BaseAuditDBModel):
 
 
 class ClientContact(AbstractBaseUser):
-    auth_uid = Column(Integer, ForeignKey("userauth.uid"), nullable=True)
+    auth_uid = Column(FelicitySAID, ForeignKey("userauth.uid"), nullable=True)
     auth = relationship(UserAuth, backref=backref(conf.CLIENT_CONTACT, uselist=False))
     email = Column(String, unique=False, index=True, nullable=True)
     email_cc = Column(String, nullable=True)
     consent_sms = Column(Boolean(), default=False)
-    client_uid = Column(Integer, ForeignKey("client.uid"), nullable=False)
-    client = relationship(Client, backref=backref("contacts", uselist=False))
+    client_uid = Column(FelicitySAID, ForeignKey("client.uid"), nullable=False)
+    client = relationship(
+        Client,
+        backref=backref(
+            "contacts",
+            uselist=False,
+        ),
+        lazy="selectin",
+    )
 
     @classmethod
     async def create(

@@ -1,18 +1,19 @@
-from typing import Optional
 from datetime import datetime
+from typing import Optional
 
 import strawberry  # noqa
 
 from felicity.api.gql.analysis.types.analysis import SampleType
-from felicity.api.gql.types import JSONScalar, BytesScalar
+from felicity.api.gql.types import BytesScalar, JSONScalar
+from felicity.core.uid_gen import FelicityID
 from felicity.api.gql.user.types import UserType
 
 
 @strawberry.type
 class ReportImpressType:
-    uid: int
+    uid: FelicityID
     state: Optional[str]
-    sample_uid: Optional[int]
+    sample_uid: Optional[FelicityID]
     sample: Optional[SampleType]
     json_content: Optional[JSONScalar]
     pdf_content: Optional[BytesScalar]
@@ -20,10 +21,10 @@ class ReportImpressType:
     email_sent: Optional[bool]
     sms_required: Optional[bool]
     sms_sent: Optional[bool]
-    generated_by_uid: Optional[int]
+    generated_by_uid: Optional[FelicityID]
     generated_by: Optional[UserType]
-    created_by_uid: Optional[int]
+    created_by_uid: Optional[FelicityID]
     created_by: Optional[UserType]
-    updated_by_uid: Optional[int]
+    updated_by_uid: Optional[FelicityID]
     updated_by: Optional[UserType]
     date_generated: Optional[datetime]

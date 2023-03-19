@@ -29,8 +29,7 @@ class InspectionMixin(Base):
 
     @classproperty
     def relations(cls):
-        """Return a `list` of relationship names or the given model
-        """
+        """Return a `list` of relationship names or the given model"""
         return [
             c.key
             for c in cls.__mapper__.iterate_properties
@@ -39,8 +38,7 @@ class InspectionMixin(Base):
 
     @classproperty
     def settable_relations(cls):
-        """Return a `list` of relationship names or the given model
-        """
+        """Return a `list` of relationship names or the given model"""
         return [r for r in cls.relations if getattr(cls, r).property.viewonly is False]
 
     @classproperty

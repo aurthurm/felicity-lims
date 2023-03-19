@@ -3,6 +3,7 @@ from typing import Any, List
 from uuid import uuid4
 
 from fastapi import APIRouter, Depends
+
 from felicity.api.rest import deps
 from felicity.apps.analysis.models import analysis as ana_models
 from felicity.apps.analytics import conf, models

@@ -1,15 +1,15 @@
-from .location import District, Country, Province
+from .location import Country, District, Province
 from .setup import (
-    Laboratory,
-    Supplier,
-    Manufacturer,
-    InstrumentType,
-    Instrument,
-    InstrumentCalibration,
     CalibrationCertificate,
     Department,
+    Instrument,
+    InstrumentCalibration,
+    InstrumentType,
+    Laboratory,
+    LaboratorySetting,
+    Manufacturer,
     Method,
+    Supplier,
     Unit,
     method_instrument,
-    LaboratorySetting,
 )

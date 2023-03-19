@@ -2,23 +2,24 @@ from datetime import datetime
 from typing import List, Optional
 
 import strawberry  # noqa
+
 from felicity.api.gql import PageInfo
-from felicity.api.gql.analysis.types.analysis import (AnalysisType,
-                                                      SampleTypeTyp)
+from felicity.api.gql.analysis.types.analysis import AnalysisType, SampleTypeTyp
+from felicity.core.uid_gen import FelicityID
 from felicity.api.gql.user.types import UserType
 
 
 @strawberry.type
 class ReflexRuleType:
-    uid: int
+    uid: FelicityID
     name: str
     description: str
     reflex_actions: Optional[List["ReflexActionType"]]
     #
-    created_by_uid: Optional[int]
+    created_by_uid: Optional[FelicityID]
     created_by: Optional[UserType]
     created_at: Optional[datetime]
-    updated_by_uid: Optional[int]
+    updated_by_uid: Optional[FelicityID]
     updated_by: Optional[UserType]
     updated_at: Optional[datetime]
 
@@ -40,18 +41,18 @@ class ReflexRuleCursorPage:
 
 @strawberry.type
 class ReflexBrainAdditionType:
-    analysis_uid: int
+    analysis_uid: FelicityID
     analysis: Optional[AnalysisType]
-    reflex_brain_uid: int
+    reflex_brain_uid: FelicityID
     reflex_brain: Optional["ReflexBrainType"]
     count: int
 
 
 @strawberry.type
 class ReflexBrainCriteriaType:
-    analysis_uid: int
+    analysis_uid: FelicityID
     analysis: Optional[AnalysisType]
-    reflex_brain_uid: int
+    reflex_brain_uid: FelicityID
     reflex_brain: Optional["ReflexBrainType"]
     operator: str
     value: str
@@ -59,46 +60,46 @@ class ReflexBrainCriteriaType:
 
 @strawberry.type
 class ReflexBrainFinalType:
-    analysis_uid: int
+    analysis_uid: FelicityID
     analysis: Optional[AnalysisType]
-    reflex_brain_uid: int
+    reflex_brain_uid: FelicityID
     reflex_brain: Optional["ReflexBrainType"]
     value: str
 
 
 @strawberry.type
 class ReflexBrainType:
-    reflex_action_uid: int
+    reflex_action_uid: FelicityID
     reflex_action: Optional["ReflexBrainType"]
-    uid: int
+    uid: FelicityID
     description: str
     analyses_values: Optional[List[ReflexBrainCriteriaType]]
     add_new: Optional[List[ReflexBrainAdditionType]]
     finalise: Optional[List[ReflexBrainFinalType]]
     #
-    created_by_uid: Optional[int]
+    created_by_uid: Optional[FelicityID]
     created_by: Optional[UserType]
     created_at: Optional[datetime]
-    updated_by_uid: Optional[int]
+    updated_by_uid: Optional[FelicityID]
     updated_by: Optional[UserType]
     updated_at: Optional[datetime]
 
 
 @strawberry.type
 class ReflexActionType:
-    uid: int
+    uid: FelicityID
     level: int
     description: str
     analyses: Optional[List[AnalysisType]]
-    sample_type_uid: Optional[int]
+    sample_type_uid: Optional[FelicityID]
     sample_type: Optional[SampleTypeTyp]
-    reflex_rule_uid: int
+    reflex_rule_uid: FelicityID
     reflex_rule: Optional[ReflexRuleType]
     brains: Optional[List[ReflexBrainType]]
     #
-    created_by_uid: Optional[int]
+    created_by_uid: Optional[FelicityID]
     created_by: Optional[UserType]
     created_at: Optional[datetime]
-    updated_by_uid: Optional[int]
+    updated_by_uid: Optional[FelicityID]
     updated_by: Optional[UserType]
     updated_at: Optional[datetime]

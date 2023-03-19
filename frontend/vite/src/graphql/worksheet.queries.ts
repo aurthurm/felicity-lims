@@ -76,7 +76,7 @@ export const GET_ALL_WORKSHEETS = gql`
 
 
 export const GET_WORKSHEET_BY_UID = gql`
-  query getWorkSheetByUid($worksheetUid: Int!) {
+  query getWorkSheetByUid($worksheetUid: FelicityID!) {
     worksheetByUid(worksheetUid: $worksheetUid) {
       uid
       worksheetId

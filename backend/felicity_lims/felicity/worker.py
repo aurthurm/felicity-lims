@@ -1,5 +1,5 @@
 from felicity.core.celery_app import celery_app
-from felicity.core.config import settings
+
 # from raven import Client
 
 # client_sentry = Client(settings.SENTRY_DSN)

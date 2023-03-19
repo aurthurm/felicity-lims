@@ -2,9 +2,11 @@ from typing import List, Optional
 
 import sqlalchemy as sa
 import strawberry  # noqa
+
 from felicity.api.gql import PageInfo
-from felicity.apps.inventory import models
 from felicity.api.gql.inventory import types
+from felicity.core.uid_gen import FelicityID
+from felicity.apps.inventory import models
 from felicity.utils import has_value_or_is_truthy
 
 
@@ -12,22 +14,19 @@ from felicity.utils import has_value_or_is_truthy
 class InventoryQuery:
     @strawberry.field
     async def stock_item_all(
-            self,
-            info,
-            page_size: Optional[int] = None,
-            after_cursor: Optional[str] = None,
-            before_cursor: Optional[str] = None,
-            text: Optional[str] = None,
-            sort_by: Optional[List[str]] = None,
+        self,
+        info,
+        page_size: Optional[int] = None,
+        after_cursor: Optional[str] = None,
+        before_cursor: Optional[str] = None,
+        text: Optional[str] = None,
+        sort_by: Optional[List[str]] = None,
     ) -> types.StockItemCursorPage:
         filters = {}
 
         _or_ = dict()
         if has_value_or_is_truthy(text):
-            arg_list = [
-                "name__ilike",
-                "description__ilike"
-            ]
+            arg_list = ["name__ilike", "description__ilike"]
             for _arg in arg_list:
                 _or_[_arg] = f"%{text}%"
 
@@ -51,7 +50,9 @@ class InventoryQuery:
         )
 
     @strawberry.field
-    async def stock_item_by_uid(self, info, uid: int) -> Optional[types.StockItemType]:
+    async def stock_item_by_uid(
+        self, info, uid: FelicityID
+    ) -> Optional[types.StockItemType]:
         return await models.StockItem.get(uid=uid)
 
     @strawberry.field
@@ -59,7 +60,9 @@ class InventoryQuery:
         return await models.StockCategory.all()
 
     @strawberry.field
-    async def stock_category_by_uid(self, info, uid: int) -> Optional[types.StockCategoryType]:
+    async def stock_category_by_uid(
+        self, info, uid: FelicityID
+    ) -> Optional[types.StockCategoryType]:
         return await models.StockCategory.get(uid=uid)
 
     @strawberry.field
@@ -67,7 +70,7 @@ class InventoryQuery:
         return await models.Hazard.all()
 
     @strawberry.field
-    async def hazard_by_uid(self, info, uid: int) -> Optional[types.HazardType]:
+    async def hazard_by_uid(self, info, uid: FelicityID) -> Optional[types.HazardType]:
         return await models.Hazard.get(uid=uid)
 
     @strawberry.field
@@ -75,7 +78,9 @@ class InventoryQuery:
         return await models.StockUnit.all()
 
     @strawberry.field
-    async def stock_unit_by_uid(self, info, uid: int) -> Optional[types.StockUnitType]:
+    async def stock_unit_by_uid(
+        self, info, uid: FelicityID
+    ) -> Optional[types.StockUnitType]:
         return await models.StockUnit.get(uid=uid)
 
     @strawberry.field
@@ -83,27 +88,26 @@ class InventoryQuery:
         return await models.StockPackaging.all()
 
     @strawberry.field
-    async def stock_packaging_by_uid(self, info, uid: int) -> Optional[types.StockPackagingType]:
+    async def stock_packaging_by_uid(
+        self, info, uid: FelicityID
+    ) -> Optional[types.StockPackagingType]:
         return await models.StockPackaging.get(uid=uid)
 
     @strawberry.field
     async def stock_product_all(
-            self,
-            info,
-            page_size: Optional[int] = None,
-            after_cursor: Optional[str] = None,
-            before_cursor: Optional[str] = None,
-            text: Optional[str] = None,
-            sort_by: Optional[List[str]] = None,
+        self,
+        info,
+        page_size: Optional[int] = None,
+        after_cursor: Optional[str] = None,
+        before_cursor: Optional[str] = None,
+        text: Optional[str] = None,
+        sort_by: Optional[List[str]] = None,
     ) -> types.StockProductCursorPage:
         filters = {}
 
         _or_ = dict()
         if has_value_or_is_truthy(text):
-            arg_list = [
-                "name__ilike",
-                "description__ilike"
-            ]
+            arg_list = ["name__ilike", "description__ilike"]
             for _arg in arg_list:
                 _or_[_arg] = f"%{text}%"
 
@@ -127,27 +131,26 @@ class InventoryQuery:
         )
 
     @strawberry.field
-    async def stock_product_by_uid(self, info, uid: int) -> Optional[types.StockProductType]:
+    async def stock_product_by_uid(
+        self, info, uid: FelicityID
+    ) -> Optional[types.StockProductType]:
         return await models.StockProduct.get(uid=uid)
 
     @strawberry.field
     async def stock_order_all(
-            self,
-            info,
-            page_size: Optional[int] = None,
-            after_cursor: Optional[str] = None,
-            before_cursor: Optional[str] = None,
-            text: Optional[str] = None,
-            sort_by: Optional[List[str]] = None,
+        self,
+        info,
+        page_size: Optional[int] = None,
+        after_cursor: Optional[str] = None,
+        before_cursor: Optional[str] = None,
+        text: Optional[str] = None,
+        sort_by: Optional[List[str]] = None,
     ) -> types.StockOrderCursorPage:
         filters = {}
 
         _or_ = dict()
         if has_value_or_is_truthy(text):
-            arg_list = [
-                "name__ilike",
-                "description__ilike"
-            ]
+            arg_list = ["name__ilike", "description__ilike"]
             for _arg in arg_list:
                 _or_[_arg] = f"%{text}%"
 
@@ -171,36 +174,38 @@ class InventoryQuery:
         )
 
     @strawberry.field
-    async def stock_order_by_uid(self, info, uid: int) -> Optional[types.StockOrderType]:
+    async def stock_order_by_uid(
+        self, info, uid: FelicityID
+    ) -> Optional[types.StockOrderType]:
         return await models.StockOrder.get(uid=uid)
 
     @strawberry.field
-    async def stock_order_product_all(self, info, stock_order_uid: int) -> List[types.StockOrderProductType]:
+    async def stock_order_product_all(
+        self, info, stock_order_uid: FelicityID
+    ) -> List[types.StockOrderProductType]:
         return await models.StockOrderProduct.get_all(order_uid=stock_order_uid)
 
     @strawberry.field
-    async def stock_order_product_by_uid(self, info, uid: int) -> Optional[types.StockOrderProductType]:
+    async def stock_order_product_by_uid(
+        self, info, uid: FelicityID
+    ) -> Optional[types.StockOrderProductType]:
         return await models.StockOrderProduct.get(uid=uid)
 
     @strawberry.field
     async def stock_transaction_all(
-            self,
-            info,
-            page_size: Optional[int] = None,
-            after_cursor: Optional[str] = None,
-            before_cursor: Optional[str] = None,
-            text: Optional[str] = None,
-            sort_by: Optional[List[str]] = None,
+        self,
+        info,
+        page_size: Optional[int] = None,
+        after_cursor: Optional[str] = None,
+        before_cursor: Optional[str] = None,
+        text: Optional[str] = None,
+        sort_by: Optional[List[str]] = None,
     ) -> types.StockTransactionCursorPage:
         filters = {}
 
         _or_ = dict()
         if has_value_or_is_truthy(text):
-            arg_list = [
-                "name__ilike",
-                "description__ilike",
-                "product___name__ilike"
-            ]
+            arg_list = ["name__ilike", "description__ilike", "product___name__ilike"]
             for _arg in arg_list:
                 _or_[_arg] = f"%{text}%"
 
@@ -224,18 +229,20 @@ class InventoryQuery:
         )
 
     @strawberry.field
-    async def stock_transaction_by_uid(self, info, uid: int) -> Optional[types.StockTransactionType]:
+    async def stock_transaction_by_uid(
+        self, info, uid: FelicityID
+    ) -> Optional[types.StockTransactionType]:
         return await models.StockTransaction.get(uid=uid)
 
     @strawberry.field
     async def stock_adjustment_all(
-            self,
-            info,
-            page_size: Optional[int] = None,
-            after_cursor: Optional[str] = None,
-            before_cursor: Optional[str] = None,
-            text: Optional[str] = None,
-            sort_by: Optional[List[str]] = None,
+        self,
+        info,
+        page_size: Optional[int] = None,
+        after_cursor: Optional[str] = None,
+        before_cursor: Optional[str] = None,
+        text: Optional[str] = None,
+        sort_by: Optional[List[str]] = None,
     ) -> types.StockAdjustmentCursorPage:
         filters = {}
 
@@ -246,7 +253,7 @@ class InventoryQuery:
                 "description__ilike",
                 "adjustment_type__ilike",
                 "remarks__ilike",
-                "product___name__ilike"
+                "product___name__ilike",
             ]
             for _arg in arg_list:
                 _or_[_arg] = f"%{text}%"
@@ -271,5 +278,7 @@ class InventoryQuery:
         )
 
     @strawberry.field
-    async def stock_adjustment_by_uid(self, info, uid: int) -> Optional[types.StockAdjustmentType]:
+    async def stock_adjustment_by_uid(
+        self, info, uid: FelicityID
+    ) -> Optional[types.StockAdjustmentType]:
         return await models.StockAdjustment.get(uid=uid)

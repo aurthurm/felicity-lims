@@ -2,14 +2,16 @@ import logging
 from datetime import datetime
 from typing import List
 
+from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, String, Table
+from sqlalchemy.orm import relationship
+from felicity.core.uid_gen import FelicityIDType
+
 from felicity.apps import Auditable, BaseAuditDBModel, DBModel
 from felicity.apps.analysis import conf, schemas
 from felicity.apps.common import BaseMPTT
-from felicity.database.session import async_session_factory
-from sqlalchemy import (Boolean, Column, DateTime, ForeignKey, Integer, String,
-                        Table)
 from felicity.apps.notification.utils import FelicityStreamer
-from sqlalchemy.orm import relationship
+from felicity.core.uid_gen import FelicitySAID
+from felicity.database.session import async_session_factory
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -33,30 +35,30 @@ class AnalysisResult(Auditable, BaseMPTT):
     the number of linked sample_analyses at minimum :)
     """
 
-    sample_uid = Column(Integer, ForeignKey("sample.uid"), nullable=False)
+    sample_uid = Column(FelicitySAID, ForeignKey("sample.uid"), nullable=False)
     sample = relationship("Sample", back_populates="analysis_results", lazy="selectin")
-    analysis_uid = Column(Integer, ForeignKey("analysis.uid"), nullable=False)
+    analysis_uid = Column(FelicitySAID, ForeignKey("analysis.uid"), nullable=False)
     analysis = relationship("Analysis", backref="analysis_results", lazy="selectin")
-    instrument_uid = Column(Integer, ForeignKey("instrument.uid"), nullable=True)
+    instrument_uid = Column(FelicitySAID, ForeignKey("instrument.uid"), nullable=True)
     instrument = relationship("Instrument", lazy="selectin")
-    method_uid = Column(Integer, ForeignKey("method.uid"), nullable=True)
+    method_uid = Column(FelicitySAID, ForeignKey("method.uid"), nullable=True)
     method = relationship("Method", lazy="selectin")
     result = Column(String, nullable=True)
-    analyst_uid = Column(Integer, ForeignKey("user.uid"), nullable=True)
+    analyst_uid = Column(FelicitySAID, ForeignKey("user.uid"), nullable=True)
     analyst = relationship("User", foreign_keys=[analyst_uid], lazy="selectin")
-    submitted_by_uid = Column(Integer, ForeignKey("user.uid"), nullable=True)
+    submitted_by_uid = Column(FelicitySAID, ForeignKey("user.uid"), nullable=True)
     submitted_by = relationship(
         "User", foreign_keys=[submitted_by_uid], lazy="selectin"
     )
     date_submitted = Column(DateTime, nullable=True)
     verified_by = relationship("User", secondary=result_verification, lazy="selectin")
     date_verified = Column(DateTime, nullable=True)
-    invalidated_by_uid = Column(Integer, ForeignKey("user.uid"), nullable=True)
+    invalidated_by_uid = Column(FelicitySAID, ForeignKey("user.uid"), nullable=True)
     invalidated_by = relationship(
         "User", foreign_keys=[invalidated_by_uid], lazy="selectin"
     )
     date_invalidated = Column(DateTime, nullable=True)
-    cancelled_by_uid = Column(Integer, ForeignKey("user.uid"), nullable=True)
+    cancelled_by_uid = Column(FelicitySAID, ForeignKey("user.uid"), nullable=True)
     cancelled_by = relationship(
         "User", foreign_keys=[cancelled_by_uid], lazy="selectin"
     )
@@ -68,7 +70,7 @@ class AnalysisResult(Auditable, BaseMPTT):
     # reflex level
     reflex_level = Column(Integer, nullable=True)
     # worksheet
-    worksheet_uid = Column(Integer, ForeignKey("worksheet.uid"), nullable=True)
+    worksheet_uid = Column(FelicitySAID, ForeignKey("worksheet.uid"), nullable=True)
     worksheet = relationship(
         "WorkSheet", back_populates="analysis_results", lazy="selectin"
     )
@@ -198,8 +200,8 @@ class AnalysisResult(Auditable, BaseMPTT):
     async def filter_for_worksheet(
         cls,
         analyses_status: str,
-        analysis_uid: int,
-        sample_type_uid: List[int],
+        analysis_uid: FelicityIDType,
+        sample_type_uid: List[FelicityIDType],
         limit: int,
     ) -> List[schemas.AnalysisResult]:
 
@@ -237,10 +239,9 @@ class AnalysisResult(Auditable, BaseMPTT):
 
 
 class ResultMutation(BaseAuditDBModel):
-    """Result Mutations tracker
-    """
+    """Result Mutations tracker"""
 
-    result_uid = Column(Integer, ForeignKey("analysisresult.uid"), nullable=False)
+    result_uid = Column(FelicitySAID, ForeignKey("analysisresult.uid"), nullable=False)
     before = Column(String, nullable=False)
     after = Column(String, nullable=False)
     mutation = Column(String, nullable=False)

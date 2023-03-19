@@ -1,10 +1,14 @@
 import base64
 import binascii
 
-from felicity.api.gql.deps import get_current_active_user
 from starlette.authentication import AuthCredentials  # UnauthenticatedUser,
-from starlette.authentication import (AuthenticationBackend,
-                                      AuthenticationError, SimpleUser)
+from starlette.authentication import (
+    AuthenticationBackend,
+    AuthenticationError,
+    SimpleUser,
+)
+
+from felicity.api.gql.deps import get_current_active_user
 
 
 class FelicityAuthBackend(AuthenticationBackend):
@@ -20,7 +24,7 @@ class FelicityAuthBackend(AuthenticationBackend):
                 username, _, password = decoded.partition(":")
                 # TODO: You'd want to verify the username and password here if needed
             elif scheme.lower() == "bearer":
-                """"get is active user from token"""
+                """ "get is active user from token"""
                 user = await get_current_active_user(credentials)
                 username, _, password = user.auth.user_name, None, None
             else:

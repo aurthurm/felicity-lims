@@ -1,10 +1,11 @@
+from graphql import GraphQLError
+from jose import jwt
+from pydantic import ValidationError
+
 from felicity.apps.common import schemas as core_schemas  # noqa
 from felicity.apps.user import models  # noqa
 from felicity.core import security  # noqa
 from felicity.core.config import settings  # noqa
-from graphql import GraphQLError
-from jose import jwt
-from pydantic import ValidationError
 
 
 async def get_current_user(token: str = None) -> models.User:
@@ -17,6 +18,7 @@ async def get_current_user(token: str = None) -> models.User:
         token_data = core_schemas.TokenPayload(**payload)
     except (jwt.JWTError, ValidationError) as e:
         raise Exception(f"Could not validate credentials:{e}")
+
     user = await models.User.get(uid=token_data.sub)
     if not user:
         raise GraphQLError("User not found!")

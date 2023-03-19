@@ -1,8 +1,10 @@
 from datetime import datetime
 from typing import List, Optional
 
-from felicity.apps.common.schemas import BaseAuditModel
 from pydantic import BaseModel, EmailStr
+
+from felicity.core.uid_gen import FelicityIDType
+from felicity.apps.common.schemas import BaseAuditModel
 
 #
 #  Laboratory
@@ -18,7 +20,7 @@ class LaboratoryBase(BaseModel):
     email_cc: Optional[str] = None
     mobile_phone: Optional[str] = None
     business_phone: Optional[str] = None
-    lab_manager_uid: Optional[int] = None
+    lab_manager_uid: Optional[FelicityIDType] = None
     address: Optional[str] = ""
 
 
@@ -33,7 +35,7 @@ class LaboratoryUpdate(LaboratoryBase):
 
 
 class LaboratoryInDBBase(LaboratoryBase):
-    uid: Optional[int] = None
+    uid: Optional[FelicityIDType] = None
 
     class Config:
         orm_mode = True
@@ -50,7 +52,7 @@ class LaboratoryInDB(LaboratoryInDBBase):
 
 
 class LaboratorySettingBase(BaseAuditModel):
-    laboratory_uid: Optional[int] = None
+    laboratory_uid: Optional[FelicityIDType] = None
     laboratory: Optional[Laboratory] = None
     allow_self_verification: Optional[bool] = False
     allow_patient_registration: Optional[bool] = True
@@ -73,7 +75,7 @@ class LaboratorySettingUpdate(LaboratorySettingBase):
 
 
 class LaboratorySetting(LaboratorySettingBase):
-    uid: Optional[int] = None
+    uid: Optional[FelicityIDType] = None
 
     class Config:
         orm_mode = True
@@ -101,7 +103,7 @@ class DepartmentUpdate(DepartmentBase):
 
 
 class DepartmentInDBBase(DepartmentBase):
-    uid: int = None
+    uid: FelicityIDType = None
 
     class Config:
         orm_mode = True
@@ -129,7 +131,7 @@ class InstrumentTypeBase(BaseAuditModel):
 
 
 class InstrumentTypeBaseInDB(InstrumentTypeBase):
-    uid: Optional[int] = None
+    uid: Optional[FelicityIDType] = None
 
     class Config:
         orm_mode = True
@@ -164,26 +166,26 @@ class InstrumentBase(BaseModel):
     name: str = None
     description: str = None
     keyword: str = None
-    instrument_type_uid: int = None
+    instrument_type_uid: FelicityIDType = None
     instrument_type: Optional[InstrumentType]
-    manufacturer_uid: int = None
+    manufacturer_uid: FelicityIDType = None
     manufacturer: Optional["Manufacturer"]
-    supplier_uid: int = None
+    supplier_uid: FelicityIDType = None
     supplier: Optional["Supplier"]
 
 
 # Properties to receive via API on creation
 class InstrumentCreate(InstrumentBase):
-    supplier_uid: Optional[int] = None
+    supplier_uid: Optional[FelicityIDType] = None
 
 
 # Properties to receive via API on update
 class InstrumentUpdate(InstrumentBase):
-    supplier_uid: Optional[int] = None
+    supplier_uid: Optional[FelicityIDType] = None
 
 
 class InstrumentInDBBase(InstrumentBase):
-    uid: int = None
+    uid: FelicityIDType = None
 
     class Config:
         orm_mode = True
@@ -205,7 +207,7 @@ class InstrumentInDB(InstrumentInDBBase):
 
 # Shared properties
 class InstrumentCalibrationBase(BaseModel):
-    instrument_uid: int
+    instrument_uid: FelicityIDType
     instrument: Optional[Instrument]
     calibration_id: str
     date_reported: datetime
@@ -229,7 +231,7 @@ class InstrumentCalibrationUpdate(InstrumentCalibrationBase):
 
 
 class InstrumentCalibrationInDBBase(InstrumentCalibrationBase):
-    uid: int = None
+    uid: FelicityIDType = None
 
     class Config:
         orm_mode = True
@@ -251,7 +253,7 @@ class InstrumentCalibrationInDB(InstrumentCalibrationInDBBase):
 
 # Shared properties
 class CalibrationCertificateBase(BaseModel):
-    instrument_uid: int
+    instrument_uid: FelicityIDType
     instrument: Optional[Instrument]
     certificate_code: str
     internal: bool = True
@@ -275,7 +277,7 @@ class CalibrationCertificateUpdate(CalibrationCertificateBase):
 
 
 class CalibrationCertificateInDBBase(CalibrationCertificateBase):
-    uid: int = None
+    uid: FelicityIDType = None
 
     class Config:
         orm_mode = True
@@ -314,7 +316,7 @@ class MethodUpdate(MethodBase):
 
 
 class MethodInDBBase(MethodBase):
-    uid: int = None
+    uid: FelicityIDType = None
 
     class Config:
         orm_mode = True
@@ -351,7 +353,7 @@ class UnitUpdate(UnitBase):
 
 
 class UnitInDBBase(UnitBase):
-    uid: int = None
+    uid: FelicityIDType = None
 
     class Config:
         orm_mode = True
@@ -389,7 +391,7 @@ class SupplierUpdate(SupplierBase):
 
 
 class SupplierInDBBase(SupplierBase):
-    uid: int = None
+    uid: FelicityIDType = None
 
     class Config:
         orm_mode = True
@@ -427,7 +429,7 @@ class ManufacturerUpdate(ManufacturerBase):
 
 
 class ManufacturerInDBBase(ManufacturerBase):
-    uid: int = None
+    uid: FelicityIDType = None
 
     class Config:
         orm_mode = True
@@ -455,7 +457,7 @@ class CountryBase(BaseModel):
 
 
 class CountryBaseInDB(CountryBase):
-    uid: Optional[int] = None
+    uid: Optional[FelicityIDType] = None
 
     class Config:
         orm_mode = True
@@ -488,7 +490,7 @@ class CountryInDB(CountryBaseInDB):
 # Shared properties
 class ProvinceBase(BaseModel):
     name: Optional[str]
-    country_uid: Optional[int]
+    country_uid: Optional[FelicityIDType]
     code: Optional[str] = None
     email: Optional[str] = None
     email_cc: Optional[str] = None
@@ -500,7 +502,7 @@ class ProvinceBase(BaseModel):
 
 
 class ProvinceBaseInDB(ProvinceBase):
-    uid: Optional[int] = None
+    uid: Optional[FelicityIDType] = None
 
     class Config:
         orm_mode = True
@@ -508,7 +510,7 @@ class ProvinceBaseInDB(ProvinceBase):
 
 # Properties to receive via API on creation
 class ProvinceCreate(ProvinceBase):
-    country_uid: int
+    country_uid: FelicityIDType
 
 
 # Properties to receive via API on update
@@ -533,7 +535,7 @@ class ProvinceInDB(ProvinceBaseInDB):
 # Shared properties
 class DistrictBase(BaseModel):
     name: Optional[str]
-    province_uid: Optional[int]
+    province_uid: Optional[FelicityIDType]
     code: Optional[str] = None
     email: Optional[str] = None
     email_cc: Optional[str] = None
@@ -545,7 +547,7 @@ class DistrictBase(BaseModel):
 
 
 class DistrictBaseInDB(DistrictBase):
-    uid: Optional[int] = None
+    uid: Optional[FelicityIDType] = None
 
     class Config:
         orm_mode = True
@@ -553,7 +555,7 @@ class DistrictBaseInDB(DistrictBase):
 
 # Properties to receive via API on creation
 class DistrictCreate(DistrictBase):
-    province_uid: int
+    province_uid: FelicityIDType
 
 
 # Properties to receive via API on update

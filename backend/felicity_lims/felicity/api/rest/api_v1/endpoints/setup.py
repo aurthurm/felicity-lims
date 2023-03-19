@@ -2,9 +2,10 @@ import logging
 from typing import Any, Optional
 
 from fastapi import APIRouter
-from felicity.apps.setup import models, schemas
-from felicity.init import (requisite_setup, default_setup)
 from pydantic import BaseModel
+
+from felicity.apps.setup import models, schemas
+from felicity.init import default_setup, requisite_setup
 
 router = APIRouter()
 
@@ -57,7 +58,11 @@ async def register_laboratory(*, form: LabNameIn) -> Any:
         }
 
     laboratory = await models.Laboratory.get_by_setup_name("felicity")
-    return {"laboratory": laboratory, "installed": True, "message": "installation success"}
+    return {
+        "laboratory": laboratory,
+        "installed": True,
+        "message": "installation success",
+    }
 
 
 @router.post("/load-default-setup", response_model=SetupResponse)

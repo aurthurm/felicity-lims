@@ -52,7 +52,7 @@ export interface IWorkSheet {
     assignedCount: number;
     analyst: any;
     priority: number,
-    methodUid?: number;
+    methodUid?: string;
     method?: IMethod;
     template?: IWorkSheetTemplate
 

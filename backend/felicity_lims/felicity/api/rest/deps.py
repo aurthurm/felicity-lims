@@ -1,11 +1,12 @@
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
+from jose import jwt
+from pydantic import ValidationError
+
 from felicity.apps.common import schemas
 from felicity.apps.user import models
 from felicity.core import security
 from felicity.core.config import settings
-from jose import jwt
-from pydantic import ValidationError
 
 reusable_oauth2 = OAuth2PasswordBearer(
     tokenUrl=f"{settings.API_V1_STR}/login/access-token"
@@ -30,7 +31,7 @@ async def get_current_user(token: str = Depends(reusable_oauth2)) -> models.User
 
 
 def get_current_active_user(
-    current_user: models.User = Depends(get_current_user)
+    current_user: models.User = Depends(get_current_user),
 ) -> models.User:
     if not current_user.is_active:
         raise HTTPException(status_code=400, detail="Inactive user")
@@ -38,7 +39,7 @@ def get_current_active_user(
 
 
 def get_current_active_superuser(
-    current_user: models.User = Depends(get_current_user)
+    current_user: models.User = Depends(get_current_user),
 ) -> models.User:
     if not current_user.is_superuser:
         raise HTTPException(

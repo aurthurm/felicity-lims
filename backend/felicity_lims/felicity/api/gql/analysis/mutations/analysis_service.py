@@ -3,8 +3,10 @@ from dataclasses import field
 from typing import List, Optional
 
 import strawberry  # noqa
+
 from felicity.api.gql import OperationError, auth_from_info, verify_user_auth
 from felicity.api.gql.analysis.types import analysis as a_types
+from felicity.core.uid_gen import FelicityID
 from felicity.apps.analysis import schemas
 from felicity.apps.analysis.models import analysis as analysis_models
 from felicity.apps.setup.models import Method
@@ -19,11 +21,11 @@ class AnalysisInputType:
     keyword: str
     sort_key: int
     description: str = ""
-    department_uid: Optional[int] = None
+    department_uid: Optional[FelicityID] = None
     sample_types: Optional[List[int]] = field(default_factory=list)
     methods: Optional[List[int]] = field(default_factory=list)
-    category_uid: Optional[int] = None
-    unit_uid: Optional[int] = None
+    category_uid: Optional[FelicityID] = None
+    unit_uid: Optional[FelicityID] = None
     internal_use: Optional[bool] = False
     tat_length_minutes: int = None
     precision: int = None
@@ -91,7 +93,7 @@ async def create_analysis(info, payload: AnalysisInputType) -> ProfilesServiceRe
 
 @strawberry.mutation
 async def update_analysis(
-    info, uid: int, payload: AnalysisInputType
+    info, uid: FelicityID, payload: AnalysisInputType
 ) -> ProfilesServiceResponse:
 
     is_authenticated, felicity_user = await auth_from_info(info)

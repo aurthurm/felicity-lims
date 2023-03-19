@@ -1,5 +1,6 @@
-import pytest
 import logging
+
+import pytest
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -39,15 +40,14 @@ update_stock_item_query = """
 @pytest.mark.order(300)
 async def test_add_stock_item(gql_client, auth_data):
     stock_item = {
-        'name': "Cuvete",
-        'description': "Chemistry testing cuvette for BS500"
+        "name": "Cuvete",
+        "description": "Chemistry testing cuvette for BS500",
     }
-    response = await gql_client.post('/felicity-gql', json={
-        "query": add_stock_item_query,
-        "variables": {
-            "payload": stock_item
-        }
-    }, headers=auth_data['headers'])
+    response = await gql_client.post(
+        "/felicity-gql",
+        json={"query": add_stock_item_query, "variables": {"payload": stock_item}},
+        headers=auth_data["headers"],
+    )
 
     logger.info(f"register stock item response: {response} {response.json()}")
 
@@ -62,16 +62,17 @@ async def test_add_stock_item(gql_client, auth_data):
 @pytest.mark.order(301)
 async def test_update_stock_item(gql_client, auth_data):
     stock_item = {
-        'name': "Cuvette",
-        'description': "Chemistry testing cuvette for Mindray BS500"
+        "name": "Cuvette",
+        "description": "Chemistry testing cuvette for Mindray BS500",
     }
-    response = await gql_client.post('/felicity-gql', json={
-        "query": update_stock_item_query,
-        "variables": {
-            "uid": 1,
-            "payload": stock_item
-        }
-    }, headers=auth_data['headers'])
+    response = await gql_client.post(
+        "/felicity-gql",
+        json={
+            "query": update_stock_item_query,
+            "variables": {"uid": 1, "payload": stock_item},
+        },
+        headers=auth_data["headers"],
+    )
 
     logger.info(f"register store room response: {response} {response.json()}")
 

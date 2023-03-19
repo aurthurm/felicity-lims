@@ -4,26 +4,24 @@ from typing import List
 
 from fastapi import FastAPI, Request, WebSocket
 from fastapi.staticfiles import StaticFiles
+from starlette.concurrency import run_until_first_complete
+from starlette.middleware.authentication import AuthenticationMiddleware
+from starlette.middleware.cors import CORSMiddleware
+from strawberry.asgi import GraphQL
+from strawberry.subscriptions import GRAPHQL_TRANSPORT_WS_PROTOCOL, GRAPHQL_WS_PROTOCOL
+
 from felicity.api.gql.schema import gql_schema  # noqa
 from felicity.api.rest.api_v1.api import api_router  # noqa
 from felicity.apps.common.channel import broadcast
-from felicity.apps.impress.tasks import impress_results
-from felicity.apps.job.sched import (felicity_halt_workforce,
-                                     felicity_workforce_init)
+from felicity.apps.job.sched import felicity_halt_workforce, felicity_workforce_init
 from felicity.apps.notification.utils import FelicityNotifier, FelicityStreamer
 from felicity.core.config import settings  # noqa
 from felicity.core.repeater import repeat_every
 from felicity.init import initialize_felicity  # noqa
 from felicity.middlewares.auth_backend import FelicityAuthBackend
 from felicity.utils.dirs import resolve_root_dirs
-from felicity.views import default_home_page
 from felicity.utils.email.email import send_new_account_email
-from starlette.concurrency import run_until_first_complete
-from starlette.middleware.authentication import AuthenticationMiddleware
-from starlette.middleware.cors import CORSMiddleware
-from strawberry.asgi import GraphQL
-from strawberry.subscriptions import (GRAPHQL_TRANSPORT_WS_PROTOCOL,
-                                      GRAPHQL_WS_PROTOCOL)
+from felicity.views import default_home_page
 
 # uvicorn_error = logging.getLogger("uvicorn.error")
 # uvicorn_error.propagate = False

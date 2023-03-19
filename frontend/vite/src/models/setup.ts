@@ -4,15 +4,15 @@ import { IGenericLocation } from "./location";
 
 export interface ILaboratory extends IGenericLocation {
   labName?: string,
-  labManagerUid?: number,
+  labManagerUid?: string,
   labManager?: IUser,
   logo?: string,
   address?: string,
 }
 
 export interface ILaboratorySetting {
-  uid?: number,
-  laboratoryUid?: number,
+  uid?: string,
+  laboratoryUid?: string,
   laboratory?: ILaboratory,
   allowSelfVerification: boolean,
   allowPatientRegistration: boolean,
@@ -29,45 +29,45 @@ export interface ILaboratorySetting {
 
 
 export interface ISupplier {
-  uid?: number;
+  uid?: string;
   name?: string;
   description?: string;
 }
 
 export interface IManufacturer {
-  uid?: number;
+  uid?: string;
   name?: string;
   description?: string;
 }
 
 export interface IDepartment {
-  uid?: number;
+  uid?: string;
   name?: string;
   description?: string;
 }
 
 export interface IInstrumentType {
-  uid?: number;
+  uid?: string;
   name?: string;
   description?: string;
 }
 
 
 export interface IInstrument {
-  uid?: number;
+  uid?: string;
   name?: string;
   keyword?: string;
   description?: string;
-  supplierUid?: number;
+  supplierUid?: string;
   supplier?: ISupplier;
-  manufacturerUid?: number;
+  manufacturerUid?: string;
   manufacturer?: IManufacturer;
-  instrumentTypeUid?: number;
+  instrumentTypeUid?: string;
   instrumentType?: IInstrumentType;
 }
   
 export interface IMethod {
-  uid?: number;
+  uid?: string;
   name?: string;
   keyword?: string;
   description?: string;
@@ -76,13 +76,13 @@ export interface IMethod {
 }
 
 export interface IDepartment {
-  uid?: number;
+  uid?: string;
   name?: string;
   description?: string;
 }
 
 export interface IUnit {
-  uid?: number,
+  uid?: string,
   name?: string,
   isSiUnit?: boolean;
 }

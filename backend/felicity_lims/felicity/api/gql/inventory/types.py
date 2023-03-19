@@ -6,21 +6,22 @@ import strawberry  # noqa
 from felicity.api.gql import PageInfo
 from felicity.api.gql.setup.types import DepartmentType, SupplierType
 from felicity.api.gql.storage.types import StoreRoomType
+from felicity.core.uid_gen import FelicityID
 from felicity.api.gql.user.types import UserType
 
 
 @strawberry.type
 class StockItemType:
-    uid: int
+    uid: FelicityID
     name: str
-    department_uid: Optional[int]
+    department_uid: Optional[FelicityID]
     department: Optional[DepartmentType]
     description: Optional[str]
     created_at: Optional[datetime]
-    created_by_uid: Optional[int]
+    created_by_uid: Optional[FelicityID]
     created_by: Optional[UserType]
     updated_at: Optional[datetime]
-    updated_by_uid: Optional[int]
+    updated_by_uid: Optional[FelicityID]
     updated_by: Optional[UserType]
 
 
@@ -40,74 +41,74 @@ class StockItemCursorPage:
 
 @strawberry.type
 class StockCategoryType:
-    uid: int
+    uid: FelicityID
     name: str
     description: Optional[str]
     created_at: Optional[datetime]
-    created_by_uid: Optional[int]
+    created_by_uid: Optional[FelicityID]
     created_by: Optional[UserType]
     updated_at: Optional[datetime]
-    updated_by_uid: Optional[int]
+    updated_by_uid: Optional[FelicityID]
     updated_by: Optional[UserType]
 
 
 @strawberry.type
 class HazardType:
-    uid: int
+    uid: FelicityID
     name: str
     description: Optional[str]
     created_at: Optional[datetime]
-    created_by_uid: Optional[int]
+    created_by_uid: Optional[FelicityID]
     created_by: Optional[UserType]
     updated_at: Optional[datetime]
-    updated_by_uid: Optional[int]
+    updated_by_uid: Optional[FelicityID]
     updated_by: Optional[UserType]
 
 
 @strawberry.type
 class StockUnitType:
-    uid: int
+    uid: FelicityID
     name: str
     created_at: Optional[datetime]
-    created_by_uid: Optional[int]
+    created_by_uid: Optional[FelicityID]
     created_by: Optional[UserType]
     updated_at: Optional[datetime]
-    updated_by_uid: Optional[int]
+    updated_by_uid: Optional[FelicityID]
     updated_by: Optional[UserType]
 
 
 @strawberry.type
 class StockPackagingType:
-    uid: int
+    uid: FelicityID
     name: str
     created_at: Optional[datetime]
-    created_by_uid: Optional[int]
+    created_by_uid: Optional[FelicityID]
     created_by: Optional[UserType]
     updated_at: Optional[datetime]
-    updated_by_uid: Optional[int]
+    updated_by_uid: Optional[FelicityID]
     updated_by: Optional[UserType]
 
 
 @strawberry.type
 class StockProductType:
-    uid: int
+    uid: FelicityID
     name: str
-    department_uid: Optional[int]
+    department_uid: Optional[FelicityID]
     department: Optional[DepartmentType]
-    supplier_uid: Optional[int]
+    supplier_uid: Optional[FelicityID]
     supplier: Optional[SupplierType]
-    category_uid: Optional[int]
+    category_uid: Optional[FelicityID]
     category: Optional[StockCategoryType]
-    hazard_uid: Optional[int]
+    hazard_uid: Optional[FelicityID]
     hazard: Optional[HazardType]
-    store_room_uid: Optional[int]
+    store_room_uid: Optional[FelicityID]
     store_room: Optional[StoreRoomType]
     lot_number: Optional[str]
     batch: Optional[str]
     size: Optional[int]
-    unit_uid: Optional[int]
+    unit_uid: Optional[FelicityID]
     unit: Optional[StockUnitType]
-    packaging_uid: Optional[int]
+    packaging_uid: Optional[FelicityID]
     packaging: Optional[StockPackagingType]
     price: Optional[int]
     quantity_received: Optional[int]
@@ -115,13 +116,13 @@ class StockProductType:
     remaining: Optional[int]
     date_received: Optional[datetime]
     expiry_date: Optional[datetime]
-    received_by_uid: Optional[int]
+    received_by_uid: Optional[FelicityID]
     received_by: Optional[UserType]
     created_at: Optional[datetime]
-    created_by_uid: Optional[int]
+    created_by_uid: Optional[FelicityID]
     created_by: Optional[UserType]
     updated_at: Optional[datetime]
-    updated_by_uid: Optional[int]
+    updated_by_uid: Optional[FelicityID]
     updated_by: Optional[UserType]
 
 
@@ -141,19 +142,19 @@ class StockProductCursorPage:
 
 @strawberry.type
 class StockOrderType:
-    uid: int
-    order_by_uid: Optional[int]
+    uid: FelicityID
+    order_by_uid: Optional[FelicityID]
     order_by: Optional[UserType]
-    department_uid: Optional[int]
+    department_uid: Optional[FelicityID]
     department: Optional[DepartmentType]
     status: Optional[str]
     remarks: Optional[str]
     order_number: Optional[str]
     created_at: Optional[datetime]
-    created_by_uid: Optional[int]
+    created_by_uid: Optional[FelicityID]
     created_by: Optional[UserType]
     updated_at: Optional[datetime]
-    updated_by_uid: Optional[int]
+    updated_by_uid: Optional[FelicityID]
     updated_by: Optional[UserType]
 
 
@@ -173,37 +174,37 @@ class StockOrderCursorPage:
 
 @strawberry.type
 class StockOrderProductType:
-    uid: int
-    product_uid: Optional[int]
+    uid: FelicityID
+    product_uid: Optional[FelicityID]
     product: Optional[StockProductType]
-    order_uid: Optional[int]
+    order_uid: Optional[FelicityID]
     order: Optional[StockOrderType]
     price: Optional[int]
     quantity: Optional[int]
     created_at: Optional[datetime]
-    created_by_uid: Optional[int]
+    created_by_uid: Optional[FelicityID]
     created_by: Optional[UserType]
     updated_at: Optional[datetime]
-    updated_by_uid: Optional[int]
+    updated_by_uid: Optional[FelicityID]
     updated_by: Optional[UserType]
 
 
 @strawberry.type
 class StockTransactionType:
-    uid: int
-    product_uid: Optional[int]
+    uid: FelicityID
+    product_uid: Optional[FelicityID]
     product: Optional[StockProductType]
     issued: Optional[int]
-    department_uid: Optional[int]
+    department_uid: Optional[FelicityID]
     department: Optional[DepartmentType]
     date_issued: Optional[datetime]
-    transaction_by_uid: Optional[int]
+    transaction_by_uid: Optional[FelicityID]
     transaction_by: Optional[UserType]
     created_at: Optional[datetime]
-    created_by_uid: Optional[int]
+    created_by_uid: Optional[FelicityID]
     created_by: Optional[UserType]
     updated_at: Optional[datetime]
-    updated_by_uid: Optional[int]
+    updated_by_uid: Optional[FelicityID]
     updated_by: Optional[UserType]
 
 
@@ -223,20 +224,20 @@ class StockTransactionCursorPage:
 
 @strawberry.type
 class StockAdjustmentType:
-    uid: int
-    product_uid: Optional[int]
+    uid: FelicityID
+    product_uid: Optional[FelicityID]
     product: Optional[StockProductType]
     adjustment_type: Optional[str]
     adjust: Optional[int]
     adjustment_date: Optional[datetime]
     remarks: Optional[str]
-    adjustment_by_uid: Optional[int]
+    adjustment_by_uid: Optional[FelicityID]
     adjustment_by: Optional[UserType]
     created_at: Optional[datetime]
-    created_by_uid: Optional[int]
+    created_by_uid: Optional[FelicityID]
     created_by: Optional[UserType]
     updated_at: Optional[datetime]
-    updated_by_uid: Optional[int]
+    updated_by_uid: Optional[FelicityID]
     updated_by: Optional[UserType]
 
 

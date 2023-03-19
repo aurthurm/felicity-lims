@@ -41,7 +41,7 @@ let brainForm = reactive({
 }) as IReflexBrain;
 
 onMounted(async () => {
-  reflexStore.fetchReflexRuleByUid(+route.params.uid);
+  reflexStore.fetchReflexRuleByUid(route.params.uid);
 });
 
 const stringToNum = (num: number) => {

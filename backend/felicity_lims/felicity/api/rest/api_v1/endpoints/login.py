@@ -3,13 +3,17 @@ from typing import Any
 
 from fastapi import APIRouter, Body, Depends, HTTPException
 from fastapi.security import OAuth2PasswordRequestForm
+
 from felicity.api.rest import deps
 from felicity.apps.common import schemas as core_schemas
 from felicity.apps.user import models, schemas
 from felicity.core import security
 from felicity.core.config import settings
-from felicity.core.security import (get_password_hash,
-                                    verify_password_reset_token, generate_password_reset_token)
+from felicity.core.security import (
+    generate_password_reset_token,
+    get_password_hash,
+    verify_password_reset_token,
+)
 from felicity.utils.email.email import send_reset_password_email
 
 router = APIRouter()
@@ -73,7 +77,7 @@ async def reset_password(token: str = Body(...), new_password: str = Body(...)) 
     user_id = verify_password_reset_token(token)
     if not user_id:
         raise HTTPException(status_code=400, detail="Invalid token")
-    user = await models.User.get(uid=int(user_id))
+    user = await models.User.get(uid=user_id)
     if not user:
         raise HTTPException(
             status_code=404,

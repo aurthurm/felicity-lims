@@ -1,8 +1,9 @@
 import logging
-from typing import List
 from datetime import datetime
-from felicity.apps.analysis.models.analysis import Sample
+from typing import List
+
 from felicity.apps.analysis.conf import states
+from felicity.apps.analysis.models.analysis import Sample
 from felicity.apps.impress.models import ReportImpress
 from felicity.apps.impress.reports.generic import FelicityImpress
 from felicity.apps.impress.schemas import ReportImpressCreate
@@ -15,7 +16,17 @@ streamer = FelicityStreamer()
 
 
 def impress_marshaller(obj):
-    exclude = ["auth", "preference", "groups", "right", "left", "level", "tree_id", "parent_id", "parent"]
+    exclude = [
+        "auth",
+        "preference",
+        "groups",
+        "right",
+        "left",
+        "level",
+        "tree_id",
+        "parent_id",
+        "parent",
+    ]
     if not hasattr(obj, "__dict__"):
         if obj is None:
             return ""
@@ -56,7 +67,7 @@ async def impress_samples(sample_meta: List[any], user):
             states.sample.AWAITING,
             states.sample.APPROVED,
             states.sample.PUBLISHING,
-            states.sample.PUBLISHED
+            states.sample.PUBLISHED,
         ]:
             impress_meta = impress_marshaller(sample)
 
@@ -72,18 +83,20 @@ async def impress_samples(sample_meta: List[any], user):
             impress_engine = FelicityImpress()
             sample_pdf = await impress_engine.generate(impress_meta, report_state)
 
-            sc_in = ReportImpressCreate(**{
-                "state": report_state,
-                "sample_uid": sample.uid,
-                "json_content": impress_meta,
-                "pdf_content": sample_pdf,
-                "email_required": False,
-                "email_sent": False,
-                "sms_required": False,
-                "sms_sent": False,
-                "generated_by_uid": user.uid,
-                "date_generated": datetime.now()
-            })
+            sc_in = ReportImpressCreate(
+                **{
+                    "state": report_state,
+                    "sample_uid": sample.uid,
+                    "json_content": impress_meta,
+                    "pdf_content": sample_pdf,
+                    "email_required": False,
+                    "email_sent": False,
+                    "sms_required": False,
+                    "sms_sent": False,
+                    "generated_by_uid": user.uid,
+                    "date_generated": datetime.now(),
+                }
+            )
 
             await ReportImpress.create(sc_in)
             if action != "pre-publish":

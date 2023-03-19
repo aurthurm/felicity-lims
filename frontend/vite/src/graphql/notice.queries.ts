@@ -2,7 +2,7 @@ import gql from 'graphql-tag'
 
 
 export const GET_NOTICES_BY_CREATOR = gql`
-  query getNoticesByCreatorUid($uid: Int!) {
+  query getNoticesByCreatorUid($uid: FelicityID!) {
     noticesByCreator(uid: $uid){
       uid
       title
@@ -38,7 +38,7 @@ export const GET_ALL_NOTICES = gql`
 
 
 export const GET_NOTICE_BY_UID = gql`
-  query getDocumentByUid($uid: Int!) {
+  query getDocumentByUid($uid: FelicityID!) {
     documentByUid(uid: $uid){
       uid
       name

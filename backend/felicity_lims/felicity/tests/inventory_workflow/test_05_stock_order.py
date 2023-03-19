@@ -1,5 +1,6 @@
-import pytest
 import logging
+
+import pytest
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -45,7 +46,7 @@ async def test_create_stock_order(gql_client, auth_data):
     """
 
     stock_order = {
-        'orderProducts': [
+        "orderProducts": [
             {"productUid": 1, "quantity": 5},
             {"productUid": 2, "quantity": 5},
             {"productUid": 3, "quantity": 5},
@@ -53,12 +54,11 @@ async def test_create_stock_order(gql_client, auth_data):
             {"productUid": 5, "quantity": 5},
         ]
     }
-    response = await gql_client.post('/felicity-gql', json={
-        "query": add_stock_order_mutation,
-        "variables": {
-            "payload": stock_order
-        }
-    }, headers=auth_data['headers'])
+    response = await gql_client.post(
+        "/felicity-gql",
+        json={"query": add_stock_order_mutation, "variables": {"payload": stock_order}},
+        headers=auth_data["headers"],
+    )
 
     logger.info(f"register stock order response: {response} {response.json()}")
 
@@ -109,13 +109,14 @@ async def test_update_stock_order(gql_client, auth_data):
         {"productUid": 3, "quantity": 6},
         {"productUid": 4, "quantity": 5},
     ]
-    response = await gql_client.post('/felicity-gql', json={
-        "query": add_stock_order_mutation,
-        "variables": {
-            "uid": 1,
-            "payload": stock_mods
-        }
-    }, headers=auth_data['headers'])
+    response = await gql_client.post(
+        "/felicity-gql",
+        json={
+            "query": add_stock_order_mutation,
+            "variables": {"uid": 1, "payload": stock_mods},
+        },
+        headers=auth_data["headers"],
+    )
 
     logger.info(f"register stock order response: {response} {response.json()}")
     assert response.status_code == 200

@@ -2,8 +2,10 @@ import logging
 from typing import Optional
 
 import strawberry  # noqa
+
 from felicity.api.gql import OperationError, auth_from_info, verify_user_auth
 from felicity.api.gql.analysis.types import analysis as a_types
+from felicity.core.uid_gen import FelicityID
 from felicity.apps.analysis import schemas
 from felicity.apps.analysis.models import analysis as analysis_models
 
@@ -15,25 +17,25 @@ logger = logging.getLogger(__name__)
 class AnalysisInterimInput:
     key: int
     value: str
-    analysis_uid: int
-    instrument_uid: int
+    analysis_uid: FelicityID
+    instrument_uid: FelicityID
 
 
 @strawberry.input
 class AnalysisCorrectionFactorInput:
     factor: float
-    analysis_uid: int
-    instrument_uid: int
-    method_uid: int
+    analysis_uid: FelicityID
+    instrument_uid: FelicityID
+    method_uid: FelicityID
 
 
 @strawberry.input
 class AnalysisDetectionLimitInput:
     lower_limit: float
     upper_limit: float
-    analysis_uid: int
-    instrument_uid: int
-    method_uid: int
+    analysis_uid: FelicityID
+    instrument_uid: FelicityID
+    method_uid: FelicityID
 
 
 @strawberry.input
@@ -41,14 +43,14 @@ class AnalysisUncertaintyInput:
     min: float
     max: float
     value: float
-    analysis_uid: int
-    instrument_uid: int
-    method_uid: int
+    analysis_uid: FelicityID
+    instrument_uid: FelicityID
+    method_uid: FelicityID
 
 
 @strawberry.input
 class AnalysisSpecificationInput:
-    analysis_uid: int
+    analysis_uid: FelicityID
     min: Optional[float] = None
     max: Optional[float] = None
     min_warn: Optional[float] = None
@@ -60,8 +62,8 @@ class AnalysisSpecificationInput:
     gender: Optional[str] = None
     age_min: Optional[int] = None
     age_max: Optional[int] = None
-    method_uid: Optional[int] = None
-    unit_uid: Optional[int] = None
+    method_uid: Optional[FelicityID] = None
+    unit_uid: Optional[FelicityID] = None
 
 
 AnalysisInterimResponse = strawberry.union(
@@ -111,15 +113,15 @@ async def create_analysis_interim(
         incoming[k] = v
 
     obj_in = schemas.AnalysisInterimCreate(**incoming)
-    interim: analysis_models.AnalysisInterim = await analysis_models.AnalysisInterim.create(
-        obj_in
+    interim: analysis_models.AnalysisInterim = (
+        await analysis_models.AnalysisInterim.create(obj_in)
     )
     return a_types.AnalysisInterimType(**interim.marshal_simple())
 
 
 @strawberry.mutation
 async def update_analysis_interim(
-    info, uid: int, payload: AnalysisInterimInput
+    info, uid: FelicityID, payload: AnalysisInterimInput
 ) -> AnalysisInterimResponse:
 
     is_authenticated, felicity_user = await auth_from_info(info)
@@ -168,15 +170,15 @@ async def create_analysis_correction_factor(
         incoming[k] = v
 
     obj_in = schemas.AnalysisCorrectionFactorCreate(**incoming)
-    correction_factor: analysis_models.AnalysisCorrectionFactor = await analysis_models.AnalysisCorrectionFactor.create(
-        obj_in
+    correction_factor: analysis_models.AnalysisCorrectionFactor = (
+        await analysis_models.AnalysisCorrectionFactor.create(obj_in)
     )
     return a_types.AnalysisCorrectionFactorType(**correction_factor.marshal_simple())
 
 
 @strawberry.mutation
 async def update_analysis_correction_factor(
-    info, uid: int, payload: AnalysisCorrectionFactorInput
+    info, uid: FelicityID, payload: AnalysisCorrectionFactorInput
 ) -> AnalysisCorrectionFactorResponse:
 
     is_authenticated, felicity_user = await auth_from_info(info)
@@ -227,15 +229,15 @@ async def create_analysis_detection_limit(
         incoming[k] = v
 
     obj_in = schemas.AnalysisDetectionLimitCreate(**incoming)
-    detection_limit: analysis_models.AnalysisDetectionLimit = await analysis_models.AnalysisDetectionLimit.create(
-        obj_in
+    detection_limit: analysis_models.AnalysisDetectionLimit = (
+        await analysis_models.AnalysisDetectionLimit.create(obj_in)
     )
     return a_types.AnalysisDetectionLimitType(**detection_limit.marshal_simple())
 
 
 @strawberry.mutation
 async def update_analysis_detection_limit(
-    info, uid: int, payload: AnalysisDetectionLimitInput
+    info, uid: FelicityID, payload: AnalysisDetectionLimitInput
 ) -> AnalysisDetectionLimitResponse:
 
     is_authenticated, felicity_user = await auth_from_info(info)
@@ -286,15 +288,15 @@ async def create_analysis_uncertainty(
         incoming[k] = v
 
     obj_in = schemas.AnalysisUncertaintyCreate(**incoming)
-    uncertainty: analysis_models.AnalysisUncertainty = await analysis_models.AnalysisUncertainty.create(
-        obj_in
+    uncertainty: analysis_models.AnalysisUncertainty = (
+        await analysis_models.AnalysisUncertainty.create(obj_in)
     )
     return a_types.AnalysisUncertaintyType(**uncertainty.marshal_simple())
 
 
 @strawberry.mutation
 async def update_analysis_uncertainty(
-    info, uid: int, payload: AnalysisUncertaintyInput
+    info, uid: FelicityID, payload: AnalysisUncertaintyInput
 ) -> AnalysisUncertaintyResponse:
 
     is_authenticated, felicity_user = await auth_from_info(info)
@@ -349,15 +351,15 @@ async def create_analysis_specification(
         incoming[k] = v
 
     obj_in = schemas.AnalysisSpecificationCreate(**incoming)
-    specification: analysis_models.AnalysisSpecification = await analysis_models.AnalysisSpecification.create(
-        obj_in
+    specification: analysis_models.AnalysisSpecification = (
+        await analysis_models.AnalysisSpecification.create(obj_in)
     )
     return a_types.AnalysisSpecificationType(**specification.marshal_simple())
 
 
 @strawberry.mutation
 async def update_analysis_specification(
-    info, uid: int, payload: AnalysisSpecificationInput
+    info, uid: FelicityID, payload: AnalysisSpecificationInput
 ) -> AnalysisSpecificationResponse:
 
     is_authenticated, felicity_user = await auth_from_info(info)

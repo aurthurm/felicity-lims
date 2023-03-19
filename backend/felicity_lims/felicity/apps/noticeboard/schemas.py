@@ -4,6 +4,7 @@ from typing import List, Optional
 from felicity.apps.common.schemas import BaseAuditModel
 from felicity.apps.setup.schemas import Department
 from felicity.apps.user.schemas import Group, User
+from felicity.core.uid_gen import FelicityIDType
 
 
 #
@@ -19,7 +20,7 @@ class NoticeBase(BaseAuditModel):
 
 
 class Notice(NoticeBase):
-    uid: Optional[int] = None
+    uid: Optional[FelicityIDType] = None
 
     class Config:
         orm_mode = True

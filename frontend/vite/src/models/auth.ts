@@ -1,18 +1,18 @@
 export interface IUser {
-    uid?: number;
-    userUid?: number;
+    uid?: string;
+    userUid?: string;
     firstName?: string;
     lastName?: string;
     email?: string;
     mobilePhone?: string;
     businessPhone?: string;
-    groupUid?: number;
+    groupUid?: string;
     group?: IGroup;
     role?: string; // group name
     groups?: IGroup[];
     isActive?: boolean;
     isSuperuser?: boolean;
-    authUid?: number;
+    authUid?: string;
     auth?: IUserAuth;
     // for API axios
     first_name?: string;
@@ -20,17 +20,17 @@ export interface IUser {
 }
 
 export interface IUserAuth {
-    uid?: number;
+    uid?: string;
     userName?: string;
     isBlocked?: boolean;
     userType?: string;
-    userUid?: number;
+    userUid?: string;
     password?: string;
     passwordc?: string;
 }
 
 export interface IPermission {
-    uid?: number;
+    uid?: string;
     action?: string;
     target?: string;
     active?: boolean;
@@ -38,7 +38,7 @@ export interface IPermission {
 }
 
 export interface IGroup {
-    uid?: number;
+    uid?: string;
     name?: string;
     keyword?: string;
     permissions?: IPermission[];

@@ -1,8 +1,10 @@
 import logging
 
 import strawberry  # noqa
+
 from felicity.api.gql import OperationError, auth_from_info, verify_user_auth
 from felicity.api.gql.analysis.types import analysis as a_types
+from felicity.core.uid_gen import FelicityID
 from felicity.apps.analysis import schemas
 from felicity.apps.analysis.models import analysis as analysis_models
 
@@ -12,7 +14,7 @@ logger = logging.getLogger(__name__)
 
 @strawberry.input
 class ResultOptionInputType:
-    analysis_uid: int
+    analysis_uid: FelicityID
     option_key: int
     value: str
 
@@ -56,15 +58,15 @@ async def create_result_option(
         incoming[k] = v
 
     obj_in = schemas.ResultOptionCreate(**incoming)
-    result_option: analysis_models.ResultOption = await analysis_models.ResultOption.create(
-        obj_in
+    result_option: analysis_models.ResultOption = (
+        await analysis_models.ResultOption.create(obj_in)
     )
     return a_types.ResultOptionType(**result_option.marshal_simple())
 
 
 @strawberry.mutation
 async def update_result_option(
-    info, uid: int, payload: ResultOptionInputType
+    info, uid: FelicityID, payload: ResultOptionInputType
 ) -> ResultOptionResponse:
 
     is_authenticated, felicity_user = await auth_from_info(info)

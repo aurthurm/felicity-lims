@@ -1,5 +1,6 @@
-import pytest
 import logging
+
+import pytest
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -21,9 +22,9 @@ async def test_check_installation(client):
 @pytest.mark.asyncio
 @pytest.mark.order(2)
 async def test_install(client):
-    response = await client.post("/setup/installation", json={
-        "name": "Test Laboratory"
-    })
+    response = await client.post(
+        "/setup/installation", json={"name": "Test Laboratory"}
+    )
     logger.info(f"reset-password response: {response} {response.json()}")
     assert response.status_code == 200
     logger.info(f"reset-password response: {response} {response.json()}")

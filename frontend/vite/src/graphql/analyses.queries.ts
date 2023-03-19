@@ -304,7 +304,7 @@ export const GET_ALL_ANALYSES_CATEGORIES = gql`
 
 
 export const GET_ALL_SAMPLES = gql`
-    query getAllSamples($first: Int!, $after: String, $before: String, $status: String!, $text: String!, $clientUid: Int!, $sortBy: [String!]) {
+    query getAllSamples($first: Int!, $after: String, $before: String, $status: String!, $text: String!, $clientUid: FelicityID!, $sortBy: [String!]) {
         sampleAll(pageSize: $first, afterCursor: $after, beforeCursor: $before, status: $status, text: $text, clientUid: $clientUid, sortBy: $sortBy) {
           totalCount
         	pageInfo {
@@ -403,7 +403,7 @@ export const GET_ALL_SAMPLES = gql`
 
 
 export const GET_ANALYSIS_REQUESTS_BY_PATIENT_UID = gql`
-query getAnalysesRequestsByPatientUid($uid: Int!) {
+query getAnalysesRequestsByPatientUid($uid: FelicityID!) {
   analysisRequestsByPatientUid(uid: $uid) {
     uid
     clientRequestId
@@ -480,7 +480,7 @@ query getAnalysesRequestsByPatientUid($uid: Int!) {
 
 
 export const GET_ANALYSIS_REQUESTS_BY_CLIENT_UID = gql`
-query getAnalysesRequestsByClientUid($uid: Int!) {
+query getAnalysesRequestsByClientUid($uid: FelicityID!) {
   analysisRequestsByClientUid(uid: $uid) {
     uid
     clientRequestId
@@ -557,7 +557,7 @@ query getAnalysesRequestsByClientUid($uid: Int!) {
 }`;
 
 export const GET_ANALYSIS_RESULTS_BY_SAMPLE_UID = gql`
-  query getAnalysesResultsBySampleUid($uid: Int!) {
+  query getAnalysesResultsBySampleUid($uid: FelicityID!) {
     analysisResultBySampleUid(uid: $uid) {
         uid
         status
@@ -619,8 +619,8 @@ export const GET_ANALYSIS_RESULTS_FOR_WS_ASSIGN = gql`
     $after: String, 
     $text: String!, 
     $sortBy: [String!],
-    $analysisUid: Int!, 
-    $sampleTypeUid: Int!
+    $analysisUid: FelicityID!, 
+    $sampleTypeUid: FelicityID!
     ) {
     analysisResultsForWsAssign(
       pageSize: $first, 
@@ -662,7 +662,7 @@ export const GET_ANALYSIS_RESULTS_FOR_WS_ASSIGN = gql`
 
 
 export const GET_SAMPLE_BY_UID = gql`
-  query getSampleByUid($uid: Int!) {
+  query getSampleByUid($uid: FelicityID!) {
       sampleByUid(uid: $uid){
         uid
         createdByUid
@@ -736,7 +736,7 @@ export const GET_SAMPLE_BY_UID = gql`
 }`;
 
 export const GET_SAMPLE_STATUS_BY_UID = gql`
-  query getSampleByUid($uid: Int!) {
+  query getSampleByUid($uid: FelicityID!) {
       sampleByUid(uid: $uid){
         uid
         sampleId
@@ -745,7 +745,7 @@ export const GET_SAMPLE_STATUS_BY_UID = gql`
 }`;
 
 export const GET_SAMPLE_BY_PARENT_ID = gql`
-  query getSampleParentId($parentId: Int!, $text: String) {
+  query getSampleParentId($parentId: FelicityID!, $text: String) {
       sampleByParentId(parentId: $parentId, text:$text){
         uid
         sampleId
@@ -754,7 +754,7 @@ export const GET_SAMPLE_BY_PARENT_ID = gql`
 }`;
 
 export const GET_SAMPLES_BY_STORAGE_CONTAINER_UID = gql`
-  query getSamplesByStorageContainerUid($uid: Int!) {
+  query getSamplesByStorageContainerUid($uid: FelicityID!) {
     samplesByStorageContainerUid(uid: $uid){
         uid
         sampleId
@@ -880,7 +880,7 @@ export const GET_ALL_QC_SETS = gql`
 
 
 export const GET_QC_SET_BY_UID = gql`
-    query getQCSetByUid($uid: Int!) {
+    query getQCSetByUid($uid: FelicityID!) {
       qcSetByUid(uid: $uid) {
         uid
         name
@@ -948,7 +948,7 @@ export const GET_QC_SET_BY_UID = gql`
 
 
 export const GET_RESULT_OPTIONS_FOR_ANALYSIS = gql`
-    query resultOptionsByAnalysisUid($uid: Int!) {
+    query resultOptionsByAnalysisUid($uid: FelicityID!) {
       resultOptionsByAnalysisUid(uid: $uid) {
         uid
         optionKey
@@ -967,7 +967,7 @@ export const GET_ALL_REJECTION_REASONS = gql`
 }`;
 
 export const GET_IMPRESS_META = gql`
-  query impressMeta ($uids: [Int!]!) {
+  query impressMeta ($uids: [FelicityID!]!) {
     impressReportsMeta(uids: $uids) {
       uid
       state
@@ -988,13 +988,13 @@ export const GET_IMPRESS_META = gql`
 `;
 
 export const DOWNLOAD_IMPRESS_SAMPLES = gql`
-  query impressReports ($uids: [Int!]!) {
+  query impressReports ($uids: [FelicityID!]!) {
     impressReportsDownload(uids: $uids)
   }
 `;
 
 export const DOWNLOAD_IMPRESS = gql`
-  query impressReport ($uid: Int!) {
+  query impressReport ($uid: FelicityID!) {
     impressReportDownload(uid: $uid)
   }
 `;

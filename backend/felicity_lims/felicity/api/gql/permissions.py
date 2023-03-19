@@ -2,9 +2,11 @@ import logging
 
 from strawberry.permission import BasePermission
 
+from ...apps.analysis.permissions import (
+    check_result_verification,
+    check_sample_verification,
+)
 from . import auth_from_info
-from ...apps.analysis.permissions import (check_result_verification,
-                                          check_sample_verification)
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

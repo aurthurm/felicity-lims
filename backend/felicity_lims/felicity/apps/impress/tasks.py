@@ -1,26 +1,26 @@
 import logging
 from typing import List
 
-from felicity.apps.analysis.models.analysis import Sample
-from felicity.apps.user import models as user_models
-from felicity.apps.notification.utils import ReportNotifier
-from felicity.apps.impress import utils
 from felicity.apps.analysis.conf import states
+from felicity.apps.analysis.models.analysis import Sample
+from felicity.apps.impress import utils
 from felicity.apps.job import models as job_models
 from felicity.apps.job import schemas as job_schemas
-from felicity.apps.job.conf import (
-    actions, categories, priorities, states as job_states
-)
+from felicity.apps.job.conf import actions, categories, priorities
+from felicity.apps.job.conf import states as job_states
+from felicity.apps.notification.utils import ReportNotifier
+from felicity.apps.user import models as user_models
 from felicity.apps.user.models import User
 from felicity.core.config import settings
 
+from felicity.core.uid_gen import FelicityIDType
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 report_notifier = ReportNotifier()
 
 
-async def impress_results(job_uid: int):
+async def impress_results(job_uid: FelicityIDType):
     logger.info(f"starting impress job {job_uid} ....")
     job = await job_models.Job.get(uid=job_uid)
     if not job:
@@ -50,9 +50,9 @@ async def prepare_for_impress():
     samples: List[Sample] = await Sample.get_all(status=states.sample.APPROVED)
     sample_uids = [sample.uid for sample in samples]
 
-    await Sample.bulk_update_with_mappings([
-        {'uid': uid, "status": states.sample.PUBLISHING} for uid in sample_uids
-    ])
+    await Sample.bulk_update_with_mappings(
+        [{"uid": uid, "status": states.sample.PUBLISHING} for uid in sample_uids]
+    )
 
     system_daemon: User = await User.get(email=settings.SYSTEM_DAEMONUSER_EMAIL)
 

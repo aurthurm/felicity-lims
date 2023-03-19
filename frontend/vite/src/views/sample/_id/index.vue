@@ -28,7 +28,7 @@ const state = reactive({
 });
 
 const { sample, fetchingSample, repeatSample } = storeToRefs(sampleStore);
-sampleStore.fetchSampleByUid(+route.params.sampleUid);
+sampleStore.fetchSampleByUid(route.params.sampleUid);
 
 watch(
   () => sample?.value?.status,
@@ -38,7 +38,7 @@ watch(
       sampleStore.resetRepeatSample();
       return;
     } else {
-      sampleStore.fetchRepeatSampleByParentId(+route.params.sampleUid);
+      sampleStore.fetchRepeatSampleByParentId(route.params.sampleUid);
     }
   }
 );

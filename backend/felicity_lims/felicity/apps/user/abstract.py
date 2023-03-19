@@ -1,12 +1,14 @@
 from datetime import datetime
 
 from fastapi.encoders import jsonable_encoder
+from sqlalchemy import Boolean, Column, DateTime, Integer, String
+from sqlalchemy.ext.declarative import declared_attr
+
 from felicity.apps import BaseAuditDBModel  # noqa
 from felicity.apps import DBModel
 from felicity.apps.user import schemas
 from felicity.core.security import get_password_hash, password_check
-from sqlalchemy import Boolean, Column, DateTime, Integer, String
-from sqlalchemy.ext.declarative import declared_attr
+from felicity.core.uid_gen import FelicitySAID
 
 
 class SimpleAuditMixin(object):
@@ -25,7 +27,7 @@ class SimpleAuditMixin(object):
 
     @declared_attr
     def creator_uid(self):
-        return Column(Integer, nullable=True)
+        return Column(FelicitySAID, nullable=True)
 
     @declared_attr
     def updated_at(self):
@@ -37,7 +39,7 @@ class SimpleAuditMixin(object):
 
     @declared_attr
     def updator_uid(self):
-        return Column(Integer, nullable=True)
+        return Column(FelicitySAID, nullable=True)
 
 
 class AbstractBaseUser(SimpleAuditMixin, DBModel):
@@ -111,8 +113,8 @@ class AbstractAuth(SimpleAuditMixin, DBModel):
         if by_username:
             raise Exception("Username already exist")
         policy = password_check(auth_in.password, auth_in.user_name)
-        if not policy['password_ok']:
-            raise Exception(policy['message'])
+        if not policy["password_ok"]:
+            raise Exception(policy["message"])
         hashed_password = get_password_hash(auth_in.password)
         data = cls._import(auth_in)
         del data["password"]
@@ -125,8 +127,8 @@ class AbstractAuth(SimpleAuditMixin, DBModel):
 
         if "password" in update_data:
             policy = password_check(auth_in.password, auth_in.user_name)
-            if not policy['password_ok']:
-                raise Exception(policy['message'])
+            if not policy["password_ok"]:
+                raise Exception(policy["message"])
             hashed_password = get_password_hash(update_data["password"])
             del update_data["password"]
             update_data["hashed_password"] = hashed_password

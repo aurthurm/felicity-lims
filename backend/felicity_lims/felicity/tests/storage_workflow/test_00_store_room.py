@@ -1,5 +1,6 @@
-import pytest
 import logging
+
+import pytest
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -38,16 +39,12 @@ update_store_room_query = """
 @pytest.mark.asyncio
 @pytest.mark.order(200)
 async def test_add_store_room(gql_client, auth_data):
-    store_room = {
-        'name': "Store Room 1",
-        'description': "Storage area one"
-    }
-    response = await gql_client.post('/felicity-gql', json={
-        "query": add_store_room_query,
-        "variables": {
-            "payload": store_room
-        }
-    }, headers=auth_data['headers'])
+    store_room = {"name": "Store Room 1", "description": "Storage area one"}
+    response = await gql_client.post(
+        "/felicity-gql",
+        json={"query": add_store_room_query, "variables": {"payload": store_room}},
+        headers=auth_data["headers"],
+    )
 
     logger.info(f"register store room response: {response} {response.json()}")
 
@@ -62,16 +59,17 @@ async def test_add_store_room(gql_client, auth_data):
 @pytest.mark.order(201)
 async def test_update_store_room(gql_client, auth_data):
     store_room = {
-        'name': "Store Room 1 Updated",
-        'description': "Storage area one Updated"
+        "name": "Store Room 1 Updated",
+        "description": "Storage area one Updated",
     }
-    response = await gql_client.post('/felicity-gql', json={
-        "query": update_store_room_query,
-        "variables": {
-            "uid": 1,
-            "payload": store_room
-        }
-    }, headers=auth_data['headers'])
+    response = await gql_client.post(
+        "/felicity-gql",
+        json={
+            "query": update_store_room_query,
+            "variables": {"uid": 1, "payload": store_room},
+        },
+        headers=auth_data["headers"],
+    )
 
     logger.info(f"register store room response: {response} {response.json()}")
 

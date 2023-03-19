@@ -2,9 +2,16 @@ from typing import List, Optional
 
 import sqlalchemy as sa
 import strawberry  # noqa
+
 from felicity.api.gql import PageInfo, deps
-from felicity.api.gql.user.types import (GroupType, PermissionType,
-                                         UserCursorPage, UserEdge, UserType)
+from felicity.core.uid_gen import FelicityID
+from felicity.api.gql.user.types import (
+    GroupType,
+    PermissionType,
+    UserCursorPage,
+    UserEdge,
+    UserType,
+)
 from felicity.apps.user import models as user_models
 from felicity.utils import has_value_or_is_truthy
 
@@ -67,7 +74,7 @@ class UserQuery:
         return await user_models.Group.all()
 
     @strawberry.field
-    async def group_by_uid(self, info, uid: int) -> Optional[GroupType]:
+    async def group_by_uid(self, info, uid: FelicityID) -> Optional[GroupType]:
         return await user_models.Group.get(uid=uid)
 
     @strawberry.field
@@ -75,5 +82,5 @@ class UserQuery:
         return await user_models.Permission.all()
 
     @strawberry.field
-    async def permission_by_uid(self, info, uid: int) -> Optional[PermissionType]:
+    async def permission_by_uid(self, info, uid: FelicityID) -> Optional[PermissionType]:
         return await user_models.Permission.get(uid=uid)

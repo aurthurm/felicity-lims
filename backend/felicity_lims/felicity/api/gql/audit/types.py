@@ -2,13 +2,15 @@ from typing import Optional, Text
 
 import strawberry  # noqa
 
+from felicity.core.uid_gen import FelicityID
+
 
 @strawberry.type
 class AuditLogType:
-    uid: int
-    user_id: Optional[int]
+    uid: FelicityID
+    user_id: Optional[FelicityID]
     target_type: Optional[str]
-    target_id: Optional[int]
+    target_id: Optional[FelicityID]
     action: Optional[int]
     state_before: Optional[Text]
     state_after: Optional[Text]

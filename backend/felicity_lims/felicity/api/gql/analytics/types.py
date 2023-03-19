@@ -1,8 +1,10 @@
-from typing import List, Optional
 from datetime import datetime
+from typing import List, Optional
+
 import strawberry  # noqa
 
 from felicity.api.gql.analysis.types.analysis import AnalysisType
+from felicity.core.uid_gen import FelicityID
 from felicity.api.gql.user.types import UserType
 
 
@@ -80,7 +82,7 @@ class LaggardStatistics:
 
 @strawberry.type
 class ReportMetaType:
-    uid: int
+    uid: FelicityID
     period_start: datetime
     period_end: datetime
     date_column: str
@@ -91,8 +93,8 @@ class ReportMetaType:
     temp: Optional[str]
     analyses: Optional[List[AnalysisType]]
     created_at: Optional[datetime]
-    created_by_uid: Optional[int]
+    created_by_uid: Optional[FelicityID]
     created_by: Optional[UserType]
     updated_at: Optional[datetime]
-    updated_by_uid: Optional[int]
+    updated_by_uid: Optional[FelicityID]
     updated_by: Optional[UserType]

@@ -5,6 +5,7 @@ from felicity.apps.common.schemas import BaseAuditModel
 from felicity.apps.setup.schemas import Department, Supplier
 from felicity.apps.storage.schemas import StoreRoom
 from felicity.apps.user.schemas import User
+from felicity.core.uid_gen import FelicityIDType
 
 
 #
@@ -15,12 +16,12 @@ class StockItemBase(BaseAuditModel):
 
     name: Optional[str] = None
     description: Optional[str] = None
-    department_uid: Optional[int] = None
+    department_uid: Optional[FelicityIDType] = None
     department: Optional[Department] = None
 
 
 class StockItem(StockItemBase):
-    uid: Optional[int] = None
+    uid: Optional[FelicityIDType] = None
 
     class Config:
         orm_mode = True
@@ -47,7 +48,7 @@ class StockCategoryBase(BaseAuditModel):
 
 
 class StockCategory(StockCategoryBase):
-    uid: Optional[int] = None
+    uid: Optional[FelicityIDType] = None
 
     class Config:
         orm_mode = True
@@ -65,15 +66,14 @@ class StockCategoryUpdate(StockCategoryBase):
 # Hazard Schemas
 #
 class HazardBase(BaseAuditModel):
-    """Hazard
-    """
+    """Hazard"""
 
     name: Optional[str] = None
     description: Optional[str] = None
 
 
 class Hazard(HazardBase):
-    uid: Optional[int] = None
+    uid: Optional[FelicityIDType] = None
 
     class Config:
         orm_mode = True
@@ -95,7 +95,7 @@ class StockUnitBase(BaseAuditModel):
 
 
 class StockUnit(StockUnitBase):
-    uid: Optional[int] = None
+    uid: Optional[FelicityIDType] = None
 
     class Config:
         orm_mode = True
@@ -117,7 +117,7 @@ class StockPackagingBase(BaseAuditModel):
 
 
 class StockPackaging(StockPackagingBase):
-    uid: Optional[int] = None
+    uid: Optional[FelicityIDType] = None
 
     class Config:
         orm_mode = True
@@ -136,22 +136,22 @@ class StockPackagingUpdate(StockPackagingBase):
 #
 class StockProductBase(BaseAuditModel):
     name: Optional[str] = None
-    department_uid: Optional[int] = None
+    department_uid: Optional[FelicityIDType] = None
     department: Optional[Department] = None
-    supplier_uid: Optional[int] = None
+    supplier_uid: Optional[FelicityIDType] = None
     supplier: Optional[Supplier] = None
-    category_uid: Optional[int] = None
+    category_uid: Optional[FelicityIDType] = None
     category: Optional[StockCategory] = None
-    hazard_uid: Optional[int] = None
+    hazard_uid: Optional[FelicityIDType] = None
     hazard: Optional[Hazard] = None
-    store_room_uid: Optional[int] = None
+    store_room_uid: Optional[FelicityIDType] = None
     store_room: Optional[StoreRoom] = None
     lot_number: Optional[str] = None
     batch: Optional[str] = None
     size: Optional[float] = None
-    unit_uid: Optional[int] = None
+    unit_uid: Optional[FelicityIDType] = None
     unit: Optional[StockUnit] = None
-    packaging_uid: Optional[int] = None
+    packaging_uid: Optional[FelicityIDType] = None
     packaging: Optional[StockPackaging] = None
     price: Optional[float] = None
     quantity_received: Optional[int] = None
@@ -159,12 +159,12 @@ class StockProductBase(BaseAuditModel):
     remaining: Optional[int] = None
     date_received: Optional[datetime] = None
     expiry_date: Optional[datetime] = None
-    received_by_uid: Optional[int] = None
+    received_by_uid: Optional[FelicityIDType] = None
     received_by: Optional[User] = None
 
 
 class StockProduct(StockProductBase):
-    uid: Optional[int] = None
+    uid: Optional[FelicityIDType] = None
 
     class Config:
         orm_mode = True
@@ -182,9 +182,9 @@ class StockProductUpdate(StockProductBase):
 # StockOrder Schemas
 #
 class StockOrderBase(BaseAuditModel):
-    order_by_uid: Optional[int] = None
+    order_by_uid: Optional[FelicityIDType] = None
     order_by: Optional[User] = None
-    department_uid: Optional[int] = None
+    department_uid: Optional[FelicityIDType] = None
     department: Optional[Department] = None
     status: Optional[str] = None
     order_number: Optional[str] = None
@@ -192,7 +192,7 @@ class StockOrderBase(BaseAuditModel):
 
 
 class StockOrder(StockOrderBase):
-    uid: Optional[int] = None
+    uid: Optional[FelicityIDType] = None
 
     class Config:
         orm_mode = True
@@ -210,9 +210,9 @@ class StockOrderUpdate(StockOrderBase):
 # StockOrderProduct Schemas
 #
 class StockOrderProductBase(BaseAuditModel):
-    product_uid: Optional[int] = None
+    product_uid: Optional[FelicityIDType] = None
     product: Optional[StockProduct] = None
-    order_uid: Optional[int] = None
+    order_uid: Optional[FelicityIDType] = None
     order: Optional[StockOrder] = None
     price: Optional[float] = None
     quantity: Optional[int] = None
@@ -220,7 +220,7 @@ class StockOrderProductBase(BaseAuditModel):
 
 
 class StockOrderProduct(StockOrderProductBase):
-    uid: Optional[int] = None
+    uid: Optional[FelicityIDType] = None
 
     class Config:
         orm_mode = True
@@ -238,18 +238,18 @@ class StockOrderProductUpdate(StockOrderProductBase):
 # StockTransaction Schemas
 #
 class StockTransactionBase(BaseAuditModel):
-    product_uid: Optional[int] = None
+    product_uid: Optional[FelicityIDType] = None
     product: Optional[StockProduct] = None
     issued: Optional[int] = None
-    department_uid: Optional[int] = None
+    department_uid: Optional[FelicityIDType] = None
     department: Optional[Department] = None
     date_issued: Optional[datetime] = None
-    transaction_by_uid: Optional[int] = None
+    transaction_by_uid: Optional[FelicityIDType] = None
     transaction_by: Optional[User] = None
 
 
 class StockTransaction(StockTransactionBase):
-    uid: Optional[int] = None
+    uid: Optional[FelicityIDType] = None
 
     class Config:
         orm_mode = True
@@ -267,18 +267,18 @@ class StockTransactionUpdate(StockTransactionBase):
 # StockAdjustment Schemas
 #
 class StockAdjustmentBase(BaseAuditModel):
-    product_uid: Optional[int] = None
+    product_uid: Optional[FelicityIDType] = None
     product: Optional[StockProduct] = None
     adjustment_type: Optional[str] = None
     adjust: Optional[int] = None
     adjustment_date: Optional[datetime] = None
     remarks: Optional[str] = None
-    adjustment_by_uid: Optional[int] = None
+    adjustment_by_uid: Optional[FelicityIDType] = None
     adjustment_by: Optional[User] = None
 
 
 class StockAdjustment(StockAdjustmentBase):
-    uid: Optional[int] = None
+    uid: Optional[FelicityIDType] = None
 
     class Config:
         orm_mode = True

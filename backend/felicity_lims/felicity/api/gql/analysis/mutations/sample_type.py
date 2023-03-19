@@ -2,8 +2,10 @@ import logging
 from typing import Optional
 
 import strawberry  # noqa
+
 from felicity.api.gql import OperationError, auth_from_info, verify_user_auth
 from felicity.api.gql.analysis.types import analysis as a_types
+from felicity.core.uid_gen import FelicityID
 from felicity.apps.analysis import schemas
 from felicity.apps.analysis.models import analysis as analysis_models
 
@@ -60,7 +62,7 @@ async def create_sample_type(info, payload: SampleTypeInputType) -> SampleTypeRe
 
 @strawberry.mutation
 async def update_sample_type(
-    info, uid: int, payload: SampleTypeInputType
+    info, uid: FelicityID, payload: SampleTypeInputType
 ) -> SampleTypeResponse:
 
     is_authenticated, felicity_user = await auth_from_info(info)

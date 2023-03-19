@@ -3,6 +3,7 @@ from typing import List, Optional
 from felicity.apps.common.schemas import BaseAuditModel
 from felicity.apps.setup.schemas import Department
 from felicity.apps.user.schemas import Group, User
+from felicity.core.uid_gen import FelicityIDType
 
 
 #
@@ -14,7 +15,7 @@ class ActivityFeedBase(BaseAuditModel):
 
 
 class ActivityFeed(ActivityFeedBase):
-    uid: Optional[int] = None
+    uid: Optional[FelicityIDType] = None
 
     class Config:
         orm_mode = True
@@ -33,19 +34,19 @@ class ActivityFeedUpdate(ActivityFeedBase):
 #
 class ActivityStreamBase(BaseAuditModel):
     feeds: Optional[List[ActivityFeed]] = []
-    actor_uid: Optional[int] = None
+    actor_uid: Optional[FelicityIDType] = None
     actor: Optional[User] = None
     verb: Optional[str] = None
     action_object_type: Optional[str] = None
-    action_object_uid: Optional[int] = None
+    action_object_uid: Optional[FelicityIDType] = None
     action_object: Optional[str] = None
-    target_uid: Optional[int] = None
+    target_uid: Optional[FelicityIDType] = None
     target: Optional[str] = None
     viewers: Optional[List[User]] = []
 
 
 class ActivityStream(ActivityStreamBase):
-    uid: Optional[int] = None
+    uid: Optional[FelicityIDType] = None
 
     class Config:
         orm_mode = True
@@ -71,7 +72,7 @@ class NotificationBase(BaseAuditModel):
 
 
 class Notification(NotificationBase):
-    uid: Optional[int] = None
+    uid: Optional[FelicityIDType] = None
 
     class Config:
         orm_mode = True

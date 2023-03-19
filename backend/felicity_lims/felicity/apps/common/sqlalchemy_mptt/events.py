@@ -74,7 +74,7 @@ def _get_tree_table(mapper):
 
 
 def mptt_before_insert(mapper, connection, instance):
-    """ Based on example
+    """Based on example
     https://bitbucket.org/zzzeek/sqlalchemy/src/73095b353124/examples/nested_sets/nested_sets.py?at=master
     """
     table = _get_tree_table(mapper)
@@ -85,6 +85,8 @@ def mptt_before_insert(mapper, connection, instance):
         instance.left = 1
         instance.right = 2
         instance.level = instance.get_default_level()
+        print(f"====table.c.tree_id========================== {table.c.tree_id}")
+        print(table.c.tree_id)
         tree_id = connection.scalar(select([func.max(table.c.tree_id) + 1])) or 1
         instance.tree_id = tree_id
     else:
@@ -137,17 +139,17 @@ def mptt_before_delete(mapper, connection, instance, delete=True):
         connection.execute(table.delete(table_pk == pk))
 
     if instance.parent_id is not None or not delete:
-        """ Update key of current tree
+        """Update key of current tree
 
-            UPDATE tree
-            SET left_id = CASE
-                    WHEN left_id > $leftId THEN left_id - $delta
-                    ELSE left_id
-                END,
-                right_id = CASE
-                    WHEN right_id >= $rightId THEN right_id - $delta
-                    ELSE right_id
-                END
+        UPDATE tree
+        SET left_id = CASE
+                WHEN left_id > $leftId THEN left_id - $delta
+                ELSE left_id
+            END,
+            right_id = CASE
+                WHEN right_id >= $rightId THEN right_id - $delta
+                ELSE right_id
+            END
         """
         connection.execute(
             table.update(and_(table.c.rgt > rgt, table.c.tree_id == tree_id)).values(
@@ -160,8 +162,8 @@ def mptt_before_delete(mapper, connection, instance, delete=True):
 
 
 def mptt_before_update(mapper, connection, instance):
-    """ Based on this example:
-        http://stackoverflow.com/questions/889527/move-node-in-nested-set
+    """Based on this example:
+    http://stackoverflow.com/questions/889527/move-node-in-nested-set
     """
     node_id = getattr(instance, instance.get_pk_name())
     table = _get_tree_table(mapper)
@@ -312,8 +314,8 @@ def mptt_before_update(mapper, connection, instance):
     mptt_before_delete(mapper, connection, instance, False)
 
     if instance.parent_id is not None:
-        """ Put there right position of new parent node (there moving node
-            should be moved)
+        """Put there right position of new parent node (there moving node
+        should be moved)
         """
         (
             parent_id,

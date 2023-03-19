@@ -5,7 +5,7 @@ import { IInstrument, IMethod, IUnit, IDepartment } from "./setup";
 import { IStorageContainer, IStorageSlot } from "./storage";
 
 export interface ISampleType {
-    uid?: number;
+    uid?: string;
     name?: string;
     abbr?: string;
     description?: string;
@@ -13,13 +13,13 @@ export interface ISampleType {
 }
 
 export interface IAnalysisService {
-    uid?: number;
+    uid?: string;
     name?: string;
     keyword?: string;
     description?: string;
-    unitUid?: number;
+    unitUid?: string;
     unit?: IUnit;
-    departmentUid?: number,
+    departmentUid?: string,
     sampleTypes?: ISampleType[] | number[];
     profiles?: IAnalysisProfile[];
     category?: IAnalysisCategory;
@@ -31,7 +31,7 @@ export interface IAnalysisService {
     uncertainties?: IAnalysisUncertainty[];
     instruments?: IInstrument[];
     methods?: IMethod[] | number[];
-    categoryUid?: number,
+    categoryUid?: string,
     sortKey?: number;
     active?: boolean;
     internalUse?: boolean;
@@ -43,17 +43,17 @@ export interface IAnalysisService {
 }
 
 export interface IAnalysisResult {
-    uid?: number;
-    analysisUid?: number;
+    uid?: string;
+    analysisUid?: string;
     analysis?: IAnalysisService;
-    instrumentUid?: number;
+    instrumentUid?: string;
     instrument?: IInstrument;
-    methodUid?: number;
+    methodUid?: string;
     method?: IMethod;
-    analystUid?: number;
+    analystUid?: string;
     analyst?: any;
     worksheetPosition?: number;
-    sampleUid?: number;
+    sampleUid?: string;
     sample?: ISample;
     status?: string;
     result?: string;
@@ -66,20 +66,20 @@ export interface IAnalysisResult {
 }
 
 export interface IAnalysisCategory {
-    uid?: number;
+    uid?: string;
     name?: string;
     description?: string;
-    departmentUid?: number;
+    departmentUid?: string;
     department?: IDepartment;
     active?: boolean;
 }
   
 export interface IAnalysisProfile {
-    uid?: number;
+    uid?: string;
     name?: string;
     description?: string;
     keyword?: string,
-    departmentUid?: number,
+    departmentUid?: string,
     analyses?: IAnalysisService[] | number[];
     sampleTypes?: ISampleType[] | number[];
     active?: boolean;
@@ -95,12 +95,12 @@ export interface IQCRequest {
   
 
 export interface IQCLevel {
-    uid?: number;
+    uid?: string;
     level?: string; 
 }
   
 export interface IQCTemplate {
-    uid?: number;
+    uid?: string;
     name?: string; 
     description?: string;  
     qcLevels?: IQCLevel[];
@@ -109,14 +109,14 @@ export interface IQCTemplate {
 }
 
   export interface IResultOption {
-    uid?: number;
-    analysisUid?: number;
+    uid?: string;
+    analysisUid?: string;
     optionKey?: number;
     value?: string;
   }
   
   export interface ISample {
-    uid?: number;
+    uid?: string;
     sampleId?: string;
     sampleType?: ISampleType | undefined;
     profiles?: IAnalysisProfile[];
@@ -134,21 +134,21 @@ export interface IQCTemplate {
     storageContainer: IStorageContainer;
     storageSlotIndex: number;
     storageSlot: string;
-    createdByUid?: number
+    createdByUid?: string
     createdBy?: any
     createdAt?: string
-    updatedByUid?: number
+    updatedByUid?: string
     updatedBy?: any
     updatedAt?: string
   }
   
   export interface IAnalysisRequest {
-    uid?: number;
+    uid?: string;
     clinicalData?: string;
     patient?: IPatient; 
-    cientUid?: number; 
+    cientUid?: string; 
     client?: IClient; 
-    clientContactUid?: number,
+    clientContactUid?: string,
     clientContact?: IClientContact; 
     clientName?: string;
     samples?: ISample[];
@@ -158,62 +158,62 @@ export interface IQCTemplate {
   }
 
   export interface IQCSet {
-    uid?: number;
+    uid?: string;
     name?: string; 
     samples?: ISample[];
     analytes?:IAnalysisService
-    createdByUid?: number
+    createdByUid?: string
     createdBy?: any
     createdAt?: string
-    updatedByUid?: number
+    updatedByUid?: string
     updatedBy?: any
     updatedAt?: string
   }
 
   export interface IRejectionReason {
-    uid?: number;
+    uid?: string;
     reason?: string;
   }
 
   export interface IAnalysisInterim {
-      uid?: number,
+      uid?: string,
       key?: number,
       value?: string,
-      analysisUid?: number,
-      instrumentUid?: number,
+      analysisUid?: string,
+      instrumentUid?: string,
   }
   
   export interface IAnalysisCorrectionFactor {
-      uid?: number,
+      uid?: string,
       factor?: string,
-      analysisUid?: number,
-      instrumentUid?: number,
-      methodUid?: number,
+      analysisUid?: string,
+      instrumentUid?: string,
+      methodUid?: string,
   }
   
   export interface IAnalysisDetectionLimit {
-    uid?: number,
+    uid?: string,
     lowerLimit?: number,
     upperLimit?: number,
-    analysisUid?: number,
-    instrumentUid?: number,
-    methodUid?: number,
+    analysisUid?: string,
+    instrumentUid?: string,
+    methodUid?: string,
   }
   
   export interface IAnalysisUncertainty {
-    uid?: number,
+    uid?: string,
     min?: number,
     max?: number,
     value?: number,
-    analysisUid?: number,
-    instrumentUid?: number,
-    methodUid?: number,
+    analysisUid?: string,
+    instrumentUid?: string,
+    methodUid?: string,
   }
   
   export interface IAnalysisSpecification {
-    uid?: number,
-    analysisUid?: number,
-    unitUid?: number,
+    uid?: string,
+    analysisUid?: string,
+    unitUid?: string,
     unit?: IUnit[],
     min?: number,
     max?: number,
@@ -226,6 +226,6 @@ export interface IQCTemplate {
     gender?: string,
     ageMin?: number,
     ageMax?: number,
-    methodUid?: number,
+    methodUid?: string,
   }
   

@@ -1,18 +1,17 @@
-import io
 import logging
 from typing import Optional
 
-import pandas as pd
 import strawberry  # noqa
+
 from felicity.api.gql.analytics import types
-from felicity.apps.analysis.models.analysis import Sample
 from felicity.apps.analysis.conf import states
+from felicity.apps.analysis.models.analysis import Sample
 from felicity.apps.analysis.models.results import AnalysisResult
 from felicity.apps.analytics import SampleAnalyticsInit
 from felicity.apps.setup.models import Instrument
 from felicity.apps.user.models import User
-from felicity.apps.worksheet.models import WorkSheet
 from felicity.apps.worksheet.conf import worksheet_states
+from felicity.apps.worksheet.models import WorkSheet
 from felicity.utils import has_value_or_is_truthy
 
 logging.basicConfig(level=logging.INFO)
@@ -49,7 +48,9 @@ async def count_sample_group_by_status(info) -> types.GroupedCounts:
         states.sample.AWAITING,
         states.sample.APPROVED,
     ]
-    results = await analytics.get_counts_group_by("status", ("", ""), ("", ""), state_in)
+    results = await analytics.get_counts_group_by(
+        "status", ("", ""), ("", ""), state_in
+    )
 
     stats = []
     for row in results:
@@ -65,13 +66,16 @@ async def count_analyte_group_by_status(info) -> types.GroupedCounts:
         states.result.PENDING,
         states.result.RESULTED,
     ]
-    results = await analytics.get_counts_group_by("status", ("", ""), ("", ""), state_in)
+    results = await analytics.get_counts_group_by(
+        "status", ("", ""), ("", ""), state_in
+    )
 
     stats = []
     for row in results:
         stats.append(types.GroupCount(group=group_exists(row[0]), count=row[1]))
 
     return types.GroupedCounts(data=stats)
+
 
 @strawberry.field
 async def count_extras_group_by_status(info) -> types.GroupedCounts:
@@ -81,22 +85,30 @@ async def count_extras_group_by_status(info) -> types.GroupedCounts:
         states.sample.REJECTED,
         states.sample.INVALIDATED,
     ]
-    sample_results = await sample_analytics.get_counts_group_by("status", ("", ""), ("", ""), sample_states)
+    sample_results = await sample_analytics.get_counts_group_by(
+        "status", ("", ""), ("", ""), sample_states
+    )
 
     result_analytics = SampleAnalyticsInit(AnalysisResult)
     result_states = [
         states.result.RETRACTED,
     ]
-    result_results = await result_analytics.get_counts_group_by("status", ("", ""), ("", ""), result_states)
+    result_results = await result_analytics.get_counts_group_by(
+        "status", ("", ""), ("", ""), result_states
+    )
 
     retests = await result_analytics.count_analyses_retests(("", ""), ("", ""))
 
     stats = []
     for s_row in sample_results:
-        stats.append(types.GroupCount(group=f"sample {group_exists(s_row[0])}", count=s_row[1]))
+        stats.append(
+            types.GroupCount(group=f"sample {group_exists(s_row[0])}", count=s_row[1])
+        )
 
     for r_row in result_results:
-        stats.append(types.GroupCount(group=f"analysis {group_exists(r_row[0])}", count=r_row[1]))
+        stats.append(
+            types.GroupCount(group=f"analysis {group_exists(r_row[0])}", count=r_row[1])
+        )
 
     if retests:
         val = retests[0][0]
@@ -112,7 +124,7 @@ async def count_worksheet_group_by_status(info) -> types.GroupedCounts:
     state_in = [
         worksheet_states.EMPTY,
         worksheet_states.AWAITING,
-        worksheet_states.PENDING
+        worksheet_states.PENDING,
     ]
     results = await analytics.get_counts_group_by("state", ("", ""), ("", ""), state_in)
 

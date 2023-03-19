@@ -52,7 +52,7 @@ export const SEARCH_CLIENTS = gql`
   }`;
 
 export const GET_CLIENT_CONTACTS_BY_CLIENT_UID = gql`
-  query getClientContactsByClientUid($clientUid: Int!) {
+  query getClientContactsByClientUid($clientUid: FelicityID!) {
     clientContactByClientUid(clientUid: $clientUid){
       uid
       firstName
@@ -65,7 +65,7 @@ export const GET_CLIENT_CONTACTS_BY_CLIENT_UID = gql`
 
 
 export const GET_CLIENT_BY_UID = gql`
-  query getClientByUid($uid: Int!) {
+  query getClientByUid($uid: FelicityID!) {
     clientByUid(uid: $uid){
         uid
         name

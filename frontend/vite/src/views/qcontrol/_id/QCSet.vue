@@ -19,7 +19,7 @@ let can_reinstate = ref<boolean>(false);
 
 let allChecked = ref<boolean>(false);
 
-sampleStore.fetchQCSetByUid(+route.params.qcSetUid);
+sampleStore.fetchQCSetByUid(route.params.qcSetUid);
 
 let qcSet = computed(() => {
   let set = sampleStore.getQCSet as IQCSet;

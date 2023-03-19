@@ -2,10 +2,12 @@ import logging
 from typing import Dict, Optional
 
 import strawberry  # noqa
+from strawberry.types import Info  # noqa
+
 from felicity.api.gql import OperationError, auth_from_info, verify_user_auth
 from felicity.api.gql.client.types import ClientContactType, ClientType
+from felicity.core.uid_gen import FelicityID
 from felicity.apps.client import models, schemas
-from strawberry.types import Info  # noqa
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -23,7 +25,7 @@ ClientContactResponse = strawberry.union(
 class ClientInputType:
     name: str
     code: str
-    district_uid: Optional[int] = None
+    district_uid: Optional[FelicityID] = None
     email: Optional[str] = None
     email_cc: Optional[str] = None
     consent_email: Optional[bool] = False
@@ -37,7 +39,7 @@ class ClientInputType:
 @strawberry.input
 class ClientContactInputType:
     first_name: str
-    client_uid: int
+    client_uid: FelicityID
     last_name: Optional[str] = None
     mail: Optional[str] = None
     email_cc: Optional[str] = None
@@ -86,7 +88,7 @@ class ClientMutations:
 
     @strawberry.mutation
     async def update_client(
-        self, info, uid: int, payload: ClientInputType
+        self, info, uid: FelicityID, payload: ClientInputType
     ) -> ClientResponse:
 
         is_authenticated, felicity_user = await auth_from_info(info)
@@ -159,7 +161,7 @@ class ClientMutations:
 
     @strawberry.mutation
     async def update_client_contact(
-        self, info, uid: int, payload: ClientContactInputType
+        self, info, uid: FelicityID, payload: ClientContactInputType
     ) -> ClientContactResponse:
 
         is_authenticated, felicity_user = await auth_from_info(info)

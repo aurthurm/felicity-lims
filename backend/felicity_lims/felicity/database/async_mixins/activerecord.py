@@ -26,8 +26,7 @@ class ActiveRecordMixin(InspectionMixin, SessionMixin):
         return self
 
     async def save(self):
-        """Saves the updated model to the current entity db.
-        """
+        """Saves the updated model to the current entity db."""
         self.session.add(self)
         await self.session.flush()
         return self
@@ -43,15 +42,13 @@ class ActiveRecordMixin(InspectionMixin, SessionMixin):
         return created
 
     async def update(self, **kwargs):
-        """Same as :meth:`fill` method but persists changes to database.
-        """
+        """Same as :meth:`fill` method but persists changes to database."""
         fill = self.fill(**kwargs)
         updated = await fill.save()
         return updated
 
     async def delete(self):
-        """Removes the model from the current entity session and mark for deletion.
-        """
+        """Removes the model from the current entity session and mark for deletion."""
         await self.session.delete(self)
         await self.session.flush()
 

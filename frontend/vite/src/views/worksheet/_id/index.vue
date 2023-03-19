@@ -7,7 +7,7 @@ import { useWorksheetStore } from "../../../stores";
 const route = useRoute();
 const workshetStore = useWorksheetStore();
 
-workshetStore.fetchWorksheetByUid(+route.params.workSheetUid);
+workshetStore.fetchWorksheetByUid(route.params.workSheetUid);
 
 function analysesText(analyses: IAnalysisService[]): string {
   let names: string[] = [];

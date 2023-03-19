@@ -1,7 +1,8 @@
-from typing import Dict, List, Optional, Union, Any
+from typing import Any, Optional
 
 from pydantic import BaseModel
 
+from felicity.core.uid_gen import FelicityIDType
 from .conf import categories, priorities, states
 
 
@@ -16,11 +17,11 @@ class JobBase(BaseModel):
     job_id: Optional[int] = None
     status: Optional[str] = states.PENDING
     reason: Optional[str] = None
-    creator_uid: Optional[int] = None
+    creator_uid: Optional[FelicityIDType] = None
 
 
 class Job(JobBase):
-    uid: Optional[int] = None
+    uid: Optional[FelicityIDType] = None
 
     class Config:
         orm_mode = True

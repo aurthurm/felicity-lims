@@ -19,7 +19,7 @@ const { patient, fetchingPatient } = storeToRefs(patientStore);
 
 let showModal = ref<boolean>(false);
 
-patientStore.fetchPtientByUid(+route.params.patientUid);
+patientStore.fetchPtientByUid(route.params.patientUid);
 
 const updatePatient = (res: IPatient) => {
   patientStore.updatePatient(res);

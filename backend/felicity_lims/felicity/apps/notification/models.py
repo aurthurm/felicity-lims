@@ -1,11 +1,13 @@
 import logging
 from typing import Any, List, Optional
 
+from sqlalchemy import Column, ForeignKey, String, Table
+from sqlalchemy.orm import relationship
+
 from felicity.apps import BaseAuditDBModel, DBModel
 from felicity.apps.setup.models import Department
 from felicity.apps.user.models import Group, User
-from sqlalchemy import Column, ForeignKey, Integer, String, Table
-from sqlalchemy.orm import relationship
+from felicity.core.uid_gen import FelicitySAID
 
 from . import schemas
 
@@ -88,13 +90,13 @@ class ActivityStream(BaseAuditDBModel):
     """
 
     feeds = relationship(ActivityFeed, secondary=activity_stream_feed, lazy="selectin")
-    actor_uid = Column(Integer, ForeignKey("user.uid"), nullable=True)
+    actor_uid = Column(FelicitySAID, ForeignKey("user.uid"), nullable=True)
     actor = relationship("User", foreign_keys=[actor_uid], lazy="selectin")
     verb = Column(String, nullable=True)
     action_object_type = Column(String, nullable=True)
-    action_object_uid = Column(Integer, nullable=True)
+    action_object_uid = Column(FelicitySAID, nullable=True)
     action_object = Column(String, nullable=True)
-    target_uid = Column(Integer, nullable=True)
+    target_uid = Column(FelicitySAID, nullable=True)
     target = Column(String, nullable=True)
     viewers = relationship("User", secondary=activity_stream_view, lazy="selectin")
 

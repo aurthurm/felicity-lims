@@ -29,13 +29,13 @@ const props = defineProps({
 });
 
 // dispatch get contacts fo slients
-clientStore.fetchClientContacts(+router.query.clientUid!);
+clientStore.fetchClientContacts(router.query.clientUid!);
 
 function addClientContact() {
   withClientMutation(
     ADD_CLIENT_CONTACT,
     {
-      clientUid: +router.query.clientUid!,
+      clientUid: router.query.clientUid!,
       firstName: contact.value.firstName,
       mobilePhone: contact.value.mobilePhone,
       email: contact.value.email,

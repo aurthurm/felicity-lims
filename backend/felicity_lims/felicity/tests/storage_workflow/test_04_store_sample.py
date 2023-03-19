@@ -1,5 +1,6 @@
-import pytest
 import logging
+
+import pytest
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -72,15 +73,14 @@ async def test_add_sample_to_storage(gql_client, auth_data):
             {"sampleType": 1, "profiles": [1], "analyses": []},
             {"sampleType": 1, "profiles": [1], "analyses": []},
             {"sampleType": 1, "profiles": [1], "analyses": []},
-            {"sampleType": 1, "profiles": [1], "analyses": []}
-        ]
+            {"sampleType": 1, "profiles": [1], "analyses": []},
+        ],
     }
-    response = await gql_client.post('/felicity-gql', json={
-        "query": add_ar_gql,
-        "variables": {
-            "payload": analysis_request
-        }
-    }, headers=auth_data['headers'])
+    response = await gql_client.post(
+        "/felicity-gql",
+        json={"query": add_ar_gql, "variables": {"payload": analysis_request}},
+        headers=auth_data["headers"],
+    )
 
     logger.info(f"add analysis request response: {response} {response.json()}")
 
@@ -113,19 +113,23 @@ async def test_add_sample_to_storage(gql_client, auth_data):
 
     store_samples_data = []
     for idx, suid in enumerate(sample_uids):
-        store_samples_data.append({
-            "storageContainerUid": 1,
-            "storageSlot": str(idx),
-            "storageSlotIndex": idx,
-            "sampleUid": suid
-        })
+        store_samples_data.append(
+            {
+                "storageContainerUid": 1,
+                "storageSlot": str(idx),
+                "storageSlotIndex": idx,
+                "sampleUid": suid,
+            }
+        )
 
-    response = await gql_client.post('/felicity-gql', json={
-        "query": store_samples_query,
-        "variables": {
-            "payload": store_samples_data
-        }
-    }, headers=auth_data['headers'])
+    response = await gql_client.post(
+        "/felicity-gql",
+        json={
+            "query": store_samples_query,
+            "variables": {"payload": store_samples_data},
+        },
+        headers=auth_data["headers"],
+    )
 
     logger.info(f"store samples response: {response} {response.json()}")
 

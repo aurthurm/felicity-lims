@@ -1,10 +1,12 @@
 import logging
 
+from sqlalchemy import Boolean, Column, ForeignKey, String, Table
+from sqlalchemy.orm import relationship
+
 from felicity.apps import BaseAuditDBModel, DBModel
 from felicity.apps.common import BaseMPTT
 from felicity.apps.user.models import User
-from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, Table
-from sqlalchemy.orm import relationship
+from felicity.core.uid_gen import FelicitySAID
 
 from . import schemas
 
@@ -124,7 +126,7 @@ message_delete = Table(
 class Message(BaseAuditDBModel, BaseMPTT):
     """Message"""
 
-    thread_uid = Column(Integer, ForeignKey("messagethread.uid"), nullable=True)
+    thread_uid = Column(FelicitySAID, ForeignKey("messagethread.uid"), nullable=True)
     thread = relationship("MessageThread", back_populates="messages", lazy="selectin")
     body = Column(String, nullable=False)
     viewers = relationship("User", secondary=message_view, lazy="selectin")

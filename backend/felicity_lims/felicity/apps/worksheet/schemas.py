@@ -1,8 +1,9 @@
 from typing import Dict, List, Optional
 
-from felicity.apps.analysis.schemas import AnalysisBaseInDB, QCLevelInDB
 from pydantic import BaseModel
 
+from felicity.apps.analysis.schemas import AnalysisBaseInDB, QCLevelInDB
+from felicity.core.uid_gen import FelicityIDType
 
 #
 # WorkSheet Schemas
@@ -10,12 +11,12 @@ from pydantic import BaseModel
 
 # Shared properties
 class WorkSheetBase(BaseModel):
-    analyst_uid: Optional[int] = None
-    template_uid: Optional[int] = None
+    analyst_uid: Optional[FelicityIDType] = None
+    template_uid: Optional[FelicityIDType] = None
     worksheet_id: Optional[str] = None
-    instrument_uid: Optional[int] = None
-    sample_type_uid: Optional[int] = None
-    analysis_uid: Optional[int] = None
+    instrument_uid: Optional[FelicityIDType] = None
+    sample_type_uid: Optional[FelicityIDType] = None
+    analysis_uid: Optional[FelicityIDType] = None
     analysis: Optional[AnalysisBaseInDB] = None
     reserved: Optional[Dict] = {}
     number_of_samples: Optional[int] = None
@@ -28,7 +29,7 @@ class WorkSheetBase(BaseModel):
 
 
 class WorkSheetBaseInDB(WorkSheetBase):
-    uid: Optional[int] = None
+    uid: Optional[FelicityIDType] = None
 
     class Config:
         orm_mode = True
@@ -62,9 +63,9 @@ class WorkSheetInDB(WorkSheetBaseInDB):
 class WSTemplateBase(BaseModel):
     name: Optional[str] = None
     description: Optional[str] = None
-    instrument_uid: Optional[int] = None
-    sample_type_uid: Optional[int] = None
-    analysis_uid: Optional[int] = None
+    instrument_uid: Optional[FelicityIDType] = None
+    sample_type_uid: Optional[FelicityIDType] = None
+    analysis_uid: Optional[FelicityIDType] = None
     analysis: Optional[AnalysisBaseInDB] = None
     qc_analyses: Optional[List[AnalysisBaseInDB]] = []
     qc_levels: Optional[List[QCLevelInDB]] = []
@@ -77,7 +78,7 @@ class WSTemplateBase(BaseModel):
 
 
 class WSTemplateBaseInDB(WSTemplateBase):
-    uid: Optional[int] = None
+    uid: Optional[FelicityIDType] = None
 
     class Config:
         orm_mode = True

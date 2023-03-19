@@ -2,14 +2,14 @@ import { ISample } from "./analysis"
 import { IUser } from "./auth"
 
 export interface IStoreRoom {
-    uid?: number;
+    uid?: string;
     name?: String;
     description?: String;
     createdAt?: Date;
-    createdByUid?: number;
+    createdByUid?: string;
     createdBy?: IUser;
     updatedAt?: Date;
-    updatedByUid?: number;
+    updatedByUid?: string;
     updatedBy?: IUser;
     children?: IStorageLocation[];
     tag?: string;
@@ -19,16 +19,16 @@ export interface IStoreRoom {
 
 
 export interface IStorageLocation {
-    uid?: number;
+    uid?: string;
     name?: String;
     description?: String;
-    storeRoomUid?: number;
+    storeRoomUid?: string;
     storeRoom?: IStoreRoom;
     createdAt?: Date;
-    createdByUid?: number;
+    createdByUid?: string;
     createdBy?: IUser;
     updatedAt?: Date;
-    updatedByUid?: number;
+    updatedByUid?: string;
     updatedBy?: IUser;
     children?: IStorageSection[], 
     tag?: string,
@@ -38,16 +38,16 @@ export interface IStorageLocation {
 
 
 export interface IStorageSection {
-    uid?: number;
+    uid?: string;
     name?: String;
     description?: String;
-    storageLocationUid?: number;
+    storageLocationUid?: string;
     storageLocation?: IStorageLocation;
     createdAt?: Date;
-    createdByUid?: number;
+    createdByUid?: string;
     createdBy?: IUser;
     updatedAt?: Date;
-    updatedByUid?: number;
+    updatedByUid?: string;
     updatedBy?: IUser;
     children?: IStorageContainer[], 
     tag?: string,
@@ -57,10 +57,10 @@ export interface IStorageSection {
 
 
 export interface IStorageContainer {
-    uid?: number;
+    uid?: string;
     name?: String;
     description?: String;
-    storageSectionUid?: number;
+    storageSectionUid?: string;
     storageSection?: IStorageSection;
     grid?: boolean;
     rowWise?: boolean;
@@ -70,10 +70,10 @@ export interface IStorageContainer {
     storedCount?: number;
     samples?: ISample[];
     createdAt?: Date;
-    createdByUid?: number;
+    createdByUid?: string;
     createdBy?: IUser;
     updatedAt?: Date;
-    updatedByUid?: number;
+    updatedByUid?: string;
     updatedBy?: IUser;
     tag?: string,
     isOpen?: boolean;

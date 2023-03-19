@@ -21,7 +21,7 @@ mutation AddStoreRoom ($payload: StoreRoomInputType!) {
 `;
 
 export const EDIT_STORE_ROOM= gql`
-mutation EditStoreRoom ($uid: Int!, $payload: StoreRoomInputType!) {
+mutation EditStoreRoom ($uid: FelicityID!, $payload: StoreRoomInputType!) {
   updateStoreRoom(uid: $uid, payload: $payload){
     ... on StoreRoomType {
       __typename
@@ -63,7 +63,7 @@ mutation AddStorageLocation ($payload: StorageLocationInputType!) {
 `;
 
 export const EDIT_STORAGE_LOCATION= gql`
-mutation EditStorageLocation ($uid: Int!, $payload: StorageLocationInputType!) {
+mutation EditStorageLocation ($uid: FelicityID!, $payload: StorageLocationInputType!) {
   updateStorageLocation(uid: $uid, payload: $payload){
     ... on StorageLocationType {
       __typename
@@ -109,7 +109,7 @@ mutation AddStorageSection ($payload: StorageSectionInputType!) {
 `;
 
 export const EDIT_STORAGE_SECTION= gql`
-mutation EditStorageSection ($uid: Int!, $payload: StorageSectionInputType!) {
+mutation EditStorageSection ($uid: FelicityID!, $payload: StorageSectionInputType!) {
   updateStorageSection(uid: $uid, payload: $payload){
     ... on StorageSectionType {
       __typename
@@ -168,7 +168,7 @@ mutation AddStorageContainer ($payload: StorageContainerInputType!) {
 `;
 
 export const EDIT_STORAGE_CONTAINER= gql`
-mutation EditStorageContainer ($uid: Int!, $payload: StorageContainerInputType!) {
+mutation EditStorageContainer ($uid: FelicityID!, $payload: StorageContainerInputType!) {
   updateStorageContainer(uid: $uid, payload: $payload){
     ... on StorageContainerType {        
         __typename

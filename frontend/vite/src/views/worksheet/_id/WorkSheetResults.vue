@@ -25,7 +25,7 @@ let viewDetail = ref<boolean>(false);
 let worksheet = computed(() => worksheetStore.getWorkSheet);
 
 const refresh = () => {
-  worksheetStore.fetchWorksheetByUid(+route.params.workSheetUid);
+  worksheetStore.fetchWorksheetByUid(route.params.workSheetUid);
 };
 
 //
@@ -42,7 +42,7 @@ const applying = ref<boolean>(false);
 const applyChanges = () => {
   applying.value = true;
   worksheetStore
-    .updateWorksheet({ worksheetUid: +route.params.workSheetUid, ...form })
+    .updateWorksheet({ worksheetUid: route.params.workSheetUid, ...form })
     .then(() => {
       applying.value = false;
       refresh();

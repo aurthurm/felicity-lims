@@ -1,10 +1,9 @@
-import asyncio
-
-import pytest
 import logging
 
+import pytest
+
 from felicity.apps.analysis.tasks import submit_results, verify_results
-from felicity.tests.utils.user import make_username, make_password
+from felicity.tests.utils.user import make_password, make_username
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -29,20 +28,24 @@ async def test_submit_results(gql_client, auth_data):
       }
     """
 
-    response = await gql_client.post('/felicity-gql', json={
-        "query": add_gql,
-        "variables": {
-            "analysisResults": [
-                {"uid": 1, "result": "Target Not Detected"},
-                {"uid": 2, "result": "Target Not Detected"},
-                {"uid": 3, "result": "Target Not Detected"},
-                {"uid": 4, "result": "Target Not Detected"},
-                {"uid": 5, "result": "Target Not Detected"}
-            ],
-            "sourceObject": "worksheet",
-            "sourceObjectUid": 1,
-        }
-    }, headers=auth_data['headers'])
+    response = await gql_client.post(
+        "/felicity-gql",
+        json={
+            "query": add_gql,
+            "variables": {
+                "analysisResults": [
+                    {"uid": 1, "result": "Target Not Detected"},
+                    {"uid": 2, "result": "Target Not Detected"},
+                    {"uid": 3, "result": "Target Not Detected"},
+                    {"uid": 4, "result": "Target Not Detected"},
+                    {"uid": 5, "result": "Target Not Detected"},
+                ],
+                "sourceObject": "worksheet",
+                "sourceObjectUid": 1,
+            },
+        },
+        headers=auth_data["headers"],
+    )
 
     logger.info(f"submitting worksheet results response: {response} {response.json()}")
 
@@ -116,12 +119,11 @@ async def test_retract_result(gql_client, auth_data):
       }
     """
 
-    response = await gql_client.post('/felicity-gql', json={
-        "query": add_gql,
-        "variables": {
-            "analyses": [2]
-        }
-    }, headers=auth_data['headers'])
+    response = await gql_client.post(
+        "/felicity-gql",
+        json={"query": add_gql, "variables": {"analyses": [2]}},
+        headers=auth_data["headers"],
+    )
 
     logger.info(f"retract result response: {response} {response.json()}")
 
@@ -204,12 +206,11 @@ async def test_retest_result(gql_client, auth_data):
       }
     """
 
-    response = await gql_client.post('/felicity-gql', json={
-        "query": add_gql,
-        "variables": {
-            "analyses": [3]
-        }
-    }, headers=auth_data['headers'])
+    response = await gql_client.post(
+        "/felicity-gql",
+        json={"query": add_gql, "variables": {"analyses": [3]}},
+        headers=auth_data["headers"],
+    )
 
     logger.info(f"retest result response: {response} {response.json()}")
 
@@ -250,17 +251,21 @@ async def test_submit_results_for_reflexed(gql_client, auth_data):
       }
     """
 
-    response = await gql_client.post('/felicity-gql', json={
-        "query": add_gql,
-        "variables": {
-            "analysisResults": [
-                {"uid": 6, "result": "TND"},
-                {"uid": 7, "result": "TND"}
-            ],
-            "sourceObject": "worksheet",
-            "sourceObjectUid": 1,
-        }
-    }, headers=auth_data['headers'])
+    response = await gql_client.post(
+        "/felicity-gql",
+        json={
+            "query": add_gql,
+            "variables": {
+                "analysisResults": [
+                    {"uid": 6, "result": "TND"},
+                    {"uid": 7, "result": "TND"},
+                ],
+                "sourceObject": "worksheet",
+                "sourceObjectUid": 1,
+            },
+        },
+        headers=auth_data["headers"],
+    )
 
     logger.info(f"submitting worksheet results response: {response} {response.json()}")
 
@@ -291,21 +296,23 @@ async def test_verify_ws_results(client, gql_client):
       }
     """
 
-    response = await client.post("/login/access-token", data={
-        "username": make_username("Daniel"),
-        "password": make_password("Daniel")
-    })
+    response = await client.post(
+        "/login/access-token",
+        data={"username": make_username("Daniel"), "password": make_password("Daniel")},
+    )
 
-    response = await gql_client.post('/felicity-gql', json={
-        "query": add_gql,
-        "variables": {
-            "analyses": [1,4,5,6],
-            "sourceObject": "worksheet",
-            "sourceObjectUid": 1,
-        }
-    }, headers={
-        "Authorization": f"bearer {response.json()['access_token']}"
-    })
+    response = await gql_client.post(
+        "/felicity-gql",
+        json={
+            "query": add_gql,
+            "variables": {
+                "analyses": [1, 4, 5, 6],
+                "sourceObject": "worksheet",
+                "sourceObjectUid": 1,
+            },
+        },
+        headers={"Authorization": f"bearer {response.json()['access_token']}"},
+    )
 
     logger.info(f"verifying worksheet results response: {response} {response.json()}")
 
@@ -337,21 +344,23 @@ async def test_verify_sample_results(client, gql_client):
       }
     """
 
-    verifier = await client.post("/login/access-token", data={
-        "username": make_username("Daniel"),
-        "password": make_password("Daniel")
-    })
+    verifier = await client.post(
+        "/login/access-token",
+        data={"username": make_username("Daniel"), "password": make_password("Daniel")},
+    )
 
-    response = await gql_client.post('/felicity-gql', json={
-        "query": add_gql,
-        "variables": {
-            "analyses": [7],
-            "sourceObject": "sample",
-            "sourceObjectUid": 3, # retested
-        }
-    }, headers={
-        "Authorization": f"bearer {verifier.json()['access_token']}"
-    })
+    response = await gql_client.post(
+        "/felicity-gql",
+        json={
+            "query": add_gql,
+            "variables": {
+                "analyses": [7],
+                "sourceObject": "sample",
+                "sourceObjectUid": 3,  # retested
+            },
+        },
+        headers={"Authorization": f"bearer {verifier.json()['access_token']}"},
+    )
 
     logger.info(f"verifying worksheet results response: {response} {response.json()}")
 
@@ -423,12 +432,11 @@ async def test_check_results(gql_client, auth_data):
     }
     """
 
-    response = await gql_client.post('/felicity-gql', json={
-        "query": add_gql,
-        "variables": {
-            "uid": 1
-        }
-    }, headers=auth_data['headers'])
+    response = await gql_client.post(
+        "/felicity-gql",
+        json={"query": add_gql, "variables": {"uid": 1}},
+        headers=auth_data["headers"],
+    )
 
     logger.info(f"get results by sample uid response: {response} {response.json()}")
 

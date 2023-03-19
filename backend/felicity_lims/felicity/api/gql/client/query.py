@@ -2,9 +2,15 @@ from typing import List, Optional
 
 import sqlalchemy as sa
 import strawberry  # noqa
+
 from felicity.api.gql import PageInfo
-from felicity.api.gql.client.types import (ClientContactType, ClientCursorPage,
-                                           ClientEdge, ClientType)
+from felicity.api.gql.client.types import (
+    ClientContactType,
+    ClientCursorPage,
+    ClientEdge,
+    ClientType,
+)
+from felicity.core.uid_gen import FelicityID
 from felicity.apps.client import models
 from felicity.utils import has_value_or_is_truthy
 
@@ -58,7 +64,7 @@ class ClientQuery:
         )
 
     @strawberry.field
-    async def client_by_uid(self, info, uid: int) -> ClientType:
+    async def client_by_uid(self, info, uid: FelicityID) -> ClientType:
         return await models.Client.get(uid=uid)
 
     @strawberry.field
@@ -84,11 +90,15 @@ class ClientQuery:
         return list(combined)
 
     @strawberry.field
-    async def client_contact_uid(self, info, uid: int) -> ClientContactType:
+    async def client_contact_all(self, info) -> List[ClientContactType]:
+        return await models.ClientContact.all()
+
+    @strawberry.field
+    async def client_contact_uid(self, info, uid: FelicityID) -> ClientContactType:
         return await models.ClientContact.get(uid=uid)
 
     @strawberry.field
     async def client_contact_by_client_uid(
-        self, info, client_uid: int
+        self, info, client_uid: FelicityID
     ) -> List[ClientContactType]:
         return await models.ClientContact.get_all(client_uid=client_uid)

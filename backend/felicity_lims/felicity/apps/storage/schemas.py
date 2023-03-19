@@ -1,8 +1,7 @@
 from typing import Optional
 
-from felicity.apps.analysis import schemas as s_schemas
 from pydantic import BaseModel
-
+from felicity.core.uid_gen import FelicityIDType
 
 #
 # StoreRoom Schemas
@@ -15,7 +14,7 @@ class StoreRoomBase(BaseModel):
 
 
 class StoreRoom(StoreRoomBase):
-    uid: Optional[int] = None
+    uid: Optional[FelicityIDType] = None
 
     class Config:
         orm_mode = True
@@ -39,12 +38,12 @@ class StoreRoomUpdate(StoreRoomBase):
 class StorageLocationBase(BaseModel):
     name: Optional[str] = None
     description: Optional[str] = None
-    store_room_uid: int
+    store_room_uid: FelicityIDType
     store_room: Optional[StoreRoom]
 
 
 class StorageLocation(StorageLocationBase):
-    uid: Optional[int] = None
+    uid: Optional[FelicityIDType] = None
 
     class Config:
         orm_mode = True
@@ -68,12 +67,12 @@ class StorageLocationUpdate(StorageLocationBase):
 class StorageSectionBase(BaseModel):
     name: Optional[str] = None
     description: Optional[str] = None
-    storage_location_uid: int
+    storage_location_uid: FelicityIDType
     storage_location: Optional[StorageLocation]
 
 
 class StorageSection(StorageSectionBase):
-    uid: Optional[int] = None
+    uid: Optional[FelicityIDType] = None
 
     class Config:
         orm_mode = True
@@ -97,7 +96,7 @@ class StorageSectionUpdate(StorageSectionBase):
 class StorageContainerBase(BaseModel):
     name: Optional[str] = None
     description: Optional[str] = None
-    storage_section_uid: int
+    storage_section_uid: FelicityIDType
     storage_section: Optional[StorageSection]
     grid: bool = False
     row_wise: bool = False
@@ -108,7 +107,7 @@ class StorageContainerBase(BaseModel):
 
 
 class StorageContainer(StorageContainerBase):
-    uid: Optional[int] = None
+    uid: Optional[FelicityIDType] = None
 
     class Config:
         orm_mode = True

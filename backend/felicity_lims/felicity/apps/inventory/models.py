@@ -1,10 +1,11 @@
-from felicity.apps import BaseAuditDBModel
 from sqlalchemy import Column, DateTime, Float, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 
+from felicity.apps import BaseAuditDBModel
 from felicity.apps.common.models import IdSequence
 from felicity.apps.inventory import schemas
 from felicity.apps.inventory.conf import order_states
+from felicity.core.uid_gen import FelicitySAID
 
 
 class StockItem(BaseAuditDBModel):
@@ -12,7 +13,7 @@ class StockItem(BaseAuditDBModel):
 
     name = Column(String, nullable=False)
     description = Column(String, nullable=False)
-    department_uid = Column(Integer, ForeignKey("department.uid"), nullable=True)
+    department_uid = Column(FelicitySAID, ForeignKey("department.uid"), nullable=True)
     department = relationship("Department", lazy="selectin")
 
     @classmethod
@@ -46,12 +47,10 @@ class StockCategory(BaseAuditDBModel):
 
 
 class Hazard(BaseAuditDBModel):
-    """Hazard
-    """
+    """Hazard"""
 
     name = Column(String, nullable=False)
     description = Column(String, nullable=False)
-
 
     @classmethod
     async def create(cls, obj_in: schemas.HazardCreate) -> schemas.Hazard:
@@ -95,22 +94,22 @@ class StockPackaging(BaseAuditDBModel):
 
 class StockProduct(BaseAuditDBModel):
     name = Column(String, nullable=False)
-    department_uid = Column(Integer, ForeignKey("department.uid"), nullable=True)
+    department_uid = Column(FelicitySAID, ForeignKey("department.uid"), nullable=True)
     department = relationship("Department", lazy="selectin")
-    supplier_uid = Column(Integer, ForeignKey("supplier.uid"), nullable=True)
+    supplier_uid = Column(FelicitySAID, ForeignKey("supplier.uid"), nullable=True)
     supplier = relationship("Supplier", lazy="selectin")
-    category_uid = Column(Integer, ForeignKey("stockcategory.uid"), nullable=True)
+    category_uid = Column(FelicitySAID, ForeignKey("stockcategory.uid"), nullable=True)
     category = relationship("StockCategory", lazy="selectin")
-    hazard_uid = Column(Integer, ForeignKey("hazard.uid"), nullable=True)
+    hazard_uid = Column(FelicitySAID, ForeignKey("hazard.uid"), nullable=True)
     hazard = relationship("Hazard", lazy="selectin")
-    store_room_uid = Column(Integer, ForeignKey("storeroom.uid"), nullable=True)
+    store_room_uid = Column(FelicitySAID, ForeignKey("storeroom.uid"), nullable=True)
     store_room = relationship("StoreRoom", lazy="selectin")
     lot_number = Column(String, nullable=True)
     batch = Column(String, nullable=True)
     size = Column(Float, nullable=True)
-    unit_uid = Column(Integer, ForeignKey("stockunit.uid"), nullable=True)
+    unit_uid = Column(FelicitySAID, ForeignKey("stockunit.uid"), nullable=True)
     unit = relationship("StockUnit", lazy="selectin")
-    packaging_uid = Column(Integer, ForeignKey("stockpackaging.uid"), nullable=True)
+    packaging_uid = Column(FelicitySAID, ForeignKey("stockpackaging.uid"), nullable=True)
     packaging = relationship("StockPackaging", lazy="selectin")
     price = Column(Float, nullable=True)
     quantity_received = Column(Integer, nullable=False)
@@ -118,7 +117,7 @@ class StockProduct(BaseAuditDBModel):
     remaining = Column(Integer, nullable=True)
     date_received = Column(DateTime, nullable=False)
     expiry_date = Column(DateTime, nullable=True)
-    received_by_uid = Column(Integer, ForeignKey("user.uid"), nullable=True)
+    received_by_uid = Column(FelicitySAID, ForeignKey("user.uid"), nullable=True)
     received_by = relationship("User", foreign_keys=[received_by_uid], lazy="selectin")
 
     @classmethod
@@ -132,9 +131,9 @@ class StockProduct(BaseAuditDBModel):
 
 
 class StockOrder(BaseAuditDBModel):
-    order_by_uid = Column(Integer, ForeignKey("user.uid"), nullable=True)
+    order_by_uid = Column(FelicitySAID, ForeignKey("user.uid"), nullable=True)
     order_by = relationship("User", foreign_keys=[order_by_uid], lazy="selectin")
-    department_uid = Column(Integer, ForeignKey("department.uid"), nullable=True)
+    department_uid = Column(FelicitySAID, ForeignKey("department.uid"), nullable=True)
     department = relationship("Department", lazy="selectin")
     status = Column(String, nullable=False)
     order_number = Column(String, nullable=False)
@@ -153,9 +152,9 @@ class StockOrder(BaseAuditDBModel):
 
 
 class StockOrderProduct(BaseAuditDBModel):
-    product_uid = Column(Integer, ForeignKey("stockproduct.uid"), nullable=True)
+    product_uid = Column(FelicitySAID, ForeignKey("stockproduct.uid"), nullable=True)
     product = relationship("StockProduct", lazy="selectin")
-    order_uid = Column(Integer, ForeignKey("stockorder.uid"), nullable=True)
+    order_uid = Column(FelicitySAID, ForeignKey("stockorder.uid"), nullable=True)
     order = relationship("StockOrder", lazy="selectin")
     price = Column(Float, nullable=False)
     quantity = Column(Integer, nullable=False)
@@ -177,13 +176,13 @@ class StockOrderProduct(BaseAuditDBModel):
 
 # transactions are issues
 class StockTransaction(BaseAuditDBModel):
-    product_uid = Column(Integer, ForeignKey("stockproduct.uid"), nullable=True)
+    product_uid = Column(FelicitySAID, ForeignKey("stockproduct.uid"), nullable=True)
     product = relationship("StockProduct", lazy="selectin")
     issued = Column(Integer, nullable=False)
-    department_uid = Column(Integer, ForeignKey("department.uid"), nullable=True)
+    department_uid = Column(FelicitySAID, ForeignKey("department.uid"), nullable=True)
     department = relationship("Department", lazy="selectin")
     date_issued = Column(DateTime, nullable=False)
-    transaction_by_uid = Column(Integer, ForeignKey("user.uid"), nullable=True)
+    transaction_by_uid = Column(FelicitySAID, ForeignKey("user.uid"), nullable=True)
     transaction_by = relationship(
         "User", foreign_keys=[transaction_by_uid], lazy="selectin"
     )
@@ -203,13 +202,13 @@ class StockTransaction(BaseAuditDBModel):
 
 
 class StockAdjustment(BaseAuditDBModel):
-    product_uid = Column(Integer, ForeignKey("stockproduct.uid"), nullable=True)
+    product_uid = Column(FelicitySAID, ForeignKey("stockproduct.uid"), nullable=True)
     product = relationship("StockProduct", lazy="selectin")
     adjustment_type = Column(String, nullable=False)
     adjust = Column(Integer, nullable=False)
     adjustment_date = Column(DateTime, nullable=False)
     remarks = Column(String, nullable=False)
-    adjustment_by_uid = Column(Integer, ForeignKey("user.uid"), nullable=True)
+    adjustment_by_uid = Column(FelicitySAID, ForeignKey("user.uid"), nullable=True)
     adjustment_by = relationship(
         "User", foreign_keys=[adjustment_by_uid], lazy="selectin"
     )

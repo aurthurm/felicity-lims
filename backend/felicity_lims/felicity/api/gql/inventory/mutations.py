@@ -1,11 +1,13 @@
 import logging
-from typing import Dict, Optional, List
-from datetime import datetime, date, timedelta
+from datetime import datetime, timedelta
+from typing import Dict, List, Optional
 
 import strawberry  # noqa
+
 from felicity.api.gql import OperationError, auth_from_info, verify_user_auth
-from felicity.apps.inventory import models, schemas
 from felicity.api.gql.inventory import types
+from felicity.core.uid_gen import FelicityID
+from felicity.apps.inventory import models, schemas
 from felicity.apps.inventory.conf import order_states
 
 logging.basicConfig(level=logging.INFO)
@@ -20,11 +22,13 @@ StockItemResponse = strawberry.union(
 class StockItemInputType:
     name: str
     description: str
-    department_uid: Optional[int] = None
+    department_uid: Optional[FelicityID] = None
 
 
 StockCategoryResponse = strawberry.union(
-    "StockCategoryResponse", (types.StockCategoryType, OperationError), description=""  # noqa
+    "StockCategoryResponse",
+    (types.StockCategoryType, OperationError),
+    description="",  # noqa
 )
 
 
@@ -56,7 +60,9 @@ class StockUnitInputType:
 
 
 StockPackagingResponse = strawberry.union(
-    "StockPackagingResponse", (types.StockPackagingType, OperationError), description=""  # noqa
+    "StockPackagingResponse",
+    (types.StockPackagingType, OperationError),
+    description="",  # noqa
 )
 
 
@@ -66,23 +72,25 @@ class StockPackagingInputType:
 
 
 StockProductResponse = strawberry.union(
-    "StockProductResponse", (types.StockProductType, OperationError), description=""  # noqa
+    "StockProductResponse",
+    (types.StockProductType, OperationError),
+    description="",  # noqa
 )
 
 
 @strawberry.input
 class StockProductInputType:
     name: str
-    department_uid: Optional[int] = None
-    supplier_uid: Optional[int] = None
-    category_uid: Optional[int] = None
-    hazard_uid: Optional[int] = None
-    store_room_uid: Optional[int] = None
+    department_uid: Optional[FelicityID] = None
+    supplier_uid: Optional[FelicityID] = None
+    category_uid: Optional[FelicityID] = None
+    hazard_uid: Optional[FelicityID] = None
+    store_room_uid: Optional[FelicityID] = None
     lot_number: Optional[str] = None
     batch: Optional[str] = None
     size: Optional[int] = None
-    unit_uid: Optional[int] = None
-    packaging_uid: Optional[int] = None
+    unit_uid: Optional[FelicityID] = None
+    packaging_uid: Optional[FelicityID] = None
     price: Optional[int] = None
     quantity_received: Optional[int] = None
     minimum_level: Optional[int] = None
@@ -96,13 +104,15 @@ class StockOrderLineType:
 
 
 StockOrderResponse = strawberry.union(
-    "StockOrderResponse", (StockOrderLineType, types.StockOrderType, OperationError), description=""  # noqa
+    "StockOrderResponse",
+    (StockOrderLineType, types.StockOrderType, OperationError),
+    description="",  # noqa
 )
 
 
 @strawberry.input
 class StockOrderProductLineInputType:
-    product_uid: int
+    product_uid: FelicityID
     quantity: int
     remarks: Optional[str] = None
 
@@ -110,7 +120,7 @@ class StockOrderProductLineInputType:
 @strawberry.input
 class StockOrderInputType:
     order_products: List[StockOrderProductLineInputType]
-    department_uid: Optional[int] = None
+    department_uid: Optional[FelicityID] = None
 
 
 @strawberry.input
@@ -120,25 +130,29 @@ class StockOrderApprovalInputType:
 
 
 StockTransactionResponse = strawberry.union(
-    "StockTransactionResponse", (types.StockTransactionType, OperationError), description=""  # noqa
+    "StockTransactionResponse",
+    (types.StockTransactionType, OperationError),
+    description="",  # noqa
 )
 
 
 @strawberry.input
 class StockTransactionInputType:
-    product_uid: int
+    product_uid: FelicityID
     issued: int
-    department_uid: Optional[int] = None
+    department_uid: Optional[FelicityID] = None
 
 
 StockAdjustmentResponse = strawberry.union(
-    "StockAdjustmentResponse", (types.StockAdjustmentType, OperationError), description=""  # noqa
+    "StockAdjustmentResponse",
+    (types.StockAdjustmentType, OperationError),
+    description="",  # noqa
 )
 
 
 @strawberry.input
 class StockAdjustmentInputType:
-    product_uid: int
+    product_uid: FelicityID
     adjustment_type: str
     adjust: int
     remarks: Optional[str] = None
@@ -147,7 +161,9 @@ class StockAdjustmentInputType:
 @strawberry.type
 class InventoryMutations:
     @strawberry.mutation
-    async def create_stock_item(self, info, payload: StockItemInputType) -> StockItemResponse:
+    async def create_stock_item(
+        self, info, payload: StockItemInputType
+    ) -> StockItemResponse:
         is_authenticated, felicity_user = await auth_from_info(info)
         auth_success, auth_error = verify_user_auth(
             is_authenticated,
@@ -174,7 +190,7 @@ class InventoryMutations:
 
     @strawberry.mutation
     async def update_stock_item(
-            self, info, uid: int, payload: StockItemInputType
+        self, info, uid: FelicityID, payload: StockItemInputType
     ) -> StockItemResponse:
 
         is_authenticated, felicity_user = await auth_from_info(info)
@@ -208,7 +224,9 @@ class InventoryMutations:
         return types.StockItemType(**stock_item.marshal_simple())
 
     @strawberry.mutation
-    async def create_stock_category(self, info, payload: StockCategoryInputType) -> StockCategoryResponse:
+    async def create_stock_category(
+        self, info, payload: StockCategoryInputType
+    ) -> StockCategoryResponse:
         is_authenticated, felicity_user = await auth_from_info(info)
         auth_success, auth_error = verify_user_auth(
             is_authenticated,
@@ -235,7 +253,7 @@ class InventoryMutations:
 
     @strawberry.mutation
     async def update_stock_category(
-            self, info, uid: int, payload: StockCategoryInputType
+        self, info, uid: FelicityID, payload: StockCategoryInputType
     ) -> StockCategoryResponse:
 
         is_authenticated, felicity_user = await auth_from_info(info)
@@ -296,7 +314,7 @@ class InventoryMutations:
 
     @strawberry.mutation
     async def update_hazard(
-            self, info, uid: int, payload: HazardInputType
+        self, info, uid: FelicityID, payload: HazardInputType
     ) -> HazardResponse:
 
         is_authenticated, felicity_user = await auth_from_info(info)
@@ -330,7 +348,9 @@ class InventoryMutations:
         return types.HazardType(**hazard.marshal_simple())
 
     @strawberry.mutation
-    async def create_stock_unit(self, info, payload: StockUnitInputType) -> StockUnitResponse:
+    async def create_stock_unit(
+        self, info, payload: StockUnitInputType
+    ) -> StockUnitResponse:
         is_authenticated, felicity_user = await auth_from_info(info)
         auth_success, auth_error = verify_user_auth(
             is_authenticated,
@@ -357,7 +377,7 @@ class InventoryMutations:
 
     @strawberry.mutation
     async def update_stock_unit(
-            self, info, uid: int, payload: StockUnitInputType
+        self, info, uid: FelicityID, payload: StockUnitInputType
     ) -> StockUnitResponse:
 
         is_authenticated, felicity_user = await auth_from_info(info)
@@ -391,7 +411,9 @@ class InventoryMutations:
         return types.StockUnitType(**stock_unit.marshal_simple())
 
     @strawberry.mutation
-    async def create_stock_packaging(self, info, payload: StockPackagingInputType) -> StockPackagingResponse:
+    async def create_stock_packaging(
+        self, info, payload: StockPackagingInputType
+    ) -> StockPackagingResponse:
         is_authenticated, felicity_user = await auth_from_info(info)
         auth_success, auth_error = verify_user_auth(
             is_authenticated,
@@ -413,12 +435,14 @@ class InventoryMutations:
             incoming[k] = v
 
         obj_in = schemas.StockPackagingCreate(**incoming)
-        stock_packaging: models.StockPackaging = await models.StockPackaging.create(obj_in)
+        stock_packaging: models.StockPackaging = await models.StockPackaging.create(
+            obj_in
+        )
         return types.StockPackagingType(**stock_packaging.marshal_simple())
 
     @strawberry.mutation
     async def update_stock_packaging(
-            self, info, uid: int, payload: StockPackagingInputType
+        self, info, uid: FelicityID, payload: StockPackagingInputType
     ) -> StockPackagingResponse:
 
         is_authenticated, felicity_user = await auth_from_info(info)
@@ -431,7 +455,9 @@ class InventoryMutations:
         if not uid:
             return OperationError(error="No uid provided to identity update obj")
 
-        stock_packaging: models.StockPackaging = await models.StockPackaging.get(uid=uid)
+        stock_packaging: models.StockPackaging = await models.StockPackaging.get(
+            uid=uid
+        )
         if not stock_packaging:
             return OperationError(
                 error=f"StockPackaging with uid {uid} not found. Cannot update obj ..."
@@ -452,7 +478,9 @@ class InventoryMutations:
         return types.StockPackagingType(**stock_packaging.marshal_simple())
 
     @strawberry.mutation
-    async def create_stock_product(self, info, payload: StockProductInputType) -> StockProductResponse:
+    async def create_stock_product(
+        self, info, payload: StockProductInputType
+    ) -> StockProductResponse:
         is_authenticated, felicity_user = await auth_from_info(info)
         auth_success, auth_error = verify_user_auth(
             is_authenticated,
@@ -482,7 +510,7 @@ class InventoryMutations:
 
     @strawberry.mutation
     async def update_stock_product(
-            self, info, uid: int, payload: StockProductInputType
+        self, info, uid: FelicityID, payload: StockProductInputType
     ) -> StockProductResponse:
 
         is_authenticated, felicity_user = await auth_from_info(info)
@@ -516,7 +544,9 @@ class InventoryMutations:
         return types.StockProductType(**stock_product.marshal_simple())
 
     @strawberry.mutation
-    async def create_stock_order(self, info, payload: StockOrderInputType) -> StockOrderResponse:
+    async def create_stock_order(
+        self, info, payload: StockOrderInputType
+    ) -> StockOrderResponse:
         is_authenticated, felicity_user = await auth_from_info(info)
         auth_success, auth_error = verify_user_auth(
             is_authenticated,
@@ -538,25 +568,29 @@ class InventoryMutations:
 
         # create Order Products
         for prod in payload.order_products:
-            product: models.StockProduct = await models.StockProduct.get(uid=prod.product_uid)
+            product: models.StockProduct = await models.StockProduct.get(
+                uid=prod.product_uid
+            )
             op_in = schemas.StockOrderProductCreate(
                 product_uid=prod.product_uid,
                 order_uid=stock_order.uid,
                 price=product.price,
-                quantity=prod.quantity
+                quantity=prod.quantity,
             )
             await models.StockOrderProduct.create(op_in)
 
-        order_products = await models.StockOrderProduct.get_all(order_uid=stock_order.uid)
+        order_products = await models.StockOrderProduct.get_all(
+            order_uid=stock_order.uid
+        )
 
         return StockOrderLineType(
-            stock_order=stock_order,
-            order_products=order_products
+            stock_order=stock_order, order_products=order_products
         )
 
     @strawberry.mutation
-    async def update_stock_order(self, info, uid: int,
-                                 payload: List[StockOrderProductLineInputType]) -> StockOrderResponse:
+    async def update_stock_order(
+        self, info, uid: FelicityID, payload: List[StockOrderProductLineInputType]
+    ) -> StockOrderResponse:
         is_authenticated, felicity_user = await auth_from_info(info)
         auth_success, auth_error = verify_user_auth(
             is_authenticated,
@@ -568,7 +602,9 @@ class InventoryMutations:
 
         stock_order: models.StockOrder = await models.StockOrder.get(uid=uid)
         if stock_order.status != order_states.PREPARATION:
-            return OperationError(error=f"You can only update a StockOrder under preparation")
+            return OperationError(
+                error=f"You can only update a StockOrder under preparation"
+            )
 
         # add Order Products
         old_products = await models.StockOrderProduct.get_all(order_uid=uid)
@@ -576,17 +612,21 @@ class InventoryMutations:
         for prod in payload:
             # New product
             if prod.product_uid not in _pr_uids:
-                product: models.StockProduct = await models.StockProduct.get(uid=prod.product_uid)
+                product: models.StockProduct = await models.StockProduct.get(
+                    uid=prod.product_uid
+                )
                 op_in = schemas.StockOrderProductCreate(
                     product_uid=prod.product_uid,
                     order_uid=uid,
                     price=product.price,
-                    quantity=prod.quantity
+                    quantity=prod.quantity,
                 )
                 await models.StockOrderProduct.create(op_in)
             else:  # update existing products
-                so_product = await models.StockOrderProduct.get(product_uid=prod.product_uid, order_uid=uid)
-                await so_product.update({'quantity': prod.quantity})
+                so_product = await models.StockOrderProduct.get(
+                    product_uid=prod.product_uid, order_uid=uid
+                )
+                await so_product.update({"quantity": prod.quantity})
 
         # delete removed products
         order_products_uids = [p.product_uid for p in payload]
@@ -598,13 +638,12 @@ class InventoryMutations:
         o_products = await models.StockOrderProduct.get_all(order_uid=uid)
         stock_order: models.StockOrder = await models.StockOrder.get(uid=uid)
 
-        return StockOrderLineType(
-            stock_order=stock_order,
-            order_products=o_products
-        )
+        return StockOrderLineType(stock_order=stock_order, order_products=o_products)
 
     @strawberry.mutation
-    async def approve_stock_order(self, info, uid: int, payload: StockOrderApprovalInputType) -> StockOrderResponse:
+    async def approve_stock_order(
+        self, info, uid: FelicityID, payload: StockOrderApprovalInputType
+    ) -> StockOrderResponse:
         is_authenticated, felicity_user = await auth_from_info(info)
         auth_success, auth_error = verify_user_auth(
             is_authenticated,
@@ -616,14 +655,19 @@ class InventoryMutations:
 
         stock_order: models.StockOrder = await models.StockOrder.get(uid=uid)
         if stock_order.status not in [order_states.SUBMITTED]:
-            return OperationError(error=f"You can only approve/revert a submitted StockOrder")
+            return OperationError(
+                error=f"You can only approve/revert a submitted StockOrder"
+            )
 
-        stock_order = await stock_order.update({'status': payload.status, 'remarks': payload.remarks}) # noqa
+        stock_order = await stock_order.update(
+            {"status": payload.status, "remarks": payload.remarks}
+        )  # noqa
         return types.StockOrderType(**stock_order.marshal_simple())
 
     @strawberry.mutation
-    async def issue_stock_order(self, info, uid: int,
-                                payload: List[StockOrderProductLineInputType]) -> StockOrderResponse:
+    async def issue_stock_order(
+        self, info, uid: FelicityID, payload: List[StockOrderProductLineInputType]
+    ) -> StockOrderResponse:
         is_authenticated, felicity_user = await auth_from_info(info)
         auth_success, auth_error = verify_user_auth(
             is_authenticated,
@@ -645,28 +689,35 @@ class InventoryMutations:
                 "updated_by_uid": felicity_user.uid,
                 "date_issued": datetime.now(),
                 "product_uid": order_p.product_uid,
-                "issued": order_p.quantity
+                "issued": order_p.quantity,
             }
             obj_in = schemas.StockTransactionCreate(**incoming)
-            stock_transaction: models.StockTransaction = await models.StockTransaction.create(obj_in)
+            stock_transaction: models.StockTransaction = (
+                await models.StockTransaction.create(obj_in)
+            )
             #
             product = await models.StockProduct.get(uid=order_p.product_uid)
             quantity = product.remaining - order_p.quantity
             if quantity < 0:
-                await stock_transaction.update({'remarks': "Sustained: Sorry you cannot issue beyond whats available"}) # noqa
-                return OperationError(error=f"Sorry you cannot issue beyond whats available")
+                await stock_transaction.update(
+                    {
+                        "remarks": "Sustained: Sorry you cannot issue beyond whats available"
+                    }
+                )  # noqa
+                return OperationError(
+                    error=f"Sorry you cannot issue beyond whats available"
+                )
             else:
-                await product.update({'remaining': quantity})
+                await product.update({"remaining": quantity})
 
-        stock_order = await stock_order.update({'status': payload.status, 'remarks': payload.remarks}) # noqa
+        stock_order = await stock_order.update(
+            {"status": payload.status, "remarks": payload.remarks}
+        )  # noqa
         o_products = await models.StockOrderProduct.get_all(order_uid=uid)
-        return StockOrderLineType(
-            stock_order=stock_order,
-            order_products=o_products
-        )
+        return StockOrderLineType(stock_order=stock_order, order_products=o_products)
 
     @strawberry.mutation
-    async def delete_stock_order(self, info, uid: int) -> StockOrderResponse:
+    async def delete_stock_order(self, info, uid: FelicityID) -> StockOrderResponse:
         is_authenticated, felicity_user = await auth_from_info(info)
         auth_success, auth_error = verify_user_auth(
             is_authenticated,
@@ -678,13 +729,17 @@ class InventoryMutations:
 
         stock_order: models.StockOrder = await models.StockOrder.get(uid=uid)
         if stock_order.status != order_states.PREPARATION:
-            return OperationError(error=f"You can only delete a StockOrder under preparation")
+            return OperationError(
+                error=f"You can only delete a StockOrder under preparation"
+            )
 
         await stock_order.delete()
         return types.StockOrderType(**stock_order.marshal_simple())
 
     @strawberry.mutation
-    async def create_stock_transaction(self, info, payload: StockTransactionInputType) -> StockTransactionResponse:
+    async def create_stock_transaction(
+        self, info, payload: StockTransactionInputType
+    ) -> StockTransactionResponse:
         is_authenticated, felicity_user = await auth_from_info(info)
         auth_success, auth_error = verify_user_auth(
             is_authenticated,
@@ -697,28 +752,36 @@ class InventoryMutations:
         incoming: Dict = {
             "created_by_uid": felicity_user.uid,
             "updated_by_uid": felicity_user.uid,
-            "date_issued": datetime.now()
+            "date_issued": datetime.now(),
         }
         for k, v in payload.__dict__.items():
             incoming[k] = v
 
         obj_in = schemas.StockTransactionCreate(**incoming)
-        stock_transaction: models.StockTransaction = await models.StockTransaction.create(obj_in)
+        stock_transaction: models.StockTransaction = (
+            await models.StockTransaction.create(obj_in)
+        )
 
         product = await models.StockProduct.get(uid=stock_transaction.product_uid)
 
         # Transact
         remaining = product.remaining - stock_transaction.issued
         if remaining < 0:
-            await stock_transaction.update({'remarks': "Sustained: Sorry you cannot issue beyond whats available"}) # noqa
-            return OperationError(error=f"Sorry you cannot issue beyond whats available")
+            await stock_transaction.update(
+                {"remarks": "Sustained: Sorry you cannot issue beyond whats available"}
+            )  # noqa
+            return OperationError(
+                error=f"Sorry you cannot issue beyond whats available"
+            )
         else:
-            await product.update({'remaining': remaining})
+            await product.update({"remaining": remaining})
 
         return types.StockTransactionType(**stock_transaction.marshal_simple())
 
     @strawberry.mutation
-    async def create_stock_adjustment(self, info, payload: StockAdjustmentInputType) -> StockAdjustmentResponse:
+    async def create_stock_adjustment(
+        self, info, payload: StockAdjustmentInputType
+    ) -> StockAdjustmentResponse:
         is_authenticated, felicity_user = await auth_from_info(info)
         auth_success, auth_error = verify_user_auth(
             is_authenticated,
@@ -731,26 +794,34 @@ class InventoryMutations:
         incoming: Dict = {
             "created_by_uid": felicity_user.uid,
             "updated_by_uid": felicity_user.uid,
-            "adjustment_date": datetime.now()
+            "adjustment_date": datetime.now(),
         }
         for k, v in payload.__dict__.items():
             incoming[k] = v
 
         obj_in = schemas.StockAdjustmentCreate(**incoming)
-        stock_adjustment: models.StockAdjustment = await models.StockAdjustment.create(obj_in)
+        stock_adjustment: models.StockAdjustment = await models.StockAdjustment.create(
+            obj_in
+        )
 
         product = await models.StockProduct.get(uid=stock_adjustment.product_uid)
 
         # Adjust
-        if stock_adjustment.adjustment_type == 'transfer in':
+        if stock_adjustment.adjustment_type == "transfer in":
             remaining = product.remaining + stock_adjustment.adjust
-            await product.update({'remaining': remaining})
+            await product.update({"remaining": remaining})
         else:
             remaining = product.remaining - stock_adjustment.adjust
             if remaining < 0:
-                await stock_adjustment.update({'remarks': "Sustained: Sorry you cant transact beyond what you have"}) # noqa
-                return OperationError(error='Sorry you cant transact beyond what you have')
+                await stock_adjustment.update(
+                    {
+                        "remarks": "Sustained: Sorry you cant transact beyond what you have"
+                    }
+                )  # noqa
+                return OperationError(
+                    error="Sorry you cant transact beyond what you have"
+                )
             else:
-                await product.update({'remaining': remaining})
+                await product.update({"remaining": remaining})
 
         return types.StockAdjustmentType(**stock_adjustment.marshal_simple())

@@ -1,8 +1,10 @@
 import json
 import logging
 
-from felicity.database.base_class import DBModel
 from sqlalchemy import Column, Integer, String, UnicodeText
+
+from felicity.core.uid_gen import FelicitySAID
+from felicity.database.base_class import DBModel
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -11,11 +13,11 @@ logger = logging.getLogger(__name__)
 class AuditLog(DBModel):
     """Model an audit log of user actions"""
 
-    user_id = Column(Integer, doc="The ID of the user who made the change")
+    user_id = Column(FelicitySAID, doc="The ID of the user who made the change")
     target_type = Column(
         String(100), nullable=False, doc="The table name of the altered object"
     )
-    target_id = Column(Integer, doc="The ID of the altered object")
+    target_id = Column(FelicitySAID, doc="The ID of the altered object")
     action = Column(Integer, doc="Create (1), update (2), or delete (3)")
     state_before = Column(
         UnicodeText,

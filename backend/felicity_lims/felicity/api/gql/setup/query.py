@@ -2,20 +2,33 @@ from typing import List, Optional
 
 import sqlalchemy as sa
 import strawberry  # noqa
+
 from felicity.api.gql import PageInfo
-from felicity.api.gql.setup.types import (CountryType, DepartmentType,
-                                          DistrictCursorPage, DistrictEdge,
-                                          DistrictType, InstrumentCursorPage,
-                                          InstrumentEdge, InstrumentType,
-                                          InstrumentTypeCursorPage,
-                                          InstrumentTypeEdge,
-                                          InstrumentTypeType,
-                                          LaboratorySettingType,
-                                          LaboratoryType, ManufacturerType,
-                                          MethodCursorPage, MethodEdge,
-                                          MethodType, ProvinceCursorPage,
-                                          ProvinceEdge, ProvinceType,
-                                          SupplierType, UnitType)
+from felicity.api.gql.setup.types import (
+    CountryType,
+    DepartmentType,
+    DistrictCursorPage,
+    DistrictEdge,
+    DistrictType,
+    InstrumentCursorPage,
+    InstrumentEdge,
+    InstrumentType,
+    InstrumentTypeCursorPage,
+    InstrumentTypeEdge,
+    InstrumentTypeType,
+    LaboratorySettingType,
+    LaboratoryType,
+    ManufacturerType,
+    MethodCursorPage,
+    MethodEdge,
+    MethodType,
+    ProvinceCursorPage,
+    ProvinceEdge,
+    ProvinceType,
+    SupplierType,
+    UnitType,
+)
+from felicity.core.uid_gen import FelicityID
 from felicity.apps.setup import models
 from felicity.utils import has_value_or_is_truthy
 
@@ -274,14 +287,14 @@ class SetupQuery:
     )
 
     @strawberry.field
-    async def manufacturer_by_uid(self, info, uid: int) -> ManufacturerType:
+    async def manufacturer_by_uid(self, info, uid: FelicityID) -> ManufacturerType:
         query = await models.Manufacturer.get(uid=uid)
         return query
 
     supplier_all: List[SupplierType] = strawberry.field(resolver=get_all_suppliers)
 
     @strawberry.field
-    async def supplier_by_uid(self, info, uid: int) -> SupplierType:
+    async def supplier_by_uid(self, info, uid: FelicityID) -> SupplierType:
         query = await models.Supplier.get(uid=uid)
         return query
 
@@ -290,7 +303,7 @@ class SetupQuery:
     )
 
     @strawberry.field
-    async def department_by_uid(self, info, uid: int) -> DepartmentType:
+    async def department_by_uid(self, info, uid: FelicityID) -> DepartmentType:
         query = await models.Department.get(uid=uid)
         return query
 
@@ -299,7 +312,7 @@ class SetupQuery:
     )
 
     @strawberry.field
-    async def instrument_type_by_uid(self, info, uid: int) -> InstrumentTypeType:
+    async def instrument_type_by_uid(self, info, uid: FelicityID) -> InstrumentTypeType:
         query = await models.InstrumentType.get(uid=uid)
         return query
 
@@ -308,51 +321,51 @@ class SetupQuery:
     )
 
     @strawberry.field
-    async def instrument_by_uid(self, info, uid: int) -> InstrumentType:
+    async def instrument_by_uid(self, info, uid: FelicityID) -> InstrumentType:
         query = await models.Instrument.get(uid=uid)
         return query
 
     method_all: MethodCursorPage = strawberry.field(resolver=get_all_methods)
 
     @strawberry.field
-    async def method_by_uid(self, info, uid: int) -> MethodType:
+    async def method_by_uid(self, info, uid: FelicityID) -> MethodType:
         query = await models.Method.get(uid=uid)
         return query
 
     district_all: DistrictCursorPage = strawberry.field(resolver=get_all_districts)
 
     @strawberry.field
-    async def district_by_uid(self, info, uid: int) -> DistrictType:
+    async def district_by_uid(self, info, uid: FelicityID) -> DistrictType:
         district = await models.District.get(uid=uid)
         return district
 
     @strawberry.field
-    async def districts_by_province_uid(self, info, uid: int) -> List[DistrictType]:
+    async def districts_by_province_uid(self, info, uid: FelicityID) -> List[DistrictType]:
         districts = await models.District.get_all(province_uid__exact=uid)
         return districts
 
     province_all: ProvinceCursorPage = strawberry.field(resolver=get_all_provinces)
 
     @strawberry.field
-    async def province_by_uid(self, info, uid: int) -> ProvinceType:
+    async def province_by_uid(self, info, uid: FelicityID) -> ProvinceType:
         province = await models.Province.get(uid=uid)
         return province
 
     @strawberry.field
-    async def provinces_by_country_uid(self, info, uid: int) -> List[ProvinceType]:
+    async def provinces_by_country_uid(self, info, uid: FelicityID) -> List[ProvinceType]:
         provinces = await models.Province.get_all(country_uid__exact=uid)
         return provinces
 
     country_all: List[CountryType] = strawberry.field(resolver=get_all_countries)
 
     @strawberry.field
-    async def country_by_uid(self, info, uid: int) -> CountryType:
+    async def country_by_uid(self, info, uid: FelicityID) -> CountryType:
         country = await models.Country.find(uid)
         return country
 
     unit_all: List[UnitType] = strawberry.field(resolver=get_all_units)
 
     @strawberry.field
-    async def unit_by_uid(self, info, uid: int) -> UnitType:
+    async def unit_by_uid(self, info, uid: FelicityID) -> UnitType:
         unit = await models.Unit.find(uid)
         return unit

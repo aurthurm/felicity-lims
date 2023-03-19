@@ -39,7 +39,7 @@ export const ADD_PATIENT = gql`
 }`;
 
 export const UPDATE_PATIENT = gql`
-  mutation EditPatient($uid: Int!,$payload: PatientInputType!){
+  mutation EditPatient($uid: FelicityID!,$payload: PatientInputType!){
   updatePatient(uid: $uid, payload: $payload) {
     ... on PatientType {
       __typename

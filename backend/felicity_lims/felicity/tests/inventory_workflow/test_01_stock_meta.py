@@ -1,5 +1,6 @@
-import pytest
 import logging
+
+import pytest
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -23,16 +24,15 @@ async def test_add_stock_item(gql_client, auth_data):
       }
     """
 
-    stock_category = {
-        'name': "Consumables",
-        'description': "Consumables"
-    }
-    response = await gql_client.post('/felicity-gql', json={
-        "query": add_stock_category_mutation,
-        "variables": {
-            "payload": stock_category
-        }
-    }, headers=auth_data['headers'])
+    stock_category = {"name": "Consumables", "description": "Consumables"}
+    response = await gql_client.post(
+        "/felicity-gql",
+        json={
+            "query": add_stock_category_mutation,
+            "variables": {"payload": stock_category},
+        },
+        headers=auth_data["headers"],
+    )
 
     logger.info(f"register stock category response: {response} {response.json()}")
 
@@ -61,16 +61,12 @@ async def test_add_hazar(gql_client, auth_data):
       }
     """
 
-    hazard = {
-        'name': "Caution",
-        'description': "Caution hazard"
-    }
-    response = await gql_client.post('/felicity-gql', json={
-        "query": add_hazard_mutation,
-        "variables": {
-            "payload": hazard
-        }
-    }, headers=auth_data['headers'])
+    hazard = {"name": "Caution", "description": "Caution hazard"}
+    response = await gql_client.post(
+        "/felicity-gql",
+        json={"query": add_hazard_mutation, "variables": {"payload": hazard}},
+        headers=auth_data["headers"],
+    )
 
     logger.info(f"register hazard response: {response} {response.json()}")
 
@@ -99,14 +95,13 @@ async def test_add_stock_unit(gql_client, auth_data):
     """
 
     stock_unit = {
-        'name': "ml",
+        "name": "ml",
     }
-    response = await gql_client.post('/felicity-gql', json={
-        "query": add_stock_unit_mutation,
-        "variables": {
-            "payload": stock_unit
-        }
-    }, headers=auth_data['headers'])
+    response = await gql_client.post(
+        "/felicity-gql",
+        json={"query": add_stock_unit_mutation, "variables": {"payload": stock_unit}},
+        headers=auth_data["headers"],
+    )
 
     logger.info(f"register stock unit response: {response} {response.json()}")
 
@@ -134,14 +129,16 @@ async def test_add_stock_packaging(gql_client, auth_data):
     """
 
     stock_packaging = {
-        'name': "container",
+        "name": "container",
     }
-    response = await gql_client.post('/felicity-gql', json={
-        "query": add_stock_packaging_mutation,
-        "variables": {
-            "payload": stock_packaging
-        }
-    }, headers=auth_data['headers'])
+    response = await gql_client.post(
+        "/felicity-gql",
+        json={
+            "query": add_stock_packaging_mutation,
+            "variables": {"payload": stock_packaging},
+        },
+        headers=auth_data["headers"],
+    )
 
     logger.info(f"register stock package response: {response} {response.json()}")
 

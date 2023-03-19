@@ -9,12 +9,13 @@ BIT_LEN_TIME = 39
 BIT_LEN_SEQUENCE = 8
 BIT_LEN_MACHINE_ID = 63 - (BIT_LEN_TIME + BIT_LEN_SEQUENCE)
 UTC = datetime.timezone.utc
-SONYFLAKE_EPOCH = datetime.datetime(2014, 9, 1, 0, 0, 0, tzinfo=UTC)
+SONYFLAKE_EPOCH = datetime.datetime(2023, 1, 1, 0, 0, 0, tzinfo=UTC)
 
 
 def lower_16bit_private_ip() -> int:
     """
     Returns the lower 16 bits of the private IP address.
+    you can also use uui.getnode() to get machine_id
     """
     ip: ipaddress.IPv4Address = ipaddress.ip_address(gethostbyname(gethostname()))
     ip_bytes = ip.packed
@@ -90,6 +91,12 @@ class SonyFlake:
         if not hasattr(self, "_machine_id"):
             self._machine_id = machine_id and machine_id() or lower_16bit_private_ip()
 
+    def __str__(self):
+        return f"{self.sonyflake}"
+
+    def __repr__(self):
+        return f"{self.__class__.__name__}({str(self)})"
+
     @staticmethod
     def to_sonyflake_time(given_time: datetime.datetime) -> int:
         """
@@ -118,6 +125,13 @@ class SonyFlake:
         initialised.
         """
         return self.current_time() - self.start_time
+
+    def __next__(self):
+        self.sonyflake = next(iter(self))
+        return self
+
+    def __iter__(self):
+        yield self.next_id()
 
     def next_id(self) -> int:
         """
@@ -173,3 +187,8 @@ class SonyFlake:
             "sequence": sequence,
             "machine_id": machine_id,
         }
+
+
+# Usage example
+# sf = SonyFlake()
+# next_id = sf.next_id()

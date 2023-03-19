@@ -30,13 +30,13 @@ const state = reactive({
   allChecked: false,
 });
 
-onMounted(() => sampleStore.fetchAnalysisResultsForSample(+route.params.sampleUid));
+onMounted(() => sampleStore.fetchAnalysisResultsForSample(route.params.sampleUid));
 
 watch(
   () => route.params.sampleUid,
   (sampleUid, prev) => {
     sampleStore.resetSample();
-    sampleStore.fetchAnalysisResultsForSample(+route.params.sampleUid);
+    sampleStore.fetchAnalysisResultsForSample(route.params.sampleUid);
   }
 );
 

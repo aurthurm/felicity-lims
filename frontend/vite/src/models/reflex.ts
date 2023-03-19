@@ -2,65 +2,65 @@ import { IAnalysisService, ISampleType } from "./analysis";
 import { IUser } from "./auth";
 
 export interface IReflexRule {
-  uid?: number,
+  uid?: string,
   name?: string,
   description?: string,
   reflexActions: IReflexAction[],
-  createdByUid?: number,
+  createdByUid?: string,
   createdBy?: IUser,
   createdAt?: string,
   }
 
 export interface IReflexBrainCriteria {
-  analysisUid?: number,
+  analysisUid?: string,
   analysis?: IAnalysisService
-  reflexBrainUid?: number,
+  reflexBrainUid?: string,
   reflexBrain?: IReflexBrain,
   operator?: string,
   value?: number,
 }
 
 export interface IReflexBrainAddition {
-  analysisUid?: number,
+  analysisUid?: string,
   analysis?: IAnalysisService
-  reflexBrainUid?: number,
+  reflexBrainUid?: string,
   reflexBrain?: IReflexBrain,
   count?: number,
 }
 
 export interface IReflexBrainFinal {
-  analysisUid?: number,
+  analysisUid?: string,
   analysis?: IAnalysisService
-  reflexBrainUid?: number,
+  reflexBrainUid?: string,
   reflexBrain?: IReflexBrain,
   value?: number,
 }
 
 export interface IReflexBrain {
-    uid?: number,
-    reflexActionUid?: number,
+    uid?: string,
+    reflexActionUid?: string,
     reflexAction?: IReflexBrain
     description?: string,
     analysesValues?: IReflexBrainCriteria[],
     addNew?: IReflexBrainAddition[],
     finalise?: IReflexBrainFinal[],
-    createdByUid?: number,
+    createdByUid?: string,
     createdBy?: IUser,
     createdAt?: string,
 }
 
 export interface IReflexAction {
-    uid?: number,
+    uid?: string,
     level?: number,
     description?: string,
-    analysisUid?: number,
+    analysisUid?: string,
     analyses?: IAnalysisService[],
-    sampleTypeUid?: number,
+    sampleTypeUid?: string,
     sampleType?: ISampleType,
-    reflexRuleUid?: number,
+    reflexRuleUid?: string,
     reflexRule?: IReflexRule,
     brains?: IReflexBrain[],
-    createdByUid?: number,
+    createdByUid?: string,
     createdBy?: IUser,
     createdAt?: string,
 }

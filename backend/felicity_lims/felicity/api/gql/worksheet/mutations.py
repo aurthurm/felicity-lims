@@ -2,9 +2,10 @@ import logging
 from typing import List, Optional
 
 import strawberry  # noqa
+
 from felicity.api.gql import OperationError, auth_from_info, verify_user_auth
-from felicity.api.gql.worksheet.types import (WorkSheetTemplateType,
-                                              WorkSheetType)
+from felicity.core.uid_gen import FelicityID
+from felicity.api.gql.worksheet.types import WorkSheetTemplateType, WorkSheetType
 from felicity.apps.analysis.models import analysis as analysis_models
 from felicity.apps.analysis.models import qc as qc_models
 from felicity.apps.analysis.models import results as result_models
@@ -25,23 +26,23 @@ logger = logging.getLogger(__name__)
 @strawberry.input
 class ReservedInputType:
     position: int
-    level_uid: Optional[int]
+    level_uid: Optional[FelicityID]
 
 
 @strawberry.input
 class WorksheetTemplateInputType:
     name: str
-    sample_type_uid: int
+    sample_type_uid: FelicityID
     reserved: List[ReservedInputType]
-    analysis_uid: Optional[int] = None
+    analysis_uid: Optional[FelicityID] = None
     number_of_samples: Optional[int] = None
-    instrument_uid: Optional[int] = None
+    instrument_uid: Optional[FelicityID] = None
     worksheet_type: Optional[str] = None
     rows: Optional[int] = None
     cols: Optional[int] = None
     row_wise: Optional[bool] = True
     description: Optional[str] = None
-    qc_template_uid: Optional[int] = None
+    qc_template_uid: Optional[FelicityID] = None
     profiles: Optional[List[int]] = None
 
 
@@ -99,7 +100,7 @@ class WorkSheetMutations:
 
         incoming = {
             "created_by_uid": felicity_user.uid,
-            "updated_by_uid": felicity_user.uid
+            "updated_by_uid": felicity_user.uid,
         }
         for k, v in payload.__dict__.items():
             if has_value_or_is_truthy(v):
@@ -134,7 +135,7 @@ class WorkSheetMutations:
 
     @strawberry.mutation
     async def update_worksheet_template(
-        self, uid: int, payload: WorksheetTemplateInputType
+        self, uid: FelicityID, payload: WorksheetTemplateInputType
     ) -> WorkSheetTemplateResponse:
 
         if not uid:
@@ -177,7 +178,7 @@ class WorkSheetMutations:
 
     @strawberry.mutation
     async def create_worksheet(
-        self, info, template_uid: int, analyst_uid: int, count: Optional[int] = 1
+        self, info, template_uid: FelicityID, analyst_uid: FelicityID, count: Optional[int] = 1
     ) -> WorkSheetsResponse:
 
         is_authenticated, felicity_user = await auth_from_info(info)
@@ -256,10 +257,10 @@ class WorkSheetMutations:
     async def update_worksheet(
         self,
         info,
-        worksheet_uid: int,
-        analyst_uid: Optional[int] = None,
-        instrument_uid: Optional[int] = None,
-        method_uid: Optional[int] = None,
+        worksheet_uid: FelicityID,
+        analyst_uid: Optional[FelicityID] = None,
+        instrument_uid: Optional[FelicityID] = None,
+        method_uid: Optional[FelicityID] = None,
         action: Optional[str] = None,
         samples: Optional[List[int]] = None,
     ) -> WorkSheetResponse:  # noqa
@@ -333,7 +334,7 @@ class WorkSheetMutations:
 
     @strawberry.mutation
     async def update_worksheet_apply_template(
-        self, info, template_uid: int, worksheet_uid: int
+        self, info, template_uid: FelicityID, worksheet_uid: FelicityID
     ) -> WorkSheetResponse:
 
         is_authenticated, felicity_user = await auth_from_info(info)
@@ -399,9 +400,9 @@ class WorkSheetMutations:
     async def update_worksheet_manual_assign(
         self,
         info,
-        uid: int,
+        uid: FelicityID,
         analyses_uids: List[int],
-        qc_template_uid: Optional[int] = None,
+        qc_template_uid: Optional[FelicityID] = None,
     ) -> WorkSheetResponse:
 
         is_authenticated, felicity_user = await auth_from_info(info)

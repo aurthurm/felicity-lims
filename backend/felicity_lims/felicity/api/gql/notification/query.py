@@ -1,7 +1,9 @@
 from typing import List, Optional
 
 import strawberry  # noqa
+
 from felicity.api.gql.notification.types import NotificationType
+from felicity.core.uid_gen import FelicityID
 from felicity.apps.notification import models
 
 
@@ -11,9 +13,9 @@ class StreamNotificationQuery:
     async def notification_filter(
         self,
         info,
-        group_uid: Optional[int],
-        department_uid: Optional[int],
-        user_uid: Optional[int],
+        group_uid: Optional[FelicityID],
+        department_uid: Optional[FelicityID],
+        user_uid: Optional[FelicityID],
     ) -> List[NotificationType]:
         filters = {}
 
@@ -36,5 +38,5 @@ class StreamNotificationQuery:
         return list(notifications)
 
     @strawberry.field
-    async def notification_by_uid(self, info, uid: int) -> Optional[NotificationType]:
+    async def notification_by_uid(self, info, uid: FelicityID) -> Optional[NotificationType]:
         return await models.Notification.get(uid=uid)

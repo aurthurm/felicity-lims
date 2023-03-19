@@ -31,7 +31,7 @@
 
   let formTitle = ref<string>('');
 
-  clientStore.fetchClientByUid(+route.query.clientUid!)
+  clientStore.fetchClientByUid(route.query.clientUid!)
 
   locationStore.fetchCountries();
   const countries = computed(() => locationStore.getCountries)

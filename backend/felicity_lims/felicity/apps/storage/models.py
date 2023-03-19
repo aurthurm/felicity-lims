@@ -1,10 +1,12 @@
 from typing import List
+
 from sqlalchemy import Boolean, Column, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 
 from felicity.apps import BaseAuditDBModel
-from felicity.apps.storage import schemas
 from felicity.apps.analysis.models.analysis import Sample
+from felicity.apps.storage import schemas
+from felicity.core.uid_gen import FelicitySAID
 
 
 class StoreRoom(BaseAuditDBModel):
@@ -30,18 +32,18 @@ class StorageLocation(BaseAuditDBModel):
 
     name = Column(String, nullable=False)
     description = Column(String, nullable=False)
-    store_room_uid = Column(Integer, ForeignKey("storeroom.uid"), nullable=False)
+    store_room_uid = Column(FelicitySAID, ForeignKey("storeroom.uid"), nullable=False)
     store_room = relationship(StoreRoom, backref="storage_locations", lazy="selectin")
 
     @classmethod
     async def create(
-            cls, obj_in: schemas.StorageLocationCreate
+        cls, obj_in: schemas.StorageLocationCreate
     ) -> schemas.StorageLocation:
         data = cls._import(obj_in)
         return await super().create(**data)
 
     async def update(
-            self, obj_in: schemas.StorageLocationUpdate
+        self, obj_in: schemas.StorageLocationUpdate
     ) -> schemas.StorageLocation:
         data = self._import(obj_in)
         return await super().update(**data)
@@ -55,7 +57,7 @@ class StorageSection(BaseAuditDBModel):
     name = Column(String, nullable=False)
     description = Column(String, nullable=False)
     storage_location_uid = Column(
-        Integer, ForeignKey("storagelocation.uid"), nullable=False
+        FelicitySAID, ForeignKey("storagelocation.uid"), nullable=False
     )
     storage_location = relationship(
         StorageLocation, backref="storage_sections", lazy="selectin"
@@ -63,13 +65,13 @@ class StorageSection(BaseAuditDBModel):
 
     @classmethod
     async def create(
-            cls, obj_in: schemas.StorageSectionCreate
+        cls, obj_in: schemas.StorageSectionCreate
     ) -> schemas.StorageSection:
         data = cls._import(obj_in)
         return await super().create(**data)
 
     async def update(
-            self, obj_in: schemas.StorageSectionUpdate
+        self, obj_in: schemas.StorageSectionUpdate
     ) -> schemas.StorageSection:
         data = self._import(obj_in)
         return await super().update(**data)
@@ -83,7 +85,7 @@ class StorageContainer(BaseAuditDBModel):
     name = Column(String, nullable=False)
     description = Column(String, nullable=False)
     storage_section_uid = Column(
-        Integer, ForeignKey("storagesection.uid"), nullable=False
+        FelicitySAID, ForeignKey("storagesection.uid"), nullable=False
     )
     storage_section = relationship(
         StorageSection, backref="storage_containers", lazy="selectin"
@@ -93,7 +95,9 @@ class StorageContainer(BaseAuditDBModel):
     row_wise = Column(Boolean(), default=False)
     cols = Column(Integer, nullable=True)
     rows = Column(Integer, nullable=True)
-    samples = relationship('Sample', back_populates="storage_container", lazy="selectin")
+    samples = relationship(
+        "Sample", back_populates="storage_container", lazy="selectin"
+    )
     stored_count = Column(Integer, nullable=False, default=0)
 
     async def get_samples(self) -> List[Sample]:
@@ -107,13 +111,13 @@ class StorageContainer(BaseAuditDBModel):
 
     @classmethod
     async def create(
-            cls, obj_in: schemas.StorageContainerCreate
+        cls, obj_in: schemas.StorageContainerCreate
     ) -> schemas.StorageContainer:
         data = cls._import(obj_in)
         return await super().create(**data)
 
     async def update(
-            self, obj_in: schemas.StorageContainerUpdate
+        self, obj_in: schemas.StorageContainerUpdate
     ) -> schemas.StorageContainer:
         data = self._import(obj_in)
         return await super().update(**data)

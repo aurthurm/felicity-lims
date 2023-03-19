@@ -4,8 +4,7 @@ This file is part of Felicity LIMS Software
 
 
 class Genders(object):
-    """Gender
-    """
+    """Gender"""
 
     MALE = "Male"
     FEMALE = "Female"

@@ -1,5 +1,5 @@
-from datetime import datetime
 import time
+from datetime import datetime, timezone
 
 
 class Snowflake:
@@ -15,10 +15,18 @@ class Snowflake:
     """
 
     # Saturday, 1 January 2011 12:00:00 GMT+01:00
-    initial_epoch = 1293879600000
-    mask = lambda x: -1 ^ (-1 << x)
-    sleep = lambda x: time.sleep(x / 1000)
-    get_timestamp = lambda x: int(time.time() * 1000)
+    initial_epoch = int(
+        datetime(2023, 1, 1, 0, 0, 0, tzinfo=timezone.utc).timestamp() * 1000
+    )  # 1672531200000
+
+    def mask(x):
+        return -1 ^ (-1 << x)
+
+    def sleep(x):
+        return time.sleep(x / 1000)
+
+    def get_timestamp(x):
+        return int(time.time() * 1000)
 
     sequence_bits = 10
     sequence_mask = mask(sequence_bits)
@@ -113,3 +121,9 @@ class Snowflake:
         Converts the current snowflake to hexdecimal of 16 chars wide.
         """
         return "%16x" % int(self)
+
+
+# Usage
+# sf = Snowflake()
+# flake = next(sf)
+# id = flake.snowflake

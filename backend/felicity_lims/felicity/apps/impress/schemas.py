@@ -1,17 +1,19 @@
-from typing import Dict, Optional
-import json
 from datetime import datetime
-from felicity.apps.analysis.schemas import SampleInDB
+from typing import Dict, Optional
+
 from pydantic import BaseModel
 
+from felicity.apps.analysis.schemas import SampleInDB
+from felicity.core.uid_gen import FelicityIDType
 
 #
 # ReportImpress Schemas
 #
 
+
 class ReportImpressBase(BaseModel):
     state: Optional[str] = None
-    sample_uid: Optional[int] = None
+    sample_uid: Optional[FelicityIDType] = None
     sample: Optional[SampleInDB] = None
     json_content: Optional[Dict] = {}
     pdf_content: Optional[bytes] = None
@@ -19,14 +21,14 @@ class ReportImpressBase(BaseModel):
     email_sent: Optional[bool] = False
     sms_required: Optional[bool] = False
     sms_sent: Optional[bool] = False
-    generated_by_uid: Optional[int] = None
-    created_by_uid: Optional[int] = None
-    updated_by_uid: Optional[int] = None
+    generated_by_uid: Optional[FelicityIDType] = None
+    created_by_uid: Optional[FelicityIDType] = None
+    updated_by_uid: Optional[FelicityIDType] = None
     date_generated: Optional[datetime] = False
 
 
 class ReportImpressBaseInDB(ReportImpressBase):
-    uid: Optional[int] = None
+    uid: Optional[FelicityIDType] = None
 
     class Config:
         orm_mode = True

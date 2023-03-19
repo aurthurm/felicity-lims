@@ -3,6 +3,8 @@ from typing import Optional, Tuple, Union
 
 import strawberry  # noqa
 
+from felicity.core.uid_gen import FelicityID
+
 from ...apps.user.models import User, UserAuth
 
 logging.basicConfig(level=logging.INFO)
@@ -19,7 +21,7 @@ class PageInfo:
 
 @strawberry.type
 class DeletedItem:
-    uid: int
+    uid: FelicityID
 
 
 @strawberry.type
@@ -87,9 +89,13 @@ async def auth_from_info(info) -> Tuple[bool, Optional[User]]:
     return is_auth, user
 
 
-def verify_user_auth(is_auth: bool = False, user=None, err_msg: str = None) -> Tuple[bool, Optional[OperationError]]:
+def verify_user_auth(
+    is_auth: bool = False, user=None, err_msg: str = None
+) -> Tuple[bool, Optional[OperationError]]:
     if not is_auth:
-        return False, OperationError(error=f"{err_msg}", suggestion="Try to login again")
+        return False, OperationError(
+            error=f"{err_msg}", suggestion="Try to login again"
+        )
 
     if not user:
         return False, OperationError(

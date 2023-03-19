@@ -1,5 +1,5 @@
 export interface IBase {
-    uid?: number;
+    uid?: string;
     name?: string;
     code?: string;
   }

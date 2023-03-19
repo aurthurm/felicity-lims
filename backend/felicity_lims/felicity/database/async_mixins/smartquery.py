@@ -13,8 +13,12 @@ from sqlalchemy.orm.util import AliasedClass
 from sqlalchemy.sql import extract, operators
 
 # noinspection PyProtectedMember
-from .eagerload import (SUBQUERY, EagerLoadMixin, _eager_expr_from_flat_schema,
-                        _flatten_schema)
+from .eagerload import (
+    SUBQUERY,
+    EagerLoadMixin,
+    _eager_expr_from_flat_schema,
+    _flatten_schema,
+)
 from .inspection import InspectionMixin
 from .utils import classproperty
 
@@ -27,13 +31,13 @@ DESC_PREFIX = "-"
 def _flatten_filter_keys(filters):
     """
     :type filters: dict|list
-    Flatten the nested filters, extracting keys where they correspond 
-    to smart_query paths, e.g. 
+    Flatten the nested filters, extracting keys where they correspond
+    to smart_query paths, e.g.
     {or_: {'id__gt': 1000, and_ : {
         'id__lt': 500,
-        'related___property__in': (1,2,3) 
+        'related___property__in': (1,2,3)
     }}}
-    
+
     Yields:
 
     'id__gt', 'id__lt', 'related___property__in'

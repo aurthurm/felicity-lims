@@ -3,11 +3,15 @@ from typing import List, Optional
 
 import sqlalchemy as sa
 import strawberry  # noqa
+
 from felicity.api.gql import PageInfo
-from felicity.api.gql.worksheet.types import (WorkSheetCursorPage,
-                                              WorkSheetEdge,
-                                              WorkSheetTemplateType,
-                                              WorkSheetType)
+from felicity.core.uid_gen import FelicityID
+from felicity.api.gql.worksheet.types import (
+    WorkSheetCursorPage,
+    WorkSheetEdge,
+    WorkSheetTemplateType,
+    WorkSheetType,
+)
 from felicity.apps.worksheet import models as ws_models
 from felicity.utils import has_value_or_is_truthy
 
@@ -73,11 +77,13 @@ class WorkSheetQuery:
         return await ws_models.WorkSheetTemplate.all()
 
     @strawberry.field
-    async def worksheet_by_analyst(self, info, analyst_uid: int) -> List[WorkSheetType]:
+    async def worksheet_by_analyst(
+        self, info, analyst_uid: FelicityID
+    ) -> List[WorkSheetType]:
         return await ws_models.WorkSheet.get_all(analyst_uid=analyst_uid)
 
     @strawberry.field
-    async def worksheet_by_uid(self, info, worksheet_uid: int) -> WorkSheetType:
+    async def worksheet_by_uid(self, info, worksheet_uid: FelicityID) -> WorkSheetType:
         return await ws_models.WorkSheet.get(uid=worksheet_uid)
 
     @strawberry.field
@@ -92,6 +98,6 @@ class WorkSheetQuery:
 
     @strawberry.field
     async def worksheet_template_by_uid(
-        self, info, worksheet_uid: int
+        self, info, worksheet_uid: FelicityID
     ) -> List[WorkSheetType]:
         return await ws_models.WorkSheet.get_all(uid=worksheet_uid)

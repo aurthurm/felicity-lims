@@ -1,9 +1,11 @@
 import logging
 
-from felicity.apps import Auditable, DBModel
-from felicity.apps.reflex import schemas
 from sqlalchemy import Column, ForeignKey, Integer, String, Table
 from sqlalchemy.orm import relationship
+
+from felicity.apps import Auditable, DBModel
+from felicity.apps.reflex import schemas
+from felicity.core.uid_gen import FelicitySAID
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -31,9 +33,11 @@ class ReflexBrainAddition(DBModel):
     with extra data for additions
     """
 
-    analysis_uid = Column(Integer, ForeignKey("analysis.uid"), primary_key=True)
+    analysis_uid = Column(FelicitySAID, ForeignKey("analysis.uid"), primary_key=True)
     analysis = relationship("Analysis", lazy="selectin")
-    reflex_brain_uid = Column(Integer, ForeignKey("reflexbrain.uid"), primary_key=True)
+    reflex_brain_uid = Column(
+        FelicitySAID, ForeignKey("reflexbrain.uid"), primary_key=True
+    )
     count = Column(Integer, default=1)
 
     @classmethod
@@ -55,9 +59,11 @@ class ReflexBrainFinal(DBModel):
     with extra data for finalize where necessary
     """
 
-    analysis_uid = Column(Integer, ForeignKey("analysis.uid"), primary_key=True)
+    analysis_uid = Column(FelicitySAID, ForeignKey("analysis.uid"), primary_key=True)
     analysis = relationship("Analysis", lazy="selectin")
-    reflex_brain_uid = Column(Integer, ForeignKey("reflexbrain.uid"), primary_key=True)
+    reflex_brain_uid = Column(
+        FelicitySAID, ForeignKey("reflexbrain.uid"), primary_key=True
+    )
     value = Column(String)
 
     @classmethod
@@ -80,9 +86,11 @@ class ReflexBrainCriteria(DBModel):
     operators: =, !=, >, >=, <, <=
     """
 
-    analysis_uid = Column(Integer, ForeignKey("analysis.uid"), primary_key=True)
+    analysis_uid = Column(FelicitySAID, ForeignKey("analysis.uid"), primary_key=True)
     analysis = relationship("Analysis", lazy="selectin")
-    reflex_brain_uid = Column(Integer, ForeignKey("reflexbrain.uid"), primary_key=True)
+    reflex_brain_uid = Column(
+        FelicitySAID, ForeignKey("reflexbrain.uid"), primary_key=True
+    )
     operator = Column(String, nullable=False)
     value = Column(String)
 
@@ -102,7 +110,7 @@ class ReflexBrainCriteria(DBModel):
 
 class ReflexBrain(Auditable):
     reflex_action_uid = Column(
-        Integer, ForeignKey("reflexaction.uid"), nullable=False, default=1
+        FelicitySAID, ForeignKey("reflexaction.uid"), nullable=False, default=1
     )
     reflex_action = relationship(
         "ReflexAction", back_populates="brains", lazy="selectin"
@@ -140,10 +148,10 @@ class ReflexAction(Auditable):
     analyses = relationship(
         "Analysis", secondary=reflex_action_analysis, lazy="selectin"
     )
-    sample_type_uid = Column(Integer, ForeignKey("sampletype.uid"), nullable=True)
+    sample_type_uid = Column(FelicitySAID, ForeignKey("sampletype.uid"), nullable=True)
     sample_type = relationship("SampleType", lazy="selectin")
     # --
-    reflex_rule_uid = Column(Integer, ForeignKey("reflexrule.uid"), nullable=False)
+    reflex_rule_uid = Column(FelicitySAID, ForeignKey("reflexrule.uid"), nullable=False)
     reflex_rule = relationship(
         "ReflexRule", back_populates="reflex_actions", lazy="selectin"
     )

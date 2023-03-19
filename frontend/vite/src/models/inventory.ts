@@ -3,84 +3,84 @@ import { IDepartment, ISupplier } from "./setup"
 import { IStoreRoom } from "./storage";
 
 export interface IStockItem {
-    uid?: number;
+    uid?: string;
     name?: String;
-    departmentUid?: number;
+    departmentUid?: string;
     department?: IDepartment;
     description?: String;
     createdAt?: Date;
-    createdByUid?: number;
+    createdByUid?: string;
     createdBy?: IUser;
     updatedAt?: Date;
-    updatedByUid?: number;
+    updatedByUid?: string;
     updatedBy?: IUser;
 }
 
 export interface IStockCategory {
-    uid?: number;
+    uid?: string;
     name?: String;
     description?: String;
     createdAt?: Date;
-    createdByUid?: number;
+    createdByUid?: string;
     createdBy?: IUser;
     updatedAt?: Date;
-    updatedByUid?: number;
+    updatedByUid?: string;
     updatedBy?: IUser;
 }
 
 export interface IHazard {
-    uid?: number;
+    uid?: string;
     name?: String;
     description?: String;
     createdAt?: Date;
-    createdByUid?: number;
+    createdByUid?: string;
     createdBy?: IUser;
     updatedAt?: Date;
-    updatedByUid?: number;
+    updatedByUid?: string;
     updatedBy?: IUser;
 }
 
 export interface IStockUnit {
-    uid?: number;
+    uid?: string;
     name?: String;
     createdAt?: Date;
-    createdByUid?: number;
+    createdByUid?: string;
     createdBy?: IUser;
     updatedAt?: Date;
-    updatedByUid?: number;
+    updatedByUid?: string;
     updatedBy?: IUser;
 }
 
 export interface IStockPackaging {
-    uid?: number;
+    uid?: string;
     name?: String;
     createdAt?: Date;
-    createdByUid?: number;
+    createdByUid?: string;
     createdBy?: IUser;
     updatedAt?: Date;
-    updatedByUid?: number;
+    updatedByUid?: string;
     updatedBy?: IUser;
 }
 
 export interface IStockProduct {
-    uid?: number;
+    uid?: string;
     name?: String;
-    departmentUid?: number;
+    departmentUid?: string;
     department?: IDepartment;
-    supplierUid?: number;
+    supplierUid?: string;
     supplier?: ISupplier;
-    categoryUid?: number;
+    categoryUid?: string;
     category?: IStockCategory;
-    hazardUid?: number;
+    hazardUid?: string;
     hazard?: IHazard;
-    storeRoomUid?: number;
+    storeRoomUid?: string;
     storeRoom?: IStoreRoom;
     lotNumber?: String;
     batch?: String;
     size?: number;
-    unitUid?: number;
+    unitUid?: string;
     unit?: IStockUnit;
-    packagingUid?: number;
+    packagingUid?: string;
     packaging?: IStockPackaging;
     price?: number;
     quantityReceived?: number;
@@ -88,81 +88,81 @@ export interface IStockProduct {
     remaining?: number;
     dateReceived?: Date;
     expiryDate?: Date;
-    receivedByUid?: number;
+    receivedByUid?: string;
     receivedBy?: IUser;
     createdAt?: Date;
-    createdByUid?: number;
+    createdByUid?: string;
     createdBy?: IUser;
     updatedAt?: Date;
-    updatedByUid?: number;
+    updatedByUid?: string;
     updatedBy?: IUser;
 }
 
 export interface IStockOrder {
-    uid?: number;
-    orderByUid?: number;
+    uid?: string;
+    orderByUid?: string;
     orderBy?: IUser;
-    departmentUid?: number;
+    departmentUid?: string;
     department?: IDepartment;
     status?: String;
     remarks?: String;
     orderNumber?: String;
     createdAt?: Date;
-    createdByUid?: number;
+    createdByUid?: string;
     createdBy?: IUser;
     updatedAt?: Date;
-    updatedByUid?: number;
+    updatedByUid?: string;
     updatedBy?: IUser;
 }
 
 export interface IStockOrderProduct {
-    uid?: number;
-    productUid?: number;
+    uid?: string;
+    productUid?: string;
     product?: IStockProduct;
-    orderUid?: number;
+    orderUid?: string;
     order?: IStockOrder;
     price?: number;
     quantity?: number;
     createdAt?: Date;
-    createdByUid?: number;
+    createdByUid?: string;
     createdBy?: IUser;
     updatedAt?: Date;
-    updatedByUid?: number;
+    updatedByUid?: string;
     updatedBy?: IUser;
 }
 
 export interface IStockTransaction {
-    uid?: number;
-    productUid?: number;
+    uid?: string;
+    productUid?: string;
     product?: IStockProduct;
     issued?: number;
-    departmentUid?: number;
+    departmentUid?: string;
     department?: IDepartment;
     dateIssued?: Date;
-    transactionByUid?: number;
+    transactionByUid?: string;
     transactionBy?: IUser;
     createdAt?: Date;
-    createdByUid?: number;
+    createdByUid?: string;
     createdBy?: IUser;
     updatedAt?: Date;
-    updatedByUid?: number;
+    updatedByUid?: string;
     updatedBy?: IUser;
 }
 
 export interface IStockAdjustment {
-    uid?: number;
-    productUid?: number;
+    uid?: string;
+    productUid?: string;
     product?: IStockProduct;
     adjustmentType?: String;
     adjust?: number;
     adjustmentDate?: Date;
     remarks?: String;
-    adjustmentByUid?: number;
+    adjustmentByUid?: string;
     adjustmentBy?: IUser;
     createdAt?: Date;
-    createdByUid?: number;
+    createdByUid?: string;
     createdBy?: IUser;
     updatedAt?: Date;
-    updatedByUid?: number;
+    updatedByUid?: string;
     updatedBy?: IUser;
 }

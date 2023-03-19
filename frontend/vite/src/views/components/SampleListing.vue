@@ -381,7 +381,7 @@ let sampleParams = reactive({
   status: "received",
   text: "",
   sortBy: ["-uid"],
-  clientUid: +ifZeroEmpty(route?.query?.clientUid),
+  clientUid: ifZeroEmpty(route?.query?.clientUid),
   filterAction: false,
 });
 sampleStore.fetchSamples(sampleParams);
@@ -521,9 +521,9 @@ function checkUserActionPermissios(): void {
   }
 }
 
-function getSampleUids(): number[] {
+function getSampleUids(): string[] {
   const items: ISample[] = getSamplesChecked();
-  let ready: number[] = [];
+  let ready: string[] = [];
   items?.forEach((item) => ready.push(item.uid!));
   return ready;
 }

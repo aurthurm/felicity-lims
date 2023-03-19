@@ -3,13 +3,15 @@ from datetime import datetime
 from typing import List, Optional
 
 import strawberry  # noqa
+
 from felicity.api.gql import PageInfo
+from felicity.core.uid_gen import FelicityID
 from felicity.api.gql.user.types import UserType
 
 
 @strawberry.type
 class LaboratoryType:
-    uid: int
+    uid: FelicityID
     setup_name: str
     lab_name: str
     lab_manager_uid: Optional[str]
@@ -21,24 +23,24 @@ class LaboratoryType:
     address: Optional[str]
     logo: Optional[str]
     #
-    created_by_uid: Optional[int]
+    created_by_uid: Optional[FelicityID]
     created_by: Optional["UserType"]
     created_at: Optional[datetime]
-    updated_by_uid: Optional[int]
+    updated_by_uid: Optional[FelicityID]
     updated_by: Optional["UserType"]
     updated_at: Optional[datetime]
 
 
 @strawberry.type
 class LaboratorySettingType:
-    created_by_uid: Optional[int]
+    created_by_uid: Optional[FelicityID]
     created_by: Optional["UserType"]
     created_at: Optional[datetime]
-    updated_by_uid: Optional[int]
+    updated_by_uid: Optional[FelicityID]
     updated_by: Optional["UserType"]
     updated_at: Optional[datetime]
-    uid: int
-    laboratory_uid: int
+    uid: FelicityID
+    laboratory_uid: FelicityID
     laboratory: LaboratoryType
     allow_self_verification: Optional[bool] = False
     allow_patient_registration: Optional[bool] = True
@@ -55,42 +57,42 @@ class LaboratorySettingType:
 
 @strawberry.type
 class SupplierType:
-    uid: int
+    uid: FelicityID
     name: Optional[str]
     description: Optional[str]
     #
-    created_by_uid: Optional[int]
+    created_by_uid: Optional[FelicityID]
     created_by: Optional["UserType"]
     created_at: Optional[datetime]
-    updated_by_uid: Optional[int]
+    updated_by_uid: Optional[FelicityID]
     updated_by: Optional["UserType"]
     updated_at: Optional[datetime]
 
 
 @strawberry.type
 class ManufacturerType:
-    uid: int
+    uid: FelicityID
     name: Optional[str]
     description: Optional[str]
     #
-    created_by_uid: Optional[int]
+    created_by_uid: Optional[FelicityID]
     created_by: Optional["UserType"]
     created_at: Optional[datetime]
-    updated_by_uid: Optional[int]
+    updated_by_uid: Optional[FelicityID]
     updated_by: Optional["UserType"]
     updated_at: Optional[datetime]
 
 
 @strawberry.type
 class InstrumentTypeType:
-    uid: int
+    uid: FelicityID
     name: Optional[str]
     description: Optional[str]
     #
-    created_by_uid: Optional[int]
+    created_by_uid: Optional[FelicityID]
     created_by: Optional["UserType"]
     created_at: Optional[datetime]
-    updated_by_uid: Optional[int]
+    updated_by_uid: Optional[FelicityID]
     updated_by: Optional["UserType"]
     updated_at: Optional[datetime]
 
@@ -112,35 +114,35 @@ class InstrumentTypeCursorPage:
 
 @strawberry.type
 class UnitType:
-    uid: int
+    uid: FelicityID
     name: str
     is_si_unit: bool
     #
-    created_by_uid: Optional[int]
+    created_by_uid: Optional[FelicityID]
     created_by: Optional["UserType"]
     created_at: Optional[datetime]
-    updated_by_uid: Optional[int]
+    updated_by_uid: Optional[FelicityID]
     updated_by: Optional["UserType"]
     updated_at: Optional[datetime]
 
 
 @strawberry.type
 class InstrumentType:
-    uid: int
+    uid: FelicityID
     name: Optional[str]
     description: Optional[str]
     keyword: Optional[str]
-    supplier_uid: Optional[int]
+    supplier_uid: Optional[FelicityID]
     supplier: Optional[SupplierType]
-    manufacturer_uid: Optional[int]
+    manufacturer_uid: Optional[FelicityID]
     manufacturer: Optional[ManufacturerType]
-    instrument_type_uid: Optional[int]
+    instrument_type_uid: Optional[FelicityID]
     instrument_type: Optional[InstrumentTypeType]
     #
-    created_by_uid: Optional[int]
+    created_by_uid: Optional[FelicityID]
     created_by: Optional["UserType"]
     created_at: Optional[datetime]
-    updated_by_uid: Optional[int]
+    updated_by_uid: Optional[FelicityID]
     updated_by: Optional["UserType"]
     updated_at: Optional[datetime]
     methods: Optional[List["MethodType"]] = field(default_factory=list)
@@ -163,8 +165,8 @@ class InstrumentCursorPage:
 
 @strawberry.type
 class InstrumentCalibrationType:
-    uid: int
-    instrument_uid: int
+    uid: FelicityID
+    instrument_uid: FelicityID
     instrument: Optional[InstrumentType]
     calibration_id: str
     date_reported: datetime
@@ -179,8 +181,8 @@ class InstrumentCalibrationType:
 
 @strawberry.type
 class CalibrationCertificateType:
-    uid: int
-    instrument_uid: int
+    uid: FelicityID
+    instrument_uid: FelicityID
     instrument: Optional[InstrumentType]
     certificate_code: str
     internal: bool
@@ -195,30 +197,30 @@ class CalibrationCertificateType:
 
 @strawberry.type
 class DepartmentType:
-    uid: int
+    uid: FelicityID
     name: Optional[str]
     description: Optional[str]
     code: Optional[str]
     #
-    created_by_uid: Optional[int]
+    created_by_uid: Optional[FelicityID]
     created_by: Optional["UserType"]
     created_at: Optional[datetime]
-    updated_by_uid: Optional[int]
+    updated_by_uid: Optional[FelicityID]
     updated_by: Optional["UserType"]
     updated_at: Optional[datetime]
 
 
 @strawberry.type
 class MethodType:
-    uid: int
+    uid: FelicityID
     name: Optional[str]
     description: Optional[str]
     keyword: Optional[str]
     #
-    created_by_uid: Optional[int]
+    created_by_uid: Optional[FelicityID]
     created_by: Optional["UserType"]
     created_at: Optional[datetime]
-    updated_by_uid: Optional[int]
+    updated_by_uid: Optional[FelicityID]
     updated_by: Optional["UserType"]
     updated_at: Optional[datetime]
     instruments: Optional[List["InstrumentType"]] = field(default_factory=list)
@@ -241,22 +243,22 @@ class MethodCursorPage:
 
 @strawberry.type
 class CountryType:
-    uid: int
+    uid: FelicityID
     name: Optional[str]
     code: Optional[str]
     active: Optional[str]
     #
-    created_by_uid: Optional[int]
+    created_by_uid: Optional[FelicityID]
     created_by: Optional["UserType"]
     created_at: Optional[datetime]
-    updated_by_uid: Optional[int]
+    updated_by_uid: Optional[FelicityID]
     updated_by: Optional["UserType"]
     updated_at: Optional[datetime]
 
 
 @strawberry.type
 class ProvinceType:
-    uid: int
+    uid: FelicityID
     code: Optional[str]
     name: Optional[str]
     email: Optional[str]
@@ -264,13 +266,13 @@ class ProvinceType:
     mobile_phone: Optional[str]
     business_phone: Optional[str]
     active: Optional[bool]
-    country_uid: Optional[int]
+    country_uid: Optional[FelicityID]
     country: Optional[CountryType]
     #
-    created_by_uid: Optional[int]
+    created_by_uid: Optional[FelicityID]
     created_by: Optional["UserType"]
     created_at: Optional[datetime]
-    updated_by_uid: Optional[int]
+    updated_by_uid: Optional[FelicityID]
     updated_by: Optional["UserType"]
     updated_at: Optional[datetime]
 
@@ -292,7 +294,7 @@ class ProvinceCursorPage:
 
 @strawberry.type
 class DistrictType:
-    uid: int
+    uid: FelicityID
     code: Optional[str]
     name: Optional[str]
     email: Optional[str]
@@ -300,13 +302,13 @@ class DistrictType:
     mobile_phone: Optional[str]
     business_phone: Optional[str]
     active: Optional[bool]
-    province_uid: Optional[int]
+    province_uid: Optional[FelicityID]
     province: Optional[ProvinceType]
     #
-    created_by_uid: Optional[int]
+    created_by_uid: Optional[FelicityID]
     created_by: Optional["UserType"]
     created_at: Optional[datetime]
-    updated_by_uid: Optional[int]
+    updated_by_uid: Optional[FelicityID]
     updated_by: Optional["UserType"]
     updated_at: Optional[datetime]
 

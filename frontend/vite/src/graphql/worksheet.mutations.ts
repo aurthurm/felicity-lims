@@ -110,7 +110,7 @@ export const EDIT_WORKSHEET_TEMPLATE= gql`
 
 
 export const ADD_WORKSHEET = gql`
-  mutation AddWorkSheet($analystUid:Int!, $templateUid: Int!, $count: Int){
+  mutation AddWorkSheet($analystUid:Int!, $templateUid: FelicityID!, $count: Int){
     createWorksheet(analystUid: $analystUid, templateUid: $templateUid, count:$count)
     {
       ... on WorksheetListingType {
@@ -154,7 +154,7 @@ export const ADD_WORKSHEET = gql`
 
 
 export const WORKSHEET_UPDATE = gql`
-  mutation UpdateWorkSheet ($worksheetUid:Int!, $analystUid: Int, $instrumentUid: Int, $methodUid: Int, $action: String, $samples: [Int!]) {
+  mutation UpdateWorkSheet ($worksheetUid:Int!, $analystUid: FelicityID, $instrumentUid: FelicityID, $methodUid: FelicityID, $action: String, $samples: [Int!]) {
     updateWorksheet(worksheetUid: $worksheetUid, analystUid: $analystUid, instrumentUid:  $instrumentUid, methodUid: $methodUid, action: $action, samples: $samples )
     {
       ... on WorkSheetType {
@@ -188,7 +188,7 @@ export const WORKSHEET_UPDATE = gql`
 
 
 export const EDIT_WORKSHEET_APPLY_TEMPLATE= gql`
-  mutation EditWorkSheetApplyTemplate($worksheetUid:Int!, $templateUid: Int!){
+  mutation EditWorkSheetApplyTemplate($worksheetUid:Int!, $templateUid: FelicityID!){
     updateWorksheetApplyTemplate(worksheetUid: $worksheetUid, templateUid: $templateUid)
   {
       ... on WorkSheetType {
@@ -222,7 +222,7 @@ export const EDIT_WORKSHEET_APPLY_TEMPLATE= gql`
 
 
 export const WORKSHEET_MANUAL_ASSIGN= gql`
-  mutation ManualyAssignWorsheet($uid:Int!, $qcTemplateUid: Int!, $analysesUids: [Int!]!){
+  mutation ManualyAssignWorsheet($uid:Int!, $qcTemplateUid: FelicityID!, $analysesUids: [Int!]!){
     updateWorksheetManualAssign(uid: $uid, qcTemplateUid: $qcTemplateUid, analysesUids: $analysesUids)
   {
       ... on WorkSheetType {

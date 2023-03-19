@@ -34,7 +34,7 @@ export const GET_ALL_PROVINCES = gql`
 
 
 export const FILTER_PROVINCES_BY_COUNTRY = gql`
-  query filterProvincesByCountry($uid: Int!) {
+  query filterProvincesByCountry($uid: FelicityID!) {
     provincesByCountryUid(uid: $uid){
       name
       uid
@@ -68,7 +68,7 @@ export const GET_ALL_DISTRICTS = gql`
   }`;
 
 export const FILTER_DISTRICTS_BY_PROVINCE = gql`
-  query filterDistrictsByProvince($uid: Int!) {
+  query filterDistrictsByProvince($uid: FelicityID!) {
     districtsByProvinceUid(uid: $uid){
       name
       uid

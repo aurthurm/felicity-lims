@@ -20,13 +20,11 @@ class States:
     class Result:
         PENDING = "pending"  # analytes that are pending results
         SUBMITTING = "submitting"
-        RESULTED = (
-            "resulted"
-        )  # analytes that have results but not approved yet. 'to_be_verified' / 'un-authorised'
+        RESULTED = "resulted"  # analytes that have results but not approved yet. 'to_be_verified' / 'un-authorised'
         RETRACTED = "retracted"  # analytes with erroneous results for correction
         CANCELLED = (
-            "cancelled"
-        )  # analytes that are no longer required <in other words deleted>
+            "cancelled"  # analytes that are no longer required <in other words deleted>
+        )
         APPROVING = "approving"
         APPROVED = "approved"  # analytes that are authorised/approved
 

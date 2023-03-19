@@ -1,5 +1,6 @@
-from typing import List, Optional, ForwardRef
 from datetime import datetime
+from typing import ForwardRef, List, Optional
+
 from pydantic import BaseModel
 
 
@@ -30,7 +31,7 @@ class Period(BaseModel):
     end: datetime | None = None
 
 
-Reference = ForwardRef('Identifier')
+Reference = ForwardRef("Identifier")
 
 
 class Reference(BaseModel):
@@ -39,7 +40,7 @@ class Reference(BaseModel):
     # Type the reference refers to (e.g. "Patient")
     type: str | None = None
     # Logical reference, when literal reference is not known
-    identifier: Optional['Identifier'] = None
+    identifier: Optional["Identifier"] = None
     # Text alternative for the resource
     display: str | None = None
 

@@ -1,10 +1,11 @@
+from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, String, Table
+from sqlalchemy.orm import relationship
+
 from felicity.apps import BaseAuditDBModel, DBModel
 from felicity.apps.common.models import IdSequence
 from felicity.apps.setup import schemas
 from felicity.apps.user.models import User
-from sqlalchemy import (Boolean, Column, DateTime, ForeignKey, Integer, String,
-                        Table)
-from sqlalchemy.orm import relationship
+from felicity.core.uid_gen import FelicitySAID
 
 
 class Laboratory(BaseAuditDBModel):
@@ -12,7 +13,7 @@ class Laboratory(BaseAuditDBModel):
         String, default="felicity", nullable=False
     )  # Do not change this value ever
     lab_name = Column(String, nullable=False)
-    lab_manager_uid = Column(Integer, ForeignKey("user.uid"), nullable=True)
+    lab_manager_uid = Column(FelicitySAID, ForeignKey("user.uid"), nullable=True)
     lab_manager = relationship(
         User, foreign_keys=[lab_manager_uid], backref="user_uid", lazy="selectin"
     )
@@ -41,7 +42,7 @@ class Laboratory(BaseAuditDBModel):
 
 
 class LaboratorySetting(BaseAuditDBModel):
-    laboratory_uid = Column(Integer, ForeignKey("laboratory.uid"), nullable=True)
+    laboratory_uid = Column(FelicitySAID, ForeignKey("laboratory.uid"), nullable=True)
     laboratory = relationship(
         Laboratory, foreign_keys=[laboratory_uid], backref="settings", lazy="selectin"
     )
@@ -185,12 +186,12 @@ class Instrument(BaseAuditDBModel):
     description = Column(String, nullable=True)
     keyword = Column(String, nullable=True)
     instrument_type_uid = Column(
-        Integer, ForeignKey("instrumenttype.uid"), nullable=True
+        FelicitySAID, ForeignKey("instrumenttype.uid"), nullable=True
     )
     instrument_type = relationship("InstrumentType", lazy="selectin")
-    supplier_uid = Column(Integer, ForeignKey("supplier.uid"), nullable=True)
+    supplier_uid = Column(FelicitySAID, ForeignKey("supplier.uid"), nullable=True)
     supplier = relationship(Supplier, backref="instruments", lazy="selectin")
-    manufacturer_uid = Column(Integer, ForeignKey("manufacturer.uid"), nullable=True)
+    manufacturer_uid = Column(FelicitySAID, ForeignKey("manufacturer.uid"), nullable=True)
     manufacturer = relationship(
         "Manufacturer", backref="manufacturers", lazy="selectin"
     )
@@ -211,7 +212,7 @@ class Instrument(BaseAuditDBModel):
 class InstrumentCalibration(BaseAuditDBModel):
     """Instrument Caliberation Task"""
 
-    instrument_uid = Column(Integer, ForeignKey("instrument.uid"), nullable=True)
+    instrument_uid = Column(FelicitySAID, ForeignKey("instrument.uid"), nullable=True)
     instrument = relationship("Instrument", lazy="selectin")
     calibration_id = Column(String, index=True, unique=True, nullable=False)
     date_reported = Column(DateTime, nullable=True)
@@ -242,7 +243,7 @@ class InstrumentCalibration(BaseAuditDBModel):
 class CalibrationCertificate(BaseAuditDBModel):
     """Instrument Calibration Certificate"""
 
-    instrument_uid = Column(Integer, ForeignKey("instrument.uid"), nullable=True)
+    instrument_uid = Column(FelicitySAID, ForeignKey("instrument.uid"), nullable=True)
     instrument = relationship("Instrument", lazy="selectin")
     certificate_code = Column(String, index=True, unique=True, nullable=False)
     internal = Column(Boolean(), nullable=False)

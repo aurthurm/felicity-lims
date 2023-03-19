@@ -2,9 +2,10 @@ from typing import List, Optional
 
 import sqlalchemy as sa
 import strawberry  # noqa
+
 from felicity.api.gql import PageInfo
-from felicity.api.gql.patient.types import (PatientCursorPage, PatientEdge,
-                                            PatientType)
+from felicity.api.gql.patient.types import PatientCursorPage, PatientEdge, PatientType
+from felicity.core.uid_gen import FelicityID
 from felicity.apps.patient import models
 from felicity.utils import has_value_or_is_truthy
 
@@ -60,7 +61,7 @@ class PatientQuery:
         )
 
     @strawberry.field
-    async def patient_by_uid(self, info, uid: int) -> Optional[PatientType]:
+    async def patient_by_uid(self, info, uid: FelicityID) -> Optional[PatientType]:
         return await models.Patient.get(uid=uid)
 
     @strawberry.field

@@ -1,5 +1,6 @@
-import pytest
 import logging
+
+import pytest
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -28,17 +29,19 @@ add_storage_container_query = """
 @pytest.mark.order(230)
 async def test_add_storage_container(gql_client, auth_data):
     storage_container = {
-        'storageSectionUid': 1,
-        'name': "Storage Location 1",
-        'description': "Storage section one",
-        'slots': 100
+        "storageSectionUid": 1,
+        "name": "Storage Location 1",
+        "description": "Storage section one",
+        "slots": 100,
     }
-    response = await gql_client.post('/felicity-gql', json={
-        "query": add_storage_container_query,
-        "variables": {
-            "payload": storage_container
-        }
-    }, headers=auth_data['headers'])
+    response = await gql_client.post(
+        "/felicity-gql",
+        json={
+            "query": add_storage_container_query,
+            "variables": {"payload": storage_container},
+        },
+        headers=auth_data["headers"],
+    )
 
     logger.info(f"register storage container response: {response} {response.json()}")
 

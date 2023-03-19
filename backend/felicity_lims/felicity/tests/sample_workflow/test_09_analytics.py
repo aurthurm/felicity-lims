@@ -1,8 +1,9 @@
-import pytest
-import logging
 import io
+import logging
 from datetime import datetime, timedelta
+
 import pandas as pd
+import pytest
 
 from felicity.apps.analytics.tasks import generate_report
 
@@ -16,14 +17,18 @@ async def test_generate_report(client, auth_data):
     time_now = datetime.now()
     period_start = (time_now - timedelta(minutes=5)).isoformat()
     period_end = time_now.isoformat()
-    response = await client.post("/reports/", json={
-        "report_type": "line_listing",
-        "analyses_uids": [1],
-        "sample_states": ["published"],
-        "date_column": "date_published",
-        "period_start": period_start,
-        "period_end": period_end
-    }, headers=auth_data["headers"])
+    response = await client.post(
+        "/reports/",
+        json={
+            "report_type": "line_listing",
+            "analyses_uids": [1],
+            "sample_states": ["published"],
+            "date_column": "date_published",
+            "period_start": period_start,
+            "period_end": period_end,
+        },
+        headers=auth_data["headers"],
+    )
 
     logger.info(f"generate report response: {response} {response.json()}")
     assert response.status_code == 200

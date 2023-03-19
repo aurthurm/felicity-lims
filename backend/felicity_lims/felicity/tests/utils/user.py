@@ -67,4 +67,4 @@ def make_username(val: str) -> str:
 
 
 def make_password(val: str):
-    return f'!{make_username(val).capitalize()}#100'
+    return f"!{make_username(val).capitalize()}#100"

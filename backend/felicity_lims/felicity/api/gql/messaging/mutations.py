@@ -3,9 +3,16 @@ import logging
 from typing import List
 
 import strawberry  # noqa
-from felicity.api.gql import (DeletedItem, DeleteResponse, OperationError,
-                              auth_from_info, verify_user_auth)
+
+from felicity.api.gql import (
+    DeletedItem,
+    DeleteResponse,
+    OperationError,
+    auth_from_info,
+    verify_user_auth,
+)
 from felicity.api.gql.messaging.types import MessageType
+from felicity.core.uid_gen import FelicityID
 from felicity.apps.messaging import models, schemas
 from felicity.apps.user.models import User
 from felicity.utils import get_passed_args
@@ -70,7 +77,9 @@ class MessageMutations:
         return MessageType(**message.marshal_simple())
 
     @strawberry.mutation
-    async def reply_message(self, info, thread_uid: int, body: str) -> MessageResponse:
+    async def reply_message(
+        self, info, thread_uid: FelicityID, body: str
+    ) -> MessageResponse:
 
         inspector = inspect.getargvalues(inspect.currentframe())
         passed_args = get_passed_args(inspector)
@@ -109,7 +118,7 @@ class MessageMutations:
         return MessageType(**message.marshal_simple())
 
     @strawberry.mutation
-    async def view_message(self, info, uid: int) -> MessageResponse:
+    async def view_message(self, info, uid: FelicityID) -> MessageResponse:
 
         is_authenticated, felicity_user = await auth_from_info(info)
         verify_user_auth(
@@ -124,7 +133,7 @@ class MessageMutations:
         return MessageType(**message.marshal_simple())
 
     @strawberry.mutation
-    async def delete_message(self, info, uid: int) -> DeleteResponse:
+    async def delete_message(self, info, uid: FelicityID) -> DeleteResponse:
 
         is_authenticated, felicity_user = await auth_from_info(info)
         verify_user_auth(
@@ -141,7 +150,7 @@ class MessageMutations:
         return DeletedItem(uid)
 
     @strawberry.mutation
-    async def delete_thread(self, info, uid: int) -> DeleteResponse:
+    async def delete_thread(self, info, uid: FelicityID) -> DeleteResponse:
 
         is_authenticated, felicity_user = await auth_from_info(info)
         verify_user_auth(

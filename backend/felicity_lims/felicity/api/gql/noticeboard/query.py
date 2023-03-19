@@ -1,23 +1,25 @@
 from typing import List, Optional
 
 import strawberry  # noqa
+
 from felicity.api.gql.noticeboard.types import NoticeType
+from felicity.core.uid_gen import FelicityID
 from felicity.apps.noticeboard import models
 
 
 @strawberry.type
 class NoticeQuery:
     @strawberry.field
-    async def notice_by_uid(self, info, uid: int) -> Optional[NoticeType]:
+    async def notice_by_uid(self, info, uid: FelicityID) -> Optional[NoticeType]:
         return await models.Notice.get(uid=uid)
 
     @strawberry.field
-    async def notices_by_creator(self, info, uid: int) -> Optional[List[NoticeType]]:
+    async def notices_by_creator(self, info, uid: FelicityID) -> Optional[List[NoticeType]]:
         return await models.Notice.get_all(created_by_uid=uid)
 
     @strawberry.field
     async def notice_filter(
-        self, info, group_uid: Optional[int], department_uid: Optional[int]
+        self, info, group_uid: Optional[FelicityID], department_uid: Optional[FelicityID]
     ) -> List[NoticeType]:
         filters = {}
 

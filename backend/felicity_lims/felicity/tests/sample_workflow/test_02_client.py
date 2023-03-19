@@ -1,6 +1,7 @@
-import pytest
 import logging
-from faker import  Faker
+
+import pytest
+from faker import Faker
 
 fake_engine = Faker()
 
@@ -34,20 +35,19 @@ add_client_query = """
 @pytest.mark.order(20)
 async def test_register_client(gql_client, auth_data):
     client = {
-                'name': fake_engine.name(),
-                'code': fake_engine.ssn(),
-                'phoneMobile': fake_engine.phone_number(),
-                'email': fake_engine.email(),
-                'phoneBusiness': fake_engine.phone_number(),
-                'consentSms': fake_engine.boolean(),
-                'active': True,
+        "name": fake_engine.name(),
+        "code": fake_engine.ssn(),
+        "phoneMobile": fake_engine.phone_number(),
+        "email": fake_engine.email(),
+        "phoneBusiness": fake_engine.phone_number(),
+        "consentSms": fake_engine.boolean(),
+        "active": True,
     }
-    response = await gql_client.post('/felicity-gql', json={
-        "query": add_client_query,
-        "variables": {
-            "payload": client
-        }
-    }, headers=auth_data['headers'])
+    response = await gql_client.post(
+        "/felicity-gql",
+        json={"query": add_client_query, "variables": {"payload": client}},
+        headers=auth_data["headers"],
+    )
 
     logger.info(f"register client response: {response} {response.json()}")
 

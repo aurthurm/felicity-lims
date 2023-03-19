@@ -21,7 +21,7 @@ export const ADD_HAZARD= gql`
 `;
 
 export const EDIT_HAZARD= gql`
-  mutation EditHazard ($uid: Int!, $payload: HazardInputType!) {
+  mutation EditHazard ($uid: FelicityID!, $payload: HazardInputType!) {
     updateHazard(uid: $uid, payload: $payload){
       ... on HazardType {
         __typename
@@ -61,7 +61,7 @@ export const ADD_STOCK_CATEGORY= gql`
 `;
 
 export const EDIT_STOCK_CATEGORY= gql`
-  mutation EditStockCategory ($uid: Int!, $payload: StockCategoryInputType!) {
+  mutation EditStockCategory ($uid: FelicityID!, $payload: StockCategoryInputType!) {
     updateStockCategory(uid: $uid, payload: $payload){
       ... on StockCategoryType {
         __typename
@@ -100,7 +100,7 @@ export const ADD_STOCK_PACKAGING = gql`
 `;
 
 export const EDIT_STOCK_PACKAGING = gql`
-  mutation editStockPackaging($uid: Int!, $payload: StockPackagingInputType!){
+  mutation editStockPackaging($uid: FelicityID!, $payload: StockPackagingInputType!){
     updateStockPackaging(uid: $uid, payload: $payload){
       ... on StockPackagingType {
         __typename
@@ -136,7 +136,7 @@ export const ADD_STOCK_UNIT = gql`
 `;
 
 export const EDIT_STOCK_UNIT = gql`
-  mutation editStockUnit($uid: Int!, $payload: StockUnitInputType!){
+  mutation editStockUnit($uid: FelicityID!, $payload: StockUnitInputType!){
     updateStockUnit(uid: $uid, payload: $payload){
       ... on StockUnitType {
         __typename
@@ -192,7 +192,7 @@ export const ADD_STOCK_PRODUCT = gql`
 `;
 
 export const EDIT_STOCK_PRODUCT = gql`
-  mutation editStockProduct($uid: Int!, $payload: StockProductInputType!){
+  mutation editStockProduct($uid: FelicityID!, $payload: StockProductInputType!){
     updateStockProduct(uid: $uid, payload: $payload){
       ... on StockProductType {
         __typename
@@ -256,7 +256,7 @@ export const ADD_STOCK_ITEM = gql`
 `;
 
 export const EDIT_STOCK_ITEM = gql`
-  mutation editStockItem($uid: Int!, $payload: StockItemInputType!){
+  mutation editStockItem($uid: FelicityID!, $payload: StockItemInputType!){
     updateStockItem(uid: $uid, payload: $payload){
       ... on StockItemType {
         __typename
@@ -367,7 +367,7 @@ export const ADD_STOCK_ORDER = gql`
 `;
 
 export const EDIT_STOCK_ORDER = gql`
-  mutation EditStockOrder($uid: Int!, $payload: [StockOrderProductLineInputType!]!) {
+  mutation EditStockOrder($uid: FelicityID!, $payload: [StockOrderProductLineInputType!]!) {
     updateStockOrder(uid:$uid, payload: $payload) {
       ... on StockOrderLineType {
         __typename
@@ -399,7 +399,7 @@ export const EDIT_STOCK_ORDER = gql`
 `;
 
 export const APPROVE_STOCK_ORDER = gql`
-  mutation ApproveStockOrder($uid: Int!, $payload: StockOrderApprovalInputType!) {
+  mutation ApproveStockOrder($uid: FelicityID!, $payload: StockOrderApprovalInputType!) {
     approveStockOrder(uid:$uid, payload: $payload) {
       ... on StockOrderType {
         __typename
@@ -421,7 +421,7 @@ export const APPROVE_STOCK_ORDER = gql`
 `;
 
 export const ISSUE_STOCK_ORDER = gql`
-  mutation IssueStockOrder($uid: Int!, $payload: [StockOrderProductLineInputType!]!) {
+  mutation IssueStockOrder($uid: FelicityID!, $payload: [StockOrderProductLineInputType!]!) {
     issueStockOrder(uid:$uid, payload: $payload) {
         ... on StockOrderLineType {
         __typename
@@ -453,7 +453,7 @@ export const ISSUE_STOCK_ORDER = gql`
 `;
 
 export const DELETE_STOCK_ORDER = gql`
-  mutation DeleteStockOrder($uid: Int!) {
+  mutation DeleteStockOrder($uid: FelicityID!) {
     deleteStockOrder(uid:$uid) {
         ... on StockOrderLineType {
         __typename

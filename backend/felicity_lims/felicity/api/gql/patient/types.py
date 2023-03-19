@@ -2,17 +2,19 @@ from datetime import datetime
 from typing import List, Optional
 
 import strawberry  # noqa
+
 from felicity.api.gql import PageInfo
 from felicity.api.gql.client.types import ClientType
+from felicity.core.uid_gen import FelicityID
 from felicity.api.gql.user.types import UserType
 
 
 @strawberry.type
 class PatientType:
-    uid: int
+    uid: FelicityID
     client_patient_id: str
     patient_id: str
-    client_uid: int
+    client_uid: FelicityID
     client: Optional[ClientType]
     first_name: Optional[str]
     middle_name: Optional[str]
@@ -28,10 +30,10 @@ class PatientType:
     internal_use: bool
     active: bool
     #
-    created_by_uid: Optional[int]
+    created_by_uid: Optional[FelicityID]
     created_by: Optional[UserType]
     created_at: Optional[datetime]
-    updated_by_uid: Optional[int]
+    updated_by_uid: Optional[FelicityID]
     updated_by: Optional[UserType]
     updated_at: Optional[datetime]
 

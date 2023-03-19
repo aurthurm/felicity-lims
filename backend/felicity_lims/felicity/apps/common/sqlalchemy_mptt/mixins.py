@@ -22,7 +22,7 @@ from .events import _get_tree_table
 
 
 class BaseNestedSets(object):
-    """ Base mixin for MPTT model.
+    """Base mixin for MPTT model.
 
     Example:
 
@@ -114,7 +114,7 @@ class BaseNestedSets(object):
 
     @hybrid_method
     def is_ancestor_of(self, other, inclusive=False):
-        """ class or instance level method which returns True if self is
+        """class or instance level method which returns True if self is
         ancestor (closer to root) of other else False. Optional flag
         `inclusive` on whether or not to treat self as ancestor of self.
 
@@ -136,7 +136,7 @@ class BaseNestedSets(object):
 
     @hybrid_method
     def is_descendant_of(self, other, inclusive=False):
-        """ class or instance level method which returns True if self is
+        """class or instance level method which returns True if self is
         descendant (farther from root) of other else False.  Optional flag
         `inclusive` on whether or not to treat self as descendant of self.
 
@@ -147,7 +147,7 @@ class BaseNestedSets(object):
         return other.is_ancestor_of(self, inclusive)
 
     def move_inside(self, parent_id):
-        """ Moving one node of tree inside another
+        """Moving one node of tree inside another
 
         For example see:
 
@@ -160,7 +160,7 @@ class BaseNestedSets(object):
         session.add(self)
 
     def move_after(self, node_id):
-        """ Moving one node of tree after another
+        """Moving one node of tree after another
 
         For example see :mod:`sqlalchemy_mptt.tests.cases.move_node.test_move_after_function`
         """  # noqa
@@ -170,7 +170,7 @@ class BaseNestedSets(object):
         session.add(self)
 
     def move_before(self, node_id):
-        """ Moving one node of tree before another
+        """Moving one node of tree before another
 
         For example see:
 
@@ -187,7 +187,7 @@ class BaseNestedSets(object):
         session.add(self)
 
     def leftsibling_in_level(self):
-        """ Node to the left of the current node at the same level
+        """Node to the left of the current node at the same level
 
         For example see
         :mod:`sqlalchemy_mptt.tests.cases.get_tree.test_leftsibling_in_level`
@@ -208,8 +208,7 @@ class BaseNestedSets(object):
 
     @classmethod
     def _node_to_dict(cls, node, json, json_fields):
-        """ Helper method for ``get_tree``.
-        """
+        """Helper method for ``get_tree``."""
         if json:
             pk_name = node.get_pk_name()
             # jqTree or jsTree format
@@ -239,7 +238,7 @@ class BaseNestedSets(object):
 
     @classmethod
     def get_tree(cls, session=None, json=False, json_fields=None, query=None):
-        """ This method generate tree of current node table in dict or json
+        """This method generate tree of current node table in dict or json
         format. You can make custom query with attribute ``query``. By default
         it return all nodes in table.
 
@@ -305,7 +304,7 @@ class BaseNestedSets(object):
         return nodes.filter(self.is_ancestor_of(table, inclusive=True))
 
     def drilldown_tree(self, session=None, json=False, json_fields=None):
-        """ This method generate a branch from a tree, begining with current
+        """This method generate a branch from a tree, begining with current
         node.
 
         For example:
@@ -444,7 +443,7 @@ class BaseNestedSets(object):
 
     @classmethod
     def rebuild_tree(cls, session, tree_id):
-        """ This method rebuild tree.
+        """This method rebuild tree.
 
         Args:
             session (:mod:`sqlalchemy.orm.session.Session`): SQLAlchemy session
@@ -496,7 +495,7 @@ class BaseNestedSets(object):
 
     @classmethod
     def rebuild(cls, session, tree_id=None):
-        """ This function rebuild tree.
+        """This function rebuild tree.
 
         Args:
             session (:mod:`sqlalchemy.orm.session.Session`): SQLAlchemy session

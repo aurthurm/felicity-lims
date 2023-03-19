@@ -12,7 +12,7 @@ export const GET_ALL_STORE_ROOMS = gql`
 
 
 export const GET_STORE_ROOM_BY_UID = gql`
-  query getStoreRoomByUid($uid: Int!) {
+  query getStoreRoomByUid($uid: FelicityID!) {
     storeRoomByUid(uid: $uid){
         uid
         name
@@ -23,7 +23,7 @@ export const GET_STORE_ROOM_BY_UID = gql`
 
 // storage location
 export const GET_ALL_STORAGE_LOCATIONS = gql`
-    query getAllStorageLocations($storeRoomUid: Int!) {
+    query getAllStorageLocations($storeRoomUid: FelicityID!) {
       storageLocations(storeRoomUid: $storeRoomUid) {
         uid
         name
@@ -34,7 +34,7 @@ export const GET_ALL_STORAGE_LOCATIONS = gql`
 
 
 export const GET_STORAGE_LOCATION_BY_UID = gql`
-  query getStorageLocationByUid($uid: Int!) {
+  query getStorageLocationByUid($uid: FelicityID!) {
     storageLocationByUid(uid: $uid){
         uid
         name
@@ -46,7 +46,7 @@ export const GET_STORAGE_LOCATION_BY_UID = gql`
 
 // storage section
 export const GET_ALL_STORAGE_SECTIONS = gql`
-    query getAllStorageSections($storageLocationUid: Int!) {
+    query getAllStorageSections($storageLocationUid: FelicityID!) {
       storageSections(storageLocationUid: $storageLocationUid) {
         uid
         name
@@ -57,7 +57,7 @@ export const GET_ALL_STORAGE_SECTIONS = gql`
 
 
 export const GET_STORAGE_SECTION_BY_UID = gql`
-  query getStorageSectionByUid($uid: Int!) {
+  query getStorageSectionByUid($uid: FelicityID!) {
     storageSectionByUid(uid: $uid){
         uid
         name
@@ -69,7 +69,7 @@ export const GET_STORAGE_SECTION_BY_UID = gql`
 
 // storage container
 export const GET_ALL_STORAGE_CONTAINERS = gql`
-    query getAllStorageContainers($storageSectionUid: Int!) {
+    query getAllStorageContainers($storageSectionUid: FelicityID!) {
       storageContainers(storageSectionUid: $storageSectionUid) {
         uid
         name
@@ -85,7 +85,7 @@ export const GET_ALL_STORAGE_CONTAINERS = gql`
 
 
 export const GET_STORAGE_CONTAINER_BY_UID = gql`
-  query getSrorageContainerByUid($uid: Int!) {
+  query getSrorageContainerByUid($uid: FelicityID!) {
     storageContainerByUid(uid: $uid){
         uid
         name

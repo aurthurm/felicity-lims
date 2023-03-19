@@ -57,7 +57,7 @@ export const AUTHENTICATE_USER = gql`
 export const ADD_USER = gql`
   ${PermissionTypeFields}
   ${GroupTypeFields}
-  mutation addUser($firstName: String!, $lastName: String!, $email: String!, $groupUid: Int) {
+  mutation addUser($firstName: String!, $lastName: String!, $email: String!, $groupUid: FelicityID) {
     createUser(
     firstName: $firstName, 
     lastName: $lastName, 
@@ -98,7 +98,7 @@ export const ADD_USER = gql`
 export const EDIT_USER = gql`
   ${PermissionTypeFields}
   ${GroupTypeFields}
-  mutation editUser($userUid: Int!, $firstName: String!, $lastName: String, $email: String, $groupUid: Int, $mobilePhone: String, $isActive: Boolean) {
+  mutation editUser($userUid: FelicityID!, $firstName: String!, $lastName: String, $email: String, $groupUid: FelicityID, $mobilePhone: String, $isActive: Boolean) {
     updateUser(
       userUid: $userUid,
       firstName: $firstName, 
@@ -142,7 +142,7 @@ export const EDIT_USER = gql`
 export const ADD_USER_AUTH = gql`
 ${PermissionTypeFields}
 ${GroupTypeFields}
-  mutation addUserAuth($userUid: Int!, $userName: String!, $password: String!, $passwordc: String!) {
+  mutation addUserAuth($userUid: FelicityID!, $userName: String!, $password: String!, $passwordc: String!) {
     createUserAuth(
       userUid: $userUid, 
       userName: $userName, 
@@ -183,7 +183,7 @@ ${GroupTypeFields}
 export const EDIT_USER_AUTH = gql`
   ${PermissionTypeFields}
   ${GroupTypeFields}
-  mutation  editUserAuth($userUid: Int!, $userName: String!, $password: String!, $passwordc: String!) {
+  mutation  editUserAuth($userUid: FelicityID!, $userName: String!, $password: String!, $passwordc: String!) {
     updateUserAuth(
       userUid: $userUid, 
       userName: $userName, 
@@ -246,7 +246,7 @@ export const ADD_GROUP = gql`
 
 
 export const UPDATE_GROUP = gql`
-  mutation editGroup($uid: Int!, $payload: GroupInputType!) {
+  mutation editGroup($uid: FelicityID!, $payload: GroupInputType!) {
     updateGroup(uid: $uid, payload: $payload) {
       ... on GroupType {
         __typename
@@ -270,7 +270,7 @@ export const UPDATE_GROUP = gql`
   }`;
 
 export const UPDATE_GROUP_PERMS = gql`
-  mutation updateGroupsAndPermissions($groupUid: Int!, $permissionUid: Int!) {
+  mutation updateGroupsAndPermissions($groupUid: FelicityID!, $permissionUid: FelicityID!) {
     updateGroupPermissions(groupUid: $groupUid, permissionUid: $permissionUid) {
       ... on UpdatedGroupPerms {
         group {
@@ -317,7 +317,7 @@ export const ADD_DEPARTMENT = gql`
 
 
 export const UPDATE_DEPARTMENT = gql`
-  mutation editDepartment($uid: Int!, $payload: DepartmentInputType!) {
+  mutation editDepartment($uid: FelicityID!, $payload: DepartmentInputType!) {
     updateDepartment(uid: $uid, payload: $payload) {
       ... on DepartmentType {
         uid
@@ -333,7 +333,7 @@ export const UPDATE_DEPARTMENT = gql`
 
 
 export const UPDATE_LABORATOTY = gql`
-  mutation editLaboratory($uid: Int!, $payload: LaboratoryInputType!) {
+  mutation editLaboratory($uid: FelicityID!, $payload: LaboratoryInputType!) {
     updateLaboratory(uid: $uid, payload: $payload) {
       ... on LaboratoryType {
         uid
@@ -356,7 +356,7 @@ export const UPDATE_LABORATOTY = gql`
   }`;
 
 export const UPDATE_LABORATOTY_SETTING = gql`
-  mutation editLaboratorySetting($uid: Int!, $payload: LaboratorySettingInputType!) {
+  mutation editLaboratorySetting($uid: FelicityID!, $payload: LaboratorySettingInputType!) {
     updateLaboratorySetting(uid: $uid, payload: $payload) {
       ... on LaboratorySettingType {
         uid

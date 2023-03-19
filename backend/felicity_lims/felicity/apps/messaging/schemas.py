@@ -3,12 +3,13 @@ from typing import List, Optional
 from felicity.apps.common.schemas import BaseAuditModel
 from felicity.apps.user.schemas import User
 
+from felicity.core.uid_gen import FelicityIDType
 
 #
 # Message Schemas
 #
 class MessageBase(BaseAuditModel):
-    thread_uid: int
+    thread_uid: FelicityIDType
     thread: Optional["MessageThread"] = None
     body: Optional[str] = ""
     viewers: Optional[List[User]] = []
@@ -17,7 +18,7 @@ class MessageBase(BaseAuditModel):
 
 
 class Message(MessageBase):
-    uid: Optional[int] = None
+    uid: Optional[FelicityIDType] = None
 
     class Config:
         orm_mode = True
@@ -42,7 +43,7 @@ class MessageThreadBase(BaseAuditModel):
 
 
 class MessageThread(MessageThreadBase):
-    uid: Optional[int] = None
+    uid: Optional[FelicityIDType] = None
 
     class Config:
         orm_mode = True

@@ -7,26 +7,26 @@ from .conf import worksheet_types
 
 class WorkSheetPlater:
     """
-    Deprecated
-    WorkSheet Plate Filler / WorkSheetTemplate creator
-    100% Grid Compatible
-        
-       A    B    C
-    ---------------------------
-   1 | A1 | B1 | C1 | ...
-      --   --   --   
-   2 | A2 | B2 | C2 | ...
-      --   --   --   
-   
-    plate = {
-        1: {
-            'row': 'A',
-            'col': 1,
-            'name': 'sample/low-pos/blank',
-            'sample_uid': 'sample uid',
-        },
-        ...
-    }
+     Deprecated
+     WorkSheet Plate Filler / WorkSheetTemplate creator
+     100% Grid Compatible
+
+        A    B    C
+     ---------------------------
+    1 | A1 | B1 | C1 | ...
+       --   --   --
+    2 | A2 | B2 | C2 | ...
+       --   --   --
+
+     plate = {
+         1: {
+             'row': 'A',
+             'col': 1,
+             'name': 'sample/low-pos/blank',
+             'sample_uid': 'sample uid',
+         },
+         ...
+     }
     """
 
     letters = list("ABCDEFGHIJKLMNOPQRSTUVWXYZ")

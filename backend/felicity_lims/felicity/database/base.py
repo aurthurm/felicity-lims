@@ -1,13 +1,10 @@
 from felicity.apps.analysis.models.analysis import Analysis  # noqa
 from felicity.apps.analysis.models.analysis import AnalysisCategory  # noqa
-from felicity.apps.analysis.models.analysis import \
-    AnalysisCorrectionFactor  # noqa
-from felicity.apps.analysis.models.analysis import \
-    AnalysisDetectionLimit  # noqa
+from felicity.apps.analysis.models.analysis import AnalysisCorrectionFactor  # noqa
+from felicity.apps.analysis.models.analysis import AnalysisDetectionLimit  # noqa
 from felicity.apps.analysis.models.analysis import AnalysisInterim  # noqa
 from felicity.apps.analysis.models.analysis import AnalysisRequest  # noqa
-from felicity.apps.analysis.models.analysis import \
-    AnalysisSpecification  # noqa
+from felicity.apps.analysis.models.analysis import AnalysisSpecification  # noqa
 from felicity.apps.analysis.models.analysis import AnalysisUncertainty  # noqa
 from felicity.apps.analysis.models.analysis import Profile  # noqa
 from felicity.apps.analysis.models.analysis import RejectionReason  # noqa
@@ -24,6 +21,7 @@ from felicity.apps.audit.models import AuditLog  # noqa
 from felicity.apps.client.models import Client  # noqa
 from felicity.apps.client.models import ClientContact  # noqa
 from felicity.apps.common.models import IdSequence  # noqa
+from felicity.apps.impress.models import ReportImpress  # noqa
 from felicity.apps.inventory.models import Hazard  # noqa
 from felicity.apps.inventory.models import StockAdjustment  # noqa
 from felicity.apps.inventory.models import StockCategory  # noqa
@@ -73,5 +71,4 @@ from felicity.apps.user.models import UserAuth  # noqa
 from felicity.apps.user.models import UserPreference  # noqa
 from felicity.apps.worksheet.models import WorkSheet  # noqa
 from felicity.apps.worksheet.models import WorkSheetTemplate  # noqa
-from felicity.apps.impress.models import ReportImpress # noqa
 from felicity.database.base_class import DBModel  # noqa

@@ -1,5 +1,6 @@
-import pytest
 import logging
+
+import pytest
 
 from felicity.apps.worksheet.tasks import populate_worksheet_plate
 
@@ -75,14 +76,13 @@ async def test_add_worksheet_template(gql_client, auth_data):
         "rowWise": False,
         "description": "Run Batch VL tests tat match this sample_workflow setup",
         "instrumentUid": 1,
-        "reserved": []
+        "reserved": [],
     }
-    response = await gql_client.post('/felicity-gql', json={
-        "query": add_gql,
-        "variables": {
-            "payload": ws_template
-        }
-    }, headers=auth_data['headers'])
+    response = await gql_client.post(
+        "/felicity-gql",
+        json={"query": add_gql, "variables": {"payload": ws_template}},
+        headers=auth_data["headers"],
+    )
 
     logger.info(f"add analysis request response: {response} {response.json()}")
 
@@ -147,17 +147,12 @@ async def test_add_worksheet_using_template(gql_client, auth_data):
       }
     """
 
-    worksheet = {
-        "analystUid": 2,
-        "templateUid": 1,
-        "count": 1
-    }
-    response = await gql_client.post('/felicity-gql', json={
-        "query": add_gql,
-        "variables": {
-            **worksheet
-        }
-    }, headers=auth_data['headers'])
+    worksheet = {"analystUid": 2, "templateUid": 1, "count": 1}
+    response = await gql_client.post(
+        "/felicity-gql",
+        json={"query": add_gql, "variables": {**worksheet}},
+        headers=auth_data["headers"],
+    )
 
     logger.info(f"add worksheet using template response: {response} {response.json()}")
 
@@ -269,14 +264,15 @@ async def test_get_worksheet_by_uid(gql_client, auth_data):
       }
     """
 
-    response = await gql_client.post('/felicity-gql', json={
-        "query": add_gql,
-        "variables": {
-            "worksheetUid": 1
-        }
-    }, headers=auth_data['headers'])
+    response = await gql_client.post(
+        "/felicity-gql",
+        json={"query": add_gql, "variables": {"worksheetUid": 1}},
+        headers=auth_data["headers"],
+    )
 
-    logger.info(f"query worksheet using worksheet uid response: {response} {response.json()}")
+    logger.info(
+        f"query worksheet using worksheet uid response: {response} {response.json()}"
+    )
 
     assert response.status_code == 200
     _data = response.json()["data"]["worksheetByUid"]
@@ -289,5 +285,5 @@ async def test_get_worksheet_by_uid(gql_client, auth_data):
     for _, result in enumerate(_data["analysisResults"]):
         assert result["uid"] is not None
         assert result["result"] is None
-        assert result["sample"]["uid"]is not None
+        assert result["sample"]["uid"] is not None
         assert result["sample"]["analysisRequest"]["uid"] == 1

@@ -1,5 +1,6 @@
-import pytest
 import logging
+
+import pytest
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -31,7 +32,7 @@ async def test_add_stock_product(gql_client, auth_data):
     """
 
     stock_product = {
-        'name': "Stramatolyser FB",
+        "name": "Stramatolyser FB",
         "categoryUid": 1,
         "hazardUid": 1,
         "storeRoomUid": 1,
@@ -44,14 +45,18 @@ async def test_add_stock_product(gql_client, auth_data):
         "quantityReceived": 10,
         "minimumLevel": 2,
     }
-    for idx, item in enumerate(["Stromatolyser FB", "Petri Dish", "Pipette", "S-Tube", "Blood Culture Bottle"]):
+    for idx, item in enumerate(
+        ["Stromatolyser FB", "Petri Dish", "Pipette", "S-Tube", "Blood Culture Bottle"]
+    ):
         stock_product["name"] = item
-        response = await gql_client.post('/felicity-gql', json={
-            "query": add_stock_product_mutation,
-            "variables": {
-                "payload": stock_product
-            }
-        }, headers=auth_data['headers'])
+        response = await gql_client.post(
+            "/felicity-gql",
+            json={
+                "query": add_stock_product_mutation,
+                "variables": {"payload": stock_product},
+            },
+            headers=auth_data["headers"],
+        )
 
         logger.info(f"register stock product response: {response} {response.json()}")
 

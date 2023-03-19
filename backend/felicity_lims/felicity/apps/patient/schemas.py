@@ -1,8 +1,10 @@
 from datetime import datetime
 from typing import Optional
 
-from felicity.apps.common.schemas import BaseAuditModel
 from pydantic import EmailStr
+
+from felicity.core.uid_gen import FelicityIDType
+from felicity.apps.common.schemas import BaseAuditModel
 
 #
 #  Patient Schema
@@ -13,7 +15,7 @@ from pydantic import EmailStr
 
 class PatientBase(BaseAuditModel):
     client_patient_id: Optional[str] = None
-    client_uid: Optional[int] = None
+    client_uid: Optional[FelicityIDType] = None
     patient_id: Optional[str] = None
     first_name: Optional[str] = None
     middle_name: Optional[str] = None
@@ -35,7 +37,7 @@ class PatientCreate(PatientBase):
     client_patient_id: str
     first_name: str
     last_name: str
-    client_uid: int
+    client_uid: FelicityIDType
     active: bool = True
 
 
@@ -45,7 +47,7 @@ class PatientUpdate(PatientBase):
 
 
 class PatientInDBBase(PatientBase):
-    uid: Optional[int] = None
+    uid: Optional[FelicityIDType] = None
 
     class Config:
         orm_mode = True

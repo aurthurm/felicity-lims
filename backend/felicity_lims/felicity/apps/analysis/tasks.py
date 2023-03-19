@@ -6,13 +6,14 @@ from felicity.apps.job.conf import states as job_states
 from felicity.apps.notification.utils import ReportNotifier
 from felicity.apps.user import models as user_models
 
+from felicity.core.uid_gen import FelicityIDType
 report_notifier = ReportNotifier()
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
-async def submit_results(job_uid: int):
+async def submit_results(job_uid: FelicityIDType):
     logger.info(f"starting job {job_uid} ....")
     job = await job_models.Job.get(uid=job_uid)
     if not job:
@@ -37,7 +38,7 @@ async def submit_results(job_uid: int):
         )
 
 
-async def verify_results(job_uid: int):
+async def verify_results(job_uid: FelicityIDType):
     logger.info(f"starting job {job_uid} ....")
     job = await job_models.Job.get(uid=job_uid)
     if not job:

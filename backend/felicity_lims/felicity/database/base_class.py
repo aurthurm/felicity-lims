@@ -2,18 +2,23 @@ import logging
 from base64 import b64decode, b64encode
 from typing import Any, AsyncIterator, Dict, List, Optional, TypeVar, Union
 
-from felicity.database.async_mixins import (AllFeaturesMixin,
-                                            ModelNotFoundError, smart_query)
-from felicity.database.paginator.cursor import EdgeNode, PageCursor, PageInfo
-from felicity.database.session import async_session_factory
-from felicity.utils import has_value_or_is_truthy
 from pydantic import BaseModel as PydanticBaseModel
-from sqlalchemy import Column, Integer
+from sqlalchemy import Column
 from sqlalchemy import or_ as sa_or_
 from sqlalchemy import update
 from sqlalchemy.future import select
 from sqlalchemy.orm import as_declarative, declared_attr, selectinload
 from sqlalchemy.sql import func
+
+from felicity.core.uid_gen import FelicitySAID, get_flake_uid
+from felicity.database.async_mixins import (
+    AllFeaturesMixin,
+    ModelNotFoundError,
+    smart_query,
+)
+from felicity.database.paginator.cursor import EdgeNode, PageCursor, PageInfo
+from felicity.database.session import async_session_factory
+from felicity.utils import has_value_or_is_truthy
 
 InDBSchemaType = TypeVar("InDBSchemaType", bound=PydanticBaseModel)
 
@@ -33,32 +38,21 @@ event.listen(MyBaseMixin, 'before_update', get_updated_by_id, propagate=True)
 """
 
 
-# Enhanced Base Model Class with some django-like super-powers
 @as_declarative()
 class DBModel(AllFeaturesMixin):
     __name__: str
     __abstract__ = True
-
-    # __mapper_args__ :
-    # required in order to access columns with server defaults
-    # or SQL expression defaults, after a flush, without
-    # triggering an expired load
     __mapper_args__ = {"eager_defaults": True}
 
     uid = Column(
-        Integer, primary_key=True, index=True, nullable=False, autoincrement=True
+        FelicitySAID, primary_key=True, index=True, nullable=False, default=get_flake_uid
     )
 
-    # uid = Column(UUID(), default=uuid.uuid4, primary_key=True, unique=True, nullable=False)
-
-    # Generate __tablename__ automatically
     @declared_attr
     def __tablename__(cls) -> str:
-        # from CamelCase to table camel_case
-        # return '_'.join(re.sub('([A-Z][a-z]+)', r' \1', re.sub('([A-Z]+)', r' \1', cls.__name__)).split()).lower()
-
-        # from CamelCase to table camelcase
-
+        """ "
+        Generate tablename automatically
+        """
         return cls.__name__.lower()
 
     def marshal_simple(self, exclude=None):
@@ -108,8 +102,7 @@ class DBModel(AllFeaturesMixin):
         return found
 
     async def delete(self):
-        """Removes the model from the current entity session and mark for deletion.
-        """
+        """Removes the model from the current entity session and mark for deletion."""
         async with async_session_factory() as session:
             await session.delete(self)
             await session.flush()
@@ -297,11 +290,15 @@ class DBModel(AllFeaturesMixin):
             await session.flush()
 
     @classmethod
-    async def get_related(cls, related: Optional[list] = None, **kwargs):
-        """Return the first value in database based on given args.
-        """
+    async def get_related(cls, related: Optional[list] = None, list=False, **kwargs):
+        """Return the first value in database based on given args."""
         try:
             del kwargs["related"]
+        except KeyError:
+            pass
+
+        try:
+            del kwargs["list"]
         except KeyError:
             pass
 
@@ -311,7 +308,12 @@ class DBModel(AllFeaturesMixin):
 
         async with async_session_factory() as session:
             results = await session.execute(stmt)
-        found = results.scalars().first()
+
+        if not list:
+            found = results.scalars().first()
+        else:
+            found = results.scalars().all()
+
         return found
 
     @classmethod
@@ -323,8 +325,7 @@ class DBModel(AllFeaturesMixin):
         return data
 
     async def save(self):
-        """Saves the updated model to the current entity db.
-        """
+        """Saves the updated model to the current entity db."""
         async with async_session_factory() as session:
             try:
                 session.add(self)
@@ -336,8 +337,7 @@ class DBModel(AllFeaturesMixin):
         return self
 
     async def flush_commit_session(self):
-        """Saves the updated model to the current entity db.
-        """
+        """Saves the updated model to the current entity db."""
         async with async_session_factory() as session:
             try:
                 await session.flush()
@@ -454,13 +454,13 @@ class DBModel(AllFeaturesMixin):
 
     @classmethod
     async def paginate_with_cursors(
-            cls,
-            page_size: int = None,
-            after_cursor: Any = None,
-            before_cursor: Any = None,
-            filters: Any = None,
-            sort_by: List[str] = None,
-            get_related: str = None,
+        cls,
+        page_size: int = None,
+        after_cursor: Any = None,
+        before_cursor: Any = None,
+        filters: Any = None,
+        sort_by: List[str] = None,
+        get_related: str = None,
     ) -> PageCursor:
         if not filters:
             filters = {}
@@ -537,11 +537,11 @@ class DBModel(AllFeaturesMixin):
 
     @classmethod
     def build_page_info(
-            cls,
-            start_cursor: str = None,
-            end_cursor: str = None,
-            has_next_page: bool = False,
-            has_previous_page: bool = False,
+        cls,
+        start_cursor: str = None,
+        end_cursor: str = None,
+        has_next_page: bool = False,
+        has_previous_page: bool = False,
     ) -> PageInfo:
         return PageInfo(
             **{

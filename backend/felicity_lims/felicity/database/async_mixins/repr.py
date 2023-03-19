@@ -1,5 +1,4 @@
 from six import string_types
-
 from sqlalchemy import inspect
 
 

@@ -2,12 +2,12 @@ import logging
 from typing import Generic, List, Optional, Tuple, Type, TypeVar
 
 from dateutil import parser
-
-from felicity.database.base_class import DBModel
-from felicity.database.session import async_session_factory
 from sqlalchemy import text
 from sqlalchemy.future import select
 from sqlalchemy.sql import func
+
+from felicity.database.base_class import DBModel
+from felicity.database.session import async_session_factory
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -115,7 +115,7 @@ class SampleAnalyticsInit(Generic[ModelType]):
         group_by: str,
         start: Optional[Tuple[str, str]],
         end: Optional[Tuple[str, str]],
-        group_in: Optional[List[str]] = None
+        group_in: Optional[List[str]] = None,
     ):  # noqa
         if not hasattr(self.model, group_by):
             logger.warning(f"Model has no attr {group_by}")
@@ -154,7 +154,9 @@ class SampleAnalyticsInit(Generic[ModelType]):
 
         return result.all()
 
-    async def count_analyses_retests(self, start: Tuple[str, str], end: Tuple[str, str]):
+    async def count_analyses_retests(
+        self, start: Tuple[str, str], end: Tuple[str, str]
+    ):
         retest = getattr(self.model, "retest")
         stmt = select(func.count(self.model.uid).label("total")).filter(retest == True)
 
@@ -180,7 +182,6 @@ class SampleAnalyticsInit(Generic[ModelType]):
             result = await session.execute(stmt)
 
         return result.all()
-
 
     async def get_sample_process_performance(
         self, start: Tuple[str, str], end: Tuple[str, str]

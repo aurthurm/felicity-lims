@@ -1,12 +1,13 @@
-from datetime import datetime, timedelta
-from typing import Any, Optional, Union
-import re
 import logging
+import re
+from datetime import datetime, timedelta
 from difflib import SequenceMatcher
+from typing import Any, Optional, Union
 
-from felicity.core.config import settings
 from jose import jwt
 from passlib.context import CryptContext
+
+from felicity.core.config import settings
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -27,7 +28,7 @@ def get_password_hash(password: str) -> str:
 
 #  JWTokens
 def create_access_token(
-        subject: Union[str, Any], expires_delta: timedelta = None
+    subject: Union[str, Any], expires_delta: timedelta = None
 ) -> str:
     if expires_delta:
         expire = datetime.utcnow() + expires_delta
@@ -71,7 +72,7 @@ def password_similarity(username: str, password: str, max_similarity=0.7):
     return True if ratio > max_similarity else False, ratio
 
 
-def format_password_message(old: str, new:str):
+def format_password_message(old: str, new: str):
     if not old:
         return new
     return f"{old}, {new}"
@@ -110,31 +111,45 @@ def password_check(password, username):
 
     # overall result
     password_ok = not (
-            length_error or digit_error or uppercase_error or
-            lowercase_error or symbol_error or similar_error
+        length_error
+        or digit_error
+        or uppercase_error
+        or lowercase_error
+        or symbol_error
+        or similar_error
     )
     message = ""
     if not password_ok:
         if length_error:
-            message = format_password_message(message, "Password must not be less than 8 characters long ")
+            message = format_password_message(
+                message, "Password must not be less than 8 characters long "
+            )
         if digit_error:
-            message = format_password_message(message, "Password must contain at least a digit")
+            message = format_password_message(
+                message, "Password must contain at least a digit"
+            )
         if uppercase_error:
-            message = format_password_message(message, "Password must contain upper case letters")
+            message = format_password_message(
+                message, "Password must contain upper case letters"
+            )
         if lowercase_error:
-            message = format_password_message(message, "Password must contain lowercase letters")
+            message = format_password_message(
+                message, "Password must contain lowercase letters"
+            )
         if symbol_error:
             message = format_password_message(message, "Password must contain symbols")
         if similar_error:
-            message = format_password_message(message, "Password is too similar to your username")
+            message = format_password_message(
+                message, "Password is too similar to your username"
+            )
 
     return {
-        'password_ok': password_ok,
-        'length_error': length_error,
-        'digit_error': digit_error,
-        'uppercase_error': uppercase_error,
-        'lowercase_error': lowercase_error,
-        'symbol_error': symbol_error,
+        "password_ok": password_ok,
+        "length_error": length_error,
+        "digit_error": digit_error,
+        "uppercase_error": uppercase_error,
+        "lowercase_error": lowercase_error,
+        "symbol_error": symbol_error,
         "similar_error": similar_error,
-        "message": message
+        "message": message,
     }

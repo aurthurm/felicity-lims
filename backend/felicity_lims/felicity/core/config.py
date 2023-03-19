@@ -1,8 +1,7 @@
 import os
 from typing import Any, Dict, List, Optional, Union
 
-from pydantic import (AnyHttpUrl, AnyUrl, BaseSettings, EmailStr, HttpUrl,
-                      validator)
+from pydantic import AnyHttpUrl, AnyUrl, BaseSettings, EmailStr, HttpUrl, validator
 
 
 def getenv_boolean(var_name, default_value=False):
@@ -33,7 +32,9 @@ class PostgresDsn(AnyUrl):
 class Settings(BaseSettings):
     BASE_DIR: str = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
     API_V1_STR: str = "/api/v1"
-    SECRET_KEY: str = "uIM7aXFRzaIxWr1NEy_RMQg9iIuDkLAlkOPs5zpgbts"  # secrets.token_urlsafe(32)
+    SECRET_KEY: str = (
+        "uIM7aXFRzaIxWr1NEy_RMQg9iIuDkLAlkOPs5zpgbts"  # secrets.token_urlsafe(32)
+    )
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 16
     SERVER_NAME: str = getenv_value("SERVER_NAME", "felicity")
     SERVER_HOST: AnyHttpUrl = getenv_value("SERVER_HOST", "https://localhost")
@@ -88,7 +89,7 @@ class Settings(BaseSettings):
 
     @validator("SQLALCHEMY_ASYNC_DATABASE_URI", pre=True)
     def assemble_async_db_connection(
-            cls, v: Optional[str], values: Dict[str, Any]
+        cls, v: Optional[str], values: Dict[str, Any]
     ) -> Any:
         if isinstance(v, str):
             return v
@@ -101,7 +102,9 @@ class Settings(BaseSettings):
         )
 
     @validator("SQLALCHEMY_TEST_DATABASE_URI", pre=True)
-    def assemble_test_db_connection(cls, v: Optional[str], values: Dict[str, Any]) -> Any:
+    def assemble_test_db_connection(
+        cls, v: Optional[str], values: Dict[str, Any]
+    ) -> Any:
         if isinstance(v, str):
             return v
         return PostgresDsn.build(
@@ -114,7 +117,7 @@ class Settings(BaseSettings):
 
     @validator("SQLALCHEMY_TEST_ASYNC_DATABASE_URI", pre=True)
     def assemble_async_test_db_connection(
-            cls, v: Optional[str], values: Dict[str, Any]
+        cls, v: Optional[str], values: Dict[str, Any]
     ) -> Any:
         if isinstance(v, str):
             return v
@@ -131,7 +134,9 @@ class Settings(BaseSettings):
     SMTP_HOST: Optional[str] = getenv_value("SMTP_HOST", "localhost")
     SMTP_USER: Optional[str] = getenv_value("SMTP_USER", "")
     SMTP_PASSWORD: Optional[str] = getenv_value("SMTP_PASSWORD", "")
-    EMAILS_FROM_EMAIL: Optional[EmailStr] = getenv_value("EMAILS_FROM_EMAIL", "felicity@felicity.labs")
+    EMAILS_FROM_EMAIL: Optional[EmailStr] = getenv_value(
+        "EMAILS_FROM_EMAIL", "felicity@felicity.labs"
+    )
     EMAILS_FROM_NAME: Optional[str] = getenv_value("EMAILS_FROM_NAME", "felicity")
 
     @validator("EMAILS_FROM_NAME")
@@ -157,7 +162,9 @@ class Settings(BaseSettings):
         "FIRST_SUPERUSER", "admin@felicitylabs.com"
     )
     FIRST_SEPERUSER_USERNAME: str = getenv_value("FIRST_SEPERUSER_USERNAME", "admin")
-    FIRST_SUPERUSER_PASSWORD: str = getenv_value("FIRST_SUPERUSER_PASSWORD", "!Felicity#100")
+    FIRST_SUPERUSER_PASSWORD: str = getenv_value(
+        "FIRST_SUPERUSER_PASSWORD", "!Felicity#100"
+    )
     # Reserved System User
     SYSTEM_DAEMONUSER_EMAIL: EmailStr = "system_daemon@system.daemon"
     SYSTEM_DAEMONUSER_USERNAME: str = "system_daemon"

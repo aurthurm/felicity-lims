@@ -1,11 +1,12 @@
 import logging
 from typing import List, Optional
 
+from sqlalchemy import Column, DateTime, ForeignKey, String, Table
+from sqlalchemy.orm import relationship
+
 from felicity.apps import BaseAuditDBModel, DBModel
 from felicity.apps.setup.models import Department
 from felicity.apps.user.models import Group, User
-from sqlalchemy import Column, DateTime, ForeignKey, String, Table
-from sqlalchemy.orm import relationship
 
 from . import schemas
 

@@ -3,6 +3,7 @@ import logging
 from typing import AsyncGenerator
 
 import strawberry  # noqa
+
 from felicity.api.gql.notification.types import ActivityStreamType
 from felicity.apps.common.channel import BroadcastEvent, Subscriber, broadcast
 from felicity.apps.notification.models import ActivityStream
@@ -13,7 +14,6 @@ logger = logging.getLogger(__name__)
 
 @strawberry.type
 class StreamSubscription:
-
     @strawberry.subscription
     async def latest_activity(self) -> AsyncGenerator[ActivityStreamType, None]:  # noqa
         subscriber: Subscriber

@@ -3,8 +3,10 @@ import logging
 from typing import List, Optional
 
 import strawberry  # noqa
+
 from felicity.api.gql import OperationError, auth_from_info, verify_user_auth
 from felicity.api.gql.analysis.types import analysis as a_types
+from felicity.core.uid_gen import FelicityID
 from felicity.apps.analysis import schemas
 from felicity.apps.analysis.conf import states
 from felicity.apps.analysis.models import analysis as analysis_models
@@ -20,7 +22,7 @@ logger = logging.getLogger(__name__)
 
 @strawberry.input
 class QCSetInputType:
-    qcTemplateUid: Optional[int]
+    qcTemplateuid: Optional[FelicityID]
     qcLevels: List[int]
     analysisProfiles: List[int]
     analysisServices: List[int]
@@ -164,7 +166,7 @@ async def create_QC_level(info, level: str) -> QCLevelResponse:
 
 
 @strawberry.mutation
-async def update_QC_level(info, uid: int, level: str) -> QCLevelResponse:
+async def update_QC_level(info, uid: FelicityID, level: str) -> QCLevelResponse:
     is_authenticated, felicity_user = await auth_from_info(info)
     verify_user_auth(
         is_authenticated, felicity_user, "Only Authenticated user can update qc-levels"
@@ -228,7 +230,7 @@ async def create_QC_template(info, payload: QCTemplateInputType) -> QCTemplateRe
 
 @strawberry.mutation
 async def update_QC_template(
-    info, uid: int, payload: QCTemplateInputType
+    info, uid: FelicityID, payload: QCTemplateInputType
 ) -> QCTemplateResponse:
 
     is_authenticated, felicity_user = await auth_from_info(info)
