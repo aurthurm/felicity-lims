@@ -53,3 +53,11 @@
 .grid-cols-20 {
   grid-template-columns: repeat(20, minmax(0, 1fr));
 }
+
+.form-input,
+.form-textarea,
+.form-select,
+.form-multiselect {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}

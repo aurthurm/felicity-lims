@@ -161,25 +161,53 @@ export const ADD_STOCK_PRODUCT = gql`
         __typename
         uid
         name
-        departmentUid
-        supplierUid
-        categoryUid
-        hazardUid
-        storeRoomUid
-        lot_number
+        department{
+          uid
+          name
+        }
+        supplier{
+          uid
+          name
+        }
+        category{
+          uid
+          name
+        }
+        hazard{
+          uid
+          name
+        }
+        storeRoom{
+          uid
+          name
+        }
+        lotNumber
         batch
         size
-        unitUid
-        packagingUid
+        unit{
+          uid
+          name
+        }
+        packaging{
+          uid
+          name
+        }
         price
         quantityReceived
-        minimumLevel
         remaining
         dateReceived
         expiryDate
-        receivedByUid
+        receivedBy{
+          uid
+          firstName
+          lastName
+        }
         createdAt
-        createdByUid
+        createdBy{
+          uid
+          firstName
+          lastName
+        }
       }
 
       ... on OperationError {
@@ -198,27 +226,59 @@ export const EDIT_STOCK_PRODUCT = gql`
         __typename
         uid
         name
-        departmentUid
-        supplierUid
-        categoryUid
-        hazardUid
-        storeRoomUid
+        department{
+          uid
+          name
+        }
+        supplier{
+          uid
+          name
+        }
+        category{
+          uid
+          name
+        }
+        hazard{
+          uid
+          name
+        }
+        storeRoom{
+          uid
+          name
+        }
         lot_number
         batch
         size
-        unitUid
-        packagingUid
+        unit{
+          uid
+          name
+        }
+        packaging{
+          uid
+          name
+        }
         price
         quantityReceived
-        minimumLevel
         remaining
         dateReceived
         expiryDate
-        receivedByUid
+        receivedBy{
+          uid
+          firstName
+          lastName
+        }
         createdAt
-        createdByUid
+        createdBy{
+          uid
+          firstName
+          lastName
+        }
         updatedAt
-        updatedByUid
+        updatedBy{
+          uid
+          firstName
+          lastName
+        }
       }
 
       ... on OperationError {

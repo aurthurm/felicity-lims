@@ -5,9 +5,37 @@ import { InventoryListing } from './InvListing';
 import { InventoryTransactions } from './InvTransactions';
 import { InventoryOrders } from './InvOrders';
 
+import { useInventoryStore, useStorageStore, useSetupStore, useUserStore } from '../../stores';
+
 const InventoryHome = defineComponent({
   name: 'inventory-home',
   setup() {
+    // Prefetch data
+    const inventoryStore = useInventoryStore();
+    const setupStore = useSetupStore();
+    const storageStore = useStorageStore();
+    const userStore = useUserStore();
+    inventoryStore.fetchItems({
+      first: 10000,
+      after: '',
+      text: '',
+      sortBy: ['-uid'],
+    });
+    userStore.fetchUsers({});
+    setupStore.fetchSuppliers();
+    setupStore.fetchDepartments({});
+    inventoryStore.fetchCategories();
+    inventoryStore.fetchHazards();
+    storageStore.fetchStoreRooms();
+    inventoryStore.fetchUnits();
+    inventoryStore.fetchPackages();
+    inventoryStore.fetchProducts({
+      first: 50,
+      after: '',
+      text: '',
+      sortBy: ['uid'],
+    });
+
     const currentTab = ref('dashboard');
     const inventoryTabs = ref([
       'dashboard',
@@ -17,6 +45,7 @@ const InventoryHome = defineComponent({
       'adjustments',
     ]);
     const currentTabComponent = computed(() => 'tab-' + currentTab.value);
+
     return {
       currentTab,
       inventoryTabs,
@@ -26,9 +55,9 @@ const InventoryHome = defineComponent({
   render() {
     return (
       <>
-        <section className="col-span-12 mt-2">
-          <nav className="bg-white shadow-md mt-2">
-            <div className="-mb-px flex justify-start">
+        <section class="col-span-12 mt-2">
+          <nav class="bg-white shadow-md mt-2">
+            <div class="-mb-px flex justify-start">
               {this.inventoryTabs?.map((tab) => (
                 <a
                   key={tab}

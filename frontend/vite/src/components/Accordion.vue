@@ -1,3 +1,12 @@
+<script setup lang="ts">
+import { ref } from "vue";
+const props = defineProps({
+  show: Boolean,
+});
+
+let show = ref(false);
+</script>
+
 <template>
   <transition name="accordion">
     <div class="rounded-sm my-1">
@@ -24,11 +33,4 @@
 
 <style lang="postcss"></style>
 
-<script setup lang="ts">
-import { ref } from "vue";
-const props = defineProps({
-  show: Boolean,
-});
 
-let show = ref(false);
-</script>

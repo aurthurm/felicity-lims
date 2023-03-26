@@ -16,6 +16,7 @@ class StockItemType:
     name: str
     department_uid: Optional[FelicityID]
     department: Optional[DepartmentType]
+    minimum_level: Optional[int]
     description: Optional[str]
     created_at: Optional[datetime]
     created_by_uid: Optional[FelicityID]
@@ -93,6 +94,8 @@ class StockPackagingType:
 class StockProductType:
     uid: FelicityID
     name: str
+    stock_item_uid: Optional[FelicityID]
+    stock_item: Optional[StockItemType]
     department_uid: Optional[FelicityID]
     department: Optional[DepartmentType]
     supplier_uid: Optional[FelicityID]
@@ -112,7 +115,6 @@ class StockProductType:
     packaging: Optional[StockPackagingType]
     price: Optional[int]
     quantity_received: Optional[int]
-    minimum_level: Optional[int]
     remaining: Optional[int]
     date_received: Optional[datetime]
     expiry_date: Optional[datetime]

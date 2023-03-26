@@ -20,6 +20,7 @@ export const useInventoryStore = defineStore('inventory', {
         fetchingUnits: false,
         products: [],
         fetchingProducts: false,
+        productsPaging: {},
         stockItems: [],
         stockItemsPaging: {},
         fetchingItems: false,
@@ -38,6 +39,7 @@ export const useInventoryStore = defineStore('inventory', {
         fetchingUnits: boolean,
         products: IStockProduct[],
         fetchingProducts: boolean,
+        productsPaging: IPaginationMeta,
         stockItems: IStockItem[],
         stockItemsPaging: IPaginationMeta,
         fetchingItems: boolean,
@@ -137,12 +139,14 @@ export const useInventoryStore = defineStore('inventory', {
     async fetchProducts(params){
       this.fetchingProducts = true;
       await withClientQuery(GET_ALL_STOCK_PRODUCTS, params, "stockProductAll")
-            .then((products: IStockProduct[]) => {
+            .then((paging: IPagination<IStockProduct>) => {
               this.fetchingProducts= false
-              this.products = products
+              this.products = paging.items ?? [];
+              this.productsPaging['totalCount'] = paging.totalCount;
+              this.productsPaging['pageInfo'] = paging.pageInfo;
             }).catch((err) => this.fetchingProducts=false)
     },
-    addProduct(payload): void {
+    addStockProduct(payload): void {
       this.products?.unshift(payload);
     },
     updateProduct(payload: IStockProduct): void {
@@ -164,7 +168,7 @@ export const useInventoryStore = defineStore('inventory', {
     addItem(payload): void {
       this.stockItems?.unshift(payload);
     },
-    updateItem(payload: IStockProduct): void {
+    updateItem(payload: IStockItem): void {
       const index = this.stockItems?.findIndex(item => item.uid === payload?.uid);
       if(index > -1) this.stockItems[index] = payload;
     },
@@ -181,7 +185,7 @@ export const useInventoryStore = defineStore('inventory', {
     addTransaction(payload): void {
       this.transactions?.unshift(payload);
     },
-    updateTransaction(payload: IStockProduct): void {
+    updateTransaction(payload: IStockTransaction): void {
       const index = this.transactions?.findIndex(item => item.uid === payload?.uid);
       if(index > -1) this.transactions[index] = payload;
     },
@@ -198,7 +202,7 @@ export const useInventoryStore = defineStore('inventory', {
     addAdjustment(payload): void {
       this.adjustments?.unshift(payload);
     },
-    updateAdjustment(payload: IStockProduct): void {
+    updateAdjustment(payload: IStockAdjustment): void {
       const index = this.adjustments?.findIndex(item => item.uid === payload?.uid);
       if(index > -1) this.adjustments[index] = payload;
     },

@@ -81,6 +81,7 @@ StockProductResponse = strawberry.union(
 @strawberry.input
 class StockProductInputType:
     name: str
+    stock_item_uid: Optional[FelicityID] = None
     department_uid: Optional[FelicityID] = None
     supplier_uid: Optional[FelicityID] = None
     category_uid: Optional[FelicityID] = None
@@ -93,8 +94,9 @@ class StockProductInputType:
     packaging_uid: Optional[FelicityID] = None
     price: Optional[int] = None
     quantity_received: Optional[int] = None
-    minimum_level: Optional[int] = None
+    date_received: Optional[datetime] = None
     expiry_date: Optional[datetime] = None
+    received_by_uid: Optional[FelicityID] = None
 
 
 @strawberry.type
@@ -489,10 +491,6 @@ class InventoryMutations:
         )
         if not auth_success:
             return auth_error
-
-        exists = await models.StockProduct.get(name=payload.name)
-        if exists:
-            return OperationError(error=f"StockProduct with this name already exists")
 
         incoming: Dict = {
             "date_received": datetime.today(),

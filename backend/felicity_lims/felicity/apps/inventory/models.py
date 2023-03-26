@@ -15,6 +15,8 @@ class StockItem(BaseAuditDBModel):
     description = Column(String, nullable=False)
     department_uid = Column(FelicitySAID, ForeignKey("department.uid"), nullable=True)
     department = relationship("Department", lazy="selectin")
+    minimum_level = Column(Integer, nullable=True)
+    maximum_level = Column(Integer, nullable=True)
 
     @classmethod
     async def create(cls, obj_in: schemas.StockItemCreate) -> schemas.StockItem:
@@ -93,7 +95,9 @@ class StockPackaging(BaseAuditDBModel):
 
 
 class StockProduct(BaseAuditDBModel):
-    name = Column(String, nullable=False)
+    name = Column(String, nullable=True)
+    stock_item_uid = Column(FelicitySAID, ForeignKey("stockitem.uid"), nullable=False)
+    stock_item = relationship("StockItem", lazy="selectin")
     department_uid = Column(FelicitySAID, ForeignKey("department.uid"), nullable=True)
     department = relationship("Department", lazy="selectin")
     supplier_uid = Column(FelicitySAID, ForeignKey("supplier.uid"), nullable=True)
@@ -115,7 +119,6 @@ class StockProduct(BaseAuditDBModel):
     packaging = relationship("StockPackaging", lazy="selectin")
     price = Column(Float, nullable=True)
     quantity_received = Column(Integer, nullable=False)
-    minimum_level = Column(Integer, nullable=True)
     remaining = Column(Integer, nullable=True)
     date_received = Column(DateTime, nullable=False)
     expiry_date = Column(DateTime, nullable=True)

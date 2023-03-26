@@ -18,6 +18,8 @@ class StockItemBase(BaseAuditModel):
     description: Optional[str] = None
     department_uid: Optional[FelicityIDType] = None
     department: Optional[Department] = None
+    minimum_level: Optional[int] = None
+    maximum_level: Optional[int] = None
 
 
 class StockItem(StockItemBase):
@@ -136,6 +138,7 @@ class StockPackagingUpdate(StockPackagingBase):
 #
 class StockProductBase(BaseAuditModel):
     name: Optional[str] = None
+    stock_item_uid: Optional[FelicityIDType] = None
     department_uid: Optional[FelicityIDType] = None
     department: Optional[Department] = None
     supplier_uid: Optional[FelicityIDType] = None
@@ -155,7 +158,6 @@ class StockProductBase(BaseAuditModel):
     packaging: Optional[StockPackaging] = None
     price: Optional[float] = None
     quantity_received: Optional[int] = None
-    minimum_level: Optional[int] = None
     remaining: Optional[int] = None
     date_received: Optional[datetime] = None
     expiry_date: Optional[datetime] = None
