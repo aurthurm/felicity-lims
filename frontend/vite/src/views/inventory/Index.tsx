@@ -4,12 +4,17 @@ import { InventoryAdjustments } from './InvAdjustments';
 import { InventoryListing } from './InvListing';
 import { InventoryTransactions } from './InvTransactions';
 import { InventoryOrders } from './InvOrders';
+import Drawer from '../../components/Drawer.vue';
+import { ADD_STOCK_ORDER } from '../../graphql/inventory.mutations';
+import { useApiUtil } from '../../composables';
 
 import { useInventoryStore, useStorageStore, useSetupStore, useUserStore } from '../../stores';
 
 const InventoryHome = defineComponent({
   name: 'inventory-home',
   setup() {
+    const { withClientMutation } = useApiUtil();
+
     // Prefetch data
     const inventoryStore = useInventoryStore();
     const setupStore = useSetupStore();
@@ -35,6 +40,12 @@ const InventoryHome = defineComponent({
       text: '',
       sortBy: ['uid'],
     });
+    inventoryStore.fetchStockOrders({
+      first: 50,
+      after: '',
+      text: '',
+      sortBy: ['uid'],
+    });
 
     const currentTab = ref('dashboard');
     const inventoryTabs = ref([
@@ -46,17 +57,43 @@ const InventoryHome = defineComponent({
     ]);
     const currentTabComponent = computed(() => 'tab-' + currentTab.value);
 
+    const viewBasket = ref(false);
+
     return {
       currentTab,
       inventoryTabs,
       currentTabComponent,
+      basket: computed(() => inventoryStore.getBasket),
+      viewBasket,
+      inventoryStore,
+      createOrder: () => {
+        const basket = inventoryStore.getBasket;
+        withClientMutation(
+          ADD_STOCK_ORDER,
+          {
+            payload: {
+              orderProducts: basket.map((order) => ({
+                productUid: order.product.uid,
+                quantity: order.quantity,
+                remarks: '',
+              })),
+              departmentUid: undefined,
+            },
+          },
+          'createStockOrder',
+        ).then((result) => {
+          inventoryStore.addStockOrder(result?.stockOrder);
+          inventoryStore.clearBasket();
+          viewBasket.value = false;
+        });
+      },
     };
   },
   render() {
     return (
       <>
         <section class="col-span-12 mt-2">
-          <nav class="bg-white shadow-md mt-2">
+          <nav class="flex justify-between bg-white shadow-md mt-2">
             <div class="-mb-px flex justify-start">
               {this.inventoryTabs?.map((tab) => (
                 <a
@@ -72,6 +109,15 @@ const InventoryHome = defineComponent({
                 </a>
               ))}
             </div>
+            {this.basket.length > 0 && (
+              <button
+                type="button"
+                class="flex items-center mr-4"
+                onClick={() => (this.viewBasket = true)}
+              >
+                <span class="mr-2">View</span> <font-awesome-icon icon="cart-shopping" />
+              </button>
+            )}
           </nav>
 
           <div>
@@ -81,6 +127,72 @@ const InventoryHome = defineComponent({
             {this.currentTab === 'transactions' && <InventoryTransactions />}
             {this.currentTab === 'adjustments' && <InventoryAdjustments />}
           </div>
+
+          <Drawer show={this.viewBasket} onClose={() => (this.viewBasket = false)}>
+            {{
+              header: () => 'Your Order Basket',
+              body: () => (
+                <>
+                  <div class="overflow-x-auto mt-2 mb-4">
+                    <div class="align-middle inline-block min-w-full shadow overflow-hidden bg-white shadow-dashboard px-2 pt-1 rounded-bl-lg rounded-br-lg">
+                      <table class="min-w-full">
+                        <thead>
+                          <tr>
+                            <th class="px-1 py-1 border-b-2 border-gray-300 text-left leading-4 text-gray-800 tracking-wider">
+                              Product Name
+                            </th>
+                            <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">
+                              Quantity
+                            </th>
+                            <th class="px-1 py-1 border-b-2 border-gray-300 text-left leading-4 text-gray-800 tracking-wider"></th>
+                          </tr>
+                        </thead>
+                        <tbody class="bg-white">
+                          {this.basket.map((item) => (
+                            <tr key={item.product.uid} v-motion-slide-right>
+                              <td>
+                                <p>{item.product.name}</p>
+                              </td>
+                              <td class="px-1 py-1 whitespace-no-wrap">
+                                <label class="block">
+                                  <input
+                                    class="form-input"
+                                    type="number"
+                                    v-model={item.quantity}
+                                    placeholder={item.quantity}
+                                  />
+                                </label>
+                              </td>
+                              <td class="px-1 whitespace-no-wrap">
+                                <button
+                                  type="button"
+                                  class="bg-sky-800 text-white rounded-sm leading-none px-2 py-1"
+                                  onClick={() =>
+                                    this.inventoryStore.removeFromBasket(item.product.uid)
+                                  }
+                                >
+                                  Remove
+                                </button>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                  <hr />
+                  <button
+                    type="button"
+                    class="mt-4 bg-sky-800 text-white rounded-sm leading-none px-2 py-1"
+                    onClick={() => this.createOrder()}
+                  >
+                    Create Order
+                  </button>
+                </>
+              ),
+              footer: () => [],
+            }}
+          </Drawer>
         </section>
       </>
     );

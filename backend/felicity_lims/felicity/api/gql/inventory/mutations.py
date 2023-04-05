@@ -639,6 +639,30 @@ class InventoryMutations:
         return StockOrderLineType(stock_order=stock_order, order_products=o_products)
 
     @strawberry.mutation
+    async def submit_stock_order(
+        self, info, uid: FelicityID
+    ) -> StockOrderResponse:
+        is_authenticated, felicity_user = await auth_from_info(info)
+        auth_success, auth_error = verify_user_auth(
+            is_authenticated,
+            felicity_user,
+            "Only Authenticated user can submit stock orders",
+        )
+        if not auth_success:
+            return auth_error
+
+        stock_order: models.StockOrder = await models.StockOrder.get(uid=uid)
+        if stock_order.status not in [order_states.PREPARATION]:
+            return OperationError(
+                error=f"You can only submit a StockOrder under preperation"
+            )
+
+        stock_order = await stock_order.update(
+            {"status": order_states.SUBMITTED}
+        )  # noqa
+        return types.StockOrderType(**stock_order.marshal_simple())
+
+    @strawberry.mutation
     async def approve_stock_order(
         self, info, uid: FelicityID, payload: StockOrderApprovalInputType
     ) -> StockOrderResponse:
@@ -646,7 +670,7 @@ class InventoryMutations:
         auth_success, auth_error = verify_user_auth(
             is_authenticated,
             felicity_user,
-            "Only Authenticated user can delete stock orders",
+            "Only Authenticated user can approve stock orders",
         )
         if not auth_success:
             return auth_error
@@ -676,7 +700,7 @@ class InventoryMutations:
             return auth_error
 
         stock_order: models.StockOrder = await models.StockOrder.get(uid=uid)
-        if stock_order.status not in [order_states.PENDING]:
+        if stock_order.status not in [order_states.PENDING, order_states.SUBMITTED]:
             return OperationError(error=f"You can only issue a pending StockOrder")
 
         # issuance
@@ -697,11 +721,6 @@ class InventoryMutations:
             product = await models.StockProduct.get(uid=order_p.product_uid)
             quantity = product.remaining - order_p.quantity
             if quantity < 0:
-                await stock_transaction.update(
-                    {
-                        "remarks": "Sustained: Sorry you cannot issue beyond whats available"
-                    }
-                )  # noqa
                 return OperationError(
                     error=f"Sorry you cannot issue beyond whats available"
                 )
@@ -709,7 +728,7 @@ class InventoryMutations:
                 await product.update({"remaining": quantity})
 
         stock_order = await stock_order.update(
-            {"status": payload.status, "remarks": payload.remarks}
+            {"status": order_states.PROCESSED, "remarks": "" }
         )  # noqa
         o_products = await models.StockOrderProduct.get_all(order_uid=uid)
         return StockOrderLineType(stock_order=stock_order, order_products=o_products)

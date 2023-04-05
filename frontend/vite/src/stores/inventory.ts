@@ -1,8 +1,8 @@
 import { defineStore } from 'pinia'
 
 import { useApiUtil } from '../composables'
-import { IHazard, IStockAdjustment, IStockCategory, IStockItem, IStockPackaging, IStockProduct, IStockTransaction, IStockUnit } from '../models/inventory';
-import { GET_ALL_HAZARDS, GET_ALL_STOCK_ADJUSTMENTS, GET_ALL_STOCK_CATEGORIES, GET_ALL_STOCK_ITEMS, GET_ALL_STOCK_PACKAGES, GET_ALL_STOCK_PRODUCTS, GET_ALL_STOCK_TRANSACTIONS, GET_ALL_STOCK_UNITS } from '../graphql/inventory.queries';
+import { IHazard, IStockAdjustment, IStockCategory, IStockItem, IStockOrder, IStockOrderProduct, IStockPackaging, IStockProduct, IStockTransaction, IStockUnit } from '../models/inventory';
+import { GET_ALL_HAZARDS, GET_ALL_STOCK_ADJUSTMENTS, GET_ALL_STOCK_CATEGORIES, GET_ALL_STOCK_ITEMS, GET_ALL_STOCK_ORDERS, GET_ALL_STOCK_PACKAGES, GET_ALL_STOCK_PRODUCTS, GET_ALL_STOCK_TRANSACTIONS, GET_ALL_STOCK_UNITS } from '../graphql/inventory.queries';
 import { IPagination, IPaginationMeta } from '../models/pagination';
 
 const { withClientQuery } = useApiUtil()
@@ -28,6 +28,10 @@ export const useInventoryStore = defineStore('inventory', {
         fetchingTransactions: false,
         adjustments: [],
         fetchingAdjustments: false,
+        basket: [],
+        stockOrders: [],
+        fetchingStockOrders: false,
+        stockOrdersPaging: {},
       } as {
         hazards: IHazard[], 
         fetchingHazards: boolean,
@@ -47,6 +51,10 @@ export const useInventoryStore = defineStore('inventory', {
         fetchingTransactions: boolean,
         adjustments: IStockAdjustment[],
         fetchingAdjustments: boolean,
+        basket: any[],
+        stockOrders: IStockOrder[],
+        fetchingStockOrders: boolean,
+        stockOrdersPaging: IPaginationMeta,
       }
   },
   getters: {  
@@ -58,6 +66,8 @@ export const useInventoryStore = defineStore('inventory', {
     getStockItems: (state) => state.stockItems,
     getTransactions: (state) => state.transactions,
     getAdjustments: (state) => state.adjustments,
+    getBasket: (state) => state.basket,
+    getStockOrders: (state) => state.stockItems,
   },
   actions: {
     // getAll stock Item deps
@@ -151,7 +161,8 @@ export const useInventoryStore = defineStore('inventory', {
     },
     updateProduct(payload: IStockProduct): void {
       const index = this.products?.findIndex(item => item.uid === payload?.uid);
-      if(index > -1) this.products[index] = payload;
+      const old = this.products[index]
+      if(index > -1) this.products[index] = { ...old, ...payload };
     },
 
     // stockItems
@@ -171,6 +182,32 @@ export const useInventoryStore = defineStore('inventory', {
     updateItem(payload: IStockItem): void {
       const index = this.stockItems?.findIndex(item => item.uid === payload?.uid);
       if(index > -1) this.stockItems[index] = payload;
+    },
+
+    // stockOrders
+    async fetchStockOrders(params){
+      this.fetchingItems = true;
+      await withClientQuery(GET_ALL_STOCK_ORDERS, params, "stockOrderAll")
+            .then((paging: IPagination<IStockOrder>) => {
+              this.fetchingItems= false
+              this.stockOrders = paging.items ?? [];
+              this.stockOrdersPaging['totalCount'] = paging.totalCount;
+              this.stockOrdersPaging['pageInfo'] = paging.pageInfo;
+            }).catch((err) => this.fetchingStockOrders=false)
+    },
+    addStockOrder(payload): void {
+      this.stockOrders?.unshift(payload);
+    },
+    updateStockOrder(payload: IStockOrder): void {
+      const index = this.stockOrders?.findIndex(item => item.uid === payload?.uid);
+      const old = this.stockOrders[index]
+      if(index > -1) this.stockOrders[index] = { ...old, ...payload };
+    },
+    issueStockOrder(payload: any): void {
+      this.updateStockOrder(payload?.stockOrder)
+      for(const op of payload?.orderProducts){
+        this.updateProduct(op.product)
+      }
     },
 
     // transactions
@@ -205,6 +242,37 @@ export const useInventoryStore = defineStore('inventory', {
     updateAdjustment(payload: IStockAdjustment): void {
       const index = this.adjustments?.findIndex(item => item.uid === payload?.uid);
       if(index > -1) this.adjustments[index] = payload;
+    },
+
+    // Basket
+    addToBasket(uid: string, quantity: number): void {
+      const index = this.products?.findIndex(item => item.uid === uid);
+      const product = this.products[index];
+      const orderItem = {
+        product,
+        quantity
+      }
+
+      // if not in basket add
+      // if in basket modify quantity
+      const basketIndex = this.basket?.findIndex(oi => oi.product.uid === uid);
+      if(basketIndex == -1) {
+        this.basket.push(orderItem)
+      } else {
+        const count = this.basket[basketIndex].quantity;
+        this.basket[basketIndex].quantity = count + quantity;
+      }
+    },
+    udateBasket(uid: string, quantity: number): void {
+      // modify quantity
+      const basketIndex = this.basket?.findIndex(oi => oi.product.uid === uid);
+      this.basket[basketIndex].quantity = quantity;
+    },
+    removeFromBasket(uid: string): void {
+      this.basket = [...this.basket.filter(oi => oi.product.uid !== uid)]
+    },
+    clearBasket(): void {
+      this.basket = []
     },
 
   }

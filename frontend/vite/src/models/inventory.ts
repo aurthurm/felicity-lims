@@ -106,9 +106,9 @@ export interface IStockOrder {
     orderBy: IUser;
     departmentUid: string;
     department: IDepartment;
-    status: String;
-    remarks: String;
-    orderNumber: String;
+    status: string;
+    remarks: string;
+    orderNumber: string;
     createdAt: Date;
     createdByUid: string;
     createdBy: IUser;
@@ -125,6 +125,7 @@ export interface IStockOrderProduct {
     order: IStockOrder;
     price: number;
     quantity: number;
+    issue: number;
     createdAt: Date;
     createdByUid: string;
     createdBy: IUser;

@@ -1,13 +1,21 @@
-import { computed, defineComponent, reactive, ref } from 'vue';
+import { computed, defineComponent, reactive, ref, h } from 'vue';
 import DataTable from '../../components/datatable/DataTable.vue';
 import Drawer from '../../components/Drawer.vue';
+import Modal from '../../components/SimpleModal.vue';
 import StockProductForm from './StockProductForm.vue';
 import { useInventoryStore } from '../../stores';
+import { IStockProduct } from '../../models/inventory';
 
 const InventoryListing = defineComponent({
   name: 'stock-listing',
   setup(props, ctx) {
     const inventoryStore = useInventoryStore();
+
+    const choiceProduct = reactive({
+      product: {} as IStockProduct,
+      quantity: 0,
+    });
+    const openAddProduct = ref(false);
 
     const tableColumns = ref([
       {
@@ -96,6 +104,46 @@ const InventoryListing = defineComponent({
         sortBy: 'asc',
         hidden: false,
       },
+      {
+        name: 'Actions',
+        value: '',
+        sortable: false,
+        sortBy: 'asc',
+        hidden: false,
+        customRender: function (product, _) {
+          return h(
+            'div',
+            {
+              class: 'flex justify-between align-items-center',
+            },
+            [
+              h(
+                'button',
+                {
+                  type: 'button',
+                  class: 'bg-sky-800 text-white py-1 px-2 rounded-sm leading-none',
+                  innerHTML: '+ Basket',
+                  onClick: () => {
+                    choiceProduct.product = product;
+                    choiceProduct.quantity = 0;
+                    openAddProduct.value = true;
+                  },
+                },
+                [],
+              ),
+              h(
+                'button',
+                {
+                  type: 'button',
+                  class: 'bg-sky-800 text-white py-1 px-2 rounded-sm leading-none',
+                  innerHTML: 'Adjust',
+                },
+                [],
+              ),
+            ],
+          );
+        },
+      },
     ]);
 
     let productParams = reactive({
@@ -110,6 +158,8 @@ const InventoryListing = defineComponent({
       tableColumns,
       inventoryStore,
       openDrawer: ref(false),
+      openAddProduct,
+      choiceProduct,
       filterProducts: (opts: any) => {
         productParams.first = 50;
         productParams.before = '';
@@ -131,6 +181,13 @@ const InventoryListing = defineComponent({
           inventoryStore.productsPaging.totalCount +
           ' products',
       ),
+      validateMinMax: (event) => {
+        const value = Math.max(
+          0,
+          Math.min(choiceProduct.product.remaining ?? 0, Number(event.target.value)),
+        );
+        choiceProduct.quantity = value;
+      },
     };
   },
   render() {
@@ -171,6 +228,43 @@ const InventoryListing = defineComponent({
             footer: () => [<span>one</span>, <span>two</span>],
           }}
         </Drawer>
+        {this.openAddProduct && (
+          <Modal onClose={() => (this.openAddProduct = false)} contentWidth="w-1/4">
+            {{
+              header: () => <h3>{this.choiceProduct.product.name}</h3>,
+              body: () => {
+                return (
+                  <form action="post" class="p-1">
+                    <label class="flex justify-between items-center gap-4 mb-4">
+                      <span class="text-gray-700">Quantiy</span>
+                      <input
+                        class="form-input mt-1 block w-full"
+                        type="number"
+                        onChange={this.validateMinMax}
+                        v-model={this.choiceProduct.quantity}
+                        placeholder="Name ..."
+                      />
+                    </label>
+                    <hr />
+                    <button
+                      type="button"
+                      onClick={() => {
+                        this.inventoryStore.addToBasket(
+                          this.choiceProduct.product.uid,
+                          this.choiceProduct.quantity,
+                        );
+                        this.openAddProduct = false;
+                      }}
+                      class="-mb-4 w-full border border-sky-800 bg-sky-800 text-white rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-sky-800 focus:outline-none focus:shadow-outline"
+                    >
+                      Add to basket
+                    </button>
+                  </form>
+                );
+              },
+            }}
+          </Modal>
+        )}
       </>
     );
   },

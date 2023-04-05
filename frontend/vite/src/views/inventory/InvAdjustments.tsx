@@ -1,101 +1,100 @@
-import { defineComponent, computed, reactive, toRefs, ref, watch } from 'vue';
-import DataTable from "../../components/datatable/DataTable.vue";
+import { defineComponent, ref } from 'vue';
+import DataTable from '../../components/datatable/DataTable.vue';
 
 const InventoryAdjustments = defineComponent({
   name: 'stock-adjustments',
   setup(props, ctx) {
     const tableColumns = ref([
       {
-        name: "UID",
-        value: "uid",
+        name: 'UID',
+        value: 'uid',
         sortable: true,
-        sortBy: "asc",
+        sortBy: 'asc',
         defaultSort: true,
         showInToggler: false,
         hidden: true,
       },
       {
-        name: "ID",
-        value: "id",
+        name: 'ID',
+        value: 'id',
         sortable: false,
-        sortBy: "asc",
+        sortBy: 'asc',
         hidden: false,
       },
       {
-        name: "Product",
-        value: "name",
+        name: 'Product',
+        value: 'name',
         sortable: false,
-        sortBy: "asc",
+        sortBy: 'asc',
         hidden: false,
       },
       {
-        name: "Adjustment Type",
-        value: "issued",
+        name: 'Adjustment Type',
+        value: 'issued',
         sortable: false,
-        sortBy: "asc",
+        sortBy: 'asc',
         hidden: false,
       },
       {
-        name: "Adjustment",
-        value: "to",
+        name: 'Adjustment',
+        value: 'to',
         sortable: false,
-        sortBy: "asc",
+        sortBy: 'asc',
         hidden: false,
       },
       {
-        name: "Date Adjusted",
-        value: "batch",
+        name: 'Date Adjusted',
+        value: 'batch',
         sortable: false,
-        sortBy: "asc",
+        sortBy: 'asc',
         hidden: false,
       },
       {
-        name: "Remarks",
-        value: "size",
+        name: 'Remarks',
+        value: 'size',
         sortable: false,
-        sortBy: "asc",
+        sortBy: 'asc',
         hidden: false,
       },
       {
-        name: "Adjusted by",
-        value: "size",
+        name: 'Adjusted by',
+        value: 'size',
         sortable: false,
-        sortBy: "asc",
+        sortBy: 'asc',
         hidden: false,
-      }
-
+      },
     ]);
 
-
     return {
-      tableColumns
+      tableColumns,
     };
   },
   render() {
-    return (<>
-      <div></div>
-      <DataTable 
-      columns={this.tableColumns}
-      data={[]}
-      toggleColumns={false}
-      loading={false}
-      paginable={false}
-      pageMeta={{
-          fetchCount: 10,
-          hasNextPage: false,
-          countNone: "",
-      }}
-      searchable={false}
-      filterable={false}
-      filterMeta={{
-        defaultFilter: "",
-        filters: [],
-      }}
-      selectable={false}
-      allChecked={false}
-
-      ></DataTable>
-    </>);
+    return (
+      <>
+        <div></div>
+        <DataTable
+          columns={this.tableColumns}
+          data={[]}
+          toggleColumns={false}
+          loading={false}
+          paginable={false}
+          pageMeta={{
+            fetchCount: 10,
+            hasNextPage: false,
+            countNone: '',
+          }}
+          searchable={false}
+          filterable={false}
+          filterMeta={{
+            defaultFilter: '',
+            filters: [],
+          }}
+          selectable={false}
+          allChecked={false}
+        ></DataTable>
+      </>
+    );
   },
 });
 

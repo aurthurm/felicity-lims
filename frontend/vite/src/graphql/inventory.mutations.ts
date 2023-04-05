@@ -405,7 +405,6 @@ export const ADD_STOCK_ORDER = gql`
             departmentUid
             status
             orderNumber
-            remarks
         }
         orderProducts {
             uid
@@ -413,7 +412,6 @@ export const ADD_STOCK_ORDER = gql`
             orderUid
             price
             quantity
-            remarks
         }
       }
 
@@ -445,8 +443,26 @@ export const EDIT_STOCK_ORDER = gql`
             orderUid
             price
             quantity
-            remarks
         }
+      }
+
+      ... on OperationError {
+        __typename
+        error
+        suggestion
+      }
+    }
+  }
+`;
+
+export const SUBMIT_STOCK_ORDER = gql`
+  mutation SubmitStockOrder($uid: FelicityID!) {
+    submitStockOrder(uid:$uid) {
+      ... on StockOrderType {
+        __typename
+        uid
+        status
+        orderNumber
       }
 
       ... on OperationError {
@@ -495,11 +511,13 @@ export const ISSUE_STOCK_ORDER = gql`
         }
         orderProducts {
             uid
-            productUid
+            product {
+              uid
+              remaining
+            }
             orderUid
             price
             quantity
-            remarks
         }
       }
 

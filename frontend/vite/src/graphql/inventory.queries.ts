@@ -133,6 +133,51 @@ export const GET_ALL_STOCK_ITEMS = gql`
     }
 }`;
 
+// stock orders
+export const GET_ALL_STOCK_ORDERS = gql`
+query getAllStockOrders($first: Int!, $after: String, $text: String!, $sortBy: [String!] = ["uid"]) {
+    stockOrderAll(pageSize: $first, afterCursor: $after, text: $text, sortBy: $sortBy){
+        totalCount
+        pageInfo {
+            hasNextPage
+            hasPreviousPage
+            startCursor
+            endCursor
+        }
+        items {
+            uid
+            orderBy {
+                uid
+                firstName
+                lastName
+            }
+            department {
+                uid
+                name
+            }
+            status
+            orderNumber
+        }
+    }
+}`;
+
+
+export const GET_ALL_STOCK_ORDER_PRODUCTS = gql`
+query getAllStockOrderProducts($stockOrderUid: FelicityID!) {
+    stockOrderProductAll(stockOrderUid: $stockOrderUid){
+            uid
+            product {
+                uid
+                name
+                remaining
+            }
+            price
+            quantity
+    }
+}`;
+
+
+
 // transactions
 export const GET_ALL_STOCK_TRANSACTIONS = gql`
     query getAllStockTransactions($first: Int!, $after: String, $text: String!, $sortBy: [String!] = ["uid"]) {

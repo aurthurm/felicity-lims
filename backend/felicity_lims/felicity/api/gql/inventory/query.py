@@ -150,7 +150,7 @@ class InventoryQuery:
 
         _or_ = dict()
         if has_value_or_is_truthy(text):
-            arg_list = ["name__ilike"]
+            arg_list = ["order_number__ilike"]
             for _arg in arg_list:
                 _or_[_arg] = f"%{text}%"
 
