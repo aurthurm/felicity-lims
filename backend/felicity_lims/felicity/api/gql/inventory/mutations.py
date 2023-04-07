@@ -750,6 +750,12 @@ class InventoryMutations:
                 error=f"You can only delete a StockOrder under preparation"
             )
 
+        order_products = await models.StockOrderProduct.get_all(
+            order_uid=stock_order.uid
+        )
+        for op in order_products:
+            await op.delete()
+
         await stock_order.delete()
         return types.StockOrderType(**stock_order.marshal_simple())
 

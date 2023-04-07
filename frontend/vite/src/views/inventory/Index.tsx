@@ -46,6 +46,18 @@ const InventoryHome = defineComponent({
       text: '',
       sortBy: ['uid'],
     });
+    inventoryStore.fetchTransactions({
+      first: 50,
+      after: '',
+      text: '',
+      sortBy: ['uid'],
+    });
+    inventoryStore.fetchAdjustments({
+      first: 50,
+      after: '',
+      text: '',
+      sortBy: ['uid'],
+    });
 
     const currentTab = ref('dashboard');
     const inventoryTabs = ref([

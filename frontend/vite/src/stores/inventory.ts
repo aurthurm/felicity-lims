@@ -25,8 +25,10 @@ export const useInventoryStore = defineStore('inventory', {
         stockItemsPaging: {},
         fetchingItems: false,
         transactions: [],
+        transactionsPaging: {},
         fetchingTransactions: false,
         adjustments: [],
+        adjustmentsPaging: {},
         fetchingAdjustments: false,
         basket: [],
         stockOrders: [],
@@ -48,8 +50,10 @@ export const useInventoryStore = defineStore('inventory', {
         stockItemsPaging: IPaginationMeta,
         fetchingItems: boolean,
         transactions: IStockTransaction[],
+        transactionsPaging: IPaginationMeta,
         fetchingTransactions: boolean,
         adjustments: IStockAdjustment[],
+        adjustmentsPaging: IPaginationMeta,
         fetchingAdjustments: boolean,
         basket: any[],
         stockOrders: IStockOrder[],
@@ -214,9 +218,11 @@ export const useInventoryStore = defineStore('inventory', {
     async fetchTransactions(params){
       this.fetchingTransactions = true;
       await withClientQuery(GET_ALL_STOCK_TRANSACTIONS, params, "stockTransactionAll")
-            .then((transactions: IStockTransaction[]) => {
+            .then((paging: IPagination<IStockTransaction>) => {
               this.fetchingTransactions= false
-              this.transactions = transactions
+              this.transactions = paging.items ?? [];
+              this.transactionsPaging['totalCount'] = paging.totalCount;
+              this.transactionsPaging['pageInfo'] = paging.pageInfo;
             }).catch((err) => this.fetchingTransactions=false)
     },
     addTransaction(payload): void {
@@ -231,9 +237,11 @@ export const useInventoryStore = defineStore('inventory', {
     async fetchAdjustments(params){
       this.fetchingAdjustments = true;
       await withClientQuery(GET_ALL_STOCK_ADJUSTMENTS, params, "stockAdjustmentAll")
-            .then((adjustments: IStockAdjustment[]) => {
+            .then((paging: IPagination<IStockAdjustment>) => {
               this.fetchingAdjustments= false
-              this.adjustments = adjustments
+              this.adjustments = paging.items ?? [];
+              this.adjustmentsPaging['totalCount'] = paging.totalCount;
+              this.adjustmentsPaging['pageInfo'] = paging.pageInfo;
             }).catch((err) => this.fetchingAdjustments=false)
     },
     addAdjustment(payload): void {

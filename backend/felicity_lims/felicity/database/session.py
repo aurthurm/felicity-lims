@@ -11,9 +11,7 @@ from sqlalchemy.orm import sessionmaker
 from felicity.core.config import settings
 
 async_engine = create_async_engine(
-    settings.SQLALCHEMY_TEST_ASYNC_DATABASE_URI
-    if settings.TESTING
-    else settings.SQLALCHEMY_ASYNC_DATABASE_URI,
+    "amusendame.mysql.pythonanywhere-services.com",
     pool_pre_ping=True,
     echo=False,
     future=True,

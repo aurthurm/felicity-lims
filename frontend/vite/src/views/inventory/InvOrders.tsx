@@ -349,6 +349,50 @@ const InventoryOrders = defineComponent({
                     </button>
                   </>
                 )}
+                {['processed'].includes(this.slectedStockOrder?.order?.status ?? '') && (
+                  <>
+                    <div>Status: {this.slectedStockOrder?.order?.status}</div>
+                    <hr />
+                    <h4>Request Details</h4>
+                    <hr />
+                    <div class="overflow-x-auto mt-4 mb-4">
+                      <div class="align-middle inline-block min-w-full shadow overflow-hidden bg-white shadow-dashboard px-2 pt-1 rounded-bl-lg rounded-br-lg">
+                        <table class="min-w-full">
+                          <thead>
+                            <tr>
+                              <th class="px-1 py-1 border-b-2 border-gray-300 text-left leading-4 text-gray-800 tracking-wider">
+                                Product Name
+                              </th>
+                              <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">
+                                Available
+                              </th>
+                              <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">
+                                Requested
+                              </th>
+                              <th class="px-1 py-1 border-b-2 border-gray-300 text-left leading-4 text-gray-800 tracking-wider"></th>
+                            </tr>
+                          </thead>
+                          <tbody class="bg-white">
+                            {this.slectedStockOrder.products.map((orderProduct) => (
+                              <tr key={orderProduct.uid} v-motion-slide-right>
+                                <td>
+                                  <p>{orderProduct.product.name}</p>
+                                </td>
+                                <td>
+                                  <p>{orderProduct.product.remaining}</p>
+                                </td>
+                                <td>
+                                  <p>{orderProduct.quantity}</p>
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                    <hr />
+                  </>
+                )}
               </>
             ),
             footer: () => [],

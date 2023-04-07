@@ -191,23 +191,30 @@ export const GET_ALL_STOCK_TRANSACTIONS = gql`
             }
             items {    
                 uid
-                productUid
+                product{
+                    uid
+                    name
+                }
                 issued
-                departmentUid
-                date_issued
-                transactionByUid
+                department{
+                    uid
+                    name
+                }
+                dateIssued
+                transactionBy {
+                    uid 
+                    firstName
+                    lastName
+                }
                 createdAt
-                createdByUid
-                updatedAt
-                updatedByUid
             }
     }
 }`;
 
 // adjustments
 export const GET_ALL_STOCK_ADJUSTMENTS = gql`
-    query getAllStockProducts($first: Int!, $after: String, $text: String!, $sortBy: [String!] = ["uid"]) {
-        stockProductAll(pageSize: $first, afterCursor: $after, text: $text, sortBy: $sortBy){
+    query getAllStockAdustments($first: Int!, $after: String, $text: String!, $sortBy: [String!] = ["uid"]) {
+        stockAdjustmentAll(pageSize: $first, afterCursor: $after, text: $text, sortBy: $sortBy){
             totalCount
             pageInfo {
                 hasNextPage
@@ -222,7 +229,7 @@ export const GET_ALL_STOCK_ADJUSTMENTS = gql`
                 adjust
                 adjustmentDate
                 remarks
-                adjustment_by_uid
+                adjustmentByUid
                 createdAt
                 createdByUid
                 updatedAt
