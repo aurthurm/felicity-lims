@@ -562,7 +562,7 @@ class DBModel(AllFeaturesMixin):
 
     @classmethod
     def decode_cursor(cls, cursor):
-        return decodb64decode(cursor.encode("ascii")).decode("utf8")
+        return b64encode(cursor.encode("ascii")).decode("utf8")
 
     @classmethod
     def encode_cursor(cls, identifier: Any):
