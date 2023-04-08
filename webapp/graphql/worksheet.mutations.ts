@@ -55,7 +55,7 @@ export const ADD_WORKSHEET_TEMPLATE= gql`
 }`;
 
 export const EDIT_WORKSHEET_TEMPLATE= gql`
-  mutation EditWorkSheetTemplate($uid:Int!, $payload: WorksheetTemplateInputType!){
+  mutation EditWorkSheetTemplate($uid:FelicityID!, $payload: WorksheetTemplateInputType!){
   updateWorksheetTemplate(uid: $uid, payload: $payload)
   {
     ... on WorkSheetTemplateType {
@@ -110,7 +110,7 @@ export const EDIT_WORKSHEET_TEMPLATE= gql`
 
 
 export const ADD_WORKSHEET = gql`
-  mutation AddWorkSheet($analystUid:Int!, $templateUid: FelicityID!, $count: Int){
+  mutation AddWorkSheet($analystUid:FelicityID!, $templateUid: FelicityID!, $count: Int){
     createWorksheet(analystUid: $analystUid, templateUid: $templateUid, count:$count)
     {
       ... on WorksheetListingType {
@@ -154,7 +154,7 @@ export const ADD_WORKSHEET = gql`
 
 
 export const WORKSHEET_UPDATE = gql`
-  mutation UpdateWorkSheet ($worksheetUid:Int!, $analystUid: FelicityID, $instrumentUid: FelicityID, $methodUid: FelicityID, $action: String, $samples: [Int!]) {
+  mutation UpdateWorkSheet ($worksheetUid:FelicityID!, $analystUid: FelicityID, $instrumentUid: FelicityID, $methodUid: FelicityID, $action: String, $samples: [FelicityID!]) {
     updateWorksheet(worksheetUid: $worksheetUid, analystUid: $analystUid, instrumentUid:  $instrumentUid, methodUid: $methodUid, action: $action, samples: $samples )
     {
       ... on WorkSheetType {
@@ -188,7 +188,7 @@ export const WORKSHEET_UPDATE = gql`
 
 
 export const EDIT_WORKSHEET_APPLY_TEMPLATE= gql`
-  mutation EditWorkSheetApplyTemplate($worksheetUid:Int!, $templateUid: FelicityID!){
+  mutation EditWorkSheetApplyTemplate($worksheetUid:FelicityID!, $templateUid: FelicityID!){
     updateWorksheetApplyTemplate(worksheetUid: $worksheetUid, templateUid: $templateUid)
   {
       ... on WorkSheetType {
@@ -222,7 +222,7 @@ export const EDIT_WORKSHEET_APPLY_TEMPLATE= gql`
 
 
 export const WORKSHEET_MANUAL_ASSIGN= gql`
-  mutation ManualyAssignWorsheet($uid:Int!, $qcTemplateUid: FelicityID!, $analysesUids: [Int!]!){
+  mutation ManualyAssignWorsheet($uid:FelicityID!, $qcTemplateUid: FelicityID!, $analysesUids: [FelicityID!]!){
     updateWorksheetManualAssign(uid: $uid, qcTemplateUid: $qcTemplateUid, analysesUids: $analysesUids)
   {
       ... on WorkSheetType {

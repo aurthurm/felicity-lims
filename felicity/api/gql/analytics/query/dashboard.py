@@ -27,14 +27,14 @@ def group_exists(val):
 async def get_username(val):
     if val == "unknown":
         return val
-    user = await User.get(uid=int(val))
+    user = await User.get(uid=val)
     return user.auth.user_name
 
 
 async def get_instrument(val):
     if val == "unknown":
         return val
-    instrument = await Instrument.get(uid=int(val))
+    instrument = await Instrument.get(uid=val)
     return instrument.name
 
 
@@ -54,7 +54,8 @@ async def count_sample_group_by_status(info) -> types.GroupedCounts:
 
     stats = []
     for row in results:
-        stats.append(types.GroupCount(group=group_exists(row[0]), count=row[1]))
+        stats.append(types.GroupCount(
+            group=group_exists(row[0]), count=row[1]))
 
     return types.GroupedCounts(data=stats)
 
@@ -72,7 +73,8 @@ async def count_analyte_group_by_status(info) -> types.GroupedCounts:
 
     stats = []
     for row in results:
-        stats.append(types.GroupCount(group=group_exists(row[0]), count=row[1]))
+        stats.append(types.GroupCount(
+            group=group_exists(row[0]), count=row[1]))
 
     return types.GroupedCounts(data=stats)
 
@@ -102,18 +104,21 @@ async def count_extras_group_by_status(info) -> types.GroupedCounts:
     stats = []
     for s_row in sample_results:
         stats.append(
-            types.GroupCount(group=f"sample {group_exists(s_row[0])}", count=s_row[1])
+            types.GroupCount(
+                group=f"sample {group_exists(s_row[0])}", count=s_row[1])
         )
 
     for r_row in result_results:
         stats.append(
-            types.GroupCount(group=f"analysis {group_exists(r_row[0])}", count=r_row[1])
+            types.GroupCount(
+                group=f"analysis {group_exists(r_row[0])}", count=r_row[1])
         )
 
     if retests:
         val = retests[0][0]
         if val > 0:
-            stats.append(types.GroupCount(group="analysis retested", count=val))
+            stats.append(types.GroupCount(
+                group="analysis retested", count=val))
 
     return types.GroupedCounts(data=stats)
 
@@ -130,7 +135,8 @@ async def count_worksheet_group_by_status(info) -> types.GroupedCounts:
 
     stats = []
     for row in results:
-        stats.append(types.GroupCount(group=group_exists(row[0]), count=row[1]))
+        stats.append(types.GroupCount(
+            group=group_exists(row[0]), count=row[1]))
 
     return types.GroupedCounts(data=stats)
 
@@ -141,13 +147,15 @@ async def count_analyte_group_by_instrument(
 ) -> types.GroupedCounts:
     analytics = SampleAnalyticsInit(AnalysisResult)
     results = await analytics.get_counts_group_by(
-        "instrument_uid", ("date_submitted", start_date), ("date_submitted", end_date)
+        "instrument_uid", ("date_submitted",
+                           start_date), ("date_submitted", end_date)
     )
 
     stats = []
     for row in results:
         stats.append(
-            types.GroupCount(group=get_instrument(group_exists(row[0])), count=row[1])
+            types.GroupCount(group=get_instrument(
+                group_exists(row[0])), count=row[1])
         )
 
     return types.GroupedCounts(data=stats)
@@ -162,41 +170,48 @@ async def count_sample_group_by_action(
         "created_by_uid", ("created_at", start_date), ("created_at", end_date)
     )
     submitted = await analytics.get_counts_group_by(
-        "submitted_by_uid", ("date_submitted", start_date), ("date_submitted", end_date)
+        "submitted_by_uid", ("date_submitted",
+                             start_date), ("date_submitted", end_date)
     )
     verified = await analytics.get_counts_group_by(
-        "verified_by_uid", ("date_verified", start_date), ("date_verified", end_date)
+        "verified_by_uid", ("date_verified",
+                            start_date), ("date_verified", end_date)
     )
     published = await analytics.get_counts_group_by(
-        "published_by_uid", ("date_published", start_date), ("date_published", end_date)
+        "published_by_uid", ("date_published",
+                             start_date), ("date_published", end_date)
     )
 
     stats = []
     registration = types.GroupData(group="registration", counts=[])
     for row in created:
         registration.counts.append(
-            types.GroupCount(group=get_username(group_exists(row[0])), count=row[1])
+            types.GroupCount(group=get_username(
+                group_exists(row[0])), count=row[1])
         )
     stats.append(registration)
 
     submission = types.GroupData(group="submission", counts=[])
     for row in submitted:
         submission.counts.append(
-            types.GroupCount(group=get_username(group_exists(row[0])), count=row[1])
+            types.GroupCount(group=get_username(
+                group_exists(row[0])), count=row[1])
         )
     stats.append(submission)
 
     verification = types.GroupData(group="verification", counts=[])
     for row in verified:
         verification.counts.append(
-            types.GroupCount(group=get_username(group_exists(row[0])), count=row[1])
+            types.GroupCount(group=get_username(
+                group_exists(row[0])), count=row[1])
         )
     stats.append(verification)
 
     publication = types.GroupData(group="publication", counts=[])
     for row in published:
         publication.counts.append(
-            types.GroupCount(group=get_username(group_exists(row[0])), count=row[1])
+            types.GroupCount(group=get_username(
+                group_exists(row[0])), count=row[1])
         )
     stats.append(publication)
 

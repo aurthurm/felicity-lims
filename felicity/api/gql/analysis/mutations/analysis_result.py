@@ -88,7 +88,7 @@ async def submit_analysis_results(
         action=actions.RESULT_SUBMIT,
         category=categories.RESULT,
         priority=priorities.MEDIUM,
-        job_id=0,
+        job_id="0",
         status=job_states.PENDING,
         creator_uid=felicity_user.uid,
         data=an_results,
@@ -112,7 +112,7 @@ async def submit_analysis_results(
 
 @strawberry.mutation(permission_classes=[CanVerifyAnalysisResult])
 async def verify_analysis_results(
-    info, analyses: List[int], source_object: str, source_object_uid: FelicityID
+    info, analyses: List[str], source_object: str, source_object_uid: FelicityID
 ) -> AnalysisResultOperationResponse:
     is_authenticated, felicity_user = await auth_from_info(info)
     verify_user_auth(
@@ -126,14 +126,15 @@ async def verify_analysis_results(
 
     # set status of these analysis_results to PROCESSING
     await result_models.AnalysisResult.bulk_update_with_mappings(
-        [{"uid": uid, "status": analysis_states.result.APPROVING} for uid in analyses]
+        [{"uid": uid, "status": analysis_states.result.APPROVING}
+            for uid in analyses]
     )
 
     job_schema = job_schemas.JobCreate(
         action=actions.RESULT_VERIFY,
         category=categories.RESULT,
         priority=priorities.MEDIUM,
-        job_id=0,
+        job_id="0",
         status=job_states.PENDING,
         creator_uid=felicity_user.uid,
         data=analyses,
@@ -156,7 +157,7 @@ async def verify_analysis_results(
 
 
 @strawberry.mutation
-async def retract_analysis_results(info, analyses: List[int]) -> AnalysisResultResponse:
+async def retract_analysis_results(info, analyses: List[str]) -> AnalysisResultResponse:
     is_authenticated, felicity_user = await auth_from_info(info)
     verify_user_auth(
         is_authenticated,
@@ -201,7 +202,7 @@ async def retract_analysis_results(info, analyses: List[int]) -> AnalysisResultR
 
 
 @strawberry.mutation
-async def retest_analysis_results(info, analyses: List[int]) -> AnalysisResultResponse:
+async def retest_analysis_results(info, analyses: List[str]) -> AnalysisResultResponse:
     is_authenticated, felicity_user = await auth_from_info(info)
     verify_user_auth(
         is_authenticated,
@@ -223,7 +224,7 @@ async def retest_analysis_results(info, analyses: List[int]) -> AnalysisResultRe
 
 
 @strawberry.mutation
-async def cancel_analysis_results(info, analyses: List[int]) -> AnalysisResultResponse:
+async def cancel_analysis_results(info, analyses: List[str]) -> AnalysisResultResponse:
     is_authenticated, felicity_user = await auth_from_info(info)
     verify_user_auth(
         is_authenticated,
@@ -257,7 +258,7 @@ async def cancel_analysis_results(info, analyses: List[int]) -> AnalysisResultRe
 
 @strawberry.mutation
 async def re_instate_analysis_results(
-    info, analyses: List[int]
+    info, analyses: List[str]
 ) -> AnalysisResultResponse:
     is_authenticated, felicity_user = await auth_from_info(info)
     verify_user_auth(

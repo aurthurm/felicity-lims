@@ -23,9 +23,9 @@ logger = logging.getLogger(__name__)
 @strawberry.input
 class QCSetInputType:
     qcTemplateUid: Optional[FelicityID]
-    qcLevels: List[int]
-    analysisProfiles: List[int]
-    analysisServices: List[int]
+    qcLevels: List[FelicityID]
+    analysisProfiles: List[FelicityID]
+    analysisServices: List[FelicityID]
 
 
 @strawberry.type
@@ -38,8 +38,8 @@ class CreateQCSetData:
 class QCTemplateInputType:
     name: str
     description: str = ""
-    departments: Optional[List[int]] = None
-    levels: List[int] = None
+    departments: Optional[List[FelicityID]] = None
+    levels: List[FelicityID] = None
 
 
 QCSetResponse = strawberry.union(

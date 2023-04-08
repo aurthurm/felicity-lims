@@ -46,7 +46,7 @@ class ARSampleInputType:
 @strawberry.input
 class SampleRejectInputType:
     uid: FelicityID
-    reasons: List[int]
+    reasons: List[FelicityID]
     other: Optional[str] = ""
 
 
@@ -254,7 +254,7 @@ async def create_analysis_request(
 
 
 @strawberry.mutation
-async def clone_samples(info, samples: List[int]) -> SampleActionResponse:
+async def clone_samples(info, samples: List[FelicityID]) -> SampleActionResponse:
     is_authenticated, felicity_user = await auth_from_info(info)
     verify_user_auth(
         is_authenticated, felicity_user, "Only Authenticated user can clone samples"
@@ -298,7 +298,7 @@ async def clone_samples(info, samples: List[int]) -> SampleActionResponse:
 
 
 @strawberry.mutation
-async def cancel_samples(info, samples: List[int]) -> ResultedSampleActionResponse:
+async def cancel_samples(info, samples: List[FelicityID]) -> ResultedSampleActionResponse:
     is_authenticated, felicity_user = await auth_from_info(info)
     verify_user_auth(
         is_authenticated, felicity_user, "Only Authenticated user can cancel samples"
@@ -329,7 +329,7 @@ async def cancel_samples(info, samples: List[int]) -> ResultedSampleActionRespon
 
 
 @strawberry.mutation
-async def re_instate_samples(info, samples: List[int]) -> ResultedSampleActionResponse:
+async def re_instate_samples(info, samples: List[FelicityID]) -> ResultedSampleActionResponse:
     is_authenticated, felicity_user = await auth_from_info(info)
     verify_user_auth(
         is_authenticated,
@@ -355,7 +355,7 @@ async def re_instate_samples(info, samples: List[int]) -> ResultedSampleActionRe
 
 
 @strawberry.mutation
-async def receive_samples(info, samples: List[int]) -> ResultedSampleActionResponse:
+async def receive_samples(info, samples: List[FelicityID]) -> ResultedSampleActionResponse:
     is_authenticated, felicity_user = await auth_from_info(info)
     verify_user_auth(
         is_authenticated,
@@ -381,7 +381,7 @@ async def receive_samples(info, samples: List[int]) -> ResultedSampleActionRespo
 
 
 @strawberry.mutation(permission_classes=[CanVerifySample])
-async def verify_samples(info, samples: List[int]) -> SampleActionResponse:
+async def verify_samples(info, samples: List[FelicityID]) -> SampleActionResponse:
     is_authenticated, felicity_user = await auth_from_info(info)
     verify_user_auth(
         is_authenticated, felicity_user, "Only Authenticated user can verify samples"
@@ -476,7 +476,7 @@ async def publish_samples(
         action=actions.IMPRESS_REPORT,
         category=categories.IMPRESS,
         priority=priorities.NORMAL,
-        job_id=0,
+        job_id="0",
         status=job_states.PENDING,
         creator_uid=felicity_user.uid,
         data=data,
@@ -498,7 +498,7 @@ async def publish_samples(
 
 
 @strawberry.mutation
-async def print_samples(info, samples: List[int]) -> SampleActionResponse:
+async def print_samples(info, samples: List[FelicityID]) -> SampleActionResponse:
     is_authenticated, felicity_user = await auth_from_info(info)
     verify_user_auth(
         is_authenticated,
@@ -524,7 +524,7 @@ async def print_samples(info, samples: List[int]) -> SampleActionResponse:
 
 
 @strawberry.mutation
-async def invalidate_samples(info, samples: List[int]) -> SampleActionResponse:
+async def invalidate_samples(info, samples: List[FelicityID]) -> SampleActionResponse:
     is_authenticated, felicity_user = await auth_from_info(info)
     verify_user_auth(
         is_authenticated,

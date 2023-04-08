@@ -29,7 +29,7 @@ MessageResponse = strawberry.union(
 class MessageMutations:
     @strawberry.mutation
     async def send_message(
-        self, info, recipients: List[int], body: str
+        self, info, recipients: List[FelicityID], body: str
     ) -> MessageResponse:
 
         inspector = inspect.getargvalues(inspect.currentframe())

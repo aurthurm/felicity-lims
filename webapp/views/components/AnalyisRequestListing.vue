@@ -7,7 +7,7 @@ import { useSampleStore } from "../../stores";
 
 const props = defineProps({
   target: String,
-  targetUid: Number,
+  targetUid: String,
 });
 
 const { targetUid, target } = toRefs(props);
@@ -42,52 +42,33 @@ function profileAnalysesText(profiles: any[], analyses: any[]): string {
 <template>
   <div class="overflow-x-auto mt-4">
     <div
-      class="align-middle inline-block min-w-full shadow overflow-hidden bg-white shadow-dashboard p-2 rounded-bl-sm rounded-br-sm"
-    >
+      class="align-middle inline-block min-w-full shadow overflow-hidden bg-white shadow-dashboard p-2 rounded-bl-sm rounded-br-sm">
       <table class="min-w-full">
         <thead>
           <tr>
-            <th
-              class="px-1 py-1 border-b-2 border-gray-300 text-left leading-4 text-gray-800 tracking-wider"
-            ></th>
-            <th
-              class="px-1 py-1 border-b-2 border-gray-300 text-left leading-4 text-gray-800 tracking-wider"
-            >
+            <th class="px-1 py-1 border-b-2 border-gray-300 text-left leading-4 text-gray-800 tracking-wider"></th>
+            <th class="px-1 py-1 border-b-2 border-gray-300 text-left leading-4 text-gray-800 tracking-wider">
               Sampe ID
             </th>
-            <th
-              class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider"
-            >
+            <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">
               Test(s)
             </th>
-            <th
-              class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider"
-            >
+            <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">
               Patient
             </th>
-            <th
-              class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider"
-            >
+            <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">
               Client Patient ID
             </th>
-            <th
-              class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider"
-            >
+            <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">
               Client
             </th>
-            <th
-              class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider"
-            >
+            <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">
               Created
             </th>
-            <th
-              class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider"
-            >
+            <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">
               Creator
             </th>
-            <th
-              class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider"
-            >
+            <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">
               Status
             </th>
             <th class="px-1 py-1 border-b-2 border-gray-300"></th>
@@ -95,10 +76,7 @@ function profileAnalysesText(profiles: any[], analyses: any[]): string {
         </thead>
         <tbody class="bg-white" v-for="request in analysisRequests" :key="request.uid">
           <tr class="bg-gray-200" v-motion-slide-left>
-            <td
-              colspan="10"
-              class="px-1 py-1 whitespace-no-wrap border-b border-gray-400"
-            >
+            <td colspan="10" class="px-1 py-1 whitespace-no-wrap border-b border-gray-400">
               <div class="flex items-center">
                 <div class="text-sm leading-5 text-gray-800">
                   {{ request.clientRequestId }}
@@ -108,29 +86,23 @@ function profileAnalysesText(profiles: any[], analyses: any[]): string {
           </tr>
           <tr v-for="sample in request.samples" :key="sample.uid" v-motion-slide-right>
             <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-              <span
-                v-if="sample.priority! < 1"
-                :class="[
-                                    'font-small',
-                                    { 'text-orange-600': sample.priority! == 0 },
-                                ]"
-              >
+              <span v-if="sample.priority! < 1" :class="[
+                'font-small',
+                { 'text-orange-600': sample.priority! == 0 },
+              ]">
                 <i class="fa fa-star"></i>
               </span>
             </td>
             <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
               <div class="flex items-center">
                 <div class="font-semibold">
-                  <router-link
-                    :to="{
-                      name: 'sample-detail',
-                      params: {
-                        patientUid: request.patient?.uid,
-                        sampleUid: sample?.uid,
-                      },
-                    }"
-                    >{{ sample.sampleId }}</router-link
-                  >
+                  <router-link :to="{
+                    name: 'sample-detail',
+                    params: {
+                      patientUid: request.patient?.uid,
+                      sampleUid: sample?.uid,
+                    },
+                  }">{{ sample.sampleId }}</router-link>
                 </div>
               </div>
             </td>
@@ -163,24 +135,16 @@ function profileAnalysesText(profiles: any[], analyses: any[]): string {
               </div>
             </td>
             <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-              <button
-                type="button"
-                class="bg-cyan-600 text-white p-1 rounded-sm leading-none"
-              >
+              <button type="button" class="bg-cyan-600 text-white p-1 rounded-sm leading-none">
                 {{ sample.status }}
               </button>
             </td>
-            <td
-              class="px-1 py-1 whitespace-no-wrap text-right border-b border-gray-500 text-sm leading-5"
-            >
-              <router-link
-                :to="{
-                  name: 'sample-detail',
-                  params: { patientUid: request.patient?.uid, sampleUid: sample?.uid },
-                }"
-                class="px-2 py-1 mr-2 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
-                >View</router-link
-              >
+            <td class="px-1 py-1 whitespace-no-wrap text-right border-b border-gray-500 text-sm leading-5">
+              <router-link :to="{
+                name: 'sample-detail',
+                params: { patientUid: request.patient?.uid, sampleUid: sample?.uid },
+              }"
+                class="px-2 py-1 mr-2 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none">View</router-link>
             </td>
           </tr>
         </tbody>

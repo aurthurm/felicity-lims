@@ -45,7 +45,7 @@ export const EDIT_SAMPLE_TYPE= gql`
 `;
 
 export const REINSTATE_SAMPLES = gql`
-  mutation ReInstateSamples ($samples: [Int!]!) {
+  mutation ReInstateSamples ($samples: [String!]!) {
     reInstateSamples(samples: $samples){
       ... on ResultedSampleListingType{
         __typename
@@ -65,7 +65,7 @@ export const REINSTATE_SAMPLES = gql`
 `;
 
 export const CLONE_SAMPLES = gql`
-  mutation CloneSamples ($samples: [Int!]!) {
+  mutation CloneSamples ($samples: [String!]!) {
     cloneSamples(samples: $samples){
       ... on SampleListingType{
         __typename
@@ -101,7 +101,7 @@ export const CLONE_SAMPLES = gql`
 `;
 
 export const CANCEL_SAMPLES = gql`
-  mutation CancelSamples ($samples: [Int!]!) {
+  mutation CancelSamples ($samples: [String!]!) {
     cancelSamples(samples: $samples){
       ... on ResultedSampleListingType{
         __typename
@@ -121,7 +121,7 @@ export const CANCEL_SAMPLES = gql`
 `;
 
 export const RECEIVE_SAMPLES = gql`
-  mutation ReceiveSamples ($samples: [Int!]!) {
+  mutation ReceiveSamples ($samples: [String!]!) {
     receiveSamples(samples: $samples){
       ... on ResultedSampleListingType{
         __typename
@@ -159,7 +159,7 @@ export const PUBLISH_SAMPLES = gql`
 
 
 export const PRINT_SAMPLES = gql`
-  mutation PrintSamples ($samples: [Int!]!) {
+  mutation PrintSamples ($samples: [String!]!) {
     printSamples(samples: $samples){
       ... on SampleListingType{
         __typename
@@ -179,7 +179,7 @@ export const PRINT_SAMPLES = gql`
 `;
 
 export const INVALIDATE_SAMPLES = gql`
-  mutation InvalidateSamples ($samples: [Int!]!) {
+  mutation InvalidateSamples ($samples: [String!]!) {
     invalidateSamples(samples: $samples){
       ... on SampleListingType{
         __typename
@@ -199,7 +199,7 @@ export const INVALIDATE_SAMPLES = gql`
 `;
 
 export const VERIFY_SAMPLES = gql`
-  mutation VerifySamples ($samples: [Int!]!) {
+  mutation VerifySamples ($samples: [String!]!) {
     verifySamples(samples: $samples){
       ... on SampleListingType{
         __typename
@@ -805,7 +805,7 @@ export const SUBMIT_ANALYSIS_RESULTS = gql`
 `; 
 
 export const CANCEL_ANALYSIS_RESULTS = gql`
-  mutation CancelAnalysisResults ($analyses: [Int!]!) {
+  mutation CancelAnalysisResults ($analyses: [String!]!) {
     cancelAnalysisResults(analyses: $analyses){
       ... on ResultListingType {
         results {
@@ -824,7 +824,7 @@ export const CANCEL_ANALYSIS_RESULTS = gql`
 `; 
 
 export const REINSTATE_ANALYSIS_RESULTS = gql`
-  mutation ReInstateAnalysisResults ($analyses: [Int!]!) {
+  mutation ReInstateAnalysisResults ($analyses: [String!]!) {
     reInstateAnalysisResults(analyses: $analyses){      
       ... on ResultListingType {
         results {
@@ -843,7 +843,7 @@ export const REINSTATE_ANALYSIS_RESULTS = gql`
 `;
 
 export const VERIFY_ANALYSIS_RESULTS = gql`
-  mutation VerifyAnalysisResults ($analyses: [Int!]!, $sourceObject: String!, $sourceObjectUid: FelicityID!) {
+  mutation VerifyAnalysisResults ($analyses: [String!]!, $sourceObject: String!, $sourceObjectUid: FelicityID!) {
     verifyAnalysisResults(analyses: $analyses, sourceObject: $sourceObject, sourceObjectUid: $sourceObjectUid){
       ... on OperationSuccess {
         message
@@ -859,7 +859,7 @@ export const VERIFY_ANALYSIS_RESULTS = gql`
 `; 
  
 export const RETRACT_ANALYSIS_RESULTS = gql`
-  mutation RetractAnalysisResults ($analyses: [Int!]!) {
+  mutation RetractAnalysisResults ($analyses: [String!]!) {
     retractAnalysisResults(analyses: $analyses){
       ... on ResultListingType {
         results {
@@ -918,7 +918,7 @@ export const RETRACT_ANALYSIS_RESULTS = gql`
 `;
 
 export const RETEST_ANALYSIS_RESULTS = gql`
-  mutation RetestAnalysisResults ($analyses: [Int!]!) {
+  mutation RetestAnalysisResults ($analyses: [String!]!) {
     retestAnalysisResults(analyses: $analyses){
       ... on ResultListingType {
         results {

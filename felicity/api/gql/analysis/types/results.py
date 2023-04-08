@@ -40,7 +40,7 @@ class AnalysisResultType:
     cancelled_by_uid: Optional[FelicityID]
     cancelled_by: Optional[UserType]
     retest: bool
-    parent_id: Optional[int]
+    parent_id: Optional[FelicityID]
     parent: Optional["AnalysisResultType"]
     reportable: bool
     status: Optional[str]

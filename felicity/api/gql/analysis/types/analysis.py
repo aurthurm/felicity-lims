@@ -244,7 +244,7 @@ class SampleType:  # for Sample
     due_date: Optional[datetime]
     rejection_reasons: Optional[List[RejectionReasonType]]
     internal_use: bool
-    parent_id: Optional[int]
+    parent_id: Optional[FelicityID]
     parent: Optional["SampleType"]
     # QC Samples
     qc_set_uid: Optional[FelicityID]

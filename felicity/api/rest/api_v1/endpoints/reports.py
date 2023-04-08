@@ -74,7 +74,7 @@ async def request_report_generation(
 @router.delete("/{report_uid}", response_model=an_schema.ReportMetaDeleted)
 async def delete_report(
     *,
-    report_uid: int,
+    report_uid: str,
     current_user: user_models.User = Depends(deps.get_current_active_user),
 ):
     report: models.ReportMeta = await models.ReportMeta.get(uid=report_uid)

@@ -10,6 +10,8 @@ from felicity.core.uid_gen import FelicityIDType
 #
 
 # Shared properties
+
+
 class SampleTypeBase(BaseAuditModel):
     name: Optional[str] = None
     description: Optional[str] = None
@@ -565,7 +567,7 @@ class RejectionReasonInDB(RejectionReasonBaseInDB):
 # Shared properties
 class AnalysisResultBase(BaseAuditModel):
     analysis_uid: Optional[FelicityIDType] = None
-    parent_id: Optional[int] = None
+    parent_id: Optional[FelicityIDType] = None
     sample_uid: Optional[FelicityIDType] = None
     instrument_uid: Optional[FelicityIDType] = None
     method_uid: Optional[FelicityIDType] = None

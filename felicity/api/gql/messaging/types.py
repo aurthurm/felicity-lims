@@ -31,7 +31,7 @@ class MessageType:
     body: str
     viewers: Optional[List[UserType]]
     deleted_by: Optional[List[UserType]]
-    parent_id: int
+    parent_id: str
     parent: Optional["MessageType"]
     left: int
     right: int

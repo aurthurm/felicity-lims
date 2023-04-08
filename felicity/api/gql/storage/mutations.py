@@ -402,7 +402,8 @@ class StorageMutations:
 
         for container_uid in container_uids:
             sample_data = list(
-                filter(lambda x: x.storage_container_uid == container_uid, payload)
+                filter(lambda x: x.storage_container_uid ==
+                       container_uid, payload)
             )
             samples = await an_models.Sample.get_by_uids(
                 uids=[s.sample_uid for s in sample_data]
@@ -439,7 +440,7 @@ class StorageMutations:
         return StoredSamplesType(samples=samples)
 
     @strawberry.mutation
-    async def recover_samples(info, sample_uids: List[int]) -> StoreSampleResponse:
+    async def recover_samples(info, sample_uids: List[FelicityID]) -> StoreSampleResponse:
         is_authenticated, felicity_user = await auth_from_info(info)
         verify_user_auth(
             is_authenticated,

@@ -229,7 +229,7 @@ mutation StoreSamples ($payload: [StoreSamplesInputType!]!) {
 
 
 export const RECOVER_SAMPLES= gql`
-mutation RecoverSamples ($sampleUids: [Int!]!) {
+mutation RecoverSamples ($sampleUids: [FelicityID!]!) {
   recoverSamples(sampleUids: $sampleUids){
     ... on StoredSamplesType {
         __typename    

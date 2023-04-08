@@ -59,7 +59,8 @@ class AnalysisQuery:
             filters.append(text_filters)
 
         if client_uid:
-            filters.append({"analysis_request___client_uid__exact": client_uid})
+            filters.append(
+                {"analysis_request___client_uid__exact": client_uid})
 
         if status:
             filters.append({"status__exact": status})
@@ -107,7 +108,7 @@ class AnalysisQuery:
 
     @strawberry.field
     async def sample_by_parent_id(
-        self, info, parent_id: int, text: Optional[str] = None
+        self, info, parent_id: FelicityID, text: Optional[str] = None
     ) -> List[a_types.SampleType]:
         """Retrieve associated invalidated parent - children relationship by mptt parent_id"""
         samples: list[a_models.Sample] = await a_models.Sample.get_all(
@@ -121,7 +122,7 @@ class AnalysisQuery:
 
     @strawberry.field
     async def samples_by_uids(
-        self, info, sample_uids: List[int] = []
+        self, info, sample_uids: List[str] = []
     ) -> List[r_types.SamplesWithResults]:
         """Samples for publishing/ report printing"""
         return await a_models.Sample.get_all(uid__in=sample_uids)
@@ -304,7 +305,8 @@ class AnalysisQuery:
         if sample_type_uid:
             filters.append({"sample___sample_type_uid": sample_type_uid})
 
-        filters.append({"sample___status": analysis_conf.states.sample.RECEIVED})
+        filters.append(
+            {"sample___status": analysis_conf.states.sample.RECEIVED})
         filters.append({"status": analysis_conf.states.result.PENDING})
 
         if not sort_by:

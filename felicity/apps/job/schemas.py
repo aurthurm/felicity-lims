@@ -15,7 +15,7 @@ class JobBase(BaseModel):
     category: Optional[str] = categories.WORKSHEET
     priority: Optional[int] = priorities.NORMAL
     data: Optional[Any] = None
-    job_id: Optional[int] = None
+    job_id: Optional[FelicityIDType] = None
     status: Optional[str] = states.PENDING
     reason: Optional[str] = None
     creator_uid: Optional[FelicityIDType] = None

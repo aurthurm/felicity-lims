@@ -8,8 +8,4 @@ const axiosRaw= axios.create({
   headers: {}
 })
 
-console.log(import.meta.env.VITE_BASE_URL)
-console.log(import.meta.env)
-console.log(import.meta)
-
 export default axiosRaw

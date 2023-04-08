@@ -57,9 +57,9 @@ function prepareResults(): IAnalysisResult[] {
   return ready;
 }
 
-function getResultsUids(): number[] {
+function getResultsUids(): string[] {
   const results = getResultsChecked();
-  let ready: number[] = [];
+  let ready: string[] = [];
   results?.forEach((result: IAnalysisResult) => ready.push(result.uid!));
   return ready;
 }
@@ -256,109 +256,62 @@ const retestResults = () =>
 
   <div class="overflow-x-auto">
     <div
-      class="align-middle inline-block min-w-full shadow overflow-hidden bg-white shadow-dashboard px-2 pt-1 rounded-bl-lg rounded-br-lg"
-    >
+      class="align-middle inline-block min-w-full shadow overflow-hidden bg-white shadow-dashboard px-2 pt-1 rounded-bl-lg rounded-br-lg">
       <div v-if="fetchingResults" class="py-4 text-center">
         <LoadingMessage message="Fetching analytes ..." />
       </div>
       <table class="min-w-full" v-else>
         <thead>
           <tr>
-            <th
-              class="px-1 py-1 border-b-2 border-gray-300 text-left leading-4 text-gray-800 tracking-wider"
-            >
-              <input
-                type="checkbox"
-                class=""
-                @change="toggleCheckAll"
-                v-model="state.allChecked"
-              />
+            <th class="px-1 py-1 border-b-2 border-gray-300 text-left leading-4 text-gray-800 tracking-wider">
+              <input type="checkbox" class="" @change="toggleCheckAll" v-model="state.allChecked" />
             </th>
-            <th
-              class="px-1 py-1 border-b-2 border-gray-300 text-left leading-4 text-gray-800 tracking-wider"
-            ></th>
-            <th
-              class="px-1 py-1 border-b-2 border-gray-300 text-left leading-4 text-gray-800 tracking-wider"
-            >
+            <th class="px-1 py-1 border-b-2 border-gray-300 text-left leading-4 text-gray-800 tracking-wider"></th>
+            <th class="px-1 py-1 border-b-2 border-gray-300 text-left leading-4 text-gray-800 tracking-wider">
               Analysis
             </th>
-            <th
-              class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider"
-            >
+            <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">
               Methods
             </th>
-            <th
-              class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider"
-            >
+            <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">
               Instrument
             </th>
-            <th
-              class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider"
-            >
+            <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">
               Analyst
             </th>
-            <th
-              class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider"
-            >
+            <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">
               Interim
             </th>
-            <th
-              class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider"
-            >
+            <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">
               Result
             </th>
-            <th
-              class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider"
-            >
+            <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">
               Retest
             </th>
-            <th
-              class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider"
-            >
+            <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">
               Submitted
             </th>
-            <th
-              class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider"
-            >
+            <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">
               Due Date
             </th>
-            <th
-              class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider"
-            >
+            <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">
               Status
             </th>
-            <th
-              class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider"
-            >
+            <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">
               Reportable
             </th>
             <th class="px-1 py-1 border-b-2 border-gray-300"></th>
           </tr>
         </thead>
         <tbody class="bg-white">
-          <tr
-            v-for="result in analysisResults"
-            :key="result.uid"
-            :class="[getResultRowColor(result)]"
-            v-motion-slide-right
-          >
+          <tr v-for="result in analysisResults" :key="result.uid" :class="[getResultRowColor(result)]"
+            v-motion-slide-right>
             <td>
-              <input
-                type="checkbox"
-                class="border-red-500"
-                v-model="result.checked"
-                @change="checkCheck(result)"
-                :disabled="isDisabledRowCheckBox(result)"
-              /><font-awesome-icon
-                v-if="result.status === 'pending'"
-                icon="fa-question"
-                class="ml-1 text-xs"
-              ></font-awesome-icon>
-              <font-awesome-icon
-                v-if="result.status === 'resulted'"
-                icon="fa-question"
-                class="ml-1 text-xs text-orange"
-              ></font-awesome-icon>
+              <input type="checkbox" class="border-red-500" v-model="result.checked" @change="checkCheck(result)"
+                :disabled="isDisabledRowCheckBox(result)" /><font-awesome-icon v-if="result.status === 'pending'"
+                icon="fa-question" class="ml-1 text-xs"></font-awesome-icon>
+              <font-awesome-icon v-if="result.status === 'resulted'" icon="fa-question"
+                class="ml-1 text-xs text-orange"></font-awesome-icon>
             </td>
             <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500"></td>
             <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
@@ -382,24 +335,15 @@ const retestResults = () =>
               </div>
             </td>
             <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-              <div
-                v-if="!isEditable(result) || result?.analysis?.interims?.length === 0"
-                class="text-sm leading-5 text-sky-800"
-              >
+              <div v-if="!isEditable(result) || result?.analysis?.interims?.length === 0"
+                class="text-sm leading-5 text-sky-800">
                 ---
               </div>
               <label v-else class="block col-span-2 mb-2">
-                <select
-                  class="form-input mt-1 block w-full"
-                  v-model="result.result"
-                  @change="check(result)"
-                >
+                <select class="form-input mt-1 block w-full" v-model="result.result" @change="check(result)">
                   <option value=""></option>
-                  <option
-                    v-for="(interim, index) in result?.analysis?.interims"
-                    :key="interim.key"
-                    :value="interim.value"
-                  >
+                  <option v-for="(interim, index) in result?.analysis?.interims" :key="interim.key"
+                    :value="interim.value">
                     {{ interim.value }}
                   </option>
                 </select>
@@ -409,28 +353,14 @@ const retestResults = () =>
               <div v-if="!isEditable(result)" class="text-sm leading-5 text-sky-800">
                 {{ result?.result }}
               </div>
-              <label
-                v-else-if="result?.analysis?.resultOptions?.length === 0"
-                class="block"
-              >
-                <input
-                  class="form-input mt-1 block w-full"
-                  v-model="result.result"
-                  @keyup="check(result)"
-                />
+              <label v-else-if="result?.analysis?.resultOptions?.length === 0" class="block">
+                <input class="form-input mt-1 block w-full" v-model="result.result" @keyup="check(result)" />
               </label>
               <label v-else class="block col-span-2 mb-2">
-                <select
-                  class="form-input mt-1 block w-full"
-                  v-model="result.result"
-                  @change="check(result)"
-                >
+                <select class="form-input mt-1 block w-full" v-model="result.result" @change="check(result)">
                   <option value=""></option>
-                  <option
-                    v-for="(option, index) in result?.analysis?.resultOptions"
-                    :key="option.optionKey"
-                    :value="option.value"
-                  >
+                  <option v-for="(option, index) in result?.analysis?.resultOptions" :key="option.optionKey"
+                    :value="option.value">
                     {{ option.value }}
                   </option>
                 </select>
@@ -453,10 +383,7 @@ const retestResults = () =>
               <div class="text-sm leading-5 text-sky-800">2020-10-10</div>
             </td>
             <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-              <button
-                type="button"
-                class="bg-sky-800 text-white px-2 py-1 rounded-sm leading-none"
-              >
+              <button type="button" class="bg-sky-800 text-white px-2 py-1 rounded-sm leading-none">
                 {{ result.status }}
               </button>
             </td>
@@ -470,13 +397,11 @@ const retestResults = () =>
                 </span>
               </div>
             </td>
-            <td
-              class="px-1 py-1 whitespace-no-wrap text-right border-b border-gray-500 text-sm leading-5"
-            >
+            <td class="px-1 py-1 whitespace-no-wrap text-right border-b border-gray-500 text-sm leading-5">
               <!-- <button @click.prevent="submitResult(result)" 
-                            class="p-1 ml-2 border-white border text-gray-500rounded-smtransition duration-300 hover:border-sky-800 hover:text-sky-800 focus:outline-none">
-                            submit
-                          </button> -->
+                              class="p-1 ml-2 border-white border text-gray-500rounded-smtransition duration-300 hover:border-sky-800 hover:text-sky-800 focus:outline-none">
+                              submit
+                            </button> -->
             </td>
           </tr>
         </tbody>
@@ -485,62 +410,26 @@ const retestResults = () =>
   </div>
 
   <section class="my-4">
-    <FButton
-      v-show="
-        shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) && state.can_cancel
-      "
-      key="cancel"
-      @click.prevent="cancelResults"
-      :color="'sky-800'"
-      >Cancel</FButton
-    >
-    <FButton
-      v-show="
-        shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) &&
-        state.can_reinstate
-      "
-      key="reinstate"
-      @click.prevent="reInstateResults"
-      :color="'orange-600'"
-      >Re-Instate</FButton
-    >
-    <FButton
-      v-show="
-        shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) && state.can_submit
-      "
-      key="submit"
-      @click.prevent="submitResults"
-      :color="'orange-600'"
-      >Submit</FButton
-    >
-    <FButton
-      v-show="
-        shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) &&
-        state.can_retract
-      "
-      key="retract"
-      @click.prevent="retractResults"
-      :color="'orange-600'"
-      >Retract</FButton
-    >
-    <FButton
-      v-show="
-        shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) &&
-        state.can_approve
-      "
-      key="verify"
-      @click.prevent="approveResults"
-      :color="'orange-600'"
-      >Verify</FButton
-    >
-    <FButton
-      v-show="
-        shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) && state.can_retest
-      "
-      key="retest"
-      @click.prevent="retestResults"
-      :color="'orange-600'"
-      >Retest</FButton
-    >
+    <FButton v-show="
+      shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) && state.can_cancel
+    " key="cancel" @click.prevent="cancelResults" :color="'sky-800'">Cancel</FButton>
+    <FButton v-show="
+      shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) &&
+      state.can_reinstate
+    " key="reinstate" @click.prevent="reInstateResults" :color="'orange-600'">Re-Instate</FButton>
+    <FButton v-show="
+      shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) && state.can_submit
+    " key="submit" @click.prevent="submitResults" :color="'orange-600'">Submit</FButton>
+    <FButton v-show="
+      shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) &&
+      state.can_retract
+    " key="retract" @click.prevent="retractResults" :color="'orange-600'">Retract</FButton>
+    <FButton v-show="
+      shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) &&
+      state.can_approve
+    " key="verify" @click.prevent="approveResults" :color="'orange-600'">Verify</FButton>
+    <FButton v-show="
+      shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) && state.can_retest
+    " key="retest" @click.prevent="retestResults" :color="'orange-600'">Retest</FButton>
   </section>
 </template>

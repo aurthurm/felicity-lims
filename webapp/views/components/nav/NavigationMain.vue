@@ -28,59 +28,41 @@ const showNotifications = (val) => notificationStore.showNotifications(val);
     </div>
     <div class="flex">
       <!-- <span
-        @click="toggleTheme()"
+          @click="toggleTheme()"
+          class="no-underline text-gray-100 opacity-50 flex items-center px-4 border-b border-transparent hover:opacity-100 md:hover:border-grey-dark"
+        >
+          <font-awesome-icon :icon="theme?.icon" class="mr-2" />
+          <span class="text-sm">{{ theme?.variant }} mode</span>
+        </span> -->
+      <a href="#"
         class="no-underline text-gray-100 opacity-50 flex items-center px-4 border-b border-transparent hover:opacity-100 md:hover:border-grey-dark"
-      >
-        <font-awesome-icon :icon="theme?.icon" class="mr-2" />
-        <span class="text-sm">{{ theme?.variant }} mode</span>
-      </span> -->
-      <a
-        href="#"
-        class="no-underline text-gray-100 opacity-50 flex items-center px-4 border-b border-transparent hover:opacity-100 md:hover:border-grey-dark"
-        @click="showNotifications(true)"
-      >
+        @click="showNotifications(true)">
         <font-awesome-icon icon="bell" class="mr-2" />
         <span>Notifications</span>
       </a>
-      <router-link
-        v-show="guards.canAccessPage(guards.pages.ADMINISTRATION)"
-        to="/admin"
-        class="no-underline text-gray-100 opacity-50 flex items-center px-4 border-b border-transparent hover:opacity-100 md:hover:border-grey-dark"
-      >
+      <router-link v-show="guards.canAccessPage(guards.pages.ADMINISTRATION)" to="/admin"
+        class="no-underline text-gray-100 opacity-50 flex items-center px-4 border-b border-transparent hover:opacity-100 md:hover:border-grey-dark">
         <font-awesome-icon icon="cog" class="mr-2" />
         <span class="text-sm">Settings</span>
       </router-link>
       <div class="flex text-right align-middle py-2">
         <span
-          class="flex justify-center items-center h-8 w-8 rounded-full border-2 border-gray-400 hover:border-gray-300 focus:border-gray-300 focus:outline-none text-white"
-        >
+          class="flex justify-center items-center h-8 w-8 rounded-full border-2 border-gray-400 hover:border-gray-300 focus:border-gray-300 focus:outline-none text-white">
           <font-awesome-icon icon="user" />
         </span>
         <div class="relative">
-          <div
-            @click="dropdownOpen = !dropdownOpen"
-            class="hidden md:block md:flex md:items-center ml-2 mt-1"
-          >
+          <div @click="dropdownOpen = !dropdownOpen" class="hidden md:block md:flex md:items-center ml-2 mt-1">
             <span class="text-white text-sm mr-2">{{ userFullName }}</span>
             <div>
               <font-awesome-icon icon="chevron-down" class="text-gray-400" />
             </div>
           </div>
 
-          <div
-            v-show="dropdownOpen"
-            @click="dropdownOpen = false"
-            class="fixed inset-0 h-full w-full z-100"
-          ></div>
+          <div v-show="dropdownOpen" @click="dropdownOpen = false" class="fixed inset-0 h-full w-full z-100"></div>
 
-          <div
-            v-show="dropdownOpen"
-            class="absolute right-0 mt-4 py-2 w-48 bg-sky-800 rounded-sm shadow-xl z-20"
-          >
-            <li
-              @click="authStore.logout()"
-              class="no-underline text-gray-100 py-1 opacity-80 flex items-center px-4 border-b border-transparent hover:bg-gray-800 hover:bg-opacity-25 hover:text-white"
-            >
+          <div v-show="dropdownOpen" class="absolute right-0 mt-4 py-2 w-48 bg-sky-800 rounded-sm shadow-xl z-20">
+            <li @click="authStore.logout()"
+              class="no-underline text-gray-100 py-1 opacity-80 flex items-center px-4 border-b border-transparent hover:bg-gray-800 hover:bg-opacity-25 hover:text-white">
               Log out
             </li>
           </div>

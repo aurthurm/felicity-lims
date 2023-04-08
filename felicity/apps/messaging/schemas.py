@@ -14,7 +14,7 @@ class MessageBase(BaseAuditModel):
     body: Optional[str] = ""
     viewers: Optional[List[User]] = []
     deleted_by: Optional[List[User]] = []
-    parent_id: Optional[int] = None
+    parent_id: Optional[FelicityIDType] = None
 
 
 class Message(MessageBase):

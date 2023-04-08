@@ -43,7 +43,7 @@ class WorksheetTemplateInputType:
     row_wise: Optional[bool] = True
     description: Optional[str] = None
     qc_template_uid: Optional[FelicityID] = None
-    profiles: Optional[List[int]] = None
+    profiles: Optional[List[FelicityID]] = None
 
 
 WorkSheetTemplateResponse = strawberry.union(
@@ -266,7 +266,7 @@ class WorkSheetMutations:
         instrument_uid: Optional[FelicityID] = None,
         method_uid: Optional[FelicityID] = None,
         action: Optional[str] = None,
-        samples: Optional[List[int]] = None,
+        samples: Optional[List[FelicityID]] = None,
     ) -> WorkSheetResponse:  # noqa
 
         is_authenticated, felicity_user = await auth_from_info(info)
@@ -405,7 +405,7 @@ class WorkSheetMutations:
         self,
         info,
         uid: FelicityID,
-        analyses_uids: List[int],
+        analyses_uids: List[FelicityID],
         qc_template_uid: Optional[FelicityID] = None,
     ) -> WorkSheetResponse:
 
@@ -438,7 +438,8 @@ class WorkSheetMutations:
             creator_uid=felicity_user.uid,
             job_id=ws.uid,
             status=states.PENDING,
-            data={"qc_template_uid": qc_template_uid, "analyses_uids": analyses_uids},
+            data={"qc_template_uid": qc_template_uid,
+                  "analyses_uids": analyses_uids},
         )
         await job_models.Job.create(job_schema)
         felicity_resume_workforce()

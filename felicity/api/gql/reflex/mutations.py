@@ -32,7 +32,7 @@ ReflexRuleResponse = strawberry.union(
 class ReflexActionInput:
     level: int
     description: str
-    analyses: List[int]
+    analyses: List[FelicityID]
     reflex_rule_uid: FelicityID
     sample_type_uid: Optional[FelicityID] = None
 

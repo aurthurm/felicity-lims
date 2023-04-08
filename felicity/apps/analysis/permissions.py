@@ -46,7 +46,7 @@ async def check_sample_verification(
 
 
 async def check_result_verification(
-    results: List[Union[int, AnalysisResult]], verifer: "User"
+    results: List[Union[str, AnalysisResult]], verifer: "User"
 ) -> Tuple[Optional[AnalysisResult], Optional[AnalysisResult], str, str]:
     """
     splits results into allowed and restricted results.
@@ -59,9 +59,9 @@ async def check_result_verification(
     restricted = []
 
     laboratory = await Laboratory.get_by_setup_name("felicity")
-    settings: LaboratorySetting = await LaboratorySetting.get(uid=laboratory.uid)
+    settings: LaboratorySetting = await LaboratorySetting.get(laboratory_uid=laboratory.uid)
 
-    if isinstance(results[0], int):
+    if isinstance(results[0], str):
         results: List[AnalysisResult] = await AnalysisResult.get_all(uid__in=results)
 
     for result in results:

@@ -114,7 +114,7 @@ const submitARForm = handleSubmit((values) => {
   arSaving.value = true;
 
   for (let sample of values.samples || []) {
-    if (typeof sample?.sampleType !== "number") {
+    if (typeof sample?.sampleType !== "string") {
       swalError("Samples must have sample types");
       return;
     }
@@ -169,11 +169,7 @@ function removeSample(index: number): void {
         <label class="flex whitespace-nowrap mb-2 w-full">
           <span class="text-gray-700 w-4/12">Client Request ID</span>
           <div class="w-full">
-            <input
-              class="form-input mt-1 block w-full"
-              v-model="clientRequestId"
-              placeholder="CRID ..."
-            />
+            <input class="form-input mt-1 block w-full" v-model="clientRequestId" placeholder="CRID ..." />
             <div class="text-orange-600 w-4/12">{{ errors.clientRequestId }}</div>
           </div>
         </label>
@@ -181,12 +177,7 @@ function removeSample(index: number): void {
         <label class="flex whitespace-nowrap mb-2 w-full">
           <span class="text-gray-700 w-4/12">Clinical Data</span>
           <div class="w-full">
-            <textarea
-              cols="2"
-              class="form-input mt-1 w-full"
-              v-model="clinicalData"
-              placeholder="Clinical Data ..."
-            />
+            <textarea cols="2" class="form-input mt-1 w-full" v-model="clinicalData" placeholder="Clinical Data ..." />
             <div class="text-orange-600 w-4/12">{{ errors.clinicalData }}</div>
           </div>
         </label>
@@ -194,15 +185,8 @@ function removeSample(index: number): void {
         <label class="flex whitespace-nowrap mb-2 w-full">
           <span class="text-gray-700 w-4/12">Client</span>
           <div class="w-full">
-            <VueMultiselect
-              placeholder="Select a Client"
-              v-model="client"
-              :options="clients"
-              :searchable="true"
-              label="name"
-              track-by="uid"
-              @select="getClientContacts"
-            >
+            <VueMultiselect placeholder="Select a Client" v-model="client" :options="clients" :searchable="true"
+              label="name" track-by="uid" @select="getClientContacts">
             </VueMultiselect>
           </div>
         </label>
@@ -210,18 +194,10 @@ function removeSample(index: number): void {
         <label class="flex whitespace-nowrap mb-2 w-full">
           <span class="text-gray-700 w-4/12">Client Contacts</span>
           <div class="w-full">
-            <select
-              name="clientContacts"
-              id="clientContacts"
-              v-model="clientContactUid"
-              class="form-input mt-1 block w-full"
-            >
+            <select name="clientContacts" id="clientContacts" v-model="clientContactUid"
+              class="form-input mt-1 block w-full">
               <option value=""></option>
-              <option
-                v-for="contact in clientContacts"
-                :key="contact.uid"
-                :value="contact.uid"
-              >
+              <option v-for="contact in clientContacts" :key="contact.uid" :value="contact.uid">
                 {{ contact.firstName }} {{ contact.lastName }}
               </option>
             </select>
@@ -232,13 +208,7 @@ function removeSample(index: number): void {
         <label class="flex whitespace-nowrap mb-2 w-full">
           <span class="text-gray-700 w-4/12">Priority</span>
           <div class="w-full">
-            <input
-              type="number"
-              min="0"
-              max="2"
-              class="form-input mt-1 block w-full"
-              v-model="priority"
-            />
+            <input type="number" min="0" max="2" class="form-input mt-1 block w-full" v-model="priority" />
             <div class="text-orange-600 w-4/12">{{ errors.priority }}</div>
           </div>
         </label>
@@ -249,11 +219,8 @@ function removeSample(index: number): void {
         <div class="flex justify-between items-center py-2">
           <h5>Samples</h5>
           <span class="text-orange-600">{{ errors.samples }}</span>
-          <button
-            v-if="samples?.length !== 20"
-            @click.prevent="addSample()"
-            class="px-2 py-1 mr-2 border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
-          >
+          <button v-if="samples?.length !== 20" @click.prevent="addSample()"
+            class="px-2 py-1 mr-2 border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none">
             Add Sample
           </button>
         </div>
@@ -264,18 +231,9 @@ function removeSample(index: number): void {
             <div class="flex items-top gap-x-4">
               <label class="flex flex-col whitespace-nowrap mb-2">
                 <span class="text-gray-700">Sample Type</span>
-                <select
-                  name="sampleTypes"
-                  id="sampleTypes"
-                  v-model="sample.sampleType"
-                  class="form-input mt-1"
-                >
+                <select name="sampleTypes" id="sampleTypes" v-model="sample.sampleType" class="form-input mt-1">
                   <option value=""></option>
-                  <option
-                    v-for="sampleType in sampleTypes"
-                    :key="sampleType.uid"
-                    :value="sampleType.uid"
-                  >
+                  <option v-for="sampleType in sampleTypes" :key="sampleType.uid" :value="sampleType.uid">
                     {{ sampleType.name }}
                   </option>
                 </select>
@@ -283,19 +241,10 @@ function removeSample(index: number): void {
 
               <label class="flex flex-col whitespace-nowrap mb-2">
                 <span class="text-gray-700">Analysis Profiles</span>
-                <select
-                  name="analysisProfiles"
-                  id="analysisProfiles"
-                  v-model="sample.profiles"
-                  class="form-input mt-1"
-                  multiple
-                >
+                <select name="analysisProfiles" id="analysisProfiles" v-model="sample.profiles" class="form-input mt-1"
+                  multiple>
                   <option value=""></option>
-                  <option
-                    v-for="(profile, index) in analysesProfiles"
-                    :key="profile.uid"
-                    :value="profile.uid"
-                  >
+                  <option v-for="(profile, index) in analysesProfiles" :key="profile.uid" :value="profile.uid">
                     {{ profile.name }}
                   </option>
                 </select>
@@ -303,29 +252,18 @@ function removeSample(index: number): void {
 
               <label class="flex flex-col whitespace-nowrap mb-2">
                 <span class="text-gray-700">Analysis Services</span>
-                <select
-                  name="analysesServices"
-                  id="analysesServices"
-                  v-model="sample.analyses"
-                  class="form-input mt-1"
-                  multiple
-                >
+                <select name="analysesServices" id="analysesServices" v-model="sample.analyses" class="form-input mt-1"
+                  multiple>
                   <option value=""></option>
-                  <option
-                    v-for="(service, index) in analysesServices"
-                    :key="service.uid"
-                    :value="service.uid"
-                  >
+                  <option v-for="(service, index) in analysesServices" :key="service.uid" :value="service.uid">
                     {{ service.name }}
                   </option>
                 </select>
               </label>
             </div>
             <div class="">
-              <button
-                @click.prevent="removeSample(index)"
-                class="px-2 py-1 mr-2 border-orange-600 border text-orange-600rounded-smtransition duration-300 hover:bg-orange-600 hover:text-white focus:outline-none"
-              >
+              <button @click.prevent="removeSample(index)"
+                class="px-2 py-1 mr-2 border-orange-600 border text-orange-600rounded-smtransition duration-300 hover:bg-orange-600 hover:text-white focus:outline-none">
                 Remove
               </button>
             </div>
@@ -334,11 +272,8 @@ function removeSample(index: number): void {
         </div>
       </section>
       <hr />
-      <button
-        v-if="!arSaving"
-        type="submit"
-        class="-mb-4 w-full border border-sky-800 bg-sky-800 text-white rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-sky-800 focus:outline-none focus:shadow-outline"
-      >
+      <button v-if="!arSaving" type="submit"
+        class="-mb-4 w-full border border-sky-800 bg-sky-800 text-white rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-sky-800 focus:outline-none focus:shadow-outline">
         Add Sample(s)
       </button>
       <div v-else class="py-4 text-center">

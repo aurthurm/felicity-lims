@@ -8,6 +8,7 @@ from sqlalchemy.sql import func
 
 from felicity.database.base_class import DBModel
 from felicity.database.session import async_session_factory
+from felicity.core.uid_gen import FelicityID
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -27,7 +28,7 @@ class SampleAnalyticsInit(Generic[ModelType]):
         period_end: str,
         sample_states: List[str],
         date_column: str,
-        analysis_uids: List[int],
+        analysis_uids: List[FelicityID],
     ):
         start_date = parser.parse(str(period_start))
         end_date = parser.parse(str(period_end))
@@ -158,7 +159,8 @@ class SampleAnalyticsInit(Generic[ModelType]):
         self, start: Tuple[str, str], end: Tuple[str, str]
     ):
         retest = getattr(self.model, "retest")
-        stmt = select(func.count(self.model.uid).label("total")).filter(retest == True)
+        stmt = select(func.count(self.model.uid).label(
+            "total")).filter(retest == True)
 
         if start[1]:
             start_column = start[0]

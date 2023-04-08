@@ -50,7 +50,7 @@ class ReportMetaDeleted(BaseModel):
 
 class ReportRequest(BaseModel):
     report_type: str
-    analyses_uids: List[int]
+    analyses_uids: List[FelicityIDType]
     sample_states: List[str]
     date_column: str
     period_start: datetime

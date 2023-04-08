@@ -21,7 +21,7 @@ export default function useAnalysisComposable(){
     const { toastInfo } = useNotifyToast()
 
     // Cancell Analyses
-    const cancelResults = async (uids: number[]) => {
+    const cancelResults = async (uids: string[]) => {
       try {
         await Swal.fire({
           title: 'Are you sure?',
@@ -49,7 +49,7 @@ export default function useAnalysisComposable(){
     }
 
     // Reinstate Analyses
-    const reInstateResults = async (uids: number[]) => {
+    const reInstateResults = async (uids: string[]) => {
       try {
         await Swal.fire({
           title: 'Are you sure?',
@@ -88,7 +88,7 @@ export default function useAnalysisComposable(){
      });
     }     
 
-    const submitResults = async (results: any[], sourceObject: string, sourceObjectUid: number) => {
+    const submitResults = async (results: any[], sourceObject: string, sourceObjectUid: string) => {
 
       try {
         await Swal.fire({
@@ -118,7 +118,7 @@ export default function useAnalysisComposable(){
     }
 
     // Approve Analyses
-    const approveResults = async (uids: number[], sourceObject: string, sourceObjectUid: number) => {
+    const approveResults = async (uids: string[], sourceObject: string, sourceObjectUid: string) => {
       try {
         await Swal.fire({
           title: 'Are you sure?',
@@ -148,7 +148,7 @@ export default function useAnalysisComposable(){
     }
   
     // Retract Analyses 
-    const retractResults = async (uids: number[]) => {
+    const retractResults = async (uids: string[]) => {
       try {
         await Swal.fire({
           title: 'Are you sure?',
@@ -176,7 +176,7 @@ export default function useAnalysisComposable(){
     }
 
     // Retest Analyses
-    const retestResults = async (uids: number[]) => {
+    const retestResults = async (uids: string[]) => {
       try {
         await Swal.fire({
           title: 'Are you sure?',

@@ -87,7 +87,7 @@ class WorkSheetQuery:
         return await ws_models.WorkSheet.get(uid=worksheet_uid)
 
     @strawberry.field
-    async def worksheet_by_id(self, info, worksheet_id: int) -> WorkSheetType:
+    async def worksheet_by_id(self, info, worksheet_id: FelicityID) -> WorkSheetType:
         return await ws_models.WorkSheet.get(worksheet_id=worksheet_id)
 
     @strawberry.field

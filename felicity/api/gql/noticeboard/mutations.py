@@ -30,8 +30,8 @@ class NoticeInputType:
     title: str
     body: str
     expiry: str
-    groups: Optional[List[int]]
-    departments: Optional[List[int]]
+    groups: Optional[List[FelicityID]]
+    departments: Optional[List[FelicityID]]
 
 
 @strawberry.type
@@ -134,7 +134,7 @@ class NoticeMutations:
         return NoticeType(**notice.marshal_simple())
 
     @strawberry.mutation
-    async def view_notice(self, info, uid: FelicityID, viewer: int) -> NoticeType:
+    async def view_notice(self, info, uid: FelicityID, viewer: FelicityID) -> NoticeType:
 
         is_authenticated, felicity_user = await auth_from_info(info)
         verify_user_auth(

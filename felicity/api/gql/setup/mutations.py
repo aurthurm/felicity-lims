@@ -148,8 +148,8 @@ class InstrumentInputType:
 @strawberry.input
 class MethodInputType:
     name: str
-    instruments: Optional[List[int]] = field(default_factory=list)
-    analyses: Optional[List[int]] = field(default_factory=list)
+    instruments: Optional[List[FelicityID]] = field(default_factory=list)
+    analyses: Optional[List[FelicityID]] = field(default_factory=list)
     keyword: Optional[str] = None
     description: Optional[str] = ""
 
@@ -660,7 +660,8 @@ class SetupMutations:
             if method.uid not in meth_uids:
                 await analysis_models.Analysis.table_insert(
                     table=analysis_models.analysis_method,
-                    mappings={"method_uid": method.uid, "analysis_uid": analysis.uid},
+                    mappings={"method_uid": method.uid,
+                              "analysis_uid": analysis.uid},
                 )
 
             for inst in method.instruments:
@@ -713,7 +714,8 @@ class SetupMutations:
         inst_uids = [inst.uid for inst in method.instruments]
         for _inst in inst_uids:
             if _inst not in payload.instruments:
-                instruments = filter(lambda i: i.uid == _inst, method.instruments)
+                instruments = filter(
+                    lambda i: i.uid == _inst, method.instruments)
                 instrument = list(instruments)[0]
                 method.instruments.remove(instrument)
         for _inst in payload.instruments:
@@ -745,7 +747,8 @@ class SetupMutations:
                 analysis = await analysis_models.Analysis.get(uid=_anal)
                 await analysis_models.Analysis.table_insert(
                     table=analysis_models.analysis_method,
-                    mappings={"method_uid": method.uid, "analysis_uid": analysis.uid},
+                    mappings={"method_uid": method.uid,
+                              "analysis_uid": analysis.uid},
                 )
 
         return MethodType(**method.marshal_simple())

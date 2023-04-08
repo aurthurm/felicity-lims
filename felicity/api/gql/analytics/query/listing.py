@@ -22,14 +22,14 @@ def group_exists(val):
 async def get_username(val):
     if val == "unknown":
         return val
-    user = await User.get(uid=int(val))
+    user = await User.get(uid=val)
     return user.auth.user_name
 
 
 async def get_instrument(val):
     if val == "unknown":
         return val
-    instrument = await Instrument.get(uid=int(val))
+    instrument = await Instrument.get(uid=val)
     return instrument.name
 
 
@@ -40,6 +40,7 @@ async def count_sample_group_by_status(info) -> types.GroupedCounts:
 
     stats = []
     for row in results:
-        stats.append(types.GroupCount(group=group_exists(row[0]), count=row[1]))
+        stats.append(types.GroupCount(
+            group=group_exists(row[0]), count=row[1]))
 
     return types.GroupedCounts(data=stats)

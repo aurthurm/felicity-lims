@@ -6,7 +6,7 @@ import { useUserStore, useAuditLogStore } from "../../stores";
 import { parseDate } from "../../utils";
 
 const props = defineProps({
-  targetId: Number,
+  targetId: String,
   targetType: String,
 });
 const { targetType, targetId } = toRefs(props);
@@ -91,27 +91,15 @@ function changes(log: any): any {
 
 <template>
   <div class="relative mt-4">
-    <div
-      class="border-r-2 border-gray-400 border-dotted absolute h-full top-0 z-0"
-      style="left: 7px"
-    ></div>
+    <div class="border-r-2 border-gray-400 border-dotted absolute h-full top-0 z-0" style="left: 7px"></div>
     <div v-if="fetchingAudits" class="py-4 text-center">
       <LoadingMessage message="Fetching audit logs ..." />
     </div>
-    <ul
-      v-motion
-      :initial="{ opacity: 0, y: 100 }"
-      :enter="{ opacity: 1, y: 0, scale: 1 }"
-      :variants="{ custom: { scale: 2 } }"
-      :delay="200"
-      class="list-none m-0 p-0"
-      v-else
-    >
+    <ul v-motion :initial="{ opacity: 0, y: 100 }" :enter="{ opacity: 1, y: 0, scale: 1 }"
+      :variants="{ custom: { scale: 2 } }" :delay="200" class="list-none m-0 p-0" v-else>
       <li v-for="log in auditLogs" :key="log.uid" class="mb-2">
         <div class="flex items-center mb-1">
-          <div
-            class="bg-indigo-600 rounded-full h-4 w-4 border-gray-200 border-2 z-10"
-          ></div>
+          <div class="bg-indigo-600 rounded-full h-4 w-4 border-gray-200 border-2 z-10"></div>
           <div class="ml-4 font-medium">
             <span>
               {{ translateUser(log?.userId) }} {{ translateAction(log?.action) }}

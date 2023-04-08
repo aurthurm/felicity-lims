@@ -67,10 +67,10 @@ const tableColumns = ref([
       return h("div", [
         sample.priority! > 1
           ? h(
-              "span",
-              { class: [{ "text-orange-600": sample.priority! > 1 }] },
-              h("i", { class: "fa fa-star" })
-            )
+            "span",
+            { class: [{ "text-orange-600": sample.priority! > 1 }] },
+            h("i", { class: "fa fa-star" })
+          )
           : "",
         sample.status === "stored" ? h("span", h("i", { class: "fa-briefcase" })) : "",
       ]);
@@ -581,138 +581,91 @@ const recoverSamples_ = async () =>
 
 <template>
   <div class="mb-4 flex justify-end">
-    <router-link
-      v-show="shield.hasRights(shield.actions.CREATE, shield.objects.SAMPLE)"
-      to="/patients/search"
-      class="px-2 py-1 border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
-      >Add Laboratory Request</router-link
-    >
+    <router-link v-show="shield.hasRights(shield.actions.CREATE, shield.objects.SAMPLE)" to="/patients/search"
+      class="px-2 py-1 border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none">Add
+      Laboratory Request</router-link>
   </div>
   <hr />
-  <DataTable
-    :columns="tableColumns"
-    :data="samples"
-    :toggleColumns="true"
-    :loading="fetchingSamples"
-    :paginable="true"
+  <DataTable :columns="tableColumns" :data="samples" :toggleColumns="true" :loading="fetchingSamples" :paginable="true"
     :pageMeta="{
       fetchCount: sampleParams.first,
       hasNextPage: samplePageInfo?.hasNextPage,
       countNone,
-    }"
-    :searchable="true"
-    :filterable="true"
-    :filterMeta="{
-      defaultFilter: sampleParams.status,
-      filters: filterOptions,
-    }"
-    :selectable="true"
-    :allChecked="allChecked"
-    @onSearch="filterSamples"
-    @onPaginate="showMoreSamples"
-    @onCheck="toggleCheck"
-    @onCheckAll="toggleCheckAll"
-  >
+    }" :searchable="true" :filterable="true" :filterMeta="{
+  defaultFilter: sampleParams.status,
+  filters: filterOptions,
+}" :selectable="true" :allChecked="allChecked" @onSearch="filterSamples" @onPaginate="showMoreSamples"
+    @onCheck="toggleCheck" @onCheckAll="toggleCheckAll">
     <template v-slot:footer>
       <div>
-        <button
-          v-show="
-            shield.hasRights(shield.actions.CANCEL, shield.objects.SAMPLE) &&
-            state.can_cancel
-          "
-          @click.prevent="cancelSamples_()"
-          class="px-2 py-1 mr-2 border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
-        >
+        <button v-show="
+          shield.hasRights(shield.actions.CANCEL, shield.objects.SAMPLE) &&
+          state.can_cancel
+        " @click.prevent="cancelSamples_()"
+          class="px-2 py-1 mr-2 border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none">
           Cancel
         </button>
-        <button
-          v-show="
-            shield.hasRights(shield.actions.CANCEL, shield.objects.SAMPLE) &&
-            state.can_reinstate
-          "
-          @click.prevent="reInstateSamples_()"
-          class="px-2 py-1 mr-2 border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
-        >
+        <button v-show="
+          shield.hasRights(shield.actions.CANCEL, shield.objects.SAMPLE) &&
+          state.can_reinstate
+        " @click.prevent="reInstateSamples_()"
+          class="px-2 py-1 mr-2 border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none">
           ReInstate
         </button>
-        <button
-          v-show="
-            shield.hasRights(shield.actions.CANCEL, shield.objects.SAMPLE) &&
-            state.can_receive
-          "
-          @click.prevent="receiveSamples_()"
-          class="px-2 py-1 mr-2 border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
-        >
+        <button v-show="
+          shield.hasRights(shield.actions.CANCEL, shield.objects.SAMPLE) &&
+          state.can_receive
+        " @click.prevent="receiveSamples_()"
+          class="px-2 py-1 mr-2 border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none">
           Reveive
         </button>
-        <button
-          v-show="
-            shield.hasRights(shield.actions.CANCEL, shield.objects.SAMPLE) &&
-            state.can_store
-          "
-          @click.prevent="prepareStorages()"
-          class="px-2 py-1 mr-2 border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
-        >
+        <button v-show="
+          shield.hasRights(shield.actions.CANCEL, shield.objects.SAMPLE) &&
+          state.can_store
+        " @click.prevent="prepareStorages()"
+          class="px-2 py-1 mr-2 border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none">
           Store
         </button>
-        <button
-          v-show="
-            shield.hasRights(shield.actions.CANCEL, shield.objects.SAMPLE) &&
-            state.can_recover
-          "
-          @click.prevent="recoverSamples_()"
-          class="px-2 py-1 mr-2 border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
-        >
+        <button v-show="
+          shield.hasRights(shield.actions.CANCEL, shield.objects.SAMPLE) &&
+          state.can_recover
+        " @click.prevent="recoverSamples_()"
+          class="px-2 py-1 mr-2 border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none">
           Recover
         </button>
-        <button
-          v-show="
-            shield.hasRights(shield.actions.CANCEL, shield.objects.SAMPLE) &&
-            state.can_reject
-          "
-          @click.prevent="prepareRejections()"
-          class="px-2 py-1 mr-2 border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
-        >
+        <button v-show="
+          shield.hasRights(shield.actions.CANCEL, shield.objects.SAMPLE) &&
+          state.can_reject
+        " @click.prevent="prepareRejections()"
+          class="px-2 py-1 mr-2 border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none">
           Reject
         </button>
-        <button
-          v-show="
-            shield.hasRights(shield.actions.CANCEL, shield.objects.SAMPLE) &&
-            state.can_copy_to
-          "
-          @click.prevent="cloneSamples_()"
-          class="px-2 py-1 mr-2 border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
-        >
+        <button v-show="
+          shield.hasRights(shield.actions.CANCEL, shield.objects.SAMPLE) &&
+          state.can_copy_to
+        " @click.prevent="cloneSamples_()"
+          class="px-2 py-1 mr-2 border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none">
           Copy to New
         </button>
-        <button
-          v-show="
-            shield.hasRights(shield.actions.CANCEL, shield.objects.SAMPLE) &&
-            state.can_download
-          "
-          @click.prevent="impressDownload_()"
-          class="px-2 py-1 mr-2 border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
-        >
+        <button v-show="
+          shield.hasRights(shield.actions.CANCEL, shield.objects.SAMPLE) &&
+          state.can_download
+        " @click.prevent="impressDownload_()"
+          class="px-2 py-1 mr-2 border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none">
           Download
         </button>
-        <button
-          v-show="
-            shield.hasRights(shield.actions.CANCEL, shield.objects.SAMPLE) &&
-            state.can_publish
-          "
-          @click.prevent="publishReports_()"
-          class="px-2 py-1 mr-2 border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
-        >
+        <button v-show="
+          shield.hasRights(shield.actions.CANCEL, shield.objects.SAMPLE) &&
+          state.can_publish
+        " @click.prevent="publishReports_()"
+          class="px-2 py-1 mr-2 border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none">
           Publish
         </button>
-        <button
-          v-show="
-            shield.hasRights(shield.actions.CANCEL, shield.objects.SAMPLE) &&
-            state.can_print
-          "
-          @click.prevent="printReports_()"
-          class="px-2 py-1 mr-2 border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
-        >
+        <button v-show="
+          shield.hasRights(shield.actions.CANCEL, shield.objects.SAMPLE) &&
+          state.can_print
+        " @click.prevent="printReports_()"
+          class="px-2 py-1 mr-2 border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none">
           Print
         </button>
       </div>

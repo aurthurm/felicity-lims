@@ -22,8 +22,8 @@ class AnalysisInputType:
     sort_key: int
     description: str = ""
     department_uid: Optional[FelicityID] = None
-    sample_types: Optional[List[int]] = field(default_factory=list)
-    methods: Optional[List[int]] = field(default_factory=list)
+    sample_types: Optional[List[FelicityID]] = field(default_factory=list)
+    methods: Optional[List[FelicityID]] = field(default_factory=list)
     category_uid: Optional[FelicityID] = None
     unit_uid: Optional[FelicityID] = None
     internal_use: Optional[bool] = False
@@ -75,7 +75,8 @@ async def create_analysis(info, payload: AnalysisInputType) -> ProfilesServiceRe
         for st_uid in payload.sample_types:
             await analysis_models.Analysis.table_insert(
                 table=analysis_models.analysis_sample_type,
-                mappings={"sample_type_uid": st_uid, "analysis_uid": analysis.uid},
+                mappings={"sample_type_uid": st_uid,
+                          "analysis_uid": analysis.uid},
             )
 
     if payload.methods:
@@ -133,7 +134,8 @@ async def update_analysis(
             meth = await Method.get(uid=_uid)
             await Method.table_insert(
                 table=analysis_models.analysis_method,
-                mappings={"method_uid": meth.uid, "analysis_uid": analysis.uid},
+                mappings={"method_uid": meth.uid,
+                          "analysis_uid": analysis.uid},
             )
         analysis = await analysis.get(uid=analysis.uid)
 

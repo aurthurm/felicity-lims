@@ -25,7 +25,7 @@ add_user_mutation = """
 
 add_auth_mutation = """
   mutation AddUserAuth(
-      $userUid: Int!,
+      $userUid: FelicityID!,
       $userName: String!,
       $password: String!,
       $passwordc: String!

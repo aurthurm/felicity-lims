@@ -7,9 +7,9 @@
 
 <style scoped>
 #mainFooter {
-    position:fixed;
-    margin: 0 auto;
-    width: 100%;
-    bottom: 0;
+  position: fixed;
+  margin: 0 auto;
+  width: 100%;
+  bottom: 0;
 }
 </style>
