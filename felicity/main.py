@@ -94,12 +94,14 @@ flims.add_websocket_route("/felicity-gql", graphql_app,
                           "felicity-subscriptions")
 resolve_root_dirs()
 flims.mount("/media", StaticFiles(directory="media"), name="media")
-flims.mount(
-    "/assets", StaticFiles(directory=settings.STATIC_DIR + "/assets", html=True), name="assets"
-)
+
 
 if settings.SERVE_WEBAPP:
     templates = Jinja2Templates(directory=settings.STATIC_DIR)
+
+    flims.mount(
+        "/static", StaticFiles(directory=settings.STATIC_DIR + "/assets", html=True), name="static"
+    )
 
     @flims.get("/", response_class=HTMLResponse)
     async def index_path(request: Request):

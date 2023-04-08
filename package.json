@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite",
     "vf": "vite --force",
-    "build": "vite build"
+    "build": "rm -rf static/* && vite build && cp -r dist/** static"
   },
   "dependencies": {
     "@antv/g2": "^4.2.8",

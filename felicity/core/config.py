@@ -33,7 +33,7 @@ class Settings(BaseSettings):
     BASE_DIR: str = os.path.abspath(
         os.path.join(os.path.dirname(__file__), ".."))
 
-    STATIC_DIR = os.path.join(BASE_DIR, "..", "dist")
+    STATIC_DIR = os.path.join(BASE_DIR, "..", "static")
 
     API_V1_STR: str = "/api/v1"
     SECRET_KEY: str = (
