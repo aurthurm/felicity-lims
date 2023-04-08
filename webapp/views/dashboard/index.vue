@@ -17,27 +17,17 @@ const { dashboard } = storeToRefs(dashBoardStore);
   <section class="col-span-12 mt-2">
     <nav class="bg-white shadow-md mt-2">
       <div class="-mb-px flex justify-start">
-        <a
-          v-for="tab in dashboard.tabs"
-          :key="tab"
-          :class="[
-            'no-underline text-gray-500 uppercase tracking-wide font-bold text-xs py-1 px-4 tab hover:bg-sky-600 hover:text-gray-200',
-            { 'tab-active': dashboard.currentTab === tab },
-          ]"
-          @click="dashBoardStore.setCurrentTab(tab)"
-          href="#"
-        >
+        <a v-for="tab in dashboard.tabs" :key="tab" :class="[
+          'no-underline text-gray-500 uppercase tracking-wide font-bold text-xs py-1 px-4 tab hover:bg-sky-600 hover:text-gray-200',
+          { 'tab-active': dashboard.currentTab === tab },
+        ]" @click="dashBoardStore.setCurrentTab(tab)" href="#">
           {{ tab }}
         </a>
       </div>
     </nav>
 
-    <div class="pt-4" 
-        v-motion
-        :initial="{ opacity: 0, y: 100 }"
-        :enter="{ opacity: 1, y: 0, scale: 1 }"
-        :variants="{ custom: { scale: 2 } }"
-        :delay="400">
+    <div class="pt-4" v-motion :initial="{ opacity: 0, y: 100 }" :enter="{ opacity: 1, y: 0, scale: 1 }"
+      :variants="{ custom: { scale: 2 } }" :delay="400">
       <tab-overview v-if="dashboard.currentTab === 'overview'" />
       <tab-resource v-if="dashboard.currentTab === 'resource'" />
       <tab-laggard v-if="dashboard.currentTab === 'laggard'" />

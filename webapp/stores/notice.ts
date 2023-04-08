@@ -24,12 +24,13 @@ export const useNoticeStore = defineStore('notice', {
     }),
     getters: {
         getNotices: (state) => state.notices,
+        getActiveNotices: (state) => state.notices?.filter(n => !n.expired),
         getMyNotices: (state) => (uid) => state.notices?.filter(n => n.createdByUid === uid),
         getFilterBy: (state) => state.filterBy,
         getFilters: (state) => state.filters
     },
     actions: {
-        async fetchMyNotices(uid: number){
+        async fetchMyNotices(uid: string){
             this.fetchingNotices = true;
             await withClientQuery(GET_NOTICES_BY_CREATOR, { uid }, "noticesByCreator")
               .then(payload => {

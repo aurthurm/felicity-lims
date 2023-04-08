@@ -10,12 +10,9 @@ let show = ref(false);
 <template>
   <transition name="accordion">
     <div class="rounded-sm my-1">
-      <div class="border border-b-1 bg-gray-100 px-4 p-2">
-        <button
-          @click="show = !show"
-          class="w-full flex justify-between text-gray-800 font-bold hover:underline focus:outline-none"
-          type="button"
-        >
+      <div class="border border-b-0 bg-gray-100 px-4 p-2">
+        <button @click="show = !show"
+          class="w-full flex justify-between text-gray-800 font-bold hover:underline focus:outline-none" type="button">
           <span class="w-full text-left">
             <slot name="title">Accordion Title</slot>
           </span>
@@ -24,7 +21,7 @@ let show = ref(false);
           </span>
         </button>
       </div>
-      <div v-show="show" class="border border-b-0 px-4 py-2">
+      <div v-show="show" class="border px-4 py-2">
         <slot name="body">Accordion Body</slot>
       </div>
     </div>

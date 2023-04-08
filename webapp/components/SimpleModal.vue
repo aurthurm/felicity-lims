@@ -23,20 +23,15 @@ export default defineComponent({
 <template>
   <div class="modal-mask">
     <div class="modal-wrapper" @click="$emit('close')">
-      <div
-        @click.stop
-        :class="[
-          'modal-container max-h-screen overflow-y-scroll',
-          contentWidth ? contentWidth : 'w-3/4',
-        ]"
-      >
+      <div @click.stop :class="[
+        'modal-container max-h-screen overflow-y-scroll',
+        contentWidth ? contentWidth : 'w-1/2',
+      ]">
         <div class="modal-header">
           <div class="flex justify-between">
             <slot name="header">default header</slot>
-            <button
-              @click="$emit('close')"
-              class="ml-4 inline-flex items-center justify-center w-8 h-8 mr-2 text-red-500 transition-colors duration-150 bg-white rounded-full border-red-200 border focus:outline-none hover:border-red-500"
-            >
+            <button @click="$emit('close')"
+              class="ml-4 inline-flex items-center justify-center w-8 h-8 mr-2 text-red-500 transition-colors duration-150 bg-white rounded-full border-red-200 border focus:outline-none hover:border-red-500">
               <font-awesome-icon icon="times" />
             </button>
           </div>
@@ -53,8 +48,7 @@ export default defineComponent({
             <div class="flex justify-end">
               <button
                 class="modal-default-button text-red-500 border-red-200 border rounded py-1 px-2 transition-colors hover:outline-none hover:border-red-500"
-                @click="$emit('close')"
-              >
+                @click="$emit('close')">
                 Cancel
               </button>
             </div>

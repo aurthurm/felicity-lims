@@ -165,4 +165,4 @@ class NoticeMutations:
             raise Exception(f"Notice with uid {uid} does not exist")
 
         await notice.delete()
-        return DeletedItem(uid)
+        return DeletedItem(uid=uid)

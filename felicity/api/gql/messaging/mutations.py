@@ -147,7 +147,7 @@ class MessageMutations:
             return OperationError(error=f"Message with uid {uid} does not exist")
 
         uid = await message.delete_for_user(felicity_user)
-        return DeletedItem(uid)
+        return DeletedItem(uid=uid)
 
     @strawberry.mutation
     async def delete_thread(self, info, uid: FelicityID) -> DeleteResponse:
@@ -164,4 +164,4 @@ class MessageMutations:
             return OperationError(error=f"Message Thread with uid {uid} does not exist")
 
         uid = await thread.delete_for_user(felicity_user)
-        return DeletedItem(uid)
+        return DeletedItem(uid=uid)

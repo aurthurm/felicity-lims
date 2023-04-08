@@ -71,6 +71,12 @@ export const useDashBoardStore = defineStore('dashboard', () => {
         fetchingAnalysisPeformanceStats: false,
         currentPeformance: "received_to_published",
         performances: ["received_to_published", "received_to_submitted","submitted_to_verified", "verified_to_published"],
+        perfs: {
+            received_to_published: "Received to Published",
+            received_to_submitted: "Received to Submitted",
+            submitted_to_verified: "Submitted to Verified",
+            verified_to_published: "Verified to Published",
+        },
         laggards: {} as any,
         fetchingLaggards: false
     })
@@ -200,6 +206,7 @@ export const useDashBoardStore = defineStore('dashboard', () => {
         .then(payload => {
             dashboard.value.fetchingAnalysisPeformanceStats = false
             dashboard.value.peformanceStats.analysis = payload.data
+            console.log(payload)
         }).catch(err => dashboard.value.fetchingAnalysisPeformanceStats = false)
     }
 
