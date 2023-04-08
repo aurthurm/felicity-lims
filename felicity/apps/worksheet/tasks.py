@@ -61,7 +61,8 @@ async def populate_worksheet_plate(job_uid: FelicityIDType):
             change_reason=f"WorkSheet {ws_uid} - contains at least a "
             f"processed sample",
         )
-        logger.warning(f"WorkSheet {ws_uid} - contains at least a processed sample")
+        logger.warning(
+            f"WorkSheet {ws_uid} - contains at least a processed sample")
         return
 
     # Enforce WS sample size limit
@@ -170,12 +171,11 @@ def run_ws_jobs():
 def get_sample_position(reserved, level_uid) -> int:
     if not reserved:
         return 0
-    level_uid = int(level_uid)
     try:
         for k, v in reserved.items():
-            val_uid = int(v.get("level_uid", 0))
+            val_uid = v.get("level_uid", 0)
             if val_uid == level_uid:
-                return int(k)
+                return k
     except Exception:  # noqa
         pass
 
@@ -223,7 +223,8 @@ async def setup_ws_quality_control(ws: models.WorkSheet):
                 sample.qc_level_uid = level.uid
                 sample.analyses.append(ws.analysis)
                 await sample.save()
-                logger.warning(f"Sample {sample.sample_id}, level {level.level}")
+                logger.warning(
+                    f"Sample {sample.sample_id}, level {level.level}")
 
                 # create results linkages
                 a_result_in = {
@@ -294,7 +295,8 @@ async def setup_ws_quality_control_manually(ws: models.WorkSheet, qc_template_ui
                 sample.qc_level_uid = level.uid
                 sample.analyses.append(ws.analysis)
                 await sample.save()
-                logger.warning(f"Sample {sample.sample_id}, level {level.level}")
+                logger.warning(
+                    f"Sample {sample.sample_id}, level {level.level}")
 
                 # create results linkages
                 a_result_in = {
@@ -348,7 +350,8 @@ async def populate_worksheet_plate_manually(job_uid: FelicityIDType):
             change_reason=f"WorkSheet {ws_uid} - contains at least a "
             f"processed sample",
         )
-        logger.warning(f"WorkSheet {ws_uid} - contains at least a processed sample")
+        logger.warning(
+            f"WorkSheet {ws_uid} - contains at least a processed sample")
         return
 
     data = job.data

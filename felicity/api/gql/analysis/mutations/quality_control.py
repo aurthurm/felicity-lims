@@ -87,8 +87,8 @@ async def create_QC_set(info, samples: List[QCSetInputType]) -> QCSetResponse:
 
         if qc_set_in.qcLevels:
             for level_uid in qc_set_in.qcLevels:
-                if int(level_uid) not in qc_levels_uids:
-                    level = await qc_models.QCLevel.get(uid=int(level_uid))
+                if level_uid not in qc_levels_uids:
+                    level = await qc_models.QCLevel.get(uid=level_uid)
                     qc_levels.append(level)
                     qc_levels_uids.append(level_uid)
 

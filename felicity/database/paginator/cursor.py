@@ -143,12 +143,7 @@ class CursorPaginationMixin(SmartQueryMixin):
 
     @classmethod
     def decode_cursor(cls, cursor):
-        decoded = b64decode(cursor.encode("ascii")).decode("utf8")
-        try:
-            return int(decoded)
-        except Exception as e:
-            logger.warning(e)
-            return decoded
+        return b64decode(cursor.encode("ascii")).decode("utf8")
 
     @classmethod
     def encode_cursor(cls, identifier: Any):
