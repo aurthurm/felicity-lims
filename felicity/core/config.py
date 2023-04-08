@@ -54,6 +54,10 @@ class Settings(BaseSettings):
         "https://felicity-lims.vercel.app",
         "http://felicity.herokuapp.com",
         "https://felicity.herokuapp.com",
+        "http://www.felicity-lims.me",
+        "https://www.felicity-lims.me",
+        "http://felicity-lims.me",
+        "https://felicity-lims.me",
     ]
     TESTING = getenv_boolean("TESTING", False)
     RETAIN_TESTING_DB_DATA = getenv_boolean("RETAIN_TESTING_DB_DATA", True)
