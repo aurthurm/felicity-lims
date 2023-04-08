@@ -2,8 +2,10 @@ from fastapi import FastAPI
 from starlette.responses import HTMLResponse
 
 
-def default_home_page(app: FastAPI):
-    @app.get("/backends", response_class=HTMLResponse)
+def setup_backends(app: FastAPI, serve_webapp: bool):
+    backends = "/backends" if serve_webapp else "/"
+
+    @app.get(backends, response_class=HTMLResponse)
     def index():
         return """
     <!Doctype html>

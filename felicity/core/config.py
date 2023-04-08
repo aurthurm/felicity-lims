@@ -181,6 +181,7 @@ class Settings(BaseSettings):
     USERS_OPEN_REGISTRATION: bool = False
 
     LOAD_SETUP_DATA = getenv_boolean("LOAD_SETUP_DATA", False)
+    SERVE_WEBAPP = getenv_boolean("SERVE_WEBAPP", True)
 
     class Config:
         case_sensitive = True

@@ -25,9 +25,8 @@ from felicity.init import initialize_felicity  # noqa
 from felicity.middlewares.auth_backend import FelicityAuthBackend
 from felicity.utils.dirs import resolve_root_dirs
 from felicity.utils.email.email import send_new_account_email
-from felicity.views import default_home_page
+from felicity.views import setup_backends
 
-templates = Jinja2Templates(directory=settings.STATIC_DIR)
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -88,7 +87,7 @@ graphql_app = GraphQL(
                             GRAPHQL_TRANSPORT_WS_PROTOCOL],
 )
 
-default_home_page(flims)
+setup_backends(flims, settings.SERVE_WEBAPP)
 flims.include_router(api_router, prefix=settings.API_V1_STR)
 flims.add_route("/felicity-gql", graphql_app)
 flims.add_websocket_route("/felicity-gql", graphql_app,
@@ -99,15 +98,16 @@ flims.mount(
     "/assets", StaticFiles(directory=settings.STATIC_DIR + "/assets", html=True), name="assets"
 )
 
+if settings.SERVE_WEBAPP:
+    templates = Jinja2Templates(directory=settings.STATIC_DIR)
 
-@flims.get("/", response_class=HTMLResponse)
-async def index_path(request: Request):
-    return templates.TemplateResponse("index.html", {"request": request})
+    @flims.get("/", response_class=HTMLResponse)
+    async def index_path(request: Request):
+        return templates.TemplateResponse("index.html", {"request": request})
 
-
-@flims.get("/{catchall:path}", response_class=HTMLResponse)
-async def index_path(request: Request):
-    return templates.TemplateResponse("index.html", {"request": request})
+    @flims.get("/{catchall:path}", response_class=HTMLResponse)
+    async def index_path(request: Request):
+        return templates.TemplateResponse("index.html", {"request": request})
 
 
 class ConnectionManager:
