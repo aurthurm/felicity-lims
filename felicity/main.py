@@ -100,7 +100,7 @@ if settings.SERVE_WEBAPP:
     templates = Jinja2Templates(directory=settings.STATIC_DIR)
 
     flims.mount(
-        "/static", StaticFiles(directory=settings.STATIC_DIR + "/assets", html=True), name="static"
+        "/assets", StaticFiles(directory=settings.STATIC_DIR + "/assets", html=True), name="assets"
     )
 
     @flims.get("/", response_class=HTMLResponse)
