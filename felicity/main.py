@@ -9,6 +9,10 @@ from starlette.middleware.authentication import AuthenticationMiddleware
 from starlette.middleware.cors import CORSMiddleware
 from strawberry.asgi import GraphQL
 from strawberry.subscriptions import GRAPHQL_TRANSPORT_WS_PROTOCOL, GRAPHQL_WS_PROTOCOL
+#
+from fastapi.staticfiles import StaticFiles
+from fastapi.templating import Jinja2Templates
+from fastapi.responses import HTMLResponse
 
 from felicity.api.gql.schema import gql_schema  # noqa
 from felicity.api.rest.api_v1.api import api_router  # noqa
@@ -23,23 +27,15 @@ from felicity.utils.dirs import resolve_root_dirs
 from felicity.utils.email.email import send_new_account_email
 from felicity.views import default_home_page
 
-# uvicorn_error = logging.getLogger("uvicorn.error")
-# uvicorn_error.propagate = False
-# logging.getLogger("uvicorn").handlers.clear()
-# logging.getLogger("uvicorn").removeHandler(logging.getLogger("uvicorn").handlers[0])
-# or more so https://pawamoy.github.io/posts/unify-logging-for-a-gunicorn-uvicorn-app/
+templates = Jinja2Templates(directory=settings.STATIC_DIR)
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+
 flims = FastAPI(
     title=settings.PROJECT_NAME, openapi_url=f"{settings.API_V1_STR}/openapi.json"
 )
-
-
-@flims.get("/check")
-async def root():
-    return {"message": "Tomato"}
 
 
 @flims.on_event("startup")
@@ -49,10 +45,7 @@ async def startup():
     if settings.LOAD_SETUP_DATA:
         await initialize_felicity()
 
-    send_new_account_email("aurthur@felicity.inc", "aurthurm", "@ceam2014;")
-
     felicity_workforce_init()
-    # await impress_results("sample_uid_here")
 
 
 @flims.on_event("startup")
@@ -71,7 +64,8 @@ async def shutdown():
 if settings.BACKEND_CORS_ORIGINS:
     flims.add_middleware(
         CORSMiddleware,
-        allow_origins=[str(origin) for origin in settings.BACKEND_CORS_ORIGINS],
+        allow_origins=[str(origin)
+                       for origin in settings.BACKEND_CORS_ORIGINS],
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],
@@ -90,16 +84,30 @@ async def set_custom_attr(request: Request, call_next):
 
 graphql_app = GraphQL(
     gql_schema,
-    subscription_protocols=[GRAPHQL_WS_PROTOCOL, GRAPHQL_TRANSPORT_WS_PROTOCOL],
+    subscription_protocols=[GRAPHQL_WS_PROTOCOL,
+                            GRAPHQL_TRANSPORT_WS_PROTOCOL],
 )
 
 default_home_page(flims)
 flims.include_router(api_router, prefix=settings.API_V1_STR)
 flims.add_route("/felicity-gql", graphql_app)
-flims.add_websocket_route("/felicity-gql", graphql_app, "felicity-subscriptions")
-
+flims.add_websocket_route("/felicity-gql", graphql_app,
+                          "felicity-subscriptions")
 resolve_root_dirs()
 flims.mount("/media", StaticFiles(directory="media"), name="media")
+flims.mount(
+    "/assets", StaticFiles(directory=settings.STATIC_DIR + "/assets", html=True), name="assets"
+)
+
+
+@flims.get("/", response_class=HTMLResponse)
+async def index_path(request: Request):
+    return templates.TemplateResponse("index.html", {"request": request})
+
+
+@flims.get("/{catchall:path}", response_class=HTMLResponse)
+async def index_path(request: Request):
+    return templates.TemplateResponse("index.html", {"request": request})
 
 
 class ConnectionManager:
@@ -118,7 +126,7 @@ class ConnectionManager:
 manager = ConnectionManager()
 
 
-@flims.websocket("/ws/{after_uid}")
+@ flims.websocket("/ws/{after_uid}")
 async def websocket_endpoint(websocket: WebSocket, after_uid: int):
     await manager.connect(websocket)
     while True:

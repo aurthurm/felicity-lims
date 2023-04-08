@@ -27,7 +27,7 @@ const streamStore = useStreamStore();
 const { loadPreferedTheme } = userPreferenceComposable();
 
 onBeforeMount(() => {
-  axios.get("setup/installation/").then((resp) => {
+  axios.get("setup/installation").then((resp) => {
     if (!resp.data.installed) {
       push({ name: "INSTALLATION" });
     }

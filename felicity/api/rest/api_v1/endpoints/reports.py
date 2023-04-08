@@ -21,7 +21,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
-@router.get("/", response_model=List[an_schema.ReportMeta])
+@router.get("", response_model=List[an_schema.ReportMeta])
 async def read_reports(
     current_user: user_models.User = Depends(deps.get_current_active_user),
 ) -> Any:
@@ -31,7 +31,7 @@ async def read_reports(
     return await models.ReportMeta.all()
 
 
-@router.post("/", response_model=an_schema.ReportMeta)
+@router.post("", response_model=an_schema.ReportMeta)
 async def request_report_generation(
     *,
     request_in: an_schema.ReportRequest,

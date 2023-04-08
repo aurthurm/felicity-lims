@@ -3,7 +3,7 @@ from starlette.responses import HTMLResponse
 
 
 def default_home_page(app: FastAPI):
-    @app.get("/", response_class=HTMLResponse)
+    @app.get("/backends", response_class=HTMLResponse)
     def index():
         return """
     <!Doctype html>
