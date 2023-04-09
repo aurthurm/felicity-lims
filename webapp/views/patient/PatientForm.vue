@@ -182,7 +182,6 @@ function addPatient(payload: IPatient) {
 }
 
 function updatePatient(payload: IPatient) {
-  console.log(payload);
   withClientMutation(
     UPDATE_PATIENT,
     {
@@ -202,6 +201,7 @@ function updatePatient(payload: IPatient) {
         countryUid: payload.countryUid,
         provinceUid: payload.provinceUid,
         districtUid: payload.districtUid,
+        identifications: payload.identifications?.map(id => ({ identificationUid: id.identificationUid, value: id.value }))
       },
     },
     "updatePatient"

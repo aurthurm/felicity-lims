@@ -42,7 +42,7 @@ class PatientInputType:
     country_uid: Optional[FelicityID] = None
     province_uid: Optional[FelicityID] = None
     district_uid: Optional[FelicityID] = None
-    identifications: List[Optional[PatientidentificationInput]] = field(
+    identifications: Optional[List[PatientidentificationInput]] = field(
         default_factory=[]
     )
 
