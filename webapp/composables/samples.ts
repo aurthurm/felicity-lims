@@ -87,7 +87,7 @@ export default function useSampleComposable(){
           showCancelButton: true,
           confirmButtonColor: '#3085d6',
           cancelButtonColor: '#d33',
-          confirmButtonText: 'Yes, cancel now!',
+          confirmButtonText: 'Yes, clone now!',
           cancelButtonText: 'No, do not clone!',
         }).then(async (result) => {
           if (result.isConfirmed) {
@@ -100,7 +100,7 @@ export default function useSampleComposable(){
 
             await Swal.fire(
               'Its Happening!',
-              'Your samples have been cloned.',
+              'Processing in the background...',
               'success'
             ).then(_ => {})
 

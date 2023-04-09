@@ -7,6 +7,36 @@ from felicity.api.gql import PageInfo
 from felicity.api.gql.client.types import ClientType
 from felicity.api.gql.user.types import UserType
 from felicity.core.uid_gen import FelicityID
+from felicity.api.gql.setup.types import DistrictType, ProvinceType, CountryType
+
+
+@strawberry.type
+class IdentificationType:
+    uid: FelicityID
+    name: str
+    #
+    created_by_uid: Optional[FelicityID]
+    created_by: Optional[UserType]
+    created_at: Optional[datetime]
+    updated_by_uid: Optional[FelicityID]
+    updated_by: Optional[UserType]
+    updated_at: Optional[datetime]
+
+
+@strawberry.type
+class PatientIdentificationType:
+    uid: FelicityID
+    patient_uid: str
+    identification_uid: str
+    identification: Optional[IdentificationType]
+    value: str
+    #
+    created_by_uid: Optional[FelicityID]
+    created_by: Optional[UserType]
+    created_at: Optional[datetime]
+    updated_by_uid: Optional[FelicityID]
+    updated_by: Optional[UserType]
+    updated_at: Optional[datetime]
 
 
 @strawberry.type
@@ -29,6 +59,13 @@ class PatientType:
     email: Optional[str]
     internal_use: bool
     active: bool
+    district_uid: Optional[FelicityID]
+    district: Optional[DistrictType]
+    province_uid: Optional[FelicityID]
+    province: Optional[ProvinceType]
+    country_uid: Optional[FelicityID]
+    country: Optional[CountryType]
+    identifications: List[Optional[PatientIdentificationType]]
     #
     created_by_uid: Optional[FelicityID]
     created_by: Optional[UserType]

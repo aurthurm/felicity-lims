@@ -1,5 +1,18 @@
 import { IDistrict, IProvince } from "./location";
-import { IClient, IClientContact } from "./client";
+import { IClient } from "./client";
+
+export interface IIdentification {
+    uid: string;
+    name: string;
+}
+
+export interface IPatientIdentification {
+    uid: string;
+    identificationUid:  string;
+    identification:  IIdentification;
+    patientUid:  string;
+    value: string;
+}
 
 export interface IPatient {
     uid: string;
@@ -23,4 +36,11 @@ export interface IPatient {
     provinceUid: string;
     country: IDistrict;
     countryUid: string;
+    identifications: IPatientIdentification[];
 }
+
+export interface IPatientIdentificationForm {
+    identificationUid:  string;
+    value: string;
+}
+

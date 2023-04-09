@@ -117,8 +117,8 @@ const tableColumns = ref([
           },
         },
         class:
-          "px-2 py-1 mr-2 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none",
-        innerHTML: "Add Analysis Request",
+          "px-2 mr-2 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none",
+        innerHTML: "+ Analysis Request",
       });
     },
   },
@@ -164,23 +164,13 @@ let getPatientFullName = (pt: IPatient) => {
 <style lang="postcss" scoped></style>
 
 <template>
-  <DataTable
-    :columns="tableColumns"
-    :data="patients"
-    :toggleColumns="true"
-    :loading="fetchingPatients"
-    :paginable="true"
+  <DataTable :columns="tableColumns" :data="patients" :toggleColumns="true" :loading="fetchingPatients" :paginable="true"
     :pageMeta="{
       fetchCount: patientParams.first,
       hasNextPage: patientPageInfo?.hasNextPage,
       countNone,
-    }"
-    :searchable="true"
-    :filterable="false"
-    @onSearch="searchPatients"
-    @onPaginate="showMorePatients"
-    :selectable="false"
-  >
+    }" :searchable="true" :filterable="false" @onSearch="searchPatients" @onPaginate="showMorePatients"
+    :selectable="false">
     <template v-slot:footer>
       <div>
         <div class="flex content-start items-center">
@@ -191,11 +181,9 @@ let getPatientFullName = (pt: IPatient) => {
         </div>
         <hr class="my-2" />
 
-        <router-link
-          v-show="shield.hasRights(shield.actions.CREATE, shield.objects.PATIENT)"
+        <router-link v-show="shield.hasRights(shield.actions.CREATE, shield.objects.PATIENT)"
           :to="{ name: 'patients-register', query: { cpid: patientSearch } }"
-          class="px-4 p-1 text-sm border-sky-800 border text-dark-700 transition-colors duration-150 rounded-sm focus:outline-none hover:bg-sky-800 hover:text-gray-100"
-        >
+          class="px-4 p-1 text-sm border-sky-800 border text-dark-700 transition-colors duration-150 rounded-sm focus:outline-none hover:bg-sky-800 hover:text-gray-100">
           Register New Patiet
         </router-link>
       </div>

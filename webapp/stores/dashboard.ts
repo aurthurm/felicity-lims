@@ -48,7 +48,7 @@ export const useDashBoardStore = defineStore('dashboard', () => {
         tabs: ['overview', 'resource', 'laggard', 'peformance', 'notices', 'line-listing'], // 'tat'
         showFilters: false,
         filterRange: { from: "", fromIso: "", to: "", toIso: "" },
-        currentFilter: "T",
+        currentFilter: "TW",
         filters: ['T', 'Y', 'TW', 'LW', 'TM', 'LM', 'TQ', 'LQ', 'TY'],
         overViewStats: { 
             analyses: [] as GroupCount[], 

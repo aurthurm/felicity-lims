@@ -42,6 +42,30 @@ export const GET_ALL_PATIENTS = gql`
         phoneHome
         phoneMobile
         consentSms
+        identifications {
+          uid
+          value
+          identificationUid
+          identification {
+            uid
+            name
+          }
+        }
+        countryUid
+        country {
+          uid
+          name
+        }
+        provinceUid
+        province {
+          uid
+          name
+        }
+        districtUid
+        district {
+          uid
+          name
+        }
         }
       }
   }`;
@@ -62,6 +86,7 @@ export const SEARCH_PATIENTS = gql`
         dateOfBirth
         ageDobEstimated
         client { 
+          uid
           name
           district {
             name
@@ -73,6 +98,30 @@ export const SEARCH_PATIENTS = gql`
         phoneHome
         phoneMobile
         consentSms
+        identifications {
+          uid
+          value
+          identificationUid
+          identification {
+            uid
+            name
+          }
+        }
+        countryUid
+        country {
+          uid
+          name
+        }
+        provinceUid
+        province {
+          uid
+          name
+        }
+        districtUid
+        district {
+          uid
+          name
+        }
     }
   }`;
 
@@ -91,6 +140,7 @@ export const GET_PATIENT_BY_UID = gql`
         dateOfBirth
         ageDobEstimated
         client { 
+          uid
           name
           district {
             name
@@ -102,5 +152,38 @@ export const GET_PATIENT_BY_UID = gql`
         phoneHome
         phoneMobile
         consentSms
+        identifications {
+          uid
+          value
+          identificationUid
+          identification {
+            uid
+            name
+          }
+        }
+        countryUid
+        country {
+          uid
+          name
+        }
+        provinceUid
+        province {
+          uid
+          name
+        }
+        districtUid
+        district {
+          uid
+          name
+        }
     }
   }`;
+
+export const IDENTIFICATION_TYPES = gql`
+  query identificationTypes {
+    identificationAll {
+        uid
+        name
+    }
+}`;
+

@@ -39,4 +39,9 @@ app.use(VueSweetalert2)
 app.use(FloatingVue)
 app.use(MotionPlugin)
 app.use(router)
-app.mount('#app')
+
+const isMobile = (navigator as any)?.userAgentData?.mobile ?? false;
+
+if(!isMobile) {
+    app.mount('#felicityApp')
+}

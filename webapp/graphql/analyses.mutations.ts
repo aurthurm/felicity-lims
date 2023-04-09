@@ -45,7 +45,7 @@ export const EDIT_SAMPLE_TYPE= gql`
 `;
 
 export const REINSTATE_SAMPLES = gql`
-  mutation ReInstateSamples ($samples: [String!]!) {
+  mutation ReInstateSamples ($samples: [FelicityID!]!) {
     reInstateSamples(samples: $samples){
       ... on ResultedSampleListingType{
         __typename
@@ -65,7 +65,7 @@ export const REINSTATE_SAMPLES = gql`
 `;
 
 export const CLONE_SAMPLES = gql`
-  mutation CloneSamples ($samples: [String!]!) {
+  mutation CloneSamples ($samples: [FelicityID!]!) {
     cloneSamples(samples: $samples){
       ... on SampleListingType{
         __typename
@@ -101,7 +101,7 @@ export const CLONE_SAMPLES = gql`
 `;
 
 export const CANCEL_SAMPLES = gql`
-  mutation CancelSamples ($samples: [String!]!) {
+  mutation CancelSamples ($samples: [FelicityID!]!) {
     cancelSamples(samples: $samples){
       ... on ResultedSampleListingType{
         __typename
@@ -121,7 +121,7 @@ export const CANCEL_SAMPLES = gql`
 `;
 
 export const RECEIVE_SAMPLES = gql`
-  mutation ReceiveSamples ($samples: [String!]!) {
+  mutation ReceiveSamples ($samples: [FelicityID!]!) {
     receiveSamples(samples: $samples){
       ... on ResultedSampleListingType{
         __typename
@@ -159,7 +159,7 @@ export const PUBLISH_SAMPLES = gql`
 
 
 export const PRINT_SAMPLES = gql`
-  mutation PrintSamples ($samples: [String!]!) {
+  mutation PrintSamples ($samples: [FelicityID!]!) {
     printSamples(samples: $samples){
       ... on SampleListingType{
         __typename
@@ -179,7 +179,7 @@ export const PRINT_SAMPLES = gql`
 `;
 
 export const INVALIDATE_SAMPLES = gql`
-  mutation InvalidateSamples ($samples: [String!]!) {
+  mutation InvalidateSamples ($samples: [FelicityID!]!) {
     invalidateSamples(samples: $samples){
       ... on SampleListingType{
         __typename
@@ -199,7 +199,7 @@ export const INVALIDATE_SAMPLES = gql`
 `;
 
 export const VERIFY_SAMPLES = gql`
-  mutation VerifySamples ($samples: [String!]!) {
+  mutation VerifySamples ($samples: [FelicityID!]!) {
     verifySamples(samples: $samples){
       ... on SampleListingType{
         __typename

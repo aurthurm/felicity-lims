@@ -4,7 +4,7 @@ import sqlalchemy as sa
 import strawberry  # noqa
 
 from felicity.api.gql import PageInfo
-from felicity.api.gql.patient.types import PatientCursorPage, PatientEdge, PatientType
+from felicity.api.gql.patient.types import PatientCursorPage, PatientEdge, PatientType, IdentificationType
 from felicity.apps.patient import models
 from felicity.core.uid_gen import FelicityID
 from felicity.utils import has_value_or_is_truthy
@@ -89,3 +89,11 @@ class PatientQuery:
             for item in query:
                 combined.add(item)
         return list(combined)
+
+    @strawberry.field
+    async def identification_all(self, info) -> List[IdentificationType]:
+        return await models.Identification.all()
+
+    @strawberry.field
+    async def identification_by_uid(self, info, uid: FelicityID) -> IdentificationType:
+        return await models.Identification.get(uid=uid)

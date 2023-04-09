@@ -63,7 +63,7 @@ export const useLocationStore = defineStore('location', {
     },
   
     // PROVINCES
-    async filterProvincesByCountry(countryUid: number){
+    async filterProvincesByCountry(countryUid: string){
       if(!countryUid) { return }
       this.fetchingProvinces = true;
       await withClientQuery(FILTER_PROVINCES_BY_COUNTRY, { uid: countryUid }, "provincesByCountryUid", 'network-only')
@@ -84,7 +84,7 @@ export const useLocationStore = defineStore('location', {
     },
   
     // DISTRICT
-    async filterDistrictsByProvince(provinceUid: number){
+    async filterDistrictsByProvince(provinceUid: string){
       if(!provinceUid) { return }
       this.fetchingDstricts = true
       await withClientQuery(FILTER_DISTRICTS_BY_PROVINCE, { uid: provinceUid }, "districtsByProvinceUid", 'network-only')

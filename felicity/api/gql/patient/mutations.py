@@ -1,11 +1,11 @@
 import logging
 from datetime import datetime
-from typing import Dict, Optional
-
+from typing import Dict, Optional, List
+from dataclasses import field
 import strawberry  # noqa
 
 from felicity.api.gql import OperationError, auth_from_info, verify_user_auth
-from felicity.api.gql.patient.types import PatientType
+from felicity.api.gql.patient.types import PatientType, PatientIdentificationType, IdentificationType
 from felicity.apps.client import models as client_models
 from felicity.apps.patient import models, schemas
 from felicity.core.uid_gen import FelicityID
@@ -16,6 +16,12 @@ logger = logging.getLogger(__name__)
 PatientResponse = strawberry.union(
     "PatientResponse", (PatientType, OperationError), description=""  # noqa
 )
+
+
+@strawberry.input
+class PatientidentificationInput:
+    value: str
+    identification_uid: str
 
 
 @strawberry.input
@@ -33,10 +39,76 @@ class PatientInputType:
     phone_home: Optional[str] = None
     consent_sms: Optional[bool] = False
     internal_use: Optional[bool] = False
+    country_uid: Optional[FelicityID] = None
+    province_uid: Optional[FelicityID] = None
+    district_uid: Optional[FelicityID] = None
+    identifications: List[Optional[PatientidentificationInput]] = field(
+        default_factory=[]
+    )
 
 
-@strawberry.type
+IdentificationResponse = strawberry.union(
+    "IdentificationResponse",
+    (IdentificationType, OperationError),  # noqa
+    description="",
+)
+
+
+@ strawberry.type
 class PatientMutations:
+    @strawberry.mutation
+    async def create_identification(info, name: str) -> IdentificationResponse:
+
+        is_authenticated, felicity_user = await auth_from_info(info)
+        verify_user_auth(
+            is_authenticated,
+            felicity_user,
+            "Only Authenticated user can create person identification",
+        )
+
+        if not name:
+            return OperationError(error="name is mandatory")
+
+        exists = await models.Identification.get(name=name)
+        if exists:
+            return OperationError(
+                error=f"The Identfication name -> {name} <- already exists"
+            )
+
+        incoming = {
+            "name": name,
+            "created_by_uid": felicity_user.uid,
+            "updated_by_uid": felicity_user.uid,
+        }
+
+        obj_in = schemas.IdentificationCreate(**incoming)
+        identification: models.Identification = await models.Identification.create(obj_in)
+        return IdentificationType(**identification.marshal_simple())
+
+    @strawberry.mutation
+    async def update_identification(
+        info, uid: FelicityID, name: str
+    ) -> IdentificationResponse:
+        is_authenticated, felicity_user = await auth_from_info(info)
+        verify_user_auth(
+            is_authenticated,
+            felicity_user,
+            "Only Authenticated user can update person identifications",
+        )
+
+        identification = await models.Identification.get(uid=uid)
+        if not identification:
+            return OperationError(error=f"identification with uid {uid} does not exist")
+
+        try:
+            setattr(identification, "name", name)
+        except AttributeError as e:
+            logger.warning(e)
+
+        id_in = schemas.IdentificationUpdate(*identification.to_dict())
+        identification = await identification.update(id_in)
+        return IdentificationType(**identification.marshal_simple())
+
     @strawberry.mutation
     async def create_patient(self, info, payload: PatientInputType) -> PatientResponse:
 
@@ -78,6 +150,16 @@ class PatientMutations:
 
         obj_in = schemas.PatientCreate(**incoming)
         patient: models.Patient = await models.Patient.create(obj_in)
+
+        # create identifications
+        for p_id in payload.identifications:
+            pid_in = schemas.PatientIdentificationCreate(
+                patient_uid=patient.uid,
+                identification_uid=p_id.identification_uid,
+                value=p_id.value
+            )
+            await models.PatientIdentification.create(pid_in)
+
         return PatientType(**patient.marshal_simple())
 
     @strawberry.mutation

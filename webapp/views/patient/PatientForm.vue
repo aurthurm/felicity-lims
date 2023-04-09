@@ -1,16 +1,16 @@
 <script setup lang="ts">
 import VueMultiselect from "vue-multiselect";
-import { reactive, computed, onMounted, PropType, toRefs } from "vue";
+import { reactive, computed, onMounted, PropType, toRefs, ref } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import { IPatient } from "../../models/patient";
 import { ADD_PATIENT, UPDATE_PATIENT } from "../../graphql/patient.mutations";
 
 import { useClientStore, useLocationStore, usePatientStore } from "../../stores";
 import { useApiUtil } from "../../composables";
-import { IDistrict, IProvince } from "../../models/location";
 import { IClient } from "../../models/client";
+import { IPatientIdentificationForm } from "../../models/patient";
 import { isNullOrWs } from "../../utils";
-
+import dayjs from "dayjs";
 import { useField, useForm } from "vee-validate";
 import { object, string, boolean, number, date } from "yup";
 
@@ -36,8 +36,8 @@ const state = reactive({
   genders: ["Male", "Female", "Missing", "Trans Gender"] as string[],
   createAction: true,
   countries: computed(() => locationsStore.getCountries),
-  provinces: [] as IProvince[],
-  districts: [] as IDistrict[],
+  provinces: computed(() => locationsStore.getProvinces),
+  districts: computed(() => locationsStore.getDistricts),
   clients: computed<IClient[]>(() => clientStore.getClients),
 });
 
@@ -52,10 +52,35 @@ let clientParams = reactive({
 onMounted(async () => {
   await locationsStore.fetchCountries();
   await clientStore.fetchClients(clientParams);
+  if (props.patient?.countryUid) {
+    await locationsStore.filterProvincesByCountry(props.patient?.countryUid)
+  }
+  if (props.patient?.provinceUid) {
+    await locationsStore.filterDistrictsByProvince(props.patient?.provinceUid)
+  }
+  await patientStore.fetchIdentifications();
 });
 
 // Patient
 const { patient, navigate } = toRefs(props);
+
+const estimateYears = ref(0);
+const estimateMonths = ref(0);
+const estimateDays = ref(0);
+
+const estimateDOB = () => {
+  const estimate = dayjs().subtract(estimateYears.value, 'year').subtract(estimateMonths.value, 'month',).subtract(estimateDays.value, 'day');
+  dateOfBirth.value = estimate.format('YYYY-MM-DD');
+  age.value = estimateYears.value;
+}
+
+const calculateAge = () => {
+  var now = (new Date()).getFullYear();
+  if (dateOfBirth.value) {
+    const born = new Date(dateOfBirth.value as any).getFullYear()
+    age.value = now - born;
+  }
+}
 
 const patientSchema = object({
   uid: number(),
@@ -99,6 +124,7 @@ const { handleSubmit, errors } = useForm({
     districtUid: patient?.value?.districtUid,
     provinceUid: patient?.value?.provinceUid,
     countryUid: patient?.value?.countryUid,
+    identifications: patient?.value?.identifications ?? [],
   } as any,
 });
 
@@ -113,12 +139,12 @@ const { value: dateOfBirth } = useField("dateOfBirth");
 const { value: ageDobEstimated } = useField<boolean>("ageDobEstimated");
 const { value: phoneMobile } = useField("phoneMobile");
 const { value: consentSms } = useField<boolean>("consentSms");
-const { value: districtUid } = useField("districtUid");
-const { value: provinceUid } = useField("provinceUid");
-const { value: countryUid } = useField("countryUid");
+const { value: districtUid } = useField<string>("districtUid");
+const { value: provinceUid } = useField<string>("provinceUid");
+const { value: countryUid } = useField<string>("countryUid");
+const { value: identifications } = useField<IPatientIdentificationForm[]>("identifications");
 
 const submitPatientForm = handleSubmit((values) => {
-  console.log(values);
   if (!values.uid) addPatient(values as IPatient);
   if (values.uid) updatePatient(values as IPatient);
 });
@@ -140,18 +166,23 @@ function addPatient(payload: IPatient) {
         clientUid: payload.client.uid,
         phoneMobile: payload.phoneMobile,
         consentSms: payload.consentSms,
+        countryUid: payload.countryUid,
+        provinceUid: payload.provinceUid,
+        districtUid: payload.districtUid,
+        identifications: payload.identifications
       },
     },
     "createPatient"
   ).then((result) => {
     patientStore.addPatient(result);
-    emit("close");
+    emit("close", result);
     if (navigate.value === true)
       router.push({ name: "patient-detail", params: { patientUid: result.uid } });
   });
 }
 
 function updatePatient(payload: IPatient) {
+  console.log(payload);
   withClientMutation(
     UPDATE_PATIENT,
     {
@@ -168,6 +199,9 @@ function updatePatient(payload: IPatient) {
         clientUid: payload.client.uid,
         phoneMobile: payload.phoneMobile,
         consentSms: payload.consentSms,
+        countryUid: payload.countryUid,
+        provinceUid: payload.provinceUid,
+        districtUid: payload.districtUid,
       },
     },
     "updatePatient"
@@ -179,29 +213,30 @@ function updatePatient(payload: IPatient) {
 
 // Provinces
 function getProvinces(event: any) {
-  locationsStore.filterProvincesByCountry(countryUid.value as number);
+  locationsStore.filterProvincesByCountry(countryUid.value);
 }
 
 // Districts
 function getDistricts(event: any) {
-  locationsStore.filterDistrictsByProvince(provinceUid.value as number);
+  locationsStore.filterDistrictsByProvince(provinceUid.value);
+}
+
+// Extra Patient Identifiers
+const addIdentifier = () => {
+  identifications.value.push({ identificationUid: "12122", value: "" })
+}
+const removeIdentifier = (index: number) => {
+  identifications.value.splice(index, 1)
 }
 </script>
 
 <template>
-  <form
-    @submit.prevent="submitPatientForm"
-    class="border-2 border-gray-900 border-dotted rounded-sm px-4 py-8"
-    autocomplete="off"
-  >
+  <form @submit.prevent="submitPatientForm" class="border-2 border-gray-900 border-dotted rounded-sm px-4 py-8"
+    autocomplete="off">
     <label class="flex whitespace-nowrap w-full">
       <span class="text-gray-700 w-4/12">Patient Unique Identifier</span>
       <div class="w-full">
-        <input
-          class="form-input mt-1 block w-full"
-          v-model="clientPatientId"
-          placeholder="Patient Unique Identifier"
-        />
+        <input class="form-input mt-1 block w-full" v-model="clientPatientId" placeholder="Patient Unique Identifier" />
         <div class="text-orange-600 w-4/12">{{ errors.clientPatientId }}</div>
       </div>
     </label>
@@ -209,11 +244,7 @@ function getDistricts(event: any) {
     <label class="flex whitespace-nowrap w-full">
       <span class="text-gray-700 w-4/12">First Name</span>
       <div class="w-full">
-        <input
-          class="form-input mt-1 w-full"
-          v-model="firstName"
-          placeholder="First Name"
-        />
+        <input class="form-input mt-1 w-full" v-model="firstName" placeholder="First Name" />
         <div class="text-orange-600 w-4/12">{{ errors.firstName }}</div>
       </div>
     </label>
@@ -221,11 +252,7 @@ function getDistricts(event: any) {
     <label class="flex whitespace-nowrap mb-2 w-full">
       <span class="text-gray-700 w-4/12">Middle Name</span>
       <div class="w-full">
-        <input
-          class="form-input mt-1 w-full"
-          v-model="middleName"
-          placeholder="Middle Name"
-        />
+        <input class="form-input mt-1 w-full" v-model="middleName" placeholder="Middle Name" />
         <div class="text-orange-600 w-4/12">{{ errors.middleName }}</div>
       </div>
     </label>
@@ -233,50 +260,51 @@ function getDistricts(event: any) {
     <label class="flex whitespace-nowrap w-full">
       <span class="text-gray-700 w-4/12">Last Name</span>
       <div class="w-full">
-        <input
-          class="form-input mt-1 w-full"
-          v-model="lastName"
-          placeholder="Last Name"
-        />
+        <input class="form-input mt-1 w-full" v-model="lastName" placeholder="Last Name" />
         <div class="text-orange-600 w-4/12">{{ errors.lastName }}</div>
       </div>
     </label>
 
-    <label class="flex whitespace-nowrap mb-2 w-full">
-      <span class="text-gray-700 w-4/12">Age</span>
-      <div class="w-full">
-        <input
-          class="form-input mt-1 w-full"
-          type="number"
-          v-model="age"
-          placeholder="Age"
-        />
-        <div class="text-orange-600 w-4/12">{{ errors.age }}</div>
+    <label class="flex whitespace-nowrap my-2 w-full">
+      <span class="text-gray-700 w-4/12">Age/DOB Estimated?</span>
+      <div class="w-full flex justify-between items-center">
+        <input type="checkbox" class="form-checkbox text-sky-800" v-model="ageDobEstimated" />
+        <div class="flex justify-start items-center gap-x-2 ml-4" v-show="ageDobEstimated">
+          <label for="estimateYears">
+            <span class="mr-1">Years</span>
+            <input name="estimateYears" type="number" min=0 class="form-input w-24 py-0 text-sky-800"
+              v-model="estimateYears" @change="estimateDOB()" @keyup="estimateDOB()" />
+          </label>
+          <label for="estimateMonths">
+            <span class="mr-1">Months</span>
+            <input name="estimateMonths" type="number" min=0 max=12 class="form-input w-24 py-0 text-sky-800"
+              v-model="estimateMonths" @change="estimateDOB()" @keyup="estimateDOB()" />
+          </label>
+          <label for="estimateDays">
+            <span class="mr-1">Days</span>
+            <input name="estimateDays" type="number" min=0 max=365 class="form-input w-24 py-0 text-sky-800"
+              v-model="estimateDays" @change="estimateDOB()" @keyup="estimateDOB()" />
+          </label>
+        </div>
+        <div class="text-orange-600 w-4/12">{{ errors.ageDobEstimated }}</div>
       </div>
     </label>
 
     <label class="flex whitespace-nowrap mb-2 w-full">
       <span class="text-gray-700 w-4/12">Date of Birth</span>
       <div class="w-full">
-        <input
-          class="form-input mt-1 w-full"
-          type="date"
-          v-model="dateOfBirth"
-          placeholder="Date of Birth"
-        />
+        <input class="form-input mt-1 w-full disabled:bg-slate-200" type="date" v-model="dateOfBirth"
+          placeholder="Date of Birth" :disabled="ageDobEstimated" @change="calculateAge()" @keyup="calculateAge()" />
         <div class="text-orange-600 w-4/12">{{ errors.dateOfBirth }}</div>
       </div>
     </label>
 
     <label class="flex whitespace-nowrap mb-2 w-full">
-      <span class="text-gray-700 w-4/12">Age/DOB Estimated?</span>
+      <span class="text-gray-700 w-4/12">Age</span>
       <div class="w-full">
-        <input
-          type="checkbox"
-          class="form-checkbox text-sky-800"
-          v-model="ageDobEstimated"
-        />
-        <div class="text-orange-600 w-4/12">{{ errors.ageDobEstimated }}</div>
+        <input class="form-input mt-1 w-full disabled:bg-slate-200" type="number" v-model="age" placeholder="Age"
+          disabled />
+        <div class="text-orange-600 w-4/12">{{ errors.age }}</div>
       </div>
     </label>
 
@@ -296,11 +324,7 @@ function getDistricts(event: any) {
     <label class="flex whitespace-nowrap mb-2 w-full">
       <span class="text-gray-700 w-4/12">Mobile Number</span>
       <div class="w-full">
-        <input
-          class="form-input mt-1 w-full"
-          v-model="phoneMobile"
-          placeholder="Mobile Number"
-        />
+        <input class="form-input mt-1 w-full" v-model="phoneMobile" placeholder="Mobile Number" />
         <div class="text-orange-600 w-4/12">{{ errors.phoneMobile }}</div>
       </div>
     </label>
@@ -317,79 +341,86 @@ function getDistricts(event: any) {
     <label class="flex whitespace-nowrap mb-2 w-full">
       <span class="text-gray-700 w-4/12">Primary Referrer</span>
       <div class="w-full">
-        <VueMultiselect
-          placeholder="Select a Primary Referrer"
-          v-model="client"
-          :options="state.clients"
-          :searchable="true"
-          label="name"
-          track-by="uid"
-        >
+        <VueMultiselect placeholder="Select a Primary Referrer" v-model="client" :options="state.clients"
+          :searchable="true" label="name" track-by="uid">
         </VueMultiselect>
         <div class="text-orange-600 w-4/12">{{ errors.client }}</div>
+      </div>
+    </label>
+
+    <label class="flex whitespace-nowrap mb-2 w-full">
+      <span class="text-gray-700 w-4/12 flex justify-between items-center">
+        <span class="mr-4">Extra Ids:</span>
+        <div>
+          <span
+            class="relative px-1 mr-2 mt-4 border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
+            @click="addIdentifier()">
+            Add
+          </span>
+        </div>
+      </span>
+      <div class="w-full border-gray-200">
+        <div class="flex justify-around items-center  w-full" v-for="(identication, index) of identifications">
+          <span>Identification</span>
+          <select class="form-select mt-1" v-model="identication.identificationUid">
+            <option></option>
+            <option v-for="identifier of patientStore.identifications" :key="identifier.uid" :value="identifier.uid">
+              {{ identifier.name }}
+            </option>
+          </select>
+          <span>Value</span>
+          <input type="text" class="form-input text-sky-800" v-model="identication.value" />
+          <span class="p-2 text-red-800" @click.prevent="removeIdentifier(index)">X</span>
+        </div>
       </div>
     </label>
 
     <hr class="my-2" />
 
     <div class="grid grid-cols-3 gap-x-4 mb-4">
-      <label class="flex items-center whitespace-nowrap col-span-1 mb-2 w-full">
-        <span class="text-gray-700 w-4/12">Country</span>
-        <select
-          class="form-select mt-1 w-full"
-          v-model="countryUid"
-          @change="getProvinces($event)"
-        >
-          <option :value="null"></option>
-          <option
-            v-for="country in state.countries"
-            :key="country.uid"
-            :value="country.uid"
-          >
-            {{ country.name }}
-          </option>
-        </select>
-      </label>
-      <label class="flex items-center whitespace-nowrap col-span-1 mb-2 w-full">
-        <span class="text-gray-700 w-4/12">Province</span>
-        <select
-          class="form-select mt-1 w-full"
-          v-model="provinceUid"
-          @change="getDistricts($event)"
-        >
-          <option :value="null"></option>
-          <option
-            v-for="province in state.provinces"
-            :key="province.uid"
-            :value="province.uid"
-          >
-            {{ province.name }}
-          </option>
-        </select>
-      </label>
-      <label class="flex items-center whitespace-nowrap col-span-1 mb-2 w-full">
-        <span class="text-gray-700 w-4/12">District</span>
-        <select class="form-select mt-1 w-full" v-model="districtUid">
-          <option :value="null"></option>
-          <option
-            v-for="district in state.districts"
-            :key="district.uid"
-            :value="district.uid"
-          >
-            {{ district.name }}
-          </option>
-        </select>
-      </label>
+      <div class="col-span-1">
+        <label class="flex gap-x-2 items-center whitespace-nowrap w-full">
+          <span class="text-gray-700 w-4/12">Country</span>
+          <select class="form-select mt-1 w-full" v-model="countryUid" @change="getProvinces($event)">
+            <option :value="null"></option>
+            <option v-for="country in state.countries" :key="country.uid" :value="country.uid">
+              {{ country.name }}
+            </option>
+          </select>
+        </label>
+        <div class="text-orange-600 w-4/12">{{ errors.countryUid }}</div>
+      </div>
+
+      <div class="col-span-1">
+        <label class="flex gap-x-2 items-center whitespace-nowrap col-span-1 w-full">
+          <span class="text-gray-700 w-4/12">Province</span>
+          <select class="form-select mt-1 w-full" v-model="provinceUid" @change="getDistricts($event)">
+            <option :value="null"></option>
+            <option v-for="province in state.provinces" :key="province.uid" :value="province.uid">
+              {{ province.name }}
+            </option>
+          </select>
+        </label>
+        <div class="text-orange-600 w-4/12">{{ errors.provinceUid }}</div>
+      </div>
+
+      <div class="col-span-1">
+        <label class="flex gap-x-2 items-center whitespace-nowrap col-span-1 w-full">
+          <span class="text-gray-700 w-4/12">District</span>
+          <select class="form-select mt-1 w-full" v-model="districtUid">
+            <option :value="null"></option>
+            <option v-for="district in state.districts" :key="district.uid" :value="district.uid">
+              {{ district.name }}
+            </option>
+          </select>
+        </label>
+      </div>
+      <div class="text-orange-600 w-4/12">{{ errors.districtUid }}</div>
     </div>
-    <div class="text-orange-600 w-4/12">{{ errors.countryUid }}</div>
-    <div class="text-orange-600 w-4/12">{{ errors.provinceUid }}</div>
-    <div class="text-orange-600 w-4/12">{{ errors.districtUid }}</div>
 
     <hr />
-    <button
-      type="submit"
-      class="-mb-4 w-1/5 border border-sky-800 bg-sky-800 text-white rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-sky-800 focus:outline-none focus:shadow-outline"
-    >
+    <button type="submit"
+      class="-mb-4 w-1/5 border border-sky-800 bg-sky-800 text-white rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-sky-800 focus:outline-none focus:shadow-outline">
       Save Patient
     </button>
   </form>

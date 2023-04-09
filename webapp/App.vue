@@ -5,6 +5,8 @@ import axios from "./axios/no-auth";
 import { useStreamStore, useAuthStore } from "./stores";
 import { userPreferenceComposable } from "./composables";
 
+
+
 const { currentRoute, push } = useRouter();
 const authStore = useAuthStore();
 

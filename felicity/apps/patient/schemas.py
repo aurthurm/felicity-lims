@@ -30,6 +30,9 @@ class PatientBase(BaseAuditModel):
     email: Optional[EmailStr] = None
     internal_use: Optional[bool] = False
     active: Optional[bool] = None
+    district_uid: Optional[FelicityIDType] = None
+    province_uid: Optional[FelicityIDType] = None
+    country_uid: Optional[FelicityIDType] = None
 
 
 # Properties to receive via API on creation
@@ -60,4 +63,82 @@ class Patient(PatientInDBBase):
 
 # Additional properties stored in DB
 class PatientInDB(PatientInDBBase):
+    pass
+
+
+#
+#  Identification Schema
+#
+
+# Shared properties
+
+
+class IdentificationBase(BaseAuditModel):
+    name: str
+
+
+# Properties to receive via API on creation
+class IdentificationCreate(IdentificationBase):
+    pass
+
+
+# Properties to receive via API on update
+class IdentificationUpdate(IdentificationBase):
+    pass
+
+
+class IdentificationInDBBase(IdentificationBase):
+    uid: Optional[FelicityIDType] = None
+
+    class Config:
+        orm_mode = True
+
+
+# Additional properties to return via API
+class Identification(IdentificationInDBBase):
+    pass
+
+
+# Additional properties stored in DB
+class IdentificationInDB(IdentificationInDBBase):
+    pass
+
+
+#
+#  PatientIdentification Schema
+#
+
+# Shared properties
+
+
+class PatientIdentificationBase(BaseAuditModel):
+    patient_uid: str
+    identification_uid: str
+    value: str
+
+
+# Properties to receive via API on creation
+class PatientIdentificationCreate(PatientIdentificationBase):
+    pass
+
+
+# Properties to receive via API on update
+class PatientIdentificationUpdate(PatientIdentificationBase):
+    pass
+
+
+class PatientIdentificationInDBBase(PatientIdentificationBase):
+    uid: Optional[FelicityIDType] = None
+
+    class Config:
+        orm_mode = True
+
+
+# Additional properties to return via API
+class PatientIdentification(PatientIdentificationInDBBase):
+    pass
+
+
+# Additional properties stored in DB
+class PatientIdentificationInDB(PatientIdentificationInDBBase):
     pass
