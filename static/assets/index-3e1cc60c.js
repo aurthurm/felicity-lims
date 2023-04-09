@@ -1,1 +1,0 @@
-import{_ as t,B as o,o as n,g as c,l as r}from"./index-00041ead.js";const s={},i={class:""};function _(a,l){const e=o("router-view");return n(),c("div",i,[r(e)])}const f=t(s,[["render",_],["__file","/home/aurthur/Development/Python/felicity/felicity-lims/webapp/views/patient/index.vue"]]);export{f as default};
