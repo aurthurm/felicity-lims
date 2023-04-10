@@ -3,12 +3,11 @@ import logging
 from typing import List
 
 import strawberry  # noqa
+from api.gql.impress.types import ReportImpressType
+from api.gql.types import BytesScalar
+from apps.impress.models import ReportImpress
+from core.uid_gen import FelicityID
 from PyPDF2 import PdfWriter
-
-from felicity.api.gql.impress.types import ReportImpressType
-from felicity.api.gql.types import BytesScalar
-from felicity.apps.impress.models import ReportImpress
-from felicity.core.uid_gen import FelicityID
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

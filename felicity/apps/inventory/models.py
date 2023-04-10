@@ -1,11 +1,10 @@
+from apps import BaseAuditDBModel
+from apps.common.models import IdSequence
+from apps.inventory import schemas
+from apps.inventory.conf import order_states
+from core.uid_gen import FelicitySAID
 from sqlalchemy import Column, DateTime, Float, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
-
-from felicity.apps import BaseAuditDBModel
-from felicity.apps.common.models import IdSequence
-from felicity.apps.inventory import schemas
-from felicity.apps.inventory.conf import order_states
-from felicity.core.uid_gen import FelicitySAID
 
 
 class StockItem(BaseAuditDBModel):

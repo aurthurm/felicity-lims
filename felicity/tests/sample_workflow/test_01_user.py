@@ -1,9 +1,8 @@
 import logging
 
 import pytest
-
-from felicity.core.config import settings
-from felicity.tests.utils.user import (
+from core.config import settings
+from tests.utils.user import (
     add_auth_mutation,
     add_user_mutation,
     make_password,

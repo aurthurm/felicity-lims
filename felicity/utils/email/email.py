@@ -2,9 +2,8 @@ import logging
 from pathlib import Path
 
 import emails
+from core.config import settings
 from emails.template import JinjaTemplate
-
-from felicity.core.config import settings
 
 
 def send_email(

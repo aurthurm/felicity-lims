@@ -2,16 +2,11 @@ import logging
 from typing import Dict, List, Optional
 
 import strawberry  # noqa
-
-from felicity.api.gql import OperationError, auth_from_info, verify_user_auth
-from felicity.api.gql.reflex.types import (
-    ReflexActionType,
-    ReflexBrainType,
-    ReflexRuleType,
-)
-from felicity.apps.analysis.models import analysis as analysis_models
-from felicity.apps.reflex import models, schemas
-from felicity.core.uid_gen import FelicityID
+from api.gql import OperationError, auth_from_info, verify_user_auth
+from api.gql.reflex.types import ReflexActionType, ReflexBrainType, ReflexRuleType
+from apps.analysis.models import analysis as analysis_models
+from apps.reflex import models, schemas
+from core.uid_gen import FelicityID
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

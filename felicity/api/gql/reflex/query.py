@@ -2,16 +2,11 @@ from typing import List, Optional
 
 import sqlalchemy as sa
 import strawberry  # noqa
-
-from felicity.api.gql import PageInfo
-from felicity.api.gql.reflex.types import (
-    ReflexRuleCursorPage,
-    ReflexRuleEdge,
-    ReflexRuleType,
-)
-from felicity.apps.reflex import models
-from felicity.core.uid_gen import FelicityID
-from felicity.utils import has_value_or_is_truthy
+from api.gql import PageInfo
+from api.gql.reflex.types import ReflexRuleCursorPage, ReflexRuleEdge, ReflexRuleType
+from apps.reflex import models
+from core.uid_gen import FelicityID
+from utils import has_value_or_is_truthy
 
 
 @strawberry.type

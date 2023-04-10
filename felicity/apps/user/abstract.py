@@ -1,14 +1,13 @@
 from datetime import datetime
 
+from apps import BaseAuditDBModel  # noqa
+from apps import DBModel
+from apps.user import schemas
+from core.security import get_password_hash, password_check
+from core.uid_gen import FelicitySAID
 from fastapi.encoders import jsonable_encoder
 from sqlalchemy import Boolean, Column, DateTime, Integer, String
 from sqlalchemy.ext.declarative import declared_attr
-
-from felicity.apps import BaseAuditDBModel  # noqa
-from felicity.apps import DBModel
-from felicity.apps.user import schemas
-from felicity.core.security import get_password_hash, password_check
-from felicity.core.uid_gen import FelicitySAID
 
 
 class SimpleAuditMixin(object):

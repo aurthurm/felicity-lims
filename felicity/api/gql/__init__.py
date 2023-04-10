@@ -2,10 +2,8 @@ import logging
 from typing import Optional, Tuple, Union
 
 import strawberry  # noqa
-
-from felicity.core.uid_gen import FelicityID
-
-from ...apps.user.models import User, UserAuth
+from apps.user.models import User, UserAuth
+from core.uid_gen import FelicityID
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

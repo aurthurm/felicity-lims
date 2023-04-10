@@ -1,10 +1,10 @@
 from datetime import datetime
 from typing import List, Optional
 
-from felicity.apps.common.schemas import BaseAuditModel
-from felicity.apps.setup.schemas import Department
-from felicity.apps.user.schemas import Group, User
-from felicity.core.uid_gen import FelicityIDType
+from apps.common.schemas import BaseAuditModel
+from apps.setup.schemas import Department
+from apps.user.schemas import Group, User
+from core.uid_gen import FelicityIDType
 
 
 #

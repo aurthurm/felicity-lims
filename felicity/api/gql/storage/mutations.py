@@ -2,14 +2,13 @@ import logging
 from typing import Dict, List, Optional
 
 import strawberry  # noqa
-
-from felicity.api.gql import OperationError, auth_from_info, verify_user_auth
-from felicity.api.gql.analysis.types.analysis import SampleType
-from felicity.api.gql.storage import types
-from felicity.apps.analysis.conf import states as analysis_states
-from felicity.apps.analysis.models import analysis as an_models
-from felicity.apps.storage import models, schemas
-from felicity.core.uid_gen import FelicityID
+from api.gql import OperationError, auth_from_info, verify_user_auth
+from api.gql.analysis.types.analysis import SampleType
+from api.gql.storage import types
+from apps.analysis.conf import states as analysis_states
+from apps.analysis.models import analysis as an_models
+from apps.storage import models, schemas
+from core.uid_gen import FelicityID
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

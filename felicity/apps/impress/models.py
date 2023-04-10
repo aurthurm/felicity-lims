@@ -1,15 +1,14 @@
 import logging
 
+from apps import Auditable
+from apps.analysis.models.analysis import Sample
+from apps.impress.schemas import ReportImpressCreate, ReportImpressUpdate
+from apps.notification.utils import FelicityStreamer
+from apps.user.models import User
+from core.uid_gen import FelicitySAID
 from sqlalchemy import Boolean, Column, DateTime, ForeignKey, LargeBinary, String
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import relationship
-
-from felicity.apps import Auditable
-from felicity.apps.analysis.models.analysis import Sample
-from felicity.apps.impress.schemas import ReportImpressCreate, ReportImpressUpdate
-from felicity.apps.notification.utils import FelicityStreamer
-from felicity.apps.user.models import User
-from felicity.core.uid_gen import FelicitySAID
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

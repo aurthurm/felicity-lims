@@ -1,11 +1,10 @@
+from apps.common import schemas as core_schemas  # noqa
+from apps.user import models  # noqa
+from core import security  # noqa
+from core.config import settings  # noqa
 from graphql import GraphQLError
 from jose import jwt
 from pydantic import ValidationError
-
-from felicity.apps.common import schemas as core_schemas  # noqa
-from felicity.apps.user import models  # noqa
-from felicity.core import security  # noqa
-from felicity.core.config import settings  # noqa
 
 
 async def get_current_user(token: str = None) -> models.User:

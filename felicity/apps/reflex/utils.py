@@ -2,9 +2,9 @@ import logging
 from datetime import datetime
 from typing import List
 
-from felicity.apps.analysis.models.analysis import Analysis, Sample
-from felicity.apps.analysis.models.results import AnalysisResult, conf, schemas
-from felicity.apps.reflex import models as reflex_models
+from apps.analysis.models.analysis import Analysis, Sample
+from apps.analysis.models.results import AnalysisResult, conf, schemas
+from apps.reflex import models as reflex_models
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

@@ -3,12 +3,11 @@ from datetime import datetime, timedelta
 from typing import Dict, List, Optional
 
 import strawberry  # noqa
-
-from felicity.api.gql import OperationError, auth_from_info, verify_user_auth
-from felicity.api.gql.inventory import types
-from felicity.apps.inventory import models, schemas
-from felicity.apps.inventory.conf import order_states
-from felicity.core.uid_gen import FelicityID
+from api.gql import OperationError, auth_from_info, verify_user_auth
+from api.gql.inventory import types
+from apps.inventory import models, schemas
+from apps.inventory.conf import order_states
+from core.uid_gen import FelicityID
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

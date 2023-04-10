@@ -2,36 +2,35 @@ import json
 import logging
 from typing import List
 
+from api.gql.schema import gql_schema  # noqa
+from api.rest.api_v1.api import api_router  # noqa
+from apps.common.channel import broadcast
+from apps.job.sched import felicity_halt_workforce, felicity_workforce_init
+from apps.notification.utils import FelicityNotifier, FelicityStreamer
+from core.config import settings  # noqa
+from core.repeater import repeat_every
 from fastapi import FastAPI, Request, WebSocket
 from fastapi.responses import HTMLResponse
 #
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
+from init import initialize_felicity  # noqa
+from middlewares.auth_backend import FelicityAuthBackend
+#
+from opentelemetry import trace
+from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import OTLPSpanExporter
+from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
+from opentelemetry.instrumentation.logging import LoggingInstrumentor
+from opentelemetry.sdk.resources import Resource
+from opentelemetry.sdk.trace import TracerProvider
+from opentelemetry.sdk.trace.export import BatchSpanProcessor
 from starlette.concurrency import run_until_first_complete
 from starlette.middleware.authentication import AuthenticationMiddleware
 from starlette.middleware.cors import CORSMiddleware
 from strawberry.asgi import GraphQL
 from strawberry.subscriptions import GRAPHQL_TRANSPORT_WS_PROTOCOL, GRAPHQL_WS_PROTOCOL
-#
-from opentelemetry import trace
-from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import OTLPSpanExporter
-from opentelemetry.sdk.trace import TracerProvider
-from opentelemetry.sdk.trace.export import BatchSpanProcessor
-from opentelemetry.sdk.resources import Resource
-from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
-from opentelemetry.instrumentation.logging import LoggingInstrumentor
-
-from felicity.api.gql.schema import gql_schema  # noqa
-from felicity.api.rest.api_v1.api import api_router  # noqa
-from felicity.apps.common.channel import broadcast
-from felicity.apps.job.sched import felicity_halt_workforce, felicity_workforce_init
-from felicity.apps.notification.utils import FelicityNotifier, FelicityStreamer
-from felicity.core.config import settings  # noqa
-from felicity.core.repeater import repeat_every
-from felicity.init import initialize_felicity  # noqa
-from felicity.middlewares.auth_backend import FelicityAuthBackend
-from felicity.utils.dirs import resolve_root_dirs
-from felicity.views import setup_backends
+from utils.dirs import resolve_root_dirs
+from views import setup_backends
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -40,16 +39,6 @@ logger = logging.getLogger(__name__)
 flims = FastAPI(
     title=settings.PROJECT_NAME, openapi_url=f"{settings.API_V1_STR}/openapi.json"
 )
-resource = Resource(attributes={"service.name": "FelicityLIMS"})
-tracer = TracerProvider(resource=resource)
-trace.set_tracer_provider(tracer)
-tracer.add_span_processor(
-    BatchSpanProcessor(
-        OTLPSpanExporter(endpoint="http://localhost:4317")
-    )
-)
-#  grafana tempo/jaeger/signoz
-# https://itnext.io/observability-part-2-tracing-1537e8d79933 or check https://github.com/blueswen/fastapi-jaeger
 
 
 @flims.on_event("startup")
@@ -197,5 +186,20 @@ async def stream_socket(websocket):
 flims.add_websocket_route("/streamer", stream_socket, "notification-only")
 
 # Instrument Felicity
-LoggingInstrumentor().instrument()
-FastAPIInstrumentor.instrument_app(flims)
+if settings.RUN_OPEN_TRACING:
+    logging.info("Open Tracing activated :)")
+    resource = Resource(attributes={"service.name": "FelicityLIMS"})
+    tracer = TracerProvider(resource=resource)
+    trace.set_tracer_provider(tracer)
+    tracer.add_span_processor(
+        BatchSpanProcessor(
+            OTLPSpanExporter(
+                endpoint=settings.OTLP_SPAN_EXPORT_URL
+            )
+        )
+    )
+    #  grafana tempo/jaeger/signoz
+    # https://itnext.io/observability-part-2-tracing-1537e8d79933 or check https://github.com/blueswen/fastapi-jaeger
+
+    LoggingInstrumentor().instrument()
+    FastAPIInstrumentor.instrument_app(flims)

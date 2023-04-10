@@ -1,16 +1,17 @@
 from typing import List, Optional
 
+from apps.common.schemas import BaseAuditModel, BaseModel
+from apps.user.conf import themes
+from core.uid_gen import FelicityIDType
 from pydantic import EmailStr
-
-from felicity.apps.common.schemas import BaseAuditModel, BaseModel
-from felicity.apps.user.conf import themes
-from felicity.core.uid_gen import FelicityIDType
 
 #
 #  Permission Schema
 #
 
 # Shared properties
+
+
 class PermissionBase(BaseModel):
     action: Optional[str] = None
     target: Optional[str] = None

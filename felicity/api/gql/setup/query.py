@@ -2,9 +2,8 @@ from typing import List, Optional
 
 import sqlalchemy as sa
 import strawberry  # noqa
-
-from felicity.api.gql import PageInfo
-from felicity.api.gql.setup.types import (
+from api.gql import PageInfo
+from api.gql.setup.types import (
     CountryType,
     DepartmentType,
     DistrictCursorPage,
@@ -28,9 +27,9 @@ from felicity.api.gql.setup.types import (
     SupplierType,
     UnitType,
 )
-from felicity.apps.setup import models
-from felicity.core.uid_gen import FelicityID
-from felicity.utils import has_value_or_is_truthy
+from apps.setup import models
+from core.uid_gen import FelicityID
+from utils import has_value_or_is_truthy
 
 
 async def get_laboratory(setup_name: str) -> LaboratoryType:

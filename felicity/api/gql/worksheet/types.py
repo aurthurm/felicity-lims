@@ -2,19 +2,18 @@ from datetime import datetime
 from typing import List, Optional
 
 import strawberry  # noqa
-
-from felicity.api.gql import PageInfo
-from felicity.api.gql.analysis.types.analysis import (
+from api.gql import PageInfo
+from api.gql.analysis.types.analysis import (
     AnalysisType,
     QCLevelType,
     QCTemplateType,
     SampleTypeTyp,
 )
-from felicity.api.gql.analysis.types.results import AnalysisResultType
-from felicity.api.gql.setup.types import InstrumentType
-from felicity.api.gql.types import JSONScalar
-from felicity.api.gql.user.types import UserType
-from felicity.core.uid_gen import FelicityID
+from api.gql.analysis.types.results import AnalysisResultType
+from api.gql.setup.types import InstrumentType
+from api.gql.types import JSONScalar
+from api.gql.user.types import UserType
+from core.uid_gen import FelicityID
 
 
 @strawberry.type

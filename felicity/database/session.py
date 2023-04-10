@@ -1,16 +1,15 @@
 from asyncio import current_task
 from typing import AsyncGenerator
 
+from core.config import settings
+from opentelemetry.instrumentation.sqlalchemy import SQLAlchemyInstrumentor
+from sqlalchemy import create_engine
 from sqlalchemy.ext.asyncio import (
     AsyncSession,
     async_scoped_session,
     create_async_engine,
 )
 from sqlalchemy.orm import sessionmaker
-from sqlalchemy import create_engine
-
-from felicity.core.config import settings
-from opentelemetry.instrumentation.sqlalchemy import SQLAlchemyInstrumentor
 
 async_engine = create_async_engine(
     settings.SQLALCHEMY_TEST_ASYNC_DATABASE_URI
@@ -23,11 +22,12 @@ async_engine = create_async_engine(
 async_session_factory = sessionmaker(
     bind=async_engine, expire_on_commit=False, autoflush=False, class_=AsyncSession
 )
-AsyncSessionScoped = async_scoped_session(
-    async_session_factory, scopefunc=current_task)
+AsyncSessionScoped = async_scoped_session(async_session_factory, scopefunc=current_task)
 
 engine = create_engine(settings.SQLALCHEMY_DATABASE_URI)
-SQLAlchemyInstrumentor().instrument(engine=engine,)
+SQLAlchemyInstrumentor().instrument(
+    engine=engine,
+)
 
 #  Async Dependency
 

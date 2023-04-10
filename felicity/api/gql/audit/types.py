@@ -1,8 +1,7 @@
 from typing import Optional, Text
 
 import strawberry  # noqa
-
-from felicity.core.uid_gen import FelicityID
+from core.uid_gen import FelicityID
 
 
 @strawberry.type

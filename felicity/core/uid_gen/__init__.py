@@ -1,10 +1,9 @@
 from typing import NewType
 
 import strawberry
+from core.uid_gen.snow_flake import Snowflake
+from core.uid_gen.sony_flake import SonyFlake
 from sqlalchemy import String
-
-from felicity.core.uid_gen.snow_flake import Snowflake
-from felicity.core.uid_gen.sony_flake import SonyFlake
 
 # For sqlalchemy tables
 FelicitySAID = String

@@ -1,3 +1,6 @@
+python -i -m asyncio main.py 
+
+
 KPI:
 Total number of urgent tests
 Critical Results

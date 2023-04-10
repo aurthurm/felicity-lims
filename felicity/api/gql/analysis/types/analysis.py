@@ -2,19 +2,13 @@ from datetime import datetime
 from typing import List, Optional
 
 import strawberry  # noqa
-
-from felicity.api.gql import PageInfo
-from felicity.api.gql.client.types import ClientType
-from felicity.api.gql.patient.types import PatientType
-from felicity.api.gql.setup.types import (
-    DepartmentType,
-    InstrumentType,
-    MethodType,
-    UnitType,
-)
-from felicity.api.gql.storage.types import StorageContainerType
-from felicity.api.gql.user.types import UserType
-from felicity.core.uid_gen import FelicityID
+from api.gql import PageInfo
+from api.gql.client.types import ClientType
+from api.gql.patient.types import PatientType
+from api.gql.setup.types import DepartmentType, InstrumentType, MethodType, UnitType
+from api.gql.storage.types import StorageContainerType
+from api.gql.user.types import UserType
+from core.uid_gen import FelicityID
 
 
 @strawberry.type

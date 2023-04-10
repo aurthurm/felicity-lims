@@ -1,14 +1,13 @@
 import base64
 import binascii
 
+from api.gql.deps import get_current_active_user
 from starlette.authentication import AuthCredentials  # UnauthenticatedUser,
 from starlette.authentication import (
     AuthenticationBackend,
     AuthenticationError,
     SimpleUser,
 )
-
-from felicity.api.gql.deps import get_current_active_user
 
 
 class FelicityAuthBackend(AuthenticationBackend):

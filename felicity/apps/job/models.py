@@ -1,8 +1,7 @@
+from core.uid_gen import FelicitySAID
+from database.base_class import DBModel
 from sqlalchemy import Column, Integer, String
 from sqlalchemy.dialects.postgresql import JSONB
-
-from felicity.core.uid_gen import FelicitySAID
-from felicity.database.base_class import DBModel
 
 from . import conf, schemas
 

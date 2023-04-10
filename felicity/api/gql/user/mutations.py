@@ -4,27 +4,26 @@ from datetime import timedelta
 from typing import Optional
 
 import strawberry  # noqa
-
-from felicity.api.gql import (
+from api.gql import (
     MessageResponse,
     MessageType,
     OperationError,
     auth_from_info,
     verify_user_auth,
 )
-from felicity.api.gql.user.types import (
+from api.gql.user.types import (
     AuthenticatedData,
     GroupType,
     UpdatedGroupPerms,
     UserAuthType,
     UserType,
 )
-from felicity.apps.user import models as user_models
-from felicity.apps.user import schemas as user_schemas
-from felicity.core import security
-from felicity.core.config import settings
-from felicity.core.security import generate_password_reset_token
-from felicity.core.uid_gen import FelicityID
+from apps.user import models as user_models
+from apps.user import schemas as user_schemas
+from core import security
+from core.config import settings
+from core.security import generate_password_reset_token
+from core.uid_gen import FelicityID
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

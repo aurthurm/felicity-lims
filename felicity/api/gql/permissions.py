@@ -1,11 +1,11 @@
 import logging
 
-from strawberry.permission import BasePermission
-
-from ...apps.analysis.permissions import (
+from apps.analysis.permissions import (
     check_result_verification,
     check_sample_verification,
 )
+from strawberry.permission import BasePermission
+
 from . import auth_from_info
 
 logging.basicConfig(level=logging.INFO)

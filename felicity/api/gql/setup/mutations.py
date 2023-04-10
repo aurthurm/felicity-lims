@@ -4,9 +4,8 @@ from datetime import datetime
 from typing import Dict, List, Optional
 
 import strawberry  # noqa
-
-from felicity.api.gql import OperationError
-from felicity.api.gql.setup.types import (
+from api.gql import OperationError
+from api.gql.setup.types import (
     CalibrationCertificateType,
     CountryType,
     DepartmentType,
@@ -22,9 +21,9 @@ from felicity.api.gql.setup.types import (
     SupplierType,
     UnitType,
 )
-from felicity.apps.analysis.models import analysis as analysis_models
-from felicity.apps.setup import models, schemas
-from felicity.core.uid_gen import FelicityID
+from apps.analysis.models import analysis as analysis_models
+from apps.setup import models, schemas
+from core.uid_gen import FelicityID
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

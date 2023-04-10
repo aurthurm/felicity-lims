@@ -3,17 +3,16 @@ from typing import List, Optional
 
 import sqlalchemy as sa
 import strawberry  # noqa
-
-from felicity.api.gql import PageInfo
-from felicity.api.gql.analysis.types import analysis as a_types
-from felicity.api.gql.analysis.types import results as r_types
-from felicity.apps.analysis import conf as analysis_conf
-from felicity.apps.analysis.models import analysis as a_models
-from felicity.apps.analysis.models import qc as qc_models
-from felicity.apps.analysis.models import results as r_models
-from felicity.apps.analysis.utils import sample_search
-from felicity.core.uid_gen import FelicityID
-from felicity.utils import has_value_or_is_truthy
+from api.gql import PageInfo
+from api.gql.analysis.types import analysis as a_types
+from api.gql.analysis.types import results as r_types
+from apps.analysis import conf as analysis_conf
+from apps.analysis.models import analysis as a_models
+from apps.analysis.models import qc as qc_models
+from apps.analysis.models import results as r_models
+from apps.analysis.utils import sample_search
+from core.uid_gen import FelicityID
+from utils import has_value_or_is_truthy
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

@@ -4,10 +4,9 @@ from datetime import datetime, timedelta
 from difflib import SequenceMatcher
 from typing import Any, Optional, Union
 
+from core.config import settings
 from jose import jwt
 from passlib.context import CryptContext
-
-from felicity.core.config import settings
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

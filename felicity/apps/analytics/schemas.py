@@ -1,12 +1,11 @@
 from datetime import datetime
 from typing import List, Optional, Union
 
+from apps.analysis.schemas import AnalysisBasic
+from apps.analytics import conf
+from apps.user.schemas import UserBasic
+from core.uid_gen import FelicityIDType
 from pydantic import BaseModel
-
-from felicity.apps.analysis.schemas import AnalysisBasic
-from felicity.apps.analytics import conf
-from felicity.apps.user.schemas import UserBasic
-from felicity.core.uid_gen import FelicityIDType
 
 
 class ReportMetaBase(BaseModel):

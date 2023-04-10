@@ -2,11 +2,10 @@ from datetime import datetime
 from typing import Optional
 
 import strawberry  # noqa
-
-from felicity.api.gql.analysis.types.analysis import SampleType
-from felicity.api.gql.types import BytesScalar, JSONScalar
-from felicity.api.gql.user.types import UserType
-from felicity.core.uid_gen import FelicityID
+from api.gql.analysis.types.analysis import SampleType
+from api.gql.types import BytesScalar, JSONScalar
+from api.gql.user.types import UserType
+from core.uid_gen import FelicityID
 
 
 @strawberry.type

@@ -1,14 +1,15 @@
 from typing import Optional
 
+from core.uid_gen import FelicityIDType
 from pydantic import BaseModel
-
-from felicity.core.uid_gen import FelicityIDType
 
 #
 # Client Schemas
 #
 
 # Shared properties
+
+
 class ClientBase(BaseModel):
     name: Optional[str] = None
     code: Optional[str] = None

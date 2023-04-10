@@ -1,10 +1,9 @@
 from datetime import datetime
 from typing import Dict, Optional
 
+from apps.analysis.schemas import SampleInDB
+from core.uid_gen import FelicityIDType
 from pydantic import BaseModel
-
-from felicity.apps.analysis.schemas import SampleInDB
-from felicity.core.uid_gen import FelicityIDType
 
 #
 # ReportImpress Schemas

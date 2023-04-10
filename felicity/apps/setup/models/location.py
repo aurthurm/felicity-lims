@@ -1,11 +1,10 @@
 import logging
 
+from apps import BaseAuditDBModel
+from apps.setup import schemas
+from core.uid_gen import FelicitySAID
 from sqlalchemy import Boolean, Column, ForeignKey, String
 from sqlalchemy.orm import relationship
-
-from felicity.apps import BaseAuditDBModel
-from felicity.apps.setup import schemas
-from felicity.core.uid_gen import FelicitySAID
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

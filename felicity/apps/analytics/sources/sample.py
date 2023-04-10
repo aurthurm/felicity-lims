@@ -1,14 +1,13 @@
 import logging
 from typing import Generic, List, Optional, Tuple, Type, TypeVar
 
+from core.uid_gen import FelicityID
+from database.base_class import DBModel
+from database.session import async_session_factory
 from dateutil import parser
 from sqlalchemy import text
 from sqlalchemy.future import select
 from sqlalchemy.sql import func
-
-from felicity.core.uid_gen import FelicityID
-from felicity.database.base_class import DBModel
-from felicity.database.session import async_session_factory
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

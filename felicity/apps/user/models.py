@@ -1,11 +1,10 @@
 import logging
 
+from apps.common.utils import is_valid_email
+from core.security import verify_password
+from core.uid_gen import FelicitySAID
 from sqlalchemy import Boolean, Column, ForeignKey, String, Table
 from sqlalchemy.orm import backref, relationship
-
-from felicity.apps.common.utils import is_valid_email
-from felicity.core.security import verify_password
-from felicity.core.uid_gen import FelicitySAID
 
 from . import conf
 from .abstract import AbstractAuth, AbstractBaseUser, DBModel, schemas

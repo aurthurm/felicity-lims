@@ -1,10 +1,9 @@
 from typing import List, Optional
 
 import strawberry  # noqa
-
-from felicity.api.gql.messaging.types import MessageThreadType
-from felicity.apps.messaging import models
-from felicity.core.uid_gen import FelicityID
+from api.gql.messaging.types import MessageThreadType
+from apps.messaging import models
+from core.uid_gen import FelicityID
 
 
 @strawberry.type

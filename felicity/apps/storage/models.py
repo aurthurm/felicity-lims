@@ -1,12 +1,11 @@
 from typing import List
 
+from apps import BaseAuditDBModel
+from apps.analysis.models.analysis import Sample
+from apps.storage import schemas
+from core.uid_gen import FelicitySAID
 from sqlalchemy import Boolean, Column, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
-
-from felicity.apps import BaseAuditDBModel
-from felicity.apps.analysis.models.analysis import Sample
-from felicity.apps.storage import schemas
-from felicity.core.uid_gen import FelicitySAID
 
 
 class StoreRoom(BaseAuditDBModel):

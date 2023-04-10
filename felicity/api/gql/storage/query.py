@@ -1,10 +1,9 @@
 from typing import List, Optional
 
 import strawberry  # noqa
-
-from felicity.api.gql.storage import types
-from felicity.apps.storage import models
-from felicity.core.uid_gen import FelicityID
+from api.gql.storage import types
+from apps.storage import models
+from core.uid_gen import FelicityID
 
 
 @strawberry.type

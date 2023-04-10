@@ -2,22 +2,21 @@ import logging
 from typing import List, Optional
 
 import strawberry  # noqa
-
-from felicity.api.gql import OperationError, auth_from_info, verify_user_auth
-from felicity.api.gql.worksheet.types import WorkSheetTemplateType, WorkSheetType
-from felicity.apps.analysis.models import analysis as analysis_models
-from felicity.apps.analysis.models import qc as qc_models
-from felicity.apps.analysis.models import results as result_models
-from felicity.apps.common.models import IdSequence
-from felicity.apps.job import models as job_models
-from felicity.apps.job import schemas as job_schemas
-from felicity.apps.job.conf import actions, categories, priorities, states
-from felicity.apps.job.sched import felicity_resume_workforce
-from felicity.apps.setup import models as setup_models
-from felicity.apps.user import models as user_models
-from felicity.apps.worksheet import conf, models, schemas
-from felicity.core.uid_gen import FelicityID
-from felicity.utils import has_value_or_is_truthy
+from api.gql import OperationError, auth_from_info, verify_user_auth
+from api.gql.worksheet.types import WorkSheetTemplateType, WorkSheetType
+from apps.analysis.models import analysis as analysis_models
+from apps.analysis.models import qc as qc_models
+from apps.analysis.models import results as result_models
+from apps.common.models import IdSequence
+from apps.job import models as job_models
+from apps.job import schemas as job_schemas
+from apps.job.conf import actions, categories, priorities, states
+from apps.job.sched import felicity_resume_workforce
+from apps.setup import models as setup_models
+from apps.user import models as user_models
+from apps.worksheet import conf, models, schemas
+from core.uid_gen import FelicityID
+from utils import has_value_or_is_truthy
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

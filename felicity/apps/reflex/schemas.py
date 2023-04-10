@@ -1,14 +1,16 @@
 from typing import List, Optional
 
-from felicity.apps.analysis.schemas import Analysis, SampleType
-from felicity.apps.common.schemas import BaseAuditModel
-from felicity.core.uid_gen import FelicityIDType
+from apps.analysis.schemas import Analysis, SampleType
+from apps.common.schemas import BaseAuditModel
+from core.uid_gen import FelicityIDType
 
 #
 #  ReflexRule Schema
 #
 
 # Shared properties
+
+
 class ReflexRuleBase(BaseAuditModel):
     name: str
     description: str

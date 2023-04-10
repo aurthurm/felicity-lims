@@ -1,18 +1,18 @@
 import logging
 from typing import List
 
-from felicity.apps.analysis.conf import states
-from felicity.apps.analysis.models.analysis import Sample
-from felicity.apps.impress import utils
-from felicity.apps.job import models as job_models
-from felicity.apps.job import schemas as job_schemas
-from felicity.apps.job.conf import actions, categories, priorities
-from felicity.apps.job.conf import states as job_states
-from felicity.apps.notification.utils import ReportNotifier
-from felicity.apps.user import models as user_models
-from felicity.apps.user.models import User
-from felicity.core.config import settings
-from felicity.core.uid_gen import FelicityIDType
+from apps.analysis.conf import states
+from apps.analysis.models.analysis import Sample
+from apps.impress import utils
+from apps.job import models as job_models
+from apps.job import schemas as job_schemas
+from apps.job.conf import actions, categories, priorities
+from apps.job.conf import states as job_states
+from apps.notification.utils import ReportNotifier
+from apps.user import models as user_models
+from apps.user.models import User
+from core.config import settings
+from core.uid_gen import FelicityIDType
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

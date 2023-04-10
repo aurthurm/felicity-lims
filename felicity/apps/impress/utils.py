@@ -2,12 +2,12 @@ import logging
 from datetime import datetime
 from typing import List
 
-from felicity.apps.analysis.conf import states
-from felicity.apps.analysis.models.analysis import Sample
-from felicity.apps.impress.models import ReportImpress
-from felicity.apps.impress.reports.generic import FelicityImpress
-from felicity.apps.impress.schemas import ReportImpressCreate
-from felicity.apps.notification.utils import FelicityStreamer
+from apps.analysis.conf import states
+from apps.analysis.models.analysis import Sample
+from apps.impress.models import ReportImpress
+from apps.impress.reports.generic import FelicityImpress
+from apps.impress.schemas import ReportImpressCreate
+from apps.notification.utils import FelicityStreamer
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

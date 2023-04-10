@@ -1,12 +1,11 @@
 import logging
 
+from apps import BaseAuditDBModel, DBModel
+from apps.common import BaseMPTT
+from apps.user.models import User
+from core.uid_gen import FelicitySAID
 from sqlalchemy import Boolean, Column, ForeignKey, String, Table
 from sqlalchemy.orm import relationship
-
-from felicity.apps import BaseAuditDBModel, DBModel
-from felicity.apps.common import BaseMPTT
-from felicity.apps.user.models import User
-from felicity.core.uid_gen import FelicitySAID
 
 from . import schemas
 

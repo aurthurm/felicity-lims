@@ -1,14 +1,15 @@
 from typing import Optional
 
+from core.uid_gen import FelicityIDType
 from pydantic import BaseModel
-
-from felicity.core.uid_gen import FelicityIDType
 
 #
 # StoreRoom Schemas
 #
 
 # Shared properties
+
+
 class StoreRoomBase(BaseModel):
     name: Optional[str] = None
     description: Optional[str] = None

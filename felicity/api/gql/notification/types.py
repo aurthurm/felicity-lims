@@ -2,18 +2,17 @@ from datetime import datetime
 from typing import List, Optional, Union
 
 import strawberry  # noqa
-
-from felicity.api.gql.analysis.types.analysis import SampleType
-from felicity.api.gql.analysis.types.results import AnalysisResultType
-from felicity.api.gql.analytics.types import ReportMetaType
-from felicity.api.gql.setup.types import DepartmentType
-from felicity.api.gql.user.types import GroupType, UserType
-from felicity.api.gql.worksheet.types import WorkSheetType
-from felicity.apps.analysis.models.analysis import Sample
-from felicity.apps.analysis.models.results import AnalysisResult
-from felicity.apps.analytics.models import ReportMeta
-from felicity.apps.worksheet.models import WorkSheet
-from felicity.core.uid_gen import FelicityID
+from api.gql.analysis.types.analysis import SampleType
+from api.gql.analysis.types.results import AnalysisResultType
+from api.gql.analytics.types import ReportMetaType
+from api.gql.setup.types import DepartmentType
+from api.gql.user.types import GroupType, UserType
+from api.gql.worksheet.types import WorkSheetType
+from apps.analysis.models.analysis import Sample
+from apps.analysis.models.results import AnalysisResult
+from apps.analytics.models import ReportMeta
+from apps.worksheet.models import WorkSheet
+from core.uid_gen import FelicityID
 
 
 @strawberry.type

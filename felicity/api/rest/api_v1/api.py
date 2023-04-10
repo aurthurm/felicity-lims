@@ -1,7 +1,6 @@
+from api.rest.api_v1.endpoints import login, reports, setup
+from api.rest.api_v1.fhir import r4
 from fastapi import APIRouter
-
-from felicity.api.rest.api_v1.endpoints import login, reports, setup
-from felicity.api.rest.api_v1.fhir import r4
 
 api_router = APIRouter()
 api_router.include_router(login.router, prefix="/login", tags=["login"])

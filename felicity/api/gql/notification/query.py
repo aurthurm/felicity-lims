@@ -1,10 +1,9 @@
 from typing import List, Optional
 
 import strawberry  # noqa
-
-from felicity.api.gql.notification.types import NotificationType
-from felicity.apps.notification import models
-from felicity.core.uid_gen import FelicityID
+from api.gql.notification.types import NotificationType
+from apps.notification import models
+from core.uid_gen import FelicityID
 
 
 @strawberry.type

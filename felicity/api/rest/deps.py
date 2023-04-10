@@ -1,12 +1,11 @@
+from apps.common import schemas
+from apps.user import models
+from core import security
+from core.config import settings
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from jose import jwt
 from pydantic import ValidationError
-
-from felicity.apps.common import schemas
-from felicity.apps.user import models
-from felicity.core import security
-from felicity.core.config import settings
 
 reusable_oauth2 = OAuth2PasswordBearer(
     tokenUrl=f"{settings.API_V1_STR}/login/access-token"

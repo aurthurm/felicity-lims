@@ -2,15 +2,14 @@ import logging
 from datetime import datetime
 from typing import List
 
+from apps import Auditable, BaseAuditDBModel, DBModel
+from apps.analysis import conf, schemas
+from apps.common import BaseMPTT
+from apps.notification.utils import FelicityStreamer
+from core.uid_gen import FelicityIDType, FelicitySAID
+from database.session import async_session_factory
 from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, String, Table
 from sqlalchemy.orm import relationship
-
-from felicity.apps import Auditable, BaseAuditDBModel, DBModel
-from felicity.apps.analysis import conf, schemas
-from felicity.apps.common import BaseMPTT
-from felicity.apps.notification.utils import FelicityStreamer
-from felicity.core.uid_gen import FelicityIDType, FelicitySAID
-from felicity.database.session import async_session_factory
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

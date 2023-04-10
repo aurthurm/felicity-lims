@@ -1,11 +1,10 @@
+from apps import BaseAuditDBModel, DBModel
+from apps.common.models import IdSequence
+from apps.setup import schemas
+from apps.user.models import User
+from core.uid_gen import FelicitySAID
 from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, String, Table
 from sqlalchemy.orm import relationship
-
-from felicity.apps import BaseAuditDBModel, DBModel
-from felicity.apps.common.models import IdSequence
-from felicity.apps.setup import schemas
-from felicity.apps.user.models import User
-from felicity.core.uid_gen import FelicitySAID
 
 
 class Laboratory(BaseAuditDBModel):

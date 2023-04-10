@@ -2,18 +2,17 @@ import logging
 from typing import Any, List
 from uuid import uuid4
 
+from api.rest import deps
+from apps.analysis.models import analysis as ana_models
+from apps.analytics import conf, models
+from apps.analytics import schemas as an_schema
+from apps.job import conf as job_conf
+from apps.job import models as job_models
+from apps.job import schemas as job_schemas
+from apps.job.sched import felicity_resume_workforce
+from apps.user import models as user_models
 from fastapi import APIRouter, Depends
-
-from felicity.api.rest import deps
-from felicity.apps.analysis.models import analysis as ana_models
-from felicity.apps.analytics import conf, models
-from felicity.apps.analytics import schemas as an_schema
-from felicity.apps.job import conf as job_conf
-from felicity.apps.job import models as job_models
-from felicity.apps.job import schemas as job_schemas
-from felicity.apps.job.sched import felicity_resume_workforce
-from felicity.apps.user import models as user_models
-from felicity.utils.dirs import deleteFile, resolve_media_dirs_for
+from utils.dirs import deleteFile, resolve_media_dirs_for
 
 router = APIRouter()
 

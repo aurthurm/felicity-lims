@@ -2,28 +2,22 @@ import logging
 from typing import List, Optional
 
 import strawberry  # noqa
-
-from felicity.api.gql import (
-    OperationError,
-    OperationSuccess,
-    auth_from_info,
-    verify_user_auth,
-)
-from felicity.api.gql.analysis.types import results as r_types
-from felicity.api.gql.permissions import CanVerifyAnalysisResult
-from felicity.apps.analysis.conf import states as analysis_states
-from felicity.apps.analysis.models import analysis as analysis_models
-from felicity.apps.analysis.models import results as result_models
-from felicity.apps.analysis.utils import retest_from_result_uids
-from felicity.apps.job import models as job_models
-from felicity.apps.job import schemas as job_schemas
-from felicity.apps.job.conf import actions, categories, priorities
-from felicity.apps.job.conf import states as job_states
-from felicity.apps.job.sched import felicity_resume_workforce
-from felicity.apps.notification.utils import FelicityStreamer
-from felicity.apps.worksheet import conf as ws_conf
-from felicity.apps.worksheet import models as ws_models
-from felicity.core.uid_gen import FelicityID
+from api.gql import OperationError, OperationSuccess, auth_from_info, verify_user_auth
+from api.gql.analysis.types import results as r_types
+from api.gql.permissions import CanVerifyAnalysisResult
+from apps.analysis.conf import states as analysis_states
+from apps.analysis.models import analysis as analysis_models
+from apps.analysis.models import results as result_models
+from apps.analysis.utils import retest_from_result_uids
+from apps.job import models as job_models
+from apps.job import schemas as job_schemas
+from apps.job.conf import actions, categories, priorities
+from apps.job.conf import states as job_states
+from apps.job.sched import felicity_resume_workforce
+from apps.notification.utils import FelicityStreamer
+from apps.worksheet import conf as ws_conf
+from apps.worksheet import models as ws_models
+from core.uid_gen import FelicityID
 
 streamer = FelicityStreamer()
 

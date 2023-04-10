@@ -1,9 +1,9 @@
 from datetime import datetime
 from typing import List, Optional
 
-from felicity.apps.common.schemas import BaseAuditModel, BaseModel
-from felicity.apps.setup.schemas import Department, Unit
-from felicity.core.uid_gen import FelicityIDType
+from apps.common.schemas import BaseAuditModel, BaseModel
+from apps.setup.schemas import Department, Unit
+from core.uid_gen import FelicityIDType
 
 #
 # SampleType Schemas

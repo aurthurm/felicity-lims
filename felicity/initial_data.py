@@ -1,6 +1,6 @@
 import logging
 
-from felicity.init import initialize_felicity
+from init import requisite_setup
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -8,7 +8,7 @@ logger = logging.getLogger(__name__)
 
 def main() -> None:
     logger.info("Creating initial data")
-    initialize_felicity()
+    requisite_setup()
     logger.info("Initial data created")
 
 

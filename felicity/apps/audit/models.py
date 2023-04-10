@@ -1,10 +1,9 @@
 import json
 import logging
 
+from core.uid_gen import FelicitySAID
+from database.base_class import DBModel
 from sqlalchemy import Column, Integer, String, UnicodeText
-
-from felicity.core.uid_gen import FelicitySAID
-from felicity.database.base_class import DBModel
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

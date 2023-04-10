@@ -1,9 +1,8 @@
 import logging
 
 import pytest
-
-from felicity.apps.analysis.tasks import submit_results, verify_results
-from felicity.tests.utils.user import make_password, make_username
+from apps.analysis.tasks import submit_results, verify_results
+from tests.utils.user import make_password, make_username
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

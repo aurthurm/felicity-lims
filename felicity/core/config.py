@@ -30,7 +30,8 @@ class PostgresDsn(AnyUrl):
 
 
 class Settings(BaseSettings):
-    BASE_DIR: str = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+    BASE_DIR: str = os.path.abspath(
+        os.path.join(os.path.dirname(__file__), ".."))
 
     STATIC_DIR = os.path.join(BASE_DIR, "..", "static")
 
@@ -78,7 +79,8 @@ class Settings(BaseSettings):
             return None
         return v
 
-    POSTGRES_SERVER: str = getenv_value("POSTGRES_SERVER", "localhost")  # felicity_db
+    POSTGRES_SERVER: str = getenv_value(
+        "POSTGRES_SERVER", "localhost")  # felicity_db
     POSTGRES_USER: str = getenv_value("POSTGRES_USER", "felicity")
     POSTGRES_PASSWORD: str = getenv_value("POSTGRES_PASSWORD", "felicity")
     POSTGRES_DB: str = getenv_value("POSTGRES_DB", "felicity_lims")
@@ -149,7 +151,8 @@ class Settings(BaseSettings):
     EMAILS_FROM_EMAIL: Optional[EmailStr] = getenv_value(
         "EMAILS_FROM_EMAIL", "felicity@felicity.labs"
     )
-    EMAILS_FROM_NAME: Optional[str] = getenv_value("EMAILS_FROM_NAME", "felicity")
+    EMAILS_FROM_NAME: Optional[str] = getenv_value(
+        "EMAILS_FROM_NAME", "felicity")
 
     @validator("EMAILS_FROM_NAME")
     def get_project_name(cls, v: Optional[str], values: Dict[str, Any]) -> str:
@@ -173,7 +176,8 @@ class Settings(BaseSettings):
     FIRST_SUPERUSER_EMAIL: EmailStr = getenv_value(
         "FIRST_SUPERUSER", "admin@felicitylabs.com"
     )
-    FIRST_SEPERUSER_USERNAME: str = getenv_value("FIRST_SEPERUSER_USERNAME", "admin")
+    FIRST_SEPERUSER_USERNAME: str = getenv_value(
+        "FIRST_SEPERUSER_USERNAME", "admin")
     FIRST_SUPERUSER_PASSWORD: str = getenv_value(
         "FIRST_SUPERUSER_PASSWORD", "!Felicity#100"
     )
@@ -186,6 +190,10 @@ class Settings(BaseSettings):
 
     LOAD_SETUP_DATA = getenv_boolean("LOAD_SETUP_DATA", False)
     SERVE_WEBAPP = getenv_boolean("SERVE_WEBAPP", True)
+    # Tracing
+    RUN_OPEN_TRACING = getenv_boolean("RUN_OPEN_TRACING", False)
+    OTLP_SPAN_EXPORT_URL = getenv_value(
+        "RUN_OPEN_TRACING", "http://localhost:4317")
 
     class Config:
         case_sensitive = True

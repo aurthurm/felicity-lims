@@ -1,10 +1,9 @@
 from datetime import datetime
 from typing import List, Optional
 
+from apps.common.schemas import BaseAuditModel
+from core.uid_gen import FelicityIDType
 from pydantic import BaseModel, EmailStr
-
-from felicity.apps.common.schemas import BaseAuditModel
-from felicity.core.uid_gen import FelicityIDType
 
 #
 #  Laboratory

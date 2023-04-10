@@ -2,9 +2,8 @@ import logging
 from base64 import b64decode, b64encode
 from typing import Any, Dict, List
 
+from database.async_mixins.smartquery import SmartQueryMixin
 from sqlalchemy.future import select
-
-from felicity.database.async_mixins.smartquery import SmartQueryMixin
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

@@ -1,10 +1,10 @@
 import logging
 from typing import Any
 
-from felicity.apps.common.channel import broadcast
-from felicity.apps.notification.conf import channels
-from felicity.apps.notification.models import ActivityStream, Notification
-from felicity.apps.notification.schemas import ActivityStreamCreate, NotificationCreate
+from apps.common.channel import broadcast
+from apps.notification.conf import channels
+from apps.notification.models import ActivityStream, Notification
+from apps.notification.schemas import ActivityStreamCreate, NotificationCreate
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

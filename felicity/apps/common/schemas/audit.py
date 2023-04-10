@@ -1,9 +1,8 @@
 from datetime import datetime
 from typing import Optional
 
+from core.uid_gen import FelicityIDType
 from pydantic import BaseModel
-
-from felicity.core.uid_gen import FelicityIDType
 
 
 class BaseAuditModel(BaseModel):

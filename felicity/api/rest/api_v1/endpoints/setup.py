@@ -1,11 +1,10 @@
 import logging
 from typing import Any, Optional
 
+from apps.setup import models, schemas
 from fastapi import APIRouter
+from init import default_setup, requisite_setup
 from pydantic import BaseModel
-
-from felicity.apps.setup import models, schemas
-from felicity.init import default_setup, requisite_setup
 
 router = APIRouter()
 

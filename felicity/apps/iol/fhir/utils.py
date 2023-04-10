@@ -1,7 +1,7 @@
-from felicity.apps.analysis.models.analysis import AnalysisRequest, Sample
-from felicity.apps.analysis.models.results import AnalysisResult
-from felicity.apps.iol.fhir.schema import DiagnosticReportResource, PatientResource
-from felicity.apps.patient.models import Patient
+from apps.analysis.models.analysis import AnalysisRequest, Sample
+from apps.analysis.models.results import AnalysisResult
+from apps.iol.fhir.schema import DiagnosticReportResource, PatientResource
+from apps.patient.models import Patient
 
 
 def one_of_else(of: list, one: str, default=None):

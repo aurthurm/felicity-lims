@@ -2,10 +2,9 @@ from datetime import datetime
 from typing import List, Optional
 
 import strawberry  # noqa
-
-from felicity.api.gql.user.types import UserType
-from felicity.apps.storage import models
-from felicity.core.uid_gen import FelicityID
+from api.gql.user.types import UserType
+from apps.storage import models
+from core.uid_gen import FelicityID
 
 
 @strawberry.type

@@ -1,10 +1,10 @@
 import logging
 from typing import Optional
 
-from felicity.apps.user import models, schemas
-from felicity.core.config import settings
-from felicity.init.setup.groups_perms import FGroup
-from felicity.utils.email.email import send_new_account_email
+from apps.user import models, schemas
+from core.config import settings
+from init.setup.groups_perms import FGroup
+from utils.email.email import send_new_account_email
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

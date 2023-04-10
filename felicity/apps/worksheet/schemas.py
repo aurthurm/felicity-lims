@@ -1,15 +1,16 @@
 from typing import Dict, List, Optional
 
+from apps.analysis.schemas import AnalysisBaseInDB, QCLevelInDB
+from core.uid_gen import FelicityIDType
 from pydantic import BaseModel
-
-from felicity.apps.analysis.schemas import AnalysisBaseInDB, QCLevelInDB
-from felicity.core.uid_gen import FelicityIDType
 
 #
 # WorkSheet Schemas
 #
 
 # Shared properties
+
+
 class WorkSheetBase(BaseModel):
     analyst_uid: Optional[FelicityIDType] = None
     template_uid: Optional[FelicityIDType] = None

@@ -1,13 +1,12 @@
+from apps import BaseAuditDBModel
+from apps.client import schemas
+from apps.setup.models import District, Province
+from apps.user import conf
+from apps.user.abstract import AbstractBaseUser
+from apps.user.models import UserAuth
+from core.uid_gen import FelicitySAID
 from sqlalchemy import Boolean, Column, ForeignKey, String
 from sqlalchemy.orm import backref, relationship
-
-from felicity.apps import BaseAuditDBModel
-from felicity.apps.client import schemas
-from felicity.apps.setup.models import District, Province
-from felicity.apps.user import conf
-from felicity.apps.user.abstract import AbstractBaseUser
-from felicity.apps.user.models import UserAuth
-from felicity.core.uid_gen import FelicitySAID
 
 
 class Client(BaseAuditDBModel):

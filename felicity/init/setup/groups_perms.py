@@ -1,6 +1,6 @@
 import logging
 
-from felicity.apps.user import models, schemas
+from apps.user import models, schemas
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

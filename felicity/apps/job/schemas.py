@@ -1,8 +1,7 @@
 from typing import Any, Optional
 
+from core.uid_gen import FelicityIDType
 from pydantic import BaseModel
-
-from felicity.core.uid_gen import FelicityIDType
 
 from .conf import categories, priorities, states
 

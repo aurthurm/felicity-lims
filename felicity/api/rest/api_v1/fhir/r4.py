@@ -1,16 +1,12 @@
 from typing import Union
 
-from fastapi import APIRouter, HTTPException, status
-
-from felicity.apps.iol.fhir.schema import (
+from apps.iol.fhir.schema import (
     DiagnosticReportResource,
     PatientResource,
     ServiceRequestResource,
 )
-from felicity.apps.iol.fhir.utils import (
-    get_diagnostic_report_resource,
-    get_patient_resource,
-)
+from apps.iol.fhir.utils import get_diagnostic_report_resource, get_patient_resource
+from fastapi import APIRouter, HTTPException, status
 
 router = APIRouter()
 

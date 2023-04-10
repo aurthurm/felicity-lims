@@ -4,12 +4,11 @@ from datetime import datetime
 from typing import Dict, List, Optional
 
 import strawberry  # noqa
-
-from felicity.api.gql import OperationError, auth_from_info, verify_user_auth
-from felicity.api.gql.patient.types import IdentificationType, PatientType
-from felicity.apps.client import models as client_models
-from felicity.apps.patient import models, schemas
-from felicity.core.uid_gen import FelicityID
+from api.gql import OperationError, auth_from_info, verify_user_auth
+from api.gql.patient.types import IdentificationType, PatientType
+from apps.client import models as client_models
+from apps.patient import models, schemas
+from core.uid_gen import FelicityID
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -203,7 +202,9 @@ class PatientMutations:
         update_identification_uids = [
             id.identification_uid for id in payload.identifications
         ]
-        identifications = await models.PatientIdentification.get_all(patient_uid=patient.uid)
+        identifications = await models.PatientIdentification.get_all(
+            patient_uid=patient.uid
+        )
         identifications_uids = [id.uid for id in identifications]
 
         for identification in identifications:
@@ -211,10 +212,15 @@ class PatientMutations:
             if not identification.uid in update_identification_uids:
                 await identification.delete()
             else:  # update
-                update_identification = list(filter(
-                    lambda x: x.identification_uid == identification.uid, payload.identifications))[0]
+                update_identification = list(
+                    filter(
+                        lambda x: x.identification_uid == identification.uid,
+                        payload.identifications,
+                    )
+                )[0]
                 id_update_in = schemas.PatientIdentificationUpdate(
-                    patient_uid=patient.uid, **id_update_in.to_dict())
+                    patient_uid=patient.uid, **id_update_in.to_dict()
+                )
                 identification = await identification.update(id_update_in)
 
         # new

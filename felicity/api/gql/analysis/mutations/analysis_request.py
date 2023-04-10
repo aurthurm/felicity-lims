@@ -4,31 +4,30 @@ from datetime import datetime, timedelta
 from typing import List, Optional
 
 import strawberry  # noqa
-
-from felicity.api.gql import (
+from api.gql import (
     OperationError,
     OperationSuccess,
     SuccessErrorResponse,
     auth_from_info,
     verify_user_auth,
 )
-from felicity.api.gql.analysis.types import analysis as a_types
-from felicity.api.gql.analysis.types import results as r_types
-from felicity.api.gql.permissions import CanVerifySample
-from felicity.apps.analysis import schemas
-from felicity.apps.analysis.conf import priorities, states
-from felicity.apps.analysis.models import analysis as analysis_models
-from felicity.apps.analysis.models import results as result_models
-from felicity.apps.client import models as ct_models
-from felicity.apps.job import models as job_models
-from felicity.apps.job import schemas as job_schemas
-from felicity.apps.job.conf import actions, categories, priorities
-from felicity.apps.job.conf import states as job_states
-from felicity.apps.job.sched import felicity_resume_workforce
-from felicity.apps.notification.utils import FelicityStreamer
-from felicity.apps.patient import models as pt_models
-from felicity.apps.reflex.utils import ReflexUtil
-from felicity.core.uid_gen import FelicityID
+from api.gql.analysis.types import analysis as a_types
+from api.gql.analysis.types import results as r_types
+from api.gql.permissions import CanVerifySample
+from apps.analysis import schemas
+from apps.analysis.conf import priorities, states
+from apps.analysis.models import analysis as analysis_models
+from apps.analysis.models import results as result_models
+from apps.client import models as ct_models
+from apps.job import models as job_models
+from apps.job import schemas as job_schemas
+from apps.job.conf import actions, categories, priorities
+from apps.job.conf import states as job_states
+from apps.job.sched import felicity_resume_workforce
+from apps.notification.utils import FelicityStreamer
+from apps.patient import models as pt_models
+from apps.reflex.utils import ReflexUtil
+from core.uid_gen import FelicityID
 
 streamer = FelicityStreamer()
 

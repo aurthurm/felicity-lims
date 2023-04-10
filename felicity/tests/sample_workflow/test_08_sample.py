@@ -1,8 +1,7 @@
 import logging
 
 import pytest
-
-from felicity.apps.impress.tasks import impress_results
+from apps.impress.tasks import impress_results
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

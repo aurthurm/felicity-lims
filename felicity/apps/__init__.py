@@ -1,13 +1,12 @@
 from datetime import datetime
 
+from apps.audit.mixin import AuditableMixin
+from apps.common.hooks import EventHookMixin
+from core.uid_gen import FelicitySAID
+from database.base_class import DBModel
 from sqlalchemy import Column, DateTime, ForeignKey, Integer, func
 from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.orm import relationship
-
-from felicity.apps.audit.mixin import AuditableMixin
-from felicity.apps.common.hooks import EventHookMixin
-from felicity.core.uid_gen import FelicitySAID
-from felicity.database.base_class import DBModel
 
 
 class TrailMixin(object):

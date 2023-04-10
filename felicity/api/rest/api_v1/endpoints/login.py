@@ -1,20 +1,19 @@
 from datetime import timedelta
 from typing import Any
 
-from fastapi import APIRouter, Body, Depends, HTTPException
-from fastapi.security import OAuth2PasswordRequestForm
-
-from felicity.api.rest import deps
-from felicity.apps.common import schemas as core_schemas
-from felicity.apps.user import models, schemas
-from felicity.core import security
-from felicity.core.config import settings
-from felicity.core.security import (
+from api.rest import deps
+from apps.common import schemas as core_schemas
+from apps.user import models, schemas
+from core import security
+from core.config import settings
+from core.security import (
     generate_password_reset_token,
     get_password_hash,
     verify_password_reset_token,
 )
-from felicity.utils.email.email import send_reset_password_email
+from fastapi import APIRouter, Body, Depends, HTTPException
+from fastapi.security import OAuth2PasswordRequestForm
+from utils.email.email import send_reset_password_email
 
 router = APIRouter()
 

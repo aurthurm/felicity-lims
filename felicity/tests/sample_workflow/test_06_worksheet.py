@@ -1,8 +1,7 @@
 import logging
 
 import pytest
-
-from felicity.apps.worksheet.tasks import populate_worksheet_plate
+from apps.worksheet.tasks import populate_worksheet_plate
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

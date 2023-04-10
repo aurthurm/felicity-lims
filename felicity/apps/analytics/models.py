@@ -1,9 +1,8 @@
 from typing import Union
 
+from apps import BaseAuditDBModel
 from sqlalchemy import Column, DateTime, ForeignKey, String, Table
 from sqlalchemy.orm import relationship
-
-from felicity.apps import BaseAuditDBModel
 
 from . import conf, schemas
 

@@ -1,14 +1,13 @@
 import logging
 from typing import List
 
+from apps import Auditable
+from apps.client.models import Client
+from apps.common.models import IdSequence
+from apps.patient import schemas
+from core.uid_gen import FelicitySAID
 from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, String
 from sqlalchemy.orm import Mapped, relationship
-
-from felicity.apps import Auditable
-from felicity.apps.client.models import Client
-from felicity.apps.common.models import IdSequence
-from felicity.apps.patient import schemas
-from felicity.core.uid_gen import FelicitySAID
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
