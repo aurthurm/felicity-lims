@@ -1,1 +1,0 @@
-import{d as t,P as o,B as s,o as n,D as r,_ as i}from"./index-f00208cb.js";const a=t({__name:"index",setup(c){return o().fetchAnalysesServices({first:void 0,after:"",text:"",sortBy:["name"]}),(_,p)=>{const e=s("router-view");return n(),r(e)}}}),l=i(a,[["__file","/home/aurthur/Development/Python/felicity/felicity-lims/webapp/views/admin/reflex/index.vue"]]);export{l as default};

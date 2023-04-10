@@ -1,1 +1,0 @@
-import{d as e,o as t,D as o,_ as a}from"./index-f00208cb.js";import{t as p}from"./SampleListing-b04bece8.js";import"./samples-626af416.js";import"./constants-e2838944.js";const s=e({__name:"Samples",setup(m){return(r,i)=>(t(),o(p))}}),f=a(s,[["__file","/home/aurthur/Development/Python/felicity/felicity-lims/webapp/views/sample/Samples.vue"]]);export{f as default};

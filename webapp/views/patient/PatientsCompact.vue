@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import LoadingMessage from "../../components/Spinners/LoadingMessage.vue";
+import PageHeading from "../components/PageHeading.vue";
 import { ref, reactive, computed } from "vue";
 import { storeToRefs } from "pinia";
 import tabSamples from "../components/AnalyisRequestListing.vue";
@@ -84,6 +85,7 @@ const updatePatient = (patient: IPatient) => {
 </style>
 
 <template>
+  <PageHeading title="Patients Quick View" />
   <div class="">
     <div class="flex justify-between">
       <div class="flex items-center content-between">

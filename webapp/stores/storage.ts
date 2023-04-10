@@ -87,7 +87,7 @@ export const useStorageStore = defineStore('storage', {
         },
 
         // storageLocations
-        async fetchStorageLocations(storeRoomUid: number) {
+        async fetchStorageLocations(storeRoomUid: string) {
             this.fetchingStorageLocations = true;
             await withClientQuery(GET_ALL_STORAGE_LOCATIONS, { storeRoomUid }, 'storageLocationAll')
                 .then((storageLocations: IStorageLocation[]) => {
@@ -105,7 +105,7 @@ export const useStorageStore = defineStore('storage', {
         },
 
         // storageSection
-        async fetchStorageSections(storageSectionUid: number) {
+        async fetchStorageSections(storageSectionUid: string) {
             this.fetchingStorageSections = true;
             await withClientQuery(GET_ALL_STORAGE_SECTIONS, { storageSectionUid }, 'storageSectionAll')
                 .then((storageSections: IStorageSection[]) => {
@@ -123,7 +123,7 @@ export const useStorageStore = defineStore('storage', {
         },
 
         // storageContainers
-        async fetchStorageContainers(storageContainerUid: number) {
+        async fetchStorageContainers(storageContainerUid: string) {
             this.fetchingStorageContainers = true;
             await withClientQuery(GET_ALL_STORAGE_CONTAINERS, { storageContainerUid }, 'storageContainerAll')
                 .then((storageContainers: IStorageContainer[]) => {
@@ -140,7 +140,7 @@ export const useStorageStore = defineStore('storage', {
             if (index > -1) this.storageContainers[index] = payload;
         },
 
-        async fetchStorageContainer(uid: number) {
+        async fetchStorageContainer(uid: string) {
             if (!uid) return;
             this.fetchingStorageContainer = true;
             await withClientQuery(GET_STORAGE_CONTAINER_BY_UID, { uid }, 'storageContainerByUid', 'network-only')
@@ -156,7 +156,7 @@ export const useStorageStore = defineStore('storage', {
             this.storageContainer = undefined;
         },
 
-        async fetchStorageContainerSamples(uid: number) {
+        async fetchStorageContainerSamples(uid: string) {
             if (!uid) return;
             this.fetchingStorageContainerSamples = true;
             await withClientQuery(GET_SAMPLES_BY_STORAGE_CONTAINER_UID, { uid }, 'samplesByStorageContainerUid', 'network-only')

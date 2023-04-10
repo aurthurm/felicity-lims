@@ -37,7 +37,6 @@ const configs = ref([
 
 <template>
   <div class="container w-full my-4">
-    <h5>Laboratory Setup</h5>
     <ul class="grid grid-cols-12 gap-4 my-2.5">
       <item-setting v-for="setting in configs" :key="setting.path" :title="setting.title" :path="setting.path"
         :icon="setting.icon" />

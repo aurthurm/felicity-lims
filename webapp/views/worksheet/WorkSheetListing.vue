@@ -12,6 +12,7 @@ import { IAnalysisService } from "../../models/analysis";
 import { useField, useForm } from "vee-validate";
 import { object, number } from "yup";
 import * as shield from "../../guards";
+import PageHeading from "../components/PageHeading.vue";
 
 const worksheetStore = useWorksheetStore();
 const userStore = useUserStore();
@@ -198,40 +199,24 @@ const countNone = computed(
 </script>
 
 <template>
+  <PageHeading title="Worksheets" />
   <div class="flex justify-between items-center">
-    <h2>WORKSHEETS</h2>
-    <!-- <div v-show="hasRights(userRole, objects.WORKSHEET, actions.CREATE)"> -->
     <div>
-      <button
-        v-show="shield.hasRights(shield.actions.CREATE, shield.objects.WORKSHEET)"
-        @click.prevent="showModal = true"
-        class="p-2 h-10 border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
-      >
+      <button v-show="shield.hasRights(shield.actions.CREATE, shield.objects.WORKSHEET)" @click.prevent="showModal = true"
+        class="p-2 h-10 border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none">
         Add WorkSheet
       </button>
     </div>
   </div>
-  <DataTable
-    :columns="tableColumns"
-    :data="workSheets"
-    :toggleColumns="true"
-    :loading="fetchingWorkSheets"
-    :paginable="true"
-    :pageMeta="{
+  <DataTable :columns="tableColumns" :data="workSheets" :toggleColumns="true" :loading="fetchingWorkSheets"
+    :paginable="true" :pageMeta="{
       fetchCount: workSheetParams.first,
       hasNextPage: workSheetPageInfo?.hasNextPage,
       countNone,
-    }"
-    :searchable="true"
-    :filterable="true"
-    :filterMeta="{
-      defaultFilter: workSheetParams.status,
-      filters: filterOptions,
-    }"
-    @onSearch="searchWorkSheets"
-    @onPaginate="showMoreWorkSheets"
-    :selectable="false"
-  >
+    }" :searchable="true" :filterable="true" :filterMeta="{
+  defaultFilter: workSheetParams.status,
+  filters: filterOptions,
+}" @onSearch="searchWorkSheets" @onPaginate="showMoreWorkSheets" :selectable="false">
     <template v-slot:footer> </template>
   </DataTable>
 
@@ -242,11 +227,7 @@ const countNone = computed(
         <h3>Create Worksheet</h3>
         <hr />
         <ul>
-          <li
-            v-for="(error, idx) in Object.values(errors)"
-            :key="idx"
-            class="text-orange-600"
-          >
+          <li v-for="(error, idx) in Object.values(errors)" :key="idx" class="text-orange-600">
             {{ error }}
           </li>
         </ul>
@@ -268,32 +249,20 @@ const countNone = computed(
             <span class="text-gray-700">Worksheet Template</span>
             <select class="form-select block w-full mt-1" v-model="templateUid">
               <option value="undefined"></option>
-              <option
-                v-for="template in workSheetTemplates"
-                :key="template.uid"
-                :value="template.uid"
-              >
+              <option v-for="template in workSheetTemplates" :key="template.uid" :value="template.uid">
                 {{ template.name }}
               </option>
             </select>
           </label>
           <label class="block col-span-1 mb-2">
             <span class="text-gray-700">How Many</span>
-            <input
-              type="number"
-              class="form-input mt-1 block w-full"
-              v-model="count"
-              min="1"
-            />
+            <input type="number" class="form-input mt-1 block w-full" v-model="count" min="1" />
           </label>
         </div>
 
         <hr />
-        <button
-          type="button"
-          @click.prevent="saveForm()"
-          class="-mb-4 w-full border border-sky-800 bg-sky-800 text-white rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-sky-800 focus:outline-none focus:shadow-outline"
-        >
+        <button type="button" @click.prevent="saveForm()"
+          class="-mb-4 w-full border border-sky-800 bg-sky-800 text-white rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-sky-800 focus:outline-none focus:shadow-outline">
           Save Form
         </button>
       </form>

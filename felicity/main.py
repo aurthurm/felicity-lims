@@ -187,7 +187,8 @@ flims.add_websocket_route("/streamer", stream_socket, "notification-only")
 
 # Instrument Felicity
 if settings.RUN_OPEN_TRACING:
-    logging.info("Open Tracing activated :)")
+    logging.info(
+        f"Open Tracing activated :) Sending to: {settings.OTLP_SPAN_EXPORT_URL}")
     resource = Resource(attributes={"service.name": "FelicityLIMS"})
     tracer = TracerProvider(resource=resource)
     trace.set_tracer_provider(tracer)

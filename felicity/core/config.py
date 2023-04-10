@@ -193,7 +193,7 @@ class Settings(BaseSettings):
     # Tracing
     RUN_OPEN_TRACING = getenv_boolean("RUN_OPEN_TRACING", False)
     OTLP_SPAN_EXPORT_URL = getenv_value(
-        "RUN_OPEN_TRACING", "http://localhost:4317")
+        "OTLP_SPAN_EXPORT_URL", "http://localhost:4317")
 
     class Config:
         case_sensitive = True

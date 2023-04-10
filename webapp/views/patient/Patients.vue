@@ -7,6 +7,7 @@ import { usePatientStore, useLocationStore } from "../../stores";
 import { IPatient } from "../../models/patient";
 
 import * as shield from "../../guards";
+import PageHeading from "../components/PageHeading.vue";
 
 let patientStore = usePatientStore();
 let locationsStore = useLocationStore();
@@ -164,6 +165,7 @@ let getPatientFullName = (pt: IPatient) => {
 <style lang="postcss" scoped></style>
 
 <template>
+  <PageHeading title="Patients" />
   <DataTable :columns="tableColumns" :data="patients" :toggleColumns="true" :loading="fetchingPatients" :paginable="true"
     :pageMeta="{
       fetchCount: patientParams.first,

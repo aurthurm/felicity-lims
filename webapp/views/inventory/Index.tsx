@@ -5,6 +5,7 @@ import { InventoryListing } from './InvListing';
 import { InventoryTransactions } from './InvTransactions';
 import { InventoryOrders } from './InvOrders';
 import Drawer from '../../components/Drawer.vue';
+import PageHeading from '../components/PageHeading.vue';
 import { ADD_STOCK_ORDER } from '../../graphql/inventory.mutations';
 import { useApiUtil } from '../../composables';
 
@@ -98,6 +99,7 @@ const InventoryHome = defineComponent({
     render() {
         return (
             <>
+                <PageHeading title="Inventory" />
                 <section class="col-span-12 mt-2">
                     <nav class="flex justify-between bg-white shadow-md mt-2">
                         <div class="-mb-px flex justify-start">

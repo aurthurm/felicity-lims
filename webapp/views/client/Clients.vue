@@ -12,6 +12,7 @@ import { IDistrict, IProvince } from "../../models/location";
 import { useApiUtil } from "../../composables";
 
 import * as shield from "../../guards";
+import PageHeading from "../components/PageHeading.vue";
 
 const clientStore = useClientStore();
 const locationStore = useLocationStore();
@@ -186,14 +187,12 @@ const countNone = computed(
 </script>
 
 <template>
-  <div class="flex items-center">
-    <h1 class="h1 my-4 font-bold text-dark-700">Clients</h1>
-    <button v-show="shield.hasRights(shield.actions.CREATE, shield.objects.CLIENT)"
-      class="p-2 my-2 ml-8 text-sm border-sky-800 border text-dark-700 transition-colors duration-150 rounded-sm focus:outline-none hover:bg-sky-800 hover:text-gray-100"
-      @click="FormManager(true, 'client')">
-      Add client
-    </button>
-  </div>
+  <PageHeading title="Clients" />
+  <button v-show="shield.hasRights(shield.actions.CREATE, shield.objects.CLIENT)"
+    class="p-2 my-2 text-sm border-sky-800 border text-dark-700 transition-colors duration-150 rounded-sm focus:outline-none hover:bg-sky-800 hover:text-gray-100"
+    @click="FormManager(true, 'client')">
+    Add client
+  </button>
   <hr />
   <DataTable :columns="tableColumns" :data="clients" :toggleColumns="true" :loading="fetchingClients" :paginable="true"
     :pageMeta="{

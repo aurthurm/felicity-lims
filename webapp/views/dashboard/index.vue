@@ -8,12 +8,14 @@ import tabTat from "./Tat.vue";
 import tabLineListing from "./LineListing.vue";
 import tabNotice from "./Notice.vue";
 import { useDashBoardStore } from "../../stores/dashboard";
+import PageHeading from "../components/PageHeading.vue";
 
 const dashBoardStore = useDashBoardStore();
 const { dashboard } = storeToRefs(dashBoardStore);
 </script>
 
 <template>
+  <page-heading title="Dashboard" />
   <section class="col-span-12 mt-2">
     <nav class="bg-white shadow-md mt-2">
       <div class="-mb-px flex justify-start">

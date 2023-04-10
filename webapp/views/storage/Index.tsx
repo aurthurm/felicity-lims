@@ -1,5 +1,6 @@
 import { defineComponent, computed, reactive, toRefs, ref, watch } from 'vue';
 import Modal from '../../components/SimpleModal.vue';
+import PageHeading from '../components/PageHeading.vue';
 import { ContainerView } from './ContainerView';
 import TreeItem from '../components/TreeItem.vue';
 import useTreeStateComposable from '../../composables/tree-state';
@@ -275,8 +276,9 @@ const StorageHome = defineComponent({
     render() {
         return (
             <>
+                <PageHeading title="Storage " />
                 <div class="grid grid-cols-12 gap-4 min-h-full bg-white">
-                    <div className="col-span-2 pt-4 pl-2">
+                    <div class="col-span-2 pt-4 pl-2">
                         <button
                             onClick={() => this.roomFormManager(true, null)}
                             class="px-2 py-1 border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
@@ -290,7 +292,7 @@ const StorageHome = defineComponent({
                             ))}
                         </ul>
                     </div>
-                    <div className="col-span-10 pt-4">
+                    <div class="col-span-10 pt-4">
                         <div class="mb-2">Selected: {this.activeTree.name}</div>
                         <hr />
                         <div class="my-4">

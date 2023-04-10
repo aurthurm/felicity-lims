@@ -1,24 +1,25 @@
 <script setup lang="ts">
-  import { computed } from 'vue';
-  import { useLocationStore } from '../../stores';
-  
-  const locationStore = useLocationStore()
-  const resetSelected = () => locationStore.updateConfRoute("");
-  const selectedRoute = computed(() => locationStore.getConfRoute)
+import { computed } from 'vue';
+import { useLocationStore } from '../../stores';
+import PageHeading from '../components/PageHeading.vue';
+
+const locationStore = useLocationStore()
+const resetSelected = () => locationStore.updateConfRoute("");
+const selectedRoute = computed(() => locationStore.getConfRoute)
 </script>
 
 <template>
-  <div class="">
-    <div class="flex justify-start">
-      <span @click="resetSelected" class="mr-4">
-        <router-link to="/admin" class="no-underline">
-          <h4>Felicity Configurations</h4>
-        </router-link>
-      </span>
-      <span v-if="selectedRoute">&rarr;</span> 
-      <span class="ml-4"> {{ selectedRoute }}</span>
-    </div>
-    <hr>
-    <router-view />
+  <PageHeading title="Felicity Configurations" />
+  <div class="flex justify-start italic uppercase text-md text-gray-600 font-bold">
+    <span @click="resetSelected">
+      <router-link to="/admin" class="no-underline">
+        <h4 class="text-gray-600">Home:</h4>
+      </router-link>
+    </span>
+    <span v-if="selectedRoute" class="mx-4 font-extrabold">&rarr;</span>
+    <span class="text-gray-400"> {{ selectedRoute }}</span>
   </div>
+  <hr class="my-4">
+
+  <router-view />
 </template>

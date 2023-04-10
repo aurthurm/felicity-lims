@@ -9,6 +9,7 @@ import { INotice } from "../../models/notice";
 import { useNoticeStore, useSetupStore, useAuthStore } from "../../stores";
 import { useApiUtil } from "../../composables";
 import Swal from 'sweetalert2';
+import PageHeading from "../components/PageHeading.vue";
 
 let setupStore = useSetupStore();
 const noticeStore = useNoticeStore();
@@ -66,7 +67,7 @@ const notices = computed<INotice[]>(() => noticeStore.getMyNotices(user.value?.u
 </script>
 
 <template>
-  <h1 class="h1 my-4 font-bold text-dark-700 mr-4">Notice Manager</h1>
+  <PageHeading title="Notice Manager" />
   <button @click.prevent="FormManager(true)"
     class="px-4 my-2 p-1 text-sm border-sky-800 border text-dark-700 transition-colors duration-150 rounded-sm focus:outline-none hover:bg-sky-800 hover:text-gray-100">
     New Notice

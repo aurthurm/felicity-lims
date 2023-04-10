@@ -1,3 +1,10 @@
+<script setup lang="ts">
+import SideBar from "../components/nav/NavigationAside.vue";
+import HeaderMain from "../components/nav/NavigationMain.vue";
+import Notification from "../components/Notification.vue";
+</script>
+
+
 <template>
   <div class="h-screen bg-gray-100 font-roboto antialiased">
     <div class="flex flex-row">
@@ -6,7 +13,7 @@
       </div>
       <div class="flex-1">
         <header-main />
-        <main class="p-8 overflow-y-scroll overscroll-contain">
+        <main class="px-8 pt-4 overflow-y-scroll overscroll-contain">
           <slot />
         </main>
       </div>
@@ -21,8 +28,3 @@
   <notification />
 </template>
 
-<script setup lang="ts">
-import SideBar from "../components/nav/NavigationAside.vue";
-import HeaderMain from "../components/nav/NavigationMain.vue";
-import Notification from "../components/Notification.vue";
-</script>
