@@ -12,6 +12,14 @@ from starlette.middleware.authentication import AuthenticationMiddleware
 from starlette.middleware.cors import CORSMiddleware
 from strawberry.asgi import GraphQL
 from strawberry.subscriptions import GRAPHQL_TRANSPORT_WS_PROTOCOL, GRAPHQL_WS_PROTOCOL
+#
+from opentelemetry import trace
+from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import OTLPSpanExporter
+from opentelemetry.sdk.trace import TracerProvider
+from opentelemetry.sdk.trace.export import BatchSpanProcessor
+from opentelemetry.sdk.resources import Resource
+from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
+from opentelemetry.instrumentation.logging import LoggingInstrumentor
 
 from felicity.api.gql.schema import gql_schema  # noqa
 from felicity.api.rest.api_v1.api import api_router  # noqa
@@ -32,6 +40,16 @@ logger = logging.getLogger(__name__)
 flims = FastAPI(
     title=settings.PROJECT_NAME, openapi_url=f"{settings.API_V1_STR}/openapi.json"
 )
+resource = Resource(attributes={"service.name": "FelicityLIMS"})
+tracer = TracerProvider(resource=resource)
+trace.set_tracer_provider(tracer)
+tracer.add_span_processor(
+    BatchSpanProcessor(
+        OTLPSpanExporter(endpoint="http://localhost:4317")
+    )
+)
+#  grafana tempo/jaeger/signoz
+# https://itnext.io/observability-part-2-tracing-1537e8d79933 or check https://github.com/blueswen/fastapi-jaeger
 
 
 @flims.on_event("startup")
@@ -60,7 +78,8 @@ async def shutdown():
 if settings.BACKEND_CORS_ORIGINS:
     flims.add_middleware(
         CORSMiddleware,
-        allow_origins=[str(origin) for origin in settings.BACKEND_CORS_ORIGINS],
+        allow_origins=[str(origin)
+                       for origin in settings.BACKEND_CORS_ORIGINS],
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],
@@ -79,13 +98,15 @@ async def set_custom_attr(request: Request, call_next):
 
 graphql_app = GraphQL(
     gql_schema,
-    subscription_protocols=[GRAPHQL_WS_PROTOCOL, GRAPHQL_TRANSPORT_WS_PROTOCOL],
+    subscription_protocols=[GRAPHQL_WS_PROTOCOL,
+                            GRAPHQL_TRANSPORT_WS_PROTOCOL],
 )
 
 setup_backends(flims, settings.SERVE_WEBAPP)
 flims.include_router(api_router, prefix=settings.API_V1_STR)
 flims.add_route("/felicity-gql", graphql_app)
-flims.add_websocket_route("/felicity-gql", graphql_app, "felicity-subscriptions")
+flims.add_websocket_route("/felicity-gql", graphql_app,
+                          "felicity-subscriptions")
 resolve_root_dirs()
 flims.mount("/media", StaticFiles(directory="media"), name="media")
 
@@ -174,3 +195,7 @@ async def stream_socket(websocket):
 
 
 flims.add_websocket_route("/streamer", stream_socket, "notification-only")
+
+# Instrument Felicity
+LoggingInstrumentor().instrument()
+FastAPIInstrumentor.instrument_app(flims)

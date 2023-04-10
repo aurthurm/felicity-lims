@@ -109,8 +109,8 @@ let clientParams = reactive({
   filterAction: false,
 });
 
-let countryUid = ref<number>();
-let provinceUid = ref<number>();
+let countryUid = ref<string>();
+let provinceUid = ref<string>();
 
 let formTitle = ref<string>("");
 
@@ -188,33 +188,20 @@ const countNone = computed(
 <template>
   <div class="flex items-center">
     <h1 class="h1 my-4 font-bold text-dark-700">Clients</h1>
-    <button
-      v-show="shield.hasRights(shield.actions.CREATE, shield.objects.CLIENT)"
+    <button v-show="shield.hasRights(shield.actions.CREATE, shield.objects.CLIENT)"
       class="p-2 my-2 ml-8 text-sm border-sky-800 border text-dark-700 transition-colors duration-150 rounded-sm focus:outline-none hover:bg-sky-800 hover:text-gray-100"
-      @click="FormManager(true, 'client')"
-    >
+      @click="FormManager(true, 'client')">
       Add client
     </button>
   </div>
   <hr />
-  <DataTable
-    :columns="tableColumns"
-    :data="clients"
-    :toggleColumns="true"
-    :loading="fetchingClients"
-    :paginable="true"
+  <DataTable :columns="tableColumns" :data="clients" :toggleColumns="true" :loading="fetchingClients" :paginable="true"
     :pageMeta="{
       fetchCount: clientParams.first,
       hasNextPage: clientPageInfo?.hasNextPage,
       countNone,
-    }"
-    :searchable="true"
-    :filterable="false"
-    @onSearchKeyUp="searchClients"
-    @onSearchFocus="resetClient"
-    @onPaginate="showMoreClients"
-    :selectable="false"
-  >
+    }" :searchable="true" :filterable="false" @onSearchKeyUp="searchClients" @onSearchFocus="resetClient"
+    @onPaginate="showMoreClients" :selectable="false">
     <template v-slot:footer> </template>
   </DataTable>
 
@@ -229,53 +216,29 @@ const countNone = computed(
         <div class="grid grid-cols-2 gap-x-4 mb-4">
           <label class="block col-span-1 mb-2">
             <span class="text-gray-700">Name</span>
-            <input
-              class="form-input mt-1 block w-full"
-              v-model="client.name"
-              placeholder="Name ..."
-            />
+            <input class="form-input mt-1 block w-full" v-model="client.name" placeholder="Name ..." />
           </label>
           <label class="block col-span-1 mb-2">
             <span class="text-gray-700">Code</span>
-            <input
-              class="form-input mt-1 block w-full"
-              v-model="client.code"
-              placeholder="Code ..."
-            />
+            <input class="form-input mt-1 block w-full" v-model="client.code" placeholder="Code ..." />
           </label>
         </div>
 
         <div class="grid grid-cols-3 gap-x-4 mb-4">
           <label class="block col-span-1 mb-2">
             <span class="text-gray-700">Country</span>
-            <select
-              class="form-select block w-full mt-1"
-              v-model="countryUid"
-              @change="getProvinces($event)"
-            >
+            <select class="form-select block w-full mt-1" v-model="countryUid" @change="getProvinces($event)">
               <option></option>
-              <option
-                v-for="country in countries"
-                :key="country.uid"
-                :value="country.uid"
-              >
+              <option v-for="country in countries" :key="country.uid" :value="country.uid">
                 {{ country.name }} {{ country.uid }}
               </option>
             </select>
           </label>
           <label class="block col-span-1 mb-2">
             <span class="text-gray-700">Province</span>
-            <select
-              class="form-select block w-full mt-1"
-              v-model="provinceUid"
-              @change="getDistricts($event)"
-            >
+            <select class="form-select block w-full mt-1" v-model="provinceUid" @change="getDistricts($event)">
               <option></option>
-              <option
-                v-for="province in provinces"
-                :key="province.uid"
-                :value="province.uid"
-              >
+              <option v-for="province in provinces" :key="province.uid" :value="province.uid">
                 {{ province.name }} {{ province.uid }}
               </option>
             </select>
@@ -284,11 +247,7 @@ const countNone = computed(
             <span class="text-gray-700">District</span>
             <select class="form-select block w-full mt-1" v-model="client.districtUid">
               <option></option>
-              <option
-                v-for="district in districts"
-                :key="district.uid"
-                :value="district.uid"
-              >
+              <option v-for="district in districts" :key="district.uid" :value="district.uid">
                 {{ district.name }} {{ district.uid }}
               </option>
             </select>
@@ -296,11 +255,8 @@ const countNone = computed(
         </div>
 
         <hr />
-        <button
-          type="button"
-          @click.prevent="saveForm()"
-          class="-mb-4 w-full border border-sky-800 bg-sky-800 text-white rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-sky-800 focus:outline-none focus:shadow-outline"
-        >
+        <button type="button" @click.prevent="saveForm()"
+          class="-mb-4 w-full border border-sky-800 bg-sky-800 text-white rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-sky-800 focus:outline-none focus:shadow-outline">
           Save Form
         </button>
       </form>

@@ -16,6 +16,7 @@ class FGroup:  # (KEYWORD, NAME)
 
 
 class FObject:
+    CLIENT = "CLIENT"
     PATIENT = "PATIENT"
     SAMPLE = "SAMPLE"
     RESULT = "RESULT"
@@ -51,11 +52,20 @@ groups = [
 # default permissions
 permissions = {
     fa.CREATE: {
+        fo.CLIENT: [fg.ADMINISTRATOR],
         fo.PATIENT: [fg.LAB_HAND],
         fo.SAMPLE: [fg.LAB_HAND],
         fo.WORKSHEET: [fg.SCIENTIST, fg.TECHNOLOGIST],
     },
     fa.READ: {
+        fo.CLIENT: [
+            fg.ADMINISTRATOR,
+            fg.LAB_MANAGER,
+            fg.SCIENTIST,
+            fg.TECHNOLOGIST,
+            fg.LAB_HAND,
+            fg.GUEST,
+        ],
         fo.PATIENT: [
             fg.ADMINISTRATOR,
             fg.LAB_MANAGER,
@@ -88,6 +98,7 @@ permissions = {
         ],
     },
     fa.UPDATE: {
+        fo.CLIENT: [fg.ADMINISTRATOR],
         fo.PATIENT: [fg.LAB_HAND],
         fo.SAMPLE: [fg.LAB_HAND],
         fo.RESULT: [fg.SCIENTIST, fg.TECHNOLOGIST],
