@@ -639,9 +639,7 @@ class InventoryMutations:
         return StockOrderLineType(stock_order=stock_order, order_products=o_products)
 
     @strawberry.mutation
-    async def submit_stock_order(
-        self, info, uid: FelicityID
-    ) -> StockOrderResponse:
+    async def submit_stock_order(self, info, uid: FelicityID) -> StockOrderResponse:
         is_authenticated, felicity_user = await auth_from_info(info)
         auth_success, auth_error = verify_user_auth(
             is_authenticated,
@@ -728,7 +726,7 @@ class InventoryMutations:
                 await product.update({"remaining": quantity})
 
         stock_order = await stock_order.update(
-            {"status": order_states.PROCESSED, "remarks": "" }
+            {"status": order_states.PROCESSED, "remarks": ""}
         )  # noqa
         o_products = await models.StockOrderProduct.get_all(order_uid=uid)
         return StockOrderLineType(stock_order=stock_order, order_products=o_products)

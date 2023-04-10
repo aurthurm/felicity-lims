@@ -3,16 +3,15 @@ import logging
 from typing import List
 
 from fastapi import FastAPI, Request, WebSocket
+from fastapi.responses import HTMLResponse
+#
 from fastapi.staticfiles import StaticFiles
+from fastapi.templating import Jinja2Templates
 from starlette.concurrency import run_until_first_complete
 from starlette.middleware.authentication import AuthenticationMiddleware
 from starlette.middleware.cors import CORSMiddleware
 from strawberry.asgi import GraphQL
 from strawberry.subscriptions import GRAPHQL_TRANSPORT_WS_PROTOCOL, GRAPHQL_WS_PROTOCOL
-#
-from fastapi.staticfiles import StaticFiles
-from fastapi.templating import Jinja2Templates
-from fastapi.responses import HTMLResponse
 
 from felicity.api.gql.schema import gql_schema  # noqa
 from felicity.api.rest.api_v1.api import api_router  # noqa
@@ -24,9 +23,7 @@ from felicity.core.repeater import repeat_every
 from felicity.init import initialize_felicity  # noqa
 from felicity.middlewares.auth_backend import FelicityAuthBackend
 from felicity.utils.dirs import resolve_root_dirs
-from felicity.utils.email.email import send_new_account_email
 from felicity.views import setup_backends
-
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -63,8 +60,7 @@ async def shutdown():
 if settings.BACKEND_CORS_ORIGINS:
     flims.add_middleware(
         CORSMiddleware,
-        allow_origins=[str(origin)
-                       for origin in settings.BACKEND_CORS_ORIGINS],
+        allow_origins=[str(origin) for origin in settings.BACKEND_CORS_ORIGINS],
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],
@@ -83,15 +79,13 @@ async def set_custom_attr(request: Request, call_next):
 
 graphql_app = GraphQL(
     gql_schema,
-    subscription_protocols=[GRAPHQL_WS_PROTOCOL,
-                            GRAPHQL_TRANSPORT_WS_PROTOCOL],
+    subscription_protocols=[GRAPHQL_WS_PROTOCOL, GRAPHQL_TRANSPORT_WS_PROTOCOL],
 )
 
 setup_backends(flims, settings.SERVE_WEBAPP)
 flims.include_router(api_router, prefix=settings.API_V1_STR)
 flims.add_route("/felicity-gql", graphql_app)
-flims.add_websocket_route("/felicity-gql", graphql_app,
-                          "felicity-subscriptions")
+flims.add_websocket_route("/felicity-gql", graphql_app, "felicity-subscriptions")
 resolve_root_dirs()
 flims.mount("/media", StaticFiles(directory="media"), name="media")
 
@@ -100,7 +94,9 @@ if settings.SERVE_WEBAPP:
     templates = Jinja2Templates(directory=settings.STATIC_DIR)
 
     flims.mount(
-        "/assets", StaticFiles(directory=settings.STATIC_DIR + "/assets", html=True), name="assets"
+        "/assets",
+        StaticFiles(directory=settings.STATIC_DIR + "/assets", html=True),
+        name="assets",
     )
 
     @flims.get("/", response_class=HTMLResponse)
@@ -108,7 +104,7 @@ if settings.SERVE_WEBAPP:
         return templates.TemplateResponse("index.html", {"request": request})
 
     @flims.get("/{catchall:path}", response_class=HTMLResponse)
-    async def index_path(request: Request):
+    async def index_catch(request: Request):
         return templates.TemplateResponse("index.html", {"request": request})
 
 
@@ -128,7 +124,7 @@ class ConnectionManager:
 manager = ConnectionManager()
 
 
-@ flims.websocket("/ws/{after_uid}")
+@flims.websocket("/ws/{after_uid}")
 async def websocket_endpoint(websocket: WebSocket, after_uid: int):
     await manager.connect(websocket)
     while True:

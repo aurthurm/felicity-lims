@@ -69,16 +69,14 @@ async def create_profile(info, payload: ProfileInputType) -> AnalysisProfileResp
         for _st_uid in payload.sample_types:
             await analysis_models.Profile.table_insert(
                 table=analysis_models.profile_sample_type,
-                mappings={"sample_type_uid": _st_uid,
-                          "profile_uid": profile.uid},
+                mappings={"sample_type_uid": _st_uid, "profile_uid": profile.uid},
             )
 
     if payload.services:
         for service_uid in payload.services:
             await analysis_models.Analysis.table_insert(
                 table=analysis_models.analysis_profile,
-                mappings={"analysis_uid": service_uid,
-                          "profile_uid": profile.uid},
+                mappings={"analysis_uid": service_uid, "profile_uid": profile.uid},
             )
 
     profile = await analysis_models.Profile.get(uid=profile.uid)
@@ -123,8 +121,7 @@ async def update_profile(
             anal = await analysis_models.Analysis.get(uid=_uid)
             await analysis_models.Analysis.table_insert(
                 table=analysis_models.analysis_profile,
-                mappings={"analysis_uid": anal.uid,
-                          "profile_uid": profile.uid},
+                mappings={"analysis_uid": anal.uid, "profile_uid": profile.uid},
             )
 
     # Sample Type management
@@ -136,8 +133,7 @@ async def update_profile(
             profile.sample_types.append(st)
             await analysis_models.SampleType.table_insert(
                 table=analysis_models.profile_sample_type,
-                mappings={"sample_type_uid": st.uid,
-                          "profile_uid": profile.uid},
+                mappings={"sample_type_uid": st.uid, "profile_uid": profile.uid},
             )
 
     return a_types.ProfileType(**profile.marshal_simple())

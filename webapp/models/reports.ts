@@ -1,5 +1,5 @@
-import { IUser } from "./auth";
-import { IAnalysisService } from "./analysis";
+import { IUser } from './auth';
+import { IAnalysisService } from './analysis';
 
 export interface IReportListing {
     uid?: string;
@@ -16,5 +16,3 @@ export interface IReportListing {
     sample_states?: string[];
     location?: string;
 }
-
-

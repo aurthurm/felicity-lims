@@ -1,79 +1,77 @@
-import { defineStore } from 'pinia'
-import {
-  GET_NOTICES_BY_CREATOR
-} from '../graphql/notice.queries';
-import { INotice } from "../models/notice"
-import { subtractDates } from  '../utils'
+import { defineStore } from 'pinia';
+import { GET_NOTICES_BY_CREATOR } from '../graphql/notice.queries';
+import { INotice } from '../models/notice';
+import { subtractDates } from '../utils';
 
-import { useApiUtil } from "../composables";
+import { useApiUtil } from '../composables';
 
 const { withClientQuery } = useApiUtil();
 
-
-export const useNoticeStore = defineStore('notice', { 
-    state: () => ({
-        notices: [],
-        fetchingNotices: false,
-        filterBy: "all",
-        filters: ['all', 'active', 'expired']
-    } as {
-        notices: INotice[],
-        fetchingNotices: boolean,
-        filterBy: string,
-        filters: string[]
-    }),
+export const useNoticeStore = defineStore('notice', {
+    state: () =>
+        ({
+            notices: [],
+            fetchingNotices: false,
+            filterBy: 'all',
+            filters: ['all', 'active', 'expired'],
+        } as {
+            notices: INotice[];
+            fetchingNotices: boolean;
+            filterBy: string;
+            filters: string[];
+        }),
     getters: {
-        getNotices: (state) => state.notices,
-        getActiveNotices: (state) => state.notices?.filter(n => !n.expired),
-        getMyNotices: (state) => (uid) => state.notices?.filter(n => n.createdByUid === uid),
-        getFilterBy: (state) => state.filterBy,
-        getFilters: (state) => state.filters
+        getNotices: state => state.notices,
+        getActiveNotices: state => state.notices?.filter(n => !n.expired),
+        getMyNotices: state => uid => state.notices?.filter(n => n.createdByUid === uid),
+        getFilterBy: state => state.filterBy,
+        getFilters: state => state.filters,
     },
     actions: {
-        async fetchMyNotices(uid: string){
+        async fetchMyNotices(uid: string) {
             this.fetchingNotices = true;
-            await withClientQuery(GET_NOTICES_BY_CREATOR, { uid }, "noticesByCreator")
-              .then(payload => {
-                this.fetchingNotices = false
-                this.notices = payload?.map(n => modifyExpiry(n))
-              }).catch(err => this.fetchingNotices = false);
+            await withClientQuery(GET_NOTICES_BY_CREATOR, { uid }, 'noticesByCreator')
+                .then(payload => {
+                    this.fetchingNotices = false;
+                    this.notices = payload?.map(n => modifyExpiry(n));
+                })
+                .catch(err => (this.fetchingNotices = false));
         },
-        addNotice(notice: INotice){
+        addNotice(notice: INotice) {
             this.notices?.unshift(modifyExpiry(notice));
         },
-        updateNotice(notice: INotice){
+        updateNotice(notice: INotice) {
             const index = this.notices?.findIndex(x => x.uid === notice.uid);
-            if(index > -1) this.notices[index] = modifyExpiry(notice);
+            if (index > -1) this.notices[index] = modifyExpiry(notice);
         },
-        deleteNotice(notice: INotice){
+        deleteNotice(notice: INotice) {
             const index = this.notices?.findIndex(x => x.uid === notice.uid);
-            if(index > -1) this.notices?.splice(index,1);
-        }
+            if (index > -1) this.notices?.splice(index, 1);
+        },
+    },
+});
 
-    }
-})
+const hasExpired = (notice: INotice) => new Date() > new Date(notice.expiry);
 
-const hasExpired = (notice: INotice) => new Date() > new Date(notice.expiry) 
-
-const daysToExpiry = (notice: INotice) => subtractDates(new Date(), new Date(notice.expiry))
+const daysToExpiry = (notice: INotice) => subtractDates(new Date(), new Date(notice.expiry));
 
 const modifyExpiry = (notice: INotice): INotice => {
     const expired = hasExpired(notice);
     const days = +daysToExpiry(notice);
-    notice.expired = expired
-    notice.dayToExpiration = days
-    if(expired === true) {
-        if(days === 0){
-            notice.status = "expired today"
+    notice.expired = expired;
+    notice.dayToExpiration = days;
+    if (expired === true) {
+        if (days === 0) {
+            notice.status = 'expired today';
         } else {
-            notice.status = "expired " + days + " days ago"
+            notice.status = 'expired ' + days + ' days ago';
         }
     } else {
-        if(days === 0){
-            notice.status = "expiring today"
+        if (days === 0) {
+            notice.status = 'expiring today';
         } else {
-            notice.status = "expiring in " + days + " days"
+            notice.status = 'expiring in ' + days + ' days';
         }
     }
     return notice;
-}
+};

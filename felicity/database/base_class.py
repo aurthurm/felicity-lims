@@ -1,5 +1,5 @@
 import logging
-from base64 import b64decode, b64encode
+from base64 import b64encode
 from typing import Any, AsyncIterator, Dict, List, Optional, TypeVar, Union
 
 from pydantic import BaseModel as PydanticBaseModel
@@ -228,8 +228,7 @@ class DBModel(AllFeaturesMixin):
 
         # stmt = update(cls).where(filters).values(to_save).execution_options(synchronize_session="fetch")
         query = smart_query(query=update(cls), filters=filters)
-        stmt = query.values(to_update).execution_options(
-            synchronize_session="fetch")
+        stmt = query.values(to_update).execution_options(synchronize_session="fetch")
 
         async with async_session_factory() as session:
             results = await session.execute(stmt)
@@ -260,8 +259,7 @@ class DBModel(AllFeaturesMixin):
             if key != "_uid":
                 binds[key] = bindparam(key)
 
-        stmt = query.values(binds).execution_options(
-            synchronize_session="fetch")
+        stmt = query.values(binds).execution_options(synchronize_session="fetch")
 
         async with async_session_factory() as session:
             await session.execute(stmt, to_update)
@@ -401,8 +399,7 @@ class DBModel(AllFeaturesMixin):
         # stmt = select(func.count()).select_from(select(cls).subquery())
         # stmt = select(func.count(cls.uid)).select_from(cls)
         filter_stmt = smart_query(query=select(cls), filters=filters)
-        count_stmt = select(func.count(filter_stmt.c.uid)
-                            ).select_from(filter_stmt)
+        count_stmt = select(func.count(filter_stmt.c.uid)).select_from(filter_stmt)
         async with async_session_factory() as session:
             res = await session.execute(count_stmt)
         count = res.scalars().one()
@@ -486,8 +483,7 @@ class DBModel(AllFeaturesMixin):
         # add paging filters
         _filters = None
         if isinstance(filters, dict):
-            _filters = [{sa_or_: cursor_limit},
-                        filters] if cursor_limit else filters
+            _filters = [{sa_or_: cursor_limit}, filters] if cursor_limit else filters
         elif isinstance(filters, list):
             _filters = filters
             if cursor_limit:

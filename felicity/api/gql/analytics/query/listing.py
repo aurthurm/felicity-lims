@@ -40,7 +40,6 @@ async def count_sample_group_by_status(info) -> types.GroupedCounts:
 
     stats = []
     for row in results:
-        stats.append(types.GroupCount(
-            group=group_exists(row[0]), count=row[1]))
+        stats.append(types.GroupCount(group=group_exists(row[0]), count=row[1]))
 
     return types.GroupedCounts(data=stats)

@@ -1,22 +1,22 @@
-import { ILocation, IDistrict } from "./location";
+import { ILocation, IDistrict } from './location';
 
 export interface IFacility extends ILocation {
-  district: IDistrict;
+    district: IDistrict;
 }
 
 export interface IRAxor {
-  district: string;
+    district: string;
 }
-  
+
 export interface IFacilityContact {
-  uid: number;
-  firstName: string;  
-  lastname: string;
-  email: string;
-  emailCc: string[];
-  consentEmail: boolean;
-  businessPhone: string;
-  mobilePhone: string;
-  consentSms: boolean;
-  client: IFacility;
+    uid: number;
+    firstName: string;
+    lastname: string;
+    email: string;
+    emailCc: string[];
+    consentEmail: boolean;
+    businessPhone: string;
+    mobilePhone: string;
+    consentSms: boolean;
+    client: IFacility;
 }

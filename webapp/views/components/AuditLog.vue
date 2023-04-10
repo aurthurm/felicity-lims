@@ -100,7 +100,7 @@ function changes(log: any): any {
       <li v-for="log in auditLogs" :key="log.uid" class="mb-2">
         <div class="flex items-center mb-1">
           <div class="bg-indigo-600 rounded-full h-4 w-4 border-gray-200 border-2 z-10"></div>
-          <div class="ml-4 font-medium">
+          <div class="ml-4 font-medium italic">
             <span>
               {{ translateUser(log?.userId) }} {{ translateAction(log?.action) }}
               {{ log?.targetType }}

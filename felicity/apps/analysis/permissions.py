@@ -59,7 +59,9 @@ async def check_result_verification(
     restricted = []
 
     laboratory = await Laboratory.get_by_setup_name("felicity")
-    settings: LaboratorySetting = await LaboratorySetting.get(laboratory_uid=laboratory.uid)
+    settings: LaboratorySetting = await LaboratorySetting.get(
+        laboratory_uid=laboratory.uid
+    )
 
     if isinstance(results[0], str):
         results: List[AnalysisResult] = await AnalysisResult.get_all(uid__in=results)

@@ -1,11 +1,12 @@
 import logging
-from datetime import datetime
-from typing import Dict, Optional, List
 from dataclasses import field
+from datetime import datetime
+from typing import Dict, List, Optional
+
 import strawberry  # noqa
 
 from felicity.api.gql import OperationError, auth_from_info, verify_user_auth
-from felicity.api.gql.patient.types import PatientType, PatientIdentificationType, IdentificationType
+from felicity.api.gql.patient.types import IdentificationType, PatientType
 from felicity.apps.client import models as client_models
 from felicity.apps.patient import models, schemas
 from felicity.core.uid_gen import FelicityID
@@ -54,7 +55,7 @@ IdentificationResponse = strawberry.union(
 )
 
 
-@ strawberry.type
+@strawberry.type
 class PatientMutations:
     @strawberry.mutation
     async def create_identification(info, name: str) -> IdentificationResponse:
@@ -82,7 +83,9 @@ class PatientMutations:
         }
 
         obj_in = schemas.IdentificationCreate(**incoming)
-        identification: models.Identification = await models.Identification.create(obj_in)
+        identification: models.Identification = await models.Identification.create(
+            obj_in
+        )
         return IdentificationType(**identification.marshal_simple())
 
     @strawberry.mutation
@@ -156,7 +159,7 @@ class PatientMutations:
             pid_in = schemas.PatientIdentificationCreate(
                 patient_uid=patient.uid,
                 identification_uid=p_id.identification_uid,
-                value=p_id.value
+                value=p_id.value,
             )
             await models.PatientIdentification.create(pid_in)
 
@@ -195,4 +198,34 @@ class PatientMutations:
 
         obj_in = schemas.PatientUpdate(**patient.to_dict())
         patient = await patient.update(obj_in)
+
+        # update identifications
+        update_identification_uids = [
+            id.identification_uid for id in payload.identifications
+        ]
+        identifications = await models.PatientIdentification.get_all(patient_uid=patient.uid)
+        identifications_uids = [id.uid for id in identifications]
+
+        for identification in identifications:
+            # deleted
+            if not identification.uid in update_identification_uids:
+                await identification.delete()
+            else:  # update
+                update_identification = list(filter(
+                    lambda x: x.identification_uid == identification.uid, payload.identifications))[0]
+                id_update_in = schemas.PatientIdentificationUpdate(
+                    patient_uid=patient.uid, **id_update_in.to_dict())
+                identification = await identification.update(id_update_in)
+
+        # new
+        for _pid in payload.identifications:
+            if not _pid.identification_uid in identifications_uids:
+                pid_in = schemas.PatientIdentificationCreate(
+                    patient_uid=patient.uid,
+                    identification_uid=_pid.identification_uid,
+                    value=_pid.value,
+                )
+                await models.PatientIdentification.create(pid_in)
+
+        patient = await models.Patient.get(uid=patient.uid)
         return PatientType(**patient.marshal_simple())

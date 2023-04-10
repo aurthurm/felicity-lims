@@ -1,6 +1,6 @@
-import { IUser } from "./auth"
-import { IDepartment, ISupplier } from "./setup"
-import { IStoreRoom } from "./storage";
+import { IUser } from './auth';
+import { IDepartment, ISupplier } from './setup';
+import { IStoreRoom } from './storage';
 
 export interface IStockItem {
     uid: string;

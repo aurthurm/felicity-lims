@@ -1,80 +1,356 @@
 {
   "categories": ["Quality Control", "Molecular Techniques"],
-  "qc_levels": ["Blank", "Negative Control", "Positive Control", "Low Positive Control", "High Positive Control"],
+  "qc_levels": [
+    "Blank",
+    "Negative Control",
+    "Positive Control",
+    "Low Positive Control",
+    "High Positive Control"
+  ],
   "sample_types": [
-    {"name": "QC Sample", "description": "QC Sample", "abbr": "QCS", "active": 1 },
-    {"name": "Whole Blood", "description": "Whole Blood", "abbr": "WB", "active": 1 },
-    {"name": "Blood Plasma", "description": "Blood Plasma", "abbr": "BP", "active": 1 },
-    {"name": "Blood Serum", "description": "Blood Serum", "abbr": "BS", "active": 1 },
-    {"name": "Dried Blood Spot", "description": "Dried Blood Spot", "abbr": "DBS", "active": 1 },
-    {"name": "Urine", "description": "Urine", "abbr": "BV", "active": 1 },
-    {"name": "Stool", "description": "Stool", "abbr": "BG", "active": 1 },
-    {"name": "Synovial Fluid", "description": "Synovial Fluid", "abbr": "SF", "active": 0 },
-    {"name": "Cerebral Spinal Fluid", "description": "Cerebral Spinal Fluid", "abbr": "CSF", "active": 0 },
-    {"name": "Nasal-Pharyngeal Swab", "description": "Nasal-Pharyngeal Swab", "abbr": "NPS", "active": 1 },
-    {"name": "Oral-Pharyngeal Swab", "description": "Oral-Pharyngeal Swab", "abbr": "OPS", "active": 0 },
-    {"name": "Pus Swab", "description": "Pus Swab", "abbr": "PS", "active": 0 },
-    {"name": "Arterial Blood", "description": "Arterial Blood", "abbr": "AB", "active": 0 },
-    {"name": "Venous Blood", "description": "Vernous Blood", "abbr": "VB", "active": 0 }
+    {
+      "name": "QC Sample",
+      "description": "QC Sample",
+      "abbr": "QCS",
+      "active": 1
+    },
+    {
+      "name": "Whole Blood",
+      "description": "Whole Blood",
+      "abbr": "WB",
+      "active": 1
+    },
+    {
+      "name": "Blood Plasma",
+      "description": "Blood Plasma",
+      "abbr": "BP",
+      "active": 1
+    },
+    {
+      "name": "Blood Serum",
+      "description": "Blood Serum",
+      "abbr": "BS",
+      "active": 1
+    },
+    {
+      "name": "Dried Blood Spot",
+      "description": "Dried Blood Spot",
+      "abbr": "DBS",
+      "active": 1
+    },
+    { "name": "Urine", "description": "Urine", "abbr": "BV", "active": 1 },
+    { "name": "Stool", "description": "Stool", "abbr": "BG", "active": 1 },
+    {
+      "name": "Synovial Fluid",
+      "description": "Synovial Fluid",
+      "abbr": "SF",
+      "active": 0
+    },
+    {
+      "name": "Cerebral Spinal Fluid",
+      "description": "Cerebral Spinal Fluid",
+      "abbr": "CSF",
+      "active": 0
+    },
+    {
+      "name": "Nasal-Pharyngeal Swab",
+      "description": "Nasal-Pharyngeal Swab",
+      "abbr": "NPS",
+      "active": 1
+    },
+    {
+      "name": "Oral-Pharyngeal Swab",
+      "description": "Oral-Pharyngeal Swab",
+      "abbr": "OPS",
+      "active": 0
+    },
+    {
+      "name": "Pus Swab",
+      "description": "Pus Swab",
+      "abbr": "PS",
+      "active": 0
+    },
+    {
+      "name": "Arterial Blood",
+      "description": "Arterial Blood",
+      "abbr": "AB",
+      "active": 0
+    },
+    {
+      "name": "Venous Blood",
+      "description": "Vernous Blood",
+      "abbr": "VB",
+      "active": 0
+    }
   ],
   "analyses": [
-    {"name": "HIV", "description": "Human Immune Virus", "keyword": "hiv", "sort_key": 1, "active": 1},
-    {"name": "HIV Viral Load", "description": "HIV Viral Load", "keyword": "hivViralLoad", "sort_key": 1, "active": 1},
-    {"name": "HIV EID", "description": "HIV Early Infant Diagnosis", "keyword": "hivEid", "sort_key": 1, "active": 1},
-    {"name": "ESR", "description": "Erythrocyte Sedimentation Rate", "keyword": "esr", "sort_key": 1, "active": 1},
-    {"name": "C-RP", "description": "C Reactive Protein", "keyword": "c_rp", "sort_key": 1, "active": 1},
-    {"name": "COVID 19", "description": "Corona Virus - SARS COV 2", "keyword": "sars-cov2", "sort_key": 1, "active": 1},
-    {"name": "HbA1cHbA1c", "description": "HbA1cHbA1c", "keyword": "HbA1cHbA1c", "sort_key": 1, "active": 1},
+    {
+      "name": "HIV",
+      "description": "Human Immune Virus",
+      "keyword": "hiv",
+      "sort_key": 1,
+      "active": 1
+    },
+    {
+      "name": "HIV Viral Load",
+      "description": "HIV Viral Load",
+      "keyword": "hivViralLoad",
+      "sort_key": 1,
+      "active": 1
+    },
+    {
+      "name": "HIV EID",
+      "description": "HIV Early Infant Diagnosis",
+      "keyword": "hivEid",
+      "sort_key": 1,
+      "active": 1
+    },
+    {
+      "name": "ESR",
+      "description": "Erythrocyte Sedimentation Rate",
+      "keyword": "esr",
+      "sort_key": 1,
+      "active": 1
+    },
+    {
+      "name": "C-RP",
+      "description": "C Reactive Protein",
+      "keyword": "c_rp",
+      "sort_key": 1,
+      "active": 1
+    },
+    {
+      "name": "COVID 19",
+      "description": "Corona Virus - SARS COV 2",
+      "keyword": "sars-cov2",
+      "sort_key": 1,
+      "active": 1
+    },
+    {
+      "name": "HbA1cHbA1c",
+      "description": "HbA1cHbA1c",
+      "keyword": "HbA1cHbA1c",
+      "sort_key": 1,
+      "active": 1
+    },
 
-    {"name": "K+", "description": "Potassium", "keyword": "potassium", "sort_key": 1, "active": 1},
-    {"name": "Na-", "description": "Sodium", "keyword": "sodium", "sort_key": 2, "active": 1},
-    {"name": "Cl-", "description": "Chloride", "keyword": "chloride", "sort_key": 3, "active": 1},
-    {"name": "Creatinine", "description": "Creatinine", "keyword": "creatinine", "sort_key": 4, "active": 1},
-    {"name": "Urea", "description": "Urea", "keyword": "urea", "sort_key": 5, "active": 1},
+    {
+      "name": "K+",
+      "description": "Potassium",
+      "keyword": "potassium",
+      "sort_key": 1,
+      "active": 1
+    },
+    {
+      "name": "Na-",
+      "description": "Sodium",
+      "keyword": "sodium",
+      "sort_key": 2,
+      "active": 1
+    },
+    {
+      "name": "Cl-",
+      "description": "Chloride",
+      "keyword": "chloride",
+      "sort_key": 3,
+      "active": 1
+    },
+    {
+      "name": "Creatinine",
+      "description": "Creatinine",
+      "keyword": "creatinine",
+      "sort_key": 4,
+      "active": 1
+    },
+    {
+      "name": "Urea",
+      "description": "Urea",
+      "keyword": "urea",
+      "sort_key": 5,
+      "active": 1
+    },
 
-    {"name": "ALP", "description": "Alkaline Phosphatase", "keyword": "alp", "sort_key": 1, "active": 1},
-    {"name": "ALT", "description": "Alanine Aminotransferase", "keyword": "alt", "sort_key": 2, "active": 1},
-    {"name": "AST", "description": "Aspartate Aminotransferase", "keyword": "ast", "sort_key": 3, "active": 1},
-    {"name": "ALB", "description": "Albumin", "keyword": "alb", "sort_key": 4, "active": 1},
-    {"name": "T-PROT", "description": "Total Protein", "keyword": "t-prot", "sort_key": 5, "active": 1},
-    {"name": "GGT", "description": "Gama Glutamyl Transferese", "keyword": "ggt", "sort_key": 6, "active": 1},
-    {"name": "D-BIL", "description": "Direct Bilirubin", "keyword": "d-bil", "sort_key": 7, "active": 1},
-    {"name": "T-BIL", "description": "Total Bilirubin", "keyword": "t-bil", "sort_key": 8, "active": 1},
+    {
+      "name": "ALP",
+      "description": "Alkaline Phosphatase",
+      "keyword": "alp",
+      "sort_key": 1,
+      "active": 1
+    },
+    {
+      "name": "ALT",
+      "description": "Alanine Aminotransferase",
+      "keyword": "alt",
+      "sort_key": 2,
+      "active": 1
+    },
+    {
+      "name": "AST",
+      "description": "Aspartate Aminotransferase",
+      "keyword": "ast",
+      "sort_key": 3,
+      "active": 1
+    },
+    {
+      "name": "ALB",
+      "description": "Albumin",
+      "keyword": "alb",
+      "sort_key": 4,
+      "active": 1
+    },
+    {
+      "name": "T-PROT",
+      "description": "Total Protein",
+      "keyword": "t-prot",
+      "sort_key": 5,
+      "active": 1
+    },
+    {
+      "name": "GGT",
+      "description": "Gama Glutamyl Transferese",
+      "keyword": "ggt",
+      "sort_key": 6,
+      "active": 1
+    },
+    {
+      "name": "D-BIL",
+      "description": "Direct Bilirubin",
+      "keyword": "d-bil",
+      "sort_key": 7,
+      "active": 1
+    },
+    {
+      "name": "T-BIL",
+      "description": "Total Bilirubin",
+      "keyword": "t-bil",
+      "sort_key": 8,
+      "active": 1
+    },
 
-    {"name": "TC", "description": "Total Cholesterol", "keyword": "tc", "sort_key": 1, "active": 1},
-    {"name": "LDL", "description": "Low density lipoprotein cholesterol", "keyword": "ldl", "sort_key": 2, "active": 1},
-    {"name": "HDL", "description": "Hig density lipoprotein cholesterol", "keyword": "hdl", "sort_key": 3, "active": 1},
-    {"name": "Trig", "description": "Triglycerides", "keyword": "trig", "sort_key": 4, "active": 1},
+    {
+      "name": "TC",
+      "description": "Total Cholesterol",
+      "keyword": "tc",
+      "sort_key": 1,
+      "active": 1
+    },
+    {
+      "name": "LDL",
+      "description": "Low density lipoprotein cholesterol",
+      "keyword": "ldl",
+      "sort_key": 2,
+      "active": 1
+    },
+    {
+      "name": "HDL",
+      "description": "Hig density lipoprotein cholesterol",
+      "keyword": "hdl",
+      "sort_key": 3,
+      "active": 1
+    },
+    {
+      "name": "Trig",
+      "description": "Triglycerides",
+      "keyword": "trig",
+      "sort_key": 4,
+      "active": 1
+    },
 
-    {"name": "WBC", "description": "White Blood Cells", "keyword": "wbc", "sort_key": 1, "active": 1},
-    {"name": "RBC", "description": "Red Blood Cells", "keyword": "rbc", "sort_key": 2, "active": 1},
-    {"name": "HGB", "description": "Haemoglobin", "keyword": "hbg", "sort_key": 3, "active": 1},
-    {"name": "HCT", "description": "Haematocrit", "keyword": "hct", "sort_key": 4, "active": 1},
-    {"name": "MVC", "description": "Mean Corpuscular Volume", "keyword": "mcv", "sort_key": 5, "active": 1},
-    {"name": "MCH", "description": "Mean Corpuscular Haemoglobin", "keyword": "mch", "sort_key": 6, "active": 1},
-    {"name": "MCHC", "description": "Mean Corpuscular Haemoglobin Concentration", "keyword": "mchc", "sort_key": 7, "active": 1},
-    {"name": "PLT", "description": "Platelets", "keyword": "plt", "sort_key": 8, "active": 1}
+    {
+      "name": "WBC",
+      "description": "White Blood Cells",
+      "keyword": "wbc",
+      "sort_key": 1,
+      "active": 1
+    },
+    {
+      "name": "RBC",
+      "description": "Red Blood Cells",
+      "keyword": "rbc",
+      "sort_key": 2,
+      "active": 1
+    },
+    {
+      "name": "HGB",
+      "description": "Haemoglobin",
+      "keyword": "hbg",
+      "sort_key": 3,
+      "active": 1
+    },
+    {
+      "name": "HCT",
+      "description": "Haematocrit",
+      "keyword": "hct",
+      "sort_key": 4,
+      "active": 1
+    },
+    {
+      "name": "MVC",
+      "description": "Mean Corpuscular Volume",
+      "keyword": "mcv",
+      "sort_key": 5,
+      "active": 1
+    },
+    {
+      "name": "MCH",
+      "description": "Mean Corpuscular Haemoglobin",
+      "keyword": "mch",
+      "sort_key": 6,
+      "active": 1
+    },
+    {
+      "name": "MCHC",
+      "description": "Mean Corpuscular Haemoglobin Concentration",
+      "keyword": "mchc",
+      "sort_key": 7,
+      "active": 1
+    },
+    {
+      "name": "PLT",
+      "description": "Platelets",
+      "keyword": "plt",
+      "sort_key": 8,
+      "active": 1
+    }
   ],
   "analyses_profiles": [
     {
-        "name": "U&E's",
-        "description": "Urea and Electrolytes",
-        "analyses_names": ["Urea", "Creatinine", "K+", "Na-", "Cl-"]
+      "name": "U&E's",
+      "description": "Urea and Electrolytes",
+      "analyses_names": ["Urea", "Creatinine", "K+", "Na-", "Cl-"]
     },
     {
-        "name": "LFT's",
-        "description": "Liver Function Tests",
-        "analyses_names": ["ALP", "ALT", "AST", "ALB", "T-PROT", "GGT", "D-BIL", "T-BIL"]
+      "name": "LFT's",
+      "description": "Liver Function Tests",
+      "analyses_names": [
+        "ALP",
+        "ALT",
+        "AST",
+        "ALB",
+        "T-PROT",
+        "GGT",
+        "D-BIL",
+        "T-BIL"
+      ]
     },
     {
-        "name": "Lipids",
-        "description": "Lipid or Cholesterol Profile",
-        "analyses_names": ["TC", "LDL", "HDL", "Trig"]
+      "name": "Lipids",
+      "description": "Lipid or Cholesterol Profile",
+      "analyses_names": ["TC", "LDL", "HDL", "Trig"]
     },
     {
-        "name": "FBC",
-        "description": "Full Blood Count",
-        "analyses_names": ["WBC", "RBC", "HGB", "HCT", "MVC", "MCH", "MCHC", "PLT"]
+      "name": "FBC",
+      "description": "Full Blood Count",
+      "analyses_names": [
+        "WBC",
+        "RBC",
+        "HGB",
+        "HCT",
+        "MVC",
+        "MCH",
+        "MCHC",
+        "PLT"
+      ]
     }
   ],
   "rejection_reasons": [
@@ -86,4 +362,3 @@
     "Sample too old"
   ]
 }
-

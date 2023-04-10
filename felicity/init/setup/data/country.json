@@ -6,121 +6,117 @@
       {
         "name": "Bulawayo",
         "code": "ZW-BU",
-        "districts": [
-          { "name": "Bulawayo", "code": "BU-BU"}
-        ]
+        "districts": [{ "name": "Bulawayo", "code": "BU-BU" }]
       },
       {
         "name": "Harare",
         "code": "ZW-HA",
-        "districts": [
-          { "name": "Harare", "code": "HA-HA"}
-        ]
+        "districts": [{ "name": "Harare", "code": "HA-HA" }]
       },
       {
         "name": "Manicaland",
         "code": "ZW-MA",
         "districts": [
-          { "name": "Buhera", "code": "MA-BU"},
-          { "name": "Chimanimani", "code": "MA-CH"},
-          { "name": "Chipinge", "code": "MA-CP"},
-          { "name": "Makoni", "code": "MA-MA"},
-          { "name": "Mutare", "code": "MA-MU"},
-          { "name": "Mutasa", "code": "MA-MT"},
-          { "name": "Nyanga", "code": "MA-NY"}
+          { "name": "Buhera", "code": "MA-BU" },
+          { "name": "Chimanimani", "code": "MA-CH" },
+          { "name": "Chipinge", "code": "MA-CP" },
+          { "name": "Makoni", "code": "MA-MA" },
+          { "name": "Mutare", "code": "MA-MU" },
+          { "name": "Mutasa", "code": "MA-MT" },
+          { "name": "Nyanga", "code": "MA-NY" }
         ]
       },
       {
         "name": "Mashonaland Central",
         "code": "ZW-MC",
         "districts": [
-          { "name": "Bindura", "code": "MC-BI"},
-          { "name": "Guruve", "code": "MC-GU"},
-          { "name": "Mazowe", "code": "MC-MA"},
-          { "name": "Mbire", "code": "MC-MB"},
-          { "name": "Mukumbura", "code": "MC-MU"},
-          { "name": "Muzarabani", "code": "MC-MZ"},
-          { "name": "Rushinga", "code": "MC-RU"},
-          { "name": "Shamva", "code": "MC-SH"}
+          { "name": "Bindura", "code": "MC-BI" },
+          { "name": "Guruve", "code": "MC-GU" },
+          { "name": "Mazowe", "code": "MC-MA" },
+          { "name": "Mbire", "code": "MC-MB" },
+          { "name": "Mukumbura", "code": "MC-MU" },
+          { "name": "Muzarabani", "code": "MC-MZ" },
+          { "name": "Rushinga", "code": "MC-RU" },
+          { "name": "Shamva", "code": "MC-SH" }
         ]
       },
       {
         "name": "Mashonaland East",
         "code": "ZW-ME",
         "districts": [
-          { "name": "Chikomba", "code": "ME-CH"},
-          { "name": "Goromonzi", "code": "ME-GO"},
-          { "name": "Hwedza (Wedza)", "code": "ME-HW"},
-          { "name": "Marondera", "code": "ME-MA"},
-          { "name": "Mudzi", "code": "ME-MU"},
-          { "name": "Murehwa", "code": "ME-MR"},
-          { "name": "Mutoko", "code": "ME-MT"},
-          { "name": "Seke", "code": "ME-SE"},
-          { "name": "Uzumba Maramba Pfungwe", "code": "ME-UZ"}
+          { "name": "Chikomba", "code": "ME-CH" },
+          { "name": "Goromonzi", "code": "ME-GO" },
+          { "name": "Hwedza (Wedza)", "code": "ME-HW" },
+          { "name": "Marondera", "code": "ME-MA" },
+          { "name": "Mudzi", "code": "ME-MU" },
+          { "name": "Murehwa", "code": "ME-MR" },
+          { "name": "Mutoko", "code": "ME-MT" },
+          { "name": "Seke", "code": "ME-SE" },
+          { "name": "Uzumba Maramba Pfungwe", "code": "ME-UZ" }
         ]
       },
       {
         "name": "Mashonaland West",
         "code": "ZW-MW",
         "districts": [
-          { "name": "Chegutu", "code": "MW-CH"},
-          { "name": "Hurungwe", "code": "MW-HU"},
-          { "name": "Kadoma", "code": "MW-KA"},
-          { "name": "Kariba", "code": "MW-KR"},
-          { "name": "Mukonde", "code": "MW-MU"},
-          { "name": "Zvimba", "code": "MW-ZV"}
+          { "name": "Chegutu", "code": "MW-CH" },
+          { "name": "Hurungwe", "code": "MW-HU" },
+          { "name": "Kadoma", "code": "MW-KA" },
+          { "name": "Kariba", "code": "MW-KR" },
+          { "name": "Mukonde", "code": "MW-MU" },
+          { "name": "Zvimba", "code": "MW-ZV" }
         ]
       },
       {
         "name": "Masvingo",
         "code": "ZW-MV",
         "districts": [
-          { "name": "Bikita", "code": "MV-BI"},
-          { "name": "Chiredzi", "code": "MV-CH"},
-          { "name": "Chivi", "code": "MV-CV"},
-          { "name": "Gutu", "code": "MV-GU"},
-          { "name": "Masvingo", "code": "MV-MA"},
-          { "name": "Mwenezi", "code": "MV-MW"},
-          { "name": "Zaka", "code": "MV-ZA"}
+          { "name": "Bikita", "code": "MV-BI" },
+          { "name": "Chiredzi", "code": "MV-CH" },
+          { "name": "Chivi", "code": "MV-CV" },
+          { "name": "Gutu", "code": "MV-GU" },
+          { "name": "Masvingo", "code": "MV-MA" },
+          { "name": "Mwenezi", "code": "MV-MW" },
+          { "name": "Zaka", "code": "MV-ZA" }
         ]
       },
       {
         "name": "Matabeleland North",
         "code": "ZW-MN",
         "districts": [
-          { "name": "Binga", "code": "MN-BI"},
-          { "name": "Bubi", "code": "MN-BU"},
-          { "name": "Hwange", "code": "MN-HW"},
-          { "name": "Lupane", "code": "MN-LU"},
-          { "name": "Nkayi", "code": "MN-NK"},
-          { "name": "Tsholotsho", "code": "MN-TS"},
-          { "name": "Umguza", "code": "MN-UM"}
+          { "name": "Binga", "code": "MN-BI" },
+          { "name": "Bubi", "code": "MN-BU" },
+          { "name": "Hwange", "code": "MN-HW" },
+          { "name": "Lupane", "code": "MN-LU" },
+          { "name": "Nkayi", "code": "MN-NK" },
+          { "name": "Tsholotsho", "code": "MN-TS" },
+          { "name": "Umguza", "code": "MN-UM" }
         ]
       },
       {
         "name": "Matabeleland South",
         "code": "ZW-MS",
         "districts": [
-          { "name": "Beitbridge", "code": "MS-BE"},
-          { "name": "Bulilimangwe", "code": "MS-BU"},
-          { "name": "Gwanda", "code": "MS-GW"},
-          { "name": "Insiza", "code": "MS-IN"},
-          { "name": "Matobo", "code": "MS-MA"},
-          { "name": "Umzingwane", "code": "MS-UM"}
+          { "name": "Beitbridge", "code": "MS-BE" },
+          { "name": "Bulilimangwe", "code": "MS-BU" },
+          { "name": "Gwanda", "code": "MS-GW" },
+          { "name": "Insiza", "code": "MS-IN" },
+          { "name": "Matobo", "code": "MS-MA" },
+          { "name": "Umzingwane", "code": "MS-UM" }
         ]
       },
       {
         "name": "Midlands",
         "code": "ZW-MI",
         "districts": [
-          { "name": "Chirumhanzu", "code": "MI-CH"},
-          { "name": "Gokwe North", "code": "MI-GN"},
-          { "name": "Gokwe South", "code": "MI-GS"},
-          { "name": "Gweru", "code": "MI-GW"},
-          { "name": "Kwekwe", "code": "MI-KW"},
-          { "name": "Mberengwa", "code": "MI-MB"},
-          { "name": "Shurugwi", "code": "MI-SH"},
-          { "name": "Zvishavane", "code": "MI-ZV"}
+          { "name": "Chirumhanzu", "code": "MI-CH" },
+          { "name": "Gokwe North", "code": "MI-GN" },
+          { "name": "Gokwe South", "code": "MI-GS" },
+          { "name": "Gweru", "code": "MI-GW" },
+          { "name": "Kwekwe", "code": "MI-KW" },
+          { "name": "Mberengwa", "code": "MI-MB" },
+          { "name": "Shurugwi", "code": "MI-SH" },
+          { "name": "Zvishavane", "code": "MI-ZV" }
         ]
       }
     ]

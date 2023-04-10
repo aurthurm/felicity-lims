@@ -1,5 +1,5 @@
-import { IDistrict, IProvince } from "./location";
-import { IClient } from "./client";
+import { IDistrict, IProvince } from './location';
+import { IClient } from './client';
 
 export interface IIdentification {
     uid: string;
@@ -8,9 +8,9 @@ export interface IIdentification {
 
 export interface IPatientIdentification {
     uid: string;
-    identificationUid:  string;
-    identification:  IIdentification;
-    patientUid:  string;
+    identificationUid: string;
+    identification: IIdentification;
+    patientUid: string;
     value: string;
 }
 
@@ -40,7 +40,6 @@ export interface IPatient {
 }
 
 export interface IPatientIdentificationForm {
-    identificationUid:  string;
+    identificationUid: string;
     value: string;
 }
-

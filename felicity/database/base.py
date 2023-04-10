@@ -40,7 +40,6 @@ from felicity.apps.notification.models import ActivityStream  # noqa
 from felicity.apps.notification.models import Notification  # noqa
 from felicity.apps.patient.models import Identification  # noqa
 from felicity.apps.patient.models import Patient  # noqa
-from felicity.apps.patient.models import PatientIdentification
 from felicity.apps.reflex.models import ReflexAction  # noqa
 from felicity.apps.reflex.models import ReflexBrain  # noqa
 from felicity.apps.reflex.models import ReflexBrainAddition  # noqa

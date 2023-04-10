@@ -4,8 +4,8 @@ import tsConfigPaths from 'vite-tsconfig-paths';
 import vueJsx from '@vitejs/plugin-vue-jsx';
 
 export default defineConfig({
-  plugins: [tsConfigPaths(), vue(), vueJsx()], // ,
-  build: {
-    target: 'esnext',
-  },
+    plugins: [tsConfigPaths(), vue(), vueJsx()], // ,
+    build: {
+        target: 'esnext',
+    },
 });

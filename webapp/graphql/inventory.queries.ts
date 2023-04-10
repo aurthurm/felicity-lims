@@ -3,31 +3,34 @@ import gql from 'graphql-tag';
 // hazards
 export const GET_ALL_HAZARDS = gql`
     query getAllHazards {
-      hazardAll {
-        uid
-        name
-        description
-      }
-  }`;
+        hazardAll {
+            uid
+            name
+            description
+        }
+    }
+`;
 
 // categories
 export const GET_ALL_STOCK_CATEGORIES = gql`
     query getAllStockCategories {
-      stockCategoryAll {
-        uid
-        name
-        description
-      }
-  }`;
+        stockCategoryAll {
+            uid
+            name
+            description
+        }
+    }
+`;
 
 // packages
 export const GET_ALL_STOCK_PACKAGES = gql`
     query getAllStockPackaging {
-    stockPackagingAll {
-        uid
-        name
+        stockPackagingAll {
+            uid
+            name
+        }
     }
-}`;
+`;
 
 // units
 export const GET_ALL_STOCK_UNITS = gql`
@@ -35,13 +38,14 @@ export const GET_ALL_STOCK_UNITS = gql`
         stockUnitAll {
             uid
             name
+        }
     }
-}`;
+`;
 
 // products
 export const GET_ALL_STOCK_PRODUCTS = gql`
     query getAllStockProducts($first: Int!, $after: String, $text: String!, $sortBy: [String!] = ["uid"]) {
-        stockProductAll(pageSize: $first, afterCursor: $after, text: $text, sortBy: $sortBy){
+        stockProductAll(pageSize: $first, afterCursor: $after, text: $text, sortBy: $sortBy) {
             totalCount
             pageInfo {
                 hasNextPage
@@ -106,13 +110,14 @@ export const GET_ALL_STOCK_PRODUCTS = gql`
                     lastName
                 }
             }
+        }
     }
-}`;
+`;
 
 // items
 export const GET_ALL_STOCK_ITEMS = gql`
     query getAllStockItems($first: Int!, $after: String, $text: String!, $sortBy: [String!] = ["uid"]) {
-        stockItemAll(pageSize: $first, afterCursor: $after, text: $text, sortBy: $sortBy){
+        stockItemAll(pageSize: $first, afterCursor: $after, text: $text, sortBy: $sortBy) {
             totalCount
             pageInfo {
                 hasNextPage
@@ -130,41 +135,42 @@ export const GET_ALL_STOCK_ITEMS = gql`
                     name
                 }
             }
+        }
     }
-}`;
+`;
 
 // stock orders
 export const GET_ALL_STOCK_ORDERS = gql`
-query getAllStockOrders($first: Int!, $after: String, $text: String!, $sortBy: [String!] = ["uid"]) {
-    stockOrderAll(pageSize: $first, afterCursor: $after, text: $text, sortBy: $sortBy){
-        totalCount
-        pageInfo {
-            hasNextPage
-            hasPreviousPage
-            startCursor
-            endCursor
-        }
-        items {
-            uid
-            orderBy {
-                uid
-                firstName
-                lastName
+    query getAllStockOrders($first: Int!, $after: String, $text: String!, $sortBy: [String!] = ["uid"]) {
+        stockOrderAll(pageSize: $first, afterCursor: $after, text: $text, sortBy: $sortBy) {
+            totalCount
+            pageInfo {
+                hasNextPage
+                hasPreviousPage
+                startCursor
+                endCursor
             }
-            department {
+            items {
                 uid
-                name
+                orderBy {
+                    uid
+                    firstName
+                    lastName
+                }
+                department {
+                    uid
+                    name
+                }
+                status
+                orderNumber
             }
-            status
-            orderNumber
         }
     }
-}`;
-
+`;
 
 export const GET_ALL_STOCK_ORDER_PRODUCTS = gql`
-query getAllStockOrderProducts($stockOrderUid: FelicityID!) {
-    stockOrderProductAll(stockOrderUid: $stockOrderUid){
+    query getAllStockOrderProducts($stockOrderUid: FelicityID!) {
+        stockOrderProductAll(stockOrderUid: $stockOrderUid) {
             uid
             product {
                 uid
@@ -173,15 +179,14 @@ query getAllStockOrderProducts($stockOrderUid: FelicityID!) {
             }
             price
             quantity
+        }
     }
-}`;
-
-
+`;
 
 // transactions
 export const GET_ALL_STOCK_TRANSACTIONS = gql`
     query getAllStockTransactions($first: Int!, $after: String, $text: String!, $sortBy: [String!] = ["uid"]) {
-        stockTransactionAll(pageSize: $first, afterCursor: $after, text: $text, sortBy: $sortBy){
+        stockTransactionAll(pageSize: $first, afterCursor: $after, text: $text, sortBy: $sortBy) {
             totalCount
             pageInfo {
                 hasNextPage
@@ -189,32 +194,33 @@ export const GET_ALL_STOCK_TRANSACTIONS = gql`
                 startCursor
                 endCursor
             }
-            items {    
+            items {
                 uid
-                product{
+                product {
                     uid
                     name
                 }
                 issued
-                department{
+                department {
                     uid
                     name
                 }
                 dateIssued
                 transactionBy {
-                    uid 
+                    uid
                     firstName
                     lastName
                 }
                 createdAt
             }
+        }
     }
-}`;
+`;
 
 // adjustments
 export const GET_ALL_STOCK_ADJUSTMENTS = gql`
     query getAllStockAdustments($first: Int!, $after: String, $text: String!, $sortBy: [String!] = ["uid"]) {
-        stockAdjustmentAll(pageSize: $first, afterCursor: $after, text: $text, sortBy: $sortBy){
+        stockAdjustmentAll(pageSize: $first, afterCursor: $after, text: $text, sortBy: $sortBy) {
             totalCount
             pageInfo {
                 hasNextPage
@@ -222,7 +228,7 @@ export const GET_ALL_STOCK_ADJUSTMENTS = gql`
                 startCursor
                 endCursor
             }
-            items {   
+            items {
                 uid
                 productUid
                 adjustmentType
@@ -235,5 +241,6 @@ export const GET_ALL_STOCK_ADJUSTMENTS = gql`
                 updatedAt
                 updatedByUid
             }
+        }
     }
-}`;
+`;

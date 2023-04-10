@@ -1,5 +1,5 @@
-import { IGroup, IUser } from "./auth";
-import { IDepartment } from "./setup";
+import { IGroup, IUser } from './auth';
+import { IDepartment } from './setup';
 
 export interface INotice {
     uid: number;
@@ -13,4 +13,4 @@ export interface INotice {
     dayToExpiration: number;
     status: string;
     createdByUid: number;
-  }
+}

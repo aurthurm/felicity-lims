@@ -1,5 +1,5 @@
-import { IInstrument, IMethod } from './setup'
-import { IAnalysisService, IAnalysisResult, ISampleType } from './analysis'
+import { IInstrument, IMethod } from './setup';
+import { IAnalysisService, IAnalysisResult, ISampleType } from './analysis';
 
 export interface IReserved {
     position: number;
@@ -38,7 +38,7 @@ export interface IWorkSheet {
     reserved: string[];
     plate: Map<string, string>;
     numberOfSamples: number;
-    analysisResults: IAnalysisResult[],
+    analysisResults: IAnalysisResult[];
     rows: number;
     cols: number;
     rowWise: Boolean;
@@ -47,17 +47,16 @@ export interface IWorkSheet {
     instrument: IInstrument;
     description: string;
     analysisUid: number;
-    analysis: IAnalysisService,
+    analysis: IAnalysisService;
     state: string;
     assignedCount: number;
     analyst: any;
-    priority: number,
+    priority: number;
     methodUid?: string;
     method?: IMethod;
-    template?: IWorkSheetTemplate
-
+    template?: IWorkSheetTemplate;
 }
-  
+
 export interface IWorkSheetForm {
     analystUid: number;
     templateUid: number;

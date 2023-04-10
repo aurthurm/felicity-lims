@@ -61,8 +61,7 @@ async def populate_worksheet_plate(job_uid: FelicityIDType):
             change_reason=f"WorkSheet {ws_uid} - contains at least a "
             f"processed sample",
         )
-        logger.warning(
-            f"WorkSheet {ws_uid} - contains at least a processed sample")
+        logger.warning(f"WorkSheet {ws_uid} - contains at least a processed sample")
         return
 
     # Enforce WS sample size limit
@@ -223,8 +222,7 @@ async def setup_ws_quality_control(ws: models.WorkSheet):
                 sample.qc_level_uid = level.uid
                 sample.analyses.append(ws.analysis)
                 await sample.save()
-                logger.warning(
-                    f"Sample {sample.sample_id}, level {level.level}")
+                logger.warning(f"Sample {sample.sample_id}, level {level.level}")
 
                 # create results linkages
                 a_result_in = {
@@ -295,8 +293,7 @@ async def setup_ws_quality_control_manually(ws: models.WorkSheet, qc_template_ui
                 sample.qc_level_uid = level.uid
                 sample.analyses.append(ws.analysis)
                 await sample.save()
-                logger.warning(
-                    f"Sample {sample.sample_id}, level {level.level}")
+                logger.warning(f"Sample {sample.sample_id}, level {level.level}")
 
                 # create results linkages
                 a_result_in = {
@@ -350,8 +347,7 @@ async def populate_worksheet_plate_manually(job_uid: FelicityIDType):
             change_reason=f"WorkSheet {ws_uid} - contains at least a "
             f"processed sample",
         )
-        logger.warning(
-            f"WorkSheet {ws_uid} - contains at least a processed sample")
+        logger.warning(f"WorkSheet {ws_uid} - contains at least a processed sample")
         return
 
     data = job.data

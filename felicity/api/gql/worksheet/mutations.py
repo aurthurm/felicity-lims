@@ -438,8 +438,7 @@ class WorkSheetMutations:
             creator_uid=felicity_user.uid,
             job_id=ws.uid,
             status=states.PENDING,
-            data={"qc_template_uid": qc_template_uid,
-                  "analyses_uids": analyses_uids},
+            data={"qc_template_uid": qc_template_uid, "analyses_uids": analyses_uids},
         )
         await job_models.Job.create(job_schema)
         felicity_resume_workforce()

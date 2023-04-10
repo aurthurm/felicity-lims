@@ -126,8 +126,7 @@ async def verify_analysis_results(
 
     # set status of these analysis_results to PROCESSING
     await result_models.AnalysisResult.bulk_update_with_mappings(
-        [{"uid": uid, "status": analysis_states.result.APPROVING}
-            for uid in analyses]
+        [{"uid": uid, "status": analysis_states.result.APPROVING} for uid in analyses]
     )
 
     job_schema = job_schemas.JobCreate(

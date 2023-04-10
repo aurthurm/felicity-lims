@@ -1,5 +1,5 @@
-import { ISample } from "./analysis"
-import { IUser } from "./auth"
+import { ISample } from './analysis';
+import { IUser } from './auth';
 
 export interface IStoreRoom {
     uid?: string;
@@ -17,7 +17,6 @@ export interface IStoreRoom {
     isFolder?: boolean;
 }
 
-
 export interface IStorageLocation {
     uid?: string;
     name?: String;
@@ -30,12 +29,11 @@ export interface IStorageLocation {
     updatedAt?: Date;
     updatedByUid?: string;
     updatedBy?: IUser;
-    children?: IStorageSection[], 
-    tag?: string,
+    children?: IStorageSection[];
+    tag?: string;
     isOpen?: boolean;
     isFolder?: boolean;
 }
-
 
 export interface IStorageSection {
     uid?: string;
@@ -49,12 +47,11 @@ export interface IStorageSection {
     updatedAt?: Date;
     updatedByUid?: string;
     updatedBy?: IUser;
-    children?: IStorageContainer[], 
-    tag?: string,
+    children?: IStorageContainer[];
+    tag?: string;
     isOpen?: boolean;
     isFolder?: boolean;
 }
-
 
 export interface IStorageContainer {
     uid?: string;
@@ -75,21 +72,20 @@ export interface IStorageContainer {
     updatedAt?: Date;
     updatedByUid?: string;
     updatedBy?: IUser;
-    tag?: string,
+    tag?: string;
     isOpen?: boolean;
     isFolder?: boolean;
 }
 
-
 interface IActivePath {
-    room?: number,
-    location?: number,
-    section?: number,
-    container?: number,
+    room?: number;
+    location?: number;
+    section?: number;
+    container?: number;
 }
 
 export interface ITreeData {
-  treeData: IStoreRoom[]  
-  activePath: IActivePath, 
-  activeTree: IStoreRoom | IStorageLocation | IStorageSection | IStorageContainer
+    treeData: IStoreRoom[];
+    activePath: IActivePath;
+    activeTree: IStoreRoom | IStorageLocation | IStorageSection | IStorageContainer;
 }

@@ -50,9 +50,13 @@ if (
   loadPreferedTheme();
 }
 
+const mobileLayout = "mobile";
 const defaultLayout = "default";
-const layout = computed(
-  () => `${currentRoute.value.meta.layout || defaultLayout}-layout`
+let layout = computed(
+  () => {
+    const isMobile = (navigator as any)?.userAgentData?.mobile ?? false;
+    return `${isMobile ? mobileLayout : (currentRoute.value.meta.layout || defaultLayout)}-layout`;
+  }
 );
 </script>
 

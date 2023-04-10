@@ -1,10 +1,10 @@
 import logging
-
-from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, String, Table
-from sqlalchemy.orm import relationship
-from sqlalchemy.orm import Mapped
 from typing import List
-from felicity.apps import Auditable, DBModel
+
+from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, String
+from sqlalchemy.orm import Mapped, relationship
+
+from felicity.apps import Auditable
 from felicity.apps.client.models import Client
 from felicity.apps.common.models import IdSequence
 from felicity.apps.patient import schemas
@@ -18,37 +18,42 @@ class Identification(Auditable):
     name = Column(String, index=True, unique=True, nullable=True)
 
     @classmethod
-    async def create(cls, obj_in: schemas.IdentificationCreate) -> schemas.Identification:
+    async def create(
+        cls, obj_in: schemas.IdentificationCreate
+    ) -> schemas.Identification:
         data = cls._import(obj_in)
         return await super().create(**data)
 
-    async def update(self, obj_in: schemas.IdentificationUpdate) -> schemas.Identification:
+    async def update(
+        self, obj_in: schemas.IdentificationUpdate
+    ) -> schemas.Identification:
         data = self._import(obj_in)
         return await super().update(**data)
 
 
 class PatientIdentification(Auditable):
-    identification_uid = Column(FelicitySAID, ForeignKey(
-        "identification.uid"), nullable=True)
-    identification: Mapped['Identification'] = relationship(
-        "Identification",
-        lazy="selectin"
+    identification_uid = Column(
+        FelicitySAID, ForeignKey("identification.uid"), nullable=True
     )
-    patient_uid = Column(FelicitySAID, ForeignKey(
-        "patient.uid"), nullable=True)
-    patient: Mapped['Patient'] = relationship(
-        "Patient",
-        back_populates="identifications",
-        lazy="selectin"
+    identification: Mapped["Identification"] = relationship(
+        "Identification", lazy="selectin"
+    )
+    patient_uid = Column(FelicitySAID, ForeignKey("patient.uid"), nullable=True)
+    patient: Mapped["Patient"] = relationship(
+        "Patient", back_populates="identifications", lazy="selectin"
     )
     value = Column(String, index=True, nullable=False)
 
     @classmethod
-    async def create(cls, obj_in: schemas.PatientIdentificationCreate) -> schemas.PatientIdentification:
+    async def create(
+        cls, obj_in: schemas.PatientIdentificationCreate
+    ) -> schemas.PatientIdentification:
         data = cls._import(obj_in)
         return await super().create(**data)
 
-    async def update(self, obj_in: schemas.PatientIdentificationUpdate) -> schemas.PatientIdentification:
+    async def update(
+        self, obj_in: schemas.PatientIdentificationUpdate
+    ) -> schemas.PatientIdentification:
         data = self._import(obj_in)
         return await super().update(**data)
 
@@ -72,21 +77,18 @@ class Patient(Auditable):
     phone_home = Column(String, nullable=True)
     consent_sms = Column(Boolean(), default=False)
     email = Column(String, nullable=True)
-    identifications: Mapped[List["PatientIdentification"]] = relationship(PatientIdentification,
-                                                                          back_populates="patient", lazy="selectin"
-                                                                          )
+    identifications: Mapped[List["PatientIdentification"]] = relationship(
+        PatientIdentification, back_populates="patient", lazy="selectin"
+    )
     # status
     internal_use = Column(Boolean(), default=False)  # e.g Test Patient
     active = Column(Boolean(), default=True)
     # belonging
-    district_uid = Column(FelicitySAID, ForeignKey(
-        "district.uid"), nullable=True)
+    district_uid = Column(FelicitySAID, ForeignKey("district.uid"), nullable=True)
     district = relationship("District", backref="patients", lazy="selectin")
-    province_uid = Column(FelicitySAID, ForeignKey(
-        "province.uid"), nullable=True)
+    province_uid = Column(FelicitySAID, ForeignKey("province.uid"), nullable=True)
     province = relationship("Province", backref="patients", lazy="selectin")
-    country_uid = Column(FelicitySAID, ForeignKey(
-        "country.uid"), nullable=True)
+    country_uid = Column(FelicitySAID, ForeignKey("country.uid"), nullable=True)
     country = relationship("Country", backref="patients", lazy="selectin")
 
     @property

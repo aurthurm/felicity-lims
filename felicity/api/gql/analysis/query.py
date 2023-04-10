@@ -59,8 +59,7 @@ class AnalysisQuery:
             filters.append(text_filters)
 
         if client_uid:
-            filters.append(
-                {"analysis_request___client_uid__exact": client_uid})
+            filters.append({"analysis_request___client_uid__exact": client_uid})
 
         if status:
             filters.append({"status__exact": status})
@@ -305,8 +304,7 @@ class AnalysisQuery:
         if sample_type_uid:
             filters.append({"sample___sample_type_uid": sample_type_uid})
 
-        filters.append(
-            {"sample___status": analysis_conf.states.sample.RECEIVED})
+        filters.append({"sample___status": analysis_conf.states.sample.RECEIVED})
         filters.append({"status": analysis_conf.states.result.PENDING})
 
         if not sort_by:

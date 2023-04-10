@@ -298,7 +298,9 @@ async def clone_samples(info, samples: List[FelicityID]) -> SampleActionResponse
 
 
 @strawberry.mutation
-async def cancel_samples(info, samples: List[FelicityID]) -> ResultedSampleActionResponse:
+async def cancel_samples(
+    info, samples: List[FelicityID]
+) -> ResultedSampleActionResponse:
     is_authenticated, felicity_user = await auth_from_info(info)
     verify_user_auth(
         is_authenticated, felicity_user, "Only Authenticated user can cancel samples"
@@ -329,7 +331,9 @@ async def cancel_samples(info, samples: List[FelicityID]) -> ResultedSampleActio
 
 
 @strawberry.mutation
-async def re_instate_samples(info, samples: List[FelicityID]) -> ResultedSampleActionResponse:
+async def re_instate_samples(
+    info, samples: List[FelicityID]
+) -> ResultedSampleActionResponse:
     is_authenticated, felicity_user = await auth_from_info(info)
     verify_user_auth(
         is_authenticated,
@@ -355,7 +359,9 @@ async def re_instate_samples(info, samples: List[FelicityID]) -> ResultedSampleA
 
 
 @strawberry.mutation
-async def receive_samples(info, samples: List[FelicityID]) -> ResultedSampleActionResponse:
+async def receive_samples(
+    info, samples: List[FelicityID]
+) -> ResultedSampleActionResponse:
     is_authenticated, felicity_user = await auth_from_info(info)
     verify_user_auth(
         is_authenticated,

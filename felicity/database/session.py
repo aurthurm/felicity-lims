@@ -21,8 +21,7 @@ async_engine = create_async_engine(
 async_session_factory = sessionmaker(
     bind=async_engine, expire_on_commit=False, autoflush=False, class_=AsyncSession
 )
-AsyncSessionScoped = async_scoped_session(
-    async_session_factory, scopefunc=current_task)
+AsyncSessionScoped = async_scoped_session(async_session_factory, scopefunc=current_task)
 
 
 #  Async Dependency

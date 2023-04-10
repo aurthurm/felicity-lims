@@ -6,9 +6,9 @@ from sqlalchemy import text
 from sqlalchemy.future import select
 from sqlalchemy.sql import func
 
+from felicity.core.uid_gen import FelicityID
 from felicity.database.base_class import DBModel
 from felicity.database.session import async_session_factory
-from felicity.core.uid_gen import FelicityID
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -159,8 +159,7 @@ class SampleAnalyticsInit(Generic[ModelType]):
         self, start: Tuple[str, str], end: Tuple[str, str]
     ):
         retest = getattr(self.model, "retest")
-        stmt = select(func.count(self.model.uid).label(
-            "total")).filter(retest == True)
+        stmt = select(func.count(self.model.uid).label("total")).filter(retest == True)
 
         if start[1]:
             start_column = start[0]

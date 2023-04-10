@@ -51,8 +51,7 @@ async def prepare_for_impress():
     sample_uids = [sample.uid for sample in samples]
 
     await Sample.bulk_update_with_mappings(
-        [{"uid": uid, "status": states.sample.PUBLISHING}
-            for uid in sample_uids]
+        [{"uid": uid, "status": states.sample.PUBLISHING} for uid in sample_uids]
     )
 
     system_daemon: User = await User.get(email=settings.SYSTEM_DAEMONUSER_EMAIL)

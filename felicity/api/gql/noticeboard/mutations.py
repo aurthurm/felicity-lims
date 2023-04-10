@@ -134,7 +134,9 @@ class NoticeMutations:
         return NoticeType(**notice.marshal_simple())
 
     @strawberry.mutation
-    async def view_notice(self, info, uid: FelicityID, viewer: FelicityID) -> NoticeType:
+    async def view_notice(
+        self, info, uid: FelicityID, viewer: FelicityID
+    ) -> NoticeType:
 
         is_authenticated, felicity_user = await auth_from_info(info)
         verify_user_auth(

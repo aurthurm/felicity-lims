@@ -4,6 +4,7 @@ import * as shield from "../../guards";
 import { useRoute } from "vue-router";
 import { storeToRefs } from "pinia";
 import { usePatientStore } from "../../stores";
+import { parseDate } from "../../utils";
 
 const route = useRoute();
 const patientStore = usePatientStore();
@@ -46,7 +47,7 @@ const editPatient = (patient) => {
           <span class="font-bold text-gray-800">{{ patient?.firstName?.toUpperCase() }}
             {{ patient?.lastName?.toUpperCase() }}</span>
           <div>
-            <span class="font-medium text-md">{{ patient?.dateOfBirth }}</span>
+            <span class="font-medium text-md">{{ parseDate(patient?.dateOfBirth, false) }}</span>
             <button v-show="shield.hasRights(shield.actions.UPDATE, shield.objects.PATIENT)" @click="editPatient(patient)"
               class="p-1 ml-2 border-white border text-gray-500 text-md rounded-sm transition duration-300 hover:text-sky-800 focus:outline-none">
               <font-awesome-icon icon="fa-edit" />
