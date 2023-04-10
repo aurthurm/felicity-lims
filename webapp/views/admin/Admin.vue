@@ -17,6 +17,7 @@ const configs = ref([
     icon: "laptop-medical",
   },
   { title: "Sample Types", path: "/admin/sampletypes-conf", icon: "fill" },
+  { title: "Person Identification", path: "/admin/identification-conf", icon: "fill" },
   {
     title: "Tests, Categories, Profiles, QC",
     path: "/admin/analyses-conf",
@@ -38,13 +39,8 @@ const configs = ref([
   <div class="container w-full my-4">
     <h5>Laboratory Setup</h5>
     <ul class="grid grid-cols-12 gap-4 my-2.5">
-      <item-setting
-        v-for="setting in configs"
-        :key="setting.path"
-        :title="setting.title"
-        :path="setting.path"
-        :icon="setting.icon"
-      />
+      <item-setting v-for="setting in configs" :key="setting.path" :title="setting.title" :path="setting.path"
+        :icon="setting.icon" />
     </ul>
     <hr />
   </div>

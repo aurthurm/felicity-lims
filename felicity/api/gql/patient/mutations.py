@@ -108,7 +108,7 @@ class PatientMutations:
         except AttributeError as e:
             logger.warning(e)
 
-        id_in = schemas.IdentificationUpdate(*identification.to_dict())
+        id_in = schemas.IdentificationUpdate(**identification.to_dict())
         identification = await identification.update(id_in)
         return IdentificationType(**identification.marshal_simple())
 

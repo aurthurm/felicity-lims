@@ -66,6 +66,14 @@ const adminRoutes = [
         },
     },
     {
+        path: 'identification-conf',
+        name: 'identification-conf',
+        component: () => import('../views/admin/patient/index.vue'),
+        meta: {
+            requiresAuth: true,
+        },
+    },
+    {
         path: 'worksheets-conf',
         name: 'worksheets-conf',
         component: () => import('../views/admin/worksheets/index.vue'),
