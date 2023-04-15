@@ -1,3 +1,20 @@
+#fel-load {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    width: 100%;
+    background-color: #4f4f9d;
+}
+
+#fel-load > p {
+    color: #fff;
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 16px;
+}
+
 .fel-loader {
     width: 10px;
     height: 10px;
