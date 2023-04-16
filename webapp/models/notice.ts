@@ -2,7 +2,7 @@ import { IGroup, IUser } from './auth';
 import { IDepartment } from './setup';
 
 export interface INotice {
-    uid: number;
+    uid: string;
     title: string;
     body: string;
     departments: IDepartment[];
@@ -12,5 +12,5 @@ export interface INotice {
     expired: boolean;
     dayToExpiration: number;
     status: string;
-    createdByUid: number;
+    createdByUid: string;
 }

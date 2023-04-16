@@ -2,7 +2,7 @@ import logging
 from typing import Dict, Optional
 
 import strawberry  # noqa
-from api.gql import OperationError, auth_from_info, verify_user_auth
+from api.gql import OperationError, DeletedItem, auth_from_info, verify_user_auth
 from api.gql.client.types import ClientContactType, ClientType
 from apps.client import models, schemas
 from core.uid_gen import FelicityID
@@ -17,6 +17,10 @@ ClientResponse = strawberry.union(
 
 ClientContactResponse = strawberry.union(
     "ClientContactResponse", (ClientContactType, OperationError), description=""  # noqa
+)
+
+DeleteContactResponse = strawberry.union(
+    "DeleteContactResponse", (DeletedItem, OperationError), description=""  # noqa
 )
 
 
@@ -40,7 +44,7 @@ class ClientContactInputType:
     first_name: str
     client_uid: FelicityID
     last_name: Optional[str] = None
-    mail: Optional[str] = None
+    email: Optional[str] = None
     email_cc: Optional[str] = None
     mobile_phone: Optional[str] = None
     consent_sms: Optional[bool] = False
@@ -156,7 +160,7 @@ class ClientMutations:
 
         obj_in = schemas.ClientContactCreate(**incoming)
         client_contact: models.ClientContact = await models.ClientContact.create(obj_in)
-        return ClientContactType(**client_contact.marshal_simple())
+        return ClientContactType(**client_contact.marshal_simple(exclude=["is_superuser", "auth_uid"]))
 
     @strawberry.mutation
     async def update_client_contact(
@@ -188,4 +192,32 @@ class ClientMutations:
                     logger.warning(f"failed to set attribute {field}: {e}")
         obj_in = schemas.ClientContactUpdate(**client_contact.to_dict())
         client_contact = await client_contact.update(obj_in)
-        return ClientContactType(**client_contact.marshal_simple())
+        return ClientContactType(**client_contact.marshal_simple(exclude=["is_superuser", "auth_uid"]))
+
+    @strawberry.mutation
+    async def delete_client_contact(self, info, uid: FelicityID) -> DeleteContactResponse:
+
+        is_authenticated, felicity_user = await auth_from_info(info)
+        verify_user_auth(
+            is_authenticated,
+            felicity_user,
+            "Only Authenticated user can delete/deactivate client contacts",
+        )
+
+        if not uid:
+            return OperationError(error="No uid provided to identify deletion obj")
+
+        client_contact = await models.ClientContact.get(uid=uid)
+        if not client_contact:
+            return OperationError(
+                error=f"Client Contact with uid {uid} not found. Cannot delete obj ..."
+            )
+
+        try:
+            setattr(client_contact, "is_active", False)
+        except Exception as e:
+            logger.warning(f"failed to set attribute {field}: {e}")
+
+        obj_in = schemas.ClientContactUpdate(**client_contact.to_dict())
+        client_contact = await client_contact.update(obj_in)
+        return DeletedItem(uid=client_contact.uid)

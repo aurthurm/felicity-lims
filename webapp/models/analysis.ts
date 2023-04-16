@@ -1,8 +1,7 @@
-import { number } from 'yup';
 import { IClient, IClientContact } from './client';
 import { IPatient } from './patient';
 import { IInstrument, IMethod, IUnit, IDepartment } from './setup';
-import { IStorageContainer, IStorageSlot } from './storage';
+import { IStorageContainer } from './storage';
 
 export interface ISampleType {
     uid?: string;
@@ -128,7 +127,22 @@ export interface ISample {
     priority?: number;
     checked?: boolean;
     dateReceived?: string;
-    storageContainerUid: number;
+    receivedBy?: any;
+    dateCollected?: string;
+    dateSubmitted?: string;
+    submittedBy?: any;
+    dateVerified?: string;
+    verifiedBy?: any;
+    datePublished?: string;
+    datePrinted?: string;
+    printedBy?: any;
+    dateInvalidated?: string;
+    invalidatedBy?: any;
+    dateCancelled?: string;
+    cancelledBy?: any;
+    dueDate?: string;
+    dateStored?: string;
+    storageContainerUid: string;
     storageContainer: IStorageContainer;
     storageSlotIndex: number;
     storageSlot: string;

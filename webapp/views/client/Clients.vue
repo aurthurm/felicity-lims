@@ -18,22 +18,6 @@ const clientStore = useClientStore();
 const locationStore = useLocationStore();
 const { withClientMutation } = useApiUtil();
 
-const { countries } = storeToRefs(locationStore);
-const { clients, clientPageInfo, fetchingClients } = storeToRefs(clientStore);
-
-let currentTab = ref<string>("samples");
-const tabs: string[] = ["samples", "contacts"];
-let currentTabComponent = computed(() => "tab-" + currentTab.value);
-
-let showClientModal = ref<boolean>(false);
-let createItem = ref<boolean>(false);
-let targetItem = ref<string>("");
-
-let provinces = ref<IProvince[]>([]);
-let districts = ref<IDistrict[]>([]);
-
-let client = reactive({}) as IClient;
-const resetClient = () => Object.assign(client, {}) as IClient;
 
 const tableColumns = ref([
   {
@@ -60,7 +44,7 @@ const tableColumns = ref([
           },
         },
         class:
-          "p-1 ml-2 border-white border text-gray-500rounded-smtransition duration-300 hover:border-sky-800 hover:text-sky-800 focus:outline-none",
+          "px-1 ml-2 border-white border text-gray-500rounded-smtransition duration-300 hover:border-sky-800 hover:text-sky-800 focus:outline-none",
         innerHTML: client?.name,
       });
     },
@@ -102,6 +86,17 @@ const tableColumns = ref([
   },
 ]);
 
+const { countries, provinces, districts } = storeToRefs(locationStore);
+const { clients, clientPageInfo, fetchingClients } = storeToRefs(clientStore);
+
+let showClientModal = ref<boolean>(false);
+let createItem = ref<boolean>(false);
+let targetItem = ref<string>("");
+
+let client = reactive({}) as IClient;
+const formTitle = ref<string>("");
+const resetClient = () => Object.assign(client, {}) as IClient;
+
 let clientParams = reactive({
   first: 50,
   after: "",
@@ -113,7 +108,6 @@ let clientParams = reactive({
 let countryUid = ref<string>();
 let provinceUid = ref<string>();
 
-let formTitle = ref<string>("");
 
 clientStore.fetchClients(clientParams);
 locationStore.fetchCountries();
@@ -121,7 +115,7 @@ locationStore.fetchCountries();
 function addClient() {
   withClientMutation(
     ADD_CLIENT,
-    { name: client.name, code: client.code, districtUid: client.districtUid },
+    { payload: { name: client.name, code: client.code, districtUid: client.districtUid } },
     "createClient"
   ).then((res) => clientStore.addClient(res));
 }
@@ -131,9 +125,11 @@ function editClient() {
     EDIT_CLIENT,
     {
       uid: client.uid,
-      name: client.name,
-      code: client.code,
-      districtUid: client.districtUid,
+      payload: {
+        name: client.name,
+        code: client.code,
+        districtUid: client.districtUid,
+      }
     },
     "updateClient"
   ).then((res) => clientStore.updateClient(res));
@@ -229,7 +225,7 @@ const countNone = computed(
             <select class="form-select block w-full mt-1" v-model="countryUid" @change="getProvinces($event)">
               <option></option>
               <option v-for="country in countries" :key="country.uid" :value="country.uid">
-                {{ country.name }} {{ country.uid }}
+                {{ country.name }}
               </option>
             </select>
           </label>
@@ -238,7 +234,7 @@ const countNone = computed(
             <select class="form-select block w-full mt-1" v-model="provinceUid" @change="getDistricts($event)">
               <option></option>
               <option v-for="province in provinces" :key="province.uid" :value="province.uid">
-                {{ province.name }} {{ province.uid }}
+                {{ province.name }}
               </option>
             </select>
           </label>
@@ -247,7 +243,7 @@ const countNone = computed(
             <select class="form-select block w-full mt-1" v-model="client.districtUid">
               <option></option>
               <option v-for="district in districts" :key="district.uid" :value="district.uid">
-                {{ district.name }} {{ district.uid }}
+                {{ district.name }}
               </option>
             </select>
           </label>

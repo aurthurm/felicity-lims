@@ -43,20 +43,18 @@ class ClientContactType:
     mobile_phone: Optional[str]
     business_phone: Optional[str]
     is_active: Optional[bool]
-    auth_uid: Optional[FelicityID]
-    auth: Optional[UserAuthType]
     email: Optional[str]
     email_cc: Optional[str]
     consent_sms: bool
     client_uid: FelicityID
     client: Optional[ClientType]
     #
-    created_by_uid: Optional[FelicityID]
-    created_by: Optional[UserType]
     created_at: Optional[datetime]
-    updated_by_uid: Optional[FelicityID]
-    updated_by: Optional[UserType]
+    creator_name: Optional[str]
+    creator_uid: Optional[FelicityID]
     updated_at: Optional[datetime]
+    updator_name: Optional[str]
+    updator_uid: Optional[FelicityID]
 
 
 #  relay paginations

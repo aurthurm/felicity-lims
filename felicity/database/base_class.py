@@ -223,7 +223,8 @@ class DBModel(AllFeaturesMixin):
 
         # stmt = update(cls).where(filters).values(to_save).execution_options(synchronize_session="fetch")
         query = smart_query(query=update(cls), filters=filters)
-        stmt = query.values(to_update).execution_options(synchronize_session="fetch")
+        stmt = query.values(to_update).execution_options(
+            synchronize_session="fetch")
 
         async with async_session_factory() as session:
             results = await session.execute(stmt)
@@ -254,7 +255,8 @@ class DBModel(AllFeaturesMixin):
             if key != "_uid":
                 binds[key] = bindparam(key)
 
-        stmt = query.values(binds).execution_options(synchronize_session="fetch")
+        stmt = query.values(binds).execution_options(
+            synchronize_session="fetch")
 
         async with async_session_factory() as session:
             await session.execute(stmt, to_update)
@@ -394,7 +396,8 @@ class DBModel(AllFeaturesMixin):
         # stmt = select(func.count()).select_from(select(cls).subquery())
         # stmt = select(func.count(cls.uid)).select_from(cls)
         filter_stmt = smart_query(query=select(cls), filters=filters)
-        count_stmt = select(func.count(filter_stmt.c.uid)).select_from(filter_stmt)
+        count_stmt = select(func.count(filter_stmt.c.uid)
+                            ).select_from(filter_stmt)
         async with async_session_factory() as session:
             res = await session.execute(count_stmt)
         count = res.scalars().one()
@@ -475,10 +478,13 @@ class DBModel(AllFeaturesMixin):
         if has_value_or_is_truthy(before_cursor):
             cursor_limit = {"uid__lt": cls.decode_cursor(before_cursor)}
 
+        logger.info(f"cursor_limit:  {cursor_limit}")
+
         # add paging filters
         _filters = None
         if isinstance(filters, dict):
-            _filters = [{sa_or_: cursor_limit}, filters] if cursor_limit else filters
+            _filters = [{sa_or_: cursor_limit},
+                        filters] if cursor_limit else filters
         elif isinstance(filters, list):
             _filters = filters
             if cursor_limit:
@@ -553,8 +559,10 @@ class DBModel(AllFeaturesMixin):
 
     @classmethod
     def decode_cursor(cls, cursor):
-        return b64encode(cursor.encode("ascii")).decode("utf8")
+        # return b64decode(cursor.encode("utf8")).decode("ascii")
+        return cursor
 
     @classmethod
     def encode_cursor(cls, identifier: Any):
-        return b64encode(str(identifier).encode("utf8")).decode("ascii")
+        # return b64encode(str(identifier).encode("ascii")).decode("utf8")
+        return identifier

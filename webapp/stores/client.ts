@@ -5,6 +5,7 @@ import { IClient, IClientContact } from '../models/client';
 import { IPageInfo } from '../models/pagination';
 
 import { useApiUtil } from '../composables';
+import { useLocationStore } from './location';
 
 const { withClientQuery } = useApiUtil();
 
@@ -73,9 +74,12 @@ export const useClientStore = defineStore('client', {
             }
             this.fetchingClient = true;
             await withClientQuery(GET_CLIENT_BY_UID, { uid }, 'clientByUid')
-                .then(payload => {
+                .then((payload: IClient) => {
                     this.fetchingClient = false;
                     this.client = payload;
+                    if(payload?.district){
+                        useLocationStore().addDistrict(payload?.district);
+                    }
                 })
                 .catch(err => (this.fetchingClient = false));
         },
@@ -84,6 +88,7 @@ export const useClientStore = defineStore('client', {
         },
         updateClient(payload: IClient) {
             this.clients = this.clients?.map(item => (item.uid === payload.uid ? payload : item));
+            this.client = { ...this.client, ...payload };
         },
 
         async fetchClientContacts(clientUid) {
@@ -104,5 +109,8 @@ export const useClientStore = defineStore('client', {
         updateClientContact(payload: IClientContact) {
             this.clientContacts = this.clientContacts?.map(item => (item.uid === payload.uid ? payload : item));
         },
+        deleteClientContact(uid: string) {
+            this.clientContacts = this.clientContacts?.filter(item => (item.uid !== uid));            
+        }
     },
 });

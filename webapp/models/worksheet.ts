@@ -3,17 +3,17 @@ import { IAnalysisService, IAnalysisResult, ISampleType } from './analysis';
 
 export interface IReserved {
     position: number;
-    levelUid: number;
+    levelUid: string;
     row: number;
     col: number;
     name: string;
-    sampleUid: number;
+    sampleUid: string;
 }
 
 export interface IWorkSheetTemplate {
-    uid: number;
+    uid: string;
     name: string;
-    qcTemplateUid: number;
+    qcTemplateUid: string;
     reserved: IReserved[];
     preview: IReserved[];
     numberOfSamples: number;
@@ -21,18 +21,18 @@ export interface IWorkSheetTemplate {
     cols: number | undefined;
     rowWise: boolean;
     worksheetType: string;
-    instrumentUid: number;
+    instrumentUid: string;
     instrument: IInstrument;
-    sampleTypeUid: number;
+    sampleTypeUid: string;
     sampleType: ISampleType;
     description: string;
-    analysisUid: number;
+    analysisUid: string;
     analysis: IAnalysisService;
     state: string;
 }
 
 export interface IWorkSheet {
-    uid: number;
+    uid: string;
     worksheetId: string;
     name: string;
     reserved: string[];
@@ -43,10 +43,10 @@ export interface IWorkSheet {
     cols: number;
     rowWise: Boolean;
     worksheetType: string;
-    instrumentUid: number;
+    instrumentUid: string;
     instrument: IInstrument;
     description: string;
-    analysisUid: number;
+    analysisUid: string;
     analysis: IAnalysisService;
     state: string;
     assignedCount: number;
@@ -58,8 +58,8 @@ export interface IWorkSheet {
 }
 
 export interface IWorkSheetForm {
-    analystUid: number;
-    templateUid: number;
-    instrumentUid: number;
+    analystUid: string;
+    templateUid: string;
+    instrumentUid: string;
     count: number;
 }

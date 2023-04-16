@@ -107,3 +107,21 @@ export const EDIT_CLIENT_CONTACT = gql`
         }
     }
 `;
+
+
+
+export const DELETE_CLIENT_CONTACT = gql`
+    mutation deleteClientContact($uid: FelicityID!) {
+        deleteClientContact(uid: $uid) {
+            ... on DeletedItem {
+                uid
+            }
+
+            ... on OperationError {
+                __typename
+                error
+                suggestion
+            }
+        }
+    }
+`;

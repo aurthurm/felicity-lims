@@ -1,76 +1,79 @@
 <script setup lang="ts">
-  import LoadingMessage from "../../../components/Spinners/LoadingMessage.vue"
-  import modal from '../../../components/SimpleModal.vue';
-  import { useRoute } from 'vue-router';
-  import { storeToRefs } from 'pinia'
-  import { ref, computed } from 'vue';
-  import { ADD_CLIENT, EDIT_CLIENT } from '../../../graphql/clients.mutations';
-  import { useLocationStore, useClientStore } from '../../../stores';
-  import { IDistrict, IProvince } from '../../../models/location';
-  import { IClient } from '../../../models/client';
-  import { useApiUtil } from '../../../composables'
+import LoadingMessage from "../../../components/Spinners/LoadingMessage.vue"
+import modal from '../../../components/SimpleModal.vue';
+import { useRoute } from 'vue-router';
+import { storeToRefs } from 'pinia'
+import { ref } from 'vue';
+import { ADD_CLIENT, EDIT_CLIENT } from '../../../graphql/clients.mutations';
+import { useLocationStore, useClientStore } from '../../../stores';
+import { IClient } from '../../../models/client';
+import { useApiUtil } from '../../../composables'
 
-  import * as shield from '../../../guards'
+import * as shield from '../../../guards'
 
-  const locationStore = useLocationStore();
-  const { withClientMutation } = useApiUtil()
-  const route = useRoute();
+const locationStore = useLocationStore();
+const { withClientMutation } = useApiUtil()
+const route = useRoute();
 
-  const clientStore = useClientStore()
-  const { client, fetchingClient } = storeToRefs(clientStore)
+const clientStore = useClientStore()
+const { client, fetchingClient } = storeToRefs(clientStore)
 
-  let showClientModal = ref<boolean>(false);
-  let createItem = ref<boolean>(false);
-  let targetItem = ref<string>('');
+let showClientModal = ref<boolean>(false);
+let createItem = ref<boolean>(false);
 
-  let provinces = ref<IProvince[]>([]);
-  let districts = ref<IDistrict[]>([]);
 
-  let countryUid = ref<number>();
-  let provinceUid = ref<number>();
+let formTitle = ref<string>('');
+let form = ref<IClient>({} as IClient);
+let countryUid = ref<string>();
+let provinceUid = ref<string>();
 
-  let formTitle = ref<string>('');
+clientStore.fetchClientByUid(route.query.clientUid!)
+locationStore.fetchCountries();
 
-  clientStore.fetchClientByUid(route.query.clientUid!)
+function getProvinces(event: Event) {
+  locationStore.filterProvincesByCountry(countryUid.value!)
+}
 
-  locationStore.fetchCountries();
-  const countries = computed(() => locationStore.getCountries)
+function getDistricts(event: Event) {
+  locationStore.filterDistrictsByProvince(provinceUid.value!)
+}
 
-  function addClient() {
-    withClientMutation(ADD_CLIENT, { name: client?.value?.name, code: client?.value?.code, districtUid: client?.value?.districtUid }, "createClient")
+function FormManager(create: boolean, obj: IClient = {} as IClient) {
+  createItem.value = create;
+  formTitle.value = `${create ? 'CREATE' : 'EDIT'} CLIENT`;
+  showClientModal.value = true;
+  if (create) {
+    form.value = {} as IClient;
+  } else {
+    countryUid.value = obj?.district?.province?.countryUid;
+    provinceUid.value = obj?.district?.provinceUid
+    form.value = obj;
+  }
+}
+
+function addClient() {
+  withClientMutation(ADD_CLIENT, { payload: { name: form?.value?.name, code: form?.value?.code, districtUid: form?.value?.districtUid } }, "createClient")
     .then((res) => clientStore.addClient(res));
-  }
+}
 
-  function editClient() {
-    withClientMutation(EDIT_CLIENT, { uid: client?.value?.uid, name: client?.value?.name, code: client?.value?.code, districtUid: client?.value?.districtUid },"updateClient")
-    .then((result) => clientStore.updateClient(result));
-  }
-
-  function getProvinces(event: Event) {
-    locationStore.filterProvincesByCountry(countryUid.value!)
-  }
-
-  function getDistricts(event: Event) {
-    locationStore.filterDistrictsByProvince(provinceUid.value!)
-  }
-
-  function FormManager(create: boolean, target: string, obj: IClient = {} as IClient) {
-    createItem.value = create;
-    targetItem.value = target;
-    formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + target.toUpperCase();
-    if(target == "client") showClientModal.value = true;
-    if (create) {
-      if(target == "client") Object.assign(client, {} as IClient);
-    } else {
-      if(target == "client") Object.assign(client, { ...obj });
+function editClient() {
+  withClientMutation(EDIT_CLIENT, {
+    uid: form?.value?.uid,
+    payload: {
+      name: form?.value?.name,
+      code: form?.value?.code,
+      districtUid: form?.value?.districtUid
     }
-  }
+  }, "updateClient")
+    .then((result) => clientStore.updateClient(result));
+}
 
-  function saveForm() {
-    if (createItem.value) addClient();
-    if (!createItem.value) editClient();
-    showClientModal.value = false;
-  }
+function saveForm() {
+  if (createItem.value) addClient();
+  if (!createItem.value) editClient();
+  showClientModal.value = false;
+  form.value = {} as IClient;
+}
 
 </script>
 
@@ -80,10 +83,10 @@
 
     <div class="grid grid-cols-12 gap-4 mt-2">
 
-      <section class="col-span-12" >
+      <section class="col-span-12">
 
         <!-- Listing Item Card -->
-        <div class="bg-white rounded-sm shadow-sm hover:shadow-lg duration-500 px-4 sm:px-6 md:px-2 py-4" >
+        <div class="bg-white rounded-sm shadow-sm hover:shadow-lg duration-500 px-4 sm:px-6 md:px-2 py-4">
           <div v-if="fetchingClient" class="py-4 text-center">
             <LoadingMessage message="Fetching client metadata ..." />
           </div>
@@ -93,16 +96,10 @@
               <div class="flex justify-between sm:text-sm md:text-md lg:text-lg text-gray-700 font-bold">
                 <span>{{ client?.name }}</span>
                 <div>
-                  <button
-                    v-show="shield.hasRights(shield.actions.UPDATE, shield.objects.CLIENT)"
-                    @click="FormManager(false, 'client', client)"
-                    class="ml-4 inline-flex items-center justify-center w-8 h-8 mr-2 border-sky-800 border text-gray-900 transition-colors duration-150 bg-white rounded-full focus:outline-none hover:bg-gray-200"
-                  >
-                    <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20">
-                      <path
-                        d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"
-                      ></path>
-                    </svg>
+                  <button v-show="shield.hasRights(shield.actions.UPDATE, shield.objects.CLIENT)"
+                    @click="FormManager(false, client)"
+                    class="p-1 ml-2 border-white border text-gray-500 text-md rounded-sm transition duration-300 hover:text-sky-800 focus:outline-none">
+                    <font-awesome-icon icon="fa-edit" />
                   </button>
                 </div>
               </div>
@@ -138,7 +135,7 @@
             </div>
           </div>
         </div>
-      
+
       </section>
     </div>
 
@@ -158,19 +155,11 @@
         <div class="grid grid-cols-2 gap-x-4 mb-4">
           <label class="block col-span-1 mb-2">
             <span class="text-gray-700">Name</span>
-            <input
-              class="form-input mt-1 block w-full"
-              v-model="client.name"
-              placeholder="Name ..."
-            />
+            <input class="form-input mt-1 block w-full" v-model="form.name" placeholder="Name ..." />
           </label>
           <label class="block col-span-1 mb-2">
             <span class="text-gray-700">Code</span>
-            <input
-              class="form-input mt-1 block w-full"
-              v-model="client.code"
-              placeholder="Code ..."
-            />
+            <input class="form-input mt-1 block w-full" v-model="form.code" placeholder="Code ..." />
           </label>
         </div>
 
@@ -179,31 +168,33 @@
             <span class="text-gray-700">Country</span>
             <select class="form-select block w-full mt-1" v-model="countryUid" @change="getProvinces($event)">
               <option></option>
-              <option v-for="country in countries" :key="country.uid" :value="country.uid"> {{ country.name }} {{ country.uid }}</option>
+              <option v-for="country in locationStore.countries" :key="country.uid" :value="country.uid"> {{ country.name
+              }}</option>
             </select>
           </label>
           <label class="block col-span-1 mb-2">
             <span class="text-gray-700">Province</span>
             <select class="form-select block w-full mt-1" v-model="provinceUid" @change="getDistricts($event)">
-               <option></option>
-              <option v-for="province in provinces" :key="province.uid" :value="province.uid"> {{ province.name }} {{ province.uid }}</option>
+              <option></option>
+              <option v-for="province in locationStore.provinces" :key="province.uid" :value="province.uid"> {{
+                province.name }}
+              </option>
             </select>
           </label>
           <label class="block col-span-1 mb-2">
             <span class="text-gray-700">District</span>
-            <select class="form-select block w-full mt-1" v-model="client.districtUid">
-               <option></option>
-              <option v-for="district in districts" :key="district.uid" :value="district.uid"> {{ district.name }} {{ district.uid }}</option>
+            <select class="form-select block w-full mt-1" v-model="form.districtUid">
+              <option></option>
+              <option v-for="district in locationStore.districts" :key="district.uid" :value="district.uid"> {{
+                district.name }}
+              </option>
             </select>
           </label>
         </div>
 
         <hr />
-        <button
-          type="button"
-          @click.prevent="saveForm()"
-          class="-mb-4 w-full border border-sky-800 bg-sky-800 text-white rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-sky-800 focus:outline-none focus:shadow-outline"
-        >
+        <button type="button" @click.prevent="saveForm()"
+          class="-mb-4 w-full border border-sky-800 bg-sky-800 text-white rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-sky-800 focus:outline-none focus:shadow-outline">
           Save Form
         </button>
       </form>

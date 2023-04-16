@@ -98,6 +98,9 @@ export const useLocationStore = defineStore('location', {
         },
         addDistrict(payload: IDistrict) {
             this.districts.unshift(payload);
+            if(payload?.province){
+                this.provinces.push(payload?.province)
+            }
         },
         updateDistrict(payload: IDistrict) {
             const index = this.districts?.findIndex(item => item.uid === payload.uid);

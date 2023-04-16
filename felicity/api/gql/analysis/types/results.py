@@ -1,11 +1,12 @@
 from datetime import datetime
-from typing import List, Optional
+from typing import List, Optional, Any
 
 import strawberry  # noqa
 from api.gql import PageInfo
 from api.gql.analysis.types.analysis import AnalysisType, QCSetType, SampleType
 from api.gql.setup.types import InstrumentType, MethodType
 from api.gql.user.types import UserType
+from apps.worksheet import models as ws_models
 from core.uid_gen import FelicityID
 
 
@@ -50,6 +51,11 @@ class AnalysisResultType:
     updated_by_uid: Optional[FelicityID]
     updated_by: Optional[UserType]
     updated_at: Optional[datetime]
+
+    @strawberry.field
+    async def worksheet_id(self, info) -> Optional[str]:
+        ws = await ws_models.WorkSheet.get(uid=self.worksheet_uid)
+        return ws.worksheet_id if ws else None
 
 
 @strawberry.type

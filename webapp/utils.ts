@@ -18,7 +18,7 @@ export const parseDate = function (str: any, withTime=true) {
         if(withTime) return date.format('D MMMM YYYY, h:mm:ss a');
         return date.format('D MMMM YYYY')
     }
-    return str;
+    return str ?? "---";
 };
 
 export const subtractDates = (first: any, second: any) => Math.floor(Math.abs(first - second) / (1000 * 60 * 60 * 24));

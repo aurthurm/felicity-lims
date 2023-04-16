@@ -627,6 +627,8 @@ export const GET_ANALYSIS_RESULTS_BY_SAMPLE_UID = gql`
             createdByUid
             updatedAt
             updatedByUid
+            worksheetUid
+            worksheetId
         }
     }
 `;
@@ -692,6 +694,24 @@ export const GET_SAMPLE_BY_UID = gql`
                 }
             }
             createdAt
+            dateReceived
+            receivedByUid
+            dateCollected
+            dateSubmitted
+            submittedByUid
+            dateVerified
+            verifiedByUid
+            datePublished
+            datePrinted
+            printedByUid
+            dateInvalidated
+            invalidatedByUid
+            dateCancelled
+            cancelledByUid
+            dueDate
+            sampleId
+            priority
+            status
             analysisRequest {
                 uid
                 clientRequestId
@@ -715,9 +735,7 @@ export const GET_SAMPLE_BY_UID = gql`
                 uid
                 name
             }
-            sampleId
-            priority
-            status
+            dateStored
             storageSlot
             storageContainerUid
             storageSlot

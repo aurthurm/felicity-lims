@@ -9,7 +9,7 @@ export interface IRAxor {
 }
 
 export interface IFacilityContact {
-    uid: number;
+    uid: string;
     firstName: string;
     lastname: string;
     email: string;

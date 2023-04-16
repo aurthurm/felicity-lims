@@ -5,7 +5,6 @@ export interface IBase {
 }
 
 export interface ICountry extends IBase {
-    //
 }
 
 export interface ILocation extends IBase {
@@ -19,14 +18,19 @@ export interface ILocation extends IBase {
 
 export interface IProvince extends ILocation {
     country?: ICountry;
+    countryUid?: string;
 }
 
 export interface IDistrict extends ILocation {
     province?: IProvince;
+    provinceUid?: string;
 }
 
 export interface IGenericLocation extends ILocation {
     district?: IDistrict;
+    districtUid?: string;
     province?: IProvince;
+    provinceUid?: string;
     country?: ICountry;
+    countryUid?: string;
 }

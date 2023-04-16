@@ -43,8 +43,7 @@ class PatientInputType:
     province_uid: Optional[FelicityID] = None
     district_uid: Optional[FelicityID] = None
     identifications: Optional[List[PatientidentificationInput]] = field(
-        default_factory=[]
-    )
+        default_factory=list)
 
 
 IdentificationResponse = strawberry.union(
@@ -113,6 +112,7 @@ class PatientMutations:
 
     @strawberry.mutation
     async def create_patient(self, info, payload: PatientInputType) -> PatientResponse:
+        logger.info(payload)
 
         is_authenticated, felicity_user = await auth_from_info(info)
         auth_success, auth_error = verify_user_auth(

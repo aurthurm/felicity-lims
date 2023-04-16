@@ -580,7 +580,7 @@ const recoverSamples_ = async () =>
 </script>
 
 <template>
-  <div class="mb-4 flex justify-end">
+  <div class="mb-4 flex justify-start">
     <router-link v-show="shield.hasRights(shield.actions.CREATE, shield.objects.SAMPLE)" to="/patients/search"
       class="px-2 py-1 border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none">Add
       Laboratory Request</router-link>

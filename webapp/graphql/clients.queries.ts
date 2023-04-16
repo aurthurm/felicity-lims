@@ -72,12 +72,15 @@ export const GET_CLIENT_BY_UID = gql`
             uid
             name
             code
+            districtUid
             district {
                 uid
                 name
+                provinceUid
                 province {
                     uid
                     name
+                    countryUid
                     country {
                         uid
                         name

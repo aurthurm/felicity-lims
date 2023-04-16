@@ -2,11 +2,11 @@ import { ILocation, IDistrict } from './location';
 
 export interface IClient extends ILocation {
     district: IDistrict;
-    districtUid: number;
+    districtUid: string;
 }
 
 export interface IClientContact {
-    uid: number;
+    uid: string;
     firstName: string;
     lastName: string;
     email: string;

@@ -100,4 +100,4 @@ class ClientQuery:
     async def client_contact_by_client_uid(
         self, info, client_uid: FelicityID
     ) -> List[ClientContactType]:
-        return await models.ClientContact.get_all(client_uid=client_uid)
+        return await models.ClientContact.get_all(client_uid=client_uid, is_active=True)
