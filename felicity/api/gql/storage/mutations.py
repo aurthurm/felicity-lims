@@ -401,7 +401,8 @@ class StorageMutations:
 
         for container_uid in container_uids:
             sample_data = list(
-                filter(lambda x: x.storage_container_uid == container_uid, payload)
+                filter(lambda x: x.storage_container_uid ==
+                       container_uid, payload)
             )
             samples = await an_models.Sample.get_by_uids(
                 uids=[s.sample_uid for s in sample_data]
@@ -426,7 +427,6 @@ class StorageMutations:
                     "status": analysis_states.sample.STORED,
                     "stored_by_uid": felicity_user.uid,
                 }
-                print(storage_object)
                 await _sample.update(obj_in=storage_object)
 
             await container.reset_stored_count()

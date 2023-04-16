@@ -240,7 +240,7 @@ async def create_analysis_request(
         created = await result_models.AnalysisResult.bulk_create(result_schemas)
 
         # initialise reflex action if exist
-        logger.info(f"ReflexUtil .... set_reflex_actions ...")
+        logger.debug(f"ReflexUtil .... set_reflex_actions ...")
         await ReflexUtil.set_reflex_actions(created)
 
     # ! paramount !

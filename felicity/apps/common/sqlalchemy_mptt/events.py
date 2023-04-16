@@ -85,9 +85,8 @@ def mptt_before_insert(mapper, connection, instance):
         instance.left = 1
         instance.right = 2
         instance.level = instance.get_default_level()
-        print(f"====table.c.tree_id========================== {table.c.tree_id}")
-        print(table.c.tree_id)
-        tree_id = connection.scalar(select([func.max(table.c.tree_id) + 1])) or 1
+        tree_id = connection.scalar(
+            select([func.max(table.c.tree_id) + 1])) or 1
         instance.tree_id = tree_id
     else:
         (
@@ -104,7 +103,8 @@ def mptt_before_insert(mapper, connection, instance):
         # Update key of right side
         connection.execute(
             table.update(
-                and_(table.c.rgt >= parent_pos_right, table.c.tree_id == parent_tree_id)
+                and_(table.c.rgt >= parent_pos_right,
+                     table.c.tree_id == parent_tree_id)
             ).values(
                 lft=case(
                     [(table.c.lft > parent_pos_right, table.c.lft + 2)],
@@ -153,7 +153,8 @@ def mptt_before_delete(mapper, connection, instance, delete=True):
         """
         connection.execute(
             table.update(and_(table.c.rgt > rgt, table.c.tree_id == tree_id)).values(
-                lft=case([(table.c.lft > lft, table.c.lft - delta)], else_=table.c.lft),
+                lft=case([(table.c.lft > lft, table.c.lft - delta)],
+                         else_=table.c.lft),
                 rgt=case(
                     [(table.c.rgt >= rgt, table.c.rgt - delta)], else_=table.c.rgt
                 ),
@@ -303,7 +304,8 @@ def mptt_before_update(mapper, connection, instance):
             parent_level,
         ) = connection.execute(
             select(
-                [table_pk, table.c.rgt, table.c.lft, table.c.tree_id, table.c.level]
+                [table_pk, table.c.rgt, table.c.lft,
+                    table.c.tree_id, table.c.level]
             ).where(table_pk == instance.parent_id)
         ).fetchone()
         if node_parent_id is None and node_tree_id == parent_tree_id:
@@ -325,7 +327,8 @@ def mptt_before_update(mapper, connection, instance):
             parent_level,
         ) = connection.execute(
             select(
-                [table_pk, table.c.rgt, table.c.lft, table.c.tree_id, table.c.level]
+                [table_pk, table.c.rgt, table.c.lft,
+                    table.c.tree_id, table.c.level]
             ).where(table_pk == instance.parent_id)
         ).fetchone()
         # 'size' of moving node (including all it's sub nodes)
@@ -367,7 +370,8 @@ def mptt_before_update(mapper, connection, instance):
             )
         # if just insert
         else:
-            tree_id = connection.scalar(select([func.max(table.c.tree_id) + 1]))
+            tree_id = connection.scalar(
+                select([func.max(table.c.tree_id) + 1]))
 
         connection.execute(
             table.update(table_pk.in_(subtree)).values(
@@ -464,7 +468,8 @@ class TreesManager(object):
             engine = create_engine('...')
             Session = mptt_sessionmaker(sessionmaker(bind=engine))
         """
-        event.listen(sessionmaker, "after_flush_postexec", self.after_flush_postexec)
+        event.listen(sessionmaker, "after_flush_postexec",
+                     self.after_flush_postexec)
         return sessionmaker
 
     def before_insert(self, mapper, connection, instance):
