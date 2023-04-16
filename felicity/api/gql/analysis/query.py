@@ -13,6 +13,7 @@ from apps.analysis.models import results as r_models
 from apps.analysis.utils import sample_search
 from core.uid_gen import FelicityID
 from utils import has_value_or_is_truthy
+from database.session import async_session_factory
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -196,6 +197,14 @@ class AnalysisQuery:
     @strawberry.field
     async def analysis_by_uid(self, info, uid: FelicityID) -> a_types.AnalysisType:
         return await a_models.Analysis.get(uid=uid)
+
+    @strawberry.field
+    async def analysis_without_profile(self, info) -> List[a_types.AnalysisType]:
+        async with async_session_factory() as session:
+            result = await session.execute(sa.text("select * from analysis_profile"))
+
+        a_uids = list(set([ids[0] for ids in result.all()]))
+        return await a_models.Analysis.get_all(uid__notin=a_uids)
 
     @strawberry.field
     async def analysis_request_all(

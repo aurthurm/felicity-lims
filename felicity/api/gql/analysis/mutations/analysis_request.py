@@ -111,6 +111,14 @@ async def create_analysis_request(
         "Only Authenticated user can create analysis requests",
     )
 
+    # are samples valid
+    for _s in payload.samples:
+        _valid = []
+        _valid.append(len(_s.profiles) > 0)
+        _valid.append(len(_s.analyses) > 0)
+        if not any(_valid):
+            return OperationError(error=f"Samples must have either analysis or profiles or both")
+
     patient = await pt_models.Patient.get(uid=payload.patient_uid)
     if not patient:
         return OperationError(error=f"Patient with uid {payload.patient_uid} Not found")

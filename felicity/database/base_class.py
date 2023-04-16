@@ -478,8 +478,6 @@ class DBModel(AllFeaturesMixin):
         if has_value_or_is_truthy(before_cursor):
             cursor_limit = {"uid__lt": cls.decode_cursor(before_cursor)}
 
-        logger.info(f"cursor_limit:  {cursor_limit}")
-
         # add paging filters
         _filters = None
         if isinstance(filters, dict):
