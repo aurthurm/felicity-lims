@@ -804,8 +804,8 @@ class Sample(Auditable, BaseMPTT):
     async def create(cls, obj_in: schemas.SampleCreate) -> schemas.Sample:
         data = cls._import(obj_in)
         sample_type = await SampleType.find(data["sample_type_uid"])
-        abbr = sample_type.abbr
-        data["sample_id"] = (await IdSequence.get_next_number(abbr))[1]
+        # data["sample_id"] = (await IdSequence.get_next_number(sample_type.abbr))[1]
+        data["sample_id"] = (await IdSequence.get_next_number(prefix="S", generic=True))[1]
         return await super().create(**data)
 
     async def update(self, obj_in: schemas.SampleUpdate) -> schemas.Sample:

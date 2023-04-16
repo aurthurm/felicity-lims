@@ -27,7 +27,7 @@ async def requisite_setup(lab_name="Felicity Labs") -> bool:
     await create_daemon_user()
     await create_super_user()
     await setup_default_permissions()
-    await init_id_sequence()
+    # await init_id_sequence()
 
     logger.info("Loading requisite setup complete.")
     return True
