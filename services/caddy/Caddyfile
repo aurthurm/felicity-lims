@@ -1,6 +1,14 @@
-:80
 
-reverse_proxy 0.0.0.0:8000
+# https://caddyserver.com/docs/caddyfile/concepts
+
+:{$PORT} {
+	reverse_proxy /* felicity_fe:3000
+	encode zstd gzip
+}
+
+#:80 {
+#	reverse_proxy 0.0.0.0:3000
+#}
 
 #
 # Use following config if with custom domain

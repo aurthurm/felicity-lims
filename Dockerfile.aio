@@ -1,0 +1,27 @@
+# Build webapp generate static files
+FROM node:18.16-alpine as web-app
+RUN npm i -g pnpm
+
+WORKDIR /app
+
+COPY ./package.json /app
+COPY ./pnpm-lock.yaml /app
+RUN pnpm install
+
+COPY ./webapp /app
+RUN pnpm build --prod
+
+
+# Build felicity
+FROM tiangolo/uvicorn-gunicorn:python3.10-slim  as production
+LABEL maintainer="Sebastian Ramirez <tiangolo@gmail.com>"
+
+COPY ./requirements.txt /tmp/requirements.txt
+RUN pip install --no-cache-dir --upgrade -r /tmp/requirements.txt
+
+WORKDIR /app/
+
+COPY ./felicity /app
+COPY --from=web-app /app/static ./static
+
+ENV PYTHONPATH=/app

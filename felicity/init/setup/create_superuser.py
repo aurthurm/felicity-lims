@@ -4,7 +4,7 @@ from typing import Optional
 from apps.user import models, schemas
 from core.config import settings
 from init.setup.groups_perms import FGroup
-from utils.email.email import send_new_account_email
+from core.events import post_event
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -50,14 +50,16 @@ async def create_daemon_user() -> None:
             await system_daemon.propagate_user_type()
 
         # initial user-preferences
-        pref_in = schemas.UserPreferenceCreate(expanded_menu=False, theme="light")
+        pref_in = schemas.UserPreferenceCreate(
+            expanded_menu=False, theme="light")
         preference = await models.UserPreference.create(obj_in=pref_in)
         logger.info(
             f"linking system daemon {system_daemon.uid} to preference {preference.uid}"
         )
         await system_daemon.link_preference(preference_uid=preference.uid)
 
-    logger.info(f"Done Setting up system daemon {system_daemon.marshal_simple()}")
+    logger.info(
+        f"Done Setting up system daemon {system_daemon.marshal_simple()}")
 
 
 async def create_super_user() -> None:
@@ -100,17 +102,15 @@ async def create_super_user() -> None:
             await superuser.propagate_user_type()
 
         # initial user-preferences
-        pref_in = schemas.UserPreferenceCreate(expanded_menu=False, theme="light")
+        pref_in = schemas.UserPreferenceCreate(
+            expanded_menu=False, theme="light")
         preference = await models.UserPreference.create(obj_in=pref_in)
         logger.info(
             f"linking super user {superuser.uid} to preference {preference.uid}"
         )
         await superuser.link_preference(preference_uid=preference.uid)
 
-        send_new_account_email(
-            settings.FIRST_SUPERUSER_EMAIL,
-            settings.FIRST_SEPERUSER_USERNAME,
-            settings.FIRST_SUPERUSER_PASSWORD,
-        )
+        post_event("new-account-created", {})
 
-    logger.info(f"Done Setting up first superuser {superuser.marshal_simple()}")
+    logger.info(
+        f"Done Setting up first superuser {superuser.marshal_simple()}")

@@ -3,31 +3,32 @@ version: '3.5'
 services:
     felicity_proxy:
         container_name: felicity_proxy
-        image: nginx:latest
+        image: caddy:2-alpine
         ports:
-            - "80:80"
+        - "$PORT:$PORT"
+        - "80:80"
+        - "443:443"
         volumes:
-            - ./services/nginx:/etc/nginx/conf.d
+        - ./services/caddy/Caddyfile:/etc/caddy/Caddyfile
+        - caddy_data:/data
+        - caddy_config:/config
         depends_on:
             - felicity_fe
-        networks:
-            - felicitynet
 
     felicity_fe:
         container_name: felicity_fe
         restart: unless-stopped
         build:
-            context: .
-            dockerfile: Dockerfile.webapp
+            context: ./frontend
         volumes:
-            - ./webapp:/app
-        ports:
-            - "3000:3000"
+            - ./frontend:/app
+        expose:
+            - "3000"
         depends_on:
             - felicity_be
         networks:
             - felicitynet
-        command: bash -c "cd webapp && pnpm dev --host --port 3000"
+        command: bash -c "cd vite && pnpm dev --host --port 3000"
 
     felicity_be:
         container_name: felicity_be
@@ -43,16 +44,14 @@ services:
             - POSTGRES_HOST_AUTH_METHOD=trust
             - DATABASE_URL=postgresql://felicity:felicity@felicity_db:5432/felicity_lims
         volumes:
-            - ./felicity/:/app
+            - ./backend/:/app
         expose:
             - "8000"
-        ports:
-            - 8000:8000
         depends_on:
             - felicity_db
         networks:
             - felicitynet
-        command: bash -c "cd felicity && uvicorn main:flims --host=0.0.0.0 --port=8000 --workers 1"
+        command: bash -c "cd felicity_lims && ./felicity.sh"
 
     felicity_db:
         container_name: felicity_db
@@ -66,8 +65,8 @@ services:
         volumes:
             - ./postgres/init/:/docker-entrypoint-initdb.d/
             - db-data:/var/lib/postgresql/data
-        ports:
-            - 5434:5432
+        expose:
+            - "5434"
         networks:
             - felicitynet
 
@@ -90,6 +89,8 @@ services:
 volumes:
     db-data:
     pgadmin:
+    caddy_data:
+    caddy_config:
 
 networks:
     felicitynet:

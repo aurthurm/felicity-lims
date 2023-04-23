@@ -140,11 +140,8 @@ const submitForm = handleSubmit(async (values) => {
                 <span class="text-gray-600 text-md">{{
                   storageContainer?.grid ? "grid" : "column"
                 }}</span>
-                <span
-                  class="ml-2 text-gray-600 text-md italic bg-slate-400 px-1 rounded-sm"
-                  v-if="storageContainer?.grid"
-                  >{{ storageContainer?.rowWise ? "by-row" : "by-column" }}</span
-                >
+                <span class="ml-2 text-gray-600 text-md italic bg-slate-400 px-1 rounded-sm"
+                  v-if="storageContainer?.grid">{{ storageContainer?.rowWise ? "by-row" : "by-column" }}</span>
               </div>
             </div>
             <div class="col-span-1">
@@ -163,11 +160,9 @@ const submitForm = handleSubmit(async (values) => {
       </div>
       <hr />
 
-      <button
-        v-if="activeTree.tag === tags.storageContainer"
+      <button v-if="activeTree.tag === tags.storageContainer"
         class="border border-sky-800 bg-sky-800 text-white rounded-sm mt-2 px-4 py-1 transition-colors duration-500 ease select-none hover:bg-sky-800 focus:outline-none focus:shadow-outline"
-        @click="prepareSlots()"
-      >
+        @click="prepareSlots()">
         Reset Slots
       </button>
 
@@ -177,11 +172,7 @@ const submitForm = handleSubmit(async (values) => {
           <div class="col-span-1 font-semibold">Label</div>
           <div class="col-span-10 font-semibold">Sample</div>
         </div>
-        <div
-          v-for="(storageMeta, index) in samplesData"
-          class="mt-2 grid grid-cols-12"
-          :key="index"
-        >
+        <div v-for="(storageMeta, index) in samplesData" class="mt-2 grid grid-cols-12" :key="index">
           <div class="col-span-12 mb-2">
             <hr />
           </div>
@@ -192,38 +183,23 @@ const submitForm = handleSubmit(async (values) => {
             {{ storageMeta.storageSlot }}
           </div>
           <label class="col-span-10">
-            <select
-              name="sampleUid"
-              id="sampleUid"
-              v-model="storageMeta.sampleUid"
-              class="form-input w-64 h-6 p-0"
-              @change="setAssigned"
-            >
-              <option
-                v-for="sample in samples"
-                :key="sample.uid"
-                :value="sample.uid"
-                v-show="!assignedUids.includes(sample.uid.toString())"
-              >
+            <select name="sampleUid" id="sampleUid" v-model="storageMeta.sampleUid" class="form-input w-64 h-6 p-0"
+              @change="setAssigned">
+              <option v-for="sample in samples" :key="sample.uid" :value="sample.uid"
+                v-show="!assignedUids.includes(sample.uid.toString())">
                 {{ sample?.sampleId }} &lbbrk;{{
                   sample?.analysisRequest?.clientRequestId
                 }}&rbbrk;
               </option>
             </select>
-            <span
-              v-if="storageMeta.sampleUid"
-              class="ml-2 text-red-500"
-              @click="removeSample(storageMeta.sampleUid)"
-              ><font-awesome-icon icon="ban" />
+            <span v-if="storageMeta.sampleUid" class="ml-2 text-red-500"
+              @click="removeSample(storageMeta.sampleUid)"><font-awesome-icon icon="ban" />
             </span>
           </label>
         </div>
         <hr class="mt-8" />
-        <button
-          v-if="activeTree.tag === tags.storageContainer && samples?.length > 0"
-          type="submit"
-          class="px-2 py-1 mt-4 border-orange-600 border text-orange-600 rounded-sm transition duration-300 hover:bg-orange-600 hover:text-white focus:outline-none"
-        >
+        <button v-if="activeTree.tag === tags.storageContainer && samples?.length > 0" type="submit"
+          class="px-2 py-1 mt-4 border-orange-600 border text-orange-600 rounded-sm transition duration-300 hover:bg-orange-600 hover:text-white focus:outline-none">
           Store Samples
         </button>
       </form>

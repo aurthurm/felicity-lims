@@ -23,6 +23,7 @@ from apps.user import schemas as user_schemas
 from core import security
 from core.config import settings
 from core.security import generate_password_reset_token
+from core.events import post_event
 from core.uid_gen import FelicityID
 
 logging.basicConfig(level=logging.INFO)
@@ -308,12 +309,9 @@ class UserMutations:
 
         password_reset_token = generate_password_reset_token(
             email=auth.user.email)
-        # send_reset_password_email(
-        #     email_to=user.email, email=user.email, token=password_reset_token
-        # )
-        # TODO: MAYBE ADD SECURITY QUESTIONS TO RECOVER PASSWORD or give them a passphrase to remember
-        # TODO: send them a new passwod to their registered phone
-        # TODO: SEND USER A DEFAULT PASSWORD TO LOGIN WITH SO THEY CAN CHANGE LATER
+
+        post_event("password_reset", user=user, token=password_reset_token)
+
         msg = "Password recovery email sent"
         return MessageType(msg)
 
