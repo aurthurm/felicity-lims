@@ -21,7 +21,7 @@ StockItemResponse = strawberry.union(
 class StockItemInputType:
     name: str
     description: str
-    department_uid: Optional[FelicityID] = None
+    department_uid: FelicityID | None = None
 
 
 StockCategoryResponse = strawberry.union(
@@ -80,22 +80,22 @@ StockProductResponse = strawberry.union(
 @strawberry.input
 class StockProductInputType:
     name: str
-    stock_item_uid: Optional[FelicityID] = None
-    department_uid: Optional[FelicityID] = None
-    supplier_uid: Optional[FelicityID] = None
-    category_uid: Optional[FelicityID] = None
-    hazard_uid: Optional[FelicityID] = None
-    store_room_uid: Optional[FelicityID] = None
-    lot_number: Optional[str] = None
-    batch: Optional[str] = None
-    size: Optional[int] = None
-    unit_uid: Optional[FelicityID] = None
-    packaging_uid: Optional[FelicityID] = None
-    price: Optional[int] = None
-    quantity_received: Optional[int] = None
-    date_received: Optional[datetime] = None
-    expiry_date: Optional[datetime] = None
-    received_by_uid: Optional[FelicityID] = None
+    stock_item_uid: FelicityID | None = None
+    department_uid: FelicityID | None = None
+    supplier_uid: FelicityID | None = None
+    category_uid: FelicityID | None = None
+    hazard_uid: FelicityID | None = None
+    store_room_uid: FelicityID | None = None
+    lot_number: str | None = None
+    batch: str | None = None
+    size: int | None = None
+    unit_uid: FelicityID | None = None
+    packaging_uid: FelicityID | None = None
+    price: int | None = None
+    quantity_received: int | None = None
+    date_received: datetime | None = None
+    expiry_date: datetime | None = None
+    received_by_uid: FelicityID | None = None
 
 
 @strawberry.type
@@ -115,13 +115,13 @@ StockOrderResponse = strawberry.union(
 class StockOrderProductLineInputType:
     product_uid: FelicityID
     quantity: int
-    remarks: Optional[str] = None
+    remarks: str | None = None
 
 
 @strawberry.input
 class StockOrderInputType:
     order_products: List[StockOrderProductLineInputType]
-    department_uid: Optional[FelicityID] = None
+    department_uid: FelicityID | None = None
 
 
 @strawberry.input
@@ -141,7 +141,7 @@ StockTransactionResponse = strawberry.union(
 class StockTransactionInputType:
     product_uid: FelicityID
     issued: int
-    department_uid: Optional[FelicityID] = None
+    department_uid: FelicityID | None = None
 
 
 StockAdjustmentResponse = strawberry.union(
@@ -156,7 +156,7 @@ class StockAdjustmentInputType:
     product_uid: FelicityID
     adjustment_type: str
     adjust: int
-    remarks: Optional[str] = None
+    remarks: str | None = None
 
 
 @strawberry.type
@@ -178,7 +178,7 @@ class InventoryMutations:
         if exists:
             return OperationError(error=f"StockItem with this name already exists")
 
-        incoming: Dict = {
+        incoming: dict = {
             "created_by_uid": felicity_user.uid,
             "updated_by_uid": felicity_user.uid,
         }
@@ -241,7 +241,7 @@ class InventoryMutations:
         if exists:
             return OperationError(error=f"StockCategory with this name already exists")
 
-        incoming: Dict = {
+        incoming: dict = {
             "created_by_uid": felicity_user.uid,
             "updated_by_uid": felicity_user.uid,
         }
@@ -302,7 +302,7 @@ class InventoryMutations:
         if exists:
             return OperationError(error=f"Hazard with this name already exists")
 
-        incoming: Dict = {
+        incoming: dict = {
             "created_by_uid": felicity_user.uid,
             "updated_by_uid": felicity_user.uid,
         }
@@ -365,7 +365,7 @@ class InventoryMutations:
         if exists:
             return OperationError(error=f"StockUnit with this name already exists")
 
-        incoming: Dict = {
+        incoming: dict = {
             "created_by_uid": felicity_user.uid,
             "updated_by_uid": felicity_user.uid,
         }
@@ -428,7 +428,7 @@ class InventoryMutations:
         if exists:
             return OperationError(error=f"StockPackaging with this name already exists")
 
-        incoming: Dict = {
+        incoming: dict = {
             "created_by_uid": felicity_user.uid,
             "updated_by_uid": felicity_user.uid,
         }
@@ -491,7 +491,7 @@ class InventoryMutations:
         if not auth_success:
             return auth_error
 
-        incoming: Dict = {
+        incoming: dict = {
             "date_received": datetime.today(),
             "expiry_date": datetime.today() + timedelta(days=10),
             "created_by_uid": felicity_user.uid,
@@ -553,7 +553,7 @@ class InventoryMutations:
         if not auth_success:
             return auth_error
 
-        incoming: Dict = {
+        incoming: dict = {
             "created_by_uid": felicity_user.uid,
             "updated_by_uid": felicity_user.uid,
         }
@@ -703,7 +703,7 @@ class InventoryMutations:
         # issuance
         for order_p in payload:
             # init transaction
-            incoming: Dict = {
+            incoming: dict = {
                 "created_by_uid": felicity_user.uid,
                 "updated_by_uid": felicity_user.uid,
                 "date_issued": datetime.now(),
@@ -769,7 +769,7 @@ class InventoryMutations:
         if not auth_success:
             return auth_error
 
-        incoming: Dict = {
+        incoming: dict = {
             "created_by_uid": felicity_user.uid,
             "updated_by_uid": felicity_user.uid,
             "date_issued": datetime.now(),
@@ -811,7 +811,7 @@ class InventoryMutations:
         if not auth_success:
             return auth_error
 
-        incoming: Dict = {
+        incoming: dict = {
             "created_by_uid": felicity_user.uid,
             "updated_by_uid": felicity_user.uid,
             "adjustment_date": datetime.now(),

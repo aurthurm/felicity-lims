@@ -13,25 +13,25 @@ from pydantic import EmailStr
 
 
 class PatientBase(BaseAuditModel):
-    client_patient_id: Optional[str] = None
-    client_uid: Optional[FelicityIDType] = None
-    patient_id: Optional[str] = None
-    first_name: Optional[str] = None
-    middle_name: Optional[str] = None
-    last_name: Optional[str] = None
-    gender: Optional[str] = None
-    age: Optional[int] = None
-    date_of_birth: Optional[datetime] = None
-    age_dob_estimated: Optional[bool] = None
-    phone_mobile: Optional[str] = None
-    phone_home: Optional[str] = None
-    consent_sms: Optional[bool] = None
+    client_patient_id: str | None = None
+    client_uid: FelicityIDType| None = None
+    patient_id: str | None = None
+    first_name: str | None = None
+    middle_name: str | None = None
+    last_name: str | None = None
+    gender: str | None = None
+    age: int | None = None
+    date_of_birth: datetime | None = None
+    age_dob_estimated: bool| None = None
+    phone_mobile: str | None = None
+    phone_home: str | None = None
+    consent_sms: bool| None = None
     email: Optional[EmailStr] = None
-    internal_use: Optional[bool] = False
-    active: Optional[bool] = None
-    district_uid: Optional[FelicityIDType] = None
-    province_uid: Optional[FelicityIDType] = None
-    country_uid: Optional[FelicityIDType] = None
+    internal_use: bool| None = False
+    active: bool| None = None
+    district_uid: FelicityIDType| None = None
+    province_uid: FelicityIDType| None = None
+    country_uid: FelicityIDType| None = None
 
 
 # Properties to receive via API on creation
@@ -49,7 +49,7 @@ class PatientUpdate(PatientBase):
 
 
 class PatientInDBBase(PatientBase):
-    uid: Optional[FelicityIDType] = None
+    uid: FelicityIDType| None = None
 
     class Config:
         orm_mode = True
@@ -87,7 +87,7 @@ class IdentificationUpdate(IdentificationBase):
 
 
 class IdentificationInDBBase(IdentificationBase):
-    uid: Optional[FelicityIDType] = None
+    uid: FelicityIDType| None = None
 
     class Config:
         orm_mode = True
@@ -127,7 +127,7 @@ class PatientIdentificationUpdate(PatientIdentificationBase):
 
 
 class PatientIdentificationInDBBase(PatientIdentificationBase):
-    uid: Optional[FelicityIDType] = None
+    uid: FelicityIDType| None = None
 
     class Config:
         orm_mode = True

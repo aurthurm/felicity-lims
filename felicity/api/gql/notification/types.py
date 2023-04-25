@@ -31,24 +31,24 @@ actionObject = strawberry.union(
 class ActivityFeedType:
     uid: FelicityID
     name: str
-    subscribers: Optional[List[UserType]]
+    subscribers: list[UserType] | None
 
 
 @strawberry.type
 class ActivityStreamType:
     uid: FelicityID
     feeds: Optional[List[ActivityFeedType]]
-    actor_uid: Optional[FelicityID]
-    actor: Optional[UserType]
-    verb: Optional[str]
-    action_object_type: Optional[str]
-    action_object_uid: Optional[FelicityID]
-    target_uid: Optional[FelicityID]
-    target: Optional[str]
-    viewers: Optional[List[UserType]]
-    created_at: Optional[datetime]
-    created_by_uid: Optional[FelicityID]
-    created_by: Optional[UserType]
+    actor_uid: FelicityID | None
+    actor: UserType | None
+    verb: str | None
+    action_object_type: str | None
+    action_object_uid: FelicityID | None
+    target_uid: FelicityID | None
+    target: str | None
+    viewers: list[UserType] | None
+    created_at: datetime | None
+    created_by_uid: FelicityID | None
+    created_by: UserType | None
 
     @strawberry.field
     async def action_object(
@@ -92,9 +92,9 @@ class NotificationType:
     uid: FelicityID
     departments: Optional[DepartmentType]
     groups: Optional[GroupType]
-    users: Optional[UserType]
+    users: UserType | None
     message: str
-    viewers: Optional[UserType]
-    created_at: Optional[datetime]
-    created_by_uid: Optional[FelicityID]
-    created_by: Optional[UserType]
+    viewers: UserType | None
+    created_at: datetime | None
+    created_by_uid: FelicityID | None
+    created_by: UserType | None

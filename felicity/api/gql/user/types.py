@@ -12,60 +12,60 @@ class UserAuthType:
     user_name: str
     login_retry: int
     is_blocked: bool
-    user_type: Optional[str]
+    user_type: str | None
     #
-    created_at: Optional[datetime]
-    creator_name: Optional[str]
-    creator_uid: Optional[FelicityID]
-    updated_at: Optional[datetime]
-    updator_name: Optional[str]
-    updator_uid: Optional[FelicityID]
+    created_at: datetime | None
+    creator_name: str | None
+    creator_uid: FelicityID | None
+    updated_at: datetime | None
+    updator_name: str | None
+    updator_uid: FelicityID | None
 
 
 @strawberry.type
 class PermissionType:
     uid: FelicityID
-    action: Optional[str]
-    target: Optional[str]
-    active: Optional[bool]
+    action: str | None
+    target: str | None
+    active: bool| None
 
 
 @strawberry.type
 class GroupType:
     uid: FelicityID
-    name: Optional[str]
-    keyword: Optional[str]
+    name: str | None
+    keyword: str | None
     members: Optional[List["UserType"]]
     permissions: Optional[List[PermissionType]]
-    active: Optional[bool]
-    pages: Optional[str]
+    active: bool| None
+    pages: str | None
 
 
 @strawberry.type
 class UserType:
     uid: FelicityID
-    first_name: Optional[str]
-    last_name: Optional[str]
-    email: Optional[str]
-    mobile_phone: Optional[str]
-    business_phone: Optional[str]
+    first_name: str | None
+    last_name: str | None
+    email: str | None
+    mobile_phone: str | None
+    business_phone: str | None
     groups: Optional[List[GroupType]]
-    preference_uid: Optional[FelicityID]
+    preference_uid: FelicityID | None
     preference: Optional["UserPreferenceType"]
     is_active: bool
     is_superuser: bool
-    auth_uid: Optional[FelicityID]
+    auth_uid: FelicityID | None
     auth: Optional[UserAuthType]
-    bio: Optional[str]
-    avatar: Optional[str]
-    default_route: Optional[str]
+    bio: str | None
+    avatar: str | None
+    default_route: str | None
     #
-    created_at: Optional[datetime]
-    creator_name: Optional[str]
-    creator_uid: Optional[FelicityID]
-    updated_at: Optional[datetime]
-    updator_name: Optional[str]
-    updator_uid: Optional[FelicityID]
+    created_at: datetime | None
+    creator_name: str | None
+    creator_uid: FelicityID | None
+    updated_at: datetime | None
+    updator_name: str | None
+    updator_uid: FelicityID | None
 
 
 @strawberry.type
@@ -92,13 +92,13 @@ class UserEdge:
 class UserCursorPage:
     page_info: PageInfo
     edges: Optional[List[UserEdge]]
-    items: Optional[List[UserType]]
+    items: list[UserType] | None
     total_count: int
 
 
 @strawberry.type
 class UserPreferenceType:
     uid: FelicityID
-    expanded_menu: Optional[bool]
+    expanded_menu: bool| None
     # departments: Optional[List["api.gql.setup.types.DepartmentType"]]
-    theme: Optional[str]
+    theme: str | None

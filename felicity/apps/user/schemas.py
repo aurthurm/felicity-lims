@@ -13,8 +13,8 @@ from pydantic import EmailStr
 
 
 class PermissionBase(BaseModel):
-    action: Optional[str] = None
-    target: Optional[str] = None
+    action: str | None = None
+    target: str | None = None
     active: bool = False
 
 
@@ -25,11 +25,11 @@ class PermissionCreate(PermissionBase):
 
 # Properties to receive via API on update
 class PermissionUpdate(PermissionBase):
-    uid: Optional[FelicityIDType] = None
+    uid: FelicityIDType| None = None
 
 
 class PermissionInDBBase(PermissionBase):
-    uid: Optional[FelicityIDType] = None
+    uid: FelicityIDType| None = None
 
     class Config:
         orm_mode = True
@@ -51,8 +51,8 @@ class PermissionInDB(PermissionInDBBase):
 
 # Shared properties
 class GroupBase(BaseModel):
-    name: Optional[str] = None
-    keyword: Optional[str] = None
+    name: str | None = None
+    keyword: str | None = None
     permissions: Optional[List[Permission]] = None
     active: bool = False
 
@@ -64,11 +64,11 @@ class GroupCreate(GroupBase):
 
 # Properties to receive via API on update
 class GroupUpdate(GroupBase):
-    uid: Optional[FelicityIDType] = None
+    uid: FelicityIDType| None = None
 
 
 class GroupInDBBase(GroupBase):
-    uid: Optional[FelicityIDType] = None
+    uid: FelicityIDType| None = None
 
     class Config:
         orm_mode = True
@@ -88,13 +88,13 @@ class GroupInDB(GroupInDBBase):
 #  User Preferences
 #
 class UserPreferenceBase(BaseAuditModel):
-    expanded_menu: Optional[bool] = False
+    expanded_menu: bool| None = False
     departments: Optional[List["Department"]]
-    theme: Optional[str] = themes.LIGHT
+    theme: str | None = themes.LIGHT
 
 
 class UserPreference(UserPreferenceBase):
-    uid: Optional[FelicityIDType] = None
+    uid: FelicityIDType| None = None
 
     class Config:
         orm_mode = True
@@ -116,22 +116,22 @@ class UserPreferenceUpdate(UserPreferenceBase):
 
 
 class UserBasicBase(BaseModel):
-    first_name: Optional[str] = None
-    last_name: Optional[str] = None
-    user_name: Optional[str] = None
+    first_name: str | None = None
+    last_name: str | None = None
+    user_name: str | None = None
 
 
 class UserBase(BaseModel):
     email: Optional[EmailStr] = None
-    is_active: Optional[bool] = True
+    is_active: bool| None = True
     is_superuser: bool = False
-    first_name: Optional[str] = None
-    last_name: Optional[str] = None
-    password: Optional[str] = None
-    user_name: Optional[str] = None
-    avatar: Optional[str] = None
-    bio: Optional[str] = None
-    default_route: Optional[str] = None
+    first_name: str | None = None
+    last_name: str | None = None
+    password: str | None = None
+    user_name: str | None = None
+    avatar: str | None = None
+    bio: str | None = None
+    default_route: str | None = None
     groups: Optional[Group] = []
 
 
@@ -142,12 +142,12 @@ class UserCreate(UserBase):
 
 # Properties to receive via API on update
 class UserUpdate(UserBase):
-    auth_uid: Optional[FelicityIDType] = None
-    preference_uid: Optional[FelicityIDType] = None
+    auth_uid: FelicityIDType| None = None
+    preference_uid: FelicityIDType| None = None
 
 
 class UserInDBBase(UserBase):
-    uid: Optional[FelicityIDType] = None
+    uid: FelicityIDType| None = None
 
     class Config:
         orm_mode = True
@@ -155,7 +155,7 @@ class UserInDBBase(UserBase):
 
 # Additional properties to return via API
 class UserBasic(UserBasicBase):
-    uid: Optional[FelicityIDType] = None
+    uid: FelicityIDType| None = None
 
     class Config:
         orm_mode = True
@@ -178,11 +178,11 @@ class UserInDB(UserInDBBase):
 
 # Shared properties
 class AuthBase(BaseModel):
-    user_name: Optional[str] = None
-    password: Optional[str] = None
-    login_retry: Optional[int] = 0
-    is_blocked: Optional[bool] = False
-    user_type: Optional[str] = None
+    user_name: str | None = None
+    password: str | None = None
+    login_retry: int | None = 0
+    is_blocked: bool| None = False
+    user_type: str | None = None
 
 
 # Properties to receive via API on creation
@@ -199,7 +199,7 @@ class AuthUpdate(AuthBase):
 
 
 class AuthInDBBase(AuthBase):
-    uid: Optional[FelicityIDType] = None
+    uid: FelicityIDType| None = None
 
     class Config:
         orm_mode = True

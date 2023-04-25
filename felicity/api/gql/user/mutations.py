@@ -75,8 +75,8 @@ class UserMutations:
         first_name: str,
         last_name: str,
         email: str,
-        group_uid: Optional[FelicityID] = None,
-        open_reg: Optional[bool] = False,
+        group_uid: FelicityID | None = None,
+        open_reg: bool| None = False,
     ) -> UserResponse:
         if open_reg and not settings.USERS_OPEN_REGISTRATION:
             return OperationError(
@@ -118,12 +118,12 @@ class UserMutations:
         self,
         info,
         user_uid: FelicityID,
-        first_name: Optional[str],
-        last_name: Optional[str],
-        mobile_phone: Optional[str],
-        email: Optional[str],
-        group_uid: Optional[FelicityID],
-        is_active: Optional[bool],
+        first_name: str | None,
+        last_name: str | None,
+        mobile_phone: str | None,
+        email: str | None,
+        group_uid: FelicityID | None,
+        is_active: bool| None,
     ) -> UserResponse:
 
         user = await user_models.User.get_one(uid=user_uid)
@@ -211,9 +211,9 @@ class UserMutations:
         self,
         info,
         user_uid: FelicityID,
-        user_name: Optional[str],
-        password: Optional[str],
-        passwordc: Optional[str],
+        user_name: str | None,
+        password: str | None,
+        passwordc: str | None,
     ) -> UserResponse:
 
         if not user_name or not password:

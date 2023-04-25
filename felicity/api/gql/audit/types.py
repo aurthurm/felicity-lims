@@ -7,9 +7,9 @@ from core.uid_gen import FelicityID
 @strawberry.type
 class AuditLogType:
     uid: FelicityID
-    user_id: Optional[FelicityID]
-    target_type: Optional[str]
-    target_id: Optional[FelicityID]
-    action: Optional[int]
+    user_id: FelicityID | None
+    target_type: str | None
+    target_id: FelicityID | None
+    action: int | None
     state_before: Optional[Text]
     state_after: Optional[Text]

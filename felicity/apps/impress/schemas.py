@@ -11,23 +11,23 @@ from pydantic import BaseModel
 
 
 class ReportImpressBase(BaseModel):
-    state: Optional[str] = None
-    sample_uid: Optional[FelicityIDType] = None
+    state: str | None = None
+    sample_uid: FelicityIDType| None = None
     sample: Optional[SampleInDB] = None
-    json_content: Optional[Dict] = {}
+    json_content: Optional[dict] = {}
     pdf_content: Optional[bytes] = None
-    email_required: Optional[bool] = False
-    email_sent: Optional[bool] = False
-    sms_required: Optional[bool] = False
-    sms_sent: Optional[bool] = False
-    generated_by_uid: Optional[FelicityIDType] = None
-    created_by_uid: Optional[FelicityIDType] = None
-    updated_by_uid: Optional[FelicityIDType] = None
-    date_generated: Optional[datetime] = False
+    email_required: bool| None = False
+    email_sent: bool| None = False
+    sms_required: bool| None = False
+    sms_sent: bool| None = False
+    generated_by_uid: FelicityIDType| None = None
+    created_by_uid: FelicityIDType| None = None
+    updated_by_uid: FelicityIDType| None = None
+    date_generated: datetime | None = False
 
 
 class ReportImpressBaseInDB(ReportImpressBase):
-    uid: Optional[FelicityIDType] = None
+    uid: FelicityIDType| None = None
 
     class Config:
         orm_mode = True

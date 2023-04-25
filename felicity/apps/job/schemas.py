@@ -10,18 +10,18 @@ from .conf import categories, priorities, states
 # Job Schemas
 #
 class JobBase(BaseModel):
-    action: Optional[str] = None
-    category: Optional[str] = categories.WORKSHEET
-    priority: Optional[int] = priorities.NORMAL
+    action: str | None = None
+    category: str | None = categories.WORKSHEET
+    priority: int | None = priorities.NORMAL
     data: Optional[Any] = None
-    job_id: Optional[FelicityIDType] = None
-    status: Optional[str] = states.PENDING
-    reason: Optional[str] = None
-    creator_uid: Optional[FelicityIDType] = None
+    job_id: FelicityIDType| None = None
+    status: str | None = states.PENDING
+    reason: str | None = None
+    creator_uid: FelicityIDType| None = None
 
 
 class Job(JobBase):
-    uid: Optional[FelicityIDType] = None
+    uid: FelicityIDType| None = None
 
     class Config:
         orm_mode = True

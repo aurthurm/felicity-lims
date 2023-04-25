@@ -11,12 +11,12 @@ from pydantic import BaseModel
 
 
 class StoreRoomBase(BaseModel):
-    name: Optional[str] = None
-    description: Optional[str] = None
+    name: str | None = None
+    description: str | None = None
 
 
 class StoreRoom(StoreRoomBase):
-    uid: Optional[FelicityIDType] = None
+    uid: FelicityIDType| None = None
 
     class Config:
         orm_mode = True
@@ -38,14 +38,14 @@ class StoreRoomUpdate(StoreRoomBase):
 
 # Shared properties
 class StorageLocationBase(BaseModel):
-    name: Optional[str] = None
-    description: Optional[str] = None
+    name: str | None = None
+    description: str | None = None
     store_room_uid: FelicityIDType
     store_room: Optional[StoreRoom]
 
 
 class StorageLocation(StorageLocationBase):
-    uid: Optional[FelicityIDType] = None
+    uid: FelicityIDType| None = None
 
     class Config:
         orm_mode = True
@@ -67,14 +67,14 @@ class StorageLocationUpdate(StorageLocationBase):
 
 # Shared properties
 class StorageSectionBase(BaseModel):
-    name: Optional[str] = None
-    description: Optional[str] = None
+    name: str | None = None
+    description: str | None = None
     storage_location_uid: FelicityIDType
     storage_location: Optional[StorageLocation]
 
 
 class StorageSection(StorageSectionBase):
-    uid: Optional[FelicityIDType] = None
+    uid: FelicityIDType| None = None
 
     class Config:
         orm_mode = True
@@ -96,20 +96,20 @@ class StorageSectionUpdate(StorageSectionBase):
 
 # Shared properties
 class StorageContainerBase(BaseModel):
-    name: Optional[str] = None
-    description: Optional[str] = None
+    name: str | None = None
+    description: str | None = None
     storage_section_uid: FelicityIDType
     storage_section: Optional[StorageSection]
     grid: bool = False
     row_wise: bool = False
-    cols: Optional[int]
-    rows: Optional[int]
-    slots: Optional[int] = 0
-    stored_count: Optional[int] = 0
+    cols: int | None
+    rows: int | None
+    slots: int | None = 0
+    stored_count: int | None = 0
 
 
 class StorageContainer(StorageContainerBase):
-    uid: Optional[FelicityIDType] = None
+    uid: FelicityIDType| None = None
 
     class Config:
         orm_mode = True

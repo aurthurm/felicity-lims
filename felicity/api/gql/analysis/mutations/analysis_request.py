@@ -46,7 +46,7 @@ class ARSampleInputType:
 class SampleRejectInputType:
     uid: FelicityID
     reasons: List[FelicityID]
-    other: Optional[str] = ""
+    other: str | None = ""
 
 
 @strawberry.input
@@ -91,10 +91,10 @@ class AnalysisRequestInputType:
     patient_uid: FelicityID
     client_uid: FelicityID
     client_contact_uid: FelicityID
-    clinicalData: Optional[str] = ""
+    clinicalData: str | None = ""
     samples: List[ARSampleInputType] = None
-    client_request_id: Optional[str] = None
-    internal_use: Optional[bool] = False
+    client_request_id: str | None = None
+    internal_use: bool| None = False
     priority: int = priorities.NORMAL
 
 

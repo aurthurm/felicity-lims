@@ -29,7 +29,7 @@ class ReflexActionInput:
     description: str
     analyses: List[FelicityID]
     reflex_rule_uid: FelicityID
-    sample_type_uid: Optional[FelicityID] = None
+    sample_type_uid: FelicityID | None = None
 
 
 ReflexActionResponse = strawberry.union(
@@ -91,7 +91,7 @@ class ReflexRuleMutations:
         if exists:
             return OperationError(error=f"Reflex Rule name must be unique")
 
-        incoming: Dict = {
+        incoming: dict = {
             "created_by_uid": felicity_user.uid,
             "updated_by_uid": felicity_user.uid,
         }
@@ -156,7 +156,7 @@ class ReflexRuleMutations:
         ):
             return OperationError(error="Anaysis, Level and description are required")
 
-        incoming: Dict = {
+        incoming: dict = {
             "created_by_uid": felicity_user.uid,
             "updated_by_uid": felicity_user.uid,
         }
@@ -232,7 +232,7 @@ class ReflexRuleMutations:
         if not payload.description:
             return OperationError(error="Description are required")
 
-        incoming: Dict = {
+        incoming: dict = {
             "reflex_action_uid": payload.reflex_action_uid,
             "description": payload.description,
             "created_by_uid": felicity_user.uid,

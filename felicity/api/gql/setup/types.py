@@ -13,87 +13,87 @@ class LaboratoryType:
     uid: FelicityID
     setup_name: str
     lab_name: str
-    lab_manager_uid: Optional[str]
+    lab_manager_uid: str | None
     lab_manager: Optional["UserType"]
-    email: Optional[str]
-    email_cc: Optional[str]
-    mobile_phone: Optional[str]
-    business_phone: Optional[str]
-    address: Optional[str]
-    logo: Optional[str]
+    email: str | None
+    email_cc: str | None
+    mobile_phone: str | None
+    business_phone: str | None
+    address: str | None
+    logo: str | None
     #
-    created_by_uid: Optional[FelicityID]
+    created_by_uid: FelicityID | None
     created_by: Optional["UserType"]
-    created_at: Optional[datetime]
-    updated_by_uid: Optional[FelicityID]
+    created_at: datetime | None
+    updated_by_uid: FelicityID | None
     updated_by: Optional["UserType"]
-    updated_at: Optional[datetime]
+    updated_at: datetime | None
 
 
 @strawberry.type
 class LaboratorySettingType:
-    created_by_uid: Optional[FelicityID]
+    created_by_uid: FelicityID | None
     created_by: Optional["UserType"]
-    created_at: Optional[datetime]
-    updated_by_uid: Optional[FelicityID]
+    created_at: datetime | None
+    updated_by_uid: FelicityID | None
     updated_by: Optional["UserType"]
-    updated_at: Optional[datetime]
+    updated_at: datetime | None
     uid: FelicityID
     laboratory_uid: FelicityID
     laboratory: LaboratoryType
-    allow_self_verification: Optional[bool] = False
-    allow_patient_registration: Optional[bool] = True
-    allow_sample_registration: Optional[bool] = True
-    allow_worksheet_creation: Optional[bool] = True
-    default_route: Optional[str] = None
-    password_lifetime: Optional[int] = None
-    inactivity_log_out: Optional[int] = None
-    default_theme: Optional[str] = None
-    auto_receive_samples: Optional[bool] = True
-    sticker_copies: Optional[int] = 2
+    allow_self_verification: bool| None = False
+    allow_patient_registration: bool| None = True
+    allow_sample_registration: bool| None = True
+    allow_worksheet_creation: bool| None = True
+    default_route: str | None = None
+    password_lifetime: int | None = None
+    inactivity_log_out: int | None = None
+    default_theme: str | None = None
+    auto_receive_samples: bool| None = True
+    sticker_copies: int | None = 2
     #
 
 
 @strawberry.type
 class SupplierType:
     uid: FelicityID
-    name: Optional[str]
-    description: Optional[str]
+    name: str | None
+    description: str | None
     #
-    created_by_uid: Optional[FelicityID]
+    created_by_uid: FelicityID | None
     created_by: Optional["UserType"]
-    created_at: Optional[datetime]
-    updated_by_uid: Optional[FelicityID]
+    created_at: datetime | None
+    updated_by_uid: FelicityID | None
     updated_by: Optional["UserType"]
-    updated_at: Optional[datetime]
+    updated_at: datetime | None
 
 
 @strawberry.type
 class ManufacturerType:
     uid: FelicityID
-    name: Optional[str]
-    description: Optional[str]
+    name: str | None
+    description: str | None
     #
-    created_by_uid: Optional[FelicityID]
+    created_by_uid: FelicityID | None
     created_by: Optional["UserType"]
-    created_at: Optional[datetime]
-    updated_by_uid: Optional[FelicityID]
+    created_at: datetime | None
+    updated_by_uid: FelicityID | None
     updated_by: Optional["UserType"]
-    updated_at: Optional[datetime]
+    updated_at: datetime | None
 
 
 @strawberry.type
 class InstrumentTypeType:
     uid: FelicityID
-    name: Optional[str]
-    description: Optional[str]
+    name: str | None
+    description: str | None
     #
-    created_by_uid: Optional[FelicityID]
+    created_by_uid: FelicityID | None
     created_by: Optional["UserType"]
-    created_at: Optional[datetime]
-    updated_by_uid: Optional[FelicityID]
+    created_at: datetime | None
+    updated_by_uid: FelicityID | None
     updated_by: Optional["UserType"]
-    updated_at: Optional[datetime]
+    updated_at: datetime | None
 
 
 #  relay paginations
@@ -117,33 +117,33 @@ class UnitType:
     name: str
     is_si_unit: bool
     #
-    created_by_uid: Optional[FelicityID]
+    created_by_uid: FelicityID | None
     created_by: Optional["UserType"]
-    created_at: Optional[datetime]
-    updated_by_uid: Optional[FelicityID]
+    created_at: datetime | None
+    updated_by_uid: FelicityID | None
     updated_by: Optional["UserType"]
-    updated_at: Optional[datetime]
+    updated_at: datetime | None
 
 
 @strawberry.type
 class InstrumentType:
     uid: FelicityID
-    name: Optional[str]
-    description: Optional[str]
-    keyword: Optional[str]
-    supplier_uid: Optional[FelicityID]
+    name: str | None
+    description: str | None
+    keyword: str | None
+    supplier_uid: FelicityID | None
     supplier: Optional[SupplierType]
-    manufacturer_uid: Optional[FelicityID]
+    manufacturer_uid: FelicityID | None
     manufacturer: Optional[ManufacturerType]
-    instrument_type_uid: Optional[FelicityID]
+    instrument_type_uid: FelicityID | None
     instrument_type: Optional[InstrumentTypeType]
     #
-    created_by_uid: Optional[FelicityID]
+    created_by_uid: FelicityID | None
     created_by: Optional["UserType"]
-    created_at: Optional[datetime]
-    updated_by_uid: Optional[FelicityID]
+    created_at: datetime | None
+    updated_by_uid: FelicityID | None
     updated_by: Optional["UserType"]
-    updated_at: Optional[datetime]
+    updated_at: datetime | None
     methods: Optional[List["MethodType"]] = field(default_factory=list)
 
 
@@ -166,7 +166,7 @@ class InstrumentCursorPage:
 class InstrumentCalibrationType:
     uid: FelicityID
     instrument_uid: FelicityID
-    instrument: Optional[InstrumentType]
+    instrument: InstrumentType | None
     calibration_id: str
     date_reported: datetime
     report_id: str
@@ -182,7 +182,7 @@ class InstrumentCalibrationType:
 class CalibrationCertificateType:
     uid: FelicityID
     instrument_uid: FelicityID
-    instrument: Optional[InstrumentType]
+    instrument: InstrumentType | None
     certificate_code: str
     internal: bool
     issuer: str
@@ -197,31 +197,31 @@ class CalibrationCertificateType:
 @strawberry.type
 class DepartmentType:
     uid: FelicityID
-    name: Optional[str]
-    description: Optional[str]
-    code: Optional[str]
+    name: str | None
+    description: str | None
+    code: str | None
     #
-    created_by_uid: Optional[FelicityID]
+    created_by_uid: FelicityID | None
     created_by: Optional["UserType"]
-    created_at: Optional[datetime]
-    updated_by_uid: Optional[FelicityID]
+    created_at: datetime | None
+    updated_by_uid: FelicityID | None
     updated_by: Optional["UserType"]
-    updated_at: Optional[datetime]
+    updated_at: datetime | None
 
 
 @strawberry.type
 class MethodType:
     uid: FelicityID
-    name: Optional[str]
-    description: Optional[str]
-    keyword: Optional[str]
+    name: str | None
+    description: str | None
+    keyword: str | None
     #
-    created_by_uid: Optional[FelicityID]
+    created_by_uid: FelicityID | None
     created_by: Optional["UserType"]
-    created_at: Optional[datetime]
-    updated_by_uid: Optional[FelicityID]
+    created_at: datetime | None
+    updated_by_uid: FelicityID | None
     updated_by: Optional["UserType"]
-    updated_at: Optional[datetime]
+    updated_at: datetime | None
     instruments: Optional[List["InstrumentType"]] = field(default_factory=list)
 
 
@@ -243,37 +243,37 @@ class MethodCursorPage:
 @strawberry.type
 class CountryType:
     uid: FelicityID
-    name: Optional[str]
-    code: Optional[str]
-    active: Optional[str]
+    name: str | None
+    code: str | None
+    active: str | None
     #
-    created_by_uid: Optional[FelicityID]
+    created_by_uid: FelicityID | None
     created_by: Optional["UserType"]
-    created_at: Optional[datetime]
-    updated_by_uid: Optional[FelicityID]
+    created_at: datetime | None
+    updated_by_uid: FelicityID | None
     updated_by: Optional["UserType"]
-    updated_at: Optional[datetime]
+    updated_at: datetime | None
 
 
 @strawberry.type
 class ProvinceType:
     uid: FelicityID
-    code: Optional[str]
-    name: Optional[str]
-    email: Optional[str]
-    email_cc: Optional[str]
-    mobile_phone: Optional[str]
-    business_phone: Optional[str]
-    active: Optional[bool]
-    country_uid: Optional[FelicityID]
+    code: str | None
+    name: str | None
+    email: str | None
+    email_cc: str | None
+    mobile_phone: str | None
+    business_phone: str | None
+    active: bool| None
+    country_uid: FelicityID | None
     country: Optional[CountryType]
     #
-    created_by_uid: Optional[FelicityID]
+    created_by_uid: FelicityID | None
     created_by: Optional["UserType"]
-    created_at: Optional[datetime]
-    updated_by_uid: Optional[FelicityID]
+    created_at: datetime | None
+    updated_by_uid: FelicityID | None
     updated_by: Optional["UserType"]
-    updated_at: Optional[datetime]
+    updated_at: datetime | None
 
 
 #  relay paginations
@@ -294,22 +294,22 @@ class ProvinceCursorPage:
 @strawberry.type
 class DistrictType:
     uid: FelicityID
-    code: Optional[str]
-    name: Optional[str]
-    email: Optional[str]
-    email_cc: Optional[str]
-    mobile_phone: Optional[str]
-    business_phone: Optional[str]
-    active: Optional[bool]
-    province_uid: Optional[FelicityID]
+    code: str | None
+    name: str | None
+    email: str | None
+    email_cc: str | None
+    mobile_phone: str | None
+    business_phone: str | None
+    active: bool| None
+    province_uid: FelicityID | None
     province: Optional[ProvinceType]
     #
-    created_by_uid: Optional[FelicityID]
+    created_by_uid: FelicityID | None
     created_by: Optional["UserType"]
-    created_at: Optional[datetime]
-    updated_by_uid: Optional[FelicityID]
+    created_at: datetime | None
+    updated_by_uid: FelicityID | None
     updated_by: Optional["UserType"]
-    updated_at: Optional[datetime]
+    updated_at: datetime | None
 
 
 #  relay paginations

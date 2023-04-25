@@ -28,26 +28,26 @@ DeleteContactResponse = strawberry.union(
 class ClientInputType:
     name: str
     code: str
-    district_uid: Optional[FelicityID] = None
-    email: Optional[str] = None
-    email_cc: Optional[str] = None
-    consent_email: Optional[bool] = False
-    phone_mobile: Optional[str] = None
-    phone_business: Optional[str] = None
-    consent_sms: Optional[bool] = False
-    internal_use: Optional[bool] = False
-    active: Optional[bool] = True
+    district_uid: FelicityID | None = None
+    email: str | None = None
+    email_cc: str | None = None
+    consent_email: bool| None = False
+    phone_mobile: str | None = None
+    phone_business: str | None = None
+    consent_sms: bool| None = False
+    internal_use: bool| None = False
+    active: bool| None = True
 
 
 @strawberry.input
 class ClientContactInputType:
     first_name: str
     client_uid: FelicityID
-    last_name: Optional[str] = None
-    email: Optional[str] = None
-    email_cc: Optional[str] = None
-    mobile_phone: Optional[str] = None
-    consent_sms: Optional[bool] = False
+    last_name: str | None = None
+    email: str | None = None
+    email_cc: str | None = None
+    mobile_phone: str | None = None
+    consent_sms: bool| None = False
     is_active: bool = True
 
 
@@ -78,7 +78,7 @@ class ClientMutations:
                 error=f"Client code {payload.code} already belong to client {exists.name}"
             )
 
-        incoming: Dict = {
+        incoming: dict = {
             "created_by_uid": felicity_user.uid,
             "updated_by_uid": felicity_user.uid,
         }
@@ -151,7 +151,7 @@ class ClientMutations:
                 error=f"Client Contact with name {payload.first_name} already exists"
             )
 
-        incoming: Dict = {
+        incoming: dict = {
             "created_by_uid": felicity_user.uid,
             "updated_by_uid": felicity_user.uid,
         }

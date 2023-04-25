@@ -383,7 +383,7 @@ def mptt_before_update(mapper, connection, instance):
         )
 
 
-class _WeakDictBasedSet(weakref.WeakKeyDictionary, object):
+class _WeakdictBasedSet(weakref.WeakKeyDictionary, object):
     """
     In absence of a default weakset implementation, provide our own dict
     based solution.
@@ -393,18 +393,18 @@ class _WeakDictBasedSet(weakref.WeakKeyDictionary, object):
         self[obj] = None
 
     def discard(self, obj):
-        super(_WeakDictBasedSet, self).pop(obj, None)
+        super(_WeakdictBasedSet, self).pop(obj, None)
 
     def pop(self):
         return self.popitem()[0]
 
 
-class _WeakDefaultDict(weakref.WeakKeyDictionary, object):
+class _WeakDefaultdict(weakref.WeakKeyDictionary, object):
     def __getitem__(self, key):
         try:
             return super(_WeakDefaultDict, self).__getitem__(key)
         except KeyError:
-            self[key] = value = _WeakDictBasedSet()
+            self[key] = value = _WeakdictBasedSet()
             return value
 
 
@@ -416,7 +416,7 @@ class TreesManager(object):
     def __init__(self, base_class):
         self.base_class = base_class
         self.classes = set()
-        self.instances = _WeakDefaultDict()
+        self.instances = _WeakDefaultdict()
 
     def register_events(self, remove=False):
         for e, h in (

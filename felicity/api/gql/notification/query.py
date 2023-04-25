@@ -12,9 +12,9 @@ class StreamNotificationQuery:
     async def notification_filter(
         self,
         info,
-        group_uid: Optional[FelicityID],
-        department_uid: Optional[FelicityID],
-        user_uid: Optional[FelicityID],
+        group_uid: FelicityID | None,
+        department_uid: FelicityID | None,
+        user_uid: FelicityID | None,
     ) -> List[NotificationType]:
         filters = {}
 

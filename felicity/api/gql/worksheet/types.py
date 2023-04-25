@@ -21,28 +21,28 @@ class WorkSheetTemplateType:
     uid: FelicityID
     worksheet_type: str
     reserved: Optional[JSONScalar]
-    number_of_samples: Optional[int]
-    rows: Optional[int]
-    cols: Optional[int]
+    number_of_samples: int | None
+    rows: int | None
+    cols: int | None
     row_wise: bool
-    state: Optional[str]
+    state: str | None
     name: str
-    description: Optional[str]
-    analysis_uid: Optional[FelicityID]
-    analysis: Optional[AnalysisType]
-    qc_template_uid: Optional[FelicityID]
+    description: str | None
+    analysis_uid: FelicityID | None
+    analysis: AnalysisType | None
+    qc_template_uid: FelicityID | None
     qc_template: Optional[QCTemplateType]
     qc_levels: Optional[List[QCLevelType]]
-    instrument_uid: Optional[FelicityID]
-    instrument: Optional[InstrumentType]
-    sample_type_uid: Optional[FelicityID]
+    instrument_uid: FelicityID | None
+    instrument: InstrumentType | None
+    sample_type_uid: FelicityID | None
     sample_type: Optional[SampleTypeTyp]
-    created_by_uid: Optional[FelicityID]
-    created_by: Optional[UserType]
-    created_at: Optional[datetime]
-    updated_by_uid: Optional[FelicityID]
-    updated_by: Optional[UserType]
-    updated_at: Optional[datetime]
+    created_by_uid: FelicityID | None
+    created_by: UserType | None
+    created_at: datetime | None
+    updated_by_uid: FelicityID | None
+    updated_by: UserType | None
+    updated_at: datetime | None
 
 
 @strawberry.type
@@ -50,36 +50,36 @@ class WorkSheetType:
     uid: FelicityID
     worksheet_type: str
     reserved: Optional[JSONScalar]
-    number_of_samples: Optional[int]
-    rows: Optional[int]
-    cols: Optional[int]
+    number_of_samples: int | None
+    rows: int | None
+    cols: int | None
     row_wise: bool
-    state: Optional[str]
-    template_uid: Optional[FelicityID]
+    state: str | None
+    template_uid: FelicityID | None
     template: Optional[WorkSheetTemplateType]
-    analyst_uid: Optional[FelicityID]
-    analyst: Optional[UserType]
+    analyst_uid: FelicityID | None
+    analyst: UserType | None
     worksheet_id: str
-    analysis_uid: Optional[FelicityID]
-    analysis: Optional[AnalysisType]
-    instrument_uid: Optional[FelicityID]
-    instrument: Optional[InstrumentType]
-    sample_type_uid: Optional[FelicityID]
+    analysis_uid: FelicityID | None
+    analysis: AnalysisType | None
+    instrument_uid: FelicityID | None
+    instrument: InstrumentType | None
+    sample_type_uid: FelicityID | None
     sample_type: Optional[SampleTypeTyp]
     assigned_count: int
-    analysis_results: Optional[List[AnalysisResultType]]
-    submitted_by_uid: Optional[FelicityID]
-    submitted_by: Optional[UserType]
-    date_submitted: Optional[datetime]
-    verified_by_uid: Optional[FelicityID]
-    verified_by: Optional[UserType]
-    date_verified: Optional[datetime]
-    created_by_uid: Optional[FelicityID]
-    created_by: Optional[UserType]
-    created_at: Optional[datetime]
-    updated_by_uid: Optional[FelicityID]
-    updated_by: Optional[UserType]
-    updated_at: Optional[datetime]
+    analysis_results: list[AnalysisResultType] | None
+    submitted_by_uid: FelicityID | None
+    submitted_by: UserType | None
+    date_submitted: datetime | None
+    verified_by_uid: FelicityID | None
+    verified_by: UserType | None
+    date_verified: datetime | None
+    created_by_uid: FelicityID | None
+    created_by: UserType | None
+    created_at: datetime | None
+    updated_by_uid: FelicityID | None
+    updated_by: UserType | None
+    updated_at: datetime | None
 
 
 #  relay paginations

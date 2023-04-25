@@ -15,11 +15,11 @@ class ReflexRuleQuery:
     async def reflex_rule_all(
         self,
         info,
-        page_size: Optional[int] = None,
-        after_cursor: Optional[str] = None,
-        before_cursor: Optional[str] = None,
-        text: Optional[str] = None,
-        sort_by: Optional[List[str]] = None,
+        page_size: int | None = None,
+        after_cursor: str | None = None,
+        before_cursor: str | None = None,
+        text: str | None = None,
+        sort_by: list[str] | None = None,
     ) -> ReflexRuleCursorPage:
         filters = {}
 

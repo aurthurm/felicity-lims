@@ -10,7 +10,7 @@ logger = logging.getLogger(__name__)
 
 
 class EdgeNode:
-    def __init__(self, cursor: str = None, node: Dict = None):
+    def __init__(self, cursor: str = None, node: dict = None):
         self.cursor = cursor
         self.node = node
 
@@ -34,7 +34,7 @@ class PageCursor:
         self,
         total_count: int = 0,
         edges: List[EdgeNode] = None,
-        items: List[Dict] = None,
+        items: List[dict] = None,
         page_info: PageInfo = None,
     ):
         self.total_count = total_count
@@ -52,8 +52,8 @@ class CursorPaginationMixin(SmartQueryMixin):
         page_size: int = None,
         after_cursor: Any = None,
         before_cursor: Any = None,
-        filters: Dict = None,
-        sort_by: List[str] = None,
+        filters: dict = None,
+        sort_by: list[str] = None,
     ):
         total_count: int = (await cls.session.execute(select(cls))).scalar().count()
         items = None

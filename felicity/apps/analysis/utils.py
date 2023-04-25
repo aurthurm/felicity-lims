@@ -60,7 +60,7 @@ async def sample_search(
     return (await model.session.execute(stmt)).scalars().all()
 
 
-async def retest_from_result_uids(uids: List[FelicityIDType], user):
+async def retest_from_result_uids(uids: list[FelicityIDType], user):
     originals = []
     retests = []
 
@@ -143,7 +143,7 @@ async def results_submitter(analysis_results: List[dict], submitter):
     return return_results
 
 
-async def verify_from_result_uids(uids: List[FelicityIDType], user):
+async def verify_from_result_uids(uids: list[FelicityIDType], user):
     to_return = []
 
     for _ar_uid in uids:

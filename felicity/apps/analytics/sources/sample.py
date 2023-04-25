@@ -25,7 +25,7 @@ class SampleAnalyticsInit(Generic[ModelType]):
         self,
         period_start: str,
         period_end: str,
-        sample_states: List[str],
+        sample_states: list[str],
         date_column: str,
         analysis_uids: List[FelicityID],
     ):
@@ -115,7 +115,7 @@ class SampleAnalyticsInit(Generic[ModelType]):
         group_by: str,
         start: Optional[Tuple[str, str]],
         end: Optional[Tuple[str, str]],
-        group_in: Optional[List[str]] = None,
+        group_in: list[str] | None = None,
     ):  # noqa
         if not hasattr(self.model, group_by):
             logger.warning(f"Model has no attr {group_by}")

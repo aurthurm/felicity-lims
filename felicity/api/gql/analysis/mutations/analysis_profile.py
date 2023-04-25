@@ -23,11 +23,11 @@ AnalysisProfileResponse = strawberry.union(
 class ProfileInputType:
     name: str
     description: str = ""
-    department_uid: Optional[FelicityID] = None
+    department_uid: FelicityID | None = None
     sample_types: Optional[List[FelicityID]] = field(default_factory=list)
     services: Optional[List[FelicityID]] = field(default_factory=list)
-    keyword: Optional[str] = None
-    active: Optional[bool] = True
+    keyword: str | None = None
+    active: bool| None = True
 
 
 @strawberry.mutation

@@ -16,9 +16,9 @@ logger = logging.getLogger(__name__)
 class SampleTypeInputType:
     name: str
     abbr: str
-    description: Optional[str] = ""
-    internal_use: Optional[bool] = False
-    active: Optional[bool] = True
+    description: str | None = ""
+    internal_use: bool| None = False
+    active: bool| None = True
 
 
 SampleTypeResponse = strawberry.union(

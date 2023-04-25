@@ -13,8 +13,8 @@ logger = logging.getLogger(__name__)
 class PageInfo:
     has_next_page: bool
     has_previous_page: bool
-    start_cursor: Optional[str]
-    end_cursor: Optional[str]
+    start_cursor: str | None
+    end_cursor: str | None
 
 
 @strawberry.type
@@ -30,7 +30,7 @@ class MessagesType:
 @strawberry.type
 class OperationError:
     error: str
-    suggestion: Optional[str] = ""
+    suggestion: str | None = ""
 
 
 @strawberry.type

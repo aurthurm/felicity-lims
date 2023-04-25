@@ -1,6 +1,6 @@
 import logging
 from base64 import b64encode
-from typing import Any, AsyncIterator, Dict, List, Optional, TypeVar, Union
+from typing import Any, AsyncIterator, List, Optional, TypeVar, Union
 
 from core.uid_gen import FelicitySAID, get_flake_uid
 from database.async_mixins import AllFeaturesMixin, ModelNotFoundError, smart_query
@@ -80,7 +80,7 @@ class DBModel(AllFeaturesMixin):
             return obj
 
     @classmethod
-    async def all_by_page(cls, page: int = 1, limit: int = 20, **kwargs) -> Dict:
+    async def all_by_page(cls, page: int = 1, limit: int = 20, **kwargs) -> dict:
         start = (page - 1) * limit
 
         stmt = cls.where(**kwargs).limit(limit).offset(start)
@@ -202,7 +202,7 @@ class DBModel(AllFeaturesMixin):
         return updated
 
     @classmethod
-    async def bulk_update_where(cls, update_data: List, filters: Dict):
+    async def bulk_update_where(cls, update_data: List, filters: dict):
         """
         @param update_data a List of dictionary update values.
         @param filters is a dict of filter values.
@@ -307,7 +307,7 @@ class DBModel(AllFeaturesMixin):
         return found
 
     @classmethod
-    def _import(cls, schema_in: Union[InDBSchemaType, Dict]):
+    def _import(cls, schema_in: Union[InDBSchemaType, dict]):
         """Convert Pydantic schema to dict"""
         if isinstance(schema_in, dict):
             return schema_in
@@ -450,7 +450,7 @@ class DBModel(AllFeaturesMixin):
         after_cursor: Any = None,
         before_cursor: Any = None,
         filters: Any = None,
-        sort_by: List[str] = None,
+        sort_by: list[str] = None,
         get_related: str = None,
     ) -> PageCursor:
         if not filters:

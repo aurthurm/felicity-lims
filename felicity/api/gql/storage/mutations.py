@@ -34,7 +34,7 @@ StorageLocationResponse = strawberry.union(
 @strawberry.input
 class StorageLocationInputType:
     name: str
-    description: Optional[str]
+    description: str | None
     store_room_uid: FelicityID
 
 
@@ -48,7 +48,7 @@ StorageSectionResponse = strawberry.union(
 @strawberry.input
 class StorageSectionInputType:
     name: str
-    description: Optional[str]
+    description: str | None
     storage_location_uid: FelicityID
 
 
@@ -62,13 +62,13 @@ StorageContainerResponse = strawberry.union(
 @strawberry.input
 class StorageContainerInputType:
     name: str
-    description: Optional[str]
+    description: str | None
     storage_section_uid: FelicityID
-    grid: Optional[bool] = False
-    row_wise: Optional[bool] = False
-    cols: Optional[int] = 0
-    rows: Optional[int] = 0
-    slots: Optional[int] = 0
+    grid: bool| None = False
+    row_wise: bool| None = False
+    cols: int | None = 0
+    rows: int | None = 0
+    slots: int | None = 0
 
 
 @strawberry.type
@@ -108,7 +108,7 @@ class StorageMutations:
         if exists:
             return OperationError(error=f"StoreRoom with this name already exists")
 
-        incoming: Dict = {
+        incoming: dict = {
             "created_by_uid": felicity_user.uid,
             "updated_by_uid": felicity_user.uid,
         }
@@ -179,7 +179,7 @@ class StorageMutations:
                 error=f"StorageRoom with uid {payload.store_room_uid} does not exists"
             )
 
-        incoming: Dict = {
+        incoming: dict = {
             "created_by_uid": felicity_user.uid,
             "updated_by_uid": felicity_user.uid,
         }
@@ -254,7 +254,7 @@ class StorageMutations:
                 error=f"storage_location with uid {payload.storage_location_uid} does not exists"
             )
 
-        incoming: Dict = {
+        incoming: dict = {
             "created_by_uid": felicity_user.uid,
             "updated_by_uid": felicity_user.uid,
         }
@@ -323,7 +323,7 @@ class StorageMutations:
                 error=f"StorageContainer with this name already exists"
             )
 
-        incoming: Dict = {
+        incoming: dict = {
             "created_by_uid": felicity_user.uid,
             "updated_by_uid": felicity_user.uid,
             "stored_count": 0,

@@ -34,7 +34,7 @@ class WorkSheetPlater:
 
     def __init__(
         self,
-        reserved: dict,
+        reserved: Dict,
         n_samples: int,
         t_type: int = worksheet_types.FLAT,
         rows: int = None,
@@ -116,7 +116,7 @@ class WorkSheetPlater:
         self.template[index]["col"] = col
 
 
-def add_samples(template: dict, samples, reserved: list):
+def add_samples(template: Dict, samples, reserved: list):
     temp = copy.deepcopy(template)
     # sort samples by uid or sample_id
     sorted_samples = samples.sort()

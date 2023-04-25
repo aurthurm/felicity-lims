@@ -13,15 +13,15 @@ from core.uid_gen import FelicityIDType
 
 
 class SampleTypeBase(BaseAuditModel):
-    name: Optional[str] = None
-    description: Optional[str] = None
-    abbr: Optional[str] = None
-    internal_use: Optional[bool] = False
-    active: Optional[bool] = True
+    name: str | None = None
+    description: str | None = None
+    abbr: str | None = None
+    internal_use: bool| None = False
+    active: bool| None = True
 
 
 class SampleTypeBaseInDB(SampleTypeBase):
-    uid: Optional[FelicityIDType] = None
+    uid: FelicityIDType| None = None
 
     class Config:
         orm_mode = True
@@ -53,18 +53,18 @@ class SampleTypeInDB(SampleTypeBaseInDB):
 
 # Shared properties
 class ProfileBase(BaseAuditModel):
-    name: Optional[str]
+    name: str | None
     analyses: Optional[List["Analysis"]]
     sample_types: Optional[List[SampleType]]
-    description: Optional[str] = None
-    department_uid: Optional[FelicityIDType] = None
-    keyword: Optional[str] = None
-    tat_length_minutes: Optional[int] = None
-    active: Optional[bool] = True
+    description: str | None = None
+    department_uid: FelicityIDType| None = None
+    keyword: str | None = None
+    tat_length_minutes: int | None = None
+    active: bool| None = True
 
 
 class ProfileBaseInDB(ProfileBase):
-    uid: Optional[FelicityIDType] = None
+    uid: FelicityIDType| None = None
 
     class Config:
         orm_mode = True
@@ -95,14 +95,14 @@ class ProfileInDB(ProfileBaseInDB):
 
 # Shared properties
 class AnalysisCategoryBase(BaseAuditModel):
-    name: Optional[str] = None
-    description: Optional[str] = None
-    department_uid: Optional[FelicityIDType] = None
-    active: Optional[bool] = True
+    name: str | None = None
+    description: str | None = None
+    department_uid: FelicityIDType| None = None
+    active: bool| None = True
 
 
 class AnalysisCategoryBaseInDB(AnalysisCategoryBase):
-    uid: Optional[FelicityIDType] = None
+    uid: FelicityIDType| None = None
 
     class Config:
         orm_mode = True
@@ -134,38 +134,38 @@ class AnalysisCategoryInDB(AnalysisCategoryBaseInDB):
 
 
 class AnalysisBasicBase(BaseModel):
-    name: Optional[str] = None
-    keyword: Optional[str] = None
+    name: str | None = None
+    keyword: str | None = None
 
 
 # Shared properties
 class AnalysisBase(BaseAuditModel):
-    name: Optional[str] = None
-    description: Optional[str] = None
-    keyword: Optional[str] = None
+    name: str | None = None
+    description: str | None = None
+    keyword: str | None = None
     profiles: Optional[List[Profile]] = []
     sample_types: Optional[List[SampleType]] = []
-    tat_length_minutes: Optional[int] = None
-    unit: Optional[str] = None
-    category_uid: Optional[FelicityIDType]
-    sort_key: Optional[int] = 0
-    internal_use: Optional[bool] = False
-    tat_length_minutes: Optional[int] = None
-    precision: Optional[int] = None
+    tat_length_minutes: int | None = None
+    unit: str | None = None
+    category_uid: FelicityIDType| None
+    sort_key: int | None = 0
+    internal_use: bool| None = False
+    tat_length_minutes: int | None = None
+    precision: int | None = None
     required_verifications: int = 1
-    self_verification: Optional[bool] = False
-    active: Optional[bool] = True
+    self_verification: bool| None = False
+    active: bool| None = True
 
 
 class AnalysisBasic(AnalysisBasicBase):
-    uid: Optional[FelicityIDType] = None
+    uid: FelicityIDType| None = None
 
     class Config:
         orm_mode = True
 
 
 class AnalysisBaseInDB(AnalysisBase):
-    uid: Optional[FelicityIDType] = None
+    uid: FelicityIDType| None = None
 
     class Config:
         orm_mode = True
@@ -204,7 +204,7 @@ class AnalysisInterimBase(BaseAuditModel):
 
 
 class AnalysisInterimInDB(AnalysisInterimBase):
-    uid: Optional[FelicityIDType] = None
+    uid: FelicityIDType| None = None
 
     class Config:
         orm_mode = True
@@ -243,7 +243,7 @@ class AnalysisCorrectionFactorBase(BaseAuditModel):
 
 
 class AnalysisCorrectionFactorBaseInDB(AnalysisCorrectionFactorBase):
-    uid: Optional[FelicityIDType] = None
+    uid: FelicityIDType| None = None
 
     class Config:
         orm_mode = True
@@ -283,7 +283,7 @@ class AnalysisDetectionLimitBase(BaseAuditModel):
 
 
 class AnalysisDetectionLimitBaseInDB(AnalysisDetectionLimitBase):
-    uid: Optional[FelicityIDType] = None
+    uid: FelicityIDType| None = None
 
     class Config:
         orm_mode = True
@@ -324,7 +324,7 @@ class AnalysisUncertaintyBase(BaseAuditModel):
 
 
 class AnalysisUncertaintyBaseInDB(AnalysisUncertaintyBase):
-    uid: Optional[FelicityIDType] = None
+    uid: FelicityIDType| None = None
 
     class Config:
         orm_mode = True
@@ -357,24 +357,24 @@ class AnalysisUncertaintyInDB(AnalysisUncertaintyBaseInDB):
 # Shared properties
 class AnalysisSpecificationBase(BaseAuditModel):
     analysis_uid: FelicityIDType
-    min: Optional[float] = None
-    max: Optional[float] = None
-    min_warn: Optional[float] = None
-    max_warn: Optional[float] = None
-    min_report: Optional[str] = None
-    max_report: Optional[str] = None
-    warn_values: Optional[str] = None
-    warn_report: Optional[str] = None
-    gender: Optional[str] = None
-    age_min: Optional[int] = None
-    age_max: Optional[int] = None
-    method_uid: Optional[FelicityIDType] = None
-    unit_uid: Optional[FelicityIDType] = None
+    min: float| None = None
+    max: float| None = None
+    min_warn: float| None = None
+    max_warn: float| None = None
+    min_report: str | None = None
+    max_report: str | None = None
+    warn_values: str | None = None
+    warn_report: str | None = None
+    gender: str | None = None
+    age_min: int | None = None
+    age_max: int | None = None
+    method_uid: FelicityIDType| None = None
+    unit_uid: FelicityIDType| None = None
     unit: Optional[Unit]
 
 
 class AnalysisSpecificationBaseInDB(AnalysisSpecificationBase):
-    uid: Optional[FelicityIDType] = None
+    uid: FelicityIDType| None = None
 
     class Config:
         orm_mode = True
@@ -406,13 +406,13 @@ class AnalysisSpecificationInDB(AnalysisSpecificationBaseInDB):
 
 # Shared properties
 class ResultOptionBase(BaseAuditModel):
-    option_key: Optional[int] = None
-    value: Optional[str] = None
-    analysis_uid: Optional[FelicityIDType] = None
+    option_key: int | None = None
+    value: str | None = None
+    analysis_uid: FelicityIDType| None = None
 
 
 class ResultOptionBaseInDB(ResultOptionBase):
-    uid: Optional[FelicityIDType] = None
+    uid: FelicityIDType| None = None
 
     class Config:
         orm_mode = True
@@ -444,15 +444,15 @@ class ResultOptionInDB(ResultOptionBaseInDB):
 
 # Shared properties
 class AnalysisRequestBase(BaseAuditModel):
-    patient_uid: Optional[FelicityIDType] = None
-    client_uid: Optional[FelicityIDType] = None
-    request_id: Optional[str] = None
-    client_request_id: Optional[str] = None
-    internal_use: Optional[bool] = False
+    patient_uid: FelicityIDType| None = None
+    client_uid: FelicityIDType| None = None
+    request_id: str | None = None
+    client_request_id: str | None = None
+    internal_use: bool| None = False
 
 
 class AnalysisRequestBaseInDB(AnalysisRequestBase):
-    uid: Optional[FelicityIDType] = None
+    uid: FelicityIDType| None = None
 
     class Config:
         orm_mode = True
@@ -484,21 +484,21 @@ class AnalysisRequestInDB(AnalysisRequestBaseInDB):
 
 # Shared properties
 class SampleBase(BaseAuditModel):
-    analysis_request_uid: Optional[FelicityIDType] = None
-    sample_type_uid: Optional[FelicityIDType] = None
+    analysis_request_uid: FelicityIDType| None = None
+    sample_type_uid: FelicityIDType| None = None
     profiles: Optional[List[Profile]] = []
     analyses: Optional[List[Analysis]] = []
-    sample_id: Optional[str] = None
-    priority: Optional[int] = 0
-    invalidated_by_uid: Optional[FelicityIDType] = None
-    date_invalidated: Optional[datetime] = None
-    internal_use: Optional[bool] = False
-    due_date: Optional[datetime] = None
-    status: Optional[str] = None
+    sample_id: str | None = None
+    priority: int | None = 0
+    invalidated_by_uid: FelicityIDType| None = None
+    date_invalidated: datetime | None = None
+    internal_use: bool| None = False
+    due_date: datetime | None = None
+    status: str | None = None
 
 
 class SampleBaseInDB(SampleBase):
-    uid: Optional[FelicityIDType] = None
+    uid: FelicityIDType| None = None
 
     class Config:
         orm_mode = True
@@ -530,11 +530,11 @@ class SampleInDB(SampleBaseInDB):
 
 # Shared properties
 class RejectionReasonBase(BaseAuditModel):
-    reason: Optional[str] = None
+    reason: str | None = None
 
 
 class RejectionReasonBaseInDB(RejectionReasonBase):
-    uid: Optional[FelicityIDType] = None
+    uid: FelicityIDType| None = None
 
     class Config:
         orm_mode = True
@@ -566,29 +566,29 @@ class RejectionReasonInDB(RejectionReasonBaseInDB):
 
 # Shared properties
 class AnalysisResultBase(BaseAuditModel):
-    analysis_uid: Optional[FelicityIDType] = None
-    parent_id: Optional[FelicityIDType] = None
-    sample_uid: Optional[FelicityIDType] = None
-    instrument_uid: Optional[FelicityIDType] = None
-    method_uid: Optional[FelicityIDType] = None
-    result: Optional[str] = None
-    analyst_uid: Optional[FelicityIDType] = None
-    submitted_by_uid: Optional[FelicityIDType] = None
-    date_submitted: Optional[datetime] = None
-    date_verified: Optional[datetime] = None
-    invalidated_by_uid: Optional[FelicityIDType] = None
-    date_invalidated: Optional[datetime] = None
-    status: Optional[str] = None
-    worksheet_uid: Optional[FelicityIDType] = None
-    worksheet_position: Optional[int] = None
-    assigned: Optional[bool] = False
-    retest: Optional[bool] = False
-    reportable: Optional[bool] = True
-    reflex_level: Optional[int] = None
+    analysis_uid: FelicityIDType| None = None
+    parent_id: FelicityIDType| None = None
+    sample_uid: FelicityIDType| None = None
+    instrument_uid: FelicityIDType| None = None
+    method_uid: FelicityIDType| None = None
+    result: str | None = None
+    analyst_uid: FelicityIDType| None = None
+    submitted_by_uid: FelicityIDType| None = None
+    date_submitted: datetime | None = None
+    date_verified: datetime | None = None
+    invalidated_by_uid: FelicityIDType| None = None
+    date_invalidated: datetime | None = None
+    status: str | None = None
+    worksheet_uid: FelicityIDType| None = None
+    worksheet_position: int | None = None
+    assigned: bool| None = False
+    retest: bool| None = False
+    reportable: bool| None = True
+    reflex_level: int | None = None
 
 
 class AnalysisResultBaseInDB(AnalysisResultBase):
-    uid: Optional[FelicityIDType] = None
+    uid: FelicityIDType| None = None
 
     class Config:
         orm_mode = True
@@ -620,12 +620,12 @@ class AnalysisResultInDB(AnalysisResultBaseInDB):
 
 # Shared properties
 class QCSetBase(BaseAuditModel):
-    name: Optional[str] = None
-    note: Optional[str] = None
+    name: str | None = None
+    note: str | None = None
 
 
 class QCSetBaseInDB(QCSetBase):
-    uid: Optional[FelicityIDType] = None
+    uid: FelicityIDType| None = None
 
     class Config:
         orm_mode = True
@@ -657,11 +657,11 @@ class QCSetInDB(QCSetBaseInDB):
 
 # Shared properties
 class QCLevelBase(BaseAuditModel):
-    level: Optional[str] = None
+    level: str | None = None
 
 
 class QCLevelBaseInDB(QCLevelBase):
-    uid: Optional[FelicityIDType] = None
+    uid: FelicityIDType| None = None
 
     class Config:
         orm_mode = True
@@ -693,14 +693,14 @@ class QCLevelInDB(QCLevelBaseInDB):
 
 # Shared properties
 class QCTemplateBase(BaseAuditModel):
-    name: Optional[str] = None
-    description: Optional[str] = None
+    name: str | None = None
+    description: str | None = None
     departments: Optional[List[Department]] = []
     qc_levels: Optional[List[QCLevel]] = []
 
 
 class QCTemplateBaseInDB(QCTemplateBase):
-    uid: Optional[FelicityIDType] = None
+    uid: FelicityIDType| None = None
 
     class Config:
         orm_mode = True

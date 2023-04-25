@@ -10,12 +10,12 @@ from core.uid_gen import FelicityIDType
 # ActivityFeed Schemas
 #
 class ActivityFeedBase(BaseAuditModel):
-    name: Optional[str] = ""
+    name: str | None = ""
     subscribers: Optional[List[User]] = []
 
 
 class ActivityFeed(ActivityFeedBase):
-    uid: Optional[FelicityIDType] = None
+    uid: FelicityIDType| None = None
 
     class Config:
         orm_mode = True
@@ -34,19 +34,19 @@ class ActivityFeedUpdate(ActivityFeedBase):
 #
 class ActivityStreamBase(BaseAuditModel):
     feeds: Optional[List[ActivityFeed]] = []
-    actor_uid: Optional[FelicityIDType] = None
+    actor_uid: FelicityIDType| None = None
     actor: Optional[User] = None
-    verb: Optional[str] = None
-    action_object_type: Optional[str] = None
-    action_object_uid: Optional[FelicityIDType] = None
-    action_object: Optional[str] = None
-    target_uid: Optional[FelicityIDType] = None
-    target: Optional[str] = None
+    verb: str | None = None
+    action_object_type: str | None = None
+    action_object_uid: FelicityIDType| None = None
+    action_object: str | None = None
+    target_uid: FelicityIDType| None = None
+    target: str | None = None
     viewers: Optional[List[User]] = []
 
 
 class ActivityStream(ActivityStreamBase):
-    uid: Optional[FelicityIDType] = None
+    uid: FelicityIDType| None = None
 
     class Config:
         orm_mode = True
@@ -67,12 +67,12 @@ class NotificationBase(BaseAuditModel):
     departments: Optional[List[Department]] = []
     groups: Optional[List[Group]] = []
     users: Optional[List[User]] = []
-    message: Optional[str] = ""
+    message: str | None = ""
     viewers: Optional[List[User]] = []
 
 
 class Notification(NotificationBase):
-    uid: Optional[FelicityIDType] = None
+    uid: FelicityIDType| None = None
 
     class Config:
         orm_mode = True

@@ -3,7 +3,7 @@ import ipaddress
 from socket import gethostbyname, gethostname
 from threading import Lock
 from time import sleep
-from typing import Callable, Dict, Optional
+from typing import Callable
 
 BIT_LEN_TIME = 39
 BIT_LEN_SEQUENCE = 8
@@ -32,9 +32,9 @@ class SonyFlake:
 
     def __new__(
         cls,
-        start_time: Optional[datetime.datetime] = None,
-        machine_id: Optional[Callable[[], int]] = None,
-        check_machine_id: Optional[Callable[[int], bool]] = None,
+        start_time: datetime.datetime | None = None,
+        machine_id: Callable[[], int] | None = None,
+        check_machine_id: Callable[[int], bool] | None = None,
     ):
         if start_time and datetime.datetime.now(UTC) < start_time:
             return None
@@ -50,9 +50,9 @@ class SonyFlake:
 
     def __init__(
         self,
-        start_time: Optional[datetime.datetime] = None,
-        machine_id: Optional[Callable[[], int]] = None,
-        check_machine_id: Optional[Callable[[int], bool]] = None,
+        start_time: datetime.datetime | None = None,
+        machine_id: Callable[[], int] | None = None,
+        check_machine_id: Callable[[int], bool] | None = None,
     ) -> None:
         """
         Create a new instance of `SonyFlake` unique ID generator.
@@ -170,7 +170,7 @@ class SonyFlake:
         ) / 100
 
     @staticmethod
-    def decompose(_id: int) -> Dict[str, int]:
+    def decompose(_id: int) -> dict[str, int]:
         """
         Decompose returns a set of SonyFlake ID parts.
         """

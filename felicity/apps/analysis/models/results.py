@@ -199,7 +199,7 @@ class AnalysisResult(Auditable, BaseMPTT):
         cls,
         analyses_status: str,
         analysis_uid: FelicityIDType,
-        sample_type_uid: List[FelicityIDType],
+        sample_type_uid: list[FelicityIDType],
         limit: int,
     ) -> List[schemas.AnalysisResult]:
 

@@ -29,7 +29,7 @@ class Subscriber:
 
 @dataclass
 class Broadcast:
-    subscribers: Dict[str, Set[Queue]] = field(default_factory=dict)
+    subscribers: dict[str, Set[Queue]] = field(default_factory=dict)
     published: Queue = Queue()
 
     @asynccontextmanager

@@ -13,14 +13,14 @@ from core.uid_gen import FelicityIDType
 class NoticeBase(BaseAuditModel):
     departments: Optional[List[Department]] = []
     groups: Optional[List[Group]] = []
-    title: Optional[str] = ""
-    body: Optional[str] = ""
+    title: str | None = ""
+    body: str | None = ""
     viewers: Optional[List[User]] = []
-    expiry: Optional[datetime] = None
+    expiry: datetime | None = None
 
 
 class Notice(NoticeBase):
-    uid: Optional[FelicityIDType] = None
+    uid: FelicityIDType| None = None
 
     class Config:
         orm_mode = True

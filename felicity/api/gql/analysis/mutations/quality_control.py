@@ -21,7 +21,7 @@ logger = logging.getLogger(__name__)
 
 @strawberry.input
 class QCSetInputType:
-    qcTemplateUid: Optional[FelicityID]
+    qcTemplateUid: FelicityID | None
     qcLevels: List[FelicityID]
     analysisProfiles: List[FelicityID]
     analysisServices: List[FelicityID]

@@ -31,17 +31,17 @@ class PatientInputType:
     last_name: str
     client_uid: FelicityID
     gender: str
-    middle_name: Optional[str] = None
-    age: Optional[int] = None
-    date_of_birth: Optional[datetime] = None
-    age_dob_estimated: Optional[bool] = False
-    phone_mobile: Optional[str] = None
-    phone_home: Optional[str] = None
-    consent_sms: Optional[bool] = False
-    internal_use: Optional[bool] = False
-    country_uid: Optional[FelicityID] = None
-    province_uid: Optional[FelicityID] = None
-    district_uid: Optional[FelicityID] = None
+    middle_name: str | None = None
+    age: int | None = None
+    date_of_birth: datetime | None = None
+    age_dob_estimated: bool| None = False
+    phone_mobile: str | None = None
+    phone_home: str | None = None
+    consent_sms: bool| None = False
+    internal_use: bool| None = False
+    country_uid: FelicityID | None = None
+    province_uid: FelicityID | None = None
+    district_uid: FelicityID | None = None
     identifications: Optional[List[PatientidentificationInput]] = field(
         default_factory=list)
 
@@ -142,7 +142,7 @@ class PatientMutations:
                 error=f"Client with uid {payload.client_uid} does not exist"
             )
 
-        incoming: Dict = {
+        incoming: dict = {
             "created_by_uid": felicity_user.uid,
             "updated_by_uid": felicity_user.uid,
         }

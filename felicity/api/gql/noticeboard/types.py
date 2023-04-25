@@ -14,11 +14,11 @@ class NoticeType:
     groups: Optional[List[GroupType]]
     title: str
     body: str
-    viewers: Optional[List[UserType]]
+    viewers: list[UserType] | None
     expiry: datetime
-    created_at: Optional[datetime]
-    created_by_uid: Optional[FelicityID]
-    created_by: Optional[UserType]
-    updated_at: Optional[datetime]
-    updated_by_uid: Optional[FelicityID]
-    updated_by: Optional[UserType]
+    created_at: datetime | None
+    created_by_uid: FelicityID | None
+    created_by: UserType | None
+    updated_at: datetime | None
+    updated_by_uid: FelicityID | None
+    updated_by: UserType | None

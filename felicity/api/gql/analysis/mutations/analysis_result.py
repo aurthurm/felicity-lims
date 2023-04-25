@@ -29,7 +29,7 @@ logger = logging.getLogger(__name__)
 class ARResultInputType:
     uid: FelicityID
     result: str
-    reportable: Optional[bool] = True
+    reportable: bool| None = True
 
 
 @strawberry.type
@@ -106,7 +106,7 @@ async def submit_analysis_results(
 
 @strawberry.mutation(permission_classes=[CanVerifyAnalysisResult])
 async def verify_analysis_results(
-    info, analyses: List[str], source_object: str, source_object_uid: FelicityID
+    info, analyses: list[str], source_object: str, source_object_uid: FelicityID
 ) -> AnalysisResultOperationResponse:
     is_authenticated, felicity_user = await auth_from_info(info)
     verify_user_auth(
@@ -150,7 +150,7 @@ async def verify_analysis_results(
 
 
 @strawberry.mutation
-async def retract_analysis_results(info, analyses: List[str]) -> AnalysisResultResponse:
+async def retract_analysis_results(info, analyses: list[str]) -> AnalysisResultResponse:
     is_authenticated, felicity_user = await auth_from_info(info)
     verify_user_auth(
         is_authenticated,
@@ -195,7 +195,7 @@ async def retract_analysis_results(info, analyses: List[str]) -> AnalysisResultR
 
 
 @strawberry.mutation
-async def retest_analysis_results(info, analyses: List[str]) -> AnalysisResultResponse:
+async def retest_analysis_results(info, analyses: list[str]) -> AnalysisResultResponse:
     is_authenticated, felicity_user = await auth_from_info(info)
     verify_user_auth(
         is_authenticated,
@@ -217,7 +217,7 @@ async def retest_analysis_results(info, analyses: List[str]) -> AnalysisResultRe
 
 
 @strawberry.mutation
-async def cancel_analysis_results(info, analyses: List[str]) -> AnalysisResultResponse:
+async def cancel_analysis_results(info, analyses: list[str]) -> AnalysisResultResponse:
     is_authenticated, felicity_user = await auth_from_info(info)
     verify_user_auth(
         is_authenticated,
@@ -251,7 +251,7 @@ async def cancel_analysis_results(info, analyses: List[str]) -> AnalysisResultRe
 
 @strawberry.mutation
 async def re_instate_analysis_results(
-    info, analyses: List[str]
+    info, analyses: list[str]
 ) -> AnalysisResultResponse:
     is_authenticated, felicity_user = await auth_from_info(info)
     verify_user_auth(

@@ -11,14 +11,14 @@ from core.uid_gen import FelicityIDType
 class MessageBase(BaseAuditModel):
     thread_uid: FelicityIDType
     thread: Optional["MessageThread"] = None
-    body: Optional[str] = ""
+    body: str | None = ""
     viewers: Optional[List[User]] = []
     deleted_by: Optional[List[User]] = []
-    parent_id: Optional[FelicityIDType] = None
+    parent_id: FelicityIDType| None = None
 
 
 class Message(MessageBase):
-    uid: Optional[FelicityIDType] = None
+    uid: FelicityIDType| None = None
 
     class Config:
         orm_mode = True
@@ -36,14 +36,14 @@ class MessageUpdate(MessageBase):
 # MessageThread Schemas
 #
 class MessageThreadBase(BaseAuditModel):
-    broadcast: Optional[bool] = False
+    broadcast: bool| None = False
     recipients: Optional[List[User]] = []
     messages: Optional[List[Message]] = []
     recipients: Optional[List[User]] = []
 
 
 class MessageThread(MessageThreadBase):
-    uid: Optional[FelicityIDType] = None
+    uid: FelicityIDType| None = None
 
     class Config:
         orm_mode = True

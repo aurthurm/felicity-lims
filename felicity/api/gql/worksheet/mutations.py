@@ -25,7 +25,7 @@ logger = logging.getLogger(__name__)
 @strawberry.input
 class ReservedInputType:
     position: int
-    level_uid: Optional[FelicityID]
+    level_uid: FelicityID | None
 
 
 @strawberry.input
@@ -33,15 +33,15 @@ class WorksheetTemplateInputType:
     name: str
     sample_type_uid: FelicityID
     reserved: List[ReservedInputType]
-    analysis_uid: Optional[FelicityID] = None
-    number_of_samples: Optional[int] = None
-    instrument_uid: Optional[FelicityID] = None
-    worksheet_type: Optional[str] = None
-    rows: Optional[int] = None
-    cols: Optional[int] = None
-    row_wise: Optional[bool] = True
-    description: Optional[str] = None
-    qc_template_uid: Optional[FelicityID] = None
+    analysis_uid: FelicityID | None = None
+    number_of_samples: int | None = None
+    instrument_uid: FelicityID | None = None
+    worksheet_type: str | None = None
+    rows: int | None = None
+    cols: int | None = None
+    row_wise: bool| None = True
+    description: str | None = None
+    qc_template_uid: FelicityID | None = None
     profiles: Optional[List[FelicityID]] = None
 
 
@@ -181,7 +181,7 @@ class WorkSheetMutations:
         info,
         template_uid: FelicityID,
         analyst_uid: FelicityID,
-        count: Optional[int] = 1,
+        count: int | None = 1,
     ) -> WorkSheetsResponse:
 
         is_authenticated, felicity_user = await auth_from_info(info)
@@ -261,10 +261,10 @@ class WorkSheetMutations:
         self,
         info,
         worksheet_uid: FelicityID,
-        analyst_uid: Optional[FelicityID] = None,
-        instrument_uid: Optional[FelicityID] = None,
-        method_uid: Optional[FelicityID] = None,
-        action: Optional[str] = None,
+        analyst_uid: FelicityID | None = None,
+        instrument_uid: FelicityID | None = None,
+        method_uid: FelicityID | None = None,
+        action: str | None = None,
         samples: Optional[List[FelicityID]] = None,
     ) -> WorkSheetResponse:  # noqa
 
@@ -405,7 +405,7 @@ class WorkSheetMutations:
         info,
         uid: FelicityID,
         analyses_uids: List[FelicityID],
-        qc_template_uid: Optional[FelicityID] = None,
+        qc_template_uid: FelicityID | None = None,
     ) -> WorkSheetResponse:
 
         is_authenticated, felicity_user = await auth_from_info(info)

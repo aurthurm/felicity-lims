@@ -84,64 +84,64 @@ CalibrationCertificateResponse = strawberry.union(
 class LaboratoryInputType:
     lab_name: str
     setup_name: str = "felicity"
-    email: Optional[str] = None
-    email_cc: Optional[str] = None
-    mobile_phone: Optional[str] = None
-    business_phone: Optional[str] = None
-    lab_manager_uid: Optional[FelicityID] = None
-    address: Optional[str] = None
-    logo: Optional[str] = None
+    email: str | None = None
+    email_cc: str | None = None
+    mobile_phone: str | None = None
+    business_phone: str | None = None
+    lab_manager_uid: FelicityID | None = None
+    address: str | None = None
+    logo: str | None = None
 
 
 @strawberry.input
 class LaboratorySettingInputType:
     laboratory_uid: FelicityID
-    allow_self_verification: Optional[bool] = False
-    allow_patient_registration: Optional[bool] = True
-    allow_sample_registration: Optional[bool] = True
-    allow_worksheet_creation: Optional[bool] = True
-    default_route: Optional[str] = None
-    password_lifetime: Optional[int] = None
-    inactivity_log_out: Optional[int] = None
-    default_theme: Optional[str] = None
-    auto_receive_samples: Optional[bool] = True
-    sticker_copies: Optional[int] = 2
+    allow_self_verification: bool| None = False
+    allow_patient_registration: bool| None = True
+    allow_sample_registration: bool| None = True
+    allow_worksheet_creation: bool| None = True
+    default_route: str | None = None
+    password_lifetime: int | None = None
+    inactivity_log_out: int | None = None
+    default_theme: str | None = None
+    auto_receive_samples: bool| None = True
+    sticker_copies: int | None = 2
 
 
 @strawberry.input
 class DepartmentInputType:
     name: str
-    description: Optional[str] = ""
-    code: Optional[str] = None
+    description: str | None = ""
+    code: str | None = None
 
 
 @strawberry.input
 class SupplierInputType:
     name: str
-    description: Optional[str] = ""
-    code: Optional[str] = None
+    description: str | None = ""
+    code: str | None = None
 
 
 @strawberry.input
 class ManufacturerInputType:
     name: str
-    description: Optional[str] = ""
+    description: str | None = ""
 
 
 @strawberry.input
 class InstrumentTypeInputType:
     name: str
-    description: Optional[str] = ""
+    description: str | None = ""
 
 
 @strawberry.input
 class InstrumentInputType:
     name: str
     keyword: str
-    description: Optional[str] = ""
-    instrument_type_uid: Optional[FelicityID] = None
-    supplier_uid: Optional[FelicityID] = None
-    manufacturer_uid: Optional[FelicityID] = None
+    description: str | None = ""
+    instrument_type_uid: FelicityID | None = None
+    supplier_uid: FelicityID | None = None
+    manufacturer_uid: FelicityID | None = None
 
 
 @strawberry.input
@@ -149,39 +149,39 @@ class MethodInputType:
     name: str
     instruments: Optional[List[FelicityID]] = field(default_factory=list)
     analyses: Optional[List[FelicityID]] = field(default_factory=list)
-    keyword: Optional[str] = None
-    description: Optional[str] = ""
+    keyword: str | None = None
+    description: str | None = ""
 
 
 @strawberry.input
 class CountryInputType:
     name: str
     code: str
-    active: Optional[bool] = True
+    active: bool| None = True
 
 
 @strawberry.input
 class ProvinceInputType:
-    name: Optional[str]
-    country_uid: Optional[FelicityID]
-    code: Optional[str] = None
-    email: Optional[str] = None
-    email_cc: Optional[str] = None
-    mobile_phone: Optional[str] = None
-    business_phone: Optional[str] = None
-    active: Optional[bool] = True
+    name: str | None
+    country_uid: FelicityID | None
+    code: str | None = None
+    email: str | None = None
+    email_cc: str | None = None
+    mobile_phone: str | None = None
+    business_phone: str | None = None
+    active: bool| None = True
 
 
 @strawberry.input
 class DistrictInputType:
     name: str
-    province_uid: Optional[FelicityID]
-    code: Optional[str] = None
-    email: Optional[str] = None
-    email_cc: Optional[str] = None
-    mobile_phone: Optional[str] = None
-    business_phone: Optional[str] = None
-    active: Optional[bool] = True
+    province_uid: FelicityID | None
+    code: str | None = None
+    email: str | None = None
+    email_cc: str | None = None
+    mobile_phone: str | None = None
+    business_phone: str | None = None
+    active: bool| None = True
 
 
 @strawberry.input
@@ -193,28 +193,28 @@ class UnitInputType:
 @strawberry.input
 class InstrumentCalibrationInput:
     instrument_uid: FelicityID
-    date_reported: Optional[datetime]
-    start_date: Optional[datetime]
-    end_date: Optional[datetime]
-    calibration_id: Optional[str] = ""
-    report_id: Optional[str] = ""
-    performed_by: Optional[str] = ""
-    notes_before: Optional[str] = ""
-    work_done: Optional[str] = ""
-    remarks: Optional[str] = ""
+    date_reported: datetime | None
+    start_date: datetime | None
+    end_date: datetime | None
+    calibration_id: str | None = ""
+    report_id: str | None = ""
+    performed_by: str | None = ""
+    notes_before: str | None = ""
+    work_done: str | None = ""
+    remarks: str | None = ""
 
 
 @strawberry.input
 class CalibrationCertificateInput:
     instrument_uid: FelicityID
-    date_issued: Optional[datetime]
-    valid_from_date: Optional[datetime]
-    valid_to_date: Optional[datetime]
-    certificate_code: Optional[str] = ""
-    issuer: Optional[str] = ""
-    performed_by: Optional[str] = ""
-    approved_by: Optional[str] = ""
-    remarks: Optional[str] = ""
+    date_issued: datetime | None
+    valid_from_date: datetime | None
+    valid_to_date: datetime | None
+    certificate_code: str | None = ""
+    issuer: str | None = ""
+    performed_by: str | None = ""
+    approved_by: str | None = ""
+    remarks: str | None = ""
     internal: bool = True
 
 
@@ -286,7 +286,7 @@ class SetupMutations:
                 error=f"A Department named {payload.name} already exists"
             )
 
-        incoming: Dict = dict()
+        incoming: dict = dict()
         for k, v in payload.__dict__.items():
             incoming[k] = v
 
@@ -334,7 +334,7 @@ class SetupMutations:
                 error=f"A Supplier named {payload.name} already exists"
             )
 
-        incoming: Dict = dict()
+        incoming: dict = dict()
         for k, v in payload.__dict__.items():
             incoming[k] = v
 
@@ -382,7 +382,7 @@ class SetupMutations:
                 error=f"A Manufacturer named {payload.name} already exists"
             )
 
-        incoming: Dict = dict()
+        incoming: dict = dict()
         for k, v in payload.__dict__.items():
             incoming[k] = v
 
@@ -430,7 +430,7 @@ class SetupMutations:
                 error=f"A InstrumentType named {payload.name} already exists"
             )
 
-        incoming: Dict = dict()
+        incoming: dict = dict()
         for k, v in payload.__dict__.items():
             incoming[k] = v
 
@@ -486,7 +486,7 @@ class SetupMutations:
                 error=f"An Instrument named {payload.name} already exists"
             )
 
-        incoming: Dict = dict()
+        incoming: dict = dict()
         for k, v in payload.__dict__.items():
             incoming[k] = v
 
@@ -532,7 +532,7 @@ class SetupMutations:
         self, info, payload: InstrumentCalibrationInput
     ) -> InstrumentCalibrationResponse:  # noqa
 
-        incoming: Dict = dict()
+        incoming: dict = dict()
         for k, v in payload.__dict__.items():
             incoming[k] = v
 
@@ -573,7 +573,7 @@ class SetupMutations:
         self, info, payload: CalibrationCertificateInput
     ) -> CalibrationCertificateResponse:  # noqa
 
-        incoming: Dict = dict()
+        incoming: dict = dict()
         for k, v in payload.__dict__.items():
             incoming[k] = v
 
@@ -901,7 +901,7 @@ class SetupMutations:
         if exists:
             return OperationError(error=f"A Unit named {payload.name} already exists")
 
-        incoming: Dict = dict()
+        incoming: dict = dict()
         for k, v in payload.__dict__.items():
             incoming[k] = v
 

@@ -136,7 +136,7 @@ class ReflexBrainCriteriaUpdate(ReflexBrainCriteriaBase):
 class ReflexBrainBase(BaseAuditModel):
     reflex_action_uid: FelicityIDType
     reflex_action: Optional["ReflexAction"]
-    description: Optional[str]
+    description: str | None
     analyses_values: Optional[List[ReflexBrainCriteria]]
     add_new: Optional[List[ReflexBrainAddition]]
     finalise: Optional[List[ReflexBrainFinal]]
@@ -144,7 +144,7 @@ class ReflexBrainBase(BaseAuditModel):
 
 # Additional properties to return via API
 class ReflexBrain(ReflexBrainBase):
-    uid: Optional[FelicityIDType] = None
+    uid: FelicityIDType| None = None
 
     class Config:
         orm_mode = True
@@ -167,18 +167,18 @@ class ReflexBrainUpdate(ReflexBrainBase):
 # Shared properties
 class ReflexActionBase(BaseAuditModel):
     level: int
-    description: Optional[str]
+    description: str | None
     reflex_rule_uid: FelicityIDType
     reflex_rule: Optional[ReflexRule]
     brains: Optional[List[ReflexBrain]]
     analyses: Optional[List[Analysis]]
-    sample_type_uid: Optional[FelicityIDType]
+    sample_type_uid: FelicityIDType| None
     sample_type: Optional[SampleType]
 
 
 # Additional properties to return via API
 class ReflexAction(ReflexActionBase):
-    uid: Optional[FelicityIDType] = None
+    uid: FelicityIDType| None = None
 
     class Config:
         orm_mode = True

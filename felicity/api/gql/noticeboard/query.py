@@ -22,8 +22,8 @@ class NoticeQuery:
     async def notice_filter(
         self,
         info,
-        group_uid: Optional[FelicityID],
-        department_uid: Optional[FelicityID],
+        group_uid: FelicityID | None,
+        department_uid: FelicityID | None,
     ) -> List[NoticeType]:
         filters = {}
 

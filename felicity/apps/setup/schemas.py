@@ -13,14 +13,14 @@ from pydantic import BaseModel, EmailStr
 
 
 class LaboratoryBase(BaseModel):
-    setup_name: Optional[str] = "felicity"
-    lab_name: Optional[str] = None
+    setup_name: str | None = "felicity"
+    lab_name: str | None = None
     email: Optional[EmailStr] = None
-    email_cc: Optional[str] = None
-    mobile_phone: Optional[str] = None
-    business_phone: Optional[str] = None
-    lab_manager_uid: Optional[FelicityIDType] = None
-    address: Optional[str] = ""
+    email_cc: str | None = None
+    mobile_phone: str | None = None
+    business_phone: str | None = None
+    lab_manager_uid: FelicityIDType| None = None
+    address: str | None = ""
 
 
 # Properties to receive via API on creation
@@ -34,7 +34,7 @@ class LaboratoryUpdate(LaboratoryBase):
 
 
 class LaboratoryInDBBase(LaboratoryBase):
-    uid: Optional[FelicityIDType] = None
+    uid: FelicityIDType| None = None
 
     class Config:
         orm_mode = True
@@ -51,18 +51,18 @@ class LaboratoryInDB(LaboratoryInDBBase):
 
 
 class LaboratorySettingBase(BaseAuditModel):
-    laboratory_uid: Optional[FelicityIDType] = None
+    laboratory_uid: FelicityIDType| None = None
     laboratory: Optional[Laboratory] = None
-    allow_self_verification: Optional[bool] = False
-    allow_patient_registration: Optional[bool] = True
-    allow_sample_registration: Optional[bool] = True
-    allow_worksheet_creation: Optional[bool] = True
-    default_route: Optional[str] = None
-    password_lifetime: Optional[int] = None
-    inactivity_log_out: Optional[int] = None
-    default_theme: Optional[str] = None
-    auto_receive_samples: Optional[bool] = True
-    sticker_copies: Optional[int] = 2
+    allow_self_verification: bool| None = False
+    allow_patient_registration: bool| None = True
+    allow_sample_registration: bool| None = True
+    allow_worksheet_creation: bool| None = True
+    default_route: str | None = None
+    password_lifetime: int | None = None
+    inactivity_log_out: int | None = None
+    default_theme: str | None = None
+    auto_receive_samples: bool| None = True
+    sticker_copies: int | None = 2
 
 
 class LaboratorySettingCreate(LaboratorySettingBase):
@@ -74,7 +74,7 @@ class LaboratorySettingUpdate(LaboratorySettingBase):
 
 
 class LaboratorySetting(LaboratorySettingBase):
-    uid: Optional[FelicityIDType] = None
+    uid: FelicityIDType| None = None
 
     class Config:
         orm_mode = True
@@ -124,13 +124,13 @@ class DepartmentInDB(DepartmentInDBBase):
 
 # Shared properties
 class InstrumentTypeBase(BaseAuditModel):
-    name: Optional[str] = None
-    description: Optional[str] = None
-    active: Optional[bool] = True
+    name: str | None = None
+    description: str | None = None
+    active: bool| None = True
 
 
 class InstrumentTypeBaseInDB(InstrumentTypeBase):
-    uid: Optional[FelicityIDType] = None
+    uid: FelicityIDType| None = None
 
     class Config:
         orm_mode = True
@@ -166,7 +166,7 @@ class InstrumentBase(BaseModel):
     description: str = None
     keyword: str = None
     instrument_type_uid: FelicityIDType = None
-    instrument_type: Optional[InstrumentType]
+    instrument_type: InstrumentType | None
     manufacturer_uid: FelicityIDType = None
     manufacturer: Optional["Manufacturer"]
     supplier_uid: FelicityIDType = None
@@ -175,12 +175,12 @@ class InstrumentBase(BaseModel):
 
 # Properties to receive via API on creation
 class InstrumentCreate(InstrumentBase):
-    supplier_uid: Optional[FelicityIDType] = None
+    supplier_uid: FelicityIDType| None = None
 
 
 # Properties to receive via API on update
 class InstrumentUpdate(InstrumentBase):
-    supplier_uid: Optional[FelicityIDType] = None
+    supplier_uid: FelicityIDType| None = None
 
 
 class InstrumentInDBBase(InstrumentBase):
@@ -450,13 +450,13 @@ class ManufacturerInDB(ManufacturerInDBBase):
 
 # Shared properties
 class CountryBase(BaseModel):
-    name: Optional[str] = None
-    code: Optional[str] = None
-    active: Optional[bool] = True
+    name: str | None = None
+    code: str | None = None
+    active: bool| None = True
 
 
 class CountryBaseInDB(CountryBase):
-    uid: Optional[FelicityIDType] = None
+    uid: FelicityIDType| None = None
 
     class Config:
         orm_mode = True
@@ -488,20 +488,20 @@ class CountryInDB(CountryBaseInDB):
 
 # Shared properties
 class ProvinceBase(BaseModel):
-    name: Optional[str]
-    country_uid: Optional[FelicityIDType]
-    code: Optional[str] = None
-    email: Optional[str] = None
-    email_cc: Optional[str] = None
-    consent_email: Optional[str] = None
-    mobile_phone: Optional[str] = None
-    business_phone: Optional[str] = None
-    consent_sms: Optional[str] = None
-    active: Optional[bool] = True
+    name: str | None
+    country_uid: FelicityIDType| None
+    code: str | None = None
+    email: str | None = None
+    email_cc: str | None = None
+    consent_email: str | None = None
+    mobile_phone: str | None = None
+    business_phone: str | None = None
+    consent_sms: str | None = None
+    active: bool| None = True
 
 
 class ProvinceBaseInDB(ProvinceBase):
-    uid: Optional[FelicityIDType] = None
+    uid: FelicityIDType| None = None
 
     class Config:
         orm_mode = True
@@ -533,20 +533,20 @@ class ProvinceInDB(ProvinceBaseInDB):
 
 # Shared properties
 class DistrictBase(BaseModel):
-    name: Optional[str]
-    province_uid: Optional[FelicityIDType]
-    code: Optional[str] = None
-    email: Optional[str] = None
-    email_cc: Optional[str] = None
-    consent_email: Optional[str] = None
-    mobile_phone: Optional[str] = None
-    business_phone: Optional[str] = None
-    consent_sms: Optional[str] = None
-    active: Optional[bool] = True
+    name: str | None
+    province_uid: FelicityIDType| None
+    code: str | None = None
+    email: str | None = None
+    email_cc: str | None = None
+    consent_email: str | None = None
+    mobile_phone: str | None = None
+    business_phone: str | None = None
+    consent_sms: str | None = None
+    active: bool| None = True
 
 
 class DistrictBaseInDB(DistrictBase):
-    uid: Optional[FelicityIDType] = None
+    uid: FelicityIDType| None = None
 
     class Config:
         orm_mode = True

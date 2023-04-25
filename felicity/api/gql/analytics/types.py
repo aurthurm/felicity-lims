@@ -9,13 +9,13 @@ from core.uid_gen import FelicityID
 
 @strawberry.type
 class Nothing:
-    data: Optional[str]
+    data: str | None
 
 
 @strawberry.type
 class GroupCount:
     group: str
-    count: Optional[int]
+    count: int | None
 
 
 @strawberry.type
@@ -36,12 +36,12 @@ class GroupedData:
 
 @strawberry.type
 class ProcessCounts:
-    total_samples: Optional[int]
-    total_late: Optional[int]
-    total_not_late: Optional[int]
-    process_average: Optional[int]
-    avg_extra_days: Optional[int]
-    service: Optional[str] = None
+    total_samples: int | None
+    total_late: int | None
+    total_not_late: int | None
+    process_average: int | None
+    avg_extra_days: int | None
+    service: str | None = None
 
 
 @strawberry.type
@@ -58,14 +58,14 @@ class ProcessStatistics:
 
 @strawberry.type
 class LaggardCounts:
-    lessThanTen: Optional[int]
-    tenToTwenty: Optional[int]
-    twentyToThirty: Optional[int]
-    graterThanThirty: Optional[int]
+    lessThanTen: int | None
+    tenToTwenty: int | None
+    twentyToThirty: int | None
+    graterThanThirty: int | None
     #
-    total_incomplete: Optional[int] = None
-    total_delayed: Optional[int] = None
-    total_not_delayed: Optional[int] = None
+    total_incomplete: int | None = None
+    total_delayed: int | None = None
+    total_not_delayed: int | None = None
 
 
 @strawberry.type
@@ -85,15 +85,15 @@ class ReportMetaType:
     period_start: datetime
     period_end: datetime
     date_column: str
-    location: Optional[str]
-    sample_states: Optional[str]
+    location: str | None
+    sample_states: str | None
     report_type: str
-    status: Optional[str]
-    temp: Optional[str]
+    status: str | None
+    temp: str | None
     analyses: Optional[List[AnalysisType]]
-    created_at: Optional[datetime]
-    created_by_uid: Optional[FelicityID]
-    created_by: Optional[UserType]
-    updated_at: Optional[datetime]
-    updated_by_uid: Optional[FelicityID]
-    updated_by: Optional[UserType]
+    created_at: datetime | None
+    created_by_uid: FelicityID | None
+    created_by: UserType | None
+    updated_at: datetime | None
+    updated_by_uid: FelicityID | None
+    updated_by: UserType | None

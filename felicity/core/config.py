@@ -63,7 +63,7 @@ class Settings(BaseSettings):
     RETAIN_TESTING_DB_DATA = getenv_boolean("RETAIN_TESTING_DB_DATA", True)
 
     @validator("BACKEND_CORS_ORIGINS", pre=True)
-    def assemble_cors_origins(cls, v: Union[str, List[str]]) -> Union[List[str], str]:
+    def assemble_cors_origins(cls, v: Union[str, list[str]]) -> Union[list[str], str]:
         if isinstance(v, str) and not v.startswith("["):
             return [i.strip() for i in v.split(",")]
         elif isinstance(v, (list, str)):
@@ -74,7 +74,7 @@ class Settings(BaseSettings):
     SENTRY_DSN: Optional[HttpUrl] = getenv_value("SENTRY_DSN", "")
 
     @validator("SENTRY_DSN", pre=True)
-    def sentry_dsn_can_be_blank(cls, v: str) -> Optional[str]:
+    def sentry_dsn_can_be_blank(cls, v: str) -> str | None:
         if len(v) == 0:
             return None
         return v
@@ -90,7 +90,7 @@ class Settings(BaseSettings):
     SQLALCHEMY_TEST_ASYNC_DATABASE_URI: Optional[PostgresDsn] = None
 
     @validator("SQLALCHEMY_DATABASE_URI", pre=True)
-    def assemble_db_connection(cls, v: Optional[str], values: Dict[str, Any]) -> Any:
+    def assemble_db_connection(cls, v: str | None, values: dict[str, Any]) -> Any:
         if isinstance(v, str):
             return v
         return PostgresDsn.build(
@@ -103,7 +103,7 @@ class Settings(BaseSettings):
 
     @validator("SQLALCHEMY_ASYNC_DATABASE_URI", pre=True)
     def assemble_async_db_connection(
-        cls, v: Optional[str], values: Dict[str, Any]
+        cls, v: str | None, values: dict[str, Any]
     ) -> Any:
         if isinstance(v, str):
             return v
@@ -117,7 +117,7 @@ class Settings(BaseSettings):
 
     @validator("SQLALCHEMY_TEST_DATABASE_URI", pre=True)
     def assemble_test_db_connection(
-        cls, v: Optional[str], values: Dict[str, Any]
+        cls, v: str | None, values: dict[str, Any]
     ) -> Any:
         if isinstance(v, str):
             return v
@@ -131,7 +131,7 @@ class Settings(BaseSettings):
 
     @validator("SQLALCHEMY_TEST_ASYNC_DATABASE_URI", pre=True)
     def assemble_async_test_db_connection(
-        cls, v: Optional[str], values: Dict[str, Any]
+        cls, v: str | None, values: dict[str, Any]
     ) -> Any:
         if isinstance(v, str):
             return v
@@ -144,18 +144,18 @@ class Settings(BaseSettings):
         )
 
     SMTP_TLS: bool = getenv_boolean("SMTP_TLS", False)
-    SMTP_PORT: Optional[int] = getenv_value("SMTP_PORT", 1025)
-    SMTP_HOST: Optional[str] = getenv_value("SMTP_HOST", "localhost")
-    SMTP_USER: Optional[str] = getenv_value("SMTP_USER", "")
-    SMTP_PASSWORD: Optional[str] = getenv_value("SMTP_PASSWORD", "")
+    SMTP_PORT: int | None = getenv_value("SMTP_PORT", 1025)
+    SMTP_HOST: str | None = getenv_value("SMTP_HOST", "localhost")
+    SMTP_USER: str | None = getenv_value("SMTP_USER", "")
+    SMTP_PASSWORD: str | None = getenv_value("SMTP_PASSWORD", "")
     EMAILS_FROM_EMAIL: Optional[EmailStr] = getenv_value(
         "EMAILS_FROM_EMAIL", "felicity@felicity.labs"
     )
-    EMAILS_FROM_NAME: Optional[str] = getenv_value(
+    EMAILS_FROM_NAME: str | None = getenv_value(
         "EMAILS_FROM_NAME", "felicity")
 
     @validator("EMAILS_FROM_NAME")
-    def get_project_name(cls, v: Optional[str], values: Dict[str, Any]) -> str:
+    def get_project_name(cls, v: str | None, values: dict[str, Any]) -> str:
         if not v:
             return values["PROJECT_NAME"]
         return v
@@ -165,7 +165,7 @@ class Settings(BaseSettings):
     EMAILS_ENABLED: bool = False
 
     @validator("EMAILS_ENABLED", pre=True)
-    def get_emails_enabled(cls, v: bool, values: Dict[str, Any]) -> bool:
+    def get_emails_enabled(cls, v: bool, values: dict[str, Any]) -> bool:
         return bool(
             values.get("SMTP_HOST")
             and values.get("SMTP_PORT")

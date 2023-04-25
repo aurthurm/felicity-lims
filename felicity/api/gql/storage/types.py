@@ -11,13 +11,13 @@ from core.uid_gen import FelicityID
 class StoreRoomType:
     uid: FelicityID
     name: str
-    description: Optional[str]
-    created_at: Optional[datetime]
-    created_by_uid: Optional[FelicityID]
-    created_by: Optional[UserType]
-    updated_at: Optional[datetime]
-    updated_by_uid: Optional[FelicityID]
-    updated_by: Optional[UserType]
+    description: str | None
+    created_at: datetime | None
+    created_by_uid: FelicityID | None
+    created_by: UserType | None
+    updated_at: datetime | None
+    updated_by_uid: FelicityID | None
+    updated_by: UserType | None
 
     @strawberry.field
     async def tag(self, info) -> str:
@@ -33,15 +33,15 @@ class StoreRoomType:
 class StorageLocationType:
     uid: FelicityID
     name: str
-    description: Optional[str]
+    description: str | None
     store_room_uid: FelicityID
     store_room: Optional[StoreRoomType]
-    created_at: Optional[datetime]
-    created_by_uid: Optional[FelicityID]
-    created_by: Optional[UserType]
-    updated_at: Optional[datetime]
-    updated_by_uid: Optional[FelicityID]
-    updated_by: Optional[UserType]
+    created_at: datetime | None
+    created_by_uid: FelicityID | None
+    created_by: UserType | None
+    updated_at: datetime | None
+    updated_by_uid: FelicityID | None
+    updated_by: UserType | None
 
     @strawberry.field
     async def tag(self, info) -> str:
@@ -59,15 +59,15 @@ class StorageLocationType:
 class StorageSectionType:
     uid: FelicityID
     name: str
-    description: Optional[str]
+    description: str | None
     storage_location_uid: FelicityID
     storage_location: Optional[StorageLocationType]
-    created_at: Optional[datetime]
-    created_by_uid: Optional[FelicityID]
-    created_by: Optional[UserType]
-    updated_at: Optional[datetime]
-    updated_by_uid: Optional[FelicityID]
-    updated_by: Optional[UserType]
+    created_at: datetime | None
+    created_by_uid: FelicityID | None
+    created_by: UserType | None
+    updated_at: datetime | None
+    updated_by_uid: FelicityID | None
+    updated_by: UserType | None
 
     @strawberry.field
     async def tag(self, info) -> str:
@@ -88,21 +88,21 @@ class StorageSectionType:
 class StorageContainerType:
     uid: FelicityID
     name: str
-    description: Optional[str]
+    description: str | None
     storage_section_uid: FelicityID
     storage_section: Optional[StorageSectionType]
-    grid: Optional[bool]
-    row_wise: Optional[bool]
-    cols: Optional[int]
-    rows: Optional[int]
-    slots: Optional[int]
-    stored_count: Optional[int]
-    created_at: Optional[datetime]
-    created_by_uid: Optional[FelicityID]
-    created_by: Optional[UserType]
-    updated_at: Optional[datetime]
-    updated_by_uid: Optional[FelicityID]
-    updated_by: Optional[UserType]
+    grid: bool| None
+    row_wise: bool| None
+    cols: int | None
+    rows: int | None
+    slots: int | None
+    stored_count: int | None
+    created_at: datetime | None
+    created_by_uid: FelicityID | None
+    created_by: UserType | None
+    updated_at: datetime | None
+    updated_by_uid: FelicityID | None
+    updated_by: UserType | None
 
     @strawberry.field
     async def tag(self, info) -> str:

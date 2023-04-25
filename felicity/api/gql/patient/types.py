@@ -14,12 +14,12 @@ class IdentificationType:
     uid: FelicityID
     name: str
     #
-    created_by_uid: Optional[FelicityID]
-    created_by: Optional[UserType]
-    created_at: Optional[datetime]
-    updated_by_uid: Optional[FelicityID]
-    updated_by: Optional[UserType]
-    updated_at: Optional[datetime]
+    created_by_uid: FelicityID | None
+    created_by: UserType | None
+    created_at: datetime | None
+    updated_by_uid: FelicityID | None
+    updated_by: UserType | None
+    updated_at: datetime | None
 
 
 @strawberry.type
@@ -30,12 +30,12 @@ class PatientIdentificationType:
     identification: Optional[IdentificationType]
     value: str
     #
-    created_by_uid: Optional[FelicityID]
-    created_by: Optional[UserType]
-    created_at: Optional[datetime]
-    updated_by_uid: Optional[FelicityID]
-    updated_by: Optional[UserType]
-    updated_at: Optional[datetime]
+    created_by_uid: FelicityID | None
+    created_by: UserType | None
+    created_at: datetime | None
+    updated_by_uid: FelicityID | None
+    updated_by: UserType | None
+    updated_at: datetime | None
 
 
 @strawberry.type
@@ -45,33 +45,33 @@ class PatientType:
     patient_id: str
     client_uid: FelicityID
     client: Optional[ClientType]
-    first_name: Optional[str]
-    middle_name: Optional[str]
-    last_name: Optional[str]
-    gender: Optional[str]
-    age: Optional[int]
-    date_of_birth: Optional[datetime]
+    first_name: str | None
+    middle_name: str | None
+    last_name: str | None
+    gender: str | None
+    age: int | None
+    date_of_birth: datetime | None
     age_dob_estimated: bool
-    phone_mobile: Optional[str]
-    phone_home: Optional[str]
+    phone_mobile: str | None
+    phone_home: str | None
     consent_sms: bool
-    email: Optional[str]
+    email: str | None
     internal_use: bool
     active: bool
-    district_uid: Optional[FelicityID]
+    district_uid: FelicityID | None
     district: Optional[DistrictType]
-    province_uid: Optional[FelicityID]
+    province_uid: FelicityID | None
     province: Optional[ProvinceType]
-    country_uid: Optional[FelicityID]
+    country_uid: FelicityID | None
     country: Optional[CountryType]
     identifications: List[Optional[PatientIdentificationType]]
     #
-    created_by_uid: Optional[FelicityID]
-    created_by: Optional[UserType]
-    created_at: Optional[datetime]
-    updated_by_uid: Optional[FelicityID]
-    updated_by: Optional[UserType]
-    updated_at: Optional[datetime]
+    created_by_uid: FelicityID | None
+    created_by: UserType | None
+    created_at: datetime | None
+    updated_by_uid: FelicityID | None
+    updated_by: UserType | None
+    updated_at: datetime | None
 
 
 #  relay paginations

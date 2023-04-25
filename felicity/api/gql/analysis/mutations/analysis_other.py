@@ -1,5 +1,4 @@
 import logging
-from typing import Optional
 
 import strawberry  # noqa
 from api.gql import OperationError, auth_from_info, verify_user_auth
@@ -50,19 +49,19 @@ class AnalysisUncertaintyInput:
 @strawberry.input
 class AnalysisSpecificationInput:
     analysis_uid: FelicityID
-    min: Optional[float] = None
-    max: Optional[float] = None
-    min_warn: Optional[float] = None
-    max_warn: Optional[float] = None
-    min_report: Optional[str] = None
-    max_report: Optional[str] = None
-    warn_values: Optional[str] = None
-    warn_report: Optional[str] = None
-    gender: Optional[str] = None
-    age_min: Optional[int] = None
-    age_max: Optional[int] = None
-    method_uid: Optional[FelicityID] = None
-    unit_uid: Optional[FelicityID] = None
+    min: float| None = None
+    max: float| None = None
+    min_warn: float| None = None
+    max_warn: float| None = None
+    min_report: str | None = None
+    max_report: str | None = None
+    warn_values: str | None = None
+    warn_report: str | None = None
+    gender: str | None = None
+    age_min: int | None = None
+    age_max: int | None = None
+    method_uid: FelicityID | None = None
+    unit_uid: FelicityID | None = None
 
 
 AnalysisInterimResponse = strawberry.union(

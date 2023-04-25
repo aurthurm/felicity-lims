@@ -11,19 +11,19 @@ from core.uid_gen import FelicityID
 @strawberry.type
 class ReportImpressType:
     uid: FelicityID
-    state: Optional[str]
-    sample_uid: Optional[FelicityID]
+    state: str | None
+    sample_uid: FelicityID | None
     sample: Optional[SampleType]
     json_content: Optional[JSONScalar]
     pdf_content: Optional[BytesScalar]
-    email_required: Optional[bool]
-    email_sent: Optional[bool]
-    sms_required: Optional[bool]
-    sms_sent: Optional[bool]
-    generated_by_uid: Optional[FelicityID]
-    generated_by: Optional[UserType]
-    created_by_uid: Optional[FelicityID]
-    created_by: Optional[UserType]
-    updated_by_uid: Optional[FelicityID]
-    updated_by: Optional[UserType]
-    date_generated: Optional[datetime]
+    email_required: bool| None
+    email_sent: bool| None
+    sms_required: bool| None
+    sms_sent: bool| None
+    generated_by_uid: FelicityID | None
+    generated_by: UserType | None
+    created_by_uid: FelicityID | None
+    created_by: UserType | None
+    updated_by_uid: FelicityID | None
+    updated_by: UserType | None
+    date_generated: datetime | None

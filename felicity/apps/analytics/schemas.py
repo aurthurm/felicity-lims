@@ -1,5 +1,4 @@
 from datetime import datetime
-from typing import List, Optional, Union
 
 from apps.analysis.schemas import AnalysisBasic
 from apps.analytics import conf
@@ -12,21 +11,21 @@ class ReportMetaBase(BaseModel):
     period_start: datetime
     period_end: datetime
     date_column: str
-    sample_states: Optional[str]
+    sample_states: str | None
     report_type: str = conf.report_types.LINE_LISTING
-    status: Optional[str] = conf.report_states.PENDING
-    analyses: Optional[List[AnalysisBasic]] = None
-    created_at: Optional[datetime] = None
-    created_by_uid: Optional[FelicityIDType] = None
-    created_by: Optional[UserBasic] = None  # noqa
-    updated_at: Optional[datetime] = None
-    updated_by_uid: Optional[FelicityIDType] = None
-    updated_by: Optional[UserBasic] = None  # noqa
+    status: str | None = conf.report_states.PENDING
+    analyses: list[AnalysisBasic]| None = None
+    created_at: datetime | None = None
+    created_by_uid: FelicityIDType| None = None
+    created_by: UserBasic| None = None  # noqa
+    updated_at: datetime | None = None
+    updated_by_uid: FelicityIDType| None = None
+    updated_by: UserBasic| None = None  # noqa
 
 
 class ReportMeta(ReportMetaBase):
-    uid: Optional[FelicityIDType] = None
-    location: Union[str, None]
+    uid: FelicityIDType| None = None
+    location: str | None
 
     class Config:
         orm_mode = True
@@ -49,8 +48,8 @@ class ReportMetaDeleted(BaseModel):
 
 class ReportRequest(BaseModel):
     report_type: str
-    analyses_uids: List[FelicityIDType]
-    sample_states: List[str]
+    analyses_uids: list[FelicityIDType]
+    sample_states: list[str]
     date_column: str
     period_start: datetime
     period_end: datetime

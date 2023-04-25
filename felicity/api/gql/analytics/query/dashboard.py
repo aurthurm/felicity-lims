@@ -136,7 +136,7 @@ async def count_worksheet_group_by_status(info) -> types.GroupedCounts:
 
 @strawberry.field
 async def count_analyte_group_by_instrument(
-    info, start_date: Optional[str] = None, end_date: Optional[str] = None
+    info, start_date: str | None = None, end_date: str | None = None
 ) -> types.GroupedCounts:
     analytics = SampleAnalyticsInit(AnalysisResult)
     results = await analytics.get_counts_group_by(
@@ -154,7 +154,7 @@ async def count_analyte_group_by_instrument(
 
 @strawberry.field
 async def count_sample_group_by_action(
-    info, start_date: Optional[str] = None, end_date: Optional[str] = None
+    info, start_date: str | None = None, end_date: str | None = None
 ) -> types.GroupedData:
     analytics = SampleAnalyticsInit(Sample)
     created = await analytics.get_counts_group_by(

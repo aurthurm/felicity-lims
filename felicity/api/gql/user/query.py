@@ -21,11 +21,11 @@ class UserQuery:
     async def user_all(
         self,
         info,
-        page_size: Optional[int] = None,
-        after_cursor: Optional[str] = None,
-        before_cursor: Optional[str] = None,
-        text: Optional[str] = None,
-        sort_by: Optional[List[str]] = None,
+        page_size: int | None = None,
+        after_cursor: str | None = None,
+        before_cursor: str | None = None,
+        text: str | None = None,
+        sort_by: list[str] | None = None,
     ) -> UserCursorPage:
         filters = {}
 
@@ -61,11 +61,11 @@ class UserQuery:
         )
 
     @strawberry.field
-    async def user_me(self, info, token: str) -> Optional[UserType]:
+    async def user_me(self, info, token: str) -> UserType | None:
         return await deps.get_current_active_user(token=token)
 
     @strawberry.field
-    async def user_by_email(self, info, email: str) -> Optional[UserType]:
+    async def user_by_email(self, info, email: str) -> UserType | None:
         return await user_models.User.get_by_email(email=email)
 
     @strawberry.field

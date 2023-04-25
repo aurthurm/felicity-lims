@@ -13,48 +13,48 @@ class ClientType:
     uid: FelicityID
     name: str
     code: str
-    district_uid: Optional[FelicityID]
+    district_uid: FelicityID | None
     district: Optional[DistrictType]
-    province_uid: Optional[FelicityID]
+    province_uid: FelicityID | None
     province: Optional[ProvinceType]
-    email: Optional[str]
-    email_cc: Optional[str]
+    email: str | None
+    email_cc: str | None
     consent_email: bool
-    phone_mobile: Optional[str]
-    phone_business: Optional[str]
+    phone_mobile: str | None
+    phone_business: str | None
     consent_sms: bool
     internal_use: bool
     active: bool
     #
-    created_by_uid: Optional[FelicityID]
-    created_by: Optional[UserType]
-    created_at: Optional[datetime]
-    updated_by_uid: Optional[FelicityID]
-    updated_by: Optional[UserType]
-    updated_at: Optional[datetime]
+    created_by_uid: FelicityID | None
+    created_by: UserType | None
+    created_at: datetime | None
+    updated_by_uid: FelicityID | None
+    updated_by: UserType | None
+    updated_at: datetime | None
 
 
 @strawberry.type
 class ClientContactType:
     uid: FelicityID
-    first_name: Optional[str]
-    last_name: Optional[str]
-    email: Optional[str]
-    mobile_phone: Optional[str]
-    business_phone: Optional[str]
-    is_active: Optional[bool]
-    email: Optional[str]
-    email_cc: Optional[str]
+    first_name: str | None
+    last_name: str | None
+    email: str | None
+    mobile_phone: str | None
+    business_phone: str | None
+    is_active: bool| None
+    email: str | None
+    email_cc: str | None
     consent_sms: bool
     client_uid: FelicityID
     client: Optional[ClientType]
     #
-    created_at: Optional[datetime]
-    creator_name: Optional[str]
-    creator_uid: Optional[FelicityID]
-    updated_at: Optional[datetime]
-    updator_name: Optional[str]
-    updator_uid: Optional[FelicityID]
+    created_at: datetime | None
+    creator_name: str | None
+    creator_uid: FelicityID | None
+    updated_at: datetime | None
+    updator_name: str | None
+    updator_uid: FelicityID | None
 
 
 #  relay paginations

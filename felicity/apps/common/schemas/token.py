@@ -10,4 +10,4 @@ class Token(BaseModel):
 
 
 class TokenPayload(BaseModel):
-    sub: Optional[FelicityIDType] = None
+    sub: FelicityIDType| None = None

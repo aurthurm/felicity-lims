@@ -20,17 +20,17 @@ class AnalysisInputType:
     keyword: str
     sort_key: int
     description: str = ""
-    department_uid: Optional[FelicityID] = None
+    department_uid: FelicityID | None = None
     sample_types: Optional[List[FelicityID]] = field(default_factory=list)
     methods: Optional[List[FelicityID]] = field(default_factory=list)
-    category_uid: Optional[FelicityID] = None
-    unit_uid: Optional[FelicityID] = None
-    internal_use: Optional[bool] = False
+    category_uid: FelicityID | None = None
+    unit_uid: FelicityID | None = None
+    internal_use: bool| None = False
     tat_length_minutes: int = None
     precision: int = None
     required_verifications: int = 1
-    self_verification: Optional[bool] = False
-    active: Optional[bool] = True
+    self_verification: bool| None = False
+    active: bool| None = True
 
 
 ProfilesServiceResponse = strawberry.union(

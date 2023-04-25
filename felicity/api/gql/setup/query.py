@@ -60,11 +60,11 @@ async def get_all_units() -> List[UnitType]:
 async def get_all_instrument_types(
     self,
     info,
-    page_size: Optional[int] = None,
-    after_cursor: Optional[str] = None,
-    before_cursor: Optional[str] = None,
-    text: Optional[str] = None,
-    sort_by: Optional[List[str]] = None,
+    page_size: int | None = None,
+    after_cursor: str | None = None,
+    before_cursor: str | None = None,
+    text: str | None = None,
+    sort_by: list[str] | None = None,
 ) -> InstrumentTypeCursorPage:
     filters = {}
 
@@ -97,11 +97,11 @@ async def get_all_instrument_types(
 async def get_all_instruments(
     self,
     info,
-    page_size: Optional[int] = None,
-    after_cursor: Optional[str] = None,
-    before_cursor: Optional[str] = None,
-    text: Optional[str] = None,
-    sort_by: Optional[List[str]] = None,
+    page_size: int | None = None,
+    after_cursor: str | None = None,
+    before_cursor: str | None = None,
+    text: str | None = None,
+    sort_by: list[str] | None = None,
 ) -> InstrumentCursorPage:
     filters = {}
 
@@ -144,11 +144,11 @@ async def get_all_instruments(
 async def get_all_methods(
     self,
     info,
-    page_size: Optional[int] = None,
-    after_cursor: Optional[str] = None,
-    before_cursor: Optional[str] = None,
-    text: Optional[str] = None,
-    sort_by: Optional[List[str]] = None,
+    page_size: int | None = None,
+    after_cursor: str | None = None,
+    before_cursor: str | None = None,
+    text: str | None = None,
+    sort_by: list[str] | None = None,
 ) -> MethodCursorPage:
     filters = {}
 
@@ -182,11 +182,11 @@ async def get_all_methods(
 async def get_all_districts(
     self,
     info,
-    page_size: Optional[int] = None,
-    after_cursor: Optional[str] = None,
-    before_cursor: Optional[str] = None,
-    text: Optional[str] = None,
-    sort_by: Optional[List[str]] = None,
+    page_size: int | None = None,
+    after_cursor: str | None = None,
+    before_cursor: str | None = None,
+    text: str | None = None,
+    sort_by: list[str] | None = None,
 ) -> DistrictCursorPage:
     filters = {}
 
@@ -228,11 +228,11 @@ async def get_all_districts(
 async def get_all_provinces(
     self,
     info,
-    page_size: Optional[int] = None,
-    after_cursor: Optional[str] = None,
-    before_cursor: Optional[str] = None,
-    text: Optional[str] = None,
-    sort_by: Optional[List[str]] = None,
+    page_size: int | None = None,
+    after_cursor: str | None = None,
+    before_cursor: str | None = None,
+    text: str | None = None,
+    sort_by: list[str] | None = None,
 ) -> ProvinceCursorPage:
     filters = {}
 

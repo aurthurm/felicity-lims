@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 class InstallResponse(BaseModel):
     laboratory: Optional[schemas.Laboratory]
     installed: bool
-    message: Optional[str]
+    message: str | None
 
 
 class LabNameIn(BaseModel):
@@ -24,7 +24,7 @@ class LabNameIn(BaseModel):
 
 class SetupResponse(BaseModel):
     success: bool
-    message: Optional[str]
+    message: str | None
 
 
 @router.get("/installation", response_model=Optional[InstallResponse])

@@ -1,5 +1,3 @@
-from typing import Optional
-
 from core.uid_gen import FelicityIDType
 from pydantic import BaseModel
 
@@ -11,21 +9,21 @@ from pydantic import BaseModel
 
 
 class ClientBase(BaseModel):
-    name: Optional[str] = None
-    code: Optional[str] = None
-    district_uid: Optional[FelicityIDType] = None
-    email: Optional[str] = None
-    email_cc: Optional[str] = None
-    consent_email: Optional[bool] = None
-    phone_mobile: Optional[str] = None
-    phone_business: Optional[str] = None
-    consent_sms: Optional[bool] = None
-    internal_use: Optional[bool] = False
-    active: Optional[bool] = True
+    name: str | None = None
+    code: str | None = None
+    district_uid: FelicityIDType| None = None
+    email: str | None = None
+    email_cc: str | None = None
+    consent_email: bool| None = None
+    phone_mobile: str | None = None
+    phone_business: str | None = None
+    consent_sms: bool| None = None
+    internal_use: bool| None = False
+    active: bool| None = True
 
 
 class ClientBaseInDB(ClientBase):
-    uid: Optional[FelicityIDType] = None
+    uid: FelicityIDType| None = None
 
     class Config:
         orm_mode = True
@@ -33,7 +31,7 @@ class ClientBaseInDB(ClientBase):
 
 # Properties to receive via API on creation
 class ClientCreate(ClientBase):
-    district_uid: Optional[FelicityIDType]
+    district_uid: FelicityIDType| None
 
 
 # Properties to receive via API on update
@@ -58,20 +56,20 @@ class ClientInDB(ClientBaseInDB):
 
 # Shared properties
 class ClientContactBase(BaseModel):
-    client_uid: Optional[FelicityIDType] = None
-    first_name: Optional[str] = None
-    last_name: Optional[str] = None
-    email: Optional[str] = None
-    email_cc: Optional[str] = None
-    mobile_phone: Optional[str] = None
-    consent_sms: Optional[bool] = False
-    business_phone: Optional[str] = None
-    is_active: Optional[bool] = True
-    is_superuser: Optional[bool] = False
+    client_uid: FelicityIDType| None = None
+    first_name: str | None = None
+    last_name: str | None = None
+    email: str | None = None
+    email_cc: str | None = None
+    mobile_phone: str | None = None
+    consent_sms: bool| None = False
+    business_phone: str | None = None
+    is_active: bool| None = True
+    is_superuser: bool| None = False
 
 
 class ClientContactBaseInDB(ClientContactBase):
-    uid: Optional[FelicityIDType] = None
+    uid: FelicityIDType| None = None
 
     class Config:
         orm_mode = True

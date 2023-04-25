@@ -68,7 +68,7 @@ class HumanName(BaseModel):
     # Family name (often called 'Surname')
     family: str | None = None
     # Given names (not always 'first'). Includes middle names
-    given: List[str] | None = None
+    given: list[str] | None = None
     # Parts that come before the name
     prefix: str | None = None
     # Parts that come after the name

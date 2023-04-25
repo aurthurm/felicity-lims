@@ -12,25 +12,25 @@ from pydantic import BaseModel
 
 
 class WorkSheetBase(BaseModel):
-    analyst_uid: Optional[FelicityIDType] = None
-    template_uid: Optional[FelicityIDType] = None
-    worksheet_id: Optional[str] = None
-    instrument_uid: Optional[FelicityIDType] = None
-    sample_type_uid: Optional[FelicityIDType] = None
-    analysis_uid: Optional[FelicityIDType] = None
+    analyst_uid: FelicityIDType| None = None
+    template_uid: FelicityIDType| None = None
+    worksheet_id: str | None = None
+    instrument_uid: FelicityIDType| None = None
+    sample_type_uid: FelicityIDType| None = None
+    analysis_uid: FelicityIDType| None = None
     analysis: Optional[AnalysisBaseInDB] = None
-    reserved: Optional[Dict] = {}
-    number_of_samples: Optional[int] = None
-    worksheet_type: Optional[int] = 0
-    rows: Optional[int] = None
-    cols: Optional[int] = None
-    row_wise: Optional[bool] = True
-    template: Optional[Dict] = {}
-    state: Optional[str] = None
+    reserved: Optional[dict] = {}
+    number_of_samples: int | None = None
+    worksheet_type: int | None = 0
+    rows: int | None = None
+    cols: int | None = None
+    row_wise: bool| None = True
+    template: Optional[dict] = {}
+    state: str | None = None
 
 
 class WorkSheetBaseInDB(WorkSheetBase):
-    uid: Optional[FelicityIDType] = None
+    uid: FelicityIDType| None = None
 
     class Config:
         orm_mode = True
@@ -62,24 +62,24 @@ class WorkSheetInDB(WorkSheetBaseInDB):
 
 # Shared properties
 class WSTemplateBase(BaseModel):
-    name: Optional[str] = None
-    description: Optional[str] = None
-    instrument_uid: Optional[FelicityIDType] = None
-    sample_type_uid: Optional[FelicityIDType] = None
-    analysis_uid: Optional[FelicityIDType] = None
+    name: str | None = None
+    description: str | None = None
+    instrument_uid: FelicityIDType| None = None
+    sample_type_uid: FelicityIDType| None = None
+    analysis_uid: FelicityIDType| None = None
     analysis: Optional[AnalysisBaseInDB] = None
     qc_analyses: Optional[List[AnalysisBaseInDB]] = []
     qc_levels: Optional[List[QCLevelInDB]] = []
-    reserved: Optional[Dict] = {}
-    number_of_samples: Optional[int] = None
-    worksheet_type: Optional[str] = "flat"
-    rows: Optional[int] = None
-    cols: Optional[int] = None
-    row_wise: Optional[bool] = True
+    reserved: Optional[dict] = {}
+    number_of_samples: int | None = None
+    worksheet_type: str | None = "flat"
+    rows: int | None = None
+    cols: int | None = None
+    row_wise: bool| None = True
 
 
 class WSTemplateBaseInDB(WSTemplateBase):
-    uid: Optional[FelicityIDType] = None
+    uid: FelicityIDType| None = None
 
     class Config:
         orm_mode = True

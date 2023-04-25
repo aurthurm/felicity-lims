@@ -106,7 +106,7 @@ class EagerLoadMixin(SessionMixin):
         In strings syntax, you can split relations with dot
          due to this SQLAlchemy feature: https://goo.gl/yM2DLX
 
-        :type paths: *List[str] | *List[InstrumentedAttribute]
+        :type paths: *list[str] | *List[InstrumentedAttribute]
 
         Example 1:
             Comment.with_joined('user', 'post', 'post.comments').first()
@@ -125,7 +125,7 @@ class EagerLoadMixin(SessionMixin):
         In strings syntax, you can split relations with dot
          (it's SQLAlchemy feature)
 
-        :type paths: *List[str] | *List[InstrumentedAttribute]
+        :type paths: *list[str] | *List[InstrumentedAttribute]
 
         Example 1:
             User.with_subquery('posts', 'posts.comments').all()

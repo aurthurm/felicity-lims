@@ -33,13 +33,13 @@ class AnalysisQuery:
     async def sample_all(
         self,
         info,
-        page_size: Optional[int] = None,
-        after_cursor: Optional[str] = None,
-        before_cursor: Optional[str] = None,
-        text: Optional[str] = None,
-        status: Optional[str] = None,
-        client_uid: Optional[FelicityID] = None,
-        sort_by: Optional[List[str]] = None,
+        page_size: int | None = None,
+        after_cursor: str | None = None,
+        before_cursor: str | None = None,
+        text: str | None = None,
+        status: str | None = None,
+        client_uid: FelicityID | None = None,
+        sort_by: list[str] | None = None,
     ) -> r_types.SampleCursorPage:
         filters = []
 
@@ -107,7 +107,7 @@ class AnalysisQuery:
 
     @strawberry.field
     async def sample_by_parent_id(
-        self, info, parent_id: FelicityID, text: Optional[str] = None
+        self, info, parent_id: FelicityID, text: str | None = None
     ) -> List[a_types.SampleType]:
         """Retrieve associated invalidated parent - children relationship by mptt parent_id"""
         samples: list[a_models.Sample] = await a_models.Sample.get_all(
@@ -121,7 +121,7 @@ class AnalysisQuery:
 
     @strawberry.field
     async def samples_by_uids(
-        self, info, sample_uids: List[str] = []
+        self, info, sample_uids: list[str] = []
     ) -> List[r_types.SamplesWithResults]:
         """Samples for publishing/ report printing"""
         return await a_models.Sample.get_all(uid__in=sample_uids)
@@ -155,12 +155,12 @@ class AnalysisQuery:
     async def analysis_all(
         self,
         info,
-        page_size: Optional[int] = None,
-        after_cursor: Optional[str] = None,
-        before_cursor: Optional[str] = None,
-        text: Optional[str] = None,
-        sort_by: Optional[List[str]] = None,
-        qc_only: Optional[bool] = False,
+        page_size: int | None = None,
+        after_cursor: str | None = None,
+        before_cursor: str | None = None,
+        text: str | None = None,
+        sort_by: list[str] | None = None,
+        qc_only: bool| None = False,
     ) -> a_types.AnalysisCursorPage:
 
         filters = []
@@ -210,11 +210,11 @@ class AnalysisQuery:
     async def analysis_request_all(
         self,
         info,
-        page_size: Optional[int] = None,
-        after_cursor: Optional[str] = None,
-        before_cursor: Optional[str] = None,
-        text: Optional[str] = None,
-        sort_by: Optional[List[str]] = None,
+        page_size: int | None = None,
+        after_cursor: str | None = None,
+        before_cursor: str | None = None,
+        text: str | None = None,
+        sort_by: list[str] | None = None,
     ) -> a_types.AnalysisRequestCursorPage:
         filters = []
 
@@ -287,13 +287,13 @@ class AnalysisQuery:
     async def analysis_results_for_ws_assign(
         self,
         info,
-        page_size: Optional[int] = None,
-        after_cursor: Optional[str] = None,
-        before_cursor: Optional[str] = None,
-        text: Optional[str] = None,
-        sort_by: Optional[List[str]] = None,
-        analysis_uid: Optional[FelicityID] = None,
-        sample_type_uid: Optional[FelicityID] = None,
+        page_size: int | None = None,
+        after_cursor: str | None = None,
+        before_cursor: str | None = None,
+        text: str | None = None,
+        sort_by: list[str] | None = None,
+        analysis_uid: FelicityID | None = None,
+        sample_type_uid: FelicityID | None = None,
     ) -> r_types.AnalysisResultCursorPage:
 
         filters = [{"assigned": False}]
@@ -399,11 +399,11 @@ class AnalysisQuery:
     async def qc_set_all(
         self,
         info,
-        page_size: Optional[int] = None,
-        after_cursor: Optional[str] = None,
-        before_cursor: Optional[str] = None,
-        text: Optional[str] = None,
-        sort_by: Optional[List[str]] = None,
+        page_size: int | None = None,
+        after_cursor: str | None = None,
+        before_cursor: str | None = None,
+        text: str | None = None,
+        sort_by: list[str] | None = None,
     ) -> r_types.QCSetCursorPage:
 
         filters = []
