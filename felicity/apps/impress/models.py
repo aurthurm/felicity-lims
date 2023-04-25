@@ -19,7 +19,7 @@ streamer = FelicityStreamer()
 class ReportImpress(Auditable):
     state = Column(String)  # preliminary, final, invalidated
     sample_uid = Column(FelicitySAID, ForeignKey("sample.uid"), nullable=False)
-    sample: Sample = relationship(Sample, foreign_keys=[sample_uid], lazy="selectin")
+    sample = relationship(Sample, foreign_keys=[sample_uid], lazy="selectin")
     json_content: dict = Column(JSONB, nullable=True)
     pdf_content = Column(LargeBinary, nullable=True)
     email_required = Column(Boolean(), default=False)

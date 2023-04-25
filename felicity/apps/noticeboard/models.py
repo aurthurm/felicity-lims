@@ -46,15 +46,15 @@ department_notice: Table = Table(
 class Notice(BaseAuditDBModel):
     """Notice"""
 
-    departments: Optional[List[Department]] = relationship(
+    departments = relationship(
         "Department", secondary=department_notice, lazy="selectin"
     )
-    groups: Optional[List[Group]] = relationship(
+    groups = relationship(
         "Group", secondary=group_notice, lazy="selectin"
     )
-    title: str = Column(String, nullable=False)
-    body: str = Column(String, nullable=False)
-    viewers: Optional[List[User]] = relationship(
+    title = Column(String, nullable=False)
+    body = Column(String, nullable=False)
+    viewers = relationship(
         "User", secondary=notice_view, lazy="selectin"
     )
     expiry: bool = Column(DateTime, nullable=False)

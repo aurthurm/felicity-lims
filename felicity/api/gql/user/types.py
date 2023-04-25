@@ -1,7 +1,6 @@
 from datetime import datetime
 from typing import List, Optional
 
-import api.gql.setup.types
 import strawberry  # noqa
 from api.gql import PageInfo
 from core.uid_gen import FelicityID
@@ -101,5 +100,5 @@ class UserCursorPage:
 class UserPreferenceType:
     uid: FelicityID
     expanded_menu: Optional[bool]
-    departments: Optional[List["api.gql.setup.types.DepartmentType"]]
+    # departments: Optional[List["api.gql.setup.types.DepartmentType"]]
     theme: Optional[str]

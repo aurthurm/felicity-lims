@@ -20,24 +20,13 @@ InDBSchemaType = TypeVar("InDBSchemaType", bound=PydanticBaseModel)
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-"""?? Usefull Tools
-1. https://docs.sqlalchemy.org/en/14/orm/session_events.html#adding-global-where-on-criteria
-   Maybe for global department filters ?
-   
-2. https://stackoverflow.com/questions/12753450/sqlalchemy-mixins-and-event-listener
-
-SQLAlchemy "event.listen" for all models
-event.listen(MyBaseMixin, 'before_insert', get_created_by_id, propagate=True)
-event.listen(MyBaseMixin, 'before_update', get_updated_by_id, propagate=True)
-
-"""
-
 
 @as_declarative()
 class DBModel(AllFeaturesMixin):
     __name__: str
     __abstract__ = True
     __mapper_args__ = {"eager_defaults": True}
+    # __allow_unmapped__ = True
 
     uid = Column(
         FelicitySAID,

@@ -116,7 +116,7 @@ class Profile(BaseAuditDBModel):
     keyword = Column(String, nullable=True, unique=True)
     tat_length_minutes = Column(Integer, nullable=True)
     active = Column(Boolean(), default=False)
-    analyses: List["Analysis"] = relationship(
+    analyses = relationship(
         "Analysis",
         secondary=analysis_profile,
         back_populates="profiles",
@@ -498,10 +498,10 @@ class Sample(Auditable, BaseMPTT):
     sample_type = relationship(
         "SampleType", backref="samples", lazy="selectin")
     sample_id = Column(String, index=True, unique=True, nullable=True)
-    profiles: List[Profile] = relationship(
+    profiles = relationship(
         Profile, secondary=sample_profile, backref="samples", lazy="selectin"
     )
-    analyses: List[Analysis] = relationship(
+    analyses = relationship(
         Analysis, secondary=sample_analysis, backref="samples", lazy="selectin"
     )
     analysis_results = relationship(

@@ -23,7 +23,7 @@ class DeletedItem:
 
 
 @strawberry.type
-class MessageType:
+class MessagesType:
     message: str
 
 
@@ -46,7 +46,7 @@ DeleteResponse = strawberry.union(
 
 MessageResponse = strawberry.union(
     "MessageResponse",
-    (MessageType, OperationError),
+    (MessagesType, OperationError),
     description="Union of possible outcomes when deleting some object",
 )
 

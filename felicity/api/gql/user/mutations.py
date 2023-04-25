@@ -6,7 +6,7 @@ from typing import Optional
 import strawberry  # noqa
 from api.gql import (
     MessageResponse,
-    MessageType,
+    MessagesType,
     OperationError,
     auth_from_info,
     verify_user_auth,
@@ -313,7 +313,7 @@ class UserMutations:
         post_event("password_reset", user=user, token=password_reset_token)
 
         msg = "Password recovery email sent"
-        return MessageType(msg)
+        return MessagesType(msg)
 
     @strawberry.mutation
     async def create_group(info, payload: GroupInputType) -> GroupResponse:
