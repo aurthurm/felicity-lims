@@ -5,13 +5,13 @@ from typing import Any, AsyncIterator, List, Optional, TypeVar, Union
 from core.uid_gen import FelicitySAID, get_flake_uid
 from database.async_mixins import AllFeaturesMixin, ModelNotFoundError, smart_query
 from database.paginator.cursor import EdgeNode, PageCursor, PageInfo
-from database.session import async_session_factory
+from database.session import async_session_factory, AsyncSessionScoped 
 from pydantic import BaseModel as PydanticBaseModel
 from sqlalchemy import Column
 from sqlalchemy import or_ as sa_or_
 from sqlalchemy import update
-from sqlalchemy.future import select
-from sqlalchemy.orm import as_declarative, declared_attr, selectinload
+from sqlalchemy import select
+from sqlalchemy.orm import declared_attr, selectinload
 from sqlalchemy.sql import func
 from utils import has_value_or_is_truthy
 
@@ -21,7 +21,6 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
-@as_declarative()
 class DBModel(AllFeaturesMixin):
     __name__: str
     __abstract__ = True
@@ -176,6 +175,7 @@ class DBModel(AllFeaturesMixin):
         This is so that mutations can work well and prevent async IO issues
         """
         fill = cls().fill(**kwargs)
+        print(kwargs)
         created = await cls.save(fill)
         if created:
             created = await cls.get(uid=created.uid)
@@ -245,7 +245,7 @@ class DBModel(AllFeaturesMixin):
                 binds[key] = bindparam(key)
 
         stmt = query.values(binds).execution_options(
-            synchronize_session="fetch")
+            synchronize_session=None) # "fetch" not available
 
         async with async_session_factory() as session:
             await session.execute(stmt, to_update)
@@ -293,8 +293,8 @@ class DBModel(AllFeaturesMixin):
             pass
 
         stmt = cls.where(**kwargs)
-        if related:
-            stmt.options(selectinload(related))
+        # if related:
+        #     stmt.options(selectinload(related))
 
         async with async_session_factory() as session:
             results = await session.execute(stmt)
@@ -384,6 +384,7 @@ class DBModel(AllFeaturesMixin):
         # stmt = select(func.count()).select_from(cls)
         # stmt = select(func.count()).select_from(select(cls).subquery())
         # stmt = select(func.count(cls.uid)).select_from(cls)
+        print(filters)
         filter_stmt = smart_query(query=select(cls), filters=filters)
         count_stmt = select(func.count(filter_stmt.c.uid)
                             ).select_from(filter_stmt)
@@ -480,7 +481,9 @@ class DBModel(AllFeaturesMixin):
         stmt = cls.smart_query(filters=_filters, sort_attrs=sort_by)
 
         if get_related:
-            stmt = stmt.options(selectinload(get_related))
+            # print(get_related)
+            # stmt = stmt.options(selectinload(get_related))
+            pass
 
         if page_size:
             stmt = stmt.limit(page_size)
@@ -553,3 +556,6 @@ class DBModel(AllFeaturesMixin):
     def encode_cursor(cls, identifier: Any):
         # return b64encode(str(identifier).encode("ascii")).decode("utf8")
         return identifier
+
+# Silence set session, not in use
+DBModel.set_session(AsyncSessionScoped)

@@ -110,7 +110,7 @@ async def create_super_user() -> None:
         )
         await superuser.link_preference(preference_uid=preference.uid)
 
-        post_event("new-account-created", {})
+        # post_event("new-account-created", {})
 
     logger.info(
         f"Done Setting up first superuser {superuser.marshal_simple()}")

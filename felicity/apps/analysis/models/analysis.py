@@ -184,7 +184,10 @@ class Analysis(BaseAuditDBModel):
     unit_uid = Column(FelicitySAID, ForeignKey("unit.uid"), nullable=True)
     unit = relationship("Unit", lazy="selectin")
     profiles = relationship(
-        "Profile", secondary=analysis_profile, back_populates="analyses"
+        "Profile", 
+        secondary=analysis_profile, 
+        back_populates="analyses",
+        lazy="selectin"
     )
     sample_types = relationship(
         "SampleType",
@@ -754,7 +757,7 @@ class Sample(Auditable, BaseMPTT):
             return await self.save()
         return self
 
-    async def invalidate(self, invalidated_by) -> (schemas.Sample, schemas.Sample):
+    async def invalidate(self, invalidated_by) -> tuple[schemas.Sample, schemas.Sample]:
         statuses = [states.sample.APPROVED, states.sample.PUBLISHED]
         copy = None
         if self.status in statuses:

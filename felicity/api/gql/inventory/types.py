@@ -3,7 +3,8 @@ from typing import List, Optional
 
 import strawberry  # noqa
 from api.gql import PageInfo
-from api.gql.setup.types import DepartmentType, SupplierType
+from api.gql.setup.types import SupplierType
+from api.gql.setup.types.department import DepartmentType
 from api.gql.storage.types import StoreRoomType
 from api.gql.user.types import UserType
 from core.uid_gen import FelicityID

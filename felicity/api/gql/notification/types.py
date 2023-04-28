@@ -5,7 +5,7 @@ import strawberry  # noqa
 from api.gql.analysis.types.analysis import SampleType
 from api.gql.analysis.types.results import AnalysisResultType
 from api.gql.analytics.types import ReportMetaType
-from api.gql.setup.types import DepartmentType
+from api.gql.setup.types.department import DepartmentType
 from api.gql.user.types import GroupType, UserType
 from api.gql.worksheet.types import WorkSheetType
 from apps.analysis.models.analysis import Sample

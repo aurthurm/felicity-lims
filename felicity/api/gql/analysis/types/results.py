@@ -73,7 +73,7 @@ class SampleEdge:
 class SampleCursorPage:
     page_info: PageInfo
     edges: list[SampleEdge] | None
-    items: list[SampleEdge] | None
+    items: list[SamplesWithResults] | None
     total_count: int
 
 

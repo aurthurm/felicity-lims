@@ -5,10 +5,10 @@ from typing import Dict, List, Optional
 
 import strawberry  # noqa
 from api.gql import OperationError
+from api.gql.setup.types.department import DepartmentType
 from api.gql.setup.types import (
     CalibrationCertificateType,
     CountryType,
-    DepartmentType,
     DistrictType,
     InstrumentCalibrationType,
     InstrumentType,

@@ -1,43 +1,38 @@
 try:
     # noinspection PyUnresolvedReferences
-    pass
+    from typing import List
 except ImportError:  # pragma: no cover
     pass
 
-from collections import OrderedDict, abc
+from collections import abc, OrderedDict
+
 
 from sqlalchemy import asc, desc, inspect
-from sqlalchemy.future import select
 from sqlalchemy.orm import aliased, contains_eager
 from sqlalchemy.orm.util import AliasedClass
-from sqlalchemy.sql import extract, operators
+from sqlalchemy.sql import operators, extract
 
 # noinspection PyProtectedMember
-from .eagerload import (
-    SUBQUERY,
-    EagerLoadMixin,
-    _eager_expr_from_flat_schema,
-    _flatten_schema,
-)
+from .eagerload import EagerLoadMixin, _eager_expr_from_schema
 from .inspection import InspectionMixin
 from .utils import classproperty
 
-RELATION_SPLITTER = "___"
-OPERATOR_SPLITTER = "__"
+RELATION_SPLITTER = '___'
+OPERATOR_SPLITTER = '__'
 
-DESC_PREFIX = "-"
+DESC_PREFIX = '-'
 
 
 def _flatten_filter_keys(filters):
     """
     :type filters: dict|list
-    Flatten the nested filters, extracting keys where they correspond
-    to smart_query paths, e.g.
+    Flatten the nested filters, extracting keys where they correspond 
+    to smart_query paths, e.g. 
     {or_: {'id__gt': 1000, and_ : {
         'id__lt': 500,
-        'related___property__in': (1,2,3)
+        'related___property__in': (1,2,3) 
     }}}
-
+    
     Yields:
 
     'id__gt', 'id__lt', 'related___property__in'
@@ -112,7 +107,6 @@ def _parse_path_and_make_aliases(entity, entity_path, attrs, aliases):
         aliases[path] = alias, relationship
         _parse_path_and_make_aliases(alias, path, nested_attrs, aliases)
 
-
 def _get_root_cls(query):
     # sqlalchemy < 1.4.0
     if hasattr(query, "_entity_zero"):
@@ -126,9 +120,9 @@ def _get_root_cls(query):
     else:
         if query.__dict__["_propagate_attrs"]["plugin_subject"].class_:
             return query.__dict__["_propagate_attrs"]["plugin_subject"].class_
-
-    raise ValueError("Cannot get a root class from`{}`".format(query))
-
+        
+    raise ValueError('Cannot get a root class from`{}`'
+                     .format(query))
 
 def smart_query(query, filters=None, sort_attrs=None, schema=None):
     """
@@ -148,39 +142,26 @@ def smart_query(query, filters=None, sort_attrs=None, schema=None):
     if not sort_attrs:
         sort_attrs = []
 
-    #  Load schema early since we need it to check whether we should eager load a relationship
-    if schema:
-        flat_schema = _flatten_schema(schema)
-    else:
-        flat_schema = {}
-
     # sqlalchemy >= 1.4.0, should probably a. check something else to determine if we need to convert
     # AppenderQuery to a query, b. probably not hack it like this
     # noinspection PyProtectedMember
-    if type(query).__name__ == "AppenderQuery" and query._statement:
+    if type(query).__name__ == 'AppenderQuery' and query._statement:
         sess = query.session
         # noinspection PyProtectedMember
         query = query._statement
         query.session = sess
 
     root_cls = _get_root_cls(query)  # for example, User or Post
-    attrs = list(_flatten_filter_keys(filters)) + list(
-        map(lambda s: s.lstrip(DESC_PREFIX), sort_attrs)
-    )
+    attrs = list(_flatten_filter_keys(filters)) + \
+        list(map(lambda s: s.lstrip(DESC_PREFIX), sort_attrs))
     aliases = OrderedDict({})
-    _parse_path_and_make_aliases(root_cls, "", attrs, aliases)
+    _parse_path_and_make_aliases(root_cls, '', attrs, aliases)
 
     loaded_paths = []
     for path, al in aliases.items():
-        relationship_path = path.replace(RELATION_SPLITTER, ".")
-        if not (
-            relationship_path in flat_schema
-            and flat_schema[relationship_path] == SUBQUERY
-        ):
-            query = query.outerjoin(al[0], al[1]).options(
-                contains_eager(relationship_path, alias=al[0])
-            )
-            loaded_paths.append(relationship_path)
+        relationship_path = path.replace(RELATION_SPLITTER, '.')
+        query = query.outerjoin(al[0], al[1])
+        loaded_paths.append(relationship_path)
 
     def recurse_filters(_filters):
         if isinstance(_filters, abc.Mapping):
@@ -207,7 +188,7 @@ def smart_query(query, filters=None, sort_attrs=None, schema=None):
 
     for attr in sort_attrs:
         if RELATION_SPLITTER in attr:
-            prefix = ""
+            prefix = ''
             if attr.startswith(DESC_PREFIX):
                 prefix = DESC_PREFIX
                 attr = attr.lstrip(DESC_PREFIX)
@@ -220,11 +201,8 @@ def smart_query(query, filters=None, sort_attrs=None, schema=None):
         except KeyError as e:
             raise KeyError("Incorrect order path `{}`: {}".format(attr, e))
 
-    if flat_schema:
-        not_loaded_part = {
-            path: v for path, v in flat_schema.items() if path not in loaded_paths
-        }
-        query = query.options(*_eager_expr_from_flat_schema(not_loaded_part))
+    if schema:
+        query = query.options(*_eager_expr_from_schema(schema))
 
     return query
 
@@ -233,46 +211,53 @@ class SmartQueryMixin(InspectionMixin, EagerLoadMixin):
     __abstract__ = True
 
     _operators = {
-        "isnull": lambda c, v: (c == None) if v else (c != None),
-        "exact": operators.eq,
-        "ne": operators.ne,  # not equal or is not (for None)
-        "gt": operators.gt,  # greater than , >
-        "ge": operators.ge,  # greater than or equal, >=
-        "lt": operators.lt,  # lower than, <
-        "le": operators.le,  # lower than or equal, <=
-        "in": operators.in_op,
-        "notin": operators.notin_op,
-        "between": lambda c, v: c.between(v[0], v[1]),
-        "like": operators.like_op,
-        "ilike": operators.ilike_op,
-        "startswith": operators.startswith_op,
-        "istartswith": lambda c, v: c.ilike(v + "%"),
-        "endswith": operators.endswith_op,
-        "iendswith": lambda c, v: c.ilike("%" + v),
-        "contains": lambda c, v: c.ilike("%{v}%".format(v=v)),
-        "year": lambda c, v: extract("year", c) == v,
-        "year_ne": lambda c, v: extract("year", c) != v,
-        "year_gt": lambda c, v: extract("year", c) > v,
-        "year_ge": lambda c, v: extract("year", c) >= v,
-        "year_lt": lambda c, v: extract("year", c) < v,
-        "year_le": lambda c, v: extract("year", c) <= v,
-        "month": lambda c, v: extract("month", c) == v,
-        "month_ne": lambda c, v: extract("month", c) != v,
-        "month_gt": lambda c, v: extract("month", c) > v,
-        "month_ge": lambda c, v: extract("month", c) >= v,
-        "month_lt": lambda c, v: extract("month", c) < v,
-        "month_le": lambda c, v: extract("month", c) <= v,
-        "day": lambda c, v: extract("day", c) == v,
-        "day_ne": lambda c, v: extract("day", c) != v,
-        "day_gt": lambda c, v: extract("day", c) > v,
-        "day_ge": lambda c, v: extract("day", c) >= v,
-        "day_lt": lambda c, v: extract("day", c) < v,
-        "day_le": lambda c, v: extract("day", c) <= v,
+        'isnull': lambda c, v: (c == None) if v else (c != None),
+        'exact': operators.eq,
+        'ne': operators.ne,  # not equal or is not (for None)
+
+        'gt': operators.gt,  # greater than , >
+        'ge': operators.ge,  # greater than or equal, >=
+        'lt': operators.lt,  # lower than, <
+        'le': operators.le,  # lower than or equal, <=
+
+        'in': operators.in_op,
+        'notin': operators.notin_op,
+        'between': lambda c, v: c.between(v[0], v[1]),
+
+        'like': operators.like_op,
+        'ilike': operators.ilike_op,
+        'startswith': operators.startswith_op,
+        'istartswith': lambda c, v: c.ilike(v + '%'),
+        'endswith': operators.endswith_op,
+        'iendswith': lambda c, v: c.ilike('%' + v),
+        'contains': lambda c, v: c.ilike('%{v}%'.format(v=v)),
+
+        'year': lambda c, v: extract('year', c) == v,
+        'year_ne': lambda c, v: extract('year', c) != v,
+        'year_gt': lambda c, v: extract('year', c) > v,
+        'year_ge': lambda c, v: extract('year', c) >= v,
+        'year_lt': lambda c, v: extract('year', c) < v,
+        'year_le': lambda c, v: extract('year', c) <= v,
+
+        'month': lambda c, v: extract('month', c) == v,
+        'month_ne': lambda c, v: extract('month', c) != v,
+        'month_gt': lambda c, v: extract('month', c) > v,
+        'month_ge': lambda c, v: extract('month', c) >= v,
+        'month_lt': lambda c, v: extract('month', c) < v,
+        'month_le': lambda c, v: extract('month', c) <= v,
+
+        'day': lambda c, v: extract('day', c) == v,
+        'day_ne': lambda c, v: extract('day', c) != v,
+        'day_gt': lambda c, v: extract('day', c) > v,
+        'day_ge': lambda c, v: extract('day', c) >= v,
+        'day_lt': lambda c, v: extract('day', c) < v,
+        'day_le': lambda c, v: extract('day', c) <= v,
     }
 
     @classproperty
     def filterable_attributes(cls):
-        return cls.relations + cls.columns + cls.hybrid_properties + cls.hybrid_methods
+        return cls.relations + cls.columns + \
+               cls.hybrid_properties + cls.hybrid_methods
 
     @classproperty
     def sortable_attributes(cls):
@@ -281,24 +266,24 @@ class SmartQueryMixin(InspectionMixin, EagerLoadMixin):
     @classmethod
     def filter_expr(cls_or_alias, **filters):
         """
-        forms expressions like [StockProduct.age_from = 5,
-                                StockProduct.subject_ids.in_([1,2])]
+        forms expressions like [Product.age_from = 5,
+                                Product.subject_ids.in_([1,2])]
         from filters like {'age_from': 5, 'subject_ids__in': [1,2]}
 
         Example 1:
-            db.query(StockProduct).filter(
-                *StockProduct.filter_expr(age_from = 5, subject_ids__in=[1, 2]))
+            db.query(Product).filter(
+                *Product.filter_expr(age_from = 5, subject_ids__in=[1, 2]))
 
         Example 2:
             filters = {'age_from': 5, 'subject_ids__in': [1,2]}
-            db.query(StockProduct).filter(*StockProduct.filter_expr(**filters))
+            db.query(Product).filter(*Product.filter_expr(**filters))
 
 
         ### About alias ###:
         If we will use alias:
-            alias = aliased(StockProduct) # table name will be product_1
+            alias = aliased(Product) # table name will be product_1
         we can't just write query like
-            db.query(alias).filter(*StockProduct.filter_expr(age_from=5))
+            db.query(alias).filter(*Product.filter_expr(age_from=5))
         because it will be compiled to
             SELECT * FROM product_1 WHERE product.age_from=5
         which is wrong: we select from 'product_1' but filter on 'product'
@@ -307,28 +292,28 @@ class SmartQueryMixin(InspectionMixin, EagerLoadMixin):
         We need to obtain
             SELECT * FROM product_1 WHERE product_1.age_from=5
         For such case, we can call filter_expr ON ALIAS:
-            alias = aliased(StockProduct)
+            alias = aliased(Product)
             db.query(alias).filter(*alias.filter_expr(age_from=5))
 
         Alias realization details:
           * we allow to call this method
             either ON ALIAS (say, alias.filter_expr())
-            or on class (StockProduct.filter_expr())
+            or on class (Product.filter_expr())
           * when method is called on alias, we need to generate SQL using
             aliased table (say, product_1), but we also need to have a real
-            class to call methods on (say, StockProduct.relations)
+            class to call methods on (say, Product.relations)
           * so, we have 'mapper' that holds table name
             and 'cls' that holds real class
 
             when we call this method ON ALIAS, we will have:
                 mapper = <product_1 table>
-                cls = <StockProduct>
+                cls = <Product>
             when we call this method ON CLASS, we will simply have:
-                mapper = <StockProduct> (or we could write <StockProduct>.__mapper__.
+                mapper = <Product> (or we could write <Product>.__mapper__.
                                     It doesn't matter because when we call
-                                    <StockProduct>.getattr, SA will magically
-                                    call <StockProduct>.__mapper__.getattr())
-                cls = <StockProduct>
+                                    <Product>.getattr, SA will magically
+                                    call <Product>.__mapper__.getattr())
+                cls = <Product>
         """
         if isinstance(cls_or_alias, AliasedClass):
             mapper, cls = cls_or_alias, inspect(cls_or_alias).mapper.class_
@@ -349,20 +334,17 @@ class SmartQueryMixin(InspectionMixin, EagerLoadMixin):
                 if OPERATOR_SPLITTER in attr:
                     attr_name, op_name = attr.rsplit(OPERATOR_SPLITTER, 1)
                     if op_name not in cls._operators:
-                        raise KeyError(
-                            "Expression `{}` has incorrect "
-                            "operator `{}`".format(attr, op_name)
-                        )
+                        raise KeyError('Expression `{}` has incorrect '
+                                       'operator `{}`'.format(attr, op_name))
                     op = cls._operators[op_name]
                 # assume equality operator for other cases (say, id=1)
                 else:
                     attr_name, op = attr, operators.eq
 
                 if attr_name not in valid_attributes:
-                    raise KeyError(
-                        "Expression `{}` "
-                        "has incorrect attribute `{}`".format(attr, attr_name)
-                    )
+                    raise KeyError('Expression `{}` '
+                                   'has incorrect attribute `{}`'
+                                   .format(attr, attr_name))
 
                 column = getattr(mapper, attr_name)
                 expressions.append(op(column, value))
@@ -393,9 +375,10 @@ class SmartQueryMixin(InspectionMixin, EagerLoadMixin):
 
         expressions = []
         for attr in columns:
-            fn, attr = (desc, attr[1:]) if attr.startswith(DESC_PREFIX) else (asc, attr)
+            fn, attr = (desc, attr[1:]) if attr.startswith(DESC_PREFIX) \
+                        else (asc, attr)
             if attr not in cls.sortable_attributes:
-                raise KeyError("Cant order {} by {}".format(cls, attr))
+                raise KeyError('Cant order {} by {}'.format(cls, attr))
 
             expr = fn(getattr(mapper, attr))
             expressions.append(expr)
@@ -414,18 +397,18 @@ class SmartQueryMixin(InspectionMixin, EagerLoadMixin):
         :param sort_attrs: List[basestring]
         :param schema: dict
         """
-        return smart_query(select(cls), filters, sort_attrs, schema)
+        return smart_query(cls.query, filters, sort_attrs, schema)
 
     @classmethod
     def where(cls, **filters):
         """
         Shortcut for smart_query() method
         Example 1:
-          StockProduct.where(subject_ids__in=[1,2], grade_from_id=2).all()
+          Product.where(subject_ids__in=[1,2], grade_from_id=2).all()
 
         Example 2:
           filters = {'subject_ids__in': [1,2], 'grade_from_id': 2}
-          StockProduct.where(**filters).all()
+          Product.where(**filters).all()
 
         Example 3 (with joins):
           Post.where(public=True, user___name__startswith='Bi').all()

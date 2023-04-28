@@ -198,6 +198,7 @@ async def create_analysis_request(
 
         #
         sample_schema = schemas.SampleCreate(**sample_in)
+        print(sample_schema.dict())
         sample: analysis_models.Sample = await analysis_models.Sample.create(
             sample_schema
         )

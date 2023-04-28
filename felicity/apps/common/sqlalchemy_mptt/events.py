@@ -41,7 +41,7 @@ def _insert_subtree(
     delta_rgt = delta_lft + node_size - 1
 
     connection.execute(
-        table.update(table_pk.in_(subtree)).values(
+        table.update().where(table_pk.in_(subtree)).values(
             lft=table.c.lft - node_pos_left + delta_lft,
             rgt=table.c.rgt - node_pos_right + delta_rgt,
             level=table.c.level - node_level + parent_level + 1,
@@ -51,7 +51,7 @@ def _insert_subtree(
 
     # step 2: update key of right side
     connection.execute(
-        table.update(
+        table.update().where(
             and_(
                 table.c.rgt > delta_lft - 1,
                 table_pk.notin_(subtree),
@@ -60,7 +60,7 @@ def _insert_subtree(
         ).values(
             rgt=table.c.rgt + node_size,
             lft=case(
-                [(table.c.lft > left_sibling["lft"], table.c.lft + node_size)],
+                (table.c.lft > left_sibling["lft"], table.c.lft + node_size),
                 else_=table.c.lft,
             ),
         )
@@ -86,7 +86,7 @@ def mptt_before_insert(mapper, connection, instance):
         instance.right = 2
         instance.level = instance.get_default_level()
         tree_id = connection.scalar(
-            select([func.max(table.c.tree_id) + 1])) or 1
+            select(func.max(table.c.tree_id) + 1)) or 1
         instance.tree_id = tree_id
     else:
         (
@@ -95,23 +95,23 @@ def mptt_before_insert(mapper, connection, instance):
             parent_tree_id,
             parent_level,
         ) = connection.execute(
-            select([table.c.lft, table.c.rgt, table.c.tree_id, table.c.level]).where(
+            select(table.c.lft, table.c.rgt, table.c.tree_id, table.c.level).where(
                 table_pk == instance.parent_id
             )
         ).fetchone()
 
         # Update key of right side
         connection.execute(
-            table.update(
+            table.update().where(
                 and_(table.c.rgt >= parent_pos_right,
                      table.c.tree_id == parent_tree_id)
             ).values(
                 lft=case(
-                    [(table.c.lft > parent_pos_right, table.c.lft + 2)],
+                    (table.c.lft > parent_pos_right, table.c.lft + 2),
                     else_=table.c.lft,
                 ),
                 rgt=case(
-                    [(table.c.rgt >= parent_pos_right, table.c.rgt + 2)],
+                    (table.c.rgt >= parent_pos_right, table.c.rgt + 2),
                     else_=table.c.rgt,
                 ),
             )
@@ -130,7 +130,7 @@ def mptt_before_delete(mapper, connection, instance, delete=True):
     db_pk = instance.get_pk_column()
     table_pk = getattr(table.c, db_pk.name)
     lft, rgt = connection.execute(
-        select([table.c.lft, table.c.rgt]).where(table_pk == pk)
+        select(table.c.lft, table.c.rgt).where(table_pk == pk)
     ).fetchone()
     delta = rgt - lft + 1
 
@@ -152,11 +152,11 @@ def mptt_before_delete(mapper, connection, instance, delete=True):
             END
         """
         connection.execute(
-            table.update(and_(table.c.rgt > rgt, table.c.tree_id == tree_id)).values(
-                lft=case([(table.c.lft > lft, table.c.lft - delta)],
+            table.update().where(and_(table.c.rgt > rgt, table.c.tree_id == tree_id)).values(
+                lft=case((table.c.lft > lft, table.c.lft - delta),
                          else_=table.c.lft),
                 rgt=case(
-                    [(table.c.rgt >= rgt, table.c.rgt - delta)], else_=table.c.rgt
+                    (table.c.rgt >= rgt, table.c.rgt - delta), else_=table.c.rgt
                 ),
             )
         )
@@ -187,18 +187,16 @@ def mptt_before_update(mapper, connection, instance):
             right_sibling_tree_id,
         ) = connection.execute(
             select(
-                [
                     table.c.lft,
                     table.c.rgt,
                     table.c.parent_id,
                     table.c.level,
-                    table.c.tree_id,
-                ]
+                    table.c.tree_id
             ).where(table_pk == instance.mptt_move_before)
         ).fetchone()
         current_lvl_nodes = connection.execute(
             select(
-                [table.c.lft, table.c.rgt, table.c.parent_id, table.c.tree_id]
+                table.c.lft, table.c.rgt, table.c.parent_id, table.c.tree_id
             ).where(
                 and_(
                     table.c.level == right_sibling_level,
@@ -233,7 +231,7 @@ def mptt_before_update(mapper, connection, instance):
             left_sibling_tree_id,
         ) = connection.execute(
             select(
-                [table.c.lft, table.c.rgt, table.c.parent_id, table.c.tree_id]
+                table.c.lft, table.c.rgt, table.c.parent_id, table.c.tree_id
             ).where(table_pk == instance.mptt_move_after)
         ).fetchone()
         instance.parent_id = left_sibling_parent
@@ -250,7 +248,7 @@ def mptt_before_update(mapper, connection, instance):
         ORDER BY left_key
     """
     subtree = connection.execute(
-        select([table_pk])
+        select(table_pk)
         .where(
             and_(
                 table.c.lft >= instance.left,
@@ -274,13 +272,11 @@ def mptt_before_update(mapper, connection, instance):
         node_level,
     ) = connection.execute(
         select(
-            [
                 table.c.lft,
                 table.c.rgt,
                 table.c.tree_id,
                 table.c.parent_id,
-                table.c.level,
-            ]
+                table.c.level
         ).where(table_pk == node_id)
     ).fetchone()
 
@@ -304,8 +300,8 @@ def mptt_before_update(mapper, connection, instance):
             parent_level,
         ) = connection.execute(
             select(
-                [table_pk, table.c.rgt, table.c.lft,
-                    table.c.tree_id, table.c.level]
+                table_pk, table.c.rgt, table.c.lft,
+                    table.c.tree_id, table.c.level
             ).where(table_pk == instance.parent_id)
         ).fetchone()
         if node_parent_id is None and node_tree_id == parent_tree_id:
@@ -327,8 +323,8 @@ def mptt_before_update(mapper, connection, instance):
             parent_level,
         ) = connection.execute(
             select(
-                [table_pk, table.c.rgt, table.c.lft,
-                    table.c.tree_id, table.c.level]
+                table_pk, table.c.rgt, table.c.lft,
+                    table.c.tree_id, table.c.level
             ).where(table_pk == instance.parent_id)
         ).fetchone()
         # 'size' of moving node (including all it's sub nodes)
@@ -364,17 +360,17 @@ def mptt_before_update(mapper, connection, instance):
         if left_sibling_tree_id or left_sibling_tree_id == 0:
             tree_id = left_sibling_tree_id + 1
             connection.execute(
-                table.update(table.c.tree_id > left_sibling_tree_id).values(
+                table.update().where(table.c.tree_id > left_sibling_tree_id).values(
                     tree_id=table.c.tree_id + 1
                 )
             )
         # if just insert
         else:
             tree_id = connection.scalar(
-                select([func.max(table.c.tree_id) + 1]))
+                select(func.max(table.c.tree_id) + 1))
 
         connection.execute(
-            table.update(table_pk.in_(subtree)).values(
+            table.update().where(table_pk.in_(subtree)).values(
                 lft=table.c.lft - node_pos_left + 1,
                 rgt=table.c.rgt - node_pos_left + 1,
                 level=table.c.level - node_level + default_level,
@@ -399,7 +395,7 @@ class _WeakdictBasedSet(weakref.WeakKeyDictionary, object):
         return self.popitem()[0]
 
 
-class _WeakDefaultdict(weakref.WeakKeyDictionary, object):
+class _WeakDefaultDict(weakref.WeakKeyDictionary, object):
     def __getitem__(self, key):
         try:
             return super(_WeakDefaultDict, self).__getitem__(key)
@@ -416,7 +412,7 @@ class TreesManager(object):
     def __init__(self, base_class):
         self.base_class = base_class
         self.classes = set()
-        self.instances = _WeakDefaultdict()
+        self.instances = _WeakDefaultDict()
 
     def register_events(self, remove=False):
         for e, h in (

@@ -3,6 +3,7 @@ from typing import List, Optional
 
 import strawberry  # noqa
 from api.gql import PageInfo
+from api.gql.setup.types.department import DepartmentType
 from core.uid_gen import FelicityID
 
 
@@ -100,5 +101,5 @@ class UserCursorPage:
 class UserPreferenceType:
     uid: FelicityID
     expanded_menu: bool| None
-    # departments: Optional[List["api.gql.setup.types.DepartmentType"]]
+    departments: list[DepartmentType] | None
     theme: str | None
