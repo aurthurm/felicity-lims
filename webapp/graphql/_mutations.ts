@@ -95,7 +95,7 @@ export const EDIT_USER = gql`
     ${PermissionTypeFields}
     ${GroupTypeFields}
     mutation editUser(
-        $userUid: str!
+        $userUid: String!
         $firstName: String!
         $lastName: String
         $email: String
@@ -145,7 +145,7 @@ export const EDIT_USER = gql`
 export const ADD_USER_AUTH = gql`
     ${PermissionTypeFields}
     ${GroupTypeFields}
-    mutation addUserAuth($userUid: str!, $userName: String!, $password: String!, $passwordc: String!) {
+    mutation addUserAuth($userUid: String!, $userName: String!, $password: String!, $passwordc: String!) {
         createUserAuth(userUid: $userUid, userName: $userName, password: $password, passwordc: $passwordc) {
             ... on UserType {
                 uid
@@ -180,7 +180,7 @@ export const ADD_USER_AUTH = gql`
 export const EDIT_USER_AUTH = gql`
     ${PermissionTypeFields}
     ${GroupTypeFields}
-    mutation editUserAuth($userUid: str!, $userName: String!, $password: String!, $passwordc: String!) {
+    mutation editUserAuth($userUid: String!, $userName: String!, $password: String!, $passwordc: String!) {
         updateUserAuth(userUid: $userUid, userName: $userName, password: $password, passwordc: $passwordc) {
             ... on UserType {
                 uid
@@ -238,7 +238,7 @@ export const ADD_GROUP = gql`
 `;
 
 export const UPDATE_GROUP = gql`
-    mutation editGroup($uid: str!, $payload: GroupInputType!) {
+    mutation editGroup($uid: String!, $payload: GroupInputType!) {
         updateGroup(uid: $uid, payload: $payload) {
             ... on GroupType {
                 __typename
@@ -263,7 +263,7 @@ export const UPDATE_GROUP = gql`
 `;
 
 export const UPDATE_GROUP_PERMS = gql`
-    mutation updateGroupsAndPermissions($groupUid: str!, $permissionUid: str!) {
+    mutation updateGroupsAndPermissions($groupUid: String!, $permissionUid: String!) {
         updateGroupPermissions(groupUid: $groupUid, permissionUid: $permissionUid) {
             ... on UpdatedGroupPerms {
                 group {
@@ -310,7 +310,7 @@ export const ADD_DEPARTMENT = gql`
 `;
 
 export const UPDATE_DEPARTMENT = gql`
-    mutation editDepartment($uid: str!, $payload: DepartmentInputType!) {
+    mutation editDepartment($uid: String!, $payload: DepartmentInputType!) {
         updateDepartment(uid: $uid, payload: $payload) {
             ... on DepartmentType {
                 uid
@@ -326,7 +326,7 @@ export const UPDATE_DEPARTMENT = gql`
 `;
 
 export const UPDATE_LABORATOTY = gql`
-    mutation editLaboratory($uid: str!, $payload: LaboratoryInputType!) {
+    mutation editLaboratory($uid: String!, $payload: LaboratoryInputType!) {
         updateLaboratory(uid: $uid, payload: $payload) {
             ... on LaboratoryType {
                 uid
@@ -350,7 +350,7 @@ export const UPDATE_LABORATOTY = gql`
 `;
 
 export const UPDATE_LABORATOTY_SETTING = gql`
-    mutation editLaboratorySetting($uid: str!, $payload: LaboratorySettingInputType!) {
+    mutation editLaboratorySetting($uid: String!, $payload: LaboratorySettingInputType!) {
         updateLaboratorySetting(uid: $uid, payload: $payload) {
             ... on LaboratorySettingType {
                 uid

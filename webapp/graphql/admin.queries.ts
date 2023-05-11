@@ -35,7 +35,7 @@ export const GET_ALL_PROVINCES = gql`
 `;
 
 export const FILTER_PROVINCES_BY_COUNTRY = gql`
-    query filterProvincesByCountry($uid: str!) {
+    query filterProvincesByCountry($uid: String!) {
         provincesByCountryUid(uid: $uid) {
             name
             uid
@@ -70,7 +70,7 @@ export const GET_ALL_DISTRICTS = gql`
 `;
 
 export const FILTER_DISTRICTS_BY_PROVINCE = gql`
-    query filterDistrictsByProvince($uid: str!) {
+    query filterDistrictsByProvince($uid: String!) {
         districtsByProvinceUid(uid: $uid) {
             name
             uid

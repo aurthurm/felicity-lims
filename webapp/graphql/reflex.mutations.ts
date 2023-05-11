@@ -21,7 +21,7 @@ export const ADD_REFLEX_RULE = gql`
 `;
 
 export const EDIT_REFLEX_RULE = gql`
-    mutation editReflexR($uid: str!, $payload: ReflexRuleInput!) {
+    mutation editReflexR($uid: String!, $payload: ReflexRuleInput!) {
         updateReflexRule(uid: $uid, payload: $payload) {
             ... on ReflexRuleType {
                 __typename
@@ -67,7 +67,7 @@ export const ADD_REFLEX_ACTION = gql`
 `;
 
 export const EDIT_REFLEX_ACTION = gql`
-    mutation editReflexA($uid: str!, $payload: ReflexActionInput!) {
+    mutation editReflexA($uid: String!, $payload: ReflexActionInput!) {
         updateReflexAction(uid: $uid, payload: $payload) {
             ... on ReflexActionType {
                 __typename
@@ -136,7 +136,7 @@ export const ADD_REFLEX_BRAIN = gql`
 `;
 
 export const EDIT_REFLEX_BRAIN = gql`
-    mutation editReflexB($uid: str!, $payload: ReflexBrainInput!) {
+    mutation editReflexB($uid: String!, $payload: ReflexBrainInput!) {
         updateReflexBrain(uid: $uid, payload: $payload) {
             ... on ReflexBrainType {
                 __typename

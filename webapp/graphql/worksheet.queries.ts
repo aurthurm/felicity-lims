@@ -72,7 +72,7 @@ export const GET_ALL_WORKSHEETS = gql`
 `;
 
 export const GET_WORKSHEET_BY_UID = gql`
-    query getWorkSheetByUid($worksheetUid: str!) {
+    query getWorkSheetByUid($worksheetUid: String!) {
         worksheetByUid(worksheetUid: $worksheetUid) {
             uid
             worksheetId

@@ -125,7 +125,7 @@ export const SEARCH_PATIENTS = gql`
 `;
 
 export const GET_PATIENT_BY_UID = gql`
-    query getPatientByUid($uid: str!) {
+    query getPatientByUid($uid: String!) {
         patientByUid(uid: $uid) {
             uid
             clientPatientId

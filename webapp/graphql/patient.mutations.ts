@@ -19,7 +19,7 @@ export const ADD_IDENTIFICATION = gql`
 `;
 
 export const UPDATE_IDENTIFICATION = gql`
-    mutation EditIdentification($uid: str!, $name: String!) {
+    mutation EditIdentification($uid: String!, $name: String!) {
         updateIdentification(uid: $uid, name: $name) {
             ... on IdentificationType {
                 __typename
@@ -100,7 +100,7 @@ export const ADD_PATIENT = gql`
 `;
 
 export const UPDATE_PATIENT = gql`
-    mutation EditPatient($uid: str!, $payload: PatientInputType!) {
+    mutation EditPatient($uid: String!, $payload: PatientInputType!) {
         updatePatient(uid: $uid, payload: $payload) {
             ... on PatientType {
                 __typename

@@ -18,7 +18,7 @@ export const GET_ALL_REFLEX_RULES = gql`
 `;
 
 export const GET_EFLEX_RULE_BY_UID = gql`
-    query getReflexRuleByUid($uid: str!) {
+    query getReflexRuleByUid($uid: String!) {
         reflexRuleByUid(uid: $uid) {
             uid
             name

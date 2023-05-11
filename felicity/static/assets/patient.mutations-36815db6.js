@@ -15,7 +15,7 @@ import{al as i}from"./index-cd9e6ac8.js";const t=i`
         }
     }
 `,n=i`
-    mutation EditIdentification($uid: str!, $name: String!) {
+    mutation EditIdentification($uid: String!, $name: String!) {
         updateIdentification(uid: $uid, name: $name) {
             ... on IdentificationType {
                 __typename
@@ -92,7 +92,7 @@ import{al as i}from"./index-cd9e6ac8.js";const t=i`
         }
     }
 `,d=i`
-    mutation EditPatient($uid: str!, $payload: PatientInputType!) {
+    mutation EditPatient($uid: String!, $payload: PatientInputType!) {
         updatePatient(uid: $uid, payload: $payload) {
             ... on PatientType {
                 __typename

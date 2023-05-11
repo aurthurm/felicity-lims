@@ -29,7 +29,7 @@ import{al as t}from"./index-cd9e6ac8.js";const n=t`
         }
     }
 `,a=t`
-    mutation editClient($uid: str!, $payload: ClientInputType!) {
+    mutation editClient($uid: String!, $payload: ClientInputType!) {
         updateClient(uid: $uid, payload: $payload) {
             ... on ClientType {
                 __typename
@@ -79,7 +79,7 @@ import{al as t}from"./index-cd9e6ac8.js";const n=t`
         }
     }
 `,o=t`
-    mutation editClientContact($uid: str!, $payload: ClientContactInputType!) {
+    mutation editClientContact($uid: String!, $payload: ClientContactInputType!) {
         updateClientContact(uid: $uid, payload: $payload) {
             ... on ClientContactType {
                 __typename
@@ -99,7 +99,7 @@ import{al as t}from"./index-cd9e6ac8.js";const n=t`
         }
     }
 `,d=t`
-    mutation deleteClientContact($uid: str!) {
+    mutation deleteClientContact($uid: String!) {
         deleteClientContact(uid: $uid) {
             ... on DeletedItem {
                 uid

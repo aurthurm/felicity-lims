@@ -20,7 +20,7 @@ export const ADD_SUPPLIER = gql`
 `;
 
 export const EDIT_SUPPLIER = gql`
-    mutation EditSupplier($uid: str!, $payload: SupplierInputType!) {
+    mutation EditSupplier($uid: String!, $payload: SupplierInputType!) {
         updateSupplier(uid: $uid, payload: $payload) {
             ... on SupplierType {
                 uid
@@ -57,7 +57,7 @@ export const ADD_MANUFACTURER = gql`
 `;
 
 export const EDIT_MANUFACTURER = gql`
-    mutation EditManufacturer($uid: str!, $payload: ManufacturerInputType!) {
+    mutation EditManufacturer($uid: String!, $payload: ManufacturerInputType!) {
         updateManufacturer(uid: $uid, payload: $payload) {
             ... on ManufacturerType {
                 uid
@@ -94,7 +94,7 @@ export const ADD_INSTRUMENT_TYPE = gql`
 `;
 
 export const EDIT_INSTRUMENT_TYPE = gql`
-    mutation EditInstrumentType($uid: str!, $payload: InstrumentTypeInputType!) {
+    mutation EditInstrumentType($uid: String!, $payload: InstrumentTypeInputType!) {
         updateInstrumentType(uid: $uid, payload: $payload) {
             ... on InstrumentTypeType {
                 uid
@@ -144,7 +144,7 @@ export const ADD_INSTRUMENT = gql`
 `;
 
 export const EDIT_INSTRUMENT = gql`
-    mutation EditInstrument($uid: str!, $payload: InstrumentInputType!) {
+    mutation EditInstrument($uid: String!, $payload: InstrumentInputType!) {
         updateInstrument(uid: $uid, payload: $payload) {
             ... on InstrumentType {
                 uid
@@ -195,7 +195,7 @@ export const ADD_METHOD = gql`
 `;
 
 export const EDIT_METHOD = gql`
-    mutation EditMethod($uid: str!, $payload: MethodInputType!) {
+    mutation EditMethod($uid: String!, $payload: MethodInputType!) {
         updateMethod(uid: $uid, payload: $payload) {
             ... on MethodType {
                 uid
@@ -233,7 +233,7 @@ export const ADD_UNIT = gql`
 `;
 
 export const EDIT_UNIT = gql`
-    mutation EditUnit($uid: str!, $payload: UnitInputType!) {
+    mutation EditUnit($uid: String!, $payload: UnitInputType!) {
         updateUnit(uid: $uid, payload: $payload) {
             ... on UnitType {
                 uid

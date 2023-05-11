@@ -312,7 +312,7 @@ export const GET_ALL_SAMPLES = gql`
         $before: String
         $status: String!
         $text: String!
-        $clientUid: str!
+        $clientUid: String!
         $sortBy: [String!]
     ) {
         sampleAll(
@@ -421,7 +421,7 @@ export const GET_ALL_SAMPLES = gql`
 `;
 
 export const GET_ANALYSIS_REQUESTS_BY_PATIENT_UID = gql`
-    query getAnalysesRequestsByPatientUid($uid: str!) {
+    query getAnalysesRequestsByPatientUid($uid: String!) {
         analysisRequestsByPatientUid(uid: $uid) {
             uid
             clientRequestId
@@ -498,7 +498,7 @@ export const GET_ANALYSIS_REQUESTS_BY_PATIENT_UID = gql`
 `;
 
 export const GET_ANALYSIS_REQUESTS_BY_CLIENT_UID = gql`
-    query getAnalysesRequestsByClientUid($uid: str!) {
+    query getAnalysesRequestsByClientUid($uid: String!) {
         analysisRequestsByClientUid(uid: $uid) {
             uid
             clientRequestId
@@ -575,7 +575,7 @@ export const GET_ANALYSIS_REQUESTS_BY_CLIENT_UID = gql`
 `;
 
 export const GET_ANALYSIS_RESULTS_BY_SAMPLE_UID = gql`
-    query getAnalysesResultsBySampleUid($uid: str!) {
+    query getAnalysesResultsBySampleUid($uid: String!) {
         analysisResultBySampleUid(uid: $uid) {
             uid
             status
@@ -639,8 +639,8 @@ export const GET_ANALYSIS_RESULTS_FOR_WS_ASSIGN = gql`
         $after: String
         $text: String!
         $sortBy: [String!]
-        $analysisUid: str!
-        $sampleTypeUid: str!
+        $analysisUid: String!
+        $sampleTypeUid: String!
     ) {
         analysisResultsForWsAssign(
             pageSize: $first
@@ -682,7 +682,7 @@ export const GET_ANALYSIS_RESULTS_FOR_WS_ASSIGN = gql`
 `;
 
 export const GET_SAMPLE_BY_UID = gql`
-    query getSampleByUid($uid: str!) {
+    query getSampleByUid($uid: String!) {
         sampleByUid(uid: $uid) {
             uid
             createdByUid
@@ -773,7 +773,7 @@ export const GET_SAMPLE_BY_UID = gql`
 `;
 
 export const GET_SAMPLE_STATUS_BY_UID = gql`
-    query getSampleByUid($uid: str!) {
+    query getSampleByUid($uid: String!) {
         sampleByUid(uid: $uid) {
             uid
             sampleId
@@ -793,7 +793,7 @@ export const GET_SAMPLE_BY_PARENT_ID = gql`
 `;
 
 export const GET_SAMPLES_BY_STORAGE_CONTAINER_UID = gql`
-    query getSamplesByStorageContainerUid($uid: str!) {
+    query getSamplesByStorageContainerUid($uid: String!) {
         samplesByStorageContainerUid(uid: $uid) {
             uid
             sampleId
@@ -921,7 +921,7 @@ export const GET_ALL_QC_SETS = gql`
 `;
 
 export const GET_QC_SET_BY_UID = gql`
-    query getQCSetByUid($uid: str!) {
+    query getQCSetByUid($uid: String!) {
         qcSetByUid(uid: $uid) {
             uid
             name
@@ -989,7 +989,7 @@ export const GET_QC_SET_BY_UID = gql`
 `;
 
 export const GET_RESULT_OPTIONS_FOR_ANALYSIS = gql`
-    query resultOptionsByAnalysisUid($uid: str!) {
+    query resultOptionsByAnalysisUid($uid: String!) {
         resultOptionsByAnalysisUid(uid: $uid) {
             uid
             optionKey
@@ -1036,7 +1036,7 @@ export const DOWNLOAD_IMPRESS_SAMPLES = gql`
 `;
 
 export const DOWNLOAD_IMPRESS = gql`
-    query impressReport($uid: str!) {
+    query impressReport($uid: String!) {
         impressReportDownload(uid: $uid)
     }
 `;

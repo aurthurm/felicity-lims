@@ -15,7 +15,7 @@ import{al as f,d as Q,a4 as W,r as w,A as k,U as P,B as X,o as r,g as c,h as t,F
         }
     }
 `,re=f`
-    mutation editCountry($uid: str!, $payload: CountryInputType!) {
+    mutation editCountry($uid: String!, $payload: CountryInputType!) {
         updateCountry(uid: $uid, payload: $payload) {
             ... on CountryType {
                 __typename
@@ -48,7 +48,7 @@ import{al as f,d as Q,a4 as W,r as w,A as k,U as P,B as X,o as r,g as c,h as t,F
         }
     }
 `,de=f`
-    mutation editProvince($uid: str!, $payload: ProvinceInputType!) {
+    mutation editProvince($uid: String!, $payload: ProvinceInputType!) {
         updateProvince(uid: $uid, payload: $payload) {
             ... on ProvinceType {
                 __typename
@@ -82,7 +82,7 @@ import{al as f,d as Q,a4 as W,r as w,A as k,U as P,B as X,o as r,g as c,h as t,F
         }
     }
 `,ue=f`
-    mutation editDistrict($uid: str!, $payload: DistrictInputType!) {
+    mutation editDistrict($uid: String!, $payload: DistrictInputType!) {
         updateDistrict(uid: $uid, payload: $payload) {
             ... on DistrictType {
                 __typename

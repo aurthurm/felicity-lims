@@ -55,7 +55,7 @@ export const ADD_WORKSHEET_TEMPLATE = gql`
 `;
 
 export const EDIT_WORKSHEET_TEMPLATE = gql`
-    mutation EditWorkSheetTemplate($uid: str!, $payload: WorksheetTemplateInputType!) {
+    mutation EditWorkSheetTemplate($uid: String!, $payload: WorksheetTemplateInputType!) {
         updateWorksheetTemplate(uid: $uid, payload: $payload) {
             ... on WorkSheetTemplateType {
                 __typename
@@ -109,7 +109,7 @@ export const EDIT_WORKSHEET_TEMPLATE = gql`
 `;
 
 export const ADD_WORKSHEET = gql`
-    mutation AddWorkSheet($analystUid: str!, $templateUid: str!, $count: Int) {
+    mutation AddWorkSheet($analystUid: String!, $templateUid: String!, $count: Int) {
         createWorksheet(analystUid: $analystUid, templateUid: $templateUid, count: $count) {
             ... on WorksheetListingType {
                 __typename
@@ -153,7 +153,7 @@ export const ADD_WORKSHEET = gql`
 
 export const WORKSHEET_UPDATE = gql`
     mutation UpdateWorkSheet(
-        $worksheetUid: str!
+        $worksheetUid: String!
         $analystUid: str
         $instrumentUid: str
         $methodUid: str
@@ -199,7 +199,7 @@ export const WORKSHEET_UPDATE = gql`
 `;
 
 export const EDIT_WORKSHEET_APPLY_TEMPLATE = gql`
-    mutation EditWorkSheetApplyTemplate($worksheetUid: str!, $templateUid: str!) {
+    mutation EditWorkSheetApplyTemplate($worksheetUid: String!, $templateUid: String!) {
         updateWorksheetApplyTemplate(worksheetUid: $worksheetUid, templateUid: $templateUid) {
             ... on WorkSheetType {
                 __typename
@@ -232,7 +232,7 @@ export const EDIT_WORKSHEET_APPLY_TEMPLATE = gql`
 `;
 
 export const WORKSHEET_MANUAL_ASSIGN = gql`
-    mutation ManualyAssignWorsheet($uid: str!, $qcTemplateUid: str!, $analysesUids: [str!]!) {
+    mutation ManualyAssignWorsheet($uid: String!, $qcTemplateUid: String!, $analysesUids: [str!]!) {
         updateWorksheetManualAssign(uid: $uid, qcTemplateUid: $qcTemplateUid, analysesUids: $analysesUids) {
             ... on WorkSheetType {
                 __typename
