@@ -3,7 +3,7 @@ from typing import List, Optional
 import strawberry  # noqa
 from api.gql.notification.types import NotificationType
 from apps.notification import models
-from core.uid_gen import FelicityID
+
 
 
 @strawberry.type
@@ -12,9 +12,9 @@ class StreamNotificationQuery:
     async def notification_filter(
         self,
         info,
-        group_uid: FelicityID | None,
-        department_uid: FelicityID | None,
-        user_uid: FelicityID | None,
+        group_uid: str | None,
+        department_uid: str | None,
+        user_uid: str | None,
     ) -> List[NotificationType]:
         filters = {}
 
@@ -38,6 +38,6 @@ class StreamNotificationQuery:
 
     @strawberry.field
     async def notification_by_uid(
-        self, info, uid: FelicityID
+        self, info, uid: str
     ) -> Optional[NotificationType]:
         return await models.Notification.get(uid=uid)

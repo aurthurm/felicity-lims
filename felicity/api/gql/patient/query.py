@@ -10,7 +10,7 @@ from api.gql.patient.types import (
     PatientType,
 )
 from apps.patient import models
-from core.uid_gen import FelicityID
+
 from utils import has_value_or_is_truthy
 
 
@@ -65,7 +65,7 @@ class PatientQuery:
         )
 
     @strawberry.field
-    async def patient_by_uid(self, info, uid: FelicityID) -> Optional[PatientType]:
+    async def patient_by_uid(self, info, uid: str) -> Optional[PatientType]:
         return await models.Patient.get(uid=uid)
 
     @strawberry.field
@@ -99,5 +99,5 @@ class PatientQuery:
         return await models.Identification.all()
 
     @strawberry.field
-    async def identification_by_uid(self, info, uid: FelicityID) -> IdentificationType:
+    async def identification_by_uid(self, info, uid: str) -> IdentificationType:
         return await models.Identification.get(uid=uid)

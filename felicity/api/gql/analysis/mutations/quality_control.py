@@ -12,7 +12,7 @@ from apps.analysis.models import qc as qc_models
 from apps.analysis.models import results as result_models
 from apps.analysis.utils import get_qc_sample_type
 from apps.setup.models import setup as setup_models
-from core.uid_gen import FelicityID
+
 from utils import get_passed_args
 
 logging.basicConfig(level=logging.INFO)
@@ -21,10 +21,10 @@ logger = logging.getLogger(__name__)
 
 @strawberry.input
 class QCSetInputType:
-    qcTemplateUid: FelicityID | None
-    qcLevels: List[FelicityID]
-    analysisProfiles: List[FelicityID]
-    analysisServices: List[FelicityID]
+    qcTemplateUid: str | None
+    qcLevels: List[str]
+    analysisProfiles: List[str]
+    analysisServices: List[str]
 
 
 @strawberry.type
@@ -37,8 +37,8 @@ class CreateQCSetData:
 class QCTemplateInputType:
     name: str
     description: str = ""
-    departments: Optional[List[FelicityID]] = None
-    levels: List[FelicityID] = None
+    departments: Optional[List[str]] = None
+    levels: List[str] = None
 
 
 QCSetResponse = strawberry.union(
@@ -165,7 +165,7 @@ async def create_QC_level(info, level: str) -> QCLevelResponse:
 
 
 @strawberry.mutation
-async def update_QC_level(info, uid: FelicityID, level: str) -> QCLevelResponse:
+async def update_QC_level(info, uid: str, level: str) -> QCLevelResponse:
     is_authenticated, felicity_user = await auth_from_info(info)
     verify_user_auth(
         is_authenticated, felicity_user, "Only Authenticated user can update qc-levels"
@@ -229,7 +229,7 @@ async def create_QC_template(info, payload: QCTemplateInputType) -> QCTemplateRe
 
 @strawberry.mutation
 async def update_QC_template(
-    info, uid: FelicityID, payload: QCTemplateInputType
+    info, uid: str, payload: QCTemplateInputType
 ) -> QCTemplateResponse:
 
     is_authenticated, felicity_user = await auth_from_info(info)

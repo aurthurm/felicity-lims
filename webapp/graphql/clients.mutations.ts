@@ -33,7 +33,7 @@ export const ADD_CLIENT = gql`
 `;
 
 export const EDIT_CLIENT = gql`
-    mutation editClient($uid: FelicityID!, $payload: ClientInputType!) {
+    mutation editClient($uid: str!, $payload: ClientInputType!) {
         updateClient(uid: $uid, payload: $payload) {
             ... on ClientType {
                 __typename
@@ -87,7 +87,7 @@ export const ADD_CLIENT_CONTACT = gql`
 `;
 
 export const EDIT_CLIENT_CONTACT = gql`
-    mutation editClientContact($uid: FelicityID!, $payload: ClientContactInputType!) {
+    mutation editClientContact($uid: str!, $payload: ClientContactInputType!) {
         updateClientContact(uid: $uid, payload: $payload) {
             ... on ClientContactType {
                 __typename
@@ -111,7 +111,7 @@ export const EDIT_CLIENT_CONTACT = gql`
 
 
 export const DELETE_CLIENT_CONTACT = gql`
-    mutation deleteClientContact($uid: FelicityID!) {
+    mutation deleteClientContact($uid: str!) {
         deleteClientContact(uid: $uid) {
             ... on DeletedItem {
                 uid

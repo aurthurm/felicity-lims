@@ -2,7 +2,7 @@ from typing import List, Optional
 
 from apps.common.schemas import BaseAuditModel, BaseModel
 from apps.user.conf import themes
-from core.uid_gen import FelicityIDType
+
 from pydantic import EmailStr
 
 #
@@ -25,11 +25,11 @@ class PermissionCreate(PermissionBase):
 
 # Properties to receive via API on update
 class PermissionUpdate(PermissionBase):
-    uid: FelicityIDType| None = None
+    uid: str| None = None
 
 
 class PermissionInDBBase(PermissionBase):
-    uid: FelicityIDType| None = None
+    uid: str| None = None
 
     class Config:
         orm_mode = True
@@ -64,11 +64,11 @@ class GroupCreate(GroupBase):
 
 # Properties to receive via API on update
 class GroupUpdate(GroupBase):
-    uid: FelicityIDType| None = None
+    uid: str| None = None
 
 
 class GroupInDBBase(GroupBase):
-    uid: FelicityIDType| None = None
+    uid: str| None = None
 
     class Config:
         orm_mode = True
@@ -94,7 +94,7 @@ class UserPreferenceBase(BaseAuditModel):
 
 
 class UserPreference(UserPreferenceBase):
-    uid: FelicityIDType| None = None
+    uid: str| None = None
 
     class Config:
         orm_mode = True
@@ -142,12 +142,12 @@ class UserCreate(UserBase):
 
 # Properties to receive via API on update
 class UserUpdate(UserBase):
-    auth_uid: FelicityIDType| None = None
-    preference_uid: FelicityIDType| None = None
+    auth_uid: str| None = None
+    preference_uid: str| None = None
 
 
 class UserInDBBase(UserBase):
-    uid: FelicityIDType| None = None
+    uid: str| None = None
 
     class Config:
         orm_mode = True
@@ -155,7 +155,7 @@ class UserInDBBase(UserBase):
 
 # Additional properties to return via API
 class UserBasic(UserBasicBase):
-    uid: FelicityIDType| None = None
+    uid: str| None = None
 
     class Config:
         orm_mode = True
@@ -199,7 +199,7 @@ class AuthUpdate(AuthBase):
 
 
 class AuthInDBBase(AuthBase):
-    uid: FelicityIDType| None = None
+    uid: str| None = None
 
     class Config:
         orm_mode = True

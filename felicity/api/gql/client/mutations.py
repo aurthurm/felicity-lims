@@ -5,7 +5,7 @@ import strawberry  # noqa
 from api.gql import OperationError, DeletedItem, auth_from_info, verify_user_auth
 from api.gql.client.types import ClientContactType, ClientType
 from apps.client import models, schemas
-from core.uid_gen import FelicityID
+
 from strawberry.types import Info  # noqa
 
 logging.basicConfig(level=logging.INFO)
@@ -28,7 +28,7 @@ DeleteContactResponse = strawberry.union(
 class ClientInputType:
     name: str
     code: str
-    district_uid: FelicityID | None = None
+    district_uid: str | None = None
     email: str | None = None
     email_cc: str | None = None
     consent_email: bool| None = False
@@ -42,7 +42,7 @@ class ClientInputType:
 @strawberry.input
 class ClientContactInputType:
     first_name: str
-    client_uid: FelicityID
+    client_uid: str
     last_name: str | None = None
     email: str | None = None
     email_cc: str | None = None
@@ -91,7 +91,7 @@ class ClientMutations:
 
     @strawberry.mutation
     async def update_client(
-        self, info, uid: FelicityID, payload: ClientInputType
+        self, info, uid: str, payload: ClientInputType
     ) -> ClientResponse:
 
         is_authenticated, felicity_user = await auth_from_info(info)
@@ -164,7 +164,7 @@ class ClientMutations:
 
     @strawberry.mutation
     async def update_client_contact(
-        self, info, uid: FelicityID, payload: ClientContactInputType
+        self, info, uid: str, payload: ClientContactInputType
     ) -> ClientContactResponse:
 
         is_authenticated, felicity_user = await auth_from_info(info)
@@ -195,7 +195,7 @@ class ClientMutations:
         return ClientContactType(**client_contact.marshal_simple(exclude=["is_superuser", "auth_uid"]))
 
     @strawberry.mutation
-    async def delete_client_contact(self, info, uid: FelicityID) -> DeleteContactResponse:
+    async def delete_client_contact(self, info, uid: str) -> DeleteContactResponse:
 
         is_authenticated, felicity_user = await auth_from_info(info)
         verify_user_auth(

@@ -5,7 +5,7 @@ import strawberry  # noqa
 from api.gql import PageInfo
 from api.gql.inventory import types
 from apps.inventory import models
-from core.uid_gen import FelicityID
+
 from utils import has_value_or_is_truthy
 
 
@@ -50,7 +50,7 @@ class InventoryQuery:
 
     @strawberry.field
     async def stock_item_by_uid(
-        self, info, uid: FelicityID
+        self, info, uid: str
     ) -> Optional[types.StockItemType]:
         return await models.StockItem.get(uid=uid)
 
@@ -60,7 +60,7 @@ class InventoryQuery:
 
     @strawberry.field
     async def stock_category_by_uid(
-        self, info, uid: FelicityID
+        self, info, uid: str
     ) -> Optional[types.StockCategoryType]:
         return await models.StockCategory.get(uid=uid)
 
@@ -69,7 +69,7 @@ class InventoryQuery:
         return await models.Hazard.all()
 
     @strawberry.field
-    async def hazard_by_uid(self, info, uid: FelicityID) -> Optional[types.HazardType]:
+    async def hazard_by_uid(self, info, uid: str) -> Optional[types.HazardType]:
         return await models.Hazard.get(uid=uid)
 
     @strawberry.field
@@ -78,7 +78,7 @@ class InventoryQuery:
 
     @strawberry.field
     async def stock_unit_by_uid(
-        self, info, uid: FelicityID
+        self, info, uid: str
     ) -> Optional[types.StockUnitType]:
         return await models.StockUnit.get(uid=uid)
 
@@ -88,7 +88,7 @@ class InventoryQuery:
 
     @strawberry.field
     async def stock_packaging_by_uid(
-        self, info, uid: FelicityID
+        self, info, uid: str
     ) -> Optional[types.StockPackagingType]:
         return await models.StockPackaging.get(uid=uid)
 
@@ -131,7 +131,7 @@ class InventoryQuery:
 
     @strawberry.field
     async def stock_product_by_uid(
-        self, info, uid: FelicityID
+        self, info, uid: str
     ) -> Optional[types.StockProductType]:
         return await models.StockProduct.get(uid=uid)
 
@@ -174,19 +174,19 @@ class InventoryQuery:
 
     @strawberry.field
     async def stock_order_by_uid(
-        self, info, uid: FelicityID
+        self, info, uid: str
     ) -> Optional[types.StockOrderType]:
         return await models.StockOrder.get(uid=uid)
 
     @strawberry.field
     async def stock_order_product_all(
-        self, info, stock_order_uid: FelicityID
+        self, info, stock_order_uid: str
     ) -> List[types.StockOrderProductType]:
         return await models.StockOrderProduct.get_all(order_uid=stock_order_uid)
 
     @strawberry.field
     async def stock_order_product_by_uid(
-        self, info, uid: FelicityID
+        self, info, uid: str
     ) -> Optional[types.StockOrderProductType]:
         return await models.StockOrderProduct.get(uid=uid)
 
@@ -229,7 +229,7 @@ class InventoryQuery:
 
     @strawberry.field
     async def stock_transaction_by_uid(
-        self, info, uid: FelicityID
+        self, info, uid: str
     ) -> Optional[types.StockTransactionType]:
         return await models.StockTransaction.get(uid=uid)
 
@@ -277,6 +277,6 @@ class InventoryQuery:
 
     @strawberry.field
     async def stock_adjustment_by_uid(
-        self, info, uid: FelicityID
+        self, info, uid: str
     ) -> Optional[types.StockAdjustmentType]:
         return await models.StockAdjustment.get(uid=uid)

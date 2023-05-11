@@ -5,17 +5,17 @@ import strawberry  # noqa
 from api.gql import PageInfo
 from api.gql.setup.types import DistrictType, ProvinceType
 from api.gql.user.types import UserAuthType, UserType
-from core.uid_gen import FelicityID
+
 
 
 @strawberry.type
 class ClientType:
-    uid: FelicityID
+    uid: str
     name: str
     code: str
-    district_uid: FelicityID | None
+    district_uid: str | None
     district: Optional[DistrictType]
-    province_uid: FelicityID | None
+    province_uid: str | None
     province: Optional[ProvinceType]
     email: str | None
     email_cc: str | None
@@ -26,17 +26,17 @@ class ClientType:
     internal_use: bool
     active: bool
     #
-    created_by_uid: FelicityID | None
+    created_by_uid: str | None
     created_by: UserType | None
     created_at: datetime | None
-    updated_by_uid: FelicityID | None
+    updated_by_uid: str | None
     updated_by: UserType | None
     updated_at: datetime | None
 
 
 @strawberry.type
 class ClientContactType:
-    uid: FelicityID
+    uid: str
     first_name: str | None
     last_name: str | None
     email: str | None
@@ -46,15 +46,15 @@ class ClientContactType:
     email: str | None
     email_cc: str | None
     consent_sms: bool
-    client_uid: FelicityID
+    client_uid: str
     client: Optional[ClientType]
     #
     created_at: datetime | None
     creator_name: str | None
-    creator_uid: FelicityID | None
+    creator_uid: str | None
     updated_at: datetime | None
     updator_name: str | None
-    updator_uid: FelicityID | None
+    updator_uid: str | None
 
 
 #  relay paginations

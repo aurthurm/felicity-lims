@@ -12,7 +12,7 @@ from apps.notification.utils import ReportNotifier
 from apps.user import models as user_models
 from apps.user.models import User
 from core.config import settings
-from core.uid_gen import FelicityIDType
+
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -20,7 +20,7 @@ logger = logging.getLogger(__name__)
 report_notifier = ReportNotifier()
 
 
-async def impress_results(job_uid: FelicityIDType):
+async def impress_results(job_uid: str):
     logger.info(f"starting impress job {job_uid} ....")
     job = await job_models.Job.get(uid=job_uid)
     if not job:

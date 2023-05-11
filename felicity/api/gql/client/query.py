@@ -10,7 +10,7 @@ from api.gql.client.types import (
     ClientType,
 )
 from apps.client import models
-from core.uid_gen import FelicityID
+
 from utils import has_value_or_is_truthy
 
 
@@ -63,7 +63,7 @@ class ClientQuery:
         )
 
     @strawberry.field
-    async def client_by_uid(self, info, uid: FelicityID) -> ClientType:
+    async def client_by_uid(self, info, uid: str) -> ClientType:
         return await models.Client.get(uid=uid)
 
     @strawberry.field
@@ -93,11 +93,11 @@ class ClientQuery:
         return await models.ClientContact.all()
 
     @strawberry.field
-    async def client_contact_uid(self, info, uid: FelicityID) -> ClientContactType:
+    async def client_contact_uid(self, info, uid: str) -> ClientContactType:
         return await models.ClientContact.get(uid=uid)
 
     @strawberry.field
     async def client_contact_by_client_uid(
-        self, info, client_uid: FelicityID
+        self, info, client_uid: str
     ) -> List[ClientContactType]:
         return await models.ClientContact.get_all(client_uid=client_uid, is_active=True)

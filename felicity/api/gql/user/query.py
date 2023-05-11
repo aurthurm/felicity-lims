@@ -11,7 +11,7 @@ from api.gql.user.types import (
     UserType,
 )
 from apps.user import models as user_models
-from core.uid_gen import FelicityID
+
 from utils import has_value_or_is_truthy
 
 
@@ -73,7 +73,7 @@ class UserQuery:
         return await user_models.Group.all()
 
     @strawberry.field
-    async def group_by_uid(self, info, uid: FelicityID) -> Optional[GroupType]:
+    async def group_by_uid(self, info, uid: str) -> Optional[GroupType]:
         return await user_models.Group.get(uid=uid)
 
     @strawberry.field
@@ -82,6 +82,6 @@ class UserQuery:
 
     @strawberry.field
     async def permission_by_uid(
-        self, info, uid: FelicityID
+        self, info, uid: str
     ) -> Optional[PermissionType]:
         return await user_models.Permission.get(uid=uid)

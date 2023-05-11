@@ -3,7 +3,7 @@ from typing import Optional, Tuple, Union
 
 import strawberry  # noqa
 from apps.user.models import User, UserAuth
-from core.uid_gen import FelicityID
+
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -19,7 +19,7 @@ class PageInfo:
 
 @strawberry.type
 class DeletedItem:
-    uid: FelicityID
+    uid: str
 
 
 @strawberry.type

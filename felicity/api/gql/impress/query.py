@@ -6,7 +6,7 @@ import strawberry  # noqa
 from api.gql.impress.types import ReportImpressType
 from api.gql.types import BytesScalar
 from apps.impress.models import ReportImpress
-from core.uid_gen import FelicityID
+
 from PyPDF2 import PdfWriter
 
 logging.basicConfig(level=logging.INFO)
@@ -17,13 +17,13 @@ logger = logging.getLogger(__name__)
 class ReportImpressQuery:
     @strawberry.field
     async def impress_reports_meta(
-        self, info, uids: List[FelicityID]
+        self, info, uids: List[str]
     ) -> List[ReportImpressType]:
         return await ReportImpress.get_all(sample_uid__in=uids)
 
     @strawberry.field
     async def impress_reports_download(
-        self, info, uids: List[FelicityID]
+        self, info, uids: List[str]
     ) -> BytesScalar | None:
         """Fetch Latest report given sample id"""
         items = await ReportImpress.get_all(sample_uid__in=uids)
@@ -66,7 +66,7 @@ class ReportImpressQuery:
 
     @strawberry.field
     async def impress_report_download(
-        self, info, uid: FelicityID
+        self, info, uid: str
     ) -> BytesScalar | None:
         report = await ReportImpress.get(uid=uid)
 

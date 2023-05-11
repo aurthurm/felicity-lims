@@ -2,7 +2,7 @@ from datetime import datetime
 from typing import List, Optional
 
 from apps.common.schemas import BaseAuditModel
-from core.uid_gen import FelicityIDType
+
 from pydantic import BaseModel, EmailStr
 
 #
@@ -19,7 +19,7 @@ class LaboratoryBase(BaseModel):
     email_cc: str | None = None
     mobile_phone: str | None = None
     business_phone: str | None = None
-    lab_manager_uid: FelicityIDType| None = None
+    lab_manager_uid: str| None = None
     address: str | None = ""
 
 
@@ -34,7 +34,7 @@ class LaboratoryUpdate(LaboratoryBase):
 
 
 class LaboratoryInDBBase(LaboratoryBase):
-    uid: FelicityIDType| None = None
+    uid: str| None = None
 
     class Config:
         orm_mode = True
@@ -51,7 +51,7 @@ class LaboratoryInDB(LaboratoryInDBBase):
 
 
 class LaboratorySettingBase(BaseAuditModel):
-    laboratory_uid: FelicityIDType| None = None
+    laboratory_uid: str| None = None
     laboratory: Optional[Laboratory] = None
     allow_self_verification: bool| None = False
     allow_patient_registration: bool| None = True
@@ -74,7 +74,7 @@ class LaboratorySettingUpdate(LaboratorySettingBase):
 
 
 class LaboratorySetting(LaboratorySettingBase):
-    uid: FelicityIDType| None = None
+    uid: str| None = None
 
     class Config:
         orm_mode = True
@@ -102,7 +102,7 @@ class DepartmentUpdate(DepartmentBase):
 
 
 class DepartmentInDBBase(DepartmentBase):
-    uid: FelicityIDType = None
+    uid: str = None
 
     class Config:
         orm_mode = True
@@ -130,7 +130,7 @@ class InstrumentTypeBase(BaseAuditModel):
 
 
 class InstrumentTypeBaseInDB(InstrumentTypeBase):
-    uid: FelicityIDType| None = None
+    uid: str| None = None
 
     class Config:
         orm_mode = True
@@ -165,26 +165,26 @@ class InstrumentBase(BaseModel):
     name: str = None
     description: str = None
     keyword: str = None
-    instrument_type_uid: FelicityIDType = None
+    instrument_type_uid: str = None
     instrument_type: InstrumentType | None
-    manufacturer_uid: FelicityIDType = None
+    manufacturer_uid: str = None
     manufacturer: Optional["Manufacturer"]
-    supplier_uid: FelicityIDType = None
+    supplier_uid: str = None
     supplier: Optional["Supplier"]
 
 
 # Properties to receive via API on creation
 class InstrumentCreate(InstrumentBase):
-    supplier_uid: FelicityIDType| None = None
+    supplier_uid: str| None = None
 
 
 # Properties to receive via API on update
 class InstrumentUpdate(InstrumentBase):
-    supplier_uid: FelicityIDType| None = None
+    supplier_uid: str| None = None
 
 
 class InstrumentInDBBase(InstrumentBase):
-    uid: FelicityIDType = None
+    uid: str = None
 
     class Config:
         orm_mode = True
@@ -206,7 +206,7 @@ class InstrumentInDB(InstrumentInDBBase):
 
 # Shared properties
 class InstrumentCalibrationBase(BaseModel):
-    instrument_uid: FelicityIDType
+    instrument_uid: str
     instrument: Optional[Instrument]
     calibration_id: str
     date_reported: datetime
@@ -230,7 +230,7 @@ class InstrumentCalibrationUpdate(InstrumentCalibrationBase):
 
 
 class InstrumentCalibrationInDBBase(InstrumentCalibrationBase):
-    uid: FelicityIDType = None
+    uid: str = None
 
     class Config:
         orm_mode = True
@@ -252,7 +252,7 @@ class InstrumentCalibrationInDB(InstrumentCalibrationInDBBase):
 
 # Shared properties
 class CalibrationCertificateBase(BaseModel):
-    instrument_uid: FelicityIDType
+    instrument_uid: str
     instrument: Optional[Instrument]
     certificate_code: str
     internal: bool = True
@@ -276,7 +276,7 @@ class CalibrationCertificateUpdate(CalibrationCertificateBase):
 
 
 class CalibrationCertificateInDBBase(CalibrationCertificateBase):
-    uid: FelicityIDType = None
+    uid: str = None
 
     class Config:
         orm_mode = True
@@ -315,7 +315,7 @@ class MethodUpdate(MethodBase):
 
 
 class MethodInDBBase(MethodBase):
-    uid: FelicityIDType = None
+    uid: str = None
 
     class Config:
         orm_mode = True
@@ -352,7 +352,7 @@ class UnitUpdate(UnitBase):
 
 
 class UnitInDBBase(UnitBase):
-    uid: FelicityIDType = None
+    uid: str = None
 
     class Config:
         orm_mode = True
@@ -390,7 +390,7 @@ class SupplierUpdate(SupplierBase):
 
 
 class SupplierInDBBase(SupplierBase):
-    uid: FelicityIDType = None
+    uid: str = None
 
     class Config:
         orm_mode = True
@@ -428,7 +428,7 @@ class ManufacturerUpdate(ManufacturerBase):
 
 
 class ManufacturerInDBBase(ManufacturerBase):
-    uid: FelicityIDType = None
+    uid: str = None
 
     class Config:
         orm_mode = True
@@ -456,7 +456,7 @@ class CountryBase(BaseModel):
 
 
 class CountryBaseInDB(CountryBase):
-    uid: FelicityIDType| None = None
+    uid: str| None = None
 
     class Config:
         orm_mode = True
@@ -489,7 +489,7 @@ class CountryInDB(CountryBaseInDB):
 # Shared properties
 class ProvinceBase(BaseModel):
     name: str | None
-    country_uid: FelicityIDType| None
+    country_uid: str| None
     code: str | None = None
     email: str | None = None
     email_cc: str | None = None
@@ -501,7 +501,7 @@ class ProvinceBase(BaseModel):
 
 
 class ProvinceBaseInDB(ProvinceBase):
-    uid: FelicityIDType| None = None
+    uid: str| None = None
 
     class Config:
         orm_mode = True
@@ -509,7 +509,7 @@ class ProvinceBaseInDB(ProvinceBase):
 
 # Properties to receive via API on creation
 class ProvinceCreate(ProvinceBase):
-    country_uid: FelicityIDType
+    country_uid: str
 
 
 # Properties to receive via API on update
@@ -534,7 +534,7 @@ class ProvinceInDB(ProvinceBaseInDB):
 # Shared properties
 class DistrictBase(BaseModel):
     name: str | None
-    province_uid: FelicityIDType| None
+    province_uid: str| None
     code: str | None = None
     email: str | None = None
     email_cc: str | None = None
@@ -546,7 +546,7 @@ class DistrictBase(BaseModel):
 
 
 class DistrictBaseInDB(DistrictBase):
-    uid: FelicityIDType| None = None
+    uid: str| None = None
 
     class Config:
         orm_mode = True
@@ -554,7 +554,7 @@ class DistrictBaseInDB(DistrictBase):
 
 # Properties to receive via API on creation
 class DistrictCreate(DistrictBase):
-    province_uid: FelicityIDType
+    province_uid: str
 
 
 # Properties to receive via API on update

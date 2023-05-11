@@ -28,7 +28,7 @@ from api.gql.setup.types import (
     UnitType,
 )
 from apps.setup import models
-from core.uid_gen import FelicityID
+
 from utils import has_value_or_is_truthy
 
 
@@ -286,14 +286,14 @@ class SetupQuery:
     )
 
     @strawberry.field
-    async def manufacturer_by_uid(self, info, uid: FelicityID) -> ManufacturerType:
+    async def manufacturer_by_uid(self, info, uid: str) -> ManufacturerType:
         query = await models.Manufacturer.get(uid=uid)
         return query
 
     supplier_all: List[SupplierType] = strawberry.field(resolver=get_all_suppliers)
 
     @strawberry.field
-    async def supplier_by_uid(self, info, uid: FelicityID) -> SupplierType:
+    async def supplier_by_uid(self, info, uid: str) -> SupplierType:
         query = await models.Supplier.get(uid=uid)
         return query
 
@@ -302,7 +302,7 @@ class SetupQuery:
     )
 
     @strawberry.field
-    async def department_by_uid(self, info, uid: FelicityID) -> DepartmentType:
+    async def department_by_uid(self, info, uid: str) -> DepartmentType:
         query = await models.Department.get(uid=uid)
         return query
 
@@ -311,7 +311,7 @@ class SetupQuery:
     )
 
     @strawberry.field
-    async def instrument_type_by_uid(self, info, uid: FelicityID) -> InstrumentTypeType:
+    async def instrument_type_by_uid(self, info, uid: str) -> InstrumentTypeType:
         query = await models.InstrumentType.get(uid=uid)
         return query
 
@@ -320,27 +320,27 @@ class SetupQuery:
     )
 
     @strawberry.field
-    async def instrument_by_uid(self, info, uid: FelicityID) -> InstrumentType:
+    async def instrument_by_uid(self, info, uid: str) -> InstrumentType:
         query = await models.Instrument.get(uid=uid)
         return query
 
     method_all: MethodCursorPage = strawberry.field(resolver=get_all_methods)
 
     @strawberry.field
-    async def method_by_uid(self, info, uid: FelicityID) -> MethodType:
+    async def method_by_uid(self, info, uid: str) -> MethodType:
         query = await models.Method.get(uid=uid)
         return query
 
     district_all: DistrictCursorPage = strawberry.field(resolver=get_all_districts)
 
     @strawberry.field
-    async def district_by_uid(self, info, uid: FelicityID) -> DistrictType:
+    async def district_by_uid(self, info, uid: str) -> DistrictType:
         district = await models.District.get(uid=uid)
         return district
 
     @strawberry.field
     async def districts_by_province_uid(
-        self, info, uid: FelicityID
+        self, info, uid: str
     ) -> List[DistrictType]:
         districts = await models.District.get_all(province_uid__exact=uid)
         return districts
@@ -348,13 +348,13 @@ class SetupQuery:
     province_all: ProvinceCursorPage = strawberry.field(resolver=get_all_provinces)
 
     @strawberry.field
-    async def province_by_uid(self, info, uid: FelicityID) -> ProvinceType:
+    async def province_by_uid(self, info, uid: str) -> ProvinceType:
         province = await models.Province.get(uid=uid)
         return province
 
     @strawberry.field
     async def provinces_by_country_uid(
-        self, info, uid: FelicityID
+        self, info, uid: str
     ) -> List[ProvinceType]:
         provinces = await models.Province.get_all(country_uid__exact=uid)
         return provinces
@@ -362,13 +362,13 @@ class SetupQuery:
     country_all: List[CountryType] = strawberry.field(resolver=get_all_countries)
 
     @strawberry.field
-    async def country_by_uid(self, info, uid: FelicityID) -> CountryType:
+    async def country_by_uid(self, info, uid: str) -> CountryType:
         country = await models.Country.find(uid)
         return country
 
     unit_all: List[UnitType] = strawberry.field(resolver=get_all_units)
 
     @strawberry.field
-    async def unit_by_uid(self, info, uid: FelicityID) -> UnitType:
+    async def unit_by_uid(self, info, uid: str) -> UnitType:
         unit = await models.Unit.find(uid)
         return unit

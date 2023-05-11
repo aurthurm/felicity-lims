@@ -2,9 +2,9 @@ from datetime import datetime
 
 from apps.audit.mixin import AuditableMixin
 from apps.common.hooks import EventHookMixin
-from core.uid_gen import FelicitySAID
+
 from database.base_class import DBModel
-from sqlalchemy import Column, DateTime, ForeignKey, Integer, func
+from sqlalchemy import Column, DateTime, ForeignKey, String
 from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.orm import relationship
 
@@ -16,7 +16,7 @@ class TrailMixin(object):
 
     @declared_attr
     def created_by_uid(self):
-        return Column(FelicitySAID, ForeignKey("user.uid"), nullable=True)
+        return Column(String, ForeignKey("user.uid"), nullable=True)
 
     @declared_attr
     def created_by(self):
@@ -28,7 +28,7 @@ class TrailMixin(object):
 
     @declared_attr
     def updated_by_uid(self):
-        return Column(FelicitySAID, ForeignKey("user.uid"), nullable=True)
+        return Column(String, ForeignKey("user.uid"), nullable=True)
 
     @declared_attr
     def updated_by(self):

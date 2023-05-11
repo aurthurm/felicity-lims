@@ -23,7 +23,7 @@ from api.gql.setup.types import (
 )
 from apps.analysis.models import analysis as analysis_models
 from apps.setup import models, schemas
-from core.uid_gen import FelicityID
+
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -88,14 +88,14 @@ class LaboratoryInputType:
     email_cc: str | None = None
     mobile_phone: str | None = None
     business_phone: str | None = None
-    lab_manager_uid: FelicityID | None = None
+    lab_manager_uid: str | None = None
     address: str | None = None
     logo: str | None = None
 
 
 @strawberry.input
 class LaboratorySettingInputType:
-    laboratory_uid: FelicityID
+    laboratory_uid: str
     allow_self_verification: bool| None = False
     allow_patient_registration: bool| None = True
     allow_sample_registration: bool| None = True
@@ -139,16 +139,16 @@ class InstrumentInputType:
     name: str
     keyword: str
     description: str | None = ""
-    instrument_type_uid: FelicityID | None = None
-    supplier_uid: FelicityID | None = None
-    manufacturer_uid: FelicityID | None = None
+    instrument_type_uid: str | None = None
+    supplier_uid: str | None = None
+    manufacturer_uid: str | None = None
 
 
 @strawberry.input
 class MethodInputType:
     name: str
-    instruments: Optional[List[FelicityID]] = field(default_factory=list)
-    analyses: Optional[List[FelicityID]] = field(default_factory=list)
+    instruments: Optional[List[str]] = field(default_factory=list)
+    analyses: Optional[List[str]] = field(default_factory=list)
     keyword: str | None = None
     description: str | None = ""
 
@@ -163,7 +163,7 @@ class CountryInputType:
 @strawberry.input
 class ProvinceInputType:
     name: str | None
-    country_uid: FelicityID | None
+    country_uid: str | None
     code: str | None = None
     email: str | None = None
     email_cc: str | None = None
@@ -175,7 +175,7 @@ class ProvinceInputType:
 @strawberry.input
 class DistrictInputType:
     name: str
-    province_uid: FelicityID | None
+    province_uid: str | None
     code: str | None = None
     email: str | None = None
     email_cc: str | None = None
@@ -192,7 +192,7 @@ class UnitInputType:
 
 @strawberry.input
 class InstrumentCalibrationInput:
-    instrument_uid: FelicityID
+    instrument_uid: str
     date_reported: datetime | None
     start_date: datetime | None
     end_date: datetime | None
@@ -206,7 +206,7 @@ class InstrumentCalibrationInput:
 
 @strawberry.input
 class CalibrationCertificateInput:
-    instrument_uid: FelicityID
+    instrument_uid: str
     date_issued: datetime | None
     valid_from_date: datetime | None
     valid_to_date: datetime | None
@@ -222,7 +222,7 @@ class CalibrationCertificateInput:
 class SetupMutations:
     @strawberry.mutation
     async def update_laboratory(
-        self, info, uid: FelicityID, payload: LaboratoryInputType
+        self, info, uid: str, payload: LaboratoryInputType
     ) -> LaboratoryResponse:  # noqa
 
         if not uid:
@@ -248,7 +248,7 @@ class SetupMutations:
 
     @strawberry.mutation
     async def update_laboratory_setting(
-        self, info, uid: FelicityID, payload: LaboratorySettingInputType
+        self, info, uid: str, payload: LaboratorySettingInputType
     ) -> LaboratorySettingResponse:  # noqa
 
         if not uid:
@@ -296,7 +296,7 @@ class SetupMutations:
 
     @strawberry.mutation
     async def update_department(
-        self, info, uid: FelicityID, payload: DepartmentInputType
+        self, info, uid: str, payload: DepartmentInputType
     ) -> DepartmentResponse:  # noqa
 
         if not uid:
@@ -344,7 +344,7 @@ class SetupMutations:
 
     @strawberry.mutation
     async def update_supplier(
-        self, info, uid: FelicityID, payload: SupplierInputType
+        self, info, uid: str, payload: SupplierInputType
     ) -> SupplierResponse:  # noqa
 
         if not uid:
@@ -392,7 +392,7 @@ class SetupMutations:
 
     @strawberry.mutation
     async def update_manufacturer(
-        self, info, uid: FelicityID, payload: ManufacturerInputType
+        self, info, uid: str, payload: ManufacturerInputType
     ) -> ManufacturerResponse:  # noqa
 
         if not uid:
@@ -440,7 +440,7 @@ class SetupMutations:
 
     @strawberry.mutation
     async def update_instrument_type(
-        self, info, uid: FelicityID, payload: InstrumentTypeInputType
+        self, info, uid: str, payload: InstrumentTypeInputType
     ) -> InstrumentTypeResponse:  # noqa
 
         if not uid:
@@ -496,7 +496,7 @@ class SetupMutations:
 
     @strawberry.mutation
     async def update_instrument(
-        self, info, uid: FelicityID, payload: InstrumentInputType
+        self, info, uid: str, payload: InstrumentInputType
     ) -> InstrumentResponse:  # noqa
 
         if not uid:
@@ -544,7 +544,7 @@ class SetupMutations:
 
     @strawberry.mutation
     async def update_instrument_caliberation(
-        self, info, uid: FelicityID, payload: InstrumentInputType
+        self, info, uid: str, payload: InstrumentInputType
     ) -> InstrumentCalibrationResponse:  # noqa
 
         if not uid:
@@ -585,7 +585,7 @@ class SetupMutations:
 
     @strawberry.mutation
     async def update_caliberation_certificate(
-        self, info, uid: FelicityID, payload: CalibrationCertificateInput
+        self, info, uid: str, payload: CalibrationCertificateInput
     ) -> CalibrationCertificateResponse:  # noqa
 
         if not uid:
@@ -678,7 +678,7 @@ class SetupMutations:
 
     @strawberry.mutation
     async def update_method(
-        self, info, uid: FelicityID, payload: MethodInputType
+        self, info, uid: str, payload: MethodInputType
     ) -> MethodResponse:  # noqa
 
         if not uid:
@@ -773,7 +773,7 @@ class SetupMutations:
 
     @strawberry.mutation
     async def update_country(
-        self, info, uid: FelicityID, payload: CountryInputType
+        self, info, uid: str, payload: CountryInputType
     ) -> CountryResponse:  # noqa
 
         if not uid:
@@ -820,7 +820,7 @@ class SetupMutations:
 
     @strawberry.mutation
     async def update_province(
-        self, info, uid: FelicityID, payload: ProvinceInputType
+        self, info, uid: str, payload: ProvinceInputType
     ) -> ProvinceResponse:  # noqa
 
         if not uid:
@@ -868,7 +868,7 @@ class SetupMutations:
 
     @strawberry.mutation
     async def update_district(
-        self, info, uid: FelicityID, payload: DistrictInputType
+        self, info, uid: str, payload: DistrictInputType
     ) -> DistrictResponse:  # noqa
         if not uid:
             return OperationError(error="No uid provided to identity update obj")
@@ -911,7 +911,7 @@ class SetupMutations:
 
     @strawberry.mutation
     async def update_unit(
-        self, info, uid: FelicityID, payload: UnitInputType
+        self, info, uid: str, payload: UnitInputType
     ) -> UnitResponse:  # noqa
 
         if not uid:

@@ -17,7 +17,7 @@ from apps.job.sched import felicity_resume_workforce
 from apps.notification.utils import FelicityStreamer
 from apps.worksheet import conf as ws_conf
 from apps.worksheet import models as ws_models
-from core.uid_gen import FelicityID
+
 
 streamer = FelicityStreamer()
 
@@ -27,7 +27,7 @@ logger = logging.getLogger(__name__)
 
 @strawberry.input
 class ARResultInputType:
-    uid: FelicityID
+    uid: str
     result: str
     reportable: bool| None = True
 
@@ -55,7 +55,7 @@ async def submit_analysis_results(
     info,
     analysis_results: List[ARResultInputType],
     source_object: str,
-    source_object_uid: FelicityID,
+    source_object_uid: str,
 ) -> AnalysisResultOperationResponse:
     is_authenticated, felicity_user = await auth_from_info(info)
     verify_user_auth(
@@ -106,7 +106,7 @@ async def submit_analysis_results(
 
 @strawberry.mutation(permission_classes=[CanVerifyAnalysisResult])
 async def verify_analysis_results(
-    info, analyses: list[str], source_object: str, source_object_uid: FelicityID
+    info, analyses: list[str], source_object: str, source_object_uid: str
 ) -> AnalysisResultOperationResponse:
     is_authenticated, felicity_user = await auth_from_info(info)
     verify_user_auth(

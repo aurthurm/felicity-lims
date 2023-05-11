@@ -3,18 +3,18 @@ from typing import List, Optional
 import strawberry  # noqa
 from api.gql.noticeboard.types import NoticeType
 from apps.noticeboard import models
-from core.uid_gen import FelicityID
+
 
 
 @strawberry.type
 class NoticeQuery:
     @strawberry.field
-    async def notice_by_uid(self, info, uid: FelicityID) -> Optional[NoticeType]:
+    async def notice_by_uid(self, info, uid: str) -> Optional[NoticeType]:
         return await models.Notice.get(uid=uid)
 
     @strawberry.field
     async def notices_by_creator(
-        self, info, uid: FelicityID
+        self, info, uid: str
     ) -> Optional[List[NoticeType]]:
         return await models.Notice.get_all(created_by_uid=uid)
 
@@ -22,8 +22,8 @@ class NoticeQuery:
     async def notice_filter(
         self,
         info,
-        group_uid: FelicityID | None,
-        department_uid: FelicityID | None,
+        group_uid: str | None,
+        department_uid: str | None,
     ) -> List[NoticeType]:
         filters = {}
 

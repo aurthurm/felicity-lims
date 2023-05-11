@@ -8,7 +8,7 @@ from api.gql import OperationError, auth_from_info, verify_user_auth
 from api.gql.patient.types import IdentificationType, PatientType
 from apps.client import models as client_models
 from apps.patient import models, schemas
-from core.uid_gen import FelicityID
+
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -29,7 +29,7 @@ class PatientInputType:
     client_patient_id: str
     first_name: str
     last_name: str
-    client_uid: FelicityID
+    client_uid: str
     gender: str
     middle_name: str | None = None
     age: int | None = None
@@ -39,9 +39,9 @@ class PatientInputType:
     phone_home: str | None = None
     consent_sms: bool| None = False
     internal_use: bool| None = False
-    country_uid: FelicityID | None = None
-    province_uid: FelicityID | None = None
-    district_uid: FelicityID | None = None
+    country_uid: str | None = None
+    province_uid: str | None = None
+    district_uid: str | None = None
     identifications: Optional[List[PatientidentificationInput]] = field(
         default_factory=list)
 
@@ -88,7 +88,7 @@ class PatientMutations:
 
     @strawberry.mutation
     async def update_identification(
-        info, uid: FelicityID, name: str
+        info, uid: str, name: str
     ) -> IdentificationResponse:
         is_authenticated, felicity_user = await auth_from_info(info)
         verify_user_auth(
@@ -165,7 +165,7 @@ class PatientMutations:
 
     @strawberry.mutation
     async def update_patient(
-        self, info, uid: FelicityID, payload: PatientInputType
+        self, info, uid: str, payload: PatientInputType
     ) -> PatientResponse:
 
         is_authenticated, felicity_user = await auth_from_info(info)

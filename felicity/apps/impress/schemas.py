@@ -2,7 +2,7 @@ from datetime import datetime
 from typing import Dict, Optional
 
 from apps.analysis.schemas import SampleInDB
-from core.uid_gen import FelicityIDType
+
 from pydantic import BaseModel
 
 #
@@ -12,7 +12,7 @@ from pydantic import BaseModel
 
 class ReportImpressBase(BaseModel):
     state: str | None = None
-    sample_uid: FelicityIDType| None = None
+    sample_uid: str| None = None
     sample: Optional[SampleInDB] = None
     json_content: Optional[dict] = {}
     pdf_content: Optional[bytes] = None
@@ -20,14 +20,14 @@ class ReportImpressBase(BaseModel):
     email_sent: bool| None = False
     sms_required: bool| None = False
     sms_sent: bool| None = False
-    generated_by_uid: FelicityIDType| None = None
-    created_by_uid: FelicityIDType| None = None
-    updated_by_uid: FelicityIDType| None = None
+    generated_by_uid: str| None = None
+    created_by_uid: str| None = None
+    updated_by_uid: str| None = None
     date_generated: datetime | None = False
 
 
 class ReportImpressBaseInDB(ReportImpressBase):
-    uid: FelicityIDType| None = None
+    uid: str| None = None
 
     class Config:
         orm_mode = True

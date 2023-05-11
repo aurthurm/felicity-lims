@@ -19,6 +19,7 @@ async_engine = create_async_engine(
     echo=False,
     future=True,
 )
+# async_session_factory can be used directly using: async with async_session_factory() as session: ...
 async_session_factory = sessionmaker(
     bind=async_engine, expire_on_commit=False, autoflush=False, class_=AsyncSession
 )
@@ -30,8 +31,6 @@ SQLAlchemyInstrumentor().instrument(
 )
 
 #  Async Dependency
-
-
 async def get_session() -> AsyncGenerator:
     async with async_session_factory() as session:
         yield session

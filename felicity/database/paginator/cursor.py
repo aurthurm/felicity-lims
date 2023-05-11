@@ -2,7 +2,7 @@ import logging
 from base64 import b64decode, b64encode
 from typing import Any, Dict, List
 
-from database.async_mixins.smartquery import SmartQueryMixin
+from sqlalchemy_mixins.smartquery import SmartQueryMixin
 from sqlalchemy.future import select
 
 logging.basicConfig(level=logging.INFO)

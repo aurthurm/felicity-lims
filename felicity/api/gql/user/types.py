@@ -4,12 +4,12 @@ from typing import List, Optional
 import strawberry  # noqa
 from api.gql import PageInfo
 from api.gql.setup.types.department import DepartmentType
-from core.uid_gen import FelicityID
+
 
 
 @strawberry.type
 class UserAuthType:
-    uid: FelicityID
+    uid: str
     user_name: str
     login_retry: int
     is_blocked: bool
@@ -17,15 +17,15 @@ class UserAuthType:
     #
     created_at: datetime | None
     creator_name: str | None
-    creator_uid: FelicityID | None
+    creator_uid: str | None
     updated_at: datetime | None
     updator_name: str | None
-    updator_uid: FelicityID | None
+    updator_uid: str | None
 
 
 @strawberry.type
 class PermissionType:
-    uid: FelicityID
+    uid: str
     action: str | None
     target: str | None
     active: bool| None
@@ -33,7 +33,7 @@ class PermissionType:
 
 @strawberry.type
 class GroupType:
-    uid: FelicityID
+    uid: str
     name: str | None
     keyword: str | None
     members: Optional[List["UserType"]]
@@ -44,18 +44,18 @@ class GroupType:
 
 @strawberry.type
 class UserType:
-    uid: FelicityID
+    uid: str
     first_name: str | None
     last_name: str | None
     email: str | None
     mobile_phone: str | None
     business_phone: str | None
     groups: Optional[List[GroupType]]
-    preference_uid: FelicityID | None
+    preference_uid: str | None
     preference: Optional["UserPreferenceType"]
     is_active: bool
     is_superuser: bool
-    auth_uid: FelicityID | None
+    auth_uid: str | None
     auth: Optional[UserAuthType]
     bio: str | None
     avatar: str | None
@@ -63,10 +63,10 @@ class UserType:
     #
     created_at: datetime | None
     creator_name: str | None
-    creator_uid: FelicityID | None
+    creator_uid: str | None
     updated_at: datetime | None
     updator_name: str | None
-    updator_uid: FelicityID | None
+    updator_uid: str | None
 
 
 @strawberry.type
@@ -99,7 +99,7 @@ class UserCursorPage:
 
 @strawberry.type
 class UserPreferenceType:
-    uid: FelicityID
+    uid: str
     expanded_menu: bool| None
     departments: list[DepartmentType] | None
     theme: str | None

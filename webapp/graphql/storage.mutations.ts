@@ -21,7 +21,7 @@ export const ADD_STORE_ROOM = gql`
 `;
 
 export const EDIT_STORE_ROOM = gql`
-    mutation EditStoreRoom($uid: FelicityID!, $payload: StoreRoomInputType!) {
+    mutation EditStoreRoom($uid: str!, $payload: StoreRoomInputType!) {
         updateStoreRoom(uid: $uid, payload: $payload) {
             ... on StoreRoomType {
                 __typename
@@ -61,7 +61,7 @@ export const ADD_STORAGE_LOCATION = gql`
 `;
 
 export const EDIT_STORAGE_LOCATION = gql`
-    mutation EditStorageLocation($uid: FelicityID!, $payload: StorageLocationInputType!) {
+    mutation EditStorageLocation($uid: str!, $payload: StorageLocationInputType!) {
         updateStorageLocation(uid: $uid, payload: $payload) {
             ... on StorageLocationType {
                 __typename
@@ -106,7 +106,7 @@ export const ADD_STORAGE_SECTION = gql`
 `;
 
 export const EDIT_STORAGE_SECTION = gql`
-    mutation EditStorageSection($uid: FelicityID!, $payload: StorageSectionInputType!) {
+    mutation EditStorageSection($uid: str!, $payload: StorageSectionInputType!) {
         updateStorageSection(uid: $uid, payload: $payload) {
             ... on StorageSectionType {
                 __typename
@@ -164,7 +164,7 @@ export const ADD_STORAGE_CONTAINER = gql`
 `;
 
 export const EDIT_STORAGE_CONTAINER = gql`
-    mutation EditStorageContainer($uid: FelicityID!, $payload: StorageContainerInputType!) {
+    mutation EditStorageContainer($uid: str!, $payload: StorageContainerInputType!) {
         updateStorageContainer(uid: $uid, payload: $payload) {
             ... on StorageContainerType {
                 __typename
@@ -222,7 +222,7 @@ export const STORE_SAMPLES = gql`
 `;
 
 export const RECOVER_SAMPLES = gql`
-    mutation RecoverSamples($sampleUids: [FelicityID!]!) {
+    mutation RecoverSamples($sampleUids: [str!]!) {
         recoverSamples(sampleUids: $sampleUids) {
             ... on StoredSamplesType {
                 __typename

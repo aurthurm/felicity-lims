@@ -312,7 +312,7 @@ export const GET_ALL_SAMPLES = gql`
         $before: String
         $status: String!
         $text: String!
-        $clientUid: FelicityID!
+        $clientUid: str!
         $sortBy: [String!]
     ) {
         sampleAll(
@@ -421,7 +421,7 @@ export const GET_ALL_SAMPLES = gql`
 `;
 
 export const GET_ANALYSIS_REQUESTS_BY_PATIENT_UID = gql`
-    query getAnalysesRequestsByPatientUid($uid: FelicityID!) {
+    query getAnalysesRequestsByPatientUid($uid: str!) {
         analysisRequestsByPatientUid(uid: $uid) {
             uid
             clientRequestId
@@ -498,7 +498,7 @@ export const GET_ANALYSIS_REQUESTS_BY_PATIENT_UID = gql`
 `;
 
 export const GET_ANALYSIS_REQUESTS_BY_CLIENT_UID = gql`
-    query getAnalysesRequestsByClientUid($uid: FelicityID!) {
+    query getAnalysesRequestsByClientUid($uid: str!) {
         analysisRequestsByClientUid(uid: $uid) {
             uid
             clientRequestId
@@ -575,7 +575,7 @@ export const GET_ANALYSIS_REQUESTS_BY_CLIENT_UID = gql`
 `;
 
 export const GET_ANALYSIS_RESULTS_BY_SAMPLE_UID = gql`
-    query getAnalysesResultsBySampleUid($uid: FelicityID!) {
+    query getAnalysesResultsBySampleUid($uid: str!) {
         analysisResultBySampleUid(uid: $uid) {
             uid
             status
@@ -639,8 +639,8 @@ export const GET_ANALYSIS_RESULTS_FOR_WS_ASSIGN = gql`
         $after: String
         $text: String!
         $sortBy: [String!]
-        $analysisUid: FelicityID!
-        $sampleTypeUid: FelicityID!
+        $analysisUid: str!
+        $sampleTypeUid: str!
     ) {
         analysisResultsForWsAssign(
             pageSize: $first
@@ -682,7 +682,7 @@ export const GET_ANALYSIS_RESULTS_FOR_WS_ASSIGN = gql`
 `;
 
 export const GET_SAMPLE_BY_UID = gql`
-    query getSampleByUid($uid: FelicityID!) {
+    query getSampleByUid($uid: str!) {
         sampleByUid(uid: $uid) {
             uid
             createdByUid
@@ -773,7 +773,7 @@ export const GET_SAMPLE_BY_UID = gql`
 `;
 
 export const GET_SAMPLE_STATUS_BY_UID = gql`
-    query getSampleByUid($uid: FelicityID!) {
+    query getSampleByUid($uid: str!) {
         sampleByUid(uid: $uid) {
             uid
             sampleId
@@ -783,7 +783,7 @@ export const GET_SAMPLE_STATUS_BY_UID = gql`
 `;
 
 export const GET_SAMPLE_BY_PARENT_ID = gql`
-    query getSampleParentId($parentId: FelicityID!, $text: String) {
+    query getSampleParentId($parentId: str!, $text: String) {
         sampleByParentId(parentId: $parentId, text: $text) {
             uid
             sampleId
@@ -793,7 +793,7 @@ export const GET_SAMPLE_BY_PARENT_ID = gql`
 `;
 
 export const GET_SAMPLES_BY_STORAGE_CONTAINER_UID = gql`
-    query getSamplesByStorageContainerUid($uid: FelicityID!) {
+    query getSamplesByStorageContainerUid($uid: str!) {
         samplesByStorageContainerUid(uid: $uid) {
             uid
             sampleId
@@ -921,7 +921,7 @@ export const GET_ALL_QC_SETS = gql`
 `;
 
 export const GET_QC_SET_BY_UID = gql`
-    query getQCSetByUid($uid: FelicityID!) {
+    query getQCSetByUid($uid: str!) {
         qcSetByUid(uid: $uid) {
             uid
             name
@@ -989,7 +989,7 @@ export const GET_QC_SET_BY_UID = gql`
 `;
 
 export const GET_RESULT_OPTIONS_FOR_ANALYSIS = gql`
-    query resultOptionsByAnalysisUid($uid: FelicityID!) {
+    query resultOptionsByAnalysisUid($uid: str!) {
         resultOptionsByAnalysisUid(uid: $uid) {
             uid
             optionKey
@@ -1009,7 +1009,7 @@ export const GET_ALL_REJECTION_REASONS = gql`
 `;
 
 export const GET_IMPRESS_META = gql`
-    query impressMeta($uids: [FelicityID!]!) {
+    query impressMeta($uids: [str!]!) {
         impressReportsMeta(uids: $uids) {
             uid
             state
@@ -1030,13 +1030,13 @@ export const GET_IMPRESS_META = gql`
 `;
 
 export const DOWNLOAD_IMPRESS_SAMPLES = gql`
-    query impressReports($uids: [FelicityID!]!) {
+    query impressReports($uids: [str!]!) {
         impressReportsDownload(uids: $uids)
     }
 `;
 
 export const DOWNLOAD_IMPRESS = gql`
-    query impressReport($uid: FelicityID!) {
+    query impressReport($uid: str!) {
         impressReportDownload(uid: $uid)
     }
 `;

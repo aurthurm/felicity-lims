@@ -11,7 +11,7 @@ from api.gql.worksheet.types import (
     WorkSheetType,
 )
 from apps.worksheet import models as ws_models
-from core.uid_gen import FelicityID
+
 from utils import has_value_or_is_truthy
 
 logging.basicConfig(level=logging.INFO)
@@ -77,16 +77,16 @@ class WorkSheetQuery:
 
     @strawberry.field
     async def worksheet_by_analyst(
-        self, info, analyst_uid: FelicityID
+        self, info, analyst_uid: str
     ) -> List[WorkSheetType]:
         return await ws_models.WorkSheet.get_all(analyst_uid=analyst_uid)
 
     @strawberry.field
-    async def worksheet_by_uid(self, info, worksheet_uid: FelicityID) -> WorkSheetType:
+    async def worksheet_by_uid(self, info, worksheet_uid: str) -> WorkSheetType:
         return await ws_models.WorkSheet.get(uid=worksheet_uid)
 
     @strawberry.field
-    async def worksheet_by_id(self, info, worksheet_id: FelicityID) -> WorkSheetType:
+    async def worksheet_by_id(self, info, worksheet_id: str) -> WorkSheetType:
         return await ws_models.WorkSheet.get(worksheet_id=worksheet_id)
 
     @strawberry.field
@@ -97,6 +97,6 @@ class WorkSheetQuery:
 
     @strawberry.field
     async def worksheet_template_by_uid(
-        self, info, worksheet_uid: FelicityID
+        self, info, worksheet_uid: str
     ) -> List[WorkSheetType]:
         return await ws_models.WorkSheet.get_all(uid=worksheet_uid)

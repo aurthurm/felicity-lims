@@ -11,7 +11,7 @@ from apps.analysis.models import analysis as a_models
 from apps.analysis.models import qc as qc_models
 from apps.analysis.models import results as r_models
 from apps.analysis.utils import sample_search
-from core.uid_gen import FelicityID
+
 from utils import has_value_or_is_truthy
 from database.session import async_session_factory
 
@@ -26,7 +26,7 @@ class AnalysisQuery:
         return await a_models.SampleType.all()
 
     @strawberry.field
-    async def sample_type_by_uid(self, info, uid: FelicityID) -> a_types.SampleTypeTyp:
+    async def sample_type_by_uid(self, info, uid: str) -> a_types.SampleTypeTyp:
         return await a_models.SampleType.get(uid=uid)
 
     @strawberry.field
@@ -38,7 +38,7 @@ class AnalysisQuery:
         before_cursor: str | None = None,
         text: str | None = None,
         status: str | None = None,
-        client_uid: FelicityID | None = None,
+        client_uid: str | None = None,
         sort_by: list[str] | None = None,
     ) -> r_types.SampleCursorPage:
         filters = []
@@ -89,25 +89,25 @@ class AnalysisQuery:
     # awaiting deprecation since sample_all can now achieve this
     @strawberry.field
     async def sample_search(
-        self, info, status: str, text: str, client_uid: FelicityID
+        self, info, status: str, text: str, client_uid: str
     ) -> List[a_types.SampleType]:
         return await sample_search(status, text, client_uid)
 
     # awaiting deprecation since sample_all can now achieve this
     @strawberry.field
     async def sample_count(
-        self, info, status: str, text: str, client_uid: FelicityID
+        self, info, status: str, text: str, client_uid: str
     ) -> int:
         combined = await sample_search(status, text, client_uid)
         return len(combined)
 
     @strawberry.field
-    async def sample_by_uid(self, info, uid: FelicityID) -> a_types.SampleType:
+    async def sample_by_uid(self, info, uid: str) -> a_types.SampleType:
         return await a_models.Sample.get(uid=uid)
 
     @strawberry.field
     async def sample_by_parent_id(
-        self, info, parent_id: FelicityID, text: str | None = None
+        self, info, parent_id: str, text: str | None = None
     ) -> List[a_types.SampleType]:
         """Retrieve associated invalidated parent - children relationship by mptt parent_id"""
         samples: list[a_models.Sample] = await a_models.Sample.get_all(
@@ -128,7 +128,7 @@ class AnalysisQuery:
 
     @strawberry.field
     async def samples_by_storage_container_uid(
-        self, info, uid: FelicityID
+        self, info, uid: str
     ) -> List[a_types.SampleType]:
         """Retrieve stored samples for a given container uid"""
         return await a_models.Sample.get_all(storage_container_uid=uid)
@@ -138,7 +138,7 @@ class AnalysisQuery:
         return await a_models.Profile.all()
 
     @strawberry.field
-    async def profile_by_uid(self, info, uid: FelicityID) -> a_types.ProfileType:
+    async def profile_by_uid(self, info, uid: str) -> a_types.ProfileType:
         return await a_models.Profile.get(uid=uid)
 
     @strawberry.field
@@ -147,7 +147,7 @@ class AnalysisQuery:
 
     @strawberry.field
     async def analysis_category_by_uid(
-        self, info, uid: FelicityID
+        self, info, uid: str
     ) -> a_types.AnalysisCategoryType:
         return await a_models.AnalysisCategory.get(uid=uid)
 
@@ -195,7 +195,7 @@ class AnalysisQuery:
         )
 
     @strawberry.field
-    async def analysis_by_uid(self, info, uid: FelicityID) -> a_types.AnalysisType:
+    async def analysis_by_uid(self, info, uid: str) -> a_types.AnalysisType:
         return await a_models.Analysis.get(uid=uid)
 
     @strawberry.field
@@ -255,31 +255,31 @@ class AnalysisQuery:
 
     @strawberry.field
     async def analysis_request_by_uid(
-        self, info, uid: FelicityID
+        self, info, uid: str
     ) -> a_types.AnalysisRequestWithSamples:
         return await a_models.AnalysisRequest.get(uid=uid)
 
     @strawberry.field
     async def analysis_requests_by_patient_uid(
-        self, info, uid: FelicityID
+        self, info, uid: str
     ) -> List[a_types.AnalysisRequestWithSamples]:
         return await a_models.AnalysisRequest.get_all(patient_uid__exact=uid)
 
     @strawberry.field
     async def analysis_requests_by_client_uid(
-        self, info, uid: FelicityID
+        self, info, uid: str
     ) -> List[a_types.AnalysisRequestWithSamples]:
         return await a_models.AnalysisRequest.get_all(client_uid__exact=uid)
 
     @strawberry.field
     async def analysis_result_by_uid(
-        self, info, uid: FelicityID
+        self, info, uid: str
     ) -> r_types.AnalysisResultType:
         return await r_models.AnalysisResult.get(uid=uid)
 
     @strawberry.field
     async def analysis_result_by_sample_uid(
-        self, info, uid: FelicityID
+        self, info, uid: str
     ) -> List[r_types.AnalysisResultType]:
         return await r_models.AnalysisResult.get_all(sample_uid__exact=uid)
 
@@ -292,8 +292,8 @@ class AnalysisQuery:
         before_cursor: str | None = None,
         text: str | None = None,
         sort_by: list[str] | None = None,
-        analysis_uid: FelicityID | None = None,
-        sample_type_uid: FelicityID | None = None,
+        analysis_uid: str | None = None,
+        sample_type_uid: str | None = None,
     ) -> r_types.AnalysisResultCursorPage:
 
         filters = [{"assigned": False}]
@@ -343,7 +343,7 @@ class AnalysisQuery:
 
     @strawberry.field
     async def analysis_interim_by_uid(
-        self, info, uid: FelicityID
+        self, info, uid: str
     ) -> a_types.AnalysisInterimType:
         return await a_models.AnalysisInterim.get(uid=uid)
 
@@ -355,7 +355,7 @@ class AnalysisQuery:
 
     @strawberry.field
     async def analysis_correction_factor_by_uid(
-        self, info, uid: FelicityID
+        self, info, uid: str
     ) -> a_types.AnalysisCorrectionFactorType:
         return await a_models.AnalysisCorrectionFactor.get(uid=uid)
 
@@ -367,7 +367,7 @@ class AnalysisQuery:
 
     @strawberry.field
     async def analysis_uncertainty_by_uid(
-        self, info, uid: FelicityID
+        self, info, uid: str
     ) -> a_types.AnalysisUncertaintyType:
         return await a_models.AnalysisUncertainty.get(uid=uid)
 
@@ -379,7 +379,7 @@ class AnalysisQuery:
 
     @strawberry.field
     async def analysis_detection_limit_by_uid(
-        self, info, uid: FelicityID
+        self, info, uid: str
     ) -> a_types.AnalysisDetectionLimitType:
         return await a_models.AnalysisUncertainty.get(uid=uid)
 
@@ -391,7 +391,7 @@ class AnalysisQuery:
 
     @strawberry.field
     async def analysis_specification_uid(
-        self, info, uid: FelicityID
+        self, info, uid: str
     ) -> a_types.AnalysisSpecificationType:
         return await a_models.AnalysisSpecification.get(uid=uid)
 
@@ -437,7 +437,7 @@ class AnalysisQuery:
         )
 
     @strawberry.field
-    async def qc_set_by_uid(self, info, uid: FelicityID) -> r_types.QCSetWithSamples:
+    async def qc_set_by_uid(self, info, uid: str) -> r_types.QCSetWithSamples:
         return await qc_models.QCSet.get(uid=uid)
 
     @strawberry.field
@@ -445,7 +445,7 @@ class AnalysisQuery:
         return await qc_models.QCLevel.all()
 
     @strawberry.field
-    async def qc_level_by_uid(self, info, uid: FelicityID) -> a_types.QCLevelType:
+    async def qc_level_by_uid(self, info, uid: str) -> a_types.QCLevelType:
         return await qc_models.QCLevel.get(uid=uid)
 
     @strawberry.field
@@ -453,12 +453,12 @@ class AnalysisQuery:
         return await qc_models.QCTemplate.all()
 
     @strawberry.field
-    async def qc_template_by_uid(self, info, uid: FelicityID) -> a_types.QCTemplateType:
+    async def qc_template_by_uid(self, info, uid: str) -> a_types.QCTemplateType:
         return await qc_models.QCTemplate.get(uid=uid)
 
     @strawberry.field
     async def result_options_by_analysis_uid(
-        self, info, uid: FelicityID
+        self, info, uid: str
     ) -> a_types.ResultOptionType:
         return await a_models.ResultOption.get_all(analysis_uid__exact=uid)
 
@@ -468,6 +468,6 @@ class AnalysisQuery:
 
     @strawberry.field
     async def rejection_reason_by_uid(
-        self, info, uid: FelicityID
+        self, info, uid: str
     ) -> a_types.RejectionReasonType:
         return await a_models.RejectionReason.get(uid=uid)

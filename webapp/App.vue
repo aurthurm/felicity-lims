@@ -38,7 +38,7 @@ onBeforeMount(() => {
 
 onMounted(() => {
   loadPreferedTheme();
-  streamStore.subscribeToActivityStream();
+  // streamStore.subscribeToActivityStream();
 });
 
 if (

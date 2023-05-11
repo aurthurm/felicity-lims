@@ -33,7 +33,7 @@ export interface IReflexBrainFinal {
     analysis?: IAnalysisService;
     reflexBrainUid?: string;
     reflexBrain?: IReflexBrain;
-    value?: number;
+    value?: string;
 }
 
 export interface IReflexBrain {

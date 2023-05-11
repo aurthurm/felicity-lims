@@ -6,7 +6,7 @@ from api.gql import OperationError, auth_from_info, verify_user_auth
 from api.gql.analysis.types import analysis as a_types
 from apps.analysis import schemas
 from apps.analysis.models import analysis as analysis_models
-from core.uid_gen import FelicityID
+
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -61,7 +61,7 @@ async def create_sample_type(info, payload: SampleTypeInputType) -> SampleTypeRe
 
 @strawberry.mutation
 async def update_sample_type(
-    info, uid: FelicityID, payload: SampleTypeInputType
+    info, uid: str, payload: SampleTypeInputType
 ) -> SampleTypeResponse:
 
     is_authenticated, felicity_user = await auth_from_info(info)

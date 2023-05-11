@@ -7,48 +7,48 @@ from api.gql.analysis.types.analysis import AnalysisType, QCSetType, SampleType
 from api.gql.setup.types import InstrumentType, MethodType
 from api.gql.user.types import UserType
 from apps.worksheet import models as ws_models
-from core.uid_gen import FelicityID
+
 
 
 @strawberry.type
 class AnalysisResultType:
-    uid: FelicityID
-    sample_uid: FelicityID
+    uid: str
+    sample_uid: str
     sample: SampleType
-    worksheet_uid: FelicityID | None
+    worksheet_uid: str | None
     worksheet_position: int | None
     assigned: bool
-    analysis_uid: FelicityID | None
+    analysis_uid: str | None
     analysis: AnalysisType | None
-    instrument_uid: FelicityID | None
+    instrument_uid: str | None
     instrument: InstrumentType | None
-    method_uid: FelicityID | None
+    method_uid: str | None
     method: MethodType | None
     result: str | None
-    analyst_uid: FelicityID | None
+    analyst_uid: str | None
     analyst: UserType | None
-    submitted_by_uid: FelicityID | None
+    submitted_by_uid: str | None
     submitted_by: UserType | None
     date_submitted: datetime | None
     verified_by: list[UserType] | None
     date_verified: datetime | None
     invalidated_by: UserType | None
-    invalidated_by_uid: FelicityID | None
+    invalidated_by_uid: str | None
     date_invalidated: datetime | None
     due_date: datetime | None
     date_cancelled: datetime | None
-    cancelled_by_uid: FelicityID | None
+    cancelled_by_uid: str | None
     cancelled_by: UserType | None
     retest: bool
-    parent_id: FelicityID | None
+    parent_id: str | None
     parent: Optional["AnalysisResultType"]
     reportable: bool
     status: str | None
     reflex_level: int | None
-    created_by_uid: FelicityID | None
+    created_by_uid: str | None
     created_by: UserType | None
     created_at: datetime | None
-    updated_by_uid: FelicityID | None
+    updated_by_uid: str | None
     updated_by: UserType | None
     updated_at: datetime | None
 

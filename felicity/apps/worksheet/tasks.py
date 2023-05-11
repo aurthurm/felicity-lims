@@ -11,13 +11,13 @@ from apps.analysis.utils import get_qc_sample_type
 from apps.job import models as job_models
 from apps.job.conf import states as job_states
 from apps.worksheet import conf, models
-from core.uid_gen import FelicityIDType
+
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
-async def populate_worksheet_plate(job_uid: FelicityIDType):
+async def populate_worksheet_plate(job_uid: str):
     logger.info(f"starting job {job_uid} ....")
     job = await job_models.Job.get(uid=job_uid)
     if not job:
@@ -303,7 +303,7 @@ async def setup_ws_quality_control_manually(ws: models.WorkSheet, qc_template_ui
                 await ar.assign(ws.uid, position, ws.instrument_uid)
 
 
-async def populate_worksheet_plate_manually(job_uid: FelicityIDType):
+async def populate_worksheet_plate_manually(job_uid: str):
     logger.info(f"starting job {job_uid} ....")
     job = await job_models.Job.get(uid=job_uid)
     if not job:

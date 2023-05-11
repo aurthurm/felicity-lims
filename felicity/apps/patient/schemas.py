@@ -2,7 +2,7 @@ from datetime import datetime
 from typing import Optional
 
 from apps.common.schemas import BaseAuditModel
-from core.uid_gen import FelicityIDType
+
 from pydantic import EmailStr
 
 #
@@ -14,7 +14,7 @@ from pydantic import EmailStr
 
 class PatientBase(BaseAuditModel):
     client_patient_id: str | None = None
-    client_uid: FelicityIDType| None = None
+    client_uid: str| None = None
     patient_id: str | None = None
     first_name: str | None = None
     middle_name: str | None = None
@@ -29,9 +29,9 @@ class PatientBase(BaseAuditModel):
     email: Optional[EmailStr] = None
     internal_use: bool| None = False
     active: bool| None = None
-    district_uid: FelicityIDType| None = None
-    province_uid: FelicityIDType| None = None
-    country_uid: FelicityIDType| None = None
+    district_uid: str| None = None
+    province_uid: str| None = None
+    country_uid: str| None = None
 
 
 # Properties to receive via API on creation
@@ -39,7 +39,7 @@ class PatientCreate(PatientBase):
     client_patient_id: str
     first_name: str
     last_name: str
-    client_uid: FelicityIDType
+    client_uid: str
     active: bool = True
 
 
@@ -49,7 +49,7 @@ class PatientUpdate(PatientBase):
 
 
 class PatientInDBBase(PatientBase):
-    uid: FelicityIDType| None = None
+    uid: str| None = None
 
     class Config:
         orm_mode = True
@@ -87,7 +87,7 @@ class IdentificationUpdate(IdentificationBase):
 
 
 class IdentificationInDBBase(IdentificationBase):
-    uid: FelicityIDType| None = None
+    uid: str| None = None
 
     class Config:
         orm_mode = True
@@ -127,7 +127,7 @@ class PatientIdentificationUpdate(PatientIdentificationBase):
 
 
 class PatientIdentificationInDBBase(PatientIdentificationBase):
-    uid: FelicityIDType| None = None
+    uid: str| None = None
 
     class Config:
         orm_mode = True

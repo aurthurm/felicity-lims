@@ -1,6 +1,6 @@
 from typing import Any, Optional
 
-from core.uid_gen import FelicityIDType
+
 from pydantic import BaseModel
 
 from .conf import categories, priorities, states
@@ -14,14 +14,14 @@ class JobBase(BaseModel):
     category: str | None = categories.WORKSHEET
     priority: int | None = priorities.NORMAL
     data: Optional[Any] = None
-    job_id: FelicityIDType| None = None
+    job_id: str| None = None
     status: str | None = states.PENDING
     reason: str | None = None
-    creator_uid: FelicityIDType| None = None
+    creator_uid: str| None = None
 
 
 class Job(JobBase):
-    uid: FelicityIDType| None = None
+    uid: str| None = None
 
     class Config:
         orm_mode = True

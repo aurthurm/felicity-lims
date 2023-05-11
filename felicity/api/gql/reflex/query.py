@@ -5,7 +5,7 @@ import strawberry  # noqa
 from api.gql import PageInfo
 from api.gql.reflex.types import ReflexRuleCursorPage, ReflexRuleEdge, ReflexRuleType
 from apps.reflex import models
-from core.uid_gen import FelicityID
+
 from utils import has_value_or_is_truthy
 
 
@@ -50,6 +50,6 @@ class ReflexRuleQuery:
 
     @strawberry.field
     async def reflex_rule_by_uid(
-        self, info, uid: FelicityID
+        self, info, uid: str
     ) -> Optional[ReflexRuleType]:
         return await models.ReflexRule.get(uid=uid)

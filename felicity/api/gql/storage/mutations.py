@@ -8,7 +8,7 @@ from api.gql.storage import types
 from apps.analysis.conf import states as analysis_states
 from apps.analysis.models import analysis as an_models
 from apps.storage import models, schemas
-from core.uid_gen import FelicityID
+
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -35,7 +35,7 @@ StorageLocationResponse = strawberry.union(
 class StorageLocationInputType:
     name: str
     description: str | None
-    store_room_uid: FelicityID
+    store_room_uid: str
 
 
 StorageSectionResponse = strawberry.union(
@@ -49,7 +49,7 @@ StorageSectionResponse = strawberry.union(
 class StorageSectionInputType:
     name: str
     description: str | None
-    storage_location_uid: FelicityID
+    storage_location_uid: str
 
 
 StorageContainerResponse = strawberry.union(
@@ -63,7 +63,7 @@ StorageContainerResponse = strawberry.union(
 class StorageContainerInputType:
     name: str
     description: str | None
-    storage_section_uid: FelicityID
+    storage_section_uid: str
     grid: bool| None = False
     row_wise: bool| None = False
     cols: int | None = 0
@@ -83,10 +83,10 @@ StoreSampleResponse = strawberry.union(
 
 @strawberry.input
 class StoreSamplesInputType:
-    sample_uid: FelicityID
+    sample_uid: str
     storage_slot: str
     storage_slot_index: int
-    storage_container_uid: FelicityID
+    storage_container_uid: str
 
 
 @strawberry.type
@@ -121,7 +121,7 @@ class StorageMutations:
 
     @strawberry.mutation
     async def update_store_room(
-        self, info, uid: FelicityID, payload: StoreRoomInputType
+        self, info, uid: str, payload: StoreRoomInputType
     ) -> StoreRoomResponse:
 
         is_authenticated, felicity_user = await auth_from_info(info)
@@ -194,7 +194,7 @@ class StorageMutations:
 
     @strawberry.mutation
     async def update_storage_location(
-        self, info, uid: FelicityID, payload: StorageLocationInputType
+        self, info, uid: str, payload: StorageLocationInputType
     ) -> StorageLocationResponse:
 
         is_authenticated, felicity_user = await auth_from_info(info)
@@ -269,7 +269,7 @@ class StorageMutations:
 
     @strawberry.mutation
     async def update_storage_section(
-        self, info, uid: FelicityID, payload: StorageSectionInputType
+        self, info, uid: str, payload: StorageSectionInputType
     ) -> StorageSectionResponse:
 
         is_authenticated, felicity_user = await auth_from_info(info)
@@ -343,7 +343,7 @@ class StorageMutations:
 
     @strawberry.mutation
     async def update_storage_container(
-        self, info, uid: FelicityID, payload: StorageContainerInputType
+        self, info, uid: str, payload: StorageContainerInputType
     ) -> StorageContainerResponse:
 
         is_authenticated, felicity_user = await auth_from_info(info)
@@ -439,7 +439,7 @@ class StorageMutations:
 
     @strawberry.mutation
     async def recover_samples(
-        info, sample_uids: List[FelicityID]
+        info, sample_uids: List[str]
     ) -> StoreSampleResponse:
         is_authenticated, felicity_user = await auth_from_info(info)
         verify_user_auth(

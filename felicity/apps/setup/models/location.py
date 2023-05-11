@@ -2,7 +2,7 @@ import logging
 
 from apps import BaseAuditDBModel
 from apps.setup import schemas
-from core.uid_gen import FelicitySAID
+
 from sqlalchemy import Boolean, Column, ForeignKey, String
 from sqlalchemy.orm import relationship
 
@@ -22,7 +22,7 @@ class LocationBase(BaseAuditDBModel):
 
 
 class District(LocationBase):
-    province_uid = Column(FelicitySAID, ForeignKey("province.uid"))
+    province_uid = Column(String, ForeignKey("province.uid"))
     province = relationship("Province", backref="districts", lazy="selectin")
 
     @classmethod
@@ -41,7 +41,7 @@ class District(LocationBase):
 
 
 class Province(LocationBase):
-    country_uid = Column(FelicitySAID, ForeignKey("country.uid"))
+    country_uid = Column(String, ForeignKey("country.uid"))
     country = relationship("Country", backref="provinces", lazy="selectin")
 
     @classmethod

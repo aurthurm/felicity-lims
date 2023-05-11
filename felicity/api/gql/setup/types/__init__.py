@@ -5,11 +5,11 @@ from typing import List, Optional
 import strawberry  # noqa
 from api.gql import PageInfo
 from api.gql.user.types import UserType
-from core.uid_gen import FelicityID
+
 
 @strawberry.type
 class LaboratoryType:
-    uid: FelicityID
+    uid: str
     setup_name: str
     lab_name: str
     lab_manager_uid: str | None
@@ -21,24 +21,24 @@ class LaboratoryType:
     address: str | None
     logo: str | None
     #
-    created_by_uid: FelicityID | None
+    created_by_uid: str | None
     created_by: Optional["UserType"]
     created_at: datetime | None
-    updated_by_uid: FelicityID | None
+    updated_by_uid: str | None
     updated_by: Optional["UserType"]
     updated_at: datetime | None
 
 
 @strawberry.type
 class LaboratorySettingType:
-    created_by_uid: FelicityID | None
+    created_by_uid: str | None
     created_by: Optional["UserType"]
     created_at: datetime | None
-    updated_by_uid: FelicityID | None
+    updated_by_uid: str | None
     updated_by: Optional["UserType"]
     updated_at: datetime | None
-    uid: FelicityID
-    laboratory_uid: FelicityID
+    uid: str
+    laboratory_uid: str
     laboratory: LaboratoryType
     allow_self_verification: bool| None = False
     allow_patient_registration: bool| None = True
@@ -55,42 +55,42 @@ class LaboratorySettingType:
 
 @strawberry.type
 class SupplierType:
-    uid: FelicityID
+    uid: str
     name: str | None
     description: str | None
     #
-    created_by_uid: FelicityID | None
+    created_by_uid: str | None
     created_by: Optional["UserType"]
     created_at: datetime | None
-    updated_by_uid: FelicityID | None
+    updated_by_uid: str | None
     updated_by: Optional["UserType"]
     updated_at: datetime | None
 
 
 @strawberry.type
 class ManufacturerType:
-    uid: FelicityID
+    uid: str
     name: str | None
     description: str | None
     #
-    created_by_uid: FelicityID | None
+    created_by_uid: str | None
     created_by: Optional["UserType"]
     created_at: datetime | None
-    updated_by_uid: FelicityID | None
+    updated_by_uid: str | None
     updated_by: Optional["UserType"]
     updated_at: datetime | None
 
 
 @strawberry.type
 class InstrumentTypeType:
-    uid: FelicityID
+    uid: str
     name: str | None
     description: str | None
     #
-    created_by_uid: FelicityID | None
+    created_by_uid: str | None
     created_by: Optional["UserType"]
     created_at: datetime | None
-    updated_by_uid: FelicityID | None
+    updated_by_uid: str | None
     updated_by: Optional["UserType"]
     updated_at: datetime | None
 
@@ -112,35 +112,35 @@ class InstrumentTypeCursorPage:
 
 @strawberry.type
 class UnitType:
-    uid: FelicityID
+    uid: str
     name: str
     is_si_unit: bool
     #
-    created_by_uid: FelicityID | None
+    created_by_uid: str | None
     created_by: Optional["UserType"]
     created_at: datetime | None
-    updated_by_uid: FelicityID | None
+    updated_by_uid: str | None
     updated_by: Optional["UserType"]
     updated_at: datetime | None
 
 
 @strawberry.type
 class InstrumentType:
-    uid: FelicityID
+    uid: str
     name: str | None
     description: str | None
     keyword: str | None
-    supplier_uid: FelicityID | None
+    supplier_uid: str | None
     supplier: Optional[SupplierType]
-    manufacturer_uid: FelicityID | None
+    manufacturer_uid: str | None
     manufacturer: Optional[ManufacturerType]
-    instrument_type_uid: FelicityID | None
+    instrument_type_uid: str | None
     instrument_type: Optional[InstrumentTypeType]
     #
-    created_by_uid: FelicityID | None
+    created_by_uid: str | None
     created_by: Optional["UserType"]
     created_at: datetime | None
-    updated_by_uid: FelicityID | None
+    updated_by_uid: str | None
     updated_by: Optional["UserType"]
     updated_at: datetime | None
     methods: Optional[List["MethodType"]] = field(default_factory=list)
@@ -163,8 +163,8 @@ class InstrumentCursorPage:
 
 @strawberry.type
 class InstrumentCalibrationType:
-    uid: FelicityID
-    instrument_uid: FelicityID
+    uid: str
+    instrument_uid: str
     instrument: InstrumentType | None
     calibration_id: str
     date_reported: datetime
@@ -179,8 +179,8 @@ class InstrumentCalibrationType:
 
 @strawberry.type
 class CalibrationCertificateType:
-    uid: FelicityID
-    instrument_uid: FelicityID
+    uid: str
+    instrument_uid: str
     instrument: InstrumentType | None
     certificate_code: str
     internal: bool
@@ -195,15 +195,15 @@ class CalibrationCertificateType:
 
 @strawberry.type
 class MethodType:
-    uid: FelicityID
+    uid: str
     name: str | None
     description: str | None
     keyword: str | None
     #
-    created_by_uid: FelicityID | None
+    created_by_uid: str | None
     created_by: Optional["UserType"]
     created_at: datetime | None
-    updated_by_uid: FelicityID | None
+    updated_by_uid: str | None
     updated_by: Optional["UserType"]
     updated_at: datetime | None
     instruments: Optional[List["InstrumentType"]] = field(default_factory=list)
@@ -226,22 +226,22 @@ class MethodCursorPage:
 
 @strawberry.type
 class CountryType:
-    uid: FelicityID
+    uid: str
     name: str | None
     code: str | None
     active: str | None
     #
-    created_by_uid: FelicityID | None
+    created_by_uid: str | None
     created_by: Optional["UserType"]
     created_at: datetime | None
-    updated_by_uid: FelicityID | None
+    updated_by_uid: str | None
     updated_by: Optional["UserType"]
     updated_at: datetime | None
 
 
 @strawberry.type
 class ProvinceType:
-    uid: FelicityID
+    uid: str
     code: str | None
     name: str | None
     email: str | None
@@ -249,13 +249,13 @@ class ProvinceType:
     mobile_phone: str | None
     business_phone: str | None
     active: bool| None
-    country_uid: FelicityID | None
+    country_uid: str | None
     country: Optional[CountryType]
     #
-    created_by_uid: FelicityID | None
+    created_by_uid: str | None
     created_by: Optional["UserType"]
     created_at: datetime | None
-    updated_by_uid: FelicityID | None
+    updated_by_uid: str | None
     updated_by: Optional["UserType"]
     updated_at: datetime | None
 
@@ -277,7 +277,7 @@ class ProvinceCursorPage:
 
 @strawberry.type
 class DistrictType:
-    uid: FelicityID
+    uid: str
     code: str | None
     name: str | None
     email: str | None
@@ -285,13 +285,13 @@ class DistrictType:
     mobile_phone: str | None
     business_phone: str | None
     active: bool| None
-    province_uid: FelicityID | None
+    province_uid: str | None
     province: Optional[ProvinceType]
     #
-    created_by_uid: FelicityID | None
+    created_by_uid: str | None
     created_by: Optional["UserType"]
     created_at: datetime | None
-    updated_by_uid: FelicityID | None
+    updated_by_uid: str | None
     updated_by: Optional["UserType"]
     updated_at: datetime | None
 

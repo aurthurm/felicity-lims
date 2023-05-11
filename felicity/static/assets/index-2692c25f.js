@@ -25,7 +25,7 @@ import{al as E,d as V,T as q,a7 as L,c as P,ae as R,a as M,af as j,am as S,b as 
         }
     }
 `,se=E`
-    mutation editNotice($uid: FelicityID!, $payload: NoticeInputType!) {
+    mutation editNotice($uid: str!, $payload: NoticeInputType!) {
         updateNotice(uid: $uid, payload: $payload) {
             ... on NoticeType {
                 __typename
@@ -51,7 +51,7 @@ import{al as E,d as V,T as q,a7 as L,c as P,ae as R,a as M,af as j,am as S,b as 
         }
     }
 `,ie=E`
-    mutation deleteNotice($uid: FelicityID!) {
+    mutation deleteNotice($uid: str!) {
         deleteNotice(uid: $uid) {
             ... on DeletedItem {
                 __typename

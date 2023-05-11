@@ -8,6 +8,7 @@ emails==0.6
 psycopg2-binary==2.9.6
 apscheduler==3.10.1
 sqlalchemy_mptt==0.2.5
+sqlalchemy_mixins @ git+https://github.com/aurthurm/sqlalchemy-mixins.git@async_support
 tenacity==8.2.2
 pydantic[email]==1.10.7
 python-multipart==0.0.6
@@ -25,11 +26,3 @@ opentelemetry-instrumentation-fastapi==0.38b0
 opentelemetry-exporter-otlp==1.17.0
 opentelemetry-instrumentation-logging==0.38b0
 opentelemetry-instrumentation-sqlalchemy==0.38b0
-# testing
-pytest
-pytest-asyncio==0.21.0
-pytest-order==1.1.0
-httpx==0.24.0
-anyio[trio]==3.6.2
-faker==18.5.1
-

@@ -15,7 +15,7 @@ import{al as e}from"./index-cd9e6ac8.js";const n=e`
         }
     }
 `,a=e`
-    mutation EditSupplier($uid: FelicityID!, $payload: SupplierInputType!) {
+    mutation EditSupplier($uid: str!, $payload: SupplierInputType!) {
         updateSupplier(uid: $uid, payload: $payload) {
             ... on SupplierType {
                 uid
@@ -47,7 +47,7 @@ import{al as e}from"./index-cd9e6ac8.js";const n=e`
         }
     }
 `,r=e`
-    mutation EditManufacturer($uid: FelicityID!, $payload: ManufacturerInputType!) {
+    mutation EditManufacturer($uid: str!, $payload: ManufacturerInputType!) {
         updateManufacturer(uid: $uid, payload: $payload) {
             ... on ManufacturerType {
                 uid
@@ -79,7 +79,7 @@ import{al as e}from"./index-cd9e6ac8.js";const n=e`
         }
     }
 `,i=e`
-    mutation EditInstrumentType($uid: FelicityID!, $payload: InstrumentTypeInputType!) {
+    mutation EditInstrumentType($uid: str!, $payload: InstrumentTypeInputType!) {
         updateInstrumentType(uid: $uid, payload: $payload) {
             ... on InstrumentTypeType {
                 uid
@@ -124,7 +124,7 @@ import{al as e}from"./index-cd9e6ac8.js";const n=e`
         }
     }
 `,d=e`
-    mutation EditInstrument($uid: FelicityID!, $payload: InstrumentInputType!) {
+    mutation EditInstrument($uid: str!, $payload: InstrumentInputType!) {
         updateInstrument(uid: $uid, payload: $payload) {
             ... on InstrumentType {
                 uid
@@ -170,7 +170,7 @@ import{al as e}from"./index-cd9e6ac8.js";const n=e`
         }
     }
 `,s=e`
-    mutation EditMethod($uid: FelicityID!, $payload: MethodInputType!) {
+    mutation EditMethod($uid: str!, $payload: MethodInputType!) {
         updateMethod(uid: $uid, payload: $payload) {
             ... on MethodType {
                 uid
@@ -203,7 +203,7 @@ import{al as e}from"./index-cd9e6ac8.js";const n=e`
         }
     }
 `,T=e`
-    mutation EditUnit($uid: FelicityID!, $payload: UnitInputType!) {
+    mutation EditUnit($uid: str!, $payload: UnitInputType!) {
         updateUnit(uid: $uid, payload: $payload) {
             ... on UnitType {
                 uid

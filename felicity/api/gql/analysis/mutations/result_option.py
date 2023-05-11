@@ -5,7 +5,7 @@ from api.gql import OperationError, auth_from_info, verify_user_auth
 from api.gql.analysis.types import analysis as a_types
 from apps.analysis import schemas
 from apps.analysis.models import analysis as analysis_models
-from core.uid_gen import FelicityID
+
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 
 @strawberry.input
 class ResultOptionInputType:
-    analysis_uid: FelicityID
+    analysis_uid: str
     option_key: int
     value: str
 
@@ -65,7 +65,7 @@ async def create_result_option(
 
 @strawberry.mutation
 async def update_result_option(
-    info, uid: FelicityID, payload: ResultOptionInputType
+    info, uid: str, payload: ResultOptionInputType
 ) -> ResultOptionResponse:
 
     is_authenticated, felicity_user = await auth_from_info(info)

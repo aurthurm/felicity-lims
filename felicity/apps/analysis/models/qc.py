@@ -3,7 +3,7 @@ import logging
 from apps import BaseAuditDBModel, DBModel
 from apps.analysis import schemas
 from apps.setup.models.setup import Department
-from core.uid_gen import FelicitySAID
+
 from sqlalchemy import Boolean, Column, DateTime, Float, ForeignKey, String, Table
 from sqlalchemy.orm import relationship
 
@@ -54,7 +54,7 @@ class QCReference(BaseAuditDBModel):
     analyses = relationship(
         "Analysis", secondary=qc_reference_analysis, lazy="selectin"
     )
-    department_uid = Column(FelicitySAID, ForeignKey("department.uid"), nullable=True)
+    department_uid = Column(String, ForeignKey("department.uid"), nullable=True)
     department = relationship("Department", lazy="selectin")
     is_string_result = Column(Boolean, nullable=True)
     # string results
@@ -85,7 +85,7 @@ class QCLevel(BaseAuditDBModel):
     """
 
     level = Column(String, nullable=False)
-    # department_uid = Column(FelicitySAID, ForeignKey("department.uid"), nullable=True)
+    # department_uid = Column(String, ForeignKey("department.uid"), nullable=True)
     # department = relationship(
     #     "Department", lazy="selectin"
     # )

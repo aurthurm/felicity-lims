@@ -3,7 +3,7 @@ from typing import List
 from apps import BaseAuditDBModel
 from apps.analysis.models.analysis import Sample
 from apps.storage import schemas
-from core.uid_gen import FelicitySAID
+
 from sqlalchemy import Boolean, Column, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 
@@ -31,7 +31,7 @@ class StorageLocation(BaseAuditDBModel):
 
     name = Column(String, nullable=False)
     description = Column(String, nullable=False)
-    store_room_uid = Column(FelicitySAID, ForeignKey("storeroom.uid"), nullable=False)
+    store_room_uid = Column(String, ForeignKey("storeroom.uid"), nullable=False)
     store_room = relationship(StoreRoom, backref="storage_locations", lazy="selectin")
 
     @classmethod
@@ -56,7 +56,7 @@ class StorageSection(BaseAuditDBModel):
     name = Column(String, nullable=False)
     description = Column(String, nullable=False)
     storage_location_uid = Column(
-        FelicitySAID, ForeignKey("storagelocation.uid"), nullable=False
+        String, ForeignKey("storagelocation.uid"), nullable=False
     )
     storage_location = relationship(
         StorageLocation, backref="storage_sections", lazy="selectin"
@@ -84,7 +84,7 @@ class StorageContainer(BaseAuditDBModel):
     name = Column(String, nullable=False)
     description = Column(String, nullable=False)
     storage_section_uid = Column(
-        FelicitySAID, ForeignKey("storagesection.uid"), nullable=False
+        String, ForeignKey("storagesection.uid"), nullable=False
     )
     storage_section = relationship(
         StorageSection, backref="storage_containers", lazy="selectin"

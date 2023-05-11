@@ -2,17 +2,19 @@ import logging
 from base64 import b64encode
 from typing import Any, AsyncIterator, List, Optional, TypeVar, Union
 
-from core.uid_gen import FelicitySAID, get_flake_uid
-from database.async_mixins import AllFeaturesMixin, ModelNotFoundError, smart_query
-from database.paginator.cursor import EdgeNode, PageCursor, PageInfo
-from database.session import async_session_factory, AsyncSessionScoped 
 from pydantic import BaseModel as PydanticBaseModel
-from sqlalchemy import Column
+from sqlalchemy import Column, String
 from sqlalchemy import or_ as sa_or_
 from sqlalchemy import update
 from sqlalchemy import select
 from sqlalchemy.orm import declared_attr, selectinload
 from sqlalchemy.sql import func
+from sqlalchemy.sql.expression import bindparam
+
+from sqlalchemy_mixins import AllFeaturesMixinAsync, smart_query
+from core.uid_gen import get_flake_uid
+from database.paginator.cursor import EdgeNode, PageCursor, PageInfo
+from database.session import AsyncSessionScoped 
 from utils import has_value_or_is_truthy
 
 InDBSchemaType = TypeVar("InDBSchemaType", bound=PydanticBaseModel)
@@ -21,14 +23,14 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
-class DBModel(AllFeaturesMixin):
+class DBModel(AllFeaturesMixinAsync):
     __name__: str
     __abstract__ = True
     __mapper_args__ = {"eager_defaults": True}
     # __allow_unmapped__ = True
 
     uid = Column(
-        FelicitySAID,
+        String,
         primary_key=True,
         index=True,
         nullable=False,
@@ -83,68 +85,10 @@ class DBModel(AllFeaturesMixin):
         start = (page - 1) * limit
 
         stmt = cls.where(**kwargs).limit(limit).offset(start)
-        async with async_session_factory() as session:
+        async with cls.session() as session:
             results = await session.execute(stmt)
         found = results.scalars().all()
         return found
-
-    async def delete(self):
-        """Removes the model from the current entity session and mark for deletion."""
-        async with async_session_factory() as session:
-            await session.delete(self)
-            await session.flush()
-            await session.commit()
-
-    @classmethod
-    async def destroy(cls, *ids):
-        """Delete the records with the given ids
-        :type ids: list
-        :param ids: primary key ids of records
-        """
-        for pk in ids:
-            obj = await cls.find(pk)
-            if obj:
-                await obj.delete()
-
-        async with async_session_factory() as session:
-            await session.flush()
-
-    @classmethod
-    async def all(cls):
-        async with async_session_factory() as session:
-            result = await session.execute(select(cls))
-        _all = result.scalars().all()
-        return _all
-
-    @classmethod
-    async def first(cls):
-        async with async_session_factory() as session:
-            result = await session.execute(select(cls))
-        _first = result.scalars().first()
-        return _first
-
-    @classmethod
-    async def find(cls, id_):
-        """Find record by the id
-        :param id_: the primary key
-        """
-        stmt = cls.where(uid=id_)
-        async with async_session_factory() as session:
-            results = await session.execute(stmt)
-
-        one_or_none = results.scalars().one_or_none()
-        return one_or_none
-
-    @classmethod
-    async def find_or_fail(cls, id_):
-        # assume that query has custom get_or_fail method
-        result = await cls.find(id_)
-        if result:
-            return result
-        else:
-            raise ModelNotFoundError(
-                "{} with uid '{}' was not found".format(cls.__name__, id_)
-            )
 
     @classmethod
     async def get(cls, **kwargs):
@@ -154,28 +98,17 @@ class DBModel(AllFeaturesMixin):
         """
         # stmt = select(cls).where(**kwargs)
         stmt = cls.where(**kwargs)
-        async with async_session_factory() as session:
+        async with cls.session() as session:
             results = await session.execute(stmt)
             found = results.scalars().first()
             return found
-
-    @staticmethod
-    async def db_commit():
-        async with async_session_factory() as session:
-            await session.commit()
-
-    @staticmethod
-    async def db_flush():
-        async with async_session_factory() as session:
-            await session.flush()
 
     @classmethod
     async def create(cls, **kwargs):
         """Returns a new get instance of the class
         This is so that mutations can work well and prevent async IO issues
         """
-        fill = cls().fill(**kwargs)
-        print(kwargs)
+        fill = await cls().fill(**kwargs)
         created = await cls.save(fill)
         if created:
             created = await cls.get(uid=created.uid)
@@ -188,14 +121,15 @@ class DBModel(AllFeaturesMixin):
         """
         to_save = []
         for data in items:
-            to_save.append(cls().fill(**cls._import(data)))
+            fill = await cls().fill(**cls._import(data))
+            to_save.append(fill)
         return await cls.save_all(to_save)
 
     async def update(self, **kwargs):
         """Returns a new get instance of the class
         This is so that mutations can work well and prevent async IO issues
         """
-        fill = self.fill(**kwargs)
+        fill = await self.fill(**kwargs)
         updated = await fill.save()
         if updated:
             updated = await self.get(uid=updated.uid)
@@ -215,7 +149,7 @@ class DBModel(AllFeaturesMixin):
         stmt = query.values(to_update).execution_options(
             synchronize_session="fetch")
 
-        async with async_session_factory() as session:
+        async with cls.session() as session:
             results = await session.execute(stmt)
         updated = results.scalars().all()
         return updated
@@ -231,8 +165,6 @@ class DBModel(AllFeaturesMixin):
         if len(mappings) == 0:
             return
 
-        from sqlalchemy.sql.expression import bindparam
-
         to_update = [cls._import(data) for data in mappings]
         for item in to_update:
             item["_uid"] = item["uid"]
@@ -247,7 +179,7 @@ class DBModel(AllFeaturesMixin):
         stmt = query.values(binds).execution_options(
             synchronize_session=None) # "fetch" not available
 
-        async with async_session_factory() as session:
+        async with cls.session() as session:
             await session.execute(stmt, to_update)
             await session.flush()
             await session.commit()
@@ -260,7 +192,7 @@ class DBModel(AllFeaturesMixin):
         """
         to_update = [cls._import(data) for data in mappings]
 
-        async with async_session_factory() as session:
+        async with cls.session() as session:
             await session.bulk_update_mappings(cls, to_update)
             await session.flush()
             await session.commit()
@@ -273,7 +205,7 @@ class DBModel(AllFeaturesMixin):
         @param mappings a dictionary update values.
         e.g {'name': 34, 'day': "fff"}
         """
-        async with async_session_factory() as session:
+        async with cls.session() as session:
             stmt = table.insert()
             await session.execute(stmt, mappings)
             await session.commit()
@@ -296,7 +228,7 @@ class DBModel(AllFeaturesMixin):
         # if related:
         #     stmt.options(selectinload(related))
 
-        async with async_session_factory() as session:
+        async with cls.session() as session:
             results = await session.execute(stmt)
 
         if not list:
@@ -316,7 +248,7 @@ class DBModel(AllFeaturesMixin):
 
     async def save(self):
         """Saves the updated model to the current entity db."""
-        async with async_session_factory() as session:
+        async with self.session() as session:
             try:
                 session.add(self)
                 await session.flush()
@@ -328,7 +260,7 @@ class DBModel(AllFeaturesMixin):
 
     async def flush_commit_session(self):
         """Saves the updated model to the current entity db."""
-        async with async_session_factory() as session:
+        async with self.session() as session:
             try:
                 await session.flush()
                 await session.commit()
@@ -339,7 +271,7 @@ class DBModel(AllFeaturesMixin):
 
     @classmethod
     async def save_all(cls, items):
-        async with async_session_factory() as session:
+        async with cls.session() as session:
             try:
                 session.add_all(items)
                 await session.flush()
@@ -352,7 +284,7 @@ class DBModel(AllFeaturesMixin):
     @classmethod
     async def get_one(cls, **kwargs):
         stmt = cls.where(**kwargs)
-        async with async_session_factory() as session:
+        async with cls.session() as session:
             results = await session.execute(stmt)
         found = results.scalars().first()
         return found
@@ -360,13 +292,13 @@ class DBModel(AllFeaturesMixin):
     @classmethod
     async def get_all(cls, **kwargs):
         stmt = cls.where(**kwargs)
-        async with async_session_factory() as session:
+        async with cls.session() as session:
             results = await session.execute(stmt)
         return results.unique().scalars().all()
 
     @classmethod
     async def from_smart_query(cls, query):
-        async with async_session_factory() as session:
+        async with cls.session() as session:
             results = await session.execute(query)
         return results.unique().scalars().all()
 
@@ -384,11 +316,10 @@ class DBModel(AllFeaturesMixin):
         # stmt = select(func.count()).select_from(cls)
         # stmt = select(func.count()).select_from(select(cls).subquery())
         # stmt = select(func.count(cls.uid)).select_from(cls)
-        print(filters)
         filter_stmt = smart_query(query=select(cls), filters=filters)
         count_stmt = select(func.count(filter_stmt.c.uid)
                             ).select_from(filter_stmt)
-        async with async_session_factory() as session:
+        async with cls.session() as session:
             res = await session.execute(count_stmt)
         count = res.scalars().one()
         return count
@@ -401,7 +332,7 @@ class DBModel(AllFeaturesMixin):
                 search_string, postgresql_regconfig="english"
             )
         )
-        async with async_session_factory() as session:
+        async with cls.session() as session:
             results = await session.execute(stmt)
         search = results.scalars().all()
         return search
@@ -411,7 +342,7 @@ class DBModel(AllFeaturesMixin):
 
         stmt = select(cls).where(cls.uid.in_(uids))  # type: ignore
 
-        async with async_session_factory() as session:
+        async with cls.session() as session:
             results = await session.execute(stmt.order_by(cls.uid))
 
         return results.scalars().all()
@@ -421,7 +352,7 @@ class DBModel(AllFeaturesMixin):
 
         stmt = select(cls).where(cls.uid.in_(uids))  # type: ignore
 
-        async with async_session_factory() as session:
+        async with cls.session() as session:
             stream = await session.stream(stmt.order_by(cls.uid))
         async for row in stream:
             yield row
@@ -429,7 +360,7 @@ class DBModel(AllFeaturesMixin):
     @classmethod
     async def stream_all(cls) -> AsyncIterator[Any]:
         stmt = select(cls)
-        async with async_session_factory() as session:
+        async with cls.session() as session:
             stream = await session.stream(stmt.order_by(cls.uid))
         async for row in stream:
             yield row
@@ -488,7 +419,7 @@ class DBModel(AllFeaturesMixin):
         if page_size:
             stmt = stmt.limit(page_size)
 
-        async with async_session_factory() as session:
+        async with cls.session() as session:
             res = await session.execute(stmt)
 
         qs = res.scalars().all()
@@ -558,4 +489,4 @@ class DBModel(AllFeaturesMixin):
         return identifier
 
 # Silence set session, not in use
-DBModel.set_session(AsyncSessionScoped)
+DBModel.set_session(AsyncSessionScoped, True)

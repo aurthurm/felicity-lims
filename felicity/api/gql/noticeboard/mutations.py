@@ -11,7 +11,7 @@ from api.gql import (
 )
 from api.gql.noticeboard.types import NoticeType
 from apps.noticeboard import models, schemas
-from core.uid_gen import FelicityID
+
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -29,8 +29,8 @@ class NoticeInputType:
     title: str
     body: str
     expiry: str
-    groups: Optional[List[FelicityID]]
-    departments: Optional[List[FelicityID]]
+    groups: Optional[List[str]]
+    departments: Optional[List[str]]
 
 
 @strawberry.type
@@ -85,7 +85,7 @@ class NoticeMutations:
 
     @strawberry.mutation
     async def update_notice(
-        self, info, uid: FelicityID, payload: NoticeInputType
+        self, info, uid: str, payload: NoticeInputType
     ) -> NoticeResponse:
 
         is_authenticated, felicity_user = await auth_from_info(info)
@@ -134,7 +134,7 @@ class NoticeMutations:
 
     @strawberry.mutation
     async def view_notice(
-        self, info, uid: FelicityID, viewer: FelicityID
+        self, info, uid: str, viewer: str
     ) -> NoticeType:
 
         is_authenticated, felicity_user = await auth_from_info(info)
@@ -154,7 +154,7 @@ class NoticeMutations:
         return NoticeType(**notice.marshal_simple())
 
     @strawberry.mutation
-    async def delete_notice(self, info, uid: FelicityID) -> DeleteResponse:
+    async def delete_notice(self, info, uid: str) -> DeleteResponse:
 
         is_authenticated, felicity_user = await auth_from_info(info)
         verify_user_auth(

@@ -4,19 +4,19 @@ from typing import List, Optional
 import strawberry  # noqa
 from api.gql.user.types import UserType
 from apps.storage import models
-from core.uid_gen import FelicityID
+
 
 
 @strawberry.type
 class StoreRoomType:
-    uid: FelicityID
+    uid: str
     name: str
     description: str | None
     created_at: datetime | None
-    created_by_uid: FelicityID | None
+    created_by_uid: str | None
     created_by: UserType | None
     updated_at: datetime | None
-    updated_by_uid: FelicityID | None
+    updated_by_uid: str | None
     updated_by: UserType | None
 
     @strawberry.field
@@ -31,16 +31,16 @@ class StoreRoomType:
 
 @strawberry.type
 class StorageLocationType:
-    uid: FelicityID
+    uid: str
     name: str
     description: str | None
-    store_room_uid: FelicityID
+    store_room_uid: str
     store_room: Optional[StoreRoomType]
     created_at: datetime | None
-    created_by_uid: FelicityID | None
+    created_by_uid: str | None
     created_by: UserType | None
     updated_at: datetime | None
-    updated_by_uid: FelicityID | None
+    updated_by_uid: str | None
     updated_by: UserType | None
 
     @strawberry.field
@@ -57,16 +57,16 @@ class StorageLocationType:
 
 @strawberry.type
 class StorageSectionType:
-    uid: FelicityID
+    uid: str
     name: str
     description: str | None
-    storage_location_uid: FelicityID
+    storage_location_uid: str
     storage_location: Optional[StorageLocationType]
     created_at: datetime | None
-    created_by_uid: FelicityID | None
+    created_by_uid: str | None
     created_by: UserType | None
     updated_at: datetime | None
-    updated_by_uid: FelicityID | None
+    updated_by_uid: str | None
     updated_by: UserType | None
 
     @strawberry.field
@@ -86,10 +86,10 @@ class StorageSectionType:
 
 @strawberry.type
 class StorageContainerType:
-    uid: FelicityID
+    uid: str
     name: str
     description: str | None
-    storage_section_uid: FelicityID
+    storage_section_uid: str
     storage_section: Optional[StorageSectionType]
     grid: bool| None
     row_wise: bool| None
@@ -98,10 +98,10 @@ class StorageContainerType:
     slots: int | None
     stored_count: int | None
     created_at: datetime | None
-    created_by_uid: FelicityID | None
+    created_by_uid: str | None
     created_by: UserType | None
     updated_at: datetime | None
-    updated_by_uid: FelicityID | None
+    updated_by_uid: str | None
     updated_by: UserType | None
 
     @strawberry.field

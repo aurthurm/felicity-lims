@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia';
 import { ref, watch } from 'vue';
+import { useRouter } from 'vue-router';
 import { IUser } from '../models/auth';
 import { STORAGE_AUTH_KEY, USER_GROUP_OVERRIDE } from '../conf';
 import { AUTHENTICATE_USER } from '../graphql/_mutations';
@@ -75,6 +76,7 @@ export const useAuthStore = defineStore('auth', () => {
         auth.value.authenticating = false;
     };
 
+    const router = useRouter()
     const authenticate = async payload => {
         auth.value.authenticating = true;
         await withClientMutation(AUTHENTICATE_USER, payload, 'authenticateUser')
@@ -82,7 +84,7 @@ export const useAuthStore = defineStore('auth', () => {
                 toastInfo('Welcome back ' + res?.user?.firstName);
                 initPreferences(res.user?.preference);
                 persistAuth(res);
-                // .then((_) => router.push({ name: "DASHBOARD" }));
+                router.push({ name: "DASHBOARD" });
             })
             .catch(err => (auth.value.authenticating = false));
     };

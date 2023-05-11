@@ -1,6 +1,6 @@
 from typing import Optional
 
-from core.uid_gen import FelicityIDType
+
 from pydantic import BaseModel
 
 
@@ -10,4 +10,4 @@ class Token(BaseModel):
 
 
 class TokenPayload(BaseModel):
-    sub: FelicityIDType| None = None
+    sub: str| None = None

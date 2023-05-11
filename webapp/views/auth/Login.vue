@@ -54,7 +54,7 @@ const login = handleSubmit((values) => {
         <span class="text-gray-700 font-semibold text-2xl">FelicityLIMS</span>
       </div>
 
-      <form class="mt-4" @submit.prevent="login">
+      <form v-if="!auth.isAuthenticated" class="mt-4" @submit.prevent="login">
         <label class="block">
           <span class="text-gray-700 text-sm">Username</span>
           <input
@@ -105,6 +105,9 @@ const login = handleSubmit((values) => {
           </div>
         </div>
       </form>
+      <div v-else>
+        <LoadingMessage message="Redirecting, please wait ..." />
+      </div>
     </div>
   </div>
 </template>

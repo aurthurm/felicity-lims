@@ -4,7 +4,7 @@ from apps import BaseAuditDBModel  # noqa
 from apps import DBModel
 from apps.user import schemas
 from core.security import get_password_hash, password_check
-from core.uid_gen import FelicitySAID
+
 from fastapi.encoders import jsonable_encoder
 from sqlalchemy import Boolean, Column, DateTime, Integer, String
 from sqlalchemy.ext.declarative import declared_attr
@@ -26,7 +26,7 @@ class SimpleAuditMixin(object):
 
     @declared_attr
     def creator_uid(self):
-        return Column(FelicitySAID, nullable=True)
+        return Column(String, nullable=True)
 
     @declared_attr
     def updated_at(self):
@@ -38,7 +38,7 @@ class SimpleAuditMixin(object):
 
     @declared_attr
     def updator_uid(self):
-        return Column(FelicitySAID, nullable=True)
+        return Column(String, nullable=True)
 
 
 class AbstractBaseUser(SimpleAuditMixin, DBModel):

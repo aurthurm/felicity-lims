@@ -5,7 +5,7 @@ from api.gql import OperationError, auth_from_info, verify_user_auth
 from api.gql.analysis.types import analysis as a_types
 from apps.analysis import schemas
 from apps.analysis.models import analysis as analysis_models
-from core.uid_gen import FelicityID
+
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -15,25 +15,25 @@ logger = logging.getLogger(__name__)
 class AnalysisInterimInput:
     key: int
     value: str
-    analysis_uid: FelicityID
-    instrument_uid: FelicityID
+    analysis_uid: str
+    instrument_uid: str
 
 
 @strawberry.input
 class AnalysisCorrectionFactorInput:
     factor: float
-    analysis_uid: FelicityID
-    instrument_uid: FelicityID
-    method_uid: FelicityID
+    analysis_uid: str
+    instrument_uid: str
+    method_uid: str
 
 
 @strawberry.input
 class AnalysisDetectionLimitInput:
     lower_limit: float
     upper_limit: float
-    analysis_uid: FelicityID
-    instrument_uid: FelicityID
-    method_uid: FelicityID
+    analysis_uid: str
+    instrument_uid: str
+    method_uid: str
 
 
 @strawberry.input
@@ -41,14 +41,14 @@ class AnalysisUncertaintyInput:
     min: float
     max: float
     value: float
-    analysis_uid: FelicityID
-    instrument_uid: FelicityID
-    method_uid: FelicityID
+    analysis_uid: str
+    instrument_uid: str
+    method_uid: str
 
 
 @strawberry.input
 class AnalysisSpecificationInput:
-    analysis_uid: FelicityID
+    analysis_uid: str
     min: float| None = None
     max: float| None = None
     min_warn: float| None = None
@@ -60,8 +60,8 @@ class AnalysisSpecificationInput:
     gender: str | None = None
     age_min: int | None = None
     age_max: int | None = None
-    method_uid: FelicityID | None = None
-    unit_uid: FelicityID | None = None
+    method_uid: str | None = None
+    unit_uid: str | None = None
 
 
 AnalysisInterimResponse = strawberry.union(
@@ -119,7 +119,7 @@ async def create_analysis_interim(
 
 @strawberry.mutation
 async def update_analysis_interim(
-    info, uid: FelicityID, payload: AnalysisInterimInput
+    info, uid: str, payload: AnalysisInterimInput
 ) -> AnalysisInterimResponse:
 
     is_authenticated, felicity_user = await auth_from_info(info)
@@ -176,7 +176,7 @@ async def create_analysis_correction_factor(
 
 @strawberry.mutation
 async def update_analysis_correction_factor(
-    info, uid: FelicityID, payload: AnalysisCorrectionFactorInput
+    info, uid: str, payload: AnalysisCorrectionFactorInput
 ) -> AnalysisCorrectionFactorResponse:
 
     is_authenticated, felicity_user = await auth_from_info(info)
@@ -235,7 +235,7 @@ async def create_analysis_detection_limit(
 
 @strawberry.mutation
 async def update_analysis_detection_limit(
-    info, uid: FelicityID, payload: AnalysisDetectionLimitInput
+    info, uid: str, payload: AnalysisDetectionLimitInput
 ) -> AnalysisDetectionLimitResponse:
 
     is_authenticated, felicity_user = await auth_from_info(info)
@@ -294,7 +294,7 @@ async def create_analysis_uncertainty(
 
 @strawberry.mutation
 async def update_analysis_uncertainty(
-    info, uid: FelicityID, payload: AnalysisUncertaintyInput
+    info, uid: str, payload: AnalysisUncertaintyInput
 ) -> AnalysisUncertaintyResponse:
 
     is_authenticated, felicity_user = await auth_from_info(info)
@@ -357,7 +357,7 @@ async def create_analysis_specification(
 
 @strawberry.mutation
 async def update_analysis_specification(
-    info, uid: FelicityID, payload: AnalysisSpecificationInput
+    info, uid: str, payload: AnalysisSpecificationInput
 ) -> AnalysisSpecificationResponse:
 
     is_authenticated, felicity_user = await auth_from_info(info)

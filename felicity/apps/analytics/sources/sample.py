@@ -1,7 +1,7 @@
 import logging
 from typing import Generic, List, Optional, Tuple, Type, TypeVar
 
-from core.uid_gen import FelicityID
+
 from database.base_class import DBModel
 from database.session import async_session_factory
 from dateutil import parser
@@ -27,7 +27,7 @@ class SampleAnalyticsInit(Generic[ModelType]):
         period_end: str,
         sample_states: list[str],
         date_column: str,
-        analysis_uids: List[FelicityID],
+        analysis_uids: List[str],
     ):
         start_date = parser.parse(str(period_start))
         end_date = parser.parse(str(period_end))

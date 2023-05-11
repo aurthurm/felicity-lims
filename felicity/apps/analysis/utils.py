@@ -8,7 +8,7 @@ from apps.analysis.models.analysis import SampleType
 from apps.analysis.models.results import AnalysisResult, ResultMutation
 from apps.notification.utils import FelicityStreamer
 from apps.reflex.utils import ReflexUtil
-from core.uid_gen import FelicityIDType
+
 from sqlalchemy import or_
 from utils import has_value_or_is_truthy
 
@@ -29,7 +29,7 @@ async def get_qc_sample_type():
 
 
 async def sample_search(
-    model, status: str, text: str, client_uid: FelicityIDType
+    model, status: str, text: str, client_uid: str
 ) -> List[schemas.SampleType]:
     """No pagination"""
     filters = []
@@ -60,7 +60,7 @@ async def sample_search(
     return (await model.session.execute(stmt)).scalars().all()
 
 
-async def retest_from_result_uids(uids: list[FelicityIDType], user):
+async def retest_from_result_uids(uids: list[str], user):
     originals = []
     retests = []
 
@@ -143,7 +143,7 @@ async def results_submitter(analysis_results: List[dict], submitter):
     return return_results
 
 
-async def verify_from_result_uids(uids: list[FelicityIDType], user):
+async def verify_from_result_uids(uids: list[str], user):
     to_return = []
 
     for _ar_uid in uids:

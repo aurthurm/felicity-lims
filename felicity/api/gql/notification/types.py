@@ -12,7 +12,7 @@ from apps.analysis.models.analysis import Sample
 from apps.analysis.models.results import AnalysisResult
 from apps.analytics.models import ReportMeta
 from apps.worksheet.models import WorkSheet
-from core.uid_gen import FelicityID
+
 
 
 @strawberry.type
@@ -29,25 +29,25 @@ actionObject = strawberry.union(
 
 @strawberry.type
 class ActivityFeedType:
-    uid: FelicityID
+    uid: str
     name: str
     subscribers: list[UserType] | None
 
 
 @strawberry.type
 class ActivityStreamType:
-    uid: FelicityID
+    uid: str
     feeds: Optional[List[ActivityFeedType]]
-    actor_uid: FelicityID | None
+    actor_uid: str | None
     actor: UserType | None
     verb: str | None
     action_object_type: str | None
-    action_object_uid: FelicityID | None
-    target_uid: FelicityID | None
+    action_object_uid: str | None
+    target_uid: str | None
     target: str | None
     viewers: list[UserType] | None
     created_at: datetime | None
-    created_by_uid: FelicityID | None
+    created_by_uid: str | None
     created_by: UserType | None
 
     @strawberry.field
@@ -89,12 +89,12 @@ class ActivityStreamType:
 
 @strawberry.type
 class NotificationType:
-    uid: FelicityID
+    uid: str
     departments: Optional[DepartmentType]
     groups: Optional[GroupType]
     users: UserType | None
     message: str
     viewers: UserType | None
     created_at: datetime | None
-    created_by_uid: FelicityID | None
+    created_by_uid: str | None
     created_by: UserType | None

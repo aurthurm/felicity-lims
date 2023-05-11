@@ -5,7 +5,7 @@ from apps import Auditable
 from apps.client.models import Client
 from apps.common.models import IdSequence
 from apps.patient import schemas
-from core.uid_gen import FelicitySAID
+
 from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, String
 from sqlalchemy.orm import Mapped, relationship
 
@@ -32,12 +32,12 @@ class Identification(Auditable):
 
 class PatientIdentification(Auditable):
     identification_uid = Column(
-        FelicitySAID, ForeignKey("identification.uid"), nullable=True
+        String, ForeignKey("identification.uid"), nullable=True
     )
     identification: Mapped["Identification"] = relationship(
         "Identification", lazy="selectin"
     )
-    patient_uid = Column(FelicitySAID, ForeignKey(
+    patient_uid = Column(String, ForeignKey(
         "patient.uid"), nullable=True)
     patient: Mapped["Patient"] = relationship(
         "Patient", back_populates="identifications", lazy="selectin"
@@ -62,7 +62,7 @@ class Patient(Auditable):
     # Identification
     client_patient_id = Column(String, index=True, unique=True, nullable=False)
     patient_id = Column(String, index=True, unique=True, nullable=True)
-    client_uid = Column(FelicitySAID, ForeignKey("client.uid"), nullable=True)
+    client_uid = Column(String, ForeignKey("client.uid"), nullable=True)
     client = relationship(Client, backref="patients", lazy="selectin")
     # Details
     first_name = Column(String, nullable=False)
@@ -84,13 +84,13 @@ class Patient(Auditable):
     internal_use = Column(Boolean(), default=False)  # e.g Test Patient
     active = Column(Boolean(), default=True)
     # belonging
-    district_uid = Column(FelicitySAID, ForeignKey(
+    district_uid = Column(String, ForeignKey(
         "district.uid"), nullable=True)
     district = relationship("District", backref="patients", lazy="selectin")
-    province_uid = Column(FelicitySAID, ForeignKey(
+    province_uid = Column(String, ForeignKey(
         "province.uid"), nullable=True)
     province = relationship("Province", backref="patients", lazy="selectin")
-    country_uid = Column(FelicitySAID, ForeignKey(
+    country_uid = Column(String, ForeignKey(
         "country.uid"), nullable=True)
     country = relationship("Country", backref="patients", lazy="selectin")
 

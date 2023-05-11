@@ -21,7 +21,7 @@ export const ADD_HAZARD = gql`
 `;
 
 export const EDIT_HAZARD = gql`
-    mutation EditHazard($uid: FelicityID!, $payload: HazardInputType!) {
+    mutation EditHazard($uid: str!, $payload: HazardInputType!) {
         updateHazard(uid: $uid, payload: $payload) {
             ... on HazardType {
                 __typename
@@ -60,7 +60,7 @@ export const ADD_STOCK_CATEGORY = gql`
 `;
 
 export const EDIT_STOCK_CATEGORY = gql`
-    mutation EditStockCategory($uid: FelicityID!, $payload: StockCategoryInputType!) {
+    mutation EditStockCategory($uid: str!, $payload: StockCategoryInputType!) {
         updateStockCategory(uid: $uid, payload: $payload) {
             ... on StockCategoryType {
                 __typename
@@ -98,7 +98,7 @@ export const ADD_STOCK_PACKAGING = gql`
 `;
 
 export const EDIT_STOCK_PACKAGING = gql`
-    mutation editStockPackaging($uid: FelicityID!, $payload: StockPackagingInputType!) {
+    mutation editStockPackaging($uid: str!, $payload: StockPackagingInputType!) {
         updateStockPackaging(uid: $uid, payload: $payload) {
             ... on StockPackagingType {
                 __typename
@@ -135,7 +135,7 @@ export const ADD_STOCK_UNIT = gql`
 `;
 
 export const EDIT_STOCK_UNIT = gql`
-    mutation editStockUnit($uid: FelicityID!, $payload: StockUnitInputType!) {
+    mutation editStockUnit($uid: str!, $payload: StockUnitInputType!) {
         updateStockUnit(uid: $uid, payload: $payload) {
             ... on StockUnitType {
                 __typename
@@ -219,7 +219,7 @@ export const ADD_STOCK_PRODUCT = gql`
 `;
 
 export const EDIT_STOCK_PRODUCT = gql`
-    mutation editStockProduct($uid: FelicityID!, $payload: StockProductInputType!) {
+    mutation editStockProduct($uid: str!, $payload: StockProductInputType!) {
         updateStockProduct(uid: $uid, payload: $payload) {
             ... on StockProductType {
                 __typename
@@ -315,7 +315,7 @@ export const ADD_STOCK_ITEM = gql`
 `;
 
 export const EDIT_STOCK_ITEM = gql`
-    mutation editStockItem($uid: FelicityID!, $payload: StockItemInputType!) {
+    mutation editStockItem($uid: str!, $payload: StockItemInputType!) {
         updateStockItem(uid: $uid, payload: $payload) {
             ... on StockItemType {
                 __typename
@@ -423,7 +423,7 @@ export const ADD_STOCK_ORDER = gql`
 `;
 
 export const EDIT_STOCK_ORDER = gql`
-    mutation EditStockOrder($uid: FelicityID!, $payload: [StockOrderProductLineInputType!]!) {
+    mutation EditStockOrder($uid: str!, $payload: [StockOrderProductLineInputType!]!) {
         updateStockOrder(uid: $uid, payload: $payload) {
             ... on StockOrderLineType {
                 __typename
@@ -454,7 +454,7 @@ export const EDIT_STOCK_ORDER = gql`
 `;
 
 export const SUBMIT_STOCK_ORDER = gql`
-    mutation SubmitStockOrder($uid: FelicityID!) {
+    mutation SubmitStockOrder($uid: str!) {
         submitStockOrder(uid: $uid) {
             ... on StockOrderType {
                 __typename
@@ -473,7 +473,7 @@ export const SUBMIT_STOCK_ORDER = gql`
 `;
 
 export const APPROVE_STOCK_ORDER = gql`
-    mutation ApproveStockOrder($uid: FelicityID!, $payload: StockOrderApprovalInputType!) {
+    mutation ApproveStockOrder($uid: str!, $payload: StockOrderApprovalInputType!) {
         approveStockOrder(uid: $uid, payload: $payload) {
             ... on StockOrderType {
                 __typename
@@ -495,7 +495,7 @@ export const APPROVE_STOCK_ORDER = gql`
 `;
 
 export const ISSUE_STOCK_ORDER = gql`
-    mutation IssueStockOrder($uid: FelicityID!, $payload: [StockOrderProductLineInputType!]!) {
+    mutation IssueStockOrder($uid: str!, $payload: [StockOrderProductLineInputType!]!) {
         issueStockOrder(uid: $uid, payload: $payload) {
             ... on StockOrderLineType {
                 __typename
@@ -529,7 +529,7 @@ export const ISSUE_STOCK_ORDER = gql`
 `;
 
 export const DELETE_STOCK_ORDER = gql`
-    mutation DeleteStockOrder($uid: FelicityID!) {
+    mutation DeleteStockOrder($uid: str!) {
         deleteStockOrder(uid: $uid) {
             ... on StockOrderLineType {
                 __typename

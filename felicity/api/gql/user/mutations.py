@@ -24,7 +24,7 @@ from core import security
 from core.config import settings
 from core.security import generate_password_reset_token
 from core.events import post_event
-from core.uid_gen import FelicityID
+
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -75,7 +75,7 @@ class UserMutations:
         first_name: str,
         last_name: str,
         email: str,
-        group_uid: FelicityID | None = None,
+        group_uid: str | None = None,
         open_reg: bool| None = False,
     ) -> UserResponse:
         if open_reg and not settings.USERS_OPEN_REGISTRATION:
@@ -117,12 +117,12 @@ class UserMutations:
     async def update_user(
         self,
         info,
-        user_uid: FelicityID,
+        user_uid: str,
         first_name: str | None,
         last_name: str | None,
         mobile_phone: str | None,
         email: str | None,
-        group_uid: FelicityID | None,
+        group_uid: str | None,
         is_active: bool| None,
     ) -> UserResponse:
 
@@ -159,7 +159,7 @@ class UserMutations:
 
     @strawberry.mutation
     async def create_user_auth(
-        self, info, user_uid: FelicityID, user_name: str, password: str, passwordc: str
+        self, info, user_uid: str, user_name: str, password: str, passwordc: str
     ) -> UserResponse:
 
         auth = await user_models.UserAuth.get_by_username(username=user_name)
@@ -210,7 +210,7 @@ class UserMutations:
     async def update_user_auth(
         self,
         info,
-        user_uid: FelicityID,
+        user_uid: str,
         user_name: str | None,
         password: str | None,
         passwordc: str | None,
@@ -280,7 +280,7 @@ class UserMutations:
         return AuthenticatedData(token=access_token[0], token_type="bearer", user=_user)
 
     @strawberry.mutation
-    async def unlink_user_auth(self, info, user_uid: FelicityID) -> UserResponse:
+    async def unlink_user_auth(self, info, user_uid: str) -> UserResponse:
         user = await user_models.User.get(uid=user_uid)
         if not user:
             return OperationError(error="User not found")
@@ -347,7 +347,7 @@ class UserMutations:
 
     @strawberry.mutation
     async def update_group(
-        info, uid: FelicityID, payload: GroupInputType
+        info, uid: str, payload: GroupInputType
     ) -> GroupResponse:
 
         is_authenticated, felicity_user = await auth_from_info(info)
@@ -376,7 +376,7 @@ class UserMutations:
 
     @strawberry.mutation
     async def update_group_permissions(
-        self, info, group_uid: FelicityID, permission_uid: FelicityID
+        self, info, group_uid: str, permission_uid: str
     ) -> UpdatedGroupPermsResponse:
         if not group_uid or not permission_uid:
             return OperationError(error="Group and Permission are required.")

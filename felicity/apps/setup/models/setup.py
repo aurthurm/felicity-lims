@@ -1,8 +1,8 @@
+from datetime import datetime
 from apps import BaseAuditDBModel, DBModel
 from apps.common.models import IdSequence
 from apps.setup import schemas
 from apps.user.models import User
-from core.uid_gen import FelicitySAID
 from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, String, Table
 from sqlalchemy.orm import relationship
 
@@ -12,7 +12,7 @@ class Laboratory(BaseAuditDBModel):
         String, default="felicity", nullable=False
     )  # Do not change this value ever
     lab_name = Column(String, nullable=False)
-    lab_manager_uid = Column(FelicitySAID, ForeignKey("user.uid"), nullable=True)
+    lab_manager_uid = Column(String, ForeignKey("user.uid"), nullable=True)
     lab_manager = relationship(
         User, foreign_keys=[lab_manager_uid], backref="user_uid", lazy="selectin"
     )
@@ -41,7 +41,7 @@ class Laboratory(BaseAuditDBModel):
 
 
 class LaboratorySetting(BaseAuditDBModel):
-    laboratory_uid = Column(FelicitySAID, ForeignKey("laboratory.uid"), nullable=True)
+    laboratory_uid = Column(String, ForeignKey("laboratory.uid"), nullable=True)
     laboratory = relationship(
         Laboratory, foreign_keys=[laboratory_uid], backref="settings", lazy="selectin"
     )
@@ -55,6 +55,7 @@ class LaboratorySetting(BaseAuditDBModel):
     default_theme = Column(String, nullable=True)
     auto_receive_samples = Column(Boolean(), nullable=True)
     sticker_copies = Column(Integer, nullable=True)
+    default_tat_minutes = Column(Integer, nullable=True, default=1440)
 
     @classmethod
     async def create(
@@ -185,13 +186,13 @@ class Instrument(BaseAuditDBModel):
     description = Column(String, nullable=True)
     keyword = Column(String, nullable=True)
     instrument_type_uid = Column(
-        FelicitySAID, ForeignKey("instrumenttype.uid"), nullable=True
+        String, ForeignKey("instrumenttype.uid"), nullable=True
     )
     instrument_type = relationship("InstrumentType", lazy="selectin")
-    supplier_uid = Column(FelicitySAID, ForeignKey("supplier.uid"), nullable=True)
+    supplier_uid = Column(String, ForeignKey("supplier.uid"), nullable=True)
     supplier = relationship(Supplier, backref="instruments", lazy="selectin")
     manufacturer_uid = Column(
-        FelicitySAID, ForeignKey("manufacturer.uid"), nullable=True
+        String, ForeignKey("manufacturer.uid"), nullable=True
     )
     manufacturer = relationship(
         "Manufacturer", backref="manufacturers", lazy="selectin"
@@ -213,7 +214,7 @@ class Instrument(BaseAuditDBModel):
 class InstrumentCalibration(BaseAuditDBModel):
     """Instrument Caliberation Task"""
 
-    instrument_uid = Column(FelicitySAID, ForeignKey("instrument.uid"), nullable=True)
+    instrument_uid = Column(String, ForeignKey("instrument.uid"), nullable=True)
     instrument = relationship("Instrument", lazy="selectin")
     calibration_id = Column(String, index=True, unique=True, nullable=False)
     date_reported = Column(DateTime, nullable=True)
@@ -244,7 +245,7 @@ class InstrumentCalibration(BaseAuditDBModel):
 class CalibrationCertificate(BaseAuditDBModel):
     """Instrument Calibration Certificate"""
 
-    instrument_uid = Column(FelicitySAID, ForeignKey("instrument.uid"), nullable=True)
+    instrument_uid = Column(String, ForeignKey("instrument.uid"), nullable=True)
     instrument = relationship("Instrument", lazy="selectin")
     certificate_code = Column(String, index=True, unique=True, nullable=False)
     internal = Column(Boolean(), nullable=False)
@@ -270,6 +271,33 @@ class CalibrationCertificate(BaseAuditDBModel):
         return await super().update(**data)
 
 
+# class InstrumentCompetence(BaseAuditDBModel):
+#     instrument_uid = Column(String, ForeignKey("instrument.uid"), nullable=True)
+#     instrument = relationship("Instrument", lazy="selectin")
+#     description = Column(
+#         String, default="competent", nullable=True
+#     )
+#     user_uid = Column(String, ForeignKey("user.uid"), nullable=True)
+#     user = relationship(
+#         User, foreign_keys=[user_uid], backref="user_uid", lazy="selectin"
+#     )
+#     issue_date = Column(DateTime, nullable=False)
+#     expiry_date = Column(DateTime, nullable=False)
+
+#     @classmethod
+#     async def create(cls, obj_in: schemas.InstrumentCompetenceCreate) -> schemas.InstrumentCompetence:
+#         data = cls._import(obj_in)
+#         return await super().create(**data)
+
+#     async def update(self, obj_in: schemas.InstrumentCompetenceUpdate) -> schemas.InstrumentCompetence:
+#         data = self._import(obj_in)
+#         return await super().update(**data)
+    
+#     @property
+#     async def is_valid(self):
+#         return datetime.now() < self.expiry_date
+
+
 class Unit(BaseAuditDBModel):
     """Unit for analyte measurement"""
 
@@ -285,3 +313,4 @@ class Unit(BaseAuditDBModel):
     async def update(self, obj_in: schemas.UnitUpdate) -> schemas.Unit:
         data = self._import(obj_in)
         return await super().update(**data)
+

@@ -1,7 +1,7 @@
 from typing import Dict, List, Optional
 
 from apps.analysis.schemas import AnalysisBaseInDB, QCLevelInDB
-from core.uid_gen import FelicityIDType
+
 from pydantic import BaseModel
 
 #
@@ -12,12 +12,12 @@ from pydantic import BaseModel
 
 
 class WorkSheetBase(BaseModel):
-    analyst_uid: FelicityIDType| None = None
-    template_uid: FelicityIDType| None = None
+    analyst_uid: str| None = None
+    template_uid: str| None = None
     worksheet_id: str | None = None
-    instrument_uid: FelicityIDType| None = None
-    sample_type_uid: FelicityIDType| None = None
-    analysis_uid: FelicityIDType| None = None
+    instrument_uid: str| None = None
+    sample_type_uid: str| None = None
+    analysis_uid: str| None = None
     analysis: Optional[AnalysisBaseInDB] = None
     reserved: Optional[dict] = {}
     number_of_samples: int | None = None
@@ -30,7 +30,7 @@ class WorkSheetBase(BaseModel):
 
 
 class WorkSheetBaseInDB(WorkSheetBase):
-    uid: FelicityIDType| None = None
+    uid: str| None = None
 
     class Config:
         orm_mode = True
@@ -64,9 +64,9 @@ class WorkSheetInDB(WorkSheetBaseInDB):
 class WSTemplateBase(BaseModel):
     name: str | None = None
     description: str | None = None
-    instrument_uid: FelicityIDType| None = None
-    sample_type_uid: FelicityIDType| None = None
-    analysis_uid: FelicityIDType| None = None
+    instrument_uid: str| None = None
+    sample_type_uid: str| None = None
+    analysis_uid: str| None = None
     analysis: Optional[AnalysisBaseInDB] = None
     qc_analyses: Optional[List[AnalysisBaseInDB]] = []
     qc_levels: Optional[List[QCLevelInDB]] = []
@@ -79,7 +79,7 @@ class WSTemplateBase(BaseModel):
 
 
 class WSTemplateBaseInDB(WSTemplateBase):
-    uid: FelicityIDType| None = None
+    uid: str| None = None
 
     class Config:
         orm_mode = True

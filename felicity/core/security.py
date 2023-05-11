@@ -2,7 +2,7 @@ import logging
 import re
 from datetime import datetime, timedelta
 from difflib import SequenceMatcher
-from typing import Any, Optional, Union
+from typing import Any, Union
 
 from core.config import settings
 from jose import jwt

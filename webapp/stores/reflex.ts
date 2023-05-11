@@ -32,7 +32,7 @@ export const useReflexStore = defineStore('reflex', {
                 })
                 .catch(err => (this.fetchingReflexRules = false));
         },
-        async fetchReflexRuleByUid(uid: number) {
+        async fetchReflexRuleByUid(uid: string) {
             this.fetchingReflexRule = true;
             await withClientQuery(GET_EFLEX_RULE_BY_UID, { uid }, 'reflexRuleByUid')
                 .then(payload => {

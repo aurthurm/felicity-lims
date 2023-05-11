@@ -23,7 +23,7 @@ export const ADD_SAMPLE_TYPE = gql`
 `;
 
 export const EDIT_SAMPLE_TYPE = gql`
-    mutation EditSampleType($uid: FelicityID!, $payload: SampleTypeInputType!) {
+    mutation EditSampleType($uid: str!, $payload: SampleTypeInputType!) {
         updateSampleType(uid: $uid, payload: $payload) {
             ... on SampleTypeTyp {
                 __typename
@@ -44,7 +44,7 @@ export const EDIT_SAMPLE_TYPE = gql`
 `;
 
 export const REINSTATE_SAMPLES = gql`
-    mutation ReInstateSamples($samples: [FelicityID!]!) {
+    mutation ReInstateSamples($samples: [str!]!) {
         reInstateSamples(samples: $samples) {
             ... on ResultedSampleListingType {
                 __typename
@@ -64,7 +64,7 @@ export const REINSTATE_SAMPLES = gql`
 `;
 
 export const CLONE_SAMPLES = gql`
-    mutation CloneSamples($samples: [FelicityID!]!) {
+    mutation CloneSamples($samples: [str!]!) {
         cloneSamples(samples: $samples) {
             ... on SampleListingType {
                 __typename
@@ -100,7 +100,7 @@ export const CLONE_SAMPLES = gql`
 `;
 
 export const CANCEL_SAMPLES = gql`
-    mutation CancelSamples($samples: [FelicityID!]!) {
+    mutation CancelSamples($samples: [str!]!) {
         cancelSamples(samples: $samples) {
             ... on ResultedSampleListingType {
                 __typename
@@ -120,7 +120,7 @@ export const CANCEL_SAMPLES = gql`
 `;
 
 export const RECEIVE_SAMPLES = gql`
-    mutation ReceiveSamples($samples: [FelicityID!]!) {
+    mutation ReceiveSamples($samples: [str!]!) {
         receiveSamples(samples: $samples) {
             ... on ResultedSampleListingType {
                 __typename
@@ -157,7 +157,7 @@ export const PUBLISH_SAMPLES = gql`
 `;
 
 export const PRINT_SAMPLES = gql`
-    mutation PrintSamples($samples: [FelicityID!]!) {
+    mutation PrintSamples($samples: [str!]!) {
         printSamples(samples: $samples) {
             ... on SampleListingType {
                 __typename
@@ -177,7 +177,7 @@ export const PRINT_SAMPLES = gql`
 `;
 
 export const INVALIDATE_SAMPLES = gql`
-    mutation InvalidateSamples($samples: [FelicityID!]!) {
+    mutation InvalidateSamples($samples: [str!]!) {
         invalidateSamples(samples: $samples) {
             ... on SampleListingType {
                 __typename
@@ -197,7 +197,7 @@ export const INVALIDATE_SAMPLES = gql`
 `;
 
 export const VERIFY_SAMPLES = gql`
-    mutation VerifySamples($samples: [FelicityID!]!) {
+    mutation VerifySamples($samples: [str!]!) {
         verifySamples(samples: $samples) {
             ... on SampleListingType {
                 __typename
@@ -261,7 +261,7 @@ export const ADD_RESULT_OPTION = gql`
 `;
 
 export const EDIT_RESULT_OPTION = gql`
-    mutation EditResultOption($uid: FelicityID!, $payload: ResultOptionInputType!) {
+    mutation EditResultOption($uid: str!, $payload: ResultOptionInputType!) {
         updateResultOption(uid: $uid, payload: $payload) {
             ... on ResultOptionType {
                 uid
@@ -301,7 +301,7 @@ export const ADD_ANALYSIS_INTERIM = gql`
 `;
 
 export const EDIT_ANALYSIS_INTERIM = gql`
-    mutation EditAnalysisInterim($uid: FelicityID!, $payload: AnalysisInterimInput!) {
+    mutation EditAnalysisInterim($uid: str!, $payload: AnalysisInterimInput!) {
         updateAnalysisInterim(uid: $uid, payload: $payload) {
             ... on AnalysisInterimType {
                 uid
@@ -342,7 +342,7 @@ export const ADD_ANALYSIS_CORRECTION_FACTOR = gql`
 `;
 
 export const EDIT_ANALYSIS_CORRECTION_FACTOR = gql`
-    mutation EditAnalysisCorrectionFactor($uid: FelicityID!, $payload: AnalysisCorrectionFactorInput!) {
+    mutation EditAnalysisCorrectionFactor($uid: str!, $payload: AnalysisCorrectionFactorInput!) {
         updateAnalysisCorrectionFactor(uid: $uid, payload: $payload) {
             ... on AnalysisCorrectionFactorType {
                 uid
@@ -385,7 +385,7 @@ export const ADD_ANALYSIS_UNCERTAINTY = gql`
 `;
 
 export const EDIT_ANALYSIS_UNCERTAINTY = gql`
-    mutation EditAnalysisUncertainty($uid: FelicityID!, $payload: AnalysisUncertaintyInput!) {
+    mutation EditAnalysisUncertainty($uid: str!, $payload: AnalysisUncertaintyInput!) {
         updateAnalysisUncertainty(uid: $uid, payload: $payload) {
             ... on AnalysisUncertaintyType {
                 uid
@@ -429,7 +429,7 @@ export const ADD_ANALYSIS_DETECTION_LIMIT = gql`
 `;
 
 export const EDIT_ANALYSIS_DETECTION_LIMIT = gql`
-    mutation EditAnalysisDetectionLimit($uid: FelicityID!, $payload: AnalysisDetectionLimitInput!) {
+    mutation EditAnalysisDetectionLimit($uid: str!, $payload: AnalysisDetectionLimitInput!) {
         updateAnalysisDetectionLimit(uid: $uid, payload: $payload) {
             ... on AnalysisDetectionLimitType {
                 uid
@@ -480,7 +480,7 @@ export const ADD_ANALYSIS_SPECIFICATION = gql`
 `;
 
 export const EDIT_ANALYSIS_SPECIFICATION = gql`
-    mutation EditAnalysisSpecification($uid: FelicityID!, $payload: AnalysisSpecificationInput!) {
+    mutation EditAnalysisSpecification($uid: str!, $payload: AnalysisSpecificationInput!) {
         updateAnalysisSpecification(uid: $uid, payload: $payload) {
             ... on AnalysisSpecificationType {
                 uid
@@ -563,7 +563,7 @@ export const ADD_ANALYSIS_SERVICE = gql`
 `;
 
 export const EDIT_ANALYSIS_SERVICE = gql`
-    mutation EditAnalysisService($uid: FelicityID!, $payload: AnalysisInputType!) {
+    mutation EditAnalysisService($uid: str!, $payload: AnalysisInputType!) {
         updateAnalysis(uid: $uid, payload: $payload) {
             ... on AnalysisWithProfiles {
                 __typename
@@ -647,7 +647,7 @@ export const ADD_ANALYSIS_PROFILE = gql`
 `;
 
 export const EDIT_ANALYSIS_PROFILE = gql`
-    mutation EditAnalysisProfile($uid: FelicityID!, $payload: ProfileInputType!) {
+    mutation EditAnalysisProfile($uid: str!, $payload: ProfileInputType!) {
         updateProfile(uid: $uid, payload: $payload) {
             ... on ProfileType {
                 uid
@@ -702,7 +702,7 @@ export const ADD_ANALYSIS_CATEGORY = gql`
 `;
 
 export const EDIT_ANALYSIS_CATEGORY = gql`
-    mutation EditAnalysisCategory($uid: FelicityID!, $payload: AnalysisCategoryInputType!) {
+    mutation EditAnalysisCategory($uid: str!, $payload: AnalysisCategoryInputType!) {
         updateAnalysisCategory(uid: $uid, payload: $payload) {
             ... on AnalysisCategoryType {
                 uid
@@ -780,7 +780,7 @@ export const ADD_ANALYSIS_REQUEST = gql`
 
 // ANALYSIS RESULTS
 export const SUBMIT_ANALYSIS_RESULTS = gql`
-    mutation SubmitAnalysisResults($analysisResults: [ARResultInputType!]!, $sourceObject: String!, $sourceObjectUid: FelicityID!) {
+    mutation SubmitAnalysisResults($analysisResults: [ARResultInputType!]!, $sourceObject: String!, $sourceObjectUid: str!) {
         submitAnalysisResults(analysisResults: $analysisResults, sourceObject: $sourceObject, sourceObjectUid: $sourceObjectUid) {
             ... on OperationSuccess {
                 message
@@ -834,7 +834,7 @@ export const REINSTATE_ANALYSIS_RESULTS = gql`
 `;
 
 export const VERIFY_ANALYSIS_RESULTS = gql`
-    mutation VerifyAnalysisResults($analyses: [String!]!, $sourceObject: String!, $sourceObjectUid: FelicityID!) {
+    mutation VerifyAnalysisResults($analyses: [String!]!, $sourceObject: String!, $sourceObjectUid: str!) {
         verifyAnalysisResults(analyses: $analyses, sourceObject: $sourceObject, sourceObjectUid: $sourceObjectUid) {
             ... on OperationSuccess {
                 message
@@ -986,7 +986,7 @@ export const ADD_QC_LEVEL = gql`
 `;
 
 export const EDIT_QC_LEVEL = gql`
-    mutation EditQCLevel($uid: FelicityID!, $level: String!) {
+    mutation EditQCLevel($uid: str!, $level: String!) {
         updateQcLevel(uid: $uid, level: $level) {
             ... on QCLevelType {
                 uid
@@ -1030,7 +1030,7 @@ export const ADD_QC_TEMPLATE = gql`
 `;
 
 export const EDIT_QC_TEMPLATE = gql`
-    mutation EditQCTemplate($uid: FelicityID!, $payload: QCTemplateInputType!) {
+    mutation EditQCTemplate($uid: str!, $payload: QCTemplateInputType!) {
         updateQcTemplate(uid: $uid, payload: $payload) {
             ... on QCTemplateType {
                 uid
@@ -1114,7 +1114,7 @@ export const ADD_REJECTION_REASON = gql`
 `;
 
 export const EDIT_REJECTION_REASON = gql`
-    mutation EditRejectionReason($uid: FelicityID!, $reason: String!) {
+    mutation EditRejectionReason($uid: str!, $reason: String!) {
         updateRejectionReason(uid: $uid, reason: $reason) {
             ... on RejectionReasonType {
                 __typename

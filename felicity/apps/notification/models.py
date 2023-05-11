@@ -4,7 +4,7 @@ from typing import Any, List, Optional
 from apps import BaseAuditDBModel, DBModel
 from apps.setup.models import Department
 from apps.user.models import Group, User
-from core.uid_gen import FelicitySAID
+
 from sqlalchemy import Column, ForeignKey, String, Table
 from sqlalchemy.orm import relationship
 
@@ -89,13 +89,13 @@ class ActivityStream(BaseAuditDBModel):
     """
 
     feeds = relationship(ActivityFeed, secondary=activity_stream_feed, lazy="selectin")
-    actor_uid = Column(FelicitySAID, ForeignKey("user.uid"), nullable=True)
+    actor_uid = Column(String, ForeignKey("user.uid"), nullable=True)
     actor = relationship("User", foreign_keys=[actor_uid], lazy="selectin")
     verb = Column(String, nullable=True)
     action_object_type = Column(String, nullable=True)
-    action_object_uid = Column(FelicitySAID, nullable=True)
+    action_object_uid = Column(String, nullable=True)
     action_object = Column(String, nullable=True)
-    target_uid = Column(FelicitySAID, nullable=True)
+    target_uid = Column(String, nullable=True)
     target = Column(String, nullable=True)
     viewers = relationship("User", secondary=activity_stream_view, lazy="selectin")
 

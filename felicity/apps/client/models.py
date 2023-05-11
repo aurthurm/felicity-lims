@@ -4,7 +4,7 @@ from apps.setup.models import District, Province
 from apps.user import conf
 from apps.user.abstract import AbstractBaseUser
 from apps.user.models import UserAuth
-from core.uid_gen import FelicitySAID
+
 from sqlalchemy import Boolean, Column, ForeignKey, String
 from sqlalchemy.orm import backref, relationship
 
@@ -14,10 +14,10 @@ class Client(Auditable):
 
     name = Column(String, nullable=False)
     code = Column(String, index=True, unique=True, nullable=False)
-    district_uid = Column(FelicitySAID, ForeignKey(
+    district_uid = Column(String, ForeignKey(
         "district.uid"), nullable=True)
     district = relationship(District, backref="clients", lazy="selectin")
-    province_uid = Column(FelicitySAID, ForeignKey(
+    province_uid = Column(String, ForeignKey(
         "province.uid"), nullable=True)
     province = relationship(Province, backref="clients", lazy="selectin")
     email = Column(String, nullable=True)
@@ -62,13 +62,13 @@ class Client(Auditable):
 
 
 class ClientContact(AbstractBaseUser):
-    auth_uid = Column(FelicitySAID, ForeignKey("userauth.uid"), nullable=True)
+    auth_uid = Column(String, ForeignKey("userauth.uid"), nullable=True)
     auth = relationship(UserAuth, backref=backref(
         conf.CLIENT_CONTACT, uselist=False))
     email = Column(String, unique=False, index=True, nullable=True)
     email_cc = Column(String, nullable=True)
     consent_sms = Column(Boolean(), default=False)
-    client_uid = Column(FelicitySAID, ForeignKey("client.uid"), nullable=False)
+    client_uid = Column(String, ForeignKey("client.uid"), nullable=False)
     client = relationship(
         Client,
         backref=backref(

@@ -17,7 +17,7 @@ import{al as e}from"./index-cd9e6ac8.js";const n=e`
         }
     }
 `,i=e`
-    mutation editReflexR($uid: FelicityID!, $payload: ReflexRuleInput!) {
+    mutation editReflexR($uid: str!, $payload: ReflexRuleInput!) {
         updateReflexRule(uid: $uid, payload: $payload) {
             ... on ReflexRuleType {
                 __typename
@@ -59,7 +59,7 @@ import{al as e}from"./index-cd9e6ac8.js";const n=e`
         }
     }
 `,l=e`
-    mutation editReflexA($uid: FelicityID!, $payload: ReflexActionInput!) {
+    mutation editReflexA($uid: str!, $payload: ReflexActionInput!) {
         updateReflexAction(uid: $uid, payload: $payload) {
             ... on ReflexActionType {
                 __typename
@@ -124,7 +124,7 @@ import{al as e}from"./index-cd9e6ac8.js";const n=e`
         }
     }
 `,d=e`
-    mutation editReflexB($uid: FelicityID!, $payload: ReflexBrainInput!) {
+    mutation editReflexB($uid: str!, $payload: ReflexBrainInput!) {
         updateReflexBrain(uid: $uid, payload: $payload) {
             ... on ReflexBrainType {
                 __typename

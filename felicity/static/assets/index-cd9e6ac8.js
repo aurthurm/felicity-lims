@@ -1197,7 +1197,7 @@ this in the docs: http://dev.apollodata.com/core/fragments.html#unique-names`):r
         $before: String
         $status: String!
         $text: String!
-        $clientUid: FelicityID!
+        $clientUid: str!
         $sortBy: [String!]
     ) {
         sampleAll(
@@ -1304,7 +1304,7 @@ this in the docs: http://dev.apollodata.com/core/fragments.html#unique-names`):r
         }
     }
 `,qd1=W`
-    query getAnalysesRequestsByPatientUid($uid: FelicityID!) {
+    query getAnalysesRequestsByPatientUid($uid: str!) {
         analysisRequestsByPatientUid(uid: $uid) {
             uid
             clientRequestId
@@ -1379,7 +1379,7 @@ this in the docs: http://dev.apollodata.com/core/fragments.html#unique-names`):r
         }
     }
 `,jd1=W`
-    query getAnalysesRequestsByClientUid($uid: FelicityID!) {
+    query getAnalysesRequestsByClientUid($uid: str!) {
         analysisRequestsByClientUid(uid: $uid) {
             uid
             clientRequestId
@@ -1454,7 +1454,7 @@ this in the docs: http://dev.apollodata.com/core/fragments.html#unique-names`):r
         }
     }
 `,Wd1=W`
-    query getAnalysesResultsBySampleUid($uid: FelicityID!) {
+    query getAnalysesResultsBySampleUid($uid: str!) {
         analysisResultBySampleUid(uid: $uid) {
             uid
             status
@@ -1516,8 +1516,8 @@ this in the docs: http://dev.apollodata.com/core/fragments.html#unique-names`):r
         $after: String
         $text: String!
         $sortBy: [String!]
-        $analysisUid: FelicityID!
-        $sampleTypeUid: FelicityID!
+        $analysisUid: str!
+        $sampleTypeUid: str!
     ) {
         analysisResultsForWsAssign(
             pageSize: $first
@@ -1557,7 +1557,7 @@ this in the docs: http://dev.apollodata.com/core/fragments.html#unique-names`):r
         }
     }
 `,Kd1=W`
-    query getSampleByUid($uid: FelicityID!) {
+    query getSampleByUid($uid: str!) {
         sampleByUid(uid: $uid) {
             uid
             createdByUid
@@ -1646,7 +1646,7 @@ this in the docs: http://dev.apollodata.com/core/fragments.html#unique-names`):r
         }
     }
 `,Yd1=W`
-    query getSampleByUid($uid: FelicityID!) {
+    query getSampleByUid($uid: str!) {
         sampleByUid(uid: $uid) {
             uid
             sampleId
@@ -1654,7 +1654,7 @@ this in the docs: http://dev.apollodata.com/core/fragments.html#unique-names`):r
         }
     }
 `,Zd1=W`
-    query getSampleParentId($parentId: FelicityID!, $text: String) {
+    query getSampleParentId($parentId: str!, $text: String) {
         sampleByParentId(parentId: $parentId, text: $text) {
             uid
             sampleId
@@ -1662,7 +1662,7 @@ this in the docs: http://dev.apollodata.com/core/fragments.html#unique-names`):r
         }
     }
 `,Qd1=W`
-    query getSamplesByStorageContainerUid($uid: FelicityID!) {
+    query getSamplesByStorageContainerUid($uid: str!) {
         samplesByStorageContainerUid(uid: $uid) {
             uid
             sampleId
@@ -1782,7 +1782,7 @@ this in the docs: http://dev.apollodata.com/core/fragments.html#unique-names`):r
         }
     }
 `,th1=W`
-    query getQCSetByUid($uid: FelicityID!) {
+    query getQCSetByUid($uid: str!) {
         qcSetByUid(uid: $uid) {
             uid
             name
@@ -1848,7 +1848,7 @@ this in the docs: http://dev.apollodata.com/core/fragments.html#unique-names`):r
         }
     }
 `;W`
-    query resultOptionsByAnalysisUid($uid: FelicityID!) {
+    query resultOptionsByAnalysisUid($uid: str!) {
         resultOptionsByAnalysisUid(uid: $uid) {
             uid
             optionKey
@@ -1864,7 +1864,7 @@ this in the docs: http://dev.apollodata.com/core/fragments.html#unique-names`):r
         }
     }
 `,FI1=W`
-    query impressMeta($uids: [FelicityID!]!) {
+    query impressMeta($uids: [str!]!) {
         impressReportsMeta(uids: $uids) {
             uid
             state
@@ -1883,11 +1883,11 @@ this in the docs: http://dev.apollodata.com/core/fragments.html#unique-names`):r
         }
     }
 `,BI1=W`
-    query impressReports($uids: [FelicityID!]!) {
+    query impressReports($uids: [str!]!) {
         impressReportsDownload(uids: $uids)
     }
 `,UI1=W`
-    query impressReport($uid: FelicityID!) {
+    query impressReport($uid: str!) {
         impressReportDownload(uid: $uid)
     }
 `;var N1=typeof globalThis<"u"?globalThis:typeof window<"u"?window:typeof global<"u"?global:typeof self<"u"?self:{};function on(e){if(e.__esModule)return e;var t=e.default;if(typeof t=="function"){var a=function c(){if(this instanceof c){var n=[null];n.push.apply(n,arguments);var s=Function.bind.apply(t,n);return new s}return t.apply(this,arguments)};a.prototype=t.prototype}else a={};return Object.defineProperty(a,"__esModule",{value:!0}),Object.keys(e).forEach(function(c){var n=Object.getOwnPropertyDescriptor(e,c);Object.defineProperty(a,c,n.get?n:{enumerable:!0,get:function(){return e[c]}})}),a}var uo={},ch1={get exports(){return uo},set exports(e){uo=e}};/*!
@@ -1987,7 +1987,7 @@ PERFORMANCE OF THIS SOFTWARE.
         }
     }
 `,jI1=W`
-    mutation EditSampleType($uid: FelicityID!, $payload: SampleTypeInputType!) {
+    mutation EditSampleType($uid: str!, $payload: SampleTypeInputType!) {
         updateSampleType(uid: $uid, payload: $payload) {
             ... on SampleTypeTyp {
                 __typename
@@ -2006,7 +2006,7 @@ PERFORMANCE OF THIS SOFTWARE.
         }
     }
 `,WI1=W`
-    mutation ReInstateSamples($samples: [FelicityID!]!) {
+    mutation ReInstateSamples($samples: [str!]!) {
         reInstateSamples(samples: $samples) {
             ... on ResultedSampleListingType {
                 __typename
@@ -2024,7 +2024,7 @@ PERFORMANCE OF THIS SOFTWARE.
         }
     }
 `,GI1=W`
-    mutation CloneSamples($samples: [FelicityID!]!) {
+    mutation CloneSamples($samples: [str!]!) {
         cloneSamples(samples: $samples) {
             ... on SampleListingType {
                 __typename
@@ -2058,7 +2058,7 @@ PERFORMANCE OF THIS SOFTWARE.
         }
     }
 `,KI1=W`
-    mutation CancelSamples($samples: [FelicityID!]!) {
+    mutation CancelSamples($samples: [str!]!) {
         cancelSamples(samples: $samples) {
             ... on ResultedSampleListingType {
                 __typename
@@ -2076,7 +2076,7 @@ PERFORMANCE OF THIS SOFTWARE.
         }
     }
 `,YI1=W`
-    mutation ReceiveSamples($samples: [FelicityID!]!) {
+    mutation ReceiveSamples($samples: [str!]!) {
         receiveSamples(samples: $samples) {
             ... on ResultedSampleListingType {
                 __typename
@@ -2109,7 +2109,7 @@ PERFORMANCE OF THIS SOFTWARE.
         }
     }
 `,QI1=W`
-    mutation PrintSamples($samples: [FelicityID!]!) {
+    mutation PrintSamples($samples: [str!]!) {
         printSamples(samples: $samples) {
             ... on SampleListingType {
                 __typename
@@ -2127,7 +2127,7 @@ PERFORMANCE OF THIS SOFTWARE.
         }
     }
 `,XI1=W`
-    mutation InvalidateSamples($samples: [FelicityID!]!) {
+    mutation InvalidateSamples($samples: [str!]!) {
         invalidateSamples(samples: $samples) {
             ... on SampleListingType {
                 __typename
@@ -2145,7 +2145,7 @@ PERFORMANCE OF THIS SOFTWARE.
         }
     }
 `,JI1=W`
-    mutation VerifySamples($samples: [FelicityID!]!) {
+    mutation VerifySamples($samples: [str!]!) {
         verifySamples(samples: $samples) {
             ... on SampleListingType {
                 __typename
@@ -2202,7 +2202,7 @@ PERFORMANCE OF THIS SOFTWARE.
         }
     }
 `,aR1=W`
-    mutation EditResultOption($uid: FelicityID!, $payload: ResultOptionInputType!) {
+    mutation EditResultOption($uid: str!, $payload: ResultOptionInputType!) {
         updateResultOption(uid: $uid, payload: $payload) {
             ... on ResultOptionType {
                 uid
@@ -2237,7 +2237,7 @@ PERFORMANCE OF THIS SOFTWARE.
         }
     }
 `,nR1=W`
-    mutation EditAnalysisInterim($uid: FelicityID!, $payload: AnalysisInterimInput!) {
+    mutation EditAnalysisInterim($uid: str!, $payload: AnalysisInterimInput!) {
         updateAnalysisInterim(uid: $uid, payload: $payload) {
             ... on AnalysisInterimType {
                 uid
@@ -2273,7 +2273,7 @@ PERFORMANCE OF THIS SOFTWARE.
         }
     }
 `,rR1=W`
-    mutation EditAnalysisCorrectionFactor($uid: FelicityID!, $payload: AnalysisCorrectionFactorInput!) {
+    mutation EditAnalysisCorrectionFactor($uid: str!, $payload: AnalysisCorrectionFactorInput!) {
         updateAnalysisCorrectionFactor(uid: $uid, payload: $payload) {
             ... on AnalysisCorrectionFactorType {
                 uid
@@ -2311,7 +2311,7 @@ PERFORMANCE OF THIS SOFTWARE.
         }
     }
 `,oR1=W`
-    mutation EditAnalysisUncertainty($uid: FelicityID!, $payload: AnalysisUncertaintyInput!) {
+    mutation EditAnalysisUncertainty($uid: str!, $payload: AnalysisUncertaintyInput!) {
         updateAnalysisUncertainty(uid: $uid, payload: $payload) {
             ... on AnalysisUncertaintyType {
                 uid
@@ -2350,7 +2350,7 @@ PERFORMANCE OF THIS SOFTWARE.
         }
     }
 `,fR1=W`
-    mutation EditAnalysisDetectionLimit($uid: FelicityID!, $payload: AnalysisDetectionLimitInput!) {
+    mutation EditAnalysisDetectionLimit($uid: str!, $payload: AnalysisDetectionLimitInput!) {
         updateAnalysisDetectionLimit(uid: $uid, payload: $payload) {
             ... on AnalysisDetectionLimitType {
                 uid
@@ -2396,7 +2396,7 @@ PERFORMANCE OF THIS SOFTWARE.
         }
     }
 `,dR1=W`
-    mutation EditAnalysisSpecification($uid: FelicityID!, $payload: AnalysisSpecificationInput!) {
+    mutation EditAnalysisSpecification($uid: str!, $payload: AnalysisSpecificationInput!) {
         updateAnalysisSpecification(uid: $uid, payload: $payload) {
             ... on AnalysisSpecificationType {
                 uid
@@ -2474,7 +2474,7 @@ PERFORMANCE OF THIS SOFTWARE.
         }
     }
 `,pR1=W`
-    mutation EditAnalysisService($uid: FelicityID!, $payload: AnalysisInputType!) {
+    mutation EditAnalysisService($uid: str!, $payload: AnalysisInputType!) {
         updateAnalysis(uid: $uid, payload: $payload) {
             ... on AnalysisWithProfiles {
                 __typename
@@ -2553,7 +2553,7 @@ PERFORMANCE OF THIS SOFTWARE.
         }
     }
 `,vR1=W`
-    mutation EditAnalysisProfile($uid: FelicityID!, $payload: ProfileInputType!) {
+    mutation EditAnalysisProfile($uid: str!, $payload: ProfileInputType!) {
         updateProfile(uid: $uid, payload: $payload) {
             ... on ProfileType {
                 uid
@@ -2603,7 +2603,7 @@ PERFORMANCE OF THIS SOFTWARE.
         }
     }
 `,yR1=W`
-    mutation EditAnalysisCategory($uid: FelicityID!, $payload: AnalysisCategoryInputType!) {
+    mutation EditAnalysisCategory($uid: str!, $payload: AnalysisCategoryInputType!) {
         updateAnalysisCategory(uid: $uid, payload: $payload) {
             ... on AnalysisCategoryType {
                 uid
@@ -2675,7 +2675,7 @@ PERFORMANCE OF THIS SOFTWARE.
         }
     }
 `,CR1=W`
-    mutation SubmitAnalysisResults($analysisResults: [ARResultInputType!]!, $sourceObject: String!, $sourceObjectUid: FelicityID!) {
+    mutation SubmitAnalysisResults($analysisResults: [ARResultInputType!]!, $sourceObject: String!, $sourceObjectUid: str!) {
         submitAnalysisResults(analysisResults: $analysisResults, sourceObject: $sourceObject, sourceObjectUid: $sourceObjectUid) {
             ... on OperationSuccess {
                 message
@@ -2723,7 +2723,7 @@ PERFORMANCE OF THIS SOFTWARE.
         }
     }
 `,HR1=W`
-    mutation VerifyAnalysisResults($analyses: [String!]!, $sourceObject: String!, $sourceObjectUid: FelicityID!) {
+    mutation VerifyAnalysisResults($analyses: [String!]!, $sourceObject: String!, $sourceObjectUid: str!) {
         verifyAnalysisResults(analyses: $analyses, sourceObject: $sourceObject, sourceObjectUid: $sourceObjectUid) {
             ... on OperationSuccess {
                 message
@@ -2866,7 +2866,7 @@ PERFORMANCE OF THIS SOFTWARE.
         }
     }
 `,SR1=W`
-    mutation EditQCLevel($uid: FelicityID!, $level: String!) {
+    mutation EditQCLevel($uid: str!, $level: String!) {
         updateQcLevel(uid: $uid, level: $level) {
             ... on QCLevelType {
                 uid
@@ -2905,7 +2905,7 @@ PERFORMANCE OF THIS SOFTWARE.
         }
     }
 `,_R1=W`
-    mutation EditQCTemplate($uid: FelicityID!, $payload: QCTemplateInputType!) {
+    mutation EditQCTemplate($uid: str!, $payload: QCTemplateInputType!) {
         updateQcTemplate(uid: $uid, payload: $payload) {
             ... on QCTemplateType {
                 uid
@@ -2981,7 +2981,7 @@ PERFORMANCE OF THIS SOFTWARE.
         }
     }
 `,NR1=W`
-    mutation EditRejectionReason($uid: FelicityID!, $reason: String!) {
+    mutation EditRejectionReason($uid: str!, $reason: String!) {
         updateRejectionReason(uid: $uid, reason: $reason) {
             ... on RejectionReasonType {
                 __typename
@@ -3028,7 +3028,7 @@ PERFORMANCE OF THIS SOFTWARE.
         }
     }
 `,Tm1=W`
-    mutation EditStoreRoom($uid: FelicityID!, $payload: StoreRoomInputType!) {
+    mutation EditStoreRoom($uid: str!, $payload: StoreRoomInputType!) {
         updateStoreRoom(uid: $uid, payload: $payload) {
             ... on StoreRoomType {
                 __typename
@@ -3063,7 +3063,7 @@ PERFORMANCE OF THIS SOFTWARE.
         }
     }
 `,Om1=W`
-    mutation EditStorageLocation($uid: FelicityID!, $payload: StorageLocationInputType!) {
+    mutation EditStorageLocation($uid: str!, $payload: StorageLocationInputType!) {
         updateStorageLocation(uid: $uid, payload: $payload) {
             ... on StorageLocationType {
                 __typename
@@ -3103,7 +3103,7 @@ PERFORMANCE OF THIS SOFTWARE.
         }
     }
 `,Im1=W`
-    mutation EditStorageSection($uid: FelicityID!, $payload: StorageSectionInputType!) {
+    mutation EditStorageSection($uid: str!, $payload: StorageSectionInputType!) {
         updateStorageSection(uid: $uid, payload: $payload) {
             ... on StorageSectionType {
                 __typename
@@ -3156,7 +3156,7 @@ PERFORMANCE OF THIS SOFTWARE.
         }
     }
 `,$m1=W`
-    mutation EditStorageContainer($uid: FelicityID!, $payload: StorageContainerInputType!) {
+    mutation EditStorageContainer($uid: str!, $payload: StorageContainerInputType!) {
         updateStorageContainer(uid: $uid, payload: $payload) {
             ... on StorageContainerType {
                 __typename
@@ -3209,7 +3209,7 @@ PERFORMANCE OF THIS SOFTWARE.
         }
     }
 `,WR1=W`
-    mutation RecoverSamples($sampleUids: [FelicityID!]!) {
+    mutation RecoverSamples($sampleUids: [str!]!) {
         recoverSamples(sampleUids: $sampleUids) {
             ... on StoredSamplesType {
                 __typename
@@ -3281,7 +3281,7 @@ PERFORMANCE OF THIS SOFTWARE.
         }
     }
 `,KR1=W`
-    mutation EditWorkSheetTemplate($uid: FelicityID!, $payload: WorksheetTemplateInputType!) {
+    mutation EditWorkSheetTemplate($uid: str!, $payload: WorksheetTemplateInputType!) {
         updateWorksheetTemplate(uid: $uid, payload: $payload) {
             ... on WorkSheetTemplateType {
                 __typename
@@ -3333,7 +3333,7 @@ PERFORMANCE OF THIS SOFTWARE.
         }
     }
 `,YR1=W`
-    mutation AddWorkSheet($analystUid: FelicityID!, $templateUid: FelicityID!, $count: Int) {
+    mutation AddWorkSheet($analystUid: str!, $templateUid: str!, $count: Int) {
         createWorksheet(analystUid: $analystUid, templateUid: $templateUid, count: $count) {
             ... on WorksheetListingType {
                 __typename
@@ -3375,12 +3375,12 @@ PERFORMANCE OF THIS SOFTWARE.
     }
 `,Dm1=W`
     mutation UpdateWorkSheet(
-        $worksheetUid: FelicityID!
-        $analystUid: FelicityID
-        $instrumentUid: FelicityID
-        $methodUid: FelicityID
+        $worksheetUid: str!
+        $analystUid: str
+        $instrumentUid: str
+        $methodUid: str
         $action: String
-        $samples: [FelicityID!]
+        $samples: [str!]
     ) {
         updateWorksheet(
             worksheetUid: $worksheetUid
@@ -3419,7 +3419,7 @@ PERFORMANCE OF THIS SOFTWARE.
         }
     }
 `,ZR1=W`
-    mutation EditWorkSheetApplyTemplate($worksheetUid: FelicityID!, $templateUid: FelicityID!) {
+    mutation EditWorkSheetApplyTemplate($worksheetUid: str!, $templateUid: str!) {
         updateWorksheetApplyTemplate(worksheetUid: $worksheetUid, templateUid: $templateUid) {
             ... on WorkSheetType {
                 __typename
@@ -3450,7 +3450,7 @@ PERFORMANCE OF THIS SOFTWARE.
         }
     }
 `,QR1=W`
-    mutation ManualyAssignWorsheet($uid: FelicityID!, $qcTemplateUid: FelicityID!, $analysesUids: [FelicityID!]!) {
+    mutation ManualyAssignWorsheet($uid: str!, $qcTemplateUid: str!, $analysesUids: [str!]!) {
         updateWorksheetManualAssign(uid: $uid, qcTemplateUid: $qcTemplateUid, analysesUids: $analysesUids) {
             ... on WorkSheetType {
                 __typename
@@ -3572,7 +3572,7 @@ PERFORMANCE OF THIS SOFTWARE.
         }
     }
 `,Wm1=W`
-    query getAuditLogs($targetType: String!, $targetId: FelicityID!) {
+    query getAuditLogs($targetType: String!, $targetId: str!) {
         auditLogsFilter(targetType: $targetType, targetId: $targetId) {
             uid
             userId
@@ -3645,7 +3645,7 @@ PERFORMANCE OF THIS SOFTWARE.
 `,e$1=W`
     ${jt}
     ${qt}
-    mutation addUser($firstName: String!, $lastName: String!, $email: String!, $groupUid: FelicityID) {
+    mutation addUser($firstName: String!, $lastName: String!, $email: String!, $groupUid: str) {
         createUser(firstName: $firstName, lastName: $lastName, email: $email, groupUid: $groupUid) {
             ... on UserType {
                 uid
@@ -3679,11 +3679,11 @@ PERFORMANCE OF THIS SOFTWARE.
     ${jt}
     ${qt}
     mutation editUser(
-        $userUid: FelicityID!
+        $userUid: str!
         $firstName: String!
         $lastName: String
         $email: String
-        $groupUid: FelicityID
+        $groupUid: str
         $mobilePhone: String
         $isActive: Boolean
     ) {
@@ -3727,7 +3727,7 @@ PERFORMANCE OF THIS SOFTWARE.
 `,a$1=W`
     ${jt}
     ${qt}
-    mutation addUserAuth($userUid: FelicityID!, $userName: String!, $password: String!, $passwordc: String!) {
+    mutation addUserAuth($userUid: str!, $userName: String!, $password: String!, $passwordc: String!) {
         createUserAuth(userUid: $userUid, userName: $userName, password: $password, passwordc: $passwordc) {
             ... on UserType {
                 uid
@@ -3760,7 +3760,7 @@ PERFORMANCE OF THIS SOFTWARE.
 `,c$1=W`
     ${jt}
     ${qt}
-    mutation editUserAuth($userUid: FelicityID!, $userName: String!, $password: String!, $passwordc: String!) {
+    mutation editUserAuth($userUid: str!, $userName: String!, $password: String!, $passwordc: String!) {
         updateUserAuth(userUid: $userUid, userName: $userName, password: $password, passwordc: $passwordc) {
             ... on UserType {
                 uid
@@ -3814,7 +3814,7 @@ PERFORMANCE OF THIS SOFTWARE.
         }
     }
 `,s$1=W`
-    mutation editGroup($uid: FelicityID!, $payload: GroupInputType!) {
+    mutation editGroup($uid: str!, $payload: GroupInputType!) {
         updateGroup(uid: $uid, payload: $payload) {
             ... on GroupType {
                 __typename
@@ -3837,7 +3837,7 @@ PERFORMANCE OF THIS SOFTWARE.
         }
     }
 `,r$1=W`
-    mutation updateGroupsAndPermissions($groupUid: FelicityID!, $permissionUid: FelicityID!) {
+    mutation updateGroupsAndPermissions($groupUid: str!, $permissionUid: str!) {
         updateGroupPermissions(groupUid: $groupUid, permissionUid: $permissionUid) {
             ... on UpdatedGroupPerms {
                 group {
@@ -3880,7 +3880,7 @@ PERFORMANCE OF THIS SOFTWARE.
         }
     }
 `,o$1=W`
-    mutation editDepartment($uid: FelicityID!, $payload: DepartmentInputType!) {
+    mutation editDepartment($uid: str!, $payload: DepartmentInputType!) {
         updateDepartment(uid: $uid, payload: $payload) {
             ... on DepartmentType {
                 uid
@@ -3894,7 +3894,7 @@ PERFORMANCE OF THIS SOFTWARE.
         }
     }
 `,l$1=W`
-    mutation editLaboratory($uid: FelicityID!, $payload: LaboratoryInputType!) {
+    mutation editLaboratory($uid: str!, $payload: LaboratoryInputType!) {
         updateLaboratory(uid: $uid, payload: $payload) {
             ... on LaboratoryType {
                 uid
@@ -3916,7 +3916,7 @@ PERFORMANCE OF THIS SOFTWARE.
         }
     }
 `,f$1=W`
-    mutation editLaboratorySetting($uid: FelicityID!, $payload: LaboratorySettingInputType!) {
+    mutation editLaboratorySetting($uid: str!, $payload: LaboratorySettingInputType!) {
         updateLaboratorySetting(uid: $uid, payload: $payload) {
             ... on LaboratorySettingType {
                 uid
@@ -3989,7 +3989,7 @@ PERFORMANCE OF THIS SOFTWARE.
         }
     }
 `,ev1=W`
-    query getClientContactsByClientUid($clientUid: FelicityID!) {
+    query getClientContactsByClientUid($clientUid: str!) {
         clientContactByClientUid(clientUid: $clientUid) {
             uid
             firstName
@@ -4000,7 +4000,7 @@ PERFORMANCE OF THIS SOFTWARE.
         }
     }
 `,tv1=W`
-    query getClientByUid($uid: FelicityID!) {
+    query getClientByUid($uid: str!) {
         clientByUid(uid: $uid) {
             uid
             name
@@ -4053,7 +4053,7 @@ PERFORMANCE OF THIS SOFTWARE.
         }
     }
 `;const cv1=W`
-    query filterProvincesByCountry($uid: FelicityID!) {
+    query filterProvincesByCountry($uid: str!) {
         provincesByCountryUid(uid: $uid) {
             name
             uid
@@ -4084,7 +4084,7 @@ PERFORMANCE OF THIS SOFTWARE.
         }
     }
 `;const nv1=W`
-    query filterDistrictsByProvince($uid: FelicityID!) {
+    query filterDistrictsByProvince($uid: str!) {
         districtsByProvinceUid(uid: $uid) {
             name
             uid
@@ -4211,7 +4211,7 @@ PERFORMANCE OF THIS SOFTWARE.
         }
     }
 `,{withClientQuery:b4}=x2();C2.extend(iv1);const d$1=K2("dashboard",()=>{const e=S1({currentTab:"overview",tabs:["overview","resource","laggard","peformance","notices","line-listing"],showFilters:!1,filterRange:{from:"",fromIso:"",to:"",toIso:""},currentFilter:"TW",filters:["T","Y","TW","LW","TM","LM","TQ","LQ","TY"],overViewStats:{analyses:[],samples:[],extras:[],worksheets:[]},fetchingOverViewStats:!1,resourceStats:{instruments:[],samples:[]},fetchingResourceStats:!1,peformancePeriods:[30,60,90,180,365],currentPeformancePeriod:30,peformanceStats:{sample:[],analysis:[]},fetchingSampePeformanceStats:!1,fetchingAnalysisPeformanceStats:!1,currentPeformance:"received_to_published",performances:["received_to_published","received_to_submitted","submitted_to_verified","verified_to_published"],perfs:{received_to_published:"Received to Published",received_to_submitted:"Received to Submitted",submitted_to_verified:"Submitted to Verified",verified_to_published:"Verified to Published"},laggards:{},fetchingLaggards:!1}),t=z=>z==="T"?"Today":z==="Y"?"Yesterday":z==="TW"?"This Week":z==="LW"?"Last Week":z==="TM"?"This Month":z==="LM"?"Last Month":z==="TQ"?"This Quarter":z==="LQ"?"Last Quarter":z==="TY"?"This Year":"Unknown Filter",a=async()=>{e.value.fetchingOverViewStats=!0;try{await n(),await s(),await r(),await i()}catch{e.value.fetchingOverViewStats=!1}e.value.fetchingOverViewStats=!1},c=async()=>{e.value.fetchingResourceStats=!0;try{await l(),await o()}catch{e.value.fetchingResourceStats=!1}e.value.fetchingResourceStats=!1},n=async()=>{const z={startDate:e.value.filterRange.fromIso,endDate:e.value.filterRange.toIso};await b4(ov1,z,"countSampleGroupByStatus","network-only").then(w=>e.value.overViewStats.samples=f7(w.data,["scheduled","expected","received","awaiting","approved"],"group"))},s=async()=>{const z={startDate:e.value.filterRange.fromIso,endDate:e.value.filterRange.toIso};await b4(fv1,z,"countAnalyteGroupByStatus","network-only").then(w=>e.value.overViewStats.analyses=f7(w.data,["pending","resulted"],"group"))},r=async()=>{const z={startDate:e.value.filterRange.fromIso,endDate:e.value.filterRange.toIso};await b4(uv1,z,"countWorksheetGroupByStatus","network-only").then(w=>e.value.overViewStats.worksheets=f7(w.data,["empty","awaiting","pending"],"group"))},i=async()=>{const z={startDate:e.value.filterRange.fromIso,endDate:e.value.filterRange.toIso};await b4(lv1,z,"countExtrasGroupByStatus","network-only").then(w=>e.value.overViewStats.extras=f7(w.data,["sample cancelled","sample rejected","sample invalidated","analysis retracted","analysis retested"],"group"))},l=async()=>{const z={startDate:e.value.filterRange.fromIso,endDate:e.value.filterRange.toIso};await b4(dv1,z,"countAnalyteGroupByInstrument","network-only").then(w=>e.value.resourceStats.instruments=w.data)},o=async()=>{const z={startDate:e.value.filterRange.fromIso,endDate:e.value.filterRange.toIso};await b4(mv1,z,"countSampleGroupByAction","network-only").then(w=>e.value.resourceStats.samples=w.data)},f=async()=>{const z={startDate:C2().startOf("day").subtract(e.value.currentPeformancePeriod,"day").toISOString(),endDate:C2().endOf("day").toISOString()};e.value.fetchingSampePeformanceStats=!0,await b4(hv1,z,"sampleProcessPerformance","network-only").then(w=>{e.value.fetchingSampePeformanceStats=!1,e.value.peformanceStats.sample=w.data}).catch(w=>e.value.fetchingSampePeformanceStats=!1)},d=async()=>{const z={process:e.value.currentPeformance,startDate:C2().startOf("day").subtract(e.value.currentPeformancePeriod,"day").toISOString(),endDate:C2().endOf("day").toISOString()};e.value.fetchingAnalysisPeformanceStats=!0,await b4(pv1,z,"analysisProcessPerformance","network-only").then(w=>{e.value.fetchingAnalysisPeformanceStats=!1,e.value.peformanceStats.analysis=w.data,console.log(w)}).catch(w=>e.value.fetchingAnalysisPeformanceStats=!1)},p=async()=>{e.value.fetchingLaggards=!0,await b4(vv1,{},"sampleLaggards","network-only").then(z=>{e.value.laggards=z.data,e.value.fetchingLaggards=!1}).catch(z=>e.value.fetchingLaggards=!1)},m=z=>e.value.currentTab=z,v=z=>e.value.currentFilter=z,H=(z,w)=>{e.value.filterRange.from=z.toDate().toLocaleDateString(),e.value.filterRange.fromIso=z.toISOString(),e.value.filterRange.to=w.toDate().toLocaleDateString(),e.value.filterRange.toIso=w.toISOString()},S=z=>{e.value.currentPeformance=z.target.value},V=z=>{const w=+z.target.value;e.value.currentPeformancePeriod=w},M=z=>e.value.showFilters=z,b=z=>{switch(z){case"T":H(C2().startOf("day"),C2().endOf("day"));break;case"Y":H(C2().startOf("day").subtract(1,"day"),C2().endOf("day").subtract(1,"day"));break;case"TW":H(C2().startOf("week"),C2().endOf("week"));break;case"LW":H(C2().startOf("week").subtract(1,"week"),C2().endOf("week").subtract(1,"week"));break;case"TM":H(C2().startOf("month"),C2().endOf("month"));break;case"LM":H(C2().startOf("month").subtract(1,"month"),C2().endOf("month").subtract(1,"month"));break;case"TQ":H(C2().startOf("quarter"),C2().endOf("quarter"));break;case"LQ":H(C2().startOf("quarter").subtract(1,"quarter"),C2().endOf("quarter").subtract(1,"quarter"));break;case"TY":H(C2().startOf("year"),C2().endOf("year"));break;default:alert("Unknown Range Selected");break}};return b(e.value.currentFilter),Z1(()=>e.value.currentFilter,(z,w)=>{b(z)}),{dashboard:e,setShowFilters:M,filterToolTip:t,setCurrentTab:m,setCurrentFilter:v,setFilterRange:H,getOverViewStats:a,getResourceStats:c,getSampleLaggards:p,getSampleProcessPeformance:f,getAnalysisProcessPeformance:d,setCurrentPeformance:S,setCurrentPeformancePeriod:V}}),gv1=W`
-    query getNoticesByCreatorUid($uid: FelicityID!) {
+    query getNoticesByCreatorUid($uid: str!) {
         noticesByCreator(uid: $uid) {
             uid
             title
@@ -4243,7 +4243,7 @@ PERFORMANCE OF THIS SOFTWARE.
         }
     }
 `;W`
-    query getDocumentByUid($uid: FelicityID!) {
+    query getDocumentByUid($uid: str!) {
         documentByUid(uid: $uid) {
             uid
             name
@@ -4378,7 +4378,7 @@ PERFORMANCE OF THIS SOFTWARE.
         }
     }
 `,Hv1=W`
-    query getPatientByUid($uid: FelicityID!) {
+    query getPatientByUid($uid: str!) {
         patientByUid(uid: $uid) {
             uid
             clientPatientId
@@ -4452,7 +4452,7 @@ PERFORMANCE OF THIS SOFTWARE.
         }
     }
 `,wv1=W`
-    query getReflexRuleByUid($uid: FelicityID!) {
+    query getReflexRuleByUid($uid: str!) {
         reflexRuleByUid(uid: $uid) {
             uid
             name
@@ -4754,7 +4754,7 @@ PERFORMANCE OF THIS SOFTWARE.
         }
     }
 `,Iv1=W`
-    query getWorkSheetByUid($worksheetUid: FelicityID!) {
+    query getWorkSheetByUid($worksheetUid: str!) {
         worksheetByUid(worksheetUid: $worksheetUid) {
             uid
             worksheetId
@@ -4993,7 +4993,7 @@ PERFORMANCE OF THIS SOFTWARE.
         }
     }
 `,dy1=W`
-    query getAllStockOrderProducts($stockOrderUid: FelicityID!) {
+    query getAllStockOrderProducts($stockOrderUid: str!) {
         stockOrderProductAll(stockOrderUid: $stockOrderUid) {
             uid
             product {
@@ -5070,7 +5070,7 @@ PERFORMANCE OF THIS SOFTWARE.
         }
     }
 `;W`
-    query getStoreRoomByUid($uid: FelicityID!) {
+    query getStoreRoomByUid($uid: str!) {
         storeRoomByUid(uid: $uid) {
             uid
             name
@@ -5078,7 +5078,7 @@ PERFORMANCE OF THIS SOFTWARE.
         }
     }
 `;const vy1=W`
-    query getAllStorageLocations($storeRoomUid: FelicityID!) {
+    query getAllStorageLocations($storeRoomUid: str!) {
         storageLocations(storeRoomUid: $storeRoomUid) {
             uid
             name
@@ -5087,7 +5087,7 @@ PERFORMANCE OF THIS SOFTWARE.
         }
     }
 `;W`
-    query getStorageLocationByUid($uid: FelicityID!) {
+    query getStorageLocationByUid($uid: str!) {
         storageLocationByUid(uid: $uid) {
             uid
             name
@@ -5096,7 +5096,7 @@ PERFORMANCE OF THIS SOFTWARE.
         }
     }
 `;const gy1=W`
-    query getAllStorageSections($storageLocationUid: FelicityID!) {
+    query getAllStorageSections($storageLocationUid: str!) {
         storageSections(storageLocationUid: $storageLocationUid) {
             uid
             name
@@ -5105,7 +5105,7 @@ PERFORMANCE OF THIS SOFTWARE.
         }
     }
 `;W`
-    query getStorageSectionByUid($uid: FelicityID!) {
+    query getStorageSectionByUid($uid: str!) {
         storageSectionByUid(uid: $uid) {
             uid
             name
@@ -5114,7 +5114,7 @@ PERFORMANCE OF THIS SOFTWARE.
         }
     }
 `;const yy1=W`
-    query getAllStorageContainers($storageSectionUid: FelicityID!) {
+    query getAllStorageContainers($storageSectionUid: str!) {
         storageContainers(storageSectionUid: $storageSectionUid) {
             uid
             name
@@ -5128,7 +5128,7 @@ PERFORMANCE OF THIS SOFTWARE.
         }
     }
 `,by1=W`
-    query getSrorageContainerByUid($uid: FelicityID!) {
+    query getSrorageContainerByUid($uid: str!) {
         storageContainerByUid(uid: $uid) {
             uid
             name
@@ -5227,7 +5227,7 @@ ${JSON.stringify(n1,null,2)}
         }
     }
 `,zz1=W`
-    mutation EditHazard($uid: FelicityID!, $payload: HazardInputType!) {
+    mutation EditHazard($uid: str!, $payload: HazardInputType!) {
         updateHazard(uid: $uid, payload: $payload) {
             ... on HazardType {
                 __typename
@@ -5261,7 +5261,7 @@ ${JSON.stringify(n1,null,2)}
         }
     }
 `,Hz1=W`
-    mutation EditStockCategory($uid: FelicityID!, $payload: StockCategoryInputType!) {
+    mutation EditStockCategory($uid: str!, $payload: StockCategoryInputType!) {
         updateStockCategory(uid: $uid, payload: $payload) {
             ... on StockCategoryType {
                 __typename
@@ -5294,7 +5294,7 @@ ${JSON.stringify(n1,null,2)}
         }
     }
 `,Vz1=W`
-    mutation editStockPackaging($uid: FelicityID!, $payload: StockPackagingInputType!) {
+    mutation editStockPackaging($uid: str!, $payload: StockPackagingInputType!) {
         updateStockPackaging(uid: $uid, payload: $payload) {
             ... on StockPackagingType {
                 __typename
@@ -5326,7 +5326,7 @@ ${JSON.stringify(n1,null,2)}
         }
     }
 `,Sz1=W`
-    mutation editStockUnit($uid: FelicityID!, $payload: StockUnitInputType!) {
+    mutation editStockUnit($uid: str!, $payload: StockUnitInputType!) {
         updateStockUnit(uid: $uid, payload: $payload) {
             ... on StockUnitType {
                 __typename
@@ -5405,7 +5405,7 @@ ${JSON.stringify(n1,null,2)}
         }
     }
 `;W`
-    mutation editStockProduct($uid: FelicityID!, $payload: StockProductInputType!) {
+    mutation editStockProduct($uid: str!, $payload: StockProductInputType!) {
         updateStockProduct(uid: $uid, payload: $payload) {
             ... on StockProductType {
                 __typename
@@ -5496,7 +5496,7 @@ ${JSON.stringify(n1,null,2)}
         }
     }
 `,Az1=W`
-    mutation editStockItem($uid: FelicityID!, $payload: StockItemInputType!) {
+    mutation editStockItem($uid: str!, $payload: StockItemInputType!) {
         updateStockItem(uid: $uid, payload: $payload) {
             ... on StockItemType {
                 __typename
@@ -5593,7 +5593,7 @@ ${JSON.stringify(n1,null,2)}
         }
     }
 `,Nz1=W`
-    mutation EditStockOrder($uid: FelicityID!, $payload: [StockOrderProductLineInputType!]!) {
+    mutation EditStockOrder($uid: str!, $payload: [StockOrderProductLineInputType!]!) {
         updateStockOrder(uid: $uid, payload: $payload) {
             ... on StockOrderLineType {
                 __typename
@@ -5622,7 +5622,7 @@ ${JSON.stringify(n1,null,2)}
         }
     }
 `,Tz1=W`
-    mutation SubmitStockOrder($uid: FelicityID!) {
+    mutation SubmitStockOrder($uid: str!) {
         submitStockOrder(uid: $uid) {
             ... on StockOrderType {
                 __typename
@@ -5639,7 +5639,7 @@ ${JSON.stringify(n1,null,2)}
         }
     }
 `;W`
-    mutation ApproveStockOrder($uid: FelicityID!, $payload: StockOrderApprovalInputType!) {
+    mutation ApproveStockOrder($uid: str!, $payload: StockOrderApprovalInputType!) {
         approveStockOrder(uid: $uid, payload: $payload) {
             ... on StockOrderType {
                 __typename
@@ -5659,7 +5659,7 @@ ${JSON.stringify(n1,null,2)}
         }
     }
 `;const Ez1=W`
-    mutation IssueStockOrder($uid: FelicityID!, $payload: [StockOrderProductLineInputType!]!) {
+    mutation IssueStockOrder($uid: str!, $payload: [StockOrderProductLineInputType!]!) {
         issueStockOrder(uid: $uid, payload: $payload) {
             ... on StockOrderLineType {
                 __typename
@@ -5691,7 +5691,7 @@ ${JSON.stringify(n1,null,2)}
         }
     }
 `;W`
-    mutation DeleteStockOrder($uid: FelicityID!) {
+    mutation DeleteStockOrder($uid: str!) {
         deleteStockOrder(uid: $uid) {
             ... on StockOrderLineType {
                 __typename

@@ -1,4 +1,4 @@
-from core.uid_gen import FelicitySAID
+
 from database.base_class import DBModel
 from sqlalchemy import Column, Integer, String
 from sqlalchemy.dialects.postgresql import JSONB
@@ -11,8 +11,8 @@ class Job(DBModel):
     category = Column(String)
     priority = Column(Integer)
     data = Column(JSONB)
-    job_id = Column(FelicitySAID)
-    creator_uid = Column(FelicitySAID)
+    job_id = Column(String)
+    creator_uid = Column(String)
     status = Column(String)
     reason = Column(String)
 

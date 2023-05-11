@@ -41,7 +41,7 @@ let brainForm = reactive({
 }) as IReflexBrain;
 
 onMounted(async () => {
-  reflexStore.fetchReflexRuleByUid(route.params.uid);
+  reflexStore.fetchReflexRuleByUid(route.params?.uid);
 });
 
 const stringToNum = (num: number) => {
@@ -86,7 +86,7 @@ function reflexActionFormManager(create: boolean, obj: IReflexAction = {}): void
   if (create) {
     Object.assign(actionForm, {} as IReflexAction);
   } else {
-    let analyses: number[] = [];
+    let analyses: string[] = [];
     obj.analyses?.forEach((analysis) => analyses.push(analysis?.uid!));
     Object.assign(actionForm, { ...obj, analyses });
   }
@@ -99,7 +99,7 @@ function saveActionForm(): void {
 }
 
 // Reflex Brain
-const forAction = ref<number>();
+const forAction = ref<string>();
 
 function addReflexBrain(): void {
   const payload = {
@@ -215,7 +215,7 @@ function saveBrainForm(): void {
           ><font-awesome-icon icon="edit" class="text-md text-gray-400 mr-1"
         /></span>
         Reflex Action Level {{ action?.level }} targeting
-        <span v-for="anal in action?.analyses" class="ml-1">{{ anal?.name }},</span>
+        <span v-for="anal in action?.analyses" :key="anal.uid" class="ml-1">{{ anal?.name }},</span>
       </template>
       <template v-slot:body>
         <div class="flex justify-start items-center mb-2">
@@ -368,7 +368,7 @@ function saveBrainForm(): void {
   </modal>
 
   <!-- Reflex Brain Edit Form Modal -->
-  <modal v-if="showBrainModal" @close="showBrainModal = false">
+  <modal v-if="showBrainModal" @close="showBrainModal = false" contentWidth="w-4/5">
     <template v-slot:header>
       <h3>{{ formTitle }}</h3>
     </template>
@@ -402,7 +402,7 @@ function saveBrainForm(): void {
 
             <div v-for="(anVal, index) in brainForm.analysesValues" :key="index">
               <div class="flex items-center justify-between">
-                <div class="flex items-top gap-x-2">
+                <div class="flex items-bottom gap-x-2">
                   <label class="flex flex-col whitespace-nowrap mb-2">
                     <span class="text-gray-700">Analysis</span>
                     <select
@@ -436,7 +436,7 @@ function saveBrainForm(): void {
                       <option value="neq">&ne;</option>
                     </select>
                   </label>
-                  <label class="block col-span-1 mb-2">
+                  <label class="block col-span-1 mt-1">
                     <span class="text-gray-700">Result</span>
                     <input
                       v-if="criteriaResultOptions.length == 0"
@@ -450,7 +450,7 @@ function saveBrainForm(): void {
                       name="criteriaValue"
                       id="criteriaValue"
                       v-model="anVal.value"
-                      class="form-input mt-1"
+                      class="form-input"
                     >
                       <option value=""></option>
                       <option
@@ -466,7 +466,7 @@ function saveBrainForm(): void {
                 <div class="">
                   <button
                     @click.prevent="removeCriteria(index)"
-                    class="px-2 py-1 mr-2 border-orange-600 border text-orange-600rounded-smtransition duration-300 hover:bg-orange-600 hover:text-white focus:outline-none"
+                    class="px-2 py-1 mt-5 ml-2 border-orange-600 border text-orange-600rounded-smtransition duration-300 hover:bg-orange-600 hover:text-white focus:outline-none"
                   >
                     Remove
                   </button>
@@ -591,7 +591,7 @@ function saveBrainForm(): void {
                       <option
                         v-for="result in finalResultOptions"
                         :key="result.uid"
-                        :value="result.uid"
+                        :value="result.value"
                       >
                         {{ result.value }}
                       </option>

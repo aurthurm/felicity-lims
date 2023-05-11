@@ -2,7 +2,7 @@ import logging
 
 from apps.common.utils import is_valid_email
 from core.security import verify_password
-from core.uid_gen import FelicitySAID
+
 from sqlalchemy import Boolean, Column, ForeignKey, String, Table
 from sqlalchemy.orm import backref, relationship
 
@@ -96,7 +96,7 @@ permission_groups = Table(
 
 
 class User(AbstractBaseUser):
-    auth_uid = Column(FelicitySAID, ForeignKey("userauth.uid"))
+    auth_uid = Column(String, ForeignKey("userauth.uid"))
     auth = relationship(
         "UserAuth",
         backref=backref(conf.LABORATORY_CONTACT, uselist=False),
@@ -105,7 +105,7 @@ class User(AbstractBaseUser):
     groups = relationship(
         "Group", secondary=user_groups, back_populates="members", lazy="selectin"
     )
-    preference_uid = Column(FelicitySAID, ForeignKey("userpreference.uid"))
+    preference_uid = Column(String, ForeignKey("userpreference.uid"))
     preference = relationship(
         "UserPreference", foreign_keys=[preference_uid], lazy="selectin"
     )

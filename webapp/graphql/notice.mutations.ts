@@ -29,7 +29,7 @@ export const ADD_NOTICE = gql`
 `;
 
 export const EDIT_NOTICE = gql`
-    mutation editNotice($uid: FelicityID!, $payload: NoticeInputType!) {
+    mutation editNotice($uid: str!, $payload: NoticeInputType!) {
         updateNotice(uid: $uid, payload: $payload) {
             ... on NoticeType {
                 __typename
@@ -57,7 +57,7 @@ export const EDIT_NOTICE = gql`
 `;
 
 export const DELETE_NOTICE = gql`
-    mutation deleteNotice($uid: FelicityID!) {
+    mutation deleteNotice($uid: str!) {
         deleteNotice(uid: $uid) {
             ... on DeletedItem {
                 __typename

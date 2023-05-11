@@ -8,7 +8,7 @@ from api.gql.analysis.types import analysis as a_types
 from apps.analysis import schemas
 from apps.analysis.models import analysis as analysis_models
 from apps.setup.models import Method
-from core.uid_gen import FelicityID
+
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -20,11 +20,11 @@ class AnalysisInputType:
     keyword: str
     sort_key: int
     description: str = ""
-    department_uid: FelicityID | None = None
-    sample_types: Optional[List[FelicityID]] = field(default_factory=list)
-    methods: Optional[List[FelicityID]] = field(default_factory=list)
-    category_uid: FelicityID | None = None
-    unit_uid: FelicityID | None = None
+    department_uid: str | None = None
+    sample_types: Optional[List[str]] = field(default_factory=list)
+    methods: Optional[List[str]] = field(default_factory=list)
+    category_uid: str | None = None
+    unit_uid: str | None = None
     internal_use: bool| None = False
     tat_length_minutes: int = None
     precision: int = None
@@ -92,7 +92,7 @@ async def create_analysis(info, payload: AnalysisInputType) -> ProfilesServiceRe
 
 @strawberry.mutation
 async def update_analysis(
-    info, uid: FelicityID, payload: AnalysisInputType
+    info, uid: str, payload: AnalysisInputType
 ) -> ProfilesServiceResponse:
 
     is_authenticated, felicity_user = await auth_from_info(info)

@@ -5,7 +5,7 @@ from apps.analysis.models.analysis import Sample
 from apps.impress.schemas import ReportImpressCreate, ReportImpressUpdate
 from apps.notification.utils import FelicityStreamer
 from apps.user.models import User
-from core.uid_gen import FelicitySAID
+
 from sqlalchemy import Boolean, Column, DateTime, ForeignKey, LargeBinary, String
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import relationship
@@ -18,7 +18,7 @@ streamer = FelicityStreamer()
 
 class ReportImpress(Auditable):
     state = Column(String)  # preliminary, final, invalidated
-    sample_uid = Column(FelicitySAID, ForeignKey("sample.uid"), nullable=False)
+    sample_uid = Column(String, ForeignKey("sample.uid"), nullable=False)
     sample = relationship(Sample, foreign_keys=[sample_uid], lazy="selectin")
     json_content: dict = Column(JSONB, nullable=True)
     pdf_content = Column(LargeBinary, nullable=True)
@@ -26,7 +26,7 @@ class ReportImpress(Auditable):
     email_sent = Column(Boolean(), default=False)
     sms_required = Column(Boolean(), default=False)
     sms_sent = Column(Boolean(), default=False)
-    generated_by_uid = Column(FelicitySAID, ForeignKey("user.uid"), nullable=True)
+    generated_by_uid = Column(String, ForeignKey("user.uid"), nullable=True)
     generated_by = relationship(User, foreign_keys=[generated_by_uid], lazy="selectin")
     date_generated = Column(DateTime)
 

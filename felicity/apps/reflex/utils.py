@@ -38,7 +38,7 @@ class ReflexUtil:
                 logger.debug(f"set_reflex_actions done")
 
     async def do_reflex(self):
-        logger.debug(
+        logger.info(
             f"do_reflex level: {self.analysis_result.reflex_level} <> SampleId {self.sample.sample_id}"
         )
         if not self.analysis_result.reflex_level:
@@ -52,37 +52,37 @@ class ReflexUtil:
             **filters
         )
         if not action:
-            logger.debug(
+            logger.info(
                 f"No reflex action found for analysis: {self.analysis.name}")
             return
         self._reflex_action = action
-        logger.debug(f"Reflex action found for analysis: {self.analysis.name}")
-        logger.debug(f"Reflex action description: {action.description}")
+        logger.info(f"Reflex action found for analysis: {self.analysis.name}")
+        logger.info(f"Reflex action description: {action.description}")
 
-        logger.debug(f"Reflex Brains: {self._reflex_action.brains}")
+        logger.info(f"Reflex Brains: {self._reflex_action.brains}")
         for brain in self._reflex_action.brains:
 
             await self.decide(brain)
 
     async def decide(self, brain: reflex_models.ReflexBrain):
-        logger.debug(f"Reflex Decision for brain: {brain}")
+        logger.info(f"Reflex Decision for brain: {brain}")
         current_result = self.analysis_result
         analyses_values = brain.analyses_values
 
-        logger.debug(f"Reflex brain analyses_values: {analyses_values}")
+        logger.info(f"Reflex brain analyses_values: {analyses_values}")
 
         # check whether related analysis must be cousins or siblings
         av_uids = [criteria.analysis_uid for criteria in brain.analyses_values]
-        logger.debug(f"Reflex Decision av_uids: {av_uids}")
+        logger.info(f"Reflex Decision av_uids: {av_uids}")
         if not av_uids:
             return
 
         if len(set(av_uids)) == 1:
             results_pool = await self.siblings()
-            logger.debug(f"reflex results pool -> siblings: {results_pool}")
+            logger.info(f"reflex results pool -> siblings: {results_pool}")
         else:
             results_pool = await self.cousins()
-            logger.debug(f"reflex results pool -> cousins: {results_pool}")
+            logger.info(f"reflex results pool -> cousins: {results_pool}")
 
         matches = []
 
@@ -91,15 +91,15 @@ class ReflexUtil:
             (criteria.analysis_uid, criteria.value) for criteria in analyses_values
         ]
         _criteria_values = criteria_values
-        logger.debug(f"Reflex criteria_values: {criteria_values}")
+        logger.info(f"Reflex criteria_values: {criteria_values}")
 
         if (current_result.analysis_uid, current_result.result) not in criteria_values:
-            logger.debug(
+            logger.info(
                 f"{(current_result.analysis_uid, current_result.result)} not in criteria_values"
             )
             return
         else:
-            logger.debug(
+            logger.info(
                 f"{(current_result.analysis_uid, current_result.result)} in avs"
             )
             matches.append(True)
@@ -112,9 +112,9 @@ class ReflexUtil:
                 filter(lambda res: res.analysis_uid == _cv[0], results_pool))
             # get latest
             _anal = sorted(_anal, key=lambda x: x.created_at)
-            logger.debug(f"_anal: {_anal}")
+            logger.info(f"_anal: {_anal}")
 
-            logger.debug(
+            logger.info(
                 f"_anal[0].result: {_anal[0].result} :: _av[1]: {_cv[1]}")
 
             if _anal[0].result == _cv[1]:
@@ -125,20 +125,20 @@ class ReflexUtil:
                 matches.append(False)
 
         # 3. If brain criteria expectations are met then take action
-        logger.debug(f"matches: {matches}")
+        logger.info(f"matches: {matches}")
         if all(matches):
-            logger.debug(f"matches found")
+            logger.info(f"matches found")
             # Add new Analyses
-            logger.debug(f"add_new: {brain.add_new}")
+            logger.info(f"add_new: {brain.add_new}")
             for assoc in brain.add_new:
                 for i in list(range(assoc.count)):
                     await self.create_analyte_for(assoc.analysis_uid)
             # Finalise Analyses
-            logger.debug(f"finalise: {brain.finalise}")
+            logger.info(f"finalise: {brain.finalise}")
             for final in brain.finalise:
                 await self.create_final_for(final.analysis.uid, final.value)
         else:
-            logger.debug(f"no matches")
+            logger.info(f"no matches")
 
     async def siblings(self):
         """
@@ -173,7 +173,7 @@ class ReflexUtil:
         return self._cousins
 
     async def create_analyte_for(self, analysis_uid) -> AnalysisResult:
-        logger.debug(f"create_analyte_for: {analysis_uid}")
+        logger.info(f"create_analyte_for: {analysis_uid}")
         analysis = await Analysis.get(uid=analysis_uid)
 
         a_result_in = {
@@ -192,7 +192,7 @@ class ReflexUtil:
         return retest
 
     async def create_final_for(self, analysis_uid, value):
-        logger.debug(f"create_analyte_for: {analysis_uid} {value}")
+        logger.info(f"create_analyte_for: {analysis_uid} {value}")
         retest = await self.create_analyte_for(analysis_uid)
         res_in = schemas.AnalysisResultUpdate(
             result=value,

@@ -1,6 +1,6 @@
 from typing import Optional
 
-from core.uid_gen import FelicityIDType
+
 from pydantic import BaseModel
 
 #
@@ -16,7 +16,7 @@ class StoreRoomBase(BaseModel):
 
 
 class StoreRoom(StoreRoomBase):
-    uid: FelicityIDType| None = None
+    uid: str| None = None
 
     class Config:
         orm_mode = True
@@ -40,12 +40,12 @@ class StoreRoomUpdate(StoreRoomBase):
 class StorageLocationBase(BaseModel):
     name: str | None = None
     description: str | None = None
-    store_room_uid: FelicityIDType
+    store_room_uid: str
     store_room: Optional[StoreRoom]
 
 
 class StorageLocation(StorageLocationBase):
-    uid: FelicityIDType| None = None
+    uid: str| None = None
 
     class Config:
         orm_mode = True
@@ -69,12 +69,12 @@ class StorageLocationUpdate(StorageLocationBase):
 class StorageSectionBase(BaseModel):
     name: str | None = None
     description: str | None = None
-    storage_location_uid: FelicityIDType
+    storage_location_uid: str
     storage_location: Optional[StorageLocation]
 
 
 class StorageSection(StorageSectionBase):
-    uid: FelicityIDType| None = None
+    uid: str| None = None
 
     class Config:
         orm_mode = True
@@ -98,7 +98,7 @@ class StorageSectionUpdate(StorageSectionBase):
 class StorageContainerBase(BaseModel):
     name: str | None = None
     description: str | None = None
-    storage_section_uid: FelicityIDType
+    storage_section_uid: str
     storage_section: Optional[StorageSection]
     grid: bool = False
     row_wise: bool = False
@@ -109,7 +109,7 @@ class StorageContainerBase(BaseModel):
 
 
 class StorageContainer(StorageContainerBase):
-    uid: FelicityIDType| None = None
+    uid: str| None = None
 
     class Config:
         orm_mode = True

@@ -4,7 +4,7 @@ from typing import List, Optional
 from apps.common.schemas import BaseAuditModel
 from apps.setup.schemas import Department
 from apps.user.schemas import Group, User
-from core.uid_gen import FelicityIDType
+
 
 
 #
@@ -20,7 +20,7 @@ class NoticeBase(BaseAuditModel):
 
 
 class Notice(NoticeBase):
-    uid: FelicityIDType| None = None
+    uid: str| None = None
 
     class Config:
         orm_mode = True

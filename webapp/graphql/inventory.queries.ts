@@ -169,7 +169,7 @@ export const GET_ALL_STOCK_ORDERS = gql`
 `;
 
 export const GET_ALL_STOCK_ORDER_PRODUCTS = gql`
-    query getAllStockOrderProducts($stockOrderUid: FelicityID!) {
+    query getAllStockOrderProducts($stockOrderUid: str!) {
         stockOrderProductAll(stockOrderUid: $stockOrderUid) {
             uid
             product {

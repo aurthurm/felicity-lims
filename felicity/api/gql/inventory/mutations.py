@@ -7,7 +7,7 @@ from api.gql import OperationError, auth_from_info, verify_user_auth
 from api.gql.inventory import types
 from apps.inventory import models, schemas
 from apps.inventory.conf import order_states
-from core.uid_gen import FelicityID
+
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -21,7 +21,7 @@ StockItemResponse = strawberry.union(
 class StockItemInputType:
     name: str
     description: str
-    department_uid: FelicityID | None = None
+    department_uid: str | None = None
 
 
 StockCategoryResponse = strawberry.union(
@@ -80,22 +80,22 @@ StockProductResponse = strawberry.union(
 @strawberry.input
 class StockProductInputType:
     name: str
-    stock_item_uid: FelicityID | None = None
-    department_uid: FelicityID | None = None
-    supplier_uid: FelicityID | None = None
-    category_uid: FelicityID | None = None
-    hazard_uid: FelicityID | None = None
-    store_room_uid: FelicityID | None = None
+    stock_item_uid: str | None = None
+    department_uid: str | None = None
+    supplier_uid: str | None = None
+    category_uid: str | None = None
+    hazard_uid: str | None = None
+    store_room_uid: str | None = None
     lot_number: str | None = None
     batch: str | None = None
     size: int | None = None
-    unit_uid: FelicityID | None = None
-    packaging_uid: FelicityID | None = None
+    unit_uid: str | None = None
+    packaging_uid: str | None = None
     price: int | None = None
     quantity_received: int | None = None
     date_received: datetime | None = None
     expiry_date: datetime | None = None
-    received_by_uid: FelicityID | None = None
+    received_by_uid: str | None = None
 
 
 @strawberry.type
@@ -113,7 +113,7 @@ StockOrderResponse = strawberry.union(
 
 @strawberry.input
 class StockOrderProductLineInputType:
-    product_uid: FelicityID
+    product_uid: str
     quantity: int
     remarks: str | None = None
 
@@ -121,7 +121,7 @@ class StockOrderProductLineInputType:
 @strawberry.input
 class StockOrderInputType:
     order_products: List[StockOrderProductLineInputType]
-    department_uid: FelicityID | None = None
+    department_uid: str | None = None
 
 
 @strawberry.input
@@ -139,9 +139,9 @@ StockTransactionResponse = strawberry.union(
 
 @strawberry.input
 class StockTransactionInputType:
-    product_uid: FelicityID
+    product_uid: str
     issued: int
-    department_uid: FelicityID | None = None
+    department_uid: str | None = None
 
 
 StockAdjustmentResponse = strawberry.union(
@@ -153,7 +153,7 @@ StockAdjustmentResponse = strawberry.union(
 
 @strawberry.input
 class StockAdjustmentInputType:
-    product_uid: FelicityID
+    product_uid: str
     adjustment_type: str
     adjust: int
     remarks: str | None = None
@@ -191,7 +191,7 @@ class InventoryMutations:
 
     @strawberry.mutation
     async def update_stock_item(
-        self, info, uid: FelicityID, payload: StockItemInputType
+        self, info, uid: str, payload: StockItemInputType
     ) -> StockItemResponse:
 
         is_authenticated, felicity_user = await auth_from_info(info)
@@ -254,7 +254,7 @@ class InventoryMutations:
 
     @strawberry.mutation
     async def update_stock_category(
-        self, info, uid: FelicityID, payload: StockCategoryInputType
+        self, info, uid: str, payload: StockCategoryInputType
     ) -> StockCategoryResponse:
 
         is_authenticated, felicity_user = await auth_from_info(info)
@@ -315,7 +315,7 @@ class InventoryMutations:
 
     @strawberry.mutation
     async def update_hazard(
-        self, info, uid: FelicityID, payload: HazardInputType
+        self, info, uid: str, payload: HazardInputType
     ) -> HazardResponse:
 
         is_authenticated, felicity_user = await auth_from_info(info)
@@ -378,7 +378,7 @@ class InventoryMutations:
 
     @strawberry.mutation
     async def update_stock_unit(
-        self, info, uid: FelicityID, payload: StockUnitInputType
+        self, info, uid: str, payload: StockUnitInputType
     ) -> StockUnitResponse:
 
         is_authenticated, felicity_user = await auth_from_info(info)
@@ -443,7 +443,7 @@ class InventoryMutations:
 
     @strawberry.mutation
     async def update_stock_packaging(
-        self, info, uid: FelicityID, payload: StockPackagingInputType
+        self, info, uid: str, payload: StockPackagingInputType
     ) -> StockPackagingResponse:
 
         is_authenticated, felicity_user = await auth_from_info(info)
@@ -507,7 +507,7 @@ class InventoryMutations:
 
     @strawberry.mutation
     async def update_stock_product(
-        self, info, uid: FelicityID, payload: StockProductInputType
+        self, info, uid: str, payload: StockProductInputType
     ) -> StockProductResponse:
 
         is_authenticated, felicity_user = await auth_from_info(info)
@@ -586,7 +586,7 @@ class InventoryMutations:
 
     @strawberry.mutation
     async def update_stock_order(
-        self, info, uid: FelicityID, payload: List[StockOrderProductLineInputType]
+        self, info, uid: str, payload: List[StockOrderProductLineInputType]
     ) -> StockOrderResponse:
         is_authenticated, felicity_user = await auth_from_info(info)
         auth_success, auth_error = verify_user_auth(
@@ -638,7 +638,7 @@ class InventoryMutations:
         return StockOrderLineType(stock_order=stock_order, order_products=o_products)
 
     @strawberry.mutation
-    async def submit_stock_order(self, info, uid: FelicityID) -> StockOrderResponse:
+    async def submit_stock_order(self, info, uid: str) -> StockOrderResponse:
         is_authenticated, felicity_user = await auth_from_info(info)
         auth_success, auth_error = verify_user_auth(
             is_authenticated,
@@ -661,7 +661,7 @@ class InventoryMutations:
 
     @strawberry.mutation
     async def approve_stock_order(
-        self, info, uid: FelicityID, payload: StockOrderApprovalInputType
+        self, info, uid: str, payload: StockOrderApprovalInputType
     ) -> StockOrderResponse:
         is_authenticated, felicity_user = await auth_from_info(info)
         auth_success, auth_error = verify_user_auth(
@@ -685,7 +685,7 @@ class InventoryMutations:
 
     @strawberry.mutation
     async def issue_stock_order(
-        self, info, uid: FelicityID, payload: List[StockOrderProductLineInputType]
+        self, info, uid: str, payload: List[StockOrderProductLineInputType]
     ) -> StockOrderResponse:
         is_authenticated, felicity_user = await auth_from_info(info)
         auth_success, auth_error = verify_user_auth(
@@ -731,7 +731,7 @@ class InventoryMutations:
         return StockOrderLineType(stock_order=stock_order, order_products=o_products)
 
     @strawberry.mutation
-    async def delete_stock_order(self, info, uid: FelicityID) -> StockOrderResponse:
+    async def delete_stock_order(self, info, uid: str) -> StockOrderResponse:
         is_authenticated, felicity_user = await auth_from_info(info)
         auth_success, auth_error = verify_user_auth(
             is_authenticated,

@@ -4,7 +4,7 @@ from typing import List, Optional
 import strawberry  # noqa
 from api.gql.analysis.types.analysis import AnalysisType
 from api.gql.user.types import UserType
-from core.uid_gen import FelicityID
+
 
 
 @strawberry.type
@@ -81,7 +81,7 @@ class LaggardStatistics:
 
 @strawberry.type
 class ReportMetaType:
-    uid: FelicityID
+    uid: str
     period_start: datetime
     period_end: datetime
     date_column: str
@@ -92,8 +92,8 @@ class ReportMetaType:
     temp: str | None
     analyses: Optional[List[AnalysisType]]
     created_at: datetime | None
-    created_by_uid: FelicityID | None
+    created_by_uid: str | None
     created_by: UserType | None
     updated_at: datetime | None
-    updated_by_uid: FelicityID | None
+    updated_by_uid: str | None
     updated_by: UserType | None

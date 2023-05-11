@@ -7,7 +7,7 @@ from api.gql import OperationError, auth_from_info, verify_user_auth
 from api.gql.analysis.types import analysis as a_types
 from apps.analysis import schemas
 from apps.analysis.models import analysis as analysis_models
-from core.uid_gen import FelicityID
+
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -23,9 +23,9 @@ AnalysisProfileResponse = strawberry.union(
 class ProfileInputType:
     name: str
     description: str = ""
-    department_uid: FelicityID | None = None
-    sample_types: Optional[List[FelicityID]] = field(default_factory=list)
-    services: Optional[List[FelicityID]] = field(default_factory=list)
+    department_uid: str | None = None
+    sample_types: Optional[List[str]] = field(default_factory=list)
+    services: Optional[List[str]] = field(default_factory=list)
     keyword: str | None = None
     active: bool| None = True
 
@@ -84,7 +84,7 @@ async def create_profile(info, payload: ProfileInputType) -> AnalysisProfileResp
 
 @strawberry.mutation
 async def update_profile(
-    info, uid: FelicityID, payload: ProfileInputType
+    info, uid: str, payload: ProfileInputType
 ) -> AnalysisProfileResponse:
 
     is_authenticated, felicity_user = await auth_from_info(info)

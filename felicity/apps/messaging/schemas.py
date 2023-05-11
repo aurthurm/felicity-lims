@@ -2,23 +2,23 @@ from typing import List, Optional
 
 from apps.common.schemas import BaseAuditModel
 from apps.user.schemas import User
-from core.uid_gen import FelicityIDType
+
 
 
 #
 # Message Schemas
 #
 class MessageBase(BaseAuditModel):
-    thread_uid: FelicityIDType
+    thread_uid: str
     thread: Optional["MessageThread"] = None
     body: str | None = ""
     viewers: Optional[List[User]] = []
     deleted_by: Optional[List[User]] = []
-    parent_id: FelicityIDType| None = None
+    parent_id: str| None = None
 
 
 class Message(MessageBase):
-    uid: FelicityIDType| None = None
+    uid: str| None = None
 
     class Config:
         orm_mode = True
@@ -43,7 +43,7 @@ class MessageThreadBase(BaseAuditModel):
 
 
 class MessageThread(MessageThreadBase):
-    uid: FelicityIDType| None = None
+    uid: str| None = None
 
     class Config:
         orm_mode = True

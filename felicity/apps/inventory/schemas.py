@@ -5,7 +5,7 @@ from apps.common.schemas import BaseAuditModel
 from apps.setup.schemas import Department, Supplier
 from apps.storage.schemas import StoreRoom
 from apps.user.schemas import User
-from core.uid_gen import FelicityIDType
+
 
 
 #
@@ -16,14 +16,14 @@ class StockItemBase(BaseAuditModel):
 
     name: str | None = None
     description: str | None = None
-    department_uid: FelicityIDType| None = None
+    department_uid: str| None = None
     department: Optional[Department] = None
     minimum_level: int | None = None
     maximum_level: int | None = None
 
 
 class StockItem(StockItemBase):
-    uid: FelicityIDType| None = None
+    uid: str| None = None
 
     class Config:
         orm_mode = True
@@ -50,7 +50,7 @@ class StockCategoryBase(BaseAuditModel):
 
 
 class StockCategory(StockCategoryBase):
-    uid: FelicityIDType| None = None
+    uid: str| None = None
 
     class Config:
         orm_mode = True
@@ -75,7 +75,7 @@ class HazardBase(BaseAuditModel):
 
 
 class Hazard(HazardBase):
-    uid: FelicityIDType| None = None
+    uid: str| None = None
 
     class Config:
         orm_mode = True
@@ -97,7 +97,7 @@ class StockUnitBase(BaseAuditModel):
 
 
 class StockUnit(StockUnitBase):
-    uid: FelicityIDType| None = None
+    uid: str| None = None
 
     class Config:
         orm_mode = True
@@ -119,7 +119,7 @@ class StockPackagingBase(BaseAuditModel):
 
 
 class StockPackaging(StockPackagingBase):
-    uid: FelicityIDType| None = None
+    uid: str| None = None
 
     class Config:
         orm_mode = True
@@ -138,35 +138,35 @@ class StockPackagingUpdate(StockPackagingBase):
 #
 class StockProductBase(BaseAuditModel):
     name: str | None = None
-    stock_item_uid: FelicityIDType| None = None
-    department_uid: FelicityIDType| None = None
+    stock_item_uid: str| None = None
+    department_uid: str| None = None
     department: Optional[Department] = None
-    supplier_uid: FelicityIDType| None = None
+    supplier_uid: str| None = None
     supplier: Optional[Supplier] = None
-    category_uid: FelicityIDType| None = None
+    category_uid: str| None = None
     category: Optional[StockCategory] = None
-    hazard_uid: FelicityIDType| None = None
+    hazard_uid: str| None = None
     hazard: Optional[Hazard] = None
-    store_room_uid: FelicityIDType| None = None
+    store_room_uid: str| None = None
     store_room: Optional[StoreRoom] = None
     lot_number: str | None = None
     batch: str | None = None
     size: float| None = None
-    unit_uid: FelicityIDType| None = None
+    unit_uid: str| None = None
     unit: Optional[StockUnit] = None
-    packaging_uid: FelicityIDType| None = None
+    packaging_uid: str| None = None
     packaging: Optional[StockPackaging] = None
     price: float| None = None
     quantity_received: int | None = None
     remaining: int | None = None
     date_received: datetime | None = None
     expiry_date: datetime | None = None
-    received_by_uid: FelicityIDType| None = None
+    received_by_uid: str| None = None
     received_by: Optional[User] = None
 
 
 class StockProduct(StockProductBase):
-    uid: FelicityIDType| None = None
+    uid: str| None = None
 
     class Config:
         orm_mode = True
@@ -184,9 +184,9 @@ class StockProductUpdate(StockProductBase):
 # StockOrder Schemas
 #
 class StockOrderBase(BaseAuditModel):
-    order_by_uid: FelicityIDType| None = None
+    order_by_uid: str| None = None
     order_by: Optional[User] = None
-    department_uid: FelicityIDType| None = None
+    department_uid: str| None = None
     department: Optional[Department] = None
     status: str | None = None
     order_number: str | None = None
@@ -194,7 +194,7 @@ class StockOrderBase(BaseAuditModel):
 
 
 class StockOrder(StockOrderBase):
-    uid: FelicityIDType| None = None
+    uid: str| None = None
 
     class Config:
         orm_mode = True
@@ -212,9 +212,9 @@ class StockOrderUpdate(StockOrderBase):
 # StockOrderProduct Schemas
 #
 class StockOrderProductBase(BaseAuditModel):
-    product_uid: FelicityIDType| None = None
+    product_uid: str| None = None
     product: Optional[StockProduct] = None
-    order_uid: FelicityIDType| None = None
+    order_uid: str| None = None
     order: Optional[StockOrder] = None
     price: float| None = None
     quantity: int | None = None
@@ -222,7 +222,7 @@ class StockOrderProductBase(BaseAuditModel):
 
 
 class StockOrderProduct(StockOrderProductBase):
-    uid: FelicityIDType| None = None
+    uid: str| None = None
 
     class Config:
         orm_mode = True
@@ -240,18 +240,18 @@ class StockOrderProductUpdate(StockOrderProductBase):
 # StockTransaction Schemas
 #
 class StockTransactionBase(BaseAuditModel):
-    product_uid: FelicityIDType| None = None
+    product_uid: str| None = None
     product: Optional[StockProduct] = None
     issued: int | None = None
-    department_uid: FelicityIDType| None = None
+    department_uid: str| None = None
     department: Optional[Department] = None
     date_issued: datetime | None = None
-    transaction_by_uid: FelicityIDType| None = None
+    transaction_by_uid: str| None = None
     transaction_by: Optional[User] = None
 
 
 class StockTransaction(StockTransactionBase):
-    uid: FelicityIDType| None = None
+    uid: str| None = None
 
     class Config:
         orm_mode = True
@@ -269,18 +269,18 @@ class StockTransactionUpdate(StockTransactionBase):
 # StockAdjustment Schemas
 #
 class StockAdjustmentBase(BaseAuditModel):
-    product_uid: FelicityIDType| None = None
+    product_uid: str| None = None
     product: Optional[StockProduct] = None
     adjustment_type: str | None = None
     adjust: int | None = None
     adjustment_date: datetime | None = None
     remarks: str | None = None
-    adjustment_by_uid: FelicityIDType| None = None
+    adjustment_by_uid: str| None = None
     adjustment_by: Optional[User] = None
 
 
 class StockAdjustment(StockAdjustmentBase):
-    uid: FelicityIDType| None = None
+    uid: str| None = None
 
     class Config:
         orm_mode = True

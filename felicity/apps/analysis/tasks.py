@@ -5,7 +5,7 @@ from apps.job import models as job_models
 from apps.job.conf import states as job_states
 from apps.notification.utils import ReportNotifier
 from apps.user import models as user_models
-from core.uid_gen import FelicityIDType
+
 
 report_notifier = ReportNotifier()
 
@@ -13,7 +13,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
-async def submit_results(job_uid: FelicityIDType):
+async def submit_results(job_uid: str):
     logger.info(f"starting job {job_uid} ....")
     job = await job_models.Job.get(uid=job_uid)
     if not job:
@@ -38,7 +38,7 @@ async def submit_results(job_uid: FelicityIDType):
         )
 
 
-async def verify_results(job_uid: FelicityIDType):
+async def verify_results(job_uid: str):
     logger.info(f"starting job {job_uid} ....")
     job = await job_models.Job.get(uid=job_uid)
     if not job:

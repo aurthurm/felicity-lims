@@ -1,4 +1,4 @@
-from core.uid_gen import FelicityIDType
+
 from pydantic import BaseModel
 
 #
@@ -11,7 +11,7 @@ from pydantic import BaseModel
 class ClientBase(BaseModel):
     name: str | None = None
     code: str | None = None
-    district_uid: FelicityIDType| None = None
+    district_uid: str| None = None
     email: str | None = None
     email_cc: str | None = None
     consent_email: bool| None = None
@@ -23,7 +23,7 @@ class ClientBase(BaseModel):
 
 
 class ClientBaseInDB(ClientBase):
-    uid: FelicityIDType| None = None
+    uid: str| None = None
 
     class Config:
         orm_mode = True
@@ -31,7 +31,7 @@ class ClientBaseInDB(ClientBase):
 
 # Properties to receive via API on creation
 class ClientCreate(ClientBase):
-    district_uid: FelicityIDType| None
+    district_uid: str| None
 
 
 # Properties to receive via API on update
@@ -56,7 +56,7 @@ class ClientInDB(ClientBaseInDB):
 
 # Shared properties
 class ClientContactBase(BaseModel):
-    client_uid: FelicityIDType| None = None
+    client_uid: str| None = None
     first_name: str | None = None
     last_name: str | None = None
     email: str | None = None
@@ -69,7 +69,7 @@ class ClientContactBase(BaseModel):
 
 
 class ClientContactBaseInDB(ClientContactBase):
-    uid: FelicityIDType| None = None
+    uid: str| None = None
 
     class Config:
         orm_mode = True
@@ -77,7 +77,7 @@ class ClientContactBaseInDB(ClientContactBase):
 
 # Properties to receive via API on creation
 class ClientContactCreate(ClientContactBase):
-    client_uid: FelicityIDType
+    client_uid: str
 
 
 # Properties to receive via API on update

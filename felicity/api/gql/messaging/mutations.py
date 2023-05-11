@@ -13,7 +13,7 @@ from api.gql import (
 from api.gql.messaging.types import MessageType
 from apps.messaging import models, schemas
 from apps.user.models import User
-from core.uid_gen import FelicityID
+
 from utils import get_passed_args
 
 logging.basicConfig(level=logging.INFO)
@@ -28,7 +28,7 @@ MessageResponse = strawberry.union(
 class MessageMutations:
     @strawberry.mutation
     async def send_message(
-        self, info, recipients: List[FelicityID], body: str
+        self, info, recipients: List[str], body: str
     ) -> MessageResponse:
 
         inspector = inspect.getargvalues(inspect.currentframe())
@@ -77,7 +77,7 @@ class MessageMutations:
 
     @strawberry.mutation
     async def reply_message(
-        self, info, thread_uid: FelicityID, body: str
+        self, info, thread_uid: str, body: str
     ) -> MessageResponse:
 
         inspector = inspect.getargvalues(inspect.currentframe())
@@ -117,7 +117,7 @@ class MessageMutations:
         return MessageType(**message.marshal_simple())
 
     @strawberry.mutation
-    async def view_message(self, info, uid: FelicityID) -> MessageResponse:
+    async def view_message(self, info, uid: str) -> MessageResponse:
 
         is_authenticated, felicity_user = await auth_from_info(info)
         verify_user_auth(
@@ -132,7 +132,7 @@ class MessageMutations:
         return MessageType(**message.marshal_simple())
 
     @strawberry.mutation
-    async def delete_message(self, info, uid: FelicityID) -> DeleteResponse:
+    async def delete_message(self, info, uid: str) -> DeleteResponse:
 
         is_authenticated, felicity_user = await auth_from_info(info)
         verify_user_auth(
@@ -149,7 +149,7 @@ class MessageMutations:
         return DeletedItem(uid=uid)
 
     @strawberry.mutation
-    async def delete_thread(self, info, uid: FelicityID) -> DeleteResponse:
+    async def delete_thread(self, info, uid: str) -> DeleteResponse:
 
         is_authenticated, felicity_user = await auth_from_info(info)
         verify_user_auth(
