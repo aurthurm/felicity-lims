@@ -14,6 +14,15 @@ import { IAnalysisCategory, IAnalysisService, IAnalysisProfile, IQCLevel, IQCTem
 import { useApiUtil } from '../composables';
 const { withClientQuery } = useApiUtil();
 
+function updateItem(arr, payload) {
+    const index = arr.findIndex(x => x.uid === payload.uid);
+    if (index !== -1) {
+        arr[index] = payload;
+    }
+}
+// Usage:
+// updateItem(this.analysesCategories, payload);
+
 export const useAnalysisStore = defineStore('analysis', {
     state: () => {
         return {
@@ -34,7 +43,20 @@ export const useAnalysisStore = defineStore('analysis', {
     },
     getters: {
         getAnalysesCategories: state => state.analysesCategories,
-        getAnalysesServices: state => groupByCategory(state.analysesServices),
+        getAnalysesServices: state => {
+            const analyses = state.analysesServices;
+            if (analyses?.length > 0) {
+                const profiled = analyses?.reduce((r, obj) => {
+                    const key = obj?.category?.name || 'No Category';
+                    r[key] = r[key] || [];
+                    r[key].push(obj);
+                    return r;
+                }, {});
+                return Object.entries(profiled || {}).sort();
+            } else {
+                return [];
+            }
+        },
         getAnalysesServicesSimple: state => state.analysesServices,
         getAnalysesProfiles: state => state.analysesProfiles,
         getQCLevels: state => state.qcLevels,
@@ -72,7 +94,6 @@ export const useAnalysisStore = defineStore('analysis', {
 
         async fetchAnalysesProfilesAndServices() {
             await withClientQuery(GET_ALL_ANALYSES_PROFILES_AND_SERVICES, {}, undefined).then(payload => {
-                console.log(payload);
                 this.analysesProfiles = payload.profileAll;
                 this.analysesServices = payload.analysisAll?.items;
             });
@@ -87,7 +108,7 @@ export const useAnalysisStore = defineStore('analysis', {
             this.analysesProfiles[index] = payload;
         },
         addAnalysisProfile(payload) {
-            this.analysesProfiles?.unshift(payload);
+            this.analysesProfiles.unshift(payload);
         },
 
         // QC LEVELS
@@ -99,7 +120,7 @@ export const useAnalysisStore = defineStore('analysis', {
             this.qcLevels[index] = payload;
         },
         addQcLevel(payload) {
-            this.qcLevels?.unshift(payload);
+            this.qcLevels.unshift(payload);
         },
 
         // analysis QC TEMPLATES
@@ -121,7 +142,7 @@ export const useAnalysisStore = defineStore('analysis', {
         addQcTemplate(payload) {
             payload.qcLevels = payload?.qcLevels || [];
             payload.departments = payload?.departments || [];
-            this.qcTemplates?.unshift(payload);
+            this.qcTemplates.unshift(payload);
         },
 
         // Result Options
@@ -259,21 +280,7 @@ export const useAnalysisStore = defineStore('analysis', {
             this.rejectionReasons[index] = payload;
         },
         addRejectionReason(payload) {
-            this.rejectionReasons?.unshift(payload);
+            this.rejectionReasons.unshift(payload);
         },
     },
 });
-
-function groupByCategory(analyses: IAnalysisService[]): any {
-    if (analyses?.length > 0) {
-        const profiled = analyses?.reduce((r: any, obj) => {
-            const key = obj?.category?.name || 'No Category';
-            r[key] = r[key] || [];
-            r[key].push(obj);
-            return r;
-        }, {});
-        return Object.entries(profiled || {}).sort();
-    } else {
-        return [];
-    }
-}

@@ -9,7 +9,7 @@ import { useClientStore, useLocationStore, usePatientStore } from "../../stores"
 import { useApiUtil } from "../../composables";
 import { IClient } from "../../models/client";
 import { IPatientIdentificationForm } from "../../models/patient";
-import { isNullOrWs } from "../../utils";
+import { isNullOrWs } from "../../utils/helpers";
 import dayjs from "dayjs";
 import { useField, useForm } from "vee-validate";
 import { object, string, boolean, number, date } from "yup";

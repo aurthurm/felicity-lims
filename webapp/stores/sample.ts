@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { parseEdgeNodeToList, addListsUnique } from '../utils';
+import { parseEdgeNodeToList, addListsUnique } from '../utils/helpers';
 
 import {
     GET_ALL_SAMPLE_TYPES,

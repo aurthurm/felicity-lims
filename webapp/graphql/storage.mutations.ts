@@ -222,7 +222,7 @@ export const STORE_SAMPLES = gql`
 `;
 
 export const RECOVER_SAMPLES = gql`
-    mutation RecoverSamples($sampleUids: [str!]!) {
+    mutation RecoverSamples($sampleUids: [String!]!) {
         recoverSamples(sampleUids: $sampleUids) {
             ... on StoredSamplesType {
                 __typename

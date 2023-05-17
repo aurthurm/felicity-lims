@@ -154,11 +154,11 @@ export const ADD_WORKSHEET = gql`
 export const WORKSHEET_UPDATE = gql`
     mutation UpdateWorkSheet(
         $worksheetUid: String!
-        $analystUid: str
-        $instrumentUid: str
-        $methodUid: str
+        $analystUid: String
+        $instrumentUid: String
+        $methodUid: String
         $action: String
-        $samples: [str!]
+        $samples: [String!]
     ) {
         updateWorksheet(
             worksheetUid: $worksheetUid
@@ -232,7 +232,7 @@ export const EDIT_WORKSHEET_APPLY_TEMPLATE = gql`
 `;
 
 export const WORKSHEET_MANUAL_ASSIGN = gql`
-    mutation ManualyAssignWorsheet($uid: String!, $qcTemplateUid: String!, $analysesUids: [str!]!) {
+    mutation ManualyAssignWorsheet($uid: String!, $qcTemplateUid: String!, $analysesUids: [String!]!) {
         updateWorksheetManualAssign(uid: $uid, qcTemplateUid: $qcTemplateUid, analysesUids: $analysesUids) {
             ... on WorkSheetType {
                 __typename

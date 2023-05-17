@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import { GET_ALL_CLIENTS, SEARCH_CLIENTS, GET_CLIENT_CONTACTS_BY_CLIENT_UID, GET_CLIENT_BY_UID } from '../graphql/clients.queries';
-import { addListsUnique } from '../utils';
+import { addListsUnique } from '../utils/helpers';
 import { IClient, IClientContact } from '../models/client';
 import { IPageInfo } from '../models/pagination';
 

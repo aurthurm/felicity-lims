@@ -13,7 +13,7 @@ import {
     GET_SAMPLE_GROUPS_BY_ACTION,
     GET_SAMPLE_LAGGARDS,
 } from '../graphql/dashboard.queries';
-import { mapOrder } from '../utils';
+import { mapOrder } from '../utils/helpers';
 
 import { useApiUtil } from '../composables';
 const { withClientQuery } = useApiUtil();

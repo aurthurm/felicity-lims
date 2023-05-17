@@ -783,7 +783,7 @@ export const GET_SAMPLE_STATUS_BY_UID = gql`
 `;
 
 export const GET_SAMPLE_BY_PARENT_ID = gql`
-    query getSampleParentId($parentId: str!, $text: String) {
+    query getSampleParentId($parentId: String!, $text: String) {
         sampleByParentId(parentId: $parentId, text: $text) {
             uid
             sampleId
@@ -1009,7 +1009,7 @@ export const GET_ALL_REJECTION_REASONS = gql`
 `;
 
 export const GET_IMPRESS_META = gql`
-    query impressMeta($uids: [str!]!) {
+    query impressMeta($uids: [String!]!) {
         impressReportsMeta(uids: $uids) {
             uid
             state
@@ -1030,7 +1030,7 @@ export const GET_IMPRESS_META = gql`
 `;
 
 export const DOWNLOAD_IMPRESS_SAMPLES = gql`
-    query impressReports($uids: [str!]!) {
+    query impressReports($uids: [String!]!) {
         impressReportsDownload(uids: $uids)
     }
 `;

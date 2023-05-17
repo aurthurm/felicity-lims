@@ -6,7 +6,7 @@ import { IAnalysisProfile, IAnalysisService, ISample } from "../../../models/ana
 import { useSampleComposable } from "../../../composables";
 import { useSampleStore } from "../../../stores";
 import { useRoute, useRouter } from "vue-router";
-import { parseDate } from "../../../utils";
+import { parseDate } from "../../../utils/helpers";
 
 const sampleStore = useSampleStore();
 const route = useRoute();

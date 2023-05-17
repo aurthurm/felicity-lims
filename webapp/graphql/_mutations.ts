@@ -59,7 +59,7 @@ export const AUTHENTICATE_USER = gql`
 export const ADD_USER = gql`
     ${PermissionTypeFields}
     ${GroupTypeFields}
-    mutation addUser($firstName: String!, $lastName: String!, $email: String!, $groupUid: str) {
+    mutation addUser($firstName: String!, $lastName: String!, $email: String!, $groupUid: String) {
         createUser(firstName: $firstName, lastName: $lastName, email: $email, groupUid: $groupUid) {
             ... on UserType {
                 uid
@@ -99,7 +99,7 @@ export const EDIT_USER = gql`
         $firstName: String!
         $lastName: String
         $email: String
-        $groupUid: str
+        $groupUid: String
         $mobilePhone: String
         $isActive: Boolean
     ) {

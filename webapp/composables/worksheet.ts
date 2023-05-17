@@ -7,7 +7,7 @@ export default function useWorkSheetComposable() {
     const { withClientMutation } = useApiUtil();
 
     // unAssign Analyses
-    const unAssignSamples = async (uids: number[]) => {
+    const unAssignSamples = async (uids: string[]) => {
         try {
             Swal.fire({
                 title: 'Are you sure?',

@@ -30,12 +30,15 @@ class Actions(object):
     RESULT_SUBMIT = "result_submit"
     GENERATE_REPORT = "generate_report"
     IMPRESS_REPORT = "impress_report"
+    SH_MANUAL_ASSIGN = "shipment_manual_assign"
+    SH_DISPATCH = "shipment_dispatch"
 
 
 actions = Actions()
 
 
 class Categories(object):
+    SHIPMENT = "shipment"
     WORKSHEET = "worksheet"
     RESULT = "result"
     REPORT = "report"

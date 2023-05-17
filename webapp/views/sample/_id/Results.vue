@@ -12,7 +12,7 @@ import {
   IAnalysisResult,
   IAnalysisService,
 } from "../../../models/analysis";
-import { isNullOrWs } from "../../../utils";
+import { isNullOrWs } from "../../../utils/helpers";
 
 import * as shield from "../../../guards";
 

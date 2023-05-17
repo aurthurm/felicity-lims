@@ -2,7 +2,7 @@
 import LoadingMessage from "../../components/Spinners/LoadingMessage.vue";
 import { toRefs, watch } from "vue";
 import { storeToRefs } from "pinia";
-import { parseDate } from "../../utils";
+import { parseDate } from "../../utils/helpers";
 import { useSampleStore } from "../../stores";
 
 const props = defineProps({

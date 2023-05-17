@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia';
 import { GET_NOTICES_BY_CREATOR } from '../graphql/notice.queries';
 import { INotice } from '../models/notice';
-import { subtractDates } from '../utils';
+import { subtractDates } from '../utils/helpers';
 
 import { useApiUtil } from '../composables';
 

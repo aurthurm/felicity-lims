@@ -6,7 +6,7 @@ import TreeItem from "../components/TreeItem.vue";
 import useTreeStateComposable from "../../composables/tree-state";
 import { useField, useForm } from "vee-validate";
 import { object, array } from "yup";
-import { storgeSlotMapper } from "../../utils";
+import { storgeSlotMapper } from "../../utils/helpers";
 
 interface ISampleData {
   sampleUid?: number;

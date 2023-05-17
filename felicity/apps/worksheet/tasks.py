@@ -108,35 +108,10 @@ async def populate_worksheet_plate(job_uid: str):
             position += 1
 
     else:  # populate worksheet using an empty position filling strategy if not empty
+        assigned_positions = [assigned_anal.worksheet_position for assigned_anal in ws.analysis_results]
+        empty_positions = [pos for pos in range(1, ws.number_of_samples + 1) if pos not in reserved and pos not in assigned_positions]
 
-        assigned_positions = []
-        empty_positions = []
-        for assigned_anal in ws.analysis_results:
-            assigned_positions.append(assigned_anal.worksheet_position)
-
-        logger.info(f"reserved : {reserved}")
-        logger.info(f"pos array : {list(range(1, ws.number_of_samples + 1))}")
-        for pos in list(range(1, ws.number_of_samples + 1)):
-            # skip reserved positions
-            if pos in reserved:
-                continue
-
-            # track empty positions
-            if pos not in assigned_positions:
-                empty_positions.append(pos)
-
-        # assert len(samples) <= len(empty_positions)
-
-        # fill in empty positions
-        empty_positions = sorted(empty_positions)
-        samples = sorted(
-            samples, key=lambda s: s.uid, reverse=True
-        )  # list(reversed(samples))
-
-        logger.info(f"samples: {samples}")
-        logger.info(f"assigned_positions: {assigned_positions}")
-        logger.info(f"empty_positions: {empty_positions}")
-
+        samples = sorted(samples, key=lambda s: s.uid, reverse=True)
         # balance sample count to avoid a key error
         samples = samples[: len(empty_positions)]
 
@@ -146,11 +121,10 @@ async def populate_worksheet_plate(job_uid: str):
     time.sleep(1)
 
     await ws.reset_assigned_count()
-    if ws.assigned_count > 0:
-        if not ws.state == conf.worksheet_states.PENDING:
-            await ws.change_state(
-                state=conf.worksheet_states.PENDING, updated_by_uid=job.creator_uid
-            )
+    if ws.assigned_count > 0 and not ws.state == conf.worksheet_states.PENDING:
+        await ws.change_state(
+            state=conf.worksheet_states.PENDING, updated_by_uid=job.creator_uid
+        )
 
     if True:  # ?? maybe allow user to choose whether to add qc samples or not
         await setup_ws_quality_control(ws)
@@ -166,15 +140,10 @@ def run_ws_jobs():
 def get_sample_position(reserved, level_uid) -> int:
     if not reserved:
         return 0
-    try:
-        for k, v in reserved.items():
-            val_uid = v.get("level_uid", 0)
-            if val_uid == level_uid:
-                return k
-    except Exception:  # noqa
-        pass
 
-    return 0
+    matching_keys = [k for k, v in reserved.items() if v.get("level_uid", 0) == level_uid]
+
+    return matching_keys[0] if matching_keys else 0
 
 
 async def setup_ws_quality_control(ws: models.WorkSheet):

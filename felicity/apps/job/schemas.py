@@ -1,6 +1,5 @@
 from typing import Any, Optional
 
-
 from pydantic import BaseModel
 
 from .conf import categories, priorities, states

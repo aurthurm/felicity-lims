@@ -18,7 +18,7 @@ import {
   ADD_REFLEX_BRAIN,
   EDIT_REFLEX_BRAIN,
 } from "../../../../graphql/reflex.mutations";
-import { stringifyNumber } from "../../../../utils";
+import { stringifyNumber } from "../../../../utils/helpers";
 import { IAnalysisService, IResultOption } from "../../../../models/analysis";
 
 const reflexStore = useReflexStore();

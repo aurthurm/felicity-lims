@@ -1,6 +1,6 @@
 import { ENCRYPT_AUTH_KEY, STORAGE_AUTH_KEY, USER_GROUP_OVERRIDE } from './conf';
 import { IUser } from './models/auth';
-import { decrypter, decrypter2, encrypter } from './utils';
+import { decrypter, decrypter2, encrypter } from './utils/helpers';
 
 const authToStorage = async (data: any) => {
     const crypted = await encrypter(data, ENCRYPT_AUTH_KEY);

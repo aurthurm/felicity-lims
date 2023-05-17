@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import { ref, onMounted, computed } from "vue";
 import { useNotificationStore, useAuthStore } from "../../../stores";
-import { userPreferenceComposable } from "../../../composables";
+import { userPreferenceComposable, useApiUtil } from "../../../composables";
+import Drawer from "../../../components/Drawer.vue";
 import * as guards from "./../../../guards";
+const { errors } = useApiUtil()
 
 const dropdownOpen = ref(false);
 const themeChange = ref(false);
@@ -19,6 +21,7 @@ const userFullName = computed(
 );
 
 const showNotifications = (val) => notificationStore.showNotifications(val);
+const showErrors = ref(false)
 </script>
 
 <template>
@@ -34,6 +37,14 @@ const showNotifications = (val) => notificationStore.showNotifications(val);
           <font-awesome-icon :icon="theme?.icon" class="mr-2" />
           <span class="text-sm">{{ theme?.variant }} mode</span>
         </span> -->
+      <a v-show="errors.length > 0"
+        href="#"
+        class="no-underline text-gray-100 opacity-50 flex items-center px-4 border-b border-transparent hover:opacity-100 md:hover:border-grey-dark"
+        @click="showErrors = true"
+        >
+        <font-awesome-icon icon="bell" class="mr-2" />
+        <span>Errors</span>
+      </a>
       <a href="#"
         class="no-underline text-gray-100 opacity-50 flex items-center px-4 border-b border-transparent hover:opacity-100 md:hover:border-grey-dark"
         @click="showNotifications(true)">
@@ -70,4 +81,18 @@ const showNotifications = (val) => notificationStore.showNotifications(val);
       </div>
     </div>
   </nav>
+
+  <Drawer :show="showErrors" @close="showErrors = false">
+    <template v-slot:header>
+      <h3>Errors List</h3>
+    </template>
+    <template v-slot:body>
+      <ul>
+        <li v-for="(err, idx) in errors" :key="idx">
+          {{ err }}
+        </li>
+      </ul>
+    </template>
+  </Drawer>
+
 </template>

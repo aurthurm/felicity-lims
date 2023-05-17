@@ -32,7 +32,7 @@ async def add_resource(resource: str, item: PatientResource | ServiceRequestReso
 
 @router.get(
     "/{resource}/{resource_id}",
-    response_model=Union[DiagnosticReportResource],
+    response_model=DiagnosticReportResource | PatientResource,
     summary="Get a fhir Resource by id",
 )
 async def get_resource(resource: str, resource_id: int):

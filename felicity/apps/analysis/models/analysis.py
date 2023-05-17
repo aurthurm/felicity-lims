@@ -560,13 +560,11 @@ class Sample(Auditable, BaseMPTT):
     # QC Samples
     qc_set_uid = Column(String, ForeignKey("qcset.uid"), nullable=True)
     qc_set = relationship(QCSet, back_populates="samples", lazy="selectin")
-    qc_level_uid = Column(String, ForeignKey(
-        "qclevel.uid"), nullable=True)
+    qc_level_uid = Column(String, ForeignKey("qclevel.uid"), nullable=True)
     qc_level = relationship(QCLevel, backref="qc_samples", lazy="selectin")
     # storage -> bio bank
     stored_by_uid = Column(String, ForeignKey("user.uid"), nullable=True)
-    stored_by = relationship("User", foreign_keys=[
-                             stored_by_uid], lazy="selectin")
+    stored_by = relationship("User", foreign_keys=[stored_by_uid], lazy="selectin")
     date_stored = Column(DateTime, nullable=True)
     date_retrieved_from_storage = Column(DateTime, nullable=True)
     storage_container_uid = Column(
@@ -646,6 +644,22 @@ class Sample(Auditable, BaseMPTT):
         from apps.analysis.models.results import AnalysisResult
 
         return await AnalysisResult.get_all(sample_uid=self.uid)
+    
+    async def get_referred_analyses(self):
+        analysis = await self.get_analysis_results()
+        return analysis, list(filter(lambda a: a.status == states.Result.REFERRED ,analysis))
+    
+    async def has_fully_referred_analyses(self):
+        analysis, referred = self.get_referred_analyses()
+        return len(analysis) == len(referred)
+    
+    async def has_no_referred_analyses(self):
+        analysis, referred = self.get_referred_analyses()
+        return len(referred) == 0
+    
+    async def has_partly_referred_analyses(self):
+        analysis, referred = self.get_referred_analyses()
+        return len(analysis) != len(referred) and len(referred) > 0
 
     async def receive(self, received_by):
         if self.status in [states.sample.EXPECTED]:
@@ -785,7 +799,7 @@ class Sample(Auditable, BaseMPTT):
         if self.status in statuses:
             self.status = states.sample.STORED
             self.stored_by = stored_by.uid
-            self.updated_by_uid = rejected_by.uid  # noqa
+            self.updated_by_uid = stored_by.uid  # noqa
             stored = await self.save()
             await streamer.stream(stored, stored_by, "stored", "sample")
             return stored
@@ -839,7 +853,7 @@ class Sample(Auditable, BaseMPTT):
         data["parent_id"] = self.uid
         data["created_by_uid"] = cloner.uid
         return await self.create(obj_in=data)
-
+    
 
 # @event.listens_for(Sample, "after_update")
 # def stream_sample_verified_models(mapper, connection, target): # noqa

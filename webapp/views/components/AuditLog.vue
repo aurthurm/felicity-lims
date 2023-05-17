@@ -3,7 +3,7 @@ import LoadingMessage from "../../components/Spinners/LoadingMessage.vue";
 import { storeToRefs } from "pinia";
 import { computed, toRefs } from "vue";
 import { useUserStore, useAuditLogStore } from "../../stores";
-import { parseDate } from "../../utils";
+import { parseDate } from "../../utils/helpers";
 
 const props = defineProps({
   targetId: String,

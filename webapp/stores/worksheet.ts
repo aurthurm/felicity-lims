@@ -3,7 +3,7 @@ import { GET_ALL_WORKSHEET_TEMPLATES, GET_ALL_WORKSHEETS, GET_WORKSHEET_BY_UID }
 import { WORKSHEET_UPDATE } from '../graphql/worksheet.mutations';
 
 import { GET_ANALYSIS_RESULTS_FOR_WS_ASSIGN } from '../graphql/analyses.queries';
-import { parseData, keysToCamel, addListsUnique } from '../utils';
+import { parseData, keysToCamel, addListsUnique } from '../utils/helpers';
 import { IAnalysisResult } from '../models/analysis';
 import { IWorkSheetTemplate, IWorkSheet, IReserved } from '../models/worksheet';
 import { IPageInfo } from '../models/pagination';

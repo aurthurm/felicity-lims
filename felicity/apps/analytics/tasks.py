@@ -70,3 +70,21 @@ async def generate_report(job_uid: str):
     )
     await streamer.stream(report, report.created_by, "generated", "report")
     return True
+
+
+
+# # Convert DataFrame to a buffer (StringIO)
+# buffer = StringIO()
+# df.to_csv(buffer, index=False)
+# buffer.seek(0)  # Reset buffer position to the beginning
+
+
+# # usage
+# @app.route('/download_csv')
+# def download_csv():
+#     buffer.seek(0)
+#     return Response(
+#         buffer.getvalue(),
+#         mimetype='text/csv',
+#         headers={'Content-Disposition': 'attachment; filename=data.csv'}
+#     )

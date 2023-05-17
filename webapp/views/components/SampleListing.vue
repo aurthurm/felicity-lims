@@ -5,7 +5,7 @@ import { RouterLink } from "vue-router";
 import { storeToRefs } from "pinia";
 import { useRoute, useRouter } from "vue-router";
 import { IAnalysisProfile, IAnalysisService, ISample } from "../../models/analysis";
-import { ifZeroEmpty, parseDate } from "../../utils";
+import { ifZeroEmpty, parseDate } from "../../utils/helpers";
 import { useSampleStore, useAnalysisStore } from "../../stores";
 import { useSampleComposable } from "../../composables";
 

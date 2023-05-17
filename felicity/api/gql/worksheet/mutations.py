@@ -325,7 +325,7 @@ class WorkSheetMutations:
         if action and samples:
             if action == actions.WS_UN_ASSIGN:
                 for res_uid in samples:
-                    result = await result_models.AnalysisResult.get(uids=res_uid)
+                    result:result_models.AnalysisResult = await result_models.AnalysisResult.get(uids=res_uid)
                     if not result:
                         continue
                     # skip un assign of quality control samples

@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import { GET_ALL_PATIENTS, SEARCH_PATIENTS, GET_PATIENT_BY_UID, IDENTIFICATION_TYPES } from '../graphql/patient.queries';
-import { addListsUnique } from '../utils';
+import { addListsUnique } from '../utils/helpers';
 import { IIdentification, IPatient } from '../models/patient';
 import { IPageInfo } from '../models/pagination';
 

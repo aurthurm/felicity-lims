@@ -1,4 +1,4 @@
-import { isNullOrWs } from '../utils';
+import { isNullOrWs } from '../utils/helpers';
 
 export const simpleValidator = (form: any, required: string[] = []) => {
     if (required.length == 0) alert('There are no validation fields');

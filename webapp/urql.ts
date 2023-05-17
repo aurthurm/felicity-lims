@@ -1,6 +1,5 @@
 import {
     createClient,
-    defaultExchanges,
     dedupExchange,
     cacheExchange,
     fetchExchange,
@@ -11,7 +10,6 @@ import {
     Exchange,
 } from 'urql';
 import { makeOperation } from '@urql/core';
-import { devtoolsExchange } from '@urql/devtools';
 import { authExchange } from '@urql/exchange-auth';
 import { SubscriptionClient } from 'subscriptions-transport-ws';
 import { pipe, tap } from 'wonka';
@@ -19,6 +17,7 @@ import { pipe, tap } from 'wonka';
 import { getAuthData, authLogout } from './auth';
 import { GQL_BASE_URL, WS_BASE_URL } from './conf';
 import { useNotifyToast } from './composables';
+import jwtDecode from 'jwt-decode';
 
 const { toastError } = useNotifyToast();
 
@@ -88,8 +87,25 @@ const didAuthError = (error: any) => {
     return error.graphQLErrors.some((e: any) => e.extensions?.code === 'FORBIDDEN');
 };
 
+// const willAuthError = (authState: any) => {
+//     if (!authState || '/* JWT is expired */') return true;
+//     return false;
+// };
+
 const willAuthError = (authState: any) => {
-    if (!authState || '/* JWT is expired */') return true;
+    if (!authState) return true;
+
+    try {
+        const decodedToken: any = jwtDecode(authState.token);
+        const currentTime = new Date().getTime() / 1000;
+        if (decodedToken.exp < currentTime) {
+            // JWT is expired
+            return true;
+        }
+    } catch (error) {
+        return true;
+    }
+
     return false;
 };
 
@@ -104,9 +120,6 @@ const resultInterceptorExchange: Exchange =
 
 export const urqlClient = createClient({
     url: GQL_BASE_URL,
-    ...('process.env.DEV' && {
-        exchanges: [devtoolsExchange, ...defaultExchanges],
-    }),
     exchanges: [
         dedupExchange,
         cacheExchange,

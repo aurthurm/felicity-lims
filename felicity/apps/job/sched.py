@@ -10,6 +10,10 @@ from apps.worksheet.tasks import (
     populate_worksheet_plate,
     populate_worksheet_plate_manually,
 )
+from apps.shipment.tasks import (
+    populate_shipment_manually,
+    dispatch_shipment
+)
 from apscheduler.events import EVENT_JOB_ERROR, EVENT_JOB_EXECUTED
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
@@ -56,40 +60,42 @@ def jobs_execution_listener(event):
 
 
 async def run_jobs_if_exists():
-    jobs = await job_models.Job.fetch_sorted()
+    async def unknown_action(action):
+        logging.warning(f"Unknown job action: {action}")
+
+    jobs: list[job_models.Job] = await job_models.Job.fetch_sorted()
 
     logging.info(f"There are {len(jobs)} Jobs pending running.")
     if len(jobs) == 0:
         felicity_pause_workforce()
     else:
+        job_dispatch_table = {
+            job_conf.categories.WORKSHEET: {
+                job_conf.actions.WS_ASSIGN: populate_worksheet_plate,
+                job_conf.actions.WS_MANUAL_ASSIGN: populate_worksheet_plate_manually,
+            },
+            job_conf.categories.REPORT: {
+                None: generate_report,
+            },
+            job_conf.categories.IMPRESS: {
+                None: impress_results,
+            },
+            job_conf.categories.RESULT: {
+                job_conf.actions.RESULT_SUBMIT: submit_results,
+                job_conf.actions.RESULT_VERIFY: verify_results,
+            },
+            job_conf.categories.SHIPMENT: {
+                job_conf.actions.SH_MANUAL_ASSIGN: populate_shipment_manually,
+                job_conf.actions.SH_DISPATCH: dispatch_shipment,
+            },
+        }
+
         for job in jobs:
-            if job.category == job_conf.categories.WORKSHEET:
-                if job.action == job_conf.actions.WS_ASSIGN:
-                    logging.warning(f"Running Task: {job.action}")
-                    await populate_worksheet_plate(job.uid)
-                elif job.action == job_conf.actions.WS_MANUAL_ASSIGN:
-                    logging.warning(f"Running Task: {job.action}")
-                    await populate_worksheet_plate_manually(job.uid)
-                else:
-                    logging.warning(f"Unknown Worksheet job action: {job.action}")
-            elif job.category == job_conf.categories.REPORT:
-                logging.warning(f"Running Task: {job.action}")
-                await generate_report(job.uid)
-            elif job.category == job_conf.categories.IMPRESS:
-                logging.warning(f"Running Task: {job.action}")
-                await impress_results(job.uid)
-                # felicity_resume_workforce()
-            elif job.category == job_conf.categories.RESULT:
-                if job.action == job_conf.actions.RESULT_SUBMIT:
-                    logging.warning(f"Running Task: {job.action}")
-                    await submit_results(job.uid)
-                elif job.action == job_conf.actions.RESULT_VERIFY:
-                    logging.warning(f"Running Task: {job.action}")
-                    await verify_results(job.uid)
-                else:
-                    logging.warning(f"Unknown result job action: {job.action}")
-            else:
-                logging.warning(f"Non categorised job found: {job.uid}")
+            action_function = job_dispatch_table.get(job.category, {}).get(
+                job.action, unknown_action
+            )
+            logging.warning(f"Running Task: {job.action}")
+            await action_function(job.uid)
 
 
 def felicity_workforce_init():

@@ -4,7 +4,7 @@ import * as shield from "../../guards";
 import { useRoute } from "vue-router";
 import { storeToRefs } from "pinia";
 import { usePatientStore } from "../../stores";
-import { parseDate } from "../../utils";
+import { parseDate } from "../../utils/helpers";
 
 const route = useRoute();
 const patientStore = usePatientStore();

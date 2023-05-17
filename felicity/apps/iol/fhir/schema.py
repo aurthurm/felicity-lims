@@ -181,6 +181,10 @@ class SampledData(BaseModel):
     data: str | None = None
 
 
+class Extension(BaseModel):
+    url:  str | None
+    valueString: str
+
 class PatientResource(BaseModel):
     resourceType: str = "Patient"
     # An identifier for this patient
@@ -352,5 +356,48 @@ class DiagnosticReportResource(BaseModel):
     # Codes for the clinical conclusion of test results
     conclusionCode: List[CodeableConcept] | None = None
 
+class Resource(BaseModel):
+    resourceType: str
+    # hort description
+    property1: str
+
+class BundleEntryRequest(BaseModel):
+    # I R!  GET | HEAD | POST | PUT | DELETE | PATCH
+    method: str 
+    # R!  URL for HTTP equivalent of this entry
+    url: str | None
+
+class BundleEntryResponse(BaseModel):
+    # R!  Status response code (text optional)
+    status: str
+    # The location (if the operation returns a location)
+    location: str | None 
+    # Server's date time modified
+    lastModified: datetime | None 
+    # // OperationOutcome with hints and warnings (for batch/transaction)
+    outcome: Resource
+
+class BundleEntry(BaseModel):
+    # I A resource in the bundle
+    resource: Resource | None = None
+    # I Additional execution information (transaction/batch/history)
+    request: BundleEntryRequest | None
+    # I Results of execution (transaction/batch/history)
+    response: BundleEntryResponse | None
+
+
+class BundleResource(BaseModel):
+    resourceType: str = "Bundle"
+    # I Persistent identifier for the bundle
+    identifier: Identifier | None = None
+    # I R!  document | message | transaction | transaction-response | batch | batch-response | history | searchset | collection | subscription-notification
+    type: str
+    # I When the bundle was assembled
+    timestamp: datetime
+    # I If search, the total number of matches
+    total: int 
+    # // Entry in the bundle - will have a resource or information
+    entry: list[BundleEntry]
+    extension: list[Extension] | None
 
 Reference.update_forward_refs()

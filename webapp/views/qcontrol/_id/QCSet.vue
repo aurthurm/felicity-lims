@@ -2,7 +2,7 @@
 import { ref, computed } from "vue";
 import { useRoute } from "vue-router";
 import { useSampleStore } from "../../../stores";
-import { isNullOrWs } from "../../../utils";
+import { isNullOrWs } from "../../../utils/helpers";
 import { useAnalysisComposable } from "../../../composables";
 import { IAnalysisResult, IQCLevel, IQCSet, ISample } from "../../../models/analysis";
 

@@ -44,7 +44,7 @@ export const EDIT_SAMPLE_TYPE = gql`
 `;
 
 export const REINSTATE_SAMPLES = gql`
-    mutation ReInstateSamples($samples: [str!]!) {
+    mutation ReInstateSamples($samples: [String!]!) {
         reInstateSamples(samples: $samples) {
             ... on ResultedSampleListingType {
                 __typename
@@ -64,7 +64,7 @@ export const REINSTATE_SAMPLES = gql`
 `;
 
 export const CLONE_SAMPLES = gql`
-    mutation CloneSamples($samples: [str!]!) {
+    mutation CloneSamples($samples: [String!]!) {
         cloneSamples(samples: $samples) {
             ... on SampleListingType {
                 __typename
@@ -100,7 +100,7 @@ export const CLONE_SAMPLES = gql`
 `;
 
 export const CANCEL_SAMPLES = gql`
-    mutation CancelSamples($samples: [str!]!) {
+    mutation CancelSamples($samples: [String!]!) {
         cancelSamples(samples: $samples) {
             ... on ResultedSampleListingType {
                 __typename
@@ -120,7 +120,7 @@ export const CANCEL_SAMPLES = gql`
 `;
 
 export const RECEIVE_SAMPLES = gql`
-    mutation ReceiveSamples($samples: [str!]!) {
+    mutation ReceiveSamples($samples: [String!]!) {
         receiveSamples(samples: $samples) {
             ... on ResultedSampleListingType {
                 __typename
@@ -157,7 +157,7 @@ export const PUBLISH_SAMPLES = gql`
 `;
 
 export const PRINT_SAMPLES = gql`
-    mutation PrintSamples($samples: [str!]!) {
+    mutation PrintSamples($samples: [String!]!) {
         printSamples(samples: $samples) {
             ... on SampleListingType {
                 __typename
@@ -177,7 +177,7 @@ export const PRINT_SAMPLES = gql`
 `;
 
 export const INVALIDATE_SAMPLES = gql`
-    mutation InvalidateSamples($samples: [str!]!) {
+    mutation InvalidateSamples($samples: [String!]!) {
         invalidateSamples(samples: $samples) {
             ... on SampleListingType {
                 __typename
@@ -197,7 +197,7 @@ export const INVALIDATE_SAMPLES = gql`
 `;
 
 export const VERIFY_SAMPLES = gql`
-    mutation VerifySamples($samples: [str!]!) {
+    mutation VerifySamples($samples: [String!]!) {
         verifySamples(samples: $samples) {
             ... on SampleListingType {
                 __typename

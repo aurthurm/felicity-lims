@@ -2,7 +2,7 @@
 import FButton from "../../../components/Buttons/Button.vue";
 import { useRoute } from "vue-router";
 import { ref, computed, reactive } from "vue";
-import { isNullOrWs } from "../../../utils";
+import { isNullOrWs } from "../../../utils/helpers";
 import { IAnalysisResult, IAnalysisService } from "../../../models/analysis";
 import { useAnalysisComposable, useWorkSheetComposable } from "../../../composables";
 import { useWorksheetStore, useSetupStore, useUserStore } from "../../../stores";

@@ -24,11 +24,11 @@ export default function useApiUtil() {
     };
 
     const gqlResponseHandler = (res: any): any => {
-        if (res.error) {
+        if (res?.error) {
             errors.value.unshift(res.error);
             gqlErrorHandler(res.error);
         }
-        return res.data;
+        return res?.data ?? {};
     };
 
     const gqlOpertionalErrorHandler = (payload: any, key: string): any => {
@@ -80,6 +80,16 @@ export default function useApiUtil() {
             });
     }
 
+    async function withClientOperation(operationType, query, variables, dataKey, requestPolicy: RequestPolicy = 'cache-first'): Promise<any> {
+        const operation = operationType === 'mutation' ? urqlClient.mutation(query, variables) : urqlClient.query(query, variables, { requestPolicy });
+        return await operation
+            .toPromise()
+            .then(result => {
+                const data = GQLResponseInterceptor(result, dataKey);
+                return dataKey ? data[dataKey] : data;
+            });
+        }
+
     // --
     return {
         gqlResponseHandler,
@@ -88,5 +98,7 @@ export default function useApiUtil() {
         GQLResponseInterceptor,
         withClientMutation,
         withClientQuery,
+        withClientOperation,
+        errors,
     };
 }
