@@ -26,6 +26,10 @@ from api.gql.user.mutations import UserMutations
 from api.gql.user.query import UserQuery
 from api.gql.worksheet.mutations import WorkSheetMutations
 from api.gql.worksheet.query import WorkSheetQuery
+from api.gql.instrument.mutations import InstrumentMutations
+from api.gql.instrument.query import InstrumentQuery
+from api.gql.shipment.mutations import ShipmentMutations
+from api.gql.shipment.query import ShipmentQuery
 
 
 @strawberry.type
@@ -45,6 +49,8 @@ class Query(
     StorageQuery,
     InventoryQuery,
     ReportImpressQuery,
+    InstrumentQuery,
+    ShipmentQuery,
 ):
     pass
 
@@ -62,6 +68,8 @@ class Mutation(
     ReflexRuleMutations,
     StorageMutations,
     InventoryMutations,
+    InstrumentMutations,
+    ShipmentMutations,
 ):
     pass
 

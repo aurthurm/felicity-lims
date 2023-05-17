@@ -10,10 +10,9 @@ from api.gql.analysis.types.analysis import (
     SampleTypeTyp,
 )
 from api.gql.analysis.types.results import AnalysisResultType
-from api.gql.setup.types import InstrumentType
+from api.gql.instrument.types import InstrumentType
 from api.gql.types import JSONScalar
 from api.gql.user.types import UserType
-
 
 
 @strawberry.type

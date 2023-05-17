@@ -7,7 +7,7 @@ from api.gql import OperationError, auth_from_info, verify_user_auth
 from api.gql.analysis.types import analysis as a_types
 from apps.analysis import schemas
 from apps.analysis.models import analysis as analysis_models
-from apps.setup.models import Method
+from apps.instrument.models import Method
 
 
 logging.basicConfig(level=logging.INFO)

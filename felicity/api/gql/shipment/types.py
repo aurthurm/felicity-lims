@@ -17,7 +17,7 @@ class ShipmentType:
     shipment_id: str | None
     comment: str | None
     assigned_count: int | None
-    data: dict | None = {}
+    data: JSONScalar | None
     samples: SampleType | None
     state: str | None
     incoming: bool| None = False

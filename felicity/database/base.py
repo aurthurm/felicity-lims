@@ -72,4 +72,6 @@ from apps.user.models import UserAuth  # noqa
 from apps.user.models import UserPreference  # noqa
 from apps.worksheet.models import WorkSheet  # noqa
 from apps.worksheet.models import WorkSheetTemplate  # noqa
+from apps.shipment.models import Shipment
+from apps.shipment.models import ShippedSample
 from database.base_class import DBModel  # noqa

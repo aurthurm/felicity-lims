@@ -10,7 +10,7 @@ from apps.job import schemas as job_schemas
 from apps.job.conf import actions, categories, priorities, states
 from apps.job.sched import felicity_resume_workforce
 from apps.shipment import conf, models, schemas
-from apps.shipment.utils import shipment_unsassign
+from apps.shipment.utils import shipment_unassign
 from apps.analysis.models import analysis
 
 
@@ -191,6 +191,6 @@ class ShipmentMutations:
         else:
             # un-assign
             assert payload.action == "un-assign"
-            await shipment_unsassign(shipment.uid, payload.samples)
+            await shipment_unassign(shipment.uid, payload.samples)
 
         return ShipmentType(**shipment.marshal_simple())

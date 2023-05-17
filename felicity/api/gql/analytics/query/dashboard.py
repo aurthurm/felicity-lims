@@ -7,7 +7,7 @@ from apps.analysis.conf import states
 from apps.analysis.models.analysis import Sample
 from apps.analysis.models.results import AnalysisResult
 from apps.analytics import SampleAnalyticsInit
-from apps.setup.models import Instrument
+from apps.instrument.models import Instrument
 from apps.user.models import User
 from apps.worksheet.conf import worksheet_states
 from apps.worksheet.models import WorkSheet

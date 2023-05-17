@@ -4,7 +4,7 @@ import asyncio
 from apps.analysis.models.analysis import Sample
 from apps.analysis.models.results import AnalysisResult
 from apps.analysis import conf as analysis_conf
-from apps.shipment.models import Shipment, ShipedSample
+from apps.shipment.models import Shipment, ShippedSample
 from apps.shipment.manifest import ManifetReport
 from apps.shipment import conf
 
@@ -30,7 +30,7 @@ async def shipment_assign(shipment_uid: str, samples_data: list[dict]):
         else:
             await sample.change_status(analysis_conf.states.sample.PAIRED, "user goes here")
 
-        await ShipedSample.create({
+        await ShippedSample.create({
             "sample_uid": sample.uid,
             "shipment_uid": shipment.uid
         })
@@ -67,7 +67,7 @@ async def shipment_unassign(shipment_uid: str, samples_data: list[dict]):
         else:
             await sample.change_status(analysis_conf.states.sample.PAIRED, "user goes here")
 
-        shipped_sample = await ShipedSample.get(uid=sample_data.shipped_sample_uid)
+        shipped_sample = await ShippedSample.get(uid=sample_data.shipped_sample_uid)
         if shipped_sample and no_referred:
             await shipped_sample.delete()
 
@@ -87,7 +87,7 @@ async def shipment_unassign(shipment_uid: str, samples_data: list[dict]):
 
 async def shipment_reset_assigned_count(shipment_uid: str):
     shipment:Shipment = await Shipment.get(uid=shipment_uid)
-    shiped_samples = await ShipedSample.get_all(shipment_uid=shipment.uid)
+    shiped_samples = await ShippedSample.get_all(shipment_uid=shipment.uid)
 
     count = len(shiped_samples)
     if count == 0:
@@ -148,7 +148,7 @@ async def shipment_finalise(shipment_uid: str, finaliser):
         return
 
     # generate manifest
-    shiped_samples:ShipedSample = await ShipedSample.get_all(shipment_uid=shipment.uid)
+    shiped_samples:ShippedSample = await ShippedSample.get_all(shipment_uid=shipment.uid)
     samples: list[Sample] = list(map(lambda ss: ss.sample, shiped_samples))
 
     manifest_data = [{

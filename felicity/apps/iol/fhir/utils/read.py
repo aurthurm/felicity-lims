@@ -3,7 +3,7 @@ from apps.analysis.models.analysis import AnalysisRequest, Sample
 from apps.analysis.models.results import AnalysisResult
 from apps.iol.fhir.schema import DiagnosticReportResource, PatientResource, BundleResource
 from apps.patient.models import Patient
-from apps.shipment.models import Shipment, ShipedSample
+from apps.shipment.models import Shipment, ShippedSample
 
 
 def one_of_else(of: list, one: str, default=None):
@@ -129,7 +129,7 @@ async def get_patient_resource(patient_id: int) -> PatientResource | None:
 
 async def get_shipment_bundle_resource(shipment_uid: int) -> BundleResource | None:
     shipment: Shipment = await Shipment.get(uid=shipment_uid)
-    shipped_samples: ShipedSample = await ShipedSample.get_all(shipment_uid=shipment.uid)
+    shipped_samples: ShippedSample = await ShippedSample.get_all(shipment_uid=shipment.uid)
     samples: list[Sample] = list(map(lambda ss: ss.sample, shipped_samples))
 
     async def get_service_entry(sample: Sample):

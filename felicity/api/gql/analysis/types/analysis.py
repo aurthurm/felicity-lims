@@ -5,7 +5,8 @@ import strawberry  # noqa
 from api.gql import PageInfo
 from api.gql.client.types import ClientType
 from api.gql.patient.types import PatientType
-from api.gql.setup.types import InstrumentType, MethodType, UnitType
+from api.gql.instrument.types import InstrumentType, MethodType
+from api.gql.setup.types import UnitType
 from api.gql.setup.types.department import DepartmentType
 from api.gql.storage.types import StorageContainerType
 from api.gql.user.types import UserType

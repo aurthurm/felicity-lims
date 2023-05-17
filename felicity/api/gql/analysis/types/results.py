@@ -4,7 +4,7 @@ from typing import Optional
 import strawberry  # noqa
 from api.gql import PageInfo
 from api.gql.analysis.types.analysis import AnalysisType, QCSetType, SampleType
-from api.gql.setup.types import InstrumentType, MethodType
+from api.gql.instrument.types import InstrumentType, MethodType
 from api.gql.user.types import UserType
 from apps.worksheet import models as ws_models
 

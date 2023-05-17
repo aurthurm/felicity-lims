@@ -8,7 +8,7 @@ from apps.analysis.models import qc as qc_models
 from apps.analysis.models import results as result_models
 from apps.common.models import IdSequence
 from apps.notification.utils import FelicityStreamer
-from apps.setup.models.setup import Instrument
+from apps.instrument.models import Instrument
 from apps.user.models import User
 from apps.worksheet import conf, schemas
 

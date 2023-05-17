@@ -2,7 +2,6 @@ import logging
 
 from apps import Auditable, BaseAuditDBModel, DBModel
 from apps.analysis import conf as analysis_conf
-from apps.analysis.models import analysis as analysis_models
 from apps.common.models import IdSequence
 from apps.notification.utils import FelicityStreamer
 from apps.user.models import User
@@ -25,9 +24,6 @@ class Shipment(Auditable):
     courier = Column(String, nullable=False)
     assigned_count = Column(Integer, nullable=False, default=0)
     data = Column(JSONB)
-    samples = relationship(
-        "Sample", back_populates="shipment", lazy="selectin"
-    )
     state = Column(String)
     # laboratory = ''
     incoming = Column(Boolean(), default=False) # either its incoming or outgoing
@@ -56,7 +52,7 @@ class Shipment(Auditable):
         await self.save()
 
     async def get_samples(self):
-        return await analysis_models.Sample.get_all(shipment_uid=self.uid)
+        return list(map(lambda ss: ss.sample, await ShippedSample.get_all(shipment_uid=self.uid)))
 
     async def change_state(self, state, updated_by_uid):
         self.state = state
@@ -93,13 +89,13 @@ class Shipment(Auditable):
 
 
 
-class ShipedSample(DBModel):
-    """ShipedSample enables samples to be shipped multiple times
+class ShippedSample(DBModel):
+    """ShippedSample enables samples to be shipped multiple times
     A sample can be tracked through different shipments from inception to end
     """
     sample_uid = Column(String, ForeignKey("sample.uid"), nullable=True)
-    sample = relationship(User, foreign_keys=[sample_uid], lazy="selectin")
+    sample = relationship("Sample", foreign_keys=[sample_uid], lazy="selectin")
     shipment_uid = Column(String, ForeignKey("shipment.uid"), nullable=True)
-    sample = relationship(User, foreign_keys=[sample_uid], lazy="selectin")
+    shipment = relationship(Shipment, foreign_keys=[shipment_uid], lazy="selectin")
     # result_notified = Column(Boolean(), default=False)
     #

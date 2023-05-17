@@ -1,7 +1,5 @@
 import logging
-import time
 
-from apps.analysis.models.analysis import Sample
 from apps.job import models as job_models
 from apps.job.conf import states as job_states
 from apps.shipment import conf, models
