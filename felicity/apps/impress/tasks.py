@@ -47,7 +47,7 @@ async def impress_results(job_uid: str):
 
 
 async def prepare_for_impress():
-    samples: List[Sample] = await Sample.get_all(status=states.sample.APPROVED)
+    samples: List[Sample] = await Sample.get_all(status__in=[states.sample.APPROVED])
     sample_uids = [sample.uid for sample in samples]
 
     await Sample.bulk_update_with_mappings(

@@ -75,6 +75,8 @@ function checkCheck(result: IAnalysisResult): void {
 }
 
 function check(result: IAnalysisResult): void {
+  if(isDisabledRowCheckBox(result)) return;
+  // if(!result.editable) return;
   result.checked = true;
   resetAnalysesPermissions();
 }
@@ -120,7 +122,7 @@ function editResult(result: any): void {
 }
 
 function isEditable(result: IAnalysisResult): Boolean {
-  if (sample?.value?.status !== "received") {
+  if (!["received", "paired"].includes(sample?.value?.status ?? "")) {
     return false;
   }
   if (result.status !== "pending") {
@@ -175,8 +177,7 @@ function resetAnalysesPermissions(): void {
   // can submit
   if (
     checked.every(
-      (result: IAnalysisResult) =>
-        result.status === "pending" && !isNullOrWs(result.result)
+      (result: IAnalysisResult) => ["pending"].includes(result.status ?? "") && !isNullOrWs(result.result)
     )
   ) {
     state.can_submit = true;

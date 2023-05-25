@@ -10,6 +10,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import declared_attr, selectinload
 from sqlalchemy.sql import func
 from sqlalchemy.sql.expression import bindparam
+from sqlalchemy import delete
 
 from sqlalchemy_mixins import AllFeaturesMixinAsync, smart_query
 from core.uid_gen import get_flake_uid
@@ -124,6 +125,19 @@ class DBModel(AllFeaturesMixinAsync):
             fill = await cls().fill(**cls._import(data))
             to_save.append(fill)
         return await cls.save_all(to_save)
+
+    async def delete(self):
+        """Removes the model from the current entity session and mark for deletion.
+        """
+        try:
+            async with self.session() as session:
+                await session.delete(self)
+                await session.commit()
+                await session.flush()
+        except:
+            async with self.session() as session:
+                await session.rollback()
+                raise
 
     async def update(self, **kwargs):
         """Returns a new get instance of the class

@@ -1,6 +1,6 @@
-
+from datetime import datetime, timedelta
 from database.base_class import DBModel
-from sqlalchemy import Column, Integer, String
+from sqlalchemy import Column, Integer, String, DateTime
 from sqlalchemy.dialects.postgresql import JSONB
 
 from . import conf, schemas
@@ -15,6 +15,39 @@ class Job(DBModel):
     creator_uid = Column(String)
     status = Column(String)
     reason = Column(String)
+    next_try = Column(DateTime, nullable=True)
+    retries = Column(Integer, default=1)
+
+    async def backoff(self, minutes=5, max_retries=5):
+        bck = minutes * self.retries
+        self.next_try = datetime.now() + timedelta(minutes=bck)
+
+        if self.retries >= max_retries + 1:
+            self.status = conf.states.FAILED
+            self.reason = f"max retries have been exceeded: {max_retries}"
+
+        self.retries += 1
+        await self.save()
+
+    @property
+    def is_ready_for_execution(self):
+        current_time = datetime.now()
+        return self.next_try <= current_time if self.next_try else True
+
+    @classmethod
+    async def fetch_sorted(cls):
+        _jobs = Job.smart_query(
+            filters={
+                "status__notin": [
+                    conf.states.FINISHED,
+                    conf.states.FAILED,
+                    conf.states.RUNNING,
+                ]
+            },
+            sort_attrs=["-priority"],
+        )
+        jobs = await Job.from_smart_query(_jobs)
+        return list(filter(lambda job: job.is_ready_for_execution, jobs))
 
     async def change_status(self, new_status, change_reason=""):
         self.status = new_status
@@ -30,21 +63,6 @@ class Job(DBModel):
         if self.priority > conf.priorities.NORMAL:
             self.priority -= 1
             await self.save()
-
-    @classmethod
-    async def fetch_sorted(cls):
-        _jobs = Job.smart_query(
-            filters={
-                "status__notin": [
-                    conf.states.FINISHED,
-                    conf.states.FAILED,
-                    conf.states.RUNNING,
-                ]
-            },
-            sort_attrs=["-priority"],
-        )
-        jobs = await Job.from_smart_query(_jobs)
-        return jobs
 
     @classmethod
     async def create(cls, obj_in: schemas.JobCreate) -> schemas.Job:

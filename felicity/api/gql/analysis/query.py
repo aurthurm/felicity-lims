@@ -7,9 +7,9 @@ from api.gql import PageInfo
 from api.gql.analysis.types import analysis as a_types
 from api.gql.analysis.types import results as r_types
 from apps.analysis import conf as analysis_conf
-from apps.analysis.models import analysis as a_models
 from apps.analysis.models import qc as qc_models
 from apps.analysis.models import results as r_models
+from apps.analysis.models import analysis as a_models
 from apps.analysis.utils import sample_search
 
 from utils import has_value_or_is_truthy
@@ -86,6 +86,61 @@ class AnalysisQuery:
             total_count=total_count, edges=edges, items=items, page_info=page_info
         )
 
+    @strawberry.field
+    async def samples_for_shipment_assign(
+        self,
+        info,
+        page_size: int | None = None,
+        after_cursor: str | None = None,
+        before_cursor: str | None = None,
+        text: str | None = None,
+        sort_by: list[str] | None = None,
+        analysis_uid: str | None = None,
+        sample_type_uid: str | None = None,
+    ) -> r_types.SampleCursorPage:
+
+        filters = []
+        _or_text_ = {}
+        if has_value_or_is_truthy(text):
+            arg_list = ["sample___sample_id__ilike"]
+            for _arg in arg_list:
+                _or_text_[_arg] = f"%{text}%"
+
+            text_filters = {sa.or_: _or_text_}
+            filters.append(text_filters)
+
+        if analysis_uid:
+            # filters.append({"analysis_uid": analysis_uid})
+            pass
+
+        if sample_type_uid:
+            filters.append({"sample_type_uid": sample_type_uid})
+
+        filters.append({
+            "status__in": [analysis_conf.states.sample.RECEIVED, analysis_conf.states.sample.PAIRED]
+        })
+
+        if not sort_by:
+            sort_by = ["-priority", "uid"]
+
+        page = await a_models.Sample.paginate_with_cursors(
+            page_size=page_size,
+            after_cursor=after_cursor,
+            before_cursor=before_cursor,
+            filters=filters,
+            sort_by=sort_by,
+            get_related="analyses",
+        )
+
+        total_count: int = page.total_count
+        edges: List[r_types.SampleEdge[a_types.SampleType]] = page.edges
+        items: List[r_types.SampleType] = page.items
+        page_info: PageInfo = page.page_info
+
+        return r_types.SampleCursorPage(
+            total_count=total_count, edges=edges, items=items, page_info=page_info
+        )
+    
     # awaiting deprecation since sample_all can now achieve this
     @strawberry.field
     async def sample_search(

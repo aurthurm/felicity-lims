@@ -1,7 +1,14 @@
 import asyncio
 from apps.analysis.models.analysis import AnalysisRequest, Sample
 from apps.analysis.models.results import AnalysisResult
-from apps.iol.fhir.schema import DiagnosticReportResource, PatientResource, BundleResource
+from apps.iol.fhir.schema import (
+    DiagnosticReportResource, 
+    PatientResource, 
+    ServiceRequestResource,
+    BundleResource,
+    ObservationResource,
+    Identifier
+)
 from apps.patient.models import Patient
 from apps.shipment.models import Shipment, ShippedSample
 
@@ -23,15 +30,15 @@ async def get_diagnostic_report_resource(
 
     analyses: list[AnalysisResult] = await sample.get_analysis_results()
     observations = [
-        {
+        ObservationResource(**{
             "type": "Observation",
-            "identifier": {
+            "identifier": Identifier(**{
                 "use": "official",
                 "type": {"text": anal.analysis.keyword},
                 "value": anal.result,
-            },
+            }),
             "display": anal.analysis.name,
-        }
+        })
         for anal in analyses
     ]
 
@@ -45,11 +52,11 @@ async def get_diagnostic_report_resource(
             }
         ],
         "basedOn": [
-            {
+            ServiceRequestResource(**{
                 "type": "ServiceRequest",
                 "identifier": {"use": "official", "value": ar.uid},
                 "display": "Service Request Id",
-            }
+            })
         ],
         # R!  registered | partial | preliminary | final +
         "status": sample.status,
@@ -93,11 +100,11 @@ async def get_patient_resource(patient_id: int) -> PatientResource | None:
     pt_vars = {
         "resourceType": "Patient",
         "identifier": [
-            {
+            Identifier(**{
                 "use": "official",
                 "type": {"text": "Client Patient Id"},
                 "value": patient.client_patient_id,
-            }
+            })
         ],
         "active": True,
         "name": [
@@ -133,15 +140,15 @@ async def get_shipment_bundle_resource(shipment_uid: int) -> BundleResource | No
     samples: list[Sample] = list(map(lambda ss: ss.sample, shipped_samples))
 
     async def get_service_entry(sample: Sample):
-        analytes: list[AnalysisResult] = await sample.get_referred_analyses()
+        _, analytes = await sample.get_referred_analyses()
         tests_meta = [{"system": "felicity/analysis", "code": analyte.analysis.keyword, "display": analyte.analysis.name} for analyte in analytes]
         return {
-            "resource": {
+            "resource": ServiceRequestResource(**{
                 "resourceType": "ServiceRequest",
                 "code": {
                     "coding": tests_meta
                 }
-            },
+            }),
             "request": {
                 "method": "POST",
                 "url": "ServiceRequest"
@@ -152,7 +159,11 @@ async def get_shipment_bundle_resource(shipment_uid: int) -> BundleResource | No
 
     bundle_vars = {
         "resourceType": "Bundle",
-        "identifier": shipment.shipment_id,
+        "identifier": Identifier(**{
+            "use": "official",
+            "system": "felicity/shipment/uid",
+            "value": shipment.shipment_id
+        }),
         "type": "batch",
         "timestamp": shipment.created_at,
         "total": len(samples),

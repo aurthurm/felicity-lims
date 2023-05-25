@@ -650,15 +650,15 @@ class Sample(Auditable, BaseMPTT):
         return analysis, list(filter(lambda a: a.status == states.Result.REFERRED ,analysis))
     
     async def has_fully_referred_analyses(self):
-        analysis, referred = self.get_referred_analyses()
+        analysis, referred = await self.get_referred_analyses()
         return len(analysis) == len(referred)
     
     async def has_no_referred_analyses(self):
-        analysis, referred = self.get_referred_analyses()
+        analysis, referred = await self.get_referred_analyses()
         return len(referred) == 0
     
     async def has_partly_referred_analyses(self):
-        analysis, referred = self.get_referred_analyses()
+        analysis, referred = await self.get_referred_analyses()
         return len(analysis) != len(referred) and len(referred) > 0
 
     async def receive(self, received_by):

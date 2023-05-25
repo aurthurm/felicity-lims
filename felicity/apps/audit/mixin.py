@@ -89,6 +89,17 @@ class AuditableMixin:
             if "updated_at" in list(state_after.keys()):
                 return
 
+        # clean up
+        if "json_content" in state_before:
+            del state_before["json_content"]
+        if "json_content" in state_after:
+            del state_after["json_content"]
+
+        if "pdf_content" in state_after:
+            del state_after["pdf_content"]
+        if "pdf_content" in state_before:
+            del state_before["pdf_content"]
+
         target.create_audit(
             connection,
             target.__tablename__,

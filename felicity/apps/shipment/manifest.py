@@ -118,7 +118,7 @@ class ManifetReport:
             self.pdf.text(
                 left_col_xl + column_width * 2,
                 y_pos,
-                get_from_nested(sample_meta, "date_sampled"),
+                get_from_nested(sample_meta, "date_collected"),
             )
             self.pdf.text(
                 left_col_xl + column_width * 3, y_pos, get_from_nested(sample_meta, "sample_type")

@@ -64,6 +64,7 @@ async def impress_samples(sample_meta: List[any], user):
         logger.info(f"sample {sample} {sample.status}")
         if sample.status in [
             states.sample.RECEIVED,
+            states.sample.PAIRED,
             states.sample.AWAITING,
             states.sample.APPROVED,
             states.sample.PUBLISHING,

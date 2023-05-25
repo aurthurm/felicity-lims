@@ -1,7 +1,6 @@
 import logging
 
-from apps import Auditable, BaseAuditDBModel, DBModel
-from apps.analysis import conf as analysis_conf
+from apps import Auditable, DBModel
 from apps.common.models import IdSequence
 from apps.notification.utils import FelicityStreamer
 from apps.user.models import User
@@ -18,6 +17,24 @@ logger = logging.getLogger(__name__)
 streamer = FelicityStreamer()
 
 
+class ReferralLaboratory(Auditable):
+    name = Column(String, nullable=True)
+    code = Column(String, index=True, unique=True, nullable=False)
+    url = Column(String, nullable=False)
+    username = Column(String, nullable=False)
+    password = Column(String, nullable=False)
+    is_reference = Column(Boolean(), default=False)
+    is_referral = Column(Boolean(), default=False)
+
+    @classmethod
+    async def create(cls, obj_in: schemas.ShippedSampleCreate) -> schemas.ShippedSample:
+        data = cls._import(obj_in)
+        return await super().create(**data)
+
+    async def update(self, obj_in: schemas.ShippedSampleUpdate) -> schemas.ShippedSample:
+        data = self._import(obj_in)
+        return await super().update(**data)
+
 class Shipment(Auditable):
     shipment_id = Column(String, index=True, unique=True, nullable=False)
     comment = Column(String, nullable=True)
@@ -25,7 +42,8 @@ class Shipment(Auditable):
     assigned_count = Column(Integer, nullable=False, default=0)
     data = Column(JSONB)
     state = Column(String)
-    # laboratory = ''
+    laboratory_uid = Column(String, ForeignKey("referrallaboratory.uid"), nullable=True)
+    laboratory = relationship(ReferralLaboratory, foreign_keys=[laboratory_uid], lazy="selectin")
     incoming = Column(Boolean(), default=False) # either its incoming or outgoing
     finalised_by_uid = Column(String, ForeignKey("user.uid"), nullable=True)
     finalised_by = relationship(User, foreign_keys=[finalised_by_uid], lazy="selectin")
@@ -57,7 +75,7 @@ class Shipment(Auditable):
     async def change_state(self, state, updated_by_uid):
         self.state = state
         self.updated_by_uid = updated_by_uid  # noqa
-        await self.save()
+        return await self.save()
 
     async def finalise(self, finaliser):
         if self.state == conf.shipment_states.PREPERATION:
@@ -98,4 +116,12 @@ class ShippedSample(DBModel):
     shipment_uid = Column(String, ForeignKey("shipment.uid"), nullable=True)
     shipment = relationship(Shipment, foreign_keys=[shipment_uid], lazy="selectin")
     # result_notified = Column(Boolean(), default=False)
-    #
+
+    @classmethod
+    async def create(cls, obj_in: schemas.ShippedSampleCreate) -> schemas.ShippedSample:
+        data = cls._import(obj_in)
+        return await super().create(**data)
+
+    async def update(self, obj_in: schemas.ShippedSampleUpdate) -> schemas.ShippedSample:
+        data = self._import(obj_in)
+        return await super().update(**data)

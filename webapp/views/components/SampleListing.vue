@@ -36,15 +36,17 @@ const state = reactive({
 const samples = computed<ISample[]>(() => sampleStore.getSamples);
 const filterOptions = ref([
   { name: "All", value: "" },
-  { name: "expected", value: "expected" },
-  { name: "received", value: "received" },
-  { name: "awaiting", value: "awaiting" },
-  { name: "approved", value: "approved" },
-  { name: "published", value: "published" },
-  { name: "invalidated", value: "invalidated" },
-  { name: "cancelled", value: "cancelled" },
-  { name: "rejected", value: "rejected" },
-  { name: "stored", value: "stored" },
+  { name: "Expected", value: "expected" },
+  { name: "Received", value: "received" },
+  { name: "Awaiting", value: "awaiting" },
+  { name: "Approved", value: "approved" },
+  { name: "Published", value: "published" },
+  { name: "Invalidated", value: "invalidated" },
+  { name: "Cancelled", value: "cancelled" },
+  { name: "Rejected", value: "rejected" },
+  { name: "Stored", value: "stored" },
+  { name: "Referred", value: "referred" },
+  { name: "Paired", value: "paired" },
 ]);
 
 const tableColumns = ref([

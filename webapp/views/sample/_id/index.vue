@@ -52,8 +52,8 @@ watch(
 );
 
 function profileAnalysesText(
-  profiles: IAnalysisProfile[],
-  analyses: IAnalysisService[]
+  profiles?: IAnalysisProfile[],
+  analyses?: IAnalysisService[]
 ): string {
   let names: string[] = [];
   profiles?.forEach((p) => names.push(p.name!));
@@ -106,7 +106,7 @@ const publishText = computed(() => {
       return true;
     const results = sampleStore.analysisResults;
     if (
-      sample?.value?.status?.toLowerCase() === "received" &&
+      ["received", "paired"].includes(sample?.value?.status?.toLowerCase() ?? "") &&
       results?.some((r) => ["approved"].includes(r.status?.toLowerCase() ?? ""))
     ) {
       return true;
@@ -146,7 +146,7 @@ const canRecover = computed(() => {
   recoverSample = async () => recoverSamples([sample?.value?.uid!]);
 
 // sample storage
-const goToStorage = async (sample: ISample) => {
+const goToStorage = async (sample?: ISample) => {
   router.push({ path: "/bio-banking", state: { sample: JSON.stringify(sample) } });
 };
 </script>
@@ -174,9 +174,9 @@ const goToStorage = async (sample: ISample) => {
       <div class="col-span-12 px-3 sm:px-0">
         <div class="mb-2 flex justify-between sm:text-sm md:text-md lg:text-lg text-gray-700 font-bold">
           <div>
-            <span v-if="sample?.priority! < 1" :class="[
+            <span v-if="sample?.priority ?? 0 < 1" :class="[
               'font-small',
-              { 'text-orange-600': sample?.priority! < 1 },
+              { 'text-orange-600': sample?.priority ?? 0 < 1 },
             ]">
               <i class="fa fa-star"></i>
             </span>
@@ -200,7 +200,7 @@ const goToStorage = async (sample: ISample) => {
               </router-link>
             </span>
           </div>
-          <span>{{ profileAnalysesText(sample?.profiles!, sample?.analyses!) }}</span>
+          <span>{{ profileAnalysesText(sample?.profiles, sample?.analyses) }}</span>
           <!-- <button type="button" class="bg-sky-800 text-white p-1rounded-smleading-none">{{ sample?.status }}</button> -->
           <div>
             <div @click="state.dropdownOpen = !state.dropdownOpen"
@@ -332,7 +332,7 @@ const goToStorage = async (sample: ISample) => {
     <div class="flex">
       <div class="mr-4 font-semibold">Storage:</div>
       <!--  -->
-      <div class="hover:underline hover:cursor-pointer" @click="goToStorage(sample!)">
+      <div class="hover:underline hover:cursor-pointer" @click="goToStorage(sample)">
         <span>{{
           sample?.storageContainer?.storageSection?.storageLocation?.storeRoom?.name
         }}
@@ -351,7 +351,7 @@ const goToStorage = async (sample: ISample) => {
     class="bg-orange-600 rounded-sm shadow-md duration-500 px-4 sm:px-6 md:px-2 py-4 my-4">
     <!-- <h3 clas="font-bold text-gray-800 text-md">This sample was rejected because of the following reason(s):</h3> -->
     <ul>
-      <li v-for="reason in sample?.rejectionReasons">{{ reason.reason }}</li>
+      <li v-for="reason in sample?.rejectionReasons" :key="reason.uid">{{ reason.reason }}</li>
     </ul>
   </div>
 

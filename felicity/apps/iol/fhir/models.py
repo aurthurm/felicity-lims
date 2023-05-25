@@ -1,27 +1,11 @@
 from sqlalchemy.dialects.postgresql import JSONB
+from sqlalchemy import Column, String, Boolean
+
+from apps import BaseAuditDBModel
 
 
-class BaseFhirModel:
-    status: str
-    incoming: False
-    content: JSONB
+class FhirTask(BaseAuditDBModel):
+    incoming = Column(Boolean, default=True)
+    data = Column(JSONB)
+    status = Column(String)
 
-
-class FhirTask(BaseFhirModel):
-    pass
-
-
-class FhirServiceRequest(BaseFhirModel):
-    pass
-
-
-class FhirPatient(BaseFhirModel):
-    pass
-
-
-class FhirObservation(BaseFhirModel):
-    pass
-
-
-class FhirDiagnosticReport(BaseFhirModel):
-    pass

@@ -9,7 +9,6 @@
   })
 
   const { message } = toRefs(props)
-
 </script>
 
 <template>

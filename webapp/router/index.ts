@@ -6,6 +6,7 @@ import clientRoutes from './client';
 import sampleRoutes from './samples';
 import qualityRoutes from './quality';
 import worksheetRoutes from './worksheet';
+import shipmentRoutes from './referral';
 import { isTokenValid } from './checks';
 import { useAuthStore } from '../stores';
 import { StorageHome } from '../views/storage/Index';
@@ -87,6 +88,15 @@ const routes: RouteRecordRaw[] = [
         name: guards.pages.WORKSHEETS,
         component: () => import('../views/worksheet/index.vue'),
         children: worksheetRoutes,
+        meta: {
+            requiresAuth: true,
+        },
+    },
+    {
+        path: '/shipments',
+        name: guards.pages.REFERRAL,
+        component: () => import('../views/shipment/index.vue'),
+        children: shipmentRoutes,
         meta: {
             requiresAuth: true,
         },
@@ -211,6 +221,9 @@ function hasAccess(page: any) {
 
         case guards.pages.WORKSHEETS:
             return guards.canAccessPage(guards.pages.WORKSHEETS);
+
+        case guards.pages.REFERRAL:
+            return guards.canAccessPage(guards.pages.REFERRAL);
 
         case guards.pages.ADMINISTRATION:
             return guards.canAccessPage(guards.pages.ADMINISTRATION);

@@ -3,3 +3,6 @@ from .read import (
     get_patient_resource,
     get_shipment_bundle_resource
 )
+from .create import (
+    create_resource
+)

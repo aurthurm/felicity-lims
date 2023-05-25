@@ -5,22 +5,42 @@ from api.gql import PageInfo
 from api.gql.analysis.types.analysis import (
     SampleType,
 )
-from api.gql.types import JSONScalar
+from api.gql.types import JSONScalar, BytesScalar
 from api.gql.user.types import UserType
+from apps.shipment.models import ShippedSample
 
-
-
+@strawberry.type
+class ReferralLaboratoryType:
+    uid: str
+    name: str | None
+    code: str | None
+    url: str | None
+    username: str | None
+    password: str | None
+    is_reference: bool | None
+    is_referral: bool | None
+    created_by_uid: str | None
+    created_by: UserType | None
+    created_at: datetime | None
+    updated_by_uid: str | None
+    updated_by: UserType | None
+    updated_at: datetime | None
 
 @strawberry.type
 class ShipmentType:
     uid: str
     shipment_id: str | None
     comment: str | None
+    courier: str | None
     assigned_count: int | None
     data: JSONScalar | None
     samples: SampleType | None
     state: str | None
     incoming: bool| None = False
+    laboratory_uid: str | None
+    laboratory: ReferralLaboratoryType | None
+    json_content: JSONScalar | None
+    pdf_content: BytesScalar | None
     finalised_by_uid: str | None    
     finalised_by: UserType | None
     date_finalised: datetime | None
@@ -36,6 +56,21 @@ class ShipmentType:
     received_by_uid: str| None
     received_by: UserType | None
     date_received: datetime | None
+    created_by_uid: str | None
+    created_by: UserType | None
+    created_at: datetime | None
+    updated_by_uid: str | None
+    updated_by: UserType | None
+    updated_at: datetime | None
+    samples: list["SampleType"] | None
+
+    @strawberry.field
+    async def samples(self, info) -> list["SampleType"] | None:
+        return [
+            s for s in 
+            list(map(lambda sam: sam.sample, await ShippedSample.get_all(shipment_uid=self.uid)))
+        ]
+
 
 
 #  relay paginations

@@ -47,17 +47,17 @@ from apps.reflex.models import ReflexBrainCriteria  # noqa
 from apps.reflex.models import ReflexBrainFinal  # noqa
 from apps.reflex.models import ReflexRule  # noqa
 # from apps.setup.models import MethodValidation  # noqa
-from apps.setup.models import CalibrationCertificate  # noqa
+from apps.instrument.models import CalibrationCertificate  # noqa
+from apps.instrument.models import Instrument  # noqa
+from apps.instrument.models import InstrumentCalibration  # noqa
+from apps.instrument.models import InstrumentType  # noqa
+from apps.instrument.models import Method  # noqa
 from apps.setup.models import Country  # noqa
 from apps.setup.models import Department  # noqa
 from apps.setup.models import District  # noqa
-from apps.setup.models import Instrument  # noqa
-from apps.setup.models import InstrumentCalibration  # noqa
-from apps.setup.models import InstrumentType  # noqa
 from apps.setup.models import Laboratory  # noqa
 from apps.setup.models import LaboratorySetting  # noqa
 from apps.setup.models import Manufacturer  # noqa
-from apps.setup.models import Method  # noqa
 from apps.setup.models import Province  # noqa
 from apps.setup.models import Supplier  # noqa
 from apps.setup.models import Unit  # noqa

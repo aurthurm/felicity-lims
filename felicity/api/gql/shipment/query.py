@@ -8,14 +8,14 @@ from api.gql.shipment.types import (
     ShipmentCursorPage,
     ShipmentEdge,
     ShipmentType,
+    ReferralLaboratoryType
 )
-from apps.shipment import models as ws_models
-
+from api.gql.types import BytesScalar
+from apps.shipment import models
 from utils import has_value_or_is_truthy
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
-
 
 @strawberry.type
 class ShipmentQuery:
@@ -48,7 +48,7 @@ class ShipmentQuery:
         if status:
             filters.append({"state__exact": status})
 
-        page = await ws_models.Shipment.paginate_with_cursors(
+        page = await models.Shipment.paginate_with_cursors(
             page_size=page_size,
             after_cursor=after_cursor,
             before_cursor=before_cursor,
@@ -67,14 +67,38 @@ class ShipmentQuery:
 
     @strawberry.field
     async def shipment_by_uid(self, info, shipment_uid: str) -> ShipmentType:
-        return await ws_models.Shipment.get(uid=shipment_uid)
+        return await models.Shipment.get(uid=shipment_uid)
 
     @strawberry.field
     async def shipment_by_id(self, info, shipment_id: str) -> ShipmentType:
-        return await ws_models.Shipment.get(shipment_id=shipment_id)
+        return await models.Shipment.get(shipment_id=shipment_id)
 
     @strawberry.field
     async def shipment_by_status(
         self, info, shipment_status: str
     ) -> List[ShipmentType]:
-        return await ws_models.Shipment.get_all(status__exact=shipment_status)
+        return await models.Shipment.get_all(status__exact=shipment_status)
+    
+    @strawberry.field
+    async def referral_laboratory_all(self, info) -> list[ReferralLaboratoryType]:
+        return await models.ReferralLaboratory.all()
+
+    @strawberry.field
+    async def referral_laboratory_by_uid(self, info, uid: str) -> ReferralLaboratoryType:
+        return await models.ReferralLaboratory.get(uid=uid)
+
+    @strawberry.field
+    async def referral_laboratory_by_code(self, info, code: str) -> ReferralLaboratoryType:
+        return await models.ReferralLaboratory.get(code=code)
+    
+    @strawberry.field
+    async def manifest_report_download(
+        self, info, uid: str
+    ) -> BytesScalar | None:
+        shipment = await models.Shipment.get(uid=uid)
+
+        if not shipment:
+            return None
+
+        # io.BytesIO()
+        return shipment.pdf_content

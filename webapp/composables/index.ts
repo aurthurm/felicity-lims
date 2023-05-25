@@ -5,6 +5,7 @@ import userPreferenceComposable from './preferences';
 import useSampleComposable from './samples';
 import useWorkSheetComposable from './worksheet';
 import useTreeStateComposable from './tree-state';
+import useShipmentComposable from './shipment'
 // import useAnalyticsComposable from "./analytics"
 
 export {
@@ -15,5 +16,6 @@ export {
     useSampleComposable,
     useWorkSheetComposable,
     useTreeStateComposable,
+    useShipmentComposable,
     // useAnalyticsComposable
 };

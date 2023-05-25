@@ -420,6 +420,55 @@ export const GET_ALL_SAMPLES = gql`
     }
 `;
 
+export const GET_SAMPLES_FOR_SH_ASSIGN = gql`
+    query getSamplesForShipmentAssign(
+        $first: Int!
+        $after: String
+        $text: String!
+        $sortBy: [String!]
+        $analysisUid: String
+        $sampleTypeUid: String!
+    ) {
+        samplesForShipmentAssign(
+            pageSize: $first
+            afterCursor: $after
+            text: $text
+            sortBy: $sortBy
+            analysisUid: $analysisUid
+            sampleTypeUid: $sampleTypeUid
+        ) {
+            totalCount
+            pageInfo {
+                hasNextPage
+                hasPreviousPage
+                startCursor
+                endCursor
+            }
+            items {
+                uid
+                sampleId
+                status
+                createdAt
+                dateReceived
+                sampleType {
+                    name
+                }
+                analysisRequest {
+                    clientRequestId
+                }
+                analysisResults {
+                    uid
+                    assigned
+                    status
+                    analysis {
+                        name
+                    }
+                }
+            }
+        }
+    }
+`;
+
 export const GET_ANALYSIS_REQUESTS_BY_PATIENT_UID = gql`
     query getAnalysesRequestsByPatientUid($uid: String!) {
         analysisRequestsByPatientUid(uid: $uid) {

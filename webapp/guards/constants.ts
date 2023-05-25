@@ -4,6 +4,8 @@ const objects = {
     SAMPLE: 'SAMPLE',
     RESULT: 'RESULT',
     WORKSHEET: 'WORKSHEET',
+    INVENTORY: 'INVENTORY',
+    SHIPMENT: "SHIPMENT"
 };
 
 // Actions that can be effected on objects

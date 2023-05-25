@@ -1,33 +1,36 @@
-from typing import Union
-
+import json
 from apps.iol.fhir.schema import (
+    BundleResource,
     DiagnosticReportResource,
     PatientResource,
     ServiceRequestResource,
 )
-from apps.iol.fhir.utils import get_diagnostic_report_resource, get_patient_resource
-from fastapi import APIRouter, HTTPException, status
+from apps.iol.fhir.utils import get_diagnostic_report_resource, get_patient_resource, create_resource
+from fastapi import APIRouter, HTTPException, status, Request
 
 router = APIRouter()
 
 
-@router.post("/{resource}", status_code=201)
-async def add_resource(resource: str, item: PatientResource | ServiceRequestResource):
+@router.post("/{resource_type}", status_code=201)
+async def add_resource(resource_type: str, resource: Request):
     """
     Add a fhir resource
-    Supported Resources are ServiceRequest and  Patient
+    Supported Resources are Bundle, ServiceRequest and Patient
     """
-    if resource not in ["Patient", "ServiceRequest"]:
+    data = json.loads(await resource.json())
+    resources = {
+        "Bundle": BundleResource,
+        "ServiceRequest": ServiceRequestResource,
+        "Patient": PatientResource,
+    }
+    if resource_type not in resources:
         raise HTTPException(
             status_code=status.HTTP_417_EXPECTATION_FAILED,
             detail=f"{resource} Resource not supported",
         )
-    if item.resourceType != resource:
-        raise HTTPException(
-            status_code=status.HTTP_417_EXPECTATION_FAILED,
-            detail=f"{item.resourceType} Resource not " f"supported",
-        )
-    return None
+    
+    mapped_data = resources[resource_type](**data)
+    return await create_resource(resource_type, mapped_data)
 
 
 @router.get(

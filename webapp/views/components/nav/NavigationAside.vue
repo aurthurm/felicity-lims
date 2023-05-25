@@ -81,15 +81,15 @@ function toggleNavText(): void {
           <span v-show="!viewNavText" class="tooltip">WorkSheets</span>
         </router-link>
         <!-- <router-link
-                                                                        v-show="guards.canAccessPage(guards.pages.QC_SAMPLES)"
-                                                                        to="/quality-control"
-                                                                        id="quality-control-link"
-                                                                        class="flex items-center has-tooltip mt-1 py-2 px-6 text-gray-100 hover:bg-gray-800 hover:bg-opacity-25 hover:text-white border-l-4 border-gray-800"
-                                                                      >
-                                                                        <span class="mr-4"><font-awesome-icon icon="anchor" /></span>
-                                                                        <span :class="[' transition-all duration-500', viewNavText ? 'scale-100' : 'scale-0 w-0 overflow-hidden']">QControl</span>
-                                                                        <span v-show="!viewNavText" class="tooltip">QControl</span>
-                                                                      </router-link> -->
+          v-show="guards.canAccessPage(guards.pages.QC_SAMPLES)"
+          to="/quality-control"
+          id="quality-control-link"
+          class="flex items-center has-tooltip mt-1 py-2 px-6 text-gray-100 hover:bg-gray-800 hover:bg-opacity-25 hover:text-white border-l-4 border-gray-800"
+        >
+          <span class="mr-4"><font-awesome-icon icon="anchor" /></span>
+          <span :class="[' transition-all duration-500', viewNavText ? 'scale-100' : 'scale-0 w-0 overflow-hidden']">QControl</span>
+          <span v-show="!viewNavText" class="tooltip">QControl</span>
+        </router-link> -->
         <router-link v-show="guards.canAccessPage(guards.pages.NOTICE_MANAGER)" to="/notice-manager"
           id="notice-manager-link"
           class="flex items-center has-tooltip mt-1 py-2 px-6 text-gray-100 hover:bg-gray-800 hover:bg-opacity-25 hover:text-white border-l-4 border-gray-800">
@@ -104,6 +104,13 @@ function toggleNavText(): void {
           <span
             :class="[' transition-all duration-500', viewNavText ? 'scale-100' : 'scale-0 w-0 overflow-hidden']">BioBanking</span>
           <span v-show="!viewNavText" class="tooltip">BioBanking</span>
+        </router-link>
+        <router-link v-show="guards.canAccessPage(guards.pages.REFERRAL)" to="/shipments" id="shipments-link"
+          class="flex items-center has-tooltip mt-1 py-2 px-6 text-gray-100 hover:bg-gray-800 hover:bg-opacity-25 hover:text-white border-l-4 border-gray-800">
+          <span class="mr-4"><font-awesome-icon icon="truck" /></span>
+          <span
+            :class="[' transition-all duration-500', viewNavText ? 'scale-100' : 'scale-0 w-0 overflow-hidden']">Referrals</span>
+          <span v-show="!viewNavText" class="tooltip">Referrals</span>
         </router-link>
         <router-link v-show="guards.canAccessPage(guards.pages.INVENTORY)" to="/inventory" id="inventory-link"
           class="flex items-center has-tooltip mt-1 py-2 px-6 text-gray-100 hover:bg-gray-800 hover:bg-opacity-25 hover:text-white border-l-4 border-gray-800">

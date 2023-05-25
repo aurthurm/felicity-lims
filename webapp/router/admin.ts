@@ -131,6 +131,14 @@ const adminRoutes = [
             requiresAuth: true,
         },
     },
+    {
+        path: 'shipment-conf',
+        name: 'shipment-conf',
+        component: () => import('../views/admin/shipment/index.vue'),
+        meta: {
+            requiresAuth: true,
+        },
+    },
 ];
 
 export default adminRoutes;

@@ -16,6 +16,7 @@ from apps.shipment.tasks import (
 )
 from apscheduler.events import EVENT_JOB_ERROR, EVENT_JOB_EXECUTED
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
+from apscheduler.triggers.interval import IntervalTrigger
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -38,27 +39,6 @@ def felicity_resume_workforce():
     logging.info(f"Felicity workforce has been resumed.")
 
 
-def run_job_now(job_id, arg_dict):
-    job = scheduler.get_job(job_id)
-    if job:
-        job.modify(next_run_time=datetime.datetime.now())
-    else:
-        scheduler.add_job(next_run_time=datetime.datetime.now(), **arg_dict)
-
-
-def jobs_execution_listener(event):
-    try:
-        job_id = event.job_id
-        if event.exception:
-            logging.error(f"job_id {job_id} error!")
-        else:
-            logging.info(f"job_id {job_id} success")
-
-            run_job_now(job_id, {})
-    except AttributeError:
-        pass
-
-
 async def run_jobs_if_exists():
     async def unknown_action(action):
         logging.warning(f"Unknown job action: {action}")
@@ -67,7 +47,8 @@ async def run_jobs_if_exists():
 
     logging.info(f"There are {len(jobs)} Jobs pending running.")
     if len(jobs) == 0:
-        felicity_pause_workforce()
+        # felicity_pause_workforce()\
+        pass
     else:
         job_dispatch_table = {
             job_conf.categories.WORKSHEET: {
@@ -75,10 +56,10 @@ async def run_jobs_if_exists():
                 job_conf.actions.WS_MANUAL_ASSIGN: populate_worksheet_plate_manually,
             },
             job_conf.categories.REPORT: {
-                None: generate_report,
+                job_conf.actions.GENERATE_REPORT: generate_report,
             },
             job_conf.categories.IMPRESS: {
-                None: impress_results,
+                job_conf.actions.IMPRESS_REPORT: impress_results,
             },
             job_conf.categories.RESULT: {
                 job_conf.actions.RESULT_SUBMIT: submit_results,
@@ -101,15 +82,11 @@ async def run_jobs_if_exists():
 def felicity_workforce_init():
     logging.info(f"Initialising felicity workforce ...")
     scheduler.add_job(
-        func=run_jobs_if_exists, trigger="interval", seconds=5, id="felicity_wf"
+        func=run_jobs_if_exists, trigger=IntervalTrigger(seconds=10), id="felicity_wf"
     )
     scheduler.add_job(
         func=prepare_for_impress,
-        trigger="interval",
-        seconds=60 * 60,
+        trigger=IntervalTrigger(seconds=60 * 60),
         id="felicity_impress",
-    )
-    scheduler.add_listener(
-        jobs_execution_listener, EVENT_JOB_EXECUTED | EVENT_JOB_ERROR
     )
     scheduler.start()

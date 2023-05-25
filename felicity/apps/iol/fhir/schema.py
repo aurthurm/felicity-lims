@@ -1,7 +1,6 @@
 from datetime import datetime
-from typing import ForwardRef, List, Optional
-
-from pydantic import BaseModel
+from typing import ForwardRef, List, Optional, Any
+from pydantic import BaseModel, validator
 
 
 class Coding(BaseModel):
@@ -358,8 +357,8 @@ class DiagnosticReportResource(BaseModel):
 
 class Resource(BaseModel):
     resourceType: str
-    # hort description
-    property1: str
+    # short description
+    property1: str | None
 
 class BundleEntryRequest(BaseModel):
     # I R!  GET | HEAD | POST | PUT | DELETE | PATCH
@@ -379,12 +378,37 @@ class BundleEntryResponse(BaseModel):
 
 class BundleEntry(BaseModel):
     # I A resource in the bundle
-    resource: Resource | None = None
+    resource: Any
     # I Additional execution information (transaction/batch/history)
     request: BundleEntryRequest | None
     # I Results of execution (transaction/batch/history)
     response: BundleEntryResponse | None
 
+    @validator("resource")
+    def validate_resource(cls, val):
+        allowed_types = (
+            ServiceRequestResource,
+            DiagnosticReportResource,
+            PatientResource,
+            ObservationResource,
+            Resource,
+        )
+        if any(isinstance(val, t) for t in allowed_types):
+            return val
+
+        if isinstance(val, dict):
+            mappings = {
+                "ServiceRequest": ServiceRequestResource,
+                "DiagnosticReport": DiagnosticReportResource,
+                "Patient": PatientResource,
+                "Observation": ObservationResource,
+                "Resource": Resource,
+            }
+            res = val.get("resourceType", None)
+            if res in mappings:
+                return mappings[res](**val)
+
+        raise TypeError(f"Wrong type for 'resource', must be one of {allowed_types}")
 
 class BundleResource(BaseModel):
     resourceType: str = "Bundle"
