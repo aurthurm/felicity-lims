@@ -27,11 +27,14 @@ class ShipmentQuery:
         after_cursor: str | None = None,
         before_cursor: str | None = None,
         text: str | None = None,
+        incoming: bool = False,
         status: str | None = None,
         sort_by: list[str] | None = None,
     ) -> ShipmentCursorPage:
 
-        filters = []
+        filters = [
+            {"incoming" : incoming }
+        ]
 
         _or_text_ = {}
         if has_value_or_is_truthy(text):

@@ -161,7 +161,7 @@ async def get_shipment_bundle_resource(shipment_uid: int) -> BundleResource | No
         "resourceType": "Bundle",
         "identifier": Identifier(**{
             "use": "official",
-            "system": "felicity/shipment/uid",
+            "system": "felicity/shipment/id",
             "value": shipment.shipment_id
         }),
         "type": "batch",

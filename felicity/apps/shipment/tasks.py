@@ -51,7 +51,7 @@ async def populate_shipment_manually(job_uid: str):
 
 
 async def dispatch_shipment(job_uid: str, by_uid=None):
-    logger.info(f"starting job {job_uid} ....")
+    logger.info(f"running shipment dispatch job: {job_uid} ....")
     job: job_models.Job = await job_models.Job.get(uid=job_uid)
     if not job:
         return

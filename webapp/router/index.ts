@@ -1,4 +1,5 @@
 import { RouteRecordRaw, createRouter, createWebHistory, createWebHashHistory } from 'vue-router';
+import { defineAsyncComponent } from 'vue'
 import * as guards from './../guards';
 import adminRoutes from './admin';
 import patientRoutes from './patient';
@@ -9,8 +10,6 @@ import worksheetRoutes from './worksheet';
 import shipmentRoutes from './referral';
 import { isTokenValid } from './checks';
 import { useAuthStore } from '../stores';
-import { StorageHome } from '../views/storage/Index';
-import { InventoryHome } from '../views/inventory/Index';
 
 const routes: RouteRecordRaw[] = [
     {
@@ -104,7 +103,7 @@ const routes: RouteRecordRaw[] = [
     {
         path: '/bio-banking',
         name: guards.pages.BIO_BANKING,
-        component: StorageHome, // () => import('../views/admin/storage/index.tsx'),
+        component: defineAsyncComponent(() => import('../views/storage/Index')),
         meta: {
             requiresAuth: true,
         },
@@ -112,7 +111,7 @@ const routes: RouteRecordRaw[] = [
     {
         path: '/inventory',
         name: guards.pages.INVENTORY,
-        component: InventoryHome,
+        component: defineAsyncComponent(() => import('../views/inventory/Index')),
         meta: {
             requiresAuth: true,
         },

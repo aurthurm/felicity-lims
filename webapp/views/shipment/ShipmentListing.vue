@@ -25,10 +25,12 @@ const route = useRoute();
 
 let showModal = ref<boolean>(false);
 
+const viewIncoming = ref(false);
 const filterOptions = ref([
   { name: "All", value: "" },
-  { name: "InBound", value: "inbound" },
-  { name: "OutBound", value: "outbound" },
+  { name: "Due", value: "due" },
+  { name: "Awaiting", value: "awaiting" },
+  { name: "Failed", value: "failed" },
 ]);
 
 const tableColumns = ref([
@@ -122,6 +124,7 @@ shipmentStore.removeShipment();
 let shipmentParams = reactive({
   first: 25,
   before: "",
+  incoming: viewIncoming.value,
   status: "",
   text: "",
   sort: ["-uid"],
@@ -166,6 +169,7 @@ function showMoreShipments(opts: any): void {
   shipmentParams.before = shipmentPageInfo?.value?.endCursor ?? "";
   shipmentParams.text = opts.filterText;
   shipmentParams.status = opts.filterStatus;
+  shipmentParams.incoming =  viewIncoming.value,
   shipmentParams.filterAction = false;
   shipmentStore.fetcShipments(shipmentParams);
 }
@@ -175,6 +179,7 @@ function searchShipments(opts: any): void {
   shipmentParams.before = "";
   shipmentParams.text = opts.filterText;
   shipmentParams.status = opts.filterStatus;
+  shipmentParams.incoming =  viewIncoming.value,
   shipmentParams.filterAction = true;
   shipmentStore.fetcShipments(shipmentParams);
 }
@@ -196,15 +201,32 @@ const countNone = computed(
       </button>
     </div>
   </div>
-  <DataTable :columns="tableColumns" :data="shipments" :toggleColumns="true" :loading="fetchingShipments"
-    :paginable="true" :pageMeta="{
-      fetchCount: shipmentParams.first,
-      hasNextPage: shipmentPageInfo?.hasNextPage,
-      countNone,
-    }" :searchable="true" :filterable="true" :filterMeta="{
-  defaultFilter: shipmentParams.status,
-  filters: filterOptions,
-}" @onSearch="searchShipments" @onPaginate="showMoreShipments" :selectable="false">
+  <DataTable 
+    :columns="tableColumns" 
+    :data="shipments" 
+    :toggleColumns="true" 
+    :loading="fetchingShipments"
+    :paginable="true" 
+    :pageMeta="{
+        fetchCount: shipmentParams.first,
+        hasNextPage: shipmentPageInfo?.hasNextPage,
+        countNone,
+    }" 
+    :searchable="true" 
+    :filterable="true" 
+    :filterMeta="{
+      defaultFilter: shipmentParams.status,
+      filters: filterOptions,
+    }" 
+    @onSearch="searchShipments" 
+    @onPaginate="showMoreShipments" 
+    :selectable="false"
+  >
+    <template v-slot:pre-filter>
+      <label class="flex">
+        <input type="checkbox" v-model="viewIncoming"> <span class="mx-2">InBound</span>
+      </label>
+    </template>
     <template v-slot:footer> </template>
   </DataTable>
 
@@ -236,11 +258,7 @@ const countNone = computed(
           <label class="block col-span-1 mb-2">
             <span class="text-gray-700">How Many</span>
             <input type="number" class="form-input mt-1 block w-full" v-model="count" min="1" default=1/>
-          </label>
-          <label class="block col-span-1 mb-2">
-            <span class="text-gray-700">Courier</span>
-            <input type="text" class="form-input mt-1 block w-full" v-model="courier"/>
-          </label>
+          </label>/
         </div>
         <div class="grid grid-cols-3 gap-x-4 mb-4">
           <label class="block col-span-3 mb-2">

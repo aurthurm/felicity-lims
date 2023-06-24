@@ -1,4 +1,4 @@
-import { InventoryHome } from '../views/admin/inventory/Index';
+import { defineAsyncComponent } from 'vue'
 
 const adminRoutes = [
     {
@@ -118,7 +118,7 @@ const adminRoutes = [
     {
         path: 'inventory-conf',
         name: 'inventory-conf',
-        component: InventoryHome, // () => import('../views/admin/inventory/Index'),
+        component: defineAsyncComponent(() => import('../views/admin/inventory/Index')),
         meta: {
             requiresAuth: true,
         },

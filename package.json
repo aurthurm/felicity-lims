@@ -17,6 +17,7 @@
         "dev": "vite",
         "vf": "vite --force",
         "build": "rm -rf felicity/static/* && vite build && cp -r dist/** felicity/static",
+        "build:only": "vite build",
         "prettier:check": "prettier --check \"{,webapp/**/}*.{md,json,yml,html,cjs,mjs,js,ts,tsx,css,scss}\"",
         "prettier:format": "prettier --write \"{,webapp/**/}*.{md,json,yml,html,cjs,mjs,js,ts,tsx,css,scss}\"",
         "lint": "eslint . --ext .js,.ts,.tsx,.vue",

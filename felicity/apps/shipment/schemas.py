@@ -64,6 +64,7 @@ class ShipmentBase(BaseModel):
     recalled_by_uid: str | None = None
     rejected_by_uid: str | None = None
     received_by_uid: str | None = None
+    # pdf manifest
     json_content: dict | None = {}
     pdf_content: bytes | None = None
 

@@ -16,8 +16,8 @@ export const GET_ALL_REFERRAL_LABORATORIES = gql`
 `;
 
 export const GET_ALL_SHIPMENTS = gql`
-    query getAllShipments($first: Int!, $after: String, $before: String, $status: String!, $text: String!, $sortBy: [String!] = ["-uid"]) {
-        shipmentAll(pageSize: $first, afterCursor: $after, beforeCursor: $before, status: $status, text: $text, sortBy: $sortBy) {
+    query getAllShipments($first: Int!, $after: String, $before: String, $incoming: Boolean!, $status: String!, $text: String!, $sortBy: [String!] = ["-uid"]) {
+        shipmentAll(pageSize: $first, afterCursor: $after, beforeCursor: $before, incoming: $incoming, status: $status, text: $text, sortBy: $sortBy) {
             totalCount
             pageInfo {
                 hasNextPage
@@ -29,6 +29,7 @@ export const GET_ALL_SHIPMENTS = gql`
                 uid
                 shipmentId
                 assignedCount
+                incoming
                 state
                 laboratoryUid
                 courier

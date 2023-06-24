@@ -160,7 +160,8 @@ const toCapitalize = (str) => {
         <div class="w-2/4">
           <div v-if="searchable" class="flex sm:flex-row flex-col">
             <div class="flex flex-row mb-1 sm:mb-0" v-if="filterable">
-              <div class="relative">
+              <div class="relative flex justify-between items-center">
+                <div><slot name="pre-filter"></slot></div>
                 <select
                   v-model="filterStatus"
                   class="appearance-none h-full rounded-l-sm border block w-full bg-white border-gray-400 text-gray-700 py-2 px-4 pr-8 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"

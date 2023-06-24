@@ -11,6 +11,7 @@ class ShipmentStates(object):
     rejected, recalled, received
     """
 
+    DUE = "due" # shipment recived from external labs
     EMPTY = "empty"  # shipment without samples
     PREPERATION = "preperation"  # shipment containing at least a single sample
     READY = "ready" # shipment finalised
