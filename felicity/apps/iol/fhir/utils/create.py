@@ -1,11 +1,12 @@
 import logging
 import json
+from fastapi import Request
 from apps.analysis.models.analysis import AnalysisRequest, Sample
 from apps.analysis.models.results import AnalysisResult
-from apps.iol.fhir.schema import DiagnosticReportResource, PatientResource, BundleResource,ServiceRequestResource
+from apps.iol.fhir.schema import DiagnosticReportResource, PatientResource, BundleResource,ServiceRequestResource, Reference
 from apps.patient.models import Patient
 from apps.shipment.schemas import ShipmentCreate
-from apps.shipment.models import Shipment
+from apps.shipment.models import Shipment, ReferralLaboratory
 from apps.shipment.conf import shipment_states
 
 
@@ -13,38 +14,64 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
-async def create_resource(resource_type: str, resource_data: BundleResource | PatientResource | ServiceRequestResource):
+async def create_resource(
+        resource_type: str, 
+        resource_data: BundleResource | PatientResource | ServiceRequestResource, 
+        request: Request
+):
     logger.info(f"create resource {resource_type} ..................")
     resource_mappings = {
         "Bundle": create_bundle,
     }
     if not resource_type in resource_mappings:
         return False
-    return await resource_mappings[resource_type](resource_data)
+    return await resource_mappings[resource_type](resource_data, request)
 
 
-async def create_bundle(resource_data: BundleResource):
+async def create_bundle(resource_data: BundleResource, request: Request):
     logger.info(f"Bundle data: ........")
     if resource_data.extension[0].valueString == "shipment":
-        await create_inbound_shipment(resource_data)
+        await create_inbound_shipment(resource_data, request)
         
     return True
 
 
-async def create_inbound_shipment(payload: BundleResource):
+async def create_inbound_shipment(payload: BundleResource, request: Request):
     """Create inbound shipment from bundle"""
     logger.info(f"Incoming Inbound shipment ....")
 
     data = payload.dict(exclude_none=True)
-    data["timestamp"] = payload.timestamp.strftime("%Y-%m-%d %H:%M:%S")
+    
+    laboratory = await resolve_ref_laboratory(payload.identifier.assigner, request)
 
     s_in = ShipmentCreate(
-        comment="",
-        courier="",
+        comment=payload.extension[2].valueString,
+        courier=payload.extension[1].valueString,
         assigned_count=payload.total,
-        laboratory_uid=None,
+        laboratory_uid=laboratory.uid,
         data=data,
         incoming=True,
         state=shipment_states.DUE,
     )
-    await Shipment.create(s_in)
+    shipment = await Shipment.create(s_in)
+    
+    try:
+        from apps.shipment.utils import gen_pdf_manifest
+        await gen_pdf_manifest(payload.extension[3].data.get("data", None), shipment)
+    except Exception:
+        pass
+
+
+async def resolve_ref_laboratory(ref: Reference, request: Request):
+    referral = await ReferralLaboratory.get(code=ref.identifier.value)
+    if referral:
+        return referral
+    return await ReferralLaboratory.create({
+        "name": ref.display,
+        "code": ref.identifier.value,
+        "url": request.headers.get('host', ""),
+        "is_reference": True,
+        "is_referral": False,
+        "username": "changeme",
+        "password": "changeme",
+    })

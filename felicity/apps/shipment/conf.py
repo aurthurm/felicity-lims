@@ -12,6 +12,7 @@ class ShipmentStates(object):
     """
 
     DUE = "due" # shipment recived from external labs
+    RECEIVING = "receiving"
     EMPTY = "empty"  # shipment without samples
     PREPERATION = "preperation"  # shipment containing at least a single sample
     READY = "ready" # shipment finalised

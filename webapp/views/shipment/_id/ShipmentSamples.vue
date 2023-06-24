@@ -121,7 +121,7 @@ const sampleManager = (action: string) => {
   <div class="">
     <hr class="mt-4" />
     <div v-show="viewShipmentModifier" class="flex justify-between items-center" v-motion-slide-left>
-      <form action="post" class="p-1" v-show="!applying">
+      <form action="post" class="p-1" v-show="!applying && !shipmentStore.shipment?.incoming">
         <div class="flex justify-start items-center mb-4">
           <label class="flex justify-between items-center">
             <span class="text-gray-700 mr-2 whitespace-nowrap">Reference Laboratory</span>

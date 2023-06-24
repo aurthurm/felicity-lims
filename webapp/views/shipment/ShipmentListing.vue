@@ -25,7 +25,7 @@ const route = useRoute();
 
 let showModal = ref<boolean>(false);
 
-const viewIncoming = ref(false);
+const viewIncoming = ref(false)
 const filterOptions = ref([
   { name: "All", value: "" },
   { name: "Due", value: "due" },
@@ -256,9 +256,13 @@ const countNone = computed(
             </select>
           </label>
           <label class="block col-span-1 mb-2">
+            <span class="text-gray-700">Courier</span>
+            <input type="text" class="form-input mt-1 block w-full" v-model="courier" />
+          </label>
+          <label class="block col-span-1 mb-2">
             <span class="text-gray-700">How Many</span>
             <input type="number" class="form-input mt-1 block w-full" v-model="count" min="1" default=1/>
-          </label>/
+          </label>
         </div>
         <div class="grid grid-cols-3 gap-x-4 mb-4">
           <label class="block col-span-3 mb-2">

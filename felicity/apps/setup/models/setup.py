@@ -10,6 +10,7 @@ class Laboratory(BaseAuditDBModel):
         String, default="felicity", nullable=False
     )  # Do not change this value ever
     lab_name = Column(String, nullable=False)
+    code = Column(String, nullable=True)
     lab_manager_uid = Column(String, ForeignKey("user.uid"), nullable=True)
     lab_manager = relationship(
         User, foreign_keys=[lab_manager_uid], backref="user_uid", lazy="selectin"

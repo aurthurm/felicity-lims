@@ -1,6 +1,12 @@
-from datetime import datetime
 from typing import ForwardRef, List, Optional, Any
 from pydantic import BaseModel, validator
+
+
+class BaseResource:
+    """All resources base: https://www.hl7.org/fhir/resource.html"""
+    id: str
+    meta: None
+    extension: None
 
 
 class Coding(BaseModel):
@@ -25,9 +31,9 @@ class CodeableConcept(BaseModel):
 
 class Period(BaseModel):
     # C? Starting time with inclusive boundary
-    start: datetime | None = None
+    start: str | None = None
     # C? End time with inclusive boundary, if not ongoing
-    end: datetime | None = None
+    end: str | None = None
 
 
 Reference = ForwardRef("Identifier")
@@ -117,7 +123,7 @@ class Annotation(BaseModel):
     authorReference: Reference | None = None
     authorString: str | None = None
     # When the annotation was made
-    time: datetime | None = None
+    time: str | None = None
     # R!  The annotation  - text content (as markdown)
     text: str | None = None
 
@@ -182,7 +188,8 @@ class SampledData(BaseModel):
 
 class Extension(BaseModel):
     url:  str | None
-    valueString: str
+    valueString: str | dict | None
+    data: dict | None
 
 class PatientResource(BaseModel):
     resourceType: str = "Patient"
@@ -197,11 +204,53 @@ class PatientResource(BaseModel):
     # male | female | other | unknown
     gender: str | None = None
     # The date of birth for the individual
-    birthDate: datetime | None = None
+    birthDate: str | None = None
     # An address for the individual
     address: List[Address] | None = None
     #  Organization that is the custodian of the patient record Reference(Organization)
     managingOrganization: Reference | None = None
+
+
+class SpecimenCollection(BaseModel):
+    #  Who collected the specimen Reference(Patient|Practitioner|PractitionerRole|RelatedPerson)
+    collector: Reference | None
+    collectedDateTime: str | None
+    #  The quantity of specimen collected Quantity(SimpleQuantity)
+    quantity: Quantity | None
+    # Technique used to perform collection
+    method: CodeableConcept | None
+
+
+class SpecimenResource(BaseModel):
+    resourceType:str = "Specimen"
+    # External Identifier
+    identifier: List[Identifier] | None = None
+    # Identifier assigned by the lab
+    accessionIdentifier: Identifier | None
+    # available | unavailable | unsatisfactory | entered-in-error
+    status: str | None 
+    # Kind of material that forms the specimen icon
+    type: CodeableConcept
+    # Reference(BiologicallyDerivedProduct|Device|Group|Location|Patient|Substance)
+    # Where the specimen came from. This may be from patient(s), from a location (e.g., the 
+    # source of an environmental sample), or a sampling of a substance, a biologically-derived product, or a device
+    subject: Reference | None = None
+    # The time when specimen is received by the testing laboratory
+    receivedTime: str | None
+    # Specimen from which this specimen originated Reference(Specimen)
+    parent: list[Reference] | None
+    # Why the specimen was collected Reference(ServiceRequest)
+    request: list[Reference] | None 
+    #  grouped | pooled
+    combined: str | None
+    # The role the specimen serves
+    role: list[CodeableConcept] | None
+    # Collection details
+    collection: SpecimenCollection
+    # State of the specimen icon
+    condition: list[CodeableConcept] | None
+    # comments
+    note: list[Annotation] | None
 
 
 class ServiceRequestResource(BaseModel):
@@ -223,7 +272,7 @@ class ServiceRequestResource(BaseModel):
     # What is being requested/ordered
     code: CodeableConcept | None = None
     # R!  Individual or Entity the service is ordered for Reference(Device|Group|Location|Patient)
-    subject: Reference | None = None
+    subject: Reference | PatientResource | None = None
     # Date request signed
     authoredOn: str | None = None
     # Who/what is requesting service Reference(Device|Organization|Patient|Practitioner|
@@ -237,7 +286,7 @@ class ServiceRequestResource(BaseModel):
     # Explanation/Justification for procedure or service
     reasonCode: List[CodeableConcept] | None = None
     # Procedure Samples Reference(Specimen)
-    specimen: List[Reference] | None = None
+    specimen: List[Reference | SpecimenResource] | None = None
     # Comments
     note: List[Annotation] | None = None
     # Patient or consumer-oriented instructions
@@ -256,8 +305,8 @@ class ObservationComponent(BaseModel):
     valueRange: Range | None = None
     valueRatio: Ratio | None = None
     valueSampledData: SampledData | None = None
-    valueTime: datetime | None = None
-    valueDateTime: datetime | None = None
+    valueTime: str | None = None
+    valueDateTime: str | None = None
     valuePeriod: Period | None = None
     # C? Why the component result is missing
     dataAbsentReason: CodeableConcept | None = None
@@ -285,7 +334,7 @@ class ObservationResource(BaseModel):
     # Reference(Any)
     focus: List[Reference] | None = None
     # Date/Time this version was made available
-    issued: datetime | None = None
+    issued: str | None = None
     # Who is responsible for the observation
     # Reference(CareTeam|Organization|Patient|Practitioner|PractitionerRole|RelatedPerson)
     performer: List[Reference] | None = None
@@ -298,8 +347,8 @@ class ObservationResource(BaseModel):
     valueRange: Range | None = None
     valueRatio: Ratio | None = None
     valueSampledData: SampledData | None = None
-    valueTime: datetime | None = None
-    valueDateTime: datetime | None = None
+    valueTime: str | None = None
+    valueDateTime: str | None = None
     valuePeriod: Period | None = None
     # C? Why the result is missing
     dataAbsentReason: CodeableConcept | None = None
@@ -339,7 +388,7 @@ class DiagnosticReportResource(BaseModel):
     # Reference(Device|Group|Location|Medication|Organization|Patient|Practitioner|Procedure|Substance)
     subject: Reference | None = None
     #  DateTime this version was made
-    issued: datetime | None = None
+    issued: str | None = None
     # Responsible Diagnostic Service
     # Reference(CareTeam|Organization|Practitioner|PractitionerRole)
     performer: List[Reference] | None = None
@@ -372,7 +421,7 @@ class BundleEntryResponse(BaseModel):
     # The location (if the operation returns a location)
     location: str | None 
     # Server's date time modified
-    lastModified: datetime | None 
+    lastModified: str | None 
     # // OperationOutcome with hints and warnings (for batch/transaction)
     outcome: Resource
 
@@ -417,7 +466,7 @@ class BundleResource(BaseModel):
     # I R!  document | message | transaction | transaction-response | batch | batch-response | history | searchset | collection | subscription-notification
     type: str
     # I When the bundle was assembled
-    timestamp: datetime
+    timestamp: str
     # I If search, the total number of matches
     total: int 
     # // Entry in the bundle - will have a resource or information

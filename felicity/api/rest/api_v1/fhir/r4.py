@@ -12,12 +12,12 @@ router = APIRouter()
 
 
 @router.post("/{resource_type}", status_code=201)
-async def add_resource(resource_type: str, resource: Request):
+async def add_resource(resource_type: str, request: Request):
     """
     Add a fhir resource
     Supported Resources are Bundle, ServiceRequest and Patient
     """
-    data = json.loads(await resource.json())
+    data = json.loads(await request.json())
     resources = {
         "Bundle": BundleResource,
         "ServiceRequest": ServiceRequestResource,
@@ -26,11 +26,11 @@ async def add_resource(resource_type: str, resource: Request):
     if resource_type not in resources:
         raise HTTPException(
             status_code=status.HTTP_417_EXPECTATION_FAILED,
-            detail=f"{resource} Resource not supported",
+            detail=f"{resource_type} Resource not supported",
         )
     
     mapped_data = resources[resource_type](**data)
-    return await create_resource(resource_type, mapped_data)
+    return await create_resource(resource_type, mapped_data, request)
 
 
 @router.get(

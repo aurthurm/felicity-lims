@@ -27,11 +27,11 @@ class ReferralLaboratory(Auditable):
     is_referral = Column(Boolean(), default=False)
 
     @classmethod
-    async def create(cls, obj_in: schemas.ShippedSampleCreate) -> schemas.ShippedSample:
+    async def create(cls, obj_in: schemas.ReferralLaboratoryCreate) -> schemas.ReferralLaboratory:
         data = cls._import(obj_in)
         return await super().create(**data)
 
-    async def update(self, obj_in: schemas.ShippedSampleUpdate) -> schemas.ShippedSample:
+    async def update(self, obj_in: schemas.ReferralLaboratoryUpdate) -> schemas.ReferralLaboratory:
         data = self._import(obj_in)
         return await super().update(**data)
 
@@ -115,7 +115,9 @@ class ShippedSample(DBModel):
     sample = relationship("Sample", foreign_keys=[sample_uid], lazy="selectin")
     shipment_uid = Column(String, ForeignKey("shipment.uid"), nullable=True)
     shipment = relationship(Shipment, foreign_keys=[shipment_uid], lazy="selectin")
-    # result_notified = Column(Boolean(), default=False)
+    result_notified = Column(Boolean(), default=False)
+    ext_sample_uid = Column(String, nullable=True)
+    ext_sample_id = Column(String, nullable=True)
 
     @classmethod
     async def create(cls, obj_in: schemas.ShippedSampleCreate) -> schemas.ShippedSample:

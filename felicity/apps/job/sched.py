@@ -12,7 +12,8 @@ from apps.worksheet.tasks import (
 )
 from apps.shipment.tasks import (
     populate_shipment_manually,
-    dispatch_shipment
+    dispatch_shipment,
+    shipment_receive
 )
 from apscheduler.events import EVENT_JOB_ERROR, EVENT_JOB_EXECUTED
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
@@ -49,7 +50,7 @@ async def run_jobs_if_exists():
 
     jobs: list[job_models.Job] = await job_models.Job.fetch_sorted()
 
-    # logging.info(f"There are {len(jobs)} Jobs pending running.")
+    logging.info(f"There are {len(jobs)} Jobs pending running.")
     
     if len(jobs) == 0:
         # felicity_pause_workforce()\
@@ -73,6 +74,7 @@ async def run_jobs_if_exists():
             job_conf.categories.SHIPMENT: {
                 job_conf.actions.SH_MANUAL_ASSIGN: populate_shipment_manually,
                 job_conf.actions.SH_DISPATCH: dispatch_shipment,
+                job_conf.actions.SH_RECEIVE: shipment_receive,
             },
         }
 

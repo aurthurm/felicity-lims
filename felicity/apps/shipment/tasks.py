@@ -3,7 +3,7 @@ import logging
 from apps.job import models as job_models
 from apps.job.conf import states as job_states
 from apps.shipment import conf, models
-from apps.shipment.utils import shipment_assign, shipment_reset_assigned_count
+from apps.shipment.utils import shipment_assign, shipment_reset_assigned_count, shipment_receive
 from apps.iol.relay import post_data
 from apps.iol.fhir.utils import get_shipment_bundle_resource
 
@@ -84,3 +84,30 @@ async def dispatch_shipment(job_uid: str, by_uid=None):
         await job.backoff(1, 10)
     
     return await models.Shipment.get(uid=shipment_uid)
+
+
+async def receive_shipment(job_uid: str):
+    logger.info(f"starting job recive shipment: {job_uid} ....")
+    job: job_models.Job = await job_models.Job.get(uid=job_uid)
+    if not job:
+        return
+
+    if not job.status == job_states.PENDING:
+        return
+
+    await job.change_status(new_status=job_states.RUNNING)
+    shipment_uid = job.job_id
+
+    shipment: models.Shipment = await models.Shipment.get(uid=shipment_uid)
+    if not shipment:
+        await job.change_status(
+            new_status=job_states.FAILED,
+            change_reason=f"Failed to acquire Shipment {shipment_uid}",
+        )
+        logger.warning(f"Failed to acquire Shipment {shipment_uid}")
+        return
+
+    await shipment_receive(shipment.uid, job.data, job.creator_uid)
+
+    await job.change_status(new_status=job_states.FINISHED)
+    logger.info(f"Done !! Job {job_uid} was executed successfully :)")

@@ -16,6 +16,10 @@ const state = reactive({
   dropdownOpen: false,
 });
 
+const canReceive = computed(() => {
+  if (["due"].includes(shipment?.value?.state?.toLowerCase()!)) return true;
+  return false;
+});
 const canFinalise = computed(() => {
   if (["preperation"].includes(shipment?.value?.state?.toLowerCase()!)) return true;
   return false;
@@ -33,7 +37,7 @@ const canRetryDispatch = computed(() => {
   return false;
 });
 const shipmentActor = (action: string) => {
-  if (!(shipment.value?.laboratory?.url && shipment.value?.laboratory?.password && shipment.value?.laboratory?.username && shipment.value?.courier)) {
+  if (!shipment.value?.incoming && !(shipment.value?.laboratory?.url && shipment.value?.laboratory?.password && shipment.value?.laboratory?.username && shipment.value?.courier)) {
     alert("The External Laboratory has missing information or the courier missing");
     return;
   }
@@ -68,6 +72,14 @@ const shipmentActor = (action: string) => {
             <div v-show="state.dropdownOpen" @click="state.dropdownOpen = false" class="fixed inset-0 h-full w-full z-10">
             </div>
             <div v-show="state.dropdownOpen" class="absolute mt-4 py-0 bg-gray-300 rounded-sm shadow-xl z-20">
+              <div v-show="canReceive" @click="shipmentActor('reject')"
+                class="no-underline text-gray-900 py-0 opacity-60 px-4 border-b border-transparent hover:opacity-100 md:hover:border-grey-dark hover:bg-sky-800 hover:text-white">
+                Reject
+              </div>
+              <div v-show="canReceive" @click="shipmentActor('receive')"
+                class="no-underline text-gray-900 py-0 opacity-60 px-4 border-b border-transparent hover:opacity-100 md:hover:border-grey-dark hover:bg-sky-800 hover:text-white">
+                Receive
+              </div>
               <div v-show="canFinalise" @click="shipmentActor('finalise')"
                 class="no-underline text-gray-900 py-0 opacity-60 px-4 border-b border-transparent hover:opacity-100 md:hover:border-grey-dark hover:bg-sky-800 hover:text-white">
                 Finalise
