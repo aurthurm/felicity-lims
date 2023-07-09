@@ -81,11 +81,24 @@ async def shipment_receive(job_uid: str):
     shipment: Shipment = await Shipment.get(uid=shipment_uid)
     felicity_user = await User.get(uid=job.creator_uid)
 
-    for _entry in shipment.data["entry"]:
+    entries = shipment.data["entry"]
+
+    # skip aready rceived sampled if any
+    shipped_samples = await ShippedSample.get(shipment_uid=shipment_uid)
+    already_received = []
+    if shipped_samples:
+        for ss in shipped_samples:
+            _ar = await AnalysisRequest.get(uid=ss.sample.analysis_request_uid)
+            already_received.append(_ar.client_request_id)
+
+    for _entry in entries:
         _diff_ = ''.join(random.SystemRandom().choice(string.ascii_letters + string.digits) for _ in range(4))
  
-
         entry = _entry["resource"]
+        #
+        sample_data = entry["specimen"][0]
+        if sample_data["subject"]['display'] in already_received:
+            continue
 
         # get_patient
         patient_data = entry["subject"]
@@ -113,7 +126,6 @@ async def shipment_receive(job_uid: str):
         patient = await Patient.create(pt_sch)
 
         # get sample data
-        sample_data = entry["specimen"][0]
         sample_type_data = sample_data["type"]["coding"][0]
 
         ar_in = {
@@ -208,6 +220,7 @@ async def shipment_receive(job_uid: str):
             "ext_sample_id": sample_data["accessionIdentifier"]['value']
         })
 
+    await shipment.change_state(conf.shipment_states.RECEIVED, felicity_user.uid)
     await job.change_status(new_status=states.FINISHED)
 
 
