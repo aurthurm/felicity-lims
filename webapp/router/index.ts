@@ -1,5 +1,4 @@
-import { RouteRecordRaw, createRouter, createWebHistory, createWebHashHistory } from 'vue-router';
-import { defineAsyncComponent } from 'vue'
+import { RouteRecordRaw, createRouter, createWebHistory } from 'vue-router';
 import * as guards from './../guards';
 import adminRoutes from './admin';
 import patientRoutes from './patient';
@@ -103,7 +102,7 @@ const routes: RouteRecordRaw[] = [
     {
         path: '/bio-banking',
         name: guards.pages.BIO_BANKING,
-        component: defineAsyncComponent(() => import('../views/storage/Index')),
+        component: () => import('../views/storage/index.vue'),
         meta: {
             requiresAuth: true,
         },
@@ -111,7 +110,7 @@ const routes: RouteRecordRaw[] = [
     {
         path: '/inventory',
         name: guards.pages.INVENTORY,
-        component: defineAsyncComponent(() => import('../views/inventory/Index')),
+        component: () => import('../views/inventory/index.vue'),
         meta: {
             requiresAuth: true,
         },

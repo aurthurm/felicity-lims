@@ -118,7 +118,7 @@ const adminRoutes = [
     {
         path: 'inventory-conf',
         name: 'inventory-conf',
-        component: defineAsyncComponent(() => import('../views/admin/inventory/Index')),
+        component: () => import('../views/admin/inventory/index.vue'),
         meta: {
             requiresAuth: true,
         },

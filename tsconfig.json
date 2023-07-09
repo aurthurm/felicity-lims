@@ -2,6 +2,7 @@
     "compilerOptions": {
         "strict": true,
         "jsx": "preserve", // "vue", 'preserve', 'react'
+        // "jsxImportSource": "vue",
         "outDir": "./dist",
         "target": "esnext", // es2017, esnext,es6
         "module": "esnext", // commonjs, es6
