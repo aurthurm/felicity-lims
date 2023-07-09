@@ -33,6 +33,8 @@ class Actions(object):
     SH_MANUAL_ASSIGN = "shipment_manual_assign"
     SH_DISPATCH = "shipment_dispatch"
     SH_RECEIVE = "shipment_receive"
+    SHIPPED_REPORT = "shipped_report"
+    DIAGNOSTIC_REPORT = "diagnostic_report"
 
 
 actions = Actions()

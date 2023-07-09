@@ -11,7 +11,6 @@ from apps.common.models import IdSequence
 from apps.job import models as job_models
 from apps.job import schemas as job_schemas
 from apps.job.conf import actions, categories, priorities, states
-from apps.job.sched import felicity_resume_workforce
 from apps.setup import models as setup_models
 from apps.user import models as user_models
 from apps.worksheet import conf, models, schemas
@@ -249,7 +248,6 @@ class WorkSheetMutations:
             j_schemas.append(job_schema.copy(update={"job_id": ws.uid}))
 
         await job_models.Job.bulk_create(j_schemas)
-        felicity_resume_workforce()
 
         # to get lazy loads working otherwise return WorksheetListingType(worksheets)
         to_send = [models.WorkSheet.get(uid=ws.uid) for ws in worksheets]
@@ -394,7 +392,6 @@ class WorkSheetMutations:
             status=states.PENDING,
         )
         await job_models.Job.create(job_schema)
-        felicity_resume_workforce()
         # await tasks.populate_worksheet_plate(job.uid)
 
         return WorkSheetType(**ws.marshal_simple())
@@ -440,6 +437,5 @@ class WorkSheetMutations:
             data={"qc_template_uid": qc_template_uid, "analyses_uids": analyses_uids},
         )
         await job_models.Job.create(job_schema)
-        felicity_resume_workforce()
 
         return WorkSheetType(**ws.marshal_simple())

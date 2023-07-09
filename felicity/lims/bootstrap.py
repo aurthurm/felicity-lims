@@ -5,7 +5,7 @@ from typing import List
 from api.gql.schema import gql_schema  # noqa
 from api.rest.api_v1.api import api_router  # noqa
 from apps.common.channel import broadcast
-from apps.job.sched import felicity_halt_workforce, felicity_workforce_init
+from apps.job.sched import felicity_workforce_init
 from apps.notification.utils import FelicityNotifier, FelicityStreamer
 from apps.events import observe_events
 from core.config import settings  # noqa
@@ -55,7 +55,7 @@ def register_app_events(app: FastAPI):
 
     @app.on_event("shutdown")
     async def shutdown():
-        felicity_halt_workforce()
+        pass
 
     return app
 

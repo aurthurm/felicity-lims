@@ -9,7 +9,6 @@ from apps.common.models import IdSequence
 from apps.job import models as job_models
 from apps.job import schemas as job_schemas
 from apps.job.conf import actions, categories, priorities, states
-from apps.job.sched import felicity_resume_workforce
 from apps.shipment import conf, models, schemas
 from apps.shipment.utils import shipment_recover, shipment_recall, action_shipment
 from api.gql.shipment import types
@@ -214,7 +213,6 @@ class ShipmentMutations:
             )
             await job_models.Job.create(job_schema)
             
-            felicity_resume_workforce()
         else:
             shipment = await action_shipment(uid, action, felicity_user)
 
@@ -259,7 +257,6 @@ class ShipmentMutations:
                 data=data,
             )
             await job_models.Job.create(job_schema)
-            felicity_resume_workforce()
         elif payload.action == "recover":
             await shipment_recover(shipment.uid, data, felicity_user.uid)            
         elif payload.action == "recall":

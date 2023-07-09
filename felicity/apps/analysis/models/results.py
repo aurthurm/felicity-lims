@@ -81,6 +81,12 @@ class AnalysisResult(Auditable, BaseMPTT):
             required = 1
         current = len(self.verified_by)
         return required, current
+    
+    # async def last_verificator(self):
+    #     _, verifications = await self.verifications()
+    #     if verifications == 0:
+    #         return None
+    #     return self.verified_by[:-1]
 
     async def retest_result(self, retested_by, next_action="verify"):
         retest = None

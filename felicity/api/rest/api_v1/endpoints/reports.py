@@ -9,7 +9,6 @@ from apps.analytics import schemas as an_schema
 from apps.job import conf as job_conf
 from apps.job import models as job_models
 from apps.job import schemas as job_schemas
-from apps.job.sched import felicity_resume_workforce
 from apps.user import models as user_models
 from fastapi import APIRouter, Depends
 from utils.dirs import deleteFile, resolve_media_dirs_for
@@ -66,7 +65,6 @@ async def request_report_generation(
         status=job_conf.states.PENDING,
     )
     await job_models.Job.create(job_schema)
-    felicity_resume_workforce()
     return report
 
 

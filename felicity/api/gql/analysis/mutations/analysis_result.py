@@ -13,7 +13,6 @@ from apps.job import models as job_models
 from apps.job import schemas as job_schemas
 from apps.job.conf import actions, categories, priorities
 from apps.job.conf import states as job_states
-from apps.job.sched import felicity_resume_workforce
 from apps.notification.utils import FelicityStreamer
 from apps.worksheet import conf as ws_conf
 from apps.worksheet import models as ws_models
@@ -97,8 +96,6 @@ async def submit_analysis_results(
     #     sa = await analysis_models.Sample.get(uid=source_object_uid)
     #     await sa.change_status("processing", felicity_user.uid)
 
-    felicity_resume_workforce()
-
     return OperationSuccess(
         message="Your results are being submitted in the background."
     )
@@ -141,8 +138,6 @@ async def verify_analysis_results(
     # elif source_object == "sample" and source_object_uid:
     #     sa = await analysis_models.Sample.get(uid=source_object_uid)
     #     await sa.change_status("APPROVING", felicity_user.uid)
-
-    felicity_resume_workforce()
 
     return OperationSuccess(
         message="Your results are being verified in the background."

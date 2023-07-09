@@ -23,7 +23,6 @@ from apps.job import models as job_models
 from apps.job import schemas as job_schemas
 from apps.job.conf import actions, categories, priorities
 from apps.job.conf import states as job_states
-from apps.job.sched import felicity_resume_workforce
 from apps.notification.utils import FelicityStreamer
 from apps.patient import models as pt_models
 from apps.reflex.utils import ReflexUtil
@@ -497,8 +496,6 @@ async def publish_samples(
     )
 
     await job_models.Job.create(job_schema)
-
-    felicity_resume_workforce()
 
     # !important for frontend
     # unfreeze frontend and return sample to original state since it is a non final publish

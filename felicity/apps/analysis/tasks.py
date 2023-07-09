@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 
 
 async def submit_results(job_uid: str):
-    logger.info(f"starting job {job_uid} ....")
+    logger.info(f"starting job result submit {job_uid} ....")
     job = await job_models.Job.get(uid=job_uid)
     if not job:
         return
@@ -39,7 +39,7 @@ async def submit_results(job_uid: str):
 
 
 async def verify_results(job_uid: str):
-    logger.info(f"starting job {job_uid} ....")
+    logger.info(f"starting job result verification {job_uid} ....")
     job = await job_models.Job.get(uid=job_uid)
     if not job:
         return

@@ -5,9 +5,14 @@ from typing import List
 from apps.analysis import schemas
 from apps.analysis.conf import states
 from apps.analysis.models.analysis import SampleType
-from apps.analysis.models.results import AnalysisResult, ResultMutation
+from apps.analysis.models.results import AnalysisResult, result_verification, ResultMutation
 from apps.notification.utils import FelicityStreamer
 from apps.reflex.utils import ReflexUtil
+from apps.shipment.models import ShippedSample
+from apps.job.models import Job
+from apps.job.schemas import JobCreate
+from apps.job import conf as job_conf
+from apps.user.models import User
 
 from sqlalchemy import or_
 from utils import has_value_or_is_truthy
@@ -27,6 +32,12 @@ async def get_qc_sample_type():
         st = await SampleType.create(st_in)
     return st
 
+
+async def get_last_verificator(result_uid: str):
+    data = await AnalysisResult.query_table(table=result_verification, result_uid=result_uid)
+    if not data:
+        return None
+    return await User.get(uid=data[-1])
 
 async def sample_search(
     model, status: str, text: str, client_uid: str
@@ -145,7 +156,6 @@ async def results_submitter(analysis_results: List[dict], submitter):
 
 async def verify_from_result_uids(uids: list[str], user):
     to_return = []
-
     for _ar_uid in uids:
         a_result: AnalysisResult = await AnalysisResult.get(uid=_ar_uid)
         if not a_result:
@@ -160,12 +170,52 @@ async def verify_from_result_uids(uids: list[str], user):
             continue
 
         # try to verify associated sample
+        sample_verified = False
         if a_result.sample:
-            await a_result.sample.verify(verified_by=user)
+            sample_verified, _ = await a_result.sample.verify(verified_by=user)
 
         # try to submit associated worksheet
         if a_result.worksheet_uid:
             await a_result.worksheet.verify(verified_by=user)
+
+        # If referral then send results and mark samle as published
+        shipped = await ShippedSample.get(sample_uid=a_result.sample_uid)
+
+        if  shipped:
+            # 1. create a Job to send the result
+            job_schema = JobCreate(
+                action=job_conf.actions.SHIPPED_REPORT,
+                category=job_conf.categories.SHIPMENT,
+                priority=job_conf.priorities.MEDIUM,
+                job_id=shipped.uid,
+                status=job_conf.states.PENDING,
+                creator_uid=user.uid,
+                data={
+                    "target": "result",
+                    "uid": a_result.uid
+                },
+            )
+            await Job.create(job_schema)
+
+            # 2. if sample is verifies, then all results are verified, send all samples
+            if sample_verified:
+                # 1. create a Job to send results
+                job_schema = JobCreate(
+                    action=job_conf.actions.SHIPPED_REPORT,
+                    category=job_conf.categories.SHIPMENT,
+                    priority=job_conf.priorities.MEDIUM,
+                    job_id=shipped.uid,
+                    status=job_conf.states.PENDING,
+                    creator_uid=user.uid,
+                    data={
+                        "target": "sample",
+                        "uid": a_result.sample_uid
+                    },
+                )
+                await Job.create(job_schema)
+
+                # 2. mark sample as published
+                await a_result.sample.change_status(states.sample.PUBLISHED)
 
     return to_return
 

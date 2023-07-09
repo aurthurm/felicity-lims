@@ -17,7 +17,7 @@ class States:
         REJECTED = "rejected"  # declined for non conformance reasons
         STORED = "stored"  # samples in storage
         REFERRED = "referred" # sample with all analyses refered
-        PAIRED = "paired" # samples with some (not all) analysis referre
+        PAIRED = "paired" # samples with some (not all) analysis referred
 
     class Result:
         PENDING = "pending"  # analytes that are pending results

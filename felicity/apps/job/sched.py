@@ -13,7 +13,8 @@ from apps.worksheet.tasks import (
 from apps.shipment.tasks import (
     populate_shipment_manually,
     dispatch_shipment,
-    shipment_receive
+    shipment_receive,
+    return_shipped_report
 )
 from apscheduler.events import EVENT_JOB_ERROR, EVENT_JOB_EXECUTED
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
@@ -27,22 +28,6 @@ log = logging.getLogger('apscheduler.executors.default')
 log.setLevel(logging.WARNING)
 
 scheduler = AsyncIOScheduler()
-
-
-def felicity_halt_workforce():
-    scheduler.shutdown()
-    logging.info(f"Felicity workforce has been shutdown")
-
-
-def felicity_pause_workforce():
-    scheduler.pause()
-    logging.info(f"Felicity workforce has been paused.")
-
-
-def felicity_resume_workforce():
-    scheduler.resume()
-    logging.info(f"Felicity workforce has been resumed.")
-
 
 async def run_jobs_if_exists():
     async def unknown_action(action):
@@ -75,6 +60,7 @@ async def run_jobs_if_exists():
                 job_conf.actions.SH_MANUAL_ASSIGN: populate_shipment_manually,
                 job_conf.actions.SH_DISPATCH: dispatch_shipment,
                 job_conf.actions.SH_RECEIVE: shipment_receive,
+                job_conf.actions.SHIPPED_REPORT: return_shipped_report
             },
         }
 

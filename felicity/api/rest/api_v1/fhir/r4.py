@@ -6,20 +6,34 @@ from apps.iol.fhir.schema import (
     ServiceRequestResource,
 )
 from apps.iol.fhir.utils import get_diagnostic_report_resource, get_patient_resource, create_resource
-from fastapi import APIRouter, HTTPException, status, Request
+from fastapi import APIRouter, HTTPException, status, Request, Depends
+from api.rest import deps
+from apps.user import models as user_models
 
 router = APIRouter()
 
 
 @router.post("/{resource_type}", status_code=201)
-async def add_resource(resource_type: str, request: Request):
+async def add_resource(
+    resource_type: str, 
+    request: Request, 
+    # current_user: user_models.User = Depends(deps.get_current_active_user),
+    ):
     """
     Add a fhir resource
     Supported Resources are Bundle, ServiceRequest and Patient
     """
+    if not "authenticated" in request.auth.scopes:
+        return HTTPException(status_code=400, detail="You are not authenticated")
+    
+    user_auth = await user_models.UserAuth.get_by_username(request.user.username)
+    current_user = await user_models.User.get(auth_uid=user_auth.uid)
+
     data = json.loads(await request.json())
+
     resources = {
         "Bundle": BundleResource,
+        "DiagnosticReport": DiagnosticReportResource,
         "ServiceRequest": ServiceRequestResource,
         "Patient": PatientResource,
     }
@@ -30,7 +44,7 @@ async def add_resource(resource_type: str, request: Request):
         )
     
     mapped_data = resources[resource_type](**data)
-    return await create_resource(resource_type, mapped_data, request)
+    return await create_resource(resource_type, mapped_data, request, current_user)
 
 
 @router.get(

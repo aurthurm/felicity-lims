@@ -224,6 +224,16 @@ class DBModel(AllFeaturesMixinAsync):
             await session.execute(stmt, mappings)
             await session.commit()
             await session.flush()
+    
+    @classmethod
+    async def query_table(cls, table, **kwargs):
+        stmt = select(table)
+        for k, v in kwargs.items():
+            stmt = stmt.where(table.c[k]==v)
+
+        async with cls.session() as session:
+            results = await session.execute(stmt)
+        return results.unique().scalars().all()
 
     @classmethod
     async def get_related(cls, related: Optional[list] = None, list=False, **kwargs):

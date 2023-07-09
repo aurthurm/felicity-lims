@@ -2,13 +2,26 @@ import httpx
 import json
 
 
+
+
+async def authenticate(username, password):
+    payload = await httpx.post("http://localhost:8000/api/v1/login/access-token", data={
+        "username": username,
+        "password": password
+    }, headers={"Content-Type": "application/json"})
+    print(payload.json())
+    return payload.json()
+
 async def post_data(url: str, data: dict, username: str, password: str, retries: int = 3) -> bool | None:
-    auth = (username, password)
     headers = {
         "Content-Type": "application/fhir+json; charset=utf-8",
     }
 
-    async with httpx.AsyncClient(base_url=url, auth=auth, headers=headers) as client:
+    # print("authenticate b4 .............")
+    # authenticate(username, password)
+    # print("authenticate after .............")
+
+    async with httpx.AsyncClient(base_url=url, auth=(username, password), headers=headers) as client:
         for attempt in range(1, retries + 1):
             try:
                 response = await client.post(".", json=data)

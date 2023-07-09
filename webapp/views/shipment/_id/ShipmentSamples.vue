@@ -12,7 +12,6 @@ const route = useRoute();
 let allChecked = ref<boolean>(false);
 let shipment = computed(() => shipmentStore.getShipment);
 
-
 const refresh = () => {
   shipmentStore.fetchShipmentByUid(route.params.shipmentUid as string);
 };

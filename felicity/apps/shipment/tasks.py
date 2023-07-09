@@ -5,7 +5,7 @@ from apps.job.conf import states as job_states
 from apps.shipment import conf, models
 from apps.shipment.utils import shipment_assign, shipment_reset_assigned_count, shipment_receive
 from apps.iol.relay import post_data
-from apps.iol.fhir.utils import get_shipment_bundle_resource
+from apps.iol.fhir.utils import get_shipment_bundle_resource, get_diagnostic_report_resource
 
 
 logging.basicConfig(level=logging.INFO)
@@ -111,3 +111,52 @@ async def receive_shipment(job_uid: str):
 
     await job.change_status(new_status=job_states.FINISHED)
     logger.info(f"Done !! Job {job_uid} was executed successfully :)")
+
+
+async def return_shipped_report(job_uid: str):
+    logger.info(f"starting job return shipped report: {job_uid} ....")
+    job: job_models.Job = await job_models.Job.get(uid=job_uid)
+    if not job:
+        return
+
+    if not job.status == job_states.PENDING:
+        return
+
+    await job.change_status(new_status=job_states.RUNNING)
+
+    shipped_sample_uid = job.job_id
+    shipped: models.ShippedSample = await models.ShippedSample.get(uid=shipped_sample_uid)
+ 
+    if not shipped:
+        await job.change_status(
+            new_status=job_states.FAILED,
+            change_reason=f"Failed to acquire shipped sample {shipped_sample_uid}",
+        )
+        logger.warning(f"Failed to acquire shipped sample {shipped_sample_uid}")
+        return
+    
+    shipment = await models.Shipment.get(uid=shipped.shipment_uid)
+    if not shipment:
+        await job.change_status(
+            new_status=job_states.FAILED,
+            change_reason=f"Failed to acquire Shipment {shipped.shipment_uid}",
+        )
+        logger.warning(f"Failed to acquire Shipment {shipped.shipment_uid}")
+        return
+
+    result_uids = []
+    if job.data["target"] == "result":
+        result_uids.append(job.data["uid"])
+
+    resource = await get_diagnostic_report_resource(shipped.sample.analysis_request_uid, result_uids, True)
+    success = await post_data(
+        f"{shipment.laboratory.url}DiagnosticReport", 
+        resource.json(exclude_none=True), 
+        shipment.laboratory.username, 
+        shipment.laboratory.password
+    )
+
+    if not success:
+        await job.change_status(new_status=job_states.FAILED)
+    else:
+        await job.change_status(new_status=job_states.FINISHED)

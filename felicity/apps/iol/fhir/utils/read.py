@@ -1,6 +1,7 @@
 import asyncio
 from datetime import datetime
 from apps.analysis.models.analysis import AnalysisRequest, Sample
+from apps.analysis.utils import get_last_verificator
 from apps.analysis.models.results import AnalysisResult
 from apps.iol.fhir.schema import (
     DiagnosticReportResource, 
@@ -27,29 +28,100 @@ def dt_to_st(v: datetime):
 
 
 async def get_diagnostic_report_resource(
-    service_request_id: int,
+    service_request_uid: str, obs_uids: list[str] = [], for_referral=False
 ) -> DiagnosticReportResource | None:
     ar, sample = await asyncio.gather(
-        AnalysisRequest.get(uid=service_request_id),
-        Sample.get(analysis_request_uid=service_request_id),
+        AnalysisRequest.get(uid=service_request_uid),
+        Sample.get(analysis_request_uid=service_request_uid),
     )
 
     if not ar or not sample:
         return None
 
     analyses: list[AnalysisResult] = await sample.get_analysis_results()
-    observations = [
-        ObservationResource(**{
+    if obs_uids:
+        analyses = list(filter(lambda res: res.uid in obs_uids, analyses))
+
+    observations = []
+    for anal in analyses:
+        last_verificator = await get_last_verificator(anal.uid)
+
+        observations.append({
             "type": "Observation",
-            "identifier": Identifier(**{
+            "identifier": {
                 "use": "official",
-                "type": {"text": anal.analysis.keyword},
+                "type": {"text": anal.analysis.keyword },
                 "value": anal.result,
-            }),
-            "display": anal.analysis.name,
+            },
+            "status": anal.status,
+            "issued": dt_to_st(anal.date_verified),
+            "performer": [
+                {
+                    "identifier": {
+                        "use": "official", 
+                        "type": {"text": "Full Name"},
+                        "value": anal.submitted_by.full_name
+                    },
+                    "display": "Analyst"
+                },
+                {
+                    "identifier": {
+                        "use": "official", 
+                        "type": {"text": "Full Name"},
+                        "value": last_verificator.full_name if last_verificator else None
+                    },
+                    "display": "Reviewer"
+                },
+            ]
         })
-        for anal in analyses
-    ]
+    
+
+    async def _resolve_based_on():
+        values = [
+            {
+                "type": "ServiceRequest",
+                "identifier": {
+                    "use": "official", 
+                    "type": {"text": "Client Request Id"},
+                    "value": ar.client_request_id 
+                },
+                "display": "Service Request ID",
+            }
+        ]
+    
+        if for_referral:
+            shipped: ShippedSample = await ShippedSample.get(sample_uid=sample.uid)
+            values.append({
+                "type": "ServiceRequest",
+                "identifier": {
+                    "use": "official", 
+                    "system": "felicity/shipment/uid",
+                    "type": {"text": "Shipment Id"},
+                    "value": shipped.shipment.shipment_id
+                },
+                "display": "Shipment Reference ID",
+            })
+            values.append({
+                "type": "ServiceRequest",
+                "identifier": {
+                    "use": "official", 
+                    "system": "felicity/sample/id",
+                    "type": {"text": "Sample Id"},
+                    "value": shipped.ext_sample_id
+                },
+                "display": "Shipment Reference ID",
+            })
+            values.append({
+                "type": "ServiceRequest",
+                "identifier": {
+                    "use": "official", 
+                    "system": "felicity/sample/uid",
+                    "type": {"text": "Sample UID"},
+                    "value": shipped.ext_sample_uid
+                },
+                "display": "Shipment Reference ID",
+            })
+        return values
 
     sr_vars = {
         "resourceType": "DiagnosticReport",
@@ -58,16 +130,15 @@ async def get_diagnostic_report_resource(
                 "use": "official",
                 "type": {"text": "Client Request Id"},
                 "value": ar.client_request_id,
+            },
+            {
+                "use": "official",
+                "type": {"text": "Analysis Request UID"},
+                "system": "felicity/analysisrequest/uid",
+                "value": ar.uid,
             }
         ],
-        "basedOn": [
-            ServiceRequestResource(**{
-                "type": "ServiceRequest",
-                "identifier": {"use": "official", "value": ar.uid},
-                "display": "Service Request Id",
-            })
-        ],
-        # R!  registered | partial | preliminary | final +
+        "basedOn": await _resolve_based_on(),
         "status": sample.status,
         "code": {
             "text": "",  # sample.profiles[0].name
@@ -80,16 +151,16 @@ async def get_diagnostic_report_resource(
         "issued": dt_to_st(ar.updated_at),
         "performer": [
             {
-                "type": "Scientist",
-                "display": sample.submitted_by.first_name
+                "type": "Analyst",
+                "display": sample.submitted_by.full_name
                 if sample.submitted_by
                 else None,
             }
         ],
         "resultsInterpreter": [
             {
-                "type": "Scientist",
-                "display": sample.verified_by.first_name
+                "type": "Reviewer",
+                "display": sample.verified_by.full_name
                 if sample.verified_by
                 else None,
             }
@@ -143,7 +214,7 @@ async def get_patient_resource(patient_id: int) -> PatientResource | None:
     return PatientResource(**pt_vars)
 
 
-async def get_speciment_resource(specimen_id: str) -> SpecimenResource:
+async def get_specimen_resource(specimen_id: str) -> SpecimenResource:
     sample: Sample = await Sample.get(uid=specimen_id)
     sp_values = {
         "resourceType": "Specimen",
@@ -191,7 +262,7 @@ async def get_shipment_bundle_resource(shipment_uid: int) -> BundleResource | No
         services_meta = [{"system": "felicity/analysis", "code": analyte.analysis.keyword, "display": analyte.analysis.name} for analyte in analytes]
 
         patient_resource = await get_patient_resource(sample.analysis_request.patient_uid)
-        specimen_resource = await get_speciment_resource(sample.uid)
+        specimen_resource = await get_specimen_resource(sample.uid)
 
         return {
             "resource": ServiceRequestResource(**{

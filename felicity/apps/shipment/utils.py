@@ -336,9 +336,6 @@ async def add_sh_receive_task(shipment_uid: str, actor_uid):
     )
     await job_models.Job.create(job_schema)
 
-    ##
-    from apps.job.sched import felicity_resume_workforce
-    felicity_resume_workforce()
     return await shipment.change_state(conf.shipment_states.RECEIVING, actor_uid) 
 
 
@@ -410,4 +407,3 @@ async def shipment_send(uid: str, by_uid=None):
         state=conf.shipment_states.FAILED if not success else conf.shipment_states.SHIPPED, 
         updated_by_uid=by_uid
     )
-    

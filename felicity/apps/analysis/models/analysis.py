@@ -750,8 +750,8 @@ class Sample(Auditable, BaseMPTT):
             self.updated_by_uid = verified_by.uid  # noqa
             saved = await self.save()
             await streamer.stream(saved, verified_by, "approved", "sample")
-            return saved
-        return self
+            return True, saved
+        return False, self
 
     async def publish(self, published_by):
         if self.status in [states.sample.APPROVED, states.sample.PUBLISHING]:
