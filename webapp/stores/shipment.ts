@@ -5,7 +5,7 @@ import { SHIPMENT_UPDATE } from '../graphql/shipment.mutations';
 import { GET_SAMPLES_FOR_SH_ASSIGN } from '../graphql/analyses.queries';
 import { parseData, keysToCamel, addListsUnique } from '../utils/helpers';
 import { ISample } from '../models/analysis';
-import { IShipment, IReferralLaboratory } from '../models/shipment';
+import { IShipment, IReferralLaboratory, IShippedSample } from '../models/shipment';
 import { IPageInfo } from '../models/pagination';
 
 import { useApiUtil } from '../composables';
@@ -35,7 +35,7 @@ export const useShipmentStore = defineStore('shipment', {
             shipmentCount: number;
             shipmentPageInfo?: IPageInfo;
             fetchingSamples?: boolean;
-            samples: ISample[];
+            samples: IShippedSample[];
             sampleCount: number;
             samplePageInfo?: IPageInfo;
         };
@@ -96,6 +96,9 @@ export const useShipmentStore = defineStore('shipment', {
         addShipment(payload) {
             payload.shipments?.forEach(shipment => this.shipments?.unshift(shipment));
         },
+        clearShipment() {
+            this.shipments = [];
+        },
         removeShipment() {
             this.shipment = undefined;
         },
@@ -151,14 +154,19 @@ export const useShipmentStore = defineStore('shipment', {
                         sample.status = result.status;
                     }
                 });
+                this.shipment?.shippedSamples?.forEach((shipped, index) => {
+                    if (shipped?.sampleUid == result.uid) {
+                        shipped.sample!.status = result.status;
+                    }
+                });
             });
         },
         updateSamples(payload: ISample[]) {
             payload?.forEach(result => {
-                const index = this.samples.findIndex(x => x.uid === result.uid);
+                const index = this.samples.findIndex(x => x.sampleUid === result.uid);
                 if (index > -1) {
-                    this.samples[index] = {
-                        ...this.samples[index],
+                    this.samples[index].sample = {
+                        ...this.samples[index].sample,
                         ...result,
                     };
                 }

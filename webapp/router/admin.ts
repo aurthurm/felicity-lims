@@ -1,4 +1,3 @@
-import { defineAsyncComponent } from 'vue'
 
 const adminRoutes = [
     {

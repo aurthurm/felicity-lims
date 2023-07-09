@@ -34,7 +34,8 @@ class ShipmentType:
     courier: str | None
     assigned_count: int | None
     data: JSONScalar | None
-    samples: SampleType | None
+    samples: list[SampleType] | None
+    shipped_samples: list["ShippedSampleType"] | None
     state: str | None
     incoming: bool| None = False
     laboratory_uid: str | None
@@ -70,7 +71,10 @@ class ShipmentType:
             s for s in 
             list(map(lambda sam: sam.sample, await ShippedSample.get_all(shipment_uid=self.uid)))
         ]
-
+    
+    @strawberry.field
+    async def shipped_samples(self, info) -> list["ShippedSampleType"] | None:
+        return await ShippedSample.get_all(shipment_uid=self.uid)
 
 
 #  relay paginations
@@ -86,3 +90,14 @@ class ShipmentCursorPage:
     edges: list[ShipmentEdge] | None
     items: list[ShipmentType] | None
     total_count: int
+
+
+@strawberry.type
+class ShippedSampleType:
+    sample_uid: str
+    sample: SampleType
+    shipment_uid: str
+    shipment: ShipmentType
+    result_notified: bool | None
+    ext_sample_uid: str | None
+    ext_sample_id: str | None

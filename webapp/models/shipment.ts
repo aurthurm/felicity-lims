@@ -23,6 +23,7 @@ export interface IShipment {
     data?: any
     jsonContent: any
     samples?: ISample[]
+    shippedSamples?: IShippedSample[]
     state?: string
     laboratoryUid?: string
     laboratory?: IReferralLaboratory
@@ -42,4 +43,15 @@ export interface IShipment {
     receivedByUid?: string
     receivedBy?: IUser
     dateReceived?: string
+}
+
+export interface IShippedSample {
+    sampleUid?: string
+    sample?: ISample
+    shipmentUid?: string
+    shipment?: IShipment
+    resultNotified?: boolean
+    extSampleUid?: string
+    extSampleId?: string
+    checked?: boolean
 }

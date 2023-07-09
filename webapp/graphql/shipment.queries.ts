@@ -60,19 +60,24 @@ export const GET_SHIPMENT_BY_UID = gql`
                 username
                 password
             }
-            samples {
-                uid
-                sampleId
-                status
-                analysisRequest {
-                    patient {
-                        uid
-                    }
-                }
-                analyses {
+            shippedSamples {
+                resultNotified
+                extSampleId
+                sample {
                     uid
-                    name
-                    keyword
+                    sampleId
+                    status
+                    analysisRequest {
+                        clientRequestId
+                        patient {
+                            uid
+                        }
+                    }
+                    analyses {
+                        uid
+                        name
+                        keyword
+                    }
                 }
             }
         }

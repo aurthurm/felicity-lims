@@ -44,20 +44,6 @@ const tableColumns = ref([
     hidden: true,
   }, 
   {
-    name: "",
-    value: "",
-    sortable: false,
-    showInToggler: false,
-    hidden: false,
-    customRender: function (shipment, _) {
-      return h(
-            "span",
-            { class: [{ "text-orange-600": shipment.incoming,  "text-green-600": !shipment.incoming }] },
-            h("i", { class: shipment.incoming ? "fa fa-arrow-right" : "fa fa-arrow-left" })
-          );
-    },
-  },
-  {
     name: "Shipment Id",
     value: "shipmentId",
     sortable: false,
@@ -116,7 +102,25 @@ const tableColumns = ref([
         innerHTML: worksheet?.state || "unknown",
       });
     },
-  }
+  },
+  {
+    name: "",
+    value: "",
+    sortable: false,
+    showInToggler: false,
+    hidden: false,
+    customRender: function (shipment, _) {
+      return  shipment.incoming ? h(
+            "span",
+            { class: "text-green-600" },
+            h("i", { class: "fa fa-reply-all" })
+          ) : h(
+            "span",
+            { class: "text-orange-600" },
+            h("i", { class: "fa fa-share-from-square" })
+          );
+    },
+  },
 ]);
 
 shipmentStore.removeShipment();
@@ -181,6 +185,7 @@ function searchShipments(opts: any): void {
   shipmentParams.status = opts.filterStatus;
   shipmentParams.incoming =  viewIncoming.value,
   shipmentParams.filterAction = true;
+  shipmentStore.clearShipment()
   shipmentStore.fetcShipments(shipmentParams);
 }
 

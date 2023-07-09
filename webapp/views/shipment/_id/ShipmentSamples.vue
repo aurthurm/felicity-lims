@@ -42,8 +42,8 @@ function areAllChecked(): boolean {
 
 function getSamplesChecked(): any {
   let samples: ISample[] = [];
-  shipment.value?.samples?.forEach((sample) => {
-    if (sample.checked) samples.push(sample);
+  shipment.value?.shippedSamples?.forEach((shipped) => {
+    if (shipped?.checked) samples.push(shipped.sample!);
   });
   return samples;
 }
@@ -190,6 +190,17 @@ const sampleManager = (action: string) => {
               >
                 Sample ID
               </th>
+              <th 
+                v-show="shipment?.incoming"
+                class="px-1 py-1 border-b-2 border-gray-300 text-left leading-4 text-gray-800 tracking-wider"
+              >
+                Exernal SID
+              </th>
+              <th
+                class="px-1 py-1 border-b-2 border-gray-300 text-left leading-4 text-gray-800 tracking-wider"
+              >
+                Client Request Id
+              </th>
               <th
                 class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider"
               >
@@ -210,24 +221,24 @@ const sampleManager = (action: string) => {
           </thead>
           <tbody class="bg-white">
             <tr
-              v-for="sample in shipment?.samples"
-              :key="sample.uid"
+              v-for="shipped in shipment?.shippedSamples"
+              :key="shipped.sampleUid"
               v-motion-slide-right
             >
               <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500" v-show="shipment?.state === 'preperation'">
                 <input
                   type="checkbox"
                   class=""
-                  v-model="sample.checked"
+                  v-model="shipped.checked"
                   @change="checkCheck()"
                 />
               </td>
               <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
                 <span
-                  v-if="sample?.priority ?? 0 > 0"
+                  v-if="shipped.sample?.priority ?? 0 > 0"
                   :class="[
                         'font-small',
-                        { 'text-orange-600': sample?.priority ?? 0 > 1 },
+                        { 'text-orange-600': shipped.sample?.priority ?? 0 > 1 },
                     ]"
                 >
                   <i class="fa fa-star"></i>
@@ -236,21 +247,28 @@ const sampleManager = (action: string) => {
               <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
                 <div class="text-sm leading-5 text-gray-800 font-semibold">
                   <router-link
-                    v-if="sample?.analysisRequest?.patient?.uid"
+                    v-if="shipped.sample?.analysisRequest?.patient?.uid"
                     :to="{
                       name: 'sample-detail',
                       params: {
-                        patientUid: sample?.analysisRequest?.patient?.uid,
-                        sampleUid: sample?.uid,
+                        patientUid: shipped.sample?.analysisRequest?.patient?.uid,
+                        sampleUid: shipped.sample?.uid,
                       },
                     }"
-                    >{{ sample?.sampleId }}
+                    >{{ shipped.sample?.sampleId }}
                   </router-link>
-                  <div v-else>{{ sample?.sampleId }}</div>
+                  <div v-else>{{ shipped.sample?.sampleId }}</div>
                 </div>
               </td>
+              <td v-show="shipment?.incoming"
+                class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
+                <div>{{ shipped.extSampleId }}</div>
+              </td>
               <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-                <div>{{ sample?.dateCollected }}</div>
+                <div>{{ shipped.sample?.analysisRequest?.clientRequestId }}</div>
+              </td>
+              <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
+                <div>{{ shipped.sample?.dateCollected }}</div>
               </td>
               <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
                 <div>tests</div>
@@ -260,7 +278,7 @@ const sampleManager = (action: string) => {
                   type="button"
                   class="bg-sky-800 text-white py-1 px-2 rounded-sm leading-none"
                 >
-                  {{ sample?.status || "unknown" }}
+                  {{ shipped.sample?.status || "unknown" }}
                 </button>
               </td>
             </tr>
