@@ -409,3 +409,35 @@ async def shipment_send(uid: str, by_uid=None):
     )
 
 
+async def shipment_result_update(diagnostic_report: dict):
+    # get basedOn-uid
+    based_on = diagnostic_report.get("basedOn", None)
+    if not based_on:
+        return
+    
+    # based = list(filter(lambda bo: bo["identifier"]["system"] == "felicity/sample/uid", based_on))
+    based = list(filter(lambda bo: bo["identifier"]["type"]["text"] == "Sample UID", based_on))
+    sample_uid = based[0]["identifier"]["value"]
+
+    sample: Sample = await Sample.get(uid=sample_uid)
+    if not sample: return
+
+    for result in diagnostic_report.get("result", []):
+        assert result.get("type", None) == "Observation"
+        identity = result.get("identifier", None)
+        keyword = identity["type"]["text"]
+        value = identity["value"]
+
+        results: list[AnalysisResult] = await sample.get_analysis_results()
+        allowed_states= [
+            analysis_conf.states.result.REFERRED,
+        ]
+        results = list(filter(lambda r: r.keyword == keyword and r.status in allowed_states, results))
+        
+        assert len(results) == 1
+        target = results[0]
+
+        update_in = {
+            "result": value
+        }
+        await target.update(update_in)

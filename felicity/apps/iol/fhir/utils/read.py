@@ -82,6 +82,7 @@ async def get_diagnostic_report_resource(
                 "type": "ServiceRequest",
                 "identifier": {
                     "use": "official", 
+                    "system": "felicity/analysisrequest/client-request-id",
                     "type": {"text": "Client Request Id"},
                     "value": ar.client_request_id 
                 },
@@ -95,7 +96,7 @@ async def get_diagnostic_report_resource(
                 "type": "ServiceRequest",
                 "identifier": {
                     "use": "official", 
-                    "system": "felicity/shipment/uid",
+                    "system": "felicity/shipment/id",
                     "type": {"text": "Shipment Id"},
                     "value": shipped.shipment.shipment_id
                 },

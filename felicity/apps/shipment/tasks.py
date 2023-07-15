@@ -3,7 +3,7 @@ import logging
 from apps.job import models as job_models
 from apps.job.conf import states as job_states
 from apps.shipment import conf, models
-from apps.shipment.utils import shipment_assign, shipment_reset_assigned_count, shipment_receive
+from apps.shipment.utils import shipment_assign, shipment_reset_assigned_count, shipment_receive, shipment_result_update
 from apps.iol.relay import post_data
 from apps.iol.fhir.utils import get_shipment_bundle_resource, get_diagnostic_report_resource
 
@@ -162,5 +162,20 @@ async def return_shipped_report(job_uid: str):
         await job.change_status(new_status=job_states.FINISHED)
 
 
-async def process_shipped_report():
-    ...
+async def process_shipped_report(job_uid: str):
+    logger.info(f"starting job return shipped report: {job_uid} ....")
+    job: job_models.Job = await job_models.Job.get(uid=job_uid)
+    if not job:
+        return
+
+    if not job.status == job_states.PENDING:
+        return
+
+    await job.change_status(new_status=job_states.RUNNING)
+    data = job.data.get("data", None)
+
+    assert data["resourceType"] == "DiagnosticReport"
+    
+    await shipment_result_update(data)
+
+    await job.change_status(new_status=job_states.FINISHED)

@@ -74,6 +74,10 @@ class AnalysisResult(Auditable, BaseMPTT):
     worksheet_position = Column(Integer, nullable=True)
     assigned = Column(Boolean(), default=False)
 
+    @property
+    def keyword(self):
+        return self.analysis.keyword
+
     async def verifications(self):
         if self.analysis.required_verifications:
             required = self.analysis.required_verifications
