@@ -1,7 +1,8 @@
-fastapi==0.95.1
+fastapi==0.100.0
+strawberry-graphql==0.195.1
+SQLAlchemy==2.0.19
 uvicorn[standard]==0.21.1
 gunicorn==20.1.0
-SQLAlchemy==2.0.11
 python-jose[cryptography]==3.3.0
 passlib[bcrypt]==1.7.4
 emails==0.6
@@ -12,9 +13,8 @@ sqlalchemy_mixins @ git+https://github.com/aurthurm/sqlalchemy-mixins.git@async_
 tenacity==8.2.2
 pydantic[email]==1.10.7
 python-multipart==0.0.6
-alembic==1.10.4
+alembic==1.11.1
 asyncpg==0.27.0
-strawberry-graphql==0.174.0
 broadcaster~=0.2.0
 aiofiles==23.1.0
 pandas==2.0.1
