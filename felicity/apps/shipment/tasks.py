@@ -160,3 +160,7 @@ async def return_shipped_report(job_uid: str):
         await job.change_status(new_status=job_states.FAILED)
     else:
         await job.change_status(new_status=job_states.FINISHED)
+
+
+async def process_shipped_report():
+    ...

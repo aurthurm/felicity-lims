@@ -40,7 +40,7 @@ function isSelected(treeNode) {
         },
       ]"
     >
-      <TreeItem v-for="children in tree?.children" :tree="children" />
+      <TreeItem v-for="(children, idx) in tree?.children" :tree="children" :key="idx" />
     </ul>
   </li>
 </template>

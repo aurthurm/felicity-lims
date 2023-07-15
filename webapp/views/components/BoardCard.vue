@@ -1,3 +1,12 @@
+<script setup lang="ts">
+  const props = defineProps({
+    board: {
+      type: Object,
+      default: () => ({})
+    }
+  })
+</script>
+
 <template>
   <div class="bg-white shadow rounded-sm px-3 pt-3 pb-5 border border-white">
     <div class="">
@@ -8,11 +17,6 @@
   </div>
 </template>
 
-<script setup lang="ts">
-  const props = defineProps({
-    board: {
-      type: Object,
-      default: () => ({})
-    }
-  })
-</script>
+
+
+

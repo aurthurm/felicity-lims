@@ -1,10 +1,14 @@
 <script setup lang="ts">
-  import modal from '../../../components/SimpleModal.vue';
-  import MethodForm from './MethodForm.vue';
-  import { ref, reactive, computed } from 'vue';
+  import { ref, reactive, computed, defineAsyncComponent } from 'vue';
   import { IMethod } from '../../../models/setup'
   import { useAnalysisStore, useSetupStore } from '../../../stores';
   import { useApiUtil } from '../../../composables';
+  const modal = defineAsyncComponent(
+    () => import('../../../components/SimpleModal.vue')
+  )
+  const MethodForm = defineAsyncComponent(
+    () => import('./MethodForm.vue')
+  )
 
   const analysisStore = useAnalysisStore()
   const setupStore = useSetupStore()

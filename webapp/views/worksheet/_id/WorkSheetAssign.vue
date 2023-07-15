@@ -1,7 +1,6 @@
 <script setup lang="ts">
-import FButton from "../../../components/Buttons/Button.vue";
 import Swal from "sweetalert2";
-import { ref, computed, reactive } from "vue";
+import { ref, computed, reactive, defineAsyncComponent } from "vue";
 import { useWorksheetStore, useAnalysisStore, useSampleStore } from "../../../stores";
 import { useApiUtil } from "../../../composables";
 import {
@@ -10,8 +9,14 @@ import {
 } from "../../../graphql/worksheet.mutations";
 
 import * as shield from "../../../guards";
-import LoadingMessage from "../../../components/Spinners/LoadingMessage.vue";
 import { IAnalysisResult } from "../../../models/analysis";
+
+const LoadingMessage = defineAsyncComponent(
+  () => import("../../../components/Spinners/LoadingMessage.vue")
+)
+const FButton = defineAsyncComponent(
+  () => import("../../../components/Buttons/Button.vue")
+)
 
 const worksheetStore = useWorksheetStore();
 const analysisStore = useAnalysisStore();
@@ -128,9 +133,9 @@ function getResultsChecked(): any {
   return results;
 }
 
-function getResultsUids(): number[] {
+function getResultsUids(): string[] {
   const results = getResultsChecked();
-  let ready: number[] = [];
+  let ready: string[] = [];
   results?.forEach((result: IAnalysisResult) => ready.push(result.uid!));
   return ready;
 }

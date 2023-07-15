@@ -1,13 +1,15 @@
 <script setup lang="ts">
 import VueMultiselect from "vue-multiselect";
-import LoadingMessage from "../../components/Spinners/LoadingMessage.vue";
 import { useField, useForm } from "vee-validate";
 import { object, string, number, date } from "yup";
 import { IStockItem, IStockProduct } from '../../models/inventory';
 import { ADD_STOCK_PRODUCT, EDIT_STOCK_PRODUCT } from '../../graphql/inventory.mutations';
 import { useApiUtil } from "../../composables";
 import { useInventoryStore, useStorageStore, useSetupStore, useUserStore } from "../../stores";
-import { PropType, ref } from "vue";
+import { defineAsyncComponent, PropType, ref } from "vue";
+const LoadingMessage = defineAsyncComponent(
+  () => import("../../components/Spinners/LoadingMessage.vue")
+)
 
 const props = defineProps({
   product: Object as PropType<IStockProduct>,

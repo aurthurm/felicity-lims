@@ -1,6 +1,8 @@
 <script setup lang="ts">
-import { ref } from "vue";
-import ItemSetting from "../components/AdminBreadCrumb.vue";
+import { defineAsyncComponent, ref } from "vue";
+const ItemSetting = defineAsyncComponent(
+  () => import("../components/AdminBreadCrumb.vue") 
+);
 
 const configs = ref([
   { title: "Country, Provinces, Districts", path: "/admin/location-conf", icon: "flag" },

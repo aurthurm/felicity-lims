@@ -36,7 +36,6 @@ export default function useApiUtil() {
             const res = payload[key];
             if (res?.__typename && res?.__typename === 'OperationError') {
                 errors.value.unshift(res);
-                console.log('swalError');
                 swalError(res.error + '\n' + res.suggestion);
                 return;
             } else {

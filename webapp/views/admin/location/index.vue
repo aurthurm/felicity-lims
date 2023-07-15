@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import { ref, reactive, computed } from 'vue';
-import modal from '../../../components/SimpleModal.vue';
+import { ref, reactive, computed, defineAsyncComponent } from 'vue';
 import {
   ICountry,
   IProvince,
@@ -14,13 +13,16 @@ import {
 
 import { useLocationStore } from '../../../stores';
 import { useApiUtil } from '../../../composables';
+const modal = defineAsyncComponent(
+  () => import('../../../components/SimpleModal.vue')
+)
 
 const locationStore = useLocationStore()
 const { withClientMutation } = useApiUtil()
 
 interface IForm extends ICountry, IProvince, IDistrict {
-  countryUid: number,
-  provinceUid: number
+  countryUid: string,
+  provinceUid: string
 };
 
 let createLocation = ref<boolean>(true);

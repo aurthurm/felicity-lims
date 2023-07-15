@@ -1,11 +1,14 @@
 <script setup lang="ts">
-import LoadingMessage from "../../components/Spinners/LoadingMessage.vue";
 import { storeToRefs } from "pinia";
-import { onMounted, watch, reactive, ref } from "vue";
+import { onMounted, watch, reactive, ref, defineAsyncComponent } from "vue";
 import { Chart } from "@antv/g2";
-import modal from "../../components/SimpleModal.vue";
 import dayjs from "dayjs";
-
+const modal = defineAsyncComponent(
+  () => import("../../components/SimpleModal.vue")
+)
+const LoadingMessage = defineAsyncComponent(
+  () => import("../../components/Spinners/LoadingMessage.vue")
+)
 import { useDashBoardStore } from "../../stores";
 
 const dashBoardStore = useDashBoardStore();

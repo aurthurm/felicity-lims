@@ -1,10 +1,12 @@
 <script setup lang="ts">
-  import modal from '../../../components/SimpleModal.vue';
-  import { ref, reactive, computed } from 'vue';
+  import { ref, reactive, computed, defineAsyncComponent } from 'vue';
   import { useSetupStore } from '../../../stores';
   import { useApiUtil } from '../../../composables';
   import { ISupplier } from '../../../models/setup'
   import { ADD_SUPPLIER, EDIT_SUPPLIER } from '../../../graphql/instrument.mutations';
+  const modal = defineAsyncComponent(
+    () => import('../../../components/SimpleModal.vue')
+  )
 
   const setupStore = useSetupStore();
   const { withClientMutation } = useApiUtil();

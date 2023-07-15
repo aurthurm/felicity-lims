@@ -1,9 +1,16 @@
 <script setup lang="ts">
-import tabResults from "./Results.vue";
-import tabImpress from "./Impress.vue";
-import tabLogs from "../../components/AuditLog.vue";
-import { ref, computed, reactive } from "vue";
+import { ref, computed, reactive, defineAsyncComponent } from "vue";
 import { useSampleStore } from "../../../stores";
+
+const tabResults = defineAsyncComponent(
+  () => import("./Results.vue")
+)
+const tabImpress = defineAsyncComponent(
+  () => import("./Impress.vue")
+)
+const tabLogs = defineAsyncComponent(
+  () => import("../../components/AuditLog.vue")
+)
 
 const sampleStore = useSampleStore();
 

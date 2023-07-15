@@ -1,13 +1,17 @@
 <script setup lang="ts">
-import { ref, reactive, computed, h } from "vue";
-import DataTable from "../../components/datatable/DataTable.vue";
+import { ref, reactive, computed, h, defineAsyncComponent } from "vue";
 import { storeToRefs } from "pinia";
 import { RouterLink } from "vue-router";
 import { usePatientStore, useLocationStore } from "../../stores";
 import { IPatient } from "../../models/patient";
-
 import * as shield from "../../guards";
-import PageHeading from "../components/PageHeading.vue";
+
+const DataTable = defineAsyncComponent(
+  () => import("../../components/datatable/DataTable.vue")
+)
+const PageHeading = defineAsyncComponent(
+  () => import("../components/PageHeading.vue")
+)
 
 let patientStore = usePatientStore();
 let locationsStore = useLocationStore();

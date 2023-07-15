@@ -1,13 +1,18 @@
 <script setup lang="ts">
-  import modal from '../../../components/SimpleModal.vue';
-  import accordion from '../../../components/Accordion.vue';
-  import { ref,reactive, computed } from 'vue';
+  import { ref,reactive, computed, defineAsyncComponent } from 'vue';
   import { useUserStore } from '../../../stores';
   import { useApiUtil } from '../../../composables';
   import { UPDATE_GROUP_PERMS, ADD_GROUP, UPDATE_GROUP } from '../../../graphql/_mutations';
   import { IGroup, IPermission } from '../../../models/auth';
-
   import * as shield from '../../../guards'
+
+const modal = defineAsyncComponent(
+  () =>import('../../../components/SimpleModal.vue')
+)
+const accordion = defineAsyncComponent(
+  () =>import('../../../components/Accordion.vue')
+)
+
   const pages = [
     shield.pages.ADMINISTRATION,
     shield.pages.DASHBOARD,
@@ -18,8 +23,6 @@
     shield.pages.QC_SAMPLES,
     shield.pages.WORKSHEETS,
     shield.pages.NOTICE_MANAGER,
-    shield.pages.MARKDOWN_DOCUMENTS,
-    shield.pages.KANBAN_BOARD,
   ]
 
   let userStore = useUserStore()
@@ -150,7 +153,7 @@
                   <hr>
                   <div div class="flex justify-start mt-2">
                     <h3 class="mr-2 text-gray-600 font-semibold">Pages: </h3>
-                    <span v-for="item in userGroup?.pages" class="mr-2">{{ item?.toLowerCase() }} </span>
+                    <span v-for="item in userGroup?.pages" :key="item" class="mr-2">{{ item?.toLowerCase() }} </span>
                   </div>
                 </section>
                 <div>
@@ -271,7 +274,7 @@
               v-model="userGroup.pages"
               class="form-input mt-1 block w-full" multiple :size="pages.length">
                 <option  
-                v-for="(page, index) in pages"
+                v-for="page in pages"
                 :key="page"
                 :value="page" >{{ page }}</option>
             </select>

@@ -1,19 +1,38 @@
 <script setup lang="ts">
-  import VueMultiselect from 'vue-multiselect';
-  import modal from '../../../../components/SimpleModal.vue';
-  import accordion from '../../../../components/Accordion.vue';
-  import ResultOptions from './ResultOptions.vue';
-  import InterimFields from './InterimFields.vue'
-  import CorrectionFactor from './CorrectionFactor.vue'
-  import AnalysisUncertainty from './Uncertainty.vue'
-  import DetectionLimits from './DetectionLimit.vue'
-  import AnalysisSpecifications from './Specifications.vue'
-
-  import { ref, reactive, computed } from 'vue';
+  import { ref, reactive, computed, defineAsyncComponent } from 'vue';
   import { IAnalysisService } from '../../../../models/analysis';
   import { ADD_ANALYSIS_SERVICE, EDIT_ANALYSIS_SERVICE  } from '../../../../graphql/analyses.mutations';
   import { useSetupStore, useAnalysisStore, useSampleStore } from '../../../../stores';
   import { useApiUtil } from '../../../../composables';
+  const VueMultiselect = defineAsyncComponent(
+    () => import('vue-multiselect')
+  )
+  const modal = defineAsyncComponent(
+    () => import('../../../../components/SimpleModal.vue')
+  )
+  const accordion = defineAsyncComponent(
+    () => import('../../../../components/Accordion.vue')
+  )
+  const ResultOptions = defineAsyncComponent(
+    () => import('./ResultOptions.vue')
+  )
+  const InterimFields = defineAsyncComponent(
+    () => import('./InterimFields.vue')
+  )
+  const CorrectionFactor = defineAsyncComponent(
+    () => import('./CorrectionFactor.vue')
+  )
+  const AnalysisUncertainty = defineAsyncComponent(
+    () => import('./Uncertainty.vue')
+  )
+  const DetectionLimits = defineAsyncComponent(
+    () => import('./DetectionLimit.vue')
+  )
+  const AnalysisSpecifications = defineAsyncComponent(
+    () => import('./Specifications.vue')
+  )
+
+
 
   const analysisStore = useAnalysisStore()
   const sampleStore = useSampleStore()

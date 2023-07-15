@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import modal from "../../../components/SimpleModal.vue";
-import { ref, computed, reactive } from "vue";
+import { ref, computed, reactive, defineAsyncComponent } from "vue";
 import {
   ADD_USER,
   EDIT_USER,
@@ -10,9 +9,12 @@ import {
 import { IUser, IUserAuth } from "../../../models/auth";
 import { useUserStore, useSetupStore } from "../../../stores";
 import { useApiUtil } from "../../../composables";
+const modal = defineAsyncComponent(
+  () => import( "../../../components/SimpleModal.vue")
+)
 
 interface IUserAuthForm extends IUser, IUserAuth {
-  groupUid: number;
+  groupUid: string;
 }
 
 let setupStore = useSetupStore();

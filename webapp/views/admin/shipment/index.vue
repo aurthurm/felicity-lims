@@ -1,8 +1,8 @@
 <script setup lang="ts">
-  import { ref, computed } from 'vue';
-
-  import tabReferralLaboratory from './ReferralLaboratory.vue'
-
+  import { ref, computed, defineAsyncComponent } from 'vue';
+  const tabReferralLaboratory = defineAsyncComponent(
+    () => import('./ReferralLaboratory.vue')
+  )
 
   let currentTab = ref<string>('referral-laboratories');
   const tabs: string[] = ['referral-laboratories']; 

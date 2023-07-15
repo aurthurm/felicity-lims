@@ -1,10 +1,12 @@
 <script setup lang="ts">
-import FButton from "../../../components/Buttons/Button.vue";
 import { useRoute } from "vue-router";
-import { ref, computed, reactive } from "vue";
+import { ref, computed, reactive, defineAsyncComponent } from "vue";
 import { ISample } from "../../../models/analysis";
 import { useShipmentComposable } from "../../../composables";
 import { useShipmentStore } from "../../../stores";
+const FButton = defineAsyncComponent(
+  () => import("../../../components/Buttons/Button.vue")
+)
 
 const shipmentStore = useShipmentStore();
 const route = useRoute();

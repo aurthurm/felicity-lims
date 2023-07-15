@@ -1,9 +1,8 @@
 <script setup lang="ts">
-  import { ref, computed } from 'vue';
-
-  import tabSampleTypes from './SampleTypes.vue'
-  import tabContainerTypes from './ContainerTypes.vue'
-
+  import { ref, computed, defineAsyncComponent } from 'vue';
+  const tabSampleTypes = defineAsyncComponent(
+    () => import('./SampleTypes.vue')
+  )
 
   let currentTab = ref<string>('sample-types');
   const tabs: string[] = ['sample-types']; //  'container-types'

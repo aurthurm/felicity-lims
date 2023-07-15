@@ -1,12 +1,14 @@
 <script setup lang="ts">
-import { computed, watch, onMounted } from "vue";
+import { computed, watch, onMounted, defineAsyncComponent } from "vue";
 import { useSampleComposable } from "../../composables";
 import { useStorageStore } from "../../stores";
-import TreeItem from "../components/TreeItem.vue";
 import useTreeStateComposable from "../../composables/tree-state";
 import { useField, useForm } from "vee-validate";
 import { object, array } from "yup";
 import { storgeSlotMapper } from "../../utils/helpers";
+const TreeItem = defineAsyncComponent(
+  () => import("../components/TreeItem.vue")
+)
 
 interface ISampleData {
   sampleUid?: number;
@@ -72,7 +74,6 @@ const prepareSlots = () => {
         s.storageContainerUid === slot.storageContainerUid
     );
     if (filtrate.length > 0) {
-      console.log(filtrate, slot);
       slot = { ...slot, sampleUid: filtrate[0].uid };
       assignedUids.push(slot.sampleUid.toString());
     }
@@ -92,7 +93,7 @@ const { handleSubmit, errors } = useForm({
   validationSchema: formSchema,
   initialValues: {
     priority: 0,
-    samples: (storageContainer.value?.samples as ISampleData[]) ?? [],
+    samples: storageContainer.value?.samples ?? [],
   } as any,
 });
 

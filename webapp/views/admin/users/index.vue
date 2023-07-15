@@ -1,8 +1,11 @@
 <script setup lang="ts">
-  import { ref, computed } from 'vue';
-
-  import tabUsers from './Users.vue'
-  import tabGroups from './Groups.vue'
+  import { ref, computed, defineAsyncComponent } from 'vue';
+  const tabUsers = defineAsyncComponent(
+    () => import('./Users.vue')
+  )
+  const tabGroups = defineAsyncComponent(
+    () => import('./Groups.vue')
+  )
 
   let currentTab = ref<string>('users');
   const tabs: string[] = ['users', 'groups'];

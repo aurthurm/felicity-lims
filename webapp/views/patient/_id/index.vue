@@ -1,13 +1,18 @@
 <script setup lang="ts">
-import modal from "../../../components/SimpleModal.vue";
-import PatientForm from "../PatientForm.vue";
-import PatientInfo from "../PatientInfo.vue";
-
-import { ref } from "vue";
+import { defineAsyncComponent, ref } from "vue";
 import { useRoute } from "vue-router";
-
 import { usePatientStore } from "../../../stores";
 import { IPatient } from "../../../models/patient";
+
+const modal = defineAsyncComponent(
+  () => import("../../../components/SimpleModal.vue")
+)
+const PatientForm = defineAsyncComponent(
+  () => import("../PatientForm.vue")
+)
+const PatientInfo = defineAsyncComponent(
+  () => import("../PatientInfo.vue")
+)
 
 const route = useRoute();
 const patientStore = usePatientStore();

@@ -1,13 +1,14 @@
 <script setup lang="ts">
-import FButton from "../../../components/Buttons/Button.vue";
 import { useRoute } from "vue-router";
-import { ref, computed, reactive } from "vue";
+import { ref, computed, reactive, defineAsyncComponent } from "vue";
 import { isNullOrWs } from "../../../utils/helpers";
 import { IAnalysisResult, IAnalysisService } from "../../../models/analysis";
 import { useAnalysisComposable, useWorkSheetComposable } from "../../../composables";
 import { useWorksheetStore, useSetupStore, useUserStore } from "../../../stores";
-
 import * as shield from "../../../guards";
+const FButton = defineAsyncComponent(
+  () => import("../../../components/Buttons/Button.vue")
+)
 
 const worksheetStore = useWorksheetStore();
 const setupStore = useSetupStore();

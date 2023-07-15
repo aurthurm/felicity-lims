@@ -1,5 +1,8 @@
 <script lang="ts" setup>
-import LoadingMessage from "../../components/Spinners/LoadingMessage.vue";
+import { defineAsyncComponent } from 'vue'
+const LoadingMessage = defineAsyncComponent(
+  () => import("../../components/Spinners/LoadingMessage.vue")
+)
 import { useAuthStore } from "../../stores";
 import { storeToRefs } from "pinia";
 
@@ -105,9 +108,7 @@ const login = handleSubmit((values) => {
           </div>
         </div>
       </form>
-      <div v-else>
-        <LoadingMessage message="Redirecting, please wait ..." />
-      </div>
+      <LoadingMessage v-else message="Redirecting, please wait ..." />
     </div>
   </div>
 </template>

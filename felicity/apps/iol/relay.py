@@ -3,7 +3,6 @@ import json
 
 
 
-
 async def authenticate(username, password):
     payload = await httpx.post("http://localhost:8000/api/v1/login/access-token", data={
         "username": username,

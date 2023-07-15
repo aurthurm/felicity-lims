@@ -1,19 +1,35 @@
 <script setup lang="ts">
-import LoadingMessage from "../../components/Spinners/LoadingMessage.vue";
-import PageHeading from "../components/PageHeading.vue";
-import { ref, reactive, computed } from "vue";
-import { storeToRefs } from "pinia";
-import tabSamples from "../components/AnalyisRequestListing.vue";
-import tabCases from "./comps/CaseTable.vue";
-import tabLogs from "../components/AuditLog.vue";
-import modal from "../../components/SimpleModal.vue";
-import PatientForm from "./PatientForm.vue";
-import PatientInfo from "./PatientInfo.vue";
-
+import { ref, reactive, computed, defineAsyncComponent } from "vue";
+import { storeToRefs } from "pinia"
 import { useLocationStore, usePatientStore } from "../../stores";
 import { IPatient } from "../../models/patient";
-
 import * as shield from "../../guards";
+
+const LoadingMessage = defineAsyncComponent(
+  () => import("../../components/Spinners/LoadingMessage.vue")
+)
+const PageHeading = defineAsyncComponent(
+  () => import("../components/PageHeading.vue")
+)
+const tabSamples = defineAsyncComponent(
+  () => import("../components/AnalyisRequestListing.vue")
+)
+const tabCases = defineAsyncComponent(
+  () => import("./comps/CaseTable.vue")
+)
+const tabLogs = defineAsyncComponent(
+  () => import("../components/AuditLog.vue")
+)
+const modal = defineAsyncComponent(
+  () => import("../../components/SimpleModal.vue")
+)
+const PatientForm = defineAsyncComponent(
+  () => import("./PatientForm.vue")
+)
+const PatientInfo = defineAsyncComponent(
+  () => import("./PatientInfo.vue")
+)
+
 
 let patientStore = usePatientStore();
 let locationStore = useLocationStore();

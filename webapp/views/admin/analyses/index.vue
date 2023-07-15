@@ -1,12 +1,23 @@
 <script setup lang="ts">
-  import { ref, computed } from 'vue';
-
-  import tabAnalysesCategories from './AnalysesCategories.vue';
-  import tabAnalysesProfiles from './AnalysesProfiles.vue';
-  import tabAnalysesServices from './services/index.vue';
-  import tabQualityControlLevels from './QCLevels.vue';
-  import tabQualityControlTemplates from './QCTemplates.vue';
-  import tabRejectionReasons from './RejectionReasons.vue';
+  import { ref, computed, defineAsyncComponent } from 'vue';
+  const tabAnalysesCategories = defineAsyncComponent(
+    () => import('./AnalysesCategories.vue')
+  )
+  const tabAnalysesProfiles = defineAsyncComponent(
+    () => import('./AnalysesProfiles.vue')
+  )
+  const tabAnalysesServices = defineAsyncComponent(
+    () => import('./services/index.vue')
+  )
+  const tabQualityControlLevels = defineAsyncComponent(
+    () => import('./QCLevels.vue')
+  )
+  const tabQualityControlTemplates = defineAsyncComponent(
+    () => import('./QCTemplates.vue')
+  )
+  const tabRejectionReasons = defineAsyncComponent(
+    () => import('./RejectionReasons.vue')
+  )
 
   import { useSampleStore, useSetupStore } from '../../../stores';
 
@@ -56,7 +67,7 @@
         <tab-analyses-categories v-else-if="currentTab === 'analyses-categories'" />
         <tab-quality-control-levels v-else-if="currentTab === 'quality-control-levels'" />
         <tab-quality-control-templates v-else-if="currentTab === 'quality-control-templates'" />
-        <tab-rejection-reasons v-else="currentTab === 'rejection-reasons'" />
+        <tab-rejection-reasons v-else-if="currentTab === 'rejection-reasons'" />
 
   </div>
 

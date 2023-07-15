@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import VueMultiselect from "vue-multiselect";
-import { ref, reactive, computed } from "vue";
+import { ref, reactive, computed, defineAsyncComponent } from "vue";
 import { useRouter } from "vue-router";
 import {
   useSampleStore,
@@ -22,7 +22,9 @@ import { useField, useForm } from "vee-validate";
 import { object, string, array, number } from "yup";
 import { IClient } from "../../models/client";
 import { useApiUtil, useNotifyToast } from "../../composables";
-import LoadingMessage from "../../components/Spinners/LoadingMessage.vue";
+const LoadingMessage = defineAsyncComponent(
+  () => import("../../components/Spinners/LoadingMessage.vue")
+)
 
 const sampleStore = useSampleStore();
 const patientStore = usePatientStore();

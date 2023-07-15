@@ -13,7 +13,6 @@ const props = defineProps(["data", "wrapper"]);
 watch(
   () => props.data,
   (n, o) => {
-    console.log(props)
     document.getElementById("jsonPreview").innerHTML = "";
     if (n.length === 0) return;
     new JsonViewer({

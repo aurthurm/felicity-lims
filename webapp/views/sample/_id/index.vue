@@ -1,12 +1,14 @@
 <script setup lang="ts">
-import LoadingMessage from "../../../components/Spinners/LoadingMessage.vue";
 import { storeToRefs } from "pinia";
-import { computed, reactive, watch } from "vue";
+import { computed, defineAsyncComponent, reactive, watch } from "vue";
 import { IAnalysisProfile, IAnalysisService, ISample } from "../../../models/analysis";
 import { useSampleComposable } from "../../../composables";
 import { useSampleStore } from "../../../stores";
 import { useRoute, useRouter } from "vue-router";
 import { parseDate } from "../../../utils/helpers";
+const LoadingMessage = defineAsyncComponent(
+  () => import("../../../components/Spinners/LoadingMessage.vue")
+)
 
 const sampleStore = useSampleStore();
 const route = useRoute();

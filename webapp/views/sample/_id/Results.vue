@@ -1,11 +1,9 @@
 <script setup lang="ts">
 import FButton from "../../../components/Buttons/Button.vue";
-import LoadingMessage from "../../../components/Spinners/LoadingMessage.vue";
-import { onMounted, watch, reactive, computed } from "vue";
+import { onMounted, watch, reactive, computed, defineAsyncComponent } from "vue";
 import { useRoute } from "vue-router";
 import { storeToRefs } from "pinia";
 import { useSampleStore } from "../../../stores";
-
 import { useAnalysisComposable } from "../../../composables";
 import {
   IAnalysisProfile,
@@ -15,6 +13,9 @@ import {
 import { isNullOrWs } from "../../../utils/helpers";
 
 import * as shield from "../../../guards";
+const LoadingMessage = defineAsyncComponent(
+  () => import("../../../components/Spinners/LoadingMessage.vue")
+)
 
 const route = useRoute();
 const sampleStore = useSampleStore();

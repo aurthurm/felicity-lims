@@ -124,7 +124,7 @@ function toggleNavText(): void {
     <div class="flex-grow"></div>
     <footer id="asideFooter" v-if="viewNavText" class="flex-none bg-gray-700 text-center text-gray-100 p-4">
       <hr />
-      <span>&copy; 2020 </span>|
+      <span>&copy; 2023 </span>|
       <router-link to="/about" class="text-gray-200"> About</router-link>
       <hr />
     </footer>

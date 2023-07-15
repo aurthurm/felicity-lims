@@ -1,7 +1,9 @@
 <script setup lang="ts">
-import Accordion from '../../components/Accordion.vue'
 import { useNoticeStore, useAuthStore } from '../../stores'
-import { computed, onMounted } from 'vue'
+import { computed, defineAsyncComponent, onMounted } from 'vue'
+const Accordion = defineAsyncComponent(
+  () => import('../../components/Accordion.vue')
+)
 
 const authStore = useAuthStore();
 const noticeStore = useNoticeStore();

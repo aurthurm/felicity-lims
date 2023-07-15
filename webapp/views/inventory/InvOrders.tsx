@@ -1,11 +1,16 @@
-import { computed, defineComponent, reactive, ref, h } from 'vue';
-import DataTable from '../../components/datatable/DataTable.vue';
-import Drawer from '../../components/Drawer.vue';
+import { computed, defineComponent, reactive, ref, h, defineAsyncComponent } from 'vue';
 import { useInventoryStore } from '../../stores';
 import { IStockOrder, IStockOrderProduct } from '../../models/inventory';
 import { useApiUtil } from '../../composables';
 import { GET_ALL_STOCK_ORDER_PRODUCTS } from '../../graphql/inventory.queries';
 import { EDIT_STOCK_ORDER, ISSUE_STOCK_ORDER, SUBMIT_STOCK_ORDER } from '../../graphql/inventory.mutations';
+
+const Drawer = defineAsyncComponent(
+    () => import('../../components/Drawer.vue')
+)
+const DataTable = defineAsyncComponent(
+    () => import('../../components/datatable/DataTable.vue')
+)
 
 const InventoryOrders = defineComponent({
     name: 'stock-orders',
@@ -392,3 +397,4 @@ const InventoryOrders = defineComponent({
 });
 
 export { InventoryOrders };
+export default InventoryOrders

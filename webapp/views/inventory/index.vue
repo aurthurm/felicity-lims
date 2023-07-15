@@ -1,5 +1,8 @@
 <script setup lang="ts">
-  import Inventory from "./Inventory";
+  import { defineAsyncComponent } from "vue";
+  const Inventory = defineAsyncComponent(
+    () => import("./Inventory")
+  )
 </script>
 
 <template>

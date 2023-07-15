@@ -1,10 +1,12 @@
-import { defineComponent, toRefs } from 'vue';
-import Modal from '../../../components/SimpleModal.vue';
+import { defineAsyncComponent, defineComponent, toRefs } from 'vue';
 import { ref, reactive, computed } from 'vue';
 import { ADD_STOCK_CATEGORY, EDIT_STOCK_CATEGORY } from '../../../graphql/inventory.mutations';
 import { useInventoryStore } from '../../../stores';
 import { useApiUtil } from '../../../composables';
 import { IStockCategory } from '../../../models/inventory';
+const Modal = defineAsyncComponent(
+    () => import('../../../components/SimpleModal.vue')
+)
 
 const StockCategory = defineComponent({
     name: 'stock-category',
@@ -47,7 +49,6 @@ const StockCategory = defineComponent({
         }
 
         function saveForm(): void {
-            console.log(formAction);
             if (formAction.value === true) addStockCategory();
             if (formAction.value === false) editStockCategory();
             showModal.value = false;

@@ -1,15 +1,29 @@
-import { defineComponent, computed, ref } from 'vue';
-import { InventoryDashboard } from './InvDashboard';
-import { InventoryAdjustments } from './InvAdjustments';
-import { InventoryListing } from './InvListing';
-import { InventoryTransactions } from './InvTransactions';
-import { InventoryOrders } from './InvOrders';
-import Drawer from '../../components/Drawer.vue';
-import PageHeading from '../components/PageHeading.vue';
+import { defineComponent, computed, ref, defineAsyncComponent } from 'vue';
 import { ADD_STOCK_ORDER } from '../../graphql/inventory.mutations';
 import { useApiUtil } from '../../composables';
-
 import { useInventoryStore, useStorageStore, useSetupStore, useUserStore } from '../../stores';
+const Drawer = defineAsyncComponent(
+    () => import('../../components/Drawer.vue')
+)
+const PageHeading = defineAsyncComponent(
+    () => import('../components/PageHeading.vue')
+)
+const InventoryDashboard = defineAsyncComponent(
+    () => import('./InvDashboard')
+)
+const InventoryAdjustments = defineAsyncComponent(
+    () => import('./InvAdjustments')
+)
+const InventoryListing = defineAsyncComponent(
+    () => import('./InvListing')
+)
+const InventoryTransactions = defineAsyncComponent(
+    () => import('./InvTransactions')
+)
+const InventoryOrders = defineAsyncComponent(
+    () => import('./InvOrders')
+)
+
 
 const InventoryHome = defineComponent({
     name: 'inventory-home',

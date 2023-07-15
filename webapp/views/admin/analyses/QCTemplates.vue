@@ -1,10 +1,12 @@
 <script setup lang="ts">
-  import modal from '../../../components/SimpleModal.vue';
-  import { ref, reactive, computed } from 'vue';
+  import { ref, reactive, computed, defineAsyncComponent } from 'vue';
   import { IQCTemplate, IQCLevel } from '../../../models/analysis';
   import { ADD_QC_TEMPLATE, EDIT_QC_TEMPLATE  } from '../../../graphql/analyses.mutations';
   import { useAnalysisStore } from '../../../stores';
   import { useApiUtil } from '../../../composables';
+  const modal = defineAsyncComponent(
+    () => import('../../../components/SimpleModal.vue')
+  )
 
   const analysisStore = useAnalysisStore()
   const { withClientMutation } = useApiUtil()
@@ -32,9 +34,9 @@
     .then((result) => analysisStore.updateQcTemplate(result));
   }
 
-  function levelsUids(levels: IQCLevel[]): number[] {
+  function levelsUids(levels: IQCLevel[]): string[] {
     if (levels?.length <= 0 ) return [];
-    let qcLevels: number[] = [];
+    let qcLevels: string[] = [];
     levels?.forEach(level => qcLevels.push(level.uid!));
     return qcLevels;
   }
@@ -96,7 +98,7 @@
                     <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
                     <div class="flex items-center">
                         <div>
-                        <div class="text-sm leading-5 text-gray-800">{{ levelsNames(templt?.qcLevels!) }}</div>
+                        <div class="text-sm leading-5 text-gray-800">{{ levelsNames(templt?.qcLevels ?? []) }}</div>
                         </div>
                     </div>
                     </td>
@@ -148,7 +150,7 @@
               class="form-input mt-1 block w-full" multiple>
                 <option value=""></option>
                 <option  
-                v-for="(level, index) in qcLevels"
+                v-for="level in qcLevels"
                 :key="level.uid"
                 :value="level" >{{ level.level }}</option>
             </select>

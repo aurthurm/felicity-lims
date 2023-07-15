@@ -1,3 +1,7 @@
+<script setup lang="ts">
+
+</script>
+
 <template>
     <!-- Cases Table View -->
     <div class="overflow-x-auto mt-4">
@@ -108,6 +112,3 @@
 
 </template>
 
-<script setup lang="ts">
-
-</script>

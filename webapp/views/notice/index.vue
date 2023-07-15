@@ -1,15 +1,23 @@
 <script setup lang="ts">
-import LoadingMessage from "../../components/Spinners/LoadingMessage.vue";
-import NoticeForm from "./NoticeForm.vue";
 import { storeToRefs } from "pinia";
-import modal from "../../components/SimpleModal.vue";
 import { DELETE_NOTICE } from "../../graphql/notice.mutations";
-import { onMounted, reactive, computed } from "vue";
+import { onMounted, reactive, computed, defineAsyncComponent } from "vue";
 import { INotice } from "../../models/notice";
 import { useNoticeStore, useSetupStore, useAuthStore } from "../../stores";
 import { useApiUtil } from "../../composables";
 import Swal from 'sweetalert2';
-import PageHeading from "../components/PageHeading.vue";
+const PageHeading = defineAsyncComponent(
+  () => import("../components/PageHeading.vue")
+)
+const LoadingMessage = defineAsyncComponent(
+  () => import("../../components/Spinners/LoadingMessage.vue")
+)
+const NoticeForm = defineAsyncComponent(
+  () => import("./NoticeForm.vue")
+)
+const modal = defineAsyncComponent(
+  () => import("../../components/SimpleModal.vue")
+)
 
 let setupStore = useSetupStore();
 const noticeStore = useNoticeStore();
@@ -32,7 +40,7 @@ onMounted(async () => {
   await noticeStore.fetchMyNotices(user.value?.uid!);
 });
 
-async function deleteNotice(uid: number) {
+async function deleteNotice(uid: string) {
 
   await Swal.fire({
     title: 'Are you sure?',

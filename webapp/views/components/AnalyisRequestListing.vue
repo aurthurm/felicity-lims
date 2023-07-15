@@ -1,9 +1,11 @@
 <script setup lang="ts">
-import LoadingMessage from "../../components/Spinners/LoadingMessage.vue";
-import { toRefs, watch } from "vue";
+import { defineAsyncComponent, toRefs, watch } from "vue";
 import { storeToRefs } from "pinia";
 import { parseDate } from "../../utils/helpers";
 import { useSampleStore } from "../../stores";
+const LoadingMessage = defineAsyncComponent(
+  () => import("../../components/Spinners/LoadingMessage.vue")
+)
 
 const props = defineProps({
   target: String,
@@ -86,9 +88,9 @@ function profileAnalysesText(profiles: any[], analyses: any[]): string {
           </tr>
           <tr v-for="sample in request.samples" :key="sample.uid" v-motion-slide-right>
             <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-              <span v-if="sample.priority! < 1" :class="[
+              <span v-if="sample.priority ?? 0 < 1" :class="[
                 'font-small',
-                { 'text-orange-600': sample.priority! == 0 },
+                { 'text-orange-600': sample.priority ?? 0 == 0 },
               ]">
                 <i class="fa fa-star"></i>
               </span>
@@ -108,7 +110,7 @@ function profileAnalysesText(profiles: any[], analyses: any[]): string {
             </td>
             <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
               <div class="text-sm leading-5 text-sky-800">
-                {{ profileAnalysesText(sample.profiles!, sample.analyses!) }}
+                {{ profileAnalysesText(sample.profiles ?? [], sample.analyses ?? []) }}
               </div>
             </td>
             <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">

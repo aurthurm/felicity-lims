@@ -1,6 +1,5 @@
 import { defineComponent, computed, watch } from 'vue';
 import { useStorageStore } from '../../stores';
-import { IStorageContainer } from '../../models/storage';
 
 const ContainerGrid = defineComponent({
     name: 'container-grid-view',
@@ -88,3 +87,4 @@ const ContainerGrid = defineComponent({
     },
 });
 export { ContainerGrid };
+export default ContainerGrid

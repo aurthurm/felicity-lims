@@ -1,9 +1,12 @@
 <script setup lang="ts">
-import { ref, onMounted, computed } from "vue";
+import { ref, onMounted, computed, defineAsyncComponent } from "vue";
 import { useNotificationStore, useAuthStore } from "../../../stores";
 import { userPreferenceComposable, useApiUtil } from "../../../composables";
-import Drawer from "../../../components/Drawer.vue";
 import * as guards from "./../../../guards";
+const Drawer = defineAsyncComponent(
+  () => import("../../../components/Drawer.vue")
+)
+
 const { errors } = useApiUtil()
 
 const dropdownOpen = ref(false);

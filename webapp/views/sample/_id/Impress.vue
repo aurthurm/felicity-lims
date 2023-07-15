@@ -1,12 +1,16 @@
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
+import { defineAsyncComponent, onMounted, ref } from "vue";
 import { useRoute } from "vue-router";
-import LoadingMessage from "../../../components/Spinners/LoadingMessage.vue";
-import JsonPreViewer from "../../../components/JsonPreViewer.vue";
 import { GET_IMPRESS_META } from "../../../graphql/analyses.queries";
-
 import { useApiUtil, useSampleComposable } from "../../../composables";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+const LoadingMessage = defineAsyncComponent(
+  () => import("../../../components/Spinners/LoadingMessage.vue")
+)
+const JsonPreViewer = defineAsyncComponent(
+  () => import("../../../components/JsonPreViewer.vue")
+)
+
 const { withClientQuery } = useApiUtil();
 
 const route = useRoute();

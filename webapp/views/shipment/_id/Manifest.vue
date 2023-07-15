@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { ref } from "vue";
-import LoadingMessage from "../../../components/Spinners/LoadingMessage.vue";
-
+import { defineAsyncComponent, ref } from "vue";
 import { useShipmentComposable } from "../../../composables";
 import { useShipmentStore } from "../../../stores";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome"
+const LoadingMessage = defineAsyncComponent(
+  () => import("../../../components/Spinners/LoadingMessage.vue")
+)
 
 const loadongMeta = ref(false);
 

@@ -407,3 +407,5 @@ async def shipment_send(uid: str, by_uid=None):
         state=conf.shipment_states.FAILED if not success else conf.shipment_states.SHIPPED, 
         updated_by_uid=by_uid
     )
+
+

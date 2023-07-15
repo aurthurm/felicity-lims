@@ -1,6 +1,8 @@
 <script setup lang="ts">
-import { reactive } from "vue";
-import DataTable from "../../components/datatable/DataTable.vue";
+import { defineAsyncComponent, reactive } from "vue";
+const DataTable = defineAsyncComponent(
+  () => import("../../components/datatable/DataTable.vue")
+)
 
 const columns = reactive([
   {
@@ -73,11 +75,10 @@ const entries = reactive<any[]>([
   },
 ]);
 
-const onSort = (v) => console.log(v);
-const onPaginate = (v) => console.log(v);
-const onSearch = (v) => console.log(v);
+const onSort = (v) => {};
+const onPaginate = (v) => {};
+const onSearch = (v) => {};
 const onCheck = (v) => {
-  console.log(v);
   Object.assign(entries, [
     ...entries.map((e) => {
       if (e.sampleId === v.entry.sampleId) {
@@ -99,7 +100,7 @@ const onCheckAll = () =>
     :loading="false"
     @onSort="onSort"
     :paginable="true"
-    :pageMeta="{ fetchCount: 50, hasNextPage: false, totalCount: 200 }"
+    :pageMeta="{ fetchCount: 50, hasNextPage: false }" 
     @onPaginate="onPaginate"
     :searchable="true"
     :searchMeta="{

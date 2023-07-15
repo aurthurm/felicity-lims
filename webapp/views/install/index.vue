@@ -1,10 +1,12 @@
 <script lang="ts" setup>
-import LoadingMessage from "../../components/Spinners/LoadingMessage.vue";
-import { ref } from "vue";
+import { defineAsyncComponent, ref } from "vue";
 import axios from "../../axios/no-auth";
 import { useRouter } from "vue-router";
 import { useField, useForm } from "vee-validate";
 import { object, string } from "yup";
+const LoadingMessage = defineAsyncComponent(
+  () => import("../../components/Spinners/LoadingMessage.vue")
+)
 
 const router = useRouter();
 const loading = ref(false);

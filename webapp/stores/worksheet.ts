@@ -44,7 +44,7 @@ export const useWorksheetStore = defineStore('worksheet', {
         getWorkSheetTemplates: state => state.workSheetTemplates,
         getWorkSheets: state => sortWorksheets(state.workSheets),
         getWorkSheet: state => state.workSheet,
-        getWorkSheetByUid: state => (uid: number) => state.workSheets?.find(ws => ws.uid === uid),
+        getWorkSheetByUid: state => (uid: string) => state.workSheets?.find(ws => ws.uid === uid),
         getWorkSheetCount: state => state.workSheetCount,
         getWorkSheetPageInfo: state => state.workSheetPageInfo,
         getAnalysisResults: state => state.analysisResults,
@@ -106,7 +106,7 @@ export const useWorksheetStore = defineStore('worksheet', {
                 })
                 .catch(err => (this.fetchingWorkSheets = false));
         },
-        async fetchWorksheetByUid(worksheetUid: number) {
+        async fetchWorksheetByUid(worksheetUid: string) {
             await withClientQuery(GET_WORKSHEET_BY_UID, { worksheetUid }, 'worksheetByUid').then(
                 payload => (this.workSheet = sortAnalysisResults(payload))
             );

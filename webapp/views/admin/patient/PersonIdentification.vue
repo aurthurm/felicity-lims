@@ -1,10 +1,12 @@
 <script setup lang="ts">
-import modal from '../../../components/SimpleModal.vue';
-import { ref, reactive, computed } from 'vue';
+import { ref, reactive, computed, defineAsyncComponent } from 'vue';
 import { usePatientStore } from '../../../stores';
 import { useApiUtil } from '../../../composables';
 import { IIdentification } from '../../../models/patient'
 import { ADD_IDENTIFICATION, UPDATE_IDENTIFICATION } from '../../../graphql/patient.mutations';
+const modal = defineAsyncComponent(
+  () => import('../../../components/SimpleModal.vue')
+)
 
 const patientStore = usePatientStore();
 const { withClientMutation } = useApiUtil();

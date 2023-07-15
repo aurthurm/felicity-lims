@@ -40,3 +40,4 @@ const ContainerColumn = defineComponent({
     },
 });
 export { ContainerColumn };
+export default ContainerColumn

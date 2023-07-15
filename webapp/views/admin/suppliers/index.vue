@@ -1,8 +1,13 @@
 
 <script setup lang="ts">
-  import { ref, computed } from 'vue';
-  import tabSuppliers from './Suppliers.vue'
-  import tabManufacturers from './Manufacturers.vue'
+  import { ref, computed, defineAsyncComponent } from 'vue';
+  const tabSuppliers = defineAsyncComponent(
+    () => import('./Suppliers.vue')
+  )
+  const tabManufacturers = defineAsyncComponent(
+    () => import('./Manufacturers.vue')
+  )
+
 
   let currentTab = ref<string>('suppliers');
   const tabs: string[] = ['suppliers', 'manufacturers'];

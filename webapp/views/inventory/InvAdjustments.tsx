@@ -1,5 +1,7 @@
-import { defineComponent, ref } from 'vue';
-import DataTable from '../../components/datatable/DataTable.vue';
+import { defineAsyncComponent, defineComponent, ref } from 'vue';
+const DataTable = defineAsyncComponent(
+    () => import('../../components/datatable/DataTable.vue')
+)
 
 const InventoryAdjustments = defineComponent({
     name: 'stock-adjustments',
@@ -99,3 +101,4 @@ const InventoryAdjustments = defineComponent({
 });
 
 export { InventoryAdjustments };
+export default InventoryAdjustments

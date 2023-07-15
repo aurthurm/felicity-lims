@@ -1,10 +1,20 @@
-import { defineComponent, ref, computed } from 'vue';
-import { StockCategory } from './StockCategory';
-import { StockItem } from './StockItem';
-import { StockPackaging } from './StockPackaging';
-import { StockUnit } from './StockUnit';
-import { Hazard } from './Hazard';
+import { defineComponent, ref, computed, defineAsyncComponent } from 'vue';
 import { useSampleStore, useSetupStore } from '../../../stores';
+const StockCategory = defineAsyncComponent(
+    () => import('./StockCategory')
+)
+const StockItem = defineAsyncComponent(
+    () => import('./StockItem')
+)
+const StockPackaging = defineAsyncComponent(
+    () => import('./StockPackaging')
+)
+const StockUnit = defineAsyncComponent(
+    () => import('./StockUnit')
+)
+const Hazard = defineAsyncComponent(
+    () => import('./Hazard')
+)
 
 const InventoryHome = defineComponent({
     name: 'InventoryHome',

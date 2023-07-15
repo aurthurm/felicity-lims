@@ -1,11 +1,13 @@
 <script setup lang="ts">
-  import modal from '../../../../components/SimpleModal.vue';
-  import { computed, ref, reactive, toRefs, watch } from 'vue';
+  import { computed, ref, reactive, toRefs, watch, defineAsyncComponent } from 'vue';
   import { ADD_ANALYSIS_INTERIM, EDIT_ANALYSIS_INTERIM  } from '../../../../graphql/analyses.mutations';
   import { IAnalysisInterim } from '../../../../models/analysis';
   import { IInstrument } from '../../../../models/setup';
   import { useSetupStore, useAnalysisStore } from '../../../../stores';
   import { useApiUtil } from '../../../../composables';
+  const modal = defineAsyncComponent(
+    () => import('../../../../components/SimpleModal.vue')
+  )
 
   const analysisStore = useAnalysisStore()
   const setupStore = useSetupStore()
@@ -69,7 +71,7 @@
       showModal.value = false;
   }
 
-  const instrumentName = (uid: number): string => {
+  const instrumentName = (uid: string): string => {
     const index = instruments?.value?.findIndex(item => item.uid === uid)
     return instruments?.value[index]?.name || "unknown";
   }

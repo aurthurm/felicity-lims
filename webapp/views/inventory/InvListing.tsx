@@ -1,10 +1,18 @@
-import { computed, defineComponent, reactive, ref, h } from 'vue';
-import DataTable from '../../components/datatable/DataTable.vue';
-import Drawer from '../../components/Drawer.vue';
-import Modal from '../../components/SimpleModal.vue';
-import StockProductForm from './StockProductForm.vue';
+import { computed, defineComponent, reactive, ref, h, defineAsyncComponent } from 'vue';
 import { useInventoryStore } from '../../stores';
 import { IStockProduct } from '../../models/inventory';
+const DataTable = defineAsyncComponent(
+    () => import('../../components/datatable/DataTable.vue')
+)
+const Drawer = defineAsyncComponent(
+    () => import( '../../components/Drawer.vue')
+)
+const Modal = defineAsyncComponent(
+    () => import('../../components/SimpleModal.vue')
+)
+const StockProductForm = defineAsyncComponent(
+    () => import('./StockProductForm.vue')
+)
 
 const InventoryListing = defineComponent({
     name: 'stock-listing',
@@ -213,7 +221,7 @@ const InventoryListing = defineComponent({
                 <Drawer show={this.openDrawer} onClose={() => (this.openDrawer = false)}>
                     {{
                         header: () => 'New Stock',
-                        body: () => [<StockProductForm product={null} onClose={() => (this.openDrawer = false)} />],
+                        body: () => [<StockProductForm product={undefined} onClose={() => (this.openDrawer = false)} />],
                         footer: () => [<span>one</span>, <span>two</span>],
                     }}
                 </Drawer>
@@ -260,3 +268,4 @@ const InventoryListing = defineComponent({
 });
 
 export { InventoryListing };
+export default InventoryListing

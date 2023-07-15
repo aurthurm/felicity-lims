@@ -1,8 +1,4 @@
-import { defineComponent, computed, reactive, toRefs, ref, watch } from 'vue';
-import Modal from '../../components/SimpleModal.vue';
-import PageHeading from '../components/PageHeading.vue';
-import { ContainerView } from './ContainerView';
-import TreeItem from '../components/TreeItem.vue';
+import { defineComponent, computed, reactive, toRefs, ref, watch, defineAsyncComponent } from 'vue';
 import useTreeStateComposable from '../../composables/tree-state';
 import { IStorageContainer, IStorageLocation, IStorageSection, IStoreRoom } from '../../models/storage';
 import {
@@ -18,6 +14,18 @@ import {
 import { useStorageStore } from '../../stores';
 import { useApiUtil } from '../../composables';
 import { useRouter } from 'vue-router';
+const Modal = defineAsyncComponent(
+    () => import('../../components/SimpleModal.vue')
+)
+const PageHeading = defineAsyncComponent(
+    () => import('../components/PageHeading.vue')
+)
+const ContainerView = defineAsyncComponent(
+    () => import('./ContainerView')
+)
+const TreeItem = defineAsyncComponent(
+    () => import('../components/TreeItem.vue')
+)
 
 const StorageHome = defineComponent({
     name: 'storage-home',
@@ -50,7 +58,6 @@ const StorageHome = defineComponent({
                     const ss = sc?.storageSection;
                     const sl = ss?.storageLocation;
                     const sr = sl?.storeRoom;
-                    console.log(sample);
                     setActiveTree({ ...sr, tag: tags.storeRoom });
                     setActiveTree({ ...sl, tag: tags.storageLocation });
                     setActiveTree({ ...ss, tag: tags.storageSection });
@@ -158,7 +165,6 @@ const StorageHome = defineComponent({
             } else {
                 Object.assign(state.locationForm, { ...obj });
             }
-            console.log(state);
         }
 
         function saveLocationForm(): void {
@@ -241,14 +247,12 @@ const StorageHome = defineComponent({
 
         //
         function calculateRows(event): void {
-            console.log(event.taget?.value);
             if (state.containerForm.grid === true) {
                 state.containerForm.rows = Math.ceil(state.containerForm?.slots! / state.containerForm?.cols!);
             }
         }
 
         function changeContainerType(event): void {
-            console.log(event.taget?.value);
             if (state.containerForm.grid == false) {
                 state.containerForm.cols = undefined;
                 state.containerForm.rows = undefined;

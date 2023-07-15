@@ -161,7 +161,6 @@ export default function useSampleComposable() {
             }).then(async result => {
                 if (result.isConfirmed) {
                     withClientMutation(RECOVER_SAMPLES, { sampleUids }, 'recoverSamples').then(resp => {
-                        console.log(resp);
                         if (resp.length <= 0) return;
                         _updateSamples(resp.samples);
                         if (resp.samples.length !== 1) return;

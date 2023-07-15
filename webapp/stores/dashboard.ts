@@ -223,7 +223,6 @@ export const useDashBoardStore = defineStore('dashboard', () => {
             .then(payload => {
                 dashboard.value.fetchingAnalysisPeformanceStats = false;
                 dashboard.value.peformanceStats.analysis = payload.data;
-                console.log(payload);
             })
             .catch(err => (dashboard.value.fetchingAnalysisPeformanceStats = false));
     };

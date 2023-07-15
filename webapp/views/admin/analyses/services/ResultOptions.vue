@@ -1,10 +1,13 @@
 <script setup lang="ts">
-  import modal from '../../../../components/SimpleModal.vue';
-  import { ref, reactive, toRefs, watch } from 'vue';
+  import { ref, reactive, toRefs, watch, defineAsyncComponent } from 'vue';
   import { ADD_RESULT_OPTION, EDIT_RESULT_OPTION  } from '../../../../graphql/analyses.mutations';
   import { IResultOption } from '../../../../models/analysis';
   import { useAnalysisStore } from '../../../../stores';
   import { useApiUtil } from '../../../../composables';
+  const modal = defineAsyncComponent(
+    () => import('../../../../components/SimpleModal.vue')
+  )
+
 
   const analysisStore = useAnalysisStore()
   const { withClientMutation } = useApiUtil()

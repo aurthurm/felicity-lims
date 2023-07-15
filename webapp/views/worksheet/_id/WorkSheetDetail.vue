@@ -1,10 +1,15 @@
 <script setup lang="ts">
-  import tabAssignSamples from './WorkSheetAssign.vue';
-  import tabWorksheetResults from './WorkSheetResults.vue';
-  import tabLogs from '../../components/AuditLog.vue';
-
-  import { ref, computed } from 'vue';
+  import { ref, computed, defineAsyncComponent } from 'vue';
   import { useWorksheetStore } from '../../../stores'
+  const tabAssignSamples = defineAsyncComponent(
+    () => import('./WorkSheetAssign.vue')
+  )
+  const tabWorksheetResults = defineAsyncComponent(
+    () => import("./WorkSheetResults.vue")
+  )
+  const tabLogs = defineAsyncComponent(
+    () => import('../../components/AuditLog.vue')
+  )
 
   let worksheetStore = useWorksheetStore();
 

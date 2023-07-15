@@ -1,14 +1,21 @@
 <script setup lang="ts">
-import tabSamples from "../../components/AnalyisRequestListing.vue";
-import tabCases from "../comps/CaseTable.vue";
-import tabLogs from "../../components/AuditLog.vue";
 import { storeToRefs } from "pinia";
-import { ref } from "vue";
+import { defineAsyncComponent, ref } from "vue";
 import { useRouter } from "vue-router";
 import { IPatient } from "../../../models/patient";
 import { usePatientStore } from "../../../stores";
-
 import * as shield from "../../../guards";
+
+const tabSamples = defineAsyncComponent(
+  () => import("../../components/AnalyisRequestListing.vue")
+)
+const tabCases = defineAsyncComponent(
+  () => import("../comps/CaseTable.vue")
+)
+const tabLogs = defineAsyncComponent(
+  () => import("../../components/AuditLog.vue")
+)
+
 
 let patientStore = usePatientStore();
 let router = useRouter();
@@ -18,11 +25,11 @@ const { patient } = storeToRefs(patientStore);
 let currentTab = ref("samples");
 const tabs = ["samples", "cases", "logs"];
 
-function addSample(patient: IPatient): void {
+function addSample(patient?: IPatient): void {
   router?.push({
     name: "samples-add",
     params: {
-      patientUid: patient.uid,
+      patientUid: patient?.uid ?? "",
     },
   });
 }
@@ -34,7 +41,7 @@ function addSample(patient: IPatient): void {
       <section class="my-4">
         <button v-show="shield.hasRights(shield.actions.UPDATE, shield.objects.PATIENT)"
           class="px-2 py-1 mr-2 border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
-          @click.prevent="addSample(patient!)">
+          @click.prevent="addSample(patient)">
           Add Sample
         </button>
       </section>

@@ -1,16 +1,21 @@
 <script setup lang="ts">
 import modal from "../../components/SimpleModal.vue";
-import { ref, reactive, computed, h } from "vue";
-import DataTable from "../../components/datatable/DataTable.vue";
+import { ref, reactive, computed, h, defineAsyncComponent } from "vue";
 import { storeToRefs } from "pinia";
 import { useRoute } from "vue-router";
 import { RouterLink } from "vue-router";
 import { useShipmentStore } from "../../stores";
 import { useApiUtil } from "../../composables";
 import { ADD_SHIPMENT } from "../../graphql/shipment.mutations";
-import PageHeading from "../components/PageHeading.vue";
 import { useField, useForm } from "vee-validate";
 import { object, string, number } from "yup";
+
+const PageHeading = defineAsyncComponent(
+  () => import("../components/PageHeading.vue")
+)
+const DataTable = defineAsyncComponent(
+  () => import("../../components/datatable/DataTable.vue")
+)
 
 const shipmentStore = useShipmentStore();
 const { withClientMutation } = useApiUtil();

@@ -1,9 +1,11 @@
 <script setup lang="ts">
-import LoadingMessage from "../../components/Spinners/LoadingMessage.vue";
+import { computed, defineAsyncComponent, toRefs } from "vue";
 import { storeToRefs } from "pinia";
-import { computed, toRefs } from "vue";
 import { useUserStore, useAuditLogStore } from "../../stores";
 import { parseDate } from "../../utils/helpers";
+const LoadingMessage = defineAsyncComponent(
+  () => import("../../components/Spinners/LoadingMessage.vue")
+)
 
 const props = defineProps({
   targetId: String,
@@ -109,7 +111,7 @@ function changes(log: any): any {
           </div>
         </div>
         <div class="ml-12 w-100">
-          <div v-for="trail of changes(log)" class="grid grid-cols-4">
+          <div v-for="trail of changes(log)" :key="trail.key" class="grid grid-cols-4">
             <span class="col-span-1">
               <span class="text-sm text-gray-600 italic">{{ trail?.key }}</span>
             </span>

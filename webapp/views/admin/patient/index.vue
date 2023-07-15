@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue';
-
-import tabPersonIdentification from './PersonIdentification.vue'
-
+import { ref, computed, defineAsyncComponent } from 'vue';
+const tabPersonIdentification = defineAsyncComponent(
+  () => import('./PersonIdentification.vue')
+)
 
 let currentTab = ref<string>('person-identification');
 const tabs: string[] = ['person-identification'];

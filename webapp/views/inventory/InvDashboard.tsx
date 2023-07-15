@@ -1,4 +1,4 @@
-import { defineComponent, computed, reactive, toRefs, ref, watch } from 'vue';
+import { defineComponent } from 'vue';
 
 const InventoryDashboard = defineComponent({
     name: 'invenory-dashboard',
@@ -11,3 +11,4 @@ const InventoryDashboard = defineComponent({
 });
 
 export { InventoryDashboard };
+export default InventoryDashboard

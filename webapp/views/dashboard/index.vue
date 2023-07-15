@@ -1,14 +1,31 @@
 <script setup lang="ts">
 import { storeToRefs } from "pinia";
-import tabOverview from "./Overview.vue";
-import tabLaggard from "./Laggard.vue";
-import tabResource from "./Resource.vue";
-import tabPeformance from "./Peformance.vue";
-import tabTat from "./Tat.vue";
-import tabLineListing from "./LineListing.vue";
-import tabNotice from "./Notice.vue";
+import { defineAsyncComponent } from "vue";
+const tabOverview = defineAsyncComponent(
+  () => import("./Overview.vue")
+);
+const tabLaggard = defineAsyncComponent(
+  () => import("./Laggard.vue")
+);
+const tabResource = defineAsyncComponent(
+  () => import("./Resource.vue")
+);
+const tabPeformance = defineAsyncComponent(
+  () => import("./Peformance.vue")
+);
+const tabTat = defineAsyncComponent(
+  () => import("./Tat.vue")
+);
+const tabLineListing = defineAsyncComponent(
+  () => import("./LineListing.vue")
+);
+const tabNotice = defineAsyncComponent(
+  () => import("./Notice.vue")
+);
+const PageHeading = defineAsyncComponent(
+  () => import("../components/PageHeading.vue")
+);
 import { useDashBoardStore } from "../../stores/dashboard";
-import PageHeading from "../components/PageHeading.vue";
 
 const dashBoardStore = useDashBoardStore();
 const { dashboard } = storeToRefs(dashBoardStore);

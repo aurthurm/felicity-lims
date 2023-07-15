@@ -1,7 +1,9 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, defineAsyncComponent } from 'vue';
 import { useLocationStore } from '../../stores';
-import PageHeading from '../components/PageHeading.vue';
+const PageHeading = defineAsyncComponent(
+  () => import("../components/PageHeading.vue")
+)
 
 const locationStore = useLocationStore()
 const resetSelected = () => locationStore.updateConfRoute("");

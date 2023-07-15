@@ -1,5 +1,8 @@
 <script setup lang="ts">
-import PatientForm from './PatientForm.vue';
+import { defineAsyncComponent } from 'vue';
+const PatientForm = defineAsyncComponent(
+  () => import('./PatientForm.vue')
+)
 </script>
 
 <template>

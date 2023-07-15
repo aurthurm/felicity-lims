@@ -1,11 +1,19 @@
 <script setup lang="ts">
-  import tabAssignSamples from './ShipmentAssign.vue';
-  import tabShipmentSamples from './ShipmentSamples.vue';
-  import tabManifest from './Manifest.vue';
-  import tabLogs from '../../components/AuditLog.vue';
-
-  import { ref, computed } from 'vue';
+  import { ref, computed, defineAsyncComponent } from 'vue';
   import { useShipmentStore } from '../../../stores'
+
+  const tabAssignSamples = defineAsyncComponent(
+    () => import('./ShipmentAssign.vue')
+  )
+  const tabShipmentSamples = defineAsyncComponent(
+    () => import('./ShipmentSamples.vue')
+  )
+  const tabManifest = defineAsyncComponent(
+    () => import('./Manifest.vue')
+  )
+  const tabLogs = defineAsyncComponent(
+    () => import('../../components/AuditLog.vue')
+  )
 
   let shipmentStore = useShipmentStore();
 

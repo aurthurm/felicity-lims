@@ -1,10 +1,12 @@
-import { defineComponent, toRefs } from 'vue';
-import Modal from '../../../components/SimpleModal.vue';
+import { defineAsyncComponent, defineComponent, toRefs } from 'vue';
 import { ref, reactive, computed } from 'vue';
 import { ADD_STOCK_UNIT, EDIT_STOCK_UNIT } from '../../../graphql/inventory.mutations';
 import { useInventoryStore } from '../../../stores';
 import { useApiUtil } from '../../../composables';
 import { IStockUnit } from '../../../models/inventory';
+const Modal = defineAsyncComponent(
+    () => import('../../../components/SimpleModal.vue')
+)
 
 const StockUnit = defineComponent({
     name: 'stock-unit',
@@ -46,7 +48,6 @@ const StockUnit = defineComponent({
         }
 
         function saveForm(): void {
-            console.log(formAction);
             if (formAction.value === true) addStockUnit();
             if (formAction.value === false) editStockUnit();
             showModal.value = false;

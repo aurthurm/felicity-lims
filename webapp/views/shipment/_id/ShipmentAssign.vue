@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import FButton from "../../../components/Buttons/Button.vue";
-import { ref, computed, reactive } from "vue";
+import { ref, computed, reactive, defineAsyncComponent } from "vue";
 import { useShipmentStore, useSampleStore } from "../../../stores";
-import { useApiUtil, useShipmentComposable } from "../../../composables";
-
-import LoadingMessage from "../../../components/Spinners/LoadingMessage.vue";
+import { useShipmentComposable } from "../../../composables";
 import {  ISample } from "../../../models/analysis";
+const LoadingMessage = defineAsyncComponent(
+  () => import("../../../components/Spinners/LoadingMessage.vue")
+)
 
 const shipmentStore = useShipmentStore();
 const sampleStore = useSampleStore();

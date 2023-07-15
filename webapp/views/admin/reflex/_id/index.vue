@@ -1,7 +1,5 @@
 <script setup lang="ts">
-import modal from "../../../../components/SimpleModal.vue";
-import Accordion from "../../../../components/Accordion.vue";
-import { ref, reactive, onMounted } from "vue";
+import { ref, reactive, onMounted, defineAsyncComponent } from "vue";
 import { useRoute } from "vue-router";
 import {
   IReflexAction,
@@ -20,6 +18,12 @@ import {
 } from "../../../../graphql/reflex.mutations";
 import { stringifyNumber } from "../../../../utils/helpers";
 import { IAnalysisService, IResultOption } from "../../../../models/analysis";
+const modal = defineAsyncComponent(
+  () => import("../../../../components/SimpleModal.vue")
+)
+const Accordion = defineAsyncComponent(
+  () => import("../../../../components/Accordion.vue")
+)
 
 const reflexStore = useReflexStore();
 const analysisStore = useAnalysisStore();

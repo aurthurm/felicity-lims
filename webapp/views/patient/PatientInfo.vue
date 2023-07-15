@@ -1,10 +1,13 @@
 <script setup lang="ts">
-import LoadingMessage from "../../components/Spinners/LoadingMessage.vue";
 import * as shield from "../../guards";
 import { useRoute } from "vue-router";
 import { storeToRefs } from "pinia";
 import { usePatientStore } from "../../stores";
 import { parseDate } from "../../utils/helpers";
+import { defineAsyncComponent } from "vue";
+const LoadingMessage = defineAsyncComponent(
+  () => import("../../components/Spinners/LoadingMessage.vue")
+)
 
 const route = useRoute();
 const patientStore = usePatientStore();
@@ -134,7 +137,7 @@ const editPatient = (patient) => {
               <span class="text-gray-600 text-sm md:text-md">
                 {{ patient?.consentSms ? 'Yes' : 'No' }}</span>
             </div>
-            <div class="flex justify-between items-center mt-2" v-for="identification in patient?.identifications">
+            <div class="flex justify-between items-center mt-2" v-for="identification in patient?.identifications" :key="identification.uid">
               <span class="text-gray-800 whitespace-nowrap text-sm font-semibold">{{ identification?.identification?.name
               }}:
               </span>

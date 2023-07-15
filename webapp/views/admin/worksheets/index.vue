@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import modal from "../../../components/SimpleModal.vue";
-import { ref, reactive, computed } from "vue";
+import { ref, reactive, computed, defineAsyncComponent } from "vue";
 
 import {
   ADD_WORKSHEET_TEMPLATE,
@@ -21,6 +20,9 @@ import {
   ISampleType,
 } from "../../../models/analysis";
 import { IInstrument } from "../../../models/setup";
+const modal = defineAsyncComponent(
+  () => import("../../../components/SimpleModal.vue")
+)
 
 const worksheetStore = useWorksheetStore();
 const analysisStore = useAnalysisStore();

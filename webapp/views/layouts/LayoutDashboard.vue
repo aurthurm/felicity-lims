@@ -1,7 +1,14 @@
 <script setup lang="ts">
-import SideBar from "../components/nav/NavigationAside.vue";
-import HeaderMain from "../components/nav/NavigationMain.vue";
-import Notification from "../components/Notification.vue";
+import { defineAsyncComponent } from "vue";
+const SideBar = defineAsyncComponent(
+  () => import("../components/nav/NavigationAside.vue")
+)
+const HeaderMain = defineAsyncComponent(
+  () => import("../components/nav/NavigationMain.vue")
+)
+const Notification = defineAsyncComponent(
+  () => import("../components/Notification.vue")
+)
 </script>
 
 

@@ -1,5 +1,8 @@
 <script setup lang="ts">
-  import Storage from "./Storage";
+  import { defineAsyncComponent } from "vue";
+  const Storage = defineAsyncComponent(
+    () => import("./Storage")
+  )
 </script>
 
 <template>

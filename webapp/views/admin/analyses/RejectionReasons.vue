@@ -1,11 +1,13 @@
 <script setup lang="ts">
-  import modal from '../../../components/SimpleModal.vue';
-  import { reactive, computed } from 'vue';
+  import { reactive, computed, defineAsyncComponent } from 'vue';
   import { IRejectionReason } from '../../../models/analysis';
   import { ADD_REJECTION_REASON, EDIT_REJECTION_REASON } from '../../../graphql/analyses.mutations';
 
   import { useAnalysisStore } from '../../../stores';
   import { useApiUtil } from '../../../composables';
+  const modal = defineAsyncComponent(
+    () => import('../../../components/SimpleModal.vue')
+  )
 
   const analysisStore = useAnalysisStore()
   const { withClientMutation } = useApiUtil()

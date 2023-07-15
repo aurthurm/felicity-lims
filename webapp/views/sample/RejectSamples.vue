@@ -50,11 +50,6 @@ const rejectSamples_ = async () => {
     toReject.push({ uid: item?.uid, reasons: item?.reasons, other: item?.other });
   });
   await rejectSamples(toReject).then((done) => {
-    console.log(
-      toReject.length,
-      routerState.back?.toString(),
-      routerState.back?.toString().includes("patient/")
-    );
     if (toReject.length == 1 && routerState.back?.toString().includes("patient")) {
       router.push({ path: routerState.back.toString() });
     } else {

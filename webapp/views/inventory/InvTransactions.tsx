@@ -89,3 +89,4 @@ const InventoryTransactions = defineComponent({
 });
 
 export { InventoryTransactions };
+export default InventoryTransactions

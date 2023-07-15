@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import DataTable from "../../components/datatable/DataTable.vue";
-import { h, ref, reactive, computed } from "vue";
+import { h, ref, reactive, computed, defineAsyncComponent } from "vue";
 import { RouterLink } from "vue-router";
 import { storeToRefs } from "pinia";
 import { useRoute, useRouter } from "vue-router";
@@ -8,6 +7,9 @@ import { IAnalysisProfile, IAnalysisService, ISample } from "../../models/analys
 import { ifZeroEmpty, parseDate } from "../../utils/helpers";
 import { useSampleStore, useAnalysisStore } from "../../stores";
 import { useSampleComposable } from "../../composables";
+const DataTable = defineAsyncComponent(
+  () => import("../../components/datatable/DataTable.vue")
+)
 
 import * as shield from "../../guards";
 

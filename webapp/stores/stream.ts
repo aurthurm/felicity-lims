@@ -49,7 +49,6 @@ export const useStreamStore = defineStore('stream', {
                     if (result.data?.latestActivity) {
                         this.addStream(result.data?.latestActivity);
                     } else {
-                        console.log('empty stream received');
                     }
                 })
             ).unsubscribe;

@@ -1,14 +1,17 @@
 <script setup lang="ts">
-  import LoadingMessage from "../../components/Spinners/LoadingMessage.vue"
-  import modal from '../../components/SimpleModal.vue';
-  import { ref, reactive, computed } from 'vue';
+  import { ref, reactive, computed, defineAsyncComponent } from 'vue';
   import { storeToRefs } from 'pinia'
   import { useSampleStore, useAnalysisStore, useSetupStore } from '../../stores';
   import { IAnalysisProfile, IAnalysisService, IQCRequest, ISample } from '../../models/analysis';
   import { ADD_QC_REQUEST } from '../../graphql/analyses.mutations';
   import { useApiUtil } from '../../composables'
-
   import * as shield from '../../guards'
+  const LoadingMessage = defineAsyncComponent(
+    () => import("../../components/Spinners/LoadingMessage.vue")
+  )
+  const modal = defineAsyncComponent(
+    () => import('../../components/SimpleModal.vue')
+  )
 
   const sampleStore = useSampleStore();
   const analysisStore = useAnalysisStore();
@@ -92,7 +95,7 @@
 
   function showMoreQCSets(): void {
     qcSetParams.first = +qcSetBatch.value;
-    qcSetParams.after = pageInfo?.value?.endCursor;
+    qcSetParams.after = pageInfo?.value?.pageInfo?.endCursor ?? "";
     qcSetParams.text = "";
     qcSetParams.filterAction = false;
     sampleStore.fetchQCSets(qcSetParams);
@@ -139,9 +142,6 @@
   const qcLevels = computed(() => analysisStore.getQCLevels)
   const qcSetCount = computed(() => sampleStore.getQCSets?.length + " of " + sampleStore.getQCSetCount + " QC Sets")
 </script>
-
-
-   
 
 <template>
   <div class="flex items-center justify-between">
@@ -219,10 +219,10 @@
                   </div>
                 </td>
                 <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-                  <div class="text-sm leading-5 text-sky-800">{{ qcSetSamples(qcSet.samples!) }}</div>
+                  <div class="text-sm leading-5 text-sky-800">{{ qcSetSamples(qcSet.samples ?? []) }}</div>
                 </td>
                 <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-                  <div class="text-sm leading-5 text-sky-800">{{ qcSetProfileAnalyses(qcSet.samples!) }}</div>
+                  <div class="text-sm leading-5 text-sky-800">{{ qcSetProfileAnalyses(qcSet.samples ?? []) }}</div>
                 </td>
                 <td class="px-1 py-1 whitespace-no-wrap text-right border-b border-gray-500 text-sm leading-5">
                     <router-link 
@@ -243,13 +243,13 @@
       <div class="my-4 flex sm:flex-row flex-col">
         <button 
         @click.prevent="showMoreQCSets()"
-        v-show="pageInfo?.hasNextPage"
+        v-show="pageInfo?.pageInfo?.hasNextPage"
         class="px-2 py-1 mr-2 border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
         >Show More</button>
         <div class="flex flex-row mb-1 sm:mb-0">
             <div class="relative">
                 <select class="appearance-none h-full rounded-l-sm border block  w-full bg-white border-gray-400 text-gray-700 py-2 px-4 pr-8 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                v-model="qcSetBatch" :disabled="!pageInfo?.hasNextPage">
+                v-model="qcSetBatch" :disabled="!pageInfo?.pageInfo?.hasNextPage">
                     <option value="25">25</option>
                     <option value="50">50</option>
                     <option value="100">100</option>

@@ -1,7 +1,12 @@
-import { defineComponent, computed, reactive, toRefs, ref, watch } from 'vue';
+import { defineComponent, computed, ref, defineAsyncComponent } from 'vue';
 import { useStorageStore } from '../../stores';
-import { ContainerColumn } from './ContainerColumn';
-import { ContainerGrid } from './ContainerGrid';
+
+const ContainerColumn = defineAsyncComponent(
+    () => import("./ContainerColumn")
+)
+const ContainerGrid = defineAsyncComponent(
+    () => import("./ContainerGrid")
+)
 
 const ContainerView = defineComponent({
     name: 'contaner-view',
@@ -86,3 +91,4 @@ const ContainerView = defineComponent({
 });
 
 export { ContainerView };
+export default ContainerView

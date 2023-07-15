@@ -1,9 +1,17 @@
 <script setup lang="ts">
-  import { ref, computed } from 'vue';
-  import tabInstrumentTypes from './InstrumentTypes.vue'
-  import tabInstruments from './Instruments.vue'
-  import tabMethods from './Methods.vue'
-  import tabUnits from './Units.vue'
+  import { ref, computed, defineAsyncComponent } from 'vue';
+  const tabInstrumentTypes = defineAsyncComponent(
+    () => import('./InstrumentTypes.vue')
+  )
+  const tabInstruments = defineAsyncComponent(
+    () => import('./Instruments.vue')
+  )
+  const tabMethods = defineAsyncComponent(
+    () => import('./Methods.vue')
+  )
+  const tabUnits = defineAsyncComponent(
+    () => import('./Units.vue')
+  )
 
   let currentTab = ref('instruments');
   const tabs = ['instrument-types', 'instruments', 'methods', 'units'];

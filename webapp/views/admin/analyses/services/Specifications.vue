@@ -1,11 +1,14 @@
 <script setup lang="ts">
-  import modal from '../../../../components/SimpleModal.vue';
-  import { computed, ref, reactive, toRefs, watch } from 'vue';
+  import { computed, ref, reactive, toRefs, watch, defineAsyncComponent } from 'vue';
   import { ADD_ANALYSIS_SPECIFICATION, EDIT_ANALYSIS_SPECIFICATION  } from '../../../../graphql/analyses.mutations';
   import { IAnalysisSpecification } from '../../../../models/analysis';
   import { IMethod } from '../../../../models/setup';
   import { useSetupStore, useAnalysisStore } from '../../../../stores';
   import { useApiUtil } from '../../../../composables';
+  const modal = defineAsyncComponent(
+    () => import('../../../../components/SimpleModal.vue')
+  )
+
 
   const analysisStore = useAnalysisStore()
   const  setupStore = useSetupStore()
@@ -84,7 +87,7 @@
       showModal.value = false;
   }
 
-  const methodName = (uid: number): string => {
+  const methodName = (uid: string): string => {
     const index = methods?.value?.findIndex(item => item.uid === uid)
     return methods?.value[index]?.name as string;
   }
