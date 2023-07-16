@@ -47,8 +47,11 @@ class AnalysisResult(Auditable, BaseMPTT):
     submitted_by = relationship(
         "User", foreign_keys=[submitted_by_uid], lazy="selectin"
     )
+    
+    submitted_by_name = Column(String, nullable=True)
     date_submitted = Column(DateTime, nullable=True)
     verified_by = relationship("User", secondary=result_verification, lazy="selectin")
+    verified_by_name = Column(String, nullable=True)
     date_verified = Column(DateTime, nullable=True)
     invalidated_by_uid = Column(String, ForeignKey("user.uid"), nullable=True)
     invalidated_by = relationship(

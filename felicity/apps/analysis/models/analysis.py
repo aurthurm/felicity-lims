@@ -733,8 +733,9 @@ class Sample(Auditable, BaseMPTT):
     async def un_assign(self):
         self.assigned = False
         return await self.save()
+    
 
-    async def verify(self, verified_by):
+    async def is_verifiable(self):
         statuses = [
             states.result.APPROVED,
             states.result.RETRACTED,
@@ -743,7 +744,13 @@ class Sample(Auditable, BaseMPTT):
         analysis_results = await self.get_analysis_results()
         match = all([(sibling.status in statuses)
                     for sibling in analysis_results])
-        if match and self.status in [states.sample.AWAITING]:
+        if match and self.status in [states.sample.AWAITING, states.sample.PAIRED]:
+            return True
+        return False
+
+    async def verify(self, verified_by):
+        is_verifiable = await self.is_verifiable()
+        if is_verifiable:
             self.status = states.sample.APPROVED
             self.verified_by_uid = verified_by.uid
             self.date_verified = datetime.now()

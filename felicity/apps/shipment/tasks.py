@@ -6,6 +6,7 @@ from apps.shipment import conf, models
 from apps.shipment.utils import shipment_assign, shipment_reset_assigned_count, shipment_receive, shipment_result_update
 from apps.iol.relay import post_data
 from apps.iol.fhir.utils import get_shipment_bundle_resource, get_diagnostic_report_resource
+from apps.user.models import User
 
 
 logging.basicConfig(level=logging.INFO)
@@ -175,7 +176,8 @@ async def process_shipped_report(job_uid: str):
     data = job.data.get("data", None)
 
     assert data["resourceType"] == "DiagnosticReport"
-    
-    await shipment_result_update(data)
+
+    actor = await User.get(uid=job.creator_uid)
+    await shipment_result_update(data, actor)
 
     await job.change_status(new_status=job_states.FINISHED)

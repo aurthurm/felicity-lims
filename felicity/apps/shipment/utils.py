@@ -409,7 +409,7 @@ async def shipment_send(uid: str, by_uid=None):
     )
 
 
-async def shipment_result_update(diagnostic_report: dict):
+async def shipment_result_update(diagnostic_report: dict, user: User):
     # get basedOn-uid
     based_on = diagnostic_report.get("basedOn", None)
     if not based_on:
@@ -438,6 +438,10 @@ async def shipment_result_update(diagnostic_report: dict):
         target = results[0]
 
         update_in = {
-            "result": value
+            "result": value,
+            "submitted_by_name": "",
+            "verified_by_name": "",
+            "status": analysis_conf.states.result.APPROVED
         }
         await target.update(update_in)
+        await sample.verify(user)
