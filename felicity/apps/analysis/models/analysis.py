@@ -616,9 +616,10 @@ class Sample(Auditable, BaseMPTT):
             return await self.save()
         return self
 
-    async def change_status(self, status, updated_by_uid):
+    async def change_status(self, status, updated_by_uid=None):
         self.status = status
-        self.updated_by_uid = updated_by_uid  # noqa
+        if updated_by_uid:
+            self.updated_by_uid = updated_by_uid  # noqa
         await self.save()
 
     async def extend_due_date(self, ext_minutes: int):
@@ -734,7 +735,6 @@ class Sample(Auditable, BaseMPTT):
         self.assigned = False
         return await self.save()
     
-
     async def is_verifiable(self):
         statuses = [
             states.result.APPROVED,
@@ -746,6 +746,12 @@ class Sample(Auditable, BaseMPTT):
                     for sibling in analysis_results])
         if match and self.status in [states.sample.AWAITING, states.sample.PAIRED]:
             return True
+        
+        # if there are no results in referred state but some are in pending state. transition awaiting to pending state
+        analysis, referred = await self.get_referred_analyses()
+        if not referred and not list(filter(lambda an: an.status in [states.result.PENDING] ,analysis)):
+            self.change_status(states.sample.RECEIVED)
+
         return False
 
     async def verify(self, verified_by):
