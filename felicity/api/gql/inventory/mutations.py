@@ -141,6 +141,7 @@ StockTransactionResponse = strawberry.union(
 class StockTransactionInputType:
     product_uid: str
     issued: int
+    issued_to_uid: str
     department_uid: str | None = None
 
 
@@ -556,6 +557,7 @@ class InventoryMutations:
         incoming: dict = {
             "created_by_uid": felicity_user.uid,
             "updated_by_uid": felicity_user.uid,
+            "order_by_uid": felicity_user.uid,
         }
         for k, v in payload.__dict__.items():
             incoming[k] = v
@@ -586,7 +588,7 @@ class InventoryMutations:
 
     @strawberry.mutation
     async def update_stock_order(
-        self, info, uid: str, payload: List[StockOrderProductLineInputType]
+        self, info, uid: str, payload: StockOrderInputType
     ) -> StockOrderResponse:
         is_authenticated, felicity_user = await auth_from_info(info)
         auth_success, auth_error = verify_user_auth(
@@ -602,11 +604,17 @@ class InventoryMutations:
             return OperationError(
                 error=f"You can only update a StockOrder under preparation"
             )
+        
+        obj_in = schemas.StockOrderUpdate(**{
+            "department_uid" : payload.department_uid,
+            "order_by_uid": felicity_user.uid,
+        })
+        await stock_order.update(obj_in)
 
         # add Order Products
         old_products = await models.StockOrderProduct.get_all(order_uid=uid)
         _pr_uids = [p.product_uid for p in old_products]
-        for prod in payload:
+        for prod in payload.order_products:
             # New product
             if prod.product_uid not in _pr_uids:
                 product: models.StockProduct = await models.StockProduct.get(
@@ -626,7 +634,7 @@ class InventoryMutations:
                 await so_product.update({"quantity": prod.quantity})
 
         # delete removed products
-        order_products_uids = [p.product_uid for p in payload]
+        order_products_uids = [p.product_uid for p in payload.order_products]
         for _op in old_products:
             if _op.product_uid not in order_products_uids:
                 await _op.delete()
@@ -679,7 +687,7 @@ class InventoryMutations:
             )
 
         stock_order = await stock_order.update(
-            {"status": payload.status, "remarks": payload.remarks}
+            {"status": payload.status, "remarks": payload.remarks }
         )  # noqa
         return types.StockOrderType(**stock_order.marshal_simple())
 
@@ -772,6 +780,7 @@ class InventoryMutations:
         incoming: dict = {
             "created_by_uid": felicity_user.uid,
             "updated_by_uid": felicity_user.uid,
+            "transaction_by_uid": felicity_user.uid,
             "date_issued": datetime.now(),
         }
         for k, v in payload.__dict__.items():
@@ -814,6 +823,7 @@ class InventoryMutations:
         incoming: dict = {
             "created_by_uid": felicity_user.uid,
             "updated_by_uid": felicity_user.uid,
+            "adjustment_by_uid": felicity_user.uid,
             "adjustment_date": datetime.now(),
         }
         for k, v in payload.__dict__.items():
@@ -827,7 +837,7 @@ class InventoryMutations:
         product = await models.StockProduct.get(uid=stock_adjustment.product_uid)
 
         # Adjust
-        if stock_adjustment.adjustment_type == "transfer in":
+        if stock_adjustment.adjustment_type == "transfer-in":
             remaining = product.remaining + stock_adjustment.adjust
             await product.update({"remaining": remaining})
         else:
@@ -835,11 +845,11 @@ class InventoryMutations:
             if remaining < 0:
                 await stock_adjustment.update(
                     {
-                        "remarks": "Sustained: Sorry you cant transact beyond what you have"
+                        "remarks": "Sustained: Sorry you cant adjust beyond what you have"
                     }
                 )  # noqa
                 return OperationError(
-                    error="Sorry you cant transact beyond what you have"
+                    error="Sorry you cant adjust beyond what you have"
                 )
             else:
                 await product.update({"remaining": remaining})

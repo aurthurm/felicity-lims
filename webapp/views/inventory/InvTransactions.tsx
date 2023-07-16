@@ -1,4 +1,4 @@
-import { defineComponent, computed, reactive, toRefs, ref, watch } from 'vue';
+import { defineComponent, ref, h } from 'vue';
 import DataTable from '../../components/datatable/DataTable.vue';
 import { useInventoryStore } from '../../stores';
 
@@ -6,6 +6,12 @@ const InventoryTransactions = defineComponent({
     name: 'stock-transactions',
     setup(props, ctx) {
         const inventoryStore = useInventoryStore();
+        inventoryStore.fetchTransactions({
+            first: 50,
+            after: '',
+            text: '',
+            sortBy: ['uid'],
+        });
 
         const tableColumns = ref([
             {
@@ -44,6 +50,29 @@ const InventoryTransactions = defineComponent({
                 sortable: false,
                 sortBy: 'asc',
                 hidden: false,
+                customRender: function (transaction) {
+                    return h(
+                        'div',
+                        {},
+                        [
+                            h(
+                                'div',
+                                {
+                                    class: "mr-2",
+                                    innerHTML: `${transaction?.department?.name ?? "No Department"}`,
+                                },
+                                []
+                            ),
+                            h(
+                                'div',
+                                {
+                                    innerHTML: `${transaction?.transactionBy?.firstName ?? "---"} ${transaction?.transactionBy?.lastName ?? ""}`,
+                                },
+                                []
+                            )                 
+                        ]
+                    );
+                },
             },
             {
                 name: 'Transacion By',
@@ -51,6 +80,15 @@ const InventoryTransactions = defineComponent({
                 sortable: false,
                 sortBy: 'asc',
                 hidden: false,
+                customRender: function (transaction) {
+                    return h(
+                        'span',
+                        {
+                            innerHTML: `${transaction?.transactionBy?.firstName ?? "---"} ${transaction?.transactionBy?.lastName ?? ""}`,
+                        },
+                        []
+                    );
+                },
             },
         ]);
 

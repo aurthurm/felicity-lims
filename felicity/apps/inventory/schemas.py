@@ -191,7 +191,8 @@ class StockOrderBase(BaseAuditModel):
     status: str | None = None
     order_number: str | None = None
     remarks: str | None = None
-
+    fullfilled_by_uid: str| None = None
+    fullfilled_by: Optional[User] = None
 
 class StockOrder(StockOrderBase):
     uid: str| None = None
@@ -243,6 +244,8 @@ class StockTransactionBase(BaseAuditModel):
     product_uid: str| None = None
     product: Optional[StockProduct] = None
     issued: int | None = None
+    issued_to_uid: str| None = None
+    issued_to: Optional[User] = None
     department_uid: str| None = None
     department: Optional[Department] = None
     date_issued: datetime | None = None

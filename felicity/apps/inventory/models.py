@@ -142,6 +142,10 @@ class StockOrder(BaseAuditDBModel):
     status = Column(String, nullable=False)
     order_number = Column(String, nullable=False)
     remarks = Column(String, nullable=True)
+    fullfilled_by_uid = Column(String, ForeignKey("user.uid"), nullable=True)
+    fullfilled_by = relationship(
+        "User", foreign_keys=[fullfilled_by_uid], lazy="selectin"
+    )
 
     @classmethod
     async def create(cls, obj_in: schemas.StockOrderCreate) -> schemas.StockOrder:
@@ -183,6 +187,10 @@ class StockTransaction(BaseAuditDBModel):
     product_uid = Column(String, ForeignKey("stockproduct.uid"), nullable=True)
     product = relationship("StockProduct", lazy="selectin")
     issued = Column(Integer, nullable=False)
+    issued_to_uid = Column(String, ForeignKey("user.uid"), nullable=True)
+    issued_to = relationship(
+        "User", foreign_keys=[issued_to_uid], lazy="selectin"
+    )
     department_uid = Column(String, ForeignKey("department.uid"), nullable=True)
     department = relationship("Department", lazy="selectin")
     date_issued = Column(DateTime, nullable=False)

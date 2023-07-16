@@ -1,4 +1,5 @@
-import { defineAsyncComponent, defineComponent, ref } from 'vue';
+import { defineAsyncComponent, defineComponent, ref, h } from 'vue';
+import { useInventoryStore } from '../../stores';
 const DataTable = defineAsyncComponent(
     () => import('../../components/datatable/DataTable.vue')
 )
@@ -6,6 +7,15 @@ const DataTable = defineAsyncComponent(
 const InventoryAdjustments = defineComponent({
     name: 'stock-adjustments',
     setup(props, ctx) {
+
+        const inventoryStore = useInventoryStore();
+        inventoryStore.fetchAdjustments({
+            first: 50,
+            after: '',
+            text: '',
+            sortBy: ['uid'],
+        });
+
         const tableColumns = ref([
             {
                 name: 'UID',
@@ -18,57 +28,67 @@ const InventoryAdjustments = defineComponent({
             },
             {
                 name: 'ID',
-                value: 'id',
+                value: 'uid',
                 sortable: false,
                 sortBy: 'asc',
                 hidden: false,
             },
             {
                 name: 'Product',
-                value: 'name',
+                value: 'product.name',
                 sortable: false,
                 sortBy: 'asc',
                 hidden: false,
             },
             {
                 name: 'Adjustment Type',
-                value: 'issued',
+                value: 'adjustmentType',
                 sortable: false,
                 sortBy: 'asc',
                 hidden: false,
             },
             {
                 name: 'Adjustment',
-                value: 'to',
+                value: 'adjust',
                 sortable: false,
                 sortBy: 'asc',
                 hidden: false,
             },
             {
                 name: 'Date Adjusted',
-                value: 'batch',
+                value: 'adjustmentDate',
                 sortable: false,
                 sortBy: 'asc',
                 hidden: false,
             },
             {
                 name: 'Remarks',
-                value: 'size',
+                value: 'remarks',
                 sortable: false,
                 sortBy: 'asc',
                 hidden: false,
             },
             {
                 name: 'Adjusted by',
-                value: 'size',
+                value: 'adjustmentBy.firstName',
                 sortable: false,
                 sortBy: 'asc',
                 hidden: false,
+                customRender: function (adjustment) {
+                    return h(
+                        'span',
+                        {
+                            innerHTML: `${adjustment?.adjustmentBy?.firstName ?? "---"} ${adjustment?.adjustmentBy?.lastName ?? ""}`,
+                        },
+                        []
+                    );
+                },
             },
         ]);
 
         return {
             tableColumns,
+            inventoryStore
         };
     },
     render() {
@@ -77,7 +97,7 @@ const InventoryAdjustments = defineComponent({
                 <div></div>
                 <DataTable
                     columns={this.tableColumns}
-                    data={[]}
+                    data={this.inventoryStore.adjustments}
                     toggleColumns={false}
                     loading={false}
                     paginable={false}

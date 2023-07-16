@@ -218,6 +218,7 @@ export const useInventoryStore = defineStore('inventory', {
         // stockOrders
         async fetchStockOrders(params) {
             this.fetchingItems = true;
+            this.stockOrders = []
             await withClientQuery(GET_ALL_STOCK_ORDERS, params, 'stockOrderAll')
                 .then((paging: IPagination<IStockOrder>) => {
                     this.fetchingItems = false;
@@ -245,7 +246,7 @@ export const useInventoryStore = defineStore('inventory', {
         // transactions
         async fetchTransactions(params) {
             this.fetchingTransactions = true;
-            await withClientQuery(GET_ALL_STOCK_TRANSACTIONS, params, 'stockTransactionAll')
+            await withClientQuery(GET_ALL_STOCK_TRANSACTIONS, params, 'stockTransactionAll', 'cache-and-network')
                 .then((paging: IPagination<IStockTransaction>) => {
                     this.fetchingTransactions = false;
                     this.transactions = paging.items ?? [];

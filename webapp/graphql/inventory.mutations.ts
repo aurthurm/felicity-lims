@@ -367,9 +367,9 @@ export const ADD_STOCK_TRANSACTION = gql`
 
 // adjustments
 export const ADD_STOCK_ADJUSTMENT = gql`
-    mutation AddStockAjustment($payload: StockAjustmentInputType!) {
-        createStockAjustment(payload: $payload) {
-            ... on StockAjustmentType {
+    mutation AddStockAdjustment($payload: StockAdjustmentInputType!) {
+        createStockAdjustment(payload: $payload) {
+            ... on StockAdjustmentType {
                 __typename
                 uid
                 productUid
@@ -377,7 +377,7 @@ export const ADD_STOCK_ADJUSTMENT = gql`
                 adjust
                 adjustmentDate
                 remarks
-                adjustment_by_uid
+                adjustmentByUid
                 createdAt
                 createdByUid
             }
@@ -423,7 +423,7 @@ export const ADD_STOCK_ORDER = gql`
 `;
 
 export const EDIT_STOCK_ORDER = gql`
-    mutation EditStockOrder($uid: String!, $payload: [StockOrderProductLineInputType!]!) {
+    mutation EditStockOrder($uid: String!, $payload: StockOrderInputType!) {
         updateStockOrder(uid: $uid, payload: $payload) {
             ... on StockOrderLineType {
                 __typename

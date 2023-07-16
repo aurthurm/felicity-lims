@@ -162,3 +162,4 @@ const Hazard = defineComponent({
 });
 
 export { Hazard };
+export default Hazard

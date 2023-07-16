@@ -1,5 +1,5 @@
 import { computed, defineComponent, reactive, ref, h, defineAsyncComponent } from 'vue';
-import { useInventoryStore } from '../../stores';
+import { useInventoryStore, useSetupStore } from '../../stores';
 import { IStockOrder, IStockOrderProduct } from '../../models/inventory';
 import { useApiUtil } from '../../composables';
 import { GET_ALL_STOCK_ORDER_PRODUCTS } from '../../graphql/inventory.queries';
@@ -16,12 +16,21 @@ const InventoryOrders = defineComponent({
     name: 'stock-orders',
     setup(props, ctx) {
         const { withClientQuery, withClientMutation } = useApiUtil();
+        const setupStore = useSetupStore()
         const inventoryStore = useInventoryStore();
+        inventoryStore.fetchStockOrders({
+            first: 50,
+            after: '',
+            text: '',
+            status: "preperation",
+            sortBy: ['uid'],
+        });
 
         const openDrawer = ref(false);
         const slectedStockOrder = reactive({
             order: {} as IStockOrder,
             products: [] as IStockOrderProduct[],
+            departmentUid: "",
         });
 
         const getOrderProducts = async (stockOrderUid: number) => {
@@ -55,6 +64,7 @@ const InventoryOrders = defineComponent({
                             innerHTML: order?.orderNumber,
                             onClick: () => {
                                 slectedStockOrder.order = order;
+                                slectedStockOrder.departmentUid = order?.department?.uid;
                                 getOrderProducts(order?.uid);
                                 openDrawer.value = true;
                             },
@@ -72,7 +82,23 @@ const InventoryOrders = defineComponent({
             },
             {
                 name: 'Orderer',
-                value: 'orderBy.firstName',
+                value: 'orderBy',
+                sortable: false,
+                sortBy: 'asc',
+                hidden: false,
+                customRender: function (order) {
+                    return h(
+                        'span',
+                        {
+                            innerHTML: `${order?.orderBy?.firstName ?? "---"} ${order?.orderBy?.lastName ?? ""}`,
+                        },
+                        []
+                    );
+                },
+            },
+            {
+                name: 'Issued By',
+                value: 'status',
                 sortable: false,
                 sortBy: 'asc',
                 hidden: false,
@@ -98,17 +124,22 @@ const InventoryOrders = defineComponent({
         return {
             tableColumns,
             inventoryStore,
+            setupStore,
             slectedStockOrder,
             openDrawer,
             stockOrderParams,
             filterOptions: [
                 { name: 'All', value: '' },
                 { name: 'Preperation', value: 'preperation' },
+                { name: 'Submitted', value: 'submitted' },
+                { name: 'Processed', value: 'processed' },
             ],
             filterStockOrders: (opts: any) => {
+                console.log(opts)
                 stockOrderParams.first = 50;
                 stockOrderParams.before = '';
                 stockOrderParams.text = opts.filterText;
+                stockOrderParams.status = opts.filterStatus;
                 stockOrderParams.filterAction = true;
                 inventoryStore.fetchStockOrders(stockOrderParams);
             },
@@ -116,6 +147,7 @@ const InventoryOrders = defineComponent({
                 stockOrderParams.first = opts.fetchCount;
                 stockOrderParams.before = inventoryStore.stockOrdersPaging?.pageInfo?.endCursor ?? '';
                 stockOrderParams.text = opts.filterText;
+                stockOrderParams.status = opts.filterStatus;
                 stockOrderParams.filterAction = false;
                 inventoryStore.fetchStockOrders(stockOrderParams);
             },
@@ -147,10 +179,10 @@ const InventoryOrders = defineComponent({
                 slectedStockOrder.products = [...slectedStockOrder.products.filter(oi => oi.product.uid !== productUid)];
             },
             updateOrder: () => {
-                const payload: any[] = [];
+                const product_lines: any[] = [];
 
                 for (const op of slectedStockOrder.products) {
-                    payload.push({
+                    product_lines.push({
                         productUid: op.product.uid,
                         quantity: op.quantity,
                         remarks: '',
@@ -161,7 +193,10 @@ const InventoryOrders = defineComponent({
                     EDIT_STOCK_ORDER,
                     {
                         uid: slectedStockOrder.order.uid,
-                        payload,
+                        payload: {
+                            orderProducts: product_lines,
+                            departmentUid: slectedStockOrder.departmentUid
+                        },
                     },
                     'updateStockOrder'
                 ).then(result => {
@@ -216,6 +251,14 @@ const InventoryOrders = defineComponent({
                                 {this.slectedStockOrder?.order?.status == 'preparation' && (
                                     <>
                                         <div>Status: {this.slectedStockOrder?.order?.status}</div>
+                                        <hr />
+                                        <label class="flex justify-between items-center gap-4 mb-4">
+                                            <span class="text-gray-700">Department</span>
+                                            <select class="form-select block w-full mt-1" v-model={this.slectedStockOrder.departmentUid}>
+                                                {this.setupStore.departments.map(department => (<option value={department.uid}>{department.name}</option>))}
+                                            </select>
+                                        </label>
+                                        <hr />
                                         <div class="overflow-x-auto mt-2 mb-4">
                                             <div class="align-middle inline-block min-w-full shadow overflow-hidden bg-white shadow-dashboard px-2 pt-1 rounded-bl-lg rounded-br-lg">
                                                 <table class="min-w-full">
@@ -260,6 +303,10 @@ const InventoryOrders = defineComponent({
                                                     </tbody>
                                                 </table>
                                             </div>
+                                        </div>
+                                        <hr />
+                                        <div class="my-2">
+                                            <p class="italic text-red-400 text-xs">If you made any changes here please update order first before finalising else your changes wont be saved</p>
                                         </div>
                                         <hr />
                                         <div class="flex justify-start gap-x-4">

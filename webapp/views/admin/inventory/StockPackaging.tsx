@@ -154,3 +154,4 @@ const StockPackaging = defineComponent({
 });
 
 export { StockPackaging };
+export default StockPackaging

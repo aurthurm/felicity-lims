@@ -164,3 +164,4 @@ const StockCategory = defineComponent({
 });
 
 export { StockCategory };
+export default StockCategory

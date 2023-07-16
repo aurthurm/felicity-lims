@@ -141,8 +141,8 @@ export const GET_ALL_STOCK_ITEMS = gql`
 
 // stock orders
 export const GET_ALL_STOCK_ORDERS = gql`
-    query getAllStockOrders($first: Int!, $after: String, $text: String!, $sortBy: [String!] = ["uid"]) {
-        stockOrderAll(pageSize: $first, afterCursor: $after, text: $text, sortBy: $sortBy) {
+    query getAllStockOrders($first: Int!, $after: String, $status: String!, $text: String!, $sortBy: [String!] = ["uid"]) {
+        stockOrderAll(pageSize: $first, afterCursor: $after, status: $status,text: $text, sortBy: $sortBy) {
             totalCount
             pageInfo {
                 hasNextPage
@@ -201,6 +201,11 @@ export const GET_ALL_STOCK_TRANSACTIONS = gql`
                     name
                 }
                 issued
+                issuedToUid
+                issuedTo {
+                    firstName
+                    lastName
+                }
                 department {
                     uid
                     name
@@ -231,11 +236,18 @@ export const GET_ALL_STOCK_ADJUSTMENTS = gql`
             items {
                 uid
                 productUid
+                product {
+                    name
+                }
                 adjustmentType
                 adjust
                 adjustmentDate
                 remarks
                 adjustmentByUid
+                adjustmentBy {
+                    firstName
+                    lastName
+                }
                 createdAt
                 createdByUid
                 updatedAt

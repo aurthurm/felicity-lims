@@ -1,6 +1,9 @@
 import { computed, defineComponent, reactive, ref, h, defineAsyncComponent } from 'vue';
 import { useInventoryStore } from '../../stores';
 import { IStockProduct } from '../../models/inventory';
+import { useApiUtil } from '../../composables';
+import { ADD_STOCK_ADJUSTMENT } from '../../graphql/inventory.mutations';
+
 const DataTable = defineAsyncComponent(
     () => import('../../components/datatable/DataTable.vue')
 )
@@ -17,13 +20,24 @@ const StockProductForm = defineAsyncComponent(
 const InventoryListing = defineComponent({
     name: 'stock-listing',
     setup(props, ctx) {
+        const { withClientMutation } = useApiUtil();
         const inventoryStore = useInventoryStore();
+        inventoryStore.fetchProducts({
+            first: 50,
+            after: '',
+            text: '',
+            sortBy: ['uid'],
+        });
 
         const choiceProduct = reactive({
             product: {} as IStockProduct,
             quantity: 0,
+            type: "",
+            remarks: ""
         });
         const openAddProduct = ref(false);
+        
+        const openAdjustProduct = ref(false);
 
         const tableColumns = ref([
             {
@@ -144,7 +158,12 @@ const InventoryListing = defineComponent({
                                 {
                                     type: 'button',
                                     class: 'bg-sky-800 text-white py-1 px-2 rounded-sm leading-none',
-                                    innerHTML: 'Adjust',
+                                    innerHTML: '+/- Adjust',
+                                    onClick: () => {
+                                        choiceProduct.product = product;
+                                        choiceProduct.quantity = 0;
+                                        openAdjustProduct.value = true;
+                                    },
                                 },
                                 []
                             ),
@@ -168,6 +187,7 @@ const InventoryListing = defineComponent({
             openDrawer: ref(false),
             openAddProduct,
             choiceProduct,
+            openAdjustProduct,
             filterProducts: (opts: any) => {
                 productParams.first = 50;
                 productParams.before = '';
@@ -186,6 +206,22 @@ const InventoryListing = defineComponent({
             validateMinMax: event => {
                 const value = Math.max(0, Math.min(choiceProduct.product.remaining ?? 0, Number(event.target.value)));
                 choiceProduct.quantity = value;
+            },
+            adjustStock: () => {
+                withClientMutation(
+                    ADD_STOCK_ADJUSTMENT,
+                    {
+                      payload: {
+                        productUid: choiceProduct.product.uid,
+                        adjustmentType: choiceProduct.type,
+                        adjust: choiceProduct.quantity,
+                        remarks: choiceProduct.remarks
+                      }
+                    },
+                    'createStockAjustment'
+                ).then(result => {
+                    console.log(result)
+                });
             },
         };
     },
@@ -255,6 +291,58 @@ const InventoryListing = defineComponent({
                                             class="-mb-4 w-full border border-sky-800 bg-sky-800 text-white rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-sky-800 focus:outline-none focus:shadow-outline"
                                         >
                                             Add to basket
+                                        </button>
+                                    </form>
+                                );
+                            },
+                        }}
+                    </Modal>
+                )}
+                {this.openAdjustProduct && (
+                    <Modal onClose={() => (this.openAdjustProduct = false)} contentWidth="w-1/4">
+                        {{
+                            header: () => <h3>{this.choiceProduct.product.name}</h3>,
+                            body: () => {
+                                return (
+                                    <form action="post" class="p-1">
+                                        <label class="flex justify-between items-center gap-4 mb-4">
+                                            <span class="text-gray-700">Adjustmet</span>
+                                            <select class="form-select block w-full mt-1" v-model={this.choiceProduct.type}>
+                                                <option value="lost">Lost</option>
+                                                <option value="theft">Theft</option>
+                                                <option value="transfer-in">Transfer In</option>
+                                                <option value="transfer-out">Transfer Out</option>
+                                            </select>
+                                        </label>
+                                        <label class="flex justify-between items-center gap-4 mb-4">
+                                            <span class="text-gray-700">Quantiy</span>
+                                            <input
+                                                class="form-input mt-1 block w-full"
+                                                type="number"
+                                                onChange={this.validateMinMax}
+                                                v-model={this.choiceProduct.quantity}
+                                                placeholder="Name ..."
+                                            />
+                                        </label>
+                                        <label class="flex justify-between items-center gap-4 mb-4">
+                                            <span class="text-gray-700">Remarks</span>
+                                            <textarea
+                                                class="form-input mt-1 block w-full"
+                                                rows="3"
+                                                v-model={this.choiceProduct.remarks}
+                                                placeholder="Remarks ..."
+                                            ></textarea>
+                                        </label>
+                                        <hr />
+                                        <button
+                                            type="button"
+                                            onClick={() => {
+                                                this.adjustStock()
+                                                this.openAdjustProduct = false;
+                                            }}
+                                            class="-mb-4 w-full border border-sky-800 bg-sky-800 text-white rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-sky-800 focus:outline-none focus:shadow-outline"
+                                        >
+                                            Adjust
                                         </button>
                                     </form>
                                 );

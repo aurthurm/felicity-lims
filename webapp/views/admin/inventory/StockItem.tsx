@@ -195,3 +195,4 @@ const StockItem = defineComponent({
 });
 
 export { StockItem };
+export default StockItem

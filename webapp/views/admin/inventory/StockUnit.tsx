@@ -152,3 +152,4 @@ const StockUnit = defineComponent({
 });
 
 export { StockUnit };
+export default StockUnit

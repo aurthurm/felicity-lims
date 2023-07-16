@@ -145,6 +145,8 @@ class StockProductCursorPage:
 @strawberry.type
 class StockOrderType:
     uid: str
+    fullfilled_by_uid: str | None
+    fullfilled_by: UserType | None
     order_by_uid: str | None
     order_by: UserType | None
     department_uid: str | None
@@ -197,6 +199,8 @@ class StockTransactionType:
     product_uid: str | None
     product: Optional[StockProductType]
     issued: int | None
+    issued_to_uid: str | None
+    issued_to: UserType | None
     department_uid: str | None
     department: Optional[DepartmentType]
     date_issued: datetime | None

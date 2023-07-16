@@ -142,10 +142,11 @@ class InventoryQuery:
         page_size: int | None = None,
         after_cursor: str | None = None,
         before_cursor: str | None = None,
+        status: str | None = None,
         text: str | None = None,
         sort_by: list[str] | None = None,
     ) -> types.StockOrderCursorPage:
-        filters = {}
+        filters = []
 
         _or_ = dict()
         if has_value_or_is_truthy(text):
@@ -153,7 +154,11 @@ class InventoryQuery:
             for _arg in arg_list:
                 _or_[_arg] = f"%{text}%"
 
-            filters = {sa.or_: _or_}
+            filters.append({sa.or_: _or_})
+        
+        if status:
+            filters.append({"status__exact": status})
+
 
         page = await models.StockOrder.paginate_with_cursors(
             page_size=page_size,
@@ -167,7 +172,7 @@ class InventoryQuery:
         edges: List[types.StockOrderEdge[types.StockOrderType]] = page.edges
         items: List[types.StockOrderType] = page.items
         page_info: PageInfo = page.page_info
-
+ 
         return types.StockOrderCursorPage(
             total_count=total_count, edges=edges, items=items, page_info=page_info
         )

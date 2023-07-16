@@ -49,30 +49,6 @@ const InventoryHome = defineComponent({
         storageStore.fetchStoreRooms();
         inventoryStore.fetchUnits();
         inventoryStore.fetchPackages();
-        inventoryStore.fetchProducts({
-            first: 50,
-            after: '',
-            text: '',
-            sortBy: ['uid'],
-        });
-        inventoryStore.fetchStockOrders({
-            first: 50,
-            after: '',
-            text: '',
-            sortBy: ['uid'],
-        });
-        inventoryStore.fetchTransactions({
-            first: 50,
-            after: '',
-            text: '',
-            sortBy: ['uid'],
-        });
-        inventoryStore.fetchAdjustments({
-            first: 50,
-            after: '',
-            text: '',
-            sortBy: ['uid'],
-        });
 
         const currentTab = ref('dashboard');
         const inventoryTabs = ref(['dashboard', 'orders', 'stock-listing', 'transactions', 'adjustments']);
@@ -113,7 +89,7 @@ const InventoryHome = defineComponent({
     render() {
         return (
             <>
-                <PageHeading title="Inventory" />
+                <PageHeading title="Inventory xxxxxxxxxxxxxx" />
                 <section class="col-span-12 mt-2">
                     <nav class="flex justify-between bg-white shadow-md mt-2">
                         <div class="-mb-px flex justify-start">
