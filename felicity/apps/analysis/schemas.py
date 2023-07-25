@@ -5,6 +5,46 @@ from apps.common.schemas import BaseAuditModel, BaseModel
 from apps.setup.schemas import Department, Unit
 
 
+
+#
+# Coding standard Schemas
+#
+
+# Shared properties
+class CogingStandardBase(BaseAuditModel):
+    name: str | None
+    description: str | None
+
+
+class CogingStandardBaseInDB(CogingStandardBase):
+    uid: str | None
+
+    class Config:
+        orm_mode = True
+
+
+# Properties to receive via API on creation
+class CogingStandardCreate(CogingStandardBase):
+    pass
+
+
+# Properties to receive via API on update
+class CogingStandardUpdate(CogingStandardBase):
+    pass
+
+
+# Properties to return via API
+class CogingStandard(CogingStandardBaseInDB):
+    pass
+
+
+# Properties stored in DB
+class CogingStandardInDB(CogingStandardBaseInDB):
+    pass
+
+
+
+
 #
 # SampleType Schemas
 #
@@ -48,6 +88,48 @@ class SampleTypeInDB(SampleTypeBaseInDB):
 
 
 #
+# SampleTypeCoding Schemas
+#
+
+class SampleTypeCodingBase(BaseAuditModel):
+    sample_type_uid: str | None
+    sample_type: SampleType | None
+    coding_standard_uid: str
+    coding_standard: CogingStandard | None
+    code: str | None
+    name: str | None
+    description: str | None
+
+
+class SampleTypeCodingBaseInDB(SampleTypeCodingBase):
+    uid: str| None
+
+    class Config:
+        orm_mode = True
+
+
+# Properties to receive via API on creation
+class SampleTypeCodingCreate(SampleTypeCodingBase):
+    pass
+
+
+# Properties to receive via API on update
+class SampleTypeCodingUpdate(SampleTypeCodingBase):
+    pass
+
+
+# Properties to return via API
+class SampleTypeCoding(SampleTypeCodingBaseInDB):
+    pass
+
+
+# Properties stored in DB
+class SampleTypeCodingInDB(SampleTypeCodingBaseInDB):
+    pass
+
+
+
+#
 # Profile Schemas
 #
 
@@ -88,6 +170,49 @@ class Profile(ProfileBaseInDB):
 # Properties stored in DB
 class ProfileInDB(ProfileBaseInDB):
     pass
+
+
+#
+# ProfileCoding Schemas
+#
+
+class ProfileCodingBase(BaseAuditModel):
+    """SampleTypeMapping"""
+    profile_uid: str | None
+    profile: Profile | None
+    coding_standard_uid: str
+    coding_standard: CogingStandard | None
+    code: str | None
+    name: str | None
+    description: str | None
+
+
+class ProfileCodingBaseInDB(ProfileCodingBase):
+    uid: str| None
+
+    class Config:
+        orm_mode = True
+
+
+# Properties to receive via API on creation
+class ProfileCodingCreate(ProfileCodingBase):
+    pass
+
+
+# Properties to receive via API on update
+class ProfileCodingUpdate(ProfileCodingBase):
+    pass
+
+
+# Properties to return via API
+class ProfileCoding(ProfileCodingBaseInDB):
+    pass
+
+
+# Properties stored in DB
+class ProfileCodingInDB(ProfileCodingBaseInDB):
+    pass
+
 
 
 # AnalysisCategory Schemas
@@ -188,6 +313,45 @@ class Analysis(AnalysisBaseInDB):
 
 # Properties stored in DB
 class AnalysisInDB(AnalysisBaseInDB):
+    pass
+
+
+
+class AnalysisCodingBase(BaseAuditModel):
+    """SampleTypeMapping"""
+    analysis_uid: str | None = None
+    analysis: Analysis | None
+    coding_standard_uid: str
+    coding_standard: CogingStandard | None
+    code: str | None
+    name: str | None
+    description: str | None
+
+
+class AnalysisCodingBaseInDB(AnalysisCodingBase):
+    uid: str| None = None
+
+    class Config:
+        orm_mode = True
+
+
+# Properties to receive via API on creation
+class AnalysisCodingCreate(AnalysisCodingBase):
+    pass
+
+
+# Properties to receive via API on update
+class AnalysisCodingUpdate(AnalysisCodingBase):
+    pass
+
+
+# Properties to return via API
+class AnalysisCoding(AnalysisCodingBaseInDB):
+    pass
+
+
+# Properties stored in DB
+class AnalysisCodingInDB(AnalysisCodingBaseInDB):
     pass
 
 
@@ -724,3 +888,6 @@ class QCTemplate(QCTemplateBaseInDB):
 # Properties stored in DB
 class QCTemplateInDB(QCTemplateBaseInDB):
     pass
+
+
+

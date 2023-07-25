@@ -81,6 +81,10 @@ export const useAuthStore = defineStore('auth', () => {
         auth.value.authenticating = true;
         await withClientMutation(AUTHENTICATE_USER, payload, 'authenticateUser')
             .then(res => {
+                if(!res) {
+                    auth.value.authenticating = false;
+                    return
+                };
                 toastInfo('Welcome back ' + res?.user?.firstName);
                 initPreferences(res.user?.preference);
                 persistAuth(res);

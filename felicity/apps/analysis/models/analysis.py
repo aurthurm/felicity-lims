@@ -32,6 +32,12 @@ logger = logging.getLogger(__name__)
 streamer = FelicityStreamer()
 
 
+class CodingStandard(BaseAuditDBModel):
+    """conding standars e.g LOINC"""
+    name = Column(String, nullable=False)
+    description = Column(String, nullable=False)
+
+
 class SampleType(BaseAuditDBModel):
     """SampleType"""
 
@@ -47,6 +53,26 @@ class SampleType(BaseAuditDBModel):
         return await super().create(**data)
 
     async def update(self, obj_in: schemas.SampleTypeUpdate) -> schemas.SampleType:
+        data = self._import(obj_in)
+        return await super().update(**data)
+
+
+class SampleTypeCoding(BaseAuditDBModel):
+    """SampleTypeCoding"""
+    sample_type_uid = Column(String, ForeignKey("sampletype.uid"), nullable=False)
+    sample_type = relationship("SampleType", lazy="selectin")
+    coding_standard_uid = Column(String, ForeignKey("codingstandard.uid"), nullable=True)
+    coding_standard = relationship("CodingStandard", lazy="selectin")
+    name = Column(String, nullable=True)
+    description = Column(String, nullable=True)
+    code = Column(String, nullable=False)
+
+    @classmethod
+    async def create(cls, obj_in: schemas.SampleTypeCodingCreate) -> schemas.SampleTypeCoding:
+        data = cls._import(obj_in)
+        return await super().create(**data)
+
+    async def update(self, obj_in: schemas.SampleTypeCodingUpdate) -> schemas.SampleTypeCoding:
         data = self._import(obj_in)
         return await super().update(**data)
 
@@ -153,6 +179,27 @@ class Profile(BaseAuditDBModel):
         return await super().update(**data)
 
 
+class ProfileCoding(BaseAuditDBModel):
+    """ProfileCoding"""
+    profile_uid = Column(String, ForeignKey(
+        "profile.uid"), nullable=True)
+    profile = relationship("Profile", lazy="selectin")
+    coding_standard_uid = Column(String, ForeignKey("codingstandard.uid"), nullable=True)
+    coding_standard = relationship("CodingStandard", lazy="selectin")
+    name = Column(String, nullable=True)
+    description = Column(String, nullable=True)
+    code = Column(String, nullable=False)
+
+    @classmethod
+    async def create(cls, obj_in: schemas.ProfileCodingCreate) -> schemas.ProfileCoding:
+        data = cls._import(obj_in)
+        return await super().create(**data)
+
+    async def update(self, obj_in: schemas.ProfileCodingUpdate) -> schemas.ProfileCoding:
+        data = self._import(obj_in)
+        return await super().update(**data)
+
+
 """
  Many to Many Link between Analyses and Method
 """
@@ -239,6 +286,27 @@ class Analysis(BaseAuditDBModel):
         return await super().create(**data)
 
     async def update(self, obj_in: schemas.AnalysisUpdate) -> schemas.Analysis:
+        data = self._import(obj_in)
+        return await super().update(**data)
+
+
+class AnalysisCoding(BaseAuditDBModel):
+    """AnalysisCoding"""
+    analysis_uid = Column(String, ForeignKey(
+        "analysis.uid"), nullable=True)
+    analysis = relationship("Analysis", lazy="selectin")
+    coding_standard_uid = Column(String, ForeignKey("codingstandard.uid"), nullable=True)
+    coding_standard = relationship("CodingStandard", lazy="selectin")
+    name = Column(String, nullable=True)
+    description = Column(String, nullable=True)
+    code = Column(String, nullable=False)
+
+    @classmethod
+    async def create(cls, obj_in: schemas.AnalysisCodingCreate) -> schemas.AnalysisCoding:
+        data = cls._import(obj_in)
+        return await super().create(**data)
+
+    async def update(self, obj_in: schemas.AnalysisCodingUpdate) -> schemas.AnalysisCoding:
         data = self._import(obj_in)
         return await super().update(**data)
 

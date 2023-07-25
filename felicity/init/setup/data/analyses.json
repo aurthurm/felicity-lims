@@ -12,34 +12,39 @@
       "name": "QC Sample",
       "description": "QC Sample",
       "abbr": "QCS",
-      "active": 1
+      "active": 1,
+      "mappins": [{ "loinc": "" }]
     },
     {
       "name": "Whole Blood",
       "description": "Whole Blood",
       "abbr": "WB",
-      "active": 1
+      "active": 1,
+      "mappins": [{ "loinc": "" }]
     },
     {
       "name": "Blood Plasma",
       "description": "Blood Plasma",
       "abbr": "BP",
-      "active": 1
+      "active": 1,
+      "mappins": [{ "loinc": "" }]
     },
     {
       "name": "Blood Serum",
       "description": "Blood Serum",
       "abbr": "BS",
-      "active": 1
+      "active": 1,
+      "mappins": [{ "loinc": "" }]
     },
     {
       "name": "Dried Blood Spot",
       "description": "Dried Blood Spot",
       "abbr": "DBS",
-      "active": 1
+      "active": 1,
+      "mappins": [{ "loinc": "" }]
     },
-    { "name": "Urine", "description": "Urine", "abbr": "BV", "active": 1 },
-    { "name": "Stool", "description": "Stool", "abbr": "BG", "active": 1 },
+    { "name": "Urine", "description": "Urine", "abbr": "BV", "active": 1, "mappins": [{ "loinc": "" }] },
+    { "name": "Stool", "description": "Stool", "abbr": "BG", "active": 1, "mappins": [{ "loinc": "" }] },
     {
       "name": "Synovial Fluid",
       "description": "Synovial Fluid",
@@ -56,31 +61,36 @@
       "name": "Nasal-Pharyngeal Swab",
       "description": "Nasal-Pharyngeal Swab",
       "abbr": "NPS",
-      "active": 1
+      "active": 1,
+      "mappins": [{ "loinc": "" }]
     },
     {
       "name": "Oral-Pharyngeal Swab",
       "description": "Oral-Pharyngeal Swab",
       "abbr": "OPS",
-      "active": 0
+      "active": 0,
+      "mappins": [{ "loinc": "" }]
     },
     {
       "name": "Pus Swab",
       "description": "Pus Swab",
       "abbr": "PS",
-      "active": 0
+      "active": 0,
+      "mappins": [{ "loinc": "" }]
     },
     {
       "name": "Arterial Blood",
       "description": "Arterial Blood",
       "abbr": "AB",
-      "active": 0
+      "active": 0,
+      "mappins": [{ "loinc": "" }]
     },
     {
       "name": "Venous Blood",
       "description": "Vernous Blood",
       "abbr": "VB",
-      "active": 0
+      "active": 0,
+      "mappins": [{ "loinc": "" }]
     }
   ],
   "analyses": [
@@ -89,49 +99,56 @@
       "description": "Human Immune Virus",
       "keyword": "hiv",
       "sort_key": 1,
-      "active": 1
+      "active": 1,
+      "mappins": [{ "loinc": "" }]
     },
     {
       "name": "HIV Viral Load",
       "description": "HIV Viral Load",
       "keyword": "hivViralLoad",
       "sort_key": 1,
-      "active": 1
+      "active": 1,
+      "mappins": [{ "loinc": "" }]
     },
     {
       "name": "HIV EID",
       "description": "HIV Early Infant Diagnosis",
       "keyword": "hivEid",
       "sort_key": 1,
-      "active": 1
+      "active": 1,
+      "mappins": [{ "loinc": "" }]
     },
     {
       "name": "ESR",
       "description": "Erythrocyte Sedimentation Rate",
       "keyword": "esr",
       "sort_key": 1,
-      "active": 1
+      "active": 1,
+      "mappins": [{ "loinc": "" }]
     },
     {
       "name": "C-RP",
       "description": "C Reactive Protein",
       "keyword": "c_rp",
       "sort_key": 1,
-      "active": 1
+      "active": 1,
+      "mappins": [{ "loinc": "" }]
     },
     {
       "name": "COVID 19",
       "description": "Corona Virus - SARS COV 2",
       "keyword": "sars-cov2",
       "sort_key": 1,
-      "active": 1
+      "active": 1,
+      "mappins": [{ "loinc": "" }]
     },
     {
       "name": "HbA1cHbA1c",
       "description": "HbA1cHbA1c",
       "keyword": "HbA1cHbA1c",
       "sort_key": 1,
-      "active": 1
+      "active": 1,
+      "mappins": [{ "loinc": "" }]
     },
 
     {
@@ -139,35 +156,40 @@
       "description": "Potassium",
       "keyword": "potassium",
       "sort_key": 1,
-      "active": 1
+      "active": 1,
+      "mappins": [{ "loinc": "" }]
     },
     {
       "name": "Na-",
       "description": "Sodium",
       "keyword": "sodium",
       "sort_key": 2,
-      "active": 1
+      "active": 1,
+      "mappins": [{ "loinc": "" }]
     },
     {
       "name": "Cl-",
       "description": "Chloride",
       "keyword": "chloride",
       "sort_key": 3,
-      "active": 1
+      "active": 1,
+      "mappins": [{ "loinc": "" }]
     },
     {
       "name": "Creatinine",
       "description": "Creatinine",
       "keyword": "creatinine",
       "sort_key": 4,
-      "active": 1
+      "active": 1,
+      "mappins": [{ "loinc": "" }]
     },
     {
       "name": "Urea",
       "description": "Urea",
       "keyword": "urea",
       "sort_key": 5,
-      "active": 1
+      "active": 1,
+      "mappins": [{ "loinc": "" }]
     },
 
     {
@@ -175,56 +197,64 @@
       "description": "Alkaline Phosphatase",
       "keyword": "alp",
       "sort_key": 1,
-      "active": 1
+      "active": 1,
+      "mappins": [{ "loinc": "" }]
     },
     {
       "name": "ALT",
       "description": "Alanine Aminotransferase",
       "keyword": "alt",
       "sort_key": 2,
-      "active": 1
+      "active": 1,
+      "mappins": [{ "loinc": "" }]
     },
     {
       "name": "AST",
       "description": "Aspartate Aminotransferase",
       "keyword": "ast",
       "sort_key": 3,
-      "active": 1
+      "active": 1,
+      "mappins": [{ "loinc": "" }]
     },
     {
       "name": "ALB",
       "description": "Albumin",
       "keyword": "alb",
       "sort_key": 4,
-      "active": 1
+      "active": 1,
+      "mappins": [{ "loinc": "" }]
     },
     {
       "name": "T-PROT",
       "description": "Total Protein",
       "keyword": "t-prot",
       "sort_key": 5,
-      "active": 1
+      "active": 1,
+      "mappins": [{ "loinc": "" }]
     },
     {
       "name": "GGT",
       "description": "Gama Glutamyl Transferese",
       "keyword": "ggt",
       "sort_key": 6,
-      "active": 1
+      "active": 1,
+      "mappins": [{ "loinc": "" }]
     },
     {
       "name": "D-BIL",
       "description": "Direct Bilirubin",
       "keyword": "d-bil",
       "sort_key": 7,
-      "active": 1
+      "active": 1,
+      "mappins": [{ "loinc": "" }]
     },
     {
       "name": "T-BIL",
       "description": "Total Bilirubin",
       "keyword": "t-bil",
       "sort_key": 8,
-      "active": 1
+      "active": 1,
+      "mappins": [{ "loinc": "" }]
     },
 
     {
@@ -232,28 +262,32 @@
       "description": "Total Cholesterol",
       "keyword": "tc",
       "sort_key": 1,
-      "active": 1
+      "active": 1,
+      "mappins": [{ "loinc": "" }]
     },
     {
       "name": "LDL",
       "description": "Low density lipoprotein cholesterol",
       "keyword": "ldl",
       "sort_key": 2,
-      "active": 1
+      "active": 1,
+      "mappins": [{ "loinc": "" }]
     },
     {
       "name": "HDL",
       "description": "Hig density lipoprotein cholesterol",
       "keyword": "hdl",
       "sort_key": 3,
-      "active": 1
+      "active": 1,
+      "mappins": [{ "loinc": "" }]
     },
     {
       "name": "Trig",
       "description": "Triglycerides",
       "keyword": "trig",
       "sort_key": 4,
-      "active": 1
+      "active": 1,
+      "mappins": [{ "loinc": "" }]
     },
 
     {
@@ -261,63 +295,72 @@
       "description": "White Blood Cells",
       "keyword": "wbc",
       "sort_key": 1,
-      "active": 1
+      "active": 1,
+      "mappins": [{ "loinc": "" }]
     },
     {
       "name": "RBC",
       "description": "Red Blood Cells",
       "keyword": "rbc",
       "sort_key": 2,
-      "active": 1
+      "active": 1,
+      "mappins": [{ "loinc": "" }]
     },
     {
       "name": "HGB",
       "description": "Haemoglobin",
       "keyword": "hbg",
       "sort_key": 3,
-      "active": 1
+      "active": 1,
+      "mappins": [{ "loinc": "" }]
     },
     {
       "name": "HCT",
       "description": "Haematocrit",
       "keyword": "hct",
       "sort_key": 4,
-      "active": 1
+      "active": 1,
+      "mappins": [{ "loinc": "" }]
     },
     {
       "name": "MVC",
       "description": "Mean Corpuscular Volume",
       "keyword": "mcv",
       "sort_key": 5,
-      "active": 1
+      "active": 1,
+      "mappins": [{ "loinc": "" }]
     },
     {
       "name": "MCH",
       "description": "Mean Corpuscular Haemoglobin",
       "keyword": "mch",
       "sort_key": 6,
-      "active": 1
+      "active": 1,
+      "mappins": [{ "loinc": "" }]
     },
     {
       "name": "MCHC",
       "description": "Mean Corpuscular Haemoglobin Concentration",
       "keyword": "mchc",
       "sort_key": 7,
-      "active": 1
+      "active": 1,
+      "mappins": [{ "loinc": "" }]
     },
     {
       "name": "PLT",
       "description": "Platelets",
       "keyword": "plt",
       "sort_key": 8,
-      "active": 1
+      "active": 1,
+      "mappins": [{ "loinc": "" }]
     }
   ],
   "analyses_profiles": [
     {
       "name": "U&E's",
       "description": "Urea and Electrolytes",
-      "analyses_names": ["Urea", "Creatinine", "K+", "Na-", "Cl-"]
+      "analyses_names": ["Urea", "Creatinine", "K+", "Na-", "Cl-"],
+      "mappins": [{ "loinc": "" }]
     },
     {
       "name": "LFT's",
@@ -331,12 +374,14 @@
         "GGT",
         "D-BIL",
         "T-BIL"
-      ]
+      ],
+      "mappins": [{ "loinc": "" }]
     },
     {
       "name": "Lipids",
       "description": "Lipid or Cholesterol Profile",
-      "analyses_names": ["TC", "LDL", "HDL", "Trig"]
+      "analyses_names": ["TC", "LDL", "HDL", "Trig"],
+      "mappins": [{ "loinc": "" }]
     },
     {
       "name": "FBC",
@@ -350,7 +395,8 @@
         "MCH",
         "MCHC",
         "PLT"
-      ]
+      ],
+      "mappins": [{ "loinc": "" }]
     }
   ],
   "rejection_reasons": [
