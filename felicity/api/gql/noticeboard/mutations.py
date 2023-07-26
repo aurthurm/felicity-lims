@@ -9,6 +9,7 @@ from api.gql import (
     auth_from_info,
     verify_user_auth,
 )
+from api.gql.permissions import IsAuthenticated
 from api.gql.noticeboard.types import NoticeType
 from apps.noticeboard import models, schemas
 
@@ -35,7 +36,7 @@ class NoticeInputType:
 
 @strawberry.type
 class NoticeMutations:
-    @strawberry.mutation
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_notice(self, info, payload: NoticeInputType) -> NoticeResponse:
 
         is_authenticated, felicity_user = await auth_from_info(info)
@@ -83,7 +84,7 @@ class NoticeMutations:
         notice: models.Notice = await models.Notice.create(obj_in)
         return NoticeType(**notice.marshal_simple())
 
-    @strawberry.mutation
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_notice(
         self, info, uid: str, payload: NoticeInputType
     ) -> NoticeResponse:
@@ -132,7 +133,7 @@ class NoticeMutations:
         notice = await notice.update(notice_in)
         return NoticeType(**notice.marshal_simple())
 
-    @strawberry.mutation
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def view_notice(
         self, info, uid: str, viewer: str
     ) -> NoticeType:
@@ -153,7 +154,7 @@ class NoticeMutations:
         notice = await notice.add_viewer(_viewer)
         return NoticeType(**notice.marshal_simple())
 
-    @strawberry.mutation
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def delete_notice(self, info, uid: str) -> DeleteResponse:
 
         is_authenticated, felicity_user = await auth_from_info(info)

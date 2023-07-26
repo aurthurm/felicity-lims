@@ -2,6 +2,7 @@ import logging
 
 import strawberry  # noqa
 from api.gql import OperationError
+from api.gql.permissions import IsAuthenticated
 from api.gql.setup.types.department import DepartmentType
 from api.gql.setup.types import (
     CountryType,
@@ -135,7 +136,7 @@ class UnitInputType:
 
 @strawberry.type
 class SetupMutations:
-    @strawberry.mutation
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_laboratory(
         self, info, uid: str, payload: LaboratoryInputType
     ) -> LaboratoryResponse:  # noqa
@@ -161,7 +162,7 @@ class SetupMutations:
         laboratory = await laboratory.update(obj_in)
         return LaboratoryType(**laboratory.marshal_simple())
 
-    @strawberry.mutation
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_laboratory_setting(
         self, info, uid: str, payload: LaboratorySettingInputType
     ) -> LaboratorySettingResponse:  # noqa
@@ -187,7 +188,7 @@ class SetupMutations:
         lab_setting = await lab_setting.update(obj_in)
         return LaboratorySettingType(**lab_setting.marshal_simple())
 
-    @strawberry.mutation
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_department(
         root, info, payload: DepartmentInputType
     ) -> DepartmentResponse:  # noqa
@@ -209,7 +210,7 @@ class SetupMutations:
         department: models.Department = await models.Department.create(obj_in)
         return DepartmentType(**department.marshal_simple())
 
-    @strawberry.mutation
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_department(
         self, info, uid: str, payload: DepartmentInputType
     ) -> DepartmentResponse:  # noqa
@@ -235,7 +236,7 @@ class SetupMutations:
         department = await department.update(obj_in)
         return DepartmentType(**department.marshal_simple())
 
-    @strawberry.mutation
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_supplier(
         self, info, payload: SupplierInputType
     ) -> SupplierResponse:  # noqa
@@ -257,7 +258,7 @@ class SetupMutations:
         supplier: models.Supplier = await models.Supplier.create(obj_in)
         return SupplierType(**supplier.marshal_simple())
 
-    @strawberry.mutation
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_supplier(
         self, info, uid: str, payload: SupplierInputType
     ) -> SupplierResponse:  # noqa
@@ -283,7 +284,7 @@ class SetupMutations:
         supplier = await supplier.update(obj_in)
         return SupplierType(**supplier.marshal_simple())
 
-    @strawberry.mutation
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_manufacturer(
         self, info, payload: ManufacturerInputType
     ) -> ManufacturerResponse:  # noqa
@@ -305,7 +306,7 @@ class SetupMutations:
         manufacturer: models.Manufacturer = await models.Manufacturer.create(obj_in)
         return ManufacturerType(**manufacturer.marshal_simple())
 
-    @strawberry.mutation
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_manufacturer(
         self, info, uid: str, payload: ManufacturerInputType
     ) -> ManufacturerResponse:  # noqa
@@ -331,7 +332,7 @@ class SetupMutations:
         manufacturer = await manufacturer.update(obj_in)
         return ManufacturerType(**manufacturer.marshal_simple())
 
-    @strawberry.mutation
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_country(
         self, info, payload: CountryInputType
     ) -> CountryResponse:  # noqa
@@ -353,7 +354,7 @@ class SetupMutations:
         country: models.Country = await models.Country.create(obj_in)
         return CountryType(**country.marshal_simple())
 
-    @strawberry.mutation
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_country(
         self, info, uid: str, payload: CountryInputType
     ) -> CountryResponse:  # noqa
@@ -379,7 +380,7 @@ class SetupMutations:
         country = await country.update(obj_in)
         return CountryType(**country.marshal_simple())
 
-    @strawberry.mutation
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_province(
         self, info, payload: ProvinceInputType
     ) -> ProvinceResponse:  # noqa
@@ -400,7 +401,7 @@ class SetupMutations:
         province: models.Province = await models.Province.create(province_in)
         return ProvinceType(**province.marshal_simple())
 
-    @strawberry.mutation
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_province(
         self, info, uid: str, payload: ProvinceInputType
     ) -> ProvinceResponse:  # noqa
@@ -426,7 +427,7 @@ class SetupMutations:
         province = await province.update(obj_in)
         return ProvinceType(**province.marshal_simple())
 
-    @strawberry.mutation
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_district(
         self, info, payload: DistrictInputType
     ) -> DistrictResponse:  # noqa
@@ -448,7 +449,7 @@ class SetupMutations:
         district: models.District = await models.District.create(district_in)
         return DistrictType(**district.marshal_simple())
 
-    @strawberry.mutation
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_district(
         self, info, uid: str, payload: DistrictInputType
     ) -> DistrictResponse:  # noqa
@@ -473,7 +474,7 @@ class SetupMutations:
         district = await district.update(obj_in)
         return DistrictType(**district.marshal_simple())
 
-    @strawberry.mutation
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_unit(self, info, payload: UnitInputType) -> UnitResponse:  # noqa
 
         if not payload.name:
@@ -491,7 +492,7 @@ class SetupMutations:
         unit: models.Unit = await models.Unit.create(obj_in)
         return UnitType(**unit.marshal_simple())
 
-    @strawberry.mutation
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_unit(
         self, info, uid: str, payload: UnitInputType
     ) -> UnitResponse:  # noqa

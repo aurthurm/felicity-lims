@@ -10,6 +10,7 @@ from api.gql.shipment.types import (
     ShipmentType,
     ReferralLaboratoryType
 )
+from api.gql.permissions import IsAuthenticated
 from api.gql.types import BytesScalar
 from apps.shipment import models
 from utils import has_value_or_is_truthy
@@ -19,7 +20,7 @@ logger = logging.getLogger(__name__)
 
 @strawberry.type
 class ShipmentQuery:
-    @strawberry.field
+    @strawberry.field(permission_classes=[IsAuthenticated])
     async def shipment_all(
         self,
         info,
@@ -68,33 +69,33 @@ class ShipmentQuery:
             total_count=total_count, edges=edges, items=items, page_info=page_info
         )
 
-    @strawberry.field
+    @strawberry.field(permission_classes=[IsAuthenticated])
     async def shipment_by_uid(self, info, shipment_uid: str) -> ShipmentType:
         return await models.Shipment.get(uid=shipment_uid)
 
-    @strawberry.field
+    @strawberry.field(permission_classes=[IsAuthenticated])
     async def shipment_by_id(self, info, shipment_id: str) -> ShipmentType:
         return await models.Shipment.get(shipment_id=shipment_id)
 
-    @strawberry.field
+    @strawberry.field(permission_classes=[IsAuthenticated])
     async def shipment_by_status(
         self, info, shipment_status: str
     ) -> List[ShipmentType]:
         return await models.Shipment.get_all(status__exact=shipment_status)
     
-    @strawberry.field
+    @strawberry.field(permission_classes=[IsAuthenticated])
     async def referral_laboratory_all(self, info) -> list[ReferralLaboratoryType]:
         return await models.ReferralLaboratory.all()
 
-    @strawberry.field
+    @strawberry.field(permission_classes=[IsAuthenticated])
     async def referral_laboratory_by_uid(self, info, uid: str) -> ReferralLaboratoryType:
         return await models.ReferralLaboratory.get(uid=uid)
 
-    @strawberry.field
+    @strawberry.field(permission_classes=[IsAuthenticated])
     async def referral_laboratory_by_code(self, info, code: str) -> ReferralLaboratoryType:
         return await models.ReferralLaboratory.get(code=code)
     
-    @strawberry.field
+    @strawberry.field(permission_classes=[IsAuthenticated])
     async def manifest_report_download(
         self, info, uid: str
     ) -> BytesScalar | None:

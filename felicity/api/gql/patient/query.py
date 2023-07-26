@@ -9,6 +9,7 @@ from api.gql.patient.types import (
     PatientEdge,
     PatientType,
 )
+from api.gql.permissions import IsAuthenticated
 from apps.patient import models
 
 from utils import has_value_or_is_truthy
@@ -16,7 +17,7 @@ from utils import has_value_or_is_truthy
 
 @strawberry.type
 class PatientQuery:
-    @strawberry.field
+    @strawberry.field(permission_classes=[IsAuthenticated])
     async def patient_all(
         self,
         info,
@@ -64,17 +65,17 @@ class PatientQuery:
             total_count=total_count, edges=edges, items=items, page_info=page_info
         )
 
-    @strawberry.field
+    @strawberry.field(permission_classes=[IsAuthenticated])
     async def patient_by_uid(self, info, uid: str) -> Optional[PatientType]:
         return await models.Patient.get(uid=uid)
 
-    @strawberry.field
+    @strawberry.field(permission_classes=[IsAuthenticated])
     async def patient_by_patient_id(
         self, info, patient_id: str
     ) -> Optional[PatientType]:
         return await models.Patient.get(patient_id=patient_id)
 
-    @strawberry.field
+    @strawberry.field(permission_classes=[IsAuthenticated])
     async def patient_search(self, info, query_string: str) -> List[PatientType]:
         filters = [
             "first_name__ilike",
@@ -94,10 +95,10 @@ class PatientQuery:
                 combined.add(item)
         return list(combined)
 
-    @strawberry.field
+    @strawberry.field(permission_classes=[IsAuthenticated])
     async def identification_all(self, info) -> List[IdentificationType]:
         return await models.Identification.all()
 
-    @strawberry.field
+    @strawberry.field(permission_classes=[IsAuthenticated])
     async def identification_by_uid(self, info, uid: str) -> IdentificationType:
         return await models.Identification.get(uid=uid)

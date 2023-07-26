@@ -4,6 +4,7 @@ from typing import List
 
 import strawberry  # noqa
 from api.gql.impress.types import ReportImpressType
+from api.gql.permissions import IsAuthenticated
 from api.gql.types import BytesScalar
 from apps.impress.models import ReportImpress
 
@@ -15,13 +16,13 @@ logger = logging.getLogger(__name__)
 
 @strawberry.type
 class ReportImpressQuery:
-    @strawberry.field
+    @strawberry.field(permission_classes=[IsAuthenticated])
     async def impress_reports_meta(
         self, info, uids: List[str]
     ) -> List[ReportImpressType]:
         return await ReportImpress.get_all(sample_uid__in=uids)
 
-    @strawberry.field
+    @strawberry.field(permission_classes=[IsAuthenticated])
     async def impress_reports_download(
         self, info, uids: List[str]
     ) -> BytesScalar | None:
@@ -64,7 +65,7 @@ class ReportImpressQuery:
 
         return out_stream
 
-    @strawberry.field
+    @strawberry.field(permission_classes=[IsAuthenticated])
     async def impress_report_download(
         self, info, uid: str
     ) -> BytesScalar | None:

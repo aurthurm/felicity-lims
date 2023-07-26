@@ -1,8 +1,11 @@
+import logging
 from typing import List, Optional
 
 import sqlalchemy as sa
 import strawberry  # noqa
-from api.gql import PageInfo
+from api.gql import PageInfo, auth_from_info
+from api.gql.deps import Info
+from api.gql.permissions import IsAuthenticated
 from api.gql.client.types import (
     ClientContactType,
     ClientCursorPage,
@@ -14,18 +17,24 @@ from apps.client import models
 from utils import has_value_or_is_truthy
 
 
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+
 @strawberry.type
 class ClientQuery:
-    @strawberry.field
+    @strawberry.field(permission_classes=[IsAuthenticated])
     async def client_all(
         self,
-        info,
+        info: Info,
         page_size: int | None = None,
         after_cursor: str | None = None,
         before_cursor: str | None = None,
         text: str | None = None,
         sort_by: list[str] | None = None,
     ) -> ClientCursorPage:
+        ss, dd = await auth_from_info(info)
+        
         filters = {}
 
         _or_ = dict()
@@ -62,21 +71,21 @@ class ClientQuery:
             total_count=total_count, edges=edges, items=items, page_info=page_info
         )
 
-    @strawberry.field
+    @strawberry.field(permission_classes=[IsAuthenticated])
     async def client_by_uid(self, info, uid: str) -> ClientType:
         return await models.Client.get(uid=uid)
 
-    @strawberry.field
+    @strawberry.field(permission_classes=[IsAuthenticated])
     async def client_by_code(self, info, code: str) -> ClientType:
         return await models.Client.get(code=code)
 
-    @strawberry.field
+    @strawberry.field(permission_classes=[IsAuthenticated])
     async def clients_by_name(self, info, name: str) -> List[ClientType]:
         clients = await models.Client.get_all(name__contains=name)
         # clients = await models.Client.get_all(name__like=f"%{name}%")
         return clients
 
-    @strawberry.field
+    @strawberry.field(permission_classes=[IsAuthenticated])
     async def client_search(self, info, query_string: str) -> List[ClientType]:
         filters = ["name__ilike", "code__ilike"]
         combined = set()
@@ -88,15 +97,15 @@ class ClientQuery:
                 combined.add(item)
         return list(combined)
 
-    @strawberry.field
+    @strawberry.field(permission_classes=[IsAuthenticated])
     async def client_contact_all(self, info) -> List[ClientContactType]:
         return await models.ClientContact.all()
 
-    @strawberry.field
+    @strawberry.field(permission_classes=[IsAuthenticated])
     async def client_contact_uid(self, info, uid: str) -> ClientContactType:
         return await models.ClientContact.get(uid=uid)
 
-    @strawberry.field
+    @strawberry.field(permission_classes=[IsAuthenticated])
     async def client_contact_by_client_uid(
         self, info, client_uid: str
     ) -> List[ClientContactType]:

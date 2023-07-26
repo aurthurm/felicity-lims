@@ -3,6 +3,7 @@ from typing import List
 import sqlalchemy as sa
 import strawberry  # noqa
 from api.gql import PageInfo
+from api.gql.permissions import IsAuthenticated
 from api.gql.setup.types.department import DepartmentType
 from api.gql.setup.types import (
     CountryType,
@@ -147,73 +148,73 @@ class SetupQuery:
     laboratory: LaboratoryType = strawberry.field(resolver=get_laboratory)
 
     laboratory_setting: LaboratorySettingType = strawberry.field(
-        resolver=get_laboratory_setting
+        resolver=get_laboratory_setting, permission_classes=[IsAuthenticated]
     )
 
     manufacturer_all: List[ManufacturerType] = strawberry.field(
-        resolver=get_all_manufacturers
+        resolver=get_all_manufacturers, permission_classes=[IsAuthenticated]
     )
 
-    @strawberry.field
+    @strawberry.field(permission_classes=[IsAuthenticated])
     async def manufacturer_by_uid(self, info, uid: str) -> ManufacturerType:
         query = await models.Manufacturer.get(uid=uid)
         return query
 
-    supplier_all: List[SupplierType] = strawberry.field(resolver=get_all_suppliers)
+    supplier_all: List[SupplierType] = strawberry.field(resolver=get_all_suppliers, permission_classes=[IsAuthenticated])
 
-    @strawberry.field
+    @strawberry.field(permission_classes=[IsAuthenticated])
     async def supplier_by_uid(self, info, uid: str) -> SupplierType:
         query = await models.Supplier.get(uid=uid)
         return query
 
     department_all: List[DepartmentType] = strawberry.field(
-        resolver=get_all_departments
+        resolver=get_all_departments, permission_classes=[IsAuthenticated]
     )
 
-    @strawberry.field
+    @strawberry.field(permission_classes=[IsAuthenticated])
     async def department_by_uid(self, info, uid: str) -> DepartmentType:
         query = await models.Department.get(uid=uid)
         return query
 
 
-    district_all: DistrictCursorPage = strawberry.field(resolver=get_all_districts)
+    district_all: DistrictCursorPage = strawberry.field(resolver=get_all_districts, permission_classes=[IsAuthenticated])
 
-    @strawberry.field
+    @strawberry.field(permission_classes=[IsAuthenticated])
     async def district_by_uid(self, info, uid: str) -> DistrictType:
         district = await models.District.get(uid=uid)
         return district
 
-    @strawberry.field
+    @strawberry.field(permission_classes=[IsAuthenticated])
     async def districts_by_province_uid(
         self, info, uid: str
     ) -> List[DistrictType]:
         districts = await models.District.get_all(province_uid__exact=uid)
         return districts
 
-    province_all: ProvinceCursorPage = strawberry.field(resolver=get_all_provinces)
+    province_all: ProvinceCursorPage = strawberry.field(resolver=get_all_provinces, permission_classes=[IsAuthenticated])
 
-    @strawberry.field
+    @strawberry.field(permission_classes=[IsAuthenticated])
     async def province_by_uid(self, info, uid: str) -> ProvinceType:
         province = await models.Province.get(uid=uid)
         return province
 
-    @strawberry.field
+    @strawberry.field(permission_classes=[IsAuthenticated])
     async def provinces_by_country_uid(
         self, info, uid: str
     ) -> List[ProvinceType]:
         provinces = await models.Province.get_all(country_uid__exact=uid)
         return provinces
 
-    country_all: List[CountryType] = strawberry.field(resolver=get_all_countries)
+    country_all: List[CountryType] = strawberry.field(resolver=get_all_countries, permission_classes=[IsAuthenticated])
 
-    @strawberry.field
+    @strawberry.field(permission_classes=[IsAuthenticated])
     async def country_by_uid(self, info, uid: str) -> CountryType:
         country = await models.Country.find(uid)
         return country
 
-    unit_all: List[UnitType] = strawberry.field(resolver=get_all_units)
+    unit_all: List[UnitType] = strawberry.field(resolver=get_all_units, permission_classes=[IsAuthenticated])
 
-    @strawberry.field
+    @strawberry.field(permission_classes=[IsAuthenticated])
     async def unit_by_uid(self, info, uid: str) -> UnitType:
         unit = await models.Unit.find(uid)
         return unit

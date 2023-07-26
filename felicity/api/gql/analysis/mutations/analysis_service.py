@@ -4,6 +4,7 @@ from typing import List, Optional
 
 import strawberry  # noqa
 from api.gql import OperationError, auth_from_info, verify_user_auth
+from api.gql.permissions import IsAuthenticated
 from api.gql.analysis.types import analysis as a_types
 from apps.analysis import schemas
 from apps.analysis.models import analysis as analysis_models
@@ -40,7 +41,7 @@ ProfilesServiceResponse = strawberry.union(
 )
 
 
-@strawberry.mutation
+@strawberry.mutation(permission_classes=[IsAuthenticated])
 async def create_analysis(info, payload: AnalysisInputType) -> ProfilesServiceResponse:
 
     is_authenticated, felicity_user = await auth_from_info(info)
@@ -90,7 +91,7 @@ async def create_analysis(info, payload: AnalysisInputType) -> ProfilesServiceRe
     return a_types.AnalysisWithProfiles(**analysis.marshal_simple(), profiles=profiles)
 
 
-@strawberry.mutation
+@strawberry.mutation(permission_classes=[IsAuthenticated])
 async def update_analysis(
     info, uid: str, payload: AnalysisInputType
 ) -> ProfilesServiceResponse:

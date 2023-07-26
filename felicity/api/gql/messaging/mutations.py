@@ -10,6 +10,7 @@ from api.gql import (
     auth_from_info,
     verify_user_auth,
 )
+from api.gql.permissions import IsAuthenticated
 from api.gql.messaging.types import MessageType
 from apps.messaging import models, schemas
 from apps.user.models import User
@@ -26,7 +27,7 @@ MessageResponse = strawberry.union(
 
 @strawberry.type
 class MessageMutations:
-    @strawberry.mutation
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def send_message(
         self, info, recipients: List[str], body: str
     ) -> MessageResponse:
@@ -75,7 +76,7 @@ class MessageMutations:
         message: models.Message = await models.Message.create(obj_in)
         return MessageType(**message.marshal_simple())
 
-    @strawberry.mutation
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def reply_message(
         self, info, thread_uid: str, body: str
     ) -> MessageResponse:
@@ -116,7 +117,7 @@ class MessageMutations:
         message: models.Message = await models.Message.create(obj_in)
         return MessageType(**message.marshal_simple())
 
-    @strawberry.mutation
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def view_message(self, info, uid: str) -> MessageResponse:
 
         is_authenticated, felicity_user = await auth_from_info(info)
@@ -131,7 +132,7 @@ class MessageMutations:
         message = await message.add_viewer(felicity_user)
         return MessageType(**message.marshal_simple())
 
-    @strawberry.mutation
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def delete_message(self, info, uid: str) -> DeleteResponse:
 
         is_authenticated, felicity_user = await auth_from_info(info)
@@ -148,7 +149,7 @@ class MessageMutations:
         uid = await message.delete_for_user(felicity_user)
         return DeletedItem(uid=uid)
 
-    @strawberry.mutation
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def delete_thread(self, info, uid: str) -> DeleteResponse:
 
         is_authenticated, felicity_user = await auth_from_info(info)

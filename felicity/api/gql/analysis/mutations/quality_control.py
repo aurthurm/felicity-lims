@@ -4,6 +4,7 @@ from typing import List, Optional
 
 import strawberry  # noqa
 from api.gql import OperationError, auth_from_info, verify_user_auth
+from api.gql.permissions import IsAuthenticated
 from api.gql.analysis.types import analysis as a_types
 from apps.analysis import schemas
 from apps.analysis.conf import states
@@ -56,7 +57,7 @@ QCTemplateResponse = strawberry.union(
 )
 
 
-@strawberry.mutation
+@strawberry.mutation(permission_classes=[IsAuthenticated])
 async def create_QC_set(info, samples: List[QCSetInputType]) -> QCSetResponse:
 
     is_authenticated, felicity_user = await auth_from_info(info)
@@ -142,7 +143,7 @@ async def create_QC_set(info, samples: List[QCSetInputType]) -> QCSetResponse:
     return CreateQCSetData(samples=qc_samples, qc_sets=qc_sets)
 
 
-@strawberry.mutation
+@strawberry.mutation(permission_classes=[IsAuthenticated])
 async def create_QC_level(info, level: str) -> QCLevelResponse:
     inspector = inspect.getargvalues(inspect.currentframe())
     passed_args = get_passed_args(inspector)
@@ -164,7 +165,7 @@ async def create_QC_level(info, level: str) -> QCLevelResponse:
     return a_types.QCLevelType(**qc_level.marshal_simple())
 
 
-@strawberry.mutation
+@strawberry.mutation(permission_classes=[IsAuthenticated])
 async def update_QC_level(info, uid: str, level: str) -> QCLevelResponse:
     is_authenticated, felicity_user = await auth_from_info(info)
     verify_user_auth(
@@ -185,7 +186,7 @@ async def update_QC_level(info, uid: str, level: str) -> QCLevelResponse:
     return a_types.QCLevelType(**qc_level.marshal_simple())
 
 
-@strawberry.mutation
+@strawberry.mutation(permission_classes=[IsAuthenticated])
 async def create_QC_template(info, payload: QCTemplateInputType) -> QCTemplateResponse:
     is_authenticated, felicity_user = await auth_from_info(info)
     verify_user_auth(
@@ -227,7 +228,7 @@ async def create_QC_template(info, payload: QCTemplateInputType) -> QCTemplateRe
     return a_types.QCTemplateType(**qc_template.marshal_simple())
 
 
-@strawberry.mutation
+@strawberry.mutation(permission_classes=[IsAuthenticated])
 async def update_QC_template(
     info, uid: str, payload: QCTemplateInputType
 ) -> QCTemplateResponse:

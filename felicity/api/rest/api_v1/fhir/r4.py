@@ -17,7 +17,7 @@ router = APIRouter()
 async def add_resource(
     resource_type: str, 
     request: Request, 
-    # current_user: user_models.User = Depends(deps.get_current_active_user),
+    current_user: user_models.User = Depends(deps.get_current_active_user),
     ):
     """
     Add a fhir resource
@@ -52,7 +52,8 @@ async def add_resource(
     response_model=DiagnosticReportResource | PatientResource,
     summary="Get a fhir Resource by id",
 )
-async def get_resource(resource: str, resource_id: int):
+async def get_resource(resource: str, resource_id: int,
+    current_user: user_models.User = Depends(deps.get_current_active_user),):
     """
     Supported Resources are DiagnosticReport and  Patient
 

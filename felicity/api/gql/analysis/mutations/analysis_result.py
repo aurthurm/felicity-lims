@@ -4,7 +4,7 @@ from typing import List, Optional
 import strawberry  # noqa
 from api.gql import OperationError, OperationSuccess, auth_from_info, verify_user_auth
 from api.gql.analysis.types import results as r_types
-from api.gql.permissions import CanVerifyAnalysisResult
+from api.gql.permissions import CanVerifyAnalysisResult, IsAuthenticated
 from apps.analysis.conf import states as analysis_states
 from apps.analysis.models import analysis as analysis_models
 from apps.analysis.models import results as result_models
@@ -49,7 +49,7 @@ AnalysisResultOperationResponse = strawberry.union(
 )
 
 
-@strawberry.mutation
+@strawberry.mutation(permission_classes=[IsAuthenticated])
 async def submit_analysis_results(
     info,
     analysis_results: List[ARResultInputType],
@@ -101,7 +101,7 @@ async def submit_analysis_results(
     )
 
 
-@strawberry.mutation(permission_classes=[CanVerifyAnalysisResult])
+@strawberry.mutation(permission_classes=[IsAuthenticated, CanVerifyAnalysisResult])
 async def verify_analysis_results(
     info, analyses: list[str], source_object: str, source_object_uid: str
 ) -> AnalysisResultOperationResponse:
@@ -144,7 +144,7 @@ async def verify_analysis_results(
     )
 
 
-@strawberry.mutation
+@strawberry.mutation(permission_classes=[IsAuthenticated])
 async def retract_analysis_results(info, analyses: list[str]) -> AnalysisResultResponse:
     is_authenticated, felicity_user = await auth_from_info(info)
     verify_user_auth(
@@ -189,7 +189,7 @@ async def retract_analysis_results(info, analyses: list[str]) -> AnalysisResultR
     return ResultListingType(results=return_results)
 
 
-@strawberry.mutation
+@strawberry.mutation(permission_classes=[IsAuthenticated])
 async def retest_analysis_results(info, analyses: list[str]) -> AnalysisResultResponse:
     is_authenticated, felicity_user = await auth_from_info(info)
     verify_user_auth(
@@ -211,7 +211,7 @@ async def retest_analysis_results(info, analyses: list[str]) -> AnalysisResultRe
     return ResultListingType(results=retests + originals)
 
 
-@strawberry.mutation
+@strawberry.mutation(permission_classes=[IsAuthenticated])
 async def cancel_analysis_results(info, analyses: list[str]) -> AnalysisResultResponse:
     is_authenticated, felicity_user = await auth_from_info(info)
     verify_user_auth(
@@ -244,7 +244,7 @@ async def cancel_analysis_results(info, analyses: list[str]) -> AnalysisResultRe
     return ResultListingType(results=return_results)
 
 
-@strawberry.mutation
+@strawberry.mutation(permission_classes=[IsAuthenticated])
 async def re_instate_analysis_results(
     info, analyses: list[str]
 ) -> AnalysisResultResponse:

@@ -29,9 +29,11 @@ from starlette.concurrency import run_until_first_complete
 from starlette.middleware.authentication import AuthenticationMiddleware
 from starlette.middleware.cors import CORSMiddleware
 from strawberry.asgi import GraphQL
+from strawberry.fastapi import GraphQLRouter
 from strawberry.subscriptions import GRAPHQL_TRANSPORT_WS_PROTOCOL, GRAPHQL_WS_PROTOCOL
 from utils.dirs import resolve_root_dirs
 from views import setup_backends
+from api.gql.deps import get_context
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -83,17 +85,17 @@ def register_app_middlewares(app: FastAPI):
 
 
 def register_app_publics(app: FastAPI):
-    graphql_app = GraphQL(
+    graphql_app = GraphQLRouter(
         gql_schema,
         subscription_protocols=[GRAPHQL_WS_PROTOCOL,
                                 GRAPHQL_TRANSPORT_WS_PROTOCOL],
+        context_getter=get_context,
     )
 
     setup_backends(app, settings.SERVE_WEBAPP)
     app.include_router(api_router, prefix=settings.API_V1_STR)
-    app.add_route("/felicity-gql", graphql_app)
-    app.add_websocket_route("/felicity-gql", graphql_app,
-                            "felicity-subscriptions")
+    app.include_router(graphql_app, prefix="/felicity-gql")
+
     resolve_root_dirs()
     app.mount("/media", StaticFiles(directory="media"), name="media")
 

@@ -3,6 +3,7 @@ from typing import Dict, List, Optional
 
 import strawberry  # noqa
 from api.gql import OperationError, auth_from_info, verify_user_auth
+from api.gql.permissions import IsAuthenticated
 from api.gql.analysis.types.analysis import SampleType
 from api.gql.storage import types
 from apps.analysis.conf import states as analysis_states
@@ -91,7 +92,7 @@ class StoreSamplesInputType:
 
 @strawberry.type
 class StorageMutations:
-    @strawberry.mutation
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_store_room(
         self, info, payload: StoreRoomInputType
     ) -> StoreRoomResponse:
@@ -119,7 +120,7 @@ class StorageMutations:
         store_room: models.StoreRoom = await models.StoreRoom.create(obj_in)
         return types.StoreRoomType(**store_room.marshal_simple())
 
-    @strawberry.mutation
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_store_room(
         self, info, uid: str, payload: StoreRoomInputType
     ) -> StoreRoomResponse:
@@ -154,7 +155,7 @@ class StorageMutations:
         store_room = await store_room.update(obj_in)
         return types.StoreRoomType(**store_room.marshal_simple())
 
-    @strawberry.mutation
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_storage_location(
         self, info, payload: StorageLocationInputType
     ) -> StorageLocationResponse:
@@ -192,7 +193,7 @@ class StorageMutations:
         )
         return types.StorageLocationType(**storage_location.marshal_simple())
 
-    @strawberry.mutation
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_storage_location(
         self, info, uid: str, payload: StorageLocationInputType
     ) -> StorageLocationResponse:
@@ -229,7 +230,7 @@ class StorageMutations:
         storage_location = await storage_location.update(obj_in)
         return types.StorageLocationType(**storage_location.marshal_simple())
 
-    @strawberry.mutation
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_storage_section(
         self, info, payload: StorageSectionInputType
     ) -> StorageSectionResponse:
@@ -267,7 +268,7 @@ class StorageMutations:
         )
         return types.StorageSectionType(**storage_section.marshal_simple())
 
-    @strawberry.mutation
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_storage_section(
         self, info, uid: str, payload: StorageSectionInputType
     ) -> StorageSectionResponse:
@@ -304,7 +305,7 @@ class StorageMutations:
         storage_section = await storage_section.update(obj_in)
         return types.StorageSectionType(**storage_section.marshal_simple())
 
-    @strawberry.mutation
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_storage_container(
         self, info, payload: StorageContainerInputType
     ) -> StorageContainerResponse:
@@ -341,7 +342,7 @@ class StorageMutations:
             **storage_container.marshal_simple(exclude=["samples"])
         )
 
-    @strawberry.mutation
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_storage_container(
         self, info, uid: str, payload: StorageContainerInputType
     ) -> StorageContainerResponse:
@@ -380,7 +381,7 @@ class StorageMutations:
             **storage_container.marshal_simple(exclude=["samples"])
         )
 
-    @strawberry.mutation
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def store_samples(
         info, payload: List[StoreSamplesInputType]
     ) -> StoreSampleResponse:
@@ -437,7 +438,7 @@ class StorageMutations:
 
         return StoredSamplesType(samples=samples)
 
-    @strawberry.mutation
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def recover_samples(
         info, sample_uids: List[str]
     ) -> StoreSampleResponse:

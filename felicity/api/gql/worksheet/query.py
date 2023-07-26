@@ -4,6 +4,7 @@ from typing import List, Optional
 import sqlalchemy as sa
 import strawberry  # noqa
 from api.gql import PageInfo
+from api.gql.permissions import IsAuthenticated
 from api.gql.worksheet.types import (
     WorkSheetCursorPage,
     WorkSheetEdge,
@@ -20,7 +21,7 @@ logger = logging.getLogger(__name__)
 
 @strawberry.type
 class WorkSheetQuery:
-    @strawberry.field
+    @strawberry.field(permission_classes=[IsAuthenticated])
     async def worksheet_all(
         self,
         info,
@@ -71,31 +72,31 @@ class WorkSheetQuery:
             total_count=total_count, edges=edges, items=items, page_info=page_info
         )
 
-    @strawberry.field
+    @strawberry.field(permission_classes=[IsAuthenticated])
     async def worksheet_template_all(self, info) -> List[WorkSheetTemplateType]:
         return await ws_models.WorkSheetTemplate.all()
 
-    @strawberry.field
+    @strawberry.field(permission_classes=[IsAuthenticated])
     async def worksheet_by_analyst(
         self, info, analyst_uid: str
     ) -> List[WorkSheetType]:
         return await ws_models.WorkSheet.get_all(analyst_uid=analyst_uid)
 
-    @strawberry.field
+    @strawberry.field(permission_classes=[IsAuthenticated])
     async def worksheet_by_uid(self, info, worksheet_uid: str) -> WorkSheetType:
         return await ws_models.WorkSheet.get(uid=worksheet_uid)
 
-    @strawberry.field
+    @strawberry.field(permission_classes=[IsAuthenticated])
     async def worksheet_by_id(self, info, worksheet_id: str) -> WorkSheetType:
         return await ws_models.WorkSheet.get(worksheet_id=worksheet_id)
 
-    @strawberry.field
+    @strawberry.field(permission_classes=[IsAuthenticated])
     async def worksheet_by_status(
         self, info, worksheet_status: str
     ) -> List[WorkSheetType]:
         return await ws_models.WorkSheet.get_all(status__exact=worksheet_status)
 
-    @strawberry.field
+    @strawberry.field(permission_classes=[IsAuthenticated])
     async def worksheet_template_by_uid(
         self, info, worksheet_uid: str
     ) -> List[WorkSheetType]:

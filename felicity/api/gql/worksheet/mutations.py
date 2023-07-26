@@ -3,6 +3,7 @@ from typing import List, Optional
 
 import strawberry  # noqa
 from api.gql import OperationError, auth_from_info, verify_user_auth
+from api.gql.permissions import IsAuthenticated
 from api.gql.worksheet.types import WorkSheetTemplateType, WorkSheetType
 from apps.analysis.models import analysis as analysis_models
 from apps.analysis.models import qc as qc_models
@@ -67,7 +68,7 @@ WorkSheetResponse = strawberry.union(
 
 @strawberry.type
 class WorkSheetMutations:
-    @strawberry.mutation
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_worksheet_template(
         self, info, payload: WorksheetTemplateInputType
     ) -> WorkSheetTemplateResponse:
@@ -131,7 +132,7 @@ class WorkSheetMutations:
 
         return WorkSheetTemplateType(**wst.marshal_simple())
 
-    @strawberry.mutation
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_worksheet_template(
         self, uid: str, payload: WorksheetTemplateInputType
     ) -> WorkSheetTemplateResponse:
@@ -174,7 +175,7 @@ class WorkSheetMutations:
 
         return WorkSheetTemplateType(**ws_template.marshal_simple())
 
-    @strawberry.mutation
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_worksheet(
         self,
         info,
@@ -254,7 +255,7 @@ class WorkSheetMutations:
 
         return WorksheetListingType(worksheets=to_send)
 
-    @strawberry.mutation
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_worksheet(
         self,
         info,
@@ -333,7 +334,7 @@ class WorkSheetMutations:
 
         return WorkSheetType(**worksheet.marshal_simple())
 
-    @strawberry.mutation
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_worksheet_apply_template(
         self, info, template_uid: str, worksheet_uid: str
     ) -> WorkSheetResponse:
@@ -396,7 +397,7 @@ class WorkSheetMutations:
 
         return WorkSheetType(**ws.marshal_simple())
 
-    @strawberry.mutation
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_worksheet_manual_assign(
         self,
         info,

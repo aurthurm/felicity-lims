@@ -50,7 +50,8 @@ def me(current_user: models.User = Depends(deps.get_current_user)) -> Any:
 
 
 @router.post("/password-recovery/{email}", response_model=core_schemas.Msg)
-async def recover_password(email: str) -> Any:
+async def recover_password(email: str, 
+    current_user: models.User = Depends(deps.get_current_active_user),) -> Any:
     """
     Password Recovery
     """
@@ -69,7 +70,8 @@ async def recover_password(email: str) -> Any:
 
 
 @router.post("/reset-password", response_model=core_schemas.Msg)
-async def reset_password(token: str = Body(...), new_password: str = Body(...)) -> Any:
+async def reset_password(token: str = Body(...), new_password: str = Body(...), 
+    current_user: models.User = Depends(deps.get_current_active_user),) -> Any:
     """
     Reset password
     """
