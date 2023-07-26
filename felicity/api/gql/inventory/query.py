@@ -4,6 +4,7 @@ import sqlalchemy as sa
 import strawberry  # noqa
 from api.gql import PageInfo
 from api.gql.inventory import types
+from api.gql.permissions import IsAuthenticated
 from apps.inventory import models
 
 from utils import has_value_or_is_truthy
@@ -11,7 +12,7 @@ from utils import has_value_or_is_truthy
 
 @strawberry.type
 class InventoryQuery:
-    @strawberry.field
+    @strawberry.field(permission_classes=[IsAuthenticated])
     async def stock_item_all(
         self,
         info,
@@ -48,51 +49,51 @@ class InventoryQuery:
             total_count=total_count, edges=edges, items=items, page_info=page_info
         )
 
-    @strawberry.field
+    @strawberry.field(permission_classes=[IsAuthenticated])
     async def stock_item_by_uid(
         self, info, uid: str
     ) -> Optional[types.StockItemType]:
         return await models.StockItem.get(uid=uid)
 
-    @strawberry.field
+    @strawberry.field(permission_classes=[IsAuthenticated])
     async def stock_category_all(self, info) -> List[types.StockCategoryType]:
         return await models.StockCategory.all()
 
-    @strawberry.field
+    @strawberry.field(permission_classes=[IsAuthenticated])
     async def stock_category_by_uid(
         self, info, uid: str
     ) -> Optional[types.StockCategoryType]:
         return await models.StockCategory.get(uid=uid)
 
-    @strawberry.field
+    @strawberry.field(permission_classes=[IsAuthenticated])
     async def hazard_all(self, info) -> List[types.HazardType]:
         return await models.Hazard.all()
 
-    @strawberry.field
+    @strawberry.field(permission_classes=[IsAuthenticated])
     async def hazard_by_uid(self, info, uid: str) -> Optional[types.HazardType]:
         return await models.Hazard.get(uid=uid)
 
-    @strawberry.field
+    @strawberry.field(permission_classes=[IsAuthenticated])
     async def stock_unit_all(self, info) -> List[types.StockUnitType]:
         return await models.StockUnit.all()
 
-    @strawberry.field
+    @strawberry.field(permission_classes=[IsAuthenticated])
     async def stock_unit_by_uid(
         self, info, uid: str
     ) -> Optional[types.StockUnitType]:
         return await models.StockUnit.get(uid=uid)
 
-    @strawberry.field
+    @strawberry.field(permission_classes=[IsAuthenticated])
     async def stock_packaging_all(self, info) -> List[types.StockPackagingType]:
         return await models.StockPackaging.all()
 
-    @strawberry.field
+    @strawberry.field(permission_classes=[IsAuthenticated])
     async def stock_packaging_by_uid(
         self, info, uid: str
     ) -> Optional[types.StockPackagingType]:
         return await models.StockPackaging.get(uid=uid)
 
-    @strawberry.field
+    @strawberry.field(permission_classes=[IsAuthenticated])
     async def stock_product_all(
         self,
         info,
@@ -129,13 +130,13 @@ class InventoryQuery:
             total_count=total_count, edges=edges, items=items, page_info=page_info
         )
 
-    @strawberry.field
+    @strawberry.field(permission_classes=[IsAuthenticated])
     async def stock_product_by_uid(
         self, info, uid: str
     ) -> Optional[types.StockProductType]:
         return await models.StockProduct.get(uid=uid)
 
-    @strawberry.field
+    @strawberry.field(permission_classes=[IsAuthenticated])
     async def stock_order_all(
         self,
         info,
@@ -177,25 +178,25 @@ class InventoryQuery:
             total_count=total_count, edges=edges, items=items, page_info=page_info
         )
 
-    @strawberry.field
+    @strawberry.field(permission_classes=[IsAuthenticated])
     async def stock_order_by_uid(
         self, info, uid: str
     ) -> Optional[types.StockOrderType]:
         return await models.StockOrder.get(uid=uid)
 
-    @strawberry.field
+    @strawberry.field(permission_classes=[IsAuthenticated])
     async def stock_order_product_all(
         self, info, stock_order_uid: str
     ) -> List[types.StockOrderProductType]:
         return await models.StockOrderProduct.get_all(order_uid=stock_order_uid)
 
-    @strawberry.field
+    @strawberry.field(permission_classes=[IsAuthenticated])
     async def stock_order_product_by_uid(
         self, info, uid: str
     ) -> Optional[types.StockOrderProductType]:
         return await models.StockOrderProduct.get(uid=uid)
 
-    @strawberry.field
+    @strawberry.field(permission_classes=[IsAuthenticated])
     async def stock_transaction_all(
         self,
         info,
@@ -232,13 +233,13 @@ class InventoryQuery:
             total_count=total_count, edges=edges, items=items, page_info=page_info
         )
 
-    @strawberry.field
+    @strawberry.field(permission_classes=[IsAuthenticated])
     async def stock_transaction_by_uid(
         self, info, uid: str
     ) -> Optional[types.StockTransactionType]:
         return await models.StockTransaction.get(uid=uid)
 
-    @strawberry.field
+    @strawberry.field(permission_classes=[IsAuthenticated])
     async def stock_adjustment_all(
         self,
         info,
@@ -280,7 +281,7 @@ class InventoryQuery:
             total_count=total_count, edges=edges, items=items, page_info=page_info
         )
 
-    @strawberry.field
+    @strawberry.field(permission_classes=[IsAuthenticated])
     async def stock_adjustment_by_uid(
         self, info, uid: str
     ) -> Optional[types.StockAdjustmentType]:

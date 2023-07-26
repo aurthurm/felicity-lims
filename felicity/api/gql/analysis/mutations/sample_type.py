@@ -3,6 +3,7 @@ from typing import Optional
 
 import strawberry  # noqa
 from api.gql import OperationError, auth_from_info, verify_user_auth
+from api.gql.permissions import IsAuthenticated
 from api.gql.analysis.types import analysis as a_types
 from apps.analysis import schemas
 from apps.analysis.models import analysis as analysis_models
@@ -28,7 +29,7 @@ SampleTypeResponse = strawberry.union(
 )
 
 
-@strawberry.mutation
+@strawberry.mutation(permission_classes=[IsAuthenticated])
 async def create_sample_type(info, payload: SampleTypeInputType) -> SampleTypeResponse:
 
     is_authenticated, felicity_user = await auth_from_info(info)
@@ -59,7 +60,7 @@ async def create_sample_type(info, payload: SampleTypeInputType) -> SampleTypeRe
     return a_types.SampleTypeTyp(**sample_type.marshal_simple())
 
 
-@strawberry.mutation
+@strawberry.mutation(permission_classes=[IsAuthenticated])
 async def update_sample_type(
     info, uid: str, payload: SampleTypeInputType
 ) -> SampleTypeResponse:

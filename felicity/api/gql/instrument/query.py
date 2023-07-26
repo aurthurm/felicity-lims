@@ -3,6 +3,7 @@ from typing import List
 import sqlalchemy as sa
 import strawberry  # noqa
 from api.gql import PageInfo
+from api.gql.permissions import IsAuthenticated
 from api.gql.instrument.types import (
     InstrumentCursorPage,
     InstrumentEdge,
@@ -146,26 +147,26 @@ async def get_all_methods(
 class InstrumentQuery:
    
     instrument_type_all: InstrumentTypeCursorPage = strawberry.field(
-        resolver=get_all_instrument_types
+        resolver=get_all_instrument_types, permission_classes=[IsAuthenticated]
     )
 
-    @strawberry.field
+    @strawberry.field(permission_classes=[IsAuthenticated])
     async def instrument_type_by_uid(self, info, uid: str) -> InstrumentTypeType:
         query = await models.InstrumentType.get(uid=uid)
         return query
 
     instrument_all: InstrumentCursorPage = strawberry.field(
-        resolver=get_all_instruments
+        resolver=get_all_instruments,permission_classes=[IsAuthenticated]
     )
 
-    @strawberry.field
+    @strawberry.field(permission_classes=[IsAuthenticated])
     async def instrument_by_uid(self, info, uid: str) -> InstrumentType:
         query = await models.Instrument.get(uid=uid)
         return query
 
-    method_all: MethodCursorPage = strawberry.field(resolver=get_all_methods)
+    method_all: MethodCursorPage = strawberry.field(resolver=get_all_methods, permission_classes=[IsAuthenticated])
 
-    @strawberry.field
+    @strawberry.field(permission_classes=[IsAuthenticated])
     async def method_by_uid(self, info, uid: str) -> MethodType:
         query = await models.Method.get(uid=uid)
         return query

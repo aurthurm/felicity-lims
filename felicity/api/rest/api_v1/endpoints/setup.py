@@ -2,7 +2,9 @@ import logging
 from typing import Any, Optional
 
 from apps.setup import models, schemas
-from fastapi import APIRouter
+from apps.user import models as user_models
+from api.gql import deps
+from fastapi import APIRouter, Depends
 from init import default_setup, requisite_setup
 from pydantic import BaseModel
 
@@ -65,7 +67,8 @@ async def register_laboratory(*, form: LabNameIn) -> Any:
 
 
 @router.post("/load-default-setup", response_model=SetupResponse)
-async def load_setup_data() -> Any:
+async def load_setup_data(
+    current_user: user_models.User = Depends(deps.get_current_active_user),) -> Any:
     """
     Run initial setup to load setup data
     """

@@ -4,6 +4,7 @@ from typing import List, Optional
 import strawberry  # noqa
 from sqlalchemy import or_
 from api.gql import OperationError, auth_from_info, verify_user_auth
+from api.gql.permissions import IsAuthenticated
 from api.gql.shipment.types import ShipmentType
 from apps.common.models import IdSequence
 from apps.job import models as job_models
@@ -82,7 +83,7 @@ ShipmentResponse = strawberry.union(
 @strawberry.type
 class ShipmentMutations:
 
-    @strawberry.mutation
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_shipment(
         self,
         info,
@@ -127,7 +128,7 @@ class ShipmentMutations:
             shipments=[(await models.Shipment.get(uid=sh.uid)) for sh in shipments]
         )
 
-    @strawberry.mutation
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_shipment(
         self,
         info,
@@ -171,7 +172,7 @@ class ShipmentMutations:
 
         return ShipmentType(**shipment.marshal_simple())
 
-    @strawberry.mutation
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def action_shipment(
         self,
         info,
@@ -219,7 +220,7 @@ class ShipmentMutations:
         return ShipmentType(**shipment.marshal_simple())
 
 
-    @strawberry.mutation
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def shipment_manage_samples(
         self,
         info,
@@ -268,7 +269,7 @@ class ShipmentMutations:
         return ShipmentType(**shipment.marshal_simple())
 
 
-    @strawberry.mutation
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_referral_laboratory(info, payload: ReferralLaboratoryInputType) -> ReferralLaboratoryResponse:
 
         is_authenticated, felicity_user = await auth_from_info(info)
@@ -303,7 +304,7 @@ class ShipmentMutations:
         return types.ReferralLaboratoryType(**referral_laboratory.marshal_simple())
 
 
-    @strawberry.mutation
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_referral_laboratory(
         info, uid: str, payload: ReferralLaboratoryInputType
     ) -> ReferralLaboratoryResponse:

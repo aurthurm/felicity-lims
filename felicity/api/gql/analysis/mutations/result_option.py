@@ -2,6 +2,7 @@ import logging
 
 import strawberry  # noqa
 from api.gql import OperationError, auth_from_info, verify_user_auth
+from api.gql.permissions import IsAuthenticated
 from api.gql.analysis.types import analysis as a_types
 from apps.analysis import schemas
 from apps.analysis.models import analysis as analysis_models
@@ -25,7 +26,7 @@ ResultOptionResponse = strawberry.union(
 )
 
 
-@strawberry.mutation
+@strawberry.mutation(permission_classes=[IsAuthenticated])
 async def create_result_option(
     info, payload: ResultOptionInputType
 ) -> ResultOptionResponse:
@@ -63,7 +64,7 @@ async def create_result_option(
     return a_types.ResultOptionType(**result_option.marshal_simple())
 
 
-@strawberry.mutation
+@strawberry.mutation(permission_classes=[IsAuthenticated])
 async def update_result_option(
     info, uid: str, payload: ResultOptionInputType
 ) -> ResultOptionResponse:

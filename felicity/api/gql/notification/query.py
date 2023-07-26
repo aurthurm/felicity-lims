@@ -2,13 +2,14 @@ from typing import List, Optional
 
 import strawberry  # noqa
 from api.gql.notification.types import NotificationType
+from api.gql.permissions import IsAuthenticated
 from apps.notification import models
 
 
 
 @strawberry.type
 class StreamNotificationQuery:
-    @strawberry.field
+    @strawberry.field(permission_classes=[IsAuthenticated])
     async def notification_filter(
         self,
         info,
@@ -36,7 +37,7 @@ class StreamNotificationQuery:
         )
         return list(notifications)
 
-    @strawberry.field
+    @strawberry.field(permission_classes=[IsAuthenticated])
     async def notification_by_uid(
         self, info, uid: str
     ) -> Optional[NotificationType]:

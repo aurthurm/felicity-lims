@@ -3,6 +3,7 @@ from typing import Optional
 
 import strawberry  # noqa
 from api.gql.analytics import types
+from api.gql.permissions import IsAuthenticated
 from apps.analysis.conf import states
 from apps.analysis.models.analysis import Sample
 from apps.analysis.models.results import AnalysisResult
@@ -37,7 +38,7 @@ async def get_instrument(val):
     return instrument.name
 
 
-@strawberry.field
+@strawberry.field(permission_classes=[IsAuthenticated])
 async def count_sample_group_by_status(info) -> types.GroupedCounts:
     analytics = SampleAnalyticsInit(Sample)
     state_in = [
@@ -58,7 +59,7 @@ async def count_sample_group_by_status(info) -> types.GroupedCounts:
     return types.GroupedCounts(data=stats)
 
 
-@strawberry.field
+@strawberry.field(permission_classes=[IsAuthenticated])
 async def count_analyte_group_by_status(info) -> types.GroupedCounts:
     analytics = SampleAnalyticsInit(AnalysisResult)
     state_in = [
@@ -76,7 +77,7 @@ async def count_analyte_group_by_status(info) -> types.GroupedCounts:
     return types.GroupedCounts(data=stats)
 
 
-@strawberry.field
+@strawberry.field(permission_classes=[IsAuthenticated])
 async def count_extras_group_by_status(info) -> types.GroupedCounts:
     sample_analytics = SampleAnalyticsInit(Sample)
     sample_states = [
@@ -117,7 +118,7 @@ async def count_extras_group_by_status(info) -> types.GroupedCounts:
     return types.GroupedCounts(data=stats)
 
 
-@strawberry.field
+@strawberry.field(permission_classes=[IsAuthenticated])
 async def count_worksheet_group_by_status(info) -> types.GroupedCounts:
     analytics = SampleAnalyticsInit(WorkSheet)
     state_in = [
@@ -134,7 +135,7 @@ async def count_worksheet_group_by_status(info) -> types.GroupedCounts:
     return types.GroupedCounts(data=stats)
 
 
-@strawberry.field
+@strawberry.field(permission_classes=[IsAuthenticated])
 async def count_analyte_group_by_instrument(
     info, start_date: str | None = None, end_date: str | None = None
 ) -> types.GroupedCounts:
@@ -152,7 +153,7 @@ async def count_analyte_group_by_instrument(
     return types.GroupedCounts(data=stats)
 
 
-@strawberry.field
+@strawberry.field(permission_classes=[IsAuthenticated])
 async def count_sample_group_by_action(
     info, start_date: str | None = None, end_date: str | None = None
 ) -> types.GroupedData:
@@ -202,7 +203,7 @@ async def count_sample_group_by_action(
     return types.GroupedData(data=stats)
 
 
-@strawberry.field
+@strawberry.field(permission_classes=[IsAuthenticated])
 async def sample_process_performance(
     info, start_date: str, end_date: str
 ) -> types.ProcessStatistics:
@@ -277,7 +278,7 @@ async def sample_process_performance(
     return types.ProcessStatistics(data=final_data)
 
 
-@strawberry.field
+@strawberry.field(permission_classes=[IsAuthenticated])
 async def analysis_process_performance(
     info, process: str, start_date: str, end_date: str
 ) -> types.ProcessStatistics:
@@ -330,7 +331,7 @@ async def analysis_process_performance(
     return types.ProcessStatistics(data=final_data)
 
 
-@strawberry.field
+@strawberry.field(permission_classes=[IsAuthenticated])
 async def sample_laggards(info) -> types.LaggardStatistics:
     analytics = SampleAnalyticsInit(Sample)
     not_complete, complete = await analytics.get_laggards()

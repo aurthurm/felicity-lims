@@ -66,24 +66,9 @@ def same_origin(request):
 
 
 async def auth_from_info(info) -> Tuple[bool, Optional[User]]:
-    is_auth = is_authenticated(info.context["request"])
-
-    try:
-        username = info.context["request"].user.username
-    except AttributeError:
-        username = None
-
-    if not username:
-        return False, None
-
-    auth = await UserAuth.get_by_username(username)
-    if not auth:
-        return False, None
-
+    is_auth = is_authenticated(info.context.request)
+    auth = await UserAuth.get_by_username(info.context.request.user.username)
     user = await User.get(auth_uid=auth.uid)
-    if not user:
-        return False, None
-
     return is_auth, user
 
 

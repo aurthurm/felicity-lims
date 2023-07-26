@@ -3,6 +3,7 @@ from typing import Dict, Optional
 
 import strawberry  # noqa
 from api.gql import OperationError, DeletedItem, auth_from_info, verify_user_auth
+from api.gql.permissions import IsAuthenticated
 from api.gql.client.types import ClientContactType, ClientType
 from apps.client import models, schemas
 
@@ -53,7 +54,7 @@ class ClientContactInputType:
 
 @strawberry.type
 class ClientMutations:
-    @strawberry.mutation
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_client(
         self, info: Info, payload: ClientInputType
     ) -> ClientResponse:
@@ -89,7 +90,7 @@ class ClientMutations:
         client: models.Client = await models.Client.create(obj_in)
         return ClientType(**client.marshal_simple())
 
-    @strawberry.mutation
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_client(
         self, info, uid: str, payload: ClientInputType
     ) -> ClientResponse:
@@ -121,7 +122,7 @@ class ClientMutations:
         client = await client.update(obj_in)
         return ClientType(**client.marshal_simple())
 
-    @strawberry.mutation
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_client_contact(
         self, info, payload: ClientContactInputType
     ) -> ClientContactResponse:
@@ -162,7 +163,7 @@ class ClientMutations:
         client_contact: models.ClientContact = await models.ClientContact.create(obj_in)
         return ClientContactType(**client_contact.marshal_simple(exclude=["is_superuser", "auth_uid"]))
 
-    @strawberry.mutation
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_client_contact(
         self, info, uid: str, payload: ClientContactInputType
     ) -> ClientContactResponse:
@@ -194,7 +195,7 @@ class ClientMutations:
         client_contact = await client_contact.update(obj_in)
         return ClientContactType(**client_contact.marshal_simple(exclude=["is_superuser", "auth_uid"]))
 
-    @strawberry.mutation
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def delete_client_contact(self, info, uid: str) -> DeleteContactResponse:
 
         is_authenticated, felicity_user = await auth_from_info(info)
@@ -216,7 +217,7 @@ class ClientMutations:
         try:
             setattr(client_contact, "is_active", False)
         except Exception as e:
-            logger.warning(f"failed to set attribute {field}: {e}")
+            logger.warning(f"failed to set attribute is_active: {e}")
 
         obj_in = schemas.ClientContactUpdate(**client_contact.to_dict())
         client_contact = await client_contact.update(obj_in)

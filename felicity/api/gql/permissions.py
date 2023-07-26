@@ -1,46 +1,42 @@
 import logging
 
+import typing
 from apps.analysis.permissions import (
     check_result_verification,
     check_sample_verification,
 )
 from strawberry.permission import BasePermission
-
-from . import auth_from_info
+from api.gql.deps import Info
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
 class IsAuthenticated(BasePermission):
-    message = "You mst be authenticated"
+    message = "Only accessible to authenticated users"
 
-    async def has_permission(self, source, info, **kwargs):
-        is_authenticated, _ = await auth_from_info(info)
-        return is_authenticated
+    async def has_permission(self, source: typing.Any, info: Info, **kwargs):
+        return await info.context.user
 
 
 class IsActiveUser(BasePermission):
     message = "You must be an active user"
 
-    async def has_permission(self, source, info, **kwargs):
-        is_authenticated, user = await auth_from_info(info)
-
-        if not is_authenticated:
+    async def has_permission(self, source: typing.Any, info: Info, **kwargs):
+        user = await info.context.user
+        if not user:
             return False
-
         return user.is_active
 
 
 class IsSuperUser(BasePermission):
     message = "You dont have enough privileges"
 
-    async def has_permission(self, source, info, **kwargs):
-        is_authenticated, user = await auth_from_info(info)
-
-        if not is_authenticated:
+    async def has_permission(self, source: typing.Any, info: Info, **kwargs):
+        user = await info.context.user
+        if not user:
             return False
-
+        
         if not user.is_active:
             return False
 
@@ -50,12 +46,11 @@ class IsSuperUser(BasePermission):
 class CanVerifySample(BasePermission):
     message = "Action not allowed"
 
-    async def has_permission(self, source, info, **kwargs):
-        is_authenticated, user = await auth_from_info(info)
-
-        if not is_authenticated:
+    async def has_permission(self, source: typing.Any, info: Info, **kwargs):
+        user = await info.context.user
+        if not user:
             return False
-
+        
         if not user.is_active:
             return False
 
@@ -78,12 +73,11 @@ class CanVerifySample(BasePermission):
 class CanVerifyAnalysisResult(BasePermission):
     message = "Action not allowed"
 
-    async def has_permission(self, source, info, **kwargs):
-        is_authenticated, user = await auth_from_info(info)
-
-        if not is_authenticated:
+    async def has_permission(self, source: typing.Any, info: Info, **kwargs):
+        user = await info.context.user
+        if not user:
             return False
-
+        
         if not user.is_active:
             return False
 

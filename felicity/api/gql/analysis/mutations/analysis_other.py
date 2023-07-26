@@ -2,6 +2,7 @@ import logging
 
 import strawberry  # noqa
 from api.gql import OperationError, auth_from_info, verify_user_auth
+from api.gql.permissions import IsAuthenticated
 from api.gql.analysis.types import analysis as a_types
 from apps.analysis import schemas
 from apps.analysis.models import analysis as analysis_models
@@ -91,7 +92,7 @@ AnalysisSpecificationResponse = strawberry.union(
 )
 
 
-@strawberry.mutation
+@strawberry.mutation(permission_classes=[IsAuthenticated])
 async def create_analysis_interim(
     info, payload: AnalysisInterimInput
 ) -> AnalysisInterimResponse:
@@ -117,7 +118,7 @@ async def create_analysis_interim(
     return a_types.AnalysisInterimType(**interim.marshal_simple())
 
 
-@strawberry.mutation
+@strawberry.mutation(permission_classes=[IsAuthenticated])
 async def update_analysis_interim(
     info, uid: str, payload: AnalysisInterimInput
 ) -> AnalysisInterimResponse:
@@ -148,7 +149,7 @@ async def update_analysis_interim(
     return a_types.AnalysisInterimType(**interim.marshal_simple())
 
 
-@strawberry.mutation
+@strawberry.mutation(permission_classes=[IsAuthenticated])
 async def create_analysis_correction_factor(
     info, payload: AnalysisCorrectionFactorInput
 ) -> AnalysisCorrectionFactorResponse:
@@ -174,7 +175,7 @@ async def create_analysis_correction_factor(
     return a_types.AnalysisCorrectionFactorType(**correction_factor.marshal_simple())
 
 
-@strawberry.mutation
+@strawberry.mutation(permission_classes=[IsAuthenticated])
 async def update_analysis_correction_factor(
     info, uid: str, payload: AnalysisCorrectionFactorInput
 ) -> AnalysisCorrectionFactorResponse:
@@ -207,7 +208,7 @@ async def update_analysis_correction_factor(
     return a_types.AnalysisCorrectionFactorType(**correction_factor.marshal_simple())
 
 
-@strawberry.mutation
+@strawberry.mutation(permission_classes=[IsAuthenticated])
 async def create_analysis_detection_limit(
     info, payload: AnalysisDetectionLimitInput
 ) -> AnalysisDetectionLimitResponse:
@@ -233,7 +234,7 @@ async def create_analysis_detection_limit(
     return a_types.AnalysisDetectionLimitType(**detection_limit.marshal_simple())
 
 
-@strawberry.mutation
+@strawberry.mutation(permission_classes=[IsAuthenticated])
 async def update_analysis_detection_limit(
     info, uid: str, payload: AnalysisDetectionLimitInput
 ) -> AnalysisDetectionLimitResponse:
@@ -266,7 +267,7 @@ async def update_analysis_detection_limit(
     return a_types.AnalysisDetectionLimitType(**detection_limit.marshal_simple())
 
 
-@strawberry.mutation
+@strawberry.mutation(permission_classes=[IsAuthenticated])
 async def create_analysis_uncertainty(
     info, payload: AnalysisUncertaintyInput
 ) -> AnalysisUncertaintyResponse:
@@ -292,7 +293,7 @@ async def create_analysis_uncertainty(
     return a_types.AnalysisUncertaintyType(**uncertainty.marshal_simple())
 
 
-@strawberry.mutation
+@strawberry.mutation(permission_classes=[IsAuthenticated])
 async def update_analysis_uncertainty(
     info, uid: str, payload: AnalysisUncertaintyInput
 ) -> AnalysisUncertaintyResponse:
@@ -323,7 +324,7 @@ async def update_analysis_uncertainty(
     return a_types.AnalysisUncertaintyType(**uncertainty.marshal_simple())
 
 
-@strawberry.mutation
+@strawberry.mutation(permission_classes=[IsAuthenticated])
 async def create_analysis_specification(
     info, payload: AnalysisSpecificationInput
 ) -> AnalysisSpecificationResponse:
@@ -355,7 +356,7 @@ async def create_analysis_specification(
     return a_types.AnalysisSpecificationType(**specification.marshal_simple())
 
 
-@strawberry.mutation
+@strawberry.mutation(permission_classes=[IsAuthenticated])
 async def update_analysis_specification(
     info, uid: str, payload: AnalysisSpecificationInput
 ) -> AnalysisSpecificationResponse:

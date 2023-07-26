@@ -3,6 +3,7 @@ from typing import Optional
 
 import strawberry  # noqa
 from api.gql import OperationError, auth_from_info, verify_user_auth
+from api.gql.permissions import IsAuthenticated
 from api.gql.analysis.types import analysis as a_types
 from apps.analysis import schemas
 from apps.analysis.models import analysis as analysis_models
@@ -26,7 +27,7 @@ class AnalysisCategoryInputType:
     active: bool| None = True
 
 
-@strawberry.mutation
+@strawberry.mutation(permission_classes=[IsAuthenticated])
 async def create_analysis_category(
     info, payload: AnalysisCategoryInputType
 ) -> AnalysisCategoryResponse:
@@ -65,7 +66,7 @@ async def create_analysis_category(
     return a_types.AnalysisCategoryType(**analysis_category.marshal_simple())
 
 
-@strawberry.mutation
+@strawberry.mutation(permission_classes=[IsAuthenticated])
 async def update_analysis_category(
     self, info, uid: str, payload: AnalysisCategoryInputType
 ) -> AnalysisCategoryResponse:  # noqa

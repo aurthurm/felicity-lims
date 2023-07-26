@@ -13,7 +13,7 @@ from api.gql import (
 )
 from api.gql.analysis.types import analysis as a_types
 from api.gql.analysis.types import results as r_types
-from api.gql.permissions import CanVerifySample
+from api.gql.permissions import CanVerifySample, IsAuthenticated
 from apps.analysis import schemas
 from apps.analysis.conf import priorities, states
 from apps.analysis.models import analysis as analysis_models
@@ -97,7 +97,7 @@ class AnalysisRequestInputType:
     priority: int = priorities.NORMAL
 
 
-@strawberry.mutation
+@strawberry.mutation(permission_classes=[IsAuthenticated])
 async def create_analysis_request(
     info, payload: AnalysisRequestInputType
 ) -> AnalysisRequestResponse:
@@ -259,7 +259,7 @@ async def create_analysis_request(
     return a_types.AnalysisRequestWithSamples(**analysis_request.marshal_simple())
 
 
-@strawberry.mutation
+@strawberry.mutation(permission_classes=[IsAuthenticated])
 async def clone_samples(info, samples: List[str]) -> SampleActionResponse:
     is_authenticated, felicity_user = await auth_from_info(info)
     verify_user_auth(
@@ -304,7 +304,7 @@ async def clone_samples(info, samples: List[str]) -> SampleActionResponse:
     return SampleListingType(samples=clones)
 
 
-@strawberry.mutation
+@strawberry.mutation(permission_classes=[IsAuthenticated])
 async def cancel_samples(
     info, samples: List[str]
 ) -> ResultedSampleActionResponse:
@@ -337,7 +337,7 @@ async def cancel_samples(
     return ResultedSampleListingType(samples=return_samples)
 
 
-@strawberry.mutation
+@strawberry.mutation(permission_classes=[IsAuthenticated])
 async def re_instate_samples(
     info, samples: List[str]
 ) -> ResultedSampleActionResponse:
@@ -365,7 +365,7 @@ async def re_instate_samples(
     return ResultedSampleListingType(samples=return_samples)
 
 
-@strawberry.mutation
+@strawberry.mutation(permission_classes=[IsAuthenticated])
 async def receive_samples(
     info, samples: List[str]
 ) -> ResultedSampleActionResponse:
@@ -393,7 +393,7 @@ async def receive_samples(
     return ResultedSampleListingType(samples=return_samples)
 
 
-@strawberry.mutation(permission_classes=[CanVerifySample])
+@strawberry.mutation(permission_classes=[IsAuthenticated, CanVerifySample])
 async def verify_samples(info, samples: List[str]) -> SampleActionResponse:
     is_authenticated, felicity_user = await auth_from_info(info)
     verify_user_auth(
@@ -417,7 +417,7 @@ async def verify_samples(info, samples: List[str]) -> SampleActionResponse:
     return SampleListingType(samples=return_samples)
 
 
-@strawberry.mutation
+@strawberry.mutation(permission_classes=[IsAuthenticated])
 async def reject_samples(
     info, samples: List[SampleRejectInputType]
 ) -> SampleActionResponse:
@@ -460,7 +460,7 @@ async def reject_samples(
     return SampleListingType(samples=return_samples)
 
 
-@strawberry.mutation
+@strawberry.mutation(permission_classes=[IsAuthenticated])
 async def publish_samples(
     info, samples: List[SamplePublishInputType]
 ) -> SuccessErrorResponse:
@@ -508,7 +508,7 @@ async def publish_samples(
     )
 
 
-@strawberry.mutation
+@strawberry.mutation(permission_classes=[IsAuthenticated])
 async def print_samples(info, samples: List[str]) -> SampleActionResponse:
     is_authenticated, felicity_user = await auth_from_info(info)
     verify_user_auth(
@@ -534,7 +534,7 @@ async def print_samples(info, samples: List[str]) -> SampleActionResponse:
     return SampleListingType(samples=return_samples)
 
 
-@strawberry.mutation
+@strawberry.mutation(permission_classes=[IsAuthenticated])
 async def invalidate_samples(info, samples: List[str]) -> SampleActionResponse:
     is_authenticated, felicity_user = await auth_from_info(info)
     verify_user_auth(

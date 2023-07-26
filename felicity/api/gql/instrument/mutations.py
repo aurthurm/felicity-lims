@@ -5,6 +5,7 @@ from typing import List, Optional
 
 import strawberry  # noqa
 from api.gql import OperationError
+from api.gql.permissions import IsAuthenticated
 from api.gql.instrument.types import (
     CalibrationCertificateType,
     InstrumentCalibrationType,
@@ -98,7 +99,7 @@ class CalibrationCertificateInput:
 
 @strawberry.type
 class InstrumentMutations:
-    @strawberry.mutation
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_instrument_type(
         self, info, payload: InstrumentTypeInputType
     ) -> InstrumentTypeResponse:  # noqa
@@ -120,7 +121,7 @@ class InstrumentMutations:
         inst_type: models.InstrumentType = await models.InstrumentType.create(obj_in)
         return InstrumentTypeType(**inst_type.marshal_simple())
 
-    @strawberry.mutation
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_instrument_type(
         self, info, uid: str, payload: InstrumentTypeInputType
     ) -> InstrumentTypeResponse:  # noqa
@@ -146,7 +147,7 @@ class InstrumentMutations:
         inst_type = await inst_type.update(obj_in)
         return InstrumentTypeType(**inst_type.marshal_simple())
 
-    @strawberry.mutation
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_instrument(
         self, info, payload: InstrumentInputType
     ) -> InstrumentResponse:  # noqa
@@ -176,7 +177,7 @@ class InstrumentMutations:
         instrument: models.Instrument = await models.Instrument.create(obj_in)
         return InstrumentType(**instrument.marshal_simple())
 
-    @strawberry.mutation
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_instrument(
         self, info, uid: str, payload: InstrumentInputType
     ) -> InstrumentResponse:  # noqa
@@ -209,7 +210,7 @@ class InstrumentMutations:
         instrument = await instrument.update(obj_in)
         return InstrumentType(**instrument.marshal_simple())
 
-    @strawberry.mutation
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_instrument_caliberation(
         self, info, payload: InstrumentCalibrationInput
     ) -> InstrumentCalibrationResponse:  # noqa
@@ -224,7 +225,7 @@ class InstrumentMutations:
         )
         return InstrumentCalibrationType(**calib.marshal_simple())
 
-    @strawberry.mutation
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_instrument_caliberation(
         self, info, uid: str, payload: InstrumentInputType
     ) -> InstrumentCalibrationResponse:  # noqa
@@ -250,7 +251,7 @@ class InstrumentMutations:
         caliberation = await caliberation.update(obj_in)
         return InstrumentCalibrationType(**caliberation.marshal_simple())
 
-    @strawberry.mutation
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_caliberation_certificate(
         self, info, payload: CalibrationCertificateInput
     ) -> CalibrationCertificateResponse:  # noqa
@@ -265,7 +266,7 @@ class InstrumentMutations:
         )
         return CalibrationCertificateType(**certificate.marshal_simple())
 
-    @strawberry.mutation
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_caliberation_certificate(
         self, info, uid: str, payload: CalibrationCertificateInput
     ) -> CalibrationCertificateResponse:  # noqa
@@ -291,7 +292,7 @@ class InstrumentMutations:
         certificate = await certificate.update(obj_in)
         return CalibrationCertificateType(**certificate.marshal_simple())
 
-    @strawberry.mutation
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_method(
         self, info, payload: MethodInputType
     ) -> MethodResponse:  # noqa
@@ -358,7 +359,7 @@ class InstrumentMutations:
 
         return MethodType(**method.marshal_simple(exclude=["instruments", "analyses"]))
 
-    @strawberry.mutation
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_method(
         self, info, uid: str, payload: MethodInputType
     ) -> MethodResponse:  # noqa

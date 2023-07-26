@@ -3,6 +3,7 @@ from typing import List, Optional
 import sqlalchemy as sa
 import strawberry  # noqa
 from api.gql import PageInfo, deps
+from api.gql.permissions import IsAuthenticated
 from api.gql.user.types import (
     GroupType,
     PermissionType,
@@ -17,7 +18,7 @@ from utils import has_value_or_is_truthy
 
 @strawberry.type
 class UserQuery:
-    @strawberry.field
+    @strawberry.field(permission_classes=[IsAuthenticated])
     async def user_all(
         self,
         info,
@@ -60,27 +61,27 @@ class UserQuery:
             total_count=total_count, edges=edges, items=items, page_info=page_info
         )
 
-    @strawberry.field
+    @strawberry.field(permission_classes=[IsAuthenticated])
     async def user_me(self, info, token: str) -> UserType | None:
         return await deps.get_current_active_user(token=token)
 
-    @strawberry.field
+    @strawberry.field(permission_classes=[IsAuthenticated])
     async def user_by_email(self, info, email: str) -> UserType | None:
         return await user_models.User.get_by_email(email=email)
 
-    @strawberry.field
+    @strawberry.field(permission_classes=[IsAuthenticated])
     async def group_all(self, info) -> List[GroupType]:
         return await user_models.Group.all()
 
-    @strawberry.field
+    @strawberry.field(permission_classes=[IsAuthenticated])
     async def group_by_uid(self, info, uid: str) -> Optional[GroupType]:
         return await user_models.Group.get(uid=uid)
 
-    @strawberry.field
+    @strawberry.field(permission_classes=[IsAuthenticated])
     async def permission_all(self, info) -> List[PermissionType]:
         return await user_models.Permission.all()
 
-    @strawberry.field
+    @strawberry.field(permission_classes=[IsAuthenticated])
     async def permission_by_uid(
         self, info, uid: str
     ) -> Optional[PermissionType]:

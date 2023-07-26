@@ -5,6 +5,7 @@ from typing import Dict, List, Optional
 
 import strawberry  # noqa
 from api.gql import OperationError, auth_from_info, verify_user_auth
+from api.gql.permissions import IsAuthenticated
 from api.gql.patient.types import IdentificationType, PatientType
 from apps.client import models as client_models
 from apps.patient import models, schemas
@@ -55,7 +56,7 @@ IdentificationResponse = strawberry.union(
 
 @strawberry.type
 class PatientMutations:
-    @strawberry.mutation
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_identification(info, name: str) -> IdentificationResponse:
 
         is_authenticated, felicity_user = await auth_from_info(info)
@@ -86,7 +87,7 @@ class PatientMutations:
         )
         return IdentificationType(**identification.marshal_simple())
 
-    @strawberry.mutation
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_identification(
         info, uid: str, name: str
     ) -> IdentificationResponse:
@@ -110,7 +111,7 @@ class PatientMutations:
         identification = await identification.update(id_in)
         return IdentificationType(**identification.marshal_simple())
 
-    @strawberry.mutation
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_patient(self, info, payload: PatientInputType) -> PatientResponse:
 
         is_authenticated, felicity_user = await auth_from_info(info)
@@ -163,7 +164,7 @@ class PatientMutations:
 
         return PatientType(**patient.marshal_simple())
 
-    @strawberry.mutation
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_patient(
         self, info, uid: str, payload: PatientInputType
     ) -> PatientResponse:

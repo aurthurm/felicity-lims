@@ -4,6 +4,7 @@ from typing import List, Optional
 
 import strawberry  # noqa
 from api.gql import OperationError, auth_from_info, verify_user_auth
+from api.gql.permissions import IsAuthenticated
 from api.gql.analysis.types import analysis as a_types
 from apps.analysis import schemas
 from apps.analysis.models import analysis as analysis_models
@@ -30,7 +31,7 @@ class ProfileInputType:
     active: bool| None = True
 
 
-@strawberry.mutation
+@strawberry.mutation(permission_classes=[IsAuthenticated])
 async def create_profile(info, payload: ProfileInputType) -> AnalysisProfileResponse:
 
     is_authenticated, felicity_user = await auth_from_info(info)
@@ -82,7 +83,7 @@ async def create_profile(info, payload: ProfileInputType) -> AnalysisProfileResp
     return a_types.ProfileType(**profile.marshal_simple())
 
 
-@strawberry.mutation
+@strawberry.mutation(permission_classes=[IsAuthenticated])
 async def update_profile(
     info, uid: str, payload: ProfileInputType
 ) -> AnalysisProfileResponse:

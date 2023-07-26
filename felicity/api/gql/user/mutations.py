@@ -11,6 +11,7 @@ from api.gql import (
     auth_from_info,
     verify_user_auth,
 )
+from api.gql.permissions import IsAuthenticated
 from api.gql.user.types import (
     AuthenticatedData,
     GroupType,
@@ -68,7 +69,7 @@ def simple_task(message: str):
 
 @strawberry.type
 class UserMutations:
-    @strawberry.mutation
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_user(
         self,
         info,
@@ -113,7 +114,7 @@ class UserMutations:
             logger.info("Handle email sending in a standalone service")
         return UserType(**user.marshal_simple())
 
-    @strawberry.mutation
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_user(
         self,
         info,
@@ -157,7 +158,7 @@ class UserMutations:
 
         return UserType(**user.marshal_simple())
 
-    @strawberry.mutation
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_user_auth(
         self, info, user_uid: str, user_name: str, password: str, passwordc: str
     ) -> UserResponse:
@@ -206,7 +207,7 @@ class UserMutations:
         user = await user_models.User.get(uid=user.uid)
         return UserType(**user.marshal_simple())
 
-    @strawberry.mutation
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_user_auth(
         self,
         info,
@@ -258,7 +259,6 @@ class UserMutations:
         user = await user_models.User.get(uid=user.uid)
         return UserType(**user.marshal_simple())
 
-    @strawberry.mutation
     async def authenticate_user(
         self, info, username: str, password: str
     ) -> AuthenticatedDataResponse:
@@ -279,7 +279,7 @@ class UserMutations:
         )
         return AuthenticatedData(token=access_token[0], token_type="bearer", user=_user)
 
-    @strawberry.mutation
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def unlink_user_auth(self, info, user_uid: str) -> UserResponse:
         user = await user_models.User.get(uid=user_uid)
         if not user:
@@ -293,7 +293,7 @@ class UserMutations:
         await user.unlink_auth()
         return UserType(**user.marshal_simple())
 
-    @strawberry.mutation
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def recover_password(self, info, username: str) -> MessageResponse:
         auth = await user_models.UserAuth.get_by_username(username=username)
         if not auth:
@@ -315,7 +315,7 @@ class UserMutations:
         msg = "Password recovery email sent"
         return MessagesType(msg)
 
-    @strawberry.mutation
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_group(info, payload: GroupInputType) -> GroupResponse:
 
         is_authenticated, felicity_user = await auth_from_info(info)
@@ -345,7 +345,7 @@ class UserMutations:
         group: user_models.Group = await user_models.Group.create(incoming)
         return GroupType(**group.marshal_simple())
 
-    @strawberry.mutation
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_group(
         info, uid: str, payload: GroupInputType
     ) -> GroupResponse:
@@ -374,7 +374,7 @@ class UserMutations:
         group = await group.update(group.to_dict())
         return GroupType(**group.marshal_simple())
 
-    @strawberry.mutation
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_group_permissions(
         self, info, group_uid: str, permission_uid: str
     ) -> UpdatedGroupPermsResponse:
