@@ -101,7 +101,7 @@ async def submit_analysis_results(
     )
 
 
-@strawberry.mutation(permission_classes=[IsAuthenticated, CanVerifyAnalysisResult])
+@strawberry.mutation(permission_classes=[CanVerifyAnalysisResult])
 async def verify_analysis_results(
     info, analyses: list[str], source_object: str, source_object_uid: str
 ) -> AnalysisResultOperationResponse:

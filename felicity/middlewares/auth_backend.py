@@ -4,11 +4,10 @@ import binascii
 
 from typing import Optional, Tuple
 from api.gql.deps import get_current_active_user
-from starlette.authentication import AuthCredentials  # UnauthenticatedUser,
+from starlette.authentication import AuthCredentials, UnauthenticatedUser
 from starlette.authentication import (
     AuthenticationBackend,
     AuthenticationError,
-    SimpleUser,
     BaseUser
 )
 from apps.user.models import User, UserAuth
