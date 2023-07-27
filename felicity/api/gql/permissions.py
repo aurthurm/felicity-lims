@@ -44,7 +44,7 @@ class IsSuperUser(BasePermission):
 
 
 class CanVerifySample(BasePermission):
-    message = "Action not allowed"
+    message = "You have no priviledges to verify this sample"
 
     async def has_permission(self, source: typing.Any, info: Info, **kwargs):
         user = await info.context.user
@@ -71,7 +71,7 @@ class CanVerifySample(BasePermission):
 
 
 class CanVerifyAnalysisResult(BasePermission):
-    message = "Action not allowed"
+    message = "You have no priviledges to verify these analyses"
 
     async def has_permission(self, source: typing.Any, info: Info, **kwargs):
         user = await info.context.user

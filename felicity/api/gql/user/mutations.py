@@ -259,6 +259,7 @@ class UserMutations:
         user = await user_models.User.get(uid=user.uid)
         return UserType(**user.marshal_simple())
 
+    @strawberry.mutation
     async def authenticate_user(
         self, info, username: str, password: str
     ) -> AuthenticatedDataResponse:

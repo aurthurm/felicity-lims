@@ -393,7 +393,7 @@ async def receive_samples(
     return ResultedSampleListingType(samples=return_samples)
 
 
-@strawberry.mutation(permission_classes=[IsAuthenticated, CanVerifySample])
+@strawberry.mutation(permission_classes=[CanVerifySample])
 async def verify_samples(info, samples: List[str]) -> SampleActionResponse:
     is_authenticated, felicity_user = await auth_from_info(info)
     verify_user_auth(
