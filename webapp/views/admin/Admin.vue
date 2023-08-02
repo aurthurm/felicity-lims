@@ -19,6 +19,7 @@ const configs = ref([
     icon: "laptop-medical",
   },
   { title: "Sample Types", path: "/admin/sampletypes-conf", icon: "fill" },
+  { title: "Coding Standard", path: "/admin/coding-conf", icon: "fill" },
   { title: "Person Identification", path: "/admin/identification-conf", icon: "fill" },
   {
     title: "Tests, Categories, Profiles, QC",

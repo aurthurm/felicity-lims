@@ -13,7 +13,7 @@ from .analysis_other import (
     update_analysis_specification,
     update_analysis_uncertainty,
 )
-from .analysis_profile import create_profile, update_profile
+from .analysis_profile import create_profile, update_profile, create_profile_mapping, update_profile_mapping
 from .analysis_request import cancel_samples  # update_analysis_request,; update_sample,
 from .analysis_request import (
     clone_samples,
@@ -34,7 +34,7 @@ from .analysis_result import (
     submit_analysis_results,
     verify_analysis_results,
 )
-from .analysis_service import create_analysis, update_analysis
+from .analysis_service import create_analysis, update_analysis, create_analysis_mapping, update_analysis_mapping
 from .quality_control import (
     create_QC_level,
     create_QC_set,
@@ -44,13 +44,18 @@ from .quality_control import (
 )
 from .rejection_reason import create_rejection_reason, update_rejection_reason
 from .result_option import create_result_option, update_result_option
-from .sample_type import create_sample_type, update_sample_type
+from .sample_type import create_sample_type, update_sample_type, create_sample_type_mapping, update_sample_type_mapping
+from .coding_standard import create_coding_standard, update_coding_standard
 
 AnalysisMutations = create_type(
     "Mutation",
     [
+        create_coding_standard, 
+        update_coding_standard,
         create_sample_type,
         update_sample_type,
+        create_sample_type_mapping, 
+        update_sample_type_mapping,
         create_result_option,
         update_result_option,
         create_rejection_reason,
@@ -59,8 +64,12 @@ AnalysisMutations = create_type(
         update_analysis_category,
         create_profile,
         update_profile,
+        create_profile_mapping, 
+        update_profile_mapping,
         create_analysis,
         update_analysis,
+        create_analysis_mapping, 
+        update_analysis_mapping,
         create_analysis_request,
         create_analysis_interim,
         update_analysis_interim,

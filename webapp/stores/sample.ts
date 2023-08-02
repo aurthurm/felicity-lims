@@ -12,6 +12,7 @@ import {
     GET_SAMPLE_BY_UID,
     GET_SAMPLE_STATUS_BY_UID,
     GET_SAMPLE_BY_PARENT_ID,
+    GET_SAMPLE_TYPE_MAPPINGS_BY_SAMPLE_TYPE,
 } from '../graphql/analyses.queries';
 import { IAnalysisRequest, ISampleType, ISample, IAnalysisResult, IQCSet } from '../models/analysis';
 import { IPageInfo, IPaginationMeta } from '../models/pagination';
@@ -24,6 +25,7 @@ export const useSampleStore = defineStore('sample', {
     state: () => {
         return {
             sampleTypes: [],
+            sampleTypesMappings: [],
             fetchingSampleTypes: false,
             samples: [],
             fetchingSamples: false,
@@ -46,6 +48,7 @@ export const useSampleStore = defineStore('sample', {
             qcSetPageInfo: undefined,
         } as {
             sampleTypes: ISampleType[];
+            sampleTypesMappings: any[],
             fetchingSampleTypes: boolean;
             samples: ISample[];
             fetchingSamples: boolean;
@@ -70,6 +73,7 @@ export const useSampleStore = defineStore('sample', {
     },
     getters: {
         getSampleTypes: state => state.sampleTypes,
+        getSampleTypesMappings: state => state.sampleTypesMappings,
         getSampleTypeByName: state => (name: string) =>
             state.sampleTypes?.find(st => st.name?.toString().toLowerCase().trim() === name.toString().toLowerCase().trim()),
         getSamples: state => state.samples,
@@ -101,6 +105,17 @@ export const useSampleStore = defineStore('sample', {
         },
         addSampleType(payload) {
             this.sampleTypes?.unshift(payload);
+        },       
+        
+        async fetchSampleTypesMappings(profileUid) {
+            await withClientQuery(GET_SAMPLE_TYPE_MAPPINGS_BY_SAMPLE_TYPE, { uid: profileUid }, 'sampleTypeMappingsBySampleType').then(payload => (this.sampleTypesMappings = payload));
+        },
+        addSampleTypesMapping(payload) {
+            this.sampleTypesMappings?.unshift(payload);
+        },
+        updateSampleTypesMapping(payload) {
+            const index = this.sampleTypesMappings.findIndex(x => x.uid === payload.uid);
+            this.sampleTypesMappings[index] = payload;
         },
 
         // SAMPLES
@@ -341,16 +356,14 @@ export const useSampleStore = defineStore('sample', {
 });
 
 function sortAnalysisRequests(ars: IAnalysisRequest[]): IAnalysisRequest[] {
-    ars = ars?.sort((a: IAnalysisRequest, b: IAnalysisRequest) => ((a?.createdAt || 0) < (b?.createdAt || 1) ? 1 : -1));
-    return ars;
+    return ars?.sort((a: IAnalysisRequest, b: IAnalysisRequest) => ((a?.createdAt || 0) < (b?.createdAt || 1) ? 1 : -1));
 }
 
 function sortResults(results: IAnalysisResult[]): IAnalysisResult[] {
-    results = results?.sort((a: IAnalysisResult, b: IAnalysisResult) => {
+    return results?.sort((a: IAnalysisResult, b: IAnalysisResult) => {
         if (a?.analysisUid === b?.analysisUid) {
             return (a?.uid || 0) > (b?.uid || 0) ? 1 : -1;
         }
         return (a?.analysis?.sortKey || 0) > (b?.analysis?.sortKey || 1) ? 1 : -1;
     });
-    return results;
 }

@@ -37,6 +37,15 @@ class CodingStandard(BaseAuditDBModel):
     name = Column(String, nullable=False)
     description = Column(String, nullable=False)
 
+    @classmethod
+    async def create(cls, obj_in: schemas.CodingStandardCreate) -> schemas.CodingStandard:
+        data = cls._import(obj_in)
+        return await super().create(**data)
+
+    async def update(self, obj_in: schemas.CodingStandardUpdate) -> schemas.CodingStandard:
+        data = self._import(obj_in)
+        return await super().update(**data)
+    
 
 class SampleType(BaseAuditDBModel):
     """SampleType"""

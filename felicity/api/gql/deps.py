@@ -46,7 +46,7 @@ async def get_current_active_superuser(token: str = None) -> models.User:
 
 
 class Context(BaseContext):
-    @cached_property
+    # @cached_property
     async def user(self) -> models.User | None:
         if not self.request:
             return None

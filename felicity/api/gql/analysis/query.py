@@ -23,12 +23,20 @@ logger = logging.getLogger(__name__)
 @strawberry.type
 class AnalysisQuery:
     @strawberry.field(permission_classes=[IsAuthenticated])
+    async def coding_standard_all(self, info) -> List[a_types.CodingStandardType]:
+        return await a_models.CodingStandard.all()
+    
+    @strawberry.field(permission_classes=[IsAuthenticated])
     async def sample_type_all(self, info) -> List[a_types.SampleTypeTyp]:
         return await a_models.SampleType.all()
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def sample_type_by_uid(self, info, uid: str) -> a_types.SampleTypeTyp:
         return await a_models.SampleType.get(uid=uid)
+    
+    @strawberry.field(permission_classes=[IsAuthenticated])
+    async def sample_type_mappings_by_sample_type(self, info, sample_type_uid: str) -> list[a_types.SampleTypeMappingType]:
+        return await a_models.SampleTypeCoding.get_all(sample_type_uid=sample_type_uid)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def sample_all(
@@ -196,6 +204,10 @@ class AnalysisQuery:
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def profile_by_uid(self, info, uid: str) -> a_types.ProfileType:
         return await a_models.Profile.get(uid=uid)
+    
+    @strawberry.field(permission_classes=[IsAuthenticated])
+    async def profile_mappings_by_profile(self, info, profile_uid: str) -> list[a_types.ProfileMappingType]:
+        return await a_models.ProfileCoding.get_all(profile_uid=profile_uid)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def analysis_category_all(self, info) -> List[a_types.AnalysisCategoryType]:
@@ -253,6 +265,10 @@ class AnalysisQuery:
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def analysis_by_uid(self, info, uid: str) -> a_types.AnalysisType:
         return await a_models.Analysis.get(uid=uid)
+
+    @strawberry.field(permission_classes=[IsAuthenticated])
+    async def analysis_mappings_by_analysis(self, info, analysis_uid: str) -> list[a_types.AnalysisMappingType]:
+        return await a_models.AnalysisCoding.get_all(analysis_uid=analysis_uid)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def analysis_without_profile(self, info) -> List[a_types.AnalysisType]:

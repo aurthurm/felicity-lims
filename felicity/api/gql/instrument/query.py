@@ -15,7 +15,7 @@ from api.gql.instrument.types import (
     MethodEdge,
     MethodType
 )
-from apps.setup import models
+from apps.instrument import models
 
 from utils import has_value_or_is_truthy
 
@@ -145,7 +145,6 @@ async def get_all_methods(
 
 @strawberry.type
 class InstrumentQuery:
-   
     instrument_type_all: InstrumentTypeCursorPage = strawberry.field(
         resolver=get_all_instrument_types, permission_classes=[IsAuthenticated]
     )

@@ -73,6 +73,14 @@ const adminRoutes = [
         },
     },
     {
+        path: 'coding-conf',
+        name: 'coding-conf',
+        component: () => import('../views/admin/coding/index.vue'),
+        meta: {
+            requiresAuth: true,
+        },
+    },
+    {
         path: 'worksheets-conf',
         name: 'worksheets-conf',
         component: () => import('../views/admin/worksheets/index.vue'),

@@ -29,6 +29,22 @@ class ProfileInputType:
     services: Optional[List[str]] = field(default_factory=list)
     keyword: str | None = None
     active: bool| None = True
+    
+    
+    
+ProfileMappingResponse = strawberry.union(
+    "ProfileMappingResponse",
+    (a_types.ProfileMappingType, OperationError),  # noqa
+    description="Union of possible outcomes when adding a new notice",
+)
+    
+@strawberry.input
+class ProfileMappingInputType:
+    profile_uid: str
+    coding_standard_uid: str
+    name: str
+    code: str
+    description: str | None = None
 
 
 @strawberry.mutation(permission_classes=[IsAuthenticated])
@@ -137,3 +153,60 @@ async def update_profile(
             )
 
     return a_types.ProfileType(**profile.marshal_simple())
+
+
+@strawberry.mutation(permission_classes=[IsAuthenticated])
+async def create_profile_mapping(info, payload: ProfileMappingInputType) -> ProfileMappingResponse:
+
+    is_authenticated, felicity_user = await auth_from_info(info)
+    verify_user_auth(
+        is_authenticated,
+        felicity_user,
+        "Only Authenticated user can create profiles mappigs",
+    )
+
+    exists = await analysis_models.ProfileCoding.get(code=payload.code)
+    if exists:
+        return OperationError(error=f"Mapping: {payload.code} already exists")
+
+    incoming = {
+        "created_by_uid": felicity_user.uid,
+        "updated_by_uid": felicity_user.uid,
+    }
+    for k, v in payload.__dict__.items():
+        incoming[k] = v
+
+    obj_in = schemas.ProfileCodingCreate(**incoming)
+    profile_mapping: analysis_models.ProfileCoding = await analysis_models.ProfileCoding.create(
+        obj_in
+    )
+    return a_types.ProfileMappingType(**profile_mapping.marshal_simple())
+
+
+@strawberry.mutation(permission_classes=[IsAuthenticated])
+async def update_profile_mapping(
+    info, uid: str, payload: ProfileMappingInputType
+) -> ProfileMappingResponse:
+
+    is_authenticated, felicity_user = await auth_from_info(info)
+    verify_user_auth(
+        is_authenticated,
+        felicity_user,
+        "Only Authenticated user can update profile mappings",
+    )
+
+    profile_mapping = await analysis_models.ProfileCoding.get(uid=uid)
+    if not profile_mapping:
+        return OperationError(error=f"Coding with uid {uid} does not exist")
+
+    st_data = profile_mapping.to_dict()
+    for field in st_data:
+        if field in payload.__dict__:
+            try:
+                setattr(profile_mapping, field, payload.__dict__[field])
+            except Exception as e:
+                logger.warning(e)
+
+    profile_mapping_in = schemas.ProfileCodingUpdate(**profile_mapping.to_dict())
+    profile_mapping = await profile_mapping.update(profile_mapping_in)
+    return a_types.ProfileMappingType(**profile_mapping.marshal_simple())

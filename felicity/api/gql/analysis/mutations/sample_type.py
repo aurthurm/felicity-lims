@@ -29,6 +29,23 @@ SampleTypeResponse = strawberry.union(
 )
 
 
+SampleTypeMappingResponse = strawberry.union(
+    "SampleTypeMappingResponse",
+    (a_types.SampleTypeMappingType, OperationError),  # noqa
+    description="Union of possible outcomes when adding a new notice",
+)
+    
+    
+@strawberry.input
+class SampleTypeMappingInputType:
+    sample_type_uid: str
+    coding_standard_uid: str
+    name: str
+    code: str
+    description: str | None = None
+
+
+
 @strawberry.mutation(permission_classes=[IsAuthenticated])
 async def create_sample_type(info, payload: SampleTypeInputType) -> SampleTypeResponse:
 
@@ -87,3 +104,62 @@ async def update_sample_type(
     sample_type_in = schemas.SampleTypeUpdate(**sample_type.to_dict())
     sample_type = await sample_type.update(sample_type_in)
     return a_types.SampleTypeTyp(**sample_type.marshal_simple())
+
+
+
+
+@strawberry.mutation(permission_classes=[IsAuthenticated])
+async def create_sample_type_mapping(info, payload: SampleTypeMappingInputType) -> SampleTypeMappingResponse:
+
+    is_authenticated, felicity_user = await auth_from_info(info)
+    verify_user_auth(
+        is_authenticated,
+        felicity_user,
+        "Only Authenticated user can create sample type mappigs",
+    )
+
+    exists = await analysis_models.SampleTypeCoding.get(code=payload.code)
+    if exists:
+        return OperationError(error=f"Mapping: {payload.code} already exists")
+
+    incoming = {
+        "created_by_uid": felicity_user.uid,
+        "updated_by_uid": felicity_user.uid,
+    }
+    for k, v in payload.__dict__.items():
+        incoming[k] = v
+
+    obj_in = schemas.SampleTypeCodingCreate(**incoming)
+    sample_type_mapping: analysis_models.SampleTypeCoding = await analysis_models.SampleTypeCoding.create(
+        obj_in
+    )
+    return a_types.SampleTypeMappingType(**sample_type_mapping.marshal_simple())
+
+
+@strawberry.mutation(permission_classes=[IsAuthenticated])
+async def update_sample_type_mapping(
+    info, uid: str, payload: SampleTypeMappingInputType
+) -> SampleTypeMappingResponse:
+
+    is_authenticated, felicity_user = await auth_from_info(info)
+    verify_user_auth(
+        is_authenticated,
+        felicity_user,
+        "Only Authenticated user can update sample_type mappings",
+    )
+
+    sample_type_mapping = await analysis_models.SampleTypeCoding.get(uid=uid)
+    if not sample_type_mapping:
+        return OperationError(error=f"Coding with uid {uid} does not exist")
+
+    st_data = sample_type_mapping.to_dict()
+    for field in st_data:
+        if field in payload.__dict__:
+            try:
+                setattr(sample_type_mapping, field, payload.__dict__[field])
+            except Exception as e:
+                logger.warning(e)
+
+    sample_type_mapping_in = schemas.SampleTypeCodingUpdate(**sample_type_mapping.to_dict())
+    sample_type_mapping = await sample_type_mapping.update(sample_type_mapping_in)
+    return a_types.SampleTypeMappingType(**sample_type_mapping.marshal_simple())
