@@ -11,12 +11,12 @@ from apps.setup.schemas import Department, Unit
 #
 
 # Shared properties
-class CogingStandardBase(BaseAuditModel):
+class CodingStandardBase(BaseAuditModel):
     name: str | None
     description: str | None
 
 
-class CogingStandardBaseInDB(CogingStandardBase):
+class CodingStandardBaseInDB(CodingStandardBase):
     uid: str | None
 
     class Config:
@@ -24,22 +24,22 @@ class CogingStandardBaseInDB(CogingStandardBase):
 
 
 # Properties to receive via API on creation
-class CogingStandardCreate(CogingStandardBase):
+class CodingStandardCreate(CodingStandardBase):
     pass
 
 
 # Properties to receive via API on update
-class CogingStandardUpdate(CogingStandardBase):
+class CodingStandardUpdate(CodingStandardBase):
     pass
 
 
 # Properties to return via API
-class CogingStandard(CogingStandardBaseInDB):
+class CodingStandard(CodingStandardBaseInDB):
     pass
 
 
 # Properties stored in DB
-class CogingStandardInDB(CogingStandardBaseInDB):
+class CodingStandardInDB(CodingStandardBaseInDB):
     pass
 
 
@@ -95,7 +95,7 @@ class SampleTypeCodingBase(BaseAuditModel):
     sample_type_uid: str | None
     sample_type: SampleType | None
     coding_standard_uid: str
-    coding_standard: CogingStandard | None
+    coding_standard: CodingStandard | None
     code: str | None
     name: str | None
     description: str | None
@@ -181,7 +181,7 @@ class ProfileCodingBase(BaseAuditModel):
     profile_uid: str | None
     profile: Profile | None
     coding_standard_uid: str
-    coding_standard: CogingStandard | None
+    coding_standard: CodingStandard | None
     code: str | None
     name: str | None
     description: str | None
@@ -322,7 +322,7 @@ class AnalysisCodingBase(BaseAuditModel):
     analysis_uid: str | None = None
     analysis: Analysis | None
     coding_standard_uid: str
-    coding_standard: CogingStandard | None
+    coding_standard: CodingStandard | None
     code: str | None
     name: str | None
     description: str | None

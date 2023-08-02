@@ -145,7 +145,6 @@ async def get_all_methods(
 
 @strawberry.type
 class InstrumentQuery:
-   
     instrument_type_all: InstrumentTypeCursorPage = strawberry.field(
         resolver=get_all_instrument_types, permission_classes=[IsAuthenticated]
     )

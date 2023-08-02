@@ -3,7 +3,9 @@ import { ref, reactive, computed, defineAsyncComponent } from "vue";
 import { IAnalysisProfile, IAnalysisService } from "../../../models/analysis";
 import {
   ADD_ANALYSIS_PROFILE,
+  ADD_PROFILE_MAPPING,
   EDIT_ANALYSIS_PROFILE,
+  EDIT_PROFILE_MAPPING,
 } from "../../../graphql/analyses.mutations";
 import { useSetupStore, useAnalysisStore, useSampleStore } from "../../../stores";
 import { useApiUtil } from "../../../composables";
@@ -24,7 +26,7 @@ const setupStore = useSetupStore();
 const { withClientMutation } = useApiUtil();
 
 let currentTab = ref("view");
-const tabs = ["view", "analyses-services", "financials"];
+const tabs = ["view", "analyses-services", "mappings", "financials"];
 
 let showModal = ref(false);
 let formTitle = ref("");
@@ -81,6 +83,8 @@ function selectProfile(profile: IAnalysisProfile): void {
       }
     });
   });
+  //  fetch profile mappings
+  analysisStore.fetchProfileMappings(profile?.uid)
 }
 
 function updateProfile(): void {
@@ -111,6 +115,69 @@ function saveForm(): void {
   if (formAction.value === true) addAnalysisProfile();
   if (formAction.value === false) editAnalysisProfile();
   showModal.value = false;
+}
+
+
+// Mapping
+analysisStore.fetchCodingStandards()
+const mappings = computed(() => analysisStore.profileMapings?.filter(m => m.profileUid === analysisProfile?.uid))
+let showMappingModal = ref(false);
+let mappingFormTitle = ref("");
+const mappingFormAction = ref(true);
+const mappingForm =  reactive({
+  uid: undefined,
+  profileUid: undefined,
+  codingStandardUid: undefined,
+  name: "",
+  code: "",
+  description: ""
+})
+
+function addMapping(): void {
+  const payload = {
+    profileUid: analysisProfile?.uid,
+    codingStandardUid: mappingForm.codingStandardUid,
+    name: mappingForm.name,
+    code: mappingForm.code,
+    description: mappingForm.description,
+  };
+  withClientMutation(
+    ADD_PROFILE_MAPPING,
+    { payload },
+    "createProfileMapping"
+  ).then((result) => analysisStore.addProfileMapping(result));
+}
+
+function updateMapping(): void {
+  const payload = {
+    profileUid: analysisProfile?.uid,
+    codingStandardUid: mappingForm.codingStandardUid,
+    name: mappingForm.name,
+    code: mappingForm.code,
+    description: mappingForm.description,
+  };
+  withClientMutation(
+    EDIT_PROFILE_MAPPING,
+    { uid: mappingForm.uid, payload },
+    "updateProfileMapping"
+  ).then((result) => analysisStore.updateProfileMapping(result));
+}
+
+function MappingFormManager(create: boolean, obj = {} as any): void {
+  mappingFormAction.value = create;
+  showMappingModal.value = true;
+  mappingFormTitle.value = (create ? "CREATE" : "EDIT") + " " + "CONCEPT MAPPING";
+  if (create) {
+    Object.assign(mappingForm, {} as any);
+  } else {
+    Object.assign(mappingForm, { ...obj });
+  }
+}
+
+function saveMappingForm(): void {
+  if (mappingFormAction.value === true) addMapping();
+  if (mappingFormAction.value === false) updateMapping();
+  showMappingModal.value = false;
 }
 </script>
 
@@ -272,6 +339,50 @@ function saveForm(): void {
               </button>
             </section>
           </div>
+          <div v-if="currentTab == 'mappings'">
+            <div class="flex justify-between items-center mb-2">
+              <h3>Concept Mappings</h3>
+              <button @click="MappingFormManager(true)"
+                class="px-2 py-1 border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none">Add Mapping</button>
+            </div>
+            <hr />
+            <div class="overflow-x-auto mt-4">
+              <div class="align-middle inline-block min-w-full shadow overflow-hidden bg-white shadow-dashboard px-2 pt-1 rounded-bl-lg rounded-br-lg">
+                <table class="min-w-full">
+                    <thead>
+                    <tr>
+                        <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">Coding Standard</th>
+                        <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">Name</th>
+                        <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">Code</th>
+                        <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">Description</th>
+                        <th class="px-1 py-1 border-b-2 border-gray-300"></th>
+                    </tr>
+                    </thead>
+                    <tbody class="bg-white">
+                    <tr v-for="mapp in mappings"  :key="mapp">
+                        <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
+                          <div class="flex items-center">
+                            <div class="text-sm leading-5 text-gray-800">{{ mapp.codingStandard?.name }}</div>
+                          </div>
+                        </td>
+                        <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
+                          <div class="text-sm leading-5 text-sky-800">{{ mapp.name }}</div>
+                        </td>
+                        <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
+                          <div class="text-sm leading-5 text-sky-800">{{ mapp.code }}</div>
+                        </td>
+                        <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
+                          <div class="text-sm leading-5 text-sky-800">{{ mapp.description }}</div>
+                        </td>
+                        <td class="px-1 py-1 whitespace-no-wrap text-right border-b border-gray-500 text-sm leading-5">
+                            <button @click="MappingFormManager(false, mapp)" class="px-2 py-1 mr-2 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none">Edit</button>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
           <div v-else>
             <!-- fiancials -->
             <h3>Billing</h3>
@@ -367,6 +478,69 @@ function saveForm(): void {
         <button
           type="button"
           @click.prevent="saveForm()"
+          class="-mb-4 w-full border border-sky-800 bg-sky-800 text-white rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-sky-800 focus:outline-none focus:shadow-outline"
+        >
+          Save Form
+        </button>
+      </form>
+    </template>
+  </modal>
+
+    <!-- MappingForm Modal -->
+  <modal v-if="showMappingModal" @close="showMappingModal = false">
+    <template v-slot:header>
+      <h3>{{ formTitle }}</h3>
+    </template>
+
+    <template v-slot:body>
+      <form action="post" class="p-1">
+        <div class="grid grid-cols-2 gap-x-4 mb-4">
+          <label class="block col-span-2 mb-2">
+            <span class="text-gray-700">Coding Standard</span>
+            <select
+              class="form-select block w-full mt-1"
+              v-model="mappingForm.codingStandardUid"
+            >
+              <option></option>
+              <option
+                v-for="c_standard in analysisStore.codingStandards"
+                :key="c_standard.uid"
+                :value="c_standard?.uid"
+              >
+                {{ c_standard.name }}
+              </option>
+            </select>
+          </label>
+          <label class="block col-span-2 mb-2">
+            <span class="text-gray-700">Standard Name</span>
+            <input
+              class="form-input mt-1 block w-full"
+              v-model="mappingForm.name"
+              placeholder="Keyword ..."
+            />
+          </label>
+          <label class="block col-span-2 mb-2">
+            <span class="text-gray-700">Standard Code</span>
+            <input
+              class="form-input mt-1 block w-full"
+              v-model="mappingForm.code"
+              placeholder="Keyword ..."
+            />
+          </label>
+          <label class="block col-span-2 mb-2">
+            <span class="text-gray-700">Standard Description</span>
+            <textarea
+              cols="2"
+              class="form-input mt-1 block w-full"
+              v-model="mappingForm.description"
+              placeholder="Description ..."
+            />
+          </label>
+        </div>
+        <hr />
+        <button
+          type="button"
+          @click.prevent="saveMappingForm()"
           class="-mb-4 w-full border border-sky-800 bg-sky-800 text-white rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-sky-800 focus:outline-none focus:shadow-outline"
         >
           Save Form

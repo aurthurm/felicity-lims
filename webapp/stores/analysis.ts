@@ -8,8 +8,11 @@ import {
     GET_ALL_QC_TEMPLATES,
     GET_ALL_QC_LEVELS,
     GET_ALL_REJECTION_REASONS,
+    GET_ALL_CODING_STANDARDS,
+    GET_PROFILE_MAPPINGS_BY_PROFILE,
+    GET_ANALYSIS_MAPPINGS_BY_ANALYSIS,
 } from '../graphql/analyses.queries';
-import { IAnalysisCategory, IAnalysisService, IAnalysisProfile, IQCLevel, IQCTemplate, IRejectionReason } from '../models/analysis';
+import { IAnalysisCategory, IAnalysisService, IAnalysisProfile, IQCLevel, IQCTemplate, IRejectionReason, ICodingStandard } from '../models/analysis';
 
 import { useApiUtil } from '../composables';
 const { withClientQuery } = useApiUtil();
@@ -26,22 +29,31 @@ function updateItem(arr, payload) {
 export const useAnalysisStore = defineStore('analysis', {
     state: () => {
         return {
+            codingStandards: [],
+            fetchingCodingStandards: false,
             analysesCategories: [],
             analysesServices: [],
+            analysesMappings: [],
             analysesProfiles: [],
+            profileMappings: [],
             qcLevels: [],
             qcTemplates: [],
             rejectionReasons: [],
         } as {
+            codingStandards: ICodingStandard[];
+            fetchingCodingStandards: boolean;
             analysesCategories: IAnalysisCategory[];
             analysesServices: IAnalysisService[];
+            analysesMappings: any[],
             analysesProfiles: IAnalysisProfile[];
+            profileMappings: any[],
             qcLevels: IQCLevel[];
             qcTemplates: IQCTemplate[];
             rejectionReasons: IRejectionReason[];
         };
     },
     getters: {
+        getCodingStandards: state => state.codingStandards,
         getAnalysesCategories: state => state.analysesCategories,
         getAnalysesServices: state => {
             const analyses = state.analysesServices;
@@ -52,18 +64,36 @@ export const useAnalysisStore = defineStore('analysis', {
                     r[key].push(obj);
                     return r;
                 }, {});
-                return Object.entries(profiled || {}).sort();
+                return Object.entries(profiled || {}).sort()
             } else {
                 return [];
             }
         },
         getAnalysesServicesSimple: state => state.analysesServices,
+        analysesMapings: state => state.analysesMappings,
         getAnalysesProfiles: state => state.analysesProfiles,
+        profileMapings: state => state.profileMappings,
         getQCLevels: state => state.qcLevels,
         getQCTemplates: state => state.qcTemplates,
         getRejectionReasons: state => state.rejectionReasons,
     },
-    actions: {
+    actions: {     
+        async fetchCodingStandards() {
+            this.fetchingCodingStandards = true;
+            await withClientQuery(GET_ALL_CODING_STANDARDS, {}, 'codingStandardAll')
+                .then(payload => {
+                    this.fetchingCodingStandards = false;
+                    this.codingStandards = payload;
+                })
+                .catch(err => (this.fetchingCodingStandards = false));
+        },
+        updateCodingStandard(payload) {
+            const index = this.codingStandards.findIndex(item => item.uid === payload?.uid);
+            if (index > -1) this.codingStandards[index] = payload;
+        },
+        addCodingStandard(payload) {
+            this.codingStandards?.unshift(payload);
+        },
         // analysis categories
         async fetchAnalysesCategories() {
             await withClientQuery(GET_ALL_ANALYSES_CATEGORIES, {}, 'analysisCategoryAll').then(
@@ -99,6 +129,17 @@ export const useAnalysisStore = defineStore('analysis', {
             });
         },
 
+        async fetchAnalysesMappings(profileUid) {
+            await withClientQuery(GET_ANALYSIS_MAPPINGS_BY_ANALYSIS, { uid: profileUid }, 'analysisMappingsByAnalysis').then(payload => (this.analysesMappings = payload));
+        },
+        addAnalysesMapping(payload) {
+            this.analysesMappings?.unshift(payload);
+        },
+        updateAnalysesMapping(payload) {
+            const index = this.analysesMappings.findIndex(x => x.uid === payload.uid);
+            this.analysesMappings[index] = payload;
+        },
+
         // analysis profiles
         async fetchAnalysesProfiles() {
             await withClientQuery(GET_ALL_ANALYSES_PROFILES, {}, 'profileAll').then(payload => (this.analysesProfiles = payload));
@@ -110,7 +151,16 @@ export const useAnalysisStore = defineStore('analysis', {
         addAnalysisProfile(payload) {
             this.analysesProfiles.unshift(payload);
         },
-
+        async fetchProfileMappings(profileUid) {
+            await withClientQuery(GET_PROFILE_MAPPINGS_BY_PROFILE, { uid: profileUid }, 'profileMappingsByProfile').then(payload => (this.profileMappings = payload));
+        },
+        addProfileMapping(payload) {
+            this.profileMapings?.unshift(payload);
+        },
+        updateProfileMapping(payload) {
+            const index = this.profileMapings.findIndex(x => x.uid === payload.uid);
+            this.profileMapings[index] = payload;
+        },
         // QC LEVELS
         async fetchQCLevels() {
             await withClientQuery(GET_ALL_QC_LEVELS, {}, 'qcLevelAll').then(payload => (this.qcLevels = payload));

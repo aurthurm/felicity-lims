@@ -12,6 +12,19 @@ from api.gql.storage.types import StorageContainerType
 from api.gql.user.types import UserType
 
 
+@strawberry.type
+class CodingStandardType:
+    uid: str
+    name: str
+    description: str | None
+    #
+    created_by_uid: str | None
+    created_by: UserType | None
+    created_at: datetime | None
+    updated_by_uid: str | None
+    updated_by: UserType | None
+    updated_at: datetime | None
+
 
 @strawberry.type
 class SampleTypeTyp:
@@ -30,6 +43,25 @@ class SampleTypeTyp:
     updated_at: datetime | None
 
 
+@strawberry.type
+class SampleTypeMappingType:
+    uid: str
+    sample_type_uid: str
+    sample_type: SampleTypeTyp | None
+    coding_standard_uid: str
+    coding_standard: CodingStandardType | None
+    name: str | None
+    description: str | None
+    code: str
+    #
+    created_by_uid: str | None
+    created_by: UserType | None
+    created_at: datetime | None
+    updated_by_uid: str | None
+    updated_by: UserType | None
+    updated_at: datetime | None
+    
+    
 @strawberry.type
 class QCLevelType:
     uid: str
@@ -162,6 +194,25 @@ class AnalysisType:
 
 
 @strawberry.type
+class AnalysisMappingType:
+    uid: str
+    analysis_uid: str
+    analysis: AnalysisType | None
+    coding_standard_uid: str
+    coding_standard: CodingStandardType | None
+    name: str | None
+    description: str | None
+    code: str
+    #
+    created_by_uid: str | None
+    created_by: UserType | None
+    created_at: datetime | None
+    updated_by_uid: str | None
+    updated_by: UserType | None
+    updated_at: datetime | None
+
+
+@strawberry.type
 class ProfileType:
     uid: str
     name: str
@@ -173,6 +224,25 @@ class ProfileType:
     analyses: Optional[List[AnalysisType]]
     sample_types: Optional[List[SampleTypeTyp]]
     active: bool
+    #
+    created_by_uid: str | None
+    created_by: UserType | None
+    created_at: datetime | None
+    updated_by_uid: str | None
+    updated_by: UserType | None
+    updated_at: datetime | None
+
+
+@strawberry.type
+class ProfileMappingType:
+    uid: str
+    profile_uid: str
+    profile: ProfileType | None
+    coding_standard_uid: str
+    coding_standard: CodingStandardType | None
+    name: str | None
+    description: str | None
+    code: str
     #
     created_by_uid: str | None
     created_by: UserType | None

@@ -1,5 +1,15 @@
 import gql from 'graphql-tag';
 
+export const GET_ALL_CODING_STANDARDS = gql`
+    query getAllCodingStandards {
+        codingStandardAll {
+            uid
+            name
+            description
+        }
+    }
+`;
+
 export const GET_ALL_SAMPLE_TYPES = gql`
     query getAllSampleTypes {
         sampleTypeAll {
@@ -11,6 +21,22 @@ export const GET_ALL_SAMPLE_TYPES = gql`
         }
     }
 `;
+
+export const GET_SAMPLE_TYPE_MAPPINGS_BY_SAMPLE_TYPE = gql`
+query geSampleTypeMappingsBySampleTypeUid($uid: String!) {
+    sampleTypeMappingsBySampleType(analysisUid: $uid) {
+        uid
+        sampleTypeUid
+        codingStandardUid
+        codingStandard {
+            name
+        }
+        name
+        code
+        description
+    }
+}
+`
 
 export const GET_ALL_ANALYSES_SERVICES = gql`
     query getAllAnalysesServices($first: Int, $after: String, $text: String, $sortBy: [String!] = ["name"]) {
@@ -155,6 +181,23 @@ export const GET_ALL_ANALYSES_PROFILES = gql`
     }
 `;
 
+
+export const GET_ANALYSIS_MAPPINGS_BY_ANALYSIS = gql`
+query getAnalysisMappingsByAnalysisUid($uid: String!) {
+    analysisMappingsByAnalysis(analysisUid: $uid) {
+        uid
+        analysisUid
+        codingStandardUid
+        codingStandard {
+            name
+        }
+        name
+        code
+        description
+    }
+}
+`
+
 export const GET_ALL_ANALYSES_PROFILES_AND_SERVICES = gql`
     query getAllProfilesANDServices {
         profileAll {
@@ -288,6 +331,22 @@ export const GET_ALL_ANALYSES_PROFILES_AND_SERVICES = gql`
         }
     }
 `;
+
+export const GET_PROFILE_MAPPINGS_BY_PROFILE = gql`
+query getProfileMappingsByProfileUid($uid: String!) {
+    profileMappingsByProfile(profileUid: $uid) {
+        uid
+        profileUid
+        codingStandardUid
+        codingStandard {
+            name
+        }
+        name
+        code
+        description
+    }
+}
+`
 
 export const GET_ALL_ANALYSES_CATEGORIES = gql`
     query getAllAnalysesCategories {

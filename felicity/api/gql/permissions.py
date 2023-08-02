@@ -16,14 +16,14 @@ class IsAuthenticated(BasePermission):
     message = "Only accessible to authenticated users"
 
     async def has_permission(self, source: typing.Any, info: Info, **kwargs):
-        return await info.context.user
+        return await info.context.user()
 
 
 class IsActiveUser(BasePermission):
     message = "You must be an active user"
 
     async def has_permission(self, source: typing.Any, info: Info, **kwargs):
-        user = await info.context.user
+        user = await info.context.user()
         if not user:
             return False
         return user.is_active
@@ -33,7 +33,7 @@ class IsSuperUser(BasePermission):
     message = "You dont have enough privileges"
 
     async def has_permission(self, source: typing.Any, info: Info, **kwargs):
-        user = await info.context.user
+        user = await info.context.user()
         if not user:
             return False
         
@@ -47,7 +47,7 @@ class CanVerifySample(BasePermission):
     message = "You have no priviledges to verify this sample"
 
     async def has_permission(self, source: typing.Any, info: Info, **kwargs):
-        user = await info.context.user
+        user = await info.context.user()
         if not user:
             return False
         
@@ -74,7 +74,7 @@ class CanVerifyAnalysisResult(BasePermission):
     message = "You have no priviledges to verify these analyses"
 
     async def has_permission(self, source: typing.Any, info: Info, **kwargs):
-        user = await info.context.user
+        user = await info.context.user()
         if not user:
             return False
         

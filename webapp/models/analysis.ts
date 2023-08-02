@@ -3,6 +3,14 @@ import { IPatient } from './patient';
 import { IInstrument, IMethod, IUnit, IDepartment } from './setup';
 import { IStorageContainer } from './storage';
 
+
+export interface ICodingStandard {
+    uid?: string;
+    name?: string;
+    description?: string;
+}
+
+
 export interface ISampleType {
     uid?: string;
     name?: string;

@@ -1,5 +1,43 @@
 import gql from 'graphql-tag';
 
+export const ADD_CODING_STANDARD = gql`
+    mutation AddCodingStandard($payload: CodingStandardInputType!) {
+        createCodingStandard(payload: $payload) {
+            ... on CodingStandardType {
+                __typename
+                uid
+                name
+                description
+            }
+
+            ... on OperationError {
+                __typename
+                error
+                suggestion
+            }
+        }
+    }
+`;
+
+export const EDIT_CODING_STANDARD = gql`
+    mutation EditCodingStandard($uid: String!, $payload: CodingStandardInputType!) {
+        updateCodingStandard(uid: $uid, payload: $payload) {
+            ... on CodingStandardTyp {
+                __typename
+                uid
+                name
+                description
+            }
+
+            ... on OperationError {
+                __typename
+                error
+                suggestion
+            }
+        }
+    }
+`;
+
 // SAMPLE_TYPE
 export const ADD_SAMPLE_TYPE = gql`
     mutation AddSampleType($payload: SampleTypeInputType!) {
@@ -42,6 +80,57 @@ export const EDIT_SAMPLE_TYPE = gql`
         }
     }
 `;
+
+
+
+export const ADD_SAMPLE_TYPE_MAPPING = gql`
+    mutation AddSampleTypeMapping($payload: SampleTypeMappingInputType!) {
+        createSampleTypeMapping(payload: $payload) {
+            ... on SampleTypeMappingType {
+                uid
+                name
+                description
+                code
+                codingStandardUid
+                codingStandard {
+                    name
+                }
+                sampleTypeUid
+            }
+
+            ... on OperationError {
+                __typename
+                error
+                suggestion
+            }
+        }
+    }
+`;
+
+export const EDIT_SAMPLE_TYPE_MAPPING = gql`
+    mutation EditSampleTypeMapping($uid: String!, $payload: SampleTypeMappingInputType!) {
+        updateSampleTypeMapping(uid: $uid, payload: $payload) {
+            ... on SampleTypeMappingType {
+                uid
+                name
+                description
+                code
+                codingStandardUid
+                codingStandard {
+                    name
+                }
+                sampleTypeUid
+            }
+
+            ... on OperationError {
+                __typename
+                error
+                suggestion
+            }
+        }
+    }
+`;
+
 
 export const REINSTATE_SAMPLES = gql`
     mutation ReInstateSamples($samples: [String!]!) {
@@ -614,6 +703,56 @@ export const EDIT_ANALYSIS_SERVICE = gql`
     }
 `;
 
+
+
+export const ADD_ANALYSIS_MAPPING = gql`
+    mutation AddAnalysisMapping($payload: AnalysisMappingInputType!) {
+        createAnalysisMapping(payload: $payload) {
+            ... on AnalysisMappingType {
+                uid
+                name
+                description
+                code
+                codingStandardUid
+                codingStandard {
+                    name
+                }
+                analysisUid
+            }
+
+            ... on OperationError {
+                __typename
+                error
+                suggestion
+            }
+        }
+    }
+`;
+
+export const EDIT_ANALYSIS_MAPPING = gql`
+    mutation EditAnalysisMapping($uid: String!, $payload: AnalysisMappingInputType!) {
+        updateAnalysisMapping(uid: $uid, payload: $payload) {
+            ... on AnalysisMappingType {
+                uid
+                name
+                description
+                code
+                codingStandardUid
+                codingStandard {
+                    name
+                }
+                analysisUid
+            }
+
+            ... on OperationError {
+                __typename
+                error
+                suggestion
+            }
+        }
+    }
+`;
+
 // ANALYSIS_PROFILES
 export const ADD_ANALYSIS_PROFILE = gql`
     mutation AddAnalysisProfile($payload: ProfileInputType!) {
@@ -666,6 +805,55 @@ export const EDIT_ANALYSIS_PROFILE = gql`
                     keyword
                     active
                 }
+            }
+
+            ... on OperationError {
+                __typename
+                error
+                suggestion
+            }
+        }
+    }
+`;
+
+
+export const ADD_PROFILE_MAPPING = gql`
+    mutation AddProfileMapping($payload: ProfileMappingInputType!) {
+        createProfileMapping(payload: $payload) {
+            ... on ProfileMappingType {
+                uid
+                name
+                description
+                code
+                codingStandardUid
+                codingStandard {
+                    name
+                }
+                profileUid
+            }
+
+            ... on OperationError {
+                __typename
+                error
+                suggestion
+            }
+        }
+    }
+`;
+
+export const EDIT_PROFILE_MAPPING = gql`
+    mutation EditProfileMapping($uid: String!, $payload: ProfileMappingInputType!) {
+        updateProfileMapping(uid: $uid, payload: $payload) {
+            ... on ProfileMappingType {
+                uid
+                name
+                description
+                code
+                codingStandardUid
+                codingStandard {
+                    name
+                }
+                profileUid
             }
 
             ... on OperationError {
