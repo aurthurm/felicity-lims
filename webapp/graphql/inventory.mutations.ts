@@ -245,7 +245,7 @@ export const EDIT_STOCK_PRODUCT = gql`
                     uid
                     name
                 }
-                lot_number
+                lotNumber
                 batch
                 size
                 unit {
@@ -348,7 +348,7 @@ export const ADD_STOCK_TRANSACTION = gql`
                 productUid
                 issued
                 departmentUid
-                date_issued
+                dateIssued
                 transactionByUid
                 createdAt
                 createdByUid
@@ -533,7 +533,6 @@ export const DELETE_STOCK_ORDER = gql`
         deleteStockOrder(uid: $uid) {
             ... on StockOrderLineType {
                 __typename
-                uid
             }
 
             ... on OperationError {

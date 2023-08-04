@@ -4,7 +4,8 @@ from datetime import datetime
 from typing import Dict, List, Optional
 
 import strawberry  # noqa
-from api.gql import OperationError, auth_from_info, verify_user_auth
+from api.gql.types import OperationError
+from api.gql.auth import auth_from_info, verify_user_auth
 from api.gql.permissions import IsAuthenticated
 from api.gql.patient.types import IdentificationType, PatientType
 from apps.client import models as client_models

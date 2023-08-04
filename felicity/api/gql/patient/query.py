@@ -2,7 +2,7 @@ from typing import List, Optional
 
 import sqlalchemy as sa
 import strawberry  # noqa
-from api.gql import PageInfo
+from api.gql.types import PageInfo
 from api.gql.patient.types import (
     IdentificationType,
     PatientCursorPage,

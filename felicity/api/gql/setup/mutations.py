@@ -1,7 +1,7 @@
 import logging
 
 import strawberry  # noqa
-from api.gql import OperationError
+from api.gql.types import OperationError
 from api.gql.permissions import IsAuthenticated
 from api.gql.setup.types.department import DepartmentType
 from api.gql.setup.types import (

@@ -3,7 +3,7 @@ from typing import List
 
 import sqlalchemy as sa
 import strawberry  # noqa
-from api.gql import PageInfo
+from api.gql.types import PageInfo
 from api.gql.shipment.types import (
     ShipmentCursorPage,
     ShipmentEdge,

@@ -2,7 +2,8 @@ import logging
 from typing import List, Optional
 
 import strawberry  # noqa
-from api.gql import OperationError, OperationSuccess, auth_from_info, verify_user_auth
+from api.gql.types import OperationError, OperationSuccess
+from api.gql.auth import auth_from_info, verify_user_auth
 from api.gql.analysis.types import results as r_types
 from api.gql.permissions import CanVerifyAnalysisResult, IsAuthenticated
 from apps.analysis.conf import states as analysis_states

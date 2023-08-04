@@ -24,7 +24,7 @@ export const GET_ALL_SAMPLE_TYPES = gql`
 
 export const GET_SAMPLE_TYPE_MAPPINGS_BY_SAMPLE_TYPE = gql`
 query geSampleTypeMappingsBySampleTypeUid($uid: String!) {
-    sampleTypeMappingsBySampleType(analysisUid: $uid) {
+    sampleTypeMappingsBySampleType(sampleTypeUid: $uid) {
         uid
         sampleTypeUid
         codingStandardUid
@@ -876,16 +876,6 @@ export const GET_SAMPLE_BY_UID = gql`
                 uid
                 reason
             }
-        }
-    }
-`;
-
-export const GET_SAMPLE_STATUS_BY_UID = gql`
-    query getSampleByUid($uid: String!) {
-        sampleByUid(uid: $uid) {
-            uid
-            sampleId
-            status
         }
     }
 `;

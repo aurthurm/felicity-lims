@@ -22,7 +22,7 @@ export const ADD_CODING_STANDARD = gql`
 export const EDIT_CODING_STANDARD = gql`
     mutation EditCodingStandard($uid: String!, $payload: CodingStandardInputType!) {
         updateCodingStandard(uid: $uid, payload: $payload) {
-            ... on CodingStandardTyp {
+            ... on CodingStandardType {
                 __typename
                 uid
                 name

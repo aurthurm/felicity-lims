@@ -4,7 +4,7 @@ from datetime import datetime
 from typing import List, Optional
 
 import strawberry  # noqa
-from api.gql import OperationError
+from api.gql.types import OperationError
 from api.gql.permissions import IsAuthenticated
 from api.gql.instrument.types import (
     CalibrationCertificateType,

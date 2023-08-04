@@ -1,0 +1,2993 @@
+input ARResultInputType {
+  uid: String!
+  result: String!
+  reportable: Boolean = true
+}
+
+input ARSampleInputType {
+  sampleType: String!
+  profiles: [String!]!
+  analyses: [String!]!
+}
+
+type ActivityFeedType {
+  uid: String!
+  name: String!
+  subscribers: [UserType!]
+}
+
+type ActivityStreamType {
+  uid: String!
+  feeds: [ActivityFeedType!]
+  actorUid: String
+  actor: UserType
+  verb: String
+  actionObjectType: String
+  actionObjectUid: String
+  targetUid: String
+  target: String
+  viewers: [UserType!]
+  createdAt: DateTime
+  createdByUid: String
+  createdBy: UserType
+  actionObject: WorkSheetTypeSampleTypeAnalysisResultTypeReportMetaTypeUnknownObjectType!
+}
+
+input AnalysisCategoryInputType {
+  name: String!
+  departmentUid: String = null
+  description: String = null
+  active: Boolean = true
+}
+
+"""Union of possible outcomes when adding a new notice"""
+union AnalysisCategoryResponse = AnalysisCategoryType | OperationError
+
+type AnalysisCategoryType {
+  uid: String!
+  name: String!
+  departmentUid: String
+  department: DepartmentType
+  description: String
+  active: Boolean!
+  createdByUid: String
+  createdBy: UserType
+  createdAt: DateTime
+  updatedByUid: String
+  updatedBy: UserType
+  updatedAt: DateTime
+}
+
+input AnalysisCorrectionFactorInput {
+  factor: Float!
+  analysisUid: String!
+  instrumentUid: String!
+  methodUid: String!
+}
+
+""""""
+union AnalysisCorrectionFactorResponse = AnalysisCorrectionFactorType | OperationError
+
+type AnalysisCorrectionFactorType {
+  uid: String!
+  factor: Float!
+  analysisUid: String!
+  instrumentUid: String!
+  methodUid: String!
+  createdByUid: String
+  createdBy: UserType
+  createdAt: DateTime
+  updatedByUid: String
+  updatedBy: UserType
+  updatedAt: DateTime
+}
+
+type AnalysisCursorPage {
+  pageInfo: PageInfo!
+  edges: [AnalysisEdge!]
+  items: [AnalysisWithProfiles!]
+  totalCount: Int!
+}
+
+input AnalysisDetectionLimitInput {
+  lowerLimit: Float!
+  upperLimit: Float!
+  analysisUid: String!
+  instrumentUid: String!
+  methodUid: String!
+}
+
+""""""
+union AnalysisDetectionLimitResponse = AnalysisDetectionLimitType | OperationError
+
+type AnalysisDetectionLimitType {
+  uid: String!
+  lowerLimit: Float!
+  upperLimit: Float!
+  analysisUid: String!
+  instrumentUid: String!
+  methodUid: String!
+  createdByUid: String
+  createdBy: UserType
+  createdAt: DateTime
+  updatedByUid: String
+  updatedBy: UserType
+  updatedAt: DateTime
+}
+
+type AnalysisEdge {
+  cursor: String!
+  node: AnalysisWithProfiles!
+}
+
+input AnalysisInputType {
+  name: String!
+  keyword: String!
+  sortKey: Int!
+  description: String! = ""
+  departmentUid: String = null
+  sampleTypes: [String!]
+  methods: [String!]
+  categoryUid: String = null
+  unitUid: String = null
+  internalUse: Boolean = false
+  tatLengthMinutes: Int!
+  precision: Int!
+  requiredVerifications: Int! = 1
+  selfVerification: Boolean = false
+  active: Boolean = true
+}
+
+input AnalysisInterimInput {
+  key: Int!
+  value: String!
+  analysisUid: String!
+  instrumentUid: String!
+}
+
+""""""
+union AnalysisInterimResponse = AnalysisInterimType | OperationError
+
+type AnalysisInterimType {
+  uid: String!
+  key: Int!
+  value: String!
+  analysisUid: String!
+  instrumentUid: String!
+  createdByUid: String
+  createdBy: UserType
+  createdAt: DateTime
+  updatedByUid: String
+  updatedBy: UserType
+  updatedAt: DateTime
+}
+
+input AnalysisMappingInputType {
+  analysisUid: String!
+  codingStandardUid: String!
+  name: String!
+  code: String!
+  description: String = null
+}
+
+"""Union of possible outcomes when adding a new notice"""
+union AnalysisMappingResponse = AnalysisMappingType | OperationError
+
+type AnalysisMappingType {
+  uid: String!
+  analysisUid: String!
+  analysis: AnalysisType
+  codingStandardUid: String!
+  codingStandard: CodingStandardType
+  name: String
+  description: String
+  code: String!
+  createdByUid: String
+  createdBy: UserType
+  createdAt: DateTime
+  updatedByUid: String
+  updatedBy: UserType
+  updatedAt: DateTime
+}
+
+"""Union of possible outcomes when adding a new notice"""
+union AnalysisProfileResponse = ProfileType | OperationError
+
+type AnalysisRequestCursorPage {
+  pageInfo: PageInfo!
+  edges: [AnalysisRequestEdge!]
+  items: [AnalysisRequestWithSamples!]
+  totalCount: Int!
+}
+
+type AnalysisRequestEdge {
+  cursor: String!
+  node: AnalysisRequestWithSamples!
+}
+
+input AnalysisRequestInputType {
+  patientUid: String!
+  clientUid: String!
+  clientContactUid: String!
+  clinicalData: String = ""
+  samples: [ARSampleInputType!]!
+  clientRequestId: String = null
+  internalUse: Boolean = false
+  priority: Int! = 0
+}
+
+"""Union of possible outcomes when adding/editing analysis requests """
+union AnalysisRequestResponse = AnalysisRequestWithSamples | OperationError
+
+type AnalysisRequestType {
+  uid: String!
+  patientUid: String!
+  patient: PatientType!
+  clientUid: String!
+  client: ClientType!
+  requestId: String!
+  clientRequestId: String!
+  internalUse: Boolean!
+  createdByUid: String
+  createdBy: UserType
+  createdAt: DateTime
+  updatedByUid: String
+  updatedBy: UserType
+  updatedAt: DateTime
+}
+
+type AnalysisRequestWithSamples {
+  uid: String!
+  patientUid: String!
+  patient: PatientType!
+  clientUid: String!
+  client: ClientType!
+  requestId: String!
+  clientRequestId: String!
+  internalUse: Boolean!
+  createdByUid: String
+  createdBy: UserType
+  createdAt: DateTime
+  updatedByUid: String
+  updatedBy: UserType
+  updatedAt: DateTime
+  samples: [SampleType!]
+}
+
+type AnalysisResultCursorPage {
+  pageInfo: PageInfo!
+  edges: [AnalysisResultEdge!]
+  items: [AnalysisResultType!]
+  totalCount: Int!
+}
+
+type AnalysisResultEdge {
+  cursor: String!
+  node: AnalysisResultType!
+}
+
+"""Union of possible outcomes when actioning samples"""
+union AnalysisResultResponse = ResultListingType | OperationError
+
+"""Union of possible outcomes when submitting/verifying results"""
+union AnalysisResultSubmitResponse = OperationSuccess | OperationError
+
+type AnalysisResultType {
+  uid: String!
+  sampleUid: String!
+  sample: SampleType!
+  worksheetUid: String
+  worksheetPosition: Int
+  assigned: Boolean!
+  analysisUid: String
+  analysis: AnalysisType
+  instrumentUid: String
+  instrument: InstrumentType
+  methodUid: String
+  method: MethodType
+  result: String
+  analystUid: String
+  analyst: UserType
+  submittedByUid: String
+  submittedBy: UserType
+  dateSubmitted: DateTime
+  verifiedBy: [UserType!]
+  dateVerified: DateTime
+  invalidatedBy: UserType
+  invalidatedByUid: String
+  dateInvalidated: DateTime
+  dueDate: DateTime
+  dateCancelled: DateTime
+  cancelledByUid: String
+  cancelledBy: UserType
+  retest: Boolean!
+  parentId: String
+  parent: AnalysisResultType
+  reportable: Boolean!
+  status: String
+  reflexLevel: Int
+  createdByUid: String
+  createdBy: UserType
+  createdAt: DateTime
+  updatedByUid: String
+  updatedBy: UserType
+  updatedAt: DateTime
+  worksheetId: String
+}
+
+input AnalysisSpecificationInput {
+  analysisUid: String!
+  min: Float = null
+  max: Float = null
+  minWarn: Float = null
+  maxWarn: Float = null
+  minReport: String = null
+  maxReport: String = null
+  warnValues: String = null
+  warnReport: String = null
+  gender: String = null
+  ageMin: Int = null
+  ageMax: Int = null
+  methodUid: String = null
+  unitUid: String = null
+}
+
+""""""
+union AnalysisSpecificationResponse = AnalysisSpecificationType | OperationError
+
+type AnalysisSpecificationType {
+  uid: String!
+  analysisUid: String!
+  min: Float
+  max: Float
+  minWarn: Float
+  maxWarn: Float
+  minReport: String
+  maxReport: String
+  warnValues: String
+  warnReport: String
+  gender: String
+  ageMin: Int
+  ageMax: Int
+  methodUid: String
+  unitUid: String
+  unit: UnitType
+  createdByUid: String
+  createdBy: UserType
+  createdAt: DateTime
+  updatedByUid: String
+  updatedBy: UserType
+  updatedAt: DateTime
+}
+
+type AnalysisType {
+  uid: String!
+  name: String!
+  description: String
+  keyword: String
+  departmentUid: String
+  department: DepartmentType
+  unitUid: String
+  unit: UnitType
+  sampleTypes: [SampleTypeTyp!]
+  categoryUid: String
+  category: AnalysisCategoryType
+  interims: [AnalysisInterimType!]
+  correctionFactors: [AnalysisCorrectionFactorType!]
+  specifications: [AnalysisSpecificationType!]
+  detectionLimits: [AnalysisDetectionLimitType!]
+  uncertainties: [AnalysisUncertaintyType!]
+  resultOptions: [ResultOptionType!]
+  instruments: [InstrumentType!]
+  methods: [MethodType!]
+  tatLengthMinutes: Int
+  sortKey: Int
+  precision: Int
+  requiredVerifications: Int
+  selfVerification: Boolean
+  hidden: Boolean
+  internalUse: Boolean
+  active: Boolean
+  createdByUid: String
+  createdBy: UserType
+  createdAt: DateTime
+  updatedByUid: String
+  updatedBy: UserType
+  updatedAt: DateTime
+}
+
+input AnalysisUncertaintyInput {
+  min: Float!
+  max: Float!
+  value: Float!
+  analysisUid: String!
+  instrumentUid: String!
+  methodUid: String!
+}
+
+""""""
+union AnalysisUncertaintyResponse = AnalysisUncertaintyType | OperationError
+
+type AnalysisUncertaintyType {
+  uid: String!
+  min: Float!
+  max: Float!
+  value: Float!
+  analysisUid: String!
+  instrumentUid: String!
+  methodUid: String!
+  createdByUid: String
+  createdBy: UserType
+  createdAt: DateTime
+  updatedByUid: String
+  updatedBy: UserType
+  updatedAt: DateTime
+}
+
+type AnalysisWithProfiles {
+  uid: String!
+  name: String!
+  description: String
+  keyword: String
+  departmentUid: String
+  department: DepartmentType
+  unitUid: String
+  unit: UnitType
+  sampleTypes: [SampleTypeTyp!]
+  categoryUid: String
+  category: AnalysisCategoryType
+  interims: [AnalysisInterimType!]
+  correctionFactors: [AnalysisCorrectionFactorType!]
+  specifications: [AnalysisSpecificationType!]
+  detectionLimits: [AnalysisDetectionLimitType!]
+  uncertainties: [AnalysisUncertaintyType!]
+  resultOptions: [ResultOptionType!]
+  instruments: [InstrumentType!]
+  methods: [MethodType!]
+  tatLengthMinutes: Int
+  sortKey: Int
+  precision: Int
+  requiredVerifications: Int
+  selfVerification: Boolean
+  hidden: Boolean
+  internalUse: Boolean
+  active: Boolean
+  createdByUid: String
+  createdBy: UserType
+  createdAt: DateTime
+  updatedByUid: String
+  updatedBy: UserType
+  updatedAt: DateTime
+  profiles: [ProfileType!]
+}
+
+type AuditLogType {
+  uid: String!
+  userId: String
+  targetType: String
+  targetId: String
+  action: Int
+  stateBefore: String
+  stateAfter: String
+}
+
+type AuthenticatedData {
+  user: UserType!
+  token: String!
+  tokenType: String!
+}
+
+""""""
+union AuthenticatedDataResponse = AuthenticatedData | OperationError
+
+scalar BytesScalar
+
+input CalibrationCertificateInput {
+  instrumentUid: String!
+  dateIssued: DateTime
+  validFromDate: DateTime
+  validToDate: DateTime
+  certificateCode: String = ""
+  issuer: String = ""
+  performedBy: String = ""
+  approvedBy: String = ""
+  remarks: String = ""
+  internal: Boolean! = true
+}
+
+""""""
+union CalibrationCertificateResponse = CalibrationCertificateType | OperationError
+
+type CalibrationCertificateType {
+  uid: String!
+  instrumentUid: String!
+  instrument: InstrumentType
+  certificateCode: String!
+  internal: Boolean!
+  issuer: String!
+  dateIssued: DateTime!
+  validFromDate: DateTime!
+  validToDate: DateTime!
+  performedBy: String!
+  approvedBy: String!
+  remarks: String!
+}
+
+input ClientContactInputType {
+  firstName: String!
+  clientUid: String!
+  lastName: String = null
+  email: String = null
+  emailCc: String = null
+  mobilePhone: String = null
+  consentSms: Boolean = false
+  isActive: Boolean! = true
+}
+
+""""""
+union ClientContactResponse = ClientContactType | OperationError
+
+type ClientContactType {
+  uid: String!
+  firstName: String
+  lastName: String
+  email: String
+  mobilePhone: String
+  businessPhone: String
+  isActive: Boolean
+  emailCc: String
+  consentSms: Boolean!
+  clientUid: String!
+  client: ClientType
+  createdAt: DateTime
+  creatorName: String
+  creatorUid: String
+  updatedAt: DateTime
+  updatorName: String
+  updatorUid: String
+}
+
+type ClientCursorPage {
+  pageInfo: PageInfo!
+  edges: [ClientEdge!]
+  items: [ClientType!]
+  totalCount: Int!
+}
+
+type ClientEdge {
+  cursor: String!
+  node: ClientType!
+}
+
+input ClientInputType {
+  name: String!
+  code: String!
+  districtUid: String = null
+  email: String = null
+  emailCc: String = null
+  consentEmail: Boolean = false
+  phoneMobile: String = null
+  phoneBusiness: String = null
+  consentSms: Boolean = false
+  internalUse: Boolean = false
+  active: Boolean = true
+}
+
+""""""
+union ClientResponse = ClientType | OperationError
+
+type ClientType {
+  uid: String!
+  name: String!
+  code: String!
+  districtUid: String
+  district: DistrictType
+  provinceUid: String
+  province: ProvinceType
+  email: String
+  emailCc: String
+  consentEmail: Boolean!
+  phoneMobile: String
+  phoneBusiness: String
+  consentSms: Boolean!
+  internalUse: Boolean!
+  active: Boolean!
+  createdByUid: String
+  createdBy: UserType
+  createdAt: DateTime
+  updatedByUid: String
+  updatedBy: UserType
+  updatedAt: DateTime
+}
+
+input CodingStandardInputType {
+  name: String!
+  description: String = ""
+}
+
+""""""
+union CodingStandardResponse = CodingStandardType | OperationError
+
+type CodingStandardType {
+  uid: String!
+  name: String!
+  description: String
+  createdByUid: String
+  createdBy: UserType
+  createdAt: DateTime
+  updatedByUid: String
+  updatedBy: UserType
+  updatedAt: DateTime
+}
+
+input CountryInputType {
+  name: String!
+  code: String!
+  active: Boolean = true
+}
+
+""""""
+union CountryResponse = CountryType | OperationError
+
+type CountryType {
+  uid: String!
+  name: String
+  code: String
+  active: String
+  createdByUid: String
+  createdBy: UserType
+  createdAt: DateTime
+  updatedByUid: String
+  updatedBy: UserType
+  updatedAt: DateTime
+}
+
+type CreateQCSetData {
+  samples: [SampleType!]!
+  qcSets: [QCSetType!]!
+}
+
+"""Date with time (isoformat)"""
+scalar DateTime
+
+""""""
+union DeleteContactResponse = DeletedItem | OperationError
+
+"""Union of possible outcomes when deleting some object"""
+union DeleteResponse = DeletedItem | OperationError
+
+type DeletedItem {
+  uid: String!
+}
+
+input DepartmentInputType {
+  name: String!
+  description: String = ""
+  code: String = null
+}
+
+""""""
+union DepartmentResponse = DepartmentType | OperationError
+
+type DepartmentType {
+  uid: String!
+  name: String
+  description: String
+  code: String
+  createdByUid: String
+  createdAt: DateTime
+  updatedByUid: String
+  updatedAt: DateTime
+}
+
+type DistrictCursorPage {
+  pageInfo: PageInfo!
+  edges: [DistrictEdge!]
+  items: [DistrictType!]
+  totalCount: Int!
+}
+
+type DistrictEdge {
+  cursor: String!
+  node: DistrictType!
+}
+
+input DistrictInputType {
+  name: String!
+  provinceUid: String
+  code: String = null
+  email: String = null
+  emailCc: String = null
+  mobilePhone: String = null
+  businessPhone: String = null
+  active: Boolean = true
+}
+
+""""""
+union DistrictResponse = DistrictType | OperationError
+
+type DistrictType {
+  uid: String!
+  code: String
+  name: String
+  email: String
+  emailCc: String
+  mobilePhone: String
+  businessPhone: String
+  active: Boolean
+  provinceUid: String
+  province: ProvinceType
+  createdByUid: String
+  createdBy: UserType
+  createdAt: DateTime
+  updatedByUid: String
+  updatedBy: UserType
+  updatedAt: DateTime
+}
+
+type GroupCount {
+  group: String!
+  count: Int
+}
+
+type GroupData {
+  group: String!
+  counts: [GroupCount!]
+}
+
+input GroupInputType {
+  name: String!
+  pages: String!
+  active: Boolean! = true
+}
+
+""""""
+union GroupResponse = GroupType | OperationError
+
+type GroupType {
+  uid: String!
+  name: String
+  keyword: String
+  members: [UserType!]
+  permissions: [PermissionType!]
+  active: Boolean
+  pages: String
+}
+
+type GroupedCounts {
+  data: [GroupCount!]!
+}
+
+type GroupedData {
+  data: [GroupData!]!
+}
+
+input HazardInputType {
+  name: String!
+  description: String!
+}
+
+""""""
+union HazardResponse = HazardType | OperationError
+
+type HazardType {
+  uid: String!
+  name: String!
+  description: String
+  createdAt: DateTime
+  createdByUid: String
+  createdBy: UserType
+  updatedAt: DateTime
+  updatedByUid: String
+  updatedBy: UserType
+}
+
+""""""
+union IdentificationResponse = IdentificationType | OperationError
+
+type IdentificationType {
+  uid: String!
+  name: String!
+  createdByUid: String
+  createdBy: UserType
+  createdAt: DateTime
+  updatedByUid: String
+  updatedBy: UserType
+  updatedAt: DateTime
+}
+
+input InstrumentCalibrationInput {
+  instrumentUid: String!
+  dateReported: DateTime
+  startDate: DateTime
+  endDate: DateTime
+  calibrationId: String = ""
+  reportId: String = ""
+  performedBy: String = ""
+  notesBefore: String = ""
+  workDone: String = ""
+  remarks: String = ""
+}
+
+""""""
+union InstrumentCalibrationResponse = InstrumentCalibrationType | OperationError
+
+type InstrumentCalibrationType {
+  uid: String!
+  instrumentUid: String!
+  instrument: InstrumentType
+  calibrationId: String!
+  dateReported: DateTime!
+  reportId: String!
+  performedBy: String!
+  startDate: DateTime!
+  endDate: DateTime!
+  notesBefore: String!
+  workDone: String!
+  remarks: String!
+}
+
+type InstrumentCursorPage {
+  pageInfo: PageInfo!
+  edges: [InstrumentEdge!]
+  items: [InstrumentType!]
+  totalCount: Int!
+}
+
+type InstrumentEdge {
+  cursor: String!
+  node: InstrumentType!
+}
+
+input InstrumentInputType {
+  name: String!
+  keyword: String!
+  description: String = ""
+  instrumentTypeUid: String = null
+  supplierUid: String = null
+  manufacturerUid: String = null
+}
+
+""""""
+union InstrumentResponse = InstrumentType | OperationError
+
+type InstrumentType {
+  uid: String!
+  name: String
+  description: String
+  keyword: String
+  supplierUid: String
+  supplier: SupplierType
+  manufacturerUid: String
+  manufacturer: ManufacturerType
+  instrumentTypeUid: String
+  instrumentType: InstrumentTypeType
+  createdByUid: String
+  createdBy: UserType
+  createdAt: DateTime
+  updatedByUid: String
+  updatedBy: UserType
+  updatedAt: DateTime
+  methods: [MethodType!]
+}
+
+type InstrumentTypeCursorPage {
+  pageInfo: PageInfo!
+  edges: [InstrumentTypeEdge!]
+  items: [InstrumentTypeType!]
+  totalCount: Int!
+}
+
+type InstrumentTypeEdge {
+  cursor: String!
+  node: InstrumentTypeType!
+}
+
+input InstrumentTypeInputType {
+  name: String!
+  description: String = ""
+}
+
+""""""
+union InstrumentTypeResponse = InstrumentTypeType | OperationError
+
+type InstrumentTypeType {
+  uid: String!
+  name: String
+  description: String
+  createdByUid: String
+  createdBy: UserType
+  createdAt: DateTime
+  updatedByUid: String
+  updatedBy: UserType
+  updatedAt: DateTime
+}
+
+"""json field"""
+scalar JSONScalar
+
+input LaboratoryInputType {
+  labName: String!
+  setupName: String! = "felicity"
+  email: String = null
+  emailCc: String = null
+  mobilePhone: String = null
+  businessPhone: String = null
+  labManagerUid: String = null
+  address: String = null
+  logo: String = null
+}
+
+""""""
+union LaboratoryResponse = LaboratoryType | OperationError
+
+input LaboratorySettingInputType {
+  laboratoryUid: String!
+  allowSelfVerification: Boolean = false
+  allowPatientRegistration: Boolean = true
+  allowSampleRegistration: Boolean = true
+  allowWorksheetCreation: Boolean = true
+  defaultRoute: String = null
+  passwordLifetime: Int = null
+  inactivityLogOut: Int = null
+  defaultTheme: String = null
+  autoReceiveSamples: Boolean = true
+  stickerCopies: Int = 2
+}
+
+""""""
+union LaboratorySettingResponse = LaboratorySettingType | OperationError
+
+type LaboratorySettingType {
+  createdByUid: String
+  createdBy: UserType
+  createdAt: DateTime
+  updatedByUid: String
+  updatedBy: UserType
+  updatedAt: DateTime
+  uid: String!
+  laboratoryUid: String!
+  laboratory: LaboratoryType!
+  allowSelfVerification: Boolean
+  allowPatientRegistration: Boolean
+  allowSampleRegistration: Boolean
+  allowWorksheetCreation: Boolean
+  defaultRoute: String
+  passwordLifetime: Int
+  inactivityLogOut: Int
+  defaultTheme: String
+  autoReceiveSamples: Boolean
+  stickerCopies: Int
+}
+
+type LaboratoryType {
+  uid: String!
+  setupName: String!
+  labName: String!
+  labManagerUid: String
+  labManager: UserType
+  email: String
+  emailCc: String
+  mobilePhone: String
+  businessPhone: String
+  address: String
+  logo: String
+  createdByUid: String
+  createdBy: UserType
+  createdAt: DateTime
+  updatedByUid: String
+  updatedBy: UserType
+  updatedAt: DateTime
+}
+
+type LaggardCounts {
+  lessThanTen: Int
+  tenToTwenty: Int
+  twentyToThirty: Int
+  graterThanThirty: Int
+  totalIncomplete: Int
+  totalDelayed: Int
+  totalNotDelayed: Int
+}
+
+type LaggardData {
+  category: String!
+  counts: LaggardCounts
+}
+
+type LaggardStatistics {
+  data: [LaggardData!]!
+}
+
+input ManufacturerInputType {
+  name: String!
+  description: String = ""
+}
+
+""""""
+union ManufacturerResponse = ManufacturerType | OperationError
+
+type ManufacturerType {
+  uid: String!
+  name: String
+  description: String
+  createdByUid: String
+  createdBy: UserType
+  createdAt: DateTime
+  updatedByUid: String
+  updatedBy: UserType
+  updatedAt: DateTime
+}
+
+"""Union of possible outcomes when deleting some object"""
+union MessageResponse = MessagesType | OperationError
+
+type MessageThreadType {
+  uid: String!
+  recipients: [UserType!]!
+  messages: [MessageType!]
+  broadcast: Boolean!
+  deletedBy: [UserType!]
+  createdByUid: String
+  createdAt: DateTime
+  createdBy: UserType
+  updatedAt: DateTime
+  updatedByUid: String
+  updatedBy: UserType
+}
+
+type MessageType {
+  uid: String!
+  threadUid: String!
+  thread: MessageThreadType
+  body: String!
+  viewers: [UserType!]
+  deletedBy: [UserType!]
+  parentId: String!
+  parent: MessageType
+  left: Int!
+  right: Int!
+  createdAt: DateTime
+  createdByUid: String
+  createdBy: UserType
+  updatedAt: DateTime
+  updatedByUid: String
+  updatedBy: UserType
+}
+
+type MessagesType {
+  message: String!
+}
+
+type MethodCursorPage {
+  pageInfo: PageInfo!
+  edges: [MethodEdge!]
+  items: [MethodType!]
+  totalCount: Int!
+}
+
+type MethodEdge {
+  cursor: String!
+  node: MethodType!
+}
+
+input MethodInputType {
+  name: String!
+  instruments: [String!]
+  analyses: [String!]
+  keyword: String = null
+  description: String = ""
+}
+
+""""""
+union MethodResponse = MethodType | OperationError
+
+type MethodType {
+  uid: String!
+  name: String
+  description: String
+  keyword: String
+  createdByUid: String
+  createdBy: UserType
+  createdAt: DateTime
+  updatedByUid: String
+  updatedBy: UserType
+  updatedAt: DateTime
+  instruments: [InstrumentType!]
+}
+
+type Mutation {
+  createUser(firstName: String!, lastName: String!, email: String!, groupUid: String = null, openReg: Boolean = false): UserResponse!
+  updateUser(userUid: String!, firstName: String, lastName: String, mobilePhone: String, email: String, groupUid: String, isActive: Boolean): UserResponse!
+  createUserAuth(userUid: String!, userName: String!, password: String!, passwordc: String!): UserResponse!
+  updateUserAuth(userUid: String!, userName: String, password: String, passwordc: String): UserResponse!
+  authenticateUser(username: String!, password: String!): AuthenticatedDataResponse!
+  unlinkUserAuth(userUid: String!): UserResponse!
+  recoverPassword(username: String!): MessageResponse!
+  createGroup(payload: GroupInputType!): GroupResponse!
+  updateGroup(uid: String!, payload: GroupInputType!): GroupResponse!
+  updateGroupPermissions(groupUid: String!, permissionUid: String!): UpdatedGroupPermsResponse!
+  updateLaboratory(uid: String!, payload: LaboratoryInputType!): LaboratoryResponse!
+  updateLaboratorySetting(uid: String!, payload: LaboratorySettingInputType!): LaboratorySettingResponse!
+  createDepartment(payload: DepartmentInputType!): DepartmentResponse!
+  updateDepartment(uid: String!, payload: DepartmentInputType!): DepartmentResponse!
+  createSupplier(payload: SupplierInputType!): SupplierResponse!
+  updateSupplier(uid: String!, payload: SupplierInputType!): SupplierResponse!
+  createManufacturer(payload: ManufacturerInputType!): ManufacturerResponse!
+  updateManufacturer(uid: String!, payload: ManufacturerInputType!): ManufacturerResponse!
+  createCountry(payload: CountryInputType!): CountryResponse!
+  updateCountry(uid: String!, payload: CountryInputType!): CountryResponse!
+  createProvince(payload: ProvinceInputType!): ProvinceResponse!
+  updateProvince(uid: String!, payload: ProvinceInputType!): ProvinceResponse!
+  createDistrict(payload: DistrictInputType!): DistrictResponse!
+  updateDistrict(uid: String!, payload: DistrictInputType!): DistrictResponse!
+  createUnit(payload: UnitInputType!): UnitResponse!
+  updateUnit(uid: String!, payload: UnitInputType!): UnitResponse!
+  createClient(payload: ClientInputType!): ClientResponse!
+  updateClient(uid: String!, payload: ClientInputType!): ClientResponse!
+  createClientContact(payload: ClientContactInputType!): ClientContactResponse!
+  updateClientContact(uid: String!, payload: ClientContactInputType!): ClientContactResponse!
+  deleteClientContact(uid: String!): DeleteContactResponse!
+  createIdentification(name: String!): IdentificationResponse!
+  updateIdentification(uid: String!, name: String!): IdentificationResponse!
+  createPatient(payload: PatientInputType!): PatientResponse!
+  updatePatient(uid: String!, payload: PatientInputType!): PatientResponse!
+  createCodingStandard(payload: CodingStandardInputType!): CodingStandardResponse!
+  updateCodingStandard(uid: String!, payload: CodingStandardInputType!): CodingStandardResponse!
+  createSampleType(payload: SampleTypeInputType!): SampleTypeResponse!
+  updateSampleType(uid: String!, payload: SampleTypeInputType!): SampleTypeResponse!
+  createSampleTypeMapping(payload: SampleTypeMappingInputType!): SampleTypeMappingResponse!
+  updateSampleTypeMapping(uid: String!, payload: SampleTypeMappingInputType!): SampleTypeMappingResponse!
+  createResultOption(payload: ResultOptionInputType!): ResultOptionResponse!
+  updateResultOption(uid: String!, payload: ResultOptionInputType!): ResultOptionResponse!
+  createRejectionReason(reason: String!): RejectionReasonResponse!
+  updateRejectionReason(uid: String!, reason: String!): RejectionReasonResponse!
+  createAnalysisCategory(payload: AnalysisCategoryInputType!): AnalysisCategoryResponse!
+  updateAnalysisCategory(uid: String!, payload: AnalysisCategoryInputType!): AnalysisCategoryResponse!
+  createProfile(payload: ProfileInputType!): AnalysisProfileResponse!
+  updateProfile(uid: String!, payload: ProfileInputType!): AnalysisProfileResponse!
+  createProfileMapping(payload: ProfileMappingInputType!): ProfileMappingResponse!
+  updateProfileMapping(uid: String!, payload: ProfileMappingInputType!): ProfileMappingResponse!
+  createAnalysis(payload: AnalysisInputType!): ProfilesServiceResponse!
+  updateAnalysis(uid: String!, payload: AnalysisInputType!): ProfilesServiceResponse!
+  createAnalysisMapping(payload: AnalysisMappingInputType!): AnalysisMappingResponse!
+  updateAnalysisMapping(uid: String!, payload: AnalysisMappingInputType!): AnalysisMappingResponse!
+  createAnalysisRequest(payload: AnalysisRequestInputType!): AnalysisRequestResponse!
+  createAnalysisInterim(payload: AnalysisInterimInput!): AnalysisInterimResponse!
+  updateAnalysisInterim(uid: String!, payload: AnalysisInterimInput!): AnalysisInterimResponse!
+  createAnalysisUncertainty(payload: AnalysisUncertaintyInput!): AnalysisUncertaintyResponse!
+  updateAnalysisUncertainty(uid: String!, payload: AnalysisUncertaintyInput!): AnalysisUncertaintyResponse!
+  createAnalysisCorrectionFactor(payload: AnalysisCorrectionFactorInput!): AnalysisCorrectionFactorResponse!
+  updateAnalysisCorrectionFactor(uid: String!, payload: AnalysisCorrectionFactorInput!): AnalysisCorrectionFactorResponse!
+  createAnalysisDetectionLimit(payload: AnalysisDetectionLimitInput!): AnalysisDetectionLimitResponse!
+  updateAnalysisDetectionLimit(uid: String!, payload: AnalysisDetectionLimitInput!): AnalysisDetectionLimitResponse!
+  createAnalysisSpecification(payload: AnalysisSpecificationInput!): AnalysisSpecificationResponse!
+  updateAnalysisSpecification(uid: String!, payload: AnalysisSpecificationInput!): AnalysisSpecificationResponse!
+  cloneSamples(samples: [String!]!): SampleActionResponse!
+  cancelSamples(samples: [String!]!): ResultedSampleActionResponse!
+  reInstateSamples(samples: [String!]!): ResultedSampleActionResponse!
+  receiveSamples(samples: [String!]!): ResultedSampleActionResponse!
+  verifySamples(samples: [String!]!): SampleActionResponse!
+  rejectSamples(samples: [SampleRejectInputType!]!): SampleActionResponse!
+  publishSamples(samples: [SamplePublishInputType!]!): SuccessErrorResponse!
+  printSamples(samples: [String!]!): SampleActionResponse!
+  invalidateSamples(samples: [String!]!): SampleActionResponse!
+  submitAnalysisResults(analysisResults: [ARResultInputType!]!, sourceObject: String!, sourceObjectUid: String!): AnalysisResultSubmitResponse!
+  verifyAnalysisResults(analyses: [String!]!, sourceObject: String!, sourceObjectUid: String!): AnalysisResultSubmitResponse!
+  retractAnalysisResults(analyses: [String!]!): AnalysisResultResponse!
+  retestAnalysisResults(analyses: [String!]!): AnalysisResultResponse!
+  cancelAnalysisResults(analyses: [String!]!): AnalysisResultResponse!
+  reInstateAnalysisResults(analyses: [String!]!): AnalysisResultResponse!
+  createQcSet(samples: [QCSetInputType!]!): QCSetResponse!
+  createQcLevel(level: String!): QCLevelResponse!
+  updateQcLevel(uid: String!, level: String!): QCLevelResponse!
+  createQcTemplate(payload: QCTemplateInputType!): QCTemplateResponse!
+  updateQcTemplate(uid: String!, payload: QCTemplateInputType!): QCTemplateResponse!
+  createWorksheetTemplate(payload: WorksheetTemplateInputType!): WorkSheetTemplateResponse!
+  updateWorksheetTemplate(uid: String!, payload: WorksheetTemplateInputType!): WorkSheetTemplateResponse!
+  createWorksheet(templateUid: String!, analystUid: String!, count: Int = 1): WorkSheetsResponse!
+  updateWorksheet(worksheetUid: String!, analystUid: String = null, instrumentUid: String = null, methodUid: String = null, action: String = null, samples: [String!] = null): WorkSheetResponse!
+  updateWorksheetApplyTemplate(templateUid: String!, worksheetUid: String!): WorkSheetResponse!
+  updateWorksheetManualAssign(uid: String!, analysesUids: [String!]!, qcTemplateUid: String = null): WorkSheetResponse!
+  sendMessage(recipients: [String!]!, body: String!): MessageResponse!
+  replyMessage(threadUid: String!, body: String!): MessageResponse!
+  viewMessage(uid: String!): MessageResponse!
+  deleteMessage(uid: String!): DeleteResponse!
+  deleteThread(uid: String!): DeleteResponse!
+  createNotice(payload: NoticeInputType!): NoticeResponse!
+  updateNotice(uid: String!, payload: NoticeInputType!): NoticeResponse!
+  viewNotice(uid: String!, viewer: String!): NoticeType!
+  deleteNotice(uid: String!): DeleteResponse!
+  createReflexRule(payload: ReflexRuleInput!): ReflexRuleResponse!
+  updateReflexRule(uid: String!, payload: ReflexRuleInput!): ReflexRuleResponse!
+  createReflexAction(payload: ReflexActionInput!): ReflexActionResponse!
+  updateReflexAction(uid: String!, payload: ReflexActionInput!): ReflexActionResponse!
+  createReflexBrain(payload: ReflexBrainInput!): ReflexBrainResponse!
+  updateReflexBrain(uid: String!, payload: ReflexBrainInput!): ReflexBrainResponse!
+  createStoreRoom(payload: StoreRoomInputType!): StoreRoomResponse!
+  updateStoreRoom(uid: String!, payload: StoreRoomInputType!): StoreRoomResponse!
+  createStorageLocation(payload: StorageLocationInputType!): StorageLocationResponse!
+  updateStorageLocation(uid: String!, payload: StorageLocationInputType!): StorageLocationResponse!
+  createStorageSection(payload: StorageSectionInputType!): StorageSectionResponse!
+  updateStorageSection(uid: String!, payload: StorageSectionInputType!): StorageSectionResponse!
+  createStorageContainer(payload: StorageContainerInputType!): StorageContainerResponse!
+  updateStorageContainer(uid: String!, payload: StorageContainerInputType!): StorageContainerResponse!
+  storeSamples(payload: [StoreSamplesInputType!]!): StoreSampleResponse!
+  recoverSamples(sampleUids: [String!]!): StoreSampleResponse!
+  createStockItem(payload: StockItemInputType!): StockItemResponse!
+  updateStockItem(uid: String!, payload: StockItemInputType!): StockItemResponse!
+  createStockCategory(payload: StockCategoryInputType!): StockCategoryResponse!
+  updateStockCategory(uid: String!, payload: StockCategoryInputType!): StockCategoryResponse!
+  createHazard(payload: HazardInputType!): HazardResponse!
+  updateHazard(uid: String!, payload: HazardInputType!): HazardResponse!
+  createStockUnit(payload: StockUnitInputType!): StockUnitResponse!
+  updateStockUnit(uid: String!, payload: StockUnitInputType!): StockUnitResponse!
+  createStockPackaging(payload: StockPackagingInputType!): StockPackagingResponse!
+  updateStockPackaging(uid: String!, payload: StockPackagingInputType!): StockPackagingResponse!
+  createStockProduct(payload: StockProductInputType!): StockProductResponse!
+  updateStockProduct(uid: String!, payload: StockProductInputType!): StockProductResponse!
+  createStockOrder(payload: StockOrderInputType!): StockOrderResponse!
+  updateStockOrder(uid: String!, payload: StockOrderInputType!): StockOrderResponse!
+  submitStockOrder(uid: String!): StockOrderResponse!
+  approveStockOrder(uid: String!, payload: StockOrderApprovalInputType!): StockOrderResponse!
+  issueStockOrder(uid: String!, payload: [StockOrderProductLineInputType!]!): StockOrderResponse!
+  deleteStockOrder(uid: String!): StockOrderResponse!
+  createStockTransaction(payload: StockTransactionInputType!): StockTransactionResponse!
+  createStockAdjustment(payload: StockAdjustmentInputType!): StockAdjustmentResponse!
+  createInstrumentType(payload: InstrumentTypeInputType!): InstrumentTypeResponse!
+  updateInstrumentType(uid: String!, payload: InstrumentTypeInputType!): InstrumentTypeResponse!
+  createInstrument(payload: InstrumentInputType!): InstrumentResponse!
+  updateInstrument(uid: String!, payload: InstrumentInputType!): InstrumentResponse!
+  createInstrumentCaliberation(payload: InstrumentCalibrationInput!): InstrumentCalibrationResponse!
+  updateInstrumentCaliberation(uid: String!, payload: InstrumentInputType!): InstrumentCalibrationResponse!
+  createCaliberationCertificate(payload: CalibrationCertificateInput!): CalibrationCertificateResponse!
+  updateCaliberationCertificate(uid: String!, payload: CalibrationCertificateInput!): CalibrationCertificateResponse!
+  createMethod(payload: MethodInputType!): MethodResponse!
+  updateMethod(uid: String!, payload: MethodInputType!): MethodResponse!
+  createShipment(payload: ShipmentInputType!): ShipmentsResponse!
+  updateShipment(uid: String!, payload: ShipmentUpdateInputType!): ShipmentResponse!
+  actionShipment(uid: String!, action: String!): ShipmentResponse!
+  shipmentManageSamples(uid: String!, payload: ShipmentManageSamplesInput!): ShipmentResponse!
+  createReferralLaboratory(payload: ReferralLaboratoryInputType!): ReferralLaboratoryResponse!
+  updateReferralLaboratory(uid: String!, payload: ReferralLaboratoryInputType!): ReferralLaboratoryResponse!
+}
+
+type Nothing {
+  data: String
+}
+
+input NoticeInputType {
+  title: String!
+  body: String!
+  expiry: String!
+  groups: [String!]
+  departments: [String!]
+}
+
+"""Union of possible outcomes when adding a new notice"""
+union NoticeResponse = NoticeType | OperationError
+
+type NoticeType {
+  uid: String!
+  departments: [DepartmentType!]
+  groups: [GroupType!]
+  title: String!
+  body: String!
+  viewers: [UserType!]
+  expiry: DateTime!
+  createdAt: DateTime
+  createdByUid: String
+  createdBy: UserType
+  updatedAt: DateTime
+  updatedByUid: String
+  updatedBy: UserType
+}
+
+type NotificationType {
+  uid: String!
+  departments: DepartmentType
+  groups: GroupType
+  users: UserType
+  message: String!
+  viewers: UserType
+  createdAt: DateTime
+  createdByUid: String
+  createdBy: UserType
+}
+
+type OperationError {
+  error: String!
+  suggestion: String
+}
+
+type OperationSuccess {
+  message: String!
+}
+
+type PageInfo {
+  hasNextPage: Boolean!
+  hasPreviousPage: Boolean!
+  startCursor: String
+  endCursor: String
+}
+
+type PatientCursorPage {
+  pageInfo: PageInfo!
+  edges: [PatientEdge!]
+  items: [PatientType!]
+  totalCount: Int!
+}
+
+type PatientEdge {
+  cursor: String!
+  node: PatientType!
+}
+
+type PatientIdentificationType {
+  uid: String!
+  patientUid: String!
+  identificationUid: String!
+  identification: IdentificationType
+  value: String!
+  createdByUid: String
+  createdBy: UserType
+  createdAt: DateTime
+  updatedByUid: String
+  updatedBy: UserType
+  updatedAt: DateTime
+}
+
+input PatientInputType {
+  clientPatientId: String!
+  firstName: String!
+  lastName: String!
+  clientUid: String!
+  gender: String!
+  middleName: String = null
+  age: Int = null
+  dateOfBirth: DateTime = null
+  ageDobEstimated: Boolean = false
+  phoneMobile: String = null
+  phoneHome: String = null
+  consentSms: Boolean = false
+  internalUse: Boolean = false
+  countryUid: String = null
+  provinceUid: String = null
+  districtUid: String = null
+  identifications: [PatientidentificationInput!]
+}
+
+""""""
+union PatientResponse = PatientType | OperationError
+
+type PatientType {
+  uid: String!
+  clientPatientId: String!
+  patientId: String!
+  clientUid: String!
+  client: ClientType
+  firstName: String
+  middleName: String
+  lastName: String
+  gender: String
+  age: Int
+  dateOfBirth: DateTime
+  ageDobEstimated: Boolean!
+  phoneMobile: String
+  phoneHome: String
+  consentSms: Boolean!
+  email: String
+  internalUse: Boolean!
+  active: Boolean!
+  districtUid: String
+  district: DistrictType
+  provinceUid: String
+  province: ProvinceType
+  countryUid: String
+  country: CountryType
+  identifications: [PatientIdentificationType]!
+  createdByUid: String
+  createdBy: UserType
+  createdAt: DateTime
+  updatedByUid: String
+  updatedBy: UserType
+  updatedAt: DateTime
+}
+
+input PatientidentificationInput {
+  value: String!
+  identificationUid: String!
+}
+
+type PermissionType {
+  uid: String!
+  action: String
+  target: String
+  active: Boolean
+}
+
+type ProcessCounts {
+  totalSamples: Int
+  totalLate: Int
+  totalNotLate: Int
+  processAverage: Int
+  avgExtraDays: Int
+  service: String
+}
+
+type ProcessData {
+  process: String!
+  counts: ProcessCounts
+  groups: [ProcessCounts!]
+}
+
+type ProcessStatistics {
+  data: [ProcessData!]!
+}
+
+input ProfileInputType {
+  name: String!
+  description: String! = ""
+  departmentUid: String = null
+  sampleTypes: [String!]
+  services: [String!]
+  keyword: String = null
+  active: Boolean = true
+}
+
+input ProfileMappingInputType {
+  profileUid: String!
+  codingStandardUid: String!
+  name: String!
+  code: String!
+  description: String = null
+}
+
+"""Union of possible outcomes when adding a new notice"""
+union ProfileMappingResponse = ProfileMappingType | OperationError
+
+type ProfileMappingType {
+  uid: String!
+  profileUid: String!
+  profile: ProfileType
+  codingStandardUid: String!
+  codingStandard: CodingStandardType
+  name: String
+  description: String
+  code: String!
+  createdByUid: String
+  createdBy: UserType
+  createdAt: DateTime
+  updatedByUid: String
+  updatedBy: UserType
+  updatedAt: DateTime
+}
+
+type ProfileType {
+  uid: String!
+  name: String!
+  description: String
+  keyword: String
+  departmentUid: String
+  department: DepartmentType
+  tatLengthMinutes: Int
+  analyses: [AnalysisType!]
+  sampleTypes: [SampleTypeTyp!]
+  active: Boolean!
+  createdByUid: String
+  createdBy: UserType
+  createdAt: DateTime
+  updatedByUid: String
+  updatedBy: UserType
+  updatedAt: DateTime
+}
+
+""""""
+union ProfilesServiceResponse = AnalysisWithProfiles | OperationError
+
+type ProvinceCursorPage {
+  pageInfo: PageInfo!
+  edges: [ProvinceEdge!]
+  items: [ProvinceType!]
+  totalCount: Int!
+}
+
+type ProvinceEdge {
+  cursor: String!
+  node: ProvinceType!
+}
+
+input ProvinceInputType {
+  name: String
+  countryUid: String
+  code: String = null
+  email: String = null
+  emailCc: String = null
+  mobilePhone: String = null
+  businessPhone: String = null
+  active: Boolean = true
+}
+
+""""""
+union ProvinceResponse = ProvinceType | OperationError
+
+type ProvinceType {
+  uid: String!
+  code: String
+  name: String
+  email: String
+  emailCc: String
+  mobilePhone: String
+  businessPhone: String
+  active: Boolean
+  countryUid: String
+  country: CountryType
+  createdByUid: String
+  createdBy: UserType
+  createdAt: DateTime
+  updatedByUid: String
+  updatedBy: UserType
+  updatedAt: DateTime
+}
+
+""""""
+union QCLevelResponse = QCLevelType | OperationError
+
+type QCLevelType {
+  uid: String!
+  level: String!
+  createdByUid: String
+  createdBy: UserType
+  createdAt: DateTime
+  updatedByUid: String
+  updatedBy: UserType
+  updatedAt: DateTime
+}
+
+type QCSetCursorPage {
+  pageInfo: PageInfo!
+  edges: [QCSetEdge!]
+  items: [QCSetWithSamples!]
+  totalCount: Int!
+}
+
+type QCSetEdge {
+  cursor: String!
+  node: QCSetWithSamples!
+}
+
+input QCSetInputType {
+  qcTemplateUid: String
+  qcLevels: [String!]!
+  analysisProfiles: [String!]!
+  analysisServices: [String!]!
+}
+
+""""""
+union QCSetResponse = CreateQCSetData | OperationError
+
+type QCSetType {
+  uid: String!
+  name: String!
+  note: String!
+  createdByUid: String
+  createdBy: UserType
+  createdAt: DateTime
+  updatedByUid: String
+  updatedBy: UserType
+  updatedAt: DateTime
+}
+
+type QCSetWithSamples {
+  uid: String!
+  name: String!
+  note: String!
+  createdByUid: String
+  createdBy: UserType
+  createdAt: DateTime
+  updatedByUid: String
+  updatedBy: UserType
+  updatedAt: DateTime
+  samples: [SamplesWithResults!]
+}
+
+input QCTemplateInputType {
+  name: String!
+  description: String! = ""
+  departments: [String!] = null
+  levels: [String!]!
+}
+
+""""""
+union QCTemplateResponse = QCTemplateType | OperationError
+
+type QCTemplateType {
+  uid: String!
+  name: String!
+  description: String
+  departments: [DepartmentType!]!
+  qcLevels: [QCLevelType!]!
+  createdByUid: String
+  createdBy: UserType
+  createdAt: DateTime
+  updatedByUid: String
+  updatedBy: UserType
+  updatedAt: DateTime
+}
+
+type Query {
+  laboratory(setupName: String!): LaboratoryType!
+  laboratorySetting(setupName: String!): LaboratorySettingType!
+  manufacturerAll: [ManufacturerType!]!
+  supplierAll: [SupplierType!]!
+  departmentAll: [DepartmentType!]!
+  districtAll(pageSize: Int = null, afterCursor: String = null, beforeCursor: String = null, text: String = null, sortBy: [String!] = null): DistrictCursorPage!
+  provinceAll(pageSize: Int = null, afterCursor: String = null, beforeCursor: String = null, text: String = null, sortBy: [String!] = null): ProvinceCursorPage!
+  countryAll: [CountryType!]!
+  unitAll: [UnitType!]!
+  manufacturerByUid(uid: String!): ManufacturerType!
+  supplierByUid(uid: String!): SupplierType!
+  departmentByUid(uid: String!): DepartmentType!
+  districtByUid(uid: String!): DistrictType!
+  districtsByProvinceUid(uid: String!): [DistrictType!]!
+  provinceByUid(uid: String!): ProvinceType!
+  provincesByCountryUid(uid: String!): [ProvinceType!]!
+  countryByUid(uid: String!): CountryType!
+  unitByUid(uid: String!): UnitType!
+  auditLogsFilter(targetType: String!, targetId: String!): [AuditLogType!]!
+  userAll(pageSize: Int = null, afterCursor: String = null, beforeCursor: String = null, text: String = null, sortBy: [String!] = null): UserCursorPage!
+  userMe(token: String!): UserType
+  userByEmail(email: String!): UserType
+  groupAll: [GroupType!]!
+  groupByUid(uid: String!): GroupType
+  permissionAll: [PermissionType!]!
+  permissionByUid(uid: String!): PermissionType
+  clientAll(pageSize: Int = null, afterCursor: String = null, beforeCursor: String = null, text: String = null, sortBy: [String!] = null): ClientCursorPage!
+  clientByUid(uid: String!): ClientType!
+  clientByCode(code: String!): ClientType!
+  clientsByName(name: String!): [ClientType!]!
+  clientSearch(queryString: String!): [ClientType!]!
+  clientContactAll: [ClientContactType!]!
+  clientContactUid(uid: String!): ClientContactType!
+  clientContactByClientUid(clientUid: String!): [ClientContactType!]!
+  patientAll(pageSize: Int = null, afterCursor: String = null, beforeCursor: String = null, text: String = null, sortBy: [String!] = null): PatientCursorPage!
+  patientByUid(uid: String!): PatientType
+  patientByPatientId(patientId: String!): PatientType
+  patientSearch(queryString: String!): [PatientType!]!
+  identificationAll: [IdentificationType!]!
+  identificationByUid(uid: String!): IdentificationType!
+  codingStandardAll: [CodingStandardType!]!
+  sampleTypeAll: [SampleTypeTyp!]!
+  sampleTypeByUid(uid: String!): SampleTypeTyp!
+  sampleTypeMappingsBySampleType(sampleTypeUid: String!): [SampleTypeMappingType!]!
+  sampleAll(pageSize: Int = null, afterCursor: String = null, beforeCursor: String = null, text: String = null, status: String = null, clientUid: String = null, sortBy: [String!] = null): SampleCursorPage!
+  samplesForShipmentAssign(pageSize: Int = null, afterCursor: String = null, beforeCursor: String = null, text: String = null, sortBy: [String!] = null, analysisUid: String = null, sampleTypeUid: String = null): SampleCursorPage!
+  sampleSearch(status: String!, text: String!, clientUid: String!): [SampleType!]!
+  sampleCount(status: String!, text: String!, clientUid: String!): Int!
+  sampleByUid(uid: String!): SampleType!
+  sampleByParentId(parentId: String!, text: String = null): [SampleType!]!
+  samplesByUids(sampleUids: [String!]! = []): [SamplesWithResults!]!
+  samplesByStorageContainerUid(uid: String!): [SampleType!]!
+  profileAll: [ProfileType!]!
+  profileByUid(uid: String!): ProfileType!
+  profileMappingsByProfile(profileUid: String!): [ProfileMappingType!]!
+  analysisCategoryAll: [AnalysisCategoryType!]!
+  analysisCategoryByUid(uid: String!): AnalysisCategoryType!
+  analysisAll(pageSize: Int = null, afterCursor: String = null, beforeCursor: String = null, text: String = null, sortBy: [String!] = null, qcOnly: Boolean = false): AnalysisCursorPage!
+  analysisByUid(uid: String!): AnalysisType!
+  analysisMappingsByAnalysis(analysisUid: String!): [AnalysisMappingType!]!
+  analysisWithoutProfile: [AnalysisType!]!
+  analysisRequestAll(pageSize: Int = null, afterCursor: String = null, beforeCursor: String = null, text: String = null, sortBy: [String!] = null): AnalysisRequestCursorPage!
+  analysisRequestByUid(uid: String!): AnalysisRequestWithSamples!
+  analysisRequestsByPatientUid(uid: String!): [AnalysisRequestWithSamples!]!
+  analysisRequestsByClientUid(uid: String!): [AnalysisRequestWithSamples!]!
+  analysisResultByUid(uid: String!): AnalysisResultType!
+  analysisResultBySampleUid(uid: String!): [AnalysisResultType!]!
+  analysisResultsForWsAssign(pageSize: Int = null, afterCursor: String = null, beforeCursor: String = null, text: String = null, sortBy: [String!] = null, analysisUid: String = null, sampleTypeUid: String = null): AnalysisResultCursorPage!
+  analysisInterimAll: [AnalysisInterimType!]!
+  analysisInterimByUid(uid: String!): AnalysisInterimType!
+  analysisCorrectionFactorAll: [AnalysisCorrectionFactorType!]!
+  analysisCorrectionFactorByUid(uid: String!): AnalysisCorrectionFactorType!
+  analysisUncertaintyAll: [AnalysisUncertaintyType!]!
+  analysisUncertaintyByUid(uid: String!): AnalysisUncertaintyType!
+  analysisDetectionLimitAll: [AnalysisDetectionLimitType!]!
+  analysisDetectionLimitByUid(uid: String!): AnalysisDetectionLimitType!
+  analysisSpecificationAll: [AnalysisSpecificationType!]!
+  analysisSpecificationUid(uid: String!): AnalysisSpecificationType!
+  qcSetAll(pageSize: Int = null, afterCursor: String = null, beforeCursor: String = null, text: String = null, sortBy: [String!] = null): QCSetCursorPage!
+  qcSetByUid(uid: String!): QCSetWithSamples!
+  qcLevelAll: [QCLevelType!]!
+  qcLevelByUid(uid: String!): QCLevelType!
+  qcTemplateAll: [QCTemplateType!]!
+  qcTemplateByUid(uid: String!): QCTemplateType!
+  resultOptionsByAnalysisUid(uid: String!): ResultOptionType!
+  rejectionReasonsAll: [RejectionReasonType!]!
+  rejectionReasonByUid(uid: String!): RejectionReasonType!
+  worksheetAll(pageSize: Int = null, afterCursor: String = null, beforeCursor: String = null, text: String = null, status: String = null, sortBy: [String!] = null): WorkSheetCursorPage!
+  worksheetTemplateAll: [WorkSheetTemplateType!]!
+  worksheetByAnalyst(analystUid: String!): [WorkSheetType!]!
+  worksheetByUid(worksheetUid: String!): WorkSheetType!
+  worksheetById(worksheetId: String!): WorkSheetType!
+  worksheetByStatus(worksheetStatus: String!): [WorkSheetType!]!
+  worksheetTemplateByUid(worksheetUid: String!): [WorkSheetType!]!
+  threadsForUser(uid: String!): [MessageThreadType!]
+  threadByUid(uid: String!): MessageThreadType
+  noticeByUid(uid: String!): NoticeType
+  noticesByCreator(uid: String!): [NoticeType!]
+  noticeFilter(groupUid: String, departmentUid: String): [NoticeType!]!
+  notificationFilter(groupUid: String, departmentUid: String, userUid: String): [NotificationType!]!
+  notificationByUid(uid: String!): NotificationType
+  countSampleGroupByStatus: GroupedCounts!
+  countSampleGroupByAction(startDate: String = null, endDate: String = null): GroupedData!
+  countAnalyteGroupByStatus: GroupedCounts!
+  countWorksheetGroupByStatus: GroupedCounts!
+  countExtrasGroupByStatus: GroupedCounts!
+  countAnalyteGroupByInstrument(startDate: String = null, endDate: String = null): GroupedCounts!
+  sampleProcessPerformance(startDate: String!, endDate: String!): ProcessStatistics!
+  analysisProcessPerformance(process: String!, startDate: String!, endDate: String!): ProcessStatistics!
+  sampleLaggards: LaggardStatistics!
+  reflexRuleAll(pageSize: Int = null, afterCursor: String = null, beforeCursor: String = null, text: String = null, sortBy: [String!] = null): ReflexRuleCursorPage!
+  reflexRuleByUid(uid: String!): ReflexRuleType
+  storeRoomAll: [StoreRoomType!]!
+  storeRoomByUid(uid: String!): StoreRoomType
+  storageLocations(storeRoomUid: String!): [StorageLocationType!]!
+  storageLocationByUid(uid: String!): StorageLocationType
+  storageSections(storageLocationUid: String!): [StorageSectionType!]!
+  storageSectionByUid(uid: String!): StorageSectionType
+  storageContainers(storageSectionUid: String!): [StorageContainerType!]!
+  storageContainerByUid(uid: String!): StorageContainerType
+  stockItemAll(pageSize: Int = null, afterCursor: String = null, beforeCursor: String = null, text: String = null, sortBy: [String!] = null): StockItemCursorPage!
+  stockItemByUid(uid: String!): StockItemType
+  stockCategoryAll: [StockCategoryType!]!
+  stockCategoryByUid(uid: String!): StockCategoryType
+  hazardAll: [HazardType!]!
+  hazardByUid(uid: String!): HazardType
+  stockUnitAll: [StockUnitType!]!
+  stockUnitByUid(uid: String!): StockUnitType
+  stockPackagingAll: [StockPackagingType!]!
+  stockPackagingByUid(uid: String!): StockPackagingType
+  stockProductAll(pageSize: Int = null, afterCursor: String = null, beforeCursor: String = null, text: String = null, sortBy: [String!] = null): StockProductCursorPage!
+  stockProductByUid(uid: String!): StockProductType
+  stockOrderAll(pageSize: Int = null, afterCursor: String = null, beforeCursor: String = null, status: String = null, text: String = null, sortBy: [String!] = null): StockOrderCursorPage!
+  stockOrderByUid(uid: String!): StockOrderType
+  stockOrderProductAll(stockOrderUid: String!): [StockOrderProductType!]!
+  stockOrderProductByUid(uid: String!): StockOrderProductType
+  stockTransactionAll(pageSize: Int = null, afterCursor: String = null, beforeCursor: String = null, text: String = null, sortBy: [String!] = null): StockTransactionCursorPage!
+  stockTransactionByUid(uid: String!): StockTransactionType
+  stockAdjustmentAll(pageSize: Int = null, afterCursor: String = null, beforeCursor: String = null, text: String = null, sortBy: [String!] = null): StockAdjustmentCursorPage!
+  stockAdjustmentByUid(uid: String!): StockAdjustmentType
+  impressReportsMeta(uids: [String!]!): [ReportImpressType!]!
+  impressReportsDownload(uids: [String!]!): BytesScalar
+  impressReportDownload(uid: String!): BytesScalar
+  instrumentTypeAll(pageSize: Int = null, afterCursor: String = null, beforeCursor: String = null, text: String = null, sortBy: [String!] = null): InstrumentTypeCursorPage!
+  instrumentAll(pageSize: Int = null, afterCursor: String = null, beforeCursor: String = null, text: String = null, sortBy: [String!] = null): InstrumentCursorPage!
+  methodAll(pageSize: Int = null, afterCursor: String = null, beforeCursor: String = null, text: String = null, sortBy: [String!] = null): MethodCursorPage!
+  instrumentTypeByUid(uid: String!): InstrumentTypeType!
+  instrumentByUid(uid: String!): InstrumentType!
+  methodByUid(uid: String!): MethodType!
+  shipmentAll(pageSize: Int = null, afterCursor: String = null, beforeCursor: String = null, text: String = null, incoming: Boolean! = false, status: String = null, sortBy: [String!] = null): ShipmentCursorPage!
+  shipmentByUid(shipmentUid: String!): ShipmentType!
+  shipmentById(shipmentId: String!): ShipmentType!
+  shipmentByStatus(shipmentStatus: String!): [ShipmentType!]!
+  referralLaboratoryAll: [ReferralLaboratoryType!]!
+  referralLaboratoryByUid(uid: String!): ReferralLaboratoryType!
+  referralLaboratoryByCode(code: String!): ReferralLaboratoryType!
+  manifestReportDownload(uid: String!): BytesScalar
+}
+
+input ReferenceSampleInput {
+  sampleUid: String = null
+  shipedSampleUid: String = null
+  analyses: [String!]!
+}
+
+input ReferralLaboratoryInputType {
+  name: String!
+  code: String!
+  url: String!
+  username: String!
+  password: String!
+  isReference: Boolean! = false
+  isReferral: Boolean! = false
+}
+
+""""""
+union ReferralLaboratoryResponse = ReferralLaboratoryType | OperationError
+
+type ReferralLaboratoryType {
+  uid: String!
+  name: String
+  code: String
+  url: String
+  username: String
+  password: String
+  isReference: Boolean
+  isReferral: Boolean
+  createdByUid: String
+  createdBy: UserType
+  createdAt: DateTime
+  updatedByUid: String
+  updatedBy: UserType
+  updatedAt: DateTime
+}
+
+input ReflexActionInput {
+  level: Int!
+  description: String!
+  analyses: [String!]!
+  reflexRuleUid: String!
+  sampleTypeUid: String = null
+}
+
+""""""
+union ReflexActionResponse = ReflexActionType | OperationError
+
+type ReflexActionType {
+  uid: String!
+  level: Int!
+  description: String!
+  analyses: [AnalysisType!]
+  sampleTypeUid: String
+  sampleType: SampleTypeTyp
+  reflexRuleUid: String!
+  reflexRule: ReflexRuleType
+  brains: [ReflexBrainType!]
+  createdByUid: String
+  createdBy: UserType
+  createdAt: DateTime
+  updatedByUid: String
+  updatedBy: UserType
+  updatedAt: DateTime
+}
+
+input ReflexAddNewInput {
+  analysisUid: String!
+  count: Int!
+}
+
+type ReflexBrainAdditionType {
+  analysisUid: String!
+  analysis: AnalysisType
+  reflexBrainUid: String!
+  reflexBrain: ReflexBrainType
+  count: Int!
+}
+
+type ReflexBrainCriteriaType {
+  analysisUid: String!
+  analysis: AnalysisType
+  reflexBrainUid: String!
+  reflexBrain: ReflexBrainType
+  operator: String!
+  value: String!
+}
+
+type ReflexBrainFinalType {
+  analysisUid: String!
+  analysis: AnalysisType
+  reflexBrainUid: String!
+  reflexBrain: ReflexBrainType
+  value: String!
+}
+
+input ReflexBrainInput {
+  reflexActionUid: String!
+  description: String!
+  analysesValues: [ReflexCriteriaInput!] = null
+  addNew: [ReflexAddNewInput!] = null
+  finalise: [ReflexFinalInput!] = null
+}
+
+""""""
+union ReflexBrainResponse = ReflexBrainType | OperationError
+
+type ReflexBrainType {
+  reflexActionUid: String!
+  reflexAction: ReflexBrainType
+  uid: String!
+  description: String!
+  analysesValues: [ReflexBrainCriteriaType!]
+  addNew: [ReflexBrainAdditionType!]
+  finalise: [ReflexBrainFinalType!]
+  createdByUid: String
+  createdBy: UserType
+  createdAt: DateTime
+  updatedByUid: String
+  updatedBy: UserType
+  updatedAt: DateTime
+}
+
+input ReflexCriteriaInput {
+  analysisUid: String!
+  operator: String!
+  value: String!
+}
+
+input ReflexFinalInput {
+  analysisUid: String!
+  value: String!
+}
+
+type ReflexRuleCursorPage {
+  pageInfo: PageInfo!
+  edges: [ReflexRuleEdge!]
+  items: [ReflexRuleType!]
+  totalCount: Int!
+}
+
+type ReflexRuleEdge {
+  cursor: String!
+  node: ReflexRuleType!
+}
+
+input ReflexRuleInput {
+  name: String!
+  description: String!
+}
+
+""""""
+union ReflexRuleResponse = ReflexRuleType | OperationError
+
+type ReflexRuleType {
+  uid: String!
+  name: String!
+  description: String!
+  reflexActions: [ReflexActionType!]
+  createdByUid: String
+  createdBy: UserType
+  createdAt: DateTime
+  updatedByUid: String
+  updatedBy: UserType
+  updatedAt: DateTime
+}
+
+""""""
+union RejectionReasonResponse = RejectionReasonType | OperationError
+
+type RejectionReasonType {
+  uid: String!
+  reason: String!
+  createdByUid: String
+  createdBy: UserType
+  createdAt: DateTime
+  updatedByUid: String
+  updatedBy: UserType
+  updatedAt: DateTime
+}
+
+type ReportImpressType {
+  uid: String!
+  state: String
+  sampleUid: String
+  sample: SampleType
+  jsonContent: JSONScalar
+  pdfContent: BytesScalar
+  emailRequired: Boolean
+  emailSent: Boolean
+  smsRequired: Boolean
+  smsSent: Boolean
+  generatedByUid: String
+  generatedBy: UserType
+  createdByUid: String
+  createdBy: UserType
+  updatedByUid: String
+  updatedBy: UserType
+  dateGenerated: DateTime
+}
+
+type ReportMetaType {
+  uid: String!
+  periodStart: DateTime!
+  periodEnd: DateTime!
+  dateColumn: String!
+  location: String
+  sampleStates: String
+  reportType: String!
+  status: String
+  temp: String
+  analyses: [AnalysisType!]
+  createdAt: DateTime
+  createdByUid: String
+  createdBy: UserType
+  updatedAt: DateTime
+  updatedByUid: String
+  updatedBy: UserType
+}
+
+input ReservedInputType {
+  position: Int!
+  levelUid: String
+}
+
+type ResultListingType {
+  results: [AnalysisResultType!]!
+}
+
+input ResultOptionInputType {
+  analysisUid: String!
+  optionKey: Int!
+  value: String!
+}
+
+""""""
+union ResultOptionResponse = ResultOptionType | OperationError
+
+type ResultOptionType {
+  uid: String!
+  optionKey: Int!
+  value: String!
+  analysisUid: String!
+  createdByUid: String
+  createdBy: UserType
+  createdAt: DateTime
+  updatedByUid: String
+  updatedBy: UserType
+  updatedAt: DateTime
+}
+
+"""Union of possible outcomes when actioning samples"""
+union ResultedSampleActionResponse = ResultedSampleListingType | OperationError
+
+type ResultedSampleListingType {
+  samples: [SamplesWithResults!]!
+}
+
+"""Union of possible outcomes when actioning samples"""
+union SampleActionResponse = SampleListingType | OperationError
+
+type SampleCursorPage {
+  pageInfo: PageInfo!
+  edges: [SampleEdge!]
+  items: [SamplesWithResults!]
+  totalCount: Int!
+}
+
+type SampleEdge {
+  cursor: String!
+  node: SamplesWithResults!
+}
+
+type SampleListingType {
+  samples: [SampleType!]!
+}
+
+input SamplePublishInputType {
+  uid: String!
+  action: String! = ""
+}
+
+input SampleRejectInputType {
+  uid: String!
+  reasons: [String!]!
+  other: String = ""
+}
+
+type SampleType {
+  uid: String!
+  analysisRequestUid: String!
+  analysisRequest: AnalysisRequestType
+  sampleTypeUid: String!
+  sampleType: SampleTypeTyp
+  sampleId: String!
+  profiles: [ProfileType!]
+  analyses: [AnalysisType!]
+  priority: Int!
+  status: String
+  assigned: Boolean!
+  dateCollected: DateTime
+  submittedByUid: String
+  submittedBy: UserType
+  dateSubmitted: DateTime
+  verifiedByUid: String
+  verifiedBy: UserType
+  dateVerified: DateTime
+  invalidatedByUid: String
+  invalidatedBy: UserType
+  dateInvalidated: DateTime
+  receivedByUid: String
+  receivedBy: UserType
+  dateReceived: DateTime
+  publishedByUid: String
+  publishedBy: UserType
+  datePublished: DateTime
+  cancelledByUid: String
+  cancelledBy: UserType
+  dateCancelled: DateTime
+  printed: Boolean
+  datePrinted: DateTime
+  printedByUid: String
+  printedBy: UserType
+  dueDate: DateTime
+  rejectionReasons: [RejectionReasonType!]
+  internalUse: Boolean!
+  parentId: String
+  parent: SampleType
+  qcSetUid: String
+  qcSet: QCSetType
+  qcLevelUid: String
+  qcLevel: QCLevelType
+  storageContainerUid: String
+  storageContainer: StorageContainerType
+  storageSlot: String
+  storageSlotIndex: Int
+  storedByUid: String
+  storedBy: UserType
+  dateStored: DateTime
+  dateRetrievedFromStorage: DateTime
+  createdByUid: String
+  createdBy: UserType
+  createdAt: DateTime
+  updatedByUid: String
+  updatedBy: UserType
+  updatedAt: DateTime
+}
+
+input SampleTypeInputType {
+  name: String!
+  abbr: String!
+  description: String = ""
+  internalUse: Boolean = false
+  active: Boolean = true
+}
+
+input SampleTypeMappingInputType {
+  sampleTypeUid: String!
+  codingStandardUid: String!
+  name: String!
+  code: String!
+  description: String = null
+}
+
+"""Union of possible outcomes when adding a new notice"""
+union SampleTypeMappingResponse = SampleTypeMappingType | OperationError
+
+type SampleTypeMappingType {
+  uid: String!
+  sampleTypeUid: String!
+  sampleType: SampleTypeTyp
+  codingStandardUid: String!
+  codingStandard: CodingStandardType
+  name: String
+  description: String
+  code: String!
+  createdByUid: String
+  createdBy: UserType
+  createdAt: DateTime
+  updatedByUid: String
+  updatedBy: UserType
+  updatedAt: DateTime
+}
+
+""""""
+union SampleTypeResponse = SampleTypeTyp | OperationError
+
+type SampleTypeTyp {
+  uid: String!
+  name: String!
+  description: String
+  active: Boolean!
+  internalUse: Boolean!
+  abbr: String!
+  createdByUid: String
+  createdBy: UserType
+  createdAt: DateTime
+  updatedByUid: String
+  updatedBy: UserType
+  updatedAt: DateTime
+}
+
+type SamplesWithResults {
+  uid: String!
+  analysisRequestUid: String!
+  analysisRequest: AnalysisRequestType
+  sampleTypeUid: String!
+  sampleType: SampleTypeTyp
+  sampleId: String!
+  profiles: [ProfileType!]
+  analyses: [AnalysisType!]
+  priority: Int!
+  status: String
+  assigned: Boolean!
+  dateCollected: DateTime
+  submittedByUid: String
+  submittedBy: UserType
+  dateSubmitted: DateTime
+  verifiedByUid: String
+  verifiedBy: UserType
+  dateVerified: DateTime
+  invalidatedByUid: String
+  invalidatedBy: UserType
+  dateInvalidated: DateTime
+  receivedByUid: String
+  receivedBy: UserType
+  dateReceived: DateTime
+  publishedByUid: String
+  publishedBy: UserType
+  datePublished: DateTime
+  cancelledByUid: String
+  cancelledBy: UserType
+  dateCancelled: DateTime
+  printed: Boolean
+  datePrinted: DateTime
+  printedByUid: String
+  printedBy: UserType
+  dueDate: DateTime
+  rejectionReasons: [RejectionReasonType!]
+  internalUse: Boolean!
+  parentId: String
+  parent: SampleType
+  qcSetUid: String
+  qcSet: QCSetType
+  qcLevelUid: String
+  qcLevel: QCLevelType
+  storageContainerUid: String
+  storageContainer: StorageContainerType
+  storageSlot: String
+  storageSlotIndex: Int
+  storedByUid: String
+  storedBy: UserType
+  dateStored: DateTime
+  dateRetrievedFromStorage: DateTime
+  createdByUid: String
+  createdBy: UserType
+  createdAt: DateTime
+  updatedByUid: String
+  updatedBy: UserType
+  updatedAt: DateTime
+  analysisResults: [AnalysisResultType!]
+}
+
+type ShipmentCursorPage {
+  pageInfo: PageInfo!
+  edges: [ShipmentEdge!]
+  items: [ShipmentType!]
+  totalCount: Int!
+}
+
+type ShipmentEdge {
+  cursor: String!
+  node: ShipmentType!
+}
+
+input ShipmentInputType {
+  laboratoryUid: String
+  courier: String!
+  comment: String
+  count: Int = 1
+}
+
+type ShipmentListingType {
+  shipments: [ShipmentType!]
+}
+
+input ShipmentManageSamplesInput {
+  samples: [ReferenceSampleInput!]!
+  action: String!
+}
+
+""""""
+union ShipmentResponse = ShipmentType | OperationError
+
+type ShipmentType {
+  uid: String!
+  shipmentId: String
+  comment: String
+  courier: String
+  assignedCount: Int
+  data: JSONScalar
+  samples: [SampleType!]
+  shippedSamples: [ShippedSampleType!]
+  state: String
+  incoming: Boolean
+  laboratoryUid: String
+  laboratory: ReferralLaboratoryType
+  jsonContent: JSONScalar
+  pdfContent: BytesScalar
+  finalisedByUid: String
+  finalisedBy: UserType
+  dateFinalised: DateTime
+  dispatchedByUid: String
+  dispatchedBy: UserType
+  dateDispatched: DateTime
+  recalledByUid: String
+  recalledBy: UserType
+  dateRecalled: DateTime
+  rejectedByUid: String
+  rejectedBy: UserType
+  dateRejected: DateTime
+  receivedByUid: String
+  receivedBy: UserType
+  dateReceived: DateTime
+  createdByUid: String
+  createdBy: UserType
+  createdAt: DateTime
+  updatedByUid: String
+  updatedBy: UserType
+  updatedAt: DateTime
+}
+
+input ShipmentUpdateInputType {
+  laboratoryUid: String
+  courier: String!
+  comment: String = ""
+}
+
+""""""
+union ShipmentsResponse = ShipmentListingType | OperationError
+
+type ShippedSampleType {
+  sampleUid: String!
+  sample: SampleType!
+  shipmentUid: String!
+  shipment: ShipmentType!
+  resultNotified: Boolean
+  extSampleUid: String
+  extSampleId: String
+}
+
+type StockAdjustmentCursorPage {
+  pageInfo: PageInfo!
+  edges: [StockAdjustmentEdge!]
+  items: [StockAdjustmentType!]
+  totalCount: Int!
+}
+
+type StockAdjustmentEdge {
+  cursor: String!
+  node: StockAdjustmentType!
+}
+
+input StockAdjustmentInputType {
+  productUid: String!
+  adjustmentType: String!
+  adjust: Int!
+  remarks: String = null
+}
+
+""""""
+union StockAdjustmentResponse = StockAdjustmentType | OperationError
+
+type StockAdjustmentType {
+  uid: String!
+  productUid: String
+  product: StockProductType
+  adjustmentType: String
+  adjust: Int
+  adjustmentDate: DateTime
+  remarks: String
+  adjustmentByUid: String
+  adjustmentBy: UserType
+  createdAt: DateTime
+  createdByUid: String
+  createdBy: UserType
+  updatedAt: DateTime
+  updatedByUid: String
+  updatedBy: UserType
+}
+
+input StockCategoryInputType {
+  name: String!
+  description: String!
+}
+
+""""""
+union StockCategoryResponse = StockCategoryType | OperationError
+
+type StockCategoryType {
+  uid: String!
+  name: String!
+  description: String
+  createdAt: DateTime
+  createdByUid: String
+  createdBy: UserType
+  updatedAt: DateTime
+  updatedByUid: String
+  updatedBy: UserType
+}
+
+type StockItemCursorPage {
+  pageInfo: PageInfo!
+  edges: [StockItemEdge!]
+  items: [StockItemType!]
+  totalCount: Int!
+}
+
+type StockItemEdge {
+  cursor: String!
+  node: StockItemType!
+}
+
+input StockItemInputType {
+  name: String!
+  description: String!
+  departmentUid: String = null
+}
+
+""""""
+union StockItemResponse = StockItemType | OperationError
+
+type StockItemType {
+  uid: String!
+  name: String!
+  departmentUid: String
+  department: DepartmentType
+  minimumLevel: Int
+  description: String
+  createdAt: DateTime
+  createdByUid: String
+  createdBy: UserType
+  updatedAt: DateTime
+  updatedByUid: String
+  updatedBy: UserType
+}
+
+input StockOrderApprovalInputType {
+  remarks: String!
+  status: String!
+}
+
+type StockOrderCursorPage {
+  pageInfo: PageInfo!
+  edges: [StockOrderEdge!]
+  items: [StockOrderType!]
+  totalCount: Int!
+}
+
+type StockOrderEdge {
+  cursor: String!
+  node: StockOrderType!
+}
+
+input StockOrderInputType {
+  orderProducts: [StockOrderProductLineInputType!]!
+  departmentUid: String = null
+}
+
+type StockOrderLineType {
+  stockOrder: StockOrderType!
+  orderProducts: [StockOrderProductType!]!
+}
+
+input StockOrderProductLineInputType {
+  productUid: String!
+  quantity: Int!
+  remarks: String = null
+}
+
+type StockOrderProductType {
+  uid: String!
+  productUid: String
+  product: StockProductType
+  orderUid: String
+  order: StockOrderType
+  price: Int
+  quantity: Int
+  createdAt: DateTime
+  createdByUid: String
+  createdBy: UserType
+  updatedAt: DateTime
+  updatedByUid: String
+  updatedBy: UserType
+}
+
+""""""
+union StockOrderResponse = StockOrderLineType | StockOrderType | OperationError
+
+type StockOrderType {
+  uid: String!
+  fullfilledByUid: String
+  fullfilledBy: UserType
+  orderByUid: String
+  orderBy: UserType
+  departmentUid: String
+  department: DepartmentType
+  status: String
+  remarks: String
+  orderNumber: String
+  createdAt: DateTime
+  createdByUid: String
+  createdBy: UserType
+  updatedAt: DateTime
+  updatedByUid: String
+  updatedBy: UserType
+}
+
+input StockPackagingInputType {
+  name: String!
+}
+
+""""""
+union StockPackagingResponse = StockPackagingType | OperationError
+
+type StockPackagingType {
+  uid: String!
+  name: String!
+  createdAt: DateTime
+  createdByUid: String
+  createdBy: UserType
+  updatedAt: DateTime
+  updatedByUid: String
+  updatedBy: UserType
+}
+
+type StockProductCursorPage {
+  pageInfo: PageInfo!
+  edges: [StockProductEdge!]
+  items: [StockProductType!]
+  totalCount: Int!
+}
+
+type StockProductEdge {
+  cursor: String!
+  node: StockProductType!
+}
+
+input StockProductInputType {
+  name: String!
+  stockItemUid: String = null
+  departmentUid: String = null
+  supplierUid: String = null
+  categoryUid: String = null
+  hazardUid: String = null
+  storeRoomUid: String = null
+  lotNumber: String = null
+  batch: String = null
+  size: Int = null
+  unitUid: String = null
+  packagingUid: String = null
+  price: Int = null
+  quantityReceived: Int = null
+  dateReceived: DateTime = null
+  expiryDate: DateTime = null
+  receivedByUid: String = null
+}
+
+""""""
+union StockProductResponse = StockProductType | OperationError
+
+type StockProductType {
+  uid: String!
+  name: String!
+  stockItemUid: String
+  stockItem: StockItemType
+  departmentUid: String
+  department: DepartmentType
+  supplierUid: String
+  supplier: SupplierType
+  categoryUid: String
+  category: StockCategoryType
+  hazardUid: String
+  hazard: HazardType
+  storeRoomUid: String
+  storeRoom: StoreRoomType
+  lotNumber: String
+  batch: String
+  size: Int
+  unitUid: String
+  unit: StockUnitType
+  packagingUid: String
+  packaging: StockPackagingType
+  price: Int
+  quantityReceived: Int
+  remaining: Int
+  dateReceived: DateTime
+  expiryDate: DateTime
+  receivedByUid: String
+  receivedBy: UserType
+  createdAt: DateTime
+  createdByUid: String
+  createdBy: UserType
+  updatedAt: DateTime
+  updatedByUid: String
+  updatedBy: UserType
+}
+
+type StockTransactionCursorPage {
+  pageInfo: PageInfo!
+  edges: [StockTransactionEdge!]
+  items: [StockTransactionType!]
+  totalCount: Int!
+}
+
+type StockTransactionEdge {
+  cursor: String!
+  node: StockTransactionType!
+}
+
+input StockTransactionInputType {
+  productUid: String!
+  issued: Int!
+  issuedToUid: String!
+  departmentUid: String = null
+}
+
+""""""
+union StockTransactionResponse = StockTransactionType | OperationError
+
+type StockTransactionType {
+  uid: String!
+  productUid: String
+  product: StockProductType
+  issued: Int
+  issuedToUid: String
+  issuedTo: UserType
+  departmentUid: String
+  department: DepartmentType
+  dateIssued: DateTime
+  transactionByUid: String
+  transactionBy: UserType
+  createdAt: DateTime
+  createdByUid: String
+  createdBy: UserType
+  updatedAt: DateTime
+  updatedByUid: String
+  updatedBy: UserType
+}
+
+input StockUnitInputType {
+  name: String!
+}
+
+""""""
+union StockUnitResponse = StockUnitType | OperationError
+
+type StockUnitType {
+  uid: String!
+  name: String!
+  createdAt: DateTime
+  createdByUid: String
+  createdBy: UserType
+  updatedAt: DateTime
+  updatedByUid: String
+  updatedBy: UserType
+}
+
+input StorageContainerInputType {
+  name: String!
+  description: String
+  storageSectionUid: String!
+  grid: Boolean = false
+  rowWise: Boolean = false
+  cols: Int = 0
+  rows: Int = 0
+  slots: Int = 0
+}
+
+""""""
+union StorageContainerResponse = StorageContainerType | OperationError
+
+type StorageContainerType {
+  uid: String!
+  name: String!
+  description: String
+  storageSectionUid: String!
+  storageSection: StorageSectionType
+  grid: Boolean
+  rowWise: Boolean
+  cols: Int
+  rows: Int
+  slots: Int
+  storedCount: Int
+  createdAt: DateTime
+  createdByUid: String
+  createdBy: UserType
+  updatedAt: DateTime
+  updatedByUid: String
+  updatedBy: UserType
+  tag: String!
+}
+
+input StorageLocationInputType {
+  name: String!
+  description: String
+  storeRoomUid: String!
+}
+
+""""""
+union StorageLocationResponse = StorageLocationType | OperationError
+
+type StorageLocationType {
+  uid: String!
+  name: String!
+  description: String
+  storeRoomUid: String!
+  storeRoom: StoreRoomType
+  createdAt: DateTime
+  createdByUid: String
+  createdBy: UserType
+  updatedAt: DateTime
+  updatedByUid: String
+  updatedBy: UserType
+  tag: String!
+  children: [StorageSectionType]!
+}
+
+input StorageSectionInputType {
+  name: String!
+  description: String
+  storageLocationUid: String!
+}
+
+""""""
+union StorageSectionResponse = StorageSectionType | OperationError
+
+type StorageSectionType {
+  uid: String!
+  name: String!
+  description: String
+  storageLocationUid: String!
+  storageLocation: StorageLocationType
+  createdAt: DateTime
+  createdByUid: String
+  createdBy: UserType
+  updatedAt: DateTime
+  updatedByUid: String
+  updatedBy: UserType
+  tag: String!
+  children: [StorageContainerType]!
+}
+
+input StoreRoomInputType {
+  name: String!
+  description: String!
+}
+
+""""""
+union StoreRoomResponse = StoreRoomType | OperationError
+
+type StoreRoomType {
+  uid: String!
+  name: String!
+  description: String
+  createdAt: DateTime
+  createdByUid: String
+  createdBy: UserType
+  updatedAt: DateTime
+  updatedByUid: String
+  updatedBy: UserType
+  tag: String!
+  children: [StorageLocationType]!
+}
+
+""""""
+union StoreSampleResponse = StoredSamplesType | OperationError
+
+input StoreSamplesInputType {
+  sampleUid: String!
+  storageSlot: String!
+  storageSlotIndex: Int!
+  storageContainerUid: String!
+}
+
+type StoredSamplesType {
+  samples: [SampleType!]!
+}
+
+type Subscription {
+  latestActivity: ActivityStreamType!
+  streamAll: ActivityStreamType!
+}
+
+"""Union of possible outcomes when deleting some object"""
+union SuccessErrorResponse = OperationSuccess | OperationError
+
+input SupplierInputType {
+  name: String!
+  description: String = ""
+  code: String = null
+}
+
+""""""
+union SupplierResponse = SupplierType | OperationError
+
+type SupplierType {
+  uid: String!
+  name: String
+  description: String
+  createdByUid: String
+  createdBy: UserType
+  createdAt: DateTime
+  updatedByUid: String
+  updatedBy: UserType
+  updatedAt: DateTime
+}
+
+input UnitInputType {
+  name: String!
+  isSiUnit: Boolean!
+}
+
+""""""
+union UnitResponse = UnitType | OperationError
+
+type UnitType {
+  uid: String!
+  name: String!
+  isSiUnit: Boolean!
+  createdByUid: String
+  createdBy: UserType
+  createdAt: DateTime
+  updatedByUid: String
+  updatedBy: UserType
+  updatedAt: DateTime
+}
+
+type UnknownObjectType {
+  message: String!
+}
+
+type UpdatedGroupPerms {
+  group: GroupType!
+  permission: PermissionType!
+}
+
+""""""
+union UpdatedGroupPermsResponse = UpdatedGroupPerms | OperationError
+
+type UserAuthType {
+  uid: String!
+  userName: String!
+  loginRetry: Int!
+  isBlocked: Boolean!
+  userType: String
+  createdAt: DateTime
+  creatorName: String
+  creatorUid: String
+  updatedAt: DateTime
+  updatorName: String
+  updatorUid: String
+}
+
+type UserCursorPage {
+  pageInfo: PageInfo!
+  edges: [UserEdge!]
+  items: [UserType!]
+  totalCount: Int!
+}
+
+type UserEdge {
+  cursor: String!
+  node: UserType!
+}
+
+type UserPreferenceType {
+  uid: String!
+  expandedMenu: Boolean
+  departments: [DepartmentType!]
+  theme: String
+}
+
+""""""
+union UserResponse = UserType | OperationError
+
+type UserType {
+  uid: String!
+  firstName: String
+  lastName: String
+  email: String
+  mobilePhone: String
+  businessPhone: String
+  groups: [GroupType!]
+  preferenceUid: String
+  preference: UserPreferenceType
+  isActive: Boolean!
+  isSuperuser: Boolean!
+  authUid: String
+  auth: UserAuthType
+  bio: String
+  avatar: String
+  defaultRoute: String
+  createdAt: DateTime
+  creatorName: String
+  creatorUid: String
+  updatedAt: DateTime
+  updatorName: String
+  updatorUid: String
+}
+
+type WorkSheetCursorPage {
+  pageInfo: PageInfo!
+  edges: [WorkSheetEdge!]
+  items: [WorkSheetType!]
+  totalCount: Int!
+}
+
+type WorkSheetEdge {
+  cursor: String!
+  node: WorkSheetType!
+}
+
+""""""
+union WorkSheetResponse = WorkSheetType | OperationError
+
+""""""
+union WorkSheetTemplateResponse = WorkSheetTemplateType | OperationError
+
+type WorkSheetTemplateType {
+  uid: String!
+  worksheetType: String!
+  reserved: JSONScalar
+  numberOfSamples: Int
+  rows: Int
+  cols: Int
+  rowWise: Boolean!
+  state: String
+  name: String!
+  description: String
+  analysisUid: String
+  analysis: AnalysisType
+  qcTemplateUid: String
+  qcTemplate: QCTemplateType
+  qcLevels: [QCLevelType!]
+  instrumentUid: String
+  instrument: InstrumentType
+  sampleTypeUid: String
+  sampleType: SampleTypeTyp
+  createdByUid: String
+  createdBy: UserType
+  createdAt: DateTime
+  updatedByUid: String
+  updatedBy: UserType
+  updatedAt: DateTime
+}
+
+type WorkSheetType {
+  uid: String!
+  worksheetType: String!
+  reserved: JSONScalar
+  numberOfSamples: Int
+  rows: Int
+  cols: Int
+  rowWise: Boolean!
+  state: String
+  templateUid: String
+  template: WorkSheetTemplateType
+  analystUid: String
+  analyst: UserType
+  worksheetId: String!
+  analysisUid: String
+  analysis: AnalysisType
+  instrumentUid: String
+  instrument: InstrumentType
+  sampleTypeUid: String
+  sampleType: SampleTypeTyp
+  assignedCount: Int!
+  analysisResults: [AnalysisResultType!]
+  submittedByUid: String
+  submittedBy: UserType
+  dateSubmitted: DateTime
+  verifiedByUid: String
+  verifiedBy: UserType
+  dateVerified: DateTime
+  createdByUid: String
+  createdBy: UserType
+  createdAt: DateTime
+  updatedByUid: String
+  updatedBy: UserType
+  updatedAt: DateTime
+}
+
+union WorkSheetTypeSampleTypeAnalysisResultTypeReportMetaTypeUnknownObjectType = WorkSheetType | SampleType | AnalysisResultType | ReportMetaType | UnknownObjectType
+
+""""""
+union WorkSheetsResponse = WorksheetListingType | OperationError
+
+type WorksheetListingType {
+  worksheets: [WorkSheetType!]
+}
+
+input WorksheetTemplateInputType {
+  name: String!
+  sampleTypeUid: String!
+  reserved: [ReservedInputType!]!
+  analysisUid: String = null
+  numberOfSamples: Int = null
+  instrumentUid: String = null
+  worksheetType: String = null
+  rows: Int = null
+  cols: Int = null
+  rowWise: Boolean = true
+  description: String = null
+  qcTemplateUid: String = null
+  profiles: [String!] = null
+}

@@ -2,7 +2,7 @@ import json
 import logging
 from typing import List
 
-from api.gql.schema import gql_schema  # noqa
+from api.gql.schema import schema  # noqa
 from api.rest.api_v1.api import api_router  # noqa
 from apps.common.channel import broadcast
 from apps.job.sched import felicity_workforce_init
@@ -86,7 +86,7 @@ def register_app_middlewares(app: FastAPI):
 
 def register_app_publics(app: FastAPI):
     graphql_app = GraphQLRouter(
-        gql_schema,
+        schema,
         subscription_protocols=[GRAPHQL_WS_PROTOCOL,
                                 GRAPHQL_TRANSPORT_WS_PROTOCOL],
         context_getter=get_context,

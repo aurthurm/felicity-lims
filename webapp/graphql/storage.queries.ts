@@ -76,7 +76,7 @@ export const GET_ALL_STORAGE_CONTAINERS = gql`
             description
             storageSectionUid
             grid
-            row_wise
+            rowWise
             cols
             rows
             slots
@@ -103,7 +103,7 @@ export const GET_STORAGE_CONTAINER_BY_UID = gql`
 
 // tree
 export const GET_STORAGE_TREE = gql`
-    query {
+    query getStoreRoomsTree {
         storeRoomAll {
             uid
             name

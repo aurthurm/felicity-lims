@@ -2,7 +2,7 @@ from typing import List
 
 import sqlalchemy as sa
 import strawberry  # noqa
-from api.gql import PageInfo
+from api.gql.types import PageInfo
 from api.gql.permissions import IsAuthenticated
 from api.gql.setup.types.department import DepartmentType
 from api.gql.setup.types import (
