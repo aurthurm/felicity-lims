@@ -1,7 +1,7 @@
 from datetime import datetime
 
 import strawberry  # noqa
-from api.gql import PageInfo
+from api.gql.types import PageInfo
 from api.gql.analysis.types.analysis import (
     SampleType,
 )

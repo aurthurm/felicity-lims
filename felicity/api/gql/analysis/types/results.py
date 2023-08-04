@@ -2,7 +2,7 @@ from datetime import datetime
 from typing import Optional
 
 import strawberry  # noqa
-from api.gql import PageInfo
+from api.gql.types import PageInfo
 from api.gql.analysis.types.analysis import AnalysisType, QCSetType, SampleType
 from api.gql.instrument.types import InstrumentType, MethodType
 from api.gql.user.types import UserType
@@ -93,7 +93,8 @@ class AnalysisResultCursorPage:
 
 @strawberry.type
 class QCSetWithSamples(QCSetType):
-    samples: list[SampleEdge] | None
+    # samples: list[SampleEdge] | None
+    samples: list[SamplesWithResults] | None
 
 
 @strawberry.type

@@ -155,7 +155,7 @@ export const EDIT_REFLEX_BRAIN = gql`
                 addNew {
                     analysisUid
                     analysis {
-                        analysisUid
+                        uid
                         name
                     }
                     count

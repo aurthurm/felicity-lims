@@ -2,7 +2,7 @@ from datetime import datetime
 from typing import List, Optional
 
 import strawberry  # noqa
-from api.gql import PageInfo
+from api.gql.types import PageInfo
 from api.gql.setup.types import DistrictType, ProvinceType
 from api.gql.user.types import UserAuthType, UserType
 

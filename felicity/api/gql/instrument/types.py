@@ -3,7 +3,7 @@ from datetime import datetime
 from typing import List, Optional
 
 import strawberry  # noqa
-from api.gql import PageInfo
+from api.gql.types import PageInfo
 from api.gql.user.types import UserType
 from api.gql.setup.types import ManufacturerType, SupplierType
 

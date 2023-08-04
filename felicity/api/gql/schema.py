@@ -30,6 +30,32 @@ from api.gql.instrument.mutations import InstrumentMutations
 from api.gql.instrument.query import InstrumentQuery
 from api.gql.shipment.mutations import ShipmentMutations
 from api.gql.shipment.query import ShipmentQuery
+from api.gql.analysis.types import analysis_types
+from api.gql.analytics import analytics_types
+from api.gql.audit import audit_types
+from api.gql.client import client_types
+from api.gql.impress import impress_types
+from api.gql.instrument import instrument_types
+from api.gql.inventory import inventory_types
+from api.gql.messaging import messaging_types
+from api.gql.noticeboard import noticeboard_types
+from api.gql.notification import notification_types
+from api.gql.patient import patient_types
+from api.gql.reflex import reflex_types
+from api.gql.setup.types import setup_types
+from api.gql.shipment import shipment_types
+from api.gql.storage import storage_types
+from api.gql.user import user_types
+from api.gql.worksheet import worksheet_types
+from api.gql.types import generic_types
+
+types = generic_types + analysis_types + analytics_types + audit_types +\
+    client_types + impress_types + instrument_types +\
+    inventory_types + messaging_types + noticeboard_types +\
+    notification_types + patient_types + reflex_types +\
+    setup_types + shipment_types + storage_types +\
+    user_types + worksheet_types
+
 
 
 @strawberry.type
@@ -79,6 +105,6 @@ class Subscription(StreamSubscription):
     pass
 
 
-gql_schema = strawberry.Schema(
-    query=Query, mutation=Mutation, subscription=Subscription
+schema = strawberry.Schema(
+    query=Query, mutation=Mutation, subscription=Subscription, types=types
 )

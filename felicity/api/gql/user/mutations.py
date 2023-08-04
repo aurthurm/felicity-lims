@@ -4,10 +4,12 @@ from datetime import timedelta
 from typing import Optional
 
 import strawberry  # noqa
-from api.gql import (
+from api.gql.types import (
     MessageResponse,
     MessagesType,
-    OperationError,
+    OperationError
+)
+from api.gql.auth import (
     auth_from_info,
     verify_user_auth,
 )

@@ -3,7 +3,8 @@ from typing import List, Optional
 
 import strawberry  # noqa
 from sqlalchemy import or_
-from api.gql import OperationError, auth_from_info, verify_user_auth
+from api.gql.types import OperationError
+from api.gql.auth import auth_from_info, verify_user_auth
 from api.gql.permissions import IsAuthenticated
 from api.gql.shipment.types import ShipmentType
 from apps.common.models import IdSequence

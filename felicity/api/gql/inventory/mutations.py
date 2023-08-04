@@ -3,7 +3,8 @@ from datetime import datetime, timedelta
 from typing import Dict, List, Optional
 
 import strawberry  # noqa
-from api.gql import OperationError, auth_from_info, verify_user_auth
+from api.gql.types import OperationError
+from api.gql.auth import auth_from_info, verify_user_auth
 from api.gql.permissions import IsAuthenticated
 from api.gql.inventory import types
 from apps.inventory import models, schemas

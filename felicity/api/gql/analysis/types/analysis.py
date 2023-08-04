@@ -2,7 +2,7 @@ from datetime import datetime
 from typing import List, Optional
 
 import strawberry  # noqa
-from api.gql import PageInfo
+from api.gql.types.generic import PageInfo
 from api.gql.client.types import ClientType
 from api.gql.patient.types import PatientType
 from api.gql.instrument.types import InstrumentType, MethodType
@@ -282,7 +282,7 @@ class SampleType:  # for Sample
     profiles: Optional[List[ProfileType]]
     analyses: Optional[List[AnalysisType]]
     priority: int
-    status: str
+    status: str | None
     assigned: bool
     date_collected: datetime | None
     submitted_by_uid: str | None

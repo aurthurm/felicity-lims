@@ -2,13 +2,8 @@ import logging
 from typing import List, Optional
 
 import strawberry  # noqa
-from api.gql import (
-    DeletedItem,
-    DeleteResponse,
-    OperationError,
-    auth_from_info,
-    verify_user_auth,
-)
+from api.gql.types import  DeletedItem, DeleteResponse, OperationError
+from api.gql.auth import auth_from_info, verify_user_auth
 from api.gql.permissions import IsAuthenticated
 from api.gql.noticeboard.types import NoticeType
 from apps.noticeboard import models, schemas
