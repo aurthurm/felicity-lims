@@ -3,7 +3,7 @@
   import { storeToRefs } from 'pinia'
   import { useSampleStore, useAnalysisStore, useSetupStore } from '../../stores';
   import { IAnalysisProfile, IAnalysisService, IQCRequest, ISample } from '../../models/analysis';
-  import { ADD_QC_REQUEST } from '../../graphql/analyses.mutations';
+  import { ADD_QC_REQUEST } from '../../graphql/operations/analyses.mutations';
   import { useApiUtil } from '../../composables'
   import * as shield from '../../guards'
   const LoadingMessage = defineAsyncComponent(

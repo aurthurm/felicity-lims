@@ -1,7 +1,7 @@
 <script setup lang="ts">
   import { ref, reactive, computed, defineAsyncComponent } from 'vue';
   import { IAnalysisService } from '../../../../models/analysis';
-  import { ADD_ANALYSIS_MAPPING, ADD_ANALYSIS_SERVICE, EDIT_ANALYSIS_MAPPING, EDIT_ANALYSIS_SERVICE  } from '../../../../graphql/analyses.mutations';
+  import { ADD_ANALYSIS_MAPPING, ADD_ANALYSIS_SERVICE, EDIT_ANALYSIS_MAPPING, EDIT_ANALYSIS_SERVICE  } from '../../../../graphql/operations/analyses.mutations';
   import { useSetupStore, useAnalysisStore, useSampleStore } from '../../../../stores';
   import { useApiUtil } from '../../../../composables';
   const VueMultiselect = defineAsyncComponent(

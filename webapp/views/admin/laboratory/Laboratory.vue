@@ -4,7 +4,7 @@ import { ILaboratory, ILaboratorySetting } from "../../../models/setup";
 import {
   UPDATE_LABORATOTY,
   UPDATE_LABORATOTY_SETTING,
-} from "../../../graphql/_mutations";
+} from "../../../graphql/operations/_mutations";
 import { useUserStore, useSetupStore } from "../../../stores";
 import { useApiUtil } from "../../../composables";
 
@@ -201,3 +201,4 @@ const users = computed(() => userStore.getUsers);
     </section>
   </div>
 </template>
+../../../graphql/operations/_mutations../../../graphql/_mutations

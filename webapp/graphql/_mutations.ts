@@ -1,25 +1,6 @@
 import gql from 'graphql-tag';
 
-const GroupTypeFields = gql`
-    fragment GroupTypeFields on GroupType {
-        uid
-        name
-        keyword
-        pages
-    }
-`;
-
-const PermissionTypeFields = gql`
-    fragment PermissionTypeFields on PermissionType {
-        uid
-        action
-        target
-    }
-`;
-
 export const AUTHENTICATE_USER = gql`
-    ${PermissionTypeFields}
-    ${GroupTypeFields}
     mutation AuthenticateUser($username: String!, $password: String!) {
         authenticateUser(password: $password, username: $username) {
             ... on AuthenticatedData {
@@ -32,9 +13,14 @@ export const AUTHENTICATE_USER = gql`
                     lastName
                     groups {
                         permissions {
-                            ...PermissionTypeFields
+                            uid
+                            action
+                            target
                         }
-                        ...GroupTypeFields
+                        uid
+                        name
+                        keyword
+                        pages
                     }
                     preferenceUid
                     preference {
@@ -57,8 +43,6 @@ export const AUTHENTICATE_USER = gql`
 `;
 
 export const ADD_USER = gql`
-    ${PermissionTypeFields}
-    ${GroupTypeFields}
     mutation addUser($firstName: String!, $lastName: String!, $email: String!, $groupUid: String) {
         createUser(firstName: $firstName, lastName: $lastName, email: $email, groupUid: $groupUid) {
             ... on UserType {
@@ -77,9 +61,14 @@ export const ADD_USER = gql`
                 }
                 groups {
                     permissions {
-                        ...PermissionTypeFields
+                        uid
+                        action
+                        target
                     }
-                    ...GroupTypeFields
+                    uid
+                    name
+                    keyword
+                    pages
                 }
             }
             ... on OperationError {
@@ -92,8 +81,6 @@ export const ADD_USER = gql`
 `;
 
 export const EDIT_USER = gql`
-    ${PermissionTypeFields}
-    ${GroupTypeFields}
     mutation editUser(
         $userUid: String!
         $firstName: String!
@@ -128,9 +115,14 @@ export const EDIT_USER = gql`
                 }
                 groups {
                     permissions {
-                        ...PermissionTypeFields
+                        uid
+                        action
+                        target
                     }
-                    ...GroupTypeFields
+                    uid
+                    name
+                    keyword
+                    pages
                 }
             }
             ... on OperationError {
@@ -143,8 +135,6 @@ export const EDIT_USER = gql`
 `;
 
 export const ADD_USER_AUTH = gql`
-    ${PermissionTypeFields}
-    ${GroupTypeFields}
     mutation addUserAuth($userUid: String!, $userName: String!, $password: String!, $passwordc: String!) {
         createUserAuth(userUid: $userUid, userName: $userName, password: $password, passwordc: $passwordc) {
             ... on UserType {
@@ -163,9 +153,14 @@ export const ADD_USER_AUTH = gql`
                 }
                 groups {
                     permissions {
-                        ...PermissionTypeFields
+                        uid
+                        action
+                        target
                     }
-                    ...GroupTypeFields
+                    uid
+                    name
+                    keyword
+                    pages
                 }
             }
             ... on OperationError {
@@ -178,8 +173,6 @@ export const ADD_USER_AUTH = gql`
 `;
 
 export const EDIT_USER_AUTH = gql`
-    ${PermissionTypeFields}
-    ${GroupTypeFields}
     mutation editUserAuth($userUid: String!, $userName: String!, $password: String!, $passwordc: String!) {
         updateUserAuth(userUid: $userUid, userName: $userName, password: $password, passwordc: $passwordc) {
             ... on UserType {
@@ -198,9 +191,14 @@ export const EDIT_USER_AUTH = gql`
                 }
                 groups {
                     permissions {
-                        ...PermissionTypeFields
+                        uid
+                        action
+                        target
                     }
-                    ...GroupTypeFields
+                    uid
+                    name
+                    keyword
+                    pages
                 }
             }
             ... on OperationError {

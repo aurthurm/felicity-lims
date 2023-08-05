@@ -2,7 +2,7 @@
   import { ref,reactive, computed, defineAsyncComponent } from 'vue';
   import { useUserStore } from '../../../stores';
   import { useApiUtil } from '../../../composables';
-  import { UPDATE_GROUP_PERMS, ADD_GROUP, UPDATE_GROUP } from '../../../graphql/_mutations';
+  import { UPDATE_GROUP_PERMS, ADD_GROUP, UPDATE_GROUP } from '../../../graphql/operations/_mutations';
   import { IGroup, IPermission } from '../../../models/auth';
   import * as shield from '../../../guards'
 
@@ -303,3 +303,4 @@ const accordion = defineAsyncComponent(
   </modal>
 
 </template>
+../../../graphql/operations/_mutations../../../graphql/_mutations

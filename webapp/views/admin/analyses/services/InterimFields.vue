@@ -1,6 +1,6 @@
 <script setup lang="ts">
   import { computed, ref, reactive, toRefs, watch, defineAsyncComponent } from 'vue';
-  import { ADD_ANALYSIS_INTERIM, EDIT_ANALYSIS_INTERIM  } from '../../../../graphql/analyses.mutations';
+  import { ADD_ANALYSIS_INTERIM, EDIT_ANALYSIS_INTERIM  } from '../../../../graphql/operations/analyses.mutations';
   import { IAnalysisInterim } from '../../../../models/analysis';
   import { IInstrument } from '../../../../models/setup';
   import { useSetupStore, useAnalysisStore } from '../../../../stores';

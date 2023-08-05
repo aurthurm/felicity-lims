@@ -3,7 +3,7 @@
   import { useSetupStore } from '../../../stores';
   import { useApiUtil } from '../../../composables';
   import { ISupplier } from '../../../models/setup'
-  import { ADD_SUPPLIER, EDIT_SUPPLIER } from '../../../graphql/instrument.mutations';
+  import { ADD_SUPPLIER, EDIT_SUPPLIER } from '../../../graphql/operations/instrument.mutations';
   const modal = defineAsyncComponent(
     () => import('../../../components/SimpleModal.vue')
   )

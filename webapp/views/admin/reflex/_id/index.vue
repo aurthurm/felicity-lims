@@ -15,7 +15,7 @@ import {
   EDIT_REFLEX_ACTION,
   ADD_REFLEX_BRAIN,
   EDIT_REFLEX_BRAIN,
-} from "../../../../graphql/reflex.mutations";
+} from "../../../../graphql/operations/reflex.mutations";
 import { stringifyNumber } from "../../../../utils/helpers";
 import { IAnalysisService, IResultOption } from "../../../../models/analysis";
 const modal = defineAsyncComponent(

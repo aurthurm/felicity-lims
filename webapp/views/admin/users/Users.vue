@@ -5,7 +5,7 @@ import {
   EDIT_USER,
   ADD_USER_AUTH,
   EDIT_USER_AUTH,
-} from "../../../graphql/_mutations";
+} from "../../../graphql/operations/_mutations";
 import { IUser, IUserAuth } from "../../../models/auth";
 import { useUserStore, useSetupStore } from "../../../stores";
 import { useApiUtil } from "../../../composables";
@@ -403,3 +403,4 @@ function saveUserAuthForm(): void {
     </template>
   </modal>
 </template>
+../../../graphql/operations/_mutations../../../graphql/_mutations

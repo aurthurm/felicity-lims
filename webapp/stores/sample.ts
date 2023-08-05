@@ -10,10 +10,12 @@ import {
     GET_ALL_QC_SETS,
     GET_QC_SET_BY_UID,
     GET_SAMPLE_BY_UID,
-    GET_SAMPLE_STATUS_BY_UID,
     GET_SAMPLE_BY_PARENT_ID,
     GET_SAMPLE_TYPE_MAPPINGS_BY_SAMPLE_TYPE,
 } from '../graphql/analyses.queries';
+import {
+    useGetAllSampleTypesQuery
+} from '../graphql/graphql'
 import { IAnalysisRequest, ISampleType, ISample, IAnalysisResult, IQCSet } from '../models/analysis';
 import { IPageInfo, IPaginationMeta } from '../models/pagination';
 
@@ -205,7 +207,7 @@ export const useSampleStore = defineStore('sample', {
                 return;
             }
             this.fetchingSamplesStatuses = true;
-            await withClientQuery(GET_SAMPLE_STATUS_BY_UID, { uid }, 'sampleByUid', 'network-only')
+            await withClientQuery(GET_SAMPLE_BY_UID, { uid }, 'sampleByUid', 'network-only')
                 .then(payload => {
                     this.fetchingSamplesStatuses = false;
                     if (this.sample && payload.status) {

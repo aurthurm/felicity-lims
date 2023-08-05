@@ -1,6 +1,6 @@
 <script setup lang="ts">
   import { computed, ref, reactive, toRefs, watch, defineAsyncComponent } from 'vue';
-  import { ADD_ANALYSIS_SPECIFICATION, EDIT_ANALYSIS_SPECIFICATION  } from '../../../../graphql/analyses.mutations';
+  import { ADD_ANALYSIS_SPECIFICATION, EDIT_ANALYSIS_SPECIFICATION  } from '../../../../graphql/operations/analyses.mutations';
   import { IAnalysisSpecification } from '../../../../models/analysis';
   import { IMethod } from '../../../../models/setup';
   import { useSetupStore, useAnalysisStore } from '../../../../stores';

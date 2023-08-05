@@ -6,7 +6,7 @@ import { useRoute } from "vue-router";
 import { RouterLink } from "vue-router";
 import { useShipmentStore } from "../../stores";
 import { useApiUtil } from "../../composables";
-import { ADD_SHIPMENT } from "../../graphql/shipment.mutations";
+import { ADD_SHIPMENT } from "../../graphql/operations/shipment.mutations";
 import { useField, useForm } from "vee-validate";
 import { object, string, number } from "yup";
 

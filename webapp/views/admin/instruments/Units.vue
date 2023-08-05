@@ -1,7 +1,7 @@
 <script setup lang="ts">
   import { ref, reactive, computed, defineAsyncComponent } from 'vue';
   import { IUnit } from '../../../models/setup'
-  import { ADD_UNIT, EDIT_UNIT } from '../../../graphql/instrument.mutations';
+  import { ADD_UNIT, EDIT_UNIT } from '../../../graphql/operations/instrument.mutations';
   import { useSetupStore } from '../../../stores';
   import { useApiUtil } from '../../../composables';
   const modal = defineAsyncComponent(

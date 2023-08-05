@@ -1,7 +1,7 @@
 <script setup lang="ts">
   import { ref, reactive, computed, defineAsyncComponent } from 'vue';
   import { IQCLevel } from '../../../models/analysis';
-  import { ADD_QC_LEVEL, EDIT_QC_LEVEL  } from '../../../graphql/analyses.mutations';
+  import { ADD_QC_LEVEL, EDIT_QC_LEVEL  } from '../../../graphql/operations/analyses.mutations';
 
   import { useAnalysisStore } from '../../../stores';
   import { useApiUtil } from '../../../composables';

@@ -4,7 +4,7 @@ import { ref, reactive, computed, defineAsyncComponent } from "vue";
 import {
   ADD_WORKSHEET_TEMPLATE,
   EDIT_WORKSHEET_TEMPLATE,
-} from "../../../graphql/worksheet.mutations";
+} from "../../../graphql/operations/worksheet.mutations";
 import {
   useWorksheetStore,
   useAnalysisStore,
