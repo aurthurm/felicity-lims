@@ -1,7 +1,7 @@
 <script setup lang="ts">
   import { reactive, computed, defineAsyncComponent } from 'vue';
   import { IRejectionReason } from '../../../models/analysis';
-  import { ADD_REJECTION_REASON, EDIT_REJECTION_REASON } from '../../../graphql/analyses.mutations';
+  import { ADD_REJECTION_REASON, EDIT_REJECTION_REASON } from '../../../graphql/operations/analyses.mutations';
 
   import { useAnalysisStore } from '../../../stores';
   import { useApiUtil } from '../../../composables';

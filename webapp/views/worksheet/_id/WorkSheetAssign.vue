@@ -6,7 +6,7 @@ import { useApiUtil } from "../../../composables";
 import {
   EDIT_WORKSHEET_APPLY_TEMPLATE,
   WORKSHEET_MANUAL_ASSIGN,
-} from "../../../graphql/worksheet.mutations";
+} from "../../../graphql/operations/worksheet.mutations";
 
 import * as shield from "../../../guards";
 import { IAnalysisResult } from "../../../models/analysis";

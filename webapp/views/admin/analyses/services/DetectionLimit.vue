@@ -1,6 +1,6 @@
 <script setup lang="ts">
   import { computed, ref, reactive, toRefs, watch, defineAsyncComponent } from 'vue';
-  import { ADD_ANALYSIS_DETECTION_LIMIT, EDIT_ANALYSIS_DETECTION_LIMIT  } from '../../../../graphql/analyses.mutations';
+  import { ADD_ANALYSIS_DETECTION_LIMIT, EDIT_ANALYSIS_DETECTION_LIMIT  } from '../../../../graphql/operations/analyses.mutations';
   import { IAnalysisDetectionLimit } from '../../../../models/analysis';
   import { IInstrument, IMethod } from '../../../../models/setup';
   import { useSetupStore, useAnalysisStore } from '../../../../stores';

@@ -5,7 +5,7 @@ import { RouterLink } from "vue-router";
 import { storeToRefs } from "pinia";
 import modal from "../../components/SimpleModal.vue";
 import { IClient } from "../../models/client";
-import { ADD_CLIENT, EDIT_CLIENT } from "../../graphql/clients.mutations";
+import { ADD_CLIENT, EDIT_CLIENT } from "../../graphql/operations/clients.mutations";
 
 import { useClientStore, useLocationStore } from "../../stores";
 import { IDistrict, IProvince } from "../../models/location";

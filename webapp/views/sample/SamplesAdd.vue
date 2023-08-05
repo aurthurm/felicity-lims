@@ -15,7 +15,7 @@ import {
   ISample,
   ISampleType,
 } from "../../models/analysis";
-import { ADD_ANALYSIS_REQUEST } from "../../graphql/analyses.mutations";
+import { ADD_ANALYSIS_REQUEST } from "../../graphql/operations/analyses.mutations";
 import { ifNoValEmpty } from "../../utils/helpers";
 
 import { useField, useForm } from "vee-validate";

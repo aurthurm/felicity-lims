@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { storeToRefs } from "pinia";
-import { DELETE_NOTICE } from "../../graphql/notice.mutations";
+import { DELETE_NOTICE } from "../../graphql/operations/notice.mutations";
 import { onMounted, reactive, computed, defineAsyncComponent } from "vue";
 import { INotice } from "../../models/notice";
 import { useNoticeStore, useSetupStore, useAuthStore } from "../../stores";

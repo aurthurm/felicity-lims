@@ -3,7 +3,7 @@ import VueMultiselect from "vue-multiselect";
 import { useField, useForm } from "vee-validate";
 import { object, string, number, date } from "yup";
 import { IStockItem, IStockProduct } from '../../models/inventory';
-import { ADD_STOCK_PRODUCT, EDIT_STOCK_PRODUCT } from '../../graphql/inventory.mutations';
+import { ADD_STOCK_PRODUCT, EDIT_STOCK_PRODUCT } from '../../graphql/operations/inventory.mutations';
 import { useApiUtil } from "../../composables";
 import { useInventoryStore, useStorageStore, useSetupStore, useUserStore } from "../../stores";
 import { defineAsyncComponent, PropType, ref } from "vue";

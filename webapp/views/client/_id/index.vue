@@ -4,7 +4,7 @@ import modal from '../../../components/SimpleModal.vue';
 import { useRoute } from 'vue-router';
 import { storeToRefs } from 'pinia'
 import { ref } from 'vue';
-import { ADD_CLIENT, EDIT_CLIENT } from '../../../graphql/clients.mutations';
+import { ADD_CLIENT, EDIT_CLIENT } from '../../../graphql/operations/clients.mutations';
 import { useLocationStore, useClientStore } from '../../../stores';
 import { IClient } from '../../../models/client';
 import { useApiUtil } from '../../../composables'

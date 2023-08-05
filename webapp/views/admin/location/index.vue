@@ -9,7 +9,7 @@ import {
   ADD_COUNTRY, UPDATE_COUNTRY,
   ADD_PROVINCE, ADD_DISTRICT,
   UPDATE_DISTRICT, UPDATE_PROVINCE
-} from '../../../graphql/admin.mutations';
+} from '../../../graphql/operations/admin.mutations';
 
 import { useLocationStore } from '../../../stores';
 import { useApiUtil } from '../../../composables';

@@ -1,6 +1,6 @@
 <script setup lang="ts">
   import { ref, reactive, toRefs, watch, defineAsyncComponent } from 'vue';
-  import { ADD_RESULT_OPTION, EDIT_RESULT_OPTION  } from '../../../../graphql/analyses.mutations';
+  import { ADD_RESULT_OPTION, EDIT_RESULT_OPTION  } from '../../../../graphql/operations/analyses.mutations';
   import { IResultOption } from '../../../../models/analysis';
   import { useAnalysisStore } from '../../../../stores';
   import { useApiUtil } from '../../../../composables';

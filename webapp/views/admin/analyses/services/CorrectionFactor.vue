@@ -1,6 +1,6 @@
 <script setup lang="ts">
   import { computed, ref, reactive, toRefs, watch, defineAsyncComponent } from 'vue';
-  import { ADD_ANALYSIS_CORRECTION_FACTOR, EDIT_ANALYSIS_CORRECTION_FACTOR  } from '../../../../graphql/analyses.mutations';
+  import { ADD_ANALYSIS_CORRECTION_FACTOR, EDIT_ANALYSIS_CORRECTION_FACTOR  } from '../../../../graphql/operations/analyses.mutations';
   import { IAnalysisCorrectionFactor } from '../../../../models/analysis';
   import { IInstrument, IMethod } from '../../../../models/setup';
   import { useSetupStore, useAnalysisStore } from '../../../../stores';

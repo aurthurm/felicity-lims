@@ -5,7 +5,7 @@ import { useRoute } from "vue-router";
 import { RouterLink } from "vue-router";
 import { useWorksheetStore, useUserStore } from "../../stores";
 import { useApiUtil } from "../../composables";
-import { ADD_WORKSHEET } from "../../graphql/worksheet.mutations";
+import { ADD_WORKSHEET } from "../../graphql/operations/worksheet.mutations";
 import { IAnalysisService } from "../../models/analysis";
 import { useField, useForm } from "vee-validate";
 import { object, number } from "yup";

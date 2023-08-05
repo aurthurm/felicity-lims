@@ -4,7 +4,9 @@ import { useRouter } from 'vue-router';
 import { IUser } from '../models/auth';
 import { STORAGE_AUTH_KEY, USER_GROUP_OVERRIDE } from '../conf';
 import { AUTHENTICATE_USER } from '../graphql/_mutations';
+import { useAuthenticateUserMutation } from '../graphql/graphql';
 import { useNotifyToast, useApiUtil, userPreferenceComposable } from '../composables';
+import { userInfo } from 'os';
 
 const { withClientMutation } = useApiUtil();
 const { toastInfo } = useNotifyToast();
@@ -19,6 +21,7 @@ interface IAuth {
 }
 
 export const useAuthStore = defineStore('auth', () => {
+    const router = useRouter()
     const initialState: IAuth = {
         user: undefined,
         token: '',
@@ -76,19 +79,29 @@ export const useAuthStore = defineStore('auth', () => {
         auth.value.authenticating = false;
     };
 
-    const router = useRouter()
     const authenticate = async payload => {
         auth.value.authenticating = true;
+
+        // typescript-urql
+        // const [{ data, fetching, error }, authenticate]  = useAuthenticateUserMutation();
+        // authenticate({password: "", username: ""})
+        // auth.value.authenticating = fetching;
+
+        // typescript-vue-urql
+        useAuthenticateUserMutation().executeMutation({username: "", password: ""}, {requestPolicy: "network-only"}).then(res => {
+            console.log(res)
+        }).catch(err => {
+            console.log(err)
+        }).finally(() => (auth.value.authenticating = false));
+
+        const { operation } = useAuthenticateUserMutation({username: "", password: ""});
+        
         await withClientMutation(AUTHENTICATE_USER, payload, 'authenticateUser')
             .then(res => {
                 if(!res) {
                     auth.value.authenticating = false;
                     return
                 };
-                toastInfo('Welcome back ' + res?.user?.firstName);
-                initPreferences(res.user?.preference);
-                persistAuth(res);
-                router.push({ name: "DASHBOARD" });
             })
             .catch(err => (auth.value.authenticating = false));
     };

@@ -1,6 +1,6 @@
 <script setup lang="ts">
   import { ref, reactive, computed, defineAsyncComponent } from 'vue';
-  import { ADD_DEPARTMENT, UPDATE_DEPARTMENT } from '../../../graphql/_mutations';
+  import { ADD_DEPARTMENT, UPDATE_DEPARTMENT } from '../../../graphql/operations/_mutations';
   import { IDepartment } from '../../../models/setup';
 
   import { useSetupStore } from '../../../stores';
@@ -116,3 +116,4 @@
   </modal>
 
 </template>
+../../../graphql/operations/_mutations../../../graphql/_mutations

@@ -1,5 +1,5 @@
 import gql from 'graphql-tag';
-import * as Urql from 'urql';
+import * as Urql from '@urql/vue';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
@@ -4688,115 +4688,6 @@ export type WorksheetTemplateInputType = {
   worksheetType?: InputMaybe<Scalars['String']['input']>;
 };
 
-export type GroupTypeFieldsFragment = { __typename?: 'GroupType', uid: string, name?: string | null, keyword?: string | null, pages?: string | null };
-
-export type PermissionTypeFieldsFragment = { __typename?: 'PermissionType', uid: string, action?: string | null, target?: string | null };
-
-export type AuthenticateUserMutationVariables = Exact<{
-  username: Scalars['String']['input'];
-  password: Scalars['String']['input'];
-}>;
-
-
-export type AuthenticateUserMutation = { __typename?: 'Mutation', authenticateUser: { __typename: 'AuthenticatedData', token: string, tokenType: string, user: { __typename?: 'UserType', uid: string, firstName?: string | null, lastName?: string | null, preferenceUid?: string | null, groups?: Array<{ __typename?: 'GroupType', uid: string, name?: string | null, keyword?: string | null, pages?: string | null, permissions?: Array<{ __typename?: 'PermissionType', uid: string, action?: string | null, target?: string | null }> | null }> | null, preference?: { __typename?: 'UserPreferenceType', expandedMenu?: boolean | null, theme?: string | null, departments?: Array<{ __typename?: 'DepartmentType', uid: string, name?: string | null }> | null } | null } } | { __typename: 'OperationError', error: string, suggestion?: string | null } };
-
-export type AddUserMutationVariables = Exact<{
-  firstName: Scalars['String']['input'];
-  lastName: Scalars['String']['input'];
-  email: Scalars['String']['input'];
-  groupUid?: InputMaybe<Scalars['String']['input']>;
-}>;
-
-
-export type AddUserMutation = { __typename?: 'Mutation', createUser: { __typename: 'OperationError', error: string, suggestion?: string | null } | { __typename?: 'UserType', uid: string, firstName?: string | null, lastName?: string | null, email?: string | null, isActive: boolean, isSuperuser: boolean, mobilePhone?: string | null, auth?: { __typename?: 'UserAuthType', uid: string, userName: string, isBlocked: boolean, userType?: string | null } | null, groups?: Array<{ __typename?: 'GroupType', uid: string, name?: string | null, keyword?: string | null, pages?: string | null, permissions?: Array<{ __typename?: 'PermissionType', uid: string, action?: string | null, target?: string | null }> | null }> | null } };
-
-export type EditUserMutationVariables = Exact<{
-  userUid: Scalars['String']['input'];
-  firstName: Scalars['String']['input'];
-  lastName?: InputMaybe<Scalars['String']['input']>;
-  email?: InputMaybe<Scalars['String']['input']>;
-  groupUid?: InputMaybe<Scalars['String']['input']>;
-  mobilePhone?: InputMaybe<Scalars['String']['input']>;
-  isActive?: InputMaybe<Scalars['Boolean']['input']>;
-}>;
-
-
-export type EditUserMutation = { __typename?: 'Mutation', updateUser: { __typename: 'OperationError', error: string, suggestion?: string | null } | { __typename?: 'UserType', uid: string, firstName?: string | null, lastName?: string | null, email?: string | null, isActive: boolean, isSuperuser: boolean, mobilePhone?: string | null, auth?: { __typename?: 'UserAuthType', uid: string, userName: string, isBlocked: boolean, userType?: string | null } | null, groups?: Array<{ __typename?: 'GroupType', uid: string, name?: string | null, keyword?: string | null, pages?: string | null, permissions?: Array<{ __typename?: 'PermissionType', uid: string, action?: string | null, target?: string | null }> | null }> | null } };
-
-export type AddUserAuthMutationVariables = Exact<{
-  userUid: Scalars['String']['input'];
-  userName: Scalars['String']['input'];
-  password: Scalars['String']['input'];
-  passwordc: Scalars['String']['input'];
-}>;
-
-
-export type AddUserAuthMutation = { __typename?: 'Mutation', createUserAuth: { __typename: 'OperationError', error: string, suggestion?: string | null } | { __typename?: 'UserType', uid: string, firstName?: string | null, lastName?: string | null, email?: string | null, isActive: boolean, isSuperuser: boolean, mobilePhone?: string | null, auth?: { __typename?: 'UserAuthType', uid: string, userName: string, isBlocked: boolean, userType?: string | null } | null, groups?: Array<{ __typename?: 'GroupType', uid: string, name?: string | null, keyword?: string | null, pages?: string | null, permissions?: Array<{ __typename?: 'PermissionType', uid: string, action?: string | null, target?: string | null }> | null }> | null } };
-
-export type EditUserAuthMutationVariables = Exact<{
-  userUid: Scalars['String']['input'];
-  userName: Scalars['String']['input'];
-  password: Scalars['String']['input'];
-  passwordc: Scalars['String']['input'];
-}>;
-
-
-export type EditUserAuthMutation = { __typename?: 'Mutation', updateUserAuth: { __typename: 'OperationError', error: string, suggestion?: string | null } | { __typename?: 'UserType', uid: string, firstName?: string | null, lastName?: string | null, email?: string | null, isActive: boolean, isSuperuser: boolean, mobilePhone?: string | null, auth?: { __typename?: 'UserAuthType', uid: string, userName: string, isBlocked: boolean, userType?: string | null } | null, groups?: Array<{ __typename?: 'GroupType', uid: string, name?: string | null, keyword?: string | null, pages?: string | null, permissions?: Array<{ __typename?: 'PermissionType', uid: string, action?: string | null, target?: string | null }> | null }> | null } };
-
-export type AddGroupMutationVariables = Exact<{
-  payload: GroupInputType;
-}>;
-
-
-export type AddGroupMutation = { __typename?: 'Mutation', createGroup: { __typename: 'GroupType', uid: string, name?: string | null, pages?: string | null, active?: boolean | null, permissions?: Array<{ __typename?: 'PermissionType', uid: string, action?: string | null, target?: string | null, active?: boolean | null }> | null } | { __typename: 'OperationError', error: string, suggestion?: string | null } };
-
-export type EditGroupMutationVariables = Exact<{
-  uid: Scalars['String']['input'];
-  payload: GroupInputType;
-}>;
-
-
-export type EditGroupMutation = { __typename?: 'Mutation', updateGroup: { __typename: 'GroupType', uid: string, name?: string | null, pages?: string | null, active?: boolean | null, permissions?: Array<{ __typename?: 'PermissionType', uid: string, action?: string | null, target?: string | null, active?: boolean | null }> | null } | { __typename: 'OperationError', error: string, suggestion?: string | null } };
-
-export type UpdateGroupsAndPermissionsMutationVariables = Exact<{
-  groupUid: Scalars['String']['input'];
-  permissionUid: Scalars['String']['input'];
-}>;
-
-
-export type UpdateGroupsAndPermissionsMutation = { __typename?: 'Mutation', updateGroupPermissions: { __typename: 'OperationError', error: string, suggestion?: string | null } | { __typename?: 'UpdatedGroupPerms', group: { __typename?: 'GroupType', uid: string, name?: string | null, pages?: string | null, active?: boolean | null, permissions?: Array<{ __typename?: 'PermissionType', uid: string, action?: string | null, target?: string | null, active?: boolean | null }> | null }, permission: { __typename?: 'PermissionType', uid: string, action?: string | null, target?: string | null } } };
-
-export type AddDepartmentMutationVariables = Exact<{
-  payload: DepartmentInputType;
-}>;
-
-
-export type AddDepartmentMutation = { __typename?: 'Mutation', createDepartment: { __typename?: 'DepartmentType', uid: string, name?: string | null } | { __typename: 'OperationError', error: string, suggestion?: string | null } };
-
-export type EditDepartmentMutationVariables = Exact<{
-  uid: Scalars['String']['input'];
-  payload: DepartmentInputType;
-}>;
-
-
-export type EditDepartmentMutation = { __typename?: 'Mutation', updateDepartment: { __typename?: 'DepartmentType', uid: string, name?: string | null } | { __typename: 'OperationError', error: string, suggestion?: string | null } };
-
-export type EditLaboratoryMutationVariables = Exact<{
-  uid: Scalars['String']['input'];
-  payload: LaboratoryInputType;
-}>;
-
-
-export type EditLaboratoryMutation = { __typename?: 'Mutation', updateLaboratory: { __typename?: 'LaboratoryType', uid: string, setupName: string, labName: string, labManagerUid?: string | null, email?: string | null, emailCc?: string | null, mobilePhone?: string | null, businessPhone?: string | null, address?: string | null, logo?: string | null } | { __typename: 'OperationError', error: string, suggestion?: string | null } };
-
-export type EditLaboratorySettingMutationVariables = Exact<{
-  uid: Scalars['String']['input'];
-  payload: LaboratorySettingInputType;
-}>;
-
-
-export type EditLaboratorySettingMutation = { __typename?: 'Mutation', updateLaboratorySetting: { __typename?: 'LaboratorySettingType', uid: string, laboratoryUid: string, allowSelfVerification?: boolean | null, allowPatientRegistration?: boolean | null, allowSampleRegistration?: boolean | null, allowWorksheetCreation?: boolean | null, defaultRoute?: string | null, passwordLifetime?: number | null, inactivityLogOut?: number | null, defaultTheme?: string | null, autoReceiveSamples?: boolean | null, stickerCopies?: number | null } | { __typename: 'OperationError', error: string, suggestion?: string | null } };
-
 export type GetLaboratoryQueryVariables = Exact<{
   setupName?: Scalars['String']['input'];
 }>;
@@ -6322,6 +6213,111 @@ export type GetSystemActivitySubscriptionVariables = Exact<{ [key: string]: neve
 
 export type GetSystemActivitySubscription = { __typename?: 'Subscription', latestActivity: { __typename?: 'ActivityStreamType', uid: string, actorUid?: string | null, actionObjectUid?: string | null, actionObjectType?: string | null, targetUid?: string | null, verb?: string | null, actor?: { __typename?: 'UserType', uid: string, firstName?: string | null, lastName?: string | null } | null, actionObject: { __typename: 'AnalysisResultType', uid: string, sampleUid: string, result?: string | null, status?: string | null } | { __typename: 'ReportMetaType', uid: string, status?: string | null, location?: string | null } | { __typename: 'SampleType', uid: string, sampleId: string, status?: string | null, analysisRequest?: { __typename?: 'AnalysisRequestType', patientUid: string } | null } | { __typename: 'UnknownObjectType' } | { __typename: 'WorkSheetType', uid: string, worksheetId: string, state?: string | null } } };
 
+export type AuthenticateUserMutationVariables = Exact<{
+  username: Scalars['String']['input'];
+  password: Scalars['String']['input'];
+}>;
+
+
+export type AuthenticateUserMutation = { __typename?: 'Mutation', authenticateUser: { __typename: 'AuthenticatedData', token: string, tokenType: string, user: { __typename?: 'UserType', uid: string, firstName?: string | null, lastName?: string | null, preferenceUid?: string | null, groups?: Array<{ __typename?: 'GroupType', uid: string, name?: string | null, keyword?: string | null, pages?: string | null, permissions?: Array<{ __typename?: 'PermissionType', uid: string, action?: string | null, target?: string | null }> | null }> | null, preference?: { __typename?: 'UserPreferenceType', expandedMenu?: boolean | null, theme?: string | null, departments?: Array<{ __typename?: 'DepartmentType', uid: string, name?: string | null }> | null } | null } } | { __typename: 'OperationError', error: string, suggestion?: string | null } };
+
+export type AddUserMutationVariables = Exact<{
+  firstName: Scalars['String']['input'];
+  lastName: Scalars['String']['input'];
+  email: Scalars['String']['input'];
+  groupUid?: InputMaybe<Scalars['String']['input']>;
+}>;
+
+
+export type AddUserMutation = { __typename?: 'Mutation', createUser: { __typename: 'OperationError', error: string, suggestion?: string | null } | { __typename?: 'UserType', uid: string, firstName?: string | null, lastName?: string | null, email?: string | null, isActive: boolean, isSuperuser: boolean, mobilePhone?: string | null, auth?: { __typename?: 'UserAuthType', uid: string, userName: string, isBlocked: boolean, userType?: string | null } | null, groups?: Array<{ __typename?: 'GroupType', uid: string, name?: string | null, keyword?: string | null, pages?: string | null, permissions?: Array<{ __typename?: 'PermissionType', uid: string, action?: string | null, target?: string | null }> | null }> | null } };
+
+export type EditUserMutationVariables = Exact<{
+  userUid: Scalars['String']['input'];
+  firstName: Scalars['String']['input'];
+  lastName?: InputMaybe<Scalars['String']['input']>;
+  email?: InputMaybe<Scalars['String']['input']>;
+  groupUid?: InputMaybe<Scalars['String']['input']>;
+  mobilePhone?: InputMaybe<Scalars['String']['input']>;
+  isActive?: InputMaybe<Scalars['Boolean']['input']>;
+}>;
+
+
+export type EditUserMutation = { __typename?: 'Mutation', updateUser: { __typename: 'OperationError', error: string, suggestion?: string | null } | { __typename?: 'UserType', uid: string, firstName?: string | null, lastName?: string | null, email?: string | null, isActive: boolean, isSuperuser: boolean, mobilePhone?: string | null, auth?: { __typename?: 'UserAuthType', uid: string, userName: string, isBlocked: boolean, userType?: string | null } | null, groups?: Array<{ __typename?: 'GroupType', uid: string, name?: string | null, keyword?: string | null, pages?: string | null, permissions?: Array<{ __typename?: 'PermissionType', uid: string, action?: string | null, target?: string | null }> | null }> | null } };
+
+export type AddUserAuthMutationVariables = Exact<{
+  userUid: Scalars['String']['input'];
+  userName: Scalars['String']['input'];
+  password: Scalars['String']['input'];
+  passwordc: Scalars['String']['input'];
+}>;
+
+
+export type AddUserAuthMutation = { __typename?: 'Mutation', createUserAuth: { __typename: 'OperationError', error: string, suggestion?: string | null } | { __typename?: 'UserType', uid: string, firstName?: string | null, lastName?: string | null, email?: string | null, isActive: boolean, isSuperuser: boolean, mobilePhone?: string | null, auth?: { __typename?: 'UserAuthType', uid: string, userName: string, isBlocked: boolean, userType?: string | null } | null, groups?: Array<{ __typename?: 'GroupType', uid: string, name?: string | null, keyword?: string | null, pages?: string | null, permissions?: Array<{ __typename?: 'PermissionType', uid: string, action?: string | null, target?: string | null }> | null }> | null } };
+
+export type EditUserAuthMutationVariables = Exact<{
+  userUid: Scalars['String']['input'];
+  userName: Scalars['String']['input'];
+  password: Scalars['String']['input'];
+  passwordc: Scalars['String']['input'];
+}>;
+
+
+export type EditUserAuthMutation = { __typename?: 'Mutation', updateUserAuth: { __typename: 'OperationError', error: string, suggestion?: string | null } | { __typename?: 'UserType', uid: string, firstName?: string | null, lastName?: string | null, email?: string | null, isActive: boolean, isSuperuser: boolean, mobilePhone?: string | null, auth?: { __typename?: 'UserAuthType', uid: string, userName: string, isBlocked: boolean, userType?: string | null } | null, groups?: Array<{ __typename?: 'GroupType', uid: string, name?: string | null, keyword?: string | null, pages?: string | null, permissions?: Array<{ __typename?: 'PermissionType', uid: string, action?: string | null, target?: string | null }> | null }> | null } };
+
+export type AddGroupMutationVariables = Exact<{
+  payload: GroupInputType;
+}>;
+
+
+export type AddGroupMutation = { __typename?: 'Mutation', createGroup: { __typename: 'GroupType', uid: string, name?: string | null, pages?: string | null, active?: boolean | null, permissions?: Array<{ __typename?: 'PermissionType', uid: string, action?: string | null, target?: string | null, active?: boolean | null }> | null } | { __typename: 'OperationError', error: string, suggestion?: string | null } };
+
+export type EditGroupMutationVariables = Exact<{
+  uid: Scalars['String']['input'];
+  payload: GroupInputType;
+}>;
+
+
+export type EditGroupMutation = { __typename?: 'Mutation', updateGroup: { __typename: 'GroupType', uid: string, name?: string | null, pages?: string | null, active?: boolean | null, permissions?: Array<{ __typename?: 'PermissionType', uid: string, action?: string | null, target?: string | null, active?: boolean | null }> | null } | { __typename: 'OperationError', error: string, suggestion?: string | null } };
+
+export type UpdateGroupsAndPermissionsMutationVariables = Exact<{
+  groupUid: Scalars['String']['input'];
+  permissionUid: Scalars['String']['input'];
+}>;
+
+
+export type UpdateGroupsAndPermissionsMutation = { __typename?: 'Mutation', updateGroupPermissions: { __typename: 'OperationError', error: string, suggestion?: string | null } | { __typename?: 'UpdatedGroupPerms', group: { __typename?: 'GroupType', uid: string, name?: string | null, pages?: string | null, active?: boolean | null, permissions?: Array<{ __typename?: 'PermissionType', uid: string, action?: string | null, target?: string | null, active?: boolean | null }> | null }, permission: { __typename?: 'PermissionType', uid: string, action?: string | null, target?: string | null } } };
+
+export type AddDepartmentMutationVariables = Exact<{
+  payload: DepartmentInputType;
+}>;
+
+
+export type AddDepartmentMutation = { __typename?: 'Mutation', createDepartment: { __typename?: 'DepartmentType', uid: string, name?: string | null } | { __typename: 'OperationError', error: string, suggestion?: string | null } };
+
+export type EditDepartmentMutationVariables = Exact<{
+  uid: Scalars['String']['input'];
+  payload: DepartmentInputType;
+}>;
+
+
+export type EditDepartmentMutation = { __typename?: 'Mutation', updateDepartment: { __typename?: 'DepartmentType', uid: string, name?: string | null } | { __typename: 'OperationError', error: string, suggestion?: string | null } };
+
+export type EditLaboratoryMutationVariables = Exact<{
+  uid: Scalars['String']['input'];
+  payload: LaboratoryInputType;
+}>;
+
+
+export type EditLaboratoryMutation = { __typename?: 'Mutation', updateLaboratory: { __typename?: 'LaboratoryType', uid: string, setupName: string, labName: string, labManagerUid?: string | null, email?: string | null, emailCc?: string | null, mobilePhone?: string | null, businessPhone?: string | null, address?: string | null, logo?: string | null } | { __typename: 'OperationError', error: string, suggestion?: string | null } };
+
+export type EditLaboratorySettingMutationVariables = Exact<{
+  uid: Scalars['String']['input'];
+  payload: LaboratorySettingInputType;
+}>;
+
+
+export type EditLaboratorySettingMutation = { __typename?: 'Mutation', updateLaboratorySetting: { __typename?: 'LaboratorySettingType', uid: string, laboratoryUid: string, allowSelfVerification?: boolean | null, allowPatientRegistration?: boolean | null, allowSampleRegistration?: boolean | null, allowWorksheetCreation?: boolean | null, defaultRoute?: string | null, passwordLifetime?: number | null, inactivityLogOut?: number | null, defaultTheme?: string | null, autoReceiveSamples?: boolean | null, stickerCopies?: number | null } | { __typename: 'OperationError', error: string, suggestion?: string | null } };
+
 export type AddWorkSheetTemplateMutationVariables = Exact<{
   payload: WorksheetTemplateInputType;
 }>;
@@ -6399,417 +6395,7 @@ export type GetWorkSheetByUidQueryVariables = Exact<{
 
 export type GetWorkSheetByUidQuery = { __typename?: 'Query', worksheetByUid: { __typename?: 'WorkSheetType', uid: string, worksheetId: string, numberOfSamples?: number | null, assignedCount: number, reserved?: any | null, state?: string | null, createdAt?: any | null, analyst?: { __typename?: 'UserType', uid: string, firstName?: string | null, lastName?: string | null, auth?: { __typename?: 'UserAuthType', uid: string, userName: string } | null } | null, sampleType?: { __typename?: 'SampleTypeTyp', name: string } | null, instrument?: { __typename?: 'InstrumentType', uid: string, name?: string | null } | null, template?: { __typename?: 'WorkSheetTemplateType', uid: string, name: string } | null, analysis?: { __typename?: 'AnalysisType', uid: string, name: string } | null, analysisResults?: Array<{ __typename?: 'AnalysisResultType', uid: string, result?: string | null, status?: string | null, worksheetPosition?: number | null, retest: boolean, reportable: boolean, method?: { __typename?: 'MethodType', uid: string, name?: string | null } | null, instrument?: { __typename?: 'InstrumentType', uid: string, name?: string | null } | null, analysis?: { __typename?: 'AnalysisType', uid: string, name: string, unitUid?: string | null, unit?: { __typename?: 'UnitType', uid: string, name: string } | null, resultOptions?: Array<{ __typename?: 'ResultOptionType', uid: string, optionKey: number, value: string }> | null } | null, sample: { __typename?: 'SampleType', uid: string, sampleId: string, priority: number, analysisRequest?: { __typename?: 'AnalysisRequestType', uid: string, client: { __typename?: 'ClientType', uid: string, name: string }, patient: { __typename?: 'PatientType', uid: string, firstName?: string | null, lastName?: string | null, clientPatientId: string, patientId: string } } | null, qcLevel?: { __typename?: 'QCLevelType', uid: string, level: string } | null } }> | null } };
 
-export const GroupTypeFieldsFragmentDoc = gql`
-    fragment GroupTypeFields on GroupType {
-  uid
-  name
-  keyword
-  pages
-}
-    `;
-export const PermissionTypeFieldsFragmentDoc = gql`
-    fragment PermissionTypeFields on PermissionType {
-  uid
-  action
-  target
-}
-    `;
-export const AuthenticateUserDocument = gql`
-    mutation AuthenticateUser($username: String!, $password: String!) {
-  authenticateUser(password: $password, username: $username) {
-    ... on AuthenticatedData {
-      __typename
-      token
-      tokenType
-      user {
-        uid
-        firstName
-        lastName
-        groups {
-          permissions {
-            ...PermissionTypeFields
-          }
-          ...GroupTypeFields
-        }
-        preferenceUid
-        preference {
-          expandedMenu
-          theme
-          departments {
-            uid
-            name
-          }
-        }
-      }
-    }
-    ... on OperationError {
-      __typename
-      error
-      suggestion
-    }
-  }
-}
-    ${PermissionTypeFieldsFragmentDoc}
-${GroupTypeFieldsFragmentDoc}`;
 
-export function useAuthenticateUserMutation() {
-  return Urql.useMutation<AuthenticateUserMutation, AuthenticateUserMutationVariables>(AuthenticateUserDocument);
-};
-export const AddUserDocument = gql`
-    mutation addUser($firstName: String!, $lastName: String!, $email: String!, $groupUid: String) {
-  createUser(
-    firstName: $firstName
-    lastName: $lastName
-    email: $email
-    groupUid: $groupUid
-  ) {
-    ... on UserType {
-      uid
-      firstName
-      lastName
-      email
-      isActive
-      isSuperuser
-      mobilePhone
-      auth {
-        uid
-        userName
-        isBlocked
-        userType
-      }
-      groups {
-        permissions {
-          ...PermissionTypeFields
-        }
-        ...GroupTypeFields
-      }
-    }
-    ... on OperationError {
-      __typename
-      error
-      suggestion
-    }
-  }
-}
-    ${PermissionTypeFieldsFragmentDoc}
-${GroupTypeFieldsFragmentDoc}`;
-
-export function useAddUserMutation() {
-  return Urql.useMutation<AddUserMutation, AddUserMutationVariables>(AddUserDocument);
-};
-export const EditUserDocument = gql`
-    mutation editUser($userUid: String!, $firstName: String!, $lastName: String, $email: String, $groupUid: String, $mobilePhone: String, $isActive: Boolean) {
-  updateUser(
-    userUid: $userUid
-    firstName: $firstName
-    lastName: $lastName
-    email: $email
-    groupUid: $groupUid
-    mobilePhone: $mobilePhone
-    isActive: $isActive
-  ) {
-    ... on UserType {
-      uid
-      firstName
-      lastName
-      email
-      isActive
-      isSuperuser
-      mobilePhone
-      auth {
-        uid
-        userName
-        isBlocked
-        userType
-      }
-      groups {
-        permissions {
-          ...PermissionTypeFields
-        }
-        ...GroupTypeFields
-      }
-    }
-    ... on OperationError {
-      __typename
-      error
-      suggestion
-    }
-  }
-}
-    ${PermissionTypeFieldsFragmentDoc}
-${GroupTypeFieldsFragmentDoc}`;
-
-export function useEditUserMutation() {
-  return Urql.useMutation<EditUserMutation, EditUserMutationVariables>(EditUserDocument);
-};
-export const AddUserAuthDocument = gql`
-    mutation addUserAuth($userUid: String!, $userName: String!, $password: String!, $passwordc: String!) {
-  createUserAuth(
-    userUid: $userUid
-    userName: $userName
-    password: $password
-    passwordc: $passwordc
-  ) {
-    ... on UserType {
-      uid
-      firstName
-      lastName
-      email
-      isActive
-      isSuperuser
-      mobilePhone
-      auth {
-        uid
-        userName
-        isBlocked
-        userType
-      }
-      groups {
-        permissions {
-          ...PermissionTypeFields
-        }
-        ...GroupTypeFields
-      }
-    }
-    ... on OperationError {
-      __typename
-      error
-      suggestion
-    }
-  }
-}
-    ${PermissionTypeFieldsFragmentDoc}
-${GroupTypeFieldsFragmentDoc}`;
-
-export function useAddUserAuthMutation() {
-  return Urql.useMutation<AddUserAuthMutation, AddUserAuthMutationVariables>(AddUserAuthDocument);
-};
-export const EditUserAuthDocument = gql`
-    mutation editUserAuth($userUid: String!, $userName: String!, $password: String!, $passwordc: String!) {
-  updateUserAuth(
-    userUid: $userUid
-    userName: $userName
-    password: $password
-    passwordc: $passwordc
-  ) {
-    ... on UserType {
-      uid
-      firstName
-      lastName
-      email
-      isActive
-      isSuperuser
-      mobilePhone
-      auth {
-        uid
-        userName
-        isBlocked
-        userType
-      }
-      groups {
-        permissions {
-          ...PermissionTypeFields
-        }
-        ...GroupTypeFields
-      }
-    }
-    ... on OperationError {
-      __typename
-      error
-      suggestion
-    }
-  }
-}
-    ${PermissionTypeFieldsFragmentDoc}
-${GroupTypeFieldsFragmentDoc}`;
-
-export function useEditUserAuthMutation() {
-  return Urql.useMutation<EditUserAuthMutation, EditUserAuthMutationVariables>(EditUserAuthDocument);
-};
-export const AddGroupDocument = gql`
-    mutation addGroup($payload: GroupInputType!) {
-  createGroup(payload: $payload) {
-    ... on GroupType {
-      __typename
-      uid
-      name
-      pages
-      permissions {
-        uid
-        action
-        target
-        active
-      }
-      active
-    }
-    ... on OperationError {
-      __typename
-      error
-      suggestion
-    }
-  }
-}
-    `;
-
-export function useAddGroupMutation() {
-  return Urql.useMutation<AddGroupMutation, AddGroupMutationVariables>(AddGroupDocument);
-};
-export const EditGroupDocument = gql`
-    mutation editGroup($uid: String!, $payload: GroupInputType!) {
-  updateGroup(uid: $uid, payload: $payload) {
-    ... on GroupType {
-      __typename
-      uid
-      name
-      pages
-      permissions {
-        uid
-        action
-        target
-        active
-      }
-      active
-    }
-    ... on OperationError {
-      __typename
-      error
-      suggestion
-    }
-  }
-}
-    `;
-
-export function useEditGroupMutation() {
-  return Urql.useMutation<EditGroupMutation, EditGroupMutationVariables>(EditGroupDocument);
-};
-export const UpdateGroupsAndPermissionsDocument = gql`
-    mutation updateGroupsAndPermissions($groupUid: String!, $permissionUid: String!) {
-  updateGroupPermissions(groupUid: $groupUid, permissionUid: $permissionUid) {
-    ... on UpdatedGroupPerms {
-      group {
-        uid
-        name
-        pages
-        permissions {
-          uid
-          action
-          target
-          active
-        }
-        active
-      }
-      permission {
-        uid
-        action
-        target
-      }
-    }
-    ... on OperationError {
-      __typename
-      error
-      suggestion
-    }
-  }
-}
-    `;
-
-export function useUpdateGroupsAndPermissionsMutation() {
-  return Urql.useMutation<UpdateGroupsAndPermissionsMutation, UpdateGroupsAndPermissionsMutationVariables>(UpdateGroupsAndPermissionsDocument);
-};
-export const AddDepartmentDocument = gql`
-    mutation addDepartment($payload: DepartmentInputType!) {
-  createDepartment(payload: $payload) {
-    ... on DepartmentType {
-      uid
-      name
-    }
-    ... on OperationError {
-      __typename
-      error
-      suggestion
-    }
-  }
-}
-    `;
-
-export function useAddDepartmentMutation() {
-  return Urql.useMutation<AddDepartmentMutation, AddDepartmentMutationVariables>(AddDepartmentDocument);
-};
-export const EditDepartmentDocument = gql`
-    mutation editDepartment($uid: String!, $payload: DepartmentInputType!) {
-  updateDepartment(uid: $uid, payload: $payload) {
-    ... on DepartmentType {
-      uid
-      name
-    }
-    ... on OperationError {
-      __typename
-      error
-      suggestion
-    }
-  }
-}
-    `;
-
-export function useEditDepartmentMutation() {
-  return Urql.useMutation<EditDepartmentMutation, EditDepartmentMutationVariables>(EditDepartmentDocument);
-};
-export const EditLaboratoryDocument = gql`
-    mutation editLaboratory($uid: String!, $payload: LaboratoryInputType!) {
-  updateLaboratory(uid: $uid, payload: $payload) {
-    ... on LaboratoryType {
-      uid
-      setupName
-      labName
-      labManagerUid
-      email
-      emailCc
-      mobilePhone
-      businessPhone
-      address
-      logo
-    }
-    ... on OperationError {
-      __typename
-      error
-      suggestion
-    }
-  }
-}
-    `;
-
-export function useEditLaboratoryMutation() {
-  return Urql.useMutation<EditLaboratoryMutation, EditLaboratoryMutationVariables>(EditLaboratoryDocument);
-};
-export const EditLaboratorySettingDocument = gql`
-    mutation editLaboratorySetting($uid: String!, $payload: LaboratorySettingInputType!) {
-  updateLaboratorySetting(uid: $uid, payload: $payload) {
-    ... on LaboratorySettingType {
-      uid
-      laboratoryUid
-      allowSelfVerification
-      allowPatientRegistration
-      allowSampleRegistration
-      allowWorksheetCreation
-      defaultRoute
-      passwordLifetime
-      inactivityLogOut
-      defaultTheme
-      autoReceiveSamples
-      stickerCopies
-    }
-    ... on OperationError {
-      __typename
-      error
-      suggestion
-    }
-  }
-}
-    `;
-
-export function useEditLaboratorySettingMutation() {
-  return Urql.useMutation<EditLaboratorySettingMutation, EditLaboratorySettingMutationVariables>(EditLaboratorySettingDocument);
-};
 export const GetLaboratoryDocument = gql`
     query getLaboratory($setupName: String! = "felicity") {
   laboratory(setupName: $setupName) {
@@ -6827,8 +6413,8 @@ export const GetLaboratoryDocument = gql`
 }
     `;
 
-export function useGetLaboratoryQuery(options?: Omit<Urql.UseQueryArgs<GetLaboratoryQueryVariables>, 'query'>) {
-  return Urql.useQuery<GetLaboratoryQuery, GetLaboratoryQueryVariables>({ query: GetLaboratoryDocument, ...options });
+export function useGetLaboratoryQuery(options: Omit<Urql.UseQueryArgs<never, GetLaboratoryQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetLaboratoryQuery>({ query: GetLaboratoryDocument, ...options });
 };
 export const GetLaboratorySettingDocument = gql`
     query getLaboratorySetting($setupName: String! = "felicity") {
@@ -6849,8 +6435,8 @@ export const GetLaboratorySettingDocument = gql`
 }
     `;
 
-export function useGetLaboratorySettingQuery(options?: Omit<Urql.UseQueryArgs<GetLaboratorySettingQueryVariables>, 'query'>) {
-  return Urql.useQuery<GetLaboratorySettingQuery, GetLaboratorySettingQueryVariables>({ query: GetLaboratorySettingDocument, ...options });
+export function useGetLaboratorySettingQuery(options: Omit<Urql.UseQueryArgs<never, GetLaboratorySettingQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetLaboratorySettingQuery>({ query: GetLaboratorySettingDocument, ...options });
 };
 export const UserAllDocument = gql`
     query userAll($first: Int, $after: String, $text: String, $sortBy: [String!] = ["uid"]) {
@@ -6892,8 +6478,8 @@ export const UserAllDocument = gql`
 }
     `;
 
-export function useUserAllQuery(options?: Omit<Urql.UseQueryArgs<UserAllQueryVariables>, 'query'>) {
-  return Urql.useQuery<UserAllQuery, UserAllQueryVariables>({ query: UserAllDocument, ...options });
+export function useUserAllQuery(options: Omit<Urql.UseQueryArgs<never, UserAllQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<UserAllQuery>({ query: UserAllDocument, ...options });
 };
 export const GroupsAndPermissionsDocument = gql`
     query groupsAndPermissions {
@@ -6917,8 +6503,8 @@ export const GroupsAndPermissionsDocument = gql`
 }
     `;
 
-export function useGroupsAndPermissionsQuery(options?: Omit<Urql.UseQueryArgs<GroupsAndPermissionsQueryVariables>, 'query'>) {
-  return Urql.useQuery<GroupsAndPermissionsQuery, GroupsAndPermissionsQueryVariables>({ query: GroupsAndPermissionsDocument, ...options });
+export function useGroupsAndPermissionsQuery(options: Omit<Urql.UseQueryArgs<never, GroupsAndPermissionsQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GroupsAndPermissionsQuery>({ query: GroupsAndPermissionsDocument, ...options });
 };
 export const GetAuditLogsDocument = gql`
     query getAuditLogs($targetType: String!, $targetId: String!) {
@@ -6934,8 +6520,8 @@ export const GetAuditLogsDocument = gql`
 }
     `;
 
-export function useGetAuditLogsQuery(options: Omit<Urql.UseQueryArgs<GetAuditLogsQueryVariables>, 'query'>) {
-  return Urql.useQuery<GetAuditLogsQuery, GetAuditLogsQueryVariables>({ query: GetAuditLogsDocument, ...options });
+export function useGetAuditLogsQuery(options: Omit<Urql.UseQueryArgs<never, GetAuditLogsQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetAuditLogsQuery>({ query: GetAuditLogsDocument, ...options });
 };
 export const GetAllDepartmentsDocument = gql`
     query getAllDepartments {
@@ -6948,8 +6534,8 @@ export const GetAllDepartmentsDocument = gql`
 }
     `;
 
-export function useGetAllDepartmentsQuery(options?: Omit<Urql.UseQueryArgs<GetAllDepartmentsQueryVariables>, 'query'>) {
-  return Urql.useQuery<GetAllDepartmentsQuery, GetAllDepartmentsQueryVariables>({ query: GetAllDepartmentsDocument, ...options });
+export function useGetAllDepartmentsQuery(options: Omit<Urql.UseQueryArgs<never, GetAllDepartmentsQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetAllDepartmentsQuery>({ query: GetAllDepartmentsDocument, ...options });
 };
 export const AddCountryDocument = gql`
     mutation AddCountry($payload: CountryInputType!) {
@@ -7091,8 +6677,8 @@ export const GetAllCountriesDocument = gql`
 }
     `;
 
-export function useGetAllCountriesQuery(options?: Omit<Urql.UseQueryArgs<GetAllCountriesQueryVariables>, 'query'>) {
-  return Urql.useQuery<GetAllCountriesQuery, GetAllCountriesQueryVariables>({ query: GetAllCountriesDocument, ...options });
+export function useGetAllCountriesQuery(options: Omit<Urql.UseQueryArgs<never, GetAllCountriesQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetAllCountriesQuery>({ query: GetAllCountriesDocument, ...options });
 };
 export const GetAllProvincesDocument = gql`
     query getAllProvinces {
@@ -7118,8 +6704,8 @@ export const GetAllProvincesDocument = gql`
 }
     `;
 
-export function useGetAllProvincesQuery(options?: Omit<Urql.UseQueryArgs<GetAllProvincesQueryVariables>, 'query'>) {
-  return Urql.useQuery<GetAllProvincesQuery, GetAllProvincesQueryVariables>({ query: GetAllProvincesDocument, ...options });
+export function useGetAllProvincesQuery(options: Omit<Urql.UseQueryArgs<never, GetAllProvincesQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetAllProvincesQuery>({ query: GetAllProvincesDocument, ...options });
 };
 export const FilterProvincesByCountryDocument = gql`
     query filterProvincesByCountry($uid: String!) {
@@ -7132,8 +6718,8 @@ export const FilterProvincesByCountryDocument = gql`
 }
     `;
 
-export function useFilterProvincesByCountryQuery(options: Omit<Urql.UseQueryArgs<FilterProvincesByCountryQueryVariables>, 'query'>) {
-  return Urql.useQuery<FilterProvincesByCountryQuery, FilterProvincesByCountryQueryVariables>({ query: FilterProvincesByCountryDocument, ...options });
+export function useFilterProvincesByCountryQuery(options: Omit<Urql.UseQueryArgs<never, FilterProvincesByCountryQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<FilterProvincesByCountryQuery>({ query: FilterProvincesByCountryDocument, ...options });
 };
 export const GetAllDistrictsDocument = gql`
     query getAllDistricts {
@@ -7159,8 +6745,8 @@ export const GetAllDistrictsDocument = gql`
 }
     `;
 
-export function useGetAllDistrictsQuery(options?: Omit<Urql.UseQueryArgs<GetAllDistrictsQueryVariables>, 'query'>) {
-  return Urql.useQuery<GetAllDistrictsQuery, GetAllDistrictsQueryVariables>({ query: GetAllDistrictsDocument, ...options });
+export function useGetAllDistrictsQuery(options: Omit<Urql.UseQueryArgs<never, GetAllDistrictsQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetAllDistrictsQuery>({ query: GetAllDistrictsDocument, ...options });
 };
 export const FilterDistrictsByProvinceDocument = gql`
     query filterDistrictsByProvince($uid: String!) {
@@ -7173,8 +6759,8 @@ export const FilterDistrictsByProvinceDocument = gql`
 }
     `;
 
-export function useFilterDistrictsByProvinceQuery(options: Omit<Urql.UseQueryArgs<FilterDistrictsByProvinceQueryVariables>, 'query'>) {
-  return Urql.useQuery<FilterDistrictsByProvinceQuery, FilterDistrictsByProvinceQueryVariables>({ query: FilterDistrictsByProvinceDocument, ...options });
+export function useFilterDistrictsByProvinceQuery(options: Omit<Urql.UseQueryArgs<never, FilterDistrictsByProvinceQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<FilterDistrictsByProvinceQuery>({ query: FilterDistrictsByProvinceDocument, ...options });
 };
 export const AddCodingStandardDocument = gql`
     mutation AddCodingStandard($payload: CodingStandardInputType!) {
@@ -8594,8 +8180,8 @@ export const GetAllCodingStandardsDocument = gql`
 }
     `;
 
-export function useGetAllCodingStandardsQuery(options?: Omit<Urql.UseQueryArgs<GetAllCodingStandardsQueryVariables>, 'query'>) {
-  return Urql.useQuery<GetAllCodingStandardsQuery, GetAllCodingStandardsQueryVariables>({ query: GetAllCodingStandardsDocument, ...options });
+export function useGetAllCodingStandardsQuery(options: Omit<Urql.UseQueryArgs<never, GetAllCodingStandardsQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetAllCodingStandardsQuery>({ query: GetAllCodingStandardsDocument, ...options });
 };
 export const GetAllSampleTypesDocument = gql`
     query getAllSampleTypes {
@@ -8609,8 +8195,8 @@ export const GetAllSampleTypesDocument = gql`
 }
     `;
 
-export function useGetAllSampleTypesQuery(options?: Omit<Urql.UseQueryArgs<GetAllSampleTypesQueryVariables>, 'query'>) {
-  return Urql.useQuery<GetAllSampleTypesQuery, GetAllSampleTypesQueryVariables>({ query: GetAllSampleTypesDocument, ...options });
+export function useGetAllSampleTypesQuery(options: Omit<Urql.UseQueryArgs<never, GetAllSampleTypesQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetAllSampleTypesQuery>({ query: GetAllSampleTypesDocument, ...options });
 };
 export const GeSampleTypeMappingsBySampleTypeUidDocument = gql`
     query geSampleTypeMappingsBySampleTypeUid($uid: String!) {
@@ -8628,8 +8214,8 @@ export const GeSampleTypeMappingsBySampleTypeUidDocument = gql`
 }
     `;
 
-export function useGeSampleTypeMappingsBySampleTypeUidQuery(options: Omit<Urql.UseQueryArgs<GeSampleTypeMappingsBySampleTypeUidQueryVariables>, 'query'>) {
-  return Urql.useQuery<GeSampleTypeMappingsBySampleTypeUidQuery, GeSampleTypeMappingsBySampleTypeUidQueryVariables>({ query: GeSampleTypeMappingsBySampleTypeUidDocument, ...options });
+export function useGeSampleTypeMappingsBySampleTypeUidQuery(options: Omit<Urql.UseQueryArgs<never, GeSampleTypeMappingsBySampleTypeUidQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GeSampleTypeMappingsBySampleTypeUidQuery>({ query: GeSampleTypeMappingsBySampleTypeUidDocument, ...options });
 };
 export const GetAllAnalysesServicesDocument = gql`
     query getAllAnalysesServices($first: Int, $after: String, $text: String, $sortBy: [String!] = ["name"]) {
@@ -8751,8 +8337,8 @@ export const GetAllAnalysesServicesDocument = gql`
 }
     `;
 
-export function useGetAllAnalysesServicesQuery(options?: Omit<Urql.UseQueryArgs<GetAllAnalysesServicesQueryVariables>, 'query'>) {
-  return Urql.useQuery<GetAllAnalysesServicesQuery, GetAllAnalysesServicesQueryVariables>({ query: GetAllAnalysesServicesDocument, ...options });
+export function useGetAllAnalysesServicesQuery(options: Omit<Urql.UseQueryArgs<never, GetAllAnalysesServicesQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetAllAnalysesServicesQuery>({ query: GetAllAnalysesServicesDocument, ...options });
 };
 export const GetAllAnalysesProfilesDocument = gql`
     query getAllAnalysesProfiles {
@@ -8777,8 +8363,8 @@ export const GetAllAnalysesProfilesDocument = gql`
 }
     `;
 
-export function useGetAllAnalysesProfilesQuery(options?: Omit<Urql.UseQueryArgs<GetAllAnalysesProfilesQueryVariables>, 'query'>) {
-  return Urql.useQuery<GetAllAnalysesProfilesQuery, GetAllAnalysesProfilesQueryVariables>({ query: GetAllAnalysesProfilesDocument, ...options });
+export function useGetAllAnalysesProfilesQuery(options: Omit<Urql.UseQueryArgs<never, GetAllAnalysesProfilesQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetAllAnalysesProfilesQuery>({ query: GetAllAnalysesProfilesDocument, ...options });
 };
 export const GetAnalysisMappingsByAnalysisUidDocument = gql`
     query getAnalysisMappingsByAnalysisUid($uid: String!) {
@@ -8796,8 +8382,8 @@ export const GetAnalysisMappingsByAnalysisUidDocument = gql`
 }
     `;
 
-export function useGetAnalysisMappingsByAnalysisUidQuery(options: Omit<Urql.UseQueryArgs<GetAnalysisMappingsByAnalysisUidQueryVariables>, 'query'>) {
-  return Urql.useQuery<GetAnalysisMappingsByAnalysisUidQuery, GetAnalysisMappingsByAnalysisUidQueryVariables>({ query: GetAnalysisMappingsByAnalysisUidDocument, ...options });
+export function useGetAnalysisMappingsByAnalysisUidQuery(options: Omit<Urql.UseQueryArgs<never, GetAnalysisMappingsByAnalysisUidQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetAnalysisMappingsByAnalysisUidQuery>({ query: GetAnalysisMappingsByAnalysisUidDocument, ...options });
 };
 export const GetAllProfilesAndServicesDocument = gql`
     query getAllProfilesANDServices {
@@ -8933,8 +8519,8 @@ export const GetAllProfilesAndServicesDocument = gql`
 }
     `;
 
-export function useGetAllProfilesAndServicesQuery(options?: Omit<Urql.UseQueryArgs<GetAllProfilesAndServicesQueryVariables>, 'query'>) {
-  return Urql.useQuery<GetAllProfilesAndServicesQuery, GetAllProfilesAndServicesQueryVariables>({ query: GetAllProfilesAndServicesDocument, ...options });
+export function useGetAllProfilesAndServicesQuery(options: Omit<Urql.UseQueryArgs<never, GetAllProfilesAndServicesQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetAllProfilesAndServicesQuery>({ query: GetAllProfilesAndServicesDocument, ...options });
 };
 export const GetProfileMappingsByProfileUidDocument = gql`
     query getProfileMappingsByProfileUid($uid: String!) {
@@ -8952,8 +8538,8 @@ export const GetProfileMappingsByProfileUidDocument = gql`
 }
     `;
 
-export function useGetProfileMappingsByProfileUidQuery(options: Omit<Urql.UseQueryArgs<GetProfileMappingsByProfileUidQueryVariables>, 'query'>) {
-  return Urql.useQuery<GetProfileMappingsByProfileUidQuery, GetProfileMappingsByProfileUidQueryVariables>({ query: GetProfileMappingsByProfileUidDocument, ...options });
+export function useGetProfileMappingsByProfileUidQuery(options: Omit<Urql.UseQueryArgs<never, GetProfileMappingsByProfileUidQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetProfileMappingsByProfileUidQuery>({ query: GetProfileMappingsByProfileUidDocument, ...options });
 };
 export const GetAllAnalysesCategoriesDocument = gql`
     query getAllAnalysesCategories {
@@ -8971,8 +8557,8 @@ export const GetAllAnalysesCategoriesDocument = gql`
 }
     `;
 
-export function useGetAllAnalysesCategoriesQuery(options?: Omit<Urql.UseQueryArgs<GetAllAnalysesCategoriesQueryVariables>, 'query'>) {
-  return Urql.useQuery<GetAllAnalysesCategoriesQuery, GetAllAnalysesCategoriesQueryVariables>({ query: GetAllAnalysesCategoriesDocument, ...options });
+export function useGetAllAnalysesCategoriesQuery(options: Omit<Urql.UseQueryArgs<never, GetAllAnalysesCategoriesQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetAllAnalysesCategoriesQuery>({ query: GetAllAnalysesCategoriesDocument, ...options });
 };
 export const GetAllSamplesDocument = gql`
     query getAllSamples($first: Int!, $after: String, $before: String, $status: String!, $text: String!, $clientUid: String!, $sortBy: [String!]) {
@@ -9081,8 +8667,8 @@ export const GetAllSamplesDocument = gql`
 }
     `;
 
-export function useGetAllSamplesQuery(options: Omit<Urql.UseQueryArgs<GetAllSamplesQueryVariables>, 'query'>) {
-  return Urql.useQuery<GetAllSamplesQuery, GetAllSamplesQueryVariables>({ query: GetAllSamplesDocument, ...options });
+export function useGetAllSamplesQuery(options: Omit<Urql.UseQueryArgs<never, GetAllSamplesQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetAllSamplesQuery>({ query: GetAllSamplesDocument, ...options });
 };
 export const GetSamplesForShipmentAssignDocument = gql`
     query getSamplesForShipmentAssign($first: Int!, $after: String, $text: String!, $sortBy: [String!], $analysisUid: String, $sampleTypeUid: String!) {
@@ -9126,8 +8712,8 @@ export const GetSamplesForShipmentAssignDocument = gql`
 }
     `;
 
-export function useGetSamplesForShipmentAssignQuery(options: Omit<Urql.UseQueryArgs<GetSamplesForShipmentAssignQueryVariables>, 'query'>) {
-  return Urql.useQuery<GetSamplesForShipmentAssignQuery, GetSamplesForShipmentAssignQueryVariables>({ query: GetSamplesForShipmentAssignDocument, ...options });
+export function useGetSamplesForShipmentAssignQuery(options: Omit<Urql.UseQueryArgs<never, GetSamplesForShipmentAssignQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetSamplesForShipmentAssignQuery>({ query: GetSamplesForShipmentAssignDocument, ...options });
 };
 export const GetAnalysesRequestsByPatientUidDocument = gql`
     query getAnalysesRequestsByPatientUid($uid: String!) {
@@ -9206,8 +8792,8 @@ export const GetAnalysesRequestsByPatientUidDocument = gql`
 }
     `;
 
-export function useGetAnalysesRequestsByPatientUidQuery(options: Omit<Urql.UseQueryArgs<GetAnalysesRequestsByPatientUidQueryVariables>, 'query'>) {
-  return Urql.useQuery<GetAnalysesRequestsByPatientUidQuery, GetAnalysesRequestsByPatientUidQueryVariables>({ query: GetAnalysesRequestsByPatientUidDocument, ...options });
+export function useGetAnalysesRequestsByPatientUidQuery(options: Omit<Urql.UseQueryArgs<never, GetAnalysesRequestsByPatientUidQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetAnalysesRequestsByPatientUidQuery>({ query: GetAnalysesRequestsByPatientUidDocument, ...options });
 };
 export const GetAnalysesRequestsByClientUidDocument = gql`
     query getAnalysesRequestsByClientUid($uid: String!) {
@@ -9286,8 +8872,8 @@ export const GetAnalysesRequestsByClientUidDocument = gql`
 }
     `;
 
-export function useGetAnalysesRequestsByClientUidQuery(options: Omit<Urql.UseQueryArgs<GetAnalysesRequestsByClientUidQueryVariables>, 'query'>) {
-  return Urql.useQuery<GetAnalysesRequestsByClientUidQuery, GetAnalysesRequestsByClientUidQueryVariables>({ query: GetAnalysesRequestsByClientUidDocument, ...options });
+export function useGetAnalysesRequestsByClientUidQuery(options: Omit<Urql.UseQueryArgs<never, GetAnalysesRequestsByClientUidQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetAnalysesRequestsByClientUidQuery>({ query: GetAnalysesRequestsByClientUidDocument, ...options });
 };
 export const GetAnalysesResultsBySampleUidDocument = gql`
     query getAnalysesResultsBySampleUid($uid: String!) {
@@ -9348,8 +8934,8 @@ export const GetAnalysesResultsBySampleUidDocument = gql`
 }
     `;
 
-export function useGetAnalysesResultsBySampleUidQuery(options: Omit<Urql.UseQueryArgs<GetAnalysesResultsBySampleUidQueryVariables>, 'query'>) {
-  return Urql.useQuery<GetAnalysesResultsBySampleUidQuery, GetAnalysesResultsBySampleUidQueryVariables>({ query: GetAnalysesResultsBySampleUidDocument, ...options });
+export function useGetAnalysesResultsBySampleUidQuery(options: Omit<Urql.UseQueryArgs<never, GetAnalysesResultsBySampleUidQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetAnalysesResultsBySampleUidQuery>({ query: GetAnalysesResultsBySampleUidDocument, ...options });
 };
 export const GetAnalysesResultsForWsAssignDocument = gql`
     query getAnalysesResultsForWsAssign($first: Int!, $after: String, $text: String!, $sortBy: [String!], $analysisUid: String!, $sampleTypeUid: String!) {
@@ -9392,8 +8978,8 @@ export const GetAnalysesResultsForWsAssignDocument = gql`
 }
     `;
 
-export function useGetAnalysesResultsForWsAssignQuery(options: Omit<Urql.UseQueryArgs<GetAnalysesResultsForWsAssignQueryVariables>, 'query'>) {
-  return Urql.useQuery<GetAnalysesResultsForWsAssignQuery, GetAnalysesResultsForWsAssignQueryVariables>({ query: GetAnalysesResultsForWsAssignDocument, ...options });
+export function useGetAnalysesResultsForWsAssignQuery(options: Omit<Urql.UseQueryArgs<never, GetAnalysesResultsForWsAssignQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetAnalysesResultsForWsAssignQuery>({ query: GetAnalysesResultsForWsAssignDocument, ...options });
 };
 export const GetSampleByUidDocument = gql`
     query getSampleByUid($uid: String!) {
@@ -9486,8 +9072,8 @@ export const GetSampleByUidDocument = gql`
 }
     `;
 
-export function useGetSampleByUidQuery(options: Omit<Urql.UseQueryArgs<GetSampleByUidQueryVariables>, 'query'>) {
-  return Urql.useQuery<GetSampleByUidQuery, GetSampleByUidQueryVariables>({ query: GetSampleByUidDocument, ...options });
+export function useGetSampleByUidQuery(options: Omit<Urql.UseQueryArgs<never, GetSampleByUidQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetSampleByUidQuery>({ query: GetSampleByUidDocument, ...options });
 };
 export const GetSampleParentIdDocument = gql`
     query getSampleParentId($parentId: String!, $text: String) {
@@ -9499,8 +9085,8 @@ export const GetSampleParentIdDocument = gql`
 }
     `;
 
-export function useGetSampleParentIdQuery(options: Omit<Urql.UseQueryArgs<GetSampleParentIdQueryVariables>, 'query'>) {
-  return Urql.useQuery<GetSampleParentIdQuery, GetSampleParentIdQueryVariables>({ query: GetSampleParentIdDocument, ...options });
+export function useGetSampleParentIdQuery(options: Omit<Urql.UseQueryArgs<never, GetSampleParentIdQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetSampleParentIdQuery>({ query: GetSampleParentIdDocument, ...options });
 };
 export const GetSamplesByStorageContainerUidDocument = gql`
     query getSamplesByStorageContainerUid($uid: String!) {
@@ -9518,8 +9104,8 @@ export const GetSamplesByStorageContainerUidDocument = gql`
 }
     `;
 
-export function useGetSamplesByStorageContainerUidQuery(options: Omit<Urql.UseQueryArgs<GetSamplesByStorageContainerUidQueryVariables>, 'query'>) {
-  return Urql.useQuery<GetSamplesByStorageContainerUidQuery, GetSamplesByStorageContainerUidQueryVariables>({ query: GetSamplesByStorageContainerUidDocument, ...options });
+export function useGetSamplesByStorageContainerUidQuery(options: Omit<Urql.UseQueryArgs<never, GetSamplesByStorageContainerUidQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetSamplesByStorageContainerUidQuery>({ query: GetSamplesByStorageContainerUidDocument, ...options });
 };
 export const GetAllQcLevelsDocument = gql`
     query getAllQCLevels {
@@ -9530,8 +9116,8 @@ export const GetAllQcLevelsDocument = gql`
 }
     `;
 
-export function useGetAllQcLevelsQuery(options?: Omit<Urql.UseQueryArgs<GetAllQcLevelsQueryVariables>, 'query'>) {
-  return Urql.useQuery<GetAllQcLevelsQuery, GetAllQcLevelsQueryVariables>({ query: GetAllQcLevelsDocument, ...options });
+export function useGetAllQcLevelsQuery(options: Omit<Urql.UseQueryArgs<never, GetAllQcLevelsQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetAllQcLevelsQuery>({ query: GetAllQcLevelsDocument, ...options });
 };
 export const GetAllQcTemplatesDocument = gql`
     query getAllQCTemplates {
@@ -9551,8 +9137,8 @@ export const GetAllQcTemplatesDocument = gql`
 }
     `;
 
-export function useGetAllQcTemplatesQuery(options?: Omit<Urql.UseQueryArgs<GetAllQcTemplatesQueryVariables>, 'query'>) {
-  return Urql.useQuery<GetAllQcTemplatesQuery, GetAllQcTemplatesQueryVariables>({ query: GetAllQcTemplatesDocument, ...options });
+export function useGetAllQcTemplatesQuery(options: Omit<Urql.UseQueryArgs<never, GetAllQcTemplatesQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetAllQcTemplatesQuery>({ query: GetAllQcTemplatesDocument, ...options });
 };
 export const GetQcSeTsDocument = gql`
     query getQCSeTs($first: Int!, $after: String, $text: String!, $sortBy: [String!] = ["uid"]) {
@@ -9639,8 +9225,8 @@ export const GetQcSeTsDocument = gql`
 }
     `;
 
-export function useGetQcSeTsQuery(options: Omit<Urql.UseQueryArgs<GetQcSeTsQueryVariables>, 'query'>) {
-  return Urql.useQuery<GetQcSeTsQuery, GetQcSeTsQueryVariables>({ query: GetQcSeTsDocument, ...options });
+export function useGetQcSeTsQuery(options: Omit<Urql.UseQueryArgs<never, GetQcSeTsQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetQcSeTsQuery>({ query: GetQcSeTsDocument, ...options });
 };
 export const GetQcSetByUidDocument = gql`
     query getQCSetByUid($uid: String!) {
@@ -9710,8 +9296,8 @@ export const GetQcSetByUidDocument = gql`
 }
     `;
 
-export function useGetQcSetByUidQuery(options: Omit<Urql.UseQueryArgs<GetQcSetByUidQueryVariables>, 'query'>) {
-  return Urql.useQuery<GetQcSetByUidQuery, GetQcSetByUidQueryVariables>({ query: GetQcSetByUidDocument, ...options });
+export function useGetQcSetByUidQuery(options: Omit<Urql.UseQueryArgs<never, GetQcSetByUidQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetQcSetByUidQuery>({ query: GetQcSetByUidDocument, ...options });
 };
 export const ResultOptionsByAnalysisUidDocument = gql`
     query resultOptionsByAnalysisUid($uid: String!) {
@@ -9724,8 +9310,8 @@ export const ResultOptionsByAnalysisUidDocument = gql`
 }
     `;
 
-export function useResultOptionsByAnalysisUidQuery(options: Omit<Urql.UseQueryArgs<ResultOptionsByAnalysisUidQueryVariables>, 'query'>) {
-  return Urql.useQuery<ResultOptionsByAnalysisUidQuery, ResultOptionsByAnalysisUidQueryVariables>({ query: ResultOptionsByAnalysisUidDocument, ...options });
+export function useResultOptionsByAnalysisUidQuery(options: Omit<Urql.UseQueryArgs<never, ResultOptionsByAnalysisUidQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<ResultOptionsByAnalysisUidQuery>({ query: ResultOptionsByAnalysisUidDocument, ...options });
 };
 export const GetAllRejectionReasonsDocument = gql`
     query getAllRejectionReasons {
@@ -9736,8 +9322,8 @@ export const GetAllRejectionReasonsDocument = gql`
 }
     `;
 
-export function useGetAllRejectionReasonsQuery(options?: Omit<Urql.UseQueryArgs<GetAllRejectionReasonsQueryVariables>, 'query'>) {
-  return Urql.useQuery<GetAllRejectionReasonsQuery, GetAllRejectionReasonsQueryVariables>({ query: GetAllRejectionReasonsDocument, ...options });
+export function useGetAllRejectionReasonsQuery(options: Omit<Urql.UseQueryArgs<never, GetAllRejectionReasonsQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetAllRejectionReasonsQuery>({ query: GetAllRejectionReasonsDocument, ...options });
 };
 export const ImpressMetaDocument = gql`
     query impressMeta($uids: [String!]!) {
@@ -9760,8 +9346,8 @@ export const ImpressMetaDocument = gql`
 }
     `;
 
-export function useImpressMetaQuery(options: Omit<Urql.UseQueryArgs<ImpressMetaQueryVariables>, 'query'>) {
-  return Urql.useQuery<ImpressMetaQuery, ImpressMetaQueryVariables>({ query: ImpressMetaDocument, ...options });
+export function useImpressMetaQuery(options: Omit<Urql.UseQueryArgs<never, ImpressMetaQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<ImpressMetaQuery>({ query: ImpressMetaDocument, ...options });
 };
 export const ImpressReportsDocument = gql`
     query impressReports($uids: [String!]!) {
@@ -9769,8 +9355,8 @@ export const ImpressReportsDocument = gql`
 }
     `;
 
-export function useImpressReportsQuery(options: Omit<Urql.UseQueryArgs<ImpressReportsQueryVariables>, 'query'>) {
-  return Urql.useQuery<ImpressReportsQuery, ImpressReportsQueryVariables>({ query: ImpressReportsDocument, ...options });
+export function useImpressReportsQuery(options: Omit<Urql.UseQueryArgs<never, ImpressReportsQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<ImpressReportsQuery>({ query: ImpressReportsDocument, ...options });
 };
 export const ImpressReportDocument = gql`
     query impressReport($uid: String!) {
@@ -9778,8 +9364,8 @@ export const ImpressReportDocument = gql`
 }
     `;
 
-export function useImpressReportQuery(options: Omit<Urql.UseQueryArgs<ImpressReportQueryVariables>, 'query'>) {
-  return Urql.useQuery<ImpressReportQuery, ImpressReportQueryVariables>({ query: ImpressReportDocument, ...options });
+export function useImpressReportQuery(options: Omit<Urql.UseQueryArgs<never, ImpressReportQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<ImpressReportQuery>({ query: ImpressReportDocument, ...options });
 };
 export const AddClientDocument = gql`
     mutation AddClient($payload: ClientInputType!) {
@@ -9946,8 +9532,8 @@ export const GetAllClientsDocument = gql`
 }
     `;
 
-export function useGetAllClientsQuery(options?: Omit<Urql.UseQueryArgs<GetAllClientsQueryVariables>, 'query'>) {
-  return Urql.useQuery<GetAllClientsQuery, GetAllClientsQueryVariables>({ query: GetAllClientsDocument, ...options });
+export function useGetAllClientsQuery(options: Omit<Urql.UseQueryArgs<never, GetAllClientsQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetAllClientsQuery>({ query: GetAllClientsDocument, ...options });
 };
 export const SearchClientsDocument = gql`
     query searchClients($queryString: String!) {
@@ -9971,8 +9557,8 @@ export const SearchClientsDocument = gql`
 }
     `;
 
-export function useSearchClientsQuery(options: Omit<Urql.UseQueryArgs<SearchClientsQueryVariables>, 'query'>) {
-  return Urql.useQuery<SearchClientsQuery, SearchClientsQueryVariables>({ query: SearchClientsDocument, ...options });
+export function useSearchClientsQuery(options: Omit<Urql.UseQueryArgs<never, SearchClientsQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<SearchClientsQuery>({ query: SearchClientsDocument, ...options });
 };
 export const GetClientContactsByClientUidDocument = gql`
     query getClientContactsByClientUid($clientUid: String!) {
@@ -9987,8 +9573,8 @@ export const GetClientContactsByClientUidDocument = gql`
 }
     `;
 
-export function useGetClientContactsByClientUidQuery(options: Omit<Urql.UseQueryArgs<GetClientContactsByClientUidQueryVariables>, 'query'>) {
-  return Urql.useQuery<GetClientContactsByClientUidQuery, GetClientContactsByClientUidQueryVariables>({ query: GetClientContactsByClientUidDocument, ...options });
+export function useGetClientContactsByClientUidQuery(options: Omit<Urql.UseQueryArgs<never, GetClientContactsByClientUidQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetClientContactsByClientUidQuery>({ query: GetClientContactsByClientUidDocument, ...options });
 };
 export const GetClientByUidDocument = gql`
     query getClientByUid($uid: String!) {
@@ -10015,8 +9601,8 @@ export const GetClientByUidDocument = gql`
 }
     `;
 
-export function useGetClientByUidQuery(options: Omit<Urql.UseQueryArgs<GetClientByUidQueryVariables>, 'query'>) {
-  return Urql.useQuery<GetClientByUidQuery, GetClientByUidQueryVariables>({ query: GetClientByUidDocument, ...options });
+export function useGetClientByUidQuery(options: Omit<Urql.UseQueryArgs<never, GetClientByUidQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetClientByUidQuery>({ query: GetClientByUidDocument, ...options });
 };
 export const GetSampleGroupByStatusDocument = gql`
     query getSampleGroupByStatus {
@@ -10030,8 +9616,8 @@ export const GetSampleGroupByStatusDocument = gql`
 }
     `;
 
-export function useGetSampleGroupByStatusQuery(options?: Omit<Urql.UseQueryArgs<GetSampleGroupByStatusQueryVariables>, 'query'>) {
-  return Urql.useQuery<GetSampleGroupByStatusQuery, GetSampleGroupByStatusQueryVariables>({ query: GetSampleGroupByStatusDocument, ...options });
+export function useGetSampleGroupByStatusQuery(options: Omit<Urql.UseQueryArgs<never, GetSampleGroupByStatusQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetSampleGroupByStatusQuery>({ query: GetSampleGroupByStatusDocument, ...options });
 };
 export const GetExtrasGroupByStatusDocument = gql`
     query getExtrasGroupByStatus {
@@ -10045,8 +9631,8 @@ export const GetExtrasGroupByStatusDocument = gql`
 }
     `;
 
-export function useGetExtrasGroupByStatusQuery(options?: Omit<Urql.UseQueryArgs<GetExtrasGroupByStatusQueryVariables>, 'query'>) {
-  return Urql.useQuery<GetExtrasGroupByStatusQuery, GetExtrasGroupByStatusQueryVariables>({ query: GetExtrasGroupByStatusDocument, ...options });
+export function useGetExtrasGroupByStatusQuery(options: Omit<Urql.UseQueryArgs<never, GetExtrasGroupByStatusQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetExtrasGroupByStatusQuery>({ query: GetExtrasGroupByStatusDocument, ...options });
 };
 export const GetAnalysisGroupByStatusDocument = gql`
     query getAnalysisGroupByStatus {
@@ -10060,8 +9646,8 @@ export const GetAnalysisGroupByStatusDocument = gql`
 }
     `;
 
-export function useGetAnalysisGroupByStatusQuery(options?: Omit<Urql.UseQueryArgs<GetAnalysisGroupByStatusQueryVariables>, 'query'>) {
-  return Urql.useQuery<GetAnalysisGroupByStatusQuery, GetAnalysisGroupByStatusQueryVariables>({ query: GetAnalysisGroupByStatusDocument, ...options });
+export function useGetAnalysisGroupByStatusQuery(options: Omit<Urql.UseQueryArgs<never, GetAnalysisGroupByStatusQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetAnalysisGroupByStatusQuery>({ query: GetAnalysisGroupByStatusDocument, ...options });
 };
 export const GetWorksheetGroupByStatusDocument = gql`
     query getWorksheetGroupByStatus {
@@ -10075,8 +9661,8 @@ export const GetWorksheetGroupByStatusDocument = gql`
 }
     `;
 
-export function useGetWorksheetGroupByStatusQuery(options?: Omit<Urql.UseQueryArgs<GetWorksheetGroupByStatusQueryVariables>, 'query'>) {
-  return Urql.useQuery<GetWorksheetGroupByStatusQuery, GetWorksheetGroupByStatusQueryVariables>({ query: GetWorksheetGroupByStatusDocument, ...options });
+export function useGetWorksheetGroupByStatusQuery(options: Omit<Urql.UseQueryArgs<never, GetWorksheetGroupByStatusQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetWorksheetGroupByStatusQuery>({ query: GetWorksheetGroupByStatusDocument, ...options });
 };
 export const GetAnalysisGroupByInstrumentDocument = gql`
     query getAnalysisGroupByInstrument($startDate: String!, $endDate: String!) {
@@ -10090,8 +9676,8 @@ export const GetAnalysisGroupByInstrumentDocument = gql`
 }
     `;
 
-export function useGetAnalysisGroupByInstrumentQuery(options: Omit<Urql.UseQueryArgs<GetAnalysisGroupByInstrumentQueryVariables>, 'query'>) {
-  return Urql.useQuery<GetAnalysisGroupByInstrumentQuery, GetAnalysisGroupByInstrumentQueryVariables>({ query: GetAnalysisGroupByInstrumentDocument, ...options });
+export function useGetAnalysisGroupByInstrumentQuery(options: Omit<Urql.UseQueryArgs<never, GetAnalysisGroupByInstrumentQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetAnalysisGroupByInstrumentQuery>({ query: GetAnalysisGroupByInstrumentDocument, ...options });
 };
 export const SampleProcessPeformanceDocument = gql`
     query sampleProcessPeformance($startDate: String!, $endDate: String!) {
@@ -10111,8 +9697,8 @@ export const SampleProcessPeformanceDocument = gql`
 }
     `;
 
-export function useSampleProcessPeformanceQuery(options: Omit<Urql.UseQueryArgs<SampleProcessPeformanceQueryVariables>, 'query'>) {
-  return Urql.useQuery<SampleProcessPeformanceQuery, SampleProcessPeformanceQueryVariables>({ query: SampleProcessPeformanceDocument, ...options });
+export function useSampleProcessPeformanceQuery(options: Omit<Urql.UseQueryArgs<never, SampleProcessPeformanceQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<SampleProcessPeformanceQuery>({ query: SampleProcessPeformanceDocument, ...options });
 };
 export const GetAnalysisProcessPeformanceDocument = gql`
     query getAnalysisProcessPeformance($process: String!, $startDate: String!, $endDate: String!) {
@@ -10137,8 +9723,8 @@ export const GetAnalysisProcessPeformanceDocument = gql`
 }
     `;
 
-export function useGetAnalysisProcessPeformanceQuery(options: Omit<Urql.UseQueryArgs<GetAnalysisProcessPeformanceQueryVariables>, 'query'>) {
-  return Urql.useQuery<GetAnalysisProcessPeformanceQuery, GetAnalysisProcessPeformanceQueryVariables>({ query: GetAnalysisProcessPeformanceDocument, ...options });
+export function useGetAnalysisProcessPeformanceQuery(options: Omit<Urql.UseQueryArgs<never, GetAnalysisProcessPeformanceQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetAnalysisProcessPeformanceQuery>({ query: GetAnalysisProcessPeformanceDocument, ...options });
 };
 export const SampleGroupByActionDocument = gql`
     query sampleGroupByAction($startDate: String!, $endDate: String!) {
@@ -10157,8 +9743,8 @@ export const SampleGroupByActionDocument = gql`
 }
     `;
 
-export function useSampleGroupByActionQuery(options: Omit<Urql.UseQueryArgs<SampleGroupByActionQueryVariables>, 'query'>) {
-  return Urql.useQuery<SampleGroupByActionQuery, SampleGroupByActionQueryVariables>({ query: SampleGroupByActionDocument, ...options });
+export function useSampleGroupByActionQuery(options: Omit<Urql.UseQueryArgs<never, SampleGroupByActionQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<SampleGroupByActionQuery>({ query: SampleGroupByActionDocument, ...options });
 };
 export const GetSampleLaggardsDocument = gql`
     query getSampleLaggards {
@@ -10182,8 +9768,8 @@ export const GetSampleLaggardsDocument = gql`
 }
     `;
 
-export function useGetSampleLaggardsQuery(options?: Omit<Urql.UseQueryArgs<GetSampleLaggardsQueryVariables>, 'query'>) {
-  return Urql.useQuery<GetSampleLaggardsQuery, GetSampleLaggardsQueryVariables>({ query: GetSampleLaggardsDocument, ...options });
+export function useGetSampleLaggardsQuery(options: Omit<Urql.UseQueryArgs<never, GetSampleLaggardsQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetSampleLaggardsQuery>({ query: GetSampleLaggardsDocument, ...options });
 };
 export const AddSupplierDocument = gql`
     mutation AddSupplier($payload: SupplierInputType!) {
@@ -10463,8 +10049,8 @@ export const GetAllSuppliersDocument = gql`
 }
     `;
 
-export function useGetAllSuppliersQuery(options?: Omit<Urql.UseQueryArgs<GetAllSuppliersQueryVariables>, 'query'>) {
-  return Urql.useQuery<GetAllSuppliersQuery, GetAllSuppliersQueryVariables>({ query: GetAllSuppliersDocument, ...options });
+export function useGetAllSuppliersQuery(options: Omit<Urql.UseQueryArgs<never, GetAllSuppliersQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetAllSuppliersQuery>({ query: GetAllSuppliersDocument, ...options });
 };
 export const GetAllManufacturersDocument = gql`
     query getAllManufacturers {
@@ -10476,8 +10062,8 @@ export const GetAllManufacturersDocument = gql`
 }
     `;
 
-export function useGetAllManufacturersQuery(options?: Omit<Urql.UseQueryArgs<GetAllManufacturersQueryVariables>, 'query'>) {
-  return Urql.useQuery<GetAllManufacturersQuery, GetAllManufacturersQueryVariables>({ query: GetAllManufacturersDocument, ...options });
+export function useGetAllManufacturersQuery(options: Omit<Urql.UseQueryArgs<never, GetAllManufacturersQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetAllManufacturersQuery>({ query: GetAllManufacturersDocument, ...options });
 };
 export const GetAllInstrumentTypesDocument = gql`
     query getAllInstrumentTypes {
@@ -10498,8 +10084,8 @@ export const GetAllInstrumentTypesDocument = gql`
 }
     `;
 
-export function useGetAllInstrumentTypesQuery(options?: Omit<Urql.UseQueryArgs<GetAllInstrumentTypesQueryVariables>, 'query'>) {
-  return Urql.useQuery<GetAllInstrumentTypesQuery, GetAllInstrumentTypesQueryVariables>({ query: GetAllInstrumentTypesDocument, ...options });
+export function useGetAllInstrumentTypesQuery(options: Omit<Urql.UseQueryArgs<never, GetAllInstrumentTypesQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetAllInstrumentTypesQuery>({ query: GetAllInstrumentTypesDocument, ...options });
 };
 export const GetAllInstrumentsDocument = gql`
     query getAllInstruments {
@@ -10541,8 +10127,8 @@ export const GetAllInstrumentsDocument = gql`
 }
     `;
 
-export function useGetAllInstrumentsQuery(options?: Omit<Urql.UseQueryArgs<GetAllInstrumentsQueryVariables>, 'query'>) {
-  return Urql.useQuery<GetAllInstrumentsQuery, GetAllInstrumentsQueryVariables>({ query: GetAllInstrumentsDocument, ...options });
+export function useGetAllInstrumentsQuery(options: Omit<Urql.UseQueryArgs<never, GetAllInstrumentsQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetAllInstrumentsQuery>({ query: GetAllInstrumentsDocument, ...options });
 };
 export const GetAllMethodsDocument = gql`
     query getAllMethods {
@@ -10569,8 +10155,8 @@ export const GetAllMethodsDocument = gql`
 }
     `;
 
-export function useGetAllMethodsQuery(options?: Omit<Urql.UseQueryArgs<GetAllMethodsQueryVariables>, 'query'>) {
-  return Urql.useQuery<GetAllMethodsQuery, GetAllMethodsQueryVariables>({ query: GetAllMethodsDocument, ...options });
+export function useGetAllMethodsQuery(options: Omit<Urql.UseQueryArgs<never, GetAllMethodsQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetAllMethodsQuery>({ query: GetAllMethodsDocument, ...options });
 };
 export const GetAllUnitsDocument = gql`
     query getAllUnits {
@@ -10582,8 +10168,8 @@ export const GetAllUnitsDocument = gql`
 }
     `;
 
-export function useGetAllUnitsQuery(options?: Omit<Urql.UseQueryArgs<GetAllUnitsQueryVariables>, 'query'>) {
-  return Urql.useQuery<GetAllUnitsQuery, GetAllUnitsQueryVariables>({ query: GetAllUnitsDocument, ...options });
+export function useGetAllUnitsQuery(options: Omit<Urql.UseQueryArgs<never, GetAllUnitsQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetAllUnitsQuery>({ query: GetAllUnitsDocument, ...options });
 };
 export const AddHazardDocument = gql`
     mutation AddHazard($payload: HazardInputType!) {
@@ -11170,8 +10756,8 @@ export const GetAllHazardsDocument = gql`
 }
     `;
 
-export function useGetAllHazardsQuery(options?: Omit<Urql.UseQueryArgs<GetAllHazardsQueryVariables>, 'query'>) {
-  return Urql.useQuery<GetAllHazardsQuery, GetAllHazardsQueryVariables>({ query: GetAllHazardsDocument, ...options });
+export function useGetAllHazardsQuery(options: Omit<Urql.UseQueryArgs<never, GetAllHazardsQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetAllHazardsQuery>({ query: GetAllHazardsDocument, ...options });
 };
 export const GetAllStockCategoriesDocument = gql`
     query getAllStockCategories {
@@ -11183,8 +10769,8 @@ export const GetAllStockCategoriesDocument = gql`
 }
     `;
 
-export function useGetAllStockCategoriesQuery(options?: Omit<Urql.UseQueryArgs<GetAllStockCategoriesQueryVariables>, 'query'>) {
-  return Urql.useQuery<GetAllStockCategoriesQuery, GetAllStockCategoriesQueryVariables>({ query: GetAllStockCategoriesDocument, ...options });
+export function useGetAllStockCategoriesQuery(options: Omit<Urql.UseQueryArgs<never, GetAllStockCategoriesQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetAllStockCategoriesQuery>({ query: GetAllStockCategoriesDocument, ...options });
 };
 export const GetAllStockPackagingDocument = gql`
     query getAllStockPackaging {
@@ -11195,8 +10781,8 @@ export const GetAllStockPackagingDocument = gql`
 }
     `;
 
-export function useGetAllStockPackagingQuery(options?: Omit<Urql.UseQueryArgs<GetAllStockPackagingQueryVariables>, 'query'>) {
-  return Urql.useQuery<GetAllStockPackagingQuery, GetAllStockPackagingQueryVariables>({ query: GetAllStockPackagingDocument, ...options });
+export function useGetAllStockPackagingQuery(options: Omit<Urql.UseQueryArgs<never, GetAllStockPackagingQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetAllStockPackagingQuery>({ query: GetAllStockPackagingDocument, ...options });
 };
 export const GetAllStockUnitsDocument = gql`
     query getAllStockUnits {
@@ -11207,8 +10793,8 @@ export const GetAllStockUnitsDocument = gql`
 }
     `;
 
-export function useGetAllStockUnitsQuery(options?: Omit<Urql.UseQueryArgs<GetAllStockUnitsQueryVariables>, 'query'>) {
-  return Urql.useQuery<GetAllStockUnitsQuery, GetAllStockUnitsQueryVariables>({ query: GetAllStockUnitsDocument, ...options });
+export function useGetAllStockUnitsQuery(options: Omit<Urql.UseQueryArgs<never, GetAllStockUnitsQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetAllStockUnitsQuery>({ query: GetAllStockUnitsDocument, ...options });
 };
 export const GetAllStockProductsDocument = gql`
     query getAllStockProducts($first: Int!, $after: String, $text: String!, $sortBy: [String!] = ["uid"]) {
@@ -11286,8 +10872,8 @@ export const GetAllStockProductsDocument = gql`
 }
     `;
 
-export function useGetAllStockProductsQuery(options: Omit<Urql.UseQueryArgs<GetAllStockProductsQueryVariables>, 'query'>) {
-  return Urql.useQuery<GetAllStockProductsQuery, GetAllStockProductsQueryVariables>({ query: GetAllStockProductsDocument, ...options });
+export function useGetAllStockProductsQuery(options: Omit<Urql.UseQueryArgs<never, GetAllStockProductsQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetAllStockProductsQuery>({ query: GetAllStockProductsDocument, ...options });
 };
 export const GetAllStockItemsDocument = gql`
     query getAllStockItems($first: Int!, $after: String, $text: String!, $sortBy: [String!] = ["uid"]) {
@@ -11318,8 +10904,8 @@ export const GetAllStockItemsDocument = gql`
 }
     `;
 
-export function useGetAllStockItemsQuery(options: Omit<Urql.UseQueryArgs<GetAllStockItemsQueryVariables>, 'query'>) {
-  return Urql.useQuery<GetAllStockItemsQuery, GetAllStockItemsQueryVariables>({ query: GetAllStockItemsDocument, ...options });
+export function useGetAllStockItemsQuery(options: Omit<Urql.UseQueryArgs<never, GetAllStockItemsQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetAllStockItemsQuery>({ query: GetAllStockItemsDocument, ...options });
 };
 export const GetAllStockOrdersDocument = gql`
     query getAllStockOrders($first: Int!, $after: String, $status: String!, $text: String!, $sortBy: [String!] = ["uid"]) {
@@ -11355,8 +10941,8 @@ export const GetAllStockOrdersDocument = gql`
 }
     `;
 
-export function useGetAllStockOrdersQuery(options: Omit<Urql.UseQueryArgs<GetAllStockOrdersQueryVariables>, 'query'>) {
-  return Urql.useQuery<GetAllStockOrdersQuery, GetAllStockOrdersQueryVariables>({ query: GetAllStockOrdersDocument, ...options });
+export function useGetAllStockOrdersQuery(options: Omit<Urql.UseQueryArgs<never, GetAllStockOrdersQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetAllStockOrdersQuery>({ query: GetAllStockOrdersDocument, ...options });
 };
 export const GetAllStockOrderProductsDocument = gql`
     query getAllStockOrderProducts($stockOrderUid: String!) {
@@ -11373,8 +10959,8 @@ export const GetAllStockOrderProductsDocument = gql`
 }
     `;
 
-export function useGetAllStockOrderProductsQuery(options: Omit<Urql.UseQueryArgs<GetAllStockOrderProductsQueryVariables>, 'query'>) {
-  return Urql.useQuery<GetAllStockOrderProductsQuery, GetAllStockOrderProductsQueryVariables>({ query: GetAllStockOrderProductsDocument, ...options });
+export function useGetAllStockOrderProductsQuery(options: Omit<Urql.UseQueryArgs<never, GetAllStockOrderProductsQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetAllStockOrderProductsQuery>({ query: GetAllStockOrderProductsDocument, ...options });
 };
 export const GetAllStockTransactionsDocument = gql`
     query getAllStockTransactions($first: Int!, $after: String, $text: String!, $sortBy: [String!] = ["uid"]) {
@@ -11419,8 +11005,8 @@ export const GetAllStockTransactionsDocument = gql`
 }
     `;
 
-export function useGetAllStockTransactionsQuery(options: Omit<Urql.UseQueryArgs<GetAllStockTransactionsQueryVariables>, 'query'>) {
-  return Urql.useQuery<GetAllStockTransactionsQuery, GetAllStockTransactionsQueryVariables>({ query: GetAllStockTransactionsDocument, ...options });
+export function useGetAllStockTransactionsQuery(options: Omit<Urql.UseQueryArgs<never, GetAllStockTransactionsQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetAllStockTransactionsQuery>({ query: GetAllStockTransactionsDocument, ...options });
 };
 export const GetAllStockAdustmentsDocument = gql`
     query getAllStockAdustments($first: Int!, $after: String, $text: String!, $sortBy: [String!] = ["uid"]) {
@@ -11461,8 +11047,8 @@ export const GetAllStockAdustmentsDocument = gql`
 }
     `;
 
-export function useGetAllStockAdustmentsQuery(options: Omit<Urql.UseQueryArgs<GetAllStockAdustmentsQueryVariables>, 'query'>) {
-  return Urql.useQuery<GetAllStockAdustmentsQuery, GetAllStockAdustmentsQueryVariables>({ query: GetAllStockAdustmentsDocument, ...options });
+export function useGetAllStockAdustmentsQuery(options: Omit<Urql.UseQueryArgs<never, GetAllStockAdustmentsQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetAllStockAdustmentsQuery>({ query: GetAllStockAdustmentsDocument, ...options });
 };
 export const AddNoticeDocument = gql`
     mutation AddNotice($payload: NoticeInputType!) {
@@ -11565,8 +11151,8 @@ export const GetNoticesByCreatorUidDocument = gql`
 }
     `;
 
-export function useGetNoticesByCreatorUidQuery(options: Omit<Urql.UseQueryArgs<GetNoticesByCreatorUidQueryVariables>, 'query'>) {
-  return Urql.useQuery<GetNoticesByCreatorUidQuery, GetNoticesByCreatorUidQueryVariables>({ query: GetNoticesByCreatorUidDocument, ...options });
+export function useGetNoticesByCreatorUidQuery(options: Omit<Urql.UseQueryArgs<never, GetNoticesByCreatorUidQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetNoticesByCreatorUidQuery>({ query: GetNoticesByCreatorUidDocument, ...options });
 };
 export const AddIdentificationDocument = gql`
     mutation AddIdentification($name: String!) {
@@ -11814,8 +11400,8 @@ export const GetAllPatientsDocument = gql`
 }
     `;
 
-export function useGetAllPatientsQuery(options: Omit<Urql.UseQueryArgs<GetAllPatientsQueryVariables>, 'query'>) {
-  return Urql.useQuery<GetAllPatientsQuery, GetAllPatientsQueryVariables>({ query: GetAllPatientsDocument, ...options });
+export function useGetAllPatientsQuery(options: Omit<Urql.UseQueryArgs<never, GetAllPatientsQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetAllPatientsQuery>({ query: GetAllPatientsDocument, ...options });
 };
 export const SearchPatientsDocument = gql`
     query searchPatients($queryString: String!) {
@@ -11871,8 +11457,8 @@ export const SearchPatientsDocument = gql`
 }
     `;
 
-export function useSearchPatientsQuery(options: Omit<Urql.UseQueryArgs<SearchPatientsQueryVariables>, 'query'>) {
-  return Urql.useQuery<SearchPatientsQuery, SearchPatientsQueryVariables>({ query: SearchPatientsDocument, ...options });
+export function useSearchPatientsQuery(options: Omit<Urql.UseQueryArgs<never, SearchPatientsQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<SearchPatientsQuery>({ query: SearchPatientsDocument, ...options });
 };
 export const GetPatientByUidDocument = gql`
     query getPatientByUid($uid: String!) {
@@ -11928,8 +11514,8 @@ export const GetPatientByUidDocument = gql`
 }
     `;
 
-export function useGetPatientByUidQuery(options: Omit<Urql.UseQueryArgs<GetPatientByUidQueryVariables>, 'query'>) {
-  return Urql.useQuery<GetPatientByUidQuery, GetPatientByUidQueryVariables>({ query: GetPatientByUidDocument, ...options });
+export function useGetPatientByUidQuery(options: Omit<Urql.UseQueryArgs<never, GetPatientByUidQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetPatientByUidQuery>({ query: GetPatientByUidDocument, ...options });
 };
 export const IdentificationTypesDocument = gql`
     query identificationTypes {
@@ -11940,8 +11526,8 @@ export const IdentificationTypesDocument = gql`
 }
     `;
 
-export function useIdentificationTypesQuery(options?: Omit<Urql.UseQueryArgs<IdentificationTypesQueryVariables>, 'query'>) {
-  return Urql.useQuery<IdentificationTypesQuery, IdentificationTypesQueryVariables>({ query: IdentificationTypesDocument, ...options });
+export function useIdentificationTypesQuery(options: Omit<Urql.UseQueryArgs<never, IdentificationTypesQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<IdentificationTypesQuery>({ query: IdentificationTypesDocument, ...options });
 };
 export const AddReflexRDocument = gql`
     mutation AddReflexR($payload: ReflexRuleInput!) {
@@ -12156,8 +11742,8 @@ export const GetAllReflexRulesDocument = gql`
 }
     `;
 
-export function useGetAllReflexRulesQuery(options?: Omit<Urql.UseQueryArgs<GetAllReflexRulesQueryVariables>, 'query'>) {
-  return Urql.useQuery<GetAllReflexRulesQuery, GetAllReflexRulesQueryVariables>({ query: GetAllReflexRulesDocument, ...options });
+export function useGetAllReflexRulesQuery(options: Omit<Urql.UseQueryArgs<never, GetAllReflexRulesQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetAllReflexRulesQuery>({ query: GetAllReflexRulesDocument, ...options });
 };
 export const GetReflexRuleByUidDocument = gql`
     query getReflexRuleByUid($uid: String!) {
@@ -12221,8 +11807,8 @@ export const GetReflexRuleByUidDocument = gql`
 }
     `;
 
-export function useGetReflexRuleByUidQuery(options: Omit<Urql.UseQueryArgs<GetReflexRuleByUidQueryVariables>, 'query'>) {
-  return Urql.useQuery<GetReflexRuleByUidQuery, GetReflexRuleByUidQueryVariables>({ query: GetReflexRuleByUidDocument, ...options });
+export function useGetReflexRuleByUidQuery(options: Omit<Urql.UseQueryArgs<never, GetReflexRuleByUidQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetReflexRuleByUidQuery>({ query: GetReflexRuleByUidDocument, ...options });
 };
 export const AddReferralLaboratoryDocument = gql`
     mutation AddReferralLaboratory($payload: ReferralLaboratoryInputType!) {
@@ -12416,8 +12002,8 @@ export const GetAllReferralLaboratoriesDocument = gql`
 }
     `;
 
-export function useGetAllReferralLaboratoriesQuery(options?: Omit<Urql.UseQueryArgs<GetAllReferralLaboratoriesQueryVariables>, 'query'>) {
-  return Urql.useQuery<GetAllReferralLaboratoriesQuery, GetAllReferralLaboratoriesQueryVariables>({ query: GetAllReferralLaboratoriesDocument, ...options });
+export function useGetAllReferralLaboratoriesQuery(options: Omit<Urql.UseQueryArgs<never, GetAllReferralLaboratoriesQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetAllReferralLaboratoriesQuery>({ query: GetAllReferralLaboratoriesDocument, ...options });
 };
 export const GetAllShipmentsDocument = gql`
     query getAllShipments($first: Int!, $after: String, $before: String, $incoming: Boolean!, $status: String!, $text: String!, $sortBy: [String!] = ["-uid"]) {
@@ -12454,8 +12040,8 @@ export const GetAllShipmentsDocument = gql`
 }
     `;
 
-export function useGetAllShipmentsQuery(options: Omit<Urql.UseQueryArgs<GetAllShipmentsQueryVariables>, 'query'>) {
-  return Urql.useQuery<GetAllShipmentsQuery, GetAllShipmentsQueryVariables>({ query: GetAllShipmentsDocument, ...options });
+export function useGetAllShipmentsQuery(options: Omit<Urql.UseQueryArgs<never, GetAllShipmentsQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetAllShipmentsQuery>({ query: GetAllShipmentsDocument, ...options });
 };
 export const GetShipmentByUidDocument = gql`
     query getShipmentByUid($shipmentUid: String!) {
@@ -12499,8 +12085,8 @@ export const GetShipmentByUidDocument = gql`
 }
     `;
 
-export function useGetShipmentByUidQuery(options: Omit<Urql.UseQueryArgs<GetShipmentByUidQueryVariables>, 'query'>) {
-  return Urql.useQuery<GetShipmentByUidQuery, GetShipmentByUidQueryVariables>({ query: GetShipmentByUidDocument, ...options });
+export function useGetShipmentByUidQuery(options: Omit<Urql.UseQueryArgs<never, GetShipmentByUidQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetShipmentByUidQuery>({ query: GetShipmentByUidDocument, ...options });
 };
 export const ManifestReportDocument = gql`
     query manifestReport($uid: String!) {
@@ -12508,8 +12094,8 @@ export const ManifestReportDocument = gql`
 }
     `;
 
-export function useManifestReportQuery(options: Omit<Urql.UseQueryArgs<ManifestReportQueryVariables>, 'query'>) {
-  return Urql.useQuery<ManifestReportQuery, ManifestReportQueryVariables>({ query: ManifestReportDocument, ...options });
+export function useManifestReportQuery(options: Omit<Urql.UseQueryArgs<never, ManifestReportQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<ManifestReportQuery>({ query: ManifestReportDocument, ...options });
 };
 export const AddStoreRoomDocument = gql`
     mutation AddStoreRoom($payload: StoreRoomInputType!) {
@@ -12779,8 +12365,8 @@ export const GetAllStoreRoomsDocument = gql`
 }
     `;
 
-export function useGetAllStoreRoomsQuery(options?: Omit<Urql.UseQueryArgs<GetAllStoreRoomsQueryVariables>, 'query'>) {
-  return Urql.useQuery<GetAllStoreRoomsQuery, GetAllStoreRoomsQueryVariables>({ query: GetAllStoreRoomsDocument, ...options });
+export function useGetAllStoreRoomsQuery(options: Omit<Urql.UseQueryArgs<never, GetAllStoreRoomsQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetAllStoreRoomsQuery>({ query: GetAllStoreRoomsDocument, ...options });
 };
 export const GetStoreRoomByUidDocument = gql`
     query getStoreRoomByUid($uid: String!) {
@@ -12792,8 +12378,8 @@ export const GetStoreRoomByUidDocument = gql`
 }
     `;
 
-export function useGetStoreRoomByUidQuery(options: Omit<Urql.UseQueryArgs<GetStoreRoomByUidQueryVariables>, 'query'>) {
-  return Urql.useQuery<GetStoreRoomByUidQuery, GetStoreRoomByUidQueryVariables>({ query: GetStoreRoomByUidDocument, ...options });
+export function useGetStoreRoomByUidQuery(options: Omit<Urql.UseQueryArgs<never, GetStoreRoomByUidQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetStoreRoomByUidQuery>({ query: GetStoreRoomByUidDocument, ...options });
 };
 export const GetAllStorageLocationsDocument = gql`
     query getAllStorageLocations($storeRoomUid: String!) {
@@ -12806,8 +12392,8 @@ export const GetAllStorageLocationsDocument = gql`
 }
     `;
 
-export function useGetAllStorageLocationsQuery(options: Omit<Urql.UseQueryArgs<GetAllStorageLocationsQueryVariables>, 'query'>) {
-  return Urql.useQuery<GetAllStorageLocationsQuery, GetAllStorageLocationsQueryVariables>({ query: GetAllStorageLocationsDocument, ...options });
+export function useGetAllStorageLocationsQuery(options: Omit<Urql.UseQueryArgs<never, GetAllStorageLocationsQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetAllStorageLocationsQuery>({ query: GetAllStorageLocationsDocument, ...options });
 };
 export const GetStorageLocationByUidDocument = gql`
     query getStorageLocationByUid($uid: String!) {
@@ -12820,8 +12406,8 @@ export const GetStorageLocationByUidDocument = gql`
 }
     `;
 
-export function useGetStorageLocationByUidQuery(options: Omit<Urql.UseQueryArgs<GetStorageLocationByUidQueryVariables>, 'query'>) {
-  return Urql.useQuery<GetStorageLocationByUidQuery, GetStorageLocationByUidQueryVariables>({ query: GetStorageLocationByUidDocument, ...options });
+export function useGetStorageLocationByUidQuery(options: Omit<Urql.UseQueryArgs<never, GetStorageLocationByUidQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetStorageLocationByUidQuery>({ query: GetStorageLocationByUidDocument, ...options });
 };
 export const GetAllStorageSectionsDocument = gql`
     query getAllStorageSections($storageLocationUid: String!) {
@@ -12834,8 +12420,8 @@ export const GetAllStorageSectionsDocument = gql`
 }
     `;
 
-export function useGetAllStorageSectionsQuery(options: Omit<Urql.UseQueryArgs<GetAllStorageSectionsQueryVariables>, 'query'>) {
-  return Urql.useQuery<GetAllStorageSectionsQuery, GetAllStorageSectionsQueryVariables>({ query: GetAllStorageSectionsDocument, ...options });
+export function useGetAllStorageSectionsQuery(options: Omit<Urql.UseQueryArgs<never, GetAllStorageSectionsQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetAllStorageSectionsQuery>({ query: GetAllStorageSectionsDocument, ...options });
 };
 export const GetStorageSectionByUidDocument = gql`
     query getStorageSectionByUid($uid: String!) {
@@ -12848,8 +12434,8 @@ export const GetStorageSectionByUidDocument = gql`
 }
     `;
 
-export function useGetStorageSectionByUidQuery(options: Omit<Urql.UseQueryArgs<GetStorageSectionByUidQueryVariables>, 'query'>) {
-  return Urql.useQuery<GetStorageSectionByUidQuery, GetStorageSectionByUidQueryVariables>({ query: GetStorageSectionByUidDocument, ...options });
+export function useGetStorageSectionByUidQuery(options: Omit<Urql.UseQueryArgs<never, GetStorageSectionByUidQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetStorageSectionByUidQuery>({ query: GetStorageSectionByUidDocument, ...options });
 };
 export const GetAllStorageContainersDocument = gql`
     query getAllStorageContainers($storageSectionUid: String!) {
@@ -12867,8 +12453,8 @@ export const GetAllStorageContainersDocument = gql`
 }
     `;
 
-export function useGetAllStorageContainersQuery(options: Omit<Urql.UseQueryArgs<GetAllStorageContainersQueryVariables>, 'query'>) {
-  return Urql.useQuery<GetAllStorageContainersQuery, GetAllStorageContainersQueryVariables>({ query: GetAllStorageContainersDocument, ...options });
+export function useGetAllStorageContainersQuery(options: Omit<Urql.UseQueryArgs<never, GetAllStorageContainersQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetAllStorageContainersQuery>({ query: GetAllStorageContainersDocument, ...options });
 };
 export const GetSrorageContainerByUidDocument = gql`
     query getSrorageContainerByUid($uid: String!) {
@@ -12887,8 +12473,8 @@ export const GetSrorageContainerByUidDocument = gql`
 }
     `;
 
-export function useGetSrorageContainerByUidQuery(options: Omit<Urql.UseQueryArgs<GetSrorageContainerByUidQueryVariables>, 'query'>) {
-  return Urql.useQuery<GetSrorageContainerByUidQuery, GetSrorageContainerByUidQueryVariables>({ query: GetSrorageContainerByUidDocument, ...options });
+export function useGetSrorageContainerByUidQuery(options: Omit<Urql.UseQueryArgs<never, GetSrorageContainerByUidQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetSrorageContainerByUidQuery>({ query: GetSrorageContainerByUidDocument, ...options });
 };
 export const GetStoreRoomsTreeDocument = gql`
     query getStoreRoomsTree {
@@ -12919,8 +12505,8 @@ export const GetStoreRoomsTreeDocument = gql`
 }
     `;
 
-export function useGetStoreRoomsTreeQuery(options?: Omit<Urql.UseQueryArgs<GetStoreRoomsTreeQueryVariables>, 'query'>) {
-  return Urql.useQuery<GetStoreRoomsTreeQuery, GetStoreRoomsTreeQueryVariables>({ query: GetStoreRoomsTreeDocument, ...options });
+export function useGetStoreRoomsTreeQuery(options: Omit<Urql.UseQueryArgs<never, GetStoreRoomsTreeQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetStoreRoomsTreeQuery>({ query: GetStoreRoomsTreeDocument, ...options });
 };
 export const GetSystemActivityDocument = gql`
     subscription getSystemActivity {
@@ -12967,8 +12553,424 @@ export const GetSystemActivityDocument = gql`
 }
     `;
 
-export function useGetSystemActivitySubscription<TData = GetSystemActivitySubscription>(options: Omit<Urql.UseSubscriptionArgs<GetSystemActivitySubscriptionVariables>, 'query'> = {}, handler?: Urql.SubscriptionHandler<GetSystemActivitySubscription, TData>) {
-  return Urql.useSubscription<GetSystemActivitySubscription, TData, GetSystemActivitySubscriptionVariables>({ query: GetSystemActivityDocument, ...options }, handler);
+export function useGetSystemActivitySubscription<R = GetSystemActivitySubscription>(options: Omit<Urql.UseSubscriptionArgs<never, GetSystemActivitySubscriptionVariables>, 'query'> = {}, handler?: Urql.SubscriptionHandlerArg<GetSystemActivitySubscription, R>) {
+  return Urql.useSubscription<GetSystemActivitySubscription, R, GetSystemActivitySubscriptionVariables>({ query: GetSystemActivityDocument, ...options }, handler);
+};
+export const AuthenticateUserDocument = gql`
+    mutation AuthenticateUser($username: String!, $password: String!) {
+  authenticateUser(password: $password, username: $username) {
+    ... on AuthenticatedData {
+      __typename
+      token
+      tokenType
+      user {
+        uid
+        firstName
+        lastName
+        groups {
+          permissions {
+            uid
+            action
+            target
+          }
+          uid
+          name
+          keyword
+          pages
+        }
+        preferenceUid
+        preference {
+          expandedMenu
+          theme
+          departments {
+            uid
+            name
+          }
+        }
+      }
+    }
+    ... on OperationError {
+      __typename
+      error
+      suggestion
+    }
+  }
+}
+    `;
+
+export function useAuthenticateUserMutation() {
+  return Urql.useMutation<AuthenticateUserMutation, AuthenticateUserMutationVariables>(AuthenticateUserDocument);
+};
+export const AddUserDocument = gql`
+    mutation addUser($firstName: String!, $lastName: String!, $email: String!, $groupUid: String) {
+  createUser(
+    firstName: $firstName
+    lastName: $lastName
+    email: $email
+    groupUid: $groupUid
+  ) {
+    ... on UserType {
+      uid
+      firstName
+      lastName
+      email
+      isActive
+      isSuperuser
+      mobilePhone
+      auth {
+        uid
+        userName
+        isBlocked
+        userType
+      }
+      groups {
+        permissions {
+          uid
+          action
+          target
+        }
+        uid
+        name
+        keyword
+        pages
+      }
+    }
+    ... on OperationError {
+      __typename
+      error
+      suggestion
+    }
+  }
+}
+    `;
+
+export function useAddUserMutation() {
+  return Urql.useMutation<AddUserMutation, AddUserMutationVariables>(AddUserDocument);
+};
+export const EditUserDocument = gql`
+    mutation editUser($userUid: String!, $firstName: String!, $lastName: String, $email: String, $groupUid: String, $mobilePhone: String, $isActive: Boolean) {
+  updateUser(
+    userUid: $userUid
+    firstName: $firstName
+    lastName: $lastName
+    email: $email
+    groupUid: $groupUid
+    mobilePhone: $mobilePhone
+    isActive: $isActive
+  ) {
+    ... on UserType {
+      uid
+      firstName
+      lastName
+      email
+      isActive
+      isSuperuser
+      mobilePhone
+      auth {
+        uid
+        userName
+        isBlocked
+        userType
+      }
+      groups {
+        permissions {
+          uid
+          action
+          target
+        }
+        uid
+        name
+        keyword
+        pages
+      }
+    }
+    ... on OperationError {
+      __typename
+      error
+      suggestion
+    }
+  }
+}
+    `;
+
+export function useEditUserMutation() {
+  return Urql.useMutation<EditUserMutation, EditUserMutationVariables>(EditUserDocument);
+};
+export const AddUserAuthDocument = gql`
+    mutation addUserAuth($userUid: String!, $userName: String!, $password: String!, $passwordc: String!) {
+  createUserAuth(
+    userUid: $userUid
+    userName: $userName
+    password: $password
+    passwordc: $passwordc
+  ) {
+    ... on UserType {
+      uid
+      firstName
+      lastName
+      email
+      isActive
+      isSuperuser
+      mobilePhone
+      auth {
+        uid
+        userName
+        isBlocked
+        userType
+      }
+      groups {
+        permissions {
+          uid
+          action
+          target
+        }
+        uid
+        name
+        keyword
+        pages
+      }
+    }
+    ... on OperationError {
+      __typename
+      error
+      suggestion
+    }
+  }
+}
+    `;
+
+export function useAddUserAuthMutation() {
+  return Urql.useMutation<AddUserAuthMutation, AddUserAuthMutationVariables>(AddUserAuthDocument);
+};
+export const EditUserAuthDocument = gql`
+    mutation editUserAuth($userUid: String!, $userName: String!, $password: String!, $passwordc: String!) {
+  updateUserAuth(
+    userUid: $userUid
+    userName: $userName
+    password: $password
+    passwordc: $passwordc
+  ) {
+    ... on UserType {
+      uid
+      firstName
+      lastName
+      email
+      isActive
+      isSuperuser
+      mobilePhone
+      auth {
+        uid
+        userName
+        isBlocked
+        userType
+      }
+      groups {
+        permissions {
+          uid
+          action
+          target
+        }
+        uid
+        name
+        keyword
+        pages
+      }
+    }
+    ... on OperationError {
+      __typename
+      error
+      suggestion
+    }
+  }
+}
+    `;
+
+export function useEditUserAuthMutation() {
+  return Urql.useMutation<EditUserAuthMutation, EditUserAuthMutationVariables>(EditUserAuthDocument);
+};
+export const AddGroupDocument = gql`
+    mutation addGroup($payload: GroupInputType!) {
+  createGroup(payload: $payload) {
+    ... on GroupType {
+      __typename
+      uid
+      name
+      pages
+      permissions {
+        uid
+        action
+        target
+        active
+      }
+      active
+    }
+    ... on OperationError {
+      __typename
+      error
+      suggestion
+    }
+  }
+}
+    `;
+
+export function useAddGroupMutation() {
+  return Urql.useMutation<AddGroupMutation, AddGroupMutationVariables>(AddGroupDocument);
+};
+export const EditGroupDocument = gql`
+    mutation editGroup($uid: String!, $payload: GroupInputType!) {
+  updateGroup(uid: $uid, payload: $payload) {
+    ... on GroupType {
+      __typename
+      uid
+      name
+      pages
+      permissions {
+        uid
+        action
+        target
+        active
+      }
+      active
+    }
+    ... on OperationError {
+      __typename
+      error
+      suggestion
+    }
+  }
+}
+    `;
+
+export function useEditGroupMutation() {
+  return Urql.useMutation<EditGroupMutation, EditGroupMutationVariables>(EditGroupDocument);
+};
+export const UpdateGroupsAndPermissionsDocument = gql`
+    mutation updateGroupsAndPermissions($groupUid: String!, $permissionUid: String!) {
+  updateGroupPermissions(groupUid: $groupUid, permissionUid: $permissionUid) {
+    ... on UpdatedGroupPerms {
+      group {
+        uid
+        name
+        pages
+        permissions {
+          uid
+          action
+          target
+          active
+        }
+        active
+      }
+      permission {
+        uid
+        action
+        target
+      }
+    }
+    ... on OperationError {
+      __typename
+      error
+      suggestion
+    }
+  }
+}
+    `;
+
+export function useUpdateGroupsAndPermissionsMutation() {
+  return Urql.useMutation<UpdateGroupsAndPermissionsMutation, UpdateGroupsAndPermissionsMutationVariables>(UpdateGroupsAndPermissionsDocument);
+};
+export const AddDepartmentDocument = gql`
+    mutation addDepartment($payload: DepartmentInputType!) {
+  createDepartment(payload: $payload) {
+    ... on DepartmentType {
+      uid
+      name
+    }
+    ... on OperationError {
+      __typename
+      error
+      suggestion
+    }
+  }
+}
+    `;
+
+export function useAddDepartmentMutation() {
+  return Urql.useMutation<AddDepartmentMutation, AddDepartmentMutationVariables>(AddDepartmentDocument);
+};
+export const EditDepartmentDocument = gql`
+    mutation editDepartment($uid: String!, $payload: DepartmentInputType!) {
+  updateDepartment(uid: $uid, payload: $payload) {
+    ... on DepartmentType {
+      uid
+      name
+    }
+    ... on OperationError {
+      __typename
+      error
+      suggestion
+    }
+  }
+}
+    `;
+
+export function useEditDepartmentMutation() {
+  return Urql.useMutation<EditDepartmentMutation, EditDepartmentMutationVariables>(EditDepartmentDocument);
+};
+export const EditLaboratoryDocument = gql`
+    mutation editLaboratory($uid: String!, $payload: LaboratoryInputType!) {
+  updateLaboratory(uid: $uid, payload: $payload) {
+    ... on LaboratoryType {
+      uid
+      setupName
+      labName
+      labManagerUid
+      email
+      emailCc
+      mobilePhone
+      businessPhone
+      address
+      logo
+    }
+    ... on OperationError {
+      __typename
+      error
+      suggestion
+    }
+  }
+}
+    `;
+
+export function useEditLaboratoryMutation() {
+  return Urql.useMutation<EditLaboratoryMutation, EditLaboratoryMutationVariables>(EditLaboratoryDocument);
+};
+export const EditLaboratorySettingDocument = gql`
+    mutation editLaboratorySetting($uid: String!, $payload: LaboratorySettingInputType!) {
+  updateLaboratorySetting(uid: $uid, payload: $payload) {
+    ... on LaboratorySettingType {
+      uid
+      laboratoryUid
+      allowSelfVerification
+      allowPatientRegistration
+      allowSampleRegistration
+      allowWorksheetCreation
+      defaultRoute
+      passwordLifetime
+      inactivityLogOut
+      defaultTheme
+      autoReceiveSamples
+      stickerCopies
+    }
+    ... on OperationError {
+      __typename
+      error
+      suggestion
+    }
+  }
+}
+    `;
+
+export function useEditLaboratorySettingMutation() {
+  return Urql.useMutation<EditLaboratorySettingMutation, EditLaboratorySettingMutationVariables>(EditLaboratorySettingDocument);
 };
 export const AddWorkSheetTemplateDocument = gql`
     mutation AddWorkSheetTemplate($payload: WorksheetTemplateInputType!) {
@@ -13282,8 +13284,8 @@ export const GetAllWorksheetTemplatesDocument = gql`
 }
     `;
 
-export function useGetAllWorksheetTemplatesQuery(options?: Omit<Urql.UseQueryArgs<GetAllWorksheetTemplatesQueryVariables>, 'query'>) {
-  return Urql.useQuery<GetAllWorksheetTemplatesQuery, GetAllWorksheetTemplatesQueryVariables>({ query: GetAllWorksheetTemplatesDocument, ...options });
+export function useGetAllWorksheetTemplatesQuery(options: Omit<Urql.UseQueryArgs<never, GetAllWorksheetTemplatesQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetAllWorksheetTemplatesQuery>({ query: GetAllWorksheetTemplatesDocument, ...options });
 };
 export const GetAllWorksheetsDocument = gql`
     query getAllWorksheets($first: Int!, $after: String, $before: String, $status: String!, $text: String!, $sortBy: [String!] = ["-uid"]) {
@@ -13331,8 +13333,8 @@ export const GetAllWorksheetsDocument = gql`
 }
     `;
 
-export function useGetAllWorksheetsQuery(options: Omit<Urql.UseQueryArgs<GetAllWorksheetsQueryVariables>, 'query'>) {
-  return Urql.useQuery<GetAllWorksheetsQuery, GetAllWorksheetsQueryVariables>({ query: GetAllWorksheetsDocument, ...options });
+export function useGetAllWorksheetsQuery(options: Omit<Urql.UseQueryArgs<never, GetAllWorksheetsQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetAllWorksheetsQuery>({ query: GetAllWorksheetsDocument, ...options });
 };
 export const GetWorkSheetByUidDocument = gql`
     query getWorkSheetByUid($worksheetUid: String!) {
@@ -13426,6 +13428,6 @@ export const GetWorkSheetByUidDocument = gql`
 }
     `;
 
-export function useGetWorkSheetByUidQuery(options: Omit<Urql.UseQueryArgs<GetWorkSheetByUidQueryVariables>, 'query'>) {
-  return Urql.useQuery<GetWorkSheetByUidQuery, GetWorkSheetByUidQueryVariables>({ query: GetWorkSheetByUidDocument, ...options });
+export function useGetWorkSheetByUidQuery(options: Omit<Urql.UseQueryArgs<never, GetWorkSheetByUidQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetWorkSheetByUidQuery>({ query: GetWorkSheetByUidDocument, ...options });
 };

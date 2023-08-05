@@ -1,7 +1,7 @@
 <script setup lang="ts">
   import { ref, reactive, computed, defineAsyncComponent } from 'vue';
   import { IAnalysisCategory } from '../../../models/analysis';
-  import { ADD_ANALYSIS_CATEGORY, EDIT_ANALYSIS_CATEGORY  } from '../../../graphql/analyses.mutations';
+  import { ADD_ANALYSIS_CATEGORY, EDIT_ANALYSIS_CATEGORY  } from '../../../graphql/operations/analyses.mutations';
   import { useSetupStore, useAnalysisStore } from '../../../stores';
   import { useApiUtil } from '../../../composables';
   const modal = defineAsyncComponent(

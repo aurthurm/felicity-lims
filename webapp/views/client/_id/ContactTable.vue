@@ -8,7 +8,7 @@ import {
   ADD_CLIENT_CONTACT,
   EDIT_CLIENT_CONTACT,
   DELETE_CLIENT_CONTACT,
-} from "../../../graphql/clients.mutations";
+} from "../../../graphql/operations/clients.mutations";
 import { useClientStore } from "../../../stores";
 import { IClientContact } from "../../../models/client";
 import { useApiUtil } from "../../../composables";

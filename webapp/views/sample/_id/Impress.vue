@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { defineAsyncComponent, onMounted, ref } from "vue";
 import { useRoute } from "vue-router";
-import { GET_IMPRESS_META } from "../../../graphql/analyses.queries";
+import { GET_IMPRESS_META } from "../../../graphql/operations/analyses.queries";
 import { useApiUtil, useSampleComposable } from "../../../composables";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 const LoadingMessage = defineAsyncComponent(

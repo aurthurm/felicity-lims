@@ -6,7 +6,7 @@ import {
   ADD_PROFILE_MAPPING,
   EDIT_ANALYSIS_PROFILE,
   EDIT_PROFILE_MAPPING,
-} from "../../../graphql/analyses.mutations";
+} from "../../../graphql/operations/analyses.mutations";
 import { useSetupStore, useAnalysisStore, useSampleStore } from "../../../stores";
 import { useApiUtil } from "../../../composables";
 
