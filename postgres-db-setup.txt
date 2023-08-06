@@ -1,0 +1,4 @@
+sudo -u postgres psql
+create database felicity_lims;
+create user felicity with encrypted password 'felicity';
+grant all privileges on database felicity_lims to felicity;
