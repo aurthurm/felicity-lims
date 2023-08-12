@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import { urqlClient } from '../urql';
-import { SUBSCRIBE_TO_ACTIVITY_STREAM } from '../graphql/stream.subscriptions';
+import { SUBSCRIBE_TO_ACTIVITY_STREAM } from '../graphql/operations/stream.subscriptions';
 import { pipe, subscribe } from 'wonka';
 import { useWorksheetStore } from './worksheet';
 import { useSampleStore } from './sample';

@@ -10,7 +10,7 @@ import {
     EDIT_STORAGE_SECTION,
     ADD_STORAGE_CONTAINER,
     EDIT_STORAGE_CONTAINER,
-} from '../../graphql/storage.mutations';
+} from '../../graphql/operations/storage.mutations';
 import { useStorageStore } from '../../stores';
 import { useApiUtil } from '../../composables';
 import { useRouter } from 'vue-router';

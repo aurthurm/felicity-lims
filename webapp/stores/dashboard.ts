@@ -12,7 +12,7 @@ import {
     GET_ANALYSIS_PROCESS_PEFORMANCE,
     GET_SAMPLE_GROUPS_BY_ACTION,
     GET_SAMPLE_LAGGARDS,
-} from '../graphql/dashboard.queries';
+} from '../graphql/operations/dashboard.queries';
 import { mapOrder } from '../utils/helpers';
 
 import { useApiUtil } from '../composables';

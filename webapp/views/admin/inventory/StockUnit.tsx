@@ -1,6 +1,6 @@
 import { defineAsyncComponent, defineComponent, toRefs } from 'vue';
 import { ref, reactive, computed } from 'vue';
-import { ADD_STOCK_UNIT, EDIT_STOCK_UNIT } from '../../../graphql/inventory.mutations';
+import { ADD_STOCK_UNIT, EDIT_STOCK_UNIT } from '../../../graphql/operations/inventory.mutations';
 import { useInventoryStore } from '../../../stores';
 import { useApiUtil } from '../../../composables';
 import { IStockUnit } from '../../../models/inventory';

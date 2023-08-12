@@ -1,5 +1,5 @@
 import { defineComponent, computed, ref, defineAsyncComponent } from 'vue';
-import { ADD_STOCK_ORDER } from '../../graphql/inventory.mutations';
+import { ADD_STOCK_ORDER } from '../../graphql/operations/inventory.mutations';
 import { useApiUtil } from '../../composables';
 import { useInventoryStore, useStorageStore, useSetupStore, useUserStore } from '../../stores';
 const Drawer = defineAsyncComponent(

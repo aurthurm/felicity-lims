@@ -12,7 +12,7 @@ import {
     GET_SAMPLE_BY_UID,
     GET_SAMPLE_BY_PARENT_ID,
     GET_SAMPLE_TYPE_MAPPINGS_BY_SAMPLE_TYPE,
-} from '../graphql/analyses.queries';
+} from '../graphql/operations/analyses.queries';
 import {
     useGetAllSampleTypesQuery
 } from '../graphql/graphql'

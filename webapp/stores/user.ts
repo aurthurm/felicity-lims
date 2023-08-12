@@ -5,7 +5,7 @@ import { useApiUtil } from '../composables';
 
 const { withClientQuery } = useApiUtil();
 
-import { GET_GROUPS_AND_PERMISSIONS, GET_ALL_USERS } from '../graphql/_queries';
+import { GET_GROUPS_AND_PERMISSIONS, GET_ALL_USERS } from '../graphql/operations/_queries';
 
 interface IUserPage extends IPagination<IUser> {}
 

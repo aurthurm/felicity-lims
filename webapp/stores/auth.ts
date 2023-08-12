@@ -3,7 +3,7 @@ import { ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import { IUser } from '../models/auth';
 import { STORAGE_AUTH_KEY, USER_GROUP_OVERRIDE } from '../conf';
-import { AUTHENTICATE_USER } from '../graphql/_mutations';
+import { AUTHENTICATE_USER } from '../graphql/operations/_mutations';
 import { useAuthenticateUserMutation } from '../graphql/graphql';
 import { useNotifyToast, useApiUtil, userPreferenceComposable } from '../composables';
 import { userInfo } from 'os';

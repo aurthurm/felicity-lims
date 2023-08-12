@@ -1,6 +1,6 @@
 import { defineAsyncComponent, defineComponent, toRefs } from 'vue';
 import { ref, reactive, computed } from 'vue';
-import { ADD_HAZARD, EDIT_HAZARD } from '../../../graphql/inventory.mutations';
+import { ADD_HAZARD, EDIT_HAZARD } from '../../../graphql/operations/inventory.mutations';
 import { useInventoryStore } from '../../../stores';
 import { useApiUtil } from '../../../composables';
 import { IHazard } from '../../../models/inventory';

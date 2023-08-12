@@ -2,7 +2,7 @@ import { computed, defineComponent, reactive, ref, h, defineAsyncComponent } fro
 import { useInventoryStore } from '../../stores';
 import { IStockProduct } from '../../models/inventory';
 import { useApiUtil } from '../../composables';
-import { ADD_STOCK_ADJUSTMENT } from '../../graphql/inventory.mutations';
+import { ADD_STOCK_ADJUSTMENT } from '../../graphql/operations/inventory.mutations';
 
 const DataTable = defineAsyncComponent(
     () => import('../../components/datatable/DataTable.vue')

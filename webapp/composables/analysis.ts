@@ -7,7 +7,7 @@ import {
     VERIFY_ANALYSIS_RESULTS,
     RETEST_ANALYSIS_RESULTS,
     RETRACT_ANALYSIS_RESULTS,
-} from '../graphql/analyses.mutations';
+} from '../graphql/operations/analyses.mutations';
 
 import { useSampleStore, useWorksheetStore } from '../stores';
 

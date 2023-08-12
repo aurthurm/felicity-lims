@@ -23,7 +23,7 @@ import {
     GET_ALL_STOCK_PRODUCTS,
     GET_ALL_STOCK_TRANSACTIONS,
     GET_ALL_STOCK_UNITS,
-} from '../graphql/inventory.queries';
+} from '../graphql/operations/inventory.queries';
 import { IPagination, IPaginationMeta } from '../models/pagination';
 
 const { withClientQuery } = useApiUtil();

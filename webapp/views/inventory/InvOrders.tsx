@@ -2,8 +2,8 @@ import { computed, defineComponent, reactive, ref, h, defineAsyncComponent } fro
 import { useInventoryStore, useSetupStore } from '../../stores';
 import { IStockOrder, IStockOrderProduct } from '../../models/inventory';
 import { useApiUtil } from '../../composables';
-import { GET_ALL_STOCK_ORDER_PRODUCTS } from '../../graphql/inventory.queries';
-import { EDIT_STOCK_ORDER, ISSUE_STOCK_ORDER, SUBMIT_STOCK_ORDER } from '../../graphql/inventory.mutations';
+import { GET_ALL_STOCK_ORDER_PRODUCTS } from '../../graphql/operations/inventory.queries';
+import { EDIT_STOCK_ORDER, ISSUE_STOCK_ORDER, SUBMIT_STOCK_ORDER } from '../../graphql/operations/inventory.mutations';
 
 const Drawer = defineAsyncComponent(
     () => import('../../components/Drawer.vue')

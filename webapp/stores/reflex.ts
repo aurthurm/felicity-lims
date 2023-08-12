@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { GET_ALL_REFLEX_RULES, GET_EFLEX_RULE_BY_UID } from '../graphql/reflex.queries';
+import { GET_ALL_REFLEX_RULES, GET_EFLEX_RULE_BY_UID } from '../graphql/operations/reflex.queries';
 import { IReflexAction, IReflexBrain, IReflexRule } from '../models/reflex';
 
 import { useApiUtil } from '../composables';

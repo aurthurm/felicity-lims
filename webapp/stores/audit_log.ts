@@ -3,7 +3,7 @@ import { useApiUtil } from '../composables';
 
 const { withClientQuery } = useApiUtil();
 
-import { GET_AUDIT_LOG_FOR_TARGET } from '../graphql/_queries';
+import { GET_AUDIT_LOG_FOR_TARGET } from '../graphql/operations/_queries';
 
 export const useAuditLogStore = defineStore('auditlog', {
     state: () => {

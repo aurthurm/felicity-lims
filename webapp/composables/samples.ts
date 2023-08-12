@@ -10,9 +10,9 @@ import {
     INVALIDATE_SAMPLES,
     VERIFY_SAMPLES,
     REJECT_SAMPLES,
-} from '../graphql/analyses.mutations';
-import { DOWNLOAD_IMPRESS, DOWNLOAD_IMPRESS_SAMPLES } from '../graphql/analyses.queries';
-import { RECOVER_SAMPLES, STORE_SAMPLES } from '../graphql/storage.mutations';
+} from '../graphql/operations/analyses.mutations';
+import { DOWNLOAD_IMPRESS, DOWNLOAD_IMPRESS_SAMPLES } from '../graphql/operations/analyses.queries';
+import { RECOVER_SAMPLES, STORE_SAMPLES } from '../graphql/operations/storage.mutations';
 import { useSampleStore } from '../stores';
 import { ISample } from '../models/analysis';
 import useApiUtil from './api_util';

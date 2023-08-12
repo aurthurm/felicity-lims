@@ -9,8 +9,8 @@ import {
     GET_ALL_STORAGE_SECTIONS,
     GET_ALL_STORE_ROOMS,
     GET_STORAGE_CONTAINER_BY_UID,
-} from '../graphql/storage.queries';
-import { GET_SAMPLES_BY_STORAGE_CONTAINER_UID } from '../graphql/analyses.queries';
+} from '../graphql/operations/storage.queries';
+import { GET_SAMPLES_BY_STORAGE_CONTAINER_UID } from '../graphql/operations/analyses.queries';
 
 const { withClientQuery } = useApiUtil();
 const { setTree } = useTreeStateComposable();

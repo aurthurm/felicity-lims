@@ -11,7 +11,7 @@ import {
     GET_ALL_CODING_STANDARDS,
     GET_PROFILE_MAPPINGS_BY_PROFILE,
     GET_ANALYSIS_MAPPINGS_BY_ANALYSIS,
-} from '../graphql/analyses.queries';
+} from '../graphql/operations/analyses.queries';
 import { IAnalysisCategory, IAnalysisService, IAnalysisProfile, IQCLevel, IQCTemplate, IRejectionReason, ICodingStandard } from '../models/analysis';
 
 import { useApiUtil } from '../composables';

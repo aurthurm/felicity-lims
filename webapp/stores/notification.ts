@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import { reactive, toRefs } from 'vue';
-import { GET_NOTICES_BY_CREATOR } from '../graphql/notice.queries';
+import { GET_NOTICES_BY_CREATOR } from '../graphql/operations/notice.queries';
 import { INotification } from '../models/notification';
 
 import useApiUtil from '../composables/api_util';

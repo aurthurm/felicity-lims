@@ -6,9 +6,9 @@ import {
     GET_ALL_INSTRUMENT_TYPES,
     GET_ALL_INSTRUMENTS,
     GET_ALL_UNITS,
-} from '../graphql/instrument.queries';
-import { GET_DEPARTMENTS } from '../graphql/_queries';
-import { GET_LABORATORY, GET_LABORATORY_SETTING } from '../graphql/_queries';
+} from '../graphql/operations/instrument.queries';
+import { GET_DEPARTMENTS } from '../graphql/operations/_queries';
+import { GET_LABORATORY, GET_LABORATORY_SETTING } from '../graphql/operations/_queries';
 import { IInstrument, IInstrumentType, ILaboratory, ILaboratorySetting, IManufacturer, IMethod, ISupplier, IUnit } from '../models/setup';
 import { IDepartment } from '../models/setup';
 
