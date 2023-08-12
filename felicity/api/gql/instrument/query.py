@@ -14,7 +14,7 @@ from api.gql.instrument.types import (
     MethodEdge,
     MethodType
 )
-from apps.setup import models
+from apps.instrument import models
 
 from utils import has_value_or_is_truthy
 
