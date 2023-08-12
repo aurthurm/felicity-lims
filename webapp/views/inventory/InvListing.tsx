@@ -26,7 +26,7 @@ const InventoryListing = defineComponent({
             first: 50,
             after: '',
             text: '',
-            sortBy: ['uid'],
+            sortBy: ['-uid'],
         });
 
         const choiceProduct = reactive({

@@ -13,7 +13,7 @@ const InventoryAdjustments = defineComponent({
             first: 50,
             after: '',
             text: '',
-            sortBy: ['uid'],
+            sortBy: ['-uid'],
         });
 
         const tableColumns = ref([

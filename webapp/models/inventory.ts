@@ -7,7 +7,9 @@ export interface IStockItem {
     name: String;
     departmentUid: string;
     department: IDepartment;
-    description: String;
+    description: string;
+    maximumLevel: number;
+    minimumLevel: number;
     createdAt: Date;
     createdByUid: string;
     createdBy: IUser;

@@ -24,7 +24,7 @@ const StockItem = defineComponent({
             first: 50,
             after: '',
             text: '',
-            sortBy: ['uid'],
+            sortBy: ['-uid'],
         });
 
         setupStore.fetchDepartments({});
@@ -152,6 +152,22 @@ const StockItem = defineComponent({
                                                     class="form-input mt-1 block w-full"
                                                     v-model={this.form.name}
                                                     placeholder="Name ..."
+                                                />
+                                            </label>
+                                            <label class="block col-span-1 mb-2">
+                                                <span class="text-gray-700">Min Level</span>
+                                                <input
+                                                    class="form-input mt-1 block w-full"
+                                                    type="number"
+                                                    v-model={this.form.minimumLevel}
+                                                />
+                                            </label>
+                                            <label class="block col-span-1 mb-2">
+                                                <span class="text-gray-700">Max Level</span>
+                                                <input
+                                                    class="form-input mt-1 block w-full"
+                                                    type="number"
+                                                    v-model={this.form.maximumLevel}
                                                 />
                                             </label>
                                             <label class="block col-span-2 mb-2">

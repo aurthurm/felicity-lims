@@ -23,7 +23,7 @@ const InventoryOrders = defineComponent({
             after: '',
             text: '',
             status: "preperation",
-            sortBy: ['uid'],
+            sortBy: ['-uid'],
         });
 
         const openDrawer = ref(false);

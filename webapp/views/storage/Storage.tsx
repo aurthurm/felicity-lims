@@ -296,44 +296,46 @@ const StorageHome = defineComponent({
                             ))}
                         </ul>
                     </div>
-                    <div class="col-span-10 pt-4">
-                        <div class="mb-2">Selected: {this.activeTree.name}</div>
-                        <hr />
-                        <div class="my-4">
-                            {this.nextTreeType === this.tags.storageLocation ? (
-                                <>
-                                    <button
-                                        onClick={() => this.locationFormManager(true, null)}
-                                        class="px-2 py-1 border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
-                                    >
-                                        Add Storage Location
-                                    </button>
-                                </>
-                            ) : null}
-                            {this.nextTreeType === this.tags.storageSection ? (
-                                <>
-                                    <button
-                                        onClick={() => this.sectionFormManager(true, null)}
-                                        class="px-2 py-1 border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
-                                    >
-                                        Add Storage Section
-                                    </button>
-                                </>
-                            ) : null}
-                            {this.nextTreeType === this.tags.storageContainer ? (
-                                <>
-                                    <button
-                                        onClick={() => this.containerFormManager(true, null)}
-                                        class="px-2 py-1 border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
-                                    >
-                                        Add Storage Container
-                                    </button>
-                                </>
-                            ) : null}
-                            {this.nextTreeType === this.tags.containerView ? <ContainerView /> : null}
+                    {this.activeTree?.name && (
+                        <div class="col-span-10 pt-4">
+                            <div class="mb-2">Selected: {this.activeTree.name}</div>
+                            <hr />
+                            <div class="my-4">
+                                {this.nextTreeType === this.tags.storageLocation ? (
+                                    <>
+                                        <button
+                                            onClick={() => this.locationFormManager(true, null)}
+                                            class="px-2 py-1 border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
+                                        >
+                                            Add Storage Location
+                                        </button>
+                                    </>
+                                ) : null}
+                                {this.nextTreeType === this.tags.storageSection ? (
+                                    <>
+                                        <button
+                                            onClick={() => this.sectionFormManager(true, null)}
+                                            class="px-2 py-1 border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
+                                        >
+                                            Add Storage Section
+                                        </button>
+                                    </>
+                                ) : null}
+                                {this.nextTreeType === this.tags.storageContainer ? (
+                                    <>
+                                        <button
+                                            onClick={() => this.containerFormManager(true, null)}
+                                            class="px-2 py-1 border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
+                                        >
+                                            Add Storage Container
+                                        </button>
+                                    </>
+                                ) : null}
+                                {this.nextTreeType === this.tags.containerView ? <ContainerView /> : null}
+                            </div>
+                            <hr />
                         </div>
-                        <hr />
-                    </div>
+                    )} 
                 </div>
 
                 {/* Store Room Form Modal */}

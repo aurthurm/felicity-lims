@@ -22,6 +22,8 @@ class StockItemInputType:
     name: str
     description: str
     department_uid: str | None = None
+    maximum_level: int | None = None
+    minimum_level: int | None = None
 
 
 StockCategoryResponse = strawberry.union(
@@ -177,7 +179,7 @@ class InventoryMutations:
 
         exists = await models.StockItem.get(name=payload.name)
         if exists:
-            return OperationError(error=f"StockItem with this name already exists")
+            return OperationError(error="StockItem with this name already exists")
 
         incoming: dict = {
             "created_by_uid": felicity_user.uid,
@@ -203,7 +205,7 @@ class InventoryMutations:
         )
 
         if not uid:
-            return OperationError(error="No uid provided to identity update obj")
+            return OperationError(error="No uid provided to identity update obj.")
 
         stock_item: models.StockItem = await models.StockItem.get(uid=uid)
         if not stock_item:
@@ -240,7 +242,7 @@ class InventoryMutations:
 
         exists = await models.StockCategory.get(name=payload.name)
         if exists:
-            return OperationError(error=f"StockCategory with this name already exists")
+            return OperationError(error="StockCategory with this name already exists")
 
         incoming: dict = {
             "created_by_uid": felicity_user.uid,
@@ -266,7 +268,7 @@ class InventoryMutations:
         )
 
         if not uid:
-            return OperationError(error="No uid provided to identity update obj")
+            return OperationError(error="No uid provided to identity update stock category")
 
         stock_category: models.StockCategory = await models.StockCategory.get(uid=uid)
         if not stock_category:
@@ -301,7 +303,7 @@ class InventoryMutations:
 
         exists = await models.Hazard.get(name=payload.name)
         if exists:
-            return OperationError(error=f"Hazard with this name already exists")
+            return OperationError(error="Hazard with this name already exists")
 
         incoming: dict = {
             "created_by_uid": felicity_user.uid,
@@ -327,7 +329,7 @@ class InventoryMutations:
         )
 
         if not uid:
-            return OperationError(error="No uid provided to identity update obj")
+            return OperationError(error="No uid provided to identity update hazard")
 
         hazard: models.Hazard = await models.Hazard.get(uid=uid)
         if not hazard:
@@ -364,7 +366,7 @@ class InventoryMutations:
 
         exists = await models.StockUnit.get(name=payload.name)
         if exists:
-            return OperationError(error=f"StockUnit with this name already exists")
+            return OperationError(error="StockUnit with this name already exists")
 
         incoming: dict = {
             "created_by_uid": felicity_user.uid,
@@ -427,7 +429,7 @@ class InventoryMutations:
 
         exists = await models.StockPackaging.get(name=payload.name)
         if exists:
-            return OperationError(error=f"StockPackaging with this name already exists")
+            return OperationError(error="StockPackaging with this name already exists")
 
         incoming: dict = {
             "created_by_uid": felicity_user.uid,
@@ -602,7 +604,7 @@ class InventoryMutations:
         stock_order: models.StockOrder = await models.StockOrder.get(uid=uid)
         if stock_order.status != order_states.PREPARATION:
             return OperationError(
-                error=f"You can only update a StockOrder under preparation"
+                error="You can only update a StockOrder under preparation"
             )
         
         obj_in = schemas.StockOrderUpdate(**{
@@ -659,7 +661,7 @@ class InventoryMutations:
         stock_order: models.StockOrder = await models.StockOrder.get(uid=uid)
         if stock_order.status not in [order_states.PREPARATION]:
             return OperationError(
-                error=f"You can only submit a StockOrder under preperation"
+                error="You can only submit a StockOrder under preperation"
             )
 
         stock_order = await stock_order.update(
@@ -683,7 +685,7 @@ class InventoryMutations:
         stock_order: models.StockOrder = await models.StockOrder.get(uid=uid)
         if stock_order.status not in [order_states.SUBMITTED]:
             return OperationError(
-                error=f"You can only approve/revert a submitted StockOrder"
+                error="You can only approve/revert a submitted StockOrder"
             )
 
         stock_order = await stock_order.update(
@@ -706,7 +708,7 @@ class InventoryMutations:
 
         stock_order: models.StockOrder = await models.StockOrder.get(uid=uid)
         if stock_order.status not in [order_states.PENDING, order_states.SUBMITTED]:
-            return OperationError(error=f"You can only issue a pending StockOrder")
+            return OperationError(error="You can only issue a pending StockOrder")
 
         # issuance
         for order_p in payload:
@@ -717,6 +719,9 @@ class InventoryMutations:
                 "date_issued": datetime.now(),
                 "product_uid": order_p.product_uid,
                 "issued": order_p.quantity,
+                "issued_to_uid": stock_order.order_by_uid,
+                "department_uid": stock_order.department_uid,
+                "transaction_by_uid": felicity_user.uid,
             }
             obj_in = schemas.StockTransactionCreate(**incoming)
             stock_transaction: models.StockTransaction = (
@@ -727,7 +732,7 @@ class InventoryMutations:
             quantity = product.remaining - order_p.quantity
             if quantity < 0:
                 return OperationError(
-                    error=f"Sorry you cannot issue beyond whats available"
+                    error="Sorry you cannot issue beyond whats available"
                 )
             else:
                 await product.update({"remaining": quantity})
@@ -752,7 +757,7 @@ class InventoryMutations:
         stock_order: models.StockOrder = await models.StockOrder.get(uid=uid)
         if stock_order.status != order_states.PREPARATION:
             return OperationError(
-                error=f"You can only delete a StockOrder under preparation"
+                error="You can only delete a StockOrder under preparation"
             )
 
         order_products = await models.StockOrderProduct.get_all(
@@ -800,7 +805,7 @@ class InventoryMutations:
                 {"remarks": "Sustained: Sorry you cannot issue beyond whats available"}
             )  # noqa
             return OperationError(
-                error=f"Sorry you cannot issue beyond whats available"
+                error="Sorry you cannot issue beyond whats available"
             )
         else:
             await product.update({"remaining": remaining})

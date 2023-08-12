@@ -8,9 +8,6 @@ const Drawer = defineAsyncComponent(
 const PageHeading = defineAsyncComponent(
     () => import('../components/PageHeading.vue')
 )
-const InventoryDashboard = defineAsyncComponent(
-    () => import('./InvDashboard')
-)
 const InventoryAdjustments = defineAsyncComponent(
     () => import('./InvAdjustments')
 )
@@ -50,8 +47,8 @@ const InventoryHome = defineComponent({
         inventoryStore.fetchUnits();
         inventoryStore.fetchPackages();
 
-        const currentTab = ref('dashboard');
-        const inventoryTabs = ref(['dashboard', 'orders', 'stock-listing', 'transactions', 'adjustments']);
+        const currentTab = ref('orders');
+        const inventoryTabs = ref(['orders', 'stock-listing', 'transactions', 'adjustments']);
         const currentTabComponent = computed(() => 'tab-' + currentTab.value);
 
         const viewBasket = ref(false);
@@ -89,7 +86,7 @@ const InventoryHome = defineComponent({
     render() {
         return (
             <>
-                <PageHeading title="Inventory xxxxxxxxxxxxxx" />
+                <PageHeading title="Inventory" />
                 <section class="col-span-12 mt-2">
                     <nav class="flex justify-between bg-white shadow-md mt-2">
                         <div class="-mb-px flex justify-start">
@@ -115,7 +112,6 @@ const InventoryHome = defineComponent({
                     </nav>
 
                     <div>
-                        {this.currentTab === 'dashboard' && <InventoryDashboard />}
                         {this.currentTab === 'orders' && <InventoryOrders />}
                         {this.currentTab === 'stock-listing' && <InventoryListing />}
                         {this.currentTab === 'transactions' && <InventoryTransactions />}

@@ -17,6 +17,7 @@ class StockItemType:
     department_uid: str | None
     department: Optional[DepartmentType]
     minimum_level: int | None
+    maximum_level: int | None
     description: str | None
     created_at: datetime | None
     created_by_uid: str | None
