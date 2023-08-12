@@ -11,6 +11,7 @@ from sqlalchemy.orm import declared_attr, selectinload
 from sqlalchemy.sql import func
 from sqlalchemy.sql.expression import bindparam
 from sqlalchemy import delete
+from sqlalchemy.orm import DeclarativeBase
 
 from sqlalchemy_mixins import AllFeaturesMixinAsync, smart_query
 from core.uid_gen import get_flake_uid
@@ -24,7 +25,8 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
-class DBModel(AllFeaturesMixinAsync):
+
+class DBModel(DeclarativeBase, AllFeaturesMixinAsync):
     __name__: str
     __abstract__ = True
     __mapper_args__ = {"eager_defaults": True}

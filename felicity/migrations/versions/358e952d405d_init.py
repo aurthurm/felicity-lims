@@ -1,8 +1,8 @@
 """init
 
-Revision ID: c5175623d799
+Revision ID: 358e952d405d
 Revises: 
-Create Date: 2023-07-17 12:09:36.238626
+Create Date: 2023-08-08 13:54:54.774460
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 from sqlalchemy.dialects import postgresql
 
 # revision identifiers, used by Alembic.
-revision = 'c5175623d799'
+revision = '358e952d405d'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -162,6 +162,19 @@ def upgrade():
     sa.PrimaryKeyConstraint('uid')
     )
     op.create_index(op.f('ix_activitystream_uid'), 'activitystream', ['uid'], unique=False)
+    op.create_table('codingstandard',
+    sa.Column('name', sa.String(), nullable=False),
+    sa.Column('description', sa.String(), nullable=False),
+    sa.Column('uid', sa.String(), nullable=False),
+    sa.Column('created_at', sa.DateTime(), nullable=True),
+    sa.Column('created_by_uid', sa.String(), nullable=True),
+    sa.Column('updated_at', sa.DateTime(), nullable=True),
+    sa.Column('updated_by_uid', sa.String(), nullable=True),
+    sa.ForeignKeyConstraint(['created_by_uid'], ['user.uid'], ),
+    sa.ForeignKeyConstraint(['updated_by_uid'], ['user.uid'], ),
+    sa.PrimaryKeyConstraint('uid')
+    )
+    op.create_index(op.f('ix_codingstandard_uid'), 'codingstandard', ['uid'], unique=False)
     op.create_table('country',
     sa.Column('name', sa.String(), nullable=True),
     sa.Column('code', sa.String(), nullable=True),
@@ -784,6 +797,24 @@ def upgrade():
     sa.PrimaryKeyConstraint('uid')
     )
     op.create_index(op.f('ix_reflexaction_uid'), 'reflexaction', ['uid'], unique=False)
+    op.create_table('sampletypecoding',
+    sa.Column('sample_type_uid', sa.String(), nullable=False),
+    sa.Column('coding_standard_uid', sa.String(), nullable=True),
+    sa.Column('name', sa.String(), nullable=True),
+    sa.Column('description', sa.String(), nullable=True),
+    sa.Column('code', sa.String(), nullable=False),
+    sa.Column('uid', sa.String(), nullable=False),
+    sa.Column('created_at', sa.DateTime(), nullable=True),
+    sa.Column('created_by_uid', sa.String(), nullable=True),
+    sa.Column('updated_at', sa.DateTime(), nullable=True),
+    sa.Column('updated_by_uid', sa.String(), nullable=True),
+    sa.ForeignKeyConstraint(['coding_standard_uid'], ['codingstandard.uid'], ),
+    sa.ForeignKeyConstraint(['created_by_uid'], ['user.uid'], ),
+    sa.ForeignKeyConstraint(['sample_type_uid'], ['sampletype.uid'], ),
+    sa.ForeignKeyConstraint(['updated_by_uid'], ['user.uid'], ),
+    sa.PrimaryKeyConstraint('uid')
+    )
+    op.create_index(op.f('ix_sampletypecoding_uid'), 'sampletypecoding', ['uid'], unique=False)
     op.create_table('shipment',
     sa.Column('shipment_id', sa.String(), nullable=False),
     sa.Column('comment', sa.String(), nullable=True),
@@ -1006,6 +1037,24 @@ def upgrade():
     sa.ForeignKeyConstraint(['sample_type_uid'], ['sampletype.uid'], ),
     sa.PrimaryKeyConstraint('sample_type_uid', 'profile_uid')
     )
+    op.create_table('profilecoding',
+    sa.Column('profile_uid', sa.String(), nullable=True),
+    sa.Column('coding_standard_uid', sa.String(), nullable=True),
+    sa.Column('name', sa.String(), nullable=True),
+    sa.Column('description', sa.String(), nullable=True),
+    sa.Column('code', sa.String(), nullable=False),
+    sa.Column('uid', sa.String(), nullable=False),
+    sa.Column('created_at', sa.DateTime(), nullable=True),
+    sa.Column('created_by_uid', sa.String(), nullable=True),
+    sa.Column('updated_at', sa.DateTime(), nullable=True),
+    sa.Column('updated_by_uid', sa.String(), nullable=True),
+    sa.ForeignKeyConstraint(['coding_standard_uid'], ['codingstandard.uid'], ),
+    sa.ForeignKeyConstraint(['created_by_uid'], ['user.uid'], ),
+    sa.ForeignKeyConstraint(['profile_uid'], ['profile.uid'], ),
+    sa.ForeignKeyConstraint(['updated_by_uid'], ['user.uid'], ),
+    sa.PrimaryKeyConstraint('uid')
+    )
+    op.create_index(op.f('ix_profilecoding_uid'), 'profilecoding', ['uid'], unique=False)
     op.create_table('reflexbrain',
     sa.Column('reflex_action_uid', sa.String(), nullable=False),
     sa.Column('description', sa.String(), nullable=True),
@@ -1108,6 +1157,24 @@ def upgrade():
     sa.ForeignKeyConstraint(['sample_type_uid'], ['sampletype.uid'], ),
     sa.PrimaryKeyConstraint('sample_type_uid', 'analysis_uid')
     )
+    op.create_table('analysiscoding',
+    sa.Column('analysis_uid', sa.String(), nullable=True),
+    sa.Column('coding_standard_uid', sa.String(), nullable=True),
+    sa.Column('name', sa.String(), nullable=True),
+    sa.Column('description', sa.String(), nullable=True),
+    sa.Column('code', sa.String(), nullable=False),
+    sa.Column('uid', sa.String(), nullable=False),
+    sa.Column('created_at', sa.DateTime(), nullable=True),
+    sa.Column('created_by_uid', sa.String(), nullable=True),
+    sa.Column('updated_at', sa.DateTime(), nullable=True),
+    sa.Column('updated_by_uid', sa.String(), nullable=True),
+    sa.ForeignKeyConstraint(['analysis_uid'], ['analysis.uid'], ),
+    sa.ForeignKeyConstraint(['coding_standard_uid'], ['codingstandard.uid'], ),
+    sa.ForeignKeyConstraint(['created_by_uid'], ['user.uid'], ),
+    sa.ForeignKeyConstraint(['updated_by_uid'], ['user.uid'], ),
+    sa.PrimaryKeyConstraint('uid')
+    )
+    op.create_index(op.f('ix_analysiscoding_uid'), 'analysiscoding', ['uid'], unique=False)
     op.create_table('analysiscorrectionfactor',
     sa.Column('factor', sa.Float(), nullable=False),
     sa.Column('analysis_uid', sa.String(), nullable=True),
@@ -1824,6 +1891,8 @@ def downgrade():
     op.drop_table('analysisdetectionlimit')
     op.drop_index(op.f('ix_analysiscorrectionfactor_uid'), table_name='analysiscorrectionfactor')
     op.drop_table('analysiscorrectionfactor')
+    op.drop_index(op.f('ix_analysiscoding_uid'), table_name='analysiscoding')
+    op.drop_table('analysiscoding')
     op.drop_table('analysis_sample_type')
     op.drop_table('analysis_reports')
     op.drop_table('analysis_profile')
@@ -1835,6 +1904,8 @@ def downgrade():
     op.drop_table('stockproduct')
     op.drop_index(op.f('ix_reflexbrain_uid'), table_name='reflexbrain')
     op.drop_table('reflexbrain')
+    op.drop_index(op.f('ix_profilecoding_uid'), table_name='profilecoding')
+    op.drop_table('profilecoding')
     op.drop_table('profile_sample_type')
     op.drop_table('method_instrument')
     op.drop_table('message_view')
@@ -1861,6 +1932,8 @@ def downgrade():
     op.drop_index(op.f('ix_shipment_uid'), table_name='shipment')
     op.drop_index(op.f('ix_shipment_shipment_id'), table_name='shipment')
     op.drop_table('shipment')
+    op.drop_index(op.f('ix_sampletypecoding_uid'), table_name='sampletypecoding')
+    op.drop_table('sampletypecoding')
     op.drop_index(op.f('ix_reflexaction_uid'), table_name='reflexaction')
     op.drop_table('reflexaction')
     op.drop_index(op.f('ix_qcreference_uid'), table_name='qcreference')
@@ -1950,6 +2023,8 @@ def downgrade():
     op.drop_index(op.f('ix_country_uid'), table_name='country')
     op.drop_index(op.f('ix_country_code'), table_name='country')
     op.drop_table('country')
+    op.drop_index(op.f('ix_codingstandard_uid'), table_name='codingstandard')
+    op.drop_table('codingstandard')
     op.drop_index(op.f('ix_activitystream_uid'), table_name='activitystream')
     op.drop_table('activitystream')
     op.drop_index(op.f('ix_activityfeed_uid'), table_name='activityfeed')
