@@ -88,13 +88,13 @@ export const useAuthStore = defineStore('auth', () => {
         // auth.value.authenticating = fetching;
 
         // typescript-vue-urql
-        useAuthenticateUserMutation().executeMutation({username: "", password: ""}, {requestPolicy: "network-only"}).then(res => {
-            console.log(res)
-        }).catch(err => {
-            console.log(err)
-        }).finally(() => (auth.value.authenticating = false));
+        // useAuthenticateUserMutation().executeMutation({username: "", password: ""}, {requestPolicy: "network-only"}).then(res => {
+        //     console.log(res)
+        // }).catch(err => {
+        //     console.log(err)
+        // }).finally(() => (auth.value.authenticating = false));
 
-        const { operation } = useAuthenticateUserMutation({username: "", password: ""});
+        // const { operation } = useAuthenticateUserMutation({username: "", password: ""});
         
         await withClientMutation(AUTHENTICATE_USER, payload, 'authenticateUser')
             .then(res => {
