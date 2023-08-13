@@ -1,6 +1,6 @@
 import logging
 import json
-from fastapi import Request
+from sanic.request import Request
 from apps.analysis.models.analysis import AnalysisRequest, Sample
 from apps.analysis.models.results import AnalysisResult
 from apps.iol.fhir.schema import DiagnosticReportResource, PatientResource, BundleResource,ServiceRequestResource, Reference

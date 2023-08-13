@@ -5,7 +5,7 @@ import sqlalchemy as sa
 import strawberry  # noqa
 from api.gql.types import PageInfo
 from api.gql.auth import auth_from_info
-from api.gql.deps import Info
+from api.deps import Info
 from api.gql.permissions import IsAuthenticated
 from api.gql.client.types import (
     ClientContactType,

@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="9f590b69-f929-45a1-8512-12ed6efbf028" name="Changes" comment="Added Invetory starter">
+      <change beforePath="$PROJECT_DIR$/felicity/api/gql/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/api/gql/analysis/mutations/analysis_category.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/analysis/mutations/analysis_category.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/api/gql/analysis/mutations/analysis_other.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/analysis/mutations/analysis_other.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/api/gql/analysis/mutations/analysis_profile.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/analysis/mutations/analysis_profile.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/api/gql/analysis/mutations/analysis_request.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/analysis/mutations/analysis_request.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/api/gql/analysis/mutations/analysis_result.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/analysis/mutations/analysis_result.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/api/gql/analysis/mutations/analysis_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/analysis/mutations/analysis_service.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/api/gql/analysis/mutations/coding_standard.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/analysis/mutations/coding_standard.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/api/gql/analysis/mutations/quality_control.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/analysis/mutations/quality_control.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/api/gql/analysis/mutations/rejection_reason.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/analysis/mutations/rejection_reason.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/api/gql/analysis/mutations/result_option.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/analysis/mutations/result_option.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/api/gql/analysis/mutations/sample_type.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/analysis/mutations/sample_type.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/api/gql/analysis/query.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/analysis/query.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/api/gql/analysis/types/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/analysis/types/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/api/gql/analysis/types/analysis.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/analysis/types/analysis.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/api/gql/analysis/types/results.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/analysis/types/results.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/api/gql/analytics/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/analytics/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/api/gql/audit/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/audit/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/api/gql/client/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/client/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/api/gql/client/mutations.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/client/mutations.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/api/gql/client/query.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/client/query.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/api/gql/client/types.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/client/types.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/api/gql/impress/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/impress/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/api/gql/instrument/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/instrument/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/api/gql/instrument/mutations.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/instrument/mutations.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/api/gql/instrument/query.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/instrument/query.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/api/gql/instrument/types.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/instrument/types.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/api/gql/inventory/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/inventory/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/api/gql/inventory/mutations.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/inventory/mutations.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/api/gql/inventory/query.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/inventory/query.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/api/gql/inventory/types.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/inventory/types.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/api/gql/messaging/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/messaging/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/api/gql/messaging/mutations.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/messaging/mutations.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/api/gql/noticeboard/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/noticeboard/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/api/gql/noticeboard/mutations.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/noticeboard/mutations.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/api/gql/notification/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/notification/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/api/gql/patient/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/patient/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/api/gql/patient/mutations.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/patient/mutations.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/api/gql/patient/query.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/patient/query.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/api/gql/patient/types.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/patient/types.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/api/gql/reflex/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/reflex/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/api/gql/reflex/mutations.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/reflex/mutations.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/api/gql/reflex/query.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/reflex/query.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/api/gql/reflex/types.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/reflex/types.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/api/gql/schema.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/schema.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/api/gql/setup/mutations.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/setup/mutations.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/api/gql/setup/query.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/setup/query.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/api/gql/setup/types/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/setup/types/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/api/gql/shipment/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/shipment/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/api/gql/shipment/mutations.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/shipment/mutations.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/api/gql/shipment/query.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/shipment/query.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/api/gql/shipment/types.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/shipment/types.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/api/gql/storage/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/storage/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/api/gql/storage/mutations.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/storage/mutations.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/api/gql/types.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/api/gql/user/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/user/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/api/gql/user/mutations.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/user/mutations.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/api/gql/user/query.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/user/query.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/api/gql/user/types.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/user/types.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/api/gql/worksheet/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/worksheet/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/api/gql/worksheet/mutations.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/worksheet/mutations.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/api/gql/worksheet/query.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/worksheet/query.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/api/gql/worksheet/types.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/worksheet/types.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/lims/bootstrap.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/lims/bootstrap.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pnpm-lock.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/pnpm-lock.yaml" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProjectId" id="2MIC1H3UyNXIcY9XKNsnyxMomqK" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "dart.analysis.tool.window.visible": "false",
+    "git-widget-placeholder": "auth-rev",
+    "ignore.virus.scanning.warn.message": "true",
+    "last_opened_file_path": "C:/Users/aurth/Development/Python/senaite-data-sync",
+    "settings.editor.selected.configurable": "terminal"
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\aurth\Development\Python\felicity-lims" />
+      <recent name="$PROJECT_DIR$/backend/felicity_lims/felicity/core/snowflake" />
+      <recent name="$PROJECT_DIR$" />
+      <recent name="$PROJECT_DIR$/frontend/vite" />
+    </key>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="9f590b69-f929-45a1-8512-12ed6efbf028" name="Changes" comment="" />
+      <created>1677445492409</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1677445492409</updated>
+    </task>
+    <task id="LOCAL-00001" summary="Added Invetory starter">
+      <created>1678626400597</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1678626400597</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
+    <servers />
+  </component>
+  <component name="UnknownFeatures">
+    <option featureType="com.intellij.fileTypeFactory" implementationName="requirements.txt" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Added Invetory starter" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added Invetory starter" />
+  </component>
+</project>

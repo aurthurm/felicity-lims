@@ -2,8 +2,8 @@ import logging
 from typing import Generic, List, Optional, Tuple, Type, TypeVar
 
 
-from database.base_class import DBModel
-from database.session import async_session_factory
+from db.base_class import DBModel
+from db.session import async_session_factory
 from dateutil import parser
 from sqlalchemy import text
 from sqlalchemy.future import select

@@ -1,7 +1,7 @@
 import logging
-from fastapi import Depends
-from functools import cached_property
-from strawberry.fastapi import BaseContext
+from typing import Any 
+
+from sanic.request import Request
 from strawberry.types import Info as _Info
 from strawberry.types.info import RootValueType
 
@@ -16,6 +16,7 @@ from pydantic import ValidationError
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+Info = _Info[Any, RootValueType]
 
 async def get_current_user(token: str = None) -> models.User:
     if not token:
@@ -38,35 +39,29 @@ async def get_current_active_user(token: str = None) -> models.User:
     return current_user
 
 
-async def get_current_active_superuser(token: str = None) -> models.User:
-    current_user = await get_current_user(token=token)
-    if not current_user.is_superuser:
-        return None
-    return current_user
+async def get_auth_context(request: Request) -> Any:
+    if "Authorization" in request.headers:
+        authorization = request.headers.get("Authorization", None)
+        if not authorization:
+            return {"user": None}
+        _, credentials = authorization.split()
+        return {
+            "user": await get_current_active_user(credentials)
+        }
+
+    logger.info(f"Context: must authenticate {request}")
+
+    return {"user": None}
 
 
-class Context(BaseContext):
-    # @cached_property
-    async def user(self) -> models.User | None:
-        if not self.request:
-            return None
-    
-        if "Authorization" in self.request.headers:
-            authorization = self.request.headers.get("Authorization", None)
-            if not authorization:
-                return
-            _, credentials = authorization.split()
-            return await get_current_user(credentials) if authorization else None
+async def get_auth_user(request: Request) -> Any:
+    if "Authorization" in request.headers:
+        authorization = request.headers.get("Authorization", None)
+        if not authorization:
+            return {"user": None}
+        _, credentials = authorization.split()
+        return await get_current_active_user(credentials)
 
-        if "auth" in self.request.query_params:
-            logger.info(f"Context: must authenticate {self.request.query_params}")
-            return None
-        
-        return  None
+    logger.info(f"Context: must authenticate {request}")
 
-
-Info = _Info[Context, RootValueType]
-
-
-async def get_context() -> Context:
-    return Context()
+    return None

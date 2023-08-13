@@ -1,8 +1,8 @@
-import logging
-from typing import Any, List
+from typing import Any
 from uuid import uuid4
 
-from api.rest import deps
+from sanic import Blueprint
+from sanic.log import logger
 from apps.analysis.models import analysis as ana_models
 from apps.analytics import conf, models
 from apps.analytics import schemas as an_schema
@@ -10,30 +10,25 @@ from apps.job import conf as job_conf
 from apps.job import models as job_models
 from apps.job import schemas as job_schemas
 from apps.user import models as user_models
-from fastapi import APIRouter, Depends
 from utils.dirs import deleteFile, resolve_media_dirs_for
 
-router = APIRouter()
 
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
+reports = Blueprint("reports", url_prefix="/reports")
 
 
-@router.get("", response_model=List[an_schema.ReportMeta])
-async def read_reports(
-    current_user: user_models.User = Depends(deps.get_current_active_user),
-) -> Any:
+@reports.get("")
+async def read_reports(current_user: user_models.User) -> Any:
     """
     Retrieve previously generated csv reports.
     """
     return await models.ReportMeta.all()
 
 
-@router.post("", response_model=an_schema.ReportMeta)
+@reports.post("")
 async def request_report_generation(
     *,
     request_in: an_schema.ReportRequest,
-    current_user: user_models.User = Depends(deps.get_current_active_user),
+    current_user: user_models.User,
 ) -> Any:
     """
     Generate Reports.
@@ -68,11 +63,11 @@ async def request_report_generation(
     return report
 
 
-@router.delete("/{report_uid}", response_model=an_schema.ReportMetaDeleted)
+@reports.delete("/{report_uid}")
 async def delete_report(
     *,
     report_uid: str,
-    current_user: user_models.User = Depends(deps.get_current_active_user),
+    current_user: user_models.User,
 ):
     report: models.ReportMeta = await models.ReportMeta.get(uid=report_uid)
     deleteFile(report.location)

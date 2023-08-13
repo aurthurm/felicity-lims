@@ -14,7 +14,7 @@ from apps.analysis.models import analysis as a_models
 from apps.analysis.utils import sample_search
 
 from utils import has_value_or_is_truthy
-from database.session import async_session_factory
+from db.session import async_session_factory
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

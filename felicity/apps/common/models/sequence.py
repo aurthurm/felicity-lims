@@ -2,8 +2,8 @@ import logging
 from datetime import datetime
 
 from apps.common.utils import sequencer, sequence_alpha
-from database.base_class import DBModel
-from database.session import async_session_factory
+from db.base_class import DBModel
+from db.session import async_session_factory
 from sqlalchemy import Column, Integer, String, DateTime
 from sqlalchemy.dialects.postgresql import insert
 

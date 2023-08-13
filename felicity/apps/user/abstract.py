@@ -5,7 +5,6 @@ from apps import DBModel
 from apps.user import schemas
 from core.security import get_password_hash, password_check
 
-from fastapi.encoders import jsonable_encoder
 from sqlalchemy import Boolean, Column, DateTime, Integer, String
 from sqlalchemy.ext.declarative import declared_attr
 
@@ -63,25 +62,25 @@ class AbstractBaseUser(SimpleAuditMixin, DBModel):
         return user
 
     async def give_super_powers(self):
-        user_obj = jsonable_encoder(self)
+        user_obj = self.to_dict()
         user_in = schemas.UserUpdate(**user_obj)
         user_in.is_superuser = True
         await self.update(user_in)
 
     async def strip_super_powers(self):
-        user_obj = jsonable_encoder(self)
+        user_obj = self.to_dict()
         user_in = schemas.UserUpdate(**user_obj)
         user_in.is_superuser = False
         await self.update(user_in)
 
     async def activate(self):
-        user_obj = jsonable_encoder(self)
+        user_obj = self.to_dict()
         user_in = schemas.UserUpdate(**user_obj)
         user_in.is_active = True
         await self.update(user_in)
 
     async def deactivate(self):
-        user_obj = jsonable_encoder(self)
+        user_obj = self.to_dict()
         user_in = schemas.UserUpdate(user_obj)
         user_in.is_active = False
         await self.update(user_in)

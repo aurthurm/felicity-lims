@@ -3,7 +3,7 @@ from typing import List, Optional
 import sqlalchemy as sa
 import strawberry  # noqa
 from api.gql.types import PageInfo
-from api.gql import deps
+from api import deps
 from api.gql.permissions import IsAuthenticated
 from api.gql.user.types import (
     GroupType,

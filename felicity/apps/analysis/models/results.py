@@ -6,7 +6,7 @@ from apps import Auditable, BaseAuditDBModel, DBModel
 from apps.analysis import conf, schemas
 from apps.common import BaseMPTT
 from apps.notification.utils import FelicityStreamer
-from database.session import async_session_factory
+from db.session import async_session_factory
 from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, String, Table
 from sqlalchemy.orm import relationship
 

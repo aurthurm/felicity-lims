@@ -156,10 +156,8 @@ export const urqlClient = createClient({
             headers: {
                 'Access-Control-Allow-Origin': '*',
                 'Access-Control-Allow-Methods': 'GET, POST, PATCH, PUT, DELETE, OPTIONS',
-                'Access-Control-Allow-Headers': 'Origin, Content-Type, X-Auth-Token',
+                'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept, Authorization',
                 ...(authData?.auth?.token && {
-                    'x-felicity-user-id': 'felicity-user-x',
-                    'x-felicity-role': 'felicity-role-x',
                     Authorization: `Bearer ${authData?.auth?.token}`,
                 }),
             },

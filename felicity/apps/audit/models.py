@@ -2,7 +2,7 @@ import json
 import logging
 
 
-from database.base_class import DBModel
+from db.base_class import DBModel
 from sqlalchemy import Column, Integer, String, UnicodeText
 
 logging.basicConfig(level=logging.INFO)

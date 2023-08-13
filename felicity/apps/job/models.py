@@ -1,5 +1,5 @@
 from datetime import datetime, timedelta
-from database.base_class import DBModel
+from db.base_class import DBModel
 from sqlalchemy import Column, Integer, String, DateTime
 from sqlalchemy.dialects.postgresql import JSONB
 

@@ -1,36 +1,30 @@
 import logging
-from base64 import b64encode
-from typing import Any, AsyncIterator, List, Optional, TypeVar, Union
+from typing import Any, AsyncIterator, List, Optional, Union
 
-from pydantic import BaseModel as PydanticBaseModel
 from sqlalchemy import Column, String
 from sqlalchemy import or_ as sa_or_
 from sqlalchemy import update
 from sqlalchemy import select
-from sqlalchemy.orm import declared_attr, selectinload
+from sqlalchemy.orm import declared_attr
 from sqlalchemy.sql import func
 from sqlalchemy.sql.expression import bindparam
-from sqlalchemy import delete
 from sqlalchemy.orm import DeclarativeBase
+from datetime import datetime
 
 from sqlalchemy_mixins import AllFeaturesMixinAsync, smart_query
 from core.uid_gen import get_flake_uid
-from database.paginator.cursor import EdgeNode, PageCursor, PageInfo
-from database.session import AsyncSessionScoped 
+from db.paginator.cursor import EdgeNode, PageCursor, PageInfo
+from db.session import AsyncSessionScoped 
 from utils import has_value_or_is_truthy
-
-InDBSchemaType = TypeVar("InDBSchemaType", bound=PydanticBaseModel)
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
-
 
 
 class DBModel(DeclarativeBase, AllFeaturesMixinAsync):
     __name__: str
     __abstract__ = True
     __mapper_args__ = {"eager_defaults": True}
-    # __allow_unmapped__ = True
 
     uid = Column(
         String,
@@ -60,7 +54,10 @@ class DBModel(DeclarativeBase, AllFeaturesMixinAsync):
 
         for field in data:
             if field not in exclude:
-                return_data[field] = data[field]  # getattr(self, field)
+                _v = data[field]
+                if isinstance(_v, datetime):
+                    _v = _v.__str__()
+                return_data[field] = _v
 
         return return_data
 
@@ -99,7 +96,6 @@ class DBModel(DeclarativeBase, AllFeaturesMixinAsync):
         Example:
             User.get(id=5)
         """
-        # stmt = select(cls).where(**kwargs)
         stmt = cls.where(**kwargs)
         async with cls.session() as session:
             results = await session.execute(stmt)
@@ -160,7 +156,6 @@ class DBModel(DeclarativeBase, AllFeaturesMixinAsync):
         """
         to_update = [cls._import(data) for data in update_data]
 
-        # stmt = update(cls).where(filters).values(to_save).execution_options(synchronize_session="fetch")
         query = smart_query(query=update(cls), filters=filters)
         stmt = query.values(to_update).execution_options(
             synchronize_session="fetch")
@@ -265,7 +260,7 @@ class DBModel(DeclarativeBase, AllFeaturesMixinAsync):
         return found
 
     @classmethod
-    def _import(cls, schema_in: Union[InDBSchemaType, dict]):
+    def _import(cls, schema_in):
         """Convert Pydantic schema to dict"""
         if isinstance(schema_in, dict):
             return schema_in
@@ -334,14 +329,6 @@ class DBModel(DeclarativeBase, AllFeaturesMixinAsync):
         :param filters:
         :return: int
         """
-        # stmt = smart_query(select(cls), filters=filters)
-        # stmt = select(func.count(cls.uid))
-        # stmt = select(func.count('*')).select_from(cls)
-        # stmt = select(cls, func.count(cls.uid))
-        # stmt = select(cls).with_only_columns([func.count(cls.uid)]).order_by(None)
-        # stmt = select(func.count()).select_from(cls)
-        # stmt = select(func.count()).select_from(select(cls).subquery())
-        # stmt = select(func.count(cls.uid)).select_from(cls)
         filter_stmt = smart_query(query=select(cls), filters=filters)
         count_stmt = select(func.count(filter_stmt.c.uid)
                             ).select_from(filter_stmt)
@@ -438,7 +425,6 @@ class DBModel(DeclarativeBase, AllFeaturesMixinAsync):
         stmt = cls.smart_query(filters=_filters, sort_attrs=sort_by)
 
         if get_related:
-            # print(get_related)
             # stmt = stmt.options(selectinload(get_related))
             pass
 
@@ -451,7 +437,6 @@ class DBModel(DeclarativeBase, AllFeaturesMixinAsync):
         qs = res.scalars().all()
 
         if qs is not None:
-            # items = qs[:page_size]
             items = qs
         else:
             qs = []
@@ -505,14 +490,10 @@ class DBModel(DeclarativeBase, AllFeaturesMixinAsync):
         )
 
     @classmethod
-    def decode_cursor(cls, cursor):
-        # return b64decode(cursor.encode("utf8")).decode("ascii")
-        return cursor
+    def decode_cursor(cls, cursor): return cursor
 
     @classmethod
-    def encode_cursor(cls, identifier: Any):
-        # return b64encode(str(identifier).encode("ascii")).decode("utf8")
-        return identifier
+    def encode_cursor(cls, identifier: Any): return identifier
 
-# Silence set session, not in use
+
 DBModel.set_session(AsyncSessionScoped, True)
