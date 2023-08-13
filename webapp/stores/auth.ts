@@ -102,6 +102,7 @@ export const useAuthStore = defineStore('auth', () => {
                     auth.value.authenticating = false;
                     return
                 };
+                persistAuth(res);
             })
             .catch(err => (auth.value.authenticating = false));
     };
