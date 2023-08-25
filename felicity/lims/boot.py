@@ -10,6 +10,7 @@ from api.gql.schema import schema
 from api.deps import get_auth_context
 from api.rest.api_v1 import api
 from api.deps import models, get_auth_user
+from apps.job.sched import felicity_workforce_init
 
 from core import settings
 
@@ -19,10 +20,13 @@ def register_configs(app: Sanic):
     Extend(app)
 
 def register_events(app: Sanic):
-    @app.listener("before_server_start")
+    @app.listener("after_server_start")
     async def setup_db(app):
         # app.ctx.db = await db_setup()
-        print("Setting up database for felicity ...")
+        # felicity_workforce_init()
+        ...
+        
+    app.add_task(felicity_workforce_init)
 
 def register_middlewares(app: Sanic):
     ...
