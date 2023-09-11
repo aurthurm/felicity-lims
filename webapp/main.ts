@@ -41,4 +41,4 @@ app.use(VueSweetalert2);
 app.use(FloatingVue);
 app.use(MotionPlugin);
 app.use(router);
-app.mount('#felicityApp');
+// app.mount('#felicityApp');

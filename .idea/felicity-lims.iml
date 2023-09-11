@@ -5,7 +5,7 @@
       <sourceFolder url="file://$MODULE_DIR$/backend/felicity_lims" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/felicity" isTestSource="false" />
     </content>
-    <orderEntry type="jdk" jdkName="felicity" jdkType="Python SDK" />
+    <orderEntry type="jdk" jdkName="fel_sanic" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
   <component name="PyDocumentationSettings">

@@ -1,4 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="ProjectRootManager" version="2" project-jdk-name="felicity" project-jdk-type="Python SDK" />
+  <component name="Black">
+    <option name="enabledOnSave" value="true" />
+    <option name="executionMode" value="BINARY" />
+    <option name="pathToExecutable" value="/usr/bin/black" />
+    <option name="sdkUUID" value="e0bc2bad-5e9b-4974-9d18-c79b0e86dd30" />
+  </component>
+  <component name="ProjectRootManager" version="2" project-jdk-name="fel_sanic" project-jdk-type="Python SDK" />
 </project>
