@@ -1,7 +1,8 @@
 import os
 from typing import Any
 
-from pydantic import AnyHttpUrl, EmailStr, HttpUrl, validator
+from pydantic import AnyHttpUrl, EmailStr, field_validator, ConfigDict
+from pydantic_core.core_schema import FieldValidationInfo
 from pydantic_settings import BaseSettings
 
 
@@ -35,6 +36,7 @@ class Settings(BaseSettings):
     SERVER_HOST: AnyHttpUrl = getenv_value("SERVER_HOST", "https://localhost")
     CORS_ORIGINS: list[str] = [
         "http://localhost:5173",
+        "http://localhost:3000",
     ]
     CORS_SUPPORTS_CREDENTIALS: bool = True
     CORS_ALLOW_HEADERS: list[str] = [
@@ -49,48 +51,45 @@ class Settings(BaseSettings):
     RETAIN_TESTING_DB_DATA: bool = getenv_boolean("RETAIN_TESTING_DB_DATA", True)
 
     PROJECT_NAME: str = getenv_value("PROJECT_NAME", "FELLICITY LIMS")
-    SENTRY_DSN: HttpUrl | None = getenv_value("SENTRY_DSN", "")
-
-    @validator("SENTRY_DSN", pre=True)
-    def sentry_dsn_can_be_blank(cls, v: str) -> str | None:
-        if len(v) == 0:
-            return None
-        return v
 
     POSTGRES_SERVER: str = getenv_value("POSTGRES_SERVER", "localhost")  # felicity_db
     POSTGRES_USER: str = getenv_value("POSTGRES_USER", "felicity")
     POSTGRES_PASSWORD: str = getenv_value("POSTGRES_PASSWORD", "felicity")
-    POSTGRES_DB: str = getenv_value("POSTGRES_DB", "felicity_lims")
+    POSTGRES_DB: str = getenv_value("POSTGRES_DB", "felicity_lims_db")
     SQLALCHEMY_DATABASE_URI: str | None = None
     SQLALCHEMY_ASYNC_DATABASE_URI: str | None = None
     SQLALCHEMY_TEST_DATABASE_URI: str | None = None
     SQLALCHEMY_TEST_ASYNC_DATABASE_URI: str | None = None
 
-    @validator("SQLALCHEMY_DATABASE_URI", pre=True)
-    def assemble_db_connection(cls, v: str | None, values: dict[str, Any]) -> Any:
+    @field_validator("SQLALCHEMY_DATABASE_URI")
+    def assemble_db_connection(cls, v: str | None, info: FieldValidationInfo) -> Any:
         if isinstance(v, str):
             return v
-        return f'postgresql://{values.get("POSTGRES_USER")}:{values.get("POSTGRES_PASSWORD")}@{values.get("POSTGRES_SERVER")}/{values.get("POSTGRES_DB") or ""}'
+        return f'postgresql://{info.data.get("POSTGRES_USER")}:{info.data.get("POSTGRES_PASSWORD")}@{info.data.get("POSTGRES_SERVER")}/{info.data.get("POSTGRES_DB") or ""}'
 
-    @validator("SQLALCHEMY_ASYNC_DATABASE_URI", pre=True)
-    def assemble_async_db_connection(cls, v: str | None, values: dict[str, Any]) -> Any:
-        if isinstance(v, str):
-            return v
-        return f'postgresql+asyncpg://{values.get("POSTGRES_USER")}:{values.get("POSTGRES_PASSWORD")}@{values.get("POSTGRES_SERVER")}/{values.get("POSTGRES_DB") or ""}'
-
-    @validator("SQLALCHEMY_TEST_DATABASE_URI", pre=True)
-    def assemble_test_db_connection(cls, v: str | None, values: dict[str, Any]) -> Any:
-        if isinstance(v, str):
-            return v
-        return f'postgresql+asyncpg://{values.get("POSTGRES_USER")}:{values.get("POSTGRES_PASSWORD")}@{values.get("POSTGRES_SERVER")}/test_{values.get("POSTGRES_DB") or ""}'
-
-    @validator("SQLALCHEMY_TEST_ASYNC_DATABASE_URI", pre=True)
-    def assemble_async_test_db_connection(
-        cls, v: str | None, values: dict[str, Any]
+    @field_validator("SQLALCHEMY_ASYNC_DATABASE_URI")
+    def assemble_async_db_connection(
+            cls, v: str | None, info: FieldValidationInfo
     ) -> Any:
         if isinstance(v, str):
             return v
-        return f'postgresql+asyncpg://{values.get("POSTGRES_USER")}:{values.get("POSTGRES_PASSWORD")}@{values.get("POSTGRES_SERVER")}/text_{values.get("POSTGRES_DB") or ""}'
+        return f'postgresql+asyncpg://{info.data.get("POSTGRES_USER")}:{info.data.get("POSTGRES_PASSWORD")}@{info.data.get("POSTGRES_SERVER")}/{info.data.get("POSTGRES_DB") or ""}'
+
+    @field_validator("SQLALCHEMY_TEST_DATABASE_URI")
+    def assemble_test_db_connection(
+            cls, v: str | None, info: FieldValidationInfo
+    ) -> Any:
+        if isinstance(v, str):
+            return v
+        return f'postgresql+asyncpg://{info.data.get("POSTGRES_USER")}:{info.data.get("POSTGRES_PASSWORD")}@{info.data.get("POSTGRES_SERVER")}/test_{info.data.get("POSTGRES_DB") or ""}'
+
+    @field_validator("SQLALCHEMY_TEST_ASYNC_DATABASE_URI")
+    def assemble_async_test_db_connection(
+            cls, v: str | None, info: FieldValidationInfo
+    ) -> Any:
+        if isinstance(v, str):
+            return v
+        return f'postgresql+asyncpg://{info.data.get("POSTGRES_USER")}:{info.data.get("POSTGRES_PASSWORD")}@{info.data.get("POSTGRES_SERVER")}/text_{info.data.get("POSTGRES_DB") or ""}'
 
     SMTP_TLS: bool = getenv_boolean("SMTP_TLS", False)
     SMTP_PORT: int | None = getenv_value("SMTP_PORT", 1025)
@@ -102,22 +101,22 @@ class Settings(BaseSettings):
     )
     EMAILS_FROM_NAME: str | None = getenv_value("EMAILS_FROM_NAME", "felicity")
 
-    @validator("EMAILS_FROM_NAME")
-    def get_project_name(cls, v: str | None, values: dict[str, Any]) -> str:
+    @field_validator("EMAILS_FROM_NAME")
+    def get_project_name(cls, v: str | None, info: FieldValidationInfo) -> str:
         if not v:
-            return values["PROJECT_NAME"]
+            return info.data["PROJECT_NAME"]
         return v
 
     EMAIL_RESET_TOKEN_EXPIRE_HOURS: int = 48
     EMAIL_TEMPLATES_DIR: str = BASE_DIR + "/utils/email/email-templates/output"
     EMAILS_ENABLED: bool = False
 
-    @validator("EMAILS_ENABLED", pre=True)
-    def get_emails_enabled(cls, v: bool, values: dict[str, Any]) -> bool:
+    @field_validator("EMAILS_ENABLED")
+    def get_emails_enabled(cls, v: bool, info: FieldValidationInfo) -> bool:
         return bool(
-            values.get("SMTP_HOST")
-            and values.get("SMTP_PORT")
-            and values.get("EMAILS_FROM_EMAIL")
+            info.data.get("SMTP_HOST")
+            and info.data.get("SMTP_PORT")
+            and info.data.get("EMAILS_FROM_EMAIL")
         )
 
     EMAIL_TEST_USER: EmailStr = "admin@stanchionlabs.inc"
@@ -143,8 +142,7 @@ class Settings(BaseSettings):
         "OTLP_SPAN_EXPORT_URL", "http://localhost:4317"
     )
 
-    class Config:
-        case_sensitive = True
+    model_config = ConfigDict(case_sensitive=True)
 
 
 settings = Settings()
