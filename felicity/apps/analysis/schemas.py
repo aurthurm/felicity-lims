@@ -1,6 +1,8 @@
 from datetime import datetime
 from typing import List, Optional
 
+from pydantic import ConfigDict
+
 from apps.common.schemas import BaseAuditModel, BaseModel
 from apps.setup.schemas import Department, Unit
 
@@ -18,8 +20,7 @@ class CodingStandardBase(BaseAuditModel):
 class CodingStandardBaseInDB(CodingStandardBase):
     uid: str | None
 
-    class Config:
-        orm_mode = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 # Properties to receive via API on creation
@@ -60,8 +61,8 @@ class SampleTypeBase(BaseAuditModel):
 class SampleTypeBaseInDB(SampleTypeBase):
     uid: str | None = None
 
-    class Config:
-        orm_mode = True
+
+model_config = ConfigDict(from_attributes=True)
 
 
 # Properties to receive via API on creation
@@ -102,8 +103,8 @@ class SampleTypeCodingBase(BaseAuditModel):
 class SampleTypeCodingBaseInDB(SampleTypeCodingBase):
     uid: str | None
 
-    class Config:
-        orm_mode = True
+
+model_config = ConfigDict(from_attributes=True)
 
 
 # Properties to receive via API on creation
@@ -145,8 +146,8 @@ class ProfileBase(BaseAuditModel):
 class ProfileBaseInDB(ProfileBase):
     uid: str | None = None
 
-    class Config:
-        orm_mode = True
+
+model_config = ConfigDict(from_attributes=True)
 
 
 # Properties to receive via API on creation
@@ -189,8 +190,8 @@ class ProfileCodingBase(BaseAuditModel):
 class ProfileCodingBaseInDB(ProfileCodingBase):
     uid: str | None
 
-    class Config:
-        orm_mode = True
+
+model_config = ConfigDict(from_attributes=True)
 
 
 # Properties to receive via API on creation
@@ -227,8 +228,8 @@ class AnalysisCategoryBase(BaseAuditModel):
 class AnalysisCategoryBaseInDB(AnalysisCategoryBase):
     uid: str | None = None
 
-    class Config:
-        orm_mode = True
+
+model_config = ConfigDict(from_attributes=True)
 
 
 # Properties to receive via API on creation
@@ -283,15 +284,15 @@ class AnalysisBase(BaseAuditModel):
 class AnalysisBasic(AnalysisBasicBase):
     uid: str | None = None
 
-    class Config:
-        orm_mode = True
+
+model_config = ConfigDict(from_attributes=True)
 
 
 class AnalysisBaseInDB(AnalysisBase):
     uid: str | None = None
 
-    class Config:
-        orm_mode = True
+
+model_config = ConfigDict(from_attributes=True)
 
 
 # Properties to receive via API on creation
@@ -329,8 +330,8 @@ class AnalysisCodingBase(BaseAuditModel):
 class AnalysisCodingBaseInDB(AnalysisCodingBase):
     uid: str | None = None
 
-    class Config:
-        orm_mode = True
+
+model_config = ConfigDict(from_attributes=True)
 
 
 # Properties to receive via API on creation
@@ -368,8 +369,8 @@ class AnalysisInterimBase(BaseAuditModel):
 class AnalysisInterimInDB(AnalysisInterimBase):
     uid: str | None = None
 
-    class Config:
-        orm_mode = True
+
+model_config = ConfigDict(from_attributes=True)
 
 
 # Properties to receive via API on creation
@@ -407,8 +408,8 @@ class AnalysisCorrectionFactorBase(BaseAuditModel):
 class AnalysisCorrectionFactorBaseInDB(AnalysisCorrectionFactorBase):
     uid: str | None = None
 
-    class Config:
-        orm_mode = True
+
+model_config = ConfigDict(from_attributes=True)
 
 
 # Properties to receive via API on creation
@@ -447,8 +448,8 @@ class AnalysisDetectionLimitBase(BaseAuditModel):
 class AnalysisDetectionLimitBaseInDB(AnalysisDetectionLimitBase):
     uid: str | None = None
 
-    class Config:
-        orm_mode = True
+
+model_config = ConfigDict(from_attributes=True)
 
 
 # Properties to receive via API on creation
@@ -488,8 +489,8 @@ class AnalysisUncertaintyBase(BaseAuditModel):
 class AnalysisUncertaintyBaseInDB(AnalysisUncertaintyBase):
     uid: str | None = None
 
-    class Config:
-        orm_mode = True
+
+model_config = ConfigDict(from_attributes=True)
 
 
 # Properties to receive via API on creation
@@ -538,8 +539,8 @@ class AnalysisSpecificationBase(BaseAuditModel):
 class AnalysisSpecificationBaseInDB(AnalysisSpecificationBase):
     uid: str | None = None
 
-    class Config:
-        orm_mode = True
+
+model_config = ConfigDict(from_attributes=True)
 
 
 # Properties to receive via API on creation
@@ -576,8 +577,8 @@ class ResultOptionBase(BaseAuditModel):
 class ResultOptionBaseInDB(ResultOptionBase):
     uid: str | None = None
 
-    class Config:
-        orm_mode = True
+
+model_config = ConfigDict(from_attributes=True)
 
 
 # Properties to receive via API on creation
@@ -616,8 +617,8 @@ class AnalysisRequestBase(BaseAuditModel):
 class AnalysisRequestBaseInDB(AnalysisRequestBase):
     uid: str | None = None
 
-    class Config:
-        orm_mode = True
+
+model_config = ConfigDict(from_attributes=True)
 
 
 # Properties to receive via API on creation
@@ -662,8 +663,8 @@ class SampleBase(BaseAuditModel):
 class SampleBaseInDB(SampleBase):
     uid: str | None = None
 
-    class Config:
-        orm_mode = True
+
+model_config = ConfigDict(from_attributes=True)
 
 
 # Properties to receive via API on creation
@@ -698,8 +699,8 @@ class RejectionReasonBase(BaseAuditModel):
 class RejectionReasonBaseInDB(RejectionReasonBase):
     uid: str | None = None
 
-    class Config:
-        orm_mode = True
+
+model_config = ConfigDict(from_attributes=True)
 
 
 # Properties to receive via API on creation
@@ -752,8 +753,8 @@ class AnalysisResultBase(BaseAuditModel):
 class AnalysisResultBaseInDB(AnalysisResultBase):
     uid: str | None = None
 
-    class Config:
-        orm_mode = True
+
+model_config = ConfigDict(from_attributes=True)
 
 
 # Properties to receive via API on creation
@@ -789,8 +790,8 @@ class QCSetBase(BaseAuditModel):
 class QCSetBaseInDB(QCSetBase):
     uid: str | None = None
 
-    class Config:
-        orm_mode = True
+
+model_config = ConfigDict(from_attributes=True)
 
 
 # Properties to receive via API on creation
@@ -825,8 +826,8 @@ class QCLevelBase(BaseAuditModel):
 class QCLevelBaseInDB(QCLevelBase):
     uid: str | None = None
 
-    class Config:
-        orm_mode = True
+
+model_config = ConfigDict(from_attributes=True)
 
 
 # Properties to receive via API on creation
@@ -864,8 +865,8 @@ class QCTemplateBase(BaseAuditModel):
 class QCTemplateBaseInDB(QCTemplateBase):
     uid: str | None = None
 
-    class Config:
-        orm_mode = True
+
+model_config = ConfigDict(from_attributes=True)
 
 
 # Properties to receive via API on creation

@@ -1,8 +1,10 @@
-from typing import Dict, List, Optional
+from typing import List, Optional
+
+from pydantic import BaseModel
+from pydantic import ConfigDict
 
 from apps.analysis.schemas import AnalysisBaseInDB, QCLevelInDB
 
-from pydantic import BaseModel
 
 #
 # WorkSheet Schemas
@@ -32,8 +34,8 @@ class WorkSheetBase(BaseModel):
 class WorkSheetBaseInDB(WorkSheetBase):
     uid: str | None = None
 
-    class Config:
-        orm_mode = True
+
+model_config = ConfigDict(from_attributes=True)
 
 
 # Properties to receive via API on creation
@@ -81,8 +83,8 @@ class WSTemplateBase(BaseModel):
 class WSTemplateBaseInDB(WSTemplateBase):
     uid: str | None = None
 
-    class Config:
-        orm_mode = True
+
+model_config = ConfigDict(from_attributes=True)
 
 
 # Properties to receive via API on creation

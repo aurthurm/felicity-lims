@@ -1,5 +1,7 @@
 from typing import List, Optional
 
+from pydantic import ConfigDict
+
 from apps.common.schemas import BaseAuditModel
 from apps.setup.schemas import Department
 from apps.user.schemas import Group, User
@@ -16,8 +18,8 @@ class ActivityFeedBase(BaseAuditModel):
 class ActivityFeed(ActivityFeedBase):
     uid: str | None = None
 
-    class Config:
-        orm_mode = True
+
+model_config = ConfigDict(from_attributes=True)
 
 
 class ActivityFeedCreate(ActivityFeedBase):
@@ -47,8 +49,8 @@ class ActivityStreamBase(BaseAuditModel):
 class ActivityStream(ActivityStreamBase):
     uid: str | None = None
 
-    class Config:
-        orm_mode = True
+
+model_config = ConfigDict(from_attributes=True)
 
 
 class ActivityStreamCreate(ActivityStream):
@@ -73,8 +75,8 @@ class NotificationBase(BaseAuditModel):
 class Notification(NotificationBase):
     uid: str | None = None
 
-    class Config:
-        orm_mode = True
+
+model_config = ConfigDict(from_attributes=True)
 
 
 class NotificationCreate(NotificationBase):

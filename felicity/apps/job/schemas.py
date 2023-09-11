@@ -1,6 +1,7 @@
 from typing import Any, Optional
 
 from pydantic import BaseModel
+from pydantic import ConfigDict
 
 from .conf import categories, priorities, states
 
@@ -22,8 +23,8 @@ class JobBase(BaseModel):
 class Job(JobBase):
     uid: str | None = None
 
-    class Config:
-        orm_mode = True
+
+model_config = ConfigDict(from_attributes=True)
 
 
 class JobCreate(JobBase):

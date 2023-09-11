@@ -1,7 +1,7 @@
 from typing import Any, Optional
 
-
 from pydantic import BaseModel
+
 
 #
 # Job Schemas
@@ -13,8 +13,8 @@ class ErrorLogBase(BaseModel):
 class ErrorLog(ErrorLogBase):
     uid: str | None = None
 
-    class Config:
-        orm_mode = True
+
+model_config = ConfigDict(from_attributes=True)
 
 
 class ErrorLogCreate(ErrorLogBase):

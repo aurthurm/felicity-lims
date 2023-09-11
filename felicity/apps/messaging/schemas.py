@@ -1,5 +1,7 @@
 from typing import List, Optional
 
+from pydantic import ConfigDict
+
 from apps.common.schemas import BaseAuditModel
 from apps.user.schemas import User
 
@@ -19,8 +21,8 @@ class MessageBase(BaseAuditModel):
 class Message(MessageBase):
     uid: str | None = None
 
-    class Config:
-        orm_mode = True
+
+model_config = ConfigDict(from_attributes=True)
 
 
 class MessageCreate(MessageBase):
@@ -44,8 +46,8 @@ class MessageThreadBase(BaseAuditModel):
 class MessageThread(MessageThreadBase):
     uid: str | None = None
 
-    class Config:
-        orm_mode = True
+
+model_config = ConfigDict(from_attributes=True)
 
 
 class MessageThreadCreate(MessageThreadBase):

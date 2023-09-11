@@ -1,10 +1,11 @@
 from datetime import datetime
 
+from pydantic import BaseModel
+from pydantic import ConfigDict
+
 from apps.analysis.schemas import AnalysisBasic
 from apps.analytics import conf
 from apps.user.schemas import UserBasic
-
-from pydantic import BaseModel
 
 
 class ReportMetaBase(BaseModel):
@@ -27,8 +28,8 @@ class ReportMeta(ReportMetaBase):
     uid: str | None = None
     location: str | None
 
-    class Config:
-        orm_mode = True
+
+model_config = ConfigDict(from_attributes=True)
 
 
 class ReportMetaCreate(ReportMetaBase):

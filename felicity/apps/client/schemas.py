@@ -1,4 +1,6 @@
 from pydantic import BaseModel
+from pydantic import ConfigDict
+
 
 #
 # Client Schemas
@@ -24,8 +26,8 @@ class ClientBase(BaseModel):
 class ClientBaseInDB(ClientBase):
     uid: str | None = None
 
-    class Config:
-        orm_mode = True
+
+model_config = ConfigDict(from_attributes=True)
 
 
 # Properties to receive via API on creation
@@ -70,8 +72,8 @@ class ClientContactBase(BaseModel):
 class ClientContactBaseInDB(ClientContactBase):
     uid: str | None = None
 
-    class Config:
-        orm_mode = True
+
+model_config = ConfigDict(from_attributes=True)
 
 
 # Properties to receive via API on creation

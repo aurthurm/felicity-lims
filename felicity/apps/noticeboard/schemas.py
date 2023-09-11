@@ -1,6 +1,8 @@
 from datetime import datetime
 from typing import List, Optional
 
+from pydantic import ConfigDict
+
 from apps.common.schemas import BaseAuditModel
 from apps.setup.schemas import Department
 from apps.user.schemas import Group, User
@@ -21,8 +23,7 @@ class NoticeBase(BaseAuditModel):
 class Notice(NoticeBase):
     uid: str | None = None
 
-    class Config:
-        orm_mode = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class NoticeCreate(NoticeBase):

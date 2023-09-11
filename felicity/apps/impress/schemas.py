@@ -1,9 +1,11 @@
 from datetime import datetime
-from typing import Dict, Optional
+from typing import Optional
+
+from pydantic import BaseModel
+from pydantic import ConfigDict
 
 from apps.analysis.schemas import SampleInDB
 
-from pydantic import BaseModel
 
 #
 # ReportImpress Schemas
@@ -29,8 +31,8 @@ class ReportImpressBase(BaseModel):
 class ReportImpressBaseInDB(ReportImpressBase):
     uid: str | None = None
 
-    class Config:
-        orm_mode = True
+
+model_config = ConfigDict(from_attributes=True)
 
 
 # Properties to receive via API on creation

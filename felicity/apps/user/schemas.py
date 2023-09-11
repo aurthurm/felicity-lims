@@ -1,9 +1,11 @@
 from typing import List, Optional
 
+from pydantic import ConfigDict
+from pydantic import EmailStr
+
 from apps.common.schemas import BaseAuditModel, BaseModel
 from apps.user.conf import themes
 
-from pydantic import EmailStr
 
 #
 #  Permission Schema
@@ -31,8 +33,8 @@ class PermissionUpdate(PermissionBase):
 class PermissionInDBBase(PermissionBase):
     uid: str | None = None
 
-    class Config:
-        orm_mode = True
+
+model_config = ConfigDict(from_attributes=True)
 
 
 # Additional properties to return via API
@@ -70,8 +72,8 @@ class GroupUpdate(GroupBase):
 class GroupInDBBase(GroupBase):
     uid: str | None = None
 
-    class Config:
-        orm_mode = True
+
+model_config = ConfigDict(from_attributes=True)
 
 
 # Additional properties to return via API
@@ -96,8 +98,8 @@ class UserPreferenceBase(BaseAuditModel):
 class UserPreference(UserPreferenceBase):
     uid: str | None = None
 
-    class Config:
-        orm_mode = True
+
+model_config = ConfigDict(from_attributes=True)
 
 
 class UserPreferenceCreate(UserPreferenceBase):
@@ -149,16 +151,16 @@ class UserUpdate(UserBase):
 class UserInDBBase(UserBase):
     uid: str | None = None
 
-    class Config:
-        orm_mode = True
+
+model_config = ConfigDict(from_attributes=True)
 
 
 # Additional properties to return via API
 class UserBasic(UserBasicBase):
     uid: str | None = None
 
-    class Config:
-        orm_mode = True
+
+model_config = ConfigDict(from_attributes=True)
 
 
 # Additional properties to return via API
@@ -201,8 +203,8 @@ class AuthUpdate(AuthBase):
 class AuthInDBBase(AuthBase):
     uid: str | None = None
 
-    class Config:
-        orm_mode = True
+
+model_config = ConfigDict(from_attributes=True)
 
 
 # Additional properties to return via API

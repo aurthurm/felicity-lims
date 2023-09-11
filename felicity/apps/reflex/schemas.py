@@ -1,5 +1,7 @@
 from typing import List, Optional
 
+from pydantic import ConfigDict
+
 from apps.analysis.schemas import Analysis, SampleType
 from apps.common.schemas import BaseAuditModel
 
@@ -21,8 +23,8 @@ class ReflexRuleBase(BaseAuditModel):
 class ReflexRule(ReflexRuleBase):
     uid: str
 
-    class Config:
-        orm_mode = True
+
+model_config = ConfigDict(from_attributes=True)
 
 
 # Properties to receive via API on creation
@@ -52,8 +54,8 @@ class ReflexBrainAdditionBase(BaseAuditModel):
 class ReflexBrainAddition(ReflexBrainAdditionBase):
     uid: str
 
-    class Config:
-        orm_mode = True
+
+model_config = ConfigDict(from_attributes=True)
 
 
 # Properties to receive via API on creation
@@ -83,8 +85,8 @@ class ReflexBrainFinalBase(BaseAuditModel):
 class ReflexBrainFinal(ReflexBrainFinalBase):
     uid: str
 
-    class Config:
-        orm_mode = True
+
+model_config = ConfigDict(from_attributes=True)
 
 
 # Properties to receive via API on creation
@@ -114,8 +116,8 @@ class ReflexBrainCriteriaBase(BaseAuditModel):
 class ReflexBrainCriteria(ReflexBrainCriteriaBase):
     uid: str
 
-    class Config:
-        orm_mode = True
+
+model_config = ConfigDict(from_attributes=True)
 
 
 # Properties to receive via API on creation
@@ -146,8 +148,8 @@ class ReflexBrainBase(BaseAuditModel):
 class ReflexBrain(ReflexBrainBase):
     uid: str | None = None
 
-    class Config:
-        orm_mode = True
+
+model_config = ConfigDict(from_attributes=True)
 
 
 # Properties to receive via API on creation
@@ -180,8 +182,8 @@ class ReflexActionBase(BaseAuditModel):
 class ReflexAction(ReflexActionBase):
     uid: str | None = None
 
-    class Config:
-        orm_mode = True
+
+model_config = ConfigDict(from_attributes=True)
 
 
 # Properties to receive via API on creation

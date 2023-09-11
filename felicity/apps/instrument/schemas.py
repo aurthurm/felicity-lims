@@ -1,9 +1,11 @@
 from datetime import datetime
 from typing import List, Optional
 
+from pydantic import BaseModel
+from pydantic import ConfigDict
+
 from apps.common.schemas import BaseAuditModel
 from apps.setup.schemas import ManufacturerInDB, SupplierInDB
-from pydantic import BaseModel
 
 
 #
@@ -20,8 +22,8 @@ class InstrumentTypeBase(BaseAuditModel):
 class InstrumentTypeBaseInDB(InstrumentTypeBase):
     uid: str | None = None
 
-    class Config:
-        orm_mode = True
+
+model_config = ConfigDict(from_attributes=True)
 
 
 # Properties to receive via API on creation
@@ -74,8 +76,8 @@ class InstrumentUpdate(InstrumentBase):
 class InstrumentInDBBase(InstrumentBase):
     uid: str = None
 
-    class Config:
-        orm_mode = True
+
+model_config = ConfigDict(from_attributes=True)
 
 
 # Additional properties to return via API
@@ -120,8 +122,8 @@ class InstrumentCalibrationUpdate(InstrumentCalibrationBase):
 class InstrumentCalibrationInDBBase(InstrumentCalibrationBase):
     uid: str = None
 
-    class Config:
-        orm_mode = True
+
+model_config = ConfigDict(from_attributes=True)
 
 
 # Additional properties to return via API
@@ -166,8 +168,8 @@ class CalibrationCertificateUpdate(CalibrationCertificateBase):
 class CalibrationCertificateInDBBase(CalibrationCertificateBase):
     uid: str = None
 
-    class Config:
-        orm_mode = True
+
+model_config = ConfigDict(from_attributes=True)
 
 
 # Additional properties to return via API
@@ -205,8 +207,8 @@ class MethodUpdate(MethodBase):
 class MethodInDBBase(MethodBase):
     uid: str = None
 
-    class Config:
-        orm_mode = True
+
+model_config = ConfigDict(from_attributes=True)
 
 
 # Additional properties to return via API
