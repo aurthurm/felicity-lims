@@ -1,9 +1,7 @@
-from typing import Union
-
-from apps import BaseAuditDBModel
 from sqlalchemy import Column, DateTime, ForeignKey, String, Table
 from sqlalchemy.orm import relationship
 
+from apps import BaseAuditDBModel
 from . import conf, schemas
 
 """
@@ -13,12 +11,14 @@ analysis_reports = Table(
     "analysis_reports",
     BaseAuditDBModel.metadata,
     Column("analysis_uid", ForeignKey("analysis.uid"), primary_key=True),
-    Column("report_uid", ForeignKey("reportmeta.uid"), primary_key=True),
+    Column("report_uid", ForeignKey("report_meta.uid"), primary_key=True),
 )
 
 
 class ReportMeta(BaseAuditDBModel):
     """Generated Reports Metadata"""
+
+    __tablename__ = "report_meta"
 
     report_type = Column(String)
     analyses = relationship("Analysis", secondary=analysis_reports, lazy="selectin")

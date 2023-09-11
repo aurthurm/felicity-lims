@@ -1,17 +1,20 @@
 import logging
 from datetime import datetime
 
-from apps.common.utils import sequencer, sequence_alpha
-from db.base_class import DBModel
-from db.session import async_session_factory
 from sqlalchemy import Column, Integer, String, DateTime
 from sqlalchemy.dialects.postgresql import insert
+
+from apps.common.utils import sequencer, sequence_alpha
+from database.base_class import DBModel
+from database.session import async_session_factory
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
 class IdSequence(DBModel):
+    __tablename__ = "id_sequence"
+
     prefix = Column(String, nullable=False, unique=True)
     number = Column(Integer, nullable=False)
     updated = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)

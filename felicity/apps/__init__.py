@@ -1,12 +1,12 @@
 from datetime import datetime
 
-from apps.audit.mixin import AuditableMixin
-from apps.common.hooks import EventHookMixin
-
-from db.base_class import DBModel
 from sqlalchemy import Column, DateTime, ForeignKey, String
 from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.orm import relationship
+
+from apps.audit.mixin import AuditableMixin
+from apps.common.hooks import EventHookMixin
+from database.base_class import DBModel
 
 
 class TrailMixin(object):

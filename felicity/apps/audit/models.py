@@ -1,9 +1,9 @@
 import json
 import logging
 
-
-from db.base_class import DBModel
 from sqlalchemy import Column, Integer, String, UnicodeText
+
+from database.base_class import DBModel
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -11,6 +11,8 @@ logger = logging.getLogger(__name__)
 
 class AuditLog(DBModel):
     """Model an audit log of user actions"""
+
+    __tablename__ = "audit_log"
 
     user_id = Column(String, doc="The ID of the user who made the change")
     target_type = Column(

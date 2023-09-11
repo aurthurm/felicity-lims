@@ -1,11 +1,14 @@
-from apps import BaseAuditDBModel
-from apps.setup import schemas
-from apps.user.models import User
 from sqlalchemy import Boolean, Column, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 
+from apps import BaseAuditDBModel
+from apps.setup import schemas
+from apps.user.models import User
+
 
 class Laboratory(BaseAuditDBModel):
+    __tablename__ = "laboratory"
+
     setup_name = Column(
         String, default="felicity", nullable=False
     )  # Do not change this value ever
@@ -40,6 +43,8 @@ class Laboratory(BaseAuditDBModel):
 
 
 class LaboratorySetting(BaseAuditDBModel):
+    __tablename__ = "laboratory_setting"
+
     laboratory_uid = Column(String, ForeignKey("laboratory.uid"), nullable=True)
     laboratory = relationship(
         Laboratory, foreign_keys=[laboratory_uid], backref="settings", lazy="selectin"
@@ -73,6 +78,8 @@ class LaboratorySetting(BaseAuditDBModel):
 class Supplier(BaseAuditDBModel):
     """Supplier"""
 
+    __tablename__ = "supplier"
+
     name = Column(String, nullable=False)
     description = Column(String, nullable=True)
 
@@ -88,6 +95,8 @@ class Supplier(BaseAuditDBModel):
 
 class Manufacturer(BaseAuditDBModel):
     """Manufacturer"""
+
+    __tablename__ = "manufacturer"
 
     name = Column(String, nullable=False)
     description = Column(String, nullable=True)
@@ -105,6 +114,8 @@ class Manufacturer(BaseAuditDBModel):
 class Department(BaseAuditDBModel):
     """Departrments/Sections"""
 
+    __tablename__ = "department"
+
     name = Column(String, nullable=False)
     description = Column(String, nullable=True)
     code = Column(String, nullable=True)
@@ -121,6 +132,8 @@ class Department(BaseAuditDBModel):
 
 class Unit(BaseAuditDBModel):
     """Unit for analyte measurement"""
+
+    __tablename__ = "unit"
 
     name = Column(String, nullable=False)
     # SI/Traditional Unit

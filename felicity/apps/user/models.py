@@ -1,11 +1,10 @@
 import logging
 
-from apps.common.utils import is_valid_email
-from core.security import verify_password
-
 from sqlalchemy import Boolean, Column, ForeignKey, String, Table
 from sqlalchemy.orm import backref, relationship
 
+from apps.common.utils import is_valid_email
+from core.security import verify_password
 from . import conf
 from .abstract import AbstractAuth, AbstractBaseUser, DBModel, schemas
 
@@ -23,6 +22,8 @@ class UserAuth(AbstractAuth):
     lcuser: laboratory contacts
     dcuser: dispatch center contacts
     """
+
+    __tablename__ = "user_auth"
 
     user_type = Column(String, nullable=True)
 
@@ -96,7 +97,9 @@ permission_groups = Table(
 
 
 class User(AbstractBaseUser):
-    auth_uid = Column(String, ForeignKey("userauth.uid"))
+    __tablename__ = "user"
+
+    auth_uid = Column(String, ForeignKey("user_auth.uid"))
     auth = relationship(
         "UserAuth",
         backref=backref(conf.LABORATORY_CONTACT, uselist=False),
@@ -105,7 +108,7 @@ class User(AbstractBaseUser):
     groups = relationship(
         "Group", secondary=user_groups, back_populates="members", lazy="selectin"
     )
-    preference_uid = Column(String, ForeignKey("userpreference.uid"))
+    preference_uid = Column(String, ForeignKey("user_preference.uid"))
     preference = relationship(
         "UserPreference", foreign_keys=[preference_uid], lazy="selectin"
     )
@@ -162,6 +165,8 @@ class User(AbstractBaseUser):
 
 
 class Permission(DBModel):
+    __tablename__ = "permission"
+
     action = Column(String, nullable=False)  # e.g create, modify
     target = Column(String, nullable=False)  # e.g sample, worksheet
     active = Column(Boolean(), default=True)
@@ -177,6 +182,8 @@ class Permission(DBModel):
 
 
 class Group(DBModel):
+    __tablename__ = "group"
+
     name = Column(String, unique=True, index=True, nullable=False)
     keyword = Column(
         String, unique=True, index=True, nullable=False, default="keyword_x"
@@ -216,12 +223,14 @@ department_preference = Table(
     "department_preference",
     DBModel.metadata,
     Column("department_uid", ForeignKey("department.uid"), primary_key=True),
-    Column("preference_uid", ForeignKey("userpreference.uid"), primary_key=True),
+    Column("preference_uid", ForeignKey("user_preference.uid"), primary_key=True),
 )
 
 
 class UserPreference(DBModel):
     """Preferences for System Personalisation"""
+
+    __tablename__ = "user_preference"
 
     expanded_menu = Column(Boolean(), default=False)
     departments = relationship(

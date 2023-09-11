@@ -2,18 +2,6 @@ import logging
 from datetime import datetime, timedelta
 from typing import Any, List, Union
 
-from apps import Auditable, BaseAuditDBModel, DBModel
-from apps.analysis import schemas
-from apps.analysis.conf import states
-from apps.analysis.models.qc import QCLevel, QCSet
-from apps.client import models as ct_models
-from apps.common import BaseMPTT
-from apps.common.models import IdSequence
-from apps.common.utils import sequencer
-from apps.notification.utils import FelicityStreamer
-from apps.patient import models as pt_models
-from apps.user.models import User
-
 from sqlalchemy import (
     Boolean,
     Column,
@@ -26,6 +14,18 @@ from sqlalchemy import (
 )
 from sqlalchemy.orm import relationship
 
+from apps import Auditable, BaseAuditDBModel, DBModel
+from apps.analysis import schemas
+from apps.analysis.conf import states
+from apps.analysis.models.qc import QCLevel, QCSet
+from apps.client import models as ct_models
+from apps.common import BaseMPTT
+from apps.common.models import IdSequence
+from apps.common.utils import sequencer
+from apps.notification.utils import FelicityStreamer
+from apps.patient import models as pt_models
+from apps.user.models import User
+
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
@@ -34,6 +34,8 @@ streamer = FelicityStreamer()
 
 class CodingStandard(BaseAuditDBModel):
     """conding standars e.g LOINC"""
+
+    __tablename__ = "coding_standard"
 
     name = Column(String, nullable=False)
     description = Column(String, nullable=False)
@@ -55,6 +57,8 @@ class CodingStandard(BaseAuditDBModel):
 class SampleType(BaseAuditDBModel):
     """SampleType"""
 
+    __tablename__ = "sample_type"
+
     name = Column(String, nullable=False)
     description = Column(String, nullable=False)
     active = Column(Boolean(), default=False)
@@ -74,10 +78,12 @@ class SampleType(BaseAuditDBModel):
 class SampleTypeCoding(BaseAuditDBModel):
     """SampleTypeCoding"""
 
-    sample_type_uid = Column(String, ForeignKey("sampletype.uid"), nullable=False)
+    __tablename__ = "sampe_type_coding"
+
+    sample_type_uid = Column(String, ForeignKey("sample_type.uid"), nullable=False)
     sample_type = relationship("SampleType", lazy="selectin")
     coding_standard_uid = Column(
-        String, ForeignKey("codingstandard.uid"), nullable=True
+        String, ForeignKey("coding_standard.uid"), nullable=True
     )
     coding_standard = relationship("CodingStandard", lazy="selectin")
     name = Column(String, nullable=True)
@@ -104,7 +110,7 @@ class SampleTypeCoding(BaseAuditDBModel):
 profile_sample_type = Table(
     "profile_sample_type",
     DBModel.metadata,
-    Column("sample_type_uid", ForeignKey("sampletype.uid"), primary_key=True),
+    Column("sample_type_uid", ForeignKey("sample_type.uid"), primary_key=True),
     Column("profile_uid", ForeignKey("profile.uid"), primary_key=True),
 )
 
@@ -114,7 +120,7 @@ Many to Many Link between Analysis and SampleType
 analysis_sample_type = Table(
     "analysis_sample_type",
     DBModel.metadata,
-    Column("sample_type_uid", ForeignKey("sampletype.uid"), primary_key=True),
+    Column("sample_type_uid", ForeignKey("sample_type.uid"), primary_key=True),
     Column("analysis_uid", ForeignKey("analysis.uid"), primary_key=True),
 )
 
@@ -133,6 +139,8 @@ analysis_profile = Table(
 
 class AnalysisCategory(BaseAuditDBModel):
     """Categorise Analysis"""
+
+    __tablename__ = "analysis_category"
 
     name = Column(String, nullable=False)
     description = Column(String, nullable=False)
@@ -156,6 +164,8 @@ class AnalysisCategory(BaseAuditDBModel):
 
 class Profile(BaseAuditDBModel):
     """Grouped Analysis e.g FBC, U&E's, MCS ..."""
+
+    __tablename__ = "profile"
 
     name = Column(String, nullable=False)
     description = Column(String, nullable=False)
@@ -201,10 +211,12 @@ class Profile(BaseAuditDBModel):
 class ProfileCoding(BaseAuditDBModel):
     """ProfileCoding"""
 
+    __tablename__ = "profile_coding"
+
     profile_uid = Column(String, ForeignKey("profile.uid"), nullable=True)
     profile = relationship("Profile", lazy="selectin")
     coding_standard_uid = Column(
-        String, ForeignKey("codingstandard.uid"), nullable=True
+        String, ForeignKey("coding_standard.uid"), nullable=True
     )
     coding_standard = relationship("CodingStandard", lazy="selectin")
     name = Column(String, nullable=True)
@@ -247,6 +259,8 @@ analysis_instrument = Table(
 class Analysis(BaseAuditDBModel):
     """Analysis Test/Service"""
 
+    __tablename__ = "analysis"
+
     name = Column(String, nullable=False)
     description = Column(String, nullable=False)
     keyword = Column(String, nullable=False, unique=True)
@@ -285,7 +299,7 @@ class Analysis(BaseAuditDBModel):
         "AnalysisUncertainty", backref="analysis", lazy="selectin"
     )
     result_options = relationship("ResultOption", backref="analyses", lazy="selectin")
-    category_uid = Column(String, ForeignKey("analysiscategory.uid"))
+    category_uid = Column(String, ForeignKey("analysis_category.uid"))
     category = relationship(AnalysisCategory, backref="analyses", lazy="selectin")
     tat_length_minutes = Column(Integer, nullable=True)  # to calculate TAT
     sort_key = Column(Integer, nullable=True)
@@ -312,10 +326,12 @@ class Analysis(BaseAuditDBModel):
 class AnalysisCoding(BaseAuditDBModel):
     """AnalysisCoding"""
 
+    __tablename__ = "analysis_coding"
+
     analysis_uid = Column(String, ForeignKey("analysis.uid"), nullable=True)
     analysis = relationship("Analysis", lazy="selectin")
     coding_standard_uid = Column(
-        String, ForeignKey("codingstandard.uid"), nullable=True
+        String, ForeignKey("coding_standard.uid"), nullable=True
     )
     coding_standard = relationship("CodingStandard", lazy="selectin")
     name = Column(String, nullable=True)
@@ -338,6 +354,8 @@ class AnalysisCoding(BaseAuditDBModel):
 
 class AnalysisInterim(BaseAuditDBModel):
     """Analysis Interim Result Field"""
+
+    __tablename__ = "analysis_interim"
 
     key = Column(Integer, nullable=False)
     value = Column(String, nullable=False)
@@ -362,6 +380,8 @@ class AnalysisInterim(BaseAuditDBModel):
 class AnalysisCorrectionFactor(BaseAuditDBModel):
     """Analysis Correction Factor"""
 
+    __tablename__ = "analysis_correction_factor"
+
     factor = Column(Float, nullable=False)
     analysis_uid = Column(String, ForeignKey("analysis.uid"), nullable=True)
     instrument_uid = Column(String, ForeignKey("instrument.uid"), nullable=True)
@@ -383,6 +403,8 @@ class AnalysisCorrectionFactor(BaseAuditDBModel):
 
 class AnalysisDetectionLimit(BaseAuditDBModel):
     """Analysis Detection Limit"""
+
+    __tablename__ = "analysis_detection_limit"
 
     lower_limit = Column(Float, nullable=False)
     upper_limit = Column(Float, nullable=False)
@@ -409,6 +431,8 @@ class AnalysisUncertainty(BaseAuditDBModel):
     If value is within the the range min.max then result becomes a range (result +/- value)
     """
 
+    __tablename__ = "analysis_uncertainty"
+
     min = Column(Float, nullable=False)
     max = Column(Float, nullable=False)
     value = Column(Float, nullable=False)
@@ -432,6 +456,8 @@ class AnalysisUncertainty(BaseAuditDBModel):
 
 class AnalysisSpecification(BaseAuditDBModel):
     """Analysis Specification Ranges"""
+
+    __tablename__ = "analysis_specification"
 
     analysis_uid = Column(String, ForeignKey("analysis.uid"), nullable=True)
     unit_uid = Column(String, ForeignKey("unit.uid"), nullable=True)
@@ -476,6 +502,8 @@ class AnalysisSpecification(BaseAuditDBModel):
 class ResultOption(BaseAuditDBModel):
     """Result Choices"""
 
+    __tablename__ = "result_options"
+
     option_key = Column(Integer, nullable=False)
     value = Column(String, nullable=False)
     analysis_uid = Column(String, ForeignKey("analysis.uid"))
@@ -492,6 +520,8 @@ class ResultOption(BaseAuditDBModel):
 
 class AnalysisRequest(BaseAuditDBModel):
     """AnalysisRequest a.k.a Laboratory Request"""
+
+    __tablename__ = "analysis_request"
 
     patient_uid = Column(String, ForeignKey("patient.uid"))
     patient = relationship(
@@ -546,12 +576,16 @@ sample_rejection_reason = Table(
     "sample_rejection_reason",
     DBModel.metadata,
     Column("sample_uid", ForeignKey("sample.uid"), primary_key=True),
-    Column("rejection_reason_uid", ForeignKey("rejectionreason.uid"), primary_key=True),
+    Column(
+        "rejection_reason_uid", ForeignKey("rejection_reason.uid"), primary_key=True
+    ),
 )
 
 
 class RejectionReason(BaseAuditDBModel):
     """Rejection Reason"""
+
+    __tablename__ = "rejection_reason"
 
     reason = Column(String, nullable=False)
 
@@ -572,13 +606,15 @@ class RejectionReason(BaseAuditDBModel):
 class Sample(Auditable, BaseMPTT):
     """Sample"""
 
+    __tablename__ = "sample"
+
     analysis_request_uid = Column(
-        String, ForeignKey("analysisrequest.uid"), nullable=True
+        String, ForeignKey("analysis_request.uid"), nullable=True
     )
     analysis_request = relationship(
         "AnalysisRequest", back_populates="samples", lazy="selectin"
     )
-    sample_type_uid = Column(String, ForeignKey("sampletype.uid"), nullable=False)
+    sample_type_uid = Column(String, ForeignKey("sample_type.uid"), nullable=False)
     sample_type = relationship("SampleType", backref="samples", lazy="selectin")
     sample_id = Column(String, index=True, unique=True, nullable=True)
     profiles = relationship(
@@ -626,9 +662,9 @@ class Sample(Auditable, BaseMPTT):
     internal_use = Column(Boolean(), default=False)
     due_date = Column(DateTime, nullable=True)
     # QC Samples
-    qc_set_uid = Column(String, ForeignKey("qcset.uid"), nullable=True)
+    qc_set_uid = Column(String, ForeignKey("qc_set.uid"), nullable=True)
     qc_set = relationship(QCSet, back_populates="samples", lazy="selectin")
-    qc_level_uid = Column(String, ForeignKey("qclevel.uid"), nullable=True)
+    qc_level_uid = Column(String, ForeignKey("qc_level.uid"), nullable=True)
     qc_level = relationship(QCLevel, backref="qc_samples", lazy="selectin")
     # storage -> bio bank
     stored_by_uid = Column(String, ForeignKey("user.uid"), nullable=True)
@@ -636,7 +672,7 @@ class Sample(Auditable, BaseMPTT):
     date_stored = Column(DateTime, nullable=True)
     date_retrieved_from_storage = Column(DateTime, nullable=True)
     storage_container_uid = Column(
-        String, ForeignKey("storagecontainer.uid"), nullable=True
+        String, ForeignKey("storage_container.uid"), nullable=True
     )
     storage_container = relationship(
         "StorageContainer", back_populates="samples", lazy="selectin"

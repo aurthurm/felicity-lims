@@ -1,11 +1,11 @@
 import logging
 
+from sqlalchemy import Boolean, Column, DateTime, Float, ForeignKey, String, Table
+from sqlalchemy.orm import relationship
+
 from apps import BaseAuditDBModel, DBModel
 from apps.analysis import schemas
 from apps.setup.models.setup import Department
-
-from sqlalchemy import Boolean, Column, DateTime, Float, ForeignKey, String, Table
-from sqlalchemy.orm import relationship
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -15,6 +15,8 @@ class QCSet(BaseAuditDBModel):
     """A Set/Group of QC Samples that are run together.
     - e.g a Viral Load Rack the QCLevels are a set i.e Negative Control, Low Pos Control, High Pos Control
     """
+
+    __tablename__ = "qc_set"
 
     name = Column(String, nullable=False)
     note = Column(String, nullable=True)
@@ -36,7 +38,7 @@ Many to Many Link between QCReference and  Analysis
 qc_reference_analysis = Table(
     "qc_reference_analysis",
     DBModel.metadata,
-    Column("qc_reference_uid", ForeignKey("qcreference.uid"), primary_key=True),
+    Column("qc_reference_uid", ForeignKey("qc_reference.uid"), primary_key=True),
     Column("analysis_uid", ForeignKey("analysis.uid"), primary_key=True),
 )
 
@@ -48,6 +50,8 @@ class QCReference(BaseAuditDBModel):
               InActive awaiting activation
               Depleted
     """
+
+    __tablename__ = "qc_reference"
 
     name = Column(String, nullable=False)
     description = Column(String, nullable=False)
@@ -84,7 +88,10 @@ class QCLevel(BaseAuditDBModel):
     - HIV High Positive Control
     """
 
+    __tablename__ = "qc_level"
+
     level = Column(String, nullable=False)
+
     # department_uid = Column(String, ForeignKey("department.uid"), nullable=True)
     # department = relationship(
     #     "Department", lazy="selectin"
@@ -113,7 +120,7 @@ qc_template_department = Table(
     "qc_template_department",
     DBModel.metadata,
     Column("department_uid", ForeignKey("department.uid"), primary_key=True),
-    Column("qc_template_uid", ForeignKey("qctemplate.uid"), primary_key=True),
+    Column("qc_template_uid", ForeignKey("qc_template.uid"), primary_key=True),
 )
 
 """
@@ -122,8 +129,8 @@ Many to Many Link between QCTemplate and  QCLevel
 qc_template_qc_level = Table(
     "qc_template_qc_level",
     DBModel.metadata,
-    Column("qc_level_uid", ForeignKey("qclevel.uid"), primary_key=True),
-    Column("qc_template_uid", ForeignKey("qctemplate.uid"), primary_key=True),
+    Column("qc_level_uid", ForeignKey("qc_level.uid"), primary_key=True),
+    Column("qc_template_uid", ForeignKey("qc_template.uid"), primary_key=True),
 )
 
 
@@ -138,6 +145,8 @@ class QCTemplate(BaseAuditDBModel):
         - Negative Control
         - Positive COntrol
     """
+
+    __tablename__ = "qc_template"
 
     name = Column(String, nullable=False)
     description = Column(String, nullable=True)

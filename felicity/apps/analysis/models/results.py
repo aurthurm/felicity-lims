@@ -2,13 +2,14 @@ import logging
 from datetime import datetime
 from typing import List
 
+from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, String, Table
+from sqlalchemy.orm import relationship
+
 from apps import Auditable, BaseAuditDBModel, DBModel
 from apps.analysis import conf, schemas
 from apps.common import BaseMPTT
 from apps.notification.utils import FelicityStreamer
-from db.session import async_session_factory
-from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, String, Table
-from sqlalchemy.orm import relationship
+from database.session import async_session_factory
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -21,7 +22,7 @@ streamer = FelicityStreamer()
 result_verification = Table(
     "result_verification",
     DBModel.metadata,
-    Column("result_uid", ForeignKey("analysisresult.uid"), primary_key=True),
+    Column("result_uid", ForeignKey("analysis_result.uid"), primary_key=True),
     Column("user_uid", ForeignKey("user.uid"), primary_key=True),
 )
 
@@ -31,6 +32,8 @@ class AnalysisResult(Auditable, BaseMPTT):
     Number of analysis results per sample will be directly proportional to
     the number of linked sample_analyses at minimum :)
     """
+
+    __tablename__ = "analysis_result"
 
     sample_uid = Column(String, ForeignKey("sample.uid"), nullable=False)
     sample = relationship("Sample", back_populates="analysis_results", lazy="selectin")
@@ -208,11 +211,11 @@ class AnalysisResult(Auditable, BaseMPTT):
 
     @classmethod
     async def filter_for_worksheet(
-        cls,
-        analyses_status: str,
-        analysis_uid: str,
-        sample_type_uid: list[str],
-        limit: int,
+            cls,
+            analyses_status: str,
+            analysis_uid: str,
+            sample_type_uid: list[str],
+            limit: int,
     ) -> List[schemas.AnalysisResult]:
 
         filters = {
@@ -236,13 +239,13 @@ class AnalysisResult(Auditable, BaseMPTT):
 
     @classmethod
     async def create(
-        cls, obj_in: schemas.AnalysisResultCreate
+            cls, obj_in: schemas.AnalysisResultCreate
     ) -> schemas.AnalysisResult:
         data = cls._import(obj_in)
         return await super().create(**data)
 
     async def update(
-        self, obj_in: schemas.AnalysisResultUpdate
+            self, obj_in: schemas.AnalysisResultUpdate
     ) -> schemas.AnalysisResult:
         data = self._import(obj_in)
         return await super().update(**data)
@@ -251,7 +254,9 @@ class AnalysisResult(Auditable, BaseMPTT):
 class ResultMutation(BaseAuditDBModel):
     """Result Mutations tracker"""
 
-    result_uid = Column(String, ForeignKey("analysisresult.uid"), nullable=False)
+    __tablename__ = "result_mutation"
+
+    result_uid = Column(String, ForeignKey("analysis_result.uid"), nullable=False)
     before = Column(String, nullable=False)
     after = Column(String, nullable=False)
     mutation = Column(String, nullable=False)

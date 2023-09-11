@@ -1,12 +1,11 @@
 import logging
-from typing import List, Optional
+
+from sqlalchemy import Column, DateTime, ForeignKey, String, Table
+from sqlalchemy.orm import relationship
 
 from apps import BaseAuditDBModel, DBModel
 from apps.setup.models import Department
 from apps.user.models import Group, User
-from sqlalchemy import Column, DateTime, ForeignKey, String, Table
-from sqlalchemy.orm import relationship
-
 from . import schemas
 
 logging.basicConfig(level=logging.INFO)
@@ -45,6 +44,8 @@ department_notice: Table = Table(
 
 class Notice(BaseAuditDBModel):
     """Notice"""
+
+    __tablename__ = "notice"
 
     departments = relationship(
         "Department", secondary=department_notice, lazy="selectin"

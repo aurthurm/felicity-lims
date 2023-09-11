@@ -1,24 +1,23 @@
 import logging
 from typing import List
 
+from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, String, Table
+from sqlalchemy.dialects.postgresql import JSONB
+from sqlalchemy.orm import relationship
+
 from apps import Auditable, BaseAuditDBModel, DBModel
 from apps.analysis import conf as analysis_conf
 from apps.analysis.models import analysis as analysis_models
 from apps.analysis.models import qc as qc_models
 from apps.analysis.models import results as result_models
 from apps.common.models import IdSequence
-from apps.notification.utils import FelicityStreamer
 from apps.instrument.models import Instrument
+from apps.notification.utils import FelicityStreamer
 from apps.user.models import User
 from apps.worksheet import conf, schemas
 
-from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, String, Table
-from sqlalchemy.dialects.postgresql import JSONB
-from sqlalchemy.orm import relationship
-
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
-
 
 streamer = FelicityStreamer()
 
@@ -40,8 +39,8 @@ Many to Many Link between WorkSheetTemplate and QCLevel
 worksheet_template_qc_level = Table(
     "worksheet_template_qc_level",
     DBModel.metadata,
-    Column("ws_template_uid", ForeignKey("worksheettemplate.uid"), primary_key=True),
-    Column("qc_level_uid", ForeignKey("qclevel.uid"), primary_key=True),
+    Column("ws_template_uid", ForeignKey("worksheet_template.uid"), primary_key=True),
+    Column("qc_level_uid", ForeignKey("qc_level.uid"), primary_key=True),
 )
 
 
@@ -52,11 +51,13 @@ class WorkSheetTemplate(WSBase):
     cases where multi analyses can be assigned to a single ws
     """
 
+    __tablename__ = "worksheet_template"
+
     name = Column(String, unique=True, nullable=False)
     description = Column(String)
     analysis_uid = Column(String, ForeignKey("analysis.uid"), nullable=True)
     analysis = relationship(analysis_models.Analysis, lazy="selectin")
-    qc_template_uid = Column(String, ForeignKey("qctemplate.uid"), nullable=True)
+    qc_template_uid = Column(String, ForeignKey("qc_template.uid"), nullable=True)
     qc_template = relationship(qc_models.QCTemplate, lazy="selectin")
     # to help cater for those created without template we also keep the qc_levels
     qc_levels = relationship(
@@ -64,7 +65,7 @@ class WorkSheetTemplate(WSBase):
     )
     instrument_uid = Column(String, ForeignKey("instrument.uid"), nullable=True)
     instrument = relationship(Instrument, lazy="selectin")
-    sample_type_uid = Column(String, ForeignKey("sampletype.uid"), nullable=False)
+    sample_type_uid = Column(String, ForeignKey("sample_type.uid"), nullable=False)
     sample_type = relationship(analysis_models.SampleType, lazy="selectin")
 
     @classmethod
@@ -78,7 +79,9 @@ class WorkSheetTemplate(WSBase):
 
 
 class WorkSheet(Auditable, WSBase):
-    template_uid = Column(String, ForeignKey("worksheettemplate.uid"), nullable=False)
+    __tablename__ = "worksheet"
+
+    template_uid = Column(String, ForeignKey("worksheet_template.uid"), nullable=False)
     template = relationship("WorkSheetTemplate", lazy="selectin")
     analyst_uid = Column(String, ForeignKey("user.uid"), nullable=False)
     analyst = relationship(User, foreign_keys=[analyst_uid], lazy="selectin")
@@ -87,7 +90,7 @@ class WorkSheet(Auditable, WSBase):
     analysis = relationship(analysis_models.Analysis, lazy="selectin")
     instrument_uid = Column(String, ForeignKey("instrument.uid"), nullable=True)
     instrument = relationship(Instrument, backref="worksheets", lazy="selectin")
-    sample_type_uid = Column(String, ForeignKey("sampletype.uid"), nullable=False)
+    sample_type_uid = Column(String, ForeignKey("sample_type.uid"), nullable=False)
     sample_type = relationship(analysis_models.SampleType, lazy="selectin")
     assigned_count = Column(Integer, nullable=False, default=0)
     analysis_results = relationship(

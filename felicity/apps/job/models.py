@@ -1,12 +1,15 @@
 from datetime import datetime, timedelta
-from db.base_class import DBModel
+
 from sqlalchemy import Column, Integer, String, DateTime
 from sqlalchemy.dialects.postgresql import JSONB
 
+from database.base_class import DBModel
 from . import conf, schemas
 
 
 class Job(DBModel):
+    __tablename__ = "job"
+
     action = Column(String)
     category = Column(String)
     priority = Column(Integer)

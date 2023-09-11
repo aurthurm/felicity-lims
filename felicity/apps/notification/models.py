@@ -1,18 +1,16 @@
 import logging
 from typing import Any, List, Optional
 
-from apps import BaseAuditDBModel, DBModel
-from apps.setup.models import Department
-from apps.user.models import Group, User
-
 from sqlalchemy import Column, ForeignKey, String, Table
 from sqlalchemy.orm import relationship
 
+from apps import BaseAuditDBModel, DBModel
+from apps.setup.models import Department
+from apps.user.models import Group, User
 from . import schemas
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
-
 
 """
  Many to Many Link between Users and ActivityFeed
@@ -20,13 +18,15 @@ logger = logging.getLogger(__name__)
 activity_feed_subscription = Table(
     "activity_feed_subscription",
     DBModel.metadata,
-    Column("activity_feed_uid", ForeignKey("activityfeed.uid"), primary_key=True),
+    Column("activity_feed_uid", ForeignKey("activity_feed.uid"), primary_key=True),
     Column("user_uid", ForeignKey("user.uid"), primary_key=True),
 )
 
 
 class ActivityFeed(BaseAuditDBModel):
     """ActivityFeed"""
+
+    __tablename__ = "activity_feed"
 
     name = Column(String, nullable=False)
     subscribers = relationship(
@@ -63,8 +63,8 @@ class ActivityFeed(BaseAuditDBModel):
 activity_stream_feed = Table(
     "activity_stream_feed",
     DBModel.metadata,
-    Column("activity_feed_uid", ForeignKey("activityfeed.uid"), primary_key=True),
-    Column("stream_uid", ForeignKey("activitystream.uid"), primary_key=True),
+    Column("activity_feed_uid", ForeignKey("activity_feed.uid"), primary_key=True),
+    Column("stream_uid", ForeignKey("activity_stream.uid"), primary_key=True),
 )
 
 """
@@ -73,7 +73,7 @@ activity_stream_feed = Table(
 activity_stream_view = Table(
     "activity_stream_view",
     DBModel.metadata,
-    Column("activity_stream_uid", ForeignKey("activitystream.uid"), primary_key=True),
+    Column("activity_stream_uid", ForeignKey("activity_stream.uid"), primary_key=True),
     Column("user_uid", ForeignKey("user.uid"), primary_key=True),
 )
 
@@ -87,6 +87,8 @@ class ActivityStream(BaseAuditDBModel):
     e.g. Aurthur (actor) verified (verb) worksheet ws20-1222 (action object) 20 on felicity lims (target) minutes ago
     ?? maybe target as feed
     """
+
+    __tablename__ = "activity_stream"
 
     feeds = relationship(ActivityFeed, secondary=activity_stream_feed, lazy="selectin")
     actor_uid = Column(String, ForeignKey("user.uid"), nullable=True)
@@ -224,6 +226,8 @@ class Notification(BaseAuditDBModel):
         2 worksheets have no samples, consider populating or deleting them to avoid cluttering your dashboard
         ...
     """
+
+    __tablename__ = "notification"
 
     # target audiences
     departments = relationship(

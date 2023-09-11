@@ -1,11 +1,13 @@
-from apps import BaseAuditDBModel
 from sqlalchemy import Column
 from sqlalchemy.dialects.postgresql import JSONB
 
+from apps import BaseAuditDBModel
 from . import schemas
 
 
 class ErrorLog(BaseAuditDBModel):
+    __tablename__ = "error_log"
+
     content = Column(JSONB)
 
     @classmethod

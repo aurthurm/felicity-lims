@@ -1,0 +1,40 @@
+# ubuntu create postgres database
+
+sudo su - postgres
+psql
+create database mspt_db;
+create user mstp_user with encrypted password 'mstp_access';
+grant all privileges on database mspt_db to mstp_user;
+
+
+# Postgres Essentials
+sudo su postgres || sudo –i –u postgres psql
+psql
+\l                          List all databases
+\dt *.                      List all tables and schemas
+\c <databas>;               Connect to database
+\l+
+\conninfo                   Current database connection info
+\du                         list all users
+create database <bd name>;
+create user <username> with [encrypted | SUPERUSER] password <password>;
+grand all priviledges on database <database> to <username>;
+REINDEX [ ( VERBOSE ) ] { INDEX | TABLE | SCHEMA | DATABASE | SYSTEM } <name>;
+
+**maintanace** without table locking
+connect to every database and run .:$ VACUUM;
+
+**maintanace** with table locking
+1. REINDEX SYSTEM <database name>;
+2. VACUUM FULL <table name>, REINDEX TABLE <table name>; for every data table (non system table)
+
+**backupa and restore**
+pg_dump dbname > dumpfile                                     Backuup
+pg_dump -h host1 dbname | psql -h host2 dbname                             Dump database from one server to another
+psql dbname < dumpfile || psql --set ON_ERROR_STOP=on dbname < dumpfile  [--single-transaction]           Restore
+pg_dumpall > dumpfile         Dump all databases at once
+psql -f dumpfile postgres     Restore databases dumpled with pd_dumpall
+pg_dump dbname | gzip > filename.gz           handling large files
+gunzip -c filename.gz | psql dbname || cat filename.gz | gunzip | psql dbname       to restore large files
+pg_dump dbname | split -b 1m - filename    split files to accepable size e.b 1mb
+cat filename* | psql dbname     restore split files

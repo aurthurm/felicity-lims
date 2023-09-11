@@ -1,12 +1,11 @@
 import logging
 
-from apps import BaseAuditDBModel, DBModel
-from apps.common import BaseMPTT
-from apps.user.models import User
-
 from sqlalchemy import Boolean, Column, ForeignKey, String, Table
 from sqlalchemy.orm import relationship
 
+from apps import BaseAuditDBModel, DBModel
+from apps.common import BaseMPTT
+from apps.user.models import User
 from . import schemas
 
 logging.basicConfig(level=logging.INFO)
@@ -18,7 +17,7 @@ logger = logging.getLogger(__name__)
 message_thread_recipient = Table(
     "message_thread_recipient",
     DBModel.metadata,
-    Column("message_thread_uid", ForeignKey("messagethread.uid"), primary_key=True),
+    Column("message_thread_uid", ForeignKey("message_thread.uid"), primary_key=True),
     Column("user_uid", ForeignKey("user.uid"), primary_key=True),
 )
 
@@ -28,13 +27,15 @@ message_thread_recipient = Table(
 message_thread_delete = Table(
     "message_thread_delete",
     DBModel.metadata,
-    Column("message_thread_uid", ForeignKey("messagethread.uid"), primary_key=True),
+    Column("message_thread_uid", ForeignKey("message_thread.uid"), primary_key=True),
     Column("user_uid", ForeignKey("user.uid"), primary_key=True),
 )
 
 
 class MessageThread(BaseAuditDBModel):
     """MessageThread"""
+
+    __tablename__ = "message_thread"
 
     broadcast = Column(Boolean, nullable=False)
     messages = relationship("Message", back_populates="thread", lazy="selectin")
@@ -49,7 +50,7 @@ class MessageThread(BaseAuditDBModel):
         return await super().create(**data)
 
     async def update(
-        self, obj_in: schemas.MessageThreadUpdate
+            self, obj_in: schemas.MessageThreadUpdate
     ) -> schemas.MessageThread:
         data = self._import(obj_in)
         return await super().update(**data)
@@ -125,7 +126,9 @@ message_delete = Table(
 class Message(BaseAuditDBModel, BaseMPTT):
     """Message"""
 
-    thread_uid = Column(String, ForeignKey("messagethread.uid"), nullable=True)
+    __tablename__ = "message"
+
+    thread_uid = Column(String, ForeignKey("message_thread.uid"), nullable=True)
     thread = relationship("MessageThread", back_populates="messages", lazy="selectin")
     body = Column(String, nullable=False)
     viewers = relationship("User", secondary=message_view, lazy="selectin")

@@ -1,16 +1,18 @@
-from apps import BaseAuditDBModel, Auditable
+from sqlalchemy import Boolean, Column, ForeignKey, String
+from sqlalchemy.orm import backref, relationship
+
+from apps import Auditable
 from apps.client import schemas
 from apps.setup.models import District, Province
 from apps.user import conf
 from apps.user.abstract import AbstractBaseUser
 from apps.user.models import UserAuth
 
-from sqlalchemy import Boolean, Column, ForeignKey, String
-from sqlalchemy.orm import backref, relationship
-
 
 class Client(Auditable):
     """Client/Facility"""
+
+    __tablename__ = "client"
 
     name = Column(String, nullable=False)
     code = Column(String, index=True, unique=True, nullable=False)
@@ -60,7 +62,9 @@ class Client(Auditable):
 
 
 class ClientContact(AbstractBaseUser):
-    auth_uid = Column(String, ForeignKey("userauth.uid"), nullable=True)
+    __tablename__ = "client_contact"
+
+    auth_uid = Column(String, ForeignKey("user_auth.uid"), nullable=True)
     auth = relationship(UserAuth, backref=backref(conf.CLIENT_CONTACT, uselist=False))
     email = Column(String, unique=False, index=True, nullable=True)
     email_cc = Column(String, nullable=True)

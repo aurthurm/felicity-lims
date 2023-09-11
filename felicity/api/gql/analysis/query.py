@@ -1,20 +1,20 @@
 import logging
-from typing import List, Optional
+from typing import List
 
 import sqlalchemy as sa
 import strawberry  # noqa
-from api.gql.types import PageInfo
-from api.gql.permissions import IsAuthenticated
+
 from api.gql.analysis.types import analysis as a_types
 from api.gql.analysis.types import results as r_types
+from api.gql.permissions import IsAuthenticated
+from api.gql.types import PageInfo
 from apps.analysis import conf as analysis_conf
+from apps.analysis.models import analysis as a_models
 from apps.analysis.models import qc as qc_models
 from apps.analysis.models import results as r_models
-from apps.analysis.models import analysis as a_models
 from apps.analysis.utils import sample_search
-
+from database.session import async_session_factory
 from utils import has_value_or_is_truthy
-from db.session import async_session_factory
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

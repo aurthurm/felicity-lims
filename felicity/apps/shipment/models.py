@@ -1,11 +1,5 @@
 import logging
 
-from apps import Auditable, DBModel
-from apps.common.models import IdSequence
-from apps.notification.utils import FelicityStreamer
-from apps.user.models import User
-from apps.shipment import conf, schemas
-
 from sqlalchemy import (
     Boolean,
     Column,
@@ -18,14 +12,21 @@ from sqlalchemy import (
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import relationship
 
+from apps import Auditable, DBModel
+from apps.common.models import IdSequence
+from apps.notification.utils import FelicityStreamer
+from apps.shipment import conf, schemas
+from apps.user.models import User
+
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
-
 
 streamer = FelicityStreamer()
 
 
 class ReferralLaboratory(Auditable):
+    __tablename__ = "referral_laboratory"
+
     name = Column(String, nullable=True)
     code = Column(String, index=True, unique=True, nullable=False)
     url = Column(String, nullable=False)
@@ -49,13 +50,17 @@ class ReferralLaboratory(Auditable):
 
 
 class Shipment(Auditable):
+    __tablename__ = "shipment"
+
     shipment_id = Column(String, index=True, unique=True, nullable=False)
     comment = Column(String, nullable=True)
     courier = Column(String, nullable=False)
     assigned_count = Column(Integer, nullable=False, default=0)
     data = Column(JSONB)
     state = Column(String)
-    laboratory_uid = Column(String, ForeignKey("referrallaboratory.uid"), nullable=True)
+    laboratory_uid = Column(
+        String, ForeignKey("referral_laboratory.uid"), nullable=True
+    )
     laboratory = relationship(
         ReferralLaboratory, foreign_keys=[laboratory_uid], lazy="selectin"
     )
@@ -131,6 +136,8 @@ class ShippedSample(DBModel):
     """ShippedSample enables samples to be shipped multiple times
     A sample can be tracked through different shipments from inception to end
     """
+
+    __tablename__ = "shipped_sample"
 
     sample_uid = Column(String, ForeignKey("sample.uid"), nullable=True)
     sample = relationship("Sample", foreign_keys=[sample_uid], lazy="selectin")

@@ -1,36 +1,40 @@
 import logging
 from typing import List
 
+from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, String
+from sqlalchemy.orm import Mapped, relationship
+
 from apps import Auditable
 from apps.client.models import Client
 from apps.common.models import IdSequence
 from apps.patient import schemas
-
-from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, String
-from sqlalchemy.orm import Mapped, relationship
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
 class Identification(Auditable):
+    __tablename__ = "identification"
+
     name = Column(String, index=True, unique=True, nullable=True)
 
     @classmethod
     async def create(
-        cls, obj_in: schemas.IdentificationCreate
+            cls, obj_in: schemas.IdentificationCreate
     ) -> schemas.Identification:
         data = cls._import(obj_in)
         return await super().create(**data)
 
     async def update(
-        self, obj_in: schemas.IdentificationUpdate
+            self, obj_in: schemas.IdentificationUpdate
     ) -> schemas.Identification:
         data = self._import(obj_in)
         return await super().update(**data)
 
 
 class PatientIdentification(Auditable):
+    __tablename__ = "patient_identification"
+
     identification_uid = Column(String, ForeignKey("identification.uid"), nullable=True)
     identification: Mapped["Identification"] = relationship(
         "Identification", lazy="selectin"
@@ -43,19 +47,21 @@ class PatientIdentification(Auditable):
 
     @classmethod
     async def create(
-        cls, obj_in: schemas.PatientIdentificationCreate
+            cls, obj_in: schemas.PatientIdentificationCreate
     ) -> schemas.PatientIdentification:
         data = cls._import(obj_in)
         return await super().create(**data)
 
     async def update(
-        self, obj_in: schemas.PatientIdentificationUpdate
+            self, obj_in: schemas.PatientIdentificationUpdate
     ) -> schemas.PatientIdentification:
         data = self._import(obj_in)
         return await super().update(**data)
 
 
 class Patient(Auditable):
+    __tablename__ = "patient"
+
     # Identification
     client_patient_id = Column(String, index=True, unique=True, nullable=False)
     patient_id = Column(String, index=True, unique=True, nullable=True)
