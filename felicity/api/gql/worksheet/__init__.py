@@ -2,12 +2,12 @@ from .types import (
     WorkSheetTemplateType,
     WorkSheetType,
     WorkSheetEdge,
-    WorkSheetCursorPage
+    WorkSheetCursorPage,
 )
 
 worksheet_types = [
     WorkSheetTemplateType,
     WorkSheetType,
     WorkSheetEdge,
-    WorkSheetCursorPage 
+    WorkSheetCursorPage,
 ]

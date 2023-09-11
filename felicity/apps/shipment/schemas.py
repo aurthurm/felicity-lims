@@ -18,7 +18,7 @@ class ReferralLaboratoryBase(BaseModel):
 
 
 class ReferralLaboratoryBaseInDB(ReferralLaboratoryBase):
-    uid: str| None = None
+    uid: str | None = None
 
     class Config:
         orm_mode = True
@@ -70,7 +70,7 @@ class ShipmentBase(BaseModel):
 
 
 class ShipmentBaseInDB(ShipmentBase):
-    uid: str| None = None
+    uid: str | None = None
 
     class Config:
         orm_mode = True
@@ -107,7 +107,7 @@ class ShippedSampleBase(BaseModel):
 
 
 class ShippedSampleBaseInDB(ShippedSampleBase):
-    uid: str| None = None
+    uid: str | None = None
 
     class Config:
         orm_mode = True

@@ -29,7 +29,7 @@ logger = logging.getLogger(__name__)
 class ARResultInputType:
     uid: str
     result: str
-    reportable: bool| None = True
+    reportable: bool | None = True
 
 
 @strawberry.type

@@ -34,9 +34,7 @@ class ReflexBrainAddition(DBModel):
 
     analysis_uid = Column(String, ForeignKey("analysis.uid"), primary_key=True)
     analysis = relationship("Analysis", lazy="selectin")
-    reflex_brain_uid = Column(
-        String, ForeignKey("reflexbrain.uid"), primary_key=True
-    )
+    reflex_brain_uid = Column(String, ForeignKey("reflexbrain.uid"), primary_key=True)
     count = Column(Integer, default=1)
 
     @classmethod
@@ -60,9 +58,7 @@ class ReflexBrainFinal(DBModel):
 
     analysis_uid = Column(String, ForeignKey("analysis.uid"), primary_key=True)
     analysis = relationship("Analysis", lazy="selectin")
-    reflex_brain_uid = Column(
-        String, ForeignKey("reflexbrain.uid"), primary_key=True
-    )
+    reflex_brain_uid = Column(String, ForeignKey("reflexbrain.uid"), primary_key=True)
     value = Column(String)
 
     @classmethod
@@ -87,9 +83,7 @@ class ReflexBrainCriteria(DBModel):
 
     analysis_uid = Column(String, ForeignKey("analysis.uid"), primary_key=True)
     analysis = relationship("Analysis", lazy="selectin")
-    reflex_brain_uid = Column(
-        String, ForeignKey("reflexbrain.uid"), primary_key=True
-    )
+    reflex_brain_uid = Column(String, ForeignKey("reflexbrain.uid"), primary_key=True)
     operator = Column(String, nullable=False)
     value = Column(String)
 

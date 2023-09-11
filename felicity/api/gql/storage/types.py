@@ -6,7 +6,6 @@ from api.gql.user.types import UserType
 from apps.storage import models
 
 
-
 @strawberry.type
 class StoreRoomType:
     uid: str
@@ -91,8 +90,8 @@ class StorageContainerType:
     description: str | None
     storage_section_uid: str
     storage_section: Optional[StorageSectionType]
-    grid: bool| None
-    row_wise: bool| None
+    grid: bool | None
+    row_wise: bool | None
     cols: int | None
     rows: int | None
     slots: int | None

@@ -18,7 +18,7 @@ from .types import (
     StockTransactionCursorPage,
     StockAdjustmentType,
     StockAdjustmentEdge,
-    StockAdjustmentCursorPage
+    StockAdjustmentCursorPage,
 )
 
 inventory_types = [
@@ -41,5 +41,5 @@ inventory_types = [
     StockTransactionCursorPage,
     StockAdjustmentType,
     StockAdjustmentEdge,
-    StockAdjustmentCursorPage
+    StockAdjustmentCursorPage,
 ]

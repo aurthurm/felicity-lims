@@ -76,9 +76,7 @@ class Instrument(BaseAuditDBModel):
     instrument_type = relationship("InstrumentType", lazy="selectin")
     supplier_uid = Column(String, ForeignKey("supplier.uid"), nullable=True)
     supplier = relationship("Supplier", backref="instruments", lazy="selectin")
-    manufacturer_uid = Column(
-        String, ForeignKey("manufacturer.uid"), nullable=True
-    )
+    manufacturer_uid = Column(String, ForeignKey("manufacturer.uid"), nullable=True)
     manufacturer = relationship(
         "Manufacturer", backref="manufacturers", lazy="selectin"
     )
@@ -177,7 +175,7 @@ class CalibrationCertificate(BaseAuditDBModel):
 #     async def update(self, obj_in: schemas.InstrumentCompetenceUpdate) -> schemas.InstrumentCompetence:
 #         data = self._import(obj_in)
 #         return await super().update(**data)
-    
+
 #     @property
 #     async def is_valid(self):
 #         return datetime.now() < self.expiry_date

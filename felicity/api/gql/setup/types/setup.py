@@ -40,15 +40,15 @@ class LaboratorySettingType:
     uid: str
     laboratory_uid: str
     laboratory: LaboratoryType
-    allow_self_verification: bool| None = False
-    allow_patient_registration: bool| None = True
-    allow_sample_registration: bool| None = True
-    allow_worksheet_creation: bool| None = True
+    allow_self_verification: bool | None = False
+    allow_patient_registration: bool | None = True
+    allow_sample_registration: bool | None = True
+    allow_worksheet_creation: bool | None = True
     default_route: str | None = None
     password_lifetime: int | None = None
     inactivity_log_out: int | None = None
     default_theme: str | None = None
-    auto_receive_samples: bool| None = True
+    auto_receive_samples: bool | None = True
     sticker_copies: int | None = 2
     #
 
@@ -79,7 +79,6 @@ class ManufacturerType:
     updated_by_uid: str | None
     updated_by: Optional["UserType"]
     updated_at: datetime | None
-
 
 
 @strawberry.type
@@ -120,7 +119,7 @@ class ProvinceType:
     email_cc: str | None
     mobile_phone: str | None
     business_phone: str | None
-    active: bool| None
+    active: bool | None
     country_uid: str | None
     country: Optional[CountryType]
     #
@@ -156,7 +155,7 @@ class DistrictType:
     email_cc: str | None
     mobile_phone: str | None
     business_phone: str | None
-    active: bool| None
+    active: bool | None
     province_uid: str | None
     province: Optional[ProvinceType]
     #
@@ -181,6 +180,3 @@ class DistrictCursorPage:
     edges: Optional[List[DistrictEdge]]
     items: Optional[List[DistrictType]]
     total_count: int
-
-
-

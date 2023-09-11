@@ -4,7 +4,6 @@ from datetime import datetime
 import strawberry  # noqa
 
 
-
 @strawberry.type
 class DepartmentType:
     uid: str

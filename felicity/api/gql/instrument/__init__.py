@@ -9,7 +9,7 @@ from .types import (
     CalibrationCertificateType,
     MethodType,
     MethodEdge,
-    MethodCursorPage
+    MethodCursorPage,
 )
 
 instrument_types = [
@@ -23,5 +23,5 @@ instrument_types = [
     CalibrationCertificateType,
     MethodType,
     MethodEdge,
-    MethodCursorPage
+    MethodCursorPage,
 ]

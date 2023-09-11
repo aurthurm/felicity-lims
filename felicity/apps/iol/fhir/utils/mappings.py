@@ -1,5 +1,4 @@
-
-# # 
+# #
 # def map_bundle_resource_to_shipment(shipment_uid: int) -> BundleResource | None:
 #     shipment: Shipment = await Shipment.get(uid=shipment_uid)
 #     shipped_samples: ShippedSample = await ShippedSample.get_all(shipment_uid=shipment.uid)

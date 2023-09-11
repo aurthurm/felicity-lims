@@ -7,7 +7,6 @@ from api.gql.analysis.types.analysis import AnalysisType, SampleTypeTyp
 from api.gql.user.types import UserType
 
 
-
 @strawberry.type
 class ReflexRuleType:
     uid: str

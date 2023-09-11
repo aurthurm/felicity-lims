@@ -6,7 +6,6 @@ from api.gql.permissions import IsAuthenticated
 from apps.notification import models
 
 
-
 @strawberry.type
 class StreamNotificationQuery:
     @strawberry.field(permission_classes=[IsAuthenticated])
@@ -38,7 +37,5 @@ class StreamNotificationQuery:
         return list(notifications)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
-    async def notification_by_uid(
-        self, info, uid: str
-    ) -> Optional[NotificationType]:
+    async def notification_by_uid(self, info, uid: str) -> Optional[NotificationType]:
         return await models.Notification.get(uid=uid)

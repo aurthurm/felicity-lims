@@ -1,7 +1,7 @@
 import os
 from typing import Any
 
-from pydantic import AnyHttpUrl , EmailStr, HttpUrl, validator
+from pydantic import AnyHttpUrl, EmailStr, HttpUrl, validator
 from pydantic_settings import BaseSettings
 
 
@@ -21,8 +21,7 @@ def getenv_value(value, default_value=None):
 
 
 class Settings(BaseSettings):
-    BASE_DIR: str = os.path.abspath(
-        os.path.join(os.path.dirname(__file__), ".."))
+    BASE_DIR: str = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 
     STATIC_DIR: str = os.path.join(BASE_DIR, "static")
 
@@ -39,10 +38,13 @@ class Settings(BaseSettings):
     ]
     CORS_SUPPORTS_CREDENTIALS: bool = True
     CORS_ALLOW_HEADERS: list[str] = [
-        'Authorization', 'access-control-allow-methods', 'content-type', 
-        'access-control-allow-origin', 'access-control-allow-headers'
+        "Authorization",
+        "access-control-allow-methods",
+        "content-type",
+        "access-control-allow-origin",
+        "access-control-allow-headers",
     ]
-    
+
     TESTING: bool = getenv_boolean("TESTING", False)
     RETAIN_TESTING_DB_DATA: bool = getenv_boolean("RETAIN_TESTING_DB_DATA", True)
 
@@ -55,7 +57,7 @@ class Settings(BaseSettings):
             return None
         return v
 
-    POSTGRES_SERVER: str = getenv_value("POSTGRES_SERVER", "localhost") # felicity_db
+    POSTGRES_SERVER: str = getenv_value("POSTGRES_SERVER", "localhost")  # felicity_db
     POSTGRES_USER: str = getenv_value("POSTGRES_USER", "felicity")
     POSTGRES_PASSWORD: str = getenv_value("POSTGRES_PASSWORD", "felicity")
     POSTGRES_DB: str = getenv_value("POSTGRES_DB", "felicity_lims")
@@ -71,17 +73,13 @@ class Settings(BaseSettings):
         return f'postgresql://{values.get("POSTGRES_USER")}:{values.get("POSTGRES_PASSWORD")}@{values.get("POSTGRES_SERVER")}/{values.get("POSTGRES_DB") or ""}'
 
     @validator("SQLALCHEMY_ASYNC_DATABASE_URI", pre=True)
-    def assemble_async_db_connection(
-        cls, v: str | None, values: dict[str, Any]
-    ) -> Any:
+    def assemble_async_db_connection(cls, v: str | None, values: dict[str, Any]) -> Any:
         if isinstance(v, str):
             return v
         return f'postgresql+asyncpg://{values.get("POSTGRES_USER")}:{values.get("POSTGRES_PASSWORD")}@{values.get("POSTGRES_SERVER")}/{values.get("POSTGRES_DB") or ""}'
 
     @validator("SQLALCHEMY_TEST_DATABASE_URI", pre=True)
-    def assemble_test_db_connection(
-        cls, v: str | None, values: dict[str, Any]
-    ) -> Any:
+    def assemble_test_db_connection(cls, v: str | None, values: dict[str, Any]) -> Any:
         if isinstance(v, str):
             return v
         return f'postgresql+asyncpg://{values.get("POSTGRES_USER")}:{values.get("POSTGRES_PASSWORD")}@{values.get("POSTGRES_SERVER")}/test_{values.get("POSTGRES_DB") or ""}'
@@ -102,8 +100,7 @@ class Settings(BaseSettings):
     EMAILS_FROM_EMAIL: EmailStr | None = getenv_value(
         "EMAILS_FROM_EMAIL", "felicity@felicity.labs"
     )
-    EMAILS_FROM_NAME: str | None = getenv_value(
-        "EMAILS_FROM_NAME", "felicity")
+    EMAILS_FROM_NAME: str | None = getenv_value("EMAILS_FROM_NAME", "felicity")
 
     @validator("EMAILS_FROM_NAME")
     def get_project_name(cls, v: str | None, values: dict[str, Any]) -> str:
@@ -127,8 +124,7 @@ class Settings(BaseSettings):
     FIRST_SUPERUSER_EMAIL: EmailStr = getenv_value(
         "FIRST_SUPERUSER", "admin@felicitylabs.com"
     )
-    FIRST_SEPERUSER_USERNAME: str = getenv_value(
-        "FIRST_SEPERUSER_USERNAME", "admin")
+    FIRST_SEPERUSER_USERNAME: str = getenv_value("FIRST_SEPERUSER_USERNAME", "admin")
     FIRST_SUPERUSER_PASSWORD: str = getenv_value(
         "FIRST_SUPERUSER_PASSWORD", "!Felicity#100"
     )
@@ -144,7 +140,8 @@ class Settings(BaseSettings):
     # Tracing
     RUN_OPEN_TRACING: bool = getenv_boolean("RUN_OPEN_TRACING", False)
     OTLP_SPAN_EXPORT_URL: str = getenv_value(
-        "OTLP_SPAN_EXPORT_URL", "http://localhost:4317")
+        "OTLP_SPAN_EXPORT_URL", "http://localhost:4317"
+    )
 
     class Config:
         case_sensitive = True

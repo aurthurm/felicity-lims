@@ -9,6 +9,7 @@ from api.gql.types import JSONScalar, BytesScalar
 from api.gql.user.types import UserType
 from apps.shipment.models import ShippedSample
 
+
 @strawberry.type
 class ReferralLaboratoryType:
     uid: str
@@ -26,6 +27,7 @@ class ReferralLaboratoryType:
     updated_by: UserType | None
     updated_at: datetime | None
 
+
 @strawberry.type
 class ShipmentType:
     uid: str
@@ -37,24 +39,24 @@ class ShipmentType:
     samples: list[SampleType] | None
     shipped_samples: list["ShippedSampleType"] | None
     state: str | None
-    incoming: bool| None = False
+    incoming: bool | None = False
     laboratory_uid: str | None
     laboratory: ReferralLaboratoryType | None
     json_content: JSONScalar | None
     pdf_content: BytesScalar | None
-    finalised_by_uid: str | None    
+    finalised_by_uid: str | None
     finalised_by: UserType | None
     date_finalised: datetime | None
-    dispatched_by_uid: str| None
+    dispatched_by_uid: str | None
     dispatched_by: UserType | None
     date_dispatched: datetime | None
-    recalled_by_uid: str| None
+    recalled_by_uid: str | None
     recalled_by: UserType | None
     date_recalled: datetime | None
-    rejected_by_uid: str| None
+    rejected_by_uid: str | None
     rejected_by: UserType | None
     date_rejected: datetime | None
-    received_by_uid: str| None
+    received_by_uid: str | None
     received_by: UserType | None
     date_received: datetime | None
     created_by_uid: str | None
@@ -68,10 +70,15 @@ class ShipmentType:
     @strawberry.field
     async def samples(self, info) -> list["SampleType"] | None:
         return [
-            s for s in 
-            list(map(lambda sam: sam.sample, await ShippedSample.get_all(shipment_uid=self.uid)))
+            s
+            for s in list(
+                map(
+                    lambda sam: sam.sample,
+                    await ShippedSample.get_all(shipment_uid=self.uid),
+                )
+            )
         ]
-    
+
     @strawberry.field
     async def shipped_samples(self, info) -> list["ShippedSampleType"] | None:
         return await ShippedSample.get_all(shipment_uid=self.uid)

@@ -9,7 +9,6 @@ from api.gql.user.types import UserType
 from apps.worksheet import models as ws_models
 
 
-
 @strawberry.type
 class AnalysisResultType:
     uid: str

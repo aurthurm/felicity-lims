@@ -16,8 +16,8 @@ class States:
         CANCELLED = "cancelled"  # no longer required <in other words deleted>
         REJECTED = "rejected"  # declined for non conformance reasons
         STORED = "stored"  # samples in storage
-        REFERRED = "referred" # sample with all analyses refered
-        PAIRED = "paired" # samples with some (not all) analysis referred
+        REFERRED = "referred"  # sample with all analyses refered
+        PAIRED = "paired"  # samples with some (not all) analysis referred
 
     class Result:
         PENDING = "pending"  # analytes that are pending results
@@ -29,7 +29,7 @@ class States:
         )
         APPROVING = "approving"
         APPROVED = "approved"  # analytes that are authorised/approved
-        REFERRED = "referred" # analytes that are refered
+        REFERRED = "referred"  # analytes that are refered
 
     def __init__(self):
         self.sample = self.Sample()

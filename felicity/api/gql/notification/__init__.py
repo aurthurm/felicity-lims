@@ -2,12 +2,12 @@ from .types import (
     UnknownObjectType,
     ActivityFeedType,
     ActivityStreamType,
-    NotificationType
+    NotificationType,
 )
 
-notification_types =[
+notification_types = [
     UnknownObjectType,
     ActivityFeedType,
     ActivityStreamType,
-    NotificationType
+    NotificationType,
 ]

@@ -4,7 +4,6 @@ from apps.common.schemas import BaseAuditModel
 from apps.user.schemas import User
 
 
-
 #
 # Message Schemas
 #
@@ -14,11 +13,11 @@ class MessageBase(BaseAuditModel):
     body: str | None = ""
     viewers: Optional[List[User]] = []
     deleted_by: Optional[List[User]] = []
-    parent_id: str| None = None
+    parent_id: str | None = None
 
 
 class Message(MessageBase):
-    uid: str| None = None
+    uid: str | None = None
 
     class Config:
         orm_mode = True
@@ -36,14 +35,14 @@ class MessageUpdate(MessageBase):
 # MessageThread Schemas
 #
 class MessageThreadBase(BaseAuditModel):
-    broadcast: bool| None = False
+    broadcast: bool | None = False
     recipients: Optional[List[User]] = []
     messages: Optional[List[Message]] = []
     recipients: Optional[List[User]] = []
 
 
 class MessageThread(MessageThreadBase):
-    uid: str| None = None
+    uid: str | None = None
 
     class Config:
         orm_mode = True

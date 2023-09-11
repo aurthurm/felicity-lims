@@ -5,7 +5,11 @@ from typing import List
 from apps.analysis import schemas
 from apps.analysis.conf import states
 from apps.analysis.models.analysis import SampleType
-from apps.analysis.models.results import AnalysisResult, result_verification, ResultMutation
+from apps.analysis.models.results import (
+    AnalysisResult,
+    result_verification,
+    ResultMutation,
+)
 from apps.notification.utils import FelicityStreamer
 from apps.reflex.utils import ReflexUtil
 from apps.shipment.models import ShippedSample
@@ -34,10 +38,13 @@ async def get_qc_sample_type():
 
 
 async def get_last_verificator(result_uid: str):
-    data = await AnalysisResult.query_table(table=result_verification, result_uid=result_uid)
+    data = await AnalysisResult.query_table(
+        table=result_verification, result_uid=result_uid
+    )
     if not data:
         return None
     return await User.get(uid=data[-1])
+
 
 async def sample_search(
     model, status: str, text: str, client_uid: str
@@ -181,7 +188,7 @@ async def verify_from_result_uids(uids: list[str], user):
         # If referral then send results and mark samle as published
         shipped = await ShippedSample.get(sample_uid=a_result.sample_uid)
 
-        if  shipped:
+        if shipped:
             # 1. create a Job to send the result
             job_schema = JobCreate(
                 action=job_conf.actions.SHIPPED_REPORT,
@@ -190,10 +197,7 @@ async def verify_from_result_uids(uids: list[str], user):
                 job_id=shipped.uid,
                 status=job_conf.states.PENDING,
                 creator_uid=user.uid,
-                data={
-                    "target": "result",
-                    "uid": a_result.uid
-                },
+                data={"target": "result", "uid": a_result.uid},
             )
             await Job.create(job_schema)
 
@@ -207,10 +211,7 @@ async def verify_from_result_uids(uids: list[str], user):
                     job_id=shipped.uid,
                     status=job_conf.states.PENDING,
                     creator_uid=user.uid,
-                    data={
-                        "target": "sample",
-                        "uid": a_result.sample_uid
-                    },
+                    data={"target": "sample", "uid": a_result.sample_uid},
                 )
                 await Job.create(job_schema)
 

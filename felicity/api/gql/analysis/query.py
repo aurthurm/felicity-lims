@@ -25,7 +25,7 @@ class AnalysisQuery:
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def coding_standard_all(self, info) -> List[a_types.CodingStandardType]:
         return await a_models.CodingStandard.all()
-    
+
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def sample_type_all(self, info) -> List[a_types.SampleTypeTyp]:
         return await a_models.SampleType.all()
@@ -33,9 +33,11 @@ class AnalysisQuery:
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def sample_type_by_uid(self, info, uid: str) -> a_types.SampleTypeTyp:
         return await a_models.SampleType.get(uid=uid)
-    
+
     @strawberry.field(permission_classes=[IsAuthenticated])
-    async def sample_type_mappings_by_sample_type(self, info, sample_type_uid: str) -> list[a_types.SampleTypeMappingType]:
+    async def sample_type_mappings_by_sample_type(
+        self, info, sample_type_uid: str
+    ) -> list[a_types.SampleTypeMappingType]:
         return await a_models.SampleTypeCoding.get_all(sample_type_uid=sample_type_uid)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
@@ -68,8 +70,7 @@ class AnalysisQuery:
             filters.append(text_filters)
 
         if client_uid:
-            filters.append(
-                {"analysis_request___client_uid__exact": client_uid})
+            filters.append({"analysis_request___client_uid__exact": client_uid})
 
         if status:
             filters.append({"status__exact": status})
@@ -125,9 +126,14 @@ class AnalysisQuery:
         if sample_type_uid:
             filters.append({"sample_type_uid": sample_type_uid})
 
-        filters.append({
-            "status__in": [analysis_conf.states.sample.RECEIVED, analysis_conf.states.sample.PAIRED]
-        })
+        filters.append(
+            {
+                "status__in": [
+                    analysis_conf.states.sample.RECEIVED,
+                    analysis_conf.states.sample.PAIRED,
+                ]
+            }
+        )
 
         if not sort_by:
             sort_by = ["-priority", "uid"]
@@ -149,7 +155,7 @@ class AnalysisQuery:
         return r_types.SampleCursorPage(
             total_count=total_count, edges=edges, items=items, page_info=page_info
         )
-    
+
     # awaiting deprecation since sample_all can now achieve this
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def sample_search(
@@ -159,9 +165,7 @@ class AnalysisQuery:
 
     # awaiting deprecation since sample_all can now achieve this
     @strawberry.field(permission_classes=[IsAuthenticated])
-    async def sample_count(
-        self, info, status: str, text: str, client_uid: str
-    ) -> int:
+    async def sample_count(self, info, status: str, text: str, client_uid: str) -> int:
         combined = await sample_search(status, text, client_uid)
         return len(combined)
 
@@ -204,9 +208,11 @@ class AnalysisQuery:
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def profile_by_uid(self, info, uid: str) -> a_types.ProfileType:
         return await a_models.Profile.get(uid=uid)
-    
+
     @strawberry.field(permission_classes=[IsAuthenticated])
-    async def profile_mappings_by_profile(self, info, profile_uid: str) -> list[a_types.ProfileMappingType]:
+    async def profile_mappings_by_profile(
+        self, info, profile_uid: str
+    ) -> list[a_types.ProfileMappingType]:
         return await a_models.ProfileCoding.get_all(profile_uid=profile_uid)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
@@ -228,7 +234,7 @@ class AnalysisQuery:
         before_cursor: str | None = None,
         text: str | None = None,
         sort_by: list[str] | None = None,
-        qc_only: bool| None = False,
+        qc_only: bool | None = False,
     ) -> a_types.AnalysisCursorPage:
 
         filters = []
@@ -267,7 +273,9 @@ class AnalysisQuery:
         return await a_models.Analysis.get(uid=uid)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
-    async def analysis_mappings_by_analysis(self, info, analysis_uid: str) -> list[a_types.AnalysisMappingType]:
+    async def analysis_mappings_by_analysis(
+        self, info, analysis_uid: str
+    ) -> list[a_types.AnalysisMappingType]:
         return await a_models.AnalysisCoding.get_all(analysis_uid=analysis_uid)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
@@ -384,8 +392,7 @@ class AnalysisQuery:
         if sample_type_uid:
             filters.append({"sample___sample_type_uid": sample_type_uid})
 
-        filters.append(
-            {"sample___status": analysis_conf.states.sample.RECEIVED})
+        filters.append({"sample___status": analysis_conf.states.sample.RECEIVED})
         filters.append({"status": analysis_conf.states.result.PENDING})
 
         if not sort_by:

@@ -3,13 +3,13 @@ from .types import (
     PatientIdentificationType,
     PatientType,
     PatientEdge,
-    PatientCursorPage
+    PatientCursorPage,
 )
 
-patient_types =[
+patient_types = [
     IdentificationType,
     PatientIdentificationType,
     PatientType,
     PatientEdge,
-    PatientCursorPage
+    PatientCursorPage,
 ]

@@ -108,8 +108,14 @@ async def populate_worksheet_plate(job_uid: str):
             position += 1
 
     else:  # populate worksheet using an empty position filling strategy if not empty
-        assigned_positions = [assigned_anal.worksheet_position for assigned_anal in ws.analysis_results]
-        empty_positions = [pos for pos in range(1, ws.number_of_samples + 1) if pos not in reserved and pos not in assigned_positions]
+        assigned_positions = [
+            assigned_anal.worksheet_position for assigned_anal in ws.analysis_results
+        ]
+        empty_positions = [
+            pos
+            for pos in range(1, ws.number_of_samples + 1)
+            if pos not in reserved and pos not in assigned_positions
+        ]
 
         samples = sorted(samples, key=lambda s: s.uid, reverse=True)
         # balance sample count to avoid a key error
@@ -141,7 +147,9 @@ def get_sample_position(reserved, level_uid) -> int:
     if not reserved:
         return 0
 
-    matching_keys = [k for k, v in reserved.items() if v.get("level_uid", 0) == level_uid]
+    matching_keys = [
+        k for k, v in reserved.items() if v.get("level_uid", 0) == level_uid
+    ]
 
     return matching_keys[0] if matching_keys else 0
 

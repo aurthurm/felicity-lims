@@ -72,7 +72,6 @@ async def generate_report(job_uid: str):
     return True
 
 
-
 # # Convert DataFrame to a buffer (StringIO)
 # buffer = StringIO()
 # df.to_csv(buffer, index=False)

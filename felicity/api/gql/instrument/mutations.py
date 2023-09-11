@@ -44,6 +44,7 @@ CalibrationCertificateResponse = strawberry.union(
     description="",  # noqa
 )
 
+
 @strawberry.input
 class InstrumentTypeInputType:
     name: str

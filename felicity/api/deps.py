@@ -1,5 +1,5 @@
 import logging
-from typing import Any 
+from typing import Any
 
 from sanic.request import Request
 from strawberry.types import Info as _Info
@@ -17,6 +17,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 Info = _Info[Any, RootValueType]
+
 
 async def get_current_user(token: str = None) -> models.User:
     if not token:
@@ -45,9 +46,7 @@ async def get_auth_context(request: Request) -> Any:
         if not authorization:
             return {"user": None}
         _, credentials = authorization.split()
-        return {
-            "user": await get_current_active_user(credentials)
-        }
+        return {"user": await get_current_active_user(credentials)}
 
     logger.info(f"Context: must authenticate {request}")
 

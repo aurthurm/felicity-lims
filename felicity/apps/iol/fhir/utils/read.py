@@ -24,12 +24,13 @@ def one_of_else(of: list, one: str, default=None):
 
 
 def dt_to_st(v: datetime):
-    if not v: return ""
+    if not v:
+        return ""
     return v.strftime("%Y-%m-%d %H:%M:%S")
 
 
 async def get_diagnostic_report_resource(
-        service_request_uid: str, obs_uids: list[str] = [], for_referral=False
+    service_request_uid: str, obs_uids: list[str] = [], for_referral=False
 ) -> DiagnosticReportResource | None:
     ar, sample = await asyncio.gather(
         AnalysisRequest.get(uid=service_request_uid),
@@ -47,34 +48,38 @@ async def get_diagnostic_report_resource(
     for anal in analyses:
         last_verificator = await get_last_verificator(anal.uid)
 
-        observations.append({
-            "type": "Observation",
-            "identifier": {
-                "use": "official",
-                "type": {"text": anal.analysis.keyword},
-                "value": anal.result,
-            },
-            "status": anal.status,
-            "issued": dt_to_st(anal.date_verified),
-            "performer": [
-                {
-                    "identifier": {
-                        "use": "official",
-                        "type": {"text": "Full Name"},
-                        "value": anal.submitted_by.full_name
-                    },
-                    "display": "Analyst"
+        observations.append(
+            {
+                "type": "Observation",
+                "identifier": {
+                    "use": "official",
+                    "type": {"text": anal.analysis.keyword},
+                    "value": anal.result,
                 },
-                {
-                    "identifier": {
-                        "use": "official",
-                        "type": {"text": "Full Name"},
-                        "value": last_verificator.full_name if last_verificator else None
+                "status": anal.status,
+                "issued": dt_to_st(anal.date_verified),
+                "performer": [
+                    {
+                        "identifier": {
+                            "use": "official",
+                            "type": {"text": "Full Name"},
+                            "value": anal.submitted_by.full_name,
+                        },
+                        "display": "Analyst",
                     },
-                    "display": "Reviewer"
-                },
-            ]
-        })
+                    {
+                        "identifier": {
+                            "use": "official",
+                            "type": {"text": "Full Name"},
+                            "value": last_verificator.full_name
+                            if last_verificator
+                            else None,
+                        },
+                        "display": "Reviewer",
+                    },
+                ],
+            }
+        )
 
     async def _resolve_based_on():
         values = [
@@ -84,7 +89,7 @@ async def get_diagnostic_report_resource(
                     "use": "official",
                     "system": "felicity/analysisrequest/client-request-id",
                     "type": {"text": "Client Request Id"},
-                    "value": ar.client_request_id
+                    "value": ar.client_request_id,
                 },
                 "display": "Service Request ID",
             }
@@ -92,36 +97,42 @@ async def get_diagnostic_report_resource(
 
         if for_referral:
             shipped: ShippedSample = await ShippedSample.get(sample_uid=sample.uid)
-            values.append({
-                "type": "ServiceRequest",
-                "identifier": {
-                    "use": "official",
-                    "system": "felicity/shipment/id",
-                    "type": {"text": "Shipment Id"},
-                    "value": shipped.shipment.shipment_id
-                },
-                "display": "Shipment Reference ID",
-            })
-            values.append({
-                "type": "ServiceRequest",
-                "identifier": {
-                    "use": "official",
-                    "system": "felicity/sample/id",
-                    "type": {"text": "Sample Id"},
-                    "value": shipped.ext_sample_id
-                },
-                "display": "Shipment Reference ID",
-            })
-            values.append({
-                "type": "ServiceRequest",
-                "identifier": {
-                    "use": "official",
-                    "system": "felicity/sample/uid",
-                    "type": {"text": "Sample UID"},
-                    "value": shipped.ext_sample_uid
-                },
-                "display": "Shipment Reference ID",
-            })
+            values.append(
+                {
+                    "type": "ServiceRequest",
+                    "identifier": {
+                        "use": "official",
+                        "system": "felicity/shipment/id",
+                        "type": {"text": "Shipment Id"},
+                        "value": shipped.shipment.shipment_id,
+                    },
+                    "display": "Shipment Reference ID",
+                }
+            )
+            values.append(
+                {
+                    "type": "ServiceRequest",
+                    "identifier": {
+                        "use": "official",
+                        "system": "felicity/sample/id",
+                        "type": {"text": "Sample Id"},
+                        "value": shipped.ext_sample_id,
+                    },
+                    "display": "Shipment Reference ID",
+                }
+            )
+            values.append(
+                {
+                    "type": "ServiceRequest",
+                    "identifier": {
+                        "use": "official",
+                        "system": "felicity/sample/uid",
+                        "type": {"text": "Sample UID"},
+                        "value": shipped.ext_sample_uid,
+                    },
+                    "display": "Shipment Reference ID",
+                }
+            )
         return values
 
     sr_vars = {
@@ -137,7 +148,7 @@ async def get_diagnostic_report_resource(
                 "type": {"text": "Analysis Request UID"},
                 "system": "felicity/analysisrequest/uid",
                 "value": ar.uid,
-            }
+            },
         ],
         "basedOn": await _resolve_based_on(),
         "status": sample.status,
@@ -161,9 +172,7 @@ async def get_diagnostic_report_resource(
         "resultsInterpreter": [
             {
                 "type": "Reviewer",
-                "display": sample.verified_by.full_name
-                if sample.verified_by
-                else None,
+                "display": sample.verified_by.full_name if sample.verified_by else None,
             }
         ],
         "specimen": [{"type": "Specimen", "display": sample.sample_id}],
@@ -181,11 +190,13 @@ async def get_patient_resource(patient_id: int) -> PatientResource | None:
     pt_vars = {
         "resourceType": "Patient",
         "identifier": [
-            Identifier(**{
-                "use": "official",
-                "type": {"text": "Client Patient Id"},
-                "value": patient.client_patient_id,
-            })
+            Identifier(
+                **{
+                    "use": "official",
+                    "type": {"text": "Client Patient Id"},
+                    "value": patient.client_patient_id,
+                }
+            )
         ],
         "active": True,
         "name": [
@@ -233,7 +244,7 @@ async def get_specimen_resource(specimen_id: str) -> SpecimenResource:
         },
         "subject": {
             "type": "Analysis Request",
-            "display": sample.analysis_request.client_request_id
+            "display": sample.analysis_request.client_request_id,
         },
         "status": "available",
         "type": {
@@ -256,85 +267,88 @@ async def get_specimen_resource(specimen_id: str) -> SpecimenResource:
 
 async def get_shipment_bundle_resource(shipment_uid: int) -> BundleResource | None:
     shipment: Shipment = await Shipment.get(uid=shipment_uid)
-    shipped_samples: ShippedSample = await ShippedSample.get_all(shipment_uid=shipment.uid)
+    shipped_samples: ShippedSample = await ShippedSample.get_all(
+        shipment_uid=shipment.uid
+    )
     samples: list[Sample] = list(map(lambda ss: ss.sample, shipped_samples))
 
     async def get_service_entry(sample: Sample):
         _, analytes = await sample.get_referred_analyses()
         services_meta = [
-            {"system": "felicity/analysis", "code": analyte.analysis.keyword, "display": analyte.analysis.name} for
-            analyte in analytes]
+            {
+                "system": "felicity/analysis",
+                "code": analyte.analysis.keyword,
+                "display": analyte.analysis.name,
+            }
+            for analyte in analytes
+        ]
 
-        patient_resource = await get_patient_resource(sample.analysis_request.patient_uid)
+        patient_resource = await get_patient_resource(
+            sample.analysis_request.patient_uid
+        )
         specimen_resource = await get_specimen_resource(sample.uid)
 
         return {
-            "resource": ServiceRequestResource(**{
-                "resourceType": "ServiceRequest",
-                "intent": "order",
-                "requisition": Identifier(**{
-                    "use": "official",
-                    "system": "felicity/analysisrequest/id",
-                    "value": sample.analysis_request.client_request_id,
-                }),
-                "subject": patient_resource,
-                "specimen": [
-                    specimen_resource
-                ],
-                "code": {
-                    "coding": services_meta
-                },
-            }),
-            "request": {
-                "method": "POST",
-                "url": "ServiceRequest"
-            }
+            "resource": ServiceRequestResource(
+                **{
+                    "resourceType": "ServiceRequest",
+                    "intent": "order",
+                    "requisition": Identifier(
+                        **{
+                            "use": "official",
+                            "system": "felicity/analysisrequest/id",
+                            "value": sample.analysis_request.client_request_id,
+                        }
+                    ),
+                    "subject": patient_resource,
+                    "specimen": [specimen_resource],
+                    "code": {"coding": services_meta},
+                }
+            ),
+            "request": {"method": "POST", "url": "ServiceRequest"},
         }
 
-    service_entries = await asyncio.gather(*(get_service_entry(sample) for sample in samples))
+    service_entries = await asyncio.gather(
+        *(get_service_entry(sample) for sample in samples)
+    )
 
     laboratory = await Laboratory.get_by_setup_name()
 
     bundle_vars = {
         "resourceType": "Bundle",
-        "identifier": Identifier(**{
-            "use": "official",
-            "system": "felicity/shipment/id",
-            "value": shipment.shipment_id,
-            "assigner": Reference(**{
-                "type": "Laboratory",
-                "identifier": Identifier(**{
-                    "use": "official",
-                    "system": "felicity/laboratory/code",
-                    "value": laboratory.code,
-                }),
-                "display": laboratory.lab_name,
-            })
-        }),
+        "identifier": Identifier(
+            **{
+                "use": "official",
+                "system": "felicity/shipment/id",
+                "value": shipment.shipment_id,
+                "assigner": Reference(
+                    **{
+                        "type": "Laboratory",
+                        "identifier": Identifier(
+                            **{
+                                "use": "official",
+                                "system": "felicity/laboratory/code",
+                                "value": laboratory.code,
+                            }
+                        ),
+                        "display": laboratory.lab_name,
+                    }
+                ),
+            }
+        ),
         "type": "batch",
         "timestamp": dt_to_st(shipment.created_at),
         "total": len(samples),
         "entry": service_entries,
         "extension": [
-            {
-                "url": "felicity/object-type",
-                "valueString": "shipment"
-            },
-            {
-                "url": "felicity/courier-name",
-                "valueString": shipment.courier
-            },
-            {
-                "url": "felicity/shipment-comment",
-                "valueString": shipment.comment
-            },
-            {
-                "url": "felicity/shipment-manifest",
-                "data": shipment.json_content
-            }
-        ]
+            {"url": "felicity/object-type", "valueString": "shipment"},
+            {"url": "felicity/courier-name", "valueString": shipment.courier},
+            {"url": "felicity/shipment-comment", "valueString": shipment.comment},
+            {"url": "felicity/shipment-manifest", "data": shipment.json_content},
+        ],
     }
     return BundleResource(**bundle_vars)
+
 
 # https://cloud.google.com/healthcare-api/docs/how-tos/fhir-bundles
 # the return type of a bundle must also be a bundle of response type

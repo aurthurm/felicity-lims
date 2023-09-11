@@ -10,7 +10,7 @@ from .setup import (
     ProvinceCursorPage,
     DistrictType,
     DistrictEdge,
-    DistrictCursorPage
+    DistrictCursorPage,
 )
 from .department import DepartmentType
 
@@ -27,5 +27,5 @@ setup_types = [
     DistrictType,
     DistrictEdge,
     DistrictCursorPage,
-    DepartmentType 
+    DepartmentType,
 ]

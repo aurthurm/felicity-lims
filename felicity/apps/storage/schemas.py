@@ -16,7 +16,7 @@ class StoreRoomBase(BaseModel):
 
 
 class StoreRoom(StoreRoomBase):
-    uid: str| None = None
+    uid: str | None = None
 
     class Config:
         orm_mode = True
@@ -45,7 +45,7 @@ class StorageLocationBase(BaseModel):
 
 
 class StorageLocation(StorageLocationBase):
-    uid: str| None = None
+    uid: str | None = None
 
     class Config:
         orm_mode = True
@@ -74,7 +74,7 @@ class StorageSectionBase(BaseModel):
 
 
 class StorageSection(StorageSectionBase):
-    uid: str| None = None
+    uid: str | None = None
 
     class Config:
         orm_mode = True
@@ -109,7 +109,7 @@ class StorageContainerBase(BaseModel):
 
 
 class StorageContainer(StorageContainerBase):
-    uid: str| None = None
+    uid: str | None = None
 
     class Config:
         orm_mode = True

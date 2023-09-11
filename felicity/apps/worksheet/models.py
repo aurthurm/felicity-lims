@@ -78,9 +78,7 @@ class WorkSheetTemplate(WSBase):
 
 
 class WorkSheet(Auditable, WSBase):
-    template_uid = Column(
-        String, ForeignKey("worksheettemplate.uid"), nullable=False
-    )
+    template_uid = Column(String, ForeignKey("worksheettemplate.uid"), nullable=False)
     template = relationship("WorkSheetTemplate", lazy="selectin")
     analyst_uid = Column(String, ForeignKey("user.uid"), nullable=False)
     analyst = relationship(User, foreign_keys=[analyst_uid], lazy="selectin")

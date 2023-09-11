@@ -24,7 +24,7 @@ from .analysis import (
     AnalysisCorrectionFactorType,
     AnalysisDetectionLimitType,
     AnalysisUncertaintyType,
-    AnalysisSpecificationType
+    AnalysisSpecificationType,
 )
 from .results import (
     AnalysisResultType,
@@ -35,7 +35,7 @@ from .results import (
     AnalysisResultCursorPage,
     QCSetWithSamples,
     QCSetEdge,
-    QCSetCursorPage
+    QCSetCursorPage,
 )
 
 
@@ -74,5 +74,5 @@ analysis_types = [
     AnalysisResultCursorPage,
     QCSetWithSamples,
     QCSetEdge,
-    QCSetCursorPage
+    QCSetCursorPage,
 ]

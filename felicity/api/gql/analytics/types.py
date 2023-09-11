@@ -6,7 +6,6 @@ from api.gql.analysis.types.analysis import AnalysisType
 from api.gql.user.types import UserType
 
 
-
 @strawberry.type
 class Nothing:
     data: str | None

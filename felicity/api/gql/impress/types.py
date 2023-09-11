@@ -7,7 +7,6 @@ from api.gql.types import BytesScalar, JSONScalar
 from api.gql.user.types import UserType
 
 
-
 @strawberry.type
 class ReportImpressType:
     uid: str
@@ -16,10 +15,10 @@ class ReportImpressType:
     sample: Optional[SampleType]
     json_content: Optional[JSONScalar]
     pdf_content: Optional[BytesScalar]
-    email_required: bool| None
-    email_sent: bool| None
-    sms_required: bool| None
-    sms_sent: bool| None
+    email_required: bool | None
+    email_sent: bool | None
+    sms_required: bool | None
+    sms_sent: bool | None
     generated_by_uid: str | None
     generated_by: UserType | None
     created_by_uid: str | None

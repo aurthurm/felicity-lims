@@ -6,7 +6,6 @@ from api.gql.permissions import IsAuthenticated
 from apps.audit.models import AuditLog
 
 
-
 @strawberry.type
 class AuditLogQuery:
     @strawberry.field(permission_classes=[IsAuthenticated])

@@ -40,7 +40,7 @@ class WorksheetTemplateInputType:
     worksheet_type: str | None = None
     rows: int | None = None
     cols: int | None = None
-    row_wise: bool| None = True
+    row_wise: bool | None = True
     description: str | None = None
     qc_template_uid: str | None = None
     profiles: Optional[List[str]] = None
@@ -325,7 +325,9 @@ class WorkSheetMutations:
         if action and samples:
             if action == actions.WS_UN_ASSIGN:
                 for res_uid in samples:
-                    result:result_models.AnalysisResult = await result_models.AnalysisResult.get(uids=res_uid)
+                    result: result_models.AnalysisResult = (
+                        await result_models.AnalysisResult.get(uids=res_uid)
+                    )
                     if not result:
                         continue
                     # skip un assign of quality control samples

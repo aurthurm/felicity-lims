@@ -6,7 +6,6 @@ from api.gql.permissions import IsAuthenticated
 from apps.storage import models
 
 
-
 @strawberry.type
 class StorageQuery:
     @strawberry.field(permission_classes=[IsAuthenticated])
@@ -14,9 +13,7 @@ class StorageQuery:
         return await models.StoreRoom.all()
 
     @strawberry.field(permission_classes=[IsAuthenticated])
-    async def store_room_by_uid(
-        self, info, uid: str
-    ) -> Optional[types.StoreRoomType]:
+    async def store_room_by_uid(self, info, uid: str) -> Optional[types.StoreRoomType]:
         return await models.StoreRoom.get(uid=uid)
 
     @strawberry.field(permission_classes=[IsAuthenticated])

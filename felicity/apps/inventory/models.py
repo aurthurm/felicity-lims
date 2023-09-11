@@ -112,9 +112,7 @@ class StockProduct(BaseAuditDBModel):
     size = Column(Float, nullable=True)
     unit_uid = Column(String, ForeignKey("stockunit.uid"), nullable=True)
     unit = relationship("StockUnit", lazy="selectin")
-    packaging_uid = Column(
-        String, ForeignKey("stockpackaging.uid"), nullable=True
-    )
+    packaging_uid = Column(String, ForeignKey("stockpackaging.uid"), nullable=True)
     packaging = relationship("StockPackaging", lazy="selectin")
     price = Column(Float, nullable=True)
     quantity_received = Column(Integer, nullable=False)
@@ -188,9 +186,7 @@ class StockTransaction(BaseAuditDBModel):
     product = relationship("StockProduct", lazy="selectin")
     issued = Column(Integer, nullable=False)
     issued_to_uid = Column(String, ForeignKey("user.uid"), nullable=True)
-    issued_to = relationship(
-        "User", foreign_keys=[issued_to_uid], lazy="selectin"
-    )
+    issued_to = relationship("User", foreign_keys=[issued_to_uid], lazy="selectin")
     department_uid = Column(String, ForeignKey("department.uid"), nullable=True)
     department = relationship("Department", lazy="selectin")
     date_issued = Column(DateTime, nullable=False)

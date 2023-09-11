@@ -29,16 +29,16 @@ class ProfileInputType:
     sample_types: Optional[List[str]] = field(default_factory=list)
     services: Optional[List[str]] = field(default_factory=list)
     keyword: str | None = None
-    active: bool| None = True
-    
-    
-    
+    active: bool | None = True
+
+
 ProfileMappingResponse = strawberry.union(
     "ProfileMappingResponse",
     (a_types.ProfileMappingType, OperationError),  # noqa
     description="Union of possible outcomes when adding a new notice",
 )
-    
+
+
 @strawberry.input
 class ProfileMappingInputType:
     profile_uid: str
@@ -157,7 +157,9 @@ async def update_profile(
 
 
 @strawberry.mutation(permission_classes=[IsAuthenticated])
-async def create_profile_mapping(info, payload: ProfileMappingInputType) -> ProfileMappingResponse:
+async def create_profile_mapping(
+    info, payload: ProfileMappingInputType
+) -> ProfileMappingResponse:
 
     is_authenticated, felicity_user = await auth_from_info(info)
     verify_user_auth(
@@ -178,8 +180,8 @@ async def create_profile_mapping(info, payload: ProfileMappingInputType) -> Prof
         incoming[k] = v
 
     obj_in = schemas.ProfileCodingCreate(**incoming)
-    profile_mapping: analysis_models.ProfileCoding = await analysis_models.ProfileCoding.create(
-        obj_in
+    profile_mapping: analysis_models.ProfileCoding = (
+        await analysis_models.ProfileCoding.create(obj_in)
     )
     return a_types.ProfileMappingType(**profile_mapping.marshal_simple())
 

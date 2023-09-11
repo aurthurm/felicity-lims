@@ -7,7 +7,7 @@ from .types import (
     UpdatedGroupPerms,
     UserEdge,
     UserCursorPage,
-    UserPreferenceType
+    UserPreferenceType,
 )
 
 user_types = [
@@ -19,5 +19,5 @@ user_types = [
     UpdatedGroupPerms,
     UserEdge,
     UserCursorPage,
-    UserPreferenceType    
+    UserPreferenceType,
 ]

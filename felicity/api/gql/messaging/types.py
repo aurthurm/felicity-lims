@@ -5,7 +5,6 @@ import strawberry  # noqa
 from api.gql.user.types import UserType
 
 
-
 @strawberry.type
 class MessageThreadType:
     uid: str

@@ -6,7 +6,6 @@ from api.gql.setup.types.department import DepartmentType
 from api.gql.user.types import GroupType, UserType
 
 
-
 @strawberry.type
 class NoticeType:
     uid: str

@@ -39,7 +39,8 @@ class ShipmentUpdateInputType:
 class ReferenceSampleInput:
     sample_uid: str | None = None
     shiped_sample_uid: str | None = None
-    analyses: list[str] # list of analysis uids being assignes/unassigned
+    analyses: list[str]  # list of analysis uids being assignes/unassigned
+
 
 @strawberry.input
 class ShipmentManageSamplesInput:
@@ -50,7 +51,6 @@ class ShipmentManageSamplesInput:
 @strawberry.type
 class ShipmentListingType:
     shipments: Optional[List[ShipmentType]]
-
 
 
 @strawberry.input
@@ -71,7 +71,6 @@ ReferralLaboratoryResponse = strawberry.union(
 )
 
 
-
 ShipmentsResponse = strawberry.union(
     "ShipmentsResponse", (ShipmentListingType, OperationError), description=""  # noqa
 )
@@ -83,12 +82,9 @@ ShipmentResponse = strawberry.union(
 
 @strawberry.type
 class ShipmentMutations:
-
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_shipment(
-        self,
-        info,
-        payload: ShipmentInputType
+        self, info, payload: ShipmentInputType
     ) -> ShipmentsResponse:
 
         is_authenticated, felicity_user = await auth_from_info(info)
@@ -100,7 +96,7 @@ class ShipmentMutations:
 
         if not payload.courier:
             return OperationError(error="Courier Details are required")
-        
+
         incoming = {
             "incoming": False,
             "comment": payload.comment,
@@ -131,10 +127,7 @@ class ShipmentMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_shipment(
-        self,
-        info,
-        uid: str,
-        payload: ShipmentUpdateInputType
+        self, info, uid: str, payload: ShipmentUpdateInputType
     ) -> ShipmentResponse:  # noqa
 
         is_authenticated, felicity_user = await auth_from_info(info)
@@ -145,21 +138,18 @@ class ShipmentMutations:
         )
 
         if not uid:
-            return OperationError(error="The uid for the update shipment was not provided")
-    
+            return OperationError(
+                error="The uid for the update shipment was not provided"
+            )
 
         # if not all(not getattr(payload, attr) for attr in dir(payload)):
         #     return OperationError(error="Either comment, courier or samples must be provided.")
 
-        shipment: Optional[models.Shipment] = await models.Shipment.get(
-            uid=uid
-        )
+        shipment: Optional[models.Shipment] = await models.Shipment.get(uid=uid)
 
         if not shipment:
-            return OperationError(
-                error=f"Shipment {uid} does not exist"
-            )
-        
+            return OperationError(error=f"Shipment {uid} does not exist")
+
         shipment_data = shipment.to_dict()
         for field in shipment_data:
             if field in payload.__dict__:
@@ -167,7 +157,7 @@ class ShipmentMutations:
                     setattr(shipment, field, payload.__dict__[field])
                 except Exception as e:
                     logger.warning(e)
-        
+
         shipment_in = schemas.ShipmentUpdate(**shipment.to_dict())
         shipment = await shipment.update(shipment_in)
 
@@ -175,10 +165,7 @@ class ShipmentMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def action_shipment(
-        self,
-        info,
-        uid: str,
-        action: str
+        self, info, uid: str, action: str
     ) -> ShipmentResponse:  # noqa
 
         is_authenticated, felicity_user = await auth_from_info(info)
@@ -189,20 +176,19 @@ class ShipmentMutations:
         )
 
         if not uid or not action:
-            return OperationError(error="The uid/action for the update shipment was not provided")
-    
-        shipment: Optional[models.Shipment] = await models.Shipment.get(
-            uid=uid
-        )
+            return OperationError(
+                error="The uid/action for the update shipment was not provided"
+            )
+
+        shipment: Optional[models.Shipment] = await models.Shipment.get(uid=uid)
 
         if not shipment:
-            return OperationError(
-                error=f"Shipment {uid} does not exist"
-            )
-        
+            return OperationError(error=f"Shipment {uid} does not exist")
 
         if action == "dispatch":
-            shipment = await shipment.change_state(conf.shipment_states.AWAITING, felicity_user.uid)
+            shipment = await shipment.change_state(
+                conf.shipment_states.AWAITING, felicity_user.uid
+            )
 
             job_schema = job_schemas.JobCreate(
                 action=actions.SH_DISPATCH,
@@ -214,19 +200,15 @@ class ShipmentMutations:
                 data=None,
             )
             await job_models.Job.create(job_schema)
-            
+
         else:
             shipment = await action_shipment(uid, action, felicity_user)
 
         return ShipmentType(**shipment.marshal_simple())
 
-
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def shipment_manage_samples(
-        self,
-        info,
-        uid: str,
-        payload: ShipmentManageSamplesInput
+        self, info, uid: str, payload: ShipmentManageSamplesInput
     ) -> ShipmentResponse:
 
         is_authenticated, felicity_user = await auth_from_info(info)
@@ -260,7 +242,7 @@ class ShipmentMutations:
             )
             await job_models.Job.create(job_schema)
         elif payload.action == "recover":
-            await shipment_recover(shipment.uid, data, felicity_user.uid)            
+            await shipment_recover(shipment.uid, data, felicity_user.uid)
         elif payload.action == "recall":
             await shipment_recall(shipment.uid, data, felicity_user.uid)
         else:
@@ -269,9 +251,10 @@ class ShipmentMutations:
         shipment = await models.Shipment.get(uid=uid)
         return ShipmentType(**shipment.marshal_simple())
 
-
     @strawberry.mutation(permission_classes=[IsAuthenticated])
-    async def create_referral_laboratory(info, payload: ReferralLaboratoryInputType) -> ReferralLaboratoryResponse:
+    async def create_referral_laboratory(
+        info, payload: ReferralLaboratoryInputType
+    ) -> ReferralLaboratoryResponse:
 
         is_authenticated, felicity_user = await auth_from_info(info)
         verify_user_auth(
@@ -283,13 +266,14 @@ class ShipmentMutations:
         if not payload.name or not payload.code:
             return OperationError(error="Name and Code are mandatory")
 
-        stmt = models.ReferralLaboratory.smart_query(filters={ or_: {
-            'name__exact': payload.name, 
-            'code__exact': payload.code
-        }})
+        stmt = models.ReferralLaboratory.smart_query(
+            filters={or_: {"name__exact": payload.name, "code__exact": payload.code}}
+        )
         exists = await models.ReferralLaboratory.from_smart_query(stmt)
         if exists:
-            return OperationError(error=f"ReferralLaboratory: {payload.name}, {payload.code} already exists")
+            return OperationError(
+                error=f"ReferralLaboratory: {payload.name}, {payload.code} already exists"
+            )
 
         incoming = {
             "created_by_uid": felicity_user.uid,
@@ -299,11 +283,10 @@ class ShipmentMutations:
             incoming[k] = v
 
         obj_in = schemas.ReferralLaboratoryCreate(**incoming)
-        referral_laboratory: models.ReferralLaboratory = await models.ReferralLaboratory.create(
-            obj_in
+        referral_laboratory: models.ReferralLaboratory = (
+            await models.ReferralLaboratory.create(obj_in)
         )
         return types.ReferralLaboratoryType(**referral_laboratory.marshal_simple())
-
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_referral_laboratory(
@@ -319,7 +302,9 @@ class ShipmentMutations:
 
         referral_laboratory = await models.ReferralLaboratory.get(uid=uid)
         if not referral_laboratory:
-            return OperationError(error=f"ReferralLaboratory with uid {uid} does not exist")
+            return OperationError(
+                error=f"ReferralLaboratory with uid {uid} does not exist"
+            )
 
         st_data = referral_laboratory.to_dict()
         for field in st_data:
@@ -329,6 +314,8 @@ class ShipmentMutations:
                 except Exception as e:
                     logger.warning(e)
 
-        referral_laboratory_in = schemas.ReferralLaboratoryUpdate(**referral_laboratory.to_dict())
+        referral_laboratory_in = schemas.ReferralLaboratoryUpdate(
+            **referral_laboratory.to_dict()
+        )
         referral_laboratory = await referral_laboratory.update(referral_laboratory_in)
         return types.ReferralLaboratoryType(**referral_laboratory.marshal_simple())

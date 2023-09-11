@@ -6,7 +6,15 @@ from apps.notification.utils import FelicityStreamer
 from apps.user.models import User
 from apps.shipment import conf, schemas
 
-from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, String, LargeBinary
+from sqlalchemy import (
+    Boolean,
+    Column,
+    DateTime,
+    ForeignKey,
+    Integer,
+    String,
+    LargeBinary,
+)
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import relationship
 
@@ -27,13 +35,18 @@ class ReferralLaboratory(Auditable):
     is_referral = Column(Boolean(), default=False)
 
     @classmethod
-    async def create(cls, obj_in: schemas.ReferralLaboratoryCreate) -> schemas.ReferralLaboratory:
+    async def create(
+        cls, obj_in: schemas.ReferralLaboratoryCreate
+    ) -> schemas.ReferralLaboratory:
         data = cls._import(obj_in)
         return await super().create(**data)
 
-    async def update(self, obj_in: schemas.ReferralLaboratoryUpdate) -> schemas.ReferralLaboratory:
+    async def update(
+        self, obj_in: schemas.ReferralLaboratoryUpdate
+    ) -> schemas.ReferralLaboratory:
         data = self._import(obj_in)
         return await super().update(**data)
+
 
 class Shipment(Auditable):
     shipment_id = Column(String, index=True, unique=True, nullable=False)
@@ -43,13 +56,17 @@ class Shipment(Auditable):
     data = Column(JSONB)
     state = Column(String)
     laboratory_uid = Column(String, ForeignKey("referrallaboratory.uid"), nullable=True)
-    laboratory = relationship(ReferralLaboratory, foreign_keys=[laboratory_uid], lazy="selectin")
-    incoming = Column(Boolean(), default=False) # either its incoming or outgoing
+    laboratory = relationship(
+        ReferralLaboratory, foreign_keys=[laboratory_uid], lazy="selectin"
+    )
+    incoming = Column(Boolean(), default=False)  # either its incoming or outgoing
     finalised_by_uid = Column(String, ForeignKey("user.uid"), nullable=True)
     finalised_by = relationship(User, foreign_keys=[finalised_by_uid], lazy="selectin")
     date_finalised = Column(DateTime, nullable=True)
     dispatched_by_uid = Column(String, ForeignKey("user.uid"), nullable=True)
-    dispatched_by = relationship(User, foreign_keys=[dispatched_by_uid], lazy="selectin")
+    dispatched_by = relationship(
+        User, foreign_keys=[dispatched_by_uid], lazy="selectin"
+    )
     date_dispatched = Column(DateTime, nullable=True)
     recalled_by_uid = Column(String, ForeignKey("user.uid"), nullable=True)
     recalled_by = relationship(User, foreign_keys=[recalled_by_uid], lazy="selectin")
@@ -70,7 +87,11 @@ class Shipment(Auditable):
         await self.save()
 
     async def get_samples(self):
-        return list(map(lambda ss: ss.sample, await ShippedSample.get_all(shipment_uid=self.uid)))
+        return list(
+            map(
+                lambda ss: ss.sample, await ShippedSample.get_all(shipment_uid=self.uid)
+            )
+        )
 
     async def change_state(self, state, updated_by_uid):
         self.state = state
@@ -106,11 +127,11 @@ class Shipment(Auditable):
         return await super().update(**data)
 
 
-
 class ShippedSample(DBModel):
     """ShippedSample enables samples to be shipped multiple times
     A sample can be tracked through different shipments from inception to end
     """
+
     sample_uid = Column(String, ForeignKey("sample.uid"), nullable=True)
     sample = relationship("Sample", foreign_keys=[sample_uid], lazy="selectin")
     shipment_uid = Column(String, ForeignKey("shipment.uid"), nullable=True)
@@ -124,6 +145,8 @@ class ShippedSample(DBModel):
         data = cls._import(obj_in)
         return await super().create(**data)
 
-    async def update(self, obj_in: schemas.ShippedSampleUpdate) -> schemas.ShippedSample:
+    async def update(
+        self, obj_in: schemas.ShippedSampleUpdate
+    ) -> schemas.ShippedSample:
         data = self._import(obj_in)
         return await super().update(**data)

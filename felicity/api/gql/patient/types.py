@@ -8,7 +8,6 @@ from api.gql.setup.types import CountryType, DistrictType, ProvinceType
 from api.gql.user.types import UserType
 
 
-
 @strawberry.type
 class IdentificationType:
     uid: str

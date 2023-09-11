@@ -50,6 +50,7 @@ UnitResponse = strawberry.union(
     "UnitResponse", (UnitType, OperationError), description=""  # noqa
 )
 
+
 @strawberry.input
 class LaboratoryInputType:
     lab_name: str
@@ -66,15 +67,15 @@ class LaboratoryInputType:
 @strawberry.input
 class LaboratorySettingInputType:
     laboratory_uid: str
-    allow_self_verification: bool| None = False
-    allow_patient_registration: bool| None = True
-    allow_sample_registration: bool| None = True
-    allow_worksheet_creation: bool| None = True
+    allow_self_verification: bool | None = False
+    allow_patient_registration: bool | None = True
+    allow_sample_registration: bool | None = True
+    allow_worksheet_creation: bool | None = True
     default_route: str | None = None
     password_lifetime: int | None = None
     inactivity_log_out: int | None = None
     default_theme: str | None = None
-    auto_receive_samples: bool| None = True
+    auto_receive_samples: bool | None = True
     sticker_copies: int | None = 2
 
 
@@ -97,11 +98,12 @@ class ManufacturerInputType:
     name: str
     description: str | None = ""
 
+
 @strawberry.input
 class CountryInputType:
     name: str
     code: str
-    active: bool| None = True
+    active: bool | None = True
 
 
 @strawberry.input
@@ -113,7 +115,7 @@ class ProvinceInputType:
     email_cc: str | None = None
     mobile_phone: str | None = None
     business_phone: str | None = None
-    active: bool| None = True
+    active: bool | None = True
 
 
 @strawberry.input
@@ -125,7 +127,7 @@ class DistrictInputType:
     email_cc: str | None = None
     mobile_phone: str | None = None
     business_phone: str | None = None
-    active: bool| None = True
+    active: bool | None = True
 
 
 @strawberry.input

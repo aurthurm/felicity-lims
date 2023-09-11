@@ -6,7 +6,6 @@ from api.gql.permissions import IsAuthenticated
 from apps.messaging import models
 
 
-
 @strawberry.type
 class MessageQuery:
     @strawberry.field(permission_classes=[IsAuthenticated])

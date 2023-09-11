@@ -3,7 +3,6 @@ from typing import Optional, Text
 import strawberry  # noqa
 
 
-
 @strawberry.type
 class AuditLogType:
     uid: str

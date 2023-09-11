@@ -3,7 +3,13 @@ import json
 from sanic.request import Request
 from apps.analysis.models.analysis import AnalysisRequest, Sample
 from apps.analysis.models.results import AnalysisResult
-from apps.iol.fhir.schema import DiagnosticReportResource, PatientResource, BundleResource,ServiceRequestResource, Reference
+from apps.iol.fhir.schema import (
+    DiagnosticReportResource,
+    PatientResource,
+    BundleResource,
+    ServiceRequestResource,
+    Reference,
+)
 from apps.patient.models import Patient
 from apps.shipment.schemas import ShipmentCreate
 from apps.shipment.models import Shipment, ReferralLaboratory
@@ -19,35 +25,42 @@ logger = logging.getLogger(__name__)
 
 
 async def create_resource(
-        resource_type: str, 
-        resource_data: BundleResource | PatientResource | ServiceRequestResource | DiagnosticReportResource, 
-        request: Request,
-        current_user: User
+    resource_type: str,
+    resource_data: BundleResource
+    | PatientResource
+    | ServiceRequestResource
+    | DiagnosticReportResource,
+    request: Request,
+    current_user: User,
 ):
     logger.info(f"create resource {resource_type} ..................")
     resource_mappings = {
         "Bundle": create_bundle,
-        "DiagnosticReport": create_diagnostic_report
+        "DiagnosticReport": create_diagnostic_report,
     }
     if not resource_type in resource_mappings:
         return False
     return await resource_mappings[resource_type](resource_data, request, current_user)
 
 
-async def create_bundle(resource_data: BundleResource, request: Request, current_user: User):
+async def create_bundle(
+    resource_data: BundleResource, request: Request, current_user: User
+):
     logger.info(f"Bundle data: ........")
     if resource_data.extension[0].valueString == "shipment":
         await create_inbound_shipment(resource_data, request, current_user)
-        
+
     return True
 
 
-async def create_inbound_shipment(payload: BundleResource, request: Request, current_user: User):
+async def create_inbound_shipment(
+    payload: BundleResource, request: Request, current_user: User
+):
     """Create inbound shipment from bundle"""
     logger.info(f"Incoming Inbound shipment ....")
 
     data = payload.dict(exclude_none=True)
-    
+
     laboratory = await resolve_ref_laboratory(payload.identifier.assigner, request)
 
     s_in = ShipmentCreate(
@@ -60,9 +73,10 @@ async def create_inbound_shipment(payload: BundleResource, request: Request, cur
         state=shipment_states.DUE,
     )
     shipment = await Shipment.create(s_in)
-    
+
     try:
         from apps.shipment.utils import gen_pdf_manifest
+
         await gen_pdf_manifest(payload.extension[3].data.get("data", None), shipment)
     except Exception:
         pass
@@ -72,18 +86,22 @@ async def resolve_ref_laboratory(ref: Reference, request: Request):
     referral = await ReferralLaboratory.get(code=ref.identifier.value)
     if referral:
         return referral
-    return await ReferralLaboratory.create({
-        "name": ref.display,
-        "code": ref.identifier.value,
-        "url": request.headers.get('host', ""),
-        "is_reference": True,
-        "is_referral": False,
-        "username": "changeme",
-        "password": "changeme",
-    })
+    return await ReferralLaboratory.create(
+        {
+            "name": ref.display,
+            "code": ref.identifier.value,
+            "url": request.headers.get("host", ""),
+            "is_reference": True,
+            "is_referral": False,
+            "username": "changeme",
+            "password": "changeme",
+        }
+    )
 
 
-async def create_diagnostic_report(diagnostic_data: DiagnosticReportResource, request: Request, current_user: User):
+async def create_diagnostic_report(
+    diagnostic_data: DiagnosticReportResource, request: Request, current_user: User
+):
     job_schema = JobCreate(
         action=job_conf.actions.DIAGNOSTIC_REPORT,
         category=job_conf.categories.SHIPMENT,
@@ -96,4 +114,3 @@ async def create_diagnostic_report(diagnostic_data: DiagnosticReportResource, re
     await Job.create(job_schema)
 
     return True
-

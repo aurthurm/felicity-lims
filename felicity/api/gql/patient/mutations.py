@@ -36,16 +36,17 @@ class PatientInputType:
     middle_name: str | None = None
     age: int | None = None
     date_of_birth: datetime | None = None
-    age_dob_estimated: bool| None = False
+    age_dob_estimated: bool | None = False
     phone_mobile: str | None = None
     phone_home: str | None = None
-    consent_sms: bool| None = False
-    internal_use: bool| None = False
+    consent_sms: bool | None = False
+    internal_use: bool | None = False
     country_uid: str | None = None
     province_uid: str | None = None
     district_uid: str | None = None
     identifications: Optional[List[PatientidentificationInput]] = field(
-        default_factory=list)
+        default_factory=list
+    )
 
 
 IdentificationResponse = strawberry.union(

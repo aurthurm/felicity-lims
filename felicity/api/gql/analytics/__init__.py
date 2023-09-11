@@ -10,7 +10,7 @@ from .types import (
     LaggardCounts,
     LaggardData,
     LaggardStatistics,
-    ReportMetaType
+    ReportMetaType,
 )
 
 analytics_types = [
@@ -25,5 +25,5 @@ analytics_types = [
     LaggardCounts,
     LaggardData,
     LaggardStatistics,
-    ReportMetaType
+    ReportMetaType,
 ]

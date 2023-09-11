@@ -87,10 +87,14 @@ class ManifetReport:
             left_col_xl + column_width * 0, results_top + self.y_diff * 1, "Sample ID"
         )
         self.pdf.text(
-            left_col_xl + column_width * 1, results_top + self.y_diff * 1, "Client Sample ID"
+            left_col_xl + column_width * 1,
+            results_top + self.y_diff * 1,
+            "Client Sample ID",
         )
         self.pdf.text(
-            left_col_xl + column_width * 2, results_top + self.y_diff * 1, "Date Sampled"
+            left_col_xl + column_width * 2,
+            results_top + self.y_diff * 1,
+            "Date Sampled",
         )
         self.pdf.text(
             left_col_xl + column_width * 3, results_top + self.y_diff * 1, "Sample Type"
@@ -121,7 +125,9 @@ class ManifetReport:
                 get_from_nested(sample_meta, "date_collected"),
             )
             self.pdf.text(
-                left_col_xl + column_width * 3, y_pos, get_from_nested(sample_meta, "sample_type")
+                left_col_xl + column_width * 3,
+                y_pos,
+                get_from_nested(sample_meta, "sample_type"),
             )
             self.pdf.text(
                 left_col_xl + column_width * 4,

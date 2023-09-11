@@ -4,6 +4,7 @@ from pydantic import BaseModel, validator
 
 class BaseResource:
     """All resources base: https://www.hl7.org/fhir/resource.html"""
+
     id: str
     meta: None
     extension: None
@@ -187,9 +188,10 @@ class SampledData(BaseModel):
 
 
 class Extension(BaseModel):
-    url:  str | None
+    url: str | None
     valueString: str | dict | None
     data: dict | None
+
 
 class PatientResource(BaseModel):
     resourceType: str = "Patient"
@@ -222,17 +224,17 @@ class SpecimenCollection(BaseModel):
 
 
 class SpecimenResource(BaseModel):
-    resourceType:str = "Specimen"
+    resourceType: str = "Specimen"
     # External Identifier
     identifier: List[Identifier] | None = None
     # Identifier assigned by the lab
     accessionIdentifier: Identifier | None
     # available | unavailable | unsatisfactory | entered-in-error
-    status: str | None 
+    status: str | None
     # Kind of material that forms the specimen icon
     type: CodeableConcept
     # Reference(BiologicallyDerivedProduct|Device|Group|Location|Patient|Substance)
-    # Where the specimen came from. This may be from patient(s), from a location (e.g., the 
+    # Where the specimen came from. This may be from patient(s), from a location (e.g., the
     # source of an environmental sample), or a sampling of a substance, a biologically-derived product, or a device
     subject: Reference | None = None
     # The time when specimen is received by the testing laboratory
@@ -240,7 +242,7 @@ class SpecimenResource(BaseModel):
     # Specimen from which this specimen originated Reference(Specimen)
     parent: list[Reference] | None
     # Why the specimen was collected Reference(ServiceRequest)
-    request: list[Reference] | None 
+    request: list[Reference] | None
     #  grouped | pooled
     combined: str | None
     # The role the specimen serves
@@ -404,26 +406,30 @@ class DiagnosticReportResource(BaseModel):
     # Codes for the clinical conclusion of test results
     conclusionCode: List[CodeableConcept] | None = None
 
+
 class Resource(BaseModel):
     resourceType: str
     # short description
     property1: str | None
 
+
 class BundleEntryRequest(BaseModel):
     # I R!  GET | HEAD | POST | PUT | DELETE | PATCH
-    method: str 
+    method: str
     # R!  URL for HTTP equivalent of this entry
     url: str | None
+
 
 class BundleEntryResponse(BaseModel):
     # R!  Status response code (text optional)
     status: str
     # The location (if the operation returns a location)
-    location: str | None 
+    location: str | None
     # Server's date time modified
-    lastModified: str | None 
+    lastModified: str | None
     # // OperationOutcome with hints and warnings (for batch/transaction)
     outcome: Resource
+
 
 class BundleEntry(BaseModel):
     # I A resource in the bundle
@@ -459,6 +465,7 @@ class BundleEntry(BaseModel):
 
         raise TypeError(f"Wrong type for 'resource', must be one of {allowed_types}")
 
+
 class BundleResource(BaseModel):
     resourceType: str = "Bundle"
     # I Persistent identifier for the bundle
@@ -468,9 +475,10 @@ class BundleResource(BaseModel):
     # I When the bundle was assembled
     timestamp: str
     # I If search, the total number of matches
-    total: int 
+    total: int
     # // Entry in the bundle - will have a resource or information
     entry: list[BundleEntry]
     extension: list[Extension] | None
+
 
 Reference.update_forward_refs()

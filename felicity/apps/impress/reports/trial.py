@@ -11,6 +11,7 @@ import io
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+
 class FelicityImpress:
     def __init__(self):
         self.buffer = io.BytesIO()
@@ -70,9 +71,13 @@ class FelicityImpress:
         ]
 
         for i, (label, value) in enumerate(details):
-            self.canvas.drawString(left_col_xl, patient_top + self.y_diff * (i + 1), label)
-            self.canvas.drawString(left_col_xv, patient_top + self.y_diff * (i + 1), value)
-    
+            self.canvas.drawString(
+                left_col_xl, patient_top + self.y_diff * (i + 1), label
+            )
+            self.canvas.drawString(
+                left_col_xv, patient_top + self.y_diff * (i + 1), value
+            )
+
     async def _add_client_details(self, sample, sample_top):
         client_top = sample_top + self.y_diff * 5
 
@@ -90,8 +95,12 @@ class FelicityImpress:
         ]
 
         for i, (label, value) in enumerate(details):
-            self.canvas.drawString(left_col_xl, client_top + self.y_diff * (i + 1), label)
-            self.canvas.drawString(left_col_xv, client_top + self.y_diff * (i + 1), value)
+            self.canvas.drawString(
+                left_col_xl, client_top + self.y_diff * (i + 1), label
+            )
+            self.canvas.drawString(
+                left_col_xv, client_top + self.y_diff * (i + 1), value
+            )
 
     async def _add_sample_details_section(self, sample, patient_top, analyses):
         sample_top = patient_top + self.y_diff * 7
@@ -113,12 +122,20 @@ class FelicityImpress:
         ]
 
         for i, (label, value) in enumerate(details_left):
-            self.canvas.drawString(left_col_xl, sample_top + self.y_diff * (i + 1), label)
-            self.canvas.drawString(left_col_xv, sample_top + self.y_diff * (i + 1), value)
+            self.canvas.drawString(
+                left_col_xl, sample_top + self.y_diff * (i + 1), label
+            )
+            self.canvas.drawString(
+                left_col_xv, sample_top + self.y_diff * (i + 1), value
+            )
 
         for i, (label, value) in enumerate(details_right):
-            self.canvas.drawString(right_col_xl, sample_top + self.y_diff * (i + 1), label)
-            self.canvas.drawString(right_col_xv, sample_top + self.y_diff * (i + 1), value)
+            self.canvas.drawString(
+                right_col_xl, sample_top + self.y_diff * (i + 1), label
+            )
+            self.canvas.drawString(
+                right_col_xv, sample_top + self.y_diff * (i + 1), value
+            )
 
     async def _add_analysis_results_section(self, sample, results_top):
         columns = 5
@@ -158,9 +175,7 @@ class FelicityImpress:
             ]
 
             for i, data in enumerate(result_data):
-                self.canvas.drawString(
-                    left_col_xl + column_width * i, y_pos, data
-                )
+                self.canvas.drawString(left_col_xl + column_width * i, y_pos, data)
 
             if y_pos >= (self.page_height - self.margin_top * 3):
                 self._add_page()

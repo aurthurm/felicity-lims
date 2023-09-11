@@ -14,7 +14,7 @@ from datetime import datetime
 from sqlalchemy_mixins import AllFeaturesMixinAsync, smart_query
 from core.uid_gen import get_flake_uid
 from db.paginator.cursor import EdgeNode, PageCursor, PageInfo
-from db.session import AsyncSessionScoped 
+from db.session import AsyncSessionScoped
 from utils import has_value_or_is_truthy
 
 logging.basicConfig(level=logging.INFO)
@@ -125,8 +125,7 @@ class DBModel(DeclarativeBase, AllFeaturesMixinAsync):
         return await cls.save_all(to_save)
 
     async def delete(self):
-        """Removes the model from the current entity session and mark for deletion.
-        """
+        """Removes the model from the current entity session and mark for deletion."""
         try:
             async with self.session() as session:
                 await session.delete(self)
@@ -157,8 +156,7 @@ class DBModel(DeclarativeBase, AllFeaturesMixinAsync):
         to_update = [cls._import(data) for data in update_data]
 
         query = smart_query(query=update(cls), filters=filters)
-        stmt = query.values(to_update).execution_options(
-            synchronize_session="fetch")
+        stmt = query.values(to_update).execution_options(synchronize_session="fetch")
 
         async with cls.session() as session:
             results = await session.execute(stmt)
@@ -188,7 +186,8 @@ class DBModel(DeclarativeBase, AllFeaturesMixinAsync):
                 binds[key] = bindparam(key)
 
         stmt = query.values(binds).execution_options(
-            synchronize_session=None) # "fetch" not available
+            synchronize_session=None
+        )  # "fetch" not available
 
         async with cls.session() as session:
             await session.execute(stmt, to_update)
@@ -221,12 +220,12 @@ class DBModel(DeclarativeBase, AllFeaturesMixinAsync):
             await session.execute(stmt, mappings)
             await session.commit()
             await session.flush()
-    
+
     @classmethod
     async def query_table(cls, table, **kwargs):
         stmt = select(table)
         for k, v in kwargs.items():
-            stmt = stmt.where(table.c[k]==v)
+            stmt = stmt.where(table.c[k] == v)
 
         async with cls.session() as session:
             results = await session.execute(stmt)
@@ -330,8 +329,7 @@ class DBModel(DeclarativeBase, AllFeaturesMixinAsync):
         :return: int
         """
         filter_stmt = smart_query(query=select(cls), filters=filters)
-        count_stmt = select(func.count(filter_stmt.c.uid)
-                            ).select_from(filter_stmt)
+        count_stmt = select(func.count(filter_stmt.c.uid)).select_from(filter_stmt)
         async with cls.session() as session:
             res = await session.execute(count_stmt)
         count = res.scalars().one()
@@ -415,8 +413,7 @@ class DBModel(DeclarativeBase, AllFeaturesMixinAsync):
         # add paging filters
         _filters = None
         if isinstance(filters, dict):
-            _filters = [{sa_or_: cursor_limit},
-                        filters] if cursor_limit else filters
+            _filters = [{sa_or_: cursor_limit}, filters] if cursor_limit else filters
         elif isinstance(filters, list):
             _filters = filters
             if cursor_limit:
@@ -490,10 +487,12 @@ class DBModel(DeclarativeBase, AllFeaturesMixinAsync):
         )
 
     @classmethod
-    def decode_cursor(cls, cursor): return cursor
+    def decode_cursor(cls, cursor):
+        return cursor
 
     @classmethod
-    def encode_cursor(cls, identifier: Any): return identifier
+    def encode_cursor(cls, identifier: Any):
+        return identifier
 
 
 DBModel.set_session(AsyncSessionScoped, True)

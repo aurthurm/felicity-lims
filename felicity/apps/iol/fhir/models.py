@@ -8,4 +8,3 @@ class FhirTask(BaseAuditDBModel):
     incoming = Column(Boolean, default=True)
     data = Column(JSONB)
     status = Column(String)
-

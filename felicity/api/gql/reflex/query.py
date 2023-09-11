@@ -50,7 +50,5 @@ class ReflexRuleQuery:
         )
 
     @strawberry.field(permission_classes=[IsAuthenticated])
-    async def reflex_rule_by_uid(
-        self, info, uid: str
-    ) -> Optional[ReflexRuleType]:
+    async def reflex_rule_by_uid(self, info, uid: str) -> Optional[ReflexRuleType]:
         return await models.ReflexRule.get(uid=uid)

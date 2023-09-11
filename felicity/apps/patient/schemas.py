@@ -14,7 +14,7 @@ from pydantic import EmailStr
 
 class PatientBase(BaseAuditModel):
     client_patient_id: str | None = None
-    client_uid: str| None = None
+    client_uid: str | None = None
     patient_id: str | None = None
     first_name: str | None = None
     middle_name: str | None = None
@@ -22,16 +22,16 @@ class PatientBase(BaseAuditModel):
     gender: str | None = None
     age: int | None = None
     date_of_birth: datetime | None = None
-    age_dob_estimated: bool| None = None
+    age_dob_estimated: bool | None = None
     phone_mobile: str | None = None
     phone_home: str | None = None
-    consent_sms: bool| None = None
+    consent_sms: bool | None = None
     email: Optional[EmailStr] = None
-    internal_use: bool| None = False
-    active: bool| None = None
-    district_uid: str| None = None
-    province_uid: str| None = None
-    country_uid: str| None = None
+    internal_use: bool | None = False
+    active: bool | None = None
+    district_uid: str | None = None
+    province_uid: str | None = None
+    country_uid: str | None = None
 
 
 # Properties to receive via API on creation
@@ -49,7 +49,7 @@ class PatientUpdate(PatientBase):
 
 
 class PatientInDBBase(PatientBase):
-    uid: str| None = None
+    uid: str | None = None
 
     class Config:
         orm_mode = True
@@ -87,7 +87,7 @@ class IdentificationUpdate(IdentificationBase):
 
 
 class IdentificationInDBBase(IdentificationBase):
-    uid: str| None = None
+    uid: str | None = None
 
     class Config:
         orm_mode = True
@@ -127,7 +127,7 @@ class PatientIdentificationUpdate(PatientIdentificationBase):
 
 
 class PatientIdentificationInDBBase(PatientIdentificationBase):
-    uid: str| None = None
+    uid: str | None = None
 
     class Config:
         orm_mode = True

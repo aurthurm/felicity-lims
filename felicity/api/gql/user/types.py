@@ -6,7 +6,6 @@ from api.gql.types import PageInfo
 from api.gql.setup.types.department import DepartmentType
 
 
-
 @strawberry.type
 class UserAuthType:
     uid: str
@@ -28,7 +27,7 @@ class PermissionType:
     uid: str
     action: str | None
     target: str | None
-    active: bool| None
+    active: bool | None
 
 
 @strawberry.type
@@ -38,7 +37,7 @@ class GroupType:
     keyword: str | None
     members: Optional[List["UserType"]]
     permissions: Optional[List[PermissionType]]
-    active: bool| None
+    active: bool | None
     pages: str | None
 
 
@@ -100,6 +99,6 @@ class UserCursorPage:
 @strawberry.type
 class UserPreferenceType:
     uid: str
-    expanded_menu: bool| None
+    expanded_menu: bool | None
     departments: list[DepartmentType] | None
     theme: str | None

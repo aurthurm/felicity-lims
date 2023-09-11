@@ -49,13 +49,26 @@ from api.gql.user import user_types
 from api.gql.worksheet import worksheet_types
 from api.gql.types import generic_types
 
-types = generic_types + analysis_types + analytics_types + audit_types +\
-    client_types + impress_types + instrument_types +\
-    inventory_types + messaging_types + noticeboard_types +\
-    notification_types + patient_types + reflex_types +\
-    setup_types + shipment_types + storage_types +\
-    user_types + worksheet_types
-
+types = (
+    generic_types
+    + analysis_types
+    + analytics_types
+    + audit_types
+    + client_types
+    + impress_types
+    + instrument_types
+    + inventory_types
+    + messaging_types
+    + noticeboard_types
+    + notification_types
+    + patient_types
+    + reflex_types
+    + setup_types
+    + shipment_types
+    + storage_types
+    + user_types
+    + worksheet_types
+)
 
 
 @strawberry.type

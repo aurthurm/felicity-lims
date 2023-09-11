@@ -1,4 +1,3 @@
-
 from pydantic import BaseModel
 
 #
@@ -11,19 +10,19 @@ from pydantic import BaseModel
 class ClientBase(BaseModel):
     name: str | None = None
     code: str | None = None
-    district_uid: str| None = None
+    district_uid: str | None = None
     email: str | None = None
     email_cc: str | None = None
-    consent_email: bool| None = None
+    consent_email: bool | None = None
     phone_mobile: str | None = None
     phone_business: str | None = None
-    consent_sms: bool| None = None
-    internal_use: bool| None = False
-    active: bool| None = True
+    consent_sms: bool | None = None
+    internal_use: bool | None = False
+    active: bool | None = True
 
 
 class ClientBaseInDB(ClientBase):
-    uid: str| None = None
+    uid: str | None = None
 
     class Config:
         orm_mode = True
@@ -31,7 +30,7 @@ class ClientBaseInDB(ClientBase):
 
 # Properties to receive via API on creation
 class ClientCreate(ClientBase):
-    district_uid: str| None
+    district_uid: str | None
 
 
 # Properties to receive via API on update
@@ -56,20 +55,20 @@ class ClientInDB(ClientBaseInDB):
 
 # Shared properties
 class ClientContactBase(BaseModel):
-    client_uid: str| None = None
+    client_uid: str | None = None
     first_name: str | None = None
     last_name: str | None = None
     email: str | None = None
     email_cc: str | None = None
     mobile_phone: str | None = None
-    consent_sms: bool| None = False
+    consent_sms: bool | None = False
     business_phone: str | None = None
-    is_active: bool| None = True
-    is_superuser: bool| None = False
+    is_active: bool | None = True
+    is_superuser: bool | None = False
 
 
 class ClientContactBaseInDB(ClientContactBase):
-    uid: str| None = None
+    uid: str | None = None
 
     class Config:
         orm_mode = True

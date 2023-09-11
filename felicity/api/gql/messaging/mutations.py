@@ -72,9 +72,7 @@ class MessageMutations:
         return MessageType(**message.marshal_simple())
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
-    async def reply_message(
-        self, info, thread_uid: str, body: str
-    ) -> MessageResponse:
+    async def reply_message(self, info, thread_uid: str, body: str) -> MessageResponse:
 
         inspector = inspect.getargvalues(inspect.currentframe())
         passed_args = get_passed_args(inspector)

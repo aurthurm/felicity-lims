@@ -19,8 +19,8 @@ class SampleTypeInputType:
     name: str
     abbr: str
     description: str | None = ""
-    internal_use: bool| None = False
-    active: bool| None = True
+    internal_use: bool | None = False
+    active: bool | None = True
 
 
 SampleTypeResponse = strawberry.union(
@@ -35,8 +35,8 @@ SampleTypeMappingResponse = strawberry.union(
     (a_types.SampleTypeMappingType, OperationError),  # noqa
     description="Union of possible outcomes when adding a new notice",
 )
-    
-    
+
+
 @strawberry.input
 class SampleTypeMappingInputType:
     sample_type_uid: str
@@ -44,7 +44,6 @@ class SampleTypeMappingInputType:
     name: str
     code: str
     description: str | None = None
-
 
 
 @strawberry.mutation(permission_classes=[IsAuthenticated])
@@ -107,10 +106,10 @@ async def update_sample_type(
     return a_types.SampleTypeTyp(**sample_type.marshal_simple())
 
 
-
-
 @strawberry.mutation(permission_classes=[IsAuthenticated])
-async def create_sample_type_mapping(info, payload: SampleTypeMappingInputType) -> SampleTypeMappingResponse:
+async def create_sample_type_mapping(
+    info, payload: SampleTypeMappingInputType
+) -> SampleTypeMappingResponse:
 
     is_authenticated, felicity_user = await auth_from_info(info)
     verify_user_auth(
@@ -131,8 +130,8 @@ async def create_sample_type_mapping(info, payload: SampleTypeMappingInputType) 
         incoming[k] = v
 
     obj_in = schemas.SampleTypeCodingCreate(**incoming)
-    sample_type_mapping: analysis_models.SampleTypeCoding = await analysis_models.SampleTypeCoding.create(
-        obj_in
+    sample_type_mapping: analysis_models.SampleTypeCoding = (
+        await analysis_models.SampleTypeCoding.create(obj_in)
     )
     return a_types.SampleTypeMappingType(**sample_type_mapping.marshal_simple())
 
@@ -161,6 +160,8 @@ async def update_sample_type_mapping(
             except Exception as e:
                 logger.warning(e)
 
-    sample_type_mapping_in = schemas.SampleTypeCodingUpdate(**sample_type_mapping.to_dict())
+    sample_type_mapping_in = schemas.SampleTypeCodingUpdate(
+        **sample_type_mapping.to_dict()
+    )
     sample_type_mapping = await sample_type_mapping.update(sample_type_mapping_in)
     return a_types.SampleTypeMappingType(**sample_type_mapping.marshal_simple())

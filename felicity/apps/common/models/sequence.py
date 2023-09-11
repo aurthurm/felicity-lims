@@ -14,8 +14,7 @@ logger = logging.getLogger(__name__)
 class IdSequence(DBModel):
     prefix = Column(String, nullable=False, unique=True)
     number = Column(Integer, nullable=False)
-    updated = Column(DateTime, default=datetime.utcnow,
-                     onupdate=datetime.utcnow)
+    updated = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
     @classmethod
     async def get_next_number(cls, prefix: str = None, generic=False):
@@ -29,8 +28,7 @@ class IdSequence(DBModel):
             if not fetch:
                 alpha = f"AA"
             else:
-                sequences = sorted(
-                    fetch, key=lambda s: s.updated, reverse=True)
+                sequences = sorted(fetch, key=lambda s: s.updated, reverse=True)
 
                 latest = sequences[0]
 
@@ -52,7 +50,12 @@ class IdSequence(DBModel):
             insert(IdSequence)
             .values(prefix=prefix, number=1)
             .on_conflict_do_update(
-                index_elements=["prefix"], set_=dict(prefix=prefix, number=IdSequence.number + 1, updated=datetime.utcnow())
+                index_elements=["prefix"],
+                set_=dict(
+                    prefix=prefix,
+                    number=IdSequence.number + 1,
+                    updated=datetime.utcnow(),
+                ),
             )
             .returning(IdSequence.number)
         )

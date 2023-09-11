@@ -25,11 +25,11 @@ class PermissionCreate(PermissionBase):
 
 # Properties to receive via API on update
 class PermissionUpdate(PermissionBase):
-    uid: str| None = None
+    uid: str | None = None
 
 
 class PermissionInDBBase(PermissionBase):
-    uid: str| None = None
+    uid: str | None = None
 
     class Config:
         orm_mode = True
@@ -64,11 +64,11 @@ class GroupCreate(GroupBase):
 
 # Properties to receive via API on update
 class GroupUpdate(GroupBase):
-    uid: str| None = None
+    uid: str | None = None
 
 
 class GroupInDBBase(GroupBase):
-    uid: str| None = None
+    uid: str | None = None
 
     class Config:
         orm_mode = True
@@ -88,13 +88,13 @@ class GroupInDB(GroupInDBBase):
 #  User Preferences
 #
 class UserPreferenceBase(BaseAuditModel):
-    expanded_menu: bool| None = False
+    expanded_menu: bool | None = False
     departments: Optional[List["Department"]]
     theme: str | None = themes.LIGHT
 
 
 class UserPreference(UserPreferenceBase):
-    uid: str| None = None
+    uid: str | None = None
 
     class Config:
         orm_mode = True
@@ -123,7 +123,7 @@ class UserBasicBase(BaseModel):
 
 class UserBase(BaseModel):
     email: Optional[EmailStr] = None
-    is_active: bool| None = True
+    is_active: bool | None = True
     is_superuser: bool = False
     first_name: str | None = None
     last_name: str | None = None
@@ -142,12 +142,12 @@ class UserCreate(UserBase):
 
 # Properties to receive via API on update
 class UserUpdate(UserBase):
-    auth_uid: str| None = None
-    preference_uid: str| None = None
+    auth_uid: str | None = None
+    preference_uid: str | None = None
 
 
 class UserInDBBase(UserBase):
-    uid: str| None = None
+    uid: str | None = None
 
     class Config:
         orm_mode = True
@@ -155,7 +155,7 @@ class UserInDBBase(UserBase):
 
 # Additional properties to return via API
 class UserBasic(UserBasicBase):
-    uid: str| None = None
+    uid: str | None = None
 
     class Config:
         orm_mode = True
@@ -181,7 +181,7 @@ class AuthBase(BaseModel):
     user_name: str | None = None
     password: str | None = None
     login_retry: int | None = 0
-    is_blocked: bool| None = False
+    is_blocked: bool | None = False
     user_type: str | None = None
 
 
@@ -199,7 +199,7 @@ class AuthUpdate(AuthBase):
 
 
 class AuthInDBBase(AuthBase):
-    uid: str| None = None
+    uid: str | None = None
 
     class Config:
         orm_mode = True

@@ -6,7 +6,7 @@ from .types import (
     ReflexBrainCriteriaType,
     ReflexBrainFinalType,
     ReflexBrainType,
-    ReflexActionType
+    ReflexActionType,
 )
 
 reflex_types = [
@@ -17,5 +17,5 @@ reflex_types = [
     ReflexBrainCriteriaType,
     ReflexBrainFinalType,
     ReflexBrainType,
-    ReflexActionType
+    ReflexActionType,
 ]

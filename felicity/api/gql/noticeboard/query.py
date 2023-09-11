@@ -6,7 +6,6 @@ from api.gql.permissions import IsAuthenticated
 from apps.noticeboard import models
 
 
-
 @strawberry.type
 class NoticeQuery:
     @strawberry.field(permission_classes=[IsAuthenticated])
@@ -14,9 +13,7 @@ class NoticeQuery:
         return await models.Notice.get(uid=uid)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
-    async def notices_by_creator(
-        self, info, uid: str
-    ) -> Optional[List[NoticeType]]:
+    async def notices_by_creator(self, info, uid: str) -> Optional[List[NoticeType]]:
         return await models.Notice.get_all(created_by_uid=uid)
 
     @strawberry.field(permission_classes=[IsAuthenticated])

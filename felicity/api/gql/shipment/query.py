@@ -8,7 +8,7 @@ from api.gql.shipment.types import (
     ShipmentCursorPage,
     ShipmentEdge,
     ShipmentType,
-    ReferralLaboratoryType
+    ReferralLaboratoryType,
 )
 from api.gql.permissions import IsAuthenticated
 from api.gql.types import BytesScalar
@@ -17,6 +17,7 @@ from utils import has_value_or_is_truthy
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
 
 @strawberry.type
 class ShipmentQuery:
@@ -33,9 +34,7 @@ class ShipmentQuery:
         sort_by: list[str] | None = None,
     ) -> ShipmentCursorPage:
 
-        filters = [
-            {"incoming" : incoming }
-        ]
+        filters = [{"incoming": incoming}]
 
         _or_text_ = {}
         if has_value_or_is_truthy(text):
@@ -82,23 +81,25 @@ class ShipmentQuery:
         self, info, shipment_status: str
     ) -> List[ShipmentType]:
         return await models.Shipment.get_all(status__exact=shipment_status)
-    
+
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def referral_laboratory_all(self, info) -> list[ReferralLaboratoryType]:
         return await models.ReferralLaboratory.all()
 
     @strawberry.field(permission_classes=[IsAuthenticated])
-    async def referral_laboratory_by_uid(self, info, uid: str) -> ReferralLaboratoryType:
+    async def referral_laboratory_by_uid(
+        self, info, uid: str
+    ) -> ReferralLaboratoryType:
         return await models.ReferralLaboratory.get(uid=uid)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
-    async def referral_laboratory_by_code(self, info, code: str) -> ReferralLaboratoryType:
+    async def referral_laboratory_by_code(
+        self, info, code: str
+    ) -> ReferralLaboratoryType:
         return await models.ReferralLaboratory.get(code=code)
-    
+
     @strawberry.field(permission_classes=[IsAuthenticated])
-    async def manifest_report_download(
-        self, info, uid: str
-    ) -> BytesScalar | None:
+    async def manifest_report_download(self, info, uid: str) -> BytesScalar | None:
         shipment = await models.Shipment.get(uid=uid)
 
         if not shipment:

@@ -7,7 +7,6 @@ from api.gql.setup.types import DistrictType, ProvinceType
 from api.gql.user.types import UserAuthType, UserType
 
 
-
 @strawberry.type
 class ClientType:
     uid: str
@@ -42,7 +41,7 @@ class ClientContactType:
     email: str | None
     mobile_phone: str | None
     business_phone: str | None
-    is_active: bool| None
+    is_active: bool | None
     email: str | None
     email_cc: str | None
     consent_sms: bool

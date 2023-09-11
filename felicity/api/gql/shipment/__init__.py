@@ -3,7 +3,7 @@ from .types import (
     ShipmentType,
     ShipmentEdge,
     ShipmentCursorPage,
-    ShippedSampleType
+    ShippedSampleType,
 )
 
 shipment_types = [
@@ -11,5 +11,5 @@ shipment_types = [
     ShipmentType,
     ShipmentEdge,
     ShipmentCursorPage,
-    ShippedSampleType
+    ShippedSampleType,
 ]

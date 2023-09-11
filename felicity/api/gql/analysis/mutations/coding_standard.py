@@ -28,7 +28,9 @@ CodingStandardResponse = strawberry.union(
 
 
 @strawberry.mutation(permission_classes=[IsAuthenticated])
-async def create_coding_standard(info, payload: CodingStandardInputType) -> CodingStandardResponse:
+async def create_coding_standard(
+    info, payload: CodingStandardInputType
+) -> CodingStandardResponse:
 
     is_authenticated, felicity_user = await auth_from_info(info)
     verify_user_auth(
@@ -52,8 +54,8 @@ async def create_coding_standard(info, payload: CodingStandardInputType) -> Codi
         incoming[k] = v
 
     obj_in = schemas.CodingStandardCreate(**incoming)
-    coding_standard: analysis_models.CodingStandard = await analysis_models.CodingStandard.create(
-        obj_in
+    coding_standard: analysis_models.CodingStandard = (
+        await analysis_models.CodingStandard.create(obj_in)
     )
     return a_types.CodingStandardType(**coding_standard.marshal_simple())
 

@@ -270,7 +270,9 @@ class InventoryMutations:
         )
 
         if not uid:
-            return OperationError(error="No uid provided to identity update stock category")
+            return OperationError(
+                error="No uid provided to identity update stock category"
+            )
 
         stock_category: models.StockCategory = await models.StockCategory.get(uid=uid)
         if not stock_category:
@@ -608,11 +610,13 @@ class InventoryMutations:
             return OperationError(
                 error="You can only update a StockOrder under preparation"
             )
-        
-        obj_in = schemas.StockOrderUpdate(**{
-            "department_uid" : payload.department_uid,
-            "order_by_uid": felicity_user.uid,
-        })
+
+        obj_in = schemas.StockOrderUpdate(
+            **{
+                "department_uid": payload.department_uid,
+                "order_by_uid": felicity_user.uid,
+            }
+        )
         await stock_order.update(obj_in)
 
         # add Order Products
@@ -691,7 +695,7 @@ class InventoryMutations:
             )
 
         stock_order = await stock_order.update(
-            {"status": payload.status, "remarks": payload.remarks }
+            {"status": payload.status, "remarks": payload.remarks}
         )  # noqa
         return types.StockOrderType(**stock_order.marshal_simple())
 
@@ -806,9 +810,7 @@ class InventoryMutations:
             await stock_transaction.update(
                 {"remarks": "Sustained: Sorry you cannot issue beyond whats available"}
             )  # noqa
-            return OperationError(
-                error="Sorry you cannot issue beyond whats available"
-            )
+            return OperationError(error="Sorry you cannot issue beyond whats available")
         else:
             await product.update({"remaining": remaining})
 
@@ -851,9 +853,7 @@ class InventoryMutations:
             remaining = product.remaining - stock_adjustment.adjust
             if remaining < 0:
                 await stock_adjustment.update(
-                    {
-                        "remarks": "Sustained: Sorry you cant adjust beyond what you have"
-                    }
+                    {"remarks": "Sustained: Sorry you cant adjust beyond what you have"}
                 )  # noqa
                 return OperationError(
                     error="Sorry you cant adjust beyond what you have"

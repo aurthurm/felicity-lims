@@ -2,12 +2,12 @@ from .types import (
     StoreRoomType,
     StorageLocationType,
     StorageSectionType,
-    StorageContainerType
+    StorageContainerType,
 )
 
 storage_types = [
     StoreRoomType,
     StorageLocationType,
     StorageSectionType,
-    StorageContainerType    
+    StorageContainerType,
 ]

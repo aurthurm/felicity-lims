@@ -31,14 +31,11 @@ class Identification(Auditable):
 
 
 class PatientIdentification(Auditable):
-    identification_uid = Column(
-        String, ForeignKey("identification.uid"), nullable=True
-    )
+    identification_uid = Column(String, ForeignKey("identification.uid"), nullable=True)
     identification: Mapped["Identification"] = relationship(
         "Identification", lazy="selectin"
     )
-    patient_uid = Column(String, ForeignKey(
-        "patient.uid"), nullable=True)
+    patient_uid = Column(String, ForeignKey("patient.uid"), nullable=True)
     patient: Mapped["Patient"] = relationship(
         "Patient", back_populates="identifications", lazy="selectin"
     )
@@ -84,14 +81,11 @@ class Patient(Auditable):
     internal_use = Column(Boolean(), default=False)  # e.g Test Patient
     active = Column(Boolean(), default=True)
     # belonging
-    district_uid = Column(String, ForeignKey(
-        "district.uid"), nullable=True)
+    district_uid = Column(String, ForeignKey("district.uid"), nullable=True)
     district = relationship("District", backref="patients", lazy="selectin")
-    province_uid = Column(String, ForeignKey(
-        "province.uid"), nullable=True)
+    province_uid = Column(String, ForeignKey("province.uid"), nullable=True)
     province = relationship("Province", backref="patients", lazy="selectin")
-    country_uid = Column(String, ForeignKey(
-        "country.uid"), nullable=True)
+    country_uid = Column(String, ForeignKey("country.uid"), nullable=True)
     country = relationship("Country", backref="patients", lazy="selectin")
 
     @property
@@ -104,7 +98,9 @@ class Patient(Auditable):
     @classmethod
     async def create(cls, obj_in: schemas.PatientCreate) -> schemas.Patient:
         data = cls._import(obj_in)
-        data["patient_id"] = (await IdSequence.get_next_number(prefix="P", generic=True))[1]
+        data["patient_id"] = (
+            await IdSequence.get_next_number(prefix="P", generic=True)
+        )[1]
         return await super().create(**data)
 
     async def update(self, obj_in: schemas.PatientUpdate) -> schemas.Patient:

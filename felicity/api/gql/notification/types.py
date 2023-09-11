@@ -14,7 +14,6 @@ from apps.analytics.models import ReportMeta
 from apps.worksheet.models import WorkSheet
 
 
-
 @strawberry.type
 class UnknownObjectType:
     message: str

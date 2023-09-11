@@ -52,8 +52,7 @@ class ReflexUtil:
             **filters
         )
         if not action:
-            logger.info(
-                f"No reflex action found for analysis: {self.analysis.name}")
+            logger.info(f"No reflex action found for analysis: {self.analysis.name}")
             return
         self._reflex_action = action
         logger.info(f"Reflex action found for analysis: {self.analysis.name}")
@@ -103,24 +102,20 @@ class ReflexUtil:
                 f"{(current_result.analysis_uid, current_result.result)} in avs"
             )
             matches.append(True)
-            criteria_values.remove(
-                (current_result.analysis_uid, current_result.result))
+            criteria_values.remove((current_result.analysis_uid, current_result.result))
 
         # 2. check for more result matched between the analysis values and results pool
         for _cv in _criteria_values:
-            _anal = list(
-                filter(lambda res: res.analysis_uid == _cv[0], results_pool))
+            _anal = list(filter(lambda res: res.analysis_uid == _cv[0], results_pool))
             # get latest
             _anal = sorted(_anal, key=lambda x: x.created_at)
             logger.info(f"_anal: {_anal}")
 
-            logger.info(
-                f"_anal[0].result: {_anal[0].result} :: _av[1]: {_cv[1]}")
+            logger.info(f"_anal[0].result: {_anal[0].result} :: _av[1]: {_cv[1]}")
 
             if _anal[0].result == _cv[1]:
                 matches.append(True)
-                criteria_values.remove(
-                    (_anal[0].analysis_uid, _anal[0].result))
+                criteria_values.remove((_anal[0].analysis_uid, _anal[0].result))
             else:
                 matches.append(False)
 
@@ -167,8 +162,7 @@ class ReflexUtil:
             analysis_uid = self.analysis.uid
             results: List[AnalysisResult] = await self.sample.get_analysis_results()
             self._cousins = list(
-                filter(lambda result: result.analysis_uid !=
-                       analysis_uid, results)
+                filter(lambda result: result.analysis_uid != analysis_uid, results)
             )
         return self._cousins
 

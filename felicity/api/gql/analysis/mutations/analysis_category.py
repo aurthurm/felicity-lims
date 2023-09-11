@@ -25,7 +25,7 @@ class AnalysisCategoryInputType:
     name: str
     department_uid: str | None = None
     description: str | None = None
-    active: bool| None = True
+    active: bool | None = True
 
 
 @strawberry.mutation(permission_classes=[IsAuthenticated])

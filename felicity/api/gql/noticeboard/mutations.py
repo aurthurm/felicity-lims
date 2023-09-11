@@ -2,7 +2,7 @@ import logging
 from typing import List, Optional
 
 import strawberry  # noqa
-from api.gql.types import  DeletedItem, DeleteResponse, OperationError
+from api.gql.types import DeletedItem, DeleteResponse, OperationError
 from api.gql.auth import auth_from_info, verify_user_auth
 from api.gql.permissions import IsAuthenticated
 from api.gql.noticeboard.types import NoticeType
@@ -129,9 +129,7 @@ class NoticeMutations:
         return NoticeType(**notice.marshal_simple())
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
-    async def view_notice(
-        self, info, uid: str, viewer: str
-    ) -> NoticeType:
+    async def view_notice(self, info, uid: str, viewer: str) -> NoticeType:
 
         is_authenticated, felicity_user = await auth_from_info(info)
         verify_user_auth(

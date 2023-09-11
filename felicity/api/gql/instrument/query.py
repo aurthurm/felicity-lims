@@ -13,7 +13,7 @@ from api.gql.instrument.types import (
     InstrumentTypeType,
     MethodCursorPage,
     MethodEdge,
-    MethodType
+    MethodType,
 )
 from apps.instrument import models
 
@@ -142,7 +142,6 @@ async def get_all_methods(
     )
 
 
-
 @strawberry.type
 class InstrumentQuery:
     instrument_type_all: InstrumentTypeCursorPage = strawberry.field(
@@ -155,7 +154,7 @@ class InstrumentQuery:
         return query
 
     instrument_all: InstrumentCursorPage = strawberry.field(
-        resolver=get_all_instruments,permission_classes=[IsAuthenticated]
+        resolver=get_all_instruments, permission_classes=[IsAuthenticated]
     )
 
     @strawberry.field(permission_classes=[IsAuthenticated])
@@ -163,7 +162,9 @@ class InstrumentQuery:
         query = await models.Instrument.get(uid=uid)
         return query
 
-    method_all: MethodCursorPage = strawberry.field(resolver=get_all_methods, permission_classes=[IsAuthenticated])
+    method_all: MethodCursorPage = strawberry.field(
+        resolver=get_all_methods, permission_classes=[IsAuthenticated]
+    )
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def method_by_uid(self, info, uid: str) -> MethodType:

@@ -35,11 +35,13 @@ async def laboratory_lookup(request) -> Any:
     Retrieve instance of installed laboratory
     """
     laboratory = await models.Laboratory.get_by_setup_name("felicity")
-    return json({
-        "laboratory": laboratory.marshal_simple(),
-        "installed": True if laboratory else False,
-        "message": "" if laboratory else "Laboratory installation required",
-    })
+    return json(
+        {
+            "laboratory": laboratory.marshal_simple(),
+            "installed": True if laboratory else False,
+            "message": "" if laboratory else "Laboratory installation required",
+        }
+    )
 
 
 @setup.post("/installation")
@@ -59,11 +61,13 @@ async def register_laboratory(request, form: LabNameIn) -> Any:
         }
 
     laboratory = await models.Laboratory.get_by_setup_name("felicity")
-    return json({
-        "laboratory": laboratory.marshal_simple(),
-        "installed": True,
-        "message": "installation success",
-    })
+    return json(
+        {
+            "laboratory": laboratory.marshal_simple(),
+            "installed": True,
+            "message": "installation success",
+        }
+    )
 
 
 @setup.post("/load-default-setup")

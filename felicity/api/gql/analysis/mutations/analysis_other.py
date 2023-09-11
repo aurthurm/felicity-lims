@@ -51,10 +51,10 @@ class AnalysisUncertaintyInput:
 @strawberry.input
 class AnalysisSpecificationInput:
     analysis_uid: str
-    min: float| None = None
-    max: float| None = None
-    min_warn: float| None = None
-    max_warn: float| None = None
+    min: float | None = None
+    max: float | None = None
+    min_warn: float | None = None
+    max_warn: float | None = None
     min_report: str | None = None
     max_report: str | None = None
     warn_values: str | None = None

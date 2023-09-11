@@ -6,7 +6,6 @@ from apps.setup.schemas import Department
 from apps.user.schemas import Group, User
 
 
-
 #
 # Notice Schemas
 #
@@ -20,7 +19,7 @@ class NoticeBase(BaseAuditModel):
 
 
 class Notice(NoticeBase):
-    uid: str| None = None
+    uid: str | None = None
 
     class Config:
         orm_mode = True

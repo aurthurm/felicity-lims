@@ -34,18 +34,23 @@ streamer = FelicityStreamer()
 
 class CodingStandard(BaseAuditDBModel):
     """conding standars e.g LOINC"""
+
     name = Column(String, nullable=False)
     description = Column(String, nullable=False)
 
     @classmethod
-    async def create(cls, obj_in: schemas.CodingStandardCreate) -> schemas.CodingStandard:
+    async def create(
+        cls, obj_in: schemas.CodingStandardCreate
+    ) -> schemas.CodingStandard:
         data = cls._import(obj_in)
         return await super().create(**data)
 
-    async def update(self, obj_in: schemas.CodingStandardUpdate) -> schemas.CodingStandard:
+    async def update(
+        self, obj_in: schemas.CodingStandardUpdate
+    ) -> schemas.CodingStandard:
         data = self._import(obj_in)
         return await super().update(**data)
-    
+
 
 class SampleType(BaseAuditDBModel):
     """SampleType"""
@@ -68,20 +73,27 @@ class SampleType(BaseAuditDBModel):
 
 class SampleTypeCoding(BaseAuditDBModel):
     """SampleTypeCoding"""
+
     sample_type_uid = Column(String, ForeignKey("sampletype.uid"), nullable=False)
     sample_type = relationship("SampleType", lazy="selectin")
-    coding_standard_uid = Column(String, ForeignKey("codingstandard.uid"), nullable=True)
+    coding_standard_uid = Column(
+        String, ForeignKey("codingstandard.uid"), nullable=True
+    )
     coding_standard = relationship("CodingStandard", lazy="selectin")
     name = Column(String, nullable=True)
     description = Column(String, nullable=True)
     code = Column(String, nullable=False)
 
     @classmethod
-    async def create(cls, obj_in: schemas.SampleTypeCodingCreate) -> schemas.SampleTypeCoding:
+    async def create(
+        cls, obj_in: schemas.SampleTypeCodingCreate
+    ) -> schemas.SampleTypeCoding:
         data = cls._import(obj_in)
         return await super().create(**data)
 
-    async def update(self, obj_in: schemas.SampleTypeCodingUpdate) -> schemas.SampleTypeCoding:
+    async def update(
+        self, obj_in: schemas.SampleTypeCodingUpdate
+    ) -> schemas.SampleTypeCoding:
         data = self._import(obj_in)
         return await super().update(**data)
 
@@ -124,8 +136,7 @@ class AnalysisCategory(BaseAuditDBModel):
 
     name = Column(String, nullable=False)
     description = Column(String, nullable=False)
-    department_uid = Column(String, ForeignKey(
-        "department.uid"), nullable=True)
+    department_uid = Column(String, ForeignKey("department.uid"), nullable=True)
     department = relationship("Department", lazy="selectin")
     active = Column(Boolean(), default=False)
 
@@ -160,8 +171,7 @@ class Profile(BaseAuditDBModel):
     sample_types = relationship(
         "SampleType", secondary=profile_sample_type, backref="profiles", lazy="selectin"
     )
-    department_uid = Column(String, ForeignKey(
-        "department.uid"), nullable=True)
+    department_uid = Column(String, ForeignKey("department.uid"), nullable=True)
     department = relationship("Department", lazy="selectin")
 
     async def update_tat(self):
@@ -190,10 +200,12 @@ class Profile(BaseAuditDBModel):
 
 class ProfileCoding(BaseAuditDBModel):
     """ProfileCoding"""
-    profile_uid = Column(String, ForeignKey(
-        "profile.uid"), nullable=True)
+
+    profile_uid = Column(String, ForeignKey("profile.uid"), nullable=True)
     profile = relationship("Profile", lazy="selectin")
-    coding_standard_uid = Column(String, ForeignKey("codingstandard.uid"), nullable=True)
+    coding_standard_uid = Column(
+        String, ForeignKey("codingstandard.uid"), nullable=True
+    )
     coding_standard = relationship("CodingStandard", lazy="selectin")
     name = Column(String, nullable=True)
     description = Column(String, nullable=True)
@@ -204,7 +216,9 @@ class ProfileCoding(BaseAuditDBModel):
         data = cls._import(obj_in)
         return await super().create(**data)
 
-    async def update(self, obj_in: schemas.ProfileCodingUpdate) -> schemas.ProfileCoding:
+    async def update(
+        self, obj_in: schemas.ProfileCodingUpdate
+    ) -> schemas.ProfileCoding:
         data = self._import(obj_in)
         return await super().update(**data)
 
@@ -240,10 +254,10 @@ class Analysis(BaseAuditDBModel):
     unit_uid = Column(String, ForeignKey("unit.uid"), nullable=True)
     unit = relationship("Unit", lazy="selectin")
     profiles = relationship(
-        "Profile", 
-        secondary=analysis_profile, 
+        "Profile",
+        secondary=analysis_profile,
         back_populates="analyses",
-        lazy="selectin"
+        lazy="selectin",
     )
     sample_types = relationship(
         "SampleType",
@@ -257,8 +271,7 @@ class Analysis(BaseAuditDBModel):
     methods = relationship(
         "Method", secondary=analysis_method, backref="analyses", lazy="selectin"
     )
-    interims = relationship(
-        "AnalysisInterim", backref="analysis", lazy="selectin")
+    interims = relationship("AnalysisInterim", backref="analysis", lazy="selectin")
     correction_factors = relationship(
         "AnalysisCorrectionFactor", backref="analysis", lazy="selectin"
     )
@@ -271,16 +284,13 @@ class Analysis(BaseAuditDBModel):
     uncertainties = relationship(
         "AnalysisUncertainty", backref="analysis", lazy="selectin"
     )
-    result_options = relationship(
-        "ResultOption", backref="analyses", lazy="selectin")
+    result_options = relationship("ResultOption", backref="analyses", lazy="selectin")
     category_uid = Column(String, ForeignKey("analysiscategory.uid"))
-    category = relationship(
-        AnalysisCategory, backref="analyses", lazy="selectin")
+    category = relationship(AnalysisCategory, backref="analyses", lazy="selectin")
     tat_length_minutes = Column(Integer, nullable=True)  # to calculate TAT
     sort_key = Column(Integer, nullable=True)
     internal_use = Column(Boolean(), default=False)  # e.g QC Services
-    department_uid = Column(String, ForeignKey(
-        "department.uid"), nullable=True)
+    department_uid = Column(String, ForeignKey("department.uid"), nullable=True)
     department = relationship("Department", lazy="selectin")
     # precision -> decimal places to report
     precision = Column(Integer, nullable=True)
@@ -301,21 +311,27 @@ class Analysis(BaseAuditDBModel):
 
 class AnalysisCoding(BaseAuditDBModel):
     """AnalysisCoding"""
-    analysis_uid = Column(String, ForeignKey(
-        "analysis.uid"), nullable=True)
+
+    analysis_uid = Column(String, ForeignKey("analysis.uid"), nullable=True)
     analysis = relationship("Analysis", lazy="selectin")
-    coding_standard_uid = Column(String, ForeignKey("codingstandard.uid"), nullable=True)
+    coding_standard_uid = Column(
+        String, ForeignKey("codingstandard.uid"), nullable=True
+    )
     coding_standard = relationship("CodingStandard", lazy="selectin")
     name = Column(String, nullable=True)
     description = Column(String, nullable=True)
     code = Column(String, nullable=False)
 
     @classmethod
-    async def create(cls, obj_in: schemas.AnalysisCodingCreate) -> schemas.AnalysisCoding:
+    async def create(
+        cls, obj_in: schemas.AnalysisCodingCreate
+    ) -> schemas.AnalysisCoding:
         data = cls._import(obj_in)
         return await super().create(**data)
 
-    async def update(self, obj_in: schemas.AnalysisCodingUpdate) -> schemas.AnalysisCoding:
+    async def update(
+        self, obj_in: schemas.AnalysisCodingUpdate
+    ) -> schemas.AnalysisCoding:
         data = self._import(obj_in)
         return await super().update(**data)
 
@@ -325,10 +341,8 @@ class AnalysisInterim(BaseAuditDBModel):
 
     key = Column(Integer, nullable=False)
     value = Column(String, nullable=False)
-    analysis_uid = Column(String, ForeignKey(
-        "analysis.uid"), nullable=True)
-    instrument_uid = Column(String, ForeignKey(
-        "instrument.uid"), nullable=True)
+    analysis_uid = Column(String, ForeignKey("analysis.uid"), nullable=True)
+    instrument_uid = Column(String, ForeignKey("instrument.uid"), nullable=True)
     instrument = relationship("Instrument")
 
     @classmethod
@@ -349,10 +363,8 @@ class AnalysisCorrectionFactor(BaseAuditDBModel):
     """Analysis Correction Factor"""
 
     factor = Column(Float, nullable=False)
-    analysis_uid = Column(String, ForeignKey(
-        "analysis.uid"), nullable=True)
-    instrument_uid = Column(String, ForeignKey(
-        "instrument.uid"), nullable=True)
+    analysis_uid = Column(String, ForeignKey("analysis.uid"), nullable=True)
+    instrument_uid = Column(String, ForeignKey("instrument.uid"), nullable=True)
     method_uid = Column(String, ForeignKey("method.uid"), nullable=True)
 
     @classmethod
@@ -374,10 +386,8 @@ class AnalysisDetectionLimit(BaseAuditDBModel):
 
     lower_limit = Column(Float, nullable=False)
     upper_limit = Column(Float, nullable=False)
-    analysis_uid = Column(String, ForeignKey(
-        "analysis.uid"), nullable=True)
-    instrument_uid = Column(String, ForeignKey(
-        "instrument.uid"), nullable=True)
+    analysis_uid = Column(String, ForeignKey("analysis.uid"), nullable=True)
+    instrument_uid = Column(String, ForeignKey("instrument.uid"), nullable=True)
     method_uid = Column(String, ForeignKey("method.uid"), nullable=True)
 
     @classmethod
@@ -402,10 +412,8 @@ class AnalysisUncertainty(BaseAuditDBModel):
     min = Column(Float, nullable=False)
     max = Column(Float, nullable=False)
     value = Column(Float, nullable=False)
-    analysis_uid = Column(String, ForeignKey(
-        "analysis.uid"), nullable=True)
-    instrument_uid = Column(String, ForeignKey(
-        "instrument.uid"), nullable=True)
+    analysis_uid = Column(String, ForeignKey("analysis.uid"), nullable=True)
+    instrument_uid = Column(String, ForeignKey("instrument.uid"), nullable=True)
     method_uid = Column(String, ForeignKey("method.uid"), nullable=True)
 
     @classmethod
@@ -425,8 +433,7 @@ class AnalysisUncertainty(BaseAuditDBModel):
 class AnalysisSpecification(BaseAuditDBModel):
     """Analysis Specification Ranges"""
 
-    analysis_uid = Column(String, ForeignKey(
-        "analysis.uid"), nullable=True)
+    analysis_uid = Column(String, ForeignKey("analysis.uid"), nullable=True)
     unit_uid = Column(String, ForeignKey("unit.uid"), nullable=True)
     unit = relationship("Unit", lazy="selectin")
     # Normal Range
@@ -494,8 +501,7 @@ class AnalysisRequest(BaseAuditDBModel):
     client = relationship(
         ct_models.Client, backref="analysis_requests", lazy="selectin"
     )
-    samples = relationship(
-        "Sample", back_populates="analysis_request", lazy="selectin")
+    samples = relationship("Sample", back_populates="analysis_request", lazy="selectin")
     request_id = Column(String, index=True, unique=True, nullable=True)
     client_request_id = Column(String, unique=True, nullable=False)
     internal_use = Column(Boolean(), default=False)  # e.g Test Requests
@@ -540,8 +546,7 @@ sample_rejection_reason = Table(
     "sample_rejection_reason",
     DBModel.metadata,
     Column("sample_uid", ForeignKey("sample.uid"), primary_key=True),
-    Column("rejection_reason_uid", ForeignKey(
-        "rejectionreason.uid"), primary_key=True),
+    Column("rejection_reason_uid", ForeignKey("rejectionreason.uid"), primary_key=True),
 )
 
 
@@ -573,10 +578,8 @@ class Sample(Auditable, BaseMPTT):
     analysis_request = relationship(
         "AnalysisRequest", back_populates="samples", lazy="selectin"
     )
-    sample_type_uid = Column(String, ForeignKey(
-        "sampletype.uid"), nullable=False)
-    sample_type = relationship(
-        "SampleType", backref="samples", lazy="selectin")
+    sample_type_uid = Column(String, ForeignKey("sampletype.uid"), nullable=False)
+    sample_type = relationship("SampleType", backref="samples", lazy="selectin")
     sample_id = Column(String, index=True, unique=True, nullable=True)
     profiles = relationship(
         Profile, secondary=sample_profile, backref="samples", lazy="selectin"
@@ -591,40 +594,28 @@ class Sample(Auditable, BaseMPTT):
     priority = Column(Integer, nullable=False, default=0)
     status = Column(String, nullable=False)
     date_collected = Column(DateTime, nullable=True)
-    received_by_uid = Column(
-        String, ForeignKey("user.uid"), nullable=True)
-    received_by = relationship(
-        User, foreign_keys=[received_by_uid], lazy="selectin")
+    received_by_uid = Column(String, ForeignKey("user.uid"), nullable=True)
+    received_by = relationship(User, foreign_keys=[received_by_uid], lazy="selectin")
     date_received = Column(DateTime, nullable=True)
-    submitted_by_uid = Column(
-        String, ForeignKey("user.uid"), nullable=True)
-    submitted_by = relationship(
-        User, foreign_keys=[submitted_by_uid], lazy="selectin")
+    submitted_by_uid = Column(String, ForeignKey("user.uid"), nullable=True)
+    submitted_by = relationship(User, foreign_keys=[submitted_by_uid], lazy="selectin")
     date_submitted = Column(DateTime, nullable=True)
-    verified_by_uid = Column(
-        String, ForeignKey("user.uid"), nullable=True)
-    verified_by = relationship(
-        User, foreign_keys=[verified_by_uid], lazy="selectin")
+    verified_by_uid = Column(String, ForeignKey("user.uid"), nullable=True)
+    verified_by = relationship(User, foreign_keys=[verified_by_uid], lazy="selectin")
     date_verified = Column(DateTime, nullable=True)
-    published_by_uid = Column(
-        String, ForeignKey("user.uid"), nullable=True)
-    published_by = relationship(
-        User, foreign_keys=[published_by_uid], lazy="selectin")
+    published_by_uid = Column(String, ForeignKey("user.uid"), nullable=True)
+    published_by = relationship(User, foreign_keys=[published_by_uid], lazy="selectin")
     date_published = Column(DateTime, nullable=True)
     printed = Column(Boolean(), default=False)
-    printed_by_uid = Column(
-        String, ForeignKey("user.uid"), nullable=True)
-    printed_by = relationship(
-        User, foreign_keys=[printed_by_uid], lazy="selectin")
+    printed_by_uid = Column(String, ForeignKey("user.uid"), nullable=True)
+    printed_by = relationship(User, foreign_keys=[printed_by_uid], lazy="selectin")
     date_printed = Column(DateTime, nullable=True)
-    invalidated_by_uid = Column(
-        String, ForeignKey("user.uid"), nullable=True)
+    invalidated_by_uid = Column(String, ForeignKey("user.uid"), nullable=True)
     invalidated_by = relationship(
         User, foreign_keys=[invalidated_by_uid], lazy="selectin"
     )
     date_invalidated = Column(DateTime, nullable=True)
-    cancelled_by_uid = Column(
-        String, ForeignKey("user.uid"), nullable=True)
+    cancelled_by_uid = Column(String, ForeignKey("user.uid"), nullable=True)
     cancelled_by = relationship(
         "User", foreign_keys=[cancelled_by_uid], lazy="selectin"
     )
@@ -722,19 +713,21 @@ class Sample(Auditable, BaseMPTT):
         from apps.analysis.models.results import AnalysisResult
 
         return await AnalysisResult.get_all(sample_uid=self.uid)
-    
+
     async def get_referred_analyses(self):
         analysis = await self.get_analysis_results()
-        return analysis, list(filter(lambda a: a.status == states.Result.REFERRED ,analysis))
-    
+        return analysis, list(
+            filter(lambda a: a.status == states.Result.REFERRED, analysis)
+        )
+
     async def has_fully_referred_analyses(self):
         analysis, referred = await self.get_referred_analyses()
         return len(analysis) == len(referred)
-    
+
     async def has_no_referred_analyses(self):
         analysis, referred = await self.get_referred_analyses()
         return len(referred) == 0
-    
+
     async def has_partly_referred_analyses(self):
         analysis, referred = await self.get_referred_analyses()
         return len(analysis) != len(referred) and len(referred) > 0
@@ -783,8 +776,7 @@ class Sample(Auditable, BaseMPTT):
             states.result.CANCELLED,
         ]
         analysis_results = await self.get_analysis_results()
-        match = all([(sibling.status in statuses)
-                    for sibling in analysis_results])
+        match = all([(sibling.status in statuses) for sibling in analysis_results])
         if match and self.status in [states.sample.RECEIVED]:
             self.status = states.sample.AWAITING
             self.submitted_by_uid = submitted_by.uid
@@ -811,7 +803,7 @@ class Sample(Auditable, BaseMPTT):
     async def un_assign(self):
         self.assigned = False
         return await self.save()
-    
+
     async def is_verifiable(self):
         statuses = [
             states.result.APPROVED,
@@ -819,14 +811,15 @@ class Sample(Auditable, BaseMPTT):
             states.result.CANCELLED,
         ]
         analysis_results = await self.get_analysis_results()
-        match = all([(sibling.status in statuses)
-                    for sibling in analysis_results])
+        match = all([(sibling.status in statuses) for sibling in analysis_results])
         if match and self.status in [states.sample.AWAITING, states.sample.PAIRED]:
             return True
-        
+
         # if there are no results in referred state but some are in pending state. transition awaiting to pending state
         analysis, referred = await self.get_referred_analyses()
-        if not referred and not list(filter(lambda an: an.status in [states.result.PENDING] ,analysis)):
+        if not referred and not list(
+            filter(lambda an: an.status in [states.result.PENDING], analysis)
+        ):
             self.change_status(states.sample.RECEIVED)
 
         return False
@@ -912,7 +905,9 @@ class Sample(Auditable, BaseMPTT):
         data = cls._import(obj_in)
         sample_type = await SampleType.find(data["sample_type_uid"])
         # data["sample_id"] = (await IdSequence.get_next_number(sample_type.abbr))[1]
-        data["sample_id"] = (await IdSequence.get_next_number(prefix="S", generic=True))[1]
+        data["sample_id"] = (
+            await IdSequence.get_next_number(prefix="S", generic=True)
+        )[1]
         return await super().create(**data)
 
     async def update(self, obj_in: schemas.SampleUpdate) -> schemas.Sample:
@@ -943,7 +938,7 @@ class Sample(Auditable, BaseMPTT):
         data["parent_id"] = self.uid
         data["created_by_uid"] = cloner.uid
         return await self.create(obj_in=data)
-    
+
 
 # @event.listens_for(Sample, "after_update")
 # def stream_sample_verified_models(mapper, connection, target): # noqa

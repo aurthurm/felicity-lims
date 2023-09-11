@@ -47,7 +47,7 @@ class AnalysisResult(Auditable, BaseMPTT):
     submitted_by = relationship(
         "User", foreign_keys=[submitted_by_uid], lazy="selectin"
     )
-    
+
     submitted_by_name = Column(String, nullable=True)
     date_submitted = Column(DateTime, nullable=True)
     verified_by = relationship("User", secondary=result_verification, lazy="selectin")
@@ -88,7 +88,7 @@ class AnalysisResult(Auditable, BaseMPTT):
             required = 1
         current = len(self.verified_by)
         return required, current
-    
+
     # async def last_verificator(self):
     #     _, verifications = await self.verifications()
     #     if verifications == 0:

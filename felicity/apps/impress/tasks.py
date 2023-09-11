@@ -26,7 +26,7 @@ async def impress_results(job_uid: str):
     if not job:
         return
 
-    if not job.status == job_states.PENDING:
+    if job.status != job_states.PENDING:
         return
 
     await job.change_status(new_status=job_states.RUNNING)
@@ -37,7 +37,7 @@ async def impress_results(job_uid: str):
         user = user
         await utils.impress_samples(job.data, user)
         await job.change_status(new_status=job_states.FINISHED)
-        await report_notifier.notify(f"Your results were successfully published", user)
+        await report_notifier.notify("Your results were successfully published", user)
     except Exception as e:
         await job.change_status(new_status=job_states.FAILED)
         await report_notifier.notify(

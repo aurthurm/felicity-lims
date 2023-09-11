@@ -14,17 +14,17 @@ class ReportMetaBase(BaseModel):
     sample_states: str | None
     report_type: str = conf.report_types.LINE_LISTING
     status: str | None = conf.report_states.PENDING
-    analyses: list[AnalysisBasic]| None = None
+    analyses: list[AnalysisBasic] | None = None
     created_at: datetime | None = None
-    created_by_uid: str| None = None
-    created_by: UserBasic| None = None  # noqa
+    created_by_uid: str | None = None
+    created_by: UserBasic | None = None  # noqa
     updated_at: datetime | None = None
-    updated_by_uid: str| None = None
-    updated_by: UserBasic| None = None  # noqa
+    updated_by_uid: str | None = None
+    updated_by: UserBasic | None = None  # noqa
 
 
 class ReportMeta(ReportMetaBase):
-    uid: str| None = None
+    uid: str | None = None
     location: str | None
 
     class Config:

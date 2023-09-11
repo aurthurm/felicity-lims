@@ -66,8 +66,8 @@ class StorageContainerInputType:
     name: str
     description: str | None
     storage_section_uid: str
-    grid: bool| None = False
-    row_wise: bool| None = False
+    grid: bool | None = False
+    row_wise: bool | None = False
     cols: int | None = 0
     rows: int | None = 0
     slots: int | None = 0
@@ -403,8 +403,7 @@ class StorageMutations:
 
         for container_uid in container_uids:
             sample_data = list(
-                filter(lambda x: x.storage_container_uid ==
-                       container_uid, payload)
+                filter(lambda x: x.storage_container_uid == container_uid, payload)
             )
             samples = await an_models.Sample.get_by_uids(
                 uids=[s.sample_uid for s in sample_data]
@@ -440,9 +439,7 @@ class StorageMutations:
         return StoredSamplesType(samples=samples)
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
-    async def recover_samples(
-        info, sample_uids: List[str]
-    ) -> StoreSampleResponse:
+    async def recover_samples(info, sample_uids: List[str]) -> StoreSampleResponse:
         is_authenticated, felicity_user = await auth_from_info(info)
         verify_user_auth(
             is_authenticated,

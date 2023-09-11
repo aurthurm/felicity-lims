@@ -160,7 +160,9 @@ class SetupQuery:
         query = await models.Manufacturer.get(uid=uid)
         return query
 
-    supplier_all: List[SupplierType] = strawberry.field(resolver=get_all_suppliers, permission_classes=[IsAuthenticated])
+    supplier_all: List[SupplierType] = strawberry.field(
+        resolver=get_all_suppliers, permission_classes=[IsAuthenticated]
+    )
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def supplier_by_uid(self, info, uid: str) -> SupplierType:
@@ -176,8 +178,9 @@ class SetupQuery:
         query = await models.Department.get(uid=uid)
         return query
 
-
-    district_all: DistrictCursorPage = strawberry.field(resolver=get_all_districts, permission_classes=[IsAuthenticated])
+    district_all: DistrictCursorPage = strawberry.field(
+        resolver=get_all_districts, permission_classes=[IsAuthenticated]
+    )
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def district_by_uid(self, info, uid: str) -> DistrictType:
@@ -185,13 +188,13 @@ class SetupQuery:
         return district
 
     @strawberry.field(permission_classes=[IsAuthenticated])
-    async def districts_by_province_uid(
-        self, info, uid: str
-    ) -> List[DistrictType]:
+    async def districts_by_province_uid(self, info, uid: str) -> List[DistrictType]:
         districts = await models.District.get_all(province_uid__exact=uid)
         return districts
 
-    province_all: ProvinceCursorPage = strawberry.field(resolver=get_all_provinces, permission_classes=[IsAuthenticated])
+    province_all: ProvinceCursorPage = strawberry.field(
+        resolver=get_all_provinces, permission_classes=[IsAuthenticated]
+    )
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def province_by_uid(self, info, uid: str) -> ProvinceType:
@@ -199,20 +202,22 @@ class SetupQuery:
         return province
 
     @strawberry.field(permission_classes=[IsAuthenticated])
-    async def provinces_by_country_uid(
-        self, info, uid: str
-    ) -> List[ProvinceType]:
+    async def provinces_by_country_uid(self, info, uid: str) -> List[ProvinceType]:
         provinces = await models.Province.get_all(country_uid__exact=uid)
         return provinces
 
-    country_all: List[CountryType] = strawberry.field(resolver=get_all_countries, permission_classes=[IsAuthenticated])
+    country_all: List[CountryType] = strawberry.field(
+        resolver=get_all_countries, permission_classes=[IsAuthenticated]
+    )
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def country_by_uid(self, info, uid: str) -> CountryType:
         country = await models.Country.find(uid)
         return country
 
-    unit_all: List[UnitType] = strawberry.field(resolver=get_all_units, permission_classes=[IsAuthenticated])
+    unit_all: List[UnitType] = strawberry.field(
+        resolver=get_all_units, permission_classes=[IsAuthenticated]
+    )
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def unit_by_uid(self, info, uid: str) -> UnitType:

@@ -26,6 +26,7 @@ BytesScalar = strawberry.scalar(
     parse_value=lambda v: base64.b64decode(v).encode("utf-8"),
 )
 
+
 @strawberry.type
 class PageInfo:
     has_next_page: bool
@@ -72,4 +73,3 @@ SuccessErrorResponse = strawberry.union(
     (OperationSuccess, OperationError),
     description="Union of possible outcomes when deleting some object",
 )
-

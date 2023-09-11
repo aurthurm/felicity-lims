@@ -50,16 +50,14 @@ async def create_daemon_user() -> None:
             await system_daemon.propagate_user_type()
 
         # initial user-preferences
-        pref_in = schemas.UserPreferenceCreate(
-            expanded_menu=False, theme="light")
+        pref_in = schemas.UserPreferenceCreate(expanded_menu=False, theme="light")
         preference = await models.UserPreference.create(obj_in=pref_in)
         logger.info(
             f"linking system daemon {system_daemon.uid} to preference {preference.uid}"
         )
         await system_daemon.link_preference(preference_uid=preference.uid)
 
-    logger.info(
-        f"Done Setting up system daemon {system_daemon.marshal_simple()}")
+    logger.info(f"Done Setting up system daemon {system_daemon.marshal_simple()}")
 
 
 async def create_super_user() -> None:
@@ -102,8 +100,7 @@ async def create_super_user() -> None:
             await superuser.propagate_user_type()
 
         # initial user-preferences
-        pref_in = schemas.UserPreferenceCreate(
-            expanded_menu=False, theme="light")
+        pref_in = schemas.UserPreferenceCreate(expanded_menu=False, theme="light")
         preference = await models.UserPreference.create(obj_in=pref_in)
         logger.info(
             f"linking super user {superuser.uid} to preference {preference.uid}"
@@ -112,5 +109,4 @@ async def create_super_user() -> None:
 
         # post_event("new-account-created", {})
 
-    logger.info(
-        f"Done Setting up first superuser {superuser.marshal_simple()}")
+    logger.info(f"Done Setting up first superuser {superuser.marshal_simple()}")

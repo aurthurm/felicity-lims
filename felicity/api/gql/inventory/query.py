@@ -50,9 +50,7 @@ class InventoryQuery:
         )
 
     @strawberry.field(permission_classes=[IsAuthenticated])
-    async def stock_item_by_uid(
-        self, info, uid: str
-    ) -> Optional[types.StockItemType]:
+    async def stock_item_by_uid(self, info, uid: str) -> Optional[types.StockItemType]:
         return await models.StockItem.get(uid=uid)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
@@ -78,9 +76,7 @@ class InventoryQuery:
         return await models.StockUnit.all()
 
     @strawberry.field(permission_classes=[IsAuthenticated])
-    async def stock_unit_by_uid(
-        self, info, uid: str
-    ) -> Optional[types.StockUnitType]:
+    async def stock_unit_by_uid(self, info, uid: str) -> Optional[types.StockUnitType]:
         return await models.StockUnit.get(uid=uid)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
@@ -156,10 +152,9 @@ class InventoryQuery:
                 _or_[_arg] = f"%{text}%"
 
             filters.append({sa.or_: _or_})
-        
+
         if status:
             filters.append({"status__exact": status})
-
 
         page = await models.StockOrder.paginate_with_cursors(
             page_size=page_size,
@@ -173,7 +168,7 @@ class InventoryQuery:
         edges: List[types.StockOrderEdge[types.StockOrderType]] = page.edges
         items: List[types.StockOrderType] = page.items
         page_info: PageInfo = page.page_info
- 
+
         return types.StockOrderCursorPage(
             total_count=total_count, edges=edges, items=items, page_info=page_info
         )

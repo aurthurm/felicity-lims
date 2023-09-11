@@ -33,12 +33,12 @@ class ClientInputType:
     district_uid: str | None = None
     email: str | None = None
     email_cc: str | None = None
-    consent_email: bool| None = False
+    consent_email: bool | None = False
     phone_mobile: str | None = None
     phone_business: str | None = None
-    consent_sms: bool| None = False
-    internal_use: bool| None = False
-    active: bool| None = True
+    consent_sms: bool | None = False
+    internal_use: bool | None = False
+    active: bool | None = True
 
 
 @strawberry.input
@@ -49,7 +49,7 @@ class ClientContactInputType:
     email: str | None = None
     email_cc: str | None = None
     mobile_phone: str | None = None
-    consent_sms: bool| None = False
+    consent_sms: bool | None = False
     is_active: bool = True
 
 
@@ -162,7 +162,9 @@ class ClientMutations:
 
         obj_in = schemas.ClientContactCreate(**incoming)
         client_contact: models.ClientContact = await models.ClientContact.create(obj_in)
-        return ClientContactType(**client_contact.marshal_simple(exclude=["is_superuser", "auth_uid"]))
+        return ClientContactType(
+            **client_contact.marshal_simple(exclude=["is_superuser", "auth_uid"])
+        )
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_client_contact(
@@ -194,7 +196,9 @@ class ClientMutations:
                     logger.warning(f"failed to set attribute {field}: {e}")
         obj_in = schemas.ClientContactUpdate(**client_contact.to_dict())
         client_contact = await client_contact.update(obj_in)
-        return ClientContactType(**client_contact.marshal_simple(exclude=["is_superuser", "auth_uid"]))
+        return ClientContactType(
+            **client_contact.marshal_simple(exclude=["is_superuser", "auth_uid"])
+        )
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def delete_client_contact(self, info, uid: str) -> DeleteContactResponse:

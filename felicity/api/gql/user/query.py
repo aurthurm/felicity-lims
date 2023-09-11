@@ -83,7 +83,5 @@ class UserQuery:
         return await user_models.Permission.all()
 
     @strawberry.field(permission_classes=[IsAuthenticated])
-    async def permission_by_uid(
-        self, info, uid: str
-    ) -> Optional[PermissionType]:
+    async def permission_by_uid(self, info, uid: str) -> Optional[PermissionType]:
         return await user_models.Permission.get(uid=uid)

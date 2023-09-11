@@ -9,7 +9,6 @@ from api.gql.storage.types import StoreRoomType
 from api.gql.user.types import UserType
 
 
-
 @strawberry.type
 class StockItemType:
     uid: str

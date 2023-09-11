@@ -66,9 +66,7 @@ class ReportImpressQuery:
         return out_stream
 
     @strawberry.field(permission_classes=[IsAuthenticated])
-    async def impress_report_download(
-        self, info, uid: str
-    ) -> BytesScalar | None:
+    async def impress_report_download(self, info, uid: str) -> BytesScalar | None:
         report = await ReportImpress.get(uid=uid)
 
         if not report:

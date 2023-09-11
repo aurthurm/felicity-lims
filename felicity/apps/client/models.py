@@ -14,11 +14,9 @@ class Client(Auditable):
 
     name = Column(String, nullable=False)
     code = Column(String, index=True, unique=True, nullable=False)
-    district_uid = Column(String, ForeignKey(
-        "district.uid"), nullable=True)
+    district_uid = Column(String, ForeignKey("district.uid"), nullable=True)
     district = relationship(District, backref="clients", lazy="selectin")
-    province_uid = Column(String, ForeignKey(
-        "province.uid"), nullable=True)
+    province_uid = Column(String, ForeignKey("province.uid"), nullable=True)
     province = relationship(Province, backref="clients", lazy="selectin")
     email = Column(String, nullable=True)
     email_cc = Column(String, nullable=True)
@@ -63,8 +61,7 @@ class Client(Auditable):
 
 class ClientContact(AbstractBaseUser):
     auth_uid = Column(String, ForeignKey("userauth.uid"), nullable=True)
-    auth = relationship(UserAuth, backref=backref(
-        conf.CLIENT_CONTACT, uselist=False))
+    auth = relationship(UserAuth, backref=backref(conf.CLIENT_CONTACT, uselist=False))
     email = Column(String, unique=False, index=True, nullable=True)
     email_cc = Column(String, nullable=True)
     consent_sms = Column(Boolean(), default=False)

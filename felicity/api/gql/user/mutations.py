@@ -4,11 +4,7 @@ from datetime import timedelta
 from typing import Optional
 
 import strawberry  # noqa
-from api.gql.types import (
-    MessageResponse,
-    MessagesType,
-    OperationError
-)
+from api.gql.types import MessageResponse, MessagesType, OperationError
 from api.gql.auth import (
     auth_from_info,
     verify_user_auth,
@@ -79,7 +75,7 @@ class UserMutations:
         last_name: str,
         email: str,
         group_uid: str | None = None,
-        open_reg: bool| None = False,
+        open_reg: bool | None = False,
     ) -> UserResponse:
         if open_reg and not settings.USERS_OPEN_REGISTRATION:
             return OperationError(
@@ -107,8 +103,7 @@ class UserMutations:
             user = await user.save()
 
         # initial user-preferences
-        pref_in = user_schemas.UserPreferenceCreate(
-            expanded_menu=False, theme="LIGHT")
+        pref_in = user_schemas.UserPreferenceCreate(expanded_menu=False, theme="LIGHT")
         preference = await user_models.UserPreference.create(obj_in=pref_in)
         user = await user.link_preference(preference_uid=preference.uid)
 
@@ -126,7 +121,7 @@ class UserMutations:
         mobile_phone: str | None,
         email: str | None,
         group_uid: str | None,
-        is_active: bool| None,
+        is_active: bool | None,
     ) -> UserResponse:
 
         user = await user_models.User.get_one(uid=user_uid)
@@ -272,13 +267,11 @@ class UserMutations:
         if not has_access:
             return OperationError(error="Failed to log you in")
 
-        access_token_expires = timedelta(
-            minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
+        access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
         # _user = getattr(auth, auth.user_type)
         _user = await user_models.User.get(auth_uid=auth.uid)
         access_token = (
-            security.create_access_token(
-                _user.uid, expires_delta=access_token_expires),
+            security.create_access_token(_user.uid, expires_delta=access_token_expires),
         )
         return AuthenticatedData(token=access_token[0], token_type="bearer", user=_user)
 
@@ -310,8 +303,7 @@ class UserMutations:
                 error="You cannot rest password for an un-linked account"
             )
 
-        password_reset_token = generate_password_reset_token(
-            email=auth.user.email)
+        password_reset_token = generate_password_reset_token(email=auth.user.email)
 
         post_event("password_reset", user=user, token=password_reset_token)
 
@@ -349,9 +341,7 @@ class UserMutations:
         return GroupType(**group.marshal_simple())
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
-    async def update_group(
-        info, uid: str, payload: GroupInputType
-    ) -> GroupResponse:
+    async def update_group(info, uid: str, payload: GroupInputType) -> GroupResponse:
 
         is_authenticated, felicity_user = await auth_from_info(info)
         verify_user_auth(
@@ -389,8 +379,7 @@ class UserMutations:
             return OperationError(error=f"group with uid {group_uid} not found")
 
         if permission_uid in [perm.uid for perm in group.permissions]:
-            permissions = filter(
-                lambda p: p.uid == permission_uid, group.permissions)
+            permissions = filter(lambda p: p.uid == permission_uid, group.permissions)
             permission = list(permissions)[0]
             group.permissions.remove(permission)
         else:

@@ -60,8 +60,8 @@ class SampleTypeMappingType:
     updated_by_uid: str | None
     updated_by: UserType | None
     updated_at: datetime | None
-    
-    
+
+
 @strawberry.type
 class QCLevelType:
     uid: str
@@ -180,10 +180,10 @@ class AnalysisType:
     sort_key: int | None
     precision: int | None
     required_verifications: int | None
-    self_verification: bool| None
-    hidden: bool| None
-    internal_use: bool| None
-    active: bool| None
+    self_verification: bool | None
+    hidden: bool | None
+    internal_use: bool | None
+    active: bool | None
     #
     created_by_uid: str | None
     created_by: UserType | None
@@ -303,7 +303,7 @@ class SampleType:  # for Sample
     cancelled_by_uid: str | None
     cancelled_by: UserType | None
     date_cancelled: datetime | None
-    printed: bool| None
+    printed: bool | None
     date_printed: datetime | None
     printed_by_uid: str | None
     printed_by: UserType | None
@@ -441,10 +441,10 @@ class AnalysisUncertaintyType:
 class AnalysisSpecificationType:
     uid: str
     analysis_uid: str
-    min: float| None
-    max: float| None
-    min_warn: float| None
-    max_warn: float| None
+    min: float | None
+    max: float | None
+    min_warn: float | None
+    max_warn: float | None
     min_report: str | None
     max_report: str | None
     warn_values: str | None

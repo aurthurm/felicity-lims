@@ -1,6 +1,5 @@
-
 from .generic import (
-    BytesScalar, 
+    BytesScalar,
     JSONScalar,
     PageInfo,
     DeletedItem,
@@ -9,7 +8,7 @@ from .generic import (
     OperationSuccess,
     DeleteResponse,
     MessageResponse,
-    SuccessErrorResponse
+    SuccessErrorResponse,
 )
 
 
@@ -20,5 +19,5 @@ generic_types = [
     DeletedItem,
     MessagesType,
     OperationError,
-    OperationSuccess
+    OperationSuccess,
 ]

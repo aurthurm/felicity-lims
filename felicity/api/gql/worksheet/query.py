@@ -77,9 +77,7 @@ class WorkSheetQuery:
         return await ws_models.WorkSheetTemplate.all()
 
     @strawberry.field(permission_classes=[IsAuthenticated])
-    async def worksheet_by_analyst(
-        self, info, analyst_uid: str
-    ) -> List[WorkSheetType]:
+    async def worksheet_by_analyst(self, info, analyst_uid: str) -> List[WorkSheetType]:
         return await ws_models.WorkSheet.get_all(analyst_uid=analyst_uid)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
