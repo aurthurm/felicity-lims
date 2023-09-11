@@ -91,7 +91,6 @@ class GroupInDB(GroupInDBBase):
 #
 class UserPreferenceBase(BaseAuditModel):
     expanded_menu: bool | None = False
-    departments: Optional[List["Department"]]
     theme: str | None = themes.LIGHT
 
 

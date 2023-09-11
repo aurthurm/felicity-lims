@@ -1,12 +1,12 @@
 import logging
 from typing import Any, Optional
 
+from pydantic import BaseModel
 from sanic import Blueprint, json
+
 from apps.setup import models, schemas
 from apps.user import models as user_models
-from api import deps
 from init import default_setup, requisite_setup
-from pydantic import BaseModel
 
 setup = Blueprint("setup", url_prefix="/setup")
 
@@ -37,7 +37,7 @@ async def laboratory_lookup(request) -> Any:
     laboratory = await models.Laboratory.get_by_setup_name("felicity")
     return json(
         {
-            "laboratory": laboratory.marshal_simple(),
+            "laboratory": laboratory.marshal_simple() if laboratory else None,
             "installed": True if laboratory else False,
             "message": "" if laboratory else "Laboratory installation required",
         }
@@ -45,14 +45,14 @@ async def laboratory_lookup(request) -> Any:
 
 
 @setup.post("/installation")
-async def register_laboratory(request, form: LabNameIn) -> Any:
+async def register_laboratory(request) -> Any:
     """
     Install a laboratory and initialise departments example post: curl -X POST
     http://localhost:8000/api/v1/setup/installation -d '{"name":"Felicity Lims"}' -H "Content-Type: application/json"
     """
 
     try:
-        await requisite_setup(form.name)
+        await requisite_setup(request.json.get("name"))
     except Exception as e:
         return {
             "laboratory": None,

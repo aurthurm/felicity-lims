@@ -55,7 +55,7 @@ class Settings(BaseSettings):
     POSTGRES_SERVER: str = getenv_value("POSTGRES_SERVER", "localhost")  # felicity_db
     POSTGRES_USER: str = getenv_value("POSTGRES_USER", "felicity")
     POSTGRES_PASSWORD: str = getenv_value("POSTGRES_PASSWORD", "felicity")
-    POSTGRES_DB: str = getenv_value("POSTGRES_DB", "felicity_lims_db")
+    POSTGRES_DB: str = getenv_value("POSTGRES_DB", "felicity_lims")
     SQLALCHEMY_DATABASE_URI: str | None = None
     SQLALCHEMY_ASYNC_DATABASE_URI: str | None = None
     SQLALCHEMY_TEST_DATABASE_URI: str | None = None

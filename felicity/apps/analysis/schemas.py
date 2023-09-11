@@ -134,8 +134,8 @@ class SampleTypeCodingInDB(SampleTypeCodingBaseInDB):
 # Shared properties
 class ProfileBase(BaseAuditModel):
     name: str | None
-    analyses: Optional[List["Analysis"]]
-    sample_types: Optional[List[SampleType]]
+    analyses: list["Analysis"] | None = None
+    sample_types: list[SampleType] | None = None
     description: str | None = None
     department_uid: str | None = None
     keyword: str | None = None
@@ -267,14 +267,13 @@ class AnalysisBase(BaseAuditModel):
     name: str | None = None
     description: str | None = None
     keyword: str | None = None
-    profiles: Optional[List[Profile]] = []
-    sample_types: Optional[List[SampleType]] = []
+    profiles: list[Profile] | None = None
+    sample_types: list[SampleType] | None = None
     tat_length_minutes: int | None = None
     unit: str | None = None
-    category_uid: str | None
+    category_uid: str | None = None
     sort_key: int | None = 0
     internal_use: bool | None = False
-    tat_length_minutes: int | None = None
     precision: int | None = None
     required_verifications: int = 1
     self_verification: bool | None = False

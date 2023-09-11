@@ -27,7 +27,7 @@ const { value: name } = useField("name");
 const initInstall = handleSubmit((values) => {
   loading.value = true;
   axios
-    .post("setup/installation/", values)
+    .post("setup/installation", values)
     .then((resp) => {
       if (resp.data.installed) {
         router.push({ name: "LOGIN" });
