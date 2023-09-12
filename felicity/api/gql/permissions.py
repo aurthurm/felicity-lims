@@ -1,12 +1,13 @@
 import logging
-
 import typing
+
+from strawberry.permission import BasePermission
+
+from api.deps import Info
 from apps.analysis.permissions import (
     check_result_verification,
     check_sample_verification,
 )
-from strawberry.permission import BasePermission
-from api.deps import Info
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -16,14 +17,14 @@ class IsAuthenticated(BasePermission):
     message = "Only accessible to authenticated users"
 
     async def has_permission(self, source: typing.Any, info: Info, **kwargs):
-        return info.context["user"]
+        return info.context.user
 
 
 class IsActiveUser(BasePermission):
     message = "You must be an active user"
 
     async def has_permission(self, source: typing.Any, info: Info, **kwargs):
-        user = info.context["user"]
+        user = info.context.user
         if not user:
             return False
         return user.is_active
@@ -33,7 +34,7 @@ class IsSuperUser(BasePermission):
     message = "You dont have enough privileges"
 
     async def has_permission(self, source: typing.Any, info: Info, **kwargs):
-        user = info.context["user"]
+        user = info.context.user
         if not user:
             return False
 
@@ -47,7 +48,7 @@ class CanVerifySample(BasePermission):
     message = "You have no priviledges to verify this sample"
 
     async def has_permission(self, source: typing.Any, info: Info, **kwargs):
-        user = info.context["user"]
+        user = info.context.user
         if not user:
             return False
 
@@ -74,7 +75,7 @@ class CanVerifyAnalysisResult(BasePermission):
     message = "You have no priviledges to verify these analyses"
 
     async def has_permission(self, source: typing.Any, info: Info, **kwargs):
-        user = info.context["user"]
+        user = info.context.user
         if not user:
             return False
 

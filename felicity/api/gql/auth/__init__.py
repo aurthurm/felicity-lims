@@ -1,16 +1,11 @@
 import logging
 from typing import Optional, Tuple
 
-from apps.user.models import User, UserAuth
 from api.gql.types import OperationError
-
+from apps.user.models import User
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
-
-
-def is_authenticated(request):
-    return request.user.is_authenticated
 
 
 def same_origin(request):
@@ -18,14 +13,13 @@ def same_origin(request):
 
 
 async def auth_from_info(info) -> Tuple[bool, Optional[User]]:
-    is_auth = is_authenticated(info.context.request)
-    auth = await UserAuth.get_by_username(info.context.request.user.username)
-    user = await User.get(auth_uid=auth.uid)
+    user = info.context.user
+    is_auth = True if user else False
     return is_auth, user
 
 
 def verify_user_auth(
-    is_auth: bool = False, user=None, err_msg: str = None
+        is_auth: bool = False, user=None, err_msg: str = None
 ) -> Tuple[bool, Optional[OperationError]]:
     if not is_auth:
         return False, OperationError(

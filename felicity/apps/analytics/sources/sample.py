@@ -76,11 +76,11 @@ class SampleAnalyticsInit(Generic[ModelType]):
                 sa.status as "Sample Status",
                 sa.{date_column} as "Period Criteria - {date_column}"
             from {self.table} sa
-            inner join analysisresult re on re.sample_uid = sa.uid
-            inner join analysisrequest ar on ar.uid = sa.analysis_request_uid
+            inner join analysis_result re on re.sample_uid = sa.uid
+            inner join analysis_request ar on ar.uid = sa.analysis_request_uid
             inner join client cl on cl.uid = ar.client_uid
             inner join analysis an on an.uid = re.analysis_uid
-            inner join sampletype st on st.uid = re.analysis_uid
+            inner join sample_type st on st.uid = re.analysis_uid
             inner join patient pt on pt.uid = ar.patient_uid
             left join instrument inst on inst.uid = re.instrument_uid
             left join method mt on mt.uid = re.method_uid
@@ -316,7 +316,7 @@ class SampleAnalyticsInit(Generic[ModelType]):
                     DATE_PART('day', {self.alias}.due_date::timestamp - {self.alias}.{end_column}::timestamp) as late_days,
                     {self.alias}.due_date > {self.alias}.{end_column} as late
                 from {self.table} {self.alias}
-                inner join analysisresult ar on ar.sample_uid = {self.alias}.uid
+                inner join analysis_result ar on ar.sample_uid = {self.alias}.uid
                 inner join analysis a on a.uid = ar.analysis_uid
                 where
                     {self.alias}.{start_column} >= :sd and

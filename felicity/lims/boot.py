@@ -5,7 +5,7 @@ from sanic.request import Request
 from sanic_ext import Extend
 from strawberry.sanic.views import GraphQLView
 
-from api.deps import models, get_auth_user, get_auth_context
+from api.deps import models, get_auth_user, get_gql_context
 from api.gql.schema import schema
 from api.rest.api_v1 import api
 from apps.job.sched import felicity_workforce_init
@@ -32,7 +32,7 @@ def register_blueprints(app: Sanic):
 def register_graphql(app: Sanic):
     class FelicityGraphQLView(GraphQLView):
         async def get_context(self, request: Request, response) -> Any:
-            return await get_auth_context(request)
+            return await get_gql_context(request, response)
 
     app.add_route(
         FelicityGraphQLView.as_view(schema=schema, graphiql=True),
