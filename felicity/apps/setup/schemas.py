@@ -37,8 +37,7 @@ class LaboratoryUpdate(LaboratoryBase):
 class LaboratoryInDBBase(LaboratoryBase):
     uid: str | None = None
 
-
-model_config = ConfigDict(from_attributes=True)
+    model_config = ConfigDict(from_attributes=True)
 
 
 # Additional properties to return via API
@@ -77,8 +76,7 @@ class LaboratorySettingUpdate(LaboratorySettingBase):
 class LaboratorySetting(LaboratorySettingBase):
     uid: str | None = None
 
-
-model_config = ConfigDict(from_attributes=True)
+    model_config = ConfigDict(from_attributes=True)
 
 
 #
@@ -246,8 +244,7 @@ class CountryBase(BaseModel):
 class CountryBaseInDB(CountryBase):
     uid: str | None = None
 
-
-model_config = ConfigDict(from_attributes=True)
+    model_config = ConfigDict(from_attributes=True)
 
 
 # Properties to receive via API on creation
@@ -291,8 +288,7 @@ class ProvinceBase(BaseModel):
 class ProvinceBaseInDB(ProvinceBase):
     uid: str | None = None
 
-
-model_config = ConfigDict(from_attributes=True)
+    model_config = ConfigDict(from_attributes=True)
 
 
 # Properties to receive via API on creation
@@ -336,8 +332,7 @@ class DistrictBase(BaseModel):
 class DistrictBaseInDB(DistrictBase):
     uid: str | None = None
 
-
-model_config = ConfigDict(from_attributes=True)
+    model_config = ConfigDict(from_attributes=True)
 
 
 # Properties to receive via API on creation

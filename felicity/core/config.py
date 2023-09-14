@@ -57,17 +57,9 @@ class Settings(BaseSettings):
     POSTGRES_PASSWORD: str = getenv_value("POSTGRES_PASSWORD", "felicity")
     POSTGRES_DB: str = getenv_value("POSTGRES_DB", "felicity_lims")
     SQLALCHEMY_DATABASE_URI: str | None = None
-    SQLALCHEMY_ASYNC_DATABASE_URI: str | None = None
     SQLALCHEMY_TEST_DATABASE_URI: str | None = None
-    SQLALCHEMY_TEST_ASYNC_DATABASE_URI: str | None = None
 
     @field_validator("SQLALCHEMY_DATABASE_URI")
-    def assemble_db_connection(cls, v: str | None, info: FieldValidationInfo) -> Any:
-        if isinstance(v, str):
-            return v
-        return f'postgresql://{info.data.get("POSTGRES_USER")}:{info.data.get("POSTGRES_PASSWORD")}@{info.data.get("POSTGRES_SERVER")}/{info.data.get("POSTGRES_DB") or ""}'
-
-    @field_validator("SQLALCHEMY_ASYNC_DATABASE_URI")
     def assemble_async_db_connection(
             cls, v: str | None, info: FieldValidationInfo
     ) -> Any:
@@ -76,20 +68,12 @@ class Settings(BaseSettings):
         return f'postgresql+asyncpg://{info.data.get("POSTGRES_USER")}:{info.data.get("POSTGRES_PASSWORD")}@{info.data.get("POSTGRES_SERVER")}/{info.data.get("POSTGRES_DB") or ""}'
 
     @field_validator("SQLALCHEMY_TEST_DATABASE_URI")
-    def assemble_test_db_connection(
-            cls, v: str | None, info: FieldValidationInfo
-    ) -> Any:
-        if isinstance(v, str):
-            return v
-        return f'postgresql+asyncpg://{info.data.get("POSTGRES_USER")}:{info.data.get("POSTGRES_PASSWORD")}@{info.data.get("POSTGRES_SERVER")}/test_{info.data.get("POSTGRES_DB") or ""}'
-
-    @field_validator("SQLALCHEMY_TEST_ASYNC_DATABASE_URI")
     def assemble_async_test_db_connection(
             cls, v: str | None, info: FieldValidationInfo
     ) -> Any:
         if isinstance(v, str):
             return v
-        return f'postgresql+asyncpg://{info.data.get("POSTGRES_USER")}:{info.data.get("POSTGRES_PASSWORD")}@{info.data.get("POSTGRES_SERVER")}/text_{info.data.get("POSTGRES_DB") or ""}'
+        return f'postgresql+asyncpg://{info.data.get("POSTGRES_USER")}:{info.data.get("POSTGRES_PASSWORD")}@{info.data.get("POSTGRES_SERVER")}/test_{info.data.get("POSTGRES_DB") or ""}'
 
     SMTP_TLS: bool = getenv_boolean("SMTP_TLS", False)
     SMTP_PORT: int | None = getenv_value("SMTP_PORT", 1025)

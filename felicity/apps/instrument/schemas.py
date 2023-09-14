@@ -22,8 +22,7 @@ class InstrumentTypeBase(BaseAuditModel):
 class InstrumentTypeBaseInDB(InstrumentTypeBase):
     uid: str | None = None
 
-
-model_config = ConfigDict(from_attributes=True)
+    model_config = ConfigDict(from_attributes=True)
 
 
 # Properties to receive via API on creation
@@ -56,16 +55,19 @@ class InstrumentBase(BaseModel):
     description: str = None
     keyword: str = None
     instrument_type_uid: str = None
-    instrument_type: InstrumentType | None
+    instrument_type: InstrumentType | None = None
     manufacturer_uid: str = None
-    manufacturer: ManufacturerInDB | None
+    manufacturer: ManufacturerInDB | None = None
     supplier_uid: str = None
-    supplier: SupplierInDB | None
+    supplier: SupplierInDB | None = None
 
 
 # Properties to receive via API on creation
 class InstrumentCreate(InstrumentBase):
     supplier_uid: str | None = None
+    keyword: str | None = None
+    instrument_type_uid: str | None = None
+    manufacturer_uid: str | None = None
 
 
 # Properties to receive via API on update
@@ -76,8 +78,7 @@ class InstrumentUpdate(InstrumentBase):
 class InstrumentInDBBase(InstrumentBase):
     uid: str = None
 
-
-model_config = ConfigDict(from_attributes=True)
+    model_config = ConfigDict(from_attributes=True)
 
 
 # Additional properties to return via API

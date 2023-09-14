@@ -2,9 +2,10 @@ import logging
 from typing import List, Optional
 
 import strawberry  # noqa
-from api.gql.types import OperationError
+
 from api.gql.auth import auth_from_info, verify_user_auth
 from api.gql.permissions import IsAuthenticated
+from api.gql.types import OperationError
 from api.gql.worksheet.types import WorkSheetTemplateType, WorkSheetType
 from apps.analysis.models import analysis as analysis_models
 from apps.analysis.models import qc as qc_models
@@ -16,7 +17,6 @@ from apps.job.conf import actions, categories, priorities, states
 from apps.setup import models as setup_models
 from apps.user import models as user_models
 from apps.worksheet import conf, models, schemas
-
 from utils import has_value_or_is_truthy
 
 logging.basicConfig(level=logging.INFO)
@@ -33,7 +33,7 @@ class ReservedInputType:
 class WorksheetTemplateInputType:
     name: str
     sample_type_uid: str
-    reserved: List[ReservedInputType]
+    reserved: list[ReservedInputType] | None = None
     analysis_uid: str | None = None
     number_of_samples: int | None = None
     instrument_uid: str | None = None
@@ -43,7 +43,7 @@ class WorksheetTemplateInputType:
     row_wise: bool | None = True
     description: str | None = None
     qc_template_uid: str | None = None
-    profiles: Optional[List[str]] = None
+    profiles: list[str] | None = None
 
 
 WorkSheetTemplateResponse = strawberry.union(
@@ -71,7 +71,7 @@ WorkSheetResponse = strawberry.union(
 class WorkSheetMutations:
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_worksheet_template(
-        self, info, payload: WorksheetTemplateInputType
+            self, info, payload: WorksheetTemplateInputType
     ) -> WorkSheetTemplateResponse:
 
         is_authenticated, felicity_user = await auth_from_info(info)
@@ -112,9 +112,9 @@ class WorkSheetMutations:
             if qc_template:
                 _qc_levels = qc_template.qc_levels
 
-        incoming["reserved"] = []
+        incoming["reserved"] = {}
         if payload.reserved:
-            positions = dict()
+            positions = {}
             for item in payload.reserved:
                 positions[item.position] = {
                     "position": item.position,
@@ -135,7 +135,7 @@ class WorkSheetMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_worksheet_template(
-        self, uid: str, payload: WorksheetTemplateInputType
+            self, uid: str, payload: WorksheetTemplateInputType
     ) -> WorkSheetTemplateResponse:
 
         if not uid:
@@ -178,11 +178,11 @@ class WorkSheetMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_worksheet(
-        self,
-        info,
-        template_uid: str,
-        analyst_uid: str,
-        count: int | None = 1,
+            self,
+            info,
+            template_uid: str,
+            analyst_uid: str,
+            count: int | None = 1,
     ) -> WorkSheetsResponse:
 
         is_authenticated, felicity_user = await auth_from_info(info)
@@ -258,14 +258,14 @@ class WorkSheetMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_worksheet(
-        self,
-        info,
-        worksheet_uid: str,
-        analyst_uid: str | None = None,
-        instrument_uid: str | None = None,
-        method_uid: str | None = None,
-        action: str | None = None,
-        samples: Optional[List[str]] = None,
+            self,
+            info,
+            worksheet_uid: str,
+            analyst_uid: str | None = None,
+            instrument_uid: str | None = None,
+            method_uid: str | None = None,
+            action: str | None = None,
+            samples: Optional[List[str]] = None,
     ) -> WorkSheetResponse:  # noqa
 
         is_authenticated, felicity_user = await auth_from_info(info)
@@ -339,7 +339,7 @@ class WorkSheetMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_worksheet_apply_template(
-        self, info, template_uid: str, worksheet_uid: str
+            self, info, template_uid: str, worksheet_uid: str
     ) -> WorkSheetResponse:
 
         is_authenticated, felicity_user = await auth_from_info(info)
@@ -367,7 +367,7 @@ class WorkSheetMutations:
             return OperationError(
                 error=f"Worksheet has {ws.assigned_count} assigned samples. You can not apply a different template",
                 suggestion="Un-assign contained samples first and you will be able to apply any template of your "
-                "choosing ",
+                           "choosing ",
             )
 
         incoming = {
@@ -402,11 +402,11 @@ class WorkSheetMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_worksheet_manual_assign(
-        self,
-        info,
-        uid: str,
-        analyses_uids: List[str],
-        qc_template_uid: str | None = None,
+            self,
+            info,
+            uid: str,
+            analyses_uids: List[str],
+            qc_template_uid: str | None = None,
     ) -> WorkSheetResponse:
 
         is_authenticated, felicity_user = await auth_from_info(info)

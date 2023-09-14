@@ -21,7 +21,7 @@ class WorkSheetBase(BaseModel):
     sample_type_uid: str | None = None
     analysis_uid: str | None = None
     analysis: Optional[AnalysisBaseInDB] = None
-    reserved: Optional[dict] = {}
+    reserved: Optional[dict] = None
     number_of_samples: int | None = None
     worksheet_type: int | None = 0
     rows: int | None = None
@@ -34,8 +34,7 @@ class WorkSheetBase(BaseModel):
 class WorkSheetBaseInDB(WorkSheetBase):
     uid: str | None = None
 
-
-model_config = ConfigDict(from_attributes=True)
+    model_config = ConfigDict(from_attributes=True)
 
 
 # Properties to receive via API on creation
@@ -72,7 +71,7 @@ class WSTemplateBase(BaseModel):
     analysis: Optional[AnalysisBaseInDB] = None
     qc_analyses: Optional[List[AnalysisBaseInDB]] = []
     qc_levels: Optional[List[QCLevelInDB]] = []
-    reserved: Optional[dict] = {}
+    reserved: Optional[dict] = None
     number_of_samples: int | None = None
     worksheet_type: str | None = "flat"
     rows: int | None = None
@@ -83,8 +82,7 @@ class WSTemplateBase(BaseModel):
 class WSTemplateBaseInDB(WSTemplateBase):
     uid: str | None = None
 
-
-model_config = ConfigDict(from_attributes=True)
+    model_config = ConfigDict(from_attributes=True)
 
 
 # Properties to receive via API on creation

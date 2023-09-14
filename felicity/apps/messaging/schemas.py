@@ -21,8 +21,7 @@ class MessageBase(BaseAuditModel):
 class Message(MessageBase):
     uid: str | None = None
 
-
-model_config = ConfigDict(from_attributes=True)
+    model_config = ConfigDict(from_attributes=True)
 
 
 class MessageCreate(MessageBase):
@@ -46,8 +45,7 @@ class MessageThreadBase(BaseAuditModel):
 class MessageThread(MessageThreadBase):
     uid: str | None = None
 
-
-model_config = ConfigDict(from_attributes=True)
+    model_config = ConfigDict(from_attributes=True)
 
 
 class MessageThreadCreate(MessageThreadBase):

@@ -33,8 +33,7 @@ class PermissionUpdate(PermissionBase):
 class PermissionInDBBase(PermissionBase):
     uid: str | None = None
 
-
-model_config = ConfigDict(from_attributes=True)
+    model_config = ConfigDict(from_attributes=True)
 
 
 # Additional properties to return via API
@@ -72,8 +71,7 @@ class GroupUpdate(GroupBase):
 class GroupInDBBase(GroupBase):
     uid: str | None = None
 
-
-model_config = ConfigDict(from_attributes=True)
+    model_config = ConfigDict(from_attributes=True)
 
 
 # Additional properties to return via API
@@ -97,8 +95,7 @@ class UserPreferenceBase(BaseAuditModel):
 class UserPreference(UserPreferenceBase):
     uid: str | None = None
 
-
-model_config = ConfigDict(from_attributes=True)
+    model_config = ConfigDict(from_attributes=True)
 
 
 class UserPreferenceCreate(UserPreferenceBase):
@@ -150,16 +147,14 @@ class UserUpdate(UserBase):
 class UserInDBBase(UserBase):
     uid: str | None = None
 
-
-model_config = ConfigDict(from_attributes=True)
+    model_config = ConfigDict(from_attributes=True)
 
 
 # Additional properties to return via API
 class UserBasic(UserBasicBase):
     uid: str | None = None
 
-
-model_config = ConfigDict(from_attributes=True)
+    model_config = ConfigDict(from_attributes=True)
 
 
 # Additional properties to return via API
@@ -202,8 +197,7 @@ class AuthUpdate(AuthBase):
 class AuthInDBBase(AuthBase):
     uid: str | None = None
 
-
-model_config = ConfigDict(from_attributes=True)
+    model_config = ConfigDict(from_attributes=True)
 
 
 # Additional properties to return via API

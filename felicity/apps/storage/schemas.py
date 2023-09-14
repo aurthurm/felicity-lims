@@ -19,8 +19,7 @@ class StoreRoomBase(BaseModel):
 class StoreRoom(StoreRoomBase):
     uid: str | None = None
 
-
-model_config = ConfigDict(from_attributes=True)
+    model_config = ConfigDict(from_attributes=True)
 
 
 # Properties to receive via API on creation
@@ -48,8 +47,7 @@ class StorageLocationBase(BaseModel):
 class StorageLocation(StorageLocationBase):
     uid: str | None = None
 
-
-model_config = ConfigDict(from_attributes=True)
+    model_config = ConfigDict(from_attributes=True)
 
 
 # Properties to receive via API on creation
@@ -77,8 +75,7 @@ class StorageSectionBase(BaseModel):
 class StorageSection(StorageSectionBase):
     uid: str | None = None
 
-
-model_config = ConfigDict(from_attributes=True)
+    model_config = ConfigDict(from_attributes=True)
 
 
 # Properties to receive via API on creation
@@ -112,8 +109,7 @@ class StorageContainerBase(BaseModel):
 class StorageContainer(StorageContainerBase):
     uid: str | None = None
 
-
-model_config = ConfigDict(from_attributes=True)
+    model_config = ConfigDict(from_attributes=True)
 
 
 # Properties to receive via API on creation

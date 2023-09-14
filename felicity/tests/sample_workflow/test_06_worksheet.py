@@ -1,6 +1,7 @@
 import logging
 
 import pytest
+
 from apps.worksheet.tasks import populate_worksheet_plate
 
 logging.basicConfig(level=logging.INFO)
@@ -9,7 +10,7 @@ logger = logging.getLogger(__name__)
 
 @pytest.mark.asyncio
 @pytest.mark.order(70)
-async def test_add_worksheet_template(gql_client, auth_data):
+async def test_add_worksheet_template(app, auth_data, sample_types, analyses, instruments):
     add_gql = """
         mutation AddWorkSheetTemplate($payload: WorksheetTemplateInputType!){
           createWorksheetTemplate(payload: $payload)
@@ -54,7 +55,7 @@ async def test_add_worksheet_template(gql_client, auth_data):
                 name
               }
             }
-        
+
             ... on OperationError {
               __typename
               error
@@ -66,28 +67,28 @@ async def test_add_worksheet_template(gql_client, auth_data):
 
     ws_template = {
         "name": "Roche Viral Load",
-        "sampleTypeUid": 1,
-        "analysisUid": 1,
+        "sampleTypeUid": sample_types[0]["uid"],
+        "analysisUid": analyses[0]["uid"],
         "numberOfSamples": 21,
         "worksheetType": "FLAT",
         "rows": 1,
         "cols": 1,
         "rowWise": False,
         "description": "Run Batch VL tests tat match this sample_workflow setup",
-        "instrumentUid": 1,
+        "instrumentUid": instruments[0]["uid"],
         "reserved": [],
     }
-    response = await gql_client.post(
+    _, response = await app.asgi_client.post(
         "/felicity-gql",
         json={"query": add_gql, "variables": {"payload": ws_template}},
         headers=auth_data["headers"],
     )
 
-    logger.info(f"add analysis request response: {response} {response.json()}")
+    logger.info(f"add analysis request response: {response} {response.json}")
 
     assert response.status_code == 200
-    _data = response.json()["data"]["createWorksheetTemplate"]
-    assert _data["uid"] == 1
+    _data = response.json["data"]["createWorksheetTemplate"]
+    assert _data["uid"] is not None
     assert _data["name"] == ws_template["name"]
     assert _data["sampleTypeUid"] == ws_template["sampleTypeUid"]
     assert _data["name"] == ws_template["name"]
@@ -101,9 +102,9 @@ async def test_add_worksheet_template(gql_client, auth_data):
 
 @pytest.mark.asyncio
 @pytest.mark.order(71)
-async def test_add_worksheet_using_template(gql_client, auth_data):
+async def test_add_worksheet_using_template(app, auth_data, users_db, ws_templates):
     add_gql = """
-      mutation AddWorkSheet($analystUid:Int!, $templateUid: Int!, $count: Int){
+      mutation AddWorkSheet($analystUid:String!, $templateUid: String!, $count: Int){
         createWorksheet(analystUid: $analystUid, templateUid: $templateUid, count:$count)
         {
           ... on WorksheetListingType {
@@ -136,7 +137,7 @@ async def test_add_worksheet_using_template(gql_client, auth_data):
               createdAt
             }
           }
-    
+
           ... on OperationError {
             __typename
             error
@@ -146,33 +147,36 @@ async def test_add_worksheet_using_template(gql_client, auth_data):
       }
     """
 
-    worksheet = {"analystUid": 2, "templateUid": 1, "count": 1}
-    response = await gql_client.post(
+    worksheet = {"analystUid": users_db[1]["uid"], "templateUid": ws_templates[0]["uid"], "count": 1}
+    _, response = await app.asgi_client.post(
         "/felicity-gql",
         json={"query": add_gql, "variables": {**worksheet}},
         headers=auth_data["headers"],
     )
 
-    logger.info(f"add worksheet using template response: {response} {response.json()}")
+    logger.info(f"add worksheet using template response: {response} {response.json}")
 
     assert response.status_code == 200
-    _data = response.json()["data"]["createWorksheet"]
+    _data = response.json["data"]["createWorksheet"]
     assert len(_data["worksheets"]) == 1
     worksheet = _data["worksheets"][0]
-    assert worksheet["uid"] == 1
-    assert worksheet["instrumentUid"] == 1
-    assert worksheet["analysisUid"] == 1
+    assert worksheet["uid"] is not None
+    assert worksheet["instrumentUid"] is not None
+    assert worksheet["analysisUid"] is not None
     assert worksheet["state"] == "empty"
 
+    _, job_response = await app.asgi_client.get("api/v1/jobs")
+    logger.info(f"job response: {job_response} {job_response.json}")
+
     # process job for the next test
-    await populate_worksheet_plate(1)
+    await populate_worksheet_plate(job_response.json["data"][0]["uid"])
 
 
 @pytest.mark.asyncio
 @pytest.mark.order(72)
-async def test_get_worksheet_by_uid(gql_client, auth_data):
+async def test_get_worksheet_by_uid(app, auth_data, worksheets):
     add_gql = """
-      query getWorkSheetByUid($worksheetUid: Int!) {
+      query getWorkSheetByUid($worksheetUid: String!) {
         worksheetByUid(worksheetUid: $worksheetUid) {
           uid
           worksheetId
@@ -211,7 +215,7 @@ async def test_get_worksheet_by_uid(gql_client, auth_data):
             result
             status
             worksheetPosition
-            retest 
+            retest
             reportable
             method {
               uid
@@ -263,20 +267,20 @@ async def test_get_worksheet_by_uid(gql_client, auth_data):
       }
     """
 
-    response = await gql_client.post(
+    _, response = await app.asgi_client.post(
         "/felicity-gql",
-        json={"query": add_gql, "variables": {"worksheetUid": 1}},
+        json={"query": add_gql, "variables": {"worksheetUid": worksheets[0]["uid"]}},
         headers=auth_data["headers"],
     )
 
     logger.info(
-        f"query worksheet using worksheet uid response: {response} {response.json()}"
+        f"query worksheet using worksheet uid response: {response} {response.json}"
     )
 
     assert response.status_code == 200
-    _data = response.json()["data"]["worksheetByUid"]
-    assert _data["uid"] == 1
-    assert _data["worksheetId"] == "WS23-00006"
+    _data = response.json["data"]["worksheetByUid"]
+    assert _data["uid"] == worksheets[0]["uid"]
+    assert _data["worksheetId"] is not None
     assert _data["numberOfSamples"] == 21
     assert _data["assignedCount"] == 5
     assert _data["state"] == "pending"
@@ -285,4 +289,4 @@ async def test_get_worksheet_by_uid(gql_client, auth_data):
         assert result["uid"] is not None
         assert result["result"] is None
         assert result["sample"]["uid"] is not None
-        assert result["sample"]["analysisRequest"]["uid"] == 1
+        assert result["sample"]["analysisRequest"]["uid"] is not None

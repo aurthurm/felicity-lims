@@ -26,8 +26,7 @@ class StockItemBase(BaseAuditModel):
 class StockItem(StockItemBase):
     uid: str | None = None
 
-
-model_config = ConfigDict(from_attributes=True)
+    model_config = ConfigDict(from_attributes=True)
 
 
 class StockItemCreate(StockItemBase):
@@ -53,8 +52,7 @@ class StockCategoryBase(BaseAuditModel):
 class StockCategory(StockCategoryBase):
     uid: str | None = None
 
-
-model_config = ConfigDict(from_attributes=True)
+    model_config = ConfigDict(from_attributes=True)
 
 
 class StockCategoryCreate(StockCategoryBase):
@@ -78,8 +76,7 @@ class HazardBase(BaseAuditModel):
 class Hazard(HazardBase):
     uid: str | None = None
 
-
-model_config = ConfigDict(from_attributes=True)
+    model_config = ConfigDict(from_attributes=True)
 
 
 class HazardCreate(HazardBase):
@@ -100,8 +97,7 @@ class StockUnitBase(BaseAuditModel):
 class StockUnit(StockUnitBase):
     uid: str | None = None
 
-
-model_config = ConfigDict(from_attributes=True)
+    model_config = ConfigDict(from_attributes=True)
 
 
 class StockUnitCreate(StockUnitBase):
@@ -122,8 +118,7 @@ class StockPackagingBase(BaseAuditModel):
 class StockPackaging(StockPackagingBase):
     uid: str | None = None
 
-
-model_config = ConfigDict(from_attributes=True)
+    model_config = ConfigDict(from_attributes=True)
 
 
 class StockPackagingCreate(StockPackagingBase):
@@ -169,8 +164,7 @@ class StockProductBase(BaseAuditModel):
 class StockProduct(StockProductBase):
     uid: str | None = None
 
-
-model_config = ConfigDict(from_attributes=True)
+    model_config = ConfigDict(from_attributes=True)
 
 
 class StockProductCreate(StockProductBase):
@@ -199,8 +193,7 @@ class StockOrderBase(BaseAuditModel):
 class StockOrder(StockOrderBase):
     uid: str | None = None
 
-
-model_config = ConfigDict(from_attributes=True)
+    model_config = ConfigDict(from_attributes=True)
 
 
 class StockOrderCreate(StockOrderBase):
@@ -227,8 +220,7 @@ class StockOrderProductBase(BaseAuditModel):
 class StockOrderProduct(StockOrderProductBase):
     uid: str | None = None
 
-
-model_config = ConfigDict(from_attributes=True)
+    model_config = ConfigDict(from_attributes=True)
 
 
 class StockOrderProductCreate(StockOrderProductBase):
@@ -258,8 +250,7 @@ class StockTransactionBase(BaseAuditModel):
 class StockTransaction(StockTransactionBase):
     uid: str | None = None
 
-
-model_config = ConfigDict(from_attributes=True)
+    model_config = ConfigDict(from_attributes=True)
 
 
 class StockTransactionCreate(StockTransactionBase):
@@ -287,8 +278,7 @@ class StockAdjustmentBase(BaseAuditModel):
 class StockAdjustment(StockAdjustmentBase):
     uid: str | None = None
 
-
-model_config = ConfigDict(from_attributes=True)
+    model_config = ConfigDict(from_attributes=True)
 
 
 class StockAdjustmentCreate(StockAdjustmentBase):

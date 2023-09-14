@@ -26,8 +26,7 @@ class ClientBase(BaseModel):
 class ClientBaseInDB(ClientBase):
     uid: str | None = None
 
-
-model_config = ConfigDict(from_attributes=True)
+    model_config = ConfigDict(from_attributes=True)
 
 
 # Properties to receive via API on creation
@@ -72,8 +71,7 @@ class ClientContactBase(BaseModel):
 class ClientContactBaseInDB(ClientContactBase):
     uid: str | None = None
 
-
-model_config = ConfigDict(from_attributes=True)
+    model_config = ConfigDict(from_attributes=True)
 
 
 # Properties to receive via API on creation

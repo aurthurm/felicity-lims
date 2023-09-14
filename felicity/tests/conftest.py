@@ -1,45 +1,41 @@
 import asyncio
 import logging
 import random
-from typing import Any, Generator
 
 import pytest_asyncio
-from apps.job.sched import felicity_workforce_init
+from faker import Faker
+from sqlalchemy.ext.asyncio import create_async_engine
+
 from core.config import settings
 from database.base_class import DBModel
-from faker import Faker
-from httpx import AsyncClient
 from init.setup.create_superuser import create_super_user
-from main import flims
-from sqlalchemy import create_engine
+from main import felicity
 
 fake_engine = Faker()
 
-sync_engine = create_engine(settings.SQLALCHEMY_TEST_DATABASE_URI)
+engine = create_async_engine(settings.SQLALCHEMY_TEST_DATABASE_URI)
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
-def pytest_configure(config):
+@pytest_asyncio.fixture(scope="session")
+async def setup():
     logger.info(f"pytest_configure ...")
-    if settings.RETAIN_TESTING_DB_DATA:
-        DBModel.metadata.drop_all(bind=sync_engine)
-    DBModel.metadata.create_all(bind=sync_engine)
-    # start scheduler
-    felicity_workforce_init()
+    async with engine.begin() as conn:
+        # await conn.run_sync(DBModel.metadata.drop_all)
+        await conn.run_sync(DBModel.metadata.create_all)
 
+    connection = engine.connect()
+    yield connection
 
-def pytest_unconfigure(config):
-    logger.info(f"pytest_un_configure ...")
-    if not settings.RETAIN_TESTING_DB_DATA:
-        DBModel.metadata.drop_all(bind=sync_engine)
+    async with engine.begin() as conn:
+        await conn.run_sync(DBModel.metadata.drop_all)
 
 
 @pytest_asyncio.fixture(scope="session")
 def event_loop():
     """Overrides pytest default function scoped event loop"""
-    # return asyncio.get_event_loop()
     policy = asyncio.get_event_loop_policy()
     loop = policy.new_event_loop()
     yield loop
@@ -47,41 +43,48 @@ def event_loop():
 
 
 @pytest_asyncio.fixture(scope="session", autouse=True)
-async def initialise():
+async def initialise(setup):
     logger.info(f"init_db_add_super_user start")
     await create_super_user()
     yield
     logger.info(f"init_db_add_super_user teardown")
 
 
-@pytest_asyncio.fixture(scope="function")
-async def client_root() -> Generator[AsyncClient, Any, None]:
-    async with AsyncClient(app=flims, base_url="http://localhost:8080") as clt:
-        yield clt
-
-
-@pytest_asyncio.fixture(scope="function")
-async def client() -> Generator[AsyncClient, Any, None]:
-    async with AsyncClient(app=flims, base_url="http://localhost:8080/api/v1") as clt:
-        yield clt
-
-
-@pytest_asyncio.fixture(scope="function")
-async def gql_client() -> Generator[AsyncClient, Any, None]:
-    async with AsyncClient(app=flims, base_url="http://localhost:8080") as clt:
-        yield clt
+@pytest_asyncio.fixture
+def app():
+    yield felicity
 
 
 @pytest_asyncio.fixture(autouse=True)
-async def auth_data(client):
-    superuser = {
-        "username": settings.FIRST_SEPERUSER_USERNAME,
-        "password": settings.FIRST_SUPERUSER_PASSWORD,
-    }
-    response = await client.post("/login/access-token", data=superuser)
+async def auth_data(app):
+    authe = """
+        mutation Auth($username: String!, $password: String!){
+          authenticateUser(username: $username, password: $password) {
+            ... on AuthenticatedData {
+                user {
+                    uid
+                    firstName
+                    lastName
+                }
+                token  
+            }
+            ... on OperationError {
+                error
+            }
+          }
+        }
+    """
+
+    req, response = await app.asgi_client.post("felicity-gql", json={
+        "query": authe, "variables": {
+            "username": settings.FIRST_SEPERUSER_USERNAME,
+            "password": settings.FIRST_SUPERUSER_PASSWORD
+        }
+    })
+    data = response.json["data"]["authenticateUser"]
     return {
-        "token": response.json()["access_token"],
-        "headers": {"Authorization": f"bearer {response.json()['access_token']}"},
+        "token": data["token"],
+        "headers": {"Authorization": f"bearer {data['token']}"},
     }
 
 

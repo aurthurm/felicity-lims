@@ -1,7 +1,5 @@
 from asyncio import current_task
-from typing import AsyncGenerator
 
-from core import settings
 from sqlalchemy import create_engine
 from sqlalchemy.ext.asyncio import (
     AsyncSession,
@@ -10,11 +8,13 @@ from sqlalchemy.ext.asyncio import (
 )
 from sqlalchemy.orm import sessionmaker
 
+from core import settings
+
 engine = create_engine(settings.SQLALCHEMY_DATABASE_URI)
 async_engine = create_async_engine(
-    settings.SQLALCHEMY_TEST_ASYNC_DATABASE_URI
+    settings.SQLALCHEMY_TEST_DATABASE_URI
     if settings.TESTING
-    else settings.SQLALCHEMY_ASYNC_DATABASE_URI,
+    else settings.SQLALCHEMY_DATABASE_URI,
     pool_pre_ping=True,
     echo=False,
     future=True,
@@ -24,7 +24,6 @@ async_session_factory = sessionmaker(
     bind=async_engine, expire_on_commit=False, autoflush=False, class_=AsyncSession
 )
 AsyncSessionScoped = async_scoped_session(async_session_factory, scopefunc=current_task)
-
 
 # #  Async Dependency
 # async def get_session() -> AsyncGenerator:

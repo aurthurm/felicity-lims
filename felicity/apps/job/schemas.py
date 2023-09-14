@@ -23,8 +23,7 @@ class JobBase(BaseModel):
 class Job(JobBase):
     uid: str | None = None
 
-
-model_config = ConfigDict(from_attributes=True)
+    model_config = ConfigDict(from_attributes=True)
 
 
 class JobCreate(JobBase):

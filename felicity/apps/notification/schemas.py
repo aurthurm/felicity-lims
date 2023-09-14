@@ -18,8 +18,7 @@ class ActivityFeedBase(BaseAuditModel):
 class ActivityFeed(ActivityFeedBase):
     uid: str | None = None
 
-
-model_config = ConfigDict(from_attributes=True)
+    model_config = ConfigDict(from_attributes=True)
 
 
 class ActivityFeedCreate(ActivityFeedBase):
@@ -49,8 +48,7 @@ class ActivityStreamBase(BaseAuditModel):
 class ActivityStream(ActivityStreamBase):
     uid: str | None = None
 
-
-model_config = ConfigDict(from_attributes=True)
+    model_config = ConfigDict(from_attributes=True)
 
 
 class ActivityStreamCreate(ActivityStream):
@@ -75,8 +73,7 @@ class NotificationBase(BaseAuditModel):
 class Notification(NotificationBase):
     uid: str | None = None
 
-
-model_config = ConfigDict(from_attributes=True)
+    model_config = ConfigDict(from_attributes=True)
 
 
 class NotificationCreate(NotificationBase):

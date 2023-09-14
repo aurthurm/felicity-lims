@@ -148,8 +148,7 @@ class ReflexBrainBase(BaseAuditModel):
 class ReflexBrain(ReflexBrainBase):
     uid: str | None = None
 
-
-model_config = ConfigDict(from_attributes=True)
+    model_config = ConfigDict(from_attributes=True)
 
 
 # Properties to receive via API on creation
@@ -182,8 +181,7 @@ class ReflexActionBase(BaseAuditModel):
 class ReflexAction(ReflexActionBase):
     uid: str | None = None
 
-
-model_config = ConfigDict(from_attributes=True)
+    model_config = ConfigDict(from_attributes=True)
 
 
 # Properties to receive via API on creation

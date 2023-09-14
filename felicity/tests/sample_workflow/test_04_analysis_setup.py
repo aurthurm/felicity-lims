@@ -8,7 +8,7 @@ logger = logging.getLogger(__name__)
 
 @pytest.mark.asyncio
 @pytest.mark.order(40)
-async def test_add_sample_type(gql_client, auth_data):
+async def test_add_sample_type(app, auth_data):
     add_gql = """
       mutation AddSampleType($payload: SampleTypeInputType!){
           createSampleType(payload: $payload) {
@@ -31,17 +31,17 @@ async def test_add_sample_type(gql_client, auth_data):
         "abbr": "WB",
         "active": True,
     }
-    response = await gql_client.post(
+    _, response = await app.asgi_client.post(
         "/felicity-gql",
         json={"query": add_gql, "variables": {"payload": sample_type}},
         headers=auth_data["headers"],
     )
 
-    logger.info(f"add sample type response: {response} {response.json()}")
+    logger.info(f"add sample type response: {response} {response.json}")
 
     assert response.status_code == 200
-    _data = response.json()["data"]["createSampleType"]
-    assert _data["uid"] == 1
+    _data = response.json["data"]["createSampleType"]
+    assert _data["uid"] is not None
     assert _data["name"] == sample_type["name"]
     assert _data["abbr"] == sample_type["abbr"]
     assert _data["active"] is True
@@ -49,7 +49,7 @@ async def test_add_sample_type(gql_client, auth_data):
 
 @pytest.mark.asyncio
 @pytest.mark.order(41)
-async def test_add_instrument(gql_client, auth_data):
+async def test_add_instrument(app, auth_data):
     add_gql = """
       mutation AddInstrument($payload: InstrumentInputType!){
           createInstrument(payload: $payload) {
@@ -70,24 +70,24 @@ async def test_add_instrument(gql_client, auth_data):
         "name": "Roche Cobas Ampliprep, Taqman 96",
         "keyword": "HICAP96",
     }
-    response = await gql_client.post(
+    _, response = await app.asgi_client.post(
         "/felicity-gql",
         json={"query": add_gql, "variables": {"payload": instrument}},
         headers=auth_data["headers"],
     )
 
-    logger.info(f"add instrument response: {response} {response.json()}")
+    logger.info(f"add instrument response: {response} {response.json}")
 
     assert response.status_code == 200
-    _data = response.json()["data"]["createInstrument"]
-    assert _data["uid"] == 1
+    _data = response.json["data"]["createInstrument"]
+    assert _data["uid"] is not None
     assert _data["name"] == instrument["name"]
     assert _data["keyword"] == instrument["keyword"]
 
 
 @pytest.mark.asyncio
 @pytest.mark.order(42)
-async def test_add_method(gql_client, auth_data):
+async def test_add_method(app, auth_data, instruments):
     add_gql = """
       mutation AddMethod($payload: MethodInputType!){
           createMethod(payload: $payload) {
@@ -104,25 +104,29 @@ async def test_add_method(gql_client, auth_data):
           }
         }
     """
-    method = {"name": "RT PCR", "keyword": "RTPCT", "instruments": [1]}
-    response = await gql_client.post(
+    method = {
+        "name": "RT PCR",
+        "keyword": "RTPCT",
+        "instruments": [instruments[0]["uid"]]
+    }
+    _, response = await app.asgi_client.post(
         "/felicity-gql",
         json={"query": add_gql, "variables": {"payload": method}},
         headers=auth_data["headers"],
     )
 
-    logger.info(f"add method response: {response} {response.json()}")
+    logger.info(f"add method response: {response} {response.json}")
 
     assert response.status_code == 200
-    _data = response.json()["data"]["createMethod"]
-    assert _data["uid"] == 1
+    _data = response.json["data"]["createMethod"]
+    assert _data["uid"] is not None
     assert _data["name"] == method["name"]
     assert _data["keyword"] == method["keyword"]
 
 
 @pytest.mark.asyncio
 @pytest.mark.order(43)
-async def test_add_analysis_service(gql_client, auth_data):
+async def test_add_analysis_service(app, auth_data, methods, sample_types):
     add_gql = """
       mutation AddAnalysisService ($payload: AnalysisInputType!) {
         createAnalysis(payload: $payload){
@@ -136,8 +140,8 @@ async def test_add_analysis_service(gql_client, auth_data):
             precision
             requiredVerifications
             selfVerification
-            description   
-            categoryUid   
+            description
+            categoryUid
             departmentUid
             unitUid
             unit {
@@ -166,7 +170,7 @@ async def test_add_analysis_service(gql_client, auth_data):
               name
             }
           }
-    
+
           ... on OperationError {
             __typename
             error
@@ -175,27 +179,28 @@ async def test_add_analysis_service(gql_client, auth_data):
         }
       }
     """
+
     analysis_service = {
         "name": "HIV Viral Load",
         "description": "A test used to detect the peron's viral load",
         "keyword": "HVL",
         "sortKey": 1,
-        "sampleTypes": [1],
-        "methods": [1],
+        "sampleTypes": [sample_types[0]["uid"]],
+        "methods": [methods[0]["uid"]],
         "requiredVerifications": 1,
         "selfVerification": False,
     }
-    response = await gql_client.post(
+    _, response = await app.asgi_client.post(
         "/felicity-gql",
         json={"query": add_gql, "variables": {"payload": analysis_service}},
         headers=auth_data["headers"],
     )
 
-    logger.info(f"add analysis service response: {response} {response.json()}")
+    logger.info(f"add analysis service response: {response} {response.json}")
 
     assert response.status_code == 200
-    _data = response.json()["data"]["createAnalysis"]
-    assert _data["uid"] == 1
+    _data = response.json["data"]["createAnalysis"]
+    assert _data["uid"] is not None
     assert _data["name"] == analysis_service["name"]
     assert _data["keyword"] == analysis_service["keyword"]
     assert _data["sortKey"] == analysis_service["sortKey"]
@@ -207,7 +212,7 @@ async def test_add_analysis_service(gql_client, auth_data):
 
 @pytest.mark.asyncio
 @pytest.mark.order(44)
-async def test_add_analysis_profile(gql_client, auth_data):
+async def test_add_analysis_profile(app, auth_data, sample_types, analyses):
     add_gql = """
       mutation AddAnalysisProfile ($payload: ProfileInputType!) {
         createProfile(payload: $payload){
@@ -229,7 +234,7 @@ async def test_add_analysis_profile(gql_client, auth_data):
               active
             }
           }
-    
+
           ... on OperationError {
             __typename
             error
@@ -238,25 +243,26 @@ async def test_add_analysis_profile(gql_client, auth_data):
         }
       }
     """
+
     analysis_profile = {
         "name": "HIV Viral Load",
         "description": "Lets detect a peron's viral load",
         "keyword": "HVL",
-        "sampleTypes": [1],
-        "services": [1],
+        "sampleTypes": [sample_types[0]["uid"]],
+        "services": [analyses[0]["uid"]],
         "active": True,
     }
-    response = await gql_client.post(
+    _, response = await app.asgi_client.post(
         "/felicity-gql",
         json={"query": add_gql, "variables": {"payload": analysis_profile}},
         headers=auth_data["headers"],
     )
 
-    logger.info(f"add analysis profile response: {response} {response.json()}")
+    logger.info(f"add analysis profile response: {response} {response.json}")
 
     assert response.status_code == 200
-    _data = response.json()["data"]["createProfile"]
-    assert _data["uid"] == 1
+    _data = response.json["data"]["createProfile"]
+    assert _data["uid"] is not None
     assert _data["name"] == analysis_profile["name"]
     assert _data["keyword"] == analysis_profile["keyword"]
     assert _data["active"] is True

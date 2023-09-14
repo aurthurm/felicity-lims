@@ -53,8 +53,7 @@ class PatientUpdate(PatientBase):
 class PatientInDBBase(PatientBase):
     uid: str | None = None
 
-
-model_config = ConfigDict(from_attributes=True)
+    model_config = ConfigDict(from_attributes=True)
 
 
 # Additional properties to return via API
@@ -91,8 +90,7 @@ class IdentificationUpdate(IdentificationBase):
 class IdentificationInDBBase(IdentificationBase):
     uid: str | None = None
 
-
-model_config = ConfigDict(from_attributes=True)
+    model_config = ConfigDict(from_attributes=True)
 
 
 # Additional properties to return via API
@@ -131,8 +129,7 @@ class PatientIdentificationUpdate(PatientIdentificationBase):
 class PatientIdentificationInDBBase(PatientIdentificationBase):
     uid: str | None = None
 
-
-model_config = ConfigDict(from_attributes=True)
+    model_config = ConfigDict(from_attributes=True)
 
 
 # Additional properties to return via API
