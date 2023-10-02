@@ -13,6 +13,7 @@ class FGroup:  # (KEYWORD, NAME)
     TECHNOLOGIST = "TECHNOLOGIST"
     LAB_HAND = "LABORATORY HAND"
     GUEST = "GUEST"
+    STORES = "STORES"
 
 
 class FObject:
@@ -21,6 +22,9 @@ class FObject:
     SAMPLE = "SAMPLE"
     RESULT = "RESULT"
     WORKSHEET = "WORKSHEET"
+    PRODUCT = "PRODUCT"
+    SHIPMENT = "SHIPMENT"
+    STORAGE = "STORAGE"
 
 
 class FAction:
@@ -34,6 +38,8 @@ class FAction:
     INVALIDATE = "INVALIDATE"
     REJECT = "REJECT"
     RETEST = "RETEST"
+    ORDER = "ORDER"
+    ISSUE = "ISSUE"
 
 
 fg = FGroup()
@@ -47,6 +53,7 @@ groups = [
     fg.TECHNOLOGIST,
     fg.LAB_HAND,
     fg.GUEST,
+    fg.STORES,
 ]
 
 # default permissions
@@ -56,6 +63,9 @@ permissions = {
         fo.PATIENT: [fg.LAB_HAND],
         fo.SAMPLE: [fg.LAB_HAND],
         fo.WORKSHEET: [fg.SCIENTIST, fg.TECHNOLOGIST],
+        fo.PRODUCT: [fg.STORES],
+        fo.SHIPMENT: [fg.LAB_HAND, fg.SCIENTIST, fg.TECHNOLOGIST],
+        fo.STORAGE: [fg.ADMINISTRATOR, fg.STORES, fg.LAB_HAND, fg.SCIENTIST, fg.TECHNOLOGIST]
     },
     fa.READ: {
         fo.CLIENT: [
@@ -96,6 +106,23 @@ permissions = {
             fg.TECHNOLOGIST,
             fg.GUEST,
         ],
+        fo.PRODUCT: [
+            fg.ADMINISTRATOR,
+            fg.LAB_MANAGER,
+            fg.SCIENTIST,
+            fg.TECHNOLOGIST,
+            fg.GUEST,
+            fg.STORES
+        ],
+        fo.SHIPMENT: [fg.LAB_HAND,fg.SCIENTIST, fg.TECHNOLOGIST, fg.GUEST],
+        fo.STORAGE: [
+            fg.ADMINISTRATOR,
+            fg.LAB_MANAGER,
+            fg.SCIENTIST,
+            fg.TECHNOLOGIST,
+            fg.GUEST,
+            fg.STORES
+        ],
     },
     fa.UPDATE: {
         fo.CLIENT: [fg.ADMINISTRATOR],
@@ -103,6 +130,9 @@ permissions = {
         fo.SAMPLE: [fg.LAB_HAND],
         fo.RESULT: [fg.SCIENTIST, fg.TECHNOLOGIST],
         fo.WORKSHEET: [fg.SCIENTIST, fg.TECHNOLOGIST],
+        fo.PRODUCT: [fg.STORES],
+        fo.SHIPMENT: [fg.LAB_HAND,fg.SCIENTIST, fg.TECHNOLOGIST],
+        fo.STORAGE: [fg.ADMINISTRATOR, fg.STORES, fg.LAB_HAND, fg.SCIENTIST, fg.TECHNOLOGIST],
     },
     fa.SUBMIT: {
         fo.SAMPLE: [fg.SCIENTIST, fg.TECHNOLOGIST],
@@ -117,6 +147,7 @@ permissions = {
     fa.CANCEL: {
         fo.SAMPLE: [fg.SCIENTIST, fg.TECHNOLOGIST, fg.LAB_HAND],
         fo.RESULT: [fg.SCIENTIST, fg.TECHNOLOGIST],
+        fo.SHIPMENT: [fg.LAB_HAND,fg.SCIENTIST, fg.TECHNOLOGIST]
     },
     fa.RETEST: {
         fo.SAMPLE: [fg.SCIENTIST, fg.TECHNOLOGIST],
@@ -124,6 +155,20 @@ permissions = {
         fo.WORKSHEET: [fg.SCIENTIST, fg.TECHNOLOGIST],
     },
     fa.INVALIDATE: {fo.SAMPLE: [fg.SCIENTIST, fg.TECHNOLOGIST]},
+    fa.ISSUE: {
+        fo.PRODUCT: [
+            fg.STORES
+        ],
+    },
+    fa.ORDER: {
+        fo.PRODUCT: [
+            fg.ADMINISTRATOR,
+            fg.LAB_MANAGER,
+            fg.SCIENTIST,
+            fg.TECHNOLOGIST,
+            fg.STORES
+        ],
+    }
 }
 
 
@@ -136,7 +181,7 @@ def get_action_targets():  # e.g ('verify', 'worksheet'),
 
 
 async def create_groups() -> None:
-    logger.info(f"Setting up groups .....")
+    logger.info("Setting up groups .....")
     for _grp in groups:
         exists = await models.Group.get(name=_grp)
         if not exists:
@@ -145,7 +190,7 @@ async def create_groups() -> None:
 
 
 async def create_permissions() -> None:
-    logger.info(f"Setting up permissions .....")
+    logger.info("Setting up permissions .....")
     for _perm in get_action_targets():
         permission = await models.Permission.get(
             action__exact=_perm[0], target__exact=_perm[1]
@@ -156,7 +201,7 @@ async def create_permissions() -> None:
 
 
 async def set_default_group_permissions() -> None:
-    logger.info(f"Setting up default group permissions .....")
+    logger.info("Setting up default group permissions .....")
     for action, objects in permissions.items():
         for obj, roles in objects.items():
             permission = await models.Permission.get(

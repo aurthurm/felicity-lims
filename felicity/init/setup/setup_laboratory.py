@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 
 
 async def create_geographies() -> None:
-    logger.info(f"Setting up geographies (country, province, districts) .....")
+    logger.info("Setting up geographies (country, province, districts) .....")
 
     with open(settings.BASE_DIR + "/init/setup/data/country.json", "r") as json_file:
         data = json.load(json_file)
@@ -61,7 +61,7 @@ async def create_geographies() -> None:
 
 
 async def create_clients() -> None:
-    logger.info(f"Setting up clients and contacts .....")
+    logger.info("Setting up clients and contacts .....")
 
     with open(settings.BASE_DIR + "/init/setup/data/clients.json", "r") as json_file:
         clients = json.load(json_file)
@@ -90,7 +90,7 @@ async def create_clients() -> None:
 
 
 async def create_laboratory(name: str) -> None:
-    logger.info(f"Setting up the laboratory .....")
+    logger.info("Setting up the laboratory .....")
 
     with open(settings.BASE_DIR + "/init/setup/data/laboratory.json", "r") as json_file:
         data = json.load(json_file)

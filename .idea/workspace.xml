@@ -5,309 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9f590b69-f929-45a1-8512-12ed6efbf028" name="Changes" comment="Added Invetory starter">
-      <change beforePath="$PROJECT_DIR$/.deepsource.toml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.env.production" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Dockerfile.aio" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Dockerfile.webapp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/apollo.config.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/codegen.yml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dc.aio.prod.yml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dc.caddy.prod.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/deploy/example-docker-compose/dc.caddy.prod.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dc.dev.yaml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dc.nginx.dev.yaml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dc.nginx.prod.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/deploy/example-docker-compose/dc.nginx.prod.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/deploy-scripts/build-push.sh" beforeDir="false" afterPath="$PROJECT_DIR$/deploy/build-push.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/deploy-scripts/build.sh" beforeDir="false" afterPath="$PROJECT_DIR$/deploy/build.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/deploy-scripts/deploy.sh" beforeDir="false" afterPath="$PROJECT_DIR$/deploy/deploy.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/deploy-scripts/steps.txt" beforeDir="false" afterPath="$PROJECT_DIR$/deploy/steps.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/deploy-scripts/supervisor/setup.sh" beforeDir="false" afterPath="$PROJECT_DIR$/deploy/supervisor/setup.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/deploy-scripts/supervisor/supervisord" beforeDir="false" afterPath="$PROJECT_DIR$/deploy/supervisor/supervisord" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/deploy-scripts/supervisor/supervisord.conf" beforeDir="false" afterPath="$PROJECT_DIR$/deploy/supervisor/supervisord.conf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/deploy-scripts/swarm.sh" beforeDir="false" afterPath="$PROJECT_DIR$/deploy/swarm.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/deploy-scripts/systemd/felicity-tasks.target" beforeDir="false" afterPath="$PROJECT_DIR$/deploy/systemd/felicity-tasks.target" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/deploy-scripts/systemd/felicity-tasks@.service" beforeDir="false" afterPath="$PROJECT_DIR$/deploy/systemd/felicity-tasks@.service" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/deploy-scripts/systemd/felicitylims.service" beforeDir="false" afterPath="$PROJECT_DIR$/deploy/systemd/felicitylims.service" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/deploy-scripts/systemd/nginx-conf" beforeDir="false" afterPath="$PROJECT_DIR$/deploy/systemd/nginx-conf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/deploy-scripts/systemd/setup.sh" beforeDir="false" afterPath="$PROJECT_DIR$/deploy/systemd/setup.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/deploy-scripts/test-local.sh" beforeDir="false" afterPath="$PROJECT_DIR$/deploy/test-local.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/deploy-scripts/test.sh" beforeDir="false" afterPath="$PROJECT_DIR$/deploy/test.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/env.local" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/env.production" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/example.env" beforeDir="false" afterPath="$PROJECT_DIR$/example.env" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/api/deps.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/deps.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/api/gql/auth/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/auth/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/api/gql/permissions.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/permissions.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/apps/analytics/sources/sample.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/analytics/sources/sample.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/lims/boot.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/lims/boot.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/index.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/pnpm-lock.yaml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/postcss.config.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/android-chrome-192x192.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/android-chrome-512x512.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/apple-touch-icon.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/favicon-16x16.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/favicon-32x32.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/favicon.ico" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tailwind.config.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tsconfig.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/env.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/index.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/vite.config.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/App.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/assets/css/loader.css" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/assets/css/style.css" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/assets/logo.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/auth.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/axios/index.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/axios/no-auth.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/axios/with-auth.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/components/Accordion.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/components/AutoComplete.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/components/Badge.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/components/Buttons/Button.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/components/Drawer.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/components/InputTags.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/components/JsonPreViewer.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/components/SimpleModal.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/components/Spinners/LoadingMessage.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/components/datatable/DataTable.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/composables/alert_toast.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/composables/analysis.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/composables/analytics.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/composables/api_util.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/composables/index.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/composables/preferences.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/composables/samples.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/composables/shipment.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/composables/tree-state.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/composables/validators.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/composables/worksheet.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/conf.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/graphql/graphql.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/graphql/operations/_mutations.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/graphql/operations/_queries.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/graphql/operations/admin.mutations.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/graphql/operations/admin.queries.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/graphql/operations/analyses.mutations.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/graphql/operations/analyses.queries.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/graphql/operations/clients.mutations.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/graphql/operations/clients.queries.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/graphql/operations/dashboard.queries.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/graphql/operations/instrument.mutations.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/graphql/operations/instrument.queries.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/graphql/operations/inventory.mutations.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/graphql/operations/inventory.queries.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/graphql/operations/notice.mutations.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/graphql/operations/notice.queries.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/graphql/operations/patient.mutations.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/graphql/operations/patient.queries.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/graphql/operations/reflex.mutations.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/graphql/operations/reflex.queries.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/graphql/operations/shipment.mutations.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/graphql/operations/shipment.queries.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/graphql/operations/storage.mutations.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/graphql/operations/storage.queries.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/graphql/operations/stream.subscriptions.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/graphql/operations/user.mutations.graphql" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/graphql/operations/worksheet.mutations.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/graphql/operations/worksheet.queries.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/guards/actions.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/guards/constants.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/guards/index.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/guards/pages.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/index.css" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/main.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/models/analysis.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/models/auth.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/models/client.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/models/facility.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/models/inventory.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/models/location.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/models/notice.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/models/notification.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/models/pagination.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/models/patient.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/models/reflex.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/models/reports.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/models/sample.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/models/setup.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/models/shipment.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/models/storage.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/models/worksheet.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/router/admin.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/router/checks.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/router/client.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/router/constants.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/router/index.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/router/patient.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/router/quality.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/router/referral.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/router/samples.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/router/worksheet.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/shims-vue.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/stores/analysis.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/stores/audit_log.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/stores/auth.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/stores/client.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/stores/dashboard.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/stores/index.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/stores/inventory.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/stores/location.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/stores/notice.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/stores/notification.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/stores/patient.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/stores/reflex.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/stores/sample.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/stores/setup.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/stores/shipment.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/stores/storage.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/stores/stream.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/stores/toast.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/stores/user.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/stores/worksheet.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/urql.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/utils/helpers.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/404.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/About.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/Blank.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/Restricted.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/admin/Admin.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/admin/analyses/AnalysesCategories.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/admin/analyses/AnalysesProfiles.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/admin/analyses/QCLevels.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/admin/analyses/QCTemplates.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/admin/analyses/RejectionReasons.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/admin/analyses/index.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/admin/analyses/services/CorrectionFactor.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/admin/analyses/services/DetectionLimit.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/admin/analyses/services/InterimFields.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/admin/analyses/services/ResultOptions.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/admin/analyses/services/Specifications.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/admin/analyses/services/Uncertainty.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/admin/analyses/services/index.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/admin/coding/CodingStandard.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/admin/coding/index.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/admin/data-load/index.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/admin/index.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/admin/instruments/InstrumentTypes.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/admin/instruments/Instruments.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/admin/instruments/MethodForm.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/admin/instruments/Methods.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/admin/instruments/Units.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/admin/instruments/index.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/admin/inventory/Hazard.tsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/admin/inventory/Inventory.tsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/admin/inventory/StockCategory.tsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/admin/inventory/StockItem.tsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/admin/inventory/StockPackaging.tsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/admin/inventory/StockUnit.tsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/admin/inventory/index.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/admin/laboratory/Departments.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/admin/laboratory/Laboratory.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/admin/laboratory/index.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/admin/location/index.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/admin/patient/PersonIdentification.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/admin/patient/index.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/admin/publication/index.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/admin/reflex/ReflexListing.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/admin/reflex/_id/index.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/admin/reflex/index.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/admin/sample/ContainerTypes.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/admin/sample/SampleTypes.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/admin/sample/index.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/admin/shipment/ReferralLaboratory.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/admin/shipment/index.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/admin/suppliers/Manufacturers.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/admin/suppliers/Suppliers.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/admin/suppliers/index.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/admin/users/Groups.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/admin/users/Users.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/admin/users/index.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/admin/worksheets/index.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/auth/Login.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/client/Clients.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/client/_id/ClientDetail.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/client/_id/ContactTable.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/client/_id/index.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/client/index.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/components/AdminBreadCrumb.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/components/AnalyisRequestListing.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/components/AuditLog.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/components/BoardCard.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/components/FooterMain.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/components/Notification.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/components/PageHeading.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/components/SampleListing.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/components/TaskCard.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/components/TreeItem.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/components/nav/NavigationAside.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/components/nav/NavigationMain.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/dashboard/Laggard.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/dashboard/LineListing.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/dashboard/Notice.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/dashboard/Overview.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/dashboard/Peformance.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/dashboard/Resource.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/dashboard/Tat.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/dashboard/index.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/dashboard/peformance.sql" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/experiment/index.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/install/index.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/inventory/InvAdjustments.tsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/inventory/InvListing.tsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/inventory/InvOrders.tsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/inventory/InvTransactions.tsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/inventory/Inventory.tsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/inventory/StockProductForm.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/inventory/index.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/layouts/LayoutDashboard.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/layouts/LayoutEmpty.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/layouts/LayoutMobile.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/notice/NoticeForm.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/notice/index.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/patient/AddPatient.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/patient/PatientForm.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/patient/PatientInfo.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/patient/Patients.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/patient/PatientsCompact.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/patient/_id/PatientDetail.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/patient/_id/index.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/patient/comps/CaseTable.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/patient/index.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/qcontrol/Listing.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/qcontrol/_id/QCSet.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/qcontrol/_id/index.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/qcontrol/index.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/sample/RejectSamples.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/sample/Samples.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/sample/SamplesAdd.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/sample/StoreSamples.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/sample/_id/Impress.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/sample/_id/Results.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/sample/_id/SampleDetail.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/sample/_id/index.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/sample/index.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/shipment/ShipmentListing.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/shipment/_id/Manifest.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/shipment/_id/ShipmentAssign.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/shipment/_id/ShipmentDetail.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/shipment/_id/ShipmentSamples.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/shipment/_id/index.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/shipment/index.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/storage/ContainerColumn.tsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/storage/ContainerGrid.tsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/storage/ContainerView.tsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/storage/Storage.tsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/storage/index.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/worksheet/WorkSheetListing.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/worksheet/_id/WorkSheetAssign.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/worksheet/_id/WorkSheetDetail.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/worksheet/_id/WorkSheetResults.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/worksheet/_id/index.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/worksheet/index.vue" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -342,25 +41,25 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "dart.analysis.tool.window.visible": "false",
-    "git-widget-placeholder": "main",
-    "ignore.virus.scanning.warn.message": "true",
-    "last_opened_file_path": "/home/aurthurm/Development/felicity-lims/felicity-lims-core",
-    "settings.editor.selected.configurable": "com.jetbrains.python.black.configuration.BlackFormatterConfigurable"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;dart.analysis.tool.window.visible&quot;: &quot;false&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/home/aurthurm/Development/felicity-lims/felicity-lims-core/felicity/api/rest/api_v1/endpoints&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.black.configuration.BlackFormatterConfigurable&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/felicity/api/rest/api_v1/endpoints" />
+      <recent name="$PROJECT_DIR$/felicity/tests/sample_workflow" />
       <recent name="$PROJECT_DIR$/felicity/infrastructure/database/utils" />
       <recent name="$PROJECT_DIR$/felicity/infrastructure/database/user" />
       <recent name="$PROJECT_DIR$/felicity/domain/user" />
-      <recent name="$PROJECT_DIR$/felicity/infrastructure/database" />
-      <recent name="C:\Users\aurth\Development\Python\felicity-lims" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/deploy/example-docker-compose" />

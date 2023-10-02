@@ -17,7 +17,7 @@ reports = Blueprint("reports", url_prefix="/reports")
 
 
 @reports.get("")
-async def read_reports(current_user: user_models.User) -> Any:
+async def read_reports(*, current_user: user_models.User) -> Any:
     """
     Retrieve previously generated csv reports.
     """

@@ -28,7 +28,7 @@ logger = logging.getLogger(__name__)
 
 
 async def create_categories():
-    logger.info(f"Setting up analyses categories .....")
+    logger.info("Setting up analyses categories .....")
 
     with open(settings.BASE_DIR + "/init/setup/data/analyses.json", "r") as json_file:
         data = json.load(json_file)

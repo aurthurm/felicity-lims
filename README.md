@@ -1,4 +1,4 @@
-# FELICITY LIMS (under active development)
+# FELICITY LIMS Backend
 
 ![Screenshot1](https://user-images.githubusercontent.com/17094364/137630249-b84e5b1c-f525-4b0a-8d1e-1e2820910a5f.png)
 
@@ -12,8 +12,7 @@ Felicity strives to promote an accurate flow of sample and associated experiment
 
 Felicity LIMS will ensure that sufficient metadata is captured and clinical laboratory personnel can track the lifecycle of a biospecimen in the laboratory from receipt to dispacth.
 
-Felicity Backend is developed in Python using the FastAPI framework and strawberry GraphQL.
-Felicity FrontEnd is developed in VueJs, URQL, and Tailwind CSS.
+Felicity Backend is developed in Python using the Sanic framework and strawberry GraphQL.
 
 Felicity is the quality of being good, pleasant, or desirable.
 
@@ -40,7 +39,6 @@ Then follow instructions below
 ```shell
 git clone https://github.com/aurthurm/felicity.git
 cd felicity
-cd backend/felicity_lims
 poetry install
 bash felicity.sh &
 ```
@@ -55,26 +53,10 @@ conda create -n felicity python=3.9
 conda activate felicity
 git clone https://github.com/aurthurm/felicity.git
 cd felicity
-cd backend/felicity_lims
 pip install -r requirements.txt
 bash felicity.sh &
 ```
 
-#### Frontend Installation
-
-Install [NodeJs](https://github.com/nodesource/distributions/blob/master/README.md#installation-instructions)
-Install [Yarn](https://yarnpkg.com/getting-started/install)
-Then follow instructions below
-
-```shell
-cd felicity/frontent/vite
-yarn install
-# for production mode
-yarn build
-yarn start
-# for development mode
-yarn dev
-```
 
 ### Docker
 
