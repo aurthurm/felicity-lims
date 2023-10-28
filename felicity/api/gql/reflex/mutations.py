@@ -173,9 +173,17 @@ class ReflexRuleMutations:
         for _anal_uid in payload.analyses:
             _anal = await analysis_models.Analysis.get(uid=_anal_uid)
             analyses.append(_anal)
-        obj_in.analyses = analyses
 
         action: models.ReflexAction = await models.ReflexAction.create(obj_in)
+        for anal in analyses:
+             await models.ReflexAction.table_insert(
+                table=models.reflex_action_analysis,
+                mappings={
+                    "analysis_uid": anal.uid,
+                    "reflex_action_uid": action.uid,
+                },
+             )
+        
         return ReflexActionType(**action.marshal_simple())
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
@@ -209,11 +217,11 @@ class ReflexRuleMutations:
 
         setattr(reflex_action, "updated_by_uid", felicity_user.uid)
 
-        analyses = []
-        for _anal_uid in payload.analyses:
-            _anal = await analysis_models.Analysis.get(uid=_anal_uid)
-            analyses.append(_anal)
-        setattr(reflex_action, "analyses", analyses)
+        # analyses = []
+        # for _anal_uid in payload.analyses:
+        #     _anal = await analysis_models.Analysis.get(uid=_anal_uid)
+        #     analyses.append(_anal)
+        # setattr(reflex_action, "analyses", analyses)
 
         obj_in = schemas.ReflexActionUpdate(**reflex_action.to_dict())
         reflex_action = await reflex_action.update(obj_in)

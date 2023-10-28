@@ -16,7 +16,7 @@ from apps.common.schemas import BaseAuditModel
 class ReflexRuleBase(BaseAuditModel):
     name: str
     description: str
-    sample_types: Optional[List[SampleType]]
+    sample_types: Optional[List[SampleType]] = []
 
 
 # Additional properties to return via API
@@ -44,9 +44,9 @@ class ReflexRuleUpdate(ReflexRuleBase):
 # Shared properties
 class ReflexBrainAdditionBase(BaseAuditModel):
     analysis_uid: str
-    analysis: Optional[Analysis]
+    analysis: Optional[Analysis] = None
     reflex_brain_uid: str
-    reflex_brain: Optional["ReflexBrain"]
+    reflex_brain: Optional["ReflexBrain"] = None
     count: int
 
 
@@ -75,9 +75,9 @@ class ReflexBrainAdditionUpdate(ReflexBrainAdditionBase):
 # Shared properties
 class ReflexBrainFinalBase(BaseAuditModel):
     analysis_uid: str
-    analysis: Optional[Analysis]
+    analysis: Optional[Analysis] = None
     reflex_brain_uid: str
-    reflex_brain: Optional["ReflexBrain"]
+    reflex_brain: Optional["ReflexBrain"] = None
     value: str
 
 
@@ -106,9 +106,9 @@ class ReflexBrainFinalUpdate(ReflexBrainFinalBase):
 # Shared properties
 class ReflexBrainCriteriaBase(BaseAuditModel):
     analysis_uid: str
-    analysis: Optional[Analysis]
+    analysis: Optional[Analysis] = None
     reflex_brain_uid: str
-    reflex_brain: Optional["ReflexBrain"]
+    reflex_brain: Optional["ReflexBrain"] = None
     value: str
 
 
@@ -137,11 +137,11 @@ class ReflexBrainCriteriaUpdate(ReflexBrainCriteriaBase):
 # Shared properties
 class ReflexBrainBase(BaseAuditModel):
     reflex_action_uid: str
-    reflex_action: Optional["ReflexAction"]
+    reflex_action: Optional["ReflexAction"] = None
     description: str | None
-    analyses_values: Optional[List[ReflexBrainCriteria]]
-    add_new: Optional[List[ReflexBrainAddition]]
-    finalise: Optional[List[ReflexBrainFinal]]
+    analyses_values: Optional[List[ReflexBrainCriteria]] = None
+    add_new: Optional[List[ReflexBrainAddition]] = None
+    finalise: Optional[List[ReflexBrainFinal]] = None
 
 
 # Additional properties to return via API
@@ -170,11 +170,11 @@ class ReflexActionBase(BaseAuditModel):
     level: int
     description: str | None
     reflex_rule_uid: str
-    reflex_rule: Optional[ReflexRule]
-    brains: Optional[List[ReflexBrain]]
-    analyses: Optional[List[Analysis]]
+    reflex_rule: Optional[ReflexRule] = None
+    brains: Optional[List[ReflexBrain]] = None
+    analyses: Optional[List[Analysis]] = []
     sample_type_uid: str | None
-    sample_type: Optional[SampleType]
+    sample_type: Optional[SampleType] = None
 
 
 # Additional properties to return via API

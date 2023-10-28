@@ -51,14 +51,14 @@ class AnalysisCategoryInDB(InstrumentTypeBaseInDB):
 
 # Shared properties
 class InstrumentBase(BaseModel):
-    name: str = None
-    description: str = None
-    keyword: str = None
-    instrument_type_uid: str = None
+    name: str
+    description: str | None = None
+    keyword: str | None = None
+    instrument_type_uid: str | None = None
     instrument_type: InstrumentType | None = None
-    manufacturer_uid: str = None
+    manufacturer_uid: str | None = None
     manufacturer: ManufacturerInDB | None = None
-    supplier_uid: str = None
+    supplier_uid: str | None = None
     supplier: SupplierInDB | None = None
 
 
@@ -76,7 +76,7 @@ class InstrumentUpdate(InstrumentBase):
 
 
 class InstrumentInDBBase(InstrumentBase):
-    uid: str = None
+    uid: str
 
     model_config = ConfigDict(from_attributes=True)
 

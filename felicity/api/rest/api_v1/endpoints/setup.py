@@ -37,7 +37,7 @@ async def laboratory_lookup(request) -> Any:
     laboratory = await models.Laboratory.get_by_setup_name("felicity")
     return json(
         {
-            "laboratory": laboratory.marshal_simple() if laboratory else None,
+            "laboratory": laboratory.marshal_simple(exclude=["lab_manager"]) if laboratory else None,
             "installed": True if laboratory else False,
             "message": "" if laboratory else "Laboratory installation required",
         }

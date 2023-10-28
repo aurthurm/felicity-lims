@@ -49,13 +49,15 @@
       "name": "Synovial Fluid",
       "description": "Synovial Fluid",
       "abbr": "SF",
-      "active": 0
+      "active": 0,
+      "mappins": [{ "loinc": "" }]
     },
     {
       "name": "Cerebral Spinal Fluid",
       "description": "Cerebral Spinal Fluid",
       "abbr": "CSF",
-      "active": 0
+      "active": 0,
+      "mappins": [{ "loinc": "" }]
     },
     {
       "name": "Nasal-Pharyngeal Swab",
@@ -275,7 +277,7 @@
     },
     {
       "name": "HDL",
-      "description": "Hig density lipoprotein cholesterol",
+      "description": "High density lipoprotein cholesterol",
       "keyword": "hdl",
       "sort_key": 3,
       "active": 1,

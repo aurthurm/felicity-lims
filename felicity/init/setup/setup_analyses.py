@@ -42,7 +42,7 @@ async def create_categories():
 
 
 async def create_qc_levels() -> None:
-    logger.info(f"Setting QC Levels .....")
+    logger.info("Setting QC Levels .....")
 
     with open(settings.BASE_DIR + "/init/setup/data/analyses.json", "r") as json_file:
         data = json.load(json_file)
@@ -56,7 +56,7 @@ async def create_qc_levels() -> None:
 
 
 async def init_id_sequence() -> None:
-    logger.info(f"Setting up id sequence .....")
+    logger.info("Setting up id sequence .....")
 
     with open(settings.BASE_DIR + "/init/setup/data/analyses.json", "r") as json_file:
         data = json.load(json_file)
@@ -80,7 +80,7 @@ async def init_id_sequence() -> None:
 
 
 async def create_sample_types() -> None:
-    logger.info(f"Setting up sample types .....")
+    logger.info("Setting up sample types .....")
 
     with open(settings.BASE_DIR + "/init/setup/data/analyses.json", "r") as json_file:
         data = json.load(json_file)
@@ -103,7 +103,7 @@ async def create_sample_types() -> None:
 
 
 async def create_analyses_services_and_profiles() -> None:
-    logger.info(f"Setting up analysis services and profiles .....")
+    logger.info("Setting up analysis services and profiles .....")
 
     with open(settings.BASE_DIR + "/init/setup/data/analyses.json", "r") as json_file:
         data = json.load(json_file)
@@ -151,7 +151,7 @@ async def create_analyses_services_and_profiles() -> None:
 
 
 async def create_rejection_reasons() -> None:
-    logger.info(f"Setting up rejection reasons .....")
+    logger.info("Setting up rejection reasons .....")
 
     with open(settings.BASE_DIR + "/init/setup/data/analyses.json", "r") as json_file:
         data = json.load(json_file)

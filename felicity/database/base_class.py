@@ -255,7 +255,11 @@ class DBModel(DeclarativeBase, AllFeaturesMixinAsync):
         """Convert Pydantic schema to dict"""
         if isinstance(schema_in, dict):
             return schema_in
-        data = schema_in.dict(exclude_unset=True)
+        data = schema_in.model_dump(exclude_unset=True)
+        # try:
+        #     data = schema_in.model_dump(exclude_unset=True)
+        # except Exception as e:
+        #     data = schema_in.dict(exclude_unset=True)
         return data
 
     async def save(self):

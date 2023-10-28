@@ -128,7 +128,7 @@ class InstrumentMutations:
     ) -> InstrumentTypeResponse:  # noqa
 
         if not uid:
-            return OperationError(error="No uid provided to identity update obj")
+            return OperationError(error="No uid provided to identity instrument")
 
         inst_type = await models.InstrumentType.get(uid=uid)
         if not inst_type:
@@ -184,11 +184,11 @@ class InstrumentMutations:
     ) -> InstrumentResponse:  # noqa
 
         if not uid:
-            return OperationError(error="No uid provided to identity update obj")
+            return OperationError(error="No uid provided to identity instrument")
 
         if "keyword" in payload.__dict__:
             taken = await models.Instrument.get(keyword=payload.keyword)
-            if taken and not (str(uid) == str(taken.uid)):
+            if taken and (str(uid) != str(taken.uid)):
                 return OperationError(
                     error=f"Provided keyword already assigned to instrument {taken.name}"
                 )

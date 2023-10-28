@@ -83,14 +83,14 @@ class LaboratorySettingInputType:
 class DepartmentInputType:
     name: str
     description: str | None = ""
-    code: str | None = None
+    code: str | None = ""
 
 
 @strawberry.input
 class SupplierInputType:
     name: str
     description: str | None = ""
-    code: str | None = None
+    code: str | None = ""
 
 
 @strawberry.input
@@ -110,11 +110,11 @@ class CountryInputType:
 class ProvinceInputType:
     name: str | None
     country_uid: str | None
-    code: str | None = None
-    email: str | None = None
-    email_cc: str | None = None
-    mobile_phone: str | None = None
-    business_phone: str | None = None
+    code: str | None = ""
+    email: str | None = ""
+    email_cc: str | None = ""
+    mobile_phone: str | None = ""
+    business_phone: str | None = ""
     active: bool | None = True
 
 
@@ -122,11 +122,11 @@ class ProvinceInputType:
 class DistrictInputType:
     name: str
     province_uid: str | None
-    code: str | None = None
-    email: str | None = None
-    email_cc: str | None = None
-    mobile_phone: str | None = None
-    business_phone: str | None = None
+    code: str | None = ""
+    email: str | None = ""
+    email_cc: str | None = ""
+    mobile_phone: str | None = ""
+    business_phone: str | None = ""
     active: bool | None = True
 
 
@@ -210,7 +210,7 @@ class SetupMutations:
 
         obj_in = schemas.DepartmentCreate(**incoming)
         department: models.Department = await models.Department.create(obj_in)
-        return DepartmentType(**department.marshal_simple())
+        return DepartmentType(**department.marshal_simple(exclude=["created_by", "updated_by"]))
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_department(
@@ -236,7 +236,7 @@ class SetupMutations:
 
         obj_in = schemas.DepartmentUpdate(**department.to_dict())
         department = await department.update(obj_in)
-        return DepartmentType(**department.marshal_simple())
+        return DepartmentType(**department.marshal_simple(exclude=["created_by", "updated_by"]))
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_supplier(

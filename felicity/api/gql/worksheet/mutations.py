@@ -128,9 +128,18 @@ class WorkSheetMutations:
             incoming["reserved"] = positions
 
         wst_schema = schemas.WSTemplateCreate(**incoming)
-        wst_schema.qc_levels = _qc_levels
         wst: schemas.WSTemplate = await models.WorkSheetTemplate.create(wst_schema)
-
+        
+        lvl_uids = [qcl.uid for qcl in _qc_levels]
+        for l_uid in lvl_uids:
+            await qc_models.QCLevel.table_insert(
+                table=models.worksheet_template_qc_level,
+                mappings={
+                    "qc_level_uid": l_uid,
+                    "ws_template_uid": wst.uid,
+                },
+            )
+        wst = await models.WorkSheetTemplate.get(uid=wst.uid)
         return WorkSheetTemplateType(**wst.marshal_simple())
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])

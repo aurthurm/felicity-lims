@@ -177,9 +177,9 @@ class ProfileCodingBase(BaseAuditModel):
     """SampleTypeMapping"""
 
     profile_uid: str | None
-    profile: Profile | None
-    coding_standard_uid: str
-    coding_standard: CodingStandard | None
+    profile: Profile | None = None
+    coding_standard_uid: str | None = None
+    coding_standard: CodingStandard | None = None
     code: str | None
     name: str | None
     description: str | None
@@ -194,7 +194,8 @@ model_config = ConfigDict(from_attributes=True)
 
 # Properties to receive via API on creation
 class ProfileCodingCreate(ProfileCodingBase):
-    pass
+    profile_uid: str
+    coding_standard_uid: str
 
 
 # Properties to receive via API on update
@@ -313,9 +314,9 @@ class AnalysisCodingBase(BaseAuditModel):
     """SampleTypeMapping"""
 
     analysis_uid: str | None = None
-    analysis: Analysis | None
-    coding_standard_uid: str
-    coding_standard: CodingStandard | None
+    analysis: Analysis | None = None
+    coding_standard_uid: str | None = None
+    coding_standard: CodingStandard | None = None
     code: str | None
     name: str | None
     description: str | None
@@ -329,7 +330,8 @@ class AnalysisCodingBaseInDB(AnalysisCodingBase):
 
 # Properties to receive via API on creation
 class AnalysisCodingCreate(AnalysisCodingBase):
-    pass
+    analysis_uid: str
+    coding_standard_uid: str
 
 
 # Properties to receive via API on update
@@ -429,8 +431,8 @@ class AnalysisCorrectionFactorInDB(AnalysisCorrectionFactorBaseInDB):
 
 # Shared properties
 class AnalysisDetectionLimitBase(BaseAuditModel):
-    lower_limit: str
-    upper_limit: str
+    lower_limit: int
+    upper_limit: int
     analysis_uid: str
     instrument_uid: str
     method_uid: str
@@ -522,7 +524,7 @@ class AnalysisSpecificationBase(BaseAuditModel):
     age_max: int | None = None
     method_uid: str | None = None
     unit_uid: str | None = None
-    unit: Optional[Unit]
+    unit: Unit | None = None
 
 
 class AnalysisSpecificationBaseInDB(AnalysisSpecificationBase):

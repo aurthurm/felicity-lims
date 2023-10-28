@@ -6,6 +6,7 @@ import strawberry  # noqa
 from api.gql.types import PageInfo
 from api.gql.user.types import UserType
 from api.gql.setup.types import ManufacturerType, SupplierType
+from apps.instrument.models import Method
 
 
 @strawberry.type
@@ -56,7 +57,11 @@ class InstrumentType:
     updated_by_uid: str | None
     updated_by: Optional["UserType"]
     updated_at: datetime | None
-    methods: Optional[List["MethodType"]] = field(default_factory=list)
+    # methods: Optional[List["MethodType"]] = field(default_factory=list)
+    
+    @strawberry.field
+    async def methods(self, info) -> Optional[List["MethodType"]]:
+        return await Method.get(instruments___uid=self.uid)
 
 
 #  relay paginations

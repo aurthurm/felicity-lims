@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 
 
 async def create_daemon_user() -> None:
-    logger.info(f"Setting up system-daemon - System Daemon - .....")
+    logger.info("Setting up system-daemon - System Daemon - .....")
 
     system_daemon: Optional[models.User] = await models.User.get_by_email(
         settings.SYSTEM_DAEMONUSER_EMAIL
@@ -61,7 +61,7 @@ async def create_daemon_user() -> None:
 
 
 async def create_super_user() -> None:
-    logger.info(f"Setting up first superuser - System Administrator - .....")
+    logger.info("Setting up first superuser - System Administrator - .....")
 
     superuser: Optional[models.User] = await models.User.get_by_email(
         settings.FIRST_SUPERUSER_EMAIL

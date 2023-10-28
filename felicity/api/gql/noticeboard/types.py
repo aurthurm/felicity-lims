@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, date
 from typing import List, Optional
 
 import strawberry  # noqa
@@ -14,7 +14,7 @@ class NoticeType:
     title: str
     body: str
     viewers: list[UserType] | None
-    expiry: datetime
+    expiry: str # datetime
     created_at: datetime | None
     created_by_uid: str | None
     created_by: UserType | None

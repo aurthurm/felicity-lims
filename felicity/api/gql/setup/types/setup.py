@@ -14,6 +14,7 @@ class LaboratoryType:
     lab_name: str
     lab_manager_uid: str | None
     lab_manager: Optional["UserType"]
+    code: str | None
     email: str | None
     email_cc: str | None
     mobile_phone: str | None
@@ -46,6 +47,7 @@ class LaboratorySettingType:
     allow_worksheet_creation: bool | None = True
     default_route: str | None = None
     password_lifetime: int | None = None
+    default_tat_minutes: int | None = None
     inactivity_log_out: int | None = None
     default_theme: str | None = None
     auto_receive_samples: bool | None = True
