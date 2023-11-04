@@ -15,9 +15,9 @@ logger = logging.getLogger(__name__)
 
 
 class InstallResponse(BaseModel):
-    laboratory: Optional[schemas.Laboratory]
+    laboratory: Optional[schemas.Laboratory] = None
     installed: bool
-    message: str | None
+    message: str | None = None
 
 
 class LabNameIn(BaseModel):
@@ -26,7 +26,7 @@ class LabNameIn(BaseModel):
 
 class SetupResponse(BaseModel):
     success: bool
-    message: str | None
+    message: str | None = None
 
 
 @setup.get("/installation")

@@ -31,7 +31,7 @@ class ClientBaseInDB(ClientBase):
 
 # Properties to receive via API on creation
 class ClientCreate(ClientBase):
-    district_uid: str | None
+    district_uid: str | None = None
 
 
 # Properties to receive via API on update

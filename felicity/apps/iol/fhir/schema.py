@@ -1,5 +1,5 @@
 from typing import ForwardRef, List, Optional, Any
-from pydantic import BaseModel, validator
+from pydantic import field_validator, BaseModel
 
 
 class BaseResource:
@@ -188,9 +188,9 @@ class SampledData(BaseModel):
 
 
 class Extension(BaseModel):
-    url: str | None
-    valueString: str | dict | None
-    data: dict | None
+    url: str | None = None
+    valueString: str | dict | None = None
+    data: dict | None = None
 
 
 class PatientResource(BaseModel):
@@ -215,12 +215,12 @@ class PatientResource(BaseModel):
 
 class SpecimenCollection(BaseModel):
     #  Who collected the specimen Reference(Patient|Practitioner|PractitionerRole|RelatedPerson)
-    collector: Reference | None
-    collectedDateTime: str | None
+    collector: Reference | None = None
+    collectedDateTime: str | None = None
     #  The quantity of specimen collected Quantity(SimpleQuantity)
-    quantity: Quantity | None
+    quantity: Quantity | None = None
     # Technique used to perform collection
-    method: CodeableConcept | None
+    method: CodeableConcept | None = None
 
 
 class SpecimenResource(BaseModel):
@@ -228,9 +228,9 @@ class SpecimenResource(BaseModel):
     # External Identifier
     identifier: List[Identifier] | None = None
     # Identifier assigned by the lab
-    accessionIdentifier: Identifier | None
+    accessionIdentifier: Identifier | None = None
     # available | unavailable | unsatisfactory | entered-in-error
-    status: str | None
+    status: str | None = None
     # Kind of material that forms the specimen icon
     type: CodeableConcept
     # Reference(BiologicallyDerivedProduct|Device|Group|Location|Patient|Substance)
@@ -238,21 +238,21 @@ class SpecimenResource(BaseModel):
     # source of an environmental sample), or a sampling of a substance, a biologically-derived product, or a device
     subject: Reference | None = None
     # The time when specimen is received by the testing laboratory
-    receivedTime: str | None
+    receivedTime: str | None = None
     # Specimen from which this specimen originated Reference(Specimen)
-    parent: list[Reference] | None
+    parent: list[Reference] | None = None
     # Why the specimen was collected Reference(ServiceRequest)
-    request: list[Reference] | None
+    request: list[Reference] | None = None
     #  grouped | pooled
-    combined: str | None
+    combined: str | None = None
     # The role the specimen serves
-    role: list[CodeableConcept] | None
+    role: list[CodeableConcept] | None = None
     # Collection details
     collection: SpecimenCollection
     # State of the specimen icon
-    condition: list[CodeableConcept] | None
+    condition: list[CodeableConcept] | None = None
     # comments
-    note: list[Annotation] | None
+    note: list[Annotation] | None = None
 
 
 class ServiceRequestResource(BaseModel):
@@ -410,36 +410,37 @@ class DiagnosticReportResource(BaseModel):
 class Resource(BaseModel):
     resourceType: str
     # short description
-    property1: str | None
+    property1: str | None = None
 
 
 class BundleEntryRequest(BaseModel):
     # I R!  GET | HEAD | POST | PUT | DELETE | PATCH
     method: str
     # R!  URL for HTTP equivalent of this entry
-    url: str | None
+    url: str | None = None
 
 
 class BundleEntryResponse(BaseModel):
     # R!  Status response code (text optional)
     status: str
     # The location (if the operation returns a location)
-    location: str | None
+    location: str | None = None
     # Server's date time modified
-    lastModified: str | None
+    lastModified: str | None = None
     # // OperationOutcome with hints and warnings (for batch/transaction)
     outcome: Resource
 
 
 class BundleEntry(BaseModel):
     # I A resource in the bundle
-    resource: Any
+    resource: Any = None
     # I Additional execution information (transaction/batch/history)
-    request: BundleEntryRequest | None
+    request: BundleEntryRequest | None = None
     # I Results of execution (transaction/batch/history)
-    response: BundleEntryResponse | None
+    response: BundleEntryResponse | None = None
 
-    @validator("resource")
+    @field_validator("resource")
+    @classmethod
     def validate_resource(cls, val):
         allowed_types = (
             ServiceRequestResource,
@@ -478,7 +479,7 @@ class BundleResource(BaseModel):
     total: int
     # // Entry in the bundle - will have a resource or information
     entry: list[BundleEntry]
-    extension: list[Extension] | None
+    extension: list[Extension] | None = None
 
 
 Reference.update_forward_refs()

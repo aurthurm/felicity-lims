@@ -12,7 +12,7 @@ class ReportMetaBase(BaseModel):
     period_start: datetime
     period_end: datetime
     date_column: str
-    sample_states: str | None
+    sample_states: str | None = None
     report_type: str = conf.report_types.LINE_LISTING
     status: str | None = conf.report_states.PENDING
     analyses: list[AnalysisBasic] | None = None
@@ -26,7 +26,7 @@ class ReportMetaBase(BaseModel):
 
 class ReportMeta(ReportMetaBase):
     uid: str | None = None
-    location: str | None
+    location: str | None = None
 
 
 model_config = ConfigDict(from_attributes=True)

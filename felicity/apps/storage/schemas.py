@@ -41,7 +41,7 @@ class StorageLocationBase(BaseModel):
     name: str | None = None
     description: str | None = None
     store_room_uid: str
-    store_room: Optional[StoreRoom]
+    store_room: Optional[StoreRoom] = None
 
 
 class StorageLocation(StorageLocationBase):
@@ -69,7 +69,7 @@ class StorageSectionBase(BaseModel):
     name: str | None = None
     description: str | None = None
     storage_location_uid: str
-    storage_location: Optional[StorageLocation]
+    storage_location: Optional[StorageLocation] = None
 
 
 class StorageSection(StorageSectionBase):
@@ -97,11 +97,11 @@ class StorageContainerBase(BaseModel):
     name: str | None = None
     description: str | None = None
     storage_section_uid: str
-    storage_section: Optional[StorageSection]
+    storage_section: Optional[StorageSection] = None
     grid: bool = False
     row_wise: bool = False
-    cols: int | None
-    rows: int | None
+    cols: int | None = None
+    rows: int | None = None
     slots: int | None = 0
     stored_count: int | None = 0
 

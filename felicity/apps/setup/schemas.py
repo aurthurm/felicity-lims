@@ -273,8 +273,8 @@ class CountryInDB(CountryBaseInDB):
 
 # Shared properties
 class ProvinceBase(BaseModel):
-    name: str | None
-    country_uid: str | None
+    name: str | None = None
+    country_uid: str | None = None
     code: str | None = None
     email: str | None = None
     email_cc: str | None = None
@@ -317,8 +317,8 @@ class ProvinceInDB(ProvinceBaseInDB):
 
 # Shared properties
 class DistrictBase(BaseModel):
-    name: str | None
-    province_uid: str | None
+    name: str | None = None
+    province_uid: str | None = None
     code: str | None = None
     email: str | None = None
     email_cc: str | None = None

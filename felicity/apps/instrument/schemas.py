@@ -98,7 +98,7 @@ class InstrumentInDB(InstrumentInDBBase):
 # Shared properties
 class InstrumentCalibrationBase(BaseModel):
     instrument_uid: str
-    instrument: Optional[Instrument]
+    instrument: Optional[Instrument] = None
     calibration_id: str
     date_reported: datetime
     report_id: str
@@ -144,7 +144,7 @@ class InstrumentCalibrationInDB(InstrumentCalibrationInDBBase):
 # Shared properties
 class CalibrationCertificateBase(BaseModel):
     instrument_uid: str
-    instrument: Optional[Instrument]
+    instrument: Optional[Instrument] = None
     certificate_code: str
     internal: bool = True
     issuer: str
