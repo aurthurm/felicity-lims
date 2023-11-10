@@ -1,4 +1,4 @@
-import { RouteRecordRaw, createRouter, createWebHistory } from 'vue-router';
+import { RouteRecordRaw, createRouter, createWebHistory, createWebHashHistory } from 'vue-router';
 import * as guards from './../guards';
 import adminRoutes from './admin';
 import patientRoutes from './patient';
@@ -167,7 +167,8 @@ const routes: RouteRecordRaw[] = [
     },
 ];
 
-const history = createWebHistory('/'); // createWebHashHistory()
+const historyX = createWebHistory('/'); 
+const history = createWebHashHistory();
 const router = createRouter({
     history,
     routes,

@@ -1,0 +1,1 @@
+import{_ as o,v as t,h as n,k as s,B as r}from"./_plugin-vue_export-helper-dacf3d65.js";const c={},_={class:""};function i(a,m){const e=t("router-view");return n(),s("div",_,[r(e)])}const p=o(c,[["render",i],["__file","/home/aurthurm/Development/felicity-lims/webapp/views/shipment/index.vue"]]);export{p as default};

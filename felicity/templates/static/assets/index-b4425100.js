@@ -1,0 +1,1 @@
+import{_ as e,h as s,k as t,x as n}from"./_plugin-vue_export-helper-dacf3d65.js";const c={},o={class:""},i=n("h4",null,"Publication Preferences:> email and sms",-1),a=[i];function _(r,l){return s(),t("div",o,a)}const m=e(c,[["render",_],["__file","/home/aurthurm/Development/felicity-lims/webapp/views/admin/publication/index.vue"]]);export{m as default};

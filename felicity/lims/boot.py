@@ -9,6 +9,7 @@ from api.deps import models, get_auth_user, get_gql_context
 from api.gql.schema import schema
 from api.rest.api_v1 import api
 from apps.job.sched import felicity_workforce_init
+from views import setup_webapp
 from core import settings
 
 
@@ -27,6 +28,7 @@ def register_blueprints(app: Sanic):
         return json({"up": True})
 
     app.blueprint(api)
+    setup_webapp(app, settings.SERVE_WEBAPP)
 
 
 def register_graphql(app: Sanic):
