@@ -1,0 +1,97 @@
+version: '3.5'
+
+services:
+  felicity_proxy:
+    container_name: felicity_proxy
+    image: caddy:2-alpine
+    ports:
+      - "$PORT:$PORT"
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./services/caddy/Caddyfile:/etc/caddy/Caddyfile
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - felicity_fe
+
+  felicity_fe:
+    container_name: felicity_fe
+    restart: unless-stopped
+    build:
+      context: ./frontend
+    volumes:
+      - ./frontend:/app
+    expose:
+      - "3000"
+    depends_on:
+      - felicity_be
+    networks:
+      - felicitynet
+    command: bash -c "cd vite && pnpm dev --host --port 3000"
+
+  felicity_be:
+    container_name: felicity_be
+    restart: unless-stopped
+    build:
+      context: ./
+      dockerfile: Dockerfile.felicity
+    environment:
+      - POSTGRES_SERVER=felicity_db
+      - POSTGRES_DB=felicity_lims
+      - POSTGRES_USER=felicity
+      - POSTGRES_PASSWORD=felicity
+      - POSTGRES_HOST_AUTH_METHOD=trust
+      - DATABASE_URL=postgresql://felicity:felicity@felicity_db:5432/felicity_lims
+    volumes:
+      - ./backend/:/app
+    expose:
+      - "8000"
+    depends_on:
+      - felicity_db
+    networks:
+      - felicitynet
+    command: bash -c "cd felicity_lims && ./felicity.sh"
+
+  felicity_db:
+    container_name: felicity_db
+    image: postgres:12
+    restart: unless-stopped
+    environment:
+      - POSTGRES_DB=felicity_lims
+      - POSTGRES_USER=felicity
+      - POSTGRES_PASSWORD=felicity
+      - POSTGRES_HOST_AUTH_METHOD=trust
+    volumes:
+      - ./postgres/init/:/docker-entrypoint-initdb.d/
+      - database-data:/var/lib/postgresql/data
+    expose:
+      - "5434"
+    networks:
+      - felicitynet
+
+  pgadmin:
+    container_name: felicity.pgadmin
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-admin@pgadmin.org}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
+    volumes:
+      - pgadmin:/root/.pgadmin
+    ports:
+      - "${PGADMIN_PORT:-5050}:80"
+    networks:
+      - felicitynet
+    restart: unless-stopped
+    depends_on:
+      - felicity_db
+
+volumes:
+  db-data:
+  pgadmin:
+  caddy_data:
+  caddy_config:
+
+networks:
+  felicitynet:
+    driver: bridge

@@ -1,0 +1,61 @@
+version: '3.8'
+
+services:
+  felicity_lims:
+    container_name: felicity_lims
+    image: felicity_lims:1.0.0
+    restart: unless-stopped
+    volumes:
+      - ./felicity:/app
+    build:
+      context: ./
+      target: production
+      dockerfile: Dockerfile.aio
+    ports:
+      - 8000:8000
+    networks:
+      - felicitynet
+    depends_on:
+      - felicity_db
+    command: bash -c "uvicorn main:flims --host=0.0.0.0 --port=8000 --workers 1"
+
+    felicity_db:
+      container_name: felicity_db
+      image: postgres:12
+      restart: unless-stopped
+      environment:
+        - POSTGRES_DB=felicity_lims
+        - POSTGRES_USER=felicity
+        - POSTGRES_PASSWORD=felicity
+        - POSTGRES_HOST_AUTH_METHOD=trust
+      volumes:
+        - ./postgres/init/:/docker-entrypoint-initdb.d/
+        - database-data:/var/lib/postgresql/data
+      ports:
+        - 5434:5432
+      networks:
+        - felicitynet
+
+    pgadmin:
+      container_name: felicity.pgadmin
+      image: dpage/pgadmin4
+      environment:
+        PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-admin@pgadmin.org}
+        PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
+      volumes:
+        - pgadmin:/root/.pgadmin
+      ports:
+        - "${PGADMIN_PORT:-5050}:80"
+      networks:
+        - felicitynet
+      restart: unless-stopped
+      depends_on:
+        - felicity_db
+
+volumes:
+  db-data:
+  pgadmin:
+
+networks:
+  felicitynet:
+    driver: bridge
