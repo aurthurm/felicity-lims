@@ -5,4 +5,5 @@ pytest-order==1.1.0
 httpx==0.24.0
 anyio[trio]==3.6.2
 faker==18.5.1
+bump-pydantic==0.7.0
 

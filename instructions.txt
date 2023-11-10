@@ -1,0 +1,6 @@
+sudo apt install libcairo2-dev pkg-config python3-dev gcc g++;
+conda create -n felicity-lims python=3.11
+conda activate felicity-lims
+pip install -r requirements.txt;
+pnpm i;
+pnpm database:al:upgrade;
