@@ -46,7 +46,7 @@ const InventoryHome = defineComponent({
                                         { 'tab-active': currentTab.value === tab },
                                     ]}
                                     onClick={() => (currentTab.value = tab)}
-                                    href="#"
+                                   
                                     role="tab"
                                 >
                                     {tab}

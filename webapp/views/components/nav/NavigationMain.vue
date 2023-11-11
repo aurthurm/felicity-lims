@@ -41,14 +41,14 @@ const showErrors = ref(false)
           <span class="text-sm">{{ theme?.variant }} mode</span>
         </span> -->
       <a v-show="errors.length > 0"
-        href="#"
+       
         class="no-underline text-gray-100 opacity-50 flex items-center px-4 border-b border-transparent hover:opacity-100 md:hover:border-grey-dark"
         @click="showErrors = true"
         >
         <font-awesome-icon icon="bell" class="mr-2" />
         <span>Errors</span>
       </a>
-      <a href="#"
+      <a
         class="no-underline text-gray-100 opacity-50 flex items-center px-4 border-b border-transparent hover:opacity-100 md:hover:border-grey-dark"
         @click="showNotifications(true)">
         <font-awesome-icon icon="bell" class="mr-2" />

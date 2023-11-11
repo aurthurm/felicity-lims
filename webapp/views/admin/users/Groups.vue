@@ -125,7 +125,7 @@ const accordion = defineAsyncComponent(
           <li 
           v-for="group in groups"
           :key="group?.uid"
-          href="#"
+         
           @click.prevent.stop="selectGroup(group)"
           :class="[
             'bg-white shadow w-full p-1 mb-1 rounded-sm',
@@ -184,7 +184,7 @@ const accordion = defineAsyncComponent(
                 { 'tab-active': currentTab === tab },
               ]"
               @click="currentTab = tab"
-              href="#"
+             
             >
               {{ tab }}
             </a>

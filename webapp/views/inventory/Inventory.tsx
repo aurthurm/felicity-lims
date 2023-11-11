@@ -98,7 +98,7 @@ const InventoryHome = defineComponent({
                                         { 'tab-active': this.currentTab === tab },
                                     ]}
                                     onClick={() => (this.currentTab = tab)}
-                                    href="#"
+                                   
                                 >
                                     {tab}
                                 </a>

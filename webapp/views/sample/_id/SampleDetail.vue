@@ -35,7 +35,7 @@ let currentTabComponent = computed(() => "tab-" + state.currentTab);
             { 'tab-active': state.currentTab === tab },
           ]"
           @click="state.currentTab = tab"
-          href="#"
+         
         >
           {{ tab }}
         </a>

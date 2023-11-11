@@ -130,7 +130,7 @@ const updatePatient = (patient: IPatient) => {
           <LoadingMessage message="Fetching patients ..." />
         </div>
         <div v-else>
-          <a v-for="pt in patients" :key="pt.patientId" href="#" @click="selectPatient(pt)" :class="[
+          <a v-for="pt in patients" :key="pt.patientId" @click="selectPatient(pt)" :class="[
             'bg-white w-full flex items-center p-1 mb-1 rounded-sm shadow border',
             { 'border-sky-800 bg-emerald-200': pt.uid === patientForm?.uid },
           ]">
@@ -167,7 +167,7 @@ const updatePatient = (patient: IPatient) => {
             <a v-for="tab in tabs" :key="tab" :class="[
               'no-underline text-gray-500 uppercase tracking-wide font-bold text-xs py-1 px-4 tab hover:bg-sky-600 hover:text-gray-200 hover:bg-sky-600 hover:text-gray-200',
               { 'tab-active': currentTab === tab },
-            ]" @click="currentTab = tab" href="#">
+            ]" @click="currentTab = tab">
               {{ tab }}
             </a>
           </div>

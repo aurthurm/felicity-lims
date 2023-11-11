@@ -89,7 +89,7 @@ const login = handleSubmit((values) => {
           </div>
 
           <div>
-            <a class="block text-sm fontme text-indigo-700 hover:underline" href="#"
+            <a class="block text-sm fontme text-indigo-700 hover:underline"
               >Forgot your password?</a
             >
           </div>

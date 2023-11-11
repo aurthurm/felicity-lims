@@ -178,10 +178,10 @@ function saveForm(): void {
         <div class="overflow-y-scroll overscroll-contain scroll-section">
           <div v-for="c in countries" :key="c.uid"
             :class="country?.uid === c.uid ? 'bg-white w-full flex justify-between p-2 mb-1 rounded-l-sm shadow border c-active' : 'bg-white w-full flex justify-between p-2 mb-1 rounded-l-sm shadow border'">
-            <a href="#" @click.prevent.stop="selectLocation('country', c)" class="font-semibold text-gray-700">
+            <a @click.prevent.stop="selectLocation('country', c)" class="font-semibold text-gray-700">
               <span>{{ c.name }}</span>
             </a>
-            <a href="#" @click="FormManager(false, 'country', c)" class="px-2 cursor">
+            <a @click="FormManager(false, 'country', c)" class="px-2 cursor">
               <font-awesome-icon icon="pen" />
             </a>
           </div>
@@ -200,11 +200,11 @@ function saveForm(): void {
         <div class="overflow-y-scroll overscroll-contain scroll-section">
           <div v-for="p in provinces" :key="p.uid"
             :class="province?.uid === p.uid ? 'bg-white w-full flex justify-between p-2 mb-1 rounded-l-sm shadow border c-active' : 'bg-white w-full flex justify-between p-2 mb-1 rounded-l-sm shadow border'">
-            <a href="#" @click.prevent.stop="selectLocation('province', p)" class="font-semibold text-gray-700">
+            <a @click.prevent.stop="selectLocation('province', p)" class="font-semibold text-gray-700">
               <span>{{ p.name }}</span>
 
             </a>
-            <a href="#" @click="FormManager(false, 'province', p)" class="px-2 cursor">
+            <a @click="FormManager(false, 'province', p)" class="px-2 cursor">
               <font-awesome-icon icon="pen" />
             </a>
           </div>
@@ -223,10 +223,10 @@ function saveForm(): void {
         <div class="overflow-y-scroll overscroll-contain scroll-section">
           <div v-for="d in districts" :key="d.uid"
             :class="district?.uid === d.uid ? 'bg-white w-full flex justify-between p-2 mb-1 rounded-l-sm shadow border c-active' : 'bg-white w-full flex justify-between p-2 mb-1 rounded-l-sm shadow border'">
-            <a href="#" @click.prevent.stop="selectLocation('district', d)" class="font-semibold text-gray-700">
+            <a @click.prevent.stop="selectLocation('district', d)" class="font-semibold text-gray-700">
               <span>{{ d.name }}</span>
             </a>
-            <a href="#" @click="FormManager(false, 'district', d)" class="px-2 cursor">
+            <a @click="FormManager(false, 'district', d)" class="px-2 cursor">
               <font-awesome-icon icon="pen" />
             </a>
           </div>

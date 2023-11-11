@@ -72,7 +72,7 @@ const ContainerView = defineComponent({
                                                 { 'tab-active': this.currentTab === tab },
                                             ]}
                                             onClick={() => (this.currentTab = tab)}
-                                            href="#"
+                                           
                                             role="tab"
                                         >
                                             {tab}

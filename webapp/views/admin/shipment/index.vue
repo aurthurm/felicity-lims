@@ -22,7 +22,7 @@
                 { 'tab-active': currentTab === tab },
               ]"
               @click="currentTab = tab"
-              href="#"
+             
             >
               {{ tab }}
             </a>

@@ -236,13 +236,13 @@ const sampleTypes = computed<ISampleType[]>(() => sampleStore.getSampleTypes);
             "
           >
             <a
-              href="#"
+             
               @click.prevent.stop="selectWorkSheetTemplate(wst)"
               class="font-semibold text-gray-700"
             >
               <span>{{ wst.name }}</span>
             </a>
-            <a href="#" @click="FormManager(false, wst)" class="px-2 cursor">
+            <a @click="FormManager(false, wst)" class="px-2 cursor">
               <font-awesome-icon icon="pen" />
             </a>
           </div>
@@ -373,7 +373,7 @@ const sampleTypes = computed<ISampleType[]>(() => sampleStore.getSampleTypes);
                 { 'tab-active': currentTab === tab },
               ]"
               @click="currentTab = tab"
-              href="#"
+             
             >
               {{ tab }}
             </a>

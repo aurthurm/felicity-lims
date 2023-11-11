@@ -207,7 +207,7 @@ function saveMappingForm(): void {
           <li
             v-for="profile in analysesProfiles"
             :key="profile.uid"
-            href="#"
+           
             @click.prevent.stop="selectProfile(profile)"
             :class="[
               'bg-white w-full p-1 mb-1 rounded',
@@ -265,7 +265,7 @@ function saveMappingForm(): void {
                 { 'tab-active': currentTab === tab },
               ]"
               @click="currentTab = tab"
-              href="#"
+             
             >
               {{ tab }}
             </a>

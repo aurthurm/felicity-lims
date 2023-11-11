@@ -15,7 +15,7 @@ sqlalchemy_mptt==0.2.5
 sqlalchemy_mixins @ git+https://github.com/aurthurm/sqlalchemy-mixins.git@async_support
 tenacity==8.2.2
 pydantic[email]==2.4.2
-pydantic_settings-2.0.3
+pydantic_settings==2.0.3
 python-multipart==0.0.6
 alembic==1.11.1
 asyncpg==0.27.0

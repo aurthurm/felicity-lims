@@ -13,7 +13,7 @@
             v-bind:class="{'active': isActive($index)}"
             @click="suggestionClick($index)"
         >
-            <a href="#">{{ suggestion }}</a>
+            <a>{{ suggestion }}</a>
         </li>
     </ul>
 </div>
