@@ -4,39 +4,20 @@ import {
     cacheExchange,
     fetchExchange,
     errorExchange,
-    subscriptionExchange,
     CombinedError,
     Operation,
     Exchange,
 } from 'urql';
 import { makeOperation } from '@urql/core';
 import { authExchange } from '@urql/exchange-auth';
-import { SubscriptionClient } from 'subscriptions-transport-ws';
 import { pipe, tap } from 'wonka';
 
 import { getAuthData, authLogout } from './auth';
-import { GQL_BASE_URL, WS_BASE_URL } from './conf';
+import { GQL_BASE_URL } from './conf';
 import { useNotifyToast } from './composables';
 import jwtDecode from 'jwt-decode';
 
 const { toastError } = useNotifyToast();
-
-const subscriptionClient = new SubscriptionClient(WS_BASE_URL, {
-    reconnect: true,
-    lazy: true,
-    connectionParams: () => {
-        const authData = getAuthData();
-        return {
-            headers: {
-                ...(authData?.auth?.token && {
-                    'x-felicity-user-id': 'felicity-user-x',
-                    'x-felicity-role': 'felicity-role-x',
-                    Authorization: `Bearer ${authData?.auth?.token}`,
-                }),
-            },
-        };
-    },
-});
 
 const getAuth = async ({ authState }) => {
     const authData = getAuthData();
@@ -86,11 +67,6 @@ const didAuthError = (error: any) => {
     }
     return error.graphQLErrors.some((e: any) => e.extensions?.code === 'FORBIDDEN');
 };
-
-// const willAuthError = (authState: any) => {
-//     if (!authState || '/* JWT is expired */') return true;
-//     return false;
-// };
 
 const willAuthError = (authState: any) => {
     if (!authState) return true;
@@ -146,9 +122,6 @@ export const urqlClient = createClient({
         }),
         resultInterceptorExchange,
         fetchExchange,
-        subscriptionExchange({
-            forwardSubscription: operation => subscriptionClient.request(operation) as any,
-        }),
     ],
     fetchOptions: () => {
         const authData = getAuthData();

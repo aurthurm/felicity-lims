@@ -1,29 +1,27 @@
-from sanic import Sanic
-from sanic import response
+from fastapi import FastAPI, Response, Request
+from fastapi.responses import HTMLResponse
+from fastapi.staticfiles import StaticFiles
+from fastapi.templating import Jinja2Templates
+
 from core import settings
-import os
 
 STATIC_DIR = f"{settings.BASE_DIR}/templates/static/"
 
 
-def setup_webapp(app: Sanic, serve_webapp: bool):
+def setup_webapp(app: FastAPI, serve_webapp: bool):
     backends = "/backends" if serve_webapp else "/"
-    
-    if serve_webapp:  
-        @app.get("/")
-        @app.ext.template("static/index.html")
-        async def handler(request):
-            return {"title": "Felicity Lims"}
-             
-        app.static("/", STATIC_DIR, name="base")
-        app.static('/assets', f"{STATIC_DIR}/index.html", name='index')
-        app.static('/favicon.ico', os.path.join(STATIC_DIR, 'favicon.ico'), name="favicon")
-        # app.static("/assets", f"{STATIC_DIR}/assets/", name="assets")
+    templates = Jinja2Templates(directory=STATIC_DIR)
 
+    if serve_webapp:
+        app.mount("/assets", StaticFiles(directory=f"{STATIC_DIR}assets"), name="assets")
+
+        @app.get("/", response_class=HTMLResponse)
+        async def handler(request: Request):
+            return templates.TemplateResponse("index.html", context={"request": request})
 
     @app.get(backends)
     def api_gql_view(request):
-        return response.html(
+        return Response(
             """
             <!Doctype html>
                 <html>
@@ -38,6 +36,3 @@ def setup_webapp(app: Sanic, serve_webapp: bool):
                 </html>
             """
         )
-    
-
- 

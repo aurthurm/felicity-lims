@@ -5,5 +5,5 @@
     <option name="pathToExecutable" value="/usr/bin/black" />
     <option name="sdkUUID" value="e0bc2bad-5e9b-4974-9d18-c79b0e86dd30" />
   </component>
-  <component name="ProjectRootManager" version="2" project-jdk-name="fel_sanic" project-jdk-type="Python SDK" />
+  <component name="ProjectRootManager" version="2" project-jdk-name="felicity-lims" project-jdk-type="Python SDK" />
 </project>

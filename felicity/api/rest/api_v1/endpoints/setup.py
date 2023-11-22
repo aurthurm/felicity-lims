@@ -1,14 +1,15 @@
 import logging
-from typing import Any, Optional
+from typing import Any, Optional, Annotated
 
+from fastapi import APIRouter, Depends
 from pydantic import BaseModel
-from sanic import Blueprint, json
 
+from api.deps import get_current_user
 from apps.setup import models, schemas
-from apps.user import models as user_models
+from apps.user.schemas import User
 from init import default_setup, requisite_setup
 
-setup = Blueprint("setup", url_prefix="/setup")
+setup = APIRouter(tags=["setup"], prefix="/setup")
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -30,29 +31,27 @@ class SetupResponse(BaseModel):
 
 
 @setup.get("/installation")
-async def laboratory_lookup(request) -> Any:
+async def laboratory_lookup() -> Any:
     """
     Retrieve instance of installed laboratory
     """
     laboratory = await models.Laboratory.get_by_setup_name("felicity")
-    return json(
-        {
-            "laboratory": laboratory.marshal_simple(exclude=["lab_manager"]) if laboratory else None,
-            "installed": True if laboratory else False,
-            "message": "" if laboratory else "Laboratory installation required",
-        }
-    )
+    return {
+        "laboratory": laboratory.marshal_simple(exclude=["lab_manager"]) if laboratory else None,
+        "installed": True if laboratory else False,
+        "message": "" if laboratory else "Laboratory installation required",
+    }
 
 
 @setup.post("/installation")
-async def register_laboratory(request) -> Any:
+async def register_laboratory(name: str) -> Any:
     """
     Install a laboratory and initialise departments example post: curl -X POST
     http://localhost:8000/api/v1/setup/installation -d '{"name":"Felicity Lims"}' -H "Content-Type: application/json"
     """
 
     try:
-        await requisite_setup(request.json.get("name"))
+        await requisite_setup(name)
     except Exception as e:
         return {
             "laboratory": None,
@@ -61,17 +60,15 @@ async def register_laboratory(request) -> Any:
         }
 
     laboratory = await models.Laboratory.get_by_setup_name("felicity")
-    return json(
-        {
-            "laboratory": laboratory.marshal_simple(),
-            "installed": True,
-            "message": "installation success",
-        }
-    )
+    return {
+        "laboratory": laboratory.marshal_simple(exclude=["lab_manager"]),
+        "installed": True,
+        "message": "installation success",
+    }
 
 
 @setup.post("/load-default-setup")
-async def load_setup_data(request, current_user: user_models.User) -> Any:
+async def load_setup_data(current_user: Annotated[User, Depends(get_current_user)]) -> Any:
     """
     Run initial setup to load setup data
     """
@@ -80,4 +77,4 @@ async def load_setup_data(request, current_user: user_models.User) -> Any:
     except Exception as e:
         return {"success": False, "message": f"Failed to load setup data: {e}"}
 
-    return json({"success": True, "message": "Setup data was successfully loaded"})
+    return {"success": True, "message": "Setup data was successfully loaded"}

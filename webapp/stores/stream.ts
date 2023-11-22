@@ -1,7 +1,6 @@
 import { defineStore } from 'pinia';
-import { urqlClient } from '../urql';
+import { WS_BASE_URL } from '../conf';
 import { SUBSCRIBE_TO_ACTIVITY_STREAM } from '../graphql/operations/stream.subscriptions';
-import { pipe, subscribe } from 'wonka';
 import { useWorksheetStore } from './worksheet';
 import { useSampleStore } from './sample';
 import useAnalyticsComposable from '../composables/analytics';
@@ -43,15 +42,19 @@ export const useStreamStore = defineStore('stream', {
             }
         },
         subscribeToActivityStream() {
-            pipe(
-                urqlClient.subscription(SUBSCRIBE_TO_ACTIVITY_STREAM, {}),
-                subscribe(result => {
-                    if (result.data?.latestActivity) {
-                        this.addStream(result.data?.latestActivity);
-                    } else {
-                    }
-                })
-            ).unsubscribe;
+            // pipe(
+            //     urqlClient.subscription(SUBSCRIBE_TO_ACTIVITY_STREAM, {}),
+            //     subscribe(result => {
+            //         if (result.data?.latestActivity) {
+            //             this.addStream(result.data?.latestActivity);
+            //         } else {
+            //         }
+            //     })
+            // ).unsubscribe;
+            const wsStream = new WebSocket(WS_BASE_URL);
+            wsStream.onmessage = (event) => {
+                console.log(event.data);
+              };
         },
     },
 });

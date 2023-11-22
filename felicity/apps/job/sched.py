@@ -74,7 +74,7 @@ async def run_jobs_if_exists():
             await action_function(job.uid)
 
 
-async def felicity_workforce_init() -> None:
+def felicity_workforce_init():
     logging.info(f"Initialising felicity workforce ...")
     scheduler.add_job(
         func=run_jobs_if_exists, trigger=IntervalTrigger(seconds=10), id="felicity_wf"

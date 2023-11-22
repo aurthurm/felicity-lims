@@ -67,6 +67,8 @@
         "pinia": "^2.0.28",
         "process": "^0.11.10",
         "react": "^18.2.0",
+        "socket.io": "^4.7.2",
+        "socket.io-client": "^4.7.2",
         "split.js": "^1.6.5",
         "subscriptions-transport-ws": "^0.11.0",
         "sweetalert2": "^11.6.16",

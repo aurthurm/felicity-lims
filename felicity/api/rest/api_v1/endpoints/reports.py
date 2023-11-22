@@ -1,39 +1,39 @@
-from typing import Any
+from typing import Any, Annotated
 from uuid import uuid4
 
-from sanic import Blueprint
-from sanic.log import logger
+from fastapi import APIRouter, Depends
+
+from api.deps import get_current_user
 from apps.analysis.models import analysis as ana_models
 from apps.analytics import conf, models
 from apps.analytics import schemas as an_schema
 from apps.job import conf as job_conf
 from apps.job import models as job_models
 from apps.job import schemas as job_schemas
-from apps.user import models as user_models
+from apps.user.schemas import User
 from utils.dirs import deleteFile, resolve_media_dirs_for
 
-
-reports = Blueprint("reports", url_prefix="/reports")
+reports = APIRouter(tags=["reports"], prefix="/reports")
 
 
 @reports.get("")
-async def read_reports(*, current_user: user_models.User) -> Any:
+async def read_reports(current_user: Annotated[User, Depends(get_current_user)]):
     """
     Retrieve previously generated csv reports.
     """
-    return await models.ReportMeta.all()
+    _r = await models.ReportMeta.all()
+    return list(map(lambda r: r.marshall_simple(), _r))
 
 
 @reports.post("")
 async def request_report_generation(
-    *,
-    request_in: an_schema.ReportRequest,
-    current_user: user_models.User,
+        request_in: an_schema.ReportRequest,
+        current_user: Annotated[User, Depends(get_current_user)],
 ) -> Any:
     """
     Generate Reports.
     """
-    logger.info(f"Report Gen request: {request_in.__dict__}")
+    # logger.info(f"Report Gen request: {request_in.__dict__}")
     media_dir = resolve_media_dirs_for("reports")
     file_path = media_dir + uuid4().hex
     analyses = await ana_models.Analysis.get_all(uid__in=request_in.analyses_uids)
@@ -65,9 +65,8 @@ async def request_report_generation(
 
 @reports.delete("/{report_uid}")
 async def delete_report(
-    *,
-    report_uid: str,
-    current_user: user_models.User,
+        report_uid: str,
+        current_user: Annotated[User, Depends(get_current_user)],
 ):
     report: models.ReportMeta = await models.ReportMeta.get(uid=report_uid)
     deleteFile(report.location)
@@ -76,4 +75,7 @@ async def delete_report(
     report.analyses = []
     await report.save()
     await report.delete()
-    return an_schema.ReportMetaDeleted(uid=report_uid, message="Deletion Success!!")
+    return {
+        "uid": report_uid,
+        "message": "Deletion Success!!"
+    }

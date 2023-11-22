@@ -1,11 +1,12 @@
 import logging
 from dataclasses import dataclass
-from typing import Any
+from typing import Any, Annotated
 
+from fastapi import Depends, Request
+from fastapi.security import OAuth2PasswordBearer
 from graphql import GraphQLError
 from jose import jwt
 from pydantic import ValidationError
-from sanic.request import Request
 from strawberry.http.temporal_response import TemporalResponse
 from strawberry.types.info import Info as StrawberryInfo, RootValueType
 
@@ -18,6 +19,8 @@ from core.config import settings  # noqa
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+
 
 @dataclass
 class InfoContext:
@@ -29,7 +32,7 @@ class InfoContext:
 Info = StrawberryInfo[InfoContext, RootValueType]
 
 
-async def get_current_user(token: str = None) -> models.User | None:
+async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]) -> models.User | None:
     if not token:
         GraphQLError("No auth token")
     try:
@@ -43,7 +46,7 @@ async def get_current_user(token: str = None) -> models.User | None:
     return await models.User.get(uid=token_data.sub)
 
 
-async def get_current_active_user(token: str = None) -> models.User | None:
+async def get_current_active_user(token: Annotated[str, Depends(oauth2_scheme)]) -> models.User | None:
     current_user = await get_current_user(token=token)
     if not current_user or not current_user.is_active:
         return None

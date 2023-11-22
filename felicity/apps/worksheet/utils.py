@@ -1,7 +1,6 @@
 import copy
 
 from apps.worksheet import models
-
 from .conf import worksheet_types
 
 
@@ -33,13 +32,13 @@ class WorkSheetPlater:
     template: dict = {}
 
     def __init__(
-        self,
-        reserved: Dict,
-        n_samples: int,
-        t_type: int = worksheet_types.FLAT,
-        rows: int = None,
-        cols: int = None,
-        row_wise: bool = True,
+            self,
+            reserved: dict,
+            n_samples: int,
+            t_type: int = worksheet_types.FLAT,
+            rows: int = None,
+            cols: int = None,
+            row_wise: bool = True,
     ):
         self.reserved_positions = reserved
         self.number_of_samples = n_samples
@@ -116,7 +115,7 @@ class WorkSheetPlater:
         self.template[index]["col"] = col
 
 
-def add_samples(template: Dict, samples, reserved: list):
+def add_samples(template: dict, samples, reserved: list):
     temp = copy.deepcopy(template)
     # sort samples by uid or sample_id
     sorted_samples = samples.sort()
