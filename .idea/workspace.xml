@@ -5,15 +5,20 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9f590b69-f929-45a1-8512-12ed6efbf028" name="Changes" comment="Added Invetory starter">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/api/deps.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/deps.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/api/gql/auth/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/auth/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/api/gql/notification/subscription.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/notification/subscription.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/api/gql/notification/types.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/notification/types.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/api/gql/permissions.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/permissions.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/lims/boot.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/lims/boot.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/stores/stream.ts" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/stores/stream.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/urql.ts" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/urql.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/templates/static/assets/404-ec58313c.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/templates/static/assets/Groups-41b0c32e.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/templates/static/assets/Impress-37c5b4d4.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/templates/static/assets/Manifest-e31f6764.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/templates/static/assets/NavigationAside-ed7fbe56.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/templates/static/assets/NavigationMain-b5305a9a.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/templates/static/assets/Restricted-597c51b1.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/templates/static/assets/SampleDetail-b728dbf9.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/templates/static/assets/ShipmentDetail-3a5f2a7f.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/templates/static/assets/index-3754201d.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/templates/static/assets/index-3e1f37cc.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/templates/static/assets/index-49dac44a.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/templates/static/assets/index-6c493664.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/templates/static/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/templates/static/index.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
