@@ -13,7 +13,7 @@ def same_origin(request):
 
 
 async def auth_from_info(info) -> Tuple[bool, Optional[User]]:
-    user = info.context.user
+    user = await info.context.user()
     is_auth = True if user else False
     return is_auth, user
 

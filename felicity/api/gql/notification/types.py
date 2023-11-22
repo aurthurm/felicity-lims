@@ -2,6 +2,7 @@ from datetime import datetime
 from typing import List, Optional, Union
 
 import strawberry  # noqa
+
 from api.gql.analysis.types.analysis import SampleType
 from api.gql.analysis.types.results import AnalysisResultType
 from api.gql.analytics.types import ReportMetaType
@@ -51,7 +52,7 @@ class ActivityStreamType:
 
     @strawberry.field
     async def action_object(
-        self, info
+            self, info
     ) -> Union[
         WorkSheetType, SampleType, AnalysisResultType, ReportMetaType, UnknownObjectType
     ]:
@@ -72,7 +73,7 @@ class ActivityStreamType:
             result = await AnalysisResult.get(uid=self.action_object_uid)
             return AnalysisResultType(
                 **result.marshal_simple(
-                    exclude=["right", "left", "tree_id", "level", "worksheet"]
+                    exclude=["right", "left", "tree_id", "level", "worksheet", "submitted_by_name", "verified_by_name"]
                 ),
                 parent=None,
             )

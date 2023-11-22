@@ -1,12 +1,25 @@
 from fastapi import FastAPI
+from starlette.middleware.cors import CORSMiddleware
 from strawberry.fastapi import GraphQLRouter
+from strawberry.subscriptions import GRAPHQL_TRANSPORT_WS_PROTOCOL, GRAPHQL_WS_PROTOCOL
 
+from api.deps import get_gql_context
 from api.gql.schema import schema
 from api.rest.api_v1 import api
 from apps.job.sched import felicity_workforce_init
 from core import settings
 from init import initialize_felicity
 from views import setup_webapp
+
+
+def register_cors(app: FastAPI):
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=settings.CORS_ORIGINS,
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
 
 
 def register_routes(app: FastAPI):
@@ -18,10 +31,6 @@ def register_routes(app: FastAPI):
     setup_webapp(app, settings.SERVE_WEBAPP)
 
 
-def register_websockets(app: FastAPI):
-    ...
-
-
 def register_listeners(app: FastAPI):
     @app.on_event("startup")
     async def init_seeds():
@@ -30,17 +39,15 @@ def register_listeners(app: FastAPI):
 
 
 def register_graphql(app: FastAPI):
-    graphql_app = GraphQLRouter(schema, graphiql=True)
+    graphql_app = GraphQLRouter(
+        schema,
+        graphiql=True,
+        context_getter=get_gql_context,
+        subscription_protocols=[GRAPHQL_TRANSPORT_WS_PROTOCOL, GRAPHQL_WS_PROTOCOL]
+        # GRAPHQL_TRANSPORT_WS_PROTOCOL, GRAPHQL_WS_PROTOCOL
+    )
     app.include_router(graphql_app, prefix="/felicity-gql")
-
-    # class FelicityGraphQLView(GraphQLView):
-    #     async def get_context(self, request: Request, response) -> Any:
-    #         return await get_gql_context(request, response)
-    #
-    # app.add_route(
-    #     FelicityGraphQLView.as_view(schema=schema, graphiql=True),
-    #     "/felicity-gql",
-    # )
+    app.add_websocket_route("/felicity-gql", graphql_app)
 
 
 def register_tasks(app: FastAPI):
@@ -50,8 +57,8 @@ def register_tasks(app: FastAPI):
 
 
 def register_felicity(app: FastAPI):
+    register_cors(app)
     register_routes(app)
-    register_websockets(app)
     register_graphql(app)
     register_listeners(app)
     register_tasks(app)

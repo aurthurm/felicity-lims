@@ -1,13 +1,12 @@
 import logging
-from dataclasses import dataclass
-from typing import Any, Annotated
+from typing import Annotated
 
-from fastapi import Depends, Request
+from fastapi import Depends
 from fastapi.security import OAuth2PasswordBearer
 from graphql import GraphQLError
 from jose import jwt
 from pydantic import ValidationError
-from strawberry.http.temporal_response import TemporalResponse
+from strawberry.fastapi import BaseContext
 from strawberry.types.info import Info as StrawberryInfo, RootValueType
 
 from apps.common import schemas as core_schemas  # noqa
@@ -22,17 +21,7 @@ logger = logging.getLogger(__name__)
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 
-@dataclass
-class InfoContext:
-    user: User
-    request: Request
-    response: TemporalResponse
-
-
-Info = StrawberryInfo[InfoContext, RootValueType]
-
-
-async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]) -> models.User | None:
+async def _get_user(token: str):
     if not token:
         GraphQLError("No auth token")
     try:
@@ -46,43 +35,32 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]) -> mod
     return await models.User.get(uid=token_data.sub)
 
 
+async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]) -> models.User | None:
+    return await _get_user(token)
+
+
 async def get_current_active_user(token: Annotated[str, Depends(oauth2_scheme)]) -> models.User | None:
-    current_user = await get_current_user(token=token)
+    current_user = await _get_user(token)
     if not current_user or not current_user.is_active:
         return None
     return current_user
 
 
-async def get_auth_context(request: Request) -> Any:
-    if "Authorization" in request.headers:
-        authorization = request.headers.get("Authorization", None)
+class InfoContext(BaseContext):
+    async def user(self) -> User | None:
+        if not self.request:
+            return None
+
+        authorization = self.request.headers.get("Authorization", None)
         if not authorization:
-            return {"user": None}
-        _, credentials = authorization.split()
-        return {"user": await get_current_active_user(credentials)}
+            return None
 
-    logger.info(f"Context: must authenticate {request}")
-
-    return {"user": None}
+        token = authorization.split(" ")[1]
+        return await _get_user(token)
 
 
-async def get_auth_user(request: Request) -> Any:
-    if "Authorization" in request.headers:
-        authorization = request.headers.get("Authorization", None)
-        if not authorization:
-            return {"user": None}
-        _, credentials = authorization.split()
-        return await get_current_active_user(credentials)
-
-    logger.info(f"Context: must authenticate {request}")
-
-    return None
+Info = StrawberryInfo[InfoContext, RootValueType]
 
 
-async def get_gql_context(request: Request, response: TemporalResponse) -> InfoContext:
-    auth_ctx = await get_auth_context(request)
-    return InfoContext(**{
-        **auth_ctx,
-        "request": request,
-        "response": response
-    })
+async def get_gql_context() -> InfoContext:
+    return InfoContext()
