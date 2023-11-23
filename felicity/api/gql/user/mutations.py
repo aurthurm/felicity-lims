@@ -1,15 +1,14 @@
 import logging
 import time
-from datetime import timedelta
-from typing import Optional
 
 import strawberry  # noqa
-from api.gql.types import MessageResponse, MessagesType, OperationError
+
 from api.gql.auth import (
     auth_from_info,
     verify_user_auth,
 )
 from api.gql.permissions import IsAuthenticated
+from api.gql.types import MessageResponse, MessagesType, OperationError
 from api.gql.user.types import (
     AuthenticatedData,
     GroupType,
@@ -21,9 +20,8 @@ from apps.user import models as user_models
 from apps.user import schemas as user_schemas
 from core import security
 from core.config import settings
-from core.security import generate_password_reset_token
 from core.events import post_event
-
+from core.security import generate_password_reset_token
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -69,13 +67,13 @@ def simple_task(message: str):
 class UserMutations:
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_user(
-        self,
-        info,
-        first_name: str,
-        last_name: str,
-        email: str,
-        group_uid: str | None = None,
-        open_reg: bool | None = False,
+            self,
+            info,
+            first_name: str,
+            last_name: str,
+            email: str,
+            group_uid: str | None = None,
+            open_reg: bool | None = False,
     ) -> UserResponse:
         if open_reg and not settings.USERS_OPEN_REGISTRATION:
             return OperationError(
@@ -113,15 +111,15 @@ class UserMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_user(
-        self,
-        info,
-        user_uid: str,
-        first_name: str | None,
-        last_name: str | None,
-        mobile_phone: str | None,
-        email: str | None,
-        group_uid: str | None,
-        is_active: bool | None,
+            self,
+            info,
+            user_uid: str,
+            first_name: str | None,
+            last_name: str | None,
+            mobile_phone: str | None,
+            email: str | None,
+            group_uid: str | None,
+            is_active: bool | None,
     ) -> UserResponse:
 
         user = await user_models.User.get_one(uid=user_uid)
@@ -157,7 +155,7 @@ class UserMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_user_auth(
-        self, info, user_uid: str, user_name: str, password: str, passwordc: str
+            self, info, user_uid: str, user_name: str, password: str, passwordc: str
     ) -> UserResponse:
 
         auth = await user_models.UserAuth.get_by_username(username=user_name)
@@ -206,12 +204,12 @@ class UserMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_user_auth(
-        self,
-        info,
-        user_uid: str,
-        user_name: str | None,
-        password: str | None,
-        passwordc: str | None,
+            self,
+            info,
+            user_uid: str,
+            user_name: str | None,
+            password: str | None,
+            passwordc: str | None,
     ) -> UserResponse:
 
         if not user_name or not password:
@@ -258,7 +256,7 @@ class UserMutations:
 
     @strawberry.mutation
     async def authenticate_user(
-        self, info, username: str, password: str
+            self, info, username: str, password: str
     ) -> AuthenticatedDataResponse:
         auth = await user_models.UserAuth.get_by_username(username=username)
         if not auth:
@@ -267,13 +265,19 @@ class UserMutations:
         if not has_access:
             return OperationError(error="Failed to log you in")
 
-        access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
         # _user = getattr(auth, auth.user_type)
         _user = await user_models.User.get(auth_uid=auth.uid)
+        access_token = security.create_access_token(_user.uid)
+        refresh_token = security.create_refresh_token(_user.uid)
+        return AuthenticatedData(token=access_token, refresh=refresh_token, token_type="bearer", user=_user)
+
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
+    async def refresh(self, info, refresh_token: str) -> AuthenticatedDataResponse:
+        is_authenticated, felicity_user = await auth_from_info(info)
         access_token = (
-            security.create_access_token(_user.uid, expires_delta=access_token_expires),
+            security.create_access_token_from_refresh(refresh_token),
         )
-        return AuthenticatedData(token=access_token[0], token_type="bearer", user=_user)
+        return AuthenticatedData(token=access_token[0], refresh=refresh_token, token_type="bearer", user=felicity_user)
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def unlink_user_auth(self, info, user_uid: str) -> UserResponse:
@@ -369,7 +373,7 @@ class UserMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_group_permissions(
-        self, info, group_uid: str, permission_uid: str
+            self, info, group_uid: str, permission_uid: str
     ) -> UpdatedGroupPermsResponse:
         if not group_uid or not permission_uid:
             return OperationError(error="Group and Permission are required.")

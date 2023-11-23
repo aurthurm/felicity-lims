@@ -990,6 +990,7 @@ export type LaboratorySettingType = {
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
   defaultRoute?: Maybe<Scalars['String']['output']>;
+  defaultTatMinutes?: Maybe<Scalars['Int']['output']>;
   defaultTheme?: Maybe<Scalars['String']['output']>;
   inactivityLogOut?: Maybe<Scalars['Int']['output']>;
   laboratory: LaboratoryType;
@@ -1006,6 +1007,7 @@ export type LaboratoryType = {
   __typename?: 'LaboratoryType';
   address?: Maybe<Scalars['String']['output']>;
   businessPhone?: Maybe<Scalars['String']['output']>;
+  code?: Maybe<Scalars['String']['output']>;
   createdAt?: Maybe<Scalars['DateTime']['output']>;
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
@@ -2185,7 +2187,7 @@ export type NoticeType = {
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
   departments?: Maybe<Array<DepartmentType>>;
-  expiry: Scalars['DateTime']['output'];
+  expiry: Scalars['String']['output'];
   groups?: Maybe<Array<GroupType>>;
   title: Scalars['String']['output'];
   uid: Scalars['String']['output'];
@@ -3592,7 +3594,7 @@ export type ReflexRuleResponse = OperationError | ReflexRuleType;
 
 export type ReflexRuleType = {
   __typename?: 'ReflexRuleType';
-  createdAt?: Maybe<Scalars['DateTime']['output']>;
+  createdAt?: Maybe<Scalars['String']['output']>;
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
   description: Scalars['String']['output'];
@@ -4080,6 +4082,8 @@ export type StockItemEdge = {
 export type StockItemInputType = {
   departmentUid?: InputMaybe<Scalars['String']['input']>;
   description: Scalars['String']['input'];
+  maximumLevel?: InputMaybe<Scalars['Int']['input']>;
+  minimumLevel?: InputMaybe<Scalars['Int']['input']>;
   name: Scalars['String']['input'];
 };
 
@@ -4093,6 +4097,7 @@ export type StockItemType = {
   department?: Maybe<DepartmentType>;
   departmentUid?: Maybe<Scalars['String']['output']>;
   description?: Maybe<Scalars['String']['output']>;
+  maximumLevel?: Maybe<Scalars['Int']['output']>;
   minimumLevel?: Maybe<Scalars['Int']['output']>;
   name: Scalars['String']['output'];
   uid: Scalars['String']['output'];
@@ -4453,8 +4458,14 @@ export type StoredSamplesType = {
 
 export type Subscription = {
   __typename?: 'Subscription';
+  count: Scalars['Int']['output'];
   latestActivity: ActivityStreamType;
   streamAll: ActivityStreamType;
+};
+
+
+export type SubscriptionCountArgs = {
+  target?: Scalars['Int']['input'];
 };
 
 /** Union of possible outcomes when deleting some object */
@@ -4681,12 +4692,117 @@ export type WorksheetTemplateInputType = {
   numberOfSamples?: InputMaybe<Scalars['Int']['input']>;
   profiles?: InputMaybe<Array<Scalars['String']['input']>>;
   qcTemplateUid?: InputMaybe<Scalars['String']['input']>;
-  reserved: Array<ReservedInputType>;
+  reserved?: InputMaybe<Array<ReservedInputType>>;
   rowWise?: InputMaybe<Scalars['Boolean']['input']>;
   rows?: InputMaybe<Scalars['Int']['input']>;
   sampleTypeUid: Scalars['String']['input'];
   worksheetType?: InputMaybe<Scalars['String']['input']>;
 };
+
+export type AuthenticateUserMutationVariables = Exact<{
+  username: Scalars['String']['input'];
+  password: Scalars['String']['input'];
+}>;
+
+
+export type AuthenticateUserMutation = { __typename?: 'Mutation', authenticateUser: { __typename: 'AuthenticatedData', token: string, tokenType: string, user: { __typename?: 'UserType', uid: string, firstName?: string | null, lastName?: string | null, preferenceUid?: string | null, groups?: Array<{ __typename?: 'GroupType', uid: string, name?: string | null, keyword?: string | null, pages?: string | null, permissions?: Array<{ __typename?: 'PermissionType', uid: string, action?: string | null, target?: string | null }> | null }> | null, preference?: { __typename?: 'UserPreferenceType', expandedMenu?: boolean | null, theme?: string | null, departments?: Array<{ __typename?: 'DepartmentType', uid: string, name?: string | null }> | null } | null } } | { __typename: 'OperationError', error: string, suggestion?: string | null } };
+
+export type AddUserMutationVariables = Exact<{
+  firstName: Scalars['String']['input'];
+  lastName: Scalars['String']['input'];
+  email: Scalars['String']['input'];
+  groupUid?: InputMaybe<Scalars['String']['input']>;
+}>;
+
+
+export type AddUserMutation = { __typename?: 'Mutation', createUser: { __typename: 'OperationError', error: string, suggestion?: string | null } | { __typename?: 'UserType', uid: string, firstName?: string | null, lastName?: string | null, email?: string | null, isActive: boolean, isSuperuser: boolean, mobilePhone?: string | null, auth?: { __typename?: 'UserAuthType', uid: string, userName: string, isBlocked: boolean, userType?: string | null } | null, groups?: Array<{ __typename?: 'GroupType', uid: string, name?: string | null, keyword?: string | null, pages?: string | null, permissions?: Array<{ __typename?: 'PermissionType', uid: string, action?: string | null, target?: string | null }> | null }> | null } };
+
+export type EditUserMutationVariables = Exact<{
+  userUid: Scalars['String']['input'];
+  firstName: Scalars['String']['input'];
+  lastName?: InputMaybe<Scalars['String']['input']>;
+  email?: InputMaybe<Scalars['String']['input']>;
+  groupUid?: InputMaybe<Scalars['String']['input']>;
+  mobilePhone?: InputMaybe<Scalars['String']['input']>;
+  isActive?: InputMaybe<Scalars['Boolean']['input']>;
+}>;
+
+
+export type EditUserMutation = { __typename?: 'Mutation', updateUser: { __typename: 'OperationError', error: string, suggestion?: string | null } | { __typename?: 'UserType', uid: string, firstName?: string | null, lastName?: string | null, email?: string | null, isActive: boolean, isSuperuser: boolean, mobilePhone?: string | null, auth?: { __typename?: 'UserAuthType', uid: string, userName: string, isBlocked: boolean, userType?: string | null } | null, groups?: Array<{ __typename?: 'GroupType', uid: string, name?: string | null, keyword?: string | null, pages?: string | null, permissions?: Array<{ __typename?: 'PermissionType', uid: string, action?: string | null, target?: string | null }> | null }> | null } };
+
+export type AddUserAuthMutationVariables = Exact<{
+  userUid: Scalars['String']['input'];
+  userName: Scalars['String']['input'];
+  password: Scalars['String']['input'];
+  passwordc: Scalars['String']['input'];
+}>;
+
+
+export type AddUserAuthMutation = { __typename?: 'Mutation', createUserAuth: { __typename: 'OperationError', error: string, suggestion?: string | null } | { __typename?: 'UserType', uid: string, firstName?: string | null, lastName?: string | null, email?: string | null, isActive: boolean, isSuperuser: boolean, mobilePhone?: string | null, auth?: { __typename?: 'UserAuthType', uid: string, userName: string, isBlocked: boolean, userType?: string | null } | null, groups?: Array<{ __typename?: 'GroupType', uid: string, name?: string | null, keyword?: string | null, pages?: string | null, permissions?: Array<{ __typename?: 'PermissionType', uid: string, action?: string | null, target?: string | null }> | null }> | null } };
+
+export type EditUserAuthMutationVariables = Exact<{
+  userUid: Scalars['String']['input'];
+  userName: Scalars['String']['input'];
+  password: Scalars['String']['input'];
+  passwordc: Scalars['String']['input'];
+}>;
+
+
+export type EditUserAuthMutation = { __typename?: 'Mutation', updateUserAuth: { __typename: 'OperationError', error: string, suggestion?: string | null } | { __typename?: 'UserType', uid: string, firstName?: string | null, lastName?: string | null, email?: string | null, isActive: boolean, isSuperuser: boolean, mobilePhone?: string | null, auth?: { __typename?: 'UserAuthType', uid: string, userName: string, isBlocked: boolean, userType?: string | null } | null, groups?: Array<{ __typename?: 'GroupType', uid: string, name?: string | null, keyword?: string | null, pages?: string | null, permissions?: Array<{ __typename?: 'PermissionType', uid: string, action?: string | null, target?: string | null }> | null }> | null } };
+
+export type AddGroupMutationVariables = Exact<{
+  payload: GroupInputType;
+}>;
+
+
+export type AddGroupMutation = { __typename?: 'Mutation', createGroup: { __typename: 'GroupType', uid: string, name?: string | null, pages?: string | null, active?: boolean | null, permissions?: Array<{ __typename?: 'PermissionType', uid: string, action?: string | null, target?: string | null, active?: boolean | null }> | null } | { __typename: 'OperationError', error: string, suggestion?: string | null } };
+
+export type EditGroupMutationVariables = Exact<{
+  uid: Scalars['String']['input'];
+  payload: GroupInputType;
+}>;
+
+
+export type EditGroupMutation = { __typename?: 'Mutation', updateGroup: { __typename: 'GroupType', uid: string, name?: string | null, pages?: string | null, active?: boolean | null, permissions?: Array<{ __typename?: 'PermissionType', uid: string, action?: string | null, target?: string | null, active?: boolean | null }> | null } | { __typename: 'OperationError', error: string, suggestion?: string | null } };
+
+export type UpdateGroupsAndPermissionsMutationVariables = Exact<{
+  groupUid: Scalars['String']['input'];
+  permissionUid: Scalars['String']['input'];
+}>;
+
+
+export type UpdateGroupsAndPermissionsMutation = { __typename?: 'Mutation', updateGroupPermissions: { __typename: 'OperationError', error: string, suggestion?: string | null } | { __typename?: 'UpdatedGroupPerms', group: { __typename?: 'GroupType', uid: string, name?: string | null, pages?: string | null, active?: boolean | null, permissions?: Array<{ __typename?: 'PermissionType', uid: string, action?: string | null, target?: string | null, active?: boolean | null }> | null }, permission: { __typename?: 'PermissionType', uid: string, action?: string | null, target?: string | null } } };
+
+export type AddDepartmentMutationVariables = Exact<{
+  payload: DepartmentInputType;
+}>;
+
+
+export type AddDepartmentMutation = { __typename?: 'Mutation', createDepartment: { __typename?: 'DepartmentType', uid: string, name?: string | null } | { __typename: 'OperationError', error: string, suggestion?: string | null } };
+
+export type EditDepartmentMutationVariables = Exact<{
+  uid: Scalars['String']['input'];
+  payload: DepartmentInputType;
+}>;
+
+
+export type EditDepartmentMutation = { __typename?: 'Mutation', updateDepartment: { __typename?: 'DepartmentType', uid: string, name?: string | null } | { __typename: 'OperationError', error: string, suggestion?: string | null } };
+
+export type EditLaboratoryMutationVariables = Exact<{
+  uid: Scalars['String']['input'];
+  payload: LaboratoryInputType;
+}>;
+
+
+export type EditLaboratoryMutation = { __typename?: 'Mutation', updateLaboratory: { __typename?: 'LaboratoryType', uid: string, setupName: string, labName: string, labManagerUid?: string | null, email?: string | null, emailCc?: string | null, mobilePhone?: string | null, businessPhone?: string | null, address?: string | null, logo?: string | null } | { __typename: 'OperationError', error: string, suggestion?: string | null } };
+
+export type EditLaboratorySettingMutationVariables = Exact<{
+  uid: Scalars['String']['input'];
+  payload: LaboratorySettingInputType;
+}>;
+
+
+export type EditLaboratorySettingMutation = { __typename?: 'Mutation', updateLaboratorySetting: { __typename?: 'LaboratorySettingType', uid: string, laboratoryUid: string, allowSelfVerification?: boolean | null, allowPatientRegistration?: boolean | null, allowSampleRegistration?: boolean | null, allowWorksheetCreation?: boolean | null, defaultRoute?: string | null, passwordLifetime?: number | null, inactivityLogOut?: number | null, defaultTheme?: string | null, autoReceiveSamples?: boolean | null, stickerCopies?: number | null } | { __typename: 'OperationError', error: string, suggestion?: string | null } };
 
 export type GetLaboratoryQueryVariables = Exact<{
   setupName?: Scalars['String']['input'];
@@ -5856,7 +5972,7 @@ export type AddNoticeMutationVariables = Exact<{
 }>;
 
 
-export type AddNoticeMutation = { __typename?: 'Mutation', createNotice: { __typename: 'NoticeType', uid: string, title: string, body: string, expiry: any, createdByUid?: string | null, departments?: Array<{ __typename?: 'DepartmentType', uid: string, name?: string | null }> | null, groups?: Array<{ __typename?: 'GroupType', uid: string, name?: string | null }> | null } | { __typename: 'OperationError', error: string, suggestion?: string | null } };
+export type AddNoticeMutation = { __typename?: 'Mutation', createNotice: { __typename: 'NoticeType', uid: string, title: string, body: string, expiry: string, createdByUid?: string | null, departments?: Array<{ __typename?: 'DepartmentType', uid: string, name?: string | null }> | null, groups?: Array<{ __typename?: 'GroupType', uid: string, name?: string | null }> | null } | { __typename: 'OperationError', error: string, suggestion?: string | null } };
 
 export type EditNoticeMutationVariables = Exact<{
   uid: Scalars['String']['input'];
@@ -5864,7 +5980,7 @@ export type EditNoticeMutationVariables = Exact<{
 }>;
 
 
-export type EditNoticeMutation = { __typename?: 'Mutation', updateNotice: { __typename: 'NoticeType', uid: string, title: string, body: string, expiry: any, createdByUid?: string | null, departments?: Array<{ __typename?: 'DepartmentType', uid: string, name?: string | null }> | null, groups?: Array<{ __typename?: 'GroupType', uid: string, name?: string | null }> | null } | { __typename: 'OperationError', error: string, suggestion?: string | null } };
+export type EditNoticeMutation = { __typename?: 'Mutation', updateNotice: { __typename: 'NoticeType', uid: string, title: string, body: string, expiry: string, createdByUid?: string | null, departments?: Array<{ __typename?: 'DepartmentType', uid: string, name?: string | null }> | null, groups?: Array<{ __typename?: 'GroupType', uid: string, name?: string | null }> | null } | { __typename: 'OperationError', error: string, suggestion?: string | null } };
 
 export type DeleteNoticeMutationVariables = Exact<{
   uid: Scalars['String']['input'];
@@ -5878,7 +5994,7 @@ export type GetNoticesByCreatorUidQueryVariables = Exact<{
 }>;
 
 
-export type GetNoticesByCreatorUidQuery = { __typename?: 'Query', noticesByCreator?: Array<{ __typename?: 'NoticeType', uid: string, title: string, body: string, expiry: any, createdByUid?: string | null, departments?: Array<{ __typename?: 'DepartmentType', uid: string, name?: string | null }> | null, groups?: Array<{ __typename?: 'GroupType', uid: string, name?: string | null }> | null }> | null };
+export type GetNoticesByCreatorUidQuery = { __typename?: 'Query', noticesByCreator?: Array<{ __typename?: 'NoticeType', uid: string, title: string, body: string, expiry: string, createdByUid?: string | null, departments?: Array<{ __typename?: 'DepartmentType', uid: string, name?: string | null }> | null, groups?: Array<{ __typename?: 'GroupType', uid: string, name?: string | null }> | null }> | null };
 
 export type AddIdentificationMutationVariables = Exact<{
   name: Scalars['String']['input'];
@@ -5945,7 +6061,7 @@ export type AddReflexRMutationVariables = Exact<{
 }>;
 
 
-export type AddReflexRMutation = { __typename?: 'Mutation', createReflexRule: { __typename: 'OperationError', error: string, suggestion?: string | null } | { __typename: 'ReflexRuleType', uid: string, name: string, description: string, createdByUid?: string | null, createdAt?: any | null } };
+export type AddReflexRMutation = { __typename?: 'Mutation', createReflexRule: { __typename: 'OperationError', error: string, suggestion?: string | null } | { __typename: 'ReflexRuleType', uid: string, name: string, description: string, createdByUid?: string | null, createdAt?: string | null } };
 
 export type EditReflexRMutationVariables = Exact<{
   uid: Scalars['String']['input'];
@@ -5953,7 +6069,7 @@ export type EditReflexRMutationVariables = Exact<{
 }>;
 
 
-export type EditReflexRMutation = { __typename?: 'Mutation', updateReflexRule: { __typename: 'OperationError', error: string, suggestion?: string | null } | { __typename: 'ReflexRuleType', uid: string, name: string, description: string, createdByUid?: string | null, createdAt?: any | null } };
+export type EditReflexRMutation = { __typename?: 'Mutation', updateReflexRule: { __typename: 'OperationError', error: string, suggestion?: string | null } | { __typename: 'ReflexRuleType', uid: string, name: string, description: string, createdByUid?: string | null, createdAt?: string | null } };
 
 export type AddReflexAMutationVariables = Exact<{
   payload: ReflexActionInput;
@@ -6213,111 +6329,6 @@ export type GetSystemActivitySubscriptionVariables = Exact<{ [key: string]: neve
 
 export type GetSystemActivitySubscription = { __typename?: 'Subscription', latestActivity: { __typename?: 'ActivityStreamType', uid: string, actorUid?: string | null, actionObjectUid?: string | null, actionObjectType?: string | null, targetUid?: string | null, verb?: string | null, actor?: { __typename?: 'UserType', uid: string, firstName?: string | null, lastName?: string | null } | null, actionObject: { __typename: 'AnalysisResultType', uid: string, sampleUid: string, result?: string | null, status?: string | null } | { __typename: 'ReportMetaType', uid: string, status?: string | null, location?: string | null } | { __typename: 'SampleType', uid: string, sampleId: string, status?: string | null, analysisRequest?: { __typename?: 'AnalysisRequestType', patientUid: string } | null } | { __typename: 'UnknownObjectType' } | { __typename: 'WorkSheetType', uid: string, worksheetId: string, state?: string | null } } };
 
-export type AuthenticateUserMutationVariables = Exact<{
-  username: Scalars['String']['input'];
-  password: Scalars['String']['input'];
-}>;
-
-
-export type AuthenticateUserMutation = { __typename?: 'Mutation', authenticateUser: { __typename: 'AuthenticatedData', token: string, tokenType: string, user: { __typename?: 'UserType', uid: string, firstName?: string | null, lastName?: string | null, preferenceUid?: string | null, groups?: Array<{ __typename?: 'GroupType', uid: string, name?: string | null, keyword?: string | null, pages?: string | null, permissions?: Array<{ __typename?: 'PermissionType', uid: string, action?: string | null, target?: string | null }> | null }> | null, preference?: { __typename?: 'UserPreferenceType', expandedMenu?: boolean | null, theme?: string | null, departments?: Array<{ __typename?: 'DepartmentType', uid: string, name?: string | null }> | null } | null } } | { __typename: 'OperationError', error: string, suggestion?: string | null } };
-
-export type AddUserMutationVariables = Exact<{
-  firstName: Scalars['String']['input'];
-  lastName: Scalars['String']['input'];
-  email: Scalars['String']['input'];
-  groupUid?: InputMaybe<Scalars['String']['input']>;
-}>;
-
-
-export type AddUserMutation = { __typename?: 'Mutation', createUser: { __typename: 'OperationError', error: string, suggestion?: string | null } | { __typename?: 'UserType', uid: string, firstName?: string | null, lastName?: string | null, email?: string | null, isActive: boolean, isSuperuser: boolean, mobilePhone?: string | null, auth?: { __typename?: 'UserAuthType', uid: string, userName: string, isBlocked: boolean, userType?: string | null } | null, groups?: Array<{ __typename?: 'GroupType', uid: string, name?: string | null, keyword?: string | null, pages?: string | null, permissions?: Array<{ __typename?: 'PermissionType', uid: string, action?: string | null, target?: string | null }> | null }> | null } };
-
-export type EditUserMutationVariables = Exact<{
-  userUid: Scalars['String']['input'];
-  firstName: Scalars['String']['input'];
-  lastName?: InputMaybe<Scalars['String']['input']>;
-  email?: InputMaybe<Scalars['String']['input']>;
-  groupUid?: InputMaybe<Scalars['String']['input']>;
-  mobilePhone?: InputMaybe<Scalars['String']['input']>;
-  isActive?: InputMaybe<Scalars['Boolean']['input']>;
-}>;
-
-
-export type EditUserMutation = { __typename?: 'Mutation', updateUser: { __typename: 'OperationError', error: string, suggestion?: string | null } | { __typename?: 'UserType', uid: string, firstName?: string | null, lastName?: string | null, email?: string | null, isActive: boolean, isSuperuser: boolean, mobilePhone?: string | null, auth?: { __typename?: 'UserAuthType', uid: string, userName: string, isBlocked: boolean, userType?: string | null } | null, groups?: Array<{ __typename?: 'GroupType', uid: string, name?: string | null, keyword?: string | null, pages?: string | null, permissions?: Array<{ __typename?: 'PermissionType', uid: string, action?: string | null, target?: string | null }> | null }> | null } };
-
-export type AddUserAuthMutationVariables = Exact<{
-  userUid: Scalars['String']['input'];
-  userName: Scalars['String']['input'];
-  password: Scalars['String']['input'];
-  passwordc: Scalars['String']['input'];
-}>;
-
-
-export type AddUserAuthMutation = { __typename?: 'Mutation', createUserAuth: { __typename: 'OperationError', error: string, suggestion?: string | null } | { __typename?: 'UserType', uid: string, firstName?: string | null, lastName?: string | null, email?: string | null, isActive: boolean, isSuperuser: boolean, mobilePhone?: string | null, auth?: { __typename?: 'UserAuthType', uid: string, userName: string, isBlocked: boolean, userType?: string | null } | null, groups?: Array<{ __typename?: 'GroupType', uid: string, name?: string | null, keyword?: string | null, pages?: string | null, permissions?: Array<{ __typename?: 'PermissionType', uid: string, action?: string | null, target?: string | null }> | null }> | null } };
-
-export type EditUserAuthMutationVariables = Exact<{
-  userUid: Scalars['String']['input'];
-  userName: Scalars['String']['input'];
-  password: Scalars['String']['input'];
-  passwordc: Scalars['String']['input'];
-}>;
-
-
-export type EditUserAuthMutation = { __typename?: 'Mutation', updateUserAuth: { __typename: 'OperationError', error: string, suggestion?: string | null } | { __typename?: 'UserType', uid: string, firstName?: string | null, lastName?: string | null, email?: string | null, isActive: boolean, isSuperuser: boolean, mobilePhone?: string | null, auth?: { __typename?: 'UserAuthType', uid: string, userName: string, isBlocked: boolean, userType?: string | null } | null, groups?: Array<{ __typename?: 'GroupType', uid: string, name?: string | null, keyword?: string | null, pages?: string | null, permissions?: Array<{ __typename?: 'PermissionType', uid: string, action?: string | null, target?: string | null }> | null }> | null } };
-
-export type AddGroupMutationVariables = Exact<{
-  payload: GroupInputType;
-}>;
-
-
-export type AddGroupMutation = { __typename?: 'Mutation', createGroup: { __typename: 'GroupType', uid: string, name?: string | null, pages?: string | null, active?: boolean | null, permissions?: Array<{ __typename?: 'PermissionType', uid: string, action?: string | null, target?: string | null, active?: boolean | null }> | null } | { __typename: 'OperationError', error: string, suggestion?: string | null } };
-
-export type EditGroupMutationVariables = Exact<{
-  uid: Scalars['String']['input'];
-  payload: GroupInputType;
-}>;
-
-
-export type EditGroupMutation = { __typename?: 'Mutation', updateGroup: { __typename: 'GroupType', uid: string, name?: string | null, pages?: string | null, active?: boolean | null, permissions?: Array<{ __typename?: 'PermissionType', uid: string, action?: string | null, target?: string | null, active?: boolean | null }> | null } | { __typename: 'OperationError', error: string, suggestion?: string | null } };
-
-export type UpdateGroupsAndPermissionsMutationVariables = Exact<{
-  groupUid: Scalars['String']['input'];
-  permissionUid: Scalars['String']['input'];
-}>;
-
-
-export type UpdateGroupsAndPermissionsMutation = { __typename?: 'Mutation', updateGroupPermissions: { __typename: 'OperationError', error: string, suggestion?: string | null } | { __typename?: 'UpdatedGroupPerms', group: { __typename?: 'GroupType', uid: string, name?: string | null, pages?: string | null, active?: boolean | null, permissions?: Array<{ __typename?: 'PermissionType', uid: string, action?: string | null, target?: string | null, active?: boolean | null }> | null }, permission: { __typename?: 'PermissionType', uid: string, action?: string | null, target?: string | null } } };
-
-export type AddDepartmentMutationVariables = Exact<{
-  payload: DepartmentInputType;
-}>;
-
-
-export type AddDepartmentMutation = { __typename?: 'Mutation', createDepartment: { __typename?: 'DepartmentType', uid: string, name?: string | null } | { __typename: 'OperationError', error: string, suggestion?: string | null } };
-
-export type EditDepartmentMutationVariables = Exact<{
-  uid: Scalars['String']['input'];
-  payload: DepartmentInputType;
-}>;
-
-
-export type EditDepartmentMutation = { __typename?: 'Mutation', updateDepartment: { __typename?: 'DepartmentType', uid: string, name?: string | null } | { __typename: 'OperationError', error: string, suggestion?: string | null } };
-
-export type EditLaboratoryMutationVariables = Exact<{
-  uid: Scalars['String']['input'];
-  payload: LaboratoryInputType;
-}>;
-
-
-export type EditLaboratoryMutation = { __typename?: 'Mutation', updateLaboratory: { __typename?: 'LaboratoryType', uid: string, setupName: string, labName: string, labManagerUid?: string | null, email?: string | null, emailCc?: string | null, mobilePhone?: string | null, businessPhone?: string | null, address?: string | null, logo?: string | null } | { __typename: 'OperationError', error: string, suggestion?: string | null } };
-
-export type EditLaboratorySettingMutationVariables = Exact<{
-  uid: Scalars['String']['input'];
-  payload: LaboratorySettingInputType;
-}>;
-
-
-export type EditLaboratorySettingMutation = { __typename?: 'Mutation', updateLaboratorySetting: { __typename?: 'LaboratorySettingType', uid: string, laboratoryUid: string, allowSelfVerification?: boolean | null, allowPatientRegistration?: boolean | null, allowSampleRegistration?: boolean | null, allowWorksheetCreation?: boolean | null, defaultRoute?: string | null, passwordLifetime?: number | null, inactivityLogOut?: number | null, defaultTheme?: string | null, autoReceiveSamples?: boolean | null, stickerCopies?: number | null } | { __typename: 'OperationError', error: string, suggestion?: string | null } };
-
 export type AddWorkSheetTemplateMutationVariables = Exact<{
   payload: WorksheetTemplateInputType;
 }>;
@@ -6396,6 +6407,422 @@ export type GetWorkSheetByUidQueryVariables = Exact<{
 export type GetWorkSheetByUidQuery = { __typename?: 'Query', worksheetByUid: { __typename?: 'WorkSheetType', uid: string, worksheetId: string, numberOfSamples?: number | null, assignedCount: number, reserved?: any | null, state?: string | null, createdAt?: any | null, analyst?: { __typename?: 'UserType', uid: string, firstName?: string | null, lastName?: string | null, auth?: { __typename?: 'UserAuthType', uid: string, userName: string } | null } | null, sampleType?: { __typename?: 'SampleTypeTyp', name: string } | null, instrument?: { __typename?: 'InstrumentType', uid: string, name?: string | null } | null, template?: { __typename?: 'WorkSheetTemplateType', uid: string, name: string } | null, analysis?: { __typename?: 'AnalysisType', uid: string, name: string } | null, analysisResults?: Array<{ __typename?: 'AnalysisResultType', uid: string, result?: string | null, status?: string | null, worksheetPosition?: number | null, retest: boolean, reportable: boolean, method?: { __typename?: 'MethodType', uid: string, name?: string | null } | null, instrument?: { __typename?: 'InstrumentType', uid: string, name?: string | null } | null, analysis?: { __typename?: 'AnalysisType', uid: string, name: string, unitUid?: string | null, unit?: { __typename?: 'UnitType', uid: string, name: string } | null, resultOptions?: Array<{ __typename?: 'ResultOptionType', uid: string, optionKey: number, value: string }> | null } | null, sample: { __typename?: 'SampleType', uid: string, sampleId: string, priority: number, analysisRequest?: { __typename?: 'AnalysisRequestType', uid: string, client: { __typename?: 'ClientType', uid: string, name: string }, patient: { __typename?: 'PatientType', uid: string, firstName?: string | null, lastName?: string | null, clientPatientId: string, patientId: string } } | null, qcLevel?: { __typename?: 'QCLevelType', uid: string, level: string } | null } }> | null } };
 
 
+export const AuthenticateUserDocument = gql`
+    mutation AuthenticateUser($username: String!, $password: String!) {
+  authenticateUser(password: $password, username: $username) {
+    ... on AuthenticatedData {
+      __typename
+      token
+      tokenType
+      user {
+        uid
+        firstName
+        lastName
+        groups {
+          permissions {
+            uid
+            action
+            target
+          }
+          uid
+          name
+          keyword
+          pages
+        }
+        preferenceUid
+        preference {
+          expandedMenu
+          theme
+          departments {
+            uid
+            name
+          }
+        }
+      }
+    }
+    ... on OperationError {
+      __typename
+      error
+      suggestion
+    }
+  }
+}
+    `;
+
+export function useAuthenticateUserMutation() {
+  return Urql.useMutation<AuthenticateUserMutation, AuthenticateUserMutationVariables>(AuthenticateUserDocument);
+};
+export const AddUserDocument = gql`
+    mutation addUser($firstName: String!, $lastName: String!, $email: String!, $groupUid: String) {
+  createUser(
+    firstName: $firstName
+    lastName: $lastName
+    email: $email
+    groupUid: $groupUid
+  ) {
+    ... on UserType {
+      uid
+      firstName
+      lastName
+      email
+      isActive
+      isSuperuser
+      mobilePhone
+      auth {
+        uid
+        userName
+        isBlocked
+        userType
+      }
+      groups {
+        permissions {
+          uid
+          action
+          target
+        }
+        uid
+        name
+        keyword
+        pages
+      }
+    }
+    ... on OperationError {
+      __typename
+      error
+      suggestion
+    }
+  }
+}
+    `;
+
+export function useAddUserMutation() {
+  return Urql.useMutation<AddUserMutation, AddUserMutationVariables>(AddUserDocument);
+};
+export const EditUserDocument = gql`
+    mutation editUser($userUid: String!, $firstName: String!, $lastName: String, $email: String, $groupUid: String, $mobilePhone: String, $isActive: Boolean) {
+  updateUser(
+    userUid: $userUid
+    firstName: $firstName
+    lastName: $lastName
+    email: $email
+    groupUid: $groupUid
+    mobilePhone: $mobilePhone
+    isActive: $isActive
+  ) {
+    ... on UserType {
+      uid
+      firstName
+      lastName
+      email
+      isActive
+      isSuperuser
+      mobilePhone
+      auth {
+        uid
+        userName
+        isBlocked
+        userType
+      }
+      groups {
+        permissions {
+          uid
+          action
+          target
+        }
+        uid
+        name
+        keyword
+        pages
+      }
+    }
+    ... on OperationError {
+      __typename
+      error
+      suggestion
+    }
+  }
+}
+    `;
+
+export function useEditUserMutation() {
+  return Urql.useMutation<EditUserMutation, EditUserMutationVariables>(EditUserDocument);
+};
+export const AddUserAuthDocument = gql`
+    mutation addUserAuth($userUid: String!, $userName: String!, $password: String!, $passwordc: String!) {
+  createUserAuth(
+    userUid: $userUid
+    userName: $userName
+    password: $password
+    passwordc: $passwordc
+  ) {
+    ... on UserType {
+      uid
+      firstName
+      lastName
+      email
+      isActive
+      isSuperuser
+      mobilePhone
+      auth {
+        uid
+        userName
+        isBlocked
+        userType
+      }
+      groups {
+        permissions {
+          uid
+          action
+          target
+        }
+        uid
+        name
+        keyword
+        pages
+      }
+    }
+    ... on OperationError {
+      __typename
+      error
+      suggestion
+    }
+  }
+}
+    `;
+
+export function useAddUserAuthMutation() {
+  return Urql.useMutation<AddUserAuthMutation, AddUserAuthMutationVariables>(AddUserAuthDocument);
+};
+export const EditUserAuthDocument = gql`
+    mutation editUserAuth($userUid: String!, $userName: String!, $password: String!, $passwordc: String!) {
+  updateUserAuth(
+    userUid: $userUid
+    userName: $userName
+    password: $password
+    passwordc: $passwordc
+  ) {
+    ... on UserType {
+      uid
+      firstName
+      lastName
+      email
+      isActive
+      isSuperuser
+      mobilePhone
+      auth {
+        uid
+        userName
+        isBlocked
+        userType
+      }
+      groups {
+        permissions {
+          uid
+          action
+          target
+        }
+        uid
+        name
+        keyword
+        pages
+      }
+    }
+    ... on OperationError {
+      __typename
+      error
+      suggestion
+    }
+  }
+}
+    `;
+
+export function useEditUserAuthMutation() {
+  return Urql.useMutation<EditUserAuthMutation, EditUserAuthMutationVariables>(EditUserAuthDocument);
+};
+export const AddGroupDocument = gql`
+    mutation addGroup($payload: GroupInputType!) {
+  createGroup(payload: $payload) {
+    ... on GroupType {
+      __typename
+      uid
+      name
+      pages
+      permissions {
+        uid
+        action
+        target
+        active
+      }
+      active
+    }
+    ... on OperationError {
+      __typename
+      error
+      suggestion
+    }
+  }
+}
+    `;
+
+export function useAddGroupMutation() {
+  return Urql.useMutation<AddGroupMutation, AddGroupMutationVariables>(AddGroupDocument);
+};
+export const EditGroupDocument = gql`
+    mutation editGroup($uid: String!, $payload: GroupInputType!) {
+  updateGroup(uid: $uid, payload: $payload) {
+    ... on GroupType {
+      __typename
+      uid
+      name
+      pages
+      permissions {
+        uid
+        action
+        target
+        active
+      }
+      active
+    }
+    ... on OperationError {
+      __typename
+      error
+      suggestion
+    }
+  }
+}
+    `;
+
+export function useEditGroupMutation() {
+  return Urql.useMutation<EditGroupMutation, EditGroupMutationVariables>(EditGroupDocument);
+};
+export const UpdateGroupsAndPermissionsDocument = gql`
+    mutation updateGroupsAndPermissions($groupUid: String!, $permissionUid: String!) {
+  updateGroupPermissions(groupUid: $groupUid, permissionUid: $permissionUid) {
+    ... on UpdatedGroupPerms {
+      group {
+        uid
+        name
+        pages
+        permissions {
+          uid
+          action
+          target
+          active
+        }
+        active
+      }
+      permission {
+        uid
+        action
+        target
+      }
+    }
+    ... on OperationError {
+      __typename
+      error
+      suggestion
+    }
+  }
+}
+    `;
+
+export function useUpdateGroupsAndPermissionsMutation() {
+  return Urql.useMutation<UpdateGroupsAndPermissionsMutation, UpdateGroupsAndPermissionsMutationVariables>(UpdateGroupsAndPermissionsDocument);
+};
+export const AddDepartmentDocument = gql`
+    mutation addDepartment($payload: DepartmentInputType!) {
+  createDepartment(payload: $payload) {
+    ... on DepartmentType {
+      uid
+      name
+    }
+    ... on OperationError {
+      __typename
+      error
+      suggestion
+    }
+  }
+}
+    `;
+
+export function useAddDepartmentMutation() {
+  return Urql.useMutation<AddDepartmentMutation, AddDepartmentMutationVariables>(AddDepartmentDocument);
+};
+export const EditDepartmentDocument = gql`
+    mutation editDepartment($uid: String!, $payload: DepartmentInputType!) {
+  updateDepartment(uid: $uid, payload: $payload) {
+    ... on DepartmentType {
+      uid
+      name
+    }
+    ... on OperationError {
+      __typename
+      error
+      suggestion
+    }
+  }
+}
+    `;
+
+export function useEditDepartmentMutation() {
+  return Urql.useMutation<EditDepartmentMutation, EditDepartmentMutationVariables>(EditDepartmentDocument);
+};
+export const EditLaboratoryDocument = gql`
+    mutation editLaboratory($uid: String!, $payload: LaboratoryInputType!) {
+  updateLaboratory(uid: $uid, payload: $payload) {
+    ... on LaboratoryType {
+      uid
+      setupName
+      labName
+      labManagerUid
+      email
+      emailCc
+      mobilePhone
+      businessPhone
+      address
+      logo
+    }
+    ... on OperationError {
+      __typename
+      error
+      suggestion
+    }
+  }
+}
+    `;
+
+export function useEditLaboratoryMutation() {
+  return Urql.useMutation<EditLaboratoryMutation, EditLaboratoryMutationVariables>(EditLaboratoryDocument);
+};
+export const EditLaboratorySettingDocument = gql`
+    mutation editLaboratorySetting($uid: String!, $payload: LaboratorySettingInputType!) {
+  updateLaboratorySetting(uid: $uid, payload: $payload) {
+    ... on LaboratorySettingType {
+      uid
+      laboratoryUid
+      allowSelfVerification
+      allowPatientRegistration
+      allowSampleRegistration
+      allowWorksheetCreation
+      defaultRoute
+      passwordLifetime
+      inactivityLogOut
+      defaultTheme
+      autoReceiveSamples
+      stickerCopies
+    }
+    ... on OperationError {
+      __typename
+      error
+      suggestion
+    }
+  }
+}
+    `;
+
+export function useEditLaboratorySettingMutation() {
+  return Urql.useMutation<EditLaboratorySettingMutation, EditLaboratorySettingMutationVariables>(EditLaboratorySettingDocument);
+};
 export const GetLaboratoryDocument = gql`
     query getLaboratory($setupName: String! = "felicity") {
   laboratory(setupName: $setupName) {
@@ -11532,8 +11959,8 @@ export function useIdentificationTypesQuery(options: Omit<Urql.UseQueryArgs<neve
 export const AddReflexRDocument = gql`
     mutation AddReflexR($payload: ReflexRuleInput!) {
   createReflexRule(payload: $payload) {
+    __typename
     ... on ReflexRuleType {
-      __typename
       uid
       name
       description
@@ -11541,7 +11968,6 @@ export const AddReflexRDocument = gql`
       createdAt
     }
     ... on OperationError {
-      __typename
       error
       suggestion
     }
@@ -11555,8 +11981,8 @@ export function useAddReflexRMutation() {
 export const EditReflexRDocument = gql`
     mutation editReflexR($uid: String!, $payload: ReflexRuleInput!) {
   updateReflexRule(uid: $uid, payload: $payload) {
+    __typename
     ... on ReflexRuleType {
-      __typename
       uid
       name
       description
@@ -11564,7 +11990,6 @@ export const EditReflexRDocument = gql`
       createdAt
     }
     ... on OperationError {
-      __typename
       error
       suggestion
     }
@@ -11578,8 +12003,8 @@ export function useEditReflexRMutation() {
 export const AddReflexADocument = gql`
     mutation AddReflexA($payload: ReflexActionInput!) {
   createReflexAction(payload: $payload) {
+    __typename
     ... on ReflexActionType {
-      __typename
       uid
       description
       level
@@ -11593,7 +12018,6 @@ export const AddReflexADocument = gql`
       }
     }
     ... on OperationError {
-      __typename
       error
       suggestion
     }
@@ -11607,8 +12031,8 @@ export function useAddReflexAMutation() {
 export const EditReflexADocument = gql`
     mutation editReflexA($uid: String!, $payload: ReflexActionInput!) {
   updateReflexAction(uid: $uid, payload: $payload) {
+    __typename
     ... on ReflexActionType {
-      __typename
       uid
       description
       level
@@ -11622,7 +12046,6 @@ export const EditReflexADocument = gql`
       }
     }
     ... on OperationError {
-      __typename
       error
       suggestion
     }
@@ -11636,8 +12059,8 @@ export function useEditReflexAMutation() {
 export const AddReflexBDocument = gql`
     mutation AddReflexB($payload: ReflexBrainInput!) {
   createReflexBrain(payload: $payload) {
+    __typename
     ... on ReflexBrainType {
-      __typename
       uid
       reflexActionUid
       description
@@ -11668,7 +12091,6 @@ export const AddReflexBDocument = gql`
       }
     }
     ... on OperationError {
-      __typename
       error
       suggestion
     }
@@ -11682,8 +12104,8 @@ export function useAddReflexBMutation() {
 export const EditReflexBDocument = gql`
     mutation editReflexB($uid: String!, $payload: ReflexBrainInput!) {
   updateReflexBrain(uid: $uid, payload: $payload) {
+    __typename
     ... on ReflexBrainType {
-      __typename
       uid
       reflexActionUid
       description
@@ -11714,7 +12136,6 @@ export const EditReflexBDocument = gql`
       }
     }
     ... on OperationError {
-      __typename
       error
       suggestion
     }
@@ -12555,422 +12976,6 @@ export const GetSystemActivityDocument = gql`
 
 export function useGetSystemActivitySubscription<R = GetSystemActivitySubscription>(options: Omit<Urql.UseSubscriptionArgs<never, GetSystemActivitySubscriptionVariables>, 'query'> = {}, handler?: Urql.SubscriptionHandlerArg<GetSystemActivitySubscription, R>) {
   return Urql.useSubscription<GetSystemActivitySubscription, R, GetSystemActivitySubscriptionVariables>({ query: GetSystemActivityDocument, ...options }, handler);
-};
-export const AuthenticateUserDocument = gql`
-    mutation AuthenticateUser($username: String!, $password: String!) {
-  authenticateUser(password: $password, username: $username) {
-    ... on AuthenticatedData {
-      __typename
-      token
-      tokenType
-      user {
-        uid
-        firstName
-        lastName
-        groups {
-          permissions {
-            uid
-            action
-            target
-          }
-          uid
-          name
-          keyword
-          pages
-        }
-        preferenceUid
-        preference {
-          expandedMenu
-          theme
-          departments {
-            uid
-            name
-          }
-        }
-      }
-    }
-    ... on OperationError {
-      __typename
-      error
-      suggestion
-    }
-  }
-}
-    `;
-
-export function useAuthenticateUserMutation() {
-  return Urql.useMutation<AuthenticateUserMutation, AuthenticateUserMutationVariables>(AuthenticateUserDocument);
-};
-export const AddUserDocument = gql`
-    mutation addUser($firstName: String!, $lastName: String!, $email: String!, $groupUid: String) {
-  createUser(
-    firstName: $firstName
-    lastName: $lastName
-    email: $email
-    groupUid: $groupUid
-  ) {
-    ... on UserType {
-      uid
-      firstName
-      lastName
-      email
-      isActive
-      isSuperuser
-      mobilePhone
-      auth {
-        uid
-        userName
-        isBlocked
-        userType
-      }
-      groups {
-        permissions {
-          uid
-          action
-          target
-        }
-        uid
-        name
-        keyword
-        pages
-      }
-    }
-    ... on OperationError {
-      __typename
-      error
-      suggestion
-    }
-  }
-}
-    `;
-
-export function useAddUserMutation() {
-  return Urql.useMutation<AddUserMutation, AddUserMutationVariables>(AddUserDocument);
-};
-export const EditUserDocument = gql`
-    mutation editUser($userUid: String!, $firstName: String!, $lastName: String, $email: String, $groupUid: String, $mobilePhone: String, $isActive: Boolean) {
-  updateUser(
-    userUid: $userUid
-    firstName: $firstName
-    lastName: $lastName
-    email: $email
-    groupUid: $groupUid
-    mobilePhone: $mobilePhone
-    isActive: $isActive
-  ) {
-    ... on UserType {
-      uid
-      firstName
-      lastName
-      email
-      isActive
-      isSuperuser
-      mobilePhone
-      auth {
-        uid
-        userName
-        isBlocked
-        userType
-      }
-      groups {
-        permissions {
-          uid
-          action
-          target
-        }
-        uid
-        name
-        keyword
-        pages
-      }
-    }
-    ... on OperationError {
-      __typename
-      error
-      suggestion
-    }
-  }
-}
-    `;
-
-export function useEditUserMutation() {
-  return Urql.useMutation<EditUserMutation, EditUserMutationVariables>(EditUserDocument);
-};
-export const AddUserAuthDocument = gql`
-    mutation addUserAuth($userUid: String!, $userName: String!, $password: String!, $passwordc: String!) {
-  createUserAuth(
-    userUid: $userUid
-    userName: $userName
-    password: $password
-    passwordc: $passwordc
-  ) {
-    ... on UserType {
-      uid
-      firstName
-      lastName
-      email
-      isActive
-      isSuperuser
-      mobilePhone
-      auth {
-        uid
-        userName
-        isBlocked
-        userType
-      }
-      groups {
-        permissions {
-          uid
-          action
-          target
-        }
-        uid
-        name
-        keyword
-        pages
-      }
-    }
-    ... on OperationError {
-      __typename
-      error
-      suggestion
-    }
-  }
-}
-    `;
-
-export function useAddUserAuthMutation() {
-  return Urql.useMutation<AddUserAuthMutation, AddUserAuthMutationVariables>(AddUserAuthDocument);
-};
-export const EditUserAuthDocument = gql`
-    mutation editUserAuth($userUid: String!, $userName: String!, $password: String!, $passwordc: String!) {
-  updateUserAuth(
-    userUid: $userUid
-    userName: $userName
-    password: $password
-    passwordc: $passwordc
-  ) {
-    ... on UserType {
-      uid
-      firstName
-      lastName
-      email
-      isActive
-      isSuperuser
-      mobilePhone
-      auth {
-        uid
-        userName
-        isBlocked
-        userType
-      }
-      groups {
-        permissions {
-          uid
-          action
-          target
-        }
-        uid
-        name
-        keyword
-        pages
-      }
-    }
-    ... on OperationError {
-      __typename
-      error
-      suggestion
-    }
-  }
-}
-    `;
-
-export function useEditUserAuthMutation() {
-  return Urql.useMutation<EditUserAuthMutation, EditUserAuthMutationVariables>(EditUserAuthDocument);
-};
-export const AddGroupDocument = gql`
-    mutation addGroup($payload: GroupInputType!) {
-  createGroup(payload: $payload) {
-    ... on GroupType {
-      __typename
-      uid
-      name
-      pages
-      permissions {
-        uid
-        action
-        target
-        active
-      }
-      active
-    }
-    ... on OperationError {
-      __typename
-      error
-      suggestion
-    }
-  }
-}
-    `;
-
-export function useAddGroupMutation() {
-  return Urql.useMutation<AddGroupMutation, AddGroupMutationVariables>(AddGroupDocument);
-};
-export const EditGroupDocument = gql`
-    mutation editGroup($uid: String!, $payload: GroupInputType!) {
-  updateGroup(uid: $uid, payload: $payload) {
-    ... on GroupType {
-      __typename
-      uid
-      name
-      pages
-      permissions {
-        uid
-        action
-        target
-        active
-      }
-      active
-    }
-    ... on OperationError {
-      __typename
-      error
-      suggestion
-    }
-  }
-}
-    `;
-
-export function useEditGroupMutation() {
-  return Urql.useMutation<EditGroupMutation, EditGroupMutationVariables>(EditGroupDocument);
-};
-export const UpdateGroupsAndPermissionsDocument = gql`
-    mutation updateGroupsAndPermissions($groupUid: String!, $permissionUid: String!) {
-  updateGroupPermissions(groupUid: $groupUid, permissionUid: $permissionUid) {
-    ... on UpdatedGroupPerms {
-      group {
-        uid
-        name
-        pages
-        permissions {
-          uid
-          action
-          target
-          active
-        }
-        active
-      }
-      permission {
-        uid
-        action
-        target
-      }
-    }
-    ... on OperationError {
-      __typename
-      error
-      suggestion
-    }
-  }
-}
-    `;
-
-export function useUpdateGroupsAndPermissionsMutation() {
-  return Urql.useMutation<UpdateGroupsAndPermissionsMutation, UpdateGroupsAndPermissionsMutationVariables>(UpdateGroupsAndPermissionsDocument);
-};
-export const AddDepartmentDocument = gql`
-    mutation addDepartment($payload: DepartmentInputType!) {
-  createDepartment(payload: $payload) {
-    ... on DepartmentType {
-      uid
-      name
-    }
-    ... on OperationError {
-      __typename
-      error
-      suggestion
-    }
-  }
-}
-    `;
-
-export function useAddDepartmentMutation() {
-  return Urql.useMutation<AddDepartmentMutation, AddDepartmentMutationVariables>(AddDepartmentDocument);
-};
-export const EditDepartmentDocument = gql`
-    mutation editDepartment($uid: String!, $payload: DepartmentInputType!) {
-  updateDepartment(uid: $uid, payload: $payload) {
-    ... on DepartmentType {
-      uid
-      name
-    }
-    ... on OperationError {
-      __typename
-      error
-      suggestion
-    }
-  }
-}
-    `;
-
-export function useEditDepartmentMutation() {
-  return Urql.useMutation<EditDepartmentMutation, EditDepartmentMutationVariables>(EditDepartmentDocument);
-};
-export const EditLaboratoryDocument = gql`
-    mutation editLaboratory($uid: String!, $payload: LaboratoryInputType!) {
-  updateLaboratory(uid: $uid, payload: $payload) {
-    ... on LaboratoryType {
-      uid
-      setupName
-      labName
-      labManagerUid
-      email
-      emailCc
-      mobilePhone
-      businessPhone
-      address
-      logo
-    }
-    ... on OperationError {
-      __typename
-      error
-      suggestion
-    }
-  }
-}
-    `;
-
-export function useEditLaboratoryMutation() {
-  return Urql.useMutation<EditLaboratoryMutation, EditLaboratoryMutationVariables>(EditLaboratoryDocument);
-};
-export const EditLaboratorySettingDocument = gql`
-    mutation editLaboratorySetting($uid: String!, $payload: LaboratorySettingInputType!) {
-  updateLaboratorySetting(uid: $uid, payload: $payload) {
-    ... on LaboratorySettingType {
-      uid
-      laboratoryUid
-      allowSelfVerification
-      allowPatientRegistration
-      allowSampleRegistration
-      allowWorksheetCreation
-      defaultRoute
-      passwordLifetime
-      inactivityLogOut
-      defaultTheme
-      autoReceiveSamples
-      stickerCopies
-    }
-    ... on OperationError {
-      __typename
-      error
-      suggestion
-    }
-  }
-}
-    `;
-
-export function useEditLaboratorySettingMutation() {
-  return Urql.useMutation<EditLaboratorySettingMutation, EditLaboratorySettingMutationVariables>(EditLaboratorySettingDocument);
 };
 export const AddWorkSheetTemplateDocument = gql`
     mutation AddWorkSheetTemplate($payload: WorksheetTemplateInputType!) {

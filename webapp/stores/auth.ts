@@ -3,10 +3,11 @@ import { ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import { IUser } from '../models/auth';
 import { STORAGE_AUTH_KEY, USER_GROUP_OVERRIDE } from '../conf';
-import { AUTHENTICATE_USER } from '../graphql/operations/_mutations';
+import { AUTHENTICATE_USER, REFRESH_TOKEN } from '../graphql/operations/_mutations';
 import { useAuthenticateUserMutation } from '../graphql/graphql';
 import { useNotifyToast, useApiUtil, userPreferenceComposable } from '../composables';
 import { userInfo } from 'os';
+import jwtDecode from 'jwt-decode';
 
 const { withClientMutation } = useApiUtil();
 const { toastInfo } = useNotifyToast();
@@ -14,10 +15,12 @@ const { initPreferences } = userPreferenceComposable();
 
 interface IAuth {
     token?: string;
+    refresh?: string;
     tokenType?: string;
     user?: IUser;
     isAuthenticated: boolean;
     authenticating: boolean;
+    refreshTokenTimeout: any;
 }
 
 export const useAuthStore = defineStore('auth', () => {
@@ -25,9 +28,11 @@ export const useAuthStore = defineStore('auth', () => {
     const initialState: IAuth = {
         user: undefined,
         token: '',
+        refresh: '',
         tokenType: '',
         isAuthenticated: false,
         authenticating: false,
+        refreshTokenTimeout: undefined,
     };
 
     const auth = ref({ ...initialState });
@@ -36,6 +41,7 @@ export const useAuthStore = defineStore('auth', () => {
 
     const reset = () => {
         localStorage.removeItem(STORAGE_AUTH_KEY);
+        stopRefreshTokenTimer()
         resetState();
     };
 
@@ -66,10 +72,11 @@ export const useAuthStore = defineStore('auth', () => {
         // logout()
     }
 
-    watch(auth, authValue => {
-        if (authValue && authValue.user && authValue.token) {
+    watch(() => auth.value, authValue => {
+        if (authValue?.user && authValue?.token) {
             localStorage.setItem(STORAGE_AUTH_KEY, JSON.stringify(authValue));
             upsertPermission();
+            startRefreshTokenTimer();
         }
     });
 
@@ -107,11 +114,35 @@ export const useAuthStore = defineStore('auth', () => {
             .catch(err => (auth.value.authenticating = false));
     };
 
+    const refreshToken = async (): Promise<void> => {
+        await withClientMutation(REFRESH_TOKEN, { refreshToken: auth.value.refresh }, 'refresh')
+        .then(res => {
+            if(!res) {
+                return
+            };
+            persistAuth(res);
+        })
+        .catch(err => (auth.value.authenticating = false));
+    };
+
+    const startRefreshTokenTimer = async () => {
+        const decodedToken: any = jwtDecode(auth.value.token!)
+        // refresh the token a minute before it expires
+        const expires = new Date(+(decodedToken.exp) * 1000);
+        const timeout = expires.getTime() - Date.now() - (60 * 1000);
+        //
+        auth.value.refreshTokenTimeout = setTimeout(refreshToken, timeout);
+    };
+
+    const stopRefreshTokenTimer = () => {
+        clearTimeout(auth.value.refreshTokenTimeout);
+    }
+
     return {
         auth,
         authenticate,
         reset,
         persistAuth,
-        logout,
+        logout
     };
 });

@@ -6,6 +6,50 @@ export const AUTHENTICATE_USER = gql`
             ... on AuthenticatedData {
                 __typename
                 token
+                refresh
+                tokenType
+                user {
+                    uid
+                    firstName
+                    lastName
+                    groups {
+                        permissions {
+                            uid
+                            action
+                            target
+                        }
+                        uid
+                        name
+                        keyword
+                        pages
+                    }
+                    preferenceUid
+                    preference {
+                        expandedMenu
+                        theme
+                        departments {
+                            uid
+                            name
+                        }
+                    }
+                }
+            }
+            ... on OperationError {
+                __typename
+                error
+                suggestion
+            }
+        }
+    }
+`;
+
+export const REFRESH_TOKEN = gql`
+    mutation TokenRefresh($refreshToken: String!) {
+        refresh(refreshToken: $refreshToken) {
+            ... on AuthenticatedData {
+                __typename
+                token
+                refresh
                 tokenType
                 user {
                     uid

@@ -2,8 +2,9 @@ from datetime import datetime
 from typing import List, Optional
 
 import strawberry  # noqa
-from api.gql.types import PageInfo
+
 from api.gql.setup.types.department import DepartmentType
+from api.gql.types import PageInfo
 
 
 @strawberry.type
@@ -72,6 +73,7 @@ class UserType:
 class AuthenticatedData:
     user: UserType
     token: str
+    refresh: str
     token_type: str
 
 

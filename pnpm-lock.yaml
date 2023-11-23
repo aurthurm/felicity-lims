@@ -50,6 +50,9 @@ dependencies:
   '@graphql-codegen/typescript-vue-urql':
     specifier: ^2.3.6
     version: 2.3.6(graphql-tag@2.12.6)(graphql@16.6.0)
+  '@graphql-typed-document-node/core':
+    specifier: ^3.2.0
+    version: 3.2.0(graphql@16.6.0)
   '@types/lodash-es':
     specifier: ^4.17.6
     version: 4.17.6

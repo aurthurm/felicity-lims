@@ -5,20 +5,29 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9f590b69-f929-45a1-8512-12ed6efbf028" name="Changes" comment="Added Invetory starter">
-      <change beforePath="$PROJECT_DIR$/felicity/templates/static/assets/404-ec58313c.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/templates/static/assets/Groups-41b0c32e.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/templates/static/assets/Impress-37c5b4d4.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/templates/static/assets/Manifest-e31f6764.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/templates/static/assets/NavigationAside-ed7fbe56.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/templates/static/assets/NavigationMain-b5305a9a.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/templates/static/assets/Restricted-597c51b1.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/templates/static/assets/SampleDetail-b728dbf9.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/templates/static/assets/ShipmentDetail-3a5f2a7f.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/templates/static/assets/index-3754201d.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/templates/static/assets/index-3e1f37cc.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/templates/static/assets/index-49dac44a.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/templates/static/assets/index-6c493664.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/templates/static/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/templates/static/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/codegen.yml" beforeDir="false" afterPath="$PROJECT_DIR$/codegen.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/api/deps.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/deps.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/api/gql/schema.graphql" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/schema.graphql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/api/gql/user/mutations.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/user/mutations.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/api/gql/user/types.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/user/types.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/core/config.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/core/config.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/core/security.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/core/security.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pnpm-lock.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/pnpm-lock.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webapp/App.vue" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/App.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webapp/auth.ts" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/auth.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webapp/axios/index.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/webapp/axios/no-auth.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/webapp/axios/with-auth.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/webapp/composables/analytics.ts" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/composables/analytics.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webapp/graphql/graphql.ts" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/graphql/graphql.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webapp/graphql/operations/_mutations.ts" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/graphql/operations/_mutations.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webapp/router/checks.ts" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/router/checks.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webapp/router/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/router/index.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webapp/stores/auth.ts" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/stores/auth.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webapp/urql.ts" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/urql.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webapp/views/auth/Login.vue" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/views/auth/Login.vue" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

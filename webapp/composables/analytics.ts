@@ -1,5 +1,5 @@
 import { toRefs, reactive } from 'vue';
-import axios from '../axios/with-auth';
+import axios from '../api';
 
 import useNotifyToast from './alert_toast';
 import { IReportListing } from '../models/reports';

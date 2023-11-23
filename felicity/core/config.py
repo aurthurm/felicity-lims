@@ -27,11 +27,17 @@ class Settings(BaseSettings):
     STATIC_DIR: str = os.path.join(BASE_DIR, "static")
 
     API_V1_STR: str = "/api/v1"
+    ALGORITHM: str = "HS256"
     SECRET_KEY: str = (
         # secrets.token_urlsafe(32)
         "uIM7aXFRzaIxWr1NEy_RMQg9iIuDkLAlkOPs5zpgbts"
     )
-    ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 16
+    REFRESH_SECRET_KEY: str = (
+        # secrets.token_urlsafe(32)
+        "v0hilmAK-_iu_F-E2I89kVGKNgk2oeKIpyYW2qT3Brg"
+    )
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 8 * 1  # 8 hours
+    REFRESH_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 1  # 1 day / 24 hours
     SERVER_NAME: str = getenv_value("SERVER_NAME", "felicity")
     SERVER_HOST: AnyHttpUrl = getenv_value("SERVER_HOST", "https://localhost")
     CORS_ORIGINS: list[str] = [

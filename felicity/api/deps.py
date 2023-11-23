@@ -18,7 +18,9 @@ from core.config import settings  # noqa
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+# oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="felicity-gql", scheme_name="JWT")
 
 
 async def _get_user(token: str):
@@ -26,7 +28,7 @@ async def _get_user(token: str):
         GraphQLError("No auth token")
     try:
         payload = jwt.decode(
-            token, settings.SECRET_KEY, algorithms=[security.ALGORITHM]
+            token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM]
         )
         token_data = core_schemas.TokenPayload(**payload)
     except (jwt.JWTError, ValidationError) as e:
@@ -52,6 +54,7 @@ class InfoContext(BaseContext):
             return None
 
         authorization = self.request.headers.get("Authorization", None)
+        print(self.request.headers)
         if not authorization:
             return None
 

@@ -87,12 +87,8 @@ const didAuthError = (error: any) => {
     return error.graphQLErrors.some((e: any) => e.extensions?.code === 'FORBIDDEN');
 };
 
-// const willAuthError = (authState: any) => {
-//     if (!authState || '/* JWT is expired */') return true;
-//     return false;
-// };
-
 const willAuthError = (authState: any) => {
+    return false;
     if (!authState) return true;
 
     try {

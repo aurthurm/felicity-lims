@@ -663,7 +663,7 @@ type DeletedItem {
 input DepartmentInputType {
   name: String!
   description: String = ""
-  code: String = null
+  code: String = ""
 }
 
 """"""
@@ -695,11 +695,11 @@ type DistrictEdge {
 input DistrictInputType {
   name: String!
   provinceUid: String
-  code: String = null
-  email: String = null
-  emailCc: String = null
-  mobilePhone: String = null
-  businessPhone: String = null
+  code: String = ""
+  email: String = ""
+  emailCc: String = ""
+  mobilePhone: String = ""
+  businessPhone: String = ""
   active: Boolean = true
 }
 
@@ -954,6 +954,7 @@ type LaboratorySettingType {
   allowWorksheetCreation: Boolean
   defaultRoute: String
   passwordLifetime: Int
+  defaultTatMinutes: Int
   inactivityLogOut: Int
   defaultTheme: String
   autoReceiveSamples: Boolean
@@ -966,6 +967,7 @@ type LaboratoryType {
   labName: String!
   labManagerUid: String
   labManager: UserType
+  code: String
   email: String
   emailCc: String
   mobilePhone: String
@@ -1274,7 +1276,7 @@ type NoticeType {
   title: String!
   body: String!
   viewers: [UserType!]
-  expiry: DateTime!
+  expiry: String!
   createdAt: DateTime
   createdByUid: String
   createdBy: UserType
@@ -1500,11 +1502,11 @@ type ProvinceEdge {
 input ProvinceInputType {
   name: String
   countryUid: String
-  code: String = null
-  email: String = null
-  emailCc: String = null
-  mobilePhone: String = null
-  businessPhone: String = null
+  code: String = ""
+  email: String = ""
+  emailCc: String = ""
+  mobilePhone: String = ""
+  businessPhone: String = ""
   active: Boolean = true
 }
 
@@ -1935,7 +1937,7 @@ type ReflexRuleType {
   reflexActions: [ReflexActionType!]
   createdByUid: String
   createdBy: UserType
-  createdAt: DateTime
+  createdAt: String
   updatedByUid: String
   updatedBy: UserType
   updatedAt: DateTime
@@ -2401,6 +2403,8 @@ input StockItemInputType {
   name: String!
   description: String!
   departmentUid: String = null
+  maximumLevel: Int = null
+  minimumLevel: Int = null
 }
 
 """"""
@@ -2412,6 +2416,7 @@ type StockItemType {
   departmentUid: String
   department: DepartmentType
   minimumLevel: Int
+  maximumLevel: Int
   description: String
   createdAt: DateTime
   createdByUid: String
@@ -2766,6 +2771,7 @@ type StoredSamplesType {
 type Subscription {
   latestActivity: ActivityStreamType!
   streamAll: ActivityStreamType!
+  count(target: Int! = 100): Int!
 }
 
 """Union of possible outcomes when deleting some object"""
@@ -2774,7 +2780,7 @@ union SuccessErrorResponse = OperationSuccess | OperationError
 input SupplierInputType {
   name: String!
   description: String = ""
-  code: String = null
+  code: String = ""
 }
 
 """"""
@@ -2979,7 +2985,7 @@ type WorksheetListingType {
 input WorksheetTemplateInputType {
   name: String!
   sampleTypeUid: String!
-  reserved: [ReservedInputType!]!
+  reserved: [ReservedInputType!] = null
   analysisUid: String = null
   numberOfSamples: Int = null
   instrumentUid: String = null

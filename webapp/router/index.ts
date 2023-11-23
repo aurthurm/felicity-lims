@@ -176,9 +176,11 @@ const router = createRouter({
 
 router.beforeEach(async (to, from) => {
     const authStore = useAuthStore();
-
+    console.log(authStore.auth)
     if (to.matched.some(record => record.meta.requiresAuth)) {
+        console.log(isTokenValid(authStore.auth.token!))
         if (!isTokenValid(authStore.auth.token!)) {
+            console.log("invalid token - back to login")
             return { name: guards.pages.LOGIN };
         }
 
@@ -186,12 +188,16 @@ router.beforeEach(async (to, from) => {
         //   return { name: guards.pages.DASHBOARD }
         // }
 
+        console.log("valid token")
         if (!hasAccess(to.matched[0].name)) {
             return { name: guards.pages.NOT_AUTHORISED };
         }
     } else {
+        console.log(to.path)
         if (to.path === '/auth') {
+            
             if (isTokenValid(authStore.auth.token!)) {
+                console.log("valid token - to dashboard")
                 return { name: guards.pages.DASHBOARD };
             }
         }

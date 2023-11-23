@@ -2,7 +2,7 @@ overwrite: true
 debug: true
 schema: "http://127.0.0.1:8000/felicity-gql"
 documents: 
-  - './felicity/api/gql/**/*.graphql'
+  - './felicity/api/gql/schema.graphql'
   - './webapp/graphql/operations/**/*.ts'
   - './webapp/graphql/operations/**/*.graphql'
 generates:

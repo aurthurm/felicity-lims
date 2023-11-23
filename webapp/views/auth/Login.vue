@@ -1,34 +1,34 @@
 <script lang="ts" setup>
-import { defineAsyncComponent } from 'vue'
-const LoadingMessage = defineAsyncComponent(
-  () => import("../../components/Spinners/LoadingMessage.vue")
-)
-import { useAuthStore } from "../../stores";
-import { storeToRefs } from "pinia";
+  import { defineAsyncComponent } from 'vue'
+  const LoadingMessage = defineAsyncComponent(
+    () => import("../../components/Spinners/LoadingMessage.vue")
+  )
+  import { useAuthStore } from "../../stores";
+  import { storeToRefs } from "pinia";
 
-import { useField, useForm } from "vee-validate";
-import { object, string } from "yup";
+  import { useField, useForm } from "vee-validate";
+  import { object, string } from "yup";
 
-const authStore = useAuthStore();
-const { auth } = storeToRefs(authStore);
+  const authStore = useAuthStore();
+  const { auth } = storeToRefs(authStore);
 
-authStore.reset();
+  authStore.reset();
 
-const authSchema = object({
-  username: string().required("Username is Required"),
-  password: string().required("Password is Required"),
-});
+  const authSchema = object({
+    username: string().required("Username is Required"),
+    password: string().required("Password is Required"),
+  });
 
-const { handleSubmit, errors } = useForm({
-  validationSchema: authSchema,
-});
+  const { handleSubmit, errors } = useForm({
+    validationSchema: authSchema,
+  });
 
-const { value: username } = useField("username");
-const { value: password } = useField("password");
+  const { value: username } = useField("username");
+  const { value: password } = useField("password");
 
-const login = handleSubmit((values) => {
-  authStore.authenticate(values);
-});
+  const login = handleSubmit((values) => {
+    authStore.authenticate(values);
+  });
 </script>
 
 <template>

@@ -4,7 +4,7 @@ import { decrypter, decrypter2, encrypter } from './utils/helpers';
 
 const authToStorage = async (data: any) => {
     const crypted = await encrypter(data, ENCRYPT_AUTH_KEY);
-    await localStorage.setItem(STORAGE_AUTH_KEY, crypted);
+    localStorage.setItem(STORAGE_AUTH_KEY, crypted);
 };
 
 const authFromStorage = async (): Promise<{
