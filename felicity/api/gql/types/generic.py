@@ -1,9 +1,10 @@
 import base64
 import json
-from typing import Any, NewType
-
+from typing import Any, NewType, TypeVar, Generic
 
 import strawberry
+
+T = TypeVar('T')
 
 JSONScalar = strawberry.scalar(
     NewType("JSONScalar", Any),
@@ -73,3 +74,20 @@ SuccessErrorResponse = strawberry.union(
     (OperationSuccess, OperationError),
     description="Union of possible outcomes when deleting some object",
 )
+
+
+class StrawberryMapper(Generic[T]):
+
+    def map(self, **kwargs) -> T:
+        type_class = self.__orig_class__.__args__[0]  # noqa
+        # Get the annotations from the Strawberry type
+        attrs = type_class.__dict__.get("__annotations__", {})
+
+        # Remove keys not in the Strawberry type from the payload
+        keys = list(kwargs.keys())
+        for key in keys:
+            if key not in attrs:
+                del kwargs[key]
+
+        # Create an instance of the Strawberry type
+        return type_class(**kwargs)

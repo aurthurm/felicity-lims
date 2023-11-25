@@ -2,20 +2,18 @@ import logging
 from typing import TYPE_CHECKING, List, Optional, Tuple, Union
 
 from apps.setup.models.setup import Laboratory, LaboratorySetting
-
 from .models.analysis import Sample
 from .models.results import AnalysisResult
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-
 if TYPE_CHECKING:
     from ..user.models import User
 
 
 async def check_sample_verification(
-    samples: List[Union[int, Sample]], verifer: "User"
+        samples: List[Union[str, Sample]], verifer: "User"
 ) -> Tuple[Optional[Sample], Optional[Sample], str, str]:
     """
     splits samples into allowed and restricted samples.
@@ -25,7 +23,7 @@ async def check_sample_verification(
     message: str = ""
     suggestion: str = ""
 
-    if isinstance(samples[0], int):
+    if isinstance(samples[0], str):
         samples: List[Sample] = await Sample.get_all(uid__in=samples)
 
     restricted: List[Sample] = list(
@@ -46,7 +44,7 @@ async def check_sample_verification(
 
 
 async def check_result_verification(
-    results: List[Union[str, AnalysisResult]], verifer: "User"
+        results: List[Union[str, AnalysisResult]], verifer: "User"
 ) -> Tuple[Optional[AnalysisResult], Optional[AnalysisResult], str, str]:
     """
     splits results into allowed and restricted results.

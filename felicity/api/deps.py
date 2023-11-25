@@ -54,7 +54,6 @@ class InfoContext(BaseContext):
             return None
 
         authorization = self.request.headers.get("Authorization", None)
-        print(self.request.headers)
         if not authorization:
             return None
 

@@ -9,6 +9,7 @@ from api.gql.auth import (
 )
 from api.gql.permissions import IsAuthenticated
 from api.gql.types import MessageResponse, MessagesType, OperationError
+from api.gql.types.generic import StrawberryMapper
 from api.gql.user.types import (
     AuthenticatedData,
     GroupType,
@@ -269,15 +270,16 @@ class UserMutations:
         _user = await user_models.User.get(auth_uid=auth.uid)
         access_token = security.create_access_token(_user.uid)
         refresh_token = security.create_refresh_token(_user.uid)
-        return AuthenticatedData(token=access_token, refresh=refresh_token, token_type="bearer", user=_user)
+        return (StrawberryMapper[AuthenticatedData]()
+                .map(token=access_token, refresh=refresh_token, token_type="bearer", user=_user))
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def refresh(self, info, refresh_token: str) -> AuthenticatedDataResponse:
         is_authenticated, felicity_user = await auth_from_info(info)
-        access_token = (
-            security.create_access_token_from_refresh(refresh_token),
-        )
-        return AuthenticatedData(token=access_token[0], refresh=refresh_token, token_type="bearer", user=felicity_user)
+        access_token = security.create_access_token_from_refresh(refresh_token)
+        print(access_token)
+        return (StrawberryMapper[AuthenticatedData]()
+                .map(token=access_token, refresh=refresh_token, token_type="bearer", user=felicity_user))
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def unlink_user_auth(self, info, user_uid: str) -> UserResponse:
@@ -291,7 +293,7 @@ class UserMutations:
             )
 
         await user.unlink_auth()
-        return UserType(**user.marshal_simple())
+        return StrawberryMapper[UserType]().map(**user.marshal_simple())
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def recover_password(self, info, username: str) -> MessageResponse:

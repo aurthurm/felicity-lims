@@ -22,12 +22,21 @@ from apps.analysis.models.results import AnalysisResult  # noqa
 from apps.analysis.models.results import ResultMutation  # noqa
 from apps.analytics.models import ReportMeta  # noqa
 from apps.audit.models import AuditLog  # noqa
+from apps.billing.models import ProfileDiscount  # noqa
+from apps.billing.models import ProfilePrice  # noqa
+from apps.billing.models import ServiceDiscount  # noqa
+from apps.billing.models import ServicePrice  # noqa
+from apps.billing.models import TestBill  # noqa
+from apps.billing.models import TestBillInvoice  # noqa
+from apps.billing.models import TestBillTransaction  # noqa
+from apps.billing.models import VoucherCode  # noqa
+from apps.billing.models import VoucherCustomer  # noqa
 from apps.client.models import Client  # noqa
 from apps.client.models import ClientContact  # noqa
 from apps.common.models import IdSequence  # noqa
 from apps.impress.models import ReportImpress  # noqa
-
 # from apps.setup.models import MethodValidation  # noqa
+# from apps.setup.models import InstrumentCompetence  # noqa
 from apps.instrument.models import CalibrationCertificate  # noqa
 from apps.instrument.models import Instrument  # noqa
 from apps.instrument.models import InstrumentCalibration  # noqa

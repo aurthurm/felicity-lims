@@ -41,11 +41,6 @@ class Method(BaseAuditDBModel):
         return await super().update(**data)
 
 
-# class MethodValidation(BaseAuditDBModel):
-#     """Method Validation Test"""
-#     pass
-
-
 class InstrumentType(BaseAuditDBModel):
     """Instrument Type"""
 
@@ -162,6 +157,10 @@ class CalibrationCertificate(BaseAuditDBModel):
     ) -> schemas.CalibrationCertificate:
         data = self._import(obj_in)
         return await super().update(**data)
+
+# class MethodValidation(BaseAuditDBModel):
+#     """Method Validation Test"""
+#     pass
 
 # class InstrumentCompetence(BaseAuditDBModel):
 #     instrument_uid = Column(String, ForeignKey("instrument.uid"), nullable=True)

@@ -44,7 +44,7 @@ def create_access_token(
 def create_access_token_from_refresh(refresh: str) -> str | None:
     try:
         payload = jwt.decode(
-            refresh, settings.SECRET_KEY, algorithms=[settings.ALGORITHM]
+            refresh, settings.REFRESH_SECRET_KEY, algorithms=[settings.ALGORITHM]
         )
     except jwt.JWTError as e:
         return None
