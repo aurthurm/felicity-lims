@@ -43,6 +43,7 @@ class Settings(BaseSettings):
     CORS_ORIGINS: list[str] = [
         "http://localhost:5173",
         "http://localhost:3000",
+        "http://localhost:8000"
     ]
     CORS_SUPPORTS_CREDENTIALS: bool = True
     CORS_ALLOW_HEADERS: list[str] = [

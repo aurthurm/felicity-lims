@@ -750,6 +750,11 @@ class Sample(Auditable, BaseMPTT):
 
         return await AnalysisResult.get_all(sample_uid=self.uid)
 
+    async def get_incomplete_analysis_results(self):
+        pending_states = [states.Result.SUBMITTING, states.Result.PENDING, states.Result.APPROVING, states.Result.REFERRED]
+        analysis = await self.get_analysis_results()
+        return analysis, list(filter(lambda a: a.status in pending_states, analysis))
+
     async def get_referred_analyses(self):
         analysis = await self.get_analysis_results()
         return analysis, list(
@@ -853,10 +858,10 @@ class Sample(Auditable, BaseMPTT):
 
         # if there are no results in referred state but some are in pending state. transition awaiting to pending state
         analysis, referred = await self.get_referred_analyses()
-        if not referred and not list(
+        if not referred and list( # and has pending results then :)
                 filter(lambda an: an.status in [states.result.PENDING], analysis)
-        ):
-            self.change_status(states.sample.RECEIVED)
+        ): 
+            await self.change_status(states.sample.RECEIVED)
 
         return False
 

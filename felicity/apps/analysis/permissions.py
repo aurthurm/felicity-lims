@@ -25,12 +25,22 @@ async def check_sample_verification(
 
     if isinstance(samples[0], str):
         samples: List[Sample] = await Sample.get_all(uid__in=samples)
-
+        
+    # verify hanging samples iff all results have been verified - just in case they exist
+    hangings = []
+    pending = []
+    for sample in samples:
+        is_verifiable = await sample.is_verifiable()
+        if(is_verifiable):
+            hangings.append(sample)
+        else:
+            pending.append(sample)
+    
     restricted: List[Sample] = list(
-        filter(lambda s: s.submitted_by_uid == verifer.uid, samples)
+        filter(lambda s: s.submitted_by_uid == verifer.uid, pending)
     )
     allowed: List[Sample] = list(
-        filter(lambda s: s.submitted_by_uid != verifer.uid, samples)
+        filter(lambda s: s.submitted_by_uid != verifer.uid, pending)
     )
 
     _sample_ids = [r.sample_id for r in restricted] if restricted else []
@@ -40,6 +50,10 @@ async def check_sample_verification(
         )
         suggestion = "The person verifying samples must be different from the one who submitted them."
 
+    # push hangings
+    for hang in hangings:
+        allowed.append(hang)
+        
     return allowed, restricted, message, suggestion
 
 
