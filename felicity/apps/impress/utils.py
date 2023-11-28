@@ -115,6 +115,7 @@ async def impress_samples(sample_meta: List[any], user):
             sample_pdf = await impress_engine.generate(impress_meta, report_state)
 
             # TODO: fix saving of json data - skipping for now :::::: 
+            #       Saving this json is paramount -> keeps track of the data it the same state as when it was impressed
             #      "json_content": impress_meta
             
             sc_in = ReportImpressCreate(
