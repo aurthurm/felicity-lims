@@ -1,7 +1,7 @@
 import logging
 from datetime import datetime
 from typing import List
-import json
+import copy
 
 from apps.analysis.conf import states
 from apps.analysis.models.analysis import Sample
@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 streamer = FelicityStreamer()
 
 
-def impress_marshaller(obj, path=None, memoize=None) -> dict:
+def impress_marshaller(obj, path=None, memoize=None) -> dict | str:
     """Notes:
         1. We use memoization To prevent marshalling the same object again hence speed things up
         2. We use path tracking To stop marshalling when a path starts to repeat itself or meets a certain path restriction
@@ -59,7 +59,7 @@ def impress_marshaller(obj, path=None, memoize=None) -> dict:
         element = []
         if isinstance(val, list):
             for item in val:
-                element.append(impress_marshaller(item, path + [key], memoize))
+                element.append(impress_marshaller(item, path + [key], memoize)) 
         else:
             element = impress_marshaller(val, path + [key], memoize)
         result[key] = element
@@ -78,6 +78,26 @@ def clean_paths(obj: dict) -> dict:
         obj = delete_from_nested(obj, _path)
     return obj
 
+def remove_circular_refs(ob, _seen=None):
+    if _seen is None:
+        _seen = set()
+
+    if id(ob) in _seen:
+        return None
+    _seen.add(id(ob))
+
+    res = ob
+
+    if isinstance(ob, dict):
+        res = {
+            remove_circular_refs(key, _seen): remove_circular_refs(value, _seen)
+            for key, value in ob.items()}
+
+    elif isinstance(ob, (list, tuple, set, frozenset)):
+        res = type(ob)(remove_circular_refs(v, _seen) for v in ob)
+
+    _seen.remove(id(ob))
+    return res
 
 async def harvest_sample_metadata():
     sample = await Sample.get(uid=1207)
@@ -91,6 +111,7 @@ async def impress_samples(sample_meta: List[any], user):
     for s_meta in sample_meta:
         sample = await Sample.get(uid=s_meta.get("uid"))
         logger.info(f"sample {sample} {sample.status}")
+        
         if sample.status in [
             states.sample.RECEIVED,
             states.sample.PAIRED,
@@ -100,6 +121,7 @@ async def impress_samples(sample_meta: List[any], user):
             states.sample.PUBLISHED,
         ]:
             impress_meta = impress_marshaller(sample)
+            impress_meta = remove_circular_refs(impress_meta)
             
             report_state = "Unknown"
             action = s_meta.get("action")
@@ -113,16 +135,12 @@ async def impress_samples(sample_meta: List[any], user):
             logger.info(f"report_state {report_state}: running impress ....")
             impress_engine = FelicityImpress()
             sample_pdf = await impress_engine.generate(impress_meta, report_state)
-
-            # TODO: fix saving of json data - skipping for now :::::: 
-            #       Saving this json is paramount -> keeps track of the data it the same state as when it was impressed
-            #      "json_content": impress_meta
             
             sc_in = ReportImpressCreate(
                 **{
                     "state": report_state,
                     "sample_uid": sample.uid,
-                    "json_content": {},
+                    "json_content": impress_meta,
                     "pdf_content": sample_pdf,
                     "email_required": False,
                     "email_sent": False,
@@ -132,7 +150,6 @@ async def impress_samples(sample_meta: List[any], user):
                     "date_generated": datetime.now(),
                 }
             )
-            
             await ReportImpress.create(sc_in)
             
             if action != "pre-publish":
@@ -145,5 +162,4 @@ async def impress_samples(sample_meta: List[any], user):
         else:
             logger.info(f"sample {sample.sample_id} could not be impressed - status: {sample.status}")
             
-
     return to_return

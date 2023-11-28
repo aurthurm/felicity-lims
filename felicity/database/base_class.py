@@ -269,7 +269,8 @@ class DBModel(DeclarativeBase, AllFeaturesMixinAsync):
                 session.add(self)
                 await session.flush()
                 await session.commit()
-            except Exception:
+            except Exception as e:
+                print(e)
                 await session.rollback()
                 raise
         return self
