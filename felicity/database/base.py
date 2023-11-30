@@ -24,8 +24,8 @@ from apps.analytics.models import ReportMeta  # noqa
 from apps.audit.models import AuditLog  # noqa
 from apps.billing.models import ProfileDiscount  # noqa
 from apps.billing.models import ProfilePrice  # noqa
-from apps.billing.models import ServiceDiscount  # noqa
-from apps.billing.models import ServicePrice  # noqa
+from apps.billing.models import AnalysisDiscount  # noqa
+from apps.billing.models import AnalysisPrice  # noqa
 from apps.billing.models import TestBill  # noqa
 from apps.billing.models import TestBillInvoice  # noqa
 from apps.billing.models import TestBillTransaction  # noqa

@@ -1,7 +1,6 @@
 import logging
 from datetime import datetime
 from typing import List
-import copy
 
 from apps.analysis.conf import states
 from apps.analysis.models.analysis import Sample

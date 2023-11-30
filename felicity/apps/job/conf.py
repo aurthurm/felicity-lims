@@ -35,6 +35,7 @@ class Actions(object):
     SH_RECEIVE = "shipment_receive"
     SHIPPED_REPORT = "shipped_report"
     DIAGNOSTIC_REPORT = "diagnostic_report"
+    BILLING_INIT = "billing_init"
 
 
 actions = Actions()
@@ -46,6 +47,7 @@ class Categories(object):
     RESULT = "result"
     REPORT = "report"
     IMPRESS = "impress"
+    BILLING = "billing"
 
 
 categories = Categories()

@@ -2,39 +2,42 @@ from sqlalchemy import Column, DateTime, Float, ForeignKey, Integer, String, Boo
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import relationship
 
-from apps import BaseAuditDBModel, DBModel
+
+from apps import Auditable, DBModel
 from apps.billing.schemas import (
-    ServicePriceCreate, ServicePriceUpdate, ProfilePriceCreate, ProfilePriceUpdate, ServiceDiscountCreate,
-    ServiceDiscountUpdate, ProfileDiscountCreate, ProfileDiscountUpdate, VoucherUpdate, VoucherCreate,
+    AnalysisPriceCreate, AnalysisPriceUpdate, ProfilePriceCreate, ProfilePriceUpdate, AnalysisDiscountCreate,
+    AnalysisDiscountUpdate, ProfileDiscountCreate, ProfileDiscountUpdate, VoucherUpdate, VoucherCreate,
     VoucherCodeCreate, VoucherCodeUpdate, VoucherCustomerCreate, VoucherCustomerUpdate, TestBillCreate, TestBillUpdate,
     TestBillTransactionCreate, TestBillTransactionUpdate, TestBillInvoiceUpdate, TestBillInvoiceCreate
 )
+from apps.billing.config import DiscountType, DiscountValueType
 
 
-class BasePrice(BaseAuditDBModel):
-    __abstract__ = True
-
+class AnalysisPrice(Auditable):
+    __tablename__ = "analysis_price"
+    
+    analysis_uid = Column(String, ForeignKey("analysis.uid"), nullable=True)
+    analysis = relationship("Analysis", lazy="selectin")
     is_active = Column(Boolean, nullable=False)
     amount = Column(Integer, nullable=False)
 
-
-class ServicePrice(BasePrice):
-    analysis_service_uid = Column(String, ForeignKey("analysis_service.uid"), nullable=True)
-    analysis_service = relationship("AnalysisService", lazy="selectin")
-
     @classmethod
-    async def create(cls, obj_in: ServicePriceCreate) -> "ServicePrice":
+    async def create(cls, obj_in: AnalysisPriceCreate) -> "AnalysisPrice":
         data = cls._import(obj_in)
         return await super().create(**data)
 
-    async def update(self, obj_in: ServicePriceUpdate) -> "ServicePrice":
+    async def update(self, obj_in: AnalysisPriceUpdate) -> "AnalysisPrice":
         data = self._import(obj_in)
         return await super().update(**data)
 
 
-class ProfilePrice(BasePrice):
-    analysis_profile_uid = Column(String, ForeignKey("analysis_profile.uid"), nullable=True)
-    analysis_profile = relationship("AnalysisProfile", lazy="selectin")
+class ProfilePrice(Auditable):
+    __tablename__ = "profile_price"
+    
+    profile_uid = Column(String, ForeignKey("profile.uid"), nullable=True)
+    profile = relationship("Profile", lazy="selectin")
+    is_active = Column(Boolean, nullable=False)
+    amount = Column(Integer, nullable=False)
 
     @classmethod
     async def create(cls, obj_in: ProfilePriceCreate) -> "ProfilePrice":
@@ -46,13 +49,15 @@ class ProfilePrice(BasePrice):
         return await super().update(**data)
 
 
-class BaseDiscount(BaseAuditDBModel):
-    __abstract__ = True
 
+class AnalysisDiscount(Auditable):
+    __tablename__ = "analysis_discount"
+    
+    analysis_uid = Column(String, ForeignKey("analysis.uid"), nullable=True)
+    analysis = relationship("Analysis", lazy="selectin")
     name = Column(String, nullable=False)
-    is_active = Column(Boolean, nullable=False)
-    discount_type = Column(Boolean, nullable=False)
-    value_type = Column(Boolean, nullable=False)
+    discount_type = Column(String, nullable=False, default=DiscountType.VOUCHER)
+    value_type = Column(String, nullable=False, default=DiscountValueType.PERCENTATE)
     start_date = Column(DateTime, nullable=False)
     end_date = Column(DateTime, nullable=False)
     voucher_uid = Column(String, ForeignKey("voucher.uid"), nullable=True)
@@ -61,25 +66,35 @@ class BaseDiscount(BaseAuditDBModel):
     voucher_code = relationship("VoucherCode", lazy="selectin")
     value_percent = Column(Float, nullable=True)
     value_amount = Column(Float, nullable=True)
-
-
-class ServiceDiscount(BaseDiscount):
-    analysis_service_uid = Column(String, ForeignKey("analysis_service.uid"), nullable=True)
-    analysis_service = relationship("AnalysisService", lazy="selectin")
+    is_active = Column(Boolean, nullable=False)
 
     @classmethod
-    async def create(cls, obj_in: ServiceDiscountCreate) -> "ServiceDiscount":
+    async def create(cls, obj_in: AnalysisDiscountCreate) -> "AnalysisDiscount":
         data = cls._import(obj_in)
         return await super().create(**data)
 
-    async def update(self, obj_in: ServiceDiscountUpdate) -> "ServiceDiscount":
+    async def update(self, obj_in: AnalysisDiscountUpdate) -> "AnalysisDiscount":
         data = self._import(obj_in)
         return await super().update(**data)
 
 
-class ProfileDiscount(BaseDiscount):
-    analysis_profile_uid = Column(String, ForeignKey("analysis_profile.uid"), nullable=True)
-    analysis_profile = relationship("AnalysisProfile", lazy="selectin")
+class ProfileDiscount(Auditable):
+    __tablename__ = "profile_discount"
+    
+    analysis_profile_uid = Column(String, ForeignKey("profile.uid"), nullable=True)
+    analysis_profile = relationship("Profile", lazy="selectin")
+    name = Column(String, nullable=False)
+    discount_type = Column(String, nullable=False, default=DiscountType.VOUCHER)
+    value_type = Column(String, nullable=False, default=DiscountValueType.PERCENTATE)
+    start_date = Column(DateTime, nullable=False)
+    end_date = Column(DateTime, nullable=False)
+    voucher_uid = Column(String, ForeignKey("voucher.uid"), nullable=True)
+    voucher = relationship("Voucher", lazy="selectin")
+    voucher_code_uid = Column(String, ForeignKey("voucher_code.uid"), nullable=True)
+    voucher_code = relationship("VoucherCode", lazy="selectin")
+    value_percent = Column(Float, nullable=True)
+    value_amount = Column(Float, nullable=True)
+    is_active = Column(Boolean, nullable=False)
 
     @classmethod
     async def create(cls, obj_in: ProfileDiscountCreate) -> "ProfileDiscount":
@@ -91,7 +106,9 @@ class ProfileDiscount(BaseDiscount):
         return await super().update(**data)
 
 
-class Voucher(BaseAuditDBModel):
+class Voucher(Auditable):
+    __tablename__ = "voucher"
+    
     name = Column(String, nullable=False)
     usage_limit = Column(Integer, nullable=False)
     start_date = Column(DateTime, nullable=False)
@@ -111,7 +128,9 @@ class Voucher(BaseAuditDBModel):
         return await super().update(**data)
 
 
-class VoucherCode(BaseAuditDBModel):
+class VoucherCode(Auditable):
+    __tablename__ = "voucher_code"
+    
     code = Column(String(20), nullable=False)
     used = Column(Integer, nullable=False)
     is_active = Column(Boolean, nullable=False)
@@ -126,7 +145,9 @@ class VoucherCode(BaseAuditDBModel):
         return await super().update(**data)
 
 
-class VoucherCustomer(BaseAuditDBModel):
+class VoucherCustomer(Auditable):
+    __tablename__ = "voucher_customer"
+    
     patient_uid = Column(String, ForeignKey("patient.uid"), nullable=True)
     patient = relationship("Patient", lazy="selectin")
     voucher_code_uid = Column(String, ForeignKey("voucher_code.uid"), nullable=True)
@@ -153,7 +174,9 @@ test_bill_item = Table(
 )
 
 
-class TestBill(BaseAuditDBModel):
+class TestBill(Auditable):
+    __tablename__ = "test_bill"
+    
     bill_id = Column(String, nullable=False)
     patient_uid = Column(String, ForeignKey("patient.uid"), nullable=True)
     patient = relationship("Patient", lazy="selectin")
@@ -180,7 +203,9 @@ class TestBill(BaseAuditDBModel):
         return await super().update(**data)
 
 
-class TestBillTransaction(BaseAuditDBModel):
+class TestBillTransaction(Auditable):
+    __tablename__ = "test_bill_transaction"
+    
     test_bill_uid = Column(String, ForeignKey("test_bill.uid"), nullable=True)
     test_bill = relationship("TestBill", lazy="selectin")
     kind = Column(String, nullable=False)
@@ -189,6 +214,7 @@ class TestBillTransaction(BaseAuditDBModel):
     is_success = Column(Boolean, nullable=False)
     action_required = Column(String, nullable=False)
     processed = Column(Boolean, nullable=False)
+    notes = Column(String, nullable=False)
 
     @classmethod
     async def create(cls, obj_in: TestBillTransactionCreate) -> "TestBillTransaction":
@@ -200,7 +226,9 @@ class TestBillTransaction(BaseAuditDBModel):
         return await super().update(**data)
 
 
-class TestBillInvoice(BaseAuditDBModel):
+class TestBillInvoice(Auditable):
+    __tablename__ = "test_bill_invoice"
+    
     test_bill_uid = Column(String, ForeignKey("test_bill.uid"), nullable=True)
     test_bill = relationship("TestBill", lazy="selectin")
     json_content: dict = Column(JSONB, nullable=True)

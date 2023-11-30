@@ -3,6 +3,7 @@ import logging
 import strawberry  # noqa
 from api.gql.types import OperationError
 from api.gql.permissions import IsAuthenticated
+from api.gql.auth import auth_from_info, verify_user_auth
 from api.gql.setup.types.department import DepartmentType
 from api.gql.setup.types import (
     CountryType,
@@ -15,6 +16,9 @@ from api.gql.setup.types import (
     UnitType,
 )
 from apps.setup import models, schemas
+from apps.job import models as job_models
+from apps.job import schemas as job_schemas
+from apps.job.conf import actions, categories, priorities, states
 
 
 logging.basicConfig(level=logging.INFO)
@@ -77,7 +81,8 @@ class LaboratorySettingInputType:
     default_theme: str | None = None
     auto_receive_samples: bool | None = True
     sticker_copies: int | None = 2
-
+    allow_billing: bool | None = False
+    currency: str | None = "USD"
 
 @strawberry.input
 class DepartmentInputType:
@@ -169,10 +174,12 @@ class SetupMutations:
         self, info, uid: str, payload: LaboratorySettingInputType
     ) -> LaboratorySettingResponse:  # noqa
 
+        is_authenticated, felicity_user = await auth_from_info(info)
+
         if not uid:
             return OperationError(error="No uid provided to identity update obj")
 
-        lab_setting = await models.LaboratorySetting.get(uid=uid)
+        lab_setting: models.LaboratorySetting = await models.LaboratorySetting.get(uid=uid)
         if not lab_setting:
             return OperationError(
                 error=f"Laboratory Setting with uid {uid} not found. Cannot update obj ..."
@@ -188,6 +195,19 @@ class SetupMutations:
 
         obj_in = schemas.LaboratoryUpdate(**lab_setting.to_dict())
         lab_setting = await lab_setting.update(obj_in)
+        
+        if lab_setting.allow_billing:
+            job_schema = job_schemas.JobCreate(
+                action=actions.BILLING_INIT,
+                category=categories.BILLING,
+                priority=priorities.MEDIUM,
+                creator_uid=felicity_user.uid,
+                job_id=None,
+                status=states.PENDING,
+                data={"profiles": [], "analyses": []},
+            )
+            await job_models.Job.create(job_schema)
+            
         return LaboratorySettingType(**lab_setting.marshal_simple())
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])

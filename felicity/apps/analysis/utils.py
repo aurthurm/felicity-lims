@@ -4,7 +4,7 @@ from typing import List
 
 from apps.analysis import schemas
 from apps.analysis.conf import states
-from apps.analysis.models.analysis import SampleType
+from apps.analysis.models.analysis import SampleType, Profile, Analysis
 from apps.analysis.models.results import (
     AnalysisResult,
     result_verification,
@@ -17,6 +17,7 @@ from apps.job.models import Job
 from apps.job.schemas import JobCreate
 from apps.job import conf as job_conf
 from apps.user.models import User
+from apps.billing.models import ProfilePrice, AnalysisPrice
 
 from sqlalchemy import or_
 from utils import has_value_or_is_truthy
@@ -338,3 +339,35 @@ async def result_mutator(result: AnalysisResult):
 
     if result_in != result.result:
         result = await result.save()
+
+
+
+async def billing_setup_profiles(profile_uids=None):
+    if profile_uids:
+        profiles = await Profile.get_by_uids(profile_uids)
+    else:
+        profiles = await Profile.all()
+    
+    for profile in profiles:
+        exists = await ProfilePrice.get_one(uid=profile.uid)
+        if not exists:
+            await ProfilePrice.create({
+                "profile_uid": profile.uid,
+                "amount": 0.0,
+                "is_active": True
+            })
+
+async def billing_setup_analysis(analysis_uids=None):
+    if analysis_uids:
+        analyses = await Analysis.get_by_uids(analysis_uids)
+    else:
+        analyses = await Analysis.all()
+    
+    for analysis in analyses:
+        exists = await AnalysisPrice.get_one(uid=analysis.uid)
+        if not exists:
+            await AnalysisPrice.create({
+                "analysis_uid": analysis.uid,
+                "amount": 0.0,
+                "is_active": True
+            })

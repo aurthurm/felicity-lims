@@ -1,6 +1,7 @@
 # coding: utf-8
 import logging
 
+from core.config import settings
 from apps.impress.reports.utils import get_from_nested, strtobool
 from fpdf import FPDF
 
@@ -32,6 +33,7 @@ class PDF(FPDF):
 
 class FelicityImpress:
     def __init__(self):
+        self.logo_path = settings.BASE_DIR + '/assets/logo.png'
         self.pdf = PDF(orientation="P", unit="mm", format="A4")
         self.pdf.set_font("Helvetica")
         self.pdf.set_page_background((255, 255, 255))
@@ -40,10 +42,11 @@ class FelicityImpress:
         self.margin_top = 20
         self.margin_left = 10
         self.y_diff = 5  # space between rows
+        print(self.logo_path)
 
     def _add_page(self):
         self.pdf.add_page()
-
+        
     def _style_heading_1(self):
         self.pdf.set_text_color(0, 125, 225)
         self.pdf.set_font("Helvetica", "B", 16)
@@ -72,6 +75,8 @@ class FelicityImpress:
             get_from_nested(p, "name") for p in get_from_nested(sample, "analyses")
         ]
         self._add_page()
+        #
+        self.pdf.image(self.logo_path, self.margin_left, self.margin_top, 10, 10)
 
         # Felicity Health Report
         # self._style_heading_1()

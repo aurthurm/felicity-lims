@@ -4,25 +4,25 @@ from typing import Optional
 from pydantic import BaseModel, ConfigDict
 
 
-class ServicePriceBase(BaseModel):
+class AnalysisPriceBase(BaseModel):
     is_active: bool
     amount: float
     analysis_service_uid: str
 
 
-class ServicePriceBaseInDB(ServicePriceBase):
+class AnalysisPriceBaseInDB(AnalysisPriceBase):
     uid: str | None = None
 
     model_config = ConfigDict(from_attributes=True)
 
 
 # Properties to receive via API on creation
-class ServicePriceCreate(ServicePriceBase):
+class AnalysisPriceCreate(AnalysisPriceBase):
     pass
 
 
 # Properties to receive via API on update
-class ServicePriceUpdate(ServicePriceBase):
+class AnalysisPriceUpdate(AnalysisPriceBase):
     pass
 
 
@@ -48,7 +48,7 @@ class ProfilePriceUpdate(ProfilePriceBase):
     pass
 
 
-class ServiceDiscountBase(BaseModel):
+class AnalysisDiscountBase(BaseModel):
     name: str
     is_active: bool
     discount_type: bool
@@ -62,19 +62,19 @@ class ServiceDiscountBase(BaseModel):
     analysis_service_uid: str
 
 
-class ServiceDiscountBaseInDB(ServiceDiscountBase):
+class AnalysisDiscountBaseInDB(AnalysisDiscountBase):
     uid: str | None = None
 
     model_config = ConfigDict(from_attributes=True)
 
 
 # Properties to receive via API on creation
-class ServiceDiscountCreate(ServiceDiscountBase):
+class AnalysisDiscountCreate(AnalysisDiscountBase):
     pass
 
 
 # Properties to receive via API on update
-class ServiceDiscountUpdate(ServiceDiscountBase):
+class AnalysisDiscountUpdate(AnalysisDiscountBase):
     pass
 
 

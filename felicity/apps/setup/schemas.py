@@ -63,6 +63,8 @@ class LaboratorySettingBase(BaseAuditModel):
     default_theme: str | None = None
     auto_receive_samples: bool | None = True
     sticker_copies: int | None = 2
+    allow_billing: bool | None = False
+    currency: str | None = "USD"
 
 
 class LaboratorySettingCreate(LaboratorySettingBase):

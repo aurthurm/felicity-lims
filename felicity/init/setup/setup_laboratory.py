@@ -136,5 +136,7 @@ async def create_laboratory(name: str) -> None:
             default_theme="LIGHT",
             auto_receive_samples=True,
             sticker_copies=2,
+            allow_billing=False,
+            currency="USD",
         )
         await models.LaboratorySetting.create(setting_in)
