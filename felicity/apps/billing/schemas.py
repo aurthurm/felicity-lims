@@ -56,7 +56,6 @@ class AnalysisDiscountBase(BaseModel):
     start_date: datetime
     end_date: datetime
     voucher_uid: str
-    voucher_code_uid: str
     value_percent: float
     value_amount: float
     analysis_service_uid: str
@@ -86,7 +85,6 @@ class ProfileDiscountBase(BaseModel):
     start_date: datetime
     end_date: datetime
     voucher_uid: str
-    voucher_code_uid: str
     value_percent: float
     value_amount: float
     analysis_profile_uid: str
@@ -110,13 +108,12 @@ class ProfileDiscountUpdate(ProfileDiscountBase):
 
 class VoucherBase(BaseModel):
     name: str
-    usage_limit: float
+    usage_limit: int
+    used: int
     start_date: datetime
     end_date: datetime
     once_per_customer: bool
     once_per_order: bool
-    single_use: bool
-    only_for_staff: bool
 
 
 class VoucherBaseInDB(VoucherBase):
@@ -137,6 +134,8 @@ class VoucherUpdate(VoucherBase):
 
 class VoucherCodeBase(BaseModel):
     code: str
+    voucher_uid: str
+    usage_limit: str
     used: float
     is_active: bool
 
@@ -184,7 +183,7 @@ class TestBillBase(BaseModel):
     client_uid: str
     is_active: bool
     to_confirm: bool
-    partial: bool
+    partial: bool = False
     total_charged: float
     json_content: Optional[dict] = {}
 
@@ -209,10 +208,11 @@ class TestBillTransactionBase(BaseModel):
     test_bill_uid: str
     kind: str
     amount: float
-    error: bool
-    is_success: bool
+    error: bool = False
+    is_success: bool = False
     action_required: str
-    processed: bool
+    processed: bool = False
+    notes: str
 
 
 class TestBillTransactionBaseInDB(TestBillTransactionBase):

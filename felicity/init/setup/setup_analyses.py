@@ -11,6 +11,7 @@ from apps.analysis.models.analysis import (
     SampleType,
 )
 from apps.analysis.models.qc import QCLevel
+from apps.analysis import utils
 from apps.analysis.schemas import (
     AnalysisCategoryCreate,
     AnalysisCreate,
@@ -120,7 +121,8 @@ async def create_analyses_services_and_profiles() -> None:
                 sort_key=_anal.get("sort_key"),
                 active=bool(_anal.get("active")),
             )
-            await Analysis.create(an_in)
+            analyte = await Analysis.create(an_in)
+        await utils.billing_setup_analysis([analyte.uid])
 
     profiles = data.get("analyses_profiles", [])
 
@@ -148,6 +150,8 @@ async def create_analyses_services_and_profiles() -> None:
                             await session.commit()
                         except Exception:  # noqa
                             await session.rollback()
+                            
+        await utils.billing_setup_profiles([a_profile.uid])
 
 
 async def create_rejection_reasons() -> None:

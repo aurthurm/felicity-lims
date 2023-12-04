@@ -8,6 +8,7 @@ from api.gql.auth import auth_from_info, verify_user_auth
 from api.gql.permissions import IsAuthenticated
 from api.gql.analysis.types import analysis as a_types
 from apps.analysis import schemas
+from apps.analysis import utils
 from apps.analysis.models import analysis as analysis_models
 
 
@@ -96,6 +97,8 @@ async def create_profile(info, payload: ProfileInputType) -> AnalysisProfileResp
                 mappings={"analysis_uid": service_uid, "profile_uid": profile.uid},
             )
 
+    await utils.billing_setup_profiles([profile.uid])
+    
     profile = await analysis_models.Profile.get(uid=profile.uid)
     return a_types.ProfileType(**profile.marshal_simple())
 

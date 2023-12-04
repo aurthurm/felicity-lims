@@ -62,8 +62,6 @@ class AnalysisDiscount(Auditable):
     end_date = Column(DateTime, nullable=False)
     voucher_uid = Column(String, ForeignKey("voucher.uid"), nullable=True)
     voucher = relationship("Voucher", lazy="selectin")
-    voucher_code_uid = Column(String, ForeignKey("voucher_code.uid"), nullable=True)
-    voucher_code = relationship("VoucherCode", lazy="selectin")
     value_percent = Column(Float, nullable=True)
     value_amount = Column(Float, nullable=True)
     is_active = Column(Boolean, nullable=False)
@@ -81,8 +79,8 @@ class AnalysisDiscount(Auditable):
 class ProfileDiscount(Auditable):
     __tablename__ = "profile_discount"
     
-    analysis_profile_uid = Column(String, ForeignKey("profile.uid"), nullable=True)
-    analysis_profile = relationship("Profile", lazy="selectin")
+    profile_uid = Column(String, ForeignKey("profile.uid"), nullable=True)
+    profile = relationship("Profile", lazy="selectin")
     name = Column(String, nullable=False)
     discount_type = Column(String, nullable=False, default=DiscountType.VOUCHER)
     value_type = Column(String, nullable=False, default=DiscountValueType.PERCENTATE)
@@ -90,8 +88,6 @@ class ProfileDiscount(Auditable):
     end_date = Column(DateTime, nullable=False)
     voucher_uid = Column(String, ForeignKey("voucher.uid"), nullable=True)
     voucher = relationship("Voucher", lazy="selectin")
-    voucher_code_uid = Column(String, ForeignKey("voucher_code.uid"), nullable=True)
-    voucher_code = relationship("VoucherCode", lazy="selectin")
     value_percent = Column(Float, nullable=True)
     value_amount = Column(Float, nullable=True)
     is_active = Column(Boolean, nullable=False)
@@ -109,14 +105,18 @@ class ProfileDiscount(Auditable):
 class Voucher(Auditable):
     __tablename__ = "voucher"
     
-    name = Column(String, nullable=False)
-    usage_limit = Column(Integer, nullable=False)
+    name = Column(String, nullable=False, unique=True)
+    # The number of times a voucher can be used.
+    usage_limit = Column(Integer, nullable=False, default=0)
+    # Used count of the voucher.
+    used = Column(Integer, nullable=False, default=0)
     start_date = Column(DateTime, nullable=False)
     end_date = Column(DateTime, nullable=False)
+    # Determine if the voucher usage should be limited to one use per customer.
     once_per_customer = Column(Boolean, nullable=False)
+    # Determine if the voucher should be applied once per order. If set to True, 
+    # the voucher is applied to a single cheapest eligible product in checkout.
     once_per_order = Column(Boolean, nullable=False)
-    single_use = Column(Boolean, nullable=False)
-    only_for_staff = Column(Boolean, nullable=False)
 
     @classmethod
     async def create(cls, obj_in: VoucherCreate) -> "Voucher":
@@ -131,8 +131,13 @@ class Voucher(Auditable):
 class VoucherCode(Auditable):
     __tablename__ = "voucher_code"
     
-    code = Column(String(20), nullable=False)
-    used = Column(Integer, nullable=False)
+    code = Column(String(20), nullable=False, unique=True)
+    voucher_uid = Column(String, ForeignKey("voucher.uid"), nullable=False)
+    voucher = relationship("Voucher", lazy="selectin")
+    # The number of times a voucher code can be used.
+    usage_limit = Column(Integer, nullable=False, default=0)
+    # Usage count of the voucher code.
+    used = Column(Integer, nullable=False, default=0)
     is_active = Column(Boolean, nullable=False)
 
     @classmethod
@@ -148,9 +153,9 @@ class VoucherCode(Auditable):
 class VoucherCustomer(Auditable):
     __tablename__ = "voucher_customer"
     
-    patient_uid = Column(String, ForeignKey("patient.uid"), nullable=True)
+    patient_uid = Column(String, ForeignKey("patient.uid"), nullable=False)
     patient = relationship("Patient", lazy="selectin")
-    voucher_code_uid = Column(String, ForeignKey("voucher_code.uid"), nullable=True)
+    voucher_code_uid = Column(String, ForeignKey("voucher_code.uid"), nullable=False)
     voucher_code = relationship("VoucherCode", lazy="selectin")
 
     @classmethod

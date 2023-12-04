@@ -21,6 +21,7 @@ from apps.job.conf import states as job_states
 from apps.notification.utils import FelicityStreamer
 from apps.patient import models as pt_models
 from apps.reflex.utils import ReflexUtil
+from apps.billing.utils import bill_order
 
 
 streamer = FelicityStreamer()
@@ -253,6 +254,10 @@ async def create_analysis_request(
     analysis_request = await analysis_models.AnalysisRequest.get_related(
         uid=analysis_request.uid, related=["samples"]
     )
+    
+    # 
+    await bill_order(analysis_request, auto=True)
+    
     return a_types.AnalysisRequestWithSamples(**analysis_request.marshal_simple())
 
 

@@ -47,6 +47,8 @@ from api.gql.shipment import shipment_types
 from api.gql.storage import storage_types
 from api.gql.user import user_types
 from api.gql.worksheet import worksheet_types
+from api.gql.billing import billing_types
+from api.gql.billing.query import BillingQuery
 from api.gql.types import generic_types
 
 types = (
@@ -68,6 +70,7 @@ types = (
     + storage_types
     + user_types
     + worksheet_types
+    + billing_types
 )
 
 
@@ -90,6 +93,7 @@ class Query(
     ReportImpressQuery,
     InstrumentQuery,
     ShipmentQuery,
+    BillingQuery,
 ):
     pass
 

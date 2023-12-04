@@ -17,7 +17,11 @@ from apps.job.models import Job
 from apps.job.schemas import JobCreate
 from apps.job import conf as job_conf
 from apps.user.models import User
-from apps.billing.models import ProfilePrice, AnalysisPrice
+from apps.billing.models import (
+    ProfilePrice, AnalysisPrice,
+    ProfileDiscount, AnalysisDiscount
+)
+from apps.billing.config import DiscountType, DiscountValueType
 
 from sqlalchemy import or_
 from utils import has_value_or_is_truthy
@@ -349,13 +353,26 @@ async def billing_setup_profiles(profile_uids=None):
         profiles = await Profile.all()
     
     for profile in profiles:
-        exists = await ProfilePrice.get_one(uid=profile.uid)
+        exists = await ProfilePrice.get_one(profile_uid=profile.uid)
         if not exists:
             await ProfilePrice.create({
                 "profile_uid": profile.uid,
                 "amount": 0.0,
                 "is_active": True
             })
+        
+        exists = await ProfileDiscount.get_one(profile_uid=profile.uid)
+        if not exists:
+            await ProfileDiscount.create({
+                "name": profile.name + "-Discount",
+                "profile_uid": profile.uid,
+                "discount_type": DiscountType.SALE,
+                "value_type": DiscountValueType.PERCENTATE,
+                "value_percent": 0.0,
+                "value_amount": 0.0,
+                "is_active": False
+            })
+
 
 async def billing_setup_analysis(analysis_uids=None):
     if analysis_uids:
@@ -364,10 +381,22 @@ async def billing_setup_analysis(analysis_uids=None):
         analyses = await Analysis.all()
     
     for analysis in analyses:
-        exists = await AnalysisPrice.get_one(uid=analysis.uid)
+        exists = await AnalysisPrice.get_one(analysis_uid=analysis.uid)
         if not exists:
             await AnalysisPrice.create({
                 "analysis_uid": analysis.uid,
                 "amount": 0.0,
                 "is_active": True
+            })
+        
+        exists = await AnalysisDiscount.get_one(analysis_uid=analysis.uid)
+        if not exists:
+            await AnalysisDiscount.create({
+                "name": analysis.name + "-Discount",
+                "analysis_uid": analysis.uid,
+                "discount_type": DiscountType.SALE,
+                "value_type": DiscountValueType.PERCENTATE,
+                "value_percent": 0.0,
+                "value_amount": 0.0,
+                "is_active": False
             })

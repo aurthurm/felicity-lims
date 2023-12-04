@@ -64,6 +64,7 @@ class LaboratorySettingBase(BaseAuditModel):
     auto_receive_samples: bool | None = True
     sticker_copies: int | None = 2
     allow_billing: bool | None = False
+    allow_auto_billing: bool | None = False
     currency: str | None = "USD"
 
 

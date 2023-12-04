@@ -9,6 +9,7 @@ from api.gql.auth import auth_from_info, verify_user_auth
 from api.gql.permissions import IsAuthenticated
 from api.gql.types import OperationError
 from apps.analysis import schemas
+from apps.analysis import utils
 from apps.analysis.models import analysis as analysis_models
 from apps.instrument.models import Method
 
@@ -102,6 +103,8 @@ async def create_analysis(info, payload: AnalysisInputType) -> ProfilesServiceRe
 
     analysis = await analysis_models.Analysis.get(uid=analysis.uid)
     profiles = await analysis_models.Profile.get_all(analyses___uid=analysis.uid)
+    
+    await utils.billing_setup_analysis([analysis.uid])
 
     return a_types.AnalysisWithProfiles(**{**analysis.marshal_simple(), "profiles": profiles})
 

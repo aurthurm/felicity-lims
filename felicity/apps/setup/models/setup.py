@@ -61,7 +61,8 @@ class LaboratorySetting(BaseAuditDBModel):
     sticker_copies = Column(Integer, nullable=True)
     default_tat_minutes = Column(Integer, nullable=True, default=1440)
     # 
-    allow_billing = Column(Boolean(), nullable=True)
+    allow_billing = Column(Boolean(), nullable=True, default=False)
+    allow_auto_billing = Column(Boolean(), nullable=True, default=True)
     currency = Column(String, nullable=True, default="USD")
 
     @classmethod

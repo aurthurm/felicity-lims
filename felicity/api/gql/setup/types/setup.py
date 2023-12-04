@@ -52,6 +52,9 @@ class LaboratorySettingType:
     default_theme: str | None = None
     auto_receive_samples: bool | None = True
     sticker_copies: int | None = 2
+    allow_auto_billing: bool | None = True
+    allow_billing: bool | None = False
+    currency: str | None = "USD"
     #
 
 
