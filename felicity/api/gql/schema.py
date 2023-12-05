@@ -49,6 +49,7 @@ from api.gql.user import user_types
 from api.gql.worksheet import worksheet_types
 from api.gql.billing import billing_types
 from api.gql.billing.query import BillingQuery
+from api.gql.billing.mutations import BillingMutations
 from api.gql.types import generic_types
 
 types = (
@@ -113,6 +114,7 @@ class Mutation(
     InventoryMutations,
     InstrumentMutations,
     ShipmentMutations,
+    BillingMutations,
 ):
     pass
 

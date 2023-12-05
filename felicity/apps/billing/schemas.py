@@ -185,6 +185,7 @@ class TestBillBase(BaseModel):
     to_confirm: bool
     partial: bool = False
     total_charged: float
+    total_paid: float
     json_content: Optional[dict] = {}
 
 

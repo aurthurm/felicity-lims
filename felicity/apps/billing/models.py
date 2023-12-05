@@ -190,7 +190,8 @@ class TestBill(Auditable):
     is_active = Column(Boolean, nullable=False)
     to_confirm = Column(Boolean, nullable=False)
     partial = Column(Boolean, nullable=False)
-    total_charged = Column(Float, nullable=False)
+    total_charged = Column(Float, nullable=False, default=0.0)
+    total_paid = Column(Float, nullable=False, default=0.0)
     json_content: dict = Column(JSONB, nullable=True)
     orders = relationship(
         "AnalysisRequest",

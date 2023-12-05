@@ -19,8 +19,8 @@ class BillingQuery:
         after_cursor: str | None = None,
         before_cursor: str | None = None,
         text: str | None = None,
-        is_active: str | None = None,
-        partial: str | None = None,
+        is_active: bool | None = None,
+        partial: bool | None = None,
         client_uid: str | None = None,
         sort_by: list[str] | None = None,
     ) -> types.TestBillCursorPage:
@@ -43,8 +43,11 @@ class BillingQuery:
         if client_uid:
             filters.append({"analysis_request___client_uid__exact": client_uid})
 
-        filters.append({"is_active": is_active})
-        filters.append({"partial": partial})
+        if has_value_or_is_truthy(is_active):
+            filters.append({"is_active": is_active})
+            
+        if has_value_or_is_truthy(partial):
+            filters.append({"partial": partial})
 
         page = await models.TestBill.paginate_with_cursors(
             page_size=page_size,

@@ -156,7 +156,7 @@ async def bill_order(analysis_request: a_models.AnalysisRequest, auto=False):
         await transaction.update(tra_update_in)
 
 
-async def apply_voucher(voucher_code: str, test_bill_uid: str, customer_uid: str):
+async def apply_voucher(voucher_code: str, test_bill_uid: str, customer_uid: str) -> TestBill:
     today = datetime.now()
     
     bill = await TestBill.get(uid=test_bill_uid)
@@ -263,9 +263,9 @@ async def apply_voucher(voucher_code: str, test_bill_uid: str, customer_uid: str
         transaction = await TestBillTransaction.create(tras_in)
         # apply sale discounts from the transaction
         bill_update_in = TestBillUpdate(
-            total_charged=bill.total_charged - transaction.amount
+            total_paid=bill.total_paid + transaction.amount
         )
-        await bill.update(bill_update_in)
+        bill = await bill.update(bill_update_in)
         # update transaction
         tra_update_in = TestBillTransactionUpdate(
             processed=True,
@@ -280,3 +280,4 @@ async def apply_voucher(voucher_code: str, test_bill_uid: str, customer_uid: str
             "voucher_code_uid":code.uid
         })
 
+    return bill
