@@ -64,7 +64,7 @@ export const useAnalysisStore = defineStore('analysis', {
                     r[key].push(obj);
                     return r;
                 }, {});
-                return Object.entries(profiled || {}).sort()
+                return Object.entries(profiled || {}).sort() as unknown as { [key: string]: IAnalysisService[] }[]
             } else {
                 return [];
             }

@@ -36,6 +36,7 @@ const configs = ref([
   { title: "Load Setup Data", path: "/admin/setup-data-conf", icon: "database" },
   { title: "Inventory Mgt", path: "/admin/inventory-conf", icon: "database" },
   { title: "Sample Referral", path: "/admin/shipment-conf", icon: "truck" },
+  { title: "Billing", path: "/admin/billing-conf", icon: "money-bill" },
 ]);
 </script>
 

@@ -25,7 +25,9 @@
         "backend:codegen:not-working": "# npm run backend:schema:export && strawberry codegen  --schema api.gql.schema --output-dir ../graphql -p python -p typescript ./api/gql/schema.graphql",
         "database:al:upgrade": "cd felicity && alembic upgrade head",
         "database:al:revision": "cd felicity && alembic revision --autogenerate -m",
-        "codegen": "graphql-codegen --config codegen.yml --verbose"
+        "codegen": "graphql-codegen --config codegen.yml --verbose",
+        "magidoc:generate": "magidoc generate",
+        "magidoc:preview": "magidoc preview"
     },
     "dependencies": {
         "@antv/g2": "^4.2.8",
@@ -44,6 +46,7 @@
         "@graphql-codegen/typescript-urql": "^3.7.3",
         "@graphql-codegen/typescript-vue-urql": "^2.3.6",
         "@graphql-typed-document-node/core": "^3.2.0",
+        "@magidoc/cli": "^4.1.2",
         "@types/lodash-es": "^4.17.6",
         "@urql/core": "^3.1.1",
         "@urql/exchange-auth": "^1.0.0",

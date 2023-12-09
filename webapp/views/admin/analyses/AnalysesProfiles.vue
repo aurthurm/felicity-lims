@@ -20,13 +20,17 @@ const accordion = defineAsyncComponent(
   () => import("../../../components/Accordion.vue")
 )
 
+const Billing = defineAsyncComponent(
+  () => import("./Billing.vue")
+)
+
 const analysisStore = useAnalysisStore();
 const sampleStore = useSampleStore();
 const setupStore = useSetupStore();
 const { withClientMutation } = useApiUtil();
 
-let currentTab = ref("view");
-const tabs = ["view", "analyses-services", "mappings", "financials"];
+let currentTab = ref("analyses-services");
+const tabs = ["analyses-services", "mappings", "billing"];
 
 let showModal = ref(false);
 let formTitle = ref("");
@@ -273,12 +277,7 @@ function saveMappingForm(): void {
         </nav>
 
         <section class="mt-2 p-2 bg-white">
-          <div v-if="currentTab === 'view'">
-            <h3>General</h3>
-            <hr />
-            <input type="text" />
-          </div>
-          <div v-else-if="currentTab === 'analyses-services'">
+          <div v-if="currentTab === 'analyses-services'">
             <h3>Analyses</h3>
             <hr />
             <section
@@ -383,10 +382,8 @@ function saveMappingForm(): void {
               </div>
             </div>
           </div>
-          <div v-else>
-            <!-- fiancials -->
-            <h3>Billing</h3>
-            <hr />
+          <div v-if="currentTab == 'billing'">
+            <Billing target="'analyis-profile'"  />
           </div>
         </section>
       </section>

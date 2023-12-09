@@ -86,18 +86,23 @@ class BillingQuery:
     async def bill_invoices(self, info, bill_uid: str) -> Optional[list[types.TestBillInvoiceType]]:
         return await models.TestBillInvoice.get(test_bill_uid=bill_uid)
 
+    @strawberry.field(permission_classes=[IsAuthenticated])
     async def bill_invoice(self, info, invoice_uid: str) -> Optional[types.TestBillInvoiceType]:
         return  await models.TestBillInvoice.get(uid=invoice_uid)
 
+    @strawberry.field(permission_classes=[IsAuthenticated])
     async def price_for_profile(self, info, profile_uid: str) -> Optional[types.ProfilePriceType]:
         return  await models.ProfilePrice.get(profile_uid=profile_uid)
 
+    @strawberry.field(permission_classes=[IsAuthenticated])
     async def price_for_analysis(self, info, analysis_uid: str) -> Optional[types.AnalysisPriceType]:
         return  await models.AnalysisPrice.get(analysis_uid=analysis_uid)
 
+    @strawberry.field(permission_classes=[IsAuthenticated])
     async def discount_for_profile(self, info, profile_uid: str) -> Optional[types.ProfileDiscountType]:
         return  await models.ProfileDiscount.get(profile_uid=profile_uid)
 
+    @strawberry.field(permission_classes=[IsAuthenticated])
     async def discount_for_analysis(self, info, analysis_uid: str) -> Optional[types.AnalysisDiscountType]:
         return  await models.AnalysisDiscount.get(analysis_uid=analysis_uid)
 

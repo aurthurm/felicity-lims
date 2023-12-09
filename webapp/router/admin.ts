@@ -146,6 +146,13 @@ const adminRoutes = [
             requiresAuth: true,
         },
     },
+    {
+        path: 'billing-conf',
+        component: () => import('../views/admin/billing/index.vue'),
+        meta: {
+            requiresAdmin: true,
+        },
+    },
 ];
 
 export default adminRoutes;
