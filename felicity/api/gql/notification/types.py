@@ -1,4 +1,3 @@
-from datetime import datetime
 from typing import List, Optional, Union
 
 import strawberry  # noqa
@@ -46,7 +45,7 @@ class ActivityStreamType:
     target_uid: str | None
     target: str | None
     viewers: list[UserType] | None
-    created_at: datetime | None
+    created_at: str | None
     created_by_uid: str | None
     created_by: UserType | None
 
@@ -95,6 +94,6 @@ class NotificationType:
     users: UserType | None
     message: str
     viewers: UserType | None
-    created_at: datetime | None
+    created_at: str | None
     created_by_uid: str | None
     created_by: UserType | None

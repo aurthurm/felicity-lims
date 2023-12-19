@@ -533,6 +533,7 @@ export const GET_ANALYSIS_REQUESTS_BY_PATIENT_UID = gql`
         analysisRequestsByPatientUid(uid: $uid) {
             uid
             clientRequestId
+            requestId
             createdAt
             patient {
                 uid

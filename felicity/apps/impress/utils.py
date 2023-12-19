@@ -23,13 +23,13 @@ def impress_marshaller(obj, path=None, memoize=None) -> dict | str:
     """
     if memoize is None:
         memoize = {}
-        
+
     if path is None:
-      path = []
+        path = []
 
     if id(obj) in memoize:
         return memoize[id(obj)]
-        
+
     exclude = [
         "auth",
         "preference",
@@ -54,15 +54,15 @@ def impress_marshaller(obj, path=None, memoize=None) -> dict | str:
     for key, val in obj.__dict__.items():
         if (key.startswith("_") or key in exclude) or (path and path[-1] == key):
             continue
-        
+
         element = []
         if isinstance(val, list):
             for item in val:
-                element.append(impress_marshaller(item, path + [key], memoize)) 
+                element.append(impress_marshaller(item, path + [key], memoize))
         else:
             element = impress_marshaller(val, path + [key], memoize)
         result[key] = element
-        
+
         memoize[id(obj)] = result
     return result
 
@@ -76,6 +76,7 @@ def clean_paths(obj: dict) -> dict:
     for _path in paths:
         obj = delete_from_nested(obj, _path)
     return obj
+
 
 def remove_circular_refs(ob, _seen=None):
     if _seen is None:
@@ -98,6 +99,7 @@ def remove_circular_refs(ob, _seen=None):
     _seen.remove(id(ob))
     return res
 
+
 async def harvest_sample_metadata():
     sample = await Sample.get(uid=1207)
     d = impress_marshaller(sample)
@@ -110,7 +112,7 @@ async def impress_samples(sample_meta: List[any], user):
     for s_meta in sample_meta:
         sample = await Sample.get(uid=s_meta.get("uid"))
         logger.info(f"sample {sample} {sample.status}")
-        
+
         if sample.status in [
             states.sample.RECEIVED,
             states.sample.PAIRED,
@@ -121,7 +123,7 @@ async def impress_samples(sample_meta: List[any], user):
         ]:
             impress_meta = impress_marshaller(sample)
             impress_meta = remove_circular_refs(impress_meta)
-            
+
             report_state = "Unknown"
             action = s_meta.get("action")
             if action == "publish":
@@ -130,11 +132,11 @@ async def impress_samples(sample_meta: List[any], user):
                 report_state = "Final Report -- republish"
             if action == "pre-publish":
                 report_state = "Preliminary Report"
-                
+
             logger.info(f"report_state {report_state}: running impress ....")
             impress_engine = FelicityImpress()
             sample_pdf = await impress_engine.generate(impress_meta, report_state)
-            
+
             sc_in = ReportImpressCreate(
                 **{
                     "state": report_state,
@@ -150,7 +152,7 @@ async def impress_samples(sample_meta: List[any], user):
                 }
             )
             await ReportImpress.create(sc_in)
-            
+
             if action != "pre-publish":
                 sample = await sample.publish(published_by=user)
 
@@ -160,5 +162,5 @@ async def impress_samples(sample_meta: List[any], user):
             await streamer.stream(sample, user, "published", "sample")
         else:
             logger.info(f"sample {sample.sample_id} could not be impressed - status: {sample.status}")
-            
+
     return to_return

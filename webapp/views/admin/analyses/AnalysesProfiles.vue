@@ -383,7 +383,7 @@ function saveMappingForm(): void {
             </div>
           </div>
           <div v-if="currentTab == 'billing'">
-            <Billing target="'analyis-profile'"  />
+            <Billing target="profile" :targetUid="analysisProfile.uid" />
           </div>
         </section>
       </section>

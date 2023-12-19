@@ -13,10 +13,18 @@ export const decrypter2 = (data: any, key: string) => {
 };
 
 export const parseDate = function (str: any, withTime=true) {
-    let date = dayjs(str);
-    if (date.isValid()) {
-        if(withTime) return date.format('D MMMM YYYY, h:mm:ss a');
-        return date.format('D MMMM YYYY')
+    let dt = dayjs(str);
+    if (dt.isValid()) {
+        if(withTime) return dt.format('D MMMM YYYY, h:mm:ss a');
+        return dt.format('D MMMM YYYY')
+    }
+    return str ?? "---";
+};
+
+export const formatDate = function (str: any, format: string) {
+    let dt = dayjs(str);
+    if (dt.isValid()) {
+        return dt.format(format)
     }
     return str ?? "---";
 };

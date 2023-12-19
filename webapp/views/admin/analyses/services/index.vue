@@ -31,6 +31,9 @@
   const AnalysisSpecifications = defineAsyncComponent(
     () => import('./Specifications.vue')
   )
+  const Billing = defineAsyncComponent(
+    () => import('../Billing.vue')
+  )
 
 
 
@@ -39,7 +42,7 @@
   const  setupStore = useSetupStore()
   const { withClientMutation } = useApiUtil()
   let currentTab = ref('general');
-  const tabs = ['general', 'uncertainities', 'result-options','interims','correction-factor', 'detection-limits', 'specifications', 'mappings', 'financials'];
+  const tabs = ['general', 'uncertainities', 'result-options','interims','correction-factor', 'detection-limits', 'specifications', 'mappings', 'billing'];
   
   let showModal = ref(false);
   let formTitle = ref('');
@@ -412,9 +415,11 @@ function saveMappingForm(): void {
               </div>
             </div>
         </div>
+          <div v-if="currentTab == 'billing'">
+            <Billing target="analysis" :targetUid="analysisService.uid" />
+          </div>
         <div v-else> <!-- fiancials -->
-          <h3>Billing</h3>
-          <hr>
+          <h3>Unknown Tab</h3>
         </div>
       </section>
 

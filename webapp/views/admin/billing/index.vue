@@ -1,14 +1,11 @@
 <script setup lang="ts">
   import { ref, computed, defineAsyncComponent } from 'vue';
-  // const tabLaboratory = defineAsyncComponent(
-  //   () => import('./Laboratory.vue')
-  // )
-  // const tabDepartments = defineAsyncComponent(
-  //   () => import('./Departments.vue')
-  // )
+  const Voucher = defineAsyncComponent(
+    () => import('./Voucher.vue')
+  )
 
-  let currentTab = ref<string>('general');
-  const tabs: string[]= ['general', 'vouchers'];
+  let currentTab = ref<string>('vouchers');
+  const tabs: string[]= ['vouchers'];
   let currentTabComponent = computed(() => 'tab-' + currentTab.value);
 </script>
 
@@ -33,8 +30,10 @@
           </div>
         </nav>
 
-        <!-- <tab-laboratory v-if="currentTab === 'laboratory'"/>
-        <tab-departments v-if="currentTab === 'departments'" /> -->
-
+        <Voucher v-if="currentTab === 'vouchers'" />
   </div>
 </template>
+
+
+
+

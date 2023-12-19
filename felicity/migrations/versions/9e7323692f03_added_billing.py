@@ -1,8 +1,8 @@
 """added billing
 
-Revision ID: a26222f9cc4e
+Revision ID: 9e7323692f03
 Revises: 1b3226667bb5
-Create Date: 2023-11-30 21:39:29.491799
+Create Date: 2023-12-17 07:37:43.738011
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 from sqlalchemy.dialects import postgresql
 
 # revision identifiers, used by Alembic.
-revision = 'a26222f9cc4e'
+revision = '9e7323692f03'
 down_revision = '1b3226667bb5'
 branch_labels = None
 depends_on = None
@@ -21,12 +21,11 @@ def upgrade():
     op.create_table('voucher',
     sa.Column('name', sa.String(), nullable=False),
     sa.Column('usage_limit', sa.Integer(), nullable=False),
+    sa.Column('used', sa.Integer(), nullable=False),
     sa.Column('start_date', sa.DateTime(), nullable=False),
     sa.Column('end_date', sa.DateTime(), nullable=False),
     sa.Column('once_per_customer', sa.Boolean(), nullable=False),
     sa.Column('once_per_order', sa.Boolean(), nullable=False),
-    sa.Column('single_use', sa.Boolean(), nullable=False),
-    sa.Column('only_for_staff', sa.Boolean(), nullable=False),
     sa.Column('uid', sa.String(), nullable=False),
     sa.Column('created_at', sa.DateTime(), nullable=True),
     sa.Column('created_by_uid', sa.String(), nullable=True),
@@ -34,11 +33,14 @@ def upgrade():
     sa.Column('updated_by_uid', sa.String(), nullable=True),
     sa.ForeignKeyConstraint(['created_by_uid'], ['user.uid'], ),
     sa.ForeignKeyConstraint(['updated_by_uid'], ['user.uid'], ),
-    sa.PrimaryKeyConstraint('uid')
+    sa.PrimaryKeyConstraint('uid'),
+    sa.UniqueConstraint('name')
     )
     op.create_index(op.f('ix_voucher_uid'), 'voucher', ['uid'], unique=False)
     op.create_table('voucher_code',
     sa.Column('code', sa.String(length=20), nullable=False),
+    sa.Column('voucher_uid', sa.String(), nullable=False),
+    sa.Column('usage_limit', sa.Integer(), nullable=False),
     sa.Column('used', sa.Integer(), nullable=False),
     sa.Column('is_active', sa.Boolean(), nullable=False),
     sa.Column('uid', sa.String(), nullable=False),
@@ -48,30 +50,30 @@ def upgrade():
     sa.Column('updated_by_uid', sa.String(), nullable=True),
     sa.ForeignKeyConstraint(['created_by_uid'], ['user.uid'], ),
     sa.ForeignKeyConstraint(['updated_by_uid'], ['user.uid'], ),
-    sa.PrimaryKeyConstraint('uid')
+    sa.ForeignKeyConstraint(['voucher_uid'], ['voucher.uid'], ),
+    sa.PrimaryKeyConstraint('uid'),
+    sa.UniqueConstraint('code')
     )
     op.create_index(op.f('ix_voucher_code_uid'), 'voucher_code', ['uid'], unique=False)
     op.create_table('profile_discount',
-    sa.Column('analysis_profile_uid', sa.String(), nullable=True),
+    sa.Column('profile_uid', sa.String(), nullable=False),
     sa.Column('name', sa.String(), nullable=False),
-    sa.Column('is_active', sa.Boolean(), nullable=False),
-    sa.Column('discount_type', sa.Boolean(), nullable=False),
-    sa.Column('value_type', sa.Boolean(), nullable=False),
+    sa.Column('discount_type', sa.String(), nullable=False),
+    sa.Column('value_type', sa.String(), nullable=False),
     sa.Column('start_date', sa.DateTime(), nullable=False),
     sa.Column('end_date', sa.DateTime(), nullable=False),
     sa.Column('voucher_uid', sa.String(), nullable=True),
-    sa.Column('voucher_code_uid', sa.String(), nullable=True),
     sa.Column('value_percent', sa.Float(), nullable=True),
     sa.Column('value_amount', sa.Float(), nullable=True),
+    sa.Column('is_active', sa.Boolean(), nullable=False),
     sa.Column('uid', sa.String(), nullable=False),
     sa.Column('created_at', sa.DateTime(), nullable=True),
     sa.Column('created_by_uid', sa.String(), nullable=True),
     sa.Column('updated_at', sa.DateTime(), nullable=True),
     sa.Column('updated_by_uid', sa.String(), nullable=True),
-    sa.ForeignKeyConstraint(['analysis_profile_uid'], ['profile.uid'], ),
     sa.ForeignKeyConstraint(['created_by_uid'], ['user.uid'], ),
+    sa.ForeignKeyConstraint(['profile_uid'], ['profile.uid'], ),
     sa.ForeignKeyConstraint(['updated_by_uid'], ['user.uid'], ),
-    sa.ForeignKeyConstraint(['voucher_code_uid'], ['voucher_code.uid'], ),
     sa.ForeignKeyConstraint(['voucher_uid'], ['voucher.uid'], ),
     sa.PrimaryKeyConstraint('uid')
     )
@@ -79,7 +81,7 @@ def upgrade():
     op.create_table('profile_price',
     sa.Column('profile_uid', sa.String(), nullable=True),
     sa.Column('is_active', sa.Boolean(), nullable=False),
-    sa.Column('amount', sa.Integer(), nullable=False),
+    sa.Column('amount', sa.Float(), nullable=False),
     sa.Column('uid', sa.String(), nullable=False),
     sa.Column('created_at', sa.DateTime(), nullable=True),
     sa.Column('created_by_uid', sa.String(), nullable=True),
@@ -92,17 +94,16 @@ def upgrade():
     )
     op.create_index(op.f('ix_profile_price_uid'), 'profile_price', ['uid'], unique=False)
     op.create_table('analysis_discount',
-    sa.Column('analysis_uid', sa.String(), nullable=True),
+    sa.Column('analysis_uid', sa.String(), nullable=False),
     sa.Column('name', sa.String(), nullable=False),
-    sa.Column('is_active', sa.Boolean(), nullable=False),
-    sa.Column('discount_type', sa.Boolean(), nullable=False),
-    sa.Column('value_type', sa.Boolean(), nullable=False),
+    sa.Column('discount_type', sa.String(), nullable=False),
+    sa.Column('value_type', sa.String(), nullable=False),
     sa.Column('start_date', sa.DateTime(), nullable=False),
     sa.Column('end_date', sa.DateTime(), nullable=False),
     sa.Column('voucher_uid', sa.String(), nullable=True),
-    sa.Column('voucher_code_uid', sa.String(), nullable=True),
     sa.Column('value_percent', sa.Float(), nullable=True),
     sa.Column('value_amount', sa.Float(), nullable=True),
+    sa.Column('is_active', sa.Boolean(), nullable=False),
     sa.Column('uid', sa.String(), nullable=False),
     sa.Column('created_at', sa.DateTime(), nullable=True),
     sa.Column('created_by_uid', sa.String(), nullable=True),
@@ -111,7 +112,6 @@ def upgrade():
     sa.ForeignKeyConstraint(['analysis_uid'], ['analysis.uid'], ),
     sa.ForeignKeyConstraint(['created_by_uid'], ['user.uid'], ),
     sa.ForeignKeyConstraint(['updated_by_uid'], ['user.uid'], ),
-    sa.ForeignKeyConstraint(['voucher_code_uid'], ['voucher_code.uid'], ),
     sa.ForeignKeyConstraint(['voucher_uid'], ['voucher.uid'], ),
     sa.PrimaryKeyConstraint('uid')
     )
@@ -119,7 +119,7 @@ def upgrade():
     op.create_table('analysis_price',
     sa.Column('analysis_uid', sa.String(), nullable=True),
     sa.Column('is_active', sa.Boolean(), nullable=False),
-    sa.Column('amount', sa.Integer(), nullable=False),
+    sa.Column('amount', sa.Float(), nullable=False),
     sa.Column('uid', sa.String(), nullable=False),
     sa.Column('created_at', sa.DateTime(), nullable=True),
     sa.Column('created_by_uid', sa.String(), nullable=True),
@@ -139,6 +139,7 @@ def upgrade():
     sa.Column('to_confirm', sa.Boolean(), nullable=False),
     sa.Column('partial', sa.Boolean(), nullable=False),
     sa.Column('total_charged', sa.Float(), nullable=False),
+    sa.Column('total_paid', sa.Float(), nullable=False),
     sa.Column('json_content', postgresql.JSONB(astext_type=sa.Text()), nullable=True),
     sa.Column('uid', sa.String(), nullable=False),
     sa.Column('created_at', sa.DateTime(), nullable=True),
@@ -153,8 +154,8 @@ def upgrade():
     )
     op.create_index(op.f('ix_test_bill_uid'), 'test_bill', ['uid'], unique=False)
     op.create_table('voucher_customer',
-    sa.Column('patient_uid', sa.String(), nullable=True),
-    sa.Column('voucher_code_uid', sa.String(), nullable=True),
+    sa.Column('patient_uid', sa.String(), nullable=False),
+    sa.Column('voucher_code_uid', sa.String(), nullable=False),
     sa.Column('uid', sa.String(), nullable=False),
     sa.Column('created_at', sa.DateTime(), nullable=True),
     sa.Column('created_by_uid', sa.String(), nullable=True),
@@ -192,11 +193,13 @@ def upgrade():
     op.create_table('test_bill_transaction',
     sa.Column('test_bill_uid', sa.String(), nullable=True),
     sa.Column('kind', sa.String(), nullable=False),
-    sa.Column('amount', sa.Integer(), nullable=False),
-    sa.Column('error', sa.Boolean(), nullable=False),
+    sa.Column('amount', sa.Float(), nullable=False),
+    sa.Column('notes', sa.String(), nullable=True),
     sa.Column('is_success', sa.Boolean(), nullable=False),
-    sa.Column('action_required', sa.String(), nullable=False),
     sa.Column('processed', sa.Boolean(), nullable=False),
+    sa.Column('message', sa.String(), nullable=True),
+    sa.Column('action_required', sa.Boolean(), nullable=False),
+    sa.Column('action_message', sa.String(), nullable=True),
     sa.Column('uid', sa.String(), nullable=False),
     sa.Column('created_at', sa.DateTime(), nullable=True),
     sa.Column('created_by_uid', sa.String(), nullable=True),
@@ -208,11 +211,17 @@ def upgrade():
     sa.PrimaryKeyConstraint('uid')
     )
     op.create_index(op.f('ix_test_bill_transaction_uid'), 'test_bill_transaction', ['uid'], unique=False)
+    op.add_column('laboratory_setting', sa.Column('allow_billing', sa.Boolean(), nullable=True))
+    op.add_column('laboratory_setting', sa.Column('allow_auto_billing', sa.Boolean(), nullable=True))
+    op.add_column('laboratory_setting', sa.Column('currency', sa.String(), nullable=True))
     # ### end Alembic commands ###
 
 
 def downgrade():
     # ### commands auto generated by Alembic - please adjust! ###
+    op.drop_column('laboratory_setting', 'currency')
+    op.drop_column('laboratory_setting', 'allow_auto_billing')
+    op.drop_column('laboratory_setting', 'allow_billing')
     op.drop_index(op.f('ix_test_bill_transaction_uid'), table_name='test_bill_transaction')
     op.drop_table('test_bill_transaction')
     op.drop_table('test_bill_item')

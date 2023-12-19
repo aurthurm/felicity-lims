@@ -22,7 +22,7 @@ export default defineComponent({
 
 <template>
   <div class="modal-mask">
-    <div class="modal-wrapper" @click="$emit('close')">
+    <div class="modal-wrapper" > <!-- @click="$emit('close')" -->
       <div @click.stop :class="[
         'modal-container max-h-screen overflow-y-scroll',
         contentWidth ? contentWidth : 'w-1/2',

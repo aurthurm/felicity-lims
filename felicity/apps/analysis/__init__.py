@@ -10,10 +10,10 @@ AnalysisRequest
         Anaysis: MP's
         
 1. Create an AnalysisRequest
-2. Choose Sampe Types: from sample types auto create samples
-3. For each sample attach profile or selected analysis individually
-4. Publish samples and not analyses
-5. Close the request once all samples are  published
+2. Choose Sample Types: from Sample types auto create Samples
+3. For each Sample attach Profile or selected Analysis individually
+4. Publish Samples and not Analyses
+5. Close the request once all Samples are  published
 
 *********************************************************************************
 """

@@ -1,25 +1,27 @@
+from datetime import datetime
+
 from sqlalchemy import Column, DateTime, Float, ForeignKey, Integer, String, Boolean, Table, LargeBinary
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import relationship
 
-
 from apps import Auditable, DBModel
+from apps.billing.config import DiscountType, DiscountValueType, TransactionKind
 from apps.billing.schemas import (
     AnalysisPriceCreate, AnalysisPriceUpdate, ProfilePriceCreate, ProfilePriceUpdate, AnalysisDiscountCreate,
     AnalysisDiscountUpdate, ProfileDiscountCreate, ProfileDiscountUpdate, VoucherUpdate, VoucherCreate,
     VoucherCodeCreate, VoucherCodeUpdate, VoucherCustomerCreate, VoucherCustomerUpdate, TestBillCreate, TestBillUpdate,
     TestBillTransactionCreate, TestBillTransactionUpdate, TestBillInvoiceUpdate, TestBillInvoiceCreate
 )
-from apps.billing.config import DiscountType, DiscountValueType
+from apps.common.models import IdSequence
 
 
 class AnalysisPrice(Auditable):
     __tablename__ = "analysis_price"
-    
+
     analysis_uid = Column(String, ForeignKey("analysis.uid"), nullable=True)
     analysis = relationship("Analysis", lazy="selectin")
     is_active = Column(Boolean, nullable=False)
-    amount = Column(Integer, nullable=False)
+    amount = Column(Float, nullable=False)
 
     @classmethod
     async def create(cls, obj_in: AnalysisPriceCreate) -> "AnalysisPrice":
@@ -33,11 +35,11 @@ class AnalysisPrice(Auditable):
 
 class ProfilePrice(Auditable):
     __tablename__ = "profile_price"
-    
+
     profile_uid = Column(String, ForeignKey("profile.uid"), nullable=True)
     profile = relationship("Profile", lazy="selectin")
     is_active = Column(Boolean, nullable=False)
-    amount = Column(Integer, nullable=False)
+    amount = Column(Float, nullable=False)
 
     @classmethod
     async def create(cls, obj_in: ProfilePriceCreate) -> "ProfilePrice":
@@ -49,17 +51,16 @@ class ProfilePrice(Auditable):
         return await super().update(**data)
 
 
-
 class AnalysisDiscount(Auditable):
     __tablename__ = "analysis_discount"
-    
-    analysis_uid = Column(String, ForeignKey("analysis.uid"), nullable=True)
+
+    analysis_uid = Column(String, ForeignKey("analysis.uid"), nullable=False)
     analysis = relationship("Analysis", lazy="selectin")
     name = Column(String, nullable=False)
     discount_type = Column(String, nullable=False, default=DiscountType.VOUCHER)
     value_type = Column(String, nullable=False, default=DiscountValueType.PERCENTATE)
-    start_date = Column(DateTime, nullable=False)
-    end_date = Column(DateTime, nullable=False)
+    start_date = Column(DateTime, nullable=False, default=datetime.now())
+    end_date = Column(DateTime, nullable=False, default=datetime.now())
     voucher_uid = Column(String, ForeignKey("voucher.uid"), nullable=True)
     voucher = relationship("Voucher", lazy="selectin")
     value_percent = Column(Float, nullable=True)
@@ -78,14 +79,14 @@ class AnalysisDiscount(Auditable):
 
 class ProfileDiscount(Auditable):
     __tablename__ = "profile_discount"
-    
-    profile_uid = Column(String, ForeignKey("profile.uid"), nullable=True)
+
+    profile_uid = Column(String, ForeignKey("profile.uid"), nullable=False)
     profile = relationship("Profile", lazy="selectin")
     name = Column(String, nullable=False)
     discount_type = Column(String, nullable=False, default=DiscountType.VOUCHER)
     value_type = Column(String, nullable=False, default=DiscountValueType.PERCENTATE)
-    start_date = Column(DateTime, nullable=False)
-    end_date = Column(DateTime, nullable=False)
+    start_date = Column(DateTime, nullable=False, default=datetime.now())
+    end_date = Column(DateTime, nullable=False, default=datetime.now())
     voucher_uid = Column(String, ForeignKey("voucher.uid"), nullable=True)
     voucher = relationship("Voucher", lazy="selectin")
     value_percent = Column(Float, nullable=True)
@@ -104,7 +105,7 @@ class ProfileDiscount(Auditable):
 
 class Voucher(Auditable):
     __tablename__ = "voucher"
-    
+
     name = Column(String, nullable=False, unique=True)
     # The number of times a voucher can be used.
     usage_limit = Column(Integer, nullable=False, default=0)
@@ -130,7 +131,7 @@ class Voucher(Auditable):
 
 class VoucherCode(Auditable):
     __tablename__ = "voucher_code"
-    
+
     code = Column(String(20), nullable=False, unique=True)
     voucher_uid = Column(String, ForeignKey("voucher.uid"), nullable=False)
     voucher = relationship("Voucher", lazy="selectin")
@@ -152,7 +153,7 @@ class VoucherCode(Auditable):
 
 class VoucherCustomer(Auditable):
     __tablename__ = "voucher_customer"
-    
+
     patient_uid = Column(String, ForeignKey("patient.uid"), nullable=False)
     patient = relationship("Patient", lazy="selectin")
     voucher_code_uid = Column(String, ForeignKey("voucher_code.uid"), nullable=False)
@@ -181,7 +182,7 @@ test_bill_item = Table(
 
 class TestBill(Auditable):
     __tablename__ = "test_bill"
-    
+
     bill_id = Column(String, nullable=False)
     patient_uid = Column(String, ForeignKey("patient.uid"), nullable=True)
     patient = relationship("Patient", lazy="selectin")
@@ -202,6 +203,9 @@ class TestBill(Auditable):
     @classmethod
     async def create(cls, obj_in: TestBillCreate) -> "TestBill":
         data = cls._import(obj_in)
+        data["bill_id"] = (
+            await IdSequence.get_next_number(prefix="X", generic=True)
+        )[1]
         return await super().create(**data)
 
     async def update(self, obj_in: TestBillUpdate) -> "TestBill":
@@ -211,16 +215,17 @@ class TestBill(Auditable):
 
 class TestBillTransaction(Auditable):
     __tablename__ = "test_bill_transaction"
-    
+
     test_bill_uid = Column(String, ForeignKey("test_bill.uid"), nullable=True)
     test_bill = relationship("TestBill", lazy="selectin")
-    kind = Column(String, nullable=False)
-    amount = Column(Integer, nullable=False)
-    error = Column(Boolean, nullable=False)
-    is_success = Column(Boolean, nullable=False)
-    action_required = Column(String, nullable=False)
-    processed = Column(Boolean, nullable=False)
-    notes = Column(String, nullable=False)
+    kind = Column(String, nullable=False, default=TransactionKind.CASH)
+    amount = Column(Float, nullable=False, default=0.0)
+    notes = Column(String, nullable=True)
+    is_success = Column(Boolean, nullable=False, default=False)
+    processed = Column(Boolean, nullable=False, default=False)
+    message = Column(String, nullable=True)
+    action_required = Column(Boolean, nullable=False, default=False)
+    action_message = Column(String, nullable=True)
 
     @classmethod
     async def create(cls, obj_in: TestBillTransactionCreate) -> "TestBillTransaction":
@@ -234,7 +239,7 @@ class TestBillTransaction(Auditable):
 
 class TestBillInvoice(Auditable):
     __tablename__ = "test_bill_invoice"
-    
+
     test_bill_uid = Column(String, ForeignKey("test_bill.uid"), nullable=True)
     test_bill = relationship("TestBill", lazy="selectin")
     json_content: dict = Column(JSONB, nullable=True)

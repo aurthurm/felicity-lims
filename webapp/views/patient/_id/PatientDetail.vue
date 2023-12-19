@@ -15,6 +15,9 @@ const tabCases = defineAsyncComponent(
 const tabLogs = defineAsyncComponent(
   () => import("../../components/AuditLog.vue")
 )
+const tabPatientBills = defineAsyncComponent(
+  () => import("./PatientBill.vue")
+)
 
 
 let patientStore = usePatientStore();
@@ -23,7 +26,7 @@ let router = useRouter();
 const { patient } = storeToRefs(patientStore);
 
 let currentTab = ref("samples");
-const tabs = ["samples", "cases", "logs"];
+const tabs = ["samples", "cases", "billing", "logs"];
 
 function addSample(patient?: IPatient): void {
   router?.push({
@@ -62,6 +65,7 @@ function addSample(patient?: IPatient): void {
         <tab-samples v-if="currentTab === 'samples'" target="patient-samples" :targetUid="patient?.uid" />
         <tab-cases v-if="currentTab === 'cases'" />
         <tab-logs v-if="currentTab === 'logs'" targetType="patient" :targetId="patient?.uid" />
+        <tab-patient-bills v-if="currentTab === 'billing'"  :patientUid="patient?.uid" />
       </div>
     </section>
   </div>

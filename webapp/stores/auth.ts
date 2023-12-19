@@ -76,7 +76,7 @@ export const useAuthStore = defineStore('auth', () => {
         if (authValue?.user && authValue?.token) {
             localStorage.setItem(STORAGE_AUTH_KEY, JSON.stringify(authValue));
             upsertPermission();
-            startRefreshTokenTimer();
+            // startRefreshTokenTimer();
         }
     });
 
@@ -115,6 +115,7 @@ export const useAuthStore = defineStore('auth', () => {
     };
 
     const refreshToken = async (): Promise<void> => {
+        console.log("refreshing tken");
         await withClientMutation(REFRESH_TOKEN, { refreshToken: auth.value.refresh }, 'refresh')
         .then(res => {
             if(!res) {
@@ -126,12 +127,17 @@ export const useAuthStore = defineStore('auth', () => {
     };
 
     const startRefreshTokenTimer = async () => {
+
         const decodedToken: any = jwtDecode(auth.value.token!)
         // refresh the token a minute before it expires
         const expires = new Date(+(decodedToken.exp) * 1000);
+        console.log("expires: ", expires);
         const timeout = expires.getTime() - Date.now() - (60 * 1000);
+        console.log("timeout: ", timeout);
         //
-        auth.value.refreshTokenTimeout = setTimeout(refreshToken, timeout);
+        auth.value.refreshTokenTimeout = setTimeout(() => {
+            refreshToken()
+        }, timeout);
     };
 
     const stopRefreshTokenTimer = () => {

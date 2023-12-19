@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { defineAsyncComponent, ref } from "vue";
-import axios from "../../../axios/no-auth";
+import axios from "../../../api";
 import { useNotifyToast } from "../../../composables";
 const LoadingMessage = defineAsyncComponent(
   () => import("../../../components/Spinners/LoadingMessage.vue")

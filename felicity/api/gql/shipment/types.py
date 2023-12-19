@@ -1,11 +1,12 @@
 from datetime import datetime
 
 import strawberry  # noqa
-from api.gql.types import PageInfo
+
 from api.gql.analysis.types.analysis import (
     SampleType,
 )
 from api.gql.types import JSONScalar, BytesScalar
+from api.gql.types import PageInfo
 from api.gql.user.types import UserType
 from apps.shipment.models import ShippedSample
 
@@ -22,10 +23,10 @@ class ReferralLaboratoryType:
     is_referral: bool | None
     created_by_uid: str | None
     created_by: UserType | None
-    created_at: datetime | None
+    created_at: str | None
     updated_by_uid: str | None
     updated_by: UserType | None
-    updated_at: datetime | None
+    updated_at: str | None
 
 
 @strawberry.type
@@ -61,10 +62,10 @@ class ShipmentType:
     date_received: datetime | None
     created_by_uid: str | None
     created_by: UserType | None
-    created_at: datetime | None
+    created_at: str | None
     updated_by_uid: str | None
     updated_by: UserType | None
-    updated_at: datetime | None
+    updated_at: str | None
     samples: list["SampleType"] | None
 
     @strawberry.field

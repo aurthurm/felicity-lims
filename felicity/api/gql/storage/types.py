@@ -1,7 +1,7 @@
-from datetime import datetime
 from typing import List, Optional
 
 import strawberry  # noqa
+
 from api.gql.user.types import UserType
 from apps.storage import models
 
@@ -11,10 +11,10 @@ class StoreRoomType:
     uid: str
     name: str
     description: str | None
-    created_at: datetime | None
+    created_at: str | None
     created_by_uid: str | None
     created_by: UserType | None
-    updated_at: datetime | None
+    updated_at: str | None
     updated_by_uid: str | None
     updated_by: UserType | None
 
@@ -35,10 +35,10 @@ class StorageLocationType:
     description: str | None
     store_room_uid: str
     store_room: Optional[StoreRoomType]
-    created_at: datetime | None
+    created_at: str | None
     created_by_uid: str | None
     created_by: UserType | None
-    updated_at: datetime | None
+    updated_at: str | None
     updated_by_uid: str | None
     updated_by: UserType | None
 
@@ -61,10 +61,10 @@ class StorageSectionType:
     description: str | None
     storage_location_uid: str
     storage_location: Optional[StorageLocationType]
-    created_at: datetime | None
+    created_at: str | None
     created_by_uid: str | None
     created_by: UserType | None
-    updated_at: datetime | None
+    updated_at: str | None
     updated_by_uid: str | None
     updated_by: UserType | None
 
@@ -96,10 +96,10 @@ class StorageContainerType:
     rows: int | None
     slots: int | None
     stored_count: int | None
-    created_at: datetime | None
+    created_at: str | None
     created_by_uid: str | None
     created_by: UserType | None
-    updated_at: datetime | None
+    updated_at: str | None
     updated_by_uid: str | None
     updated_by: UserType | None
 

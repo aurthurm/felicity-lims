@@ -17,6 +17,7 @@ import { useWorksheetStore } from './worksheet';
 import { useInventoryStore } from './inventory';
 import { useStorageStore } from './storage';
 import { useShipmentStore } from './shipment';
+import { useBillingStore } from './billing';
 
 export {
     useAnalysisStore,
@@ -38,4 +39,5 @@ export {
     useInventoryStore,
     useStorageStore,
     useShipmentStore,
+    useBillingStore,
 };

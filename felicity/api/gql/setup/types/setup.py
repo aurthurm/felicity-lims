@@ -1,8 +1,7 @@
-from dataclasses import field
-from datetime import datetime
 from typing import List, Optional
 
 import strawberry  # noqa
+
 from api.gql.types import PageInfo
 from api.gql.user.types import UserType
 
@@ -24,20 +23,20 @@ class LaboratoryType:
     #
     created_by_uid: str | None
     created_by: Optional["UserType"]
-    created_at: datetime | None
+    created_at: str | None
     updated_by_uid: str | None
     updated_by: Optional["UserType"]
-    updated_at: datetime | None
+    updated_at: str | None
 
 
 @strawberry.type
 class LaboratorySettingType:
     created_by_uid: str | None
     created_by: Optional["UserType"]
-    created_at: datetime | None
+    created_at: str | None
     updated_by_uid: str | None
     updated_by: Optional["UserType"]
-    updated_at: datetime | None
+    updated_at: str | None
     uid: str
     laboratory_uid: str
     laboratory: LaboratoryType
@@ -66,10 +65,10 @@ class SupplierType:
     #
     created_by_uid: str | None
     created_by: Optional["UserType"]
-    created_at: datetime | None
+    created_at: str | None
     updated_by_uid: str | None
     updated_by: Optional["UserType"]
-    updated_at: datetime | None
+    updated_at: str | None
 
 
 @strawberry.type
@@ -80,10 +79,10 @@ class ManufacturerType:
     #
     created_by_uid: str | None
     created_by: Optional["UserType"]
-    created_at: datetime | None
+    created_at: str | None
     updated_by_uid: str | None
     updated_by: Optional["UserType"]
-    updated_at: datetime | None
+    updated_at: str | None
 
 
 @strawberry.type
@@ -94,10 +93,10 @@ class UnitType:
     #
     created_by_uid: str | None
     created_by: Optional["UserType"]
-    created_at: datetime | None
+    created_at: str | None
     updated_by_uid: str | None
     updated_by: Optional["UserType"]
-    updated_at: datetime | None
+    updated_at: str | None
 
 
 @strawberry.type
@@ -109,10 +108,10 @@ class CountryType:
     #
     created_by_uid: str | None
     created_by: Optional["UserType"]
-    created_at: datetime | None
+    created_at: str | None
     updated_by_uid: str | None
     updated_by: Optional["UserType"]
-    updated_at: datetime | None
+    updated_at: str | None
 
 
 @strawberry.type
@@ -130,10 +129,10 @@ class ProvinceType:
     #
     created_by_uid: str | None
     created_by: Optional["UserType"]
-    created_at: datetime | None
+    created_at: str | None
     updated_by_uid: str | None
     updated_by: Optional["UserType"]
-    updated_at: datetime | None
+    updated_at: str | None
 
 
 #  relay paginations
@@ -166,10 +165,10 @@ class DistrictType:
     #
     created_by_uid: str | None
     created_by: Optional["UserType"]
-    created_at: datetime | None
+    created_at: str | None
     updated_by_uid: str | None
     updated_by: Optional["UserType"]
-    updated_at: datetime | None
+    updated_at: str | None
 
 
 #  relay paginations

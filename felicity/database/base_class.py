@@ -214,8 +214,13 @@ class DBModel(DeclarativeBase, AllFeaturesMixinAsync):
             await session.flush()
 
     @classmethod
-    async def query_table(cls, table, **kwargs):
-        stmt = select(table)
+    async def query_table(cls, table, columns: list[str], **kwargs):
+
+        if columns:
+            stmt = select(*(table.c[column] for column in columns))
+        else:
+            stmt = select(table)
+
         for k, v in kwargs.items():
             stmt = stmt.where(table.c[k] == v)
 
@@ -270,7 +275,6 @@ class DBModel(DeclarativeBase, AllFeaturesMixinAsync):
                 await session.flush()
                 await session.commit()
             except Exception as e:
-                print(e)
                 await session.rollback()
                 raise
         return self

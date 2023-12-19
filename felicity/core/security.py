@@ -49,7 +49,7 @@ def create_access_token_from_refresh(refresh: str) -> str | None:
     except jwt.JWTError as e:
         return None
 
-    return create_refresh_token(payload["sub"])
+    return create_access_token(payload["sub"])
 
 
 def create_refresh_token(subject: Union[str, Any], expires_delta: timedelta = None) -> str:
@@ -76,7 +76,7 @@ def generate_password_reset_token(email: str) -> str:
 
 def verify_password_reset_token(token: str) -> str | None:
     try:
-        decoded_token = jwt.decode(token, settings.SECRET_KEY, algorithms=["HS256"])
+        decoded_token = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
         logger.info(f"decoded_token: {decoded_token}")
         return decoded_token["sub"]
     except jwt.JWTError:

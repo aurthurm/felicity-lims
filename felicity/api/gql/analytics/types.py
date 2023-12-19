@@ -2,6 +2,7 @@ from datetime import datetime
 from typing import List, Optional
 
 import strawberry  # noqa
+
 from api.gql.analysis.types.analysis import AnalysisType
 from api.gql.user.types import UserType
 
@@ -90,9 +91,9 @@ class ReportMetaType:
     status: str | None
     temp: str | None
     analyses: Optional[List[AnalysisType]]
-    created_at: datetime | None
+    created_at: str | None
     created_by_uid: str | None
     created_by: UserType | None
-    updated_at: datetime | None
+    updated_at: str | None
     updated_by_uid: str | None
     updated_by: UserType | None

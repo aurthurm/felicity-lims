@@ -1,18 +1,20 @@
 import asyncio
 import logging
 from datetime import datetime, timedelta
-from typing import List, Optional
+from typing import List
 
 import strawberry  # noqa
-from api.gql.types import OperationError, OperationSuccess, SuccessErrorResponse
-from api.gql.auth import auth_from_info, verify_user_auth
+
 from api.gql.analysis.types import analysis as a_types
 from api.gql.analysis.types import results as r_types
+from api.gql.auth import auth_from_info, verify_user_auth
 from api.gql.permissions import CanVerifySample, IsAuthenticated
+from api.gql.types import OperationError, OperationSuccess, SuccessErrorResponse
 from apps.analysis import schemas
 from apps.analysis.conf import priorities, states
 from apps.analysis.models import analysis as analysis_models
 from apps.analysis.models import results as result_models
+from apps.billing.utils import bill_order
 from apps.client import models as ct_models
 from apps.job import models as job_models
 from apps.job import schemas as job_schemas
@@ -21,8 +23,6 @@ from apps.job.conf import states as job_states
 from apps.notification.utils import FelicityStreamer
 from apps.patient import models as pt_models
 from apps.reflex.utils import ReflexUtil
-from apps.billing.utils import bill_order
-
 
 streamer = FelicityStreamer()
 
@@ -95,7 +95,7 @@ class AnalysisRequestInputType:
 
 @strawberry.mutation(permission_classes=[IsAuthenticated])
 async def create_analysis_request(
-    info, payload: AnalysisRequestInputType
+        info, payload: AnalysisRequestInputType
 ) -> AnalysisRequestResponse:
     logger.info("Received request to create analysis request")
 
@@ -236,7 +236,7 @@ async def create_analysis_request(
                     update={
                         "analysis_uid": _service.uid,
                         "due_date": datetime.now()
-                        + timedelta(minutes=_service.tat_length_minutes)
+                                    + timedelta(minutes=_service.tat_length_minutes)
                         if _service.tat_length_minutes
                         else None,
                     }
@@ -254,10 +254,10 @@ async def create_analysis_request(
     analysis_request = await analysis_models.AnalysisRequest.get_related(
         uid=analysis_request.uid, related=["samples"]
     )
-    
+
     # 
-    await bill_order(analysis_request, auto=True)
-    
+    await bill_order(analysis_request, auto_bill=True)
+
     return a_types.AnalysisRequestWithSamples(**analysis_request.marshal_simple())
 
 
@@ -415,7 +415,7 @@ async def verify_samples(info, samples: List[str]) -> SampleActionResponse:
 
 @strawberry.mutation(permission_classes=[IsAuthenticated])
 async def reject_samples(
-    info, samples: List[SampleRejectInputType]
+        info, samples: List[SampleRejectInputType]
 ) -> SampleActionResponse:
     is_authenticated, felicity_user = await auth_from_info(info)
     verify_user_auth(
@@ -458,7 +458,7 @@ async def reject_samples(
 
 @strawberry.mutation(permission_classes=[IsAuthenticated])
 async def publish_samples(
-    info, samples: List[SamplePublishInputType]
+        info, samples: List[SamplePublishInputType]
 ) -> SuccessErrorResponse:
     is_authenticated, felicity_user = await auth_from_info(info)
     verify_user_auth(

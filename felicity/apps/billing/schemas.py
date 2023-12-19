@@ -7,7 +7,7 @@ from pydantic import BaseModel, ConfigDict
 class AnalysisPriceBase(BaseModel):
     is_active: bool
     amount: float
-    analysis_service_uid: str
+    analysis_uid: str | None = None
 
 
 class AnalysisPriceBaseInDB(AnalysisPriceBase):
@@ -29,7 +29,7 @@ class AnalysisPriceUpdate(AnalysisPriceBase):
 class ProfilePriceBase(BaseModel):
     is_active: bool
     amount: float
-    analysis_profile_uid: str
+    profile_uid: str | None = None
 
 
 class ProfilePriceBaseInDB(ProfilePriceBase):
@@ -49,16 +49,16 @@ class ProfilePriceUpdate(ProfilePriceBase):
 
 
 class AnalysisDiscountBase(BaseModel):
+    analysis_uid: str
     name: str
-    is_active: bool
-    discount_type: bool
-    value_type: bool
-    start_date: datetime
-    end_date: datetime
-    voucher_uid: str
-    value_percent: float
-    value_amount: float
-    analysis_service_uid: str
+    discount_type: str
+    value_type: str
+    start_date: datetime = datetime.now()
+    end_date: datetime = datetime.now()
+    voucher_uid: str | None = None
+    value_percent: float | None = None
+    value_amount: float | None = None
+    is_active: bool = True
 
 
 class AnalysisDiscountBaseInDB(AnalysisDiscountBase):
@@ -74,20 +74,21 @@ class AnalysisDiscountCreate(AnalysisDiscountBase):
 
 # Properties to receive via API on update
 class AnalysisDiscountUpdate(AnalysisDiscountBase):
-    pass
+    analysis_uid: str | None = None
+    name: str | None = None
 
 
 class ProfileDiscountBase(BaseModel):
+    profile_uid: str
     name: str
-    is_active: bool
-    discount_type: bool
-    value_type: bool
-    start_date: datetime
-    end_date: datetime
-    voucher_uid: str
-    value_percent: float
-    value_amount: float
-    analysis_profile_uid: str
+    discount_type: str | None = None
+    value_type: str | None = None
+    start_date: datetime = datetime.now()
+    end_date: datetime = datetime.now()
+    voucher_uid: str | None = None
+    value_percent: float | None = None
+    value_amount: float | None = None
+    is_active: bool = True
 
 
 class ProfileDiscountBaseInDB(ProfileDiscountBase):
@@ -103,13 +104,14 @@ class ProfileDiscountCreate(ProfileDiscountBase):
 
 # Properties to receive via API on update
 class ProfileDiscountUpdate(ProfileDiscountBase):
-    pass
+    profile_uid: str | None = None
+    name: str | None = None
 
 
 class VoucherBase(BaseModel):
     name: str
     usage_limit: int
-    used: int
+    used: int | None = None
     start_date: datetime
     end_date: datetime
     once_per_customer: bool
@@ -135,8 +137,8 @@ class VoucherUpdate(VoucherBase):
 class VoucherCodeBase(BaseModel):
     code: str
     voucher_uid: str
-    usage_limit: str
-    used: float
+    usage_limit: int
+    used: int | None = None
     is_active: bool
 
 
@@ -178,14 +180,14 @@ class VoucherCustomerUpdate(VoucherCustomerBase):
 
 
 class TestBillBase(BaseModel):
-    bill_id: str
+    bill_id: str | None = None
     patient_uid: str
     client_uid: str
     is_active: bool
     to_confirm: bool
     partial: bool = False
     total_charged: float
-    total_paid: float
+    total_paid: float | None = None
     json_content: Optional[dict] = {}
 
 
@@ -202,18 +204,23 @@ class TestBillCreate(TestBillBase):
 
 # Properties to receive via API on update
 class TestBillUpdate(TestBillBase):
-    pass
+    patient_uid: str | None = None
+    client_uid: str | None = None
+    total_charged: float | None = None
+    is_active: bool | None = None
+    to_confirm: bool | None = None
 
 
 class TestBillTransactionBase(BaseModel):
     test_bill_uid: str
     kind: str
     amount: float
-    error: bool = False
     is_success: bool = False
-    action_required: str
+    action_required: bool = False
     processed: bool = False
     notes: str
+    message: str | None = ""
+    action_message: str | None = ""
 
 
 class TestBillTransactionBaseInDB(TestBillTransactionBase):
@@ -229,7 +236,10 @@ class TestBillTransactionCreate(TestBillTransactionBase):
 
 # Properties to receive via API on update
 class TestBillTransactionUpdate(TestBillTransactionBase):
-    pass
+    test_bill_uid: str | None = None
+    kind: str | None = None
+    amount: float | None = None
+    notes: str | None = None
 
 
 class TestBillInvoiceBase(BaseModel):

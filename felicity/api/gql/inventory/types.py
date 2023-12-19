@@ -2,10 +2,11 @@ from datetime import datetime
 from typing import List, Optional
 
 import strawberry  # noqa
-from api.gql.types import PageInfo
+
 from api.gql.setup.types import SupplierType
 from api.gql.setup.types.department import DepartmentType
 from api.gql.storage.types import StoreRoomType
+from api.gql.types import PageInfo
 from api.gql.user.types import UserType
 
 
@@ -18,10 +19,10 @@ class StockItemType:
     minimum_level: int | None
     maximum_level: int | None
     description: str | None
-    created_at: datetime | None
+    created_at: str | None
     created_by_uid: str | None
     created_by: UserType | None
-    updated_at: datetime | None
+    updated_at: str | None
     updated_by_uid: str | None
     updated_by: UserType | None
 
@@ -45,10 +46,10 @@ class StockCategoryType:
     uid: str
     name: str
     description: str | None
-    created_at: datetime | None
+    created_at: str | None
     created_by_uid: str | None
     created_by: UserType | None
-    updated_at: datetime | None
+    updated_at: str | None
     updated_by_uid: str | None
     updated_by: UserType | None
 
@@ -58,10 +59,10 @@ class HazardType:
     uid: str
     name: str
     description: str | None
-    created_at: datetime | None
+    created_at: str | None
     created_by_uid: str | None
     created_by: UserType | None
-    updated_at: datetime | None
+    updated_at: str | None
     updated_by_uid: str | None
     updated_by: UserType | None
 
@@ -70,10 +71,10 @@ class HazardType:
 class StockUnitType:
     uid: str
     name: str
-    created_at: datetime | None
+    created_at: str | None
     created_by_uid: str | None
     created_by: UserType | None
-    updated_at: datetime | None
+    updated_at: str | None
     updated_by_uid: str | None
     updated_by: UserType | None
 
@@ -82,10 +83,10 @@ class StockUnitType:
 class StockPackagingType:
     uid: str
     name: str
-    created_at: datetime | None
+    created_at: str | None
     created_by_uid: str | None
     created_by: UserType | None
-    updated_at: datetime | None
+    updated_at: str | None
     updated_by_uid: str | None
     updated_by: UserType | None
 
@@ -117,13 +118,13 @@ class StockProductType:
     quantity_received: int | None
     remaining: int | None
     date_received: datetime | None
-    expiry_date: datetime | None
+    expiry_date: str | None
     received_by_uid: str | None
     received_by: UserType | None
-    created_at: datetime | None
+    created_at: str | None
     created_by_uid: str | None
     created_by: UserType | None
-    updated_at: datetime | None
+    updated_at: str | None
     updated_by_uid: str | None
     updated_by: UserType | None
 
@@ -154,10 +155,10 @@ class StockOrderType:
     status: str | None
     remarks: str | None
     order_number: str | None
-    created_at: datetime | None
+    created_at: str | None
     created_by_uid: str | None
     created_by: UserType | None
-    updated_at: datetime | None
+    updated_at: str | None
     updated_by_uid: str | None
     updated_by: UserType | None
 
@@ -185,10 +186,10 @@ class StockOrderProductType:
     order: Optional[StockOrderType]
     price: int | None
     quantity: int | None
-    created_at: datetime | None
+    created_at: str | None
     created_by_uid: str | None
     created_by: UserType | None
-    updated_at: datetime | None
+    updated_at: str | None
     updated_by_uid: str | None
     updated_by: UserType | None
 
@@ -206,10 +207,10 @@ class StockTransactionType:
     date_issued: datetime | None
     transaction_by_uid: str | None
     transaction_by: UserType | None
-    created_at: datetime | None
+    created_at: str | None
     created_by_uid: str | None
     created_by: UserType | None
-    updated_at: datetime | None
+    updated_at: str | None
     updated_by_uid: str | None
     updated_by: UserType | None
 
@@ -235,14 +236,14 @@ class StockAdjustmentType:
     product: Optional[StockProductType]
     adjustment_type: str | None
     adjust: int | None
-    adjustment_date: datetime | None
+    adjustment_date: str | None
     remarks: str | None
     adjustment_by_uid: str | None
     adjustment_by: UserType | None
-    created_at: datetime | None
+    created_at: str | None
     created_by_uid: str | None
     created_by: UserType | None
-    updated_at: datetime | None
+    updated_at: str | None
     updated_by_uid: str | None
     updated_by: UserType | None
 

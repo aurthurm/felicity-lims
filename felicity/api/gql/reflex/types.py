@@ -1,9 +1,9 @@
-from datetime import datetime
 from typing import List, Optional
 
 import strawberry  # noqa
-from api.gql.types import PageInfo
+
 from api.gql.analysis.types.analysis import AnalysisType, SampleTypeTyp
+from api.gql.types import PageInfo
 from api.gql.user.types import UserType
 
 
@@ -19,7 +19,7 @@ class ReflexRuleType:
     created_at: str | None
     updated_by_uid: str | None
     updated_by: UserType | None
-    updated_at: datetime | None
+    updated_at: str | None
 
 
 #  relay paginations
@@ -77,10 +77,10 @@ class ReflexBrainType:
     #
     created_by_uid: str | None
     created_by: UserType | None
-    created_at: datetime | None
+    created_at: str | None
     updated_by_uid: str | None
     updated_by: UserType | None
-    updated_at: datetime | None
+    updated_at: str | None
 
 
 @strawberry.type
@@ -97,7 +97,7 @@ class ReflexActionType:
     #
     created_by_uid: str | None
     created_by: UserType | None
-    created_at: datetime | None
+    created_at: str | None
     updated_by_uid: str | None
     updated_by: UserType | None
-    updated_at: datetime | None
+    updated_at: str | None

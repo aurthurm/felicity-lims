@@ -1,7 +1,7 @@
-from datetime import datetime
 from typing import List, Optional
 
 import strawberry  # noqa
+
 from api.gql.user.types import UserType
 
 
@@ -13,10 +13,10 @@ class MessageThreadType:
     broadcast: bool
     deleted_by: list[UserType] | None
     created_by_uid: str | None
-    created_at: datetime | None
+    created_at: str | None
     created_by_uid: str | None
     created_by: UserType | None
-    updated_at: datetime | None
+    updated_at: str | None
     updated_by_uid: str | None
     updated_by: UserType | None
 
@@ -33,9 +33,9 @@ class MessageType:
     parent: Optional["MessageType"]
     left: int
     right: int
-    created_at: datetime | None
+    created_at: str | None
     created_by_uid: str | None
     created_by: UserType | None
-    updated_at: datetime | None
+    updated_at: str | None
     updated_by_uid: str | None
     updated_by: UserType | None

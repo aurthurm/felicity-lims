@@ -2,9 +2,10 @@ from datetime import datetime
 from typing import Optional
 
 import strawberry  # noqa
-from api.gql.types import PageInfo
+
 from api.gql.analysis.types.analysis import AnalysisType, QCSetType, SampleType
 from api.gql.instrument.types import InstrumentType, MethodType
+from api.gql.types import PageInfo
 from api.gql.user.types import UserType
 from apps.worksheet import models as ws_models
 
@@ -34,7 +35,7 @@ class AnalysisResultType:
     invalidated_by: UserType | None
     invalidated_by_uid: str | None
     date_invalidated: datetime | None
-    due_date: datetime | None
+    due_date: str | None
     date_cancelled: datetime | None
     cancelled_by_uid: str | None
     cancelled_by: UserType | None
@@ -46,10 +47,10 @@ class AnalysisResultType:
     reflex_level: int | None
     created_by_uid: str | None
     created_by: UserType | None
-    created_at: datetime | None
+    created_at: str | None
     updated_by_uid: str | None
     updated_by: UserType | None
-    updated_at: datetime | None
+    updated_at: str | None
 
     @strawberry.field
     async def worksheet_id(self, info) -> str | None:

@@ -3,9 +3,10 @@ from datetime import datetime
 from typing import List, Optional
 
 import strawberry  # noqa
+
+from api.gql.setup.types import ManufacturerType, SupplierType
 from api.gql.types import PageInfo
 from api.gql.user.types import UserType
-from api.gql.setup.types import ManufacturerType, SupplierType
 from apps.instrument.models import Method
 
 
@@ -17,10 +18,10 @@ class InstrumentTypeType:
     #
     created_by_uid: str | None
     created_by: Optional["UserType"]
-    created_at: datetime | None
+    created_at: str | None
     updated_by_uid: str | None
     updated_by: Optional["UserType"]
-    updated_at: datetime | None
+    updated_at: str | None
 
 
 #  relay paginations
@@ -53,12 +54,13 @@ class InstrumentType:
     #
     created_by_uid: str | None
     created_by: Optional["UserType"]
-    created_at: datetime | None
+    created_at: str | None
     updated_by_uid: str | None
     updated_by: Optional["UserType"]
-    updated_at: datetime | None
+    updated_at: str | None
+
     # methods: Optional[List["MethodType"]] = field(default_factory=list)
-    
+
     @strawberry.field
     async def methods(self, info) -> Optional[List["MethodType"]]:
         return await Method.get(instruments___uid=self.uid)
@@ -120,10 +122,10 @@ class MethodType:
     #
     created_by_uid: str | None
     created_by: Optional["UserType"]
-    created_at: datetime | None
+    created_at: str | None
     updated_by_uid: str | None
     updated_by: Optional["UserType"]
-    updated_at: datetime | None
+    updated_at: str | None
     instruments: Optional[List["InstrumentType"]] = field(default_factory=list)
 
 

@@ -277,7 +277,6 @@ class UserMutations:
     async def refresh(self, info, refresh_token: str) -> AuthenticatedDataResponse:
         is_authenticated, felicity_user = await auth_from_info(info)
         access_token = security.create_access_token_from_refresh(refresh_token)
-        print(access_token)
         return (StrawberryMapper[AuthenticatedData]()
                 .map(token=access_token, refresh=refresh_token, token_type="bearer", user=felicity_user))
 

@@ -1,4 +1,3 @@
-from datetime import datetime
 from typing import List, Optional
 
 import strawberry  # noqa
@@ -15,10 +14,10 @@ class UserAuthType:
     is_blocked: bool
     user_type: str | None
     #
-    created_at: datetime | None
+    created_at: str | None
     creator_name: str | None
     creator_uid: str | None
-    updated_at: datetime | None
+    updated_at: str | None
     updator_name: str | None
     updator_uid: str | None
 
@@ -61,10 +60,10 @@ class UserType:
     avatar: str | None
     default_route: str | None
     #
-    created_at: datetime | None
+    created_at: str | None
     creator_name: str | None
     creator_uid: str | None
-    updated_at: datetime | None
+    updated_at: str | None
     updator_name: str | None
     updator_uid: str | None
 

@@ -9,6 +9,7 @@ from init.setup.setup_analyses import (
     create_rejection_reasons,
     create_sample_types,
     init_id_sequence,
+    init_coding_standards
 )
 from init.setup.setup_laboratory import (
     create_clients,
@@ -28,6 +29,7 @@ async def requisite_setup(lab_name="Felicity Labs") -> bool:
     await create_super_user()
     await setup_default_permissions()
     # await init_id_sequence()
+    await init_coding_standards()
 
     logger.info("Loading requisite setup complete.")
     return True
@@ -35,7 +37,6 @@ async def requisite_setup(lab_name="Felicity Labs") -> bool:
 
 async def default_setup() -> bool:
     logger.info("Loading default setup ...")
-
     await create_geographies()
     await create_clients()
     await create_categories()
@@ -43,7 +44,6 @@ async def default_setup() -> bool:
     await create_sample_types()
     await create_analyses_services_and_profiles()
     await create_rejection_reasons()
-
     logger.info("Loading default setup complete.")
     return True
 

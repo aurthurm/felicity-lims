@@ -1,10 +1,10 @@
-from datetime import datetime
 from typing import List, Optional
 
 import strawberry  # noqa
-from api.gql.types import PageInfo
+
 from api.gql.setup.types import DistrictType, ProvinceType
-from api.gql.user.types import UserAuthType, UserType
+from api.gql.types import PageInfo
+from api.gql.user.types import UserType
 
 
 @strawberry.type
@@ -27,10 +27,10 @@ class ClientType:
     #
     created_by_uid: str | None
     created_by: UserType | None
-    created_at: datetime | None
+    created_at: str | None
     updated_by_uid: str | None
     updated_by: UserType | None
-    updated_at: datetime | None
+    updated_at: str | None
 
 
 @strawberry.type
@@ -48,10 +48,10 @@ class ClientContactType:
     client_uid: str
     client: Optional[ClientType]
     #
-    created_at: datetime | None
+    created_at: str | None
     creator_name: str | None
     creator_uid: str | None
-    updated_at: datetime | None
+    updated_at: str | None
     updator_name: str | None
     updator_uid: str | None
 

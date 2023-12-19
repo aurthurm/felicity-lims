@@ -29,6 +29,9 @@ const PatientForm = defineAsyncComponent(
 const PatientInfo = defineAsyncComponent(
   () => import("./PatientInfo.vue")
 )
+const tabPatientBills = defineAsyncComponent(
+  () => import("./_id/PatientBill.vue")
+)
 
 
 let patientStore = usePatientStore();
@@ -38,7 +41,7 @@ const { patients, fetchingPatients } = storeToRefs(patientStore);
 
 let showModal = ref<boolean>(false);
 let currentTab = ref<string>("samples");
-const tabs: string[] = ["samples", "cases", "logs"];
+const tabs: string[] = ["samples", "cases", "billing", "logs"];
 
 let patientForm = ref({} as IPatient);
 
@@ -175,6 +178,7 @@ const updatePatient = (patient: IPatient) => {
 
         <tab-samples v-if="currentTab === 'samples'" target="patient-samples" :targetUid="patientForm.uid" />
         <tab-cases v-if="currentTab === 'cases'" />
+        <tab-patient-bills v-if="currentTab === 'billing'"  :patientUid="patientForm?.uid" />
         <tab-logs v-if="currentTab === 'logs'" targetType="patient" :targetId="patientForm?.uid" />
       </section>
     </div>

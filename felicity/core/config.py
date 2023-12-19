@@ -126,7 +126,7 @@ class Settings(BaseSettings):
     USERS_OPEN_REGISTRATION: bool = False
 
     LOAD_SETUP_DATA: bool = getenv_boolean("LOAD_SETUP_DATA", False)
-    SERVE_WEBAPP: bool = getenv_boolean("SERVE_WEBAPP", True)
+    SERVE_WEBAPP: bool = getenv_boolean("SERVE_WEBAPP", False)
     # Tracing
     RUN_OPEN_TRACING: bool = getenv_boolean("RUN_OPEN_TRACING", False)
     OTLP_SPAN_EXPORT_URL: str = getenv_value(

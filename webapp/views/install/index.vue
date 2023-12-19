@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { defineAsyncComponent, ref } from "vue";
-import axios from "../../axios/no-auth";
+import axios from "../../api";
 import { useRouter } from "vue-router";
 import { useField, useForm } from "vee-validate";
 import { object, string } from "yup";

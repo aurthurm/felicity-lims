@@ -172,6 +172,7 @@ export interface IAnalysisRequest {
     clientContact?: IClientContact;
     clientName?: string;
     samples?: ISample[];
+    requestId?: string;
     clientRequestId?: string;
     priority?: number;
     createdAt?: Date;

@@ -2,13 +2,14 @@ from datetime import datetime
 from typing import List, Optional
 
 import strawberry  # noqa
-from api.gql.types.generic import PageInfo
+
 from api.gql.client.types import ClientType
-from api.gql.patient.types import PatientType
 from api.gql.instrument.types import InstrumentType, MethodType
+from api.gql.patient.types import PatientType
 from api.gql.setup.types import UnitType
 from api.gql.setup.types.department import DepartmentType
 from api.gql.storage.types import StorageContainerType
+from api.gql.types.generic import PageInfo
 from api.gql.user.types import UserType
 
 
@@ -20,10 +21,10 @@ class CodingStandardType:
     #
     created_by_uid: str | None
     created_by: UserType | None
-    created_at: datetime | None
+    created_at: str | None
     updated_by_uid: str | None
     updated_by: UserType | None
-    updated_at: datetime | None
+    updated_at: str | None
 
 
 @strawberry.type
@@ -37,10 +38,10 @@ class SampleTypeTyp:
     #
     created_by_uid: str | None
     created_by: UserType | None
-    created_at: datetime | None
+    created_at: str | None
     updated_by_uid: str | None
     updated_by: UserType | None
-    updated_at: datetime | None
+    updated_at: str | None
 
 
 @strawberry.type
@@ -56,10 +57,10 @@ class SampleTypeMappingType:
     #
     created_by_uid: str | None
     created_by: UserType | None
-    created_at: datetime | None
+    created_at: str | None
     updated_by_uid: str | None
     updated_by: UserType | None
-    updated_at: datetime | None
+    updated_at: str | None
 
 
 @strawberry.type
@@ -69,10 +70,10 @@ class QCLevelType:
     #
     created_by_uid: str | None
     created_by: UserType | None
-    created_at: datetime | None
+    created_at: str | None
     updated_by_uid: str | None
     updated_by: UserType | None
-    updated_at: datetime | None
+    updated_at: str | None
 
 
 @strawberry.type
@@ -83,10 +84,10 @@ class QCSetType:
     #
     created_by_uid: str | None
     created_by: UserType | None
-    created_at: datetime | None
+    created_at: str | None
     updated_by_uid: str | None
     updated_by: UserType | None
-    updated_at: datetime | None
+    updated_at: str | None
 
 
 @strawberry.type
@@ -96,10 +97,10 @@ class RejectionReasonType:
     #
     created_by_uid: str | None
     created_by: UserType | None
-    created_at: datetime | None
+    created_at: str | None
     updated_by_uid: str | None
     updated_by: UserType | None
-    updated_at: datetime | None
+    updated_at: str | None
 
 
 @strawberry.type
@@ -115,10 +116,10 @@ class AnalysisRequestType:
     #
     created_by_uid: str | None
     created_by: UserType | None
-    created_at: datetime | None
+    created_at: str | None
     updated_by_uid: str | None
     updated_by: UserType | None
-    updated_at: datetime | None
+    updated_at: str | None
 
 
 @strawberry.type
@@ -132,10 +133,10 @@ class AnalysisCategoryType:
     #
     created_by_uid: str | None
     created_by: UserType | None
-    created_at: datetime | None
+    created_at: str | None
     updated_by_uid: str | None
     updated_by: UserType | None
-    updated_at: datetime | None
+    updated_at: str | None
 
 
 @strawberry.type
@@ -148,10 +149,10 @@ class ResultOptionType:
     #
     created_by_uid: str | None
     created_by: UserType | None
-    created_at: datetime | None
+    created_at: str | None
     updated_by_uid: str | None
     updated_by: UserType | None
-    updated_at: datetime | None
+    updated_at: str | None
 
 
 @strawberry.type
@@ -187,10 +188,10 @@ class AnalysisType:
     #
     created_by_uid: str | None
     created_by: UserType | None
-    created_at: datetime | None
+    created_at: str | None
     updated_by_uid: str | None
     updated_by: UserType | None
-    updated_at: datetime | None
+    updated_at: str | None
 
 
 @strawberry.type
@@ -206,10 +207,10 @@ class AnalysisMappingType:
     #
     created_by_uid: str | None
     created_by: UserType | None
-    created_at: datetime | None
+    created_at: str | None
     updated_by_uid: str | None
     updated_by: UserType | None
-    updated_at: datetime | None
+    updated_at: str | None
 
 
 @strawberry.type
@@ -227,10 +228,10 @@ class ProfileType:
     #
     created_by_uid: str | None
     created_by: UserType | None
-    created_at: datetime | None
+    created_at: str | None
     updated_by_uid: str | None
     updated_by: UserType | None
-    updated_at: datetime | None
+    updated_at: str | None
 
 
 @strawberry.type
@@ -246,10 +247,10 @@ class ProfileMappingType:
     #
     created_by_uid: str | None
     created_by: UserType | None
-    created_at: datetime | None
+    created_at: str | None
     updated_by_uid: str | None
     updated_by: UserType | None
-    updated_at: datetime | None
+    updated_at: str | None
 
 
 @strawberry.type
@@ -307,7 +308,7 @@ class SampleType:  # for Sample
     date_printed: datetime | None
     printed_by_uid: str | None
     printed_by: UserType | None
-    due_date: datetime | None
+    due_date: str | None
     rejection_reasons: Optional[List[RejectionReasonType]]
     internal_use: bool
     parent_id: str | None
@@ -329,10 +330,10 @@ class SampleType:  # for Sample
     #
     created_by_uid: str | None
     created_by: UserType | None
-    created_at: datetime | None
+    created_at: str | None
     updated_by_uid: str | None
     updated_by: UserType | None
-    updated_at: datetime | None
+    updated_at: str | None
 
 
 @strawberry.type
@@ -364,10 +365,10 @@ class QCTemplateType:
     #
     created_by_uid: str | None
     created_by: UserType | None
-    created_at: datetime | None
+    created_at: str | None
     updated_by_uid: str | None
     updated_by: UserType | None
-    updated_at: datetime | None
+    updated_at: str | None
 
 
 @strawberry.type
@@ -380,10 +381,10 @@ class AnalysisInterimType:
     #
     created_by_uid: str | None
     created_by: UserType | None
-    created_at: datetime | None
+    created_at: str | None
     updated_by_uid: str | None
     updated_by: UserType | None
-    updated_at: datetime | None
+    updated_at: str | None
 
 
 @strawberry.type
@@ -396,10 +397,10 @@ class AnalysisCorrectionFactorType:
     #
     created_by_uid: str | None
     created_by: UserType | None
-    created_at: datetime | None
+    created_at: str | None
     updated_by_uid: str | None
     updated_by: UserType | None
-    updated_at: datetime | None
+    updated_at: str | None
 
 
 @strawberry.type
@@ -413,10 +414,10 @@ class AnalysisDetectionLimitType:
     #
     created_by_uid: str | None
     created_by: UserType | None
-    created_at: datetime | None
+    created_at: str | None
     updated_by_uid: str | None
     updated_by: UserType | None
-    updated_at: datetime | None
+    updated_at: str | None
 
 
 @strawberry.type
@@ -431,10 +432,10 @@ class AnalysisUncertaintyType:
     #
     created_by_uid: str | None
     created_by: UserType | None
-    created_at: datetime | None
+    created_at: str | None
     updated_by_uid: str | None
     updated_by: UserType | None
-    updated_at: datetime | None
+    updated_at: str | None
 
 
 @strawberry.type
@@ -458,7 +459,7 @@ class AnalysisSpecificationType:
     #
     created_by_uid: str | None
     created_by: UserType | None
-    created_at: datetime | None
+    created_at: str | None
     updated_by_uid: str | None
     updated_by: UserType | None
-    updated_at: datetime | None
+    updated_at: str | None

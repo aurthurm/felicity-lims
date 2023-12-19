@@ -2,7 +2,7 @@ from datetime import datetime
 from typing import List, Optional
 
 import strawberry  # noqa
-from api.gql.types import PageInfo
+
 from api.gql.analysis.types.analysis import (
     AnalysisType,
     QCLevelType,
@@ -12,6 +12,7 @@ from api.gql.analysis.types.analysis import (
 from api.gql.analysis.types.results import AnalysisResultType
 from api.gql.instrument.types import InstrumentType
 from api.gql.types import JSONScalar
+from api.gql.types import PageInfo
 from api.gql.user.types import UserType
 
 
@@ -38,10 +39,10 @@ class WorkSheetTemplateType:
     sample_type: Optional[SampleTypeTyp]
     created_by_uid: str | None
     created_by: UserType | None
-    created_at: datetime | None
+    created_at: str | None
     updated_by_uid: str | None
     updated_by: UserType | None
-    updated_at: datetime | None
+    updated_at: str | None
 
 
 @strawberry.type
@@ -75,10 +76,10 @@ class WorkSheetType:
     date_verified: datetime | None
     created_by_uid: str | None
     created_by: UserType | None
-    created_at: datetime | None
+    created_at: str | None
     updated_by_uid: str | None
     updated_by: UserType | None
-    updated_at: datetime | None
+    updated_at: str | None
 
 
 #  relay paginations

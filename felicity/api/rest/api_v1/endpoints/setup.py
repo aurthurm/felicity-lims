@@ -44,14 +44,14 @@ async def laboratory_lookup() -> Any:
 
 
 @setup.post("/installation")
-async def register_laboratory(name: str) -> Any:
+async def register_laboratory(lab: LabNameIn) -> Any:
     """
     Install a laboratory and initialise departments example post: curl -X POST
     http://localhost:8000/api/v1/setup/installation -d '{"name":"Felicity Lims"}' -H "Content-Type: application/json"
     """
 
     try:
-        await requisite_setup(name)
+        await requisite_setup(lab.name)
     except Exception as e:
         return {
             "laboratory": None,

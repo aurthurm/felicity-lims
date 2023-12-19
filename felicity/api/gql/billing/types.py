@@ -2,14 +2,15 @@ from datetime import datetime
 from typing import List, Optional
 
 import strawberry  # noqa
-from api.gql.types import PageInfo
+
 from api.gql.analysis.types.analysis import AnalysisRequestType, AnalysisType, ProfileType
 from api.gql.client.types import ClientType
 from api.gql.patient.types import PatientType
 from api.gql.types import BytesScalar, JSONScalar
+from api.gql.types import PageInfo
 from api.gql.user.types import UserType
 from apps.analysis.models.analysis import AnalysisRequest
-from apps.billing.models import TestBill, test_bill_item
+from apps.billing.models import TestBill, test_bill_item, VoucherCode
 
 
 @strawberry.type
@@ -19,10 +20,10 @@ class AnalysisPriceType:
     analysis: AnalysisType
     is_active: bool
     amount: float
-    created_at: datetime | None
+    created_at: str | None
     created_by_uid: str | None
     created_by: UserType | None
-    updated_at: datetime | None
+    updated_at: str | None
     updated_by_uid: str | None
     updated_by: UserType | None
 
@@ -34,10 +35,10 @@ class ProfilePriceType:
     profile: ProfileType
     is_active: bool
     amount: float
-    created_at: datetime | None
+    created_at: str | None
     created_by_uid: str | None
     created_by: UserType | None
-    updated_at: datetime | None
+    updated_at: str | None
     updated_by_uid: str | None
     updated_by: UserType | None
 
@@ -52,15 +53,15 @@ class AnalysisDiscountType:
     value_type: str
     start_date: datetime
     end_date: datetime
-    voucher_uid: str
-    voucher: "VoucherType"
+    voucher_uid: str | None
+    voucher: Optional["VoucherType"]
     value_percent: float
     value_amount: float
     is_active: bool
-    created_at: datetime | None
+    created_at: str | None
     created_by_uid: str | None
     created_by: UserType | None
-    updated_at: datetime | None
+    updated_at: str | None
     updated_by_uid: str | None
     updated_by: UserType | None
 
@@ -75,18 +76,18 @@ class ProfileDiscountType:
     value_type: str
     start_date: datetime
     end_date: datetime
-    voucher_uid: str
-    voucher: "VoucherType"
+    voucher_uid: str | None
+    voucher: Optional["VoucherType"]
     value_percent: float
     value_amount: float
     is_active: bool
-    created_at: datetime | None
+    created_at: str | None
     created_by_uid: str | None
     created_by: UserType | None
-    updated_at: datetime | None
+    updated_at: str | None
     updated_by_uid: str | None
     updated_by: UserType | None
-    
+
 
 @strawberry.type
 class VoucherType:
@@ -94,16 +95,20 @@ class VoucherType:
     name: str
     usage_limit: int
     used: int
-    start_date: datetime
-    end_date: datetime
+    start_date: str
+    end_date: str
     once_per_customer: bool
     once_per_order: bool
-    created_at: datetime | None
+    created_at: str | None
     created_by_uid: str | None
     created_by: UserType | None
-    updated_at: datetime | None
+    updated_at: str | None
     updated_by_uid: str | None
     updated_by: UserType | None
+
+    @strawberry.field
+    async def codes(self) -> Optional[list["VoucherCodeType"]]:
+        return await VoucherCode.get_all(voucher_uid=self.uid)
 
 
 @strawberry.type
@@ -115,10 +120,10 @@ class VoucherCodeType:
     usage_limit: int
     used: int
     is_active: bool
-    created_at: datetime | None
+    created_at: str
     created_by_uid: str | None
     created_by: UserType | None
-    updated_at: datetime | None
+    updated_at: str
     updated_by_uid: str | None
     updated_by: UserType | None
 
@@ -130,10 +135,10 @@ class VoucherCustomerType:
     patient: PatientType
     voucher_code_uid: str
     voucher_code: VoucherCodeType
-    created_at: datetime | None
+    created_at: str | None
     created_by_uid: str | None
     created_by: UserType | None
-    updated_at: datetime | None
+    updated_at: str | None
     updated_by_uid: str | None
     updated_by: UserType | None
 
@@ -150,18 +155,21 @@ class TestBillType:
     to_confirm: bool
     partial: bool
     total_charged: float
+    total_paid: float
     json_content: JSONScalar | None
-    created_at: datetime | None
+    created_at: str | None
     created_by_uid: str | None
     created_by: UserType | None
-    updated_at: datetime | None
+    updated_at: str | None
     updated_by_uid: str | None
     updated_by: UserType | None
 
     @strawberry.field
-    async def orders(self) -> AnalysisRequestType:
-        test_bills = await TestBill.query_table(test_bill_item, test_bill_uid=self.uid)
-        return await AnalysisRequest.get_by_uids(uids=[tb.analysis_request_uid for tb in test_bills])
+    async def orders(self) -> Optional[list[AnalysisRequestType]]:
+        test_bills = await TestBill.query_table(
+            test_bill_item, ["analysis_request_uid"], test_bill_uid=self.uid
+        )
+        return await AnalysisRequest.get_by_uids(uids=test_bills)
 
 
 @strawberry.type
@@ -176,8 +184,8 @@ class TestBillCursorPage:
     edges: Optional[List[TestBillEdge]]
     items: Optional[List[TestBillType]]
     total_count: int
-    
-    
+
+
 @strawberry.type
 class TestBillTransactionType:
     uid: str
@@ -185,15 +193,16 @@ class TestBillTransactionType:
     test_bill: TestBillType
     kind: str
     amount: float
-    error: bool
     is_success: bool
-    action_required: str
+    action_required: bool
     processed: bool
     notes: str
-    created_at: datetime | None
+    message: str
+    action_message: str
+    created_at: str | None
     created_by_uid: str | None
     created_by: UserType | None
-    updated_at: datetime | None
+    updated_at: str | None
     updated_by_uid: str | None
     updated_by: UserType | None
 
@@ -205,9 +214,9 @@ class TestBillInvoiceType:
     test_bill: TestBillType
     json_content: JSONScalar | None
     pdf_content: BytesScalar | None
-    created_at: datetime | None
+    created_at: str | None
     created_by_uid: str | None
     created_by: UserType | None
-    updated_at: datetime | None
+    updated_at: str | None
     updated_by_uid: str | None
     updated_by: UserType | None

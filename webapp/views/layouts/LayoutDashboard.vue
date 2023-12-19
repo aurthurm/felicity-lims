@@ -11,9 +11,8 @@ const Notification = defineAsyncComponent(
 )
 </script>
 
-
 <template>
-  <div class="h-screen bg-gray-100 font-roboto antialiased">
+  <div class="bg-gray-100 font-roboto antialiased">
     <div class="flex flex-row">
       <div class="min-h-screen bg-sky-800">
         <side-bar />

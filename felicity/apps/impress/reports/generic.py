@@ -1,9 +1,10 @@
 # coding: utf-8
 import logging
 
-from core.config import settings
-from apps.impress.reports.utils import get_from_nested, strtobool
 from fpdf import FPDF
+
+from apps.impress.reports.utils import get_from_nested, strtobool
+from core.config import settings
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -42,11 +43,10 @@ class FelicityImpress:
         self.margin_top = 20
         self.margin_left = 10
         self.y_diff = 5  # space between rows
-        print(self.logo_path)
 
     def _add_page(self):
         self.pdf.add_page()
-        
+
     def _style_heading_1(self):
         self.pdf.set_text_color(0, 125, 225)
         self.pdf.set_font("Helvetica", "B", 16)

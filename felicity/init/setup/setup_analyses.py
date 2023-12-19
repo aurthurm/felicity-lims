@@ -3,7 +3,9 @@ import logging
 from datetime import datetime
 from typing import Optional
 
+from apps.analysis import utils
 from apps.analysis.models.analysis import (
+    CodingStandard,
     Analysis,
     AnalysisCategory,
     Profile,
@@ -11,7 +13,6 @@ from apps.analysis.models.analysis import (
     SampleType,
 )
 from apps.analysis.models.qc import QCLevel
-from apps.analysis import utils
 from apps.analysis.schemas import (
     AnalysisCategoryCreate,
     AnalysisCreate,
@@ -78,6 +79,20 @@ async def init_id_sequence() -> None:
         id_seq = await IdSequence.get(prefix=prefix)
         if id_seq is None:
             await IdSequence.create(**{"prefix": prefix, "number": 0})
+
+
+async def init_coding_standards() -> None:
+    # Coding for clinical laboratory information
+    logger.info("Setting up coding standard .....")
+
+    standards = [
+        {"name": "LOINC", "description": "Logical Observation Identifiers Names and Codes"},
+        # {"name": "SNOMED CT", "description": "Systemized Nomenclature of Medicine – Clinical Terms"}
+    ]
+    for stand in standards:
+        standard = await CodingStandard.get(name=stand.get("name"))
+        if standard is None:
+            await CodingStandard.create(stand)
 
 
 async def create_sample_types() -> None:
@@ -150,7 +165,7 @@ async def create_analyses_services_and_profiles() -> None:
                             await session.commit()
                         except Exception:  # noqa
                             await session.rollback()
-                            
+
         await utils.billing_setup_profiles([a_profile.uid])
 
 

@@ -8,5 +8,8 @@ class DiscountValueType:
     AMOUNT = "amount"
 
 
-class TransactionType:
+class TransactionKind:
+    CASH = "cash"
+    MEDICAL_AID = "medical-aid"
+    E_PAYMENT = "e-payment"
     AUTO_DISCOUNT = "auto-discount"

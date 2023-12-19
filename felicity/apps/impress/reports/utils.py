@@ -24,12 +24,12 @@ def delete_from_nested(obj: dict, path: str):
     :return: None
     """
     print(f"cleaning up: {path}")
-    
+
     if not obj:
         return
     if not path:
         return obj
-    
+
     keys = path.split(".")
     key = keys.pop(0)
     value = obj.get(key)
