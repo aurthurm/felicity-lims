@@ -5,6 +5,7 @@ from fpdf import FPDF
 
 from apps.impress.reports.utils import get_from_nested
 from core.config import settings
+from utils import get_time_now
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -31,6 +32,7 @@ class FelicityInvoice:
         self.margin_top = 20
         self.margin_left = 10
         self.y_diff = 5  # space between rows
+        self.time_now = get_time_now()
 
     async def _make(self, meta):
         bill = get_from_nested(meta, "bill")
@@ -81,7 +83,7 @@ class FelicityInvoice:
         self.pdf.cell(ln=0, h=5.5, align='R', w=10.0, txt='Invoice Date: ', border=0)
         self.pdf.set_font('arial', '', 12.0)
         self.pdf.set_xy(170.0, 33)
-        self.pdf.cell(ln=0, h=9.5, align='R', w=10.0, txt='2023-10-11', border=0)
+        self.pdf.cell(ln=0, h=9.5, align='R', w=10.0, txt=self.time_now, border=0)
         # ---
         self.pdf.set_font('arial', 'B', 12.0)
         self.pdf.set_xy(140.0, 40)
@@ -95,7 +97,7 @@ class FelicityInvoice:
         self.pdf.cell(ln=0, h=5.5, align='R', w=10.0, txt='Due Date: ', border=0)
         self.pdf.set_font('arial', '', 12.0)
         self.pdf.set_xy(170.0, 43)
-        self.pdf.cell(ln=0, h=9.5, align='R', w=10.0, txt='2023-11-11', border=0)
+        self.pdf.cell(ln=0, h=9.5, align='R', w=10.0, txt='-------', border=0)
 
         self.pdf.set_line_width(0.0)
         self.pdf.line(20.0, 53.0, 180.0, 53.0)

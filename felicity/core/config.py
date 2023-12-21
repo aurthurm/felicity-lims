@@ -1,6 +1,7 @@
 import os
 from typing import Any
 
+import pytz
 from pydantic import AnyHttpUrl, EmailStr, field_validator, ConfigDict
 from pydantic_core.core_schema import FieldValidationInfo
 from pydantic_settings import BaseSettings
@@ -53,7 +54,15 @@ class Settings(BaseSettings):
         "access-control-allow-origin",
         "access-control-allow-headers",
     ]
-
+    # ------------------------------------------ Dates
+    DATE_STR_FORMAT: str = "%d-%m-%y"
+    DATETIME_STR_FORMAT: str = F"{DATE_STR_FORMAT} %H:%M"
+    DATE_HUMAN_FORMAT: str = "%d-%b-%Y"
+    DATETIME_HUMAN_FORMAT: str = f"{DATE_HUMAN_FORMAT} %I.%M %p"
+    TIMEZONE_AWARE: bool = False
+    TIMEZONE_REGION: str = "UTC"  # "Africa/Harare"
+    TIMEZONE: any = pytz.timezone(TIMEZONE_REGION)
+    # -------------------------------------------
     TESTING: bool = getenv_boolean("TESTING", False)
     RETAIN_TESTING_DB_DATA: bool = getenv_boolean("RETAIN_TESTING_DB_DATA", True)
 

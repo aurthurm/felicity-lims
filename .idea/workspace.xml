@@ -5,71 +5,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9f590b69-f929-45a1-8512-12ed6efbf028" name="Changes" comment="Added Invetory starter">
-      <change afterPath="$PROJECT_DIR$/felicity/apps/billing/invoicing/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/felicity/apps/billing/invoicing/generic.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/felicity/apps/billing/invoicing/utils.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/api/gql/analysis/mutations/analysis_request.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/analysis/mutations/analysis_request.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/api/gql/analysis/types/analysis.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/analysis/types/analysis.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/api/gql/analysis/types/results.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/analysis/types/results.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/api/gql/analytics/types.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/analytics/types.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/api/gql/billing/mutations.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/billing/mutations.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/api/gql/billing/query.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/billing/query.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/api/gql/billing/types.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/billing/types.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/api/gql/client/types.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/client/types.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/api/gql/instrument/mutations.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/instrument/mutations.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/api/gql/instrument/types.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/instrument/types.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/api/gql/inventory/mutations.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/inventory/mutations.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/api/gql/inventory/types.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/inventory/types.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/api/gql/messaging/types.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/messaging/types.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/api/gql/noticeboard/types.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/noticeboard/types.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/api/gql/notification/types.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/notification/types.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/api/gql/patient/types.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/patient/types.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/api/gql/reflex/types.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/reflex/types.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/api/gql/setup/types/department.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/setup/types/department.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/api/gql/setup/types/setup.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/setup/types/setup.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/api/gql/shipment/types.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/shipment/types.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/api/gql/storage/types.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/storage/types.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/api/gql/user/mutations.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/user/mutations.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/api/gql/user/types.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/user/types.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/api/gql/worksheet/types.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/worksheet/types.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/api/rest/api_v1/endpoints/setup.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/rest/api_v1/endpoints/setup.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/apps/analysis/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/analysis/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/apps/analysis/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/analysis/utils.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/apps/billing/config.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/billing/config.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/apps/billing/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/billing/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/apps/billing/schemas.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/billing/schemas.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/apps/billing/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/billing/utils.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/apps/billing/invoicing/generic.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/billing/invoicing/generic.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/felicity/apps/impress/reports/generic.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/impress/reports/generic.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/apps/impress/reports/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/impress/reports/utils.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/apps/impress/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/impress/utils.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/felicity/core/config.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/core/config.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/core/security.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/core/security.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/database/base_class.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/database/base_class.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/init/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/init/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/init/setup/setup_analyses.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/init/setup/setup_analyses.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/migrations/versions/026a8b0275fc_modified_billing_types.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/migrations/versions/948a829e0626_added_bill_transaction_notes.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/migrations/versions/a26222f9cc4e_added_billing.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/migrations/versions/f79adc6dd35a_made_chges.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/api.ts" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/api.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/components/SimpleModal.vue" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/components/SimpleModal.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/composables/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/composables/index.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/graphql/operations/analyses.queries.ts" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/graphql/operations/analyses.queries.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/models/analysis.ts" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/models/analysis.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/stores/auth.ts" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/stores/auth.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/stores/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/stores/index.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/utils/helpers.ts" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/utils/helpers.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/admin/analyses/AnalysesProfiles.vue" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/views/admin/analyses/AnalysesProfiles.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/admin/analyses/Billing.vue" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/views/admin/analyses/Billing.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/admin/analyses/services/index.vue" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/views/admin/analyses/services/index.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/admin/billing/index.vue" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/views/admin/billing/index.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/admin/data-load/index.vue" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/views/admin/data-load/index.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/install/index.vue" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/views/install/index.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/layouts/LayoutDashboard.vue" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/views/layouts/LayoutDashboard.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/layouts/LayoutMobile.vue" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/views/layouts/LayoutMobile.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/patient/PatientsCompact.vue" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/views/patient/PatientsCompact.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/patient/_id/PatientDetail.vue" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/views/patient/_id/PatientDetail.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/utils/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/utils/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -104,25 +45,25 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;dart.analysis.tool.window.visible&quot;: &quot;false&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/home/aurthurm/Development/felicity-lims/felicity/apps/billing/invoicing&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.black.configuration.BlackFormatterConfigurable&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "dart.analysis.tool.window.visible": "false",
+    "git-widget-placeholder": "main",
+    "ignore.virus.scanning.warn.message": "true",
+    "last_opened_file_path": "/home/aurthurm/Development/felicity-lims/felicity/apps/impress/reports",
+    "settings.editor.selected.configurable": "com.jetbrains.python.black.configuration.BlackFormatterConfigurable"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/felicity/apps/impress/reports" />
       <recent name="$PROJECT_DIR$/felicity/apps/billing/invoicing" />
       <recent name="$PROJECT_DIR$/felicity/api/rest/api_v1/endpoints" />
       <recent name="$PROJECT_DIR$/felicity/tests/sample_workflow" />
       <recent name="$PROJECT_DIR$/felicity/infrastructure/database/utils" />
-      <recent name="$PROJECT_DIR$/felicity/infrastructure/database/user" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/deploy/example-docker-compose" />

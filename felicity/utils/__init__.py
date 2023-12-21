@@ -1,3 +1,8 @@
+from datetime import datetime
+
+from core.config import settings
+
+
 def get_passed_args(inspection):
     """
     Retrieve user passed function arguments from the current frame from inspect
@@ -43,3 +48,19 @@ def has_value_or_is_truthy(val) -> bool:  # noqa
 
 def to_text(val) -> str:  # noqa
     return str(val)
+
+
+def get_time_now(str_format=True) -> str | datetime:
+    if settings.TIMEZONE_AWARE:
+        now = datetime.now(settings.TIMEZONE)
+    else:
+        now = datetime.now()
+    if str_format:
+        return now.strftime(settings.DATETIME_STR_FORMAT)
+    return now
+
+
+def make_tz_aware(unaware: str | datetime):
+    if isinstance(unaware, datetime):
+        return unaware.replace(tzinfo=settings.TIMEZONE)
+    return datetime.strptime(unaware, settings.DATETIME_STR_FORMAT).replace(tzinfo=settings.TIMEZONE)

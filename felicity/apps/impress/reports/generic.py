@@ -1,28 +1,22 @@
 # coding: utf-8
 import logging
+import os
+from io import BytesIO
+from tempfile import NamedTemporaryFile
 
+from barcode import Code128
+from barcode.writer import ImageWriter
 from fpdf import FPDF
 
 from apps.impress.reports.utils import get_from_nested, strtobool
 from core.config import settings
+from utils import get_time_now
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
 class PDF(FPDF):
-    def header(self):
-        # Rendering logo:
-        # self.image("../docs/fpdf2-logo.png", 10, 8, 33)
-        # Setting font: helvetica bold 15
-        self.set_font("helvetica", "B", 15)
-        # Moving cursor to the right:
-        self.cell(1)
-        # Printing title:
-        self.cell(60, 10, "Felicity Patient Report", border=1, align="C")
-        # Performing a line break:
-        self.ln(20)
-
     def footer(self):
         # Position cursor at 1.5 cm from bottom:
         self.set_y(-15)
@@ -41,203 +35,196 @@ class FelicityImpress:
         self.pdf_w = 210
         self.pdf_h = 297
         self.margin_top = 20
-        self.margin_left = 10
+        self.margin_left = 20
         self.y_diff = 5  # space between rows
+        self.time_now = get_time_now()
 
-    def _add_page(self):
-        self.pdf.add_page()
-
-    def _style_heading_1(self):
-        self.pdf.set_text_color(0, 125, 225)
-        self.pdf.set_font("Helvetica", "B", 16)
-
-    def _style_heading_2(self):
-        self.pdf.set_text_color(0, 125, 225)
-        self.pdf.set_font("Helvetica", "B", 14)
-
-    def _style_heading_3(self):
-        self.pdf.set_text_color(0, 125, 225)
-        self.pdf.set_font("Helvetica", "B", 12)
-
-    def _style_heading_4(self):
-        self.pdf.set_text_color(0, 125, 225)
-        self.pdf.set_font("Helvetica", "B", 10)
-
-    def _style_text(self):
-        self.pdf.set_text_color(0, 0, 0)
-        self.pdf.set_font("Helvetica", "", 10)
-
-    async def _add_sample(self, sample: dict, report_state):
+    async def _make(self, sample: dict, report_state):
         profiles = [
             get_from_nested(p, "name") for p in get_from_nested(sample, "profiles")
         ]
         analyses = [
             get_from_nested(p, "name") for p in get_from_nested(sample, "analyses")
         ]
-        self._add_page()
         #
-        self.pdf.image(self.logo_path, self.margin_left, self.margin_top, 10, 10)
+        sampe_id = get_from_nested(sample, "sample_id")
 
-        # Felicity Health Report
-        # self._style_heading_1()
-        # self.pdf.text(self.margin_left, self.margin_top, "Felicity Patient Report")
+        self.pdf.add_page()
+        self.pdf.set_font('helvetica', '', 12.0)
 
-        heading_top = self.margin_top + 15
-        self._style_heading_1()
-        self.pdf.text(self.margin_left, heading_top, report_state)
+        # Page Border
+        self.pdf.set_line_width(0.0)
+        self.pdf.rect(15.0, 15.0, 170.0, 245.0)
 
-        # Patient Details Column
-        patient_top = heading_top + 15
-        left_col_xl = self.margin_left
-        left_col_xv = left_col_xl + 40
+        # Logo
+        self.pdf.image(self.logo_path, 20.0, 16.0, link='', type='', w=15.0, h=15.0)
 
-        self._style_heading_3()
-        self.pdf.text(left_col_xl, patient_top, "Patient Details:")
-        self._style_text()
+        # Lab Details
+        self.pdf.set_font('arial', 'B', 12.0)
+        self.pdf.set_xy(40.0, 16)
+        self.pdf.cell(ln=0, h=5.5, align='L', w=10.0, txt='Felicity Diagnostics', border=0)
+        self.pdf.set_font('arial', 'I', 8.0)
+        self.pdf.set_xy(40.0, 22)
+        self.pdf.multi_cell(40.0, 3.5, 'Mambusa Building, \nCnr 10th and Sero road, \nHarare, ZW')
 
+        # Contact Details
+        self.pdf.set_font('arial', 'B', 6.0)
+        self.pdf.set_xy(140.0, 15)
+        self.pdf.cell(ln=0, h=5.5, align='R', w=10.0, txt='Call: ', border=0)
+        self.pdf.set_font('arial', 'I', 6.0)
+        self.pdf.set_xy(150.0, 13)
+        self.pdf.cell(ln=0, h=9.5, align='L', w=10.0, txt='(263) 0242 876 876 | 7 | 8', border=0)
+        # ---
+        self.pdf.set_font('arial', 'B', 6.0)
+        self.pdf.set_xy(140.0, 17)
+        self.pdf.cell(ln=0, h=5.5, align='R', w=10.0, txt='Whatsapp: ', border=0)
+        self.pdf.set_font('arial', 'I', 6.0)
+        self.pdf.set_xy(150.0, 15)
+        self.pdf.cell(ln=0, h=9.5, align='L', w=10.0, txt='(263) 776 455 333', border=0)
+        # ---
+        self.pdf.set_font('arial', 'B', 6.0)
+        self.pdf.set_xy(140.0, 19)
+        self.pdf.cell(ln=0, h=5.5, align='R', w=10.0, txt='Email: ', border=0)
+        self.pdf.set_font('arial', 'I', 6.0)
+        self.pdf.set_xy(150.0, 17)
+        self.pdf.cell(ln=0, h=9.5, align='L', w=10.0, txt='info@inclusive.med', border=0)
+
+        # Report BarCode
+        svg_img_bytes = BytesIO()
+        Code128(sampe_id, writer=ImageWriter()).write(svg_img_bytes, options={"write_text": False})
+        with NamedTemporaryFile(delete=False, suffix='.png') as temp:
+            temp.write(svg_img_bytes.getvalue())
+            temp_path = temp.name
+        self.pdf.image(temp_path, x=142, y=25, w=40, h=5)
+        os.unlink(temp_path)
+
+        self.pdf.set_font('arial', '', 8.0)
+        self.pdf.set_xy(143.5, 29.5)
+        self.pdf.cell(ln=0, h=5, align='L', w=10.0, txt=sampe_id, border=0)
+        self.pdf.set_line_width(0.0)
+        self.pdf.line(20.0, 35.0, 180.0, 35.0)
+
+        # Lab Report Status
+        self.pdf.set_font('arial', 'B', 10.0)
+        self.pdf.set_xy(20.0, 36)
+        self.pdf.cell(ln=0, h=5.5, align='L', w=10.0, txt='Diagnostic Report'.upper(), border=0)
+        self.pdf.set_font('arial', 'B', 10.0)
+        self.pdf.set_xy(170.0, 36)
+        self.pdf.cell(ln=0, h=5.5, align='R', w=10.0, txt=report_state, border=0)
+
+        self.pdf.set_line_width(0.0)
+        self.pdf.line(20.0, 42.0, 180.0, 42.0)
+
+        # Customer Column
         patient = get_from_nested(sample, "analysis_request.patient")
+        full_name = get_from_nested(patient, "first_name") + " " + get_from_nested(patient, "last_name")
+        self.pdf.set_font('arial', 'B', 10.0)
+        self.pdf.set_xy(20, 42)
+        self.pdf.cell(ln=0, h=9.5, align='L', w=20.0, txt='MRN: ', border=0)
+        self.pdf.set_font('arial', '', 10.0)
+        self.pdf.set_xy(34, 42)
+        self.pdf.cell(ln=0, h=9.5, align='l', w=20.0, txt=get_from_nested(sample, "analysis_request.client_request_id"),
+                      border=0)
+        self.pdf.set_font('arial', 'B', 10.0)
+        self.pdf.set_xy(20, 46)
+        self.pdf.cell(ln=0, h=9.5, align='L', w=20.0, txt='Name: ', border=0)
+        self.pdf.set_font('arial', '', 10.0)
+        self.pdf.set_xy(34, 48)
+        self.pdf.cell(ln=0, h=5.5, align='L', w=10.0, txt=full_name, border=0)
+        self.pdf.set_font('arial', 'B', 10.0)
+        self.pdf.set_xy(20, 50)
+        self.pdf.cell(ln=0, h=9.5, align='L', w=20.0, txt='Age: ', border=0)
+        self.pdf.set_font('arial', '', 10.0)
+        self.pdf.set_xy(34, 52)
+        self.pdf.cell(ln=0, h=5.5, align='L', w=10.0, txt=get_from_nested(patient, "age"), border=0)
+        self.pdf.set_font('arial', 'B', 10.0)
+        self.pdf.set_xy(20, 54)
+        self.pdf.cell(ln=0, h=9.5, align='L', w=20.0, txt='Sex: ', border=0)
+        self.pdf.set_font('arial', '', 10.0)
+        self.pdf.set_xy(34, 56)
+        self.pdf.cell(ln=0, h=5.5, align='L', w=10.0, txt=get_from_nested(patient, "gender"), border=0)
 
-        # First Name
-        self.pdf.text(left_col_xl, patient_top + self.y_diff * 1, "First Name")
-        self.pdf.text(
-            left_col_xv,
-            patient_top + self.y_diff * 1,
-            get_from_nested(patient, "first_name"),
-        )
-        # Last Name
-        self.pdf.text(left_col_xl, patient_top + self.y_diff * 2, "Last Name")
-        self.pdf.text(
-            left_col_xv,
-            patient_top + self.y_diff * 2,
-            get_from_nested(patient, "last_name"),
-        )
-        # Gender
-        self.pdf.text(left_col_xl, patient_top + self.y_diff * 3, "Gender")
-        self.pdf.text(
-            left_col_xv,
-            patient_top + self.y_diff * 3,
-            get_from_nested(patient, "gender"),
-        )
-        # Age
-        self.pdf.text(left_col_xl, patient_top + self.y_diff * 4, "Age")
-        self.pdf.text(
-            left_col_xv, patient_top + self.y_diff * 4, get_from_nested(patient, "age")
-        )
-        # D.O.B
-        self.pdf.text(left_col_xl, patient_top + self.y_diff * 5, "D.O.B")
-        self.pdf.text(
-            left_col_xv,
-            patient_top + self.y_diff * 5,
-            get_from_nested(patient, "date_of_birth"),
-        )
+        self.pdf.set_line_width(0.0)
+        self.pdf.line(73.0, 42.0, 73.0, 64.0)
 
-        # Client Details Column
-        right_col_xl = self.pdf_w / 2
-        right_col_xv = right_col_xl + 40
-
+        # Primary Referrer Details
         client = get_from_nested(sample, "analysis_request.client")
+        name = get_from_nested(client, "name")
+        address = ""
+        self.pdf.set_font('arial', 'B', 10.0)
+        self.pdf.set_xy(80, 42)
+        self.pdf.cell(ln=0, h=9.5, align='L', w=20.0, txt='Primary Referrer: ', border=0)
+        self.pdf.set_font('arial', 'I', 10.0)
+        self.pdf.set_xy(80, 50)
+        self.pdf.multi_cell(40.0, 3.5, f'{name}, \n{address}')
 
-        # Client Patient Id
-        self.pdf.text(right_col_xl, patient_top + self.y_diff * 1, "Client Patient Id:")
-        self.pdf.text(
-            right_col_xv,
-            patient_top + self.y_diff * 1,
-            get_from_nested(sample, "analysis_request" ".client_request_id"),
-        )
-        # Client Name
-        self.pdf.text(right_col_xl, patient_top + self.y_diff * 2, "Client Name:")
-        self.pdf.text(
-            right_col_xv, patient_top + self.y_diff * 2, get_from_nested(client, "name")
-        )
-        # Client Phone
-        self.pdf.text(right_col_xl, patient_top + self.y_diff * 3, "Client Phone:")
-        self.pdf.text(
-            right_col_xv,
-            patient_top + self.y_diff * 3,
-            get_from_nested(client, "phone_mobile"),
-        )
-        # Client Email
-        self.pdf.text(right_col_xl, patient_top + self.y_diff * 4, "Client Email:")
-        self.pdf.text(
-            right_col_xv,
-            patient_top + self.y_diff * 4,
-            get_from_nested(client, "email"),
-        )
+        self.pdf.set_line_width(0.0)
+        self.pdf.line(120.0, 42.0, 120.0, 64.0)
 
-        # Sample Details Section
-        sample_top = patient_top + self.y_diff * 7
+        # Sample Details
+        sample_type = get_from_nested(sample, "sample_type.name")
+        self.pdf.set_font('arial', 'B', 8.0)
+        self.pdf.set_xy(128.0, 43)
+        self.pdf.cell(ln=0, h=5, align='L', w=10.0, txt='Sample Type:', border=0)
+        self.pdf.set_font('arial', 'I', 8.0)
+        self.pdf.set_xy(149.5, 43)
+        self.pdf.cell(ln=0, h=5, align='L', w=10.0, txt=sample_type, border=0)
+        # ---
+        self.pdf.set_font('arial', 'B', 8.0)
+        self.pdf.set_xy(128.0, 47)
+        self.pdf.cell(ln=0, h=5, align='L', w=10.0, txt='Collected on:', border=0)
+        self.pdf.set_font('arial', 'I', 8.0)
+        self.pdf.set_xy(149.5, 47)
+        self.pdf.cell(ln=0, h=5, align='L', w=10.0, txt=get_from_nested(sample, "date_collected"), border=0)
+        # ---
+        self.pdf.set_font('arial', 'B', 8.0)
+        self.pdf.set_xy(128.0, 51)
+        self.pdf.cell(ln=0, h=5, align='L', w=10.0, txt='Received on:', border=0)
+        self.pdf.set_font('arial', 'I', 8.0)
+        self.pdf.set_xy(149.5, 51)
+        self.pdf.cell(ln=0, h=5, align='L', w=10.0, txt=get_from_nested(sample, "date_received"), border=0)
+        # ---
+        self.pdf.set_font('arial', 'B', 8.0)
+        self.pdf.set_xy(128.0, 55)
+        self.pdf.cell(ln=0, h=5, align='L', w=10.0, txt='Registered on:', border=0)
+        self.pdf.set_font('arial', 'I', 8.0)
+        self.pdf.set_xy(149.5, 55)
+        self.pdf.cell(ln=0, h=5, align='L', w=10.0, txt=get_from_nested(sample, "created_at"), border=0)  # ---
+        self.pdf.set_font('arial', 'B', 8.0)
+        self.pdf.set_xy(128.0, 59)
+        self.pdf.cell(ln=0, h=5, align='L', w=10.0, txt='Reported on:', border=0)
+        self.pdf.set_font('arial', 'I', 8.0)
+        self.pdf.set_xy(149.5, 59)
+        self.pdf.cell(ln=0, h=5, align='L', w=10.0, txt=get_from_nested(sample, "date_published"), border=0)
 
-        self._style_heading_3()
-        self.pdf.text(left_col_xl, sample_top, "Sample Details:")
-        self._style_text()
-        # Sample ID
-        self.pdf.text(left_col_xl, sample_top + self.y_diff * 1, "Sample ID:")
-        self.pdf.text(
-            left_col_xv,
-            sample_top + self.y_diff * 1,
-            get_from_nested(sample, "sample_id"),
-        )
-        # Sample Type
-        self.pdf.text(left_col_xl, sample_top + self.y_diff * 2, "Sample Type:")
-        self.pdf.text(
-            left_col_xv,
-            sample_top + self.y_diff * 2,
-            get_from_nested(sample, "sample_type.name"),
-        )
-        # Test(s)
-        self.pdf.text(left_col_xl, sample_top + self.y_diff * 3, "Tests:")
-        self.pdf.text(left_col_xv, sample_top + self.y_diff * 3, ", ".join(analyses))
-        #
-        # Date Collected
-        self.pdf.text(right_col_xl, sample_top + self.y_diff * 1, "Date Collected:")
-        self.pdf.text(
-            right_col_xv,
-            sample_top + self.y_diff * 1,
-            get_from_nested(sample, "date_collected"),
-        )
-        # Date Received
-        self.pdf.text(right_col_xl, sample_top + self.y_diff * 2, "Date Received:")
-        self.pdf.text(
-            right_col_xv,
-            sample_top + self.y_diff * 2,
-            get_from_nested(sample, "date_received"),
-        )
-        # Date Published
-        self.pdf.text(right_col_xl, sample_top + self.y_diff * 3, "Date Published:")
-        self.pdf.text(
-            right_col_xv,
-            sample_top + self.y_diff * 3,
-            get_from_nested(sample, "date_published"),
-        )
+        self.pdf.set_line_width(0.0)
+        self.pdf.line(20.0, 64.0, 180.0, 64.0)
 
-        # Analyses Results Section
-        results_top = sample_top + self.y_diff * 5
+        # Diagnostics Results
+        _p = ", ".join(profiles)
+        _a = ", ".join(analyses)
+        investigations = _p
+        if _a:
+            investigations += ", " + _a
 
-        # Result column headers
-        columns = 5
-        column_total_width = self.pdf_w - self.margin_left * 2
-        column_width = column_total_width / columns
+        self.pdf.dashed_line(20, 70.0, 50, 70.0, dash_length=1, space_length=1)
+        self.pdf.set_font('arial', 'B', 10.0)
+        self.pdf.set_xy(55, 67)
+        self.pdf.cell(ln=0, h=5, align='L', w=20.0, txt=investigations, border=0)
 
-        self._style_heading_3()
-        self.pdf.text(left_col_xl, results_top, "Analyses Results:")
-        self._style_heading_4()
-        self.pdf.text(
-            left_col_xl + column_width * 0, results_top + self.y_diff * 1, "Analysis"
-        )
-        self.pdf.text(
-            left_col_xl + column_width * 1, results_top + self.y_diff * 1, "Instrument"
-        )
-        self.pdf.text(
-            left_col_xl + column_width * 2, results_top + self.y_diff * 1, "Method"
-        )
-        self.pdf.text(
-            left_col_xl + column_width * 3, results_top + self.y_diff * 1, "Result"
-        )
-        self.pdf.text(
-            left_col_xl + column_width * 4, results_top + self.y_diff * 1, "Unit"
-        )
+        # Results Heading
+        self.pdf.set_font('arial', 'B', 10.0)
+        self.pdf.set_xy(20, 75)
+        self.pdf.cell(ln=0, h=5.5, align='L', w=10.0, txt='Investigation', border=0)
+        self.pdf.set_xy(120, 75)
+        self.pdf.cell(ln=0, h=5.5, align='R', w=10.0, txt='Result', border=0)
+        self.pdf.set_xy(130, 75)
+        self.pdf.cell(ln=0, h=5.5, align='L', w=10.0, txt='Unit', border=0)
+        self.pdf.set_xy(150, 75)
+        self.pdf.cell(ln=0, h=5.5, align='L', w=10.0, txt='Ref Range', border=0)
 
-        self._style_text()
+        # Results
+        y_pos = 80
 
         analyses_results = get_from_nested(sample, "analysis_results")
         analyses_results = list(
@@ -245,46 +232,49 @@ class FelicityImpress:
                 lambda r: strtobool(get_from_nested(r, "reportable")), analyses_results
             )
         )
-        count = 0
-        for result in analyses_results:
-            y_pos = results_top + self.y_diff * (count + 2)
 
-            self.pdf.text(
-                left_col_xl + column_width * 0,
-                y_pos,
-                get_from_nested(result, "analysis.name"),
-            )
-            self.pdf.text(
-                left_col_xl + column_width * 1,
-                y_pos,
-                get_from_nested(result, "instrument.name"),
-            )
-            self.pdf.text(
-                left_col_xl + column_width * 2,
-                y_pos,
-                get_from_nested(result, "method.name"),
-            )
-            self.pdf.text(
-                left_col_xl + column_width * 3, y_pos, get_from_nested(result, "result")
-            )
-            self.pdf.text(
-                left_col_xl + column_width * 4,
-                y_pos,
-                get_from_nested(result, "analysis.unit.name"),
-            )
+        for result in analyses_results:
+            self.pdf.set_font('arial', '', 8.0)
+            self.pdf.set_xy(20, y_pos)
+            self.pdf.cell(ln=0, h=5.5, align='L', w=10.0, txt=get_from_nested(result, "analysis.name"), border=0)
+            self.pdf.set_xy(120, y_pos)
+            self.pdf.cell(ln=0, h=5.5, align='R', w=10.0, txt=get_from_nested(result, "result"), border=0)
+            self.pdf.set_xy(130, y_pos)
+            self.pdf.cell(ln=0, h=5.5, align='L', w=10.0, txt=get_from_nested(result, "analysis.unit.name"), border=0)
+            self.pdf.set_xy(150, y_pos)
+            self.pdf.cell(ln=0, h=5.5, align='L', w=10.0, txt='xx - xx', border=0)
+            # ---
+            y_pos += 4
+            inst_meth = f"{get_from_nested(result, 'instrument.name')} | {get_from_nested(result, 'method.name')}"
+            self.pdf.set_font('arial', 'I', 6.0)
+            self.pdf.set_xy(20, y_pos)
+            self.pdf.cell(ln=0, h=5.5, align='L', w=10.0, txt=inst_meth, border=0)
+            # ---
+            y_pos += 5
 
             if y_pos >= (self.pdf_h - self.margin_top * 3):
-                self._add_page()
-                results_top = self.margin_top
-                count = 0
+                self.pdf.add_page()
+                y_pos = self.margin_top
 
-            count += 1
+        # End of report
+        self.pdf.set_line_width(0.0)
+        self.pdf.line(20.0, y_pos, 180.0, y_pos)
+        self.pdf.set_font('arial', 'I', 8.0)
+        self.pdf.set_xy(170, y_pos)
+        self.pdf.cell(ln=0, h=5.5, align='R', w=10.0, txt='* End of Report', border=0)
+
+        # --- Quality Statement
+        self.pdf.set_line_width(0.0)
+        self.pdf.line(15.0, 255.0, 185.0, 255.0)
+        self.pdf.set_font('arial', 'I', 8.0)
+        self.pdf.set_xy(20, 255)
+        self.pdf.cell(ln=0, h=5.5, align='L', w=150.0,
+                      txt='all about diagnostic excellence', border=0)
+        self.pdf.set_xy(162, 255)
+        self.pdf.cell(ln=0, h=5.5, align='R', w=20.0, txt=f'Generated on: {self.time_now}', border=0)
 
         return self.pdf
 
     async def generate(self, sample: dict, report_state="final"):
-        get_from_nested(sample, "sample_id")
-        pdf = await self._add_sample(sample, report_state)
-        # another = pdf
-        # another.output(f"{sample_id}.pdf")
+        pdf = await self._make(sample, report_state)
         return pdf.output()

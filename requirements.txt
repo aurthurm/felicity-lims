@@ -26,6 +26,7 @@ PyPDF2==3.0.1
 reportlab==4.0.0
 fhir.resources==7.0.0
 httpx==0.24.0
+python-barcode==0.15.1
 importlib-metadata~=6.0.0
 opentelemetry-instrumentation-fastapi==0.38b0
 opentelemetry-exporter-otlp==1.17.0
