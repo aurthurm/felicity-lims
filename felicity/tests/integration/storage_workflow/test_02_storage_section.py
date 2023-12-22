@@ -30,7 +30,7 @@
 #         "name": "Storage Section 1",
 #         "description": "Storage section one",
 #     }
-#     _, response = await app.asgi_client.post(
+#     response = await app.post(
 #         "/felicity-gql",
 #         json={
 #             "query": add_storage_section_query,
@@ -42,7 +42,7 @@
 #     logger.info(f"register storage section response: {response} {response.json}")
 #
 #     assert response.status_code == 200
-#     _st_s = response.json["data"]["createStorageSection"]
+#     _st_s = response.json()["data"]["createStorageSection"]
 #     assert _st_s["uid"] is not None
 #     assert _st_s["name"] == storage_section["name"]
 #     assert _st_s["storageLocationUid"] == 1

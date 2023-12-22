@@ -54,7 +54,7 @@
 #             {"productUid": 5, "quantity": 5},
 #         ]
 #     }
-#     _, response = await app.asgi_client.post(
+#     response = await app.post(
 #         "/felicity-gql",
 #         json={"query": add_stock_order_mutation, "variables": {"payload": stock_order}},
 #         headers=auth_data["headers"],
@@ -63,7 +63,7 @@
 #     logger.info(f"register stock order response: {response} {response.json}")
 #
 #     assert response.status_code == 200
-#     order_line = response.json["data"]["createStockOrder"]
+#     order_line = response.json()["data"]["createStockOrder"]
 #     order = order_line["stockOrder"]
 #     assert order["uid"] is not None
 #     assert order["orderNumber"] == "SON23-00006"
@@ -109,7 +109,7 @@
 #         {"productUid": 3, "quantity": 6},
 #         {"productUid": 4, "quantity": 5},
 #     ]
-#     _, response = await app.asgi_client.post(
+#     response = await app.post(
 #         "/felicity-gql",
 #         json={
 #             "query": add_stock_order_mutation,
@@ -120,7 +120,7 @@
 #
 #     logger.info(f"register stock order response: {response} {response.json}")
 #     assert response.status_code == 200
-#     order_line = response.json["data"]["updateStockOrder"]
+#     order_line = response.json()["data"]["updateStockOrder"]
 #     order = order_line["stockOrder"]
 #     assert order["uid"] is not None
 #     assert order["orderNumber"] == "SON23-00006"

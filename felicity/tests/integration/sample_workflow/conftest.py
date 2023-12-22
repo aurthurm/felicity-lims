@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 
 @pytest_asyncio.fixture(scope="function")
 async def clients(app, auth_data):
-    _, response = await app.asgi_client.post(
+    response = await app.post(
         "felicity-gql",
         json={"query": """
             query GetClients{
@@ -29,12 +29,12 @@ async def clients(app, auth_data):
         """},
         headers=auth_data["headers"],
     )
-    return response.json['data']['clientAll']['items']
+    return response.json()['data']['clientAll']['items']
 
 
 @pytest_asyncio.fixture(scope="function")
 async def client_contacts(app, auth_data, clients):
-    _, response = await app.asgi_client.post(
+    response = await app.post(
         "felicity-gql",
         json={
             "query": """
@@ -50,12 +50,12 @@ async def client_contacts(app, auth_data, clients):
         },
         headers=auth_data["headers"],
     )
-    return response.json['data']['clientContactByClientUid']
+    return response.json()['data']['clientContactByClientUid']
 
 
 @pytest_asyncio.fixture(scope="function")
 async def sample_types(app, auth_data):
-    _, response = await app.asgi_client.post(
+    response = await app.post(
         "felicity-gql",
         json={"query": """
             query GetSampleTypes {
@@ -66,12 +66,12 @@ async def sample_types(app, auth_data):
         """},
         headers=auth_data["headers"],
     )
-    return response.json['data']['sampleTypeAll']
+    return response.json()['data']['sampleTypeAll']
 
 
 @pytest_asyncio.fixture(scope="function")
 async def methods(app, auth_data):
-    _, response = await app.asgi_client.post(
+    response = await app.post(
         "felicity-gql",
         json={"query": """
             query GetMethods {
@@ -84,12 +84,12 @@ async def methods(app, auth_data):
         """},
         headers=auth_data["headers"],
     )
-    return response.json['data']['methodAll']["items"]
+    return response.json()['data']['methodAll']["items"]
 
 
 @pytest_asyncio.fixture(scope="function")
 async def instruments(app, auth_data):
-    _, response = await app.asgi_client.post(
+    response = await app.post(
         "felicity-gql",
         json={"query": """
             query GetInstruments {
@@ -102,12 +102,12 @@ async def instruments(app, auth_data):
         """},
         headers=auth_data["headers"],
     )
-    return response.json['data']['instrumentAll']["items"]
+    return response.json()['data']['instrumentAll']["items"]
 
 
 @pytest_asyncio.fixture(scope="function")
 async def analyses(app, auth_data):
-    _, response = await app.asgi_client.post(
+    response = await app.post(
         "felicity-gql",
         json={"query": """
             query GetAnalyses {
@@ -120,12 +120,12 @@ async def analyses(app, auth_data):
         """},
         headers=auth_data["headers"],
     )
-    return response.json['data']['analysisAll']["items"]
+    return response.json()['data']['analysisAll']["items"]
 
 
 @pytest_asyncio.fixture(scope="function")
 async def profiles(app, auth_data):
-    _, response = await app.asgi_client.post(
+    response = await app.post(
         "felicity-gql",
         json={"query": """
             query GetProfiles {
@@ -136,12 +136,12 @@ async def profiles(app, auth_data):
         """},
         headers=auth_data["headers"],
     )
-    return response.json['data']['profileAll']
+    return response.json()['data']['profileAll']
 
 
 @pytest_asyncio.fixture(scope="function")
 async def patients(app, auth_data):
-    _, response = await app.asgi_client.post(
+    response = await app.post(
         "felicity-gql",
         json={"query": """
             query GetPatients {
@@ -154,12 +154,12 @@ async def patients(app, auth_data):
         """},
         headers=auth_data["headers"],
     )
-    return response.json['data']['patientAll']["items"]
+    return response.json()['data']['patientAll']["items"]
 
 
 @pytest_asyncio.fixture(scope="function")
 async def users_db(app, auth_data):
-    _, response = await app.asgi_client.post(
+    response = await app.post(
         "felicity-gql",
         json={"query": """
             query GetUsers {
@@ -172,12 +172,12 @@ async def users_db(app, auth_data):
         """},
         headers=auth_data["headers"],
     )
-    return response.json['data']['userAll']["items"]
+    return response.json()['data']['userAll']["items"]
 
 
 @pytest_asyncio.fixture(scope="function")
 async def ws_templates(app, auth_data):
-    _, response = await app.asgi_client.post(
+    response = await app.post(
         "felicity-gql",
         json={"query": """
             query GetWSTemplates {
@@ -188,12 +188,12 @@ async def ws_templates(app, auth_data):
         """},
         headers=auth_data["headers"],
     )
-    return response.json['data']['worksheetTemplateAll']
+    return response.json()['data']['worksheetTemplateAll']
 
 
 @pytest_asyncio.fixture(scope="function")
 async def worksheets(app, auth_data):
-    _, response = await app.asgi_client.post(
+    response = await app.post(
         "felicity-gql",
         json={"query": """
             query GetWS {
@@ -206,12 +206,12 @@ async def worksheets(app, auth_data):
         """},
         headers=auth_data["headers"],
     )
-    return response.json['data']['worksheetAll']["items"]
+    return response.json()['data']['worksheetAll']["items"]
 
 
 @pytest_asyncio.fixture(scope="function")
 async def jobs(app, auth_data):
-    _, response = await app.asgi_client.post(
+    response = await app.post(
         "felicity-gql",
         json={"query": """
             query GeJobs {
@@ -224,12 +224,12 @@ async def jobs(app, auth_data):
         """},
         headers=auth_data["headers"],
     )
-    return response.json['data']['jobAll']["items"]
+    return response.json()['data']['jobAll']["items"]
 
 
 @pytest_asyncio.fixture(scope="function")
 async def samples(app, auth_data):
-    _, response = await app.asgi_client.post(
+    response = await app.post(
         "felicity-gql",
         json={"query": """
             query GetResults {
@@ -248,4 +248,4 @@ async def samples(app, auth_data):
         """},
         headers=auth_data["headers"],
     )
-    return response.json['data']['sampleAll']["items"]
+    return response.json()['data']['sampleAll']["items"]

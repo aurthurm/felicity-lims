@@ -40,7 +40,7 @@
 # @pytest.mark.order(200)
 # async def test_add_store_room(app, auth_data):
 #     store_room = {"name": "Store Room 1", "description": "Storage area one"}
-#     _, response = await app.asgi_client.post(
+#     response = await app.post(
 #         "/felicity-gql",
 #         json={"query": add_store_room_query, "variables": {"payload": store_room}},
 #         headers=auth_data["headers"],
@@ -49,7 +49,7 @@
 #     logger.info(f"register store room response: {response} {response.json}")
 #
 #     assert response.status_code == 200
-#     _st = response.json["data"]["createStoreRoom"]
+#     _st = response.json()["data"]["createStoreRoom"]
 #     assert _st["uid"] is not None
 #     assert _st["name"] == store_room["name"]
 #     assert _st["description"] == store_room["description"]
@@ -62,7 +62,7 @@
 #         "name": "Store Room 1 Updated",
 #         "description": "Storage area one Updated",
 #     }
-#     _, response = await app.asgi_client.post(
+#     response = await app.post(
 #         "/felicity-gql",
 #         json={
 #             "query": update_store_room_query,
@@ -74,7 +74,7 @@
 #     logger.info(f"register store room response: {response} {response.json}")
 #
 #     assert response.status_code == 200
-#     _st = response.json["data"]["updateStoreRoom"]
+#     _st = response.json()["data"]["updateStoreRoom"]
 #     assert _st["uid"] is not None
 #     assert _st["name"] == store_room["name"]
 #     assert _st["description"] == store_room["description"]

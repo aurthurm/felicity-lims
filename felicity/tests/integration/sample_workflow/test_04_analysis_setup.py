@@ -31,7 +31,7 @@ async def test_add_sample_type(app, auth_data):
         "abbr": "WB",
         "active": True,
     }
-    _, response = await app.asgi_client.post(
+    response = await app.post(
         "/felicity-gql",
         json={"query": add_gql, "variables": {"payload": sample_type}},
         headers=auth_data["headers"],
@@ -40,7 +40,7 @@ async def test_add_sample_type(app, auth_data):
     logger.info(f"add sample type response: {response} {response.json}")
 
     assert response.status_code == 200
-    _data = response.json["data"]["createSampleType"]
+    _data = response.json()["data"]["createSampleType"]
     assert _data["uid"] is not None
     assert _data["name"] == sample_type["name"]
     assert _data["abbr"] == sample_type["abbr"]
@@ -70,7 +70,7 @@ async def test_add_instrument(app, auth_data):
         "name": "Roche Cobas Ampliprep, Taqman 96",
         "keyword": "HICAP96",
     }
-    _, response = await app.asgi_client.post(
+    response = await app.post(
         "/felicity-gql",
         json={"query": add_gql, "variables": {"payload": instrument}},
         headers=auth_data["headers"],
@@ -79,7 +79,7 @@ async def test_add_instrument(app, auth_data):
     logger.info(f"add instrument response: {response} {response.json}")
 
     assert response.status_code == 200
-    _data = response.json["data"]["createInstrument"]
+    _data = response.json()["data"]["createInstrument"]
     assert _data["uid"] is not None
     assert _data["name"] == instrument["name"]
     assert _data["keyword"] == instrument["keyword"]
@@ -109,7 +109,7 @@ async def test_add_method(app, auth_data, instruments):
         "keyword": "RTPCT",
         "instruments": [instruments[0]["uid"]]
     }
-    _, response = await app.asgi_client.post(
+    response = await app.post(
         "/felicity-gql",
         json={"query": add_gql, "variables": {"payload": method}},
         headers=auth_data["headers"],
@@ -118,7 +118,7 @@ async def test_add_method(app, auth_data, instruments):
     logger.info(f"add method response: {response} {response.json}")
 
     assert response.status_code == 200
-    _data = response.json["data"]["createMethod"]
+    _data = response.json()["data"]["createMethod"]
     assert _data["uid"] is not None
     assert _data["name"] == method["name"]
     assert _data["keyword"] == method["keyword"]
@@ -190,7 +190,7 @@ async def test_add_analysis_service(app, auth_data, methods, sample_types):
         "requiredVerifications": 1,
         "selfVerification": False,
     }
-    _, response = await app.asgi_client.post(
+    response = await app.post(
         "/felicity-gql",
         json={"query": add_gql, "variables": {"payload": analysis_service}},
         headers=auth_data["headers"],
@@ -199,7 +199,7 @@ async def test_add_analysis_service(app, auth_data, methods, sample_types):
     logger.info(f"add analysis service response: {response} {response.json}")
 
     assert response.status_code == 200
-    _data = response.json["data"]["createAnalysis"]
+    _data = response.json()["data"]["createAnalysis"]
     assert _data["uid"] is not None
     assert _data["name"] == analysis_service["name"]
     assert _data["keyword"] == analysis_service["keyword"]
@@ -252,7 +252,7 @@ async def test_add_analysis_profile(app, auth_data, sample_types, analyses):
         "services": [analyses[0]["uid"]],
         "active": True,
     }
-    _, response = await app.asgi_client.post(
+    response = await app.post(
         "/felicity-gql",
         json={"query": add_gql, "variables": {"payload": analysis_profile}},
         headers=auth_data["headers"],
@@ -261,7 +261,7 @@ async def test_add_analysis_profile(app, auth_data, sample_types, analyses):
     logger.info(f"add analysis profile response: {response} {response.json}")
 
     assert response.status_code == 200
-    _data = response.json["data"]["createProfile"]
+    _data = response.json()["data"]["createProfile"]
     assert _data["uid"] is not None
     assert _data["name"] == analysis_profile["name"]
     assert _data["keyword"] == analysis_profile["keyword"]

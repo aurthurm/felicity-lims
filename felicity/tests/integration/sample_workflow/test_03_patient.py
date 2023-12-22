@@ -54,7 +54,7 @@ async def test_register_patient(app, auth_data, clients):
         "consentSms": fake_engine.boolean(),
     }
 
-    _, response = await app.asgi_client.post(
+    response = await app.post(
         "/felicity-gql",
         json={"query": add_patient_query, "variables": {"payload": patient}},
         headers=auth_data["headers"],
@@ -63,7 +63,7 @@ async def test_register_patient(app, auth_data, clients):
     logger.info(f"register_patient response: {response} {response.json}")
 
     assert response.status_code == 200
-    _patient = response.json["data"]["createPatient"]
+    _patient = response.json()["data"]["createPatient"]
     assert _patient["uid"] is not None
     assert _patient["clientPatientId"] == patient["clientPatientId"]
     assert _patient["firstName"] == patient["firstName"]

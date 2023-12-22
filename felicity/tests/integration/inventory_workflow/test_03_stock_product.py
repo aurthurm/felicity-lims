@@ -49,7 +49,7 @@
 #         ["Stromatolyser FB", "Petri Dish", "Pipette", "S-Tube", "Blood Culture Bottle"]
 #     ):
 #         stock_product["name"] = item
-#         _, response = await app.asgi_client.post(
+#         response = await app.post(
 #             "/felicity-gql",
 #             json={
 #                 "query": add_stock_product_mutation,
@@ -61,7 +61,7 @@
 #         logger.info(f"register stock product response: {response} {response.json}")
 #
 #         assert response.status_code == 200
-#         data = response.json["data"]["createStockProduct"]
+#         data = response.json()["data"]["createStockProduct"]
 #         assert data["uid"] == idx + 1
 #         assert data["name"] == stock_product["name"]
 #         assert data["categoryUid"] == stock_product["categoryUid"]

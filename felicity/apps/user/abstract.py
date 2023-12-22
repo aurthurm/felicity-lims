@@ -1,12 +1,12 @@
 from datetime import datetime
 
+from sqlalchemy import Boolean, Column, DateTime, Integer, String
+from sqlalchemy.ext.declarative import declared_attr
+
 from apps import BaseAuditDBModel  # noqa
 from apps import DBModel
 from apps.user import schemas
 from core.security import get_password_hash, password_check
-
-from sqlalchemy import Boolean, Column, DateTime, Integer, String
-from sqlalchemy.ext.declarative import declared_attr
 
 
 class SimpleAuditMixin(object):
@@ -63,26 +63,22 @@ class AbstractBaseUser(SimpleAuditMixin, DBModel):
 
     async def give_super_powers(self):
         user_obj = self.to_dict()
-        user_in = schemas.UserUpdate(**user_obj)
-        user_in.is_superuser = True
+        user_in = schemas.UserUpdate(**{**user_obj, "is_superuser": True})
         await self.update(user_in)
 
     async def strip_super_powers(self):
         user_obj = self.to_dict()
-        user_in = schemas.UserUpdate(**user_obj)
-        user_in.is_superuser = False
+        user_in = schemas.UserUpdate(**{**user_obj, "is_superuser": False})
         await self.update(user_in)
 
     async def activate(self):
         user_obj = self.to_dict()
-        user_in = schemas.UserUpdate(**user_obj)
-        user_in.is_active = True
+        user_in = schemas.UserUpdate(**{**user_obj, "is_active": True})
         await self.update(user_in)
 
     async def deactivate(self):
         user_obj = self.to_dict()
-        user_in = schemas.UserUpdate(user_obj)
-        user_in.is_active = False
+        user_in = schemas.UserUpdate(**{**user_obj, "is_active": False})
         await self.update(user_in)
 
 

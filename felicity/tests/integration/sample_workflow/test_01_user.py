@@ -3,7 +3,7 @@ import logging
 import pytest
 
 from core.config import settings
-from tests.utils.user import (
+from tests.integration.utils.user import (
     add_auth_mutation,
     add_user_mutation,
     make_password,
@@ -36,13 +36,13 @@ async def test_user_login(app):
         }
     """
 
-    _, response = await app.asgi_client.post("felicity-gql", json={
+    response = await app.post("felicity-gql", json={
         "query": authe, "variables": {
             "username": settings.FIRST_SEPERUSER_USERNAME,
             "password": settings.FIRST_SUPERUSER_PASSWORD
         }
     })
-    data = response.json["data"]["authenticateUser"]
+    data = response.json()["data"]["authenticateUser"]
     logger.info(f"superuser_login response: {response} {response.json}")
     assert response.status_code == 200
     assert data["token"] is not None
@@ -54,7 +54,7 @@ async def test_user_login(app):
 async def test_register_users(app, users, auth_data):
     _final = []
     for user in users:
-        _, response = await app.asgi_client.post(
+        response = await app.post(
             "felicity-gql", json={"query": add_user_mutation, "variables": user},
             headers=auth_data["headers"]
         )
@@ -62,7 +62,7 @@ async def test_register_users(app, users, auth_data):
         logger.info(f"register_users response: {response} {response.json}")
 
         assert response.status_code == 200
-        _user = response.json["data"]["createUser"]
+        _user = response.json()["data"]["createUser"]
         assert _user["uid"] is not None
         assert _user["firstName"] == user["firstName"]
         assert _user["lastName"] == user["lastName"]
@@ -71,7 +71,7 @@ async def test_register_users(app, users, auth_data):
 
     _auths = []
     for auth in _final:
-        _, response = await app.asgi_client.post(
+        response = await app.post(
             "/felicity-gql",
             json={
                 "query": add_auth_mutation,
@@ -87,7 +87,7 @@ async def test_register_users(app, users, auth_data):
 
         logger.info(f"add-auth response: {response} {response.json}")
         assert response.status_code == 200
-        _auth = response.json["data"]["createUserAuth"]
+        _auth = response.json()["data"]["createUserAuth"]
         _auths.append(_auth)
         assert _auth["uid"] == auth["uid"]
         assert _auth["auth"]["userName"] == auth["firstName"].lower()

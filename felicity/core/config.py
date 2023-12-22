@@ -24,6 +24,7 @@ def getenv_value(value, default_value=None):
 
 class Settings(BaseSettings):
     BASE_DIR: str = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+    TESTING: bool = getenv_boolean("TESTING", False)
 
     STATIC_DIR: str = os.path.join(BASE_DIR, "static")
 
@@ -63,7 +64,6 @@ class Settings(BaseSettings):
     TIMEZONE_REGION: str = "UTC"  # "Africa/Harare"
     TIMEZONE: any = pytz.timezone(TIMEZONE_REGION)
     # -------------------------------------------
-    TESTING: bool = getenv_boolean("TESTING", False)
     RETAIN_TESTING_DB_DATA: bool = getenv_boolean("RETAIN_TESTING_DB_DATA", True)
 
     PROJECT_NAME: str = getenv_value("PROJECT_NAME", "FELLICITY LIMS")

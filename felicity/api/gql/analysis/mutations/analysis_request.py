@@ -108,9 +108,7 @@ async def create_analysis_request(
 
     # are samples valid
     for _s in payload.samples:
-        _valid = []
-        _valid.append(len(_s.profiles) > 0)
-        _valid.append(len(_s.analyses) > 0)
+        _valid = [len(_s.profiles) > 0, len(_s.analyses) > 0]
         if not any(_valid):
             return OperationError(
                 error=f"Samples must have either analysis or profiles or both"

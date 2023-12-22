@@ -25,7 +25,7 @@
 #     """
 #
 #     stock_category = {"name": "Consumables", "description": "Consumables"}
-#     _, response = await app.asgi_client.post(
+#     response = await app.post(
 #         "/felicity-gql",
 #         json={
 #             "query": add_stock_category_mutation,
@@ -37,7 +37,7 @@
 #     logger.info(f"register stock category response: {response} {response.json}")
 #
 #     assert response.status_code == 200
-#     data = response.json["data"]["createStockCategory"]
+#     data = response.json()["data"]["createStockCategory"]
 #     assert data["uid"] is not None
 #     assert data["name"] == stock_category["name"]
 #     assert data["description"] == stock_category["description"]
@@ -62,7 +62,7 @@
 #     """
 #
 #     hazard = {"name": "Caution", "description": "Caution hazard"}
-#     _, response = await app.asgi_client.post(
+#     response = await app.post(
 #         "/felicity-gql",
 #         json={"query": add_hazard_mutation, "variables": {"payload": hazard}},
 #         headers=auth_data["headers"],
@@ -71,7 +71,7 @@
 #     logger.info(f"register hazard response: {response} {response.json}")
 #
 #     assert response.status_code == 200
-#     data = response.json["data"]["createHazard"]
+#     data = response.json()["data"]["createHazard"]
 #     assert data["uid"] is not None
 #     assert data["name"] == hazard["name"]
 #     assert data["description"] == hazard["description"]
@@ -97,7 +97,7 @@
 #     stock_unit = {
 #         "name": "ml",
 #     }
-#     _, response = await app.asgi_client.post(
+#     response = await app.post(
 #         "/felicity-gql",
 #         json={"query": add_stock_unit_mutation, "variables": {"payload": stock_unit}},
 #         headers=auth_data["headers"],
@@ -106,7 +106,7 @@
 #     logger.info(f"register stock unit response: {response} {response.json}")
 #
 #     assert response.status_code == 200
-#     data = response.json["data"]["createStockUnit"]
+#     data = response.json()["data"]["createStockUnit"]
 #     assert data["uid"] is not None
 #     assert data["name"] == stock_unit["name"]
 #
@@ -131,7 +131,7 @@
 #     stock_packaging = {
 #         "name": "container",
 #     }
-#     _, response = await app.asgi_client.post(
+#     response = await app.post(
 #         "/felicity-gql",
 #         json={
 #             "query": add_stock_packaging_mutation,
@@ -143,7 +143,7 @@
 #     logger.info(f"register stock package response: {response} {response.json}")
 #
 #     assert response.status_code == 200
-#     data = response.json["data"]["createStockPackaging"]
+#     data = response.json()["data"]["createStockPackaging"]
 #     assert data["uid"] is not None
 #     assert data["name"] == stock_packaging["name"]
 # import logging
@@ -173,7 +173,7 @@
 #     """
 #
 #     stock_category = {"name": "Consumables", "description": "Consumables"}
-#     _, response = await app.asgi_client.post(
+#     response = await app.post(
 #         "/felicity-gql",
 #         json={
 #             "query": add_stock_category_mutation,
@@ -185,7 +185,7 @@
 #     logger.info(f"register stock category response: {response} {response.json}")
 #
 #     assert response.status_code == 200
-#     data = response.json["data"]["createStockCategory"]
+#     data = response.json()["data"]["createStockCategory"]
 #     assert data["uid"] is not None
 #     assert data["name"] == stock_category["name"]
 #     assert data["description"] == stock_category["description"]
@@ -210,7 +210,7 @@
 #     """
 #
 #     hazard = {"name": "Caution", "description": "Caution hazard"}
-#     _, response = await app.asgi_client.post(
+#     response = await app.post(
 #         "/felicity-gql",
 #         json={"query": add_hazard_mutation, "variables": {"payload": hazard}},
 #         headers=auth_data["headers"],
@@ -219,7 +219,7 @@
 #     logger.info(f"register hazard response: {response} {response.json}")
 #
 #     assert response.status_code == 200
-#     data = response.json["data"]["createHazard"]
+#     data = response.json()["data"]["createHazard"]
 #     assert data["uid"] is not None
 #     assert data["name"] == hazard["name"]
 #     assert data["description"] == hazard["description"]
@@ -245,7 +245,7 @@
 #     stock_unit = {
 #         "name": "ml",
 #     }
-#     _, response = await app.asgi_client.post(
+#     response = await app.post(
 #         "/felicity-gql",
 #         json={"query": add_stock_unit_mutation, "variables": {"payload": stock_unit}},
 #         headers=auth_data["headers"],
@@ -254,7 +254,7 @@
 #     logger.info(f"register stock unit response: {response} {response.json}")
 #
 #     assert response.status_code == 200
-#     data = response.json["data"]["createStockUnit"]
+#     data = response.json()["data"]["createStockUnit"]
 #     assert data["uid"] is not None
 #     assert data["name"] == stock_unit["name"]
 #
@@ -279,7 +279,7 @@
 #     stock_packaging = {
 #         "name": "container",
 #     }
-#     _, response = await app.asgi_client.post(
+#     response = await app.post(
 #         "/felicity-gql",
 #         json={
 #             "query": add_stock_packaging_mutation,
@@ -291,6 +291,6 @@
 #     logger.info(f"register stock package response: {response} {response.json}")
 #
 #     assert response.status_code == 200
-#     data = response.json["data"]["createStockPackaging"]
+#     data = response.json()["data"]["createStockPackaging"]
 #     assert data["uid"] is not None
 #     assert data["name"] == stock_packaging["name"]

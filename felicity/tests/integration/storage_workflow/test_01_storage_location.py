@@ -30,7 +30,7 @@
 #         "name": "Storage Location 1",
 #         "description": "Storage location one",
 #     }
-#     _, response = await app.asgi_client.post(
+#     response = await app.post(
 #         "/felicity-gql",
 #         json={
 #             "query": add_storage_location_query,
@@ -42,7 +42,7 @@
 #     logger.info(f"register storage location response: {response} {response.json}")
 # 
 #     assert response.status_code == 200
-#     _st_l = response.json["data"]["createStorageLocation"]
+#     _st_l = response.json()["data"]["createStorageLocation"]
 #     assert _st_l["uid"] is not None
 #     assert _st_l["name"] == storage_location["name"]
 #     assert _st_l["storeRoomUid"] == 1
@@ -78,7 +78,7 @@
 #         "name": "Storage Location 1",
 #         "description": "Storage location one",
 #     }
-#     _, response = await app.asgi_client.post(
+#     response = await app.post(
 #         "/felicity-gql",
 #         json={
 #             "query": add_storage_location_query,
@@ -90,7 +90,7 @@
 #     logger.info(f"register storage location response: {response} {response.json}")
 # 
 #     assert response.status_code == 200
-#     _st_l = response.json["data"]["createStorageLocation"]
+#     _st_l = response.json()["data"]["createStorageLocation"]
 #     assert _st_l["uid"] is not None
 #     assert _st_l["name"] == storage_location["name"]
 #     assert _st_l["storeRoomUid"] == 1

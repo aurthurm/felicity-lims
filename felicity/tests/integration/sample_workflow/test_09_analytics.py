@@ -16,7 +16,7 @@
 #     time_now = datetime.now()
 #     period_start = (time_now - timedelta(minutes=5)).isoformat()
 #     period_end = time_now.isoformat()
-#     _, response = await app.asgi_client.post(
+#     response = await app.post(
 #         "/reports/",
 #         json={
 #             "report_type": "line_listing",
@@ -46,7 +46,7 @@
 # @pytest.mark.asyncio
 # @pytest.mark.order(101)
 # async def test_fetch_reports(app, client_root, auth_data):
-#     _, response = await app.asgi_client.get("/reports/", headers=auth_data["headers"])
+#     response = await app.get("/reports/", headers=auth_data["headers"])
 #
 #     logger.info(f"generate report response: {response} {response.json}")
 #     assert response.status_code == 200

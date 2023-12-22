@@ -27,7 +27,7 @@
 #       }
 #     """
 #
-#     _, response = await app.asgi_client.post(
+#     response = await app.post(
 #         "/felicity-gql",
 #         json={
 #             "query": add_gql,
@@ -47,7 +47,7 @@
 #     logger.info(f"publishing samples response: {response} {response.json}")
 #
 #     assert response.status_code == 200
-#     _data = response.json["data"]["publishSamples"]
+#     _data = response.json()["data"]["publishSamples"]
 #     assert _data["message"] == "Your results are being published in the background."
 #
 #     # process job for the next test
@@ -78,7 +78,7 @@
 #       }
 #     """
 #
-#     _, response = await app.asgi_client.post(
+#     response = await app.post(
 #         "/felicity-gql",
 #         json={
 #             "query": add_gql,
@@ -92,7 +92,7 @@
 #     logger.info(f"publishing samples response: {response} {response.json}")
 #
 #     assert response.status_code == 200
-#     _data = response.json["data"]["invalidateSamples"]
+#     _data = response.json()["data"]["invalidateSamples"]
 #     assert len(_data["samples"]) == 2
 #     for _, sample in enumerate(_data["samples"]):
 #         if sample["uid"] is not None:

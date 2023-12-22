@@ -3,7 +3,7 @@ import logging
 import pytest
 
 from apps.analysis.tasks import submit_results, verify_results
-from tests.utils.user import make_password, make_username
+from tests.integration.utils.user import make_username, make_password
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -30,7 +30,7 @@ async def test_submit_results(app, auth_data, samples, worksheets):
 
     results = [r["analysisResults"][0] for r in samples]
 
-    _, response = await app.asgi_client.post(
+    response = await app.post(
         "/felicity-gql",
         json={
             "query": add_gql,
@@ -52,13 +52,13 @@ async def test_submit_results(app, auth_data, samples, worksheets):
     logger.info(f"submitting worksheet results response: {response} {response.json}")
 
     assert response.status_code == 200
-    _data = response.json["data"]["submitAnalysisResults"]
+    _data = response.json()["data"]["submitAnalysisResults"]
     assert _data["message"] == "Your results are being submitted in the background."
 
     # process job for the next test
-    _, job_response = await app.asgi_client.get("api/v1/jobs")
+    job_response = await app.get("api/v1/jobs")
     logger.info(f"job response: {job_response} {job_response.json}")
-    jobs = list(filter(lambda j: j['status'] == "pending", job_response.json["data"]))
+    jobs = list(filter(lambda j: j['status'] == "pending", job_response.json()))
     await submit_results(jobs[0]["uid"])
 
 
@@ -128,7 +128,7 @@ async def test_retract_result(app, auth_data, samples):
     resulted = list(filter(lambda r: r['status'] == "resulted", results))
     logger.info(f"resulted, results: {resulted} {results}")
 
-    _, response = await app.asgi_client.post(
+    response = await app.post(
         "felicity-gql",
         json={"query": add_gql, "variables": {"analyses": [resulted[0]["uid"]]}},
         headers=auth_data["headers"],
@@ -137,7 +137,7 @@ async def test_retract_result(app, auth_data, samples):
     logger.info(f"retract result response: {response} {response.json}")
 
     assert response.status_code == 200
-    _data = response.json["data"]["retractAnalysisResults"]
+    _data = response.json()["data"]["retractAnalysisResults"]
     assert len(_data["results"]) == 2
     for _, result in enumerate(_data["results"]):
         if result["status"] == "retracted":
@@ -215,7 +215,7 @@ async def test_retest_result(app, auth_data, samples):
     """
 
     results = [r["analysisResults"][0] for r in samples]
-    _, response = await app.asgi_client.post(
+    response = await app.post(
         "/felicity-gql",
         json={"query": add_gql, "variables": {"analyses": [results[3]["uid"]]}},
         headers=auth_data["headers"],
@@ -224,7 +224,7 @@ async def test_retest_result(app, auth_data, samples):
     logger.info(f"retest result response: {response} {response.json}")
 
     assert response.status_code == 200
-    _data = response.json["data"]["retestAnalysisResults"]
+    _data = response.json()["data"]["retestAnalysisResults"]
     assert len(_data["results"]) == 2
     for _, result in enumerate(_data["results"]):
         if result["uid"] == results[3]["uid"]:
@@ -276,7 +276,7 @@ async def test_verify_ws_results(app, samples, users, worksheets):
           }
         }
     """
-    _, auth_resp = await app.asgi_client.post(
+    auth_resp = await app.post(
         "/felicity-gql",
         json={
             "query": authe,
@@ -286,13 +286,13 @@ async def test_verify_ws_results(app, samples, users, worksheets):
             }
         }
     )
-    logger.info(f"auth_resp: {auth_resp} {auth_resp.json}")
+    logger.info(f"auth_resp: {auth_resp} {auth_resp.json()}")
 
-    auth_data = auth_resp.json["data"]["authenticateUser"]
+    auth_data = auth_resp.json()["data"]["authenticateUser"]
 
     results = [r["analysisResults"][0] for r in samples]
     results = list(filter(lambda r: r["status"] == "resulted", results))
-    _, response = await app.asgi_client.post(
+    response = await app.post(
         "/felicity-gql",
         json={
             "query": add_gql,
@@ -308,13 +308,13 @@ async def test_verify_ws_results(app, samples, users, worksheets):
     logger.info(f"verifying worksheet results response: {response} {response.json}")
 
     assert response.status_code == 200
-    _data = response.json["data"]["verifyAnalysisResults"]
+    _data = response.json()["data"]["verifyAnalysisResults"]
     assert _data["message"] == "Your results are being verified in the background."
 
     # process job for the next test
-    _, job_response = await app.asgi_client.get("api/v1/jobs")
+    job_response = await app.get("api/v1/jobs")
     logger.info(f"job response: {job_response} {job_response.json}")
-    jobs = list(filter(lambda j: j['status'] == "pending", job_response.json["data"]))
+    jobs = list(filter(lambda j: j['status'] == "pending", job_response.json()))
     await verify_results(jobs[0]["uid"])
 
 
@@ -357,7 +357,7 @@ async def test_verify_sample_results(app, users, samples):
            }
        """
 
-    _, u_resp = await app.asgi_client.post("felicity-gql", json={
+    u_resp = await app.post("felicity-gql", json={
         "query": authe,
         "variables": {
             "username": make_username(users[0]["firstName"]),
@@ -365,13 +365,13 @@ async def test_verify_sample_results(app, users, samples):
         }
     })
 
-    user_data = u_resp.json["data"]["authenticateUser"]
+    user_data = u_resp.json()["data"]["authenticateUser"]
     logger.info(f"verifier response: {u_resp} {u_resp.json}")
 
     samples = list(filter(lambda s: s["status"] == "awaiting", samples))
     results = samples[0]["analysisResults"]
 
-    _, response = await app.asgi_client.post(
+    response = await app.post(
         "/felicity-gql",
         json={
             "query": add_gql,
@@ -387,13 +387,13 @@ async def test_verify_sample_results(app, users, samples):
     logger.info(f"verifying worksheet results response: {response} {response.json}")
 
     assert response.status_code == 200
-    _data = response.json["data"]["verifyAnalysisResults"]
+    _data = response.json()["data"]["verifyAnalysisResults"]
     assert _data["message"] == "Your results are being verified in the background."
 
     # process job for the next test
-    _, job_response = await app.asgi_client.get("api/v1/jobs")
+    job_response = await app.get("api/v1/jobs")
     logger.info(f"job response: {job_response} {job_response.json}")
-    jobs = list(filter(lambda j: j['status'] == "pending", job_response.json["data"]))
+    jobs = list(filter(lambda j: j['status'] == "pending", job_response.json()))
     await verify_results(jobs[0]["uid"])
 
 
@@ -457,7 +457,7 @@ async def test_check_results(app, auth_data, samples):
     }
     """
     samples = list(filter(lambda r: r["status"] == "approved", samples))
-    _, response = await app.asgi_client.post(
+    response = await app.post(
         "/felicity-gql",
         json={"query": add_gql, "variables": {"uid": samples[0]['uid']}},
         headers=auth_data["headers"],
@@ -466,7 +466,7 @@ async def test_check_results(app, auth_data, samples):
     logger.info(f"get results by sample uid response: {response} {response.json}")
 
     assert response.status_code == 200
-    _data = response.json["data"]["analysisResultBySampleUid"]
+    _data = response.json()["data"]["analysisResultBySampleUid"]
     assert len(_data) > 0
     result = _data[0]
     assert result["uid"] is not None

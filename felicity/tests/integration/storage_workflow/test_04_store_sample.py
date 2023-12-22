@@ -76,7 +76,7 @@
 #             {"sampleType": 1, "profiles": [1], "analyses": []},
 #         ],
 #     }
-#     _, response = await app.asgi_client.post(
+#     response = await app.post(
 #         "/felicity-gql",
 #         json={"query": add_ar_gql, "variables": {"payload": analysis_request}},
 #         headers=auth_data["headers"],
@@ -85,7 +85,7 @@
 #     logger.info(f"add analysis request response: {response} {response.json}")
 #
 #     assert response.status_code == 200
-#     _data = response.json["data"]["createAnalysisRequest"]
+#     _data = response.json()["data"]["createAnalysisRequest"]
 #     assert _data["uid"] is not None
 #     assert len(_data["samples"]) == 5
 #
@@ -122,7 +122,7 @@
 #             }
 #         )
 #
-#     _, response = await app.asgi_client.post(
+#     response = await app.post(
 #         "/felicity-gql",
 #         json={
 #             "query": store_samples_query,
@@ -134,7 +134,7 @@
 #     logger.info(f"store samples response: {response} {response.json}")
 #
 #     assert response.status_code == 200
-#     _data = response.json["data"]["storeSamples"]
+#     _data = response.json()["data"]["storeSamples"]
 #     assert len(_data["samples"]) == 5
 #     for sample in _data["samples"]:
 #         assert sample["storageSlot"] is not None

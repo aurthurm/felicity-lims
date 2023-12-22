@@ -76,7 +76,7 @@ async def test_add_analysis_request(app, auth_data, profiles, sample_types, clie
             {"sampleType": sample_types[0]["uid"], "profiles": [profiles[0]["uid"]], "analyses": []},
         ],
     }
-    _, response = await app.asgi_client.post(
+    response = await app.post(
         "/felicity-gql",
         json={"query": add_gql, "variables": {"payload": analysis_request}},
         headers=auth_data["headers"],
@@ -85,7 +85,7 @@ async def test_add_analysis_request(app, auth_data, profiles, sample_types, clie
     logger.info(f"add analysis request response: {response} {response.json}")
 
     assert response.status_code == 200
-    _data = response.json["data"]["createAnalysisRequest"]
+    _data = response.json()["data"]["createAnalysisRequest"]
     assert _data["uid"] is not None
     assert _data["clientRequestId"] == analysis_request["clientRequestId"]
     assert _data["clientRequestId"] == analysis_request["clientRequestId"]

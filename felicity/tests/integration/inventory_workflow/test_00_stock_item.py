@@ -43,7 +43,7 @@
 #         "name": "Cuvete",
 #         "description": "Chemistry testing cuvette for BS500",
 #     }
-#     _, response = await app.asgi_client.post(
+#     response = await app.post(
 #         "/felicity-gql",
 #         json={"query": add_stock_item_query, "variables": {"payload": stock_item}},
 #         headers=auth_data["headers"],
@@ -52,7 +52,7 @@
 #     logger.info(f"register stock item response: {response} {response.json}")
 #
 #     assert response.status_code == 200
-#     _st = response.json["data"]["createStockItem"]
+#     _st = response.json()["data"]["createStockItem"]
 #     assert _st["uid"] is not None
 #     assert _st["name"] == stock_item["name"]
 #     assert _st["description"] == stock_item["description"]
@@ -65,7 +65,7 @@
 #         "name": "Cuvette",
 #         "description": "Chemistry testing cuvette for Mindray BS500",
 #     }
-#     _, response = await app.asgi_client.post(
+#     response = await app.post(
 #         "/felicity-gql",
 #         json={
 #             "query": update_stock_item_query,
@@ -77,7 +77,7 @@
 #     logger.info(f"register store room response: {response} {response.json}")
 #
 #     assert response.status_code == 200
-#     _st = response.json["data"]["updateStockItem"]
+#     _st = response.json()["data"]["updateStockItem"]
 #     assert _st["uid"] is not None
 #     assert _st["name"] == stock_item["name"]
 #     assert _st["description"] == stock_item["description"]
