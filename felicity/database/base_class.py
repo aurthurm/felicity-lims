@@ -14,7 +14,7 @@ from sqlalchemy_mixins import AllFeaturesMixinAsync, smart_query
 from core.uid_gen import get_flake_uid
 from database.paginator.cursor import EdgeNode, PageCursor, PageInfo
 from database.session import AsyncSessionScoped
-from utils import has_value_or_is_truthy
+from utils import has_value_or_is_truthy, format_datetime
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -48,7 +48,7 @@ class DBModel(DeclarativeBase, AllFeaturesMixinAsync):
             if field not in exclude:
                 _v = data[field]
                 if isinstance(_v, datetime):
-                    _v = _v.__str__()
+                    _v = format_datetime(_v, human_format=False, with_time=True)
                 return_data[field] = _v
 
         return return_data

@@ -16,12 +16,15 @@ from apps.common.schemas import BaseAuditModel
 class LaboratoryBase(BaseModel):
     setup_name: str | None = "felicity"
     lab_name: str | None = None
+    tag_line: str | None = None
     email: Optional[EmailStr] = None
     email_cc: str | None = None
     mobile_phone: str | None = None
     business_phone: str | None = None
     lab_manager_uid: str | None = None
     address: str | None = ""
+    banking: str | None = ""
+    quality_statement: str | None = ""
 
 
 # Properties to receive via API on creation
@@ -66,6 +69,7 @@ class LaboratorySettingBase(BaseAuditModel):
     allow_billing: bool | None = False
     allow_auto_billing: bool | None = False
     currency: str | None = "USD"
+    payment_terms_days: int = 0
 
 
 class LaboratorySettingCreate(LaboratorySettingBase):

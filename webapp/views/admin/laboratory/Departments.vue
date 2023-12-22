@@ -59,7 +59,7 @@
                 <thead>
                 <tr>
                     <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">Name</th>
-                    <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">HOD</th>
+                    <!-- <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">HOD</th> -->
                     <th class="px-1 py-1 border-b-2 border-gray-300"></th>
                 </tr>
                 </thead>
@@ -72,9 +72,9 @@
                         </div>
                     </div>
                     </td>
-                    <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-                    <div class="text-sm leading-5 text-sky-800">Aurthur</div>
-                    </td>
+                    <!-- <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
+                    <div class="text-sm leading-5 text-sky-800"></div>
+                    </td> -->
                     <td class="px-1 py-1 whitespace-no-wrap text-right border-b border-gray-500 text-sm leading-5">
                         <button @click="FormManager(false, dept)" class="px-2 py-1 mr-2 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none">Edit</button>
                     </td>

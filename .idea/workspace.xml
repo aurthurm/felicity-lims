@@ -5,12 +5,25 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9f590b69-f929-45a1-8512-12ed6efbf028" name="Changes" comment="Added Invetory starter">
+      <change afterPath="$PROJECT_DIR$/felicity/apps/setup/caches.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/felicity/assets/currencies.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/felicity/assets/emojis.csv" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/api/gql/setup/mutations.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/setup/mutations.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/api/gql/setup/types/setup.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/setup/types/setup.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/felicity/apps/billing/invoicing/generic.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/billing/invoicing/generic.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/apps/billing/invoicing/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/billing/invoicing/utils.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/felicity/apps/impress/reports/generic.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/impress/reports/generic.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/core/config.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/core/config.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/apps/impress/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/impress/utils.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/apps/setup/models/setup.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/setup/models/setup.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/apps/setup/schemas.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/setup/schemas.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/database/base_class.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/database/base_class.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/felicity/utils/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/utils/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webapp/graphql/operations/_mutations.ts" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/graphql/operations/_mutations.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webapp/graphql/operations/_queries.ts" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/graphql/operations/_queries.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webapp/models/setup.ts" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/models/setup.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webapp/views/admin/laboratory/Departments.vue" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/views/admin/laboratory/Departments.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webapp/views/admin/laboratory/Laboratory.vue" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/views/admin/laboratory/Laboratory.vue" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -45,18 +58,18 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "dart.analysis.tool.window.visible": "false",
-    "git-widget-placeholder": "main",
-    "ignore.virus.scanning.warn.message": "true",
-    "last_opened_file_path": "/home/aurthurm/Development/felicity-lims/felicity/apps/impress/reports",
-    "settings.editor.selected.configurable": "com.jetbrains.python.black.configuration.BlackFormatterConfigurable"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;dart.analysis.tool.window.visible&quot;: &quot;false&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/home/aurthurm/Development/felicity-lims/felicity/apps/impress/reports&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.black.configuration.BlackFormatterConfigurable&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/felicity/apps/impress/reports" />
@@ -66,11 +79,11 @@
       <recent name="$PROJECT_DIR$/felicity/infrastructure/database/utils" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/felicity/apps/setup" />
       <recent name="$PROJECT_DIR$/deploy/example-docker-compose" />
       <recent name="$PROJECT_DIR$/felicity/domain/analysis/services" />
       <recent name="$PROJECT_DIR$/felicity/domain" />
       <recent name="$PROJECT_DIR$/felicity/domain/iol/fhir" />
-      <recent name="$PROJECT_DIR$/felicity/domain/shipment" />
     </key>
   </component>
   <component name="RunManager">

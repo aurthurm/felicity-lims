@@ -13,6 +13,7 @@ class Laboratory(BaseAuditDBModel):
         String, default="felicity", nullable=False
     )  # Do not change this value ever
     lab_name = Column(String, nullable=False)
+    tag_line = Column(String, nullable=True)
     code = Column(String, nullable=True)
     lab_manager_uid = Column(String, ForeignKey("user.uid"), nullable=True)
     lab_manager = relationship(
@@ -22,8 +23,10 @@ class Laboratory(BaseAuditDBModel):
     email_cc = Column(String, nullable=True)
     mobile_phone = Column(String, nullable=True)
     business_phone = Column(String, nullable=True)
-    address = Column(String)
+    address = Column(String, nullable=True)
+    banking = Column(String, nullable=True)
     logo = Column(String, nullable=True)
+    quality_statement = Column(String, nullable=True)
 
     @classmethod
     async def create(cls, obj_in: schemas.LaboratoryCreate) -> schemas.Laboratory:
@@ -64,16 +67,17 @@ class LaboratorySetting(BaseAuditDBModel):
     allow_billing = Column(Boolean(), nullable=True, default=False)
     allow_auto_billing = Column(Boolean(), nullable=True, default=True)
     currency = Column(String, nullable=True, default="USD")
+    payment_terms_days = Column(Integer, nullable=True, default=0)
 
     @classmethod
     async def create(
-        cls, obj_in: schemas.LaboratorySettingCreate
+            cls, obj_in: schemas.LaboratorySettingCreate
     ) -> schemas.LaboratorySetting:
         data = cls._import(obj_in)
         return await super().create(**data)
 
     async def update(
-        self, obj_in: schemas.LaboratorySettingUpdate
+            self, obj_in: schemas.LaboratorySettingUpdate
     ) -> schemas.LaboratorySetting:
         data = self._import(obj_in)
         return await super().update(**data)

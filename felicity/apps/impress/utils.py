@@ -9,6 +9,8 @@ from apps.impress.reports.generic import FelicityImpress
 from apps.impress.reports.utils import delete_from_nested
 from apps.impress.schemas import ReportImpressCreate
 from apps.notification.utils import FelicityStreamer
+from apps.setup.caches import get_laboratory
+from utils import format_datetime
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -45,7 +47,7 @@ def impress_marshaller(obj, path=None, memoize=None) -> dict | str:
         if obj is None:
             return ""
         if isinstance(obj, datetime):
-            return obj.strftime("%Y-%m-%d %H:%M:%S")
+            return format_datetime(obj, human_format=False, with_time=True)
         if hasattr(obj, "__str__"):
             return obj.__str__()
         return obj
@@ -107,6 +109,7 @@ async def harvest_sample_metadata():
 
 
 async def impress_samples(sample_meta: List[any], user):
+    laboratory = await get_laboratory()
     to_return = []
 
     for s_meta in sample_meta:
@@ -122,6 +125,7 @@ async def impress_samples(sample_meta: List[any], user):
             states.sample.PUBLISHED,
         ]:
             impress_meta = impress_marshaller(sample)
+            impress_meta["laboratory"] = laboratory.marshal_simple(exclude=["lab_manager"])
             impress_meta = remove_circular_refs(impress_meta)
 
             report_state = "Unknown"
@@ -129,7 +133,7 @@ async def impress_samples(sample_meta: List[any], user):
             if action == "publish":
                 report_state = "Final Report"
             if action == "re-publish":
-                report_state = "Final Report -- republish"
+                report_state = "Final Report [Re]"
             if action == "pre-publish":
                 report_state = "Preliminary Report"
 

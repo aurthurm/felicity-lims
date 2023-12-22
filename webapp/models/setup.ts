@@ -4,10 +4,13 @@ import { IGenericLocation } from './location';
 
 export interface ILaboratory extends IGenericLocation {
     labName?: string;
+    tagLine?: string;
     labManagerUid?: string;
     labManager?: IUser;
     logo?: string;
     address?: string;
+    banking?: string;
+    qualityStatement?: string;
 }
 
 export interface ILaboratorySetting {
@@ -24,6 +27,10 @@ export interface ILaboratorySetting {
     defaultTheme?: string;
     autoReceiveSamples: boolean;
     stickerCopies?: number;
+    allowBilling?: boolean;
+    allowAutoBilling?: boolean;
+    currency?: string;
+    paymentTermsDays?: number;
 }
 
 export interface ISupplier {

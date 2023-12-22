@@ -5,7 +5,7 @@ from fpdf import FPDF
 
 from apps.impress.reports.utils import get_from_nested
 from core.config import settings
-from utils import get_time_now
+from utils import get_time_now, datetime_math, format_datetime
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -37,6 +37,7 @@ class FelicityInvoice:
     async def _make(self, meta):
         bill = get_from_nested(meta, "bill")
         laboratory = get_from_nested(meta, "laboratory")
+        laboratory_settings = get_from_nested(meta, "laboratory_settings")
         customer = get_from_nested(meta, "customer")
         client = get_from_nested(meta, "client")
         orders = get_from_nested(meta, "orders")
@@ -72,32 +73,48 @@ class FelicityInvoice:
 
         # invoice Details
         self.pdf.set_font('arial', 'B', 12.0)
-        self.pdf.set_xy(140.0, 30)
+        self.pdf.set_xy(140.0, 25)
         self.pdf.cell(ln=0, h=5.5, align='R', w=10.0, txt='Invoice #: ', border=0)
         self.pdf.set_font('arial', '', 12.0)
-        self.pdf.set_xy(170.0, 28)
+        self.pdf.set_xy(170.0, 23)
         self.pdf.cell(ln=0, h=9.5, align='R', w=10.0, txt=bill_id, border=0)
         # ---
         self.pdf.set_font('arial', 'B', 12.0)
-        self.pdf.set_xy(140.0, 35)
+        self.pdf.set_xy(140.0, 30)
         self.pdf.cell(ln=0, h=5.5, align='R', w=10.0, txt='Invoice Date: ', border=0)
         self.pdf.set_font('arial', '', 12.0)
-        self.pdf.set_xy(170.0, 33)
+        self.pdf.set_xy(170.0, 28)
         self.pdf.cell(ln=0, h=9.5, align='R', w=10.0, txt=self.time_now, border=0)
         # ---
+        bill_created = get_from_nested(bill, "created_at")
+        self.pdf.set_font('arial', 'B', 12.0)
+        self.pdf.set_xy(140.0, 35)
+        self.pdf.cell(ln=0, h=5.5, align='R', w=10.0, txt='Billed on: ', border=0)
+        self.pdf.set_font('arial', '', 12.0)
+        self.pdf.set_xy(170.0, 33)
+        self.pdf.cell(ln=0, h=9.5, align='R', w=10.0, txt=bill_created, border=0)
+        # ---
+        terms_days = get_from_nested(laboratory_settings, "payment_terms_days")
+        days = f"Immediate"
+        due_date = bill_created
+        if terms_days > 0:
+            days = f"{terms_days} days"
+            _delta_datetime = datetime_math(bill_created, terms_days, addition=True)
+            due_date = format_datetime(_delta_datetime)
+
         self.pdf.set_font('arial', 'B', 12.0)
         self.pdf.set_xy(140.0, 40)
         self.pdf.cell(ln=0, h=5.5, align='R', w=10.0, txt='Payment Terms: ', border=0)
         self.pdf.set_font('arial', '', 12.0)
         self.pdf.set_xy(170.0, 38)
-        self.pdf.cell(ln=0, h=9.5, align='R', w=10.0, txt='30 days', border=0)
+        self.pdf.cell(ln=0, h=9.5, align='R', w=10.0, txt=days, border=0)
         # ---
         self.pdf.set_font('arial', 'B', 12.0)
         self.pdf.set_xy(140.0, 45)
         self.pdf.cell(ln=0, h=5.5, align='R', w=10.0, txt='Due Date: ', border=0)
         self.pdf.set_font('arial', '', 12.0)
         self.pdf.set_xy(170.0, 43)
-        self.pdf.cell(ln=0, h=9.5, align='R', w=10.0, txt='-------', border=0)
+        self.pdf.cell(ln=0, h=9.5, align='R', w=10.0, txt=due_date, border=0)
 
         self.pdf.set_line_width(0.0)
         self.pdf.line(20.0, 53.0, 180.0, 53.0)
@@ -242,37 +259,29 @@ class FelicityInvoice:
         self.pdf.cell(ln=0, h=5.5, align='L', w=10.0, txt='Our Location', border=0)
         self.pdf.set_font('arial', '', 10.0)
         self.pdf.set_xy(20, 231)
-        self.pdf.cell(ln=0, h=5.5, align='L', w=10.0, txt='Excellence Diagnostics', border=0)
-        self.pdf.set_xy(20, 235)
-        self.pdf.cell(ln=0, h=5.5, align='L', w=10.0, txt='No 1 Angwa Ave', border=0)
-        self.pdf.set_xy(20, 239)
-        self.pdf.cell(ln=0, h=5.5, align='L', w=10.0, txt='Breaside North', border=0)
-        self.pdf.set_xy(20, 243)
-        self.pdf.cell(ln=0, h=5.5, align='L', w=10.0, txt='Harare, ZW', border=0)
+        self.pdf.cell(ln=0, h=5.5, align='L', w=10.0, txt=get_from_nested(laboratory, "lab_name"), border=0)
+        self.pdf.set_xy(20, 236)
+        self.pdf.multi_cell(40.0, 3.5, get_from_nested(laboratory, "address"))
         # ---
         self.pdf.set_font('arial', 'B', 14.0)
         self.pdf.set_xy(80, 225)
         self.pdf.cell(ln=0, h=5.5, align='L', w=10.0, txt='Get in touch', border=0)
         self.pdf.set_font('arial', '', 10.0)
         self.pdf.set_xy(80, 231)
-        self.pdf.cell(ln=0, h=5.5, align='L', w=10.0, txt='Email: info@excellence.org', border=0)
+        self.pdf.cell(ln=0, h=5.5, align='L', w=10.0, txt='Email: ' + get_from_nested(laboratory, "email"), border=0)
         self.pdf.set_xy(80, 235)
-        self.pdf.cell(ln=0, h=5.5, align='L', w=10.0, txt='Call: (263) 776 554 677', border=0)
+        self.pdf.cell(ln=0, h=5.5, align='L', w=10.0, txt='Call: ' + get_from_nested(laboratory, "business_phone"),
+                      border=0)
         self.pdf.set_xy(80, 239)
-        self.pdf.cell(ln=0, h=5.5, align='L', w=10.0, txt='Whatsapp: (263) 776 554 677', border=0)
+        self.pdf.cell(ln=0, h=5.5, align='L', w=10.0, txt='Whatsapp: ' + get_from_nested(laboratory, "mobile_phone"),
+                      border=0)
         # ---
         self.pdf.set_font('arial', 'B', 14.0)
         self.pdf.set_xy(140, 225)
         self.pdf.cell(ln=0, h=5.5, align='L', w=10.0, txt='Payment Details', border=0)
         self.pdf.set_font('arial', '', 10.0)
         self.pdf.set_xy(140, 231)
-        self.pdf.cell(ln=0, h=5.5, align='L', w=10.0, txt='Bank: Nexios Int', border=0)
-        self.pdf.set_xy(140, 235)
-        self.pdf.cell(ln=0, h=5.5, align='L', w=10.0, txt='Branch: Mega Street X', border=0)
-        self.pdf.set_xy(140, 239)
-        self.pdf.cell(ln=0, h=5.5, align='L', w=10.0, txt='Acc #: 0003347777999', border=0)
-        self.pdf.set_xy(140, 243)
-        self.pdf.cell(ln=0, h=5.5, align='L', w=10.0, txt='IBAN: ZWX-XX-123', border=0)
+        self.pdf.multi_cell(40.0, 3.5, get_from_nested(laboratory, "banking"))
 
         # --- Quality Statement
         self.pdf.set_line_width(0.0)
@@ -281,7 +290,7 @@ class FelicityInvoice:
         self.pdf.set_font('arial', 'I', 10.0)
         self.pdf.set_xy(20, 253)
         self.pdf.cell(ln=0, h=5.5, align='C', w=150.0,
-                      txt='-- Some quality statement about this laboratory will go somewhere here -- ', border=0)
+                      txt=get_from_nested(laboratory, "quality_statement"), border=0)
         #
         return self.pdf
 

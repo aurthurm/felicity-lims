@@ -374,13 +374,16 @@ export const UPDATE_LABORATOTY = gql`
                 uid
                 setupName
                 labName
+                tagLine
                 labManagerUid
                 email
                 emailCc
                 mobilePhone
                 businessPhone
                 address
+                banking
                 logo
+                qualityStatement
             }
             ... on OperationError {
                 __typename
@@ -407,6 +410,10 @@ export const UPDATE_LABORATOTY_SETTING = gql`
                 defaultTheme
                 autoReceiveSamples
                 stickerCopies
+                allowBilling
+                allowAutoBilling
+                currency
+                paymentTermsDays
             }
             ... on OperationError {
                 __typename

@@ -84,6 +84,11 @@ const users = computed(() => userStore.getUsers);
               :disabled="editDisabled" />
           </label>
           <label class="block col-span-1 mb-2">
+            <span class="text-gray-700">Tag Line</span>
+            <input class="form-input mt-1 block w-full" v-model="formLaboratory.tagLine" placeholder="Tag Line ..."
+              :disabled="editDisabled" />
+          </label>
+          <label class="block col-span-1 mb-2">
             <span class="text-gray-700">Lab Manager</span>
             <div class="w-full">
               <select class="form-select mt-1 w-full" v-model="formLaboratory.labManagerUid" :disabled="editDisabled">
@@ -116,18 +121,28 @@ const users = computed(() => userStore.getUsers);
           </label>
           <label class="block col-span-1 mb-2">
             <span class="text-gray-700">Address</span>
-            <textarea cols="2" class="form-input mt-1 block w-full" v-model="formLaboratory.address"
-              placeholder="Description ..." :disabled="editDisabled" />
+            <textarea cols="3" class="form-input mt-1 block w-full" v-model="formLaboratory.address"
+              placeholder="Address ..." :disabled="editDisabled" />
+          </label>
+          <label class="block col-span-1 mb-2">
+            <span class="text-gray-700">Banking Details</span>
+            <textarea cols="3" class="form-input mt-1 block w-full" v-model="formLaboratory.banking"
+              placeholder="Banking ..." :disabled="editDisabled" />
+          </label>
+          <label class="block col-span-1 mb-2">
+            <span class="text-gray-700">Quality Statemnt</span>
+            <input class="form-input mt-1 block w-full" v-model="formLaboratory.qualityStatement" placeholder="Quality Statemnt ..."
+              :disabled="editDisabled" />
           </label>
           <!-- <label class="block col-span-1 mb-2">
-                                <span class="text-gray-700">Laboratory Logo</span>
-                                <input
-                                  class="form-input mt-1 block w-full"
-                                  v-model="formLaboratory.logo"
-                                  placeholder="Name ..."
-                                  :disabled="editDisabled"
-                                />
-                              </label> -->
+            <span class="text-gray-700">Laboratory Logo</span>
+            <input
+              class="form-input mt-1 block w-full"
+              v-model="formLaboratory.logo"
+              placeholder="Name ..."
+              :disabled="editDisabled"
+            />
+          </label> -->
         </div>
         <hr />
         <button v-show="!editDisabled" type="button" @click.prevent="saveLaboratoryForm()"
@@ -167,30 +182,43 @@ const users = computed(() => userStore.getUsers);
           </label>
           <span class="block col-span-1 mb-2"></span>
           <label class="block col-span-1 mb-2">
-            <input type="checkbox" class="" v-model="formSettings.allowSelfVerification" placeholder="Name ..."
-              :disabled="editDisabled" />
+            <input type="checkbox" class="" v-model="formSettings.allowSelfVerification" :disabled="editDisabled" />
             <span class="text-gray-700 ml-3">Allow self verificaion</span>
           </label>
           <label class="block col-span-1 mb-2">
-            <input type="checkbox" class="" v-model="formSettings.allowPatientRegistration" placeholder="Name ..."
-              :disabled="editDisabled" />
+            <input type="checkbox" class="" v-model="formSettings.allowPatientRegistration" :disabled="editDisabled" />
             <span class="text-gray-700 ml-3">Allow patient registration</span>
           </label>
           <label class="block col-span-1 mb-2">
-            <input type="checkbox" class="" v-model="formSettings.allowSampleRegistration" placeholder="Name ..."
-              :disabled="editDisabled" />
+            <input type="checkbox" class="" v-model="formSettings.allowSampleRegistration" :disabled="editDisabled" />
             <span class="text-gray-700 ml-3">Allow sample registration</span>
           </label>
           <label class="block col-span-1 mb-2">
-            <input type="checkbox" class="" v-model="formSettings.allowWorksheetCreation" placeholder="Name ..."
-              :disabled="editDisabled" />
+            <input type="checkbox" class="" v-model="formSettings.allowWorksheetCreation" :disabled="editDisabled" />
             <span class="text-gray-700 ml-3">Allow worksheet creation</span>
           </label>
           <label class="block col-span-1 mb-2">
-            <input type="checkbox" class="" v-model="formSettings.autoReceiveSamples" placeholder="Name ..."
-              :disabled="editDisabled" />
+            <input type="checkbox" class="" v-model="formSettings.autoReceiveSamples" :disabled="editDisabled" />
             <span class="text-gray-700 ml-3">Auto receive samples</span>
           </label>
+          <span class="block col-span-1 mb-2"></span>
+          <label class="block col-span-1 mb-2">
+            <input type="checkbox" class="" v-model="formSettings.allowBilling" :disabled="editDisabled" />
+            <span class="text-gray-700 ml-3">Allow Billing</span>
+          </label>
+          <label class="block col-span-1 mb-2">
+            <input type="checkbox" class="" v-model="formSettings.allowAutoBilling" :disabled="editDisabled" />
+            <span class="text-gray-700 ml-3">Allow Auto Billing</span>
+          </label>
+          <label class="block col-span-1 mb-2">
+            <span class="text-gray-700 ml-3">Currency</span>
+            <input type="text" class="form-input mt-1 block w-full" v-model="formSettings.currency" :disabled="editDisabled" />
+          </label>
+          <label class="block col-span-1 mb-2">
+            <span class="text-gray-700 ml-3">Payment Terms (Days)</span>
+            <input type="number" min="0" class="form-input mt-1 block w-full" v-model="formSettings.paymentTermsDays" :disabled="editDisabled" />
+          </label>
+          
         </div>
         <hr />
         <button v-show="!editDisabled" type="button" @click.prevent="saveSettingForm()"

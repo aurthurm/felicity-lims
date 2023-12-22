@@ -1,7 +1,7 @@
 from apps.analysis.models.analysis import AnalysisRequest
 from apps.billing.invoicing.generic import FelicityInvoice
 from apps.billing.models import TestBill, test_bill_item, TestBillTransaction, ProfilePrice, AnalysisPrice
-from apps.setup.models.setup import Laboratory
+from apps.setup.caches import get_laboratory_setting
 
 invoicer = FelicityInvoice()
 
@@ -13,8 +13,9 @@ async def generate_invoice(test_bill: TestBill):
     impress_meta["bill"] = test_bill.marshal_simple()
 
     # laboratory
-    lab = await Laboratory.get_by_setup_name()
+    lab, lab_setting = await get_laboratory_setting()
     impress_meta["laboratory"] = lab.marshal_simple()
+    impress_meta["laboratory_settings"] = lab_setting.marshal_simple()
 
     # customer
     impress_meta["customer"] = test_bill.patient.marshal_simple()

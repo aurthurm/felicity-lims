@@ -11,6 +11,7 @@ class LaboratoryType:
     uid: str
     setup_name: str
     lab_name: str
+    tag_line: str | None
     lab_manager_uid: str | None
     lab_manager: Optional["UserType"]
     code: str | None
@@ -19,7 +20,9 @@ class LaboratoryType:
     mobile_phone: str | None
     business_phone: str | None
     address: str | None
+    banking: str | None
     logo: str | None
+    quality_statement: str | None
     #
     created_by_uid: str | None
     created_by: Optional["UserType"]
@@ -54,6 +57,7 @@ class LaboratorySettingType:
     allow_auto_billing: bool | None = True
     allow_billing: bool | None = False
     currency: str | None = "USD"
+    payment_terms_days: int | None = 0
     #
 
 

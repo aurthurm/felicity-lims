@@ -40,6 +40,8 @@ class FelicityImpress:
         self.time_now = get_time_now()
 
     async def _make(self, sample: dict, report_state):
+        laboratory = get_from_nested(sample, "laboratory")
+
         profiles = [
             get_from_nested(p, "name") for p in get_from_nested(sample, "profiles")
         ]
@@ -62,10 +64,10 @@ class FelicityImpress:
         # Lab Details
         self.pdf.set_font('arial', 'B', 12.0)
         self.pdf.set_xy(40.0, 16)
-        self.pdf.cell(ln=0, h=5.5, align='L', w=10.0, txt='Felicity Diagnostics', border=0)
+        self.pdf.cell(ln=0, h=5.5, align='L', w=10.0, txt=get_from_nested(laboratory, "lab_name"), border=0)
         self.pdf.set_font('arial', 'I', 8.0)
         self.pdf.set_xy(40.0, 22)
-        self.pdf.multi_cell(40.0, 3.5, 'Mambusa Building, \nCnr 10th and Sero road, \nHarare, ZW')
+        self.pdf.multi_cell(40.0, 3.5, get_from_nested(laboratory, "address"))
 
         # Contact Details
         self.pdf.set_font('arial', 'B', 6.0)
@@ -73,21 +75,21 @@ class FelicityImpress:
         self.pdf.cell(ln=0, h=5.5, align='R', w=10.0, txt='Call: ', border=0)
         self.pdf.set_font('arial', 'I', 6.0)
         self.pdf.set_xy(150.0, 13)
-        self.pdf.cell(ln=0, h=9.5, align='L', w=10.0, txt='(263) 0242 876 876 | 7 | 8', border=0)
+        self.pdf.cell(ln=0, h=9.5, align='L', w=10.0, txt=get_from_nested(laboratory, "business_phone"), border=0)
         # ---
         self.pdf.set_font('arial', 'B', 6.0)
         self.pdf.set_xy(140.0, 17)
         self.pdf.cell(ln=0, h=5.5, align='R', w=10.0, txt='Whatsapp: ', border=0)
         self.pdf.set_font('arial', 'I', 6.0)
         self.pdf.set_xy(150.0, 15)
-        self.pdf.cell(ln=0, h=9.5, align='L', w=10.0, txt='(263) 776 455 333', border=0)
+        self.pdf.cell(ln=0, h=9.5, align='L', w=10.0, txt=get_from_nested(laboratory, "mobile_phone"), border=0)
         # ---
         self.pdf.set_font('arial', 'B', 6.0)
         self.pdf.set_xy(140.0, 19)
         self.pdf.cell(ln=0, h=5.5, align='R', w=10.0, txt='Email: ', border=0)
         self.pdf.set_font('arial', 'I', 6.0)
         self.pdf.set_xy(150.0, 17)
-        self.pdf.cell(ln=0, h=9.5, align='L', w=10.0, txt='info@inclusive.med', border=0)
+        self.pdf.cell(ln=0, h=9.5, align='L', w=10.0, txt=get_from_nested(laboratory, "email"), border=0)
 
         # Report BarCode
         svg_img_bytes = BytesIO()
@@ -146,11 +148,10 @@ class FelicityImpress:
 
         self.pdf.set_line_width(0.0)
         self.pdf.line(73.0, 42.0, 73.0, 64.0)
-
         # Primary Referrer Details
         client = get_from_nested(sample, "analysis_request.client")
         name = get_from_nested(client, "name")
-        address = ""
+        address = get_from_nested(client, "address")
         self.pdf.set_font('arial', 'B', 10.0)
         self.pdf.set_xy(80, 42)
         self.pdf.cell(ln=0, h=9.5, align='L', w=20.0, txt='Primary Referrer: ', border=0)
@@ -269,7 +270,7 @@ class FelicityImpress:
         self.pdf.set_font('arial', 'I', 8.0)
         self.pdf.set_xy(20, 255)
         self.pdf.cell(ln=0, h=5.5, align='L', w=150.0,
-                      txt='all about diagnostic excellence', border=0)
+                      txt=get_from_nested(laboratory, "quality_statement"), border=0)
         self.pdf.set_xy(162, 255)
         self.pdf.cell(ln=0, h=5.5, align='R', w=20.0, txt=f'Generated on: {self.time_now}', border=0)
 

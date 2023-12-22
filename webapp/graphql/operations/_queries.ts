@@ -6,13 +6,16 @@ export const GET_LABORATORY = gql`
             uid
             setupName
             labName
+            tagLine
             labManagerUid
             email
             emailCc
             mobilePhone
             businessPhone
             address
+            banking
             logo
+            qualityStatement
         }
     }
 `;
@@ -32,6 +35,10 @@ export const GET_LABORATORY_SETTING = gql`
             defaultTheme
             autoReceiveSamples
             stickerCopies
+            allowBilling
+            allowAutoBilling
+            currency
+            paymentTermsDays
         }
     }
 `;
