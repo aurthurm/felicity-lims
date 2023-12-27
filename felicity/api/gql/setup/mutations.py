@@ -16,9 +16,6 @@ from api.gql.setup.types import (
 )
 from api.gql.setup.types.department import DepartmentType
 from api.gql.types import OperationError
-from apps.job import models as job_models
-from apps.job import schemas as job_schemas
-from apps.job.conf import actions, categories, priorities, states
 from apps.setup import models, schemas
 
 logging.basicConfig(level=logging.INFO)
@@ -201,18 +198,6 @@ class SetupMutations:
 
         obj_in = schemas.LaboratorySettingUpdate(**lab_setting.to_dict())
         lab_setting = await lab_setting.update(obj_in)
-
-        if lab_setting.allow_billing:
-            job_schema = job_schemas.JobCreate(
-                action=actions.BILLING_INIT,
-                category=categories.BILLING,
-                priority=priorities.MEDIUM,
-                creator_uid=felicity_user.uid,
-                job_id=None,
-                status=states.PENDING,
-                data={"profiles": [], "analyses": []},
-            )
-            await job_models.Job.create(job_schema)
 
         return LaboratorySettingType(**lab_setting.marshal_simple())
 

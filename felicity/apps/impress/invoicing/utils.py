@@ -1,12 +1,15 @@
 from apps.analysis.models.analysis import AnalysisRequest
-from apps.billing.invoicing.generic import FelicityInvoice
-from apps.billing.models import TestBill, test_bill_item, TestBillTransaction, ProfilePrice, AnalysisPrice
+from apps.billing.models import TestBill, test_bill_item, TestBillTransaction, ProfilePrice, AnalysisPrice, \
+    TestBillInvoice
+from apps.billing.schemas import TestBillInvoiceCreate
+from apps.impress.invoicing.engine import FelicityInvoice
 from apps.setup.caches import get_laboratory_setting
 
 invoicer = FelicityInvoice()
 
 
-async def generate_invoice(test_bill: TestBill):
+async def impress_invoice(test_bill: TestBill):
+    print("invicing")
     impress_meta = dict()
 
     # bill
@@ -61,20 +64,13 @@ async def generate_invoice(test_bill: TestBill):
     impress_meta["transactions"] = [t.marshal_simple() for t in transactions]
     pdf = await invoicer.generate(impress_meta)
 
-    # sc_in = ReportImpressCreate(
-    #     **{
-    #         "state": report_state,
-    #         "sample_uid": sample.uid,
-    #         "json_content": impress_meta,
-    #         "pdf_content": sample_pdf,
-    #         "email_required": False,
-    #         "email_sent": False,
-    #         "sms_required": False,
-    #         "sms_sent": False,
-    #         "generated_by_uid": user.uid,
-    #         "date_generated": datetime.now(),
-    #     }
-    # )
-    # await ReportImpress.create(sc_in)
+    sc_in = TestBillInvoiceCreate(
+        **{
+            "v": test_bill.uid,
+            "json_content": impress_meta,
+            "pdf_content": pdf,
+        }
+    )
+    await TestBillInvoice.create(sc_in)
 
     return pdf

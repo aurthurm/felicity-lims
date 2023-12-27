@@ -1,12 +1,12 @@
 import logging
-import json
+
 from sqlalchemy import Boolean, Column, DateTime, ForeignKey, LargeBinary, String
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import relationship
 
 from apps import Auditable
 from apps.analysis.models.analysis import Sample
-from apps.impress.schemas import ReportImpressCreate, ReportImpressUpdate
+from apps.impress.sample.schemas import ReportImpressCreate, ReportImpressUpdate
 from apps.notification.utils import FelicityStreamer
 from apps.user.models import User
 

@@ -8,9 +8,8 @@ from barcode import Code128
 from barcode.writer import ImageWriter
 from fpdf import FPDF
 
-from apps.impress.reports.utils import get_from_nested, strtobool
 from core.config import settings
-from utils import get_time_now
+from utils import get_time_now, get_from_nested, strtobool
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -50,7 +49,6 @@ class FelicityImpress:
         ]
         #
         sampe_id = get_from_nested(sample, "sample_id")
-
         self.pdf.add_page()
         self.pdf.set_font('helvetica', '', 12.0)
 
@@ -60,7 +58,6 @@ class FelicityImpress:
 
         # Logo
         self.pdf.image(self.logo_path, 20.0, 16.0, link='', type='', w=15.0, h=15.0)
-
         # Lab Details
         self.pdf.set_font('arial', 'B', 12.0)
         self.pdf.set_xy(40.0, 16)
@@ -68,7 +65,6 @@ class FelicityImpress:
         self.pdf.set_font('arial', 'I', 8.0)
         self.pdf.set_xy(40.0, 22)
         self.pdf.multi_cell(40.0, 3.5, get_from_nested(laboratory, "address"))
-
         # Contact Details
         self.pdf.set_font('arial', 'B', 6.0)
         self.pdf.set_xy(140.0, 15)
@@ -90,7 +86,6 @@ class FelicityImpress:
         self.pdf.set_font('arial', 'I', 6.0)
         self.pdf.set_xy(150.0, 17)
         self.pdf.cell(ln=0, h=9.5, align='L', w=10.0, txt=get_from_nested(laboratory, "email"), border=0)
-
         # Report BarCode
         svg_img_bytes = BytesIO()
         Code128(sampe_id, writer=ImageWriter()).write(svg_img_bytes, options={"write_text": False})

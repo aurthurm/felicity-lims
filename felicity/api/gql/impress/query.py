@@ -1,14 +1,19 @@
 import io
 import logging
+from functools import lru_cache
 from typing import List
 
 import strawberry  # noqa
+from PyPDF2 import PdfWriter
+
 from api.gql.impress.types import ReportImpressType
 from api.gql.permissions import IsAuthenticated
 from api.gql.types import BytesScalar
-from apps.impress.models import ReportImpress
-
-from PyPDF2 import PdfWriter
+from apps.client import Client
+from apps.impress.barcode.schema import BarCode, BarCodeMeta
+from apps.impress.barcode.utils import impress_barcodes
+from apps.impress.sample.models import ReportImpress
+from apps.storage.models import Sample
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -18,13 +23,13 @@ logger = logging.getLogger(__name__)
 class ReportImpressQuery:
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def impress_reports_meta(
-        self, info, uids: List[str]
+            self, info, uids: List[str]
     ) -> List[ReportImpressType]:
         return await ReportImpress.get_all(sample_uid__in=uids)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def impress_reports_download(
-        self, info, uids: List[str]
+            self, info, uids: List[str]
     ) -> BytesScalar | None:
         """Fetch Latest report given sample id"""
         items = await ReportImpress.get_all(sample_uid__in=uids)
@@ -74,3 +79,31 @@ class ReportImpressQuery:
 
         # io.BytesIO()
         return report.pdf_content
+
+    @strawberry.field(permission_classes=[IsAuthenticated])
+    async def barcode_samples(self, info, sample_uids: list[str]) -> BytesScalar | None:
+        samples = await Sample.get_all(uid__in=sample_uids)
+
+        @lru_cache
+        async def _client_name(uid: str) -> str: return (await Client.get(uid=uid)).name
+
+        barcode_metas = [
+            BarCode(
+                barcode=_s.sample_id,
+                metadata=[
+                    BarCodeMeta(
+                        label="CRID",
+                        value=_s.analysis_request.client_request_id
+                    ),
+                    BarCodeMeta(
+                        label="Sample Type",
+                        value=_s.sample_type.name
+                    ),
+                    BarCodeMeta(
+                        label="Client",
+                        value=_s.analysis_request.client.name  # await _client_name(_s.analysis_request.client_uid)
+                    )
+                ]
+            ) for _s in samples
+        ]
+        return await impress_barcodes(barcode_metas)

@@ -7,7 +7,7 @@ from api.gql.billing import types
 from api.gql.permissions import IsAuthenticated
 from api.gql.types import PageInfo, BytesScalar
 from apps.billing import models
-from apps.billing.invoicing.utils import generate_invoice
+from apps.impress.invoicing.utils import impress_invoice
 from utils import has_value_or_is_truthy
 
 
@@ -97,7 +97,7 @@ class BillingQuery:
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def bill_invoice_create(self, info, bill_uid: str) -> BytesScalar | None:
         bill = await models.TestBill.get(uid=bill_uid)
-        return await generate_invoice(bill)
+        return await impress_invoice(bill)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def price_for_profile(self, info, profile_uid: str) -> Optional[types.ProfilePriceType]:

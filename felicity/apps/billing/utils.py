@@ -12,7 +12,6 @@ from apps.billing.exceptions import (
     VoucherCodeLimitExceededException,
     VoucherLimitExceededException,
 )
-from apps.billing.invoicing.utils import generate_invoice
 from apps.billing.models import (
     TestBill,
     ProfilePrice, ProfileDiscount,
@@ -25,20 +24,20 @@ from apps.billing.schemas import (
     TestBillCreate, TestBillUpdate,
     TestBillTransactionCreate, TestBillTransactionUpdate
 )
+from apps.impress.invoicing.utils import impress_invoice
 from apps.setup.models.setup import Laboratory, LaboratorySetting
 
 
 async def bill_order(analysis_request: a_models.AnalysisRequest, auto_bill=False):
-    print("bill_order")
     laboratory = await Laboratory.get_by_setup_name("felicity")
     lab_settings = await LaboratorySetting.get(laboratory_uid=laboratory.uid)
 
-    # if not lab_settings.allow_billing:
-    #     return
-    #
-    # # auto_billing ?? or user initiated
-    # if auto_bill and not lab_settings.allow_auto_billing:
-    #     return
+    if not lab_settings.allow_billing:
+        return
+
+    # auto_billing ?? or user initiated
+    if auto_bill and not lab_settings.allow_auto_billing:
+        return
 
     # calculate bill and marshall prices for future reference
     total_charged = 0.00
@@ -51,12 +50,8 @@ async def bill_order(analysis_request: a_models.AnalysisRequest, auto_bill=False
         for _an in sample.analyses:
             analysis_uids.append(_an.uid)
 
-    print("profile_uids: ", profile_uids)
-    print("analysis_uids: ", analysis_uids)
     profiles_prices = await ProfilePrice.get_all(profile_uid__in=profile_uids)
     analysis_prices = await AnalysisPrice.get_all(analysis_uid__in=analysis_uids)
-    print("profiles_prices: ", profiles_prices)
-    print("analysis_prices: ", analysis_prices)
 
     pricing_lines = {
         "profiles": {},
@@ -64,10 +59,8 @@ async def bill_order(analysis_request: a_models.AnalysisRequest, auto_bill=False
     }
     today = datetime.now()
     in_transactions = []
-    print("total_charged: ", total_charged)
     for p_price in profiles_prices:
         total_charged += p_price.amount
-        print("total_charged: ", total_charged)
 
         p_discount = await ProfileDiscount.get(
             profile_uid=p_price.profile_uid,
@@ -76,8 +69,6 @@ async def bill_order(analysis_request: a_models.AnalysisRequest, auto_bill=False
             end_date__ge=today,
             is_active=True,
         )
-        print("p_discount: ", p_discount)
-        print("p_discount: ", p_discount)
 
         discount = {}
         if p_discount:
@@ -99,10 +90,8 @@ async def bill_order(analysis_request: a_models.AnalysisRequest, auto_bill=False
             "price": p_price.amount,
             "discount": discount
         }
-        print("pricing_lines: ", pricing_lines)
 
     if total_charged <= 0:
-        print("Aborting billing of insignificant value of $: ", total_charged)
         return
 
     for a_price in analysis_prices:
@@ -150,12 +139,9 @@ async def bill_order(analysis_request: a_models.AnalysisRequest, auto_bill=False
         total_paid=0,
         json_content=pricing_lines
     )
-    print("billing: ", bill_in)
     bill = await TestBill.create(bill_in)
-    print("bill: ", bill)
 
     # attach related orders to bill
-    print("attach related orders to bill: ", analysis_request)
     await TestBill.table_insert(
         test_bill_item,
         {
@@ -165,7 +151,6 @@ async def bill_order(analysis_request: a_models.AnalysisRequest, auto_bill=False
     )
 
     # apply discounts
-    print("apply discounts: ", bill)
     for t_in in in_transactions:
         # add a transaction
         transaction = await TestBillTransaction.create(TestBillTransactionCreate(
@@ -173,7 +158,6 @@ async def bill_order(analysis_request: a_models.AnalysisRequest, auto_bill=False
             test_bill_uid=bill.uid,
         ))
         # apply sale discounts from the transaction
-        print("transaction.amount: ", transaction.amount)
         bill_update_in = TestBillUpdate(
             total_paid=bill.total_paid + transaction.amount
         )
@@ -185,18 +169,16 @@ async def bill_order(analysis_request: a_models.AnalysisRequest, auto_bill=False
         )
         await transaction.update(tra_update_in)
 
-    await generate_invoice(bill)
+    await impress_invoice(bill)
 
 
 async def apply_voucher(voucher_code: str, test_bill_uid: str, customer_uid: str) -> TestBill:
     today = datetime.now()
-    print("voucher_code: ", voucher_code)
     bill = await TestBill.get(uid=test_bill_uid)
     if not bill.is_active:
         raise InactiveTestBillException()
 
     code: VoucherCode = await VoucherCode.get(code=voucher_code)
-    print("code: ", code)
 
     if not code:
         raise InvalidVoucherCodeException()
@@ -208,7 +190,6 @@ async def apply_voucher(voucher_code: str, test_bill_uid: str, customer_uid: str
         raise VoucherCodeLimitExceededException()
 
     voucher: Voucher = await Voucher.get(uid=code.voucher_uid)
-    print("voucher: ", voucher)
     if voucher.used > voucher.usage_limit:
         raise VoucherLimitExceededException()
 
@@ -219,7 +200,6 @@ async def apply_voucher(voucher_code: str, test_bill_uid: str, customer_uid: str
         patient_uid=customer_uid,
         voucher_code_uid=code.uid
     )
-    print("voucher_customer: ", voucher_customer)
     if voucher_customer and voucher.once_per_customer:
         raise CustomerAlreadyUsedVoucherException()
 
@@ -232,8 +212,6 @@ async def apply_voucher(voucher_code: str, test_bill_uid: str, customer_uid: str
         if k == "analyses":
             analyses_uids = list(v.keys())
 
-    print("profiles_uids: ", profiles_uids)
-    print("analyses_uids: ", analyses_uids)
     profiles_discounts = await ProfileDiscount.get_all(
         profile_uid__in=profiles_uids,
         voucher_uid=voucher.uid,
@@ -250,8 +228,6 @@ async def apply_voucher(voucher_code: str, test_bill_uid: str, customer_uid: str
         # end_date__ge=today,
         # is_active=True,
     )
-    print("analyses_discounts: ", analyses_discounts)
-    print("profiles_discounts: ", profiles_discounts)
     if not analyses_discounts and not profiles_discounts:
         raise InvalidVoucherCodeException()
 
@@ -318,5 +294,5 @@ async def apply_voucher(voucher_code: str, test_bill_uid: str, customer_uid: str
             "voucher_code_uid": code.uid
         })
 
-    await generate_invoice(bill)
+    await impress_invoice(bill)
     return bill

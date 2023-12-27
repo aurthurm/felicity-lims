@@ -3,7 +3,7 @@ import { useRoute } from "vue-router";
 import { ref, computed, reactive, defineAsyncComponent } from "vue";
 import { isNullOrWs } from "../../../utils/helpers";
 import { IAnalysisResult, IAnalysisService } from "../../../models/analysis";
-import { useAnalysisComposable, useWorkSheetComposable } from "../../../composables";
+import { useAnalysisComposable, useSampleComposable, useWorkSheetComposable } from "../../../composables";
 import { useWorksheetStore, useSetupStore, useUserStore } from "../../../stores";
 import * as shield from "../../../guards";
 const FButton = defineAsyncComponent(
@@ -20,13 +20,14 @@ let can_retract = ref<boolean>(false);
 let can_approve = ref<boolean>(false);
 let can_retest = ref<boolean>(false);
 let can_unassign = ref<boolean>(false);
+let barcodes = ref<boolean>(false);
 
 let allChecked = ref<boolean>(false);
 let viewDetail = ref<boolean>(false);
 let worksheet = computed(() => worksheetStore.getWorkSheet);
 
 const refresh = () => {
-  worksheetStore.fetchWorksheetByUid(route.params.workSheetUid);
+  worksheetStore.fetchWorksheetByUid(route.params.workSheetUid as string);
 };
 
 //
@@ -132,10 +133,17 @@ function prepareResults(): any[] {
   return ready;
 }
 
-function getResultsUids(): number[] {
+function getResultsUids(): string[] {
   const results = getResultsChecked();
-  let ready: number[] = [];
+  let ready: string[] = [];
   results?.forEach((result: IAnalysisResult) => ready.push(result.uid!));
+  return ready;
+}
+
+function getSampleUids(): string[] {
+  const results = getResultsChecked();
+  let ready: string[] = [];
+  results?.forEach((result: IAnalysisResult) => ready.push(result.sampleUid!));
   return ready;
 }
 
@@ -188,9 +196,14 @@ function checkUserActionPermissios(): void {
   can_retract.value = false;
   can_approve.value = false;
   can_retest.value = false;
+  barcodes.value = false;
 
   const checked = getResultsChecked();
-  if (checked.length === 0) return;
+  if (checked.length === 0) {
+    return;
+  } else {
+    barcodes.value = true;
+  };
 
   // can submit
   if (checked.every((result: IAnalysisResult) => result.status === "pending")) {
@@ -210,7 +223,10 @@ const {
   approveResults: approver_,
   retractResults: retracter_,
   retestResults: retester_,
+  
 } = useAnalysisComposable();
+
+const { barcodeSamples } = useSampleComposable()
 const { unAssignSamples: unassinger_ } = useWorkSheetComposable();
 
 const unAssignSamples = () => unassinger_(getResultsUids());
@@ -220,6 +236,7 @@ const approveResults = () =>
   approver_(getResultsUids(), "worksheet", worksheet.value?.uid!);
 const retractResults = () => retracter_(getResultsUids());
 const retestResults = () => retester_(getResultsUids());
+const printBarCodes = async () => await barcodeSamples(getSampleUids())
 </script>
 
 <template>
@@ -558,6 +575,12 @@ const retestResults = () => retester_(getResultsUids());
       >
         Retest
       </button>
+      <button 
+          v-show="barcodes"
+          @click.prevent="printBarCodes"
+          class="px-2 py-1 mr-2 border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none">
+          Print Barcodes
+        </button>
     </section>
   </div>
 </template>

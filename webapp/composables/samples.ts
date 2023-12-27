@@ -11,7 +11,7 @@ import {
     VERIFY_SAMPLES,
     REJECT_SAMPLES,
 } from '../graphql/operations/analyses.mutations';
-import { DOWNLOAD_IMPRESS, DOWNLOAD_IMPRESS_SAMPLES } from '../graphql/operations/analyses.queries';
+import { BARCODE_SAMPLES, DOWNLOAD_IMPRESS, DOWNLOAD_IMPRESS_SAMPLES } from '../graphql/operations/analyses.queries';
 import { RECOVER_SAMPLES, STORE_SAMPLES } from '../graphql/operations/storage.mutations';
 import { useSampleStore } from '../stores';
 import { ISample } from '../models/analysis';
@@ -249,6 +249,18 @@ export default function useSampleComposable() {
                 }
             });
         } catch (error) {}
+    };    
+
+    const barcodeSamples = async (sampleUids: string[]) => {
+        try {
+            withClientQuery(BARCODE_SAMPLES, { sampleUids }, 'barcodeSamples').then(resp => {
+                const tempLink = document.createElement('a');
+                tempLink.href = `data:application/pdf;base64,${resp}`;
+                tempLink.setAttribute('download', 'barcodes.pdf');
+                // tempLink.setAttribute('target', tempLink.href);
+                tempLink.click();
+            });
+        } catch (error) {}
     };
 
     // PRINT_SAMPLES
@@ -399,6 +411,7 @@ export default function useSampleComposable() {
         publishSamples,
         downloadSamplesImpress,
         downloadImpress,
+        barcodeSamples,
         invalidateSamples,
         rejectSamples,
         storeSamples,

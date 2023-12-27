@@ -24,6 +24,7 @@ const {
   publishSamples,
   verifySamples,
   recoverSamples,
+  barcodeSamples
 } = useSampleComposable();
 
 const state = reactive({
@@ -130,6 +131,8 @@ const invalidateSample = async () =>
     if (inv.length > 0) sampleStore.setRepeatSample(inv[0]);
   });
 
+const printBarCooe = async () => await barcodeSamples([sample?.value?.uid!])
+
 const canReject = computed(() => {
   if (["received", "expected"].includes(sample?.value?.status?.toLowerCase()!))
     return true;
@@ -154,15 +157,21 @@ const goToStorage = async (sample?: ISample) => {
 </script>
 
 <template>
-  <div class="flex justify-between">
+  <div class="flex justify-between items-center">
     <h3 class="my-4 font-bold">Sample Detail</h3>
-    <router-link v-if="sample?.analysisRequest?.patient?.uid" :to="{
+    <div>
+      <button class="p-2 mr-8 text-sm hover:border-sky-800 border text-dark-700 transition-colors duration-150 rounded-sm focus:outline-none"
+      @click="printBarCooe">
+        Barcode <font-awesome-icon icon="barcode" class="ml-2" /> 
+      </button>
+      <router-link v-if="sample?.analysisRequest?.patient?.uid" :to="{
       name: 'patient-detail',
       params: { patientUid: sample?.analysisRequest?.patient?.uid },
     }"
-      class="p-2 my-2 text-sm border-sky-800 border text-dark-700 transition-colors duration-150 rounded-sm focus:outline-none hover:bg-sky-800 hover:text-gray-100">
+      class="p-2 my-2 ml-4 text-sm border-sky-800 border text-dark-700 transition-colors duration-150 rounded-sm focus:outline-none hover:bg-sky-800 hover:text-gray-100">
       ... other samples
     </router-link>
+    </div>
   </div>
 
   <hr />

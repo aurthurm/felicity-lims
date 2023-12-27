@@ -1139,3 +1139,9 @@ export const DOWNLOAD_IMPRESS = gql`
         impressReportDownload(uid: $uid)
     }
 `;
+
+export const BARCODE_SAMPLES = gql`
+    query BarcodeSamples($sampleUids: [String!]!) {
+        barcodeSamples(sampleUids: $sampleUids)
+    }
+`;

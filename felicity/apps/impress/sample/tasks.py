@@ -3,7 +3,7 @@ from typing import List
 
 from apps.analysis.conf import states
 from apps.analysis.models.analysis import Sample
-from apps.impress import utils
+from apps.impress.sample import utils
 from apps.job import models as job_models
 from apps.job import schemas as job_schemas
 from apps.job.conf import actions, categories, priorities
@@ -12,7 +12,6 @@ from apps.notification.utils import ReportNotifier
 from apps.user import models as user_models
 from apps.user.models import User
 from core.config import settings
-
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

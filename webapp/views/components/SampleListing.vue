@@ -22,6 +22,7 @@ let route = useRoute();
 let router = useRouter();
 
 const state = reactive({
+  barcodes: false,
   can_cancel: false,
   can_receive: false,
   can_reinstate: false,
@@ -474,9 +475,14 @@ function checkUserActionPermissios(): void {
   state.can_store = false;
   state.can_recover = false;
   state.can_copy_to = false;
+  state.barcodes = false;
 
   const checked: ISample[] = getSamplesChecked();
-  if (checked.length === 0) return;
+  if (checked.length === 0) {
+    return;
+  } else {
+    state.barcodes = true;
+  };
 
   // can_receive
   if (checked.every((sample: ISample) => sample.status === "expected")) {
@@ -542,6 +548,7 @@ const {
   publishSamples,
   recoverSamples,
   cloneSamples,
+  barcodeSamples
 } = useSampleComposable();
 
 const countNone = computed(
@@ -581,6 +588,8 @@ const prepareStorages = async () => {
 };
 const recoverSamples_ = async () =>
   recoverSamples(getSampleUids()).finally(() => unCheckAll());
+
+const printBarCodes = async () => await barcodeSamples(getSampleUids())
 </script>
 
 <template>
@@ -671,6 +680,12 @@ const recoverSamples_ = async () =>
         " @click.prevent="printReports_()"
           class="px-2 py-1 mr-2 border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none">
           Print
+        </button>
+        <button 
+          v-show="state.barcodes"
+          @click.prevent="printBarCodes"
+          class="px-2 py-1 mr-2 border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none">
+          Print Barcodes
         </button>
       </div>
     </template>
