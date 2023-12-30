@@ -32,13 +32,13 @@ class WorkSheetPlater:
     template: dict = {}
 
     def __init__(
-            self,
-            reserved: dict,
-            n_samples: int,
-            t_type: int = worksheet_types.FLAT,
-            rows: int = None,
-            cols: int = None,
-            row_wise: bool = True,
+        self,
+        reserved: dict,
+        n_samples: int,
+        t_type: int = worksheet_types.FLAT,
+        rows: int = None,
+        cols: int = None,
+        row_wise: bool = True,
     ):
         self.reserved_positions = reserved
         self.number_of_samples = n_samples

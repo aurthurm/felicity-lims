@@ -91,7 +91,7 @@ function deleteClientContact(uid: string) {
   <!-- Contacts Table View -->
   <div class="overflow-x-auto">
     <button v-show="shield.hasRights(shield.actions.CREATE, shield.objects.CLIENT)" @click="FormManager(true)"
-      class="px-1 py-0 mb-4 border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none">
+      class="px-1 py-0 mb-4 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none">
       Add Contact
     </button>
 

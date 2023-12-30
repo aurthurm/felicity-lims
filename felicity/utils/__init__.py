@@ -76,7 +76,9 @@ def datetime_math(date_val: str | datetime, days: int, addition=True) -> datetim
         return date_val - timedelta(days=days)  # noqa
 
 
-def format_datetime(dat_value: str | datetime, human_format=False, with_time=True) -> str:
+def format_datetime(
+    dat_value: str | datetime, human_format=False, with_time=True
+) -> str:
     if human_format:
         if with_time:
             _format = settings.DATETIME_HUMAN_FORMAT
@@ -97,7 +99,9 @@ def format_datetime(dat_value: str | datetime, human_format=False, with_time=Tru
 def make_tz_aware(unaware: str | datetime):
     if isinstance(unaware, datetime):
         return unaware.replace(tzinfo=settings.TIMEZONE)
-    return datetime.strptime(unaware, settings.DATETIME_STR_FORMAT).replace(tzinfo=settings.TIMEZONE)
+    return datetime.strptime(unaware, settings.DATETIME_STR_FORMAT).replace(
+        tzinfo=settings.TIMEZONE
+    )
 
 
 def get_from_nested(obj: dict, path: str):
@@ -125,7 +129,6 @@ def delete_from_nested(obj: dict, path: str):
     :param path: the paths to find the required value
     :return: None
     """
-    print(f"cleaning up: {path}")
 
     if not obj:
         return
@@ -166,8 +169,8 @@ def strtobool(val):
 
 def marshaller(obj, path=None, memoize=None, exclude: list[str] = None) -> dict | str:
     """Notes:
-        1. We use memoization To prevent marshalling the same object again hence speed things up
-        2. We use path tracking To stop marshalling when a path starts to repeat itself or meets a certain path restriction
+    1. We use memoization To prevent marshalling the same object again hence speed things up
+    2. We use path tracking To stop marshalling when a path starts to repeat itself or meets a certain path restriction
     """
     if memoize is None:
         memoize = {}
@@ -228,7 +231,8 @@ def remove_circular_refs(ob, _seen=None):
     if isinstance(ob, dict):
         res = {
             remove_circular_refs(key, _seen): remove_circular_refs(value, _seen)
-            for key, value in ob.items()}
+            for key, value in ob.items()
+        }
 
     elif isinstance(ob, (list, tuple, set, frozenset)):
         res = type(ob)(remove_circular_refs(v, _seen) for v in ob)

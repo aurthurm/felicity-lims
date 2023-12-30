@@ -2,7 +2,6 @@ import axios from 'axios';
 import { getAuthData, authLogout } from './auth';
 import { REST_BASE_URL, GQL_BASE_URL, STORAGE_AUTH_KEY } from './conf';
 
-
 const axiosInstance = axios.create({
     baseURL: REST_BASE_URL + '/api/v1/',
     timeout: 1000,
@@ -36,7 +35,6 @@ axiosInstance.interceptors.response.use(
 
       if (err.response) {
         // Access Token was expired
-        console.log("Axios err.response: ", err)
         if (err.response.status === 401 && !originalConfig._retry) {
           originalConfig._retry = true;
 
@@ -82,7 +80,6 @@ axiosInstance.interceptors.response.use(
                 }
             );
 
-            console.log(response.data);
             localStorage.setItem(STORAGE_AUTH_KEY, JSON.stringify(response.data));
             
             return axiosInstance(originalConfig);

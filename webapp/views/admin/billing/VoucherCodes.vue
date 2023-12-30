@@ -64,7 +64,6 @@ const { value: used } = useField("used");
 const { value: isActive } = useField("isActive");
 
 const submitVoucherForm = handleSubmit((values) => {
-  console.log(values)
   if (!values.uid) addVoucherCode(values as IVoucherCode);
   if (values.uid) updateVoucherCode(values as IVoucherCode);
 });

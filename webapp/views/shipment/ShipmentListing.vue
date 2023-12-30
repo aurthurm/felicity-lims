@@ -206,7 +206,7 @@ const countNone = computed(
     <div>
       <!-- v-show="shield.hasRights(shield.actions.CREATE, shield.objects.SHIPMENT)" -->
       <button  @click.prevent="showModal = true"
-        class="p-2 h-10 border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none">
+        class="p-2 h-10 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none">
         Add Shipment
       </button>
     </div>

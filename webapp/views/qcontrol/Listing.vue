@@ -188,7 +188,7 @@
                 class="appearance-none rounded-r-sm rounded-l-sm sm:rounded-l-none border border-gray-400 border-b block pl-8 pr-6 py-2 w-full bg-white text-sm placeholder-gray-400 text-gray-700 focus:bg-white focus:placeholder-gray-600 focus:text-gray-700 focus:outline-none" />
       </div>
       <button
-        class="px-2 py-1 ml-2 border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none">
+        class="px-2 py-1 ml-2 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none">
         Filter ...</button>
       
     </section> -->
@@ -244,7 +244,7 @@
         <button 
         @click.prevent="showMoreQCSets()"
         v-show="pageInfo?.pageInfo?.hasNextPage"
-        class="px-2 py-1 mr-2 border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
+        class="px-2 py-1 mr-2 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
         >Show More</button>
         <div class="flex flex-row mb-1 sm:mb-0">
             <div class="relative">
@@ -308,7 +308,7 @@
                 <button
                 v-if="form.samples?.length < 20"
                 @click.prevent="addQCSet()"
-                class="px-2 py-1 mr-2 border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none">Add QCSet</button>
+                class="px-2 py-1 mr-2 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none">Add QCSet</button>
             </div>
             <hr class="mb-4">
             <div v-for="(sample, index) in form.samples" :key="index">

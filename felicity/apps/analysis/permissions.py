@@ -13,7 +13,7 @@ if TYPE_CHECKING:
 
 
 async def check_sample_verification(
-        samples: List[Union[str, Sample]], verifer: "User"
+    samples: List[Union[str, Sample]], verifer: "User"
 ) -> Tuple[Optional[Sample], Optional[Sample], str, str]:
     """
     splits samples into allowed and restricted samples.
@@ -25,17 +25,17 @@ async def check_sample_verification(
 
     if isinstance(samples[0], str):
         samples: List[Sample] = await Sample.get_all(uid__in=samples)
-        
+
     # verify hanging samples iff all results have been verified - just in case they exist
     hangings = []
     pending = []
     for sample in samples:
         is_verifiable = await sample.is_verifiable()
-        if(is_verifiable):
+        if is_verifiable:
             hangings.append(sample)
         else:
             pending.append(sample)
-    
+
     restricted: List[Sample] = list(
         filter(lambda s: s.submitted_by_uid == verifer.uid, pending)
     )
@@ -53,12 +53,12 @@ async def check_sample_verification(
     # push hangings
     for hang in hangings:
         allowed.append(hang)
-        
+
     return allowed, restricted, message, suggestion
 
 
 async def check_result_verification(
-        results: List[Union[str, AnalysisResult]], verifer: "User"
+    results: List[Union[str, AnalysisResult]], verifer: "User"
 ) -> Tuple[Optional[AnalysisResult], Optional[AnalysisResult], str, str]:
     """
     splits results into allowed and restricted results.

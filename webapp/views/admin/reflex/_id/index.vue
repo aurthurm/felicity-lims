@@ -202,7 +202,7 @@ function saveBrainForm(): void {
 
   <button
     @click="reflexActionFormManager(true)"
-    class="my-4 px-2 py-1 border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
+    class="my-4 px-2 py-1 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
   >
     Add Reflex Action
   </button>
@@ -226,7 +226,7 @@ function saveBrainForm(): void {
           <h4 class="text-l leading-4 italic">Reflex Action Brains</h4>
           <button
             @click="reflexBrainFormManager(true, action)"
-            class="ml-4 px-2 py-1 border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
+            class="ml-4 px-2 py-1 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
           >
             Add Brain
           </button>
@@ -397,7 +397,7 @@ function saveBrainForm(): void {
               <span class="text-orange-600"></span>
               <button
                 @click.prevent="addCriteria()"
-                class="px-2 py-1 mr-2 border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
+                class="px-2 py-1 mr-2 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
               >
                 Add Criteria
               </button>
@@ -487,7 +487,7 @@ function saveBrainForm(): void {
               <span class="text-orange-600"></span>
               <button
                 @click.prevent="addNew()"
-                class="px-2 py-1 mr-2 border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
+                class="px-2 py-1 mr-2 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
               >
                 Add New
               </button>
@@ -546,7 +546,7 @@ function saveBrainForm(): void {
               <span class="text-orange-600"></span>
               <button
                 @click.prevent="addFinal()"
-                class="px-2 py-1 mr-2 border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
+                class="px-2 py-1 mr-2 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
               >
                 Add Final
               </button>

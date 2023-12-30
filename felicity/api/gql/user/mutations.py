@@ -22,7 +22,7 @@ from apps.user import schemas as user_schemas
 from core import security
 from core.config import settings
 from core.events import post_event
-from core.security import generate_password_reset_token
+from core.security import generate_password_reset_token, verify_password_reset_token
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -51,6 +51,19 @@ GroupResponse = strawberry.union(
 )
 
 
+@strawberry.type
+class PasswordResetValidityType:
+    username: str
+    auth_uid: str
+
+
+PasswordResetValidityResponse = strawberry.union(
+    "PasswordResetValidityResponse",
+    (PasswordResetValidityType, OperationError),
+    description="",  # noqa
+)
+
+
 @strawberry.input
 class GroupInputType:
     name: str
@@ -68,13 +81,13 @@ def simple_task(message: str):
 class UserMutations:
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_user(
-            self,
-            info,
-            first_name: str,
-            last_name: str,
-            email: str,
-            group_uid: str | None = None,
-            open_reg: bool | None = False,
+        self,
+        info,
+        first_name: str,
+        last_name: str,
+        email: str,
+        group_uid: str | None = None,
+        open_reg: bool | None = False,
     ) -> UserResponse:
         if open_reg and not settings.USERS_OPEN_REGISTRATION:
             return OperationError(
@@ -112,15 +125,15 @@ class UserMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_user(
-            self,
-            info,
-            user_uid: str,
-            first_name: str | None,
-            last_name: str | None,
-            mobile_phone: str | None,
-            email: str | None,
-            group_uid: str | None,
-            is_active: bool | None,
+        self,
+        info,
+        user_uid: str,
+        first_name: str | None,
+        last_name: str | None,
+        mobile_phone: str | None,
+        email: str | None,
+        group_uid: str | None,
+        is_active: bool | None,
     ) -> UserResponse:
 
         user = await user_models.User.get_one(uid=user_uid)
@@ -156,7 +169,7 @@ class UserMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_user_auth(
-            self, info, user_uid: str, user_name: str, password: str, passwordc: str
+        self, info, user_uid: str, user_name: str, password: str, passwordc: str
     ) -> UserResponse:
 
         auth = await user_models.UserAuth.get_by_username(username=user_name)
@@ -205,12 +218,12 @@ class UserMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_user_auth(
-            self,
-            info,
-            user_uid: str,
-            user_name: str | None,
-            password: str | None,
-            passwordc: str | None,
+        self,
+        info,
+        user_uid: str,
+        user_name: str | None,
+        password: str | None,
+        passwordc: str | None,
     ) -> UserResponse:
 
         if not user_name or not password:
@@ -257,7 +270,7 @@ class UserMutations:
 
     @strawberry.mutation
     async def authenticate_user(
-            self, info, username: str, password: str
+        self, info, username: str, password: str
     ) -> AuthenticatedDataResponse:
         auth = await user_models.UserAuth.get_by_username(username=username)
         if not auth:
@@ -270,15 +283,20 @@ class UserMutations:
         _user = await user_models.User.get(auth_uid=auth.uid)
         access_token = security.create_access_token(_user.uid)
         refresh_token = security.create_refresh_token(_user.uid)
-        return (StrawberryMapper[AuthenticatedData]()
-                .map(token=access_token, refresh=refresh_token, token_type="bearer", user=_user))
+        return StrawberryMapper[AuthenticatedData]().map(
+            token=access_token, refresh=refresh_token, token_type="bearer", user=_user
+        )
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def refresh(self, info, refresh_token: str) -> AuthenticatedDataResponse:
         is_authenticated, felicity_user = await auth_from_info(info)
         access_token = security.create_access_token_from_refresh(refresh_token)
-        return (StrawberryMapper[AuthenticatedData]()
-                .map(token=access_token, refresh=refresh_token, token_type="bearer", user=felicity_user))
+        return StrawberryMapper[AuthenticatedData]().map(
+            token=access_token,
+            refresh=refresh_token,
+            token_type="bearer",
+            user=felicity_user,
+        )
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def unlink_user_auth(self, info, user_uid: str) -> UserResponse:
@@ -294,26 +312,64 @@ class UserMutations:
         await user.unlink_auth()
         return StrawberryMapper[UserType]().map(**user.marshal_simple())
 
-    @strawberry.mutation(permission_classes=[IsAuthenticated])
-    async def recover_password(self, info, username: str) -> MessageResponse:
-        auth = await user_models.UserAuth.get_by_username(username=username)
-        if not auth:
-            return OperationError(
-                error="Error, failed to fetch user for password reset"
-            )
+    @strawberry.mutation()
+    async def request_password_reset(self, info, email: str) -> MessageResponse:
 
-        user = await user_models.User.get(auth_uid=auth.uid)
+        user = await user_models.User.get_by_email(email)
         if not user:
             return OperationError(
-                error="You cannot rest password for an un-linked account"
+                error="User with provided email not found? Check your email and try again"
             )
 
-        password_reset_token = generate_password_reset_token(email=auth.user.email)
+        if not user.auth_uid:
+            return OperationError(
+                error="Authentication for provided user does not exist. Talk to your administrator"
+            )
 
-        post_event("password_reset", user=user, token=password_reset_token)
+        password_reset_token = generate_password_reset_token(email)
+
+        post_event("password-reset", user=user, token=password_reset_token)
 
         msg = "Password recovery email sent"
-        return MessagesType(msg)
+        return MessagesType(message=msg)
+
+    @strawberry.mutation()
+    async def validate_password_reset_token(
+        self, info, token: str
+    ) -> PasswordResetValidityResponse:
+
+        email = verify_password_reset_token(token)
+        if not email:
+            return OperationError(error="Your token is invalid")
+
+        user = await user_models.User.get_by_email(email)
+        if not user:
+            return OperationError(error="Your token is invalid")
+        auth = await user_models.UserAuth.get(uid=user.auth_uid)
+        return PasswordResetValidityType(
+            username=auth.user_name, auth_uid=user.auth_uid
+        )
+
+    @strawberry.mutation()
+    async def reset_password(
+        self,
+        info,
+        auth_uid: str,
+        username: str,
+        password: str,
+        passwordc: str,
+    ) -> MessageResponse:
+
+        auth = await user_models.UserAuth.get(uid=auth_uid, user_name=username)
+
+        if password != passwordc:
+            return OperationError(error=f"Passwords dont match")
+
+        auth_in = user_schemas.AuthUpdate(password=password, user_name=username)
+        await auth.update(auth_in)
+        return MessagesType(
+            message="Password was successfully reset, Now login with your new password"
+        )
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_group(info, payload: GroupInputType) -> GroupResponse:
@@ -374,7 +430,7 @@ class UserMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_group_permissions(
-            self, info, group_uid: str, permission_uid: str
+        self, info, group_uid: str, permission_uid: str
     ) -> UpdatedGroupPermsResponse:
         if not group_uid or not permission_uid:
             return OperationError(error="Group and Permission are required.")

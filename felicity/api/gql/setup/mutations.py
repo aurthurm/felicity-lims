@@ -148,7 +148,7 @@ class UnitInputType:
 class SetupMutations:
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_laboratory(
-            self, info, uid: str, payload: LaboratoryInputType
+        self, info, uid: str, payload: LaboratoryInputType
     ) -> LaboratoryResponse:  # noqa
 
         if not uid:
@@ -174,7 +174,7 @@ class SetupMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_laboratory_setting(
-            self, info, uid: str, payload: LaboratorySettingInputType
+        self, info, uid: str, payload: LaboratorySettingInputType
     ) -> LaboratorySettingResponse:  # noqa
 
         is_authenticated, felicity_user = await auth_from_info(info)
@@ -182,7 +182,9 @@ class SetupMutations:
         if not uid:
             return OperationError(error="No uid provided to identity update obj")
 
-        lab_setting: models.LaboratorySetting = await models.LaboratorySetting.get(uid=uid)
+        lab_setting: models.LaboratorySetting = await models.LaboratorySetting.get(
+            uid=uid
+        )
         if not lab_setting:
             return OperationError(
                 error=f"Laboratory Setting with uid {uid} not found. Cannot update obj ..."
@@ -203,7 +205,7 @@ class SetupMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_department(
-            root, info, payload: DepartmentInputType
+        root, info, payload: DepartmentInputType
     ) -> DepartmentResponse:  # noqa
 
         if not payload.name:
@@ -221,11 +223,13 @@ class SetupMutations:
 
         obj_in = schemas.DepartmentCreate(**incoming)
         department: models.Department = await models.Department.create(obj_in)
-        return DepartmentType(**department.marshal_simple(exclude=["created_by", "updated_by"]))
+        return DepartmentType(
+            **department.marshal_simple(exclude=["created_by", "updated_by"])
+        )
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_department(
-            self, info, uid: str, payload: DepartmentInputType
+        self, info, uid: str, payload: DepartmentInputType
     ) -> DepartmentResponse:  # noqa
 
         if not uid:
@@ -247,11 +251,13 @@ class SetupMutations:
 
         obj_in = schemas.DepartmentUpdate(**department.to_dict())
         department = await department.update(obj_in)
-        return DepartmentType(**department.marshal_simple(exclude=["created_by", "updated_by"]))
+        return DepartmentType(
+            **department.marshal_simple(exclude=["created_by", "updated_by"])
+        )
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_supplier(
-            self, info, payload: SupplierInputType
+        self, info, payload: SupplierInputType
     ) -> SupplierResponse:  # noqa
 
         if not payload.name:
@@ -273,7 +279,7 @@ class SetupMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_supplier(
-            self, info, uid: str, payload: SupplierInputType
+        self, info, uid: str, payload: SupplierInputType
     ) -> SupplierResponse:  # noqa
 
         if not uid:
@@ -299,7 +305,7 @@ class SetupMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_manufacturer(
-            self, info, payload: ManufacturerInputType
+        self, info, payload: ManufacturerInputType
     ) -> ManufacturerResponse:  # noqa
 
         if not payload.name:
@@ -321,7 +327,7 @@ class SetupMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_manufacturer(
-            self, info, uid: str, payload: ManufacturerInputType
+        self, info, uid: str, payload: ManufacturerInputType
     ) -> ManufacturerResponse:  # noqa
 
         if not uid:
@@ -347,7 +353,7 @@ class SetupMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_country(
-            self, info, payload: CountryInputType
+        self, info, payload: CountryInputType
     ) -> CountryResponse:  # noqa
 
         if not payload.name:
@@ -369,7 +375,7 @@ class SetupMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_country(
-            self, info, uid: str, payload: CountryInputType
+        self, info, uid: str, payload: CountryInputType
     ) -> CountryResponse:  # noqa
 
         if not uid:
@@ -395,7 +401,7 @@ class SetupMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_province(
-            self, info, payload: ProvinceInputType
+        self, info, payload: ProvinceInputType
     ) -> ProvinceResponse:  # noqa
         if not payload.name:
             return OperationError(error="Please Provide a name for the Province")
@@ -416,7 +422,7 @@ class SetupMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_province(
-            self, info, uid: str, payload: ProvinceInputType
+        self, info, uid: str, payload: ProvinceInputType
     ) -> ProvinceResponse:  # noqa
 
         if not uid:
@@ -442,7 +448,7 @@ class SetupMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_district(
-            self, info, payload: DistrictInputType
+        self, info, payload: DistrictInputType
     ) -> DistrictResponse:  # noqa
 
         if not payload.name:
@@ -464,7 +470,7 @@ class SetupMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_district(
-            self, info, uid: str, payload: DistrictInputType
+        self, info, uid: str, payload: DistrictInputType
     ) -> DistrictResponse:  # noqa
         if not uid:
             return OperationError(error="No uid provided to identity update obj")
@@ -507,7 +513,7 @@ class SetupMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_unit(
-            self, info, uid: str, payload: UnitInputType
+        self, info, uid: str, payload: UnitInputType
     ) -> UnitResponse:  # noqa
 
         if not uid:

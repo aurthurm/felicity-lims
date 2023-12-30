@@ -1,12 +1,12 @@
 import Swal from 'sweetalert2';
-import JSConfetti from 'js-confetti';
+// import JSConfetti from 'js-confetti';
 import { Notyf } from 'notyf';
 
-const jsConfetti = new JSConfetti();
+// const jsConfetti = new JSConfetti();
 
-jsConfetti.addConfetti({
-    emojis: ['🌈', '⚡️', '💥', '✨', '💫', '🌸'],
-});
+// jsConfetti.addConfetti({
+//     emojis: ['🌈', '⚡️', '💥', '✨', '💫', '🌸'],
+// });
 
 const notyf = new Notyf({
     // https://github.com/caroso1222/notyf

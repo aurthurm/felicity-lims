@@ -5,6 +5,7 @@ from typing import AsyncGenerator
 import strawberry  # noqa
 
 from api.gql.notification.types import ActivityStreamType
+
 # from api.gql.permissions import IsAuthenticated
 from apps.common.channel import BroadcastEvent, Subscriber, broadcast
 from apps.notification.models import ActivityStream

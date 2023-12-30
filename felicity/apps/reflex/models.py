@@ -43,13 +43,13 @@ class ReflexBrainAddition(DBModel):
 
     @classmethod
     async def create(
-            cls, obj_in: schemas.ReflexBrainAdditionCreate
+        cls, obj_in: schemas.ReflexBrainAdditionCreate
     ) -> schemas.ReflexBrainAddition:
         data = cls._import(obj_in)
         return await super().create(**data)
 
     async def update(
-            self, obj_in: schemas.ReflexBrainAdditionUpdate
+        self, obj_in: schemas.ReflexBrainAdditionUpdate
     ) -> schemas.ReflexBrainAddition:
         data = self._import(obj_in)
         return await super().update(**data)
@@ -69,13 +69,13 @@ class ReflexBrainFinal(DBModel):
 
     @classmethod
     async def create(
-            cls, obj_in: schemas.ReflexBrainFinalCreate
+        cls, obj_in: schemas.ReflexBrainFinalCreate
     ) -> schemas.ReflexBrainFinal:
         data = cls._import(obj_in)
         return await super().create(**data)
 
     async def update(
-            self, obj_in: schemas.ReflexBrainFinalUpdate
+        self, obj_in: schemas.ReflexBrainFinalUpdate
     ) -> schemas.ReflexBrainFinal:
         data = self._import(obj_in)
         return await super().update(**data)
@@ -97,13 +97,13 @@ class ReflexBrainCriteria(DBModel):
 
     @classmethod
     async def create(
-            cls, obj_in: schemas.ReflexBrainCriteriaCreate
+        cls, obj_in: schemas.ReflexBrainCriteriaCreate
     ) -> schemas.ReflexBrainCriteria:
         data = cls._import(obj_in)
         return await super().create(**data)
 
     async def update(
-            self, obj_in: schemas.ReflexBrainCriteriaUpdate
+        self, obj_in: schemas.ReflexBrainCriteriaUpdate
     ) -> schemas.ReflexBrainCriteria:
         data = self._import(obj_in)
         return await super().update(**data)

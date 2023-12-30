@@ -13,11 +13,15 @@ def setup_webapp(app: FastAPI, serve_webapp: bool):
     templates = Jinja2Templates(directory=STATIC_DIR)
 
     if serve_webapp:
-        app.mount("/assets", StaticFiles(directory=f"{STATIC_DIR}assets"), name="assets")
+        app.mount(
+            "/assets", StaticFiles(directory=f"{STATIC_DIR}assets"), name="assets"
+        )
 
         @app.get("/", response_class=HTMLResponse)
         async def handler(request: Request):
-            return templates.TemplateResponse("index.html", context={"request": request})
+            return templates.TemplateResponse(
+                "index.html", context={"request": request}
+            )
 
     @app.get(backends)
     def api_gql_view(request):

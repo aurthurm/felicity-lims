@@ -23,9 +23,9 @@ fhir_v4 = APIRouter(tags=["fhir-v4"], prefix="/fhir")
 
 @fhir_v4.post("/{resource_type}")
 async def add_resource(
-        request: Request,
-        resource_type: str,
-        current_user: Annotated[User, Depends(get_current_user)],
+    request: Request,
+    resource_type: str,
+    current_user: Annotated[User, Depends(get_current_user)],
 ):
     """
     Add a fhir resource
@@ -51,9 +51,9 @@ async def add_resource(
 
 @fhir_v4.get("/{resource}/{resource_id}")
 async def get_resource(
-        resource: str,
-        resource_id: int,
-        current_user: Annotated[User, Depends(get_current_user)],
+    resource: str,
+    resource_id: int,
+    current_user: Annotated[User, Depends(get_current_user)],
 ):
     """
     Supported Resources are DiagnosticReport and  Patient
@@ -71,7 +71,5 @@ async def get_resource(
         item = await get_diagnostic_report_resource(resource_id)
 
     if not item:
-        raise HTTPException(404,
-                            f"{resource} with id {resource_id} not found"
-                            )
+        raise HTTPException(404, f"{resource} with id {resource_id} not found")
     return item

@@ -36,12 +36,16 @@ async def test_user_login(app):
         }
     """
 
-    response = await app.post("felicity-gql", json={
-        "query": authe, "variables": {
-            "username": settings.FIRST_SEPERUSER_USERNAME,
-            "password": settings.FIRST_SUPERUSER_PASSWORD
-        }
-    })
+    response = await app.post(
+        "felicity-gql",
+        json={
+            "query": authe,
+            "variables": {
+                "username": settings.FIRST_SEPERUSER_USERNAME,
+                "password": settings.FIRST_SUPERUSER_PASSWORD,
+            },
+        },
+    )
     data = response.json()["data"]["authenticateUser"]
     logger.info(f"superuser_login response: {response} {response.json}")
     assert response.status_code == 200
@@ -55,8 +59,9 @@ async def test_register_users(app, users, auth_data):
     _final = []
     for user in users:
         response = await app.post(
-            "felicity-gql", json={"query": add_user_mutation, "variables": user},
-            headers=auth_data["headers"]
+            "felicity-gql",
+            json={"query": add_user_mutation, "variables": user},
+            headers=auth_data["headers"],
         )
 
         logger.info(f"register_users response: {response} {response.json}")
@@ -82,7 +87,7 @@ async def test_register_users(app, users, auth_data):
                     "passwordc": make_password(auth["firstName"]),
                 },
             },
-            headers=auth_data["headers"]
+            headers=auth_data["headers"],
         )
 
         logger.info(f"add-auth response: {response} {response.json}")

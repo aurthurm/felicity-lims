@@ -67,12 +67,16 @@ async def auth_data(app):
         }
     """
 
-    response = await app.post("felicity-gql", json={
-        "query": authe, "variables": {
-            "username": settings.FIRST_SEPERUSER_USERNAME,
-            "password": settings.FIRST_SUPERUSER_PASSWORD
-        }
-    })
+    response = await app.post(
+        "felicity-gql",
+        json={
+            "query": authe,
+            "variables": {
+                "username": settings.FIRST_SEPERUSER_USERNAME,
+                "password": settings.FIRST_SUPERUSER_PASSWORD,
+            },
+        },
+    )
     data = response.json()["data"]["authenticateUser"]
     return {
         "token": data["token"],

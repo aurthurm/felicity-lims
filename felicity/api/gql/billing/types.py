@@ -3,7 +3,11 @@ from typing import List, Optional
 
 import strawberry  # noqa
 
-from api.gql.analysis.types.analysis import AnalysisRequestType, AnalysisType, ProfileType
+from api.gql.analysis.types.analysis import (
+    AnalysisRequestType,
+    AnalysisType,
+    ProfileType,
+)
 from api.gql.client.types import ClientType
 from api.gql.patient.types import PatientType
 from api.gql.types import BytesScalar, JSONScalar

@@ -14,10 +14,17 @@ from apps.analysis.models.results import (
 )
 from apps.billing.config import DiscountType, DiscountValueType
 from apps.billing.models import (
-    ProfilePrice, AnalysisPrice,
-    ProfileDiscount, AnalysisDiscount
+    ProfilePrice,
+    AnalysisPrice,
+    ProfileDiscount,
+    AnalysisDiscount,
 )
-from apps.billing.schemas import AnalysisPriceCreate, AnalysisDiscountCreate, ProfileDiscountCreate, ProfilePriceCreate
+from apps.billing.schemas import (
+    AnalysisPriceCreate,
+    AnalysisDiscountCreate,
+    ProfileDiscountCreate,
+    ProfilePriceCreate,
+)
 from apps.job import conf as job_conf
 from apps.job.models import Job
 from apps.job.schemas import JobCreate
@@ -53,7 +60,7 @@ async def get_last_verificator(result_uid: str):
 
 
 async def sample_search(
-        model, status: str, text: str, client_uid: str
+    model, status: str, text: str, client_uid: str
 ) -> List[schemas.SampleType]:
     """No pagination"""
     filters = []
@@ -239,8 +246,8 @@ async def result_mutator(result: AnalysisResult):
         # Correction factor
         for cf in correction_factors:
             if (
-                    cf.instrument_uid == result.instrument_uid
-                    and cf.method_uid == result.method_uid
+                cf.instrument_uid == result.instrument_uid
+                and cf.method_uid == result.method_uid
             ):
                 await ResultMutation.create(
                     obj_in={
@@ -355,23 +362,27 @@ async def billing_setup_profiles(profile_uids=None):
     for profile in profiles:
         exists = await ProfilePrice.get_one(profile_uid=profile.uid)
         if not exists:
-            await ProfilePrice.create(ProfilePriceCreate(**{
-                "profile_uid": profile.uid,
-                "amount": 0.0,
-                "is_active": True
-            }))
+            await ProfilePrice.create(
+                ProfilePriceCreate(
+                    **{"profile_uid": profile.uid, "amount": 0.0, "is_active": True}
+                )
+            )
 
         exists = await ProfileDiscount.get_one(profile_uid=profile.uid)
         if not exists:
-            await ProfileDiscount.create(ProfileDiscountCreate(**{
-                "name": profile.name + "-Discount",
-                "profile_uid": profile.uid,
-                "discount_type": DiscountType.SALE,
-                "value_type": DiscountValueType.PERCENTATE,
-                "value_percent": 0.0,
-                "value_amount": 0.0,
-                "is_active": False
-            }))
+            await ProfileDiscount.create(
+                ProfileDiscountCreate(
+                    **{
+                        "name": profile.name + "-Discount",
+                        "profile_uid": profile.uid,
+                        "discount_type": DiscountType.SALE,
+                        "value_type": DiscountValueType.PERCENTATE,
+                        "value_percent": 0.0,
+                        "value_amount": 0.0,
+                        "is_active": False,
+                    }
+                )
+            )
 
 
 async def billing_setup_analysis(analysis_uids=None):
@@ -383,20 +394,24 @@ async def billing_setup_analysis(analysis_uids=None):
     for analysis in analyses:
         exists = await AnalysisPrice.get_one(analysis_uid=analysis.uid)
         if not exists:
-            await AnalysisPrice.create(AnalysisPriceCreate(**{
-                "analysis_uid": analysis.uid,
-                "amount": 0.0,
-                "is_active": True
-            }))
+            await AnalysisPrice.create(
+                AnalysisPriceCreate(
+                    **{"analysis_uid": analysis.uid, "amount": 0.0, "is_active": True}
+                )
+            )
 
         exists = await AnalysisDiscount.get_one(analysis_uid=analysis.uid)
         if not exists:
-            await AnalysisDiscount.create(AnalysisDiscountCreate(**{
-                "name": analysis.name + "-Discount",
-                "analysis_uid": analysis.uid,
-                "discount_type": DiscountType.SALE,
-                "value_type": DiscountValueType.PERCENTATE,
-                "value_percent": 0.0,
-                "value_amount": 0.0,
-                "is_active": False
-            }))
+            await AnalysisDiscount.create(
+                AnalysisDiscountCreate(
+                    **{
+                        "name": analysis.name + "-Discount",
+                        "analysis_uid": analysis.uid,
+                        "discount_type": DiscountType.SALE,
+                        "value_type": DiscountValueType.PERCENTATE,
+                        "value_percent": 0.0,
+                        "value_amount": 0.0,
+                        "is_active": False,
+                    }
+                )
+            )

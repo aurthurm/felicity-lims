@@ -56,7 +56,7 @@ class ClientContactInputType:
 class ClientMutations:
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_client(
-            self, info: Info, payload: ClientInputType
+        self, info: Info, payload: ClientInputType
     ) -> ClientResponse:
 
         is_authenticated, felicity_user = await auth_from_info(info)
@@ -105,7 +105,7 @@ class ClientMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_client(
-            self, info, uid: str, payload: ClientInputType
+        self, info, uid: str, payload: ClientInputType
     ) -> ClientResponse:
 
         is_authenticated, felicity_user = await auth_from_info(info)
@@ -137,7 +137,7 @@ class ClientMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_client_contact(
-            self, info, payload: ClientContactInputType
+        self, info, payload: ClientContactInputType
     ) -> ClientContactResponse:
 
         is_authenticated, felicity_user = await auth_from_info(info)
@@ -180,7 +180,7 @@ class ClientMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_client_contact(
-            self, info, uid: str, payload: ClientContactInputType
+        self, info, uid: str, payload: ClientContactInputType
     ) -> ClientContactResponse:
 
         is_authenticated, felicity_user = await auth_from_info(info)

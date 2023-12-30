@@ -1,9 +1,7 @@
 from datetime import datetime
 
 from apps.analysis.models import analysis as a_models
-from apps.billing.config import (
-    DiscountType, DiscountValueType, TransactionKind
-)
+from apps.billing.config import DiscountType, DiscountValueType, TransactionKind
 from apps.billing.exceptions import (
     CustomerAlreadyUsedVoucherException,
     InactiveTestBillException,
@@ -14,15 +12,21 @@ from apps.billing.exceptions import (
 )
 from apps.billing.models import (
     TestBill,
-    ProfilePrice, ProfileDiscount,
-    AnalysisPrice, AnalysisDiscount,
+    ProfilePrice,
+    ProfileDiscount,
+    AnalysisPrice,
+    AnalysisDiscount,
     TestBillTransaction,
-    Voucher, VoucherCode, VoucherCustomer,
-    test_bill_item
+    Voucher,
+    VoucherCode,
+    VoucherCustomer,
+    test_bill_item,
 )
 from apps.billing.schemas import (
-    TestBillCreate, TestBillUpdate,
-    TestBillTransactionCreate, TestBillTransactionUpdate
+    TestBillCreate,
+    TestBillUpdate,
+    TestBillTransactionCreate,
+    TestBillTransactionUpdate,
 )
 from apps.impress.invoicing.utils import impress_invoice
 from apps.setup.models.setup import Laboratory, LaboratorySetting
@@ -72,23 +76,27 @@ async def bill_order(analysis_request: a_models.AnalysisRequest, auto_bill=False
 
         discount = {}
         if p_discount:
-            discount["discount_type"] = p_discount.discount_type,
-            discount["value_type"] = p_discount.value_type,
-            discount["percentage"] = p_discount.value_percent,
+            discount["discount_type"] = (p_discount.discount_type,)
+            discount["value_type"] = (p_discount.value_type,)
+            discount["percentage"] = (p_discount.value_percent,)
             discount["amount"] = p_discount.value_amount
             if p_discount.value_type == DiscountValueType.PERCENTATE:
-                discount["amount"] = float(p_discount.value_percent) * float(p_price.amount)
+                discount["amount"] = float(p_discount.value_percent) * float(
+                    p_price.amount
+                )
 
-            in_transactions.append({
-                "kind": TransactionKind.AUTO_DISCOUNT,
-                "amount": discount["amount"],
-                "processed": True,
-                "notes": "automated discount"
-            })
+            in_transactions.append(
+                {
+                    "kind": TransactionKind.AUTO_DISCOUNT,
+                    "amount": discount["amount"],
+                    "processed": True,
+                    "notes": "automated discount",
+                }
+            )
 
         pricing_lines["profiles"][p_price.profile_uid] = {
             "price": p_price.amount,
-            "discount": discount
+            "discount": discount,
         }
 
     if total_charged <= 0:
@@ -107,24 +115,28 @@ async def bill_order(analysis_request: a_models.AnalysisRequest, auto_bill=False
 
         discount = {}
         if a_discount:
-            discount["discount_type"] = a_discount.discount_type,
-            discount["value_type"] = a_discount.value_type,
-            discount["percentage"] = a_discount.value_percent,
+            discount["discount_type"] = (a_discount.discount_type,)
+            discount["value_type"] = (a_discount.value_type,)
+            discount["percentage"] = (a_discount.value_percent,)
             discount["amount"] = a_discount.value_amount
             if a_discount.value_type == DiscountValueType.PERCENTATE:
-                discount["amount"] = float(a_discount.value_percent) * float(a_price.amount)
+                discount["amount"] = float(a_discount.value_percent) * float(
+                    a_price.amount
+                )
 
-            in_transactions.append({
-                "kind": TransactionKind.AUTO_DISCOUNT,
-                "amount": discount["amount"],
-                "processed": False,
-                "is_success": False,
-                "notes": "automated discount"
-            })
+            in_transactions.append(
+                {
+                    "kind": TransactionKind.AUTO_DISCOUNT,
+                    "amount": discount["amount"],
+                    "processed": False,
+                    "is_success": False,
+                    "notes": "automated discount",
+                }
+            )
 
         pricing_lines["analyses"][a_price.analysis_uid] = {
             "price": a_price.amount,
-            "discount": discount
+            "discount": discount,
         }
 
     # create a new bill
@@ -137,30 +149,27 @@ async def bill_order(analysis_request: a_models.AnalysisRequest, auto_bill=False
         partial=False,
         total_charged=total_charged,
         total_paid=0,
-        json_content=pricing_lines
+        json_content=pricing_lines,
     )
     bill = await TestBill.create(bill_in)
 
     # attach related orders to bill
     await TestBill.table_insert(
         test_bill_item,
-        {
-            "test_bill_uid": bill.uid,
-            "analysis_request_uid": analysis_request.uid
-        }
+        {"test_bill_uid": bill.uid, "analysis_request_uid": analysis_request.uid},
     )
 
     # apply discounts
     for t_in in in_transactions:
         # add a transaction
-        transaction = await TestBillTransaction.create(TestBillTransactionCreate(
-            **t_in,
-            test_bill_uid=bill.uid,
-        ))
-        # apply sale discounts from the transaction
-        bill_update_in = TestBillUpdate(
-            total_paid=bill.total_paid + transaction.amount
+        transaction = await TestBillTransaction.create(
+            TestBillTransactionCreate(
+                **t_in,
+                test_bill_uid=bill.uid,
+            )
         )
+        # apply sale discounts from the transaction
+        bill_update_in = TestBillUpdate(total_paid=bill.total_paid + transaction.amount)
         await bill.update(bill_update_in)
         # update transaction
         tra_update_in = TestBillTransactionUpdate(
@@ -172,7 +181,9 @@ async def bill_order(analysis_request: a_models.AnalysisRequest, auto_bill=False
     await impress_invoice(bill)
 
 
-async def apply_voucher(voucher_code: str, test_bill_uid: str, customer_uid: str) -> TestBill:
+async def apply_voucher(
+    voucher_code: str, test_bill_uid: str, customer_uid: str
+) -> TestBill:
     today = datetime.now()
     bill = await TestBill.get(uid=test_bill_uid)
     if not bill.is_active:
@@ -197,8 +208,7 @@ async def apply_voucher(voucher_code: str, test_bill_uid: str, customer_uid: str
         raise VoucherLimitExceededException()
 
     voucher_customer = await VoucherCustomer.get(
-        patient_uid=customer_uid,
-        voucher_code_uid=code.uid
+        patient_uid=customer_uid, voucher_code_uid=code.uid
     )
     if voucher_customer and voucher.once_per_customer:
         raise CustomerAlreadyUsedVoucherException()
@@ -239,14 +249,16 @@ async def apply_voucher(voucher_code: str, test_bill_uid: str, customer_uid: str
             p_price = await ProfilePrice.get(profile_uid=p_disc.profile_uid)
             amount = float(p_disc.value_percent) * float(p_price.amount)
 
-        prof_in_trans.append(TestBillTransactionCreate(
-            test_bill_uid=bill.uid,
-            kind=TransactionKind.AUTO_DISCOUNT,
-            amount=amount,
-            processed=False,
-            is_success=False,
-            notes="voucher discount"
-        ))
+        prof_in_trans.append(
+            TestBillTransactionCreate(
+                test_bill_uid=bill.uid,
+                kind=TransactionKind.AUTO_DISCOUNT,
+                amount=amount,
+                processed=False,
+                is_success=False,
+                notes="voucher discount",
+            )
+        )
 
     for a_disc in analyses_discounts:
         amount = a_disc.value_amount
@@ -254,17 +266,19 @@ async def apply_voucher(voucher_code: str, test_bill_uid: str, customer_uid: str
             a_price = await AnalysisPrice.get(analysis_uid=a_disc.analysis_uid)
             amount = float(a_disc.value_percent) * float(a_price.amount)
 
-        anal_in_trans.append(TestBillTransactionCreate(
-            test_bill_uid=bill.uid,
-            kind=TransactionKind.AUTO_DISCOUNT,
-            amount=amount,
-            processed=False,
-            is_success=False,
-            notes="voucher discount"
-        ))
+        anal_in_trans.append(
+            TestBillTransactionCreate(
+                test_bill_uid=bill.uid,
+                kind=TransactionKind.AUTO_DISCOUNT,
+                amount=amount,
+                processed=False,
+                is_success=False,
+                notes="voucher discount",
+            )
+        )
 
     if voucher.once_per_order:
-        # pick one for each with: 
+        # pick one for each with:
         if prof_in_trans:
             prof_in_trans = [sorted(prof_in_trans, key=lambda x: x.amount)[0]]
         if anal_in_trans:
@@ -276,9 +290,7 @@ async def apply_voucher(voucher_code: str, test_bill_uid: str, customer_uid: str
     for tras_in in in_trans:
         transaction = await TestBillTransaction.create(tras_in)
         # apply sale discounts from the transaction
-        bill_update_in = TestBillUpdate(
-            total_paid=bill.total_paid + transaction.amount
-        )
+        bill_update_in = TestBillUpdate(total_paid=bill.total_paid + transaction.amount)
         bill = await bill.update(bill_update_in)
         # update transaction
         tra_update_in = TestBillTransactionUpdate(
@@ -289,10 +301,9 @@ async def apply_voucher(voucher_code: str, test_bill_uid: str, customer_uid: str
 
     # add voucher customer
     if not voucher_customer:
-        await VoucherCustomer.create({
-            "patient_uid": customer_uid,
-            "voucher_code_uid": code.uid
-        })
+        await VoucherCustomer.create(
+            {"patient_uid": customer_uid, "voucher_code_uid": code.uid}
+        )
 
     await impress_invoice(bill)
     return bill

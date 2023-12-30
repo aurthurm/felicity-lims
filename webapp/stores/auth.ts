@@ -3,10 +3,9 @@ import { ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import { IUser } from '../models/auth';
 import { STORAGE_AUTH_KEY, USER_GROUP_OVERRIDE } from '../conf';
-import { AUTHENTICATE_USER, REFRESH_TOKEN } from '../graphql/operations/_mutations';
+import { AUTHENTICATE_USER, REFRESH_TOKEN, REQUEST_PASSWORD_RESET, RESET_PASSWORD, VALIDATE_PASSWORD_RESET_TOKEN } from '../graphql/operations/_mutations';
 import { useAuthenticateUserMutation } from '../graphql/graphql';
 import { useNotifyToast, useApiUtil, userPreferenceComposable } from '../composables';
-import { userInfo } from 'os';
 import jwtDecode from 'jwt-decode';
 
 const { withClientMutation } = useApiUtil();
@@ -19,20 +18,33 @@ interface IAuth {
     tokenType?: string;
     user?: IUser;
     isAuthenticated: boolean;
-    authenticating: boolean;
+    processing: boolean;
     refreshTokenTimeout: any;
+    forgotPassword: boolean;
+    receivedToken: boolean;
+    resetData: {
+        canReset: boolean;
+        username?: string;
+        authUid?: string
+    }
 }
 
 export const useAuthStore = defineStore('auth', () => {
-    const router = useRouter()
     const initialState: IAuth = {
         user: undefined,
         token: '',
         refresh: '',
         tokenType: '',
         isAuthenticated: false,
-        authenticating: false,
+        processing: false,
         refreshTokenTimeout: undefined,
+        forgotPassword: false,
+        receivedToken: false,
+        resetData: {
+            canReset: false,
+            username: '',
+            authUid: ''
+        }
     };
 
     const auth = ref({ ...initialState });
@@ -65,7 +77,7 @@ export const useAuthStore = defineStore('auth', () => {
             ...auth.value,
             ...data,
             isAuthenticated: true,
-            authenticating: false,
+            processing: false,
         };
         upsertPermission();
     } else {
@@ -83,11 +95,11 @@ export const useAuthStore = defineStore('auth', () => {
     const persistAuth = async data => {
         auth.value = data;
         auth.value.isAuthenticated = true;
-        auth.value.authenticating = false;
+        auth.value.processing = false;
     };
 
     const authenticate = async payload => {
-        auth.value.authenticating = true;
+        auth.value.processing = true;
 
         // typescript-urql
         // const [{ data, fetching, error }, authenticate]  = useAuthenticateUserMutation();
@@ -96,9 +108,7 @@ export const useAuthStore = defineStore('auth', () => {
 
         // typescript-vue-urql
         // useAuthenticateUserMutation().executeMutation({username: "", password: ""}, {requestPolicy: "network-only"}).then(res => {
-        //     console.log(res)
         // }).catch(err => {
-        //     console.log(err)
         // }).finally(() => (auth.value.authenticating = false));
 
         // const { operation } = useAuthenticateUserMutation({username: "", password: ""});
@@ -106,16 +116,61 @@ export const useAuthStore = defineStore('auth', () => {
         await withClientMutation(AUTHENTICATE_USER, payload, 'authenticateUser')
             .then(res => {
                 if(!res) {
-                    auth.value.authenticating = false;
+                    auth.value.processing = false;
                     return
                 };
                 persistAuth(res);
             })
-            .catch(err => (auth.value.authenticating = false));
+            .catch(err => (auth.value.processing = false));
     };
 
+    const setForgotPassword = (v: boolean) => {
+        auth.value.forgotPassword = v
+    }
+
+    const setReceivedResetToken = (v: boolean) => {
+        auth.value.receivedToken = v
+    }
+
+    const resetPasswordRequest = async (email: string) => {
+        auth.value.processing = true;
+        await withClientMutation(REQUEST_PASSWORD_RESET, { email }, 'requestPasswordReset')
+        .then(({ message }) => {
+            setReceivedResetToken(true);
+            auth.value.processing = false;
+        })
+        .catch(err => (auth.value.processing = false));
+    }
+
+    const validatePasswordResetToken = async (token: string) => {
+        auth.value.processing = true;
+        await withClientMutation(VALIDATE_PASSWORD_RESET_TOKEN, { token }, 'validatePasswordResetToken')
+        .then(res => {
+            auth.value.resetData = {
+                canReset: res?.authUid && res?.username,
+                authUid: res?.authUid,
+                username:res?.username
+            }
+            auth.value.processing = false;
+        })
+        .catch(err => (auth.value.processing = false));
+    }
+
+    const resetPassword = async (password: string, passwordc: string) => {
+        auth.value.processing = true;
+        await withClientMutation(RESET_PASSWORD, { 
+            username: auth.value?.resetData?.username, 
+            authUid: auth.value?.resetData?.authUid, 
+            password, passwordc 
+        }, 'resetPassword')
+        .then(res => {
+            setForgotPassword(false)
+            auth.value.processing = false;
+        })
+        .catch(err => (auth.value.processing = false));
+    }
+    
     const refreshToken = async (): Promise<void> => {
-        console.log("refreshing tken");
         await withClientMutation(REFRESH_TOKEN, { refreshToken: auth.value.refresh }, 'refresh')
         .then(res => {
             if(!res) {
@@ -123,7 +178,7 @@ export const useAuthStore = defineStore('auth', () => {
             };
             persistAuth(res);
         })
-        .catch(err => (auth.value.authenticating = false));
+        .catch(err => (auth.value.processing = false));
     };
 
     const startRefreshTokenTimer = async () => {
@@ -131,9 +186,7 @@ export const useAuthStore = defineStore('auth', () => {
         const decodedToken: any = jwtDecode(auth.value.token!)
         // refresh the token a minute before it expires
         const expires = new Date(+(decodedToken.exp) * 1000);
-        console.log("expires: ", expires);
         const timeout = expires.getTime() - Date.now() - (60 * 1000);
-        console.log("timeout: ", timeout);
         //
         auth.value.refreshTokenTimeout = setTimeout(() => {
             refreshToken()
@@ -147,6 +200,11 @@ export const useAuthStore = defineStore('auth', () => {
     return {
         auth,
         authenticate,
+        validatePasswordResetToken,
+        resetPasswordRequest,
+        resetPassword,
+        setReceivedResetToken,
+        setForgotPassword,
         reset,
         persistAuth,
         logout

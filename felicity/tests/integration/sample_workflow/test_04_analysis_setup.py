@@ -107,7 +107,7 @@ async def test_add_method(app, auth_data, instruments):
     method = {
         "name": "RT PCR",
         "keyword": "RTPCT",
-        "instruments": [instruments[0]["uid"]]
+        "instruments": [instruments[0]["uid"]],
     }
     response = await app.post(
         "/felicity-gql",

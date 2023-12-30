@@ -10,7 +10,7 @@ from .types import (
     TestBillEdge,
     TestBillCursorPage,
     TestBillTransactionType,
-    TestBillInvoiceType
+    TestBillInvoiceType,
 )
 
 billing_types = [
@@ -27,6 +27,3 @@ billing_types = [
     TestBillTransactionType,
     TestBillInvoiceType,
 ]
-
-
-

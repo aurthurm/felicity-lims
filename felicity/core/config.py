@@ -45,7 +45,7 @@ class Settings(BaseSettings):
     CORS_ORIGINS: list[str] = [
         "http://localhost:5173",
         "http://localhost:3000",
-        "http://localhost:8000"
+        "http://localhost:8000",
     ]
     CORS_SUPPORTS_CREDENTIALS: bool = True
     CORS_ALLOW_HEADERS: list[str] = [
@@ -57,7 +57,7 @@ class Settings(BaseSettings):
     ]
     # ------------------------------------------ Dates
     DATE_STR_FORMAT: str = "%d-%m-%y"
-    DATETIME_STR_FORMAT: str = F"{DATE_STR_FORMAT} %H:%M"
+    DATETIME_STR_FORMAT: str = f"{DATE_STR_FORMAT} %H:%M"
     DATE_HUMAN_FORMAT: str = "%d-%b-%Y"
     DATETIME_HUMAN_FORMAT: str = f"{DATE_HUMAN_FORMAT} %I.%M %p"
     TIMEZONE_AWARE: bool = False
@@ -77,7 +77,7 @@ class Settings(BaseSettings):
 
     @field_validator("SQLALCHEMY_DATABASE_URI")
     def assemble_async_db_connection(
-            cls, v: str | None, info: FieldValidationInfo
+        cls, v: str | None, info: FieldValidationInfo
     ) -> Any:
         if isinstance(v, str):
             return v
@@ -85,7 +85,7 @@ class Settings(BaseSettings):
 
     @field_validator("SQLALCHEMY_TEST_DATABASE_URI")
     def assemble_async_test_db_connection(
-            cls, v: str | None, info: FieldValidationInfo
+        cls, v: str | None, info: FieldValidationInfo
     ) -> Any:
         if isinstance(v, str):
             return v

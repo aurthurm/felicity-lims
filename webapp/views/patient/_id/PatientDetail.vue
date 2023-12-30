@@ -43,7 +43,7 @@ function addSample(patient?: IPatient): void {
     <section class="col-span-12">
       <section class="my-4">
         <button v-show="shield.hasRights(shield.actions.UPDATE, shield.objects.PATIENT)"
-          class="px-2 py-1 mr-2 border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
+          class="px-2 py-1 mr-2 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
           @click.prevent="addSample(patient)">
           Add Sample
         </button>

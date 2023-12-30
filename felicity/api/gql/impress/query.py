@@ -23,13 +23,13 @@ logger = logging.getLogger(__name__)
 class ReportImpressQuery:
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def impress_reports_meta(
-            self, info, uids: List[str]
+        self, info, uids: List[str]
     ) -> List[ReportImpressType]:
         return await ReportImpress.get_all(sample_uid__in=uids)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def impress_reports_download(
-            self, info, uids: List[str]
+        self, info, uids: List[str]
     ) -> BytesScalar | None:
         """Fetch Latest report given sample id"""
         items = await ReportImpress.get_all(sample_uid__in=uids)
@@ -85,25 +85,23 @@ class ReportImpressQuery:
         samples = await Sample.get_all(uid__in=sample_uids)
 
         @lru_cache
-        async def _client_name(uid: str) -> str: return (await Client.get(uid=uid)).name
+        async def _client_name(uid: str) -> str:
+            return (await Client.get(uid=uid)).name
 
         barcode_metas = [
             BarCode(
                 barcode=_s.sample_id,
                 metadata=[
                     BarCodeMeta(
-                        label="CRID",
-                        value=_s.analysis_request.client_request_id
+                        label="CRID", value=_s.analysis_request.client_request_id
                     ),
-                    BarCodeMeta(
-                        label="Sample Type",
-                        value=_s.sample_type.name
-                    ),
+                    BarCodeMeta(label="Sample Type", value=_s.sample_type.name),
                     BarCodeMeta(
                         label="Client",
-                        value=_s.analysis_request.client.name  # await _client_name(_s.analysis_request.client_uid)
-                    )
-                ]
-            ) for _s in samples
+                        value=_s.analysis_request.client.name,  # await _client_name(_s.analysis_request.client_uid)
+                    ),
+                ],
+            )
+            for _s in samples
         ]
         return await impress_barcodes(barcode_metas)

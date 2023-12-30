@@ -40,13 +40,13 @@ class StorageLocation(BaseAuditDBModel):
 
     @classmethod
     async def create(
-            cls, obj_in: schemas.StorageLocationCreate
+        cls, obj_in: schemas.StorageLocationCreate
     ) -> schemas.StorageLocation:
         data = cls._import(obj_in)
         return await super().create(**data)
 
     async def update(
-            self, obj_in: schemas.StorageLocationUpdate
+        self, obj_in: schemas.StorageLocationUpdate
     ) -> schemas.StorageLocation:
         data = self._import(obj_in)
         return await super().update(**data)
@@ -70,13 +70,13 @@ class StorageSection(BaseAuditDBModel):
 
     @classmethod
     async def create(
-            cls, obj_in: schemas.StorageSectionCreate
+        cls, obj_in: schemas.StorageSectionCreate
     ) -> schemas.StorageSection:
         data = cls._import(obj_in)
         return await super().create(**data)
 
     async def update(
-            self, obj_in: schemas.StorageSectionUpdate
+        self, obj_in: schemas.StorageSectionUpdate
     ) -> schemas.StorageSection:
         data = self._import(obj_in)
         return await super().update(**data)
@@ -118,13 +118,13 @@ class StorageContainer(BaseAuditDBModel):
 
     @classmethod
     async def create(
-            cls, obj_in: schemas.StorageContainerCreate
+        cls, obj_in: schemas.StorageContainerCreate
     ) -> schemas.StorageContainer:
         data = cls._import(obj_in)
         return await super().create(**data)
 
     async def update(
-            self, obj_in: schemas.StorageContainerUpdate
+        self, obj_in: schemas.StorageContainerUpdate
     ) -> schemas.StorageContainer:
         data = self._import(obj_in)
         return await super().update(**data)

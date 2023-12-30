@@ -26,7 +26,7 @@ def get_password_hash(password: str) -> str:
 
 #  JWTokens
 def create_access_token(
-        subject: Union[str, Any], expires_delta: timedelta = None
+    subject: Union[str, Any], expires_delta: timedelta = None
 ) -> str:
     if expires_delta:
         expire = datetime.utcnow() + expires_delta
@@ -37,7 +37,9 @@ def create_access_token(
 
     expire = expire.timestamp() * 1000  # convert to milliseconds
     to_encode = {"exp": expire, "sub": str(subject)}
-    encoded_jwt = jwt.encode(to_encode, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
+    encoded_jwt = jwt.encode(
+        to_encode, settings.SECRET_KEY, algorithm=settings.ALGORITHM
+    )
     return encoded_jwt
 
 
@@ -52,14 +54,20 @@ def create_access_token_from_refresh(refresh: str) -> str | None:
     return create_access_token(payload["sub"])
 
 
-def create_refresh_token(subject: Union[str, Any], expires_delta: timedelta = None) -> str:
+def create_refresh_token(
+    subject: Union[str, Any], expires_delta: timedelta = None
+) -> str:
     if expires_delta:
         expires_delta = datetime.utcnow() + expires_delta
     else:
-        expires_delta = datetime.utcnow() + timedelta(minutes=settings.REFRESH_TOKEN_EXPIRE_MINUTES)
+        expires_delta = datetime.utcnow() + timedelta(
+            minutes=settings.REFRESH_TOKEN_EXPIRE_MINUTES
+        )
 
     to_encode = {"exp": expires_delta.timestamp() * 1000, "sub": str(subject)}
-    encoded_jwt = jwt.encode(to_encode, settings.REFRESH_SECRET_KEY, algorithm=settings.ALGORITHM)
+    encoded_jwt = jwt.encode(
+        to_encode, settings.REFRESH_SECRET_KEY, algorithm=settings.ALGORITHM
+    )
     return encoded_jwt
 
 
@@ -69,14 +77,18 @@ def generate_password_reset_token(email: str) -> str:
     expires = now + delta
     exp = expires.timestamp()
     encoded_jwt = jwt.encode(
-        {"exp": exp, "nbf": now, "sub": email}, settings.SECRET_KEY, algorithm=settings.ALGORITHM
+        {"exp": exp, "nbf": now, "sub": email},
+        settings.SECRET_KEY,
+        algorithm=settings.ALGORITHM,
     )
     return encoded_jwt
 
 
 def verify_password_reset_token(token: str) -> str | None:
     try:
-        decoded_token = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
+        decoded_token = jwt.decode(
+            token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM]
+        )
         logger.info(f"decoded_token: {decoded_token}")
         return decoded_token["sub"]
     except jwt.JWTError:
@@ -132,12 +144,12 @@ def password_check(password, username):
 
     # overall result
     password_ok = not (
-            length_error
-            or digit_error
-            or uppercase_error
-            or lowercase_error
-            or symbol_error
-            or similar_error
+        length_error
+        or digit_error
+        or uppercase_error
+        or lowercase_error
+        or symbol_error
+        or similar_error
     )
     message = ""
     if not password_ok:

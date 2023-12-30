@@ -5,36 +5,168 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9f590b69-f929-45a1-8512-12ed6efbf028" name="Changes" comment="Added Invetory starter">
-      <change afterPath="$PROJECT_DIR$/felicity/apps/impress/barcode/utils.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/felicity/apps/impress/invoicing/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/felicity/apps/impress/sample/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/reads/Dashboard.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/reads/Deployment.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/reads/Interperability.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/reads/Introoduction.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/reads/Inventory.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/reads/Notices.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/reads/Notifications.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/reads/PatientManagement.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/reads/Peformance.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/reads/Referrals.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/reads/ReflexRules.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/reads/Reports.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/reads/SampleManagement.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/reads/SystemSettings.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/reads/TechSupport.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/reads/UserManagement.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/reads/WorkSheets.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/reads/reference.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/webapp/ideas.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/webapp/views/auth/PasswordReset.vue" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/webapp/views/auth/index.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/api/deps.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/deps.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/api/gql/analysis/mutations/analysis_profile.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/analysis/mutations/analysis_profile.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/api/gql/analysis/mutations/analysis_request.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/analysis/mutations/analysis_request.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/api/gql/analysis/mutations/analysis_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/analysis/mutations/analysis_service.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/api/gql/auth/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/auth/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/api/gql/billing/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/billing/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/api/gql/billing/mutations.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/billing/mutations.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/felicity/api/gql/billing/query.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/billing/query.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/api/gql/billing/types.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/billing/types.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/api/gql/client/mutations.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/client/mutations.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/felicity/api/gql/impress/query.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/impress/query.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/api/gql/instrument/mutations.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/instrument/mutations.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/api/gql/inventory/mutations.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/inventory/mutations.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/api/gql/notification/subscription.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/notification/subscription.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/api/gql/notification/types.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/notification/types.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/api/gql/reflex/mutations.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/reflex/mutations.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/api/gql/schema.graphql" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/schema.graphql" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/felicity/api/gql/setup/mutations.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/setup/mutations.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/apps/billing/invoicing/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/impress/barcode/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/apps/billing/invoicing/generic.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/impress/invoicing/engine.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/apps/billing/invoicing/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/impress/invoicing/utils.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/api/gql/types/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/types/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/api/gql/types/generic.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/types/generic.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/api/gql/user/mutations.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/user/mutations.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/api/gql/worksheet/mutations.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/worksheet/mutations.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/api/rest/api_v1/endpoints/reports.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/rest/api_v1/endpoints/reports.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/api/rest/api_v1/endpoints/setup.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/rest/api_v1/endpoints/setup.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/api/rest/api_v1/fhir/r4.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/rest/api_v1/fhir/r4.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/apps/analysis/models/analysis.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/analysis/models/analysis.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/apps/analysis/models/results.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/analysis/models/results.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/apps/analysis/permissions.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/analysis/permissions.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/apps/analysis/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/analysis/utils.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/apps/analytics/sources/sample.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/analytics/sources/sample.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/apps/billing/exceptions.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/billing/exceptions.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/apps/billing/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/billing/models.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/felicity/apps/billing/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/billing/utils.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/apps/impress/config.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/impress/barcode/engine.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/apps/impress/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/impress/sample/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/apps/impress/reports/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/impress/barcode/schema.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/apps/impress/reports/generic.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/impress/sample/engine.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/apps/impress/reports/trial.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/apps/impress/reports/utils.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/apps/impress/schemas.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/impress/sample/schemas.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/apps/impress/tasks.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/impress/sample/tasks.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/apps/impress/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/impress/sample/utils.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/apps/job/sched.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/job/sched.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/apps/shipment/manifest.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/shipment/manifest.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/apps/events/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/reads/RoadMap.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/apps/impress/barcode/engine.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/impress/barcode/engine.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/apps/impress/invoicing/engine.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/impress/invoicing/engine.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/apps/impress/invoicing/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/impress/invoicing/utils.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/apps/impress/sample/engine.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/impress/sample/engine.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/apps/impress/sample/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/impress/sample/utils.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/apps/instrument/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/instrument/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/apps/inventory/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/inventory/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/apps/iol/fhir/utils/create.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/iol/fhir/utils/create.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/apps/iol/relay.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/iol/relay.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/apps/messaging/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/messaging/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/apps/patient/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/patient/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/apps/reflex/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/reflex/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/apps/setup/models/setup.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/setup/models/setup.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/apps/storage/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/storage/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/apps/user/abstract.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/user/abstract.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/apps/user/events.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/user/events.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/apps/worksheet/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/worksheet/utils.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/core/config.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/core/config.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/core/security.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/core/security.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/felicity/database/base.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/database/base.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/ideas/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/ideas/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/database/base_class.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/database/base_class.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/init/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/init/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/init/setup/groups_perms.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/init/setup/groups_perms.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/init/setup/setup_analyses.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/init/setup/setup_analyses.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/lims/boot.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/lims/boot.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/migrations/versions/1b3226667bb5_init.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/migrations/versions/1b3226667bb5_init.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/migrations/versions/247906fc37e3_upgrade_1.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/migrations/versions/247906fc37e3_upgrade_1.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/tests/integration/conftest.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/tests/integration/conftest.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/tests/integration/sample_workflow/conftest.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/tests/integration/sample_workflow/conftest.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/tests/integration/sample_workflow/test_01_user.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/tests/integration/sample_workflow/test_01_user.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/tests/integration/sample_workflow/test_04_analysis_setup.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/tests/integration/sample_workflow/test_04_analysis_setup.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/tests/integration/sample_workflow/test_05_analysis_request.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/tests/integration/sample_workflow/test_05_analysis_request.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/tests/integration/sample_workflow/test_06_worksheet.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/tests/integration/sample_workflow/test_06_worksheet.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/tests/integration/sample_workflow/test_07_results.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/tests/integration/sample_workflow/test_07_results.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/tests/integration/storage_workflow/test_01_storage_location.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/tests/integration/storage_workflow/test_01_storage_location.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/tests/unit/test_user.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/tests/unit/test_user.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/felicity/utils/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/utils/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/composables/samples.ts" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/composables/samples.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/graphql/operations/analyses.queries.ts" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/graphql/operations/analyses.queries.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/utils/email/email-templates/output/reset_password.html" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/utils/email/email-templates/output/reset_password.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/utils/email/email-templates/src/reset_password.mjml" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/utils/email/email-templates/src/reset_password.mjml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/utils/email/email.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/utils/email/email.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/views/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/views/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/postgres-db-setup.txt" beforeDir="false" afterPath="$PROJECT_DIR$/postgres-db-setup.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webapp/App.vue" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/App.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webapp/api.ts" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/api.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webapp/composables/alert_toast.ts" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/composables/alert_toast.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webapp/composables/api_util.ts" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/composables/api_util.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webapp/graphql/operations/_mutations.ts" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/graphql/operations/_mutations.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webapp/graphql/operations/user.mutations.graphql" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/graphql/operations/user.mutations.graphql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webapp/router/checks.ts" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/router/checks.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webapp/router/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/router/index.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webapp/stores/auth.ts" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/stores/auth.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webapp/views/admin/analyses/AnalysesCategories.vue" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/views/admin/analyses/AnalysesCategories.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webapp/views/admin/analyses/AnalysesProfiles.vue" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/views/admin/analyses/AnalysesProfiles.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webapp/views/admin/analyses/Billing.vue" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/views/admin/analyses/Billing.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webapp/views/admin/analyses/QCLevels.vue" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/views/admin/analyses/QCLevels.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webapp/views/admin/analyses/QCTemplates.vue" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/views/admin/analyses/QCTemplates.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webapp/views/admin/analyses/RejectionReasons.vue" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/views/admin/analyses/RejectionReasons.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webapp/views/admin/analyses/services/CorrectionFactor.vue" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/views/admin/analyses/services/CorrectionFactor.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webapp/views/admin/analyses/services/DetectionLimit.vue" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/views/admin/analyses/services/DetectionLimit.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webapp/views/admin/analyses/services/InterimFields.vue" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/views/admin/analyses/services/InterimFields.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webapp/views/admin/analyses/services/ResultOptions.vue" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/views/admin/analyses/services/ResultOptions.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webapp/views/admin/analyses/services/Specifications.vue" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/views/admin/analyses/services/Specifications.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webapp/views/admin/analyses/services/Uncertainty.vue" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/views/admin/analyses/services/Uncertainty.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webapp/views/admin/analyses/services/index.vue" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/views/admin/analyses/services/index.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webapp/views/admin/billing/Voucher.vue" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/views/admin/billing/Voucher.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webapp/views/admin/billing/VoucherCodes.vue" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/views/admin/billing/VoucherCodes.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webapp/views/admin/coding/CodingStandard.vue" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/views/admin/coding/CodingStandard.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webapp/views/admin/instruments/InstrumentTypes.vue" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/views/admin/instruments/InstrumentTypes.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webapp/views/admin/instruments/Instruments.vue" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/views/admin/instruments/Instruments.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webapp/views/admin/instruments/Methods.vue" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/views/admin/instruments/Methods.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webapp/views/admin/instruments/Units.vue" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/views/admin/instruments/Units.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webapp/views/admin/inventory/Hazard.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/views/admin/inventory/Hazard.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webapp/views/admin/inventory/StockCategory.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/views/admin/inventory/StockCategory.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webapp/views/admin/inventory/StockItem.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/views/admin/inventory/StockItem.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webapp/views/admin/inventory/StockPackaging.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/views/admin/inventory/StockPackaging.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webapp/views/admin/inventory/StockUnit.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/views/admin/inventory/StockUnit.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webapp/views/admin/laboratory/Departments.vue" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/views/admin/laboratory/Departments.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webapp/views/admin/patient/PersonIdentification.vue" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/views/admin/patient/PersonIdentification.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webapp/views/admin/reflex/ReflexListing.vue" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/views/admin/reflex/ReflexListing.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webapp/views/admin/reflex/_id/index.vue" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/views/admin/reflex/_id/index.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webapp/views/admin/sample/SampleTypes.vue" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/views/admin/sample/SampleTypes.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webapp/views/admin/shipment/ReferralLaboratory.vue" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/views/admin/shipment/ReferralLaboratory.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webapp/views/admin/suppliers/Manufacturers.vue" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/views/admin/suppliers/Manufacturers.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webapp/views/admin/suppliers/Suppliers.vue" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/views/admin/suppliers/Suppliers.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webapp/views/admin/users/Groups.vue" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/views/admin/users/Groups.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webapp/views/admin/users/Users.vue" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/views/admin/users/Users.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webapp/views/admin/worksheets/index.vue" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/views/admin/worksheets/index.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webapp/views/auth/Login.vue" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/views/auth/Login.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webapp/views/client/_id/ContactTable.vue" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/views/client/_id/ContactTable.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/webapp/views/components/SampleListing.vue" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/views/components/SampleListing.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/sample/_id/index.vue" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/views/sample/_id/index.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webapp/views/dashboard/LineListing.vue" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/views/dashboard/LineListing.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webapp/views/inventory/InvListing.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/views/inventory/InvListing.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webapp/views/inventory/InvOrders.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/views/inventory/InvOrders.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webapp/views/patient/PatientForm.vue" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/views/patient/PatientForm.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webapp/views/patient/_id/PatientBill.vue" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/views/patient/_id/PatientBill.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webapp/views/patient/_id/PatientDetail.vue" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/views/patient/_id/PatientDetail.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webapp/views/patient/comps/CaseTable.vue" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/views/patient/comps/CaseTable.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webapp/views/qcontrol/Listing.vue" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/views/qcontrol/Listing.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webapp/views/qcontrol/_id/QCSet.vue" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/views/qcontrol/_id/QCSet.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webapp/views/sample/SamplesAdd.vue" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/views/sample/SamplesAdd.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webapp/views/shipment/ShipmentListing.vue" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/views/shipment/ShipmentListing.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webapp/views/shipment/_id/ShipmentSamples.vue" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/views/shipment/_id/ShipmentSamples.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webapp/views/storage/Storage.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/views/storage/Storage.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webapp/views/worksheet/WorkSheetListing.vue" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/views/worksheet/WorkSheetListing.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webapp/views/worksheet/_id/WorkSheetResults.vue" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/views/worksheet/_id/WorkSheetResults.vue" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -70,25 +202,25 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;dart.analysis.tool.window.visible&quot;: &quot;false&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/home/aurthurm/Development/felicity-lims/felicity/apps/impress/barcode&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.black.configuration.BlackFormatterConfigurable&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "dart.analysis.tool.window.visible": "false",
+    "git-widget-placeholder": "main",
+    "ignore.virus.scanning.warn.message": "true",
+    "last_opened_file_path": "/home/aurthurm/Development/felicity-lims/reads",
+    "settings.editor.selected.configurable": "com.jetbrains.python.black.configuration.BlackFormatterConfigurable"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/reads" />
       <recent name="$PROJECT_DIR$/felicity/apps/impress/barcode" />
       <recent name="$PROJECT_DIR$/felicity/tests/integration" />
       <recent name="$PROJECT_DIR$/felicity/apps/impress/reports" />
       <recent name="$PROJECT_DIR$/felicity/apps/billing/invoicing" />
-      <recent name="$PROJECT_DIR$/felicity/api/rest/api_v1/endpoints" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/felicity/apps/impress" />

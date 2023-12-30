@@ -43,6 +43,57 @@ export const AUTHENTICATE_USER = gql`
     }
 `;
 
+export const REQUEST_PASSWORD_RESET = gql`
+    mutation RequestPassReset($email: String!) {
+        requestPasswordReset(email: $email) {
+            ... on MessagesType {
+            __typename
+            message
+            }
+            ... on OperationError {
+            __typename
+            error
+            suggestion
+            }
+        }
+    }
+`
+
+export const VALIDATE_PASSWORD_RESET_TOKEN = gql`
+    mutation ValidatePassResetToken($token: String!) {
+        validatePasswordResetToken(token: $token) {
+            ... on PasswordResetValidityType {
+            __typename
+            authUid
+            username
+            }
+            ... on OperationError {
+            __typename
+            error
+            suggestion
+            }
+        }
+    }
+
+`
+
+export const RESET_PASSWORD = gql`
+    mutation PasswordReset($username: String!, $authUid: String!, $password: String!, $passwordc: String!) {
+        resetPassword(username:$username, authUid: $authUid, password: $password, passwordc:$passwordc) {
+            ... on MessagesType {
+            __typename
+            message
+            }
+            ... on OperationError {
+            __typename
+            error
+            suggestion
+            }
+        }
+    }
+`
+
+
 export const REFRESH_TOKEN = gql`
     mutation TokenRefresh($refreshToken: String!) {
         refresh(refreshToken: $refreshToken) {

@@ -1,17 +1,17 @@
 # import logging
-# 
+#
 # import pytest
-# 
+#
 # logging.basicConfig(level=logging.INFO)
 # logger = logging.getLogger(__name__)
-# 
+#
 # add_storage_location_query = """
 #   mutation AddStorageLocation($payload: StorageLocationInputType!){
 #   createStorageLocation(payload: $payload) {
 #     ... on StorageLocationType {
 #         uid
 #         name
-#         description  
+#         description
 #         storeRoomUid
 #     }
 #     ... on OperationError {
@@ -20,8 +20,8 @@
 #   }
 # }
 # """
-# 
-# 
+#
+#
 # @pytest.mark.asyncio
 # @pytest.mark.order(210)
 # async def test_add_storage_location(app, auth_data):
@@ -38,28 +38,28 @@
 #         },
 #         headers=auth_data["headers"],
 #     )
-# 
+#
 #     logger.info(f"register storage location response: {response} {response.json}")
-# 
+#
 #     assert response.status_code == 200
 #     _st_l = response.json()["data"]["createStorageLocation"]
 #     assert _st_l["uid"] is not None
 #     assert _st_l["name"] == storage_location["name"]
 #     assert _st_l["storeRoomUid"] == 1
 # import logging
-# 
+#
 # import pytest
-# 
+#
 # logging.basicConfig(level=logging.INFO)
 # logger = logging.getLogger(__name__)
-# 
+#
 # add_storage_location_query = """
 #   mutation AddStorageLocation($payload: StorageLocationInputType!){
 #   createStorageLocation(payload: $payload) {
 #     ... on StorageLocationType {
 #         uid
 #         name
-#         description  
+#         description
 #         storeRoomUid
 #     }
 #     ... on OperationError {
@@ -68,8 +68,8 @@
 #   }
 # }
 # """
-# 
-# 
+#
+#
 # @pytest.mark.asyncio
 # @pytest.mark.order(210)
 # async def test_add_storage_location(app, auth_data):
@@ -86,9 +86,9 @@
 #         },
 #         headers=auth_data["headers"],
 #     )
-# 
+#
 #     logger.info(f"register storage location response: {response} {response.json}")
-# 
+#
 #     assert response.status_code == 200
 #     _st_l = response.json()["data"]["createStorageLocation"]
 #     assert _st_l["uid"] is not None

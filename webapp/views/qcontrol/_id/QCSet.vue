@@ -581,7 +581,7 @@ function toggleView(choice: string): void {
     <button
       v-if="shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) && can_submit"
       @click.prevent="cancelResults()"
-      class="px-2 py-1 mr-2 border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
+      class="px-2 py-1 mr-2 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
     >
       Cancel
     </button>
@@ -590,35 +590,35 @@ function toggleView(choice: string): void {
         shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) && can_reinstate
       "
       @click.prevent="reInstateResults()"
-      class="px-2 py-1 mr-2 border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
+      class="px-2 py-1 mr-2 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
     >
       Re-Instate
     </button>
     <button
       v-if="shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) && can_submit"
       @click.prevent="submitResults()"
-      class="px-2 py-1 mr-2 border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
+      class="px-2 py-1 mr-2 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
     >
       Submit
     </button>
     <button
       v-if="shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) && can_retract"
       @click.prevent="retractResults()"
-      class="px-2 py-1 mr-2 border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
+      class="px-2 py-1 mr-2 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
     >
       Retract
     </button>
     <button
       v-if="shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) && can_verify"
       @click.prevent="verifyResults()"
-      class="px-2 py-1 mr-2 border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
+      class="px-2 py-1 mr-2 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
     >
       Verify
     </button>
     <button
       v-if="shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) && can_retest"
       @click.prevent="retestResults()"
-      class="px-2 py-1 mr-2 border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
+      class="px-2 py-1 mr-2 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
     >
       Retest
     </button>

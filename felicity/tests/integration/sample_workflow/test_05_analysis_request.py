@@ -8,7 +8,9 @@ logger = logging.getLogger(__name__)
 
 @pytest.mark.asyncio
 @pytest.mark.order(60)
-async def test_add_analysis_request(app, auth_data, profiles, sample_types, clients, client_contacts, patients):
+async def test_add_analysis_request(
+    app, auth_data, profiles, sample_types, clients, client_contacts, patients
+):
     add_gql = """
         mutation AddAnalysisRequest ($payload: AnalysisRequestInputType!) {
           createAnalysisRequest(payload: $payload) {
@@ -69,11 +71,31 @@ async def test_add_analysis_request(app, auth_data, profiles, sample_types, clie
         "patientUid": patients[0]["uid"],
         "priority": 1,
         "samples": [
-            {"sampleType": sample_types[0]["uid"], "profiles": [profiles[0]["uid"]], "analyses": []},
-            {"sampleType": sample_types[0]["uid"], "profiles": [profiles[0]["uid"]], "analyses": []},
-            {"sampleType": sample_types[0]["uid"], "profiles": [profiles[0]["uid"]], "analyses": []},
-            {"sampleType": sample_types[0]["uid"], "profiles": [profiles[0]["uid"]], "analyses": []},
-            {"sampleType": sample_types[0]["uid"], "profiles": [profiles[0]["uid"]], "analyses": []},
+            {
+                "sampleType": sample_types[0]["uid"],
+                "profiles": [profiles[0]["uid"]],
+                "analyses": [],
+            },
+            {
+                "sampleType": sample_types[0]["uid"],
+                "profiles": [profiles[0]["uid"]],
+                "analyses": [],
+            },
+            {
+                "sampleType": sample_types[0]["uid"],
+                "profiles": [profiles[0]["uid"]],
+                "analyses": [],
+            },
+            {
+                "sampleType": sample_types[0]["uid"],
+                "profiles": [profiles[0]["uid"]],
+                "analyses": [],
+            },
+            {
+                "sampleType": sample_types[0]["uid"],
+                "profiles": [profiles[0]["uid"]],
+                "analyses": [],
+            },
         ],
     }
     response = await app.post(

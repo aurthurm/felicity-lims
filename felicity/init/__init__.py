@@ -9,7 +9,7 @@ from init.setup.setup_analyses import (
     create_rejection_reasons,
     create_sample_types,
     init_id_sequence,
-    init_coding_standards
+    init_coding_standards,
 )
 from init.setup.setup_laboratory import (
     create_clients,

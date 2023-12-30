@@ -220,7 +220,6 @@ const InventoryListing = defineComponent({
                     },
                     'createStockAjustment'
                 ).then(result => {
-                    console.log(result)
                 });
             },
         };

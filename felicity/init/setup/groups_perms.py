@@ -65,7 +65,13 @@ permissions = {
         fo.WORKSHEET: [fg.SCIENTIST, fg.TECHNOLOGIST],
         fo.PRODUCT: [fg.STORES],
         fo.SHIPMENT: [fg.LAB_HAND, fg.SCIENTIST, fg.TECHNOLOGIST],
-        fo.STORAGE: [fg.ADMINISTRATOR, fg.STORES, fg.LAB_HAND, fg.SCIENTIST, fg.TECHNOLOGIST]
+        fo.STORAGE: [
+            fg.ADMINISTRATOR,
+            fg.STORES,
+            fg.LAB_HAND,
+            fg.SCIENTIST,
+            fg.TECHNOLOGIST,
+        ],
     },
     fa.READ: {
         fo.CLIENT: [
@@ -112,16 +118,16 @@ permissions = {
             fg.SCIENTIST,
             fg.TECHNOLOGIST,
             fg.GUEST,
-            fg.STORES
+            fg.STORES,
         ],
-        fo.SHIPMENT: [fg.LAB_HAND,fg.SCIENTIST, fg.TECHNOLOGIST, fg.GUEST],
+        fo.SHIPMENT: [fg.LAB_HAND, fg.SCIENTIST, fg.TECHNOLOGIST, fg.GUEST],
         fo.STORAGE: [
             fg.ADMINISTRATOR,
             fg.LAB_MANAGER,
             fg.SCIENTIST,
             fg.TECHNOLOGIST,
             fg.GUEST,
-            fg.STORES
+            fg.STORES,
         ],
     },
     fa.UPDATE: {
@@ -131,8 +137,14 @@ permissions = {
         fo.RESULT: [fg.SCIENTIST, fg.TECHNOLOGIST],
         fo.WORKSHEET: [fg.SCIENTIST, fg.TECHNOLOGIST],
         fo.PRODUCT: [fg.STORES],
-        fo.SHIPMENT: [fg.LAB_HAND,fg.SCIENTIST, fg.TECHNOLOGIST],
-        fo.STORAGE: [fg.ADMINISTRATOR, fg.STORES, fg.LAB_HAND, fg.SCIENTIST, fg.TECHNOLOGIST],
+        fo.SHIPMENT: [fg.LAB_HAND, fg.SCIENTIST, fg.TECHNOLOGIST],
+        fo.STORAGE: [
+            fg.ADMINISTRATOR,
+            fg.STORES,
+            fg.LAB_HAND,
+            fg.SCIENTIST,
+            fg.TECHNOLOGIST,
+        ],
     },
     fa.SUBMIT: {
         fo.SAMPLE: [fg.SCIENTIST, fg.TECHNOLOGIST],
@@ -147,7 +159,7 @@ permissions = {
     fa.CANCEL: {
         fo.SAMPLE: [fg.SCIENTIST, fg.TECHNOLOGIST, fg.LAB_HAND],
         fo.RESULT: [fg.SCIENTIST, fg.TECHNOLOGIST],
-        fo.SHIPMENT: [fg.LAB_HAND,fg.SCIENTIST, fg.TECHNOLOGIST]
+        fo.SHIPMENT: [fg.LAB_HAND, fg.SCIENTIST, fg.TECHNOLOGIST],
     },
     fa.RETEST: {
         fo.SAMPLE: [fg.SCIENTIST, fg.TECHNOLOGIST],
@@ -156,9 +168,7 @@ permissions = {
     },
     fa.INVALIDATE: {fo.SAMPLE: [fg.SCIENTIST, fg.TECHNOLOGIST]},
     fa.ISSUE: {
-        fo.PRODUCT: [
-            fg.STORES
-        ],
+        fo.PRODUCT: [fg.STORES],
     },
     fa.ORDER: {
         fo.PRODUCT: [
@@ -166,9 +176,9 @@ permissions = {
             fg.LAB_MANAGER,
             fg.SCIENTIST,
             fg.TECHNOLOGIST,
-            fg.STORES
+            fg.STORES,
         ],
-    }
+    },
 }
 
 

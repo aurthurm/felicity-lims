@@ -37,11 +37,15 @@ async def _get_user(token: str):
     return await models.User.get(uid=token_data.sub)
 
 
-async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]) -> models.User | None:
+async def get_current_user(
+    token: Annotated[str, Depends(oauth2_scheme)]
+) -> models.User | None:
     return await _get_user(token)
 
 
-async def get_current_active_user(token: Annotated[str, Depends(oauth2_scheme)]) -> models.User | None:
+async def get_current_active_user(
+    token: Annotated[str, Depends(oauth2_scheme)]
+) -> models.User | None:
     current_user = await _get_user(token)
     if not current_user or not current_user.is_active:
         return None

@@ -1,16 +1,42 @@
 from datetime import datetime
 
-from sqlalchemy import Column, DateTime, Float, ForeignKey, Integer, String, Boolean, Table, LargeBinary
+from sqlalchemy import (
+    Column,
+    DateTime,
+    Float,
+    ForeignKey,
+    Integer,
+    String,
+    Boolean,
+    Table,
+    LargeBinary,
+)
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import relationship
 
 from apps import Auditable, DBModel
 from apps.billing.config import DiscountType, DiscountValueType, TransactionKind
 from apps.billing.schemas import (
-    AnalysisPriceCreate, AnalysisPriceUpdate, ProfilePriceCreate, ProfilePriceUpdate, AnalysisDiscountCreate,
-    AnalysisDiscountUpdate, ProfileDiscountCreate, ProfileDiscountUpdate, VoucherUpdate, VoucherCreate,
-    VoucherCodeCreate, VoucherCodeUpdate, VoucherCustomerCreate, VoucherCustomerUpdate, TestBillCreate, TestBillUpdate,
-    TestBillTransactionCreate, TestBillTransactionUpdate, TestBillInvoiceUpdate, TestBillInvoiceCreate
+    AnalysisPriceCreate,
+    AnalysisPriceUpdate,
+    ProfilePriceCreate,
+    ProfilePriceUpdate,
+    AnalysisDiscountCreate,
+    AnalysisDiscountUpdate,
+    ProfileDiscountCreate,
+    ProfileDiscountUpdate,
+    VoucherUpdate,
+    VoucherCreate,
+    VoucherCodeCreate,
+    VoucherCodeUpdate,
+    VoucherCustomerCreate,
+    VoucherCustomerUpdate,
+    TestBillCreate,
+    TestBillUpdate,
+    TestBillTransactionCreate,
+    TestBillTransactionUpdate,
+    TestBillInvoiceUpdate,
+    TestBillInvoiceCreate,
 )
 from apps.common.models import IdSequence
 
@@ -115,7 +141,7 @@ class Voucher(Auditable):
     end_date = Column(DateTime, nullable=False)
     # Determine if the voucher usage should be limited to one use per customer.
     once_per_customer = Column(Boolean, nullable=False)
-    # Determine if the voucher should be applied once per order. If set to True, 
+    # Determine if the voucher should be applied once per order. If set to True,
     # the voucher is applied to a single cheapest eligible product in checkout.
     once_per_order = Column(Boolean, nullable=False)
 
@@ -176,7 +202,9 @@ test_bill_item = Table(
     "test_bill_item",
     DBModel.metadata,
     Column("test_bill_uid", ForeignKey("test_bill.uid"), primary_key=True),
-    Column("analysis_request_uid", ForeignKey("analysis_request.uid"), primary_key=True),
+    Column(
+        "analysis_request_uid", ForeignKey("analysis_request.uid"), primary_key=True
+    ),
 )
 
 
@@ -203,9 +231,9 @@ class TestBill(Auditable):
     @classmethod
     async def create(cls, obj_in: TestBillCreate) -> "TestBill":
         data = cls._import(obj_in)
-        data["bill_id"] = (
-            await IdSequence.get_next_number(prefix="X", generic=True)
-        )[1]
+        data["bill_id"] = (await IdSequence.get_next_number(prefix="X", generic=True))[
+            1
+        ]
         return await super().create(**data)
 
     async def update(self, obj_in: TestBillUpdate) -> "TestBill":

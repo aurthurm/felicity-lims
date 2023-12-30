@@ -222,7 +222,7 @@ function removeSample(index: number): void {
           <h5>Samples</h5>
           <span class="text-orange-600">{{ errors.samples }}</span>
           <button v-if="samples?.length !== 20" @click.prevent="addSample()"
-            class="px-2 py-1 mr-2 border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none">
+            class="px-2 py-1 mr-2 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none">
             Add Sample
           </button>
         </div>

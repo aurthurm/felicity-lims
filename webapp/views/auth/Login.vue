@@ -9,10 +9,10 @@
   import { useField, useForm } from "vee-validate";
   import { object, string } from "yup";
 
+  const emit = defineEmits(["forgot"]);
+
   const authStore = useAuthStore();
   const { auth } = storeToRefs(authStore);
-
-  authStore.reset();
 
   const authSchema = object({
     username: string().required("Username is Required"),
@@ -27,8 +27,10 @@
   const { value: password } = useField("password");
 
   const login = handleSubmit((values) => {
-    authStore.authenticate(values);
+      authStore.authenticate(values);
   });
+
+
 </script>
 
 <template>
@@ -54,54 +56,56 @@
             fill="white"
           />
         </svg>
-        <span class="text-gray-700 font-semibold text-2xl">FelicityLIMS</span>
+        <span class="text-gray-700 font-semibold text-2xl">Felicity LIMS</span>
       </div>
 
       <form v-if="!auth.isAuthenticated" class="mt-4" @submit.prevent="login">
-        <label class="block">
-          <span class="text-gray-700 text-sm">Username</span>
-          <input
-            type="text"
-            class="form-input mt-1 block w-full rounded-sm focus:border-sky-800"
-            v-model="username"
-            :disabled="auth.authenticating"
-          />
-          <div class="text-orange-600 w-4/12">{{ errors.username }}</div>
-        </label>
+          <label class="block">
+            <span class="text-gray-700 text-sm">Username</span>
+            <input
+              type="text"
+              :class="[
+                'form-input mt-1 block w-full rounded-sm focus:border-sky-800 outline-none',
+                {'border-red-500 focus:border-red-500 transision-colors duratioon-150': errors?.username}
+              ]"
+              v-model="username"
+              :disabled="auth.processing"
+            />
+          </label>
 
-        <label class="block mt-3">
-          <span class="text-gray-700 text-sm">Password</span>
-          <input
-            type="password"
-            class="form-input mt-1 block w-full rounded-sm focus:border-sky-800"
-            v-model="password"
-            :disabled="auth.authenticating"
-          />
-          <div class="text-orange-600 w-4/12">{{ errors.password }}</div>
-        </label>
-
-        <div class="flex justify-between items-center mt-4">
-          <div>
-            <label class="inline-flex items-center">
-              <input type="checkbox" class="form-checkbox text-sky-800" />
-              <span class="mx-2 text-gray-600 text-sm">Remember me</span>
-            </label>
+          <label class="block mt-3">
+            <span class="text-gray-700 text-sm">Password</span>
+            <input
+              type="password"
+              :class="[
+                'form-input mt-1 block w-full rounded-sm focus:border-sky-800',
+                {'border-red-500 focus:border-red-500': errors?.password}
+              ]"
+              v-model="password"
+              :disabled="auth.processing"
+            />
+          </label>
+          <div class="flex justify-between items-center mt-4">
+            <div>
+              <a class="block text-sm fontme text-indigo-700 hover:underline"
+                @click.prevent="emit('forgot')">Forgot your password?</a
+              >
+            </div>
           </div>
-
-          <div>
-            <a class="block text-sm fontme text-indigo-700 hover:underline"
-              >Forgot your password?</a
-            >
-          </div>
-        </div>
-
-        <div class="mt-6">
+          <div class="mt-6">
           <button
-            v-if="!auth.authenticating"
+            v-if="!auth.processing"
             type="submit"
-            class="py-2 px-4 text-center bg-sky-800 rounded-sm w-full text-white text-sm hover:bg-sky-800"
+            :class="[
+              'py-2 px-4 text-center  rounded-sm w-full text-white text-sm ',
+              {
+                'bg-gray-500': !password || !username,
+                'bg-sky-800 hover:bg-sky-600': password && username
+              }
+            ]"
+            :disabled="!password || !username"
           >
-            Sign in
+            <span>Sign in</span>
           </button>
           <div v-else class="text-center">
             <LoadingMessage message="Signing you in ..." />

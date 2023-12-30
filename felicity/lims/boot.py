@@ -6,6 +6,7 @@ from strawberry.subscriptions import GRAPHQL_TRANSPORT_WS_PROTOCOL, GRAPHQL_WS_P
 from api.deps import get_gql_context
 from api.gql.schema import schema
 from api.rest.api_v1 import api
+from apps.events import observe_events
 from apps.job.sched import felicity_workforce_init
 from core import settings
 from init import initialize_felicity
@@ -54,6 +55,7 @@ def register_tasks(app: FastAPI):
     # bg_tasks = BackgroundTasks(tasks=None)
     # bg_tasks.add_task(felicity_workforce_init)
     felicity_workforce_init()
+    observe_events()
 
 
 def register_felicity(app: FastAPI):

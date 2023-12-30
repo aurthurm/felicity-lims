@@ -40,6 +40,9 @@ class SimpleAuditMixin(object):
         return Column(String, nullable=True)
 
 
+0.8
+
+
 class AbstractBaseUser(SimpleAuditMixin, DBModel):
     __abstract__ = True
     first_name = Column(String, index=True)

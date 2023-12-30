@@ -19,7 +19,7 @@ async def auth_from_info(info) -> Tuple[bool, Optional[User]]:
 
 
 def verify_user_auth(
-        is_auth: bool = False, user=None, err_msg: str = None
+    is_auth: bool = False, user=None, err_msg: str = None
 ) -> Tuple[bool, Optional[OperationError]]:
     if not is_auth:
         return False, OperationError(

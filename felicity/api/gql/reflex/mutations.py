@@ -176,14 +176,14 @@ class ReflexRuleMutations:
 
         action: models.ReflexAction = await models.ReflexAction.create(obj_in)
         for anal in analyses:
-             await models.ReflexAction.table_insert(
+            await models.ReflexAction.table_insert(
                 table=models.reflex_action_analysis,
                 mappings={
                     "analysis_uid": anal.uid,
                     "reflex_action_uid": action.uid,
                 },
-             )
-        
+            )
+
         return ReflexActionType(**action.marshal_simple())
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])

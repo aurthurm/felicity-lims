@@ -53,7 +53,7 @@ const identifications = computed(() => patientStore.getIdentifications)
   <div class="container w-full my-4">
     <hr>
     <button @click="FormManager(true)"
-      class="px-2 py-1 border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none">Add
+      class="px-2 py-1 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none">Add
       Identification</button>
     <hr>
 

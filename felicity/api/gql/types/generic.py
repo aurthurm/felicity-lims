@@ -4,7 +4,7 @@ from typing import Any, NewType, TypeVar, Generic
 
 import strawberry
 
-T = TypeVar('T')
+T = TypeVar("T")
 
 JSONScalar = strawberry.scalar(
     NewType("JSONScalar", Any),
@@ -77,7 +77,6 @@ SuccessErrorResponse = strawberry.union(
 
 
 class StrawberryMapper(Generic[T]):
-
     def map(self, **kwargs) -> T:
         type_class = self.__orig_class__.__args__[0]  # noqa
         # Get the annotations from the Strawberry type

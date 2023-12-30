@@ -211,11 +211,11 @@ class AnalysisResult(Auditable, BaseMPTT):
 
     @classmethod
     async def filter_for_worksheet(
-            cls,
-            analyses_status: str,
-            analysis_uid: str,
-            sample_type_uid: list[str],
-            limit: int,
+        cls,
+        analyses_status: str,
+        analysis_uid: str,
+        sample_type_uid: list[str],
+        limit: int,
     ) -> List[schemas.AnalysisResult]:
 
         filters = {
@@ -239,13 +239,13 @@ class AnalysisResult(Auditable, BaseMPTT):
 
     @classmethod
     async def create(
-            cls, obj_in: schemas.AnalysisResultCreate
+        cls, obj_in: schemas.AnalysisResultCreate
     ) -> schemas.AnalysisResult:
         data = cls._import(obj_in)
         return await super().create(**data)
 
     async def update(
-            self, obj_in: schemas.AnalysisResultUpdate
+        self, obj_in: schemas.AnalysisResultUpdate
     ) -> schemas.AnalysisResult:
         data = self._import(obj_in)
         return await super().update(**data)

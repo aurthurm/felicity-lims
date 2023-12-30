@@ -58,7 +58,6 @@ const { value: oncePerCustomer } = useField("oncePerCustomer");
 const { value: oncePerOrder } = useField("oncePerOrder");
 
 const submitVoucherForm = handleSubmit((values) => {
-  console.log(values)
   if (!values.uid) addVoucher(values as IVoucher);
   if (values.uid) updateVoucher(values as IVoucher);
 });

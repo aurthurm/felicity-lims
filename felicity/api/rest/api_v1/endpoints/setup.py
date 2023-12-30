@@ -37,7 +37,9 @@ async def laboratory_lookup() -> Any:
     """
     laboratory = await models.Laboratory.get_by_setup_name("felicity")
     return {
-        "laboratory": laboratory.marshal_simple(exclude=["lab_manager"]) if laboratory else None,
+        "laboratory": laboratory.marshal_simple(exclude=["lab_manager"])
+        if laboratory
+        else None,
         "installed": True if laboratory else False,
         "message": "" if laboratory else "Laboratory installation required",
     }
@@ -68,7 +70,9 @@ async def register_laboratory(lab: LabNameIn) -> Any:
 
 
 @setup.post("/load-default-setup")
-async def load_setup_data(current_user: Annotated[User, Depends(get_current_user)]) -> Any:
+async def load_setup_data(
+    current_user: Annotated[User, Depends(get_current_user)]
+) -> Any:
     """
     Run initial setup to load setup data
     """

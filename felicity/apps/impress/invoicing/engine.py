@@ -22,9 +22,9 @@ class PDF(FPDF):
 
 class FelicityInvoice:
     def __init__(self):
-        self.logo_path = settings.BASE_DIR + '/assets/logo.png'
+        self.logo_path = settings.BASE_DIR + "/assets/logo.png"
         self.pdf = PDF(orientation="P", unit="mm", format="A4")
-        self.pdf.set_font('helvetica', '', 13.0)
+        self.pdf.set_font("helvetica", "", 13.0)
         self.pdf.set_page_background((255, 255, 255))
         self.pdf_w = 210
         self.pdf_h = 297
@@ -49,49 +49,49 @@ class FelicityInvoice:
         self.pdf.rect(15.0, 15.0, 170.0, 245.0)
 
         # Logo
-        self.pdf.image(self.logo_path, 20.0, 16.0, link='', type='', w=20.0, h=20.0)
+        self.pdf.image(self.logo_path, 20.0, 16.0, link="", type="", w=20.0, h=20.0)
 
         # Barcode
         bill_id = get_from_nested(bill, "bill_id")
         self.pdf.code39(bill_id, x=20, y=42, w=1, h=5)
-        self.pdf.set_font('arial', '', 8.0)
+        self.pdf.set_font("arial", "", 8.0)
         self.pdf.set_xy(20.0, 47)
-        self.pdf.cell(ln=0, h=5, align='L', w=10.0, txt=bill_id, border=0)
+        self.pdf.cell(ln=0, h=5, align="L", w=10.0, txt=bill_id, border=0)
 
         # Invoice Box
         self.pdf.set_line_width(0.0)
         self.pdf.rect(85.0, 15.0, 30.0, 10.0)
 
         # Invoice
-        self.pdf.set_font('arial', 'B', 16.0)
+        self.pdf.set_font("arial", "B", 16.0)
         self.pdf.set_xy(95.0, 18.0)
-        self.pdf.cell(ln=0, h=2.0, align='C', w=10.0, txt='INVOICE', border=0)
-        self.pdf.set_font('arial', '', 8.0)
+        self.pdf.cell(ln=0, h=2.0, align="C", w=10.0, txt="INVOICE", border=0)
+        self.pdf.set_font("arial", "", 8.0)
         self.pdf.set_xy(63.0, 21.0)
-        self.pdf.cell(ln=0, h=4.0, align='C', w=75.0, txt='- original -', border=0)
+        self.pdf.cell(ln=0, h=4.0, align="C", w=75.0, txt="- original -", border=0)
 
         # invoice Details
-        self.pdf.set_font('arial', 'B', 12.0)
+        self.pdf.set_font("arial", "B", 12.0)
         self.pdf.set_xy(140.0, 25)
-        self.pdf.cell(ln=0, h=5.5, align='R', w=10.0, txt='Invoice #: ', border=0)
-        self.pdf.set_font('arial', '', 12.0)
+        self.pdf.cell(ln=0, h=5.5, align="R", w=10.0, txt="Invoice #: ", border=0)
+        self.pdf.set_font("arial", "", 12.0)
         self.pdf.set_xy(170.0, 23)
-        self.pdf.cell(ln=0, h=9.5, align='R', w=10.0, txt=bill_id, border=0)
+        self.pdf.cell(ln=0, h=9.5, align="R", w=10.0, txt=bill_id, border=0)
         # ---
-        self.pdf.set_font('arial', 'B', 12.0)
+        self.pdf.set_font("arial", "B", 12.0)
         self.pdf.set_xy(140.0, 30)
-        self.pdf.cell(ln=0, h=5.5, align='R', w=10.0, txt='Invoice Date: ', border=0)
-        self.pdf.set_font('arial', '', 12.0)
+        self.pdf.cell(ln=0, h=5.5, align="R", w=10.0, txt="Invoice Date: ", border=0)
+        self.pdf.set_font("arial", "", 12.0)
         self.pdf.set_xy(170.0, 28)
-        self.pdf.cell(ln=0, h=9.5, align='R', w=10.0, txt=self.time_now, border=0)
+        self.pdf.cell(ln=0, h=9.5, align="R", w=10.0, txt=self.time_now, border=0)
         # ---
         bill_created = get_from_nested(bill, "created_at")
-        self.pdf.set_font('arial', 'B', 12.0)
+        self.pdf.set_font("arial", "B", 12.0)
         self.pdf.set_xy(140.0, 35)
-        self.pdf.cell(ln=0, h=5.5, align='R', w=10.0, txt='Billed on: ', border=0)
-        self.pdf.set_font('arial', '', 12.0)
+        self.pdf.cell(ln=0, h=5.5, align="R", w=10.0, txt="Billed on: ", border=0)
+        self.pdf.set_font("arial", "", 12.0)
         self.pdf.set_xy(170.0, 33)
-        self.pdf.cell(ln=0, h=9.5, align='R', w=10.0, txt=bill_created, border=0)
+        self.pdf.cell(ln=0, h=9.5, align="R", w=10.0, txt=bill_created, border=0)
         # ---
         terms_days = get_from_nested(laboratory_settings, "payment_terms_days")
         days = f"Immediate"
@@ -101,101 +101,152 @@ class FelicityInvoice:
             _delta_datetime = datetime_math(bill_created, terms_days, addition=True)
             due_date = format_datetime(_delta_datetime)
 
-        self.pdf.set_font('arial', 'B', 12.0)
+        self.pdf.set_font("arial", "B", 12.0)
         self.pdf.set_xy(140.0, 40)
-        self.pdf.cell(ln=0, h=5.5, align='R', w=10.0, txt='Payment Terms: ', border=0)
-        self.pdf.set_font('arial', '', 12.0)
+        self.pdf.cell(ln=0, h=5.5, align="R", w=10.0, txt="Payment Terms: ", border=0)
+        self.pdf.set_font("arial", "", 12.0)
         self.pdf.set_xy(170.0, 38)
-        self.pdf.cell(ln=0, h=9.5, align='R', w=10.0, txt=days, border=0)
+        self.pdf.cell(ln=0, h=9.5, align="R", w=10.0, txt=days, border=0)
         # ---
-        self.pdf.set_font('arial', 'B', 12.0)
+        self.pdf.set_font("arial", "B", 12.0)
         self.pdf.set_xy(140.0, 45)
-        self.pdf.cell(ln=0, h=5.5, align='R', w=10.0, txt='Due Date: ', border=0)
-        self.pdf.set_font('arial', '', 12.0)
+        self.pdf.cell(ln=0, h=5.5, align="R", w=10.0, txt="Due Date: ", border=0)
+        self.pdf.set_font("arial", "", 12.0)
         self.pdf.set_xy(170.0, 43)
-        self.pdf.cell(ln=0, h=9.5, align='R', w=10.0, txt=due_date, border=0)
+        self.pdf.cell(ln=0, h=9.5, align="R", w=10.0, txt=due_date, border=0)
 
         self.pdf.set_line_width(0.0)
         self.pdf.line(20.0, 53.0, 180.0, 53.0)
 
         # Customer Details
-        full_name = get_from_nested(customer, "first_name") + " " + get_from_nested(customer, "last_name")
-        self.pdf.set_font('arial', 'B', 14.0)
+        full_name = (
+            get_from_nested(customer, "first_name")
+            + " "
+            + get_from_nested(customer, "last_name")
+        )
+        self.pdf.set_font("arial", "B", 14.0)
         self.pdf.set_xy(20, 55)
-        self.pdf.cell(ln=0, h=5.5, align='L', w=10.0, txt='Bill to: ', border=0)
+        self.pdf.cell(ln=0, h=5.5, align="L", w=10.0, txt="Bill to: ", border=0)
         # ---
-        self.pdf.set_font('arial', 'B', 12.0)
+        self.pdf.set_font("arial", "B", 12.0)
         self.pdf.set_xy(20, 60)
-        self.pdf.cell(ln=0, h=5.5, align='L', w=10.0, txt='Full Name: ', border=0)
-        self.pdf.set_font('arial', '', 12.0)
+        self.pdf.cell(ln=0, h=5.5, align="L", w=10.0, txt="Full Name: ", border=0)
+        self.pdf.set_font("arial", "", 12.0)
         self.pdf.set_xy(45, 58)
-        self.pdf.cell(ln=0, h=9.5, align='L', w=20.0, txt=full_name, border=0)
+        self.pdf.cell(ln=0, h=9.5, align="L", w=20.0, txt=full_name, border=0)
         # ---
-        self.pdf.set_font('arial', 'B', 12.0)
+        self.pdf.set_font("arial", "B", 12.0)
         self.pdf.set_xy(20, 65)
-        self.pdf.cell(ln=0, h=5.5, align='L', w=10.0, txt='Client: ', border=0)
-        self.pdf.set_font('arial', '', 12.0)
+        self.pdf.cell(ln=0, h=5.5, align="L", w=10.0, txt="Client: ", border=0)
+        self.pdf.set_font("arial", "", 12.0)
         self.pdf.set_xy(45, 63)
-        self.pdf.cell(ln=0, h=9.5, align='L', w=10.0, txt=get_from_nested(client, "name"), border=0)
+        self.pdf.cell(
+            ln=0,
+            h=9.5,
+            align="L",
+            w=10.0,
+            txt=get_from_nested(client, "name"),
+            border=0,
+        )
 
         self.pdf.set_line_width(0.0)
         self.pdf.line(20.0, 72.0, 180.0, 72.0)
 
         # Order Details
         oy = 75
-        self.pdf.set_font('arial', 'B', 12.0)
+        self.pdf.set_font("arial", "B", 12.0)
         self.pdf.set_xy(20, oy)
-        self.pdf.cell(ln=0, h=5.5, align='L', w=10.0, txt='Order Details: ', border=0)
+        self.pdf.cell(ln=0, h=5.5, align="L", w=10.0, txt="Order Details: ", border=0)
         # ---
         oy += 5
-        self.pdf.set_font('arial', 'B', 10.0)
+        self.pdf.set_font("arial", "B", 10.0)
         self.pdf.set_xy(20, oy)
-        self.pdf.cell(ln=0, h=5.5, align='L', w=10.0, txt='Quantity', border=0)
+        self.pdf.cell(ln=0, h=5.5, align="L", w=10.0, txt="Quantity", border=0)
         self.pdf.set_xy(45, oy)
-        self.pdf.cell(ln=0, h=5.5, align='L', w=10.0, txt='Details', border=0)
+        self.pdf.cell(ln=0, h=5.5, align="L", w=10.0, txt="Details", border=0)
         self.pdf.set_xy(130, oy)
-        self.pdf.cell(ln=0, h=5.5, align='L', w=10.0, txt='Unit Price', border=0)
+        self.pdf.cell(ln=0, h=5.5, align="L", w=10.0, txt="Unit Price", border=0)
         self.pdf.set_xy(150, oy)
-        self.pdf.cell(ln=0, h=5.5, align='L', w=10.0, txt='Sub-Total', border=0)
+        self.pdf.cell(ln=0, h=5.5, align="L", w=10.0, txt="Sub-Total", border=0)
         # ---
         for order in orders:
             for sample in get_from_nested(order, "samples"):
                 x = 0
                 for profile in get_from_nested(sample, "profiles"):
-                    oy += (5 if x == 0 else 3)
-                    self.pdf.set_font('helvetica', 'I', 8.0)
+                    oy += 5 if x == 0 else 3
+                    self.pdf.set_font("helvetica", "I", 8.0)
                     self.pdf.set_xy(20, oy)
-                    self.pdf.cell(ln=0, h=5.5, align='L', w=10.0, txt='1 x', border=0)
+                    self.pdf.cell(ln=0, h=5.5, align="L", w=10.0, txt="1 x", border=0)
                     self.pdf.set_xy(45, oy)
-                    self.pdf.cell(ln=0, h=5.5, align='L', w=10.0, txt=get_from_nested(profile, "name"), border=0)
+                    self.pdf.cell(
+                        ln=0,
+                        h=5.5,
+                        align="L",
+                        w=10.0,
+                        txt=get_from_nested(profile, "name"),
+                        border=0,
+                    )
                     self.pdf.set_xy(130, oy)
-                    self.pdf.cell(ln=0, h=5.5, align='L', w=10.0, txt='$' + str(get_from_nested(profile, "price")),
-                                  border=0)
+                    self.pdf.cell(
+                        ln=0,
+                        h=5.5,
+                        align="L",
+                        w=10.0,
+                        txt="$" + str(get_from_nested(profile, "price")),
+                        border=0,
+                    )
                     self.pdf.set_xy(150, oy)
-                    self.pdf.cell(ln=0, h=5.5, align='L', w=10.0, txt='$' + str(get_from_nested(profile, "price")),
-                                  border=0)
+                    self.pdf.cell(
+                        ln=0,
+                        h=5.5,
+                        align="L",
+                        w=10.0,
+                        txt="$" + str(get_from_nested(profile, "price")),
+                        border=0,
+                    )
                 for analysis in get_from_nested(sample, "analyses"):
-                    oy += (5 if x == 0 else 3)
-                    self.pdf.set_font('helvetica', 'I', 8.0)
+                    oy += 5 if x == 0 else 3
+                    self.pdf.set_font("helvetica", "I", 8.0)
                     self.pdf.set_xy(20, oy)
-                    self.pdf.cell(ln=0, h=5.5, align='L', w=10.0, txt='1 x', border=0)
+                    self.pdf.cell(ln=0, h=5.5, align="L", w=10.0, txt="1 x", border=0)
                     self.pdf.set_xy(45, oy)
-                    self.pdf.cell(ln=0, h=5.5, align='L', w=10.0, txt=get_from_nested(analysis, "name"), border=0)
+                    self.pdf.cell(
+                        ln=0,
+                        h=5.5,
+                        align="L",
+                        w=10.0,
+                        txt=get_from_nested(analysis, "name"),
+                        border=0,
+                    )
                     self.pdf.set_xy(130, oy)
-                    self.pdf.cell(ln=0, h=5.5, align='L', w=10.0, txt='$' + str(get_from_nested(analysis, "price")),
-                                  border=0)
+                    self.pdf.cell(
+                        ln=0,
+                        h=5.5,
+                        align="L",
+                        w=10.0,
+                        txt="$" + str(get_from_nested(analysis, "price")),
+                        border=0,
+                    )
                     self.pdf.set_xy(150, oy)
-                    self.pdf.cell(ln=0, h=5.5, align='L', w=10.0, txt='$' + str(get_from_nested(analysis, "price")),
-                                  border=0)
+                    self.pdf.cell(
+                        ln=0,
+                        h=5.5,
+                        align="L",
+                        w=10.0,
+                        txt="$" + str(get_from_nested(analysis, "price")),
+                        border=0,
+                    )
 
         # ---
         total_charged = get_from_nested(bill, "total_charged")
         oy += 5
-        self.pdf.set_font('arial', 'B', 10.0)
+        self.pdf.set_font("arial", "B", 10.0)
         self.pdf.set_xy(120, oy)
-        self.pdf.cell(ln=0, h=5.5, align='L', w=10.0, txt='Total Charged:', border=0)
+        self.pdf.cell(ln=0, h=5.5, align="L", w=10.0, txt="Total Charged:", border=0)
         self.pdf.set_xy(150, oy)
-        self.pdf.cell(ln=0, h=5.5, align='L', w=10.0, txt='$' + str(total_charged), border=0)
+        self.pdf.cell(
+            ln=0, h=5.5, align="L", w=10.0, txt="$" + str(total_charged), border=0
+        )
 
         oy += 8
         self.pdf.set_line_width(0.0)
@@ -203,39 +254,63 @@ class FelicityInvoice:
 
         # Transaction Details
         ty = oy + 2
-        self.pdf.set_font('arial', 'B', 12.0)
+        self.pdf.set_font("arial", "B", 12.0)
         self.pdf.set_xy(20, ty)
-        self.pdf.cell(ln=0, h=5.5, align='L', w=10.0, txt='Transaction Details: ', border=0)
+        self.pdf.cell(
+            ln=0, h=5.5, align="L", w=10.0, txt="Transaction Details: ", border=0
+        )
         ty += 5
         # ---
-        self.pdf.set_font('arial', 'B', 10.0)
+        self.pdf.set_font("arial", "B", 10.0)
         self.pdf.set_xy(20, ty)
-        self.pdf.cell(ln=0, h=5.5, align='L', w=10.0, txt='Date', border=0)
+        self.pdf.cell(ln=0, h=5.5, align="L", w=10.0, txt="Date", border=0)
         self.pdf.set_xy(70, ty)
-        self.pdf.cell(ln=0, h=5.5, align='L', w=10.0, txt='Kind', border=0)
+        self.pdf.cell(ln=0, h=5.5, align="L", w=10.0, txt="Kind", border=0)
         self.pdf.set_xy(150, ty)
-        self.pdf.cell(ln=0, h=5.5, align='L', w=10.0, txt='Amount', border=0)
+        self.pdf.cell(ln=0, h=5.5, align="L", w=10.0, txt="Amount", border=0)
         # ---
         x = 0
         for transaction in transactions:
-            ty += (5 if x == 0 else 3)
-            self.pdf.set_font('helvetica', 'I', 8.0)
+            ty += 5 if x == 0 else 3
+            self.pdf.set_font("helvetica", "I", 8.0)
             self.pdf.set_xy(20, ty)
-            self.pdf.cell(ln=0, h=5.5, align='L', w=10.0, txt=get_from_nested(transaction, "created_at"), border=0)
+            self.pdf.cell(
+                ln=0,
+                h=5.5,
+                align="L",
+                w=10.0,
+                txt=get_from_nested(transaction, "created_at"),
+                border=0,
+            )
             self.pdf.set_xy(70, ty)
-            self.pdf.cell(ln=0, h=5.5, align='L', w=10.0, txt=get_from_nested(transaction, "kind"), border=0)
+            self.pdf.cell(
+                ln=0,
+                h=5.5,
+                align="L",
+                w=10.0,
+                txt=get_from_nested(transaction, "kind"),
+                border=0,
+            )
             self.pdf.set_xy(150, ty)
-            self.pdf.cell(ln=0, h=5.5, align='L', w=10.0, txt='$' + str(get_from_nested(transaction, "amount")),
-                          border=0)
+            self.pdf.cell(
+                ln=0,
+                h=5.5,
+                align="L",
+                w=10.0,
+                txt="$" + str(get_from_nested(transaction, "amount")),
+                border=0,
+            )
 
         # ---
         total_paid = get_from_nested(bill, "total_paid")
         ty += 5
-        self.pdf.set_font('arial', 'B', 10.0)
+        self.pdf.set_font("arial", "B", 10.0)
         self.pdf.set_xy(130, ty)
-        self.pdf.cell(ln=0, h=5.5, align='L', w=10.0, txt='Total Paid:', border=0)
+        self.pdf.cell(ln=0, h=5.5, align="L", w=10.0, txt="Total Paid:", border=0)
         self.pdf.set_xy(150, ty)
-        self.pdf.cell(ln=0, h=5.5, align='L', w=10.0, txt='$' + str(total_paid), border=0)
+        self.pdf.cell(
+            ln=0, h=5.5, align="L", w=10.0, txt="$" + str(total_paid), border=0
+        )
 
         ty += 8
         self.pdf.set_line_width(0.0)
@@ -243,42 +318,75 @@ class FelicityInvoice:
 
         # Balance Remaining
         br = ty + 2
-        self.pdf.set_font('arial', 'B', 14.0)
+        self.pdf.set_font("arial", "B", 14.0)
         self.pdf.set_xy(20, br)
-        self.pdf.cell(ln=0, h=5.5, align='L', w=10.0, txt='Balance Due: ', border=0)
+        self.pdf.cell(ln=0, h=5.5, align="L", w=10.0, txt="Balance Due: ", border=0)
         self.pdf.set_xy(150, br)
-        self.pdf.cell(ln=0, h=5.5, align='L', w=10.0, txt='$' + str(total_charged - total_paid), border=0)
+        self.pdf.cell(
+            ln=0,
+            h=5.5,
+            align="L",
+            w=10.0,
+            txt="$" + str(total_charged - total_paid),
+            border=0,
+        )
 
         # Footer
         self.pdf.set_line_width(0.0)
         self.pdf.line(20.0, 220.0, 180.0, 220.0)
         # ---
-        self.pdf.set_font('arial', 'B', 14.0)
+        self.pdf.set_font("arial", "B", 14.0)
         self.pdf.set_xy(20, 225)
-        self.pdf.cell(ln=0, h=5.5, align='L', w=10.0, txt='Our Location', border=0)
-        self.pdf.set_font('arial', '', 10.0)
+        self.pdf.cell(ln=0, h=5.5, align="L", w=10.0, txt="Our Location", border=0)
+        self.pdf.set_font("arial", "", 10.0)
         self.pdf.set_xy(20, 231)
-        self.pdf.cell(ln=0, h=5.5, align='L', w=10.0, txt=get_from_nested(laboratory, "lab_name"), border=0)
+        self.pdf.cell(
+            ln=0,
+            h=5.5,
+            align="L",
+            w=10.0,
+            txt=get_from_nested(laboratory, "lab_name"),
+            border=0,
+        )
         self.pdf.set_xy(20, 236)
         self.pdf.multi_cell(40.0, 3.5, get_from_nested(laboratory, "address"))
         # ---
-        self.pdf.set_font('arial', 'B', 14.0)
+        self.pdf.set_font("arial", "B", 14.0)
         self.pdf.set_xy(80, 225)
-        self.pdf.cell(ln=0, h=5.5, align='L', w=10.0, txt='Get in touch', border=0)
-        self.pdf.set_font('arial', '', 10.0)
+        self.pdf.cell(ln=0, h=5.5, align="L", w=10.0, txt="Get in touch", border=0)
+        self.pdf.set_font("arial", "", 10.0)
         self.pdf.set_xy(80, 231)
-        self.pdf.cell(ln=0, h=5.5, align='L', w=10.0, txt='Email: ' + get_from_nested(laboratory, "email"), border=0)
+        self.pdf.cell(
+            ln=0,
+            h=5.5,
+            align="L",
+            w=10.0,
+            txt="Email: " + get_from_nested(laboratory, "email"),
+            border=0,
+        )
         self.pdf.set_xy(80, 235)
-        self.pdf.cell(ln=0, h=5.5, align='L', w=10.0, txt='Call: ' + get_from_nested(laboratory, "business_phone"),
-                      border=0)
+        self.pdf.cell(
+            ln=0,
+            h=5.5,
+            align="L",
+            w=10.0,
+            txt="Call: " + get_from_nested(laboratory, "business_phone"),
+            border=0,
+        )
         self.pdf.set_xy(80, 239)
-        self.pdf.cell(ln=0, h=5.5, align='L', w=10.0, txt='Whatsapp: ' + get_from_nested(laboratory, "mobile_phone"),
-                      border=0)
+        self.pdf.cell(
+            ln=0,
+            h=5.5,
+            align="L",
+            w=10.0,
+            txt="Whatsapp: " + get_from_nested(laboratory, "mobile_phone"),
+            border=0,
+        )
         # ---
-        self.pdf.set_font('arial', 'B', 14.0)
+        self.pdf.set_font("arial", "B", 14.0)
         self.pdf.set_xy(140, 225)
-        self.pdf.cell(ln=0, h=5.5, align='L', w=10.0, txt='Payment Details', border=0)
-        self.pdf.set_font('arial', '', 10.0)
+        self.pdf.cell(ln=0, h=5.5, align="L", w=10.0, txt="Payment Details", border=0)
+        self.pdf.set_font("arial", "", 10.0)
         self.pdf.set_xy(140, 231)
         self.pdf.multi_cell(40.0, 3.5, get_from_nested(laboratory, "banking"))
 
@@ -286,10 +394,16 @@ class FelicityInvoice:
         self.pdf.set_line_width(0.0)
         self.pdf.line(30.0, 251.0, 170.0, 251.0)
         # ---
-        self.pdf.set_font('arial', 'I', 10.0)
+        self.pdf.set_font("arial", "I", 10.0)
         self.pdf.set_xy(20, 253)
-        self.pdf.cell(ln=0, h=5.5, align='C', w=150.0,
-                      txt=get_from_nested(laboratory, "quality_statement"), border=0)
+        self.pdf.cell(
+            ln=0,
+            h=5.5,
+            align="C",
+            w=150.0,
+            txt=get_from_nested(laboratory, "quality_statement"),
+            border=0,
+        )
         #
         return self.pdf
 

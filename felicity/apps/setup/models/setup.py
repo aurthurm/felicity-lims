@@ -63,7 +63,7 @@ class LaboratorySetting(BaseAuditDBModel):
     auto_receive_samples = Column(Boolean(), nullable=True)
     sticker_copies = Column(Integer, nullable=True)
     default_tat_minutes = Column(Integer, nullable=True, default=1440)
-    # 
+    #
     allow_billing = Column(Boolean(), nullable=True, default=False)
     allow_auto_billing = Column(Boolean(), nullable=True, default=True)
     currency = Column(String, nullable=True, default="USD")
@@ -71,13 +71,13 @@ class LaboratorySetting(BaseAuditDBModel):
 
     @classmethod
     async def create(
-            cls, obj_in: schemas.LaboratorySettingCreate
+        cls, obj_in: schemas.LaboratorySettingCreate
     ) -> schemas.LaboratorySetting:
         data = cls._import(obj_in)
         return await super().create(**data)
 
     async def update(
-            self, obj_in: schemas.LaboratorySettingUpdate
+        self, obj_in: schemas.LaboratorySettingUpdate
     ) -> schemas.LaboratorySetting:
         data = self._import(obj_in)
         return await super().update(**data)

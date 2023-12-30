@@ -156,7 +156,7 @@ const sampleManager = (action: string) => {
       <div>
         <button
           @click.prevent="refresh()"
-          class="px-1 py-1 mr-2 border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
+          class="px-1 py-1 mr-2 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
         >
           Refresh
         </button>
@@ -292,14 +292,14 @@ const sampleManager = (action: string) => {
       <button
         v-show="can_recover"
         @click.prevent="sampleManager('recover')"
-        class="px-2 py-1 mr-2 border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
+        class="px-2 py-1 mr-2 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
       >
         Remove
       </button>
       <button
         v-show="can_recall"
         @click.prevent="sampleManager('recall')"
-        class="px-2 py-1 mr-2 border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
+        class="px-2 py-1 mr-2 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
       >
         Pair
       </button>

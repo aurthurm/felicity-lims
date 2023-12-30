@@ -6,6 +6,7 @@ import useNotifyToast from './alert_toast';
 const { toastSuccess, toastInfo, toastWarning, toastError, swalSuccess, swalInfo, swalWarning, swalError } = useNotifyToast();
 
 const errors = ref<any[]>([]);
+const messages = ref<any[]>([]);
 
 export default function useApiUtil() {
     // Automatic Error handling from Graphql backend
@@ -34,12 +35,18 @@ export default function useApiUtil() {
     const gqlOpertionalErrorHandler = (payload: any, key: string): any => {
         if (payload.hasOwnProperty(key)) {
             const res = payload[key];
-            if (res?.__typename && res?.__typename === 'OperationError') {
-                errors.value.unshift(res);
-                swalError(res.error + '\n' + res.suggestion);
-                return;
+            if(res?.__typename) {
+                if (res?.__typename === 'OperationError') {
+                    errors.value.unshift(res);
+                    swalError(res.error + '\n' + res.suggestion);
+                    return;
+                } else if (["MessagesType", "OperationSuccess"].includes(res?.__typename)){
+                    messages.value.unshift(res);
+                    toastInfo(res.message)
+                } else {
+                    //
+                }
             } else {
-                // toastInfo("operation success");
                 // instread of this which is not good. maybe create some dots status bar that appear green for success and red for error
             }
         }

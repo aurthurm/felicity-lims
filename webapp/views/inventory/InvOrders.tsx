@@ -135,7 +135,6 @@ const InventoryOrders = defineComponent({
                 { name: 'Processed', value: 'processed' },
             ],
             filterStockOrders: (opts: any) => {
-                console.log(opts)
                 stockOrderParams.first = 50;
                 stockOrderParams.before = '';
                 stockOrderParams.text = opts.filterText;

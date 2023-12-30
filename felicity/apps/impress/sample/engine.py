@@ -27,7 +27,7 @@ class PDF(FPDF):
 
 class FelicityImpress:
     def __init__(self):
-        self.logo_path = settings.BASE_DIR + '/assets/logo.png'
+        self.logo_path = settings.BASE_DIR + "/assets/logo.png"
         self.pdf = PDF(orientation="P", unit="mm", format="A4")
         self.pdf.set_font("Helvetica")
         self.pdf.set_page_background((255, 255, 255))
@@ -50,96 +50,152 @@ class FelicityImpress:
         #
         sampe_id = get_from_nested(sample, "sample_id")
         self.pdf.add_page()
-        self.pdf.set_font('helvetica', '', 12.0)
+        self.pdf.set_font("helvetica", "", 12.0)
 
         # Page Border
         self.pdf.set_line_width(0.0)
         self.pdf.rect(15.0, 15.0, 170.0, 245.0)
 
         # Logo
-        self.pdf.image(self.logo_path, 20.0, 16.0, link='', type='', w=15.0, h=15.0)
+        self.pdf.image(self.logo_path, 20.0, 16.0, link="", type="", w=15.0, h=15.0)
         # Lab Details
-        self.pdf.set_font('arial', 'B', 12.0)
+        self.pdf.set_font("arial", "B", 12.0)
         self.pdf.set_xy(40.0, 16)
-        self.pdf.cell(ln=0, h=5.5, align='L', w=10.0, txt=get_from_nested(laboratory, "lab_name"), border=0)
-        self.pdf.set_font('arial', 'I', 8.0)
+        self.pdf.cell(
+            ln=0,
+            h=5.5,
+            align="L",
+            w=10.0,
+            txt=get_from_nested(laboratory, "lab_name"),
+            border=0,
+        )
+        self.pdf.set_font("arial", "I", 8.0)
         self.pdf.set_xy(40.0, 22)
         self.pdf.multi_cell(40.0, 3.5, get_from_nested(laboratory, "address"))
         # Contact Details
-        self.pdf.set_font('arial', 'B', 6.0)
+        self.pdf.set_font("arial", "B", 6.0)
         self.pdf.set_xy(140.0, 15)
-        self.pdf.cell(ln=0, h=5.5, align='R', w=10.0, txt='Call: ', border=0)
-        self.pdf.set_font('arial', 'I', 6.0)
+        self.pdf.cell(ln=0, h=5.5, align="R", w=10.0, txt="Call: ", border=0)
+        self.pdf.set_font("arial", "I", 6.0)
         self.pdf.set_xy(150.0, 13)
-        self.pdf.cell(ln=0, h=9.5, align='L', w=10.0, txt=get_from_nested(laboratory, "business_phone"), border=0)
+        self.pdf.cell(
+            ln=0,
+            h=9.5,
+            align="L",
+            w=10.0,
+            txt=get_from_nested(laboratory, "business_phone"),
+            border=0,
+        )
         # ---
-        self.pdf.set_font('arial', 'B', 6.0)
+        self.pdf.set_font("arial", "B", 6.0)
         self.pdf.set_xy(140.0, 17)
-        self.pdf.cell(ln=0, h=5.5, align='R', w=10.0, txt='Whatsapp: ', border=0)
-        self.pdf.set_font('arial', 'I', 6.0)
+        self.pdf.cell(ln=0, h=5.5, align="R", w=10.0, txt="Whatsapp: ", border=0)
+        self.pdf.set_font("arial", "I", 6.0)
         self.pdf.set_xy(150.0, 15)
-        self.pdf.cell(ln=0, h=9.5, align='L', w=10.0, txt=get_from_nested(laboratory, "mobile_phone"), border=0)
+        self.pdf.cell(
+            ln=0,
+            h=9.5,
+            align="L",
+            w=10.0,
+            txt=get_from_nested(laboratory, "mobile_phone"),
+            border=0,
+        )
         # ---
-        self.pdf.set_font('arial', 'B', 6.0)
+        self.pdf.set_font("arial", "B", 6.0)
         self.pdf.set_xy(140.0, 19)
-        self.pdf.cell(ln=0, h=5.5, align='R', w=10.0, txt='Email: ', border=0)
-        self.pdf.set_font('arial', 'I', 6.0)
+        self.pdf.cell(ln=0, h=5.5, align="R", w=10.0, txt="Email: ", border=0)
+        self.pdf.set_font("arial", "I", 6.0)
         self.pdf.set_xy(150.0, 17)
-        self.pdf.cell(ln=0, h=9.5, align='L', w=10.0, txt=get_from_nested(laboratory, "email"), border=0)
+        self.pdf.cell(
+            ln=0,
+            h=9.5,
+            align="L",
+            w=10.0,
+            txt=get_from_nested(laboratory, "email"),
+            border=0,
+        )
         # Report BarCode
         svg_img_bytes = BytesIO()
-        Code128(sampe_id, writer=ImageWriter()).write(svg_img_bytes, options={"write_text": False})
-        with NamedTemporaryFile(delete=False, suffix='.png') as temp:
+        Code128(sampe_id, writer=ImageWriter()).write(
+            svg_img_bytes, options={"write_text": False}
+        )
+        with NamedTemporaryFile(delete=False, suffix=".png") as temp:
             temp.write(svg_img_bytes.getvalue())
             temp_path = temp.name
         self.pdf.image(temp_path, x=142, y=25, w=40, h=5)
         os.unlink(temp_path)
 
-        self.pdf.set_font('arial', '', 8.0)
+        self.pdf.set_font("arial", "", 8.0)
         self.pdf.set_xy(143.5, 29.5)
-        self.pdf.cell(ln=0, h=5, align='L', w=10.0, txt=sampe_id, border=0)
+        self.pdf.cell(ln=0, h=5, align="L", w=10.0, txt=sampe_id, border=0)
         self.pdf.set_line_width(0.0)
         self.pdf.line(20.0, 35.0, 180.0, 35.0)
 
         # Lab Report Status
-        self.pdf.set_font('arial', 'B', 10.0)
+        self.pdf.set_font("arial", "B", 10.0)
         self.pdf.set_xy(20.0, 36)
-        self.pdf.cell(ln=0, h=5.5, align='L', w=10.0, txt='Diagnostic Report'.upper(), border=0)
-        self.pdf.set_font('arial', 'B', 10.0)
+        self.pdf.cell(
+            ln=0, h=5.5, align="L", w=10.0, txt="Diagnostic Report".upper(), border=0
+        )
+        self.pdf.set_font("arial", "B", 10.0)
         self.pdf.set_xy(170.0, 36)
-        self.pdf.cell(ln=0, h=5.5, align='R', w=10.0, txt=report_state, border=0)
+        self.pdf.cell(ln=0, h=5.5, align="R", w=10.0, txt=report_state, border=0)
 
         self.pdf.set_line_width(0.0)
         self.pdf.line(20.0, 42.0, 180.0, 42.0)
 
         # Customer Column
         patient = get_from_nested(sample, "analysis_request.patient")
-        full_name = get_from_nested(patient, "first_name") + " " + get_from_nested(patient, "last_name")
-        self.pdf.set_font('arial', 'B', 10.0)
+        full_name = (
+            get_from_nested(patient, "first_name")
+            + " "
+            + get_from_nested(patient, "last_name")
+        )
+        self.pdf.set_font("arial", "B", 10.0)
         self.pdf.set_xy(20, 42)
-        self.pdf.cell(ln=0, h=9.5, align='L', w=20.0, txt='MRN: ', border=0)
-        self.pdf.set_font('arial', '', 10.0)
+        self.pdf.cell(ln=0, h=9.5, align="L", w=20.0, txt="MRN: ", border=0)
+        self.pdf.set_font("arial", "", 10.0)
         self.pdf.set_xy(34, 42)
-        self.pdf.cell(ln=0, h=9.5, align='l', w=20.0, txt=get_from_nested(sample, "analysis_request.client_request_id"),
-                      border=0)
-        self.pdf.set_font('arial', 'B', 10.0)
+        self.pdf.cell(
+            ln=0,
+            h=9.5,
+            align="l",
+            w=20.0,
+            txt=get_from_nested(sample, "analysis_request.client_request_id"),
+            border=0,
+        )
+        self.pdf.set_font("arial", "B", 10.0)
         self.pdf.set_xy(20, 46)
-        self.pdf.cell(ln=0, h=9.5, align='L', w=20.0, txt='Name: ', border=0)
-        self.pdf.set_font('arial', '', 10.0)
+        self.pdf.cell(ln=0, h=9.5, align="L", w=20.0, txt="Name: ", border=0)
+        self.pdf.set_font("arial", "", 10.0)
         self.pdf.set_xy(34, 48)
-        self.pdf.cell(ln=0, h=5.5, align='L', w=10.0, txt=full_name, border=0)
-        self.pdf.set_font('arial', 'B', 10.0)
+        self.pdf.cell(ln=0, h=5.5, align="L", w=10.0, txt=full_name, border=0)
+        self.pdf.set_font("arial", "B", 10.0)
         self.pdf.set_xy(20, 50)
-        self.pdf.cell(ln=0, h=9.5, align='L', w=20.0, txt='Age: ', border=0)
-        self.pdf.set_font('arial', '', 10.0)
+        self.pdf.cell(ln=0, h=9.5, align="L", w=20.0, txt="Age: ", border=0)
+        self.pdf.set_font("arial", "", 10.0)
         self.pdf.set_xy(34, 52)
-        self.pdf.cell(ln=0, h=5.5, align='L', w=10.0, txt=get_from_nested(patient, "age"), border=0)
-        self.pdf.set_font('arial', 'B', 10.0)
+        self.pdf.cell(
+            ln=0,
+            h=5.5,
+            align="L",
+            w=10.0,
+            txt=get_from_nested(patient, "age"),
+            border=0,
+        )
+        self.pdf.set_font("arial", "B", 10.0)
         self.pdf.set_xy(20, 54)
-        self.pdf.cell(ln=0, h=9.5, align='L', w=20.0, txt='Sex: ', border=0)
-        self.pdf.set_font('arial', '', 10.0)
+        self.pdf.cell(ln=0, h=9.5, align="L", w=20.0, txt="Sex: ", border=0)
+        self.pdf.set_font("arial", "", 10.0)
         self.pdf.set_xy(34, 56)
-        self.pdf.cell(ln=0, h=5.5, align='L', w=10.0, txt=get_from_nested(patient, "gender"), border=0)
+        self.pdf.cell(
+            ln=0,
+            h=5.5,
+            align="L",
+            w=10.0,
+            txt=get_from_nested(patient, "gender"),
+            border=0,
+        )
 
         self.pdf.set_line_width(0.0)
         self.pdf.line(73.0, 42.0, 73.0, 64.0)
@@ -147,51 +203,81 @@ class FelicityImpress:
         client = get_from_nested(sample, "analysis_request.client")
         name = get_from_nested(client, "name")
         address = get_from_nested(client, "address")
-        self.pdf.set_font('arial', 'B', 10.0)
+        self.pdf.set_font("arial", "B", 10.0)
         self.pdf.set_xy(80, 42)
-        self.pdf.cell(ln=0, h=9.5, align='L', w=20.0, txt='Primary Referrer: ', border=0)
-        self.pdf.set_font('arial', 'I', 10.0)
+        self.pdf.cell(
+            ln=0, h=9.5, align="L", w=20.0, txt="Primary Referrer: ", border=0
+        )
+        self.pdf.set_font("arial", "I", 10.0)
         self.pdf.set_xy(80, 50)
-        self.pdf.multi_cell(40.0, 3.5, f'{name}, \n{address}')
+        self.pdf.multi_cell(40.0, 3.5, f"{name}, \n{address}")
 
         self.pdf.set_line_width(0.0)
         self.pdf.line(120.0, 42.0, 120.0, 64.0)
 
         # Sample Details
         sample_type = get_from_nested(sample, "sample_type.name")
-        self.pdf.set_font('arial', 'B', 8.0)
+        self.pdf.set_font("arial", "B", 8.0)
         self.pdf.set_xy(128.0, 43)
-        self.pdf.cell(ln=0, h=5, align='L', w=10.0, txt='Sample Type:', border=0)
-        self.pdf.set_font('arial', 'I', 8.0)
+        self.pdf.cell(ln=0, h=5, align="L", w=10.0, txt="Sample Type:", border=0)
+        self.pdf.set_font("arial", "I", 8.0)
         self.pdf.set_xy(149.5, 43)
-        self.pdf.cell(ln=0, h=5, align='L', w=10.0, txt=sample_type, border=0)
+        self.pdf.cell(ln=0, h=5, align="L", w=10.0, txt=sample_type, border=0)
         # ---
-        self.pdf.set_font('arial', 'B', 8.0)
+        self.pdf.set_font("arial", "B", 8.0)
         self.pdf.set_xy(128.0, 47)
-        self.pdf.cell(ln=0, h=5, align='L', w=10.0, txt='Collected on:', border=0)
-        self.pdf.set_font('arial', 'I', 8.0)
+        self.pdf.cell(ln=0, h=5, align="L", w=10.0, txt="Collected on:", border=0)
+        self.pdf.set_font("arial", "I", 8.0)
         self.pdf.set_xy(149.5, 47)
-        self.pdf.cell(ln=0, h=5, align='L', w=10.0, txt=get_from_nested(sample, "date_collected"), border=0)
+        self.pdf.cell(
+            ln=0,
+            h=5,
+            align="L",
+            w=10.0,
+            txt=get_from_nested(sample, "date_collected"),
+            border=0,
+        )
         # ---
-        self.pdf.set_font('arial', 'B', 8.0)
+        self.pdf.set_font("arial", "B", 8.0)
         self.pdf.set_xy(128.0, 51)
-        self.pdf.cell(ln=0, h=5, align='L', w=10.0, txt='Received on:', border=0)
-        self.pdf.set_font('arial', 'I', 8.0)
+        self.pdf.cell(ln=0, h=5, align="L", w=10.0, txt="Received on:", border=0)
+        self.pdf.set_font("arial", "I", 8.0)
         self.pdf.set_xy(149.5, 51)
-        self.pdf.cell(ln=0, h=5, align='L', w=10.0, txt=get_from_nested(sample, "date_received"), border=0)
+        self.pdf.cell(
+            ln=0,
+            h=5,
+            align="L",
+            w=10.0,
+            txt=get_from_nested(sample, "date_received"),
+            border=0,
+        )
         # ---
-        self.pdf.set_font('arial', 'B', 8.0)
+        self.pdf.set_font("arial", "B", 8.0)
         self.pdf.set_xy(128.0, 55)
-        self.pdf.cell(ln=0, h=5, align='L', w=10.0, txt='Registered on:', border=0)
-        self.pdf.set_font('arial', 'I', 8.0)
+        self.pdf.cell(ln=0, h=5, align="L", w=10.0, txt="Registered on:", border=0)
+        self.pdf.set_font("arial", "I", 8.0)
         self.pdf.set_xy(149.5, 55)
-        self.pdf.cell(ln=0, h=5, align='L', w=10.0, txt=get_from_nested(sample, "created_at"), border=0)  # ---
-        self.pdf.set_font('arial', 'B', 8.0)
+        self.pdf.cell(
+            ln=0,
+            h=5,
+            align="L",
+            w=10.0,
+            txt=get_from_nested(sample, "created_at"),
+            border=0,
+        )  # ---
+        self.pdf.set_font("arial", "B", 8.0)
         self.pdf.set_xy(128.0, 59)
-        self.pdf.cell(ln=0, h=5, align='L', w=10.0, txt='Reported on:', border=0)
-        self.pdf.set_font('arial', 'I', 8.0)
+        self.pdf.cell(ln=0, h=5, align="L", w=10.0, txt="Reported on:", border=0)
+        self.pdf.set_font("arial", "I", 8.0)
         self.pdf.set_xy(149.5, 59)
-        self.pdf.cell(ln=0, h=5, align='L', w=10.0, txt=get_from_nested(sample, "date_published"), border=0)
+        self.pdf.cell(
+            ln=0,
+            h=5,
+            align="L",
+            w=10.0,
+            txt=get_from_nested(sample, "date_published"),
+            border=0,
+        )
 
         self.pdf.set_line_width(0.0)
         self.pdf.line(20.0, 64.0, 180.0, 64.0)
@@ -204,20 +290,20 @@ class FelicityImpress:
             investigations += ", " + _a
 
         self.pdf.dashed_line(20, 70.0, 50, 70.0, dash_length=1, space_length=1)
-        self.pdf.set_font('arial', 'B', 10.0)
+        self.pdf.set_font("arial", "B", 10.0)
         self.pdf.set_xy(55, 67)
-        self.pdf.cell(ln=0, h=5, align='L', w=20.0, txt=investigations, border=0)
+        self.pdf.cell(ln=0, h=5, align="L", w=20.0, txt=investigations, border=0)
 
         # Results Heading
-        self.pdf.set_font('arial', 'B', 10.0)
+        self.pdf.set_font("arial", "B", 10.0)
         self.pdf.set_xy(20, 75)
-        self.pdf.cell(ln=0, h=5.5, align='L', w=10.0, txt='Investigation', border=0)
+        self.pdf.cell(ln=0, h=5.5, align="L", w=10.0, txt="Investigation", border=0)
         self.pdf.set_xy(120, 75)
-        self.pdf.cell(ln=0, h=5.5, align='R', w=10.0, txt='Result', border=0)
+        self.pdf.cell(ln=0, h=5.5, align="R", w=10.0, txt="Result", border=0)
         self.pdf.set_xy(130, 75)
-        self.pdf.cell(ln=0, h=5.5, align='L', w=10.0, txt='Unit', border=0)
+        self.pdf.cell(ln=0, h=5.5, align="L", w=10.0, txt="Unit", border=0)
         self.pdf.set_xy(150, 75)
-        self.pdf.cell(ln=0, h=5.5, align='L', w=10.0, txt='Ref Range', border=0)
+        self.pdf.cell(ln=0, h=5.5, align="L", w=10.0, txt="Ref Range", border=0)
 
         # Results
         y_pos = 80
@@ -230,21 +316,42 @@ class FelicityImpress:
         )
 
         for result in analyses_results:
-            self.pdf.set_font('arial', '', 8.0)
+            self.pdf.set_font("arial", "", 8.0)
             self.pdf.set_xy(20, y_pos)
-            self.pdf.cell(ln=0, h=5.5, align='L', w=10.0, txt=get_from_nested(result, "analysis.name"), border=0)
+            self.pdf.cell(
+                ln=0,
+                h=5.5,
+                align="L",
+                w=10.0,
+                txt=get_from_nested(result, "analysis.name"),
+                border=0,
+            )
             self.pdf.set_xy(120, y_pos)
-            self.pdf.cell(ln=0, h=5.5, align='R', w=10.0, txt=get_from_nested(result, "result"), border=0)
+            self.pdf.cell(
+                ln=0,
+                h=5.5,
+                align="R",
+                w=10.0,
+                txt=get_from_nested(result, "result"),
+                border=0,
+            )
             self.pdf.set_xy(130, y_pos)
-            self.pdf.cell(ln=0, h=5.5, align='L', w=10.0, txt=get_from_nested(result, "analysis.unit.name"), border=0)
+            self.pdf.cell(
+                ln=0,
+                h=5.5,
+                align="L",
+                w=10.0,
+                txt=get_from_nested(result, "analysis.unit.name"),
+                border=0,
+            )
             self.pdf.set_xy(150, y_pos)
-            self.pdf.cell(ln=0, h=5.5, align='L', w=10.0, txt='xx - xx', border=0)
+            self.pdf.cell(ln=0, h=5.5, align="L", w=10.0, txt="xx - xx", border=0)
             # ---
             y_pos += 4
             inst_meth = f"{get_from_nested(result, 'instrument.name')} | {get_from_nested(result, 'method.name')}"
-            self.pdf.set_font('arial', 'I', 6.0)
+            self.pdf.set_font("arial", "I", 6.0)
             self.pdf.set_xy(20, y_pos)
-            self.pdf.cell(ln=0, h=5.5, align='L', w=10.0, txt=inst_meth, border=0)
+            self.pdf.cell(ln=0, h=5.5, align="L", w=10.0, txt=inst_meth, border=0)
             # ---
             y_pos += 5
 
@@ -255,19 +362,32 @@ class FelicityImpress:
         # End of report
         self.pdf.set_line_width(0.0)
         self.pdf.line(20.0, y_pos, 180.0, y_pos)
-        self.pdf.set_font('arial', 'I', 8.0)
+        self.pdf.set_font("arial", "I", 8.0)
         self.pdf.set_xy(170, y_pos)
-        self.pdf.cell(ln=0, h=5.5, align='R', w=10.0, txt='* End of Report', border=0)
+        self.pdf.cell(ln=0, h=5.5, align="R", w=10.0, txt="* End of Report", border=0)
 
         # --- Quality Statement
         self.pdf.set_line_width(0.0)
         self.pdf.line(15.0, 255.0, 185.0, 255.0)
-        self.pdf.set_font('arial', 'I', 8.0)
+        self.pdf.set_font("arial", "I", 8.0)
         self.pdf.set_xy(20, 255)
-        self.pdf.cell(ln=0, h=5.5, align='L', w=150.0,
-                      txt=get_from_nested(laboratory, "quality_statement"), border=0)
+        self.pdf.cell(
+            ln=0,
+            h=5.5,
+            align="L",
+            w=150.0,
+            txt=get_from_nested(laboratory, "quality_statement"),
+            border=0,
+        )
         self.pdf.set_xy(162, 255)
-        self.pdf.cell(ln=0, h=5.5, align='R', w=20.0, txt=f'Generated on: {self.time_now}', border=0)
+        self.pdf.cell(
+            ln=0,
+            h=5.5,
+            align="R",
+            w=20.0,
+            txt=f"Generated on: {self.time_now}",
+            border=0,
+        )
 
         return self.pdf
 

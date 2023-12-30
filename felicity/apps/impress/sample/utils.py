@@ -46,7 +46,9 @@ async def impress_samples(sample_meta: List[any], user):
             states.sample.PUBLISHED,
         ]:
             impress_meta = marshaller(sample, exclude=exclude)
-            impress_meta["laboratory"] = laboratory.marshal_simple(exclude=["lab_manager"])
+            impress_meta["laboratory"] = laboratory.marshal_simple(
+                exclude=["lab_manager"]
+            )
             impress_meta = remove_circular_refs(impress_meta)
             report_state = "Unknown"
             action = s_meta.get("action")
@@ -84,6 +86,8 @@ async def impress_samples(sample_meta: List[any], user):
 
             await streamer.stream(sample, user, "published", "sample")
         else:
-            logger.info(f"sample {sample.sample_id} could not be impressed - status: {sample.status}")
+            logger.info(
+                f"sample {sample.sample_id} could not be impressed - status: {sample.status}"
+            )
 
     return to_return

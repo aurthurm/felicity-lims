@@ -1,6 +1,12 @@
 from apps.analysis.models.analysis import AnalysisRequest
-from apps.billing.models import TestBill, test_bill_item, TestBillTransaction, ProfilePrice, AnalysisPrice, \
-    TestBillInvoice
+from apps.billing.models import (
+    TestBill,
+    test_bill_item,
+    TestBillTransaction,
+    ProfilePrice,
+    AnalysisPrice,
+    TestBillInvoice,
+)
 from apps.billing.schemas import TestBillInvoiceCreate
 from apps.impress.invoicing.engine import FelicityInvoice
 from apps.setup.caches import get_laboratory_setting
@@ -9,7 +15,6 @@ invoicer = FelicityInvoice()
 
 
 async def impress_invoice(test_bill: TestBill):
-    print("invicing")
     impress_meta = dict()
 
     # bill

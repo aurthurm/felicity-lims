@@ -50,7 +50,7 @@ class MessageThread(BaseAuditDBModel):
         return await super().create(**data)
 
     async def update(
-            self, obj_in: schemas.MessageThreadUpdate
+        self, obj_in: schemas.MessageThreadUpdate
     ) -> schemas.MessageThread:
         data = self._import(obj_in)
         return await super().update(**data)

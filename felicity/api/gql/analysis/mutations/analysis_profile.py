@@ -98,7 +98,7 @@ async def create_profile(info, payload: ProfileInputType) -> AnalysisProfileResp
             )
 
     await utils.billing_setup_profiles([profile.uid])
-    
+
     profile = await analysis_models.Profile.get(uid=profile.uid)
     return a_types.ProfileType(**profile.marshal_simple())
 

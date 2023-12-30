@@ -38,6 +38,20 @@ mutation AuthenticateUser($username: String!, $password: String!) {
     }
 }
 
+mutation RequestPassReset($email: String!) {
+  requestPasswordReset(email: $email) {
+    ... on MessagesType {
+      __typename
+      message
+    }
+    ... on OperationError {
+      __typename
+      error
+      suggestion
+    }
+  }
+}
+
 mutation addUser($firstName: String!, $lastName: String!, $email: String!, $groupUid: String) {
     createUser(firstName: $firstName, lastName: $lastName, email: $email, groupUid: $groupUid) {
         ... on UserType {

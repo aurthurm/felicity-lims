@@ -86,7 +86,10 @@ async def init_coding_standards() -> None:
     logger.info("Setting up coding standard .....")
 
     standards = [
-        {"name": "LOINC", "description": "Logical Observation Identifiers Names and Codes"},
+        {
+            "name": "LOINC",
+            "description": "Logical Observation Identifiers Names and Codes",
+        },
         # {"name": "SNOMED CT", "description": "Systemized Nomenclature of Medicine – Clinical Terms"}
     ]
     for stand in standards:

@@ -27,8 +27,8 @@ async def read_reports(current_user: Annotated[User, Depends(get_current_user)])
 
 @reports.post("")
 async def request_report_generation(
-        request_in: an_schema.ReportRequest,
-        current_user: Annotated[User, Depends(get_current_user)],
+    request_in: an_schema.ReportRequest,
+    current_user: Annotated[User, Depends(get_current_user)],
 ) -> Any:
     """
     Generate Reports.
@@ -65,8 +65,8 @@ async def request_report_generation(
 
 @reports.delete("/{report_uid}")
 async def delete_report(
-        report_uid: str,
-        current_user: Annotated[User, Depends(get_current_user)],
+    report_uid: str,
+    current_user: Annotated[User, Depends(get_current_user)],
 ):
     report: models.ReportMeta = await models.ReportMeta.get(uid=report_uid)
     deleteFile(report.location)
@@ -75,7 +75,4 @@ async def delete_report(
     report.analyses = []
     await report.save()
     await report.delete()
-    return {
-        "uid": report_uid,
-        "message": "Deletion Success!!"
-    }
+    return {"uid": report_uid, "message": "Deletion Success!!"}

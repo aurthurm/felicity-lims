@@ -8,7 +8,7 @@ from .generic import (
     OperationSuccess,
     DeleteResponse,
     MessageResponse,
-    SuccessErrorResponse
+    SuccessErrorResponse,
 )
 
 generic_types = [

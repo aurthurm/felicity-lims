@@ -62,7 +62,6 @@ import { IAnalysisDiscount, IProfileDiscount } from '../../../models/billing';
       { uid: pricing?.uid, payload },
       mutationKey
     ).then((result) => {
-      console.log(result)
     });
   };
 
@@ -109,7 +108,6 @@ import { IAnalysisDiscount, IProfileDiscount } from '../../../models/billing';
       { uid: discount?.uid, payload },
       mutationKey
     ).then((result) => {
-      console.log(result)
     });
   };
 

@@ -35,6 +35,7 @@ from apps.client.models import Client  # noqa
 from apps.client.models import ClientContact  # noqa
 from apps.common.models import IdSequence  # noqa
 from apps.impress.sample.models import ReportImpress  # noqa
+
 # from apps.setup.models import MethodValidation  # noqa
 # from apps.setup.models import InstrumentCompetence  # noqa
 from apps.instrument.models import CalibrationCertificate  # noqa

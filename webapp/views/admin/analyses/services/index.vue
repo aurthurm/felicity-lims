@@ -203,7 +203,7 @@ function saveMappingForm(): void {
     <div class="container w-full my-4">
       <hr>
       <button
-        class="px-2 py-1 border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
+        class="px-2 py-1 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
         @click="FormManager(true)"
       >Add Analyses Service</button>
       <hr>
@@ -375,7 +375,7 @@ function saveMappingForm(): void {
             <div class="flex justify-between items-center mb-2">
               <h3>Concept Mappings</h3>
               <button @click="MappingFormManager(true)"
-                class="px-2 py-1 border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none">Add Mapping</button>
+                class="px-2 py-1 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none">Add Mapping</button>
             </div>
             <hr />
             <div class="overflow-x-auto mt-4">

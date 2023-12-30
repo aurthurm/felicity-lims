@@ -111,7 +111,7 @@ const accordion = defineAsyncComponent(
     <div class="container w-full my-4">
       <hr>
       <button
-        class="px-2 py-1 border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
+        class="px-2 py-1 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
         @click="FormManager(true)"
       >Add Group</button>
       <hr>

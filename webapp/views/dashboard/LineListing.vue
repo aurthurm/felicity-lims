@@ -120,7 +120,7 @@ const downloadReport = (report: any) => {
                   </td>
                   <td class="px-1 py-1 whitespace-no-wrap text-right border-b border-gray-500 text-sm leading-5">
                     <button v-show="report.status == 'READY'" @click="downloadReport(report)"
-                      class="px-2 py-1 mr-2 border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none">
+                      class="px-2 py-1 mr-2 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none">
                       Download
                     </button>
                     <button v-show="report.status == 'READY'" @click="deleteReport(report)"

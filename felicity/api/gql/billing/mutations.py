@@ -6,10 +6,14 @@ from strawberry.types import Info  # noqa
 
 from api.gql.auth import auth_from_info, verify_user_auth
 from api.gql.billing.types import (
-    ProfilePriceType, ProfileDiscountType,
-    AnalysisPriceType, AnalysisDiscountType,
-    VoucherType, VoucherCodeType,
-    TestBillTransactionType, TestBillType
+    ProfilePriceType,
+    ProfileDiscountType,
+    AnalysisPriceType,
+    AnalysisDiscountType,
+    VoucherType,
+    VoucherCodeType,
+    TestBillTransactionType,
+    TestBillType,
 )
 from api.gql.permissions import IsAuthenticated
 from api.gql.types import OperationError
@@ -29,11 +33,15 @@ AnalysisPriceResponse = strawberry.union(
 )
 
 ProfileDiscountResponse = strawberry.union(
-    "ProfileDiscountResponse", (ProfileDiscountType, OperationError), description=""  # noqa
+    "ProfileDiscountResponse",
+    (ProfileDiscountType, OperationError),
+    description="",  # noqa
 )
 
 AnalysisDiscountResponse = strawberry.union(
-    "AnalysisDiscountResponse", (AnalysisDiscountType, OperationError), description=""  #
+    "AnalysisDiscountResponse",
+    (AnalysisDiscountType, OperationError),
+    description="",  #
 )
 
 VoucherResponse = strawberry.union(
@@ -45,7 +53,9 @@ VoucherCodeResponse = strawberry.union(
 )
 
 TestBillTransactionResponse = strawberry.union(
-    "TestBillTransactionResponse", (TestBillTransactionType, OperationError), description=""  #
+    "TestBillTransactionResponse",
+    (TestBillTransactionType, OperationError),
+    description="",  #
 )
 
 TestBillResponse = strawberry.union(
@@ -107,7 +117,9 @@ class ApplyVoucherInput:
 @strawberry.type
 class BillingMutations:
     @strawberry.mutation(permission_classes=[IsAuthenticated])
-    async def update_profile_price(self, info: Info, uid: str, payload: PriceInput) -> ProfilePriceResponse:
+    async def update_profile_price(
+        self, info: Info, uid: str, payload: PriceInput
+    ) -> ProfilePriceResponse:
         _, felicity_user = await auth_from_info(info)
 
         profile_price = await models.ProfilePrice.get(uid=uid)
@@ -122,7 +134,9 @@ class BillingMutations:
         return ProfilePriceType(**profile_price.marshal_simple())
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
-    async def update_analysis_price(self, info: Info, uid: str, payload: PriceInput) -> AnalysisPriceResponse:
+    async def update_analysis_price(
+        self, info: Info, uid: str, payload: PriceInput
+    ) -> AnalysisPriceResponse:
         _, felicity_user = await auth_from_info(info)
 
         analysis_price = await models.AnalysisPrice.get(uid=uid)
@@ -138,7 +152,7 @@ class BillingMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_profile_discount(
-            self, info, uid: str, payload: PriceDiscountInput
+        self, info, uid: str, payload: PriceDiscountInput
     ) -> ProfileDiscountResponse:
         _, felicity_user = await auth_from_info(info)
 
@@ -168,13 +182,17 @@ class BillingMutations:
             "updated_by_uid": felicity_user.uid,
         }
 
-        obj_in = schemas.ProfileDiscountUpdate(**{**profile_discount.to_dict(), **update_in})
+        obj_in = schemas.ProfileDiscountUpdate(
+            **{**profile_discount.to_dict(), **update_in}
+        )
         profile_discount = await profile_discount.update(obj_in)
-        return ProfileDiscountType(**profile_discount.marshal_simple(), )
+        return ProfileDiscountType(
+            **profile_discount.marshal_simple(),
+        )
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_analysis_discount(
-            self, info, uid: str, payload: PriceDiscountInput
+        self, info, uid: str, payload: PriceDiscountInput
     ) -> AnalysisDiscountResponse:
         _, felicity_user = await auth_from_info(info)
 
@@ -199,13 +217,15 @@ class BillingMutations:
             "created_by_uid": felicity_user.uid,
             "updated_by_uid": felicity_user.uid,
         }
-        obj_in = schemas.AnalysisDiscountUpdate(**{**analysis_discount.to_dict(), **update_in})
+        obj_in = schemas.AnalysisDiscountUpdate(
+            **{**analysis_discount.to_dict(), **update_in}
+        )
         analysis_discount = await analysis_discount.update(obj_in)
         return AnalysisDiscountType(**analysis_discount.marshal_simple())
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_voucher(
-            self, info: Info, payload: VoucherInput
+        self, info: Info, payload: VoucherInput
     ) -> VoucherResponse:
 
         is_authenticated, felicity_user = await auth_from_info(info)
@@ -219,9 +239,7 @@ class BillingMutations:
 
         exists = await models.Voucher.get(name=payload.name)
         if exists:
-            return OperationError(
-                error=f"Voucher {payload.name} already exists"
-            )
+            return OperationError(error=f"Voucher {payload.name} already exists")
 
         incoming: dict = {
             "created_by_uid": felicity_user.uid,
@@ -236,7 +254,7 @@ class BillingMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_voucher(
-            self, info, uid: str, payload: VoucherInput
+        self, info, uid: str, payload: VoucherInput
     ) -> VoucherResponse:
 
         is_authenticated, felicity_user = await auth_from_info(info)
@@ -268,7 +286,7 @@ class BillingMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_voucher_code(
-            self, info: Info, payload: VoucherCodeInput
+        self, info: Info, payload: VoucherCodeInput
     ) -> VoucherCodeResponse:
 
         is_authenticated, felicity_user = await auth_from_info(info)
@@ -282,9 +300,7 @@ class BillingMutations:
 
         exists = await models.VoucherCode.get(code=payload.code)
         if exists:
-            return OperationError(
-                error=f"Voucher Code {payload.code} already exists"
-            )
+            return OperationError(error=f"Voucher Code {payload.code} already exists")
 
         incoming: dict = {
             "created_by_uid": felicity_user.uid,
@@ -299,7 +315,7 @@ class BillingMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_voucher_code(
-            self, info, uid: str, payload: VoucherCodeInput
+        self, info, uid: str, payload: VoucherCodeInput
     ) -> VoucherCodeResponse:
 
         is_authenticated, felicity_user = await auth_from_info(info)
@@ -331,7 +347,7 @@ class BillingMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_test_bill_transaction(
-            self, info, payload: BillTransactionInput
+        self, info, payload: BillTransactionInput
     ) -> TestBillTransactionResponse:
 
         is_authenticated, felicity_user = await auth_from_info(info)
@@ -343,7 +359,7 @@ class BillingMutations:
         if payload.amount <= 0:
             return OperationError(
                 error="Invalid transaction Amount.",
-                suggestion="Transaction amount must be greater than 0"
+                suggestion="Transaction amount must be greater than 0",
             )
 
         test_bill = await models.TestBill.get(uid=payload.test_bill_uid)
@@ -362,7 +378,7 @@ class BillingMutations:
 
         test_bill_update = {
             "total_paid": test_bill.total_paid + tbt.amount,
-            "partial": True
+            "partial": True,
         }
         if test_bill_update["total_paid"] >= test_bill.total_charged:
             test_bill_update["partial"] = False
@@ -383,7 +399,7 @@ class BillingMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def apply_voucher(
-            self, info, payload: ApplyVoucherInput
+        self, info, payload: ApplyVoucherInput
     ) -> TestBillTransactionResponse:
 
         is_authenticated, felicity_user = await auth_from_info(info)
@@ -392,5 +408,7 @@ class BillingMutations:
             felicity_user,
             "Only Authenticated user can add test bill transactions",
         )
-        bill = await utils.apply_voucher(payload.voucher_code, payload.test_bill_uid, payload.customer_uid)
+        bill = await utils.apply_voucher(
+            payload.voucher_code, payload.test_bill_uid, payload.customer_uid
+        )
         return TestBillType(**bill.marshal_simple(exclude=["orders"]))

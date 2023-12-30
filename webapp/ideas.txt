@@ -1,0 +1,3 @@
+https://github.com/TaTo30/VuePDF
+https://pspdfkit.com/blog/2021/how-to-build-a-vuejs-pdf-viewer-with-pdfjs/
+https://github.com/DingRui12138/vue-pdf-viewer

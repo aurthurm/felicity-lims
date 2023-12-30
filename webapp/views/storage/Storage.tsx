@@ -285,7 +285,7 @@ const StorageHome = defineComponent({
                     <div class="col-span-2 pt-4 pl-2">
                         <button
                             onClick={() => this.roomFormManager(true, null)}
-                            class="px-2 py-1 border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
+                            class="px-2 py-1 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
                         >
                             Add Store Room
                         </button>
@@ -305,7 +305,7 @@ const StorageHome = defineComponent({
                                     <>
                                         <button
                                             onClick={() => this.locationFormManager(true, null)}
-                                            class="px-2 py-1 border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
+                                            class="px-2 py-1 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
                                         >
                                             Add Storage Location
                                         </button>
@@ -315,7 +315,7 @@ const StorageHome = defineComponent({
                                     <>
                                         <button
                                             onClick={() => this.sectionFormManager(true, null)}
-                                            class="px-2 py-1 border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
+                                            class="px-2 py-1 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
                                         >
                                             Add Storage Section
                                         </button>
@@ -325,7 +325,7 @@ const StorageHome = defineComponent({
                                     <>
                                         <button
                                             onClick={() => this.containerFormManager(true, null)}
-                                            class="px-2 py-1 border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
+                                            class="px-2 py-1 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
                                         >
                                             Add Storage Container
                                         </button>

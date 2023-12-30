@@ -604,7 +604,7 @@ const sampleTypes = computed<ISampleType[]>(() => sampleStore.getSampleTypes);
                 </select>
                 <button
                   @click.prevent="appyQCTemplate()"
-                  class="px-2 py-1 ml-2 h-auto border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
+                  class="px-2 py-1 ml-2 h-auto border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
                 >
                   Apply
                 </button>
@@ -612,7 +612,7 @@ const sampleTypes = computed<ISampleType[]>(() => sampleStore.getSampleTypes);
             </label>
             <button
               @click.prevent="addReserved()"
-              class="px-2 py-1 mr-2 border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
+              class="px-2 py-1 mr-2 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
             >
               Add Reserve Slot
             </button>

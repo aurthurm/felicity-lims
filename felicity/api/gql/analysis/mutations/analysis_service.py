@@ -103,15 +103,17 @@ async def create_analysis(info, payload: AnalysisInputType) -> ProfilesServiceRe
 
     analysis = await analysis_models.Analysis.get(uid=analysis.uid)
     profiles = await analysis_models.Profile.get_all(analyses___uid=analysis.uid)
-    
+
     await utils.billing_setup_analysis([analysis.uid])
 
-    return a_types.AnalysisWithProfiles(**{**analysis.marshal_simple(), "profiles": profiles})
+    return a_types.AnalysisWithProfiles(
+        **{**analysis.marshal_simple(), "profiles": profiles}
+    )
 
 
 @strawberry.mutation(permission_classes=[IsAuthenticated])
 async def update_analysis(
-        info, uid: str, payload: AnalysisInputType
+    info, uid: str, payload: AnalysisInputType
 ) -> ProfilesServiceResponse:
     is_authenticated, felicity_user = await auth_from_info(info)
     verify_user_auth(
@@ -156,12 +158,14 @@ async def update_analysis(
 
     profiles = analysis_models.Profile.get_all(analyses___uid=analysis.uid)
 
-    return a_types.AnalysisWithProfiles(**{**analysis.marshal_simple(), "profiles": profiles})
+    return a_types.AnalysisWithProfiles(
+        **{**analysis.marshal_simple(), "profiles": profiles}
+    )
 
 
 @strawberry.mutation(permission_classes=[IsAuthenticated])
 async def create_analysis_mapping(
-        info, payload: AnalysisMappingInputType
+    info, payload: AnalysisMappingInputType
 ) -> AnalysisMappingResponse:
     is_authenticated, felicity_user = await auth_from_info(info)
     verify_user_auth(
@@ -190,7 +194,7 @@ async def create_analysis_mapping(
 
 @strawberry.mutation(permission_classes=[IsAuthenticated])
 async def update_analysis_mapping(
-        info, uid: str, payload: AnalysisMappingInputType
+    info, uid: str, payload: AnalysisMappingInputType
 ) -> AnalysisMappingResponse:
     is_authenticated, felicity_user = await auth_from_info(info)
     verify_user_auth(

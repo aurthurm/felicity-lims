@@ -10,7 +10,9 @@ logger = logging.getLogger(__name__)
 
 @pytest.mark.asyncio
 @pytest.mark.order(70)
-async def test_add_worksheet_template(app, auth_data, sample_types, analyses, instruments):
+async def test_add_worksheet_template(
+    app, auth_data, sample_types, analyses, instruments
+):
     add_gql = """
         mutation AddWorkSheetTemplate($payload: WorksheetTemplateInputType!){
           createWorksheetTemplate(payload: $payload)
@@ -147,7 +149,11 @@ async def test_add_worksheet_using_template(app, auth_data, users_db, ws_templat
       }
     """
 
-    worksheet = {"analystUid": users_db[1]["uid"], "templateUid": ws_templates[0]["uid"], "count": 1}
+    worksheet = {
+        "analystUid": users_db[1]["uid"],
+        "templateUid": ws_templates[0]["uid"],
+        "count": 1,
+    }
     response = await app.post(
         "/felicity-gql",
         json={"query": add_gql, "variables": {**worksheet}},

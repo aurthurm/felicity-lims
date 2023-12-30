@@ -320,7 +320,7 @@ const printBarCodes = async () => await barcodeSamples(getSampleUids())
       <div>
         <button
           @click.prevent="refresh()"
-          class="px-1 py-1 mr-2 border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
+          class="px-1 py-1 mr-2 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
         >
           Refresh
         </button>
@@ -535,7 +535,7 @@ const printBarCodes = async () => await barcodeSamples(getSampleUids())
           can_unassign
         "
         @click.prevent="unAssignSamples()"
-        class="px-2 py-1 mr-2 border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
+        class="px-2 py-1 mr-2 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
       >
         Un Assign
       </button>
@@ -544,7 +544,7 @@ const printBarCodes = async () => await barcodeSamples(getSampleUids())
           shield.hasRights(shield.actions.UPDATE, shield.objects.WORKSHEET) && can_submit
         "
         @click.prevent="submitResults()"
-        class="px-2 py-1 mr-2 border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
+        class="px-2 py-1 mr-2 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
       >
         Submit
       </button>
@@ -553,7 +553,7 @@ const printBarCodes = async () => await barcodeSamples(getSampleUids())
           shield.hasRights(shield.actions.UPDATE, shield.objects.WORKSHEET) && can_retract
         "
         @click.prevent="retractResults()"
-        class="px-2 py-1 mr-2 border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
+        class="px-2 py-1 mr-2 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
       >
         Retract
       </button>
@@ -562,7 +562,7 @@ const printBarCodes = async () => await barcodeSamples(getSampleUids())
           shield.hasRights(shield.actions.UPDATE, shield.objects.WORKSHEET) && can_approve
         "
         @click.prevent="approveResults()"
-        class="px-2 py-1 mr-2 border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
+        class="px-2 py-1 mr-2 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
       >
         Approve
       </button>
@@ -571,14 +571,14 @@ const printBarCodes = async () => await barcodeSamples(getSampleUids())
           shield.hasRights(shield.actions.UPDATE, shield.objects.WORKSHEET) && can_retest
         "
         @click.prevent="retestResults()"
-        class="px-2 py-1 mr-2 border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
+        class="px-2 py-1 mr-2 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
       >
         Retest
       </button>
       <button 
           v-show="barcodes"
           @click.prevent="printBarCodes"
-          class="px-2 py-1 mr-2 border-sky-800 border text-sky-800rounded-smtransition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none">
+          class="px-2 py-1 mr-2 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none">
           Print Barcodes
         </button>
     </section>

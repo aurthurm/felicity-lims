@@ -58,7 +58,7 @@ async def test_submit_results(app, auth_data, samples, worksheets):
     # process job for the next test
     job_response = await app.get("api/v1/jobs")
     logger.info(f"job response: {job_response} {job_response.json}")
-    jobs = list(filter(lambda j: j['status'] == "pending", job_response.json()))
+    jobs = list(filter(lambda j: j["status"] == "pending", job_response.json()))
     await submit_results(jobs[0]["uid"])
 
 
@@ -125,7 +125,7 @@ async def test_retract_result(app, auth_data, samples):
     """
 
     results = [r["analysisResults"][0] for r in samples]
-    resulted = list(filter(lambda r: r['status'] == "resulted", results))
+    resulted = list(filter(lambda r: r["status"] == "resulted", results))
     logger.info(f"resulted, results: {resulted} {results}")
 
     response = await app.post(
@@ -281,10 +281,10 @@ async def test_verify_ws_results(app, samples, users, worksheets):
         json={
             "query": authe,
             "variables": {
-                "username": make_username(users[1]['firstName']),
-                "password": make_password(users[1]['firstName'])
-            }
-        }
+                "username": make_username(users[1]["firstName"]),
+                "password": make_password(users[1]["firstName"]),
+            },
+        },
     )
     logger.info(f"auth_resp: {auth_resp} {auth_resp.json()}")
 
@@ -314,7 +314,7 @@ async def test_verify_ws_results(app, samples, users, worksheets):
     # process job for the next test
     job_response = await app.get("api/v1/jobs")
     logger.info(f"job response: {job_response} {job_response.json}")
-    jobs = list(filter(lambda j: j['status'] == "pending", job_response.json()))
+    jobs = list(filter(lambda j: j["status"] == "pending", job_response.json()))
     await verify_results(jobs[0]["uid"])
 
 
@@ -357,13 +357,16 @@ async def test_verify_sample_results(app, users, samples):
            }
        """
 
-    u_resp = await app.post("felicity-gql", json={
-        "query": authe,
-        "variables": {
-            "username": make_username(users[0]["firstName"]),
-            "password": make_password(users[0]["firstName"])
-        }
-    })
+    u_resp = await app.post(
+        "felicity-gql",
+        json={
+            "query": authe,
+            "variables": {
+                "username": make_username(users[0]["firstName"]),
+                "password": make_password(users[0]["firstName"]),
+            },
+        },
+    )
 
     user_data = u_resp.json()["data"]["authenticateUser"]
     logger.info(f"verifier response: {u_resp} {u_resp.json}")
@@ -393,7 +396,7 @@ async def test_verify_sample_results(app, users, samples):
     # process job for the next test
     job_response = await app.get("api/v1/jobs")
     logger.info(f"job response: {job_response} {job_response.json}")
-    jobs = list(filter(lambda j: j['status'] == "pending", job_response.json()))
+    jobs = list(filter(lambda j: j["status"] == "pending", job_response.json()))
     await verify_results(jobs[0]["uid"])
 
 
@@ -459,7 +462,7 @@ async def test_check_results(app, auth_data, samples):
     samples = list(filter(lambda r: r["status"] == "approved", samples))
     response = await app.post(
         "/felicity-gql",
-        json={"query": add_gql, "variables": {"uid": samples[0]['uid']}},
+        json={"query": add_gql, "variables": {"uid": samples[0]["uid"]}},
         headers=auth_data["headers"],
     )
 
