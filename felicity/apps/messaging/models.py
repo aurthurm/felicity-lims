@@ -45,12 +45,12 @@ class MessageThread(BaseAuditDBModel):
     deleted_by = relationship("User", secondary=message_thread_delete, lazy="selectin")
 
     @classmethod
-    async def create(cls, obj_in: schemas.MessageThreadCreate) -> schemas.MessageThread:
+    async def create(cls, obj_in: dict | schemas.MessageThreadCreate) -> schemas.MessageThread:
         data = cls._import(obj_in)
         return await super().create(**data)
 
     async def update(
-        self, obj_in: schemas.MessageThreadUpdate
+            self, obj_in: dict | schemas.MessageThreadUpdate
     ) -> schemas.MessageThread:
         data = self._import(obj_in)
         return await super().update(**data)
@@ -135,11 +135,11 @@ class Message(BaseAuditDBModel, BaseMPTT):
     deleted_by = relationship("User", secondary=message_delete, lazy="selectin")
 
     @classmethod
-    async def create(cls, obj_in: schemas.MessageCreate) -> schemas.Message:
+    async def create(cls, obj_in: dict | schemas.MessageCreate) -> schemas.Message:
         data = cls._import(obj_in)
         return await super().create(**data)
 
-    async def update(self, obj_in: schemas.MessageUpdate) -> schemas.Message:
+    async def update(self, obj_in: dict | schemas.MessageUpdate) -> schemas.Message:
         data = self._import(obj_in)
         return await super().update(**data)
 

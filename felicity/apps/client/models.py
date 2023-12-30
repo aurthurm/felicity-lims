@@ -30,7 +30,7 @@ class Client(Auditable):
     active = Column(Boolean(), default=False)
 
     @classmethod
-    async def create(cls, obj_in: schemas.ClientCreate) -> schemas.Client:
+    async def create(cls, obj_in: dict | schemas.ClientCreate) -> schemas.Client:
         exist = await cls.get(code=obj_in.code)
         if exist:
             raise Exception(f"Client with code {obj_in.code} already Exists")
@@ -38,7 +38,7 @@ class Client(Auditable):
         data = cls._import(obj_in)
         return await super().create(**data)
 
-    async def update(self, obj_in: schemas.ClientUpdate) -> schemas.Client:
+    async def update(self, obj_in: dict | schemas.ClientUpdate) -> schemas.Client:
         data = self._import(obj_in)
         return await super().update(**data)
 
@@ -81,13 +81,13 @@ class ClientContact(AbstractBaseUser):
 
     @classmethod
     async def create(
-        cls, contact_in: schemas.ClientContactCreate
+            cls, contact_in: schemas.ClientContactCreate
     ) -> schemas.ClientContact:
         data = cls._import(contact_in)
         return await super().create(**data)
 
     async def update(
-        self, contact_in: schemas.ClientContactUpdate
+            self, contact_in: schemas.ClientContactUpdate
     ) -> schemas.ClientContact:
         data = self._import(contact_in)
         return await super().update(**data)

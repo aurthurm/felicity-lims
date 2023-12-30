@@ -69,11 +69,11 @@ class WorkSheetTemplate(WSBase):
     sample_type = relationship(analysis_models.SampleType, lazy="selectin")
 
     @classmethod
-    async def create(cls, obj_in: schemas.WSTemplateCreate) -> schemas.WSTemplate:
+    async def create(cls, obj_in: dict | schemas.WSTemplateCreate) -> schemas.WSTemplate:
         data = cls._import(obj_in)
         return await super().create(**data)
 
-    async def update(self, obj_in: schemas.WSTemplateUpdate) -> schemas.WSTemplate:
+    async def update(self, obj_in: dict | schemas.WSTemplateUpdate) -> schemas.WSTemplate:
         data = self._import(obj_in)
         return await super().update(**data)
 
@@ -183,11 +183,11 @@ class WorkSheet(Auditable, WSBase):
         return self
 
     @classmethod
-    async def create(cls, obj_in: schemas.WorkSheetCreate) -> schemas.WorkSheet:
+    async def create(cls, obj_in: dict | schemas.WorkSheetCreate) -> schemas.WorkSheet:
         data = cls._import(obj_in)
         data["worksheet_id"] = (await IdSequence.get_next_number("WS"))[1]
         return await super().create(**data)
 
-    async def update(self, obj_in: schemas.WorkSheetUpdate) -> schemas.WorkSheet:
+    async def update(self, obj_in: dict | schemas.WorkSheetUpdate) -> schemas.WorkSheet:
         data = self._import(obj_in)
         return await super().update(**data)

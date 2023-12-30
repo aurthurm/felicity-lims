@@ -22,28 +22,28 @@ logger = logging.getLogger(__name__)
 
 
 async def create_resource(
-    resource_type: str,
-    resource_data: BundleResource
-    | PatientResource
-    | ServiceRequestResource
-    | DiagnosticReportResource,
-    request: Request,
-    current_user: User,
+        resource_type: str,
+        resource_data: BundleResource
+                       | PatientResource
+                       | ServiceRequestResource
+                       | DiagnosticReportResource,
+        request: Request,
+        current_user: User,
 ):
     logger.info(f"create resource {resource_type} ..................")
     resource_mappings = {
         "Bundle": create_bundle,
         "DiagnosticReport": create_diagnostic_report,
     }
-    if not resource_type in resource_mappings:
+    if resource_type not in resource_mappings:
         return False
     return await resource_mappings[resource_type](resource_data, request, current_user)
 
 
 async def create_bundle(
-    resource_data: BundleResource, request: Request, current_user: User
+        resource_data: BundleResource, request: Request, current_user: User
 ):
-    logger.info(f"Bundle data: ........")
+    logger.info(f"Bundle data:...")
     if resource_data.extension[0].valueString == "shipment":
         await create_inbound_shipment(resource_data, request, current_user)
 
@@ -51,12 +51,12 @@ async def create_bundle(
 
 
 async def create_inbound_shipment(
-    payload: BundleResource, request: Request, current_user: User
+        payload: BundleResource, request: Request, current_user: User
 ):
     """Create inbound shipment from bundle"""
-    logger.info(f"Incoming Inbound shipment ....")
+    logger.info(f"Incoming Inbound shipment...")
 
-    data = payload.dict(exclude_none=True)
+    data = payload.model_dump(exclude_none=True)
 
     laboratory = await resolve_ref_laboratory(payload.identifier.assigner, request)
 
@@ -72,7 +72,7 @@ async def create_inbound_shipment(
     shipment = await Shipment.create(s_in)
 
     try:
-        from apps.shipment.utils import gen_pdf_manifest
+        from apps.impress.shipment.utils import gen_pdf_manifest
 
         await gen_pdf_manifest(payload.extension[3].data.get("data", None), shipment)
     except Exception:
@@ -97,7 +97,7 @@ async def resolve_ref_laboratory(ref: Reference, request: Request):
 
 
 async def create_diagnostic_report(
-    diagnostic_data: DiagnosticReportResource, request: Request, current_user: User
+        diagnostic_data: DiagnosticReportResource, request: Request, current_user: User
 ):
     job_schema = JobCreate(
         action=job_conf.actions.DIAGNOSTIC_REPORT,
@@ -106,7 +106,7 @@ async def create_diagnostic_report(
         job_id=0,
         status=job_conf.states.PENDING,
         creator_uid=current_user.uid,
-        data={"data": diagnostic_data.dict(exclude_none=True)},
+        data={"data": diagnostic_data.model_dump(exclude_none=True)},
     )
     await Job.create(job_schema)
 

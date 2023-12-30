@@ -20,11 +20,11 @@ class StockItem(BaseAuditDBModel):
     maximum_level = Column(Integer, nullable=True)
 
     @classmethod
-    async def create(cls, obj_in: schemas.StockItemCreate) -> schemas.StockItem:
+    async def create(cls, obj_in: dict | schemas.StockItemCreate) -> schemas.StockItem:
         data = cls._import(obj_in)
         return await super().create(**data)
 
-    async def update(self, obj_in: schemas.StockItemUpdate) -> schemas.StockItem:
+    async def update(self, obj_in: dict | schemas.StockItemUpdate) -> schemas.StockItem:
         data = self._import(obj_in)
         return await super().update(**data)
 
@@ -40,12 +40,12 @@ class StockCategory(BaseAuditDBModel):
     description = Column(String, nullable=False)
 
     @classmethod
-    async def create(cls, obj_in: schemas.StockCategoryCreate) -> schemas.StockCategory:
+    async def create(cls, obj_in: dict | schemas.StockCategoryCreate) -> schemas.StockCategory:
         data = cls._import(obj_in)
         return await super().create(**data)
 
     async def update(
-        self, obj_in: schemas.StockCategoryUpdate
+            self, obj_in: dict | schemas.StockCategoryUpdate
     ) -> schemas.StockCategory:
         data = self._import(obj_in)
         return await super().update(**data)
@@ -60,11 +60,11 @@ class Hazard(BaseAuditDBModel):
     description = Column(String, nullable=False)
 
     @classmethod
-    async def create(cls, obj_in: schemas.HazardCreate) -> schemas.Hazard:
+    async def create(cls, obj_in: dict | schemas.HazardCreate) -> schemas.Hazard:
         data = cls._import(obj_in)
         return await super().create(**data)
 
-    async def update(self, obj_in: schemas.HazardUpdate) -> schemas.Hazard:
+    async def update(self, obj_in: dict | schemas.HazardUpdate) -> schemas.Hazard:
         data = self._import(obj_in)
         return await super().update(**data)
 
@@ -74,11 +74,11 @@ class StockUnit(BaseAuditDBModel):
     __tablename__ = "stock_unit"
 
     @classmethod
-    async def create(cls, obj_in: schemas.StockUnitCreate) -> schemas.StockUnit:
+    async def create(cls, obj_in: dict | schemas.StockUnitCreate) -> schemas.StockUnit:
         data = cls._import(obj_in)
         return await super().create(**data)
 
-    async def update(self, obj_in: schemas.StockUnitUpdate) -> schemas.StockUnit:
+    async def update(self, obj_in: dict | schemas.StockUnitUpdate) -> schemas.StockUnit:
         data = self._import(obj_in)
         return await super().update(**data)
 
@@ -90,13 +90,13 @@ class StockPackaging(BaseAuditDBModel):
 
     @classmethod
     async def create(
-        cls, obj_in: schemas.StockPackagingCreate
+            cls, obj_in: dict | schemas.StockPackagingCreate
     ) -> schemas.StockPackaging:
         data = cls._import(obj_in)
         return await super().create(**data)
 
     async def update(
-        self, obj_in: schemas.StockPackagingUpdate
+            self, obj_in: dict | schemas.StockPackagingUpdate
     ) -> schemas.StockPackaging:
         data = self._import(obj_in)
         return await super().update(**data)
@@ -134,11 +134,11 @@ class StockProduct(BaseAuditDBModel):
     received_by = relationship("User", foreign_keys=[received_by_uid], lazy="selectin")
 
     @classmethod
-    async def create(cls, obj_in: schemas.StockProductCreate) -> schemas.StockProduct:
+    async def create(cls, obj_in: dict | schemas.StockProductCreate) -> schemas.StockProduct:
         data = cls._import(obj_in)
         return await super().create(**data)
 
-    async def update(self, obj_in: schemas.StockProductUpdate) -> schemas.StockProduct:
+    async def update(self, obj_in: dict | schemas.StockProductUpdate) -> schemas.StockProduct:
         data = self._import(obj_in)
         return await super().update(**data)
 
@@ -153,19 +153,19 @@ class StockOrder(BaseAuditDBModel):
     status = Column(String, nullable=False)
     order_number = Column(String, nullable=False)
     remarks = Column(String, nullable=True)
-    fullfilled_by_uid = Column(String, ForeignKey("user.uid"), nullable=True)
-    fullfilled_by = relationship(
-        "User", foreign_keys=[fullfilled_by_uid], lazy="selectin"
+    fulfilled_by_uid = Column(String, ForeignKey("user.uid"), nullable=True)
+    fulfilled_by = relationship(
+        "User", foreign_keys=[fulfilled_by_uid], lazy="selectin"
     )
 
     @classmethod
-    async def create(cls, obj_in: schemas.StockOrderCreate) -> schemas.StockOrder:
+    async def create(cls, obj_in: dict | schemas.StockOrderCreate) -> schemas.StockOrder:
         data = cls._import(obj_in)
         data["status"] = order_states.PREPARATION
         data["order_number"] = (await IdSequence.get_next_number("SON"))[1]
         return await super().create(**data)
 
-    async def update(self, obj_in: schemas.StockOrderUpdate) -> schemas.StockOrder:
+    async def update(self, obj_in: dict | schemas.StockOrderUpdate) -> schemas.StockOrder:
         data = self._import(obj_in)
         return await super().update(**data)
 
@@ -177,19 +177,19 @@ class StockOrderProduct(BaseAuditDBModel):
     product = relationship("StockProduct", lazy="selectin")
     order_uid = Column(String, ForeignKey("stock_order.uid"), nullable=True)
     order = relationship("StockOrder", lazy="selectin")
-    price = Column(Float, nullable=False)
+    price = Column(Float, nullable=True)
     quantity = Column(Integer, nullable=False)
     remarks = Column(String, nullable=True)
 
     @classmethod
     async def create(
-        cls, obj_in: schemas.StockOrderProductCreate
+            cls, obj_in: dict | schemas.StockOrderProductCreate
     ) -> schemas.StockOrderProduct:
         data = cls._import(obj_in)
         return await super().create(**data)
 
     async def update(
-        self, obj_in: schemas.StockOrderProductUpdate
+            self, obj_in: dict | schemas.StockOrderProductUpdate
     ) -> schemas.StockOrderProduct:
         data = self._import(obj_in)
         return await super().update(**data)
@@ -214,13 +214,13 @@ class StockTransaction(BaseAuditDBModel):
 
     @classmethod
     async def create(
-        cls, obj_in: schemas.StockTransactionCreate
+            cls, obj_in: dict | schemas.StockTransactionCreate
     ) -> schemas.StockTransaction:
         data = cls._import(obj_in)
         return await super().create(**data)
 
     async def update(
-        self, obj_in: schemas.StockTransactionUpdate
+            self, obj_in: dict | schemas.StockTransactionUpdate
     ) -> schemas.StockTransaction:
         data = self._import(obj_in)
         return await super().update(**data)
@@ -242,13 +242,13 @@ class StockAdjustment(BaseAuditDBModel):
 
     @classmethod
     async def create(
-        cls, obj_in: schemas.StockAdjustmentCreate
+            cls, obj_in: dict | schemas.StockAdjustmentCreate
     ) -> schemas.StockAdjustment:
         data = cls._import(obj_in)
         return await super().create(**data)
 
     async def update(
-        self, obj_in: schemas.StockAdjustmentUpdate
+            self, obj_in: dict | schemas.StockAdjustmentUpdate
     ) -> schemas.StockAdjustment:
         data = self._import(obj_in)
         return await super().update(**data)

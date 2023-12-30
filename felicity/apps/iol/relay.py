@@ -11,14 +11,14 @@ async def authenticate(username, password):
 
 
 async def post_data(
-    url: str, data: dict, username: str, password: str, retries: int = 3
+        url: str, data: dict, username: str, password: str, retries: int = 3
 ) -> bool | None:
     headers = {
         "Content-Type": "application/fhir+json; charset=utf-8",
     }
 
     async with httpx.AsyncClient(
-        base_url=url, auth=(username, password), headers=headers
+            base_url=url, auth=(username, password), headers=headers
     ) as client:
         for attempt in range(1, retries + 1):
             try:
@@ -31,7 +31,7 @@ async def post_data(
                 )
             except httpx.HTTPStatusError as exc:
                 print(
-                    f"Attempt {attempt}: Error response {exc.response.status_code} while requesting {exc.request.url!r}."
+                    f"Attempt {attempt}: Error {exc.response.status_code} while requesting {exc.request.url!r}."
                 )
 
     return False

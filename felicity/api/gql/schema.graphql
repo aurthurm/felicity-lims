@@ -2645,8 +2645,8 @@ union StockOrderResponse = StockOrderLineType | StockOrderType | OperationError
 
 type StockOrderType {
   uid: String!
-  fullfilledByUid: String
-  fullfilledBy: UserType
+  fulfilledByUid: String
+  fulfilledBy: UserType
   orderByUid: String
   orderBy: UserType
   departmentUid: String

@@ -1,5 +1,10 @@
 import logging
 
+from apps.iol.fhir.utils import (
+    get_shipment_bundle_resource,
+    get_diagnostic_report_resource,
+)
+from apps.iol.relay import post_data
 from apps.job import models as job_models
 from apps.job.conf import states as job_states
 from apps.shipment import conf, models
@@ -9,13 +14,7 @@ from apps.shipment.utils import (
     shipment_receive,
     shipment_result_update,
 )
-from apps.iol.relay import post_data
-from apps.iol.fhir.utils import (
-    get_shipment_bundle_resource,
-    get_diagnostic_report_resource,
-)
 from apps.user.models import User
-
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -81,8 +80,8 @@ async def dispatch_shipment(job_uid: str, by_uid=None):
 
     resource = await get_shipment_bundle_resource(shipment_uid)
     success = await post_data(
-        f"{shipment.laboratory.url}Bundle",
-        resource.json(exclude_none=True),
+        f"{shipment.laboratory.url}/Bundle",
+        resource.model_dump(exclude_none=True),
         shipment.laboratory.username,
         shipment.laboratory.password,
     )
@@ -103,7 +102,7 @@ async def dispatch_shipment(job_uid: str, by_uid=None):
 
 
 async def receive_shipment(job_uid: str):
-    logger.info(f"starting job recive shipment: {job_uid} ....")
+    logger.info(f"starting job receive shipment: {job_uid} ....")
     job: job_models.Job = await job_models.Job.get(uid=job_uid)
     if not job:
         return
@@ -171,7 +170,7 @@ async def return_shipped_report(job_uid: str):
     )
     success = await post_data(
         f"{shipment.laboratory.url}DiagnosticReport",
-        resource.json(exclude_none=True),
+        resource.model_dump(exclude_none=True),
         shipment.laboratory.username,
         shipment.laboratory.password,
     )

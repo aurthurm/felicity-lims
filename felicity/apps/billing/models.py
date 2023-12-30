@@ -50,11 +50,11 @@ class AnalysisPrice(Auditable):
     amount = Column(Float, nullable=False)
 
     @classmethod
-    async def create(cls, obj_in: AnalysisPriceCreate) -> "AnalysisPrice":
+    async def create(cls, obj_in: dict | AnalysisPriceCreate) -> "AnalysisPrice":
         data = cls._import(obj_in)
         return await super().create(**data)
 
-    async def update(self, obj_in: AnalysisPriceUpdate) -> "AnalysisPrice":
+    async def update(self, obj_in: dict | AnalysisPriceUpdate) -> "AnalysisPrice":
         data = self._import(obj_in)
         return await super().update(**data)
 
@@ -68,11 +68,11 @@ class ProfilePrice(Auditable):
     amount = Column(Float, nullable=False)
 
     @classmethod
-    async def create(cls, obj_in: ProfilePriceCreate) -> "ProfilePrice":
+    async def create(cls, obj_in: dict | ProfilePriceCreate) -> "ProfilePrice":
         data = cls._import(obj_in)
         return await super().create(**data)
 
-    async def update(self, obj_in: ProfilePriceUpdate) -> "ProfilePrice":
+    async def update(self, obj_in: dict | ProfilePriceUpdate) -> "ProfilePrice":
         data = self._import(obj_in)
         return await super().update(**data)
 
@@ -94,11 +94,11 @@ class AnalysisDiscount(Auditable):
     is_active = Column(Boolean, nullable=False)
 
     @classmethod
-    async def create(cls, obj_in: AnalysisDiscountCreate) -> "AnalysisDiscount":
+    async def create(cls, obj_in: dict | AnalysisDiscountCreate) -> "AnalysisDiscount":
         data = cls._import(obj_in)
         return await super().create(**data)
 
-    async def update(self, obj_in: AnalysisDiscountUpdate) -> "AnalysisDiscount":
+    async def update(self, obj_in: dict | AnalysisDiscountUpdate) -> "AnalysisDiscount":
         data = self._import(obj_in)
         return await super().update(**data)
 
@@ -120,11 +120,11 @@ class ProfileDiscount(Auditable):
     is_active = Column(Boolean, nullable=False)
 
     @classmethod
-    async def create(cls, obj_in: ProfileDiscountCreate) -> "ProfileDiscount":
+    async def create(cls, obj_in: dict | ProfileDiscountCreate) -> "ProfileDiscount":
         data = cls._import(obj_in)
         return await super().create(**data)
 
-    async def update(self, obj_in: ProfileDiscountUpdate) -> "ProfileDiscount":
+    async def update(self, obj_in: dict | ProfileDiscountUpdate) -> "ProfileDiscount":
         data = self._import(obj_in)
         return await super().update(**data)
 
@@ -146,11 +146,11 @@ class Voucher(Auditable):
     once_per_order = Column(Boolean, nullable=False)
 
     @classmethod
-    async def create(cls, obj_in: VoucherCreate) -> "Voucher":
+    async def create(cls, obj_in: dict | VoucherCreate) -> "Voucher":
         data = cls._import(obj_in)
         return await super().create(**data)
 
-    async def update(self, obj_in: VoucherUpdate) -> "Voucher":
+    async def update(self, obj_in: dict | VoucherUpdate) -> "Voucher":
         data = self._import(obj_in)
         return await super().update(**data)
 
@@ -168,11 +168,11 @@ class VoucherCode(Auditable):
     is_active = Column(Boolean, nullable=False)
 
     @classmethod
-    async def create(cls, obj_in: VoucherCodeCreate) -> "VoucherCode":
+    async def create(cls, obj_in: dict | VoucherCodeCreate) -> "VoucherCode":
         data = cls._import(obj_in)
         return await super().create(**data)
 
-    async def update(self, obj_in: VoucherCodeUpdate) -> "VoucherCode":
+    async def update(self, obj_in: dict | VoucherCodeUpdate) -> "VoucherCode":
         data = self._import(obj_in)
         return await super().update(**data)
 
@@ -186,11 +186,11 @@ class VoucherCustomer(Auditable):
     voucher_code = relationship("VoucherCode", lazy="selectin")
 
     @classmethod
-    async def create(cls, obj_in: VoucherCustomerCreate) -> "VoucherCustomer":
+    async def create(cls, obj_in: dict | VoucherCustomerCreate) -> "VoucherCustomer":
         data = cls._import(obj_in)
         return await super().create(**data)
 
-    async def update(self, obj_in: VoucherCustomerUpdate) -> "VoucherCustomer":
+    async def update(self, obj_in: dict | VoucherCustomerUpdate) -> "VoucherCustomer":
         data = self._import(obj_in)
         return await super().update(**data)
 
@@ -229,14 +229,14 @@ class TestBill(Auditable):
     )
 
     @classmethod
-    async def create(cls, obj_in: TestBillCreate) -> "TestBill":
+    async def create(cls, obj_in: dict | TestBillCreate) -> "TestBill":
         data = cls._import(obj_in)
         data["bill_id"] = (await IdSequence.get_next_number(prefix="X", generic=True))[
             1
         ]
         return await super().create(**data)
 
-    async def update(self, obj_in: TestBillUpdate) -> "TestBill":
+    async def update(self, obj_in: dict | TestBillUpdate) -> "TestBill":
         data = self._import(obj_in)
         return await super().update(**data)
 
@@ -256,11 +256,11 @@ class TestBillTransaction(Auditable):
     action_message = Column(String, nullable=True)
 
     @classmethod
-    async def create(cls, obj_in: TestBillTransactionCreate) -> "TestBillTransaction":
+    async def create(cls, obj_in: dict | TestBillTransactionCreate) -> "TestBillTransaction":
         data = cls._import(obj_in)
         return await super().create(**data)
 
-    async def update(self, obj_in: TestBillTransactionUpdate) -> "TestBillTransaction":
+    async def update(self, obj_in: dict | TestBillTransactionUpdate) -> "TestBillTransaction":
         data = self._import(obj_in)
         return await super().update(**data)
 
@@ -274,10 +274,10 @@ class TestBillInvoice(Auditable):
     pdf_content = Column(LargeBinary, nullable=True)
 
     @classmethod
-    async def create(cls, obj_in: TestBillInvoiceCreate) -> "TestBillInvoice":
+    async def create(cls, obj_in: dict | TestBillInvoiceCreate) -> "TestBillInvoice":
         data = cls._import(obj_in)
         return await super().create(**data)
 
-    async def update(self, obj_in: TestBillInvoiceUpdate) -> "TestBillInvoice":
+    async def update(self, obj_in: dict | TestBillInvoiceUpdate) -> "TestBillInvoice":
         data = self._import(obj_in)
         return await super().update(**data)

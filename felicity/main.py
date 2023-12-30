@@ -2,11 +2,9 @@
     - The felicity app must be creaed first before importing other modules.
     - This is important to register felicity in sanic registry
 """
-import warnings
 from fastapi import FastAPI
-from lims import register_felicity
 
-warnings.filterwarnings("ignore")
+from lims import register_felicity
 
 description = """
 Felicity LIMS API helps you do awesome stuff. 🚀

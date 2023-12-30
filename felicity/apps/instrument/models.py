@@ -32,11 +32,11 @@ class Method(BaseAuditDBModel):
     )
 
     @classmethod
-    async def create(cls, obj_in: schemas.MethodCreate) -> schemas.Method:
+    async def create(cls, obj_in: dict | schemas.MethodCreate) -> schemas.Method:
         data = cls._import(obj_in)
         return await super().create(**data)
 
-    async def update(self, obj_in: schemas.MethodUpdate) -> schemas.Method:
+    async def update(self, obj_in: dict | schemas.MethodUpdate) -> schemas.Method:
         data = self._import(obj_in)
         return await super().update(**data)
 
@@ -51,13 +51,13 @@ class InstrumentType(BaseAuditDBModel):
 
     @classmethod
     async def create(
-        cls, obj_in: schemas.InstrumentTypeCreate
+            cls, obj_in: dict | schemas.InstrumentTypeCreate
     ) -> schemas.InstrumentType:
         data = cls._import(obj_in)
         return await super().create(**data)
 
     async def update(
-        self, obj_in: schemas.InstrumentTypeUpdate
+            self, obj_in: dict | schemas.InstrumentTypeUpdate
     ) -> schemas.InstrumentType:
         data = self._import(obj_in)
         return await super().update(**data)
@@ -86,11 +86,11 @@ class Instrument(BaseAuditDBModel):
     )
 
     @classmethod
-    async def create(cls, obj_in: schemas.InstrumentCreate) -> schemas.Instrument:
+    async def create(cls, obj_in: dict | schemas.InstrumentCreate) -> schemas.Instrument:
         data = cls._import(obj_in)
         return await super().create(**data)
 
-    async def update(self, obj_in: schemas.InstrumentUpdate) -> schemas.Instrument:
+    async def update(self, obj_in: dict | schemas.InstrumentUpdate) -> schemas.Instrument:
         data = self._import(obj_in)
         return await super().update(**data)
 
@@ -115,14 +115,14 @@ class InstrumentCalibration(BaseAuditDBModel):
 
     @classmethod
     async def create(
-        cls, obj_in: schemas.InstrumentCalibrationCreate
+            cls, obj_in: dict | schemas.InstrumentCalibrationCreate
     ) -> schemas.InstrumentCalibration:
         data = cls._import(obj_in)
         data["calibration_id"] = (await IdSequence.get_next_number("ICAL"))[1]
         return await super().create(**data)
 
     async def update(
-        self, obj_in: schemas.InstrumentCalibrationUpdate
+            self, obj_in: dict | schemas.InstrumentCalibrationUpdate
     ) -> schemas.InstrumentCalibration:
         data = self._import(obj_in)
         return await super().update(**data)
@@ -147,17 +147,16 @@ class CalibrationCertificate(BaseAuditDBModel):
 
     @classmethod
     async def create(
-        cls, obj_in: schemas.CalibrationCertificateCreate
+            cls, obj_in: dict | schemas.CalibrationCertificateCreate
     ) -> schemas.CalibrationCertificate:
         data = cls._import(obj_in)
         return await super().create(**data)
 
     async def update(
-        self, obj_in: schemas.CalibrationCertificateUpdate
+            self, obj_in: dict | schemas.CalibrationCertificateUpdate
     ) -> schemas.CalibrationCertificate:
         data = self._import(obj_in)
         return await super().update(**data)
-
 
 # class MethodValidation(BaseAuditDBModel):
 #     """Method Validation Test"""
@@ -177,11 +176,11 @@ class CalibrationCertificate(BaseAuditDBModel):
 #     expiry_date = Column(DateTime, nullable=False)
 
 #     @classmethod
-#     async def create(cls, obj_in: schemas.InstrumentCompetenceCreate) -> schemas.InstrumentCompetence:
+#     async def create(cls, obj_in: dict | schemas.InstrumentCompetenceCreate) -> schemas.InstrumentCompetence:
 #         data = cls._import(obj_in)
 #         return await super().create(**data)
 
-#     async def update(self, obj_in: schemas.InstrumentCompetenceUpdate) -> schemas.InstrumentCompetence:
+#     async def update(self, obj_in: dict | schemas.InstrumentCompetenceUpdate) -> schemas.InstrumentCompetence:
 #         data = self._import(obj_in)
 #         return await super().update(**data)
 

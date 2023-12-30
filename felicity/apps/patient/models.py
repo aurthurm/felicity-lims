@@ -20,13 +20,13 @@ class Identification(Auditable):
 
     @classmethod
     async def create(
-        cls, obj_in: schemas.IdentificationCreate
+            cls, obj_in: dict | schemas.IdentificationCreate
     ) -> schemas.Identification:
         data = cls._import(obj_in)
         return await super().create(**data)
 
     async def update(
-        self, obj_in: schemas.IdentificationUpdate
+            self, obj_in: dict | schemas.IdentificationUpdate
     ) -> schemas.Identification:
         data = self._import(obj_in)
         return await super().update(**data)
@@ -47,13 +47,13 @@ class PatientIdentification(Auditable):
 
     @classmethod
     async def create(
-        cls, obj_in: schemas.PatientIdentificationCreate
+            cls, obj_in: dict | schemas.PatientIdentificationCreate
     ) -> schemas.PatientIdentification:
         data = cls._import(obj_in)
         return await super().create(**data)
 
     async def update(
-        self, obj_in: schemas.PatientIdentificationUpdate
+            self, obj_in: dict | schemas.PatientIdentificationUpdate
     ) -> schemas.PatientIdentification:
         data = self._import(obj_in)
         return await super().update(**data)
@@ -102,13 +102,13 @@ class Patient(Auditable):
             return f"{self.first_name} {self.last_name}"
 
     @classmethod
-    async def create(cls, obj_in: schemas.PatientCreate) -> schemas.Patient:
+    async def create(cls, obj_in: dict | schemas.PatientCreate) -> schemas.Patient:
         data = cls._import(obj_in)
         data["patient_id"] = (
             await IdSequence.get_next_number(prefix="P", generic=True)
         )[1]
         return await super().create(**data)
 
-    async def update(self, obj_in: schemas.PatientUpdate) -> schemas.Patient:
+    async def update(self, obj_in: dict | schemas.PatientUpdate) -> schemas.Patient:
         data = self._import(obj_in)
         return await super().update(**data)

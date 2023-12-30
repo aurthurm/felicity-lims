@@ -24,10 +24,6 @@ const Notification = defineAsyncComponent(
         </main>
       </div>
     </div>
-    <div
-      class="absolute top-3 left-[10%] px-2 flex justify-center content-center items-center bg-yellow-500 rounded animate-bounce">
-      <div class="">!! Felicity Preview !!</div>
-    </div>
   </div>
   <!-- <footer-main><slot /></footer-main> -->
 

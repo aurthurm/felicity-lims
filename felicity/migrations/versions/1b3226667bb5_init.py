@@ -5,8 +5,8 @@ Revises:
 Create Date: 2023-09-11 08:20:16.052503
 
 """
-from alembic import op
 import sqlalchemy as sa
+from alembic import op
 from sqlalchemy.dialects import postgresql
 
 # revision identifiers, used by Alembic.
@@ -1385,7 +1385,7 @@ def upgrade():
         sa.Column("status", sa.String(), nullable=False),
         sa.Column("order_number", sa.String(), nullable=False),
         sa.Column("remarks", sa.String(), nullable=True),
-        sa.Column("fullfilled_by_uid", sa.String(), nullable=True),
+        sa.Column("fulfilled_by_uid", sa.String(), nullable=True),
         sa.Column("uid", sa.String(), nullable=False),
         sa.Column("created_at", sa.DateTime(), nullable=True),
         sa.Column("created_by_uid", sa.String(), nullable=True),
@@ -1400,7 +1400,7 @@ def upgrade():
             ["department.uid"],
         ),
         sa.ForeignKeyConstraint(
-            ["fullfilled_by_uid"],
+            ["fulfilled_by_uid"],
             ["user.uid"],
         ),
         sa.ForeignKeyConstraint(

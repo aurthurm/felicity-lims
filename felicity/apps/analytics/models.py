@@ -38,10 +38,10 @@ class ReportMeta(BaseAuditDBModel):
             await self.save()
 
     @classmethod
-    async def create(cls, obj_in: schemas.ReportMetaCreate) -> schemas.ReportMeta:
+    async def create(cls, obj_in: dict | schemas.ReportMetaCreate) -> schemas.ReportMeta:
         data = cls._import(obj_in)
         return await super().create(**data)
 
-    async def update(self, obj_in: schemas.ReportMetaUpdate) -> schemas.ReportMeta:
+    async def update(self, obj_in: dict | schemas.ReportMetaUpdate) -> schemas.ReportMeta:
         data = self._import(obj_in)
         return await super().update(**data)

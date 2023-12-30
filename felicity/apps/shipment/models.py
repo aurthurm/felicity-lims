@@ -37,13 +37,13 @@ class ReferralLaboratory(Auditable):
 
     @classmethod
     async def create(
-        cls, obj_in: schemas.ReferralLaboratoryCreate
+            cls, obj_in: dict | schemas.ReferralLaboratoryCreate
     ) -> schemas.ReferralLaboratory:
         data = cls._import(obj_in)
         return await super().create(**data)
 
     async def update(
-        self, obj_in: schemas.ReferralLaboratoryUpdate
+            self, obj_in: dict | schemas.ReferralLaboratoryUpdate
     ) -> schemas.ReferralLaboratory:
         data = self._import(obj_in)
         return await super().update(**data)
@@ -122,12 +122,12 @@ class Shipment(Auditable):
         return self
 
     @classmethod
-    async def create(cls, obj_in: schemas.ShipmentCreate) -> schemas.Shipment:
+    async def create(cls, obj_in: dict | schemas.ShipmentCreate) -> schemas.Shipment:
         data = cls._import(obj_in)
         data["shipment_id"] = (await IdSequence.get_next_number("SHIP"))[1]
         return await super().create(**data)
 
-    async def update(self, obj_in: schemas.ShipmentUpdate) -> schemas.Shipment:
+    async def update(self, obj_in: dict | schemas.ShipmentUpdate) -> schemas.Shipment:
         data = self._import(obj_in)
         return await super().update(**data)
 
@@ -148,12 +148,12 @@ class ShippedSample(DBModel):
     ext_sample_id = Column(String, nullable=True)
 
     @classmethod
-    async def create(cls, obj_in: schemas.ShippedSampleCreate) -> schemas.ShippedSample:
+    async def create(cls, obj_in: dict | schemas.ShippedSampleCreate) -> schemas.ShippedSample:
         data = cls._import(obj_in)
         return await super().create(**data)
 
     async def update(
-        self, obj_in: schemas.ShippedSampleUpdate
+            self, obj_in: dict | schemas.ShippedSampleUpdate
     ) -> schemas.ShippedSample:
         data = self._import(obj_in)
         return await super().update(**data)

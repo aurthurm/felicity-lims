@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, date
 from typing import Optional
 
 from pydantic import ConfigDict
@@ -155,8 +155,8 @@ class StockProductBase(BaseAuditModel):
     price: float | None = None
     quantity_received: int | None = None
     remaining: int | None = None
-    date_received: datetime | None = None
-    expiry_date: datetime | None = None
+    date_received: date | None = None
+    expiry_date: date | None = None
     received_by_uid: str | None = None
     received_by: Optional[User] = None
 
@@ -186,8 +186,8 @@ class StockOrderBase(BaseAuditModel):
     status: str | None = None
     order_number: str | None = None
     remarks: str | None = None
-    fullfilled_by_uid: str | None = None
-    fullfilled_by: Optional[User] = None
+    fulfilled_by_uid: str | None = None
+    fulfilled_by: Optional[User] = None
 
 
 class StockOrder(StockOrderBase):

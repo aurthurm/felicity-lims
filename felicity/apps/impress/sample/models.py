@@ -33,10 +33,10 @@ class ReportImpress(Auditable):
     date_generated = Column(DateTime)
 
     @classmethod
-    async def create(cls, obj_in: ReportImpressCreate) -> "ReportImpress":
+    async def create(cls, obj_in: dict | ReportImpressCreate) -> "ReportImpress":
         data = cls._import(obj_in)
         return await super().create(**data)
 
-    async def update(self, obj_in: ReportImpressUpdate) -> "ReportImpress":
+    async def update(self, obj_in: dict | ReportImpressUpdate) -> "ReportImpress":
         data = self._import(obj_in)
         return await super().update(**data)

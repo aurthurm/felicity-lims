@@ -1,4 +1,5 @@
 from typing import ForwardRef, List, Optional, Any
+
 from pydantic import field_validator, BaseModel
 
 
@@ -6,8 +7,8 @@ class BaseResource:
     """All resources base: https://www.hl7.org/fhir/resource.html"""
 
     id: str
-    meta: None
-    extension: None
+    meta: None = None
+    extension: None = None
 
 
 class Coding(BaseModel):
@@ -432,11 +433,11 @@ class BundleEntryResponse(BaseModel):
 
 
 class BundleEntry(BaseModel):
-    # I A resource in the bundle
+    # A resource in the bundle
     resource: Any = None
-    # I Additional execution information (transaction/batch/history)
+    # Additional execution information (transaction/batch/history)
     request: BundleEntryRequest | None = None
-    # I Results of execution (transaction/batch/history)
+    # Results of execution (transaction/batch/history)
     response: BundleEntryResponse | None = None
 
     @field_validator("resource")
@@ -469,17 +470,18 @@ class BundleEntry(BaseModel):
 
 class BundleResource(BaseModel):
     resourceType: str = "Bundle"
-    # I Persistent identifier for the bundle
+    # Persistent identifier for the bundle
     identifier: Identifier | None = None
-    # I R!  document | message | transaction | transaction-response | batch | batch-response | history | searchset | collection | subscription-notification
+    # R!  document | message | transaction | transaction-response | batch | batch-response |  \
+    # history | searchset | collection | subscription-notification
     type: str
-    # I When the bundle was assembled
+    # When the bundle was assembled
     timestamp: str
-    # I If search, the total number of matches
+    # If search, the total number of matches
     total: int
     # // Entry in the bundle - will have a resource or information
     entry: list[BundleEntry]
     extension: list[Extension] | None = None
 
 
-Reference.update_forward_refs()
+Reference.model_rebuild()

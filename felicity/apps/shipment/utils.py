@@ -1,7 +1,10 @@
-import logging
 import asyncio
+import logging
+import random
+import string
 from datetime import datetime, timedelta
 
+from apps.analysis import conf as analysis_conf
 from apps.analysis.models.analysis import (
     Sample,
     AnalysisRequest,
@@ -15,39 +18,35 @@ from apps.analysis.schemas import (
     SampleCreate,
     AnalysisResultCreate,
 )
-from apps.analysis import conf as analysis_conf
-from apps.shipment.models import Shipment, ShippedSample
-from apps.shipment.schemas import ShipmentUpdate
-from apps.shipment.manifest import ManifetReport
-from apps.shipment import conf
-from apps.patient.schemas import PatientCreate
-from apps.patient.models import Patient, Client
-from apps.user.models import User
-from apps.reflex.utils import ReflexUtil
-
-from apps.iol.relay import post_data
+from apps.impress.shipment.utils import gen_pdf_manifest
 from apps.iol.fhir.utils import get_shipment_bundle_resource
-
+from apps.iol.relay import post_data
 from apps.job import models as job_models
 from apps.job import schemas as job_schemas
 from apps.job.conf import actions, categories, priorities, states
-
+from apps.patient.models import Patient, Client
+from apps.patient.schemas import PatientCreate
+from apps.reflex.utils import ReflexUtil
+from apps.shipment import conf
+from apps.shipment.models import Shipment, ShippedSample
+from apps.user.models import User
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
 
 # shipments
 async def shipment_assign(shipment_uid: str, samples_data: list[dict], actor_uid):
     shipment: Shipment = await Shipment.get(uid=shipment_uid)
 
-    async def process_sample(sample_data):
-        sample: Sample = await Sample.get(uid=sample_data.get("sample_uid", None))
+    async def process_sample(_sample_data):
+        sample: Sample = await Sample.get(uid=_sample_data.get("sample_uid", None))
         if not sample:
-            logger.info(f"Failed to retrieve sample {sample_data} .... skipping")
+            logger.info(f"Failed to retrieve sample {_sample_data} .... skipping")
             return
 
         analytes: list[AnalysisResult] = await AnalysisResult.get_by_uids(
-            uids=sample_data.get("analyses", [])
+            uids=_sample_data.get("analyses", [])
         )
         # await asyncio.gather(*(analyte.change_status(analysis_conf.states.Result.REFERRED) for analyte in analytes))
         for analyte in analytes:
@@ -77,9 +76,6 @@ async def shipment_assign(shipment_uid: str, samples_data: list[dict], actor_uid
         await worker(sample_data)
 
     return await shipment_reset_assigned_count(shipment.uid)
-
-
-import random, string
 
 
 async def shipment_receive(job_uid: str):
@@ -214,11 +210,11 @@ async def shipment_receive(job_uid: str):
         result_schemas = []
         for _service in analyses:
             result_schemas.append(
-                a_result_schema.copy(
+                a_result_schema.model_copy(
                     update={
                         "analysis_uid": _service.uid,
                         "due_date": datetime.now()
-                        + timedelta(minutes=_service.tat_length_minutes)
+                                    + timedelta(minutes=_service.tat_length_minutes)
                         if _service.tat_length_minutes
                         else None,
                     }
@@ -366,7 +362,7 @@ async def add_sh_receive_task(shipment_uid: str, actor_uid):
 
 async def shipment_cancel(shipment_uid: str, actor_uid):
     shipment: Shipment = await Shipment.get(uid=shipment_uid)
-    shiped_samples: ShippedSample = await ShippedSample.get_all(
+    shiped_samples: list[ShippedSample] = await ShippedSample.get_all(
         shipment_uid=shipment.uid
     )
     samples: list[Sample] = list(map(lambda ss: ss.sample, shiped_samples))
@@ -394,7 +390,7 @@ async def shipment_finalise(shipment_uid: str, finaliser):
         return
 
     # generate manifest
-    shiped_samples: ShippedSample = await ShippedSample.get_all(
+    shiped_samples: list[ShippedSample] = await ShippedSample.get_all(
         shipment_uid=shipment.uid
     )
     samples: list[Sample] = list(map(lambda ss: ss.sample, shiped_samples))
@@ -423,23 +419,12 @@ async def shipment_finalise(shipment_uid: str, finaliser):
     return await shipment.finalise(finaliser)
 
 
-async def gen_pdf_manifest(data, shipment):
-    manifest_pdf = await ManifetReport().generate(data)
-    update_in = ShipmentUpdate(
-        **{
-            "json_content": {"data": data},
-            "pdf_content": manifest_pdf,
-        }
-    )
-    await shipment.update(obj_in=update_in)
-
-
 async def shipment_send(uid: str, by_uid=None):
     shipment: Shipment = await Shipment.get(uid=uid)
     resource = await get_shipment_bundle_resource(uid)
     success = await post_data(
         f"{shipment.laboratory.url}Bundle",
-        resource.json(exclude_none=True),
+        resource.model_dump(exclude_none=True),
         shipment.laboratory.username,
         shipment.laboratory.password,
     )

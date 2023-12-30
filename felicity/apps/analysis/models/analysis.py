@@ -42,13 +42,13 @@ class CodingStandard(BaseAuditDBModel):
 
     @classmethod
     async def create(
-        cls, obj_in: schemas.CodingStandardCreate
+            cls, obj_in: dict | schemas.CodingStandardCreate
     ) -> schemas.CodingStandard:
         data = cls._import(obj_in)
         return await super().create(**data)
 
     async def update(
-        self, obj_in: schemas.CodingStandardUpdate
+            self, obj_in: dict | schemas.CodingStandardUpdate
     ) -> schemas.CodingStandard:
         data = self._import(obj_in)
         return await super().update(**data)
@@ -66,11 +66,11 @@ class SampleType(BaseAuditDBModel):
     abbr = Column(String, nullable=False)
 
     @classmethod
-    async def create(cls, obj_in: schemas.SampleTypeCreate) -> schemas.SampleType:
+    async def create(cls, obj_in: dict | schemas.SampleTypeCreate) -> schemas.SampleType:
         data = cls._import(obj_in)
         return await super().create(**data)
 
-    async def update(self, obj_in: schemas.SampleTypeUpdate) -> schemas.SampleType:
+    async def update(self, obj_in: dict | schemas.SampleTypeUpdate) -> schemas.SampleType:
         data = self._import(obj_in)
         return await super().update(**data)
 
@@ -92,13 +92,13 @@ class SampleTypeCoding(BaseAuditDBModel):
 
     @classmethod
     async def create(
-        cls, obj_in: schemas.SampleTypeCodingCreate
+            cls, obj_in: dict | schemas.SampleTypeCodingCreate
     ) -> schemas.SampleTypeCoding:
         data = cls._import(obj_in)
         return await super().create(**data)
 
     async def update(
-        self, obj_in: schemas.SampleTypeCodingUpdate
+            self, obj_in: dict | schemas.SampleTypeCodingUpdate
     ) -> schemas.SampleTypeCoding:
         data = self._import(obj_in)
         return await super().update(**data)
@@ -150,13 +150,13 @@ class AnalysisCategory(BaseAuditDBModel):
 
     @classmethod
     async def create(
-        cls, obj_in: schemas.AnalysisCategoryCreate
+            cls, obj_in: dict | schemas.AnalysisCategoryCreate
     ) -> schemas.AnalysisCategory:
         data = cls._import(obj_in)
         return await super().create(**data)
 
     async def update(
-        self, obj_in: schemas.AnalysisCategoryUpdate
+            self, obj_in: dict | schemas.AnalysisCategoryUpdate
     ) -> schemas.AnalysisCategory:
         data = self._import(obj_in)
         return await super().update(**data)
@@ -199,11 +199,11 @@ class Profile(BaseAuditDBModel):
         return self
 
     @classmethod
-    async def create(cls, obj_in: schemas.ProfileCreate) -> schemas.Profile:
+    async def create(cls, obj_in: dict | schemas.ProfileCreate) -> schemas.Profile:
         data = cls._import(obj_in)
         return await super().create(**data)
 
-    async def update(self, obj_in: schemas.ProfileUpdate) -> schemas.Profile:
+    async def update(self, obj_in: dict | schemas.ProfileUpdate) -> schemas.Profile:
         data = self._import(obj_in)
         return await super().update(**data)
 
@@ -224,12 +224,12 @@ class ProfileCoding(BaseAuditDBModel):
     code = Column(String, nullable=False)
 
     @classmethod
-    async def create(cls, obj_in: schemas.ProfileCodingCreate) -> schemas.ProfileCoding:
+    async def create(cls, obj_in: dict | schemas.ProfileCodingCreate) -> schemas.ProfileCoding:
         data = cls._import(obj_in)
         return await super().create(**data)
 
     async def update(
-        self, obj_in: schemas.ProfileCodingUpdate
+            self, obj_in: dict | schemas.ProfileCodingUpdate
     ) -> schemas.ProfileCoding:
         data = self._import(obj_in)
         return await super().update(**data)
@@ -314,11 +314,11 @@ class Analysis(BaseAuditDBModel):
     active = Column(Boolean(), default=False)
 
     @classmethod
-    async def create(cls, obj_in: schemas.AnalysisCreate) -> schemas.Analysis:
+    async def create(cls, obj_in: dict | schemas.AnalysisCreate) -> schemas.Analysis:
         data = cls._import(obj_in)
         return await super().create(**data)
 
-    async def update(self, obj_in: schemas.AnalysisUpdate) -> schemas.Analysis:
+    async def update(self, obj_in: dict | schemas.AnalysisUpdate) -> schemas.Analysis:
         data = self._import(obj_in)
         return await super().update(**data)
 
@@ -340,13 +340,13 @@ class AnalysisCoding(BaseAuditDBModel):
 
     @classmethod
     async def create(
-        cls, obj_in: schemas.AnalysisCodingCreate
+            cls, obj_in: dict | schemas.AnalysisCodingCreate
     ) -> schemas.AnalysisCoding:
         data = cls._import(obj_in)
         return await super().create(**data)
 
     async def update(
-        self, obj_in: schemas.AnalysisCodingUpdate
+            self, obj_in: dict | schemas.AnalysisCodingUpdate
     ) -> schemas.AnalysisCoding:
         data = self._import(obj_in)
         return await super().update(**data)
@@ -365,13 +365,13 @@ class AnalysisInterim(BaseAuditDBModel):
 
     @classmethod
     async def create(
-        cls, obj_in: schemas.AnalysisInterimCreate
+            cls, obj_in: dict | schemas.AnalysisInterimCreate
     ) -> schemas.AnalysisInterim:
         data = cls._import(obj_in)
         return await super().create(**data)
 
     async def update(
-        self, obj_in: schemas.AnalysisInterimUpdate
+            self, obj_in: dict | schemas.AnalysisInterimUpdate
     ) -> schemas.AnalysisInterim:
         data = self._import(obj_in)
         return await super().update(**data)
@@ -389,13 +389,13 @@ class AnalysisCorrectionFactor(BaseAuditDBModel):
 
     @classmethod
     async def create(
-        cls, obj_in: schemas.AnalysisCorrectionFactorCreate
+            cls, obj_in: dict | schemas.AnalysisCorrectionFactorCreate
     ) -> schemas.AnalysisCorrectionFactor:
         data = cls._import(obj_in)
         return await super().create(**data)
 
     async def update(
-        self, obj_in: schemas.AnalysisCorrectionFactorUpdate
+            self, obj_in: dict | schemas.AnalysisCorrectionFactorUpdate
     ) -> schemas.AnalysisCorrectionFactor:
         data = self._import(obj_in)
         return await super().update(**data)
@@ -414,13 +414,13 @@ class AnalysisDetectionLimit(BaseAuditDBModel):
 
     @classmethod
     async def create(
-        cls, obj_in: schemas.AnalysisDetectionLimitCreate
+            cls, obj_in: dict | schemas.AnalysisDetectionLimitCreate
     ) -> schemas.AnalysisDetectionLimit:
         data = cls._import(obj_in)
         return await super().create(**data)
 
     async def update(
-        self, obj_in: schemas.AnalysisDetectionLimitUpdate
+            self, obj_in: dict | schemas.AnalysisDetectionLimitUpdate
     ) -> schemas.AnalysisDetectionLimit:
         data = self._import(obj_in)
         return await super().update(**data)
@@ -442,13 +442,13 @@ class AnalysisUncertainty(BaseAuditDBModel):
 
     @classmethod
     async def create(
-        cls, obj_in: schemas.AnalysisUncertaintyCreate
+            cls, obj_in: dict | schemas.AnalysisUncertaintyCreate
     ) -> schemas.AnalysisUncertainty:
         data = cls._import(obj_in)
         return await super().create(**data)
 
     async def update(
-        self, obj_in: schemas.AnalysisUncertaintyUpdate
+            self, obj_in: dict | schemas.AnalysisUncertaintyUpdate
     ) -> schemas.AnalysisUncertainty:
         data = self._import(obj_in)
         return await super().update(**data)
@@ -487,13 +487,13 @@ class AnalysisSpecification(BaseAuditDBModel):
 
     @classmethod
     async def create(
-        cls, obj_in: schemas.AnalysisSpecificationCreate
+            cls, obj_in: dict | schemas.AnalysisSpecificationCreate
     ) -> schemas.AnalysisSpecification:
         data = cls._import(obj_in)
         return await super().create(**data)
 
     async def update(
-        self, obj_in: schemas.AnalysisSpecificationUpdate
+            self, obj_in: dict | schemas.AnalysisSpecificationUpdate
     ) -> schemas.AnalysisSpecification:
         data = self._import(obj_in)
         return await super().update(**data)
@@ -509,11 +509,11 @@ class ResultOption(BaseAuditDBModel):
     analysis_uid = Column(String, ForeignKey("analysis.uid"))
 
     @classmethod
-    async def create(cls, obj_in: schemas.ResultOptionCreate) -> schemas.ResultOption:
+    async def create(cls, obj_in: dict | schemas.ResultOptionCreate) -> schemas.ResultOption:
         data = cls._import(obj_in)
         return await super().create(**data)
 
-    async def update(self, obj_in: schemas.ResultOptionUpdate) -> schemas.ResultOption:
+    async def update(self, obj_in: dict | schemas.ResultOptionUpdate) -> schemas.ResultOption:
         data = self._import(obj_in)
         return await super().update(**data)
 
@@ -538,13 +538,13 @@ class AnalysisRequest(BaseAuditDBModel):
 
     @classmethod
     async def create(
-        cls, obj_in: schemas.AnalysisRequestCreate
+            cls, obj_in: dict | schemas.AnalysisRequestCreate
     ) -> schemas.AnalysisRequest:
         data = cls._import(obj_in)
         data["request_id"] = (await IdSequence.get_next_number("AR"))[1]
         return await super().create(**data)
 
-    async def update(self, obj_in: schemas.SampleTypeUpdate) -> schemas.AnalysisRequest:
+    async def update(self, obj_in: dict | schemas.SampleTypeUpdate) -> schemas.AnalysisRequest:
         data = self._import(obj_in)
         return await super().update(**data)
 
@@ -591,13 +591,13 @@ class RejectionReason(BaseAuditDBModel):
 
     @classmethod
     async def create(
-        cls, obj_in: schemas.RejectionReasonCreate
+            cls, obj_in: dict | schemas.RejectionReasonCreate
     ) -> schemas.RejectionReason:
         data = cls._import(obj_in)
         return await super().create(**data)
 
     async def update(
-        self, obj_in: schemas.RejectionReasonUpdate
+            self, obj_in: dict | schemas.RejectionReasonUpdate
     ) -> schemas.RejectionReason:
         data = self._import(obj_in)
         return await super().update(**data)
@@ -864,7 +864,7 @@ class Sample(Auditable, BaseMPTT):
         # if there are no results in referred state but some are in pending state. transition awaiting to pending state
         analysis, referred = await self.get_referred_analyses()
         if not referred and list(  # and has pending results then :)
-            filter(lambda an: an.status in [states.result.PENDING], analysis)
+                filter(lambda an: an.status in [states.result.PENDING], analysis)
         ):
             await self.change_status(states.sample.RECEIVED)
 
@@ -947,7 +947,7 @@ class Sample(Auditable, BaseMPTT):
         return self
 
     @classmethod
-    async def create(cls, obj_in: schemas.SampleCreate) -> schemas.Sample:
+    async def create(cls, obj_in: dict | schemas.SampleCreate) -> schemas.Sample:
         data = cls._import(obj_in)
         sample_type = await SampleType.find(data["sample_type_uid"])
         # data["sample_id"] = (await IdSequence.get_next_number(sample_type.abbr))[1]
@@ -956,7 +956,7 @@ class Sample(Auditable, BaseMPTT):
         )[1]
         return await super().create(**data)
 
-    async def update(self, obj_in: schemas.SampleUpdate) -> schemas.Sample:
+    async def update(self, obj_in: dict | schemas.SampleUpdate) -> schemas.Sample:
         data = self._import(obj_in)
         return await super().update(**data)
 
@@ -984,7 +984,6 @@ class Sample(Auditable, BaseMPTT):
         data["parent_id"] = self.uid
         data["created_by_uid"] = cloner.uid
         return await self.create(obj_in=data)
-
 
 # @event.listens_for(Sample, "after_update")
 # def stream_sample_verified_models(mapper, connection, target): # noqa

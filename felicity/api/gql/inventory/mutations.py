@@ -119,6 +119,7 @@ StockOrderResponse = strawberry.union(
 class StockOrderProductLineInputType:
     product_uid: str
     quantity: int
+    price: float = 0.0
     remarks: str | None = None
 
 
@@ -168,7 +169,7 @@ class StockAdjustmentInputType:
 class InventoryMutations:
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_stock_item(
-        self, info, payload: StockItemInputType
+            self, info, payload: StockItemInputType
     ) -> StockItemResponse:
         is_authenticated, felicity_user = await auth_from_info(info)
         auth_success, auth_error = verify_user_auth(
@@ -196,7 +197,7 @@ class InventoryMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_stock_item(
-        self, info, uid: str, payload: StockItemInputType
+            self, info, uid: str, payload: StockItemInputType
     ) -> StockItemResponse:
 
         is_authenticated, felicity_user = await auth_from_info(info)
@@ -231,7 +232,7 @@ class InventoryMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_stock_category(
-        self, info, payload: StockCategoryInputType
+            self, info, payload: StockCategoryInputType
     ) -> StockCategoryResponse:
         is_authenticated, felicity_user = await auth_from_info(info)
         auth_success, auth_error = verify_user_auth(
@@ -259,7 +260,7 @@ class InventoryMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_stock_category(
-        self, info, uid: str, payload: StockCategoryInputType
+            self, info, uid: str, payload: StockCategoryInputType
     ) -> StockCategoryResponse:
 
         is_authenticated, felicity_user = await auth_from_info(info)
@@ -322,7 +323,7 @@ class InventoryMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_hazard(
-        self, info, uid: str, payload: HazardInputType
+            self, info, uid: str, payload: HazardInputType
     ) -> HazardResponse:
 
         is_authenticated, felicity_user = await auth_from_info(info)
@@ -357,7 +358,7 @@ class InventoryMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_stock_unit(
-        self, info, payload: StockUnitInputType
+            self, info, payload: StockUnitInputType
     ) -> StockUnitResponse:
         is_authenticated, felicity_user = await auth_from_info(info)
         auth_success, auth_error = verify_user_auth(
@@ -385,7 +386,7 @@ class InventoryMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_stock_unit(
-        self, info, uid: str, payload: StockUnitInputType
+            self, info, uid: str, payload: StockUnitInputType
     ) -> StockUnitResponse:
 
         is_authenticated, felicity_user = await auth_from_info(info)
@@ -420,7 +421,7 @@ class InventoryMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_stock_packaging(
-        self, info, payload: StockPackagingInputType
+            self, info, payload: StockPackagingInputType
     ) -> StockPackagingResponse:
         is_authenticated, felicity_user = await auth_from_info(info)
         auth_success, auth_error = verify_user_auth(
@@ -450,7 +451,7 @@ class InventoryMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_stock_packaging(
-        self, info, uid: str, payload: StockPackagingInputType
+            self, info, uid: str, payload: StockPackagingInputType
     ) -> StockPackagingResponse:
 
         is_authenticated, felicity_user = await auth_from_info(info)
@@ -487,7 +488,7 @@ class InventoryMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_stock_product(
-        self, info, payload: StockProductInputType
+            self, info, payload: StockProductInputType
     ) -> StockProductResponse:
         is_authenticated, felicity_user = await auth_from_info(info)
         auth_success, auth_error = verify_user_auth(
@@ -514,7 +515,7 @@ class InventoryMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_stock_product(
-        self, info, uid: str, payload: StockProductInputType
+            self, info, uid: str, payload: StockProductInputType
     ) -> StockProductResponse:
 
         is_authenticated, felicity_user = await auth_from_info(info)
@@ -549,7 +550,7 @@ class InventoryMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_stock_order(
-        self, info, payload: StockOrderInputType
+            self, info, payload: StockOrderInputType
     ) -> StockOrderResponse:
         is_authenticated, felicity_user = await auth_from_info(info)
         auth_success, auth_error = verify_user_auth(
@@ -594,7 +595,7 @@ class InventoryMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_stock_order(
-        self, info, uid: str, payload: StockOrderInputType
+            self, info, uid: str, payload: StockOrderInputType
     ) -> StockOrderResponse:
         is_authenticated, felicity_user = await auth_from_info(info)
         auth_success, auth_error = verify_user_auth(
@@ -677,7 +678,7 @@ class InventoryMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def approve_stock_order(
-        self, info, uid: str, payload: StockOrderApprovalInputType
+            self, info, uid: str, payload: StockOrderApprovalInputType
     ) -> StockOrderResponse:
         is_authenticated, felicity_user = await auth_from_info(info)
         auth_success, auth_error = verify_user_auth(
@@ -701,7 +702,7 @@ class InventoryMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def issue_stock_order(
-        self, info, uid: str, payload: List[StockOrderProductLineInputType]
+            self, info, uid: str, payload: List[StockOrderProductLineInputType]
     ) -> StockOrderResponse:
         is_authenticated, felicity_user = await auth_from_info(info)
         auth_success, auth_error = verify_user_auth(
@@ -777,7 +778,7 @@ class InventoryMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_stock_transaction(
-        self, info, payload: StockTransactionInputType
+            self, info, payload: StockTransactionInputType
     ) -> StockTransactionResponse:
         is_authenticated, felicity_user = await auth_from_info(info)
         auth_success, auth_error = verify_user_auth(
@@ -818,7 +819,7 @@ class InventoryMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_stock_adjustment(
-        self, info, payload: StockAdjustmentInputType
+            self, info, payload: StockAdjustmentInputType
     ) -> StockAdjustmentResponse:
         is_authenticated, felicity_user = await auth_from_info(info)
         auth_success, auth_error = verify_user_auth(

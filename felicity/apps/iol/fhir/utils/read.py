@@ -1,37 +1,33 @@
 import asyncio
-from datetime import datetime
+
 from apps.analysis.models.analysis import AnalysisRequest, Sample
-from apps.analysis.utils import get_last_verificator
 from apps.analysis.models.results import AnalysisResult
+from apps.analysis.utils import get_last_verificator
 from apps.iol.fhir.schema import (
     DiagnosticReportResource,
     PatientResource,
     ServiceRequestResource,
     BundleResource,
-    ObservationResource,
     Identifier,
     Reference,
     SpecimenResource,
-    CodeableConcept,
 )
 from apps.patient.models import Patient
-from apps.shipment.models import Shipment, ShippedSample
 from apps.setup.models.setup import Laboratory
+from apps.shipment.models import Shipment, ShippedSample
+from utils import format_datetime
 
 
 def one_of_else(of: list, one: str, default=None):
     return one if one in of else default
 
 
-def dt_to_st(v: datetime):
-    if not v:
-        return ""
-    return v.strftime("%Y-%m-%d %H:%M:%S")
-
-
 async def get_diagnostic_report_resource(
-    service_request_uid: str, obs_uids: list[str] = [], for_referral=False
+        service_request_uid: str, obs_uids=None, for_referral=False
 ) -> DiagnosticReportResource | None:
+    if obs_uids is None:
+        obs_uids = []
+
     ar, sample = await asyncio.gather(
         AnalysisRequest.get(uid=service_request_uid),
         Sample.get(analysis_request_uid=service_request_uid),
@@ -57,7 +53,7 @@ async def get_diagnostic_report_resource(
                     "value": anal.result,
                 },
                 "status": anal.status,
-                "issued": dt_to_st(anal.date_verified),
+                "issued": format_datetime(anal.date_verified),
                 "performer": [
                     {
                         "identifier": {
@@ -160,7 +156,7 @@ async def get_diagnostic_report_resource(
             "identifier": {"use": "official", "value": ar.patient_uid},
             "display": "Patient uid",
         },
-        "issued": dt_to_st(ar.updated_at),
+        "issued": format_datetime(ar.updated_at),
         "performer": [
             {
                 "type": "Analyst",
@@ -211,7 +207,7 @@ async def get_patient_resource(patient_id: int) -> PatientResource | None:
         if patient.phone_mobile
         else [],
         "gender": one_of_else(["male", "female", "other"], patient.gender, "unknown"),
-        "birthDate": dt_to_st(patient.date_of_birth),
+        "birthDate": format_datetime(patient.date_of_birth, with_time=False),
         "managingOrganization": {
             "type": "Organisation",
             "identifier": {
@@ -257,17 +253,17 @@ async def get_specimen_resource(specimen_id: str) -> SpecimenResource:
             ],
             "text": "Sample Type",
         },
-        "receivedTime": dt_to_st(sample.date_received),
+        "receivedTime": format_datetime(sample.date_received),
         "collection": {
-            "collectedDateTime": dt_to_st(sample.date_collected),
+            "collectedDateTime": format_datetime(sample.date_collected),
         },
     }
     return SpecimenResource(**sp_values)
 
 
-async def get_shipment_bundle_resource(shipment_uid: int) -> BundleResource | None:
+async def get_shipment_bundle_resource(shipment_uid: str) -> BundleResource | None:
     shipment: Shipment = await Shipment.get(uid=shipment_uid)
-    shipped_samples: ShippedSample = await ShippedSample.get_all(
+    shipped_samples: list[ShippedSample] = await ShippedSample.get_all(
         shipment_uid=shipment.uid
     )
     samples: list[Sample] = list(map(lambda ss: ss.sample, shipped_samples))
@@ -337,7 +333,7 @@ async def get_shipment_bundle_resource(shipment_uid: int) -> BundleResource | No
             }
         ),
         "type": "batch",
-        "timestamp": dt_to_st(shipment.created_at),
+        "timestamp": format_datetime(shipment.created_at),
         "total": len(samples),
         "entry": service_entries,
         "extension": [
@@ -348,7 +344,6 @@ async def get_shipment_bundle_resource(shipment_uid: int) -> BundleResource | No
         ],
     }
     return BundleResource(**bundle_vars)
-
 
 # https://cloud.google.com/healthcare-api/docs/how-tos/fhir-bundles
 # the return type of a bundle must also be a bundle of response type

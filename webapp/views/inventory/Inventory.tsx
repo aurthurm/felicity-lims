@@ -69,6 +69,7 @@ const InventoryHome = defineComponent({
                             orderProducts: basket.map(order => ({
                                 productUid: order.product.uid,
                                 quantity: order.quantity,
+                                price: 0.0,
                                 remarks: '',
                             })),
                             departmentUid: undefined,

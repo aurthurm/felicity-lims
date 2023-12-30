@@ -146,8 +146,8 @@ class StockProductCursorPage:
 @strawberry.type
 class StockOrderType:
     uid: str
-    fullfilled_by_uid: str | None
-    fullfilled_by: UserType | None
+    fulfilled_by_uid: str | None
+    fulfilled_by: UserType | None
     order_by_uid: str | None
     order_by: UserType | None
     department_uid: str | None

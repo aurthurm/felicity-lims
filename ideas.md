@@ -1,5 +1,7 @@
 # state machine pattern to track transitions
 
+```python
+
 class State(Base):
     __tablename__ = 'state'
     id = Column(Integer, primary_key=True)
@@ -26,26 +28,29 @@ class Sample(Base):
         return self.session.query(SampleState).join(State).filter(SampleState.sample_id == self.id).order_by(
             State.timestamp.desc()).first().state
 
-  def transition(self, action):
-       # Define the valid actions for each state
-       valid_actions = {
-           'received': ['submit', 'cancel'],
-           'submitted': ['verify'],
-           'verified': ['publish', 'invalidate'],
-           'cancelled': ['receive']
-       }
 
-       # Get the current state
-       current_state = self.current_state
+def transition(self, action):
+    # Define the valid actions for each state
+    valid_actions = {
+        'received': ['submit', 'cancel'],
+        'submitted': ['verify'],
+        'verified': ['publish', 'invalidate'],
+        'cancelled': ['receive']
+    }
 
-       # Check if the action is valid for the current state
-       if action not in valid_actions[current_state]:
-           raise Exception(f"Cannot transition from {current_state} to {action}")
+    # Get the current state
+    current_state = self.current_state
 
-       # If the action is valid, perform the transition
-       new_state = session.query(State).filter(State.name == action).first()
-       if new_state:
-           sample_state = SampleState(sample_id=self.id, state_id=new_state.id)
-           session.add(sample_state)
-           session.commit()
+    # Check if the action is valid for the current state
+    if action not in valid_actions[current_state]:
+        raise Exception(f"Cannot transition from {current_state} to {action}")
 
+    # If the action is valid, perform the transition
+    new_state = session.query(State).filter(State.name == action).first()
+    if new_state:
+        sample_state = SampleState(sample_id=self.id, state_id=new_state.id)
+        session.add(sample_state)
+        session.commit()
+
+
+```

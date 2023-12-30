@@ -14,6 +14,7 @@ class FGroup:  # (KEYWORD, NAME)
     LAB_HAND = "LABORATORY HAND"
     GUEST = "GUEST"
     STORES = "STORES"
+    ACCOUNTING = "ACCOUNTING"
 
 
 class FObject:
@@ -25,6 +26,8 @@ class FObject:
     PRODUCT = "PRODUCT"
     SHIPMENT = "SHIPMENT"
     STORAGE = "STORAGE"
+    NOTICE = "NOTICE"
+    BILLING = "BILLING"
 
 
 class FAction:
@@ -54,6 +57,7 @@ groups = [
     fg.LAB_HAND,
     fg.GUEST,
     fg.STORES,
+    fg.ACCOUNTING
 ]
 
 # default permissions
@@ -145,6 +149,14 @@ permissions = {
             fg.SCIENTIST,
             fg.TECHNOLOGIST,
         ],
+        fo.NOTICE: [
+            fg.LAB_MANAGER,
+            fg.SCIENTIST,
+            fg.STORES,
+        ],
+        fo.BILLING: [
+            fg.ACCOUNTING
+        ]
     },
     fa.SUBMIT: {
         fo.SAMPLE: [fg.SCIENTIST, fg.TECHNOLOGIST],

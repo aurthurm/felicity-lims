@@ -23,11 +23,11 @@ class QCSet(BaseAuditDBModel):
     samples = relationship("Sample", back_populates="qc_set", lazy="selectin")
 
     @classmethod
-    async def create(cls, obj_in: schemas.QCSetCreate) -> schemas.QCSet:
+    async def create(cls, obj_in: dict | schemas.QCSetCreate) -> schemas.QCSet:
         data = cls._import(obj_in)
         return await super().create(**data)
 
-    async def update(self, obj_in: schemas.QCSetUpdate) -> schemas.QCSet:
+    async def update(self, obj_in: dict | schemas.QCSetUpdate) -> schemas.QCSet:
         data = self._import(obj_in)
         return await super().update(**data)
 
@@ -104,11 +104,11 @@ class QCLevel(BaseAuditDBModel):
     # allowable_error = Column(Float, nullable=True)
 
     @classmethod
-    async def create(cls, obj_in: schemas.QCLevelCreate) -> schemas.QCLevel:
+    async def create(cls, obj_in: dict | schemas.QCLevelCreate) -> schemas.QCLevel:
         data = cls._import(obj_in)
         return await super().create(**data)
 
-    async def update(self, obj_in: schemas.QCLevelUpdate) -> schemas.QCLevel:
+    async def update(self, obj_in: dict | schemas.QCLevelUpdate) -> schemas.QCLevel:
         data = self._import(obj_in)
         return await super().update(**data)
 
@@ -161,10 +161,10 @@ class QCTemplate(BaseAuditDBModel):
     )
 
     @classmethod
-    async def create(cls, obj_in: schemas.QCTemplateCreate) -> schemas.QCTemplate:
+    async def create(cls, obj_in: dict | schemas.QCTemplateCreate) -> schemas.QCTemplate:
         data = cls._import(obj_in)
         return await super().create(**data)
 
-    async def update(self, obj_in: schemas.QCTemplateUpdate) -> schemas.QCTemplate:
+    async def update(self, obj_in: dict | schemas.QCTemplateUpdate) -> schemas.QCTemplate:
         data = self._import(obj_in)
         return await super().update(**data)

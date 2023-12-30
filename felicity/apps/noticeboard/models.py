@@ -57,11 +57,11 @@ class Notice(BaseAuditDBModel):
     expiry: bool = Column(DateTime, nullable=False)
 
     @classmethod
-    async def create(cls, obj_in: schemas.NoticeCreate) -> schemas.Notice:
+    async def create(cls, obj_in: dict | schemas.NoticeCreate) -> schemas.Notice:
         data = cls._import(obj_in)
         return await super().create(**data)
 
-    async def update(self, obj_in: schemas.NoticeUpdate) -> schemas.Notice:
+    async def update(self, obj_in: dict | schemas.NoticeUpdate) -> schemas.Notice:
         data = self._import(obj_in)
         return await super().update(**data)
 

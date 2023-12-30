@@ -240,13 +240,13 @@ class UserPreference(DBModel):
 
     @classmethod
     async def create(
-        cls, obj_in: schemas.UserPreferenceCreate
+            cls, obj_in: dict | schemas.UserPreferenceCreate
     ) -> schemas.UserPreference:
         data = cls._import(obj_in)
         return await super().create(**data)
 
     async def update(
-        self, obj_in: schemas.UserPreferenceUpdate
+            self, obj_in: dict | schemas.UserPreferenceUpdate
     ) -> schemas.UserPreference:
         data = self._import(obj_in)
         return await super().update(**data)

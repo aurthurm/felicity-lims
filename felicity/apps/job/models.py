@@ -68,10 +68,10 @@ class Job(DBModel):
             await self.save()
 
     @classmethod
-    async def create(cls, obj_in: schemas.JobCreate) -> schemas.Job:
+    async def create(cls, obj_in: dict | schemas.JobCreate) -> schemas.Job:
         data = cls._import(obj_in)
         return await super().create(**data)
 
-    async def update(self, obj_in: schemas.JobUpdate) -> schemas.Job:
+    async def update(self, obj_in: dict | schemas.JobUpdate) -> schemas.Job:
         data = self._import(obj_in)
         return await super().update(**data)
