@@ -2,7 +2,7 @@ const qualityRoutes = [
     {
         path: '',
         name: 'quality-control-listing',
-        component: () => import('../views/qcontrol/Listing.vue'),
+        component: () => import('../views/qcontrol/QualityControlListing.vue'),
         meta: {
             requiresAuth: true,
         },
@@ -10,7 +10,7 @@ const qualityRoutes = [
     {
         path: '/qc-set/:qcSetUid',
         name: 'qc-set-view',
-        component: () => import('../views/qcontrol/_id/index.vue'),
+        component: () => import('../views/qcontrol/_id/QualityControl.vue'),
         children: [
             {
                 path: '',

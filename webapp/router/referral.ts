@@ -10,7 +10,7 @@ const shipmentRoutes = [
     {
         path: ':shipmentUid',
         name: 'shipment-single',
-        component: () => import('../views/shipment/_id/index.vue'),
+        component: () => import('../views/shipment/_id/Shipment.vue'),
         children: [
             {
                 path: '',

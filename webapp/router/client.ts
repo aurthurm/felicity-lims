@@ -2,7 +2,7 @@ const clientRoutes = [
     {
         path: '',
         name: 'clients-listing',
-        component: () => import('../views/client/Clients.vue'),
+        component: () => import('../views/client/ClientListing.vue'),
         meta: {
             requiresAuth: true,
         },
@@ -10,7 +10,7 @@ const clientRoutes = [
     {
         path: 'single',
         name: 'client-single-view',
-        component: () => import('../views/client/_id/index.vue'),
+        component: () => import('../views/client/_id/Client.vue'),
         children: [
             {
                 path: '',

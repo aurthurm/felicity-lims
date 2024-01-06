@@ -2,7 +2,7 @@ const patientRoutes = [
     {
         path: '',
         name: 'patients-listing',
-        component: () => import('../views/patient/Patients.vue'),
+        component: () => import('../views/patient/PatientListing.vue'),
         meta: {
             requiresAuth: true,
         },
@@ -18,7 +18,7 @@ const patientRoutes = [
     {
         path: 'search',
         name: 'patients-search',
-        component: () => import('../views/patient/Patients.vue'),
+        component: () => import('../views/patient/PatientListing.vue'),
         meta: {
             requiresAuth: true,
         },
@@ -26,7 +26,7 @@ const patientRoutes = [
     {
         path: ':patientUid',
         name: 'patient',
-        component: () => import('../views/patient/_id/index.vue'),
+        component: () => import('../views/patient/_id/Patient.vue'),
         children: [
             {
                 path: '',
@@ -47,7 +47,7 @@ const patientRoutes = [
             {
                 path: 'samples',
                 name: 'patient-samples',
-                component: () => import('../views/sample/_id/index.vue'),
+                component: () => import('../views/sample/_id/Sample.vue'),
                 children: [
                     {
                         path: ':sampleUid',

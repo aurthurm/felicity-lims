@@ -11,6 +11,7 @@
         "standalone:build": "rm -rf felicity/templates/static/* && vite build && cp -r dist/** felicity/templates/static",
         "frontend:dev": "vite",
         "frontend:vf": "vite --force",
+        "frontend:build:report": "npx vite-bundle-visualizer",
         "frontend:build:only": "vite build",
         "frontend:prettier:check": "prettier --check \"{,webapp/**/}*.{md,json,yml,html,cjs,mjs,js,ts,tsx,css,scss}\"",
         "frontend:prettier:format": "prettier --write \"{,webapp/**/}*.{md,json,yml,html,cjs,mjs,js,ts,tsx,css,scss}\"",

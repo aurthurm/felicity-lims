@@ -108,7 +108,7 @@ class Settings(BaseSettings):
     SYSTEM_DAEMON_PASSWORD: str = "!System@Daemon#100"
     USERS_OPEN_REGISTRATION: bool = False
     LOAD_SETUP_DATA: bool = getenv_boolean("LOAD_SETUP_DATA", False)
-    SERVE_WEBAPP: bool = getenv_boolean("SERVE_WEBAPP", False)
+    SERVE_WEBAPP: bool = getenv_boolean("SERVE_WEBAPP", True)
     RUN_OPEN_TRACING: bool = getenv_boolean("RUN_OPEN_TRACING", False)
     OTLP_SPAN_EXPORT_URL: str = getenv_value("OTLP_SPAN_EXPORT_URL", "http://localhost:4317")
 

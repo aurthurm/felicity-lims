@@ -2,7 +2,7 @@ const sampleRoutes = [
     {
         path: '',
         name: 'samples-listing',
-        component: () => import('../views/sample/Samples.vue'),
+        component: () => import('../views/sample/SamplesListing.vue'),
         meta: {
             requiresAuth: true,
         },

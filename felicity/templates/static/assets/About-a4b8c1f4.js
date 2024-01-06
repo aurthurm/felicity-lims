@@ -1,1 +1,0 @@
-import{_ as e,h as t,k as o,x as s}from"./_plugin-vue_export-helper-dacf3d65.js";const c={},_={class:""},n=s("h4",null,"About Felicity LIMS",-1),a=[n];function i(r,l){return t(),o("div",_,a)}const d=e(c,[["render",i],["__file","/home/aurthurm/Development/felicity-lims/webapp/views/About.vue"]]);export{d as default};

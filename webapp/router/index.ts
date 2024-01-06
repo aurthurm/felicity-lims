@@ -18,7 +18,7 @@ const routes: RouteRecordRaw[] = [
     {
         path: '/installation',
         name: guards.pages.INSTALLATION,
-        component: () => import('../views/install/index.vue'),
+        component: () => import('../views/install/Install.vue'),
         meta: {
             layout: 'empty',
         },
@@ -26,13 +26,13 @@ const routes: RouteRecordRaw[] = [
     {
         path: '/auth',
         name: guards.pages.LOGIN,
-        component: () => import('../views/auth/index.vue'),
+        component: () => import('../views/auth/Auth.vue'),
         meta: { layout: 'empty' },
     },
     {
         path: '/dashboard',
         name: guards.pages.DASHBOARD,
-        component: () => import('../views/dashboard/index.vue'),
+        component: () => import('../views/dashboard/Dashboard.vue'),
         meta: {
             requiresAuth: true,
         },
@@ -40,7 +40,7 @@ const routes: RouteRecordRaw[] = [
     {
         path: '/patients',
         name: guards.pages.PATIENTS,
-        component: () => import('../views/patient/index.vue'),
+        component: () => import('../views/patient/Patients.vue'),
         children: patientRoutes,
         meta: {
             requiresAuth: true,
@@ -57,7 +57,7 @@ const routes: RouteRecordRaw[] = [
     {
         path: '/clients',
         name: guards.pages.CLIENTS,
-        component: () => import('../views/client/index.vue'),
+        component: () => import('../views/client/Clients.vue'),
         children: clientRoutes,
         meta: {
             requiresAuth: true,
@@ -66,7 +66,7 @@ const routes: RouteRecordRaw[] = [
     {
         path: '/samples',
         name: guards.pages.SAMPLES,
-        component: () => import('../views/sample/index.vue'),
+        component: () => import('../views/sample/Samples.vue'),
         children: sampleRoutes,
         meta: {
             requiresAuth: true,
@@ -75,7 +75,7 @@ const routes: RouteRecordRaw[] = [
     {
         path: '/quality-control',
         name: guards.pages.QC_SAMPLES,
-        component: () => import('../views/qcontrol/index.vue'),
+        component: () => import('../views/qcontrol/QualityControls.vue'),
         children: qualityRoutes,
         meta: {
             requiresAuth: true,
@@ -84,7 +84,7 @@ const routes: RouteRecordRaw[] = [
     {
         path: '/worksheets',
         name: guards.pages.WORKSHEETS,
-        component: () => import('../views/worksheet/index.vue'),
+        component: () => import('../views/worksheet/WorkSheets.vue'),
         children: worksheetRoutes,
         meta: {
             requiresAuth: true,
@@ -93,7 +93,7 @@ const routes: RouteRecordRaw[] = [
     {
         path: '/shipments',
         name: guards.pages.REFERRAL,
-        component: () => import('../views/shipment/index.vue'),
+        component: () => import('../views/shipment/Shipments.vue'),
         children: shipmentRoutes,
         meta: {
             requiresAuth: true,
@@ -102,7 +102,7 @@ const routes: RouteRecordRaw[] = [
     {
         path: '/bio-banking',
         name: guards.pages.BIO_BANKING,
-        component: () => import('../views/storage/index.vue'),
+        component: () => import('../views/storage/Storage.vue'),
         meta: {
             requiresAuth: true,
         },
@@ -110,7 +110,7 @@ const routes: RouteRecordRaw[] = [
     {
         path: '/inventory',
         name: guards.pages.INVENTORY,
-        component: () => import('../views/inventory/index.vue'),
+        component: () => import('../views/inventory/Inventory.vue'),
         meta: {
             requiresAuth: true,
         },
@@ -118,7 +118,7 @@ const routes: RouteRecordRaw[] = [
     {
         path: '/notice-manager',
         name: guards.pages.NOTICE_MANAGER,
-        component: () => import('../views/notice/index.vue'),
+        component: () => import('../views/notice/Notices.vue'),
         meta: {
             requiresAuth: true,
         },
@@ -126,7 +126,7 @@ const routes: RouteRecordRaw[] = [
     {
         name: guards.pages.ADMINISTRATION,
         path: '/admin',
-        component: () => import('../views/admin/index.vue'),
+        component: () => import('../views/admin/Admin.vue'),
         children: adminRoutes,
         meta: {
             requiresAuth: true,
@@ -136,7 +136,7 @@ const routes: RouteRecordRaw[] = [
     {
         path: '/experiment',
         name: 'experiment',
-        component: () => import('../views/experiment/index.vue'),
+        component: () => import('../views/experiment/Experiment.vue'),
         meta: {
             requiresAuth: true,
         },
@@ -180,10 +180,6 @@ router.beforeEach(async (to, from) => {
         if (!isTokenValid(authStore.auth.token!)) {
             return { name: guards.pages.LOGIN };
         }
-
-        // if (to.path === '/') {
-        //   return { name: guards.pages.DASHBOARD }
-        // }
 
         if (!hasAccess(to.matched[0].name)) {
             return { name: guards.pages.NOT_AUTHORISED };

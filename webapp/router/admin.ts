@@ -3,7 +3,7 @@ const adminRoutes = [
     {
         path: '',
         name: 'felicity-configs',
-        component: () => import('../views/admin/Admin.vue'),
+        component: () => import('../views/admin/AdminLinks.vue'),
         meta: {
             requiresAuth: true,
         },
@@ -11,7 +11,7 @@ const adminRoutes = [
     {
         path: 'users-conf',
         name: 'users-conf',
-        component: () => import('../views/admin/users/index.vue'),
+        component: () => import('../views/admin/users/UsersAdmin.vue'),
         meta: {
             requiresAuth: true,
         },
@@ -19,7 +19,7 @@ const adminRoutes = [
     {
         path: 'location-conf',
         name: 'location-conf',
-        component: () => import('../views/admin/location/index.vue'),
+        component: () => import('../views/admin/location/LocationAdmin.vue'),
         meta: {
             requiresAuth: true,
         },
@@ -27,7 +27,7 @@ const adminRoutes = [
     {
         path: 'laboratory-conf',
         name: 'laboratory-conf',
-        component: () => import('../views/admin/laboratory/index.vue'),
+        component: () => import('../views/admin/laboratory/LaboratoryAdmin.vue'),
         meta: {
             requiresAuth: true,
         },
@@ -35,7 +35,7 @@ const adminRoutes = [
     {
         path: 'instruments-conf',
         name: 'instruments-conf',
-        component: () => import('../views/admin/instruments/index.vue'),
+        component: () => import('../views/admin/instruments/InstrumentsAdmin.vue'),
         meta: {
             requiresAuth: true,
         },
@@ -43,7 +43,7 @@ const adminRoutes = [
     {
         path: 'publication-conf',
         name: 'publication-conf',
-        component: () => import('../views/admin/publication/index.vue'),
+        component: () => import('../views/admin/publication/PublicationAdmin.vue'),
         meta: {
             requiresAuth: true,
         },
@@ -51,7 +51,7 @@ const adminRoutes = [
     {
         path: 'analyses-conf',
         name: 'analyses-conf',
-        component: () => import('../views/admin/analyses/index.vue'),
+        component: () => import('../views/admin/analyses/AnalysesAdmin.vue'),
         meta: {
             requiresAuth: true,
         },
@@ -59,7 +59,7 @@ const adminRoutes = [
     {
         path: 'sampletypes-conf',
         name: 'sampletypes-conf',
-        component: () => import('../views/admin/sample/index.vue'),
+        component: () => import('../views/admin/sample/SampleAdmin.vue'),
         meta: {
             requiresAuth: true,
         },
@@ -67,7 +67,7 @@ const adminRoutes = [
     {
         path: 'identification-conf',
         name: 'identification-conf',
-        component: () => import('../views/admin/patient/index.vue'),
+        component: () => import('../views/admin/patient/PatientAdmin.vue'),
         meta: {
             requiresAuth: true,
         },
@@ -75,7 +75,7 @@ const adminRoutes = [
     {
         path: 'coding-conf',
         name: 'coding-conf',
-        component: () => import('../views/admin/coding/index.vue'),
+        component: () => import('../views/admin/coding/CodingAdmin.vue'),
         meta: {
             requiresAuth: true,
         },
@@ -83,7 +83,7 @@ const adminRoutes = [
     {
         path: 'worksheets-conf',
         name: 'worksheets-conf',
-        component: () => import('../views/admin/worksheets/index.vue'),
+        component: () => import('../views/admin/worksheets/WorkSheetsAdmin.vue'),
         meta: {
             requiresAuth: true,
         },
@@ -91,7 +91,7 @@ const adminRoutes = [
     {
         path: 'suppliers-conf',
         name: 'suppliers-conf',
-        component: () => import('../views/admin/suppliers/index.vue'),
+        component: () => import('../views/admin/suppliers/SupplierAdmin.vue'),
         meta: {
             requiresAuth: true,
         },
@@ -99,7 +99,7 @@ const adminRoutes = [
     {
         path: 'reflex-rule-conf',
         name: 'reflex-rule-conf',
-        component: () => import('../views/admin/reflex/index.vue'),
+        component: () => import('../views/admin/reflex/ReflexAdmin.vue'),
         children: [
             {
                 path: '',
@@ -112,7 +112,7 @@ const adminRoutes = [
             {
                 path: ':uid',
                 name: 'reflex-detail',
-                component: () => import('../views/admin/reflex/_id/index.vue'),
+                component: () => import('../views/admin/reflex/_id/Reflex.vue'),
                 meta: {
                     requiresAuth: true,
                 },
@@ -125,7 +125,7 @@ const adminRoutes = [
     {
         path: 'inventory-conf',
         name: 'inventory-conf',
-        component: () => import('../views/admin/inventory/index.vue'),
+        component: () => import('../views/admin/inventory/InventoryAdmin.vue'),
         meta: {
             requiresAuth: true,
         },
@@ -133,7 +133,7 @@ const adminRoutes = [
     {
         path: 'setup-data-conf',
         name: 'setup-data-conf',
-        component: () => import('../views/admin/data-load/index.vue'),
+        component: () => import('../views/admin/data-load/DataLoad.vue'),
         meta: {
             requiresAuth: true,
         },
@@ -141,14 +141,14 @@ const adminRoutes = [
     {
         path: 'shipment-conf',
         name: 'shipment-conf',
-        component: () => import('../views/admin/shipment/index.vue'),
+        component: () => import('../views/admin/shipment/ShipmentAdmin.vue'),
         meta: {
             requiresAuth: true,
         },
     },
     {
         path: 'billing-conf',
-        component: () => import('../views/admin/billing/index.vue'),
+        component: () => import('../views/admin/billing/BillingAdmin.vue'),
         meta: {
             requiresAdmin: true,
         },

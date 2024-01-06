@@ -1,1 +1,0 @@
-import{_ as t,v as o,h as n,k as r,B as s}from"./_plugin-vue_export-helper-dacf3d65.js";const c={},_={class:""};function a(i,l){const e=o("router-view");return n(),r("div",_,[s(e)])}const p=t(c,[["render",a],["__file","/home/aurthurm/Development/felicity-lims/webapp/views/patient/index.vue"]]);export{p as default};

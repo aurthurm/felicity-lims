@@ -116,4 +116,3 @@
   </modal>
 
 </template>
-../../../graphql/operations/_mutations../../../graphql/_mutations

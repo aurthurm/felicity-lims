@@ -4,9 +4,13 @@ import { MotionPlugin } from '@vueuse/motion';
 import VueSweetalert2 from 'vue-sweetalert2';
 import FloatingVue from 'floating-vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-import { library, dom } from '@fortawesome/fontawesome-svg-core';
-import { fas } from '@fortawesome/free-solid-svg-icons';
-import { fab } from '@fortawesome/free-brands-svg-icons';
+import { library } from '@fortawesome/fontawesome-svg-core';
+import { 
+    faBell, faCog, faUser, faChevronDown, faBars, faMeteor, faTachometerAlt, faBullseye,
+    faUserInjured, faClinicMedical, faVial, faGripVertical, faDatabase, faTruck, faBoxesStacked,
+    faFlag, faFileMedical, faUsers, faCaravan, faLaptopMedical, faFill, faMicroscope, faGripHorizontal,
+    faCopy, faCodeBranch, faMoneyBill, faEdit, faLeftRight, faSort, faTimes, faEllipsis
+} from '@fortawesome/free-solid-svg-icons';
 import LayoutDashboard from './views/layouts/LayoutDashboard.vue';
 import LayoutEmpty from './views/layouts/LayoutEmpty.vue';
 import LayoutMobile from './views/layouts/LayoutMobile.vue';
@@ -22,8 +26,13 @@ import router from './router';
 import { createPinia } from 'pinia';
 import { urqlClient } from './urql';
 
-library.add(fas, fab);
-dom.watch();
+const icons = [
+    faBell, faCog, faUser, faChevronDown, faBars, faMeteor, faTachometerAlt, faBullseye,
+    faUserInjured, faClinicMedical, faVial, faGripVertical, faDatabase, faTruck, faBoxesStacked,
+    faFlag, faFileMedical, faUsers, faCaravan, faLaptopMedical, faFill, faMicroscope, faGripHorizontal,
+    faCopy, faCodeBranch, faMoneyBill, faEdit, faLeftRight, faSort, faTimes, faEllipsis
+]
+library.add(...icons);
 
 const pinia = createPinia();
 pinia.use(({ store }) => {

@@ -10,7 +10,7 @@ const wsRoutes = [
     {
         path: ':workSheetUid',
         name: 'worksheet-single',
-        component: () => import('../views/worksheet/_id/index.vue'),
+        component: () => import('../views/worksheet/_id/WorkSheet.vue'),
         children: [
             {
                 path: '',
