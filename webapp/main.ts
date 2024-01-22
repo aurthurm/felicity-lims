@@ -40,14 +40,15 @@ pinia.use(({ store }) => {
 });
 
 const app = createApp(App);
-app.use(pinia);
 app.component('font-awesome-icon', FontAwesomeIcon);
 app.component('default-layout', LayoutDashboard);
 app.component('empty-layout', LayoutEmpty);
 app.component('mobile-layout', LayoutMobile);
-app.use(urql, urqlClient);
+
 app.use(VueSweetalert2);
 app.use(FloatingVue);
 app.use(MotionPlugin);
+app.use(pinia);
 app.use(router);
+app.use(urql, urqlClient);
 app.mount('#felicityApp');

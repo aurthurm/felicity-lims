@@ -1,13 +1,31 @@
 overwrite: true
 debug: true
-schema: "http://127.0.0.1:8000/felicity-gql"
+schema: 
+  - "http://127.0.0.1:8000/felicity-gql"
+  - './felicity/api/gql/schema.graphql'
 documents: 
   - './felicity/api/gql/schema.graphql'
-  - './webapp/graphql/operations/**/*.ts'
   - './webapp/graphql/operations/**/*.graphql'
+config:
+  scalars:
+    Long: number
+  defaultScalarType: never
+  useTypeImports: true
 generates:
-  webapp/graphql/graphql.ts:
+  gql/schema.ts:
     plugins:
-      - "typescript"
-      - "typescript-operations"
-      - "typescript-vue-urql"
+      - typescript
+      - typescript-urql-graphcache
+  gql/:
+    preset: near-operation-file
+    presetConfig:
+      baseTypesPath: schema.ts
+      extension: .ts
+    config:
+      preResolveTypes: false
+    plugins:
+      - typescript-operations
+      - typescript-vue-urql
+  gql/introspection.ts:
+    plugins:
+      - urql-introspection
