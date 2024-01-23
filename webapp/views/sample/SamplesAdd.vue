@@ -152,6 +152,7 @@ function addAnalysesRequest(request: IAnalysisRequest): void {
 function addSample(): void {
   const sample = {
     sampleType: {} as ISampleType,
+    dateCollected: "",
     profiles: [] as IAnalysisProfile[],
     analyses: [] as IAnalysisService[],
   } as ISample;
@@ -239,6 +240,10 @@ function removeSample(index: number): void {
                     {{ sampleType.name }}
                   </option>
                 </select>
+              </label>
+              <label class="flex flex-col whitespace-nowrap mb-2">
+                <span class="text-gray-700">Date Collected</span>
+                <input type="datetime-local" class="form-input mt-1 block w-full" v-model="sample.dateCollected" />
               </label>
 
               <label class="flex flex-col whitespace-nowrap mb-2">

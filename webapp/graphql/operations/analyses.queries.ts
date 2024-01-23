@@ -732,6 +732,25 @@ export const GET_ANALYSIS_RESULTS_BY_SAMPLE_UID = gql`
             }
             retest
             reportable
+            submittedBy {
+                uid
+                firstName
+                lastName
+                auth {
+                    userName
+                }
+            }
+            dateSubmitted
+            dueDate
+            verifiedBy {
+                uid
+                firstName
+                lastName
+                auth {
+                    userName
+                }
+            }
+            dateVerified
             createdAt
             createdByUid
             updatedAt

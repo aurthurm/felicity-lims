@@ -59,7 +59,7 @@ class InstrumentType:
     updated_by: Optional["UserType"]
     updated_at: str | None
 
-    # methods: Optional[List["MethodType"]] = field(default_factory=list)
+    methods: Optional[List["MethodType"]] = field(default_factory=list)
 
     @strawberry.field
     async def methods(self, info) -> Optional[List["MethodType"]]:

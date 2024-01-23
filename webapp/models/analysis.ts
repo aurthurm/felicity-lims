@@ -1,3 +1,4 @@
+import { IUser } from './auth';
 import { IClient, IClientContact } from './client';
 import { IPatient } from './patient';
 import { IInstrument, IMethod, IUnit, IDepartment } from './setup';
@@ -57,8 +58,6 @@ export interface IAnalysisResult {
     instrument?: IInstrument;
     methodUid?: string;
     method?: IMethod;
-    analystUid?: string;
-    analyst?: any;
     worksheetPosition?: number;
     sampleUid?: string;
     sample?: ISample;
@@ -66,6 +65,11 @@ export interface IAnalysisResult {
     result?: string;
     retest?: boolean;
     reportable?: boolean;
+    submittedBy?: IUser;
+    dateSubmitted?: string;
+    verifiedBy?: IUser[];
+    dateVerified?: string;
+    dueDate?: string;
     editResult?: string;
     createdAt?: string;
     checked?: boolean;

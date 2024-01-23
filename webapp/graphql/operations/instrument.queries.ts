@@ -54,11 +54,11 @@ export const GET_ALL_INSTRUMENTS = gql`
                 name
                 description
                 keyword
-                methods {
-                    uid
-                    name
-                    description
-                }
+                # methods {
+                #     uid
+                #     name
+                #     description
+                # }
                 supplierUid
                 supplier {
                     uid

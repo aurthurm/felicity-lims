@@ -3,8 +3,9 @@ import FButton from "../../../components/Buttons/Button.vue";
 import { onMounted, watch, reactive, computed, defineAsyncComponent } from "vue";
 import { useRoute } from "vue-router";
 import { storeToRefs } from "pinia";
-import { useSampleStore } from "../../../stores";
+import { useSampleStore, useSetupStore } from "../../../stores";
 import { useAnalysisComposable } from "../../../composables";
+import { parseDate } from "../../../utils/helpers";
 import {
   IAnalysisProfile,
   IAnalysisResult,
@@ -18,6 +19,7 @@ const LoadingMessage = defineAsyncComponent(
 )
 
 const route = useRoute();
+const setupStore = useSetupStore()
 const sampleStore = useSampleStore();
 const { sample, analysisResults, fetchingResults } = storeToRefs(sampleStore);
 
@@ -31,7 +33,11 @@ const state = reactive({
   allChecked: false,
 });
 
-onMounted(() => sampleStore.fetchAnalysisResultsForSample(route.params.sampleUid));
+onMounted(() => {
+  setupStore.fetchInstruments();
+  setupStore.fetchMethods();
+  sampleStore.fetchAnalysisResultsForSample(route.params.sampleUid)
+});
 
 watch(
   () => route.params.sampleUid,
@@ -53,7 +59,7 @@ function prepareResults(): IAnalysisResult[] {
   let results = getResultsChecked();
   let ready: any[] = [];
   results?.forEach((result: IAnalysisResult) =>
-    ready.push({ uid: result.uid, result: result.result })
+    ready.push({ uid: result.uid, result: result.result, methodUid: result.methodUid, instrumentUid: result.instrumentUid })
   );
   return ready;
 }
@@ -273,13 +279,16 @@ const retestResults = () =>
               Analysis
             </th>
             <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">
-              Methods
-            </th>
-            <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">
               Instrument
             </th>
             <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">
+              Method
+            </th>
+            <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">
               Analyst
+            </th>
+            <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">
+              Reviewer(s)
             </th>
             <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">
               Interim
@@ -291,10 +300,13 @@ const retestResults = () =>
               Retest
             </th>
             <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">
+              Due Date
+            </th>
+            <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">
               Submitted
             </th>
             <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">
-              Due Date
+              Approved
             </th>
             <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">
               Status
@@ -322,18 +334,43 @@ const retestResults = () =>
               </div>
             </td>
             <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
+              <div v-if="!isEditable(result)" class="text-sm leading-5 text-sky-800">
+                {{ result.instrument?.name || "---" }}
+              </div>
+              <label v-else class="block col-span-2 mb-2">
+                <select class="form-input mt-1 block w-full" v-model="result.instrumentUid" @change="check(result)">
+                  <option value=""></option>
+                  <option v-for="instrument in setupStore.instruments" :key="instrument.uid"
+                    :value="instrument.uid">
+                    {{ instrument.name }}
+                  </option>
+                </select>
+              </label>
+            </td>
+            <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
+              <div v-if="!isEditable(result)" class="text-sm leading-5 text-sky-800">
+                {{ result.method?.name || "---" }}
+              </div>
+              <label v-else class="block col-span-2 mb-2">
+                <select class="form-input mt-1 block w-full" v-model="result.methodUid" @change="check(result)">
+                  <option value=""></option>
+                  <option v-for="method in setupStore.methods" :key="method.uid"
+                    :value="method.uid">
+                    {{ method.name }}
+                  </option>
+                </select>
+              </label>
+            </td>
+            <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
               <div class="text-sm leading-5 text-sky-800">
-                {{ result.method?.name || "None" }}
+                {{ `${result.submittedBy?.firstName ?? '--'} ${result.submittedBy?.lastName ?? '--'}` }}
               </div>
             </td>
             <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
               <div class="text-sm leading-5 text-sky-800">
-                {{ result.instrument?.name || "None" }}
-              </div>
-            </td>
-            <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-              <div class="text-sm leading-5 text-sky-800">
-                {{ result.analyst?.name || "moyoza" }}
+                <span v-for="reviewer in result.verifiedBy" :key="reviewer.firstName" class="ml-1">
+                  {{ `${reviewer?.firstName ?? '--'} ${reviewer?.lastName ?? '--'},` }}
+                </span>
               </div>
             </td>
             <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
@@ -371,18 +408,21 @@ const retestResults = () =>
             <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
               <div class="text-sm leading-5 text-sky-800">
                 <span v-if="result?.retest" class="text-sky-800">
-                  <i class="fa fa-check-circle" aria-hidden="true"></i>
+                  <font-awesome-icon icon="fa-check-circle"></font-awesome-icon>
                 </span>
                 <span v-else class="text-orange-600">
-                  <i class="fa fa-times-circle" aria-hidden="true"></i>
+                  <font-awesome-icon icon="fa-times-circle"></font-awesome-icon>
                 </span>
               </div>
             </td>
             <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-              <div class="text-sm leading-5 text-sky-800">2020-10-10</div>
+              <div class="text-sm leading-5 text-sky-800">{{ parseDate(result?.dueDate) }}</div>
             </td>
             <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-              <div class="text-sm leading-5 text-sky-800">2020-10-10</div>
+              <div class="text-sm leading-5 text-sky-800">{{ parseDate(result?.dateSubmitted) }}</div>
+            </td>
+            <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
+              <div class="text-sm leading-5 text-sky-800">{{ parseDate(result?.dateVerified) }}</div>
             </td>
             <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
               <button type="button" class="bg-sky-800 text-white px-2 py-1 rounded-sm leading-none">
@@ -392,10 +432,10 @@ const retestResults = () =>
             <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
               <div class="text-sm leading-5 text-sky-800">
                 <span v-if="result?.reportable" class="text-emerald-600">
-                  <i class="fa fa-thumbs-up" aria-hidden="true"></i>
+                  <font-awesome-icon icon="fa-thumbs-up" aria-hidden="true"></font-awesome-icon>
                 </span>
                 <span v-else class="text-orange-600">
-                  <i class="fa fa-thumbs-down" aria-hidden="true"></i>
+                  <font-awesome-icon icon="fa-thumbs-down" aria-hidden="true"></font-awesome-icon>
                 </span>
               </div>
             </td>

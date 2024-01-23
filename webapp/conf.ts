@@ -14,5 +14,3 @@ if (REST_BASE_URL?.includes("http")) {
 } else {
     WS_BASE_URL = `ws://${window.location.host}/felicity-gql`;
 }
-
-console.log(REST_BASE_URL, GQL_BASE_URL, WS_BASE_URL)

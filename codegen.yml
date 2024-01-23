@@ -6,17 +6,22 @@ schema:
 documents: 
   - './felicity/api/gql/schema.graphql'
   - './webapp/graphql/operations/**/*.graphql'
+ignoreNoDocuments: true
 config:
   scalars:
     Long: number
   defaultScalarType: never
   useTypeImports: true
 generates:
-  gql/schema.ts:
+  webapp/graphql:
+    preset: client
+    config:
+      useTypeImports: true
+  webapp/graphql/schema.ts:
     plugins:
       - typescript
       - typescript-urql-graphcache
-  gql/:
+  webapp/graphql/operations:
     preset: near-operation-file
     presetConfig:
       baseTypesPath: schema.ts
@@ -26,6 +31,6 @@ generates:
     plugins:
       - typescript-operations
       - typescript-vue-urql
-  gql/introspection.ts:
+  webapp/graphql/introspection.ts:
     plugins:
       - urql-introspection
