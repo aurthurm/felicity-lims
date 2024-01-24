@@ -1,6 +1,13 @@
 from fastapi import FastAPI
+from opentelemetry import trace
+from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import OTLPSpanExporter
 from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
+from opentelemetry.instrumentation.sqlalchemy import SQLAlchemyInstrumentor
+from opentelemetry.sdk.resources import Resource
+from opentelemetry.sdk.trace import TracerProvider
+from opentelemetry.sdk.trace.export import SimpleSpanProcessor
 from starlette.middleware.cors import CORSMiddleware
+from strawberry.extensions.tracing import OpenTelemetryExtension
 from strawberry.fastapi import GraphQLRouter
 from strawberry.subscriptions import GRAPHQL_TRANSPORT_WS_PROTOCOL, GRAPHQL_WS_PROTOCOL
 
@@ -41,6 +48,9 @@ def register_listeners(app: FastAPI):
 
 
 def register_graphql(app: FastAPI):
+    if settings.RUN_OPEN_TRACING:
+        schema.extensions = schema.extensions + (OpenTelemetryExtension,)
+        
     graphql_app = GraphQLRouter(
         schema,
         graphiql=True,
@@ -61,7 +71,15 @@ def register_tasks(app: FastAPI):
 
 def trace_app(app: FastAPI):
     if settings.RUN_OPEN_TRACING:
-        FastAPIInstrumentor.instrument_app(app)
+        otlp_exporter = OTLPSpanExporter(endpoint=settings.OTLP_SPAN_EXPORT_URL, insecure=True)
+        resource = Resource.create({"service.name": settings.PROJECT_NAME})
+        trace.set_tracer_provider(TracerProvider(resource=resource))
+        tracer = trace.get_tracer(__name__)
+        span_processor = SimpleSpanProcessor(otlp_exporter)
+        trace.get_tracer_provider().add_span_processor(span_processor)
+        #
+        FastAPIInstrumentor.instrument_app(app, tracer_provider=tracer)
+        SQLAlchemyInstrumentor().instrument(enable_commenter=True, commenter_options={})
 
 
 def register_felicity(app: FastAPI):

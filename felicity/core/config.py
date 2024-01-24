@@ -3,7 +3,7 @@ from typing import Any
 
 import pytz
 from pydantic import (
-    PostgresDsn, AnyHttpUrl, EmailStr, field_validator, ValidationInfo
+    AnyHttpUrl, EmailStr, field_validator, ValidationInfo
 )
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
@@ -61,7 +61,7 @@ class Settings(BaseSettings):
     @field_validator("SQLALCHEMY_DATABASE_URI")
     def assemble_async_db_connection(
             cls, v: str | None, info: ValidationInfo
-    ) -> PostgresDsn:
+    ) -> str:
         if isinstance(v, str):
             return v
         return f'postgresql+asyncpg://{info.data.get("POSTGRES_USER")}:{info.data.get("POSTGRES_PASSWORD")}\
@@ -70,7 +70,7 @@ class Settings(BaseSettings):
     @field_validator("SQLALCHEMY_TEST_DATABASE_URI")
     def assemble_async_test_db_connection(
             cls, v: str | None, info: ValidationInfo
-    ) -> PostgresDsn:
+    ) -> str:
         if isinstance(v, str):
             return v
         return f'postgresql+asyncpg://{info.data.get("POSTGRES_USER")}:{info.data.get("POSTGRES_PASSWORD")}\
@@ -112,7 +112,7 @@ class Settings(BaseSettings):
     USERS_OPEN_REGISTRATION: bool = False
     LOAD_SETUP_DATA: bool = getenv_boolean("LOAD_SETUP_DATA", False)
     SERVE_WEBAPP: bool = getenv_boolean("SERVE_WEBAPP", True)
-    RUN_OPEN_TRACING: bool = getenv_boolean("RUN_OPEN_TRACING", False)
+    RUN_OPEN_TRACING: bool = getenv_boolean("RUN_OPEN_TRACING", True)
     OTLP_SPAN_EXPORT_URL: str = getenv_value("OTLP_SPAN_EXPORT_URL", "http://localhost:4317")
 
     model_config = SettingsConfigDict(case_sensitive=True)

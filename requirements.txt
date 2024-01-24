@@ -1,5 +1,5 @@
 fastapi==0.109.0
-strawberry-graphql==0.219.0
+strawberry-graphql[opentelemetry]==0.219.0
 SQLAlchemy==2.0.25
 uvicorn[standard]==0.27.0
 gunicorn==21.2.0
@@ -27,8 +27,12 @@ fhir.resources==7.1.0
 httpx==0.26.0
 python-barcode==0.15.1
 importlib-metadata~=6.0.0
+opentelemetry-distro==0.43b0
+opentelemetry-exporter-otlp==1.22.0
 opentelemetry-semantic-conventions==0.43b0
 opentelemetry-instrumentation-fastapi==0.43b0
-opentelemetry-exporter-otlp==1.22.0
 opentelemetry-instrumentation-logging==0.43b0
 opentelemetry-instrumentation-sqlalchemy==0.43b0
+opentelemetry-instrumentation-psycopg2==0.43b0
+psycopg2==2.9.9
+opentelemetry-instrumentation-fastapi==0.43b0
