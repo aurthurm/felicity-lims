@@ -6,18 +6,12 @@
   <component name="ChangeListManager">
     <list default="true" id="9f590b69-f929-45a1-8512-12ed6efbf028" name="Changes" comment="Added Invetory starter">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/codegen.yml" beforeDir="false" afterPath="$PROJECT_DIR$/codegen.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/api/gql/analysis/mutations/analysis_request.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/analysis/mutations/analysis_request.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/api/gql/analysis/mutations/analysis_result.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/analysis/mutations/analysis_result.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/api/gql/instrument/types.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/instrument/types.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/core/config.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/core/config.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/lims/boot.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/lims/boot.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/main.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/conf.ts" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/conf.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/graphql/operations/analyses.queries.ts" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/graphql/operations/analyses.queries.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/graphql/operations/instrument.queries.ts" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/graphql/operations/instrument.queries.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/main.ts" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/main.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/models/analysis.ts" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/models/analysis.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/sample/SamplesAdd.vue" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/views/sample/SamplesAdd.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/sample/_id/Results.vue" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/views/sample/_id/Results.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/requirements-dev.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements-dev.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

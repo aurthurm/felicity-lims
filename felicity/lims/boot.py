@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
 from starlette.middleware.cors import CORSMiddleware
 from strawberry.fastapi import GraphQLRouter
 from strawberry.subscriptions import GRAPHQL_TRANSPORT_WS_PROTOCOL, GRAPHQL_WS_PROTOCOL
@@ -58,9 +59,15 @@ def register_tasks(app: FastAPI):
     observe_events()
 
 
+def trace_app(app: FastAPI):
+    if settings.RUN_OPEN_TRACING:
+        FastAPIInstrumentor.instrument_app(app)
+
+
 def register_felicity(app: FastAPI):
     register_cors(app)
     register_routes(app)
     register_graphql(app)
     register_listeners(app)
     register_tasks(app)
+    trace_app(app)

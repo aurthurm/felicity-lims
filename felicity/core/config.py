@@ -1,11 +1,11 @@
 import os
-import secrets
 from typing import Any
 
 import pytz
-from pydantic import AnyHttpUrl, EmailStr, field_validator, ConfigDict
-from pydantic_core.core_schema import FieldValidationInfo
-from pydantic_settings import BaseSettings
+from pydantic import (
+    PostgresDsn, AnyHttpUrl, EmailStr, field_validator, ValidationInfo
+)
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 def getenv_boolean(var_name: Any, default_value: bool = False) -> bool:
@@ -28,8 +28,9 @@ class Settings(BaseSettings):
     STATIC_DIR: str = os.path.join(BASE_DIR, "static")
     API_V1_STR: str = "/api/v1"
     ALGORITHM: str = "HS256"
-    SECRET_KEY: str = secrets.token_urlsafe(32)
-    REFRESH_SECRET_KEY: str = secrets.token_urlsafe(32)
+    # secrets.token_urlsafe(32)
+    SECRET_KEY: str = "Eoy7XAjJWnr6PcgFi0FK37XbjXEfx2PdFV8GFbucReDbWiew8T79ob3ZIF3bgYi62THktkoTNdC1SrFyd_k4xQ"
+    REFRESH_SECRET_KEY: str = "KKj6HeSWwizXDnzc1SS_e-PYn3EwA4XuotoOD3J0mvmu1PLdVzbDkAeThJDTQsgYHVgYwbV5PnSbo_ZJZHEMEg"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 4 * 1  # 4 hours
     REFRESH_TOKEN_EXPIRE_MINUTES: int = 60 * 12 * 1  # 1/2 day / 12 hours
     PROJECT_NAME: str = getenv_value("PROJECT_NAME", "Felicity LIMS")
@@ -59,19 +60,21 @@ class Settings(BaseSettings):
 
     @field_validator("SQLALCHEMY_DATABASE_URI")
     def assemble_async_db_connection(
-            cls, v: str | None, info: FieldValidationInfo
-    ) -> Any:
+            cls, v: str | None, info: ValidationInfo
+    ) -> PostgresDsn:
         if isinstance(v, str):
             return v
-        return f'postgresql+asyncpg://{info.data.get("POSTGRES_USER")}:{info.data.get("POSTGRES_PASSWORD")}@{info.data.get("POSTGRES_SERVER")}/{info.data.get("POSTGRES_DB") or ""}'
+        return f'postgresql+asyncpg://{info.data.get("POSTGRES_USER")}:{info.data.get("POSTGRES_PASSWORD")}\
+        @{info.data.get("POSTGRES_SERVER")}/{info.data.get("POSTGRES_DB") or ""}'
 
     @field_validator("SQLALCHEMY_TEST_DATABASE_URI")
     def assemble_async_test_db_connection(
-            cls, v: str | None, info: FieldValidationInfo
-    ) -> Any:
+            cls, v: str | None, info: ValidationInfo
+    ) -> PostgresDsn:
         if isinstance(v, str):
             return v
-        return f'postgresql+asyncpg://{info.data.get("POSTGRES_USER")}:{info.data.get("POSTGRES_PASSWORD")}@{info.data.get("POSTGRES_SERVER")}/test_{info.data.get("POSTGRES_DB") or ""}'
+        return f'postgresql+asyncpg://{info.data.get("POSTGRES_USER")}:{info.data.get("POSTGRES_PASSWORD")}\
+        @{info.data.get("POSTGRES_SERVER")}/test_{info.data.get("POSTGRES_DB") or ""}'
 
     SMTP_TLS: bool = getenv_boolean("SMTP_TLS", False)
     SMTP_PORT: int | None = getenv_value("SMTP_PORT", 1025)
@@ -82,7 +85,7 @@ class Settings(BaseSettings):
     EMAILS_FROM_NAME: str | None = getenv_value("EMAILS_FROM_NAME", "felicity")
 
     @field_validator("EMAILS_FROM_NAME")
-    def get_project_name(cls, v: str | None, info: FieldValidationInfo) -> str:
+    def get_project_name(cls, v: str | None, info: ValidationInfo) -> str:
         if not v:
             return info.data["PROJECT_NAME"]
         return v
@@ -92,7 +95,7 @@ class Settings(BaseSettings):
     EMAILS_ENABLED: bool = False
 
     @field_validator("EMAILS_ENABLED")
-    def get_emails_enabled(cls, v: bool, info: FieldValidationInfo) -> bool:
+    def get_emails_enabled(cls, v: bool, info: ValidationInfo) -> bool:
         return bool(
             info.data.get("SMTP_HOST")
             and info.data.get("SMTP_PORT")
@@ -112,7 +115,7 @@ class Settings(BaseSettings):
     RUN_OPEN_TRACING: bool = getenv_boolean("RUN_OPEN_TRACING", False)
     OTLP_SPAN_EXPORT_URL: str = getenv_value("OTLP_SPAN_EXPORT_URL", "http://localhost:4317")
 
-    model_config = ConfigDict(case_sensitive=True)
+    model_config = SettingsConfigDict(case_sensitive=True)
 
 
 settings = Settings()
