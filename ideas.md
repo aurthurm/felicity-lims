@@ -54,3 +54,8 @@ def transition(self, action):
 
 
 ```
+
+
+https://github.com/open-telemetry/opentelemetry-python-contrib/discussions/2044
+
+also read uptrace uwsgi for uv gu fastapi

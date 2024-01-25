@@ -1,8 +1,21 @@
+# Split: The felicity will run independely and a reverse proxy serve the webapp's static files
 version: '3.5'
 
 services:
-  felicity_proxy:
-    container_name: felicity_proxy
+  # Option 1: run with nginx as a reverse proxy to serve static files
+  felicity_split_nginx:
+    container_name: felicity_split_nginx
+    image: nginx:latest
+    ports:
+      - "80:80"
+    volumes:
+      - ./services/nginx:/etc/nginx/conf.d
+    depends_on:
+      - felicity_fe
+
+  # Option 2: run with caddy as a reverse proxy to serve static files
+  felicity_split_caddy:
+    container_name: felicity_split_caddy
     image: caddy:2-alpine
     ports:
       - "$PORT:$PORT"
@@ -29,29 +42,6 @@ services:
     networks:
       - felicitynet
     command: bash -c "cd vite && pnpm dev --host --port 3000"
-
-  felicity_be:
-    container_name: felicity_be
-    restart: unless-stopped
-    build:
-      context: ./
-      dockerfile: Dockerfile.felicity
-    environment:
-      - POSTGRES_SERVER=felicity_db
-      - POSTGRES_DB=felicity_lims
-      - POSTGRES_USER=felicity
-      - POSTGRES_PASSWORD=felicity
-      - POSTGRES_HOST_AUTH_METHOD=trust
-      - DATABASE_URL=postgresql://felicity:felicity@felicity_db:5432/felicity_lims
-    volumes:
-      - ./backend/:/app
-    expose:
-      - "8000"
-    depends_on:
-      - felicity_db
-    networks:
-      - felicitynet
-    command: bash -c "cd felicity_lims && ./felicity.sh"
 
   felicity_db:
     container_name: felicity_db

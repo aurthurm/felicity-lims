@@ -5,8 +5,9 @@ from typing import Optional
 from apps.client import models as client_models
 from apps.client import schemas as client_schemas
 from apps.setup import models, schemas
-from core.config import settings
+from core.config import get_settings
 
+settings = get_settings()
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 

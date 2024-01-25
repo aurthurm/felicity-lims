@@ -12,11 +12,13 @@ from strawberry.types.info import Info as StrawberryInfo, RootValueType
 from apps.common import schemas as core_schemas  # noqa
 from apps.user import models  # noqa
 from apps.user.models import User
-from core import security  # noqa
-from core.config import settings  # noqa
+from core import get_settings  # noqa
+
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
+settings = get_settings()
 
 # oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 

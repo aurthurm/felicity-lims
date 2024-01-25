@@ -22,9 +22,10 @@ from apps.analysis.schemas import (
     SampleTypeCreate,
 )
 from apps.common.models import IdSequence
-from core.config import settings
+from core.config import get_settings
 from database.session import async_session_factory
 
+settings = get_settings()
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 

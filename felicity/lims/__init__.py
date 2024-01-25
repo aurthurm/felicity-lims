@@ -1,3 +1,3 @@
-from lims.boot import register_felicity
+from lims.boot import factory
 
-__all__ = ["register_felicity"]
+__all__ = ["factory"]

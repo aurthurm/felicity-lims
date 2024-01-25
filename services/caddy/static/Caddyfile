@@ -1,0 +1,24 @@
+{
+	log {
+		output stdout
+		level DEBUG
+	}
+}
+
+{$DOMAIN} {
+
+	handle /felicity-gql {
+		reverse_proxy {$PROXY_BACKEND}:{$PROXY_PORT}
+	}
+
+	handle /api/* {
+		reverse_proxy {$PROXY_BACKEND}:{$PROXY_PORT}
+	}
+
+	handle {
+		root * /app
+		try_files {path} /index.html
+		encode gzip
+		file_server
+	}
+}

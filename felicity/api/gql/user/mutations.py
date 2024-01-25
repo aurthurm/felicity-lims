@@ -20,9 +20,11 @@ from api.gql.user.types import (
 from apps.user import models as user_models
 from apps.user import schemas as user_schemas
 from core import security
-from core.config import settings
+from core.config import get_settings
 from core.events import post_event
 from core.security import generate_password_reset_token, verify_password_reset_token
+
+settings = get_settings()
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

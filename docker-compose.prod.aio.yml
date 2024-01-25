@@ -1,0 +1,184 @@
+# Option 1: felicity serves static files with caddy as a reverse proxy in front -- felicity_aio_caddy
+# Option 2: felicity serves static files with nginx as a reverse proxy in front  -- felicity_aio_nginx
+# Option 3: felicity serves static files without a reverse proxy -- felicity_aio
+# Option 4: nginx serves static files -- felicity_static_nginx
+# Option 5: caddy serves static files -- felicity_static_caddy
+
+version: '3.8'
+
+volumes:
+  db-data:
+  pgadmin:
+  caddy_data:
+  caddy_config:
+
+networks:
+  felicitynet:
+    driver: bridge
+
+services:
+  felicity_aio_caddy:
+    container_name: felicity_aio_caddy
+    restart: unless-stopped
+    image: caddy:2-alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./services/caddy/proxy/Caddyfile:/etc/caddy/Caddyfile
+      - ./caddy.data:/data
+      - ./caddy.config:/config
+    environment:
+      PROXY_BACKEND: felicity_aio
+      PROXY_PORT: 8000
+      DOMAIN: ${DOMAIN}
+    depends_on:
+      - felicity_aio
+    networks:
+      - felicitynet
+
+  felicity_aio_nginx:
+    container_name: felicity_aio_nginx
+    image: nginx:latest
+    ports:
+      - "80:80"
+    environment:
+      PROXY_BACKEND: felicity_aio
+      PROXY_PORT: 8000
+      DOMAIN: ${DOMAIN}
+    volumes:
+      - ./services/nginx/proxy/:/etc/nginx/templates/
+    depends_on:
+      - felicity_aio
+    networks:
+      - felicitynet
+
+  felicity_aio:
+    container_name: felicity_aio
+    image: felicity_aio:1.0.0
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      - POSTGRES_SERVER=felicity_db
+      - SERVE_WEBAPP=True
+    volumes:
+      - ./felicity:/app
+    build:
+      context: ./
+      target: server-aio
+      dockerfile: Dockerfile.aio
+    ports:
+      - 8000:8000
+    networks:
+      - felicitynet
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    depends_on:
+      - felicity_db
+    command: bash -c "uvicorn main:felicity --host=0.0.0.0 --port=8000 --workers 5"
+
+  felicity_static_caddy:
+    container_name: felicity_static_caddy
+    restart: unless-stopped
+    build:
+      context: ./
+      target: caddy-static
+      dockerfile: Dockerfile.aio
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./services/caddy/static/Caddyfile:/etc/caddy/Caddyfile
+      - ./caddy.data:/data
+      - ./caddy.config:/config
+    environment:
+      PROXY_BACKEND: felicity_api
+      PROXY_PORT: 8000
+      DOMAIN: ${DOMAIN}
+    depends_on:
+      - felicity_api
+    networks:
+      - felicitynet
+
+  felicity_static_nginx:
+    container_name: felicity_static_nginx
+    restart: unless-stopped
+    build:
+      context: ./
+      target: nginx-static
+      dockerfile: Dockerfile.aio
+    ports:
+      - "80:80"
+    environment:
+      PROXY_BACKEND: felicity_api
+      PROXY_PORT: 8000
+      DOMAIN: ${DOMAIN}
+    volumes:
+      - ./services/nginx/static/:/etc/nginx/templates/
+    depends_on:
+      - felicity_api
+    networks:
+      - felicitynet
+
+  felicity_api:
+    container_name: felicity_api
+    image: felicity_api:1.0.0
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      - POSTGRES_SERVER=felicity_db
+      - SERVE_WEBAPP=False
+    volumes:
+      - ./felicity:/app
+    build:
+      context: ./
+      target: server-api
+      dockerfile: Dockerfile.aio
+    ports:
+      - 8000:8000
+    networks:
+      - felicitynet
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    depends_on:
+      - felicity_db
+    command: bash -c "uvicorn main:felicity --host=0.0.0.0 --port=8000 --workers 5"
+
+  felicity_db:
+    container_name: felicity_db
+    image: postgres:12
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_HOST_AUTH_METHOD=trust
+    volumes:
+      - ./postgres/init/:/docker-entrypoint-initdb.d/
+      - db-data:/var/lib/postgresql/data
+    ports:
+      - 5434:5432
+    networks:
+      - felicitynet
+
+  pgadmin:
+    container_name: felicity.pgadmin
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-admin@pgadmin.org}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
+    volumes:
+      - pgadmin:/root/.pgadmin
+    ports:
+      - "${PGADMIN_PORT:-5050}:80"
+    networks:
+      - felicitynet
+    restart: unless-stopped
+    depends_on:
+      - felicity_db
+
+

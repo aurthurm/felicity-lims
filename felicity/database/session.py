@@ -8,7 +8,10 @@ from sqlalchemy.ext.asyncio import (
 )
 from sqlalchemy.orm import sessionmaker
 
-from core import settings
+from core import get_settings
+
+settings = get_settings()
+
 
 engine = create_engine(settings.SQLALCHEMY_DATABASE_URI)
 async_engine = create_async_engine(

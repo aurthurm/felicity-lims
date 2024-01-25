@@ -72,7 +72,7 @@ async def auth_data(app):
         json={
             "query": authe,
             "variables": {
-                "username": settings.FIRST_SEPERUSER_USERNAME,
+                "username": settings.FIRST_SUPERUSER_USERNAME,
                 "password": settings.FIRST_SUPERUSER_PASSWORD,
             },
         },

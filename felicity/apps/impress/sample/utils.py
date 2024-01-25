@@ -9,7 +9,8 @@ from apps.impress.sample.models import ReportImpress
 from apps.impress.sample.schemas import ReportImpressCreate
 from apps.notification.utils import FelicityStreamer
 from apps.setup.caches import get_laboratory
-from utils import marshaller, remove_circular_refs
+from utils import remove_circular_refs
+from apps.common.utils.serializer import marshaller
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

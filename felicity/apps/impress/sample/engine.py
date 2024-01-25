@@ -8,9 +8,11 @@ from barcode import Code128
 from barcode.writer import ImageWriter
 from fpdf import FPDF
 
-from core.config import settings
-from utils import get_time_now, get_from_nested, strtobool
+from core.config import get_settings
+from core.dtz import get_time_now
+from utils.helpers import get_from_nested, strtobool
 
+settings = get_settings()
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 

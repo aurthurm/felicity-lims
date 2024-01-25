@@ -1,12 +1,13 @@
-from core.config import settings
+from core.config import get_settings
 from core.events import subscribe
 from utils.email.email import send_new_account_email, send_reset_password_email
 
+settings = get_settings()
 
 def new_account_created(**kwargs):
     send_new_account_email(
         settings.FIRST_SUPERUSER_EMAIL,
-        settings.FIRST_SEPERUSER_USERNAME,
+        settings.FIRST_SUPERUSER_USERNAME,
         settings.FIRST_SUPERUSER_PASSWORD,
     )
 

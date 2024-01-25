@@ -1,0 +1,25 @@
+upstream api {
+    server felicity_aio:8000;
+}
+
+server {
+    listen 80;
+
+    location /api {
+        proxy_pass http://api;
+        proxy_set_header Host $http_host;
+        proxy_set_header X-Real-IP $remote_addr;
+    }
+
+    location /felicity-fql {
+        proxy_pass http://felicity-fql;
+        proxy_set_header Host $http_host;
+        proxy_set_header X-Real-IP $remote_addr;
+   }
+
+    location /static {
+        proxy_pass http://static;
+        proxy_set_header Host $http_host;
+        proxy_set_header X-Real-IP $remote_addr;
+   }
+}

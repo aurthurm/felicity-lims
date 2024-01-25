@@ -3,8 +3,11 @@ import logging
 
 from fpdf import FPDF
 
-from core.config import settings
-from utils import get_time_now, datetime_math, format_datetime, get_from_nested
+from core.config import get_settings
+from core.dtz import get_time_now, datetime_math, format_datetime
+from utils.helpers import get_from_nested
+
+settings = get_settings()
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

@@ -11,8 +11,9 @@ from apps.job.conf import states as job_states
 from apps.notification.utils import ReportNotifier
 from apps.user import models as user_models
 from apps.user.models import User
-from core.config import settings
+from core.config import get_settings
 
+settings = get_settings()
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
@@ -53,7 +54,7 @@ async def prepare_for_impress():
         [{"uid": uid, "status": states.sample.PUBLISHING} for uid in sample_uids]
     )
 
-    system_daemon: User = await User.get(email=settings.SYSTEM_DAEMONUSER_EMAIL)
+    system_daemon: User = await User.get(email=settings.SYSTEM_DAEMON_EMAIL)
 
     job_schema = job_schemas.JobCreate(
         action=actions.IMPRESS_REPORT,

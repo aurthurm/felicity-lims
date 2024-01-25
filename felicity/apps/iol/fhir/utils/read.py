@@ -15,7 +15,7 @@ from apps.iol.fhir.schema import (
 from apps.patient.models import Patient
 from apps.setup.models.setup import Laboratory
 from apps.shipment.models import Shipment, ShippedSample
-from utils import format_datetime
+from core.dtz import format_datetime
 
 
 def one_of_else(of: list, one: str, default=None):

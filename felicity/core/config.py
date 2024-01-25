@@ -1,30 +1,25 @@
+from functools import lru_cache
 import os
+from pathlib import Path
 from typing import Any
 
+from dotenv import load_dotenv
 import pytz
 from pydantic import (
-    AnyHttpUrl, EmailStr, field_validator, ValidationInfo
+    AnyHttpUrl, EmailStr, Extra, field_validator, ValidationInfo
 )
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
-
-def getenv_boolean(var_name: Any, default_value: bool = False) -> bool:
-    result = default_value
-    env_value = os.getenv(var_name)
-    if env_value is not None:
-        result = env_value.upper() in ("TRUE", "1")
-    return result
+from utils.env import getenv_value, getenv_boolean
 
 
-def getenv_value(value: Any, default_value: Any = None) -> Any:
-    env_value = os.getenv(value)
-    if env_value is None:
-        env_value = default_value
-    return env_value
+BASE_DIR: str = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+ENV_FILE: Path = Path(BASE_DIR, "./../.env")
+load_dotenv(dotenv_path=ENV_FILE)
 
 
 class Settings(BaseSettings):
-    BASE_DIR: str = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+    BASE_DIR: str = BASE_DIR
     STATIC_DIR: str = os.path.join(BASE_DIR, "static")
     API_V1_STR: str = "/api/v1"
     ALGORITHM: str = "HS256"
@@ -49,7 +44,7 @@ class Settings(BaseSettings):
     TIMEZONE_AWARE: bool = False
     TIMEZONE_REGION: str = "UTC"  # "Africa/Harare"
     TIMEZONE: Any = pytz.timezone(TIMEZONE_REGION)
-    POSTGRES_SERVER: str = getenv_value("POSTGRES_SERVER", "localhost")  # felicity_db
+    POSTGRES_SERVER: str = getenv_value("POSTGRES_SERVER", "localhost")
     POSTGRES_USER: str = getenv_value("POSTGRES_USER", "felicity")
     POSTGRES_PASSWORD: str = getenv_value("POSTGRES_PASSWORD", "felicity")
     POSTGRES_DB: str = getenv_value("POSTGRES_DB", "felicity_lims")
@@ -65,7 +60,7 @@ class Settings(BaseSettings):
         if isinstance(v, str):
             return v
         return f'postgresql+asyncpg://{info.data.get("POSTGRES_USER")}:{info.data.get("POSTGRES_PASSWORD")}\
-        @{info.data.get("POSTGRES_SERVER")}/{info.data.get("POSTGRES_DB") or ""}'
+        @{info.data.get("POSTGRES_SERVER")}/{info.data.get("POSTGRES_DB") or ""}'.replace(" ", "")
 
     @field_validator("SQLALCHEMY_TEST_DATABASE_URI")
     def assemble_async_test_db_connection(
@@ -74,7 +69,7 @@ class Settings(BaseSettings):
         if isinstance(v, str):
             return v
         return f'postgresql+asyncpg://{info.data.get("POSTGRES_USER")}:{info.data.get("POSTGRES_PASSWORD")}\
-        @{info.data.get("POSTGRES_SERVER")}/test_{info.data.get("POSTGRES_DB") or ""}'
+        @{info.data.get("POSTGRES_SERVER")}/test_{info.data.get("POSTGRES_DB") or ""}'.replace(" ", "")
 
     SMTP_TLS: bool = getenv_boolean("SMTP_TLS", False)
     SMTP_PORT: int | None = getenv_value("SMTP_PORT", 1025)
@@ -112,10 +107,16 @@ class Settings(BaseSettings):
     USERS_OPEN_REGISTRATION: bool = False
     LOAD_SETUP_DATA: bool = getenv_boolean("LOAD_SETUP_DATA", False)
     SERVE_WEBAPP: bool = getenv_boolean("SERVE_WEBAPP", True)
-    RUN_OPEN_TRACING: bool = getenv_boolean("RUN_OPEN_TRACING", True)
+    RUN_OPEN_TRACING: bool = getenv_boolean("RUN_OPEN_TRACING", False)
     OTLP_SPAN_EXPORT_URL: str = getenv_value("OTLP_SPAN_EXPORT_URL", "http://localhost:4317")
 
-    model_config = SettingsConfigDict(case_sensitive=True)
+    model_config = SettingsConfigDict(
+        env_file=ENV_FILE, env_file_encoding='utf-8',
+        # allow | forbid | ignore --- allowed to mainatin a single .env for both felicity and its webapp
+        extra = "allow"
+    )
 
 
-settings = Settings()
+@lru_cache
+def get_settings():
+    return Settings()

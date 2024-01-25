@@ -1,3 +1,4 @@
+from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from opentelemetry import trace
 from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import OTLPSpanExporter
@@ -10,15 +11,33 @@ from starlette.middleware.cors import CORSMiddleware
 from strawberry.extensions.tracing import OpenTelemetryExtension
 from strawberry.fastapi import GraphQLRouter
 from strawberry.subscriptions import GRAPHQL_TRANSPORT_WS_PROTOCOL, GRAPHQL_WS_PROTOCOL
+from database.session import async_engine
 
 from api.deps import get_gql_context
 from api.gql.schema import schema
 from api.rest.api_v1 import api
 from apps.events import observe_events
 from apps.job.sched import felicity_workforce_init
-from core import settings
+from core import get_settings
 from init import initialize_felicity
 from views import setup_webapp
+
+
+settings = get_settings()
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    if settings.LOAD_SETUP_DATA:
+        initialize_felicity()
+    # bg_tasks = BackgroundTasks(tasks=None)
+    # bg_tasks.add_task(felicity_workforce_init)
+    felicity_workforce_init()
+    observe_events()
+    #
+    yield
+    # 
+    ...
 
 
 def register_cors(app: FastAPI):
@@ -38,14 +57,7 @@ def register_routes(app: FastAPI):
 
     app.include_router(api, prefix="/api/v1")
     setup_webapp(app, settings.SERVE_WEBAPP)
-
-
-def register_listeners(app: FastAPI):
-    @app.on_event("startup")
-    async def init_seeds():
-        if settings.LOAD_SETUP_DATA:
-            await initialize_felicity()
-
+    
 
 def register_graphql(app: FastAPI):
     if settings.RUN_OPEN_TRACING:
@@ -62,14 +74,7 @@ def register_graphql(app: FastAPI):
     app.add_websocket_route("/felicity-gql", graphql_app)
 
 
-def register_tasks(app: FastAPI):
-    # bg_tasks = BackgroundTasks(tasks=None)
-    # bg_tasks.add_task(felicity_workforce_init)
-    felicity_workforce_init()
-    observe_events()
-
-
-def trace_app(app: FastAPI):
+def register_tracer(app: FastAPI):
     if settings.RUN_OPEN_TRACING:
         otlp_exporter = OTLPSpanExporter(endpoint=settings.OTLP_SPAN_EXPORT_URL, insecure=True)
         resource = Resource.create({"service.name": settings.PROJECT_NAME})
@@ -78,14 +83,19 @@ def trace_app(app: FastAPI):
         span_processor = SimpleSpanProcessor(otlp_exporter)
         trace.get_tracer_provider().add_span_processor(span_processor)
         #
-        FastAPIInstrumentor.instrument_app(app, tracer_provider=tracer)
-        SQLAlchemyInstrumentor().instrument(enable_commenter=True, commenter_options={})
+        FastAPIInstrumentor.instrument_app(app)
+        SQLAlchemyInstrumentor().instrument(
+            engine=async_engine.sync_engine, 
+            enable_commenter=True, 
+            commenter_options={}
+        )
 
 
-def register_felicity(app: FastAPI):
+def factory(config: dict):
+    config["lifespan"] = lifespan
+    app = FastAPI(**config)
     register_cors(app)
     register_routes(app)
     register_graphql(app)
-    register_listeners(app)
-    register_tasks(app)
-    trace_app(app)
+    register_tracer(app)
+    return app

@@ -14,7 +14,8 @@ from sqlalchemy_mixins import AllFeaturesMixinAsync, smart_query  # noqa
 from core.uid_gen import get_flake_uid
 from database.paginator.cursor import EdgeNode, PageCursor, PageInfo
 from database.session import AsyncSessionScoped
-from utils import has_value_or_is_truthy, format_datetime
+from utils import has_value_or_is_truthy
+from core.dtz import format_datetime
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

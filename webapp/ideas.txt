@@ -1,3 +1,7 @@
 https://github.com/TaTo30/VuePDF
 https://pspdfkit.com/blog/2021/how-to-build-a-vuejs-pdf-viewer-with-pdfjs/
 https://github.com/DingRui12138/vue-pdf-viewer
+
+
+https://stackoverflow.com/questions/76649766/anyone-has-any-idea-how-to-start-on-opentelemetry-browser-instrumentation-for-a
+https://opentelemetry.io/docs/languages/js/getting-started/browser/
