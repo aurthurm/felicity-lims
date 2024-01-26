@@ -67,7 +67,7 @@ services:
     build:
       context: ./
       target: server-aio
-      dockerfile: Dockerfile.aio
+      dockerfile: Dockerfile.prod
     ports:
       - 8000:8000
     networks:
@@ -76,7 +76,6 @@ services:
       - "host.docker.internal:host-gateway"
     depends_on:
       - felicity_db
-    command: bash -c "uvicorn main:felicity --host=0.0.0.0 --port=8000 --workers 5"
 
   felicity_static_caddy:
     container_name: felicity_static_caddy
@@ -84,7 +83,7 @@ services:
     build:
       context: ./
       target: caddy-static
-      dockerfile: Dockerfile.aio
+      dockerfile: Dockerfile.prod
     ports:
       - "80:80"
       - "443:443"
@@ -107,7 +106,7 @@ services:
     build:
       context: ./
       target: nginx-static
-      dockerfile: Dockerfile.aio
+      dockerfile: Dockerfile.prod
     ports:
       - "80:80"
     environment:
@@ -135,7 +134,7 @@ services:
     build:
       context: ./
       target: server-api
-      dockerfile: Dockerfile.aio
+      dockerfile: Dockerfile.prod
     ports:
       - 8000:8000
     networks:

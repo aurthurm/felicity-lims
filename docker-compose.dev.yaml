@@ -7,13 +7,14 @@ services:
     restart: unless-stopped
     build:
       context: ./
-      dockerfile: Dockerfile.webapp
+      target: webapp
+      dockerfile: Dockerfile.dev
     volumes:
       - ./webapp:/app
     ports:
       - "3000:3000"
     depends_on:
-      - felicity_be
+      - felicity_pg
     networks:
       - felicitynet
     command: bash -c "pnpm dev --host --port 3000"
@@ -23,9 +24,10 @@ services:
     restart: unless-stopped
     build:
       context: ./
-      dockerfile: Dockerfile.felicity
+      target: webapi
+      dockerfile: Dockerfile.dev
     environment:
-      - POSTGRES_SERVER=felicity_db
+      - POSTGRES_SERVER=felicity_pg
       - POSTGRES_DB=felicity_lims
       - POSTGRES_USER=felicity
       - POSTGRES_PASSWORD=felicity
@@ -37,13 +39,13 @@ services:
     ports:
       - 8000:8000
     depends_on:
-      - felicity_db
+      - felicity_pg
     networks:
       - felicitynet
-    command: bash -c "alembic upgrade head && uvicorn main:flims --host=0.0.0.0 --port=8000 --workers 1"
+    command: bash -c "alembic upgrade head && uvicorn main:flims --host=0.0.0.0 --port=8000"
 
-  felicity_db:
-    container_name: felicity_db
+  felicity_pg:
+    container_name: felicity_pg
     image: postgres:12
     restart: unless-stopped
     environment:
@@ -52,8 +54,8 @@ services:
       - POSTGRES_PASSWORD=felicity
       - POSTGRES_HOST_AUTH_METHOD=trust
     volumes:
-      - ./postgres/init/:/docker-entrypoint-initdb.d/
-      - database-data:/var/lib/postgresql/data
+      - ./services/postgres/init/:/docker-entrypoint-initdb.d/
+      - pg-data:/var/lib/postgresql/data
     ports:
       - 5434:5432
     networks:
@@ -73,10 +75,10 @@ services:
       - felicitynet
     restart: unless-stopped
     depends_on:
-      - felicity_db
+      - felicity_pg
 
 volumes:
-  db-data:
+  pg-data:
   pgadmin:
 
 networks:

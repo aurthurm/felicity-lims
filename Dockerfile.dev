@@ -1,0 +1,22 @@
+FROM node:18.16.0-alpine as webapp
+RUN apk update && apk add bash
+RUN npm i -g pnpm
+RUN mkdir -p /app
+WORKDIR /app
+COPY ./package.json /app
+COPY ./pnpm-lock.yaml /app
+RUN pnpm install
+COPY ./webapp /app/webapp
+COPY ./index.html /app
+COPY ./public /app/public
+COPY ./*.js /app
+COPY ./*.json /app
+
+FROM tiangolo/uvicorn-gunicorn:python3.10-slim as webapi
+LABEL maintainer="Sebastian Ramirez <tiangolo@gmail.com>"
+RUN apt-get update && apt-get install -y git libpq-dev gcc
+COPY ./requirements.txt /tmp/requirements.txt
+RUN pip install --no-cache-dir --upgrade -r /tmp/requirements.txt
+WORKDIR /app
+COPY ./felicity /app
+ENV PYTHONPATH=/app

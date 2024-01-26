@@ -30,6 +30,7 @@ COPY ./felicity /app
 RUN  rm -rf /app/templates/static/*
 COPY --from=webapp-build /app/dist /app/templates/static
 ENV PYTHONPATH=/app
+CMD ["gunicorn", "main:felicity", "--bind", "0.0.0.0:8000", "--workers", "4", "--worker-class", "uvicorn.workers.UvicornWorker"]
 
 
 FROM tiangolo/uvicorn-gunicorn:python3.10-slim as server-api
@@ -43,6 +44,7 @@ WORKDIR /app
 COPY ./felicity /app
 RUN  rm -rf /app/templates/static/*
 ENV PYTHONPATH=/app
+CMD ["gunicorn", "main:felicity", "--bind", "0.0.0.0:8000", "--workers", "4", "--worker-class", "uvicorn.workers.UvicornWorker"]
 
 
 FROM nginx:latest as nginx-static
