@@ -1,20 +1,20 @@
 import logging
 
-from apps.iol.fhir.utils import (
+from felicity.apps.iol.fhir.utils import (
     get_shipment_bundle_resource,
     get_diagnostic_report_resource,
 )
-from apps.iol.relay import post_data
-from apps.job import models as job_models
-from apps.job.conf import states as job_states
-from apps.shipment import conf, models
-from apps.shipment.utils import (
+from felicity.apps.iol.relay import post_data
+from felicity.apps.job import models as job_models
+from felicity.apps.job.conf import states as job_states
+from felicity.apps.shipment import conf, models
+from felicity.apps.shipment.utils import (
     shipment_assign,
     shipment_reset_assigned_count,
     shipment_receive,
     shipment_result_update,
 )
-from apps.user.models import User
+from felicity.apps.user.models import User
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

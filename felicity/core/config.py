@@ -10,7 +10,7 @@ from pydantic import (
 )
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
-from utils.env import getenv_value, getenv_boolean
+from felicity.utils.env import getenv_value, getenv_boolean
 
 
 BASE_DIR: str = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))

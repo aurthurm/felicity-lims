@@ -5,11 +5,11 @@ from typing import List
 from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, String, Table
 from sqlalchemy.orm import relationship
 
-from apps import Auditable, BaseAuditDBModel, DBModel
-from apps.analysis import conf, schemas
-from apps.common import BaseMPTT
-from apps.notification.utils import FelicityStreamer
-from database.session import async_session_factory
+from felicity.apps import Auditable, BaseAuditDBModel, DBModel
+from felicity.apps.analysis import conf, schemas
+from felicity.apps.common import BaseMPTT
+from felicity.apps.notification.utils import FelicityStreamer
+from felicity.database.session import async_session_factory
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

@@ -2,7 +2,7 @@
     - The felicity app must be creaed first before importing other modules.
     - This is important to register felicity in sanic registry
 """
-from lims import factory
+from felicity.lims import factory
 
 description = """
 Felicity LIMS API helps you do awesome stuff. 🚀

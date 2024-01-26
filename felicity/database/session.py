@@ -8,7 +8,7 @@ from sqlalchemy.ext.asyncio import (
 )
 from sqlalchemy.orm import sessionmaker
 
-from core import get_settings
+from felicity.core import get_settings
 
 settings = get_settings()
 

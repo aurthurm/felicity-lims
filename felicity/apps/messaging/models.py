@@ -3,9 +3,9 @@ import logging
 from sqlalchemy import Boolean, Column, ForeignKey, String, Table
 from sqlalchemy.orm import relationship
 
-from apps import BaseAuditDBModel, DBModel
-from apps.common import BaseMPTT
-from apps.user.models import User
+from felicity.apps import BaseAuditDBModel, DBModel
+from felicity.apps.common import BaseMPTT
+from felicity.apps.user.models import User
 from . import schemas
 
 logging.basicConfig(level=logging.INFO)

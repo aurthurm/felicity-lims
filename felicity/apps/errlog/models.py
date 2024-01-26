@@ -1,7 +1,7 @@
 from sqlalchemy import Column
 from sqlalchemy.dialects.postgresql import JSONB
 
-from apps import BaseAuditDBModel
+from felicity.apps import BaseAuditDBModel
 from . import schemas
 
 

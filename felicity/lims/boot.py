@@ -11,16 +11,16 @@ from starlette.middleware.cors import CORSMiddleware
 from strawberry.extensions.tracing import OpenTelemetryExtension
 from strawberry.fastapi import GraphQLRouter
 from strawberry.subscriptions import GRAPHQL_TRANSPORT_WS_PROTOCOL, GRAPHQL_WS_PROTOCOL
-from database.session import async_engine
+from felicity.database.session import async_engine
 
-from api.deps import get_gql_context
-from api.gql.schema import schema
-from api.rest.api_v1 import api
-from apps.events import observe_events
-from apps.job.sched import felicity_workforce_init
-from core import get_settings
-from init import initialize_felicity
-from views import setup_webapp
+from felicity.api.deps import get_gql_context
+from felicity.api.gql.schema import schema
+from felicity.api.rest.api_v1 import api
+from felicity.apps.events import observe_events
+from felicity.apps.job.sched import felicity_workforce_init
+from felicity.core import get_settings
+from felicity.init import initialize_felicity
+from felicity.views import setup_webapp
 
 
 settings = get_settings()

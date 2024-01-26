@@ -7,7 +7,7 @@ from typing import Any, Union
 from jose import jwt
 from passlib.context import CryptContext
 
-from core.config import get_settings
+from felicity.core.config import get_settings
 
 settings = get_settings()
 

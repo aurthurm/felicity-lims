@@ -4,17 +4,17 @@ from typing import List
 import sqlalchemy as sa
 import strawberry  # noqa
 
-from api.gql.analysis.types import analysis as a_types
-from api.gql.analysis.types import results as r_types
-from api.gql.permissions import IsAuthenticated
-from api.gql.types import PageInfo
-from apps.analysis import conf as analysis_conf
-from apps.analysis.models import analysis as a_models
-from apps.analysis.models import qc as qc_models
-from apps.analysis.models import results as r_models
-from apps.analysis.utils import sample_search
-from database.session import async_session_factory
-from utils import has_value_or_is_truthy
+from felicity.api.gql.analysis.types import analysis as a_types
+from felicity.api.gql.analysis.types import results as r_types
+from felicity.api.gql.permissions import IsAuthenticated
+from felicity.api.gql.types import PageInfo
+from felicity.apps.analysis import conf as analysis_conf
+from felicity.apps.analysis.models import analysis as a_models
+from felicity.apps.analysis.models import qc as qc_models
+from felicity.apps.analysis.models import results as r_models
+from felicity.apps.analysis.utils import sample_search
+from felicity.database.session import async_session_factory
+from felicity.utils import has_value_or_is_truthy
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

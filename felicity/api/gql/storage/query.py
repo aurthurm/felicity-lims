@@ -1,9 +1,9 @@
 from typing import List, Optional
 
 import strawberry  # noqa
-from api.gql.storage import types
-from api.gql.permissions import IsAuthenticated
-from apps.storage import models
+from felicity.api.gql.storage import types
+from felicity.api.gql.permissions import IsAuthenticated
+from felicity.apps.storage import models
 
 
 @strawberry.type

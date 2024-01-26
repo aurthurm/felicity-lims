@@ -2,11 +2,11 @@ import logging
 from pathlib import Path
 
 import pandas as pd
-from apps.analysis.models.analysis import Sample
-from apps.analytics import SampleAnalyticsInit, conf, models
-from apps.job import conf as job_conf
-from apps.job import models as job_models
-from apps.notification.utils import FelicityStreamer, ReportNotifier
+from felicity.apps.analysis.models.analysis import Sample
+from felicity.apps.analytics import SampleAnalyticsInit, conf, models
+from felicity.apps.job import conf as job_conf
+from felicity.apps.job import models as job_models
+from felicity.apps.notification.utils import FelicityStreamer, ReportNotifier
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

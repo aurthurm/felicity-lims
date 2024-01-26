@@ -2,15 +2,15 @@ import logging
 from datetime import datetime
 from typing import List
 
-from apps.analysis.conf import states
-from apps.analysis.models.analysis import Sample
-from apps.impress.sample.engine import FelicityImpress
-from apps.impress.sample.models import ReportImpress
-from apps.impress.sample.schemas import ReportImpressCreate
-from apps.notification.utils import FelicityStreamer
-from apps.setup.caches import get_laboratory
-from utils import remove_circular_refs
-from apps.common.utils.serializer import marshaller
+from felicity.apps.analysis.conf import states
+from felicity.apps.analysis.models.analysis import Sample
+from felicity.apps.impress.sample.engine import FelicityImpress
+from felicity.apps.impress.sample.models import ReportImpress
+from felicity.apps.impress.sample.schemas import ReportImpressCreate
+from felicity.apps.notification.utils import FelicityStreamer
+from felicity.apps.setup.caches import get_laboratory
+from felicity.utils import remove_circular_refs
+from felicity.apps.common.utils.serializer import marshaller
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

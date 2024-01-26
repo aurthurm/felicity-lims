@@ -3,9 +3,9 @@ import logging
 from sqlalchemy import Boolean, Column, DateTime, Float, ForeignKey, String, Table
 from sqlalchemy.orm import relationship
 
-from apps import BaseAuditDBModel, DBModel
-from apps.analysis import schemas
-from apps.setup.models.setup import Department
+from felicity.apps import BaseAuditDBModel, DBModel
+from felicity.apps.analysis import schemas
+from felicity.apps.setup.models.setup import Department
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

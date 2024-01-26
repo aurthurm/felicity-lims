@@ -1,10 +1,10 @@
 from sqlalchemy import Column, DateTime, Float, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 
-from apps import BaseAuditDBModel
-from apps.common.models import IdSequence
-from apps.inventory import schemas
-from apps.inventory.conf import order_states
+from felicity.apps import BaseAuditDBModel
+from felicity.apps.common.models import IdSequence
+from felicity.apps.inventory import schemas
+from felicity.apps.inventory.conf import order_states
 
 
 class StockItem(BaseAuditDBModel):

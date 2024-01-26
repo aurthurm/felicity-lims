@@ -3,7 +3,7 @@ from typing import Any
 
 from fastapi import APIRouter
 
-from apps.job import models
+from felicity.apps.job import models
 
 jobs = APIRouter(tags=["job"], prefix="/jobs")
 

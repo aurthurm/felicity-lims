@@ -2,17 +2,17 @@ import logging
 from typing import Optional
 
 import strawberry  # noqa
-from api.gql.analytics import types
-from api.gql.permissions import IsAuthenticated
-from apps.analysis.conf import states
-from apps.analysis.models.analysis import Sample
-from apps.analysis.models.results import AnalysisResult
-from apps.analytics import SampleAnalyticsInit
-from apps.instrument.models import Instrument
-from apps.user.models import User
-from apps.worksheet.conf import worksheet_states
-from apps.worksheet.models import WorkSheet
-from utils import has_value_or_is_truthy
+from felicity.api.gql.analytics import types
+from felicity.api.gql.permissions import IsAuthenticated
+from felicity.apps.analysis.conf import states
+from felicity.apps.analysis.models.analysis import Sample
+from felicity.apps.analysis.models.results import AnalysisResult
+from felicity.apps.analytics import SampleAnalyticsInit
+from felicity.apps.instrument.models import Instrument
+from felicity.apps.user.models import User
+from felicity.apps.worksheet.conf import worksheet_states
+from felicity.apps.worksheet.models import WorkSheet
+from felicity.utils import has_value_or_is_truthy
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

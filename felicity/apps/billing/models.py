@@ -14,9 +14,9 @@ from sqlalchemy import (
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import relationship
 
-from apps import Auditable, DBModel
-from apps.billing.config import DiscountType, DiscountValueType, TransactionKind
-from apps.billing.schemas import (
+from felicity.apps import Auditable, DBModel
+from felicity.apps.billing.config import DiscountType, DiscountValueType, TransactionKind
+from felicity.apps.billing.schemas import (
     AnalysisPriceCreate,
     AnalysisPriceUpdate,
     ProfilePriceCreate,
@@ -38,7 +38,7 @@ from apps.billing.schemas import (
     TestBillInvoiceUpdate,
     TestBillInvoiceCreate,
 )
-from apps.common.models import IdSequence
+from felicity.apps.common.models import IdSequence
 
 
 class AnalysisPrice(Auditable):

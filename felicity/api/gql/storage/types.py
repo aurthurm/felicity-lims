@@ -2,8 +2,8 @@ from typing import List, Optional
 
 import strawberry  # noqa
 
-from api.gql.user.types import UserType
-from apps.storage import models
+from felicity.api.gql.user.types import UserType
+from felicity.apps.storage import models
 
 
 @strawberry.type

@@ -2,13 +2,13 @@ from datetime import datetime
 
 import strawberry  # noqa
 
-from api.gql.analysis.types.analysis import (
+from felicity.api.gql.analysis.types.analysis import (
     SampleType,
 )
-from api.gql.types import JSONScalar, BytesScalar
-from api.gql.types import PageInfo
-from api.gql.user.types import UserType
-from apps.shipment.models import ShippedSample
+from felicity.api.gql.types import JSONScalar, BytesScalar
+from felicity.api.gql.types import PageInfo
+from felicity.api.gql.user.types import UserType
+from felicity.apps.shipment.models import ShippedSample
 
 
 @strawberry.type

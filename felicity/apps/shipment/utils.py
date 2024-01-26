@@ -4,32 +4,32 @@ import random
 import string
 from datetime import datetime, timedelta
 
-from apps.analysis import conf as analysis_conf
-from apps.analysis.models.analysis import (
+from felicity.apps.analysis import conf as analysis_conf
+from felicity.apps.analysis.models.analysis import (
     Sample,
     AnalysisRequest,
     SampleType,
     Analysis,
     sample_analysis,
 )
-from apps.analysis.models.results import AnalysisResult
-from apps.analysis.schemas import (
+from felicity.apps.analysis.models.results import AnalysisResult
+from felicity.apps.analysis.schemas import (
     AnalysisRequestCreate,
     SampleCreate,
     AnalysisResultCreate,
 )
-from apps.impress.shipment.utils import gen_pdf_manifest
-from apps.iol.fhir.utils import get_shipment_bundle_resource
-from apps.iol.relay import post_data
-from apps.job import models as job_models
-from apps.job import schemas as job_schemas
-from apps.job.conf import actions, categories, priorities, states
-from apps.patient.models import Patient, Client
-from apps.patient.schemas import PatientCreate
-from apps.reflex.utils import ReflexUtil
-from apps.shipment import conf
-from apps.shipment.models import Shipment, ShippedSample
-from apps.user.models import User
+from felicity.apps.impress.shipment.utils import gen_pdf_manifest
+from felicity.apps.iol.fhir.utils import get_shipment_bundle_resource
+from felicity.apps.iol.relay import post_data
+from felicity.apps.job import models as job_models
+from felicity.apps.job import schemas as job_schemas
+from felicity.apps.job.conf import actions, categories, priorities, states
+from felicity.apps.patient.models import Patient, Client
+from felicity.apps.patient.schemas import PatientCreate
+from felicity.apps.reflex.utils import ReflexUtil
+from felicity.apps.shipment import conf
+from felicity.apps.shipment.models import Shipment, ShippedSample
+from felicity.apps.user.models import User
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

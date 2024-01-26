@@ -1,9 +1,9 @@
 import asyncio
 
-from apps.analysis.models.analysis import AnalysisRequest, Sample
-from apps.analysis.models.results import AnalysisResult
-from apps.analysis.utils import get_last_verificator
-from apps.iol.fhir.schema import (
+from felicity.apps.analysis.models.analysis import AnalysisRequest, Sample
+from felicity.apps.analysis.models.results import AnalysisResult
+from felicity.apps.analysis.utils import get_last_verificator
+from felicity.apps.iol.fhir.schema import (
     DiagnosticReportResource,
     PatientResource,
     ServiceRequestResource,
@@ -12,10 +12,10 @@ from apps.iol.fhir.schema import (
     Reference,
     SpecimenResource,
 )
-from apps.patient.models import Patient
-from apps.setup.models.setup import Laboratory
-from apps.shipment.models import Shipment, ShippedSample
-from core.dtz import format_datetime
+from felicity.apps.patient.models import Patient
+from felicity.apps.setup.models.setup import Laboratory
+from felicity.apps.shipment.models import Shipment, ShippedSample
+from felicity.core.dtz import format_datetime
 
 
 def one_of_else(of: list, one: str, default=None):

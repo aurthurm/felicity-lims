@@ -6,8 +6,8 @@ from sqlalchemy import text
 from sqlalchemy.future import select
 from sqlalchemy.sql import func
 
-from database.base_class import DBModel
-from database.session import async_session_factory
+from felicity.database.base_class import DBModel
+from felicity.database.session import async_session_factory
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

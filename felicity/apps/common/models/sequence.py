@@ -4,9 +4,9 @@ from datetime import datetime
 from sqlalchemy import Column, Integer, String, DateTime
 from sqlalchemy.dialects.postgresql import insert
 
-from apps.common.utils import sequencer, sequence_alpha
-from database.base_class import DBModel
-from database.session import async_session_factory
+from felicity.apps.common.utils import sequencer, sequence_alpha
+from felicity.database.base_class import DBModel
+from felicity.database.session import async_session_factory
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

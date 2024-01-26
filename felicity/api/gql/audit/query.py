@@ -1,9 +1,9 @@
 from typing import List
 
 import strawberry  # noqa
-from api.gql.audit.types import AuditLogType
-from api.gql.permissions import IsAuthenticated
-from apps.audit.models import AuditLog
+from felicity.api.gql.audit.types import AuditLogType
+from felicity.api.gql.permissions import IsAuthenticated
+from felicity.apps.audit.models import AuditLog
 
 
 @strawberry.type

@@ -1,10 +1,10 @@
 import logging
 from typing import Optional
 
-from apps.user import models, schemas
-from core.config import get_settings
-from init.setup.groups_perms import FGroup
-from core.events import post_event
+from felicity.apps.user import models, schemas
+from felicity.core.config import get_settings
+from felicity.init.setup.groups_perms import FGroup
+from felicity.core.events import post_event
 settings = get_settings()
 
 logging.basicConfig(level=logging.INFO)

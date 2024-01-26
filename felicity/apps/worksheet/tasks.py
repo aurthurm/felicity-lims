@@ -2,15 +2,15 @@ import logging
 import time
 from typing import List
 
-from apps.analysis import conf as analysis_conf
-from apps.analysis.models.analysis import Sample
-from apps.analysis.models.qc import QCSet, QCTemplate
-from apps.analysis.models.results import AnalysisResult
-from apps.analysis.schemas import AnalysisResultCreate, QCSetCreate, SampleCreate
-from apps.analysis.utils import get_qc_sample_type
-from apps.job import models as job_models
-from apps.job.conf import states as job_states
-from apps.worksheet import conf, models
+from felicity.apps.analysis import conf as analysis_conf
+from felicity.apps.analysis.models.analysis import Sample
+from felicity.apps.analysis.models.qc import QCSet, QCTemplate
+from felicity.apps.analysis.models.results import AnalysisResult
+from felicity.apps.analysis.schemas import AnalysisResultCreate, QCSetCreate, SampleCreate
+from felicity.apps.analysis.utils import get_qc_sample_type
+from felicity.apps.job import models as job_models
+from felicity.apps.job.conf import states as job_states
+from felicity.apps.worksheet import conf, models
 
 
 logging.basicConfig(level=logging.INFO)

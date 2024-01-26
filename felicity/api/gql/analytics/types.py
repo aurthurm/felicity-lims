@@ -3,8 +3,8 @@ from typing import List, Optional
 
 import strawberry  # noqa
 
-from api.gql.analysis.types.analysis import AnalysisType
-from api.gql.user.types import UserType
+from felicity.api.gql.analysis.types.analysis import AnalysisType
+from felicity.api.gql.user.types import UserType
 
 
 @strawberry.type

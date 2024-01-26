@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 
-from api.rest.api_v1.endpoints import reports, setup, jobs
-from api.rest.api_v1.fhir import r4
+from felicity.api.rest.api_v1.endpoints import reports, setup, jobs
+from felicity.api.rest.api_v1.fhir import r4
 
 api = APIRouter()
 

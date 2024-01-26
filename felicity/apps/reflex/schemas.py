@@ -2,8 +2,8 @@ from typing import List, Optional
 
 from pydantic import ConfigDict
 
-from apps.analysis.schemas import Analysis, SampleType
-from apps.common.schemas import BaseAuditModel
+from felicity.apps.analysis.schemas import Analysis, SampleType
+from felicity.apps.common.schemas import BaseAuditModel
 
 
 #

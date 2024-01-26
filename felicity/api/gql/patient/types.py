@@ -3,10 +3,10 @@ from typing import List, Optional
 
 import strawberry  # noqa
 
-from api.gql.client.types import ClientType
-from api.gql.setup.types import CountryType, DistrictType, ProvinceType
-from api.gql.types import PageInfo
-from api.gql.user.types import UserType
+from felicity.api.gql.client.types import ClientType
+from felicity.api.gql.setup.types import CountryType, DistrictType, ProvinceType
+from felicity.api.gql.types import PageInfo
+from felicity.api.gql.user.types import UserType
 
 
 @strawberry.type

@@ -4,17 +4,17 @@ from typing import List, Optional
 import strawberry  # noqa
 from sqlalchemy import or_
 
-from api.gql.auth import auth_from_info, verify_user_auth
-from api.gql.permissions import IsAuthenticated
-from api.gql.shipment import types
-from api.gql.shipment.types import ShipmentType
-from api.gql.types import OperationError
-from apps.common.models import IdSequence
-from apps.job import models as job_models
-from apps.job import schemas as job_schemas
-from apps.job.conf import actions, categories, priorities, states
-from apps.shipment import conf, models, schemas
-from apps.shipment.utils import shipment_recover, shipment_recall, action_shipment
+from felicity.api.gql.auth import auth_from_info, verify_user_auth
+from felicity.api.gql.permissions import IsAuthenticated
+from felicity.api.gql.shipment import types
+from felicity.api.gql.shipment.types import ShipmentType
+from felicity.api.gql.types import OperationError
+from felicity.apps.common.models import IdSequence
+from felicity.apps.job import models as job_models
+from felicity.apps.job import schemas as job_schemas
+from felicity.apps.job.conf import actions, categories, priorities, states
+from felicity.apps.shipment import conf, models, schemas
+from felicity.apps.shipment.utils import shipment_recover, shipment_recall, action_shipment
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

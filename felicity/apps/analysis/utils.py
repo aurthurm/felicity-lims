@@ -4,35 +4,35 @@ from typing import List
 
 from sqlalchemy import or_
 
-from apps.analysis import schemas
-from apps.analysis.conf import states
-from apps.analysis.models.analysis import SampleType, Profile, Analysis
-from apps.analysis.models.results import (
+from felicity.apps.analysis import schemas
+from felicity.apps.analysis.conf import states
+from felicity.apps.analysis.models.analysis import SampleType, Profile, Analysis
+from felicity.apps.analysis.models.results import (
     AnalysisResult,
     result_verification,
     ResultMutation,
 )
-from apps.billing.config import DiscountType, DiscountValueType
-from apps.billing.models import (
+from felicity.apps.billing.config import DiscountType, DiscountValueType
+from felicity.apps.billing.models import (
     ProfilePrice,
     AnalysisPrice,
     ProfileDiscount,
     AnalysisDiscount,
 )
-from apps.billing.schemas import (
+from felicity.apps.billing.schemas import (
     AnalysisPriceCreate,
     AnalysisDiscountCreate,
     ProfileDiscountCreate,
     ProfilePriceCreate,
 )
-from apps.job import conf as job_conf
-from apps.job.models import Job
-from apps.job.schemas import JobCreate
-from apps.notification.utils import FelicityStreamer
-from apps.reflex.utils import ReflexUtil
-from apps.shipment.models import ShippedSample
-from apps.user.models import User
-from utils import has_value_or_is_truthy
+from felicity.apps.job import conf as job_conf
+from felicity.apps.job.models import Job
+from felicity.apps.job.schemas import JobCreate
+from felicity.apps.notification.utils import FelicityStreamer
+from felicity.apps.reflex.utils import ReflexUtil
+from felicity.apps.shipment.models import ShippedSample
+from felicity.apps.user.models import User
+from felicity.utils import has_value_or_is_truthy
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

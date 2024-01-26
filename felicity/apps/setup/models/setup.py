@@ -1,9 +1,9 @@
 from sqlalchemy import Boolean, Column, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 
-from apps import BaseAuditDBModel
-from apps.setup import schemas
-from apps.user.models import User
+from felicity.apps import BaseAuditDBModel
+from felicity.apps.setup import schemas
+from felicity.apps.user.models import User
 
 
 class Laboratory(BaseAuditDBModel):

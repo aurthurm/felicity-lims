@@ -4,7 +4,7 @@ from pathlib import Path
 import emails
 from emails.template import JinjaTemplate
 
-from core.config import get_settings
+from felicity.core.config import get_settings
 
 settings = get_settings()
 

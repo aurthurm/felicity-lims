@@ -1,7 +1,7 @@
 import logging
 from typing import TYPE_CHECKING, List, Optional, Tuple, Union
 
-from apps.setup.models.setup import Laboratory, LaboratorySetting
+from felicity.apps.setup.models.setup import Laboratory, LaboratorySetting
 from .models.analysis import Sample
 from .models.results import AnalysisResult
 

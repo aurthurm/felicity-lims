@@ -3,8 +3,8 @@ from typing import List, Optional
 from pydantic import ConfigDict
 from pydantic import EmailStr
 
-from apps.common.schemas import BaseAuditModel, BaseModel
-from apps.user.conf import themes
+from felicity.apps.common.schemas import BaseAuditModel, BaseModel
+from felicity.apps.user.conf import themes
 
 
 #

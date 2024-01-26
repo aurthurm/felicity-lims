@@ -3,19 +3,19 @@ import logging
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from apscheduler.triggers.interval import IntervalTrigger
 
-from apps.analysis.tasks import submit_results, verify_results
-from apps.analytics.tasks import generate_report
-from apps.impress.sample.tasks import impress_results, prepare_for_impress
-from apps.job import conf as job_conf
-from apps.job import models as job_models
-from apps.shipment.tasks import (
+from felicity.apps.analysis.tasks import submit_results, verify_results
+from felicity.apps.analytics.tasks import generate_report
+from felicity.apps.impress.sample.tasks import impress_results, prepare_for_impress
+from felicity.apps.job import conf as job_conf
+from felicity.apps.job import models as job_models
+from felicity.apps.shipment.tasks import (
     populate_shipment_manually,
     dispatch_shipment,
     shipment_receive,
     return_shipped_report,
     process_shipped_report,
 )
-from apps.worksheet.tasks import (
+from felicity.apps.worksheet.tasks import (
     populate_worksheet_plate,
     populate_worksheet_plate_manually,
 )

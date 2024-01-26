@@ -63,7 +63,7 @@ services:
       - POSTGRES_SERVER=felicity_db
       - SERVE_WEBAPP=True
     volumes:
-      - ./felicity:/app
+      - ./felicity:/app/felicity
     build:
       context: ./
       target: server-aio
@@ -130,7 +130,7 @@ services:
       - POSTGRES_SERVER=felicity_db
       - SERVE_WEBAPP=False
     volumes:
-      - ./felicity:/app
+      - ./felicity:/app/felicity
     build:
       context: ./
       target: server-api
@@ -143,7 +143,6 @@ services:
       - "host.docker.internal:host-gateway"
     depends_on:
       - felicity_db
-    command: bash -c "uvicorn main:felicity --host=0.0.0.0 --port=8000 --workers 5"
 
   felicity_db:
     container_name: felicity_db

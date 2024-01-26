@@ -3,8 +3,8 @@ import logging
 from sqlalchemy import Boolean, Column, ForeignKey, String, Table
 from sqlalchemy.orm import backref, relationship
 
-from apps.common.utils import is_valid_email
-from core.security import verify_password
+from felicity.apps.common.utils import is_valid_email
+from felicity.core.security import verify_password
 from . import conf
 from .abstract import AbstractAuth, AbstractBaseUser, DBModel, schemas
 

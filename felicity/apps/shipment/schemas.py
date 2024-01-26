@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 from pydantic import ConfigDict
 
-from apps.analysis.schemas import SampleBaseInDB
+from felicity.apps.analysis.schemas import SampleBaseInDB
 
 
 #

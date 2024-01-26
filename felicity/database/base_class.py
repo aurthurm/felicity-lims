@@ -11,11 +11,11 @@ from sqlalchemy.sql import func
 from sqlalchemy.sql.expression import bindparam
 from sqlalchemy_mixins import AllFeaturesMixinAsync, smart_query  # noqa
 
-from core.uid_gen import get_flake_uid
-from database.paginator.cursor import EdgeNode, PageCursor, PageInfo
-from database.session import AsyncSessionScoped
-from utils import has_value_or_is_truthy
-from core.dtz import format_datetime
+from felicity.core.uid_gen import get_flake_uid
+from felicity.database.paginator.cursor import EdgeNode, PageCursor, PageInfo
+from felicity.database.session import AsyncSessionScoped
+from felicity.utils import has_value_or_is_truthy
+from felicity.core.dtz import format_datetime
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

@@ -8,9 +8,9 @@ from barcode import Code128
 from barcode.writer import ImageWriter
 from fpdf import FPDF
 
-from core.config import get_settings
-from core.dtz import get_time_now
-from utils.helpers import get_from_nested, strtobool
+from felicity.core.config import get_settings
+from felicity.core.dtz import get_time_now
+from felicity.utils.helpers import get_from_nested, strtobool
 
 settings = get_settings()
 logging.basicConfig(level=logging.INFO)

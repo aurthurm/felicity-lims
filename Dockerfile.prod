@@ -26,11 +26,11 @@ COPY ./requirements.txt /tmp/requirements.txt
 RUN pip install --no-cache-dir --upgrade -r /tmp/requirements.txt
 
 WORKDIR /app
-COPY ./felicity /app
-RUN  rm -rf /app/templates/static/*
-COPY --from=webapp-build /app/dist /app/templates/static
+COPY ./felicity /app/felicity
+RUN  rm -rf /app/felicity/templates/static/*
+COPY --from=webapp-build /app/dist /app/felicity/templates/static
 ENV PYTHONPATH=/app
-CMD ["gunicorn", "main:felicity", "--bind", "0.0.0.0:8000", "--workers", "4", "--worker-class", "uvicorn.workers.UvicornWorker"]
+CMD ["gunicorn", "felicity.main:felicity", "--bind", "0.0.0.0:8000", "--workers", "4", "--worker-class", "uvicorn.workers.UvicornWorker"]
 
 
 FROM tiangolo/uvicorn-gunicorn:python3.10-slim as server-api
@@ -41,10 +41,10 @@ COPY ./requirements.txt /tmp/requirements.txt
 RUN pip install --no-cache-dir --upgrade -r /tmp/requirements.txt
 
 WORKDIR /app
-COPY ./felicity /app
-RUN  rm -rf /app/templates/static/*
+COPY ./felicity /app/felicity
+RUN  rm -rf /app/felicity/templates/static/*
 ENV PYTHONPATH=/app
-CMD ["gunicorn", "main:felicity", "--bind", "0.0.0.0:8000", "--workers", "4", "--worker-class", "uvicorn.workers.UvicornWorker"]
+CMD ["gunicorn", "felicity.main:felicity", "--bind", "0.0.0.0:8000", "--workers", "4", "--worker-class", "uvicorn.workers.UvicornWorker"]
 
 
 FROM nginx:latest as nginx-static

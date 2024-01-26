@@ -9,10 +9,10 @@ from pydantic import ValidationError
 from strawberry.fastapi import BaseContext
 from strawberry.types.info import Info as StrawberryInfo, RootValueType
 
-from apps.common import schemas as core_schemas  # noqa
-from apps.user import models  # noqa
-from apps.user.models import User
-from core import get_settings  # noqa
+from felicity.apps.common import schemas as core_schemas  # noqa
+from felicity.apps.user import models  # noqa
+from felicity.apps.user.models import User
+from felicity.core import get_settings  # noqa
 
 
 logging.basicConfig(level=logging.INFO)

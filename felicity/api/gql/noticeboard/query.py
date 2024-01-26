@@ -1,9 +1,9 @@
 from typing import List, Optional
 
 import strawberry  # noqa
-from api.gql.noticeboard.types import NoticeType
-from api.gql.permissions import IsAuthenticated
-from apps.noticeboard import models
+from felicity.api.gql.noticeboard.types import NoticeType
+from felicity.api.gql.permissions import IsAuthenticated
+from felicity.apps.noticeboard import models
 
 
 @strawberry.type

@@ -3,9 +3,9 @@ from typing import List
 from sqlalchemy import Boolean, Column, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 
-from apps import BaseAuditDBModel
-from apps.analysis.models.analysis import Sample
-from apps.storage import schemas
+from felicity.apps import BaseAuditDBModel
+from felicity.apps.analysis.models.analysis import Sample
+from felicity.apps.storage import schemas
 
 
 class StoreRoom(BaseAuditDBModel):

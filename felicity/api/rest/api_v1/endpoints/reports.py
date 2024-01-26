@@ -3,15 +3,15 @@ from uuid import uuid4
 
 from fastapi import APIRouter, Depends
 
-from api.deps import get_current_user
-from apps.analysis.models import analysis as ana_models
-from apps.analytics import conf, models
-from apps.analytics import schemas as an_schema
-from apps.job import conf as job_conf
-from apps.job import models as job_models
-from apps.job import schemas as job_schemas
-from apps.user.schemas import User
-from utils.dirs import deleteFile, resolve_media_dirs_for
+from felicity.api.deps import get_current_user
+from felicity.apps.analysis.models import analysis as ana_models
+from felicity.apps.analytics import conf, models
+from felicity.apps.analytics import schemas as an_schema
+from felicity.apps.job import conf as job_conf
+from felicity.apps.job import models as job_models
+from felicity.apps.job import schemas as job_schemas
+from felicity.apps.user.schemas import User
+from felicity.utils.dirs import deleteFile, resolve_media_dirs_for
 
 reports = APIRouter(tags=["reports"], prefix="/reports")
 

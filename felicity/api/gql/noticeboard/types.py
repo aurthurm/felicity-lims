@@ -2,8 +2,8 @@ from typing import List, Optional
 
 import strawberry  # noqa
 
-from api.gql.setup.types.department import DepartmentType
-from api.gql.user.types import GroupType, UserType
+from felicity.api.gql.setup.types.department import DepartmentType
+from felicity.api.gql.user.types import GroupType, UserType
 
 
 @strawberry.type

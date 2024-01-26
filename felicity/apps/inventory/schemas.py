@@ -3,10 +3,10 @@ from typing import Optional
 
 from pydantic import ConfigDict
 
-from apps.common.schemas import BaseAuditModel
-from apps.setup.schemas import Department, Supplier
-from apps.storage.schemas import StoreRoom
-from apps.user.schemas import User
+from felicity.apps.common.schemas import BaseAuditModel
+from felicity.apps.setup.schemas import Department, Supplier
+from felicity.apps.storage.schemas import StoreRoom
+from felicity.apps.user.schemas import User
 
 
 #

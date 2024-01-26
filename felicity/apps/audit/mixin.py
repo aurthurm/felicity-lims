@@ -2,7 +2,7 @@ import datetime
 import json
 import logging
 
-from apps.audit.models import AuditLog
+from felicity.apps.audit.models import AuditLog
 from sqlalchemy import event, inspect
 from sqlalchemy.orm import class_mapper
 from sqlalchemy.orm.attributes import get_history

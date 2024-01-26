@@ -3,17 +3,17 @@ from typing import List
 
 import sqlalchemy as sa
 import strawberry  # noqa
-from api.gql.types import PageInfo
-from api.gql.shipment.types import (
+from felicity.api.gql.types import PageInfo
+from felicity.api.gql.shipment.types import (
     ShipmentCursorPage,
     ShipmentEdge,
     ShipmentType,
     ReferralLaboratoryType,
 )
-from api.gql.permissions import IsAuthenticated
-from api.gql.types import BytesScalar
-from apps.shipment import models
-from utils import has_value_or_is_truthy
+from felicity.api.gql.permissions import IsAuthenticated
+from felicity.api.gql.types import BytesScalar
+from felicity.apps.shipment import models
+from felicity.utils import has_value_or_is_truthy
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

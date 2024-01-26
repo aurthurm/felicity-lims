@@ -1,5 +1,5 @@
-from apps.impress.shipment.engine import ManifetReport
-from apps.shipment.schemas import ShipmentUpdate
+from felicity.apps.impress.shipment.engine import ManifetReport
+from felicity.apps.shipment.schemas import ShipmentUpdate
 
 
 async def gen_pdf_manifest(data, shipment):

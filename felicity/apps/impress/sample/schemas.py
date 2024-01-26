@@ -4,7 +4,7 @@ from typing import Optional
 from pydantic import BaseModel
 from pydantic import ConfigDict
 
-from apps.analysis.schemas import SampleInDB
+from felicity.apps.analysis.schemas import SampleInDB
 
 
 #

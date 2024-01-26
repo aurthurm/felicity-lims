@@ -1,8 +1,8 @@
 import logging
 from typing import Optional, Tuple
 
-from api.gql.types import OperationError
-from apps.user.models import User
+from felicity.api.gql.types import OperationError
+from felicity.apps.user.models import User
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

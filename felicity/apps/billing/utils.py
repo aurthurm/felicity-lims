@@ -1,8 +1,8 @@
 from datetime import datetime
 
-from apps.analysis.models import analysis as a_models
-from apps.billing.config import DiscountType, DiscountValueType, TransactionKind
-from apps.billing.exceptions import (
+from felicity.apps.analysis.models import analysis as a_models
+from felicity.apps.billing.config import DiscountType, DiscountValueType, TransactionKind
+from felicity.apps.billing.exceptions import (
     CustomerAlreadyUsedVoucherException,
     InactiveTestBillException,
     InvalidVoucherCodeException,
@@ -10,7 +10,7 @@ from apps.billing.exceptions import (
     VoucherCodeLimitExceededException,
     VoucherLimitExceededException,
 )
-from apps.billing.models import (
+from felicity.apps.billing.models import (
     TestBill,
     ProfilePrice,
     ProfileDiscount,
@@ -22,14 +22,14 @@ from apps.billing.models import (
     VoucherCustomer,
     test_bill_item,
 )
-from apps.billing.schemas import (
+from felicity.apps.billing.schemas import (
     TestBillCreate,
     TestBillUpdate,
     TestBillTransactionCreate,
     TestBillTransactionUpdate,
 )
-from apps.impress.invoicing.utils import impress_invoice
-from apps.setup.models.setup import Laboratory, LaboratorySetting
+from felicity.apps.impress.invoicing.utils import impress_invoice
+from felicity.apps.setup.models.setup import Laboratory, LaboratorySetting
 
 
 async def bill_order(analysis_request: a_models.AnalysisRequest, auto_bill=False):

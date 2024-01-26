@@ -3,19 +3,19 @@ from typing import List, Optional
 
 import sqlalchemy as sa
 import strawberry  # noqa
-from api.gql.types import PageInfo
-from api.gql.auth import auth_from_info
-from api.deps import Info
-from api.gql.permissions import IsAuthenticated
-from api.gql.client.types import (
+from felicity.api.gql.types import PageInfo
+from felicity.api.gql.auth import auth_from_info
+from felicity.api.deps import Info
+from felicity.api.gql.permissions import IsAuthenticated
+from felicity.api.gql.client.types import (
     ClientContactType,
     ClientCursorPage,
     ClientEdge,
     ClientType,
 )
-from apps.client import models
+from felicity.apps.client import models
 
-from utils import has_value_or_is_truthy
+from felicity.utils import has_value_or_is_truthy
 
 
 logging.basicConfig(level=logging.INFO)

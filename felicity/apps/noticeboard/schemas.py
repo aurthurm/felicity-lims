@@ -3,9 +3,9 @@ from typing import List, Optional
 
 from pydantic import ConfigDict
 
-from apps.common.schemas import BaseAuditModel
-from apps.setup.schemas import Department
-from apps.user.schemas import Group, User
+from felicity.apps.common.schemas import BaseAuditModel
+from felicity.apps.setup.schemas import Department
+from felicity.apps.user.schemas import Group, User
 
 
 #

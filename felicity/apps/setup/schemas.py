@@ -3,7 +3,7 @@ from typing import Optional
 from pydantic import BaseModel, EmailStr
 from pydantic import ConfigDict
 
-from apps.common.schemas import BaseAuditModel
+from felicity.apps.common.schemas import BaseAuditModel
 
 
 #

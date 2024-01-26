@@ -6,14 +6,14 @@ from typing import List
 import strawberry  # noqa
 from PyPDF2 import PdfWriter
 
-from api.gql.impress.types import ReportImpressType
-from api.gql.permissions import IsAuthenticated
-from api.gql.types import BytesScalar
-from apps.client import Client
-from apps.impress.barcode.schema import BarCode, BarCodeMeta
-from apps.impress.barcode.utils import impress_barcodes
-from apps.impress.sample.models import ReportImpress
-from apps.storage.models import Sample
+from felicity.api.gql.impress.types import ReportImpressType
+from felicity.api.gql.permissions import IsAuthenticated
+from felicity.api.gql.types import BytesScalar
+from felicity.apps.client import Client
+from felicity.apps.impress.barcode.schema import BarCode, BarCodeMeta
+from felicity.apps.impress.barcode.utils import impress_barcodes
+from felicity.apps.impress.sample.models import ReportImpress
+from felicity.apps.storage.models import Sample
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

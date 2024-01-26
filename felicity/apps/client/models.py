@@ -1,12 +1,12 @@
 from sqlalchemy import Boolean, Column, ForeignKey, String
 from sqlalchemy.orm import backref, relationship
 
-from apps import Auditable
-from apps.client import schemas
-from apps.setup.models import District, Province
-from apps.user import conf
-from apps.user.abstract import AbstractBaseUser
-from apps.user.models import UserAuth
+from felicity.apps import Auditable
+from felicity.apps.client import schemas
+from felicity.apps.setup.models import District, Province
+from felicity.apps.user import conf
+from felicity.apps.user.abstract import AbstractBaseUser
+from felicity.apps.user.models import UserAuth
 
 
 class Client(Auditable):

@@ -3,19 +3,19 @@ import logging
 from typing import List, Optional
 
 import strawberry  # noqa
-from api.gql.types import OperationError
-from api.gql.auth import auth_from_info, verify_user_auth
-from api.gql.permissions import IsAuthenticated
-from api.gql.analysis.types import analysis as a_types
-from apps.analysis import schemas
-from apps.analysis.conf import states
-from apps.analysis.models import analysis as analysis_models
-from apps.analysis.models import qc as qc_models
-from apps.analysis.models import results as result_models
-from apps.analysis.utils import get_qc_sample_type
-from apps.setup.models import setup as setup_models
+from felicity.api.gql.types import OperationError
+from felicity.api.gql.auth import auth_from_info, verify_user_auth
+from felicity.api.gql.permissions import IsAuthenticated
+from felicity.api.gql.analysis.types import analysis as a_types
+from felicity.apps.analysis import schemas
+from felicity.apps.analysis.conf import states
+from felicity.apps.analysis.models import analysis as analysis_models
+from felicity.apps.analysis.models import qc as qc_models
+from felicity.apps.analysis.models import results as result_models
+from felicity.apps.analysis.utils import get_qc_sample_type
+from felicity.apps.setup.models import setup as setup_models
 
-from utils import get_passed_args
+from felicity.utils import get_passed_args
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

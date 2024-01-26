@@ -5,16 +5,16 @@ from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, String, T
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import relationship
 
-from apps import Auditable, BaseAuditDBModel, DBModel
-from apps.analysis import conf as analysis_conf
-from apps.analysis.models import analysis as analysis_models
-from apps.analysis.models import qc as qc_models
-from apps.analysis.models import results as result_models
-from apps.common.models import IdSequence
-from apps.instrument.models import Instrument
-from apps.notification.utils import FelicityStreamer
-from apps.user.models import User
-from apps.worksheet import conf, schemas
+from felicity.apps import Auditable, BaseAuditDBModel, DBModel
+from felicity.apps.analysis import conf as analysis_conf
+from felicity.apps.analysis.models import analysis as analysis_models
+from felicity.apps.analysis.models import qc as qc_models
+from felicity.apps.analysis.models import results as result_models
+from felicity.apps.common.models import IdSequence
+from felicity.apps.instrument.models import Instrument
+from felicity.apps.notification.utils import FelicityStreamer
+from felicity.apps.user.models import User
+from felicity.apps.worksheet import conf, schemas
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

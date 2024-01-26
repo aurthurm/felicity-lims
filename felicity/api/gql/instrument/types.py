@@ -4,10 +4,10 @@ from typing import List, Optional
 
 import strawberry  # noqa
 
-from api.gql.setup.types import ManufacturerType, SupplierType
-from api.gql.types import PageInfo
-from api.gql.user.types import UserType
-from apps.instrument.models import Method
+from felicity.api.gql.setup.types import ManufacturerType, SupplierType
+from felicity.api.gql.types import PageInfo
+from felicity.api.gql.user.types import UserType
+from felicity.apps.instrument.models import Method
 
 
 @strawberry.type

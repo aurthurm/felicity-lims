@@ -2,7 +2,7 @@ import logging
 
 import pytest
 
-from apps.analysis.tasks import submit_results, verify_results
+from felicity.apps.analysis.tasks import submit_results, verify_results
 from tests.integration.utils.user import make_username, make_password
 
 logging.basicConfig(level=logging.INFO)

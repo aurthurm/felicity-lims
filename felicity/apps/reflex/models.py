@@ -3,8 +3,8 @@ import logging
 from sqlalchemy import Column, ForeignKey, Integer, String, Table
 from sqlalchemy.orm import relationship
 
-from apps import Auditable, DBModel
-from apps.reflex import schemas
+from felicity.apps import Auditable, DBModel
+from felicity.apps.reflex import schemas
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

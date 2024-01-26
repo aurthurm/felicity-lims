@@ -3,8 +3,8 @@ import typing
 
 from strawberry.permission import BasePermission
 
-from api.deps import Info
-from apps.analysis.permissions import (
+from felicity.api.deps import Info
+from felicity.apps.analysis.permissions import (
     check_result_verification,
     check_sample_verification,
 )

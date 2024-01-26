@@ -4,8 +4,8 @@ from datetime import datetime
 import strawberry  # noqa
 from strawberry.types import Info  # noqa
 
-from api.gql.auth import auth_from_info, verify_user_auth
-from api.gql.billing.types import (
+from felicity.api.gql.auth import auth_from_info, verify_user_auth
+from felicity.api.gql.billing.types import (
     ProfilePriceType,
     ProfileDiscountType,
     AnalysisPriceType,
@@ -15,11 +15,11 @@ from api.gql.billing.types import (
     TestBillTransactionType,
     TestBillType,
 )
-from api.gql.permissions import IsAuthenticated
-from api.gql.types import OperationError
-from apps.billing import models, schemas, utils
-from apps.billing.config import TransactionKind, DiscountType
-from apps.billing.schemas import TestBillTransactionUpdate, TestBillUpdate
+from felicity.api.gql.permissions import IsAuthenticated
+from felicity.api.gql.types import OperationError
+from felicity.apps.billing import models, schemas, utils
+from felicity.apps.billing.config import TransactionKind, DiscountType
+from felicity.apps.billing.schemas import TestBillTransactionUpdate, TestBillUpdate
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

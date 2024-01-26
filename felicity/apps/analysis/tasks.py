@@ -1,10 +1,10 @@
 import logging
 
-from apps.analysis import utils
-from apps.job import models as job_models
-from apps.job.conf import states as job_states
-from apps.notification.utils import ReportNotifier
-from apps.user import models as user_models
+from felicity.apps.analysis import utils
+from felicity.apps.job import models as job_models
+from felicity.apps.job.conf import states as job_states
+from felicity.apps.notification.utils import ReportNotifier
+from felicity.apps.user import models as user_models
 
 
 report_notifier = ReportNotifier()

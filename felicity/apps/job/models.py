@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 from sqlalchemy import Column, Integer, String, DateTime
 from sqlalchemy.dialects.postgresql import JSONB
 
-from database.base_class import DBModel
+from felicity.database.base_class import DBModel
 from . import conf, schemas
 
 

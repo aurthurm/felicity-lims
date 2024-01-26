@@ -2,7 +2,7 @@ import logging
 
 import pytest
 
-from core.config import settings
+from felicity.core.config import settings
 from tests.integration.utils.user import (
     add_auth_mutation,
     add_user_mutation,

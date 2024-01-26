@@ -4,7 +4,7 @@ import random
 import pytest
 from faker import Faker
 
-from apps.patient.conf import genders
+from felicity.apps.patient.conf import genders
 
 fake_engine = Faker()
 

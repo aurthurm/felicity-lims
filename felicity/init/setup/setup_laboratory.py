@@ -2,10 +2,10 @@ import json
 import logging
 from typing import Optional
 
-from apps.client import models as client_models
-from apps.client import schemas as client_schemas
-from apps.setup import models, schemas
-from core.config import get_settings
+from felicity.apps.client import models as client_models
+from felicity.apps.client import schemas as client_schemas
+from felicity.apps.setup import models, schemas
+from felicity.core.config import get_settings
 
 settings = get_settings()
 logging.basicConfig(level=logging.INFO)

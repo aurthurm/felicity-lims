@@ -2,20 +2,20 @@ import logging
 
 from fastapi import Request
 
-from apps.iol.fhir.schema import (
+from felicity.apps.iol.fhir.schema import (
     DiagnosticReportResource,
     PatientResource,
     BundleResource,
     ServiceRequestResource,
     Reference,
 )
-from apps.job import conf as job_conf
-from apps.job.models import Job
-from apps.job.schemas import JobCreate
-from apps.shipment.conf import shipment_states
-from apps.shipment.models import Shipment, ReferralLaboratory
-from apps.shipment.schemas import ShipmentCreate
-from apps.user.models import User
+from felicity.apps.job import conf as job_conf
+from felicity.apps.job.models import Job
+from felicity.apps.job.schemas import JobCreate
+from felicity.apps.shipment.conf import shipment_states
+from felicity.apps.shipment.models import Shipment, ReferralLaboratory
+from felicity.apps.shipment.schemas import ShipmentCreate
+from felicity.apps.user.models import User
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -72,7 +72,7 @@ async def create_inbound_shipment(
     shipment = await Shipment.create(s_in)
 
     try:
-        from apps.impress.shipment.utils import gen_pdf_manifest
+        from felicity.apps.impress.shipment.utils import gen_pdf_manifest
 
         await gen_pdf_manifest(payload.extension[3].data.get("data", None), shipment)
     except Exception:

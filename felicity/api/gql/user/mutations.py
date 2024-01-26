@@ -3,26 +3,26 @@ import time
 
 import strawberry  # noqa
 
-from api.gql.auth import (
+from felicity.api.gql.auth import (
     auth_from_info,
     verify_user_auth,
 )
-from api.gql.permissions import IsAuthenticated
-from api.gql.types import MessageResponse, MessagesType, OperationError
-from api.gql.types.generic import StrawberryMapper
-from api.gql.user.types import (
+from felicity.api.gql.permissions import IsAuthenticated
+from felicity.api.gql.types import MessageResponse, MessagesType, OperationError
+from felicity.api.gql.types.generic import StrawberryMapper
+from felicity.api.gql.user.types import (
     AuthenticatedData,
     GroupType,
     UpdatedGroupPerms,
     UserAuthType,
     UserType,
 )
-from apps.user import models as user_models
-from apps.user import schemas as user_schemas
-from core import security
-from core.config import get_settings
-from core.events import post_event
-from core.security import generate_password_reset_token, verify_password_reset_token
+from felicity.apps.user import models as user_models
+from felicity.apps.user import schemas as user_schemas
+from felicity.core import security
+from felicity.core.config import get_settings
+from felicity.core.events import post_event
+from felicity.core.security import generate_password_reset_token, verify_password_reset_token
 
 settings = get_settings()
 

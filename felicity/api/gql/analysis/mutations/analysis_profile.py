@@ -3,13 +3,13 @@ from dataclasses import field
 from typing import List, Optional
 
 import strawberry  # noqa
-from api.gql.types import OperationError
-from api.gql.auth import auth_from_info, verify_user_auth
-from api.gql.permissions import IsAuthenticated
-from api.gql.analysis.types import analysis as a_types
-from apps.analysis import schemas
-from apps.analysis import utils
-from apps.analysis.models import analysis as analysis_models
+from felicity.api.gql.types import OperationError
+from felicity.api.gql.auth import auth_from_info, verify_user_auth
+from felicity.api.gql.permissions import IsAuthenticated
+from felicity.api.gql.analysis.types import analysis as a_types
+from felicity.apps.analysis import schemas
+from felicity.apps.analysis import utils
+from felicity.apps.analysis.models import analysis as analysis_models
 
 
 logging.basicConfig(level=logging.INFO)

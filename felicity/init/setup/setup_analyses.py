@@ -3,8 +3,8 @@ import logging
 from datetime import datetime
 from typing import Optional
 
-from apps.analysis import utils
-from apps.analysis.models.analysis import (
+from felicity.apps.analysis import utils
+from felicity.apps.analysis.models.analysis import (
     CodingStandard,
     Analysis,
     AnalysisCategory,
@@ -12,8 +12,8 @@ from apps.analysis.models.analysis import (
     RejectionReason,
     SampleType,
 )
-from apps.analysis.models.qc import QCLevel
-from apps.analysis.schemas import (
+from felicity.apps.analysis.models.qc import QCLevel
+from felicity.apps.analysis.schemas import (
     AnalysisCategoryCreate,
     AnalysisCreate,
     ProfileCreate,
@@ -21,9 +21,9 @@ from apps.analysis.schemas import (
     RejectionReasonCreate,
     SampleTypeCreate,
 )
-from apps.common.models import IdSequence
-from core.config import get_settings
-from database.session import async_session_factory
+from felicity.apps.common.models import IdSequence
+from felicity.core.config import get_settings
+from felicity.database.session import async_session_factory
 
 settings = get_settings()
 logging.basicConfig(level=logging.INFO)

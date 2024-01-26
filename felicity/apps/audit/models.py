@@ -3,7 +3,7 @@ import logging
 
 from sqlalchemy import Column, Integer, String, UnicodeText
 
-from database.base_class import DBModel
+from felicity.database.base_class import DBModel
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

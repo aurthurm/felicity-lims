@@ -1,8 +1,8 @@
 import logging
 
-from init.setup.create_superuser import create_daemon_user, create_super_user
-from init.setup.groups_perms import setup_default_permissions
-from init.setup.setup_analyses import (
+from felicity.init.setup.create_superuser import create_daemon_user, create_super_user
+from felicity.init.setup.groups_perms import setup_default_permissions
+from felicity.init.setup.setup_analyses import (
     create_analyses_services_and_profiles,
     create_categories,
     create_qc_levels,
@@ -11,7 +11,7 @@ from init.setup.setup_analyses import (
     init_id_sequence,
     init_coding_standards,
 )
-from init.setup.setup_laboratory import (
+from felicity.init.setup.setup_laboratory import (
     create_clients,
     create_geographies,
     create_laboratory,

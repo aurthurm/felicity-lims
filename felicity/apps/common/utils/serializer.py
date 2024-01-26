@@ -1,5 +1,5 @@
 from datetime import datetime
-from core.dtz import format_datetime
+from felicity.core.dtz import format_datetime
 
 
 def marshaller(obj, path=None, memoize=None, exclude: list[str] = None) -> dict | str:

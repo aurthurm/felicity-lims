@@ -1,4 +1,4 @@
-from core.celery_app import celery_app
+from felicity.core.celery_app import celery_app
 
 # from raven import Client
 

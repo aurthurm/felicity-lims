@@ -4,12 +4,12 @@ from typing import List
 
 import strawberry  # noqa
 
-from api.gql.auth import auth_from_info, verify_user_auth
-from api.gql.inventory import types
-from api.gql.permissions import IsAuthenticated
-from api.gql.types import OperationError
-from apps.inventory import models, schemas
-from apps.inventory.conf import order_states
+from felicity.api.gql.auth import auth_from_info, verify_user_auth
+from felicity.api.gql.inventory import types
+from felicity.api.gql.permissions import IsAuthenticated
+from felicity.api.gql.types import OperationError
+from felicity.apps.inventory import models, schemas
+from felicity.apps.inventory.conf import order_states
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

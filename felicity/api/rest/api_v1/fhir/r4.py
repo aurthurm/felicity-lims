@@ -3,20 +3,20 @@ from typing import Annotated
 
 from fastapi import APIRouter, HTTPException, Depends, Request
 
-from api.deps import get_current_user
-from apps.iol.fhir.schema import (
+from felicity.api.deps import get_current_user
+from felicity.apps.iol.fhir.schema import (
     BundleResource,
     DiagnosticReportResource,
     PatientResource,
     ServiceRequestResource,
 )
-from apps.iol.fhir.utils import (
+from felicity.apps.iol.fhir.utils import (
     get_diagnostic_report_resource,
     get_patient_resource,
     create_resource,
 )
-from apps.user import models as user_models
-from apps.user.schemas import User
+from felicity.apps.user import models as user_models
+from felicity.apps.user.schemas import User
 
 fhir_v4 = APIRouter(tags=["fhir-v4"], prefix="/fhir")
 

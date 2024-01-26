@@ -1,7 +1,7 @@
 from sqlalchemy import Column, DateTime, ForeignKey, String, Table
 from sqlalchemy.orm import relationship
 
-from apps import BaseAuditDBModel
+from felicity.apps import BaseAuditDBModel
 from . import conf, schemas
 
 """

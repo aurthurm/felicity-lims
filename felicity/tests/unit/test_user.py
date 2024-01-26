@@ -2,8 +2,8 @@ from unittest.mock import AsyncMock
 
 import pytest
 
-from apps.user.models import User
-from apps.user.schemas import UserCreate
+from felicity.apps.user.models import User
+from felicity.apps.user.schemas import UserCreate
 
 
 # @pytest.fixture

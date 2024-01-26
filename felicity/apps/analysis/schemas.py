@@ -3,8 +3,8 @@ from typing import List, Optional
 
 from pydantic import ConfigDict
 
-from apps.common.schemas import BaseAuditModel, BaseModel
-from apps.setup.schemas import Department, Unit
+from felicity.apps.common.schemas import BaseAuditModel, BaseModel
+from felicity.apps.setup.schemas import Department, Unit
 
 
 #

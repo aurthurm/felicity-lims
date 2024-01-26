@@ -4,10 +4,10 @@ from typing import Any, Optional, Annotated
 from fastapi import APIRouter, Depends
 from pydantic import BaseModel
 
-from api.deps import get_current_user
-from apps.setup import models, schemas
-from apps.user.schemas import User
-from init import default_setup, requisite_setup
+from felicity.api.deps import get_current_user
+from felicity.apps.setup import models, schemas
+from felicity.apps.user.schemas import User
+from felicity.init import default_setup, requisite_setup
 
 setup = APIRouter(tags=["setup"], prefix="/setup")
 

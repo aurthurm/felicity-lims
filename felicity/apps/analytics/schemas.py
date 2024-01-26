@@ -3,9 +3,9 @@ from datetime import datetime
 from pydantic import BaseModel
 from pydantic import ConfigDict
 
-from apps.analysis.schemas import AnalysisBasic
-from apps.analytics import conf
-from apps.user.schemas import UserBasic
+from felicity.apps.analysis.schemas import AnalysisBasic
+from felicity.apps.analytics import conf
+from felicity.apps.user.schemas import UserBasic
 
 
 class ReportMetaBase(BaseModel):

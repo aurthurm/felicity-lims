@@ -2,19 +2,19 @@ from typing import List, Optional
 
 import sqlalchemy as sa
 import strawberry  # noqa
-from api.gql.types import PageInfo
-from api import deps
-from api.gql.permissions import IsAuthenticated
-from api.gql.user.types import (
+from felicity.api.gql.types import PageInfo
+from felicity.api import deps
+from felicity.api.gql.permissions import IsAuthenticated
+from felicity.api.gql.user.types import (
     GroupType,
     PermissionType,
     UserCursorPage,
     UserEdge,
     UserType,
 )
-from apps.user import models as user_models
+from felicity.apps.user import models as user_models
 
-from utils import has_value_or_is_truthy
+from felicity.utils import has_value_or_is_truthy
 
 
 @strawberry.type

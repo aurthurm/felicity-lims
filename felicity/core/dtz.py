@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 
 from dateutil import parser
 
-from core.config import get_settings
+from felicity.core.config import get_settings
 
 
 settings = get_settings()

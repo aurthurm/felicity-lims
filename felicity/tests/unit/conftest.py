@@ -4,8 +4,8 @@ import pytest_asyncio
 from faker import Faker
 from sqlalchemy.ext.asyncio import create_async_engine
 
-from core.config import settings
-from database.base_class import DBModel
+from felicity.core.config import settings
+from felicity.database.base_class import DBModel
 
 fake_engine = Faker()
 

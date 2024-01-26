@@ -1,12 +1,12 @@
 import logging
 
 import strawberry  # noqa
-from api.gql.analytics import types
-from apps.analysis.models.analysis import Sample
-from apps.analytics import SampleAnalyticsInit
-from apps.instrument.models import Instrument
-from apps.user.models import User
-from utils import has_value_or_is_truthy
+from felicity.api.gql.analytics import types
+from felicity.apps.analysis.models.analysis import Sample
+from felicity.apps.analytics import SampleAnalyticsInit
+from felicity.apps.instrument.models import Instrument
+from felicity.apps.user.models import User
+from felicity.utils import has_value_or_is_truthy
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

@@ -1,9 +1,9 @@
 from sqlalchemy import Boolean, Column, DateTime, ForeignKey, String, Table
 from sqlalchemy.orm import relationship
 
-from apps import BaseAuditDBModel, DBModel
-from apps.common.models import IdSequence
-from apps.instrument import schemas
+from felicity.apps import BaseAuditDBModel, DBModel
+from felicity.apps.common.models import IdSequence
+from felicity.apps.instrument import schemas
 
 """
  Many to Many Link between Method and Instruments

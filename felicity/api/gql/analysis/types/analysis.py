@@ -3,14 +3,14 @@ from typing import List, Optional
 
 import strawberry  # noqa
 
-from api.gql.client.types import ClientType
-from api.gql.instrument.types import InstrumentType, MethodType
-from api.gql.patient.types import PatientType
-from api.gql.setup.types import UnitType
-from api.gql.setup.types.department import DepartmentType
-from api.gql.storage.types import StorageContainerType
-from api.gql.types.generic import PageInfo
-from api.gql.user.types import UserType
+from felicity.api.gql.client.types import ClientType
+from felicity.api.gql.instrument.types import InstrumentType, MethodType
+from felicity.api.gql.patient.types import PatientType
+from felicity.api.gql.setup.types import UnitType
+from felicity.api.gql.setup.types.department import DepartmentType
+from felicity.api.gql.storage.types import StorageContainerType
+from felicity.api.gql.types.generic import PageInfo
+from felicity.api.gql.user.types import UserType
 
 
 @strawberry.type

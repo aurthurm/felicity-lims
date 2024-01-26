@@ -3,18 +3,18 @@ from typing import List, Optional
 
 import strawberry  # noqa
 
-from api.gql.analysis.types.analysis import (
+from felicity.api.gql.analysis.types.analysis import (
     AnalysisRequestType,
     AnalysisType,
     ProfileType,
 )
-from api.gql.client.types import ClientType
-from api.gql.patient.types import PatientType
-from api.gql.types import BytesScalar, JSONScalar
-from api.gql.types import PageInfo
-from api.gql.user.types import UserType
-from apps.analysis.models.analysis import AnalysisRequest
-from apps.billing.models import TestBill, test_bill_item, VoucherCode
+from felicity.api.gql.client.types import ClientType
+from felicity.api.gql.patient.types import PatientType
+from felicity.api.gql.types import BytesScalar, JSONScalar
+from felicity.api.gql.types import PageInfo
+from felicity.api.gql.user.types import UserType
+from felicity.apps.analysis.models.analysis import AnalysisRequest
+from felicity.apps.billing.models import TestBill, test_bill_item, VoucherCode
 
 
 @strawberry.type

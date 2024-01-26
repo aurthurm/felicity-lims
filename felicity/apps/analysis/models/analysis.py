@@ -14,17 +14,17 @@ from sqlalchemy import (
 )
 from sqlalchemy.orm import relationship
 
-from apps import Auditable, BaseAuditDBModel, DBModel
-from apps.analysis import schemas
-from apps.analysis.conf import states
-from apps.analysis.models.qc import QCLevel, QCSet
-from apps.client import models as ct_models
-from apps.common import BaseMPTT
-from apps.common.models import IdSequence
-from apps.common.utils import sequencer
-from apps.notification.utils import FelicityStreamer
-from apps.patient import models as pt_models
-from apps.user.models import User
+from felicity.apps import Auditable, BaseAuditDBModel, DBModel
+from felicity.apps.analysis import schemas
+from felicity.apps.analysis.conf import states
+from felicity.apps.analysis.models.qc import QCLevel, QCSet
+from felicity.apps.client import models as ct_models
+from felicity.apps.common import BaseMPTT
+from felicity.apps.common.models import IdSequence
+from felicity.apps.common.utils import sequencer
+from felicity.apps.notification.utils import FelicityStreamer
+from felicity.apps.patient import models as pt_models
+from felicity.apps.user.models import User
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -746,7 +746,7 @@ class Sample(Auditable, BaseMPTT):
                 return f"{prefix}_R{sequencer(count + 1, 2)}"
 
     async def get_analysis_results(self):
-        from apps.analysis.models.results import AnalysisResult
+        from felicity.apps.analysis.models.results import AnalysisResult
 
         return await AnalysisResult.get_all(sample_uid=self.uid)
 

@@ -1,6 +1,6 @@
 from functools import lru_cache
 
-from apps.setup.models.setup import Laboratory, LaboratorySetting
+from felicity.apps.setup.models.setup import Laboratory, LaboratorySetting
 
 
 @lru_cache

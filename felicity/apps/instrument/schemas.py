@@ -4,8 +4,8 @@ from typing import List, Optional
 from pydantic import BaseModel
 from pydantic import ConfigDict
 
-from apps.common.schemas import BaseAuditModel
-from apps.setup.schemas import ManufacturerInDB, SupplierInDB
+from felicity.apps.common.schemas import BaseAuditModel
+from felicity.apps.setup.schemas import ManufacturerInDB, SupplierInDB
 
 
 #

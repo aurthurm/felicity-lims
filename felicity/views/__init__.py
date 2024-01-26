@@ -3,7 +3,7 @@ from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
-from core import get_settings
+from felicity.core import get_settings
 
 settings = get_settings()
 STATIC_DIR = f"{settings.BASE_DIR}/templates/static/"

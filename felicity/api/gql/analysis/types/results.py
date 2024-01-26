@@ -3,11 +3,11 @@ from typing import Optional
 
 import strawberry  # noqa
 
-from api.gql.analysis.types.analysis import AnalysisType, QCSetType, SampleType
-from api.gql.instrument.types import InstrumentType, MethodType
-from api.gql.types import PageInfo
-from api.gql.user.types import UserType
-from apps.worksheet import models as ws_models
+from felicity.api.gql.analysis.types.analysis import AnalysisType, QCSetType, SampleType
+from felicity.api.gql.instrument.types import InstrumentType, MethodType
+from felicity.api.gql.types import PageInfo
+from felicity.api.gql.user.types import UserType
+from felicity.apps.worksheet import models as ws_models
 
 
 @strawberry.type

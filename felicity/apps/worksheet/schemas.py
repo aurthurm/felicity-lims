@@ -3,7 +3,7 @@ from typing import List, Optional
 from pydantic import BaseModel
 from pydantic import ConfigDict
 
-from apps.analysis.schemas import AnalysisBaseInDB, QCLevelInDB
+from felicity.apps.analysis.schemas import AnalysisBaseInDB, QCLevelInDB
 
 
 #

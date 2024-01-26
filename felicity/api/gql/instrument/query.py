@@ -2,9 +2,9 @@ from typing import List
 
 import sqlalchemy as sa
 import strawberry  # noqa
-from api.gql.types import PageInfo
-from api.gql.permissions import IsAuthenticated
-from api.gql.instrument.types import (
+from felicity.api.gql.types import PageInfo
+from felicity.api.gql.permissions import IsAuthenticated
+from felicity.api.gql.instrument.types import (
     InstrumentCursorPage,
     InstrumentEdge,
     InstrumentType,
@@ -15,9 +15,9 @@ from api.gql.instrument.types import (
     MethodEdge,
     MethodType,
 )
-from apps.instrument import models
+from felicity.apps.instrument import models
 
-from utils import has_value_or_is_truthy
+from felicity.utils import has_value_or_is_truthy
 
 
 async def get_all_instrument_types(

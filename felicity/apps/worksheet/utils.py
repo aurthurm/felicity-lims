@@ -1,6 +1,6 @@
 import copy
 
-from apps.worksheet import models
+from felicity.apps.worksheet import models
 from .conf import worksheet_types
 
 

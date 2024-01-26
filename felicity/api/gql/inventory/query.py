@@ -2,12 +2,12 @@ from typing import List, Optional
 
 import sqlalchemy as sa
 import strawberry  # noqa
-from api.gql.types import PageInfo
-from api.gql.inventory import types
-from api.gql.permissions import IsAuthenticated
-from apps.inventory import models
+from felicity.api.gql.types import PageInfo
+from felicity.api.gql.inventory import types
+from felicity.api.gql.permissions import IsAuthenticated
+from felicity.apps.inventory import models
 
-from utils import has_value_or_is_truthy
+from felicity.utils import has_value_or_is_truthy
 
 
 @strawberry.type

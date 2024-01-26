@@ -4,9 +4,9 @@ from sqlalchemy import Column, DateTime, ForeignKey, String
 from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.orm import relationship
 
-from apps.audit.mixin import AuditableMixin
-from apps.common.hooks import EventHookMixin
-from database.base_class import DBModel
+from felicity.apps.audit.mixin import AuditableMixin
+from felicity.apps.common.hooks import EventHookMixin
+from felicity.database.base_class import DBModel
 
 
 class TrailMixin(object):

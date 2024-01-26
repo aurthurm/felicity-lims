@@ -6,7 +6,7 @@ from barcode import Code128
 from barcode.writer import ImageWriter
 from fpdf import FPDF
 
-from apps.impress.barcode.schema import BarCode
+from felicity.apps.impress.barcode.schema import BarCode
 
 
 class FelicityBarCoder:

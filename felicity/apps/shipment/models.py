@@ -12,11 +12,11 @@ from sqlalchemy import (
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import relationship
 
-from apps import Auditable, DBModel
-from apps.common.models import IdSequence
-from apps.notification.utils import FelicityStreamer
-from apps.shipment import conf, schemas
-from apps.user.models import User
+from felicity.apps import Auditable, DBModel
+from felicity.apps.common.models import IdSequence
+from felicity.apps.notification.utils import FelicityStreamer
+from felicity.apps.shipment import conf, schemas
+from felicity.apps.user.models import User
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

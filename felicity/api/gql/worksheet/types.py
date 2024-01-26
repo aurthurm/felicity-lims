@@ -3,17 +3,17 @@ from typing import List, Optional
 
 import strawberry  # noqa
 
-from api.gql.analysis.types.analysis import (
+from felicity.api.gql.analysis.types.analysis import (
     AnalysisType,
     QCLevelType,
     QCTemplateType,
     SampleTypeTyp,
 )
-from api.gql.analysis.types.results import AnalysisResultType
-from api.gql.instrument.types import InstrumentType
-from api.gql.types import JSONScalar
-from api.gql.types import PageInfo
-from api.gql.user.types import UserType
+from felicity.api.gql.analysis.types.results import AnalysisResultType
+from felicity.api.gql.instrument.types import InstrumentType
+from felicity.api.gql.types import JSONScalar
+from felicity.api.gql.types import PageInfo
+from felicity.api.gql.user.types import UserType
 
 
 @strawberry.type

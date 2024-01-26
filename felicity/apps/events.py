@@ -1,4 +1,4 @@
-from apps.user.events import init_user_events
+from felicity.apps.user.events import init_user_events
 
 
 def observe_events():

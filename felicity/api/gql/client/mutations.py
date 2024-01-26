@@ -3,11 +3,11 @@ import logging
 import strawberry  # noqa
 from strawberry.types import Info  # noqa
 
-from api.gql.auth import auth_from_info, verify_user_auth
-from api.gql.client.types import ClientContactType, ClientType
-from api.gql.permissions import IsAuthenticated
-from api.gql.types import OperationError, DeletedItem
-from apps.client import models, schemas
+from felicity.api.gql.auth import auth_from_info, verify_user_auth
+from felicity.api.gql.client.types import ClientContactType, ClientType
+from felicity.api.gql.permissions import IsAuthenticated
+from felicity.api.gql.types import OperationError, DeletedItem
+from felicity.apps.client import models, schemas
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

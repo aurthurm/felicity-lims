@@ -2,9 +2,9 @@ from datetime import datetime
 from typing import Optional
 
 import strawberry  # noqa
-from api.gql.analysis.types.analysis import SampleType
-from api.gql.types import BytesScalar, JSONScalar
-from api.gql.user.types import UserType
+from felicity.api.gql.analysis.types.analysis import SampleType
+from felicity.api.gql.types import BytesScalar, JSONScalar
+from felicity.api.gql.user.types import UserType
 
 
 @strawberry.type

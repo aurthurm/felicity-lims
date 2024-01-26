@@ -4,7 +4,7 @@
 #
 # import pandas as pd
 # import pytest
-# from apps.analytics.tasks import generate_report
+# from felicity.apps.analytics.tasks import generate_report
 #
 # logging.basicConfig(level=logging.INFO)
 # logger = logging.getLogger(__name__)

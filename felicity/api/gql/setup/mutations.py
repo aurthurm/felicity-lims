@@ -2,9 +2,9 @@ import logging
 
 import strawberry  # noqa
 
-from api.gql.auth import auth_from_info
-from api.gql.permissions import IsAuthenticated
-from api.gql.setup.types import (
+from felicity.api.gql.auth import auth_from_info
+from felicity.api.gql.permissions import IsAuthenticated
+from felicity.api.gql.setup.types import (
     CountryType,
     DistrictType,
     LaboratorySettingType,
@@ -14,9 +14,9 @@ from api.gql.setup.types import (
     SupplierType,
     UnitType,
 )
-from api.gql.setup.types.department import DepartmentType
-from api.gql.types import OperationError
-from apps.setup import models, schemas
+from felicity.api.gql.setup.types.department import DepartmentType
+from felicity.api.gql.types import OperationError
+from felicity.apps.setup import models, schemas
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

@@ -1,5 +1,5 @@
-from apps.analysis.models.analysis import AnalysisRequest
-from apps.billing.models import (
+from felicity.apps.analysis.models.analysis import AnalysisRequest
+from felicity.apps.billing.models import (
     TestBill,
     test_bill_item,
     TestBillTransaction,
@@ -7,9 +7,9 @@ from apps.billing.models import (
     AnalysisPrice,
     TestBillInvoice,
 )
-from apps.billing.schemas import TestBillInvoiceCreate
-from apps.impress.invoicing.engine import FelicityInvoice
-from apps.setup.caches import get_laboratory_setting
+from felicity.apps.billing.schemas import TestBillInvoiceCreate
+from felicity.apps.impress.invoicing.engine import FelicityInvoice
+from felicity.apps.setup.caches import get_laboratory_setting
 
 invoicer = FelicityInvoice()
 

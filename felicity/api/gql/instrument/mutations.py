@@ -5,17 +5,17 @@ from typing import List, Optional
 
 import strawberry  # noqa
 
-from api.gql.instrument.types import (
+from felicity.api.gql.instrument.types import (
     CalibrationCertificateType,
     InstrumentCalibrationType,
     InstrumentType,
     InstrumentTypeType,
     MethodType,
 )
-from api.gql.permissions import IsAuthenticated
-from api.gql.types import OperationError
-from apps.analysis.models import analysis as analysis_models
-from apps.instrument import models, schemas
+from felicity.api.gql.permissions import IsAuthenticated
+from felicity.api.gql.types import OperationError
+from felicity.apps.analysis.models import analysis as analysis_models
+from felicity.apps.instrument import models, schemas
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
