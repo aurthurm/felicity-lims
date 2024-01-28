@@ -128,12 +128,12 @@ class WorkSheet(Auditable, WSBase):
         if count > 0 and self.state == conf.worksheet_states.EMPTY:
             self.state = conf.worksheet_states.PENDING
 
-        await self.save()
+        await self.save_async()
 
     async def change_state(self, state, updated_by_uid):
         self.state = state
         self.updated_by_uid = updated_by_uid  # noqa
-        await self.save()
+        await self.save_async()
 
     async def has_processed_samples(self):
         states = [
@@ -159,7 +159,7 @@ class WorkSheet(Auditable, WSBase):
                 self.state = conf.worksheet_states.AWAITING
                 self.updated_by_uid = submitter.uid  # noqa
                 self.submitted_by_uid = submitter.uid
-                saved = await self.save()
+                saved = await self.save_async()
                 await streamer.stream(saved, submitter, "submitted", "worksheet")
                 return saved
         return self
@@ -177,7 +177,7 @@ class WorkSheet(Auditable, WSBase):
                 self.state = conf.worksheet_states.APPROVED
                 self.updated_by_uid = verified_by.uid  # noqa
                 self.verified_by_uid = verified_by.uid
-                saved = await self.save()
+                saved = await self.save_async()
                 await streamer.stream(saved, verified_by, "verified", "worksheet")
                 return saved
         return self

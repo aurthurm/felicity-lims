@@ -17,7 +17,6 @@ from felicity.apps.client import models
 
 from felicity.utils import has_value_or_is_truthy
 
-
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
@@ -26,13 +25,13 @@ logger = logging.getLogger(__name__)
 class ClientQuery:
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def client_all(
-        self,
-        info: Info,
-        page_size: int | None = None,
-        after_cursor: str | None = None,
-        before_cursor: str | None = None,
-        text: str | None = None,
-        sort_by: list[str] | None = None,
+            self,
+            info: Info,
+            page_size: int | None = None,
+            after_cursor: str | None = None,
+            before_cursor: str | None = None,
+            text: str | None = None,
+            sort_by: list[str] | None = None,
     ) -> ClientCursorPage:
         ss, dd = await auth_from_info(info)
 
@@ -100,7 +99,7 @@ class ClientQuery:
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def client_contact_all(self, info) -> List[ClientContactType]:
-        return await models.ClientContact.all()
+        return await models.ClientContact.all_async()
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def client_contact_uid(self, info, uid: str) -> ClientContactType:
@@ -108,6 +107,6 @@ class ClientQuery:
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def client_contact_by_client_uid(
-        self, info, client_uid: str
+            self, info, client_uid: str
     ) -> List[ClientContactType]:
         return await models.ClientContact.get_all(client_uid=client_uid, is_active=True)

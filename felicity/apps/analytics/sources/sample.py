@@ -22,12 +22,12 @@ class SampleAnalyticsInit(Generic[ModelType]):
         self.alias = model.__tablename__ + "_tbl"
 
     async def get_line_listing(
-        self,
-        period_start: str,
-        period_end: str,
-        sample_states: list[str],
-        date_column: str,
-        analysis_uids: List[str],
+            self,
+            period_start: str,
+            period_end: str,
+            sample_states: list[str],
+            date_column: str,
+            analysis_uids: List[str],
     ):
         start_date = parser.parse(str(period_start))
         end_date = parser.parse(str(period_end))
@@ -96,7 +96,7 @@ class SampleAnalyticsInit(Generic[ModelType]):
             result = await session.execute(stmt, {"sd": start_date, "ed": end_date})
 
         # columns result.keys()/result._metadata.keys
-        return result.keys(), result.all()
+        return result.keys(), result.all_async()
 
     async def get_line_listing_2(self):
         stmt = self.model.with_joined(
@@ -106,16 +106,16 @@ class SampleAnalyticsInit(Generic[ModelType]):
             await session.execute(stmt.limit(10))
 
         # logger.info(result)
-        # logger.info(result.scalars().all())
+        # logger.info(result.scalars().all_async())
 
         return None, None
 
     async def get_counts_group_by(
-        self,
-        group_by: str,
-        start: Optional[Tuple[str, str]],
-        end: Optional[Tuple[str, str]],
-        group_in: list[str] | None = None,
+            self,
+            group_by: str,
+            start: Optional[Tuple[str, str]],
+            end: Optional[Tuple[str, str]],
+            group_in: list[str] | None = None,
     ):  # noqa
         if not hasattr(self.model, group_by):
             logger.warning(f"Model has no attr {group_by}")
@@ -152,10 +152,10 @@ class SampleAnalyticsInit(Generic[ModelType]):
         async with async_session_factory() as session:
             result = await session.execute(stmt)
 
-        return result.all()
+        return result.all_async()
 
     async def count_analyses_retests(
-        self, start: Tuple[str, str], end: Tuple[str, str]
+            self, start: Tuple[str, str], end: Tuple[str, str]
     ):
         retest = getattr(self.model, "retest")
         stmt = select(func.count(self.model.uid).label("total")).filter(retest == True)
@@ -181,10 +181,10 @@ class SampleAnalyticsInit(Generic[ModelType]):
         async with async_session_factory() as session:
             result = await session.execute(stmt)
 
-        return result.all()
+        return result.all_async()
 
     async def get_sample_process_performance(
-        self, start: Tuple[str, str], end: Tuple[str, str]
+            self, start: Tuple[str, str], end: Tuple[str, str]
     ):
         """
         :param start: process start Tuple[str::Column, str::Date]
@@ -253,10 +253,10 @@ class SampleAnalyticsInit(Generic[ModelType]):
         async with async_session_factory() as session:
             result = await session.execute(stmt, {"sd": start_date, "ed": end_date})
 
-        return result.all()
+        return result.all_async()
 
     async def get_analysis_process_performance(
-        self, start: Tuple[str, str], end: Tuple[str, str]
+            self, start: Tuple[str, str], end: Tuple[str, str]
     ):
         """
         :param start: process start Tuple[str::Column, str::Date]
@@ -331,7 +331,7 @@ class SampleAnalyticsInit(Generic[ModelType]):
         async with async_session_factory() as session:
             result = await session.execute(stmt, {"sd": start_date, "ed": end_date})
 
-        return result.all()
+        return result.all_async()
 
     async def get_laggards(self):
         """
@@ -386,4 +386,4 @@ class SampleAnalyticsInit(Generic[ModelType]):
             result_for_incomplete = await session.execute(stmt_for_incomplete)
             result_for_complete = await session.execute(stmt_for_complete)
 
-        return result_for_incomplete.all(), result_for_complete.all()
+        return result_for_incomplete.all_async(), result_for_complete.all_async()

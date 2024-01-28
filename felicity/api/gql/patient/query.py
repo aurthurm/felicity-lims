@@ -19,13 +19,13 @@ from felicity.utils import has_value_or_is_truthy
 class PatientQuery:
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def patient_all(
-        self,
-        info,
-        page_size: int | None = None,
-        after_cursor: str | None = None,
-        before_cursor: str | None = None,
-        text: str | None = None,
-        sort_by: list[str] | None = None,
+            self,
+            info,
+            page_size: int | None = None,
+            after_cursor: str | None = None,
+            before_cursor: str | None = None,
+            text: str | None = None,
+            sort_by: list[str] | None = None,
     ) -> PatientCursorPage:
         filters = {}
 
@@ -71,7 +71,7 @@ class PatientQuery:
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def patient_by_patient_id(
-        self, info, patient_id: str
+            self, info, patient_id: str
     ) -> Optional[PatientType]:
         return await models.Patient.get(patient_id=patient_id)
 
@@ -97,7 +97,7 @@ class PatientQuery:
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def identification_all(self, info) -> List[IdentificationType]:
-        return await models.Identification.all()
+        return await models.Identification.all_async()
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def identification_by_uid(self, info, uid: str) -> IdentificationType:

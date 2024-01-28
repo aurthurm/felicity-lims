@@ -165,11 +165,11 @@ class WorkSheetMutations:
         _qc_levels = []
         if payload.qc_template_uid:
             ws_template.qc_levels.clear()
-            ws_template = await ws_template.save()
+            ws_template = await ws_template.save_async()
             qc_template = await qc_models.QCTemplate.get(uid=payload.qc_template_uid)
             _qc_levels = qc_template.qc_levels
             ws_template.qc_levels = qc_template.qc_levels
-            ws_template = await ws_template.save()
+            ws_template = await ws_template.save_async()
 
         if payload.reserved:
             positions = dict()

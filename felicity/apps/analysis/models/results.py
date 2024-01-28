@@ -131,14 +131,14 @@ class AnalysisResult(Auditable, BaseMPTT):
         self.assigned = True
         self.worksheet_position = position
         self.instrument_uid = instrument_uid if instrument_uid else None
-        return await self.save()
+        return await self.save_async()
 
     async def un_assign(self):
         self.worksheet_uid = None
         self.assigned = False
         self.worksheet_position = None
         self.instrument_uid = None
-        return await self.save()
+        return await self.save_async()
 
     async def verify(self, verifier):
         is_verified = False
@@ -153,7 +153,7 @@ class AnalysisResult(Auditable, BaseMPTT):
             self.status = conf.states.result.APPROVED
             self.date_verified = datetime.now()
             is_verified = True
-        final = await self.save()
+        final = await self.save_async()
         if final.status == conf.states.result.APPROVED:
             await streamer.stream(final, verifier, "approved", "result")
         return is_verified, final
@@ -166,7 +166,7 @@ class AnalysisResult(Auditable, BaseMPTT):
         self.status = conf.states.result.RETRACTED
         self.date_verified = datetime.now()
         self.updated_by_uid = retracted_by.uid  # noqa
-        final = await self.save()
+        final = await self.save_async()
         if final.status == conf.states.result.RETRACTED:
             await streamer.stream(final, retracted_by, "retracted", "result")
         return final
@@ -177,7 +177,7 @@ class AnalysisResult(Auditable, BaseMPTT):
             self.cancelled_by_uid = cancelled_by.uid
             self.date_cancelled = datetime.now()
             self.updated_by_uid = cancelled_by.uid  # noqa
-        final = await self.save()
+        final = await self.save_async()
         if final.status == conf.states.result.CANCELLED:
             await streamer.stream(final, cancelled_by, "cancelled", "result")
         return final
@@ -196,18 +196,18 @@ class AnalysisResult(Auditable, BaseMPTT):
             self.cancelled_by_uid = None
             self.date_cancelled = None
             self.updated_by_uid = re_instated_by.uid  # noqa
-        final = await self.save()
+        final = await self.save_async()
         if final.status == conf.states.result.PENDING:
             await streamer.stream(final, re_instated_by, "reinstated", "result")
         return final
 
     async def change_status(self, status):
         self.status = status
-        return await self.save()
+        return await self.save_async()
 
     async def hide_report(self):
         self.reportable = False
-        return await self.save()
+        return await self.save_async()
 
     @classmethod
     async def filter_for_worksheet(
@@ -233,7 +233,7 @@ class AnalysisResult(Auditable, BaseMPTT):
         # available: int = await cls.count_where(filters=filters)
 
         async with async_session_factory() as session:
-            analyses_results = (await session.execute(stmt)).scalars().all()
+            analyses_results = (await session.execute(stmt)).scalars().all_async()
 
         return analyses_results
 

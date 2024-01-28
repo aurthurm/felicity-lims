@@ -30,7 +30,7 @@ class Job(DBModel):
             self.reason = f"max retries have been exceeded: {max_retries}"
 
         self.retries += 1
-        await self.save()
+        await self.save_async()
 
     @property
     def is_ready_for_execution(self):
@@ -55,17 +55,17 @@ class Job(DBModel):
     async def change_status(self, new_status, change_reason=""):
         self.status = new_status
         self.reason = change_reason
-        await self.save()
+        await self.save_async()
 
     async def increase_priority(self):
         if self.priority < conf.priorities.HIGH:
             self.priority += 1
-            await self.save()
+            await self.save_async()
 
     async def decrease_priority(self):
         if self.priority > conf.priorities.NORMAL:
             self.priority -= 1
-            await self.save()
+            await self.save_async()
 
     @classmethod
     async def create(cls, obj_in: dict | schemas.JobCreate) -> schemas.Job:

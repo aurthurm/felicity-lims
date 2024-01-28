@@ -44,16 +44,16 @@ class ActivityFeed(BaseAuditDBModel):
 
     async def reset_subscribers(self) -> schemas.ActivityFeed:
         self.subscribers.clear()
-        return await self.save()
+        return await self.save_async()
 
     async def remove_subscriber(self, user: User) -> schemas.ActivityFeed:
         self.subscribers.remove(user)
-        return await self.save()
+        return await self.save_async()
 
     async def add_subscriber(self, user: User) -> schemas.ActivityFeed:
         if user not in self.viewers:
             self.subscribers.append(user)
-            return await self.save()
+            return await self.save_async()
         return self
 
 
@@ -116,30 +116,30 @@ class ActivityStream(BaseAuditDBModel):
 
     async def reset_feeds(self) -> schemas.ActivityStream:
         self.feeds.clear()
-        return await self.save()
+        return await self.save_async()
 
     async def remove_feed(self, feed: ActivityFeed) -> schemas.ActivityStream:
         self.feeds.remove(feed)
-        return await self.save()
+        return await self.save_async()
 
     async def add_feed(self, feed: ActivityFeed) -> schemas.ActivityStream:
         if feed not in self.feeds:
             self.feeds.append(feed)
-            return await self.save()
+            return await self.save_async()
         return self
 
     async def reset_viewers(self) -> schemas.ActivityStream:
         self.viewers.clear()
-        return await self.save()
+        return await self.save_async()
 
     async def remove_viewer(self, viewer: User) -> schemas.ActivityStream:
         self.viewers.remove(viewer)
-        return await self.save()
+        return await self.save_async()
 
     async def add_viewer(self, viewer: User) -> schemas.ActivityStream:
         if viewer not in self.viewers:
             self.viewers.append(viewer)
-            return await self.save()
+            return await self.save_async()
         return self
 
     async def not_viewed(self, activity_uid) -> Optional[List[User]]:
@@ -251,56 +251,56 @@ class Notification(BaseAuditDBModel):
 
     async def reset_views(self) -> schemas.Notification:
         self.viewers.clear()
-        return await self.save()
+        return await self.save_async()
 
     async def remove_viewer(self, user: User) -> schemas.Notification:
         self.viewers.remove(user)
-        return await self.save()
+        return await self.save_async()
 
     async def add_viewer(self, user: User) -> schemas.Notification:
         if user not in self.viewers:
             self.viewers.append(user)
-            return await self.save()
+            return await self.save_async()
         return self
 
     async def reset_departments(self) -> schemas.Notification:
         self.departments.clear()
-        return await self.save()
+        return await self.save_async()
 
     async def remove_department(self, department: Department) -> schemas.Notification:
         self.departments.remove(department)
-        return await self.save()
+        return await self.save_async()
 
     async def add_department(self, department: Department) -> schemas.Notification:
         if department not in self.departments:
             self.departments.append(department)
-            return await self.save()
+            return await self.save_async()
         return self
 
     async def reset_groups(self) -> schemas.Notification:
         self.groups.clear()
-        return await self.save()
+        return await self.save_async()
 
     async def remove_group(self, group: Group) -> schemas.Notification:
         self.groups.remove(group)
-        return await self.save()
+        return await self.save_async()
 
     async def add_group(self, group: Group) -> schemas.Notification:
         if group not in self.groups:
             self.groups.append(group)
-            return await self.save()
+            return await self.save_async()
         return self
 
     async def reset_users(self) -> schemas.Notification:
         self.users.clear()
-        return await self.save()
+        return await self.save_async()
 
     async def remove_users(self, user: User) -> schemas.Notification:
         self.users.remove(user)
-        return await self.save()
+        return await self.save_async()
 
     async def add_user(self, user: Group) -> schemas.Notification:
         if user not in self.users:
             self.users.append(user)
-            return await self.save()
+            return await self.save_async()
         return self

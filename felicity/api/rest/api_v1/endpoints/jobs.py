@@ -16,4 +16,4 @@ async def all_jobs() -> Any:
     """
     Retrieve all jobs
     """
-    return await models.Job.all()
+    return await models.Job.all_async()

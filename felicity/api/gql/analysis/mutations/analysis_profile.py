@@ -11,7 +11,6 @@ from felicity.apps.analysis import schemas
 from felicity.apps.analysis import utils
 from felicity.apps.analysis.models import analysis as analysis_models
 
-
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
@@ -51,7 +50,6 @@ class ProfileMappingInputType:
 
 @strawberry.mutation(permission_classes=[IsAuthenticated])
 async def create_profile(info, payload: ProfileInputType) -> AnalysisProfileResponse:
-
     is_authenticated, felicity_user = await auth_from_info(info)
     verify_user_auth(
         is_authenticated,
@@ -105,9 +103,8 @@ async def create_profile(info, payload: ProfileInputType) -> AnalysisProfileResp
 
 @strawberry.mutation(permission_classes=[IsAuthenticated])
 async def update_profile(
-    info, uid: str, payload: ProfileInputType
+        info, uid: str, payload: ProfileInputType
 ) -> AnalysisProfileResponse:
-
     is_authenticated, felicity_user = await auth_from_info(info)
     verify_user_auth(
         is_authenticated,
@@ -136,7 +133,7 @@ async def update_profile(
     # Analyses management
     if payload.services:
         profile.analyses.clear()
-        profile = await profile.save()
+        profile = await profile.save_async()
         for _uid in payload.services:
             anal = await analysis_models.Analysis.get(uid=_uid)
             await analysis_models.Analysis.table_insert(
@@ -147,7 +144,7 @@ async def update_profile(
     # Sample Type management
     if payload.sample_types:
         profile.sample_types.clear()
-        profile = await profile.save()
+        profile = await profile.save_async()
         for _uid in payload.sample_types:
             st = await analysis_models.SampleType.get(uid=_uid)
             profile.sample_types.append(st)
@@ -161,9 +158,8 @@ async def update_profile(
 
 @strawberry.mutation(permission_classes=[IsAuthenticated])
 async def create_profile_mapping(
-    info, payload: ProfileMappingInputType
+        info, payload: ProfileMappingInputType
 ) -> ProfileMappingResponse:
-
     is_authenticated, felicity_user = await auth_from_info(info)
     verify_user_auth(
         is_authenticated,
@@ -191,9 +187,8 @@ async def create_profile_mapping(
 
 @strawberry.mutation(permission_classes=[IsAuthenticated])
 async def update_profile_mapping(
-    info, uid: str, payload: ProfileMappingInputType
+        info, uid: str, payload: ProfileMappingInputType
 ) -> ProfileMappingResponse:
-
     is_authenticated, felicity_user = await auth_from_info(info)
     verify_user_auth(
         is_authenticated,

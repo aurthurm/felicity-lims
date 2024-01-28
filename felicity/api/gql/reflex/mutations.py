@@ -9,7 +9,6 @@ from felicity.api.gql.reflex.types import ReflexActionType, ReflexBrainType, Ref
 from felicity.apps.analysis.models import analysis as analysis_models
 from felicity.apps.reflex import models, schemas
 
-
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
@@ -76,7 +75,7 @@ ReflexBrainResponse = strawberry.union(
 class ReflexRuleMutations:
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_reflex_rule(
-        self, info, payload: ReflexRuleInput
+            self, info, payload: ReflexRuleInput
     ) -> ReflexRuleResponse:
 
         is_authenticated, felicity_user = await auth_from_info(info)
@@ -106,7 +105,7 @@ class ReflexRuleMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_reflex_rule(
-        self, info, uid: str, payload: ReflexRuleInput
+            self, info, uid: str, payload: ReflexRuleInput
     ) -> ReflexRuleResponse:
 
         is_authenticated, felicity_user = await auth_from_info(info)
@@ -141,7 +140,7 @@ class ReflexRuleMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_reflex_action(
-        self, info, payload: ReflexActionInput
+            self, info, payload: ReflexActionInput
     ) -> ReflexActionResponse:
 
         is_authenticated, felicity_user = await auth_from_info(info)
@@ -152,9 +151,9 @@ class ReflexRuleMutations:
         )
 
         if (
-            not len(payload.analyses) > 0
-            or not payload.level
-            or not payload.description
+                not len(payload.analyses) > 0
+                or not payload.level
+                or not payload.description
         ):
             return OperationError(error="Anaysis, Level and description are required")
 
@@ -188,7 +187,7 @@ class ReflexRuleMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_reflex_action(
-        self, info, uid: str, payload: ReflexActionInput
+            self, info, uid: str, payload: ReflexActionInput
     ) -> ReflexActionResponse:
 
         is_authenticated, felicity_user = await auth_from_info(info)
@@ -229,7 +228,7 @@ class ReflexRuleMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_reflex_brain(
-        self, info, payload: ReflexBrainInput
+            self, info, payload: ReflexBrainInput
     ) -> ReflexBrainResponse:
 
         is_authenticated, felicity_user = await auth_from_info(info)
@@ -283,7 +282,7 @@ class ReflexRuleMutations:
             add_new.append(assoc)
         brain.add_new = add_new
 
-        await brain.save()
+        await brain.save_async()
         brain = await models.ReflexBrain.get_related(
             related=["add_new.analysis", "analyses_values.analysis"], uid=brain.uid
         )
@@ -291,7 +290,7 @@ class ReflexRuleMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_reflex_brain(
-        self, info, uid: str, payload: ReflexBrainInput
+            self, info, uid: str, payload: ReflexBrainInput
     ) -> ReflexBrainResponse:
 
         is_authenticated, felicity_user = await auth_from_info(info)

@@ -89,7 +89,7 @@ class Shipment(Auditable):
     async def set_flow(self, flow: bool = False):
         """Set whether the flow is incoming or outgoing"""
         self.incoming = flow
-        await self.save()
+        await self.save_async()
 
     async def get_samples(self):
         return list(
@@ -101,13 +101,13 @@ class Shipment(Auditable):
     async def change_state(self, state, updated_by_uid):
         self.state = state
         self.updated_by_uid = updated_by_uid  # noqa
-        return await self.save()
+        return await self.save_async()
 
     async def finalise(self, finaliser):
         if self.state == conf.shipment_states.PREPERATION:
             self.state = conf.shipment_states.READY
             self.finalised_by_uid = finaliser.uid  # noqa
-            saved = await self.save()
+            saved = await self.save_async()
             await streamer.stream(saved, finaliser, "finalised", "shipment")
             return saved
         return self
@@ -116,7 +116,7 @@ class Shipment(Auditable):
         if self.state == conf.shipment_states.READY:
             self.state = conf.shipment_states.AWAITING
             self.dispatched_by_uid = dispatcher.uid  # noqa
-            saved = await self.save()
+            saved = await self.save_async()
             await streamer.stream(saved, dispatcher, "dispatched", "shipment")
             return saved
         return self

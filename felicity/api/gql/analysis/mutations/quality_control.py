@@ -60,7 +60,6 @@ QCTemplateResponse = strawberry.union(
 
 @strawberry.mutation(permission_classes=[IsAuthenticated])
 async def create_QC_set(info, samples: List[QCSetInputType]) -> QCSetResponse:
-
     is_authenticated, felicity_user = await auth_from_info(info)
     verify_user_auth(
         is_authenticated, felicity_user, "Only Authenticated user can create qc-sets"
@@ -125,7 +124,7 @@ async def create_QC_set(info, samples: List[QCSetInputType]) -> QCSetResponse:
             sample.profiles = profiles
             sample.qc_set_uid = qc_set.uid
             sample.qc_level_uid = level.uid
-            sample = await sample.save()
+            sample = await sample.save_async()
 
             # Attach Analysis result for each Analyses
             for _service in _profiles_analyses:
@@ -217,7 +216,7 @@ async def create_QC_template(info, payload: QCTemplateInputType) -> QCTemplateRe
             level = await qc_models.QCLevel.get(uid=_uid)
             if level not in qc_template.qc_levels:
                 qc_template.qc_levels.append(level)
-    qc_template = await qc_template.save()
+    qc_template = await qc_template.save_async()
 
     qc_template.departments.clear()
     if payload.departments:
@@ -225,15 +224,14 @@ async def create_QC_template(info, payload: QCTemplateInputType) -> QCTemplateRe
             dept = await setup_models.Department.get(uid=_uid)
             if dept not in qc_template.departments:
                 qc_template.departments.append(dept)
-    qc_template = await qc_template.save()
+    qc_template = await qc_template.save_async()
     return a_types.QCTemplateType(**qc_template.marshal_simple())
 
 
 @strawberry.mutation(permission_classes=[IsAuthenticated])
 async def update_QC_template(
-    info, uid: str, payload: QCTemplateInputType
+        info, uid: str, payload: QCTemplateInputType
 ) -> QCTemplateResponse:
-
     is_authenticated, felicity_user = await auth_from_info(info)
     verify_user_auth(
         is_authenticated,
@@ -259,19 +257,19 @@ async def update_QC_template(
 
     if payload.levels:
         qc_template.qc_levels.clear()
-        qc_template = await qc_template.save()
+        qc_template = await qc_template.save_async()
         for _uid in payload.levels:
             level = await qc_models.QCLevel.get(uid=_uid)
             if level not in qc_template.qc_levels:
                 qc_template.qc_levels.append(level)
-        qc_template = await qc_template.save()
+        qc_template = await qc_template.save_async()
 
     if payload.departments:
         qc_template.departments.clear()
-        qc_template = await qc_template.save()
+        qc_template = await qc_template.save_async()
         for _uid in payload.departments:
             dept = await setup_models.Department.get(uid=_uid)
             if dept not in qc_template.departments:
                 qc_template.departments.append(dept)
-        qc_template = await qc_template.save()
+        qc_template = await qc_template.save_async()
     return a_types.QCTemplateType(**qc_template.marshal_simple())

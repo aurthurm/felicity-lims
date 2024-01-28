@@ -195,7 +195,7 @@ class Profile(BaseAuditDBModel):
 
         if tat:
             self.tat_length_minutes = tat
-            return await self.save()
+            return await self.save_async()
         return self
 
     @classmethod
@@ -717,18 +717,18 @@ class Sample(Auditable, BaseMPTT):
 
         if length:
             self.due_date = start + timedelta(minutes=length)
-            return await self.save()
+            return await self.save_async()
         return self
 
     async def change_status(self, status, updated_by_uid=None):
         self.status = status
         if updated_by_uid:
             self.updated_by_uid = updated_by_uid  # noqa
-        await self.save()
+        await self.save_async()
 
     async def extend_due_date(self, ext_minutes: int):
         self.due_date += timedelta(minutes=ext_minutes)
-        return await self.save()
+        return await self.save_async()
 
     def copy_sample_id_unique(self):
         split = self.sample_id.split("_R")
@@ -784,7 +784,7 @@ class Sample(Auditable, BaseMPTT):
             self.received_by_uid = received_by.uid
             self.date_received = datetime.now()
             self.updated_by_uid = received_by.uid  # noqa
-            return await self.save()
+            return await self.save_async()
         return None
 
     async def cancel(self, cancelled_by):
@@ -796,7 +796,7 @@ class Sample(Auditable, BaseMPTT):
             self.cancelled_by_uid = cancelled_by.uid
             self.date_cancelled = datetime.now()
             self.updated_by_uid = cancelled_by.uid  # noqa
-            return await self.save()
+            return await self.save_async()
         return None
 
     async def re_instate(self, re_instated_by):
@@ -808,7 +808,7 @@ class Sample(Auditable, BaseMPTT):
             self.cancelled_by_uid = None
             self.date_cancelled = None
             self.updated_by_uid = re_instated_by.uid  # noqa
-            sample = await self.save()
+            sample = await self.save_async()
             for result in analysis_results:
                 await result.re_instate(sample, re_instated_by=re_instated_by)
             return sample
@@ -828,7 +828,7 @@ class Sample(Auditable, BaseMPTT):
             self.submitted_by_uid = submitted_by.uid
             self.date_submitted = datetime.now()
             self.updated_by_uid = submitted_by.uid  # noqa
-            saved = await self.save()
+            saved = await self.save_async()
             await streamer.stream(saved, submitted_by, "submitted", "sample")
             return saved
         return self
@@ -839,16 +839,16 @@ class Sample(Auditable, BaseMPTT):
             self.submitted_by_uid = None
             self.date_submitted = None
             self.updated_by_uid = None  # noqa
-            return await self.save()
+            return await self.save_async()
         return self
 
     async def assign(self):
         self.assigned = True
-        return await self.save()
+        return await self.save_async()
 
     async def un_assign(self):
         self.assigned = False
-        return await self.save()
+        return await self.save_async()
 
     async def is_verifiable(self):
         statuses = [
@@ -877,7 +877,7 @@ class Sample(Auditable, BaseMPTT):
             self.verified_by_uid = verified_by.uid
             self.date_verified = datetime.now()
             self.updated_by_uid = verified_by.uid  # noqa
-            saved = await self.save()
+            saved = await self.save_async()
             await streamer.stream(saved, verified_by, "approved", "sample")
             return True, saved
         return False, self
@@ -888,7 +888,7 @@ class Sample(Auditable, BaseMPTT):
             self.published_by_uid = published_by.uid
             self.date_published = datetime.now()
             self.updated_by_uid = published_by.uid  # noqa
-            return await self.save()
+            return await self.save_async()
         return self
 
     async def print(self, printed_by):
@@ -897,7 +897,7 @@ class Sample(Auditable, BaseMPTT):
             self.printed_by_uid = printed_by.uid
             self.date_printed = datetime.now()
             self.updated_by_uid = printed_by.uid  # noqa
-            return await self.save()
+            return await self.save_async()
         return self
 
     async def invalidate(self, invalidated_by) -> tuple[schemas.Sample, schemas.Sample]:
@@ -907,7 +907,7 @@ class Sample(Auditable, BaseMPTT):
             copy = await self.duplicate_unique(invalidated_by)
             self.status = states.sample.INVALIDATED
             self.invalidated_by_uid = invalidated_by.uid
-            invalidated = await self.save()
+            invalidated = await self.save_async()
             await streamer.stream(invalidated, invalidated_by, "invalidated", "sample")
             return copy, invalidated
         return copy, self
@@ -918,7 +918,7 @@ class Sample(Auditable, BaseMPTT):
             self.status = states.sample.REJECTED
             self.received_by_uid = rejected_by.uid
             self.updated_by_uid = rejected_by.uid  # noqa
-            rejected = await self.save()
+            rejected = await self.save_async()
             await streamer.stream(rejected, rejected_by, "rejected", "sample")
             return rejected
         return self
@@ -929,7 +929,7 @@ class Sample(Auditable, BaseMPTT):
             self.status = states.sample.STORED
             self.stored_by = stored_by.uid
             self.updated_by_uid = stored_by.uid  # noqa
-            stored = await self.save()
+            stored = await self.save_async()
             await streamer.stream(stored, stored_by, "stored", "sample")
             return stored
         return self
@@ -942,7 +942,7 @@ class Sample(Auditable, BaseMPTT):
             self.storage_slot = None
             self.storage_slot_index = None
             self.date_retrieved_from_storage = datetime.now()
-            recovered = await self.save()
+            recovered = await self.save_async()
             return recovered
         return self
 

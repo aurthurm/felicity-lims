@@ -9,19 +9,21 @@ from sqlalchemy import update
 from sqlalchemy.orm import DeclarativeBase
 from sqlalchemy.sql import func
 from sqlalchemy.sql.expression import bindparam
-from sqlalchemy_mixins import AllFeaturesMixinAsync, smart_query  # noqa
+from sqlalchemy_mixins import (
+    AllFeaturesMixin, smart_query, ActiveRecordMixinAsync
+)
 
+from felicity.core.dtz import format_datetime
 from felicity.core.uid_gen import get_flake_uid
 from felicity.database.paginator.cursor import EdgeNode, PageCursor, PageInfo
 from felicity.database.session import AsyncSessionScoped
 from felicity.utils import has_value_or_is_truthy
-from felicity.core.dtz import format_datetime
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
-class DBModel(DeclarativeBase, AllFeaturesMixinAsync):
+class DBModel(DeclarativeBase, ActiveRecordMixinAsync, AllFeaturesMixin):
     __name__: str
     __abstract__ = True
     __mapper_args__ = {"eager_defaults": True}
@@ -100,8 +102,8 @@ class DBModel(DeclarativeBase, AllFeaturesMixinAsync):
         """Returns a new get instance of the class
         This is so that mutations can work well and prevent async IO issues
         """
-        fill = await cls().fill(**kwargs)
-        created = await cls.save(fill)
+        fill = cls().fill(**kwargs)
+        created = await cls.save_async(fill)
         if created:
             created = await cls.get(uid=created.uid)
         return created
@@ -113,7 +115,7 @@ class DBModel(DeclarativeBase, AllFeaturesMixinAsync):
         """
         to_save = []
         for data in items:
-            fill = await cls().fill(**cls._import(data))
+            fill = cls().fill(**cls._import(data))
             to_save.append(fill)
         return await cls.save_all(to_save)
 
@@ -133,8 +135,8 @@ class DBModel(DeclarativeBase, AllFeaturesMixinAsync):
         """Returns a new get instance of the class
         This is so that mutations can work well and prevent async IO issues
         """
-        fill = await self.fill(**kwargs)
-        updated = await fill.save()
+        fill = self.fill(**kwargs)
+        updated = await fill.save_async()
         if updated:
             updated = await self.get(uid=updated.uid)
         return updated
@@ -497,4 +499,4 @@ class DBModel(DeclarativeBase, AllFeaturesMixinAsync):
         return identifier
 
 
-DBModel.set_session(AsyncSessionScoped, True)
+DBModel.set_session(AsyncSessionScoped)

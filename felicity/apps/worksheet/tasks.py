@@ -12,7 +12,6 @@ from felicity.apps.job import models as job_models
 from felicity.apps.job.conf import states as job_states
 from felicity.apps.worksheet import conf, models
 
-
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
@@ -55,7 +54,7 @@ async def populate_worksheet_plate(job_uid: str):
         await job.change_status(
             new_status=job_states.FAILED,
             change_reason=f"WorkSheet {ws_uid} - contains at least a "
-            f"processed sample",
+                          f"processed sample",
         )
         logger.warning(f"WorkSheet {ws_uid} - contains at least a processed sample")
         return
@@ -65,7 +64,7 @@ async def populate_worksheet_plate(job_uid: str):
         await job.change_status(
             new_status=job_states.FAILED,
             change_reason=f"WorkSheet {ws_uid} already has "
-            f"{ws.assigned_count} assigned samples",
+                          f"{ws.assigned_count} assigned samples",
         )
         logger.warning(
             f"WorkSheet {ws_uid} already has {ws.assigned_count} assigned samples"
@@ -97,7 +96,7 @@ async def populate_worksheet_plate(job_uid: str):
 
         position = 1
         for key, sample in enumerate(
-            sorted(samples, key=lambda s: s.uid, reverse=True)
+                sorted(samples, key=lambda s: s.uid, reverse=True)
         ):
 
             while position in reserved:
@@ -194,7 +193,7 @@ async def setup_ws_quality_control(ws: models.WorkSheet):
                 sample.qc_set_uid = qc_set.uid
                 sample.qc_level_uid = level.uid
                 sample.analyses.append(ws.analysis)
-                await sample.save()
+                await sample.save_async()
                 logger.warning(f"Sample {sample.sample_id}, level {level.level}")
 
                 # create results linkages
@@ -265,7 +264,7 @@ async def setup_ws_quality_control_manually(ws: models.WorkSheet, qc_template_ui
                 sample.qc_set_uid = qc_set.uid
                 sample.qc_level_uid = level.uid
                 sample.analyses.append(ws.analysis)
-                await sample.save()
+                await sample.save_async()
                 logger.warning(f"Sample {sample.sample_id}, level {level.level}")
 
                 # create results linkages
@@ -318,7 +317,7 @@ async def populate_worksheet_plate_manually(job_uid: str):
         await job.change_status(
             new_status=job_states.FAILED,
             change_reason=f"WorkSheet {ws_uid} - contains at least a "
-            f"processed sample",
+                          f"processed sample",
         )
         logger.warning(f"WorkSheet {ws_uid} - contains at least a processed sample")
         return
@@ -344,7 +343,7 @@ async def populate_worksheet_plate_manually(job_uid: str):
 
         position = 1
         for key, sample in enumerate(
-            sorted(samples, key=lambda s: s.uid, reverse=True)
+                sorted(samples, key=lambda s: s.uid, reverse=True)
         ):
 
             while position in reserved:

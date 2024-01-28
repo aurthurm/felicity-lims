@@ -32,7 +32,7 @@ class FelicityNotifier:
 
     @staticmethod
     async def notify(
-        message: str, departments: Any = None, groups: Any = None, users: Any = None
+            message: str, departments: Any = None, groups: Any = None, users: Any = None
     ):
         n_in = NotificationCreate(message=message)
         notification: Notification = await Notification.create(n_in)
@@ -47,5 +47,5 @@ class ReportNotifier:
         n_in = NotificationCreate(message=message)
         notification: Notification = await Notification.create(n_in)
         notification.users = [user]
-        notification = await notification.save()
+        notification = await notification.save_async()
         await broadcast.publish(channels.NOTIFICATIONS, notification)

@@ -17,11 +17,11 @@ class EdgeNode:
 
 class PageInfo:
     def __init__(
-        self,
-        start_cursor: str = None,
-        end_cursor: str = None,
-        has_next_page: bool = False,
-        has_previous_page: bool = False,
+            self,
+            start_cursor: str = None,
+            end_cursor: str = None,
+            has_next_page: bool = False,
+            has_previous_page: bool = False,
     ):
         self.start_cursor = start_cursor
         self.end_cursor = end_cursor
@@ -31,11 +31,11 @@ class PageInfo:
 
 class PageCursor:
     def __init__(
-        self,
-        total_count: int = 0,
-        edges: List[EdgeNode] = None,
-        items: List[dict] = None,
-        page_info: PageInfo = None,
+            self,
+            total_count: int = 0,
+            edges: List[EdgeNode] = None,
+            items: List[dict] = None,
+            page_info: PageInfo = None,
     ):
         self.total_count = total_count
         self.edges = edges
@@ -48,18 +48,18 @@ class CursorPaginationMixin(SmartQueryMixin):
 
     @classmethod
     async def paginate_with_cursors(
-        cls,
-        page_size: int = None,
-        after_cursor: Any = None,
-        before_cursor: Any = None,
-        filters: dict = None,
-        sort_by: list[str] = None,
+            cls,
+            page_size: int = None,
+            after_cursor: Any = None,
+            before_cursor: Any = None,
+            filters: dict = None,
+            sort_by: list[str] = None,
     ):
         total_count: int = (await cls.session.execute(select(cls))).scalar().count()
         items = None
 
         if page_size is None:
-            qs = await cls.all()
+            qs = await cls.all_async()
             if qs:
                 items = list(qs)
             return PageCursor(
@@ -88,7 +88,7 @@ class CursorPaginationMixin(SmartQueryMixin):
 
         filters = {**cursor_limit, **filters}
 
-        qs = cls.smart_query(filters=filters, sort_attrs=sort_by).all()
+        qs = cls.smart_query(filters=filters, sort_attrs=sort_by).all_async()
         if qs:
             qs = list(qs)
             items = qs[:page_size]
@@ -125,11 +125,11 @@ class CursorPaginationMixin(SmartQueryMixin):
 
     @classmethod
     def build_page_info(
-        cls,
-        first_cursor: str = None,
-        last_cursor: str = None,
-        has_next_page: bool = False,
-        has_previous_page: bool = False,
+            cls,
+            first_cursor: str = None,
+            last_cursor: str = None,
+            has_next_page: bool = False,
+            has_previous_page: bool = False,
     ) -> PageInfo:
         return PageInfo(
             **{

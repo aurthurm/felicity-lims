@@ -60,7 +60,7 @@ async def get_last_verificator(result_uid: str):
 
 
 async def sample_search(
-    model, status: str, text: str, client_uid: str
+        model, status: str, text: str, client_uid: str
 ) -> List[schemas.SampleType]:
     """No pagination"""
     filters = []
@@ -88,7 +88,7 @@ async def sample_search(
     filters.append({"internal_use__ne": True})
 
     stmt = model.smart_query(filters=filters, sort_attrs=["uid"])
-    return (await model.session.execute(stmt)).scalars().all()
+    return (await model.session.execute(stmt)).scalars().all_async()
 
 
 async def retest_from_result_uids(uids: list[str], user):
@@ -246,8 +246,8 @@ async def result_mutator(result: AnalysisResult):
         # Correction factor
         for cf in correction_factors:
             if (
-                cf.instrument_uid == result.instrument_uid
-                and cf.method_uid == result.method_uid
+                    cf.instrument_uid == result.instrument_uid
+                    and cf.method_uid == result.method_uid
             ):
                 await ResultMutation.create(
                     obj_in={
@@ -350,14 +350,14 @@ async def result_mutator(result: AnalysisResult):
                 result.result = spec.warn_report
 
     if result_in != result.result:
-        result = await result.save()
+        result = await result.save_async()
 
 
 async def billing_setup_profiles(profile_uids=None):
     if profile_uids:
         profiles = await Profile.get_by_uids(profile_uids)
     else:
-        profiles = await Profile.all()
+        profiles = await Profile.all_async()
 
     for profile in profiles:
         exists = await ProfilePrice.get_one(profile_uid=profile.uid)
@@ -389,7 +389,7 @@ async def billing_setup_analysis(analysis_uids=None):
     if analysis_uids:
         analyses = await Analysis.get_by_uids(analysis_uids)
     else:
-        analyses = await Analysis.all()
+        analyses = await Analysis.all_async()
 
     for analysis in analyses:
         exists = await AnalysisPrice.get_one(analysis_uid=analysis.uid)

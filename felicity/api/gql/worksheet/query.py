@@ -23,14 +23,14 @@ logger = logging.getLogger(__name__)
 class WorkSheetQuery:
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def worksheet_all(
-        self,
-        info,
-        page_size: int | None = None,
-        after_cursor: str | None = None,
-        before_cursor: str | None = None,
-        text: str | None = None,
-        status: str | None = None,
-        sort_by: list[str] | None = None,
+            self,
+            info,
+            page_size: int | None = None,
+            after_cursor: str | None = None,
+            before_cursor: str | None = None,
+            text: str | None = None,
+            status: str | None = None,
+            sort_by: list[str] | None = None,
     ) -> WorkSheetCursorPage:
 
         filters = []
@@ -74,7 +74,7 @@ class WorkSheetQuery:
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def worksheet_template_all(self, info) -> List[WorkSheetTemplateType]:
-        return await ws_models.WorkSheetTemplate.all()
+        return await ws_models.WorkSheetTemplate.all_async()
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def worksheet_by_analyst(self, info, analyst_uid: str) -> List[WorkSheetType]:
@@ -90,12 +90,12 @@ class WorkSheetQuery:
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def worksheet_by_status(
-        self, info, worksheet_status: str
+            self, info, worksheet_status: str
     ) -> List[WorkSheetType]:
         return await ws_models.WorkSheet.get_all(status__exact=worksheet_status)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def worksheet_template_by_uid(
-        self, info, worksheet_uid: str
+            self, info, worksheet_uid: str
     ) -> List[WorkSheetType]:
         return await ws_models.WorkSheet.get_all(uid=worksheet_uid)

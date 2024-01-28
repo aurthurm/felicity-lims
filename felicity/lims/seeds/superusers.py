@@ -29,7 +29,7 @@ async def seed_daemon_user() -> None:
         admin_group = await models.Group.get(name=FGroup.ADMINISTRATOR)
         if admin_group:
             system_daemon.groups.append(admin_group)
-            await system_daemon.save()
+            await system_daemon.save_async()
 
         if not system_daemon:
             raise Exception("Failed to create system_daemon")
@@ -79,7 +79,7 @@ async def seed_super_user() -> None:
         admin_group = await models.Group.get(name=FGroup.ADMINISTRATOR)
         if admin_group:
             superuser.groups.append(admin_group)
-            await superuser.save()
+            await superuser.save_async()
 
         if not superuser:
             raise Exception("Failed to create superuser")

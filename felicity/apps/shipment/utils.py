@@ -319,7 +319,7 @@ async def shipment_reset_assigned_count(shipment_uid: str):
         shipment.state = conf.shipment_states.PREPERATION
 
     shipment.assigned_count = count
-    return await shipment.save()
+    return await shipment.save_async()
 
 
 async def action_shipment(shipment_uid: str, action: str, actor):

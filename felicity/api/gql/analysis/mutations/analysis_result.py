@@ -181,7 +181,7 @@ async def retract_analysis_results(info, analyses: list[str]) -> AnalysisResultR
             retest.worksheet_uid = a_result.worksheet_uid
             retest.worksheet_position = a_result.worksheet_position
             retest.assigned = True
-            retest = await retest.save()
+            retest = await retest.save_async()
 
         # add retest
         if retest:

@@ -35,7 +35,7 @@ class ReportMeta(BaseAuditDBModel):
             self.location = location
             self.status = status
             self.temp = None
-            await self.save()
+            await self.save_async()
 
     @classmethod
     async def create(cls, obj_in: dict | schemas.ReportMetaCreate) -> schemas.ReportMeta:

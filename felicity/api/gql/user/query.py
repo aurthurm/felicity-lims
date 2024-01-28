@@ -21,13 +21,13 @@ from felicity.utils import has_value_or_is_truthy
 class UserQuery:
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def user_all(
-        self,
-        info,
-        page_size: int | None = None,
-        after_cursor: str | None = None,
-        before_cursor: str | None = None,
-        text: str | None = None,
-        sort_by: list[str] | None = None,
+            self,
+            info,
+            page_size: int | None = None,
+            after_cursor: str | None = None,
+            before_cursor: str | None = None,
+            text: str | None = None,
+            sort_by: list[str] | None = None,
     ) -> UserCursorPage:
         filters = {}
 
@@ -72,7 +72,7 @@ class UserQuery:
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def group_all(self, info) -> List[GroupType]:
-        return await user_models.Group.all()
+        return await user_models.Group.all_async()
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def group_by_uid(self, info, uid: str) -> Optional[GroupType]:
@@ -80,7 +80,7 @@ class UserQuery:
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def permission_all(self, info) -> List[PermissionType]:
-        return await user_models.Permission.all()
+        return await user_models.Permission.all_async()
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def permission_by_uid(self, info, uid: str) -> Optional[PermissionType]:

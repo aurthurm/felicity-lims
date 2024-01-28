@@ -66,13 +66,13 @@ class MessageThread(BaseAuditDBModel):
     async def add_recipient(self, user: User) -> schemas.MessageThread:
         if user not in self.recipients:
             self.recipients.append(user)
-            return await self.save()
+            return await self.save_async()
         return self
 
     async def add_deletion(self, user: User) -> schemas.MessageThread:
         if user not in self.deleted_by:
             self.deleted_by.append(user)
-            return await self.save()
+            return await self.save_async()
         return self
 
     async def delete_for_user(self, user: User) -> schemas.MessageThread:
@@ -146,7 +146,7 @@ class Message(BaseAuditDBModel, BaseMPTT):
     async def add_deletion(self, user: User) -> schemas.Message:
         if user not in self.deleted_by:
             self.deleted_by.append(user)
-            return await self.save()
+            return await self.save_async()
         return self
 
     async def delete_for_user(self, user: User) -> int:

@@ -124,14 +124,14 @@ class BaseNestedSets(object):
         """
         if inclusive:
             return (
-                (self.tree_id == other.tree_id)
-                & (self.left <= other.left)
-                & (other.right <= self.right)
+                    (self.tree_id == other.tree_id)
+                    & (self.left <= other.left)
+                    & (other.right <= self.right)
             )
         return (
-            (self.tree_id == other.tree_id)
-            & (self.left < other.left)
-            & (other.right < self.right)
+                (self.tree_id == other.tree_id)
+                & (self.left < other.left)
+                & (other.right < self.right)
         )
 
     @hybrid_method
@@ -200,7 +200,7 @@ class BaseNestedSets(object):
             .filter_by(tree_id=self.tree_id)
             .filter(table.c.lft < self.left)
             .order_by(table.c.lft)
-            .all()
+            .all_async()
         )
         if current_lvl_nodes:
             return current_lvl_nodes[-1]
@@ -271,7 +271,7 @@ class BaseNestedSets(object):
         nodes = cls._base_query(session)
         if query:
             nodes = query(nodes)
-        nodes = cls._base_order(nodes).all()
+        nodes = cls._base_order(nodes).all_async()
 
         # search minimal level of nodes.
         min_level = min([node.level for node in nodes] or [None])

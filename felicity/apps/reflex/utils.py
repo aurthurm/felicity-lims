@@ -34,7 +34,7 @@ class ReflexUtil:
             )
             if action:
                 result.reflex_level = 1
-                await result.save()
+                await result.save_async()
                 logger.debug(f"set_reflex_actions done")
 
     async def do_reflex(self):
@@ -60,7 +60,6 @@ class ReflexUtil:
 
         logger.info(f"Reflex Brains: {self._reflex_action.brains}")
         for brain in self._reflex_action.brains:
-
             await self.decide(brain)
 
     async def decide(self, brain: reflex_models.ReflexBrain):
@@ -147,7 +146,7 @@ class ReflexUtil:
             self._siblings = list(
                 filter(
                     lambda result: result.analysis_uid == analysis_uid
-                    and result.uid != self.analysis_result.uid,
+                                   and result.uid != self.analysis_result.uid,
                     results,
                 )
             )

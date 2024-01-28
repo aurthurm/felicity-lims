@@ -18,10 +18,10 @@ class NoticeQuery:
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def notice_filter(
-        self,
-        info,
-        group_uid: str | None,
-        department_uid: str | None,
+            self,
+            info,
+            group_uid: str | None,
+            department_uid: str | None,
     ) -> List[NoticeType]:
         filters = {}
 
@@ -35,5 +35,5 @@ class NoticeQuery:
             filters=filters, sort_attrs=["-created_at"]
         )
 
-        notices = (await models.Notice.session.execute(notice_stmt)).scalars().all()
+        notices = (await models.Notice.session.execute(notice_stmt)).scalars().all_async()
         return list(notices)

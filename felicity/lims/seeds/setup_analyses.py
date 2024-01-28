@@ -154,7 +154,7 @@ async def seed_analyses_services_and_profiles() -> None:
                 if a_profile.uid not in [profile.uid for profile in profiles]:
                     logger.info(f"adding anal: {anal} to profile: {a_profile}")
                     a_profile.analyses.append(anal)
-                    await a_profile.save()
+                    await a_profile.save_async()
 
                     async with async_session_factory() as session:
                         try:

@@ -236,4 +236,4 @@ async def seed_group_permissions_defaults() -> None:
                     group.pages = "DASHBOARD"
                     if group.name == FGroup.ADMINISTRATOR:
                         group.pages += ", ADMINISTRATION"
-                    await group.save()
+                    await group.save_async()

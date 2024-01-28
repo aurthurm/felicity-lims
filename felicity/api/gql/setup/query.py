@@ -34,29 +34,29 @@ async def get_laboratory_setting(setup_name: str) -> LaboratorySettingType:
 
 
 async def get_all_suppliers() -> List[SupplierType]:
-    return await models.Supplier.all()
+    return await models.Supplier.all_async()
 
 
 async def get_all_manufacturers() -> List[ManufacturerType]:
-    return await models.Manufacturer.all()
+    return await models.Manufacturer.all_async()
 
 
 async def get_all_departments() -> List[DepartmentType]:
-    return await models.Department.all()
+    return await models.Department.all_async()
 
 
 async def get_all_units() -> List[UnitType]:
-    return await models.Unit.all()
+    return await models.Unit.all_async()
 
 
 async def get_all_districts(
-    self,
-    info,
-    page_size: int | None = None,
-    after_cursor: str | None = None,
-    before_cursor: str | None = None,
-    text: str | None = None,
-    sort_by: list[str] | None = None,
+        self,
+        info,
+        page_size: int | None = None,
+        after_cursor: str | None = None,
+        before_cursor: str | None = None,
+        text: str | None = None,
+        sort_by: list[str] | None = None,
 ) -> DistrictCursorPage:
     filters = {}
 
@@ -96,13 +96,13 @@ async def get_all_districts(
 
 
 async def get_all_provinces(
-    self,
-    info,
-    page_size: int | None = None,
-    after_cursor: str | None = None,
-    before_cursor: str | None = None,
-    text: str | None = None,
-    sort_by: list[str] | None = None,
+        self,
+        info,
+        page_size: int | None = None,
+        after_cursor: str | None = None,
+        before_cursor: str | None = None,
+        text: str | None = None,
+        sort_by: list[str] | None = None,
 ) -> ProvinceCursorPage:
     filters = {}
 
@@ -140,7 +140,7 @@ async def get_all_provinces(
 
 
 async def get_all_countries() -> List[CountryType]:
-    return await models.Country.all()
+    return await models.Country.all_async()
 
 
 @strawberry.type

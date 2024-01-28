@@ -67,42 +67,42 @@ class Notice(BaseAuditDBModel):
 
     async def reset_views(self) -> schemas.Notice:
         self.viewers.clear()
-        return await self.save()
+        return await self.save_async()
 
     async def remove_viewer(self, user: User) -> schemas.Notice:
         self.viewers.remove(user)
-        return await self.save()
+        return await self.save_async()
 
     async def add_viewer(self, user: User) -> schemas.Notice:
         if user not in self.viewers:
             self.viewers.append(user)
-            return await self.save()
+            return await self.save_async()
         return self
 
     async def reset_departments(self) -> schemas.Notice:
         self.departments.clear()
-        return await self.save()
+        return await self.save_async()
 
     async def remove_department(self, department: Department) -> schemas.Notice:
         self.departments.remove(department)
-        return await self.save()
+        return await self.save_async()
 
     async def add_department(self, department: Department) -> schemas.Notice:
         if department not in self.departments:
             self.departments.append(department)
-            return await self.save()
+            return await self.save_async()
         return self
 
     async def reset_groups(self) -> schemas.Notice:
         self.groups.clear()
-        return await self.save()
+        return await self.save_async()
 
     async def remove_group(self, group: Group) -> schemas.Notice:
         self.groups.remove(group)
-        return await self.save()
+        return await self.save_async()
 
     async def add_group(self, group: Group) -> schemas.Notice:
         if group not in self.groups:
             self.groups.append(group)
-            return await self.save()
+            return await self.save_async()
         return self

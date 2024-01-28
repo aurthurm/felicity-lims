@@ -21,7 +21,7 @@ async def read_reports(current_user: Annotated[User, Depends(get_current_user)])
     """
     Retrieve previously generated csv reports.
     """
-    _r = await models.ReportMeta.all()
+    _r = await models.ReportMeta.all_async()
     return list(map(lambda r: r.marshall_simple(), _r))
 
 
@@ -73,6 +73,6 @@ async def delete_report(
     for analysis in report.analyses:
         report.analyses.remove(analysis)
     report.analyses = []
-    await report.save()
+    await report.save_async()
     await report.delete()
     return {"uid": report_uid, "message": "Deletion Success!!"}

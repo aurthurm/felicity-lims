@@ -114,7 +114,7 @@ class StorageContainer(BaseAuditDBModel):
         samples = await self.get_samples()
         count = len(samples)
         self.stored_count = count
-        await self.save()
+        await self.save_async()
 
     @classmethod
     async def create(
