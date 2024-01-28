@@ -1,6 +1,7 @@
 import os
 from typing import Any
 
+
 def getenv_boolean(var_name: Any, default_value: bool = False) -> bool:
     result = default_value
     env_value = os.getenv(var_name)

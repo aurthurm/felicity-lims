@@ -3,7 +3,7 @@ from distutils import dir_util
 from pathlib import Path
 
 
-def deleteFile(file_name: str) -> bool:
+def delete_file(file_name: str) -> bool:
     file_path = Path(file_name)
     if file_path.is_file():
         file_path.unlink()

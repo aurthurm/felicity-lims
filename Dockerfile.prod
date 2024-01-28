@@ -29,6 +29,7 @@ WORKDIR /app
 COPY ./felicity /app/felicity
 RUN  rm -rf /app/felicity/templates/static/*
 COPY --from=webapp-build /app/dist /app/felicity/templates/static
+RUN cd /app/felicity && alembic upgrade head
 ENV PYTHONPATH=/app
 CMD ["gunicorn", "felicity.main:felicity", "--bind", "0.0.0.0:8000", "--workers", "4", "--worker-class", "uvicorn.workers.UvicornWorker"]
 
@@ -43,6 +44,7 @@ RUN pip install --no-cache-dir --upgrade -r /tmp/requirements.txt
 WORKDIR /app
 COPY ./felicity /app/felicity
 RUN  rm -rf /app/felicity/templates/static/*
+RUN cd /app/felicity && alembic upgrade head
 ENV PYTHONPATH=/app
 CMD ["gunicorn", "felicity.main:felicity", "--bind", "0.0.0.0:8000", "--workers", "4", "--worker-class", "uvicorn.workers.UvicornWorker"]
 

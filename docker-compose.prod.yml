@@ -1,9 +1,3 @@
-# Option 1: felicity serves static files with caddy as a reverse proxy in front -- felicity_aio_caddy
-# Option 2: felicity serves static files with nginx as a reverse proxy in front  -- felicity_aio_nginx
-# Option 3: felicity serves static files without a reverse proxy -- felicity_aio
-# Option 4: nginx serves static files -- felicity_static_nginx
-# Option 5: caddy serves static files -- felicity_static_caddy
-
 version: '3.8'
 
 volumes:
@@ -31,7 +25,7 @@ services:
     environment:
       PROXY_BACKEND: felicity_aio
       PROXY_PORT: 8000
-      DOMAIN: ${DOMAIN}
+      SERVER_HOST: ${SERVER_HOST}
     depends_on:
       - felicity_aio
     networks:
@@ -45,7 +39,7 @@ services:
     environment:
       PROXY_BACKEND: felicity_aio
       PROXY_PORT: 8000
-      DOMAIN: ${DOMAIN}
+      SERVER_HOST: ${SERVER_HOST}
     volumes:
       - ./services/nginx/proxy/:/etc/nginx/templates/
     depends_on:
@@ -94,7 +88,7 @@ services:
     environment:
       PROXY_BACKEND: felicity_api
       PROXY_PORT: 8000
-      DOMAIN: ${DOMAIN}
+      SERVER_HOST: ${SERVER_HOST}
     depends_on:
       - felicity_api
     networks:
@@ -112,7 +106,7 @@ services:
     environment:
       PROXY_BACKEND: felicity_api
       PROXY_PORT: 8000
-      DOMAIN: ${DOMAIN}
+      SERVER_HOST: ${SERVER_HOST}
     volumes:
       - ./services/nginx/static/:/etc/nginx/templates/
     depends_on:

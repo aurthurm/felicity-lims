@@ -5,50 +5,766 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9f590b69-f929-45a1-8512-12ed6efbf028" name="Changes" comment="Added Invetory starter">
+      <change afterPath="$PROJECT_DIR$/felicity/__main__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.env.production" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/deploy/docker/Dockerfile" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/deploy/docker/dc.aio.prod.yml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/deploy/docker/dc.caddy.prod.yaml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/deploy/docker/dc.dev.yaml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/deploy/docker/dc.nginx.prod.yaml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/deploy/supervisor/setup.sh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/deploy/supervisor/supervisord" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/deploy/supervisor/supervisord.conf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/deploy/systemd/felicity-tasks.target" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/deploy/systemd/felicity-tasks@.service" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/deploy/systemd/felicitylims.service" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/deploy/systemd/nginx-conf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/deploy/systemd/setup.sh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/example.env" beforeDir="false" afterPath="$PROJECT_DIR$/example.env" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/api/deps.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/deps.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/api/gql/user/mutations.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/user/mutations.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/apps/impress/invoicing/engine.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/impress/invoicing/engine.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/apps/impress/sample/engine.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/impress/sample/engine.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/apps/impress/sample/tasks.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/impress/sample/tasks.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/apps/impress/sample/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/impress/sample/utils.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/apps/iol/fhir/utils/read.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/iol/fhir/utils/read.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/apps/user/events.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/user/events.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/core/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/core/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/core/config.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/core/config.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/core/security.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/core/security.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/database/base_class.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/database/base_class.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/database/session.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/database/session.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/init/setup/create_superuser.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/init/setup/create_superuser.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/init/setup/setup_analyses.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/init/setup/setup_analyses.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/init/setup/setup_laboratory.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/init/setup/setup_laboratory.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Dockerfile.prod" beforeDir="false" afterPath="$PROJECT_DIR$/Dockerfile.prod" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apollo.config.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/deploy/build-push.sh" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/deploy/build.sh" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/deploy/daemon/supervisor/setup.sh" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/deploy/daemon/supervisor/supervisord" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/deploy/daemon/supervisor/supervisord.conf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/deploy/daemon/systemd/felicity-tasks.target" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/deploy/daemon/systemd/felicity-tasks@.service" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/deploy/daemon/systemd/felicitylims.service" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/deploy/daemon/systemd/nginx-conf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/deploy/daemon/systemd/setup.sh" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/deploy/deploy.sh" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/deploy/docker/Dockerfile.felicity" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/deploy/docker/Dockerfile.webapp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/deploy/docker/services/nginx/felicity_aio.cnf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/deploy/docker/services/nginx/felicity_aio2.cnf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/deploy/steps.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/deploy/swarm.sh" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/deploy/test-local.sh" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/deploy/test.sh" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/deploy/tracing/readme.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docker-compose.prod.yml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-compose.prod.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_app/immutable/chunks/ArgsList.326a7e53.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_app/immutable/chunks/Button.1a73675c.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_app/immutable/chunks/ChevronDown.eab95b0a.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_app/immutable/chunks/DirectiveTag.7d718981.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_app/immutable/chunks/FieldDetails.67469850.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_app/immutable/chunks/PreviousNextPage.6e22016f.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_app/immutable/chunks/pages.4bbbac1a.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_app/immutable/chunks/paths.35803d68.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_app/immutable/chunks/singletons.091b6d63.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_app/immutable/chunks/stores.592a45d9.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_app/immutable/entry/app.20be8dcb.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_app/immutable/entry/start.aae54c0d.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_app/immutable/nodes/0.112f4590.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_app/immutable/nodes/1.53a241dd.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_app/immutable/nodes/2.c85ccbfe.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_app/immutable/nodes/3.de1517ec.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_app/immutable/nodes/4.b4430515.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_app/immutable/nodes/5.454873c8.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_app/immutable/nodes/6.e4af8ba8.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_app/immutable/nodes/7.89a401b8.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_app/immutable/nodes/8.a2b4f300.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_app/version.json" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_app/version.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/introduction/welcome.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/introduction/welcome.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/actionShipment.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/actionShipment.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/applyVoucher.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/applyVoucher.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/approveStockOrder.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/approveStockOrder.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/authenticateUser.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/authenticateUser.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/cancelAnalysisResults.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/cancelAnalysisResults.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/cancelSamples.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/cancelSamples.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/cloneSamples.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/cloneSamples.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/createAnalysis.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/createAnalysis.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/createAnalysisCategory.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/createAnalysisCategory.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/createAnalysisCorrectionFactor.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/createAnalysisCorrectionFactor.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/createAnalysisDetectionLimit.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/createAnalysisDetectionLimit.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/createAnalysisInterim.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/createAnalysisInterim.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/createAnalysisMapping.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/createAnalysisMapping.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/createAnalysisRequest.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/createAnalysisRequest.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/createAnalysisSpecification.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/createAnalysisSpecification.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/createAnalysisUncertainty.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/createAnalysisUncertainty.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/createCaliberationCertificate.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/createCaliberationCertificate.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/createClient.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/createClient.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/createClientContact.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/createClientContact.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/createCodingStandard.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/createCodingStandard.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/createCountry.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/createCountry.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/createDepartment.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/createDepartment.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/createDistrict.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/createDistrict.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/createGroup.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/createGroup.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/createHazard.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/createHazard.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/createIdentification.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/createIdentification.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/createInstrument.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/createInstrument.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/createInstrumentCaliberation.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/createInstrumentCaliberation.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/createInstrumentType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/createInstrumentType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/createManufacturer.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/createManufacturer.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/createMethod.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/createMethod.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/createNotice.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/createNotice.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/createPatient.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/createPatient.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/createProfile.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/createProfile.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/createProfileMapping.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/createProfileMapping.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/createProvince.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/createProvince.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/createQcLevel.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/createQcLevel.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/createQcSet.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/createQcSet.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/createQcTemplate.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/createQcTemplate.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/createReferralLaboratory.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/createReferralLaboratory.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/createReflexAction.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/createReflexAction.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/createReflexBrain.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/createReflexBrain.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/createReflexRule.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/createReflexRule.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/createRejectionReason.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/createRejectionReason.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/createResultOption.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/createResultOption.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/createSampleType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/createSampleType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/createSampleTypeMapping.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/createSampleTypeMapping.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/createShipment.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/createShipment.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/createStockAdjustment.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/createStockAdjustment.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/createStockCategory.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/createStockCategory.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/createStockItem.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/createStockItem.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/createStockOrder.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/createStockOrder.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/createStockPackaging.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/createStockPackaging.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/createStockProduct.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/createStockProduct.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/createStockTransaction.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/createStockTransaction.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/createStockUnit.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/createStockUnit.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/createStorageContainer.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/createStorageContainer.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/createStorageLocation.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/createStorageLocation.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/createStorageSection.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/createStorageSection.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/createStoreRoom.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/createStoreRoom.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/createSupplier.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/createSupplier.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/createTestBillTransaction.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/createTestBillTransaction.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/createUnit.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/createUnit.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/createUser.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/createUser.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/createUserAuth.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/createUserAuth.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/createVoucher.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/createVoucher.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/createVoucherCode.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/createVoucherCode.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/createWorksheet.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/createWorksheet.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/createWorksheetTemplate.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/createWorksheetTemplate.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/deleteClientContact.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/deleteClientContact.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/deleteMessage.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/deleteMessage.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/deleteNotice.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/deleteNotice.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/deleteStockOrder.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/deleteStockOrder.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/deleteThread.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/deleteThread.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/invalidateSamples.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/invalidateSamples.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/issueStockOrder.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/issueStockOrder.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/printSamples.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/printSamples.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/publishSamples.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/publishSamples.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/reInstateAnalysisResults.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/reInstateAnalysisResults.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/reInstateSamples.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/reInstateSamples.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/receiveSamples.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/receiveSamples.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/recoverPassword.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/recoverSamples.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/recoverSamples.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/refresh.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/refresh.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/rejectSamples.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/rejectSamples.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/replyMessage.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/replyMessage.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/retestAnalysisResults.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/retestAnalysisResults.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/retractAnalysisResults.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/retractAnalysisResults.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/sendMessage.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/sendMessage.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/shipmentManageSamples.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/shipmentManageSamples.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/storeSamples.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/storeSamples.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/submitAnalysisResults.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/submitAnalysisResults.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/submitStockOrder.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/submitStockOrder.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/unlinkUserAuth.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/unlinkUserAuth.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/updateAnalysis.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/updateAnalysis.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/updateAnalysisCategory.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/updateAnalysisCategory.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/updateAnalysisCorrectionFactor.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/updateAnalysisCorrectionFactor.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/updateAnalysisDetectionLimit.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/updateAnalysisDetectionLimit.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/updateAnalysisDiscount.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/updateAnalysisDiscount.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/updateAnalysisInterim.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/updateAnalysisInterim.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/updateAnalysisMapping.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/updateAnalysisMapping.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/updateAnalysisPrice.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/updateAnalysisPrice.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/updateAnalysisSpecification.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/updateAnalysisSpecification.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/updateAnalysisUncertainty.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/updateAnalysisUncertainty.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/updateCaliberationCertificate.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/updateCaliberationCertificate.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/updateClient.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/updateClient.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/updateClientContact.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/updateClientContact.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/updateCodingStandard.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/updateCodingStandard.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/updateCountry.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/updateCountry.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/updateDepartment.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/updateDepartment.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/updateDistrict.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/updateDistrict.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/updateGroup.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/updateGroup.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/updateGroupPermissions.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/updateGroupPermissions.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/updateHazard.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/updateHazard.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/updateIdentification.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/updateIdentification.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/updateInstrument.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/updateInstrument.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/updateInstrumentCaliberation.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/updateInstrumentCaliberation.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/updateInstrumentType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/updateInstrumentType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/updateLaboratory.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/updateLaboratory.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/updateLaboratorySetting.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/updateLaboratorySetting.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/updateManufacturer.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/updateManufacturer.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/updateMethod.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/updateMethod.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/updateNotice.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/updateNotice.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/updatePatient.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/updatePatient.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/updateProfile.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/updateProfile.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/updateProfileDiscount.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/updateProfileDiscount.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/updateProfileMapping.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/updateProfileMapping.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/updateProfilePrice.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/updateProfilePrice.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/updateProvince.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/updateProvince.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/updateQcLevel.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/updateQcLevel.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/updateQcTemplate.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/updateQcTemplate.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/updateReferralLaboratory.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/updateReferralLaboratory.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/updateReflexAction.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/updateReflexAction.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/updateReflexBrain.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/updateReflexBrain.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/updateReflexRule.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/updateReflexRule.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/updateRejectionReason.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/updateRejectionReason.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/updateResultOption.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/updateResultOption.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/updateSampleType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/updateSampleType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/updateSampleTypeMapping.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/updateSampleTypeMapping.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/updateShipment.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/updateShipment.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/updateStockCategory.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/updateStockCategory.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/updateStockItem.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/updateStockItem.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/updateStockOrder.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/updateStockOrder.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/updateStockPackaging.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/updateStockPackaging.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/updateStockProduct.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/updateStockProduct.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/updateStockUnit.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/updateStockUnit.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/updateStorageContainer.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/updateStorageContainer.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/updateStorageLocation.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/updateStorageLocation.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/updateStorageSection.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/updateStorageSection.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/updateStoreRoom.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/updateStoreRoom.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/updateSupplier.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/updateSupplier.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/updateUnit.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/updateUnit.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/updateUser.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/updateUser.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/updateUserAuth.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/updateUserAuth.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/updateVoucher.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/updateVoucher.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/updateVoucherCode.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/updateVoucherCode.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/updateWorksheet.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/updateWorksheet.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/updateWorksheetApplyTemplate.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/updateWorksheetApplyTemplate.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/updateWorksheetManualAssign.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/updateWorksheetManualAssign.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/updateWorksheetTemplate.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/updateWorksheetTemplate.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/verifyAnalysisResults.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/verifyAnalysisResults.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/verifySamples.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/verifySamples.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/viewMessage.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/viewMessage.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mutations/viewNotice.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mutations/viewNotice.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/analysisAll.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/analysisAll.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/analysisByUid.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/analysisByUid.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/analysisCategoryAll.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/analysisCategoryAll.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/analysisCategoryByUid.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/analysisCategoryByUid.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/analysisCorrectionFactorAll.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/analysisCorrectionFactorAll.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/analysisCorrectionFactorByUid.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/analysisCorrectionFactorByUid.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/analysisDetectionLimitAll.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/analysisDetectionLimitAll.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/analysisDetectionLimitByUid.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/analysisDetectionLimitByUid.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/analysisInterimAll.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/analysisInterimAll.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/analysisInterimByUid.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/analysisInterimByUid.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/analysisMappingsByAnalysis.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/analysisMappingsByAnalysis.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/analysisProcessPerformance.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/analysisProcessPerformance.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/analysisRequestAll.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/analysisRequestAll.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/analysisRequestByUid.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/analysisRequestByUid.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/analysisRequestsByClientUid.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/analysisRequestsByClientUid.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/analysisRequestsByPatientUid.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/analysisRequestsByPatientUid.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/analysisResultBySampleUid.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/analysisResultBySampleUid.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/analysisResultByUid.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/analysisResultByUid.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/analysisResultsForWsAssign.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/analysisResultsForWsAssign.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/analysisSpecificationAll.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/analysisSpecificationAll.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/analysisSpecificationUid.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/analysisSpecificationUid.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/analysisUncertaintyAll.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/analysisUncertaintyAll.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/analysisUncertaintyByUid.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/analysisUncertaintyByUid.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/analysisWithoutProfile.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/analysisWithoutProfile.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/auditLogsFilter.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/auditLogsFilter.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/billByUid.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/billByUid.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/billInvoice.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/billInvoice.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/billInvoices.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/billInvoices.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/billTransactions.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/billTransactions.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/bills.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/bills.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/billsForClient.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/billsForClient.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/billsForPatient.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/billsForPatient.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/clientAll.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/clientAll.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/clientByCode.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/clientByCode.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/clientByUid.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/clientByUid.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/clientContactAll.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/clientContactAll.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/clientContactByClientUid.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/clientContactByClientUid.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/clientContactUid.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/clientContactUid.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/clientSearch.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/clientSearch.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/clientsByName.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/clientsByName.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/codingStandardAll.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/codingStandardAll.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/countAnalyteGroupByInstrument.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/countAnalyteGroupByInstrument.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/countAnalyteGroupByStatus.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/countAnalyteGroupByStatus.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/countExtrasGroupByStatus.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/countExtrasGroupByStatus.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/countSampleGroupByAction.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/countSampleGroupByAction.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/countSampleGroupByStatus.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/countSampleGroupByStatus.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/countWorksheetGroupByStatus.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/countWorksheetGroupByStatus.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/countryAll.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/countryAll.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/countryByUid.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/countryByUid.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/departmentAll.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/departmentAll.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/departmentByUid.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/departmentByUid.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/discountForAnalysis.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/discountForAnalysis.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/discountForProfile.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/discountForProfile.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/districtAll.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/districtAll.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/districtByUid.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/districtByUid.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/districtsByProvinceUid.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/districtsByProvinceUid.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/groupAll.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/groupAll.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/groupByUid.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/groupByUid.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/hazardAll.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/hazardAll.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/hazardByUid.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/hazardByUid.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/identificationAll.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/identificationAll.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/identificationByUid.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/identificationByUid.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/impressReportDownload.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/impressReportDownload.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/impressReportsDownload.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/impressReportsDownload.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/impressReportsMeta.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/impressReportsMeta.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/instrumentAll.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/instrumentAll.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/instrumentByUid.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/instrumentByUid.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/instrumentTypeAll.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/instrumentTypeAll.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/instrumentTypeByUid.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/instrumentTypeByUid.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/laboratory.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/laboratory.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/laboratorySetting.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/laboratorySetting.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/manifestReportDownload.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/manifestReportDownload.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/manufacturerAll.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/manufacturerAll.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/manufacturerByUid.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/manufacturerByUid.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/methodAll.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/methodAll.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/methodByUid.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/methodByUid.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/noticeByUid.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/noticeByUid.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/noticeFilter.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/noticeFilter.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/noticesByCreator.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/noticesByCreator.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/notificationByUid.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/notificationByUid.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/notificationFilter.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/notificationFilter.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/patientAll.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/patientAll.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/patientByPatientId.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/patientByPatientId.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/patientByUid.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/patientByUid.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/patientSearch.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/patientSearch.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/permissionAll.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/permissionAll.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/permissionByUid.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/permissionByUid.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/priceForAnalysis.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/priceForAnalysis.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/priceForProfile.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/priceForProfile.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/profileAll.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/profileAll.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/profileByUid.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/profileByUid.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/profileMappingsByProfile.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/profileMappingsByProfile.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/provinceAll.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/provinceAll.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/provinceByUid.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/provinceByUid.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/provincesByCountryUid.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/provincesByCountryUid.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/qcLevelAll.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/qcLevelAll.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/qcLevelByUid.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/qcLevelByUid.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/qcSetAll.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/qcSetAll.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/qcSetByUid.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/qcSetByUid.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/qcTemplateAll.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/qcTemplateAll.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/qcTemplateByUid.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/qcTemplateByUid.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/referralLaboratoryAll.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/referralLaboratoryAll.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/referralLaboratoryByCode.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/referralLaboratoryByCode.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/referralLaboratoryByUid.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/referralLaboratoryByUid.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/reflexRuleAll.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/reflexRuleAll.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/reflexRuleByUid.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/reflexRuleByUid.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/rejectionReasonByUid.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/rejectionReasonByUid.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/rejectionReasonsAll.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/rejectionReasonsAll.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/resultOptionsByAnalysisUid.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/resultOptionsByAnalysisUid.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/sampleAll.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/sampleAll.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/sampleByParentId.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/sampleByParentId.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/sampleByUid.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/sampleByUid.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/sampleCount.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/sampleCount.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/sampleLaggards.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/sampleLaggards.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/sampleProcessPerformance.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/sampleProcessPerformance.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/sampleSearch.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/sampleSearch.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/sampleTypeAll.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/sampleTypeAll.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/sampleTypeByUid.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/sampleTypeByUid.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/sampleTypeMappingsBySampleType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/sampleTypeMappingsBySampleType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/samplesByStorageContainerUid.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/samplesByStorageContainerUid.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/samplesByUids.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/samplesByUids.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/samplesForShipmentAssign.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/samplesForShipmentAssign.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/shipmentAll.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/shipmentAll.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/shipmentById.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/shipmentById.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/shipmentByStatus.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/shipmentByStatus.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/shipmentByUid.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/shipmentByUid.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/stockAdjustmentAll.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/stockAdjustmentAll.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/stockAdjustmentByUid.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/stockAdjustmentByUid.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/stockCategoryAll.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/stockCategoryAll.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/stockCategoryByUid.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/stockCategoryByUid.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/stockItemAll.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/stockItemAll.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/stockItemByUid.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/stockItemByUid.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/stockOrderAll.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/stockOrderAll.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/stockOrderByUid.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/stockOrderByUid.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/stockOrderProductAll.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/stockOrderProductAll.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/stockOrderProductByUid.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/stockOrderProductByUid.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/stockPackagingAll.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/stockPackagingAll.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/stockPackagingByUid.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/stockPackagingByUid.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/stockProductAll.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/stockProductAll.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/stockProductByUid.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/stockProductByUid.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/stockTransactionAll.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/stockTransactionAll.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/stockTransactionByUid.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/stockTransactionByUid.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/stockUnitAll.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/stockUnitAll.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/stockUnitByUid.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/stockUnitByUid.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/storageContainerByUid.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/storageContainerByUid.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/storageContainers.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/storageContainers.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/storageLocationByUid.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/storageLocationByUid.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/storageLocations.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/storageLocations.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/storageSectionByUid.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/storageSectionByUid.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/storageSections.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/storageSections.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/storeRoomAll.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/storeRoomAll.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/storeRoomByUid.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/storeRoomByUid.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/supplierAll.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/supplierAll.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/supplierByUid.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/supplierByUid.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/threadByUid.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/threadByUid.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/threadsForUser.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/threadsForUser.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/unitAll.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/unitAll.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/unitByUid.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/unitByUid.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/userAll.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/userAll.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/userByEmail.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/userByEmail.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/userMe.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/userMe.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/worksheetAll.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/worksheetAll.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/worksheetByAnalyst.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/worksheetByAnalyst.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/worksheetById.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/worksheetById.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/worksheetByStatus.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/worksheetByStatus.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/worksheetByUid.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/worksheetByUid.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/worksheetTemplateAll.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/worksheetTemplateAll.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/worksheetTemplateByUid.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/worksheetTemplateByUid.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/subscriptions/count.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/subscriptions/count.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/subscriptions/latestActivity.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/subscriptions/latestActivity.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/subscriptions/streamAll.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/subscriptions/streamAll.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/ARResultInputType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/ARResultInputType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/ARSampleInputType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/ARSampleInputType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/ActivityFeedType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/ActivityFeedType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/ActivityStreamType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/ActivityStreamType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/AnalysisCategoryInputType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/AnalysisCategoryInputType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/AnalysisCategoryResponse.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/AnalysisCategoryResponse.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/AnalysisCategoryType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/AnalysisCategoryType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/AnalysisCorrectionFactorInput.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/AnalysisCorrectionFactorInput.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/AnalysisCorrectionFactorResponse.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/AnalysisCorrectionFactorResponse.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/AnalysisCorrectionFactorType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/AnalysisCorrectionFactorType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/AnalysisCursorPage.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/AnalysisCursorPage.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/AnalysisDetectionLimitInput.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/AnalysisDetectionLimitInput.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/AnalysisDetectionLimitResponse.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/AnalysisDetectionLimitResponse.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/AnalysisDetectionLimitType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/AnalysisDetectionLimitType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/AnalysisDiscountResponse.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/AnalysisDiscountResponse.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/AnalysisDiscountType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/AnalysisDiscountType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/AnalysisEdge.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/AnalysisEdge.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/AnalysisInputType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/AnalysisInputType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/AnalysisInterimInput.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/AnalysisInterimInput.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/AnalysisInterimResponse.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/AnalysisInterimResponse.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/AnalysisInterimType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/AnalysisInterimType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/AnalysisMappingInputType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/AnalysisMappingInputType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/AnalysisMappingResponse.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/AnalysisMappingResponse.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/AnalysisMappingType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/AnalysisMappingType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/AnalysisPriceType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/AnalysisPriceType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/AnalysisProfileResponse.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/AnalysisProfileResponse.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/AnalysisRequestCursorPage.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/AnalysisRequestCursorPage.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/AnalysisRequestEdge.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/AnalysisRequestEdge.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/AnalysisRequestInputType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/AnalysisRequestInputType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/AnalysisRequestResponse.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/AnalysisRequestResponse.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/AnalysisRequestType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/AnalysisRequestType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/AnalysisRequestWithSamples.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/AnalysisRequestWithSamples.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/AnalysisResultCursorPage.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/AnalysisResultCursorPage.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/AnalysisResultEdge.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/AnalysisResultEdge.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/AnalysisResultResponse.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/AnalysisResultResponse.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/AnalysisResultSubmitResponse.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/AnalysisResultSubmitResponse.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/AnalysisResultType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/AnalysisResultType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/AnalysisSpecificationInput.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/AnalysisSpecificationInput.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/AnalysisSpecificationResponse.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/AnalysisSpecificationResponse.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/AnalysisSpecificationType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/AnalysisSpecificationType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/AnalysisType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/AnalysisType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/AnalysisUncertaintyInput.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/AnalysisUncertaintyInput.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/AnalysisUncertaintyResponse.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/AnalysisUncertaintyResponse.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/AnalysisUncertaintyType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/AnalysisUncertaintyType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/AnalysisWithProfiles.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/AnalysisWithProfiles.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/ApplyVoucherInput.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/ApplyVoucherInput.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/AuditLogType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/AuditLogType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/AuthenticatedData.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/AuthenticatedData.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/AuthenticatedDataResponse.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/AuthenticatedDataResponse.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/BillTransactionInput.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/BillTransactionInput.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/Boolean.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/Boolean.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/BytesScalar.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/BytesScalar.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/CalibrationCertificateInput.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/CalibrationCertificateInput.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/CalibrationCertificateResponse.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/CalibrationCertificateResponse.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/CalibrationCertificateType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/CalibrationCertificateType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/ClientContactInputType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/ClientContactInputType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/ClientContactResponse.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/ClientContactResponse.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/ClientContactType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/ClientContactType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/ClientCursorPage.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/ClientCursorPage.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/ClientEdge.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/ClientEdge.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/ClientInputType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/ClientInputType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/ClientResponse.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/ClientResponse.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/ClientType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/ClientType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/CodingStandardInputType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/CodingStandardInputType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/CodingStandardResponse.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/CodingStandardResponse.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/CodingStandardType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/CodingStandardType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/CountryInputType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/CountryInputType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/CountryResponse.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/CountryResponse.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/CountryType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/CountryType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/CreateQCSetData.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/CreateQCSetData.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/DateTime.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/DateTime.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/DeleteContactResponse.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/DeleteContactResponse.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/DeleteResponse.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/DeleteResponse.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/DeletedItem.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/DeletedItem.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/DepartmentInputType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/DepartmentInputType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/DepartmentResponse.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/DepartmentResponse.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/DepartmentType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/DepartmentType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/DistrictCursorPage.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/DistrictCursorPage.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/DistrictEdge.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/DistrictEdge.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/DistrictInputType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/DistrictInputType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/DistrictResponse.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/DistrictResponse.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/DistrictType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/DistrictType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/Float.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/Float.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/GroupCount.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/GroupCount.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/GroupData.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/GroupData.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/GroupInputType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/GroupInputType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/GroupResponse.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/GroupResponse.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/GroupType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/GroupType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/GroupedCounts.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/GroupedCounts.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/GroupedData.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/GroupedData.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/HazardInputType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/HazardInputType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/HazardResponse.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/HazardResponse.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/HazardType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/HazardType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/IdentificationResponse.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/IdentificationResponse.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/IdentificationType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/IdentificationType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/InstrumentCalibrationInput.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/InstrumentCalibrationInput.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/InstrumentCalibrationResponse.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/InstrumentCalibrationResponse.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/InstrumentCalibrationType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/InstrumentCalibrationType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/InstrumentCursorPage.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/InstrumentCursorPage.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/InstrumentEdge.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/InstrumentEdge.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/InstrumentInputType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/InstrumentInputType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/InstrumentResponse.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/InstrumentResponse.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/InstrumentType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/InstrumentType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/InstrumentTypeCursorPage.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/InstrumentTypeCursorPage.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/InstrumentTypeEdge.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/InstrumentTypeEdge.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/InstrumentTypeInputType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/InstrumentTypeInputType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/InstrumentTypeResponse.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/InstrumentTypeResponse.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/InstrumentTypeType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/InstrumentTypeType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/Int.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/Int.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/JSONScalar.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/JSONScalar.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/LaboratoryInputType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/LaboratoryInputType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/LaboratoryResponse.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/LaboratoryResponse.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/LaboratorySettingInputType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/LaboratorySettingInputType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/LaboratorySettingResponse.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/LaboratorySettingResponse.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/LaboratorySettingType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/LaboratorySettingType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/LaboratoryType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/LaboratoryType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/LaggardCounts.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/LaggardCounts.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/LaggardData.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/LaggardData.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/LaggardStatistics.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/LaggardStatistics.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/ManufacturerInputType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/ManufacturerInputType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/ManufacturerResponse.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/ManufacturerResponse.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/ManufacturerType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/ManufacturerType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/MessageResponse.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/MessageResponse.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/MessageThreadType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/MessageThreadType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/MessageType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/MessageType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/MessagesType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/MessagesType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/MethodCursorPage.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/MethodCursorPage.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/MethodEdge.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/MethodEdge.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/MethodInputType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/MethodInputType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/MethodResponse.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/MethodResponse.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/MethodType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/MethodType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/Mutation.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/Mutation.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/Nothing.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/Nothing.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/NoticeInputType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/NoticeInputType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/NoticeResponse.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/NoticeResponse.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/NoticeType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/NoticeType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/NotificationType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/NotificationType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/OperationError.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/OperationError.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/OperationSuccess.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/OperationSuccess.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/PageInfo.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/PageInfo.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/PatientCursorPage.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/PatientCursorPage.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/PatientEdge.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/PatientEdge.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/PatientIdentificationType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/PatientIdentificationType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/PatientInputType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/PatientInputType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/PatientResponse.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/PatientResponse.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/PatientType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/PatientType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/PatientidentificationInput.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/PatientidentificationInput.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/PermissionType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/PermissionType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/PriceDiscountInput.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/PriceDiscountInput.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/PriceInput.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/PriceInput.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/ProcessCounts.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/ProcessCounts.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/ProcessData.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/ProcessData.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/ProcessStatistics.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/ProcessStatistics.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/ProfileDiscountResponse.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/ProfileDiscountResponse.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/ProfileDiscountType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/ProfileDiscountType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/ProfileInputType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/ProfileInputType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/ProfileMappingInputType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/ProfileMappingInputType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/ProfileMappingResponse.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/ProfileMappingResponse.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/ProfileMappingType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/ProfileMappingType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/ProfilePriceType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/ProfilePriceType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/ProfileType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/ProfileType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/ProfilesServiceResponse.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/ProfilesServiceResponse.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/ProvinceCursorPage.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/ProvinceCursorPage.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/ProvinceEdge.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/ProvinceEdge.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/ProvinceInputType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/ProvinceInputType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/ProvinceResponse.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/ProvinceResponse.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/ProvinceType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/ProvinceType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/QCLevelResponse.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/QCLevelResponse.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/QCLevelType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/QCLevelType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/QCSetCursorPage.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/QCSetCursorPage.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/QCSetEdge.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/QCSetEdge.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/QCSetInputType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/QCSetInputType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/QCSetResponse.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/QCSetResponse.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/QCSetType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/QCSetType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/QCSetWithSamples.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/QCSetWithSamples.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/QCTemplateInputType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/QCTemplateInputType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/QCTemplateResponse.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/QCTemplateResponse.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/QCTemplateType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/QCTemplateType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/Query.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/Query.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/ReferenceSampleInput.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/ReferenceSampleInput.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/ReferralLaboratoryInputType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/ReferralLaboratoryInputType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/ReferralLaboratoryResponse.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/ReferralLaboratoryResponse.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/ReferralLaboratoryType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/ReferralLaboratoryType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/ReflexActionInput.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/ReflexActionInput.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/ReflexActionResponse.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/ReflexActionResponse.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/ReflexActionType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/ReflexActionType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/ReflexAddNewInput.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/ReflexAddNewInput.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/ReflexBrainAdditionType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/ReflexBrainAdditionType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/ReflexBrainCriteriaType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/ReflexBrainCriteriaType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/ReflexBrainFinalType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/ReflexBrainFinalType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/ReflexBrainInput.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/ReflexBrainInput.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/ReflexBrainResponse.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/ReflexBrainResponse.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/ReflexBrainType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/ReflexBrainType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/ReflexCriteriaInput.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/ReflexCriteriaInput.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/ReflexFinalInput.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/ReflexFinalInput.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/ReflexRuleCursorPage.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/ReflexRuleCursorPage.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/ReflexRuleEdge.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/ReflexRuleEdge.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/ReflexRuleInput.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/ReflexRuleInput.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/ReflexRuleResponse.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/ReflexRuleResponse.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/ReflexRuleType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/ReflexRuleType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/RejectionReasonResponse.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/RejectionReasonResponse.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/RejectionReasonType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/RejectionReasonType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/ReportImpressType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/ReportImpressType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/ReportMetaType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/ReportMetaType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/ReservedInputType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/ReservedInputType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/ResultListingType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/ResultListingType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/ResultOptionInputType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/ResultOptionInputType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/ResultOptionResponse.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/ResultOptionResponse.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/ResultOptionType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/ResultOptionType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/ResultedSampleActionResponse.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/ResultedSampleActionResponse.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/ResultedSampleListingType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/ResultedSampleListingType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/SampleActionResponse.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/SampleActionResponse.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/SampleCursorPage.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/SampleCursorPage.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/SampleEdge.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/SampleEdge.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/SampleListingType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/SampleListingType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/SamplePublishInputType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/SamplePublishInputType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/SampleRejectInputType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/SampleRejectInputType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/SampleType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/SampleType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/SampleTypeInputType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/SampleTypeInputType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/SampleTypeMappingInputType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/SampleTypeMappingInputType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/SampleTypeMappingResponse.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/SampleTypeMappingResponse.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/SampleTypeMappingType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/SampleTypeMappingType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/SampleTypeResponse.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/SampleTypeResponse.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/SampleTypeTyp.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/SampleTypeTyp.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/SamplesWithResults.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/SamplesWithResults.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/ShipmentCursorPage.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/ShipmentCursorPage.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/ShipmentEdge.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/ShipmentEdge.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/ShipmentInputType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/ShipmentInputType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/ShipmentListingType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/ShipmentListingType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/ShipmentManageSamplesInput.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/ShipmentManageSamplesInput.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/ShipmentResponse.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/ShipmentResponse.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/ShipmentType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/ShipmentType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/ShipmentUpdateInputType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/ShipmentUpdateInputType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/ShipmentsResponse.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/ShipmentsResponse.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/ShippedSampleType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/ShippedSampleType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/StockAdjustmentCursorPage.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/StockAdjustmentCursorPage.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/StockAdjustmentEdge.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/StockAdjustmentEdge.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/StockAdjustmentInputType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/StockAdjustmentInputType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/StockAdjustmentResponse.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/StockAdjustmentResponse.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/StockAdjustmentType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/StockAdjustmentType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/StockCategoryInputType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/StockCategoryInputType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/StockCategoryResponse.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/StockCategoryResponse.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/StockCategoryType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/StockCategoryType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/StockItemCursorPage.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/StockItemCursorPage.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/StockItemEdge.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/StockItemEdge.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/StockItemInputType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/StockItemInputType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/StockItemResponse.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/StockItemResponse.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/StockItemType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/StockItemType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/StockOrderApprovalInputType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/StockOrderApprovalInputType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/StockOrderCursorPage.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/StockOrderCursorPage.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/StockOrderEdge.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/StockOrderEdge.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/StockOrderInputType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/StockOrderInputType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/StockOrderLineType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/StockOrderLineType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/StockOrderProductLineInputType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/StockOrderProductLineInputType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/StockOrderProductType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/StockOrderProductType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/StockOrderResponse.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/StockOrderResponse.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/StockOrderType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/StockOrderType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/StockPackagingInputType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/StockPackagingInputType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/StockPackagingResponse.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/StockPackagingResponse.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/StockPackagingType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/StockPackagingType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/StockProductCursorPage.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/StockProductCursorPage.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/StockProductEdge.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/StockProductEdge.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/StockProductInputType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/StockProductInputType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/StockProductResponse.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/StockProductResponse.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/StockProductType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/StockProductType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/StockTransactionCursorPage.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/StockTransactionCursorPage.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/StockTransactionEdge.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/StockTransactionEdge.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/StockTransactionInputType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/StockTransactionInputType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/StockTransactionResponse.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/StockTransactionResponse.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/StockTransactionType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/StockTransactionType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/StockUnitInputType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/StockUnitInputType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/StockUnitResponse.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/StockUnitResponse.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/StockUnitType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/StockUnitType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/StorageContainerInputType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/StorageContainerInputType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/StorageContainerResponse.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/StorageContainerResponse.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/StorageContainerType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/StorageContainerType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/StorageLocationInputType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/StorageLocationInputType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/StorageLocationResponse.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/StorageLocationResponse.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/StorageLocationType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/StorageLocationType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/StorageSectionInputType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/StorageSectionInputType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/StorageSectionResponse.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/StorageSectionResponse.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/StorageSectionType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/StorageSectionType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/StoreRoomInputType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/StoreRoomInputType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/StoreRoomResponse.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/StoreRoomResponse.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/StoreRoomType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/StoreRoomType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/StoreSampleResponse.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/StoreSampleResponse.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/StoreSamplesInputType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/StoreSamplesInputType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/StoredSamplesType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/StoredSamplesType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/String.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/String.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/Subscription.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/Subscription.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/SuccessErrorResponse.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/SuccessErrorResponse.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/SupplierInputType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/SupplierInputType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/SupplierResponse.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/SupplierResponse.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/SupplierType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/SupplierType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/TestBillCursorPage.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/TestBillCursorPage.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/TestBillEdge.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/TestBillEdge.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/TestBillInvoiceType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/TestBillInvoiceType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/TestBillTransactionResponse.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/TestBillTransactionResponse.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/TestBillTransactionType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/TestBillTransactionType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/TestBillType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/TestBillType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/UnitInputType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/UnitInputType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/UnitResponse.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/UnitResponse.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/UnitType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/UnitType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/UnknownObjectType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/UnknownObjectType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/UpdatedGroupPerms.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/UpdatedGroupPerms.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/UpdatedGroupPermsResponse.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/UpdatedGroupPermsResponse.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/UserAuthType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/UserAuthType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/UserCursorPage.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/UserCursorPage.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/UserEdge.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/UserEdge.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/UserPreferenceType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/UserPreferenceType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/UserResponse.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/UserResponse.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/UserType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/UserType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/VoucherCodeInput.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/VoucherCodeInput.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/VoucherCodeResponse.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/VoucherCodeResponse.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/VoucherCodeType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/VoucherCodeType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/VoucherCustomerType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/VoucherCustomerType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/VoucherInput.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/VoucherInput.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/VoucherResponse.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/VoucherResponse.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/VoucherType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/VoucherType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/WorkSheetCursorPage.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/WorkSheetCursorPage.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/WorkSheetEdge.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/WorkSheetEdge.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/WorkSheetResponse.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/WorkSheetResponse.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/WorkSheetTemplateResponse.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/WorkSheetTemplateResponse.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/WorkSheetTemplateType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/WorkSheetTemplateType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/WorkSheetType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/WorkSheetType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/WorkSheetTypeSampleTypeAnalysisResultTypeReportMetaTypeUnknownObjectType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/WorkSheetTypeSampleTypeAnalysisResultTypeReportMetaTypeUnknownObjectType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/WorkSheetsResponse.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/WorkSheetsResponse.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/WorksheetListingType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/WorksheetListingType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/types/WorksheetTemplateInputType.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/types/WorksheetTemplateInputType.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/env.local" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/env.production" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/example.env" beforeDir="false" afterPath="$PROJECT_DIR$/env.example" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/api/gql/schema.graphql" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/schema.graphql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/api/rest/api_v1/endpoints/reports.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/rest/api_v1/endpoints/reports.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/api/rest/api_v1/endpoints/setup.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/rest/api_v1/endpoints/setup.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/backend_pre_start.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/worker_prestart.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/celeryworker_pre_start.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/tests_prestart.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/docs/user.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/init/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/init/checks/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/lims/checks/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/init/checks/db.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/lims/checks/db.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/init/conf.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/init/setup/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/lims/seeds/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/init/setup/create_superuser.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/lims/seeds/superusers.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/init/setup/data/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/lims/seeds/data/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/init/setup/data/analyses.json" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/lims/seeds/data/analyses.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/init/setup/data/clients.json" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/lims/seeds/data/clients.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/init/setup/data/country.json" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/lims/seeds/data/country.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/init/setup/data/laboratory.json" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/lims/seeds/data/laboratory.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/init/setup/groups_perms.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/lims/seeds/groups_perms.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/init/setup/setup_analyses.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/lims/seeds/setup_analyses.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/init/setup/setup_laboratory.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/lims/seeds/setup_laboratory.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/felicity/lims/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/lims/__init__.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/felicity/lims/boot.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/lims/boot.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/felicity/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/migrations/versions/247906fc37e3_upgrade_1.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/migrations/versions/3f4a5704d9c2_minor_changes.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/notes.txt" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/felicity/tests/integration/conftest.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/tests/integration/conftest.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/tests/integration/sample_workflow/test_01_user.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/tests/integration/sample_workflow/test_01_user.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/utils/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/utils/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/utils/email/email.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/utils/email/email.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/tests_pre_start.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/prestart.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/utils/dirs.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/utils/dirs.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/utils/env.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/utils/env.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/felicity/views/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/views/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/instructions.txt" beforeDir="false" afterPath="$PROJECT_DIR$/instructions.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/worker-prestart.sh" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/worker_prestart.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/worker-start.sh" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/worker_start.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/worker.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/worker.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ideas.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/instructions.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/log.txt" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/utils/loader.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/magidoc.mjs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pyproject.toml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/reads/reference.txt" beforeDir="false" afterPath="$PROJECT_DIR$/reads/reference.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/ideas.txt" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/ideas.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/caddy/proxy/Caddyfile" beforeDir="false" afterPath="$PROJECT_DIR$/services/caddy/proxy/Caddyfile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/caddy/static/Caddyfile" beforeDir="false" afterPath="$PROJECT_DIR$/services/caddy/static/Caddyfile" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -80,36 +796,39 @@
   &quot;associatedIndex&quot;: 6
 }</component>
   <component name="ProjectId" id="2MIC1H3UyNXIcY9XKNsnyxMomqK" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;dart.analysis.tool.window.visible&quot;: &quot;false&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/home/aurthurm/Development/felicity-lims&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.black.configuration.BlackFormatterConfigurable&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "dart.analysis.tool.window.visible": "false",
+    "git-widget-placeholder": "main",
+    "ignore.virus.scanning.warn.message": "true",
+    "last_opened_file_path": "/home/aurthurm/Development/felicity-lims/felicity",
+    "settings.editor.selected.configurable": "project.propVCSSupport.DirectoryMappings"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/felicity" />
       <recent name="$PROJECT_DIR$" />
       <recent name="$PROJECT_DIR$/reads" />
       <recent name="$PROJECT_DIR$/felicity/apps/impress/barcode" />
       <recent name="$PROJECT_DIR$/felicity/tests/integration" />
-      <recent name="$PROJECT_DIR$/felicity/apps/impress/reports" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/felicity/lims" />
       <recent name="$PROJECT_DIR$/deploy/tracing" />
       <recent name="$PROJECT_DIR$/felicity/apps/impress/shipment" />
       <recent name="$PROJECT_DIR$/felicity/apps/impress" />
       <recent name="$PROJECT_DIR$/felicity/apps/impress/sample" />
-      <recent name="$PROJECT_DIR$/felicity/tests/integration" />
     </key>
   </component>
   <component name="RunManager">

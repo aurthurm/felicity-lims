@@ -1,3 +1,3 @@
-from felicity.lims.boot import factory
+from .boot import factory
 
 __all__ = ["factory"]

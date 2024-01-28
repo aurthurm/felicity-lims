@@ -1,0 +1,1 @@
+import{_ as t,v as o,h as s,k as n,B as r}from"./_plugin-vue_export-helper-3f67fb71.js";const c={},a={class:""};function _(i,l){const e=o("router-view");return s(),n("div",a,[r(e)])}const p=t(c,[["render",_],["__file","/home/aurthurm/Development/felicity-lims/webapp/views/patient/Patients.vue"]]);export{p as default};

@@ -1,6 +1,8 @@
 input ARResultInputType {
   uid: String!
   result: String!
+  methodUid: String!
+  instrumentUid: String!
   reportable: Boolean = true
 }
 
@@ -8,6 +10,7 @@ input ARSampleInputType {
   sampleType: String!
   profiles: [String!]!
   analyses: [String!]!
+  dateCollected: String!
 }
 
 type ActivityFeedType {
@@ -2621,6 +2624,7 @@ type StockOrderLineType {
 input StockOrderProductLineInputType {
   productUid: String!
   quantity: Int!
+  price: Float! = 0
   remarks: String = null
 }
 

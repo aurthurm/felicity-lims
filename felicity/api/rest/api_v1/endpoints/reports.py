@@ -11,7 +11,7 @@ from felicity.apps.job import conf as job_conf
 from felicity.apps.job import models as job_models
 from felicity.apps.job import schemas as job_schemas
 from felicity.apps.user.schemas import User
-from felicity.utils.dirs import deleteFile, resolve_media_dirs_for
+from felicity.utils.dirs import resolve_media_dirs_for, delete_file
 
 reports = APIRouter(tags=["reports"], prefix="/reports")
 
@@ -27,8 +27,8 @@ async def read_reports(current_user: Annotated[User, Depends(get_current_user)])
 
 @reports.post("")
 async def request_report_generation(
-    request_in: an_schema.ReportRequest,
-    current_user: Annotated[User, Depends(get_current_user)],
+        request_in: an_schema.ReportRequest,
+        current_user: Annotated[User, Depends(get_current_user)],
 ) -> Any:
     """
     Generate Reports.
@@ -65,11 +65,11 @@ async def request_report_generation(
 
 @reports.delete("/{report_uid}")
 async def delete_report(
-    report_uid: str,
-    current_user: Annotated[User, Depends(get_current_user)],
+        report_uid: str,
+        current_user: Annotated[User, Depends(get_current_user)],
 ):
     report: models.ReportMeta = await models.ReportMeta.get(uid=report_uid)
-    deleteFile(report.location)
+    delete_file(report.location)
     for analysis in report.analyses:
         report.analyses.remove(analysis)
     report.analyses = []

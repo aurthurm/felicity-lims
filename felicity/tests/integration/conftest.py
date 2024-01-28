@@ -8,7 +8,7 @@ from sqlalchemy.ext.asyncio import create_async_engine
 
 from felicity.core.config import settings
 from felicity.database.base_class import DBModel
-from felicity.init.setup.create_superuser import create_super_user
+from lims import create_super_user
 from main import felicity
 
 fake_engine = Faker()

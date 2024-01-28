@@ -5,7 +5,7 @@
 	}
 }
 
-{$DOMAIN} {
+{$SERVER_HOST} {
 
 	handle /felicity-gql {
 		reverse_proxy {$PROXY_BACKEND}:{$PROXY_PORT}
