@@ -1,9 +1,5 @@
-from .types import (
-    StoreRoomType,
-    StorageLocationType,
-    StorageSectionType,
-    StorageContainerType,
-)
+from .types import (StorageContainerType, StorageLocationType,
+                    StorageSectionType, StoreRoomType)
 
 storage_types = [
     StoreRoomType,

@@ -2,11 +2,8 @@ from datetime import datetime
 
 import strawberry  # noqa
 
-from felicity.api.gql.analysis.types.analysis import (
-    SampleType,
-)
-from felicity.api.gql.types import JSONScalar, BytesScalar
-from felicity.api.gql.types import PageInfo
+from felicity.api.gql.analysis.types.analysis import SampleType
+from felicity.api.gql.types import BytesScalar, JSONScalar, PageInfo
 from felicity.api.gql.user.types import UserType
 from felicity.apps.shipment.models import ShippedSample
 

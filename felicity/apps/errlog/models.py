@@ -2,6 +2,7 @@ from sqlalchemy import Column
 from sqlalchemy.dialects.postgresql import JSONB
 
 from felicity.apps import BaseAuditDBModel
+
 from . import schemas
 
 

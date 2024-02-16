@@ -1,6 +1,7 @@
 from typing import List, Optional
 
 import strawberry  # noqa
+
 from felicity.api.gql.noticeboard.types import NoticeType
 from felicity.api.gql.permissions import IsAuthenticated
 from felicity.apps.noticeboard import models
@@ -18,10 +19,10 @@ class NoticeQuery:
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def notice_filter(
-            self,
-            info,
-            group_uid: str | None,
-            department_uid: str | None,
+        self,
+        info,
+        group_uid: str | None,
+        department_uid: str | None,
     ) -> List[NoticeType]:
         filters = {}
 
@@ -35,5 +36,7 @@ class NoticeQuery:
             filters=filters, sort_attrs=["-created_at"]
         )
 
-        notices = (await models.Notice.session.execute(notice_stmt)).scalars().all_async()
+        notices = (
+            (await models.Notice.session.execute(notice_stmt)).scalars().all_async()
+        )
         return list(notices)

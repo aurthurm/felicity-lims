@@ -1,25 +1,11 @@
-from .types import (
-    StockItemType,
-    StockItemEdge,
-    StockItemCursorPage,
-    StockCategoryType,
-    HazardType,
-    StockUnitType,
-    StockPackagingType,
-    StockProductType,
-    StockProductEdge,
-    StockProductCursorPage,
-    StockOrderType,
-    StockOrderEdge,
-    StockOrderCursorPage,
-    StockOrderProductType,
-    StockTransactionType,
-    StockTransactionEdge,
-    StockTransactionCursorPage,
-    StockAdjustmentType,
-    StockAdjustmentEdge,
-    StockAdjustmentCursorPage,
-)
+from .types import (HazardType, StockAdjustmentCursorPage, StockAdjustmentEdge,
+                    StockAdjustmentType, StockCategoryType,
+                    StockItemCursorPage, StockItemEdge, StockItemType,
+                    StockOrderCursorPage, StockOrderEdge,
+                    StockOrderProductType, StockOrderType, StockPackagingType,
+                    StockProductCursorPage, StockProductEdge, StockProductType,
+                    StockTransactionCursorPage, StockTransactionEdge,
+                    StockTransactionType, StockUnitType)
 
 inventory_types = [
     StockItemType,

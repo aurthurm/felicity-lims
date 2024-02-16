@@ -1,6 +1,6 @@
-from typing import ForwardRef, List, Optional, Any
+from typing import Any, ForwardRef, List, Optional
 
-from pydantic import field_validator, BaseModel
+from pydantic import BaseModel, field_validator
 
 
 class BaseResource:

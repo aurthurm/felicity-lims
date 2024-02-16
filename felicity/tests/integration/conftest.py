@@ -21,7 +21,7 @@ logger = logging.getLogger(__name__)
 
 @pytest_asyncio.fixture(scope="session")
 async def setup():
-    logger.info(f"pytest_configure integration tests...")
+    logger.info("pytest_configure integration tests...")
     async with engine.begin() as conn:
         # await conn.run_sync(DBModel.metadata.drop_all)
         await conn.run_sync(DBModel.metadata.create_all)
@@ -35,10 +35,10 @@ async def setup():
 
 @pytest_asyncio.fixture(scope="session", autouse=True)
 async def initialise(setup):
-    logger.info(f"init_db_add_super_user start")
+    logger.info("init_db_add_super_user start")
     await create_super_user()
     yield
-    logger.info(f"init_db_add_super_user teardown")
+    logger.info("init_db_add_super_user teardown")
 
 
 @pytest_asyncio.fixture
@@ -58,7 +58,7 @@ async def auth_data(app):
                     firstName
                     lastName
                 }
-                token  
+                token
             }
             ... on OperationError {
                 error
@@ -90,31 +90,31 @@ async def users():
         {
             "firstName": "Daniel",
             "lastName": "Diesel",
-            "email": f"daniel@felcity.com",
+            "email": "daniel@felcity.com",
             "openReg": False,
         },
         {
             "firstName": "Brian",
             "lastName": "Moyo",
-            "email": f"brian@felcity.com",
+            "email": "brian@felcity.com",
             "openReg": False,
         },
         {
             "firstName": "Teddy",
             "lastName": "Estat",
-            "email": f"teddy@felcity.com",
+            "email": "teddy@felcity.com",
             "openReg": False,
         },
         {
             "firstName": "Samantha",
             "lastName": "Mapako",
-            "email": f"samantha@felcity.com",
+            "email": "samantha@felcity.com",
             "openReg": False,
         },
         {
             "firstName": "Peter",
             "lastName": "Tosh",
-            "email": f"peter@felcity.com",
+            "email": "peter@felcity.com",
             "openReg": False,
         },
     ]

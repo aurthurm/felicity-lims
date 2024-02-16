@@ -59,7 +59,7 @@ class UserAuth(AbstractAuth):
                 auth_obj["login_retry"] = retries
                 if retries == 3:
                     auth_obj["is_blocked"] = True
-                    msg = f"Sorry your Account has been Blocked"
+                    msg = "Sorry your Account has been Blocked"
             await self.update(auth_obj)
             raise Exception(msg)
         if self.login_retry != 0:
@@ -139,7 +139,7 @@ class User(AbstractBaseUser):
             auth = await UserAuth.get(uid=self.auth_uid)
             await auth.acquire_user_type(conf.LABORATORY_CONTACT)
         else:
-            raise Exception(f"auth obj is None")
+            raise Exception("auth obj is None")
 
     async def unlink_auth(self):
         auth = self.auth

@@ -1,43 +1,30 @@
 from datetime import datetime
 
-from sqlalchemy import (
-    Column,
-    DateTime,
-    Float,
-    ForeignKey,
-    Integer,
-    String,
-    Boolean,
-    Table,
-    LargeBinary,
-)
+from sqlalchemy import (Boolean, Column, DateTime, Float, ForeignKey, Integer,
+                        LargeBinary, String, Table)
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import relationship
 
 from felicity.apps import Auditable, DBModel
-from felicity.apps.billing.config import DiscountType, DiscountValueType, TransactionKind
-from felicity.apps.billing.schemas import (
-    AnalysisPriceCreate,
-    AnalysisPriceUpdate,
-    ProfilePriceCreate,
-    ProfilePriceUpdate,
-    AnalysisDiscountCreate,
-    AnalysisDiscountUpdate,
-    ProfileDiscountCreate,
-    ProfileDiscountUpdate,
-    VoucherUpdate,
-    VoucherCreate,
-    VoucherCodeCreate,
-    VoucherCodeUpdate,
-    VoucherCustomerCreate,
-    VoucherCustomerUpdate,
-    TestBillCreate,
-    TestBillUpdate,
-    TestBillTransactionCreate,
-    TestBillTransactionUpdate,
-    TestBillInvoiceUpdate,
-    TestBillInvoiceCreate,
-)
+from felicity.apps.billing.config import (DiscountType, DiscountValueType,
+                                          TransactionKind)
+from felicity.apps.billing.schemas import (AnalysisDiscountCreate,
+                                           AnalysisDiscountUpdate,
+                                           AnalysisPriceCreate,
+                                           AnalysisPriceUpdate,
+                                           ProfileDiscountCreate,
+                                           ProfileDiscountUpdate,
+                                           ProfilePriceCreate,
+                                           ProfilePriceUpdate, TestBillCreate,
+                                           TestBillInvoiceCreate,
+                                           TestBillInvoiceUpdate,
+                                           TestBillTransactionCreate,
+                                           TestBillTransactionUpdate,
+                                           TestBillUpdate, VoucherCodeCreate,
+                                           VoucherCodeUpdate, VoucherCreate,
+                                           VoucherCustomerCreate,
+                                           VoucherCustomerUpdate,
+                                           VoucherUpdate)
 from felicity.apps.common.models import IdSequence
 
 
@@ -256,11 +243,15 @@ class TestBillTransaction(Auditable):
     action_message = Column(String, nullable=True)
 
     @classmethod
-    async def create(cls, obj_in: dict | TestBillTransactionCreate) -> "TestBillTransaction":
+    async def create(
+        cls, obj_in: dict | TestBillTransactionCreate
+    ) -> "TestBillTransaction":
         data = cls._import(obj_in)
         return await super().create(**data)
 
-    async def update(self, obj_in: dict | TestBillTransactionUpdate) -> "TestBillTransaction":
+    async def update(
+        self, obj_in: dict | TestBillTransactionUpdate
+    ) -> "TestBillTransaction":
         data = self._import(obj_in)
         return await super().update(**data)
 

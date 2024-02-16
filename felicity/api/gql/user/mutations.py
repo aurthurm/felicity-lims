@@ -3,26 +3,21 @@ import time
 
 import strawberry  # noqa
 
-from felicity.api.gql.auth import (
-    auth_from_info,
-    verify_user_auth,
-)
+from felicity.api.gql.auth import auth_from_info, verify_user_auth
 from felicity.api.gql.permissions import IsAuthenticated
-from felicity.api.gql.types import MessageResponse, MessagesType, OperationError
+from felicity.api.gql.types import (MessageResponse, MessagesType,
+                                    OperationError)
 from felicity.api.gql.types.generic import StrawberryMapper
-from felicity.api.gql.user.types import (
-    AuthenticatedData,
-    GroupType,
-    UpdatedGroupPerms,
-    UserAuthType,
-    UserType,
-)
+from felicity.api.gql.user.types import (AuthenticatedData, GroupType,
+                                         UpdatedGroupPerms, UserAuthType,
+                                         UserType)
 from felicity.apps.user import models as user_models
 from felicity.apps.user import schemas as user_schemas
 from felicity.core import security
 from felicity.core.config import get_settings
 from felicity.core.events import post_event
-from felicity.core.security import generate_password_reset_token, verify_password_reset_token
+from felicity.core.security import (generate_password_reset_token,
+                                    verify_password_reset_token)
 
 settings = get_settings()
 
@@ -83,13 +78,13 @@ def simple_task(message: str):
 class UserMutations:
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_user(
-            self,
-            info,
-            first_name: str,
-            last_name: str,
-            email: str,
-            group_uid: str | None = None,
-            open_reg: bool | None = False,
+        self,
+        info,
+        first_name: str,
+        last_name: str,
+        email: str,
+        group_uid: str | None = None,
+        open_reg: bool | None = False,
     ) -> UserResponse:
         if open_reg and not settings.USERS_OPEN_REGISTRATION:
             return OperationError(
@@ -127,15 +122,15 @@ class UserMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_user(
-            self,
-            info,
-            user_uid: str,
-            first_name: str | None,
-            last_name: str | None,
-            mobile_phone: str | None,
-            email: str | None,
-            group_uid: str | None,
-            is_active: bool | None,
+        self,
+        info,
+        user_uid: str,
+        first_name: str | None,
+        last_name: str | None,
+        mobile_phone: str | None,
+        email: str | None,
+        group_uid: str | None,
+        is_active: bool | None,
     ) -> UserResponse:
 
         user = await user_models.User.get_one(uid=user_uid)
@@ -171,7 +166,7 @@ class UserMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_user_auth(
-            self, info, user_uid: str, user_name: str, password: str, passwordc: str
+        self, info, user_uid: str, user_name: str, password: str, passwordc: str
     ) -> UserResponse:
 
         auth = await user_models.UserAuth.get_by_username(username=user_name)
@@ -220,12 +215,12 @@ class UserMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_user_auth(
-            self,
-            info,
-            user_uid: str,
-            user_name: str | None,
-            password: str | None,
-            passwordc: str | None,
+        self,
+        info,
+        user_uid: str,
+        user_name: str | None,
+        password: str | None,
+        passwordc: str | None,
     ) -> UserResponse:
 
         if not user_name or not password:
@@ -272,7 +267,7 @@ class UserMutations:
 
     @strawberry.mutation
     async def authenticate_user(
-            self, info, username: str, password: str
+        self, info, username: str, password: str
     ) -> AuthenticatedDataResponse:
         auth = await user_models.UserAuth.get_by_username(username=username)
         if not auth:
@@ -337,7 +332,7 @@ class UserMutations:
 
     @strawberry.mutation()
     async def validate_password_reset_token(
-            self, info, token: str
+        self, info, token: str
     ) -> PasswordResetValidityResponse:
 
         email = verify_password_reset_token(token)
@@ -354,12 +349,12 @@ class UserMutations:
 
     @strawberry.mutation()
     async def reset_password(
-            self,
-            info,
-            auth_uid: str,
-            username: str,
-            password: str,
-            passwordc: str,
+        self,
+        info,
+        auth_uid: str,
+        username: str,
+        password: str,
+        passwordc: str,
     ) -> MessageResponse:
 
         auth = await user_models.UserAuth.get(uid=auth_uid, user_name=username)
@@ -432,7 +427,7 @@ class UserMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_group_permissions(
-            self, info, group_uid: str, permission_uid: str
+        self, info, group_uid: str, permission_uid: str
     ) -> UpdatedGroupPermsResponse:
         if not group_uid or not permission_uid:
             return OperationError(error="Group and Permission are required.")

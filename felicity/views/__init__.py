@@ -5,7 +5,6 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
 from felicity.core import get_settings
-from felicity.utils.loader import load_schema_from_path
 
 settings = get_settings()
 STATIC_DIR = f"{settings.BASE_DIR}/templates/static/"

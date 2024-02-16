@@ -1,7 +1,8 @@
 import logging
 from typing import List
 
-from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, String, Table
+from sqlalchemy import (Boolean, Column, DateTime, ForeignKey, Integer, String,
+                        Table)
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import relationship
 
@@ -69,11 +70,15 @@ class WorkSheetTemplate(WSBase):
     sample_type = relationship(analysis_models.SampleType, lazy="selectin")
 
     @classmethod
-    async def create(cls, obj_in: dict | schemas.WSTemplateCreate) -> schemas.WSTemplate:
+    async def create(
+        cls, obj_in: dict | schemas.WSTemplateCreate
+    ) -> schemas.WSTemplate:
         data = cls._import(obj_in)
         return await super().create(**data)
 
-    async def update(self, obj_in: dict | schemas.WSTemplateUpdate) -> schemas.WSTemplate:
+    async def update(
+        self, obj_in: dict | schemas.WSTemplateUpdate
+    ) -> schemas.WSTemplate:
         data = self._import(obj_in)
         return await super().update(**data)
 

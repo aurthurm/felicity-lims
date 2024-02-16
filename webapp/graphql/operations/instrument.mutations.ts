@@ -174,6 +174,58 @@ export const EDIT_INSTRUMENT = gql`
     }
 `;
 
+
+// laboratory INSTRUMENT
+export const ADD_LABORATORY_INSTRUMENT = gql`
+    mutation AddLaboratoryInstrument($payload: LaboratoryInstrumentInputType!) {
+        createLaboratoryInstrument(payload: $payload) {
+            ... on LaboratoryInstrumentType {
+                uid
+                labName
+                serialNumber
+                instrumentUid
+                instrument {
+                    uid
+                    name
+                }
+                dateCommissioned
+                dateDecommissioned
+            }
+
+            ... on OperationError {
+                __typename
+                error
+                suggestion
+            }
+        }
+    }
+`;
+
+export const EDIT_LABORATORY_INSTRUMENT = gql`
+    mutation EditLaboratoryInstrument($uid: String!, $payload: LaboratoryInstrumentInputType!) {
+        updateLaboratoryInstrument(uid: $uid, payload: $payload) {
+            ... on LaboratoryInstrumentType {
+                uid
+                labName
+                serialNumber
+                instrumentUid
+                instrument {
+                    uid
+                    name
+                }
+                dateCommissioned
+                dateDecommissioned
+            }
+
+            ... on OperationError {
+                __typename
+                error
+                suggestion
+            }
+        }
+    }
+`;
+
 // METHOD
 export const ADD_METHOD = gql`
     mutation AddMethod($payload: MethodInputType!) {

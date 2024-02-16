@@ -1,6 +1,6 @@
 import base64
 import json
-from typing import Any, NewType, TypeVar, Generic
+from typing import Any, Generic, NewType, TypeVar
 
 import strawberry
 

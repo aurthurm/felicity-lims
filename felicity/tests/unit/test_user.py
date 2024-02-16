@@ -5,7 +5,6 @@ import pytest
 from felicity.apps.user.models import User
 from felicity.apps.user.schemas import UserCreate
 
-
 # @pytest.fixture
 # async def user():
 #     user_in = UserCreate(first_name='John', last_name='Doe', email='john.doe@example.com')

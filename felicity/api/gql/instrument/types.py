@@ -5,7 +5,7 @@ from typing import List, Optional
 import strawberry  # noqa
 
 from felicity.api.gql.setup.types import ManufacturerType, SupplierType
-from felicity.api.gql.types import PageInfo
+from felicity.api.gql.types import BytesScalar, PageInfo
 from felicity.api.gql.user.types import UserType
 from felicity.apps.instrument.models import Method
 
@@ -63,7 +63,8 @@ class InstrumentType:
 
     @strawberry.field
     async def methods(self, info) -> Optional[List["MethodType"]]:
-        return await Method.get(instruments___uid=self.uid)
+        m = await Method.get(instruments___uid=self.uid)
+        return MethodType(**m) if m else None
 
 
 #  relay paginations
@@ -82,10 +83,42 @@ class InstrumentCursorPage:
 
 
 @strawberry.type
+class LaboratoryInstrumentType:
+    uid: str
+    instrument_uid: str | None = None
+    instrument: InstrumentType | None = None
+    lab_name: str | None = None
+    serial_number: str | None = None
+    date_commissioned: datetime | None = None
+    date_decommissioned: datetime | None = None
+    #
+    created_by_uid: str | None
+    created_by: Optional["UserType"]
+    created_at: str | None
+    updated_by_uid: str | None
+    updated_by: Optional["UserType"]
+    updated_at: str | None
+
+
+@strawberry.type
+class LaboratoryInstrumentEdge:
+    cursor: str
+    node: LaboratoryInstrumentType
+
+
+@strawberry.type
+class LaboratoryInstrumentCursorPage:
+    page_info: PageInfo
+    edges: Optional[List[LaboratoryInstrumentEdge]]
+    items: Optional[List[LaboratoryInstrumentType]]
+    total_count: int
+
+
+@strawberry.type
 class InstrumentCalibrationType:
     uid: str
-    instrument_uid: str
-    instrument: InstrumentType | None
+    laboratory_instrument_uid: str
+    laboratory_instrument: LaboratoryInstrumentType | None
     calibration_id: str
     date_reported: datetime
     report_id: str
@@ -95,13 +128,20 @@ class InstrumentCalibrationType:
     notes_before: str
     work_done: str
     remarks: str
+    #
+    created_by_uid: str | None
+    created_by: Optional["UserType"]
+    created_at: str | None
+    updated_by_uid: str | None
+    updated_by: Optional["UserType"]
+    updated_at: str | None
 
 
 @strawberry.type
 class CalibrationCertificateType:
     uid: str
-    instrument_uid: str
-    instrument: InstrumentType | None
+    laboratory_instrument_uid: str
+    laboratory_instrument: LaboratoryInstrumentType | None
     certificate_code: str
     internal: bool
     issuer: str
@@ -111,6 +151,34 @@ class CalibrationCertificateType:
     performed_by: str
     approved_by: str
     remarks: str
+    #
+    created_by_uid: str | None
+    created_by: Optional["UserType"]
+    created_at: str | None
+    updated_by_uid: str | None
+    updated_by: Optional["UserType"]
+    updated_at: str | None
+
+
+@strawberry.type
+class InstrumentCompetenceType:
+    uid: str
+    instrument_uid: str
+    instrument: InstrumentType | None
+    description: str
+    user_uid: str
+    user: UserType | None
+    issue_date: datetime
+    expiry_date: datetime
+    internal: bool
+    competence: BytesScalar | None
+    #
+    created_by_uid: str | None
+    created_by: Optional["UserType"]
+    created_at: str | None
+    updated_by_uid: str | None
+    updated_by: Optional["UserType"]
+    updated_at: str | None
 
 
 @strawberry.type

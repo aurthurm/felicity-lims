@@ -2,7 +2,8 @@ import logging
 from datetime import datetime
 from typing import List
 
-from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, String, Table
+from sqlalchemy import (Boolean, Column, DateTime, ForeignKey, Integer, String,
+                        Table)
 from sqlalchemy.orm import relationship
 
 from felicity.apps import Auditable, BaseAuditDBModel, DBModel
@@ -39,8 +40,10 @@ class AnalysisResult(Auditable, BaseMPTT):
     sample = relationship("Sample", back_populates="analysis_results", lazy="selectin")
     analysis_uid = Column(String, ForeignKey("analysis.uid"), nullable=False)
     analysis = relationship("Analysis", backref="analysis_results", lazy="selectin")
-    instrument_uid = Column(String, ForeignKey("instrument.uid"), nullable=True)
-    instrument = relationship("Instrument", lazy="selectin")
+    laboratory_instrument_uid = Column(
+        String, ForeignKey("laboratory_instrument.uid"), nullable=True
+    )
+    laboratory_instrument = relationship("LaboratoryInstrument", lazy="selectin")
     method_uid = Column(String, ForeignKey("method.uid"), nullable=True)
     method = relationship("Method", lazy="selectin")
     result = Column(String, nullable=True)
@@ -105,7 +108,7 @@ class AnalysisResult(Auditable, BaseMPTT):
                 "sample_uid": self.sample.uid,
                 "analysis_uid": self.analysis_uid,
                 "status": conf.states.result.PENDING,
-                "instrument_uid": self.instrument_uid,
+                "laboratory_instrument_uid": self.laboratory_instrument_uid,
                 "method_uid": self.method_uid,
                 "parent_id": self.uid,
                 "retest": True,
@@ -126,18 +129,20 @@ class AnalysisResult(Auditable, BaseMPTT):
             return retest, final
         return retest, self
 
-    async def assign(self, ws_uid, position, instrument_uid):
+    async def assign(self, ws_uid, position, laboratory_instrument_uid):
         self.worksheet_uid = ws_uid
         self.assigned = True
         self.worksheet_position = position
-        self.instrument_uid = instrument_uid if instrument_uid else None
+        self.laboratory_instrument_uid = (
+            laboratory_instrument_uid if laboratory_instrument_uid else None
+        )
         return await self.save_async()
 
     async def un_assign(self):
         self.worksheet_uid = None
         self.assigned = False
         self.worksheet_position = None
-        self.instrument_uid = None
+        self.laboratory_instrument_uid = None
         return await self.save_async()
 
     async def verify(self, verifier):
@@ -211,11 +216,11 @@ class AnalysisResult(Auditable, BaseMPTT):
 
     @classmethod
     async def filter_for_worksheet(
-            cls,
-            analyses_status: str,
-            analysis_uid: str,
-            sample_type_uid: list[str],
-            limit: int,
+        cls,
+        analyses_status: str,
+        analysis_uid: str,
+        sample_type_uid: list[str],
+        limit: int,
     ) -> List[schemas.AnalysisResult]:
 
         filters = {
@@ -239,13 +244,13 @@ class AnalysisResult(Auditable, BaseMPTT):
 
     @classmethod
     async def create(
-            cls, obj_in: dict | schemas.AnalysisResultCreate
+        cls, obj_in: dict | schemas.AnalysisResultCreate
     ) -> schemas.AnalysisResult:
         data = cls._import(obj_in)
         return await super().create(**data)
 
     async def update(
-            self, obj_in: dict | schemas.AnalysisResultUpdate
+        self, obj_in: dict | schemas.AnalysisResultUpdate
     ) -> schemas.AnalysisResult:
         data = self._import(obj_in)
         return await super().update(**data)

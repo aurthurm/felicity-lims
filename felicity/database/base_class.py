@@ -1,17 +1,16 @@
 import logging
 from datetime import datetime
-from typing import Any, AsyncIterator, List, Optional
+from typing import Any, AsyncIterator, List, Optional, Self
 
 from sqlalchemy import Column, String
 from sqlalchemy import or_ as sa_or_
-from sqlalchemy import select
-from sqlalchemy import update
+from sqlalchemy import select, update
+from sqlalchemy.ext.asyncio import AsyncAttrs
 from sqlalchemy.orm import DeclarativeBase
 from sqlalchemy.sql import func
 from sqlalchemy.sql.expression import bindparam
-from sqlalchemy_mixins import (
-    AllFeaturesMixin, smart_query, ActiveRecordMixinAsync
-)
+from sqlalchemy_mixins import (ActiveRecordMixinAsync, AllFeaturesMixin,
+                               smart_query)
 
 from felicity.core.dtz import format_datetime
 from felicity.core.uid_gen import get_flake_uid
@@ -23,7 +22,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
-class DBModel(DeclarativeBase, ActiveRecordMixinAsync, AllFeaturesMixin):
+class DBModel(DeclarativeBase, AsyncAttrs, ActiveRecordMixinAsync, AllFeaturesMixin):
     __name__: str
     __abstract__ = True
     __mapper_args__ = {"eager_defaults": True}
@@ -86,7 +85,7 @@ class DBModel(DeclarativeBase, ActiveRecordMixinAsync, AllFeaturesMixin):
         return found
 
     @classmethod
-    async def get(cls, **kwargs):
+    async def get(cls, **kwargs) -> Self:
         """Return the first value in database based on given args.
         Example:
             User.get(id=5)
@@ -98,7 +97,7 @@ class DBModel(DeclarativeBase, ActiveRecordMixinAsync, AllFeaturesMixin):
             return found
 
     @classmethod
-    async def create(cls, **kwargs):
+    async def create(cls, **kwargs) -> Self:
         """Returns a new get instance of the class
         This is so that mutations can work well and prevent async IO issues
         """
@@ -131,7 +130,7 @@ class DBModel(DeclarativeBase, ActiveRecordMixinAsync, AllFeaturesMixin):
                 await session.rollback()
                 raise
 
-    async def update(self, **kwargs):
+    async def update(self, **kwargs) -> Self:
         """Returns a new get instance of the class
         This is so that mutations can work well and prevent async IO issues
         """
@@ -392,13 +391,13 @@ class DBModel(DeclarativeBase, ActiveRecordMixinAsync, AllFeaturesMixin):
 
     @classmethod
     async def paginate_with_cursors(
-            cls,
-            page_size: int = None,
-            after_cursor: Any = None,
-            before_cursor: Any = None,
-            filters: Any = None,
-            sort_by: list[str] = None,
-            get_related: str = None,
+        cls,
+        page_size: int = None,
+        after_cursor: Any = None,
+        before_cursor: Any = None,
+        filters: Any = None,
+        sort_by: list[str] = None,
+        get_related: str = None,
     ) -> PageCursor:
         if not filters:
             filters = {}
@@ -475,11 +474,11 @@ class DBModel(DeclarativeBase, ActiveRecordMixinAsync, AllFeaturesMixin):
 
     @classmethod
     def build_page_info(
-            cls,
-            start_cursor: str = None,
-            end_cursor: str = None,
-            has_next_page: bool = False,
-            has_previous_page: bool = False,
+        cls,
+        start_cursor: str = None,
+        end_cursor: str = None,
+        has_next_page: bool = False,
+        has_previous_page: bool = False,
     ) -> PageInfo:
         return PageInfo(
             **{

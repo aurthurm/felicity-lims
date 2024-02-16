@@ -6,6 +6,7 @@ from sqlalchemy.orm import relationship
 from felicity.apps import BaseAuditDBModel, DBModel
 from felicity.apps.setup.models import Department
 from felicity.apps.user.models import Group, User
+
 from . import schemas
 
 logging.basicConfig(level=logging.INFO)

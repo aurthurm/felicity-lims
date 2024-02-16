@@ -81,13 +81,13 @@ class ClientContact(AbstractBaseUser):
 
     @classmethod
     async def create(
-            cls, contact_in: schemas.ClientContactCreate
+        cls, contact_in: schemas.ClientContactCreate
     ) -> schemas.ClientContact:
         data = cls._import(contact_in)
         return await super().create(**data)
 
     async def update(
-            self, contact_in: schemas.ClientContactUpdate
+        self, contact_in: schemas.ClientContactUpdate
     ) -> schemas.ClientContact:
         data = self._import(contact_in)
         return await super().update(**data)

@@ -34,7 +34,7 @@ const state = reactive({
 });
 
 onMounted(() => {
-  setupStore.fetchInstruments();
+  setupStore.fetchLaboratoryInstruments();
   setupStore.fetchMethods();
   sampleStore.fetchAnalysisResultsForSample(route.params.sampleUid)
 });
@@ -59,7 +59,7 @@ function prepareResults(): IAnalysisResult[] {
   let results = getResultsChecked();
   let ready: any[] = [];
   results?.forEach((result: IAnalysisResult) =>
-    ready.push({ uid: result.uid, result: result.result, methodUid: result.methodUid, instrumentUid: result.instrumentUid })
+    ready.push({ uid: result.uid, result: result.result, methodUid: result.methodUid, laboratoryInstrumentUid: result.laboratoryInstrumentUid })
   );
   return ready;
 }
@@ -335,14 +335,17 @@ const retestResults = () =>
             </td>
             <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
               <div v-if="!isEditable(result)" class="text-sm leading-5 text-sky-800">
-                {{ result.instrument?.name || "---" }}
+                {{ result.laboratoryInstrument?.labName || "---" }}
               </div>
               <label v-else class="block col-span-2 mb-2">
-                <select class="form-input mt-1 block w-full" v-model="result.instrumentUid" @change="check(result)">
+                <select class="form-input mt-1 block w-full" v-model="result.laboratoryInstrumentUid" @change="check(result)">
                   <option value=""></option>
-                  <option v-for="instrument in setupStore.instruments" :key="instrument.uid"
+                  <option v-for="instrument in setupStore.laboratoryInstruments" :key="instrument.uid"
                     :value="instrument.uid">
-                    {{ instrument.name }}
+                    <div class="flex justify-start items-center gap-x-1">
+                      <span>{{ instrument.labName }}</span> &rarr;
+                      <span class="text-xs font-thin text-gray-300">({{ instrument?.instrument?.name }})</span>
+                    </div>
                   </option>
                 </select>
               </label>

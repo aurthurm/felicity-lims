@@ -1,15 +1,6 @@
-from .generic import (
-    BytesScalar,
-    JSONScalar,
-    PageInfo,
-    DeletedItem,
-    MessagesType,
-    OperationError,
-    OperationSuccess,
-    DeleteResponse,
-    MessageResponse,
-    SuccessErrorResponse,
-)
+from .generic import (BytesScalar, DeletedItem, DeleteResponse, JSONScalar,
+                      MessageResponse, MessagesType, OperationError,
+                      OperationSuccess, PageInfo, SuccessErrorResponse)
 
 generic_types = [
     BytesScalar,

@@ -1,11 +1,9 @@
 from datetime import datetime
 from typing import Optional
 
-from pydantic import ConfigDict
-from pydantic import EmailStr
+from pydantic import ConfigDict, EmailStr
 
 from felicity.apps.common.schemas import BaseAuditModel
-
 
 #
 #  Patient Schema

@@ -6,7 +6,6 @@ from pydantic import ConfigDict
 from felicity.apps.common.schemas import BaseAuditModel, BaseModel
 from felicity.apps.setup.schemas import Department, Unit
 
-
 #
 # Coding standard Schemas
 #

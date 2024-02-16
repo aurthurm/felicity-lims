@@ -1,17 +1,15 @@
-from functools import lru_cache
 import os
+from functools import lru_cache
 from pathlib import Path
 from typing import Any
 
-from dotenv import load_dotenv
 import pytz
-from pydantic import (
-    AnyHttpUrl, EmailStr, Extra, field_validator, ValidationInfo
-)
+from dotenv import load_dotenv
+from pydantic import (AnyHttpUrl, EmailStr, ValidationInfo,
+                      field_validator)
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
-from felicity.utils.env import getenv_value, getenv_boolean
-
+from felicity.utils.env import getenv_boolean, getenv_value
 
 BASE_DIR: str = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 ENV_FILE: Path = Path(BASE_DIR, "./../.env")
@@ -31,11 +29,18 @@ class Settings(BaseSettings):
     PROJECT_NAME: str = getenv_value("PROJECT_NAME", "Felicity LIMS")
     SERVER_NAME: str = getenv_value("SERVER_NAME", "felicity-lims")
     SERVER_HOST: AnyHttpUrl = getenv_value("SERVER_HOST", "https://localhost")
-    CORS_ORIGINS: list[str] = ["http://localhost:5173", "http://localhost:3000", "http://localhost:8000"]
+    CORS_ORIGINS: list[str] = [
+        "http://localhost:5173",
+        "http://localhost:3000",
+        "http://localhost:8000",
+    ]
     CORS_SUPPORTS_CREDENTIALS: bool = True
     CORS_ALLOW_HEADERS: list[str] = [
-        "Authorization", "access-control-allow-methods", "content-type",
-        "access-control-allow-origin", "access-control-allow-headers",
+        "Authorization",
+        "access-control-allow-methods",
+        "content-type",
+        "access-control-allow-origin",
+        "access-control-allow-headers",
     ]
     DATE_STR_FORMAT: str = "%d-%m-%y"
     DATETIME_STR_FORMAT: str = f"{DATE_STR_FORMAT} %H:%M"
@@ -54,13 +59,13 @@ class Settings(BaseSettings):
     SQLALCHEMY_TEST_DATABASE_URI: str | None = None
 
     @field_validator("SQLALCHEMY_DATABASE_URI")
-    def assemble_async_db_connection(
-            cls, v: str | None, info: ValidationInfo
-    ) -> str:
+    def assemble_async_db_connection(cls, v: str | None, info: ValidationInfo) -> str:
         if isinstance(v, str):
             return v
         return f'postgresql+asyncpg://{info.data.get("POSTGRES_USER")}:{info.data.get("POSTGRES_PASSWORD")}\
-        @{info.data.get("POSTGRES_SERVER")}/{info.data.get("POSTGRES_DB") or ""}'.replace(" ", "")
+        @{info.data.get("POSTGRES_SERVER")}/{info.data.get("POSTGRES_DB") or ""}'.replace(
+            " ", ""
+        )
 
     @field_validator("SQLALCHEMY_TEST_DATABASE_URI")
     def assemble_async_test_db_connection(
@@ -69,14 +74,18 @@ class Settings(BaseSettings):
         if isinstance(v, str):
             return v
         return f'postgresql+asyncpg://{info.data.get("POSTGRES_USER")}:{info.data.get("POSTGRES_PASSWORD")}\
-        @{info.data.get("POSTGRES_SERVER")}/test_{info.data.get("POSTGRES_DB") or ""}'.replace(" ", "")
+        @{info.data.get("POSTGRES_SERVER")}/test_{info.data.get("POSTGRES_DB") or ""}'.replace(
+            " ", ""
+        )
 
     SMTP_TLS: bool = getenv_boolean("SMTP_TLS", False)
     SMTP_PORT: int | None = getenv_value("SMTP_PORT", 1025)
     SMTP_HOST: str | None = getenv_value("SMTP_HOST", "localhost")
     SMTP_USER: str | None = getenv_value("SMTP_USER", "")
     SMTP_PASSWORD: str | None = getenv_value("SMTP_PASSWORD", "")
-    EMAILS_FROM_EMAIL: EmailStr | None = getenv_value("EMAILS_FROM_EMAIL", "felicity@felicity.labs")
+    EMAILS_FROM_EMAIL: EmailStr | None = getenv_value(
+        "EMAILS_FROM_EMAIL", "felicity@felicity.labs"
+    )
     EMAILS_FROM_NAME: str | None = getenv_value("EMAILS_FROM_NAME", "felicity")
 
     @field_validator("EMAILS_FROM_NAME")
@@ -98,9 +107,13 @@ class Settings(BaseSettings):
         )
 
     EMAIL_TEST_USER: EmailStr = "test@felicitylims.inc"
-    FIRST_SUPERUSER_EMAIL: EmailStr = getenv_value("FIRST_SUPERUSER", "admin@felicitylims.com")
+    FIRST_SUPERUSER_EMAIL: EmailStr = getenv_value(
+        "FIRST_SUPERUSER", "admin@felicitylims.com"
+    )
     FIRST_SUPERUSER_USERNAME: str = getenv_value("FIRST_SUPERUSER_USERNAME", "admin")
-    FIRST_SUPERUSER_PASSWORD: str = getenv_value("FIRST_SUPERUSER_PASSWORD", "!Felicity#100")
+    FIRST_SUPERUSER_PASSWORD: str = getenv_value(
+        "FIRST_SUPERUSER_PASSWORD", "!Felicity#100"
+    )
     SYSTEM_DAEMON_EMAIL: EmailStr = "system_daemon@felicitylims.com"
     SYSTEM_DAEMON_USERNAME: str = "system_daemon"
     SYSTEM_DAEMON_PASSWORD: str = "!System@Daemon#100"
@@ -108,12 +121,15 @@ class Settings(BaseSettings):
     LOAD_SETUP_DATA: bool = getenv_boolean("LOAD_SETUP_DATA", False)
     SERVE_WEBAPP: bool = getenv_boolean("SERVE_WEBAPP", True)
     RUN_OPEN_TRACING: bool = getenv_boolean("RUN_OPEN_TRACING", False)
-    OTLP_SPAN_EXPORT_URL: str = getenv_value("OTLP_SPAN_EXPORT_URL", "http://localhost:4317")
+    OTLP_SPAN_EXPORT_URL: str = getenv_value(
+        "OTLP_SPAN_EXPORT_URL", "http://localhost:4317"
+    )
 
     model_config = SettingsConfigDict(
-        env_file=ENV_FILE, env_file_encoding='utf-8',
+        env_file=ENV_FILE,
+        env_file_encoding="utf-8",
         # allow | forbid | ignore --- allowed to mainatin a single .env for both felicity and its webapp
-        extra = "allow"
+        extra="allow",
     )
 
 

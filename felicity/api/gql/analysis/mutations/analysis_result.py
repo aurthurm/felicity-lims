@@ -5,7 +5,8 @@ import strawberry  # noqa
 
 from felicity.api.gql.analysis.types import results as r_types
 from felicity.api.gql.auth import auth_from_info, verify_user_auth
-from felicity.api.gql.permissions import CanVerifyAnalysisResult, IsAuthenticated
+from felicity.api.gql.permissions import (CanVerifyAnalysisResult,
+                                          IsAuthenticated)
 from felicity.api.gql.types import OperationError, OperationSuccess
 from felicity.apps.analysis.conf import states as analysis_states
 from felicity.apps.analysis.models import analysis as analysis_models
@@ -30,7 +31,7 @@ class ARResultInputType:
     uid: str
     result: str
     method_uid: str
-    instrument_uid: str
+    laboratory_instrument_uid: str
     reportable: bool | None = True
 
 
@@ -54,10 +55,10 @@ AnalysisResultOperationResponse = strawberry.union(
 
 @strawberry.mutation(permission_classes=[IsAuthenticated])
 async def submit_analysis_results(
-        info,
-        analysis_results: List[ARResultInputType],
-        source_object: str,
-        source_object_uid: str,
+    info,
+    analysis_results: List[ARResultInputType],
+    source_object: str,
+    source_object_uid: str,
 ) -> AnalysisResultOperationResponse:
     is_authenticated, felicity_user = await auth_from_info(info)
     verify_user_auth(
@@ -106,7 +107,7 @@ async def submit_analysis_results(
 
 @strawberry.mutation(permission_classes=[CanVerifyAnalysisResult])
 async def verify_analysis_results(
-        info, analyses: list[str], source_object: str, source_object_uid: str
+    info, analyses: list[str], source_object: str, source_object_uid: str
 ) -> AnalysisResultOperationResponse:
     is_authenticated, felicity_user = await auth_from_info(info)
     verify_user_auth(
@@ -249,7 +250,7 @@ async def cancel_analysis_results(info, analyses: list[str]) -> AnalysisResultRe
 
 @strawberry.mutation(permission_classes=[IsAuthenticated])
 async def re_instate_analysis_results(
-        info, analyses: list[str]
+    info, analyses: list[str]
 ) -> AnalysisResultResponse:
     is_authenticated, felicity_user = await auth_from_info(info)
     verify_user_auth(

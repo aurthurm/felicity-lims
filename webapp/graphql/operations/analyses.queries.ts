@@ -144,6 +144,10 @@ export const GET_ALL_ANALYSES_SERVICES = gql`
                     uid
                     optionKey
                     value
+                    sampleTypes{
+                        uid
+                        name
+                    }
                 }
                 category {
                     uid
@@ -318,6 +322,10 @@ export const GET_ALL_ANALYSES_PROFILES_AND_SERVICES = gql`
                     uid
                     optionKey
                     value
+                    sampleTypes{
+                        uid
+                        name
+                    }
                 }
                 category {
                     uid
@@ -694,9 +702,13 @@ export const GET_ANALYSIS_RESULTS_BY_SAMPLE_UID = gql`
                 uid
                 name
             }
-            instrument {
+            laboratoryInstrument {
                 uid
-                name
+                labName
+                instrument {
+                    uid
+                    name
+                }
             }
             sample {
                 uid
@@ -728,6 +740,10 @@ export const GET_ANALYSIS_RESULTS_BY_SAMPLE_UID = gql`
                     uid
                     optionKey
                     value
+                    sampleTypes{
+                        uid
+                        name
+                    }
                 }
             }
             retest
@@ -1003,15 +1019,23 @@ export const GET_ALL_QC_SETS = gql`
                                 uid
                                 optionKey
                                 value
+                                sampleTypes{
+                                    uid
+                                    name
+                                }
                             }
                         }
                         method {
                             uid
                             name
                         }
-                        instrument {
+                        laboratoryInstrument {
                             uid
-                            name
+                            labName
+                            instrument {
+                                uid
+                                name
+                            }
                         }
                     }
                     analyses {
@@ -1026,6 +1050,10 @@ export const GET_ALL_QC_SETS = gql`
                             uid
                             optionKey
                             value
+                            sampleTypes{
+                                uid
+                                name
+                            }
                         }
                     }
                     profiles {
@@ -1072,15 +1100,23 @@ export const GET_QC_SET_BY_UID = gql`
                             uid
                             optionKey
                             value
+                            sampleTypes{
+                                uid
+                                name
+                            }
                         }
                     }
                     method {
                         uid
                         name
                     }
-                    instrument {
+                    laboratoryInstrument {
                         uid
-                        name
+                        labName
+                        instrument {
+                            uid
+                            name
+                        }
                     }
                 }
                 analyses {
@@ -1095,6 +1131,10 @@ export const GET_QC_SET_BY_UID = gql`
                         uid
                         optionKey
                         value
+                        sampleTypes{
+                            uid
+                            name
+                        }
                     }
                 }
                 profiles {
@@ -1113,6 +1153,10 @@ export const GET_RESULT_OPTIONS_FOR_ANALYSIS = gql`
             optionKey
             value
             analysisUid
+            sampleTypes{
+                uid
+                name
+            }
         }
     }
 `;

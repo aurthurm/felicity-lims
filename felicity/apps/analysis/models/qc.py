@@ -1,6 +1,7 @@
 import logging
 
-from sqlalchemy import Boolean, Column, DateTime, Float, ForeignKey, String, Table
+from sqlalchemy import (Boolean, Column, DateTime, Float, ForeignKey, String,
+                        Table)
 from sqlalchemy.orm import relationship
 
 from felicity.apps import BaseAuditDBModel, DBModel
@@ -161,10 +162,14 @@ class QCTemplate(BaseAuditDBModel):
     )
 
     @classmethod
-    async def create(cls, obj_in: dict | schemas.QCTemplateCreate) -> schemas.QCTemplate:
+    async def create(
+        cls, obj_in: dict | schemas.QCTemplateCreate
+    ) -> schemas.QCTemplate:
         data = cls._import(obj_in)
         return await super().create(**data)
 
-    async def update(self, obj_in: dict | schemas.QCTemplateUpdate) -> schemas.QCTemplate:
+    async def update(
+        self, obj_in: dict | schemas.QCTemplateUpdate
+    ) -> schemas.QCTemplate:
         data = self._import(obj_in)
         return await super().update(**data)

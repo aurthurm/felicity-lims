@@ -3,6 +3,9 @@
   const tabInstrumentTypes = defineAsyncComponent(
     () => import('./InstrumentTypes.vue')
   )
+  const tabLaboratoryInstruments = defineAsyncComponent(
+    () => import('./LaboratoryInstruments.vue')
+  )
   const tabInstruments = defineAsyncComponent(
     () => import('./Instruments.vue')
   )
@@ -13,8 +16,8 @@
     () => import('./Units.vue')
   )
 
-  let currentTab = ref('instruments');
-  const tabs = ['instrument-types', 'instruments', 'methods', 'units'];
+  let currentTab = ref('laboratory-instruments');
+  const tabs = ['laboratory-instruments', 'instrument-types', 'instruments', 'methods', 'units'];
   let currentTabComponent = computed(() => 'tab-' + currentTab.value);
 </script>
 
@@ -38,6 +41,7 @@
           </div>
         </nav>
 
+        <tab-laboratory-instruments v-if="currentTab === 'laboratory-instruments'"/>
         <tab-instrument-types v-if="currentTab === 'instrument-types'"/>
         <tab-instruments v-if="currentTab === 'instruments'"/>
         <tab-methods v-if="currentTab === 'methods'" />

@@ -1,10 +1,10 @@
 import logging
 from datetime import datetime
 
-from sqlalchemy import Column, Integer, String, DateTime
+from sqlalchemy import Column, DateTime, Integer, String
 from sqlalchemy.dialects.postgresql import insert
 
-from felicity.apps.common.utils import sequencer, sequence_alpha
+from felicity.apps.common.utils import sequence_alpha, sequencer
 from felicity.database.base_class import DBModel
 from felicity.database.session import async_session_factory
 

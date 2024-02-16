@@ -3,8 +3,10 @@ from typing import Optional
 
 import strawberry  # noqa
 
-from felicity.api.gql.analysis.types.analysis import AnalysisType, QCSetType, SampleType
-from felicity.api.gql.instrument.types import InstrumentType, MethodType
+from felicity.api.gql.analysis.types.analysis import (AnalysisType, QCSetType,
+                                                      SampleType)
+from felicity.api.gql.instrument.types import (LaboratoryInstrumentType,
+                                               MethodType)
 from felicity.api.gql.types import PageInfo
 from felicity.api.gql.user.types import UserType
 from felicity.apps.worksheet import models as ws_models
@@ -20,8 +22,8 @@ class AnalysisResultType:
     assigned: bool
     analysis_uid: str | None
     analysis: AnalysisType | None
-    instrument_uid: str | None
-    instrument: InstrumentType | None
+    laboratory_instrument_uid: str | None
+    laboratory_instrument: LaboratoryInstrumentType | None
     method_uid: str | None
     method: MethodType | None
     result: str | None

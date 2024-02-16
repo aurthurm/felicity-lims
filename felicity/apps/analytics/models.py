@@ -2,6 +2,7 @@ from sqlalchemy import Column, DateTime, ForeignKey, String, Table
 from sqlalchemy.orm import relationship
 
 from felicity.apps import BaseAuditDBModel
+
 from . import conf, schemas
 
 """
@@ -38,10 +39,14 @@ class ReportMeta(BaseAuditDBModel):
             await self.save_async()
 
     @classmethod
-    async def create(cls, obj_in: dict | schemas.ReportMetaCreate) -> schemas.ReportMeta:
+    async def create(
+        cls, obj_in: dict | schemas.ReportMetaCreate
+    ) -> schemas.ReportMeta:
         data = cls._import(obj_in)
         return await super().create(**data)
 
-    async def update(self, obj_in: dict | schemas.ReportMetaUpdate) -> schemas.ReportMeta:
+    async def update(
+        self, obj_in: dict | schemas.ReportMetaUpdate
+    ) -> schemas.ReportMeta:
         data = self._import(obj_in)
         return await super().update(**data)

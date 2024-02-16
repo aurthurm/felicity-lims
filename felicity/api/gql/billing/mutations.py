@@ -5,21 +5,19 @@ import strawberry  # noqa
 from strawberry.types import Info  # noqa
 
 from felicity.api.gql.auth import auth_from_info, verify_user_auth
-from felicity.api.gql.billing.types import (
-    ProfilePriceType,
-    ProfileDiscountType,
-    AnalysisPriceType,
-    AnalysisDiscountType,
-    VoucherType,
-    VoucherCodeType,
-    TestBillTransactionType,
-    TestBillType,
-)
+from felicity.api.gql.billing.types import (AnalysisDiscountType,
+                                            AnalysisPriceType,
+                                            ProfileDiscountType,
+                                            ProfilePriceType,
+                                            TestBillTransactionType,
+                                            TestBillType, VoucherCodeType,
+                                            VoucherType)
 from felicity.api.gql.permissions import IsAuthenticated
 from felicity.api.gql.types import OperationError
 from felicity.apps.billing import models, schemas, utils
-from felicity.apps.billing.config import TransactionKind, DiscountType
-from felicity.apps.billing.schemas import TestBillTransactionUpdate, TestBillUpdate
+from felicity.apps.billing.config import DiscountType, TransactionKind
+from felicity.apps.billing.schemas import (TestBillTransactionUpdate,
+                                           TestBillUpdate)
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

@@ -70,6 +70,29 @@ export interface IInstrument {
     instrumentType?: IInstrumentType;
 }
 
+export interface ILaboratoryInstrument {
+    uid?: string;
+    instrumentUid: string;
+    instrument: IInstrument;
+    labName: string;
+    serialNumber: string;
+    dateCommissioned: string;
+    dateDecommissioned: string;
+}
+
+export interface IInstrumentCompetence {
+    uid?: string;
+    instrumentUid: string;
+    instrument: IInstrument;
+    description: string;
+    user_uid: string;
+    user: IUser;
+    issue_date: string;
+    expiry_date: string;
+    internal: boolean;
+    competence: bigint;
+}
+
 export interface IMethod {
     uid?: string;
     name?: string;

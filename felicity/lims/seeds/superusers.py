@@ -3,6 +3,7 @@ from typing import Optional
 
 from felicity.apps.user import models, schemas
 from felicity.core.config import get_settings
+
 from .groups_perms import FGroup
 
 settings = get_settings()

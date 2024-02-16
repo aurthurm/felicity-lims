@@ -8,8 +8,7 @@ from felicity.api.gql.analysis.types import analysis as a_types
 from felicity.api.gql.auth import auth_from_info, verify_user_auth
 from felicity.api.gql.permissions import IsAuthenticated
 from felicity.api.gql.types import OperationError
-from felicity.apps.analysis import schemas
-from felicity.apps.analysis import utils
+from felicity.apps.analysis import schemas, utils
 from felicity.apps.analysis.models import analysis as analysis_models
 from felicity.apps.instrument.models import Method
 
@@ -113,7 +112,7 @@ async def create_analysis(info, payload: AnalysisInputType) -> ProfilesServiceRe
 
 @strawberry.mutation(permission_classes=[IsAuthenticated])
 async def update_analysis(
-        info, uid: str, payload: AnalysisInputType
+    info, uid: str, payload: AnalysisInputType
 ) -> ProfilesServiceResponse:
     is_authenticated, felicity_user = await auth_from_info(info)
     verify_user_auth(
@@ -165,7 +164,7 @@ async def update_analysis(
 
 @strawberry.mutation(permission_classes=[IsAuthenticated])
 async def create_analysis_mapping(
-        info, payload: AnalysisMappingInputType
+    info, payload: AnalysisMappingInputType
 ) -> AnalysisMappingResponse:
     is_authenticated, felicity_user = await auth_from_info(info)
     verify_user_auth(
@@ -194,7 +193,7 @@ async def create_analysis_mapping(
 
 @strawberry.mutation(permission_classes=[IsAuthenticated])
 async def update_analysis_mapping(
-        info, uid: str, payload: AnalysisMappingInputType
+    info, uid: str, payload: AnalysisMappingInputType
 ) -> AnalysisMappingResponse:
     is_authenticated, felicity_user = await auth_from_info(info)
     verify_user_auth(

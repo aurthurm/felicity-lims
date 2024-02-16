@@ -3,15 +3,12 @@ from typing import List
 
 import sqlalchemy as sa
 import strawberry  # noqa
-from felicity.api.gql.types import PageInfo
-from felicity.api.gql.shipment.types import (
-    ShipmentCursorPage,
-    ShipmentEdge,
-    ShipmentType,
-    ReferralLaboratoryType,
-)
+
 from felicity.api.gql.permissions import IsAuthenticated
-from felicity.api.gql.types import BytesScalar
+from felicity.api.gql.shipment.types import (ReferralLaboratoryType,
+                                             ShipmentCursorPage, ShipmentEdge,
+                                             ShipmentType)
+from felicity.api.gql.types import BytesScalar, PageInfo
 from felicity.apps.shipment import models
 from felicity.utils import has_value_or_is_truthy
 
@@ -23,15 +20,15 @@ logger = logging.getLogger(__name__)
 class ShipmentQuery:
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def shipment_all(
-            self,
-            info,
-            page_size: int | None = None,
-            after_cursor: str | None = None,
-            before_cursor: str | None = None,
-            text: str | None = None,
-            incoming: bool = False,
-            status: str | None = None,
-            sort_by: list[str] | None = None,
+        self,
+        info,
+        page_size: int | None = None,
+        after_cursor: str | None = None,
+        before_cursor: str | None = None,
+        text: str | None = None,
+        incoming: bool = False,
+        status: str | None = None,
+        sort_by: list[str] | None = None,
     ) -> ShipmentCursorPage:
 
         filters = [{"incoming": incoming}]
@@ -78,7 +75,7 @@ class ShipmentQuery:
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def shipment_by_status(
-            self, info, shipment_status: str
+        self, info, shipment_status: str
     ) -> List[ShipmentType]:
         return await models.Shipment.get_all(status__exact=shipment_status)
 
@@ -88,13 +85,13 @@ class ShipmentQuery:
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def referral_laboratory_by_uid(
-            self, info, uid: str
+        self, info, uid: str
     ) -> ReferralLaboratoryType:
         return await models.ReferralLaboratory.get(uid=uid)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def referral_laboratory_by_code(
-            self, info, code: str
+        self, info, code: str
     ) -> ReferralLaboratoryType:
         return await models.ReferralLaboratory.get(code=code)
 

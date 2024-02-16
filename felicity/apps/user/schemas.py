@@ -1,11 +1,9 @@
 from typing import List, Optional
 
-from pydantic import ConfigDict
-from pydantic import EmailStr
+from pydantic import ConfigDict, EmailStr
 
 from felicity.apps.common.schemas import BaseAuditModel, BaseModel
 from felicity.apps.user.conf import themes
-
 
 #
 #  Permission Schema

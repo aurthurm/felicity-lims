@@ -6,25 +6,18 @@ from sqlalchemy import or_
 
 from felicity.apps.analysis import schemas
 from felicity.apps.analysis.conf import states
-from felicity.apps.analysis.models.analysis import SampleType, Profile, Analysis
-from felicity.apps.analysis.models.results import (
-    AnalysisResult,
-    result_verification,
-    ResultMutation,
-)
+from felicity.apps.analysis.models.analysis import (Analysis, Profile,
+                                                    SampleType)
+from felicity.apps.analysis.models.results import (AnalysisResult,
+                                                   ResultMutation,
+                                                   result_verification)
 from felicity.apps.billing.config import DiscountType, DiscountValueType
-from felicity.apps.billing.models import (
-    ProfilePrice,
-    AnalysisPrice,
-    ProfileDiscount,
-    AnalysisDiscount,
-)
-from felicity.apps.billing.schemas import (
-    AnalysisPriceCreate,
-    AnalysisDiscountCreate,
-    ProfileDiscountCreate,
-    ProfilePriceCreate,
-)
+from felicity.apps.billing.models import (AnalysisDiscount, AnalysisPrice,
+                                          ProfileDiscount, ProfilePrice)
+from felicity.apps.billing.schemas import (AnalysisDiscountCreate,
+                                           AnalysisPriceCreate,
+                                           ProfileDiscountCreate,
+                                           ProfilePriceCreate)
 from felicity.apps.job import conf as job_conf
 from felicity.apps.job.models import Job
 from felicity.apps.job.schemas import JobCreate
@@ -60,7 +53,7 @@ async def get_last_verificator(result_uid: str):
 
 
 async def sample_search(
-        model, status: str, text: str, client_uid: str
+    model, status: str, text: str, client_uid: str
 ) -> List[schemas.SampleType]:
     """No pagination"""
     filters = []
@@ -246,8 +239,8 @@ async def result_mutator(result: AnalysisResult):
         # Correction factor
         for cf in correction_factors:
             if (
-                    cf.instrument_uid == result.instrument_uid
-                    and cf.method_uid == result.method_uid
+                cf.instrument_uid == result.instrument_uid
+                and cf.method_uid == result.method_uid
             ):
                 await ResultMutation.create(
                     obj_in={

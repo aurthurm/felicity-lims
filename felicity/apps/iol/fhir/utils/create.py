@@ -2,18 +2,15 @@ import logging
 
 from fastapi import Request
 
-from felicity.apps.iol.fhir.schema import (
-    DiagnosticReportResource,
-    PatientResource,
-    BundleResource,
-    ServiceRequestResource,
-    Reference,
-)
+from felicity.apps.iol.fhir.schema import (BundleResource,
+                                           DiagnosticReportResource,
+                                           PatientResource, Reference,
+                                           ServiceRequestResource)
 from felicity.apps.job import conf as job_conf
 from felicity.apps.job.models import Job
 from felicity.apps.job.schemas import JobCreate
 from felicity.apps.shipment.conf import shipment_states
-from felicity.apps.shipment.models import Shipment, ReferralLaboratory
+from felicity.apps.shipment.models import ReferralLaboratory, Shipment
 from felicity.apps.shipment.schemas import ShipmentCreate
 from felicity.apps.user.models import User
 
@@ -22,13 +19,13 @@ logger = logging.getLogger(__name__)
 
 
 async def create_resource(
-        resource_type: str,
-        resource_data: BundleResource
-                       | PatientResource
-                       | ServiceRequestResource
-                       | DiagnosticReportResource,
-        request: Request,
-        current_user: User,
+    resource_type: str,
+    resource_data: BundleResource
+    | PatientResource
+    | ServiceRequestResource
+    | DiagnosticReportResource,
+    request: Request,
+    current_user: User,
 ):
     logger.info(f"create resource {resource_type} ..................")
     resource_mappings = {
@@ -41,7 +38,7 @@ async def create_resource(
 
 
 async def create_bundle(
-        resource_data: BundleResource, request: Request, current_user: User
+    resource_data: BundleResource, request: Request, current_user: User
 ):
     logger.info(f"Bundle data:...")
     if resource_data.extension[0].valueString == "shipment":
@@ -51,7 +48,7 @@ async def create_bundle(
 
 
 async def create_inbound_shipment(
-        payload: BundleResource, request: Request, current_user: User
+    payload: BundleResource, request: Request, current_user: User
 ):
     """Create inbound shipment from bundle"""
     logger.info(f"Incoming Inbound shipment...")
@@ -97,7 +94,7 @@ async def resolve_ref_laboratory(ref: Reference, request: Request):
 
 
 async def create_diagnostic_report(
-        diagnostic_data: DiagnosticReportResource, request: Request, current_user: User
+    diagnostic_data: DiagnosticReportResource, request: Request, current_user: User
 ):
     job_schema = JobCreate(
         action=job_conf.actions.DIAGNOSTIC_REPORT,

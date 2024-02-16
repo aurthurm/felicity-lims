@@ -1,5 +1,5 @@
+from sqlalchemy import Boolean, Column, String
 from sqlalchemy.dialects.postgresql import JSONB
-from sqlalchemy import Column, String, Boolean
 
 from felicity.apps import BaseAuditDBModel
 

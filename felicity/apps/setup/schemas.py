@@ -1,10 +1,8 @@
 from typing import Optional
 
-from pydantic import BaseModel, EmailStr
-from pydantic import ConfigDict
+from pydantic import BaseModel, ConfigDict, EmailStr
 
 from felicity.apps.common.schemas import BaseAuditModel
-
 
 #
 #  Laboratory

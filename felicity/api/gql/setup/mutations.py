@@ -4,16 +4,10 @@ import strawberry  # noqa
 
 from felicity.api.gql.auth import auth_from_info
 from felicity.api.gql.permissions import IsAuthenticated
-from felicity.api.gql.setup.types import (
-    CountryType,
-    DistrictType,
-    LaboratorySettingType,
-    LaboratoryType,
-    ManufacturerType,
-    ProvinceType,
-    SupplierType,
-    UnitType,
-)
+from felicity.api.gql.setup.types import (CountryType, DistrictType,
+                                          LaboratorySettingType,
+                                          LaboratoryType, ManufacturerType,
+                                          ProvinceType, SupplierType, UnitType)
 from felicity.api.gql.setup.types.department import DepartmentType
 from felicity.api.gql.types import OperationError
 from felicity.apps.setup import models, schemas

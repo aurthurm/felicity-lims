@@ -3,12 +3,8 @@ import logging
 import pytest
 
 from felicity.core.config import settings
-from tests.integration.utils.user import (
-    add_auth_mutation,
-    add_user_mutation,
-    make_password,
-    make_username,
-)
+from tests.integration.utils.user import (add_auth_mutation, add_user_mutation,
+                                          make_password, make_username)
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -26,7 +22,7 @@ async def test_user_login(app):
                     firstName
                     lastName
                 }
-                token  
+                token
                 tokenType
             }
             ... on OperationError {

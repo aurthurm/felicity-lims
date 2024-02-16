@@ -5,11 +5,12 @@ import {
     GET_ALL_METHODS,
     GET_ALL_INSTRUMENT_TYPES,
     GET_ALL_INSTRUMENTS,
+    GET_ALL_LABORATORY_INSTRUMENTS,
     GET_ALL_UNITS,
 } from '../graphql/operations/instrument.queries';
 import { GET_DEPARTMENTS } from '../graphql/operations/_queries';
 import { GET_LABORATORY, GET_LABORATORY_SETTING } from '../graphql/operations/_queries';
-import { IInstrument, IInstrumentType, ILaboratory, ILaboratorySetting, IManufacturer, IMethod, ISupplier, IUnit } from '../models/setup';
+import { IInstrument, IInstrumentType, ILaboratory, ILaboratoryInstrument, ILaboratorySetting, IManufacturer, IMethod, ISupplier, IUnit } from '../models/setup';
 import { IDepartment } from '../models/setup';
 
 import { useApiUtil } from '../composables';
@@ -30,6 +31,7 @@ export const useSetupStore = defineStore('setup', {
             instrumentTypes: [],
             fetchingInstrumentTypes: false,
             instruments: [],
+            laboratoryInstruments: [],
             fetchingInstruments: false,
             methods: [],
             fetchingMethods: false,
@@ -47,6 +49,7 @@ export const useSetupStore = defineStore('setup', {
             instrumentTypes: IInstrumentType[];
             fetchingInstrumentTypes: boolean;
             instruments: IInstrument[];
+            laboratoryInstruments: ILaboratoryInstrument[];
             fetchingInstruments: boolean;
             methods: IMethod[];
             fetchingMethods: boolean;
@@ -62,6 +65,7 @@ export const useSetupStore = defineStore('setup', {
         getManufacturers: state => state.manufacturers,
         getInstrumentTypes: state => state.instrumentTypes,
         getInstruments: state => state.instruments,
+        getLaboratoryInstruments: state => state.laboratoryInstruments,
         getMethods: state => state.methods,
         getUnits: state => state.units,
     },
@@ -170,6 +174,24 @@ export const useSetupStore = defineStore('setup', {
         updateInstrument(payload: IInstrument) {
             const index = this.instruments?.findIndex(item => item.uid === payload?.uid);
             if (index > -1) this.instruments[index] = payload;
+        },
+
+        // laboratory INSTRUMENTS
+        async fetchLaboratoryInstruments() {
+            this.fetchingInstruments = false;
+            await withClientQuery(GET_ALL_LABORATORY_INSTRUMENTS, {}, 'laboratoryInstrumentAll')
+                .then(payload => {
+                    this.fetchingInstruments = false;
+                    this.laboratoryInstruments = payload?.items;
+                })
+                .catch(err => (this.fetchingInstruments = false));
+        },
+        addLaboratoryInstrument(payload) {
+            this.laboratoryInstruments?.unshift(payload);
+        },
+        updateLaboratoryInstrument(payload: ILaboratoryInstrument) {
+            const index = this.laboratoryInstruments?.findIndex(item => item.uid === payload?.uid);
+            if (index > -1) this.laboratoryInstruments[index] = payload;
         },
 
         // METHODS

@@ -1,7 +1,7 @@
 import { IUser } from './auth';
 import { IClient, IClientContact } from './client';
 import { IPatient } from './patient';
-import { IInstrument, IMethod, IUnit, IDepartment } from './setup';
+import { IInstrument, ILaboratoryInstrument, IMethod, IUnit, IDepartment } from './setup';
 import { IStorageContainer } from './storage';
 
 
@@ -10,7 +10,6 @@ export interface ICodingStandard {
     name?: string;
     description?: string;
 }
-
 
 export interface ISampleType {
     uid?: string;
@@ -54,8 +53,8 @@ export interface IAnalysisResult {
     uid?: string;
     analysisUid?: string;
     analysis?: IAnalysisService;
-    instrumentUid?: string;
-    instrument?: IInstrument;
+    laboratoryInstrumentUid?: string;
+    laboratoryInstrument?: ILaboratoryInstrument;
     methodUid?: string;
     method?: IMethod;
     worksheetPosition?: number;
@@ -122,6 +121,7 @@ export interface IResultOption {
     analysisUid?: string;
     optionKey?: number;
     value?: string;
+    sampleTypes?: ISampleType[];
 }
 
 export interface ISample {

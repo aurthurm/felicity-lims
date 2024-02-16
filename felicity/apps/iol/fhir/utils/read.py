@@ -3,15 +3,11 @@ import asyncio
 from felicity.apps.analysis.models.analysis import AnalysisRequest, Sample
 from felicity.apps.analysis.models.results import AnalysisResult
 from felicity.apps.analysis.utils import get_last_verificator
-from felicity.apps.iol.fhir.schema import (
-    DiagnosticReportResource,
-    PatientResource,
-    ServiceRequestResource,
-    BundleResource,
-    Identifier,
-    Reference,
-    SpecimenResource,
-)
+from felicity.apps.iol.fhir.schema import (BundleResource,
+                                           DiagnosticReportResource,
+                                           Identifier, PatientResource,
+                                           Reference, ServiceRequestResource,
+                                           SpecimenResource)
 from felicity.apps.patient.models import Patient
 from felicity.apps.setup.models.setup import Laboratory
 from felicity.apps.shipment.models import Shipment, ShippedSample
@@ -23,7 +19,7 @@ def one_of_else(of: list, one: str, default=None):
 
 
 async def get_diagnostic_report_resource(
-        service_request_uid: str, obs_uids=None, for_referral=False
+    service_request_uid: str, obs_uids=None, for_referral=False
 ) -> DiagnosticReportResource | None:
     if obs_uids is None:
         obs_uids = []
@@ -344,6 +340,7 @@ async def get_shipment_bundle_resource(shipment_uid: str) -> BundleResource | No
         ],
     }
     return BundleResource(**bundle_vars)
+
 
 # https://cloud.google.com/healthcare-api/docs/how-tos/fhir-bundles
 # the return type of a bundle must also be a bundle of response type

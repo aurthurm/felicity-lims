@@ -1,6 +1,7 @@
 from typing import List, Optional
 
 import strawberry  # noqa
+
 from felicity.api.gql.messaging.types import MessageThreadType
 from felicity.api.gql.permissions import IsAuthenticated
 from felicity.apps.messaging import models

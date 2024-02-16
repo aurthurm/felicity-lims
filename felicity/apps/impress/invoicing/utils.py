@@ -1,12 +1,7 @@
 from felicity.apps.analysis.models.analysis import AnalysisRequest
-from felicity.apps.billing.models import (
-    TestBill,
-    test_bill_item,
-    TestBillTransaction,
-    ProfilePrice,
-    AnalysisPrice,
-    TestBillInvoice,
-)
+from felicity.apps.billing.models import (AnalysisPrice, ProfilePrice,
+                                          TestBill, TestBillInvoice,
+                                          TestBillTransaction, test_bill_item)
 from felicity.apps.billing.schemas import TestBillInvoiceCreate
 from felicity.apps.impress.invoicing.engine import FelicityInvoice
 from felicity.apps.setup.caches import get_laboratory_setting

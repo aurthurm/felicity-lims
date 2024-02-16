@@ -3,16 +3,14 @@ from typing import List, Optional
 
 import sqlalchemy as sa
 import strawberry  # noqa
-from felicity.api.gql.types import PageInfo
-from felicity.api.gql.permissions import IsAuthenticated
-from felicity.api.gql.worksheet.types import (
-    WorkSheetCursorPage,
-    WorkSheetEdge,
-    WorkSheetTemplateType,
-    WorkSheetType,
-)
-from felicity.apps.worksheet import models as ws_models
 
+from felicity.api.gql.permissions import IsAuthenticated
+from felicity.api.gql.types import PageInfo
+from felicity.api.gql.worksheet.types import (WorkSheetCursorPage,
+                                              WorkSheetEdge,
+                                              WorkSheetTemplateType,
+                                              WorkSheetType)
+from felicity.apps.worksheet import models as ws_models
 from felicity.utils import has_value_or_is_truthy
 
 logging.basicConfig(level=logging.INFO)
@@ -23,14 +21,14 @@ logger = logging.getLogger(__name__)
 class WorkSheetQuery:
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def worksheet_all(
-            self,
-            info,
-            page_size: int | None = None,
-            after_cursor: str | None = None,
-            before_cursor: str | None = None,
-            text: str | None = None,
-            status: str | None = None,
-            sort_by: list[str] | None = None,
+        self,
+        info,
+        page_size: int | None = None,
+        after_cursor: str | None = None,
+        before_cursor: str | None = None,
+        text: str | None = None,
+        status: str | None = None,
+        sort_by: list[str] | None = None,
     ) -> WorkSheetCursorPage:
 
         filters = []
@@ -90,12 +88,12 @@ class WorkSheetQuery:
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def worksheet_by_status(
-            self, info, worksheet_status: str
+        self, info, worksheet_status: str
     ) -> List[WorkSheetType]:
         return await ws_models.WorkSheet.get_all(status__exact=worksheet_status)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def worksheet_template_by_uid(
-            self, info, worksheet_uid: str
+        self, info, worksheet_uid: str
     ) -> List[WorkSheetType]:
         return await ws_models.WorkSheet.get_all(uid=worksheet_uid)

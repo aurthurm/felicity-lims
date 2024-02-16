@@ -3,12 +3,12 @@ from dataclasses import field
 from typing import List, Optional
 
 import strawberry  # noqa
-from felicity.api.gql.types import OperationError
+
+from felicity.api.gql.analysis.types import analysis as a_types
 from felicity.api.gql.auth import auth_from_info, verify_user_auth
 from felicity.api.gql.permissions import IsAuthenticated
-from felicity.api.gql.analysis.types import analysis as a_types
-from felicity.apps.analysis import schemas
-from felicity.apps.analysis import utils
+from felicity.api.gql.types import OperationError
+from felicity.apps.analysis import schemas, utils
 from felicity.apps.analysis.models import analysis as analysis_models
 
 logging.basicConfig(level=logging.INFO)
@@ -103,7 +103,7 @@ async def create_profile(info, payload: ProfileInputType) -> AnalysisProfileResp
 
 @strawberry.mutation(permission_classes=[IsAuthenticated])
 async def update_profile(
-        info, uid: str, payload: ProfileInputType
+    info, uid: str, payload: ProfileInputType
 ) -> AnalysisProfileResponse:
     is_authenticated, felicity_user = await auth_from_info(info)
     verify_user_auth(
@@ -158,7 +158,7 @@ async def update_profile(
 
 @strawberry.mutation(permission_classes=[IsAuthenticated])
 async def create_profile_mapping(
-        info, payload: ProfileMappingInputType
+    info, payload: ProfileMappingInputType
 ) -> ProfileMappingResponse:
     is_authenticated, felicity_user = await auth_from_info(info)
     verify_user_auth(
@@ -187,7 +187,7 @@ async def create_profile_mapping(
 
 @strawberry.mutation(permission_classes=[IsAuthenticated])
 async def update_profile_mapping(
-        info, uid: str, payload: ProfileMappingInputType
+    info, uid: str, payload: ProfileMappingInputType
 ) -> ProfileMappingResponse:
     is_authenticated, felicity_user = await auth_from_info(info)
     verify_user_auth(

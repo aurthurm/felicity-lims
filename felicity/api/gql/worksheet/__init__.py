@@ -1,9 +1,5 @@
-from .types import (
-    WorkSheetTemplateType,
-    WorkSheetType,
-    WorkSheetEdge,
-    WorkSheetCursorPage,
-)
+from .types import (WorkSheetCursorPage, WorkSheetEdge, WorkSheetTemplateType,
+                    WorkSheetType)
 
 worksheet_types = [
     WorkSheetTemplateType,

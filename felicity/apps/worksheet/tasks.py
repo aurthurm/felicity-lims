@@ -6,7 +6,8 @@ from felicity.apps.analysis import conf as analysis_conf
 from felicity.apps.analysis.models.analysis import Sample
 from felicity.apps.analysis.models.qc import QCSet, QCTemplate
 from felicity.apps.analysis.models.results import AnalysisResult
-from felicity.apps.analysis.schemas import AnalysisResultCreate, QCSetCreate, SampleCreate
+from felicity.apps.analysis.schemas import (AnalysisResultCreate, QCSetCreate,
+                                            SampleCreate)
 from felicity.apps.analysis.utils import get_qc_sample_type
 from felicity.apps.job import models as job_models
 from felicity.apps.job.conf import states as job_states
@@ -71,7 +72,7 @@ async def populate_worksheet_plate(job_uid: str):
         )
         return
 
-    logger.info(f"Filtering samples by template criteria ...")
+    logger.info("Filtering samples by template criteria ...")
     # get sample, filtered by analysis_service and Sample Type
     samples: List[AnalysisResult] = await AnalysisResult.filter_for_worksheet(
         analyses_status=analysis_conf.states.result.PENDING,

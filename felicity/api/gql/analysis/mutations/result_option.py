@@ -1,13 +1,15 @@
 import logging
+from dataclasses import field
+from typing import List, Optional
 
 import strawberry  # noqa
-from felicity.api.gql.types import OperationError
+
+from felicity.api.gql.analysis.types import analysis as a_types
 from felicity.api.gql.auth import auth_from_info, verify_user_auth
 from felicity.api.gql.permissions import IsAuthenticated
-from felicity.api.gql.analysis.types import analysis as a_types
+from felicity.api.gql.types import OperationError
 from felicity.apps.analysis import schemas
 from felicity.apps.analysis.models import analysis as analysis_models
-
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -16,6 +18,7 @@ logger = logging.getLogger(__name__)
 @strawberry.input
 class ResultOptionInputType:
     analysis_uid: str
+    sample_types: Optional[List[str]] = field(default_factory=list)
     option_key: int
     value: str
 
@@ -31,7 +34,6 @@ ResultOptionResponse = strawberry.union(
 async def create_result_option(
     info, payload: ResultOptionInputType
 ) -> ResultOptionResponse:
-
     is_authenticated, felicity_user = await auth_from_info(info)
     verify_user_auth(
         is_authenticated,
@@ -56,12 +58,24 @@ async def create_result_option(
         "updated_by_uid": felicity_user.uid,
     }
     for k, v in payload.__dict__.items():
-        incoming[k] = v
+        if k not in ["sample_types"]:
+            incoming[k] = v
 
     obj_in = schemas.ResultOptionCreate(**incoming)
     result_option: analysis_models.ResultOption = (
         await analysis_models.ResultOption.create(obj_in)
     )
+
+    if payload.sample_types:
+        for _st_uid in payload.sample_types:
+            st = await analysis_models.SampleType.get(uid=_st_uid)
+            result_option.sample_types.append(st)
+            # await analysis_models.ResultOption.table_insert(
+            #     table=analysis_models.result_option_sample_type,
+            #     mappings={"sample_type_uid": _st_uid, "result_option_uid": result_option.uid},
+            # )
+            await result_option.save_async()
+
     return a_types.ResultOptionType(**result_option.marshal_simple())
 
 
@@ -69,7 +83,6 @@ async def create_result_option(
 async def update_result_option(
     info, uid: str, payload: ResultOptionInputType
 ) -> ResultOptionResponse:
-
     is_authenticated, felicity_user = await auth_from_info(info)
     verify_user_auth(
         is_authenticated,
@@ -91,4 +104,17 @@ async def update_result_option(
 
     result_option_in = schemas.ResultOptionUpdate(**result_option.to_dict())
     result_option = await result_option.update(result_option_in)
+
+    if payload.sample_types:
+        result_option.sample_types.clear()
+        result_option = await result_option.save_async()
+        for _uid in payload.sample_types:
+            st = await analysis_models.SampleType.get(uid=_uid)
+            result_option.sample_types.append(st)
+            # await analysis_models.ResultOption.table_insert(
+            #     table=analysis_models.result_option_sample_type,
+            #     mappings={"sample_type_uid": st, "result_option_uid": result_option.uid},
+            # )
+            await result_option.save_async()
+
     return a_types.ResultOptionType(**result_option.marshal_simple())

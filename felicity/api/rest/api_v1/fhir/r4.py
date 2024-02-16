@@ -1,20 +1,16 @@
 import json
 from typing import Annotated
 
-from fastapi import APIRouter, HTTPException, Depends, Request
+from fastapi import APIRouter, Depends, HTTPException, Request
 
 from felicity.api.deps import get_current_user
-from felicity.apps.iol.fhir.schema import (
-    BundleResource,
-    DiagnosticReportResource,
-    PatientResource,
-    ServiceRequestResource,
-)
-from felicity.apps.iol.fhir.utils import (
-    get_diagnostic_report_resource,
-    get_patient_resource,
-    create_resource,
-)
+from felicity.apps.iol.fhir.schema import (BundleResource,
+                                           DiagnosticReportResource,
+                                           PatientResource,
+                                           ServiceRequestResource)
+from felicity.apps.iol.fhir.utils import (create_resource,
+                                          get_diagnostic_report_resource,
+                                          get_patient_resource)
 from felicity.apps.user import models as user_models
 from felicity.apps.user.schemas import User
 

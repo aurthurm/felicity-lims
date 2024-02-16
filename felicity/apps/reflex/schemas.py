@@ -5,7 +5,6 @@ from pydantic import ConfigDict
 from felicity.apps.analysis.schemas import Analysis, SampleType
 from felicity.apps.common.schemas import BaseAuditModel
 
-
 #
 #  ReflexRule Schema
 #

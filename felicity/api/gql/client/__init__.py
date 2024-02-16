@@ -1,3 +1,3 @@
-from .types import ClientType, ClientContactType, ClientEdge, ClientCursorPage
+from .types import ClientContactType, ClientCursorPage, ClientEdge, ClientType
 
 client_types = [ClientType, ClientContactType, ClientEdge, ClientCursorPage]

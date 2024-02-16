@@ -1,9 +1,10 @@
 from datetime import datetime, timedelta
 
-from sqlalchemy import Column, Integer, String, DateTime
+from sqlalchemy import Column, DateTime, Integer, String
 from sqlalchemy.dialects.postgresql import JSONB
 
 from felicity.database.base_class import DBModel
+
 from . import conf, schemas
 
 

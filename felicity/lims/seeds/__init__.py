@@ -1,28 +1,13 @@
 import logging
 
-from .groups_perms import (
-    seed_groups,
-    seed_permissions,
-    seed_group_permissions_defaults
-)
-from .setup_analyses import (
-    seed_categories,
-    seed_qc_levels,
-    seed_id_sequence,
-    seed_coding_standards,
-    seed_sample_types,
-    seed_analyses_services_and_profiles,
-    seed_rejection_reasons
-)
-from .setup_laboratory import (
-    seed_geographies,
-    seed_clients,
-    seed_laboratory
-)
-from .superusers import (
-    seed_daemon_user,
-    seed_super_user
-)
+from .groups_perms import (seed_group_permissions_defaults, seed_groups,
+                           seed_permissions)
+from .setup_analyses import (seed_analyses_services_and_profiles,
+                             seed_categories, seed_coding_standards,
+                             seed_id_sequence, seed_qc_levels,
+                             seed_rejection_reasons, seed_sample_types)
+from .setup_laboratory import seed_clients, seed_geographies, seed_laboratory
+from .superusers import seed_daemon_user, seed_super_user
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

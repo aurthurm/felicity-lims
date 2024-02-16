@@ -20,13 +20,13 @@ class Identification(Auditable):
 
     @classmethod
     async def create(
-            cls, obj_in: dict | schemas.IdentificationCreate
+        cls, obj_in: dict | schemas.IdentificationCreate
     ) -> schemas.Identification:
         data = cls._import(obj_in)
         return await super().create(**data)
 
     async def update(
-            self, obj_in: dict | schemas.IdentificationUpdate
+        self, obj_in: dict | schemas.IdentificationUpdate
     ) -> schemas.Identification:
         data = self._import(obj_in)
         return await super().update(**data)
@@ -47,13 +47,13 @@ class PatientIdentification(Auditable):
 
     @classmethod
     async def create(
-            cls, obj_in: dict | schemas.PatientIdentificationCreate
+        cls, obj_in: dict | schemas.PatientIdentificationCreate
     ) -> schemas.PatientIdentification:
         data = cls._import(obj_in)
         return await super().create(**data)
 
     async def update(
-            self, obj_in: dict | schemas.PatientIdentificationUpdate
+        self, obj_in: dict | schemas.PatientIdentificationUpdate
     ) -> schemas.PatientIdentification:
         data = self._import(obj_in)
         return await super().update(**data)

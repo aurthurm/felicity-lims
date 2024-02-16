@@ -121,7 +121,7 @@ class ReflexUtil:
         # 3. If brain criteria expectations are met then take action
         logger.info(f"matches: {matches}")
         if all(matches):
-            logger.info(f"matches found")
+            logger.info("matches found")
             # Add new Analyses
             logger.info(f"add_new: {brain.add_new}")
             for assoc in brain.add_new:
@@ -132,7 +132,7 @@ class ReflexUtil:
             for final in brain.finalise:
                 await self.create_final_for(final.analysis.uid, final.value)
         else:
-            logger.info(f"no matches")
+            logger.info("no matches")
 
     async def siblings(self):
         """

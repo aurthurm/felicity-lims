@@ -371,7 +371,7 @@ function saveMappingForm(): void {
         <div v-else-if="currentTab === 'specifications'">
           <analysis-specifications :analysis="analysisService" :analysisUid="analysisService?.uid"/>
         </div>
-        <div v-if="currentTab == 'mappings'">
+        <div v-else-if="currentTab == 'mappings'">
             <div class="flex justify-between items-center mb-2">
               <h3>Concept Mappings</h3>
               <button @click="MappingFormManager(true)"
@@ -415,11 +415,8 @@ function saveMappingForm(): void {
               </div>
             </div>
         </div>
-          <div v-if="currentTab == 'billing'">
-            <Billing target="analysis" :targetUid="analysisService.uid" />
-          </div>
-        <div v-else> <!-- fiancials -->
-          <h3>Unknown Tab</h3>
+        <div v-else-if="currentTab == 'billing'">
+          <Billing target="analysis" :targetUid="analysisService.uid" />
         </div>
       </section>
 

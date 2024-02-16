@@ -1,14 +1,7 @@
 import logging
 
-from sqlalchemy import (
-    Boolean,
-    Column,
-    DateTime,
-    ForeignKey,
-    Integer,
-    String,
-    LargeBinary,
-)
+from sqlalchemy import (Boolean, Column, DateTime, ForeignKey, Integer,
+                        LargeBinary, String)
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import relationship
 
@@ -37,13 +30,13 @@ class ReferralLaboratory(Auditable):
 
     @classmethod
     async def create(
-            cls, obj_in: dict | schemas.ReferralLaboratoryCreate
+        cls, obj_in: dict | schemas.ReferralLaboratoryCreate
     ) -> schemas.ReferralLaboratory:
         data = cls._import(obj_in)
         return await super().create(**data)
 
     async def update(
-            self, obj_in: dict | schemas.ReferralLaboratoryUpdate
+        self, obj_in: dict | schemas.ReferralLaboratoryUpdate
     ) -> schemas.ReferralLaboratory:
         data = self._import(obj_in)
         return await super().update(**data)
@@ -148,12 +141,14 @@ class ShippedSample(DBModel):
     ext_sample_id = Column(String, nullable=True)
 
     @classmethod
-    async def create(cls, obj_in: dict | schemas.ShippedSampleCreate) -> schemas.ShippedSample:
+    async def create(
+        cls, obj_in: dict | schemas.ShippedSampleCreate
+    ) -> schemas.ShippedSample:
         data = cls._import(obj_in)
         return await super().create(**data)
 
     async def update(
-            self, obj_in: dict | schemas.ShippedSampleUpdate
+        self, obj_in: dict | schemas.ShippedSampleUpdate
     ) -> schemas.ShippedSample:
         data = self._import(obj_in)
         return await super().update(**data)

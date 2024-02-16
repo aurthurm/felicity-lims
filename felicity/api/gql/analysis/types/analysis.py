@@ -146,6 +146,7 @@ class ResultOptionType:
     value: str
     analysis_uid: str
     # analysis: Optional['AnalysisType']
+    sample_types: Optional[list[SampleTypeTyp]]
     #
     created_by_uid: str | None
     created_by: UserType | None

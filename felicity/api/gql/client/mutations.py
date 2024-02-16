@@ -6,7 +6,7 @@ from strawberry.types import Info  # noqa
 from felicity.api.gql.auth import auth_from_info, verify_user_auth
 from felicity.api.gql.client.types import ClientContactType, ClientType
 from felicity.api.gql.permissions import IsAuthenticated
-from felicity.api.gql.types import OperationError, DeletedItem
+from felicity.api.gql.types import DeletedItem, OperationError
 from felicity.apps.client import models, schemas
 
 logging.basicConfig(level=logging.INFO)

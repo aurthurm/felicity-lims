@@ -16,12 +16,6 @@ class InactiveTestBillException(Exception):
         super().__init__(self.message)
 
 
-class InvalidVoucherCodeException(Exception):
-    def __init__(self, message="Invalid Voucher Code"):
-        self.message = message
-        super().__init__(self.message)
-
-
 class InactiveVoucherCodeException(Exception):
     def __init__(self, message="Inactive Voucher Code"):
         self.message = message

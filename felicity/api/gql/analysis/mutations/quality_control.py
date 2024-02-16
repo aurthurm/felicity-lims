@@ -3,10 +3,11 @@ import logging
 from typing import List, Optional
 
 import strawberry  # noqa
-from felicity.api.gql.types import OperationError
+
+from felicity.api.gql.analysis.types import analysis as a_types
 from felicity.api.gql.auth import auth_from_info, verify_user_auth
 from felicity.api.gql.permissions import IsAuthenticated
-from felicity.api.gql.analysis.types import analysis as a_types
+from felicity.api.gql.types import OperationError
 from felicity.apps.analysis import schemas
 from felicity.apps.analysis.conf import states
 from felicity.apps.analysis.models import analysis as analysis_models
@@ -14,7 +15,6 @@ from felicity.apps.analysis.models import qc as qc_models
 from felicity.apps.analysis.models import results as result_models
 from felicity.apps.analysis.utils import get_qc_sample_type
 from felicity.apps.setup.models import setup as setup_models
-
 from felicity.utils import get_passed_args
 
 logging.basicConfig(level=logging.INFO)
@@ -230,7 +230,7 @@ async def create_QC_template(info, payload: QCTemplateInputType) -> QCTemplateRe
 
 @strawberry.mutation(permission_classes=[IsAuthenticated])
 async def update_QC_template(
-        info, uid: str, payload: QCTemplateInputType
+    info, uid: str, payload: QCTemplateInputType
 ) -> QCTemplateResponse:
     is_authenticated, felicity_user = await auth_from_info(info)
     verify_user_auth(

@@ -14,7 +14,8 @@ from felicity.apps.job import models as job_models
 from felicity.apps.job import schemas as job_schemas
 from felicity.apps.job.conf import actions, categories, priorities, states
 from felicity.apps.shipment import conf, models, schemas
-from felicity.apps.shipment.utils import shipment_recover, shipment_recall, action_shipment
+from felicity.apps.shipment.utils import (action_shipment, shipment_recall,
+                                          shipment_recover)
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -83,7 +84,7 @@ ShipmentResponse = strawberry.union(
 class ShipmentMutations:
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_shipment(
-            self, info, payload: ShipmentInputType
+        self, info, payload: ShipmentInputType
     ) -> ShipmentsResponse:
 
         is_authenticated, felicity_user = await auth_from_info(info)
@@ -126,7 +127,7 @@ class ShipmentMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_shipment(
-            self, info, uid: str, payload: ShipmentUpdateInputType
+        self, info, uid: str, payload: ShipmentUpdateInputType
     ) -> ShipmentResponse:  # noqa
 
         is_authenticated, felicity_user = await auth_from_info(info)
@@ -164,7 +165,7 @@ class ShipmentMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def action_shipment(
-            self, info, uid: str, action: str
+        self, info, uid: str, action: str
     ) -> ShipmentResponse:  # noqa
 
         is_authenticated, felicity_user = await auth_from_info(info)
@@ -207,7 +208,7 @@ class ShipmentMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def shipment_manage_samples(
-            self, info, uid: str, payload: ShipmentManageSamplesInput
+        self, info, uid: str, payload: ShipmentManageSamplesInput
     ) -> ShipmentResponse:
 
         is_authenticated, felicity_user = await auth_from_info(info)
@@ -252,7 +253,7 @@ class ShipmentMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_referral_laboratory(
-            info, payload: ReferralLaboratoryInputType
+        info, payload: ReferralLaboratoryInputType
     ) -> ReferralLaboratoryResponse:
 
         is_authenticated, felicity_user = await auth_from_info(info)
@@ -289,7 +290,7 @@ class ShipmentMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_referral_laboratory(
-            info, uid: str, payload: ReferralLaboratoryInputType
+        info, uid: str, payload: ReferralLaboratoryInputType
     ) -> ReferralLaboratoryResponse:
 
         is_authenticated, felicity_user = await auth_from_info(info)

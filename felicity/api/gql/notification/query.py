@@ -1,6 +1,7 @@
 from typing import List, Optional
 
 import strawberry  # noqa
+
 from felicity.api.gql.notification.types import NotificationType
 from felicity.api.gql.permissions import IsAuthenticated
 from felicity.apps.notification import models
@@ -10,11 +11,11 @@ from felicity.apps.notification import models
 class StreamNotificationQuery:
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def notification_filter(
-            self,
-            info,
-            group_uid: str | None,
-            department_uid: str | None,
-            user_uid: str | None,
+        self,
+        info,
+        group_uid: str | None,
+        department_uid: str | None,
+        user_uid: str | None,
     ) -> List[NotificationType]:
         filters = {}
 
@@ -32,7 +33,9 @@ class StreamNotificationQuery:
         )
 
         notifications = (
-            (await models.Notification.session.execute(notif_stmt)).scalars().all_async()
+            (await models.Notification.session.execute(notif_stmt))
+            .scalars()
+            .all_async()
         )
         return list(notifications)
 

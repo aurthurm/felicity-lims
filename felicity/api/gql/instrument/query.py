@@ -2,21 +2,20 @@ from typing import List
 
 import sqlalchemy as sa
 import strawberry  # noqa
-from felicity.api.gql.types import PageInfo
-from felicity.api.gql.permissions import IsAuthenticated
-from felicity.api.gql.instrument.types import (
-    InstrumentCursorPage,
-    InstrumentEdge,
-    InstrumentType,
-    InstrumentTypeCursorPage,
-    InstrumentTypeEdge,
-    InstrumentTypeType,
-    MethodCursorPage,
-    MethodEdge,
-    MethodType,
-)
-from felicity.apps.instrument import models
 
+from felicity.api.gql.instrument.types import (InstrumentCursorPage,
+                                               InstrumentEdge, InstrumentType,
+                                               InstrumentTypeCursorPage,
+                                               InstrumentTypeEdge,
+                                               InstrumentTypeType,
+                                               LaboratoryInstrumentCursorPage,
+                                               LaboratoryInstrumentEdge,
+                                               LaboratoryInstrumentType,
+                                               MethodCursorPage, MethodEdge,
+                                               MethodType)
+from felicity.api.gql.permissions import IsAuthenticated
+from felicity.api.gql.types import PageInfo
+from felicity.apps.instrument import models
 from felicity.utils import has_value_or_is_truthy
 
 
@@ -104,6 +103,48 @@ async def get_all_instruments(
     )
 
 
+async def get_all_laboratory_instruments(
+    self,
+    info,
+    page_size: int | None = None,
+    after_cursor: str | None = None,
+    before_cursor: str | None = None,
+    text: str | None = None,
+    sort_by: list[str] | None = None,
+) -> LaboratoryInstrumentCursorPage:
+    filters = {}
+
+    _or_ = dict()
+    if has_value_or_is_truthy(text):
+        arg_list = [
+            "lab_name__ilike",
+            "serial_number__ilike",
+            "instrument___name__ilike",
+        ]
+        for _arg in arg_list:
+            _or_[_arg] = f"%{text}%"
+
+        filters = {sa.or_: _or_}
+
+    page = await models.LaboratoryInstrument.paginate_with_cursors(
+        page_size=page_size,
+        after_cursor=after_cursor,
+        before_cursor=before_cursor,
+        filters=filters,
+        sort_by=sort_by,
+        get_related="methods",
+    )
+
+    total_count: int = page.total_count
+    edges: List[LaboratoryInstrumentEdge[LaboratoryInstrumentType]] = page.edges
+    items: List[LaboratoryInstrumentType] = page.items
+    page_info: PageInfo = page.page_info
+
+    return LaboratoryInstrumentCursorPage(
+        total_count=total_count, edges=edges, items=items, page_info=page_info
+    )
+
+
 async def get_all_methods(
     self,
     info,
@@ -159,8 +200,17 @@ class InstrumentQuery:
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def instrument_by_uid(self, info, uid: str) -> InstrumentType:
-        query = await models.Instrument.get(uid=uid)
-        return query
+        return await models.Instrument.get(uid=uid)
+
+    laboratory_instrument_all: LaboratoryInstrumentCursorPage = strawberry.field(
+        resolver=get_all_laboratory_instruments, permission_classes=[IsAuthenticated]
+    )
+
+    @strawberry.field(permission_classes=[IsAuthenticated])
+    async def laboratory_instrument_by_uid(
+        self, info, uid: str
+    ) -> LaboratoryInstrumentType:
+        return await models.LaboratoryInstrument.get(uid=uid)
 
     method_all: MethodCursorPage = strawberry.field(
         resolver=get_all_methods, permission_classes=[IsAuthenticated]
@@ -168,5 +218,4 @@ class InstrumentQuery:
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def method_by_uid(self, info, uid: str) -> MethodType:
-        query = await models.Method.get(uid=uid)
-        return query
+        return await models.Method.get(uid=uid)

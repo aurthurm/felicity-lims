@@ -2,7 +2,7 @@
 
 set -x
 
-mypy .
-black . --check
-isort --recursive --check-only .
-flake8 .
+mypy ./felivity
+black ./felicity --check
+isort --recursive --check-only ./felicity
+flake8 ./felicity

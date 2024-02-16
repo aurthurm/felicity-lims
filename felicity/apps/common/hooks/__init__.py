@@ -1,7 +1,8 @@
 import logging
 
-from felicity.apps.common.hooks.audit import AuditHook, conf
 from sqlalchemy import event
+
+from felicity.apps.common.hooks.audit import AuditHook, conf
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

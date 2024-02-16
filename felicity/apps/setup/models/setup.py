@@ -16,9 +16,7 @@ class Laboratory(BaseAuditDBModel):
     tag_line = Column(String, nullable=True)
     code = Column(String, nullable=True)
     lab_manager_uid = Column(String, ForeignKey("user.uid"), nullable=True)
-    lab_manager = relationship(
-        User, foreign_keys=[lab_manager_uid], backref="user_uid", lazy="selectin"
-    )
+    lab_manager = relationship(User, foreign_keys=[lab_manager_uid], lazy="selectin")
     email = Column(String, nullable=True)  # Main Email Adress
     email_cc = Column(String, nullable=True)
     mobile_phone = Column(String, nullable=True)
@@ -29,11 +27,15 @@ class Laboratory(BaseAuditDBModel):
     quality_statement = Column(String, nullable=True)
 
     @classmethod
-    async def create(cls, obj_in: dict | schemas.LaboratoryCreate) -> schemas.Laboratory:
+    async def create(
+        cls, obj_in: dict | schemas.LaboratoryCreate
+    ) -> schemas.Laboratory:
         data = cls._import(obj_in)
         return await super().create(**data)
 
-    async def update(self, obj_in: dict | schemas.LaboratoryUpdate) -> schemas.Laboratory:
+    async def update(
+        self, obj_in: dict | schemas.LaboratoryUpdate
+    ) -> schemas.Laboratory:
         data = self._import(obj_in)
         return await super().update(**data)
 
@@ -71,13 +73,13 @@ class LaboratorySetting(BaseAuditDBModel):
 
     @classmethod
     async def create(
-            cls, obj_in: dict | schemas.LaboratorySettingCreate
+        cls, obj_in: dict | schemas.LaboratorySettingCreate
     ) -> schemas.LaboratorySetting:
         data = cls._import(obj_in)
         return await super().create(**data)
 
     async def update(
-            self, obj_in: dict | schemas.LaboratorySettingUpdate
+        self, obj_in: dict | schemas.LaboratorySettingUpdate
     ) -> schemas.LaboratorySetting:
         data = self._import(obj_in)
         return await super().update(**data)
@@ -110,11 +112,15 @@ class Manufacturer(BaseAuditDBModel):
     description = Column(String, nullable=True)
 
     @classmethod
-    async def create(cls, obj_in: dict | schemas.ManufacturerCreate) -> schemas.Manufacturer:
+    async def create(
+        cls, obj_in: dict | schemas.ManufacturerCreate
+    ) -> schemas.Manufacturer:
         data = cls._import(obj_in)
         return await super().create(**data)
 
-    async def update(self, obj_in: dict | schemas.ManufacturerUpdate) -> schemas.Manufacturer:
+    async def update(
+        self, obj_in: dict | schemas.ManufacturerUpdate
+    ) -> schemas.Manufacturer:
         data = self._import(obj_in)
         return await super().update(**data)
 
@@ -129,11 +135,15 @@ class Department(BaseAuditDBModel):
     code = Column(String, nullable=True)
 
     @classmethod
-    async def create(cls, obj_in: dict | schemas.DepartmentCreate) -> schemas.Department:
+    async def create(
+        cls, obj_in: dict | schemas.DepartmentCreate
+    ) -> schemas.Department:
         data = cls._import(obj_in)
         return await super().create(**data)
 
-    async def update(self, obj_in: dict | schemas.DepartmentUpdate) -> schemas.Department:
+    async def update(
+        self, obj_in: dict | schemas.DepartmentUpdate
+    ) -> schemas.Department:
         data = self._import(obj_in)
         return await super().update(**data)
 

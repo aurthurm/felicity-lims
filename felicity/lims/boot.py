@@ -2,7 +2,8 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 from opentelemetry import trace
-from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import OTLPSpanExporter
+from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import \
+    OTLPSpanExporter
 from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
 from opentelemetry.instrumentation.sqlalchemy import SQLAlchemyInstrumentor
 from opentelemetry.sdk.resources import Resource
@@ -11,7 +12,8 @@ from opentelemetry.sdk.trace.export import SimpleSpanProcessor
 from starlette.middleware.cors import CORSMiddleware
 from strawberry.extensions.tracing import OpenTelemetryExtension
 from strawberry.fastapi import GraphQLRouter
-from strawberry.subscriptions import GRAPHQL_TRANSPORT_WS_PROTOCOL, GRAPHQL_WS_PROTOCOL
+from strawberry.subscriptions import (GRAPHQL_TRANSPORT_WS_PROTOCOL,
+                                      GRAPHQL_WS_PROTOCOL)
 
 from felicity.api.deps import get_gql_context
 from felicity.api.gql.schema import schema
@@ -36,7 +38,7 @@ async def lifespan(app: FastAPI):
     observe_events()
     #
     yield
-    # 
+    #
     ...
 
 
@@ -67,7 +69,7 @@ def register_graphql(app: FastAPI):
         schema,
         graphiql=True,
         context_getter=get_gql_context,
-        subscription_protocols=[GRAPHQL_TRANSPORT_WS_PROTOCOL, GRAPHQL_WS_PROTOCOL]
+        subscription_protocols=[GRAPHQL_TRANSPORT_WS_PROTOCOL, GRAPHQL_WS_PROTOCOL],
     )
     app.include_router(graphql_app, prefix="/felicity-gql")
     app.add_websocket_route("/felicity-gql", graphql_app)
@@ -75,7 +77,9 @@ def register_graphql(app: FastAPI):
 
 def register_tracer(app: FastAPI):
     if settings.RUN_OPEN_TRACING:
-        otlp_exporter = OTLPSpanExporter(endpoint=settings.OTLP_SPAN_EXPORT_URL, insecure=True)
+        otlp_exporter = OTLPSpanExporter(
+            endpoint=settings.OTLP_SPAN_EXPORT_URL, insecure=True
+        )
         resource = Resource.create({"service.name": settings.PROJECT_NAME})
         trace.set_tracer_provider(TracerProvider(resource=resource))
         tracer = trace.get_tracer(__name__)
@@ -84,9 +88,7 @@ def register_tracer(app: FastAPI):
         #
         FastAPIInstrumentor.instrument_app(app)
         SQLAlchemyInstrumentor().instrument(
-            engine=async_engine.sync_engine,
-            enable_commenter=True,
-            commenter_options={}
+            engine=async_engine.sync_engine, enable_commenter=True, commenter_options={}
         )
 
 

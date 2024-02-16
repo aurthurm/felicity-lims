@@ -7,6 +7,7 @@ from sqlalchemy.orm import relationship
 from felicity.apps import BaseAuditDBModel, DBModel
 from felicity.apps.setup.models import Department
 from felicity.apps.user.models import Group, User
+
 from . import schemas
 
 logging.basicConfig(level=logging.INFO)
@@ -34,11 +35,15 @@ class ActivityFeed(BaseAuditDBModel):
     )
 
     @classmethod
-    async def create(cls, obj_in: dict | schemas.ActivityFeedCreate) -> schemas.ActivityFeed:
+    async def create(
+        cls, obj_in: dict | schemas.ActivityFeedCreate
+    ) -> schemas.ActivityFeed:
         data = cls._import(obj_in)
         return await super().create(**data)
 
-    async def update(self, obj_in: dict | schemas.ActivityFeedUpdate) -> schemas.ActivityFeed:
+    async def update(
+        self, obj_in: dict | schemas.ActivityFeedUpdate
+    ) -> schemas.ActivityFeed:
         data = self._import(obj_in)
         return await super().update(**data)
 
@@ -103,13 +108,13 @@ class ActivityStream(BaseAuditDBModel):
 
     @classmethod
     async def create(
-            cls, obj_in: dict | schemas.ActivityStreamCreate
+        cls, obj_in: dict | schemas.ActivityStreamCreate
     ) -> schemas.ActivityStream:
         data = cls._import(obj_in)
         return await super().create(**data)
 
     async def update(
-            self, obj_in: dict | schemas.ActivityStreamUpdate
+        self, obj_in: dict | schemas.ActivityStreamUpdate
     ) -> schemas.ActivityStream:
         data = self._import(obj_in)
         return await super().update(**data)
@@ -147,18 +152,18 @@ class ActivityStream(BaseAuditDBModel):
 
     @classmethod
     async def for_viewer(
-            cls, viewer: User, seen=False
+        cls, viewer: User, seen=False
     ) -> Optional[List[schemas.ActivityStream]]:
         """Streams for user: seen or unseen"""
 
     @classmethod
     async def stream(
-            cls,
-            obj: Any,
-            actor: User,
-            verb: str,
-            object_type: str,
-            feeds: List[ActivityFeed] = None,
+        cls,
+        obj: Any,
+        actor: User,
+        verb: str,
+        object_type: str,
+        feeds: List[ActivityFeed] = None,
     ):
         if feeds is None:
             feeds = []
@@ -241,11 +246,15 @@ class Notification(BaseAuditDBModel):
     viewers = relationship("User", secondary=notification_view, lazy="selectin")
 
     @classmethod
-    async def create(cls, obj_in: dict | schemas.NotificationCreate) -> schemas.Notification:
+    async def create(
+        cls, obj_in: dict | schemas.NotificationCreate
+    ) -> schemas.Notification:
         data = cls._import(obj_in)
         return await super().create(**data)
 
-    async def update(self, obj_in: dict | schemas.NotificationUpdate) -> schemas.Notification:
+    async def update(
+        self, obj_in: dict | schemas.NotificationUpdate
+    ) -> schemas.Notification:
         data = self._import(obj_in)
         return await super().update(**data)
 

@@ -9,7 +9,8 @@ from felicity.api.gql.analysis.types import analysis as a_types
 from felicity.api.gql.analysis.types import results as r_types
 from felicity.api.gql.auth import auth_from_info, verify_user_auth
 from felicity.api.gql.permissions import CanVerifySample, IsAuthenticated
-from felicity.api.gql.types import OperationError, OperationSuccess, SuccessErrorResponse
+from felicity.api.gql.types import (OperationError, OperationSuccess,
+                                    SuccessErrorResponse)
 from felicity.apps.analysis import schemas
 from felicity.apps.analysis.conf import priorities, states
 from felicity.apps.analysis.models import analysis as analysis_models
@@ -96,7 +97,7 @@ class AnalysisRequestInputType:
 
 @strawberry.mutation(permission_classes=[IsAuthenticated])
 async def create_analysis_request(
-        info, payload: AnalysisRequestInputType
+    info, payload: AnalysisRequestInputType
 ) -> AnalysisRequestResponse:
     logger.info("Received request to create analysis request")
 
@@ -236,7 +237,7 @@ async def create_analysis_request(
                     update={
                         "analysis_uid": _service.uid,
                         "due_date": datetime.now()
-                                    + timedelta(minutes=_service.tat_length_minutes)
+                        + timedelta(minutes=_service.tat_length_minutes)
                         if _service.tat_length_minutes
                         else None,
                     }
@@ -415,7 +416,7 @@ async def verify_samples(info, samples: List[str]) -> SampleActionResponse:
 
 @strawberry.mutation(permission_classes=[IsAuthenticated])
 async def reject_samples(
-        info, samples: List[SampleRejectInputType]
+    info, samples: List[SampleRejectInputType]
 ) -> SampleActionResponse:
     is_authenticated, felicity_user = await auth_from_info(info)
     verify_user_auth(
@@ -458,7 +459,7 @@ async def reject_samples(
 
 @strawberry.mutation(permission_classes=[IsAuthenticated])
 async def publish_samples(
-        info, samples: List[SamplePublishInputType]
+    info, samples: List[SamplePublishInputType]
 ) -> SuccessErrorResponse:
     is_authenticated, felicity_user = await auth_from_info(info)
     verify_user_auth(

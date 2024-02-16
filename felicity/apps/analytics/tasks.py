@@ -2,6 +2,7 @@ import logging
 from pathlib import Path
 
 import pandas as pd
+
 from felicity.apps.analysis.models.analysis import Sample
 from felicity.apps.analytics import SampleAnalyticsInit, conf, models
 from felicity.apps.job import conf as job_conf

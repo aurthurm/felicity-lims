@@ -1,11 +1,14 @@
 from felicity.apps.analysis.models.analysis import Analysis  # noqa
 from felicity.apps.analysis.models.analysis import AnalysisCategory  # noqa
 from felicity.apps.analysis.models.analysis import AnalysisCoding  # noqa
-from felicity.apps.analysis.models.analysis import AnalysisCorrectionFactor  # noqa
-from felicity.apps.analysis.models.analysis import AnalysisDetectionLimit  # noqa
+from felicity.apps.analysis.models.analysis import \
+    AnalysisCorrectionFactor  # noqa
+from felicity.apps.analysis.models.analysis import \
+    AnalysisDetectionLimit  # noqa
 from felicity.apps.analysis.models.analysis import AnalysisInterim  # noqa
 from felicity.apps.analysis.models.analysis import AnalysisRequest  # noqa
-from felicity.apps.analysis.models.analysis import AnalysisSpecification  # noqa
+from felicity.apps.analysis.models.analysis import \
+    AnalysisSpecification  # noqa
 from felicity.apps.analysis.models.analysis import AnalysisUncertainty  # noqa
 from felicity.apps.analysis.models.analysis import CodingStandard  # noqa
 from felicity.apps.analysis.models.analysis import Profile  # noqa
@@ -35,7 +38,6 @@ from felicity.apps.client.models import Client  # noqa
 from felicity.apps.client.models import ClientContact  # noqa
 from felicity.apps.common.models import IdSequence  # noqa
 from felicity.apps.impress.sample.models import ReportImpress  # noqa
-
 # from felicity.apps.setup.models import MethodValidation  # noqa
 # from felicity.apps.setup.models import InstrumentCompetence  # noqa
 from felicity.apps.instrument.models import CalibrationCertificate  # noqa

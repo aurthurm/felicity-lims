@@ -6,7 +6,6 @@ from felicity.apps.job.conf import states as job_states
 from felicity.apps.notification.utils import ReportNotifier
 from felicity.apps.user import models as user_models
 
-
 report_notifier = ReportNotifier()
 
 logging.basicConfig(level=logging.INFO)

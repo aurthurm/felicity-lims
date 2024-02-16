@@ -1,8 +1,7 @@
 from datetime import datetime
 from typing import List, Optional
 
-from pydantic import BaseModel
-from pydantic import ConfigDict
+from pydantic import BaseModel, ConfigDict
 
 from felicity.apps.common.schemas import BaseAuditModel
 from felicity.apps.setup.schemas import ManufacturerInDB, SupplierInDB
@@ -92,13 +91,53 @@ class InstrumentInDB(InstrumentInDBBase):
 
 
 #
+# Laboratory Instrument
+#
+
+# Shared properties
+class LaboratoryInstrumentBase(BaseModel):
+    instrument_uid: str | None = None
+    instrument: Instrument | None = None
+    lab_name: str | None = None
+    serial_number: str | None = None
+    date_commissioned: datetime | None = None
+    date_decommissioned: datetime | None = None
+
+
+# Properties to receive via API on creation
+class LaboratoryInstrumentCreate(LaboratoryInstrumentBase):
+    instrument_uid: str
+
+
+# Properties to receive via API on update
+class LaboratoryInstrumentUpdate(LaboratoryInstrumentBase):
+    pass
+
+
+class LaboratoryInstrumentInDBBase(LaboratoryInstrumentBase):
+    uid: str
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+# Additional properties to return via API
+class LaboratoryInstrument(LaboratoryInstrumentInDBBase):
+    pass
+
+
+# Additional properties stored in DB
+class LaboratoryInstrumentInDB(LaboratoryInstrumentInDBBase):
+    pass
+
+
+#
 #  InstrumentCalibration
 #
 
 # Shared properties
 class InstrumentCalibrationBase(BaseModel):
-    instrument_uid: str
-    instrument: Optional[Instrument] = None
+    laboratory_instrument_uid: str
+    laboratory_instrument: Optional[LaboratoryInstrument] = None
     calibration_id: str
     date_reported: datetime
     report_id: str
@@ -143,8 +182,8 @@ class InstrumentCalibrationInDB(InstrumentCalibrationInDBBase):
 
 # Shared properties
 class CalibrationCertificateBase(BaseModel):
-    instrument_uid: str
-    instrument: Optional[Instrument] = None
+    laboratory_instrument_uid: str
+    laboratory_instrument: Optional[LaboratoryInstrument] = None
     certificate_code: str
     internal: bool = True
     issuer: str
@@ -168,9 +207,7 @@ class CalibrationCertificateUpdate(CalibrationCertificateBase):
 
 class CalibrationCertificateInDBBase(CalibrationCertificateBase):
     uid: str = None
-
-
-model_config = ConfigDict(from_attributes=True)
+    model_config = ConfigDict(from_attributes=True)
 
 
 # Additional properties to return via API
@@ -180,6 +217,47 @@ class CalibrationCertificate(CalibrationCertificateInDBBase):
 
 # Additional properties stored in DB
 class CalibrationCertificateInDB(CalibrationCertificateInDBBase):
+    pass
+
+
+#
+#  InstrumentCompetence
+#
+
+# Shared properties
+class InstrumentCompetenceBase(BaseModel):
+    instrument_uid: str
+    instrument: Optional[Instrument] = None
+    description: str
+    user_uid: str
+    issue_date: datetime
+    expiry_date: datetime
+    internal: bool
+    competence: str
+
+
+# Properties to receive via API on creation
+class InstrumentCompetenceCreate(InstrumentCompetenceBase):
+    pass
+
+
+# Properties to receive via API on update
+class InstrumentCompetenceUpdate(InstrumentCompetenceBase):
+    pass
+
+
+class InstrumentCompetenceInDBBase(InstrumentCompetenceBase):
+    uid: str = None
+    model_config = ConfigDict(from_attributes=True)
+
+
+# Additional properties to return via API
+class InstrumentCompetence(InstrumentCompetenceInDBBase):
+    pass
+
+
+# Additional properties stored in DB
+class InstrumentCompetenceInDB(InstrumentCompetenceInDBBase):
     pass
 
 
@@ -207,9 +285,7 @@ class MethodUpdate(MethodBase):
 
 class MethodInDBBase(MethodBase):
     uid: str = None
-
-
-model_config = ConfigDict(from_attributes=True)
+    model_config = ConfigDict(from_attributes=True)
 
 
 # Additional properties to return via API

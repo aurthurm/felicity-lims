@@ -20,11 +20,15 @@ class ReflexRule(Auditable):
     )
 
     @classmethod
-    async def create(cls, obj_in: dict | schemas.ReflexRuleCreate) -> schemas.ReflexRule:
+    async def create(
+        cls, obj_in: dict | schemas.ReflexRuleCreate
+    ) -> schemas.ReflexRule:
         data = cls._import(obj_in)
         return await super().create(**data)
 
-    async def update(self, obj_in: dict | schemas.ReflexRuleUpdate) -> schemas.ReflexRule:
+    async def update(
+        self, obj_in: dict | schemas.ReflexRuleUpdate
+    ) -> schemas.ReflexRule:
         data = self._import(obj_in)
         return await super().update(**data)
 
@@ -43,13 +47,13 @@ class ReflexBrainAddition(DBModel):
 
     @classmethod
     async def create(
-            cls, obj_in: dict | schemas.ReflexBrainAdditionCreate
+        cls, obj_in: dict | schemas.ReflexBrainAdditionCreate
     ) -> schemas.ReflexBrainAddition:
         data = cls._import(obj_in)
         return await super().create(**data)
 
     async def update(
-            self, obj_in: dict | schemas.ReflexBrainAdditionUpdate
+        self, obj_in: dict | schemas.ReflexBrainAdditionUpdate
     ) -> schemas.ReflexBrainAddition:
         data = self._import(obj_in)
         return await super().update(**data)
@@ -69,13 +73,13 @@ class ReflexBrainFinal(DBModel):
 
     @classmethod
     async def create(
-            cls, obj_in: dict | schemas.ReflexBrainFinalCreate
+        cls, obj_in: dict | schemas.ReflexBrainFinalCreate
     ) -> schemas.ReflexBrainFinal:
         data = cls._import(obj_in)
         return await super().create(**data)
 
     async def update(
-            self, obj_in: dict | schemas.ReflexBrainFinalUpdate
+        self, obj_in: dict | schemas.ReflexBrainFinalUpdate
     ) -> schemas.ReflexBrainFinal:
         data = self._import(obj_in)
         return await super().update(**data)
@@ -97,13 +101,13 @@ class ReflexBrainCriteria(DBModel):
 
     @classmethod
     async def create(
-            cls, obj_in: dict | schemas.ReflexBrainCriteriaCreate
+        cls, obj_in: dict | schemas.ReflexBrainCriteriaCreate
     ) -> schemas.ReflexBrainCriteria:
         data = cls._import(obj_in)
         return await super().create(**data)
 
     async def update(
-            self, obj_in: dict | schemas.ReflexBrainCriteriaUpdate
+        self, obj_in: dict | schemas.ReflexBrainCriteriaUpdate
     ) -> schemas.ReflexBrainCriteria:
         data = self._import(obj_in)
         return await super().update(**data)
@@ -124,11 +128,15 @@ class ReflexBrain(Auditable):
     finalise = relationship(ReflexBrainFinal, lazy="selectin")
 
     @classmethod
-    async def create(cls, obj_in: dict | schemas.ReflexBrainCreate) -> schemas.ReflexBrain:
+    async def create(
+        cls, obj_in: dict | schemas.ReflexBrainCreate
+    ) -> schemas.ReflexBrain:
         data = cls._import(obj_in)
         return await super().create(**data)
 
-    async def update(self, obj_in: dict | schemas.ReflexBrainUpdate) -> schemas.ReflexBrain:
+    async def update(
+        self, obj_in: dict | schemas.ReflexBrainUpdate
+    ) -> schemas.ReflexBrain:
         data = self._import(obj_in)
         return await super().update(**data)
 
@@ -164,10 +172,14 @@ class ReflexAction(Auditable):
     brains = relationship(ReflexBrain, back_populates="reflex_action", lazy="selectin")
 
     @classmethod
-    async def create(cls, obj_in: dict | schemas.ReflexActionCreate) -> schemas.ReflexAction:
+    async def create(
+        cls, obj_in: dict | schemas.ReflexActionCreate
+    ) -> schemas.ReflexAction:
         data = cls._import(obj_in)
         return await super().create(**data)
 
-    async def update(self, obj_in: dict | schemas.ReflexActionUpdate) -> schemas.ReflexAction:
+    async def update(
+        self, obj_in: dict | schemas.ReflexActionUpdate
+    ) -> schemas.ReflexAction:
         data = self._import(obj_in)
         return await super().update(**data)

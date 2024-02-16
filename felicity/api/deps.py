@@ -7,13 +7,13 @@ from graphql import GraphQLError
 from jose import jwt
 from pydantic import ValidationError
 from strawberry.fastapi import BaseContext
-from strawberry.types.info import Info as StrawberryInfo, RootValueType
+from strawberry.types.info import Info as StrawberryInfo
+from strawberry.types.info import RootValueType
 
 from felicity.apps.common import schemas as core_schemas  # noqa
 from felicity.apps.user import models  # noqa
 from felicity.apps.user.models import User
 from felicity.core import get_settings  # noqa
-
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

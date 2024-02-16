@@ -1,7 +1,7 @@
 import logging
-from typing import Optional
 
 import strawberry  # noqa
+
 from felicity.api.gql.analytics import types
 from felicity.api.gql.permissions import IsAuthenticated
 from felicity.apps.analysis.conf import states
@@ -141,7 +141,9 @@ async def count_analyte_group_by_instrument(
 ) -> types.GroupedCounts:
     analytics = SampleAnalyticsInit(AnalysisResult)
     results = await analytics.get_counts_group_by(
-        "instrument_uid", ("date_submitted", start_date), ("date_submitted", end_date)
+        "laboratory_instrument_uid",
+        ("date_submitted", start_date),
+        ("date_submitted", end_date),
     )
 
     stats = []

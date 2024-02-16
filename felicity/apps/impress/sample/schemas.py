@@ -1,11 +1,9 @@
 from datetime import datetime
 from typing import Optional
 
-from pydantic import BaseModel
-from pydantic import ConfigDict
+from pydantic import BaseModel, ConfigDict
 
 from felicity.apps.analysis.schemas import SampleInDB
-
 
 #
 # ReportImpress Schemas

@@ -6,6 +6,7 @@ from sqlalchemy.orm import relationship
 from felicity.apps import BaseAuditDBModel, DBModel
 from felicity.apps.common import BaseMPTT
 from felicity.apps.user.models import User
+
 from . import schemas
 
 logging.basicConfig(level=logging.INFO)
@@ -45,12 +46,14 @@ class MessageThread(BaseAuditDBModel):
     deleted_by = relationship("User", secondary=message_thread_delete, lazy="selectin")
 
     @classmethod
-    async def create(cls, obj_in: dict | schemas.MessageThreadCreate) -> schemas.MessageThread:
+    async def create(
+        cls, obj_in: dict | schemas.MessageThreadCreate
+    ) -> schemas.MessageThread:
         data = cls._import(obj_in)
         return await super().create(**data)
 
     async def update(
-            self, obj_in: dict | schemas.MessageThreadUpdate
+        self, obj_in: dict | schemas.MessageThreadUpdate
     ) -> schemas.MessageThread:
         data = self._import(obj_in)
         return await super().update(**data)

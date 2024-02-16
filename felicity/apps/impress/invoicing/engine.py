@@ -4,7 +4,7 @@ import logging
 from fpdf import FPDF
 
 from felicity.core.config import get_settings
-from felicity.core.dtz import get_time_now, datetime_math, format_datetime
+from felicity.core.dtz import datetime_math, format_datetime, get_time_now
 from felicity.utils.helpers import get_from_nested
 
 settings = get_settings()

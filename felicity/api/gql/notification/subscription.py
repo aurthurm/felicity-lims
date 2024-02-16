@@ -5,7 +5,6 @@ from typing import AsyncGenerator
 import strawberry  # noqa
 
 from felicity.api.gql.notification.types import ActivityStreamType
-
 # from felicity.api.gql.permissions import IsAuthenticated
 from felicity.apps.common.channel import BroadcastEvent, Subscriber, broadcast
 from felicity.apps.notification.models import ActivityStream

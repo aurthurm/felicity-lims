@@ -1,16 +1,21 @@
 <script setup lang="ts">
-  import { ref, reactive, toRefs, watch, defineAsyncComponent } from 'vue';
+  import { ref, computed, reactive, toRefs, watch, defineAsyncComponent } from 'vue';
   import { ADD_RESULT_OPTION, EDIT_RESULT_OPTION  } from '../../../../graphql/operations/analyses.mutations';
   import { IResultOption } from '../../../../models/analysis';
-  import { useAnalysisStore } from '../../../../stores';
+  import { useAnalysisStore, useSampleStore } from '../../../../stores';
   import { useApiUtil } from '../../../../composables';
   const modal = defineAsyncComponent(
     () => import('../../../../components/SimpleModal.vue')
   )
-
+  const VueMultiselect = defineAsyncComponent(
+    () => import('vue-multiselect')
+  )
 
   const analysisStore = useAnalysisStore()
+  const sampleStore = useSampleStore()
   const { withClientMutation } = useApiUtil()
+
+  const sampleTypes = computed<any[]>(() => sampleStore.getSampleTypes);
 
   const props = defineProps({
       analysis: {
@@ -37,16 +42,18 @@
 
   function addResultOption(): void {
       form.optionKey = +form.optionKey!;
-      const payload = { ...form, analysisUid: analysis?.value?.uid }
+      const payload = { ...form, 
+        analysisUid: analysis?.value?.uid,
+        sampleTypes: form.sampleTypes?.map(item => item.uid),
+      }
       withClientMutation(ADD_RESULT_OPTION, { payload }, "createResultOption")
       .then((result) => analysisStore.addResultOption(result));
   }
 
   function editResultOption(): void {
-      const payload = { ...form };
+      const payload = { ...form, analysisUid: analysis?.value?.uid, sampleTypes: form.sampleTypes?.map(item => item.uid) };
       delete payload['__typename']
       delete payload['uid']
-
       withClientMutation(EDIT_RESULT_OPTION, { uid : form.uid,  payload }, "updateResultOption")
       .then((result) => analysisStore.updateResultOption(result));
   }
@@ -83,6 +90,7 @@
             <tr>
                 <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">Result Key</th>
                 <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">Result Value</th>
+                <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">Sample Tyes</th>
                 <th class="px-1 py-1 border-b-2 border-gray-300"></th>
             </tr>
             </thead>
@@ -96,7 +104,10 @@
                 </div>
                 </td>
                 <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-                <div class="text-sm leading-5 text-sky-800">{{ option?.value }}</div>
+                  <div class="text-sm leading-5 text-sky-800">{{ option?.value }}</div>
+                </td>
+                <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
+                  <span class="p-1 rounded-sm text-sm leading-5 text-sky-800 bg-gray-200 mr-2" v-for="stype of option?.sampleTypes" :key="stype.uid">{{ stype.name }}</span>
                 </td>
                 <td class="px-1 py-1 whitespace-no-wrap text-right border-b border-gray-500 text-sm leading-5">
                     <button @click="FormManager(false, option)" class="px-2 py-1 mr-2 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none">Edit</button>
@@ -133,6 +144,16 @@
               v-model="form.value"
               placeholder="Value ..."
             />
+          </label>          <label class="block col-span-3 mb-2">
+            <span class="text-gray-700">Sample Types</span>
+            <VueMultiselect
+            v-model="form.sampleTypes"
+            :options="sampleTypes"
+            :multiple="true"
+            :searchable="true"
+            label="name"
+            track-by="uid">
+            </VueMultiselect>
           </label>
         </div>
         <hr />
@@ -148,4 +169,3 @@
   </modal>
 
 </template>
-

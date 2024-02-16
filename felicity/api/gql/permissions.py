@@ -4,10 +4,8 @@ import typing
 from strawberry.permission import BasePermission
 
 from felicity.api.deps import Info
-from felicity.apps.analysis.permissions import (
-    check_result_verification,
-    check_sample_verification,
-)
+from felicity.apps.analysis.permissions import (check_result_verification,
+                                                check_sample_verification)
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

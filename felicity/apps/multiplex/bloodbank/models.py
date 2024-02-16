@@ -38,8 +38,7 @@
 """ICT
     product
     identifier
-    group and rhesus
-    
+    group and rhesus    
     CrossMatch
     IS
     ICT
@@ -54,7 +53,6 @@
 """
     Blood Bank Storage/Inventory
     to be done later
-    
     collection status
     recall blood too long uncollected etc
     reassignments etc

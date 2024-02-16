@@ -15,6 +15,7 @@ import LayoutDashboard from './views/layouts/LayoutDashboard.vue';
 import LayoutEmpty from './views/layouts/LayoutEmpty.vue';
 import LayoutMobile from './views/layouts/LayoutMobile.vue';
 
+import 'vue-multiselect/dist/vue-multiselect.css';
 import 'floating-vue/dist/style.css';
 import 'sweetalert2/dist/sweetalert2.min.css';
 import 'notyf/notyf.min.css';

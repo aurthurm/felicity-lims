@@ -79,6 +79,33 @@ export const GET_ALL_INSTRUMENTS = gql`
     }
 `;
 
+
+export const GET_ALL_LABORATORY_INSTRUMENTS = gql`
+    query getAllLaboratoryInstruments {
+        laboratoryInstrumentAll {
+            totalCount
+            pageInfo {
+                hasNextPage
+                hasPreviousPage
+                startCursor
+                endCursor
+            }
+            items {
+                uid
+                labName
+                serialNumber
+                instrumentUid
+                instrument {
+                    uid
+                    name
+                }
+                dateCommissioned
+                dateDecommissioned
+            }
+        }
+    }
+`
+
 export const GET_ALL_METHODS = gql`
     query getAllMethods {
         methodAll {

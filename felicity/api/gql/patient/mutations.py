@@ -4,13 +4,13 @@ from datetime import datetime
 from typing import Dict, List, Optional
 
 import strawberry  # noqa
-from felicity.api.gql.types import OperationError
+
 from felicity.api.gql.auth import auth_from_info, verify_user_auth
-from felicity.api.gql.permissions import IsAuthenticated
 from felicity.api.gql.patient.types import IdentificationType, PatientType
+from felicity.api.gql.permissions import IsAuthenticated
+from felicity.api.gql.types import OperationError
 from felicity.apps.client import models as client_models
 from felicity.apps.patient import models, schemas
-
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

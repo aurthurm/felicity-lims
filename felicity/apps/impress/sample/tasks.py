@@ -34,12 +34,12 @@ async def impress_results(job_uid: str):
     user = await user_models.User.get(uid=job.creator_uid)
 
     try:
-        user = user
         await utils.impress_samples(job.data, user)
         await job.change_status(new_status=job_states.FINISHED)
         await report_notifier.notify("Your results were successfully published", user)
     except Exception as e:
         await job.change_status(new_status=job_states.FAILED)
+        logger.info(f"Failed impress job {job_uid} with errr: {str(e)}")
         await report_notifier.notify(
             f"Failed to publish results in job with uid: {job.uid} with error: {str(e)}",
             user,

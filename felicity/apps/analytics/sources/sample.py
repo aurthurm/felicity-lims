@@ -96,7 +96,7 @@ class SampleAnalyticsInit(Generic[ModelType]):
             result = await session.execute(stmt, {"sd": start_date, "ed": end_date})
 
         # columns result.keys()/result._metadata.keys
-        return result.keys(), result.all_async()
+        return result.keys(), result.all()
 
     async def get_line_listing_2(self):
         stmt = self.model.with_joined(
@@ -106,7 +106,7 @@ class SampleAnalyticsInit(Generic[ModelType]):
             await session.execute(stmt.limit(10))
 
         # logger.info(result)
-        # logger.info(result.scalars().all_async())
+        # logger.info(result.scalars().all())
 
         return None, None
 
@@ -152,13 +152,13 @@ class SampleAnalyticsInit(Generic[ModelType]):
         async with async_session_factory() as session:
             result = await session.execute(stmt)
 
-        return result.all_async()
+        return result.all()
 
     async def count_analyses_retests(
             self, start: Tuple[str, str], end: Tuple[str, str]
     ):
         retest = getattr(self.model, "retest")
-        stmt = select(func.count(self.model.uid).label("total")).filter(retest == True)
+        stmt = select(func.count(self.model.uid).label("total")).filter(retest is True)
 
         if start[1]:
             start_column = start[0]
@@ -181,7 +181,7 @@ class SampleAnalyticsInit(Generic[ModelType]):
         async with async_session_factory() as session:
             result = await session.execute(stmt)
 
-        return result.all_async()
+        return result.all()
 
     async def get_sample_process_performance(
             self, start: Tuple[str, str], end: Tuple[str, str]
@@ -253,7 +253,7 @@ class SampleAnalyticsInit(Generic[ModelType]):
         async with async_session_factory() as session:
             result = await session.execute(stmt, {"sd": start_date, "ed": end_date})
 
-        return result.all_async()
+        return result.all()
 
     async def get_analysis_process_performance(
             self, start: Tuple[str, str], end: Tuple[str, str]
@@ -331,7 +331,7 @@ class SampleAnalyticsInit(Generic[ModelType]):
         async with async_session_factory() as session:
             result = await session.execute(stmt, {"sd": start_date, "ed": end_date})
 
-        return result.all_async()
+        return result.all()
 
     async def get_laggards(self):
         """
@@ -386,4 +386,4 @@ class SampleAnalyticsInit(Generic[ModelType]):
             result_for_incomplete = await session.execute(stmt_for_incomplete)
             result_for_complete = await session.execute(stmt_for_complete)
 
-        return result_for_incomplete.all_async(), result_for_complete.all_async()
+        return result_for_incomplete.all(), result_for_complete.all()

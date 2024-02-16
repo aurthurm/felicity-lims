@@ -1,5 +1,5 @@
 import logging
-from typing import Any, Optional, Annotated
+from typing import Annotated, Any, Optional
 
 from fastapi import APIRouter, Depends
 from pydantic import BaseModel
@@ -71,7 +71,7 @@ async def register_laboratory(lab: LabNameIn) -> Any:
 
 @setup.post("/load-default-setup")
 async def load_setup_data(
-        current_user: Annotated[User, Depends(get_current_user)]
+    current_user: Annotated[User, Depends(get_current_user)]
 ) -> Any:
     """
     Run initial setup to load setup data

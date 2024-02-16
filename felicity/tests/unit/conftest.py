@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 
 @pytest_asyncio.fixture(scope="function", autouse=True)
 async def setup():
-    logger.info(f"pytest_configure unittest...")
+    logger.info("pytest_configure unittest...")
     async with engine.begin() as conn:
         await conn.run_sync(DBModel.metadata.create_all)
 

@@ -6,4 +6,6 @@ httpx==0.26.0
 anyio[trio]==4.2.0
 faker==22.5.1
 bump-pydantic==0.8.0
+isort==5.13.2
+flake8==7.0.0
 

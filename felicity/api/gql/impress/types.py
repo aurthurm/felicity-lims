@@ -2,6 +2,7 @@ from datetime import datetime
 from typing import Optional
 
 import strawberry  # noqa
+
 from felicity.api.gql.analysis.types.analysis import SampleType
 from felicity.api.gql.types import BytesScalar, JSONScalar
 from felicity.api.gql.user.types import UserType

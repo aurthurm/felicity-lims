@@ -1,7 +1,6 @@
 from felicity.core.uid_gen.snow_flake import Snowflake
 from felicity.core.uid_gen.sony_flake import SonyFlake
 
-
 USE_SNOW_FLAKE = True
 
 snow = Snowflake()

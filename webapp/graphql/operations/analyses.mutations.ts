@@ -338,6 +338,10 @@ export const ADD_RESULT_OPTION = gql`
                 optionKey
                 value
                 analysisUid
+                sampleTypes{
+                    uid
+                    name
+                }
             }
 
             ... on OperationError {
@@ -357,6 +361,10 @@ export const EDIT_RESULT_OPTION = gql`
                 optionKey
                 value
                 analysisUid
+                sampleTypes{
+                    uid
+                    name
+                }
             }
 
             ... on OperationError {

@@ -1,33 +1,21 @@
 from datetime import datetime
 
 from felicity.apps.analysis.models import analysis as a_models
-from felicity.apps.billing.config import DiscountType, DiscountValueType, TransactionKind
+from felicity.apps.billing.config import (DiscountType, DiscountValueType,
+                                          TransactionKind)
 from felicity.apps.billing.exceptions import (
-    CustomerAlreadyUsedVoucherException,
-    InactiveTestBillException,
-    InvalidVoucherCodeException,
-    InactiveVoucherCodeException,
-    VoucherCodeLimitExceededException,
-    VoucherLimitExceededException,
-)
-from felicity.apps.billing.models import (
-    TestBill,
-    ProfilePrice,
-    ProfileDiscount,
-    AnalysisPrice,
-    AnalysisDiscount,
-    TestBillTransaction,
-    Voucher,
-    VoucherCode,
-    VoucherCustomer,
-    test_bill_item,
-)
-from felicity.apps.billing.schemas import (
-    TestBillCreate,
-    TestBillUpdate,
-    TestBillTransactionCreate,
-    TestBillTransactionUpdate,
-)
+    CustomerAlreadyUsedVoucherException, InactiveTestBillException,
+    InactiveVoucherCodeException, InvalidVoucherCodeException,
+    VoucherCodeLimitExceededException, VoucherLimitExceededException)
+from felicity.apps.billing.models import (AnalysisDiscount, AnalysisPrice,
+                                          ProfileDiscount, ProfilePrice,
+                                          TestBill, TestBillTransaction,
+                                          Voucher, VoucherCode,
+                                          VoucherCustomer, test_bill_item)
+from felicity.apps.billing.schemas import (TestBillCreate,
+                                           TestBillTransactionCreate,
+                                           TestBillTransactionUpdate,
+                                           TestBillUpdate)
 from felicity.apps.impress.invoicing.utils import impress_invoice
 from felicity.apps.setup.models.setup import Laboratory, LaboratorySetting
 

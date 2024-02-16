@@ -5,13 +5,13 @@ from typing import List, Optional
 
 import strawberry  # noqa
 
-from felicity.api.gql.instrument.types import (
-    CalibrationCertificateType,
-    InstrumentCalibrationType,
-    InstrumentType,
-    InstrumentTypeType,
-    MethodType,
-)
+from felicity.api.gql.instrument.types import (CalibrationCertificateType,
+                                               InstrumentCalibrationType,
+                                               InstrumentCompetenceType,
+                                               InstrumentType,
+                                               InstrumentTypeType,
+                                               LaboratoryInstrumentType,
+                                               MethodType)
 from felicity.api.gql.permissions import IsAuthenticated
 from felicity.api.gql.types import OperationError
 from felicity.apps.analysis.models import analysis as analysis_models
@@ -27,6 +27,16 @@ InstrumentTypeResponse = strawberry.union(
 )
 InstrumentResponse = strawberry.union(
     "InstrumentResponse", (InstrumentType, OperationError), description=""  # noqa
+)
+LaboratoryInstrumentResponse = strawberry.union(
+    "LaboratoryInstrumentResponse",
+    (LaboratoryInstrumentType, OperationError),
+    description="",  # noqa
+)
+InstrumentCompetenceResponse = strawberry.union(
+    "InstrumentCompetenceResponse",
+    (InstrumentCompetenceType, OperationError),
+    description="",  # noqa
 )
 MethodResponse = strawberry.union(
     "MethodResponse", (MethodType, OperationError), description=""  # noqa
@@ -61,6 +71,15 @@ class InstrumentInputType:
 
 
 @strawberry.input
+class LaboratoryInstrumentInputType:
+    instrument_uid: str
+    lab_name: str
+    serial_number: str | None = None
+    date_commissioned: datetime | None = None
+    date_decommissioned: datetime | None = None
+
+
+@strawberry.input
 class MethodInputType:
     name: str
     instruments: Optional[List[str]] = field(default_factory=list)
@@ -71,7 +90,7 @@ class MethodInputType:
 
 @strawberry.input
 class InstrumentCalibrationInput:
-    instrument_uid: str
+    laboratory_instrument_uid: str
     date_reported: datetime | None
     start_date: str | None
     end_date: str | None
@@ -85,7 +104,7 @@ class InstrumentCalibrationInput:
 
 @strawberry.input
 class CalibrationCertificateInput:
-    instrument_uid: str
+    laboratory_instrument_uid: str
     date_issued: datetime | None
     valid_from_date: str | None
     valid_to_date: str | None
@@ -97,11 +116,22 @@ class CalibrationCertificateInput:
     internal: bool = True
 
 
+@strawberry.input
+class InstrumentCompetenceInput:
+    instrument_uid: str
+    description: str
+    user_uid: str
+    issue_date: datetime
+    expiry_date: datetime
+    internal: bool
+    competence: str
+
+
 @strawberry.type
 class InstrumentMutations:
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_instrument_type(
-            self, info, payload: InstrumentTypeInputType
+        self, info, payload: InstrumentTypeInputType
     ) -> InstrumentTypeResponse:  # noqa
 
         if not payload.name:
@@ -123,7 +153,7 @@ class InstrumentMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_instrument_type(
-            self, info, uid: str, payload: InstrumentTypeInputType
+        self, info, uid: str, payload: InstrumentTypeInputType
     ) -> InstrumentTypeResponse:  # noqa
 
         if not uid:
@@ -149,7 +179,7 @@ class InstrumentMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_instrument(
-            self, info, payload: InstrumentInputType
+        self, info, payload: InstrumentInputType
     ) -> InstrumentResponse:  # noqa
 
         if not payload.name or not payload.keyword:
@@ -179,7 +209,7 @@ class InstrumentMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_instrument(
-            self, info, uid: str, payload: InstrumentInputType
+        self, info, uid: str, payload: InstrumentInputType
     ) -> InstrumentResponse:  # noqa
 
         if not uid:
@@ -211,8 +241,105 @@ class InstrumentMutations:
         return InstrumentType(**instrument.marshal_simple())
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
+    async def create_instrument_competence(
+        self, info, payload: InstrumentCompetenceInput
+    ) -> InstrumentCompetenceResponse:  # noqa
+
+        instrument = await models.Instrument.get(keyword=payload.instrument_uid)
+        if not instrument:
+            return OperationError(error=f"Provided instrument does not exist")
+
+        incoming: dict = dict()
+        for k, v in payload.__dict__.items():
+            incoming[k] = v
+
+        obj_in = schemas.InstrumentCompetenceCreate(**incoming)
+        instrument_competence: models.InstrumentCompetence = (
+            await models.InstrumentCompetence.create(obj_in)
+        )
+        return InstrumentCompetenceType(**instrument_competence.marshal_simple())
+
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
+    async def update_instrument_competence(
+        self, info, uid: str, payload: InstrumentInputType
+    ) -> InstrumentCompetenceResponse:  # noqa
+
+        if not uid:
+            return OperationError(error="No uid provided to identify instrument")
+
+        competence = await models.InstrumentCompetence.get(uid=uid)
+        if not competence:
+            return OperationError(
+                error=f"instrument competence with uid {uid} not found. Cannot update obj ..."
+            )
+
+        obj_data = competence.to_dict()
+        for field in obj_data:
+            if field in payload.__dict__:
+                try:
+                    setattr(competence, field, payload.__dict__[field])
+                except Exception as e:
+                    logger.warning(e)
+
+        obj_in = schemas.InstrumentCompetenceUpdate(**competence.to_dict())
+        competence = await competence.update(obj_in)
+        return InstrumentCompetenceType(**competence.marshal_simple())
+
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
+    async def create_laboratory_instrument(
+        self, info, payload: LaboratoryInstrumentInputType
+    ) -> LaboratoryInstrumentResponse:  # noqa
+        instrument = await models.Instrument.get(uid=payload.instrument_uid)
+        if not instrument:
+            return OperationError(
+                error=f"Choice instrument not found: {payload.instrument_uid}"
+            )
+
+        incoming: dict = dict()
+        for k, v in payload.__dict__.items():
+            incoming[k] = v
+
+        obj_in = schemas.LaboratoryInstrumentCreate(**incoming)
+        laboratory_instrument: models.LaboratoryInstrument = (
+            await models.LaboratoryInstrument.create(obj_in)
+        )
+        return LaboratoryInstrumentType(**laboratory_instrument.marshal_simple())
+
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
+    async def update_laboratory_instrument(
+        self, info, uid: str, payload: LaboratoryInstrumentInputType
+    ) -> LaboratoryInstrumentResponse:  # noqa
+
+        if not uid:
+            return OperationError(error="No uid provided to identity instrument")
+
+        taken = await models.LaboratoryInstrument.get(lab_name=payload.lab_name)
+        if taken and taken.uid != uid:
+            return OperationError(
+                error=f"Provided lab_name already assigned to another instrument"
+            )
+
+        instrument = await models.LaboratoryInstrument.get(uid=uid)
+        if not instrument:
+            return OperationError(
+                error=f"instrument with uid {uid} not found. Cannot update obj ..."
+            )
+
+        obj_data = instrument.to_dict()
+        for field in obj_data:
+            if field in payload.__dict__:
+                try:
+                    setattr(instrument, field, payload.__dict__[field])
+                except Exception as e:
+                    logger.warning(e)
+
+        obj_in = schemas.LaboratoryInstrumentUpdate(**instrument.to_dict())
+        instrument = await instrument.update(obj_in)
+        return LaboratoryInstrumentType(**instrument.marshal_simple())
+
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_instrument_caliberation(
-            self, info, payload: InstrumentCalibrationInput
+        self, info, payload: InstrumentCalibrationInput
     ) -> InstrumentCalibrationResponse:  # noqa
 
         incoming: dict = dict()
@@ -227,7 +354,7 @@ class InstrumentMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_instrument_caliberation(
-            self, info, uid: str, payload: InstrumentInputType
+        self, info, uid: str, payload: InstrumentInputType
     ) -> InstrumentCalibrationResponse:  # noqa
 
         if not uid:
@@ -253,7 +380,7 @@ class InstrumentMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_caliberation_certificate(
-            self, info, payload: CalibrationCertificateInput
+        self, info, payload: CalibrationCertificateInput
     ) -> CalibrationCertificateResponse:  # noqa
 
         incoming: dict = dict()
@@ -268,7 +395,7 @@ class InstrumentMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_caliberation_certificate(
-            self, info, uid: str, payload: CalibrationCertificateInput
+        self, info, uid: str, payload: CalibrationCertificateInput
     ) -> CalibrationCertificateResponse:  # noqa
 
         if not uid:
@@ -294,7 +421,7 @@ class InstrumentMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_method(
-            self, info, payload: MethodInputType
+        self, info, payload: MethodInputType
     ) -> MethodResponse:  # noqa
 
         if not payload.name:
@@ -361,7 +488,7 @@ class InstrumentMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_method(
-            self, info, uid: str, payload: MethodInputType
+        self, info, uid: str, payload: MethodInputType
     ) -> MethodResponse:  # noqa
 
         if not uid:

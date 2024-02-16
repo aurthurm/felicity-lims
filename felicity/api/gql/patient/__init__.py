@@ -1,10 +1,5 @@
-from .types import (
-    IdentificationType,
-    PatientIdentificationType,
-    PatientType,
-    PatientEdge,
-    PatientCursorPage,
-)
+from .types import (IdentificationType, PatientCursorPage, PatientEdge,
+                    PatientIdentificationType, PatientType)
 
 patient_types = [
     IdentificationType,

@@ -57,7 +57,7 @@ groups = [
     fg.LAB_HAND,
     fg.GUEST,
     fg.STORES,
-    fg.ACCOUNTING
+    fg.ACCOUNTING,
 ]
 
 # default permissions
@@ -154,9 +154,7 @@ permissions = {
             fg.SCIENTIST,
             fg.STORES,
         ],
-        fo.BILLING: [
-            fg.ACCOUNTING
-        ]
+        fo.BILLING: [fg.ACCOUNTING],
     },
     fa.SUBMIT: {
         fo.SAMPLE: [fg.SCIENTIST, fg.TECHNOLOGIST],

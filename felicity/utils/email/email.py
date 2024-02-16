@@ -8,6 +8,7 @@ from felicity.core.config import get_settings
 
 settings = get_settings()
 
+
 def send_email(
     email_to: str, subject_template: str = "", html_template: str = "", environment=None
 ) -> None:

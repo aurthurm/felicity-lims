@@ -5,6 +5,7 @@ from felicity.apps.client import models as client_models
 from felicity.apps.client import schemas as client_schemas
 from felicity.apps.setup import models, schemas
 from felicity.core.config import get_settings
+
 from .data import get_seeds
 
 settings = get_settings()

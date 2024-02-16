@@ -5,26 +5,19 @@ import string
 from datetime import datetime, timedelta
 
 from felicity.apps.analysis import conf as analysis_conf
-from felicity.apps.analysis.models.analysis import (
-    Sample,
-    AnalysisRequest,
-    SampleType,
-    Analysis,
-    sample_analysis,
-)
+from felicity.apps.analysis.models.analysis import (Analysis, AnalysisRequest,
+                                                    Sample, SampleType,
+                                                    sample_analysis)
 from felicity.apps.analysis.models.results import AnalysisResult
-from felicity.apps.analysis.schemas import (
-    AnalysisRequestCreate,
-    SampleCreate,
-    AnalysisResultCreate,
-)
+from felicity.apps.analysis.schemas import (AnalysisRequestCreate,
+                                            AnalysisResultCreate, SampleCreate)
 from felicity.apps.impress.shipment.utils import gen_pdf_manifest
 from felicity.apps.iol.fhir.utils import get_shipment_bundle_resource
 from felicity.apps.iol.relay import post_data
 from felicity.apps.job import models as job_models
 from felicity.apps.job import schemas as job_schemas
 from felicity.apps.job.conf import actions, categories, priorities, states
-from felicity.apps.patient.models import Patient, Client
+from felicity.apps.patient.models import Client, Patient
 from felicity.apps.patient.schemas import PatientCreate
 from felicity.apps.reflex.utils import ReflexUtil
 from felicity.apps.shipment import conf
@@ -223,7 +216,7 @@ async def shipment_receive(job_uid: str):
         created = await AnalysisResult.bulk_create(result_schemas)
 
         # initialise reflex action if exist
-        logger.debug(f"ReflexUtil .... set_reflex_actions ...")
+        logger.debug("ReflexUtil .... set_reflex_actions ...")
         await ReflexUtil.set_reflex_actions(created)
 
         # ! paramount !
