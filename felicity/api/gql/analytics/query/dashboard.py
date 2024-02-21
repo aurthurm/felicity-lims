@@ -8,7 +8,7 @@ from felicity.apps.analysis.conf import states
 from felicity.apps.analysis.models.analysis import Sample
 from felicity.apps.analysis.models.results import AnalysisResult
 from felicity.apps.analytics import SampleAnalyticsInit
-from felicity.apps.instrument.models import Instrument
+from felicity.apps.instrument.models import LaboratoryInstrument
 from felicity.apps.user.models import User
 from felicity.apps.worksheet.conf import worksheet_states
 from felicity.apps.worksheet.models import WorkSheet
@@ -34,8 +34,8 @@ async def get_username(val):
 async def get_instrument(val):
     if val == "unknown":
         return val
-    instrument = await Instrument.get(uid=val)
-    return instrument.name
+    instrument = await LaboratoryInstrument.get(uid=val)
+    return instrument.lab_name
 
 
 @strawberry.field(permission_classes=[IsAuthenticated])
@@ -137,7 +137,7 @@ async def count_worksheet_group_by_status(info) -> types.GroupedCounts:
 
 @strawberry.field(permission_classes=[IsAuthenticated])
 async def count_analyte_group_by_instrument(
-    info, start_date: str | None = None, end_date: str | None = None
+        info, start_date: str | None = None, end_date: str | None = None
 ) -> types.GroupedCounts:
     analytics = SampleAnalyticsInit(AnalysisResult)
     results = await analytics.get_counts_group_by(
@@ -157,7 +157,7 @@ async def count_analyte_group_by_instrument(
 
 @strawberry.field(permission_classes=[IsAuthenticated])
 async def count_sample_group_by_action(
-    info, start_date: str | None = None, end_date: str | None = None
+        info, start_date: str | None = None, end_date: str | None = None
 ) -> types.GroupedData:
     analytics = SampleAnalyticsInit(Sample)
     created = await analytics.get_counts_group_by(
@@ -207,7 +207,7 @@ async def count_sample_group_by_action(
 
 @strawberry.field(permission_classes=[IsAuthenticated])
 async def sample_process_performance(
-    info, start_date: str, end_date: str
+        info, start_date: str, end_date: str
 ) -> types.ProcessStatistics:
     analytics = SampleAnalyticsInit(Sample)
     received_to_published = await analytics.get_sample_process_performance(
@@ -282,7 +282,7 @@ async def sample_process_performance(
 
 @strawberry.field(permission_classes=[IsAuthenticated])
 async def analysis_process_performance(
-    info, process: str, start_date: str, end_date: str
+        info, process: str, start_date: str, end_date: str
 ) -> types.ProcessStatistics:
     analytics = SampleAnalyticsInit(Sample)
     processes = [

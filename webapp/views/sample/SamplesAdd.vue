@@ -101,6 +101,7 @@ const { handleSubmit, errors } = useForm({
   validationSchema: arSchema,
   initialValues: {
     priority: 0,
+    client: patient?.value?.client,
     samples: [],
   } as any,
 });

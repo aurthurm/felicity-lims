@@ -5,6 +5,7 @@ from typing import List
 from felicity.apps.analysis.models.analysis import Analysis, Sample
 from felicity.apps.analysis.models.results import AnalysisResult, conf, schemas
 from felicity.apps.reflex import models as reflex_models
+from felicity.apps.reflex.models import ReflexBrainCriteria
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -13,6 +14,7 @@ logger = logging.getLogger(__name__)
 class ReflexUtil:
     _siblings: List[AnalysisResult] = None
     _cousins: List[AnalysisResult] = None
+    _results_pool: List[AnalysisResult] = None
     _reflex_action: reflex_models.ReflexAction = None
 
     def __init__(self, analysis_result, user):
@@ -38,11 +40,12 @@ class ReflexUtil:
                 logger.debug(f"set_reflex_actions done")
 
     async def do_reflex(self):
+        if not self.analysis_result.reflex_level:
+            return
+
         logger.info(
             f"do_reflex level: {self.analysis_result.reflex_level} <> SampleId {self.sample.sample_id}"
         )
-        if not self.analysis_result.reflex_level:
-            return
 
         filters = {
             "analyses___uid": self.analysis.uid,
@@ -62,108 +65,119 @@ class ReflexUtil:
         for brain in self._reflex_action.brains:
             await self.decide(brain)
 
+    @staticmethod
+    def can_decide(results_pool: list[AnalysisResult]):
+        """If all results in consideration are approved then a decision can be made
+        """
+        if not results_pool:
+            return False
+        return all([r.status == conf.states.result.APPROVED for r in results_pool])
+
     async def decide(self, brain: reflex_models.ReflexBrain):
         logger.info(f"Reflex Decision for brain: {brain}")
-        current_result = self.analysis_result
-        analyses_values = brain.analyses_values
 
-        logger.info(f"Reflex brain analyses_values: {analyses_values}")
+        if not brain.analyses_values:
+            return
+        logger.info(f"Reflex brain analyses_values: {brain.analyses_values}")
 
-        # check whether related analysis must be cousins or siblings
-        av_uids = [criteria.analysis_uid for criteria in brain.analyses_values]
-        logger.info(f"Reflex Decision av_uids: {av_uids}")
-        if not av_uids:
+        results_pool = await self.get_results_pool(brain.analyses_values)
+        logger.info(f"relevant results_pool: {[r.result for r in results_pool]}")
+
+        if not self.can_decide(results_pool):
+            logger.info(f"A decision cannot be made -> aborting relex: {[r.status for r in results_pool]}")
             return
 
-        if len(set(av_uids)) == 1:
-            results_pool = await self.siblings()
-            logger.info(f"reflex results pool -> siblings: {results_pool}")
-        else:
-            results_pool = await self.cousins()
-            logger.info(f"reflex results pool -> cousins: {results_pool}")
+        # 1. criteria_values must match results_pool
+        criteria_values = frozenset([
+            (criteria.analysis_uid, criteria.value) for criteria in brain.analyses_values
+        ])
+        logger.info(f"criteria_values: {criteria_values}")
+        results_values = frozenset([
+            (result.analysis_uid, result.result) for result in results_pool
+        ])
+        logger.info(f"results_values: {results_values}")
 
-        matches = []
+        is_match = criteria_values == results_values
 
-        # 1. the current result must one of the analysis values
-        criteria_values = [
-            (criteria.analysis_uid, criteria.value) for criteria in analyses_values
-        ]
-        _criteria_values = criteria_values
-        logger.info(f"Reflex criteria_values: {criteria_values}")
-
-        if (current_result.analysis_uid, current_result.result) not in criteria_values:
-            logger.info(
-                f"{(current_result.analysis_uid, current_result.result)} not in criteria_values"
-            )
-            return
-        else:
-            logger.info(
-                f"{(current_result.analysis_uid, current_result.result)} in avs"
-            )
-            matches.append(True)
-            criteria_values.remove((current_result.analysis_uid, current_result.result))
-
-        # 2. check for more result matched between the analysis values and results pool
-        for _cv in _criteria_values:
-            _anal = list(filter(lambda res: res.analysis_uid == _cv[0], results_pool))
-            # get latest
-            _anal = sorted(_anal, key=lambda x: x.created_at)
-            logger.info(f"_anal: {_anal}")
-
-            logger.info(f"_anal[0].result: {_anal[0].result} :: _av[1]: {_cv[1]}")
-
-            if _anal[0].result == _cv[1]:
-                matches.append(True)
-                criteria_values.remove((_anal[0].analysis_uid, _anal[0].result))
-            else:
-                matches.append(False)
-
-        # 3. If brain criteria expectations are met then take action
-        logger.info(f"matches: {matches}")
-        if all(matches):
-            logger.info("matches found")
+        # 2. If brain criteria expectations are met then take action
+        if is_match:
+            logger.info("Perfect match yay!")
             # Add new Analyses
-            logger.info(f"add_new: {brain.add_new}")
+            logger.info(f"add_new... : {brain.add_new}")
             for assoc in brain.add_new:
                 for i in list(range(assoc.count)):
                     await self.create_analyte_for(assoc.analysis_uid)
             # Finalise Analyses
-            logger.info(f"finalise: {brain.finalise}")
+            logger.info(f"finalise... : {brain.finalise}")
             for final in brain.finalise:
                 await self.create_final_for(final.analysis.uid, final.value)
+
+            # clean up
+            for r in results_pool:
+                if r.reportable:
+                    await r.hide_report()
         else:
-            logger.info("no matches")
+            logger.info("No matches found :)")
 
-    async def siblings(self):
-        """
-        Siblings of the current analysis result
-        Analysis Results from the same sample that share the same analysis
-        """
-        if self._siblings is None:
-            analysis_uid = self.analysis.uid
+    async def get_results_pool(self, criteria: list[ReflexBrainCriteria]):
+        total_criteria = len(criteria)
+        criteria_anals = list(set([cr.analysis_uid for cr in criteria]))
+        logger.info(f"criteria_anals: {criteria_anals}")
+
+        if self._results_pool is None:
             results: List[AnalysisResult] = await self.sample.get_analysis_results()
-            # get siblings and exclude current analysis
-            self._siblings = list(
-                filter(
-                    lambda result: result.analysis_uid == analysis_uid
-                                   and result.uid != self.analysis_result.uid,
-                    results,
+            self._results_pool = list(
+                filter(lambda result: result.analysis_uid in criteria_anals, results)
+            )
+            if len(self._results_pool) > 1:
+                self._results_pool = list(
+                    filter(lambda result: result.uid != self.analysis_result.uid, self._results_pool)
                 )
-            )
-        return self._siblings
 
-    async def cousins(self):
-        """
-        Cousins of the current analysis result
-        Analysis Results from the same sample that do not share the current result's analysis
-        """
-        if self._cousins is None:
-            analysis_uid = self.analysis.uid
-            results: List[AnalysisResult] = await self.sample.get_analysis_results()
-            self._cousins = list(
-                filter(lambda result: result.analysis_uid != analysis_uid, results)
-            )
-        return self._cousins
+        logger.info(f"entire results_pool: {[r.result for r in self._results_pool]}")
+        self._results_pool.sort(key=lambda x: x.created_at, reverse=True)
+        return self._results_pool[:total_criteria]
+
+    # async def siblings(self, latest_n: int = None):
+    #     """
+    #     Siblings of the current analysis result
+    #     Analysis Results from the same sample that share the same analysis
+    #     """
+    #     if self._siblings is None:
+    #         analysis_uid = self.analysis.uid
+    #         results: List[AnalysisResult] = await self.sample.get_analysis_results()
+    #         # get siblings and exclude current analysis
+    #         self._siblings = list(
+    #             filter(
+    #                 lambda result: result.analysis_uid == analysis_uid
+    #                                and result.uid != self.analysis_result.uid,
+    #                 results,
+    #             )
+    #         )
+    #
+    #     # Sort the siblings by created_at in descending order and get the first latest_n items
+    #     self._siblings.sort(key=lambda x: x.created_at, reverse=True)
+    #     if latest_n:
+    #         return self._siblings[:latest_n]
+    #     return self._siblings
+    #
+    # async def cousins(self, latest_n: int = None):
+    #     """
+    #     Cousins of the current analysis result
+    #     Analysis Results from the same sample that do not share the current result's analysis
+    #     """
+    #     if self._cousins is None:
+    #         analysis_uid = self.analysis.uid
+    #         results: List[AnalysisResult] = await self.sample.get_analysis_results()
+    #         self._cousins = list(
+    #             filter(lambda result: result.analysis_uid != analysis_uid, results)
+    #         )
+    #
+    #     # Sort the cousins by created_at in descending order and get the first latest_n items
+    #     self._cousins.sort(key=lambda x: x.created_at, reverse=True)
+    #     if latest_n:
+    #         return self._cousins[:latest_n]
+    #     return self._cousins
 
     async def create_analyte_for(self, analysis_uid) -> AnalysisResult:
         logger.info(f"create_analyte_for: {analysis_uid}")
@@ -173,7 +187,7 @@ class ReflexUtil:
             "sample_uid": self.sample.uid,
             "analysis_uid": analysis.uid,
             "status": conf.states.result.PENDING,
-            "instrument_uid": self.analysis_result.instrument_uid,
+            "laboratory_instrument_uid": self.analysis_result.laboratory_instrument_uid,
             "method_uid": self.analysis_result.method_uid,
             "parent_id": self.analysis_result.uid,
             "retest": True,
@@ -185,7 +199,7 @@ class ReflexUtil:
         return retest
 
     async def create_final_for(self, analysis_uid, value):
-        logger.info(f"create_analyte_for: {analysis_uid} {value}")
+        logger.info(f"create_final_for: {analysis_uid} {value}")
         retest = await self.create_analyte_for(analysis_uid)
         res_in = schemas.AnalysisResultUpdate(
             result=value,

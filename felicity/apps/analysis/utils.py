@@ -53,7 +53,7 @@ async def get_last_verificator(result_uid: str):
 
 
 async def sample_search(
-    model, status: str, text: str, client_uid: str
+        model, status: str, text: str, client_uid: str
 ) -> List[schemas.SampleType]:
     """No pagination"""
     filters = []
@@ -150,10 +150,10 @@ async def results_submitter(analysis_results: List[dict], submitter):
         if a_result.status == states.result.RESULTED:
             await streamer.stream(a_result, submitter, "submitted", "result")
 
-        # Do Reflex Testing
-        logger.info(f"ReflexUtil .... running")
-        await ReflexUtil(analysis_result=a_result, user=submitter).do_reflex()
-        logger.info(f"ReflexUtil .... done")
+        # # Do Reflex Testing
+        # logger.info(f"ReflexUtil .... running")
+        # await ReflexUtil(analysis_result=a_result, user=submitter).do_reflex()
+        # logger.info(f"ReflexUtil .... done")
 
         # try to submit sample
         if a_result.sample:
@@ -181,6 +181,11 @@ async def verify_from_result_uids(uids: list[str], user):
             to_return.append(a_result)
         else:
             continue
+
+        # Do Reflex Testing
+        logger.info(f"ReflexUtil .... running")
+        await ReflexUtil(analysis_result=a_result, user=user).do_reflex()
+        logger.info(f"ReflexUtil .... done")
 
         # try to verify associated sample
         sample_verified = False
@@ -239,8 +244,8 @@ async def result_mutator(result: AnalysisResult):
         # Correction factor
         for cf in correction_factors:
             if (
-                cf.instrument_uid == result.instrument_uid
-                and cf.method_uid == result.method_uid
+                    cf.instrument_uid == result.instrument_uid
+                    and cf.method_uid == result.method_uid
             ):
                 await ResultMutation.create(
                     obj_in={
