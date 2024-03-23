@@ -15,11 +15,12 @@ const { withClientQuery } = useApiUtil();
 
 const route = useRoute();
 
-const loadongMeta = ref(false);
+const loadingMeta = ref(false);
 const impressMeta = ref<any[]>([]);
 const selectedMeta = ref<any>({});
-onMounted(() => {
-  loadongMeta.value = true;
+
+const loadMeta = () => {
+  loadingMeta.value = true;
   withClientQuery(
     GET_IMPRESS_META,
     { uids: [route?.params?.sampleUid] },
@@ -29,16 +30,18 @@ onMounted(() => {
       impressMeta.value = resp;
     })
     .finally(() => {
-      loadongMeta.value = false;
+      loadingMeta.value = false;
     });
-});
+}
+// onMounted(() => loadMeta());
+loadMeta()
 
 const { downloadImpress } = useSampleComposable();
 const impressDownloader = async (report_uid) => await downloadImpress(report_uid);
 </script>
 
 <template>
-  <LoadingMessage v-if="loadongMeta" :message="'Loading your reports ...'" />
+  <LoadingMessage v-if="loadingMeta" :message="'Loading your reports ...'" />
   <section v-else>
     <div v-if="impressMeta.length > 0" class="flex justify-start mt-4 mr-4">
       <ul class="">

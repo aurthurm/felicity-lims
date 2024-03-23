@@ -6,6 +6,7 @@ import useTreeStateComposable from "../../composables/tree-state";
 import { useField, useForm } from "vee-validate";
 import { object, array } from "yup";
 import { storgeSlotMapper } from "../../utils/helpers";
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 const TreeItem = defineAsyncComponent(
   () => import("../components/TreeItem.vue")
 )
@@ -184,7 +185,7 @@ const submitForm = handleSubmit(async (values) => {
             {{ storageMeta.storageSlot }}
           </div>
           <label class="col-span-10">
-            <select name="sampleUid" id="sampleUid" v-model="storageMeta.sampleUid" class="form-input w-64 h-6 p-0"
+            <select name="sampleUid" id="sampleUid" v-model="storageMeta.sampleUid" class="form-input w-64 h-8 p-0"
               @change="setAssigned">
               <option v-for="sample in samples" :key="sample.uid" :value="sample.uid"
                 v-show="!assignedUids.includes(sample.uid.toString())">
@@ -194,7 +195,8 @@ const submitForm = handleSubmit(async (values) => {
               </option>
             </select>
             <span v-if="storageMeta.sampleUid" class="ml-2 text-red-500"
-              @click="removeSample(storageMeta.sampleUid)"><font-awesome-icon icon="ban" />
+              @click="removeSample(storageMeta.sampleUid)">
+              <FontAwesomeIcon icon="ban" />
             </span>
           </label>
         </div>
