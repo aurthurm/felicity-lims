@@ -46,6 +46,10 @@ services:
       - felicity_aio
     networks:
       - felicitynet
+    logging:
+      options:
+        max-size: 10m
+        max-file: 5
 
   felicity_aio:
     container_name: felicity_aio
@@ -70,6 +74,10 @@ services:
       - "host.docker.internal:host-gateway"
     depends_on:
       - felicity_db
+    logging:
+      options:
+        max-size: 10m
+        max-file: 5
 
   felicity_static_caddy:
     container_name: felicity_static_caddy
@@ -93,6 +101,10 @@ services:
       - felicity_api
     networks:
       - felicitynet
+    logging:
+      options:
+        max-size: 10m
+        max-file: 5
 
   felicity_static_nginx:
     container_name: felicity_static_nginx
@@ -113,6 +125,10 @@ services:
       - felicity_api
     networks:
       - felicitynet
+    logging:
+      options:
+        max-size: 10m
+        max-file: 5
 
   felicity_api:
     container_name: felicity_api
@@ -137,6 +153,10 @@ services:
       - "host.docker.internal:host-gateway"
     depends_on:
       - felicity_db
+    logging:
+      options:
+        max-size: 10m
+        max-file: 5
 
   felicity_db:
     container_name: felicity_db
