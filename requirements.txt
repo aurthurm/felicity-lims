@@ -36,3 +36,4 @@ opentelemetry-instrumentation-logging==0.43b0
 opentelemetry-instrumentation-sqlalchemy==0.43b0
 opentelemetry-instrumentation-psycopg2==0.43b0
 psycopg2==2.9.9
+typing-extensions
