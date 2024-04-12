@@ -1,3 +1,7 @@
+# docker-local-volumes
+db-data/
+caddy.data
+caddy.config
 # General
 media/reports/
 deploy/tracing/signoz

@@ -1,8 +1,7 @@
 import logging
-from typing import TYPE_CHECKING, List, Optional, Tuple, Union
+from typing import TYPE_CHECKING, List, Union
 
 from felicity.apps.setup.models.setup import Laboratory, LaboratorySetting
-
 from .models.analysis import Sample
 from .models.results import AnalysisResult
 
@@ -14,8 +13,8 @@ if TYPE_CHECKING:
 
 
 async def check_sample_verification(
-    samples: List[Union[str, Sample]], verifer: "User"
-) -> Tuple[Optional[Sample], Optional[Sample], str, str]:
+        samples: List[Union[str, Sample]], verifier: "User"
+) -> tuple[list[Sample] | None, list[Sample] | None, str, str]:
     """
     splits samples into allowed and restricted samples.
     allowed samples are those that the user is allowed to verify.
@@ -38,10 +37,10 @@ async def check_sample_verification(
             pending.append(sample)
 
     restricted: List[Sample] = list(
-        filter(lambda s: s.submitted_by_uid == verifer.uid, pending)
+        filter(lambda s: s.submitted_by_uid == verifier.uid, pending)
     )
     allowed: List[Sample] = list(
-        filter(lambda s: s.submitted_by_uid != verifer.uid, pending)
+        filter(lambda s: s.submitted_by_uid != verifier.uid, pending)
     )
 
     _sample_ids = [r.sample_id for r in restricted] if restricted else []
@@ -59,8 +58,8 @@ async def check_sample_verification(
 
 
 async def check_result_verification(
-    results: List[Union[str, AnalysisResult]], verifer: "User"
-) -> Tuple[Optional[AnalysisResult], Optional[AnalysisResult], str, str]:
+        results: List[Union[str, AnalysisResult]], verifier: "User"
+) -> tuple[list[AnalysisResult] | None, list[AnalysisResult] | None, str, str]:
     """
     splits results into allowed and restricted results.
     allowed results are those that the user is allowed to verify.
@@ -85,11 +84,11 @@ async def check_result_verification(
             allowed.append(result)
         else:
             # First time verifier must not be the submitter
-            if len(result.verified_by) == 0 and result.submitted_by_uid == verifer.uid:
+            if len(result.verified_by) == 0 and result.submitted_by_uid == verifier.uid:
                 restricted.append(result)
             else:
                 # cannot co-verify own verifications
-                if verifer.uid in [usr.uid for usr in result.verified_by]:
+                if verifier.uid in [usr.uid for usr in result.verified_by]:
                     restricted.append(result)
                 else:
                     allowed.append(result)

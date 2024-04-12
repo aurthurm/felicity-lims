@@ -42,6 +42,8 @@ services:
       - felicity_pg
     networks:
       - felicitynet
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     command: bash -c "alembic upgrade head && uvicorn main:flims --host=0.0.0.0 --port=8000"
 
   felicity_pg:

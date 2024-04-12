@@ -1,6 +1,11 @@
 import logging
 from datetime import datetime
-from typing import List
+from typing import Annotated
+
+try:
+    from typing import Self
+except ImportError:
+    from typing_extensions import Self
 
 from sqlalchemy import (Boolean, Column, DateTime, ForeignKey, Integer, String,
                         Table)
@@ -84,14 +89,14 @@ class AnalysisResult(Auditable, BaseMPTT):
     assigned = Column(Boolean(), default=False)
 
     @property
-    def keyword(self):
+    def keyword(self) -> str:
         return self.analysis.keyword
 
-    async def verifications(self):
-        if self.analysis.required_verifications:
-            required = self.analysis.required_verifications
-        else:
-            required = 1
+    async def verifications(self) -> tuple[
+        Annotated[int, "Total number required verifications"],
+        Annotated[int, "current number of verifications"]
+    ]:
+        required = self.analysis.required_verifications if self.analysis.required_verifications else 1
         current = len(self.verified_by)
         return required, current
 
@@ -101,7 +106,14 @@ class AnalysisResult(Auditable, BaseMPTT):
     #         return None
     #     return self.verified_by[:-1]
 
-    async def retest_result(self, retested_by, next_action="verify"):
+    async def retest_result(
+            self, retested_by, next_action="verify"
+    ) -> tuple[
+             Annotated[
+                 "AnalysisResult", "Newly Created AnalysisResult"] | None,
+             Annotated[
+                 "AnalysisResult", "Retested AnalysisResult"]
+         ] | None:
         retest = None
         if self.status in [conf.states.result.RESULTED]:
             a_result_in = {
@@ -145,38 +157,38 @@ class AnalysisResult(Auditable, BaseMPTT):
         self.laboratory_instrument_uid = None
         return await self.save_async()
 
-    async def verify(self, verifier):
+    async def verify(self, verifier) -> tuple[bool, "AnalysisResult"]:
         is_verified = False
         required, current = await self.verifications()
-        await AnalysisResult.table_insert(
-            table=result_verification,
-            mappings={"result_uid": self.uid, "user_uid": verifier.uid},
-        )
-        # self.verified_by.append(verifier)
         self.updated_by_uid = verifier.uid  # noqa
         if current < required and current + 1 == required:
+            await self._verify(verifier)
             self.status = conf.states.result.APPROVED
             self.date_verified = datetime.now()
             is_verified = True
+            # self.verified_by.append(verifier)
         final = await self.save_async()
         if final.status == conf.states.result.APPROVED:
             await streamer.stream(final, verifier, "approved", "result")
         return is_verified, final
 
-    async def retract(self, retracted_by):
+    async def _verify(self, verifier_uid):
         await AnalysisResult.table_insert(
             table=result_verification,
-            mappings={"result_uid": self.uid, "user_uid": retracted_by.uid},
+            mappings={"result_uid": self.uid, "user_uid": verifier_uid}
         )
+
+    async def retract(self, retracted_by) -> "AnalysisResult":
         self.status = conf.states.result.RETRACTED
         self.date_verified = datetime.now()
         self.updated_by_uid = retracted_by.uid  # noqa
         final = await self.save_async()
         if final.status == conf.states.result.RETRACTED:
             await streamer.stream(final, retracted_by, "retracted", "result")
+            await self._verify(retracted_by)
         return final
 
-    async def cancel(self, cancelled_by):
+    async def cancel(self, cancelled_by) -> "AnalysisResult":
         if self.status in [conf.states.result.PENDING]:
             self.status = conf.states.result.CANCELLED
             self.cancelled_by_uid = cancelled_by.uid
@@ -187,7 +199,7 @@ class AnalysisResult(Auditable, BaseMPTT):
             await streamer.stream(final, cancelled_by, "cancelled", "result")
         return final
 
-    async def re_instate(self, sample, re_instated_by):
+    async def re_instate(self, sample, re_instated_by) -> "AnalysisResult":
         if sample.status not in [
             conf.states.sample.RECEIVED,
             conf.states.sample.EXPECTED,
@@ -206,22 +218,22 @@ class AnalysisResult(Auditable, BaseMPTT):
             await streamer.stream(final, re_instated_by, "reinstated", "result")
         return final
 
-    async def change_status(self, status):
+    async def change_status(self, status) -> "AnalysisResult":
         self.status = status
         return await self.save_async()
 
-    async def hide_report(self):
+    async def hide_report(self) -> "AnalysisResult":
         self.reportable = False
         return await self.save_async()
 
     @classmethod
     async def filter_for_worksheet(
-        cls,
-        analyses_status: str,
-        analysis_uid: str,
-        sample_type_uid: list[str],
-        limit: int,
-    ) -> List[schemas.AnalysisResult]:
+            cls,
+            analyses_status: str,
+            analysis_uid: str,
+            sample_type_uid: list[str],
+            limit: int,
+    ) -> list["AnalysisResult"]:
 
         filters = {
             "status__exact": analyses_status,
@@ -244,14 +256,14 @@ class AnalysisResult(Auditable, BaseMPTT):
 
     @classmethod
     async def create(
-        cls, obj_in: dict | schemas.AnalysisResultCreate
-    ) -> schemas.AnalysisResult:
+            cls, obj_in: dict | schemas.AnalysisResultCreate
+    ) -> Self:
         data = cls._import(obj_in)
         return await super().create(**data)
 
     async def update(
-        self, obj_in: dict | schemas.AnalysisResultUpdate
-    ) -> schemas.AnalysisResult:
+            self, obj_in: dict | schemas.AnalysisResultUpdate
+    ) -> Self:
         data = self._import(obj_in)
         return await super().update(**data)
 
@@ -268,6 +280,6 @@ class ResultMutation(BaseAuditDBModel):
     date = Column(DateTime, nullable=True)
 
     @classmethod
-    async def create(cls, obj_in: dict | dict):
+    async def create(cls, obj_in: dict | dict) -> Self:
         data = cls._import(obj_in)
-        await super().create(**data)
+        return await super().create(**data)

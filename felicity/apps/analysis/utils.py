@@ -1,6 +1,6 @@
 import logging
 from datetime import datetime
-from typing import List
+from typing import List, NoReturn
 
 from sqlalchemy import or_
 
@@ -33,7 +33,7 @@ logger = logging.getLogger(__name__)
 streamer = FelicityStreamer()
 
 
-async def get_qc_sample_type():
+async def get_qc_sample_type() -> SampleType:
     st = await SampleType.get(name="QC Sample")
     if not st:
         st_in = schemas.SampleTypeCreate(
@@ -43,7 +43,7 @@ async def get_qc_sample_type():
     return st
 
 
-async def get_last_verificator(result_uid: str):
+async def get_last_verificator(result_uid: str) -> User | None:
     data = await AnalysisResult.query_table(
         table=result_verification, result_uid=result_uid
     )
@@ -52,9 +52,7 @@ async def get_last_verificator(result_uid: str):
     return await User.get(uid=data[-1])
 
 
-async def sample_search(
-        model, status: str, text: str, client_uid: str
-) -> List[schemas.SampleType]:
+async def sample_search(model, status: str, text: str, client_uid: str) -> list[SampleType]:
     """No pagination"""
     filters = []
     _or_text_ = {}
@@ -84,9 +82,9 @@ async def sample_search(
     return (await model.session.execute(stmt)).scalars().all_async()
 
 
-async def retest_from_result_uids(uids: list[str], user):
-    originals = []
-    retests = []
+async def retest_from_result_uids(uids: list[str], user: User) -> tuple[list[AnalysisResult], list[AnalysisResult]]:
+    originals: list[AnalysisResult] = []
+    retests: list[AnalysisResult] = []
 
     for _ar_uid in uids:
         a_result: AnalysisResult = await AnalysisResult.get(uid=_ar_uid)
@@ -102,14 +100,14 @@ async def retest_from_result_uids(uids: list[str], user):
     return retests, originals
 
 
-async def results_submitter(analysis_results: List[dict], submitter):
-    return_results = []
+async def results_submitter(analysis_results: List[dict], submitter: User) -> list[AnalysisResult]:
+    return_results: list[AnalysisResult] = []
 
     for _ar in analysis_results:
         uid = _ar["uid"]
         a_result: AnalysisResult = await AnalysisResult.get(uid=uid)
         if not a_result:
-            return Exception(f"AnalysisResult with uid {uid} not found")
+            raise Exception(f"AnalysisResult with uid {uid} not found")
 
         # only submit results in pending/submitting state
         if a_result.status not in [states.result.PENDING, states.result.SUBMITTING]:
@@ -167,8 +165,8 @@ async def results_submitter(analysis_results: List[dict], submitter):
     return return_results
 
 
-async def verify_from_result_uids(uids: list[str], user):
-    to_return = []
+async def verify_from_result_uids(uids: list[str], user: User) -> list[AnalysisResult]:
+    to_return: list[AnalysisResult] = []
     for _ar_uid in uids:
         a_result: AnalysisResult = await AnalysisResult.get(uid=_ar_uid)
         if not a_result:
@@ -232,7 +230,7 @@ async def verify_from_result_uids(uids: list[str], user):
     return to_return
 
 
-async def result_mutator(result: AnalysisResult):
+async def result_mutator(result: AnalysisResult) -> NoReturn:
     result_in = result.result
 
     correction_factors = result.analysis.correction_factors
@@ -244,7 +242,7 @@ async def result_mutator(result: AnalysisResult):
         # Correction factor
         for cf in correction_factors:
             if (
-                    cf.instrument_uid == result.instrument_uid
+                    cf.instrument_uid == result.laboratory_instrument_uid
                     and cf.method_uid == result.method_uid
             ):
                 await ResultMutation.create(
@@ -351,7 +349,7 @@ async def result_mutator(result: AnalysisResult):
         result = await result.save_async()
 
 
-async def billing_setup_profiles(profile_uids=None):
+async def billing_setup_profiles(profile_uids: list[str] = None) -> NoReturn:
     if profile_uids:
         profiles = await Profile.get_by_uids(profile_uids)
     else:
@@ -383,7 +381,7 @@ async def billing_setup_profiles(profile_uids=None):
             )
 
 
-async def billing_setup_analysis(analysis_uids=None):
+async def billing_setup_analysis(analysis_uids: list[str] = None) -> NoReturn:
     if analysis_uids:
         analyses = await Analysis.get_by_uids(analysis_uids)
     else:

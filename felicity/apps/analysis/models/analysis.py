@@ -2,6 +2,11 @@ import logging
 from datetime import datetime, timedelta
 from typing import Any, List, Union
 
+try:
+    from typing import Self
+except ImportError:
+    from typing_extensions import Self
+
 from sqlalchemy import (Boolean, Column, DateTime, Float, ForeignKey, Integer,
                         String, Table)
 from sqlalchemy.orm import relationship
@@ -33,15 +38,11 @@ class CodingStandard(BaseAuditDBModel):
     description = Column(String, nullable=False)
 
     @classmethod
-    async def create(
-        cls, obj_in: dict | schemas.CodingStandardCreate
-    ) -> schemas.CodingStandard:
+    async def create(cls, obj_in: dict | schemas.CodingStandardCreate) -> Self:
         data = cls._import(obj_in)
         return await super().create(**data)
 
-    async def update(
-        self, obj_in: dict | schemas.CodingStandardUpdate
-    ) -> schemas.CodingStandard:
+    async def update(self, obj_in: dict | schemas.CodingStandardUpdate) -> Self:
         data = self._import(obj_in)
         return await super().update(**data)
 
@@ -58,15 +59,11 @@ class SampleType(BaseAuditDBModel):
     abbr = Column(String, nullable=False)
 
     @classmethod
-    async def create(
-        cls, obj_in: dict | schemas.SampleTypeCreate
-    ) -> schemas.SampleType:
+    async def create(cls, obj_in: dict | schemas.SampleTypeCreate) -> Self:
         data = cls._import(obj_in)
         return await super().create(**data)
 
-    async def update(
-        self, obj_in: dict | schemas.SampleTypeUpdate
-    ) -> schemas.SampleType:
+    async def update(self, obj_in: dict | schemas.SampleTypeUpdate) -> Self:
         data = self._import(obj_in)
         return await super().update(**data)
 
@@ -87,15 +84,11 @@ class SampleTypeCoding(BaseAuditDBModel):
     code = Column(String, nullable=False)
 
     @classmethod
-    async def create(
-        cls, obj_in: dict | schemas.SampleTypeCodingCreate
-    ) -> schemas.SampleTypeCoding:
+    async def create(cls, obj_in: dict | schemas.SampleTypeCodingCreate) -> Self:
         data = cls._import(obj_in)
         return await super().create(**data)
 
-    async def update(
-        self, obj_in: dict | schemas.SampleTypeCodingUpdate
-    ) -> schemas.SampleTypeCoding:
+    async def update(self, obj_in: dict | schemas.SampleTypeCodingUpdate) -> Self:
         data = self._import(obj_in)
         return await super().update(**data)
 
@@ -145,15 +138,11 @@ class AnalysisCategory(BaseAuditDBModel):
     active = Column(Boolean(), default=False)
 
     @classmethod
-    async def create(
-        cls, obj_in: dict | schemas.AnalysisCategoryCreate
-    ) -> schemas.AnalysisCategory:
+    async def create(cls, obj_in: dict | schemas.AnalysisCategoryCreate) -> Self:
         data = cls._import(obj_in)
         return await super().create(**data)
 
-    async def update(
-        self, obj_in: dict | schemas.AnalysisCategoryUpdate
-    ) -> schemas.AnalysisCategory:
+    async def update(self, obj_in: dict | schemas.AnalysisCategoryUpdate) -> Self:
         data = self._import(obj_in)
         return await super().update(**data)
 
@@ -180,7 +169,7 @@ class Profile(BaseAuditDBModel):
     department_uid = Column(String, ForeignKey("department.uid"), nullable=True)
     department = relationship("Department", lazy="selectin")
 
-    async def update_tat(self):
+    async def update_tat(self) -> Self | None:
         tats = []
         tat = None
         for anal in self.analyses:
@@ -195,11 +184,11 @@ class Profile(BaseAuditDBModel):
         return self
 
     @classmethod
-    async def create(cls, obj_in: dict | schemas.ProfileCreate) -> schemas.Profile:
+    async def create(cls, obj_in: dict | schemas.ProfileCreate) -> Self:
         data = cls._import(obj_in)
         return await super().create(**data)
 
-    async def update(self, obj_in: dict | schemas.ProfileUpdate) -> schemas.Profile:
+    async def update(self, obj_in: dict | schemas.ProfileUpdate) -> Self:
         data = self._import(obj_in)
         return await super().update(**data)
 
@@ -220,15 +209,11 @@ class ProfileCoding(BaseAuditDBModel):
     code = Column(String, nullable=False)
 
     @classmethod
-    async def create(
-        cls, obj_in: dict | schemas.ProfileCodingCreate
-    ) -> schemas.ProfileCoding:
+    async def create(cls, obj_in: dict | schemas.ProfileCodingCreate) -> Self:
         data = cls._import(obj_in)
         return await super().create(**data)
 
-    async def update(
-        self, obj_in: dict | schemas.ProfileCodingUpdate
-    ) -> schemas.ProfileCoding:
+    async def update(self, obj_in: dict | schemas.ProfileCodingUpdate) -> Self:
         data = self._import(obj_in)
         return await super().update(**data)
 
@@ -312,11 +297,11 @@ class Analysis(BaseAuditDBModel):
     active = Column(Boolean(), default=False)
 
     @classmethod
-    async def create(cls, obj_in: dict | schemas.AnalysisCreate) -> schemas.Analysis:
+    async def create(cls, obj_in: dict | schemas.AnalysisCreate) -> Self:
         data = cls._import(obj_in)
         return await super().create(**data)
 
-    async def update(self, obj_in: dict | schemas.AnalysisUpdate) -> schemas.Analysis:
+    async def update(self, obj_in: dict | schemas.AnalysisUpdate) -> Self:
         data = self._import(obj_in)
         return await super().update(**data)
 
@@ -337,15 +322,11 @@ class AnalysisCoding(BaseAuditDBModel):
     code = Column(String, nullable=False)
 
     @classmethod
-    async def create(
-        cls, obj_in: dict | schemas.AnalysisCodingCreate
-    ) -> schemas.AnalysisCoding:
+    async def create(cls, obj_in: dict | schemas.AnalysisCodingCreate) -> Self:
         data = cls._import(obj_in)
         return await super().create(**data)
 
-    async def update(
-        self, obj_in: dict | schemas.AnalysisCodingUpdate
-    ) -> schemas.AnalysisCoding:
+    async def update(self, obj_in: dict | schemas.AnalysisCodingUpdate) -> Self:
         data = self._import(obj_in)
         return await super().update(**data)
 
@@ -362,15 +343,11 @@ class AnalysisInterim(BaseAuditDBModel):
     instrument = relationship("Instrument")
 
     @classmethod
-    async def create(
-        cls, obj_in: dict | schemas.AnalysisInterimCreate
-    ) -> schemas.AnalysisInterim:
+    async def create(cls, obj_in: dict | schemas.AnalysisInterimCreate) -> Self:
         data = cls._import(obj_in)
         return await super().create(**data)
 
-    async def update(
-        self, obj_in: dict | schemas.AnalysisInterimUpdate
-    ) -> schemas.AnalysisInterim:
+    async def update(self, obj_in: dict | schemas.AnalysisInterimUpdate) -> Self:
         data = self._import(obj_in)
         return await super().update(**data)
 
@@ -386,15 +363,11 @@ class AnalysisCorrectionFactor(BaseAuditDBModel):
     method_uid = Column(String, ForeignKey("method.uid"), nullable=True)
 
     @classmethod
-    async def create(
-        cls, obj_in: dict | schemas.AnalysisCorrectionFactorCreate
-    ) -> schemas.AnalysisCorrectionFactor:
+    async def create(cls, obj_in: dict | schemas.AnalysisCorrectionFactorCreate) -> Self:
         data = cls._import(obj_in)
         return await super().create(**data)
 
-    async def update(
-        self, obj_in: dict | schemas.AnalysisCorrectionFactorUpdate
-    ) -> schemas.AnalysisCorrectionFactor:
+    async def update(self, obj_in: dict | schemas.AnalysisCorrectionFactorUpdate) -> Self:
         data = self._import(obj_in)
         return await super().update(**data)
 
@@ -411,15 +384,11 @@ class AnalysisDetectionLimit(BaseAuditDBModel):
     method_uid = Column(String, ForeignKey("method.uid"), nullable=True)
 
     @classmethod
-    async def create(
-        cls, obj_in: dict | schemas.AnalysisDetectionLimitCreate
-    ) -> schemas.AnalysisDetectionLimit:
+    async def create(cls, obj_in: dict | schemas.AnalysisDetectionLimitCreate) -> Self:
         data = cls._import(obj_in)
         return await super().create(**data)
 
-    async def update(
-        self, obj_in: dict | schemas.AnalysisDetectionLimitUpdate
-    ) -> schemas.AnalysisDetectionLimit:
+    async def update(self, obj_in: dict | schemas.AnalysisDetectionLimitUpdate) -> Self:
         data = self._import(obj_in)
         return await super().update(**data)
 
@@ -440,14 +409,14 @@ class AnalysisUncertainty(BaseAuditDBModel):
 
     @classmethod
     async def create(
-        cls, obj_in: dict | schemas.AnalysisUncertaintyCreate
-    ) -> schemas.AnalysisUncertainty:
+            cls, obj_in: dict | schemas.AnalysisUncertaintyCreate
+    ) -> Self:
         data = cls._import(obj_in)
         return await super().create(**data)
 
     async def update(
-        self, obj_in: dict | schemas.AnalysisUncertaintyUpdate
-    ) -> schemas.AnalysisUncertainty:
+            self, obj_in: dict | schemas.AnalysisUncertaintyUpdate
+    ) -> Self:
         data = self._import(obj_in)
         return await super().update(**data)
 
@@ -487,14 +456,14 @@ class AnalysisSpecification(BaseAuditDBModel):
 
     @classmethod
     async def create(
-        cls, obj_in: dict | schemas.AnalysisSpecificationCreate
-    ) -> schemas.AnalysisSpecification:
+            cls, obj_in: dict | schemas.AnalysisSpecificationCreate
+    ) -> Self:
         data = cls._import(obj_in)
         return await super().create(**data)
 
     async def update(
-        self, obj_in: dict | schemas.AnalysisSpecificationUpdate
-    ) -> schemas.AnalysisSpecification:
+            self, obj_in: dict | schemas.AnalysisSpecificationUpdate
+    ) -> Self:
         data = self._import(obj_in)
         return await super().update(**data)
 
@@ -524,14 +493,14 @@ class ResultOption(BaseAuditDBModel):
 
     @classmethod
     async def create(
-        cls, obj_in: dict | schemas.ResultOptionCreate
-    ) -> schemas.ResultOption:
+            cls, obj_in: dict | schemas.ResultOptionCreate
+    ) -> Self:
         data = cls._import(obj_in)
         return await super().create(**data)
 
     async def update(
-        self, obj_in: dict | schemas.ResultOptionUpdate
-    ) -> schemas.ResultOption:
+            self, obj_in: dict | schemas.ResultOptionUpdate
+    ) -> Self:
         data = self._import(obj_in)
         return await super().update(**data)
 
@@ -556,15 +525,15 @@ class AnalysisRequest(BaseAuditDBModel):
 
     @classmethod
     async def create(
-        cls, obj_in: dict | schemas.AnalysisRequestCreate
-    ) -> schemas.AnalysisRequest:
+            cls, obj_in: dict | schemas.AnalysisRequestCreate
+    ) -> Self:
         data = cls._import(obj_in)
         data["request_id"] = (await IdSequence.get_next_number("AR"))[1]
         return await super().create(**data)
 
     async def update(
-        self, obj_in: dict | schemas.SampleTypeUpdate
-    ) -> schemas.AnalysisRequest:
+            self, obj_in: dict | schemas.SampleTypeUpdate
+    ) -> Self:
         data = self._import(obj_in)
         return await super().update(**data)
 
@@ -611,14 +580,14 @@ class RejectionReason(BaseAuditDBModel):
 
     @classmethod
     async def create(
-        cls, obj_in: dict | schemas.RejectionReasonCreate
-    ) -> schemas.RejectionReason:
+            cls, obj_in: dict | schemas.RejectionReasonCreate
+    ) -> Self:
         data = cls._import(obj_in)
         return await super().create(**data)
 
     async def update(
-        self, obj_in: dict | schemas.RejectionReasonUpdate
-    ) -> schemas.RejectionReason:
+            self, obj_in: dict | schemas.RejectionReasonUpdate
+    ) -> Self:
         data = self._import(obj_in)
         return await super().update(**data)
 
@@ -701,7 +670,7 @@ class Sample(Auditable, BaseMPTT):
     storage_slot_index = Column(Integer, nullable=True)
 
     @staticmethod
-    def copy_include_keys():
+    def copy_include_keys() -> list[str]:
         """Keys to include when duplicating Sample"""
         return [
             "analysis_request_uid",
@@ -716,7 +685,7 @@ class Sample(Auditable, BaseMPTT):
             "internal_use",
         ]
 
-    async def update_due_date(self, reset: bool = False):
+    async def update_due_date(self, reset: bool = False) -> Self:
         tats: List[Union[int, Any]] = []
         length: int = 0
         for anal in self.analyses:
@@ -740,17 +709,17 @@ class Sample(Auditable, BaseMPTT):
             return await self.save_async()
         return self
 
-    async def change_status(self, status, updated_by_uid=None):
+    async def change_status(self, status, updated_by_uid=None) -> Self:
         self.status = status
         if updated_by_uid:
             self.updated_by_uid = updated_by_uid  # noqa
-        await self.save_async()
+        return await self.save_async()
 
-    async def extend_due_date(self, ext_minutes: int):
+    async def extend_due_date(self, ext_minutes: int) -> Self:
         self.due_date += timedelta(minutes=ext_minutes)
         return await self.save_async()
 
-    def copy_sample_id_unique(self):
+    def copy_sample_id_unique(self) -> str:
         split = self.sample_id.split("_R")
         prefix = split[0]
         stub = None
@@ -767,7 +736,6 @@ class Sample(Auditable, BaseMPTT):
 
     async def get_analysis_results(self):
         from felicity.apps.analysis.models.results import AnalysisResult
-
         return await AnalysisResult.get_all(sample_uid=self.uid)
 
     async def get_incomplete_analysis_results(self):
@@ -790,15 +758,15 @@ class Sample(Auditable, BaseMPTT):
         analysis, referred = await self.get_referred_analyses()
         return len(analysis) == len(referred)
 
-    async def has_no_referred_analyses(self):
+    async def has_no_referred_analyses(self) -> bool:
         analysis, referred = await self.get_referred_analyses()
         return len(referred) == 0
 
-    async def has_partly_referred_analyses(self):
+    async def has_partly_referred_analyses(self) -> bool:
         analysis, referred = await self.get_referred_analyses()
         return len(analysis) != len(referred) and len(referred) > 0
 
-    async def receive(self, received_by):
+    async def receive(self, received_by) -> Self | None:
         if self.status in [states.sample.EXPECTED]:
             self.status = states.sample.RECEIVED
             self.received_by_uid = received_by.uid
@@ -807,7 +775,7 @@ class Sample(Auditable, BaseMPTT):
             return await self.save_async()
         return None
 
-    async def cancel(self, cancelled_by):
+    async def cancel(self, cancelled_by) -> Self | None:
         analysis_results = await self.get_analysis_results()
         if self.status in [states.sample.RECEIVED, states.sample.EXPECTED]:
             for result in analysis_results:
@@ -819,7 +787,7 @@ class Sample(Auditable, BaseMPTT):
             return await self.save_async()
         return None
 
-    async def re_instate(self, re_instated_by):
+    async def re_instate(self, re_instated_by) -> Self:
         analysis_results = await self.get_analysis_results()
         if self.status in [states.sample.CANCELLED]:
             # A better way is to go to audit log and retrieve previous state
@@ -834,7 +802,7 @@ class Sample(Auditable, BaseMPTT):
             return sample
         return self
 
-    async def submit(self, submitted_by):
+    async def submit(self, submitted_by) -> Self:
         statuses = [
             states.result.RESULTED,
             states.result.RETRACTED,
@@ -853,7 +821,7 @@ class Sample(Auditable, BaseMPTT):
             return saved
         return self
 
-    async def un_submit(self):
+    async def un_submit(self) -> Self:
         if self.status == states.sample.AWAITING:
             self.status = states.sample.RECEIVED
             self.submitted_by_uid = None
@@ -862,15 +830,15 @@ class Sample(Auditable, BaseMPTT):
             return await self.save_async()
         return self
 
-    async def assign(self):
+    async def assign(self) -> Self:
         self.assigned = True
         return await self.save_async()
 
-    async def un_assign(self):
+    async def un_assign(self) -> Self:
         self.assigned = False
         return await self.save_async()
 
-    async def is_verifiable(self):
+    async def is_verifiable(self) -> bool:
         statuses = [
             states.result.APPROVED,
             states.result.RETRACTED,
@@ -884,13 +852,13 @@ class Sample(Auditable, BaseMPTT):
         # if there are no results in referred state but some are in pending state. transition awaiting to pending state
         analysis, referred = await self.get_referred_analyses()
         if not referred and list(  # and has pending results then :)
-            filter(lambda an: an.status in [states.result.PENDING], analysis)
+                filter(lambda an: an.status in [states.result.PENDING], analysis)
         ):
             await self.change_status(states.sample.RECEIVED)
 
         return False
 
-    async def verify(self, verified_by):
+    async def verify(self, verified_by) -> tuple[bool, Self]:
         is_verifiable = await self.is_verifiable()
         if is_verifiable:
             self.status = states.sample.APPROVED
@@ -902,7 +870,7 @@ class Sample(Auditable, BaseMPTT):
             return True, saved
         return False, self
 
-    async def publish(self, published_by):
+    async def publish(self, published_by) -> Self:
         if self.status in [states.sample.APPROVED, states.sample.PUBLISHING]:
             self.status = states.sample.PUBLISHED
             self.published_by_uid = published_by.uid
@@ -911,7 +879,7 @@ class Sample(Auditable, BaseMPTT):
             return await self.save_async()
         return self
 
-    async def print(self, printed_by):
+    async def print(self, printed_by) -> Self:
         if self.status == states.sample.PUBLISHED:
             self.printed = True
             self.printed_by_uid = printed_by.uid
@@ -920,7 +888,7 @@ class Sample(Auditable, BaseMPTT):
             return await self.save_async()
         return self
 
-    async def invalidate(self, invalidated_by) -> tuple[schemas.Sample, schemas.Sample]:
+    async def invalidate(self, invalidated_by) -> tuple[Self, Self]:
         statuses = [states.sample.APPROVED, states.sample.PUBLISHED]
         copy = None
         if self.status in statuses:
@@ -932,7 +900,7 @@ class Sample(Auditable, BaseMPTT):
             return copy, invalidated
         return copy, self
 
-    async def reject(self, rejected_by):
+    async def reject(self, rejected_by) -> Self:
         statuses = [states.sample.RECEIVED, states.sample.EXPECTED]
         if self.status in statuses:
             self.status = states.sample.REJECTED
@@ -943,7 +911,7 @@ class Sample(Auditable, BaseMPTT):
             return rejected
         return self
 
-    async def store(self, stored_by):
+    async def store(self, stored_by) -> Self:
         statuses = [states.sample.RECEIVED]
         if self.status in statuses:
             self.status = states.sample.STORED
@@ -954,7 +922,7 @@ class Sample(Auditable, BaseMPTT):
             return stored
         return self
 
-    async def recover(self):
+    async def recover(self) -> Self:
         statuses = [states.sample.STORED]
         if self.status in statuses:
             self.status = states.sample.RECEIVED
@@ -967,7 +935,7 @@ class Sample(Auditable, BaseMPTT):
         return self
 
     @classmethod
-    async def create(cls, obj_in: dict | schemas.SampleCreate) -> schemas.Sample:
+    async def create(cls, obj_in: dict | schemas.SampleCreate) -> Self:
         data = cls._import(obj_in)
         # sample_type = await SampleType.find(data["sample_type_uid"])
         # data["sample_id"] = (await IdSequence.get_next_number(sample_type.abbr))[1]
@@ -976,11 +944,11 @@ class Sample(Auditable, BaseMPTT):
         )[1]
         return await super().create(**data)
 
-    async def update(self, obj_in: dict | schemas.SampleUpdate) -> schemas.Sample:
+    async def update(self, obj_in: dict | schemas.SampleUpdate) -> Self:
         data = self._import(obj_in)
         return await super().update(**data)
 
-    async def duplicate_unique(self, duplicator) -> schemas.Sample:
+    async def duplicate_unique(self, duplicator) -> Self:
         data = self.to_dict(nested=False)
         data["sample_id"] = self.copy_sample_id_unique()
         for key, _ in list(data.items()):
@@ -993,7 +961,7 @@ class Sample(Auditable, BaseMPTT):
         data["created_by_uid"] = duplicator.uid
         return await super().create(**data)
 
-    async def clone_afresh(self, cloner) -> schemas.Sample:
+    async def clone_afresh(self, cloner) -> Self:
         data = self.to_dict(nested=False)
         for key, _ in list(data.items()):
             if key not in self.copy_include_keys():
@@ -1004,7 +972,6 @@ class Sample(Auditable, BaseMPTT):
         data["parent_id"] = self.uid
         data["created_by_uid"] = cloner.uid
         return await self.create(obj_in=data)
-
 
 # @event.listens_for(Sample, "after_update")
 # def stream_sample_verified_models(mapper, connection, target): # noqa

@@ -1,11 +1,11 @@
 import asyncio
-import os
 from logging.config import fileConfig
 
 from alembic import context
 from sqlalchemy import engine_from_config, pool
 from sqlalchemy.ext.asyncio import AsyncEngine
 
+from felicity.core.config import settings
 from felicity.database.base import DBModel
 
 # this is the Alembic Config object, which provides
@@ -54,10 +54,10 @@ def run_migrations_offline():
 
 
 def get_async_url():
-    user = os.getenv("POSTGRES_USER", "felicity")
-    password = os.getenv("POSTGRES_PASSWORD", "felicity")
-    server = os.getenv("POSTGRES_SERVER", "localhost")  # felicity_db
-    db = os.getenv("POSTGRES_DB", "felicity_lims")
+    user = settings.POSTGRES_USER
+    password = settings.POSTGRES_PASSWORD
+    server = settings.POSTGRES_SERVER
+    db = settings.POSTGRES_DB
     return f"postgresql+asyncpg://{user}:{password}@{server}/{db}"
 
 

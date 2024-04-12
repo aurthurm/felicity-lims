@@ -31,7 +31,7 @@ settings = get_settings()
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     if settings.LOAD_SETUP_DATA:
-        initialize_felicity()
+        await initialize_felicity()
     # bg_tasks = BackgroundTasks(tasks=None)
     # bg_tasks.add_task(felicity_workforce_init)
     felicity_workforce_init()

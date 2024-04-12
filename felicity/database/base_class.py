@@ -1,10 +1,17 @@
 import logging
 from datetime import datetime
-from typing import Any, AsyncIterator, List, Optional, Self
+from typing import Any, AsyncIterator, List, Optional, Mapping, NoReturn, TypeVar
+
+from pydantic import BaseModel
+
+try:
+    from typing import Self
+except ImportError:
+    from typing_extensions import Self
 
 from sqlalchemy import Column, String
 from sqlalchemy import or_ as sa_or_
-from sqlalchemy import select, update
+from sqlalchemy import select, update, Table
 from sqlalchemy.ext.asyncio import AsyncAttrs
 from sqlalchemy.orm import DeclarativeBase
 from sqlalchemy.sql import func
@@ -17,6 +24,8 @@ from felicity.core.uid_gen import get_flake_uid
 from felicity.database.paginator.cursor import EdgeNode, PageCursor, PageInfo
 from felicity.database.session import AsyncSessionScoped
 from felicity.utils import has_value_or_is_truthy
+
+M = TypeVar("M", bound=BaseModel)
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -35,7 +44,7 @@ class DBModel(DeclarativeBase, AsyncAttrs, ActiveRecordMixinAsync, AllFeaturesMi
         default=get_flake_uid,
     )
 
-    def marshal_simple(self, exclude=None):
+    def marshal_simple(self, exclude=None) -> Mapping[str, Any]:
         """convert instance to dict
         leverages instance.__dict__
         """
@@ -55,19 +64,22 @@ class DBModel(DeclarativeBase, AsyncAttrs, ActiveRecordMixinAsync, AllFeaturesMi
 
         return return_data
 
-    def marshal_nested(self, obj=None):
+    def marshal_nested(self, obj: Any = None, depth: int = 3):
+        if depth <= 0:
+            return obj
+
         if obj is None:
             obj = self
 
         if isinstance(obj, dict):
-            return {k: self.marshal_nested(v) for k, v in obj.items()}
+            return {k: self.marshal_nested(obj=v, depth=depth - 1) for k, v in obj.items()}
         elif hasattr(obj, "_ast"):
-            return self.marshal_nested(obj._ast())
+            return self.marshal_nested(obj=obj._ast(), depth=depth - 1)
         elif not isinstance(obj, str) and hasattr(obj, "__iter__"):
-            return [self.marshal_nested(v) for v in obj]
+            return [self.marshal_nested(obj=v, depth=depth - 1) for v in obj]
         elif hasattr(obj, "__dict__"):
             return {
-                k: self.marshal_nested(v)
+                k: self.marshal_nested(obj=v, depth=depth - 1)
                 for k, v in obj.__dict__.items()
                 if not callable(v) and not k.startswith("_")
             }
@@ -97,7 +109,7 @@ class DBModel(DeclarativeBase, AsyncAttrs, ActiveRecordMixinAsync, AllFeaturesMi
             return found
 
     @classmethod
-    async def create(cls, **kwargs) -> Self:
+    async def create(cls, **kwargs):
         """Returns a new get instance of the class
         This is so that mutations can work well and prevent async IO issues
         """
@@ -108,7 +120,7 @@ class DBModel(DeclarativeBase, AsyncAttrs, ActiveRecordMixinAsync, AllFeaturesMi
         return created
 
     @classmethod
-    async def bulk_create(cls, items: List):
+    async def bulk_create(cls, items: List) -> list[Self]:
         """
         @param items a list of Pydantic models
         """
@@ -118,14 +130,14 @@ class DBModel(DeclarativeBase, AsyncAttrs, ActiveRecordMixinAsync, AllFeaturesMi
             to_save.append(fill)
         return await cls.save_all(to_save)
 
-    async def delete(self):
+    async def delete(self) -> NoReturn:
         """Removes the model from the current entity session and mark for deletion."""
         try:
             async with self.session() as session:
                 await session.delete(self)
                 await session.commit()
                 await session.flush()
-        except:
+        except Exception:
             async with self.session() as session:
                 await session.rollback()
                 raise
@@ -141,7 +153,7 @@ class DBModel(DeclarativeBase, AsyncAttrs, ActiveRecordMixinAsync, AllFeaturesMi
         return updated
 
     @classmethod
-    async def bulk_update_where(cls, update_data: List, filters: dict):
+    async def bulk_update_where(cls, update_data: List, filters: dict) -> list[Self]:
         """
         @param update_data a List of dictionary update values.
         @param filters is a dict of filter values.
@@ -158,7 +170,7 @@ class DBModel(DeclarativeBase, AsyncAttrs, ActiveRecordMixinAsync, AllFeaturesMi
         return updated
 
     @classmethod
-    async def bulk_update_with_mappings(cls, mappings: List) -> None:
+    async def bulk_update_with_mappings(cls, mappings: List[dict[str, Any]]) -> NoReturn:
         """
         @param mappings a List of dictionary update values with pks.
         e.g [{'uid': 34, update_values}, ...]
@@ -189,7 +201,7 @@ class DBModel(DeclarativeBase, AsyncAttrs, ActiveRecordMixinAsync, AllFeaturesMi
             await session.commit()
 
     @classmethod
-    async def bulk_update_with_mappings_not_working(cls, mappings: List):
+    async def bulk_update_with_mappings_not_working(cls, mappings: List[dict[str, Any]]) -> list[Self]:
         """
         @param mappings a List of dictionary update values with pks.
         e.g [{'uid': 34, update_values}, ...]
@@ -204,8 +216,9 @@ class DBModel(DeclarativeBase, AsyncAttrs, ActiveRecordMixinAsync, AllFeaturesMi
         return to_update
 
     @classmethod
-    async def table_insert(cls, table, mappings):
+    async def table_insert(cls, table: Table, mappings: Mapping[str, int | str | dict]) -> NoReturn:
         """
+        @param table the table instance
         @param mappings a dictionary update values.
         e.g {'name': 34, 'day': "fff"}
         """
@@ -216,7 +229,7 @@ class DBModel(DeclarativeBase, AsyncAttrs, ActiveRecordMixinAsync, AllFeaturesMi
             await session.flush()
 
     @classmethod
-    async def query_table(cls, table, columns: list[str], **kwargs):
+    async def query_table(cls, table: Table, columns: list[str], **kwargs) -> list[Self]:
 
         if columns:
             stmt = select(*(table.c[column] for column in columns))
@@ -231,7 +244,7 @@ class DBModel(DeclarativeBase, AsyncAttrs, ActiveRecordMixinAsync, AllFeaturesMi
         return results.unique().scalars().all()
 
     @classmethod
-    async def get_related(cls, related: Optional[list] = None, list=False, **kwargs):
+    async def get_related(cls, related: Optional[list] = None, listing: bool = False, **kwargs) -> Self | list[Self]:
         """Return the first value in database based on given args."""
         try:
             del kwargs["related"]
@@ -244,13 +257,14 @@ class DBModel(DeclarativeBase, AsyncAttrs, ActiveRecordMixinAsync, AllFeaturesMi
             pass
 
         stmt = cls.where(**kwargs)
-        # if related:
-        #     stmt.options(selectinload(related))
+        if related:
+            # stmt.options(selectinload(related))
+            pass
 
         async with cls.session() as session:
             results = await session.execute(stmt)
 
-        if not list:
+        if not listing:
             found = results.scalars().first()
         else:
             found = results.scalars().all()
@@ -258,18 +272,14 @@ class DBModel(DeclarativeBase, AsyncAttrs, ActiveRecordMixinAsync, AllFeaturesMi
         return found
 
     @classmethod
-    def _import(cls, schema_in):
+    def _import(cls, schema_in: M | dict[str, Any]) -> dict[str, Any]:
         """Convert Pydantic schema to dict"""
         if isinstance(schema_in, dict):
             return schema_in
         data = schema_in.model_dump(exclude_unset=True)
-        # try:
-        #     data = schema_in.model_dump(exclude_unset=True)
-        # except Exception as e:
-        #     data = schema_in.dict(exclude_unset=True)
         return data
 
-    async def save(self):
+    async def save(self) -> Self:
         """Saves the updated model to the current entity database."""
         async with self.session() as session:
             try:
@@ -281,7 +291,7 @@ class DBModel(DeclarativeBase, AsyncAttrs, ActiveRecordMixinAsync, AllFeaturesMi
                 raise
         return self
 
-    async def flush_commit_session(self):
+    async def flush_commit_session(self) -> Self:
         """Saves the updated model to the current entity database."""
         async with self.session() as session:
             try:
@@ -293,7 +303,7 @@ class DBModel(DeclarativeBase, AsyncAttrs, ActiveRecordMixinAsync, AllFeaturesMi
         return self
 
     @classmethod
-    async def save_all(cls, items):
+    async def save_all(cls, items) -> list[Self]:
         async with cls.session() as session:
             try:
                 session.add_all(items)
@@ -305,7 +315,7 @@ class DBModel(DeclarativeBase, AsyncAttrs, ActiveRecordMixinAsync, AllFeaturesMi
         return items
 
     @classmethod
-    async def get_one(cls, **kwargs):
+    async def get_one(cls, **kwargs) -> Self:
         stmt = cls.where(**kwargs)
         async with cls.session() as session:
             results = await session.execute(stmt)
@@ -313,20 +323,20 @@ class DBModel(DeclarativeBase, AsyncAttrs, ActiveRecordMixinAsync, AllFeaturesMi
         return found
 
     @classmethod
-    async def get_all(cls, **kwargs):
+    async def get_all(cls, **kwargs) -> list[Self]:
         stmt = cls.where(**kwargs)
         async with cls.session() as session:
             results = await session.execute(stmt)
         return results.unique().scalars().all()
 
     @classmethod
-    async def from_smart_query(cls, query):
+    async def from_smart_query(cls, query) -> list[Self]:
         async with cls.session() as session:
             results = await session.execute(query)
         return results.unique().scalars().all()
 
     @classmethod
-    async def count_where(cls, filters):
+    async def count_where(cls, filters) -> int:
         """
         :param filters:
         :return: int
@@ -339,7 +349,7 @@ class DBModel(DeclarativeBase, AsyncAttrs, ActiveRecordMixinAsync, AllFeaturesMi
         return count
 
     @classmethod
-    async def fulltext_search(cls, search_string, field):
+    async def fulltext_search(cls, search_string, field) -> list[Self]:
         """Full-text Search with PostgreSQL"""
         stmt = select(cls).filter(
             func.to_tsvector("english", getattr(cls, field)).match(
@@ -352,7 +362,7 @@ class DBModel(DeclarativeBase, AsyncAttrs, ActiveRecordMixinAsync, AllFeaturesMi
         return search
 
     @classmethod
-    async def get_by_uids(cls, uids: List[Any]):
+    async def get_by_uids(cls, uids: List[Any]) -> list[Self]:
 
         stmt = select(cls).where(cls.uid.in_(uids))  # type: ignore
 
@@ -362,7 +372,7 @@ class DBModel(DeclarativeBase, AsyncAttrs, ActiveRecordMixinAsync, AllFeaturesMi
         return results.scalars().all()
 
     @classmethod
-    async def stream_by_uids(cls, uids: List[Any]) -> AsyncIterator[Any]:
+    async def stream_by_uids(cls, uids: List[Any]) -> AsyncIterator[Self]:
 
         stmt = select(cls).where(cls.uid.in_(uids))  # type: ignore
 
@@ -372,7 +382,7 @@ class DBModel(DeclarativeBase, AsyncAttrs, ActiveRecordMixinAsync, AllFeaturesMi
             yield row
 
     @classmethod
-    async def stream_all(cls) -> AsyncIterator[Any]:
+    async def stream_all(cls) -> AsyncIterator[Self]:
         stmt = select(cls)
         async with cls.session() as session:
             stream = await session.stream(stmt.order_by(cls.uid))
@@ -380,7 +390,7 @@ class DBModel(DeclarativeBase, AsyncAttrs, ActiveRecordMixinAsync, AllFeaturesMi
             yield row
 
     @staticmethod
-    def psql_records_to_dict(self, records, many=False):
+    def psql_records_to_dict(records, many=False) -> list[dict[str, Any]] | dict[str, Any]:
         # records._row: asyncpg.Record / databases.backends.postgres.Record
         if not many and records:
             return dict(records)
@@ -391,13 +401,13 @@ class DBModel(DeclarativeBase, AsyncAttrs, ActiveRecordMixinAsync, AllFeaturesMi
 
     @classmethod
     async def paginate_with_cursors(
-        cls,
-        page_size: int = None,
-        after_cursor: Any = None,
-        before_cursor: Any = None,
-        filters: Any = None,
-        sort_by: list[str] = None,
-        get_related: str = None,
+            cls,
+            page_size: int = None,
+            after_cursor: Any = None,
+            before_cursor: Any = None,
+            filters: Any = None,
+            sort_by: list[str] = None,
+            get_related: str = None,
     ) -> PageCursor:
         if not filters:
             filters = {}
@@ -474,11 +484,11 @@ class DBModel(DeclarativeBase, AsyncAttrs, ActiveRecordMixinAsync, AllFeaturesMi
 
     @classmethod
     def build_page_info(
-        cls,
-        start_cursor: str = None,
-        end_cursor: str = None,
-        has_next_page: bool = False,
-        has_previous_page: bool = False,
+            cls,
+            start_cursor: str = None,
+            end_cursor: str = None,
+            has_next_page: bool = False,
+            has_previous_page: bool = False,
     ) -> PageInfo:
         return PageInfo(
             **{

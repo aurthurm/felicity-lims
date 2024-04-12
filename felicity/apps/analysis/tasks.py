@@ -1,4 +1,5 @@
 import logging
+from typing import NoReturn
 
 from felicity.apps.analysis import utils
 from felicity.apps.job import models as job_models
@@ -12,7 +13,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
-async def submit_results(job_uid: str):
+async def submit_results(job_uid: str) -> NoReturn:
     logger.info(f"starting job result submit {job_uid} ....")
     job = await job_models.Job.get(uid=job_uid)
     if not job:
@@ -37,7 +38,7 @@ async def submit_results(job_uid: str):
         )
 
 
-async def verify_results(job_uid: str):
+async def verify_results(job_uid: str) -> NoReturn:
     logger.info(f"starting job result verification {job_uid} ....")
     job = await job_models.Job.get(uid=job_uid)
     if not job:
@@ -63,7 +64,7 @@ async def verify_results(job_uid: str):
         )
 
 
-async def setup_billing(job_uid: str):
+async def setup_billing(job_uid: str) -> NoReturn:
     logger.info(f"starting job setup billing {job_uid} ....")
     job = await job_models.Job.get(uid=job_uid)
     if not job:
@@ -77,9 +78,9 @@ async def setup_billing(job_uid: str):
     user = await user_models.User.get(uid=job.creator_uid)
 
     try:
-        await utils.billing_setup_profiles(job.data.get("profiles", []), user)
-        await utils.billing_setup_analysis(job.data.get("analyses", []), user)
-        await job.change_status(new_status=job_states.FINISHED)
+        await utils.billing_setup_profiles(job.data.get("profiles", []))
+        await utils.billing_setup_analysis(job.data.get("analyses", []))  # noqa
+        await job.change_status(new_status=job_states.FINISHED)  # noqa
         await report_notifier.notify("Billing setup was successfully setup", user)
     except Exception as e:
         logger.debug(f"Exception ....... {e}")

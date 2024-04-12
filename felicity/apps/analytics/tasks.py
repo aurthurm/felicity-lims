@@ -16,7 +16,7 @@ report_notifier = ReportNotifier()
 streamer = FelicityStreamer()
 
 
-async def generate_report(job_uid: str):
+async def generate_report(job_uid: str) -> bool:
     job: job_models.Job = await job_models.Job.get(uid=job_uid)
     report: models.ReportMeta = await models.ReportMeta.get(uid=job.job_id)
     if report.status != conf.report_states.PENDING:
@@ -24,7 +24,7 @@ async def generate_report(job_uid: str):
         await report_notifier.notify(
             f"Failed to generate {report.report_type} report", report.created_by
         )
-        return
+        return False
 
     await job.change_status(new_status=job_conf.states.RUNNING)
     analytics = SampleAnalyticsInit(Sample)
@@ -49,7 +49,7 @@ async def generate_report(job_uid: str):
             f"Error encountered: Failed to save generated {report.report_type} report: {e}",
             report.created_by,
         )
-        return
+        return False
 
     df.to_csv(file_name, index=False)
 
@@ -71,7 +71,6 @@ async def generate_report(job_uid: str):
     )
     await streamer.stream(report, report.created_by, "generated", "report")
     return True
-
 
 # # Convert DataFrame to a buffer (StringIO)
 # buffer = StringIO()

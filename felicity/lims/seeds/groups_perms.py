@@ -18,6 +18,7 @@ class FGroup:  # (KEYWORD, NAME)
 
 
 class FObject:
+    ANALYTICS = "ANALYTICS"
     CLIENT = "CLIENT"
     PATIENT = "PATIENT"
     SAMPLE = "SAMPLE"
@@ -78,6 +79,14 @@ permissions = {
         ],
     },
     fa.READ: {
+        fo.ANALYTICS: [
+            fg.ADMINISTRATOR,
+            fg.LAB_MANAGER,
+            fg.SCIENTIST,
+            fg.TECHNOLOGIST,
+            fg.LAB_HAND,
+            fg.GUEST,
+        ],
         fo.CLIENT: [
             fg.ADMINISTRATOR,
             fg.LAB_MANAGER,

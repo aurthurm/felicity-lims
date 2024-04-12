@@ -1,5 +1,10 @@
 import logging
 
+try:
+    from typing import Self
+except ImportError:
+    from typing_extensions import Self
+
 from sqlalchemy import (Boolean, Column, DateTime, Float, ForeignKey, String,
                         Table)
 from sqlalchemy.orm import relationship
@@ -24,11 +29,11 @@ class QCSet(BaseAuditDBModel):
     samples = relationship("Sample", back_populates="qc_set", lazy="selectin")
 
     @classmethod
-    async def create(cls, obj_in: dict | schemas.QCSetCreate) -> schemas.QCSet:
+    async def create(cls, obj_in: dict | schemas.QCSetCreate) -> Self:
         data = cls._import(obj_in)
         return await super().create(**data)
 
-    async def update(self, obj_in: dict | schemas.QCSetUpdate) -> schemas.QCSet:
+    async def update(self, obj_in: dict | schemas.QCSetUpdate) -> Self:
         data = self._import(obj_in)
         return await super().update(**data)
 
@@ -105,11 +110,11 @@ class QCLevel(BaseAuditDBModel):
     # allowable_error = Column(Float, nullable=True)
 
     @classmethod
-    async def create(cls, obj_in: dict | schemas.QCLevelCreate) -> schemas.QCLevel:
+    async def create(cls, obj_in: dict | schemas.QCLevelCreate) -> Self:
         data = cls._import(obj_in)
         return await super().create(**data)
 
-    async def update(self, obj_in: dict | schemas.QCLevelUpdate) -> schemas.QCLevel:
+    async def update(self, obj_in: dict | schemas.QCLevelUpdate) -> Self:
         data = self._import(obj_in)
         return await super().update(**data)
 
@@ -163,13 +168,13 @@ class QCTemplate(BaseAuditDBModel):
 
     @classmethod
     async def create(
-        cls, obj_in: dict | schemas.QCTemplateCreate
-    ) -> schemas.QCTemplate:
+            cls, obj_in: dict | schemas.QCTemplateCreate
+    ) -> Self:
         data = cls._import(obj_in)
         return await super().create(**data)
 
     async def update(
-        self, obj_in: dict | schemas.QCTemplateUpdate
-    ) -> schemas.QCTemplate:
+            self, obj_in: dict | schemas.QCTemplateUpdate
+    ) -> Self:
         data = self._import(obj_in)
         return await super().update(**data)

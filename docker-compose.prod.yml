@@ -58,8 +58,8 @@ services:
     env_file:
       - .env
     environment:
-      - POSTGRES_SERVER=felicity_db
-      - SERVE_WEBAPP=True
+      POSTGRES_SERVER: felicity_db
+      SERVE_WEBAPP: True
     volumes:
       - ./felicity:/app/felicity
     build:
@@ -70,8 +70,6 @@ services:
       - 8000:8000
     networks:
       - felicitynet
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
     depends_on:
       - felicity_db
     logging:
@@ -137,8 +135,8 @@ services:
     env_file:
       - .env
     environment:
-      - POSTGRES_SERVER=felicity_db
-      - SERVE_WEBAPP=False
+      POSTGRES_SERVER: felicity_db
+      SERVE_WEBAPP: False
     volumes:
       - ./felicity:/app/felicity
     build:
@@ -149,8 +147,6 @@ services:
       - 8000:8000
     networks:
       - felicitynet
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
     depends_on:
       - felicity_db
     logging:
@@ -165,13 +161,13 @@ services:
     env_file:
       - .env
     environment:
-      - POSTGRES_DB=${POSTGRES_DB}
-      - POSTGRES_USER=${POSTGRES_USER}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-      - POSTGRES_HOST_AUTH_METHOD=trust
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_HOST_AUTH_METHOD: trust
     volumes:
       - ./postgres/init/:/docker-entrypoint-initdb.d/
-      - db-data:/var/lib/postgresql/data
+      - ./db-data:/var/lib/postgresql/data
     ports:
       - 5434:5432
     networks:
@@ -184,7 +180,7 @@ services:
       PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-admin@pgadmin.org}
       PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
     volumes:
-      - pgadmin:/root/.pgadmin
+      - ./pgadmin:/root/.pgadmin
     ports:
       - "${PGADMIN_PORT:-5050}:80"
     networks:

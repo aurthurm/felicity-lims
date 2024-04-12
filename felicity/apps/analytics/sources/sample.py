@@ -1,5 +1,5 @@
 import logging
-from typing import Generic, List, Optional, Tuple, Type, TypeVar
+from typing import Generic, List, Optional, Tuple, Type, TypeVar, Any
 
 from dateutil import parser
 from sqlalchemy import text
@@ -28,7 +28,7 @@ class SampleAnalyticsInit(Generic[ModelType]):
             sample_states: list[str],
             date_column: str,
             analysis_uids: List[str],
-    ):
+    ) -> tuple[list[str], list[Any]]:
         start_date = parser.parse(str(period_start))
         end_date = parser.parse(str(period_end))
 

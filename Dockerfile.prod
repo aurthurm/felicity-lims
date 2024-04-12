@@ -18,8 +18,7 @@ COPY ./*.json /app
 RUN pnpm webapp:build:only
 
 
-FROM tiangolo/uvicorn-gunicorn:python3.10-slim as server-aio
-LABEL maintainer="Sebastian Ramirez <tiangolo@gmail.com>"
+FROM python:3.12.3-bookworm as server-aio
 
 RUN apt-get update && apt-get install -y git libpq-dev gcc
 COPY ./requirements.txt /tmp/requirements.txt
@@ -29,13 +28,12 @@ WORKDIR /app
 COPY ./felicity /app/felicity
 RUN  rm -rf /app/felicity/templates/static/*
 COPY --from=webapp-build /app/dist /app/felicity/templates/static
-RUN cd /app/felicity && alembic upgrade head
+# RUN cd /app/felicity && alembic upgrade head
 ENV PYTHONPATH=/app
 CMD ["gunicorn", "felicity.main:felicity", "--bind", "0.0.0.0:8000", "--workers", "4", "--worker-class", "uvicorn.workers.UvicornWorker"]
 
 
-FROM tiangolo/uvicorn-gunicorn:python3.10-slim as server-api
-LABEL maintainer="Sebastian Ramirez <tiangolo@gmail.com>"
+FROM python:3.12.3-bookworm as server-api
 
 RUN apt-get update && apt-get install -y git libpq-dev gcc
 COPY ./requirements.txt /tmp/requirements.txt
@@ -44,7 +42,7 @@ RUN pip install --no-cache-dir --upgrade -r /tmp/requirements.txt
 WORKDIR /app
 COPY ./felicity /app/felicity
 RUN  rm -rf /app/felicity/templates/static/*
-RUN cd /app/felicity && alembic upgrade head
+# RUN cd /app/felicity && alembic upgrade head
 ENV PYTHONPATH=/app
 CMD ["gunicorn", "felicity.main:felicity", "--bind", "0.0.0.0:8000", "--workers", "4", "--worker-class", "uvicorn.workers.UvicornWorker"]
 

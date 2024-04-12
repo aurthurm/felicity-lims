@@ -1,8 +1,14 @@
+from typing import NoReturn
+
+try:
+    from typing import Self
+except ImportError:
+    from typing_extensions import Self
+
 from sqlalchemy import Column, DateTime, ForeignKey, String, Table
 from sqlalchemy.orm import relationship
 
 from felicity.apps import BaseAuditDBModel
-
 from . import conf, schemas
 
 """
@@ -31,7 +37,7 @@ class ReportMeta(BaseAuditDBModel):
     status = Column(String)
     sample_states = Column(String)
 
-    async def set_final(self, status: str, location: str | None = None):
+    async def set_final(self, status: str, location: str | None = None) -> NoReturn:
         if self.status != conf.report_states.READY:
             self.location = location
             self.status = status
@@ -40,13 +46,13 @@ class ReportMeta(BaseAuditDBModel):
 
     @classmethod
     async def create(
-        cls, obj_in: dict | schemas.ReportMetaCreate
-    ) -> schemas.ReportMeta:
+            cls, obj_in: dict | schemas.ReportMetaCreate
+    ) -> Self:
         data = cls._import(obj_in)
         return await super().create(**data)
 
     async def update(
-        self, obj_in: dict | schemas.ReportMetaUpdate
-    ) -> schemas.ReportMeta:
+            self, obj_in: dict | schemas.ReportMetaUpdate
+    ) -> Self:
         data = self._import(obj_in)
         return await super().update(**data)

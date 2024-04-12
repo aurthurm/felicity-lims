@@ -9,7 +9,7 @@ emails==0.6
 psycopg2-binary==2.9.9
 apscheduler==3.10.4
 sqlalchemy_mptt==0.2.5
-sqlalchemy_mixins @ git+https://github.com/aurthurm/sqlalchemy-mixins.git@async_support
+sqlalchemy_mixins@git+https://github.com/aurthurm/sqlalchemy-mixins.git@async_support
 tenacity==8.2.3
 pydantic[email]==2.5.3
 pydantic_settings==2.1.0
@@ -19,7 +19,7 @@ asyncpg==0.29.0
 broadcaster~=0.2.0
 aiofiles==23.2.1
 pandas==2.2.0
-graphdoc @ git+https://github.com/beak-insights/graphdoc@strawberry_support
+graphdoc@git+https://github.com/wallee94/graphdoc
 jinja2==3.1.3
 celery==5.3.6
 fpdf2==2.7.7
@@ -36,4 +36,4 @@ opentelemetry-instrumentation-logging==0.43b0
 opentelemetry-instrumentation-sqlalchemy==0.43b0
 opentelemetry-instrumentation-psycopg2==0.43b0
 psycopg2==2.9.9
-typing-extensions
+typing-extensions==4.11.0

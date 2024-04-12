@@ -198,13 +198,13 @@ class Group(DBModel):
     active = Column(Boolean(), default=True)
 
     @classmethod
-    def create(cls, obj_in):
+    async def create(cls, obj_in):
         data = cls._import(obj_in)
-        return super().create(**data)
+        return await super().create(**data)
 
-    def update(self, obj_in):
+    async def update(self, obj_in):
         data = self._import(obj_in)
-        return super().update(**data)
+        return await super().update(**data)
 
     def add_member(self, member):
         self.members.add(member)
