@@ -99,7 +99,7 @@ async def seed_laboratory(name: str) -> None:
     )
     if not laboratory:
         lab_in = schemas.LaboratoryCreate(
-            setup_name="felicity",
+            setup_name=data.get("setup_name", "felicity"),
             lab_name=name,
             email=None,
             email_cc=None,

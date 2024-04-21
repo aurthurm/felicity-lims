@@ -9,9 +9,8 @@ function canAccessPage(pageName: string) {
     if (!groups || groups?.length == 0) return false;
 
     const group = groups![0] as IGroup;
-
-    if (group) {
-        return group?.pages?.includes(pageName);
+    if (group?.pages) {
+        return group?.pages?.toLowerCase()?.includes(pageName?.toLowerCase());
     }
 
     return false;

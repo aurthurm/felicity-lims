@@ -1,0 +1,1 @@
+import{k as e,o as t,c as o,b as s}from"./index-2a6c9271.js";const c={},n={class:""},_=s("h4",null,"About Felicity LIMS",-1),a=[_];function i(r,l){return t(),o("div",n,[...a])}const d=e(c,[["render",i],["__file","/home/aurthur/Documents/Development/felicity-lims/webapp/views/About.vue"]]);export{d as default};

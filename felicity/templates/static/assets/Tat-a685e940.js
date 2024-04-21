@@ -1,0 +1,1 @@
+import{d as e,k as t,o,c as s}from"./index-2a6c9271.js";const a=e({name:"tab-tat",setup(){return{}}}),n={class:"text-xl text-gray-700 font-semibold"};function r(c,i,p,u,m,_){return o(),s("h1",n,"Turn Aroud Time Measures")}const l=t(a,[["render",r],["__file","/home/aurthur/Documents/Development/felicity-lims/webapp/views/dashboard/Tat.vue"]]);export{l as default};

@@ -151,7 +151,7 @@ const routes: RouteRecordRaw[] = [
     },
     {
         name: guards.pages.NOT_AUTHORISED,
-        path: '/acced-denied',
+        path: '/access-denied',
         component: () => import('../views/Restricted.vue'),
         meta: {
             layout: 'empty',

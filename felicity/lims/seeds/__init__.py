@@ -17,13 +17,13 @@ async def requisite_setup(lab_name="Felicity Labs") -> bool:
     logger.info("Loading requisite setup ...")
 
     await seed_laboratory(lab_name)
-    await seed_daemon_user()
-    await seed_super_user()
     await seed_groups()
     await seed_permissions()
     await seed_group_permissions_defaults()
     await seed_id_sequence()
     await seed_coding_standards()
+    await seed_daemon_user()
+    await seed_super_user()
 
     logger.info("Loading requisite setup complete.")
     return True

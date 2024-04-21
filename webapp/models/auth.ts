@@ -43,5 +43,5 @@ export interface IGroup {
     keyword?: string;
     permissions?: IPermission[];
     active?: boolean;
-    pages?: string | string[];
+    pages?: string;
 }

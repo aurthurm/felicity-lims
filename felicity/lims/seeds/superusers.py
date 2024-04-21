@@ -81,6 +81,10 @@ async def seed_super_user() -> None:
         if admin_group:
             superuser.groups.append(admin_group)
             await superuser.save_async()
+            # await models.Group.table_insert({
+            #     "user_uid": superuser.uid,
+            #     "group_uid": admin_group.uid
+            # })
 
         if not superuser:
             raise Exception("Failed to create superuser")

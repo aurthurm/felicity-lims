@@ -1,0 +1,1 @@
+import{k as t,z as o,o as s,c,g as n}from"./index-2a6c9271.js";const r={},i={class:""};function _(a,l){const e=o("router-view");return s(),c("div",i,[n(e)])}const p=t(r,[["render",_],["__file","/home/aurthur/Documents/Development/felicity-lims/webapp/views/client/Clients.vue"]]);export{p as default};

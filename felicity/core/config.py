@@ -11,13 +11,14 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 from felicity.utils.env import getenv_boolean, getenv_value
 
-BASE_DIR: str = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+BASE_DIR: str = os.path.abspath(os.path.join(os.path.dirname(__file__), "..")) 
 ENV_FILE: Path = Path(BASE_DIR, "./../.env")
 load_dotenv(dotenv_path=ENV_FILE)
 
 
 class Settings(BaseSettings):
     BASE_DIR: str = BASE_DIR
+    SEEDS_DIR: str = os.path.abspath(os.path.join(BASE_DIR, "lims", "seeds", "data")) 
     STATIC_DIR: str = os.path.join(BASE_DIR, "static")
     API_V1_STR: str = "/api/v1"
     ALGORITHM: str = "HS256"

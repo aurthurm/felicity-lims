@@ -6,7 +6,8 @@ gunicorn==21.2.0
 python-jose[cryptography]==3.3.0
 passlib[bcrypt]==1.7.4
 emails==0.6
-psycopg2-binary==2.9.9
+#psycopg2-binary==2.9.9
+#psycopg2==2.9.9
 apscheduler==3.10.4
 sqlalchemy_mptt==0.2.5
 sqlalchemy_mixins@git+https://github.com/aurthurm/sqlalchemy-mixins.git@async_support
@@ -35,5 +36,4 @@ opentelemetry-instrumentation-fastapi==0.43b0
 opentelemetry-instrumentation-logging==0.43b0
 opentelemetry-instrumentation-sqlalchemy==0.43b0
 opentelemetry-instrumentation-psycopg2==0.43b0
-psycopg2==2.9.9
 typing-extensions==4.11.0
