@@ -1,10 +1,10 @@
 from typing import List, Optional
-
 import strawberry  # noqa
 
 from felicity.api.gql.noticeboard.types import NoticeType
 from felicity.api.gql.permissions import IsAuthenticated
 from felicity.apps.noticeboard import models
+from felicity.core.dtz import get_time_now
 
 
 @strawberry.type
@@ -15,7 +15,7 @@ class NoticeQuery:
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def notices_by_creator(self, info, uid: str) -> Optional[List[NoticeType]]:
-        return await models.Notice.get_all(created_by_uid=uid)
+        return await models.Notice.get_all(created_by_uid=uid, expiry__gt=get_time_now(str_format=False))
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def notice_filter(

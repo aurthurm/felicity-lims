@@ -12,9 +12,10 @@ def get_time_now(str_format=True) -> str | datetime:
         now = datetime.now(settings.TIMEZONE)
     else:
         now = datetime.now()
+    str_time = now.strftime(settings.DATETIME_STR_FORMAT)
     if str_format:
-        return now.strftime(settings.DATETIME_STR_FORMAT)
-    return now
+        return str_time
+    return datetime.strptime(str_time, settings.DATETIME_STR_FORMAT)
 
 
 def to_datetime(date_value: str) -> datetime:

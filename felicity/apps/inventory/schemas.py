@@ -38,6 +38,33 @@ class StockItemUpdate(StockItemBase):
 
 
 #
+# StockItemVariant Schemas
+#
+class StockItemVariantBase(BaseAuditModel):
+    """StockItemVariant Standardization"""
+
+    name: str | None = None
+    description: str | None = None
+    stock_item_uid: str | None = None
+    stock_item: Optional[StockItem] = None
+    minimum_level: int | None = None
+    maximum_level: int | None = None
+
+
+class StockItemVariant(StockItemVariantBase):
+    uid: str | None = None
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+class StockItemVariantCreate(StockItemVariantBase):
+    pass
+
+
+class StockItemVariantUpdate(StockItemVariantBase):
+    pass
+
+#
 # StockCategory Schemas
 #
 class StockCategoryBase(BaseAuditModel):
@@ -135,30 +162,13 @@ class StockPackagingUpdate(StockPackagingBase):
 class StockProductBase(BaseAuditModel):
     name: str | None = None
     stock_item_uid: str | None = None
+    stock_item_variant_uid: str | None = None
     department_uid: str | None = None
     department: Optional[Department] = None
-    supplier_uid: str | None = None
-    supplier: Optional[Supplier] = None
     category_uid: str | None = None
     category: Optional[StockCategory] = None
     hazard_uid: str | None = None
     hazard: Optional[Hazard] = None
-    store_room_uid: str | None = None
-    store_room: Optional[StoreRoom] = None
-    lot_number: str | None = None
-    batch: str | None = None
-    size: float | None = None
-    unit_uid: str | None = None
-    unit: Optional[StockUnit] = None
-    packaging_uid: str | None = None
-    packaging: Optional[StockPackaging] = None
-    price: float | None = None
-    quantity_received: int | None = None
-    remaining: int | None = None
-    date_received: date | None = None
-    expiry_date: date | None = None
-    received_by_uid: str | None = None
-    received_by: Optional[User] = None
 
 
 class StockProduct(StockProductBase):
@@ -172,6 +182,87 @@ class StockProductCreate(StockProductBase):
 
 
 class StockProductUpdate(StockProductBase):
+    pass
+
+
+#
+# StockLot Schemas
+#
+class StockLotBase(BaseAuditModel):
+    product_uid: str | None = None
+    lot_number: str | None = None
+    expiry_date: Optional[datetime] = None
+    remarks: str | None = None
+
+
+class StockLot(StockLotBase):
+    uid: str | None = None
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+class StockLotCreate(StockLotBase):
+    pass
+
+
+class StockLotUpdate(StockLotBase):
+    pass
+
+
+#
+# StockProductInventory Schemas
+#
+class StockProductInventoryBase(BaseAuditModel):
+    product_uid: str | None = None
+    stock_lot_uid: str | None = None
+    quantity: Optional[datetime] = None
+    remarks: str | None = None
+
+
+class StockProductInventory(StockProductInventoryBase):
+    uid: str | None = None
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+class StockProductInventoryCreate(StockProductInventoryBase):
+    pass
+
+
+class StockProductInventoryUpdate(StockProductInventoryBase):
+    pass
+
+
+#
+# StockReceipt Schemas
+#
+class StockReceiptBase(BaseAuditModel):
+    product_uid: str | None = None
+    stock_lot_uid: str | None = None
+    unit_price: str | None = None
+    total_price: str | None = None
+    supplier_uid: str | None = None
+    unit_uid: str | None = None
+    singles_received: int | None = None
+    packages_received: int | None = None
+    package_factor: int | None = None
+    quantity_received: int | None = None
+    receipt_type : str | None = None
+    receipt_by_uid : str | None = None
+    receipt_date : datetime | None = None
+
+
+class StockReceipt(StockReceiptBase):
+    uid: str | None = None
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+class StockReceiptCreate(StockReceiptBase):
+    pass
+
+
+class StockReceiptUpdate(StockReceiptBase):
     pass
 
 
@@ -232,9 +323,9 @@ class StockOrderProductUpdate(StockOrderProductBase):
 
 
 #
-# StockTransaction Schemas
+# StockIssue Schemas
 #
-class StockTransactionBase(BaseAuditModel):
+class StockIssueBase(BaseAuditModel):
     product_uid: str | None = None
     product: Optional[StockProduct] = None
     issued: int | None = None
@@ -243,21 +334,21 @@ class StockTransactionBase(BaseAuditModel):
     department_uid: str | None = None
     department: Optional[Department] = None
     date_issued: datetime | None = None
-    transaction_by_uid: str | None = None
-    transaction_by: Optional[User] = None
+    issue_by_uid: str | None = None
+    issue_by: Optional[User] = None
 
 
-class StockTransaction(StockTransactionBase):
+class StockIssue(StockIssueBase):
     uid: str | None = None
 
     model_config = ConfigDict(from_attributes=True)
 
 
-class StockTransactionCreate(StockTransactionBase):
+class StockIssueCreate(StockIssueBase):
     pass
 
 
-class StockTransactionUpdate(StockTransactionBase):
+class StockIssueUpdate(StockIssueBase):
     pass
 
 

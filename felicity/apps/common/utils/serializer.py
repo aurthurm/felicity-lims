@@ -14,6 +14,9 @@ def marshaller(obj, path=None, memoize=None, exclude: list[str] = None) -> dict 
     if path is None:
         path = []
 
+    if exclude is None:
+        exclude = []
+
     if id(obj) in memoize:
         return memoize[id(obj)]
 

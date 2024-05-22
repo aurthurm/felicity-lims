@@ -43,11 +43,11 @@ class Settings(BaseSettings):
         "access-control-allow-origin",
         "access-control-allow-headers",
     ]
-    DATE_STR_FORMAT: str = "%d-%m-%y"
+    DATE_STR_FORMAT: str = "%d-%m-%Y"
     DATETIME_STR_FORMAT: str = f"{DATE_STR_FORMAT} %H:%M"
     DATE_HUMAN_FORMAT: str = "%d-%b-%Y"
     DATETIME_HUMAN_FORMAT: str = f"{DATE_HUMAN_FORMAT} %I.%M %p"
-    TIMEZONE_AWARE: bool = False
+    TIMEZONE_AWARE: bool = True
     TIMEZONE_REGION: str = "UTC"  # "Africa/Harare"
     TIMEZONE: Any = pytz.timezone(TIMEZONE_REGION)
     POSTGRES_SERVER: str = getenv_value("POSTGRES_SERVER", "localhost")

@@ -23,6 +23,9 @@ const accordion = defineAsyncComponent(
     shield.pages.QC_SAMPLES,
     shield.pages.WORKSHEETS,
     shield.pages.NOTICE_MANAGER,
+    shield.pages.BIO_BANKING,
+    shield.pages.INVENTORY,
+    shield.pages.REFERRAL
   ]
 
   let userStore = useUserStore()

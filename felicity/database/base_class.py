@@ -64,7 +64,7 @@ class DBModel(DeclarativeBase, AsyncAttrs, ActiveRecordMixinAsync, AllFeaturesMi
 
         return return_data
 
-    def marshal_nested(self, obj: Any = None, depth: int = 3):
+    def marshal_nested(self, obj: Any = None, depth: int = 3) -> Mapping[str, Any] | List[Mapping[str, Any]]:
         if depth <= 0:
             return obj
 
@@ -109,7 +109,7 @@ class DBModel(DeclarativeBase, AsyncAttrs, ActiveRecordMixinAsync, AllFeaturesMi
             return found
 
     @classmethod
-    async def create(cls, **kwargs):
+    async def create(cls, **kwargs) -> Self:
         """Returns a new get instance of the class
         This is so that mutations can work well and prevent async IO issues
         """

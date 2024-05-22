@@ -1,0 +1,77 @@
+{
+  "categories": [
+    {"name": "Consumable", "description": "These are items that are expected to be used up or consumed quickly, such reagents, cleaning supplies, and office materials."},
+    {"name": "Durable", "description": "These are items that are expected to last for a long time, such as machinery, equipment,"},
+    {"name": "Reagents", "description": "A type of consumable stock item, specifically a chemical substance or mixture used in laboratory tests, experiments, or procedures"}
+  ],
+  "Units": [
+    {"name": "Box", "description": "Box"},
+    {"name": "Carton", "description": "Carton"},
+    {"name": "Case", "description": "Case"},
+    {"name": "Container", "description": "Container"},
+    {"name": "Crate", "description": "Crate"},
+    {"name": "Drum", "description": "Drum"},
+    {"name": "Pallet", "description": "Pallet"},
+    {"name": "Packet", "description": "Packet"},
+    {"name": "Rack", "description": "Rack"},
+    {"name": "Reel", "description": "Reel"},
+    {"name": "Roll", "description": "Roll"},
+    {"name": "Spool", "description": "Spool"},
+    {"name": "Tray", "description": "Tray"},
+    {"name": "Bottle", "description": "Bottle"},
+    {"name": "Bag", "description": "Bag"},
+    {"name": "Bundle", "description": "Bundle"},
+    {"name": "Can", "description": "Can"},
+    {"name": "Coil", "description": "Coil"},
+    {"name": "Dozen", "description": "Dozen"},
+    {"name": "Each", "description": "Each"},
+    {"name": "Jar", "description": "Jar"},
+    {"name": "Kit", "description": "Kit"},
+    {"name": "Sachet", "description": "Sachet"},
+    {"name": "Sheet", "description": "Sheet"},
+    {"name": "Syringe", "description": "Syringe"},
+    {"name": "Vial", "description": "Vial"}
+  ],
+  "hazards": [
+      {
+        "name": "Chemical Hazards",
+        "description": "Substances that can cause harm through chemical reactions, explosions, or toxic emissions."
+      },
+      {
+        "name": "Biological Hazards",
+        "description": "Organisms or substances that can cause harm through infection, allergy, or toxicity."
+      },
+      {
+        "name": "Physical Hazards",
+        "description": "Objects or conditions that can cause harm through impact, cutting, or crushing."
+      },
+      {
+        "name": "Radiation Hazards",
+        "description": "Sources of ionizing or non-ionizing radiation that can cause harm through exposure."
+      },
+      {
+        "name": "Fire Hazards",
+        "description": "Materials or conditions that can cause or contribute to a fire."
+      },
+      {
+        "name": "Explosion Hazards",
+        "description": "Substances or conditions that can cause an explosion."
+      },
+      {
+        "name": "Electrical Hazards",
+        "description": "Equipment or conditions that can cause electrical shock or electrocution."
+      },
+      {
+        "name": "Ergonomic Hazards",
+        "description": "Conditions that can cause strain or injury through repetitive motion or poor posture."
+      },
+      {
+        "name": "Psychological Hazards",
+        "description": "Factors that can cause mental health issues, such as stress or anxiety."
+      },
+      {
+        "name": "Environmental Hazards",
+        "description": "Substances or conditions that can harm the environment or contaminate natural resources."
+      }
+  ]
+}

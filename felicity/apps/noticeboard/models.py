@@ -55,7 +55,7 @@ class Notice(BaseAuditDBModel):
     title = Column(String, nullable=False)
     body = Column(String, nullable=False)
     viewers = relationship("User", secondary=notice_view, lazy="selectin")
-    expiry: bool = Column(DateTime, nullable=False)
+    expiry = Column(DateTime, nullable=False)
 
     @classmethod
     async def create(cls, obj_in: dict | schemas.NoticeCreate) -> schemas.Notice:
