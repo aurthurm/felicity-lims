@@ -14,13 +14,13 @@ from felicity.utils import has_value_or_is_truthy
 class InventoryQuery:
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def stock_item_all(
-        self,
-        info,
-        page_size: int | None = None,
-        after_cursor: str | None = None,
-        before_cursor: str | None = None,
-        text: str | None = None,
-        sort_by: list[str] | None = None,
+            self,
+            info,
+            page_size: int | None = None,
+            after_cursor: str | None = None,
+            before_cursor: str | None = None,
+            text: str | None = None,
+            sort_by: list[str] | None = None,
     ) -> types.StockItemCursorPage:
         filters = {}
 
@@ -58,7 +58,7 @@ class InventoryQuery:
         return await models.StockItemVariant.get_all(stock_item_uid=stock_item_uid)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
-    async def stock_lots(self, info, product_uid) -> List[types.StockLotType]:
+    async def stock_lots(self, info, product_uid: str) -> List[types.StockLotType]:
         return await models.StockLot.get_all(product_uid=product_uid)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
@@ -67,7 +67,7 @@ class InventoryQuery:
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def stock_category_by_uid(
-        self, info, uid: str
+            self, info, uid: str
     ) -> Optional[types.StockCategoryType]:
         return await models.StockCategory.get(uid=uid)
 
@@ -93,19 +93,19 @@ class InventoryQuery:
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def stock_packaging_by_uid(
-        self, info, uid: str
+            self, info, uid: str
     ) -> Optional[types.StockPackagingType]:
         return await models.StockPackaging.get(uid=uid)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def stock_product_all(
-        self,
-        info,
-        page_size: int | None = None,
-        after_cursor: str | None = None,
-        before_cursor: str | None = None,
-        text: str | None = None,
-        sort_by: list[str] | None = None,
+            self,
+            info,
+            page_size: int | None = None,
+            after_cursor: str | None = None,
+            before_cursor: str | None = None,
+            text: str | None = None,
+            sort_by: list[str] | None = None,
     ) -> types.StockProductCursorPage:
         filters = {}
 
@@ -136,26 +136,26 @@ class InventoryQuery:
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def stock_product_by_uid(
-        self, info, uid: str
+            self, info, uid: str
     ) -> Optional[types.StockProductType]:
         return await models.StockProduct.get(uid=uid)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def stock_product_inventory(
-        self, info, product_uid: str, stock_lot_uid: str
+            self, info, product_uid: str, stock_lot_uid: str
     ) -> Optional[types.StockProductInventoryType]:
         return await models.StockProductInventory.get_all(product_uid=product_uid, stock_lot_uid=stock_lot_uid)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def stock_order_all(
-        self,
-        info,
-        page_size: int | None = None,
-        after_cursor: str | None = None,
-        before_cursor: str | None = None,
-        status: str | None = None,
-        text: str | None = None,
-        sort_by: list[str] | None = None,
+            self,
+            info,
+            page_size: int | None = None,
+            after_cursor: str | None = None,
+            before_cursor: str | None = None,
+            status: str | None = None,
+            text: str | None = None,
+            sort_by: list[str] | None = None,
     ) -> types.StockOrderCursorPage:
         filters = []
 
@@ -189,35 +189,35 @@ class InventoryQuery:
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def stock_order_by_uid(
-        self, info, uid: str
+            self, info, uid: str
     ) -> Optional[types.StockOrderType]:
         return await models.StockOrder.get(uid=uid)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def stock_order_product_all(
-        self, info, stock_order_uid: str
+            self, info, stock_order_uid: str
     ) -> List[types.StockOrderProductType]:
         return await models.StockOrderProduct.get_all(order_uid=stock_order_uid)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def stock_order_product_by_uid(
-        self, info, uid: str
+            self, info, uid: str
     ) -> Optional[types.StockOrderProductType]:
         return await models.StockOrderProduct.get(uid=uid)
-    
+
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def stock_receipt(self, info, product_uid: str, stock_lot_uid: str) -> List[types.StockReceiptType]:
         return await models.StockReceipt.get_all(product_uid=product_uid, stock_lot_uid=stock_lot_uid)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def stock_adjustment_all(
-        self,
-        info,
-        page_size: int | None = None,
-        after_cursor: str | None = None,
-        before_cursor: str | None = None,
-        text: str | None = None,
-        sort_by: list[str] | None = None,
+            self,
+            info,
+            page_size: int | None = None,
+            after_cursor: str | None = None,
+            before_cursor: str | None = None,
+            text: str | None = None,
+            sort_by: list[str] | None = None,
     ) -> types.StockAdjustmentCursorPage:
         filters = {}
 
@@ -253,7 +253,7 @@ class InventoryQuery:
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def stock_adjustment_by_uid(
-        self, info, uid: str
+            self, info, uid: str
     ) -> Optional[types.StockAdjustmentType]:
         return await models.StockAdjustment.get(uid=uid)
 

@@ -743,18 +743,17 @@ class InventoryMutations:
 
         # issuance
         for order_p in payload:
-            # init transaction
-            incoming: dict = {
+            adjust_in = {
                 "adjustment_date": datetime.now(),
                 "product_uid": order_p.product_uid,
                 "department_uid": stock_order.department_uid,
                 "adjustment_by_uid": felicity_user.uid,
+                "adjustment_for_uid": stock_order.order_by_uid,
                 "created_by_uid": felicity_user.uid,
                 "updated_by_uid": felicity_user.uid,
             }
+            base_adjustment = schemas.StockAdjustmentCreate(**adjust_in)
 
-            obj_in = schemas.StockAdjustmentCreate(**incoming)
-            #
             inventories = await models.StockProductInventory.get_all(
                 product_uid=order_p.product_uid,
                 quantity__gt=0
@@ -781,7 +780,7 @@ class InventoryMutations:
             for item in _data:
                 stock_inventory = await models.StockProductInventory.get(uid=item.get("uid"))
                 if item.get("quantity") >= remaining:
-                    adjustment = obj_in.model_copy(update={
+                    adjustment = base_adjustment.model_copy(update={
                         "adjust": remaining,
                         "lot_number": item.get("lot_number")
                     })
@@ -792,7 +791,7 @@ class InventoryMutations:
                     issued += remaining
                     remaining -= remaining
                 else:
-                    adjustment = obj_in.model_copy(update={
+                    adjustment = base_adjustment.model_copy(update={
                         "adjust": stock_inventory.quantity,
                         "lot_number": item.get("lot_number")
                     })

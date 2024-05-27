@@ -157,7 +157,7 @@ class StockProductInventory(BaseAuditDBModel):
     product_uid = Column(String, ForeignKey("stock_product.uid"), nullable=True)
     product = relationship("StockProduct", lazy="selectin")
     stock_lot_uid = Column(String, ForeignKey("stock_lot.uid"), nullable=True)
-    stock_lot = relationship("StockProduct", lazy="selectin")
+    stock_lot = relationship("StockLot", lazy="selectin")
     quantity = Column(Integer, nullable=False)
     remarks = Column(String, nullable=True)
 
@@ -273,36 +273,6 @@ class StockReceipt(BaseAuditDBModel):
         return await super().update(**data)
 
 
-class StockIssue(BaseAuditDBModel):
-    __tablename__ = "stock_issue"
-
-    product_uid = Column(String, ForeignKey("stock_product.uid"), nullable=True)
-    product = relationship("StockProduct", lazy="selectin")
-    issued = Column(Integer, nullable=False)
-    issued_to_uid = Column(String, ForeignKey("user.uid"), nullable=True)
-    issued_to = relationship("User", foreign_keys=[issued_to_uid], lazy="selectin")
-    department_uid = Column(String, ForeignKey("department.uid"), nullable=True)
-    department = relationship("Department", lazy="selectin")
-    date_issued = Column(DateTime, nullable=False)
-    issue_by_uid = Column(String, ForeignKey("user.uid"), nullable=True)
-    issue_by = relationship(
-        "User", foreign_keys=[issue_by_uid], lazy="selectin"
-    )
-
-    @classmethod
-    async def create(
-            cls, obj_in: dict | schemas.StockIssueCreate
-    ) -> schemas.StockIssue:
-        data = cls._import(obj_in)
-        return await super().create(**data)
-
-    async def update(
-            self, obj_in: dict | schemas.StockIssueUpdate
-    ) -> schemas.StockIssue:
-        data = self._import(obj_in)
-        return await super().update(**data)
-
-
 class StockAdjustment(BaseAuditDBModel):
     __tablename__ = "stock_adjustment"
 
@@ -317,6 +287,8 @@ class StockAdjustment(BaseAuditDBModel):
     adjustment_by = relationship(
         "User", foreign_keys=[adjustment_by_uid], lazy="selectin"
     )
+    adjustment_for_uid = Column(Integer, nullable=True)
+    adjustment_for = Column(String, ForeignKey("user.uid"), nullable=True)
 
     @classmethod
     async def create(

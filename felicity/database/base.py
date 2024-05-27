@@ -1,14 +1,8 @@
 from felicity.apps.analysis.models.analysis import Analysis  # noqa
 from felicity.apps.analysis.models.analysis import AnalysisCategory  # noqa
 from felicity.apps.analysis.models.analysis import AnalysisCoding  # noqa
-from felicity.apps.analysis.models.analysis import \
-    AnalysisCorrectionFactor  # noqa
-from felicity.apps.analysis.models.analysis import \
-    AnalysisDetectionLimit  # noqa
 from felicity.apps.analysis.models.analysis import AnalysisInterim  # noqa
 from felicity.apps.analysis.models.analysis import AnalysisRequest  # noqa
-from felicity.apps.analysis.models.analysis import \
-    AnalysisSpecification  # noqa
 from felicity.apps.analysis.models.analysis import AnalysisUncertainty  # noqa
 from felicity.apps.analysis.models.analysis import CodingStandard  # noqa
 from felicity.apps.analysis.models.analysis import Profile  # noqa
@@ -49,11 +43,13 @@ from felicity.apps.inventory.models import Hazard  # noqa
 from felicity.apps.inventory.models import StockAdjustment  # noqa
 from felicity.apps.inventory.models import StockCategory  # noqa
 from felicity.apps.inventory.models import StockItem  # noqa
+from felicity.apps.inventory.models import StockItemVariant  # noqa
+from felicity.apps.inventory.models import StockLot  # noqa
 from felicity.apps.inventory.models import StockOrder  # noqa
 from felicity.apps.inventory.models import StockOrderProduct  # noqa
-from felicity.apps.inventory.models import StockPackaging  # noqa
 from felicity.apps.inventory.models import StockProduct  # noqa
-from felicity.apps.inventory.models import StockTransaction  # noqa
+from felicity.apps.inventory.models import StockProductInventory  # noqa
+from felicity.apps.inventory.models import StockReceipt  # noqa
 from felicity.apps.inventory.models import StockUnit  # noqa
 from felicity.apps.job.models import Job  # noqa
 from felicity.apps.messaging.models import Message  # noqa

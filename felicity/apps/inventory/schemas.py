@@ -302,36 +302,6 @@ class StockOrderProductUpdate(StockOrderProductBase):
 
 
 #
-# StockIssue Schemas
-#
-class StockIssueBase(BaseAuditModel):
-    product_uid: str | None = None
-    product: Optional[StockProduct] = None
-    issued: int | None = None
-    issued_to_uid: str | None = None
-    issued_to: Optional[User] = None
-    department_uid: str | None = None
-    department: Optional[Department] = None
-    date_issued: datetime | None = None
-    issue_by_uid: str | None = None
-    issue_by: Optional[User] = None
-
-
-class StockIssue(StockIssueBase):
-    uid: str | None = None
-
-    model_config = ConfigDict(from_attributes=True)
-
-
-class StockIssueCreate(StockIssueBase):
-    pass
-
-
-class StockIssueUpdate(StockIssueBase):
-    pass
-
-
-#
 # StockAdjustment Schemas
 #
 class StockAdjustmentBase(BaseAuditModel):
