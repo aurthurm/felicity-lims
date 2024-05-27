@@ -2,7 +2,6 @@
 This file is part of Felicity LIMS Software
 """
 
-
 CATEGORIES = ["Consumables", "Reagents", "Durables"]
 
 HAZARDS = [
@@ -59,7 +58,10 @@ PACKAGES = [
 
 
 class Adjust:
+    #  Adding
+    NEW_STOCK = "new_stock"
     TRANSFER_IN = "transfer_in"
+    # subtracting
     TRANSFER_OUT = "transfer_out"
     DAMAGED = "damaged"
     EXPIRED = "expired"

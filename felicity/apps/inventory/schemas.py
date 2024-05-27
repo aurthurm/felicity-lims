@@ -1,11 +1,10 @@
-from datetime import date, datetime
+from datetime import datetime
 from typing import Optional
 
 from pydantic import ConfigDict
 
 from felicity.apps.common.schemas import BaseAuditModel
-from felicity.apps.setup.schemas import Department, Supplier
-from felicity.apps.storage.schemas import StoreRoom
+from felicity.apps.setup.schemas import Department
 from felicity.apps.user.schemas import User
 
 
@@ -63,6 +62,7 @@ class StockItemVariantCreate(StockItemVariantBase):
 
 class StockItemVariantUpdate(StockItemVariantBase):
     pass
+
 
 #
 # StockCategory Schemas
@@ -132,27 +132,6 @@ class StockUnitCreate(StockUnitBase):
 
 
 class StockUnitUpdate(StockUnitBase):
-    pass
-
-
-#
-# StockPackaging Schemas
-#
-class StockPackagingBase(BaseAuditModel):
-    name: str | None = None
-
-
-class StockPackaging(StockPackagingBase):
-    uid: str | None = None
-
-    model_config = ConfigDict(from_attributes=True)
-
-
-class StockPackagingCreate(StockPackagingBase):
-    pass
-
-
-class StockPackagingUpdate(StockPackagingBase):
     pass
 
 
@@ -247,9 +226,9 @@ class StockReceiptBase(BaseAuditModel):
     packages_received: int | None = None
     package_factor: int | None = None
     quantity_received: int | None = None
-    receipt_type : str | None = None
-    receipt_by_uid : str | None = None
-    receipt_date : datetime | None = None
+    receipt_type: str | None = None
+    receipt_by_uid: str | None = None
+    receipt_date: datetime | None = None
 
 
 class StockReceipt(StockReceiptBase):
@@ -358,6 +337,7 @@ class StockIssueUpdate(StockIssueBase):
 class StockAdjustmentBase(BaseAuditModel):
     product_uid: str | None = None
     product: Optional[StockProduct] = None
+    lot_number: str | None = None
     adjustment_type: str | None = None
     adjust: int | None = None
     adjustment_date: datetime | None = None

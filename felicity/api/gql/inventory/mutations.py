@@ -9,7 +9,7 @@ from felicity.api.gql.inventory import types
 from felicity.api.gql.permissions import IsAuthenticated
 from felicity.api.gql.types import OperationError
 from felicity.apps.inventory import models, schemas
-from felicity.apps.inventory.conf import order_states
+from felicity.apps.inventory.conf import order_states, Adjust
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -71,18 +71,6 @@ class StockUnitInputType:
     name: str
 
 
-StockPackagingResponse = strawberry.union(
-    "StockPackagingResponse",
-    (types.StockPackagingType, OperationError),
-    description="",  # noqa
-)
-
-
-@strawberry.input
-class StockPackagingInputType:
-    name: str
-
-
 StockProductResponse = strawberry.union(
     "StockProductResponse",
     (types.StockProductType, OperationError),
@@ -95,23 +83,31 @@ class StockProductInputType:
     name: str
     stock_item_uid: str | None = None
     stock_item_variant_uid: str | None = None
-    department_uid: str | None = None
-    supplier_uid: str | None = None
-    category_uid: str | None = None
-    hazard_uid: str | None = None
-    store_room_uid: str | None = None
-    lot_number: str | None = None
-    batch: str | None = None
-    size: int | None = None
-    unit_uid: str | None = None
-    packaging_uid: str | None = None
-    packages: int | None = None
-    conversion_factor: int | None = 1
-    price: int | None = None
-    quantity_received: int | None = None
-    date_received: datetime | None = None
-    expiry_date: str | None = None
-    received_by_uid: str | None = None
+
+
+@strawberry.input
+class StockReceiptInputType:
+    product_uid: str
+    lot_number: str
+    unit_price: float
+    total_price: float
+    supplier_uid: str
+    unit_uid: str
+    singles_received: int
+    packages_received: int
+    package_factor: int
+    quantity_received: int
+    receipt_type: str
+    receipt_by_uid: int
+    receipt_date: str
+    expiry_date: str
+
+
+StockReceiptResponse = strawberry.union(
+    "StockReceiptResponse",
+    (types.StockReceiptType, OperationError),
+    description="",  # noqa
+)
 
 
 @strawberry.type
@@ -172,6 +168,7 @@ StockAdjustmentResponse = strawberry.union(
 @strawberry.input
 class StockAdjustmentInputType:
     product_uid: str
+    lot_number: str
     adjustment_type: str
     adjust: int
     remarks: str | None = None
@@ -181,8 +178,8 @@ class StockAdjustmentInputType:
 class InventoryMutations:
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_stock_item(
-        self, info, payload: StockItemInputType
-    ) -> StockItemResponse: 
+            self, info, payload: StockItemInputType
+    ) -> StockItemResponse:
         is_authenticated, felicity_user = await auth_from_info(info)
         auth_success, auth_error = verify_user_auth(
             is_authenticated,
@@ -219,7 +216,7 @@ class InventoryMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_stock_item(
-        self, info, uid: str, payload: StockItemInputType
+            self, info, uid: str, payload: StockItemInputType
     ) -> StockItemResponse:
 
         is_authenticated, felicity_user = await auth_from_info(info)
@@ -252,9 +249,12 @@ class InventoryMutations:
         stock_item = await stock_item.update(obj_in)
         return types.StockItemType(**stock_item.marshal_simple())
 
+    # TODO: Add stock variant
+    # TODO: update stock variant
+
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_stock_category(
-        self, info, payload: StockCategoryInputType
+            self, info, payload: StockCategoryInputType
     ) -> StockCategoryResponse:
         is_authenticated, felicity_user = await auth_from_info(info)
         auth_success, auth_error = verify_user_auth(
@@ -282,7 +282,7 @@ class InventoryMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_stock_category(
-        self, info, uid: str, payload: StockCategoryInputType
+            self, info, uid: str, payload: StockCategoryInputType
     ) -> StockCategoryResponse:
 
         is_authenticated, felicity_user = await auth_from_info(info)
@@ -345,7 +345,7 @@ class InventoryMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_hazard(
-        self, info, uid: str, payload: HazardInputType
+            self, info, uid: str, payload: HazardInputType
     ) -> HazardResponse:
 
         is_authenticated, felicity_user = await auth_from_info(info)
@@ -380,7 +380,7 @@ class InventoryMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_stock_unit(
-        self, info, payload: StockUnitInputType
+            self, info, payload: StockUnitInputType
     ) -> StockUnitResponse:
         is_authenticated, felicity_user = await auth_from_info(info)
         auth_success, auth_error = verify_user_auth(
@@ -408,7 +408,7 @@ class InventoryMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_stock_unit(
-        self, info, uid: str, payload: StockUnitInputType
+            self, info, uid: str, payload: StockUnitInputType
     ) -> StockUnitResponse:
 
         is_authenticated, felicity_user = await auth_from_info(info)
@@ -442,75 +442,8 @@ class InventoryMutations:
         return types.StockUnitType(**stock_unit.marshal_simple())
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
-    async def create_stock_packaging(
-        self, info, payload: StockPackagingInputType
-    ) -> StockPackagingResponse:
-        is_authenticated, felicity_user = await auth_from_info(info)
-        auth_success, auth_error = verify_user_auth(
-            is_authenticated,
-            felicity_user,
-            "Only Authenticated user can create stock_packaging",
-        )
-        if not auth_success:
-            return auth_error
-
-        exists = await models.StockPackaging.get(name=payload.name)
-        if exists:
-            return OperationError(error="StockPackaging with this name already exists")
-
-        incoming: dict = {
-            "created_by_uid": felicity_user.uid,
-            "updated_by_uid": felicity_user.uid,
-        }
-        for k, v in payload.__dict__.items():
-            incoming[k] = v
-
-        obj_in = schemas.StockPackagingCreate(**incoming)
-        stock_packaging: models.StockPackaging = await models.StockPackaging.create(
-            obj_in
-        )
-        return types.StockPackagingType(**stock_packaging.marshal_simple())
-
-    @strawberry.mutation(permission_classes=[IsAuthenticated])
-    async def update_stock_packaging(
-        self, info, uid: str, payload: StockPackagingInputType
-    ) -> StockPackagingResponse:
-
-        is_authenticated, felicity_user = await auth_from_info(info)
-        verify_user_auth(
-            is_authenticated,
-            felicity_user,
-            "Only Authenticated user can update stock_packaging",
-        )
-
-        if not uid:
-            return OperationError(error="No uid provided to identity update obj")
-
-        stock_packaging: models.StockPackaging = await models.StockPackaging.get(
-            uid=uid
-        )
-        if not stock_packaging:
-            return OperationError(
-                error=f"StockPackaging with uid {uid} not found. Cannot update obj ..."
-            )
-
-        obj_data = stock_packaging.to_dict()
-        for field in obj_data:
-            if field in payload.__dict__:
-                try:
-                    setattr(stock_packaging, field, payload.__dict__[field])
-                except Exception as e:  # noqa
-                    pass
-
-        setattr(stock_packaging, "updated_by_uid", felicity_user.uid)
-
-        obj_in = schemas.StockPackagingUpdate(**stock_packaging.to_dict())
-        stock_packaging = await stock_packaging.update(obj_in)
-        return types.StockPackagingType(**stock_packaging.marshal_simple())
-
-    @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_stock_product(
-        self, info, payload: StockProductInputType
+            self, info, payload: StockProductInputType
     ) -> StockProductResponse:
         is_authenticated, felicity_user = await auth_from_info(info)
         auth_success, auth_error = verify_user_auth(
@@ -522,8 +455,6 @@ class InventoryMutations:
             return auth_error
 
         incoming: dict = {
-            "date_received": datetime.today(),
-            "expiry_date": datetime.today() + timedelta(days=10),
             "created_by_uid": felicity_user.uid,
             "updated_by_uid": felicity_user.uid,
         }
@@ -531,23 +462,13 @@ class InventoryMutations:
         for k, v in payload.__dict__.items():
             incoming[k] = v
 
-        quantity_received = payload.quantity_received
-        assert quantity_received  > 0
-        if payload.packages and payload.conversion_factor:
-            if quantity_received != payload.packages*payload.conversion_factor:
-                quantity_received = payload.packages*payload.conversion_factor
-
-        # TODO : verify quantity_received ? single items received
-        incoming["quantity_received"] = quantity_received
-        incoming["remaining"] = quantity_received
-
         obj_in = schemas.StockProductCreate(**incoming)
         stock_product: models.StockProduct = await models.StockProduct.create(obj_in)
         return types.StockProductType(**stock_product.marshal_simple())
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_stock_product(
-        self, info, uid: str, payload: StockProductInputType
+            self, info, uid: str, payload: StockProductInputType
     ) -> StockProductResponse:
 
         is_authenticated, felicity_user = await auth_from_info(info)
@@ -581,8 +502,79 @@ class InventoryMutations:
         return types.StockProductType(**stock_product.marshal_simple())
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
+    async def create_stock_receipt(
+            self, info, payload: StockReceiptInputType
+    ) -> StockReceiptResponse:
+        is_authenticated, felicity_user = await auth_from_info(info)
+        auth_success, auth_error = verify_user_auth(
+            is_authenticated,
+            felicity_user,
+            "Only Authenticated user can receive products",
+        )
+        if not auth_success:
+            return auth_error
+
+        stock_lot = await models.StockLot.get(product_uid=payload.product_uid, lot_number=payload.lot_number)
+        if not stock_lot:
+            stock_lot = await models.StockLot.create({
+                "product_uid": payload.product_uid,
+                "lot_number": payload.lot_number
+            })
+        await stock_lot.update({"expiry_date": payload.expiry_date})
+
+        incoming: dict = {
+            "receipt_date": datetime.today(),
+            "expiry_date": datetime.today() + timedelta(days=90),
+            "stock_lot_uid": stock_lot.uid,
+            "created_by_uid": felicity_user.uid,
+            "updated_by_uid": felicity_user.uid,
+        }
+
+        for k, v in payload.__dict__.items():
+            incoming[k] = v
+
+        quantity_received = payload.quantity_received
+        assert quantity_received > 0
+        if payload.packages_received and payload.package_factor:
+            if quantity_received != payload.packages_received * payload.package_factor:
+                quantity_received = payload.packages_received * payload.package_factor
+
+        incoming["quantity_received"] = quantity_received
+
+        obj_in = schemas.StockReceiptCreate(**incoming)
+        stock_receipt = await models.StockReceipt.create(obj_in)
+
+        # update StockProductInventory and  StockLot
+        inventory = await models.StockProductInventory.get(
+            product_uid=payload.product_uid, stock_lot_uid=stock_lot.uid
+        )
+        if not inventory:
+            inventory = await models.StockProductInventory.create({
+                "product_uid": payload.product_uid,
+                "stock_lot_uid": stock_lot.uid,
+                "quantity": 0
+            })
+        await inventory.update({
+            "quantity": inventory.quantity + quantity_received
+        })
+
+        # Record the adjustment
+        adjustment = schemas.StockAdjustmentCreate(**{
+            "product_uid": payload.product_uid,
+            "lot_number": payload.lot_number,
+            "adjustment_type": Adjust.NEW_STOCK,
+            "adjust": quantity_received,
+            "adjustment_date": datetime.now(),
+            "remarks": "",
+            "adjustment_by_uid": felicity_user.uid
+        })
+        await models.StockAdjustment.create(adjustment)
+
+        return types.StockReceiptType(**stock_receipt.marshal_simple())
+
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_stock_order(
-        self, info, payload: StockOrderInputType
+            self, info, payload: StockOrderInputType
     ) -> StockOrderResponse:
         is_authenticated, felicity_user = await auth_from_info(info)
         auth_success, auth_error = verify_user_auth(
@@ -627,7 +619,7 @@ class InventoryMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_stock_order(
-        self, info, uid: str, payload: StockOrderInputType
+            self, info, uid: str, payload: StockOrderInputType
     ) -> StockOrderResponse:
         is_authenticated, felicity_user = await auth_from_info(info)
         auth_success, auth_error = verify_user_auth(
@@ -710,7 +702,7 @@ class InventoryMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def approve_stock_order(
-        self, info, uid: str, payload: StockOrderApprovalInputType
+            self, info, uid: str, payload: StockOrderApprovalInputType
     ) -> StockOrderResponse:
         is_authenticated, felicity_user = await auth_from_info(info)
         auth_success, auth_error = verify_user_auth(
@@ -734,7 +726,7 @@ class InventoryMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def issue_stock_order(
-        self, info, uid: str, payload: List[StockOrderProductLineInputType]
+            self, info, uid: str, payload: List[StockOrderProductLineInputType]
     ) -> StockOrderResponse:
         is_authenticated, felicity_user = await auth_from_info(info)
         auth_success, auth_error = verify_user_auth(
@@ -753,28 +745,67 @@ class InventoryMutations:
         for order_p in payload:
             # init transaction
             incoming: dict = {
+                "adjustment_date": datetime.now(),
+                "product_uid": order_p.product_uid,
+                "department_uid": stock_order.department_uid,
+                "adjustment_by_uid": felicity_user.uid,
                 "created_by_uid": felicity_user.uid,
                 "updated_by_uid": felicity_user.uid,
-                "date_issued": datetime.now(),
-                "product_uid": order_p.product_uid,
-                "issued": order_p.quantity,
-                "issued_to_uid": stock_order.order_by_uid,
-                "department_uid": stock_order.department_uid,
-                "transaction_by_uid": felicity_user.uid,
             }
-            obj_in = schemas.StockTransactionCreate(**incoming)
-            stock_transaction: models.StockTransaction = (
-                await models.StockTransaction.create(obj_in)
-            )
+
+            obj_in = schemas.StockAdjustmentCreate(**incoming)
             #
-            product = await models.StockProduct.get(uid=order_p.product_uid)
-            quantity = product.remaining - order_p.quantity
-            if quantity < 0:
+            inventories = await models.StockProductInventory.get_all(
+                product_uid=order_p.product_uid,
+                quantity__gt=0
+            )
+            if len(inventories) == 0:
                 return OperationError(
-                    error="Sorry you cannot issue beyond whats available"
+                    error=f"No inventory found for this product {order_p.product_uid}"
                 )
-            else:
-                await product.update({"remaining": quantity})
+
+            _data = []
+            for inv in inventories:
+                _data.append({
+                    "uid": inv.uid,
+                    "product_uid": inv.product_uid,
+                    "quantity": inv.quantity,
+                    "expiry": inv.stock_lot.expiry_date,
+                    "lot_number": inv.stock_lot.lot_number,
+                })
+
+            _data = sorted(_data, key=lambda x: x['expiry'])
+
+            issued = 0
+            remaining = order_p.quantity
+            for item in _data:
+                stock_inventory = await models.StockProductInventory.get(uid=item.get("uid"))
+                if item.get("quantity") >= remaining:
+                    adjustment = obj_in.model_copy(update={
+                        "adjust": remaining,
+                        "lot_number": item.get("lot_number")
+                    })
+                    await models.StockAdjustment.create(adjustment)
+                    await stock_inventory.update({
+                        "quantity": stock_inventory.quantity - remaining
+                    })
+                    issued += remaining
+                    remaining -= remaining
+                else:
+                    adjustment = obj_in.model_copy(update={
+                        "adjust": stock_inventory.quantity,
+                        "lot_number": item.get("lot_number")
+                    })
+                    await models.StockAdjustment.create(adjustment)
+                    await stock_inventory.update({
+                        "quantity": 0
+                    })
+                    issued += stock_inventory.quantity
+                    remaining -= stock_inventory.quantity
+
+                if remaining == 0:
+                    assert issued == order_p.quantity
+                    break
 
         stock_order = await stock_order.update(
             {"status": order_states.PROCESSED, "remarks": ""}
@@ -808,50 +839,9 @@ class InventoryMutations:
         await stock_order.delete()
         return types.StockOrderType(**stock_order.marshal_simple())
 
-    # @strawberry.mutation(permission_classes=[IsAuthenticated])
-    # async def create_stock_transaction(
-    #     self, info, payload: StockTransactionInputType
-    # ) -> StockTransactionResponse:
-    #     is_authenticated, felicity_user = await auth_from_info(info)
-    #     auth_success, auth_error = verify_user_auth(
-    #         is_authenticated,
-    #         felicity_user,
-    #         "Only Authenticated user can create stock_transaction",
-    #     )
-    #     if not auth_success:
-    #         return auth_error
-
-    #     incoming: dict = {
-    #         "created_by_uid": felicity_user.uid,
-    #         "updated_by_uid": felicity_user.uid,
-    #         "transaction_by_uid": felicity_user.uid,
-    #         "date_issued": datetime.now(),
-    #     }
-    #     for k, v in payload.__dict__.items():
-    #         incoming[k] = v
-
-    #     obj_in = schemas.StockTransactionCreate(**incoming)
-    #     stock_transaction: models.StockTransaction = (
-    #         await models.StockTransaction.create(obj_in)
-    #     )
-
-    #     product = await models.StockProduct.get(uid=stock_transaction.product_uid)
-
-    #     # Transact
-    #     remaining = product.remaining - stock_transaction.issued
-    #     if remaining < 0:
-    #         await stock_transaction.update(
-    #             {"remarks": "Sustained: Sorry you cannot issue beyond whats available"}
-    #         )  # noqa
-    #         return OperationError(error="Sorry you cannot issue beyond whats available")
-    #     else:
-    #         await product.update({"remaining": remaining})
-
-    #     return types.StockTransactionType(**stock_transaction.marshal_simple())
-
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_stock_adjustment(
-        self, info, payload: StockAdjustmentInputType
+            self, info, payload: StockAdjustmentInputType
     ) -> StockAdjustmentResponse:
         is_authenticated, felicity_user = await auth_from_info(info)
         auth_success, auth_error = verify_user_auth(
@@ -861,6 +851,11 @@ class InventoryMutations:
         )
         if not auth_success:
             return auth_error
+
+        if payload.adjustment_type in [Adjust.NEW_STOCK, Adjust.TRANSFER_IN]:
+            return OperationError(
+                error="Use Stock Receipt to make this adjustment"
+            )
 
         incoming: dict = {
             "created_by_uid": felicity_user.uid,
@@ -876,22 +871,20 @@ class InventoryMutations:
             obj_in
         )
 
-        product = await models.StockProduct.get(uid=stock_adjustment.product_uid)
+        stock_lot = await models.StockLot.get(product_uid=payload.product_uid, lot_number=payload.lot_number)
+        inventory = await models.StockProductInventory.get(
+            product_uid=payload.product_uid, stock_lot_uid=stock_lot.uid
+        )
 
-        # Adjust
-        if stock_adjustment.adjustment_type == "transfer-in":
-            remaining = product.remaining + stock_adjustment.adjust
-            await product.update({"remaining": remaining})
+        remaining = inventory.quantity - stock_adjustment.adjust
+        if remaining < 0:
+            await stock_adjustment.update(
+                {"remarks": "Sustained: Sorry you cant adjust beyond what you have"}
+            )  # noqa
+            return OperationError(
+                error="Sorry you cant adjust beyond what you have"
+            )
         else:
-            remaining = product.remaining - stock_adjustment.adjust
-            if remaining < 0:
-                await stock_adjustment.update(
-                    {"remarks": "Sustained: Sorry you cant adjust beyond what you have"}
-                )  # noqa
-                return OperationError(
-                    error="Sorry you cant adjust beyond what you have"
-                )
-            else:
-                await product.update({"remaining": remaining})
+            await inventory.update({"quantity": remaining})
 
         return types.StockAdjustmentType(**stock_adjustment.marshal_simple())

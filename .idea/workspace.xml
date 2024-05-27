@@ -5,20 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9f590b69-f929-45a1-8512-12ed6efbf028" name="Changes" comment="Added Invetory starter">
-      <change beforePath="$PROJECT_DIR$/.idea/felicity-lims.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/felicity-lims.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/felicity/api/gql/inventory/mutations.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/inventory/mutations.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/api/gql/inventory/types.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/inventory/types.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/api/gql/noticeboard/query.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/noticeboard/query.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/apps/common/utils/serializer.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/common/utils/serializer.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/apps/inventory/conf.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/inventory/conf.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/felicity/apps/inventory/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/inventory/models.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/felicity/apps/inventory/schemas.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/inventory/schemas.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/apps/noticeboard/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/noticeboard/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/core/config.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/core/config.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/core/dtz.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/core/dtz.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/database/base_class.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/database/base_class.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/admin/users/Groups.vue" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/views/admin/users/Groups.vue" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
