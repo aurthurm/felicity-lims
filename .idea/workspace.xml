@@ -6,11 +6,9 @@
   <component name="ChangeListManager">
     <list default="true" id="9f590b69-f929-45a1-8512-12ed6efbf028" name="Changes" comment="Added Invetory starter">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/api/gql/inventory/mutations.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/inventory/mutations.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/api/gql/inventory/query.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/inventory/query.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/apps/inventory/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/inventory/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/apps/inventory/schemas.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/inventory/schemas.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/database/base.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/database/base.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/migrations/versions/0777557a3508_added_sample_types_to_result_options.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/migrations/versions/662ac32ade50_refactored_inventory.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/migrations/versions/e84a878a57a7_upgrade_1_0_1.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/migrations/versions/79cc9c2c7768_cleanup.py" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
