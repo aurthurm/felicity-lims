@@ -17,9 +17,9 @@ class StockItemBase(BaseAuditModel):
     name: str | None = None
     description: str | None = None
     department_uid: str | None = None
-    department: Optional[Department] = None    
+    department: Optional[Department] = None
     category_uid: str | None = None
-    hazard_uid : str | None = None
+    hazard_uid: str | None = None
     minimum_level: int | None = None
     maximum_level: int | None = None
 
@@ -120,9 +120,9 @@ class HazardUpdate(HazardBase):
 # StockUnit Schemas
 #
 class StockUnitBase(BaseAuditModel):
-    name: str | None = None    
-    description: str | None = None 
-    synonyms: str | None = None 
+    name: str | None = None
+    description: str | None = None
+    synonyms: str | None = None
 
 
 class StockUnit(StockUnitBase):
@@ -136,29 +136,6 @@ class StockUnitCreate(StockUnitBase):
 
 
 class StockUnitUpdate(StockUnitBase):
-    pass
-
-
-#
-# StockProduct Schemas
-#
-class StockProductBase(BaseAuditModel):
-    name: str | None = None
-    stock_item_uid: str | None = None
-    stock_item_variant_uid: str | None = None
-
-
-class StockProduct(StockProductBase):
-    uid: str | None = None
-
-    model_config = ConfigDict(from_attributes=True)
-
-
-class StockProductCreate(StockProductBase):
-    pass
-
-
-class StockProductUpdate(StockProductBase):
     pass
 
 
@@ -216,8 +193,8 @@ class StockProductInventoryUpdate(StockProductInventoryBase):
 class StockReceiptBase(BaseAuditModel):
     product_uid: str | None = None
     stock_lot_uid: str | None = None
-    unit_price: str | None = None
-    total_price: str | None = None
+    unit_price: float | None = None
+    total_price: float | None = None
     supplier_uid: str | None = None
     unit_uid: str | None = None
     singles_received: int | None = None
@@ -227,6 +204,7 @@ class StockReceiptBase(BaseAuditModel):
     receipt_type: str | None = None
     receipt_by_uid: str | None = None
     receipt_date: datetime | None = None
+    expiry_date: datetime | None = None
 
 
 class StockReceipt(StockReceiptBase):
@@ -277,7 +255,7 @@ class StockOrderUpdate(StockOrderBase):
 #
 class StockOrderProductBase(BaseAuditModel):
     product_uid: str | None = None
-    product: Optional[StockProduct] = None
+    product: Optional[StockItemVariant] = None
     order_uid: str | None = None
     order: Optional[StockOrder] = None
     price: float | None = None
@@ -304,7 +282,7 @@ class StockOrderProductUpdate(StockOrderProductBase):
 #
 class StockAdjustmentBase(BaseAuditModel):
     product_uid: str | None = None
-    product: Optional[StockProduct] = None
+    product: Optional[StockItemVariant] = None
     lot_number: str | None = None
     adjustment_type: str | None = None
     adjust: int | None = None

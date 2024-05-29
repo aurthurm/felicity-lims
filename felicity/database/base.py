@@ -47,7 +47,6 @@ from felicity.apps.inventory.models import StockItemVariant  # noqa
 from felicity.apps.inventory.models import StockLot  # noqa
 from felicity.apps.inventory.models import StockOrder  # noqa
 from felicity.apps.inventory.models import StockOrderProduct  # noqa
-from felicity.apps.inventory.models import StockProduct  # noqa
 from felicity.apps.inventory.models import StockProductInventory  # noqa
 from felicity.apps.inventory.models import StockReceipt  # noqa
 from felicity.apps.inventory.models import StockUnit  # noqa

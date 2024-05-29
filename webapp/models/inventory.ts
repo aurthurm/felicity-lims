@@ -86,7 +86,9 @@ export interface IStockProduct {
     uid: string;
     name: string;
     stockItemUid: string;
+    stockItem: IStockItem;
     stockItemVariantUid: string;
+    stockItemVariant: IStockItemVariant
     receivedByUid: string;
     receivedBy: IUser;
     createdAt: Date;
@@ -95,6 +97,25 @@ export interface IStockProduct {
     updatedAt: Date;
     updatedByUid: string;
     updatedBy: IUser;
+}
+
+export interface IStockReceive {
+    stockItemVariantUid: string;
+    receivedByUid: string;
+    lotNumber: string;
+    unitPrice: number;
+    totalPrice: number;
+    supplierUid: string;
+    unitUid: string;
+    singlesReceived: number;
+    packagesReceived: number;
+    packageFactor: number;
+    quantityReceived: number;
+    receiptType: string;
+    receiptByUid: number;
+    receiptDate: string;
+    expiryDate: string;
+    storeRoomUid: string;
 }
 
 export interface IStockProductInventory {

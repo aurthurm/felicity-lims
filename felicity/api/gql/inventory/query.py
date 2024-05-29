@@ -58,6 +58,49 @@ class InventoryQuery:
         return await models.StockItemVariant.get_all(stock_item_uid=stock_item_uid)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
+    async def stock_product_all(
+            self,
+            info,
+            page_size: int | None = None,
+            after_cursor: str | None = None,
+            before_cursor: str | None = None,
+            text: str | None = None,
+            sort_by: list[str] | None = None,
+    ) -> types.StockItemVariantCursorPage:
+        filters = {}
+
+        _or_ = dict()
+        if has_value_or_is_truthy(text):
+            arg_list = ["name__ilike", "stock_item___name__ilike"]
+            for _arg in arg_list:
+                _or_[_arg] = f"%{text}%"
+
+            filters = {sa.or_: _or_}
+
+        page = await models.StockItemVariant.paginate_with_cursors(
+            page_size=page_size,
+            after_cursor=after_cursor,
+            before_cursor=before_cursor,
+            filters=filters,
+            sort_by=sort_by,
+        )
+
+        total_count: int = page.total_count
+        edges: List[types.StockItemVariantEdge[types.StockItemVariantType]] = page.edges
+        items: List[types.StockItemVariantType] = page.items
+        page_info: PageInfo = page.page_info
+
+        return types.StockItemVariantCursorPage(
+            total_count=total_count, edges=edges, items=items, page_info=page_info
+        )
+
+    @strawberry.field(permission_classes=[IsAuthenticated])
+    async def stock_product_by_uid(
+            self, info, uid: str
+    ) -> Optional[types.StockItemVariantType]:
+        return await models.StockItemVariant.get(uid=uid)
+
+    @strawberry.field(permission_classes=[IsAuthenticated])
     async def stock_lots(self, info, product_uid: str) -> List[types.StockLotType]:
         return await models.StockLot.get_all(product_uid=product_uid)
 
@@ -96,49 +139,6 @@ class InventoryQuery:
             self, info, uid: str
     ) -> Optional[types.StockPackagingType]:
         return await models.StockPackaging.get(uid=uid)
-
-    @strawberry.field(permission_classes=[IsAuthenticated])
-    async def stock_product_all(
-            self,
-            info,
-            page_size: int | None = None,
-            after_cursor: str | None = None,
-            before_cursor: str | None = None,
-            text: str | None = None,
-            sort_by: list[str] | None = None,
-    ) -> types.StockProductCursorPage:
-        filters = {}
-
-        _or_ = dict()
-        if has_value_or_is_truthy(text):
-            arg_list = ["name__ilike"]
-            for _arg in arg_list:
-                _or_[_arg] = f"%{text}%"
-
-            filters = {sa.or_: _or_}
-
-        page = await models.StockProduct.paginate_with_cursors(
-            page_size=page_size,
-            after_cursor=after_cursor,
-            before_cursor=before_cursor,
-            filters=filters,
-            sort_by=sort_by,
-        )
-
-        total_count: int = page.total_count
-        edges: List[types.StockProductEdge[types.StockProductType]] = page.edges
-        items: List[types.StockProductType] = page.items
-        page_info: PageInfo = page.page_info
-
-        return types.StockProductCursorPage(
-            total_count=total_count, edges=edges, items=items, page_info=page_info
-        )
-
-    @strawberry.field(permission_classes=[IsAuthenticated])
-    async def stock_product_by_uid(
-            self, info, uid: str
-    ) -> Optional[types.StockProductType]:
-        return await models.StockProduct.get(uid=uid)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def stock_product_inventory(
@@ -256,46 +256,3 @@ class InventoryQuery:
             self, info, uid: str
     ) -> Optional[types.StockAdjustmentType]:
         return await models.StockAdjustment.get(uid=uid)
-
-    # @strawberry.field(permission_classes=[IsAuthenticated])
-    # async def stock_transaction_all(
-    #     self,
-    #     info,
-    #     page_size: int | None = None,
-    #     after_cursor: str | None = None,
-    #     before_cursor: str | None = None,
-    #     text: str | None = None,
-    #     sort_by: list[str] | None = None,
-    # ) -> types.StockTransactionCursorPage:
-    #     filters = {}
-
-    #     _or_ = dict()
-    #     if has_value_or_is_truthy(text):
-    #         arg_list = ["name__ilike", "product___name__ilike"]
-    #         for _arg in arg_list:
-    #             _or_[_arg] = f"%{text}%"
-
-    #         filters = {sa.or_: _or_}
-
-    #     page = await models.StockTransaction.paginate_with_cursors(
-    #         page_size=page_size,
-    #         after_cursor=after_cursor,
-    #         before_cursor=before_cursor,
-    #         filters=filters,
-    #         sort_by=sort_by,
-    #     )
-
-    #     total_count: int = page.total_count
-    #     edges: List[types.StockTransactionEdge[types.StockTransactionType]] = page.edges
-    #     items: List[types.StockTransactionType] = page.items
-    #     page_info: PageInfo = page.page_info
-
-    #     return types.StockTransactionCursorPage(
-    #         total_count=total_count, edges=edges, items=items, page_info=page_info
-    #     )
-
-    # @strawberry.field(permission_classes=[IsAuthenticated])
-    # async def stock_transaction_by_uid(
-    #     self, info, uid: str
-    # ) -> Optional[types.StockTransactionType]:
-    #     return await models.StockTransaction.get(uid=uid)

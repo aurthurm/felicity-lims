@@ -63,6 +63,25 @@ class StockItemVariantType:
     updated_at: str | None
     updated_by_uid: str | None
     updated_by: UserType | None
+    quantity: int
+
+    @strawberry.field
+    async def quantity(self, info) -> int:
+        return 0
+
+
+@strawberry.type
+class StockItemVariantEdge:
+    cursor: str
+    node: StockItemVariantType
+
+
+@strawberry.type
+class StockItemVariantCursorPage:
+    page_info: PageInfo
+    edges: Optional[List[StockItemVariantType]]
+    items: Optional[List[StockItemVariantType]]
+    total_count: int
 
 
 @strawberry.type
@@ -118,42 +137,10 @@ class StockPackagingType:
 
 
 @strawberry.type
-class StockProductType:
-    uid: str
-    name: str
-    stock_item_uid: str | None
-    stock_item: Optional[StockItemType]
-    stock_item_variant_uid: str | None
-    stock_item_variant: Optional[StockItemVariantType]
-    received_by_uid: str | None
-    received_by: UserType | None
-    created_at: str | None
-    created_by_uid: str | None
-    created_by: UserType | None
-    updated_at: str | None
-    updated_by_uid: str | None
-    updated_by: UserType | None
-
-
-@strawberry.type
-class StockProductEdge:
-    cursor: str
-    node: StockProductType
-
-
-@strawberry.type
-class StockProductCursorPage:
-    page_info: PageInfo
-    edges: Optional[List[StockProductEdge]]
-    items: Optional[List[StockProductType]]
-    total_count: int
-
-
-@strawberry.type
 class StockLotType:
     uid: str
     product_uid: str
-    product: Optional[StockProductType]
+    product: Optional[StockItemVariantType]
     lot_number: str
     expiry_date: datetime
     remarks: str | None
@@ -177,7 +164,7 @@ class StockLotCursorPage:
 class StockProductInventoryType:
     uid: str
     product_uid: str
-    product: Optional[StockProductType]
+    product: Optional[StockItemVariantType]
     stock_lot_uid: str
     stock_lot: Optional[StockLotType]
     quantity: int
@@ -236,7 +223,7 @@ class StockOrderCursorPage:
 class StockOrderProductType:
     uid: str
     product_uid: str | None
-    product: Optional[StockProductType]
+    product: Optional[StockItemVariantType]
     order_uid: str | None
     order: Optional[StockOrderType]
     price: int | None
@@ -253,7 +240,7 @@ class StockOrderProductType:
 class StockReceiptType:
     uid: str
     product_uid: str | None
-    product: Optional[StockProductType]
+    product: Optional[StockItemVariantType]
     stock_lot_uid: str | None
     stock_lot: Optional[StockLotType]
     unit_price: float
@@ -295,7 +282,7 @@ class StockReceiptCursorPage:
 class StockIssueType:
     uid: str
     product_uid: str | None
-    product: Optional[StockProductType]
+    product: Optional[StockItemVariantType]
     stock_lot_uid: str | None
     stock_lot: Optional[StockLotType]
     issued: int
@@ -326,7 +313,7 @@ class StockIssueCursorPage:
 class StockTransactionType:
     uid: str
     product_uid: str | None
-    product: Optional[StockProductType]
+    product: Optional[StockItemVariantType]
     issued: int | None
     issued_to_uid: str | None
     issued_to: UserType | None
@@ -361,7 +348,7 @@ class StockTransactionCursorPage:
 class StockAdjustmentType:
     uid: str
     product_uid: str | None
-    product: Optional[StockProductType]
+    product: Optional[StockItemVariantType]
     adjustment_type: str | None
     adjust: int | None
     adjustment_date: str | None

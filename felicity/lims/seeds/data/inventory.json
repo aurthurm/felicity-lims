@@ -15,24 +15,12 @@
   ],
   "units": [
     {
-      "name": "Box",
-      "description": "Box"
-    },
-    {
-      "name": "Carton",
-      "description": "Carton"
-    },
-    {
-      "name": "Case",
-      "description": "Case"
+      "name": "Each",
+      "description": "Each"
     },
     {
       "name": "Container",
       "description": "Container"
-    },
-    {
-      "name": "Crate",
-      "description": "Crate"
     },
     {
       "name": "Drum",
@@ -51,22 +39,6 @@
       "description": "Rack"
     },
     {
-      "name": "Reel",
-      "description": "Reel"
-    },
-    {
-      "name": "Roll",
-      "description": "Roll"
-    },
-    {
-      "name": "Spool",
-      "description": "Spool"
-    },
-    {
-      "name": "Tray",
-      "description": "Tray"
-    },
-    {
       "name": "Bottle",
       "description": "Bottle"
     },
@@ -75,24 +47,8 @@
       "description": "Bag"
     },
     {
-      "name": "Bundle",
-      "description": "Bundle"
-    },
-    {
       "name": "Can",
       "description": "Can"
-    },
-    {
-      "name": "Coil",
-      "description": "Coil"
-    },
-    {
-      "name": "Dozen",
-      "description": "Dozen"
-    },
-    {
-      "name": "Each",
-      "description": "Each"
     },
     {
       "name": "Jar",

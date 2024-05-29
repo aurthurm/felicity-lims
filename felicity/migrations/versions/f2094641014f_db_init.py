@@ -1,8 +1,8 @@
 """db-init
 
-Revision ID: 44ad0ec2625f
+Revision ID: f2094641014f
 Revises: 
-Create Date: 2024-05-27 17:33:27.989874
+Create Date: 2024-05-29 14:33:22.242135
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 from sqlalchemy.dialects import postgresql
 
 # revision identifiers, used by Alembic.
-revision = '44ad0ec2625f'
+revision = 'f2094641014f'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -1494,22 +1494,63 @@ def upgrade():
     sa.PrimaryKeyConstraint('uid')
     )
     op.create_index(op.f('ix_result_options_uid'), 'result_options', ['uid'], unique=False)
-    op.create_table('stock_product',
-    sa.Column('name', sa.String(), nullable=True),
-    sa.Column('stock_item_uid', sa.String(), nullable=False),
-    sa.Column('stock_item_variant_uid', sa.String(), nullable=False),
+    op.create_table('stock_adjustment',
+    sa.Column('product_uid', sa.String(), nullable=True),
+    sa.Column('lot_number', sa.String(), nullable=True),
+    sa.Column('adjustment_type', sa.String(), nullable=False),
+    sa.Column('adjust', sa.Integer(), nullable=False),
+    sa.Column('adjustment_date', sa.DateTime(), nullable=False),
+    sa.Column('remarks', sa.String(), nullable=False),
+    sa.Column('adjustment_by_uid', sa.String(), nullable=True),
+    sa.Column('adjustment_for_uid', sa.Integer(), nullable=True),
+    sa.Column('adjustment_for', sa.String(), nullable=True),
+    sa.Column('uid', sa.String(), nullable=False),
+    sa.Column('created_at', sa.DateTime(), nullable=True),
+    sa.Column('created_by_uid', sa.String(), nullable=True),
+    sa.Column('updated_at', sa.DateTime(), nullable=True),
+    sa.Column('updated_by_uid', sa.String(), nullable=True),
+    sa.ForeignKeyConstraint(['adjustment_by_uid'], ['user.uid'], ),
+    sa.ForeignKeyConstraint(['adjustment_for'], ['user.uid'], ),
+    sa.ForeignKeyConstraint(['created_by_uid'], ['user.uid'], ),
+    sa.ForeignKeyConstraint(['product_uid'], ['stock_item_variant.uid'], ),
+    sa.ForeignKeyConstraint(['updated_by_uid'], ['user.uid'], ),
+    sa.PrimaryKeyConstraint('uid')
+    )
+    op.create_index(op.f('ix_stock_adjustment_uid'), 'stock_adjustment', ['uid'], unique=False)
+    op.create_table('stock_lot',
+    sa.Column('product_uid', sa.String(), nullable=True),
+    sa.Column('lot_number', sa.String(), nullable=False),
+    sa.Column('expiry_date', sa.DateTime(), nullable=False),
+    sa.Column('remarks', sa.String(), nullable=True),
     sa.Column('uid', sa.String(), nullable=False),
     sa.Column('created_at', sa.DateTime(), nullable=True),
     sa.Column('created_by_uid', sa.String(), nullable=True),
     sa.Column('updated_at', sa.DateTime(), nullable=True),
     sa.Column('updated_by_uid', sa.String(), nullable=True),
     sa.ForeignKeyConstraint(['created_by_uid'], ['user.uid'], ),
-    sa.ForeignKeyConstraint(['stock_item_uid'], ['stock_item.uid'], ),
-    sa.ForeignKeyConstraint(['stock_item_variant_uid'], ['stock_item_variant.uid'], ),
+    sa.ForeignKeyConstraint(['product_uid'], ['stock_item_variant.uid'], ),
     sa.ForeignKeyConstraint(['updated_by_uid'], ['user.uid'], ),
     sa.PrimaryKeyConstraint('uid')
     )
-    op.create_index(op.f('ix_stock_product_uid'), 'stock_product', ['uid'], unique=False)
+    op.create_index(op.f('ix_stock_lot_uid'), 'stock_lot', ['uid'], unique=False)
+    op.create_table('stock_order_product',
+    sa.Column('product_uid', sa.String(), nullable=True),
+    sa.Column('order_uid', sa.String(), nullable=True),
+    sa.Column('price', sa.Float(), nullable=True),
+    sa.Column('quantity', sa.Integer(), nullable=False),
+    sa.Column('remarks', sa.String(), nullable=True),
+    sa.Column('uid', sa.String(), nullable=False),
+    sa.Column('created_at', sa.DateTime(), nullable=True),
+    sa.Column('created_by_uid', sa.String(), nullable=True),
+    sa.Column('updated_at', sa.DateTime(), nullable=True),
+    sa.Column('updated_by_uid', sa.String(), nullable=True),
+    sa.ForeignKeyConstraint(['created_by_uid'], ['user.uid'], ),
+    sa.ForeignKeyConstraint(['order_uid'], ['stock_order.uid'], ),
+    sa.ForeignKeyConstraint(['product_uid'], ['stock_item_variant.uid'], ),
+    sa.ForeignKeyConstraint(['updated_by_uid'], ['user.uid'], ),
+    sa.PrimaryKeyConstraint('uid')
+    )
+    op.create_index(op.f('ix_stock_order_product_uid'), 'stock_order_product', ['uid'], unique=False)
     op.create_table('storage_container',
     sa.Column('name', sa.String(), nullable=False),
     sa.Column('description', sa.String(), nullable=False),
@@ -1630,49 +1671,9 @@ def upgrade():
     sa.ForeignKeyConstraint(['sample_type_uid'], ['sample_type.uid'], ),
     sa.PrimaryKeyConstraint('result_option_uid', 'sample_type_uid')
     )
-    op.create_table('stock_adjustment',
+    op.create_table('stock_product_inventory',
     sa.Column('product_uid', sa.String(), nullable=True),
-    sa.Column('lot_number', sa.String(), nullable=True),
-    sa.Column('adjustment_type', sa.String(), nullable=False),
-    sa.Column('adjust', sa.Integer(), nullable=False),
-    sa.Column('adjustment_date', sa.DateTime(), nullable=False),
-    sa.Column('remarks', sa.String(), nullable=False),
-    sa.Column('adjustment_by_uid', sa.String(), nullable=True),
-    sa.Column('adjustment_for_uid', sa.Integer(), nullable=True),
-    sa.Column('adjustment_for', sa.String(), nullable=True),
-    sa.Column('uid', sa.String(), nullable=False),
-    sa.Column('created_at', sa.DateTime(), nullable=True),
-    sa.Column('created_by_uid', sa.String(), nullable=True),
-    sa.Column('updated_at', sa.DateTime(), nullable=True),
-    sa.Column('updated_by_uid', sa.String(), nullable=True),
-    sa.ForeignKeyConstraint(['adjustment_by_uid'], ['user.uid'], ),
-    sa.ForeignKeyConstraint(['adjustment_for'], ['user.uid'], ),
-    sa.ForeignKeyConstraint(['created_by_uid'], ['user.uid'], ),
-    sa.ForeignKeyConstraint(['product_uid'], ['stock_product.uid'], ),
-    sa.ForeignKeyConstraint(['updated_by_uid'], ['user.uid'], ),
-    sa.PrimaryKeyConstraint('uid')
-    )
-    op.create_index(op.f('ix_stock_adjustment_uid'), 'stock_adjustment', ['uid'], unique=False)
-    op.create_table('stock_lot',
-    sa.Column('product_uid', sa.String(), nullable=True),
-    sa.Column('lot_number', sa.String(), nullable=False),
-    sa.Column('expiry_date', sa.DateTime(), nullable=False),
-    sa.Column('remarks', sa.String(), nullable=True),
-    sa.Column('uid', sa.String(), nullable=False),
-    sa.Column('created_at', sa.DateTime(), nullable=True),
-    sa.Column('created_by_uid', sa.String(), nullable=True),
-    sa.Column('updated_at', sa.DateTime(), nullable=True),
-    sa.Column('updated_by_uid', sa.String(), nullable=True),
-    sa.ForeignKeyConstraint(['created_by_uid'], ['user.uid'], ),
-    sa.ForeignKeyConstraint(['product_uid'], ['stock_product.uid'], ),
-    sa.ForeignKeyConstraint(['updated_by_uid'], ['user.uid'], ),
-    sa.PrimaryKeyConstraint('uid')
-    )
-    op.create_index(op.f('ix_stock_lot_uid'), 'stock_lot', ['uid'], unique=False)
-    op.create_table('stock_order_product',
-    sa.Column('product_uid', sa.String(), nullable=True),
-    sa.Column('order_uid', sa.String(), nullable=True),
-    sa.Column('price', sa.Float(), nullable=True),
+    sa.Column('stock_lot_uid', sa.String(), nullable=True),
     sa.Column('quantity', sa.Integer(), nullable=False),
     sa.Column('remarks', sa.String(), nullable=True),
     sa.Column('uid', sa.String(), nullable=False),
@@ -1681,12 +1682,42 @@ def upgrade():
     sa.Column('updated_at', sa.DateTime(), nullable=True),
     sa.Column('updated_by_uid', sa.String(), nullable=True),
     sa.ForeignKeyConstraint(['created_by_uid'], ['user.uid'], ),
-    sa.ForeignKeyConstraint(['order_uid'], ['stock_order.uid'], ),
-    sa.ForeignKeyConstraint(['product_uid'], ['stock_product.uid'], ),
+    sa.ForeignKeyConstraint(['product_uid'], ['stock_item_variant.uid'], ),
+    sa.ForeignKeyConstraint(['stock_lot_uid'], ['stock_lot.uid'], ),
     sa.ForeignKeyConstraint(['updated_by_uid'], ['user.uid'], ),
     sa.PrimaryKeyConstraint('uid')
     )
-    op.create_index(op.f('ix_stock_order_product_uid'), 'stock_order_product', ['uid'], unique=False)
+    op.create_index(op.f('ix_stock_product_inventory_uid'), 'stock_product_inventory', ['uid'], unique=False)
+    op.create_table('stock_receipt',
+    sa.Column('product_uid', sa.String(), nullable=False),
+    sa.Column('stock_lot_uid', sa.String(), nullable=True),
+    sa.Column('unit_price', sa.Float(), nullable=True),
+    sa.Column('total_price', sa.Float(), nullable=True),
+    sa.Column('supplier_uid', sa.String(), nullable=True),
+    sa.Column('unit_uid', sa.String(), nullable=True),
+    sa.Column('singles_received', sa.Integer(), nullable=True),
+    sa.Column('packages_received', sa.Integer(), nullable=True),
+    sa.Column('package_factor', sa.Integer(), nullable=True),
+    sa.Column('quantity_received', sa.Integer(), nullable=False),
+    sa.Column('receipt_type', sa.String(), nullable=False),
+    sa.Column('receipt_by_uid', sa.String(), nullable=True),
+    sa.Column('receipt_date', sa.DateTime(), nullable=False),
+    sa.Column('expiry_date', sa.DateTime(), nullable=False),
+    sa.Column('uid', sa.String(), nullable=False),
+    sa.Column('created_at', sa.DateTime(), nullable=True),
+    sa.Column('created_by_uid', sa.String(), nullable=True),
+    sa.Column('updated_at', sa.DateTime(), nullable=True),
+    sa.Column('updated_by_uid', sa.String(), nullable=True),
+    sa.ForeignKeyConstraint(['created_by_uid'], ['user.uid'], ),
+    sa.ForeignKeyConstraint(['product_uid'], ['stock_item_variant.uid'], ),
+    sa.ForeignKeyConstraint(['receipt_by_uid'], ['user.uid'], ),
+    sa.ForeignKeyConstraint(['stock_lot_uid'], ['stock_lot.uid'], ),
+    sa.ForeignKeyConstraint(['supplier_uid'], ['supplier.uid'], ),
+    sa.ForeignKeyConstraint(['unit_uid'], ['stock_unit.uid'], ),
+    sa.ForeignKeyConstraint(['updated_by_uid'], ['user.uid'], ),
+    sa.PrimaryKeyConstraint('uid')
+    )
+    op.create_index(op.f('ix_stock_receipt_uid'), 'stock_receipt', ['uid'], unique=False)
     op.create_table('worksheet',
     sa.Column('template_uid', sa.String(), nullable=False),
     sa.Column('analyst_uid', sa.String(), nullable=False),
@@ -1768,53 +1799,6 @@ def upgrade():
     )
     op.create_index(op.f('ix_patient_identification_uid'), 'patient_identification', ['uid'], unique=False)
     op.create_index(op.f('ix_patient_identification_value'), 'patient_identification', ['value'], unique=False)
-    op.create_table('stock_product_inventory',
-    sa.Column('product_uid', sa.String(), nullable=True),
-    sa.Column('stock_lot_uid', sa.String(), nullable=True),
-    sa.Column('quantity', sa.Integer(), nullable=False),
-    sa.Column('remarks', sa.String(), nullable=True),
-    sa.Column('uid', sa.String(), nullable=False),
-    sa.Column('created_at', sa.DateTime(), nullable=True),
-    sa.Column('created_by_uid', sa.String(), nullable=True),
-    sa.Column('updated_at', sa.DateTime(), nullable=True),
-    sa.Column('updated_by_uid', sa.String(), nullable=True),
-    sa.ForeignKeyConstraint(['created_by_uid'], ['user.uid'], ),
-    sa.ForeignKeyConstraint(['product_uid'], ['stock_product.uid'], ),
-    sa.ForeignKeyConstraint(['stock_lot_uid'], ['stock_lot.uid'], ),
-    sa.ForeignKeyConstraint(['updated_by_uid'], ['user.uid'], ),
-    sa.PrimaryKeyConstraint('uid')
-    )
-    op.create_index(op.f('ix_stock_product_inventory_uid'), 'stock_product_inventory', ['uid'], unique=False)
-    op.create_table('stock_receipt',
-    sa.Column('product_uid', sa.String(), nullable=False),
-    sa.Column('stock_lot_uid', sa.String(), nullable=True),
-    sa.Column('unit_price', sa.Float(), nullable=True),
-    sa.Column('total_price', sa.Float(), nullable=True),
-    sa.Column('supplier_uid', sa.String(), nullable=True),
-    sa.Column('unit_uid', sa.String(), nullable=True),
-    sa.Column('singles_received', sa.Integer(), nullable=True),
-    sa.Column('packages_received', sa.Integer(), nullable=True),
-    sa.Column('package_factor', sa.Integer(), nullable=True),
-    sa.Column('quantity_received', sa.Integer(), nullable=False),
-    sa.Column('receipt_type', sa.String(), nullable=False),
-    sa.Column('receipt_by_uid', sa.String(), nullable=True),
-    sa.Column('receipt_date', sa.DateTime(), nullable=False),
-    sa.Column('expiry_date', sa.DateTime(), nullable=False),
-    sa.Column('uid', sa.String(), nullable=False),
-    sa.Column('created_at', sa.DateTime(), nullable=True),
-    sa.Column('created_by_uid', sa.String(), nullable=True),
-    sa.Column('updated_at', sa.DateTime(), nullable=True),
-    sa.Column('updated_by_uid', sa.String(), nullable=True),
-    sa.ForeignKeyConstraint(['created_by_uid'], ['user.uid'], ),
-    sa.ForeignKeyConstraint(['product_uid'], ['stock_product.uid'], ),
-    sa.ForeignKeyConstraint(['receipt_by_uid'], ['user.uid'], ),
-    sa.ForeignKeyConstraint(['stock_lot_uid'], ['stock_lot.uid'], ),
-    sa.ForeignKeyConstraint(['supplier_uid'], ['supplier.uid'], ),
-    sa.ForeignKeyConstraint(['unit_uid'], ['stock_unit.uid'], ),
-    sa.ForeignKeyConstraint(['updated_by_uid'], ['user.uid'], ),
-    sa.PrimaryKeyConstraint('uid')
-    )
-    op.create_index(op.f('ix_stock_receipt_uid'), 'stock_receipt', ['uid'], unique=False)
     op.create_table('test_bill',
     sa.Column('bill_id', sa.String(), nullable=False),
     sa.Column('patient_uid', sa.String(), nullable=True),
@@ -2128,10 +2112,6 @@ def downgrade():
     op.drop_table('voucher_customer')
     op.drop_index(op.f('ix_test_bill_uid'), table_name='test_bill')
     op.drop_table('test_bill')
-    op.drop_index(op.f('ix_stock_receipt_uid'), table_name='stock_receipt')
-    op.drop_table('stock_receipt')
-    op.drop_index(op.f('ix_stock_product_inventory_uid'), table_name='stock_product_inventory')
-    op.drop_table('stock_product_inventory')
     op.drop_index(op.f('ix_patient_identification_value'), table_name='patient_identification')
     op.drop_index(op.f('ix_patient_identification_uid'), table_name='patient_identification')
     op.drop_table('patient_identification')
@@ -2142,12 +2122,10 @@ def downgrade():
     op.drop_index(op.f('ix_worksheet_worksheet_id'), table_name='worksheet')
     op.drop_index(op.f('ix_worksheet_uid'), table_name='worksheet')
     op.drop_table('worksheet')
-    op.drop_index(op.f('ix_stock_order_product_uid'), table_name='stock_order_product')
-    op.drop_table('stock_order_product')
-    op.drop_index(op.f('ix_stock_lot_uid'), table_name='stock_lot')
-    op.drop_table('stock_lot')
-    op.drop_index(op.f('ix_stock_adjustment_uid'), table_name='stock_adjustment')
-    op.drop_table('stock_adjustment')
+    op.drop_index(op.f('ix_stock_receipt_uid'), table_name='stock_receipt')
+    op.drop_table('stock_receipt')
+    op.drop_index(op.f('ix_stock_product_inventory_uid'), table_name='stock_product_inventory')
+    op.drop_table('stock_product_inventory')
     op.drop_table('result_option_sample_type')
     op.drop_index(op.f('ix_patient_uid'), table_name='patient')
     op.drop_index(op.f('ix_patient_patient_id'), table_name='patient')
@@ -2162,8 +2140,12 @@ def downgrade():
     op.drop_table('worksheet_template')
     op.drop_index(op.f('ix_storage_container_uid'), table_name='storage_container')
     op.drop_table('storage_container')
-    op.drop_index(op.f('ix_stock_product_uid'), table_name='stock_product')
-    op.drop_table('stock_product')
+    op.drop_index(op.f('ix_stock_order_product_uid'), table_name='stock_order_product')
+    op.drop_table('stock_order_product')
+    op.drop_index(op.f('ix_stock_lot_uid'), table_name='stock_lot')
+    op.drop_table('stock_lot')
+    op.drop_index(op.f('ix_stock_adjustment_uid'), table_name='stock_adjustment')
+    op.drop_table('stock_adjustment')
     op.drop_index(op.f('ix_result_options_uid'), table_name='result_options')
     op.drop_table('result_options')
     op.drop_index(op.f('ix_reflex_brain_final_uid'), table_name='reflex_brain_final')

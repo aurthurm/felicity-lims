@@ -33,73 +33,6 @@ export const GET_ALL_STOCK_UNITS = gql`
     }
 `;
 
-// products
-export const GET_ALL_STOCK_PRODUCTS = gql`
-    query getAllStockProducts($first: Int!, $after: String, $text: String!, $sortBy: [String!] = ["uid"]) {
-        stockProductAll(pageSize: $first, afterCursor: $after, text: $text, sortBy: $sortBy) {
-            totalCount
-            pageInfo {
-                hasNextPage
-                hasPreviousPage
-                startCursor
-                endCursor
-            }
-            items {
-                uid
-                name
-                department {
-                    uid
-                    name
-                }
-                supplier {
-                    uid
-                    name
-                }
-                category {
-                    uid
-                    name
-                }
-                hazard {
-                    uid
-                    name
-                }
-                storeRoom {
-                    uid
-                    name
-                }
-                lotNumber
-                batch
-                size
-                unit {
-                    uid
-                    name
-                }
-                price
-                quantityReceived
-                remaining
-                dateReceived
-                expiryDate
-                receivedBy {
-                    uid
-                    firstName
-                    lastName
-                }
-                createdAt
-                createdBy {
-                    uid
-                    firstName
-                    lastName
-                }
-                updatedAt
-                updatedBy {
-                    uid
-                    firstName
-                    lastName
-                }
-            }
-        }
-    }
-`;
 
 // items
 export const GET_ALL_STOCK_ITEMS = gql`
@@ -143,6 +76,60 @@ export const GET_ALL_STOCK_ITEM_VARIANTS = gql`
         }
     }
 `;
+
+
+export const GET_ALL_STOCK_PRODUCTS = gql`
+    query getAllStockProducts($first: Int!, $after: String, $text: String!, $sortBy: [String!] = ["uid"]) {
+        stockProductAll(pageSize: $first, afterCursor: $after, text: $text, sortBy: $sortBy) {
+            totalCount
+            pageInfo {
+                hasNextPage
+                hasPreviousPage
+                startCursor
+                endCursor
+            }
+            items {
+                uid
+                name
+                description
+                stockItem {
+                    name
+                    description
+                    category {
+                        name
+                    }
+                    hazard {
+                        name
+                    }
+                }
+                quantity
+                createdAt
+                createdBy {
+                    uid
+                    firstName
+                    lastName
+                }
+                updatedAt
+                updatedBy {
+                    uid
+                    firstName
+                    lastName
+                }
+            }
+        }
+    }
+`;
+
+// stock lots
+export const GET_ALL_STOCK_LOTS = gql`
+    query getAllStockLots($productUid: String!) {
+        stockLots(productUid: $productUid) {
+            uid
+            lotNumber
+            expiryDate
+        }
+    }
+`; 
 
 
 // stock orders

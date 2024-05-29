@@ -44,7 +44,7 @@ const InventoryHome = defineComponent({
         inventoryStore.fetchUnits();
 
         const currentTab = ref('orders');
-        const inventoryTabs = ref(['orders', 'stock-listing', 'adjustments']);
+        const inventoryTabs = ref(['orders', 'products', 'ledger']);
         const currentTabComponent = computed(() => 'tab-' + currentTab.value);
 
         const viewBasket = ref(false);
@@ -110,8 +110,8 @@ const InventoryHome = defineComponent({
 
                     <div>
                         {this.currentTab === 'orders' && <InventoryOrders />}
-                        {this.currentTab === 'stock-listing' && <InventoryListing />}
-                        {this.currentTab === 'adjustments' && <InventoryAdjustments />}
+                        {this.currentTab === 'products' && <InventoryListing />}
+                        {this.currentTab === 'ledger' && <InventoryAdjustments />}
                     </div>
 
                     <Drawer show={this.viewBasket} onClose={() => (this.viewBasket = false)}>

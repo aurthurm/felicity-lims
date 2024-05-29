@@ -117,75 +117,25 @@ export const EDIT_STOCK_UNIT = gql`
 `;
 
 // products
-export const ADD_STOCK_PRODUCT = gql`
-    mutation AddStockProduct($payload: StockProductInputType!) {
-        createStockProduct(payload: $payload) {
-            ... on StockProductType {
+export const RECEIVE_STOCK_PRODUCT = gql`
+    mutation ReceiveStockProduct($payload: StockReceiptInputType!) {
+        createStockReceipt(payload: $payload) {
+            ... on StockItemVariantType {
                 __typename
                 uid
                 name
+                description
                 stockItem {
-                    uid
                     name
+                    description
+                    category {
+                        name
+                    }
+                    hazard {
+                        name
+                    }
                 }
-                stockItemVariant {
-                    uid
-                    name
-                }
-                receivedBy {
-                    uid
-                    firstName
-                    lastName
-                }
-                createdAt
-                createdBy {
-                    uid
-                    firstName
-                    lastName
-                }
-            }
-
-            ... on OperationError {
-                __typename
-                error
-                suggestion
-            }
-        }
-    }
-`;
-
-export const EDIT_STOCK_PRODUCT = gql`
-    mutation editStockProduct($uid: String!, $payload: StockProductInputType!) {
-        updateStockProduct(uid: $uid, payload: $payload) {
-            ... on StockProductType {
-                __typename
-                uid
-                name
-                stockItem {
-                    uid
-                    name
-                }
-                stockItemVariant {
-                    uid
-                    name
-                }
-                receivedBy {
-                    uid
-                    firstName
-                    lastName
-                }
-                createdAt
-                createdBy {
-                    uid
-                    firstName
-                    lastName
-                }
-                updatedAt
-                updatedBy {
-                    uid
-                    firstName
-                    lastName
-                }
+                quantity
             }
 
             ... on OperationError {

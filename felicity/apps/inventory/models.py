@@ -32,7 +32,7 @@ class StockItem(BaseAuditDBModel):
 
 
 class StockItemVariant(BaseAuditDBModel):
-    """StockItem Variant Standardization"""
+    """StockItem Variant as the StockProduct"""
 
     __tablename__ = "stock_item_variant"
 
@@ -112,34 +112,11 @@ class StockUnit(BaseAuditDBModel):
         return await super().update(**data)
 
 
-class StockProduct(BaseAuditDBModel):
-    __tablename__ = "stock_product"
-
-    name = Column(String, nullable=True)
-    stock_item_uid = Column(String, ForeignKey("stock_item.uid"), nullable=False)
-    stock_item = relationship("StockItem", lazy="selectin")
-    stock_item_variant_uid = Column(String, ForeignKey("stock_item_variant.uid"), nullable=False)
-    stock_item_variant = relationship("StockItemVariant", lazy="selectin")
-
-    @classmethod
-    async def create(
-            cls, obj_in: dict | schemas.StockProductCreate
-    ) -> schemas.StockProduct:
-        data = cls._import(obj_in)
-        return await super().create(**data)
-
-    async def update(
-            self, obj_in: dict | schemas.StockProductUpdate
-    ) -> schemas.StockProduct:
-        data = self._import(obj_in)
-        return await super().update(**data)
-
-
 class StockLot(BaseAuditDBModel):
     __tablename__ = "stock_lot"
 
-    product_uid = Column(String, ForeignKey("stock_product.uid"), nullable=True)
-    product = relationship("StockProduct", lazy="selectin")
+    product_uid = Column(String, ForeignKey("stock_item_variant.uid"), nullable=True)
+    product = relationship("StockItemVariant", lazy="selectin")
     lot_number = Column(String, nullable=False)
     expiry_date = Column(DateTime, nullable=False)
     remarks = Column(String, nullable=True)
@@ -157,8 +134,8 @@ class StockLot(BaseAuditDBModel):
 class StockProductInventory(BaseAuditDBModel):
     __tablename__ = "stock_product_inventory"
 
-    product_uid = Column(String, ForeignKey("stock_product.uid"), nullable=True)
-    product = relationship("StockProduct", lazy="selectin")
+    product_uid = Column(String, ForeignKey("stock_item_variant.uid"), nullable=True)
+    product = relationship("StockItemVariant", lazy="selectin")
     stock_lot_uid = Column(String, ForeignKey("stock_lot.uid"), nullable=True)
     stock_lot = relationship("StockLot", lazy="selectin")
     quantity = Column(Integer, nullable=False)
@@ -212,8 +189,8 @@ class StockOrder(BaseAuditDBModel):
 class StockOrderProduct(BaseAuditDBModel):
     __tablename__ = "stock_order_product"
 
-    product_uid = Column(String, ForeignKey("stock_product.uid"), nullable=True)
-    product = relationship("StockProduct", lazy="selectin")
+    product_uid = Column(String, ForeignKey("stock_item_variant.uid"), nullable=True)
+    product = relationship("StockItemVariant", lazy="selectin")
     order_uid = Column(String, ForeignKey("stock_order.uid"), nullable=True)
     order = relationship("StockOrder", lazy="selectin")
     price = Column(Float, nullable=True)
@@ -237,8 +214,8 @@ class StockOrderProduct(BaseAuditDBModel):
 class StockReceipt(BaseAuditDBModel):
     __tablename__ = "stock_receipt"
 
-    product_uid = Column(String, ForeignKey("stock_product.uid"), nullable=False)
-    product = relationship("StockProduct", lazy="selectin")
+    product_uid = Column(String, ForeignKey("stock_item_variant.uid"), nullable=False)
+    product = relationship("StockItemVariant", lazy="selectin")
     stock_lot_uid = Column(String, ForeignKey("stock_lot.uid"), nullable=True)
     stock_lot = relationship("StockLot", lazy="selectin")
     unit_price = Column(Float, nullable=True)
@@ -279,8 +256,8 @@ class StockReceipt(BaseAuditDBModel):
 class StockAdjustment(BaseAuditDBModel):
     __tablename__ = "stock_adjustment"
 
-    product_uid = Column(String, ForeignKey("stock_product.uid"), nullable=True)
-    product = relationship("StockProduct", lazy="selectin")
+    product_uid = Column(String, ForeignKey("stock_item_variant.uid"), nullable=True)
+    product = relationship("StockItemVariant", lazy="selectin")
     lot_number = Column(String, nullable=True)
     adjustment_type = Column(String, nullable=False)
     adjust = Column(Integer, nullable=False)

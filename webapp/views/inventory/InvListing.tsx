@@ -1,8 +1,9 @@
-import { computed, defineComponent, reactive, ref, h, defineAsyncComponent } from 'vue';
+import { computed, watch, defineComponent, reactive, ref, h, defineAsyncComponent } from 'vue';
 import { useInventoryStore } from '../../stores';
-import { IStockProduct } from '../../models/inventory';
+import { IStockLot, IStockProduct } from '../../models/inventory';
 import { useApiUtil } from '../../composables';
 import { ADD_STOCK_ADJUSTMENT } from '../../graphql/operations/inventory.mutations';
+import { GET_ALL_STOCK_LOTS } from '../../graphql/operations/inventory.queries';
 
 const DataTable = defineAsyncComponent(
     () => import('../../components/datatable/DataTable.vue')
@@ -13,14 +14,14 @@ const Drawer = defineAsyncComponent(
 const Modal = defineAsyncComponent(
     () => import('../../components/SimpleModal.vue')
 )
-const StockProductForm = defineAsyncComponent(
-    () => import('./StockProductForm.vue')
+const StockReceiveForm = defineAsyncComponent(
+    () => import('./StockReceiveForm.vue')
 )
 
 const InventoryListing = defineComponent({
     name: 'stock-listing',
     setup(props, ctx) {
-        const { withClientMutation } = useApiUtil();
+        const { withClientMutation, withClientQuery } = useApiUtil();
         const inventoryStore = useInventoryStore();
         inventoryStore.fetchProducts({
             first: 50,
@@ -32,13 +33,23 @@ const InventoryListing = defineComponent({
         const choiceProduct = reactive({
             product: {} as IStockProduct,
             quantity: 0,
+            lotUid: "",
             type: "",
             remarks: ""
         });
         const openAddProduct = ref(false);
+
+        const stockLots = ref([]);
+        const fetchLots = (productUid: string) => {
+            withClientQuery(GET_ALL_STOCK_LOTS, { productUid }, 'stockLots').then(result => {
+                stockLots.value = result;
+            })
+        }
+
+        watch(() => choiceProduct.product?.uid, (itemUid, _) => (itemUid && fetchLots(itemUid)))
         
         const openAdjustProduct = ref(false);
-
+        
         const tableColumns = ref([
             {
                 name: 'UID',
@@ -51,77 +62,42 @@ const InventoryListing = defineComponent({
             },
             {
                 name: 'Name',
+                value: 'stockItem.name',
+                sortable: false,
+                sortBy: 'asc',
+                hidden: false,
+            },
+            {
+                name: 'Type',
                 value: 'name',
                 sortable: false,
                 sortBy: 'asc',
                 hidden: false,
             },
             {
-                name: 'Department',
-                value: 'department.name',
+                name: 'Category',
+                value: 'stockItem.category.name',
                 sortable: false,
                 sortBy: 'asc',
                 hidden: false,
             },
             {
-                name: 'Supplier',
-                value: 'supplier.name',
+                name: 'Hazard',
+                value: 'stockItem.hazard.name',
                 sortable: false,
                 sortBy: 'asc',
                 hidden: false,
             },
             {
-                name: 'Lot Number',
-                value: 'lotNumber',
+                name: 'Quantity',
+                value: 'quantity',
                 sortable: false,
                 sortBy: 'asc',
                 hidden: false,
             },
             {
-                name: 'Batch',
-                value: 'batch',
-                sortable: false,
-                sortBy: 'asc',
-                hidden: false,
-            },
-            {
-                name: 'Size',
-                value: 'size',
-                sortable: false,
-                sortBy: 'asc',
-                hidden: false,
-            },
-            {
-                name: 'Unit',
-                value: 'unit.name',
-                sortable: false,
-                sortBy: 'asc',
-                hidden: false,
-            },
-            {
-                name: 'Packaging',
-                value: 'packaging.name',
-                sortable: false,
-                sortBy: 'asc',
-                hidden: false,
-            },
-            {
-                name: 'Quantity Received',
-                value: 'quantityReceived',
-                sortable: false,
-                sortBy: 'asc',
-                hidden: false,
-            },
-            {
-                name: 'Quantity Available',
-                value: 'remaining',
-                sortable: false,
-                sortBy: 'asc',
-                hidden: false,
-            },
-            {
-                name: 'Expiration',
-                value: 'expiryDate',
+                name: 'Description',
+                value: 'description',
                 sortable: false,
                 sortBy: 'asc',
                 hidden: false,
@@ -188,6 +164,7 @@ const InventoryListing = defineComponent({
             openAddProduct,
             choiceProduct,
             openAdjustProduct,
+            stockLots,
             filterProducts: (opts: any) => {
                 productParams.first = 50;
                 productParams.before = '';
@@ -204,8 +181,8 @@ const InventoryListing = defineComponent({
             },
             countNone: computed(() => inventoryStore.products?.length + ' of ' + inventoryStore.productsPaging.totalCount + ' products'),
             validateMinMax: event => {
-                const value = Math.max(0, Math.min(choiceProduct.product.remaining ?? 0, Number(event.target.value)));
-                choiceProduct.quantity = value;
+                // const value = Math.max(0, Math.min(choiceProduct.product.remaining ?? 0, Number(event.target.value)));
+                // choiceProduct.quantity = value;
             },
             adjustStock: () => {
                 withClientMutation(
@@ -232,7 +209,7 @@ const InventoryListing = defineComponent({
                         onClick={() => (this.openDrawer = true)}
                         class="px-4 my-2 p-1 text-sm border-sky-800 border text-dark-700 transition-colors duration-150 rounded-sm focus:outline-none hover:bg-sky-800 hover:text-gray-100"
                     >
-                        New Stock
+                        Receive Stock
                     </button>
                 </div>
                 <DataTable
@@ -255,22 +232,28 @@ const InventoryListing = defineComponent({
                 {/* Drawer */}
                 <Drawer show={this.openDrawer} onClose={() => (this.openDrawer = false)}>
                     {{
-                        header: () => 'New Stock',
-                        body: () => [<StockProductForm product={undefined} onClose={() => (this.openDrawer = false)} />],
-                        footer: () => [<span>one</span>, <span>two</span>],
+                        header: () => 'Receive Stock',
+                        body: () => [<StockReceiveForm onClose={() => (this.openDrawer = false)} />],
                     }}
                 </Drawer>
                 {this.openAddProduct && (
                     <Modal onClose={() => (this.openAddProduct = false)} contentWidth="w-1/4">
                         {{
-                            header: () => <h3>{this.choiceProduct.product.name}</h3>,
+                            header: () => <h3>{this.choiceProduct.product?.stockItem?.name} ({this.choiceProduct.product.name})</h3>,
                             body: () => {
                                 return (
                                     <form action="post" class="p-1">
-                                        <label class="flex justify-between items-center gap-4 mb-4">
-                                            <span class="text-gray-700">Quantiy</span>
+                                        <label class="grid grid-cols-4 items-center gap-4 mb-4">
+                                            <span class="col-span-1 text-gray-700  text-nowrap">Product Lot</span>
+                                            <select class="col-span-3 form-select block w-full mt-1" v-model={this.choiceProduct.lotUid}>
+                                            <option></option>
+                                            {this.stockLots?.map((lot: IStockLot) => (<option key={lot.uid} value={lot.uid}>{lot.lotNumber}</option>))}
+                                            </select>
+                                        </label>
+                                        <label class="grid grid-cols-4 items-center gap-4 mb-4">
+                                            <span class="col-span-1 text-gray-700 text-nowrap">Quantiy</span>
                                             <input
-                                                class="form-input mt-1 block w-full"
+                                                class="col-span-3 form-input mt-1 block w-full"
                                                 type="number"
                                                 onChange={this.validateMinMax}
                                                 v-model={this.choiceProduct.quantity}
@@ -287,8 +270,8 @@ const InventoryListing = defineComponent({
                                                 );
                                                 this.openAddProduct = false;
                                             }}
-                                            class="-mb-4 w-full border border-sky-800 bg-sky-800 text-white rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-sky-800 focus:outline-none focus:shadow-outline"
-                                        >
+                                            class="-mb-4 border border-sky-800 bg-sky-800 text-white rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-sky-800 focus:outline-none focus:shadow-outline disabled:bg-gray-500"
+                                            disabled={!this.choiceProduct.lotUid}>
                                             Add to basket
                                         </button>
                                     </form>
@@ -300,33 +283,43 @@ const InventoryListing = defineComponent({
                 {this.openAdjustProduct && (
                     <Modal onClose={() => (this.openAdjustProduct = false)} contentWidth="w-1/4">
                         {{
-                            header: () => <h3>{this.choiceProduct.product.name}</h3>,
+                            header: () => <h3>{this.choiceProduct.product?.stockItem?.name} ({this.choiceProduct.product.name})</h3>,
                             body: () => {
                                 return (
                                     <form action="post" class="p-1">
-                                        <label class="flex justify-between items-center gap-4 mb-4">
-                                            <span class="text-gray-700">Adjustmet</span>
-                                            <select class="form-select block w-full mt-1" v-model={this.choiceProduct.type}>
+                                        <label class="grid grid-cols-4 items-center gap-4 mb-4">
+                                            <span class="col-span-1 text-gray-700  text-nowrap">Product Lot</span>
+                                            <select class="col-span-3 form-select block w-full mt-1" v-model={this.choiceProduct.lotUid}>
+                                            <option></option>
+                                            {this.stockLots?.map((lot: IStockLot) => (<option key={lot.uid} value={lot.uid}>{lot.lotNumber}</option>))}
+                                            </select>
+                                        </label>
+                                        <label class="grid grid-cols-4 items-center gap-4 mb-4">
+                                            <span class="col-span-1 text-gray-700">Adjustmet</span>
+                                            <select 
+                                            class="col-span-3 form-select block w-full mt-1" 
+                                            v-model={this.choiceProduct.type}
+                                            >
                                                 <option value="lost">Lost</option>
                                                 <option value="theft">Theft</option>
                                                 <option value="transfer-in">Transfer In</option>
                                                 <option value="transfer-out">Transfer Out</option>
                                             </select>
                                         </label>
-                                        <label class="flex justify-between items-center gap-4 mb-4">
-                                            <span class="text-gray-700">Quantiy</span>
+                                        <label class="grid grid-cols-4 items-center gap-4 mb-4">
+                                            <span class="col-span-1 text-gray-700">Quantiy</span>
                                             <input
-                                                class="form-input mt-1 block w-full"
+                                                class="col-span-3 form-input mt-1 block w-full"
                                                 type="number"
                                                 onChange={this.validateMinMax}
                                                 v-model={this.choiceProduct.quantity}
                                                 placeholder="Name ..."
                                             />
                                         </label>
-                                        <label class="flex justify-between items-center gap-4 mb-4">
-                                            <span class="text-gray-700">Remarks</span>
+                                        <label class="grid grid-cols-4 items-center gap-4 mb-4">
+                                            <span class="col-span-1 text-gray-700">Remarks</span>
                                             <textarea
-                                                class="form-input mt-1 block w-full"
+                                                class="col-span-3 form-input mt-1 block w-full"
                                                 rows="3"
                                                 v-model={this.choiceProduct.remarks}
                                                 placeholder="Remarks ..."
@@ -339,8 +332,8 @@ const InventoryListing = defineComponent({
                                                 this.adjustStock()
                                                 this.openAdjustProduct = false;
                                             }}
-                                            class="-mb-4 w-full border border-sky-800 bg-sky-800 text-white rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-sky-800 focus:outline-none focus:shadow-outline"
-                                        >
+                                            class="-mb-4 border border-sky-800 bg-sky-800 text-white rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-sky-800 focus:outline-none focus:shadow-outline disabled:bg-gray-500"
+                                            disabled={!this.choiceProduct.lotUid}>
                                             Adjust
                                         </button>
                                     </form>

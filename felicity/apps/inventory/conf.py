@@ -2,64 +2,11 @@
 This file is part of Felicity LIMS Software
 """
 
-CATEGORIES = ["Consumables", "Reagents", "Durables"]
-
-HAZARDS = [
-    "Caution",
-    "Toxic",
-    "Very Toxic",
-    "Corrosive",
-    "Irritant",
-    "Harmful",
-    "Flammable",
-    "Highly Flammable",
-    "Biological",
-    "Electrical",
-    "Explosive",
-    "Oxidising",
-    "Environmental",
-    "Reactive",
-    "Physical",
-    "Mechanical",
-]
-
-UNITS = [
-    ("l", "liter"),
-    ("ml", "milliliter"),
-    ("kg", "kilogramme"),
-    ("g", "gramme"),
-    ("mg", "milligramme"),
-    ("ea", "each"),
-    ("pc", "piece"),
-    ("t", "tonne"),
-    ("in", "inch"),
-    ("cm", "centimeter"),
-    ("m", "meter"),
-    ("g", "gallon"),
-    ("tests", "tests"),
-    ("kit", "kit"),
-]
-
-PACKAGES = [
-    "box",
-    "container",
-    "bag",
-    "plastic",
-    "bottle",
-    "bucket",
-    "tray",
-    "crate",
-    "bin",
-    "pouche",
-    "envelope",
-    "kit",
-    "cardboard",
-]
-
 
 class Adjust:
     #  Adding
-    NEW_STOCK = "new_stock"
+    PURCHASE = "purchase"
+    PUSHED = "pushed"
     TRANSFER_IN = "transfer_in"
     # subtracting
     TRANSFER_OUT = "transfer_out"

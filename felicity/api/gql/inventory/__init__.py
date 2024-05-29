@@ -1,9 +1,9 @@
 from .types import (HazardType, StockAdjustmentCursorPage, StockAdjustmentEdge,
                     StockAdjustmentType, StockCategoryType,
                     StockItemCursorPage, StockItemEdge, StockItemType,
+                    StockItemVariantCursorPage, StockItemVariantEdge, StockItemVariantType,
                     StockOrderCursorPage, StockOrderEdge,
                     StockOrderProductType, StockOrderType, StockPackagingType,
-                    StockProductCursorPage, StockProductEdge, StockProductType,
                     StockTransactionCursorPage, StockTransactionEdge,
                     StockTransactionType, StockUnitType)
 
@@ -15,9 +15,9 @@ inventory_types = [
     HazardType,
     StockUnitType,
     StockPackagingType,
-    StockProductType,
-    StockProductEdge,
-    StockProductCursorPage,
+    StockItemVariantType,
+    StockItemVariantEdge,
+    StockItemVariantCursorPage,
     StockOrderType,
     StockOrderEdge,
     StockOrderCursorPage,

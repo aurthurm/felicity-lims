@@ -1,5 +1,5 @@
 import logging
-from datetime import datetime, timedelta
+from datetime import datetime
 from typing import List
 
 import strawberry  # noqa
@@ -76,26 +76,12 @@ class StockUnitInputType:
     name: str
 
 
-StockProductResponse = strawberry.union(
-    "StockProductResponse",
-    (types.StockProductType, OperationError),
-    description="",  # noqa
-)
-
-
-@strawberry.input
-class StockProductInputType:
-    name: str
-    stock_item_uid: str | None = None
-    stock_item_variant_uid: str | None = None
-
-
 @strawberry.input
 class StockReceiptInputType:
     product_uid: str
     lot_number: str
-    unit_price: float
-    total_price: float
+    unit_price: float | None = None
+    total_price: float | None = None
     supplier_uid: str
     unit_uid: str
     singles_received: int
@@ -103,9 +89,9 @@ class StockReceiptInputType:
     package_factor: int
     quantity_received: int
     receipt_type: str
-    receipt_by_uid: int
-    receipt_date: str
-    expiry_date: str
+    receipt_by_uid: str
+    receipt_date: datetime | None
+    expiry_date: datetime | None
 
 
 StockReceiptResponse = strawberry.union(
@@ -508,69 +494,9 @@ class InventoryMutations:
         return types.StockUnitType(**stock_unit.marshal_simple())
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
-    async def create_stock_product(
-            self, info, payload: StockProductInputType
-    ) -> StockProductResponse:
-        is_authenticated, felicity_user = await auth_from_info(info)
-        auth_success, auth_error = verify_user_auth(
-            is_authenticated,
-            felicity_user,
-            "Only Authenticated user can create stock_product",
-        )
-        if not auth_success:
-            return auth_error
-
-        incoming: dict = {
-            "created_by_uid": felicity_user.uid,
-            "updated_by_uid": felicity_user.uid,
-        }
-
-        for k, v in payload.__dict__.items():
-            incoming[k] = v
-
-        obj_in = schemas.StockProductCreate(**incoming)
-        stock_product: models.StockProduct = await models.StockProduct.create(obj_in)
-        return types.StockProductType(**stock_product.marshal_simple())
-
-    @strawberry.mutation(permission_classes=[IsAuthenticated])
-    async def update_stock_product(
-            self, info, uid: str, payload: StockProductInputType
-    ) -> StockProductResponse:
-
-        is_authenticated, felicity_user = await auth_from_info(info)
-        verify_user_auth(
-            is_authenticated,
-            felicity_user,
-            "Only Authenticated user can update stock_product",
-        )
-
-        if not uid:
-            return OperationError(error="No uid provided to identity update obj")
-
-        stock_product: models.StockProduct = await models.StockProduct.get(uid=uid)
-        if not stock_product:
-            return OperationError(
-                error=f"StockProduct with uid {uid} not found. Cannot update obj ..."
-            )
-
-        obj_data = stock_product.to_dict()
-        for field in obj_data:
-            if field in payload.__dict__:
-                try:
-                    setattr(stock_product, field, payload.__dict__[field])
-                except Exception as e:  # noqa
-                    pass
-
-        setattr(stock_product, "updated_by_uid", felicity_user.uid)
-
-        obj_in = schemas.StockProductUpdate(**stock_product.to_dict())
-        stock_product = await stock_product.update(obj_in)
-        return types.StockProductType(**stock_product.marshal_simple())
-
-    @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_stock_receipt(
             self, info, payload: StockReceiptInputType
-    ) -> StockReceiptResponse:
+    ) -> StockItemVariantResponse:
         is_authenticated, felicity_user = await auth_from_info(info)
         auth_success, auth_error = verify_user_auth(
             is_authenticated,
@@ -584,13 +510,15 @@ class InventoryMutations:
         if not stock_lot:
             stock_lot = await models.StockLot.create({
                 "product_uid": payload.product_uid,
-                "lot_number": payload.lot_number
+                "lot_number": payload.lot_number,
+                "expiry_date": payload.expiry_date
             })
-        await stock_lot.update({"expiry_date": payload.expiry_date})
+        else:
+            await stock_lot.update({"expiry_date": payload.expiry_date})
 
         incoming: dict = {
-            "receipt_date": datetime.today(),
-            "expiry_date": datetime.today() + timedelta(days=90),
+            "receipt_date": payload.receipt_date,
+            "expiry_date": payload.expiry_date,
             "stock_lot_uid": stock_lot.uid,
             "created_by_uid": felicity_user.uid,
             "updated_by_uid": felicity_user.uid,
@@ -608,27 +536,28 @@ class InventoryMutations:
         incoming["quantity_received"] = quantity_received
 
         obj_in = schemas.StockReceiptCreate(**incoming)
-        stock_receipt = await models.StockReceipt.create(obj_in)
+        await models.StockReceipt.create(obj_in)
 
         # update StockProductInventory and  StockLot
         inventory = await models.StockProductInventory.get(
             product_uid=payload.product_uid, stock_lot_uid=stock_lot.uid
         )
         if not inventory:
-            inventory = await models.StockProductInventory.create({
+            await models.StockProductInventory.create({
                 "product_uid": payload.product_uid,
                 "stock_lot_uid": stock_lot.uid,
-                "quantity": 0
+                "quantity": quantity_received
             })
-        await inventory.update({
-            "quantity": inventory.quantity + quantity_received
-        })
+        else:
+            await inventory.update({
+                "quantity": inventory.quantity + quantity_received
+            })
 
         # Record the adjustment
         adjustment = schemas.StockAdjustmentCreate(**{
             "product_uid": payload.product_uid,
             "lot_number": payload.lot_number,
-            "adjustment_type": Adjust.NEW_STOCK,
+            "adjustment_type": payload.receipt_type,
             "adjust": quantity_received,
             "adjustment_date": datetime.now(),
             "remarks": "",
@@ -636,7 +565,8 @@ class InventoryMutations:
         })
         await models.StockAdjustment.create(adjustment)
 
-        return types.StockReceiptType(**stock_receipt.marshal_simple())
+        stock_item_variant = await models.StockItemVariant.get(uid=payload.product_uid)
+        return types.StockItemVariantType(**stock_item_variant.marshal_simple())
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_stock_order(
