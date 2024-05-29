@@ -78,42 +78,6 @@ export const EDIT_STOCK_CATEGORY = gql`
     }
 `;
 
-// packages
-export const ADD_STOCK_PACKAGING = gql`
-    mutation AddStockPackaging($payload: StockPackagingInputType!) {
-        createStockPackaging(payload: $payload) {
-            ... on StockPackagingType {
-                __typename
-                uid
-                name
-            }
-
-            ... on OperationError {
-                __typename
-                error
-                suggestion
-            }
-        }
-    }
-`;
-
-export const EDIT_STOCK_PACKAGING = gql`
-    mutation editStockPackaging($uid: String!, $payload: StockPackagingInputType!) {
-        updateStockPackaging(uid: $uid, payload: $payload) {
-            ... on StockPackagingType {
-                __typename
-                uid
-                name
-            }
-
-            ... on OperationError {
-                __typename
-                error
-                suggestion
-            }
-        }
-    }
-`;
 
 // units
 export const ADD_STOCK_UNIT = gql`
@@ -160,42 +124,14 @@ export const ADD_STOCK_PRODUCT = gql`
                 __typename
                 uid
                 name
-                department {
+                stockItem {
                     uid
                     name
                 }
-                supplier {
+                stockItemVariant {
                     uid
                     name
                 }
-                category {
-                    uid
-                    name
-                }
-                hazard {
-                    uid
-                    name
-                }
-                storeRoom {
-                    uid
-                    name
-                }
-                lotNumber
-                batch
-                size
-                unit {
-                    uid
-                    name
-                }
-                packaging {
-                    uid
-                    name
-                }
-                price
-                quantityReceived
-                remaining
-                dateReceived
-                expiryDate
                 receivedBy {
                     uid
                     firstName
@@ -225,42 +161,14 @@ export const EDIT_STOCK_PRODUCT = gql`
                 __typename
                 uid
                 name
-                department {
+                stockItem {
                     uid
                     name
                 }
-                supplier {
+                stockItemVariant {
                     uid
                     name
                 }
-                category {
-                    uid
-                    name
-                }
-                hazard {
-                    uid
-                    name
-                }
-                storeRoom {
-                    uid
-                    name
-                }
-                lotNumber
-                batch
-                size
-                unit {
-                    uid
-                    name
-                }
-                packaging {
-                    uid
-                    name
-                }
-                price
-                quantityReceived
-                remaining
-                dateReceived
-                expiryDate
                 receivedBy {
                     uid
                     firstName
@@ -298,11 +206,6 @@ export const ADD_STOCK_ITEM = gql`
                 uid
                 name
                 description
-                departmentUid
-                department {
-                    uid
-                    name
-                }
             }
 
             ... on OperationError {
@@ -322,10 +225,34 @@ export const EDIT_STOCK_ITEM = gql`
                 uid
                 name
                 description
-                departmentUid
-                department {
+            }
+
+            ... on OperationError {
+                __typename
+                error
+                suggestion
+            }
+        }
+    }
+`;
+
+// stock item variants
+export const ADD_STOCK_ITEM_VARIANT = gql`
+    mutation AddStockItemVariant($stockItemUid: String!, $payload: StockItemVariantInputType!) {
+        createStockItemVariant(stockItemUid: $stockItemUid, payload: $payload) {
+            ... on StockItemVariantType {
+                __typename
+                uid
+                name
+                description
+                stockItemUid
+                minimumLevel
+                maximumLevel
+                createdAt
+                createdBy {
                     uid
-                    name
+                    firstName
+                    lastName
                 }
             }
 
@@ -338,22 +265,30 @@ export const EDIT_STOCK_ITEM = gql`
     }
 `;
 
-// transactions
-export const ADD_STOCK_TRANSACTION = gql`
-    mutation AddStockTransaction($payload: StockTransactionInputType!) {
-        createStockTransaction(payload: $payload) {
-            ... on StockTransactionType {
+
+export const EDIT_STOCK_ITEM_VARIANT = gql`
+    mutation editStockItemVariant($uid: String!, $payload: StockItemVariantInputType!) {
+        updateStockItemVariant(uid: $uid, payload: $payload) {
+            ... on StockItemVariantType {
                 __typename
                 uid
-                productUid
-                issued
-                departmentUid
-                dateIssued
-                transactionByUid
+                name
+                description
+                stockItemUid
+                minimumLevel
+                maximumLevel
                 createdAt
-                createdByUid
+                createdBy {
+                    uid
+                    firstName
+                    lastName
+                }
                 updatedAt
-                updatedByUid
+                updatedBy {
+                    uid
+                    firstName
+                    lastName
+                }
             }
 
             ... on OperationError {
@@ -364,6 +299,7 @@ export const ADD_STOCK_TRANSACTION = gql`
         }
     }
 `;
+
 
 // adjustments
 export const ADD_STOCK_ADJUSTMENT = gql`

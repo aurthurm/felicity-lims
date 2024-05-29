@@ -14,9 +14,6 @@ const InventoryAdjustments = defineAsyncComponent(
 const InventoryListing = defineAsyncComponent(
     () => import('./InvListing')
 )
-const InventoryTransactions = defineAsyncComponent(
-    () => import('./InvTransactions')
-)
 const InventoryOrders = defineAsyncComponent(
     () => import('./InvOrders')
 )
@@ -45,10 +42,9 @@ const InventoryHome = defineComponent({
         inventoryStore.fetchHazards();
         storageStore.fetchStoreRooms();
         inventoryStore.fetchUnits();
-        inventoryStore.fetchPackages();
 
         const currentTab = ref('orders');
-        const inventoryTabs = ref(['orders', 'stock-listing', 'transactions', 'adjustments']);
+        const inventoryTabs = ref(['orders', 'stock-listing', 'adjustments']);
         const currentTabComponent = computed(() => 'tab-' + currentTab.value);
 
         const viewBasket = ref(false);
@@ -115,7 +111,6 @@ const InventoryHome = defineComponent({
                     <div>
                         {this.currentTab === 'orders' && <InventoryOrders />}
                         {this.currentTab === 'stock-listing' && <InventoryListing />}
-                        {this.currentTab === 'transactions' && <InventoryTransactions />}
                         {this.currentTab === 'adjustments' && <InventoryAdjustments />}
                     </div>
 

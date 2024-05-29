@@ -6,9 +6,6 @@ const StockCategory = defineAsyncComponent(
 const StockItem = defineAsyncComponent(
     () => import('./StockItem')
 )
-const StockPackaging = defineAsyncComponent(
-    () => import('./StockPackaging')
-)
 const StockUnit = defineAsyncComponent(
     () => import('./StockUnit')
 )
@@ -22,8 +19,8 @@ const InventoryHome = defineComponent({
         const setupStore = useSetupStore();
         const sampleStore = useSampleStore();
 
-        let currentTab = ref('stock-items');
-        const tabs = ['stock-items', 'stock-categories', 'hazards', 'stock-units', 'stock-packaging'];
+        let currentTab = ref('stock-categories');
+        const tabs = ['stock-categories', 'hazards', 'stock-units', 'stock-items' ];
         let currentTabComponent = computed(() => 'tab-' + currentTab.value);
 
         sampleStore.fetchSampleTypes();
@@ -58,7 +55,6 @@ const InventoryHome = defineComponent({
 
                 {currentTab.value === 'stock-items' ? <StockItem /> : null}
                 {currentTab.value === 'stock-categories' ? <StockCategory /> : null}
-                {currentTab.value === 'stock-packaging' ? <StockPackaging /> : null}
                 {currentTab.value === 'stock-units' ? <StockUnit /> : null}
                 {currentTab.value === 'hazards' ? <Hazard /> : null}
             </div>

@@ -17,7 +17,9 @@ class StockItemBase(BaseAuditModel):
     name: str | None = None
     description: str | None = None
     department_uid: str | None = None
-    department: Optional[Department] = None
+    department: Optional[Department] = None    
+    category_uid: str | None = None
+    hazard_uid : str | None = None
     minimum_level: int | None = None
     maximum_level: int | None = None
 
@@ -118,7 +120,9 @@ class HazardUpdate(HazardBase):
 # StockUnit Schemas
 #
 class StockUnitBase(BaseAuditModel):
-    name: str | None = None
+    name: str | None = None    
+    description: str | None = None 
+    synonyms: str | None = None 
 
 
 class StockUnit(StockUnitBase):
@@ -142,12 +146,6 @@ class StockProductBase(BaseAuditModel):
     name: str | None = None
     stock_item_uid: str | None = None
     stock_item_variant_uid: str | None = None
-    department_uid: str | None = None
-    department: Optional[Department] = None
-    category_uid: str | None = None
-    category: Optional[StockCategory] = None
-    hazard_uid: str | None = None
-    hazard: Optional[Hazard] = None
 
 
 class StockProduct(StockProductBase):
@@ -194,7 +192,7 @@ class StockLotUpdate(StockLotBase):
 class StockProductInventoryBase(BaseAuditModel):
     product_uid: str | None = None
     stock_lot_uid: str | None = None
-    quantity: Optional[datetime] = None
+    quantity: int = None
     remarks: str | None = None
 
 

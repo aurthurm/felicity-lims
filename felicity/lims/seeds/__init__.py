@@ -6,6 +6,11 @@ from .setup_analyses import (seed_analyses_services_and_profiles,
                              seed_categories, seed_coding_standards,
                              seed_id_sequence, seed_qc_levels,
                              seed_rejection_reasons, seed_sample_types)
+from .setup_inventory import (
+    seed_stock_units,
+    seed_stock_hazards,
+    seed_stock_categories
+)
 from .setup_laboratory import seed_clients, seed_geographies, seed_laboratory
 from .superusers import seed_daemon_user, seed_super_user
 
@@ -38,6 +43,9 @@ async def default_setup() -> bool:
     await seed_sample_types()
     await seed_analyses_services_and_profiles()
     await seed_rejection_reasons()
+    await seed_stock_units()
+    await seed_stock_hazards()
+    await seed_stock_categories()
     logger.info("Loading default setup complete.")
     return True
 

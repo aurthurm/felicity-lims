@@ -1,15 +1,34 @@
 import { IUser } from './auth';
-import { IDepartment, ISupplier } from './setup';
-import { IStoreRoom } from './storage';
+import { IDepartment } from './setup';
+
 
 export interface IStockItem {
     uid: string;
-    name: String;
-    departmentUid: string;
-    department: IDepartment;
+    name: string;
     description: string;
+    categoryUid: string;
+    category: IStockCategory;
+    hazardUid: string;
+    hazard: IHazard;
     maximumLevel: number;
     minimumLevel: number;
+    variants: IStockItemVariant[];
+    createdAt: Date;
+    createdByUid: string;
+    createdBy: IUser;
+    updatedAt: Date;
+    updatedByUid: string;
+    updatedBy: IUser;
+}
+
+export interface IStockItemVariant {
+    uid: string;
+    name: string;
+    description: string;
+    stockItemUid: string;
+    stockItem: IStockItem;
+    minimumLevel: number;
+    maximumLevel: number;
     createdAt: Date;
     createdByUid: string;
     createdBy: IUser;
@@ -20,8 +39,8 @@ export interface IStockItem {
 
 export interface IStockCategory {
     uid: string;
-    name: String;
-    description: String;
+    name: string;
+    description: string;
     createdAt: Date;
     createdByUid: string;
     createdBy: IUser;
@@ -32,8 +51,8 @@ export interface IStockCategory {
 
 export interface IHazard {
     uid: string;
-    name: String;
-    description: String;
+    name: string;
+    description: string;
     createdAt: Date;
     createdByUid: string;
     createdBy: IUser;
@@ -44,7 +63,9 @@ export interface IHazard {
 
 export interface IStockUnit {
     uid: string;
-    name: String;
+    name: string;
+    description: string;
+    synonyms: string;
     createdAt: Date;
     createdByUid: string;
     createdBy: IUser;
@@ -53,47 +74,35 @@ export interface IStockUnit {
     updatedBy: IUser;
 }
 
-export interface IStockPackaging {
+export interface IStockLot {
     uid: string;
-    name: String;
-    createdAt: Date;
-    createdByUid: string;
-    createdBy: IUser;
-    updatedAt: Date;
-    updatedByUid: string;
-    updatedBy: IUser;
+    productUid: string;
+    lotNumber: string;
+    expiryDate: string;
+    remarks: string;
 }
 
 export interface IStockProduct {
     uid: string;
     name: string;
     stockItemUid: string;
-    stockItem: IStockItem;
-    departmentUid: string;
-    department: IDepartment;
-    supplierUid: string;
-    supplier: ISupplier;
-    categoryUid: string;
-    category: IStockCategory;
-    hazardUid: string;
-    hazard: IHazard;
-    storeRoomUid: string;
-    storeRoom: IStoreRoom;
-    lotNumber: String;
-    batch: String;
-    size: number;
-    unitUid: string;
-    unit: IStockUnit;
-    packagingUid: string;
-    packaging: IStockPackaging;
-    price: number;
-    quantityReceived: number;
-    minimumLevel: number;
-    remaining: number;
-    dateReceived: Date;
-    expiryDate: Date;
+    stockItemVariantUid: string;
     receivedByUid: string;
     receivedBy: IUser;
+    createdAt: Date;
+    createdByUid: string;
+    createdBy: IUser;
+    updatedAt: Date;
+    updatedByUid: string;
+    updatedBy: IUser;
+}
+
+export interface IStockProductInventory {
+    uid: string;
+    productUid: string;
+    stockLotUid: string;
+    quantity: number;
+    remarks: string;
     createdAt: Date;
     createdByUid: string;
     createdBy: IUser;
@@ -136,16 +145,21 @@ export interface IStockOrderProduct {
     updatedBy: IUser;
 }
 
-export interface IStockTransaction {
+export interface IStockReceipt {
     uid: string;
     productUid: string;
-    product: IStockProduct;
-    issued: number;
-    departmentUid: string;
-    department: IDepartment;
-    dateIssued: Date;
-    transactionByUid: string;
-    transactionBy: IUser;
+    stockLotUid: string;
+    unitPrice: string;
+    totalPrice: string;
+    supplierUid: string;
+    unitUid: string;
+    singlesReceived: number;
+    packagesReceived: number;
+    packageFactor: number;
+    quantityReceived: number;
+    receiptType: string;
+    receiptByUid: string;
+    receiptDate: Date;
     createdAt: Date;
     createdByUid: string;
     createdBy: IUser;
@@ -158,6 +172,7 @@ export interface IStockAdjustment {
     uid: string;
     productUid: string;
     product: IStockProduct;
+    lotNumber: string;
     adjustmentType: String;
     adjust: number;
     adjustmentDate: Date;

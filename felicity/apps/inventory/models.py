@@ -96,8 +96,11 @@ class Hazard(BaseAuditDBModel):
 
 
 class StockUnit(BaseAuditDBModel):
-    name = Column(String, nullable=False)
     __tablename__ = "stock_unit"
+
+    name = Column(String, nullable=False)
+    description = Column(String, nullable=True)
+    synonyms = Column(String, nullable=True)
 
     @classmethod
     async def create(cls, obj_in: dict | schemas.StockUnitCreate) -> schemas.StockUnit:

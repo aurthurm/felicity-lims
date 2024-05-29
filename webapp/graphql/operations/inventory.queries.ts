@@ -22,15 +22,6 @@ export const GET_ALL_STOCK_CATEGORIES = gql`
     }
 `;
 
-// packages
-export const GET_ALL_STOCK_PACKAGES = gql`
-    query getAllStockPackaging {
-        stockPackagingAll {
-            uid
-            name
-        }
-    }
-`;
 
 // units
 export const GET_ALL_STOCK_UNITS = gql`
@@ -83,10 +74,6 @@ export const GET_ALL_STOCK_PRODUCTS = gql`
                     uid
                     name
                 }
-                packaging {
-                    uid
-                    name
-                }
                 price
                 quantityReceived
                 remaining
@@ -129,8 +116,13 @@ export const GET_ALL_STOCK_ITEMS = gql`
                 uid
                 name
                 description
-                departmentUid
-                department {
+                categoryUid
+                category {
+                    uid
+                    name
+                }
+                hazardUid
+                hazard {
                     uid
                     name
                 }
@@ -138,6 +130,20 @@ export const GET_ALL_STOCK_ITEMS = gql`
         }
     }
 `;
+
+export const GET_ALL_STOCK_ITEM_VARIANTS = gql`
+    query getAllStockItemVariants($stockItemUid: String!) {
+        stockItemVariants(stockItemUid: $stockItemUid) {
+            uid
+            name
+            description
+            stockItemUid
+            minimumLevel
+            maximumLevel
+        }
+    }
+`;
+
 
 // stock orders
 export const GET_ALL_STOCK_ORDERS = gql`
@@ -183,44 +189,6 @@ export const GET_ALL_STOCK_ORDER_PRODUCTS = gql`
     }
 `;
 
-// transactions
-export const GET_ALL_STOCK_TRANSACTIONS = gql`
-    query getAllStockTransactions($first: Int!, $after: String, $text: String!, $sortBy: [String!] = ["uid"]) {
-        stockTransactionAll(pageSize: $first, afterCursor: $after, text: $text, sortBy: $sortBy) {
-            totalCount
-            pageInfo {
-                hasNextPage
-                hasPreviousPage
-                startCursor
-                endCursor
-            }
-            items {
-                uid
-                product {
-                    uid
-                    name
-                }
-                issued
-                issuedToUid
-                issuedTo {
-                    firstName
-                    lastName
-                }
-                department {
-                    uid
-                    name
-                }
-                dateIssued
-                transactionBy {
-                    uid
-                    firstName
-                    lastName
-                }
-                createdAt
-            }
-        }
-    }
-`;
 
 // adjustments
 export const GET_ALL_STOCK_ADJUSTMENTS = gql`

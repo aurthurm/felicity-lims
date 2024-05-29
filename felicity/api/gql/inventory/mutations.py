@@ -23,16 +23,21 @@ StockItemResponse = strawberry.union(
 class StockItemInputType:
     name: str
     description: str
-    department_uid: str | None = None
+    category_uid: str | None = None
+    hazard_uid: str | None = None
     maximum_level: int | None = None
     minimum_level: int | None = None
+
+
+StockItemVariantResponse = strawberry.union(
+    "StockItemVariantResponse", (types.StockItemVariantType, OperationError), description=""  # noqa
+)
 
 
 @strawberry.input
 class StockItemVariantInputType:
     name: str
     description: str
-    stock_item_uid: str | None = None
     maximum_level: int | None = None
     minimum_level: int | None = None
 
@@ -249,8 +254,69 @@ class InventoryMutations:
         stock_item = await stock_item.update(obj_in)
         return types.StockItemType(**stock_item.marshal_simple())
 
-    # TODO: Add stock variant
-    # TODO: update stock variant
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
+    async def create_stock_item_variant(
+            self, info, stock_item_uid: str, payload: StockItemVariantInputType
+    ) -> StockItemVariantResponse:
+        is_authenticated, felicity_user = await auth_from_info(info)
+        auth_success, auth_error = verify_user_auth(
+            is_authenticated,
+            felicity_user,
+            "Only Authenticated user can create stock item variant",
+        )
+        if not auth_success:
+            return auth_error
+
+        exists = await models.StockItem.get(uid=stock_item_uid)
+        if not exists:
+            return OperationError(error=f"StockItem with uid {stock_item_uid} does not exist")
+
+        incoming: dict = {
+            "stock_item_uid": exists.uid,
+            "created_by_uid": felicity_user.uid,
+            "updated_by_uid": felicity_user.uid,
+        }
+        for k, v in payload.__dict__.items():
+            incoming[k] = v
+
+        obj_in = schemas.StockItemVariantCreate(**incoming)
+        stock_item_variant = await models.StockItemVariant.create(obj_in)
+        return types.StockItemVariantType(**stock_item_variant.marshal_simple())
+
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
+    async def update_stock_item_variant(
+            self, info, uid: str, payload: StockItemVariantInputType
+    ) -> StockItemVariantResponse:
+
+        is_authenticated, felicity_user = await auth_from_info(info)
+        verify_user_auth(
+            is_authenticated,
+            felicity_user,
+            "Only Authenticated user can update stock item variant",
+        )
+
+        if not uid:
+            return OperationError(error="No uid provided to identity update obj.")
+
+        stock_item_variant = await models.StockItemVariant.get(uid=uid)
+        if not stock_item_variant:
+            return OperationError(
+                error=f"Stock Item variant with uid {uid} not found. Cannot update obj ..."
+            )
+
+        obj_data = stock_item_variant.to_dict()
+        for field in obj_data:
+            if field in payload.__dict__:
+                try:
+                    setattr(stock_item_variant, field, payload.__dict__[field])
+                except Exception as e:  # noqa
+                    pass
+
+        setattr(stock_item_variant, "updated_by_uid", felicity_user.uid)
+
+        obj_in = schemas.StockItemVariantUpdate(**stock_item_variant.to_dict())
+        stock_item_variant = await stock_item_variant.update(obj_in)
+        return types.StockItemVariantType(**stock_item_variant.marshal_simple())
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_stock_category(

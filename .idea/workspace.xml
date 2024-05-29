@@ -5,10 +5,25 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9f590b69-f929-45a1-8512-12ed6efbf028" name="Changes" comment="Added Invetory starter">
+      <change afterPath="$PROJECT_DIR$/felicity/lims/seeds/setup_inventory.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/migrations/versions/0777557a3508_added_sample_types_to_result_options.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/migrations/versions/662ac32ade50_refactored_inventory.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/migrations/versions/e84a878a57a7_upgrade_1_0_1.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/migrations/versions/79cc9c2c7768_cleanup.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/api/gql/inventory/mutations.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/inventory/mutations.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/api/gql/inventory/types.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/inventory/types.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/apps/inventory/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/inventory/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/apps/inventory/schemas.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/inventory/schemas.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/lims/seeds/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/lims/seeds/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/lims/seeds/data/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/lims/seeds/data/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/lims/seeds/data/inventory.json" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/lims/seeds/data/inventory.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/migrations/versions/1f401d679db1_db_init.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/webapp/graphql/operations/inventory.mutations.ts" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/graphql/operations/inventory.mutations.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webapp/graphql/operations/inventory.queries.ts" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/graphql/operations/inventory.queries.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webapp/models/inventory.ts" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/models/inventory.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webapp/stores/inventory.ts" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/stores/inventory.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webapp/views/admin/inventory/Inventory.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/views/admin/inventory/Inventory.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webapp/views/admin/inventory/StockItem.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/views/admin/inventory/StockItem.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webapp/views/admin/inventory/StockPackaging.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/webapp/views/inventory/InvTransactions.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/webapp/views/inventory/Inventory.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/views/inventory/Inventory.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

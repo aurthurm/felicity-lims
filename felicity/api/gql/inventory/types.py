@@ -5,7 +5,6 @@ import strawberry  # noqa
 
 from felicity.api.gql.setup.types import SupplierType
 from felicity.api.gql.setup.types.department import DepartmentType
-from felicity.api.gql.storage.types import StoreRoomType
 from felicity.api.gql.types import PageInfo
 from felicity.api.gql.user.types import UserType
 from felicity.apps.inventory import models
@@ -15,8 +14,10 @@ from felicity.apps.inventory import models
 class StockItemType:
     uid: str
     name: str
-    department_uid: str | None
-    department: Optional[DepartmentType]
+    category_uid: str | None = None
+    category: Optional["StockCategoryType"]
+    hazard_uid: str | None = None
+    hazard: Optional["HazardType"]
     minimum_level: int | None
     maximum_level: int | None
     description: str | None
@@ -31,6 +32,7 @@ class StockItemType:
     async def variants(self, info) -> List[Optional["StockItemVariantType"]]:
         stock_item_variants = await models.StockItemVariant.get_all(stock_item_uid=self.uid)
         return [StockItemVariantType(**siv.marshal_simple()) for siv in stock_item_variants]
+
 
 @strawberry.type
 class StockItemEdge:
@@ -93,6 +95,8 @@ class HazardType:
 class StockUnitType:
     uid: str
     name: str
+    description: str
+    synonyms: str
     created_at: str | None
     created_by_uid: str | None
     created_by: UserType | None
@@ -121,29 +125,6 @@ class StockProductType:
     stock_item: Optional[StockItemType]
     stock_item_variant_uid: str | None
     stock_item_variant: Optional[StockItemVariantType]
-    department_uid: str | None
-    department: Optional[DepartmentType]
-    supplier_uid: str | None
-    supplier: Optional[SupplierType]
-    category_uid: str | None
-    category: Optional[StockCategoryType]
-    hazard_uid: str | None
-    hazard: Optional[HazardType]
-    store_room_uid: str | None
-    store_room: Optional[StoreRoomType]
-    lot_number: str | None
-    batch: str | None
-    size: int | None
-    unit_uid: str | None
-    unit: Optional[StockUnitType]
-    packaging_uid: str | None
-    packaging: Optional[StockPackagingType]
-    conversion_factor: int | None
-    price: int | None
-    quantity_received: int | None
-    remaining: int | None
-    date_received: datetime | None
-    expiry_date: str | None
     received_by_uid: str | None
     received_by: UserType | None
     created_at: str | None

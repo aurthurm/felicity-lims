@@ -1,8 +1,8 @@
 """db-init
 
-Revision ID: 1f401d679db1
+Revision ID: 44ad0ec2625f
 Revises: 
-Create Date: 2024-05-27 16:45:05.762645
+Create Date: 2024-05-27 17:33:27.989874
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 from sqlalchemy.dialects import postgresql
 
 # revision identifiers, used by Alembic.
-revision = '1f401d679db1'
+revision = '44ad0ec2625f'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -466,6 +466,8 @@ def upgrade():
     op.create_index(op.f('ix_stock_category_uid'), 'stock_category', ['uid'], unique=False)
     op.create_table('stock_unit',
     sa.Column('name', sa.String(), nullable=False),
+    sa.Column('description', sa.String(), nullable=True),
+    sa.Column('synonyms', sa.String(), nullable=True),
     sa.Column('uid', sa.String(), nullable=False),
     sa.Column('created_at', sa.DateTime(), nullable=True),
     sa.Column('created_by_uid', sa.String(), nullable=True),

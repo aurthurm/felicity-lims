@@ -7,7 +7,12 @@ import { IStockItem } from '../../../models/inventory';
 const Modal = defineAsyncComponent(
     () => import('../../../components/SimpleModal.vue')
 )
-
+const Drawer = defineAsyncComponent(
+    () => import( '../../../components/Drawer.vue')
+)
+const StockItemDetail = defineAsyncComponent(
+    () => import( './StockItemDetail')
+)
 const StockItem = defineComponent({
     name: 'stock-item',
     setup(props, ctx) {
@@ -27,12 +32,11 @@ const StockItem = defineComponent({
             sortBy: ['-uid'],
         });
 
-        setupStore.fetchDepartments({});
-        const departments = computed<any[]>(() => setupStore.getDepartments);
-
         inventoryStore.fetchAllDependencies();
         inventoryStore.fetchItems(itemParams);
         const stockItems = computed(() => inventoryStore.getStockItems);
+        const hazards = computed(() => inventoryStore.getHazards);
+        const categories = computed(() => inventoryStore.getCategories);
 
         function addStockItem(): void {
             const payload = { ...form };
@@ -43,7 +47,8 @@ const StockItem = defineComponent({
             const payload = {
                 name: form.name,
                 description: form.description,
-                departmentUid: form.departmentUid,
+                hazardUid: form.hazardUid,
+                categoryUid: form.categoryUid,
             };
             withClientMutation(EDIT_STOCK_ITEM, { uid: form.uid, payload }, 'updateStockItem').then(result =>
                 inventoryStore.updateItem(result)
@@ -67,6 +72,14 @@ const StockItem = defineComponent({
             showModal.value = false;
         }
 
+        // Stock Item Detail
+        let openDrawer = ref(false);
+        let stockItem = ref<IStockItem>()
+        const viewStockItem = (item: IStockItem) => {
+            stockItem.value = item;
+            openDrawer.value = true;
+        }
+
         return {
             form,
             FormManager,
@@ -74,7 +87,11 @@ const StockItem = defineComponent({
             stockItems,
             showModal,
             formTitle,
-            departments,
+            hazards,
+            categories,
+            openDrawer,
+            viewStockItem,
+            stockItem,
         };
     },
     render() {
@@ -98,10 +115,13 @@ const StockItem = defineComponent({
                                         Item Name
                                     </th>
                                     <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">
-                                        Description
+                                        Category
                                     </th>
                                     <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">
-                                        Main User (Department)
+                                        Hazard
+                                    </th>
+                                    <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">
+                                        Description
                                     </th>
                                     <th class="px-1 py-1 border-b-2 border-gray-300"></th>
                                 </tr>
@@ -116,10 +136,13 @@ const StockItem = defineComponent({
                                                 </div>
                                             </td>
                                             <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-                                                <div class="text-sm leading-5 text-sky-800">{item?.description}</div>
+                                                <div class="text-sm leading-5 text-sky-800">{item?.category?.name}</div>
                                             </td>
                                             <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-                                                <div class="text-sm leading-5 text-sky-800">{item?.department?.name}</div>
+                                                <div class="text-sm leading-5 text-sky-800">{item?.hazard?.name}</div>
+                                            </td>
+                                            <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
+                                                <div class="text-sm leading-5 text-sky-800">{item?.description}</div>
                                             </td>
                                             <td class="px-1 py-1 whitespace-no-wrap text-right border-b border-gray-500 text-sm leading-5">
                                                 <button
@@ -127,6 +150,12 @@ const StockItem = defineComponent({
                                                     class="px-2 py-1 mr-2 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
                                                 >
                                                     Edit
+                                                </button>  
+                                                <button
+                                                    onClick={() => this.viewStockItem(item)}
+                                                    class="px-2 py-1 mr-2 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
+                                                >
+                                                    View
                                                 </button>
                                             </td>
                                         </tr>
@@ -136,6 +165,14 @@ const StockItem = defineComponent({
                         </table>
                     </div>
                 </div>
+                
+                <Drawer show={this.openDrawer} onClose={() => (this.openDrawer = false)}>
+                {{
+                    header: () => 'Stock Item Detail',
+                    body: () => (<StockItemDetail stockItem={this.stockItem} />),
+                    footer: () => [<div></div>],
+                }}
+                </Drawer>
 
                 {/* StockItem Form Modal */}
                 {this.showModal ? (
@@ -180,12 +217,23 @@ const StockItem = defineComponent({
                                                 />
                                             </label>
                                             <label class="block col-span-1 mb-2">
-                                                <span class="text-gray-700">Department</span>
-                                                <select class="form-select block w-full mt-1" v-model={this.form.departmentUid}>
+                                                <span class="text-gray-700">Hazard</span>
+                                                <select class="form-select block w-full mt-1" v-model={this.form.hazardUid}>
                                                     <option></option>
-                                                    {this.departments.map(department => (
-                                                        <option key={department.uid} value={department?.uid}>
-                                                            {department.name}
+                                                    {this.hazards.map(hazard => (
+                                                        <option key={hazard.uid} value={hazard?.uid}>
+                                                            {hazard.name}
+                                                        </option>
+                                                    ))}
+                                                </select>
+                                            </label>
+                                            <label class="block col-span-1 mb-2">
+                                                <span class="text-gray-700">Category</span>
+                                                <select class="form-select block w-full mt-1" v-model={this.form.categoryUid}>
+                                                    <option></option>
+                                                    {this.categories.map(category => (
+                                                        <option key={category.uid} value={category?.uid}>
+                                                            {category.name}
                                                         </option>
                                                     ))}
                                                 </select>

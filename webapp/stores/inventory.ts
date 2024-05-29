@@ -6,11 +6,9 @@ import {
     IStockAdjustment,
     IStockCategory,
     IStockItem,
+    IStockItemVariant,
     IStockOrder,
-    IStockOrderProduct,
-    IStockPackaging,
     IStockProduct,
-    IStockTransaction,
     IStockUnit,
 } from '../models/inventory';
 import {
@@ -18,10 +16,9 @@ import {
     GET_ALL_STOCK_ADJUSTMENTS,
     GET_ALL_STOCK_CATEGORIES,
     GET_ALL_STOCK_ITEMS,
+    GET_ALL_STOCK_ITEM_VARIANTS,
     GET_ALL_STOCK_ORDERS,
-    GET_ALL_STOCK_PACKAGES,
     GET_ALL_STOCK_PRODUCTS,
-    GET_ALL_STOCK_TRANSACTIONS,
     GET_ALL_STOCK_UNITS,
 } from '../graphql/operations/inventory.queries';
 import { IPagination, IPaginationMeta } from '../models/pagination';
@@ -35,8 +32,6 @@ export const useInventoryStore = defineStore('inventory', {
             fetchingHazards: false,
             categories: [],
             fetchingCategories: false,
-            packages: [],
-            fetchingPackages: false,
             units: [],
             fetchingUnits: false,
             products: [],
@@ -45,9 +40,6 @@ export const useInventoryStore = defineStore('inventory', {
             stockItems: [],
             stockItemsPaging: {},
             fetchingItems: false,
-            transactions: [],
-            transactionsPaging: {},
-            fetchingTransactions: false,
             adjustments: [],
             adjustmentsPaging: {},
             fetchingAdjustments: false,
@@ -60,8 +52,6 @@ export const useInventoryStore = defineStore('inventory', {
             fetchingHazards: boolean;
             categories: IStockCategory[];
             fetchingCategories: boolean;
-            packages: IStockPackaging[];
-            fetchingPackages: boolean;
             units: IStockUnit[];
             fetchingUnits: boolean;
             products: IStockProduct[];
@@ -70,9 +60,6 @@ export const useInventoryStore = defineStore('inventory', {
             stockItems: IStockItem[];
             stockItemsPaging: IPaginationMeta;
             fetchingItems: boolean;
-            transactions: IStockTransaction[];
-            transactionsPaging: IPaginationMeta;
-            fetchingTransactions: boolean;
             adjustments: IStockAdjustment[];
             adjustmentsPaging: IPaginationMeta;
             fetchingAdjustments: boolean;
@@ -85,11 +72,9 @@ export const useInventoryStore = defineStore('inventory', {
     getters: {
         getHazards: state => state.hazards,
         getCategories: state => state.categories,
-        getPackages: state => state.packages,
         getUnits: state => state.units,
         getProducts: state => state.products,
         getStockItems: state => state.stockItems,
-        getTransactions: state => state.transactions,
         getAdjustments: state => state.adjustments,
         getBasket: state => state.basket,
         getStockOrders: state => state.stockItems,
@@ -99,7 +84,6 @@ export const useInventoryStore = defineStore('inventory', {
         async fetchAllDependencies() {
             await this.fetchHazards();
             await this.fetchCategories();
-            await this.fetchPackages();
             await this.fetchUnits();
         },
         // hazards
@@ -136,24 +120,6 @@ export const useInventoryStore = defineStore('inventory', {
         updateCategory(payload: IStockCategory): void {
             const index = this.categories?.findIndex(item => item.uid === payload?.uid);
             if (index > -1) this.categories[index] = payload;
-        },
-
-        // packages
-        async fetchPackages() {
-            this.fetchingPackages = true;
-            await withClientQuery(GET_ALL_STOCK_PACKAGES, {}, 'stockPackagingAll')
-                .then((packages: IStockPackaging[]) => {
-                    this.fetchingPackages = false;
-                    this.packages = packages;
-                })
-                .catch(err => (this.fetchingPackages = false));
-        },
-        addPackaging(payload): void {
-            this.packages?.unshift(payload);
-        },
-        updatePackaging(payload: IStockPackaging): void {
-            const index = this.packages?.findIndex(item => item.uid === payload?.uid);
-            if (index > -1) this.packages[index] = payload;
         },
 
         // units
@@ -214,6 +180,32 @@ export const useInventoryStore = defineStore('inventory', {
             const index = this.stockItems?.findIndex(item => item.uid === payload?.uid);
             if (index > -1) this.stockItems[index] = payload;
         },
+        async fetchItemVariants(stockItemUid: string) {
+            await withClientQuery(GET_ALL_STOCK_ITEM_VARIANTS, { stockItemUid }, 'stockItemVariants')
+                .then((data: IStockItemVariant[]) => {
+                    this.stockItems?.map(item => {
+                        if (item.uid === stockItemUid) {
+                            item.variants = [...data] ?? [];
+                        }
+                    });
+                })
+                .catch(err => (this.fetchingItems = false));
+        },
+        addItemVariant(payload): void {
+            this.stockItems?.map(item => {
+                if (item.uid === payload.stockItemUid) {
+                    item.variants?.unshift(payload);
+                }
+            });
+        },
+        updateItemVariant(payload: IStockItemVariant): void {
+            this.stockItems?.map(item => {
+                if (item.uid === payload.stockItemUid) {
+                    const index = item.variants?.findIndex(v => v.uid === payload.uid);
+                    if (index > -1) item.variants[index] = payload;
+                }
+            });
+        },
 
         // stockOrders
         async fetchStockOrders(params) {
@@ -241,26 +233,6 @@ export const useInventoryStore = defineStore('inventory', {
             for (const op of payload?.orderProducts) {
                 this.updateProduct(op.product);
             }
-        },
-
-        // transactions
-        async fetchTransactions(params) {
-            this.fetchingTransactions = true;
-            await withClientQuery(GET_ALL_STOCK_TRANSACTIONS, params, 'stockTransactionAll', 'cache-and-network')
-                .then((paging: IPagination<IStockTransaction>) => {
-                    this.fetchingTransactions = false;
-                    this.transactions = paging.items ?? [];
-                    this.transactionsPaging['totalCount'] = paging.totalCount;
-                    this.transactionsPaging['pageInfo'] = paging.pageInfo;
-                })
-                .catch(err => (this.fetchingTransactions = false));
-        },
-        addTransaction(payload): void {
-            this.transactions?.unshift(payload);
-        },
-        updateTransaction(payload: IStockTransaction): void {
-            const index = this.transactions?.findIndex(item => item.uid === payload?.uid);
-            if (index > -1) this.transactions[index] = payload;
         },
 
         // adjustments
