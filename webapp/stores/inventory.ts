@@ -256,11 +256,12 @@ export const useInventoryStore = defineStore('inventory', {
         },
 
         // Basket
-        addToBasket(uid: string, quantity: number): void {
+        addToBasket(uid: string, stockLotUid: string, quantity: number): void {
             const index = this.products?.findIndex(item => item.uid === uid);
             const product = this.products[index];
             const orderItem = {
                 product,
+                stockLotUid,
                 quantity,
             };
 

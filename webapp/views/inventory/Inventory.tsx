@@ -64,8 +64,8 @@ const InventoryHome = defineComponent({
                         payload: {
                             orderProducts: basket.map(order => ({
                                 productUid: order.product.uid,
+                                stockLotUid: order.stockLotUid,
                                 quantity: order.quantity,
-                                price: 0.0,
                                 remarks: '',
                             })),
                             departmentUid: undefined,
@@ -83,7 +83,7 @@ const InventoryHome = defineComponent({
     render() {
         return (
             <>
-                <PageHeading title="Inventory" />
+                <PageHeading title="Inventory Management" />
                 <section class="col-span-12 mt-2">
                     <nav class="flex justify-between bg-white shadow-md mt-2">
                         <div class="-mb-px flex justify-start">
@@ -128,6 +128,9 @@ const InventoryHome = defineComponent({
                                                             Product Name
                                                         </th>
                                                         <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">
+                                                            Lot Number
+                                                        </th>
+                                                        <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">
                                                             Quantity
                                                         </th>
                                                         <th class="px-1 py-1 border-b-2 border-gray-300 text-left leading-4 text-gray-800 tracking-wider"></th>
@@ -138,6 +141,9 @@ const InventoryHome = defineComponent({
                                                         <tr key={item.product.uid} v-motion-slide-right>
                                                             <td>
                                                                 <p>{item.product.name}</p>
+                                                            </td>
+                                                            <td>
+                                                                <p>{item.stockLot.lotNumber}</p>
                                                             </td>
                                                             <td class="px-1 py-1 whitespace-no-wrap">
                                                                 <label class="block">

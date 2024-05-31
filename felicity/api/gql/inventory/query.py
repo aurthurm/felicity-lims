@@ -131,16 +131,6 @@ class InventoryQuery:
         return await models.StockUnit.get(uid=uid)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
-    async def stock_packaging_all(self, info) -> List[types.StockPackagingType]:
-        return await models.StockPackaging.all_async()
-
-    @strawberry.field(permission_classes=[IsAuthenticated])
-    async def stock_packaging_by_uid(
-            self, info, uid: str
-    ) -> Optional[types.StockPackagingType]:
-        return await models.StockPackaging.get(uid=uid)
-
-    @strawberry.field(permission_classes=[IsAuthenticated])
     async def stock_product_inventory(
             self, info, product_uid: str, stock_lot_uid: str
     ) -> Optional[types.StockProductInventoryType]:

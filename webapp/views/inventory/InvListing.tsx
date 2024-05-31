@@ -33,7 +33,7 @@ const InventoryListing = defineComponent({
         const choiceProduct = reactive({
             product: {} as IStockProduct,
             quantity: 0,
-            lotUid: "",
+            stockLotUid: "",
             type: "",
             remarks: ""
         });
@@ -119,8 +119,9 @@ const InventoryListing = defineComponent({
                                 'button',
                                 {
                                     type: 'button',
-                                    class: 'bg-sky-800 text-white py-1 px-2 rounded-sm leading-none',
+                                    class: 'bg-sky-800 text-white py-1 px-2 rounded-sm leading-none disabled:bg-gray-500',
                                     innerHTML: '+ Basket',
+                                    disabled: product.quantity < 1,
                                     onClick: () => {
                                         choiceProduct.product = product;
                                         choiceProduct.quantity = 0;
@@ -133,8 +134,9 @@ const InventoryListing = defineComponent({
                                 'button',
                                 {
                                     type: 'button',
-                                    class: 'bg-sky-800 text-white py-1 px-2 rounded-sm leading-none',
+                                    class: 'bg-sky-800 text-white py-1 px-2 rounded-sm leading-none disabled:bg-gray-500',
                                     innerHTML: '+/- Adjust',
+                                    disabled: product.quantity < 1,
                                     onClick: () => {
                                         choiceProduct.product = product;
                                         choiceProduct.quantity = 0;
@@ -190,6 +192,7 @@ const InventoryListing = defineComponent({
                     {
                       payload: {
                         productUid: choiceProduct.product.uid,
+                        stockLotUid: choiceProduct.stockLotUid,
                         adjustmentType: choiceProduct.type,
                         adjust: choiceProduct.quantity,
                         remarks: choiceProduct.remarks
@@ -245,7 +248,7 @@ const InventoryListing = defineComponent({
                                     <form action="post" class="p-1">
                                         <label class="grid grid-cols-4 items-center gap-4 mb-4">
                                             <span class="col-span-1 text-gray-700  text-nowrap">Product Lot</span>
-                                            <select class="col-span-3 form-select block w-full mt-1" v-model={this.choiceProduct.lotUid}>
+                                            <select class="col-span-3 form-select block w-full mt-1" v-model={this.choiceProduct.stockLotUid}>
                                             <option></option>
                                             {this.stockLots?.map((lot: IStockLot) => (<option key={lot.uid} value={lot.uid}>{lot.lotNumber}</option>))}
                                             </select>
@@ -266,12 +269,13 @@ const InventoryListing = defineComponent({
                                             onClick={() => {
                                                 this.inventoryStore.addToBasket(
                                                     this.choiceProduct.product.uid,
+                                                    this.choiceProduct.stockLotUid,
                                                     this.choiceProduct.quantity
                                                 );
                                                 this.openAddProduct = false;
                                             }}
                                             class="-mb-4 border border-sky-800 bg-sky-800 text-white rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-sky-800 focus:outline-none focus:shadow-outline disabled:bg-gray-500"
-                                            disabled={!this.choiceProduct.lotUid}>
+                                            disabled={!this.choiceProduct.stockLotUid}>
                                             Add to basket
                                         </button>
                                     </form>
@@ -289,7 +293,7 @@ const InventoryListing = defineComponent({
                                     <form action="post" class="p-1">
                                         <label class="grid grid-cols-4 items-center gap-4 mb-4">
                                             <span class="col-span-1 text-gray-700  text-nowrap">Product Lot</span>
-                                            <select class="col-span-3 form-select block w-full mt-1" v-model={this.choiceProduct.lotUid}>
+                                            <select class="col-span-3 form-select block w-full mt-1" v-model={this.choiceProduct.stockLotUid}>
                                             <option></option>
                                             {this.stockLots?.map((lot: IStockLot) => (<option key={lot.uid} value={lot.uid}>{lot.lotNumber}</option>))}
                                             </select>
@@ -302,7 +306,6 @@ const InventoryListing = defineComponent({
                                             >
                                                 <option value="lost">Lost</option>
                                                 <option value="theft">Theft</option>
-                                                <option value="transfer-in">Transfer In</option>
                                                 <option value="transfer-out">Transfer Out</option>
                                             </select>
                                         </label>
@@ -333,7 +336,7 @@ const InventoryListing = defineComponent({
                                                 this.openAdjustProduct = false;
                                             }}
                                             class="-mb-4 border border-sky-800 bg-sky-800 text-white rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-sky-800 focus:outline-none focus:shadow-outline disabled:bg-gray-500"
-                                            disabled={!this.choiceProduct.lotUid}>
+                                            disabled={!this.choiceProduct.stockLotUid}>
                                             Adjust
                                         </button>
                                     </form>

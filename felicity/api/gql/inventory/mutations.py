@@ -117,6 +117,7 @@ StockOrderResponse = strawberry.union(
 @strawberry.input
 class StockOrderProductLineInputType:
     product_uid: str
+    stock_lot_uid: str
     quantity: int
     price: float = 0.0
     remarks: str | None = None
@@ -159,7 +160,7 @@ StockAdjustmentResponse = strawberry.union(
 @strawberry.input
 class StockAdjustmentInputType:
     product_uid: str
-    lot_number: str
+    stock_lot_uid: str
     adjustment_type: str
     adjust: int
     remarks: str | None = None
@@ -594,13 +595,10 @@ class InventoryMutations:
 
         # create Order Products
         for prod in payload.order_products:
-            product: models.StockProduct = await models.StockProduct.get(
-                uid=prod.product_uid
-            )
             op_in = schemas.StockOrderProductCreate(
                 product_uid=prod.product_uid,
+                stock_lot_uid=prod.stock_lot_uid,
                 order_uid=stock_order.uid,
-                price=product.price,
                 quantity=prod.quantity,
             )
             await models.StockOrderProduct.create(op_in)
@@ -646,13 +644,10 @@ class InventoryMutations:
         for prod in payload.order_products:
             # New product
             if prod.product_uid not in _pr_uids:
-                product: models.StockProduct = await models.StockProduct.get(
-                    uid=prod.product_uid
-                )
                 op_in = schemas.StockOrderProductCreate(
                     product_uid=prod.product_uid,
+                    stock_lot_uid=prod.stock_lot_uid,
                     order_uid=uid,
-                    price=product.price,
                     quantity=prod.quantity,
                 )
                 await models.StockOrderProduct.create(op_in)
@@ -670,7 +665,7 @@ class InventoryMutations:
 
         # re-fetch updated
         o_products = await models.StockOrderProduct.get_all(order_uid=uid)
-        stock_order: models.StockOrder = await models.StockOrder.get(uid=uid)
+        stock_order = await models.StockOrder.get(uid=uid)
 
         return StockOrderLineType(stock_order=stock_order, order_products=o_products)
 
@@ -740,11 +735,13 @@ class InventoryMutations:
         # issuance
         for order_p in payload:
             adjust_in = {
+                "adjustment_type": Adjust.ISSUE,
                 "adjustment_date": datetime.now(),
                 "product_uid": order_p.product_uid,
                 "department_uid": stock_order.department_uid,
                 "adjustment_by_uid": felicity_user.uid,
                 "adjustment_for_uid": stock_order.order_by_uid,
+                "remarks": "issue out stock",
                 "created_by_uid": felicity_user.uid,
                 "updated_by_uid": felicity_user.uid,
             }
@@ -847,7 +844,7 @@ class InventoryMutations:
         if not auth_success:
             return auth_error
 
-        if payload.adjustment_type in [Adjust.NEW_STOCK, Adjust.TRANSFER_IN]:
+        if payload.adjustment_type in [Adjust.PURCHASE, Adjust.TRANSFER_IN, Adjust.PUSHED]:
             return OperationError(
                 error="Use Stock Receipt to make this adjustment"
             )
@@ -862,13 +859,12 @@ class InventoryMutations:
             incoming[k] = v
 
         obj_in = schemas.StockAdjustmentCreate(**incoming)
-        stock_adjustment: models.StockAdjustment = await models.StockAdjustment.create(
+        stock_adjustment = await models.StockAdjustment.create(
             obj_in
         )
 
-        stock_lot = await models.StockLot.get(product_uid=payload.product_uid, lot_number=payload.lot_number)
         inventory = await models.StockProductInventory.get(
-            product_uid=payload.product_uid, stock_lot_uid=stock_lot.uid
+            product_uid=payload.product_uid, stock_lot_uid=payload.stock_lot_uid
         )
 
         remaining = inventory.quantity - stock_adjustment.adjust

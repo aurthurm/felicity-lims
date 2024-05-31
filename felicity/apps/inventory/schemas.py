@@ -256,9 +256,9 @@ class StockOrderUpdate(StockOrderBase):
 class StockOrderProductBase(BaseAuditModel):
     product_uid: str | None = None
     product: Optional[StockItemVariant] = None
+    stock_lot_uid: str | None = None
     order_uid: str | None = None
     order: Optional[StockOrder] = None
-    price: float | None = None
     quantity: int | None = None
     remarks: str | None = None
 
@@ -283,7 +283,7 @@ class StockOrderProductUpdate(StockOrderProductBase):
 class StockAdjustmentBase(BaseAuditModel):
     product_uid: str | None = None
     product: Optional[StockItemVariant] = None
-    lot_number: str | None = None
+    stock_lot_uid: str | None = None
     adjustment_type: str | None = None
     adjust: int | None = None
     adjustment_date: datetime | None = None

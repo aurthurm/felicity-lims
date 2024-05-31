@@ -191,9 +191,10 @@ class StockOrderProduct(BaseAuditDBModel):
 
     product_uid = Column(String, ForeignKey("stock_item_variant.uid"), nullable=True)
     product = relationship("StockItemVariant", lazy="selectin")
+    stock_lot_uid = Column(String, ForeignKey("stock_lot.uid"), nullable=True)
+    stock_lot = relationship("StockLot", lazy="selectin")
     order_uid = Column(String, ForeignKey("stock_order.uid"), nullable=True)
     order = relationship("StockOrder", lazy="selectin")
-    price = Column(Float, nullable=True)
     quantity = Column(Integer, nullable=False)
     remarks = Column(String, nullable=True)
 
@@ -258,7 +259,8 @@ class StockAdjustment(BaseAuditDBModel):
 
     product_uid = Column(String, ForeignKey("stock_item_variant.uid"), nullable=True)
     product = relationship("StockItemVariant", lazy="selectin")
-    lot_number = Column(String, nullable=True)
+    stock_lot_uid = Column(String, ForeignKey("stock_lot.uid"), nullable=True)
+    stock_lot = relationship("StockLot", lazy="selectin")
     adjustment_type = Column(String, nullable=False)
     adjust = Column(Integer, nullable=False)
     adjustment_date = Column(DateTime, nullable=False)

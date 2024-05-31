@@ -294,7 +294,6 @@ export const ADD_STOCK_ORDER = gql`
                     uid
                     productUid
                     orderUid
-                    price
                     quantity
                 }
             }
@@ -325,7 +324,6 @@ export const EDIT_STOCK_ORDER = gql`
                     uid
                     productUid
                     orderUid
-                    price
                     quantity
                 }
             }
@@ -397,10 +395,9 @@ export const ISSUE_STOCK_ORDER = gql`
                     uid
                     product {
                         uid
-                        remaining
+                        quantity
                     }
                     orderUid
-                    price
                     quantity
                 }
             }

@@ -67,7 +67,11 @@ class StockItemVariantType:
 
     @strawberry.field
     async def quantity(self, info) -> int:
-        return 0
+        total = 0
+        inventories = await models.StockProductInventory.get_all(product_uid=self.uid)
+        for inv in inventories:
+            total += inv.quantity
+        return total
 
 
 @strawberry.type
@@ -144,6 +148,18 @@ class StockLotType:
     lot_number: str
     expiry_date: datetime
     remarks: str | None
+    quantity: int
+
+    @strawberry.field
+    async def quantity(self, info) -> int:
+        total = 0
+        inventories = await models.StockProductInventory.get_all(
+            product_uid=self.product_uid,
+            stock_lot_uid=self.uid
+        )
+        for inv in inventories:
+            total += inv.quantity
+        return total
 
 
 @strawberry.type
@@ -224,9 +240,10 @@ class StockOrderProductType:
     uid: str
     product_uid: str | None
     product: Optional[StockItemVariantType]
+    stock_lot_uid: str
+    stock_lot: Optional[StockLotType]
     order_uid: str | None
     order: Optional[StockOrderType]
-    price: int | None
     quantity: int | None
     created_at: str | None
     created_by_uid: str | None
@@ -349,12 +366,16 @@ class StockAdjustmentType:
     uid: str
     product_uid: str | None
     product: Optional[StockItemVariantType]
+    stock_lot_uid: str | None
+    stock_lot: Optional[StockLotType]
     adjustment_type: str | None
     adjust: int | None
     adjustment_date: str | None
     remarks: str | None
     adjustment_by_uid: str | None
     adjustment_by: UserType | None
+    adjustment_for_uid: str | None
+    adjustment_for: UserType | None
     created_at: str | None
     created_by_uid: str | None
     created_by: UserType | None

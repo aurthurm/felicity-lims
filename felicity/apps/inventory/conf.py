@@ -9,6 +9,7 @@ class Adjust:
     PUSHED = "pushed"
     TRANSFER_IN = "transfer_in"
     # subtracting
+    ISSUE = "issue"
     TRANSFER_OUT = "transfer_out"
     DAMAGED = "damaged"
     EXPIRED = "expired"

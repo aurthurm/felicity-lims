@@ -80,6 +80,7 @@ export interface IStockLot {
     lotNumber: string;
     expiryDate: string;
     remarks: string;
+    quantity: number
 }
 
 export interface IStockProduct {
@@ -153,6 +154,8 @@ export interface IStockOrderProduct {
     uid: string;
     productUid: string;
     product: IStockProduct;
+    stockLotUid: string;
+    stockLot: IStockLot;
     orderUid: string;
     order: IStockOrder;
     price: number;

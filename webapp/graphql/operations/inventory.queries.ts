@@ -168,9 +168,13 @@ export const GET_ALL_STOCK_ORDER_PRODUCTS = gql`
             product {
                 uid
                 name
-                remaining
+                quantity
             }
-            price
+            stockLot {
+                uid
+                lotNumber
+                quantity
+            }
             quantity
         }
     }

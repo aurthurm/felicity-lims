@@ -22,7 +22,7 @@ const InventoryOrders = defineComponent({
             first: 50,
             after: '',
             text: '',
-            status: "preperation",
+            status: "preparation",
             sortBy: ['-uid'],
         });
 
@@ -158,8 +158,9 @@ const InventoryOrders = defineComponent({
                 for (const orderProduct of slectedStockOrder.products) {
                     payload.push({
                         productUid: orderProduct.product.uid,
+                        stockLotUid: orderProduct.stockLot?.uid,
                         quantity: orderProduct.issue,
-                        remarks: '',
+                        remarks: 'issue stock',
                     });
                 }
                 withClientMutation(
@@ -183,6 +184,7 @@ const InventoryOrders = defineComponent({
                 for (const op of slectedStockOrder.products) {
                     product_lines.push({
                         productUid: op.product.uid,
+                        stockLotUid: op.stockLot?.uid,
                         quantity: op.quantity,
                         remarks: '',
                     });
@@ -242,7 +244,8 @@ const InventoryOrders = defineComponent({
                     onOnPaginate={x => this.showMoreStockOrders(x)}
                 ></DataTable>
                 {/* Drawer */}
-                <Drawer show={this.openDrawer} onClose={() => (this.openDrawer = false)}>
+                <Drawer contentWidth="w-1/2"
+                show={this.openDrawer} onClose={() => (this.openDrawer = false)}>
                     {{
                         header: () => `Order: ${this.slectedStockOrder?.order.orderNumber}`,
                         body: () => (
@@ -264,10 +267,13 @@ const InventoryOrders = defineComponent({
                                                     <thead>
                                                         <tr>
                                                             <th class="px-1 py-1 border-b-2 border-gray-300 text-left leading-4 text-gray-800 tracking-wider">
-                                                                Product Name
+                                                                Product
+                                                            </th>
+                                                            <th class="px-1 py-1 border-b-2 border-gray-300 text-left leading-4 text-gray-800 tracking-wider">
+                                                                Lot
                                                             </th>
                                                             <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">
-                                                                Quantity
+                                                                Qty
                                                             </th>
                                                             <th class="px-1 py-1 border-b-2 border-gray-300 text-left leading-4 text-gray-800 tracking-wider"></th>
                                                         </tr>
@@ -278,20 +284,21 @@ const InventoryOrders = defineComponent({
                                                                 <td>
                                                                     <p>{item.product.name}</p>
                                                                 </td>
-                                                                <td class="px-1 py-1 whitespace-no-wrap">
-                                                                    <label class="block">
-                                                                        <input
+                                                                <td>
+                                                                    <p>{item.stockLot.lotNumber} ({item.stockLot.quantity})</p>
+                                                                </td>
+                                                                <td class="px-1 py-1">
+                                                                    <input
                                                                             class="form-input"
                                                                             type="number"
                                                                             v-model={item.quantity}
                                                                             placeholder={''}
                                                                         />
-                                                                    </label>
                                                                 </td>
                                                                 <td class="px-1 whitespace-no-wrap">
                                                                     <button
                                                                         type="button"
-                                                                        class="bg-sky-800 text-white rounded-sm leading-none px-2 py-1"
+                                                                        class="w-16 bg-sky-800 text-white rounded-sm leading-none px-2 py-1"
                                                                         onClick={() => this.removeOrderProduct(item.product.uid)}
                                                                     >
                                                                         Remove
@@ -314,14 +321,14 @@ const InventoryOrders = defineComponent({
                                                 class="mt-4 bg-sky-800 text-white rounded-sm leading-none px-2 py-1"
                                                 onClick={() => this.updateOrder()}
                                             >
-                                                Update Order
+                                                Update
                                             </button>
                                             <button
                                                 type="button"
                                                 class="mt-4 bg-sky-800 text-white rounded-sm leading-none px-2 py-1"
                                                 onClick={() => this.submitOrder()}
                                             >
-                                                Finalize Order
+                                                Finalize
                                             </button>
                                         </div>
                                     </>
@@ -336,7 +343,10 @@ const InventoryOrders = defineComponent({
                                                     <thead>
                                                         <tr>
                                                             <th class="px-1 py-1 border-b-2 border-gray-300 text-left leading-4 text-gray-800 tracking-wider">
-                                                                Product Name
+                                                                Product
+                                                            </th>
+                                                            <th class="px-1 py-1 border-b-2 border-gray-300 text-left leading-4 text-gray-800 tracking-wider">
+                                                                Lot
                                                             </th>
                                                             <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">
                                                                 Available
@@ -357,7 +367,10 @@ const InventoryOrders = defineComponent({
                                                                     <p>{orderProduct.product.name}</p>
                                                                 </td>
                                                                 <td>
-                                                                    <p>{orderProduct.product.remaining}</p>
+                                                                    <p>{orderProduct.stockLot.lotNumber}</p>
+                                                                </td>
+                                                                <td>
+                                                                    <p>{orderProduct.stockLot.quantity}</p>
                                                                 </td>
                                                                 <td>
                                                                     <p>{orderProduct.quantity}</p>
