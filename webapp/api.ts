@@ -4,7 +4,7 @@ import { REST_BASE_URL, GQL_BASE_URL, STORAGE_AUTH_KEY } from './conf';
 
 const axiosInstance = axios.create({
     baseURL: REST_BASE_URL + '/api/v1/',
-    timeout: 1000,
+    timeout: 5000,
     headers: {
         'Content-Type': 'application/json',
         'Access-Control-Allow-Origin': '*',

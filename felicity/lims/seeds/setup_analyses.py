@@ -2,6 +2,7 @@ import logging
 from datetime import datetime
 from typing import Optional
 
+from apps.setup.models.setup import Department
 from felicity.apps.analysis import utils
 from felicity.apps.analysis.models.analysis import (Analysis, AnalysisCategory,
                                                     CodingStandard, Profile,
@@ -16,7 +17,6 @@ from felicity.apps.analysis.schemas import (AnalysisCategoryCreate,
 from felicity.apps.common.models import IdSequence
 from felicity.core.config import get_settings
 from felicity.database.session import async_session_factory
-
 from .data import get_seeds
 
 settings = get_settings()
@@ -119,10 +119,12 @@ async def seed_analyses_services_and_profiles() -> None:
 
     for _anal in analyses:
         analyte: Optional[Analysis] = await Analysis.get(name=_anal.get("name"))
+        category = await AnalysisCategory.get(name=_anal.get("category"))
         if not analyte:
             an_in = AnalysisCreate(
                 name=_anal.get("name"),
                 description=_anal.get("description"),
+                category_uid=category.uid if category else None,
                 keyword=_anal.get("keyword"),
                 sort_key=_anal.get("sort_key"),
                 active=bool(_anal.get("active")),
@@ -134,9 +136,12 @@ async def seed_analyses_services_and_profiles() -> None:
 
     for _prf in profiles:
         a_profile: Optional[Profile] = await Profile.get(name=_prf.get("name"))
+        department = await Department.get(name=_prf.get("department"))
         if not a_profile:
             prof_in = ProfileCreate(
-                name=_prf.get("name"), description=_prf.get("description")
+                name=_prf.get("name"),
+                description=_prf.get("description"),
+                department_uid=_prf.get("department")
             )
             a_profile = await Profile.create(prof_in)
 

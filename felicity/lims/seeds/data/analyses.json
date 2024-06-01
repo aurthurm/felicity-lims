@@ -1,5 +1,26 @@
 {
-  "categories": ["Quality Control", "Molecular Techniques"],
+  "categories": [
+    "Quality Control",
+    "Molecular",
+    "Nucleic Acid",
+    "Urinalysis",
+    "Hematology",
+    "Coagulation",
+    "Histology",
+    "Blood Bank",
+    "Cytology",
+    "Toxicology",
+    "Clinical Chemistry",
+    "Immunology",
+    "Serology",
+    "Microbiology",
+    "Bacteriology",
+    "Parasitology",
+    "Microscopy",
+    "Mycology",
+    "Culture",
+    "Endocrinology"
+  ],
   "qc_levels": [
     "Blank",
     "Negative Control",
@@ -13,360 +34,1443 @@
       "description": "QC Sample",
       "abbr": "QCS",
       "active": 1,
-      "mappins": [{ "loinc": "" }]
+      "mappins": [
+        {
+          "loinc": ""
+        }
+      ]
     },
     {
       "name": "Whole Blood",
       "description": "Whole Blood",
       "abbr": "WB",
       "active": 1,
-      "mappins": [{ "loinc": "" }]
+      "mappins": [
+        {
+          "loinc": ""
+        }
+      ]
     },
     {
       "name": "Blood Plasma",
       "description": "Blood Plasma",
       "abbr": "BP",
       "active": 1,
-      "mappins": [{ "loinc": "" }]
+      "mappins": [
+        {
+          "loinc": ""
+        }
+      ]
     },
     {
       "name": "Blood Serum",
       "description": "Blood Serum",
       "abbr": "BS",
       "active": 1,
-      "mappins": [{ "loinc": "" }]
+      "mappins": [
+        {
+          "loinc": ""
+        }
+      ]
     },
     {
       "name": "Dried Blood Spot",
       "description": "Dried Blood Spot",
       "abbr": "DBS",
       "active": 1,
-      "mappins": [{ "loinc": "" }]
+      "mappins": [
+        {
+          "loinc": ""
+        }
+      ]
     },
-    { "name": "Urine", "description": "Urine", "abbr": "BV", "active": 1, "mappins": [{ "loinc": "" }] },
-    { "name": "Stool", "description": "Stool", "abbr": "BG", "active": 1, "mappins": [{ "loinc": "" }] },
+    {
+      "name": "Urine",
+      "description": "Urine",
+      "abbr": "BV",
+      "active": 1,
+      "mappins": [
+        {
+          "loinc": ""
+        }
+      ]
+    },
+    {
+      "name": "Stool",
+      "description": "Stool",
+      "abbr": "BG",
+      "active": 1,
+      "mappins": [
+        {
+          "loinc": ""
+        }
+      ]
+    },
     {
       "name": "Synovial Fluid",
       "description": "Synovial Fluid",
       "abbr": "SF",
       "active": 0,
-      "mappins": [{ "loinc": "" }]
+      "mappins": [
+        {
+          "loinc": ""
+        }
+      ]
     },
     {
       "name": "Cerebral Spinal Fluid",
       "description": "Cerebral Spinal Fluid",
       "abbr": "CSF",
       "active": 0,
-      "mappins": [{ "loinc": "" }]
+      "mappins": [
+        {
+          "loinc": ""
+        }
+      ]
     },
     {
       "name": "Nasal-Pharyngeal Swab",
       "description": "Nasal-Pharyngeal Swab",
       "abbr": "NPS",
       "active": 1,
-      "mappins": [{ "loinc": "" }]
+      "mappins": [
+        {
+          "loinc": ""
+        }
+      ]
     },
     {
       "name": "Oral-Pharyngeal Swab",
       "description": "Oral-Pharyngeal Swab",
       "abbr": "OPS",
       "active": 0,
-      "mappins": [{ "loinc": "" }]
+      "mappins": [
+        {
+          "loinc": ""
+        }
+      ]
     },
     {
       "name": "Pus Swab",
       "description": "Pus Swab",
       "abbr": "PS",
       "active": 0,
-      "mappins": [{ "loinc": "" }]
+      "mappins": [
+        {
+          "loinc": ""
+        }
+      ]
     },
     {
       "name": "Arterial Blood",
       "description": "Arterial Blood",
       "abbr": "AB",
       "active": 0,
-      "mappins": [{ "loinc": "" }]
+      "mappins": [
+        {
+          "loinc": ""
+        }
+      ]
     },
     {
       "name": "Venous Blood",
       "description": "Vernous Blood",
       "abbr": "VB",
       "active": 0,
-      "mappins": [{ "loinc": "" }]
+      "mappins": [
+        {
+          "loinc": ""
+        }
+      ]
     }
   ],
   "analyses": [
     {
       "name": "HIV",
       "description": "Human Immune Virus",
+      "category": "",
       "keyword": "hiv",
       "sort_key": 1,
       "active": 1,
-      "mappins": [{ "loinc": "" }]
+      "mappins": [
+        {
+          "loinc": ""
+        }
+      ]
     },
     {
       "name": "HIV Viral Load",
       "description": "HIV Viral Load",
+      "category": "Molecular",
       "keyword": "hivViralLoad",
       "sort_key": 1,
       "active": 1,
-      "mappins": [{ "loinc": "" }]
+      "mappins": [
+        {
+          "loinc": ""
+        }
+      ]
     },
     {
       "name": "HIV EID",
       "description": "HIV Early Infant Diagnosis",
+      "category": "Molecular",
       "keyword": "hivEid",
       "sort_key": 1,
       "active": 1,
-      "mappins": [{ "loinc": "" }]
-    },
-    {
-      "name": "ESR",
-      "description": "Erythrocyte Sedimentation Rate",
-      "keyword": "esr",
-      "sort_key": 1,
-      "active": 1,
-      "mappins": [{ "loinc": "" }]
+      "mappins": [
+        {
+          "loinc": ""
+        }
+      ]
     },
     {
       "name": "C-RP",
       "description": "C Reactive Protein",
+      "category": "Serology",
+      "ucuum": "mg/L",
       "keyword": "c_rp",
       "sort_key": 1,
       "active": 1,
-      "mappins": [{ "loinc": "" }]
+      "mappins": [
+        {
+          "loinc": ""
+        }
+      ]
+    },
+    {
+      "name": "ESR",
+      "description": "Erythrocyte Sedimentation Rate",
+      "category": "Hematology",
+      "ucuum": "mm/h",
+      "keyword": "esr",
+      "sort_key": 1,
+      "active": 1,
+      "mappins": [
+        {
+          "loinc": ""
+        }
+      ]
+    },
+    {
+      "name": "Anti-CCP",
+      "description": "Anti-Cyclic Citrullinated Peptide",
+      "category": "Hematology",
+      "ucuum": "U/mL",
+      "keyword": "A-CCP",
+      "sort_key": 1,
+      "active": 1,
+      "mappins": [
+        {
+          "loinc": ""
+        }
+      ]
+    },
+    {
+      "name": "RF",
+      "description": "Rheumatoid Factor",
+      "category": "Serology",
+      "ucuum": "IU/mL",
+      "keyword": "RF",
+      "sort_key": 1,
+      "active": 1,
+      "mappins": [
+        {
+          "loinc": ""
+        }
+      ]
+    },
+    {
+      "name": "ANA",
+      "description": "Antinuclear Antibody",
+      "category": "Serology",
+      "ucuum": "",
+      "keyword": "ANA",
+      "sort_key": 1,
+      "active": 1,
+      "mappins": [
+        {
+          "loinc": ""
+        }
+      ]
     },
     {
       "name": "COVID 19",
       "description": "Corona Virus - SARS COV 2",
+      "category": "Molecular",
       "keyword": "sars-cov2",
       "sort_key": 1,
       "active": 1,
-      "mappins": [{ "loinc": "" }]
+      "mappins": [
+        {
+          "loinc": ""
+        }
+      ]
     },
-    {
-      "name": "HbA1cHbA1c",
-      "description": "HbA1cHbA1c",
-      "keyword": "HbA1cHbA1c",
-      "sort_key": 1,
-      "active": 1,
-      "mappins": [{ "loinc": "" }]
-    },
-
     {
       "name": "K+",
       "description": "Potassium",
+      "category": "Clinical Chemistry",
+      "ucuum": "mmol/L",
       "keyword": "potassium",
       "sort_key": 1,
       "active": 1,
-      "mappins": [{ "loinc": "" }]
+      "mappins": [
+        {
+          "loinc": ""
+        }
+      ]
     },
     {
       "name": "Na-",
       "description": "Sodium",
+      "category": "Clinical Chemistry",
+      "ucuum": "mmol/L",
       "keyword": "sodium",
       "sort_key": 2,
       "active": 1,
-      "mappins": [{ "loinc": "" }]
+      "mappins": [
+        {
+          "loinc": ""
+        }
+      ]
     },
     {
       "name": "Cl-",
       "description": "Chloride",
+      "category": "Clinical Chemistry",
+      "ucuum": "mmol/L",
       "keyword": "chloride",
       "sort_key": 3,
       "active": 1,
-      "mappins": [{ "loinc": "" }]
+      "mappins": [
+        {
+          "loinc": ""
+        }
+      ]
     },
     {
-      "name": "Creatinine",
+      "name": "Crea",
       "description": "Creatinine",
-      "keyword": "creatinine",
+      "category": "Clinical Chemistry",
+      "ucuum": "mg/dL",
+      "keyword": "crea",
       "sort_key": 4,
       "active": 1,
-      "mappins": [{ "loinc": "" }]
+      "mappins": [
+        {
+          "loinc": ""
+        }
+      ]
     },
     {
-      "name": "Urea",
-      "description": "Urea",
+      "name": "BUN",
+      "description": "Blood Urea Nitrogen",
+      "category": "Clinical Chemistry",
       "keyword": "urea",
       "sort_key": 5,
       "active": 1,
-      "mappins": [{ "loinc": "" }]
+      "mappins": [
+        {
+          "loinc": ""
+        }
+      ]
     },
-
+    {
+      "name": "CO2",
+      "description": "Evaluates bicarbonate level; important for maintaining acid-base balance.",
+      "category": "Clinical Chemistry",
+      "ucuum": "mmol/L",
+      "sort_key": 6,
+      "active": 1,
+      "mappins": [
+        {
+          "loinc": ""
+        }
+      ]
+    },
+    {
+      "name": "GLU",
+      "description": "Glucose",
+      "category": "Clinical Chemistry",
+      "ucuum": "mg/dL",
+      "keyword": "GLU",
+      "sort_key": 5,
+      "active": 1,
+      "mappins": [
+        {
+          "loinc": ""
+        }
+      ]
+    },
     {
       "name": "ALP",
       "description": "Alkaline Phosphatase",
+      "category": "Clinical Chemistry",
+      "ucuum": "IU/L",
       "keyword": "alp",
       "sort_key": 1,
       "active": 1,
-      "mappins": [{ "loinc": "" }]
+      "mappins": [
+        {
+          "loinc": ""
+        }
+      ]
     },
     {
       "name": "ALT",
       "description": "Alanine Aminotransferase",
+      "category": "Clinical Chemistry",
+      "ucuum": "IU/L",
       "keyword": "alt",
       "sort_key": 2,
       "active": 1,
-      "mappins": [{ "loinc": "" }]
+      "mappins": [
+        {
+          "loinc": ""
+        }
+      ]
     },
     {
       "name": "AST",
       "description": "Aspartate Aminotransferase",
+      "category": "Clinical Chemistry",
+      "ucuum": "IU/L",
       "keyword": "ast",
       "sort_key": 3,
       "active": 1,
-      "mappins": [{ "loinc": "" }]
+      "mappins": [
+        {
+          "loinc": ""
+        }
+      ]
     },
     {
       "name": "ALB",
       "description": "Albumin",
+      "category": "Clinical Chemistry",
+      "ucuum": "g/dL",
       "keyword": "alb",
       "sort_key": 4,
       "active": 1,
-      "mappins": [{ "loinc": "" }]
+      "mappins": [
+        {
+          "loinc": ""
+        }
+      ]
+    },
+    {
+      "name": "CAL",
+      "description": "Calcium",
+      "category": "Clinical Chemistry",
+      "ucuum": "mg/dL",
+      "keyword": "cal",
+      "sort_key": 4,
+      "active": 1,
+      "mappins": [
+        {
+          "loinc": ""
+        }
+      ]
+    },
+    {
+      "name": "P",
+      "description": "Phosphorous",
+      "category": "Clinical Chemistry",
+      "ucuum": "mg/dL",
+      "keyword": "p",
+      "sort_key": 4,
+      "active": 1,
+      "mappins": [
+        {
+          "loinc": ""
+        }
+      ]
     },
     {
       "name": "T-PROT",
       "description": "Total Protein",
+      "category": "Clinical Chemistry",
+      "ucuum": "g/dL",
       "keyword": "t-prot",
       "sort_key": 5,
       "active": 1,
-      "mappins": [{ "loinc": "" }]
+      "mappins": [
+        {
+          "loinc": ""
+        }
+      ]
     },
     {
       "name": "GGT",
       "description": "Gama Glutamyl Transferese",
+      "category": "Clinical Chemistry",
+      "ucuum": "IU/L",
       "keyword": "ggt",
       "sort_key": 6,
       "active": 1,
-      "mappins": [{ "loinc": "" }]
+      "mappins": [
+        {
+          "loinc": ""
+        }
+      ]
     },
     {
       "name": "D-BIL",
       "description": "Direct Bilirubin",
+      "category": "Clinical Chemistry",
+      "ucuum": "mg/dL",
       "keyword": "d-bil",
       "sort_key": 7,
       "active": 1,
-      "mappins": [{ "loinc": "" }]
+      "mappins": [
+        {
+          "loinc": ""
+        }
+      ]
     },
     {
       "name": "T-BIL",
       "description": "Total Bilirubin",
+      "category": "Clinical Chemistry",
+      "ucuum": "mg/dL",
       "keyword": "t-bil",
       "sort_key": 8,
       "active": 1,
-      "mappins": [{ "loinc": "" }]
+      "mappins": [
+        {
+          "loinc": ""
+        }
+      ]
     },
-
     {
-      "name": "TC",
+      "name": "HbA1c",
+      "description": "HbA1c",
+      "category": "Clinical Chemistry",
+      "ucuum": "%",
+      "keyword": "HbA1c",
+      "sort_key": 1,
+      "active": 1,
+      "mappins": [
+        {
+          "loinc": ""
+        }
+      ]
+    },
+    {
+      "name": "T-C",
       "description": "Total Cholesterol",
+      "category": "Clinical Chemistry",
+      "ucuum": "mg/dL",
       "keyword": "tc",
       "sort_key": 1,
       "active": 1,
-      "mappins": [{ "loinc": "" }]
+      "mappins": [
+        {
+          "loinc": ""
+        }
+      ]
+    },
+    {
+      "name": "C-Peptide",
+      "description": "C-Peptide",
+      "category": "Clinical Chemistry",
+      "ucuum": "ng/mL",
+      "keyword": "C-Pept",
+      "sort_key": 1,
+      "active": 1,
+      "mappins": [
+        {
+          "loinc": ""
+        }
+      ]
+    },
+    {
+      "name": "Insulin",
+      "description": "Insulin",
+      "category": "Clinical Chemistry",
+      "ucuum": "μIU/mL",
+      "keyword": "Insulin",
+      "sort_key": 1,
+      "active": 1,
+      "mappins": [
+        {
+          "loinc": ""
+        }
+      ]
+    },
+    {
+      "name": "OGTT",
+      "description": "Oral Glucose Tolerance Test",
+      "category": "Clinical Chemistry",
+      "ucuum": "mg/dL",
+      "keyword": "OGTT",
+      "sort_key": 1,
+      "active": 1,
+      "mappins": [
+        {
+          "loinc": ""
+        }
+      ]
     },
     {
       "name": "LDL",
       "description": "Low density lipoprotein cholesterol",
+      "category": "Clinical Chemistry",
+      "ucuum": "mg/dL",
       "keyword": "ldl",
       "sort_key": 2,
       "active": 1,
-      "mappins": [{ "loinc": "" }]
+      "mappins": [
+        {
+          "loinc": ""
+        }
+      ]
     },
     {
       "name": "HDL",
       "description": "High density lipoprotein cholesterol",
+      "category": "Clinical Chemistry",
+      "ucuum": "mg/dL",
       "keyword": "hdl",
       "sort_key": 3,
       "active": 1,
-      "mappins": [{ "loinc": "" }]
+      "mappins": [
+        {
+          "loinc": ""
+        }
+      ]
     },
     {
       "name": "Trig",
       "description": "Triglycerides",
+      "category": "Clinical Chemistry",
+      "ucuum": "mg/dL",
       "keyword": "trig",
       "sort_key": 4,
       "active": 1,
-      "mappins": [{ "loinc": "" }]
+      "mappins": [
+        {
+          "loinc": ""
+        }
+      ]
     },
-
+    {
+      "name": "TSH",
+      "description": "Thyroid-Stimulating Hormone",
+      "category": "Clinical Chemistry",
+      "ucuum": "μIU/mL",
+      "keyword": "TSH",
+      "sort_key": 4,
+      "active": 1,
+      "mappins": [
+        {
+          "loinc": ""
+        }
+      ]
+    },
+    {
+      "name": "FT4",
+      "description": "Free Thyroxine",
+      "category": "Clinical Chemistry",
+      "ucuum": "ng/dL",
+      "keyword": "FT4",
+      "sort_key": 4,
+      "active": 1,
+      "mappins": [
+        {
+          "loinc": ""
+        }
+      ]
+    },
+    {
+      "name": "T3",
+      "description": "Total or Free Triiodothyronine",
+      "category": "Clinical Chemistry",
+      "ucuum": "ng/dL",
+      "keyword": "T3",
+      "sort_key": 4,
+      "active": 1,
+      "mappins": [
+        {
+          "loinc": ""
+        }
+      ]
+    },
+    {
+      "name": "PT",
+      "description": "Prothrombin Time ",
+      "category": "Hematology",
+      "ucuum": "",
+      "keyword": "PT",
+      "sort_key": 4,
+      "active": 1,
+      "mappins": [
+        {
+          "loinc": ""
+        }
+      ]
+    },
+    {
+      "name": "INR",
+      "description": "International Normalized Ratio",
+      "category": "Hematology",
+      "ucuum": "",
+      "keyword": "INR",
+      "sort_key": 4,
+      "active": 1,
+      "mappins": [
+        {
+          "loinc": ""
+        }
+      ]
+    },
+    {
+      "name": "APTT",
+      "description": "Activated Partial Thromboplastin Time",
+      "category": "Hematology",
+      "ucuum": "",
+      "keyword": "APTT",
+      "sort_key": 4,
+      "active": 1,
+      "mappins": [
+        {
+          "loinc": ""
+        }
+      ]
+    },
+    {
+      "name": "Fibrinogen",
+      "description": "Fibrinogen",
+      "category": "Hematology",
+      "ucuum": "",
+      "keyword": "Fib",
+      "sort_key": 4,
+      "active": 1,
+      "mappins": [
+        {
+          "loinc": ""
+        }
+      ]
+    },
     {
       "name": "WBC",
       "description": "White Blood Cells",
+      "category": "Hematology",
+      "ucuum": "×10^3/μL",
       "keyword": "wbc",
       "sort_key": 1,
       "active": 1,
-      "mappins": [{ "loinc": "" }]
+      "mappins": [
+        {
+          "loinc": ""
+        }
+      ]
     },
     {
       "name": "RBC",
       "description": "Red Blood Cells",
+      "category": "Hematology",
+      "ucuum": "×10^6/μL",
       "keyword": "rbc",
       "sort_key": 2,
       "active": 1,
-      "mappins": [{ "loinc": "" }]
+      "mappins": [
+        {
+          "loinc": ""
+        }
+      ]
     },
     {
       "name": "HGB",
       "description": "Haemoglobin",
+      "category": "Hematology",
+      "ucuum": "g/dL",
       "keyword": "hbg",
       "sort_key": 3,
       "active": 1,
-      "mappins": [{ "loinc": "" }]
+      "mappins": [
+        {
+          "loinc": ""
+        }
+      ]
     },
     {
       "name": "HCT",
       "description": "Haematocrit",
+      "category": "Hematology",
+      "ucuum": "%",
       "keyword": "hct",
       "sort_key": 4,
       "active": 1,
-      "mappins": [{ "loinc": "" }]
+      "mappins": [
+        {
+          "loinc": ""
+        }
+      ]
     },
     {
       "name": "MVC",
       "description": "Mean Corpuscular Volume",
+      "category": "Hematology",
+      "ucuum": "fL",
       "keyword": "mcv",
       "sort_key": 5,
       "active": 1,
-      "mappins": [{ "loinc": "" }]
+      "mappins": [
+        {
+          "loinc": ""
+        }
+      ]
     },
     {
       "name": "MCH",
       "description": "Mean Corpuscular Haemoglobin",
+      "category": "Hematology",
+      "ucuum": "pg",
       "keyword": "mch",
       "sort_key": 6,
       "active": 1,
-      "mappins": [{ "loinc": "" }]
+      "mappins": [
+        {
+          "loinc": ""
+        }
+      ]
     },
     {
       "name": "MCHC",
       "description": "Mean Corpuscular Haemoglobin Concentration",
+      "category": "Hematology",
+      "ucuum": "g/dL",
       "keyword": "mchc",
       "sort_key": 7,
       "active": 1,
-      "mappins": [{ "loinc": "" }]
+      "mappins": [
+        {
+          "loinc": ""
+        }
+      ]
+    },
+    {
+      "name": "RDW",
+      "description": "Red Cell Distribution Width",
+      "category": "Hematology",
+      "ucuum": "%",
+      "keyword": "RDW",
+      "sort_key": 7,
+      "active": 1,
+      "mappins": [
+        {
+          "loinc": ""
+        }
+      ]
     },
     {
       "name": "PLT",
       "description": "Platelets",
+      "category": "Hematology",
+      "ucuum": "×10^3/μL",
       "keyword": "plt",
       "sort_key": 8,
       "active": 1,
-      "mappins": [{ "loinc": "" }]
+      "mappins": [
+        {
+          "loinc": ""
+        }
+      ]
+    },
+    {
+      "name": "Neut (Abs)",
+      "description": "Neutrophils Absolute",
+      "category": "Hematology",
+      "ucuum": "×10^3/μL",
+      "keyword": "NeutAbs",
+      "sort_key": 8,
+      "active": 1,
+      "mappins": [
+        {
+          "loinc": ""
+        }
+      ]
+    },
+    {
+      "name": "Neut (%)",
+      "description": "Neutrophils %",
+      "category": "Hematology",
+      "ucuum": "%",
+      "keyword": "NeutPct",
+      "sort_key": 8,
+      "active": 1,
+      "mappins": [
+        {
+          "loinc": ""
+        }
+      ]
+    },
+    {
+      "name": "Lymph (Abs)",
+      "description": "Neutrophils Absolute",
+      "category": "Hematology",
+      "ucuum": "×10^3/μL",
+      "keyword": "LymphAbs",
+      "sort_key": 8,
+      "active": 1,
+      "mappins": [
+        {
+          "loinc": ""
+        }
+      ]
+    },
+    {
+      "name": "Lymph (%)",
+      "description": "Lymphocytes %",
+      "category": "Hematology",
+      "ucuum": "%",
+      "keyword": "LymphPct",
+      "sort_key": 8,
+      "active": 1,
+      "mappins": [
+        {
+          "loinc": ""
+        }
+      ]
+    },
+    {
+      "name": "Mono (Abs)",
+      "description": "Monocytes Absolute",
+      "category": "Hematology",
+      "ucuum": "×10^3/μL",
+      "keyword": "MonoAbs",
+      "sort_key": 8,
+      "active": 1,
+      "mappins": [
+        {
+          "loinc": ""
+        }
+      ]
+    },
+    {
+      "name": "Mono (%)",
+      "description": "Monocytes %",
+      "category": "Hematology",
+      "ucuum": "%",
+      "keyword": "MonoPct",
+      "sort_key": 8,
+      "active": 1,
+      "mappins": [
+        {
+          "loinc": ""
+        }
+      ]
+    },
+    {
+      "name": "Eos (Abs)",
+      "description": "Eosinophils Absolute",
+      "category": "Hematology",
+      "ucuum": "×10^3/μL",
+      "keyword": "EosAbs",
+      "sort_key": 8,
+      "active": 1,
+      "mappins": [
+        {
+          "loinc": ""
+        }
+      ]
+    },
+    {
+      "name": "Eos (%)",
+      "description": "Eosinophils %",
+      "category": "Hematology",
+      "ucuum": "%",
+      "keyword": "EosPct",
+      "sort_key": 8,
+      "active": 1,
+      "mappins": [
+        {
+          "loinc": ""
+        }
+      ]
+    },
+    {
+      "name": "Baso (Abs)",
+      "description": "Basophils Absolute",
+      "category": "Hematology",
+      "ucuum": "×10^3/μL",
+      "keyword": "BasoAbs",
+      "sort_key": 8,
+      "active": 1,
+      "mappins": [
+        {
+          "loinc": ""
+        }
+      ]
+    },
+    {
+      "name": "Baso (%)",
+      "description": "Basophils %",
+      "category": "Hematology",
+      "ucuum": "%",
+      "keyword": "BasoPct",
+      "sort_key": 8,
+      "active": 1,
+      "mappins": [
+        {
+          "loinc": ""
+        }
+      ]
+    },
+    {
+      "name": "Retic Count (Abs)",
+      "description": "Reticulocyte Count Absolute",
+      "category": "Hematology",
+      "ucuum": "×10^3/μL",
+      "keyword": "ReticAbs",
+      "sort_key": 8,
+      "active": 1,
+      "mappins": [
+        {
+          "loinc": ""
+        }
+      ]
+    },
+    {
+      "name": "Retic Count (%)",
+      "description": "Reticulocyte Count %",
+      "category": "Hematology",
+      "ucuum": "%",
+      "keyword": "ReticPct",
+      "sort_key": 8,
+      "active": 1,
+      "mappins": [
+        {
+          "loinc": ""
+        }
+      ]
+    },
+    {
+      "name": "Peripheral Blood Smear",
+      "description": "Peripheral Blood Smear Evaluation",
+      "category": "Hematology",
+      "ucuum": "",
+      "keyword": "PeBldSm",
+      "sort_key": 8,
+      "active": 1,
+      "mappins": [
+        {
+          "loinc": ""
+        }
+      ]
+    },
+    {
+      "name": "SI",
+      "description": "Serum Iron",
+      "category": "Hematology",
+      "keyword": "SI",
+      "sort_key": 1,
+      "active": 1,
+      "mappins": [
+        {
+          "loinc": ""
+        }
+      ]
+    },
+    {
+      "name": "TIBC",
+      "description": "Total Iron-Binding Capacity",
+      "category": "Hematology",
+      "keyword": "TIBC",
+      "sort_key": 1,
+      "active": 1,
+      "mappins": [
+        {
+          "loinc": ""
+        }
+      ]
+    },
+    {
+      "name": "FERR",
+      "description": "Ferritin",
+      "category": "Hematology",
+      "keyword": "FERR",
+      "sort_key": 1,
+      "active": 1,
+      "mappins": [
+        {
+          "loinc": ""
+        }
+      ]
+    },
+    {
+      "name": "T-Saturation",
+      "description": "Transferrin Saturation",
+      "category": "Hematology",
+      "keyword": "TSat",
+      "sort_key": 1,
+      "active": 1,
+      "mappins": [
+        {
+          "loinc": ""
+        }
+      ]
+    },
+    {
+      "name": "Troponin",
+      "description": "Troponin",
+      "category": "Clinical Chemistry",
+      "ucuum": "ng/mL",
+      "keyword": "Troponin",
+      "sort_key": 1,
+      "active": 1,
+      "mappins": [
+        {
+          "loinc": ""
+        }
+      ]
+    },
+    {
+      "name": "CK-MB",
+      "description": "Creatine Kinase-MB",
+      "ucuum": "ng/mL",
+      "category": "Clinical Chemistry",
+      "keyword": "CK-MB",
+      "sort_key": 1,
+      "active": 1,
+      "mappins": [
+        {
+          "loinc": ""
+        }
+      ]
+    },
+    {
+      "name": "Myoglobin",
+      "description": "Myoglobin",
+      "ucuum": "ng/mL",
+      "category": "Clinical Chemistry",
+      "keyword": "Myoglobin",
+      "sort_key": 1,
+      "active": 1,
+      "mappins": [
+        {
+          "loinc": ""
+        }
+      ]
+    },
+    {
+      "name": "NT-proBNP",
+      "description": "NT-pro B-Type Natriuretic Peptide",
+      "category": "Clinical Chemistry",
+      "ucuum": "pg/mL",
+      "keyword": "NT-proBNP",
+      "sort_key": 1,
+      "active": 1,
+      "mappins": [
+        {
+          "loinc": ""
+        }
+      ]
+    },
+    {
+      "name": "BNP",
+      "description": "B-Type Natriuretic Peptide",
+      "category": "Clinical Chemistry",
+      "ucuum": "pg/mL",
+      "keyword": "BNP",
+      "sort_key": 1,
+      "active": 1,
+      "mappins": [
+        {
+          "loinc": ""
+        }
+      ]
+    },
+    {
+      "name": "pH",
+      "description": "pH",
+      "category": "Clinical Chemistry",
+      "ucuum": "",
+      "keyword": "NT-proBNP",
+      "sort_key": 1,
+      "active": 1,
+      "mappins": [
+        {
+          "loinc": ""
+        }
+      ]
+    },
+    {
+      "name": "PaO2",
+      "description": "Partial Pressure of Oxygen",
+      "category": "Clinical Chemistry",
+      "ucuum": "mmHg",
+      "keyword": "PaO2",
+      "sort_key": 1,
+      "active": 1,
+      "mappins": [
+        {
+          "loinc": ""
+        }
+      ]
+    },
+    {
+      "name": "PaCO2",
+      "description": "Partial Pressure of Carbon Dioxide",
+      "category": "Clinical Chemistry",
+      "ucuum": "mmHg",
+      "keyword": "NPaCO2",
+      "sort_key": 1,
+      "active": 1,
+      "mappins": [
+        {
+          "loinc": ""
+        }
+      ]
+    },
+    {
+      "name": "HCO3",
+      "description": "Bicarbonate",
+      "category": "Clinical Chemistry",
+      "ucuum": "mmol/L",
+      "keyword": "HCO3",
+      "sort_key": 1,
+      "active": 1,
+      "mappins": [
+        {
+          "loinc": ""
+        }
+      ]
+    },
+    {
+      "name": "O2Sat",
+      "description": "Oxygen Saturation",
+      "category": "Clinical Chemistry",
+      "ucuum": "%",
+      "keyword": "O2Sat",
+      "sort_key": 1,
+      "active": 1,
+      "mappins": [
+        {
+          "loinc": ""
+        }
+      ]
+    },
+    {
+      "name": "Base Excess",
+      "description": "pH",
+      "category": "Clinical Chemistry",
+      "ucuum": "mmol/L",
+      "keyword": "Ba-Ex",
+      "sort_key": 1,
+      "active": 1,
+      "mappins": [
+        {
+          "loinc": ""
+        }
+      ]
+    },
+    {
+      "name": "Testosterone",
+      "description": "Testosterone",
+      "category": "Clinical Chemistry",
+      "ucuum": "ng/dL",
+      "keyword": "Testos",
+      "sort_key": 1,
+      "active": 1,
+      "mappins": [
+        {
+          "loinc": ""
+        }
+      ]
+    },
+    {
+      "name": "Estradiol",
+      "description": "Estradiol",
+      "category": "Clinical Chemistry",
+      "ucuum": "pg/mL",
+      "keyword": "Estrad",
+      "sort_key": 1,
+      "active": 1,
+      "mappins": [
+        {
+          "loinc": ""
+        }
+      ]
+    },
+    {
+      "name": "Progesterone",
+      "description": "Progesterone",
+      "category": "Clinical Chemistry",
+      "ucuum": "ng/mL",
+      "keyword": "Progest",
+      "sort_key": 1,
+      "active": 1,
+      "mappins": [
+        {
+          "loinc": ""
+        }
+      ]
+    },
+    {
+      "name": "LH",
+      "description": "Luteinizing Hormone",
+      "category": "Clinical Chemistry",
+      "ucuum": "mIU/mL",
+      "keyword": "LH",
+      "sort_key": 1,
+      "active": 1,
+      "mappins": [
+        {
+          "loinc": ""
+        }
+      ]
+    },
+    {
+      "name": "FSH",
+      "description": "Follicle-Stimulating Hormone",
+      "category": "Clinical Chemistry",
+      "ucuum": "mIU/mL",
+      "keyword": "FSH",
+      "sort_key": 1,
+      "active": 1,
+      "mappins": [
+        {
+          "loinc": ""
+        }
+      ]
+    },
+    {
+      "name": "Folate",
+      "description": "Folate",
+      "category": "Clinical Chemistry",
+      "ucuum": "ng/mL",
+      "keyword": "Fol",
+      "sort_key": 1,
+      "active": 1,
+      "mappins": [
+        {
+          "loinc": ""
+        }
+      ]
+    },
+    {
+      "name": "Vit B12",
+      "description": "Vitamin B12",
+      "category": "Clinical Chemistry",
+      "ucuum": "pg/mL",
+      "keyword": "Vit-B12",
+      "sort_key": 1,
+      "active": 1,
+      "mappins": [
+        {
+          "loinc": ""
+        }
+      ]
+    },
+    {
+      "name": "Vit D",
+      "description": "Vitamin D (25-hydroxyvitamin D)",
+      "category": "Clinical Chemistry",
+      "ucuum": "ng/mL",
+      "keyword": "Vit-D",
+      "sort_key": 1,
+      "active": 1,
+      "mappins": [
+        {
+          "loinc": ""
+        }
+      ]
     }
   ],
   "analyses_profiles": [
     {
-      "name": "U&E's",
-      "description": "Urea and Electrolytes",
-      "analyses_names": ["Urea", "Creatinine", "K+", "Na-", "Cl-"],
-      "mappins": [{ "loinc": "" }]
+      "name": "Electrolyte Panel",
+      "description": "Electrolyte Panel",
+      "department": "Chemistry",
+      "analyses_names": [
+        "K+",
+        "Na-",
+        "Cl-",
+        "CO2"
+      ],
+      "mappins": [
+        {
+          "loinc": ""
+        }
+      ]
     },
     {
-      "name": "LFT's",
-      "description": "Liver Function Tests",
+      "name": "Renal Panel",
+      "description": "Renal Panel",
+      "department": "Chemistry",
+      "analyses_names": [
+        "K+",
+        "Na-",
+        "Cl-",
+        "CO2",
+        "BUN",
+        "Crea",
+        "GLU",
+        "CAL",
+        "P",
+        "ALB"
+      ],
+      "mappins": [
+        {
+          "loinc": ""
+        }
+      ]
+    },
+    {
+      "name": "Basic Metabolic Panel",
+      "description": "Basic Metabolic Panel (BMP)",
+      "department": "Chemistry",
+      "analyses_names": [
+        "K+",
+        "Na-",
+        "Cl-",
+        "CAL",
+        "CO2",
+        "GLU",
+        "BUN",
+        "Crea"
+      ],
+      "mappins": [
+        {
+          "loinc": ""
+        }
+      ]
+    },
+    {
+      "name": "Comprehensive Metabolic PaneL",
+      "description": "Comprehensive Metabolic Panel (CMP)",
+      "department": "Chemistry",
+      "analyses_names": [
+        "K+",
+        "Na-",
+        "Cl-",
+        "CAL",
+        "CO2",
+        "GLU",
+        "BUN",
+        "Crea",
+        "ALP",
+        "ALT",
+        "AST",
+        "ALB",
+        "T-PROT",
+        "GGT",
+        "D-BIL",
+        "T-BIL"
+      ],
+      "mappins": [
+        {
+          "loinc": ""
+        }
+      ]
+    },
+    {
+      "name": "Liver Function Panel",
+      "description": "Liver Function Panel",
+      "department": "Chemistry",
       "analyses_names": [
         "ALP",
         "ALT",
@@ -377,17 +1481,163 @@
         "D-BIL",
         "T-BIL"
       ],
-      "mappins": [{ "loinc": "" }]
+      "mappins": [
+        {
+          "loinc": ""
+        }
+      ]
     },
     {
-      "name": "Lipids",
-      "description": "Lipid or Cholesterol Profile",
-      "analyses_names": ["TC", "LDL", "HDL", "Trig"],
-      "mappins": [{ "loinc": "" }]
+      "name": "Thyroid Panel",
+      "description": "Thyroid Panel",
+      "department": "Chemistry",
+      "analyses_names": [
+        "TSH",
+        "FT4",
+        "T3"
+      ],
+      "mappins": [
+        {
+          "loinc": ""
+        }
+      ]
     },
     {
-      "name": "FBC",
-      "description": "Full Blood Count",
+      "name": "Lipid Panel",
+      "description": "Lipid Panel",
+      "department": "Chemistry",
+      "analyses_names": [
+        "TC",
+        "LDL",
+        "HDL",
+        "Trig"
+      ],
+      "mappins": [
+        {
+          "loinc": ""
+        }
+      ]
+    },
+    {
+      "name": "Coagulation Panel",
+      "description": "Coagulation Panel",
+      "department": "Hematology",
+      "analyses_names": [
+        "PT",
+        "INR",
+        "APTT",
+        "Fibrinogen"
+      ],
+      "mappins": [
+        {
+          "loinc": ""
+        }
+      ]
+    },
+    {
+      "name": "Iron Panel",
+      "description": "Iron Panel",
+      "department": "Chemistry",
+      "analyses_names": [
+        "SI",
+        "TIBC",
+        "FERR",
+        "T-Saturation"
+      ],
+      "mappins": [
+        {
+          "loinc": ""
+        }
+      ]
+    },
+    {
+      "name": "Cardiac Panel",
+      "description": "Cardiac Panel",
+      "department": "Chemistry",
+      "analyses_names": [
+        "Troponin",
+        "CK-MB",
+        "Myoglobin",
+        "BNP",
+        "NT-proBNP"
+      ],
+      "mappins": [
+        {
+          "loinc": ""
+        }
+      ]
+    },
+    {
+      "name": "Arterial Blood Gas Panel",
+      "description": "Arterial Blood Gas (ABG) Panel",
+      "department": "Chemistry",
+      "analyses_names": [
+        "pH",
+        "PaO2",
+        "PaCO2",
+        "HCO3",
+        "O2Sat",
+        "Base Excess"
+      ],
+      "mappins": [
+        {
+          "loinc": ""
+        }
+      ]
+    },
+    {
+      "name": "Hormone Panel",
+      "description": "Hormone Panel",
+      "department": "Chemistry",
+      "analyses_names": [
+        "Testosterone",
+        "Estradiol",
+        "Progesterone",
+        "LH",
+        "FSH"
+      ],
+      "mappins": [
+        {
+          "loinc": ""
+        }
+      ]
+    },
+    {
+      "name": "Autoimmune Panel",
+      "description": "Autoimmune Panel",
+      "department": "Chemistry",
+      "analyses_names": [
+        "ANA",
+        "RF",
+        "Anti-CCP",
+        "ESR",
+        "C-RP"
+      ],
+      "mappins": [
+        {
+          "loinc": ""
+        }
+      ]
+    },
+    {
+      "name": "Diabetes Panel",
+      "description": "Diabetes Panel",
+      "department": "Chemistry",
+      "analyses_names": [
+        "GLU",
+        "HbA1c",
+        "C-Peptide"
+      ],
+      "mappins": [
+        {
+          "loinc": ""
+        }
+      ]
+    },
+    {
+      "name": "Complete Blood Count",
+      "description": "Complete Blood Count (CBC)",
+      "department": "Haematology",
       "analyses_names": [
         "WBC",
         "RBC",
@@ -396,15 +1646,111 @@
         "MVC",
         "MCH",
         "MCHC",
+        "RDW",
         "PLT"
       ],
-      "mappins": [{ "loinc": "" }]
+      "mappins": [
+        {
+          "loinc": ""
+        }
+      ]
+    },
+    {
+      "name": "Complete Blood with Differential",
+      "description": "Complete Blood Count (CBC) with Differential",
+      "department": "Haematology",
+      "analyses_names": [
+        "WBC",
+        "RBC",
+        "HGB",
+        "HCT",
+        "MVC",
+        "MCH",
+        "MCHC",
+        "RDW",
+        "PLT",
+        "Neut (Abs)",
+        "Neut (%)",
+        "Lymph (Abs)",
+        "Lymph (%)",
+        "Mono (Abs)",
+        "Mono (%)",
+        "Eos (Abs)",
+        "Eos (%)",
+        "Baso (Abs)",
+        "Baso (%)"
+      ],
+      "mappins": [
+        {
+          "loinc": ""
+        }
+      ]
+    },
+    {
+      "name": "Complete Blood Count with Retic Count",
+      "description": "Complete Blood Count (CBC)",
+      "department": "Haematology",
+      "analyses_names": [
+        "WBC",
+        "RBC",
+        "HGB",
+        "HCT",
+        "MVC",
+        "MCH",
+        "MCHC",
+        "RDW",
+        "PLT",
+        "Retic Count (Abs)",
+        "Retic Count (%)"
+      ],
+      "mappins": [
+        {
+          "loinc": ""
+        }
+      ]
+    },
+    {
+      "name": "Complete Blood Count with Peripheral Blood Smear",
+      "description": "Complete Blood Count (CBC)",
+      "department": "Haematology",
+      "analyses_names": [
+        "WBC",
+        "RBC",
+        "HGB",
+        "HCT",
+        "MVC",
+        "MCH",
+        "MCHC",
+        "RDW",
+        "PLT",
+        "Peripheral Blood Smear"
+      ],
+      "mappins": [
+        {
+          "loinc": ""
+        }
+      ]
+    },
+    {
+      "name": "Vitamin Panel",
+      "description": "Vitamin Panel",
+      "department": "Chemistry",
+      "analyses_names": [
+        "Folate",
+        "Vit D",
+        "Vit B12"
+      ],
+      "mappins": [
+        {
+          "loinc": ""
+        }
+      ]
     }
   ],
   "rejection_reasons": [
     "Sample clotted",
     "Sample details and form details not matching",
-    "Sample spoilled",
+    "Sample spoiled",
     "Sample insufficient",
     "Sample haemolysed",
     "Sample too old"
