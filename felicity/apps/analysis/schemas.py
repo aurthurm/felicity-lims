@@ -268,7 +268,7 @@ class AnalysisBase(BaseAuditModel):
     profiles: list[Profile] | None = None
     sample_types: list[SampleType] | None = None
     tat_length_minutes: int | None = None
-    unit: str | None = None
+    unit_uid: str | None = None
     category_uid: str | None = None
     sort_key: int | None = 0
     internal_use: bool | None = False

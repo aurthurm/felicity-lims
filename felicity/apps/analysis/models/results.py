@@ -7,7 +7,7 @@ try:
 except ImportError:
     from typing_extensions import Self
 
-from sqlalchemy import (Boolean, Column, DateTime, ForeignKey, Integer, String,
+from sqlalchemy import (Boolean, Column, DateTime, ForeignKey, Integer, String, Text,
                         Table)
 from sqlalchemy.orm import relationship
 
@@ -51,14 +51,13 @@ class AnalysisResult(Auditable, BaseMPTT):
     laboratory_instrument = relationship("LaboratoryInstrument", lazy="selectin")
     method_uid = Column(String, ForeignKey("method.uid"), nullable=True)
     method = relationship("Method", lazy="selectin")
-    result = Column(String, nullable=True)
+    result = Column(Text, nullable=True)
     analyst_uid = Column(String, ForeignKey("user.uid"), nullable=True)
     analyst = relationship("User", foreign_keys=[analyst_uid], lazy="selectin")
     submitted_by_uid = Column(String, ForeignKey("user.uid"), nullable=True)
     submitted_by = relationship(
         "User", foreign_keys=[submitted_by_uid], lazy="selectin"
     )
-
     submitted_by_name = Column(String, nullable=True)
     date_submitted = Column(DateTime, nullable=True)
     verified_by = relationship("User", secondary=result_verification, lazy="selectin")

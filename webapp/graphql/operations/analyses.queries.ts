@@ -70,7 +70,7 @@ export const GET_ALL_ANALYSES_SERVICES = gql`
                     unit {
                         uid
                         name
-                        isSiUnit
+                        description
                     }
                     min
                     max
@@ -253,7 +253,7 @@ export const GET_ALL_ANALYSES_PROFILES_AND_SERVICES = gql`
                     unit {
                         uid
                         name
-                        isSiUnit
+                        description
                     }
                     min
                     max

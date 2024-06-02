@@ -111,5 +111,5 @@ export interface IDepartment {
 export interface IUnit {
     uid?: string;
     name?: string;
-    isSiUnit?: boolean;
+    description?: string;
 }

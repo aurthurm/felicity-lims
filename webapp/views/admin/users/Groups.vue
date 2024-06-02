@@ -123,7 +123,7 @@ const accordion = defineAsyncComponent(
     <hr />
 
     <div class="grid grid-cols-12 gap-4 mt-2">
-      <section class="col-span-3 overflow-y-scroll overscroll-contain patient-scrol">
+      <section class="col-span-3 overflow-y-scroll overscroll-contain max-h-[540px]">
         <ul>
           <li 
           v-for="group in groups"

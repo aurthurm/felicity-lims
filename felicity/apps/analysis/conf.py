@@ -50,3 +50,12 @@ class Priorities(object):
 
 
 priorities = Priorities()
+
+
+class ResultType:
+    NUMERIC = "numeric"  # strict numeric
+    SHORT_TEXT = "short-text"  # short text and numeric
+    LONG_TEXT = "long-text"  # strictly long text
+
+
+result_types = ResultType()

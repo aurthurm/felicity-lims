@@ -1,23 +1,5 @@
 [
   {
-    "case-sensitive code": "'",
-    "name (display)": "arc minute",
-    "category": "Clinical",
-    "synonyms": "arcminutes; arcmin; arc minutes; arc mins",
-    "LOINC property": "Angle",
-    "Guidance": "equal to 1/60 degree; used in optometry and opthamology (e.g. visual acuity tests)",
-    "source": "UCUM"
-  },
-  {
-    "case-sensitive code": "''",
-    "name (display)": "arc second",
-    "category": "Clinical",
-    "synonyms": "arcseconds; arcsecs",
-    "LOINC property": "Angle",
-    "Guidance": "equal to 1/60 arcminute = 1/3600 degree; used in optometry and opthamology (e.g. visual acuity tests)",
-    "source": "UCUM"
-  },
-  {
     "case-sensitive code": "%",
     "name (display)": "",
     "category": "Clinical",
@@ -25,33 +7,6 @@
     "LOINC property": "FR; NFR; MFR; CFR; SFR Rto; etc.",
     "Guidance": "",
     "source": "UCUM"
-  },
-  {
-    "case-sensitive code": "%[slope]",
-    "name (display)": "percent of slope",
-    "category": "Clinical",
-    "synonyms": "% slope; %slope; percents slopes",
-    "LOINC property": "VelFr; ElpotRatFr; VelRtoFr; AccelFr",
-    "Guidance": "",
-    "source": "UCUM"
-  },
-  {
-    "case-sensitive code": "/(12.h)",
-    "name (display)": "per twelve hour",
-    "category": "Clinical",
-    "synonyms": "per 12 hours; 12hrs; 12 hrs; /12hrs",
-    "LOINC property": "Rat",
-    "Guidance": "",
-    "source": "LOINC"
-  },
-  {
-    "case-sensitive code": "/[arb'U]",
-    "name (display)": "per arbitrary unit",
-    "category": "Clinical",
-    "synonyms": "/arbU",
-    "LOINC property": "InvA",
-    "Guidance": "",
-    "source": "LOINC"
   },
   {
     "case-sensitive code": "/[HPF]",
@@ -349,16 +304,7 @@
     "LOINC property": "Area",
     "Guidance": "the standard unit for acre used in the US and internationally",
     "source": "UCUM"
-  },
-  {
-    "case-sensitive code": "[acr_us]",
-    "name (display)": "acre - US",
-    "category": "Nonclinical",
-    "synonyms": "Acre USA Survey; Acre USA; survey acres",
-    "LOINC property": "Area",
-    "Guidance": "an older unit based on pre 1959 US statute lengths that is still sometimes used in the US only for land survey purposes.",
-    "source": "UCUM"
-  },
+  }
   {
     "case-sensitive code": "[Amb'a'1'U]",
     "name (display)": "allergen unit for Ambrosia artemisiifolia",
@@ -6750,15 +6696,6 @@
     "source": "LOINC"
   },
   {
-    "case-sensitive code": "us",
-    "name (display)": "microsecond",
-    "category": "Clinical",
-    "synonyms": "microseconds",
-    "LOINC property": "Time",
-    "Guidance": "",
-    "source": "LOINC"
-  },
-  {
     "case-sensitive code": "uU/g",
     "name (display)": "micro enzyme unit per gram",
     "category": "Clinical",
@@ -6784,50 +6721,5 @@
     "LOINC property": "CCnc",
     "Guidance": "1 U is the standard enzyme unit which equals 1 micromole substrate catalyzed per minute (1 umol/min); 1 uU = 1pmol/min",
     "source": "LOINC"
-  },
-  {
-    "case-sensitive code": "uV",
-    "name (display)": "microvolt",
-    "category": "Clinical",
-    "synonyms": "microvolts",
-    "LOINC property": "Elpot",
-    "Guidance": "unit of electric potential (voltage)",
-    "source": "LOINC"
-  },
-  {
-    "case-sensitive code": "V",
-    "name (display)": "volt",
-    "category": "Clinical",
-    "synonyms": "volts",
-    "LOINC property": "Elpot",
-    "Guidance": "unit of electric potential (voltage) = 1 Joule per Coulomb (J/C)",
-    "source": "UCUM"
-  },
-  {
-    "case-sensitive code": "W",
-    "name (display)": "watt",
-    "category": "Clinical",
-    "synonyms": "watts",
-    "LOINC property": "EngRat",
-    "Guidance": "unit of power equal to 1 Joule per second (J/s) =  kg⋅m2⋅s−3",
-    "source": "UCUM"
-  },
-  {
-    "case-sensitive code": "Wb",
-    "name (display)": "weber",
-    "category": "Clinical",
-    "synonyms": "magnetic flux; webers",
-    "LOINC property": "",
-    "Guidance": "unit of magnetic flux equal to Volt second",
-    "source": "UCUM"
-  },
-  {
-    "case-sensitive code": "wk",
-    "name (display)": "week",
-    "category": "Clinical",
-    "synonyms": "weeks; wks",
-    "LOINC property": "Time",
-    "Guidance": "",
-    "source": "UCUM"
   }
 ]

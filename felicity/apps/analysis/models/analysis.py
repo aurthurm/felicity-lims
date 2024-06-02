@@ -2,6 +2,8 @@ import logging
 from datetime import datetime, timedelta
 from typing import Any, List, Union
 
+from felicity.apps.analysis.conf import ResultType
+
 try:
     from typing import Self
 except ImportError:
@@ -282,6 +284,8 @@ class Analysis(BaseAuditDBModel):
         "AnalysisUncertainty", backref="analysis", lazy="selectin"
     )
     result_options = relationship("ResultOption", backref="analyses", lazy="selectin")
+    # result_type : numeric, short-text, long-text (long text are a special requiring special handling)
+    result_type = Column(String, default=ResultType.SHORT_TEXT, nullable=False)
     category_uid = Column(String, ForeignKey("analysis_category.uid"))
     category = relationship(AnalysisCategory, backref="analyses", lazy="selectin")
     tat_length_minutes = Column(Integer, nullable=True)  # to calculate TAT

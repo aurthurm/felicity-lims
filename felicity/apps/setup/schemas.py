@@ -4,6 +4,7 @@ from pydantic import BaseModel, ConfigDict, EmailStr
 
 from felicity.apps.common.schemas import BaseAuditModel
 
+
 #
 #  Laboratory
 #
@@ -107,9 +108,7 @@ class DepartmentUpdate(DepartmentBase):
 
 class DepartmentInDBBase(DepartmentBase):
     uid: str = None
-
-
-model_config = ConfigDict(from_attributes=True)
+    model_config = ConfigDict(from_attributes=True)
 
 
 # Additional properties to return via API
@@ -129,7 +128,7 @@ class DepartmentInDB(DepartmentInDBBase):
 # Shared properties
 class UnitBase(BaseModel):
     name: str = None
-    is_si_unit: bool = False
+    description: str | None = None
 
 
 # Properties to receive via API on creation
@@ -144,9 +143,7 @@ class UnitUpdate(UnitBase):
 
 class UnitInDBBase(UnitBase):
     uid: str = None
-
-
-model_config = ConfigDict(from_attributes=True)
+    model_config = ConfigDict(from_attributes=True)
 
 
 # Additional properties to return via API
@@ -182,9 +179,7 @@ class SupplierUpdate(SupplierBase):
 
 class SupplierInDBBase(SupplierBase):
     uid: str = None
-
-
-model_config = ConfigDict(from_attributes=True)
+    model_config = ConfigDict(from_attributes=True)
 
 
 # Additional properties to return via API
@@ -220,9 +215,7 @@ class ManufacturerUpdate(ManufacturerBase):
 
 class ManufacturerInDBBase(ManufacturerBase):
     uid: str = None
-
-
-model_config = ConfigDict(from_attributes=True)
+    model_config = ConfigDict(from_attributes=True)
 
 
 # Additional properties to return via API
@@ -248,7 +241,6 @@ class CountryBase(BaseModel):
 
 class CountryBaseInDB(CountryBase):
     uid: str | None = None
-
     model_config = ConfigDict(from_attributes=True)
 
 

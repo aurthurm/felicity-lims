@@ -21,13 +21,13 @@
   let unit = reactive({}) as IUnit;
 
   function addUnit(): void {
-    const payload = { name: unit.name, isSiUnit: unit.isSiUnit == true }
+    const payload = { name: unit.name, description: unit.description }
     withClientMutation(ADD_UNIT, { payload }, "createUnit")
     .then((result) => setupStore.addUnit(result));
   }
 
   function editUnit(): void {
-    const payload = { name: unit.name, isSiUnit: unit.isSiUnit == true }
+    const payload = { name: unit.name, description: unit.description }
     withClientMutation(EDIT_UNIT, { uid: unit.uid, payload }, "updateUnit")
     .then((result) => setupStore.updateUnit(result));
   }
@@ -114,7 +114,7 @@
           <label class="block col-span-2 my-2">
             <input
               type="checkbox"
-              v-model="unit.isSiUnit"
+              v-model="unit.description"
             />
             <span class="text-gray-700 ml-4">Is SI Unit</span>
           </label>

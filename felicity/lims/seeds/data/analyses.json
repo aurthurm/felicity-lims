@@ -15,6 +15,7 @@
     "Serology",
     "Microbiology",
     "Bacteriology",
+    "Virology",
     "Parasitology",
     "Microscopy",
     "Mycology",
@@ -188,7 +189,8 @@
     {
       "name": "HIV",
       "description": "Human Immune Virus",
-      "category": "",
+      "category": "Virology",
+      "ucuum": "",
       "keyword": "hiv",
       "sort_key": 1,
       "active": 1,
@@ -202,7 +204,8 @@
       "name": "HIV Viral Load",
       "description": "HIV Viral Load",
       "category": "Molecular",
-      "keyword": "hivViralLoad",
+      "ucuum": "",
+      "keyword": "hivVL",
       "sort_key": 1,
       "active": 1,
       "mappins": [
@@ -215,6 +218,7 @@
       "name": "HIV EID",
       "description": "HIV Early Infant Diagnosis",
       "category": "Molecular",
+      "ucuum": "",
       "keyword": "hivEid",
       "sort_key": 1,
       "active": 1,
@@ -229,7 +233,7 @@
       "description": "C Reactive Protein",
       "category": "Serology",
       "ucuum": "mg/L",
-      "keyword": "c_rp",
+      "keyword": "c-rp",
       "sort_key": 1,
       "active": 1,
       "mappins": [
@@ -312,7 +316,7 @@
       "description": "Potassium",
       "category": "Clinical Chemistry",
       "ucuum": "mmol/L",
-      "keyword": "potassium",
+      "keyword": "POTA",
       "sort_key": 1,
       "active": 1,
       "mappins": [
@@ -368,6 +372,7 @@
       "description": "Blood Urea Nitrogen",
       "category": "Clinical Chemistry",
       "keyword": "urea",
+      "ucuum": "",
       "sort_key": 5,
       "active": 1,
       "mappins": [
@@ -381,6 +386,7 @@
       "description": "Evaluates bicarbonate level; important for maintaining acid-base balance.",
       "category": "Clinical Chemistry",
       "ucuum": "mmol/L",
+      "keyword": "CO2",
       "sort_key": 6,
       "active": 1,
       "mappins": [
@@ -1065,6 +1071,7 @@
       "name": "SI",
       "description": "Serum Iron",
       "category": "Hematology",
+      "ucuum": "",
       "keyword": "SI",
       "sort_key": 1,
       "active": 1,
@@ -1078,6 +1085,7 @@
       "name": "TIBC",
       "description": "Total Iron-Binding Capacity",
       "category": "Hematology",
+      "ucuum": "",
       "keyword": "TIBC",
       "sort_key": 1,
       "active": 1,
@@ -1091,6 +1099,7 @@
       "name": "FERR",
       "description": "Ferritin",
       "category": "Hematology",
+      "ucuum": "",
       "keyword": "FERR",
       "sort_key": 1,
       "active": 1,
@@ -1104,6 +1113,7 @@
       "name": "T-Saturation",
       "description": "Transferrin Saturation",
       "category": "Hematology",
+      "ucuum": "",
       "keyword": "TSat",
       "sort_key": 1,
       "active": 1,
@@ -1118,7 +1128,7 @@
       "description": "Troponin",
       "category": "Clinical Chemistry",
       "ucuum": "ng/mL",
-      "keyword": "Troponin",
+      "keyword": "Trop",
       "sort_key": 1,
       "active": 1,
       "mappins": [
@@ -1146,7 +1156,7 @@
       "description": "Myoglobin",
       "ucuum": "ng/mL",
       "category": "Clinical Chemistry",
-      "keyword": "Myoglobin",
+      "keyword": "Myogl",
       "sort_key": 1,
       "active": 1,
       "mappins": [
@@ -1188,7 +1198,7 @@
       "description": "pH",
       "category": "Clinical Chemistry",
       "ucuum": "",
-      "keyword": "NT-proBNP",
+      "keyword": "pH",
       "sort_key": 1,
       "active": 1,
       "mappins": [
@@ -1216,7 +1226,7 @@
       "description": "Partial Pressure of Carbon Dioxide",
       "category": "Clinical Chemistry",
       "ucuum": "mmHg",
-      "keyword": "NPaCO2",
+      "keyword": "PaCO2",
       "sort_key": 1,
       "active": 1,
       "mappins": [
@@ -1507,7 +1517,7 @@
       "description": "Lipid Panel",
       "department": "Chemistry",
       "analyses_names": [
-        "TC",
+        "T-C",
         "LDL",
         "HDL",
         "Trig"

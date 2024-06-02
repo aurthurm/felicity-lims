@@ -93,7 +93,7 @@ class ManufacturerType:
 class UnitType:
     uid: str
     name: str
-    is_si_unit: bool
+    description: str | None
     #
     created_by_uid: str | None
     created_by: Optional["UserType"]

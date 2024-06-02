@@ -28,14 +28,14 @@ class Laboratory(BaseAuditDBModel):
 
     @classmethod
     async def create(
-        cls, obj_in: dict | schemas.LaboratoryCreate
-    ) -> schemas.Laboratory:
+            cls, obj_in: dict | schemas.LaboratoryCreate
+    ):
         data = cls._import(obj_in)
         return await super().create(**data)
 
     async def update(
-        self, obj_in: dict | schemas.LaboratoryUpdate
-    ) -> schemas.Laboratory:
+            self, obj_in: dict | schemas.LaboratoryUpdate
+    ):
         data = self._import(obj_in)
         return await super().update(**data)
 
@@ -73,14 +73,14 @@ class LaboratorySetting(BaseAuditDBModel):
 
     @classmethod
     async def create(
-        cls, obj_in: dict | schemas.LaboratorySettingCreate
-    ) -> schemas.LaboratorySetting:
+            cls, obj_in: dict | schemas.LaboratorySettingCreate
+    ):
         data = cls._import(obj_in)
         return await super().create(**data)
 
     async def update(
-        self, obj_in: dict | schemas.LaboratorySettingUpdate
-    ) -> schemas.LaboratorySetting:
+            self, obj_in: dict | schemas.LaboratorySettingUpdate
+    ):
         data = self._import(obj_in)
         return await super().update(**data)
 
@@ -94,11 +94,11 @@ class Supplier(BaseAuditDBModel):
     description = Column(String, nullable=True)
 
     @classmethod
-    async def create(cls, obj_in: dict | schemas.SupplierCreate) -> schemas.Supplier:
+    async def create(cls, obj_in: dict | schemas.SupplierCreate):
         data = cls._import(obj_in)
         return await super().create(**data)
 
-    async def update(self, obj_in: dict | schemas.SupplierUpdate) -> schemas.Supplier:
+    async def update(self, obj_in: dict | schemas.SupplierUpdate):
         data = self._import(obj_in)
         return await super().update(**data)
 
@@ -113,20 +113,20 @@ class Manufacturer(BaseAuditDBModel):
 
     @classmethod
     async def create(
-        cls, obj_in: dict | schemas.ManufacturerCreate
-    ) -> schemas.Manufacturer:
+            cls, obj_in: dict | schemas.ManufacturerCreate
+    ):
         data = cls._import(obj_in)
         return await super().create(**data)
 
     async def update(
-        self, obj_in: dict | schemas.ManufacturerUpdate
-    ) -> schemas.Manufacturer:
+            self, obj_in: dict | schemas.ManufacturerUpdate
+    ):
         data = self._import(obj_in)
         return await super().update(**data)
 
 
 class Department(BaseAuditDBModel):
-    """Departrments/Sections"""
+    """Departments/Sections"""
 
     __tablename__ = "department"
 
@@ -136,14 +136,14 @@ class Department(BaseAuditDBModel):
 
     @classmethod
     async def create(
-        cls, obj_in: dict | schemas.DepartmentCreate
-    ) -> schemas.Department:
+            cls, obj_in: dict | schemas.DepartmentCreate
+    ):
         data = cls._import(obj_in)
         return await super().create(**data)
 
     async def update(
-        self, obj_in: dict | schemas.DepartmentUpdate
-    ) -> schemas.Department:
+            self, obj_in: dict | schemas.DepartmentUpdate
+    ):
         data = self._import(obj_in)
         return await super().update(**data)
 
@@ -154,14 +154,13 @@ class Unit(BaseAuditDBModel):
     __tablename__ = "unit"
 
     name = Column(String, nullable=False)
-    # SI/Traditional Unit
-    is_si_unit = Column(Boolean(), default=False)
+    description = Column(String, nullable=True)
 
     @classmethod
-    async def create(cls, obj_in: dict | schemas.UnitCreate) -> schemas.Unit:
+    async def create(cls, obj_in: dict | schemas.UnitCreate):
         data = cls._import(obj_in)
         return await super().create(**data)
 
-    async def update(self, obj_in: dict | schemas.UnitUpdate) -> schemas.Unit:
+    async def update(self, obj_in: dict | schemas.UnitUpdate):
         data = self._import(obj_in)
         return await super().update(**data)

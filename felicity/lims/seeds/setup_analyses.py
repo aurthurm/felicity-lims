@@ -2,9 +2,8 @@ import logging
 from datetime import datetime
 from typing import Optional
 
-from apps.setup.models.setup import Department
 from felicity.apps.analysis import utils
-from felicity.apps.analysis.models.analysis import (Analysis, AnalysisCategory,
+from felicity.apps.analysis.models.analysis import (Analysis, analysis_profile, AnalysisCategory,
                                                     CodingStandard, Profile,
                                                     RejectionReason,
                                                     SampleType)
@@ -15,13 +14,32 @@ from felicity.apps.analysis.schemas import (AnalysisCategoryCreate,
                                             RejectionReasonCreate,
                                             SampleTypeCreate)
 from felicity.apps.common.models import IdSequence
+from felicity.apps.setup.models.setup import Department
+from felicity.apps.setup.models.setup import Unit
+from felicity.apps.setup.schemas import UnitCreate
 from felicity.core.config import get_settings
-from felicity.database.session import async_session_factory
 from .data import get_seeds
 
 settings = get_settings()
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
+units = {}
+
+
+async def unit_resolver(name: str, description=""):
+    if not name or name is None:
+        return None
+
+    if name in units:
+        return units[name]
+
+    unit = await Unit.get(name=name)
+    if not unit:
+        unit_in = UnitCreate(name=name, descritpion=description)
+        unit = await Unit.create(unit_in)
+    units[name] = unit
+    return unit
 
 
 async def seed_categories():
@@ -119,12 +137,14 @@ async def seed_analyses_services_and_profiles() -> None:
 
     for _anal in analyses:
         analyte: Optional[Analysis] = await Analysis.get(name=_anal.get("name"))
-        category = await AnalysisCategory.get(name=_anal.get("category"))
         if not analyte:
+            category = await AnalysisCategory.get(name=_anal.get("category"))
+            unit = await unit_resolver(name=_anal.get("ucuum"))
             an_in = AnalysisCreate(
                 name=_anal.get("name"),
                 description=_anal.get("description"),
                 category_uid=category.uid if category else None,
+                unit_uid=unit.uid if unit else None,
                 keyword=_anal.get("keyword"),
                 sort_key=_anal.get("sort_key"),
                 active=bool(_anal.get("active")),
@@ -136,31 +156,27 @@ async def seed_analyses_services_and_profiles() -> None:
 
     for _prf in profiles:
         a_profile: Optional[Profile] = await Profile.get(name=_prf.get("name"))
-        department = await Department.get(name=_prf.get("department"))
         if not a_profile:
+            department = await Department.get(name=_prf.get("department"))
             prof_in = ProfileCreate(
                 name=_prf.get("name"),
                 description=_prf.get("description"),
-                department_uid=_prf.get("department")
+                department_uid=department.uid if department else None
             )
             a_profile = await Profile.create(prof_in)
 
         analyses_names = _prf.get("analyses_names", [])
         for _a_name in analyses_names:
-            anal: Optional[Analysis] = await Analysis.get(name=_a_name)
-            if anal:
-                profiles = await Profile.get_all(analyses___uid=anal.uid)
-                if a_profile.uid not in [profile.uid for profile in profiles]:
-                    logger.info(f"adding anal: {anal} to profile: {a_profile}")
-                    a_profile.analyses.append(anal)
-                    await a_profile.save_async()
-
-                    async with async_session_factory() as session:
-                        try:
-                            await session.flush()
-                            await session.commit()
-                        except Exception:  # noqa
-                            await session.rollback()
+            anal = await Analysis.get(name=_a_name)
+            if anal and anal.uid not in [a.uid for a in a_profile.analyses]:
+                a_profile.analyses.append(anal)
+                await Profile.table_insert(
+                    analysis_profile,
+                    mappings={
+                        "analysis_uid": anal.uid,
+                        "profile_uid": a_profile.uid
+                    }
+                )
 
         await utils.billing_setup_profiles([a_profile.uid])
 

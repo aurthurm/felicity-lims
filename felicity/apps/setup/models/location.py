@@ -28,7 +28,7 @@ class District(LocationBase):
     province = relationship("Province", backref="districts", lazy="selectin")
 
     @classmethod
-    async def create(cls, district: schemas.DistrictCreate) -> schemas.District:
+    async def create(cls, district: schemas.DistrictCreate):
         """Create a new District and return the new instance."""
         exists = await cls.get(code=district.code)
         if exists:
@@ -36,7 +36,7 @@ class District(LocationBase):
         data = cls._import(district)
         return await super().create(**data)
 
-    async def update(self, district: schemas.DistrictUpdate) -> schemas.District:
+    async def update(self, district: schemas.DistrictUpdate):
         """Update the district with given data"""
         data = self._import(district)
         return await super().update(**data)
@@ -49,7 +49,7 @@ class Province(LocationBase):
     country = relationship("Country", backref="provinces", lazy="selectin")
 
     @classmethod
-    async def create(cls, province: schemas.ProvinceCreate) -> schemas.Province:
+    async def create(cls, province: schemas.ProvinceCreate):
         """Create a new province and return the new instance."""
         exists = await cls.get(code=province.code)
         if exists:
@@ -57,7 +57,7 @@ class Province(LocationBase):
         data = cls._import(province)
         return await super().create(**data)
 
-    async def update(self, province: schemas.ProvinceUpdate) -> schemas.Province:
+    async def update(self, province: schemas.ProvinceUpdate):
         """Update the province with given data"""
         data = self._import(province)
         return await super().update(**data)
@@ -71,7 +71,7 @@ class Country(BaseAuditDBModel):
     active = Column(Boolean(), default=False)
 
     @classmethod
-    async def create(cls, country: schemas.CountryCreate) -> schemas.Country:
+    async def create(cls, country: schemas.CountryCreate):
         """Create a new Country and return the new instance."""
         exists = await cls.get(code=country.code)
         if exists:
@@ -79,7 +79,7 @@ class Country(BaseAuditDBModel):
         data = cls._import(country)
         return await super().create(**data)
 
-    async def update(self, country: schemas.CountryUpdate) -> schemas.Country:
+    async def update(self, country: schemas.CountryUpdate):
         """Update the country with given data"""
         data = self._import(country)
         return await super().update(**data)

@@ -6,9 +6,27 @@
   <component name="ChangeListManager">
     <list default="true" id="9f590b69-f929-45a1-8512-12ed6efbf028" name="Changes" comment="Added Invetory starter">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/api/gql/setup/types/setup.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/setup/types/setup.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/apps/analysis/conf.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/analysis/conf.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/apps/analysis/models/analysis.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/analysis/models/analysis.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/apps/analysis/models/results.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/analysis/models/results.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/apps/analysis/schemas.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/analysis/schemas.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/apps/setup/models/location.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/setup/models/location.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/apps/setup/models/setup.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/setup/models/setup.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/apps/setup/schemas.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/setup/schemas.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/felicity/lims/seeds/data/analyses.json" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/lims/seeds/data/analyses.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/lims/seeds/data/laboratory.json" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/lims/seeds/data/laboratory.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/lims/seeds/data/ucuum.json" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/lims/seeds/data/ucuum.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/felicity/lims/seeds/setup_analyses.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/lims/seeds/setup_analyses.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/api.ts" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/api.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/migrations/versions/3e36503be66f_init_db.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/webapp/graphql/operations/analyses.queries.ts" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/graphql/operations/analyses.queries.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webapp/graphql/operations/instrument.mutations.ts" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/graphql/operations/instrument.mutations.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webapp/graphql/operations/instrument.queries.ts" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/graphql/operations/instrument.queries.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webapp/models/setup.ts" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/models/setup.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webapp/views/admin/analyses/AnalysesProfiles.vue" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/views/admin/analyses/AnalysesProfiles.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webapp/views/admin/analyses/services/ServicesAdmin.vue" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/views/admin/analyses/services/ServicesAdmin.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webapp/views/admin/instruments/Units.vue" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/views/admin/instruments/Units.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webapp/views/admin/users/Groups.vue" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/views/admin/users/Groups.vue" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

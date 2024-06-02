@@ -212,7 +212,7 @@ function saveMappingForm(): void {
     <hr />
 
     <div class="grid grid-cols-12 gap-4 mt-2">
-      <section class="col-span-2 overflow-y-scroll overscroll-contain analyses-scroll bg-white p-1">
+      <section class="col-span-2 overflow-y-scroll overscroll-contain max-h-[540px] bg-white p-1">
         <div class="w-full">
             <accordion v-for="category in analysesServices" :key="category[0]">
               <template v-slot:title>{{ category[0] }}</template>

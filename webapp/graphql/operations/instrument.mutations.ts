@@ -272,7 +272,7 @@ export const ADD_UNIT = gql`
             ... on UnitType {
                 uid
                 name
-                isSiUnit
+                description
             }
 
             ... on OperationError {
@@ -290,7 +290,7 @@ export const EDIT_UNIT = gql`
             ... on UnitType {
                 uid
                 name
-                isSiUnit
+                description
             }
 
             ... on OperationError {
