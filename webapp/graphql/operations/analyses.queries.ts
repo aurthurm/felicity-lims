@@ -185,6 +185,20 @@ export const GET_ALL_ANALYSES_PROFILES = gql`
     }
 `;
 
+export const GET_ALL_ANALYSES_TEMPLATES = gql`
+    query getAllAnalysesTemplates {
+        analysisTemplateAll {
+            uid
+            name
+            description
+            departmentUid
+            analyses {
+                uid
+            }
+        }
+    }
+`;
+
 
 export const GET_ANALYSIS_MAPPINGS_BY_ANALYSIS = gql`
 query getAnalysisMappingsByAnalysisUid($uid: String!) {

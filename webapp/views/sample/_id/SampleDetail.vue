@@ -5,6 +5,9 @@ import { useSampleStore } from "../../../stores";
 const tabResults = defineAsyncComponent(
   () => import("./Results.vue")
 )
+const tabManageAnalyses = defineAsyncComponent(
+  () => import("./ManageAnalyses.vue")
+)
 const tabImpress = defineAsyncComponent(
   () => import("./Impress.vue")
 )
@@ -16,7 +19,7 @@ const sampleStore = useSampleStore();
 
 const state = reactive({
   currentTab: ref("analysis-results"),
-  tabs: ["analysis-results", "logs", "impress-reports"],
+  tabs: ["analysis-results", "manage-analyses", "logs", "impress-reports"],
   sample: computed(() => sampleStore.getSample),
 });
 
@@ -44,6 +47,7 @@ let currentTabComponent = computed(() => "tab-" + state.currentTab);
 
     <div>
       <tab-results v-if="state.currentTab === 'analysis-results'" />
+      <tab-manage-analyses v-if="state.currentTab === 'manage-analyses'" @changeTab="(tab) => (state.currentTab = tab)" />
       <tab-logs
         v-if="state.currentTab === 'logs'"
         targetType="sample"

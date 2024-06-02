@@ -13,13 +13,16 @@ from .analysis_other import (create_analysis_correction_factor,
                              update_analysis_specification,
                              update_analysis_uncertainty)
 from .analysis_profile import (create_profile, create_profile_mapping,
-                               update_profile, update_profile_mapping)
-from .analysis_request import \
-    cancel_samples  # update_analysis_request,; update_sample,
-from .analysis_request import (clone_samples, create_analysis_request,
-                               invalidate_samples, print_samples,
-                               publish_samples, re_instate_samples,
-                               receive_samples, reject_samples, verify_samples)
+                               update_profile, update_profile_mapping,
+                               create_analysis_template, update_analysis_template)
+from .analysis_request import (
+    cancel_samples,  # update_analysis_request, update_sample,
+    samples_apply_template, manage_analyses,
+    clone_samples, create_analysis_request,
+    invalidate_samples, print_samples,
+    publish_samples, re_instate_samples,
+    receive_samples, reject_samples, verify_samples
+)
 from .analysis_result import (cancel_analysis_results,
                               re_instate_analysis_results,
                               retest_analysis_results,
@@ -53,6 +56,8 @@ AnalysisMutations = create_type(
         update_analysis_category,
         create_profile,
         update_profile,
+        create_analysis_template,
+        update_analysis_template,
         create_profile_mapping,
         update_profile_mapping,
         create_analysis,
@@ -72,6 +77,8 @@ AnalysisMutations = create_type(
         update_analysis_specification,
         # update_analysis_request,
         # update_sample,
+        samples_apply_template,
+        manage_analyses,
         clone_samples,
         cancel_samples,
         re_instate_samples,

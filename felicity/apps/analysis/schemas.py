@@ -169,6 +169,44 @@ class ProfileInDB(ProfileBaseInDB):
 
 
 #
+# AnalysisTemplate Schemas
+#
+
+# Shared properties
+class AnalysisTemplateBase(BaseAuditModel):
+    name: str | None
+    analyses: list["Analysis"] | None = None
+    description: str | None = None
+    department_uid: str | None = None
+
+
+class AnalysisTemplateBaseInDB(AnalysisTemplateBase):
+    uid: str | None = None
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+# Properties to receive via API on creation
+class AnalysisTemplateCreate(AnalysisTemplateBase):
+    pass
+
+
+# Properties to receive via API on update
+class AnalysisTemplateUpdate(AnalysisTemplateBase):
+    pass
+
+
+# Properties to return via API
+class AnalysisTemplate(AnalysisTemplateBaseInDB):
+    pass
+
+
+# Properties stored in DB
+class AnalysisTemplateInDB(AnalysisTemplateBaseInDB):
+    pass
+
+
+#
 # ProfileCoding Schemas
 #
 
@@ -187,9 +225,7 @@ class ProfileCodingBase(BaseAuditModel):
 
 class ProfileCodingBaseInDB(ProfileCodingBase):
     uid: str | None
-
-
-model_config = ConfigDict(from_attributes=True)
+    model_config = ConfigDict(from_attributes=True)
 
 
 # Properties to receive via API on creation

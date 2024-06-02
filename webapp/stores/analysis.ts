@@ -3,6 +3,7 @@ import { defineStore } from 'pinia';
 import {
     GET_ALL_ANALYSES_SERVICES,
     GET_ALL_ANALYSES_PROFILES,
+    GET_ALL_ANALYSES_TEMPLATES,
     GET_ALL_ANALYSES_CATEGORIES,
     GET_ALL_ANALYSES_PROFILES_AND_SERVICES,
     GET_ALL_QC_TEMPLATES,
@@ -12,7 +13,7 @@ import {
     GET_PROFILE_MAPPINGS_BY_PROFILE,
     GET_ANALYSIS_MAPPINGS_BY_ANALYSIS,
 } from '../graphql/operations/analyses.queries';
-import { IAnalysisCategory, IAnalysisService, IAnalysisProfile, IQCLevel, IQCTemplate, IRejectionReason, ICodingStandard } from '../models/analysis';
+import { IAnalysisCategory, IAnalysisService, IAnalysisProfile, IQCLevel, IQCTemplate, IRejectionReason, ICodingStandard, IAnalysisTemplate } from '../models/analysis';
 
 import { useApiUtil } from '../composables';
 const { withClientQuery } = useApiUtil();
@@ -35,6 +36,7 @@ export const useAnalysisStore = defineStore('analysis', {
             analysesServices: [],
             analysesMappings: [],
             analysesProfiles: [],
+            analysesTemplates: [],
             profileMappings: [],
             qcLevels: [],
             qcTemplates: [],
@@ -46,6 +48,7 @@ export const useAnalysisStore = defineStore('analysis', {
             analysesServices: IAnalysisService[];
             analysesMappings: any[],
             analysesProfiles: IAnalysisProfile[];
+            analysesTemplates: IAnalysisTemplate[];
             profileMappings: any[],
             qcLevels: IQCLevel[];
             qcTemplates: IQCTemplate[];
@@ -72,6 +75,7 @@ export const useAnalysisStore = defineStore('analysis', {
         getAnalysesServicesSimple: state => state.analysesServices,
         analysesMapings: state => state.analysesMappings,
         getAnalysesProfiles: state => state.analysesProfiles,
+        getAnalysesTemplates: state => state.analysesTemplates,
         profileMapings: state => state.profileMappings,
         getQCLevels: state => state.qcLevels,
         getQCTemplates: state => state.qcTemplates,
@@ -161,6 +165,19 @@ export const useAnalysisStore = defineStore('analysis', {
             const index = this.profileMapings.findIndex(x => x.uid === payload.uid);
             this.profileMapings[index] = payload;
         },
+
+        // analysis profiles
+        async fetchAnalysesTemplates() {
+            await withClientQuery(GET_ALL_ANALYSES_TEMPLATES, {}, 'analysisTemplateAll').then(payload => (this.analysesTemplates = payload));
+        },
+        updateAnalysesTemplate(payload) {
+            const index = this.analysesTemplates.findIndex(x => x.uid === payload.uid);
+            this.analysesTemplates[index] = payload;
+        },
+        addAnalysisTemplate(payload) {
+            this.analysesTemplates.unshift(payload);
+        },
+
         // QC LEVELS
         async fetchQCLevels() {
             await withClientQuery(GET_ALL_QC_LEVELS, {}, 'qcLevelAll').then(payload => (this.qcLevels = payload));

@@ -5,6 +5,9 @@
   )
   const tabAnalysesProfiles = defineAsyncComponent(
     () => import('./AnalysesProfiles.vue')
+  ) 
+  const tabAnalysesTemplates = defineAsyncComponent(
+    () => import('./AnalysesTemplates.vue')
   )
   const tabAnalysesServices = defineAsyncComponent(
     () => import('./services/ServicesAdmin.vue')
@@ -28,6 +31,7 @@
   const tabs = [
     'analyses-profiles', 
     'analyses-services', 
+    'analyses-templates',
     'analyses-categories', 
     'quality-control-levels', 
     'quality-control-templates',
@@ -64,6 +68,7 @@
 
         <tab-analyses-profiles v-if="currentTab === 'analyses-profiles'"/>
         <tab-analyses-services v-else-if="currentTab === 'analyses-services'" />
+        <tab-analyses-templates v-else-if="currentTab === 'analyses-templates'" />
         <tab-analyses-categories v-else-if="currentTab === 'analyses-categories'" />
         <tab-quality-control-levels v-else-if="currentTab === 'quality-control-levels'" />
         <tab-quality-control-templates v-else-if="currentTab === 'quality-control-templates'" />

@@ -32,6 +32,21 @@ class ProfileInputType:
     active: bool | None = True
 
 
+AnalysisTemplateResponse = strawberry.union(
+    "AnalysisTemplateResponse",
+    (a_types.AnalysisTemplateType, OperationError),  # noqa
+    description="Union of possible outcomes",
+)
+
+
+@strawberry.input
+class AnalysisTemplateInputType:
+    name: str
+    description: str = ""
+    department_uid: str | None = None
+    services: Optional[List[str]] = field(default_factory=list)
+
+
 ProfileMappingResponse = strawberry.union(
     "ProfileMappingResponse",
     (a_types.ProfileMappingType, OperationError),  # noqa
@@ -97,13 +112,13 @@ async def create_profile(info, payload: ProfileInputType) -> AnalysisProfileResp
 
     await utils.billing_setup_profiles([profile.uid])
 
-    profile = await analysis_models.Profile.get(uid=profile.uid)
+    profile = await analysis_models.Profile.get(uid=profile.uid)  # noqa
     return a_types.ProfileType(**profile.marshal_simple())
 
 
 @strawberry.mutation(permission_classes=[IsAuthenticated])
 async def update_profile(
-    info, uid: str, payload: ProfileInputType
+        info, uid: str, payload: ProfileInputType
 ) -> AnalysisProfileResponse:
     is_authenticated, felicity_user = await auth_from_info(info)
     verify_user_auth(
@@ -120,10 +135,10 @@ async def update_profile(
         )
 
     profile_data = profile.to_dict()
-    for field in profile_data:
-        if field in payload.__dict__:
+    for _field in profile_data:
+        if _field in payload.__dict__:
             try:
-                setattr(profile, field, payload.__dict__[field])
+                setattr(profile, _field, payload.__dict__[_field])
             except AttributeError as e:
                 logger.warning(e)
 
@@ -157,8 +172,95 @@ async def update_profile(
 
 
 @strawberry.mutation(permission_classes=[IsAuthenticated])
+async def create_analysis_template(info, payload: AnalysisTemplateInputType) -> AnalysisTemplateResponse:
+    is_authenticated, felicity_user = await auth_from_info(info)
+    verify_user_auth(
+        is_authenticated,
+        felicity_user,
+        "Only Authenticated user can create analysis templates",
+    )
+
+    if not payload.name or not payload.description:
+        return OperationError(
+            error="Name and Description are mandatory",
+            suggestion="Make sure the fields name and description are not empty",
+        )
+
+    exists = await analysis_models.AnalysisTemplate.get(name=payload.name)
+    if exists:
+        return OperationError(
+            error=f"An Analysis Template named {payload.name} already exists",
+            suggestion="Change template title to something else",
+        )
+
+    incoming = {
+        "created_by_uid": felicity_user.uid,
+        "updated_by_uid": felicity_user.uid,
+    }
+    for k, v in payload.__dict__.items():
+        if k not in ["services"]:
+            incoming[k] = v
+
+    obj_in = schemas.AnalysisTemplateCreate(**incoming)
+    template = await analysis_models.AnalysisTemplate.create(obj_in)
+
+    if payload.services:
+        for service_uid in payload.services:
+            await analysis_models.Analysis.table_insert(
+                table=analysis_models.analysis_analysis_template,
+                mappings={"analysis_uid": service_uid, "analysis_template_uid": template.uid},
+            )
+
+    template = await analysis_models.AnalysisTemplate.get(uid=template.uid)
+    return a_types.AnalysisTemplateType(**template.marshal_simple())
+
+
+@strawberry.mutation(permission_classes=[IsAuthenticated])
+async def update_analysis_template(
+        info, uid: str, payload: AnalysisTemplateInputType
+) -> AnalysisTemplateResponse:
+    is_authenticated, felicity_user = await auth_from_info(info)
+    verify_user_auth(
+        is_authenticated,
+        felicity_user,
+        "Only Authenticated user can update analysis templates",
+    )
+
+    template = await analysis_models.AnalysisTemplate.get(uid=uid)
+    if not template:
+        return OperationError(
+            error=f"Analysis Template with uid {uid} does not exist",
+            suggestion="refresh your page and try again",
+        )
+
+    template_data = template.to_dict()
+    for _field in template_data:
+        if _field in payload.__dict__:
+            try:
+                setattr(template, _field, payload.__dict__[_field])
+            except AttributeError as e:
+                logger.warning(e)
+
+    template_in = schemas.AnalysisTemplateUpdate(**template.to_dict())
+    template = await template.update(template_in)
+
+    # Analyses management
+    if payload.services:
+        template.analyses.clear()
+        template = await template.save_async()
+        for _uid in payload.services:
+            anal = await analysis_models.Analysis.get(uid=_uid)
+            await analysis_models.Analysis.table_insert(
+                table=analysis_models.analysis_analysis_template,
+                mappings={"analysis_uid": anal.uid, "analysis_template_uid": template.uid},
+            )
+
+    return a_types.AnalysisTemplateType(**template.marshal_simple())
+
+
+@strawberry.mutation(permission_classes=[IsAuthenticated])
 async def create_profile_mapping(
-    info, payload: ProfileMappingInputType
+        info, payload: ProfileMappingInputType
 ) -> ProfileMappingResponse:
     is_authenticated, felicity_user = await auth_from_info(info)
     verify_user_auth(
@@ -187,7 +289,7 @@ async def create_profile_mapping(
 
 @strawberry.mutation(permission_classes=[IsAuthenticated])
 async def update_profile_mapping(
-    info, uid: str, payload: ProfileMappingInputType
+        info, uid: str, payload: ProfileMappingInputType
 ) -> ProfileMappingResponse:
     is_authenticated, felicity_user = await auth_from_info(info)
     verify_user_auth(
@@ -201,10 +303,10 @@ async def update_profile_mapping(
         return OperationError(error=f"Coding with uid {uid} does not exist")
 
     st_data = profile_mapping.to_dict()
-    for field in st_data:
-        if field in payload.__dict__:
+    for _field in st_data:
+        if _field in payload.__dict__:
             try:
-                setattr(profile_mapping, field, payload.__dict__[field])
+                setattr(profile_mapping, _field, payload.__dict__[_field])
             except Exception as e:
                 logger.warning(e)
 

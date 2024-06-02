@@ -90,8 +90,17 @@ export interface IAnalysisProfile {
     description?: string;
     keyword?: string;
     departmentUid?: string;
-    analyses?: IAnalysisService[] | number[];
-    sampleTypes?: ISampleType[] | number[];
+    analyses?: IAnalysisService[] | string[];
+    sampleTypes?: ISampleType[] | string[];
+    active?: boolean;
+}
+
+export interface IAnalysisTemplate {
+    uid?: string;
+    name?: string;
+    description?: string;
+    departmentUid?: string;
+    analyses?: IAnalysisService[] | string[];
     active?: boolean;
 }
 

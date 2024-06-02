@@ -105,14 +105,14 @@ async def create_analysis(info, payload: AnalysisInputType) -> ProfilesServiceRe
 
     await utils.billing_setup_analysis([analysis.uid])
 
-    return a_types.AnalysisWithProfiles(
+    return a_types.AnalysisWithProfiles(  # noqa
         **{**analysis.marshal_simple(), "profiles": profiles}
     )
 
 
 @strawberry.mutation(permission_classes=[IsAuthenticated])
 async def update_analysis(
-    info, uid: str, payload: AnalysisInputType
+        info, uid: str, payload: AnalysisInputType
 ) -> ProfilesServiceResponse:
     is_authenticated, felicity_user = await auth_from_info(info)
     verify_user_auth(
@@ -126,10 +126,10 @@ async def update_analysis(
         )
 
     analysis_data = analysis.to_dict()
-    for field in analysis_data:
-        if field in payload.__dict__:
+    for _field in analysis_data:
+        if _field in payload.__dict__:
             try:
-                setattr(analysis, field, payload.__dict__[field])
+                setattr(analysis, _field, payload.__dict__[_field])
             except AttributeError as e:
                 logger.warning(e)
 
@@ -164,7 +164,7 @@ async def update_analysis(
 
 @strawberry.mutation(permission_classes=[IsAuthenticated])
 async def create_analysis_mapping(
-    info, payload: AnalysisMappingInputType
+        info, payload: AnalysisMappingInputType
 ) -> AnalysisMappingResponse:
     is_authenticated, felicity_user = await auth_from_info(info)
     verify_user_auth(
@@ -193,7 +193,7 @@ async def create_analysis_mapping(
 
 @strawberry.mutation(permission_classes=[IsAuthenticated])
 async def update_analysis_mapping(
-    info, uid: str, payload: AnalysisMappingInputType
+        info, uid: str, payload: AnalysisMappingInputType
 ) -> AnalysisMappingResponse:
     is_authenticated, felicity_user = await auth_from_info(info)
     verify_user_auth(
@@ -207,10 +207,10 @@ async def update_analysis_mapping(
         return OperationError(error=f"Coding with uid {uid} does not exist")
 
     st_data = analysis_mapping.to_dict()
-    for field in st_data:
-        if field in payload.__dict__:
+    for _field in st_data:
+        if _field in payload.__dict__:
             try:
-                setattr(analysis_mapping, field, payload.__dict__[field])
+                setattr(analysis_mapping, _field, payload.__dict__[_field])
             except Exception as e:
                 logger.warning(e)
 

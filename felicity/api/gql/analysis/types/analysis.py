@@ -274,6 +274,23 @@ class AnalysisCursorPage:
 
 
 @strawberry.type
+class AnalysisTemplateType:
+    uid: str
+    name: str
+    description: str | None
+    department_uid: str | None
+    department: Optional[DepartmentType]
+    analyses: Optional[List[AnalysisType]]
+    #
+    created_by_uid: str | None
+    created_by: UserType | None
+    created_at: str | None
+    updated_by_uid: str | None
+    updated_by: UserType | None
+    updated_at: str | None
+
+
+@strawberry.type
 class SampleType:  # for Sample
     uid: str
     analysis_request_uid: str

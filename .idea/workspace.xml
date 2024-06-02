@@ -6,27 +6,20 @@
   <component name="ChangeListManager">
     <list default="true" id="9f590b69-f929-45a1-8512-12ed6efbf028" name="Changes" comment="Added Invetory starter">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/api/gql/setup/types/setup.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/setup/types/setup.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/apps/analysis/conf.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/analysis/conf.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/api/gql/analysis/mutations/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/analysis/mutations/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/api/gql/analysis/mutations/analysis_profile.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/analysis/mutations/analysis_profile.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/api/gql/analysis/mutations/analysis_request.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/analysis/mutations/analysis_request.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/api/gql/analysis/mutations/analysis_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/analysis/mutations/analysis_service.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/api/gql/analysis/query.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/analysis/query.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/api/gql/analysis/types/analysis.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/analysis/types/analysis.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/felicity/apps/analysis/models/analysis.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/analysis/models/analysis.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/apps/analysis/models/results.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/analysis/models/results.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/felicity/apps/analysis/schemas.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/analysis/schemas.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/apps/setup/models/location.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/setup/models/location.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/apps/setup/models/setup.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/setup/models/setup.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/apps/setup/schemas.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/setup/schemas.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/lims/seeds/data/analyses.json" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/lims/seeds/data/analyses.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/lims/seeds/data/laboratory.json" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/lims/seeds/data/laboratory.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/lims/seeds/data/ucuum.json" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/lims/seeds/data/ucuum.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/lims/seeds/setup_analyses.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/lims/seeds/setup_analyses.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/migrations/versions/3e36503be66f_init_db.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/webapp/graphql/operations/analyses.mutations.ts" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/graphql/operations/analyses.mutations.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/webapp/graphql/operations/analyses.queries.ts" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/graphql/operations/analyses.queries.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/graphql/operations/instrument.mutations.ts" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/graphql/operations/instrument.mutations.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/graphql/operations/instrument.queries.ts" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/graphql/operations/instrument.queries.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/models/setup.ts" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/models/setup.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/admin/analyses/AnalysesProfiles.vue" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/views/admin/analyses/AnalysesProfiles.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/admin/analyses/services/ServicesAdmin.vue" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/views/admin/analyses/services/ServicesAdmin.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/admin/instruments/Units.vue" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/views/admin/instruments/Units.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/admin/users/Groups.vue" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/views/admin/users/Groups.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webapp/models/analysis.ts" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/models/analysis.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webapp/stores/analysis.ts" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/stores/analysis.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webapp/views/admin/analyses/AnalysesAdmin.vue" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/views/admin/analyses/AnalysesAdmin.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webapp/views/sample/_id/SampleDetail.vue" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/views/sample/_id/SampleDetail.vue" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -65,25 +58,25 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;dart.analysis.tool.window.visible&quot;: &quot;false&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/home/aurthur/Documents/Development/felicity-lims&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;project.propVCSSupport.DirectoryMappings&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "dart.analysis.tool.window.visible": "false",
+    "git-widget-placeholder": "main",
+    "ignore.virus.scanning.warn.message": "true",
+    "last_opened_file_path": "/home/aurthur/Documents/Development/felicity-lims/felicity/api/gql/analysis/mutations",
+    "settings.editor.selected.configurable": "project.propVCSSupport.DirectoryMappings"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/felicity/api/gql/analysis/mutations" />
       <recent name="$PROJECT_DIR$/felicity/apps/guards" />
       <recent name="$PROJECT_DIR$/felicity/api/rest/api_v1/endpoints" />
       <recent name="$PROJECT_DIR$/felicity" />
       <recent name="$PROJECT_DIR$" />
-      <recent name="$PROJECT_DIR$/reads" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/felicity/version" />

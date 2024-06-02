@@ -12,6 +12,7 @@ from felicity.api.gql.permissions import CanVerifySample, IsAuthenticated
 from felicity.api.gql.types import (OperationError, OperationSuccess,
                                     SuccessErrorResponse)
 from felicity.apps.analysis import schemas
+from felicity.apps.analysis.conf import States
 from felicity.apps.analysis.conf import priorities, states
 from felicity.apps.analysis.models import analysis as analysis_models
 from felicity.apps.analysis.models import results as result_models
@@ -95,9 +96,15 @@ class AnalysisRequestInputType:
     priority: int = priorities.NORMAL
 
 
+@strawberry.input
+class ManageAnalysisInputType:
+    cancel: List[str] = None
+    add: List[str] = None
+
+
 @strawberry.mutation(permission_classes=[IsAuthenticated])
 async def create_analysis_request(
-    info, payload: AnalysisRequestInputType
+        info, payload: AnalysisRequestInputType
 ) -> AnalysisRequestResponse:
     logger.info("Received request to create analysis request")
 
@@ -237,7 +244,7 @@ async def create_analysis_request(
                     update={
                         "analysis_uid": _service.uid,
                         "due_date": datetime.now()
-                        + timedelta(minutes=_service.tat_length_minutes)
+                                    + timedelta(minutes=_service.tat_length_minutes)
                         if _service.tat_length_minutes
                         else None,
                     }
@@ -403,11 +410,11 @@ async def verify_samples(info, samples: List[str]) -> SampleActionResponse:
         return OperationError(error=f"No Samples to verify are provided!")
 
     for _sa_uid in samples:
-        sample: analysis_models.Sample = await analysis_models.Sample.get(uid=_sa_uid)
+        sample = await analysis_models.Sample.get(uid=_sa_uid)
         if not sample:
             return OperationError(error=f"Sample with uid {_sa_uid} not found")
 
-        sample = await sample.verify(verified_by=felicity_user)
+        _, sample = await sample.verify(verified_by=felicity_user)
         if sample:
             return_samples.append(sample)
 
@@ -416,7 +423,7 @@ async def verify_samples(info, samples: List[str]) -> SampleActionResponse:
 
 @strawberry.mutation(permission_classes=[IsAuthenticated])
 async def reject_samples(
-    info, samples: List[SampleRejectInputType]
+        info, samples: List[SampleRejectInputType]
 ) -> SampleActionResponse:
     is_authenticated, felicity_user = await auth_from_info(info)
     verify_user_auth(
@@ -447,7 +454,7 @@ async def reject_samples(
                 {"sample_uid": sample.uid, "rejection_reason_uid": reason.uid},
             )
 
-            if sample:
+            if sample:  # noqa
                 return_samples.append(sample)
 
                 if sample.status == states.sample.REJECTED:
@@ -459,7 +466,7 @@ async def reject_samples(
 
 @strawberry.mutation(permission_classes=[IsAuthenticated])
 async def publish_samples(
-    info, samples: List[SamplePublishInputType]
+        info, samples: List[SamplePublishInputType]
 ) -> SuccessErrorResponse:
     is_authenticated, felicity_user = await auth_from_info(info)
     verify_user_auth(
@@ -481,7 +488,7 @@ async def publish_samples(
         ]
     )
 
-    data = [{"uid": s.uid, "action": s.action} for s in samples]
+    data = [{"uid": s.uid, "action": s.action} for s in samples]  # noqa
     job_schema = job_schemas.JobCreate(
         action=actions.IMPRESS_REPORT,
         category=categories.IMPRESS,
@@ -582,3 +589,100 @@ async def invalidate_samples(info, samples: List[str]) -> SampleActionResponse:
                 await result_models.AnalysisResult.create(a_result_schema)
 
     return SampleListingType(samples=return_samples)
+
+
+@strawberry.mutation(permission_classes=[IsAuthenticated])
+async def samples_apply_template(info, uid: str, analysis_template_uid: str) -> ResultedSampleActionResponse:
+    is_authenticated, felicity_user = await auth_from_info(info)
+    verify_user_auth(
+        is_authenticated,
+        felicity_user,
+        "Only Authenticated user can add analyses to samples",
+    )
+
+    sample = await analysis_models.Sample.get(uid=uid)
+    template = await analysis_models.AnalysisTemplate.get(uid=analysis_template_uid)
+
+    pending_results = await result_models.AnalysisResult.get_all(
+        sample_uid=sample.uid,
+        status=States.Result.PENDING,
+        worksheet_uid=None
+    )
+    pending_uids = [pr.analysis_uid for pr in pending_results]
+
+    # create and attach result objects for each Analyses
+    logger.info(
+        f"Adding {len(template.analyses)} service results to the sample {sample.sample_id}"
+    )
+    a_result_schema = schemas.AnalysisResultCreate(
+        sample_uid=sample.uid,
+        status=states.result.PENDING,
+        analysis_uid=None,
+        due_date=None,
+        created_by_uid=felicity_user.uid,
+        updated_by_uid=felicity_user.uid,
+    )
+    result_schemas = []
+    for _service in template.analyses:
+        if _service.uid not in pending_uids:
+            result_schemas.append(
+                a_result_schema.model_copy(
+                    update={
+                        "analysis_uid": _service.uid,
+                        "due_date": datetime.now() + timedelta(minutes=_service.tat_length_minutes)
+                        if _service.tat_length_minutes
+                        else None,
+                    }
+                )
+            )
+    await result_models.AnalysisResult.bulk_create(result_schemas)
+
+    sample = await analysis_models.Sample.get(uid=uid)
+    return ResultedSampleListingType(samples=[sample])
+
+
+@strawberry.mutation(permission_classes=[IsAuthenticated])
+async def manage_analyses(info, sample_uid: str, payload: ManageAnalysisInputType) -> ResultedSampleActionResponse:
+    is_authenticated, felicity_user = await auth_from_info(info)
+    verify_user_auth(
+        is_authenticated,
+        felicity_user,
+        "Only Authenticated user can manage analyses to samples",
+    )
+
+    sample = await analysis_models.Sample.get(uid=sample_uid)
+
+    # cancel
+    for _anal in payload.cancel:
+        result = await result_models.AnalysisResult.get(uid=_anal)
+        await result.cancel(cancelled_by=felicity_user)
+
+    # create and attach result objects for each added Analyses
+    logger.info(
+        f"Adding {len(payload.add)} extra service results to the sample {sample.sample_id}"
+    )
+    a_result_schema = schemas.AnalysisResultCreate(
+        sample_uid=sample.uid,
+        status=states.result.PENDING,
+        analysis_uid=None,
+        due_date=None,
+        created_by_uid=felicity_user.uid,
+        updated_by_uid=felicity_user.uid,
+    )
+    result_schemas = []
+    for _service_uid in payload.add:
+        service = await analysis_models.Analysis.get(uid=_service_uid)
+        result_schemas.append(
+            a_result_schema.model_copy(
+                update={
+                    "analysis_uid": service.uid,
+                    "due_date": datetime.now() + timedelta(minutes=service.tat_length_minutes)
+                    if service.tat_length_minutes
+                    else None,
+                }
+            )
+        )
+    await result_models.AnalysisResult.bulk_create(result_schemas)
+
+    sample = await analysis_models.Sample.get(uid=sample_uid)
+    return ResultedSampleListingType(samples=[sample])

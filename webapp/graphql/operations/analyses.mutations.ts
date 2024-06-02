@@ -873,6 +873,112 @@ export const EDIT_PROFILE_MAPPING = gql`
     }
 `;
 
+
+// ANALYSIS_TEMPLATE
+export const ADD_ANALYSIS_TEMPLATE = gql`
+    mutation AddAnalysisTemplate($payload: AnalysisTemplateInputType!) {
+        createAnalysisTemplate(payload: $payload) {
+            ... on AnalysisTemplateType {
+                uid
+                name
+                description
+                departmentUid
+                analyses {
+                    uid
+                    name
+                    keyword
+                    active
+                }
+            }
+
+            ... on OperationError {
+                __typename
+                error
+                suggestion
+            }
+        }
+    }
+`;
+
+export const EDIT_ANALYSIS_TEMPLATE = gql`
+    mutation EditAnalysisTemplate($uid: String!, $payload: AnalysisTemplateInputType!) {
+        updateAnalysisTemplate(uid: $uid, payload: $payload) {
+            ... on AnalysisTemplateType {
+                uid
+                name
+                description
+                departmentUid
+                analyses {
+                    uid
+                    name
+                    keyword
+                    active
+                }
+            }
+
+            ... on OperationError {
+                __typename
+                error
+                suggestion
+            }
+        }
+    }
+`;
+
+
+export const EDIT_SAMPLE_APPLY_TEMPLATE = gql`
+    mutation EditWorkSheetApplyTemplate($uid: String!, $analysisTemplateUid: String!) {
+        samplesApplyTemplate(uid: $uid, analysisTemplateUid: $analysisTemplateUid) {
+            ... on ResultedSampleListingType {
+                __typename
+                samples {
+                    uid
+                }
+            }
+
+            ... on OperationError {
+                __typename
+                error
+                suggestion
+            }
+        }
+    }
+`;
+
+export const SAMPLE_MANAGE_ANALYSIS= gql`
+    mutation ManualyAssignWorsheet($uid: String!, $qcTemplateUid: String!, $analysesUids: [String!]!) {
+        updateWorksheetManualAssign(uid: $uid, qcTemplateUid: $qcTemplateUid, analysesUids: $analysesUids) {
+            ... on WorkSheetType {
+                __typename
+                uid
+                numberOfSamples
+                sampleTypeUid
+                sampleType {
+                    name
+                    name
+                }
+                instrumentUid
+                instrument {
+                    uid
+                    name
+                }
+                templateUid
+                template {
+                    uid
+                    name
+                }
+            }
+
+            ... on OperationError {
+                __typename
+                error
+                suggestion
+            }
+        }
+    }
+`;
+
+
 // ANALYSIS_CATEGORIES
 export const ADD_ANALYSIS_CATEGORY = gql`
     mutation AddAnalysisCategory($payload: AnalysisCategoryInputType!) {

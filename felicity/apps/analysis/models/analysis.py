@@ -221,6 +221,42 @@ class ProfileCoding(BaseAuditDBModel):
 
 
 """
+ Many to Many Link between Analyses and Analysis_Template
+"""
+analysis_analysis_template = Table(
+    "analysis_analysis_template",
+    DBModel.metadata,
+    Column("analysis_uid", ForeignKey("analysis.uid"), primary_key=True),
+    Column("analysis_template_uid", ForeignKey("analysis_template.uid"), primary_key=True),
+)
+
+
+class AnalysisTemplate(BaseAuditDBModel):
+    """Template for adding Analysis extras"""
+
+    __tablename__ = "analysis_template"
+
+    name = Column(String, nullable=False)
+    description = Column(String, nullable=False)
+    analyses = relationship(
+        "Analysis",
+        secondary=analysis_analysis_template,
+        lazy="selectin",
+    )
+    department_uid = Column(String, ForeignKey("department.uid"), nullable=True)
+    department = relationship("Department", lazy="selectin")
+
+    @classmethod
+    async def create(cls, obj_in: dict | schemas.AnalysisTemplateCreate) -> Self:
+        data = cls._import(obj_in)
+        return await super().create(**data)
+
+    async def update(self, obj_in: dict | schemas.AnalysisTemplateUpdate) -> Self:
+        data = self._import(obj_in)
+        return await super().update(**data)
+
+
+"""
  Many to Many Link between Analyses and Method
 """
 analysis_method = Table(
