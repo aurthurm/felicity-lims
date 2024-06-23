@@ -1,0 +1,25 @@
+{
+  "categories": [
+    "Analyzer",
+    "Spectrophotometer",
+    "Electrophoresis",
+    "Polymerase Chain Reaction",
+    "Microscope",
+    "Centrifuge",
+    "Incubator",
+    "Autoclave",
+    "Meter",
+    "Imaging",
+    "Point of Care"
+  ],
+  "methods": [
+    "Rapid Test",
+    "ELISA",
+    "PCR",
+    "RT-PCR",
+    "Flow Cytometry",
+    "Western Blot",
+    "Microscopy",
+    "Culture"
+  ]
+}

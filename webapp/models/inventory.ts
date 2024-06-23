@@ -86,6 +86,7 @@ export interface IStockLot {
 export interface IStockProduct {
     uid: string;
     name: string;
+    description: string;
     stockItemUid: string;
     stockItem: IStockItem;
     stockItemVariantUid: string;

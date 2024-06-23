@@ -4,6 +4,7 @@ import { IStockLot, IStockProduct } from '../../models/inventory';
 import { useApiUtil } from '../../composables';
 import { ADD_STOCK_ADJUSTMENT } from '../../graphql/operations/inventory.mutations';
 import { GET_ALL_STOCK_LOTS } from '../../graphql/operations/inventory.queries';
+import { parseDate } from '../../utils/helpers';
 
 const DataTable = defineAsyncComponent(
     () => import('../../components/datatable/DataTable.vue')
@@ -16,6 +17,9 @@ const Modal = defineAsyncComponent(
 )
 const StockReceiveForm = defineAsyncComponent(
     () => import('./StockReceiveForm.vue')
+)
+const ProductDetail = defineAsyncComponent(
+    () => import('./ProductDetail')
 )
 
 const InventoryListing = defineComponent({
@@ -49,6 +53,8 @@ const InventoryListing = defineComponent({
         watch(() => choiceProduct.product?.uid, (itemUid, _) => (itemUid && fetchLots(itemUid)))
         
         const openAdjustProduct = ref(false);
+        const openProductDetail = ref(false);
+        const productDetailItem = ref({} as IStockProduct);
         
         const tableColumns = ref([
             {
@@ -112,7 +118,7 @@ const InventoryListing = defineComponent({
                     return h(
                         'div',
                         {
-                            class: 'flex justify-between align-items-center',
+                            class: 'flex justify-start align-items-center gap-x-4',
                         },
                         [
                             h(
@@ -145,6 +151,19 @@ const InventoryListing = defineComponent({
                                 },
                                 []
                             ),
+                            h(
+                                'button',
+                                {
+                                    type: 'button',
+                                    class: 'bg-sky-800 text-white py-1 px-2 rounded-sm leading-none',
+                                    innerHTML: 'View Detail',
+                                    onClick: () => {
+                                        openProductDetail.value = true;
+                                        productDetailItem.value = product;
+                                    },
+                                },
+                                []
+                            ),
                         ]
                     );
                 },
@@ -167,6 +186,8 @@ const InventoryListing = defineComponent({
             choiceProduct,
             openAdjustProduct,
             stockLots,
+            openProductDetail,
+            productDetailItem,
             filterProducts: (opts: any) => {
                 productParams.first = 50;
                 productParams.before = '';
@@ -239,6 +260,13 @@ const InventoryListing = defineComponent({
                         body: () => [<StockReceiveForm onClose={() => (this.openDrawer = false)} />],
                     }}
                 </Drawer>
+                {/* Drawer */}
+                <Drawer show={this.openProductDetail} onClose={() => (this.openProductDetail = false)}>
+                    {{
+                        header: () => 'Product Details',
+                        body: () => [<ProductDetail product={this.productDetailItem} onClose={() => (this.openProductDetail = false)} />],
+                    }}
+                </Drawer>
                 {this.openAddProduct && (
                     <Modal onClose={() => (this.openAddProduct = false)} contentWidth="w-1/4">
                         {{
@@ -250,7 +278,9 @@ const InventoryListing = defineComponent({
                                             <span class="col-span-1 text-gray-700  text-nowrap">Product Lot</span>
                                             <select class="col-span-3 form-select block w-full mt-1" v-model={this.choiceProduct.stockLotUid}>
                                             <option></option>
-                                            {this.stockLots?.map((lot: IStockLot) => (<option key={lot.uid} value={lot.uid}>{lot.lotNumber}</option>))}
+                                            {this.stockLots?.map((lot: IStockLot) => (<option key={lot.uid} value={lot.uid}>
+                                                {lot.lotNumber} ({lot.quantity}) [{parseDate(lot.expiryDate, false)}]
+                                            </option>))}
                                             </select>
                                         </label>
                                         <label class="grid grid-cols-4 items-center gap-4 mb-4">

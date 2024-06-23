@@ -18,7 +18,6 @@ const InventoryOrders = defineAsyncComponent(
     () => import('./InvOrders')
 )
 
-
 const InventoryHome = defineComponent({
     name: 'inventory-home',
     setup() {
@@ -143,7 +142,7 @@ const InventoryHome = defineComponent({
                                                                 <p>{item.product.name}</p>
                                                             </td>
                                                             <td>
-                                                                <p>{item.stockLot.lotNumber}</p>
+                                                                <p>{item.stockLot?.lotNumber}</p>
                                                             </td>
                                                             <td class="px-1 py-1 whitespace-no-wrap">
                                                                 <label class="block">

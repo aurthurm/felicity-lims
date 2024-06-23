@@ -11,6 +11,8 @@ from .setup_inventory import (
     seed_stock_hazards,
     seed_stock_categories
 )
+from .setup_instruments import seed_instrument_categories
+from .setup_person import seed_person
 from .setup_laboratory import seed_clients, seed_geographies, seed_laboratory
 from .superusers import seed_daemon_user, seed_super_user
 
@@ -46,6 +48,8 @@ async def default_setup() -> bool:
     await seed_stock_units()
     await seed_stock_hazards()
     await seed_stock_categories()
+    await seed_instrument_categories()
+    await seed_person()
     logger.info("Loading default setup complete.")
     return True
 

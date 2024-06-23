@@ -68,37 +68,30 @@
       > Add Instrument Type</button>
       <hr>
     </div>
-    <hr />
 
-    <div class="grid grid-cols-12 gap-4 mt-2">
-      <section class="col-span-5">
-        <ul>
-          <li 
-          v-for="instype in instrumentTypes" :key="instype?.uid"
-          @click.prevent.stop="selectInstrumentType(instype)"
-          class="flex justify-between sm:text-sm md:text-md lg:text-lg text-gray-700 font-bold bg-white p-1 mb-2">
-            <span class="cursor-pointer">
-              <div class="flex-grow p-1">
-                <div class="font-medium text-gray-500 hover:text-gray-700 flex justify-between">
-                  <span>{{ instype?.name }}</span>
-                  <span class="text-sm text-gray-500"></span>
-                </div>
-              </div>
-            </span>
-            <button
-              @click="FormManager(false, instype)"
-              class="ml-4 inline-flex items-center justify-center w-8 h-8 mr-2 border-sky-800 border text-gray-900 transition-colors duration-150 bg-white rounded-full focus:outline-none hover:bg-gray-200"
-            >
-              <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20">
-                <path
-                  d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"
-                ></path>
-              </svg>
-            </button>
-          </li>
-        </ul>
-      </section>
-
+    <div class="overflow-x-auto mt-4  overflow-y-scroll overscroll-contain max-h-[740px]">
+      <div class="align-middle inline-block min-w-full shadow overflow-hidden bg-white shadow-dashboard px-2 pt-1 rounded-bl-lg rounded-br-lg">
+        <table class="min-w-full">
+            <thead>
+            <tr>
+                <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">Name</th>
+                <th class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider">Description</th>
+                <th class="px-1 py-1 border-b-2 border-gray-300"></th>
+            </tr>
+            </thead>
+            <tbody class="bg-white">
+            <tr v-for="instype in instrumentTypes" :key="instype?.uid">
+                <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
+                  <div class="text-sm leading-5 text-gray-800">{{ instype?.name }}</div>
+                </td>
+                <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500"></td>
+                <td class="px-1 py-1 whitespace-no-wrap text-right border-b border-gray-500 text-sm leading-5">
+                    <button @click="FormManager(false, instype)" class="px-2 py-1 mr-2 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none">Edit</button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+      </div>
     </div>
   </div>
 

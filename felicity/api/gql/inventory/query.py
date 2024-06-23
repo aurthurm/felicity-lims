@@ -208,6 +208,7 @@ class InventoryQuery:
             before_cursor: str | None = None,
             text: str | None = None,
             sort_by: list[str] | None = None,
+            product_uid: str | None = None,
     ) -> types.StockAdjustmentCursorPage:
         filters = {}
 
@@ -223,6 +224,9 @@ class InventoryQuery:
                 _or_[_arg] = f"%{text}%"
 
             filters = {sa.or_: _or_}
+
+        if product_uid:
+            filters["product_uid"] = product_uid
 
         page = await models.StockAdjustment.paginate_with_cursors(
             page_size=page_size,

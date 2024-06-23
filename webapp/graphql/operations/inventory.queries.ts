@@ -126,6 +126,7 @@ export const GET_ALL_STOCK_LOTS = gql`
         stockLots(productUid: $productUid) {
             uid
             lotNumber
+            quantity
             expiryDate
         }
     }
@@ -183,8 +184,8 @@ export const GET_ALL_STOCK_ORDER_PRODUCTS = gql`
 
 // adjustments
 export const GET_ALL_STOCK_ADJUSTMENTS = gql`
-    query getAllStockAdustments($first: Int!, $after: String, $text: String!, $sortBy: [String!] = ["uid"]) {
-        stockAdjustmentAll(pageSize: $first, afterCursor: $after, text: $text, sortBy: $sortBy) {
+    query getAllStockAdustments($first: Int!, $after: String, $text: String!, $sortBy: [String!] = ["uid"], $productUid: String) {
+        stockAdjustmentAll(pageSize: $first, afterCursor: $after, text: $text, sortBy: $sortBy, productUid: $productUid) {
             totalCount
             pageInfo {
                 hasNextPage
