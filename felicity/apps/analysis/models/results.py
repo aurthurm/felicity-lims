@@ -198,8 +198,8 @@ class AnalysisResult(Auditable, BaseMPTT):
             await streamer.stream(final, cancelled_by, "cancelled", "result")
         return final
 
-    async def re_instate(self, sample, re_instated_by) -> "AnalysisResult":
-        if sample.status not in [
+    async def re_instate(self, re_instated_by) -> "AnalysisResult":
+        if self.sample.status not in [
             conf.states.sample.RECEIVED,
             conf.states.sample.EXPECTED,
         ]:

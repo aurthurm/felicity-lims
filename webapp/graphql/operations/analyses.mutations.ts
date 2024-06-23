@@ -945,27 +945,13 @@ export const EDIT_SAMPLE_APPLY_TEMPLATE = gql`
     }
 `;
 
-export const SAMPLE_MANAGE_ANALYSIS= gql`
-    mutation ManualyAssignWorsheet($uid: String!, $qcTemplateUid: String!, $analysesUids: [String!]!) {
-        updateWorksheetManualAssign(uid: $uid, qcTemplateUid: $qcTemplateUid, analysesUids: $analysesUids) {
-            ... on WorkSheetType {
+export const EDIT_SAMPLE_MANAGE_ANALYSIS= gql`
+    mutation SampleManageAnalysis($sampleUid: String!, $payload: ManageAnalysisInputType!) {
+        manageAnalyses(sampleUid: $sampleUid, payload: $payload) {
+            ... on ResultedSampleListingType {
                 __typename
-                uid
-                numberOfSamples
-                sampleTypeUid
-                sampleType {
-                    name
-                    name
-                }
-                instrumentUid
-                instrument {
+                samples {
                     uid
-                    name
-                }
-                templateUid
-                template {
-                    uid
-                    name
                 }
             }
 
