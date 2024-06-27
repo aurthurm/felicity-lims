@@ -161,11 +161,12 @@ class AnalysisResult(Auditable, BaseMPTT):
         required, current = await self.verifications()
         self.updated_by_uid = verifier.uid  # noqa
         if current < required and current + 1 == required:
-            await self._verify(verifier)
+            await self._verify(verifier_uid=verifier.uid)
             self.status = conf.states.result.APPROVED
             self.date_verified = datetime.now()
             is_verified = True
             # self.verified_by.append(verifier)
+
         final = await self.save_async()
         if final.status == conf.states.result.APPROVED:
             await streamer.stream(final, verifier, "approved", "result")
@@ -184,7 +185,7 @@ class AnalysisResult(Auditable, BaseMPTT):
         final = await self.save_async()
         if final.status == conf.states.result.RETRACTED:
             await streamer.stream(final, retracted_by, "retracted", "result")
-            await self._verify(retracted_by)
+            await self._verify(verifier_uid=retracted_by.uid)
         return final
 
     async def cancel(self, cancelled_by) -> "AnalysisResult":

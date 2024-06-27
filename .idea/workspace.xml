@@ -6,19 +6,13 @@
   <component name="ChangeListManager">
     <list default="true" id="9f590b69-f929-45a1-8512-12ed6efbf028" name="Changes" comment="Added Invetory starter">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/api/gql/billing/mutations.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/billing/mutations.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/apps/billing/schemas.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/billing/schemas.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/apps/billing/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/billing/utils.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/apps/common/utils/serializer.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/common/utils/serializer.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/api/gql/analysis/mutations/analysis_request.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/analysis/mutations/analysis_request.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/apps/analysis/models/results.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/analysis/models/results.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/apps/analysis/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/analysis/utils.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/felicity/apps/impress/invoicing/engine.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/impress/invoicing/engine.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/apps/impress/invoicing/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/impress/invoicing/utils.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/apps/setup/caches.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/setup/caches.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/utils/helpers.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/utils/helpers.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/guards/constants.ts" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/guards/constants.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/models/inventory.ts" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/models/inventory.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/admin/analyses/Billing.vue" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/views/admin/analyses/Billing.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/inventory/InvOrders.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/views/inventory/InvOrders.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/apps/impress/sample/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/impress/sample/utils.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/lims/seeds/data/instrument.json" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/lims/seeds/data/instrument.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/lims/seeds/setup_instruments.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/lims/seeds/setup_instruments.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

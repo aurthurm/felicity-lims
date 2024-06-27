@@ -601,6 +601,9 @@ async def samples_apply_template(info, uid: str, analysis_template_uid: str) -> 
     )
 
     sample = await analysis_models.Sample.get(uid=uid)
+    if sample.status not in [states.sample.RECEIVED, states.sample.AWAITING, states.sample.APPROVED]:
+        return OperationError(error=f"Samples in {sample.status} can not be added analyses")
+
     template = await analysis_models.AnalysisTemplate.get(uid=analysis_template_uid)
 
     pending_results = await result_models.AnalysisResult.get_all(
@@ -637,6 +640,9 @@ async def samples_apply_template(info, uid: str, analysis_template_uid: str) -> 
             )
     await result_models.AnalysisResult.bulk_create(result_schemas)
 
+    if sample.status != states.sample.RECEIVED:
+        await sample.change_status(status=states.sample.RECEIVED, updated_by_uid=felicity_user.uid)
+
     sample = await analysis_models.Sample.get(uid=uid)
     return ResultedSampleListingType(samples=[sample])
 
@@ -651,6 +657,8 @@ async def manage_analyses(info, sample_uid: str, payload: ManageAnalysisInputTyp
     )
 
     sample = await analysis_models.Sample.get(uid=sample_uid)
+    if sample.status not in [states.sample.RECEIVED, states.sample.AWAITING, states.sample.APPROVED]:
+        return OperationError(error=f"Samples in {sample.status} can not be added analyses")
 
     # cancel
     for _anal in payload.cancel:
@@ -683,6 +691,9 @@ async def manage_analyses(info, sample_uid: str, payload: ManageAnalysisInputTyp
             )
         )
     await result_models.AnalysisResult.bulk_create(result_schemas)
+
+    if sample.status != states.sample.RECEIVED:
+        await sample.change_status(status=states.sample.RECEIVED, updated_by_uid=felicity_user.uid)
 
     sample = await analysis_models.Sample.get(uid=sample_uid)
     return ResultedSampleListingType(samples=[sample])

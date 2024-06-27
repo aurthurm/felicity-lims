@@ -75,14 +75,14 @@ class FelicityInvoice:
 
         # invoice Details
         self.pdf.set_font("arial", "B", 12.0)
-        self.pdf.set_xy(140.0, 25)
+        self.pdf.set_xy(135.0, 25)
         self.pdf.cell(ln=0, h=5.5, align="R", w=10.0, txt="Invoice #: ", border=0)
         self.pdf.set_font("arial", "", 12.0)
         self.pdf.set_xy(170.0, 23)
         self.pdf.cell(ln=0, h=9.5, align="R", w=10.0, txt=bill_id, border=0)
-        # ---
+        # ---inst_in
         self.pdf.set_font("arial", "B", 12.0)
-        self.pdf.set_xy(140.0, 30)
+        self.pdf.set_xy(135.0, 30)
         self.pdf.cell(ln=0, h=5.5, align="R", w=10.0, txt="Invoice Date: ", border=0)
         self.pdf.set_font("arial", "", 12.0)
         self.pdf.set_xy(170.0, 28)
@@ -90,7 +90,7 @@ class FelicityInvoice:
         # ---
         bill_created = get_from_nested(bill, "created_at")
         self.pdf.set_font("arial", "B", 12.0)
-        self.pdf.set_xy(140.0, 35)
+        self.pdf.set_xy(135.0, 35)
         self.pdf.cell(ln=0, h=5.5, align="R", w=10.0, txt="Billed on: ", border=0)
         self.pdf.set_font("arial", "", 12.0)
         self.pdf.set_xy(170.0, 33)
@@ -105,14 +105,14 @@ class FelicityInvoice:
             due_date = format_datetime(_delta_datetime)
 
         self.pdf.set_font("arial", "B", 12.0)
-        self.pdf.set_xy(140.0, 40)
+        self.pdf.set_xy(135.0, 40)
         self.pdf.cell(ln=0, h=5.5, align="R", w=10.0, txt="Payment Terms: ", border=0)
         self.pdf.set_font("arial", "", 12.0)
         self.pdf.set_xy(170.0, 38)
         self.pdf.cell(ln=0, h=9.5, align="R", w=10.0, txt=days, border=0)
         # ---
         self.pdf.set_font("arial", "B", 12.0)
-        self.pdf.set_xy(140.0, 45)
+        self.pdf.set_xy(135.0, 45)
         self.pdf.cell(ln=0, h=5.5, align="R", w=10.0, txt="Due Date: ", border=0)
         self.pdf.set_font("arial", "", 12.0)
         self.pdf.set_xy(170.0, 43)

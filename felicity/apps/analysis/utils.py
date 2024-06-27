@@ -194,7 +194,7 @@ async def verify_from_result_uids(uids: list[str], user: User) -> list[AnalysisR
         if a_result.worksheet_uid:
             await a_result.worksheet.verify(verified_by=user)
 
-        # If referral then send results and mark samle as published
+        # If referral then send results and mark sample as published
         shipped = await ShippedSample.get(sample_uid=a_result.sample_uid)
 
         if shipped:
@@ -210,7 +210,7 @@ async def verify_from_result_uids(uids: list[str], user: User) -> list[AnalysisR
             )
             await Job.create(job_schema)
 
-            # 2. if sample is verifies, then all results are verified, send all samples
+            # 2. if sample is verified, then all results are verified, send all samples
             if sample_verified:
                 # 1. create a Job to send results
                 job_schema = JobCreate(

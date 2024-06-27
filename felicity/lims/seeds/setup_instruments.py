@@ -1,10 +1,8 @@
 import logging
-from typing import Optional
 
 from felicity.apps.instrument import models
 from felicity.apps.instrument import schemas
 from felicity.core.config import get_settings
-
 from .data import get_seeds
 
 settings = get_settings()
@@ -27,3 +25,14 @@ async def seed_instrument_categories() -> None:
             method_in = schemas.MethodCreate(name=_meth, description="", keyword="")
             await models.Method.create(method_in)
 
+    for _inst in data.get("instruments"):
+        if not (await models.Instrument.get(name=_inst)):
+            inst_in = schemas.InstrumentCreate(name=_inst, description="", keyword="")
+            instrument = await models.Instrument.create(inst_in)
+
+            if _inst == "Manual":
+                if not (await models.LaboratoryInstrument.get(lab_name=_inst)):
+                    lab_inst_in = schemas.LaboratoryInstrumentCreate(
+                        instrument_uid=instrument.uid, lab_name=_inst, serial_number="Man-001"
+                    )
+                    await models.LaboratoryInstrument.create(lab_inst_in)

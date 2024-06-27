@@ -21,5 +21,8 @@
     "Western Blot",
     "Microscopy",
     "Culture"
+  ],
+  "instruments": [
+    "Manual"
   ]
 }
