@@ -1,3 +1,4 @@
+import logging
 from datetime import datetime
 
 from felicity.apps.analysis.models import analysis as a_models
@@ -19,17 +20,24 @@ from felicity.apps.billing.schemas import (TestBillCreate,
 from felicity.apps.impress.invoicing.utils import impress_invoice
 from felicity.apps.setup.models.setup import Laboratory, LaboratorySetting
 
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
 
 async def bill_order(analysis_request: a_models.AnalysisRequest, auto_bill=False):
     laboratory = await Laboratory.get_by_setup_name("felicity")
     lab_settings = await LaboratorySetting.get(laboratory_uid=laboratory.uid)
 
     if not lab_settings.allow_billing:
+        logger.info("Billing is not allowed")
         return
 
     # auto_billing ?? or user initiated
     if auto_bill and not lab_settings.allow_auto_billing:
+        logger.info("Auto billing is not allowed")
         return
+
+    logger.info("Billing order ...")
 
     # calculate bill and marshall prices for future reference
     total_charged = 0.00
@@ -69,9 +77,9 @@ async def bill_order(analysis_request: a_models.AnalysisRequest, auto_bill=False
             discount["percentage"] = (p_discount.value_percent,)
             discount["amount"] = p_discount.value_amount
             if p_discount.value_type == DiscountValueType.PERCENTATE:
-                discount["amount"] = float(p_discount.value_percent) * float(
+                discount["amount"] = round(float(p_discount.value_percent) * float(
                     p_price.amount
-                )
+                ), 2)
 
             in_transactions.append(
                 {
@@ -86,9 +94,6 @@ async def bill_order(analysis_request: a_models.AnalysisRequest, auto_bill=False
             "price": p_price.amount,
             "discount": discount,
         }
-
-    if total_charged <= 0:
-        return
 
     for a_price in analysis_prices:
         total_charged += a_price.amount
@@ -108,9 +113,9 @@ async def bill_order(analysis_request: a_models.AnalysisRequest, auto_bill=False
             discount["percentage"] = (a_discount.value_percent,)
             discount["amount"] = a_discount.value_amount
             if a_discount.value_type == DiscountValueType.PERCENTATE:
-                discount["amount"] = float(a_discount.value_percent) * float(
+                discount["amount"] = round(float(a_discount.value_percent) * float(
                     a_price.amount
-                )
+                ), 2)
 
             in_transactions.append(
                 {
@@ -127,6 +132,9 @@ async def bill_order(analysis_request: a_models.AnalysisRequest, auto_bill=False
             "discount": discount,
         }
 
+    if total_charged <= 0:
+        return
+
     # create a new bill
     bill_in = TestBillCreate(
         bill_id=None,
@@ -136,7 +144,7 @@ async def bill_order(analysis_request: a_models.AnalysisRequest, auto_bill=False
         to_confirm=True,
         partial=False,
         total_charged=total_charged,
-        total_paid=0,
+        total_paid=0.0,
         json_content=pricing_lines,
     )
     bill = await TestBill.create(bill_in)
@@ -148,6 +156,7 @@ async def bill_order(analysis_request: a_models.AnalysisRequest, auto_bill=False
     )
 
     # apply discounts
+    logger.info("applying discounts...")
     for t_in in in_transactions:
         # add a transaction
         transaction = await TestBillTransaction.create(
@@ -166,11 +175,12 @@ async def bill_order(analysis_request: a_models.AnalysisRequest, auto_bill=False
         )
         await transaction.update(tra_update_in)
 
+    logger.info(f"invoicing...")
     await impress_invoice(bill)
 
 
 async def apply_voucher(
-    voucher_code: str, test_bill_uid: str, customer_uid: str
+        voucher_code: str, test_bill_uid: str, customer_uid: str
 ) -> TestBill:
     today = datetime.now()
     bill = await TestBill.get(uid=test_bill_uid)
@@ -201,7 +211,7 @@ async def apply_voucher(
     if voucher_customer and voucher.once_per_customer:
         raise CustomerAlreadyUsedVoucherException()
 
-    # check voucher elligibillity to bill orders
+    # check voucher eligibility to bill orders
     profiles_uids = []
     analyses_uids = []
     for k, v in bill.json_content.items():
@@ -236,6 +246,7 @@ async def apply_voucher(
         if p_disc.value_type == DiscountValueType.PERCENTATE:
             p_price = await ProfilePrice.get(profile_uid=p_disc.profile_uid)
             amount = float(p_disc.value_percent) * float(p_price.amount)
+            amount = round(amount, 2)
 
         prof_in_trans.append(
             TestBillTransactionCreate(
@@ -253,6 +264,7 @@ async def apply_voucher(
         if a_disc.value_type == DiscountValueType.PERCENTATE:
             a_price = await AnalysisPrice.get(analysis_uid=a_disc.analysis_uid)
             amount = float(a_disc.value_percent) * float(a_price.amount)
+            amount = round(amount, 2)
 
         anal_in_trans.append(
             TestBillTransactionCreate(

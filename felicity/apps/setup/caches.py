@@ -1,14 +1,16 @@
-from functools import lru_cache
+from cache import AsyncLRU
 
 from felicity.apps.setup.models.setup import Laboratory, LaboratorySetting
 
 
-@lru_cache
+@AsyncLRU(maxsize=128)
 async def get_laboratory():
-    return await Laboratory.get_by_setup_name()
+    lab = await Laboratory.get_by_setup_name()
+    return lab
 
 
-@lru_cache
+@AsyncLRU(maxsize=128)
 async def get_laboratory_setting():
     lab = await Laboratory.get_by_setup_name()
-    return lab, await LaboratorySetting.get(laboratory_uid=lab.uid)
+    setting = await LaboratorySetting.get(laboratory_uid=lab.uid)
+    return lab, setting

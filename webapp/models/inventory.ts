@@ -87,6 +87,7 @@ export interface IStockProduct {
     uid: string;
     name: string;
     description: string;
+    remaining: string;
     stockItemUid: string;
     stockItem: IStockItem;
     stockItemVariantUid: string;

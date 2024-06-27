@@ -58,6 +58,8 @@ def get_from_nested(obj: dict, path: str):
     key = keys.pop(0)
     value = obj.get(key)
     if len(keys) == 0:
+        if isinstance(value, int) or isinstance(value, float):
+            return value
         return value if value else ""
     else:
         return get_from_nested(value, ".".join(keys))

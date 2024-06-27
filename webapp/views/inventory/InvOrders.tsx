@@ -4,6 +4,7 @@ import { IStockOrder, IStockOrderProduct } from '../../models/inventory';
 import { useApiUtil } from '../../composables';
 import { GET_ALL_STOCK_ORDER_PRODUCTS } from '../../graphql/operations/inventory.queries';
 import { EDIT_STOCK_ORDER, ISSUE_STOCK_ORDER, SUBMIT_STOCK_ORDER } from '../../graphql/operations/inventory.mutations';
+import * as shield from "../../guards";
 
 const Drawer = defineAsyncComponent(
     () => import('../../components/Drawer.vue')
@@ -122,6 +123,7 @@ const InventoryOrders = defineComponent({
         });
 
         return {
+            shield,
             tableColumns,
             inventoryStore,
             setupStore,
@@ -318,15 +320,17 @@ const InventoryOrders = defineComponent({
                                         <div class="flex justify-start gap-x-4">
                                             <button
                                                 type="button"
-                                                class="mt-4 bg-sky-800 text-white rounded-sm leading-none px-2 py-1"
                                                 onClick={() => this.updateOrder()}
+                                                class="mt-4 bg-sky-800 text-white rounded-sm leading-none px-2 py-1 disabled:opacity-50 disabled:cursor-not-allowed"
+                                                disabled={!this.shield.hasRights(shield.actions.ORDER, shield.objects.PRODUCT)}
                                             >
                                                 Update
                                             </button>
                                             <button
                                                 type="button"
-                                                class="mt-4 bg-sky-800 text-white rounded-sm leading-none px-2 py-1"
                                                 onClick={() => this.submitOrder()}
+                                                class="mt-4 bg-sky-800 text-white rounded-sm leading-none px-2 py-1 disabled:opacity-50 disabled:cursor-not-allowed"
+                                                disabled={!this.shield.hasRights(shield.actions.ORDER, shield.objects.PRODUCT)}
                                             >
                                                 Finalize
                                             </button>
@@ -394,7 +398,8 @@ const InventoryOrders = defineComponent({
                                         <hr />
                                         <button
                                             type="button"
-                                            class="mt-4 bg-sky-800 text-white rounded-sm leading-none px-2 py-1"
+                                            class="mt-4 bg-sky-800 text-white rounded-sm leading-none px-2 py-1 disabled:opacity-50 disabled:cursor-not-allowed"
+                                            disabled={!this.shield.hasRights(shield.actions.ISSUE, shield.objects.PRODUCT)}
                                             onClick={() => this.issueOrder()}
                                         >
                                             Issue Order
@@ -431,7 +436,7 @@ const InventoryOrders = defineComponent({
                                                                     <p>{orderProduct.product.name}</p>
                                                                 </td>
                                                                 <td>
-                                                                    <p>{orderProduct.product.remaining}</p>
+                                                                    <p>{orderProduct.product?.remaining}</p>
                                                                 </td>
                                                                 <td>
                                                                     <p>{orderProduct.quantity}</p>

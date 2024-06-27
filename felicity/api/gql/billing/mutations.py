@@ -18,6 +18,7 @@ from felicity.apps.billing import models, schemas, utils
 from felicity.apps.billing.config import DiscountType, TransactionKind
 from felicity.apps.billing.schemas import (TestBillTransactionUpdate,
                                            TestBillUpdate)
+from felicity.apps.impress.invoicing import utils as invoice_utils
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -116,7 +117,7 @@ class ApplyVoucherInput:
 class BillingMutations:
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_profile_price(
-        self, info: Info, uid: str, payload: PriceInput
+            self, info: Info, uid: str, payload: PriceInput
     ) -> ProfilePriceResponse:
         _, felicity_user = await auth_from_info(info)
 
@@ -133,7 +134,7 @@ class BillingMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_analysis_price(
-        self, info: Info, uid: str, payload: PriceInput
+            self, info: Info, uid: str, payload: PriceInput
     ) -> AnalysisPriceResponse:
         _, felicity_user = await auth_from_info(info)
 
@@ -150,7 +151,7 @@ class BillingMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_profile_discount(
-        self, info, uid: str, payload: PriceDiscountInput
+            self, info, uid: str, payload: PriceDiscountInput
     ) -> ProfileDiscountResponse:
         _, felicity_user = await auth_from_info(info)
 
@@ -190,7 +191,7 @@ class BillingMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_analysis_discount(
-        self, info, uid: str, payload: PriceDiscountInput
+            self, info, uid: str, payload: PriceDiscountInput
     ) -> AnalysisDiscountResponse:
         _, felicity_user = await auth_from_info(info)
 
@@ -223,7 +224,7 @@ class BillingMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_voucher(
-        self, info: Info, payload: VoucherInput
+            self, info: Info, payload: VoucherInput
     ) -> VoucherResponse:
 
         is_authenticated, felicity_user = await auth_from_info(info)
@@ -252,7 +253,7 @@ class BillingMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_voucher(
-        self, info, uid: str, payload: VoucherInput
+            self, info, uid: str, payload: VoucherInput
     ) -> VoucherResponse:
 
         is_authenticated, felicity_user = await auth_from_info(info)
@@ -284,7 +285,7 @@ class BillingMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_voucher_code(
-        self, info: Info, payload: VoucherCodeInput
+            self, info: Info, payload: VoucherCodeInput
     ) -> VoucherCodeResponse:
 
         is_authenticated, felicity_user = await auth_from_info(info)
@@ -313,7 +314,7 @@ class BillingMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_voucher_code(
-        self, info, uid: str, payload: VoucherCodeInput
+            self, info, uid: str, payload: VoucherCodeInput
     ) -> VoucherCodeResponse:
 
         is_authenticated, felicity_user = await auth_from_info(info)
@@ -345,7 +346,7 @@ class BillingMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_test_bill_transaction(
-        self, info, payload: BillTransactionInput
+            self, info, payload: BillTransactionInput
     ) -> TestBillTransactionResponse:
 
         is_authenticated, felicity_user = await auth_from_info(info)
@@ -392,12 +393,12 @@ class BillingMutations:
             incoming["action_message"] = "Confirm funds reception"
 
         tbt = await tbt.update(TestBillTransactionUpdate(**transaction_update))
-        await utils.generate_invoice(test_bill_update)
+        await invoice_utils.impress_invoice(test_bill)
         return TestBillTransactionType(**tbt.marshal_simple())
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def apply_voucher(
-        self, info, payload: ApplyVoucherInput
+            self, info, payload: ApplyVoucherInput
     ) -> TestBillTransactionResponse:
 
         is_authenticated, felicity_user = await auth_from_info(info)

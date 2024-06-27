@@ -4,7 +4,7 @@ const objects = {
     SAMPLE: 'SAMPLE',
     RESULT: 'RESULT',
     WORKSHEET: 'WORKSHEET',
-    INVENTORY: 'INVENTORY',
+    PRODUCT: 'PRODUCT',
     SHIPMENT: "SHIPMENT"
 };
 
@@ -19,6 +19,9 @@ const actions = {
     SUBMIT: 'SUBMIT',
     CANCEL: 'CANCEL',
     VERIFY: 'VERIFY',
+    // INVENTORY
+    ISSUE: 'ISSUE',
+    ORDER: 'ORDER',
 };
 
 export { actions, objects };

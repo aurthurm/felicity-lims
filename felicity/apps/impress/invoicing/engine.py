@@ -96,7 +96,7 @@ class FelicityInvoice:
         self.pdf.set_xy(170.0, 33)
         self.pdf.cell(ln=0, h=9.5, align="R", w=10.0, txt=bill_created, border=0)
         # ---
-        terms_days = get_from_nested(laboratory_settings, "payment_terms_days")
+        terms_days = int(get_from_nested(laboratory_settings, "payment_terms_days"))
         days = f"Immediate"
         due_date = bill_created
         if terms_days > 0:
@@ -123,9 +123,9 @@ class FelicityInvoice:
 
         # Customer Details
         full_name = (
-            get_from_nested(customer, "first_name")
-            + " "
-            + get_from_nested(customer, "last_name")
+                get_from_nested(customer, "first_name")
+                + " "
+                + get_from_nested(customer, "last_name")
         )
         self.pdf.set_font("arial", "B", 14.0)
         self.pdf.set_xy(20, 55)
@@ -241,7 +241,7 @@ class FelicityInvoice:
                     )
 
         # ---
-        total_charged = get_from_nested(bill, "total_charged")
+        total_charged = float(get_from_nested(bill, "total_charged"))
         oy += 5
         self.pdf.set_font("arial", "B", 10.0)
         self.pdf.set_xy(120, oy)
@@ -305,7 +305,7 @@ class FelicityInvoice:
             )
 
         # ---
-        total_paid = get_from_nested(bill, "total_paid")
+        total_paid = float(get_from_nested(bill, "total_paid"))
         ty += 5
         self.pdf.set_font("arial", "B", 10.0)
         self.pdf.set_xy(130, ty)

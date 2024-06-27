@@ -3,26 +3,25 @@ from felicity.apps.billing.models import (AnalysisPrice, ProfilePrice,
                                           TestBill, TestBillInvoice,
                                           TestBillTransaction, test_bill_item)
 from felicity.apps.billing.schemas import TestBillInvoiceCreate
+from felicity.apps.common.utils.serializer import marshaller
 from felicity.apps.impress.invoicing.engine import FelicityInvoice
 from felicity.apps.setup.caches import get_laboratory_setting
-
-invoicer = FelicityInvoice()
 
 
 async def impress_invoice(test_bill: TestBill):
     impress_meta = dict()
 
     # bill
-    impress_meta["bill"] = test_bill.marshal_simple()
+    impress_meta["bill"] = marshaller(test_bill, depth=1)
 
     # laboratory
     lab, lab_setting = await get_laboratory_setting()
-    impress_meta["laboratory"] = lab.marshal_simple()
-    impress_meta["laboratory_settings"] = lab_setting.marshal_simple()
+    impress_meta["laboratory"] = marshaller(lab, depth=1)
+    impress_meta["laboratory_settings"] = marshaller(lab_setting, depth=1)
 
     # customer
-    impress_meta["customer"] = test_bill.patient.marshal_simple()
-    impress_meta["client"] = test_bill.client.marshal_simple()
+    impress_meta["customer"] = marshaller(test_bill.patient)
+    impress_meta["client"] = marshaller(test_bill.client, depth=1)
 
     # orders
     impress_meta["orders"] = []
@@ -31,10 +30,10 @@ async def impress_invoice(test_bill: TestBill):
     )
     orders = await AnalysisRequest.get_by_uids(uids=analysis_request_uids)
     for order in orders:
-        _order = order.marshal_simple()
+        _order = marshaller(order, depth=1)
         _order["samples"] = []
         for _sample in order.samples:
-            _s = _sample.marshal_simple()
+            _s = marshaller(_sample)
             _s["profiles"] = []
             _s["analyses"] = []
             for _p in _sample.profiles:
@@ -61,16 +60,16 @@ async def impress_invoice(test_bill: TestBill):
 
     # transactions
     transactions = await TestBillTransaction.get_all(test_bill_uid=test_bill.uid)
-    impress_meta["transactions"] = [t.marshal_simple() for t in transactions]
-    pdf = await invoicer.generate(impress_meta)
-
+    impress_meta["transactions"] = [marshaller(t, depth=1) for t in transactions]
+    pdf = await FelicityInvoice().generate(impress_meta)
     sc_in = TestBillInvoiceCreate(
         **{
-            "v": test_bill.uid,
+            "test_bill_uid": test_bill.uid,
             "json_content": impress_meta,
             "pdf_content": pdf,
         }
     )
+    print(impress_meta)
     await TestBillInvoice.create(sc_in)
 
     return pdf

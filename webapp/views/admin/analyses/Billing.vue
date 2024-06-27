@@ -70,7 +70,7 @@ import { IAnalysisDiscount, IProfileDiscount } from '../../../models/billing';
     valueType: "",
     startDate: "",
     endDate: "",
-    voucherUid: "",
+    voucherUid: "" as string | undefined,
     valuePercent: 0.0,
     valueAmount: 0.0,
     isActive: true,
@@ -113,7 +113,7 @@ import { IAnalysisDiscount, IProfileDiscount } from '../../../models/billing';
 
   watch(() => formDiscount.discountType, (dt, _) => {
     if(dt !== 'voucher') {
-      formDiscount.voucherUid = "";
+      formDiscount.voucherUid = undefined;
     }
   })
 
