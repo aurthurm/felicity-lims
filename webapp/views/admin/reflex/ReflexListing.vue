@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { ref, reactive, onMounted, defineAsyncComponent } from "vue";
-import { IReflexRule } from "../../../models/reflex";
-import { useApiUtil } from "../../../composables";
-import { useReflexStore } from "../../../stores";
-import { ADD_REFLEX_RULE, EDIT_REFLEX_RULE } from "../../../graphql/operations/reflex.mutations";
+import { IReflexRule } from "@/models/reflex";
+import { useApiUtil } from "@/composables";
+import { useReflexStore } from "@/stores";
+import { ADD_REFLEX_RULE, EDIT_REFLEX_RULE } from "@/graphql/operations/reflex.mutations";
 const modal = defineAsyncComponent(
-  () => import("../../../components/SimpleModal.vue")
+  () => import("@/components/ui/FelModal.vue")
 )
 
 const { withClientMutation } = useApiUtil();

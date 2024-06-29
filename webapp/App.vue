@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { computed, onMounted, onBeforeMount, watch } from "vue";
 import { useRouter } from "vue-router";
-import axios from "./api";
-import { useStreamStore, useAuthStore } from "./stores";
-import { userPreferenceComposable } from "./composables";
+import axios from "@/api";
+import { useStreamStore, useAuthStore } from "@/stores";
+import { userPreferenceComposable } from "@/composables";
 
 const { currentRoute, push } = useRouter();
 const authStore = useAuthStore();

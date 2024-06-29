@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import * as shield from "../../guards";
+import * as shield from "@/guards";
 import { useRoute } from "vue-router";
 import { storeToRefs } from "pinia";
-import { usePatientStore } from "../../stores";
-import { parseDate } from "../../utils/helpers";
+import { usePatientStore } from "@/stores";
+import { parseDate } from "@/utils/helpers";
 import { defineAsyncComponent } from "vue";
 const LoadingMessage = defineAsyncComponent(
-  () => import("../../components/Spinners/LoadingMessage.vue")
+  () => import("@/components/ui/spinners/FelLoadingMessage.vue")
 )
 
 const route = useRoute();

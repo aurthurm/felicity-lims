@@ -7,23 +7,23 @@ import {
   useAnalysisStore,
   useClientStore,
   usePatientStore,
-} from "../../stores";
+} from "@/stores";
 import {
   IAnalysisProfile,
   IAnalysisRequest,
   IAnalysisService,
   ISample,
   ISampleType,
-} from "../../models/analysis";
-import { ADD_ANALYSIS_REQUEST } from "../../graphql/operations/analyses.mutations";
-import { ifNoValEmpty } from "../../utils/helpers";
+} from "@/models/analysis";
+import { ADD_ANALYSIS_REQUEST } from "@/graphql/operations/analyses.mutations";
+import { ifNoValEmpty } from "@/utils/helpers";
 
 import { useField, useForm } from "vee-validate";
 import { object, string, array, number } from "yup";
-import { IClient } from "../../models/client";
-import { useApiUtil, useNotifyToast } from "../../composables";
+import { IClient } from "@/models/client";
+import { useApiUtil, useNotifyToast } from "@/composables";
 const LoadingMessage = defineAsyncComponent(
-  () => import("../../components/Spinners/LoadingMessage.vue")
+  () => import("@/components/ui/spinners/FelLoadingMessage.vue")
 )
 
 const sampleStore = useSampleStore();

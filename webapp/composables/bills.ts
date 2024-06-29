@@ -1,5 +1,5 @@
 import Swal from 'sweetalert2';
-import { DOWNLOAD_INVOICE } from '../graphql/operations/billing.queries';
+import { DOWNLOAD_INVOICE } from '@/graphql/operations/billing.queries';
 import useApiUtil from './api_util';
 
 export default function useBillComposable() {

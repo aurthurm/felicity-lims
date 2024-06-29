@@ -1,5 +1,5 @@
 import Swal from 'sweetalert2';
-import { IAnalysisResult } from '../models/analysis';
+import { IAnalysisResult } from '@/models/analysis';
 import {
     CANCEL_ANALYSIS_RESULTS,
     REINSTATE_ANALYSIS_RESULTS,
@@ -7,9 +7,9 @@ import {
     VERIFY_ANALYSIS_RESULTS,
     RETEST_ANALYSIS_RESULTS,
     RETRACT_ANALYSIS_RESULTS,
-} from '../graphql/operations/analyses.mutations';
+} from '@/graphql/operations/analyses.mutations';
 
-import { useSampleStore, useWorksheetStore } from '../stores';
+import { useSampleStore, useWorksheetStore } from '@/stores';
 
 import useApiUtil from './api_util';
 import useNotifyToast from './alert_toast';

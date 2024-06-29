@@ -1,11 +1,11 @@
 import { defineAsyncComponent, defineComponent, toRefs } from 'vue';
 import { ref, reactive, computed } from 'vue';
-import { ADD_HAZARD, EDIT_HAZARD } from '../../../graphql/operations/inventory.mutations';
-import { useInventoryStore } from '../../../stores';
-import { useApiUtil } from '../../../composables';
-import { IHazard } from '../../../models/inventory';
+import { ADD_HAZARD, EDIT_HAZARD } from '@/graphql/operations/inventory.mutations';
+import { useInventoryStore } from '@/stores';
+import { useApiUtil } from '@/composables';
+import { IHazard } from '@/models/inventory';
 const Modal = defineAsyncComponent(
-    () => import('../../../components/SimpleModal.vue')
+    () => import('@/components/ui/FelModal.vue')
 )
 
 const Hazard = defineComponent({

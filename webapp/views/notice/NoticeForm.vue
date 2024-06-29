@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { PropType, toRefs } from "vue";
-import { INotice } from "../../models/notice";
-import { ADD_NOTICE, EDIT_NOTICE } from "../../graphql/operations/notice.mutations";
+import { INotice } from "@/models/notice";
+import { ADD_NOTICE, EDIT_NOTICE } from "@/graphql/operations/notice.mutations";
 
-import { useNoticeStore } from "../../stores";
-import { useApiUtil } from "../../composables";
+import { useNoticeStore } from "@/stores";
+import { useApiUtil } from "@/composables";
 
 import { useField, useForm } from "vee-validate";
 import { object, string, array, number, date } from "yup";

@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import { storeToRefs } from "pinia";
 import { computed, defineAsyncComponent, reactive, watch } from "vue";
-import { IAnalysisProfile, IAnalysisService, ISample } from "../../../models/analysis";
-import { useSampleComposable } from "../../../composables";
-import { useSampleStore } from "../../../stores";
+import { IAnalysisProfile, IAnalysisService, ISample } from "@/models/analysis";
+import { useSampleComposable } from "@/composables";
+import { useSampleStore } from "@/stores";
 import { useRoute, useRouter } from "vue-router";
-import { parseDate } from "../../../utils/helpers";
+import { parseDate } from "@/utils/helpers";
 const LoadingMessage = defineAsyncComponent(
-  () => import("../../../components/Spinners/LoadingMessage.vue")
+  () => import("@/components/ui/spinners/FelLoadingMessage.vue")
 )
 
 const sampleStore = useSampleStore();

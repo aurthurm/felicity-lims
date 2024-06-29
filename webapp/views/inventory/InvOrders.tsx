@@ -1,16 +1,16 @@
 import { computed, defineComponent, reactive, ref, h, defineAsyncComponent } from 'vue';
-import { useInventoryStore, useSetupStore } from '../../stores';
-import { IStockOrder, IStockOrderProduct } from '../../models/inventory';
-import { useApiUtil } from '../../composables';
-import { GET_ALL_STOCK_ORDER_PRODUCTS } from '../../graphql/operations/inventory.queries';
-import { EDIT_STOCK_ORDER, ISSUE_STOCK_ORDER, SUBMIT_STOCK_ORDER } from '../../graphql/operations/inventory.mutations';
-import * as shield from "../../guards";
+import { useInventoryStore, useSetupStore } from '@/stores';
+import { IStockOrder, IStockOrderProduct } from '@/models/inventory';
+import { useApiUtil } from '@/composables';
+import { GET_ALL_STOCK_ORDER_PRODUCTS } from '@/graphql/operations/inventory.queries';
+import { EDIT_STOCK_ORDER, ISSUE_STOCK_ORDER, SUBMIT_STOCK_ORDER } from '@/graphql/operations/inventory.mutations';
+import * as shield from "@/guards";
 
 const Drawer = defineAsyncComponent(
-    () => import('../../components/Drawer.vue')
+    () => import('@/components/ui/FelDrawer.vue')
 )
 const DataTable = defineAsyncComponent(
-    () => import('../../components/datatable/DataTable.vue')
+    () => import('@/components/ui/datatable/FelDataTable.vue')
 )
 
 const InventoryOrders = defineComponent({

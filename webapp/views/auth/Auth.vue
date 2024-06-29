@@ -6,7 +6,7 @@
   const PasswordReset = defineAsyncComponent(
     () => import("./PasswordReset.vue")
   )
-  import { useAuthStore } from "../../stores";
+  import { useAuthStore } from "@/stores";
 
   const authStore = useAuthStore();
   authStore.reset();

@@ -1,13 +1,13 @@
 <script setup lang="ts">
   import { ref, reactive, computed, defineAsyncComponent } from 'vue';
-  import { ADD_DEPARTMENT, UPDATE_DEPARTMENT } from '../../../graphql/operations/_mutations';
-  import { IDepartment } from '../../../models/setup';
+  import { ADD_DEPARTMENT, UPDATE_DEPARTMENT } from '@/graphql/operations/_mutations';
+  import { IDepartment } from '@/models/setup';
 
-  import { useSetupStore } from '../../../stores';
-  import { useApiUtil } from '../../../composables';
+  import { useSetupStore } from '@/stores';
+  import { useApiUtil } from '@/composables';
 
   const modal = defineAsyncComponent(
-    () => import('../../../components/SimpleModal.vue')
+    () => import('@/components/ui/FelModal.vue')
   )
 
   const setupStore = useSetupStore()

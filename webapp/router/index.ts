@@ -1,5 +1,5 @@
 import { RouteRecordRaw, createRouter, createWebHistory, createWebHashHistory } from 'vue-router';
-import * as guards from './../guards';
+import * as guards from '@//guards';
 import adminRoutes from './admin';
 import patientRoutes from './patient';
 import clientRoutes from './client';
@@ -8,7 +8,7 @@ import qualityRoutes from './quality';
 import worksheetRoutes from './worksheet';
 import shipmentRoutes from './referral';
 import { isTokenValid } from './checks';
-import { useAuthStore } from '../stores';
+import { useAuthStore } from '@/stores';
 
 const routes: RouteRecordRaw[] = [
     {
@@ -18,7 +18,7 @@ const routes: RouteRecordRaw[] = [
     {
         path: '/installation',
         name: guards.pages.INSTALLATION,
-        component: () => import('../views/install/Install.vue'),
+        component: () => import('@/views/install/Install.vue'),
         meta: {
             layout: 'empty',
         },
@@ -26,13 +26,13 @@ const routes: RouteRecordRaw[] = [
     {
         path: '/auth',
         name: guards.pages.LOGIN,
-        component: () => import('../views/auth/Auth.vue'),
+        component: () => import('@/views/auth/Auth.vue'),
         meta: { layout: 'empty' },
     },
     {
         path: '/dashboard',
         name: guards.pages.DASHBOARD,
-        component: () => import('../views/dashboard/Dashboard.vue'),
+        component: () => import('@/views/dashboard/Dashboard.vue'),
         meta: {
             requiresAuth: true,
         },
@@ -40,7 +40,7 @@ const routes: RouteRecordRaw[] = [
     {
         path: '/patients',
         name: guards.pages.PATIENTS,
-        component: () => import('../views/patient/Patients.vue'),
+        component: () => import('@/views/patient/Patients.vue'),
         children: patientRoutes,
         meta: {
             requiresAuth: true,
@@ -49,7 +49,7 @@ const routes: RouteRecordRaw[] = [
     {
         path: '/patients-compact',
         name: guards.pages.PATIENTS_COMPACT,
-        component: () => import('../views/patient/PatientsCompact.vue'),
+        component: () => import('@/views/patient/PatientsCompact.vue'),
         meta: {
             requiresAuth: true,
         },
@@ -57,7 +57,7 @@ const routes: RouteRecordRaw[] = [
     {
         path: '/clients',
         name: guards.pages.CLIENTS,
-        component: () => import('../views/client/Clients.vue'),
+        component: () => import('@/views/client/Clients.vue'),
         children: clientRoutes,
         meta: {
             requiresAuth: true,
@@ -66,7 +66,7 @@ const routes: RouteRecordRaw[] = [
     {
         path: '/samples',
         name: guards.pages.SAMPLES,
-        component: () => import('../views/sample/Samples.vue'),
+        component: () => import('@/views/sample/Samples.vue'),
         children: sampleRoutes,
         meta: {
             requiresAuth: true,
@@ -75,7 +75,7 @@ const routes: RouteRecordRaw[] = [
     {
         path: '/quality-control',
         name: guards.pages.QC_SAMPLES,
-        component: () => import('../views/qcontrol/QualityControls.vue'),
+        component: () => import('@/views/qcontrol/QualityControls.vue'),
         children: qualityRoutes,
         meta: {
             requiresAuth: true,
@@ -84,7 +84,7 @@ const routes: RouteRecordRaw[] = [
     {
         path: '/worksheets',
         name: guards.pages.WORKSHEETS,
-        component: () => import('../views/worksheet/WorkSheets.vue'),
+        component: () => import('@/views/worksheet/WorkSheets.vue'),
         children: worksheetRoutes,
         meta: {
             requiresAuth: true,
@@ -93,7 +93,7 @@ const routes: RouteRecordRaw[] = [
     {
         path: '/shipments',
         name: guards.pages.REFERRAL,
-        component: () => import('../views/shipment/Shipments.vue'),
+        component: () => import('@/views/shipment/Shipments.vue'),
         children: shipmentRoutes,
         meta: {
             requiresAuth: true,
@@ -102,7 +102,7 @@ const routes: RouteRecordRaw[] = [
     {
         path: '/bio-banking',
         name: guards.pages.BIO_BANKING,
-        component: () => import('../views/storage/Storage.vue'),
+        component: () => import('@/views/storage/Storage.vue'),
         meta: {
             requiresAuth: true,
         },
@@ -110,7 +110,7 @@ const routes: RouteRecordRaw[] = [
     {
         path: '/inventory',
         name: guards.pages.INVENTORY,
-        component: () => import('../views/inventory/Inventory.vue'),
+        component: () => import('@/views/inventory/Inventory.vue'),
         meta: {
             requiresAuth: true,
         },
@@ -118,7 +118,7 @@ const routes: RouteRecordRaw[] = [
     {
         path: '/notice-manager',
         name: guards.pages.NOTICE_MANAGER,
-        component: () => import('../views/notice/Notices.vue'),
+        component: () => import('@/views/notice/Notices.vue'),
         meta: {
             requiresAuth: true,
         },
@@ -126,7 +126,7 @@ const routes: RouteRecordRaw[] = [
     {
         name: guards.pages.ADMINISTRATION,
         path: '/admin',
-        component: () => import('../views/admin/Admin.vue'),
+        component: () => import('@/views/admin/Admin.vue'),
         children: adminRoutes,
         meta: {
             requiresAuth: true,
@@ -136,7 +136,7 @@ const routes: RouteRecordRaw[] = [
     {
         path: '/experiment',
         name: 'experiment',
-        component: () => import('../views/experiment/Experiment.vue'),
+        component: () => import('@/views/experiment/Experiment.vue'),
         meta: {
             requiresAuth: true,
         },
@@ -144,7 +144,7 @@ const routes: RouteRecordRaw[] = [
     {
         path: '/about',
         name: 'About',
-        component: () => import('../views/About.vue'),
+        component: () => import('@/views/About.vue'),
         meta: {
             requiresAuth: true,
         },
@@ -152,7 +152,7 @@ const routes: RouteRecordRaw[] = [
     {
         name: guards.pages.NOT_AUTHORISED,
         path: '/access-denied',
-        component: () => import('../views/Restricted.vue'),
+        component: () => import('@/views/Restricted.vue'),
         meta: {
             layout: 'empty',
         },
@@ -160,7 +160,7 @@ const routes: RouteRecordRaw[] = [
     {
         name: guards.pages.FOUR_OR_FOUR,
         path: '/:pathMatch(.*)',
-        component: () => import('../views/404.vue'),
+        component: () => import('@/views/404.vue'),
         meta: {
             layout: 'empty',
         },

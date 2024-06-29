@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { ref, watch } from "vue";
-import { useNotificationStore, useStreamStore } from "../../stores";
+import { useNotificationStore, useStreamStore } from "@/stores";
 
 const notificationStore = useNotificationStore();
 const streamStore = useStreamStore();

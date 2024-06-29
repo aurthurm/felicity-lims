@@ -1,9 +1,9 @@
 import { defineStore } from 'pinia';
 import { reactive, toRefs } from 'vue';
-import { GET_NOTICES_BY_CREATOR } from '../graphql/operations/notice.queries';
-import { INotification } from '../models/notification';
+import { GET_NOTICES_BY_CREATOR } from '@/graphql/operations/notice.queries';
+import { INotification } from '@/models/notification';
 
-import useApiUtil from '../composables/api_util';
+import useApiUtil from '@/composables/api_util';
 const { withClientQuery } = useApiUtil();
 
 export const useNotificationStore = defineStore('notification', {

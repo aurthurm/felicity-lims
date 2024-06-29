@@ -3,15 +3,15 @@ import { h, ref, reactive, computed, defineAsyncComponent } from "vue";
 import { RouterLink } from "vue-router";
 import { storeToRefs } from "pinia";
 import { useRoute, useRouter } from "vue-router";
-import { IAnalysisProfile, IAnalysisService, ISample } from "../../models/analysis";
-import { ifZeroEmpty, parseDate } from "../../utils/helpers";
-import { useSampleStore, useAnalysisStore } from "../../stores";
-import { useSampleComposable } from "../../composables";
+import { IAnalysisProfile, IAnalysisService, ISample } from "@/models/analysis";
+import { ifZeroEmpty, parseDate } from "@/utils/helpers";
+import { useSampleStore, useAnalysisStore } from "@/stores";
+import { useSampleComposable } from "@/composables";
 const DataTable = defineAsyncComponent(
-  () => import("../../components/datatable/DataTable.vue")
+  () => import("@/components/ui/datatable/FelDataTable.vue")
 )
 
-import * as shield from "../../guards";
+import * as shield from "@/guards";
 
 const sampleStore = useSampleStore();
 const analysisStore = useAnalysisStore();

@@ -3,10 +3,10 @@
   import { 
     EDIT_PROFILE_PRICING, EDIT_ANALYSIS_PRICING,
     EDIT_ANALYSIS_DISCOUNT, EDIT_PROFILE_DISCOUNT
-  } from '../../../graphql/operations/billing.mutations'
-  import { useBillingStore } from '../../../stores';
-  import { useApiUtil } from '../../../composables';
-import { IAnalysisDiscount, IProfileDiscount } from '../../../models/billing';
+  } from '@/graphql/operations/billing.mutations'
+  import { useBillingStore } from '@/stores';
+  import { useApiUtil } from '@/composables';
+import { IAnalysisDiscount, IProfileDiscount } from '@/models/billing';
 
   const  billingStore = useBillingStore()
   const { withClientMutation } = useApiUtil()

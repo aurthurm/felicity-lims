@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { reactive, ref, computed, watch } from "vue";
-import { ILaboratory, ILaboratorySetting } from "../../../models/setup";
+import { ILaboratory, ILaboratorySetting } from "@/models/setup";
 import {
   UPDATE_LABORATOTY,
   UPDATE_LABORATOTY_SETTING,
-} from "../../../graphql/operations/_mutations";
-import { useUserStore, useSetupStore } from "../../../stores";
-import { useApiUtil } from "../../../composables";
+} from "@/graphql/operations/_mutations";
+import { useUserStore, useSetupStore } from "@/stores";
+import { useApiUtil } from "@/composables";
 
 const userStore = useUserStore();
 const setupStore = useSetupStore();
@@ -229,4 +229,4 @@ const users = computed(() => userStore.getUsers);
     </section>
   </div>
 </template>
-../../../graphql/operations/_mutations../../../graphql/_mutations
+@/graphql/operations/_mutations@/graphql/_mutations

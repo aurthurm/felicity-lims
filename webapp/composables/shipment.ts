@@ -1,10 +1,10 @@
 import Swal from 'sweetalert2';
 import {
     SHIPMENT_MANAGE_SAMPLES, ACTION_SHIPMENT
-} from "../graphql/operations/shipment.mutations";
-import { DOWNLOAD_MANIFEST } from "../graphql/operations/shipment.queries"
+} from "@/graphql/operations/shipment.mutations";
+import { DOWNLOAD_MANIFEST } from "@/graphql/operations/shipment.queries"
 import { useApiUtil } from '.';
-import { useShipmentStore } from '../stores';
+import { useShipmentStore } from '@/stores';
 
 export default function useShipmentComposable() {
     const { withClientMutation, withClientQuery } = useApiUtil();

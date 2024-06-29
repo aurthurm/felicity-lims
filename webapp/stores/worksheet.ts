@@ -1,14 +1,14 @@
 import { defineStore } from 'pinia';
-import { GET_ALL_WORKSHEET_TEMPLATES, GET_ALL_WORKSHEETS, GET_WORKSHEET_BY_UID } from '../graphql/operations/worksheet.queries';
-import { WORKSHEET_UPDATE } from '../graphql/operations/worksheet.mutations';
+import { GET_ALL_WORKSHEET_TEMPLATES, GET_ALL_WORKSHEETS, GET_WORKSHEET_BY_UID } from '@/graphql/operations/worksheet.queries';
+import { WORKSHEET_UPDATE } from '@/graphql/operations/worksheet.mutations';
 
-import { GET_ANALYSIS_RESULTS_FOR_WS_ASSIGN } from '../graphql/operations/analyses.queries';
-import { parseData, keysToCamel, addListsUnique } from '../utils/helpers';
-import { IAnalysisResult } from '../models/analysis';
-import { IWorkSheetTemplate, IWorkSheet, IReserved } from '../models/worksheet';
-import { IPageInfo } from '../models/pagination';
+import { GET_ANALYSIS_RESULTS_FOR_WS_ASSIGN } from '@/graphql/operations/analyses.queries';
+import { parseData, keysToCamel, addListsUnique } from '@/utils/helpers';
+import { IAnalysisResult } from '@/models/analysis';
+import { IWorkSheetTemplate, IWorkSheet, IReserved } from '@/models/worksheet';
+import { IPageInfo } from '@/models/pagination';
 
-import { useApiUtil } from '../composables';
+import { useApiUtil } from '@/composables';
 
 const { withClientQuery, withClientMutation } = useApiUtil();
 

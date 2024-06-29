@@ -1,14 +1,14 @@
 import { defineStore } from 'pinia';
-import { GET_ALL_REFERRAL_LABORATORIES, GET_ALL_SHIPMENTS, GET_SHIPMENT_BY_UID } from '../graphql/operations/shipment.queries';
-import { SHIPMENT_UPDATE } from '../graphql/operations/shipment.mutations';
+import { GET_ALL_REFERRAL_LABORATORIES, GET_ALL_SHIPMENTS, GET_SHIPMENT_BY_UID } from '@/graphql/operations/shipment.queries';
+import { SHIPMENT_UPDATE } from '@/graphql/operations/shipment.mutations';
 
-import { GET_SAMPLES_FOR_SH_ASSIGN } from '../graphql/operations/analyses.queries';
-import { parseData, keysToCamel, addListsUnique } from '../utils/helpers';
-import { ISample } from '../models/analysis';
-import { IShipment, IReferralLaboratory, IShippedSample } from '../models/shipment';
-import { IPageInfo } from '../models/pagination';
+import { GET_SAMPLES_FOR_SH_ASSIGN } from '@/graphql/operations/analyses.queries';
+import { parseData, keysToCamel, addListsUnique } from '@/utils/helpers';
+import { ISample } from '@/models/analysis';
+import { IShipment, IReferralLaboratory, IShippedSample } from '@/models/shipment';
+import { IPageInfo } from '@/models/pagination';
 
-import { useApiUtil } from '../composables';
+import { useApiUtil } from '@/composables';
 
 const { withClientOperation } = useApiUtil();
 

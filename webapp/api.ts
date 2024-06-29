@@ -1,6 +1,6 @@
 import axios from 'axios';
-import { getAuthData, authLogout } from './auth';
-import { REST_BASE_URL, GQL_BASE_URL, STORAGE_AUTH_KEY } from './conf';
+import { getAuthData } from '@/auth';
+import { REST_BASE_URL, GQL_BASE_URL, STORAGE_AUTH_KEY } from '@/conf';
 
 const axiosInstance = axios.create({
     baseURL: REST_BASE_URL + '/api/v1/',

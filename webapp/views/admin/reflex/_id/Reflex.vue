@@ -7,22 +7,22 @@ import {
   IReflexBrainFinal,
   IReflexBrainCriteria,
   IReflexBrainAddition,
-} from "../../../../models/reflex";
-import { useApiUtil } from "../../../../composables";
-import { useReflexStore, useAnalysisStore } from "../../../../stores";
+} from "@/models/reflex";
+import { useApiUtil } from "@/composables";
+import { useReflexStore, useAnalysisStore } from "@/stores";
 import {
   ADD_REFLEX_ACTION,
   EDIT_REFLEX_ACTION,
   ADD_REFLEX_BRAIN,
   EDIT_REFLEX_BRAIN,
-} from "../../../../graphql/operations/reflex.mutations";
-import { stringifyNumber } from "../../../../utils/helpers";
-import { IAnalysisService, IResultOption } from "../../../../models/analysis";
+} from "@/graphql/operations/reflex.mutations";
+import { stringifyNumber } from "@/utils/helpers";
+import { IAnalysisService, IResultOption } from "@/models/analysis";
 const modal = defineAsyncComponent(
-  () => import("../../../../components/SimpleModal.vue")
+  () => import("@/components/ui/FelModal.vue")
 )
 const Accordion = defineAsyncComponent(
-  () => import("../../../../components/Accordion.vue")
+  () => import("@/components/ui/FelAccordion.vue")
 )
 
 const reflexStore = useReflexStore();

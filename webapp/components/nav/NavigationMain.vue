@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { ref, onMounted, computed, defineAsyncComponent } from "vue";
-import { useNotificationStore, useAuthStore } from "../../../stores";
-import { userPreferenceComposable, useApiUtil } from "../../../composables";
-import * as guards from "./../../../guards";
+import { useNotificationStore, useAuthStore } from "@/stores";
+import { userPreferenceComposable, useApiUtil } from "@/composables";
+import * as guards from "@/guards";
 const Drawer = defineAsyncComponent(
-  () => import("../../../components/Drawer.vue")
+  () => import("@/components/ui/FelDrawer.vue")
 )
 
 const { errors } = useApiUtil()

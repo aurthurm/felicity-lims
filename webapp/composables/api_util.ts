@@ -1,4 +1,4 @@
-import { urqlClient } from '../urql';
+import { urqlClient } from '@/urql';
 import { ref } from 'vue';
 import { RequestPolicy } from '@urql/vue';
 import useNotifyToast from './alert_toast';

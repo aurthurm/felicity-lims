@@ -12,10 +12,10 @@ import {
     GET_ANALYSIS_PROCESS_PEFORMANCE,
     GET_SAMPLE_GROUPS_BY_ACTION,
     GET_SAMPLE_LAGGARDS,
-} from '../graphql/operations/dashboard.queries';
-import { mapOrder } from '../utils/helpers';
+} from '@/graphql/operations/dashboard.queries';
+import { mapOrder } from '@/utils/helpers';
 
-import { useApiUtil } from '../composables';
+import { useApiUtil } from '@/composables';
 const { withClientQuery } = useApiUtil();
 
 interface GroupCount {

@@ -1,6 +1,6 @@
 import Swal from 'sweetalert2';
 
-import { WORKSHEET_UPDATE } from '../graphql/operations/worksheet.mutations';
+import { WORKSHEET_UPDATE } from '@/graphql/operations/worksheet.mutations';
 import { useApiUtil } from './';
 
 export default function useWorkSheetComposable() {

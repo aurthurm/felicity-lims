@@ -1,14 +1,14 @@
 <script setup lang="ts">
 import { computed, watch, onMounted, defineAsyncComponent } from "vue";
-import { useSampleComposable } from "../../composables";
-import { useStorageStore } from "../../stores";
-import useTreeStateComposable from "../../composables/tree-state";
+import { useSampleComposable } from "@/composables";
+import { useStorageStore } from "@/stores";
+import useTreeStateComposable from "@/composables/tree-state";
 import { useField, useForm } from "vee-validate";
 import { object, array } from "yup";
-import { storgeSlotMapper } from "../../utils/helpers";
+import { storgeSlotMapper } from "@/utils/helpers";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 const TreeItem = defineAsyncComponent(
-  () => import("../components/TreeItem.vue")
+  () => import("@/components/storage/FelTreeItem.vue")
 )
 
 interface ISampleData {

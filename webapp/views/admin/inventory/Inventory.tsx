@@ -1,5 +1,5 @@
 import { defineComponent, ref, computed, defineAsyncComponent } from 'vue';
-import { useSampleStore, useSetupStore } from '../../../stores';
+import { useSampleStore, useSetupStore } from '@/stores';
 const StockCategory = defineAsyncComponent(
     () => import('./StockCategory')
 )

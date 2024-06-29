@@ -1,22 +1,22 @@
 <script setup lang="ts">
 import { defineAsyncComponent, ref, computed } from "vue";
-import { useBillingStore, useSampleStore } from "../../../stores";
+import { useBillingStore, useSampleStore } from "@/stores";
 import { storeToRefs } from "pinia";
-import { parseDate } from "../../../utils/helpers";
-import { ITestBill, ITestBillTransaction } from "../../../models/billing";
-import { ADD_TEST_BILL_TRANSACTION,  APPLY_BILL_VOUCHER } from "../../../graphql/operations/billing.mutations";
-import { useApiUtil, useBillComposable } from "../../../composables";
+import { parseDate } from "@/utils/helpers";
+import { ITestBill, ITestBillTransaction } from "@/models/billing";
+import { ADD_TEST_BILL_TRANSACTION,  APPLY_BILL_VOUCHER } from "@/graphql/operations/billing.mutations";
+import { useApiUtil, useBillComposable } from "@/composables";
 import { useField, useForm } from "vee-validate";
 import { object, string, number } from "yup";
 
 const LoadingMessage = defineAsyncComponent(
-  () => import("../../../components/Spinners/LoadingMessage.vue")
+  () => import("@/components/ui/spinners/FelLoadingMessage.vue")
 )
 const modal = defineAsyncComponent(
-  () => import("../../../components/SimpleModal.vue")
+  () => import("@/components/ui/FelModal.vue")
 )
 const DataTable = defineAsyncComponent(
-  () => import("../../../components/datatable/DataTable.vue")
+  () => import("@/components/ui/datatable/FelDataTable.vue")
 )
 const props = defineProps({
   patientUid: String

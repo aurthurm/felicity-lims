@@ -1,11 +1,11 @@
 <script setup lang="ts">
   import { ref, computed, reactive, toRefs, watch, defineAsyncComponent } from 'vue';
-  import { ADD_RESULT_OPTION, EDIT_RESULT_OPTION  } from '../../../../graphql/operations/analyses.mutations';
-  import { IResultOption } from '../../../../models/analysis';
-  import { useAnalysisStore, useSampleStore } from '../../../../stores';
-  import { useApiUtil } from '../../../../composables';
+  import { ADD_RESULT_OPTION, EDIT_RESULT_OPTION  } from '@/graphql/operations/analyses.mutations';
+  import { IResultOption } from '@/models/analysis';
+  import { useAnalysisStore, useSampleStore } from '@/stores';
+  import { useApiUtil } from '@/composables';
   const modal = defineAsyncComponent(
-    () => import('../../../../components/SimpleModal.vue')
+    () => import('@/components/ui/FelModal.vue')
   )
   const VueMultiselect = defineAsyncComponent(
     () => import('vue-multiselect')

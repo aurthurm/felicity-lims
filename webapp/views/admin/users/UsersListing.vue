@@ -5,12 +5,12 @@ import {
   EDIT_USER,
   ADD_USER_AUTH,
   EDIT_USER_AUTH,
-} from "../../../graphql/operations/_mutations";
-import { IUser, IUserAuth } from "../../../models/auth";
-import { useUserStore, useSetupStore } from "../../../stores";
-import { useApiUtil } from "../../../composables";
+} from "@/graphql/operations/_mutations";
+import { IUser, IUserAuth } from "@/models/auth";
+import { useUserStore, useSetupStore } from "@/stores";
+import { useApiUtil } from "@/composables";
 const modal = defineAsyncComponent(
-  () => import( "../../../components/SimpleModal.vue")
+  () => import( "@/components/ui/FelModal.vue")
 )
 
 interface IUserAuthForm extends IUser, IUserAuth {
@@ -403,4 +403,4 @@ function saveUserAuthForm(): void {
     </template>
   </modal>
 </template>
-../../../graphql/operations/_mutations../../../graphql/_mutations
+@/graphql/operations/_mutations@/graphql/_mutations

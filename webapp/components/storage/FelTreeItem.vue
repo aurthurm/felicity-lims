@@ -1,5 +1,5 @@
 <script setup>
-import useTreeStateComposable from "../../composables/tree-state";
+import useTreeStateComposable from "@/composables/tree-state";
 
 const props = defineProps({
   tree: Object,

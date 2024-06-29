@@ -2,7 +2,7 @@ const wsRoutes = [
     {
         path: '',
         name: 'worksheet-listing',
-        component: () => import('../views/worksheet/WorkSheetListing.vue'),
+        component: () => import('@/views/worksheet/WorkSheetListing.vue'),
         meta: {
             requiresAuth: true,
         },
@@ -10,12 +10,12 @@ const wsRoutes = [
     {
         path: ':workSheetUid',
         name: 'worksheet-single',
-        component: () => import('../views/worksheet/_id/WorkSheet.vue'),
+        component: () => import('@/views/worksheet/_id/WorkSheet.vue'),
         children: [
             {
                 path: '',
                 name: 'worksheet-detail',
-                component: () => import('../views/worksheet/_id/WorkSheetDetail.vue'),
+                component: () => import('@/views/worksheet/_id/WorkSheetDetail.vue'),
                 meta: {
                     requiresAuth: true,
                 },

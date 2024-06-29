@@ -11,9 +11,9 @@ import {
 import { SubscriptionClient } from 'subscriptions-transport-ws';
 import { pipe, tap } from 'wonka';
 
-import { getAuthData, authLogout } from './auth';
-import { GQL_BASE_URL, WS_BASE_URL } from './conf';
-import { useNotifyToast } from './composables';
+import { getAuthData, authLogout } from '@/auth';
+import { GQL_BASE_URL, WS_BASE_URL } from '@/conf';
+import useNotifyToast from '@/composables/alert_toast';
 
 const { toastError } = useNotifyToast();
 

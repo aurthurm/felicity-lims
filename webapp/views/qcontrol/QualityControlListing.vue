@@ -1,16 +1,16 @@
 <script setup lang="ts">
   import { ref, reactive, computed, defineAsyncComponent } from 'vue';
   import { storeToRefs } from 'pinia'
-  import { useSampleStore, useAnalysisStore, useSetupStore } from '../../stores';
-  import { IAnalysisProfile, IAnalysisService, IQCRequest, ISample } from '../../models/analysis';
-  import { ADD_QC_REQUEST } from '../../graphql/operations/analyses.mutations';
-  import { useApiUtil } from '../../composables'
-  import * as shield from '../../guards'
+  import { useSampleStore, useAnalysisStore, useSetupStore } from '@/stores';
+  import { IAnalysisProfile, IAnalysisService, IQCRequest, ISample } from '@/models/analysis';
+  import { ADD_QC_REQUEST } from '@/graphql/operations/analyses.mutations';
+  import { useApiUtil } from '@/composables'
+  import * as shield from '@/guards'
   const LoadingMessage = defineAsyncComponent(
-    () => import("../../components/Spinners/LoadingMessage.vue")
+    () => import("@/components/ui/spinners/FelLoadingMessage.vue")
   )
   const modal = defineAsyncComponent(
-    () => import('../../components/SimpleModal.vue')
+    () => import('@/components/ui/FelModal.vue')
   )
 
   const sampleStore = useSampleStore();

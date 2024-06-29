@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import { useRoute } from "vue-router";
 import { ref, computed, reactive, defineAsyncComponent } from "vue";
-import { isNullOrWs } from "../../../utils/helpers";
-import { IAnalysisResult, IAnalysisService } from "../../../models/analysis";
-import { useAnalysisComposable, useSampleComposable, useWorkSheetComposable } from "../../../composables";
-import { useWorksheetStore, useSetupStore, useUserStore } from "../../../stores";
-import * as shield from "../../../guards";
+import { isNullOrWs } from "@/utils/helpers";
+import { IAnalysisResult, IAnalysisService } from "@/models/analysis";
+import { useAnalysisComposable, useSampleComposable, useWorkSheetComposable } from "@/composables";
+import { useWorksheetStore, useSetupStore, useUserStore } from "@/stores";
+import * as shield from "@/guards";
 const FButton = defineAsyncComponent(
-  () => import("../../../components/Buttons/Button.vue")
+  () => import("@/components/ui/buttons/FelButton.vue")
 )
 
 const worksheetStore = useWorksheetStore();

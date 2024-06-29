@@ -1,21 +1,21 @@
 <script setup lang="ts">
 import Swal from "sweetalert2";
 import { ref, computed, reactive, defineAsyncComponent } from "vue";
-import { useWorksheetStore, useAnalysisStore, useSampleStore } from "../../../stores";
-import { useApiUtil } from "../../../composables";
+import { useWorksheetStore, useAnalysisStore, useSampleStore } from "@/stores";
+import { useApiUtil } from "@/composables";
 import {
   EDIT_WORKSHEET_APPLY_TEMPLATE,
   WORKSHEET_MANUAL_ASSIGN,
-} from "../../../graphql/operations/worksheet.mutations";
+} from "@/graphql/operations/worksheet.mutations";
 
-import * as shield from "../../../guards";
-import { IAnalysisResult } from "../../../models/analysis";
+import * as shield from "@/guards";
+import { IAnalysisResult } from "@/models/analysis";
 
 const LoadingMessage = defineAsyncComponent(
-  () => import("../../../components/Spinners/LoadingMessage.vue")
+  () => import("@/components/ui/spinners/FelLoadingMessage.vue")
 )
 const FButton = defineAsyncComponent(
-  () => import("../../../components/Buttons/Button.vue")
+  () => import("@/components/ui/buttons/FelButton.vue")
 )
 
 const worksheetStore = useWorksheetStore();

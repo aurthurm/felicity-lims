@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { parseEdgeNodeToList, addListsUnique } from '../utils/helpers';
+import { parseEdgeNodeToList, addListsUnique } from '@/utils/helpers';
 
 import {
     GET_ALL_SAMPLE_TYPES,
@@ -12,14 +12,14 @@ import {
     GET_SAMPLE_BY_UID,
     GET_SAMPLE_BY_PARENT_ID,
     GET_SAMPLE_TYPE_MAPPINGS_BY_SAMPLE_TYPE,
-} from '../graphql/operations/analyses.queries';
+} from '@/graphql/operations/analyses.queries';
 import {
     useGetAllSampleTypesQuery
-} from '../graphql/graphql'
-import { IAnalysisRequest, ISampleType, ISample, IAnalysisResult, IQCSet } from '../models/analysis';
-import { IPageInfo, IPaginationMeta } from '../models/pagination';
+} from '@/graphql/graphql'
+import { IAnalysisRequest, ISampleType, ISample, IAnalysisResult, IQCSet } from '@/models/analysis';
+import { IPageInfo, IPaginationMeta } from '@/models/pagination';
 
-import useApiUtil from '../composables/api_util';
+import useApiUtil from '@/composables/api_util';
 
 const { withClientQuery } = useApiUtil();
 

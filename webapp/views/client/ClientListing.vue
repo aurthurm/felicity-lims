@@ -1,17 +1,17 @@
 <script setup lang="ts">
-import DataTable from "../../components/datatable/DataTable.vue";
+import DataTable from "@/components/ui/datatable/FelDataTable.vue";
 import { ref, reactive, computed, h } from "vue";
 import { RouterLink } from "vue-router";
 import { storeToRefs } from "pinia";
-import modal from "../../components/SimpleModal.vue";
-import { IClient } from "../../models/client";
-import { ADD_CLIENT, EDIT_CLIENT } from "../../graphql/operations/clients.mutations";
+import modal from "@/components/ui/FelModal.vue";
+import { IClient } from "@/models/client";
+import { ADD_CLIENT, EDIT_CLIENT } from "@/graphql/operations/clients.mutations";
 
-import { useClientStore, useLocationStore } from "../../stores";
-import { useApiUtil } from "../../composables";
+import { useClientStore, useLocationStore } from "@/stores";
+import { useApiUtil } from "@/composables";
 
-import * as shield from "../../guards";
-import PageHeading from "../components/PageHeading.vue";
+import * as shield from "@/guards";
+import PageHeading from "@/components/common/FelPageHeading.vue";
 
 const clientStore = useClientStore();
 const locationStore = useLocationStore();

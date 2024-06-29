@@ -2,19 +2,19 @@
 import Swal from "sweetalert2";
 import { defineAsyncComponent, onMounted, ref, computed } from "vue";
 import { useRoute } from "vue-router";
-import { useApiUtil } from "../../../composables";
-import { useAnalysisStore, useSampleStore } from "../../../stores";
+import { useApiUtil } from "@/composables";
+import { useAnalysisStore, useSampleStore } from "@/stores";
 import {
   EDIT_SAMPLE_APPLY_TEMPLATE,
   EDIT_SAMPLE_MANAGE_ANALYSIS,
-} from "../../../graphql/operations/analyses.mutations";
+} from "@/graphql/operations/analyses.mutations";
 import { on } from "events";
 
 const accordion = defineAsyncComponent(
-    () => import('../../../components/Accordion.vue')
+    () => import('@/components/ui/FelAccordion.vue')
   )
 const LoadingMessage = defineAsyncComponent(
-  () => import("../../../components/Spinners/LoadingMessage.vue")
+  () => import("@/components/ui/spinners/FelLoadingMessage.vue")
 )
 const { withClientMutation } = useApiUtil();
 const route = useRoute();

@@ -1,5 +1,5 @@
 import { defineComponent, computed, ref, defineAsyncComponent } from 'vue';
-import { useStorageStore } from '../../stores';
+import { useStorageStore } from '@/stores';
 
 const ContainerColumn = defineAsyncComponent(
     () => import("./ContainerColumn")

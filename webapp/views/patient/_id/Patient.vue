@@ -1,17 +1,17 @@
 <script setup lang="ts">
 import { defineAsyncComponent, ref } from "vue";
 import { useRoute } from "vue-router";
-import { usePatientStore } from "../../../stores";
-import { IPatient } from "../../../models/patient";
+import { usePatientStore } from "@/stores";
+import { IPatient } from "@/models/patient";
 
 const modal = defineAsyncComponent(
-  () => import("../../../components/SimpleModal.vue")
+  () => import("@/components/ui/FelModal.vue")
 )
 const PatientForm = defineAsyncComponent(
-  () => import("../PatientForm.vue")
+  () => import("@/components/person/PatientForm.vue")
 )
 const PatientInfo = defineAsyncComponent(
-  () => import("../PatientInfo.vue")
+  () => import("@/components/person/PatientInfo.vue")
 )
 
 const route = useRoute();

@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { INotification, IAlert } from '../models/notification';
+import { INotification, IAlert } from '@/models/notification';
 
 export const useToastStore = defineStore('toast', {
     state: () => {

@@ -1,5 +1,5 @@
 import { toRefs, reactive } from 'vue';
-import { IStorageContainer, IStorageLocation, IStorageSection, IStoreRoom, ITreeData } from '../models/storage';
+import { IStorageContainer, IStorageLocation, IStorageSection, IStoreRoom, ITreeData } from '@/models/storage';
 const tags = {
     storeRoom: 'store-room',
     storageLocation: 'storage-location',

@@ -1,5 +1,5 @@
-import { useAuthStore } from '../stores';
-import { IGroup } from '../models/auth';
+import { useAuthStore } from '@/stores';
+import { IGroup } from '@/models/auth';
 
 function hasRights(action: string, objectName: string) {
     const authStore = useAuthStore();

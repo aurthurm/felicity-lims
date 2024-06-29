@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { ref, reactive, computed, defineAsyncComponent } from 'vue';
-import { usePatientStore } from '../../../stores';
-import { useApiUtil } from '../../../composables';
-import { IIdentification } from '../../../models/patient'
-import { ADD_IDENTIFICATION, UPDATE_IDENTIFICATION } from '../../../graphql/operations/patient.mutations';
+import { usePatientStore } from '@/stores';
+import { useApiUtil } from '@/composables';
+import { IIdentification } from '@/models/patient'
+import { ADD_IDENTIFICATION, UPDATE_IDENTIFICATION } from '@/graphql/operations/patient.mutations';
 const modal = defineAsyncComponent(
-  () => import('../../../components/SimpleModal.vue')
+  () => import('@/components/ui/FelModal.vue')
 )
 
 const patientStore = usePatientStore();

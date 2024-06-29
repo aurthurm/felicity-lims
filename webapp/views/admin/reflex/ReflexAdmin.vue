@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { useAnalysisStore } from '../../../stores'
+  import { useAnalysisStore } from '@/stores'
 
   useAnalysisStore()
   .fetchAnalysesServices({ 

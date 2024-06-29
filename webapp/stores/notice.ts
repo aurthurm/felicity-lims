@@ -1,9 +1,9 @@
 import { defineStore } from 'pinia';
-import { GET_NOTICES_BY_CREATOR } from '../graphql/operations/notice.queries';
-import { INotice } from '../models/notice';
-import { subtractDates } from '../utils/helpers';
+import { GET_NOTICES_BY_CREATOR } from '@/graphql/operations/notice.queries';
+import { INotice } from '@/models/notice';
+import { subtractDates } from '@/utils/helpers';
 
-import { useApiUtil } from '../composables';
+import { useApiUtil } from '@/composables';
 
 const { withClientQuery } = useApiUtil();
 

@@ -1,5 +1,6 @@
 <script setup lang="ts">
   import { ref, computed, defineAsyncComponent } from 'vue';
+  import { useRoute } from 'vue-router';
   const tabAnalysesCategories = defineAsyncComponent(
     () => import('./AnalysesCategories.vue')
   )
@@ -22,12 +23,13 @@
     () => import('./RejectionReasons.vue')
   )
 
-  import { useSampleStore, useSetupStore } from '../../../stores';
+  import { useSampleStore, useSetupStore } from '@/stores';
 
   const setupStore = useSetupStore()
   const  sampleStore = useSampleStore()
+  const route = useRoute();
 
-  let currentTab = ref('analyses-profiles');
+  let currentTab = ref(route.query.tab || 'analyses-profiles');
   const tabs = [
     'analyses-profiles', 
     'analyses-services', 

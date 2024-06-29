@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import { useRoute } from "vue-router";
-import { IAnalysisService } from "../../../models/analysis";
-import { useWorksheetStore } from "../../../stores";
+import { IAnalysisService } from "@/models/analysis";
+import { useWorksheetStore } from "@/stores";
 
 const route = useRoute();
 const workshetStore = useWorksheetStore();

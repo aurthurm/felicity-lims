@@ -1,12 +1,12 @@
 <script setup lang="ts">
   import { computed, ref, reactive, toRefs, watch, defineAsyncComponent } from 'vue';
-  import { ADD_ANALYSIS_UNCERTAINTY, EDIT_ANALYSIS_UNCERTAINTY  } from '../../../../graphql/operations/analyses.mutations';
-  import { IAnalysisUncertainty } from '../../../../models/analysis';
-  import { IInstrument, IMethod } from '../../../../models/setup';
-  import { useSetupStore, useAnalysisStore } from '../../../../stores';
-  import { useApiUtil } from '../../../../composables';
+  import { ADD_ANALYSIS_UNCERTAINTY, EDIT_ANALYSIS_UNCERTAINTY  } from '@/graphql/operations/analyses.mutations';
+  import { IAnalysisUncertainty } from '@/models/analysis';
+  import { IInstrument, IMethod } from '@/models/setup';
+  import { useSetupStore, useAnalysisStore } from '@/stores';
+  import { useApiUtil } from '@/composables';
   const modal = defineAsyncComponent(
-    () => import('../../../../components/SimpleModal.vue')
+    () => import('@/components/ui/FelModal.vue')
   )
 
   const analysisStore = useAnalysisStore()

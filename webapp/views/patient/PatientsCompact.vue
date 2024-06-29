@@ -1,33 +1,33 @@
 <script setup lang="ts">
 import { ref, reactive, computed, defineAsyncComponent } from "vue";
 import { storeToRefs } from "pinia"
-import { useLocationStore, usePatientStore } from "../../stores";
-import { IPatient } from "../../models/patient";
-import * as shield from "../../guards";
+import { useLocationStore, usePatientStore } from "@/stores";
+import { IPatient } from "@/models/patient";
+import * as shield from "@/guards";
 
 const LoadingMessage = defineAsyncComponent(
-  () => import("../../components/Spinners/LoadingMessage.vue")
+  () => import("@/components/ui/spinners/FelLoadingMessage.vue")
 )
 const PageHeading = defineAsyncComponent(
-  () => import("../components/PageHeading.vue")
+  () => import("@/components/common/FelPageHeading.vue")
 )
 const tabSamples = defineAsyncComponent(
-  () => import("../components/AnalyisRequestListing.vue")
+  () => import("@/components/sample/FelAnalyisRequestListing.vue")
 )
 const tabCases = defineAsyncComponent(
-  () => import("./comps/CaseTable.vue")
+  () => import("../../components/case/CaseTable.vue")
 )
 const tabLogs = defineAsyncComponent(
-  () => import("../components/AuditLog.vue")
+  () => import("@/components/audit/FelAuditLog.vue")
 )
 const modal = defineAsyncComponent(
-  () => import("../../components/SimpleModal.vue")
+  () => import("@/components/ui/FelModal.vue")
 )
 const PatientForm = defineAsyncComponent(
-  () => import("./PatientForm.vue")
+  () => import("@/components/person/PatientForm.vue")
 )
 const PatientInfo = defineAsyncComponent(
-  () => import("./PatientInfo.vue")
+  () => import("@/components/person/PatientInfo.vue")
 )
 const tabPatientBills = defineAsyncComponent(
   () => import("./_id/PatientBill.vue")

@@ -1,11 +1,11 @@
 <script setup lang="ts">
   import { ref, reactive, computed, defineAsyncComponent } from 'vue';
-  import { IQCTemplate, IQCLevel } from '../../../models/analysis';
-  import { ADD_QC_TEMPLATE, EDIT_QC_TEMPLATE  } from '../../../graphql/operations/analyses.mutations';
-  import { useAnalysisStore } from '../../../stores';
-  import { useApiUtil } from '../../../composables';
+  import { IQCTemplate, IQCLevel } from '@/models/analysis';
+  import { ADD_QC_TEMPLATE, EDIT_QC_TEMPLATE  } from '@/graphql/operations/analyses.mutations';
+  import { useAnalysisStore } from '@/stores';
+  import { useApiUtil } from '@/composables';
   const modal = defineAsyncComponent(
-    () => import('../../../components/SimpleModal.vue')
+    () => import('@/components/ui/FelModal.vue')
   )
 
   const analysisStore = useAnalysisStore()

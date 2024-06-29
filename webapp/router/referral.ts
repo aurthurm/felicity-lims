@@ -2,7 +2,7 @@ const shipmentRoutes = [
     {
         path: '',
         name: 'shipment-listing',
-        component: () => import('../views/shipment/ShipmentListing.vue'),
+        component: () => import('@/views/shipment/ShipmentListing.vue'),
         meta: {
             requiresAuth: true,
         },
@@ -10,12 +10,12 @@ const shipmentRoutes = [
     {
         path: ':shipmentUid',
         name: 'shipment-single',
-        component: () => import('../views/shipment/_id/Shipment.vue'),
+        component: () => import('@/views/shipment/_id/Shipment.vue'),
         children: [
             {
                 path: '',
                 name: 'shipment-detail',
-                component: () => import('../views/shipment/_id/ShipmentDetail.vue'),
+                component: () => import('@/views/shipment/_id/ShipmentDetail.vue'),
                 meta: {
                     requiresAuth: true,
                 },

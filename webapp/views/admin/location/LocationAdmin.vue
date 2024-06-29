@@ -4,17 +4,17 @@ import {
   ICountry,
   IProvince,
   IDistrict
-} from '../../../models/location';
+} from '@/models/location';
 import {
   ADD_COUNTRY, UPDATE_COUNTRY,
   ADD_PROVINCE, ADD_DISTRICT,
   UPDATE_DISTRICT, UPDATE_PROVINCE
-} from '../../../graphql/operations/admin.mutations';
+} from '@/graphql/operations/admin.mutations';
 
-import { useLocationStore } from '../../../stores';
-import { useApiUtil } from '../../../composables';
+import { useLocationStore } from '@/stores';
+import { useApiUtil } from '@/composables';
 const modal = defineAsyncComponent(
-  () => import('../../../components/SimpleModal.vue')
+  () => import('@/components/ui/FelModal.vue')
 )
 
 const locationStore = useLocationStore()

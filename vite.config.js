@@ -3,7 +3,12 @@ import { defineConfig } from 'vite';
 import tsConfigPaths from 'vite-tsconfig-paths';
 import vueJsx from '@vitejs/plugin-vue-jsx';
 import path from 'path'
+// import { fileURLToPath, URL } from 'url';
 
+/**
+ * https://vitejs.dev/config/
+ * @type {import('vite').UserConfig}
+ */
 export default defineConfig({
     plugins: [tsConfigPaths(), vue(), vueJsx()], // ,
     build: {
@@ -20,7 +25,9 @@ export default defineConfig({
     },
     resolve: {
         alias: {
-            "@": path.resolve(__dirname, "webapp"),
+            "@": path.resolve(__dirname, "./webapp")
+            // '@': fileURLToPath(new URL('./webapp', import.meta.url))
+            // "@": path.resolve(path.dirname(fileURLToPath(import.meta.url)), "webapp"),
         },
     },
 });

@@ -1,16 +1,16 @@
 <script setup lang="ts">
   import { ref,reactive, computed, defineAsyncComponent } from 'vue';
-  import { useUserStore } from '../../../stores';
-  import { useApiUtil } from '../../../composables';
-  import { UPDATE_GROUP_PERMS, ADD_GROUP, UPDATE_GROUP } from '../../../graphql/operations/_mutations';
-  import { IGroup, IPermission } from '../../../models/auth';
-  import * as shield from '../../../guards'
+  import { useUserStore } from '@/stores';
+  import { useApiUtil } from '@/composables';
+  import { UPDATE_GROUP_PERMS, ADD_GROUP, UPDATE_GROUP } from '@/graphql/operations/_mutations';
+  import { IGroup, IPermission } from '@/models/auth';
+  import * as shield from '@/guards'
 
 const modal = defineAsyncComponent(
-  () =>import('../../../components/SimpleModal.vue')
+  () =>import('@/components/ui/FelModal.vue')
 )
 const accordion = defineAsyncComponent(
-  () =>import('../../../components/Accordion.vue')
+  () =>import('@/components/ui/FelAccordion.vue')
 )
 
   const pages = [
@@ -306,4 +306,4 @@ const accordion = defineAsyncComponent(
   </modal>
 
 </template>
-../../../graphql/operations/_mutations../../../graphql/_mutations
+@/graphql/operations/_mutations@/graphql/_mutations

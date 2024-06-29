@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { ref, computed } from "vue";
-import { useClientStore } from "../../../stores";
-import tabSamples from "../../components/SampleListing.vue";
+import { useClientStore } from "@/stores";
+import tabSamples from "@/components/sample/FelSampleListing.vue";
 import tabContacts from "./ContactTable.vue";
-import tabLogs from "../../components/AuditLog.vue";
+import tabLogs from "@/components/audit/FelAuditLog.vue";
 
 const clientStore = useClientStore();
 

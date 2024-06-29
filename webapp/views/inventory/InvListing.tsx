@@ -1,19 +1,19 @@
 import { computed, watch, defineComponent, reactive, ref, h, defineAsyncComponent } from 'vue';
-import { useInventoryStore } from '../../stores';
-import { IStockLot, IStockProduct } from '../../models/inventory';
-import { useApiUtil } from '../../composables';
-import { ADD_STOCK_ADJUSTMENT } from '../../graphql/operations/inventory.mutations';
-import { GET_ALL_STOCK_LOTS } from '../../graphql/operations/inventory.queries';
-import { parseDate } from '../../utils/helpers';
+import { useInventoryStore } from '@/stores';
+import { IStockLot, IStockProduct } from '@/models/inventory';
+import { useApiUtil } from '@/composables';
+import { ADD_STOCK_ADJUSTMENT } from '@/graphql/operations/inventory.mutations';
+import { GET_ALL_STOCK_LOTS } from '@/graphql/operations/inventory.queries';
+import { parseDate } from '@/utils/helpers';
 
 const DataTable = defineAsyncComponent(
-    () => import('../../components/datatable/DataTable.vue')
+    () => import('@/components/ui/datatable/FelDataTable.vue')
 )
 const Drawer = defineAsyncComponent(
-    () => import( '../../components/Drawer.vue')
+    () => import( '@/components/ui/FelDrawer.vue')
 )
 const Modal = defineAsyncComponent(
-    () => import('../../components/SimpleModal.vue')
+    () => import('@/components/ui/FelModal.vue')
 )
 const StockReceiveForm = defineAsyncComponent(
     () => import('./StockReceiveForm.vue')

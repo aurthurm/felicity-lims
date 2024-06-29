@@ -2,14 +2,14 @@
 import VueMultiselect from "vue-multiselect";
 import { reactive, computed, onMounted, PropType, toRefs, ref } from "vue";
 import { useRouter, useRoute } from "vue-router";
-import { IPatient } from "../../models/patient";
-import { ADD_PATIENT, UPDATE_PATIENT } from "../../graphql/operations/patient.mutations";
+import { IPatient } from "@/models/patient";
+import { ADD_PATIENT, UPDATE_PATIENT } from "@/graphql/operations/patient.mutations";
 
-import { useClientStore, useLocationStore, usePatientStore } from "../../stores";
-import { useApiUtil } from "../../composables";
-import { IClient } from "../../models/client";
-import { IPatientIdentificationForm } from "../../models/patient";
-import { isNullOrWs } from "../../utils/helpers";
+import { useClientStore, useLocationStore, usePatientStore } from "@/stores";
+import { useApiUtil } from "@/composables";
+import { IClient } from "@/models/client";
+import { IPatientIdentificationForm } from "@/models/patient";
+import { isNullOrWs } from "@/utils/helpers";
 import dayjs from "dayjs";
 import { useField, useForm } from "vee-validate";
 import { object, string, boolean, number, date } from "yup";

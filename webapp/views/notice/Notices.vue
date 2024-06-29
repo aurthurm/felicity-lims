@@ -1,22 +1,22 @@
 <script setup lang="ts">
 import { storeToRefs } from "pinia";
-import { DELETE_NOTICE } from "../../graphql/operations/notice.mutations";
+import { DELETE_NOTICE } from "@/graphql/operations/notice.mutations";
 import { onMounted, reactive, computed, defineAsyncComponent } from "vue";
-import { INotice } from "../../models/notice";
-import { useNoticeStore, useSetupStore, useAuthStore } from "../../stores";
-import { useApiUtil } from "../../composables";
+import { INotice } from "@/models/notice";
+import { useNoticeStore, useSetupStore, useAuthStore } from "@/stores";
+import { useApiUtil } from "@/composables";
 import Swal from 'sweetalert2';
 const PageHeading = defineAsyncComponent(
-  () => import("../components/PageHeading.vue")
+  () => import("@/components/common/FelPageHeading.vue")
 )
 const LoadingMessage = defineAsyncComponent(
-  () => import("../../components/Spinners/LoadingMessage.vue")
+  () => import("@/components/ui/spinners/FelLoadingMessage.vue")
 )
 const NoticeForm = defineAsyncComponent(
   () => import("./NoticeForm.vue")
 )
 const modal = defineAsyncComponent(
-  () => import("../../components/SimpleModal.vue")
+  () => import("@/components/ui/FelModal.vue")
 )
 
 let setupStore = useSetupStore();

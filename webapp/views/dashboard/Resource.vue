@@ -4,12 +4,12 @@ import { onMounted, watch, reactive, ref, defineAsyncComponent } from "vue";
 import { Chart } from "@antv/g2";
 import dayjs from "dayjs";
 const modal = defineAsyncComponent(
-  () => import("../../components/SimpleModal.vue")
+  () => import("@/components/ui/FelModal.vue")
 )
 const LoadingMessage = defineAsyncComponent(
-  () => import("../../components/Spinners/LoadingMessage.vue")
+  () => import("@/components/ui/spinners/FelLoadingMessage.vue")
 )
-import { useDashBoardStore } from "../../stores";
+import { useDashBoardStore } from "@/stores";
 
 const dashBoardStore = useDashBoardStore();
 const { dashboard } = storeToRefs(dashBoardStore);

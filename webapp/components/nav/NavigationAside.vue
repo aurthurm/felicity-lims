@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
 
-import * as guards from "./../../../guards";
+import * as guards from "@/guards";
 
 let viewNavText = ref(false);
 

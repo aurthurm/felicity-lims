@@ -558,3 +558,9 @@ class AnalysisQuery:
             self, info, uid: str
     ) -> a_types.RejectionReasonType:
         return await a_models.RejectionReason.get(uid=uid)
+
+    @strawberry.field(permission_classes=[IsAuthenticated])
+    async def result_mutation_by_result_uid(
+            self, info, result_uid: str
+    ) -> r_types.ResultMutationType | None:
+        return await r_models.ResultMutation.get(result_uid=result_uid)

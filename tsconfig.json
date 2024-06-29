@@ -19,16 +19,17 @@
         "experimentalDecorators": true,
         "allowSyntheticDefaultImports": true,
         "esModuleInterop": true,
-        "typeRoots": ["./node_modules/@types", "./node_modules/vite/dist/", "./types/"]
+        "typeRoots": ["./node_modules/@types", "./node_modules/vite/dist/", "./types/"],
+        "baseUrl": ".",
+        "paths": {
+            "@/*": ["webapp/*"]
+        }
     },
     "exclude": ["node_modules"],
     "include": [
         "./**/*.ts",
+        "./**/*.tsx",
         "./webapp/**/*.vue",
-        "webapp/App.tsx",
-        "webapp/orig.tsx",
-        "webapp/views/admin/inventory/index.vue",
-        "webapp/views/admin/storage/Index.tsx"
     ],
     "types": ["vue-sweetalert2", "vite/client"]
 }

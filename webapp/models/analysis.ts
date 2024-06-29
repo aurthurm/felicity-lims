@@ -20,7 +20,7 @@ export interface ISampleType {
 }
 
 export interface IAnalysisService {
-    uid?: string;
+    uid: string;
     name?: string;
     keyword?: string;
     description?: string;
@@ -52,7 +52,7 @@ export interface IAnalysisService {
 export interface IAnalysisResult {
     uid?: string;
     analysisUid?: string;
-    analysis?: IAnalysisService;
+    analysis: IAnalysisService;
     laboratoryInstrumentUid?: string;
     laboratoryInstrument?: ILaboratoryInstrument;
     methodUid?: string;
@@ -74,6 +74,17 @@ export interface IAnalysisResult {
     checked?: boolean;
     editable?: boolean;
 }
+
+export interface IResultMutation {
+    uid: string;
+    resultUid: string;
+    before: string;
+    after: string;
+    mutation: string;
+    date?: string;
+    createdByUid?: string;
+    createdBy?: IUser;
+  } 
 
 export interface IAnalysisCategory {
     uid?: string;

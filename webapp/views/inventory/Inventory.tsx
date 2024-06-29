@@ -1,12 +1,12 @@
 import { defineComponent, computed, ref, defineAsyncComponent } from 'vue';
-import { ADD_STOCK_ORDER } from '../../graphql/operations/inventory.mutations';
-import { useApiUtil } from '../../composables';
-import { useInventoryStore, useStorageStore, useSetupStore, useUserStore } from '../../stores';
+import { ADD_STOCK_ORDER } from '@/graphql/operations/inventory.mutations';
+import { useApiUtil } from '@/composables';
+import { useInventoryStore, useStorageStore, useSetupStore, useUserStore } from '@/stores';
 const Drawer = defineAsyncComponent(
-    () => import('../../components/Drawer.vue')
+    () => import('@/components/ui/FelDrawer.vue')
 )
 const PageHeading = defineAsyncComponent(
-    () => import('../components/PageHeading.vue')
+    () => import('@/components/common/FelPageHeading.vue')
 )
 const InventoryAdjustments = defineAsyncComponent(
     () => import('./InvAdjustments')

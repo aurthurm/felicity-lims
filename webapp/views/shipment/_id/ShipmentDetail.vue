@@ -1,6 +1,6 @@
 <script setup lang="ts">
   import { ref, computed, defineAsyncComponent } from 'vue';
-  import { useShipmentStore } from '../../../stores'
+  import { useShipmentStore } from '@/stores'
 
   const tabAssignSamples = defineAsyncComponent(
     () => import('./ShipmentAssign.vue')
@@ -12,7 +12,7 @@
     () => import('./Manifest.vue')
   )
   const tabLogs = defineAsyncComponent(
-    () => import('../../components/AuditLog.vue')
+    () => import('@/components/audit/FelAuditLog.vue')
   )
 
   let shipmentStore = useShipmentStore();

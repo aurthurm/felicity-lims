@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { defineAsyncComponent } from 'vue';
 const PatientForm = defineAsyncComponent(
-  () => import('./PatientForm.vue')
+  () => import('@/components/person/PatientForm.vue')
 )
 </script>
 

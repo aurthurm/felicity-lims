@@ -1,18 +1,18 @@
 <script setup lang="ts">
-import LoadingMessage from "../../../components/Spinners/LoadingMessage.vue";
+import LoadingMessage from "@/components/ui/spinners/FelLoadingMessage.vue";
 import { storeToRefs } from "pinia";
 import { ref } from "vue";
 import { useRoute } from "vue-router";
-import modal from "../../../components/SimpleModal.vue";
+import modal from "@/components/ui/FelModal.vue";
 import {
   ADD_CLIENT_CONTACT,
   EDIT_CLIENT_CONTACT,
   DELETE_CLIENT_CONTACT,
-} from "../../../graphql/operations/clients.mutations";
-import { useClientStore } from "../../../stores";
-import { IClientContact } from "../../../models/client";
-import { useApiUtil } from "../../../composables";
-import * as shield from "../../../guards";
+} from "@/graphql/operations/clients.mutations";
+import { useClientStore } from "@/stores";
+import { IClientContact } from "@/models/client";
+import { useApiUtil } from "@/composables";
+import * as shield from "@/guards";
 
 let clientStore = useClientStore();
 let router = useRoute();

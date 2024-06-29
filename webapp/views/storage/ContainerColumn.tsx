@@ -1,5 +1,5 @@
 import { defineComponent, computed } from 'vue';
-import { useStorageStore } from '../../stores';
+import { useStorageStore } from '@/stores';
 
 const ContainerColumn = defineComponent({
     name: 'container-column-view',

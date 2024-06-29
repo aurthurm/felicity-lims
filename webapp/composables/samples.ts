@@ -10,11 +10,11 @@ import {
     INVALIDATE_SAMPLES,
     VERIFY_SAMPLES,
     REJECT_SAMPLES,
-} from '../graphql/operations/analyses.mutations';
-import { BARCODE_SAMPLES, DOWNLOAD_IMPRESS, DOWNLOAD_IMPRESS_SAMPLES } from '../graphql/operations/analyses.queries';
-import { RECOVER_SAMPLES, STORE_SAMPLES } from '../graphql/operations/storage.mutations';
-import { useSampleStore } from '../stores';
-import { ISample } from '../models/analysis';
+} from '@/graphql/operations/analyses.mutations';
+import { BARCODE_SAMPLES, DOWNLOAD_IMPRESS, DOWNLOAD_IMPRESS_SAMPLES } from '@/graphql/operations/analyses.queries';
+import { RECOVER_SAMPLES, STORE_SAMPLES } from '@/graphql/operations/storage.mutations';
+import { useSampleStore } from '@/stores';
+import { ISample } from '@/models/analysis';
 import useApiUtil from './api_util';
 import useNotifyToast from './alert_toast';
 

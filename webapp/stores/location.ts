@@ -1,9 +1,9 @@
 import { defineStore } from 'pinia';
-import { IDistrict, IProvince, ICountry } from '../models/location';
+import { IDistrict, IProvince, ICountry } from '@/models/location';
 
-import { GET_ALL_COUNTRIES, FILTER_PROVINCES_BY_COUNTRY, FILTER_DISTRICTS_BY_PROVINCE } from '../graphql/operations/admin.queries';
+import { GET_ALL_COUNTRIES, FILTER_PROVINCES_BY_COUNTRY, FILTER_DISTRICTS_BY_PROVINCE } from '@/graphql/operations/admin.queries';
 
-import { useApiUtil } from '../composables';
+import { useApiUtil } from '@/composables';
 
 const { withClientQuery } = useApiUtil();
 

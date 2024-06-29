@@ -162,6 +162,25 @@ export const GET_ALL_ANALYSES_SERVICES = gql`
     }
 `;
 
+export const GET_ANALYSES_SERVICE_BY_UID = gql`
+    query getAllAnalysesServices($uid: String!) {
+        analysisByUid(uid: $uid) {
+            uid
+            name
+            keyword
+            description
+            unit {
+                uid
+                name
+            }
+            category {
+                uid
+                name
+            }
+        }
+    }
+`;
+
 export const GET_ALL_ANALYSES_PROFILES = gql`
     query getAllAnalysesProfiles {
         profileAll {
@@ -838,6 +857,30 @@ export const GET_ANALYSIS_RESULTS_FOR_WS_ASSIGN = gql`
         }
     }
 `;
+
+
+export const GET_ANALYSIS_RESULT_MUTATION = gql`
+    query getAnalysisResultMutation($resultUid: String!) {
+        resultMutationByResultUid(resultUid: $resultUid) {
+            uid
+            resultUid
+            before
+            after
+            mutation
+            date
+            createdBy {
+                uid
+                firstName
+                lastName
+                auth {
+                    userName
+                }
+            }
+            createdByUid
+        }
+    }
+`;
+
 
 export const GET_SAMPLE_BY_UID = gql`
     query getSampleByUid($uid: String!) {

@@ -4,24 +4,24 @@ import { ref, reactive, computed, defineAsyncComponent } from "vue";
 import {
   ADD_WORKSHEET_TEMPLATE,
   EDIT_WORKSHEET_TEMPLATE,
-} from "../../../graphql/operations/worksheet.mutations";
+} from "@/graphql/operations/worksheet.mutations";
 import {
   useWorksheetStore,
   useAnalysisStore,
   useSampleStore,
   useSetupStore,
-} from "../../../stores";
-import { useApiUtil } from "../../../composables";
-import { IReserved, IWorkSheetTemplate } from "../../../models/worksheet";
+} from "@/stores";
+import { useApiUtil } from "@/composables";
+import { IReserved, IWorkSheetTemplate } from "@/models/worksheet";
 import {
   IAnalysisService,
   IQCLevel,
   IQCTemplate,
   ISampleType,
-} from "../../../models/analysis";
-import { IInstrument } from "../../../models/setup";
+} from "@/models/analysis";
+import { IInstrument } from "@/models/setup";
 const modal = defineAsyncComponent(
-  () => import("../../../components/SimpleModal.vue")
+  () => import("@/components/ui/FelModal.vue")
 )
 
 const worksheetStore = useWorksheetStore();

@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { defineAsyncComponent, ref } from "vue";
-import axios from "../../../api";
-import { useNotifyToast } from "../../../composables";
+import axios from "@/api";
+import { useNotifyToast } from "@/composables";
 const LoadingMessage = defineAsyncComponent(
-  () => import("../../../components/Spinners/LoadingMessage.vue")
+  () => import("@/components/ui/spinners/FelLoadingMessage.vue")
 )
 
 const { toastSuccess } = useNotifyToast();

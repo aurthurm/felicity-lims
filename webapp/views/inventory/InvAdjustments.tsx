@@ -1,7 +1,7 @@
 import { defineAsyncComponent, defineComponent, ref, h } from 'vue';
-import { useInventoryStore } from '../../stores';
+import { useInventoryStore } from '@/stores';
 const DataTable = defineAsyncComponent(
-    () => import('../../components/datatable/DataTable.vue')
+    () => import('@/components/ui/datatable/FelDataTable.vue')
 )
 
 const InventoryAdjustments = defineComponent({

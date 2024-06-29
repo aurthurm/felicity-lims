@@ -1,12 +1,12 @@
 import { defineComponent, computed, ref, watch, PropType } from 'vue';
-import { useApiUtil } from '../../composables';
-import { IStockAdjustment, IStockLot, IStockProduct } from '../../models/inventory';
-import { GET_ALL_STOCK_LOTS } from '../../graphql/operations/inventory.queries';
+import { useApiUtil } from '@/composables';
+import { IStockAdjustment, IStockLot, IStockProduct } from '@/models/inventory';
+import { GET_ALL_STOCK_LOTS } from '@/graphql/operations/inventory.queries';
 import {
     GET_ALL_STOCK_ADJUSTMENTS
-} from '../../graphql/operations/inventory.queries';
-import { parseDate } from '../../utils/helpers';
-import { IPagination } from '../../models/pagination';
+} from '@/graphql/operations/inventory.queries';
+import { parseDate } from '@/utils/helpers';
+import { IPagination } from '@/models/pagination';
 
 const ProductDetail = defineComponent({
     name: 'product-detail',

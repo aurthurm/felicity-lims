@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 
-import { useApiUtil } from '../composables';
+import { useApiUtil } from '@/composables';
 import {
     IHazard,
     IStockAdjustment,
@@ -10,7 +10,7 @@ import {
     IStockOrder,
     IStockProduct,
     IStockUnit,
-} from '../models/inventory';
+} from '@/models/inventory';
 import {
     GET_ALL_HAZARDS,
     GET_ALL_STOCK_ADJUSTMENTS,
@@ -20,8 +20,8 @@ import {
     GET_ALL_STOCK_ORDERS,
     GET_ALL_STOCK_PRODUCTS,
     GET_ALL_STOCK_UNITS,
-} from '../graphql/operations/inventory.queries';
-import { IPagination, IPaginationMeta } from '../models/pagination';
+} from '@/graphql/operations/inventory.queries';
+import { IPagination, IPaginationMeta } from '@/models/pagination';
 
 const { withClientQuery } = useApiUtil();
 

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { defineAsyncComponent, ref } from "vue";
 const ItemSetting = defineAsyncComponent(
-  () => import("../components/AdminBreadCrumb.vue") 
+  () => import("@/components/nav/FelAdminBreadCrumb.vue") 
 );
 
 const configs = ref([

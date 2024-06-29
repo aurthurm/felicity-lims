@@ -1,6 +1,6 @@
 <script setup lang="ts">
   import { ref, computed, defineAsyncComponent } from 'vue';
-  import { useWorksheetStore } from '../../../stores'
+  import { useWorksheetStore } from '@/stores'
   const tabAssignSamples = defineAsyncComponent(
     () => import('./WorkSheetAssign.vue')
   )
@@ -8,7 +8,7 @@
     () => import("./WorkSheetResults.vue")
   )
   const tabLogs = defineAsyncComponent(
-    () => import('../../components/AuditLog.vue')
+    () => import('@/components/audit/FelAuditLog.vue')
   )
 
   let worksheetStore = useWorksheetStore();

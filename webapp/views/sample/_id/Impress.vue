@@ -1,14 +1,14 @@
 <script setup lang="ts">
 import { defineAsyncComponent, onMounted, ref } from "vue";
 import { useRoute } from "vue-router";
-import { GET_IMPRESS_META } from "../../../graphql/operations/analyses.queries";
-import { useApiUtil, useSampleComposable } from "../../../composables";
+import { GET_IMPRESS_META } from "@/graphql/operations/analyses.queries";
+import { useApiUtil, useSampleComposable } from "@/composables";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 const LoadingMessage = defineAsyncComponent(
-  () => import("../../../components/Spinners/LoadingMessage.vue")
+  () => import("@/components/ui/spinners/FelLoadingMessage.vue")
 )
 const JsonPreViewer = defineAsyncComponent(
-  () => import("../../../components/JsonPreViewer.vue")
+  () => import("@/components/ui/FelJsonPreViewer.vue")
 )
 
 const { withClientQuery } = useApiUtil();

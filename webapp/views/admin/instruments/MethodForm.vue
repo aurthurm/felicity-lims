@@ -1,10 +1,10 @@
 <script setup lang="ts">
   import { ref, reactive, computed, PropType, watch, toRefs, defineAsyncComponent } from 'vue';
-  import { IInstrument, IMethod } from '../../../models/setup'
-  import { ADD_METHOD, EDIT_METHOD  } from '../../../graphql/operations/instrument.mutations';
-  import { IAnalysisService } from '../../../models/analysis';
-  import { useAnalysisStore, useSetupStore } from '../../../stores';
-  import { useApiUtil } from '../../../composables';
+  import { IInstrument, IMethod } from '@/models/setup'
+  import { ADD_METHOD, EDIT_METHOD  } from '@/graphql/operations/instrument.mutations';
+  import { IAnalysisService } from '@/models/analysis';
+  import { useAnalysisStore, useSetupStore } from '@/stores';
+  import { useApiUtil } from '@/composables';
   const VueMultiselect = defineAsyncComponent(
     () => import('vue-multiselect')
   )

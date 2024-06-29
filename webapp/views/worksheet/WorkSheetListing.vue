@@ -3,22 +3,22 @@ import { ref, reactive, computed, h, defineAsyncComponent } from "vue";
 import { storeToRefs } from "pinia";
 import { useRoute } from "vue-router";
 import { RouterLink } from "vue-router";
-import { useWorksheetStore, useUserStore } from "../../stores";
-import { useApiUtil } from "../../composables";
-import { ADD_WORKSHEET } from "../../graphql/operations/worksheet.mutations";
-import { IAnalysisService } from "../../models/analysis";
+import { useWorksheetStore, useUserStore } from "@/stores";
+import { useApiUtil } from "@/composables";
+import { ADD_WORKSHEET } from "@/graphql/operations/worksheet.mutations";
+import { IAnalysisService } from "@/models/analysis";
 import { useField, useForm } from "vee-validate";
 import { object, number } from "yup";
-import * as shield from "../../guards";
+import * as shield from "@/guards";
 
 const modal = defineAsyncComponent(
-  () => import("../../components/SimpleModal.vue")
+  () => import("@/components/ui/FelModal.vue")
 )
 const DataTable = defineAsyncComponent(
-  () => import("../../components/datatable/DataTable.vue")
+  () => import("@/components/ui/datatable/FelDataTable.vue")
 )
 const PageHeading = defineAsyncComponent(
-  () => import("../components/PageHeading.vue")
+  () => import("@/components/common/FelPageHeading.vue")
 )
 
 const worksheetStore = useWorksheetStore();

@@ -3,13 +3,13 @@ import {
     GET_PRICE_FOR_PROFILE, GET_DISCOUNT_FOR_PROFILE, 
     GET_PRICE_FOR_ANALYSIS, GET_DISCOUNT_FOR_ANALYSIS,
     GET_ALL_VOUCHERS, GET_VOUCHER_BY_UID, GET_VOUCHER_CODES, GET_BILLS_FOR_PATIENT, GET_BILL_TRANSACTIONS
-} from '../graphql/operations/billing.queries'
+} from '@/graphql/operations/billing.queries'
 
-import { useApiUtil } from '../composables';
+import { useApiUtil } from '@/composables';
 import { 
     IAnalysisDiscount, IAnalysisPrice, IProfileDiscount, 
     IProfilePrice, IVoucher, IVoucherCode, ITestBill, ITestBillTransaction 
-} from '../models/billing';
+} from '@/models/billing';
 
 const { withClientQuery } = useApiUtil();
 

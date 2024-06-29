@@ -23,9 +23,9 @@ const tabNotice = defineAsyncComponent(
   () => import("./Notice.vue")
 );
 const PageHeading = defineAsyncComponent(
-  () => import("../components/PageHeading.vue")
+  () => import("@/components/common/FelPageHeading.vue")
 );
-import { useDashBoardStore } from "../../stores/dashboard";
+import { useDashBoardStore } from "@/stores/dashboard";
 
 const dashBoardStore = useDashBoardStore();
 const { dashboard } = storeToRefs(dashBoardStore);

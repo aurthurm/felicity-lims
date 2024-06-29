@@ -1,18 +1,18 @@
 <script setup lang="ts">
 import { ref, reactive, computed, defineAsyncComponent } from "vue";
-import { IAnalysisTemplate, IAnalysisService } from "../../../models/analysis";
+import { IAnalysisTemplate, IAnalysisService } from "@/models/analysis";
 import {
   ADD_ANALYSIS_TEMPLATE,
   EDIT_ANALYSIS_TEMPLATE,
-} from "../../../graphql/operations/analyses.mutations";
-import { useSetupStore, useAnalysisStore } from "../../../stores";
-import { useApiUtil } from "../../../composables";
+} from "@/graphql/operations/analyses.mutations";
+import { useSetupStore, useAnalysisStore } from "@/stores";
+import { useApiUtil } from "@/composables";
 
 const modal = defineAsyncComponent(
-  () => import("../../../components/SimpleModal.vue")
+  () => import("@/components/ui/FelModal.vue")
 )
 const accordion = defineAsyncComponent(
-  () => import("../../../components/Accordion.vue")
+  () => import("@/components/ui/FelAccordion.vue")
 )
 
 

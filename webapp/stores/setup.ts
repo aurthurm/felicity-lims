@@ -7,13 +7,13 @@ import {
     GET_ALL_INSTRUMENTS,
     GET_ALL_LABORATORY_INSTRUMENTS,
     GET_ALL_UNITS,
-} from '../graphql/operations/instrument.queries';
-import { GET_DEPARTMENTS } from '../graphql/operations/_queries';
-import { GET_LABORATORY, GET_LABORATORY_SETTING } from '../graphql/operations/_queries';
-import { IInstrument, IInstrumentType, ILaboratory, ILaboratoryInstrument, ILaboratorySetting, IManufacturer, IMethod, ISupplier, IUnit } from '../models/setup';
-import { IDepartment } from '../models/setup';
+} from '@/graphql/operations/instrument.queries';
+import { GET_DEPARTMENTS } from '@/graphql/operations/_queries';
+import { GET_LABORATORY, GET_LABORATORY_SETTING } from '@/graphql/operations/_queries';
+import { IInstrument, IInstrumentType, ILaboratory, ILaboratoryInstrument, ILaboratorySetting, IManufacturer, IMethod, ISupplier, IUnit } from '@/models/setup';
+import { IDepartment } from '@/models/setup';
 
-import { useApiUtil } from '../composables';
+import { useApiUtil } from '@/composables';
 
 const { withClientQuery } = useApiUtil();
 

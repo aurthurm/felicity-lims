@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { computed, defineAsyncComponent, toRefs } from "vue";
 import { storeToRefs } from "pinia";
-import { useUserStore, useAuditLogStore } from "../../stores";
-import { parseDate } from "../../utils/helpers";
+import { useUserStore, useAuditLogStore } from "@/stores";
+import { parseDate } from "@/utils/helpers";
 const LoadingMessage = defineAsyncComponent(
-  () => import("../../components/Spinners/LoadingMessage.vue")
+  () => import("@/components/ui/spinners/FelLoadingMessage.vue")
 )
 
 const props = defineProps({

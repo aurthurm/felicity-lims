@@ -1,11 +1,11 @@
 import { defineAsyncComponent, defineComponent, toRefs } from 'vue';
 import { ref, reactive, computed } from 'vue';
-import { ADD_STOCK_CATEGORY, EDIT_STOCK_CATEGORY } from '../../../graphql/operations/inventory.mutations';
-import { useInventoryStore } from '../../../stores';
-import { useApiUtil } from '../../../composables';
-import { IStockCategory } from '../../../models/inventory';
+import { ADD_STOCK_CATEGORY, EDIT_STOCK_CATEGORY } from '@/graphql/operations/inventory.mutations';
+import { useInventoryStore } from '@/stores';
+import { useApiUtil } from '@/composables';
+import { IStockCategory } from '@/models/inventory';
 const Modal = defineAsyncComponent(
-    () => import('../../../components/SimpleModal.vue')
+    () => import('@/components/ui/FelModal.vue')
 )
 
 const StockCategory = defineComponent({

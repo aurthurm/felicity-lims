@@ -1,12 +1,12 @@
 <script setup lang="ts">
   import { computed, ref, reactive, toRefs, watch, defineAsyncComponent } from 'vue';
-  import { ADD_ANALYSIS_SPECIFICATION, EDIT_ANALYSIS_SPECIFICATION  } from '../../../../graphql/operations/analyses.mutations';
-  import { IAnalysisSpecification } from '../../../../models/analysis';
-  import { IMethod } from '../../../../models/setup';
-  import { useSetupStore, useAnalysisStore } from '../../../../stores';
-  import { useApiUtil } from '../../../../composables';
+  import { ADD_ANALYSIS_SPECIFICATION, EDIT_ANALYSIS_SPECIFICATION  } from '@/graphql/operations/analyses.mutations';
+  import { IAnalysisSpecification } from '@/models/analysis';
+  import { IMethod } from '@/models/setup';
+  import { useSetupStore, useAnalysisStore } from '@/stores';
+  import { useApiUtil } from '@/composables';
   const modal = defineAsyncComponent(
-    () => import('../../../../components/SimpleModal.vue')
+    () => import('@/components/ui/FelModal.vue')
   )
 
 

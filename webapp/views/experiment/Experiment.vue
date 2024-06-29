@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { defineAsyncComponent, reactive } from "vue";
 const DataTable = defineAsyncComponent(
-  () => import("../../components/datatable/DataTable.vue")
+  () => import("@/components/ui/datatable/FelDataTable.vue")
 )
 
 const columns = reactive([

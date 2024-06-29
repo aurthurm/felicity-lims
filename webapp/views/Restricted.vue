@@ -1,6 +1,6 @@
 <script setup lang="ts">
   import { useRouter } from 'vue-router';
-  import { pages } from "./../router/constants";
+  import { pages } from "@/router/constants";
 
   const router = useRouter();
   const goHome = () => router.push({ name: pages.DASHBOARD });

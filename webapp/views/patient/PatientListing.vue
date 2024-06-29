@@ -2,15 +2,15 @@
 import { ref, reactive, computed, h, defineAsyncComponent } from "vue";
 import { storeToRefs } from "pinia";
 import { RouterLink } from "vue-router";
-import { usePatientStore, useLocationStore } from "../../stores";
-import { IPatient } from "../../models/patient";
-import * as shield from "../../guards";
+import { usePatientStore, useLocationStore } from "@/stores";
+import { IPatient } from "@/models/patient";
+import * as shield from "@/guards";
 
 const DataTable = defineAsyncComponent(
-  () => import("../../components/datatable/DataTable.vue")
+  () => import("@/components/ui/datatable/FelDataTable.vue")
 )
 const PageHeading = defineAsyncComponent(
-  () => import("../components/PageHeading.vue")
+  () => import("@/components/common/FelPageHeading.vue")
 )
 
 let patientStore = usePatientStore();

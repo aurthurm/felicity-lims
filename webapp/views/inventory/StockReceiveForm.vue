@@ -2,14 +2,14 @@
 import VueMultiselect from "vue-multiselect";
 import { useField, useForm } from "vee-validate";
 import { object, string, number, date } from "yup";
-import { IStockItemVariant, IStockReceive } from '../../models/inventory';
-import { GET_ALL_STOCK_PRODUCTS } from "../../graphql/operations/inventory.queries";
-import { RECEIVE_STOCK_PRODUCT } from '../../graphql/operations/inventory.mutations';
-import { useApiUtil } from "../../composables";
-import { useInventoryStore, useStorageStore, useSetupStore, useUserStore } from "../../stores";
+import { IStockItemVariant, IStockReceive } from '@/models/inventory';
+import { GET_ALL_STOCK_PRODUCTS } from "@/graphql/operations/inventory.queries";
+import { RECEIVE_STOCK_PRODUCT } from '@/graphql/operations/inventory.mutations';
+import { useApiUtil } from "@/composables";
+import { useInventoryStore, useStorageStore, useSetupStore, useUserStore } from "@/stores";
 import { defineAsyncComponent, ref } from "vue";
 const LoadingMessage = defineAsyncComponent(
-  () => import("../../components/Spinners/LoadingMessage.vue")
+  () => import("@/components/ui/spinners/FelLoadingMessage.vue")
 )
 
 const emit = defineEmits(["close"])

@@ -1,17 +1,18 @@
 <script setup lang="ts">
-  import { ref, reactive, computed, defineAsyncComponent } from 'vue';
-  import { IAnalysisService } from '../../../../models/analysis';
-  import { ADD_ANALYSIS_MAPPING, ADD_ANALYSIS_SERVICE, EDIT_ANALYSIS_MAPPING, EDIT_ANALYSIS_SERVICE  } from '../../../../graphql/operations/analyses.mutations';
-  import { useSetupStore, useAnalysisStore, useSampleStore } from '../../../../stores';
-  import { useApiUtil } from '../../../../composables';
+  import { ref, reactive, computed, defineAsyncComponent, watch } from 'vue';
+  import { useRoute } from 'vue-router';
+  import { IAnalysisService } from '@/models/analysis';
+  import { ADD_ANALYSIS_MAPPING, ADD_ANALYSIS_SERVICE, EDIT_ANALYSIS_MAPPING, EDIT_ANALYSIS_SERVICE  } from '@/graphql/operations/analyses.mutations';
+  import { useSetupStore, useAnalysisStore, useSampleStore } from '@/stores';
+  import { useApiUtil } from '@/composables';
   const VueMultiselect = defineAsyncComponent(
     () => import('vue-multiselect')
   )
   const modal = defineAsyncComponent(
-    () => import('../../../../components/SimpleModal.vue')
+    () => import('@/components/ui/FelModal.vue')
   )
   const accordion = defineAsyncComponent(
-    () => import('../../../../components/Accordion.vue')
+    () => import('@/components/ui/FelAccordion.vue')
   )
   const ResultOptions = defineAsyncComponent(
     () => import('./ResultOptions.vue')
@@ -36,7 +37,7 @@
   )
 
 
-
+  const route = useRoute();
   const analysisStore = useAnalysisStore()
   const sampleStore = useSampleStore()
   const  setupStore = useSetupStore()
@@ -46,7 +47,7 @@
   
   let showModal = ref(false);
   let formTitle = ref('');
-  let analysisService = reactive({}) as IAnalysisService;
+  let analysisService = reactive({}) as IAnalysisService; 
   const formAction = ref(true);
 
   const sampleTypes = computed<any[]>(() => sampleStore.getSampleTypes);
@@ -61,6 +62,17 @@
   analysisStore.fetchAnalysesCategories();
   const analysesCategories = computed(() => analysisStore.getAnalysesCategories)
   const analysesServices = computed(() => analysisStore.getAnalysesServices)
+
+  watch(
+  () => route.query,
+  (newQuery) => {
+    if (newQuery.item) {
+      const service = analysisStore.analysesServices.find(an => an.name === newQuery.item)
+      Object.assign(analysisService, { ...service });
+    }
+  },
+  { immediate: true }
+);
 
   let analysesParams = reactive({ 
     first: undefined, 

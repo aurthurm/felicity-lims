@@ -1,15 +1,15 @@
 <script setup lang="ts">
-import LoadingMessage from "../../../components/Spinners/LoadingMessage.vue"
-import modal from '../../../components/SimpleModal.vue';
+import LoadingMessage from "@/components/ui/spinners/FelLoadingMessage.vue"
+import modal from '@/components/ui/FelModal.vue';
 import { useRoute } from 'vue-router';
 import { storeToRefs } from 'pinia'
 import { ref } from 'vue';
-import { ADD_CLIENT, EDIT_CLIENT } from '../../../graphql/operations/clients.mutations';
-import { useLocationStore, useClientStore } from '../../../stores';
-import { IClient } from '../../../models/client';
-import { useApiUtil } from '../../../composables'
+import { ADD_CLIENT, EDIT_CLIENT } from '@/graphql/operations/clients.mutations';
+import { useLocationStore, useClientStore } from '@/stores';
+import { IClient } from '@/models/client';
+import { useApiUtil } from '@/composables'
 
-import * as shield from '../../../guards'
+import * as shield from '@/guards'
 
 const locationStore = useLocationStore();
 const { withClientMutation } = useApiUtil()

@@ -10,18 +10,20 @@ import {
     faUserInjured, faClinicMedical, faVial, faGripVertical, faDatabase, faTruck, faBoxesStacked,
     faFlag, faFileMedical, faUsers, faCaravan, faLaptopMedical, faFill, faMicroscope, faGripHorizontal,
     faCopy, faCodeBranch, faMoneyBill, faEdit, faLeftRight, faSort, faTimes, faEllipsis, faBarcode, faCheckCircle, faTimesCircle, faThumbsDown, faThumbsUp, faQuestion, faDownload, faBan,
-    faCartShopping
+    faCartShopping,
+    faInfo,
+    faInfoCircle
 } from '@fortawesome/free-solid-svg-icons';
-import LayoutDashboard from './views/layouts/LayoutDashboard.vue';
-import LayoutEmpty from './views/layouts/LayoutEmpty.vue';
-import LayoutMobile from './views/layouts/LayoutMobile.vue';
+import LayoutDashboard from '@/views/layouts/LayoutDashboard.vue';
+import LayoutEmpty from '@/views/layouts/LayoutEmpty.vue';
+import LayoutMobile from '@/views/layouts/LayoutMobile.vue';
 
 import 'vue-multiselect/dist/vue-multiselect.css';
 import 'floating-vue/dist/style.css';
 import 'sweetalert2/dist/sweetalert2.min.css';
 import 'notyf/notyf.min.css';
-import './index.css';
-import './assets/css/style.css';
+import '@/index.css';
+import '@/assets/css/style.css';
 
 import App from './App.vue';
 import router from './router';
@@ -33,7 +35,8 @@ const icons = [
     faUserInjured, faClinicMedical, faVial, faGripVertical, faDatabase, faTruck, faBoxesStacked,
     faFlag, faFileMedical, faUsers, faCaravan, faLaptopMedical, faFill, faMicroscope, faGripHorizontal,
     faCopy, faCodeBranch, faMoneyBill, faEdit, faLeftRight, faSort, faTimes, faEllipsis, faBarcode,
-    faCheckCircle, faTimesCircle, faThumbsDown, faThumbsUp, faQuestion, faDownload, faBan, faCartShopping
+    faCheckCircle, faTimesCircle, faThumbsDown, faThumbsUp, faQuestion, faDownload, faBan, faCartShopping,
+    faInfoCircle
 ]
 library.add(...icons);
 

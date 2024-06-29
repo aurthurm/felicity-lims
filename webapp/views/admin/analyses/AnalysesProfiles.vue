@@ -1,23 +1,23 @@
 <script setup lang="ts">
 import { ref, reactive, computed, defineAsyncComponent } from "vue";
-import { IAnalysisProfile, IAnalysisService } from "../../../models/analysis";
+import { IAnalysisProfile, IAnalysisService } from "@/models/analysis";
 import {
   ADD_ANALYSIS_PROFILE,
   ADD_PROFILE_MAPPING,
   EDIT_ANALYSIS_PROFILE,
   EDIT_PROFILE_MAPPING,
-} from "../../../graphql/operations/analyses.mutations";
-import { useSetupStore, useAnalysisStore, useSampleStore } from "../../../stores";
-import { useApiUtil } from "../../../composables";
+} from "@/graphql/operations/analyses.mutations";
+import { useSetupStore, useAnalysisStore, useSampleStore } from "@/stores";
+import { useApiUtil } from "@/composables";
 
 const VueMultiselect = defineAsyncComponent(
   () => import("vue-multiselect")
 )
 const modal = defineAsyncComponent(
-  () => import("../../../components/SimpleModal.vue")
+  () => import("@/components/ui/FelModal.vue")
 )
 const accordion = defineAsyncComponent(
-  () => import("../../../components/Accordion.vue")
+  () => import("@/components/ui/FelAccordion.vue")
 )
 
 const Billing = defineAsyncComponent(

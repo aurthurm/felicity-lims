@@ -1,21 +1,32 @@
 <script setup lang="ts">
-import FButton from "../../../components/Buttons/Button.vue";
-import { onMounted, watch, reactive, computed, defineAsyncComponent } from "vue";
+import { onMounted, watch, reactive, computed, defineAsyncComponent, ref } from "vue";
 import { useRoute } from "vue-router";
 import { storeToRefs } from "pinia";
-import { useSampleStore, useSetupStore } from "../../../stores";
-import { useAnalysisComposable } from "../../../composables";
-import { parseDate } from "../../../utils/helpers";
+import { useSampleStore, useSetupStore } from "@/stores";
+import { useAnalysisComposable } from "@/composables";
+import { parseDate } from "@/utils/helpers";
 import {
   IAnalysisProfile,
   IAnalysisResult,
   IAnalysisService,
-} from "../../../models/analysis";
-import { isNullOrWs } from "../../../utils/helpers";
+} from "@/models/analysis";
+import { isNullOrWs } from "@/utils/helpers";
 
-import * as shield from "../../../guards";
+import * as shield from "@/guards";
+const FelButton = defineAsyncComponent(
+  () => import("@/components/ui/buttons/FelButton.vue")
+)
 const LoadingMessage = defineAsyncComponent(
-  () => import("../../../components/Spinners/LoadingMessage.vue")
+  () => import("@/components/ui/spinners/FelLoadingMessage.vue")
+)
+const FelDrawer = defineAsyncComponent(
+  () => import("@/components/ui/FelDrawer.vue")
+)
+const AnalysisSneak = defineAsyncComponent(
+  () => import("@/components/analysis/AnalysisSneak.vue")
+)
+const ResultDetail = defineAsyncComponent(
+  () => import("@/components/result/ResultDetail.vue")
 )
 
 const route = useRoute();
@@ -216,6 +227,14 @@ const profileAnalysesText = (
   return names.join(", ");
 };
 
+// viewAnalysisInfo
+const viewInfo = ref(false)
+const viewResultInfo = ref<IAnalysisResult | undefined>(undefined)
+const viewAnalysisInfo = (result: IAnalysisResult,) => {
+  viewInfo.value = true
+  viewResultInfo.value = result;
+}
+
 // Sample Actions
 let {
   submitResults: submitter_,
@@ -263,8 +282,7 @@ const retestResults = () =>
   <hr class="mb-4 mt-2" />
 
   <div class="overflow-x-auto">
-    <div
-      class="align-middle inline-block min-w-full shadow overflow-hidden bg-white shadow-dashboard px-2 pt-1 rounded-bl-lg rounded-br-lg">
+    <div class="align-middle inline-block min-w-full shadow overflow-hidden bg-white shadow-dashboard px-2 pt-1 rounded-bl-lg rounded-br-lg">
       <div v-if="fetchingResults" class="py-4 text-center">
         <LoadingMessage message="Fetching analytes ..." />
       </div>
@@ -330,6 +348,7 @@ const retestResults = () =>
             <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500"></td>
             <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
               <div class="text-sm leading-5 text-sky-800 font-semibold">
+                <span class="mr-1 hover:cursor-pointer" @click="viewAnalysisInfo(result)"><font-awesome-icon icon="fa-info-circle"></font-awesome-icon></span>
                 {{ result.analysis?.name }}
               </div>
             </td>
@@ -384,7 +403,7 @@ const retestResults = () =>
               <label v-else class="block col-span-2 mb-2">
                 <select class="form-input mt-1 block w-full" v-model="result.result" @change="check(result)">
                   <option value=""></option>
-                  <option v-for="(interim, index) in result?.analysis?.interims" :key="interim.key"
+                  <option v-for="interim in result?.analysis?.interims" :key="interim.key"
                     :value="interim.value">
                     {{ interim.value }}
                   </option>
@@ -401,7 +420,7 @@ const retestResults = () =>
               <label v-else class="block col-span-2 mb-2">
                 <select class="form-input mt-1 block w-full" v-model="result.result" @change="check(result)">
                   <option value=""></option>
-                  <option v-for="(option, index) in result?.analysis?.resultOptions" :key="option.optionKey"
+                  <option v-for="option in result?.analysis?.resultOptions" :key="option.optionKey"
                     :value="option.value">
                     {{ option.value }}
                   </option>
@@ -455,26 +474,36 @@ const retestResults = () =>
   </div>
 
   <section class="my-4">
-    <FButton v-show="
+    <FelButton v-show="
       shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) && state.can_cancel
-    " key="cancel" @click.prevent="cancelResults" :color="'sky-800'">Cancel</FButton>
-    <FButton v-show="
+    " key="cancel" @click.prevent="cancelResults" :color="'sky-800'">Cancel</FelButton>
+    <FelButton v-show="
       shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) &&
       state.can_reinstate
-    " key="reinstate" @click.prevent="reInstateResults" :color="'orange-600'">Re-Instate</FButton>
-    <FButton v-show="
+    " key="reinstate" @click.prevent="reInstateResults" :color="'orange-600'">Re-Instate</FelButton>
+    <FelButton v-show="
       shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) && state.can_submit
-    " key="submit" @click.prevent="submitResults" :color="'orange-600'">Submit</FButton>
-    <FButton v-show="
+    " key="submit" @click.prevent="submitResults" :color="'orange-600'">Submit</FelButton>
+    <FelButton v-show="
       shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) &&
       state.can_retract
-    " key="retract" @click.prevent="retractResults" :color="'orange-600'">Retract</FButton>
-    <FButton v-show="
+    " key="retract" @click.prevent="retractResults" :color="'orange-600'">Retract</FelButton>
+    <FelButton v-show="
       shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) &&
       state.can_approve
-    " key="verify" @click.prevent="approveResults" :color="'orange-600'">Verify</FButton>
-    <FButton v-show="
+    " key="verify" @click.prevent="approveResults" :color="'orange-600'">Verify</FelButton>
+    <FelButton v-show="
       shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) && state.can_retest
-    " key="retest" @click.prevent="retestResults" :color="'orange-600'">Retest</FButton>
+    " key="retest" @click.prevent="retestResults" :color="'orange-600'">Retest</FelButton>
   </section>
+
+  <FelDrawer :show="viewInfo" @close="viewInfo = false" :content-width="'w-2/4'">
+    <template v-slot:header>
+      <h3>Result Information</h3>
+    </template>
+    <template v-slot:body>
+      <AnalysisSneak v-if="viewResultInfo?.analysisUid" :analysisUid="viewResultInfo?.analysisUid" />
+      <ResultDetail v-if="viewResultInfo?.uid" :analysisResultesultUid="viewResultInfo?.uid" />
+    </template>
+  </FelDrawer>
 </template>

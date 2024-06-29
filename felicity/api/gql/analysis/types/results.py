@@ -111,3 +111,19 @@ class QCSetCursorPage:
     edges: list[QCSetEdge] | None
     items: list[QCSetWithSamples] | None
     total_count: int
+
+
+@strawberry.type
+class ResultMutationType:
+    uid: str
+    result_uid: str
+    before: str
+    after: str
+    mutation: str
+    date: str | None
+    created_by_uid: str | None
+    created_by: UserType | None
+    created_at: str | None
+    updated_by_uid: str | None
+    updated_by: UserType | None
+    updated_at: str | None

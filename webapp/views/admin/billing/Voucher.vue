@@ -1,19 +1,19 @@
 <script setup lang="ts">
 import { ref, defineAsyncComponent, onMounted } from "vue";
-import { ADD_VOUCHER, EDIT_VOUCHER } from '../../../graphql/operations/billing.mutations';
+import { ADD_VOUCHER, EDIT_VOUCHER } from '@/graphql/operations/billing.mutations';
 import { storeToRefs } from "pinia"
-import { useBillingStore } from "../../../stores";
-import { useApiUtil } from "../../../composables";
-import { IVoucher } from "../../../models/billing";
+import { useBillingStore } from "@/stores";
+import { useApiUtil } from "@/composables";
+import { IVoucher } from "@/models/billing";
 import { useField, useForm } from "vee-validate";
 import { object, string, boolean, number, date } from "yup";
-import { formatDate } from "../../../utils/helpers";
+import { formatDate } from "@/utils/helpers";
 
 const LoadingMessage = defineAsyncComponent(
-  () => import("../../../components/Spinners/LoadingMessage.vue")
+  () => import("@/components/ui/spinners/FelLoadingMessage.vue")
 )
 const modal = defineAsyncComponent(
-  () => import("../../../components/SimpleModal.vue")
+  () => import("@/components/ui/FelModal.vue")
 )
 const VoucherCodes = defineAsyncComponent(
   () => import("./VoucherCodes.vue")

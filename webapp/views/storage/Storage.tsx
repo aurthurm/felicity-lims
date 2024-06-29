@@ -1,6 +1,6 @@
 import { defineComponent, computed, reactive, toRefs, ref, watch, defineAsyncComponent } from 'vue';
-import useTreeStateComposable from '../../composables/tree-state';
-import { IStorageContainer, IStorageLocation, IStorageSection, IStoreRoom } from '../../models/storage';
+import useTreeStateComposable from '@/composables/tree-state';
+import { IStorageContainer, IStorageLocation, IStorageSection, IStoreRoom } from '@/models/storage';
 import {
     ADD_STORE_ROOM,
     EDIT_STORE_ROOM,
@@ -10,21 +10,21 @@ import {
     EDIT_STORAGE_SECTION,
     ADD_STORAGE_CONTAINER,
     EDIT_STORAGE_CONTAINER,
-} from '../../graphql/operations/storage.mutations';
-import { useStorageStore } from '../../stores';
-import { useApiUtil } from '../../composables';
+} from '@/graphql/operations/storage.mutations';
+import { useStorageStore } from '@/stores';
+import { useApiUtil } from '@/composables';
 import { useRouter } from 'vue-router';
 const Modal = defineAsyncComponent(
-    () => import('../../components/SimpleModal.vue')
+    () => import('@/components/ui/FelModal.vue')
 )
 const PageHeading = defineAsyncComponent(
-    () => import('../components/PageHeading.vue')
+    () => import('@/components/common/FelPageHeading.vue')
 )
 const ContainerView = defineAsyncComponent(
     () => import('./ContainerView')
 )
 const TreeItem = defineAsyncComponent(
-    () => import('../components/TreeItem.vue')
+    () => import('@/components/storage/FelTreeItem.vue')
 )
 
 const StorageHome = defineComponent({

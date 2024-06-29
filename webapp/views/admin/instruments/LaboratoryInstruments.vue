@@ -1,11 +1,11 @@
 <script setup lang="ts">
   import { ref, reactive, computed, defineAsyncComponent } from 'vue';
-  import { ILaboratoryInstrument } from '../../../models/setup'
-  import { ADD_LABORATORY_INSTRUMENT, EDIT_LABORATORY_INSTRUMENT  } from '../../../graphql/operations/instrument.mutations';
-  import { useSetupStore } from '../../../stores';
-  import { useApiUtil } from '../../../composables';
+  import { ILaboratoryInstrument } from '@/models/setup'
+  import { ADD_LABORATORY_INSTRUMENT, EDIT_LABORATORY_INSTRUMENT  } from '@/graphql/operations/instrument.mutations';
+  import { useSetupStore } from '@/stores';
+  import { useApiUtil } from '@/composables';
   const modal = defineAsyncComponent(
-    () => import('../../../components/SimpleModal.vue')
+    () => import('@/components/ui/FelModal.vue')
   )
 
   const setupStore = useSetupStore()

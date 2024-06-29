@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import { defineAsyncComponent } from "vue";
 const SideBar = defineAsyncComponent(
-  () => import("../components/nav/NavigationAside.vue")
+  () => import("@/components/nav/NavigationAside.vue")
 )
 const HeaderMain = defineAsyncComponent(
-  () => import("../components/nav/NavigationMain.vue")
+  () => import("@/components/nav/NavigationMain.vue")
 )
 const Notification = defineAsyncComponent(
-  () => import("../components/Notification.vue")
+  () => import("@/components/notification/FelNotification.vue")
 )
 </script>
 

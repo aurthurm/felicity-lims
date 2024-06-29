@@ -2,18 +2,18 @@
 import { storeToRefs } from "pinia";
 import { defineAsyncComponent, ref } from "vue";
 import { useRouter } from "vue-router";
-import { IPatient } from "../../../models/patient";
-import { usePatientStore } from "../../../stores";
-import * as shield from "../../../guards";
+import { IPatient } from "@/models/patient";
+import { usePatientStore } from "@/stores";
+import * as shield from "@/guards";
 
 const tabSamples = defineAsyncComponent(
-  () => import("../../components/AnalyisRequestListing.vue")
+  () => import("@/components/sample/FelAnalyisRequestListing.vue")
 )
 const tabCases = defineAsyncComponent(
-  () => import("../comps/CaseTable.vue")
+  () => import("@/components/case/CaseTable.vue")
 )
 const tabLogs = defineAsyncComponent(
-  () => import("../../components/AuditLog.vue")
+  () => import("@/components/audit/FelAuditLog.vue")
 )
 const tabPatientBills = defineAsyncComponent(
   () => import("./PatientBill.vue")

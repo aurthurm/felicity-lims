@@ -1,11 +1,11 @@
 import { defineStore } from 'pinia';
 import { ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
-import { IUser } from '../models/auth';
-import { STORAGE_AUTH_KEY, USER_GROUP_OVERRIDE } from '../conf';
-import { AUTHENTICATE_USER, REFRESH_TOKEN, REQUEST_PASSWORD_RESET, RESET_PASSWORD, VALIDATE_PASSWORD_RESET_TOKEN } from '../graphql/operations/_mutations';
-import { useAuthenticateUserMutation } from '../graphql/graphql';
-import { useNotifyToast, useApiUtil, userPreferenceComposable } from '../composables';
+import { IUser } from '@/models/auth';
+import { STORAGE_AUTH_KEY, USER_GROUP_OVERRIDE } from '@/conf';
+import { AUTHENTICATE_USER, REFRESH_TOKEN, REQUEST_PASSWORD_RESET, RESET_PASSWORD, VALIDATE_PASSWORD_RESET_TOKEN } from '@/graphql/operations/_mutations';
+import { useAuthenticateUserMutation } from '@/graphql/graphql';
+import { useNotifyToast, useApiUtil, userPreferenceComposable } from '@/composables';
 import jwtDecode from 'jwt-decode';
 
 const { withClientMutation } = useApiUtil();

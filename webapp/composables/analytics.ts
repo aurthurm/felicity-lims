@@ -1,8 +1,8 @@
 import { toRefs, reactive } from 'vue';
-import axios from '../api';
+import axios from '@/api';
 
 import useNotifyToast from './alert_toast';
-import { IReportListing } from '../models/reports';
+import { IReportListing } from '@/models/reports';
 
 const { toastSuccess, toastWarning } = useNotifyToast();
 

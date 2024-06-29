@@ -1,11 +1,11 @@
 <script setup lang="ts">
   import { ref, reactive, computed, defineAsyncComponent } from 'vue';
-  import { IReferralLaboratory } from '../../../models/shipment'
-  import { ADD_REFERRAL_LABORATORY, EDIT_REFERRAL_LABORATORY  } from '../../../graphql/operations/shipment.mutations';
-  import { useShipmentStore } from '../../../stores';
-  import { useApiUtil } from '../../../composables';
+  import { IReferralLaboratory } from '@/models/shipment'
+  import { ADD_REFERRAL_LABORATORY, EDIT_REFERRAL_LABORATORY  } from '@/graphql/operations/shipment.mutations';
+  import { useShipmentStore } from '@/stores';
+  import { useApiUtil } from '@/composables';
   const modal = defineAsyncComponent(
-    () => import("../../../components/SimpleModal.vue")
+    () => import("@/components/ui/FelModal.vue")
   )
 
   const shipmentStore = useShipmentStore();

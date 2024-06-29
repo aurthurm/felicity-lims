@@ -1,7 +1,7 @@
 <script lang="ts">
 import { defineAsyncComponent } from 'vue';
 const Badge = defineAsyncComponent(
-  () => import("../../components/Badge.vue")
+  () => import("@/components/Badge.vue")
 )
 export default {
   name: "task-card",
