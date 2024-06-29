@@ -117,9 +117,13 @@ export const GET_WORKSHEET_BY_UID = gql`
                     uid
                     name
                 }
-                instrument {
+                laboratoryInstrument {
                     uid
-                    name
+                    labName
+                    instrument {
+                        uid
+                        name
+                    }
                 }
                 analysis {
                     uid

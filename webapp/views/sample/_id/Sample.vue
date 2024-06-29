@@ -23,8 +23,7 @@ const {
   invalidateSamples,
   publishSamples,
   verifySamples,
-  recoverSamples,
-  barcodeSamples
+  recoverSamples
 } = useSampleComposable();
 
 const state = reactive({
@@ -130,8 +129,11 @@ const invalidateSample = async () =>
     let inv = res?.filter((s) => s.uid !== sample?.value?.uid);
     if (inv.length > 0) sampleStore.setRepeatSample(inv[0]);
   });
-
-const printBarCooe = async () => await barcodeSamples([sample?.value?.uid!])
+  
+const printBarCooe = async () => router.push({ 
+  name: "print-barcodes",
+  state: { sampleUids: JSON.stringify([sample?.value?.uid!]) }}
+)
 
 const canReject = computed(() => {
   if (["received", "expected"].includes(sample?.value?.status?.toLowerCase()!))

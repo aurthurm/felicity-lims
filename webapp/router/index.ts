@@ -134,6 +134,14 @@ const routes: RouteRecordRaw[] = [
         },
     },
     {
+        path: '/print/barcodes',
+        name: 'print-barcodes',
+        component: () => import('@/views/barcode/index.vue'),
+        meta: {
+            requiresAuth: true,
+        },
+    },
+    {
         path: '/experiment',
         name: 'experiment',
         component: () => import('@/views/experiment/Experiment.vue'),
@@ -194,6 +202,8 @@ router.beforeEach(async (to, from) => {
     }
 });
 
+const exemptions = ["print-barcodes"]
+
 function hasAccess(page: any) {
     switch (page) {
         case guards.pages.DASHBOARD:
@@ -236,7 +246,7 @@ function hasAccess(page: any) {
             return true;
 
         default:
-            return false;
+            return exemptions.includes(page);
     }
 }
 

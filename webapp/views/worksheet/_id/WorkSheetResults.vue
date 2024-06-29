@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import { ref, computed, reactive, defineAsyncComponent } from "vue";
 import { isNullOrWs } from "@/utils/helpers";
 import { IAnalysisResult, IAnalysisService } from "@/models/analysis";
-import { useAnalysisComposable, useSampleComposable, useWorkSheetComposable } from "@/composables";
+import { useAnalysisComposable, useWorkSheetComposable } from "@/composables";
 import { useWorksheetStore, useSetupStore, useUserStore } from "@/stores";
 import * as shield from "@/guards";
 const FButton = defineAsyncComponent(
@@ -14,6 +14,7 @@ const worksheetStore = useWorksheetStore();
 const setupStore = useSetupStore();
 const userStore = useUserStore();
 const route = useRoute();
+const router = useRouter();
 
 let can_submit = ref<boolean>(false);
 let can_retract = ref<boolean>(false);
@@ -32,7 +33,7 @@ const refresh = () => {
 
 //
 userStore.fetchUsers({});
-setupStore.fetchInstruments();
+setupStore.fetchLaboratoryInstruments();
 setupStore.fetchMethods();
 const form = reactive({
   analystUid: undefined,
@@ -142,8 +143,10 @@ function getResultsUids(): string[] {
 
 function getSampleUids(): string[] {
   const results = getResultsChecked();
+  console.log(results);
   let ready: string[] = [];
-  results?.forEach((result: IAnalysisResult) => ready.push(result.sampleUid!));
+  results?.forEach((result: IAnalysisResult) => ready.push(result.sample?.uid!));
+  console.log(ready);
   return ready;
 }
 
@@ -226,7 +229,6 @@ const {
   
 } = useAnalysisComposable();
 
-const { barcodeSamples } = useSampleComposable()
 const { unAssignSamples: unassinger_ } = useWorkSheetComposable();
 
 const unAssignSamples = () => unassinger_(getResultsUids());
@@ -236,7 +238,13 @@ const approveResults = () =>
   approver_(getResultsUids(), "worksheet", worksheet.value?.uid!);
 const retractResults = () => retracter_(getResultsUids());
 const retestResults = () => retester_(getResultsUids());
-const printBarCodes = async () => await barcodeSamples(getSampleUids())
+const printBarCodes = async () => {
+  window.open(router.resolve({ 
+    name: "print-barcodes",
+    query: { sampleUids: JSON.stringify(getSampleUids().join(",")) }}
+  ).href,'_blank')
+}
+
 </script>
 
 <template>
@@ -284,11 +292,11 @@ const printBarCodes = async () => await barcodeSamples(getSampleUids())
               class="form-input mt-1 block w-full py-1"
             >
               <option
-                v-for="instrument in setupStore.instruments"
-                :key="instrument.uid"
-                :value="instrument.uid"
+                v-for="labInst in setupStore.laboratoryInstruments"
+                :key="labInst.uid"
+                :value="labInst.uid"
               >
-                {{ instrument.name }}
+                {{ labInst?.instrument.name }}: ({{ labInst?.labName }})
               </option>
             </select>
           </label>
@@ -451,7 +459,10 @@ const printBarCodes = async () => await barcodeSamples(getSampleUids())
                 <div>{{ result?.analysis?.name }}</div>
               </td>
               <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-                <div>{{ result?.instrument?.name || "None" }}</div>
+                <div>
+                  {{ result?.laboratoryInstrument?.instrument?.name }}: 
+                  {{  (result?.laboratoryInstrument?.labName) }}
+                </div>
               </td>
               <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
                 <div>{{ result?.method?.name || "None" }}</div>

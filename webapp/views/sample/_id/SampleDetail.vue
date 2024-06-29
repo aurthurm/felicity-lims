@@ -16,14 +16,19 @@ const tabLogs = defineAsyncComponent(
 )
 
 const sampleStore = useSampleStore();
+const currentTab = ref("analysis-results")
+const tabs = computed(() => {
+  const tabs = ["analysis-results", "manage-analyses", "logs", "impress-reports"];
+  if (sampleStore.sample?.status === 'published') {
+    const index = tabs.indexOf('manage-analyses');
+    if (index !== -1) {
+      tabs.splice(index, 1);
+    }
+  }
+  return tabs;
+})
 
-const state = reactive({
-  currentTab: ref("analysis-results"),
-  tabs: ["analysis-results", "manage-analyses", "logs", "impress-reports"],
-  sample: computed(() => sampleStore.getSample),
-});
-
-let currentTabComponent = computed(() => "tab-" + state.currentTab);
+let currentTabComponent = computed(() => "tab-" + currentTab);
 </script>
 
 <template>
@@ -31,14 +36,13 @@ let currentTabComponent = computed(() => "tab-" + state.currentTab);
     <nav class="bg-white shadow-md mt-2" v-motion-slide-left>
       <div class="-mb-px flex justify-start">
         <a
-          v-for="tab in state.tabs"
+          v-for="tab in tabs"
           :key="tab"
           :class="[
             'no-underline text-gray-500 uppercase tracking-wide font-bold text-xs py-1 px-4 tab hover:bg-sky-600 hover:text-gray-200',
-            { 'tab-active': state.currentTab === tab },
+            { 'tab-active': currentTab === tab },
           ]"
-          @click="state.currentTab = tab"
-         
+          @click="currentTab = tab"
         >
           {{ tab }}
         </a>
@@ -46,14 +50,14 @@ let currentTabComponent = computed(() => "tab-" + state.currentTab);
     </nav>
 
     <div>
-      <tab-results v-if="state.currentTab === 'analysis-results'" />
-      <tab-manage-analyses v-if="state.currentTab === 'manage-analyses'" @changeTab="(tab) => (state.currentTab = tab)" />
+      <tab-results v-if="currentTab === 'analysis-results'" />
+      <tab-manage-analyses v-if="currentTab === 'manage-analyses'" @changeTab="(tab) => (currentTab = tab)" />
       <tab-logs
-        v-if="state.currentTab === 'logs'"
+        v-if="currentTab === 'logs'"
         targetType="sample"
-        :targetId="state.sample?.uid"
+        :targetId="sampleStore.sample?.uid"
       />
-      <tab-impress v-if="state.currentTab === 'impress-reports'" />
+      <tab-impress v-if="currentTab === 'impress-reports'" />
     </div>
   </section>
 </template>

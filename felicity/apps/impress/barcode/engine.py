@@ -3,15 +3,19 @@ from io import BytesIO
 from tempfile import NamedTemporaryFile
 
 from barcode import Code128
+from barcode.base import Barcode
 from barcode.writer import ImageWriter
 from fpdf import FPDF
 
 from felicity.apps.impress.barcode.schema import BarCode
 
+Barcode.default_writer_options['write_text'] = False
+ImageWriter.human = " "
+
 
 class FelicityBarCoder:
     def __init__(
-        self, page_width=40.0, page_height=30.0, barcode_width=30, barcode_height=7.5
+            self, page_width=40.0, page_height=30.0, barcode_width=30, barcode_height=7.5
     ):
         assert page_width > barcode_width and page_height > barcode_height
         self.pdf = FPDF(unit="mm", format=(page_width, page_height))
@@ -31,9 +35,7 @@ class FelicityBarCoder:
 
             # Barcode
             svg_img_bytes = BytesIO()
-            Code128(_meta.barcode, writer=ImageWriter()).write(
-                svg_img_bytes, options={"write_txt": False}
-            )
+            Code128(_meta.barcode, writer=ImageWriter()).write(svg_img_bytes)
             with NamedTemporaryFile(delete=False, suffix=".png") as temp:
                 temp.write(svg_img_bytes.getvalue())
                 temp_path = temp.name
@@ -47,7 +49,7 @@ class FelicityBarCoder:
             os.unlink(temp_path)
 
             # Barcode txt
-            y_next_txt = self.barcode_bottom + 0.25
+            y_next_txt = self.barcode_bottom + 1
             self.pdf.set_font("helvetica", "", 6.0)
             self.pdf.set_xy(self.txt_left, y_next_txt)
             self.pdf.cell(w=1, h=1, txt=_meta.barcode, border=0)

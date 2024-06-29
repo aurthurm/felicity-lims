@@ -252,15 +252,12 @@ export default function useSampleComposable() {
     };    
 
     const barcodeSamples = async (sampleUids: string[]) => {
+        let data = [];
         try {
-            withClientQuery(BARCODE_SAMPLES, { sampleUids }, 'barcodeSamples').then(resp => {
-                const tempLink = document.createElement('a');
-                tempLink.href = `data:application/pdf;base64,${resp}`;
-                tempLink.setAttribute('download', 'barcodes.pdf');
-                // tempLink.setAttribute('target', tempLink.href);
-                tempLink.click();
-            });
+            await withClientQuery(BARCODE_SAMPLES, { sampleUids }, 'barcodeSamples')
+            .then(resp => (data = resp));
         } catch (error) {}
+        return data
     };
 
     // PRINT_SAMPLES

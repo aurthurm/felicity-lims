@@ -250,7 +250,7 @@ class AnalysisResult(Auditable, BaseMPTT):
         # available: int = await cls.count_where(filters=filters)
 
         async with async_session_factory() as session:
-            analyses_results = (await session.execute(stmt)).scalars().all_async()
+            analyses_results = (await session.execute(stmt)).scalars().all()
 
         return analyses_results
 

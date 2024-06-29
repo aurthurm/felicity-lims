@@ -104,7 +104,7 @@ async def populate_worksheet_plate(job_uid: str):
                 # skip reserved ?qc positions
                 position += 1
 
-            await sample.assign(ws.uid, position, ws.instrument_uid)
+            await sample.assign(ws.uid, position, None)
             position += 1
 
     else:  # populate worksheet using an empty position filling strategy if not empty

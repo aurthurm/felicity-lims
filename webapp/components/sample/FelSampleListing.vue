@@ -547,8 +547,7 @@ const {
   downloadSamplesImpress,
   publishSamples,
   recoverSamples,
-  cloneSamples,
-  barcodeSamples
+  cloneSamples
 } = useSampleComposable();
 
 const countNone = computed(
@@ -589,7 +588,11 @@ const prepareStorages = async () => {
 const recoverSamples_ = async () =>
   recoverSamples(getSampleUids()).finally(() => unCheckAll());
 
-const printBarCodes = async () => await barcodeSamples(getSampleUids())
+const printBarCodes = async () => router.push({ 
+  name: "print-barcodes",
+  state: { sampleUids: JSON.stringify(getSampleUids()) }}
+)
+
 </script>
 
 <template>
