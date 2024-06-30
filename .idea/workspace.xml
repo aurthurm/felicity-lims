@@ -5,20 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9f590b69-f929-45a1-8512-12ed6efbf028" name="Changes" comment="Added Invetory starter">
-      <change afterPath="$PROJECT_DIR$/felicity/apps/analysis/workflow/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/felicity/apps/analysis/workflow/analysis_result.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/felicity/apps/analysis/workflow/qcset.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/felicity/apps/analysis/workflow/sample.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/felicity/apps/worksheet/workflow/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/felicity/apps/worksheet/workflow/worksheet.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/api/gql/analysis/mutations/quality_control.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/analysis/mutations/quality_control.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/api/gql/impress/query.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/impress/query.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/apps/analysis/models/qc.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/analysis/models/qc.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/components/nav/NavigationAside.vue" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/components/nav/NavigationAside.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/graphql/operations/analyses.mutations.ts" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/graphql/operations/analyses.mutations.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/main.ts" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/main.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/stores/sample.ts" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/stores/sample.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/qcontrol/QualityControlListing.vue" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/views/qcontrol/QualityControlListing.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/webapp/views/qcontrol/_id/QualityControl.vue" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/views/qcontrol/_id/QualityControl.vue" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -66,17 +55,17 @@
     "dart.analysis.tool.window.visible": "false",
     "git-widget-placeholder": "main",
     "ignore.virus.scanning.warn.message": "true",
-    "last_opened_file_path": "/home/aurthurm/Documents/Development/felicity/felicity-lims/felicity/apps/analysis/workflow",
+    "last_opened_file_path": "/home/aurthurm/Documents/Development/felicity/felicity-lims/felicity/apps/worksheet",
     "settings.editor.selected.configurable": "project.propVCSSupport.DirectoryMappings"
   }
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/felicity/apps/worksheet" />
       <recent name="$PROJECT_DIR$/felicity/apps/analysis/workflow" />
       <recent name="$PROJECT_DIR$/felicity/api/gql/analysis/mutations" />
       <recent name="$PROJECT_DIR$/felicity/apps/guards" />
       <recent name="$PROJECT_DIR$/felicity/api/rest/api_v1/endpoints" />
-      <recent name="$PROJECT_DIR$/felicity" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/felicity/version" />
