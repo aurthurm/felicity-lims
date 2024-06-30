@@ -5,11 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9f590b69-f929-45a1-8512-12ed6efbf028" name="Changes" comment="Added Invetory starter">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/felicity/api/gql/impress/query.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/impress/query.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/apps/analysis/conf.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/analysis/conf.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/apps/analysis/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/analysis/utils.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/apps/worksheet/tasks.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/worksheet/tasks.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

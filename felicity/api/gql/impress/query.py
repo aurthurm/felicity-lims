@@ -110,7 +110,7 @@ class ReportImpressQuery:
                     BarCodeMeta(
                         label="Client",
                         value=_s.analysis_request.client.name,  # await _client_name(_s.analysis_request.client_uid)
-
+                    )
                 )
             barcode_metas.append(barcode)
 
