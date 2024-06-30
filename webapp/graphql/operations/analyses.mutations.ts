@@ -1349,27 +1349,80 @@ export const ADD_QC_REQUEST = gql`
         createQcSet(samples: $samples) {
             ... on CreateQCSetData {
                 __typename
-                samples {
-                    uid
-                    sampleId
-                    status
-                    qcLevel {
-                        uid
-                        level
-                    }
-                    analyses {
-                        uid
-                        name
-                    }
-                    profiles {
-                        uid
-                        name
-                    }
-                }
                 qcSets {
                     uid
                     name
                     note
+                    createdAt
+                    samples {
+                        uid
+                        sampleId
+                        status
+                        createdAt
+                        updatedAt
+                        assigned
+                        qcLevel {
+                            uid
+                            level
+                        }
+                        analysisResults {
+                            uid
+                            status
+                            sampleUid
+                            result
+                            analysisUid
+                            retest
+                            reportable
+                            analysis {
+                                uid
+                                name
+                                sortKey
+                                resultOptions {
+                                    uid
+                                    optionKey
+                                    value
+                                    sampleTypes{
+                                        uid
+                                        name
+                                    }
+                                }
+                            }
+                            method {
+                                uid
+                                name
+                            }
+                            laboratoryInstrument {
+                                uid
+                                labName
+                                instrument {
+                                    uid
+                                    name
+                                }
+                            }
+                        }
+                        analyses {
+                            uid
+                            name
+                            unitUid
+                            unit {
+                                uid
+                                name
+                            }
+                            resultOptions {
+                                uid
+                                optionKey
+                                value
+                                sampleTypes{
+                                    uid
+                                    name
+                                }
+                            }
+                        }
+                        profiles {
+                            uid
+                            name
+                        }
+                    }
                 }
             }
 

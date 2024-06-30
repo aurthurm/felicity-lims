@@ -12,6 +12,7 @@ from sqlalchemy.orm import relationship
 from felicity.apps import BaseAuditDBModel, DBModel
 from felicity.apps.analysis import schemas
 from felicity.apps.setup.models.setup import Department
+from felicity.apps.analysis.conf import states
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -26,6 +27,7 @@ class QCSet(BaseAuditDBModel):
 
     name = Column(String, nullable=False)
     note = Column(String, nullable=True)
+    status = Column(String, nullable=False, default=states.sample.RECEIVED)
     samples = relationship("Sample", back_populates="qc_set", lazy="selectin")
 
     @classmethod
@@ -36,6 +38,10 @@ class QCSet(BaseAuditDBModel):
     async def update(self, obj_in: dict | schemas.QCSetUpdate) -> Self:
         data = self._import(obj_in)
         return await super().update(**data)
+
+    async def change_status(self, status):
+        self.status = status
+        await self.save_async()
 
 
 """

@@ -5,7 +5,20 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9f590b69-f929-45a1-8512-12ed6efbf028" name="Changes" comment="Added Invetory starter">
+      <change afterPath="$PROJECT_DIR$/felicity/apps/analysis/workflow/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/felicity/apps/analysis/workflow/analysis_result.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/felicity/apps/analysis/workflow/qcset.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/felicity/apps/analysis/workflow/sample.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/api/gql/analysis/mutations/quality_control.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/analysis/mutations/quality_control.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/felicity/api/gql/impress/query.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/impress/query.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/apps/analysis/models/qc.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/analysis/models/qc.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webapp/components/nav/NavigationAside.vue" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/components/nav/NavigationAside.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webapp/graphql/operations/analyses.mutations.ts" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/graphql/operations/analyses.mutations.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webapp/main.ts" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/main.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webapp/stores/sample.ts" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/stores/sample.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webapp/views/qcontrol/QualityControlListing.vue" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/views/qcontrol/QualityControlListing.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webapp/views/qcontrol/_id/QualityControl.vue" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/views/qcontrol/_id/QualityControl.vue" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -44,25 +57,26 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;dart.analysis.tool.window.visible&quot;: &quot;false&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/home/aurthurm/Documents/Development/felicity/felicity-lims&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;project.propVCSSupport.DirectoryMappings&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Python tests.pytest for test_user.test_create_user.executor": "Run",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "dart.analysis.tool.window.visible": "false",
+    "git-widget-placeholder": "main",
+    "ignore.virus.scanning.warn.message": "true",
+    "last_opened_file_path": "/home/aurthurm/Documents/Development/felicity/felicity-lims/felicity/apps/analysis/workflow",
+    "settings.editor.selected.configurable": "project.propVCSSupport.DirectoryMappings"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/felicity/apps/analysis/workflow" />
       <recent name="$PROJECT_DIR$/felicity/api/gql/analysis/mutations" />
       <recent name="$PROJECT_DIR$/felicity/apps/guards" />
       <recent name="$PROJECT_DIR$/felicity/api/rest/api_v1/endpoints" />
       <recent name="$PROJECT_DIR$/felicity" />
-      <recent name="$PROJECT_DIR$" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/felicity/version" />
@@ -72,7 +86,7 @@
       <recent name="$PROJECT_DIR$/felicity/apps/impress" />
     </key>
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="Python tests.pytest for test_user.test_create_user">
     <configuration name="format.sh" type="ShConfigurationType" temporary="true">
       <option name="SCRIPT_TEXT" value="" />
       <option name="INDEPENDENT_SCRIPT_PATH" value="true" />
@@ -88,8 +102,26 @@
       <envs />
       <method v="2" />
     </configuration>
+    <configuration name="pytest for test_user.test_create_user" type="tests" factoryName="py.test" temporary="true" nameIsGenerated="true">
+      <module name="felicity-lims" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/felicity/tests/unit" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="_new_keywords" value="&quot;&quot;" />
+      <option name="_new_parameters" value="&quot;&quot;" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;test_user.test_create_user&quot;" />
+      <option name="_new_targetType" value="&quot;PYTHON&quot;" />
+      <method v="2" />
+    </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Python tests.pytest for test_user.test_create_user" />
         <item itemvalue="Shell Script.format.sh" />
       </list>
     </recent_temporary>

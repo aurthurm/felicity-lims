@@ -120,6 +120,5 @@ class ReportImpressQuery:
         for page in image_bytes:
             in_mem_file = io.BytesIO()
             page.save(in_mem_file, format="png")
-            # return_bytes.append(in_mem_file.seek(0))
             return_bytes.append(in_mem_file.getvalue())
         return return_bytes

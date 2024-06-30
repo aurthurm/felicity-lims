@@ -80,7 +80,7 @@ function toggleNavText(): void {
             :class="[' transition-all duration-500', viewNavText ? 'scale-100' : 'scale-0 w-0 overflow-hidden']">WorkSheets</span>
           <span v-show="!viewNavText" class="tooltip">WorkSheets</span>
         </router-link>
-        <!-- <router-link
+        <router-link
           v-show="guards.canAccessPage(guards.pages.QC_SAMPLES)"
           to="/quality-control"
           id="quality-control-link"
@@ -89,7 +89,7 @@ function toggleNavText(): void {
           <span class="mr-4"><font-awesome-icon icon="anchor" /></span>
           <span :class="[' transition-all duration-500', viewNavText ? 'scale-100' : 'scale-0 w-0 overflow-hidden']">QControl</span>
           <span v-show="!viewNavText" class="tooltip">QControl</span>
-        </router-link> -->
+        </router-link>
         <router-link v-show="guards.canAccessPage(guards.pages.NOTICE_MANAGER)" to="/notice-manager"
           id="notice-manager-link"
           class="flex items-center has-tooltip mt-1 py-2 px-6 text-gray-100 hover:bg-gray-800 hover:bg-opacity-25 hover:text-white border-l-4 border-gray-800">

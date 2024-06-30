@@ -351,8 +351,8 @@ export const useSampleStore = defineStore('sample', {
                 })
                 .catch(err => (this.fetchingQCSet = false));
         },
-        addQCSet(payload) {
-            this.qcSets = addListsUnique(this.qcSets, payload, 'uid');
+        addQCSets(payload) {
+            this.qcSets = addListsUnique(payload, this.qcSets, 'uid');
         },
     },
 });

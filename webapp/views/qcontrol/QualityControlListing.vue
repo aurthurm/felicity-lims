@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { ref, reactive, computed, defineAsyncComponent } from 'vue';
+  import { ref, reactive, computed, defineAsyncComponent, onMounted } from 'vue';
   import { storeToRefs } from 'pinia'
   import { useSampleStore, useAnalysisStore, useSetupStore } from '@/stores';
   import { IAnalysisProfile, IAnalysisService, IQCRequest, ISample } from '@/models/analysis';
@@ -20,14 +20,6 @@
 
   const { qcSets, fetchingQCSets } = storeToRefs(sampleStore)
 
-  let showModal = ref<boolean>(false);
-
-  let formAction = ref<boolean>(true);
-  let form = reactive({ 
-    departmentUid: undefined,
-    samples: [{}] as IQCRequest[]
-  });
-
   let analysesParams = reactive({ 
     first: undefined, 
     after: "",
@@ -46,7 +38,7 @@
     first: qcSetBatch.value, 
     after: "",
     text: "", 
-    sortBy: ["uid"],
+    sortBy: ["-uid"],
     filterAction: false
   });
   sampleStore.fetchQCSets(qcSetParams);
@@ -63,13 +55,30 @@
     return [...s];
   });
 
-  function addQCRequest(): void {
-    withClientMutation(ADD_QC_REQUEST, { samples: form.samples }, "createQcSet")
-    .then((result) => sampleStore.addQCSet(result));
-  }
+
+  // QC Request
+  let showModal = ref<boolean>(false);
+  let formAction = ref<boolean>(true);
+  let form = reactive({ 
+    departmentUid: undefined,
+    samples: [] as IQCRequest[]
+  });
+  // initialise with 1 set
+  onMounted(() => addQCSet())
 
   function addQCSet(): void {
-    form.samples?.push({} as IQCRequest);
+    form.samples?.push({
+      qcTemplateUid: undefined,
+      qcLevels: [],
+      analysisProfiles: [],
+      analysisServices: []
+    });
+  }
+
+  function addQCRequest(): void {
+    console.log(form)
+    withClientMutation(ADD_QC_REQUEST, { samples: form.samples }, "createQcSet")
+    .then((result) => sampleStore.addQCSets(result?.qcSets ));
   }
 
   function removeQCSet(index: number): void {
@@ -156,16 +165,16 @@
   </div>
   <hr>
 
-  <!-- <section class="my-4 flex sm:flex-row flex-col">
+  <section class="my-4 flex sm:flex-row flex-col">
         <div class="flex flex-row mb-1 sm:mb-0">
             <div class="relative">
                 <select
                 class="appearance-none h-full rounded-l-sm border block  w-full bg-white border-gray-400 text-gray-700 py-2 px-4 pr-8 leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
                    <option value="">All</option>
-                    <option value="pending">Pending</option>
-                    <option value="resulted">Resulted</option>
-                    <option value="to_be_verified">To be Verified</option>
-                    <option value="verified">Verified</option>
+                    <option value="received">Received</option>
+                    <option value="awaiting">Awaiting</option>
+                    <option value="approved">Approved</option>
+                    <option value="cancelled">Cancelled</option>
                 </select>
                 <div
                     class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
@@ -184,14 +193,13 @@
                 </svg>
             </span>
             <input placeholder="Search ..."
-                
-                class="appearance-none rounded-r-sm rounded-l-sm sm:rounded-l-none border border-gray-400 border-b block pl-8 pr-6 py-2 w-full bg-white text-sm placeholder-gray-400 text-gray-700 focus:bg-white focus:placeholder-gray-600 focus:text-gray-700 focus:outline-none" />
+              class="appearance-none rounded-r-sm rounded-l-sm sm:rounded-l-none border border-gray-400 border-b block pl-8 pr-6 py-2 w-full bg-white text-sm placeholder-gray-400 text-gray-700 focus:bg-white focus:placeholder-gray-600 focus:text-gray-700 focus:outline-none" />
       </div>
       <button
         class="px-2 py-1 ml-2 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none">
         Filter ...</button>
       
-    </section> -->
+    </section>
 
     <section class="overflow-x-auto mt-4">
         <div class="align-middle inline-block min-w-full shadow overflow-hidden bg-white shadow-dashboard px-2 pt-1 rounded-bl-lg rounded-br-lg">
@@ -322,7 +330,7 @@
                                 class="form-input mt-1 block w-full">
                                   <option value=""></option>
                                   <option  
-                                  v-for="(template, index) in qcTemplates"
+                                  v-for="template in qcTemplates"
                                   :key="template.uid"
                                   :value="template.uid" >{{ template.name }}</option>
                               </select>
@@ -334,7 +342,7 @@
                                 class="form-input mt-1 block w-full" multiple>
                                   <option value=""></option>
                                   <option  
-                                  v-for="(level, index) in qcLevels"
+                                  v-for="level in qcLevels"
                                   :key="level.uid"
                                   :value="level.uid" >{{ level.level }}</option>
                               </select>
@@ -346,7 +354,7 @@
                                 class="form-input mt-1 block w-full" multiple>
                                   <option value=""></option>
                                   <option  
-                                  v-for="(profile, index) in analysesProfiles"
+                                  v-for="profile in analysesProfiles"
                                   :key="profile.uid"
                                   :value="profile.uid" >{{ profile.name }}</option>
                               </select>
@@ -358,7 +366,7 @@
                                 class="form-input mt-1 block w-full" multiple>
                                   <option value=""></option>
                                   <option  
-                                  v-for="(service, index) in analysesServices"
+                                  v-for="service in analysesServices"
                                   :key="service.uid"
                                   :value="service.uid" >{{ service.name }}</option>
                               </select>

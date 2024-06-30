@@ -4,7 +4,10 @@ from typing import List, Optional
 
 import strawberry  # noqa
 
-from felicity.api.gql.analysis.types import analysis as a_types
+from felicity.api.gql.analysis.types import (
+    analysis as a_types,
+    results as r_types
+)
 from felicity.api.gql.auth import auth_from_info, verify_user_auth
 from felicity.api.gql.permissions import IsAuthenticated
 from felicity.api.gql.types import OperationError
@@ -31,8 +34,7 @@ class QCSetInputType:
 
 @strawberry.type
 class CreateQCSetData:
-    samples: List[a_types.SampleType]
-    qc_sets: List[a_types.QCSetType]
+    qc_sets: List[r_types.QCSetWithSamples]
 
 
 @strawberry.input
@@ -115,11 +117,11 @@ async def create_QC_set(info, samples: List[QCSetInputType]) -> QCSetResponse:
         for level in qc_levels:
             # create qc_sample
             s_in = schemas.SampleCreate(
-                sampletype_uid=qc_sample_type.uid,
+                sample_type_uid=qc_sample_type.uid,
                 internal_use=True,
                 status=states.sample.RECEIVED,
             )
-            sample: analysis_models.Sample = await analysis_models.Sample.create(s_in)
+            sample = await analysis_models.Sample.create(s_in)
             sample.analyses = analyses
             sample.profiles = profiles
             sample.qc_set_uid = qc_set.uid
@@ -138,9 +140,8 @@ async def create_QC_set(info, samples: List[QCSetInputType]) -> QCSetResponse:
 
             qc_samples.append(sample)
 
-        qc_sets.append(qc_set)
-
-    return CreateQCSetData(samples=qc_samples, qc_sets=qc_sets)
+        qc_sets.append((await analysis_models.QCSet.get(uid=qc_set.uid)))
+    return CreateQCSetData(qc_sets=qc_sets)
 
 
 @strawberry.mutation(permission_classes=[IsAuthenticated])
@@ -230,7 +231,7 @@ async def create_QC_template(info, payload: QCTemplateInputType) -> QCTemplateRe
 
 @strawberry.mutation(permission_classes=[IsAuthenticated])
 async def update_QC_template(
-    info, uid: str, payload: QCTemplateInputType
+        info, uid: str, payload: QCTemplateInputType
 ) -> QCTemplateResponse:
     is_authenticated, felicity_user = await auth_from_info(info)
     verify_user_auth(

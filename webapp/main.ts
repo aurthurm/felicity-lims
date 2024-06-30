@@ -12,7 +12,10 @@ import {
     faCopy, faCodeBranch, faMoneyBill, faEdit, faLeftRight, faSort, faTimes, faEllipsis, faBarcode, faCheckCircle, faTimesCircle, faThumbsDown, faThumbsUp, faQuestion, faDownload, faBan,
     faCartShopping,
     faInfo,
-    faInfoCircle
+    faInfoCircle,
+    faAnchor,
+    faThList,
+    faTh
 } from '@fortawesome/free-solid-svg-icons';
 import LayoutDashboard from '@/views/layouts/LayoutDashboard.vue';
 import LayoutEmpty from '@/views/layouts/LayoutEmpty.vue';
@@ -36,7 +39,7 @@ const icons = [
     faFlag, faFileMedical, faUsers, faCaravan, faLaptopMedical, faFill, faMicroscope, faGripHorizontal,
     faCopy, faCodeBranch, faMoneyBill, faEdit, faLeftRight, faSort, faTimes, faEllipsis, faBarcode,
     faCheckCircle, faTimesCircle, faThumbsDown, faThumbsUp, faQuestion, faDownload, faBan, faCartShopping,
-    faInfoCircle
+    faInfoCircle, faAnchor, faThList, faTh
 ]
 library.add(...icons);
 
