@@ -2,6 +2,8 @@
 This file is part of Felicity LIMS Software
 """
 
+QC_SAMPLE = {"name": "QC Sample", "description": "QC Sample", "abbr": "QCS"}
+
 
 class States:
     class Sample:

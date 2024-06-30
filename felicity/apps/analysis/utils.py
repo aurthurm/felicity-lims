@@ -5,7 +5,7 @@ from typing import List, NoReturn
 from sqlalchemy import or_
 
 from felicity.apps.analysis import schemas
-from felicity.apps.analysis.conf import states
+from felicity.apps.analysis.conf import states, QC_SAMPLE
 from felicity.apps.analysis.models.analysis import (Analysis, Profile,
                                                     SampleType)
 from felicity.apps.analysis.models.results import (AnalysisResult,
@@ -34,11 +34,9 @@ streamer = FelicityStreamer()
 
 
 async def get_qc_sample_type() -> SampleType:
-    st = await SampleType.get(name="QC Sample")
+    st = await SampleType.get(name=QC_SAMPLE.get("name"))
     if not st:
-        st_in = schemas.SampleTypeCreate(
-            name="QC Sample", description="QC Sample", abbr="QCS"
-        )
+        st_in = schemas.SampleTypeCreate(**QC_SAMPLE)
         st = await SampleType.create(st_in)
     return st
 

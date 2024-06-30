@@ -122,7 +122,7 @@ async def populate_worksheet_plate(job_uid: str):
         samples = samples[: len(empty_positions)]
 
         for key in list(range(len(samples))):
-            await samples[key].assign(ws.uid, empty_positions[key], ws.instrument_uid)
+            await samples[key].assign(ws.uid, empty_positions[key], None)
 
     time.sleep(1)
 
@@ -151,7 +151,7 @@ def get_sample_position(reserved, level_uid) -> int:
         k for k, v in reserved.items() if v.get("level_uid", 0) == level_uid
     ]
 
-    return matching_keys[0] if matching_keys else 0
+    return int(matching_keys[0]) if matching_keys else 0
 
 
 async def setup_ws_quality_control(ws: models.WorkSheet):
@@ -206,7 +206,7 @@ async def setup_ws_quality_control(ws: models.WorkSheet):
                 a_result_schema = AnalysisResultCreate(**a_result_in)
                 ar: AnalysisResult = await AnalysisResult.create(a_result_schema)
                 position = get_sample_position(reserved_pos, level.uid)
-                await ar.assign(ws.uid, position, ws.instrument_uid)
+                await ar.assign(ws.uid, position, None)
 
 
 async def setup_ws_quality_control_manually(ws: models.WorkSheet, qc_template_uid):
@@ -277,7 +277,7 @@ async def setup_ws_quality_control_manually(ws: models.WorkSheet, qc_template_ui
                 a_result_schema = AnalysisResultCreate(**a_result_in)
                 ar: AnalysisResult = await AnalysisResult.create(a_result_schema)
                 position = get_sample_position(reserved_pos, level.uid)
-                await ar.assign(ws.uid, position, ws.instrument_uid)
+                await ar.assign(ws.uid, position, None)
 
 
 async def populate_worksheet_plate_manually(job_uid: str):
@@ -351,7 +351,7 @@ async def populate_worksheet_plate_manually(job_uid: str):
                 # skip reserved ?qc positions
                 position += 1
 
-            await sample.assign(ws.uid, position, ws.instrument_uid)
+            await sample.assign(ws.uid, position, None)
             position += 1
 
     else:  # populate worksheet using an empty position filling strategy if not empty
@@ -385,7 +385,7 @@ async def populate_worksheet_plate_manually(job_uid: str):
         samples = samples[: len(empty_positions)]
 
         for key in list(range(len(samples))):
-            await samples[key].assign(ws.uid, empty_positions[key], ws.instrument_uid)
+            await samples[key].assign(ws.uid, empty_positions[key], None)
 
     time.sleep(1)
 

@@ -10,6 +10,7 @@ from pdf2image import convert_from_bytes
 from felicity.api.gql.impress.types import ReportImpressType
 from felicity.api.gql.permissions import IsAuthenticated
 from felicity.api.gql.types import BytesScalar
+from felicity.apps.analysis.conf import QC_SAMPLE
 from felicity.apps.client import Client
 from felicity.apps.impress.barcode.schema import BarCode, BarCodeMeta
 from felicity.apps.impress.barcode.utils import impress_barcodes
@@ -89,22 +90,30 @@ class ReportImpressQuery:
         async def _client_name(uid: str) -> str:
             return (await Client.get(uid=uid)).name
 
-        barcode_metas = [
-            BarCode(
+        barcode_metas = []
+        for _s in samples:
+            barcode = BarCode(
                 barcode=_s.sample_id,
-                metadata=[
+                metadata=[BarCodeMeta(label="Sample Type", value=_s.sample_type.name)]
+            )
+            if _s.sample_type.name == QC_SAMPLE.get("name"):
+                barcode.metadata.append(
+                    BarCodeMeta(label="QC Level", value=_s.qc_level.level),
+                )
+            else:
+                barcode.metadata.append(
                     BarCodeMeta(
                         label="CRID", value=_s.analysis_request.client_request_id
-                    ),
-                    BarCodeMeta(label="Sample Type", value=_s.sample_type.name),
+                    )
+                )
+                barcode.metadata.append(
                     BarCodeMeta(
                         label="Client",
                         value=_s.analysis_request.client.name,  # await _client_name(_s.analysis_request.client_uid)
-                    ),
-                ],
-            )
-            for _s in samples
-        ]
+
+                )
+            barcode_metas.append(barcode)
+
         pdf_bytes = await impress_barcodes(barcode_metas)
         image_bytes = convert_from_bytes(pdf_file=pdf_bytes)
         return_bytes = []
