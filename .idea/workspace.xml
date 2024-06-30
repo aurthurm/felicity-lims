@@ -5,9 +5,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9f590b69-f929-45a1-8512-12ed6efbf028" name="Changes" comment="Added Invetory starter">
-      <change afterPath="$PROJECT_DIR$/felicity/apps/worksheet/workflow/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/felicity/apps/worksheet/workflow/worksheet.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/apps/analysis/workflow/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/workflow/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/apps/analysis/workflow/analysis_result.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/workflow/analysis_result.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/apps/analysis/workflow/qcset.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/workflow/qcset.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/apps/analysis/workflow/sample.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/workflow/sample.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/apps/worksheet/workflow/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/apps/worksheet/workflow/worksheet.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/workflow/worksheet.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -68,11 +72,11 @@
       <recent name="$PROJECT_DIR$/felicity/api/rest/api_v1/endpoints" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/felicity/apps/workflow" />
       <recent name="$PROJECT_DIR$/felicity/version" />
       <recent name="$PROJECT_DIR$/felicity/lims" />
       <recent name="$PROJECT_DIR$/deploy/tracing" />
       <recent name="$PROJECT_DIR$/felicity/apps/impress/shipment" />
-      <recent name="$PROJECT_DIR$/felicity/apps/impress" />
     </key>
   </component>
   <component name="RunManager" selected="Python tests.pytest for test_user.test_create_user">
