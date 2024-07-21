@@ -1,0 +1,470 @@
+from sqlalchemy import (
+    Boolean,
+    Column,
+    DateTime,
+    Float,
+    ForeignKey,
+    Integer,
+    String,
+    Table,
+)
+from sqlalchemy.orm import relationship
+
+from infrastructure.database import Auditable, BaseAuditDBModel, DBModel, BaseMPTT
+from infrastructure.database.analysis.entities.quality_control import QCLevel, QCSet
+from infrastructure.database.client import entities as ct_entities
+from infrastructure.database.patient import entities as pt_entities
+from infrastructure.database.user.entities import User
+
+
+class CodingStandard(BaseAuditDBModel):
+    """conding standars e.g LOINC"""
+
+    __tablename__ = "coding_standard"
+
+    name = Column(String, nullable=False)
+    description = Column(String, nullable=False)
+
+
+class SampleType(BaseAuditDBModel):
+    """SampleType"""
+
+    __tablename__ = "sample_type"
+
+    name = Column(String, nullable=False)
+    description = Column(String, nullable=False)
+    active = Column(Boolean(), default=False)
+    internal_use = Column(Boolean(), default=False)  # e.g QC Sample
+    abbr = Column(String, nullable=False)
+
+
+class SampleTypeCoding(BaseAuditDBModel):
+    """SampleTypeCoding"""
+
+    __tablename__ = "sample_type_coding"
+
+    sample_type_uid = Column(String, ForeignKey("sample_type.uid"), nullable=False)
+    sample_type = relationship("SampleType", lazy="selectin")
+    coding_standard_uid = Column(
+        String, ForeignKey("coding_standard.uid"), nullable=True
+    )
+    coding_standard = relationship("CodingStandard", lazy="selectin")
+    name = Column(String, nullable=True)
+    description = Column(String, nullable=True)
+    code = Column(String, nullable=False)
+
+
+"""
+ Many to Many Link between SampleType and Profile
+"""
+profile_sample_type = Table(
+    "profile_sample_type",
+    DBModel.metadata,
+    Column("sample_type_uid", ForeignKey("sample_type.uid"), primary_key=True),
+    Column("profile_uid", ForeignKey("profile.uid"), primary_key=True),
+)
+
+"""
+Many to Many Link between Analysis and SampleType
+"""
+analysis_sample_type = Table(
+    "analysis_sample_type",
+    DBModel.metadata,
+    Column("sample_type_uid", ForeignKey("sample_type.uid"), primary_key=True),
+    Column("analysis_uid", ForeignKey("analysis.uid"), primary_key=True),
+)
+
+"""
+ Many to Many Link between Analysis and Profile
+    Offers multi-profiles flexibility per analysis
+    A rare scenario worth supporting :)
+"""
+analysis_profile = Table(
+    "analysis_profile",
+    DBModel.metadata,
+    Column("analysis_uid", ForeignKey("analysis.uid"), primary_key=True),
+    Column("profile_uid", ForeignKey("profile.uid"), primary_key=True),
+)
+
+
+class AnalysisCategory(BaseAuditDBModel):
+    """Categorise Analysis"""
+
+    __tablename__ = "analysis_category"
+
+    name = Column(String, nullable=False)
+    description = Column(String, nullable=False)
+    department_uid = Column(String, ForeignKey("department.uid"), nullable=True)
+    department = relationship("Department", lazy="selectin")
+    active = Column(Boolean(), default=False)
+
+
+class Profile(BaseAuditDBModel):
+    """Grouped Analysis e.g FBC, U&E's, MCS ..."""
+
+    __tablename__ = "profile"
+
+    name = Column(String, nullable=False)
+    description = Column(String, nullable=False)
+    keyword = Column(String, nullable=True, unique=True)
+    tat_length_minutes = Column(Integer, nullable=True)
+    active = Column(Boolean(), default=False)
+    analyses = relationship(
+        "Analysis",
+        secondary=analysis_profile,
+        back_populates="profiles",
+        lazy="selectin",
+    )
+    sample_types = relationship(
+        "SampleType", secondary=profile_sample_type, backref="profiles", lazy="selectin"
+    )
+    department_uid = Column(String, ForeignKey("department.uid"), nullable=True)
+    department = relationship("Department", lazy="selectin")
+
+
+class ProfileCoding(BaseAuditDBModel):
+    """ProfileCoding"""
+
+    __tablename__ = "profile_coding"
+
+    profile_uid = Column(String, ForeignKey("profile.uid"), nullable=True)
+    profile = relationship("Profile", lazy="selectin")
+    coding_standard_uid = Column(
+        String, ForeignKey("coding_standard.uid"), nullable=True
+    )
+    coding_standard = relationship("CodingStandard", lazy="selectin")
+    name = Column(String, nullable=True)
+    description = Column(String, nullable=True)
+    code = Column(String, nullable=False)
+
+
+"""
+ Many to Many Link between Analyses and Method
+"""
+analysis_method = Table(
+    "analysis_method",
+    DBModel.metadata,
+    Column("analysis_uid", ForeignKey("analysis.uid"), primary_key=True),
+    Column("method_uid", ForeignKey("method.uid"), primary_key=True),
+)
+
+"""
+ Many to Many Link between Analyses and Intruments
+"""
+analysis_instrument = Table(
+    "analysis_instrument",
+    DBModel.metadata,
+    Column("analysis_uid", ForeignKey("analysis.uid"), primary_key=True),
+    Column("instrument_uid", ForeignKey("instrument.uid"), primary_key=True),
+)
+
+
+class Analysis(BaseAuditDBModel):
+    """Analysis Test/Service"""
+
+    __tablename__ = "analysis"
+
+    name = Column(String, nullable=False)
+    description = Column(String, nullable=False)
+    keyword = Column(String, nullable=False, unique=True)
+    # default unit: can be overridden by specification unit
+    unit_uid = Column(String, ForeignKey("unit.uid"), nullable=True)
+    unit = relationship("Unit", lazy="selectin")
+    profiles = relationship(
+        "Profile",
+        secondary=analysis_profile,
+        back_populates="analyses",
+        lazy="selectin",
+    )
+    sample_types = relationship(
+        "SampleType",
+        secondary=analysis_sample_type,
+        backref="analyses",
+        lazy="selectin",
+    )
+    instruments = relationship(
+        "Instrument", secondary=analysis_instrument, backref="analyses", lazy="selectin"
+    )
+    methods = relationship(
+        "Method", secondary=analysis_method, backref="analyses", lazy="selectin"
+    )
+    interims = relationship("AnalysisInterim", backref="analysis", lazy="selectin")
+    correction_factors = relationship(
+        "AnalysisCorrectionFactor", backref="analysis", lazy="selectin"
+    )
+    specifications = relationship(
+        "AnalysisSpecification", backref="analysis", lazy="selectin"
+    )
+    detection_limits = relationship(
+        "AnalysisDetectionLimit", backref="analysis", lazy="selectin"
+    )
+    uncertainties = relationship(
+        "AnalysisUncertainty", backref="analysis", lazy="selectin"
+    )
+    result_options = relationship("ResultOption", backref="analyses", lazy="selectin")
+    category_uid = Column(String, ForeignKey("analysis_category.uid"))
+    category = relationship(AnalysisCategory, backref="analyses", lazy="selectin")
+    tat_length_minutes = Column(Integer, nullable=True)  # to calculate TAT
+    sort_key = Column(Integer, nullable=True)
+    internal_use = Column(Boolean(), default=False)  # e.g QC Services
+    department_uid = Column(String, ForeignKey("department.uid"), nullable=True)
+    department = relationship("Department", lazy="selectin")
+    # precision -> decimal places to report
+    precision = Column(Integer, nullable=True)
+    required_verifications = Column(Integer, nullable=True, default=1)
+    self_verification = Column(Boolean(), default=False)
+    hidden = Column(Boolean(), default=False)
+    active = Column(Boolean(), default=False)
+
+
+class AnalysisCoding(BaseAuditDBModel):
+    """AnalysisCoding"""
+
+    __tablename__ = "analysis_coding"
+
+    analysis_uid = Column(String, ForeignKey("analysis.uid"), nullable=True)
+    analysis = relationship("Analysis", lazy="selectin")
+    coding_standard_uid = Column(
+        String, ForeignKey("coding_standard.uid"), nullable=True
+    )
+    coding_standard = relationship("CodingStandard", lazy="selectin")
+    name = Column(String, nullable=True)
+    description = Column(String, nullable=True)
+    code = Column(String, nullable=False)
+
+
+class AnalysisInterim(BaseAuditDBModel):
+    """Analysis Interim Result Field"""
+
+    __tablename__ = "analysis_interim"
+
+    key = Column(Integer, nullable=False)
+    value = Column(String, nullable=False)
+    analysis_uid = Column(String, ForeignKey("analysis.uid"), nullable=True)
+    instrument_uid = Column(String, ForeignKey("instrument.uid"), nullable=True)
+    instrument = relationship("Instrument")
+
+
+class AnalysisCorrectionFactor(BaseAuditDBModel):
+    """Analysis Correction Factor"""
+
+    __tablename__ = "analysis_correction_factor"
+
+    factor = Column(Float, nullable=False)
+    analysis_uid = Column(String, ForeignKey("analysis.uid"), nullable=True)
+    instrument_uid = Column(String, ForeignKey("instrument.uid"), nullable=True)
+    method_uid = Column(String, ForeignKey("method.uid"), nullable=True)
+
+
+class AnalysisDetectionLimit(BaseAuditDBModel):
+    """Analysis Detection Limit"""
+
+    __tablename__ = "analysis_detection_limit"
+
+    lower_limit = Column(Float, nullable=False)
+    upper_limit = Column(Float, nullable=False)
+    analysis_uid = Column(String, ForeignKey("analysis.uid"), nullable=True)
+    instrument_uid = Column(String, ForeignKey("instrument.uid"), nullable=True)
+    method_uid = Column(String, ForeignKey("method.uid"), nullable=True)
+
+
+class AnalysisUncertainty(BaseAuditDBModel):
+    """Analysis Measurment Uncertainty
+    If value is within the the range min.max then result becomes a range (result +/- value)
+    """
+
+    __tablename__ = "analysis_uncertainty"
+
+    min = Column(Float, nullable=False)
+    max = Column(Float, nullable=False)
+    value = Column(Float, nullable=False)
+    analysis_uid = Column(String, ForeignKey("analysis.uid"), nullable=True)
+    instrument_uid = Column(String, ForeignKey("instrument.uid"), nullable=True)
+    method_uid = Column(String, ForeignKey("method.uid"), nullable=True)
+
+
+class AnalysisSpecification(BaseAuditDBModel):
+    """Analysis Specification Ranges"""
+
+    __tablename__ = "analysis_specification"
+
+    analysis_uid = Column(String, ForeignKey("analysis.uid"), nullable=True)
+    unit_uid = Column(String, ForeignKey("unit.uid"), nullable=True)
+    unit = relationship("Unit", lazy="selectin")
+    # Normal Range
+    min = Column(Float, nullable=True)
+    max = Column(Float, nullable=True)
+    # Below Normal Range: Raise Alarm
+    min_warn = Column(Float, nullable=True)
+    # Above Normal Range: Raise Alarm
+    max_warn = Column(Float, nullable=True)
+    # Result Value if less than min_warn
+    min_report = Column(String, nullable=True)
+    # Result Value if more than max_warn
+    max_report = Column(String, nullable=True)
+    # If result is textual
+    # comma seperated warn results
+    warn_values = Column(String, nullable=True)
+    # Result Value if result in warn_values
+    warn_report = Column(String, nullable=True)
+    #
+    # dependencies
+    method_uid = Column(String, ForeignKey("method.uid"), nullable=True)
+    gender = Column(String, nullable=True)
+    age_min = Column(Integer, nullable=True)
+    age_max = Column(Integer, nullable=True)
+
+
+class ResultOption(BaseAuditDBModel):
+    """Result Choices"""
+
+    __tablename__ = "result_option"
+
+    option_key = Column(Integer, nullable=False)
+    value = Column(String, nullable=False)
+    analysis_uid = Column(String, ForeignKey("analysis.uid"))
+
+
+class AnalysisRequest(BaseAuditDBModel):
+    """AnalysisRequest a.k.a Laboratory Request"""
+
+    __tablename__ = "analysis_request"
+
+    patient_uid = Column(String, ForeignKey("patient.uid"))
+    patient = relationship(
+        pt_entities.Patient, backref="analysis_requests", lazy="selectin"
+    )
+    client_uid = Column(String, ForeignKey("client.uid"))
+    client = relationship(
+        ct_entities.Client, backref="analysis_requests", lazy="selectin"
+    )
+    samples = relationship("Sample", back_populates="analysis_request", lazy="selectin")
+    request_id = Column(String, index=True, unique=True, nullable=True)
+    client_request_id = Column(String, unique=True, nullable=False)
+    internal_use = Column(Boolean(), default=False)  # e.g Test Requests
+
+
+"""
+Many to Many Link between Sample and Profile
+"""
+sample_profile = Table(
+    "sample_profile",
+    DBModel.metadata,
+    Column("sample_uid", ForeignKey("sample.uid"), primary_key=True),
+    Column("profile_uid", ForeignKey("profile.uid"), primary_key=True),
+)
+
+"""
+Many to Many Link between Sample and Analysis
+"""
+sample_analysis = Table(
+    "sample_analysis",
+    DBModel.metadata,
+    Column("sample_uid", ForeignKey("sample.uid"), primary_key=True),
+    Column("analysis_uid", ForeignKey("analysis.uid"), primary_key=True),
+)
+
+"""
+Many to Many Link between Sample and Rejection Reason
+"""
+sample_rejection_reason = Table(
+    "sample_rejection_reason",
+    DBModel.metadata,
+    Column("sample_uid", ForeignKey("sample.uid"), primary_key=True),
+    Column(
+        "rejection_reason_uid", ForeignKey("rejection_reason.uid"), primary_key=True
+    ),
+)
+
+
+class RejectionReason(BaseAuditDBModel):
+    """Rejection Reason"""
+
+    __tablename__ = "rejection_reason"
+
+    reason = Column(String, nullable=False)
+
+
+class Sample(Auditable, BaseMPTT):
+    """Sample"""
+
+    __tablename__ = "sample"
+
+    analysis_request_uid = Column(
+        String, ForeignKey("analysis_request.uid"), nullable=True
+    )
+    analysis_request = relationship(
+        "AnalysisRequest", back_populates="samples", lazy="selectin"
+    )
+    sample_type_uid = Column(String, ForeignKey("sample_type.uid"), nullable=False)
+    sample_type = relationship("SampleType", backref="samples", lazy="selectin")
+    sample_id = Column(String, index=True, unique=True, nullable=True)
+    profiles = relationship(
+        Profile, secondary=sample_profile, backref="samples", lazy="selectin"
+    )
+    analyses = relationship(
+        Analysis, secondary=sample_analysis, backref="samples", lazy="selectin"
+    )
+    analysis_results = relationship(
+        "AnalysisResult", back_populates="sample", lazy="selectin"
+    )
+    assigned = Column(Boolean(), default=False)
+    priority = Column(Integer, nullable=False, default=0)
+    status = Column(String, nullable=False)
+    date_collected = Column(DateTime, nullable=True)
+    received_by_uid = Column(String, ForeignKey("user.uid"), nullable=True)
+    received_by = relationship(User, foreign_keys=[received_by_uid], lazy="selectin")
+    date_received = Column(DateTime, nullable=True)
+    submitted_by_uid = Column(String, ForeignKey("user.uid"), nullable=True)
+    submitted_by = relationship(User, foreign_keys=[submitted_by_uid], lazy="selectin")
+    date_submitted = Column(DateTime, nullable=True)
+    verified_by_uid = Column(String, ForeignKey("user.uid"), nullable=True)
+    verified_by = relationship(User, foreign_keys=[verified_by_uid], lazy="selectin")
+    date_verified = Column(DateTime, nullable=True)
+    published_by_uid = Column(String, ForeignKey("user.uid"), nullable=True)
+    published_by = relationship(User, foreign_keys=[published_by_uid], lazy="selectin")
+    date_published = Column(DateTime, nullable=True)
+    printed = Column(Boolean(), default=False)
+    printed_by_uid = Column(String, ForeignKey("user.uid"), nullable=True)
+    printed_by = relationship(User, foreign_keys=[printed_by_uid], lazy="selectin")
+    date_printed = Column(DateTime, nullable=True)
+    invalidated_by_uid = Column(String, ForeignKey("user.uid"), nullable=True)
+    invalidated_by = relationship(
+        User, foreign_keys=[invalidated_by_uid], lazy="selectin"
+    )
+    date_invalidated = Column(DateTime, nullable=True)
+    cancelled_by_uid = Column(String, ForeignKey("user.uid"), nullable=True)
+    cancelled_by = relationship(
+        "User", foreign_keys=[cancelled_by_uid], lazy="selectin"
+    )
+    date_cancelled = Column(DateTime, nullable=True)
+    rejection_reasons = relationship(
+        RejectionReason, secondary=sample_rejection_reason, lazy="selectin"
+    )
+    internal_use = Column(Boolean(), default=False)
+    due_date = Column(DateTime, nullable=True)
+    # QC Samples
+    qc_set_uid = Column(String, ForeignKey("qc_set.uid"), nullable=True)
+    qc_set = relationship(QCSet, back_populates="samples", lazy="selectin")
+    qc_level_uid = Column(String, ForeignKey("qc_level.uid"), nullable=True)
+    qc_level = relationship(QCLevel, backref="qc_samples", lazy="selectin")
+    # storage -> bio bank
+    stored_by_uid = Column(String, ForeignKey("user.uid"), nullable=True)
+    stored_by = relationship("User", foreign_keys=[stored_by_uid], lazy="selectin")
+    date_stored = Column(DateTime, nullable=True)
+    date_retrieved_from_storage = Column(DateTime, nullable=True)
+    storage_container_uid = Column(
+        String, ForeignKey("storage_container.uid"), nullable=True
+    )
+    storage_container = relationship(
+        "StorageContainer", back_populates="samples", lazy="selectin"
+    )
+    storage_slot = Column(String, nullable=True)
+    storage_slot_index = Column(Integer, nullable=True)
+
+
+# @event.listens_for(Sample, "after_update")
+# def stream_sample_verified_entities(mapper, connection, target): # noqa
+#     logger.log("stream_sample_verified inn")
+#     logger.log(target)
+#     print("hurray inn")
