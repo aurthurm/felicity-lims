@@ -5,9 +5,9 @@ from domain.storage.ports.repository import (
     IStorageContainerRepository,
 )
 
-from infrastructure.database.repository.base import BaseRepository
+from felicity.apps.repository.base import BaseRepository
 
-from infrastructure.database.storage.entities import (
+from felicity.apps.storage.entities import (
     StoreRoom,
     StorageLocation,
     StorageSection,

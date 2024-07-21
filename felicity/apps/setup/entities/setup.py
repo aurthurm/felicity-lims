@@ -1,11 +1,11 @@
 from sqlalchemy import Boolean, Column, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 
-from infrastructure.database import BaseAuditDBModel
-from infrastructure.database.user.entities import User
+from felicity.apps.abstract import AuditUser
+from felicity.apps.user.entities import User
 
 
-class Laboratory(BaseAuditDBModel):
+class Laboratory(AuditUser):
     __tablename__ = "laboratory"
 
     setup_name = Column(
@@ -25,7 +25,7 @@ class Laboratory(BaseAuditDBModel):
     logo = Column(String, nullable=True)
 
 
-class LaboratorySetting(BaseAuditDBModel):
+class LaboratorySetting(AuditUser):
     __tablename__ = "laboratory_setting"
 
     laboratory_uid = Column(String, ForeignKey("laboratory.uid"), nullable=True)
@@ -45,7 +45,7 @@ class LaboratorySetting(BaseAuditDBModel):
     default_tat_minutes = Column(Integer, nullable=True, default=1440)
 
 
-class Supplier(BaseAuditDBModel):
+class Supplier(AuditUser):
     """Supplier"""
 
     __tablename__ = "supplier"
@@ -54,7 +54,7 @@ class Supplier(BaseAuditDBModel):
     description = Column(String, nullable=True)
 
 
-class Manufacturer(BaseAuditDBModel):
+class Manufacturer(AuditUser):
     """Manufacturer"""
 
     __tablename__ = "manufacturer"
@@ -63,7 +63,7 @@ class Manufacturer(BaseAuditDBModel):
     description = Column(String, nullable=True)
 
 
-class Department(BaseAuditDBModel):
+class Department(AuditUser):
     """Departrments/Sections"""
 
     __tablename__ = "department"
@@ -73,7 +73,7 @@ class Department(BaseAuditDBModel):
     code = Column(String, nullable=True)
 
 
-class Unit(BaseAuditDBModel):
+class Unit(AuditUser):
     """Unit for analyte measurement"""
 
     __tablename__ = "unit"

@@ -6,7 +6,7 @@ import strawberry  # noqa
 from felicity.api.gql.billing import types
 from felicity.api.gql.permissions import IsAuthenticated
 from felicity.api.gql.types import BytesScalar, PageInfo
-from felicity.apps.billing import models
+from felicity.apps.billing import entities
 from felicity.apps.impress.invoicing.utils import impress_invoice
 from felicity.utils import has_value_or_is_truthy
 
@@ -51,7 +51,7 @@ class BillingQuery:
         if has_value_or_is_truthy(partial):
             filters.append({"partial": partial})
 
-        page = await models.TestBill.paginate_with_cursors(
+        page = await entities.TestBill.paginate_with_cursors(
             page_size=page_size,
             after_cursor=after_cursor,
             before_cursor=before_cursor,
@@ -70,79 +70,79 @@ class BillingQuery:
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def bill_by_uid(self, info, uid: str) -> Optional[types.TestBillType]:
-        return await models.TestBill.get(uid=uid)
+        return await entities.TestBill.get(uid=uid)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def bills_for_patient(
         self, info, patient_uid: str
     ) -> Optional[list[types.TestBillType]]:
-        bills = await models.TestBill.get_all(patient_uid=patient_uid)
+        bills = await entities.TestBill.get_all(patient_uid=patient_uid)
         return sorted(bills, key=lambda b: b.uid, reverse=True)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def bills_for_client(
         self, info, client_uid: str
     ) -> Optional[list[types.TestBillType]]:
-        return await models.TestBill.get_all(client_uid=client_uid)
+        return await entities.TestBill.get_all(client_uid=client_uid)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def bill_transactions(
         self, info, bill_uid: str
     ) -> Optional[list[types.TestBillTransactionType]]:
-        transactions = await models.TestBillTransaction.get_all(test_bill_uid=bill_uid)
+        transactions = await entities.TestBillTransaction.get_all(test_bill_uid=bill_uid)
         return sorted(transactions, key=lambda t: t.uid, reverse=True)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def bill_invoices(
         self, info, bill_uid: str
     ) -> Optional[list[types.TestBillInvoiceType]]:
-        return await models.TestBillInvoice.get(test_bill_uid=bill_uid)
+        return await entities.TestBillInvoice.get(test_bill_uid=bill_uid)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def bill_invoice(
         self, info, invoice_uid: str
     ) -> Optional[types.TestBillInvoiceType]:
-        return await models.TestBillInvoice.get(uid=invoice_uid)
+        return await entities.TestBillInvoice.get(uid=invoice_uid)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def bill_invoice_create(self, info, bill_uid: str) -> BytesScalar | None:
-        bill = await models.TestBill.get(uid=bill_uid)
+        bill = await entities.TestBill.get(uid=bill_uid)
         return await impress_invoice(bill)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def price_for_profile(
         self, info, profile_uid: str
     ) -> Optional[types.ProfilePriceType]:
-        return await models.ProfilePrice.get(profile_uid=profile_uid)
+        return await entities.ProfilePrice.get(profile_uid=profile_uid)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def price_for_analysis(
         self, info, analysis_uid: str
     ) -> Optional[types.AnalysisPriceType]:
-        return await models.AnalysisPrice.get(analysis_uid=analysis_uid)
+        return await entities.AnalysisPrice.get(analysis_uid=analysis_uid)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def discount_for_profile(
         self, info, profile_uid: str
     ) -> Optional[types.ProfileDiscountType]:
-        return await models.ProfileDiscount.get(profile_uid=profile_uid)
+        return await entities.ProfileDiscount.get(profile_uid=profile_uid)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def discount_for_analysis(
         self, info, analysis_uid: str
     ) -> Optional[types.AnalysisDiscountType]:
-        return await models.AnalysisDiscount.get(analysis_uid=analysis_uid)
+        return await entities.AnalysisDiscount.get(analysis_uid=analysis_uid)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def voucher_all(self, info) -> Optional[list[types.VoucherType]]:
-        return await models.Voucher.all_async()
+        return await entities.Voucher.all_async()
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def voucher_by_uid(self, info, uid: str) -> Optional[types.VoucherType]:
-        return await models.Voucher.get(uid=uid)
+        return await entities.Voucher.get(uid=uid)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def voucher_codes(
         self, info, voucher_uid: str
     ) -> Optional[list[types.VoucherCodeType]]:
-        return await models.VoucherCode.get_all(voucher_uid=voucher_uid)
+        return await entities.VoucherCode.get_all(voucher_uid=voucher_uid)

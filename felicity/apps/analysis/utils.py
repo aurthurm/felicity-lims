@@ -12,7 +12,7 @@ from felicity.apps.analysis.models.results import (AnalysisResult,
                                                    ResultMutation,
                                                    result_verification)
 from felicity.apps.billing.config import DiscountType, DiscountValueType
-from felicity.apps.billing.models import (AnalysisDiscount, AnalysisPrice,
+from felicity.apps.billing.entities import (AnalysisDiscount, AnalysisPrice,
                                           ProfileDiscount, ProfilePrice)
 from felicity.apps.billing.schemas import (AnalysisDiscountCreate,
                                            AnalysisPriceCreate,

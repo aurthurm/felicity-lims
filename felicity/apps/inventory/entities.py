@@ -1,23 +1,39 @@
 from sqlalchemy import Column, DateTime, Float, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 
-from infrastructure.database import BaseAuditDBModel
+from felicity.apps.abstract.audit import AuditUser
 
 
-class StockItem(BaseAuditDBModel):
+class StockItem(AuditUser):
     """StockItem Standardization"""
 
     __tablename__ = "stock_item"
 
     name = Column(String, nullable=False)
     description = Column(String, nullable=False)
-    department_uid = Column(String, ForeignKey("department.uid"), nullable=True)
-    department = relationship("Department", lazy="selectin")
+    category_uid = Column(String, ForeignKey("stock_category.uid"), nullable=True)
+    category = relationship("StockCategory", lazy="selectin")
+    hazard_uid = Column(String, ForeignKey("hazard.uid"), nullable=True)
+    hazard = relationship("Hazard", lazy="selectin")
     minimum_level = Column(Integer, nullable=True)
     maximum_level = Column(Integer, nullable=True)
 
 
-class StockCategory(BaseAuditDBModel):
+
+class StockItemVariant(AuditUser):
+    """StockItem Variant as the StockProduct"""
+
+    __tablename__ = "stock_item_variant"
+
+    name = Column(String, nullable=False)
+    description = Column(String, nullable=False)
+    stock_item_uid = Column(String, ForeignKey("stock_item.uid"), nullable=True)
+    stock_item = relationship("StockItem", lazy="selectin")
+    minimum_level = Column(Integer, nullable=True)
+    maximum_level = Column(Integer, nullable=True)
+
+
+class StockCategory(AuditUser):
     """StockCategory
     Consumable, Reagents, Durables
     """
@@ -27,8 +43,7 @@ class StockCategory(BaseAuditDBModel):
     name = Column(String, nullable=False)
     description = Column(String, nullable=False)
 
-
-class Hazard(BaseAuditDBModel):
+class Hazard(AuditUser):
     """Hazard"""
 
     __tablename__ = "hazard"
@@ -37,51 +52,36 @@ class Hazard(BaseAuditDBModel):
     description = Column(String, nullable=False)
 
 
-class StockUnit(BaseAuditDBModel):
+class StockUnit(AuditUser):
     __tablename__ = "stock_unit"
 
     name = Column(String, nullable=False)
+    description = Column(String, nullable=True)
+    synonyms = Column(String, nullable=True)
 
 
-class StockPackaging(BaseAuditDBModel):
-    __tablename__ = "stock_packaging"
+class StockLot(AuditUser):
+    __tablename__ = "stock_lot"
 
-    name = Column(String, nullable=False)
-
-
-class StockProduct(BaseAuditDBModel):
-    __tablename__ = "stock_product"
-
-    name = Column(String, nullable=True)
-    stock_item_uid = Column(String, ForeignKey("stock_item.uid"), nullable=False)
-    stock_item = relationship("StockItem", lazy="selectin")
-    department_uid = Column(String, ForeignKey("department.uid"), nullable=True)
-    department = relationship("Department", lazy="selectin")
-    supplier_uid = Column(String, ForeignKey("supplier.uid"), nullable=True)
-    supplier = relationship("Supplier", lazy="selectin")
-    category_uid = Column(String, ForeignKey("stock_category.uid"), nullable=True)
-    category = relationship("StockCategory", lazy="selectin")
-    hazard_uid = Column(String, ForeignKey("hazard.uid"), nullable=True)
-    hazard = relationship("Hazard", lazy="selectin")
-    store_room_uid = Column(String, ForeignKey("store_room.uid"), nullable=True)
-    store_room = relationship("StoreRoom", lazy="selectin")
-    lot_number = Column(String, nullable=True)
-    batch = Column(String, nullable=True)
-    size = Column(Float, nullable=True)
-    unit_uid = Column(String, ForeignKey("stock_unit.uid"), nullable=True)
-    unit = relationship("StockUnit", lazy="selectin")
-    packaging_uid = Column(String, ForeignKey("stock_packaging.uid"), nullable=True)
-    packaging = relationship("StockPackaging", lazy="selectin")
-    price = Column(Float, nullable=True)
-    quantity_received = Column(Integer, nullable=False)
-    remaining = Column(Integer, nullable=True)
-    date_received = Column(DateTime, nullable=False)
-    expiry_date = Column(DateTime, nullable=True)
-    received_by_uid = Column(String, ForeignKey("user.uid"), nullable=True)
-    received_by = relationship("User", foreign_keys=[received_by_uid], lazy="selectin")
+    product_uid = Column(String, ForeignKey("stock_item_variant.uid"), nullable=True)
+    product = relationship("StockItemVariant", lazy="selectin")
+    lot_number = Column(String, nullable=False)
+    expiry_date = Column(DateTime, nullable=False)
+    remarks = Column(String, nullable=True)
 
 
-class StockOrder(BaseAuditDBModel):
+class StockProductInventory(AuditUser):
+    __tablename__ = "stock_product_inventory"
+
+    product_uid = Column(String, ForeignKey("stock_item_variant.uid"), nullable=True)
+    product = relationship("StockItemVariant", lazy="selectin")
+    stock_lot_uid = Column(String, ForeignKey("stock_lot.uid"), nullable=True)
+    stock_lot = relationship("StockLot", lazy="selectin")
+    quantity = Column(Integer, nullable=False)
+    remarks = Column(String, nullable=True)
+
+
+class StockOrder(AuditUser):
     __tablename__ = "stock_order"
 
     order_by_uid = Column(String, ForeignKey("user.uid"), nullable=True)
@@ -91,47 +91,62 @@ class StockOrder(BaseAuditDBModel):
     status = Column(String, nullable=False)
     order_number = Column(String, nullable=False)
     remarks = Column(String, nullable=True)
-    fullfilled_by_uid = Column(String, ForeignKey("user.uid"), nullable=True)
-    fullfilled_by = relationship(
-        "User", foreign_keys=[fullfilled_by_uid], lazy="selectin"
+    fulfilled_by_uid = Column(String, ForeignKey("user.uid"), nullable=True)
+    fulfilled_by = relationship(
+        "User", foreign_keys=[fulfilled_by_uid], lazy="selectin"
     )
 
 
-class StockOrderProduct(BaseAuditDBModel):
+class StockOrderProduct(AuditUser):
     __tablename__ = "stock_order_product"
 
-    product_uid = Column(String, ForeignKey("stock_product.uid"), nullable=True)
-    product = relationship("StockProduct", lazy="selectin")
+    product_uid = Column(String, ForeignKey("stock_item_variant.uid"), nullable=True)
+    product = relationship("StockItemVariant", lazy="selectin")
+    stock_lot_uid = Column(String, ForeignKey("stock_lot.uid"), nullable=True)
+    stock_lot = relationship("StockLot", lazy="selectin")
     order_uid = Column(String, ForeignKey("stock_order.uid"), nullable=True)
     order = relationship("StockOrder", lazy="selectin")
-    price = Column(Float, nullable=False)
     quantity = Column(Integer, nullable=False)
     remarks = Column(String, nullable=True)
 
 
-# transactions are issues
-class StockTransaction(BaseAuditDBModel):
-    __tablename__ = "stock_transaction"
 
-    product_uid = Column(String, ForeignKey("stock_product.uid"), nullable=True)
-    product = relationship("StockProduct", lazy="selectin")
-    issued = Column(Integer, nullable=False)
-    issued_to_uid = Column(String, ForeignKey("user.uid"), nullable=True)
-    issued_to = relationship("User", foreign_keys=[issued_to_uid], lazy="selectin")
-    department_uid = Column(String, ForeignKey("department.uid"), nullable=True)
-    department = relationship("Department", lazy="selectin")
-    date_issued = Column(DateTime, nullable=False)
-    transaction_by_uid = Column(String, ForeignKey("user.uid"), nullable=True)
-    transaction_by = relationship(
-        "User", foreign_keys=[transaction_by_uid], lazy="selectin"
-    )
+class StockReceipt(AuditUser):
+    __tablename__ = "stock_receipt"
+
+    product_uid = Column(String, ForeignKey("stock_item_variant.uid"), nullable=False)
+    product = relationship("StockItemVariant", lazy="selectin")
+    stock_lot_uid = Column(String, ForeignKey("stock_lot.uid"), nullable=True)
+    stock_lot = relationship("StockLot", lazy="selectin")
+    unit_price = Column(Float, nullable=True)
+    total_price = Column(Float, nullable=True)
+    supplier_uid = Column(String, ForeignKey("supplier.uid"), nullable=True)
+    supplier = relationship("Supplier", lazy="selectin")
+    unit_uid = Column(String, ForeignKey("stock_unit.uid"), nullable=True)
+    unit = relationship("StockUnit", lazy="selectin")
+    # number of non packages received
+    singles_received = Column(Integer, nullable=True)
+    # number of packages received
+    packages_received = Column(Integer, nullable=True)
+    # number of units in the package
+    package_factor = Column(Integer, nullable=True)
+    # total quantity received 
+    quantity_received = Column(Integer, nullable=False)
+    # receipt_type can be a purchase, transfer, return
+    receipt_type = Column(String, nullable=False)
+    receipt_by_uid = Column(String, ForeignKey("user.uid"), nullable=True)
+    receipt_by = relationship("User", foreign_keys=[receipt_by_uid], lazy="selectin")
+    receipt_date = Column(DateTime, nullable=False)
+    expiry_date = Column(DateTime, nullable=False)
 
 
-class StockAdjustment(BaseAuditDBModel):
+class StockAdjustment(AuditUser):
     __tablename__ = "stock_adjustment"
 
-    product_uid = Column(String, ForeignKey("stock_product.uid"), nullable=True)
-    product = relationship("StockProduct", lazy="selectin")
+    product_uid = Column(String, ForeignKey("stock_item_variant.uid"), nullable=True)
+    product = relationship("StockItemVariant", lazy="selectin")
+    stock_lot_uid = Column(String, ForeignKey("stock_lot.uid"), nullable=True)
+    stock_lot = relationship("StockLot", lazy="selectin")
     adjustment_type = Column(String, nullable=False)
     adjust = Column(Integer, nullable=False)
     adjustment_date = Column(DateTime, nullable=False)
@@ -140,3 +155,5 @@ class StockAdjustment(BaseAuditDBModel):
     adjustment_by = relationship(
         "User", foreign_keys=[adjustment_by_uid], lazy="selectin"
     )
+    adjustment_for_uid = Column(Integer, nullable=True)
+    adjustment_for = Column(String, ForeignKey("user.uid"), nullable=True)

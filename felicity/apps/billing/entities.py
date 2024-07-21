@@ -5,30 +5,12 @@ from sqlalchemy import (Boolean, Column, DateTime, Float, ForeignKey, Integer,
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import relationship
 
-from felicity.apps import Auditable, DBModel
+from felicity.apps.abstract import AuditHistory, BaseEntity
 from felicity.apps.billing.config import (DiscountType, DiscountValueType,
                                           TransactionKind)
-from felicity.apps.billing.schemas import (AnalysisDiscountCreate,
-                                           AnalysisDiscountUpdate,
-                                           AnalysisPriceCreate,
-                                           AnalysisPriceUpdate,
-                                           ProfileDiscountCreate,
-                                           ProfileDiscountUpdate,
-                                           ProfilePriceCreate,
-                                           ProfilePriceUpdate, TestBillCreate,
-                                           TestBillInvoiceCreate,
-                                           TestBillInvoiceUpdate,
-                                           TestBillTransactionCreate,
-                                           TestBillTransactionUpdate,
-                                           TestBillUpdate, VoucherCodeCreate,
-                                           VoucherCodeUpdate, VoucherCreate,
-                                           VoucherCustomerCreate,
-                                           VoucherCustomerUpdate,
-                                           VoucherUpdate)
-from felicity.apps.common.models import IdSequence
 
 
-class AnalysisPrice(Auditable):
+class AnalysisPrice(AuditHistory):
     __tablename__ = "analysis_price"
 
     analysis_uid = Column(String, ForeignKey("analysis.uid"), nullable=True)
@@ -36,17 +18,8 @@ class AnalysisPrice(Auditable):
     is_active = Column(Boolean, nullable=False)
     amount = Column(Float, nullable=False)
 
-    @classmethod
-    async def create(cls, obj_in: dict | AnalysisPriceCreate) -> "AnalysisPrice":
-        data = cls._import(obj_in)
-        return await super().create(**data)
 
-    async def update(self, obj_in: dict | AnalysisPriceUpdate) -> "AnalysisPrice":
-        data = self._import(obj_in)
-        return await super().update(**data)
-
-
-class ProfilePrice(Auditable):
+class ProfilePrice(AuditHistory):
     __tablename__ = "profile_price"
 
     profile_uid = Column(String, ForeignKey("profile.uid"), nullable=True)
@@ -54,17 +27,8 @@ class ProfilePrice(Auditable):
     is_active = Column(Boolean, nullable=False)
     amount = Column(Float, nullable=False)
 
-    @classmethod
-    async def create(cls, obj_in: dict | ProfilePriceCreate) -> "ProfilePrice":
-        data = cls._import(obj_in)
-        return await super().create(**data)
 
-    async def update(self, obj_in: dict | ProfilePriceUpdate) -> "ProfilePrice":
-        data = self._import(obj_in)
-        return await super().update(**data)
-
-
-class AnalysisDiscount(Auditable):
+class AnalysisDiscount(AuditHistory):
     __tablename__ = "analysis_discount"
 
     analysis_uid = Column(String, ForeignKey("analysis.uid"), nullable=False)
@@ -80,17 +44,8 @@ class AnalysisDiscount(Auditable):
     value_amount = Column(Float, nullable=True)
     is_active = Column(Boolean, nullable=False)
 
-    @classmethod
-    async def create(cls, obj_in: dict | AnalysisDiscountCreate) -> "AnalysisDiscount":
-        data = cls._import(obj_in)
-        return await super().create(**data)
 
-    async def update(self, obj_in: dict | AnalysisDiscountUpdate) -> "AnalysisDiscount":
-        data = self._import(obj_in)
-        return await super().update(**data)
-
-
-class ProfileDiscount(Auditable):
+class ProfileDiscount(AuditHistory):
     __tablename__ = "profile_discount"
 
     profile_uid = Column(String, ForeignKey("profile.uid"), nullable=False)
@@ -106,17 +61,8 @@ class ProfileDiscount(Auditable):
     value_amount = Column(Float, nullable=True)
     is_active = Column(Boolean, nullable=False)
 
-    @classmethod
-    async def create(cls, obj_in: dict | ProfileDiscountCreate) -> "ProfileDiscount":
-        data = cls._import(obj_in)
-        return await super().create(**data)
 
-    async def update(self, obj_in: dict | ProfileDiscountUpdate) -> "ProfileDiscount":
-        data = self._import(obj_in)
-        return await super().update(**data)
-
-
-class Voucher(Auditable):
+class Voucher(AuditHistory):
     __tablename__ = "voucher"
 
     name = Column(String, nullable=False, unique=True)
@@ -132,17 +78,8 @@ class Voucher(Auditable):
     # the voucher is applied to a single cheapest eligible product in checkout.
     once_per_order = Column(Boolean, nullable=False)
 
-    @classmethod
-    async def create(cls, obj_in: dict | VoucherCreate) -> "Voucher":
-        data = cls._import(obj_in)
-        return await super().create(**data)
 
-    async def update(self, obj_in: dict | VoucherUpdate) -> "Voucher":
-        data = self._import(obj_in)
-        return await super().update(**data)
-
-
-class VoucherCode(Auditable):
+class VoucherCode(AuditHistory):
     __tablename__ = "voucher_code"
 
     code = Column(String(20), nullable=False, unique=True)
@@ -154,17 +91,8 @@ class VoucherCode(Auditable):
     used = Column(Integer, nullable=False, default=0)
     is_active = Column(Boolean, nullable=False)
 
-    @classmethod
-    async def create(cls, obj_in: dict | VoucherCodeCreate) -> "VoucherCode":
-        data = cls._import(obj_in)
-        return await super().create(**data)
 
-    async def update(self, obj_in: dict | VoucherCodeUpdate) -> "VoucherCode":
-        data = self._import(obj_in)
-        return await super().update(**data)
-
-
-class VoucherCustomer(Auditable):
+class VoucherCustomer(AuditHistory):
     __tablename__ = "voucher_customer"
 
     patient_uid = Column(String, ForeignKey("patient.uid"), nullable=False)
@@ -172,22 +100,12 @@ class VoucherCustomer(Auditable):
     voucher_code_uid = Column(String, ForeignKey("voucher_code.uid"), nullable=False)
     voucher_code = relationship("VoucherCode", lazy="selectin")
 
-    @classmethod
-    async def create(cls, obj_in: dict | VoucherCustomerCreate) -> "VoucherCustomer":
-        data = cls._import(obj_in)
-        return await super().create(**data)
-
-    async def update(self, obj_in: dict | VoucherCustomerUpdate) -> "VoucherCustomer":
-        data = self._import(obj_in)
-        return await super().update(**data)
-
-
 """
  Many to Many Link between TestBill and AnalysisRequest
 """
 test_bill_item = Table(
     "test_bill_item",
-    DBModel.metadata,
+    BaseEntity.metadata,
     Column("test_bill_uid", ForeignKey("test_bill.uid"), primary_key=True),
     Column(
         "analysis_request_uid", ForeignKey("analysis_request.uid"), primary_key=True
@@ -195,7 +113,7 @@ test_bill_item = Table(
 )
 
 
-class TestBill(Auditable):
+class TestBill(AuditHistory):
     __tablename__ = "test_bill"
 
     bill_id = Column(String, nullable=False)
@@ -215,20 +133,8 @@ class TestBill(Auditable):
         lazy="selectin",
     )
 
-    @classmethod
-    async def create(cls, obj_in: dict | TestBillCreate) -> "TestBill":
-        data = cls._import(obj_in)
-        data["bill_id"] = (await IdSequence.get_next_number(prefix="X", generic=True))[
-            1
-        ]
-        return await super().create(**data)
 
-    async def update(self, obj_in: dict | TestBillUpdate) -> "TestBill":
-        data = self._import(obj_in)
-        return await super().update(**data)
-
-
-class TestBillTransaction(Auditable):
+class TestBillTransaction(AuditHistory):
     __tablename__ = "test_bill_transaction"
 
     test_bill_uid = Column(String, ForeignKey("test_bill.uid"), nullable=True)
@@ -242,33 +148,11 @@ class TestBillTransaction(Auditable):
     action_required = Column(Boolean, nullable=False, default=False)
     action_message = Column(String, nullable=True)
 
-    @classmethod
-    async def create(
-        cls, obj_in: dict | TestBillTransactionCreate
-    ) -> "TestBillTransaction":
-        data = cls._import(obj_in)
-        return await super().create(**data)
 
-    async def update(
-        self, obj_in: dict | TestBillTransactionUpdate
-    ) -> "TestBillTransaction":
-        data = self._import(obj_in)
-        return await super().update(**data)
-
-
-class TestBillInvoice(Auditable):
+class TestBillInvoice(AuditHistory):
     __tablename__ = "test_bill_invoice"
 
     test_bill_uid = Column(String, ForeignKey("test_bill.uid"), nullable=True)
     test_bill = relationship("TestBill", lazy="selectin")
     json_content: dict = Column(JSONB, nullable=True)
     pdf_content = Column(LargeBinary, nullable=True)
-
-    @classmethod
-    async def create(cls, obj_in: dict | TestBillInvoiceCreate) -> "TestBillInvoice":
-        data = cls._import(obj_in)
-        return await super().create(**data)
-
-    async def update(self, obj_in: dict | TestBillInvoiceUpdate) -> "TestBillInvoice":
-        data = self._import(obj_in)
-        return await super().update(**data)

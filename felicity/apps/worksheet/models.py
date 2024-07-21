@@ -6,7 +6,7 @@ from sqlalchemy import (Boolean, Column, DateTime, ForeignKey, Integer, String,
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import relationship
 
-from felicity.apps import Auditable, BaseAuditDBModel, DBModel
+from felicity.apps import AuditHistory, AuditUser, BaseEntity
 from felicity.apps.analysis import conf as analysis_conf
 from felicity.apps.analysis.models import analysis as analysis_models
 from felicity.apps.analysis.models import qc as qc_models
@@ -23,7 +23,7 @@ logger = logging.getLogger(__name__)
 streamer = FelicityStreamer()
 
 
-class WSBase(BaseAuditDBModel):
+class WSBase(AuditUser):
     __abstract__ = True
     worksheet_type = Column(String)
     reserved = Column(JSONB)
@@ -39,7 +39,7 @@ Many to Many Link between WorkSheetTemplate and QCLevel
 """
 worksheet_template_qc_level = Table(
     "worksheet_template_qc_level",
-    DBModel.metadata,
+    BaseEntity.metadata,
     Column("ws_template_uid", ForeignKey("worksheet_template.uid"), primary_key=True),
     Column("qc_level_uid", ForeignKey("qc_level.uid"), primary_key=True),
 )
@@ -83,7 +83,7 @@ class WorkSheetTemplate(WSBase):
         return await super().update(**data)
 
 
-class WorkSheet(Auditable, WSBase):
+class WorkSheet(AuditHistory, WSBase):
     __tablename__ = "worksheet"
 
     template_uid = Column(String, ForeignKey("worksheet_template.uid"), nullable=False)

@@ -3,43 +3,19 @@ from io import BytesIO
 
 from PyPDF2 import PdfWriter
 
-from core.setting import settings
-from domain.analysis.conf import SampleStates
-from domain.analysis.ports.service.analysis import ISampleService
-from domain.impress.ports.repository import IReportImpressRepository
-from domain.impress.ports.service import IReportImpressService
-from domain.impress.reports.generic import FelicityImpress
-from domain.impress.schemas import ReportImpress, ReportImpressCreate
-from domain.impress.utils import impress_marshaller
-from domain.job.conf import JobStates, JobActions, JobCategories, JobPriorities
-from domain.job.ports.service import IJobService
-from domain.job.schemas import JobCreate
-from domain.notification.ports.service import (
-    IActivityStreamService,
-    INotificationService,
-)
-from domain.shared.services import BaseService
-from domain.shared.utils.serialisers import marshal
-from domain.user.ports.service import IUserService
-from domain.user.schemas import User
+from felicity.apps.abstract.service import BaseService
+from felicity.apps.impress.entities import ReportImpress
+from felicity.apps.impress.sample.schemas import ReportImpressCreate, ReportImpressUpdate
 
 
-class ReportImpressService(BaseService[ReportImpress], IReportImpressService):
-    def __init__(
-        self,
-        repository: IReportImpressRepository,
-        sample_service: ISampleService,
-        activity_stream_service: IActivityStreamService,
-        job_service: IJobService,
-        user_service: IUserService,
-        notification_service: INotificationService,
-    ):
-        self.repository = repository
-        self.sample_service = sample_service
-        self.activity_stream_service = activity_stream_service
-        self.job_service = job_service
-        self.user_service = user_service
-        self.notification_service = notification_service
+class ReportImpressService(BaseService[ReportImpress, ReportImpressCreate, ReportImpressUpdate]):
+    def __init__(self):
+        self.sample_service = SampleService()
+        self.activity_stream_service = ActivityStreamService()
+        self.job_service = JobService()
+        self.user_service = UserService()
+        self.notification_service = NotificationService()
+        super().__init__(ReportImpressRepository)
 
     async def impress_reports_download(self, uids: list[str]) -> bytes | None:
         """Fetch Latest report given sample id"""

@@ -6,8 +6,8 @@ from domain.shipment.ports.repository import (
     IShipmentRepository,
     IShippedSampleRepository,
 )
-from infrastructure.database.repository.base import BaseRepository
-from infrastructure.database.shipment.entities import (
+from felicity.apps.repository.base import BaseRepository
+from felicity.apps.shipment.entities import (
     ReferralLaboratory,
     Shipment,
     ShippedSample,

@@ -104,7 +104,7 @@ from domain.reflex.ports.service import IReflexEngineService
 from domain.shared.services import BaseService
 from domain.shared.utils.serialisers import marshal
 from domain.user.schemas import User
-from infrastructure.database.analysis.entities.analysis import (
+from felicity.apps.analysis.entities.analysis import (
     profile_sample_type,
     analysis_profile,
     analysis_sample_type,

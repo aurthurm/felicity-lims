@@ -9,7 +9,7 @@ from domain.reflex.ports.repository import (
     IReflexActionRepository,
 )
 from domain.shared.ports.paginator.cursor import PageCursor
-from infrastructure.database.reflex.entities import (
+from felicity.apps.reflex.entities import (
     ReflexRule,
     ReflexBrainAddition,
     ReflexBrainFinal,
@@ -17,7 +17,7 @@ from infrastructure.database.reflex.entities import (
     ReflexBrain,
     ReflexAction,
 )
-from infrastructure.database.repository.base import BaseRepository
+from felicity.apps.repository.base import BaseRepository
 
 
 class ReflexRuleRepository(BaseRepository[ReflexRule], IReflexRuleRepository):

@@ -10,11 +10,11 @@ from sqlalchemy import (
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import relationship
 
-from infrastructure.database import Auditable, DBModel
-from infrastructure.database.user.entities import User
+from felicity.apps.abstract import AuditHistory, BaseEntity
+from felicity.apps.user.entities import User
 
 
-class ReferralLaboratory(Auditable):
+class ReferralLaboratory(AuditHistory):
     __tablename__ = "referral_laboratory"
 
     name = Column(String, nullable=True)
@@ -26,7 +26,7 @@ class ReferralLaboratory(Auditable):
     is_referral = Column(Boolean(), default=False)
 
 
-class Shipment(Auditable):
+class Shipment(AuditHistory):
     __tablename__ = "shipment"
 
     shipment_id = Column(String, index=True, unique=True, nullable=False)
@@ -64,7 +64,7 @@ class Shipment(Auditable):
     pdf_content = Column(LargeBinary, nullable=True)
 
 
-class ShippedSample(DBModel):
+class ShippedSample(BaseEntity):
     __tablename__ = "shipped_sample"
 
     """ShippedSample enables samples to be shipped multiple times

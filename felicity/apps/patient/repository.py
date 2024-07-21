@@ -6,12 +6,12 @@ from domain.patient.ports.repository import (
     IPatientIdentificationRepository,
 )
 from domain.shared.ports.paginator.cursor import PageCursor
-from infrastructure.database.patient.entities import (
+from felicity.apps.patient.entities import (
     Patient,
     Identification,
     PatientIdentification,
 )
-from infrastructure.database.repository.base import BaseRepository
+from felicity.apps.repository.base import BaseRepository
 
 
 class PatientRepository(BaseRepository[Patient], IPatientRepository):

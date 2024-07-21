@@ -14,7 +14,7 @@ from felicity.api.gql.billing.types import (AnalysisDiscountType,
                                             VoucherType)
 from felicity.api.gql.permissions import IsAuthenticated
 from felicity.api.gql.types import OperationError
-from felicity.apps.billing import models, schemas, utils
+from felicity.apps.billing import entities, schemas, utils
 from felicity.apps.billing.config import DiscountType, TransactionKind
 from felicity.apps.billing.schemas import (TestBillTransactionUpdate,
                                            TestBillUpdate)
@@ -121,7 +121,7 @@ class BillingMutations:
     ) -> ProfilePriceResponse:
         _, felicity_user = await auth_from_info(info)
 
-        profile_price = await models.ProfilePrice.get(uid=uid)
+        profile_price = await entities.ProfilePrice.get(uid=uid)
         incoming: dict = {
             "amount": payload.amount,
             "is_active": payload.is_active,
@@ -138,7 +138,7 @@ class BillingMutations:
     ) -> AnalysisPriceResponse:
         _, felicity_user = await auth_from_info(info)
 
-        analysis_price = await models.AnalysisPrice.get(uid=uid)
+        analysis_price = await entities.AnalysisPrice.get(uid=uid)
         incoming: dict = {
             "amount": payload.amount,
             "is_active": payload.is_active,
@@ -158,7 +158,7 @@ class BillingMutations:
         if not uid:
             return OperationError(error="No uid provided to identify update obj")
 
-        profile_discount = await models.ProfileDiscount.get(uid=uid)
+        profile_discount = await entities.ProfileDiscount.get(uid=uid)
         if not profile_discount:
             return OperationError(
                 error=f"ProfileDiscount with uid {uid} not found. Cannot update obj ..."
@@ -198,7 +198,7 @@ class BillingMutations:
         if not uid:
             return OperationError(error="No uid provided to identify update obj")
 
-        analysis_discount = await models.AnalysisDiscount.get(uid=uid)
+        analysis_discount = await entities.AnalysisDiscount.get(uid=uid)
         if not analysis_discount:
             return OperationError(
                 error=f"AnalysisDiscount with uid {uid} not found. Cannot update obj ..."
@@ -236,7 +236,7 @@ class BillingMutations:
         if not success:
             return auth_err
 
-        exists = await models.Voucher.get(name=payload.name)
+        exists = await entities.Voucher.get(name=payload.name)
         if exists:
             return OperationError(error=f"Voucher {payload.name} already exists")
 
@@ -248,7 +248,7 @@ class BillingMutations:
             incoming[k] = v
 
         obj_in = schemas.VoucherCreate(**incoming)
-        voucher = await models.Voucher.create(obj_in)
+        voucher = await entities.Voucher.create(obj_in)
         return VoucherType(**voucher.marshal_simple())
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
@@ -266,7 +266,7 @@ class BillingMutations:
         if not uid:
             return OperationError(error="No uid provided to identify update obj")
 
-        voucher = await models.Voucher.get(uid=uid)
+        voucher = await entities.Voucher.get(uid=uid)
         if not voucher:
             return OperationError(
                 error=f"Voucher with uid {uid} not found. Cannot update obj ..."
@@ -297,7 +297,7 @@ class BillingMutations:
         if not success:
             return auth_err
 
-        exists = await models.VoucherCode.get(code=payload.code)
+        exists = await entities.VoucherCode.get(code=payload.code)
         if exists:
             return OperationError(error=f"Voucher Code {payload.code} already exists")
 
@@ -309,7 +309,7 @@ class BillingMutations:
             incoming[k] = v
 
         obj_in = schemas.VoucherCodeCreate(**incoming)
-        voucher_code = await models.VoucherCode.create(obj_in)
+        voucher_code = await entities.VoucherCode.create(obj_in)
         return VoucherCodeType(**voucher_code.marshal_simple())
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
@@ -327,7 +327,7 @@ class BillingMutations:
         if not uid:
             return OperationError(error="No uid provided to identify update obj")
 
-        voucher_code = await models.VoucherCode.get(uid=uid)
+        voucher_code = await entities.VoucherCode.get(uid=uid)
         if not voucher_code:
             return OperationError(
                 error=f"Voucher with uid {uid} not found. Cannot update obj ..."
@@ -361,7 +361,7 @@ class BillingMutations:
                 suggestion="Transaction amount must be greater than 0",
             )
 
-        test_bill = await models.TestBill.get(uid=payload.test_bill_uid)
+        test_bill = await entities.TestBill.get(uid=payload.test_bill_uid)
         incoming: dict = {
             "patient_uid": test_bill.patient_uid,
             "client_uid": test_bill.client_uid,
@@ -373,7 +373,7 @@ class BillingMutations:
             incoming[k] = v
 
         obj_in = schemas.TestBillTransactionCreate(**incoming)
-        tbt = await models.TestBillTransaction.create(obj_in)
+        tbt = await entities.TestBillTransaction.create(obj_in)
 
         test_bill_update = {
             "total_paid": test_bill.total_paid + tbt.amount,

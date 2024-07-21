@@ -1,7 +1,7 @@
 from sqlalchemy import Boolean, Column, ForeignKey, String, Table
 from sqlalchemy.orm import relationship
 
-from infrastructure.database import BaseAuditDBModel, DBModel, BaseMPTT
+from felicity.apps.abstract import AuditUser, BaseEntity, BaseMPTT
 
 
 """
@@ -9,7 +9,7 @@ from infrastructure.database import BaseAuditDBModel, DBModel, BaseMPTT
 """
 message_thread_recipient = Table(
     "message_thread_recipient",
-    DBModel.metadata,
+    BaseEntity.metadata,
     Column("message_thread_uid", ForeignKey("message_thread.uid"), primary_key=True),
     Column("user_uid", ForeignKey("user.uid"), primary_key=True),
 )
@@ -19,13 +19,13 @@ message_thread_recipient = Table(
 """
 message_thread_delete = Table(
     "message_thread_delete",
-    DBModel.metadata,
+    BaseEntity.metadata,
     Column("message_thread_uid", ForeignKey("message_thread.uid"), primary_key=True),
     Column("user_uid", ForeignKey("user.uid"), primary_key=True),
 )
 
 
-class MessageThread(BaseAuditDBModel):
+class MessageThread(AuditUser):
     """MessageThread"""
 
     __tablename__ = "message_thread"
@@ -43,7 +43,7 @@ class MessageThread(BaseAuditDBModel):
 """
 message_view = Table(
     "message_view",
-    DBModel.metadata,
+    BaseEntity.metadata,
     Column("message_uid", ForeignKey("message.uid"), primary_key=True),
     Column("user_uid", ForeignKey("user.uid"), primary_key=True),
 )
@@ -53,13 +53,13 @@ message_view = Table(
 """
 message_delete = Table(
     "message_delete",
-    DBModel.metadata,
+    BaseEntity.metadata,
     Column("message_uid", ForeignKey("message.uid"), primary_key=True),
     Column("user_uid", ForeignKey("user.uid"), primary_key=True),
 )
 
 
-class Message(BaseAuditDBModel, BaseMPTT):
+class Message(AuditUser, BaseMPTT):
     """Message"""
 
     __tablename__ = "message"

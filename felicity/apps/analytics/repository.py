@@ -9,9 +9,9 @@ from domain.analytics.ports.repository import (
     IReportMetaRepository,
     ISampleAnalyticsRepository,
 )
-from infrastructure.database.analysis.entities.analysis import Sample
-from infrastructure.database.analytics.entities import ReportMeta
-from infrastructure.database.repository.base import BaseRepository
+from felicity.apps.analysis.entities.analysis import Sample
+from felicity.apps.analytics.entities import ReportMeta
+from felicity.apps.repository.base import BaseRepository
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

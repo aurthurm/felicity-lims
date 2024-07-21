@@ -3,12 +3,12 @@ from typing import List
 from sqlalchemy import Boolean, Column, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 
-from felicity.apps import BaseAuditDBModel
+from felicity.apps import AuditUser
 from felicity.apps.analysis.models.analysis import Sample
 from felicity.apps.storage import schemas
 
 
-class StoreRoom(BaseAuditDBModel):
+class StoreRoom(AuditUser):
     """Store Room"""
 
     __tablename__ = "store_room"
@@ -26,7 +26,7 @@ class StoreRoom(BaseAuditDBModel):
         return await super().update(**data)
 
 
-class StorageLocation(BaseAuditDBModel):
+class StorageLocation(AuditUser):
     """Storage Location
     e.g: Fridge, CupBoard, Floor, Box, etc
     """
@@ -52,7 +52,7 @@ class StorageLocation(BaseAuditDBModel):
         return await super().update(**data)
 
 
-class StorageSection(BaseAuditDBModel):
+class StorageSection(AuditUser):
     """Storage Location Section/Compartment
     e.g: Shelve, Tray, Rack, etc
     """
@@ -82,7 +82,7 @@ class StorageSection(BaseAuditDBModel):
         return await super().update(**data)
 
 
-class StorageContainer(BaseAuditDBModel):
+class StorageContainer(AuditUser):
     """Storage Carrier
     e.g: Sample K-Lite, etc
     """

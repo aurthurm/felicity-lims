@@ -6,7 +6,7 @@ from sqlalchemy import event, inspect
 from sqlalchemy.orm import class_mapper
 from sqlalchemy.orm.attributes import get_history
 
-from felicity.apps.audit.models import AuditLog
+from felicity.apps.auditlog.entities import AuditLog
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -26,7 +26,7 @@ def custom_serial(o):
     raise TypeError("Type %s not serializable" % type(o))
 
 
-class AuditableMixin:
+class AuditHistoryMixin:
     """Allow a model to be automatically audited"""
 
     @staticmethod

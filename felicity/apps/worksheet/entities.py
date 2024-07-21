@@ -2,17 +2,17 @@ from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, String, T
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import relationship
 
-from infrastructure.database import Auditable, BaseAuditDBModel, DBModel
-from infrastructure.database.analysis.entities import analysis as analysis_models
-from infrastructure.database.analysis.entities.quality_control import (
+from felicity.apps.abstract import BaseEntity, AuditUser, AuditHistory
+from felicity.apps.analysis.entities import analysis as analysis_models
+from felicity.apps.analysis.entities.quality_control import (
     QCTemplate,
     QCLevel,
 )
-from infrastructure.database.instrument.entities import Instrument
-from infrastructure.database.user.entities import User
+from felicity.apps.instrument.entities import Instrument
+from felicity.apps.user.entities import User
 
 
-class WSBase(BaseAuditDBModel):
+class WSBase(AuditUser):
     __abstract__ = True
     worksheet_type = Column(String)
     reserved = Column(JSONB)
@@ -28,7 +28,7 @@ Many to Many Link between WorkSheetTemplate and QCLevel
 """
 worksheet_template_qc_level = Table(
     "worksheet_template_qc_level",
-    DBModel.metadata,
+    BaseEntity.metadata,
     Column("ws_template_uid", ForeignKey("worksheet_template.uid"), primary_key=True),
     Column("qc_level_uid", ForeignKey("qc_level.uid"), primary_key=True),
 )
@@ -59,7 +59,7 @@ class WorkSheetTemplate(WSBase):
     sample_type = relationship(analysis_models.SampleType, lazy="selectin")
 
 
-class WorkSheet(Auditable, WSBase):
+class WorkSheet(AuditHistory, WSBase):
     __tablename__ = "worksheet"
 
     template_uid = Column(String, ForeignKey("worksheet_template.uid"), nullable=False)

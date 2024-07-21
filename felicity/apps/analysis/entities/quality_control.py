@@ -1,11 +1,11 @@
 from sqlalchemy import Boolean, Column, DateTime, Float, ForeignKey, String, Table
 from sqlalchemy.orm import relationship
 
-from infrastructure.database import BaseAuditDBModel, DBModel
-from infrastructure.database.setup.entities.setup import Department
+from felicity.apps.abstract import AuditUser, BaseEntity
+from felicity.apps.setup.entities.setup import Department
 
 
-class QCSet(BaseAuditDBModel):
+class QCSet(AuditUser):
     """A Set/Group of QC Samples that are run together.
     - e.g a Viral Load Rack the QCLevels are a set i.e Negative Control, Low Pos Control, High Pos Control
     """
@@ -22,13 +22,13 @@ Many to Many Link between QCReference and  Analysis
 """
 qc_reference_analysis = Table(
     "qc_reference_analysis",
-    DBModel.metadata,
+    BaseEntity.metadata,
     Column("qc_reference_uid", ForeignKey("qc_reference.uid"), primary_key=True),
     Column("analysis_uid", ForeignKey("analysis.uid"), primary_key=True),
 )
 
 
-class QCReference(BaseAuditDBModel):
+class QCReference(AuditUser):
     """QC Sample Reference Material    :: Not Implemented Yet
     - can have multi analytes/Profile
     - states: Active (in-use - there must be only 1 active per analysis)
@@ -64,7 +64,7 @@ class QCReference(BaseAuditDBModel):
     lot_number = Column(String, nullable=True)
 
 
-class QCLevel(BaseAuditDBModel):
+class QCLevel(AuditUser):
     """Sample Level /category
     - None - normal sample
     - Negative Control
@@ -93,7 +93,7 @@ Many to Many Link between QCTemplate and Department
 """
 qc_template_department = Table(
     "qc_template_department",
-    DBModel.metadata,
+    BaseEntity.metadata,
     Column("department_uid", ForeignKey("department.uid"), primary_key=True),
     Column("qc_template_uid", ForeignKey("qc_template.uid"), primary_key=True),
 )
@@ -103,13 +103,13 @@ Many to Many Link between QCTemplate and  QCLevel
 """
 qc_template_qc_level = Table(
     "qc_template_qc_level",
-    DBModel.metadata,
+    BaseEntity.metadata,
     Column("qc_level_uid", ForeignKey("qc_level.uid"), primary_key=True),
     Column("qc_template_uid", ForeignKey("qc_template.uid"), primary_key=True),
 )
 
 
-class QCTemplate(BaseAuditDBModel):
+class QCTemplate(AuditUser):
     """QC Level Grouping e.g:
     Roche Viral Load CQ:
         - Neg Control

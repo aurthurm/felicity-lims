@@ -1,20 +1,20 @@
 from sqlalchemy import Column, DateTime, ForeignKey, String, Table
 from sqlalchemy.orm import relationship
 
-from infrastructure.database import BaseAuditDBModel
+from felicity.apps.abstract import AuditUser
 
 """
 Many to Many Link between ReportMeta and Analysis
 """
 analysis_reports = Table(
     "analysis_reports",
-    BaseAuditDBModel.metadata,
+    AuditUser.metadata,
     Column("analysis_uid", ForeignKey("analysis.uid"), primary_key=True),
     Column("report_uid", ForeignKey("report_meta.uid"), primary_key=True),
 )
 
 
-class ReportMeta(BaseAuditDBModel):
+class ReportMeta(AuditUser):
     """Generated Reports Metadata"""
 
     __tablename__ = "report_meta"

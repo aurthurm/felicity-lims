@@ -7,9 +7,9 @@ from domain.setup.ports.repository import (
     IUnitRepository,
 )
 
-from infrastructure.database.repository.base import BaseRepository
+from felicity.apps.repository.base import BaseRepository
 
-from infrastructure.database.setup.entities import (
+from felicity.apps.setup.entities import (
     Department,
     Laboratory,
     LaboratorySetting,

@@ -3,8 +3,8 @@ from datetime import datetime
 from sqlalchemy import Boolean, Column, DateTime, Integer, String
 from sqlalchemy.ext.declarative import declared_attr
 
-from felicity.apps import BaseAuditDBModel  # noqa
-from felicity.apps import DBModel
+from felicity.apps import AuditUser  # noqa
+from felicity.apps import BaseEntity
 from felicity.apps.user import schemas
 from felicity.core.security import get_password_hash, password_check
 
@@ -43,7 +43,7 @@ class SimpleAuditMixin(object):
 0.8
 
 
-class AbstractBaseUser(SimpleAuditMixin, DBModel):
+class AbstractBaseUser(SimpleAuditMixin, BaseEntity):
     __abstract__ = True
     first_name = Column(String, index=True)
     last_name = Column(String, index=True)
@@ -85,7 +85,7 @@ class AbstractBaseUser(SimpleAuditMixin, DBModel):
         await self.update(user_in)
 
 
-class AbstractAuth(SimpleAuditMixin, DBModel):
+class AbstractAuth(SimpleAuditMixin, BaseEntity):
     __abstract__ = True
     user_name = Column(String, unique=True, index=True, nullable=False)
     hashed_password = Column(String, nullable=False)

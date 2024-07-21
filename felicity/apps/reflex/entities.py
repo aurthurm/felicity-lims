@@ -1,10 +1,10 @@
 from sqlalchemy import Column, ForeignKey, Integer, String, Table
 from sqlalchemy.orm import relationship
 
-from infrastructure.database import Auditable, DBModel
+from felicity.apps.abstract import AuditHistory, BaseEntity
 
 
-class ReflexRule(Auditable):
+class ReflexRule(AuditHistory):
     __tablename__ = "reflex_rule"
 
     name = Column(String, index=True, unique=True, nullable=False)
@@ -14,7 +14,7 @@ class ReflexRule(Auditable):
     )
 
 
-class ReflexBrainAddition(DBModel):
+class ReflexBrainAddition(BaseEntity):
     """Many to Many Link between ReflexBrain and Analysis
     with extra data for additions
     """
@@ -27,7 +27,7 @@ class ReflexBrainAddition(DBModel):
     count = Column(Integer, default=1)
 
 
-class ReflexBrainFinal(DBModel):
+class ReflexBrainFinal(BaseEntity):
     """Many to Many Link between ReflexBrain and Analysis
     with extra data for finalize where necessary
     """
@@ -40,7 +40,7 @@ class ReflexBrainFinal(DBModel):
     value = Column(String)
 
 
-class ReflexBrainCriteria(DBModel):
+class ReflexBrainCriteria(BaseEntity):
     """Many to Many Link between ReflexBrain and Analysis
     with extra data for criteria/decision making
     operators: =, !=, >, >=, <, <=
@@ -55,7 +55,7 @@ class ReflexBrainCriteria(DBModel):
     value = Column(String)
 
 
-class ReflexBrain(Auditable):
+class ReflexBrain(AuditHistory):
     __tablename__ = "reflex_brain"
 
     reflex_action_uid = Column(
@@ -75,13 +75,13 @@ Many to Many Link between ReflexBrain and Analysis
 """
 reflex_action_analysis = Table(
     "reflex_action_analysis",
-    DBModel.metadata,
+    BaseEntity.metadata,
     Column("analysis_uid", ForeignKey("analysis.uid"), primary_key=True),
     Column("reflex_action_uid", ForeignKey("reflex_action.uid"), primary_key=True),
 )
 
 
-class ReflexAction(Auditable):
+class ReflexAction(AuditHistory):
     __tablename__ = "reflex_action"
 
     level = Column(Integer, nullable=False, default=1)

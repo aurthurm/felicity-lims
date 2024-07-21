@@ -1,23 +1,19 @@
 from datetime import datetime
 from typing import TypeVar
-from sqlalchemy.dialects.postgresql import insert
 
-from domain.shared.services import BaseService
-from domain.idsequence.ports.service import IIdSequenceService
-from domain.idsequence.ports.repository import IIdSequenceRepository
-from domain.idsequence.utils import sequencer, sequence_alpha
-from domain.idsequence.exception import (
-    SequenceGenerateError,
-    IncompleDataError,
-)
+from felicity.apps.abstract.service import BaseService
+from felicity.apps.idsequencer.exception import IncompleDataError
+from felicity.apps.idsequencer.repository import IdSequenceRepository
+from felicity.apps.idsequencer.utils import sequence_alpha, sequencer
+
 
 IdSequence = TypeVar("IdSequence")
 SEQUENCE_BEGIN = 5
 SEQUENCE_CUTOFF = 10
 
 
-class IdSequenceService(BaseService[IdSequence], IIdSequenceService):
-    def __init__(self, repository: IIdSequenceRepository) -> None:
+class IdSequenceService(BaseService[IdSequence]):
+    def __init__(self, repository: IdSequenceRepository) -> None:
         self.repository = repository
         super().__init__(repository)
 

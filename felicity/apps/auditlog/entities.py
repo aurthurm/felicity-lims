@@ -1,9 +1,9 @@
 import json
 from sqlalchemy import Column, Integer, String, UnicodeText
-from infrastructure.database.entity.base import DBModel
+from felicity.database.entity import BaseEntity
 
 
-class AuditLog(DBModel):
+class AuditLog(BaseEntity):
     """Model an audit log of user actions"""
 
     __tablename__ = "audit_log"

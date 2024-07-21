@@ -3,7 +3,7 @@ import os
 from logging.config import fileConfig
 
 from alembic import context
-from infrastructure.database.sqla_base import DBModel
+from felicity.apps.sqla_base import BaseEntity
 from sqlalchemy import engine_from_config, pool
 from sqlalchemy.ext.asyncio import AsyncEngine
 
@@ -19,7 +19,7 @@ fileConfig(config.config_file_name)
 # for 'autogenerate' support
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
-target_metadata = DBModel.metadata
+target_metadata = BaseEntity.metadata
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:

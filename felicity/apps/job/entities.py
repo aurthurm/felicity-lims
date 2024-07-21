@@ -3,10 +3,10 @@ from datetime import datetime
 from sqlalchemy import Column, Integer, String, DateTime
 from sqlalchemy.dialects.postgresql import JSONB
 
-from infrastructure.database import DBModel
+from felicity.apps.abstract import BaseEntity
 
 
-class Job(DBModel):
+class Job(BaseEntity):
     __tablename__ = "job"
 
     action = Column(String)

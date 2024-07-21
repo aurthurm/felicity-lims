@@ -21,7 +21,7 @@ from sqlalchemy_mixins import (ActiveRecordMixinAsync, AllFeaturesMixin,
 
 from felicity.core.dtz import format_datetime
 from felicity.core.uid_gen import get_flake_uid
-from felicity.database.paginator.cursor import EdgeNode, PageCursor, PageInfo
+from felicity.database.paging import EdgeNode, PageCursor, PageInfo
 from felicity.database.session import AsyncSessionScoped
 from felicity.utils import has_value_or_is_truthy
 

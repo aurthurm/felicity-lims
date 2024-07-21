@@ -10,14 +10,14 @@ from sqlalchemy import (
 )
 from sqlalchemy.orm import relationship
 
-from infrastructure.database import Auditable, BaseAuditDBModel, DBModel, BaseMPTT
-from infrastructure.database.analysis.entities.quality_control import QCLevel, QCSet
-from infrastructure.database.client import entities as ct_entities
-from infrastructure.database.patient import entities as pt_entities
-from infrastructure.database.user.entities import User
+from felicity.apps.abstract import AuditHistory, AuditUser, BaseEntity, BaseMPTT
+from felicity.apps.analysis.entities.quality_control import QCLevel, QCSet
+from felicity.apps.client import entities as ct_entities
+from felicity.apps.patient import entities as pt_entities
+from felicity.apps.user.entities import User
 
 
-class CodingStandard(BaseAuditDBModel):
+class CodingStandard(AuditUser):
     """conding standars e.g LOINC"""
 
     __tablename__ = "coding_standard"
@@ -26,7 +26,7 @@ class CodingStandard(BaseAuditDBModel):
     description = Column(String, nullable=False)
 
 
-class SampleType(BaseAuditDBModel):
+class SampleType(AuditUser):
     """SampleType"""
 
     __tablename__ = "sample_type"
@@ -38,7 +38,7 @@ class SampleType(BaseAuditDBModel):
     abbr = Column(String, nullable=False)
 
 
-class SampleTypeCoding(BaseAuditDBModel):
+class SampleTypeCoding(AuditUser):
     """SampleTypeCoding"""
 
     __tablename__ = "sample_type_coding"
@@ -59,7 +59,7 @@ class SampleTypeCoding(BaseAuditDBModel):
 """
 profile_sample_type = Table(
     "profile_sample_type",
-    DBModel.metadata,
+    BaseEntity.metadata,
     Column("sample_type_uid", ForeignKey("sample_type.uid"), primary_key=True),
     Column("profile_uid", ForeignKey("profile.uid"), primary_key=True),
 )
@@ -69,7 +69,7 @@ Many to Many Link between Analysis and SampleType
 """
 analysis_sample_type = Table(
     "analysis_sample_type",
-    DBModel.metadata,
+    BaseEntity.metadata,
     Column("sample_type_uid", ForeignKey("sample_type.uid"), primary_key=True),
     Column("analysis_uid", ForeignKey("analysis.uid"), primary_key=True),
 )
@@ -81,13 +81,13 @@ analysis_sample_type = Table(
 """
 analysis_profile = Table(
     "analysis_profile",
-    DBModel.metadata,
+    BaseEntity.metadata,
     Column("analysis_uid", ForeignKey("analysis.uid"), primary_key=True),
     Column("profile_uid", ForeignKey("profile.uid"), primary_key=True),
 )
 
 
-class AnalysisCategory(BaseAuditDBModel):
+class AnalysisCategory(AuditUser):
     """Categorise Analysis"""
 
     __tablename__ = "analysis_category"
@@ -99,7 +99,7 @@ class AnalysisCategory(BaseAuditDBModel):
     active = Column(Boolean(), default=False)
 
 
-class Profile(BaseAuditDBModel):
+class Profile(AuditUser):
     """Grouped Analysis e.g FBC, U&E's, MCS ..."""
 
     __tablename__ = "profile"
@@ -122,7 +122,7 @@ class Profile(BaseAuditDBModel):
     department = relationship("Department", lazy="selectin")
 
 
-class ProfileCoding(BaseAuditDBModel):
+class ProfileCoding(AuditUser):
     """ProfileCoding"""
 
     __tablename__ = "profile_coding"
@@ -143,7 +143,7 @@ class ProfileCoding(BaseAuditDBModel):
 """
 analysis_method = Table(
     "analysis_method",
-    DBModel.metadata,
+    BaseEntity.metadata,
     Column("analysis_uid", ForeignKey("analysis.uid"), primary_key=True),
     Column("method_uid", ForeignKey("method.uid"), primary_key=True),
 )
@@ -153,13 +153,13 @@ analysis_method = Table(
 """
 analysis_instrument = Table(
     "analysis_instrument",
-    DBModel.metadata,
+    BaseEntity.metadata,
     Column("analysis_uid", ForeignKey("analysis.uid"), primary_key=True),
     Column("instrument_uid", ForeignKey("instrument.uid"), primary_key=True),
 )
 
 
-class Analysis(BaseAuditDBModel):
+class Analysis(AuditUser):
     """Analysis Test/Service"""
 
     __tablename__ = "analysis"
@@ -217,7 +217,7 @@ class Analysis(BaseAuditDBModel):
     active = Column(Boolean(), default=False)
 
 
-class AnalysisCoding(BaseAuditDBModel):
+class AnalysisCoding(AuditUser):
     """AnalysisCoding"""
 
     __tablename__ = "analysis_coding"
@@ -233,7 +233,7 @@ class AnalysisCoding(BaseAuditDBModel):
     code = Column(String, nullable=False)
 
 
-class AnalysisInterim(BaseAuditDBModel):
+class AnalysisInterim(AuditUser):
     """Analysis Interim Result Field"""
 
     __tablename__ = "analysis_interim"
@@ -245,7 +245,7 @@ class AnalysisInterim(BaseAuditDBModel):
     instrument = relationship("Instrument")
 
 
-class AnalysisCorrectionFactor(BaseAuditDBModel):
+class AnalysisCorrectionFactor(AuditUser):
     """Analysis Correction Factor"""
 
     __tablename__ = "analysis_correction_factor"
@@ -256,7 +256,7 @@ class AnalysisCorrectionFactor(BaseAuditDBModel):
     method_uid = Column(String, ForeignKey("method.uid"), nullable=True)
 
 
-class AnalysisDetectionLimit(BaseAuditDBModel):
+class AnalysisDetectionLimit(AuditUser):
     """Analysis Detection Limit"""
 
     __tablename__ = "analysis_detection_limit"
@@ -268,7 +268,7 @@ class AnalysisDetectionLimit(BaseAuditDBModel):
     method_uid = Column(String, ForeignKey("method.uid"), nullable=True)
 
 
-class AnalysisUncertainty(BaseAuditDBModel):
+class AnalysisUncertainty(AuditUser):
     """Analysis Measurment Uncertainty
     If value is within the the range min.max then result becomes a range (result +/- value)
     """
@@ -283,7 +283,7 @@ class AnalysisUncertainty(BaseAuditDBModel):
     method_uid = Column(String, ForeignKey("method.uid"), nullable=True)
 
 
-class AnalysisSpecification(BaseAuditDBModel):
+class AnalysisSpecification(AuditUser):
     """Analysis Specification Ranges"""
 
     __tablename__ = "analysis_specification"
@@ -315,7 +315,7 @@ class AnalysisSpecification(BaseAuditDBModel):
     age_max = Column(Integer, nullable=True)
 
 
-class ResultOption(BaseAuditDBModel):
+class ResultOption(AuditUser):
     """Result Choices"""
 
     __tablename__ = "result_option"
@@ -325,7 +325,7 @@ class ResultOption(BaseAuditDBModel):
     analysis_uid = Column(String, ForeignKey("analysis.uid"))
 
 
-class AnalysisRequest(BaseAuditDBModel):
+class AnalysisRequest(AuditUser):
     """AnalysisRequest a.k.a Laboratory Request"""
 
     __tablename__ = "analysis_request"
@@ -349,7 +349,7 @@ Many to Many Link between Sample and Profile
 """
 sample_profile = Table(
     "sample_profile",
-    DBModel.metadata,
+    BaseEntity.metadata,
     Column("sample_uid", ForeignKey("sample.uid"), primary_key=True),
     Column("profile_uid", ForeignKey("profile.uid"), primary_key=True),
 )
@@ -359,7 +359,7 @@ Many to Many Link between Sample and Analysis
 """
 sample_analysis = Table(
     "sample_analysis",
-    DBModel.metadata,
+    BaseEntity.metadata,
     Column("sample_uid", ForeignKey("sample.uid"), primary_key=True),
     Column("analysis_uid", ForeignKey("analysis.uid"), primary_key=True),
 )
@@ -369,7 +369,7 @@ Many to Many Link between Sample and Rejection Reason
 """
 sample_rejection_reason = Table(
     "sample_rejection_reason",
-    DBModel.metadata,
+    BaseEntity.metadata,
     Column("sample_uid", ForeignKey("sample.uid"), primary_key=True),
     Column(
         "rejection_reason_uid", ForeignKey("rejection_reason.uid"), primary_key=True
@@ -377,7 +377,7 @@ sample_rejection_reason = Table(
 )
 
 
-class RejectionReason(BaseAuditDBModel):
+class RejectionReason(AuditUser):
     """Rejection Reason"""
 
     __tablename__ = "rejection_reason"
@@ -385,7 +385,7 @@ class RejectionReason(BaseAuditDBModel):
     reason = Column(String, nullable=False)
 
 
-class Sample(Auditable, BaseMPTT):
+class Sample(AuditHistory, BaseMPTT):
     """Sample"""
 
     __tablename__ = "sample"

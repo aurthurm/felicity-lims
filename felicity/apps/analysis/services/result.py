@@ -27,7 +27,7 @@ from domain.shared.utils.serialisers import marshal
 from domain.user.schemas import User
 from domain.worksheet.conf import WSStates
 from domain.worksheet.ports.service import IWorkSheetService
-from infrastructure.database.analysis.entities.results import result_verification
+from felicity.apps.analysis.entities.results import result_verification
 
 T = TypeVar("T")
 

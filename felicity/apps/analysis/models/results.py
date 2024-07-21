@@ -11,7 +11,7 @@ from sqlalchemy import (Boolean, Column, DateTime, ForeignKey, Integer, String, 
                         Table)
 from sqlalchemy.orm import relationship
 
-from felicity.apps import Auditable, BaseAuditDBModel, DBModel
+from felicity.apps import AuditHistory, AuditUser, BaseEntity
 from felicity.apps.analysis import conf, schemas
 from felicity.apps.common import BaseMPTT
 from felicity.apps.notification.utils import FelicityStreamer
@@ -27,13 +27,13 @@ streamer = FelicityStreamer()
 """
 result_verification = Table(
     "result_verification",
-    DBModel.metadata,
+    BaseEntity.metadata,
     Column("result_uid", ForeignKey("analysis_result.uid"), primary_key=True),
     Column("user_uid", ForeignKey("user.uid"), primary_key=True),
 )
 
 
-class AnalysisResult(Auditable, BaseMPTT):
+class AnalysisResult(AuditHistory, BaseMPTT):
     """Test/Analysis Result
     Number of analysis results per sample will be directly proportional to
     the number of linked sample_analyses at minimum :)
@@ -268,7 +268,7 @@ class AnalysisResult(Auditable, BaseMPTT):
         return await super().update(**data)
 
 
-class ResultMutation(BaseAuditDBModel):
+class ResultMutation(AuditUser):
     """Result Mutations tracker"""
 
     __tablename__ = "result_mutation"

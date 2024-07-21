@@ -1,7 +1,12 @@
-from sqlalchemy import Boolean, Column, DateTime, ForeignKey, String, Table
+from datetime import datetime
+
+from sqlalchemy import (Boolean, Column, DateTime, ForeignKey, LargeBinary,
+                        String, Table)
 from sqlalchemy.orm import relationship
 
-from infrastructure.database import BaseAuditDBModel, DBModel
+from felicity.apps.abstract import AuditUser, BaseEntity
+from felicity.apps.instrument import schemas
+from felicity.apps.user.models import User
 
 
 """
@@ -9,14 +14,16 @@ from infrastructure.database import BaseAuditDBModel, DBModel
 """
 method_instrument = Table(
     "method_instrument",
-    DBModel.metadata,
+    BaseEntity.metadata,
     Column("method_uid", ForeignKey("method.uid"), primary_key=True),
     Column("instrument_uid", ForeignKey("instrument.uid"), primary_key=True),
 )
 
 
-class Method(BaseAuditDBModel):
-    """Analyses/Test Method"""
+class Method(AuditUser):
+    """Method
+    analytical method
+    """
 
     __tablename__ = "method"
 
@@ -31,12 +38,7 @@ class Method(BaseAuditDBModel):
     )
 
 
-# class MethodValidation(BaseAuditDBModel):
-#     """Method Validation Test"""
-#     pass
-
-
-class InstrumentType(BaseAuditDBModel):
+class InstrumentType(AuditUser):
     """Instrument Type"""
 
     __tablename__ = "instrument_type"
@@ -45,7 +47,7 @@ class InstrumentType(BaseAuditDBModel):
     description = Column(String, nullable=False)
 
 
-class Instrument(BaseAuditDBModel):
+class Instrument(AuditUser):
     """Instrument/Analyser"""
 
     __tablename__ = "instrument"
@@ -68,56 +70,125 @@ class Instrument(BaseAuditDBModel):
     )
 
 
-class InstrumentCalibration(BaseAuditDBModel):
-    """Instrument Caliberation Task"""
+class LaboratoryInstrument(AuditUser):
+    """Laboratory Instrument"""
+
+    __tablename__ = "laboratory_instrument"
+
+    instrument_uid = Column(String, ForeignKey("instrument.uid"), nullable=False)
+    instrument = relationship("Instrument", lazy="selectin")
+    lab_name = Column(String, nullable=False)
+    serial_number = Column(String, nullable=False)
+    date_commissioned = Column(DateTime, nullable=True)
+    date_decommissioned = Column(DateTime, nullable=True)
+
+
+class InstrumentCalibration(AuditUser):
+    """Laboratory Instrument Calibration Task
+    -   ensures the measurement accuracy of an instrument meets a known standard
+    -   Is it still accurate?
+    """
 
     __tablename__ = "instrument_calibration"
 
-    instrument_uid = Column(String, ForeignKey("instrument.uid"), nullable=True)
-    instrument = relationship("Instrument", lazy="selectin")
-    calibration_id = Column(String, index=True, unique=True, nullable=False)
-    date_reported = Column(DateTime, nullable=True)
+    laboratory_instrument_uid = Column(
+        String, ForeignKey("laboratory_instrument.uid"), nullable=False
+    )
+    laboratory_instrument = relationship("LaboratoryInstrument", lazy="selectin")
+    calibration_id = Column(String, index=True, unique=True, nullable=True)
+    date_reported = Column(DateTime, nullable=False)
     report_id = Column(String, index=True, unique=True, nullable=True)
-    performed_by = Column(String, nullable=True)
-    start_date = Column(DateTime, nullable=True)
-    end_date = Column(DateTime, nullable=True)
+    report = Column(LargeBinary, nullable=True)
+    performed_by = Column(String, nullable=False)
+    start_date = Column(DateTime, nullable=False)
+    end_date = Column(DateTime, nullable=False)
     # considerations to take into account before calibration
     notes_before = Column(String, nullable=True)
-    work_done = Column(String, nullable=True)
+    work_done = Column(String, nullable=False)
     remarks = Column(String, nullable=True)
 
 
-class CalibrationCertificate(BaseAuditDBModel):
+class CalibrationCertificate(AuditUser):
     """Instrument Calibration Certificate"""
 
     __tablename__ = "calibration_certificate"
 
-    instrument_uid = Column(String, ForeignKey("instrument.uid"), nullable=True)
-    instrument = relationship("Instrument", lazy="selectin")
+    laboratory_instrument_uid = Column(
+        String, ForeignKey("laboratory_instrument.uid"), nullable=False
+    )
+    laboratory_instrument = relationship("LaboratoryInstrument", lazy="selectin")
     certificate_code = Column(String, index=True, unique=True, nullable=False)
+    certificate = Column(LargeBinary, nullable=True)
     internal = Column(Boolean(), nullable=False)
     issuer = Column(String, nullable=True)
-    date_issued = Column(DateTime, nullable=True)
-    valid_from_date = Column(DateTime, nullable=True)
-    valid_to_date = Column(DateTime, nullable=True)
-    performed_by = Column(String, nullable=True)
-    approved_by = Column(String, nullable=True)
+    date_issued = Column(DateTime, nullable=False)
+    valid_from_date = Column(DateTime, nullable=False)
+    valid_to_date = Column(DateTime, nullable=False)
+    performed_by = Column(String, nullable=False)
+    approved_by = Column(String, nullable=False)
     remarks = Column(String, nullable=True)
 
+    @property
+    async def is_valid(self):
+        return datetime.now() < self.valid_to_date
 
-# class InstrumentCompetence(BaseAuditDBModel):
-#     instrument_uid = Column(String, ForeignKey("instrument.uid"), nullable=True)
-#     instrument = relationship("Instrument", lazy="selectin")
-#     description = Column(
-#         String, default="competent", nullable=True
-#     )
-#     user_uid = Column(String, ForeignKey("user.uid"), nullable=True)
-#     user = relationship(
-#         User, foreign_keys=[user_uid], backref="user_uid", lazy="selectin"
-#     )
-#     issue_date = Column(DateTime, nullable=False)
-#     expiry_date = Column(DateTime, nullable=False)
 
-#     @property
-#     async def is_valid(self):
-#         return datetime.now() < self.expiry_date
+# class MethodValidation(AuditUser):
+#     """Method Validation Test
+#     -   Establishing and confirming the analytical performance characteristics of a method
+#     -   Is it producing the right results?
+#
+#     Typical analytical characteristics evaluated during method validation may include:
+#         Accuracy
+#         Precision
+#         Specificity
+#         Detection Limit
+#         Quantitation Limit
+#         Linearity
+#         Range
+#     """
+#
+#     __tablename__ = "method_validation"
+#
+#     laboratory_instrument_uid = Column(String, ForeignKey("laboratory_instrument.uid"), nullable=False)
+#     laboratory_instrument = relationship("LaboratoryInstrument", lazy="selectin")
+
+
+# class MethodVerification(AuditUser):
+#     """Method Verification Test
+#     -   Assess the suitability of a method under actual conditions of use
+#     -   Is it working correctly
+#     """
+#
+#     __tablename__ = "method_verification"
+#
+#     laboratory_instrument_uid = Column(String, ForeignKey("laboratory_instrument.uid"), nullable=False)
+#     laboratory_instrument = relationship("LaboratoryInstrument", lazy="selectin")
+
+
+class InstrumentCompetence(AuditUser):
+    __tablename__ = "instrument_competence"
+
+    instrument_uid = Column(String, ForeignKey("instrument.uid"), nullable=False)
+    instrument = relationship("Instrument", lazy="selectin")
+    description = Column(String, default="competent", nullable=True)
+    user_uid = Column(String, ForeignKey("user.uid"), nullable=False)
+    user = relationship(
+        User, foreign_keys=[user_uid], backref="user_uid", lazy="selectin"
+    )
+    issue_date = Column(DateTime, nullable=False)
+    expiry_date = Column(DateTime, nullable=False)
+    internal = Column(Boolean, nullable=False)
+    competence = Column(LargeBinary, nullable=True)
+
+    @property
+    async def is_valid(self):
+        return datetime.now() < self.expiry_date
+
+
+# class MeasurementUncertainty(AuditUser):
+#     __tablename__ = "measurement_uncertainty"
+
+# https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8199534/
+# https://github.com/1966bc/Biovarase
+# https://github.com/aurthurm/sqc-r-scripts

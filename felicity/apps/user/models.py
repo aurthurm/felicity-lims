@@ -6,7 +6,7 @@ from sqlalchemy.orm import backref, relationship
 from felicity.apps.common.utils import is_valid_email
 from felicity.core.security import verify_password
 from . import conf
-from .abstract import AbstractAuth, AbstractBaseUser, DBModel, schemas
+from .abstract import AbstractAuth, AbstractBaseUser, BaseEntity, schemas
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -80,7 +80,7 @@ Many to Many Link between Group and User
 """
 user_groups = Table(
     "user_groups",
-    DBModel.metadata,
+    BaseEntity.metadata,
     Column("user_uid", ForeignKey("user.uid"), primary_key=True),
     Column("group_uid", ForeignKey("group.uid"), primary_key=True),
 )
@@ -90,7 +90,7 @@ Many to Many Link between Group and Permission
 """
 permission_groups = Table(
     "permission_groups",
-    DBModel.metadata,
+    BaseEntity.metadata,
     Column("permission_uid", ForeignKey("permission.uid"), primary_key=True),
     Column("group_uid", ForeignKey("group.uid"), primary_key=True),
 )
@@ -164,7 +164,7 @@ class User(AbstractBaseUser):
         return await self.update(update_in)
 
 
-class Permission(DBModel):
+class Permission(BaseEntity):
     __tablename__ = "permission"
 
     action = Column(String, nullable=False)  # e.g create, modify
@@ -181,7 +181,7 @@ class Permission(DBModel):
         return await super().update(**data)
 
 
-class Group(DBModel):
+class Group(BaseEntity):
     __tablename__ = "group"
 
     name = Column(String, unique=True, index=True, nullable=False)
@@ -221,13 +221,13 @@ class Group(DBModel):
 
 department_preference = Table(
     "department_preference",
-    DBModel.metadata,
+    BaseEntity.metadata,
     Column("department_uid", ForeignKey("department.uid"), primary_key=True),
     Column("preference_uid", ForeignKey("user_preference.uid"), primary_key=True),
 )
 
 
-class UserPreference(DBModel):
+class UserPreference(BaseEntity):
     """Preferences for System Personalisation"""
 
     __tablename__ = "user_preference"

@@ -4,7 +4,7 @@ from typing import List
 from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, String
 from sqlalchemy.orm import Mapped, relationship
 
-from felicity.apps import Auditable
+from felicity.apps import AuditHistory
 from felicity.apps.client.models import Client
 from felicity.apps.common.models import IdSequence
 from felicity.apps.patient import schemas
@@ -13,7 +13,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
-class Identification(Auditable):
+class Identification(AuditHistory):
     __tablename__ = "identification"
 
     name = Column(String, index=True, unique=True, nullable=True)
@@ -32,7 +32,7 @@ class Identification(Auditable):
         return await super().update(**data)
 
 
-class PatientIdentification(Auditable):
+class PatientIdentification(AuditHistory):
     __tablename__ = "patient_identification"
 
     identification_uid = Column(String, ForeignKey("identification.uid"), nullable=True)
@@ -59,7 +59,7 @@ class PatientIdentification(Auditable):
         return await super().update(**data)
 
 
-class Patient(Auditable):
+class Patient(AuditHistory):
     __tablename__ = "patient"
 
     # Identification

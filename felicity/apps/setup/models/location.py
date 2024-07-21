@@ -3,14 +3,14 @@ import logging
 from sqlalchemy import Boolean, Column, ForeignKey, String
 from sqlalchemy.orm import relationship
 
-from felicity.apps import BaseAuditDBModel
+from felicity.apps import AuditUser
 from felicity.apps.setup import schemas
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
-class LocationBase(BaseAuditDBModel):
+class LocationBase(AuditUser):
     __abstract__ = True
     code = Column(String, index=True, unique=True, nullable=True)
     name = Column(String)
@@ -63,7 +63,7 @@ class Province(LocationBase):
         return await super().update(**data)
 
 
-class Country(BaseAuditDBModel):
+class Country(AuditUser):
     __tablename__ = "country"
 
     name = Column(String, default="Zimbabwe")

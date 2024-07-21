@@ -1,8 +1,8 @@
 from domain.job.conf import JobStates
 from domain.job.ports.repository import IJobRepository
-from infrastructure.database.repository.base import BaseRepository
+from felicity.apps.repository.base import BaseRepository
 
-from infrastructure.database.job.entities import Job
+from felicity.apps.job.entities import Job
 
 
 class JobRepository(BaseRepository[Job], IJobRepository):

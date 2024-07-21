@@ -3,7 +3,7 @@ import logging
 from sqlalchemy import Column, DateTime, ForeignKey, String, Table
 from sqlalchemy.orm import relationship
 
-from felicity.apps import BaseAuditDBModel, DBModel
+from felicity.apps import AuditUser, BaseEntity
 from felicity.apps.setup.models import Department
 from felicity.apps.user.models import Group, User
 
@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 """
 notice_view: Table = Table(
     "notice_view",
-    DBModel.metadata,
+    BaseEntity.metadata,
     Column("notice_uid", ForeignKey("notice.uid"), primary_key=True),
     Column("user_uid", ForeignKey("user.uid"), primary_key=True),
 )
@@ -27,7 +27,7 @@ notice_view: Table = Table(
 """
 group_notice: Table = Table(
     "group_notice",
-    DBModel.metadata,
+    BaseEntity.metadata,
     Column("notice_uid", ForeignKey("notice.uid"), primary_key=True),
     Column("group_uid", ForeignKey("group.uid"), primary_key=True),
 )
@@ -37,13 +37,13 @@ group_notice: Table = Table(
 """
 department_notice: Table = Table(
     "department_notice",
-    DBModel.metadata,
+    BaseEntity.metadata,
     Column("notice_uid", ForeignKey("notice.uid"), primary_key=True),
     Column("department_uid", ForeignKey("department.uid"), primary_key=True),
 )
 
 
-class Notice(BaseAuditDBModel):
+class Notice(AuditUser):
     """Notice"""
 
     __tablename__ = "notice"

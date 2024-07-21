@@ -1,12 +1,12 @@
 from sqlalchemy import Boolean, Column, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 
-from felicity.apps import BaseAuditDBModel
+from felicity.apps import AuditUser
 from felicity.apps.setup import schemas
 from felicity.apps.user.models import User
 
 
-class Laboratory(BaseAuditDBModel):
+class Laboratory(AuditUser):
     __tablename__ = "laboratory"
 
     setup_name = Column(
@@ -47,7 +47,7 @@ class Laboratory(BaseAuditDBModel):
         return lab_setup
 
 
-class LaboratorySetting(BaseAuditDBModel):
+class LaboratorySetting(AuditUser):
     __tablename__ = "laboratory_setting"
 
     laboratory_uid = Column(String, ForeignKey("laboratory.uid"), nullable=True)
@@ -85,7 +85,7 @@ class LaboratorySetting(BaseAuditDBModel):
         return await super().update(**data)
 
 
-class Supplier(BaseAuditDBModel):
+class Supplier(AuditUser):
     """Supplier"""
 
     __tablename__ = "supplier"
@@ -103,7 +103,7 @@ class Supplier(BaseAuditDBModel):
         return await super().update(**data)
 
 
-class Manufacturer(BaseAuditDBModel):
+class Manufacturer(AuditUser):
     """Manufacturer"""
 
     __tablename__ = "manufacturer"
@@ -125,7 +125,7 @@ class Manufacturer(BaseAuditDBModel):
         return await super().update(**data)
 
 
-class Department(BaseAuditDBModel):
+class Department(AuditUser):
     """Departments/Sections"""
 
     __tablename__ = "department"
@@ -148,7 +148,7 @@ class Department(BaseAuditDBModel):
         return await super().update(**data)
 
 
-class Unit(BaseAuditDBModel):
+class Unit(AuditUser):
     """Unit for analyte measurement"""
 
     __tablename__ = "unit"

@@ -6,8 +6,8 @@ from domain.setup.ports.repository import (
     IDistrictRepository,
 )
 from domain.shared.ports.paginator.cursor import PageCursor
-from infrastructure.database.repository.base import BaseRepository
-from infrastructure.database.setup.entities import Country, Province, District
+from felicity.apps.repository.base import BaseRepository
+from felicity.apps.setup.entities import Country, Province, District
 
 
 class CountryRepository(BaseRepository[Country], ICountryRepository):

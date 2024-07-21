@@ -1,13 +1,13 @@
 from sqlalchemy import Boolean, Column, ForeignKey, String
 from sqlalchemy.orm import backref, relationship
 
-from domain.user.conf import UserType
-from infrastructure.database import Auditable
-from infrastructure.database.setup.entities import District, Province
-from infrastructure.database.user.abstract import AbstractBaseUser
+from felicity.apps.abstract import AuditHistory
+from felicity.apps.setup.entities import District, Province
+from felicity.apps.user.abstract import AbstractBaseUser
+from felicity.apps.user.conf import CLIENT_CONTACT
 
 
-class Client(Auditable):
+class Client(AuditHistory):
     """Client/Facility"""
 
     __tablename__ = "client"
@@ -64,4 +64,4 @@ class ClientContact(AbstractBaseUser):
 
     @property
     def user_type(self):
-        return UserType.CLIENT_CONTACT
+        return CLIENT_CONTACT

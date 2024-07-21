@@ -2,12 +2,12 @@ from datetime import datetime
 
 from sqlalchemy import Column, Integer, String, DateTime
 
-from infrastructure.database import DBModel
+from felicity.apps.abstract import BaseEntity
 
 
-class IdSequence(DBModel):
+class IdSequence(BaseEntity):
     __tablename__ = "id_sequence"
 
     prefix = Column(String, nullable=False, unique=True)
     number = Column(Integer, nullable=False)
-    updated = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    updated = Column(DateTime, default=datetime.now, onupdate=datetime.now)

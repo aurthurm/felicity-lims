@@ -8,7 +8,7 @@ from felicity.apps.billing.exceptions import (
     CustomerAlreadyUsedVoucherException, InactiveTestBillException,
     InactiveVoucherCodeException, InvalidVoucherCodeException,
     VoucherCodeLimitExceededException, VoucherLimitExceededException)
-from felicity.apps.billing.models import (AnalysisDiscount, AnalysisPrice,
+from felicity.apps.billing.entities import (AnalysisDiscount, AnalysisPrice,
                                           ProfileDiscount, ProfilePrice,
                                           TestBill, TestBillTransaction,
                                           Voucher, VoucherCode,

@@ -5,7 +5,7 @@ from sqlalchemy import (Boolean, Column, DateTime, ForeignKey, Integer,
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import relationship
 
-from felicity.apps import Auditable, DBModel
+from felicity.apps import AuditHistory, BaseEntity
 from felicity.apps.common.models import IdSequence
 from felicity.apps.notification.utils import FelicityStreamer
 from felicity.apps.shipment import conf, schemas
@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 streamer = FelicityStreamer()
 
 
-class ReferralLaboratory(Auditable):
+class ReferralLaboratory(AuditHistory):
     __tablename__ = "referral_laboratory"
 
     name = Column(String, nullable=True)
@@ -42,7 +42,7 @@ class ReferralLaboratory(Auditable):
         return await super().update(**data)
 
 
-class Shipment(Auditable):
+class Shipment(AuditHistory):
     __tablename__ = "shipment"
 
     shipment_id = Column(String, index=True, unique=True, nullable=False)
@@ -125,7 +125,7 @@ class Shipment(Auditable):
         return await super().update(**data)
 
 
-class ShippedSample(DBModel):
+class ShippedSample(BaseEntity):
     """ShippedSample enables samples to be shipped multiple times
     A sample can be tracked through different shipments from inception to end
     """

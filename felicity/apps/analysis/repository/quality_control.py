@@ -5,9 +5,9 @@ from domain.analysis.ports.repository.quality_control import (
     IQCTemplateRepository,
 )
 
-from infrastructure.database.repository.base import BaseRepository
+from felicity.apps.repository.base import BaseRepository
 
-from infrastructure.database.analysis.entities.quality_control import (
+from felicity.apps.analysis.entities.quality_control import (
     QCSet,
     QCReference,
     QCLevel,

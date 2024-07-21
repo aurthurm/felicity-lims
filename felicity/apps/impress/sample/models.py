@@ -5,7 +5,7 @@ from sqlalchemy import (Boolean, Column, DateTime, ForeignKey, LargeBinary,
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import relationship
 
-from felicity.apps import Auditable
+from felicity.apps import AuditHistory
 from felicity.apps.analysis.models.analysis import Sample
 from felicity.apps.impress.sample.schemas import (ReportImpressCreate,
                                                   ReportImpressUpdate)
@@ -18,7 +18,7 @@ logger = logging.getLogger(__name__)
 streamer = FelicityStreamer()
 
 
-class ReportImpress(Auditable):
+class ReportImpress(AuditHistory):
     __tablename__ = "report_impress"
 
     state = Column(String)  # preliminary, final, invalidated

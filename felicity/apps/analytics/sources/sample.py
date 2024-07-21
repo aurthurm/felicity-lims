@@ -6,13 +6,13 @@ from sqlalchemy import text
 from sqlalchemy.future import select
 from sqlalchemy.sql import func
 
-from felicity.database.base_class import DBModel
+from felicity.database.base_class import BaseEntity
 from felicity.database.session import async_session_factory
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-ModelType = TypeVar("ModelType", bound=DBModel)
+ModelType = TypeVar("ModelType", bound=BaseEntity)
 
 
 class SampleAnalyticsInit(Generic[ModelType]):

@@ -2,8 +2,8 @@ from domain.worksheet.ports.repository import (
     IWorkSheetRepository,
     IWorkSheetTemplateRepository,
 )
-from infrastructure.database.repository.base import BaseRepository
-from infrastructure.database.worksheet.entities import WorkSheet, WorkSheetTemplate
+from felicity.apps.repository.base import BaseRepository
+from felicity.apps.worksheet.entities import WorkSheet, WorkSheetTemplate
 from domain.shared.ports.paginator.cursor import PageCursor
 import sqlalchemy as sa
 

@@ -1,10 +1,10 @@
 from sqlalchemy import Boolean, Column, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 
-from infrastructure.database import BaseAuditDBModel
+from felicity.apps.abstract import AuditUser
 
 
-class StoreRoom(BaseAuditDBModel):
+class StoreRoom(AuditUser):
     """Store Room"""
 
     __tablename__ = "store_room"
@@ -13,7 +13,7 @@ class StoreRoom(BaseAuditDBModel):
     description = Column(String, nullable=False)
 
 
-class StorageLocation(BaseAuditDBModel):
+class StorageLocation(AuditUser):
     """Storage Location
     e.g: Fridge, CupBoard, Floor, Box, etc
     """
@@ -26,7 +26,7 @@ class StorageLocation(BaseAuditDBModel):
     store_room = relationship(StoreRoom, backref="storage_locations", lazy="selectin")
 
 
-class StorageSection(BaseAuditDBModel):
+class StorageSection(AuditUser):
     """Storage Location Section/Compartment
     e.g: Shelve, Tray, Rack, etc
     """
@@ -43,7 +43,7 @@ class StorageSection(BaseAuditDBModel):
     )
 
 
-class StorageContainer(BaseAuditDBModel):
+class StorageContainer(AuditUser):
     """Storage Carrier
     e.g: Sample K-Lite, etc
     """

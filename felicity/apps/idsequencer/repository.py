@@ -2,16 +2,15 @@ from datetime import datetime
 from sqlalchemy.dialects.postgresql import insert
 
 
-from domain.idsequence.ports.repository import IIdSequenceRepository
-from domain.idsequence.exception import SequenceGenerateError
-from infrastructure.database.repository.base import BaseRepository
-from infrastructure.database.idsequencer.entities import IdSequence
+from felicity.apps.idsequencer.exception import SequenceGenerateError
+from felicity.apps.idsequencer.entities import IdSequence
+from felicity.apps.abstract import BaseRepository
 
 SEQUENCE_BEGIN = 5
 SEQUENCE_CUTOFF = 10
 
 
-class IdSequenceRepository(BaseRepository[IdSequence], IIdSequenceRepository):
+class IdSequenceRepository(BaseRepository[IdSequence]):
     def __init__(self) -> None:
         self.model = IdSequence
         super().__init__()

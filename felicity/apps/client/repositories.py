@@ -1,16 +1,14 @@
-from domain.client.ports.repository import IClientRepository, IClientContactRepository
-from domain.shared.ports.paginator.cursor import PageCursor
 
-from infrastructure.database.repository.base import BaseRepository
-
-from infrastructure.database.client.entities import Client, ClientContact
+from felicity.apps.client.entities import Client, ClientContact
 import sqlalchemy as sa
 
+from felicity.database.paging import PageCursor
+from felicity.database.repository import BaseRepository
 
-class ClientRepository(BaseRepository[Client], IClientRepository):
+
+class ClientRepository(BaseRepository[Client]):
     def __init__(self) -> None:
-        self.model = Client
-        super().__init__()
+        super().__init__(Client)
 
     async def paginate_with_cursors(
         self,
@@ -40,7 +38,7 @@ class ClientRepository(BaseRepository[Client], IClientRepository):
 
             filters = {sa.or_: _or_}
 
-        return super().paginate(
+        return super().paginate_with_cursors(
             page_size=page_size,
             after_cursor=after_cursor,
             before_cursor=before_cursor,
@@ -49,7 +47,6 @@ class ClientRepository(BaseRepository[Client], IClientRepository):
         )
 
 
-class ClientContactRepository(BaseRepository[ClientContact], IClientContactRepository):
+class ClientContactRepository(BaseRepository[ClientContact]):
     def __init__(self) -> None:
-        self.model = ClientContact
-        super().__init__()
+        super().__init__(ClientContact)

@@ -4,8 +4,8 @@ from domain.user.ports.repository import (
     IPermissionRepository,
     IGroupRepository,
 )
-from infrastructure.database.repository.base import BaseRepository
-from infrastructure.database.user.entities import (
+from felicity.apps.repository.base import BaseRepository
+from felicity.apps.user.entities import (
     User,
     Permission,
     Group,

@@ -1,8 +1,8 @@
 from sqlalchemy import Boolean, Column, ForeignKey, String, Table
 from sqlalchemy.orm import relationship
 
-from infrastructure.database import DBModel
-from infrastructure.database.user.abstract import AbstractBaseUser
+from felicity.apps.abstract import BaseEntity
+from felicity.apps.user.abstract import AbstractBaseUser
 
 
 """
@@ -10,7 +10,7 @@ Many to Many Link between Group and User
 """
 user_groups = Table(
     "user_groups",
-    DBModel.metadata,
+    BaseEntity.metadata,
     Column("user_uid", ForeignKey("user.uid"), primary_key=True),
     Column("group_uid", ForeignKey("group.uid"), primary_key=True),
 )
@@ -20,7 +20,7 @@ Many to Many Link between Group and Permission
 """
 permission_groups = Table(
     "permission_groups",
-    DBModel.metadata,
+    BaseEntity.metadata,
     Column("permission_uid", ForeignKey("permission.uid"), primary_key=True),
     Column("group_uid", ForeignKey("group.uid"), primary_key=True),
 )
@@ -38,14 +38,14 @@ class User(AbstractBaseUser):
     user_type = Column(String, nullable=True)
 
 
-class Permission(DBModel):
+class Permission(BaseEntity):
     __tablename__ = "permission"
     action = Column(String, nullable=False)  # e.g create, modify
     target = Column(String, nullable=False)  # e.g sample, worksheet
     active = Column(Boolean(), default=True)
 
 
-class Group(DBModel):
+class Group(BaseEntity):
     __tablename__ = "group"
     name = Column(String, unique=True, index=True, nullable=False)
     keyword = Column(

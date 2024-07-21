@@ -1,8 +1,8 @@
 from domain.analysis.ports.repository.quality_control import IQCSetRepository
 from domain.analysis.ports.repository.result import IResultMutationRepository, IAnalysisResultRepository
-from infrastructure.database.analysis.entities.quality_control import QCSet
-from infrastructure.database.analysis.entities.results import ResultMutation, AnalysisResult
-from infrastructure.database.repository.base import BaseRepository
+from felicity.apps.analysis.entities.quality_control import QCSet
+from felicity.apps.analysis.entities.results import ResultMutation, AnalysisResult
+from felicity.apps.repository.base import BaseRepository
 
 
 class QCSetRepository(BaseRepository[QCSet], IQCSetRepository):

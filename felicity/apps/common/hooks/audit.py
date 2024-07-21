@@ -6,7 +6,7 @@ from sqlalchemy import inspect
 from sqlalchemy.orm import class_mapper
 from sqlalchemy.orm.attributes import get_history
 
-from felicity.apps.audit.models import AuditLog
+from felicity.apps.auditlog.models import AuditLog
 from felicity.apps.common.hooks import conf
 
 logging.basicConfig(level=logging.INFO)

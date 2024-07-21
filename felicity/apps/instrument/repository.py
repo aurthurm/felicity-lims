@@ -1,30 +1,25 @@
 import sqlalchemy as sa
 
-from domain.instrument.ports.repository import (
-    IMethodRepository,
-    IInstrumentRepository,
-    IInstrumentTypeRepository,
-    IInstrumentCalibrationRepository,
-    ICalibrationCertificateRepository,
-)
-from domain.shared.ports.paginator.cursor import PageCursor
-from infrastructure.database.instrument.entities import (
+
+from felicity.apps.instrument.entities import (
+    InstrumentCompetence,
+    LaboratoryInstrument,
     Method,
     Instrument,
     InstrumentType,
     InstrumentCalibration,
     CalibrationCertificate,
 )
-from infrastructure.database.repository.base import BaseRepository
+from felicity.apps.abstract import BaseRepository
+from felicity.database.paging import PageCursor
 
 SEQUENCE_BEGIN = 5
 SEQUENCE_CUTOFF = 10
 
 
-class MethodRepository(BaseRepository[Method], IMethodRepository):
+class MethodRepository(BaseRepository[Method]):
     def __init__(self) -> None:
-        self.model = Method
-        super().__init__()
+        super().__init__(Method)
 
     async def paginate_with_cursors(
             self,
@@ -45,15 +40,14 @@ class MethodRepository(BaseRepository[Method], IMethodRepository):
 
             filters = {sa.or_: _or_}
 
-        return await super().paginate(
+        return await super().paginate_with_cursors(
             page_size, after_cursor, before_cursor, filters, sort_by
         )
 
 
-class InstrumentRepository(BaseRepository[Instrument], IInstrumentRepository):
+class InstrumentRepository(BaseRepository[Instrument]):
     def __init__(self) -> None:
-        self.model = Instrument
-        super().__init__()
+        super().__init__(Instrument)
 
     async def paginate_with_cursors(
             self,
@@ -83,17 +77,22 @@ class InstrumentRepository(BaseRepository[Instrument], IInstrumentRepository):
 
             filters = {sa.or_: _or_}
 
-        return await super().paginate(
+        return await super().paginate_with_cursors(
             page_size, after_cursor, before_cursor, filters, sort_by
         )
 
+class LaboratoryInstrumentRepository(
+    BaseRepository[LaboratoryInstrument],
+):
+    def __init__(self,):
+        super().__init__(LaboratoryInstrument)
+
 
 class InstrumentTypeRepository(
-    BaseRepository[InstrumentType], IInstrumentTypeRepository
+    BaseRepository[InstrumentType]
 ):
     def __init__(self) -> None:
-        self.model = InstrumentType
-        super().__init__()
+        super().__init__(InstrumentType)
 
     async def paginate_with_cursors(
             self,
@@ -114,22 +113,28 @@ class InstrumentTypeRepository(
 
             filters = {sa.or_: _or_}
 
-        return await super().paginate(
+        return await super().paginate_with_cursors(
             page_size, after_cursor, before_cursor, filters, sort_by
         )
 
 
 class InstrumentCalibrationRepository(
-    BaseRepository[InstrumentCalibration], IInstrumentCalibrationRepository
+    BaseRepository[InstrumentCalibration]
 ):
     def __init__(self) -> None:
-        self.model = InstrumentCalibration
-        super().__init__()
+        super().__init__(InstrumentCalibration)
 
 
 class CalibrationCertificateRepository(
-    BaseRepository[CalibrationCertificate], ICalibrationCertificateRepository
+    BaseRepository[CalibrationCertificate]
 ):
     def __init__(self) -> None:
-        self.model = CalibrationCertificate
-        super().__init__()
+        super().__init__(CalibrationCertificate)
+
+
+class InstrumentCompetenceRepository(
+    BaseRepository[InstrumentCompetence],
+):
+    def __init__(self,):
+        super().__init__(InstrumentCompetence)
+

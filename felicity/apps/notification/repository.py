@@ -4,9 +4,9 @@ from domain.notification.ports.repository import (
     INotificationRepository,
 )
 
-from infrastructure.database.repository.base import BaseRepository
+from felicity.apps.repository.base import BaseRepository
 
-from infrastructure.database.notification.entities import (
+from felicity.apps.notification.entities import (
     ActivityFeed,
     ActivityStream,
     Notification,

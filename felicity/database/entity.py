@@ -1,10 +1,11 @@
 from sqlalchemy import Column, String
 from sqlalchemy.orm import DeclarativeBase
+from sqlalchemy.ext.asyncio import AsyncAttrs
 
 from core.uid_gen import get_flake_uid
 
 
-class BaseEntity(DeclarativeBase):
+class BaseEntity(DeclarativeBase, AsyncAttrs):
     __name__: str
     __abstract__ = True
     __mapper_args__ = {"eager_defaults": True}

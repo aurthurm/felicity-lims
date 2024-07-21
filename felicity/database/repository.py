@@ -10,25 +10,29 @@ from sqlalchemy import select
 from sqlalchemy import update
 from sqlalchemy.sql import func
 from sqlalchemy.sql.expression import bindparam
+from sqlalchemy.orm import DeclarativeBase
 
 from felicity.apps.common.utils.serializer import marshaller
-from felicity.database.paginator.cursor import PageCursor, EdgeNode, PageInfo
 from felicity.database.queryset import (
     QueryBuilder,
     settable_attributes,
     smart_query,
 )
+from felicity.database.paging import (
+    PageCursor, EdgeNode, PageInfo
+)
 from felicity.database.session import async_session
 
-M = TypeVar("M")
+M = TypeVar("M", bound=DeclarativeBase)
 
 
 class BaseRepository(Generic[M]):
     async_session = async_session
     model: M = None
 
-    def __init__(self) -> None:
-        self._qb = QueryBuilder(model=self.model)
+    def __init__(self, model: M) -> None:
+        self.model = model
+        self.queryset = QueryBuilder(model=self.model)
 
     @staticmethod
     def fill(m: M, **kwargs):
@@ -149,14 +153,14 @@ class BaseRepository(Generic[M]):
         return results.unique().scalars().all()
 
     async def get(self, **kwargs) -> M:
-        stmt = self._qb.where(**kwargs)
+        stmt = self.queryset.where(**kwargs)
         async with self.async_session() as session:
             results = await session.execute(stmt)
             found = results.scalars().first()
         return found
 
     async def get_all(self, **kwargs) -> list[M]:
-        stmt = self._qb.where(**kwargs)
+        stmt = self.queryset.where(**kwargs)
         async with self.async_session() as session:
             results = await session.execute(stmt)
             found = results.scalars().all()
@@ -170,7 +174,7 @@ class BaseRepository(Generic[M]):
     async def all_by_page(self, page: int = 1, limit: int = 20, **kwargs) -> dict:
         start = (page - 1) * limit
 
-        stmt = self._qb.where(**kwargs).limit(limit).offset(start)
+        stmt = self.queryset.where(**kwargs).limit(limit).offset(start)
         async with self.async_session() as session:
             results = await session.execute(stmt)
         found = results.scalars().all()
@@ -196,7 +200,7 @@ class BaseRepository(Generic[M]):
         except KeyError:
             pass
 
-        stmt = self._qb.where(**kwargs)
+        stmt = self.queryset.where(**kwargs)
         # if related:
         #     stmt.options(selectinload(related))
 
@@ -251,7 +255,7 @@ class BaseRepository(Generic[M]):
         :return: int
         """
         # filter_stmt = smart_query(query=select(cls), filters=filters) noqa
-        filter_stmt = self._qb.smart_query(filters=filters)
+        filter_stmt = self.queryset.smart_query(filters=filters)
         count_stmt = select(func.count(filter_stmt.c.uid)).select_from(filter_stmt)
         async with self.async_session() as session:
             res = await session.execute(count_stmt)
@@ -283,7 +287,7 @@ class BaseRepository(Generic[M]):
         if either:
             filters = {sa_or_: filters}
 
-        stmt = self._qb.smart_query(filters, sort_attrs)
+        stmt = self.queryset.smart_query(filters, sort_attrs)
         if limit:
             stmt = stmt.limit(limit)
         async with self.async_session() as session:
@@ -323,7 +327,7 @@ class BaseRepository(Generic[M]):
             if cursor_limit:
                 _filters.append({sa_or_: cursor_limit})
 
-        stmt = self._qb.smart_query(filters=_filters, sort_attrs=sort_by)
+        stmt = self.queryset.smart_query(filters=_filters, sort_attrs=sort_by)
 
         if kwargs.get("get_related"):
             # stmt = stmt.options(selectinload(get_related))   noqa

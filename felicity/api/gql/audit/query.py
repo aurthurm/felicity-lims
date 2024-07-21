@@ -4,7 +4,7 @@ import strawberry  # noqa
 
 from felicity.api.gql.audit.types import AuditLogType
 from felicity.api.gql.permissions import IsAuthenticated
-from felicity.apps.audit.models import AuditLog
+from felicity.apps.auditlog.models import AuditLog
 
 
 @strawberry.type

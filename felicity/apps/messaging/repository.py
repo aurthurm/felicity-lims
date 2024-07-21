@@ -2,8 +2,8 @@ from domain.messaging.ports.repository import (
     IMessageThreadRepository,
     IMessageRepository,
 )
-from infrastructure.database.messaging.entities import MessageThread, Message
-from infrastructure.database.repository.base import BaseRepository
+from felicity.apps.messaging.entities import MessageThread, Message
+from felicity.apps.repository.base import BaseRepository
 
 
 class MessageThreadRepository(BaseRepository[MessageThread], IMessageThreadRepository):

@@ -19,7 +19,7 @@ from domain.analysis.ports.repository.analysis import (
     IRejectionReasonRepository,
     ISampleRepository,
 )
-from infrastructure.database.analysis.entities.analysis import (
+from felicity.apps.analysis.entities.analysis import (
     CodingStandard,
     SampleType,
     SampleTypeCoding,
@@ -38,7 +38,7 @@ from infrastructure.database.analysis.entities.analysis import (
     RejectionReason,
     Sample,
 )
-from infrastructure.database.repository.base import BaseRepository
+from felicity.apps.repository.base import BaseRepository
 
 
 class CodingStandardRepository(

@@ -53,7 +53,7 @@ from domain.shipment.schemas import (
 )
 from domain.user.ports.service import IUserService
 from domain.user.schemas import User
-from infrastructure.database.analysis.entities.analysis import sample_analysis
+from felicity.apps.analysis.entities.analysis import sample_analysis
 
 
 class ReferralLaboratoryService(
