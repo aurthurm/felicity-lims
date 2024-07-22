@@ -1,22 +1,24 @@
 import sqlalchemy as sa
-from domain.user.ports.repository import (
-    IUserRepository,
-    IPermissionRepository,
-    IGroupRepository,
-)
-from felicity.apps.repository.base import BaseRepository
+
 from felicity.apps.user.entities import (
     User,
     Permission,
     Group,
+    UserAuth,
+    UserPreference,
 )
-from domain.shared.ports.paginator.cursor import PageCursor
+from felicity.database.paging import PageCursor
+from felicity.database.repository import BaseRepository
 
 
-class UserRepository(BaseRepository[User], IUserRepository):
+
+class UserAuthRepository(BaseRepository[UserAuth]):
     def __init__(self) -> None:
-        self.model = User
-        super().__init__()
+        super().__init__(UserAuth)
+
+class UserRepository(BaseRepository[User]):
+    def __init__(self) -> None:
+        super().__init__(User)
 
     async def paginate_with_cursors(
         self,
@@ -51,13 +53,17 @@ class UserRepository(BaseRepository[User], IUserRepository):
         )
 
 
-class PermissionRepository(BaseRepository[Permission], IPermissionRepository):
+class PermissionRepository(BaseRepository[Permission]):
     def __init__(self) -> None:
-        self.model = Permission
-        super().__init__()
+        super().__init__(Permission)
 
 
-class GroupRepository(BaseRepository[Group], IGroupRepository):
+class GroupRepository(BaseRepository[Group]):
     def __init__(self) -> None:
-        self.model = Group
-        super().__init__()
+        super().__init__(Group)
+
+
+
+class UserPreferenceRepository(BaseRepository[UserPreference]):
+    def __init__(self) -> None:
+        super().__init__(UserPreference)

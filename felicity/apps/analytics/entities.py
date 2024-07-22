@@ -1,7 +1,15 @@
+from typing import NoReturn
+
+try:
+    from typing import Self
+except ImportError:
+    from typing_extensions import Self
+
 from sqlalchemy import Column, DateTime, ForeignKey, String, Table
 from sqlalchemy.orm import relationship
 
-from felicity.apps.abstract import AuditUser
+from felicity.apps import AuditUser
+from . import conf, schemas
 
 """
 Many to Many Link between ReportMeta and Analysis
@@ -28,3 +36,10 @@ class ReportMeta(AuditUser):
     temp = Column(String, nullable=True)
     status = Column(String)
     sample_states = Column(String)
+
+    async def set_final(self, status: str, location: str | None = None) -> NoReturn:
+        if self.status != conf.report_states.READY:
+            self.location = location
+            self.status = status
+            self.temp = None
+            await self.save_async()

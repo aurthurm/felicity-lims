@@ -1,34 +1,27 @@
 from datetime import datetime
+from typing import List
+import logging
 
-from domain.analysis.conf import ResultStates
-from domain.analysis.ports.service.analysis import IAnalysisService
-from domain.analysis.ports.service.result import IAnalysisResultService
-from domain.analysis.schemas import (
-    AnalysisResult,
-    Analysis,
-    AnalysisResultCreate,
-    AnalysisResultUpdate,
+from felicity.apps.abstract.service import BaseService
+from felicity.apps.analysis import conf
+from felicity.apps.analysis.entities.analysis import Analysis, Sample
+from felicity.apps.analysis.entities.results import AnalysisResult
+from felicity.apps.analysis.schemas import AnalysisResultCreate, AnalysisResultUpdate
+from felicity.apps.reflex.repository import (
+    ReflexRuleRepository,
+    ReflexActionRepository,
+    ReflexBrainRepository,
+    ReflexBrainCriteriaRepository,
+    ReflexBrainFinalRepository,
+    ReflexBrainAdditionRepository,
 )
-from domain.exceptions import AlreadyExistsError
-from domain.reflex.ports import ReflexCriteriaIn, ReflexAddNewIn, ReflexFinalIn
-from domain.reflex.ports.repository import (
-    IReflexRuleRepository,
-    IReflexActionRepository,
-    IReflexBrainRepository,
-    IReflexBrainCriteriaRepository,
-    IReflexBrainFinalRepository,
-    IReflexBrainAdditionRepository,
-)
-from domain.reflex.ports.service import (
-    IReflexRuleService,
-    IReflexBrainAdditionService,
-    IReflexBrainFinalService,
-    IReflexBrainCriteriaService,
-    IReflexBrainService,
-    IReflexActionService,
-    IReflexEngineService,
-)
-from domain.reflex.schemas import (
+from felicity.apps.reflex.schemas import (
+    ReflexBrainAdditionCreate,
+    ReflexBrainAdditionUpdate,
+    ReflexBrainCriteriaCreate,
+    ReflexBrainCriteriaUpdate,
+    ReflexBrainFinalCreate,
+    ReflexBrainFinalUpdate,
     ReflexRule,
     ReflexBrainAddition,
     ReflexBrainFinal,
@@ -42,454 +35,233 @@ from domain.reflex.schemas import (
     ReflexActionCreate,
     ReflexActionUpdate,
 )
-from domain.shared.services import BaseService
-from domain.shared.utils.serialisers import marshal
-from domain.user.schemas import User
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 
-class ReflexRuleService(BaseService[ReflexRule], IReflexRuleService):
-    def __init__(self, repository: IReflexRuleRepository):
-        self.repository = repository
-
-    async def create(self, name: str, description: str, user: User) -> ReflexRule:
-        payload = locals()
-
-        exists = await self.get(name=name)
-        if exists:
-            raise AlreadyExistsError(f"Reflex Rule name must be unique")
-
-        incoming: dict = {
-            "created_by_uid": user.uid,
-            "updated_by_uid": user.uid,
-        }
-        for k, v in payload.__dict__.items():
-            incoming[k] = v
-
-        obj_in = ReflexRuleCreate(**incoming)
-        return await super().create(**marshal(obj_in))
-
-    async def update(
-        self, info, uid: str, name: str, description: str, user: User
-    ) -> ReflexRule:
-        payload = locals()
-
-        reflex_rule = await self.get(uid=uid)
-
-        obj_data = marshal(reflex_rule)
-        for field in obj_data:
-            if field in payload.__dict__:
-                try:
-                    setattr(reflex_rule, field, payload.__dict__[field])
-                except Exception as e:  # noqa
-                    pass
-
-        setattr(reflex_rule, "updated_by_uid", user.uid)
-
-        obj_in = ReflexRuleUpdate(**marshal(reflex_rule))
-        return await super().update(reflex_rule, **marshal(obj_in))
-
+class ReflexRuleService(BaseService[ReflexRule, ReflexRuleCreate, ReflexRuleUpdate]):
+    def __init__(self):
+        super().__init__(ReflexRuleRepository)
 
 class ReflexBrainAdditionService(
-    BaseService[ReflexBrainAddition], IReflexBrainAdditionService
+    BaseService[ReflexBrainAddition, ReflexBrainAdditionCreate, ReflexBrainAdditionUpdate]
 ):
-    def __init__(self, repository: IReflexBrainAdditionRepository):
-        self.repository = repository
+    def __init__(self):
+        super().__init__(ReflexBrainAdditionRepository)
 
 
-class ReflexBrainFinalService(BaseService[ReflexBrainFinal], IReflexBrainFinalService):
-    def __init__(self, repository: IReflexBrainFinalRepository):
-        self.repository = repository
+class ReflexBrainFinalService(BaseService[ReflexBrainFinal, ReflexBrainFinalCreate, ReflexBrainFinalUpdate]):
+    def __init__(self):
+        super().__init__(ReflexBrainFinalRepository)
 
 
 class ReflexBrainCriteriaService(
-    BaseService[ReflexBrainCriteria], IReflexBrainCriteriaService
+    BaseService[ReflexBrainCriteria, ReflexBrainCriteriaCreate, ReflexBrainCriteriaUpdate]
 ):
-    def __init__(self, repository: IReflexBrainCriteriaRepository):
-        self.repository = repository
+    def __init__(self):
+        super().__init__(ReflexBrainCriteriaRepository)
 
 
-class ReflexBrainService(BaseService[ReflexBrain], IReflexBrainService):
-    def __init__(
-        self, repository: IReflexBrainRepository, analysis_service: IAnalysisService
-    ):
-        self.repository = repository
-        self.analysis_service = analysis_service
+class ReflexBrainService(BaseService[ReflexBrain, ReflexBrainCreate, ReflexBrainUpdate]):
+    def __init__(self):
+        super().__init__(ReflexBrainRepository)
+      
 
-    async def create(
-        self,
-        reflex_action_uid: str,
-        description: str,
-        analyses_values: list[ReflexCriteriaIn] | None,
-        add_new: list[ReflexAddNewIn] | None,
-        finalise: list[ReflexFinalIn] | None,
-        user: User,
-    ) -> ReflexBrain:
-        payload = locals()
-
-        incoming: dict = {
-            "reflex_action_uid": reflex_action_uid,
-            "description": description,
-            "created_by_uid": user.uid,
-            "updated_by_uid": user.uid,
-        }
-        obj_in = ReflexBrainCreate(**incoming)
-        brain = await super().create(**marshal(obj_in))
-
-        _analyses_values = []
-        for criteria in analyses_values:
-            _anal = await self.analysis_service.get(uid=criteria.analysis_uid)
-            assoc = ReflexBrainCriteria()  # ??
-            assoc.operator = criteria.operator
-            assoc.value = criteria.value
-            assoc.analysis_uid = _anal.uid
-            assoc.reflex_brain_uid = brain.uid
-            _analyses_values.append(assoc)
-        brain.analyses_values = _analyses_values
-
-        _finalise = []
-        for final in finalise:
-            _anal = await self.analysis_service.get(uid=final.analysis_uid)
-            assoc = ReflexBrainFinal()
-            assoc.value = final.value
-            assoc.analysis_uid = _anal.uid
-            assoc.reflex_brain_uid = brain.uid
-            _finalise.append(assoc)
-        brain.finalise = _finalise
-
-        _add_new = []
-        for add_n in add_new:
-            _anal = await self.analysis_service.get(uid=add_n.analysis_uid)
-            assoc = ReflexBrainAddition()
-            assoc.count = add_n.count
-            assoc.analysis_uid = _anal.uid
-            assoc.reflex_brain_uid = brain.uid
-            _add_new.append(assoc)
-        brain.add_new = _add_new
-
-        await super().update(brain, **marshal(brain))
-        return await self.repository.get_related(
-            uid=brain.uid,
-            related=["add_new.analysis", "analyses_values.analysis"],
-        )
-
-    async def update(
-        self,
-        info,
-        uid: str,
-        reflex_action_uid: str,
-        description: str,
-        analyses_values: list[ReflexCriteriaIn] | None,
-        add_new: list[ReflexAddNewIn] | None,
-        finalise: list[ReflexFinalIn] | None,
-        user: User,
-    ) -> ReflexBrain:
-        payload = locals()
-
-        reflex_brain = await self.get(uid=uid)
-
-        obj_data = reflex_brain.to_dict()
-        for field in obj_data:
-            if field in payload.__dict__:
-                try:
-                    setattr(reflex_brain, field, payload.__dict__[field])
-                except Exception as e:  # noqa
-                    pass
-
-        setattr(reflex_brain, "updated_by_uid", user.uid)
-
-        _analyses_values = []
-        for criteria in analyses_values:
-            _anal = await self.analysis_service.get(uid=criteria.analysis_uid)
-            assoc = ReflexBrainCriteria()
-            assoc.operator = criteria.operator
-            assoc.value = criteria.value
-            assoc.analysis_uid = _anal.uid
-            assoc.reflex_brain_uid = reflex_brain.uid
-            _analyses_values.append(assoc)
-        reflex_brain.analyses_values = _analyses_values
-
-        _finalise = []
-        for final in finalise:
-            _anal = await self.analysis_service.get(uid=final.analysis_uid)
-            assoc = ReflexBrainFinal()
-            assoc.value = final.value
-            assoc.analysis_uid = _anal.uid
-            assoc.reflex_brain_uid = reflex_brain.uid
-            _finalise.append(assoc)
-        reflex_brain.finalise = _finalise
-
-        _add_new = []
-        for add_n in add_new:
-            _anal = await self.analysis_service.get(uid=add_n.analysis_uid)
-            assoc = ReflexBrainAddition()
-            assoc.count = add_n.count
-            assoc.analysis_uid = _anal.uid
-            assoc.reflex_brain_uid = reflex_brain.uid
-            _add_new.append(assoc)
-        reflex_brain.add_new = _add_new
-
-        obj_in = ReflexBrainUpdate(**marshal(reflex_brain))
-        return await super().update(reflex_brain, **marshal(obj_in))
+class ReflexActionService(BaseService[ReflexAction, ReflexActionCreate, ReflexActionUpdate]):
+    def __init__(self):
+        super().__init__(ReflexActionRepository)
 
 
-class ReflexActionService(BaseService[ReflexAction], IReflexActionService):
-    def __init__(
-        self, repository: IReflexActionRepository, analysis_service: IAnalysisService
-    ):
-        self.repository = repository
-        self.analysis_service = analysis_service
-
-    async def create(
-        self,
-        level: int,
-        description: str,
-        analyses: list[str],
-        reflex_rule_uid: str,
-        sample_type_uid: str | None,
-        user: User,
-    ) -> ReflexAction:
-        payload = locals()
-
-        incoming: dict = {
-            "created_by_uid": user.uid,
-            "updated_by_uid": user.uid,
-        }
-        for k, v in payload.__dict__.items():
-            incoming[k] = v
-
-        del incoming["analyses"]
-
-        obj_in = ReflexActionCreate(**incoming)
-
-        _analyses = []
-        for _anal_uid in analyses:
-            _anal = await self.analysis_service.get(uid=_anal_uid)
-            _analyses.append(_anal)
-        obj_in.analyses = _analyses
-
-        return await super().create(**marshal(obj_in))
-
-    async def update(
-        self,
-        info,
-        uid: str,
-        level: int,
-        description: str,
-        analyses: list[str],
-        reflex_rule_uid: str,
-        sample_type_uid: str | None,
-        user: User,
-    ) -> ReflexAction:
-        payload = locals()
-
-        reflex_action = await self.get(uid=uid)
-
-        obj_data = marshal(reflex_action)
-        for field in obj_data:
-            if field in payload.__dict__:
-                try:
-                    setattr(reflex_action, field, payload.__dict__[field])
-                except Exception as e:  # noqa
-                    pass
-
-        setattr(reflex_action, "updated_by_uid", user.uid)
-
-        _analyses = []
-        for _anal_uid in analyses:
-            _anal = await self.analysis_service.get(uid=_anal_uid)
-            _analyses.append(_anal)
-        setattr(reflex_action, "analyses", _analyses)
-
-        obj_in = ReflexActionUpdate(**marshal(reflex_action))
-        return await super().update(reflex_action, **marshal(obj_in))
-
-
-class ReflexEngineService(IReflexEngineService):
-    _siblings: list[AnalysisResult] = []
-    _cousins: list[AnalysisResult] = []
+class ReflexEngineService:
+    _siblings: List[AnalysisResult] = None
+    _cousins: List[AnalysisResult] = None
+    _results_pool: List[AnalysisResult] = None
     _reflex_action: ReflexAction = None
-    user = None
-    analysis_result = None
-    analysis = None
 
-    def __init__(
-        self,
-        reflex_action_service: IReflexActionService,
-        analysis_result_service: IAnalysisResultService,
-    ):
-        self.reflex_action_service = reflex_action_service
-        self.analysis_result_service = analysis_result_service
-
-    def init(self, analysis_result: AnalysisResult, user: User):
-        self.analysis_result = analysis_result
-        self.user = user
+    def __init__(self, analysis_result, user):
+        self.analysis_result: AnalysisResult = analysis_result
+        self.sample: Sample = analysis_result.sample
         self.analysis: Analysis = analysis_result.analysis
+        self.user = user
 
     # TODO: apply set_reflex_actions for already created analyses
 
-    async def set_reflex_actions(self, analysis_results: list[AnalysisResult]):
+    @classmethod
+    async def set_reflex_actions(cls, analysis_results: List[AnalysisResult]):
         """Prepares an analysis result for reflex testing"""
         for result in analysis_results:
-            # logger.debug(f"set_reflex_actions for : {result}")
-            action = await self.reflex_action_service.get(
-                **{"analyses___uid": result.analysis_uid, "level": 1}
+            logger.debug(f"set_reflex_actions for : {result}")
+            filters = {"analyses___uid": result.analysis_uid, "level": 1}
+            action: ReflexAction = await ReflexAction.get(
+                **filters
             )
             if action:
                 result.reflex_level = 1
-                await self.analysis_result_service.update(result, **marshal(result))
-                # logger.debug(f"set_reflex_actions done")
+                await result.save_async()
+                logger.debug(f"set_reflex_actions done")
 
     async def do_reflex(self):
-        # logger.info(
-        #     f"do_reflex level: {self.analysis_result.reflex_level} <> SampleId {self.sample.sample_id}"
-        # )
         if not self.analysis_result.reflex_level:
             return
+
+        logger.info(
+            f"do_reflex level: {self.analysis_result.reflex_level} <> SampleId {self.sample.sample_id}"
+        )
 
         filters = {
             "analyses___uid": self.analysis.uid,
             "level": self.analysis_result.reflex_level,
         }
-        action = await self.reflex_action_service.get(**filters)
+        action: ReflexAction = await ReflexAction.get(
+            **filters
+        )
         if not action:
-            # logger.info(f"No reflex action found for analysis: {self.analysis.name}")
+            logger.info(f"No reflex action found for analysis: {self.analysis.name}")
             return
         self._reflex_action = action
-        # logger.info(f"Reflex action found for analysis: {self.analysis.name}")
-        # logger.info(f"Reflex action description: {action.description}")
+        logger.info(f"Reflex action found for analysis: {self.analysis.name}")
+        logger.info(f"Reflex action description: {action.description}")
 
-        # logger.info(f"Reflex Brains: {self._reflex_action.brains}")
+        logger.info(f"Reflex Brains: {self._reflex_action.brains}")
         for brain in self._reflex_action.brains:
             await self.decide(brain)
 
+    @staticmethod
+    def can_decide(results_pool: list[AnalysisResult]):
+        """If all results in consideration are approved then a decision can be made
+        """
+        if not results_pool:
+            return False
+        return all([r.status == conf.states.result.APPROVED for r in results_pool])
+
     async def decide(self, brain: ReflexBrain):
-        # logger.info(f"Reflex Decision for brain: {brain}")
-        current_result = self.analysis_result
-        analyses_values = brain.analyses_values
+        logger.info(f"Reflex Decision for brain: {brain}")
 
-        # logger.info(f"Reflex brain analyses_values: {analyses_values}")
+        if not brain.analyses_values:
+            return
+        logger.info(f"Reflex brain analyses_values: {brain.analyses_values}")
 
-        # check whether related analysis must be cousins or siblings
-        av_uids = [criteria.analysis_uid for criteria in brain.analyses_values]
-        # logger.info(f"Reflex Decision av_uids: {av_uids}")
-        if not av_uids:
+        results_pool = await self.get_results_pool(brain.analyses_values)
+        logger.info(f"relevant results_pool: {[r.result for r in results_pool]}")
+
+        if not self.can_decide(results_pool):
+            logger.info(f"A decision cannot be made -> aborting relex: {[r.status for r in results_pool]}")
             return
 
-        if len(set(av_uids)) == 1:
-            results_pool = await self.siblings()
-            # logger.info(f"reflex results pool -> siblings: {results_pool}")
-        else:
-            results_pool = await self.cousins()
-            # logger.info(f"reflex results pool -> cousins: {results_pool}")
+        # 1. criteria_values must match results_pool
+        criteria_values = frozenset([
+            (criteria.analysis_uid, criteria.value) for criteria in brain.analyses_values
+        ])
+        logger.info(f"criteria_values: {criteria_values}")
+        results_values = frozenset([
+            (result.analysis_uid, result.result) for result in results_pool
+        ])
+        logger.info(f"results_values: {results_values}")
 
-        matches = []
+        is_match = criteria_values == results_values
 
-        # 1. the current result must one of the analysis values
-        criteria_values = [
-            (criteria.analysis_uid, criteria.value) for criteria in analyses_values
-        ]
-        _criteria_values = criteria_values
-        # logger.info(f"Reflex criteria_values: {criteria_values}")
-
-        if (current_result.analysis_uid, current_result.result) not in criteria_values:
-            # logger.info(
-            #     f"{(current_result.analysis_uid, current_result.result)} not in criteria_values"
-            # )
-            return
-        else:
-            # logger.info(
-            #     f"{(current_result.analysis_uid, current_result.result)} in avs"
-            # )
-            matches.append(True)
-            criteria_values.remove((current_result.analysis_uid, current_result.result))
-
-        # 2. check for more result matched between the analysis values and results pool
-        for _cv in _criteria_values:
-            _anal = list(filter(lambda res: res.analysis_uid == _cv[0], results_pool))
-            # get latest
-            _anal = sorted(_anal, key=lambda x: x.created_at)
-            # logger.info(f"_anal: {_anal}")
-            #
-            # logger.info(f"_anal[0].result: {_anal[0].result} :: _av[1]: {_cv[1]}")
-
-            if _anal[0].result == _cv[1]:
-                matches.append(True)
-                criteria_values.remove((_anal[0].analysis_uid, _anal[0].result))
-            else:
-                matches.append(False)
-
-        # 3. If brain criteria expectations are met then take action
-        # logger.info(f"matches: {matches}")
-        if all(matches):
-            # logger.info(f"matches found")
+        # 2. If brain criteria expectations are met then take action
+        if is_match:
+            logger.info("Perfect match yay!")
             # Add new Analyses
-            # logger.info(f"add_new: {brain.add_new}")
+            logger.info(f"add_new... : {brain.add_new}")
             for assoc in brain.add_new:
                 for i in list(range(assoc.count)):
                     await self.create_analyte_for(assoc.analysis_uid)
             # Finalise Analyses
-            # logger.info(f"finalise: {brain.finalise}")
+            logger.info(f"finalise... : {brain.finalise}")
             for final in brain.finalise:
                 await self.create_final_for(final.analysis.uid, final.value)
+
+            # clean up
+            for r in results_pool:
+                if r.reportable:
+                    await r.hide_report()
         else:
-            # logger.info(f"no matches")
-            pass
+            logger.info("No matches found :)")
 
-    async def siblings(self):
-        """
-        Siblings of the current analysis result
-        Analysis Results from the same sample that share the same analysis
-        """
-        if self._siblings is None:
-            analysis_uid = self.analysis.uid
-            results = await self.analysis_result_service.get_all(
-                sample_uid=self.analysis_result.sample_uid
+    async def get_results_pool(self, criteria: list[ReflexBrainCriteria]):
+        total_criteria = len(criteria)
+        criteria_anals = list(set([cr.analysis_uid for cr in criteria]))
+        logger.info(f"criteria_anals: {criteria_anals}")
+
+        if self._results_pool is None:
+            results: List[AnalysisResult] = await self.sample.get_analysis_results()
+            self._results_pool = list(
+                filter(lambda result: result.analysis_uid in criteria_anals, results)
             )
-            # get siblings and exclude current analysis
-            self._siblings = list(
-                filter(
-                    lambda result: result.analysis_uid == analysis_uid
-                    and result.uid != self.analysis_result.uid,
-                    results,
+            if len(self._results_pool) > 1:
+                self._results_pool = list(
+                    filter(lambda result: result.uid != self.analysis_result.uid, self._results_pool)
                 )
-            )
-        return self._siblings
 
-    async def cousins(self):
-        """
-        Cousins of the current analysis result
-        Analysis Results from the same sample that do not share the current result's analysis
-        """
-        if self._cousins is None:
-            analysis_uid = self.analysis.uid
-            results = await self.analysis_result_service.get_all(
-                sample_uid=self.analysis_result.sample_uid
-            )
-            self._cousins = list(
-                filter(lambda result: result.analysis_uid != analysis_uid, results)
-            )
-        return self._cousins
+        logger.info(f"entire results_pool: {[r.result for r in self._results_pool]}")
+        self._results_pool.sort(key=lambda x: x.created_at, reverse=True)
+        return self._results_pool[:total_criteria]
+
+    # async def siblings(self, latest_n: int = None):
+    #     """
+    #     Siblings of the current analysis result
+    #     Analysis Results from the same sample that share the same analysis
+    #     """
+    #     if self._siblings is None:
+    #         analysis_uid = self.analysis.uid
+    #         results: List[AnalysisResult] = await self.sample.get_analysis_results()
+    #         # get siblings and exclude current analysis
+    #         self._siblings = list(
+    #             filter(
+    #                 lambda result: result.analysis_uid == analysis_uid
+    #                                and result.uid != self.analysis_result.uid,
+    #                 results,
+    #             )
+    #         )
+    #
+    #     # Sort the siblings by created_at in descending order and get the first latest_n items
+    #     self._siblings.sort(key=lambda x: x.created_at, reverse=True)
+    #     if latest_n:
+    #         return self._siblings[:latest_n]
+    #     return self._siblings
+    #
+    # async def cousins(self, latest_n: int = None):
+    #     """
+    #     Cousins of the current analysis result
+    #     Analysis Results from the same sample that do not share the current result's analysis
+    #     """
+    #     if self._cousins is None:
+    #         analysis_uid = self.analysis.uid
+    #         results: List[AnalysisResult] = await self.sample.get_analysis_results()
+    #         self._cousins = list(
+    #             filter(lambda result: result.analysis_uid != analysis_uid, results)
+    #         )
+    #
+    #     # Sort the cousins by created_at in descending order and get the first latest_n items
+    #     self._cousins.sort(key=lambda x: x.created_at, reverse=True)
+    #     if latest_n:
+    #         return self._cousins[:latest_n]
+    #     return self._cousins
 
     async def create_analyte_for(self, analysis_uid) -> AnalysisResult:
-        # logger.info(f"create_analyte_for: {analysis_uid}")
+        logger.info(f"create_analyte_for: {analysis_uid}")
         analysis = await Analysis.get(uid=analysis_uid)
 
         a_result_in = {
-            "sample_uid": self.analysis_result.sample_uid,
+            "sample_uid": self.sample.uid,
             "analysis_uid": analysis.uid,
-            "status": ResultStates.PENDING,
-            "instrument_uid": self.analysis_result.instrument_uid,
+            "status": conf.states.result.PENDING,
+            "laboratory_instrument_uid": self.analysis_result.laboratory_instrument_uid,
             "method_uid": self.analysis_result.method_uid,
             "parent_id": self.analysis_result.uid,
             "retest": True,
             "reflex_level": self.analysis_result.reflex_level + 1,
         }
         a_result_schema = AnalysisResultCreate(**a_result_in)
-        await self.analysis_result_service.hide_report(self.analysis_result)
-        return await self.analysis_result_service.create(**marshal(a_result_schema))
+        retest = await AnalysisResult.create(a_result_schema)
+        await self.analysis_result.hide_report()
+        return retest
 
     async def create_final_for(self, analysis_uid, value):
-        # logger.info(f"create_analyte_for: {analysis_uid} {value}")
+        logger.info(f"create_final_for: {analysis_uid} {value}")
         retest = await self.create_analyte_for(analysis_uid)
         res_in = AnalysisResultUpdate(
             result=value,
@@ -497,9 +269,10 @@ class ReflexEngineService(IReflexEngineService):
             date_submitted=datetime.now(),
             verified_by_uid=self.user.uid,
             date_verified=datetime.now(),
-            status=ResultStates.APPROVED,
+            status=conf.states.result.APPROVED,
             retest=False,
             reportable=True,
             reflex_level=None,
         )
-        return await self.analysis_result_service.update(retest, **marshal(res_in))
+        final = await retest.update(res_in)
+        return final

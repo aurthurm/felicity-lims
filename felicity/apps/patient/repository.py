@@ -1,23 +1,18 @@
 import sqlalchemy as sa
 
-from domain.patient.ports.repository import (
-    IPatientRepository,
-    IIdentificationRepository,
-    IPatientIdentificationRepository,
-)
-from domain.shared.ports.paginator.cursor import PageCursor
+
 from felicity.apps.patient.entities import (
     Patient,
     Identification,
     PatientIdentification,
 )
-from felicity.apps.repository.base import BaseRepository
+from felicity.database.paging import PageCursor
+from felicity.database.repository import BaseRepository
 
 
-class PatientRepository(BaseRepository[Patient], IPatientRepository):
+class PatientRepository(BaseRepository[Patient]):
     def __init__(self) -> None:
-        self.model = Patient
-        super().__init__()
+        super().__init__(Patient)
 
     async def paginate_with_cursors(
             self,
@@ -49,13 +44,13 @@ class PatientRepository(BaseRepository[Patient], IPatientRepository):
 
             filters = {sa.or_: _or_}
 
-        return await super().paginate(
+        return await super().paginate_with_cursors(
             page_size, after_cursor, before_cursor, filters, sort_by
         )
 
 
 class IdentificationRepository(
-    BaseRepository[Identification], IIdentificationRepository
+    BaseRepository[Identification]
 ):
     def __init__(self) -> None:
         self.model = Identification
@@ -63,7 +58,7 @@ class IdentificationRepository(
 
 
 class PatientIdentificationRepository(
-    BaseRepository[PatientIdentification], IPatientIdentificationRepository
+    BaseRepository[PatientIdentification]
 ):
     def __init__(self) -> None:
         self.model = PatientIdentification

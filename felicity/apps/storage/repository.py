@@ -1,45 +1,33 @@
-from domain.storage.ports.repository import (
-    IStoreRoomRepository,
-    IStorageLocationRepository,
-    IStorageSectionRepository,
-    IStorageContainerRepository,
-)
-
-from felicity.apps.repository.base import BaseRepository
-
 from felicity.apps.storage.entities import (
     StoreRoom,
     StorageLocation,
     StorageSection,
     StorageContainer,
 )
+from felicity.database.repository import BaseRepository
 
 
-class StoreRoomRepository(BaseRepository[StoreRoom], IStoreRoomRepository):
+class StoreRoomRepository(BaseRepository[StoreRoom]):
     def __init__(self) -> None:
-        self.model = StoreRoom
-        super().__init__()
+        super().__init__(StoreRoom)
 
 
 class StorageLocationRepository(
-    BaseRepository[StorageLocation], IStorageLocationRepository
+    BaseRepository[StorageLocation]
 ):
     def __init__(self) -> None:
-        self.model = StorageLocation
-        super().__init__()
+        super().__init__(StorageLocation)
 
 
 class StorageSectionRepository(
-    BaseRepository[StorageSection], IStorageSectionRepository
+    BaseRepository[StorageSection]
 ):
     def __init__(self) -> None:
-        self.model = StorageSection
-        super().__init__()
+        super().__init__(StorageSection)
 
 
 class StorageContainerRepository(
-    BaseRepository[StorageContainer], IStorageContainerRepository
+    BaseRepository[StorageContainer]
 ):
     def __init__(self) -> None:
-        self.model = StorageContainer
-        super().__init__()
+        super().__init__(StorageContainer)

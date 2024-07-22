@@ -1,17 +1,20 @@
-from sqlalchemy import (
-    Boolean,
-    Column,
-    DateTime,
-    ForeignKey,
-    Integer,
-    String,
-    LargeBinary,
-)
+import logging
+
+from sqlalchemy import (Boolean, Column, DateTime, ForeignKey, Integer,
+                        LargeBinary, String)
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import relationship
 
-from felicity.apps.abstract import AuditHistory, BaseEntity
-from felicity.apps.user.entities import User
+from felicity.apps.abstract.audit import AuditHistory
+from felicity.apps.notification.utils import FelicityStreamer
+from felicity.apps.shipment import conf, schemas
+from felicity.apps.user.models import User
+from felicity.database.entity import BaseEntity
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+streamer = FelicityStreamer()
 
 
 class ReferralLaboratory(AuditHistory):
@@ -63,13 +66,13 @@ class Shipment(AuditHistory):
     json_content: dict = Column(JSONB, nullable=True)
     pdf_content = Column(LargeBinary, nullable=True)
 
-
 class ShippedSample(BaseEntity):
-    __tablename__ = "shipped_sample"
-
     """ShippedSample enables samples to be shipped multiple times
     A sample can be tracked through different shipments from inception to end
     """
+
+    __tablename__ = "shipped_sample"
+
     sample_uid = Column(String, ForeignKey("sample.uid"), nullable=True)
     sample = relationship("Sample", foreign_keys=[sample_uid], lazy="selectin")
     shipment_uid = Column(String, ForeignKey("shipment.uid"), nullable=True)
@@ -77,3 +80,4 @@ class ShippedSample(BaseEntity):
     result_notified = Column(Boolean(), default=False)
     ext_sample_uid = Column(String, nullable=True)
     ext_sample_id = Column(String, nullable=True)
+

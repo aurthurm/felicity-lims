@@ -1,25 +1,18 @@
 import sqlalchemy as sa
 
-from domain.setup.ports.repository import (
-    ICountryRepository,
-    IProvinceRepository,
-    IDistrictRepository,
-)
-from domain.shared.ports.paginator.cursor import PageCursor
-from felicity.apps.repository.base import BaseRepository
 from felicity.apps.setup.entities import Country, Province, District
+from felicity.database.paging import PageCursor
+from felicity.database.repository import BaseRepository
 
 
-class CountryRepository(BaseRepository[Country], ICountryRepository):
+class CountryRepository(BaseRepository[Country]):
     def __init__(self) -> None:
-        self.model = Country
-        super().__init__()
+        super().__init__(Country)
 
 
-class ProvinceRepository(BaseRepository[Province], IProvinceRepository):
+class ProvinceRepository(BaseRepository[Province]):
     def __init__(self) -> None:
-        self.model = Province
-        super().__init__()
+        super().__init__(Province)
 
     async def paginate_with_cursors(
             self,
@@ -47,7 +40,7 @@ class ProvinceRepository(BaseRepository[Province], IProvinceRepository):
 
             filters = {sa.or_: _or_}
 
-        return super().paginate(
+        return super().paginate_with_cursors(
             page_size=page_size,
             after_cursor=after_cursor,
             before_cursor=before_cursor,
@@ -56,10 +49,9 @@ class ProvinceRepository(BaseRepository[Province], IProvinceRepository):
         )
 
 
-class DistrictRepository(BaseRepository[District], IDistrictRepository):
+class DistrictRepository(BaseRepository[District]):
     def __init__(self) -> None:
-        self.model = District
-        super().__init__()
+        super().__init__(District)
 
     async def paginate_with_cursors(
             self,
@@ -89,7 +81,7 @@ class DistrictRepository(BaseRepository[District], IDistrictRepository):
 
             filters = {sa.or_: _or_}
 
-        return super().paginate(
+        return super().paginate_with_cursors(
             page_size=page_size,
             after_cursor=after_cursor,
             before_cursor=before_cursor,

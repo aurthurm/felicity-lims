@@ -1,31 +1,24 @@
 import sqlalchemy as sa
 
-from domain.shared.ports.paginator.cursor import PageCursor
-from domain.shipment.ports.repository import (
-    IReferralLaboratoryRepository,
-    IShipmentRepository,
-    IShippedSampleRepository,
-)
-from felicity.apps.repository.base import BaseRepository
 from felicity.apps.shipment.entities import (
     ReferralLaboratory,
     Shipment,
     ShippedSample,
 )
+from felicity.database.paging import PageCursor
+from felicity.database.repository import BaseRepository
 
 
 class ReferralLaboratoryRepository(
-    BaseRepository[ReferralLaboratory], IReferralLaboratoryRepository
+    BaseRepository[ReferralLaboratory]
 ):
     def __init__(self) -> None:
-        self.model = ReferralLaboratory
-        super().__init__()
+        super().__init__(ReferralLaboratory)
 
 
-class ShipmentRepository(BaseRepository[Shipment], IShipmentRepository):
+class ShipmentRepository(BaseRepository[Shipment]):
     def __init__(self) -> None:
-        self.model = Shipment
-        super().__init__()
+        super().__init__(Shipment)
 
     async def paginate_with_cursors(
         self,
@@ -54,7 +47,7 @@ class ShipmentRepository(BaseRepository[Shipment], IShipmentRepository):
 
         if status:
             filters.append({"state__exact": status})
-        return super().paginate(
+        return super().paginate_with_cursors(
             page_size=page_size,
             after_cursor=after_cursor,
             before_cursor=before_cursor,
@@ -63,7 +56,6 @@ class ShipmentRepository(BaseRepository[Shipment], IShipmentRepository):
         )
 
 
-class ShippedSampleRepository(BaseRepository[ShippedSample], IShippedSampleRepository):
+class ShippedSampleRepository(BaseRepository[ShippedSample]):
     def __init__(self) -> None:
-        self.model = ShippedSample
-        super().__init__()
+        super().__init__(ShippedSample)

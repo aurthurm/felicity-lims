@@ -1,18 +1,13 @@
-from domain.messaging.ports.repository import (
-    IMessageThreadRepository,
-    IMessageRepository,
-)
 from felicity.apps.messaging.entities import MessageThread, Message
-from felicity.apps.repository.base import BaseRepository
+from felicity.database.repository import BaseRepository
 
 
-class MessageThreadRepository(BaseRepository[MessageThread], IMessageThreadRepository):
+
+class MessageThreadRepository(BaseRepository[MessageThread]):
     def __init__(self) -> None:
-        self.model = MessageThread
-        super().__init__()
+        super().__init__(MessageThread)
 
 
-class MessageRepository(BaseRepository[Message], IMessageRepository):
+class MessageRepository(BaseRepository[Message]):
     def __init__(self) -> None:
-        self.model = Message
-        super().__init__()
+        super().__init__(Message)

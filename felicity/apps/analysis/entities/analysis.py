@@ -1,20 +1,34 @@
-from sqlalchemy import (
-    Boolean,
-    Column,
-    DateTime,
-    Float,
-    ForeignKey,
-    Integer,
-    String,
-    Table,
-)
+import logging
+from datetime import datetime, timedelta
+from typing import Any, List, Union
+
+from felicity.apps.analysis.conf import ResultType
+
+try:
+    from typing import Self
+except ImportError:
+    from typing_extensions import Self
+
+from sqlalchemy import (Boolean, Column, DateTime, Float, ForeignKey, Integer,
+                        String, Table)
 from sqlalchemy.orm import relationship
 
-from felicity.apps.abstract import AuditHistory, AuditUser, BaseEntity, BaseMPTT
-from felicity.apps.analysis.entities.quality_control import QCLevel, QCSet
-from felicity.apps.client import entities as ct_entities
-from felicity.apps.patient import entities as pt_entities
+from felicity.apps.abstract import AuditHistory, AuditUser, BaseEntity
+from felicity.apps.analysis import schemas
+from felicity.apps.analysis.conf import states
+from felicity.apps.analysis.entities.qc import QCLevel, QCSet
+from felicity.apps.client import models as ct_models
+from felicity.apps.common import BaseMPTT
+from felicity.apps.idsequencer.entities import IdSequence
+from felicity.apps.common.utils import sequencer
+from felicity.apps.notification.utils import FelicityStreamer
+from felicity.apps.patient import entities as pt_models
 from felicity.apps.user.entities import User
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+streamer = FelicityStreamer()
 
 
 class CodingStandard(AuditUser):
@@ -41,7 +55,7 @@ class SampleType(AuditUser):
 class SampleTypeCoding(AuditUser):
     """SampleTypeCoding"""
 
-    __tablename__ = "sample_type_coding"
+    __tablename__ = "sampe_type_coding"
 
     sample_type_uid = Column(String, ForeignKey("sample_type.uid"), nullable=False)
     sample_type = relationship("SampleType", lazy="selectin")
@@ -98,7 +112,6 @@ class AnalysisCategory(AuditUser):
     department = relationship("Department", lazy="selectin")
     active = Column(Boolean(), default=False)
 
-
 class Profile(AuditUser):
     """Grouped Analysis e.g FBC, U&E's, MCS ..."""
 
@@ -136,6 +149,33 @@ class ProfileCoding(AuditUser):
     name = Column(String, nullable=True)
     description = Column(String, nullable=True)
     code = Column(String, nullable=False)
+
+
+"""
+ Many to Many Link between Analyses and Analysis_Template
+"""
+analysis_analysis_template = Table(
+    "analysis_analysis_template",
+    BaseEntity.metadata,
+    Column("analysis_uid", ForeignKey("analysis.uid"), primary_key=True),
+    Column("analysis_template_uid", ForeignKey("analysis_template.uid"), primary_key=True),
+)
+
+
+class AnalysisTemplate(AuditUser):
+    """Template for adding Analysis extras"""
+
+    __tablename__ = "analysis_template"
+
+    name = Column(String, nullable=False)
+    description = Column(String, nullable=False)
+    analyses = relationship(
+        "Analysis",
+        secondary=analysis_analysis_template,
+        lazy="selectin",
+    )
+    department_uid = Column(String, ForeignKey("department.uid"), nullable=True)
+    department = relationship("Department", lazy="selectin")
 
 
 """
@@ -202,6 +242,8 @@ class Analysis(AuditUser):
         "AnalysisUncertainty", backref="analysis", lazy="selectin"
     )
     result_options = relationship("ResultOption", backref="analyses", lazy="selectin")
+    # result_type : numeric, short-text, long-text (long text are a special requiring special handling)
+    result_type = Column(String, default=ResultType.SHORT_TEXT, nullable=False)
     category_uid = Column(String, ForeignKey("analysis_category.uid"))
     category = relationship(AnalysisCategory, backref="analyses", lazy="selectin")
     tat_length_minutes = Column(Integer, nullable=True)  # to calculate TAT
@@ -233,6 +275,7 @@ class AnalysisCoding(AuditUser):
     code = Column(String, nullable=False)
 
 
+
 class AnalysisInterim(AuditUser):
     """Analysis Interim Result Field"""
 
@@ -255,7 +298,6 @@ class AnalysisCorrectionFactor(AuditUser):
     instrument_uid = Column(String, ForeignKey("instrument.uid"), nullable=True)
     method_uid = Column(String, ForeignKey("method.uid"), nullable=True)
 
-
 class AnalysisDetectionLimit(AuditUser):
     """Analysis Detection Limit"""
 
@@ -269,8 +311,8 @@ class AnalysisDetectionLimit(AuditUser):
 
 
 class AnalysisUncertainty(AuditUser):
-    """Analysis Measurment Uncertainty
-    If value is within the the range min.max then result becomes a range (result +/- value)
+    """Analysis Measurement Uncertainty
+    If value is within the range min.max then result becomes a range (result +/- value)
     """
 
     __tablename__ = "analysis_uncertainty"
@@ -303,6 +345,8 @@ class AnalysisSpecification(AuditUser):
     # Result Value if more than max_warn
     max_report = Column(String, nullable=True)
     # If result is textual
+    # Textual expected Normal Range a.k.a Expected Value
+    normal_value = Column(String, nullable=True)
     # comma seperated warn results
     warn_values = Column(String, nullable=True)
     # Result Value if result in warn_values
@@ -315,14 +359,28 @@ class AnalysisSpecification(AuditUser):
     age_max = Column(Integer, nullable=True)
 
 
+"""
+ Many to Many Link between Analyses and Intruments
+"""
+result_option_sample_type = Table(
+    "result_option_sample_type",
+    BaseEntity.metadata,
+    Column("result_option_uid", ForeignKey("result_options.uid"), primary_key=True),
+    Column("sample_type_uid", ForeignKey("sample_type.uid"), primary_key=True),
+)
+
+
 class ResultOption(AuditUser):
     """Result Choices"""
 
-    __tablename__ = "result_option"
+    __tablename__ = "result_options"
 
     option_key = Column(Integer, nullable=False)
     value = Column(String, nullable=False)
     analysis_uid = Column(String, ForeignKey("analysis.uid"))
+    sample_types = relationship(
+        SampleType, secondary=result_option_sample_type, lazy="selectin"
+    )
 
 
 class AnalysisRequest(AuditUser):
@@ -332,11 +390,11 @@ class AnalysisRequest(AuditUser):
 
     patient_uid = Column(String, ForeignKey("patient.uid"))
     patient = relationship(
-        pt_entities.Patient, backref="analysis_requests", lazy="selectin"
+        pt_models.Patient, backref="analysis_requests", lazy="selectin"
     )
     client_uid = Column(String, ForeignKey("client.uid"))
     client = relationship(
-        ct_entities.Client, backref="analysis_requests", lazy="selectin"
+        ct_models.Client, backref="analysis_requests", lazy="selectin"
     )
     samples = relationship("Sample", back_populates="analysis_request", lazy="selectin")
     request_id = Column(String, index=True, unique=True, nullable=True)
@@ -383,6 +441,7 @@ class RejectionReason(AuditUser):
     __tablename__ = "rejection_reason"
 
     reason = Column(String, nullable=False)
+
 
 
 class Sample(AuditHistory, BaseMPTT):
@@ -464,7 +523,6 @@ class Sample(AuditHistory, BaseMPTT):
 
 
 # @event.listens_for(Sample, "after_update")
-# def stream_sample_verified_entities(mapper, connection, target): # noqa
+# def stream_sample_verified_models(mapper, connection, target): # noqa
 #     logger.log("stream_sample_verified inn")
 #     logger.log(target)
-#     print("hurray inn")

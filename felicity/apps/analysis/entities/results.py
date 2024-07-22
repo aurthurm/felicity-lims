@@ -1,7 +1,21 @@
-from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, String, Table
+import logging
+from datetime import datetime
+from typing import Annotated
+
+from sqlalchemy import (Boolean, Column, DateTime, ForeignKey, Integer, String, Text,
+                        Table)
 from sqlalchemy.orm import relationship
 
-from felicity.apps.abstract import AuditHistory, AuditUser, BaseEntity, BaseMPTT
+from felicity.apps.abstract import AuditHistory, AuditUser, BaseEntity
+from felicity.apps.analysis import conf, schemas
+from felicity.apps.common import BaseMPTT
+from felicity.apps.notification.utils import FelicityStreamer
+from felicity.database.session import async_session_factory
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+streamer = FelicityStreamer()
 
 """
  Many to Many Link between AnalysisResult and User
@@ -26,18 +40,19 @@ class AnalysisResult(AuditHistory, BaseMPTT):
     sample = relationship("Sample", back_populates="analysis_results", lazy="selectin")
     analysis_uid = Column(String, ForeignKey("analysis.uid"), nullable=False)
     analysis = relationship("Analysis", backref="analysis_results", lazy="selectin")
-    instrument_uid = Column(String, ForeignKey("instrument.uid"), nullable=True)
-    instrument = relationship("Instrument", lazy="selectin")
+    laboratory_instrument_uid = Column(
+        String, ForeignKey("laboratory_instrument.uid"), nullable=True
+    )
+    laboratory_instrument = relationship("LaboratoryInstrument", lazy="selectin")
     method_uid = Column(String, ForeignKey("method.uid"), nullable=True)
     method = relationship("Method", lazy="selectin")
-    result = Column(String, nullable=True)
+    result = Column(Text, nullable=True)
     analyst_uid = Column(String, ForeignKey("user.uid"), nullable=True)
     analyst = relationship("User", foreign_keys=[analyst_uid], lazy="selectin")
     submitted_by_uid = Column(String, ForeignKey("user.uid"), nullable=True)
     submitted_by = relationship(
         "User", foreign_keys=[submitted_by_uid], lazy="selectin"
     )
-
     submitted_by_name = Column(String, nullable=True)
     date_submitted = Column(DateTime, nullable=True)
     verified_by = relationship("User", secondary=result_verification, lazy="selectin")
@@ -68,7 +83,7 @@ class AnalysisResult(AuditHistory, BaseMPTT):
     assigned = Column(Boolean(), default=False)
 
     @property
-    def keyword(self):
+    def keyword(self) -> str:
         return self.analysis.keyword
 
 

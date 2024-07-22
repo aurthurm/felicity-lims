@@ -1,25 +1,14 @@
-from domain.analysis.ports.repository.quality_control import IQCSetRepository
-from domain.analysis.ports.repository.result import IResultMutationRepository, IAnalysisResultRepository
-from felicity.apps.analysis.entities.quality_control import QCSet
 from felicity.apps.analysis.entities.results import ResultMutation, AnalysisResult
-from felicity.apps.repository.base import BaseRepository
-
-
-class QCSetRepository(BaseRepository[QCSet], IQCSetRepository):
-    def __init__(self) -> None:
-        self.model = QCSet
-        super().__init__()
+from felicity.database.repository import BaseRepository
 
 
 class ResultMutationRepository(
-    BaseRepository[ResultMutation], IResultMutationRepository
+    BaseRepository[ResultMutation]
 ):
     def __init__(self) -> None:
-        self.model = ResultMutation
-        super().__init__()
+        super().__init__(ResultMutation)
 
 
-class AnalysisResultRepository(BaseRepository[AnalysisResult], IAnalysisResultRepository):
+class AnalysisResultRepository(BaseRepository[AnalysisResult]):
     def __init__(self) -> None:
-        self.model = AnalysisResult
-        super().__init__()
+        super().__init__(AnalysisResult)

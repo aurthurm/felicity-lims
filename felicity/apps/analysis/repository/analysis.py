@@ -1,30 +1,12 @@
 from sqlalchemy import or_
 
-from domain.analysis.ports.repository.analysis import (
-    ICodingStandardRepository,
-    ISampleTypeRepository,
-    ISampleTypeCodingRepository,
-    IAnalysisCategoryRepository,
-    IProfileRepository,
-    IProfileCodingRepository,
-    IAnalysisRepository,
-    IAnalysisCodingRepository,
-    IAnalysisInterimRepository,
-    IAnalysisCorrectionFactorRepository,
-    IAnalysisDetectionLimitRepository,
-    IAnalysisUncertaintyRepository,
-    IAnalysisSpecificationRepository,
-    IResultOptionRepository,
-    IAnalysisRequestRepository,
-    IRejectionReasonRepository,
-    ISampleRepository,
-)
 from felicity.apps.analysis.entities.analysis import (
     CodingStandard,
     SampleType,
     SampleTypeCoding,
     AnalysisCategory,
     Profile,
+    AnalysisTemplate,
     ProfileCoding,
     Analysis,
     AnalysisCoding,
@@ -38,131 +20,119 @@ from felicity.apps.analysis.entities.analysis import (
     RejectionReason,
     Sample,
 )
-from felicity.apps.repository.base import BaseRepository
+from felicity.apps.abstract import BaseRepository
 
 
 class CodingStandardRepository(
-    BaseRepository[CodingStandard], ICodingStandardRepository
+    BaseRepository[CodingStandard]
 ):
     def __init__(self) -> None:
-        self.model = CodingStandard
-        super().__init__()
+        super().__init__(CodingStandard)
 
 
-class SampleTypeRepository(BaseRepository[SampleType], ISampleTypeRepository):
+class SampleTypeRepository(BaseRepository[SampleType]):
     def __init__(self) -> None:
-        self.model = SampleType
-        super().__init__()
+        super().__init__(SampleType)
 
 
 class SampleTypeCodingRepository(
-    BaseRepository[SampleTypeCoding], ISampleTypeCodingRepository
+    BaseRepository[SampleTypeCoding]
 ):
     def __init__(self) -> None:
-        self.model = SampleTypeCoding
-        super().__init__()
+        super().__init__(SampleTypeCoding)
 
 
-class ProfileRepository(BaseRepository[Profile], IProfileRepository):
+class ProfileRepository(BaseRepository[Profile]):
     def __init__(self) -> None:
-        self.model = Profile
-        super().__init__()
+        super().__init__(Profile)
+
+
+class AnalysisTemplateRepository(BaseRepository[AnalysisTemplate]):
+    def __init__(self) -> None:
+        super().__init__(AnalysisTemplate)
 
 
 class AnalysisCategoryRepository(
-    BaseRepository[AnalysisCategory], IAnalysisCategoryRepository
+    BaseRepository[AnalysisCategory]
 ):
     def __init__(self) -> None:
-        self.model = AnalysisCategory
-        super().__init__()
+        super().__init__(AnalysisCategory)
 
 
-class ProfileCodingRepository(BaseRepository[ProfileCoding], IProfileCodingRepository):
+class ProfileCodingRepository(BaseRepository[ProfileCoding]):
     def __init__(self) -> None:
-        self.model = ProfileCoding
-        super().__init__()
+        super().__init__(ProfileCoding)
 
 
-class AnalysisRepository(BaseRepository[Analysis], IAnalysisRepository):
+class AnalysisRepository(BaseRepository[Analysis]):
     def __init__(self) -> None:
-        self.model = Analysis
-        super().__init__()
+        super().__init__(Analysis)
 
 
 class AnalysisCodingRepository(
-    BaseRepository[AnalysisCoding], IAnalysisCodingRepository
+    BaseRepository[AnalysisCoding]
 ):
     def __init__(self) -> None:
-        self.model = AnalysisCoding
-        super().__init__()
+        super().__init__(AnalysisCoding)
 
 
 class AnalysisInterimRepository(
-    BaseRepository[AnalysisInterim], IAnalysisInterimRepository
+    BaseRepository[AnalysisInterim]
 ):
     def __init__(self) -> None:
-        self.model = AnalysisInterim
-        super().__init__()
+        super().__init__(AnalysisInterim)
 
 
 class AnalysisCorrectionFactorRepository(
-    BaseRepository[AnalysisCorrectionFactor], IAnalysisCorrectionFactorRepository
+    BaseRepository[AnalysisCorrectionFactor]
 ):
     def __init__(self) -> None:
-        self.model = AnalysisCorrectionFactor
-        super().__init__()
+        super().__init__(AnalysisCorrectionFactor)
 
 
 class AnalysisDetectionLimitRepository(
-    BaseRepository[AnalysisDetectionLimit], IAnalysisDetectionLimitRepository
+    BaseRepository[AnalysisDetectionLimit]
 ):
     def __init__(self) -> None:
-        self.model = AnalysisDetectionLimit
-        super().__init__()
+        super().__init__(AnalysisDetectionLimit)
 
 
 class AnalysisUncertaintyRepository(
-    BaseRepository[AnalysisUncertainty], IAnalysisUncertaintyRepository
+    BaseRepository[AnalysisUncertainty]
 ):
     def __init__(self) -> None:
-        self.model = AnalysisUncertainty
-        super().__init__()
+        super().__init__(AnalysisUncertainty)
 
 
 class AnalysisSpecificationRepository(
-    BaseRepository[AnalysisSpecification], IAnalysisSpecificationRepository
+    BaseRepository[AnalysisSpecification]
 ):
     def __init__(self) -> None:
-        self.model = AnalysisSpecification
-        super().__init__()
+        super().__init__(AnalysisSpecification)
 
 
-class ResultOptionRepository(BaseRepository[ResultOption], IResultOptionRepository):
+class ResultOptionRepository(BaseRepository[ResultOption]):
     def __init__(self) -> None:
-        self.model = ResultOption
-        super().__init__()
+        super().__init__(ResultOption)
 
 
 class AnalysisRequestRepository(
-    BaseRepository[AnalysisRequest], IAnalysisRequestRepository
+    BaseRepository[AnalysisRequest]
 ):
     def __init__(self) -> None:
-        self.model = AnalysisRequest
-        super().__init__()
+        super().__init__(AnalysisRequest)
 
 
 class RejectionReasonRepository(
-    BaseRepository[RejectionReason], IRejectionReasonRepository
+    BaseRepository[RejectionReason]
 ):
     def __init__(self) -> None:
-        self.model = RejectionReason
-        super().__init__()
+        super().__init__(RejectionReason)
 
 
-class SampleRepository(BaseRepository[Sample], ISampleRepository):
+class SampleRepository(BaseRepository[Sample]):
     def __init__(self) -> None:
-        self.model = Sample
-        super().__init__()
+        super().__init__(Sample)
 
     async def search(self, status: str, text: str, client_uid: str) -> list[Sample]:
         """No pagination"""

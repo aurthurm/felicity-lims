@@ -3,15 +3,11 @@ This file is part of Felicity LIMS Software
 """
 
 
-class Types:
+class ReportTypes:
     LINE_LISTING = "LINE_LISTING"
 
 
-class States:
+class ReportStates:
     PENDING = "PENDING"
     FAILED = "FAILED"
     READY = "READY"
-
-
-report_types = Types()
-report_states = States()

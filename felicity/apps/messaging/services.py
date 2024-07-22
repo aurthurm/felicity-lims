@@ -1,26 +1,17 @@
-from domain.messaging.ports.repository import (
-    IMessageThreadRepository,
-    IMessageRepository,
-)
-from domain.messaging.ports.service import IMessageThreadService, IMessageService
-from domain.messaging.schemas import (
-    MessageThread,
-    Message,
-    MessageCreate,
-    MessageThreadCreate,
-)
-from domain.shared.services import BaseService
-from domain.shared.utils.serialisers import marshal
-from domain.user.ports.service import IUserService
-from domain.user.schemas import User
+
+from felicity.apps.abstract.service import BaseService
+from felicity.apps.common.utils.serializer import marshaller
+from felicity.apps.messaging.entities import Message, MessageThread
+from felicity.apps.messaging.repository import MessageRepository, MessageThreadRepository
+from felicity.apps.messaging.schemas import MessageCreate, MessageThreadCreate, MessageThreadUpdate, MessageUpdate
+from felicity.apps.user.entities import User
+from felicity.apps.user.services import UserService
 
 
-class MessageThreadService(BaseService[MessageThread], IMessageThreadService):
-    def __init__(
-            self, repository: IMessageThreadRepository, message_service: IMessageService
-    ):
-        self.repository = repository
-        self.message_service = message_service
+class MessageThreadService(BaseService[MessageThread, MessageThreadCreate, MessageThreadUpdate]):
+    def __init__(self):
+        self.message_service = MessageService()
+        super().__init__(MessageThreadRepository)
 
     async def get_last_message(self, thread: MessageThread):
         if not thread.messages:
@@ -34,13 +25,13 @@ class MessageThreadService(BaseService[MessageThread], IMessageThreadService):
     async def add_recipient(self, thread: MessageThread, user: User) -> MessageThread:
         if user not in thread.recipients:
             thread.recipients.append(user)
-            return await super().update(thread, **marshal(thread))
+            return await super().update(thread, **marshaller(thread))
         return thread
 
     async def add_deletion(self, thread: MessageThread, user: User) -> MessageThread:
         if user not in thread.deleted_by:
             thread.deleted_by.append(user)
-            return await super().update(thread, **marshal(thread))
+            return await super().update(thread, **marshaller(thread))
         return thread
 
     async def delete_for_user(self, thread: MessageThread, user: User) -> str:
@@ -52,7 +43,9 @@ class MessageThreadService(BaseService[MessageThread], IMessageThreadService):
         # delete thread for user
         await self.add_deletion(thread, user)
 
-        # if all thread recipients have deleted the thread
+        # if all thread 
+        # ]
+        # recipients have deleted the thread
         if self.all_have_deleted(thread):
             # permanently delete all messages in thread
             for message in thread.messages:
@@ -75,16 +68,11 @@ class MessageThreadService(BaseService[MessageThread], IMessageThreadService):
         return await self.delete_for_user(thread, user)
 
 
-class MessageService(BaseService[Message], IMessageService):
-    def __int__(
-            self,
-            repository: IMessageRepository,
-            thread_service: IMessageThreadService,
-            user_service: IUserService,
-    ):
-        self.repository = repository
-        self.thread_service = thread_service
-        self.user_service = user_service
+class MessageService(BaseService[Message, MessageCreate, MessageUpdate]):
+    def __int__(self):
+        self.thread_service = MessageThreadService()
+        self.user_service = UserService()
+        super().__init__(MessageRepository)
 
     async def send_message(
             self, recipients: list[str], body: str, user: User
@@ -98,7 +86,7 @@ class MessageService(BaseService[Message], IMessageService):
 
         thread_in = MessageThreadCreate(broadcast=len(recipients) > 1)
         thread_in.recipients = _recipients
-        thread = await super().create(**marshal(thread_in))
+        thread = await super().create(**marshaller(thread_in))
 
         incoming = {
             "body": body,
@@ -118,7 +106,7 @@ class MessageService(BaseService[Message], IMessageService):
                 incoming["recipients"].append(_rec)
 
         obj_in = MessageCreate(**incoming)
-        return await super().create(**marshal(obj_in))
+        return await super().create(**marshaller(obj_in))
 
     async def reply_message(self, thread_uid: str, body: str, user: User) -> Message:
         thread = await self.get(uid=thread_uid)
@@ -137,13 +125,13 @@ class MessageService(BaseService[Message], IMessageService):
             incoming["parent_id"] = last_message.uid
 
         obj_in = MessageCreate(**incoming)
-        return await super().create(**marshal(obj_in))
+        return await super().create(**marshaller(obj_in))
 
     async def view_message(self, uid: str, user: User) -> Message:
         message = await self.get(uid=uid)
         if user not in message.viewers:
             message.viewers.append(user)
-            return await super().update(message, **marshal(message))
+            return await super().update(message, **marshaller(message))
         return message
 
     async def delete_message(self, uid: str, user: User) -> str:
@@ -153,7 +141,7 @@ class MessageService(BaseService[Message], IMessageService):
     async def add_deletion(self, message: Message, user: User) -> Message:
         if user not in message.deleted_by:
             message.deleted_by.append(user)
-            return await super().update(message, **marshal(message))
+            return await super().update(message, **marshaller(message))
         return message
 
     async def delete_for_user(self, message: Message, user: User) -> str:

@@ -1,39 +1,22 @@
-from domain.analysis.ports.repository.quality_control import (
-    IQCSetRepository,
-    IQCReferenceRepository,
-    IQCLevelRepository,
-    IQCTemplateRepository,
-)
-
-from felicity.apps.repository.base import BaseRepository
-
-from felicity.apps.analysis.entities.quality_control import (
-    QCSet,
-    QCReference,
-    QCLevel,
-    QCTemplate,
-)
+from felicity.apps.analysis.entities.qc import QCLevel, QCReference, QCSet, QCTemplate
+from felicity.database.repository import BaseRepository
 
 
-class QCSetRepository(BaseRepository[QCSet], IQCSetRepository):
+class QCSetRepository(BaseRepository[QCSet]):
     def __init__(self) -> None:
-        self.model = QCSet
-        super().__init__()
+        super().__init__(QCSet)
 
 
-class QCReferenceRepository(BaseRepository[QCReference], IQCReferenceRepository):
+class QCReferenceRepository(BaseRepository[QCReference]):
     def __init__(self) -> None:
-        self.model = QCReference
-        super().__init__()
+        super().__init__(QCReference)
 
 
-class QCLevelRepository(BaseRepository[QCLevel], IQCLevelRepository):
+class QCLevelRepository(BaseRepository[QCLevel]):
     def __init__(self) -> None:
-        self.model = QCLevel
-        super().__init__()
+        super().__init__(QCLevel)
 
 
-class QCTemplateRepository(BaseRepository[QCTemplate], IQCTemplateRepository):
+class QCTemplateRepository(BaseRepository[QCTemplate]):
     def __init__(self) -> None:
-        self.model = QCTemplate
-        super().__init__()
+        super().__init__(QCTemplate)

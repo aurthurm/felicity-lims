@@ -1,33 +1,24 @@
-from domain.notification.ports.repository import (
-    IActivityFeedRepository,
-    IActivityStreamRepository,
-    INotificationRepository,
-)
-
-from felicity.apps.repository.base import BaseRepository
 
 from felicity.apps.notification.entities import (
     ActivityFeed,
     ActivityStream,
     Notification,
 )
+from felicity.database.repository import BaseRepository
 
 
-class ActivityFeedRepository(BaseRepository[ActivityFeed], IActivityFeedRepository):
+class ActivityFeedRepository(BaseRepository[ActivityFeed]):
     def __init__(self) -> None:
-        self.model = ActivityFeed
-        super().__init__()
+        super().__init__(ActivityFeed)
 
 
 class ActivityStreamRepository(
-    BaseRepository[ActivityStream], IActivityStreamRepository
+    BaseRepository[ActivityStream]
 ):
     def __init__(self) -> None:
-        self.model = ActivityStream
-        super().__init__()
+        super().__init__(ActivityStream)
 
 
-class NotificationRepository(BaseRepository[Notification], INotificationRepository):
+class NotificationRepository(BaseRepository[Notification]):
     def __init__(self) -> None:
-        self.model = Notification
-        super().__init__()
+        super().__init__(Notification)

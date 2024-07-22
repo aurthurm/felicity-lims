@@ -1,14 +1,3 @@
-from domain.setup.ports.repository import (
-    IDepartmentRepository,
-    ILaboratoryRepository,
-    ILaboratorySettingRepository,
-    IManufacturerRepository,
-    ISupplierRepository,
-    IUnitRepository,
-)
-
-from felicity.apps.repository.base import BaseRepository
-
 from felicity.apps.setup.entities import (
     Department,
     Laboratory,
@@ -17,41 +6,31 @@ from felicity.apps.setup.entities import (
     Supplier,
     Unit,
 )
+from felicity.database.repository import BaseRepository
 
 
-class DepartmentRepository(BaseRepository[Department], IDepartmentRepository):
+class DepartmentRepository(BaseRepository[Department]):
     def __init__(self) -> None:
-        self.model = Department
-        super().__init__()
+        super().__init__(Department)
 
-
-class LaboratoryRepository(BaseRepository[Laboratory], ILaboratoryRepository):
+class LaboratoryRepository(BaseRepository[Laboratory]):
     def __init__(self) -> None:
-        self.model = Laboratory
-        super().__init__()
-
+        super().__init__(Laboratory)
 
 class LaboratorySettingRepository(
-    BaseRepository[LaboratorySetting], ILaboratorySettingRepository
+    BaseRepository[LaboratorySetting]
 ):
     def __init__(self) -> None:
-        self.model = LaboratorySetting
-        super().__init__()
+        super().__init__(LaboratorySetting)
 
-
-class ManufacturerRepository(BaseRepository[Manufacturer], IManufacturerRepository):
+class ManufacturerRepository(BaseRepository[Manufacturer]):
     def __init__(self) -> None:
-        self.model = Manufacturer
-        super().__init__()
+        super().__init__(Manufacturer)
 
-
-class SupplierRepository(BaseRepository[Supplier], ISupplierRepository):
+class SupplierRepository(BaseRepository[Supplier]):
     def __init__(self) -> None:
-        self.model = Supplier
-        super().__init__()
+        super().__init__(Supplier)
 
-
-class UnitRepository(BaseRepository[Unit], IUnitRepository):
+class UnitRepository(BaseRepository[Unit]):
     def __init__(self) -> None:
-        self.model = Unit
-        super().__init__()
+        super().__init__(Unit)

@@ -1,22 +1,19 @@
-from domain.job.conf import JobStates
-from domain.job.ports.repository import IJobRepository
-from felicity.apps.repository.base import BaseRepository
-
+from felicity.apps.job.conf import States
 from felicity.apps.job.entities import Job
+from felicity.database.repository import BaseRepository
 
 
-class JobRepository(BaseRepository[Job], IJobRepository):
+class JobRepository(BaseRepository[Job]):
     def __init__(self) -> None:
-        self.model = Job
-        super().__init__()
+        super().__init__(Job)
 
     async def fetch_sorted(self):
         stmt = self._qb.smart_query(
             filters={
                 "status__notin": [
-                    JobStates.FINISHED,
-                    JobStates.FAILED,
-                    JobStates.RUNNING,
+                    States.FINISHED,
+                    States.FAILED,
+                    States.RUNNING,
                 ]
             },
             sort_attrs=["-priority"],

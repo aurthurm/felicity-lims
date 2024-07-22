@@ -7,3 +7,13 @@ from .setup import (
     Supplier,
     Unit,
 )
+
+__all__ = [
+    "Country", "District", "Province",
+    "Department",
+    "Laboratory",
+    "LaboratorySetting",
+    "Manufacturer",
+    "Supplier",
+    "Unit",
+]

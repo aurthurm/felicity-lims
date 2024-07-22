@@ -9,9 +9,9 @@ from sqlalchemy import (Boolean, Column, DateTime, Float, ForeignKey, String,
                         Table)
 from sqlalchemy.orm import relationship
 
-from felicity.apps import AuditUser, BaseEntity
+from felicity.apps.abstract import AuditUser, BaseEntity
 from felicity.apps.analysis import schemas
-from felicity.apps.setup.models.setup import Department
+from felicity.apps.setup.entities.setup import Department
 from felicity.apps.analysis.conf import states
 
 logging.basicConfig(level=logging.INFO)
@@ -29,19 +29,6 @@ class QCSet(AuditUser):
     note = Column(String, nullable=True)
     status = Column(String, nullable=False, default=states.sample.RECEIVED)
     samples = relationship("Sample", back_populates="qc_set", lazy="selectin")
-
-    @classmethod
-    async def create(cls, obj_in: dict | schemas.QCSetCreate) -> Self:
-        data = cls._import(obj_in)
-        return await super().create(**data)
-
-    async def update(self, obj_in: dict | schemas.QCSetUpdate) -> Self:
-        data = self._import(obj_in)
-        return await super().update(**data)
-
-    async def change_status(self, status):
-        self.status = status
-        await self.save_async()
 
 
 """
@@ -115,14 +102,6 @@ class QCLevel(AuditUser):
     # max_value = Column(Float, nullable=True)
     # allowable_error = Column(Float, nullable=True)
 
-    @classmethod
-    async def create(cls, obj_in: dict | schemas.QCLevelCreate) -> Self:
-        data = cls._import(obj_in)
-        return await super().create(**data)
-
-    async def update(self, obj_in: dict | schemas.QCLevelUpdate) -> Self:
-        data = self._import(obj_in)
-        return await super().update(**data)
 
 
 """
@@ -171,16 +150,3 @@ class QCTemplate(AuditUser):
     qc_levels = relationship(
         QCLevel, secondary=qc_template_qc_level, backref="qc_templates", lazy="selectin"
     )
-
-    @classmethod
-    async def create(
-            cls, obj_in: dict | schemas.QCTemplateCreate
-    ) -> Self:
-        data = cls._import(obj_in)
-        return await super().create(**data)
-
-    async def update(
-            self, obj_in: dict | schemas.QCTemplateUpdate
-    ) -> Self:
-        data = self._import(obj_in)
-        return await super().update(**data)

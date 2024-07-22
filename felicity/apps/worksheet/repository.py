@@ -1,17 +1,13 @@
-from domain.worksheet.ports.repository import (
-    IWorkSheetRepository,
-    IWorkSheetTemplateRepository,
-)
-from felicity.apps.repository.base import BaseRepository
 from felicity.apps.worksheet.entities import WorkSheet, WorkSheetTemplate
-from domain.shared.ports.paginator.cursor import PageCursor
 import sqlalchemy as sa
 
+from felicity.database.paging import PageCursor
+from felicity.database.repository import BaseRepository
 
-class WorkSheetRepository(BaseRepository[WorkSheet], IWorkSheetRepository):
+
+class WorkSheetRepository(BaseRepository[WorkSheet]):
     def __init__(self) -> None:
-        self.model = WorkSheet
-        super().__init__()
+        super().__init__(WorkSheet)
 
     async def paginate_with_cursors(
         self,
@@ -45,14 +41,13 @@ class WorkSheetRepository(BaseRepository[WorkSheet], IWorkSheetRepository):
             filters.append({"state__exact": status})
 
         # filters.append({'internal_use__ne': True})
-        return await super().paginate(
+        return await super().paginate_with_cursors(
             page_size, after_cursor, before_cursor, filters, sort_by
         )
 
 
 class WorkSheetTemplateRepository(
-    BaseRepository[WorkSheetTemplate], IWorkSheetTemplateRepository
+    BaseRepository[WorkSheetTemplate]
 ):
     def __init__(self) -> None:
-        self.model = WorkSheetTemplate
-        super().__init__()
+        super().__init__(WorkSheetTemplate)

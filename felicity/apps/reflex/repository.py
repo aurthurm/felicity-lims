@@ -1,14 +1,5 @@
 import sqlalchemy as sa
 
-from domain.reflex.ports.repository import (
-    IReflexRuleRepository,
-    IReflexBrainAdditionRepository,
-    IReflexBrainFinalRepository,
-    IReflexBrainCriteriaRepository,
-    IReflexBrainRepository,
-    IReflexActionRepository,
-)
-from domain.shared.ports.paginator.cursor import PageCursor
 from felicity.apps.reflex.entities import (
     ReflexRule,
     ReflexBrainAddition,
@@ -17,13 +8,13 @@ from felicity.apps.reflex.entities import (
     ReflexBrain,
     ReflexAction,
 )
-from felicity.apps.repository.base import BaseRepository
+from felicity.database.paging import PageCursor
+from felicity.database.repository import BaseRepository
 
 
-class ReflexRuleRepository(BaseRepository[ReflexRule], IReflexRuleRepository):
+class ReflexRuleRepository(BaseRepository[ReflexRule]):
     def __init__(self) -> None:
-        self.model = ReflexRule
-        super().__init__()
+        super().__init__(ReflexRule)
 
     async def paginate_with_cursors(
             self,
@@ -43,7 +34,7 @@ class ReflexRuleRepository(BaseRepository[ReflexRule], IReflexRuleRepository):
 
             filters = {sa.or_: _or_}
 
-        return super().paginate(
+        return super().paginate_with_cursors(
             page_size=page_size,
             after_cursor=after_cursor,
             before_cursor=before_cursor,
@@ -53,36 +44,31 @@ class ReflexRuleRepository(BaseRepository[ReflexRule], IReflexRuleRepository):
 
 
 class ReflexBrainAdditionRepository(
-    BaseRepository[ReflexBrainAddition], IReflexBrainAdditionRepository
+    BaseRepository[ReflexBrainAddition]
 ):
     def __init__(self) -> None:
-        self.model = ReflexBrainAddition
-        super().__init__()
+        super().__init__(ReflexBrainAddition)
 
 
 class ReflexBrainFinalRepository(
-    BaseRepository[ReflexBrainFinal], IReflexBrainFinalRepository
+    BaseRepository[ReflexBrainFinal]
 ):
     def __init__(self) -> None:
-        self.model = ReflexBrainFinal
-        super().__init__()
+        super().__init__(ReflexBrainFinal)
 
 
 class ReflexBrainCriteriaRepository(
-    BaseRepository[ReflexBrainCriteria], IReflexBrainCriteriaRepository
+    BaseRepository[ReflexBrainCriteria]
 ):
     def __init__(self) -> None:
-        self.model = ReflexBrainCriteria
-        super().__init__()
+        super().__init__(ReflexBrainCriteria)
 
 
-class ReflexBrainRepository(BaseRepository[ReflexBrain], IReflexBrainRepository):
+class ReflexBrainRepository(BaseRepository[ReflexBrain]):
     def __init__(self) -> None:
-        self.model = ReflexBrain
-        super().__init__()
+        super().__init__(ReflexBrain)
 
 
-class ReflexActionRepository(BaseRepository[ReflexAction], IReflexActionRepository):
+class ReflexActionRepository(BaseRepository[ReflexAction]):
     def __init__(self) -> None:
-        self.model = ReflexAction
-        super().__init__()
+        super().__init__(ReflexAction)

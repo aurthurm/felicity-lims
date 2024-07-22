@@ -1,15 +1,25 @@
-from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, String, Table
+import logging
+from typing import List
+
+from sqlalchemy import (Boolean, Column, DateTime, ForeignKey, Integer, String,
+                        Table)
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import relationship
 
-from felicity.apps.abstract import BaseEntity, AuditUser, AuditHistory
-from felicity.apps.analysis.entities import analysis as analysis_models
-from felicity.apps.analysis.entities.quality_control import (
-    QCTemplate,
-    QCLevel,
-)
+from felicity.apps.abstract import AuditHistory, AuditUser, BaseEntity
+from felicity.apps.analysis import conf as analysis_conf
+from felicity.apps.analysis.models import analysis as analysis_models
+from felicity.apps.analysis.models import qc as qc_models
+from felicity.apps.analysis.models import results as result_models
 from felicity.apps.instrument.entities import Instrument
+from felicity.apps.notification.utils import FelicityStreamer
 from felicity.apps.user.entities import User
+from felicity.apps.worksheet import conf, schemas
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+streamer = FelicityStreamer()
 
 
 class WSBase(AuditUser):
@@ -48,10 +58,10 @@ class WorkSheetTemplate(WSBase):
     analysis_uid = Column(String, ForeignKey("analysis.uid"), nullable=True)
     analysis = relationship(analysis_models.Analysis, lazy="selectin")
     qc_template_uid = Column(String, ForeignKey("qc_template.uid"), nullable=True)
-    qc_template = relationship(QCTemplate, lazy="selectin")
+    qc_template = relationship(qc_models.QCTemplate, lazy="selectin")
     # to help cater for those created without template we also keep the qc_levels
     qc_levels = relationship(
-        QCLevel, secondary=worksheet_template_qc_level, lazy="selectin"
+        qc_models.QCLevel, secondary=worksheet_template_qc_level, lazy="selectin"
     )
     instrument_uid = Column(String, ForeignKey("instrument.uid"), nullable=True)
     instrument = relationship(Instrument, lazy="selectin")
