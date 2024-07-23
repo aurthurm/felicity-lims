@@ -1,6 +1,6 @@
 from cache import AsyncLRU
 
-from felicity.apps.setup.models.setup import Laboratory, LaboratorySetting
+from felicity.apps.setup.entities.setup import Laboratory, LaboratorySetting
 
 
 @AsyncLRU(maxsize=128)

@@ -8,11 +8,11 @@ from domain.iol.fhir.schema import (
     Reference,
 )
 from domain.iol.ports.service import IFhirCreateService
-from domain.job.conf import JobActions, JobCategories, JobStates
+from domain.job.enum import JobActions, JobCategories, JobStates
 from domain.job.ports.service import IJobService
 from domain.job.schemas import JobCreate
 from domain.shared.utils.serialisers import marshal
-from domain.shipment.conf import ShipmentStates
+from domain.shipment.enum import ShipmentStates
 from domain.shipment.ports.service import (
     IShipmentService,
     IReferralLaboratoryService,

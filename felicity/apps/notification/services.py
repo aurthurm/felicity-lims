@@ -2,13 +2,13 @@ from typing import List, Optional, Any
 
 from felicity.apps.abstract.service import BaseService
 from felicity.apps.common.utils.serializer import marshaller
-from felicity.apps.notification.conf import Channels
+from felicity.apps.notification.enum import NotificationChannel
 from felicity.apps.notification.entities import ActivityFeed, ActivityStream, Notification
 from felicity.apps.notification.repository import ActivityFeedRepository, ActivityStreamRepository, NotificationRepository
 from felicity.apps.notification.schemas import ActivityFeedCreate, ActivityFeedUpdate, ActivityStreamCreate, ActivityStreamUpdate, NotificationCreate, NotificationUpdate
 from felicity.apps.setup.entities.setup import Department
 from felicity.apps.user.entities import Group, User
-
+from felicity.apps.common.channel import broadcast
 
 class ActivityFeedService(BaseService[ActivityFeed, ActivityFeedCreate, ActivityFeedUpdate]):
     def __init__(self):
@@ -57,7 +57,7 @@ class ActivityStreamService(BaseService[ActivityStream, ActivityStreamCreate, Ac
             target_uid=None,
         )
         stream = await super().create(**marshaller(s_in))
-        await broadcast.publish(Channels.ACTIVITIES, stream)
+        await broadcast.publish(NotificationChannel.ACTIVITIES, stream)
 
     async def reset_feeds(self, activity_stream: ActivityStream) -> ActivityStream:
         activity_stream.feeds.clear()
@@ -121,7 +121,7 @@ class NotificationService(BaseService[Notification, NotificationCreate, Notifica
         n_in.departments = departments
         n_in.groups = groups
         notification = await super().create(**marshaller(n_in))
-        await broadcast.publish(Channels.NOTIFICATIONS, notification)
+        await broadcast.publish(NotificationChannel.NOTIFICATIONS, notification)
 
     async def filter(
             self,

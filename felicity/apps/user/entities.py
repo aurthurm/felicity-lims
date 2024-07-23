@@ -1,11 +1,10 @@
 import logging
 
 from sqlalchemy import Boolean, Column, ForeignKey, String, Table
-from sqlalchemy.orm import backref, relationship
+from sqlalchemy.orm import  relationship
 
-from felicity.database.entity import BaseEntity
-from . import conf
-from .abstract import AbstractAuth, AbstractBaseUser
+from felicity.apps.abstract.entity import BaseEntity
+from .abstract import AbstractBaseUser
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -14,17 +13,6 @@ logger = logging.getLogger(__name__)
 # TODO: Refactor User to LaboratoryContact, UserAuth to ContactAuth
 
 
-class UserAuth(AbstractAuth):
-    """Authentication class user access
-    @param user_type is dynamically accessed and values are:
-    ccuser: client contacts
-    lcuser: laboratory contacts
-    dcuser: dispatch center contacts
-    """
-
-    __tablename__ = "user_auth"
-
-    user_type = Column(String, nullable=True)
 
 
 """
@@ -51,12 +39,6 @@ permission_groups = Table(
 class User(AbstractBaseUser):
     __tablename__ = "user"
 
-    auth_uid = Column(String, ForeignKey("user_auth.uid"))
-    auth = relationship(
-        "UserAuth",
-        backref=backref(conf.LABORATORY_CONTACT, uselist=False),
-        lazy="joined",
-    )
     groups = relationship(
         "Group", secondary=user_groups, back_populates="members", lazy="selectin"
     )
@@ -64,13 +46,7 @@ class User(AbstractBaseUser):
     preference = relationship(
         "UserPreference", foreign_keys=[preference_uid], lazy="selectin"
     )
-    avatar = Column(String, nullable=True)
-    bio = Column(String, nullable=True)
-    default_route = Column(Boolean(), nullable=True)
 
-    @property
-    def user_type(self):
-        return conf.LABORATORY_CONTACT
 
 
 class Permission(BaseEntity):
@@ -116,4 +92,4 @@ class UserPreference(BaseEntity):
     departments = relationship(
         "Department", secondary=department_preference, lazy="selectin"
     )
-    theme = Column(String, default=conf.themes.LIGHT)  # dark, light
+    theme = Column(String, default="light")  # dark, light

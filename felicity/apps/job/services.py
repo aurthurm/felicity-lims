@@ -2,11 +2,10 @@ from datetime import datetime, timedelta
 
 from felicity.apps.abstract.service import BaseService
 from felicity.apps.common.utils.serializer import marshaller
-from felicity.apps.job.conf import Priorities, States
 from felicity.apps.job.entities import Job
 from felicity.apps.job.repository import JobRepository
 from felicity.apps.job.schemas import JobCreate, JobUpdate
-
+from felicity.apps.job.enum import JobPriority, JobState
 
 
 class JobService(BaseService[Job, JobCreate, JobUpdate]):
@@ -18,14 +17,22 @@ class JobService(BaseService[Job, JobCreate, JobUpdate]):
         job.next_try = datetime.now() + timedelta(minutes=bck)
 
         if job.retries >= max_retries + 1:
-            job.status = States.FAILED
+            job.status = JobState.FAILED
             job.reason = f"max retries have been exceeded: {max_retries}"
 
         job.retries += 1
         await self.repository.update(job, **marshaller(job))
 
     async def fetch_sorted(self):
-        return await self.repository.fetch_sorted()
+        filters = {
+            "status__notin": [
+                JobState.FINISHED,
+                JobState.FAILED,
+                JobState.RUNNING,
+            ]
+        }
+        sort_attrs = "-priority",
+        return await self.repository.fetch_sorted(filters, sort_attrs)
 
     async def change_status(self, job: Job, new_status, change_reason=""):
         job.status = new_status
@@ -33,12 +40,12 @@ class JobService(BaseService[Job, JobCreate, JobUpdate]):
         await self.repository.update(job, **marshaller(job))
 
     async def increase_priority(self, job: Job):
-        if job.priority < Priorities.HIGH:
+        if job.priority < JobPriority.HIGH:
             job.priority += 1
             await self.repository.update(job, **marshaller(job))
 
     async def decrease_priority(self, job: Job):
-        if job.priority > Priorities.NORMAL:
+        if job.priority > JobPriority.NORMAL:
             job.priority -= 1
             await self.repository.update(job, **marshaller(job))
 

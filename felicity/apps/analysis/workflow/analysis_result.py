@@ -1,9 +1,9 @@
 import logging
 from typing import TYPE_CHECKING
 
-from felicity.apps.analysis.conf import States
-from felicity.apps.analysis.models.results import AnalysisResult
-from felicity.apps.setup.models.setup import Laboratory, LaboratorySetting
+from felicity.apps.analysis.enum import States
+from felicity.apps.analysis.entities.results import AnalysisResult
+from felicity.apps.setup.entities.setup import Laboratory, LaboratorySetting
 
 if TYPE_CHECKING:
     pass

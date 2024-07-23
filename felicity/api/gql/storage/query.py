@@ -4,36 +4,36 @@ import strawberry  # noqa
 
 from felicity.api.gql.permissions import IsAuthenticated
 from felicity.api.gql.storage import types
-from felicity.apps.storage import models
+from felicity.apps.storage import entities
 
 
 @strawberry.type
 class StorageQuery:
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def store_room_all(self, info) -> List[types.StoreRoomType]:
-        return await models.StoreRoom.all_async()
+        return await entities.StoreRoom.all_async()
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def store_room_by_uid(self, info, uid: str) -> Optional[types.StoreRoomType]:
-        return await models.StoreRoom.get(uid=uid)
+        return await entities.StoreRoom.get(uid=uid)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def storage_locations(
         self, info, store_room_uid: str
     ) -> List[types.StorageLocationType]:
-        return await models.StorageLocation.get_all(store_room_uid=store_room_uid)
+        return await entities.StorageLocation.get_all(store_room_uid=store_room_uid)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def storage_location_by_uid(
         self, info, uid: str
     ) -> Optional[types.StorageLocationType]:
-        return await models.StorageLocation.get(uid=uid)
+        return await entities.StorageLocation.get(uid=uid)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def storage_sections(
         self, info, storage_location_uid: str
     ) -> List[types.StorageSectionType]:
-        return await models.StorageLocation.get_all(
+        return await entities.StorageLocation.get_all(
             storage_location_uid=storage_location_uid
         )
 
@@ -41,13 +41,13 @@ class StorageQuery:
     async def storage_section_by_uid(
         self, info, uid: str
     ) -> Optional[types.StorageSectionType]:
-        return await models.StorageSection.get(uid=uid)
+        return await entities.StorageSection.get(uid=uid)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def storage_containers(
         self, info, storage_section_uid: str
     ) -> List[types.StorageContainerType]:
-        return await models.StorageContainer.get_all(
+        return await entities.StorageContainer.get_all(
             storage_section_uid=storage_section_uid
         )
 
@@ -55,4 +55,4 @@ class StorageQuery:
     async def storage_container_by_uid(
         self, info, uid: str
     ) -> Optional[types.StorageContainerType]:
-        return await models.StorageContainer.get(uid=uid)
+        return await entities.StorageContainer.get(uid=uid)

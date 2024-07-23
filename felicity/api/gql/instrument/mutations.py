@@ -14,8 +14,8 @@ from felicity.api.gql.instrument.types import (CalibrationCertificateType,
                                                MethodType)
 from felicity.api.gql.permissions import IsAuthenticated
 from felicity.api.gql.types import OperationError
-from felicity.apps.analysis.models import analysis as analysis_models
-from felicity.apps.instrument import models, schemas
+from felicity.apps.analysis.entities import analysis as analysis_entities
+from felicity.apps.instrument import entities, schemas
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -137,7 +137,7 @@ class InstrumentMutations:
         if not payload.name:
             return OperationError(error="Please a name for your instrument type")
 
-        exists = await models.InstrumentType.get(name=payload.name)
+        exists = await entities.InstrumentType.get(name=payload.name)
         if exists:
             return OperationError(
                 error=f"A InstrumentType named {payload.name} already exists"
@@ -148,7 +148,7 @@ class InstrumentMutations:
             incoming[k] = v
 
         obj_in = schemas.InstrumentTypeCreate(**incoming)
-        inst_type: models.InstrumentType = await models.InstrumentType.create(obj_in)
+        inst_type: entities.InstrumentType = await entities.InstrumentType.create(obj_in)
         return InstrumentTypeType(**inst_type.marshal_simple())
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
@@ -159,7 +159,7 @@ class InstrumentMutations:
         if not uid:
             return OperationError(error="No uid provided to identity instrument")
 
-        inst_type = await models.InstrumentType.get(uid=uid)
+        inst_type = await entities.InstrumentType.get(uid=uid)
         if not inst_type:
             return OperationError(
                 error=f"manufacturer with uid {uid} not found. Cannot update obj ..."
@@ -187,13 +187,13 @@ class InstrumentMutations:
                 error="Provide a name and a unique keyword for your instrument"
             )
 
-        taken = await models.Instrument.get(keyword=payload.keyword)
+        taken = await entities.Instrument.get(keyword=payload.keyword)
         if taken:
             return OperationError(
                 error=f"Provided keyword already assigned to instrument {taken.name}"
             )
 
-        exists = await models.Instrument.get(name=payload.name)
+        exists = await entities.Instrument.get(name=payload.name)
         if exists:
             return OperationError(
                 error=f"An Instrument named {payload.name} already exists"
@@ -204,7 +204,7 @@ class InstrumentMutations:
             incoming[k] = v
 
         obj_in = schemas.InstrumentCreate(**incoming)
-        instrument: models.Instrument = await models.Instrument.create(obj_in)
+        instrument: entities.Instrument = await entities.Instrument.create(obj_in)
         return InstrumentType(**instrument.marshal_simple())
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
@@ -216,13 +216,13 @@ class InstrumentMutations:
             return OperationError(error="No uid provided to identity instrument")
 
         if "keyword" in payload.__dict__:
-            taken = await models.Instrument.get(keyword=payload.keyword)
+            taken = await entities.Instrument.get(keyword=payload.keyword)
             if taken and (str(uid) != str(taken.uid)):
                 return OperationError(
                     error=f"Provided keyword already assigned to instrument {taken.name}"
                 )
 
-        instrument = await models.Instrument.get(uid=uid)
+        instrument = await entities.Instrument.get(uid=uid)
         if not instrument:
             return OperationError(
                 error=f"instrument with uid {uid} not found. Cannot update obj ..."
@@ -245,7 +245,7 @@ class InstrumentMutations:
         self, info, payload: InstrumentCompetenceInput
     ) -> InstrumentCompetenceResponse:  # noqa
 
-        instrument = await models.Instrument.get(keyword=payload.instrument_uid)
+        instrument = await entities.Instrument.get(keyword=payload.instrument_uid)
         if not instrument:
             return OperationError(error=f"Provided instrument does not exist")
 
@@ -254,8 +254,8 @@ class InstrumentMutations:
             incoming[k] = v
 
         obj_in = schemas.InstrumentCompetenceCreate(**incoming)
-        instrument_competence: models.InstrumentCompetence = (
-            await models.InstrumentCompetence.create(obj_in)
+        instrument_competence: entities.InstrumentCompetence = (
+            await entities.InstrumentCompetence.create(obj_in)
         )
         return InstrumentCompetenceType(**instrument_competence.marshal_simple())
 
@@ -267,7 +267,7 @@ class InstrumentMutations:
         if not uid:
             return OperationError(error="No uid provided to identify instrument")
 
-        competence = await models.InstrumentCompetence.get(uid=uid)
+        competence = await entities.InstrumentCompetence.get(uid=uid)
         if not competence:
             return OperationError(
                 error=f"instrument competence with uid {uid} not found. Cannot update obj ..."
@@ -289,7 +289,7 @@ class InstrumentMutations:
     async def create_laboratory_instrument(
         self, info, payload: LaboratoryInstrumentInputType
     ) -> LaboratoryInstrumentResponse:  # noqa
-        instrument = await models.Instrument.get(uid=payload.instrument_uid)
+        instrument = await entities.Instrument.get(uid=payload.instrument_uid)
         if not instrument:
             return OperationError(
                 error=f"Choice instrument not found: {payload.instrument_uid}"
@@ -300,8 +300,8 @@ class InstrumentMutations:
             incoming[k] = v
 
         obj_in = schemas.LaboratoryInstrumentCreate(**incoming)
-        laboratory_instrument: models.LaboratoryInstrument = (
-            await models.LaboratoryInstrument.create(obj_in)
+        laboratory_instrument: entities.LaboratoryInstrument = (
+            await entities.LaboratoryInstrument.create(obj_in)
         )
         return LaboratoryInstrumentType(**laboratory_instrument.marshal_simple())
 
@@ -313,13 +313,13 @@ class InstrumentMutations:
         if not uid:
             return OperationError(error="No uid provided to identity instrument")
 
-        taken = await models.LaboratoryInstrument.get(lab_name=payload.lab_name)
+        taken = await entities.LaboratoryInstrument.get(lab_name=payload.lab_name)
         if taken and taken.uid != uid:
             return OperationError(
                 error=f"Provided lab_name already assigned to another instrument"
             )
 
-        instrument = await models.LaboratoryInstrument.get(uid=uid)
+        instrument = await entities.LaboratoryInstrument.get(uid=uid)
         if not instrument:
             return OperationError(
                 error=f"instrument with uid {uid} not found. Cannot update obj ..."
@@ -347,7 +347,7 @@ class InstrumentMutations:
             incoming[k] = v
 
         obj_in = schemas.InstrumentCalibrationCreate(**incoming)
-        calib: models.InstrumentCalibration = await models.InstrumentCalibration.create(
+        calib: entities.InstrumentCalibration = await entities.InstrumentCalibration.create(
             obj_in
         )
         return InstrumentCalibrationType(**calib.marshal_simple())
@@ -360,7 +360,7 @@ class InstrumentMutations:
         if not uid:
             return OperationError(error="No uid provided to identity update obj")
 
-        caliberation = await models.InstrumentCalibration.get(uid=uid)
+        caliberation = await entities.InstrumentCalibration.get(uid=uid)
         if not caliberation:
             return OperationError(
                 error=f"caliberation with uid {uid} not found. Cannot update obj ..."
@@ -388,8 +388,8 @@ class InstrumentMutations:
             incoming[k] = v
 
         obj_in = schemas.CalibrationCertificateCreate(**incoming)
-        certificate: models.CalibrationCertificate = (
-            await models.CalibrationCertificate.create(obj_in)
+        certificate: entities.CalibrationCertificate = (
+            await entities.CalibrationCertificate.create(obj_in)
         )
         return CalibrationCertificateType(**certificate.marshal_simple())
 
@@ -401,7 +401,7 @@ class InstrumentMutations:
         if not uid:
             return OperationError(error="No uid provided to identity update obj")
 
-        certificate = await models.CalibrationCertificate.get(uid=uid)
+        certificate = await entities.CalibrationCertificate.get(uid=uid)
         if not certificate:
             return OperationError(
                 error=f"caliberation certificate with uid {uid} not found. Cannot update obj ..."
@@ -428,13 +428,13 @@ class InstrumentMutations:
             return OperationError(error="Provide a name for your method")
 
         if "keyword" in payload.__dict__:
-            taken = await models.Method.get(keyword=payload.keyword)
+            taken = await entities.Method.get(keyword=payload.keyword)
             if taken:
                 return OperationError(
                     error=f"Provided keyword already assigned to Method {taken.name}"
                 )
 
-        exists = await models.Method.get(name=payload.name)
+        exists = await entities.Method.get(name=payload.name)
         if exists:
             return OperationError(error=f"A Method named {payload.name} already exists")
 
@@ -444,19 +444,19 @@ class InstrumentMutations:
                 incoming[k] = v
 
         obj_in = schemas.MethodCreate(**incoming)
-        method: models.Method = await models.Method.create(obj_in)
+        method: entities.Method = await entities.Method.create(obj_in)
 
         _instruments = set()
         for i_uid in payload.instruments:
-            instrument = await models.Instrument.get(uid=i_uid)
+            instrument = await entities.Instrument.get(uid=i_uid)
             if not instrument:
                 return OperationError(
                     error=f"An instrument with uid {i_uid} does not exist"
                 )
             if instrument not in _instruments:
                 _instruments.add(instrument)
-                await models.Method.table_insert(
-                    table=models.method_instrument,
+                await entities.Method.table_insert(
+                    table=entities.method_instrument,
                     mappings={
                         "method_uid": method.uid,
                         "instrument_uid": instrument.uid,
@@ -464,11 +464,11 @@ class InstrumentMutations:
                 )
 
         for a_uid in payload.analyses:
-            analysis = await analysis_models.Analysis.get(uid=a_uid)
+            analysis = await analysis_entities.Analysis.get(uid=a_uid)
             meth_uids = [meth.uid for meth in analysis.methods]
             if method.uid not in meth_uids:
-                await analysis_models.Analysis.table_insert(
-                    table=analysis_models.analysis_method,
+                await analysis_entities.Analysis.table_insert(
+                    table=analysis_entities.analysis_method,
                     mappings={"method_uid": method.uid, "analysis_uid": analysis.uid},
                 )
 
@@ -476,8 +476,8 @@ class InstrumentMutations:
                 inst_uids = [inst.uid for inst in analysis.instruments]
                 if inst.uid not in inst_uids:
                     analysis.instruments.append(inst)
-                    await analysis_models.Analysis.table_insert(
-                        table=analysis_models.analysis_instrument,
+                    await analysis_entities.Analysis.table_insert(
+                        table=analysis_entities.analysis_instrument,
                         mappings={
                             "instrument_uid": inst.uid,
                             "analysis_uid": analysis.uid,
@@ -495,13 +495,13 @@ class InstrumentMutations:
             return OperationError(error="No uid provided to identity update obj")
 
         if "keyword" in payload.__dict__:
-            taken = await models.Method.get(keyword=payload.keyword)
+            taken = await entities.Method.get(keyword=payload.keyword)
             if taken and not (str(uid) == str(taken.uid)):
                 return OperationError(
                     error=f"Provided keyword already assigned to method {taken.name}"
                 )
 
-        method = await models.Method.get(uid=uid)
+        method = await entities.Method.get(uid=uid)
         if not method:
             return OperationError(
                 error=f"method with uid {uid} not found. Cannot update obj ..."
@@ -527,12 +527,12 @@ class InstrumentMutations:
                 method.instruments.remove(instrument)
         for _inst in payload.instruments:
             if _inst not in inst_uids:
-                instrument = await models.Instrument.get(uid=_inst)
+                instrument = await entities.Instrument.get(uid=_inst)
                 method.instruments.append(instrument)
         method = await method.save_async()
 
         # manage analyses
-        all_analyses = await analysis_models.Analysis.all_async()
+        all_analyses = await analysis_entities.Analysis.all_async()
         analyses = set()
         for analysis in all_analyses:
             for _meth in analysis.methods:
@@ -551,9 +551,9 @@ class InstrumentMutations:
 
         for _anal in payload.analyses:
             if _anal not in an_uids:
-                analysis = await analysis_models.Analysis.get(uid=_anal)
-                await analysis_models.Analysis.table_insert(
-                    table=analysis_models.analysis_method,
+                analysis = await analysis_entities.Analysis.get(uid=_anal)
+                await analysis_entities.Analysis.table_insert(
+                    table=analysis_entities.analysis_method,
                     mappings={"method_uid": method.uid, "analysis_uid": analysis.uid},
                 )
 

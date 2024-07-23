@@ -8,9 +8,9 @@ from felicity.api.gql.auth import auth_from_info, verify_user_auth
 from felicity.api.gql.permissions import IsAuthenticated
 from felicity.api.gql.storage import types
 from felicity.api.gql.types import OperationError
-from felicity.apps.analysis.conf import states as analysis_states
-from felicity.apps.analysis.models import analysis as an_models
-from felicity.apps.storage import models, schemas
+from felicity.apps.analysis.entities import analysis as an_entities
+from felicity.apps.analysis.enum import SampleState
+from felicity.apps.storage import  schemas
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -106,7 +106,7 @@ class StorageMutations:
         if not auth_success:
             return auth_error
 
-        exists = await models.StoreRoom.get(name=payload.name)
+        exists = await entities.StoreRoom.get(name=payload.name)
         if exists:
             return OperationError(error=f"StoreRoom with this name already exists")
 
@@ -118,7 +118,7 @@ class StorageMutations:
             incoming[k] = v
 
         obj_in = schemas.StoreRoomCreate(**incoming)
-        store_room: models.StoreRoom = await models.StoreRoom.create(obj_in)
+        store_room: entities.StoreRoom = await entities.StoreRoom.create(obj_in)
         return types.StoreRoomType(**store_room.marshal_simple())
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
@@ -136,7 +136,7 @@ class StorageMutations:
         if not uid:
             return OperationError(error="No uid provided to identity update obj")
 
-        store_room: models.StoreRoom = await models.StoreRoom.get(uid=uid)
+        store_room: entities.StoreRoom = await entities.StoreRoom.get(uid=uid)
         if not store_room:
             return OperationError(
                 error=f"store_room with uid {uid} not found. Cannot update obj ..."
@@ -169,13 +169,13 @@ class StorageMutations:
         if not auth_success:
             return auth_error
 
-        exists = await models.StorageLocation.get(name=payload.name)
+        exists = await entities.StorageLocation.get(name=payload.name)
         if exists:
             return OperationError(
                 error=f"StorageLocation with this name already exists"
             )
 
-        store_room = await models.StoreRoom.get(uid=payload.store_room_uid)
+        store_room = await entities.StoreRoom.get(uid=payload.store_room_uid)
         if not store_room:
             return OperationError(
                 error=f"StorageRoom with uid {payload.store_room_uid} does not exists"
@@ -189,7 +189,7 @@ class StorageMutations:
             incoming[k] = v
 
         obj_in = schemas.StorageLocationCreate(**incoming)
-        storage_location: models.StorageLocation = await models.StorageLocation.create(
+        storage_location: entities.StorageLocation = await entities.StorageLocation.create(
             obj_in
         )
         return types.StorageLocationType(**storage_location.marshal_simple())
@@ -209,7 +209,7 @@ class StorageMutations:
         if not uid:
             return OperationError(error="No uid provided to identity update obj")
 
-        storage_location: models.StorageLocation = await models.StorageLocation.get(
+        storage_location: entities.StorageLocation = await entities.StorageLocation.get(
             uid=uid
         )
         if not storage_location:
@@ -244,11 +244,11 @@ class StorageMutations:
         if not auth_success:
             return auth_error
 
-        exists = await models.StorageSection.get(name=payload.name)
+        exists = await entities.StorageSection.get(name=payload.name)
         if exists:
             return OperationError(error=f"StorageSection with this name already exists")
 
-        storage_location = await models.StorageLocation.get(
+        storage_location = await entities.StorageLocation.get(
             uid=payload.storage_location_uid
         )
         if not storage_location:
@@ -264,7 +264,7 @@ class StorageMutations:
             incoming[k] = v
 
         obj_in = schemas.StorageSectionCreate(**incoming)
-        storage_section: models.StorageSection = await models.StorageSection.create(
+        storage_section: entities.StorageSection = await entities.StorageSection.create(
             obj_in
         )
         return types.StorageSectionType(**storage_section.marshal_simple())
@@ -284,7 +284,7 @@ class StorageMutations:
         if not uid:
             return OperationError(error="No uid provided to identity update obj")
 
-        storage_section: models.StorageSection = await models.StorageSection.get(
+        storage_section: entities.StorageSection = await entities.StorageSection.get(
             uid=uid
         )
         if not storage_section:
@@ -319,7 +319,7 @@ class StorageMutations:
         if not auth_success:
             return auth_error
 
-        exists = await models.StorageContainer.get(name=payload.name)
+        exists = await entities.StorageContainer.get(name=payload.name)
         if exists:
             return OperationError(
                 error=f"StorageContainer with this name already exists"
@@ -334,11 +334,11 @@ class StorageMutations:
             incoming[k] = v
 
         obj_in = schemas.StorageContainerCreate(**incoming)
-        storage_container: models.StorageContainer = (
-            await models.StorageContainer.create(obj_in)
+        storage_container: entities.StorageContainer = (
+            await entities.StorageContainer.create(obj_in)
         )
 
-        storage_container = await models.StorageContainer.get(uid=storage_container.uid)
+        storage_container = await entities.StorageContainer.get(uid=storage_container.uid)
         return types.StorageContainerType(
             **storage_container.marshal_simple(exclude=["samples"])
         )
@@ -358,7 +358,7 @@ class StorageMutations:
         if not uid:
             return OperationError(error="No uid provided to identity update obj")
 
-        storage_container: models.StorageContainer = await models.StorageContainer.get(
+        storage_container: entities.StorageContainer = await entities.StorageContainer.get(
             uid=uid
         )
         if not storage_container:
@@ -405,10 +405,10 @@ class StorageMutations:
             sample_data = list(
                 filter(lambda x: x.storage_container_uid == container_uid, payload)
             )
-            samples = await an_models.Sample.get_by_uids(
+            samples = await an_entities.Sample.get_by_uids(
                 uids=[s.sample_uid for s in sample_data]
             )
-            container: models.StorageContainer = await models.StorageContainer.get(
+            container: entities.StorageContainer = await entities.StorageContainer.get(
                 uid=container_uid
             )
 
@@ -425,14 +425,14 @@ class StorageMutations:
                     "storage_container_uid": container_uid,
                     "storage_slot": sample_datum.storage_slot,
                     "storage_slot_index": sample_datum.storage_slot_index,
-                    "status": analysis_states.sample.STORED,
+                    "status": SampleState.STORED,
                     "stored_by_uid": felicity_user.uid,
                 }
                 await _sample.update(obj_in=storage_object)
 
             await container.reset_stored_count()
 
-        samples = await an_models.Sample.get_by_uids(
+        samples = await an_entities.Sample.get_by_uids(
             uids=[s.sample_uid for s in payload]
         )
 
@@ -450,19 +450,19 @@ class StorageMutations:
         if len(sample_uids) == 0:
             return OperationError(error=f"No Samples to recover are provided!")
 
-        samples = await an_models.Sample.get_by_uids(uids=sample_uids)
+        samples = await an_entities.Sample.get_by_uids(uids=sample_uids)
 
-        await an_models.Sample.bulk_update_with_mappings(
+        await an_entities.Sample.bulk_update_with_mappings(
             [
                 {
                     "uid": _sample.uid,
                     "storage_container_uid": None,
                     "storage_slot": None,
-                    "status": analysis_states.sample.RECEIVED,
+                    "status": SampleState.RECEIVED,
                 }
                 for idx, _sample in enumerate(samples)
             ]
         )
 
-        samples = await an_models.Sample.get_by_uids(uids=sample_uids)
+        samples = await an_entities.Sample.get_by_uids(uids=sample_uids)
         return StoredSamplesType(samples=samples)

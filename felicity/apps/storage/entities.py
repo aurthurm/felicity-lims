@@ -2,9 +2,7 @@ from typing import List
 
 from sqlalchemy import Boolean, Column, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
-
-from felicity.apps import AuditUser
-from felicity.apps.analysis.models.analysis import Sample
+from felicity.apps.abstract import AuditUser
 
 
 class StoreRoom(AuditUser):

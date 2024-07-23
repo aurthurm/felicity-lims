@@ -4,7 +4,7 @@ import strawberry  # noqa
 
 from felicity.api.gql.notification.types import NotificationType
 from felicity.api.gql.permissions import IsAuthenticated
-from felicity.apps.notification import models
+from felicity.apps.notification import entities
 
 
 @strawberry.type
@@ -28,12 +28,12 @@ class StreamNotificationQuery:
         if user_uid:
             filters["users__uid__in"] = [user_uid]
 
-        notif_stmt = models.Notification.smart_query(
+        notif_stmt = entities.Notification.smart_query(
             filters=filters, sort_attrs=["-created_at"]
         )
 
         notifications = (
-            (await models.Notification.session.execute(notif_stmt))
+            (await entities.Notification.session.execute(notif_stmt))
             .scalars()
             .all_async()
         )
@@ -41,4 +41,4 @@ class StreamNotificationQuery:
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def notification_by_uid(self, info, uid: str) -> Optional[NotificationType]:
-        return await models.Notification.get(uid=uid)
+        return await entities.Notification.get(uid=uid)

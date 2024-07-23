@@ -1,17 +1,22 @@
+import felicity.api.gql.analysis.types
 import logging
 import time
 from typing import List
 
-from felicity.apps.analysis import conf as analysis_conf
-from felicity.apps.analysis.models.analysis import Sample
-from felicity.apps.analysis.models.qc import QCSet, QCTemplate
-from felicity.apps.analysis.models.results import AnalysisResult
 from felicity.apps.analysis.schemas import (AnalysisResultCreate, QCSetCreate,
                                             SampleCreate)
 from felicity.apps.analysis.utils import get_qc_sample_type
-from felicity.apps.job import models as job_models
-from felicity.apps.job.conf import states as job_states
-from felicity.apps.worksheet import conf, models
+from felicity.apps.job.enum import JobState
+from felicity.apps.worksheet.entities import WorkSheet
+from felicity.apps.worksheet.enum import WorkSheetState
+from felicity.apps.analysis.enum import ResultState, SampleState
+from felicity.apps.job.services import JobService
+from felicity.apps.worksheet.services import WorkSheetService
+from felicity.apps.analysis.services.result import AnalysisResultService
+from felicity.apps.analysis.services.quality_control import QCSetService, QCTemplateService
+from felicity.apps.analysis.services.analysis import SampleService
+from felicity.apps.common.utils.serializer import marshaller
+from felicity.apps.analysis.entities.qc import QCTemplate
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -19,41 +24,45 @@ logger = logging.getLogger(__name__)
 
 async def populate_worksheet_plate(job_uid: str):
     logger.info(f"starting job {job_uid} ....")
-    job = await job_models.Job.get(uid=job_uid)
+    job_service = JobService()
+    worksheet_service = WorkSheetService()
+    analysis_result_service = AnalysisResultService()
+
+    job = await job_service.get(uid=job_uid)
     if not job:
         return
 
-    if not job.status == job_states.PENDING:
+    if not job.status == JobState.PENDING:
         return
 
-    await job.change_status(new_status=job_states.RUNNING)
+    await job_service.change_status(job.uid, new_status=JobState.RUNNING)
     ws_uid = job.job_id
 
-    ws = await models.WorkSheet.get(uid=ws_uid)
+    ws = await worksheet_service.get(uid=ws_uid)
     if not ws:
-        await job.change_status(
-            new_status=job_states.FAILED,
+        await job_service.change_status(job.uid,
+            new_status=JobState.FAILED,
             change_reason=f"Failed to acquire WorkSheet {ws_uid}",
         )
         logger.warning(f"Failed to acquire WorkSheet {ws_uid}")
         return
 
-    await ws.reset_assigned_count()
+    await worksheet_service.reset_assigned_count(ws.uid)
 
     # Don't handle processed worksheets
-    if ws.state in [conf.worksheet_states.AWAITING, conf.worksheet_states.APPROVED]:
-        await job.change_status(
-            new_status=job_states.FAILED,
+    if ws.state in [WorkSheetState.AWAITING, WorkSheetState.APPROVED]:
+        await job_service.change_status(job.uid,
+            new_status=JobState.FAILED,
             change_reason=f"WorkSheet {ws_uid} - is already processed",
         )
         logger.warning(f"WorkSheet {ws_uid} - is already processed")
         return
 
     # Enforce WS with at least a processed sample
-    has_processed_samples = await ws.has_processed_samples()
+    has_processed_samples = await worksheet_service.has_processed_samples(ws.uid)
     if has_processed_samples:
-        await job.change_status(
-            new_status=job_states.FAILED,
+        await job_service.change_status(job.uid,
+            new_status=JobState.FAILED,
             change_reason=f"WorkSheet {ws_uid} - contains at least a "
                           f"processed sample",
         )
@@ -62,8 +71,8 @@ async def populate_worksheet_plate(job_uid: str):
 
     # Enforce WS sample size limit
     if not ws.assigned_count < ws.number_of_samples:
-        await job.change_status(
-            new_status=job_states.FAILED,
+        await job_service.change_status(job.uid,
+            new_status=JobState.FAILED,
             change_reason=f"WorkSheet {ws_uid} already has "
                           f"{ws.assigned_count} assigned samples",
         )
@@ -74,8 +83,8 @@ async def populate_worksheet_plate(job_uid: str):
 
     logger.info("Filtering samples by template criteria ...")
     # get sample, filtered by analysis_service and Sample Type
-    samples: List[AnalysisResult] = await AnalysisResult.filter_for_worksheet(
-        analyses_status=analysis_conf.states.result.PENDING,
+    samples = await analysis_result_service.filter_for_worksheet(
+        analyses_status=ResultState.PENDING,
         analysis_uid=ws.analysis_uid,
         sample_type_uid=ws.sample_type_uid,
         limit=ws.number_of_samples,
@@ -84,8 +93,8 @@ async def populate_worksheet_plate(job_uid: str):
     obtained_count = len(samples)
     logger.info(f"Done filtering: Got {obtained_count} for assignment ...")
     if obtained_count == 0:
-        await job.change_status(
-            new_status=job_states.FAILED,
+        await job_service.change_status(job.uid,
+            new_status=JobState.FAILED,
             change_reason=f"There are no samples to assign to " f"WorkSheet {ws_uid}",
         )
         logger.warning(f"There are no samples to assign to WorkSheet {ws_uid}")
@@ -104,7 +113,7 @@ async def populate_worksheet_plate(job_uid: str):
                 # skip reserved ?qc positions
                 position += 1
 
-            await sample.assign(ws.uid, position, None)
+            await analysis_result_service.assign(sample.uid, ws.uid, position, None)
             position += 1
 
     else:  # populate worksheet using an empty position filling strategy if not empty
@@ -122,25 +131,21 @@ async def populate_worksheet_plate(job_uid: str):
         samples = samples[: len(empty_positions)]
 
         for key in list(range(len(samples))):
-            await samples[key].assign(ws.uid, empty_positions[key], None)
+            await analysis_result_service.assign(samples[key].uid, ws.uid, empty_positions[key], None)
 
     time.sleep(1)
 
-    await ws.reset_assigned_count()
-    if ws.assigned_count > 0 and not ws.state == conf.worksheet_states.PENDING:
-        await ws.change_state(
-            state=conf.worksheet_states.PENDING, updated_by_uid=job.creator_uid
+    await worksheet_service.reset_assigned_count(ws.uid)
+    if ws.assigned_count > 0 and not ws.state == WorkSheetState.PENDING:
+        await worksheet_service.change_state(ws.uid,
+            state=WorkSheetState.PENDING, updated_by_uid=job.creator_uid
         )
 
     if True:  # ?? maybe allow user to choose whether to add qc samples or not
         await setup_ws_quality_control(ws)
 
-    await job.change_status(new_status=job_states.FINISHED)
+    await job_service.change_status(job.uid, new_status=JobState.FINISHED)
     logger.info(f"Done !! Job {job_uid} was executed successfully :)")
-
-
-def run_ws_jobs():
-    pass
 
 
 def get_sample_position(reserved, level_uid) -> int:
@@ -154,11 +159,16 @@ def get_sample_position(reserved, level_uid) -> int:
     return int(matching_keys[0]) if matching_keys else 0
 
 
-async def setup_ws_quality_control(ws: models.WorkSheet):
+async def setup_ws_quality_control(ws: WorkSheet):
+    analysis_result_service = AnalysisResultService()
+    qc_set_service = QCSetService()
+    sample_service = SampleService()
+
+
     reserved_pos = ws.reserved
     if ws.template.qc_levels:
         # if ws has qc set, then retrieve
-        _a_res = await AnalysisResult.get_all(worksheet_uid=ws.uid)
+        _a_res = await analysis_result_service.get_all(worksheet_uid=ws.uid)
         _qc_sets = []
 
         for _a_r in _a_res:
@@ -170,12 +180,12 @@ async def setup_ws_quality_control(ws: models.WorkSheet):
         except Exception:  # noqa
             # If ws has no qc_set then create
             qc_set_schema = QCSetCreate(name="Set", note="Auto Generated")
-            qc_set = await QCSet.create(qc_set_schema)
+            qc_set = await qc_set_service.create(qc_set_schema)
 
         for level in ws.template.qc_levels:
             # if ws has qc_set with this level, skip
             add_qc_sample = True
-            samples = await Sample.get_all(qc_set_uid=qc_set.uid)
+            samples = await sample_service.get_all(qc_set_uid=qc_set.uid)
             if samples:
                 for _sample in samples:
                     if _sample.qc_level.uid == level.uid:
@@ -188,34 +198,39 @@ async def setup_ws_quality_control(ws: models.WorkSheet):
                 s_in = SampleCreate(
                     sample_type_uid=sample_type.uid,
                     internal_use=True,
-                    status=analysis_conf.states.sample.RECEIVED,
+                    status=SampleState.RECEIVED,
                 )
-                sample: Sample = await Sample.create(s_in)
+                sample = await sample_service.create(s_in)
                 sample.qc_set_uid = qc_set.uid
                 sample.qc_level_uid = level.uid
                 sample.analyses.append(ws.analysis)
-                await sample.save_async()
+                await sample_service.update(sample.uid, marshaller(sample))
                 logger.warning(f"Sample {sample.sample_id}, level {level.level}")
 
                 # create results linkages
                 a_result_in = {
                     "sample_uid": sample.uid,
                     "analysis_uid": ws.analysis_uid,
-                    "status": analysis_conf.states.result.PENDING,
+                    "status": ResultState.PENDING,
                 }
                 a_result_schema = AnalysisResultCreate(**a_result_in)
-                ar: AnalysisResult = await AnalysisResult.create(a_result_schema)
+                ar = await analysis_result_service.create(a_result_schema)
                 position = get_sample_position(reserved_pos, level.uid)
-                await ar.assign(ws.uid, position, None)
+                await analysis_result_service.assign(ar.uid, ws.uid, position, None)
 
 
-async def setup_ws_quality_control_manually(ws: models.WorkSheet, qc_template_uid):
+async def setup_ws_quality_control_manually(ws: WorkSheet, qc_template_uid):
+    qc_template_service = QCTemplateService()
+    analysis_result_service = AnalysisResultService()
+    qc_set_service = QCSetService()
+    sample_service = SampleService()
+
     qc_template = None
     reserved_pos = None
     qc_levels = None
 
     if qc_template_uid:
-        qc_template = await QCTemplate.get(uid=qc_template_uid)
+        qc_template = await qc_template_service.get(uid=qc_template_uid)
         reserved_pos = list(range(1, len(qc_template.qc_levels) + 1))
 
     if ws.reserved:
@@ -229,7 +244,7 @@ async def setup_ws_quality_control_manually(ws: models.WorkSheet, qc_template_ui
 
     if qc_levels:
         # if ws has qc set, then retrieve
-        _a_res = await AnalysisResult.get_all(worksheet_uid=ws.uid)
+        _a_res = await analysis_result_service.get_all(worksheet_uid=ws.uid)
         _qc_sets = []
 
         for _a_r in _a_res:
@@ -241,12 +256,12 @@ async def setup_ws_quality_control_manually(ws: models.WorkSheet, qc_template_ui
         except Exception:  # noqa
             # If ws has no qc_set then create
             qc_set_schema = QCSetCreate(name="Set", note="Auto Generated")
-            qc_set = await QCSet.create(qc_set_schema)
+            qc_set = await qc_set_service.create(qc_set_schema)
 
         for level in qc_levels:
             # if ws has qc_set with this level, skip
             add_qc_sample = True
-            samples = await Sample.get_all(qc_set_uid=qc_set.uid)
+            samples = await sample_service.get_all(qc_set_uid=qc_set.uid)
             if samples:
                 for _sample in samples:
                     if _sample.qc_level.uid == level.uid:
@@ -259,64 +274,71 @@ async def setup_ws_quality_control_manually(ws: models.WorkSheet, qc_template_ui
                 s_in = SampleCreate(
                     sample_type_uid=sample_type.uid,
                     internal_use=True,
-                    status=analysis_conf.states.sample.RECEIVED,
+                    status=SampleState.RECEIVED,
                 )
-                sample: Sample = await Sample.create(s_in)
+                sample =await sample_service.create(s_in)
                 sample.qc_set_uid = qc_set.uid
                 sample.qc_level_uid = level.uid
                 sample.analyses.append(ws.analysis)
-                await sample.save_async()
+                await sample_service.update(sample.uid, marshaller(sample))
                 logger.warning(f"Sample {sample.sample_id}, level {level.level}")
 
                 # create results linkages
                 a_result_in = {
                     "sample_uid": sample.uid,
                     "analysis_uid": ws.analysis_uid,
-                    "status": analysis_conf.states.result.PENDING,
+                    "status": ResultState.PENDING,
                 }
                 a_result_schema = AnalysisResultCreate(**a_result_in)
-                ar: AnalysisResult = await AnalysisResult.create(a_result_schema)
+                ar = await analysis_result_service.create(a_result_schema)
                 position = get_sample_position(reserved_pos, level.uid)
-                await ar.assign(ws.uid, position, None)
+                await analysis_result_service.assign(ar.uid, ws.uid, position, None)
 
 
 async def populate_worksheet_plate_manually(job_uid: str):
     logger.info(f"starting job {job_uid} ....")
-    job = await job_models.Job.get(uid=job_uid)
+    job_service = JobService()
+    worksheet_service = WorkSheetService()
+    analysis_result_service = AnalysisResultService()
+    qc_template_service = QCTemplateService()
+    sample_service = SampleService()
+
+
+    job = await job_service.get(uid=job_uid)
     if not job:
         return
 
-    if not job.status == job_states.PENDING:
+    if not job.status == JobState.PENDING:
         return
 
-    await job.change_status(new_status=job_states.RUNNING)
+    await job_service.change_status(job.uid,new_status=JobState.RUNNING)
     ws_uid = job.job_id
 
-    ws = await models.WorkSheet.get(uid=ws_uid)
+    ws = await worksheet_service.get(uid=ws_uid)
     if not ws:
-        await job.change_status(
-            new_status=job_states.FAILED,
+        await job_service.change_status(job.uid,
+            new_status=JobState.FAILED,
             change_reason=f"Failed to acquire WorkSheet {ws_uid}",
         )
         logger.warning(f"Failed to acquire WorkSheet {ws_uid}")
         return
 
-    await ws.reset_assigned_count()
+    await worksheet_service.reset_assigned_count(ws.uid)
 
     # Don't handle processed worksheets
-    if ws.state in [conf.worksheet_states.AWAITING, conf.worksheet_states.APPROVED]:
-        await job.change_status(
-            new_status=job_states.FAILED,
+    if ws.state in [WorkSheetState.AWAITING, WorkSheetState.APPROVED]:
+        await job_service.change_status(job.uid,
+            new_status=JobState.FAILED,
             change_reason=f"WorkSheet {ws_uid} - is already processed",
         )
         logger.warning(f"WorkSheet {ws_uid} - is already processed")
         return
 
     # Enforce WS with at least a processed sample
-    has_processed_samples = await ws.has_processed_samples()
+    has_processed_samples = await worksheet_service.has_processed_samples(ws.uid)
     if has_processed_samples:
-        await job.change_status(
-            new_status=job_states.FAILED,
+        await job_service.change_status(job.uid,
+            new_status=JobState.FAILED,
             change_reason=f"WorkSheet {ws_uid} - contains at least a "
                           f"processed sample",
         )
@@ -327,7 +349,7 @@ async def populate_worksheet_plate_manually(job_uid: str):
 
     logger.info(f"Fetching samples with uids ... {data['analyses_uids']}")
     # get sample, filtered by analysis_service and Sample Type
-    samples: List[AnalysisResult] = await AnalysisResult.get_by_uids(
+    samples = await analysis_result_service.get_by_uids(
         uids=data["analyses_uids"]
     )
 
@@ -337,7 +359,7 @@ async def populate_worksheet_plate_manually(job_uid: str):
     reserved = [int(r) for r in list(ws.reserved.keys())]
     if not reserved:
         if data["qc_template_uid"]:
-            qc_template = await QCTemplate.get(uid=data["qc_template_uid"])
+            qc_template = await qc_template_service.get(uid=data["qc_template_uid"])
             reserved = list(range(1, len(qc_template.qc_levels) + 1))
 
     if ws.assigned_count == 0:
@@ -351,7 +373,7 @@ async def populate_worksheet_plate_manually(job_uid: str):
                 # skip reserved ?qc positions
                 position += 1
 
-            await sample.assign(ws.uid, position, None)
+            await sample_service.assign(sample.uid, ws.uid, position, None)
             position += 1
 
     else:  # populate worksheet using an empty position filling strategy if not empty
@@ -385,20 +407,20 @@ async def populate_worksheet_plate_manually(job_uid: str):
         samples = samples[: len(empty_positions)]
 
         for key in list(range(len(samples))):
-            await samples[key].assign(ws.uid, empty_positions[key], None)
+            await sample_service.assign(samples[key].uid, ws.uid, empty_positions[key], None)
 
     time.sleep(1)
 
-    await ws.reset_assigned_count()
+    await worksheet_service.reset_assigned_count(ws.uid)
     if ws.assigned_count > 0:
-        if not ws.state == conf.worksheet_states.PENDING:
-            await ws.change_state(
-                state=conf.worksheet_states.PENDING, updated_by_uid=job.creator_uid
+        if not ws.state == WorkSheetState.PENDING:
+            await worksheet_service.change_state(ws.uid,
+                state=WorkSheetState.PENDING, updated_by_uid=job.creator_uid
             )
 
     if True:  # ?? maybe allow user to choose whether to add qc samples or not
 
         await setup_ws_quality_control_manually(ws, data["qc_template_uid"])
 
-    await job.change_status(new_status=job_states.FINISHED)
+    await job_service.change_status(job.uid, new_status=JobState.FINISHED)
     logger.info(f"Done !! Job {job_uid} was executed successfully :)")

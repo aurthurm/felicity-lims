@@ -1,16 +1,16 @@
 import asyncio
 
-from felicity.apps.analysis.models.analysis import AnalysisRequest, Sample
-from felicity.apps.analysis.models.results import AnalysisResult
+from felicity.apps.analysis.entities.analysis import AnalysisRequest, Sample
+from felicity.apps.analysis.entities.results import AnalysisResult
 from felicity.apps.analysis.utils import get_last_verificator
 from felicity.apps.iol.fhir.schema import (BundleResource,
                                            DiagnosticReportResource,
                                            Identifier, PatientResource,
                                            Reference, ServiceRequestResource,
                                            SpecimenResource)
-from felicity.apps.patient.models import Patient
-from felicity.apps.setup.models.setup import Laboratory
-from felicity.apps.shipment.models import Shipment, ShippedSample
+from felicity.apps.patient.entities import Patient
+from felicity.apps.setup.entities.setup import Laboratory
+from felicity.apps.shipment.entities import Shipment, ShippedSample
 from felicity.core.dtz import format_datetime
 
 

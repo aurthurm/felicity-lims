@@ -10,7 +10,7 @@ from felicity.api.gql.setup.types import (CountryType, DistrictType,
                                           ProvinceType, SupplierType, UnitType)
 from felicity.api.gql.setup.types.department import DepartmentType
 from felicity.api.gql.types import OperationError
-from felicity.apps.setup import models, schemas
+from felicity.apps.setup import entities, schemas
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -148,7 +148,7 @@ class SetupMutations:
         if not uid:
             return OperationError(error="No uid provided to identity update obj")
 
-        laboratory = await models.Laboratory.get(uid=uid)
+        laboratory = await entities.Laboratory.get(uid=uid)
         if not laboratory:
             return OperationError(
                 error=f"Laboratory with uid {uid} not found. Cannot update obj ..."
@@ -176,7 +176,7 @@ class SetupMutations:
         if not uid:
             return OperationError(error="No uid provided to identity update obj")
 
-        lab_setting: models.LaboratorySetting = await models.LaboratorySetting.get(
+        lab_setting: entities.LaboratorySetting = await entities.LaboratorySetting.get(
             uid=uid
         )
         if not lab_setting:
@@ -205,7 +205,7 @@ class SetupMutations:
         if not payload.name:
             return OperationError(error="Please Provide a name for your department")
 
-        exists = await models.Department.get(name=payload.name)
+        exists = await entities.Department.get(name=payload.name)
         if exists:
             return OperationError(
                 error=f"A Department named {payload.name} already exists"
@@ -216,7 +216,7 @@ class SetupMutations:
             incoming[k] = v
 
         obj_in = schemas.DepartmentCreate(**incoming)
-        department: models.Department = await models.Department.create(obj_in)
+        department: entities.Department = await entities.Department.create(obj_in)
         return DepartmentType(
             **department.marshal_simple(exclude=["created_by", "updated_by"])
         )
@@ -229,7 +229,7 @@ class SetupMutations:
         if not uid:
             return OperationError(error="No uid provided to identity update obj")
 
-        department = await models.Department.get(uid=uid)
+        department = await entities.Department.get(uid=uid)
         if not department:
             return OperationError(
                 error=f"department with uid {uid} not found. Cannot update obj ..."
@@ -257,7 +257,7 @@ class SetupMutations:
         if not payload.name:
             return OperationError(error="Please Provide a name for your supplier")
 
-        exists = await models.Supplier.get(name=payload.name)
+        exists = await entities.Supplier.get(name=payload.name)
         if exists:
             return OperationError(
                 error=f"A Supplier named {payload.name} already exists"
@@ -268,7 +268,7 @@ class SetupMutations:
             incoming[k] = v
 
         obj_in = schemas.SupplierCreate(**incoming)
-        supplier: models.Supplier = await models.Supplier.create(obj_in)
+        supplier: entities.Supplier = await entities.Supplier.create(obj_in)
         return SupplierType(**supplier.marshal_simple())
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
@@ -279,7 +279,7 @@ class SetupMutations:
         if not uid:
             return OperationError(error="No uid provided to identity update obj")
 
-        supplier = await models.Supplier.get(uid=uid)
+        supplier = await entities.Supplier.get(uid=uid)
         if not supplier:
             return OperationError(
                 error=f"supplier with uid {uid} not found. Cannot update obj ..."
@@ -305,7 +305,7 @@ class SetupMutations:
         if not payload.name:
             return OperationError(error="Please a name for your manufacturer")
 
-        exists = await models.Manufacturer.get(name=payload.name)
+        exists = await entities.Manufacturer.get(name=payload.name)
         if exists:
             return OperationError(
                 error=f"A Manufacturer named {payload.name} already exists"
@@ -316,7 +316,7 @@ class SetupMutations:
             incoming[k] = v
 
         obj_in = schemas.ManufacturerCreate(**incoming)
-        manufacturer: models.Manufacturer = await models.Manufacturer.create(obj_in)
+        manufacturer: entities.Manufacturer = await entities.Manufacturer.create(obj_in)
         return ManufacturerType(**manufacturer.marshal_simple())
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
@@ -327,7 +327,7 @@ class SetupMutations:
         if not uid:
             return OperationError(error="No uid provided to identity update obj")
 
-        manufacturer = await models.Manufacturer.get(uid=uid)
+        manufacturer = await entities.Manufacturer.get(uid=uid)
         if not manufacturer:
             return OperationError(
                 error=f"manufacturer with uid {uid} not found. Cannot update obj ..."
@@ -353,7 +353,7 @@ class SetupMutations:
         if not payload.name:
             return OperationError(error="Please Provide a name for the country")
 
-        exists = await models.Country.get(code=payload.code)
+        exists = await entities.Country.get(code=payload.code)
         if exists:
             return OperationError(
                 error=f"Country code {payload.code} already exists: This code belongs to {exists.name}"
@@ -364,7 +364,7 @@ class SetupMutations:
             incoming[k] = v
 
         obj_in = schemas.CountryCreate(**incoming)
-        country: models.Country = await models.Country.create(obj_in)
+        country: entities.Country = await entities.Country.create(obj_in)
         return CountryType(**country.marshal_simple())
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
@@ -375,7 +375,7 @@ class SetupMutations:
         if not uid:
             return OperationError(error="No uid provided to identity update obj")
 
-        country = await models.Country.get(uid=uid)
+        country = await entities.Country.get(uid=uid)
         if not country:
             return OperationError(
                 error=f"country with uid {uid} not found. Cannot update obj ..."
@@ -400,7 +400,7 @@ class SetupMutations:
         if not payload.name:
             return OperationError(error="Please Provide a name for the Province")
 
-        exists = await models.Province.get(code=payload.code)
+        exists = await entities.Province.get(code=payload.code)
         if exists:
             return OperationError(
                 error=f"Province code {payload.code} already belong to Province {exists.name}"
@@ -411,7 +411,7 @@ class SetupMutations:
             incoming[k] = v
 
         province_in = schemas.ProvinceCreate(**incoming)
-        province: models.Province = await models.Province.create(province_in)
+        province: entities.Province = await entities.Province.create(province_in)
         return ProvinceType(**province.marshal_simple())
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
@@ -422,7 +422,7 @@ class SetupMutations:
         if not uid:
             return OperationError(error="No uid provided to identity update obj")
 
-        province = await models.Province.get(uid=uid)
+        province = await entities.Province.get(uid=uid)
         if not province:
             return OperationError(
                 error=f"province with id {uid} not found. Cannot update obj ..."
@@ -448,7 +448,7 @@ class SetupMutations:
         if not payload.name:
             return OperationError(error="Please Provide a name for the district")
 
-        exists = await models.District.get(code=payload.code)
+        exists = await entities.District.get(code=payload.code)
         if exists:
             return OperationError(
                 error=f"District code {payload.code} already belong to district {exists.name}"
@@ -459,7 +459,7 @@ class SetupMutations:
             incoming[k] = v
 
         district_in = schemas.DistrictCreate(**incoming)
-        district: models.District = await models.District.create(district_in)
+        district: entities.District = await entities.District.create(district_in)
         return DistrictType(**district.marshal_simple())
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
@@ -469,7 +469,7 @@ class SetupMutations:
         if not uid:
             return OperationError(error="No uid provided to identity update obj")
 
-        district = await models.District.get(uid=uid)
+        district = await entities.District.get(uid=uid)
         if not district:
             return OperationError(
                 error=f"district with uid {uid} not found. Cannot update obj ..."
@@ -493,7 +493,7 @@ class SetupMutations:
         if not payload.name:
             return OperationError(error="Unit name is required")
 
-        exists = await models.Unit.get(name=payload.name)
+        exists = await entities.Unit.get(name=payload.name)
         if exists:
             return OperationError(error=f"A Unit named {payload.name} already exists")
 
@@ -502,7 +502,7 @@ class SetupMutations:
             incoming[k] = v
 
         obj_in = schemas.UnitCreate(**incoming)
-        unit: models.Unit = await models.Unit.create(obj_in)
+        unit: entities.Unit = await entities.Unit.create(obj_in)
         return UnitType(**unit.marshal_simple())
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
@@ -513,7 +513,7 @@ class SetupMutations:
         if not uid:
             return OperationError(error="No uid provided to identity update obj")
 
-        unit = await models.Unit.get(uid=uid)
+        unit = await entities.Unit.get(uid=uid)
         if not unit:
             return OperationError(
                 error=f"unit with uid {uid} not found. Cannot update obj ..."

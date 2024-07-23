@@ -1,6 +1,6 @@
 
 from felicity.apps.impress.entities import ReportImpress
-from felicity.database.repository import BaseRepository
+from felicity.apps.abstract.repository import BaseRepository
 
 
 class ReportImpressRepository(BaseRepository[ReportImpress]):

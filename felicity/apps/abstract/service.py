@@ -3,7 +3,7 @@ from typing import TypeVar, Generic, Any
 from pydantic import BaseModel
 from sqlalchemy.orm import DeclarativeBase
 
-from felicity.database.repository import BaseRepository
+from felicity.apps.abstract.repository import BaseRepository
 
 
 
@@ -14,8 +14,8 @@ U = TypeVar("U", bound=BaseModel)
 
 class BaseService(Generic[E, C, U]):
     def __init__(self, repository: BaseRepository) -> None:
-        self.repository = repository
-
+        self.repository = repository()
+    
     async def paging_filter(
         self,
         page_size: int | None = None,
@@ -51,18 +51,14 @@ class BaseService(Generic[E, C, U]):
         data = self._import(c)
         return await self.repository.create(**data)
 
-    async def bulk_create(self, bulk: list[dict]) -> None:
-        pass
+    async def bulk_create(self, bulk: list[dict | C]) -> None:
+        return await self.repository.bulk_create([self._import(b) for b in bulk])
 
-    async def update(self, uid, u: U | dict) -> E:
-        data = self._import(u)
-        return await self.repository.update(uid, **data)
+    async def update(self, uid: str, update: U | dict) -> E:
+        return await self.repository.update(uid, **self._import(update))
 
     async def bulk_update_with_mappings(self, mappings: list[dict]) -> list[E]:
         return await self.repository.bulk_update_with_mappings(mappings)
-
-    async def update_by_uid(self, uid: str, **kwargs) -> E:
-        return await self.repository.update_by_uid(uid, **kwargs)
 
     async def delete(self, uid: str) -> None:
         return await self.repository.delete(uid)

@@ -9,7 +9,7 @@ from felicity.apps.reflex.entities import (
     ReflexAction,
 )
 from felicity.database.paging import PageCursor
-from felicity.database.repository import BaseRepository
+from felicity.apps.abstract.repository import BaseRepository
 
 
 class ReflexRuleRepository(BaseRepository[ReflexRule]):

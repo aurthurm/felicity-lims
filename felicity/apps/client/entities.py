@@ -4,7 +4,7 @@ from sqlalchemy.orm import backref, relationship
 from felicity.apps.abstract import AuditHistory
 from felicity.apps.setup.entities import District, Province
 from felicity.apps.user.abstract import AbstractBaseUser
-from felicity.apps.user.conf import CLIENT_CONTACT
+from felicity.apps.user.enum import UserType
 
 
 class Client(AuditHistory):
@@ -64,4 +64,4 @@ class ClientContact(AbstractBaseUser):
 
     @property
     def user_type(self):
-        return CLIENT_CONTACT
+        return UserType.CLIENT_CONTACT

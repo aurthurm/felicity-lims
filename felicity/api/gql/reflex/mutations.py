@@ -8,8 +8,8 @@ from felicity.api.gql.permissions import IsAuthenticated
 from felicity.api.gql.reflex.types import (ReflexActionType, ReflexBrainType,
                                            ReflexRuleType)
 from felicity.api.gql.types import OperationError
-from felicity.apps.analysis.models import analysis as analysis_models
-from felicity.apps.reflex import models, schemas
+from felicity.apps.analysis.entities import analysis as analysis_entities
+from felicity.apps.reflex import entities, schemas
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -90,7 +90,7 @@ class ReflexRuleMutations:
         if not payload.name or not payload.description:
             return OperationError(error="Name and Description are required")
 
-        exists = await models.ReflexRule.get(name=payload.name)
+        exists = await entities.ReflexRule.get(name=payload.name)
         if exists:
             return OperationError(error=f"Reflex Rule name must be unique")
 
@@ -102,7 +102,7 @@ class ReflexRuleMutations:
             incoming[k] = v
 
         obj_in = schemas.ReflexRuleCreate(**incoming)
-        reflex: models.ReflexRule = await models.ReflexRule.create(obj_in)
+        reflex: entities.ReflexRule = await entities.ReflexRule.create(obj_in)
         return ReflexRuleType(**reflex.marshal_simple())
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
@@ -120,7 +120,7 @@ class ReflexRuleMutations:
         if not uid:
             return OperationError(error="No uid provided to identify update obj")
 
-        reflex_rule: models.ReflexRule = await models.ReflexRule.get(uid=uid)
+        reflex_rule: entities.ReflexRule = await entities.ReflexRule.get(uid=uid)
         if not reflex_rule:
             return OperationError(
                 error=f"reflex_rule with uid {uid} not found. Cannot update obj ..."
@@ -172,13 +172,13 @@ class ReflexRuleMutations:
 
         analyses = []
         for _anal_uid in payload.analyses:
-            _anal = await analysis_models.Analysis.get(uid=_anal_uid)
+            _anal = await analysis_entities.Analysis.get(uid=_anal_uid)
             analyses.append(_anal)
 
-        action: models.ReflexAction = await models.ReflexAction.create(obj_in)
+        action: entities.ReflexAction = await entities.ReflexAction.create(obj_in)
         for anal in analyses:
-            await models.ReflexAction.table_insert(
-                table=models.reflex_action_analysis,
+            await entities.ReflexAction.table_insert(
+                table=entities.reflex_action_analysis,
                 mappings={
                     "analysis_uid": anal.uid,
                     "reflex_action_uid": action.uid,
@@ -202,7 +202,7 @@ class ReflexRuleMutations:
         if not uid:
             return OperationError(error="No uid provided to identify update obj")
 
-        reflex_action: models.ReflexAction = await models.ReflexAction.get(uid=uid)
+        reflex_action: entities.ReflexAction = await entities.ReflexAction.get(uid=uid)
         if not reflex_action:
             return OperationError(
                 error=f"reflex_action with uid {uid} not found. Cannot update obj ..."
@@ -220,7 +220,7 @@ class ReflexRuleMutations:
 
         # analyses = []
         # for _anal_uid in payload.analyses:
-        #     _anal = await analysis_models.Analysis.get(uid=_anal_uid)
+        #     _anal = await analysis_entities.Analysis.get(uid=_anal_uid)
         #     analyses.append(_anal)
         # setattr(reflex_action, "analyses", analyses)
 
@@ -251,12 +251,12 @@ class ReflexRuleMutations:
         }
         obj_in = schemas.ReflexBrainCreate(**incoming)
 
-        brain: models.ReflexBrain = await models.ReflexBrain.create(obj_in)
+        brain: entities.ReflexBrain = await entities.ReflexBrain.create(obj_in)
 
         analyses_values = []
         for criteria in payload.analyses_values:
-            _anal = await analysis_models.Analysis.get(uid=criteria.analysis_uid)
-            assoc = models.ReflexBrainCriteria()
+            _anal = await analysis_entities.Analysis.get(uid=criteria.analysis_uid)
+            assoc = entities.ReflexBrainCriteria()
             assoc.operator = criteria.operator
             assoc.value = criteria.value
             assoc.analysis_uid = _anal.uid
@@ -266,8 +266,8 @@ class ReflexRuleMutations:
 
         finalise = []
         for final in payload.finalise:
-            _anal = await analysis_models.Analysis.get(uid=final.analysis_uid)
-            assoc = models.ReflexBrainFinal()
+            _anal = await analysis_entities.Analysis.get(uid=final.analysis_uid)
+            assoc = entities.ReflexBrainFinal()
             assoc.value = final.value
             assoc.analysis_uid = _anal.uid
             assoc.reflex_brain_uid = brain.uid
@@ -276,8 +276,8 @@ class ReflexRuleMutations:
 
         add_new = []
         for add_n in payload.add_new:
-            _anal = await analysis_models.Analysis.get(uid=add_n.analysis_uid)
-            assoc = models.ReflexBrainAddition()
+            _anal = await analysis_entities.Analysis.get(uid=add_n.analysis_uid)
+            assoc = entities.ReflexBrainAddition()
             assoc.count = add_n.count
             assoc.analysis_uid = _anal.uid
             assoc.reflex_brain_uid = brain.uid
@@ -285,7 +285,7 @@ class ReflexRuleMutations:
         brain.add_new = add_new
 
         await brain.save_async()
-        brain = await models.ReflexBrain.get_related(
+        brain = await entities.ReflexBrain.get_related(
             related=["add_new.analysis", "analyses_values.analysis"], uid=brain.uid
         )
         return ReflexBrainType(**brain.marshal_simple())
@@ -305,7 +305,7 @@ class ReflexRuleMutations:
         if not uid:
             return OperationError(error="No uid provided to identify update obj")
 
-        reflex_brain: models.ReflexBrain = await models.ReflexBrain.get(uid=uid)
+        reflex_brain: entities.ReflexBrain = await entities.ReflexBrain.get(uid=uid)
         if not reflex_brain:
             return OperationError(
                 error=f"reflex_action with uid {uid} not found. Cannot update obj ..."
@@ -323,8 +323,8 @@ class ReflexRuleMutations:
 
         analyses_values = []
         for criteria in payload.analyses_values:
-            _anal = await analysis_models.Analysis.get(uid=criteria.analysis_uid)
-            assoc = models.ReflexBrainCriteria()
+            _anal = await analysis_entities.Analysis.get(uid=criteria.analysis_uid)
+            assoc = entities.ReflexBrainCriteria()
             assoc.operator = criteria.operator
             assoc.value = criteria.value
             assoc.analysis_uid = _anal.uid
@@ -334,8 +334,8 @@ class ReflexRuleMutations:
 
         finalise = []
         for final in payload.finalise:
-            _anal = await analysis_models.Analysis.get(uid=final.analysis_uid)
-            assoc = models.ReflexBrainFinal()
+            _anal = await analysis_entities.Analysis.get(uid=final.analysis_uid)
+            assoc = entities.ReflexBrainFinal()
             assoc.value = final.value
             assoc.analysis_uid = _anal.uid
             assoc.reflex_brain_uid = reflex_brain.uid
@@ -344,8 +344,8 @@ class ReflexRuleMutations:
 
         add_new = []
         for add_n in payload.add_new:
-            _anal = await analysis_models.Analysis.get(uid=add_n.analysis_uid)
-            assoc = models.ReflexBrainAddition()
+            _anal = await analysis_entities.Analysis.get(uid=add_n.analysis_uid)
+            assoc = entities.ReflexBrainAddition()
             assoc.count = add_n.count
             assoc.analysis_uid = _anal.uid
             assoc.reflex_brain_uid = reflex_brain.uid

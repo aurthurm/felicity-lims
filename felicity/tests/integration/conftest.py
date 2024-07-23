@@ -7,7 +7,7 @@ from httpx import AsyncClient
 from sqlalchemy.ext.asyncio import create_async_engine
 
 from felicity.core.config import settings
-from felicity.database.base_class import DBModel
+from felicity.apps.abstract.entity import BaseEntity
 from lims import create_super_user
 from main import felicity
 
@@ -23,14 +23,14 @@ logger = logging.getLogger(__name__)
 async def setup():
     logger.info("pytest_configure integration tests...")
     async with engine.begin() as conn:
-        # await conn.run_sync(DBModel.metadata.drop_all)
-        await conn.run_sync(DBModel.metadata.create_all)
+        # await conn.run_sync(BaseEntity.metadata.drop_all)
+        await conn.run_sync(BaseEntity.metadata.create_all)
 
     connection = engine.connect()
     yield connection
 
     async with engine.begin() as conn:
-        await conn.run_sync(DBModel.metadata.drop_all)
+        await conn.run_sync(BaseEntity.metadata.drop_all)
 
 
 @pytest_asyncio.fixture(scope="session", autouse=True)

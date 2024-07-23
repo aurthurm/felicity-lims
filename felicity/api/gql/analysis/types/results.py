@@ -9,7 +9,7 @@ from felicity.api.gql.instrument.types import (LaboratoryInstrumentType,
                                                MethodType)
 from felicity.api.gql.types import PageInfo
 from felicity.api.gql.user.types import UserType
-from felicity.apps.worksheet import models as ws_models
+from felicity.apps.worksheet.entities import WorkSheet
 
 
 @strawberry.type
@@ -56,7 +56,7 @@ class AnalysisResultType:
 
     @strawberry.field
     async def worksheet_id(self, info) -> str | None:
-        ws = await ws_models.WorkSheet.get(uid=self.worksheet_uid)
+        ws = await WorkSheet.get(uid=self.worksheet_uid)
         return ws.worksheet_id if ws else None
 
 

@@ -1,118 +1,124 @@
-from core.security import (
+from felicity.apps.common.utils.serializer import marshaller
+from felicity.core.security import (
+    get_password_hash,
+    password_check,
     verify_password
 )
 from felicity.apps.abstract.service import BaseService
 from felicity.apps.common.utils import is_valid_email
-from felicity.apps.user.conf import LABORATORY_CONTACT
-from felicity.apps.user.entities import Group, Permission, User, UserAuth, UserPreference
-from felicity.apps.user.repository import GroupRepository, PermissionRepository, UserRepository
-from felicity.apps.user.schemas import AuthCreate, AuthUpdate, GroupCreate, GroupUpdate, PermissionCreate, PermissionUpdate, UserCreate, UserUpdate
+from felicity.apps.user.entities import Group, Permission, User, UserPreference
+from felicity.apps.user.repository import (GroupRepository, PermissionRepository, UserRepository)
+from felicity.apps.user.schemas import (GroupCreate, GroupUpdate,
+    PermissionCreate, PermissionUpdate, UserCreate, UserPreferenceCreate, UserPreferenceUpdate,
+    UserUpdate)
 
-
-
-class UserAuthService(BaseService[UserAuth, AuthCreate, AuthUpdate]):
-    def __init__(self) -> None:
-        super().__init__(UserAuth)
-
-    async def acquire_user_type(self, user_type):
-        _update = {
-            "user_type": user_type
-        }  # {**self.to_dict(), **{'user_type': user_type}}
-        update_in = AuthUpdate(**_update)
-        await self.update(update_in)
-
-    async def has_access(self, password):
-        if self.is_blocked:
-            raise Exception("Blocked Account: Reset Password to regain access")
-        #  dynamically get self.ccuser / self.lcuser / self.dcuser
-
-        # _user = getattr(self, self.user_type)
-        _user = await User.get(auth_uid=self.uid)
-        if not _user:
-            raise Exception(
-                "Authentication disabled for this account. Contact Admin to re-link"
-            )
-
-        if not getattr(_user, "is_active"):  # e.g self.ccuser.is_active
-            raise Exception("In active account: contact administrator")
-
-        auth_obj = self.to_dict()
-        retries = self.login_retry
-        if not verify_password(password, self.hashed_password):
-            msg = ""
-            if self.login_retry < 3:
-                retries += 1
-                msg = f"Wrong Password {3 - retries} attempts left"
-                auth_obj["login_retry"] = retries
-                if retries == 3:
-                    auth_obj["is_blocked"] = True
-                    msg = "Sorry your Account has been Blocked"
-            await self.update(auth_obj)
-            raise Exception(msg)
-        if self.login_retry != 0:
-            auth_obj["login_retry"] = 0
-            await self.update(auth_obj)
-        return self
-
-    async def authenticate(self, username, password):
-        if is_valid_email(username):
-            raise Exception("Use your username authenticate")
-        auth_obj = await self.get_by_username(username)
-        has_access = await auth_obj.has_access(password)
-        return has_access
 
 class UserService(BaseService[User, UserCreate, UserUpdate]):
     def __init__(self) -> None:
         super().__init__(UserRepository)
 
-    async def propagate_user_type(self):
-        """sets the user_type field in auth"""
-        if self.auth:
-            await self.auth.acquire_user_type(LABORATORY_CONTACT)
-        elif self.auth_uid:
-            auth = await UserAuth.get(uid=self.auth_uid)
-            await auth.acquire_user_type(LABORATORY_CONTACT)
-        else:
-            raise Exception("auth obj is None")
 
-    async def unlink_auth(self):
-        auth = self.auth
-        _update = {**self.to_dict(), **{"auth_uid": None, "auth": None}}
-        update_in = UserUpdate(**_update)
-        await self.update(update_in)
-        if not self.auth:
-            await auth.delete()
+    async def create(self, user_in: UserCreate) -> User:
+        by_username = await self.get_by_username(user_in.user_name)
+        if by_username:
+            raise Exception("Username already exist")
+        policy = password_check(user_in.password, user_in.user_name)
+        if not policy["password_ok"]:
+            raise Exception(policy["message"])
+        hashed_password = get_password_hash(user_in.password)
+        data = self._import(user_in)
+        del data["password"]
+        data["hashed_password"] = hashed_password
+        return await super().create(**data)
 
-    async def link_auth(self, auth_uid):
-        _update = {
-            "auth_uid": auth_uid
-        }  # {**result.to_dict(), **{'auth_uid': auth_uid}}
-        update_in = UserUpdate(**_update)
-        await self.update(update_in)
+    async def update(self, user_uid: str, user_in: UserUpdate) -> User:
+        update_data = self._import(user_in)
 
-    async def link_preference(self, preference_uid):
+        if "password" in update_data:
+            policy = password_check(user_in.password, user_in.user_name)
+            if not policy["password_ok"]:
+                raise Exception(policy["message"])
+            hashed_password = get_password_hash(update_data["password"])
+            del update_data["password"]
+            update_data["hashed_password"] = hashed_password
+        if "user" in update_data:
+            del update_data["user"]
+
+        return await super().update(user_uid, **update_data)
+
+    async def has_access(self, user: User, password: str):
+        if user.is_blocked:
+            raise Exception("Blocked Account: Reset Password to regain access")
+
+        if not user.is_active:
+            raise Exception("In active account: contact administrator")
+
+        if not verify_password(password, user.hashed_password):
+            msg = ""
+            retries = 0
+            if user.login_retry < 3:
+                msg = f"Wrong Password {3 - retries} attempts left"
+                user["login_retry"] = user.login_retry + 1
+                if user.login_retry == 3:
+                    user["is_blocked"] = True
+                    msg = "Sorry your Account has been Blocked"
+            await super().update(user.uid, user)
+            raise Exception(msg)
+        if user.login_retry != 0:
+            user["login_retry"] = 0
+            await super().update(user.uid, user)
+        return user
+
+    async def authenticate(self, username, password):
+        if is_valid_email(username):
+            raise Exception("Use your username authenticate")
+        user = await self.get_by_username(username)
+        return self.has_access(user, password)
+
+    async def get_by_email(self, email):
+        user = await self.get(email=email)
+        if not user:
+            return None
+        return user
+    
+    async def get_by_username(self, username) -> User:
+        return await self.get(user_name=username)
+
+    async def give_super_powers(self, user_uid: str):
+        user = self.get(user_uid)
+        user_obj = marshaller(user)
+        user_in = UserUpdate(**{**user_obj, "is_superuser": True})
+        await self.update(user_uid, user_in)
+
+    async def strip_super_powers(self, user_uid: str):
+        user = self.get(user_uid)
+        user_obj = marshaller(user)
+        user_in = UserUpdate(**{**user_obj, "is_superuser": False})
+        await self.update(user_uid, user_in)
+
+    async def activate(self, user_uid: str):
+        user = self.get(user_uid)
+        user_obj = marshaller(user)
+        user_in = UserUpdate(**{**user_obj, "is_active": True})
+        await super().update(user_uid, user_in)
+
+    async def deactivate(self, user_uid: str):
+        user = self.get(user_uid)
+        user_obj = marshaller(user)
+        user_in = UserUpdate(**{**user_obj, "is_active": False})
+        await super().update(user_uid, user_in)
+
+    async def link_preference(self, user_uid: str, preference_uid):
         _update = {
             "preference_uid": preference_uid
-        }  # {**result.to_dict(), **{'auth_uid': auth_uid}}
+        }
         update_in = UserUpdate(**_update)
-        return await self.update(update_in)
+        return await super().update(user_uid, update_in)
 
 
 class GroupService(BaseService[Group, GroupCreate, GroupUpdate]):
     def __init__(self):
         super().__init__(GroupRepository)
-
-    def add_member(self, member):
-        self.members.add(member)
-
-    def remove_member(self, member):
-        self.members.remove(member)
-
-    def add_perm(self, perm):
-        self.permissions.add(perm)
-
-    def remove_perm(self, perm):
-        self.permissions.remove(perm)
   
 
 class PermissionService(BaseService[Permission, PermissionCreate, PermissionUpdate]):
@@ -120,6 +126,6 @@ class PermissionService(BaseService[Permission, PermissionCreate, PermissionUpda
         super().__init__(PermissionRepository)
 
 
-class UserPreferenceService(BaseService[UserPreference]):
+class UserPreferenceService(BaseService[UserPreference, UserPreferenceCreate, UserPreferenceUpdate]):
     def __init__(self) -> None:
         super().__init__(UserPreference)

@@ -1,15 +1,15 @@
 import logging
 from typing import TYPE_CHECKING, List, Union
 
-from felicity.apps.setup.models.setup import Laboratory, LaboratorySetting
-from .models.analysis import Sample
-from .models.results import AnalysisResult
+from felicity.apps.setup.entities.setup import Laboratory, LaboratorySetting
+from .entities.analysis import Sample
+from .entities.results import AnalysisResult
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 if TYPE_CHECKING:
-    from ..user.models import User
+    from ..user.entities import User
 
 
 async def check_sample_verification(

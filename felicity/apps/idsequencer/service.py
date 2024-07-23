@@ -2,6 +2,7 @@ from datetime import datetime
 from typing import TypeVar
 
 from felicity.apps.abstract.service import BaseService
+from felicity.apps.common.schemas.dummy import Dummy
 from felicity.apps.idsequencer.exception import IncompleDataError
 from felicity.apps.idsequencer.repository import IdSequenceRepository
 from felicity.apps.idsequencer.utils import sequence_alpha, sequencer
@@ -12,10 +13,10 @@ SEQUENCE_BEGIN = 5
 SEQUENCE_CUTOFF = 10
 
 
-class IdSequenceService(BaseService[IdSequence]):
-    def __init__(self, repository: IdSequenceRepository) -> None:
-        self.repository = repository
-        super().__init__(repository)
+
+class IdSequenceService(BaseService[IdSequence, Dummy, Dummy]):
+    def __init__(self) -> None:
+        super().__init__(IdSequenceRepository)
 
     async def get_next_number(
         self, prefix: str = None, generic=False

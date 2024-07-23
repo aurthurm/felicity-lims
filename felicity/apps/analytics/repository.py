@@ -5,29 +5,25 @@ from sqlalchemy import text
 from sqlalchemy.future import select
 from sqlalchemy.sql import func
 
-from domain.analytics.ports.repository import (
-    IReportMetaRepository,
-    ISampleAnalyticsRepository,
-)
+
+from felicity.apps.abstract.repository import BaseRepository
 from felicity.apps.analysis.entities.analysis import Sample
 from felicity.apps.analytics.entities import ReportMeta
-from felicity.apps.repository.base import BaseRepository
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
-class ReportMetaRepository(BaseRepository[ReportMeta], IReportMetaRepository):
+class ReportMetaRepository(BaseRepository[ReportMeta]):
     def __init__(self) -> None:
-        self.model = ReportMeta
-        super().__init__()
+        super().__init__(ReportMeta)
 
 
-class SampleAnalyticsRepository(BaseRepository[Sample], ISampleAnalyticsRepository):
+class SampleAnalyticsRepository(BaseRepository[Sample]):
     def __init__(self):
-        self.model = Sample
         self.table = Sample.__tablename__
         self.alias = Sample.__tablename__ + "_tbl"
+        super().__init__(Sample)
 
     async def get_line_listing(
         self,

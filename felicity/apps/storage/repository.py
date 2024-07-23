@@ -4,7 +4,7 @@ from felicity.apps.storage.entities import (
     StorageSection,
     StorageContainer,
 )
-from felicity.database.repository import BaseRepository
+from felicity.apps.abstract.repository import BaseRepository
 
 
 class StoreRoomRepository(BaseRepository[StoreRoom]):

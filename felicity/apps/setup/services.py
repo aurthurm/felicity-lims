@@ -73,7 +73,7 @@ class LaboratoryService(BaseService[Laboratory, LaboratoryCreate, LaboratoryUpda
         super().__init__(LaboratoryRepository)
 
     async def get_by_setup_name(self, keyword="felicity") -> Laboratory:
-        return await self.repository.get(setup_name=keyword)
+        return await self.get(setup_name=keyword)
 
 class DistrictService(BaseService[District, DistrictCreate, DistrictUpdate]):
     def __init__(self):

@@ -8,8 +8,8 @@ from felicity.api.gql.auth import auth_from_info, verify_user_auth
 from felicity.api.gql.messaging.types import MessageType
 from felicity.api.gql.permissions import IsAuthenticated
 from felicity.api.gql.types import DeletedItem, DeleteResponse, OperationError
-from felicity.apps.messaging import models, schemas
-from felicity.apps.user.models import User
+from felicity.apps.messaging import entities, schemas
+from felicity.apps.user.entities import User
 from felicity.utils import get_passed_args
 
 logging.basicConfig(level=logging.INFO)
@@ -46,7 +46,7 @@ class MessageMutations:
 
         thread_in = schemas.MessageThreadCreate(broadcast=len(recipients) > 1)
         thread_in.recipients = _recipients
-        thread: models.MessageThread = await models.MessageThread.create(thread_in)
+        thread: entities.MessageThread = await entities.MessageThread.create(thread_in)
 
         incoming = {
             "thread_uid": thread.uid,
@@ -57,7 +57,7 @@ class MessageMutations:
         for k, v in passed_args.items():
             incoming[k] = v
 
-        exists = await models.Message.get(body=body)
+        exists = await entities.Message.get(body=body)
         if exists:
             incoming["body"] = ">> " + incoming["body"]
 
@@ -68,7 +68,7 @@ class MessageMutations:
                 incoming["recipients"].append(_rec)
 
         obj_in = schemas.MessageCreate(**incoming)
-        message: models.Message = await models.Message.create(obj_in)
+        message: entities.Message = await entities.Message.create(obj_in)
         return MessageType(**message.marshal_simple())
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
@@ -84,7 +84,7 @@ class MessageMutations:
             "Only Authenticated user can reply to messages",
         )
 
-        thread: models.MessageThread = await models.MessageThread.get(uid=thread_uid)
+        thread: entities.MessageThread = await entities.MessageThread.get(uid=thread_uid)
         if not thread:
             return OperationError(
                 error=f"Message Thread with uid {thread_uid} not fount"
@@ -107,7 +107,7 @@ class MessageMutations:
             incoming["parent_id"] = last_message.uid
 
         obj_in = schemas.MessageCreate(**incoming)
-        message: models.Message = await models.Message.create(obj_in)
+        message: entities.Message = await entities.Message.create(obj_in)
         return MessageType(**message.marshal_simple())
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
@@ -118,7 +118,7 @@ class MessageMutations:
             is_authenticated, felicity_user, "Only Authenticated user can view messages"
         )
 
-        message: models.Message = await models.Message.get(uid=uid)
+        message: entities.Message = await entities.Message.get(uid=uid)
         if not message:
             return OperationError(error=f"message with uid {uid} does not exist")
 
@@ -135,7 +135,7 @@ class MessageMutations:
             "Only Authenticated user can delete messages",
         )
 
-        message: models.Message = await models.Message.get(uid=uid)
+        message: entities.Message = await entities.Message.get(uid=uid)
         if not message:
             return OperationError(error=f"Message with uid {uid} does not exist")
 
@@ -152,7 +152,7 @@ class MessageMutations:
             "Only Authenticated user can delete threads",
         )
 
-        thread: models.Message = await models.MessageThread.get(uid=uid)
+        thread: entities.Message = await entities.MessageThread.get(uid=uid)
         if not thread:
             return OperationError(error=f"Message Thread with uid {uid} does not exist")
 

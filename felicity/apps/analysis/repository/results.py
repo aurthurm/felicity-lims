@@ -1,5 +1,5 @@
 from felicity.apps.analysis.entities.results import ResultMutation, AnalysisResult
-from felicity.database.repository import BaseRepository
+from felicity.apps.abstract.repository import BaseRepository
 
 
 class ResultMutationRepository(

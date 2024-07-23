@@ -15,7 +15,7 @@ from felicity.api.gql.billing.types import (AnalysisDiscountType,
 from felicity.api.gql.permissions import IsAuthenticated
 from felicity.api.gql.types import OperationError
 from felicity.apps.billing import entities, schemas, utils
-from felicity.apps.billing.config import DiscountType, TransactionKind
+from felicity.apps.billing.enum import DiscountType, TransactionKind
 from felicity.apps.billing.schemas import (TestBillTransactionUpdate,
                                            TestBillUpdate)
 from felicity.apps.impress.invoicing import utils as invoice_utils

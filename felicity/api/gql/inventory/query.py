@@ -6,7 +6,7 @@ import strawberry  # noqa
 from felicity.api.gql.inventory import types
 from felicity.api.gql.permissions import IsAuthenticated
 from felicity.api.gql.types import PageInfo
-from felicity.apps.inventory import models
+from felicity.apps.inventory import entities
 from felicity.utils import has_value_or_is_truthy
 
 
@@ -32,7 +32,7 @@ class InventoryQuery:
 
             filters = {sa.or_: _or_}
 
-        page = await models.StockItem.paginate_with_cursors(
+        page = await entities.StockItem.paginate_with_cursors(
             page_size=page_size,
             after_cursor=after_cursor,
             before_cursor=before_cursor,
@@ -51,11 +51,11 @@ class InventoryQuery:
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def stock_item_by_uid(self, info, uid: str) -> Optional[types.StockItemType]:
-        return await models.StockItem.get(uid=uid)
+        return await entities.StockItem.get(uid=uid)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def stock_item_variants(self, info, stock_item_uid: str) -> List[types.StockItemVariantType]:
-        return await models.StockItemVariant.get_all(stock_item_uid=stock_item_uid)
+        return await entities.StockItemVariant.get_all(stock_item_uid=stock_item_uid)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def stock_product_all(
@@ -77,7 +77,7 @@ class InventoryQuery:
 
             filters = {sa.or_: _or_}
 
-        page = await models.StockItemVariant.paginate_with_cursors(
+        page = await entities.StockItemVariant.paginate_with_cursors(
             page_size=page_size,
             after_cursor=after_cursor,
             before_cursor=before_cursor,
@@ -98,43 +98,43 @@ class InventoryQuery:
     async def stock_product_by_uid(
             self, info, uid: str
     ) -> Optional[types.StockItemVariantType]:
-        return await models.StockItemVariant.get(uid=uid)
+        return await entities.StockItemVariant.get(uid=uid)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def stock_lots(self, info, product_uid: str) -> List[types.StockLotType]:
-        return await models.StockLot.get_all(product_uid=product_uid)
+        return await entities.StockLot.get_all(product_uid=product_uid)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def stock_category_all(self, info) -> List[types.StockCategoryType]:
-        return await models.StockCategory.all_async()
+        return await entities.StockCategory.all_async()
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def stock_category_by_uid(
             self, info, uid: str
     ) -> Optional[types.StockCategoryType]:
-        return await models.StockCategory.get(uid=uid)
+        return await entities.StockCategory.get(uid=uid)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def hazard_all(self, info) -> List[types.HazardType]:
-        return await models.Hazard.all_async()
+        return await entities.Hazard.all_async()
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def hazard_by_uid(self, info, uid: str) -> Optional[types.HazardType]:
-        return await models.Hazard.get(uid=uid)
+        return await entities.Hazard.get(uid=uid)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def stock_unit_all(self, info) -> List[types.StockUnitType]:
-        return await models.StockUnit.all_async()
+        return await entities.StockUnit.all_async()
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def stock_unit_by_uid(self, info, uid: str) -> Optional[types.StockUnitType]:
-        return await models.StockUnit.get(uid=uid)
+        return await entities.StockUnit.get(uid=uid)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def stock_product_inventory(
             self, info, product_uid: str, stock_lot_uid: str
     ) -> Optional[types.StockProductInventoryType]:
-        return await models.StockProductInventory.get_all(product_uid=product_uid, stock_lot_uid=stock_lot_uid)
+        return await entities.StockProductInventory.get_all(product_uid=product_uid, stock_lot_uid=stock_lot_uid)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def stock_order_all(
@@ -160,7 +160,7 @@ class InventoryQuery:
         if status:
             filters.append({"status__exact": status})
 
-        page = await models.StockOrder.paginate_with_cursors(
+        page = await entities.StockOrder.paginate_with_cursors(
             page_size=page_size,
             after_cursor=after_cursor,
             before_cursor=before_cursor,
@@ -181,23 +181,23 @@ class InventoryQuery:
     async def stock_order_by_uid(
             self, info, uid: str
     ) -> Optional[types.StockOrderType]:
-        return await models.StockOrder.get(uid=uid)
+        return await entities.StockOrder.get(uid=uid)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def stock_order_product_all(
             self, info, stock_order_uid: str
     ) -> List[types.StockOrderProductType]:
-        return await models.StockOrderProduct.get_all(order_uid=stock_order_uid)
+        return await entities.StockOrderProduct.get_all(order_uid=stock_order_uid)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def stock_order_product_by_uid(
             self, info, uid: str
     ) -> Optional[types.StockOrderProductType]:
-        return await models.StockOrderProduct.get(uid=uid)
+        return await entities.StockOrderProduct.get(uid=uid)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def stock_receipt(self, info, product_uid: str, stock_lot_uid: str) -> List[types.StockReceiptType]:
-        return await models.StockReceipt.get_all(product_uid=product_uid, stock_lot_uid=stock_lot_uid)
+        return await entities.StockReceipt.get_all(product_uid=product_uid, stock_lot_uid=stock_lot_uid)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def stock_adjustment_all(
@@ -228,7 +228,7 @@ class InventoryQuery:
         if product_uid:
             filters["product_uid"] = product_uid
 
-        page = await models.StockAdjustment.paginate_with_cursors(
+        page = await entities.StockAdjustment.paginate_with_cursors(
             page_size=page_size,
             after_cursor=after_cursor,
             before_cursor=before_cursor,
@@ -249,4 +249,4 @@ class InventoryQuery:
     async def stock_adjustment_by_uid(
             self, info, uid: str
     ) -> Optional[types.StockAdjustmentType]:
-        return await models.StockAdjustment.get(uid=uid)
+        return await entities.StockAdjustment.get(uid=uid)

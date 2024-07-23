@@ -7,7 +7,7 @@ from felicity.api.gql.auth import auth_from_info, verify_user_auth
 from felicity.api.gql.permissions import IsAuthenticated
 from felicity.api.gql.types import OperationError
 from felicity.apps.analysis import schemas
-from felicity.apps.analysis.models import analysis as analysis_models
+from felicity.apps.analysis.entities import analysis as analysis_entities
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -113,8 +113,8 @@ async def create_analysis_interim(
         incoming[k] = v
 
     obj_in = schemas.AnalysisInterimCreate(**incoming)
-    interim: analysis_models.AnalysisInterim = (
-        await analysis_models.AnalysisInterim.create(obj_in)
+    interim: analysis_entities.AnalysisInterim = (
+        await analysis_entities.AnalysisInterim.create(obj_in)
     )
     return a_types.AnalysisInterimType(**interim.marshal_simple())
 
@@ -131,7 +131,7 @@ async def update_analysis_interim(
         "Only Authenticated user can update analysis interims",
     )
 
-    interim = await analysis_models.AnalysisInterim.get(uid=uid)
+    interim = await analysis_entities.AnalysisInterim.get(uid=uid)
     if not interim:
         return OperationError(
             error=f"Analysis Interim with uid {uid} does not exist -- cannot update"
@@ -170,8 +170,8 @@ async def create_analysis_correction_factor(
         incoming[k] = v
 
     obj_in = schemas.AnalysisCorrectionFactorCreate(**incoming)
-    correction_factor: analysis_models.AnalysisCorrectionFactor = (
-        await analysis_models.AnalysisCorrectionFactor.create(obj_in)
+    correction_factor: analysis_entities.AnalysisCorrectionFactor = (
+        await analysis_entities.AnalysisCorrectionFactor.create(obj_in)
     )
     return a_types.AnalysisCorrectionFactorType(**correction_factor.marshal_simple())
 
@@ -188,7 +188,7 @@ async def update_analysis_correction_factor(
         "Only Authenticated user can update analysis correction factors",
     )
 
-    correction_factor = await analysis_models.AnalysisCorrectionFactor.get(uid=uid)
+    correction_factor = await analysis_entities.AnalysisCorrectionFactor.get(uid=uid)
     if not correction_factor:
         return OperationError(
             error=f"Analysis Correction factor with uid {uid} does not exist -- cannot update"
@@ -229,8 +229,8 @@ async def create_analysis_detection_limit(
         incoming[k] = v
 
     obj_in = schemas.AnalysisDetectionLimitCreate(**incoming)
-    detection_limit: analysis_models.AnalysisDetectionLimit = (
-        await analysis_models.AnalysisDetectionLimit.create(obj_in)
+    detection_limit: analysis_entities.AnalysisDetectionLimit = (
+        await analysis_entities.AnalysisDetectionLimit.create(obj_in)
     )
     return a_types.AnalysisDetectionLimitType(**detection_limit.marshal_simple())
 
@@ -247,7 +247,7 @@ async def update_analysis_detection_limit(
         "Only Authenticated user can update analysis interims",
     )
 
-    detection_limit = await analysis_models.AnalysisDetectionLimit.get(uid=uid)
+    detection_limit = await analysis_entities.AnalysisDetectionLimit.get(uid=uid)
     if not detection_limit:
         return OperationError(
             error=f"Analysis detection limit with uid {uid} does not exist -- cannot update"
@@ -288,8 +288,8 @@ async def create_analysis_uncertainty(
         incoming[k] = v
 
     obj_in = schemas.AnalysisUncertaintyCreate(**incoming)
-    uncertainty: analysis_models.AnalysisUncertainty = (
-        await analysis_models.AnalysisUncertainty.create(obj_in)
+    uncertainty: analysis_entities.AnalysisUncertainty = (
+        await analysis_entities.AnalysisUncertainty.create(obj_in)
     )
     return a_types.AnalysisUncertaintyType(**uncertainty.marshal_simple())
 
@@ -306,7 +306,7 @@ async def update_analysis_uncertainty(
         "Only Authenticated user can update analysis interims",
     )
 
-    uncertainty = await analysis_models.AnalysisUncertainty.get(uid=uid)
+    uncertainty = await analysis_entities.AnalysisUncertainty.get(uid=uid)
     if not uncertainty:
         return OperationError(
             error=f"Analysis uncertainty with uid {uid} does not exist -- cannot update"
@@ -351,8 +351,8 @@ async def create_analysis_specification(
         incoming[k] = v
 
     obj_in = schemas.AnalysisSpecificationCreate(**incoming)
-    specification: analysis_models.AnalysisSpecification = (
-        await analysis_models.AnalysisSpecification.create(obj_in)
+    specification: analysis_entities.AnalysisSpecification = (
+        await analysis_entities.AnalysisSpecification.create(obj_in)
     )
     return a_types.AnalysisSpecificationType(**specification.marshal_simple())
 
@@ -369,7 +369,7 @@ async def update_analysis_specification(
         "Only Authenticated user can update analysis specifications",
     )
 
-    specification = await analysis_models.AnalysisSpecification.get(uid=uid)
+    specification = await analysis_entities.AnalysisSpecification.get(uid=uid)
     if not specification:
         return OperationError(
             error=f"Analysis Specification with uid {uid} does not exist -- cannot update"

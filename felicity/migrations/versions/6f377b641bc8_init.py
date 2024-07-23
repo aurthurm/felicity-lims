@@ -1,8 +1,8 @@
-"""init-db
+"""init
 
-Revision ID: 65f077efa77b
+Revision ID: 6f377b641bc8
 Revises: 
-Create Date: 2024-06-02 13:00:17.789910
+Create Date: 2024-07-23 12:57:13.081794
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 from sqlalchemy.dialects import postgresql
 
 # revision identifiers, used by Alembic.
-revision = '65f077efa77b'
+revision = '6f377b641bc8'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -72,23 +72,6 @@ def upgrade():
     sa.PrimaryKeyConstraint('uid')
     )
     op.create_index(op.f('ix_permission_uid'), 'permission', ['uid'], unique=False)
-    op.create_table('user_auth',
-    sa.Column('user_type', sa.String(), nullable=True),
-    sa.Column('user_name', sa.String(), nullable=False),
-    sa.Column('hashed_password', sa.String(), nullable=False),
-    sa.Column('login_retry', sa.Integer(), nullable=True),
-    sa.Column('is_blocked', sa.Boolean(), nullable=True),
-    sa.Column('created_at', sa.DateTime(), nullable=True),
-    sa.Column('creator_name', sa.String(), nullable=True),
-    sa.Column('creator_uid', sa.String(), nullable=True),
-    sa.Column('updated_at', sa.DateTime(), nullable=True),
-    sa.Column('updator_name', sa.String(), nullable=True),
-    sa.Column('updator_uid', sa.String(), nullable=True),
-    sa.Column('uid', sa.String(), nullable=False),
-    sa.PrimaryKeyConstraint('uid')
-    )
-    op.create_index(op.f('ix_user_auth_uid'), 'user_auth', ['uid'], unique=False)
-    op.create_index(op.f('ix_user_auth_user_name'), 'user_auth', ['user_name'], unique=True)
     op.create_table('user_preference',
     sa.Column('expanded_menu', sa.Boolean(), nullable=True),
     sa.Column('theme', sa.String(), nullable=True),
@@ -104,33 +87,36 @@ def upgrade():
     sa.PrimaryKeyConstraint('permission_uid', 'group_uid')
     )
     op.create_table('user',
-    sa.Column('auth_uid', sa.String(), nullable=True),
     sa.Column('preference_uid', sa.String(), nullable=True),
-    sa.Column('avatar', sa.String(), nullable=True),
-    sa.Column('bio', sa.String(), nullable=True),
-    sa.Column('default_route', sa.Boolean(), nullable=True),
     sa.Column('first_name', sa.String(), nullable=True),
     sa.Column('last_name', sa.String(), nullable=True),
     sa.Column('email', sa.String(), nullable=False),
     sa.Column('mobile_phone', sa.String(), nullable=True),
     sa.Column('business_phone', sa.String(), nullable=True),
+    sa.Column('user_name', sa.String(), nullable=False),
+    sa.Column('hashed_password', sa.String(), nullable=False),
+    sa.Column('login_retry', sa.Integer(), nullable=True),
+    sa.Column('is_blocked', sa.Boolean(), nullable=True),
+    sa.Column('avatar', sa.String(), nullable=True),
+    sa.Column('bio', sa.String(), nullable=True),
+    sa.Column('default_route', sa.Boolean(), nullable=True),
     sa.Column('is_active', sa.Boolean(), nullable=True),
     sa.Column('is_superuser', sa.Boolean(), nullable=True),
-    sa.Column('created_at', sa.DateTime(), nullable=True),
-    sa.Column('creator_name', sa.String(), nullable=True),
-    sa.Column('creator_uid', sa.String(), nullable=True),
-    sa.Column('updated_at', sa.DateTime(), nullable=True),
-    sa.Column('updator_name', sa.String(), nullable=True),
-    sa.Column('updator_uid', sa.String(), nullable=True),
     sa.Column('uid', sa.String(), nullable=False),
-    sa.ForeignKeyConstraint(['auth_uid'], ['user_auth.uid'], ),
+    sa.Column('created_at', sa.DateTime(), nullable=True),
+    sa.Column('created_by_uid', sa.String(), nullable=True),
+    sa.Column('updated_at', sa.DateTime(), nullable=True),
+    sa.Column('updated_by_uid', sa.String(), nullable=True),
+    sa.ForeignKeyConstraint(['created_by_uid'], ['user.uid'], ),
     sa.ForeignKeyConstraint(['preference_uid'], ['user_preference.uid'], ),
+    sa.ForeignKeyConstraint(['updated_by_uid'], ['user.uid'], ),
     sa.PrimaryKeyConstraint('uid')
     )
     op.create_index(op.f('ix_user_email'), 'user', ['email'], unique=True)
     op.create_index(op.f('ix_user_first_name'), 'user', ['first_name'], unique=False)
     op.create_index(op.f('ix_user_last_name'), 'user', ['last_name'], unique=False)
     op.create_index(op.f('ix_user_uid'), 'user', ['uid'], unique=False)
+    op.create_index(op.f('ix_user_user_name'), 'user', ['user_name'], unique=True)
     op.create_table('activity_feed',
     sa.Column('name', sa.String(), nullable=False),
     sa.Column('uid', sa.String(), nullable=False),
@@ -348,6 +334,7 @@ def upgrade():
     op.create_table('qc_set',
     sa.Column('name', sa.String(), nullable=False),
     sa.Column('note', sa.String(), nullable=True),
+    sa.Column('status', sa.String(), nullable=False),
     sa.Column('uid', sa.String(), nullable=False),
     sa.Column('created_at', sa.DateTime(), nullable=True),
     sa.Column('created_by_uid', sa.String(), nullable=True),
@@ -506,7 +493,7 @@ def upgrade():
     op.create_index(op.f('ix_supplier_uid'), 'supplier', ['uid'], unique=False)
     op.create_table('unit',
     sa.Column('name', sa.String(), nullable=False),
-    sa.Column('description', sa.String(), nullable=True),
+    sa.Column('is_si_unit', sa.Boolean(), nullable=True),
     sa.Column('uid', sa.String(), nullable=False),
     sa.Column('created_at', sa.DateTime(), nullable=True),
     sa.Column('created_by_uid', sa.String(), nullable=True),
@@ -580,6 +567,21 @@ def upgrade():
     sa.PrimaryKeyConstraint('uid')
     )
     op.create_index(op.f('ix_analysis_category_uid'), 'analysis_category', ['uid'], unique=False)
+    op.create_table('analysis_template',
+    sa.Column('name', sa.String(), nullable=False),
+    sa.Column('description', sa.String(), nullable=False),
+    sa.Column('department_uid', sa.String(), nullable=True),
+    sa.Column('uid', sa.String(), nullable=False),
+    sa.Column('created_at', sa.DateTime(), nullable=True),
+    sa.Column('created_by_uid', sa.String(), nullable=True),
+    sa.Column('updated_at', sa.DateTime(), nullable=True),
+    sa.Column('updated_by_uid', sa.String(), nullable=True),
+    sa.ForeignKeyConstraint(['created_by_uid'], ['user.uid'], ),
+    sa.ForeignKeyConstraint(['department_uid'], ['department.uid'], ),
+    sa.ForeignKeyConstraint(['updated_by_uid'], ['user.uid'], ),
+    sa.PrimaryKeyConstraint('uid')
+    )
+    op.create_index(op.f('ix_analysis_template_uid'), 'analysis_template', ['uid'], unique=False)
     op.create_table('department_notice',
     sa.Column('notice_uid', sa.String(), nullable=False),
     sa.Column('department_uid', sa.String(), nullable=False),
@@ -1166,6 +1168,13 @@ def upgrade():
     sa.PrimaryKeyConstraint('uid')
     )
     op.create_index(op.f('ix_storage_section_uid'), 'storage_section', ['uid'], unique=False)
+    op.create_table('analysis_analysis_template',
+    sa.Column('analysis_uid', sa.String(), nullable=False),
+    sa.Column('analysis_template_uid', sa.String(), nullable=False),
+    sa.ForeignKeyConstraint(['analysis_template_uid'], ['analysis_template.uid'], ),
+    sa.ForeignKeyConstraint(['analysis_uid'], ['analysis.uid'], ),
+    sa.PrimaryKeyConstraint('analysis_uid', 'analysis_template_uid')
+    )
     op.create_table('analysis_coding',
     sa.Column('analysis_uid', sa.String(), nullable=True),
     sa.Column('coding_standard_uid', sa.String(), nullable=True),
@@ -1562,7 +1571,6 @@ def upgrade():
     )
     op.create_index(op.f('ix_worksheet_template_uid'), 'worksheet_template', ['uid'], unique=False)
     op.create_table('client_contact',
-    sa.Column('auth_uid', sa.String(), nullable=True),
     sa.Column('email', sa.String(), nullable=True),
     sa.Column('email_cc', sa.String(), nullable=True),
     sa.Column('consent_sms', sa.Boolean(), nullable=True),
@@ -1571,23 +1579,30 @@ def upgrade():
     sa.Column('last_name', sa.String(), nullable=True),
     sa.Column('mobile_phone', sa.String(), nullable=True),
     sa.Column('business_phone', sa.String(), nullable=True),
+    sa.Column('user_name', sa.String(), nullable=False),
+    sa.Column('hashed_password', sa.String(), nullable=False),
+    sa.Column('login_retry', sa.Integer(), nullable=True),
+    sa.Column('is_blocked', sa.Boolean(), nullable=True),
+    sa.Column('avatar', sa.String(), nullable=True),
+    sa.Column('bio', sa.String(), nullable=True),
+    sa.Column('default_route', sa.Boolean(), nullable=True),
     sa.Column('is_active', sa.Boolean(), nullable=True),
     sa.Column('is_superuser', sa.Boolean(), nullable=True),
-    sa.Column('created_at', sa.DateTime(), nullable=True),
-    sa.Column('creator_name', sa.String(), nullable=True),
-    sa.Column('creator_uid', sa.String(), nullable=True),
-    sa.Column('updated_at', sa.DateTime(), nullable=True),
-    sa.Column('updator_name', sa.String(), nullable=True),
-    sa.Column('updator_uid', sa.String(), nullable=True),
     sa.Column('uid', sa.String(), nullable=False),
-    sa.ForeignKeyConstraint(['auth_uid'], ['user_auth.uid'], ),
+    sa.Column('created_at', sa.DateTime(), nullable=True),
+    sa.Column('created_by_uid', sa.String(), nullable=True),
+    sa.Column('updated_at', sa.DateTime(), nullable=True),
+    sa.Column('updated_by_uid', sa.String(), nullable=True),
     sa.ForeignKeyConstraint(['client_uid'], ['client.uid'], ),
+    sa.ForeignKeyConstraint(['created_by_uid'], ['user.uid'], ),
+    sa.ForeignKeyConstraint(['updated_by_uid'], ['user.uid'], ),
     sa.PrimaryKeyConstraint('uid')
     )
     op.create_index(op.f('ix_client_contact_email'), 'client_contact', ['email'], unique=False)
     op.create_index(op.f('ix_client_contact_first_name'), 'client_contact', ['first_name'], unique=False)
     op.create_index(op.f('ix_client_contact_last_name'), 'client_contact', ['last_name'], unique=False)
     op.create_index(op.f('ix_client_contact_uid'), 'client_contact', ['uid'], unique=False)
+    op.create_index(op.f('ix_client_contact_user_name'), 'client_contact', ['user_name'], unique=True)
     op.create_table('patient',
     sa.Column('client_patient_id', sa.String(), nullable=False),
     sa.Column('patient_id', sa.String(), nullable=True),
@@ -2138,6 +2153,7 @@ def downgrade():
     op.drop_index(op.f('ix_patient_patient_id'), table_name='patient')
     op.drop_index(op.f('ix_patient_client_patient_id'), table_name='patient')
     op.drop_table('patient')
+    op.drop_index(op.f('ix_client_contact_user_name'), table_name='client_contact')
     op.drop_index(op.f('ix_client_contact_uid'), table_name='client_contact')
     op.drop_index(op.f('ix_client_contact_last_name'), table_name='client_contact')
     op.drop_index(op.f('ix_client_contact_first_name'), table_name='client_contact')
@@ -2190,6 +2206,7 @@ def downgrade():
     op.drop_table('analysis_correction_factor')
     op.drop_index(op.f('ix_analysis_coding_uid'), table_name='analysis_coding')
     op.drop_table('analysis_coding')
+    op.drop_table('analysis_analysis_template')
     op.drop_index(op.f('ix_storage_section_uid'), table_name='storage_section')
     op.drop_table('storage_section')
     op.drop_index(op.f('ix_stock_item_variant_uid'), table_name='stock_item_variant')
@@ -2258,6 +2275,8 @@ def downgrade():
     op.drop_table('department_preference')
     op.drop_table('department_notification')
     op.drop_table('department_notice')
+    op.drop_index(op.f('ix_analysis_template_uid'), table_name='analysis_template')
+    op.drop_table('analysis_template')
     op.drop_index(op.f('ix_analysis_category_uid'), table_name='analysis_category')
     op.drop_table('analysis_category')
     op.drop_table('activity_stream_view')
@@ -2324,6 +2343,7 @@ def downgrade():
     op.drop_table('activity_stream')
     op.drop_index(op.f('ix_activity_feed_uid'), table_name='activity_feed')
     op.drop_table('activity_feed')
+    op.drop_index(op.f('ix_user_user_name'), table_name='user')
     op.drop_index(op.f('ix_user_uid'), table_name='user')
     op.drop_index(op.f('ix_user_last_name'), table_name='user')
     op.drop_index(op.f('ix_user_first_name'), table_name='user')
@@ -2332,9 +2352,6 @@ def downgrade():
     op.drop_table('permission_groups')
     op.drop_index(op.f('ix_user_preference_uid'), table_name='user_preference')
     op.drop_table('user_preference')
-    op.drop_index(op.f('ix_user_auth_user_name'), table_name='user_auth')
-    op.drop_index(op.f('ix_user_auth_uid'), table_name='user_auth')
-    op.drop_table('user_auth')
     op.drop_index(op.f('ix_permission_uid'), table_name='permission')
     op.drop_table('permission')
     op.drop_index(op.f('ix_job_uid'), table_name='job')

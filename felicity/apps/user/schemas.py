@@ -3,7 +3,6 @@ from typing import List, Optional
 from pydantic import ConfigDict, EmailStr
 
 from felicity.apps.common.schemas import BaseAuditModel, BaseModel
-from felicity.apps.user.conf import themes
 
 #
 #  Permission Schema
@@ -87,7 +86,7 @@ class GroupInDB(GroupInDBBase):
 #
 class UserPreferenceBase(BaseAuditModel):
     expanded_menu: bool | None = False
-    theme: str | None = themes.LIGHT
+    theme: str | None = "light"
 
 
 class UserPreference(UserPreferenceBase):
@@ -119,8 +118,6 @@ class UserBasicBase(BaseModel):
 
 class UserBase(BaseModel):
     email: Optional[EmailStr] = None
-    is_active: bool | None = True
-    is_superuser: bool = False
     first_name: str | None = None
     last_name: str | None = None
     password: str | None = None
@@ -129,6 +126,12 @@ class UserBase(BaseModel):
     bio: str | None = None
     default_route: str | None = None
     groups: Optional[Group] = []
+    user_name: str | None = None
+    password: str | None = None
+    login_retry: int | None = 0
+    is_blocked: bool | None = False
+    is_active: bool | None = True
+    is_superuser: bool = False
 
 
 # Properties to receive via API on creation
@@ -138,7 +141,6 @@ class UserCreate(UserBase):
 
 # Properties to receive via API on update
 class UserUpdate(UserBase):
-    auth_uid: str | None = None
     preference_uid: str | None = None
 
 
@@ -162,47 +164,4 @@ class User(UserInDBBase):
 
 # Additional properties stored in DB
 class UserInDB(UserInDBBase):
-    pass
-
-
-#
-#  Auth Schema
-#
-
-
-# Shared properties
-class AuthBase(BaseModel):
-    user_name: str | None = None
-    password: str | None = None
-    login_retry: int | None = 0
-    is_blocked: bool | None = False
-    user_type: str | None = None
-
-
-# Properties to receive via API on creation
-class AuthCreate(AuthBase):
-    user_name: str
-    password: str
-    login_retry: int = 0
-    is_blocked: bool = False
-
-
-# Properties to receive via API on update
-class AuthUpdate(AuthBase):
-    pass
-
-
-class AuthInDBBase(AuthBase):
-    uid: str | None = None
-
-    model_config = ConfigDict(from_attributes=True)
-
-
-# Additional properties to return via API
-class Auth(AuthInDBBase):
-    pass
-
-
-# Additional properties stored in DB
-class AuthInDB(AuthInDBBase):
     hashed_password: str

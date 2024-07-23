@@ -1,10 +1,5 @@
 from typing import Generic, TypeVar, Any, List, AsyncIterator, Optional
 
-try:
-    from typing import Self
-except ImportError:
-    from typing_extensions import Self
-
 from sqlalchemy import or_ as sa_or_
 from sqlalchemy import select
 from sqlalchemy import update
@@ -42,7 +37,7 @@ class BaseRepository(Generic[M]):
             else:
                 raise KeyError("Attribute '{}' doesn't exist".format(name))
         return m
-
+    
     async def save(self, m: M) -> M:
         async with self.async_session() as session:
             try:
@@ -54,9 +49,8 @@ class BaseRepository(Generic[M]):
                 raise
         return m
 
-    @classmethod
-    async def save_all(cls, items):
-        async with cls.async_session() as session:
+    async def save_all(self, items):
+        async with self.async_session() as session:
             try:
                 session.add_all(items)
                 await session.flush()
@@ -67,8 +61,7 @@ class BaseRepository(Generic[M]):
         return items
 
     async def create(self, **kwargs) -> M:
-        cls = self.model()
-        filled = self.fill(cls, **kwargs)
+        filled = self.fill(self.model(), **kwargs)
         return await self.save(filled)
 
     async def bulk_create(self, bulk: list[dict]) -> list[M]:
@@ -78,13 +71,10 @@ class BaseRepository(Generic[M]):
             to_save.append(fill)
         return await self.save_all(to_save)
 
-    async def update(self, model: M, **kwargs) -> M:
+    async def update(self, item: M | str, **kwargs) -> M:
+        if isinstance(item, str):
+            model = await self.get(uid=item)
         filled = self.fill(model, **kwargs)
-        return await self.save(filled)
-
-    async def update_by_uid(self, uid: str, **kwargs) -> M:
-        _update = await self.get(uid=uid)
-        filled = self.fill(_update, **kwargs)
         return await self.save(filled)
 
     async def bulk_update_where(self, update_data: list[dict], filters: dict):
@@ -254,7 +244,7 @@ class BaseRepository(Generic[M]):
         :param filters:
         :return: int
         """
-        # filter_stmt = smart_query(query=select(cls), filters=filters) noqa
+        # filter_stmt = smart_query(query=select(self), filters=filters) noqa
         filter_stmt = self.queryset.smart_query(filters=filters)
         count_stmt = select(func.count(filter_stmt.c.uid)).select_from(filter_stmt)
         async with self.async_session() as session:

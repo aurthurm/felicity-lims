@@ -91,7 +91,6 @@ def verify_password_reset_token(token: str) -> str | None:
         decoded_token = jwt.decode(
             token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM]
         )
-        logger.info(f"decoded_token: {decoded_token}")
         return decoded_token["sub"]
     except jwt.JWTError:
         return None

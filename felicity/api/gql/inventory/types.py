@@ -7,7 +7,7 @@ from felicity.api.gql.setup.types import SupplierType
 from felicity.api.gql.setup.types.department import DepartmentType
 from felicity.api.gql.types import PageInfo
 from felicity.api.gql.user.types import UserType
-from felicity.apps.inventory import models
+from felicity.apps.inventory import entities
 
 
 @strawberry.type
@@ -30,7 +30,7 @@ class StockItemType:
 
     @strawberry.field
     async def variants(self, info) -> List[Optional["StockItemVariantType"]]:
-        stock_item_variants = await models.StockItemVariant.get_all(stock_item_uid=self.uid)
+        stock_item_variants = await entities.StockItemVariant.get_all(stock_item_uid=self.uid)
         return [StockItemVariantType(**siv.marshal_simple()) for siv in stock_item_variants]
 
 
@@ -68,7 +68,7 @@ class StockItemVariantType:
     @strawberry.field
     async def quantity(self, info) -> int:
         total = 0
-        inventories = await models.StockProductInventory.get_all(product_uid=self.uid)
+        inventories = await entities.StockProductInventory.get_all(product_uid=self.uid)
         for inv in inventories:
             total += inv.quantity
         return total
@@ -153,7 +153,7 @@ class StockLotType:
     @strawberry.field
     async def quantity(self, info) -> int:
         total = 0
-        inventories = await models.StockProductInventory.get_all(
+        inventories = await entities.StockProductInventory.get_all(
             product_uid=self.product_uid,
             stock_lot_uid=self.uid
         )

@@ -1,8 +1,8 @@
 import logging
 from datetime import datetime
 
-from felicity.apps.analysis.models import analysis as a_models
-from felicity.apps.billing.config import (DiscountType, DiscountValueType,
+from felicity.apps.analysis.entities import analysis as a_entities
+from felicity.apps.billing.enum import (DiscountType, DiscountValueType,
                                           TransactionKind)
 from felicity.apps.billing.exceptions import (
     CustomerAlreadyUsedVoucherException, InactiveTestBillException,
@@ -18,13 +18,13 @@ from felicity.apps.billing.schemas import (TestBillCreate,
                                            TestBillTransactionUpdate,
                                            TestBillUpdate)
 from felicity.apps.impress.invoicing.utils import impress_invoice
-from felicity.apps.setup.models.setup import Laboratory, LaboratorySetting
+from felicity.apps.setup.entities.setup import Laboratory, LaboratorySetting
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
-async def bill_order(analysis_request: a_models.AnalysisRequest, auto_bill=False):
+async def bill_order(analysis_request: a_entities.AnalysisRequest, auto_bill=False):
     laboratory = await Laboratory.get_by_setup_name("felicity")
     lab_settings = await LaboratorySetting.get(laboratory_uid=laboratory.uid)
 

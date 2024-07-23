@@ -2,7 +2,7 @@ import sqlalchemy as sa
 
 from felicity.apps.setup.entities import Country, Province, District
 from felicity.database.paging import PageCursor
-from felicity.database.repository import BaseRepository
+from felicity.apps.abstract.repository import BaseRepository
 
 
 class CountryRepository(BaseRepository[Country]):

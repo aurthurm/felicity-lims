@@ -5,8 +5,7 @@ from sqlalchemy import (Boolean, Column, DateTime, ForeignKey, LargeBinary,
 from sqlalchemy.orm import relationship
 
 from felicity.apps.abstract import AuditUser, BaseEntity
-from felicity.apps.instrument import schemas
-from felicity.apps.user.models import User
+from felicity.apps.user.entities import User
 
 
 """

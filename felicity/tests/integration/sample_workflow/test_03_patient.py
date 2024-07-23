@@ -4,7 +4,7 @@ import random
 import pytest
 from faker import Faker
 
-from felicity.apps.patient.conf import genders
+from felicity.apps.patient.enum import Sex
 
 fake_engine = Faker()
 
@@ -44,7 +44,7 @@ async def test_register_patient(app, auth_data, clients):
         "lastName": fake_engine.last_name(),
         "age": random.randint(1, 90),
         "gender": random.choice(
-            [genders.MALE, genders.FEMALE, genders.TRANS_GENDER, genders.MISSING]
+            [Sex.MALE, Sex.FEMALE, Sex.TRANS_GENDER, Sex.MISSING]
         ),
         "dateOfBirth": str(fake_engine.date_time()),
         "ageDobEstimated": fake_engine.boolean(),

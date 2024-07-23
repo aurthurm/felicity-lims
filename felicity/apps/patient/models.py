@@ -3,10 +3,9 @@ from typing import List
 
 from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, String
 from sqlalchemy.orm import Mapped, relationship
-
-from felicity.apps import AuditHistory
-from felicity.apps.client.models import Client
-from felicity.apps.common.models import IdSequence
+from felicity.apps.abstract import AuditHistory
+from felicity.apps.client.entities import Client
+from felicity.apps.common.entities import IdSequence
 from felicity.apps.patient import schemas
 
 logging.basicConfig(level=logging.INFO)

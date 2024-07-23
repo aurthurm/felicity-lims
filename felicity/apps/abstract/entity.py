@@ -2,7 +2,7 @@ from sqlalchemy import Column, String
 from sqlalchemy.orm import DeclarativeBase
 from sqlalchemy.ext.asyncio import AsyncAttrs
 
-from core.uid_gen import get_flake_uid
+from felicity.core.uid_gen import get_flake_uid
 
 
 class BaseEntity(DeclarativeBase, AsyncAttrs):

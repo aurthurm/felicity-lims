@@ -6,7 +6,7 @@ from sqlalchemy import text
 from sqlalchemy.future import select
 from sqlalchemy.sql import func
 
-from felicity.database.base_class import BaseEntity
+from felicity.apps.abstract.entity import BaseEntity
 from felicity.database.session import async_session_factory
 
 logging.basicConfig(level=logging.INFO)

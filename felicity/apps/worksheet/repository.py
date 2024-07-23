@@ -2,7 +2,7 @@ from felicity.apps.worksheet.entities import WorkSheet, WorkSheetTemplate
 import sqlalchemy as sa
 
 from felicity.database.paging import PageCursor
-from felicity.database.repository import BaseRepository
+from felicity.apps.abstract.repository import BaseRepository
 
 
 class WorkSheetRepository(BaseRepository[WorkSheet]):

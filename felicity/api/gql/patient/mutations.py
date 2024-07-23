@@ -9,8 +9,8 @@ from felicity.api.gql.auth import auth_from_info, verify_user_auth
 from felicity.api.gql.patient.types import IdentificationType, PatientType
 from felicity.api.gql.permissions import IsAuthenticated
 from felicity.api.gql.types import OperationError
-from felicity.apps.client import models as client_models
-from felicity.apps.patient import models, schemas
+from felicity.apps.client import entities as client_entities
+from felicity.apps.patient import entities, schemas
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -71,7 +71,7 @@ class PatientMutations:
         if not name:
             return OperationError(error="name is mandatory")
 
-        exists = await models.Identification.get(name=name)
+        exists = await entities.Identification.get(name=name)
         if exists:
             return OperationError(
                 error=f"The Identfication name -> {name} <- already exists"
@@ -84,7 +84,7 @@ class PatientMutations:
         }
 
         obj_in = schemas.IdentificationCreate(**incoming)
-        identification: models.Identification = await models.Identification.create(
+        identification: entities.Identification = await entities.Identification.create(
             obj_in
         )
         return IdentificationType(**identification.marshal_simple())
@@ -100,7 +100,7 @@ class PatientMutations:
             "Only Authenticated user can update person identifications",
         )
 
-        identification = await models.Identification.get(uid=uid)
+        identification = await entities.Identification.get(uid=uid)
         if not identification:
             return OperationError(error=f"identification with uid {uid} does not exist")
 
@@ -135,11 +135,11 @@ class PatientMutations:
                 error="Client Patient Id, First Name and Last Name , gender etc are required"
             )
 
-        exists = await models.Patient.get(client_patient_id=payload.client_patient_id)
+        exists = await entities.Patient.get(client_patient_id=payload.client_patient_id)
         if exists:
             return OperationError(error=f"Client Patient Id already in use")
 
-        client = await client_models.Client.get(uid=payload.client_uid)
+        client = await client_entities.Client.get(uid=payload.client_uid)
         if not client:
             return OperationError(
                 error=f"Client with uid {payload.client_uid} does not exist"
@@ -153,7 +153,7 @@ class PatientMutations:
             incoming[k] = v
 
         obj_in = schemas.PatientCreate(**incoming)
-        patient: models.Patient = await models.Patient.create(obj_in)
+        patient: entities.Patient = await entities.Patient.create(obj_in)
 
         # create identifications
         for p_id in payload.identifications:
@@ -162,7 +162,7 @@ class PatientMutations:
                 identification_uid=p_id.identification_uid,
                 value=p_id.value,
             )
-            await models.PatientIdentification.create(pid_in)
+            await entities.PatientIdentification.create(pid_in)
 
         return PatientType(**patient.marshal_simple())
 
@@ -181,7 +181,7 @@ class PatientMutations:
         if not uid:
             return OperationError(error="No uid provided to idenity update obj")
 
-        patient: models.Patient = await models.Patient.get(uid=uid)
+        patient: entities.Patient = await entities.Patient.get(uid=uid)
         if not patient:
             return OperationError(
                 error=f"patient with uid {uid} not found. Cannot update obj ..."
@@ -204,7 +204,7 @@ class PatientMutations:
         update_identification_uids = [
             id.identification_uid for id in payload.identifications
         ]
-        identifications = await models.PatientIdentification.get_all(
+        identifications = await entities.PatientIdentification.get_all(
             patient_uid=patient.uid
         )
         identifications_uids = [id.uid for id in identifications]
@@ -233,7 +233,7 @@ class PatientMutations:
                     identification_uid=_pid.identification_uid,
                     value=_pid.value,
                 )
-                await models.PatientIdentification.create(pid_in)
+                await entities.PatientIdentification.create(pid_in)
 
-        patient = await models.Patient.get(uid=patient.uid)
+        patient = await entities.Patient.get(uid=patient.uid)
         return PatientType(**patient.marshal_simple())

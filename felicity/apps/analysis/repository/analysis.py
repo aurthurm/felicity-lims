@@ -160,5 +160,5 @@ class SampleRepository(BaseRepository[Sample]):
 
         filters.append({"internal_use__ne": True})
 
-        stmt = self._db.smart_query(filters=filters, sort_attrs=["uid"])
+        stmt = self.queryset.smart_query(filters=filters, sort_attrs=["uid"])
         return (await self.async_session().execute(stmt)).scalars().all()

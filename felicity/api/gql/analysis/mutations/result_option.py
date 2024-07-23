@@ -9,7 +9,7 @@ from felicity.api.gql.auth import auth_from_info, verify_user_auth
 from felicity.api.gql.permissions import IsAuthenticated
 from felicity.api.gql.types import OperationError
 from felicity.apps.analysis import schemas
-from felicity.apps.analysis.models import analysis as analysis_models
+from felicity.apps.analysis.entities import analysis as analysis_entities
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -47,7 +47,7 @@ async def create_result_option(
     if not isinstance(payload.option_key, int) or not payload.value:
         return OperationError(error="Result option key and value Required")
 
-    analysis = await analysis_models.Analysis.get(uid=payload.analysis_uid)
+    analysis = await analysis_entities.Analysis.get(uid=payload.analysis_uid)
     if not analysis:
         return OperationError(
             error=f"Analysis with uid {payload.analysis_uid} does not exist"
@@ -62,16 +62,16 @@ async def create_result_option(
             incoming[k] = v
 
     obj_in = schemas.ResultOptionCreate(**incoming)
-    result_option: analysis_models.ResultOption = (
-        await analysis_models.ResultOption.create(obj_in)
+    result_option: analysis_entities.ResultOption = (
+        await analysis_entities.ResultOption.create(obj_in)
     )
 
     if payload.sample_types:
         for _st_uid in payload.sample_types:
-            st = await analysis_models.SampleType.get(uid=_st_uid)
+            st = await analysis_entities.SampleType.get(uid=_st_uid)
             result_option.sample_types.append(st)
-            # await analysis_models.ResultOption.table_insert(
-            #     table=analysis_models.result_option_sample_type,
+            # await analysis_entities.ResultOption.table_insert(
+            #     table=analysis_entities.result_option_sample_type,
             #     mappings={"sample_type_uid": _st_uid, "result_option_uid": result_option.uid},
             # )
             await result_option.save_async()
@@ -90,7 +90,7 @@ async def update_result_option(
         "Only Authenticated user can update result options",
     )
 
-    result_option = await analysis_models.ResultOption.get(uid=uid)
+    result_option = await analysis_entities.ResultOption.get(uid=uid)
     if not result_option:
         return OperationError(error=f"ResultOption with uid {uid} does not exist")
 
@@ -109,10 +109,10 @@ async def update_result_option(
         result_option.sample_types.clear()
         result_option = await result_option.save_async()
         for _uid in payload.sample_types:
-            st = await analysis_models.SampleType.get(uid=_uid)
+            st = await analysis_entities.SampleType.get(uid=_uid)
             result_option.sample_types.append(st)
-            # await analysis_models.ResultOption.table_insert(
-            #     table=analysis_models.result_option_sample_type,
+            # await analysis_entities.ResultOption.table_insert(
+            #     table=analysis_entities.result_option_sample_type,
             #     mappings={"sample_type_uid": st, "result_option_uid": result_option.uid},
             # )
             await result_option.save_async()

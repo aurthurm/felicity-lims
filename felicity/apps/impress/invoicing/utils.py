@@ -1,4 +1,4 @@
-from felicity.apps.analysis.models.analysis import AnalysisRequest
+from felicity.apps.analysis.entities.analysis import AnalysisRequest
 from felicity.apps.billing.entities import (AnalysisPrice, ProfilePrice,
                                           TestBill, TestBillInvoice,
                                           TestBillTransaction, test_bill_item)

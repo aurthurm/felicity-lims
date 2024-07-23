@@ -1,6 +1,6 @@
 import json
 from sqlalchemy import Column, Integer, String, UnicodeText
-from felicity.database.entity import BaseEntity
+from felicity.apps.abstract.entity import BaseEntity
 
 
 class AuditLog(BaseEntity):

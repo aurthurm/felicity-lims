@@ -4,17 +4,12 @@ from felicity.apps.user.entities import (
     User,
     Permission,
     Group,
-    UserAuth,
     UserPreference,
 )
 from felicity.database.paging import PageCursor
-from felicity.database.repository import BaseRepository
+from felicity.apps.abstract.repository import BaseRepository
 
 
-
-class UserAuthRepository(BaseRepository[UserAuth]):
-    def __init__(self) -> None:
-        super().__init__(UserAuth)
 
 class UserRepository(BaseRepository[User]):
     def __init__(self) -> None:
@@ -44,7 +39,7 @@ class UserRepository(BaseRepository[User]):
 
             filters = {sa.or_: _or_}
 
-        return super().paginate(
+        return super().paginate_with_cursors(
             page_size=page_size,
             after_cursor=after_cursor,
             before_cursor=before_cursor,

@@ -5,7 +5,7 @@ from faker import Faker
 from sqlalchemy.ext.asyncio import create_async_engine
 
 from felicity.core.config import settings
-from felicity.database.base_class import DBModel
+from felicity.apps.abstract.entity import BaseEntity
 
 fake_engine = Faker()
 
@@ -19,10 +19,10 @@ logger = logging.getLogger(__name__)
 async def setup():
     logger.info("pytest_configure unittest...")
     async with engine.begin() as conn:
-        await conn.run_sync(DBModel.metadata.create_all)
+        await conn.run_sync(BaseEntity.metadata.create_all)
 
     connection = engine.connect()
     yield connection
 
     async with engine.begin() as conn:
-        await conn.run_sync(DBModel.metadata.drop_all)
+        await conn.run_sync(BaseEntity.metadata.drop_all)

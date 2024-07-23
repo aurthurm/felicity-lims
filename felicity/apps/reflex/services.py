@@ -3,10 +3,12 @@ from typing import List
 import logging
 
 from felicity.apps.abstract.service import BaseService
-from felicity.apps.analysis import conf
 from felicity.apps.analysis.entities.analysis import Analysis, Sample
 from felicity.apps.analysis.entities.results import AnalysisResult
+from felicity.apps.analysis.enum import ResultState
 from felicity.apps.analysis.schemas import AnalysisResultCreate, AnalysisResultUpdate
+from felicity.apps.analysis.services.result import AnalysisResultService
+from felicity.apps.common.utils.serializer import marshaller
 from felicity.apps.reflex.repository import (
     ReflexRuleRepository,
     ReflexActionRepository,
@@ -84,21 +86,23 @@ class ReflexEngineService:
         self.sample: Sample = analysis_result.sample
         self.analysis: Analysis = analysis_result.analysis
         self.user = user
+        self.analysis_result_service = AnalysisResultService()
+        self.reflex_action_service = ReflexActionService()
+
 
     # TODO: apply set_reflex_actions for already created analyses
 
-    @classmethod
-    async def set_reflex_actions(cls, analysis_results: List[AnalysisResult]):
+    async def set_reflex_actions(self, analysis_results: List[AnalysisResult]):
         """Prepares an analysis result for reflex testing"""
         for result in analysis_results:
             logger.debug(f"set_reflex_actions for : {result}")
             filters = {"analyses___uid": result.analysis_uid, "level": 1}
-            action: ReflexAction = await ReflexAction.get(
+            action = await self.reflex_action_service.get(
                 **filters
             )
             if action:
                 result.reflex_level = 1
-                await result.save_async()
+                await self.analysis_result_service.update(result.uid, marshaller(result))
                 logger.debug(f"set_reflex_actions done")
 
     async def do_reflex(self):
@@ -113,9 +117,7 @@ class ReflexEngineService:
             "analyses___uid": self.analysis.uid,
             "level": self.analysis_result.reflex_level,
         }
-        action: ReflexAction = await ReflexAction.get(
-            **filters
-        )
+        action = await self.reflex_action_service.get(**filters)
         if not action:
             logger.info(f"No reflex action found for analysis: {self.analysis.name}")
             return
@@ -133,7 +135,7 @@ class ReflexEngineService:
         """
         if not results_pool:
             return False
-        return all([r.status == conf.states.result.APPROVED for r in results_pool])
+        return all([r.status == ResultState.APPROVED for r in results_pool])
 
     async def decide(self, brain: ReflexBrain):
         logger.info(f"Reflex Decision for brain: {brain}")
@@ -187,7 +189,7 @@ class ReflexEngineService:
         logger.info(f"criteria_anals: {criteria_anals}")
 
         if self._results_pool is None:
-            results: List[AnalysisResult] = await self.sample.get_analysis_results()
+            results: List[AnalysisResult] = await self.analysis_result_service.get_all(sample_uid=self.sample.uid)
             self._results_pool = list(
                 filter(lambda result: result.analysis_uid in criteria_anals, results)
             )
@@ -243,12 +245,11 @@ class ReflexEngineService:
 
     async def create_analyte_for(self, analysis_uid) -> AnalysisResult:
         logger.info(f"create_analyte_for: {analysis_uid}")
-        analysis = await Analysis.get(uid=analysis_uid)
 
         a_result_in = {
             "sample_uid": self.sample.uid,
-            "analysis_uid": analysis.uid,
-            "status": conf.states.result.PENDING,
+            "analysis_uid": analysis_uid,
+            "status": ResultState.PENDING,
             "laboratory_instrument_uid": self.analysis_result.laboratory_instrument_uid,
             "method_uid": self.analysis_result.method_uid,
             "parent_id": self.analysis_result.uid,
@@ -256,8 +257,8 @@ class ReflexEngineService:
             "reflex_level": self.analysis_result.reflex_level + 1,
         }
         a_result_schema = AnalysisResultCreate(**a_result_in)
-        retest = await AnalysisResult.create(a_result_schema)
-        await self.analysis_result.hide_report()
+        retest = await self.analysis_result_service.create(a_result_schema)
+        await self.analysis_result_service.hide_report(self.analysis_result.uid)
         return retest
 
     async def create_final_for(self, analysis_uid, value):
@@ -269,10 +270,10 @@ class ReflexEngineService:
             date_submitted=datetime.now(),
             verified_by_uid=self.user.uid,
             date_verified=datetime.now(),
-            status=conf.states.result.APPROVED,
+            status=ResultState.APPROVED,
             retest=False,
             reportable=True,
             reflex_level=None,
         )
-        final = await retest.update(res_in)
+        final = await self.analysis_result_service.update(retest.uid, res_in)
         return final

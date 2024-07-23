@@ -10,12 +10,12 @@ from pdf2image import convert_from_bytes
 from felicity.api.gql.impress.types import ReportImpressType
 from felicity.api.gql.permissions import IsAuthenticated
 from felicity.api.gql.types import BytesScalar
-from felicity.apps.analysis.conf import QC_SAMPLE
+from felicity.apps.analysis.utils import QC_SAMPLE
 from felicity.apps.client import Client
 from felicity.apps.impress.barcode.schema import BarCode, BarCodeMeta
 from felicity.apps.impress.barcode.utils import impress_barcodes
-from felicity.apps.impress.sample.models import ReportImpress
-from felicity.apps.storage.models import Sample
+from felicity.apps.impress.entities import ReportImpress
+from felicity.apps.analysis.entities.analysis import Sample
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

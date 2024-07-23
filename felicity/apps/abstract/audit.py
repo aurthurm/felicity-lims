@@ -5,13 +5,13 @@ from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.orm import relationship
 
 from felicity.apps.auditlog.mixin import AuditHistoryMixin
-from felicity.database.entity import BaseEntity
+from felicity.apps.abstract.entity import BaseEntity
 
 
 class TrailMixin(object):
     @declared_attr
     def created_at(self):
-        return Column(DateTime, default=datetime.utcnow)
+        return Column(DateTime, default=datetime.now)
 
     @declared_attr
     def created_by_uid(self):
@@ -23,7 +23,7 @@ class TrailMixin(object):
 
     @declared_attr
     def updated_at(self):
-        return Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+        return Column(DateTime, default=datetime.now, onupdate=datetime.now)
 
     @declared_attr
     def updated_by_uid(self):

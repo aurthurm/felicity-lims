@@ -6,13 +6,13 @@ from felicity.apps.iol.fhir.schema import (BundleResource,
                                            DiagnosticReportResource,
                                            PatientResource, Reference,
                                            ServiceRequestResource)
-from felicity.apps.job import conf as job_conf
-from felicity.apps.job.models import Job
+from felicity.apps.job.entities import Job
+from felicity.apps.job.enum import JobAction, JobCategory, JobPriority, JobState
 from felicity.apps.job.schemas import JobCreate
-from felicity.apps.shipment.conf import shipment_states
-from felicity.apps.shipment.models import ReferralLaboratory, Shipment
+from felicity.apps.shipment.entities import ReferralLaboratory, Shipment
+from felicity.apps.shipment.enum import ShipmentState
 from felicity.apps.shipment.schemas import ShipmentCreate
-from felicity.apps.user.models import User
+from felicity.apps.user.entities import User
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -64,7 +64,7 @@ async def create_inbound_shipment(
         laboratory_uid=laboratory.uid,
         data=data,
         incoming=True,
-        state=shipment_states.DUE,
+        state=ShipmentState.DUE,
     )
     shipment = await Shipment.create(s_in)
 
@@ -97,11 +97,11 @@ async def create_diagnostic_report(
     diagnostic_data: DiagnosticReportResource, request: Request, current_user: User
 ):
     job_schema = JobCreate(
-        action=job_conf.actions.DIAGNOSTIC_REPORT,
-        category=job_conf.categories.SHIPMENT,
-        priority=job_conf.priorities.MEDIUM,
+        action=JobAction.DIAGNOSTIC_REPORT,
+        category=JobCategory.SHIPMENT,
+        priority=JobPriority.MEDIUM,
         job_id=0,
-        status=job_conf.states.PENDING,
+        status=JobState.PENDING,
         creator_uid=current_user.uid,
         data={"data": diagnostic_data.model_dump(exclude_none=True)},
     )

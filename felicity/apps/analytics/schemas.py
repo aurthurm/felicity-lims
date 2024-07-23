@@ -3,7 +3,7 @@ from datetime import datetime
 from pydantic import BaseModel, ConfigDict
 
 from felicity.apps.analysis.schemas import AnalysisBasic
-from felicity.apps.analytics import conf
+from felicity.apps.analytics.enum import ReportState, ReportTypes
 from felicity.apps.user.schemas import UserBasic
 
 
@@ -12,8 +12,8 @@ class ReportMetaBase(BaseModel):
     period_end: datetime
     date_column: str
     sample_states: str | None = None
-    report_type: str = conf.report_types.LINE_LISTING
-    status: str | None = conf.report_states.PENDING
+    report_type: str = ReportTypes.LINE_LISTING
+    status: str | None = ReportState.PENDING
     analyses: list[AnalysisBasic] | None = None
     created_at: datetime | None = None
     created_by_uid: str | None = None

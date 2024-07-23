@@ -6,7 +6,7 @@ from felicity.apps.setup.entities import (
     Supplier,
     Unit,
 )
-from felicity.database.repository import BaseRepository
+from felicity.apps.abstract.repository import BaseRepository
 
 
 class DepartmentRepository(BaseRepository[Department]):

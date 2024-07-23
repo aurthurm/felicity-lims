@@ -8,7 +8,7 @@ from felicity.api.gql.permissions import IsAuthenticated
 from felicity.api.gql.types import PageInfo
 from felicity.api.gql.user.types import (GroupType, PermissionType,
                                          UserCursorPage, UserEdge, UserType)
-from felicity.apps.user import models as user_models
+from felicity.apps.user import entities as user_entities
 from felicity.utils import has_value_or_is_truthy
 
 
@@ -40,7 +40,7 @@ class UserQuery:
 
             filters = {sa.or_: _or_}
 
-        page = await user_models.User.paginate_with_cursors(
+        page = await user_entities.User.paginate_with_cursors(
             page_size=page_size,
             after_cursor=after_cursor,
             before_cursor=before_cursor,
@@ -63,20 +63,20 @@ class UserQuery:
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def user_by_email(self, info, email: str) -> UserType | None:
-        return await user_models.User.get_by_email(email=email)
+        return await user_entities.User.get_by_email(email=email)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def group_all(self, info) -> List[GroupType]:
-        return await user_models.Group.all_async()
+        return await user_entities.Group.all_async()
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def group_by_uid(self, info, uid: str) -> Optional[GroupType]:
-        return await user_models.Group.get(uid=uid)
+        return await user_entities.Group.get(uid=uid)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def permission_all(self, info) -> List[PermissionType]:
-        return await user_models.Permission.all_async()
+        return await user_entities.Permission.all_async()
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def permission_by_uid(self, info, uid: str) -> Optional[PermissionType]:
-        return await user_models.Permission.get(uid=uid)
+        return await user_entities.Permission.get(uid=uid)

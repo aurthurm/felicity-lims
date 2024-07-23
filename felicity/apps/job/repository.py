@@ -1,22 +1,15 @@
-from felicity.apps.job.conf import States
 from felicity.apps.job.entities import Job
-from felicity.database.repository import BaseRepository
+from felicity.apps.abstract.repository import BaseRepository
 
 
 class JobRepository(BaseRepository[Job]):
     def __init__(self) -> None:
         super().__init__(Job)
 
-    async def fetch_sorted(self):
-        stmt = self._qb.smart_query(
-            filters={
-                "status__notin": [
-                    States.FINISHED,
-                    States.FAILED,
-                    States.RUNNING,
-                ]
-            },
-            sort_attrs=["-priority"],
+    async def fetch_sorted(self, filters: dict, sort: str):
+        stmt = self.queryset.smart_query(
+            filters=filters,
+            sort_attrs=sort,
         )
         async with self.async_session() as session:
             results = await session.execute(stmt)

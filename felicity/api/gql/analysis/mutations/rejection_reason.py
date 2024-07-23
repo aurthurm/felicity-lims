@@ -7,7 +7,7 @@ from felicity.api.gql.auth import auth_from_info, verify_user_auth
 from felicity.api.gql.permissions import IsAuthenticated
 from felicity.api.gql.types import OperationError
 from felicity.apps.analysis import schemas
-from felicity.apps.analysis.models import analysis as analysis_models
+from felicity.apps.analysis.entities import analysis as analysis_entities
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -32,7 +32,7 @@ async def create_rejection_reason(info, reason: str) -> RejectionReasonResponse:
     if not reason:
         return OperationError(error="reason is mandatory")
 
-    exists = await analysis_models.RejectionReason.get(reason=reason)
+    exists = await analysis_entities.RejectionReason.get(reason=reason)
     if exists:
         return OperationError(
             error=f"The Rejection reason -> {reason} <- already exists"
@@ -45,8 +45,8 @@ async def create_rejection_reason(info, reason: str) -> RejectionReasonResponse:
     }
 
     obj_in = schemas.RejectionReasonCreate(**incoming)
-    rejection_reason: analysis_models.RejectionReason = (
-        await analysis_models.RejectionReason.create(obj_in)
+    rejection_reason: analysis_entities.RejectionReason = (
+        await analysis_entities.RejectionReason.create(obj_in)
     )
     return a_types.RejectionReasonType(**rejection_reason.marshal_simple())
 
@@ -62,7 +62,7 @@ async def update_rejection_reason(
         "Only Authenticated user can update rejection reasons",
     )
 
-    rejection_reason = await analysis_models.RejectionReason.get(uid=uid)
+    rejection_reason = await analysis_entities.RejectionReason.get(uid=uid)
     if not rejection_reason:
         return OperationError(error=f"rejection reason with uid {uid} does not exist")
 

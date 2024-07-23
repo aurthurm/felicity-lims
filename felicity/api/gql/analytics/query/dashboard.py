@@ -4,14 +4,14 @@ import strawberry  # noqa
 
 from felicity.api.gql.analytics import types
 from felicity.api.gql.permissions import IsAuthenticated
-from felicity.apps.analysis.conf import states
-from felicity.apps.analysis.models.analysis import Sample
-from felicity.apps.analysis.models.results import AnalysisResult
+from felicity.apps.analysis.entities.analysis import Sample
+from felicity.apps.analysis.entities.results import AnalysisResult
+from felicity.apps.analysis.enum import ResultState, SampleState
 from felicity.apps.analytics import SampleAnalyticsInit
-from felicity.apps.instrument.models import LaboratoryInstrument
-from felicity.apps.user.models import User
-from felicity.apps.worksheet.conf import worksheet_states
-from felicity.apps.worksheet.models import WorkSheet
+from felicity.apps.instrument.entities import LaboratoryInstrument
+from felicity.apps.user.entities import User
+from felicity.apps.worksheet.enum import WorkSheetState
+from felicity.apps.worksheet.entities import WorkSheet
 from felicity.utils import has_value_or_is_truthy
 
 logging.basicConfig(level=logging.INFO)
@@ -42,11 +42,11 @@ async def get_instrument(val):
 async def count_sample_group_by_status(info) -> types.GroupedCounts:
     analytics = SampleAnalyticsInit(Sample)
     state_in = [
-        states.sample.SCHEDULED,
-        states.sample.EXPECTED,
-        states.sample.RECEIVED,
-        states.sample.AWAITING,
-        states.sample.APPROVED,
+        SampleState.SCHEDULED,
+        SampleState.EXPECTED,
+        SampleState.RECEIVED,
+        SampleState.AWAITING,
+        SampleState.APPROVED,
     ]
     results = await analytics.get_counts_group_by(
         "status", ("", ""), ("", ""), state_in
@@ -63,8 +63,8 @@ async def count_sample_group_by_status(info) -> types.GroupedCounts:
 async def count_analyte_group_by_status(info) -> types.GroupedCounts:
     analytics = SampleAnalyticsInit(AnalysisResult)
     state_in = [
-        states.result.PENDING,
-        states.result.RESULTED,
+        ResultState.PENDING,
+        ResultState.RESULTED,
     ]
     results = await analytics.get_counts_group_by(
         "status", ("", ""), ("", ""), state_in
@@ -81,9 +81,9 @@ async def count_analyte_group_by_status(info) -> types.GroupedCounts:
 async def count_extras_group_by_status(info) -> types.GroupedCounts:
     sample_analytics = SampleAnalyticsInit(Sample)
     sample_states = [
-        states.sample.CANCELLED,
-        states.sample.REJECTED,
-        states.sample.INVALIDATED,
+        SampleState.CANCELLED,
+        SampleState.REJECTED,
+        SampleState.INVALIDATED,
     ]
     sample_results = await sample_analytics.get_counts_group_by(
         "status", ("", ""), ("", ""), sample_states
@@ -91,7 +91,7 @@ async def count_extras_group_by_status(info) -> types.GroupedCounts:
 
     result_analytics = SampleAnalyticsInit(AnalysisResult)
     result_states = [
-        states.result.RETRACTED,
+        ResultState.RETRACTED,
     ]
     result_results = await result_analytics.get_counts_group_by(
         "status", ("", ""), ("", ""), result_states
@@ -122,9 +122,9 @@ async def count_extras_group_by_status(info) -> types.GroupedCounts:
 async def count_worksheet_group_by_status(info) -> types.GroupedCounts:
     analytics = SampleAnalyticsInit(WorkSheet)
     state_in = [
-        worksheet_states.EMPTY,
-        worksheet_states.AWAITING,
-        worksheet_states.PENDING,
+        WorkSheetState.EMPTY,
+        WorkSheetState.AWAITING,
+        WorkSheetState.PENDING,
     ]
     results = await analytics.get_counts_group_by("state", ("", ""), ("", ""), state_in)
 

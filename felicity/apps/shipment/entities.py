@@ -6,16 +6,12 @@ from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import relationship
 
 from felicity.apps.abstract.audit import AuditHistory
-from felicity.apps.notification.utils import FelicityStreamer
-from felicity.apps.shipment import conf, schemas
-from felicity.apps.user.models import User
-from felicity.database.entity import BaseEntity
+from felicity.apps.shipment import enum, schemas
+from felicity.apps.user.entities import User
+from felicity.apps.abstract.entity import BaseEntity
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
-
-streamer = FelicityStreamer()
-
 
 class ReferralLaboratory(AuditHistory):
     __tablename__ = "referral_laboratory"

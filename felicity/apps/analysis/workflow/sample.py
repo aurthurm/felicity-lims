@@ -1,5 +1,5 @@
-from felicity.apps.analysis.conf import States
-from felicity.apps.analysis.models.analysis import Sample
+from felicity.apps.analysis.enum import States
+from felicity.apps.analysis.entities.analysis import Sample
 
 
 class SampleWorkFlowException(Exception):
@@ -18,12 +18,12 @@ class SampleWorkFlow:
     async def receive(cls, uid):
         sample = await Sample.get(uid=uid)
         await cls._guard_receive(sample)
-        await sample.change_status(States.Sample.RECEIVED)
+        await sample.change_status(SampleState.RECEIVED)
 
     @staticmethod
     async def _guard_receive(sample: Sample) -> bool:
         allow = False
-        if sample.status == States.Sample.EXPECTED:
+        if sample.status == SampleState.EXPECTED:
             allow = True
 
         if not allow:
@@ -38,7 +38,7 @@ class SampleWorkFlow:
 
     @staticmethod
     async def _guard_cancel(sample: Sample) -> bool:
-        allow = sample.status in [States.Sample.RECEIVED, States.Sample.EXPECTED]
+        allow = sample.status in [SampleState.RECEIVED, SampleState.EXPECTED]
         if not allow:
             raise SampleWorkFlowException(f"Cannot cancel this Sample")
         return True
@@ -51,7 +51,7 @@ class SampleWorkFlow:
 
     @staticmethod
     async def _guard_re_instate(sample: Sample) -> bool:
-        allow = sample.status == States.Sample.CANCELLED
+        allow = sample.status == SampleState.CANCELLED
         if not allow:
             raise SampleWorkFlowException(f"Cannot re-instate this Sample")
         return True
@@ -71,7 +71,7 @@ class SampleWorkFlow:
             States.Result.APPROVED, States.Result.CANCELLED
         ]
         match = all([(result.status in statuses) for result in analysis_results])
-        if match and sample.status == States.Sample.RECEIVED:
+        if match and sample.status == SampleState.RECEIVED:
             allow = True
 
         if not allow:
@@ -86,7 +86,7 @@ class SampleWorkFlow:
 
     @staticmethod
     async def _guard_un_submit(sample: Sample) -> bool:
-        allow = sample.status == States.Sample.AWAITING
+        allow = sample.status == SampleState.AWAITING
         if not allow:
             raise SampleWorkFlowException(f"Cannot un-submit this Sample")
         return True
@@ -99,7 +99,7 @@ class SampleWorkFlow:
 
     @staticmethod
     async def _guard_reject(sample: Sample) -> bool:
-        allow = sample.status in [States.Sample.RECEIVED, States.Sample.EXPECTED]
+        allow = sample.status in [SampleState.RECEIVED, SampleState.EXPECTED]
         if not allow:
             raise SampleWorkFlowException(f"Cannot reject this Sample")
         return True
@@ -113,7 +113,7 @@ class SampleWorkFlow:
     @staticmethod
     async def _guard_store(sample: Sample) -> bool:
         allow = False
-        if sample.status == States.Sample.RECEIVED:
+        if sample.status == SampleState.RECEIVED:
             allow = True
 
         if not allow:
@@ -129,7 +129,7 @@ class SampleWorkFlow:
     @staticmethod
     async def _guard_recover(sample: Sample) -> bool:
         allow = False
-        if sample.status == States.Sample.STORED:
+        if sample.status == SampleState.STORED:
             allow = True
 
         if not allow:
@@ -144,7 +144,7 @@ class SampleWorkFlow:
 
     @staticmethod
     async def _guard_print(sample: Sample) -> bool:
-        allow = sample.status == States.Sample.PUBLISHED
+        allow = sample.status == SampleState.PUBLISHED
         if not allow:
             raise SampleWorkFlowException(f"Cannot print this Sample")
         return True
@@ -157,7 +157,7 @@ class SampleWorkFlow:
 
     @staticmethod
     async def _guard_invalidate(sample: Sample):
-        allow = sample.status in [States.Sample.APPROVED, States.Sample.PUBLISHED]
+        allow = sample.status in [SampleState.APPROVED, SampleState.PUBLISHED]
         if not allow:
             raise SampleWorkFlowException(f"Cannot invalidate this Sample")
         return True
@@ -170,7 +170,7 @@ class SampleWorkFlow:
 
     @staticmethod
     async def _guard_publish(sample):
-        allow = sample.status in [States.Sample.APPROVED, States.Sample.PUBLISHING]
+        allow = sample.status in [SampleState.APPROVED, SampleState.PUBLISHING]
         if not allow:
             raise SampleWorkFlowException(f"Cannot publish this Sample")
         return True
@@ -183,7 +183,7 @@ class SampleWorkFlow:
 
     @staticmethod
     async def _guard_assign(sample):
-        allow = sample.status in [States.Sample.RECEIVED, States.Sample.PAIRED]
+        allow = sample.status in [SampleState.RECEIVED, SampleState.PAIRED]
         if not allow:
             raise SampleWorkFlowException(f"Cannot assign this Sample")
         return True
@@ -196,7 +196,7 @@ class SampleWorkFlow:
 
     @staticmethod
     async def _guard_un_assign(sample):
-        allow = sample.status == States.Sample.RECEIVED
+        allow = sample.status == SampleState.RECEIVED
         if not allow:
             raise SampleWorkFlowException(f"Cannot publish this Sample")
         return True
@@ -216,7 +216,7 @@ class SampleWorkFlow:
         match = all([(result.status in statuses) for result in analyses_results])
 
         #  ?? cannot approve referred unless u r system_daemon
-        if match and sample.status == [States.Sample.AWAITING, States.Sample.PAIRED]:
+        if match and sample.status == [SampleState.AWAITING, SampleState.PAIRED]:
             allow = True
 
         # Are there are results in referred state or some are in pending state

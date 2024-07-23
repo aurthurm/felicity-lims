@@ -7,7 +7,7 @@ from felicity.api.gql.auth import auth_from_info, verify_user_auth
 from felicity.api.gql.noticeboard.types import NoticeType
 from felicity.api.gql.permissions import IsAuthenticated
 from felicity.api.gql.types import DeletedItem, DeleteResponse, OperationError
-from felicity.apps.noticeboard import models, schemas
+from felicity.apps.noticeboard import entities, schemas
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -47,7 +47,7 @@ class NoticeMutations:
                 suggestion="Make sure that the fields: [title, body, expiry] all have values",
             )
 
-        exists = await models.Notice.get(title=payload.title)
+        exists = await entities.Notice.get(title=payload.title)
         if exists:
             return OperationError(
                 error="Notice title Duplication not Allowed",
@@ -64,19 +64,19 @@ class NoticeMutations:
         if payload.groups:
             incoming["groups"] = []
             for g_uid in payload.groups:
-                _gr = models.Group.get(uid=g_uid)
+                _gr = entities.Group.get(uid=g_uid)
                 if _gr:
                     incoming["groups"].append(_gr)
 
         if payload.departments:
             incoming["departments"] = []
             for dept_uid in payload.departments:
-                _gr = models.Department.get(uid=dept_uid)
+                _gr = entities.Department.get(uid=dept_uid)
                 if _gr:
                     incoming["departments"].append(_gr)
 
         obj_in = schemas.NoticeCreate(**incoming)
-        notice: models.Notice = await models.Notice.create(obj_in)
+        notice: entities.Notice = await entities.Notice.create(obj_in)
         return NoticeType(**notice.marshal_simple())
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
@@ -91,7 +91,7 @@ class NoticeMutations:
             "Only Authenticated user can update notices",
         )
 
-        notice = await models.Notice.get(uid=uid)
+        notice = await entities.Notice.get(uid=uid)
         if not notice:
             raise OperationError(
                 error=f"notice with uid {uid} does not exist",
@@ -109,7 +109,7 @@ class NoticeMutations:
         if payload.groups:
             _groups = []
             for g_uid in payload.groups:
-                _gr = models.Group.get(uid=g_uid)
+                _gr = entities.Group.get(uid=g_uid)
                 if _gr:
                     _groups.append(_gr)
             setattr(notice, "groups", _groups)
@@ -117,7 +117,7 @@ class NoticeMutations:
         if payload.departments:
             _departments = []
             for dept_uid in payload.departments:
-                _gr = models.Department.get(uid=dept_uid)
+                _gr = entities.Department.get(uid=dept_uid)
                 if _gr:
                     _departments.append(_gr)
             setattr(notice, "departments", _departments)
@@ -136,11 +136,11 @@ class NoticeMutations:
             is_authenticated, felicity_user, "Only Authenticated user can view notices"
         )
 
-        notice: models.Notice = await models.Notice.get(uid=uid)
+        notice: entities.Notice = await entities.Notice.get(uid=uid)
         if not notice:
             raise Exception(f"Notice with uid {uid} does not exist")
 
-        _viewer = await models.User.get(uid=viewer)
+        _viewer = await entities.User.get(uid=viewer)
         if not _viewer:
             raise Exception(f"User with uid {viewer} does not exist")
 
@@ -155,7 +155,7 @@ class NoticeMutations:
             is_authenticated, felicity_user, "Only Authenticated user can view notices"
         )
 
-        notice: models.Notice = await models.Notice.get(uid=uid)
+        notice: entities.Notice = await entities.Notice.get(uid=uid)
         if not notice:
             raise Exception(f"Notice with uid {uid} does not exist")
 

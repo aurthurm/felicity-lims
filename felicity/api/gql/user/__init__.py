@@ -1,9 +1,8 @@
 from .types import (AuthenticatedData, GroupType, PermissionType,
-                    UpdatedGroupPerms, UserAuthType, UserCursorPage, UserEdge,
+                    UpdatedGroupPerms, UserCursorPage, UserEdge,
                     UserPreferenceType, UserType)
 
 user_types = [
-    UserAuthType,
     PermissionType,
     GroupType,
     UserType,

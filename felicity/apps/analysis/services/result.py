@@ -1,178 +1,177 @@
+from datetime import datetime
 from typing import Annotated
 from felicity.apps.abstract.service import BaseService
-from felicity.apps.analysis.entities.results import AnalysisResult, ResultMutation
+from felicity.apps.analysis.entities.results import (AnalysisResult, result_verification,
+    ResultMutation)
 from felicity.apps.analysis.repository.results import AnalysisResultRepository, ResultMutationRepository
 from felicity.apps.analysis.schemas import AnalysisResultCreate, AnalysisResultUpdate
+from felicity.apps.common.schemas.dummy import Dummy
+from felicity.apps.analysis.enum import ResultState, SampleState
+from felicity.apps.common.utils.serializer import marshaller
+from felicity.apps.notification.services import ActivityStreamService
 
 
 class AnalysisResultService(BaseService[AnalysisResult, AnalysisResultCreate, AnalysisResultUpdate]):
     def __init__(self):
+        self.streamer_service = ActivityStreamService()
         super().__init__(AnalysisResultRepository)
 
-    async def verifications(self) -> tuple[
+    async def verifications(self, uid: str) -> tuple[
         Annotated[int, "Total number required verifications"],
         Annotated[int, "current number of verifications"]
     ]:
-        required = self.analysis.required_verifications if self.analysis.required_verifications else 1
-        current = len(self.verified_by)
+        analysis_result = await self.get(uid)
+        required = analysis_result.analysis.required_verifications
+        current = len(analysis_result.verified_by)
         return required, current
 
-    # async def last_verificator(self):
-    #     _, verifications = await self.verifications()
-    #     if verifications == 0:
-    #         return None
-    #     return self.verified_by[:-1]
+    async def last_verificator(self, uid: str):
+        _, verifications = await self.verifications(uid)
+        if verifications == 0:
+            return None
+        return self.verified_by[:-1]
 
     async def retest_result(
-            self, retested_by, next_action="verify"
+            self, uid: str, retested_by, next_action="verify"
     ) -> tuple[
              Annotated[
                  "AnalysisResult", "Newly Created AnalysisResult"] | None,
              Annotated[
                  "AnalysisResult", "Retested AnalysisResult"]
          ] | None:
+        analysis_result = await self.get(uid)
         retest = None
-        if self.status in [conf.states.result.RESULTED]:
+        if analysis_result.status in [ResultState.RESULTED]:
             a_result_in = {
-                "sample_uid": self.sample.uid,
-                "analysis_uid": self.analysis_uid,
-                "status": conf.states.result.PENDING,
-                "laboratory_instrument_uid": self.laboratory_instrument_uid,
-                "method_uid": self.method_uid,
-                "parent_id": self.uid,
+                "sample_uid": analysis_result.sample.uid,
+                "analysis_uid": analysis_result.analysis_uid,
+                "status": ResultState.PENDING,
+                "laboratory_instrument_uid": analysis_result.laboratory_instrument_uid,
+                "method_uid": analysis_result.method_uid,
+                "parent_id": analysis_result.uid,
                 "retest": True,
             }
-            a_result_schema = schemas.AnalysisResultCreate(**a_result_in)
-            retest = await AnalysisResult.create(a_result_schema)
+            a_result_schema = AnalysisResultCreate(**a_result_in)
+            retest = await self.create(a_result_schema)
 
-            await self.hide_report()
+            await self.hide_report(uid)
             if next_action == "verify":
-                _, final = await self.verify(verifier=retested_by)
+                _, final = await self.verify(uid, verifier=retested_by)
             elif next_action == "retract":
-                final = await self.retract(retracted_by=retested_by)
+                final = await self.retract(uid, retracted_by=retested_by)
             else:
-                final = self
+                final = analysis_result
 
             # transition sample back to received state
-            await self.sample.un_submit()
+            # await self.sample.un_submit()
             return retest, final
-        return retest, self
+        return retest, analysis_result
 
-    async def assign(self, ws_uid, position, laboratory_instrument_uid):
-        self.worksheet_uid = ws_uid
-        self.assigned = True
-        self.worksheet_position = position
-        self.laboratory_instrument_uid = (
+    async def assign(self, uid: str, ws_uid, position, laboratory_instrument_uid):
+        analysis_result = await self.get(uid)
+        analysis_result.worksheet_uid = ws_uid
+        analysis_result.assigned = True
+        analysis_result.worksheet_position = position
+        analysis_result.laboratory_instrument_uid = (
             laboratory_instrument_uid if laboratory_instrument_uid else None
         )
-        return await self.save_async()
+        return await super().update(uid, marshaller(analysis_result))
 
-    async def un_assign(self):
-        self.worksheet_uid = None
-        self.assigned = False
-        self.worksheet_position = None
-        self.laboratory_instrument_uid = None
-        return await self.save_async()
+    async def un_assign(self, uid: str):
+        analysis_result = await self.get(uid)
+        analysis_result.worksheet_uid = None
+        analysis_result.assigned = False
+        analysis_result.worksheet_position = None
+        analysis_result.laboratory_instrument_uid = None
+        return await super().update(uid, marshaller(analysis_result))
 
-    async def verify(self, verifier) -> tuple[bool, "AnalysisResult"]:
+    async def verify(self, uid: str, verifier) -> tuple[bool, "AnalysisResult"]:
+        analysis_result = await self.get(uid)
         is_verified = False
         required, current = await self.verifications()
-        self.updated_by_uid = verifier.uid  # noqa
+        analysis_result.updated_by_uid = verifier.uid  # noqa
         if current < required and current + 1 == required:
-            await self._verify(verifier_uid=verifier.uid)
-            self.status = conf.states.result.APPROVED
-            self.date_verified = datetime.now()
+            await self._verify(uid, verifier_uid=verifier.uid)
+            analysis_result.status = ResultState.APPROVED
+            analysis_result.date_verified = datetime.now()
             is_verified = True
-            # self.verified_by.append(verifier)
 
-        final = await self.save_async()
-        if final.status == conf.states.result.APPROVED:
-            await streamer.stream(final, verifier, "approved", "result")
+        final = await super().update(uid, marshaller(analysis_result))
+        if final.status == ResultState.APPROVED:
+            await self.streamer_service.stream(final, verifier, "approved", "result")
         return is_verified, final
 
-    async def _verify(self, verifier_uid):
-        await AnalysisResult.table_insert(
+    async def _verify(self, uid: str, verifier_uid):
+        await self.repository.table_insert(
             table=result_verification,
-            mappings={"result_uid": self.uid, "user_uid": verifier_uid}
+            mappings={"result_uid": uid, "user_uid": verifier_uid}
         )
 
-    async def retract(self, retracted_by) -> "AnalysisResult":
-        self.status = conf.states.result.RETRACTED
-        self.date_verified = datetime.now()
-        self.updated_by_uid = retracted_by.uid  # noqa
-        final = await self.save_async()
-        if final.status == conf.states.result.RETRACTED:
-            await streamer.stream(final, retracted_by, "retracted", "result")
-            await self._verify(verifier_uid=retracted_by.uid)
+    async def retract(self, uid: str, retracted_by) -> "AnalysisResult":
+        analysis_result = await self.get(uid)
+        analysis_result.status = ResultState.RETRACTED
+        analysis_result.date_verified = datetime.now()
+        analysis_result.updated_by_uid = retracted_by.uid  # noqa
+        final = await super().update(uid, marshaller(analysis_result))
+        if final.status == ResultState.RETRACTED:
+            await self.streamer_service.stream(final, retracted_by, "retracted", "result")
+            await self._verify(uid, verifier_uid=retracted_by.uid)
         return final
 
-    async def cancel(self, cancelled_by) -> "AnalysisResult":
-        if self.status in [conf.states.result.PENDING]:
-            self.status = conf.states.result.CANCELLED
-            self.cancelled_by_uid = cancelled_by.uid
-            self.date_cancelled = datetime.now()
-            self.updated_by_uid = cancelled_by.uid  # noqa
-        final = await self.save_async()
-        if final.status == conf.states.result.CANCELLED:
-            await streamer.stream(final, cancelled_by, "cancelled", "result")
+    async def cancel(self, uid: str, cancelled_by) -> "AnalysisResult":
+        analysis_result = await self.get(uid)
+        if analysis_result.status in [ResultState.PENDING]:
+            analysis_result.status = ResultState.CANCELLED
+            analysis_result.cancelled_by_uid = cancelled_by.uid
+            analysis_result.date_cancelled = datetime.now()
+            analysis_result.updated_by_uid = cancelled_by.uid  # noqa
+        final = await super().update(uid, marshaller(analysis_result))
+        if final.status == ResultState.CANCELLED:
+            await self.streamer_service.stream(final, cancelled_by, "cancelled", "result")
         return final
 
-    async def re_instate(self, re_instated_by) -> "AnalysisResult":
-        if self.sample.status not in [
-            conf.states.sample.RECEIVED,
-            conf.states.sample.EXPECTED,
+    async def re_instate(self, uid: str, re_instated_by) -> "AnalysisResult":
+        analysis_result = await self.get(uid)
+        if analysis_result.sample.status not in [
+            SampleState.RECEIVED,
+            SampleState.EXPECTED,
         ]:
             raise Exception(
                 "You can only reinstate analytes of due and received samples"
             )
 
-        if self.status in [conf.states.result.CANCELLED]:
-            self.status = conf.states.result.PENDING
-            self.cancelled_by_uid = None
-            self.date_cancelled = None
-            self.updated_by_uid = re_instated_by.uid  # noqa
-        final = await self.save_async()
-        if final.status == conf.states.result.PENDING:
-            await streamer.stream(final, re_instated_by, "reinstated", "result")
+        if analysis_result.status in [ResultState.CANCELLED]:
+            analysis_result.status = ResultState.PENDING
+            analysis_result.cancelled_by_uid = None
+            analysis_result.date_cancelled = None
+            analysis_result.updated_by_uid = re_instated_by.uid  # noqa
+        final = await super().update(uid, marshaller(analysis_result))
+        if final.status == ResultState.PENDING:
+            await self.streamer_service.stream(final, re_instated_by, "reinstated", "result")
         return final
 
-    async def change_status(self, status) -> "AnalysisResult":
-        self.status = status
-        return await self.save_async()
+    async def change_status(self, uid: str, status) -> "AnalysisResult":
+        return await super().update(uid, {"status": status})
 
-    async def hide_report(self) -> "AnalysisResult":
-        self.reportable = False
-        return await self.save_async()
+    async def hide_report(self, uid: str) -> "AnalysisResult":
+        return await super().update(uid, {"reportable": False})
 
-    @classmethod
-    async def filter_for_worksheet(
-            cls,
+    async def filter_for_worksheet(self,
             analyses_status: str,
             analysis_uid: str,
             sample_type_uid: list[str],
             limit: int,
     ) -> list["AnalysisResult"]:
-
         filters = {
             "status__exact": analyses_status,
             "assigned__exact": False,
             "analysis_uid__exact": analysis_uid,
             "sample___sample_type_uid__exact": sample_type_uid,
-            "sample___status": conf.states.sample.RECEIVED,
+            "sample___status": SampleState.RECEIVED,
         }
-        sort_attrs = ["-sample___priority", "sample___sample_id", "-created_at"]
+        sort_attrs = ["-sample___priority", "sample___sample_id", "-created_at"]        
+        return await self.repository.filter(filters=filters, sort_attrs=sort_attrs, limit=limit)
 
-        analytes_stmt = cls.smart_query(filters=filters, sort_attrs=sort_attrs)
-        stmt = analytes_stmt.limit(limit)
-
-        # available: int = await cls.count_where(filters=filters)
-
-        async with async_session_factory() as session:
-            analyses_results = (await session.execute(stmt)).scalars().all()
-
-        return analyses_results
-
-
-class ResultMutationService(BaseService[ResultMutation]):
+class ResultMutationService(BaseService[ResultMutation, Dummy, Dummy]):
     def __init__(self):
         super().__init__(ResultMutationRepository)

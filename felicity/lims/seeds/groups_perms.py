@@ -1,6 +1,7 @@
 import logging
 
-from felicity.apps.user import models, schemas
+from felicity.apps.user import entities, schemas
+from felicity.apps.user.services import GroupService, PermissionService
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -211,33 +212,40 @@ def get_action_targets():  # e.g ('verify', 'worksheet'),
 
 async def seed_groups() -> None:
     logger.info("Setting up groups .....")
+    group_service = GroupService()
+
     for _grp in groups:
-        exists = await models.Group.get(name=_grp)
+        exists = await group_service.get(name=_grp)
         if not exists:
             schema = schemas.GroupCreate(name=_grp, keyword=_grp)
-            await models.Group.create(schema)
+            await group_service.create(schema)
 
 
 async def seed_permissions() -> None:
     logger.info("Setting up permissions .....")
+    permission_service = PermissionService()
+
     for _perm in get_action_targets():
-        permission = await models.Permission.get(
+        permission = await permission_service.get(
             action__exact=_perm[0], target__exact=_perm[1]
         )
         if not permission:
             schema = schemas.PermissionCreate(action=_perm[0], target=_perm[1])
-            await models.Permission.create(schema)
+            await permission_service.create(schema)
 
 
 async def seed_group_permissions_defaults() -> None:
     logger.info("Setting up default group permissions .....")
+    permission_service = PermissionService()
+    group_service = GroupService()
+
     for action, objects in permissions.items():
         for obj, roles in objects.items():
-            permission = await models.Permission.get(
+            permission = await permission_service.get(
                 action__exact=action, target__exact=obj
             )
             for role in roles:
-                group: models.Group = await models.Group.get(name=role)
+                group= await group_service.get(name=role)
                 if permission.uid not in [p.uid for p in group.permissions]:
                     group.permissions.append(permission)
                     group.pages = "DASHBOARD"

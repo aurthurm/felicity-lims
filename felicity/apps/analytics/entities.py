@@ -7,9 +7,8 @@ except ImportError:
 
 from sqlalchemy import Column, DateTime, ForeignKey, String, Table
 from sqlalchemy.orm import relationship
-
-from felicity.apps import AuditUser
-from . import conf, schemas
+from felicity.apps.abstract import AuditUser
+from . import enum, schemas
 
 """
 Many to Many Link between ReportMeta and Analysis
@@ -38,7 +37,7 @@ class ReportMeta(AuditUser):
     sample_states = Column(String)
 
     async def set_final(self, status: str, location: str | None = None) -> NoReturn:
-        if self.status != conf.report_states.READY:
+        if self.status != enum.report_states.READY:
             self.location = location
             self.status = status
             self.temp = None

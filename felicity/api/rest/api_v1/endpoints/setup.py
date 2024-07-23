@@ -5,9 +5,11 @@ from fastapi import APIRouter, Depends
 from pydantic import BaseModel
 
 from felicity.api.deps import get_current_user
-from felicity.apps.setup import models, schemas
+from felicity.apps.setup import  schemas
+from felicity.apps.setup.services import LaboratoryService
 from felicity.apps.user.schemas import User
 from felicity.lims.seeds import default_setup, requisite_setup
+from felicity.apps.common.utils.serializer import marshaller
 
 setup = APIRouter(tags=["setup"], prefix="/setup")
 
@@ -31,13 +33,13 @@ class SetupResponse(BaseModel):
 
 
 @setup.get("/installation")
-async def laboratory_lookup() -> Any:
+async def laboratory_lookup(lab_service: LaboratoryService = Depends(LaboratoryService)) -> Any:
     """
     Retrieve instance of installed laboratory
     """
-    laboratory = await models.Laboratory.get_by_setup_name("felicity")
+    laboratory = await lab_service.get_by_setup_name("felicity")
     return {
-        "laboratory": laboratory.marshal_simple(exclude=["lab_manager"])
+        "laboratory": marshaller(laboratory, exclude=["lab_manager"])
         if laboratory
         else None,
         "installed": True if laboratory else False,
@@ -46,7 +48,7 @@ async def laboratory_lookup() -> Any:
 
 
 @setup.post("/installation")
-async def register_laboratory(lab: LabNameIn) -> Any:
+async def register_laboratory(lab: LabNameIn, lab_service: LaboratoryService = Depends(LaboratoryService)) -> Any:
     """
     Install a laboratory and initialise departments example post: curl -X POST
     http://localhost:8000/api/v1/setup/installation -d '{"name":"Felicity Lims"}' -H "Content-Type: application/json"
@@ -61,9 +63,9 @@ async def register_laboratory(lab: LabNameIn) -> Any:
             "message": f"Failed to load requisite setup: {e}",
         }
 
-    laboratory = await models.Laboratory.get_by_setup_name("felicity")
+    laboratory = await lab_service.get_by_setup_name("felicity")
     return {
-        "laboratory": laboratory.marshal_simple(exclude=["lab_manager"]),
+        "laboratory": marshaller(laboratory, exclude=["lab_manager"]),
         "installed": True,
         "message": "installation success",
     }

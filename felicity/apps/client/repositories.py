@@ -3,7 +3,7 @@ from felicity.apps.client.entities import Client, ClientContact
 import sqlalchemy as sa
 
 from felicity.database.paging import PageCursor
-from felicity.database.repository import BaseRepository
+from felicity.apps.abstract.repository import BaseRepository
 
 
 class ClientRepository(BaseRepository[Client]):

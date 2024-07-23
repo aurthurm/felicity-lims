@@ -8,10 +8,10 @@ from felicity.api.gql.analysis.types import analysis as a_types
 from felicity.api.gql.analysis.types import results as r_types
 from felicity.api.gql.permissions import IsAuthenticated
 from felicity.api.gql.types import PageInfo
-from felicity.apps.analysis import conf as analysis_conf
-from felicity.apps.analysis.models import analysis as a_models
-from felicity.apps.analysis.models import qc as qc_models
-from felicity.apps.analysis.models import results as r_models
+from felicity.apps.analysis import enum as analysis_conf
+from felicity.apps.analysis.entities import analysis as a_entities
+from felicity.apps.analysis.entities import qc as qc_entities
+from felicity.apps.analysis.entities import results as r_entities
 from felicity.apps.analysis.utils import sample_search
 from felicity.database.session import async_session_factory
 from felicity.utils import has_value_or_is_truthy
@@ -24,21 +24,21 @@ logger = logging.getLogger(__name__)
 class AnalysisQuery:
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def coding_standard_all(self, info) -> List[a_types.CodingStandardType]:
-        return await a_models.CodingStandard.all_async()
+        return await a_entities.CodingStandard.all_async()
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def sample_type_all(self, info) -> List[a_types.SampleTypeTyp]:
-        return await a_models.SampleType.all_async()
+        return await a_entities.SampleType.all_async()
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def sample_type_by_uid(self, info, uid: str) -> a_types.SampleTypeTyp:
-        return await a_models.SampleType.get(uid=uid)
+        return await a_entities.SampleType.get(uid=uid)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def sample_type_mappings_by_sample_type(
             self, info, sample_type_uid: str
     ) -> list[a_types.SampleTypeMappingType]:
-        return await a_models.SampleTypeCoding.get_all(sample_type_uid=sample_type_uid)
+        return await a_entities.SampleTypeCoding.get_all(sample_type_uid=sample_type_uid)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def sample_all(
@@ -79,7 +79,7 @@ class AnalysisQuery:
         # filters.append({'internal_use__ne': True})
         filters.append({"analysis_request__ne": None})
 
-        page = await a_models.Sample.paginate_with_cursors(
+        page = await a_entities.Sample.paginate_with_cursors(
             page_size=page_size,
             after_cursor=after_cursor,
             before_cursor=before_cursor,
@@ -129,8 +129,8 @@ class AnalysisQuery:
         filters.append(
             {
                 "status__in": [
-                    analysis_conf.states.sample.RECEIVED,
-                    analysis_conf.states.sample.PAIRED,
+                    analysis_conf.SampleState.RECEIVED,
+                    analysis_conf.SampleState.PAIRED,
                 ]
             }
         )
@@ -138,7 +138,7 @@ class AnalysisQuery:
         if not sort_by:
             sort_by = ["-priority", "uid"]
 
-        page = await a_models.Sample.paginate_with_cursors(
+        page = await a_entities.Sample.paginate_with_cursors(
             page_size=page_size,
             after_cursor=after_cursor,
             before_cursor=before_cursor,
@@ -171,14 +171,14 @@ class AnalysisQuery:
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def sample_by_uid(self, info, uid: str) -> a_types.SampleType:
-        return await a_models.Sample.get(uid=uid)
+        return await a_entities.Sample.get(uid=uid)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def sample_by_parent_id(
             self, info, parent_id: str, text: str | None = None
     ) -> List[a_types.SampleType]:
         """Retrieve associated invalidated parent - children relationship by mptt parent_id"""
-        samples: list[a_models.Sample] = await a_models.Sample.get_all(
+        samples: list[a_entities.Sample] = await a_entities.Sample.get_all(
             parent_id=parent_id
         )
 
@@ -192,46 +192,46 @@ class AnalysisQuery:
             self, info, sample_uids: list[str] = []
     ) -> List[r_types.SamplesWithResults]:
         """Samples for publishing/ report printing"""
-        return await a_models.Sample.get_all(uid__in=sample_uids)
+        return await a_entities.Sample.get_all(uid__in=sample_uids)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def samples_by_storage_container_uid(
             self, info, uid: str
     ) -> List[a_types.SampleType]:
         """Retrieve stored samples for a given container uid"""
-        return await a_models.Sample.get_all(storage_container_uid=uid)
+        return await a_entities.Sample.get_all(storage_container_uid=uid)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def profile_all(self, info) -> List[a_types.ProfileType]:
-        return await a_models.Profile.all_async()
+        return await a_entities.Profile.all_async()
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def profile_by_uid(self, info, uid: str) -> a_types.ProfileType:
-        return await a_models.Profile.get(uid=uid)
+        return await a_entities.Profile.get(uid=uid)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def profile_mappings_by_profile(
             self, info, profile_uid: str
     ) -> list[a_types.ProfileMappingType]:
-        return await a_models.ProfileCoding.get_all(profile_uid=profile_uid)
+        return await a_entities.ProfileCoding.get_all(profile_uid=profile_uid)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def analysis_category_all(self, info) -> List[a_types.AnalysisCategoryType]:
-        return await a_models.AnalysisCategory.all_async()
+        return await a_entities.AnalysisCategory.all_async()
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def analysis_category_by_uid(
             self, info, uid: str
     ) -> a_types.AnalysisCategoryType:
-        return await a_models.AnalysisCategory.get(uid=uid)
+        return await a_entities.AnalysisCategory.get(uid=uid)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def analysis_template_all(self, info) -> List[a_types.AnalysisTemplateType]:
-        return await a_models.AnalysisTemplate.all_async()
+        return await a_entities.AnalysisTemplate.all_async()
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def analysis_template_by_uid(self, info, uid: str) -> a_types.AnalysisTemplateType:
-        return await a_models.AnalysisTemplate.get(uid=uid)
+        return await a_entities.AnalysisTemplate.get(uid=uid)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def analysis_all(
@@ -258,7 +258,7 @@ class AnalysisQuery:
         if qc_only:
             filters.append({"category___name__exact": "Quality Control"})
 
-        page = await a_models.Analysis.paginate_with_cursors(
+        page = await a_entities.Analysis.paginate_with_cursors(
             page_size=page_size,
             after_cursor=after_cursor,
             before_cursor=before_cursor,
@@ -278,13 +278,13 @@ class AnalysisQuery:
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def analysis_by_uid(self, info, uid: str) -> a_types.AnalysisType:
-        return await a_models.Analysis.get(uid=uid)
+        return await a_entities.Analysis.get(uid=uid)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def analysis_mappings_by_analysis(
             self, info, analysis_uid: str
     ) -> list[a_types.AnalysisMappingType]:
-        return await a_models.AnalysisCoding.get_all(analysis_uid=analysis_uid)
+        return await a_entities.AnalysisCoding.get_all(analysis_uid=analysis_uid)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def analysis_without_profile(self, info) -> List[a_types.AnalysisType]:
@@ -292,7 +292,7 @@ class AnalysisQuery:
             result = await session.execute(sa.text("select * from analysis_profile"))
 
         a_uids = list(set([ids[0] for ids in result.all_async()]))
-        return await a_models.Analysis.get_all(uid__notin=a_uids)
+        return await a_entities.Analysis.get_all(uid__notin=a_uids)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def analysis_request_all(
@@ -322,7 +322,7 @@ class AnalysisQuery:
 
         filters.append({"internal_use__ne": True})
 
-        page = await a_models.AnalysisRequest.paginate_with_cursors(
+        page = await a_entities.AnalysisRequest.paginate_with_cursors(
             page_size=page_size,
             after_cursor=after_cursor,
             before_cursor=before_cursor,
@@ -345,31 +345,31 @@ class AnalysisQuery:
     async def analysis_request_by_uid(
             self, info, uid: str
     ) -> a_types.AnalysisRequestWithSamples:
-        return await a_models.AnalysisRequest.get(uid=uid)
+        return await a_entities.AnalysisRequest.get(uid=uid)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def analysis_requests_by_patient_uid(
             self, info, uid: str
     ) -> List[a_types.AnalysisRequestWithSamples]:
-        return await a_models.AnalysisRequest.get_all(patient_uid__exact=uid)
+        return await a_entities.AnalysisRequest.get_all(patient_uid__exact=uid)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def analysis_requests_by_client_uid(
             self, info, uid: str
     ) -> List[a_types.AnalysisRequestWithSamples]:
-        return await a_models.AnalysisRequest.get_all(client_uid__exact=uid)
+        return await a_entities.AnalysisRequest.get_all(client_uid__exact=uid)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def analysis_result_by_uid(
             self, info, uid: str
     ) -> r_types.AnalysisResultType:
-        return await r_models.AnalysisResult.get(uid=uid)
+        return await r_entities.AnalysisResult.get(uid=uid)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def analysis_result_by_sample_uid(
             self, info, uid: str
     ) -> List[r_types.AnalysisResultType]:
-        return await r_models.AnalysisResult.get_all(sample_uid__exact=uid)
+        return await r_entities.AnalysisResult.get_all(sample_uid__exact=uid)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def analysis_results_for_ws_assign(
@@ -400,13 +400,13 @@ class AnalysisQuery:
         if sample_type_uid:
             filters.append({"sample___sample_type_uid": sample_type_uid})
 
-        filters.append({"sample___status": analysis_conf.states.sample.RECEIVED})
+        filters.append({"sample___status": analysis_conf.SampleState.RECEIVED})
         filters.append({"status": analysis_conf.states.result.PENDING})
 
         if not sort_by:
             sort_by = ["-sample___priority", "sample___uid"]
 
-        page = await r_models.AnalysisResult.paginate_with_cursors(
+        page = await r_entities.AnalysisResult.paginate_with_cursors(
             page_size=page_size,
             after_cursor=after_cursor,
             before_cursor=before_cursor,
@@ -426,61 +426,61 @@ class AnalysisQuery:
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def analysis_interim_all(self, info) -> List[a_types.AnalysisInterimType]:
-        return await a_models.AnalysisInterim.all_async()
+        return await a_entities.AnalysisInterim.all_async()
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def analysis_interim_by_uid(
             self, info, uid: str
     ) -> a_types.AnalysisInterimType:
-        return await a_models.AnalysisInterim.get(uid=uid)
+        return await a_entities.AnalysisInterim.get(uid=uid)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def analysis_correction_factor_all(
             self, info
     ) -> List[a_types.AnalysisCorrectionFactorType]:
-        return await a_models.AnalysisCorrectionFactor.all_async()
+        return await a_entities.AnalysisCorrectionFactor.all_async()
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def analysis_correction_factor_by_uid(
             self, info, uid: str
     ) -> a_types.AnalysisCorrectionFactorType:
-        return await a_models.AnalysisCorrectionFactor.get(uid=uid)
+        return await a_entities.AnalysisCorrectionFactor.get(uid=uid)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def analysis_uncertainty_all(
             self, info
     ) -> List[a_types.AnalysisUncertaintyType]:
-        return await a_models.AnalysisUncertainty.all_async()
+        return await a_entities.AnalysisUncertainty.all_async()
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def analysis_uncertainty_by_uid(
             self, info, uid: str
     ) -> a_types.AnalysisUncertaintyType:
-        return await a_models.AnalysisUncertainty.get(uid=uid)
+        return await a_entities.AnalysisUncertainty.get(uid=uid)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def analysis_detection_limit_all(
             self, info
     ) -> List[a_types.AnalysisDetectionLimitType]:
-        return await a_models.AnalysisDetectionLimit.all_async()
+        return await a_entities.AnalysisDetectionLimit.all_async()
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def analysis_detection_limit_by_uid(
             self, info, uid: str
     ) -> a_types.AnalysisDetectionLimitType:
-        return await a_models.AnalysisUncertainty.get(uid=uid)
+        return await a_entities.AnalysisUncertainty.get(uid=uid)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def analysis_specification_all(
             self, info
     ) -> List[a_types.AnalysisSpecificationType]:
-        return await a_models.AnalysisSpecification.all_async()
+        return await a_entities.AnalysisSpecification.all_async()
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def analysis_specification_uid(
             self, info, uid: str
     ) -> a_types.AnalysisSpecificationType:
-        return await a_models.AnalysisSpecification.get(uid=uid)
+        return await a_entities.AnalysisSpecification.get(uid=uid)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def qc_set_all(
@@ -506,7 +506,7 @@ class AnalysisQuery:
 
         # filters.append({'internal_use__ne': True})
 
-        page = await a_models.QCSet.paginate_with_cursors(
+        page = await a_entities.QCSet.paginate_with_cursors(
             page_size=page_size,
             after_cursor=after_cursor,
             before_cursor=before_cursor,
@@ -525,42 +525,42 @@ class AnalysisQuery:
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def qc_set_by_uid(self, info, uid: str) -> r_types.QCSetWithSamples:
-        return await qc_models.QCSet.get(uid=uid)
+        return await qc_entities.QCSet.get(uid=uid)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def qc_level_all(self, info) -> List[a_types.QCLevelType]:
-        return await qc_models.QCLevel.all_async()
+        return await qc_entities.QCLevel.all_async()
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def qc_level_by_uid(self, info, uid: str) -> a_types.QCLevelType:
-        return await qc_models.QCLevel.get(uid=uid)
+        return await qc_entities.QCLevel.get(uid=uid)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def qc_template_all(self, info) -> List[a_types.QCTemplateType]:
-        return await qc_models.QCTemplate.all_async()
+        return await qc_entities.QCTemplate.all_async()
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def qc_template_by_uid(self, info, uid: str) -> a_types.QCTemplateType:
-        return await qc_models.QCTemplate.get(uid=uid)
+        return await qc_entities.QCTemplate.get(uid=uid)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def result_options_by_analysis_uid(
             self, info, uid: str
     ) -> a_types.ResultOptionType:
-        return await a_models.ResultOption.get_all(analysis_uid__exact=uid)
+        return await a_entities.ResultOption.get_all(analysis_uid__exact=uid)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def rejection_reasons_all(self, info) -> List[a_types.RejectionReasonType]:
-        return await a_models.RejectionReason.all_async()
+        return await a_entities.RejectionReason.all_async()
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def rejection_reason_by_uid(
             self, info, uid: str
     ) -> a_types.RejectionReasonType:
-        return await a_models.RejectionReason.get(uid=uid)
+        return await a_entities.RejectionReason.get(uid=uid)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def result_mutation_by_result_uid(
             self, info, result_uid: str
     ) -> r_types.ResultMutationType | None:
-        return await r_models.ResultMutation.get(result_uid=result_uid)
+        return await r_entities.ResultMutation.get(result_uid=result_uid)

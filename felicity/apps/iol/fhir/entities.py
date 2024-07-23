@@ -1,7 +1,6 @@
 from sqlalchemy import Boolean, Column, String
 from sqlalchemy.dialects.postgresql import JSONB
-
-from felicity.apps import AuditUser
+from felicity.apps.abstract import AuditUser
 
 
 class FhirTask(AuditUser):

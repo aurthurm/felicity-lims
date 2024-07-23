@@ -7,22 +7,6 @@ from felicity.api.gql.types import PageInfo
 
 
 @strawberry.type
-class UserAuthType:
-    uid: str
-    user_name: str
-    login_retry: int
-    is_blocked: bool
-    user_type: str | None
-    #
-    created_at: str | None
-    creator_name: str | None
-    creator_uid: str | None
-    updated_at: str | None
-    updator_name: str | None
-    updator_uid: str | None
-
-
-@strawberry.type
 class PermissionType:
     uid: str
     action: str | None
@@ -54,11 +38,13 @@ class UserType:
     preference: Optional["UserPreferenceType"]
     is_active: bool
     is_superuser: bool
-    auth_uid: str | None
-    auth: Optional[UserAuthType]
     bio: str | None
     avatar: str | None
     default_route: str | None
+    uid: str
+    user_name: str
+    login_retry: int
+    is_blocked: bool
     #
     created_at: str | None
     creator_name: str | None

@@ -1,5 +1,5 @@
 from felicity.apps.messaging.entities import MessageThread, Message
-from felicity.database.repository import BaseRepository
+from felicity.apps.abstract.repository import BaseRepository
 
 
 

@@ -1,3 +1,3 @@
-from .models import Client
+from .entities import Client
 
 __all__ = ["Client"]

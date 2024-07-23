@@ -1,11 +1,11 @@
 from domain.iol.ports.service import IIOLService, IFhirReadService, IFhirCreateService
 from domain.iol.relay import post_data
 
-from domain.job.conf import JobStates
+from domain.job.enum import JobStates
 from domain.job.ports.service import IJobService
 from domain.notification.ports.service import IActivityStreamService
 from domain.shared.utils.serialisers import marshal
-from domain.shipment.conf import ShipmentStates
+from domain.shipment.enum import ShipmentStates
 from domain.shipment.ports.service import IShipmentService, IShippedSampleService
 from domain.user.ports.service import IUserService
 

@@ -17,9 +17,10 @@ class PatientIdentificationService(
 
 
 class PatientService(BaseService[Patient, PatientCreate, PatientUpdate]):
-    id_sequence_service = IdSequenceService()
+    
 
     def __init__(self):
+        self.id_sequence_service = IdSequenceService()
         super().__init__(PatientRepository)
 
     async def search(self, query_string: str) -> list[Patient]:
@@ -34,10 +35,9 @@ class PatientService(BaseService[Patient, PatientCreate, PatientUpdate]):
         }
         return await super().search(**filters)
 
-    @classmethod
-    async def create(cls, obj_in: dict | PatientCreate) -> Patient:
-        data = cls._import(obj_in)
+    async def create(self, obj_in: dict | PatientCreate) -> Patient:
+        data = self._import(obj_in)
         data["patient_id"] = (
-            await cls.id_sequence_service.get_next_number(prefix="P", generic=True)
+            await self.id_sequence_service.get_next_number(prefix="P", generic=True)
         )[1]
         return await super().create(**data)

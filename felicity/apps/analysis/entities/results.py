@@ -1,21 +1,14 @@
 import logging
-from datetime import datetime
-from typing import Annotated
-
 from sqlalchemy import (Boolean, Column, DateTime, ForeignKey, Integer, String, Text,
                         Table)
 from sqlalchemy.orm import relationship
 
 from felicity.apps.abstract import AuditHistory, AuditUser, BaseEntity
-from felicity.apps.analysis import conf, schemas
-from felicity.apps.common import BaseMPTT
-from felicity.apps.notification.utils import FelicityStreamer
-from felicity.database.session import async_session_factory
+from felicity.apps.abstract import BaseMPTT
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-streamer = FelicityStreamer()
 
 """
  Many to Many Link between AnalysisResult and User

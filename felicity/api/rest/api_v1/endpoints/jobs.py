@@ -3,7 +3,7 @@ from typing import Any
 
 from fastapi import APIRouter
 
-from felicity.apps.job import models
+from felicity.apps.job import entities
 
 jobs = APIRouter(tags=["job"], prefix="/jobs")
 
@@ -16,4 +16,4 @@ async def all_jobs() -> Any:
     """
     Retrieve all jobs
     """
-    return await models.Job.all_async()
+    return await entities.Job.all_async()

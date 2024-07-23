@@ -15,7 +15,7 @@ from felicity.api.gql.instrument.types import (InstrumentCursorPage,
                                                MethodType)
 from felicity.api.gql.permissions import IsAuthenticated
 from felicity.api.gql.types import PageInfo
-from felicity.apps.instrument import models
+from felicity.apps.instrument import entities
 from felicity.utils import has_value_or_is_truthy
 
 
@@ -38,7 +38,7 @@ async def get_all_instrument_types(
 
         filters = {sa.or_: _or_}
 
-    page = await models.InstrumentType.paginate_with_cursors(
+    page = await entities.InstrumentType.paginate_with_cursors(
         page_size=page_size,
         after_cursor=after_cursor,
         before_cursor=before_cursor,
@@ -84,7 +84,7 @@ async def get_all_instruments(
 
         filters = {sa.or_: _or_}
 
-    page = await models.Instrument.paginate_with_cursors(
+    page = await entities.Instrument.paginate_with_cursors(
         page_size=page_size,
         after_cursor=after_cursor,
         before_cursor=before_cursor,
@@ -126,7 +126,7 @@ async def get_all_laboratory_instruments(
 
         filters = {sa.or_: _or_}
 
-    page = await models.LaboratoryInstrument.paginate_with_cursors(
+    page = await entities.LaboratoryInstrument.paginate_with_cursors(
         page_size=page_size,
         after_cursor=after_cursor,
         before_cursor=before_cursor,
@@ -164,7 +164,7 @@ async def get_all_methods(
 
         filters = {sa.or_: _or_}
 
-    page = await models.Method.paginate_with_cursors(
+    page = await entities.Method.paginate_with_cursors(
         page_size=page_size,
         after_cursor=after_cursor,
         before_cursor=before_cursor,
@@ -191,7 +191,7 @@ class InstrumentQuery:
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def instrument_type_by_uid(self, info, uid: str) -> InstrumentTypeType:
-        query = await models.InstrumentType.get(uid=uid)
+        query = await entities.InstrumentType.get(uid=uid)
         return query
 
     instrument_all: InstrumentCursorPage = strawberry.field(
@@ -200,7 +200,7 @@ class InstrumentQuery:
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def instrument_by_uid(self, info, uid: str) -> InstrumentType:
-        return await models.Instrument.get(uid=uid)
+        return await entities.Instrument.get(uid=uid)
 
     laboratory_instrument_all: LaboratoryInstrumentCursorPage = strawberry.field(
         resolver=get_all_laboratory_instruments, permission_classes=[IsAuthenticated]
@@ -210,7 +210,7 @@ class InstrumentQuery:
     async def laboratory_instrument_by_uid(
         self, info, uid: str
     ) -> LaboratoryInstrumentType:
-        return await models.LaboratoryInstrument.get(uid=uid)
+        return await entities.LaboratoryInstrument.get(uid=uid)
 
     method_all: MethodCursorPage = strawberry.field(
         resolver=get_all_methods, permission_classes=[IsAuthenticated]
@@ -218,4 +218,4 @@ class InstrumentQuery:
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def method_by_uid(self, info, uid: str) -> MethodType:
-        return await models.Method.get(uid=uid)
+        return await entities.Method.get(uid=uid)

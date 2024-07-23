@@ -29,56 +29,63 @@ class NoticeService(BaseService[Notice, NoticeCreate, NoticeUpdate]):
         if department_uid:
             filters["departments__uid__in"] = [department_uid]
 
-        return await self.repository.filter(filters, ["-created_at"])
+        return await super().filter(filters, ["-created_at"])
 
     async def view(self, uid: str, viewer_uid: str) -> Notice:
-
         notice = await self.get(uid=uid)
         _viewer = await self.user_service.get(uid=viewer_uid)
         return await self.add_viewer(notice, _viewer)
 
     async def delete(self, uid: str):
+        await super().delete(uid)
+
+    async def reset_views(self, uid: str) -> Notice:
         notice = await self.get(uid=uid)
-        await super().delete(notice)
-
-    async def reset_views(self, notice: Notice) -> Notice:
         notice.viewers.clear()
-        return await super().update(notice, **marshaller(notice))
+        return await super().update(uid, **marshaller(notice))
 
-    async def remove_viewer(self, notice: Notice, user: User) -> Notice:
+    async def remove_viewer(self, uid: str, user: User) -> Notice:
+        notice = await self.get(uid=uid)
         notice.viewers.remove(user)
-        return await super().update(notice, **marshaller(notice))
+        return await super().update(uid, **marshaller(notice))
 
-    async def add_viewer(self, notice: Notice, user: User) -> Notice:
+    async def add_viewer(self, uid: str, user: User) -> Notice:
+        notice = await self.get(uid=uid)
         if user not in notice.viewers:
             notice.viewers.append(user)
-            return await super().update(notice, **marshaller(notice))
+            return await super().update(uid, **marshaller(notice))
         return notice
 
-    async def reset_departments(self, notice: Notice) -> Notice:
+    async def reset_departments(self, uid: str) -> Notice:
+        notice = await self.get(uid=uid)
         notice.departments.clear()
-        return await super().update(notice, **marshaller(notice))
+        return await super().update(uid, **marshaller(notice))
 
-    async def remove_department(self, notice: Notice, department: Department) -> Notice:
+    async def remove_department(self, uid: str, department: Department) -> Notice:
+        notice = await self.get(uid=uid)
         notice.departments.remove(department)
-        return await super().update(notice, **marshaller(notice))
+        return await super().update(uid, **marshaller(notice))
 
-    async def add_department(self, notice: Notice, department: Department) -> Notice:
+    async def add_department(self, uid: str, department: Department) -> Notice:
+        notice = await self.get(uid=uid)
         if department not in notice.departments:
             notice.departments.append(department)
-            return await super().update(notice, **marshaller(notice))
+            return await super().update(uid, **marshaller(notice))
         return notice
 
-    async def reset_groups(self, notice: Notice) -> Notice:
+    async def reset_groups(self, uid: str) -> Notice:
+        notice = await self.get(uid=uid)
         notice.groups.clear()
-        return await super().update(notice, **marshaller(notice))
+        return await super().update(uid, **marshaller(notice))
 
-    async def remove_group(self, notice: Notice, group: Group) -> Notice:
+    async def remove_group(self, uid: str, group: Group) -> Notice:
+        notice = await self.get(uid=uid)
         notice.groups.remove(group)
-        return await super().update(notice, **marshaller(notice))
+        return await super().update(uid, **marshaller(notice))
 
-    async def add_group(self, notice: Notice, group: Group) -> Notice:
+    async def add_group(self, uid: str, group: Group) -> Notice:
+        notice = await self.get(uid=uid)
         if group not in notice.groups:
             notice.groups.append(group)
-            return await super().update(notice, **marshaller(notice))
+            return await super().update(uid, **marshaller(notice))
         return notice

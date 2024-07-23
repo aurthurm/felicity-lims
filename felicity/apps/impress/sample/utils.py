@@ -2,20 +2,18 @@ import logging
 from datetime import datetime
 from typing import List
 
-from felicity.apps.analysis.conf import states
-from felicity.apps.analysis.models.analysis import Sample
+from felicity.apps.analysis.entities.analysis import Sample
+from felicity.apps.analysis.enum import SampleState
 from felicity.apps.common.utils.serializer import marshaller
 from felicity.apps.impress.sample.engine import FelicityImpress
-from felicity.apps.impress.sample.models import ReportImpress
+from felicity.apps.impress.entities import ReportImpress
 from felicity.apps.impress.sample.schemas import ReportImpressCreate
-from felicity.apps.notification.utils import FelicityStreamer
 from felicity.apps.setup.caches import get_laboratory
 from felicity.utils import remove_circular_refs
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-streamer = FelicityStreamer()
 
 exclude = [
     "auth",
@@ -39,12 +37,12 @@ async def impress_samples(sample_meta: List[any], user):
         logger.info(f"sample {sample} {sample.status}")
 
         if sample.status in [
-            states.sample.RECEIVED,
-            states.sample.PAIRED,
-            states.sample.AWAITING,
-            states.sample.APPROVED,
-            states.sample.PUBLISHING,
-            states.sample.PUBLISHED,
+            SampleState.RECEIVED,
+            SampleState.PAIRED,
+            SampleState.AWAITING,
+            SampleState.APPROVED,
+            SampleState.PUBLISHING,
+            SampleState.PUBLISHED,
         ]:
             impress_meta = marshaller(sample, exclude=exclude, depth=3)
             impress_meta["laboratory"] = laboratory.marshal_simple(

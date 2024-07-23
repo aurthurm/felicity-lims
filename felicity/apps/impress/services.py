@@ -4,8 +4,22 @@ from io import BytesIO
 from PyPDF2 import PdfWriter
 
 from felicity.apps.abstract.service import BaseService
+from felicity.apps.analysis.enum import SampleState
+from felicity.apps.analysis.services.analysis import SampleService
+from felicity.apps.common.utils.serializer import marshaller
 from felicity.apps.impress.entities import ReportImpress
+from felicity.apps.impress.repository import ReportImpressRepository
+from felicity.apps.impress.sample.engine import FelicityImpress
 from felicity.apps.impress.sample.schemas import ReportImpressCreate, ReportImpressUpdate
+from felicity.apps.job.enum import JobAction, JobCategory, JobPriority, JobState
+from felicity.apps.job.schemas import JobCreate
+from felicity.apps.job.services import JobService
+from felicity.apps.notification.services import ActivityStreamService, NotificationService
+from felicity.apps.user.entities import User
+from felicity.apps.user.services import UserService
+from felicity.core.config import get_settings
+
+settings = get_settings()
 
 
 class ReportImpressService(BaseService[ReportImpress, ReportImpressCreate, ReportImpressUpdate]):
@@ -73,14 +87,14 @@ class ReportImpressService(BaseService[ReportImpress, ReportImpressCreate, Repor
             sample = await self.sample_service.get(uid=s_meta.get("uid"))
             # logger.info(f"sample {sample} {sample.status}")
             if sample.status in [
-                SampleStates.RECEIVED,
-                SampleStates.PAIRED,
-                SampleStates.AWAITING,
-                SampleStates.APPROVED,
-                SampleStates.PUBLISHING,
-                SampleStates.PUBLISHED,
+                SampleState.RECEIVED,
+                SampleState.PAIRED,
+                SampleState.AWAITING,
+                SampleState.APPROVED,
+                SampleState.PUBLISHING,
+                SampleState.PUBLISHED,
             ]:
-                impress_meta = impress_marshaller(sample)
+                impress_meta = marshaller(sample)
 
                 report_state = "Unknown"
                 action = s_meta.get("action")
@@ -109,7 +123,7 @@ class ReportImpressService(BaseService[ReportImpress, ReportImpressCreate, Repor
                     }
                 )
 
-                await super().create(**marshal(sc_in))
+                await super().create(**marshaller(sc_in))
                 if action != "pre-publish":
                     sample = await self.sample_service.publish(
                         sample, published_by=user
@@ -131,32 +145,32 @@ class ReportImpressService(BaseService[ReportImpress, ReportImpressCreate, Repor
         if not job:
             return
 
-        if not job.status == JobStates.PENDING:
+        if not job.status == JobState.PENDING:
             return
 
-        await self.job_service.change_status(job, new_status=JobStates.RUNNING)
+        await self.job_service.change_status(job.uid, new_status=JobState.RUNNING)
 
         user = await self.user_service.get(uid=job.creator_uid)
 
         try:
             await self.impress_samples(job.data, user)
-            await self.job_service.change_status(job, new_status=JobStates.FINISHED)
+            await self.job_service.change_status(job.uid, new_status=JobState.FINISHED)
             await self.notification_service.notify(
                 f"Your results were successfully published", user
             )
         except Exception as e:
-            await self.job_service.change_status(job, new_status=JobStates.FAILED)
+            await self.job_service.change_status(job.uid, new_status=JobState.FAILED)
             await self.notification_service.notify(
                 f"Failed to publish results in job with uid: {job.uid} with error: {str(e)}",
                 user,
             )
 
     async def prepare_for_impress(self):
-        samples = await self.sample_service.get_all(status__in=[SampleStates.APPROVED])
+        samples = await self.sample_service.get_all(status__in=[SampleState.APPROVED])
         sample_uids = [sample.uid for sample in samples]
 
         await self.sample_service.bulk_update_with_mappings(
-            [{"uid": uid, "status": SampleStates.PUBLISHING} for uid in sample_uids]
+            [{"uid": uid, "status": SampleState.PUBLISHING} for uid in sample_uids]
         )
 
         system_daemon = await self.user_service.get(
@@ -164,13 +178,12 @@ class ReportImpressService(BaseService[ReportImpress, ReportImpressCreate, Repor
         )
 
         job_schema = JobCreate(
-            action=JobActions.IMPRESS_REPORT,
-            category=JobCategories.IMPRESS,
-            priority=JobPriorities.NORMAL,
+            action=JobAction.IMPRESS_REPORT,
+            category=JobCategory.IMPRESS,
+            priority=JobPriority.NORMAL,
             job_id="0",
-            status=JobStates.PENDING,
+            status=JobState.PENDING,
             creator_uid=system_daemon.uid,
             data=sample_uids,
         )
-
-        await self.job_service.create(**marshal(job_schema))
+        await self.job_service.create(job_schema)

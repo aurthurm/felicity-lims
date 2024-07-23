@@ -1,3 +1,3 @@
-from felicity.database.base_class import DBModel
+from felicity.apps.abstract.entity import BaseEntity
 
-__all__ = ["DBModel"]
+__all__ = ["BaseEntity"]

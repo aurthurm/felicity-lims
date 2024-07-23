@@ -7,8 +7,7 @@ from felicity.apps.analysis.tasks import submit_results, verify_results
 from felicity.apps.analytics.tasks import generate_report
 from felicity.apps.impress.sample.tasks import (impress_results,
                                                 prepare_for_impress)
-from felicity.apps.job import conf as job_conf
-from felicity.apps.job import models as job_models
+from felicity.apps.job.services import JobService
 from felicity.apps.shipment.tasks import (dispatch_shipment,
                                           populate_shipment_manually,
                                           process_shipped_report,
@@ -16,6 +15,7 @@ from felicity.apps.shipment.tasks import (dispatch_shipment,
                                           shipment_receive)
 from felicity.apps.worksheet.tasks import (populate_worksheet_plate,
                                            populate_worksheet_plate_manually)
+from felicity.apps.job.enum import JobAction, JobCategory
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -31,7 +31,7 @@ async def run_jobs_if_exists():
     async def unknown_action(action):
         logging.warning(f"Unknown job action: {action}")
 
-    jobs: list[job_models.Job] = await job_models.Job.fetch_sorted()
+    jobs = await JobService().fetch_sorted()
 
     # logging.info(f"There are {len(jobs)} Jobs pending running.")
 
@@ -40,26 +40,26 @@ async def run_jobs_if_exists():
         pass
     else:
         job_dispatch_table = {
-            job_conf.categories.WORKSHEET: {
-                job_conf.actions.WS_ASSIGN: populate_worksheet_plate,
-                job_conf.actions.WS_MANUAL_ASSIGN: populate_worksheet_plate_manually,
+            JobCategory.WORKSHEET: {
+                JobAction.WORKSHEET_ASSIGN: populate_worksheet_plate,
+                JobAction.WORKSHEET_MANUAL_ASSIGN: populate_worksheet_plate_manually,
             },
-            job_conf.categories.REPORT: {
-                job_conf.actions.GENERATE_REPORT: generate_report,
+            JobCategory.REPORT: {
+                JobAction.GENERATE_REPORT: generate_report,
             },
-            job_conf.categories.IMPRESS: {
-                job_conf.actions.IMPRESS_REPORT: impress_results,
+            JobCategory.IMPRESS: {
+                JobAction.IMPRESS_REPORT: impress_results,
             },
-            job_conf.categories.RESULT: {
-                job_conf.actions.RESULT_SUBMIT: submit_results,
-                job_conf.actions.RESULT_VERIFY: verify_results,
+            JobCategory.RESULT: {
+                JobAction.RESULT_SUBMIT: submit_results,
+                JobAction.RESULT_VERIFY: verify_results,
             },
-            job_conf.categories.SHIPMENT: {
-                job_conf.actions.SH_MANUAL_ASSIGN: populate_shipment_manually,
-                job_conf.actions.SH_DISPATCH: dispatch_shipment,
-                job_conf.actions.SH_RECEIVE: shipment_receive,
-                job_conf.actions.SHIPPED_REPORT: return_shipped_report,
-                job_conf.actions.DIAGNOSTIC_REPORT: process_shipped_report,
+            JobCategory.SHIPMENT: {
+                JobAction.SHIPMENT_MANUAL_ASSIGN: populate_shipment_manually,
+                JobAction.SHIPMENT_DISPATCH: dispatch_shipment,
+                JobAction.SHIPMENT_RECEIVE: shipment_receive,
+                JobAction.SHIPPED_REPORT: return_shipped_report,
+                JobAction.DIAGNOSTIC_REPORT: process_shipped_report,
             },
         }
 

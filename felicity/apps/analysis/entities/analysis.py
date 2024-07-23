@@ -1,34 +1,20 @@
 import logging
-from datetime import datetime, timedelta
-from typing import Any, List, Union
 
-from felicity.apps.analysis.conf import ResultType
-
-try:
-    from typing import Self
-except ImportError:
-    from typing_extensions import Self
+from felicity.apps.analysis.enum import ResultType
 
 from sqlalchemy import (Boolean, Column, DateTime, Float, ForeignKey, Integer,
                         String, Table)
 from sqlalchemy.orm import relationship
 
 from felicity.apps.abstract import AuditHistory, AuditUser, BaseEntity
-from felicity.apps.analysis import schemas
-from felicity.apps.analysis.conf import states
 from felicity.apps.analysis.entities.qc import QCLevel, QCSet
-from felicity.apps.client import models as ct_models
-from felicity.apps.common import BaseMPTT
-from felicity.apps.idsequencer.entities import IdSequence
-from felicity.apps.common.utils import sequencer
-from felicity.apps.notification.utils import FelicityStreamer
-from felicity.apps.patient import entities as pt_models
+from felicity.apps.client import entities as ct_entities
+from felicity.apps.abstract import BaseMPTT
+from felicity.apps.patient import entities as pt_entities
 from felicity.apps.user.entities import User
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
-
-streamer = FelicityStreamer()
 
 
 class CodingStandard(AuditUser):
@@ -246,14 +232,14 @@ class Analysis(AuditUser):
     result_type = Column(String, default=ResultType.SHORT_TEXT, nullable=False)
     category_uid = Column(String, ForeignKey("analysis_category.uid"))
     category = relationship(AnalysisCategory, backref="analyses", lazy="selectin")
-    tat_length_minutes = Column(Integer, nullable=True)  # to calculate TAT
-    sort_key = Column(Integer, nullable=True)
+    tat_length_minutes = Column(Integer, default=60*24)  # default 1 day
+    sort_key = Column(Integer, default=1)
     internal_use = Column(Boolean(), default=False)  # e.g QC Services
     department_uid = Column(String, ForeignKey("department.uid"), nullable=True)
     department = relationship("Department", lazy="selectin")
     # precision -> decimal places to report
     precision = Column(Integer, nullable=True)
-    required_verifications = Column(Integer, nullable=True, default=1)
+    required_verifications = Column(Integer, default=1)
     self_verification = Column(Boolean(), default=False)
     hidden = Column(Boolean(), default=False)
     active = Column(Boolean(), default=False)
@@ -390,11 +376,11 @@ class AnalysisRequest(AuditUser):
 
     patient_uid = Column(String, ForeignKey("patient.uid"))
     patient = relationship(
-        pt_models.Patient, backref="analysis_requests", lazy="selectin"
+        pt_entities.Patient, backref="analysis_requests", lazy="selectin"
     )
     client_uid = Column(String, ForeignKey("client.uid"))
     client = relationship(
-        ct_models.Client, backref="analysis_requests", lazy="selectin"
+        ct_entities.Client, backref="analysis_requests", lazy="selectin"
     )
     samples = relationship("Sample", back_populates="analysis_request", lazy="selectin")
     request_id = Column(String, index=True, unique=True, nullable=True)
@@ -523,6 +509,6 @@ class Sample(AuditHistory, BaseMPTT):
 
 
 # @event.listens_for(Sample, "after_update")
-# def stream_sample_verified_models(mapper, connection, target): # noqa
+# def stream_sample_verified_entities(mapper, connection, target): # noqa
 #     logger.log("stream_sample_verified inn")
 #     logger.log(target)

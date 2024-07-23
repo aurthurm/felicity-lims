@@ -8,7 +8,7 @@ from felicity.api.gql.auth import auth_from_info, verify_user_auth
 from felicity.api.gql.permissions import IsAuthenticated
 from felicity.api.gql.types import OperationError
 from felicity.apps.analysis import schemas
-from felicity.apps.analysis.models import analysis as analysis_models
+from felicity.apps.analysis.entities import analysis as analysis_entities
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -42,7 +42,7 @@ async def create_coding_standard(
     if not payload.name:
         return OperationError(error="Name is mandatory")
 
-    exists = await analysis_models.CodingStandard.get(name=payload.name)
+    exists = await analysis_entities.CodingStandard.get(name=payload.name)
     if exists:
         return OperationError(error=f"Coding Standard: {payload.name} already exists")
 
@@ -54,8 +54,8 @@ async def create_coding_standard(
         incoming[k] = v
 
     obj_in = schemas.CodingStandardCreate(**incoming)
-    coding_standard: analysis_models.CodingStandard = (
-        await analysis_models.CodingStandard.create(obj_in)
+    coding_standard: analysis_entities.CodingStandard = (
+        await analysis_entities.CodingStandard.create(obj_in)
     )
     return a_types.CodingStandardType(**coding_standard.marshal_simple())
 
@@ -72,7 +72,7 @@ async def update_coding_standard(
         "Only Authenticated user can update codind standards",
     )
 
-    coding_standard = await analysis_models.CodingStandard.get(uid=uid)
+    coding_standard = await analysis_entities.CodingStandard.get(uid=uid)
     if not coding_standard:
         return OperationError(error=f"Coding standard with uid {uid} does not exist")
 

@@ -139,7 +139,7 @@ def mptt_before_delete(mapper, connection, instance, delete=True):
     delta = rgt - lft + 1
 
     if delete:
-        mapper.base_mapper.confirm_deleted_rows = False
+        mapper.base_mapper.enumirm_deleted_rows = False
         connection.execute(table.delete(table_pk == pk))
 
     if instance.parent_id is not None or not delete:

@@ -4,25 +4,27 @@ import random
 import string
 from datetime import datetime, timedelta
 
-from felicity.apps.analysis import conf as analysis_conf
-from felicity.apps.analysis.models.analysis import (Analysis, AnalysisRequest,
-                                                    Sample, SampleType,
-                                                    sample_analysis)
-from felicity.apps.analysis.models.results import AnalysisResult
+from felicity.apps.analysis.entities.analysis import Sample, sample_analysis
+from felicity.apps.analysis.enum import ResultState, SampleState
 from felicity.apps.analysis.schemas import (AnalysisRequestCreate,
                                             AnalysisResultCreate, SampleCreate)
+from felicity.apps.analysis.services.result import AnalysisResultService
+from felicity.apps.client.services import ClientService
 from felicity.apps.impress.shipment.utils import gen_pdf_manifest
 from felicity.apps.iol.fhir.utils import get_shipment_bundle_resource
 from felicity.apps.iol.relay import post_data
-from felicity.apps.job import models as job_models
 from felicity.apps.job import schemas as job_schemas
-from felicity.apps.job.conf import actions, categories, priorities, states
-from felicity.apps.patient.models import Client, Patient
+from felicity.apps.job.enum import JobAction, JobCategory, JobPriority, JobState
 from felicity.apps.patient.schemas import PatientCreate
-from felicity.apps.reflex.utils import ReflexUtil
-from felicity.apps.shipment import conf
-from felicity.apps.shipment.models import Shipment, ShippedSample
-from felicity.apps.user.models import User
+from felicity.apps.patient.services import PatientService
+from felicity.apps.shipment.enum import ShipmentState
+from felicity.apps.shipment.services import ShipmentService, ShippedSampleService
+from felicity.apps.user.entities import User
+from felicity.apps.analysis.services.analysis import (AnalysisRequestService, AnalysisService,
+    SampleService, SampleTypeService)
+from felicity.apps.job.services import JobService
+from felicity.apps.reflex.services import ReflexEngineService
+from felicity.apps.common.utils.serializer import marshaller
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -30,28 +32,33 @@ logger = logging.getLogger(__name__)
 
 # shipments
 async def shipment_assign(shipment_uid: str, samples_data: list[dict], actor_uid):
-    shipment: Shipment = await Shipment.get(uid=shipment_uid)
+    shipment_service = ShipmentService()
+    sample_service = SampleService()
+    analysis_result_service = AnalysisResultService()
+    shipped_sample_service = ShippedSampleService()
+    
+    shipment = await shipment_service.get(uid=shipment_uid)
 
     async def process_sample(_sample_data):
-        sample: Sample = await Sample.get(uid=_sample_data.get("sample_uid", None))
+        sample = await sample_service.get(uid=_sample_data.get("sample_uid", None))
         if not sample:
             logger.info(f"Failed to retrieve sample {_sample_data} .... skipping")
             return
 
-        analytes: list[AnalysisResult] = await AnalysisResult.get_by_uids(
+        analytes = await analysis_result_service.get_by_uids(
             uids=_sample_data.get("analyses", [])
         )
-        # await asyncio.gather(*(analyte.change_status(analysis_conf.states.Result.REFERRED) for analyte in analytes))
+        # await asyncio.gather(*(analyte.change_status(ResultState.REFERRED) for analyte in analytes))
         for analyte in analytes:
-            await analyte.change_status(analysis_conf.states.Result.REFERRED)
+            await analysis_result_service.change_status(analyte.uid, ResultState.REFERRED)
 
-        fully_referred = await sample.has_fully_referred_analyses()
+        fully_referred = await sample_service.has_fully_referred_analyses(sample.uid)
         if fully_referred:
-            await sample.change_status(analysis_conf.states.sample.REFERRED, actor_uid)
+            await sample_service.change_status(sample.uid,SampleState.REFERRED, actor_uid)
         else:
-            await sample.change_status(analysis_conf.states.sample.PAIRED, actor_uid)
+            await sample_service.change_status(sample.uid,SampleState.PAIRED, actor_uid)
 
-        await ShippedSample.create(
+        await shipped_sample_service.create(
             {"sample_uid": sample.uid, "shipment_uid": shipment.uid}
         )
 
@@ -72,26 +79,37 @@ async def shipment_assign(shipment_uid: str, samples_data: list[dict], actor_uid
 
 
 async def shipment_receive(job_uid: str):
-    job: job_models.Job = await job_models.Job.get(uid=job_uid)
+    job_service = JobService()
+    shipment_service = ShipmentService()
+    sample_service = SampleService()
+    analysis_result_service = AnalysisResultService()
+    shipped_sample_service = ShippedSampleService()
+    client_service = ClientService()
+    patient_service = PatientService()
+    analysis_request_service = AnalysisRequestService()
+    sample_type_service = SampleTypeService()
+    analysis_service = AnalysisService()
+
+    job = await job_service.get(uid=job_uid)
     if not job:
         return
 
-    if not job.status == states.PENDING:
+    if not job.status == JobState.PENDING:
         return None
 
-    await job.change_status(new_status=states.RUNNING)
+    await job_service.change_status(job.uid, new_status=JobState.RUNNING)
     shipment_uid = job.job_id
-    shipment: Shipment = await Shipment.get(uid=shipment_uid)
+    shipment = await shipment_service.get(uid=shipment_uid)
     felicity_user = await User.get(uid=job.creator_uid)
 
     entries = shipment.data["entry"]
 
     # skip aready rceived sampled if any
-    shipped_samples = await ShippedSample.get(shipment_uid=shipment_uid)
+    shipped_samples = await shipped_sample_service.get(shipment_uid=shipment_uid)
     already_received = []
     if shipped_samples:
         for ss in shipped_samples:
-            _ar = await AnalysisRequest.get(uid=ss.sample.analysis_request_uid)
+            _ar = await analysis_result_service.get(uid=ss.sample.analysis_request_uid)
             already_received.append(_ar.client_request_id)
 
     for _entry in entries:
@@ -110,7 +128,7 @@ async def shipment_receive(job_uid: str):
         patient_data = entry["subject"]
 
         # TODO: what if it doesnt exist ? create it
-        client = await Client.get(
+        client = await client_service.get(
             code=patient_data["managingOrganization"]["identifier"]["value"]
         )
         patient_in: dict = {
@@ -133,7 +151,7 @@ async def shipment_receive(job_uid: str):
             # "country_uid": str| None = None
         }
         pt_sch = PatientCreate(**patient_in)
-        patient = await Patient.create(pt_sch)
+        patient = await patient_service.create(pt_sch)
 
         # get sample data
         sample_type_data = sample_data["type"]["coding"][0]
@@ -146,14 +164,14 @@ async def shipment_receive(job_uid: str):
             "updated_by_uid": felicity_user.uid,
         }
         ar_sch = AnalysisRequestCreate(**ar_in)
-        analysis_request = await AnalysisRequest.create(ar_sch)
+        analysis_request = await analysis_request_service.create(ar_sch)
 
-        sample_type = await SampleType.get(name=sample_type_data["display"])
+        sample_type = await sample_type_service.get(name=sample_type_data["display"])
         sam_in = {
             "analysis_request_uid": analysis_request.uid,
             "sample_type_uid": sample_type.uid,
             "priority": 0,
-            "status": analysis_conf.states.sample.EXPECTED,
+            "status": SampleState.EXPECTED,
             "created_by_uid": felicity_user.uid,
             "updated_by_uid": felicity_user.uid,
         }
@@ -163,7 +181,7 @@ async def shipment_receive(job_uid: str):
         service_data = entry["code"]["coding"]
 
         for coding in service_data:
-            analysis = await Analysis.get(keyword=coding["code"])
+            analysis = await analysis_service.get(keyword=coding["code"])
             analyses.append(analysis)
 
         tat_lengths = []
@@ -175,14 +193,14 @@ async def shipment_receive(job_uid: str):
             sam_in["due_date"] = datetime.now() + timedelta(minutes=minutes)
 
         sa_sch = SampleCreate(**sam_in)
-        sample = await Sample.create(sa_sch)
+        sample = await sample_service.create(sa_sch)
 
         # auto receive samples
         await sample.receive(received_by=felicity_user)
 
         # link sample to provided services
         for _anal in analyses:
-            await Sample.table_insert(
+            await sample_service.repository.table_insert(
                 table=sample_analysis,
                 mappings={"sample_uid": sample.uid, "analysis_uid": _anal.uid},
             )
@@ -193,7 +211,7 @@ async def shipment_receive(job_uid: str):
         )
         a_result_schema = AnalysisResultCreate(
             sample_uid=sample.uid,
-            status=analysis_conf.states.result.PENDING,
+            status=ResultState.PENDING,
             analysis_uid=None,
             due_date=None,
             created_by_uid=felicity_user.uid,
@@ -213,17 +231,17 @@ async def shipment_receive(job_uid: str):
                     }
                 )
             )
-        created = await AnalysisResult.bulk_create(result_schemas)
+        created = await analysis_result_service.bulk_create(result_schemas)
 
         # initialise reflex action if exist
         logger.debug("ReflexUtil .... set_reflex_actions ...")
-        await ReflexUtil.set_reflex_actions(created)
+        await ReflexEngineService(created, None).set_reflex_actions(created)
 
         # ! paramount !
         await asyncio.sleep(1)
 
         # Add sample to shipment
-        await ShippedSample.create(
+        await shipped_sample_service.create(
             {
                 "sample_uid": sample.uid,
                 "shipment_uid": shipment.uid,
@@ -232,30 +250,35 @@ async def shipment_receive(job_uid: str):
             }
         )
 
-    await shipment.change_state(conf.shipment_states.RECEIVED, felicity_user.uid)
-    await job.change_status(new_status=states.FINISHED)
+    await shipment_service.change_state(shipment.uid, ShipmentState.RECEIVED, felicity_user.uid)
+    await job_service.change_status(job.uid, new_status=JobState.FINISHED)
 
 
 async def shipment_recover(shipment_uid: str, samples_data: list[dict], actor_uid):
-    shipment: Shipment = await Shipment.get(uid=shipment_uid)
+    shipment_service = ShipmentService()
+    sample_service = SampleService()
+    analysis_result_service = AnalysisResultService()
+    shipped_sample_service = ShippedSampleService()
+
+    shipment = await shipment_service.get(uid=shipment_uid)
 
     async def process_sample(sample_data):
-        sample: Sample = await Sample.get(uid=sample_data.get("sample_uid", None))
+        sample = await sample_service.get(uid=sample_data.get("sample_uid", None))
         if not sample:
             logger.info(f"Failed to retrieve sample {sample_data} .... skipping")
             return
 
-        _, analytes = await sample.get_referred_analyses()
+        _, analytes = await sample_service.get_referred_analyses(sample.uid)
         for analyte in analytes:
-            await analyte.change_status(analysis_conf.states.Result.PENDING)
+            await analysis_result_service.change_status(analyte, ResultState.PENDING)
 
-        no_referred = await sample.has_no_referred_analyses()
+        no_referred = await sample_service.has_no_referred_analyses(sample.uid)
         if no_referred:
-            await sample.change_status(analysis_conf.states.sample.RECEIVED, actor_uid)
+            await sample_service.change_status(sample.uid, SampleState.RECEIVED, actor_uid)
         else:
-            await sample.change_status(analysis_conf.states.sample.PAIRED, actor_uid)
+            await sample_service.change_status(sample.uid, SampleState.PAIRED, actor_uid)
 
-        shipped_sample: ShippedSample = await ShippedSample.get(
+        shipped_sample = await shipped_sample_service.get(
             sample_uid=sample_data.get("sample_uid", None)
         )
         if shipped_sample and no_referred:
@@ -276,15 +299,18 @@ async def shipment_recover(shipment_uid: str, samples_data: list[dict], actor_ui
 
 
 async def shipment_recall(shipment_uid: str, samples_data: list[dict], actor_uid):
-    shipment: Shipment = await Shipment.get(uid=shipment_uid)
+    shipment_service = ShipmentService()
+    sample_service = SampleService()
+
+    shipment = await shipment_service.get(uid=shipment_uid)
 
     async def process_sample(sample_data):
-        sample: Sample = await Sample.get(uid=sample_data.get("sample_uid", None))
+        sample = await sample_service.get(uid=sample_data.get("sample_uid", None))
         if not sample:
             logger.info(f"Failed to retrieve sample {sample_data} .... skipping")
             return
 
-        await sample.change_status(analysis_conf.states.sample.PAIRED, actor_uid)
+        await sample_service.change_status(sample.uid, SampleState.PAIRED, actor_uid)
 
     async def worker(sample_data):
         async with semaphore:
@@ -301,21 +327,26 @@ async def shipment_recall(shipment_uid: str, samples_data: list[dict], actor_uid
 
 
 async def shipment_reset_assigned_count(shipment_uid: str):
-    shipment: Shipment = await Shipment.get(uid=shipment_uid)
-    shiped_samples = await ShippedSample.get_all(shipment_uid=shipment.uid)
+    shipment_service = ShipmentService()
+    shipped_sample_service = ShippedSampleService()
+
+    shipment = await shipment_service.get(uid=shipment_uid)
+    shiped_samples = await shipped_sample_service.get_all(shipment_uid=shipment.uid)
 
     count = len(shiped_samples)
     if count == 0:
-        shipment.state = conf.shipment_states.EMPTY
+        shipment.state = ShipmentState.EMPTY
 
-    if count > 0 and shipment.state == conf.shipment_states.EMPTY:
-        shipment.state = conf.shipment_states.PREPERATION
+    if count > 0 and shipment.state == ShipmentState.EMPTY:
+        shipment.state = ShipmentState.PREPERATION
 
     shipment.assigned_count = count
-    return await shipment.save_async()
+    return await shipment_service.update(shipment.uid, marshaller(shipment))
 
 
 async def action_shipment(shipment_uid: str, action: str, actor):
+    shipment_service = ShipmentService()
+
     if action == "finalise":
         await shipment_finalise(shipment_uid, actor)
     elif action == "cancel":
@@ -329,61 +360,74 @@ async def action_shipment(shipment_uid: str, action: str, actor):
     else:
         pass
 
-    return await Shipment.get(uid=shipment_uid)
+    return await shipment_service.get(uid=shipment_uid)
 
 
 async def shipment_reject(shipment_uid: str, actor_uid):
-    shipment: Shipment = await Shipment.get(uid=shipment_uid)
-    return await shipment.change_state(conf.shipment_states.REJECTED, actor_uid)
+    shipment_service = ShipmentService()
+    shipment = await shipment_service.get(uid=shipment_uid)
+    return await shipment_service.change_state(shipment.uid, ShipmentState.REJECTED, actor_uid)
 
 
 async def add_sh_receive_task(shipment_uid: str, actor_uid):
-    shipment: Shipment = await Shipment.get(uid=shipment_uid)
+    shipment_service = ShipmentService()
+    job_service = JobService()
+
+    shipment = await shipment_service.get(uid=shipment_uid)
     job_schema = job_schemas.JobCreate(
-        action=actions.SH_RECEIVE,
-        category=categories.SHIPMENT,
-        priority=priorities.MEDIUM,
+        action=JobAction.SHIPMENT_RECEIVE,
+        category=JobCategory.SHIPMENT,
+        priority=JobPriority.MEDIUM,
         creator_uid=actor_uid,
         job_id=shipment.uid,
-        status=states.PENDING,
+        status=JobState.PENDING,
         data=None,
     )
-    await job_models.Job.create(job_schema)
+    await job_service.create(job_schema)
 
-    return await shipment.change_state(conf.shipment_states.RECEIVING, actor_uid)
+    return await shipment_service.change_state(shipment.uid, ShipmentState.RECEIVING, actor_uid)
 
 
 async def shipment_cancel(shipment_uid: str, actor_uid):
-    shipment: Shipment = await Shipment.get(uid=shipment_uid)
-    shiped_samples: list[ShippedSample] = await ShippedSample.get_all(
+    shipment_service = ShipmentService()
+    shipped_sample_service = ShippedSampleService() 
+    sample_service = SampleService()
+    analysis_result_service = AnalysisResultService()
+
+    shipment = await shipment_service.get(uid=shipment_uid)
+    shiped_samples = await shipped_sample_service.get_all(
         shipment_uid=shipment.uid
     )
-    samples: list[Sample] = list(map(lambda ss: ss.sample, shiped_samples))
+    samples = list(map(lambda ss: ss.sample, shiped_samples))
 
     async def process_sample(sample: Sample):
-        _, analytes = await sample.get_referred_analyses()
+        _, analytes = await sample_service.get_referred_analyses(sample.uid)
         await asyncio.gather(
             *(
-                analyte.change_status(analysis_conf.states.Result.PENDING)
+                 analysis_result_service.change_status(analyte.uid, ResultState.PENDING)
                 for analyte in analytes
             )
         )
-        await sample.change_status(analysis_conf.states.sample.RECEIVED, actor_uid)
+        await sample_service.change_status(sample.uid, SampleState.RECEIVED, actor_uid)
 
     for sample in samples:
         await process_sample(sample)
 
-    return await shipment.change_state(conf.shipment_states.CANCELLED, actor_uid)
+    return await shipment_service.change_state(shipment.uid, ShipmentState.CANCELLED, actor_uid)
 
 
 async def shipment_finalise(shipment_uid: str, finaliser):
-    shipment: Shipment = await Shipment.get(uid=shipment_uid)
+    shipment_service = ShipmentService()
+    shipped_sample_service = ShippedSampleService()
+    sample_service = SampleService()
 
-    if not shipment.state == conf.shipment_states.PREPERATION:
+    shipment = await shipment_service.get(uid=shipment_uid)
+
+    if not shipment.state == ShipmentState.PREPERATION:
         return
 
     # generate manifest
-    shiped_samples: list[ShippedSample] = await ShippedSample.get_all(
+    shiped_samples = await shipped_sample_service.get_all(
         shipment_uid=shipment.uid
     )
     samples: list[Sample] = list(map(lambda ss: ss.sample, shiped_samples))
@@ -391,7 +435,7 @@ async def shipment_finalise(shipment_uid: str, finaliser):
     manifest_data = []
     for sample in samples:
         services = []
-        _, analytes = await sample.get_referred_analyses()
+        _, analytes = await sample_service.get_referred_analyses(sample.uid)
         for analyte in analytes:
             services.append(analyte.analysis.name)
 
@@ -409,11 +453,13 @@ async def shipment_finalise(shipment_uid: str, finaliser):
 
     await gen_pdf_manifest(manifest_data, shipment)
 
-    return await shipment.finalise(finaliser)
+    return await shipment_service.finalise(shipment.uid, finaliser)
 
 
 async def shipment_send(uid: str, by_uid=None):
-    shipment: Shipment = await Shipment.get(uid=uid)
+    shipment_service = ShipmentService()
+
+    shipment = await shipment_service.get(uid=uid)
     resource = await get_shipment_bundle_resource(uid)
     success = await post_data(
         f"{shipment.laboratory.url}Bundle",
@@ -421,15 +467,18 @@ async def shipment_send(uid: str, by_uid=None):
         shipment.laboratory.username,
         shipment.laboratory.password,
     )
-    return await shipment.change_state(
-        state=conf.shipment_states.FAILED
+    return await shipment_service.change_state(shipment.uid,
+        state=ShipmentState.FAILED
         if not success
-        else conf.shipment_states.SHIPPED,
+        else ShipmentState.SHIPPED,
         updated_by_uid=by_uid,
     )
 
 
 async def shipment_result_update(diagnostic_report: dict, user: User):
+    sample_service = SampleService()
+    analysis_result_service = AnalysisResultService()
+
     # get basedOn-uid
     based_on = diagnostic_report.get("basedOn", None)
     if not based_on:
@@ -441,7 +490,7 @@ async def shipment_result_update(diagnostic_report: dict, user: User):
     )
     sample_uid = based[0]["identifier"]["value"]
 
-    sample: Sample = await Sample.get(uid=sample_uid)
+    sample: Sample = await sample_service.get(uid=sample_uid)
     if not sample:
         return
 
@@ -451,9 +500,9 @@ async def shipment_result_update(diagnostic_report: dict, user: User):
         keyword = identity["type"]["text"]
         value = identity["value"]
 
-        results: list[AnalysisResult] = await sample.get_analysis_results()
+        results = await sample_service.get_analysis_results(sample.uid)
         allowed_states = [
-            analysis_conf.states.result.REFERRED,
+            ResultState.REFERRED,
         ]
         results = list(
             filter(
@@ -468,7 +517,7 @@ async def shipment_result_update(diagnostic_report: dict, user: User):
             "result": value,
             "submitted_by_name": "",
             "verified_by_name": "",
-            "status": analysis_conf.states.result.APPROVED,
+            "status": ResultState.APPROVED,
         }
-        await target.update(update_in)
-        await sample.verify(user)
+        await analysis_result_service.update(target.uid, update_in)
+        await sample_service.verify(sample.uid, user)

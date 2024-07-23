@@ -3,7 +3,7 @@ from typing import List, Optional
 import strawberry  # noqa
 
 from felicity.api.gql.user.types import UserType
-from felicity.apps.storage import models
+from felicity.apps.storage.entities import StorageLocation, StorageSection, StorageContainer
 
 
 @strawberry.type
@@ -24,7 +24,7 @@ class StoreRoomType:
 
     @strawberry.field
     async def children(self, info) -> List[Optional["StorageLocationType"]]:
-        storage_location = await models.StorageLocation.get_all(store_room_uid=self.uid)
+        storage_location = await StorageLocation.get_all(store_room_uid=self.uid)
         return [StorageLocationType(**sl.marshal_simple()) for sl in storage_location]
 
 
@@ -48,7 +48,7 @@ class StorageLocationType:
 
     @strawberry.field
     async def children(self, info) -> List[Optional["StorageSectionType"]]:
-        storage_section = await models.StorageSection.get_all(
+        storage_section = await StorageSection.get_all(
             storage_location_uid=self.uid
         )
         return [StorageSectionType(**ss.marshal_simple()) for ss in storage_section]
@@ -74,7 +74,7 @@ class StorageSectionType:
 
     @strawberry.field
     async def children(self, info) -> List[Optional["StorageContainerType"]]:
-        storage_container = await models.StorageContainer.get_all(
+        storage_container = await StorageContainer.get_all(
             storage_section_uid=self.uid
         )
         return [

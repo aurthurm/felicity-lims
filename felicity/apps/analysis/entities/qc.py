@@ -1,18 +1,12 @@
 import logging
 
-try:
-    from typing import Self
-except ImportError:
-    from typing_extensions import Self
-
 from sqlalchemy import (Boolean, Column, DateTime, Float, ForeignKey, String,
                         Table)
 from sqlalchemy.orm import relationship
 
 from felicity.apps.abstract import AuditUser, BaseEntity
-from felicity.apps.analysis import schemas
 from felicity.apps.setup.entities.setup import Department
-from felicity.apps.analysis.conf import states
+from felicity.apps.analysis.enum import SampleState
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -27,7 +21,7 @@ class QCSet(AuditUser):
 
     name = Column(String, nullable=False)
     note = Column(String, nullable=True)
-    status = Column(String, nullable=False, default=states.sample.RECEIVED)
+    status = Column(String, nullable=False, default=SampleState.RECEIVED)
     samples = relationship("Sample", back_populates="qc_set", lazy="selectin")
 
 

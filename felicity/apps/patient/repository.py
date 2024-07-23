@@ -7,7 +7,7 @@ from felicity.apps.patient.entities import (
     PatientIdentification,
 )
 from felicity.database.paging import PageCursor
-from felicity.database.repository import BaseRepository
+from felicity.apps.abstract.repository import BaseRepository
 
 
 class PatientRepository(BaseRepository[Patient]):

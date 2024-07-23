@@ -6,7 +6,7 @@ from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import relationship
 
 from felicity.apps.abstract import AuditHistory, BaseEntity
-from felicity.apps.billing.config import (DiscountType, DiscountValueType,
+from felicity.apps.billing.enum import (DiscountType, DiscountValueType,
                                           TransactionKind)
 
 

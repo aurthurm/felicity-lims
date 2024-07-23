@@ -12,8 +12,7 @@ SEQUENCE_CUTOFF = 10
 
 class IdSequenceRepository(BaseRepository[IdSequence]):
     def __init__(self) -> None:
-        self.model = IdSequence
-        super().__init__()
+        super().__init__(IdSequence)
 
     async def next_number(self, prefix: str) -> int:
 

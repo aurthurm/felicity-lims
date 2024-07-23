@@ -12,12 +12,12 @@ from felicity.api.gql.auth import auth_from_info, verify_user_auth
 from felicity.api.gql.permissions import IsAuthenticated
 from felicity.api.gql.types import OperationError
 from felicity.apps.analysis import schemas
-from felicity.apps.analysis.conf import states
-from felicity.apps.analysis.models import analysis as analysis_models
-from felicity.apps.analysis.models import qc as qc_models
-from felicity.apps.analysis.models import results as result_models
+from felicity.apps.analysis.entities import analysis as analysis_entities
+from felicity.apps.analysis.entities import qc as qc_entities
+from felicity.apps.analysis.entities import results as result_entities
+from felicity.apps.analysis.enum import ResultState, SampleState
 from felicity.apps.analysis.utils import get_qc_sample_type
-from felicity.apps.setup.models import setup as setup_models
+from felicity.apps.setup.entities import setup as setup_entities
 from felicity.utils import get_passed_args
 
 logging.basicConfig(level=logging.INFO)
@@ -71,17 +71,17 @@ async def create_QC_set(info, samples: List[QCSetInputType]) -> QCSetResponse:
         return OperationError(error="There are No QC Requests to create")
 
     qc_sample_type = await get_qc_sample_type()
-    qc_samples: List[analysis_models.Sample] = []
-    qc_sets: List[analysis_models.QCSet] = []
+    qc_samples: List[analysis_entities.Sample] = []
+    qc_sets: List[analysis_entities.QCSet] = []
 
     for qc_set_in in samples:
         qc_set_schema = schemas.QCSetCreate(name="Set", note="Auto Generated")
-        qc_set = await qc_models.QCSet.create(qc_set_schema)
+        qc_set = await qc_entities.QCSet.create(qc_set_schema)
 
         qc_levels = []
         qc_levels_uids = []
         if qc_set_in.qcTemplateUid:
-            qc_template = await qc_models.QCTemplate.get(uid=qc_set_in.qcTemplateUid)
+            qc_template = await qc_entities.QCTemplate.get(uid=qc_set_in.qcTemplateUid)
             for level in qc_template.qc_levels:
                 if level.uid not in qc_levels_uids:
                     qc_levels.append(level)
@@ -90,7 +90,7 @@ async def create_QC_set(info, samples: List[QCSetInputType]) -> QCSetResponse:
         if qc_set_in.qcLevels:
             for level_uid in qc_set_in.qcLevels:
                 if level_uid not in qc_levels_uids:
-                    level = await qc_models.QCLevel.get(uid=level_uid)
+                    level = await qc_entities.QCLevel.get(uid=level_uid)
                     qc_levels.append(level)
                     qc_levels_uids.append(level_uid)
 
@@ -100,7 +100,7 @@ async def create_QC_set(info, samples: List[QCSetInputType]) -> QCSetResponse:
 
         if qc_set_in.analysisProfiles:
             for p_uid in qc_set_in.analysisProfiles:
-                profile = await analysis_models.Profile.get(uid=p_uid)
+                profile = await analysis_entities.Profile.get(uid=p_uid)
                 profiles.append(profile)
                 analyses_ = profile.analyses
                 for _an in analyses_:
@@ -109,7 +109,7 @@ async def create_QC_set(info, samples: List[QCSetInputType]) -> QCSetResponse:
         if qc_set_in.analysisServices:
             # make sure the selected analyses are not part of the selected profiles
             for a_uid in qc_set_in.analysisServices:
-                analysis = await analysis_models.Analysis.get(uid=a_uid)
+                analysis = await analysis_entities.Analysis.get(uid=a_uid)
                 if analysis not in _profiles_analyses:
                     analyses.append(analysis)
                     _profiles_analyses.add(analysis)
@@ -119,9 +119,9 @@ async def create_QC_set(info, samples: List[QCSetInputType]) -> QCSetResponse:
             s_in = schemas.SampleCreate(
                 sample_type_uid=qc_sample_type.uid,
                 internal_use=True,
-                status=states.sample.RECEIVED,
+                status=SampleState.RECEIVED,
             )
-            sample = await analysis_models.Sample.create(s_in)
+            sample = await analysis_entities.Sample.create(s_in)
             sample.analyses = analyses
             sample.profiles = profiles
             sample.qc_set_uid = qc_set.uid
@@ -133,14 +133,14 @@ async def create_QC_set(info, samples: List[QCSetInputType]) -> QCSetResponse:
                 a_result_in = {
                     "sample_uid": sample.uid,
                     "analysis_uid": _service.uid,
-                    "status": states.result.PENDING,
+                    "status": ResultState.PENDING,
                 }
                 a_result_schema = schemas.AnalysisResultCreate(**a_result_in)
-                await result_models.AnalysisResult.create(a_result_schema)
+                await result_entities.AnalysisResult.create(a_result_schema)
 
             qc_samples.append(sample)
 
-        qc_sets.append((await analysis_models.QCSet.get(uid=qc_set.uid)))
+        qc_sets.append((await analysis_entities.QCSet.get(uid=qc_set.uid)))
     return CreateQCSetData(qc_sets=qc_sets)
 
 
@@ -157,12 +157,12 @@ async def create_QC_level(info, level: str) -> QCLevelResponse:
     if not level:
         return OperationError(error="Level Name is mandatory")
 
-    exists = await qc_models.QCLevel.get(level=level)
+    exists = await qc_entities.QCLevel.get(level=level)
     if exists:
         return OperationError(error=f"A QCLevel named {level} already exists")
 
     obj_in = schemas.QCLevelCreate(**passed_args)
-    qc_level: qc_models.QCLevel = await qc_models.QCLevel.create(obj_in)
+    qc_level: qc_entities.QCLevel = await qc_entities.QCLevel.create(obj_in)
     return a_types.QCLevelType(**qc_level.marshal_simple())
 
 
@@ -173,7 +173,7 @@ async def update_QC_level(info, uid: str, level: str) -> QCLevelResponse:
         is_authenticated, felicity_user, "Only Authenticated user can update qc-levels"
     )
 
-    qc_level = await qc_models.QCLevel.get(uid=uid)
+    qc_level = await qc_entities.QCLevel.get(uid=uid)
     if not qc_level:
         return OperationError(error=f"QCLevel with uid {uid} does not exist")
 
@@ -199,7 +199,7 @@ async def create_QC_template(info, payload: QCTemplateInputType) -> QCTemplateRe
     if not payload.name:
         return OperationError(error="Name is mandatory")
 
-    exists = await qc_models.QCTemplate.get(name=payload.name)
+    exists = await qc_entities.QCTemplate.get(name=payload.name)
     if exists:
         return OperationError(error=f"A QCTemplate named {payload.name} already exists")
 
@@ -209,12 +209,12 @@ async def create_QC_template(info, payload: QCTemplateInputType) -> QCTemplateRe
             incoming[k] = v
 
     obj_in = schemas.QCTemplateCreate(**incoming)
-    qc_template: qc_models.QCTemplate = await qc_models.QCTemplate.create(obj_in)
+    qc_template: qc_entities.QCTemplate = await qc_entities.QCTemplate.create(obj_in)
 
     qc_template.qc_levels.clear()
     if payload.levels:
         for _uid in payload.levels:
-            level = await qc_models.QCLevel.get(uid=_uid)
+            level = await qc_entities.QCLevel.get(uid=_uid)
             if level not in qc_template.qc_levels:
                 qc_template.qc_levels.append(level)
     qc_template = await qc_template.save_async()
@@ -222,7 +222,7 @@ async def create_QC_template(info, payload: QCTemplateInputType) -> QCTemplateRe
     qc_template.departments.clear()
     if payload.departments:
         for _uid in payload.departments:
-            dept = await setup_models.Department.get(uid=_uid)
+            dept = await setup_entities.Department.get(uid=_uid)
             if dept not in qc_template.departments:
                 qc_template.departments.append(dept)
     qc_template = await qc_template.save_async()
@@ -240,7 +240,7 @@ async def update_QC_template(
         "Only Authenticated user can update qc-templates",
     )
 
-    qc_template = await qc_models.QCTemplate.get(uid=uid)
+    qc_template = await qc_entities.QCTemplate.get(uid=uid)
     if not qc_template:
         return OperationError(error=f"QCTemplate with uid {uid} does not exist")
 
@@ -260,7 +260,7 @@ async def update_QC_template(
         qc_template.qc_levels.clear()
         qc_template = await qc_template.save_async()
         for _uid in payload.levels:
-            level = await qc_models.QCLevel.get(uid=_uid)
+            level = await qc_entities.QCLevel.get(uid=_uid)
             if level not in qc_template.qc_levels:
                 qc_template.qc_levels.append(level)
         qc_template = await qc_template.save_async()
@@ -269,7 +269,7 @@ async def update_QC_template(
         qc_template.departments.clear()
         qc_template = await qc_template.save_async()
         for _uid in payload.departments:
-            dept = await setup_models.Department.get(uid=_uid)
+            dept = await setup_entities.Department.get(uid=_uid)
             if dept not in qc_template.departments:
                 qc_template.departments.append(dept)
         qc_template = await qc_template.save_async()

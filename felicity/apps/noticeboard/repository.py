@@ -1,5 +1,5 @@
 from felicity.apps.noticeboard.entities import Notice
-from felicity.database.repository import BaseRepository
+from felicity.apps.abstract.repository import BaseRepository
 
 
 class NoticeRepository(BaseRepository[Notice]):
