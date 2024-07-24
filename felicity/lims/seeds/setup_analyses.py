@@ -92,7 +92,7 @@ async def seed_id_sequence() -> None:
     for prefix in id_prefixes:
         id_seq = await iq_sequence_service.get(prefix=prefix)
         if id_seq is None:
-            await iq_sequence_service.create(**{"prefix": prefix, "number": 0})
+            await iq_sequence_service.create({"prefix": prefix, "number": 0})
 
 
 async def seed_coding_standards() -> None:
@@ -181,9 +181,9 @@ async def seed_analyses_services_and_profiles() -> None:
         analyses_names = _prf.get("analyses_names", [])
         for _a_name in analyses_names:
             anal = await analysis_service.get(name=_a_name)
-            if anal and anal.uid not in [a.uid for a in a_profile.analyses]:
-                a_profile.analyses.append(anal)
-                await profile_servide.table_insert(
+            p_analyses = await profile_servide.get_analyses(a_profile.uid)
+            if anal and anal.uid not in [a.uid for a in p_analyses]:
+                await profile_servide.repository.table_insert(
                     analysis_profile,
                     mappings={
                         "analysis_uid": anal.uid,

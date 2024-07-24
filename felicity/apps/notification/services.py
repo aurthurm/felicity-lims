@@ -56,7 +56,7 @@ class ActivityStreamService(BaseService[ActivityStream, ActivityStreamCreate, Ac
             action_object_uid=obj.uid,
             target_uid=None,
         )
-        stream = await super().create(**marshaller(s_in))
+        stream = await super().create(marshaller(s_in))
         await broadcast.publish(NotificationChannel.ACTIVITIES, stream)
 
     async def reset_feeds(self, activity_stream: ActivityStream) -> ActivityStream:
@@ -120,7 +120,7 @@ class NotificationService(BaseService[Notification, NotificationCreate, Notifica
         n_in.users = users
         n_in.departments = departments
         n_in.groups = groups
-        notification = await super().create(**marshaller(n_in))
+        notification = await super().create(marshaller(n_in))
         await broadcast.publish(NotificationChannel.NOTIFICATIONS, notification)
 
     async def filter(

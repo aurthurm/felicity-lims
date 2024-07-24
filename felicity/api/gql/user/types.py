@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import List, Optional, Self
 
 import strawberry  # noqa
 
@@ -46,12 +46,12 @@ class UserType:
     login_retry: int
     is_blocked: bool
     #
+    created_by_uid: str | None
+    created_by: Self | None = None
     created_at: str | None
-    creator_name: str | None
-    creator_uid: str | None
+    updated_by_uid: str | None
+    updated_by: Self | None = None
     updated_at: str | None
-    updator_name: str | None
-    updator_uid: str | None
 
 
 @strawberry.type

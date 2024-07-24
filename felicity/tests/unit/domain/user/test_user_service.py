@@ -1,15 +1,15 @@
 import unittest
 
 from unittest import mock
-from domain.user.schemas import User
-from domain.user.ports.repository import IUserRepository
-from domain.exceptions import NotAllowedError, AlreadyExistsError, ValidationError
-from domain.user.services import UserService
+from felicity.apps.user.schemas import User
+from felicity.apps.user.repository import UserRepository
+from felicity.apps.exceptions import NotAllowedError, AlreadyExistsError, ValidationError
+from felicity.apps.user.services import UserService
 
 
 class UserServiceTestCase(unittest.IsolatedAsyncioTestCase):
     async def asyncSetUp(self):
-        self.repository = mock.create_autospec(IUserRepository)
+        self.repository = mock.create_autospec(UserRepository)
         self.group_service = mock.AsyncMock()
         self.permission_service = mock.AsyncMock()
         self.user_preference_service = mock.AsyncMock()

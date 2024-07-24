@@ -3,26 +3,22 @@ import { ref, computed, reactive, defineAsyncComponent } from "vue";
 import {
   ADD_USER,
   EDIT_USER,
-  ADD_USER_AUTH,
-  EDIT_USER_AUTH,
 } from "@/graphql/operations/_mutations";
-import { IUser, IUserAuth } from "@/models/auth";
-import { useUserStore, useSetupStore } from "@/stores";
+import { IUser } from "@/models/auth";
+import { useUserStore } from "@/stores";
 import { useApiUtil } from "@/composables";
 const modal = defineAsyncComponent(
   () => import( "@/components/ui/FelModal.vue")
 )
 
-interface IUserAuthForm extends IUser, IUserAuth {
+interface IUserAuthForm extends IUser {
   groupUid: string;
 }
 
-let setupStore = useSetupStore();
 const userStore = useUserStore();
 const { withClientMutation } = useApiUtil();
 
 let showUserModal = ref<boolean>(false);
-let showUserAuthModal = ref<boolean>(false);
 let formTitle = ref<string>("");
 let form = reactive({}) as IUserAuthForm;
 const formAction = ref<boolean>(true);
@@ -47,18 +43,6 @@ function editUser(): void {
   );
 }
 
-function addUserAuth(): void {
-  withClientMutation(ADD_USER_AUTH, form, "createUserAuth").then((result) =>
-    userStore.addUserAuth(result)
-  );
-}
-
-function editUserAuth(): void {
-  withClientMutation(EDIT_USER_AUTH, form, "updateUserAuth").then((result) =>
-    userStore.updateUserAuth(result)
-  );
-}
-
 function userGroupsName(user: IUser): string {
   let groups: string[] = [];
   user?.groups?.forEach((g) => groups.push(g?.name!));
@@ -71,11 +55,13 @@ function UserFormManager(create: boolean, obj: IUser = {} as IUser): void {
   formTitle.value = (create ? "CREATE" : "EDIT") + " " + "USER";
   if (create) {
     let user = new Object() as IUser;
-    user.firstName = "";
-    user.lastName = "";
-    user.email = "";
+    user.firstName = undefined;
+    user.lastName = undefined;
+    user.email = undefined;
     user.isActive = true;
     user.groupUid = undefined;
+    user.userName = undefined;
+    user.isBlocked = false;
     Object.assign(form, { ...user });
   } else {
     obj.userUid = obj?.uid;
@@ -91,35 +77,6 @@ function saveUserForm(): void {
     editUser();
   }
   showUserModal.value = false;
-}
-
-function UserAuthFormManager(create: boolean, obj: IUser): void {
-  formAction.value = create;
-  showUserAuthModal.value = true;
-  formTitle.value =
-    (create ? "ADD" : "EDIT") + " AUTHENTICATION " + "FOR USER " + obj?.firstName;
-  let userAuth = new Object() as IUserAuth;
-  userAuth.userUid = obj?.uid;
-  userAuth.password = "";
-  userAuth.passwordc = "";
-  if (create) {
-    userAuth.userName = "";
-    userAuth.isBlocked = false;
-    Object.assign(form, { ...userAuth });
-  } else {
-    userAuth.userName = obj?.auth?.userName;
-    userAuth.isBlocked = obj?.auth?.isBlocked;
-    Object.assign(form, { ...userAuth });
-  }
-}
-
-function saveUserAuthForm(): void {
-  if (formAction.value) {
-    addUserAuth();
-  } else {
-    editUserAuth();
-  }
-  showUserAuthModal.value = false;
 }
 </script>
 
@@ -177,11 +134,6 @@ function saveUserAuthForm(): void {
               <th
                 class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider"
               >
-                User Type
-              </th>
-              <th
-                class="px-1 py-1 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-800 tracking-wider"
-              >
                 Blocked
               </th>
               <th class="px-1 py-1 border-b-2 border-gray-300"></th>
@@ -216,45 +168,25 @@ function saveUserAuthForm(): void {
               </td>
               <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
                 <div class="text-sm leading-5 text-sky-800">
-                  {{ user?.auth?.userName }}
-                </div>
-              </td>
-              <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
-                <div class="text-sm leading-5 text-sky-800">
-                  {{ user?.auth?.userType }}
+                  {{ user?.userName }}
                 </div>
               </td>
               <td class="px-1 py-1 whitespace-no-wrap border-b border-gray-500">
                 <span
-                  v-if="user?.auth"
                   :class="[
                     'block h-4 w-4 rounded-full bottom-0 right-0',
-                    !user?.auth?.isBlocked ? 'bg-emerald-600' : 'bg-orange-600',
+                    !user?.isBlocked ? 'bg-emerald-600' : 'bg-orange-600',
                   ]"
                 ></span>
               </td>
               <td
                 class="px-1 py-1 whitespace-no-wrap text-right border-b border-gray-500 text-sm leading-5"
               >
-                <button
+                <button v-show="!user.isSuperuser"
                   @click="UserFormManager(false, user)"
                   class="px-2 py-1 mr-2 border-orange-500 border text-orange-500 rounded-sm transition duration-300 hover:bg-orange-700 hover:text-white focus:outline-none"
                 >
                   Edit User
-                </button>
-                <button
-                  v-if="!user?.auth"
-                  @click="UserAuthFormManager(true, user)"
-                  class="px-2 py-1 mr-2 border-orange-500 border text-orange-500 rounded-sm transition duration-300 hover:bg-orange-700 hover:text-white focus:outline-none"
-                >
-                  Add Auth
-                </button>
-                <button
-                  v-if="user?.auth"
-                  @click="UserAuthFormManager(false, user)"
-                  class="px-2 py-1 mr-2 border-orange-500 border text-orange-500 rounded-sm transition duration-300 hover:bg-orange-700 hover:text-white focus:outline-none"
-                >
-                  Edit Auth
                 </button>
               </td>
             </tr>
@@ -271,7 +203,7 @@ function saveUserAuthForm(): void {
     </template>
 
     <template v-slot:body>
-      <form action="post" class="p-1">
+      <form action="post" class="p-1" disabled>
         <div class="grid grid-cols-2 gap-x-4 mb-4">
           <label class="block col-span-1 mb-2">
             <span class="text-gray-700">First Name</span>
@@ -299,6 +231,32 @@ function saveUserAuthForm(): void {
             />
           </label>
           <label class="block col-span-1 mb-2">
+            <span class="text-gray-700">UserName</span>
+            <input
+              class="form-input mt-1 block w-full disabled:bg-slate-300"
+              v-model="form.userName"
+              placeholder="First Name ..."
+              :disabled="form.uid != undefined"
+            />
+          </label>
+          <label class="block col-span-1 mb-2">
+            <span class="text-gray-700">Password</span>
+            <input
+              class="form-input mt-1 block w-full"
+              v-model="form.password"
+              placeholder="Password ..."
+            />
+          </label>
+          <label class="block col-span-1 mb-2">
+            <span class="text-gray-700">Confirm Password</span>
+            <input
+              class="form-input mt-1 block w-full"
+              type="email"
+              v-model="form.passwordc"
+              placeholder="confirm ..."
+            />
+          </label>
+          <label class="block col-span-2 mb-2">
             <span class="text-gray-700">Group</span>
             <select class="form-select block w-full mt-1" v-model="form.groupUid">
               <option></option>
@@ -307,7 +265,25 @@ function saveUserAuthForm(): void {
               </option>
             </select>
           </label>
-          <label for="toggle" class="block col-span-2 text-xs text-gray-700 mt-4"
+          <label for="toggle" class="block col-span-1 text-xs text-gray-700 mt-4"
+            >Blocked
+            <div
+              class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in"
+            >
+              <input
+                type="checkbox"
+                name="toggle"
+                id="toggle"
+                v-model="form.isBlocked"
+                class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer outline-none"
+              />
+              <label
+                for="toggle"
+                class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer"
+              ></label>
+            </div>
+          </label>
+          <label for="toggle" class="block col-span-1 text-xs text-gray-700 mt-4"
             >Active
             <div
               class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in"
@@ -338,69 +314,5 @@ function saveUserAuthForm(): void {
     </template>
   </modal>
 
-  <!-- UserAuthForm Modal -->
-  <modal v-if="showUserAuthModal" @close="showUserAuthModal = false">
-    <template v-slot:header>
-      <h3>{{ formTitle }}</h3>
-    </template>
-
-    <template v-slot:body>
-      <form action="post" class="p-1">
-        <div class="grid grid-cols-2 gap-x-4 mb-4">
-          <label class="block col-span-1 mb-2">
-            <span class="text-gray-700">UserName</span>
-            <input
-              class="form-input mt-1 block w-full"
-              v-model="form.userName"
-              placeholder="First Name ..."
-            />
-          </label>
-          <label class="block col-span-1 mb-2">
-            <span class="text-gray-700">Password</span>
-            <input
-              class="form-input mt-1 block w-full"
-              v-model="form.password"
-              placeholder="Last Name ..."
-            />
-          </label>
-          <label class="block col-span-1 mb-2">
-            <span class="text-gray-700">Confirm Password</span>
-            <input
-              class="form-input mt-1 block w-full"
-              type="email"
-              v-model="form.passwordc"
-              placeholder="Email ..."
-            />
-          </label>
-          <label for="toggle" class="block col-span-2 text-xs text-gray-700 mt-4"
-            >Blocked
-            <div
-              class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in"
-            >
-              <input
-                type="checkbox"
-                name="toggle"
-                id="toggle"
-                v-model="form.isBlocked"
-                class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer outline-none"
-              />
-              <label
-                for="toggle"
-                class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer"
-              ></label>
-            </div>
-          </label>
-        </div>
-        <hr />
-        <button
-          type="button"
-          @click.prevent="saveUserAuthForm()"
-          class="-mb-4 w-full border border-sky-800 bg-sky-800 text-white rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-sky-800 focus:outline-none focus:shadow-outline"
-        >
-          Save Form
-        </button>
-      </form>
-    </template>
-  </modal>
 </template>
 @/graphql/operations/_mutations@/graphql/_mutations

@@ -53,9 +53,9 @@ async def register_laboratory(lab: LabNameIn, lab_service: LaboratoryService = D
     Install a laboratory and initialise departments example post: curl -X POST
     http://localhost:8000/api/v1/setup/installation -d '{"name":"Felicity Lims"}' -H "Content-Type: application/json"
     """
-
+    await requisite_setup(lab.name)
     try:
-        await requisite_setup(lab.name)
+        1
     except Exception as e:
         return {
             "laboratory": None,

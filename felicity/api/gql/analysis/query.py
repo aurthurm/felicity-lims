@@ -13,7 +13,7 @@ from felicity.apps.analysis.entities import analysis as a_entities
 from felicity.apps.analysis.entities import qc as qc_entities
 from felicity.apps.analysis.entities import results as r_entities
 from felicity.apps.analysis.utils import sample_search
-from felicity.database.session import async_session_factory
+from felicity.database.session import async_session
 from felicity.utils import has_value_or_is_truthy
 
 logging.basicConfig(level=logging.INFO)
@@ -288,7 +288,7 @@ class AnalysisQuery:
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def analysis_without_profile(self, info) -> List[a_types.AnalysisType]:
-        async with async_session_factory() as session:
+        async with async_session() as session:
             result = await session.execute(sa.text("select * from analysis_profile"))
 
         a_uids = list(set([ids[0] for ids in result.all_async()]))

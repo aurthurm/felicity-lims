@@ -12,22 +12,16 @@ export interface IUser {
     groups?: IGroup[];
     isActive?: boolean;
     isSuperuser?: boolean;
-    authUid?: string;
-    auth?: IUserAuth;
+    userName?: string;
+    isBlocked?: boolean;
+    password?: string;
+    passwordc?: string;
+    
     // for API axios
     first_name?: string;
     last_name?: string;
 }
 
-export interface IUserAuth {
-    uid?: string;
-    userName?: string;
-    isBlocked?: boolean;
-    userType?: string;
-    userUid?: string;
-    password?: string;
-    passwordc?: string;
-}
 
 export interface IPermission {
     uid?: string;

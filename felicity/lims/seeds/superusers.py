@@ -33,17 +33,15 @@ async def seed_daemon_user() -> None:
         )
         system_daemon = await user_service.create(user_in=su_in)
 
-        admin_group = await group_service.get(name=FGroup.ADMINISTRATOR)
-        if admin_group:
-            system_daemon.groups.append(admin_group)
-            await user_service.update(system_daemon.uid, system_daemon)
+    admin_group = await group_service.get(name=FGroup.ADMINISTRATOR)
+    if admin_group.uid not in [g.uid for g in system_daemon.groups]:
+        system_daemon.groups.append(admin_group)
+        await user_service.save(system_daemon)
 
-        if not system_daemon:
-            raise Exception("Failed to create system_daemon")
-
-        # initial user-preferences
+    # initial user-preferences
+    if not system_daemon.preference_uid:
         pref_in = schemas.UserPreferenceCreate(expanded_menu=False, theme="light")
-        preference = await preference_service.create(obj_in=pref_in)
+        preference = await preference_service.create(pref_in)
         logger.info(
             f"linking system daemon {system_daemon.uid} to preference {preference.uid}"
         )
@@ -72,21 +70,17 @@ async def seed_super_user() -> None:
             is_superuser=True,
         )
         super_user = await user_service.create(user_in=su_in)
+    
+    admin_group = await group_service.get(name=FGroup.ADMINISTRATOR)
+    
+    if admin_group.uid not in [g.uid for g in super_user.groups]:
+        super_user.groups.append(admin_group)
+        await user_service.save(super_user)
 
-        admin_group = await group_service.get(name=FGroup.ADMINISTRATOR)
-        if admin_group:
-            super_user.groups.append(admin_group)
-            await user_service.update(super_user.uid, super_user)
-
-        if not super_user:
-            raise Exception("Failed to create system admin")
-
-        # initial user-preferences
+    # initial user-preferences
+    if not super_user.preference_uid:
         pref_in = schemas.UserPreferenceCreate(expanded_menu=False, theme="light")
-        preference = await preference_service.create(obj_in=pref_in)
-        logger.info(
-            f"linking system admin {super_user.uid} to preference {preference.uid}"
-        )
+        preference = await preference_service.create(pref_in)
         await user_service.link_preference(super_user.uid, preference.uid)
 
     logger.info(f"Done Setting up system admin")

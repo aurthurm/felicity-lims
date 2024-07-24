@@ -25,7 +25,6 @@ interface IAuth {
     resetData: {
         canReset: boolean;
         username?: string;
-        authUid?: string
     }
 }
 
@@ -43,7 +42,6 @@ export const useAuthStore = defineStore('auth', () => {
         resetData: {
             canReset: false,
             username: '',
-            authUid: ''
         }
     };
 
@@ -147,8 +145,7 @@ export const useAuthStore = defineStore('auth', () => {
         await withClientMutation(VALIDATE_PASSWORD_RESET_TOKEN, { token }, 'validatePasswordResetToken')
         .then(res => {
             auth.value.resetData = {
-                canReset: res?.authUid && res?.username,
-                authUid: res?.authUid,
+                canReset: !!!res?.username,
                 username:res?.username
             }
             auth.value.processing = false;
@@ -160,7 +157,6 @@ export const useAuthStore = defineStore('auth', () => {
         auth.value.processing = true;
         await withClientMutation(RESET_PASSWORD, { 
             username: auth.value?.resetData?.username, 
-            authUid: auth.value?.resetData?.authUid, 
             password, passwordc 
         }, 'resetPassword')
         .then(res => {

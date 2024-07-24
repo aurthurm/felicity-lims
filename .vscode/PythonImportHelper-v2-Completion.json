@@ -770,15 +770,7 @@
         "documentation": {}
     },
     {
-        "label": "List",
-        "importPath": "typing",
-        "description": "typing",
-        "isExtraImport": true,
-        "detail": "typing",
-        "documentation": {}
-    },
-    {
-        "label": "Optional",
+        "label": "Self",
         "importPath": "typing",
         "description": "typing",
         "isExtraImport": true,
@@ -818,6 +810,22 @@
         "documentation": {}
     },
     {
+        "label": "List",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "Optional",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
         "label": "Any",
         "importPath": "typing",
         "description": "typing",
@@ -891,6 +899,22 @@
     },
     {
         "label": "Annotated",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "Mapping",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "Any",
         "importPath": "typing",
         "description": "typing",
         "isExtraImport": true,
@@ -955,14 +979,6 @@
     },
     {
         "label": "Generic",
-        "importPath": "typing",
-        "description": "typing",
-        "isExtraImport": true,
-        "detail": "typing",
-        "documentation": {}
-    },
-    {
-        "label": "Any",
         "importPath": "typing",
         "description": "typing",
         "isExtraImport": true,
@@ -3614,6 +3630,14 @@
         "documentation": {}
     },
     {
+        "label": "datetime",
+        "importPath": "datetime",
+        "description": "datetime",
+        "isExtraImport": true,
+        "detail": "datetime",
+        "documentation": {}
+    },
+    {
         "label": "timedelta",
         "importPath": "datetime",
         "description": "datetime",
@@ -5312,14 +5336,6 @@
     },
     {
         "label": "get_passed_args",
-        "importPath": "felicity.utils",
-        "description": "felicity.utils",
-        "isExtraImport": true,
-        "detail": "felicity.utils",
-        "documentation": {}
-    },
-    {
-        "label": "has_value_or_is_truthy",
         "importPath": "felicity.utils",
         "description": "felicity.utils",
         "isExtraImport": true,
@@ -7920,7 +7936,7 @@
         "documentation": {}
     },
     {
-        "label": "async_session_factory",
+        "label": "async_session",
         "importPath": "felicity.database.session",
         "description": "felicity.database.session",
         "isExtraImport": true,
@@ -7936,7 +7952,7 @@
         "documentation": {}
     },
     {
-        "label": "async_session_factory",
+        "label": "async_session",
         "importPath": "felicity.database.session",
         "description": "felicity.database.session",
         "isExtraImport": true,
@@ -8161,6 +8177,14 @@
     },
     {
         "label": "Sample",
+        "importPath": "felicity.apps.analysis.entities.analysis",
+        "description": "felicity.apps.analysis.entities.analysis",
+        "isExtraImport": true,
+        "detail": "felicity.apps.analysis.entities.analysis",
+        "documentation": {}
+    },
+    {
+        "label": "analysis_profile",
         "importPath": "felicity.apps.analysis.entities.analysis",
         "description": "felicity.apps.analysis.entities.analysis",
         "isExtraImport": true,
@@ -10193,6 +10217,14 @@
         "documentation": {}
     },
     {
+        "label": "format_datetime",
+        "importPath": "felicity.core.dtz",
+        "description": "felicity.core.dtz",
+        "isExtraImport": true,
+        "detail": "felicity.core.dtz",
+        "documentation": {}
+    },
+    {
         "label": "datetime_math",
         "importPath": "felicity.core.dtz",
         "description": "felicity.core.dtz",
@@ -11076,6 +11108,62 @@
         "documentation": {}
     },
     {
+        "label": "schemas",
+        "importPath": "felicity.apps.user",
+        "description": "felicity.apps.user",
+        "isExtraImport": true,
+        "detail": "felicity.apps.user",
+        "documentation": {}
+    },
+    {
+        "label": "entities",
+        "importPath": "felicity.apps.user",
+        "description": "felicity.apps.user",
+        "isExtraImport": true,
+        "detail": "felicity.apps.user",
+        "documentation": {}
+    },
+    {
+        "label": "entities",
+        "importPath": "felicity.apps.user",
+        "description": "felicity.apps.user",
+        "isExtraImport": true,
+        "detail": "felicity.apps.user",
+        "documentation": {}
+    },
+    {
+        "label": "entities",
+        "importPath": "felicity.apps.user",
+        "description": "felicity.apps.user",
+        "isExtraImport": true,
+        "detail": "felicity.apps.user",
+        "documentation": {}
+    },
+    {
+        "label": "entities",
+        "importPath": "felicity.apps.user",
+        "description": "felicity.apps.user",
+        "isExtraImport": true,
+        "detail": "felicity.apps.user",
+        "documentation": {}
+    },
+    {
+        "label": "schemas",
+        "importPath": "felicity.apps.user",
+        "description": "felicity.apps.user",
+        "isExtraImport": true,
+        "detail": "felicity.apps.user",
+        "documentation": {}
+    },
+    {
+        "label": "schemas",
+        "importPath": "felicity.apps.user",
+        "description": "felicity.apps.user",
+        "isExtraImport": true,
+        "detail": "felicity.apps.user",
+        "documentation": {}
+    },
+    {
         "label": "GroupService",
         "importPath": "felicity.apps.user.services",
         "description": "felicity.apps.user.services",
@@ -11085,6 +11173,126 @@
     },
     {
         "label": "PermissionService",
+        "importPath": "felicity.apps.user.services",
+        "description": "felicity.apps.user.services",
+        "isExtraImport": true,
+        "detail": "felicity.apps.user.services",
+        "documentation": {}
+    },
+    {
+        "label": "UserPreferenceService",
+        "importPath": "felicity.apps.user.services",
+        "description": "felicity.apps.user.services",
+        "isExtraImport": true,
+        "detail": "felicity.apps.user.services",
+        "documentation": {}
+    },
+    {
+        "label": "UserService",
+        "importPath": "felicity.apps.user.services",
+        "description": "felicity.apps.user.services",
+        "isExtraImport": true,
+        "detail": "felicity.apps.user.services",
+        "documentation": {}
+    },
+    {
+        "label": "GroupService",
+        "importPath": "felicity.apps.user.services",
+        "description": "felicity.apps.user.services",
+        "isExtraImport": true,
+        "detail": "felicity.apps.user.services",
+        "documentation": {}
+    },
+    {
+        "label": "PermissionService",
+        "importPath": "felicity.apps.user.services",
+        "description": "felicity.apps.user.services",
+        "isExtraImport": true,
+        "detail": "felicity.apps.user.services",
+        "documentation": {}
+    },
+    {
+        "label": "UserService",
+        "importPath": "felicity.apps.user.services",
+        "description": "felicity.apps.user.services",
+        "isExtraImport": true,
+        "detail": "felicity.apps.user.services",
+        "documentation": {}
+    },
+    {
+        "label": "UserService",
+        "importPath": "felicity.apps.user.services",
+        "description": "felicity.apps.user.services",
+        "isExtraImport": true,
+        "detail": "felicity.apps.user.services",
+        "documentation": {}
+    },
+    {
+        "label": "UserService",
+        "importPath": "felicity.apps.user.services",
+        "description": "felicity.apps.user.services",
+        "isExtraImport": true,
+        "detail": "felicity.apps.user.services",
+        "documentation": {}
+    },
+    {
+        "label": "UserService",
+        "importPath": "felicity.apps.user.services",
+        "description": "felicity.apps.user.services",
+        "isExtraImport": true,
+        "detail": "felicity.apps.user.services",
+        "documentation": {}
+    },
+    {
+        "label": "UserService",
+        "importPath": "felicity.apps.user.services",
+        "description": "felicity.apps.user.services",
+        "isExtraImport": true,
+        "detail": "felicity.apps.user.services",
+        "documentation": {}
+    },
+    {
+        "label": "UserService",
+        "importPath": "felicity.apps.user.services",
+        "description": "felicity.apps.user.services",
+        "isExtraImport": true,
+        "detail": "felicity.apps.user.services",
+        "documentation": {}
+    },
+    {
+        "label": "GroupService",
+        "importPath": "felicity.apps.user.services",
+        "description": "felicity.apps.user.services",
+        "isExtraImport": true,
+        "detail": "felicity.apps.user.services",
+        "documentation": {}
+    },
+    {
+        "label": "UserService",
+        "importPath": "felicity.apps.user.services",
+        "description": "felicity.apps.user.services",
+        "isExtraImport": true,
+        "detail": "felicity.apps.user.services",
+        "documentation": {}
+    },
+    {
+        "label": "GroupService",
+        "importPath": "felicity.apps.user.services",
+        "description": "felicity.apps.user.services",
+        "isExtraImport": true,
+        "detail": "felicity.apps.user.services",
+        "documentation": {}
+    },
+    {
+        "label": "PermissionService",
+        "importPath": "felicity.apps.user.services",
+        "description": "felicity.apps.user.services",
+        "isExtraImport": true,
+        "detail": "felicity.apps.user.services",
+        "documentation": {}
+    },
+    {
+        "label": "GroupService",
         "importPath": "felicity.apps.user.services",
         "description": "felicity.apps.user.services",
         "isExtraImport": true,
@@ -11121,142 +11329,6 @@
         "description": "felicity.apps.user.services",
         "isExtraImport": true,
         "detail": "felicity.apps.user.services",
-        "documentation": {}
-    },
-    {
-        "label": "UserService",
-        "importPath": "felicity.apps.user.services",
-        "description": "felicity.apps.user.services",
-        "isExtraImport": true,
-        "detail": "felicity.apps.user.services",
-        "documentation": {}
-    },
-    {
-        "label": "UserService",
-        "importPath": "felicity.apps.user.services",
-        "description": "felicity.apps.user.services",
-        "isExtraImport": true,
-        "detail": "felicity.apps.user.services",
-        "documentation": {}
-    },
-    {
-        "label": "GroupService",
-        "importPath": "felicity.apps.user.services",
-        "description": "felicity.apps.user.services",
-        "isExtraImport": true,
-        "detail": "felicity.apps.user.services",
-        "documentation": {}
-    },
-    {
-        "label": "UserService",
-        "importPath": "felicity.apps.user.services",
-        "description": "felicity.apps.user.services",
-        "isExtraImport": true,
-        "detail": "felicity.apps.user.services",
-        "documentation": {}
-    },
-    {
-        "label": "GroupService",
-        "importPath": "felicity.apps.user.services",
-        "description": "felicity.apps.user.services",
-        "isExtraImport": true,
-        "detail": "felicity.apps.user.services",
-        "documentation": {}
-    },
-    {
-        "label": "PermissionService",
-        "importPath": "felicity.apps.user.services",
-        "description": "felicity.apps.user.services",
-        "isExtraImport": true,
-        "detail": "felicity.apps.user.services",
-        "documentation": {}
-    },
-    {
-        "label": "GroupService",
-        "importPath": "felicity.apps.user.services",
-        "description": "felicity.apps.user.services",
-        "isExtraImport": true,
-        "detail": "felicity.apps.user.services",
-        "documentation": {}
-    },
-    {
-        "label": "UserPreferenceService",
-        "importPath": "felicity.apps.user.services",
-        "description": "felicity.apps.user.services",
-        "isExtraImport": true,
-        "detail": "felicity.apps.user.services",
-        "documentation": {}
-    },
-    {
-        "label": "UserService",
-        "importPath": "felicity.apps.user.services",
-        "description": "felicity.apps.user.services",
-        "isExtraImport": true,
-        "detail": "felicity.apps.user.services",
-        "documentation": {}
-    },
-    {
-        "label": "schemas",
-        "importPath": "felicity.apps.user",
-        "description": "felicity.apps.user",
-        "isExtraImport": true,
-        "detail": "felicity.apps.user",
-        "documentation": {}
-    },
-    {
-        "label": "entities",
-        "importPath": "felicity.apps.user",
-        "description": "felicity.apps.user",
-        "isExtraImport": true,
-        "detail": "felicity.apps.user",
-        "documentation": {}
-    },
-    {
-        "label": "entities",
-        "importPath": "felicity.apps.user",
-        "description": "felicity.apps.user",
-        "isExtraImport": true,
-        "detail": "felicity.apps.user",
-        "documentation": {}
-    },
-    {
-        "label": "entities",
-        "importPath": "felicity.apps.user",
-        "description": "felicity.apps.user",
-        "isExtraImport": true,
-        "detail": "felicity.apps.user",
-        "documentation": {}
-    },
-    {
-        "label": "entities",
-        "importPath": "felicity.apps.user",
-        "description": "felicity.apps.user",
-        "isExtraImport": true,
-        "detail": "felicity.apps.user",
-        "documentation": {}
-    },
-    {
-        "label": "entities",
-        "importPath": "felicity.apps.user",
-        "description": "felicity.apps.user",
-        "isExtraImport": true,
-        "detail": "felicity.apps.user",
-        "documentation": {}
-    },
-    {
-        "label": "schemas",
-        "importPath": "felicity.apps.user",
-        "description": "felicity.apps.user",
-        "isExtraImport": true,
-        "detail": "felicity.apps.user",
-        "documentation": {}
-    },
-    {
-        "label": "schemas",
-        "importPath": "felicity.apps.user",
-        "description": "felicity.apps.user",
-        "isExtraImport": true,
-        "detail": "felicity.apps.user",
         "documentation": {}
     },
     {
@@ -12004,6 +12076,14 @@
         "documentation": {}
     },
     {
+        "label": "uuid4",
+        "importPath": "uuid",
+        "description": "uuid",
+        "isExtraImport": true,
+        "detail": "uuid",
+        "documentation": {}
+    },
+    {
         "label": "User",
         "importPath": "felicity.apps.user.schemas",
         "description": "felicity.apps.user.schemas",
@@ -12141,6 +12221,22 @@
     },
     {
         "label": "UserUpdate",
+        "importPath": "felicity.apps.user.schemas",
+        "description": "felicity.apps.user.schemas",
+        "isExtraImport": true,
+        "detail": "felicity.apps.user.schemas",
+        "documentation": {}
+    },
+    {
+        "label": "User",
+        "importPath": "felicity.apps.user.schemas",
+        "description": "felicity.apps.user.schemas",
+        "isExtraImport": true,
+        "detail": "felicity.apps.user.schemas",
+        "documentation": {}
+    },
+    {
+        "label": "User",
         "importPath": "felicity.apps.user.schemas",
         "description": "felicity.apps.user.schemas",
         "isExtraImport": true,
@@ -12796,6 +12892,14 @@
         "documentation": {}
     },
     {
+        "label": "marshaller",
+        "importPath": "felicity.apps.common.utils.serializer",
+        "description": "felicity.apps.common.utils.serializer",
+        "isExtraImport": true,
+        "detail": "felicity.apps.common.utils.serializer",
+        "documentation": {}
+    },
+    {
         "label": "FelicityVersion",
         "importPath": "felicity.version",
         "description": "felicity.version",
@@ -13057,6 +13161,14 @@
         "description": "felicity.apps.common",
         "isExtraImport": true,
         "detail": "felicity.apps.common",
+        "documentation": {}
+    },
+    {
+        "label": "user_service",
+        "importPath": "felicity.tests.unit.domain.user.test_user_service2",
+        "description": "felicity.tests.unit.domain.user.test_user_service2",
+        "isExtraImport": true,
+        "detail": "felicity.tests.unit.domain.user.test_user_service2",
         "documentation": {}
     },
     {
@@ -13540,6 +13652,30 @@
         "documentation": {}
     },
     {
+        "label": "ReprMixin",
+        "importPath": "sqlalchemy_mixins",
+        "description": "sqlalchemy_mixins",
+        "isExtraImport": true,
+        "detail": "sqlalchemy_mixins",
+        "documentation": {}
+    },
+    {
+        "label": "SerializeMixin",
+        "importPath": "sqlalchemy_mixins",
+        "description": "sqlalchemy_mixins",
+        "isExtraImport": true,
+        "detail": "sqlalchemy_mixins",
+        "documentation": {}
+    },
+    {
+        "label": "InspectionMixin",
+        "importPath": "sqlalchemy_mixins",
+        "description": "sqlalchemy_mixins",
+        "isExtraImport": true,
+        "detail": "sqlalchemy_mixins",
+        "documentation": {}
+    },
+    {
         "label": "get_flake_uid",
         "importPath": "felicity.core.uid_gen",
         "description": "felicity.core.uid_gen",
@@ -13609,30 +13745,6 @@
         "description": "sqlalchemy.sql.expression",
         "isExtraImport": true,
         "detail": "sqlalchemy.sql.expression",
-        "documentation": {}
-    },
-    {
-        "label": "QueryBuilder",
-        "importPath": "felicity.database.queryset",
-        "description": "felicity.database.queryset",
-        "isExtraImport": true,
-        "detail": "felicity.database.queryset",
-        "documentation": {}
-    },
-    {
-        "label": "settable_attributes",
-        "importPath": "felicity.database.queryset",
-        "description": "felicity.database.queryset",
-        "isExtraImport": true,
-        "detail": "felicity.database.queryset",
-        "documentation": {}
-    },
-    {
-        "label": "smart_query",
-        "importPath": "felicity.database.queryset",
-        "description": "felicity.database.queryset",
-        "isExtraImport": true,
-        "detail": "felicity.database.queryset",
         "documentation": {}
     },
     {
@@ -13737,6 +13849,30 @@
         "description": "felicity.database.paging",
         "isExtraImport": true,
         "detail": "felicity.database.paging",
+        "documentation": {}
+    },
+    {
+        "label": "QueryBuilder",
+        "importPath": "felicity.database.queryset",
+        "description": "felicity.database.queryset",
+        "isExtraImport": true,
+        "detail": "felicity.database.queryset",
+        "documentation": {}
+    },
+    {
+        "label": "settable_attributes",
+        "importPath": "felicity.database.queryset",
+        "description": "felicity.database.queryset",
+        "isExtraImport": true,
+        "detail": "felicity.database.queryset",
+        "documentation": {}
+    },
+    {
+        "label": "smart_query",
+        "importPath": "felicity.database.queryset",
+        "description": "felicity.database.queryset",
+        "isExtraImport": true,
+        "detail": "felicity.database.queryset",
         "documentation": {}
     },
     {
@@ -18398,22 +18534,6 @@
         "documentation": {}
     },
     {
-        "label": "User",
-        "importPath": "domain.user.schemas",
-        "description": "domain.user.schemas",
-        "isExtraImport": true,
-        "detail": "domain.user.schemas",
-        "documentation": {}
-    },
-    {
-        "label": "User",
-        "importPath": "domain.user.schemas",
-        "description": "domain.user.schemas",
-        "isExtraImport": true,
-        "detail": "domain.user.schemas",
-        "documentation": {}
-    },
-    {
         "label": "IAnalysisRequestService",
         "importPath": "domain.analysis.ports.service.analysis",
         "description": "domain.analysis.ports.service.analysis",
@@ -19641,6 +19761,30 @@
         "documentation": {}
     },
     {
+        "label": "UserPreferenceRepository",
+        "importPath": "felicity.apps.user.repository",
+        "description": "felicity.apps.user.repository",
+        "isExtraImport": true,
+        "detail": "felicity.apps.user.repository",
+        "documentation": {}
+    },
+    {
+        "label": "UserRepository",
+        "importPath": "felicity.apps.user.repository",
+        "description": "felicity.apps.user.repository",
+        "isExtraImport": true,
+        "detail": "felicity.apps.user.repository",
+        "documentation": {}
+    },
+    {
+        "label": "UserRepository",
+        "importPath": "felicity.apps.user.repository",
+        "description": "felicity.apps.user.repository",
+        "isExtraImport": true,
+        "detail": "felicity.apps.user.repository",
+        "documentation": {}
+    },
+    {
         "label": "UserRepository",
         "importPath": "felicity.apps.user.repository",
         "description": "felicity.apps.user.repository",
@@ -19913,6 +20057,14 @@
         "description": "sqlalchemy.ext.hybrid",
         "isExtraImport": true,
         "detail": "sqlalchemy.ext.hybrid",
+        "documentation": {}
+    },
+    {
+        "label": "InstanceState",
+        "importPath": "sqlalchemy.orm.state",
+        "description": "sqlalchemy.orm.state",
+        "isExtraImport": true,
+        "detail": "sqlalchemy.orm.state",
         "documentation": {}
     },
     {
@@ -20450,83 +20602,51 @@
         "documentation": {}
     },
     {
-        "label": "IUserRepository",
-        "importPath": "domain.user.ports.repository",
-        "description": "domain.user.ports.repository",
-        "isExtraImport": true,
-        "detail": "domain.user.ports.repository",
-        "documentation": {}
-    },
-    {
-        "label": "IUserRepository",
-        "importPath": "domain.user.ports.repository",
-        "description": "domain.user.ports.repository",
-        "isExtraImport": true,
-        "detail": "domain.user.ports.repository",
-        "documentation": {}
-    },
-    {
         "label": "NotAllowedError",
-        "importPath": "domain.exceptions",
-        "description": "domain.exceptions",
+        "importPath": "felicity.apps.exceptions",
+        "description": "felicity.apps.exceptions",
         "isExtraImport": true,
-        "detail": "domain.exceptions",
+        "detail": "felicity.apps.exceptions",
         "documentation": {}
     },
     {
         "label": "AlreadyExistsError",
-        "importPath": "domain.exceptions",
-        "description": "domain.exceptions",
+        "importPath": "felicity.apps.exceptions",
+        "description": "felicity.apps.exceptions",
         "isExtraImport": true,
-        "detail": "domain.exceptions",
+        "detail": "felicity.apps.exceptions",
         "documentation": {}
     },
     {
         "label": "ValidationError",
-        "importPath": "domain.exceptions",
-        "description": "domain.exceptions",
+        "importPath": "felicity.apps.exceptions",
+        "description": "felicity.apps.exceptions",
         "isExtraImport": true,
-        "detail": "domain.exceptions",
+        "detail": "felicity.apps.exceptions",
         "documentation": {}
     },
     {
         "label": "NotAllowedError",
-        "importPath": "domain.exceptions",
-        "description": "domain.exceptions",
+        "importPath": "felicity.apps.exceptions",
+        "description": "felicity.apps.exceptions",
         "isExtraImport": true,
-        "detail": "domain.exceptions",
+        "detail": "felicity.apps.exceptions",
         "documentation": {}
     },
     {
         "label": "AlreadyExistsError",
-        "importPath": "domain.exceptions",
-        "description": "domain.exceptions",
+        "importPath": "felicity.apps.exceptions",
+        "description": "felicity.apps.exceptions",
         "isExtraImport": true,
-        "detail": "domain.exceptions",
+        "detail": "felicity.apps.exceptions",
         "documentation": {}
     },
     {
         "label": "ValidationError",
-        "importPath": "domain.exceptions",
-        "description": "domain.exceptions",
+        "importPath": "felicity.apps.exceptions",
+        "description": "felicity.apps.exceptions",
         "isExtraImport": true,
-        "detail": "domain.exceptions",
-        "documentation": {}
-    },
-    {
-        "label": "UserService",
-        "importPath": "domain.user.services",
-        "description": "domain.user.services",
-        "isExtraImport": true,
-        "detail": "domain.user.services",
-        "documentation": {}
-    },
-    {
-        "label": "UserService",
-        "importPath": "domain.user.services",
-        "description": "domain.user.services",
-        "isExtraImport": true,
-        "detail": "domain.user.services",
+        "detail": "felicity.apps.exceptions",
         "documentation": {}
     },
     {
@@ -24158,7 +24278,7 @@
         "kind": 6,
         "importPath": "felicity.api.gql.user.mutations",
         "description": "felicity.api.gql.user.mutations",
-        "peekOfCode": "class UserMutations:\n    @strawberry.mutation(permission_classes=[IsAuthenticated])\n    async def create_user(\n        self,\n        info,\n        first_name: str,\n        last_name: str,\n        email: str,\n        group_uid: str | None = None,\n        open_reg: bool | None = False,",
+        "peekOfCode": "class UserMutations:\n    @strawberry.mutation(permission_classes=[IsAuthenticated])\n    async def create_user(\n            self,\n            info,\n            first_name: str,\n            last_name: str,\n            email: str,\n            user_name: str,\n            password: str,",
         "detail": "felicity.api.gql.user.mutations",
         "documentation": {}
     },
@@ -24167,7 +24287,7 @@
         "kind": 2,
         "importPath": "felicity.api.gql.user.mutations",
         "description": "felicity.api.gql.user.mutations",
-        "peekOfCode": "def simple_task(message: str):\n    time.sleep(4)\n    logger.info(f\"finished task: {message}\")\n    return message\n@strawberry.type\nclass UserMutations:\n    @strawberry.mutation(permission_classes=[IsAuthenticated])\n    async def create_user(\n        self,\n        info,",
+        "peekOfCode": "def simple_task(message: str):\n    time.sleep(4)\n    logger.info(f\"finished task: {message}\")\n    return message\n@strawberry.type\nclass UserMutations:\n    @strawberry.mutation(permission_classes=[IsAuthenticated])\n    async def create_user(\n            self,\n            info,",
         "detail": "felicity.api.gql.user.mutations",
         "documentation": {}
     },
@@ -24239,7 +24359,34 @@
         "kind": 6,
         "importPath": "felicity.api.gql.user.query",
         "description": "felicity.api.gql.user.query",
-        "peekOfCode": "class UserQuery:\n    @strawberry.field(permission_classes=[IsAuthenticated])\n    async def user_all(\n        self,\n        info,\n        page_size: int | None = None,\n        after_cursor: str | None = None,\n        before_cursor: str | None = None,\n        text: str | None = None,\n        sort_by: list[str] | None = None,",
+        "peekOfCode": "class UserQuery:\n    @strawberry.field(permission_classes=[IsAuthenticated])\n    async def user_all(\n            self,\n            info,\n            page_size: int | None = None,\n            after_cursor: str | None = None,\n            before_cursor: str | None = None,\n            text: str | None = None,\n            sort_by: list[str] | None = None,",
+        "detail": "felicity.api.gql.user.query",
+        "documentation": {}
+    },
+    {
+        "label": "group_service",
+        "kind": 5,
+        "importPath": "felicity.api.gql.user.query",
+        "description": "felicity.api.gql.user.query",
+        "peekOfCode": "group_service = GroupService()\npermission_service = PermissionService()\nuser_service = UserService()\n@strawberry.type\nclass UserQuery:\n    @strawberry.field(permission_classes=[IsAuthenticated])\n    async def user_all(\n            self,\n            info,\n            page_size: int | None = None,",
+        "detail": "felicity.api.gql.user.query",
+        "documentation": {}
+    },
+    {
+        "label": "permission_service",
+        "kind": 5,
+        "importPath": "felicity.api.gql.user.query",
+        "description": "felicity.api.gql.user.query",
+        "peekOfCode": "permission_service = PermissionService()\nuser_service = UserService()\n@strawberry.type\nclass UserQuery:\n    @strawberry.field(permission_classes=[IsAuthenticated])\n    async def user_all(\n            self,\n            info,\n            page_size: int | None = None,\n            after_cursor: str | None = None,",
+        "detail": "felicity.api.gql.user.query",
+        "documentation": {}
+    },
+    {
+        "label": "user_service",
+        "kind": 5,
+        "importPath": "felicity.api.gql.user.query",
+        "description": "felicity.api.gql.user.query",
+        "peekOfCode": "user_service = UserService()\n@strawberry.type\nclass UserQuery:\n    @strawberry.field(permission_classes=[IsAuthenticated])\n    async def user_all(\n            self,\n            info,\n            page_size: int | None = None,\n            after_cursor: str | None = None,\n            before_cursor: str | None = None,",
         "detail": "felicity.api.gql.user.query",
         "documentation": {}
     },
@@ -24680,7 +24827,7 @@
         "kind": 5,
         "importPath": "felicity.api.deps",
         "description": "felicity.api.deps",
-        "peekOfCode": "logger = logging.getLogger(__name__)\nsettings = get_settings()\n# oauth2_scheme = OAuth2PasswordBearer(tokenUrl=\"token\")\noauth2_scheme = OAuth2PasswordBearer(tokenUrl=\"felicity-gql\", scheme_name=\"JWT\")\nasync def _get_user(token: str):\n    if not token:\n        GraphQLError(\"No auth token\")\n    try:\n        payload = jwt.decode(\n            token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM]",
+        "peekOfCode": "logger = logging.getLogger(__name__)\nsettings = get_settings()\n# oauth2_scheme = OAuth2PasswordBearer(tokenUrl=\"token\")\noauth2_scheme = OAuth2PasswordBearer(tokenUrl=\"felicity-gql\", scheme_name=\"JWT\")\nasync def _get_user(token: str):\n    user_service = UserService()\n    if not token:\n        GraphQLError(\"No auth token\")\n    try:\n        payload = jwt.decode(",
         "detail": "felicity.api.deps",
         "documentation": {}
     },
@@ -24689,7 +24836,7 @@
         "kind": 5,
         "importPath": "felicity.api.deps",
         "description": "felicity.api.deps",
-        "peekOfCode": "settings = get_settings()\n# oauth2_scheme = OAuth2PasswordBearer(tokenUrl=\"token\")\noauth2_scheme = OAuth2PasswordBearer(tokenUrl=\"felicity-gql\", scheme_name=\"JWT\")\nasync def _get_user(token: str):\n    if not token:\n        GraphQLError(\"No auth token\")\n    try:\n        payload = jwt.decode(\n            token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM]\n        )",
+        "peekOfCode": "settings = get_settings()\n# oauth2_scheme = OAuth2PasswordBearer(tokenUrl=\"token\")\noauth2_scheme = OAuth2PasswordBearer(tokenUrl=\"felicity-gql\", scheme_name=\"JWT\")\nasync def _get_user(token: str):\n    user_service = UserService()\n    if not token:\n        GraphQLError(\"No auth token\")\n    try:\n        payload = jwt.decode(\n            token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM]",
         "detail": "felicity.api.deps",
         "documentation": {}
     },
@@ -24698,7 +24845,7 @@
         "kind": 5,
         "importPath": "felicity.api.deps",
         "description": "felicity.api.deps",
-        "peekOfCode": "oauth2_scheme = OAuth2PasswordBearer(tokenUrl=\"felicity-gql\", scheme_name=\"JWT\")\nasync def _get_user(token: str):\n    if not token:\n        GraphQLError(\"No auth token\")\n    try:\n        payload = jwt.decode(\n            token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM]\n        )\n        token_data = core_schemas.TokenPayload(**payload)\n    except (jwt.JWTError, ValidationError) as e:",
+        "peekOfCode": "oauth2_scheme = OAuth2PasswordBearer(tokenUrl=\"felicity-gql\", scheme_name=\"JWT\")\nasync def _get_user(token: str):\n    user_service = UserService()\n    if not token:\n        GraphQLError(\"No auth token\")\n    try:\n        payload = jwt.decode(\n            token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM]\n        )\n        token_data = core_schemas.TokenPayload(**payload)",
         "detail": "felicity.api.deps",
         "documentation": {}
     },
@@ -24743,7 +24890,7 @@
         "kind": 6,
         "importPath": "felicity.apps.abstract.entity",
         "description": "felicity.apps.abstract.entity",
-        "peekOfCode": "class BaseEntity(DeclarativeBase, AsyncAttrs):\n    __name__: str\n    __abstract__ = True\n    __mapper_args__ = {\"eager_defaults\": True}\n    uid = Column(\n        String,\n        primary_key=True,\n        index=True,\n        nullable=False,\n        default=get_flake_uid,",
+        "peekOfCode": "class BaseEntity(DeclarativeBase, ReprMixin, SerializeMixin, AsyncAttrs):\n    __repr__ = ReprMixin.__repr__\n    __name__: str\n    __abstract__ = True\n    __mapper_args__ = {\"eager_defaults\": True}\n    uid = Column(\n        String,\n        primary_key=True,\n        index=True,\n        nullable=False,",
         "detail": "felicity.apps.abstract.entity",
         "documentation": {}
     },
@@ -24779,7 +24926,7 @@
         "kind": 6,
         "importPath": "felicity.apps.abstract.service",
         "description": "felicity.apps.abstract.service",
-        "peekOfCode": "class BaseService(Generic[E, C, U]):\n    def __init__(self, repository: BaseRepository) -> None:\n        self.repository = repository()\n    async def paging_filter(\n        self,\n        page_size: int | None = None,\n        after_cursor: str | None = None,\n        before_cursor: str | None = None,\n        text: str | None = None,\n        sort_by: list[str] | None = None,",
+        "peekOfCode": "class BaseService(Generic[E, C, U]):\n    def __init__(self, repository) -> None:\n        self.repository: BaseRepository = repository()\n    async def paging_filter(\n            self,\n            page_size: int | None = None,\n            after_cursor: str | None = None,\n            before_cursor: str | None = None,\n            text: str | None = None,\n            sort_by: list[str] | None = None,",
         "detail": "felicity.apps.abstract.service",
         "documentation": {}
     },
@@ -24788,7 +24935,7 @@
         "kind": 5,
         "importPath": "felicity.apps.abstract.service",
         "description": "felicity.apps.abstract.service",
-        "peekOfCode": "E = TypeVar(\"E\", bound=DeclarativeBase)\nC = TypeVar(\"C\", bound=BaseModel)\nU = TypeVar(\"U\", bound=BaseModel)\nclass BaseService(Generic[E, C, U]):\n    def __init__(self, repository: BaseRepository) -> None:\n        self.repository = repository()\n    async def paging_filter(\n        self,\n        page_size: int | None = None,\n        after_cursor: str | None = None,",
+        "peekOfCode": "E = TypeVar(\"E\", bound=DeclarativeBase)\nC = TypeVar(\"C\", bound=BaseModel)\nU = TypeVar(\"U\", bound=BaseModel)\nclass BaseService(Generic[E, C, U]):\n    def __init__(self, repository) -> None:\n        self.repository: BaseRepository = repository()\n    async def paging_filter(\n            self,\n            page_size: int | None = None,\n            after_cursor: str | None = None,",
         "detail": "felicity.apps.abstract.service",
         "documentation": {}
     },
@@ -24797,7 +24944,7 @@
         "kind": 5,
         "importPath": "felicity.apps.abstract.service",
         "description": "felicity.apps.abstract.service",
-        "peekOfCode": "C = TypeVar(\"C\", bound=BaseModel)\nU = TypeVar(\"U\", bound=BaseModel)\nclass BaseService(Generic[E, C, U]):\n    def __init__(self, repository: BaseRepository) -> None:\n        self.repository = repository()\n    async def paging_filter(\n        self,\n        page_size: int | None = None,\n        after_cursor: str | None = None,\n        before_cursor: str | None = None,",
+        "peekOfCode": "C = TypeVar(\"C\", bound=BaseModel)\nU = TypeVar(\"U\", bound=BaseModel)\nclass BaseService(Generic[E, C, U]):\n    def __init__(self, repository) -> None:\n        self.repository: BaseRepository = repository()\n    async def paging_filter(\n            self,\n            page_size: int | None = None,\n            after_cursor: str | None = None,\n            before_cursor: str | None = None,",
         "detail": "felicity.apps.abstract.service",
         "documentation": {}
     },
@@ -24806,7 +24953,7 @@
         "kind": 5,
         "importPath": "felicity.apps.abstract.service",
         "description": "felicity.apps.abstract.service",
-        "peekOfCode": "U = TypeVar(\"U\", bound=BaseModel)\nclass BaseService(Generic[E, C, U]):\n    def __init__(self, repository: BaseRepository) -> None:\n        self.repository = repository()\n    async def paging_filter(\n        self,\n        page_size: int | None = None,\n        after_cursor: str | None = None,\n        before_cursor: str | None = None,\n        text: str | None = None,",
+        "peekOfCode": "U = TypeVar(\"U\", bound=BaseModel)\nclass BaseService(Generic[E, C, U]):\n    def __init__(self, repository) -> None:\n        self.repository: BaseRepository = repository()\n    async def paging_filter(\n            self,\n            page_size: int | None = None,\n            after_cursor: str | None = None,\n            before_cursor: str | None = None,\n            text: str | None = None,",
         "detail": "felicity.apps.abstract.service",
         "documentation": {}
     },
@@ -27911,7 +28058,7 @@
         "kind": 6,
         "importPath": "felicity.apps.billing.services",
         "description": "felicity.apps.billing.services",
-        "peekOfCode": "class TestBillService(BaseService[TestBill, TestBillCreate, TestBillUpdate]):\n    def __init__(self) -> None:\n        self.id_sequence_servce = IdSequenceService()\n        super().__init__(TestBillRepository)\n    async def create(self, obj_in: dict | TestBillCreate) -> \"TestBill\":\n        data = self._import(obj_in)\n        data[\"bill_id\"] = (await self.id_sequence_servce.get_next_number(prefix=\"X\", generic=True))[1]\n        return await super().create(**data)\nclass TestBillTransactionService(BaseService[TestBillTransaction, TestBillTransactionCreate, TestBillTransactionUpdate]):\n    def __init__(self) -> None:",
+        "peekOfCode": "class TestBillService(BaseService[TestBill, TestBillCreate, TestBillUpdate]):\n    def __init__(self) -> None:\n        self.id_sequence_servce = IdSequenceService()\n        super().__init__(TestBillRepository)\n    async def create(self, obj_in: dict | TestBillCreate) -> \"TestBill\":\n        data = self._import(obj_in)\n        data[\"bill_id\"] = (await self.id_sequence_servce.get_next_number(prefix=\"X\", generic=True))[1]\n        return await super().create(data)\nclass TestBillTransactionService(BaseService[TestBillTransaction, TestBillTransactionCreate, TestBillTransactionUpdate]):\n    def __init__(self) -> None:",
         "detail": "felicity.apps.billing.services",
         "documentation": {}
     },
@@ -27956,7 +28103,7 @@
         "kind": 6,
         "importPath": "felicity.apps.client.entities",
         "description": "felicity.apps.client.entities",
-        "peekOfCode": "class ClientContact(AbstractBaseUser):\n    __tablename__ = \"client_contact\"\n    email = Column(String, unique=False, index=True, nullable=True)\n    email_cc = Column(String, nullable=True)\n    consent_sms = Column(Boolean(), default=False)\n    client_uid = Column(String, ForeignKey(\"client.uid\"), nullable=False)\n    client = relationship(\n        Client,\n        backref=backref(\n            \"contacts\",",
+        "peekOfCode": "class ClientContact(AbstractBaseUser):\n    __tablename__ = \"client_contact\"\n    email_cc = Column(String, nullable=True)\n    consent_sms = Column(Boolean(), default=False)\n    client_uid = Column(String, ForeignKey(\"client.uid\"), nullable=False)\n    client = relationship(\n        Client,\n        backref=backref(\n            \"contacts\",\n            uselist=False,",
         "detail": "felicity.apps.client.entities",
         "documentation": {}
     },
@@ -30962,7 +31109,7 @@
         "kind": 6,
         "importPath": "felicity.apps.patient.models",
         "description": "felicity.apps.patient.models",
-        "peekOfCode": "class Identification(AuditHistory):\n    __tablename__ = \"identification\"\n    name = Column(String, index=True, unique=True, nullable=True)\n    @classmethod\n    async def create(\n        cls, obj_in: dict | schemas.IdentificationCreate\n    ) -> schemas.Identification:\n        data = cls._import(obj_in)\n        return await super().create(**data)\n    async def update(",
+        "peekOfCode": "class Identification(AuditHistory):\n    __tablename__ = \"identification\"\n    name = Column(String, index=True, unique=True, nullable=True)\n    @classmethod\n    async def create(\n        cls, obj_in: dict | schemas.IdentificationCreate\n    ) -> schemas.Identification:\n        data = cls._import(obj_in)\n        return await super().create(data)\n    async def update(",
         "detail": "felicity.apps.patient.models",
         "documentation": {}
     },
@@ -30989,7 +31136,7 @@
         "kind": 5,
         "importPath": "felicity.apps.patient.models",
         "description": "felicity.apps.patient.models",
-        "peekOfCode": "logger = logging.getLogger(__name__)\nclass Identification(AuditHistory):\n    __tablename__ = \"identification\"\n    name = Column(String, index=True, unique=True, nullable=True)\n    @classmethod\n    async def create(\n        cls, obj_in: dict | schemas.IdentificationCreate\n    ) -> schemas.Identification:\n        data = cls._import(obj_in)\n        return await super().create(**data)",
+        "peekOfCode": "logger = logging.getLogger(__name__)\nclass Identification(AuditHistory):\n    __tablename__ = \"identification\"\n    name = Column(String, index=True, unique=True, nullable=True)\n    @classmethod\n    async def create(\n        cls, obj_in: dict | schemas.IdentificationCreate\n    ) -> schemas.Identification:\n        data = cls._import(obj_in)\n        return await super().create(data)",
         "detail": "felicity.apps.patient.models",
         "documentation": {}
     },
@@ -31007,7 +31154,7 @@
         "kind": 6,
         "importPath": "felicity.apps.patient.repository",
         "description": "felicity.apps.patient.repository",
-        "peekOfCode": "class IdentificationRepository(\n    BaseRepository[Identification]\n):\n    def __init__(self) -> None:\n        self.model = Identification\n        super().__init__()\nclass PatientIdentificationRepository(\n    BaseRepository[PatientIdentification]\n):\n    def __init__(self) -> None:",
+        "peekOfCode": "class IdentificationRepository(\n    BaseRepository[Identification]\n):\n    def __init__(self) -> None:\n        super().__init__(Identification)\nclass PatientIdentificationRepository(\n    BaseRepository[PatientIdentification]\n):\n    def __init__(self) -> None:\n        super().__init__(PatientIdentification)",
         "detail": "felicity.apps.patient.repository",
         "documentation": {}
     },
@@ -31016,7 +31163,7 @@
         "kind": 6,
         "importPath": "felicity.apps.patient.repository",
         "description": "felicity.apps.patient.repository",
-        "peekOfCode": "class PatientIdentificationRepository(\n    BaseRepository[PatientIdentification]\n):\n    def __init__(self) -> None:\n        self.model = PatientIdentification\n        super().__init__()",
+        "peekOfCode": "class PatientIdentificationRepository(\n    BaseRepository[PatientIdentification]\n):\n    def __init__(self) -> None:\n        super().__init__(PatientIdentification)",
         "detail": "felicity.apps.patient.repository",
         "documentation": {}
     },
@@ -33212,7 +33359,7 @@
         "kind": 6,
         "importPath": "felicity.apps.user.schemas",
         "description": "felicity.apps.user.schemas",
-        "peekOfCode": "class UserBasicBase(BaseModel):\n    first_name: str | None = None\n    last_name: str | None = None\n    user_name: str | None = None\nclass UserBase(BaseModel):\n    email: Optional[EmailStr] = None\n    first_name: str | None = None\n    last_name: str | None = None\n    password: str | None = None\n    user_name: str | None = None",
+        "peekOfCode": "class UserBasicBase(BaseModel):\n    first_name: str | None = None\n    last_name: str | None = None\n    user_name: str | None = None\nclass UserBase(BaseAuditModel):\n    email: Optional[EmailStr] = None\n    first_name: str | None = None\n    last_name: str | None = None\n    password: str | None = None\n    user_name: str | None = None",
         "detail": "felicity.apps.user.schemas",
         "documentation": {}
     },
@@ -33221,7 +33368,7 @@
         "kind": 6,
         "importPath": "felicity.apps.user.schemas",
         "description": "felicity.apps.user.schemas",
-        "peekOfCode": "class UserBase(BaseModel):\n    email: Optional[EmailStr] = None\n    first_name: str | None = None\n    last_name: str | None = None\n    password: str | None = None\n    user_name: str | None = None\n    avatar: str | None = None\n    bio: str | None = None\n    default_route: str | None = None\n    groups: Optional[Group] = []",
+        "peekOfCode": "class UserBase(BaseAuditModel):\n    email: Optional[EmailStr] = None\n    first_name: str | None = None\n    last_name: str | None = None\n    password: str | None = None\n    user_name: str | None = None\n    avatar: str | None = None\n    bio: str | None = None\n    default_route: str | None = None\n    groups: Optional[Group] = []",
         "detail": "felicity.apps.user.schemas",
         "documentation": {}
     },
@@ -33293,7 +33440,7 @@
         "kind": 6,
         "importPath": "felicity.apps.user.services",
         "description": "felicity.apps.user.services",
-        "peekOfCode": "class GroupService(BaseService[Group, GroupCreate, GroupUpdate]):\n    def __init__(self):\n        super().__init__(GroupRepository)\nclass PermissionService(BaseService[Permission, PermissionCreate, PermissionUpdate]):\n    def __init__(self):\n        super().__init__(PermissionRepository)\nclass UserPreferenceService(BaseService[UserPreference, UserPreferenceCreate, UserPreferenceUpdate]):\n    def __init__(self) -> None:\n        super().__init__(UserPreference)",
+        "peekOfCode": "class GroupService(BaseService[Group, GroupCreate, GroupUpdate]):\n    def __init__(self):\n        super().__init__(GroupRepository)\nclass PermissionService(BaseService[Permission, PermissionCreate, PermissionUpdate]):\n    def __init__(self):\n        super().__init__(PermissionRepository)\nclass UserPreferenceService(BaseService[UserPreference, UserPreferenceCreate, UserPreferenceUpdate]):\n    def __init__(self) -> None:\n        super().__init__(UserPreferenceRepository)",
         "detail": "felicity.apps.user.services",
         "documentation": {}
     },
@@ -33302,7 +33449,7 @@
         "kind": 6,
         "importPath": "felicity.apps.user.services",
         "description": "felicity.apps.user.services",
-        "peekOfCode": "class PermissionService(BaseService[Permission, PermissionCreate, PermissionUpdate]):\n    def __init__(self):\n        super().__init__(PermissionRepository)\nclass UserPreferenceService(BaseService[UserPreference, UserPreferenceCreate, UserPreferenceUpdate]):\n    def __init__(self) -> None:\n        super().__init__(UserPreference)",
+        "peekOfCode": "class PermissionService(BaseService[Permission, PermissionCreate, PermissionUpdate]):\n    def __init__(self):\n        super().__init__(PermissionRepository)\nclass UserPreferenceService(BaseService[UserPreference, UserPreferenceCreate, UserPreferenceUpdate]):\n    def __init__(self) -> None:\n        super().__init__(UserPreferenceRepository)",
         "detail": "felicity.apps.user.services",
         "documentation": {}
     },
@@ -33311,7 +33458,7 @@
         "kind": 6,
         "importPath": "felicity.apps.user.services",
         "description": "felicity.apps.user.services",
-        "peekOfCode": "class UserPreferenceService(BaseService[UserPreference, UserPreferenceCreate, UserPreferenceUpdate]):\n    def __init__(self) -> None:\n        super().__init__(UserPreference)",
+        "peekOfCode": "class UserPreferenceService(BaseService[UserPreference, UserPreferenceCreate, UserPreferenceUpdate]):\n    def __init__(self) -> None:\n        super().__init__(UserPreferenceRepository)",
         "detail": "felicity.apps.user.services",
         "documentation": {}
     },
@@ -34040,7 +34187,7 @@
         "kind": 2,
         "importPath": "felicity.database.queryset.builder",
         "description": "felicity.database.queryset.builder",
-        "peekOfCode": "def columns(model):\n    return inspect(model).columns.keys()\ndef primary_keys_full(model):\n    \"\"\"Get primary key properties for a SQLAlchemy cls.\n    Taken from marshmallow_sqlalchemy\n    \"\"\"\n    mapper = model.__mapper__\n    return [mapper.get_property_by_column(column) for column in mapper.primary_key]\ndef primary_keys(model):\n    return [pk.key for pk in primary_keys_full(model)]",
+        "peekOfCode": "def columns(model):\n    \"\"\"classproperty\"\"\"\n    cls = _klass(model)\n    return inspect(cls).columns.keys()\ndef primary_keys_full(model):\n    \"\"\"classproperty\n    Get primary key properties for a SQLAlchemy cls.\n    Taken from marshmallow_sqlalchemy\n    \"\"\"\n    cls = _klass(model)",
         "detail": "felicity.database.queryset.builder",
         "documentation": {}
     },
@@ -34049,7 +34196,7 @@
         "kind": 2,
         "importPath": "felicity.database.queryset.builder",
         "description": "felicity.database.queryset.builder",
-        "peekOfCode": "def primary_keys_full(model):\n    \"\"\"Get primary key properties for a SQLAlchemy cls.\n    Taken from marshmallow_sqlalchemy\n    \"\"\"\n    mapper = model.__mapper__\n    return [mapper.get_property_by_column(column) for column in mapper.primary_key]\ndef primary_keys(model):\n    return [pk.key for pk in primary_keys_full(model)]\ndef relations(model):\n    \"\"\"Return a `list` of relationship names or the given model\"\"\"",
+        "peekOfCode": "def primary_keys_full(model):\n    \"\"\"classproperty\n    Get primary key properties for a SQLAlchemy cls.\n    Taken from marshmallow_sqlalchemy\n    \"\"\"\n    cls = _klass(model)\n    mapper = cls.__mapper__\n    return [mapper.get_property_by_column(column) for column in mapper.primary_key]\ndef primary_keys(model):\n    \"\"\"classproperty\"\"\"",
         "detail": "felicity.database.queryset.builder",
         "documentation": {}
     },
@@ -34058,7 +34205,7 @@
         "kind": 2,
         "importPath": "felicity.database.queryset.builder",
         "description": "felicity.database.queryset.builder",
-        "peekOfCode": "def primary_keys(model):\n    return [pk.key for pk in primary_keys_full(model)]\ndef relations(model):\n    \"\"\"Return a `list` of relationship names or the given model\"\"\"\n    return [\n        c.key for c in model.__mapper__.attrs if isinstance(c, RelationshipProperty)\n    ]\ndef settable_relations(model):\n    \"\"\"Return a `list` of relationship names or the given model\"\"\"\n    return [r for r in model.relations if getattr(model, r).property.viewonly is False]",
+        "peekOfCode": "def primary_keys(model):\n    \"\"\"classproperty\"\"\"\n    cls = _klass(model)\n    return [pk.key for pk in primary_keys_full(cls)]\ndef relations(model):\n    \"\"\"classproperty\n    Return a `list` of relationship names or the given model\"\"\"\n    cls = _klass(model)\n    return [\n        c.key for c in cls.__mapper__.attrs if isinstance(c, RelationshipProperty)",
         "detail": "felicity.database.queryset.builder",
         "documentation": {}
     },
@@ -34067,7 +34214,7 @@
         "kind": 2,
         "importPath": "felicity.database.queryset.builder",
         "description": "felicity.database.queryset.builder",
-        "peekOfCode": "def relations(model):\n    \"\"\"Return a `list` of relationship names or the given model\"\"\"\n    return [\n        c.key for c in model.__mapper__.attrs if isinstance(c, RelationshipProperty)\n    ]\ndef settable_relations(model):\n    \"\"\"Return a `list` of relationship names or the given model\"\"\"\n    return [r for r in model.relations if getattr(model, r).property.viewonly is False]\ndef hybrid_properties(model):\n    items = inspect(model).all_orm_descriptors",
+        "peekOfCode": "def relations(model):\n    \"\"\"classproperty\n    Return a `list` of relationship names or the given model\"\"\"\n    cls = _klass(model)\n    return [\n        c.key for c in cls.__mapper__.attrs if isinstance(c, RelationshipProperty)\n    ]\ndef settable_relations(model):\n    \"\"\"classproperty\n    Return a `list` of relationship names or the given model\"\"\"",
         "detail": "felicity.database.queryset.builder",
         "documentation": {}
     },
@@ -34076,7 +34223,7 @@
         "kind": 2,
         "importPath": "felicity.database.queryset.builder",
         "description": "felicity.database.queryset.builder",
-        "peekOfCode": "def settable_relations(model):\n    \"\"\"Return a `list` of relationship names or the given model\"\"\"\n    return [r for r in model.relations if getattr(model, r).property.viewonly is False]\ndef hybrid_properties(model):\n    items = inspect(model).all_orm_descriptors\n    return [item.__name__ for item in items if isinstance(item, hybrid_property)]\ndef hybrid_methods_full(model):\n    items = inspect(model).all_orm_descriptors\n    return {item.func.__name__: item for item in items if type(item) == hybrid_method}\ndef hybrid_methods(model):",
+        "peekOfCode": "def settable_relations(model):\n    \"\"\"classproperty\n    Return a `list` of relationship names or the given model\"\"\"\n    cls = _klass(model)\n    return [r for r in relations(cls) if getattr(model, r).property.viewonly is False]\ndef hybrid_properties(model):\n    \"\"\"classproperty\"\"\"\n    cls = _klass(model)\n    items = inspect(cls).all_orm_descriptors\n    return [item.__name__ for item in items if isinstance(item, hybrid_property)]",
         "detail": "felicity.database.queryset.builder",
         "documentation": {}
     },
@@ -34085,7 +34232,7 @@
         "kind": 2,
         "importPath": "felicity.database.queryset.builder",
         "description": "felicity.database.queryset.builder",
-        "peekOfCode": "def hybrid_properties(model):\n    items = inspect(model).all_orm_descriptors\n    return [item.__name__ for item in items if isinstance(item, hybrid_property)]\ndef hybrid_methods_full(model):\n    items = inspect(model).all_orm_descriptors\n    return {item.func.__name__: item for item in items if type(item) == hybrid_method}\ndef hybrid_methods(model):\n    return list(hybrid_methods_full(model).keys())\ndef filterable_attributes(model):\n    return (",
+        "peekOfCode": "def hybrid_properties(model):\n    \"\"\"classproperty\"\"\"\n    cls = _klass(model)\n    items = inspect(cls).all_orm_descriptors\n    return [item.__name__ for item in items if isinstance(item, hybrid_property)]\ndef hybrid_methods_full(model):\n    \"\"\"classproperty\"\"\"\n    cls = _klass(model)\n    items = inspect(cls).all_orm_descriptors\n    return {item.func.__name__: item for item in items if type(item) == hybrid_method}",
         "detail": "felicity.database.queryset.builder",
         "documentation": {}
     },
@@ -34094,7 +34241,7 @@
         "kind": 2,
         "importPath": "felicity.database.queryset.builder",
         "description": "felicity.database.queryset.builder",
-        "peekOfCode": "def hybrid_methods_full(model):\n    items = inspect(model).all_orm_descriptors\n    return {item.func.__name__: item for item in items if type(item) == hybrid_method}\ndef hybrid_methods(model):\n    return list(hybrid_methods_full(model).keys())\ndef filterable_attributes(model):\n    return (\n        relations(model)\n        + columns(model)\n        + hybrid_properties(model)",
+        "peekOfCode": "def hybrid_methods_full(model):\n    \"\"\"classproperty\"\"\"\n    cls = _klass(model)\n    items = inspect(cls).all_orm_descriptors\n    return {item.func.__name__: item for item in items if type(item) == hybrid_method}\ndef hybrid_methods(model):\n    \"\"\"classproperty\"\"\"\n    cls = _klass(model)\n    return list(hybrid_methods_full(cls).keys())\ndef filterable_attributes(model):",
         "detail": "felicity.database.queryset.builder",
         "documentation": {}
     },
@@ -34103,7 +34250,7 @@
         "kind": 2,
         "importPath": "felicity.database.queryset.builder",
         "description": "felicity.database.queryset.builder",
-        "peekOfCode": "def hybrid_methods(model):\n    return list(hybrid_methods_full(model).keys())\ndef filterable_attributes(model):\n    return (\n        relations(model)\n        + columns(model)\n        + hybrid_properties(model)\n        + hybrid_methods(model)\n    )\ndef sortable_attributes(model):",
+        "peekOfCode": "def hybrid_methods(model):\n    \"\"\"classproperty\"\"\"\n    cls = _klass(model)\n    return list(hybrid_methods_full(cls).keys())\ndef filterable_attributes(model):\n    cls = _klass(model)\n    return (\n            relations(cls)\n            + columns(cls)\n            + hybrid_properties(cls)",
         "detail": "felicity.database.queryset.builder",
         "documentation": {}
     },
@@ -34112,7 +34259,7 @@
         "kind": 2,
         "importPath": "felicity.database.queryset.builder",
         "description": "felicity.database.queryset.builder",
-        "peekOfCode": "def filterable_attributes(model):\n    return (\n        relations(model)\n        + columns(model)\n        + hybrid_properties(model)\n        + hybrid_methods(model)\n    )\ndef sortable_attributes(model):\n    return columns(model) + hybrid_properties(model)\ndef settable_attributes(model):",
+        "peekOfCode": "def filterable_attributes(model):\n    cls = _klass(model)\n    return (\n            relations(cls)\n            + columns(cls)\n            + hybrid_properties(cls)\n            + hybrid_methods(cls)\n    )\ndef sortable_attributes(model):\n    cls = _klass(model)",
         "detail": "felicity.database.queryset.builder",
         "documentation": {}
     },
@@ -34121,7 +34268,7 @@
         "kind": 2,
         "importPath": "felicity.database.queryset.builder",
         "description": "felicity.database.queryset.builder",
-        "peekOfCode": "def sortable_attributes(model):\n    return columns(model) + hybrid_properties(model)\ndef settable_attributes(model):\n    return sortable_attributes(model) + settable_relations(model)\nclass QueryBuilder:\n    def __init__(self, model: M) -> None:\n        self.model = model\n    @property\n    def query(self):\n        return select(self.model)",
+        "peekOfCode": "def sortable_attributes(model):\n    cls = _klass(model)\n    return columns(cls) + hybrid_properties(cls)\ndef settable_attributes(model):\n    cls = _klass(model)\n    return sortable_attributes(cls) + settable_relations(cls)\nclass QueryBuilder:\n    def __init__(self, model: M) -> None:\n        self.model = model\n    @property",
         "detail": "felicity.database.queryset.builder",
         "documentation": {}
     },
@@ -34130,7 +34277,7 @@
         "kind": 2,
         "importPath": "felicity.database.queryset.builder",
         "description": "felicity.database.queryset.builder",
-        "peekOfCode": "def settable_attributes(model):\n    return sortable_attributes(model) + settable_relations(model)\nclass QueryBuilder:\n    def __init__(self, model: M) -> None:\n        self.model = model\n    @property\n    def query(self):\n        return select(self.model)\n    def with_(self, schema):\n        \"\"\"",
+        "peekOfCode": "def settable_attributes(model):\n    cls = _klass(model)\n    return sortable_attributes(cls) + settable_relations(cls)\nclass QueryBuilder:\n    def __init__(self, model: M) -> None:\n        self.model = model\n    @property\n    def query(self):\n        return select(self.model)\n    def with_(self, schema):",
         "detail": "felicity.database.queryset.builder",
         "documentation": {}
     },
@@ -34256,16 +34403,7 @@
         "kind": 5,
         "importPath": "felicity.database.session",
         "description": "felicity.database.session",
-        "peekOfCode": "async_engine = create_async_engine(\n    settings.SQLALCHEMY_TEST_DATABASE_URI\n    if settings.TESTING\n    else settings.SQLALCHEMY_DATABASE_URI,\n    pool_pre_ping=True,\n    echo=False,\n    future=True,\n)\n# async_session_factory can be used directly using: async with async_session_factory() as session: ...\nasync_session_factory = sessionmaker(",
-        "detail": "felicity.database.session",
-        "documentation": {}
-    },
-    {
-        "label": "async_session_factory",
-        "kind": 5,
-        "importPath": "felicity.database.session",
-        "description": "felicity.database.session",
-        "peekOfCode": "async_session_factory = sessionmaker(\n    bind=async_engine, expire_on_commit=False, autoflush=False, class_=AsyncSession\n)\nasync_session = async_sessionmaker(\n    bind=async_engine,\n    expire_on_commit=False,\n    autoflush=False,\n    class_=AsyncSession\n)\nAsyncSessionScoped = async_scoped_session(async_session, scopefunc=current_task)",
+        "peekOfCode": "async_engine = create_async_engine(\n    settings.SQLALCHEMY_TEST_DATABASE_URI\n    if settings.TESTING\n    else settings.SQLALCHEMY_DATABASE_URI,\n    pool_pre_ping=True,\n    echo=False,\n    future=True,\n)\n# async_session_factory can be used directly using: async with async_session_factory() as session: ...\nasync_session = async_sessionmaker(",
         "detail": "felicity.database.session",
         "documentation": {}
     },
@@ -35102,7 +35240,7 @@
         "kind": 6,
         "importPath": "felicity.tests.unit.domain.user.test_user_service",
         "description": "felicity.tests.unit.domain.user.test_user_service",
-        "peekOfCode": "class UserServiceTestCase(unittest.IsolatedAsyncioTestCase):\n    async def asyncSetUp(self):\n        self.repository = mock.create_autospec(IUserRepository)\n        self.group_service = mock.AsyncMock()\n        self.permission_service = mock.AsyncMock()\n        self.user_preference_service = mock.AsyncMock()\n        self.user_service = UserService(\n            self.repository,\n            self.user_preference_service,\n            self.group_service,",
+        "peekOfCode": "class UserServiceTestCase(unittest.IsolatedAsyncioTestCase):\n    async def asyncSetUp(self):\n        self.repository = mock.create_autospec(UserRepository)\n        self.group_service = mock.AsyncMock()\n        self.permission_service = mock.AsyncMock()\n        self.user_preference_service = mock.AsyncMock()\n        self.user_service = UserService(\n            self.repository,\n            self.user_preference_service,\n            self.group_service,",
         "detail": "felicity.tests.unit.domain.user.test_user_service",
         "documentation": {}
     },
@@ -35111,7 +35249,7 @@
         "kind": 2,
         "importPath": "felicity.tests.unit.domain.user.test_user_service2",
         "description": "felicity.tests.unit.domain.user.test_user_service2",
-        "peekOfCode": "def user_service(mocker):\n    repository = mocker.create_autospec(IUserRepository)\n    group_service = mocker.AsyncMock()\n    permission_service = mocker.AsyncMock()\n    user_preference_service = mocker.AsyncMock()\n    return UserService(\n        repository, user_preference_service, group_service, permission_service\n    )\n@pytest.fixture\ndef user_data():",
+        "peekOfCode": "def user_service(mocker):\n    repository = mocker.create_autospec(UserRepository)\n    group_service = mocker.AsyncMock()\n    permission_service = mocker.AsyncMock()\n    user_preference_service = mocker.AsyncMock()\n    return UserService(\n        repository, user_preference_service, group_service, permission_service\n    )\n@pytest.fixture\ndef user_data():",
         "detail": "felicity.tests.unit.domain.user.test_user_service2",
         "documentation": {}
     },

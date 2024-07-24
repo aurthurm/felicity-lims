@@ -3,18 +3,18 @@ from typing import Generic, TypeVar, Any, List, AsyncIterator, Optional
 from sqlalchemy import or_ as sa_or_
 from sqlalchemy import select
 from sqlalchemy import update
+from sqlalchemy.orm import DeclarativeBase
 from sqlalchemy.sql import func
 from sqlalchemy.sql.expression import bindparam
-from sqlalchemy.orm import DeclarativeBase
 
 from felicity.apps.common.utils.serializer import marshaller
+from felicity.database.paging import (
+    PageCursor, EdgeNode, PageInfo
+)
 from felicity.database.queryset import (
     QueryBuilder,
     settable_attributes,
     smart_query,
-)
-from felicity.database.paging import (
-    PageCursor, EdgeNode, PageInfo
 )
 from felicity.database.session import async_session
 
@@ -37,11 +37,14 @@ class BaseRepository(Generic[M]):
             else:
                 raise KeyError("Attribute '{}' doesn't exist".format(name))
         return m
-    
+
     async def save(self, m: M) -> M:
         async with self.async_session() as session:
             try:
-                session.add(m)
+                try:
+                    session.add(m)
+                except Exception:
+                    session.merge(m)
                 await session.flush()
                 await session.commit()
             except Exception:
@@ -61,20 +64,19 @@ class BaseRepository(Generic[M]):
         return items
 
     async def create(self, **kwargs) -> M:
-        filled = self.fill(self.model(), **kwargs)
+        filled = self.fill(self.model, **kwargs)
         return await self.save(filled)
 
     async def bulk_create(self, bulk: list[dict]) -> list[M]:
         to_save = []
         for data in bulk:
-            fill = await self.fill(self.model(), **data)
+            fill = await self.fill(self.model, **data)
             to_save.append(fill)
         return await self.save_all(to_save)
 
-    async def update(self, item: M | str, **kwargs) -> M:
-        if isinstance(item, str):
-            model = await self.get(uid=item)
-        filled = self.fill(model, **kwargs)
+    async def update(self, uid: str, **data) -> M:
+        item = await self.get(uid=uid)
+        filled = self.fill(item, **data)
         return await self.save(filled)
 
     async def bulk_update_where(self, update_data: list[dict], filters: dict):
@@ -140,7 +142,7 @@ class BaseRepository(Generic[M]):
 
         async with self.async_session() as session:
             results = await session.execute(stmt)
-        return results.unique().scalars().all()
+        return results.unique().scalars().all()  # , results.keys()
 
     async def get(self, **kwargs) -> M:
         stmt = self.queryset.where(**kwargs)
@@ -191,8 +193,11 @@ class BaseRepository(Generic[M]):
             pass
 
         stmt = self.queryset.where(**kwargs)
-        # if related:
-        #     stmt.options(selectinload(related))
+        if related:
+            # print(related)
+            # keys = [self.model[key] for key in related]
+            # stmt.options(selectinload(keys))
+            ...
 
         async with self.async_session() as session:
             results = await session.execute(stmt)
@@ -249,8 +254,7 @@ class BaseRepository(Generic[M]):
         count_stmt = select(func.count(filter_stmt.c.uid)).select_from(filter_stmt)
         async with self.async_session() as session:
             res = await session.execute(count_stmt)
-        count = res.scalars().one()
-        return count
+        return res.scalars().one()
 
     async def search(self, **kwargs) -> list[M]:
         filters = []
@@ -285,7 +289,7 @@ class BaseRepository(Generic[M]):
             found = results.scalars().all()
         return found
 
-    async def paginate_with_cursors(
+    async def paginate(
             self,
             page_size: int | None,
             after_cursor: str | None,

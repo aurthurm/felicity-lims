@@ -13,6 +13,8 @@ from strawberry.types.info import RootValueType
 from felicity.apps.common import schemas as core_schemas  # noqa
 from felicity.apps.user.entities import User
 from felicity.core import get_settings  # noqa
+from felicity.tests.unit.domain.user.test_user_service2 import user_service
+from felicity.apps.user.services import UserService
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -25,6 +27,7 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="felicity-gql", scheme_name="JWT")
 
 
 async def _get_user(token: str):
+    user_service = UserService()
     if not token:
         GraphQLError("No auth token")
     try:
@@ -35,7 +38,7 @@ async def _get_user(token: str):
     except (jwt.JWTError, ValidationError) as e:
         return None
 
-    return await User.get(uid=token_data.sub)
+    return await user_service.get(uid=token_data.sub)
 
 
 async def get_current_user(

@@ -120,10 +120,7 @@ export const ADD_WORKSHEET = gql`
                     assignedCount
                     analyst {
                         uid
-                        auth {
-                            uid
-                            userName
-                        }
+                        userName
                         firstName
                         lastName
                     }

@@ -83,6 +83,7 @@ from felicity.apps.idsequencer.service import IdSequenceService
 from felicity.apps.idsequencer.utils import sequencer
 from felicity.apps.analysis.enum import ResultState, SampleState
 from felicity.apps.notification.services import ActivityStreamService
+from felicity.apps.analysis.entities.analysis import analysis_profile
 
 
 class CodingStandardService(BaseService[CodingStandard, CodingStandardCreate, CodingStandardUpdate]):
@@ -121,6 +122,13 @@ class ProfileService(BaseService[Profile, ProfileCreate, ProfileUpdate]):
             profile.tat_length_minutes = tat
             return await self.update(profile, **marshaller(profile))
         return profile
+    
+    async def get_analyses(self, uid):
+        # items, cols = await self.repository.query_table(
+        #     analysis_profile,
+        #     **{"profile_uid": uid},
+        # )
+        return (await self.repository.get_related(related=["analyses"], uid=uid)).analyses
 
 
 class AnalysisTemplateService(BaseService[AnalysisTemplate, AnalysisTemplateCreate, AnalysisTemplateUpdate]):
@@ -196,7 +204,7 @@ class AnalysisRequestService(BaseService[AnalysisRequest, AnalysisRequestCreate,
     ):
         data = cls._import(obj_in)
         data["request_id"] = (await cls.id_sequence_service.get_next_number("AR"))[1]
-        return await super().create(**data)
+        return await super().create(data)
 
 
 class RejectionReasonService(BaseService[RejectionReason, RejectionReasonCreate, RejectionReasonUpdate]):
@@ -498,7 +506,7 @@ class SampleService(BaseService[Sample, SampleCreate, SampleUpdate]):
         data["sample_id"] = (
             await self.id_sequencer_service.get_next_number(prefix="S", generic=True)
         )[1]
-        return await super().create(**data)
+        return await super().create(data)
 
     async def duplicate_unique(self, uid: str, duplicator):
         sample = await self.get(uid)
@@ -512,7 +520,7 @@ class SampleService(BaseService[Sample, SampleCreate, SampleUpdate]):
         data["analyses"] = self.analyses
         data["parent_id"] = self.uid
         data["created_by_uid"] = duplicator.uid
-        return await super().create(**data)
+        return await super().create(data)
 
     async def clone_afresh(self, uid: str, cloner):
         sample = await self.get(uid)

@@ -83,7 +83,7 @@ class FhirCreateService(IFhirCreateService):
             incoming=True,
             state=ShipmentStates.DUE,
         )
-        shipment = await self.shipment_service.create(**marshal(s_in))
+        shipment = await self.shipment_service.create(marshal(s_in))
 
         try:
             await self.shipment_service.gen_pdf_manifest(
@@ -123,6 +123,6 @@ class FhirCreateService(IFhirCreateService):
             creator_uid=current_user.uid,
             data={"data": diagnostic_data.model_dump(exclude_none=True)},
         )
-        await self.job_service.create(**marshal(job_schema))
+        await self.job_service.create(marshal(job_schema))
 
         return True

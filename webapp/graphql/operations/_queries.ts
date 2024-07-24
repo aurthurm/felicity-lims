@@ -61,12 +61,8 @@ export const GET_ALL_USERS = gql`
                 isActive
                 isSuperuser
                 mobilePhone
-                auth {
-                    uid
-                    userName
-                    isBlocked
-                    userType
-                }
+                userName
+                isBlocked
                 groups {
                     uid
                     name

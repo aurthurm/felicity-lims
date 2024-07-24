@@ -7,8 +7,10 @@ from sqlalchemy.orm import RelationshipProperty
 from sqlalchemy.orm import aliased
 from sqlalchemy.orm import joinedload
 from sqlalchemy.orm import subqueryload
+from sqlalchemy.orm.state import InstanceState
 from sqlalchemy.orm.util import AliasedClass
 from sqlalchemy.sql import operators, extract
+from sqlalchemy_mixins import InspectionMixin
 
 M = TypeVar("M")
 
@@ -458,63 +460,88 @@ _operators = {
 }
 
 
+def _klass(obj):
+    if isinstance(inspect(obj), InstanceState):  # type(inspect(obj)) ==InstanceState
+        return obj._sa_instance_state.mapper.class_
+    return obj
+
+
 def columns(model):
-    return inspect(model).columns.keys()
+    """classproperty"""
+    cls = _klass(model)
+    return inspect(cls).columns.keys()
 
 
 def primary_keys_full(model):
-    """Get primary key properties for a SQLAlchemy cls.
+    """classproperty
+    Get primary key properties for a SQLAlchemy cls.
     Taken from marshmallow_sqlalchemy
     """
-    mapper = model.__mapper__
+    cls = _klass(model)
+    mapper = cls.__mapper__
     return [mapper.get_property_by_column(column) for column in mapper.primary_key]
 
 
 def primary_keys(model):
-    return [pk.key for pk in primary_keys_full(model)]
+    """classproperty"""
+    cls = _klass(model)
+    return [pk.key for pk in primary_keys_full(cls)]
 
 
 def relations(model):
-    """Return a `list` of relationship names or the given model"""
+    """classproperty
+    Return a `list` of relationship names or the given model"""
+    cls = _klass(model)
     return [
-        c.key for c in model.__mapper__.attrs if isinstance(c, RelationshipProperty)
+        c.key for c in cls.__mapper__.attrs if isinstance(c, RelationshipProperty)
     ]
 
 
 def settable_relations(model):
-    """Return a `list` of relationship names or the given model"""
-    return [r for r in model.relations if getattr(model, r).property.viewonly is False]
+    """classproperty
+    Return a `list` of relationship names or the given model"""
+    cls = _klass(model)
+    return [r for r in relations(cls) if getattr(model, r).property.viewonly is False]
 
 
 def hybrid_properties(model):
-    items = inspect(model).all_orm_descriptors
+    """classproperty"""
+    cls = _klass(model)
+    items = inspect(cls).all_orm_descriptors
     return [item.__name__ for item in items if isinstance(item, hybrid_property)]
 
 
 def hybrid_methods_full(model):
-    items = inspect(model).all_orm_descriptors
+    """classproperty"""
+    cls = _klass(model)
+    items = inspect(cls).all_orm_descriptors
     return {item.func.__name__: item for item in items if type(item) == hybrid_method}
 
 
 def hybrid_methods(model):
-    return list(hybrid_methods_full(model).keys())
+    """classproperty"""
+    cls = _klass(model)
+    return list(hybrid_methods_full(cls).keys())
 
 
 def filterable_attributes(model):
+    cls = _klass(model)
     return (
-        relations(model)
-        + columns(model)
-        + hybrid_properties(model)
-        + hybrid_methods(model)
+            relations(cls)
+            + columns(cls)
+            + hybrid_properties(cls)
+            + hybrid_methods(cls)
     )
 
 
 def sortable_attributes(model):
-    return columns(model) + hybrid_properties(model)
+    cls = _klass(model)
+    return columns(cls) + hybrid_properties(cls)
 
 
 def settable_attributes(model):
-    return sortable_attributes(model) + settable_relations(model)
+    cls = _klass(model)
+    return sortable_attributes(cls) + settable_relations(cls)
 
 
 class QueryBuilder:

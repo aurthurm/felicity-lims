@@ -62,12 +62,9 @@ mutation addUser($firstName: String!, $lastName: String!, $email: String!, $grou
             isActive
             isSuperuser
             mobilePhone
-            auth {
-                uid
-                userName
-                isBlocked
-                userType
-            }
+            userName
+            isBlocked
+            userType
             groups {
                 permissions {
                     uid
@@ -114,12 +111,9 @@ mutation editUser(
             isActive
             isSuperuser
             mobilePhone
-            auth {
-                uid
-                userName
-                isBlocked
-                userType
-            }
+            userName
+            isBlocked
+            userType
             groups {
                 permissions {
                     uid
@@ -150,12 +144,9 @@ mutation addUserAuth($userUid: String!, $userName: String!, $password: String!, 
             isActive
             isSuperuser
             mobilePhone
-            auth {
-                uid
-                userName
-                isBlocked
-                userType
-            }
+            userName
+            isBlocked
+            userType
             groups {
                 permissions {
                     uid
@@ -186,12 +177,9 @@ mutation editUserAuth($userUid: String!, $userName: String!, $password: String!,
             isActive
             isSuperuser
             mobilePhone
-            auth {
-                uid
-                userName
-                isBlocked
-                userType
-            }
+            userName
+            isBlocked
+            userType
             groups {
                 permissions {
                     uid

@@ -4,6 +4,7 @@ from pydantic import ConfigDict, EmailStr
 
 from felicity.apps.common.schemas import BaseAuditModel, BaseModel
 
+
 #
 #  Permission Schema
 #
@@ -116,7 +117,7 @@ class UserBasicBase(BaseModel):
     user_name: str | None = None
 
 
-class UserBase(BaseModel):
+class UserBase(BaseAuditModel):
     email: Optional[EmailStr] = None
     first_name: str | None = None
     last_name: str | None = None
@@ -126,8 +127,6 @@ class UserBase(BaseModel):
     bio: str | None = None
     default_route: str | None = None
     groups: Optional[Group] = []
-    user_name: str | None = None
-    password: str | None = None
     login_retry: int | None = 0
     is_blocked: bool | None = False
     is_active: bool | None = True

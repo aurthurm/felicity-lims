@@ -379,7 +379,7 @@ async def billing_setup_profiles(profile_uids: list[str] = None) -> None:
         profiles = await profile_service.all_async()
 
     for profile in profiles:
-        exists = await profile_price_service.get_one(profile_uid=profile.uid)
+        exists = await profile_price_service.get(profile_uid=profile.uid)
         if not exists:
             await profile_price_service.create(
                 ProfilePriceCreate(
@@ -387,7 +387,7 @@ async def billing_setup_profiles(profile_uids: list[str] = None) -> None:
                 )
             )
 
-        exists = await profile_discount_service.get_one(profile_uid=profile.uid)
+        exists = await profile_discount_service.get(profile_uid=profile.uid)
         if not exists:
             await profile_discount_service.create(
                 ProfileDiscountCreate(
@@ -415,7 +415,7 @@ async def billing_setup_analysis(analysis_uids: list[str] = None) -> None:
         analyses = await analysis_service.all_async()
 
     for analysis in analyses:
-        exists = await analysis_price_service.get_one(analysis_uid=analysis.uid)
+        exists = await analysis_price_service.get(analysis_uid=analysis.uid)
         if not exists:
             await analysis_price_service.create(
                 AnalysisPriceCreate(
@@ -423,7 +423,7 @@ async def billing_setup_analysis(analysis_uids: list[str] = None) -> None:
                 )
             )
 
-        exists = await analysis_discount_service.get_one(analysis_uid=analysis.uid)
+        exists = await analysis_discount_service.get(analysis_uid=analysis.uid)
         if not exists:
             await analysis_discount_service.create(
                 AnalysisDiscountCreate(

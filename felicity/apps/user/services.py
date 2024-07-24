@@ -7,7 +7,8 @@ from felicity.core.security import (
 from felicity.apps.abstract.service import BaseService
 from felicity.apps.common.utils import is_valid_email
 from felicity.apps.user.entities import Group, Permission, User, UserPreference
-from felicity.apps.user.repository import (GroupRepository, PermissionRepository, UserRepository)
+from felicity.apps.user.repository import (GroupRepository, PermissionRepository,
+    UserPreferenceRepository, UserRepository)
 from felicity.apps.user.schemas import (GroupCreate, GroupUpdate,
     PermissionCreate, PermissionUpdate, UserCreate, UserPreferenceCreate, UserPreferenceUpdate,
     UserUpdate)
@@ -16,7 +17,6 @@ from felicity.apps.user.schemas import (GroupCreate, GroupUpdate,
 class UserService(BaseService[User, UserCreate, UserUpdate]):
     def __init__(self) -> None:
         super().__init__(UserRepository)
-
 
     async def create(self, user_in: UserCreate) -> User:
         by_username = await self.get_by_username(user_in.user_name)
@@ -29,7 +29,7 @@ class UserService(BaseService[User, UserCreate, UserUpdate]):
         data = self._import(user_in)
         del data["password"]
         data["hashed_password"] = hashed_password
-        return await super().create(**data)
+        return await super().create(data)
 
     async def update(self, user_uid: str, user_in: UserUpdate) -> User:
         update_data = self._import(user_in)
@@ -44,7 +44,7 @@ class UserService(BaseService[User, UserCreate, UserUpdate]):
         if "user" in update_data:
             del update_data["user"]
 
-        return await super().update(user_uid, **update_data)
+        return await super().update(user_uid, update_data)
 
     async def has_access(self, user: User, password: str):
         if user.is_blocked:
@@ -58,15 +58,15 @@ class UserService(BaseService[User, UserCreate, UserUpdate]):
             retries = 0
             if user.login_retry < 3:
                 msg = f"Wrong Password {3 - retries} attempts left"
-                user["login_retry"] = user.login_retry + 1
+                user.login_retry = user.login_retry + 1
                 if user.login_retry == 3:
-                    user["is_blocked"] = True
+                    user.is_blocked = True
                     msg = "Sorry your Account has been Blocked"
-            await super().update(user.uid, user)
+            await self.save(user)
             raise Exception(msg)
         if user.login_retry != 0:
-            user["login_retry"] = 0
-            await super().update(user.uid, user)
+            user.login_retry = 0
+            await self.save(user)
         return user
 
     async def authenticate(self, username, password):
@@ -128,4 +128,4 @@ class PermissionService(BaseService[Permission, PermissionCreate, PermissionUpda
 
 class UserPreferenceService(BaseService[UserPreference, UserPreferenceCreate, UserPreferenceUpdate]):
     def __init__(self) -> None:
-        super().__init__(UserPreference)
+        super().__init__(UserPreferenceRepository)

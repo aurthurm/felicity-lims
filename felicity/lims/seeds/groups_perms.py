@@ -2,6 +2,7 @@ import logging
 
 from felicity.apps.user import entities, schemas
 from felicity.apps.user.services import GroupService, PermissionService
+from felicity.apps.common.utils.serializer import marshaller
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -251,4 +252,4 @@ async def seed_group_permissions_defaults() -> None:
                     group.pages = "DASHBOARD"
                     if group.name == FGroup.ADMINISTRATOR:
                         group.pages += ", ADMINISTRATION"
-                    await group.save_async()
+                    await group_service.save(group)

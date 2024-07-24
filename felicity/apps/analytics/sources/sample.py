@@ -7,7 +7,7 @@ from sqlalchemy.future import select
 from sqlalchemy.sql import func
 
 from felicity.apps.abstract.entity import BaseEntity
-from felicity.database.session import async_session_factory
+from felicity.database.session import async_session
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -92,7 +92,7 @@ class SampleAnalyticsInit(Generic[ModelType]):
         """
         )
 
-        async with async_session_factory() as session:
+        async with async_session() as session:
             result = await session.execute(stmt, {"sd": start_date, "ed": end_date})
 
         # columns result.keys()/result._metadata.keys
@@ -102,7 +102,7 @@ class SampleAnalyticsInit(Generic[ModelType]):
         stmt = self.model.with_joined(
             "analysis_results", "analyses", "analysis_request"
         )
-        async with async_session_factory() as session:
+        async with async_session() as session:
             await session.execute(stmt.limit(10))
 
         # logger.info(result)
@@ -149,7 +149,7 @@ class SampleAnalyticsInit(Generic[ModelType]):
 
         stmt = stmt.group_by(group_by)
 
-        async with async_session_factory() as session:
+        async with async_session() as session:
             result = await session.execute(stmt)
 
         return result.all()
@@ -178,7 +178,7 @@ class SampleAnalyticsInit(Generic[ModelType]):
             end_column = getattr(self.model, end_column)
             stmt = stmt.filter(end_column <= end_date)
 
-        async with async_session_factory() as session:
+        async with async_session() as session:
             result = await session.execute(stmt)
 
         return result.all()
@@ -250,7 +250,7 @@ class SampleAnalyticsInit(Generic[ModelType]):
 
         stmt = text(raw_sql)  # noqa:
 
-        async with async_session_factory() as session:
+        async with async_session() as session:
             result = await session.execute(stmt, {"sd": start_date, "ed": end_date})
 
         return result.all()
@@ -328,7 +328,7 @@ class SampleAnalyticsInit(Generic[ModelType]):
 
         stmt = text(raw_sql)  # noqa:
 
-        async with async_session_factory() as session:
+        async with async_session() as session:
             result = await session.execute(stmt, {"sd": start_date, "ed": end_date})
 
         return result.all()
@@ -382,7 +382,7 @@ class SampleAnalyticsInit(Generic[ModelType]):
         stmt_for_incomplete = text(raw_sql_for_incomplete)  # noqa:
         stmt_for_complete = text(raw_sql_for_complete)  # noqa:
 
-        async with async_session_factory() as session:
+        async with async_session() as session:
             result_for_incomplete = await session.execute(stmt_for_incomplete)
             result_for_complete = await session.execute(stmt_for_complete)
 

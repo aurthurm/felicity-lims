@@ -1,7 +1,7 @@
 import { IAnalysisProfile, IAnalysisRequest, IAnalysisService } from './analysis';
-import { IUser } from './auth';
-import { IClient } from './client';
-import { IPatient } from './patient';
+import { IUser }                                                from './auth';
+import { IClient }                                              from './client';
+import { IPatient }                                             from './patient';
 
 
 export interface IAnalysisPrice {

@@ -38,6 +38,8 @@ def marshaller(obj, path=None, memoize=None, exclude: list[str] = None, depth=2)
             continue
 
         element = []
+        # if isinstance(val, bool):
+        #     element = val
         if isinstance(val, list):
             for item in val:
                 element.append(marshaller(item, path + [key], memoize, exclude, depth - 1))

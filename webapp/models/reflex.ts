@@ -1,5 +1,6 @@
 import { IAnalysisService, ISampleType } from './analysis';
-import { IUser } from './auth';
+import { IUser }                         from './auth';
+
 
 export interface IReflexRule {
     uid?: string;

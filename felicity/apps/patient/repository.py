@@ -53,13 +53,11 @@ class IdentificationRepository(
     BaseRepository[Identification]
 ):
     def __init__(self) -> None:
-        self.model = Identification
-        super().__init__()
+        super().__init__(Identification)
 
 
 class PatientIdentificationRepository(
     BaseRepository[PatientIdentification]
 ):
     def __init__(self) -> None:
-        self.model = PatientIdentification
-        super().__init__()
+        super().__init__(PatientIdentification)

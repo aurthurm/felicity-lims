@@ -59,7 +59,7 @@ class TestBillService(BaseService[TestBill, TestBillCreate, TestBillUpdate]):
     async def create(self, obj_in: dict | TestBillCreate) -> "TestBill":
         data = self._import(obj_in)
         data["bill_id"] = (await self.id_sequence_servce.get_next_number(prefix="X", generic=True))[1]
-        return await super().create(**data)
+        return await super().create(data)
 
 class TestBillTransactionService(BaseService[TestBillTransaction, TestBillTransactionCreate, TestBillTransactionUpdate]):
     def __init__(self) -> None:

@@ -1,4 +1,4 @@
-import Swal from 'sweetalert2';
+import Swal      from 'sweetalert2';
 // import JSConfetti from 'js-confetti';
 import { Notyf } from 'notyf';
 

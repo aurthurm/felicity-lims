@@ -11,9 +11,9 @@ from felicity.api.gql.types.generic import StrawberryMapper
 from felicity.api.gql.user.types import (AuthenticatedData, GroupType,
                                          UpdatedGroupPerms,
                                          UserType)
-from felicity.apps.user.services import (GroupService, PermissionService,
-    UserPreferenceService, UserService)
 from felicity.apps.user import schemas as user_schemas
+from felicity.apps.user.services import (GroupService, PermissionService,
+                                         UserPreferenceService, UserService)
 from felicity.core import security
 from felicity.core.config import get_settings
 from felicity.core.events import post_event
@@ -76,62 +76,80 @@ def simple_task(message: str):
 class UserMutations:
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_user(
-        self,
-        info,
-        first_name: str,
-        last_name: str,
-        email: str,
-        group_uid: str | None = None,
-        open_reg: bool | None = False,
+            self,
+            info,
+            first_name: str,
+            last_name: str,
+            email: str,
+            user_name: str,
+            password: str,
+            passwordc: str,
+            group_uid: str | None = None,
+            open_reg: bool | None = False,
     ) -> UserResponse:
+        user_service = UserService()
+        group_service = GroupService()
+        user_preference_service = UserPreferenceService()
+        is_authenticated, felicity_user = await auth_from_info(info)
+
         if open_reg and not settings.USERS_OPEN_REGISTRATION:
             return OperationError(
                 error="Open user registration is forbidden on this server"
             )
 
-        if email:
-            user_e = await UserService().get_by_email(email=email)
-            if user_e:
-                return OperationError(
-                    error="A user with this email already exists in the system"
-                )
+        user_e = await user_service.get_by_email(email=email)
+        if user_e:
+            return OperationError(
+                error="A user with this email already exists in the system"
+            )
+
+        assert password == passwordc
 
         user_in = {
             "first_name": first_name,
             "last_name": last_name,
             "email": email,
+            "user_name": user_name,
+            "password": password,
             "is_superuser": False,
+            "created_by_uid": felicity_user.uid,
+            "updated_by_uid": felicity_user.uid
         }
         user_in = user_schemas.UserCreate(**user_in)
-        user: UserService() = await UserService().create(user_in=user_in)
+        user = await user_service.create(user_in=user_in)
         if group_uid:
-            group = await GroupService().get(uid=group_uid)
+            group = await group_service.get(uid=group_uid)
             user.groups.append(group)
-            user = await user.save_async()
+            user = await user_service.save(user)
 
         # initial user-preferences
         pref_in = user_schemas.UserPreferenceCreate(expanded_menu=False, theme="LIGHT")
-        preference = await UserPreferenceService().create(obj_in=pref_in)
-        user = await user.link_preference(preference_uid=preference.uid)
+        preference = await user_preference_service.create(pref_in)
+        user = await user_service.link_preference(user.uid, preference_uid=preference.uid)
 
         if user_in.email:
             logger.info("Handle email sending in a standalone service")
-        return UserType(**user.marshal_simple())
+        return StrawberryMapper[UserType]().map(**user.marshal_simple())
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_user(
-        self,
-        info,
-        user_uid: str,
-        first_name: str | None,
-        last_name: str | None,
-        mobile_phone: str | None,
-        email: str | None,
-        group_uid: str | None,
-        is_active: bool | None,
+            self,
+            info,
+            user_uid: str,
+            first_name: str | None,
+            last_name: str | None,
+            mobile_phone: str | None,
+            email: str | None,
+            group_uid: str | None,
+            is_active: bool | None,
+            password: str | None = None,
+            passwordc: str | None = None,
     ) -> UserResponse:
+        user_service = UserService()
+        group_service = GroupService()
+        is_authenticated, felicity_user = await auth_from_info(info)
 
-        user = await UserService().get_one(uid=user_uid)
+        user = await user_service.get(uid=user_uid)
         if not user:
             return OperationError(error="Error, failed to fetch user for updating")
 
@@ -148,37 +166,43 @@ class UserMutations:
             setattr(user, "is_active", is_active)
 
         user_in = user_schemas.UserUpdate(**user.to_dict())
-        user = await user.update(user_in)
+        user_in.updated_by_uid = felicity_user.uid
+
+        if password and passwordc:
+            assert password == passwordc
+            user_in.password = password
+
+        user = await user_service.update(user.uid, user_in)
 
         # group management
         grp_ids = [grp.uid for grp in user.groups]
         if group_uid and group_uid not in grp_ids:
-            group = await GroupService().get(uid=group_uid)
+            group = await group_service.get(uid=group_uid)
             for grp in user.groups:
                 user.groups.remove(grp)
-            await user.save_async()
+            await user_service.save(user)
             user.groups = [group]
-            user = await user.save_async()
+            user = await user_service.save(user)
 
-        return UserType(**user.marshal_simple())
+        return StrawberryMapper[UserType]().map(**user.marshal_simple())
 
     @strawberry.mutation
     async def authenticate_user(
-        self, info, username: str, password: str
+            self, info, username: str, password: str
     ) -> AuthenticatedDataResponse:
-        auth = await UserService().get_by_username(username=username)
-        if not auth:
+        user_service = UserService()
+
+        user = await user_service.get_by_username(username=username)
+        if not user:
             return OperationError(error="Incorrect username")
-        has_access = await UserService().has_access(auth, password)
+        has_access = await user_service.has_access(user, password)
         if not has_access:
             return OperationError(error="Failed to log you in")
 
-        # _user = getattr(auth, auth.user_type)
-        _user = await UserService().get(auth_uid=auth.uid)
-        access_token = security.create_access_token(_user.uid)
-        refresh_token = security.create_refresh_token(_user.uid)
+        access_token = security.create_access_token(user.uid)
+        refresh_token = security.create_refresh_token(user.uid)
         return StrawberryMapper[AuthenticatedData]().map(
-            token=access_token, refresh=refresh_token, token_type="bearer", user=_user
+            token=access_token, refresh=refresh_token, token_type="bearer", user=user
         )
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
@@ -192,32 +216,13 @@ class UserMutations:
             user=felicity_user,
         )
 
-    @strawberry.mutation(permission_classes=[IsAuthenticated])
-    async def unlink_user_auth(self, info, user_uid: str) -> UserResponse:
-        user = await UserService().get(uid=user_uid)
-        if not user:
-            return OperationError(error="User not found")
-
-        if not user.auth_uid:
-            return OperationError(
-                error=f"User {user.full_name} is not linked to auth access"
-            )
-
-        await user.unlink_auth()
-        return StrawberryMapper[UserType]().map(**user.marshal_simple())
-
     @strawberry.mutation()
     async def request_password_reset(self, info, email: str) -> MessageResponse:
-
-        user = await UserService().get_by_email(email)
+        user_service = UserService()
+        user = await user_service.get_by_email(email)
         if not user:
             return OperationError(
                 error="User with provided email not found? Check your email and try again"
-            )
-
-        if not user.auth_uid:
-            return OperationError(
-                error="Authentication for provided user does not exist. Talk to your administrator"
             )
 
         password_reset_token = generate_password_reset_token(email)
@@ -229,44 +234,44 @@ class UserMutations:
 
     @strawberry.mutation()
     async def validate_password_reset_token(
-        self, info, token: str
+            self, info, token: str
     ) -> PasswordResetValidityResponse:
-
+        user_service = UserService()
         email = verify_password_reset_token(token)
         if not email:
             return OperationError(error="Your token is invalid")
 
-        user = await UserService().get_by_email(email)
+        user = await user_service.get_by_email(email)
         if not user:
             return OperationError(error="Your token is invalid")
-        auth = await UserService().get(uid=user.auth_uid)
+        auth = await user_service.get(uid=user.auth_uid)
         return PasswordResetValidityType(
             username=auth.user_name, auth_uid=user.auth_uid
         )
 
     @strawberry.mutation()
     async def reset_password(
-        self,
-        info,
-        auth_uid: str,
-        username: str,
-        password: str,
-        passwordc: str,
+            self,
+            info,
+            user_uid: str,
+            password: str,
+            passwordc: str,
     ) -> MessageResponse:
+        user_service = UserService()
 
-        auth = await UserService().get(uid=auth_uid, user_name=username)
-
+        user = await user_service.get(uid=user_uid)
         if password != passwordc:
-            return OperationError(error=f"Passwords dont match")
+            return OperationError(error=f"Passwords do not match")
 
-        auth_in = user_schemas.AuthUpdate(password=password, user_name=username)
-        await auth.update(auth_in)
+        auth_in = user_schemas.UserUpdate(password=password)
+        await user_service.update(user.uid, auth_in)
         return MessagesType(
             message="Password was successfully reset, Now login with your new password"
         )
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
-    async def create_group(info, payload: GroupInputType) -> GroupResponse:
+    async def create_group(self, info, payload: GroupInputType) -> GroupResponse:
+        group_service = GroupService()
 
         is_authenticated, felicity_user = await auth_from_info(info)
         verify_user_auth(
@@ -278,7 +283,7 @@ class UserMutations:
         if not payload.name:
             return OperationError(error="Name Required")
 
-        group = await GroupService().get(name=payload.name)
+        group = await group_service.get(name=payload.name)
         if group:
             return OperationError(
                 error=f"Group with name {payload.name} already exists"
@@ -286,17 +291,18 @@ class UserMutations:
 
         incoming = {
             "keyword": payload.name.upper(),
-            # "created_by_uid": felicity_user.uid,
-            # "updated_by_uid": felicity_user.uid,
+            "created_by_uid": felicity_user.uid,
+            "updated_by_uid": felicity_user.uid,
         }
         for k, v in payload.__dict__.items():
             incoming[k] = v
 
-        group: GroupService() = await GroupService().create(incoming)
+        group = await group_service.create(incoming)
         return GroupType(**group.marshal_simple())
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
-    async def update_group(info, uid: str, payload: GroupInputType) -> GroupResponse:
+    async def update_group(self, info, uid: str, payload: GroupInputType) -> GroupResponse:
+        group_service = GroupService()
 
         is_authenticated, felicity_user = await auth_from_info(info)
         verify_user_auth(
@@ -305,7 +311,7 @@ class UserMutations:
             "Only Authenticated user can update user groups",
         )
 
-        group = await GroupService().get(uid=uid)
+        group = await group_service.get(uid=uid)
         if not group:
             return OperationError(error=f"Group with uid {uid} does not exist")
 
@@ -319,17 +325,20 @@ class UserMutations:
 
         setattr(group, "keyword", payload.__dict__["name"].upper())
 
-        group = await group.update(group.to_dict())
+        group = await group_service.save(group)
         return GroupType(**group.marshal_simple())
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_group_permissions(
-        self, info, group_uid: str, permission_uid: str
+            self, info, group_uid: str, permission_uid: str
     ) -> UpdatedGroupPermsResponse:
+        group_service = GroupService()
+        permission_service = PermissionService()
+
         if not group_uid or not permission_uid:
             return OperationError(error="Group and Permission are required.")
 
-        group = await GroupService().get(uid=group_uid)
+        group = await group_service.get(uid=group_uid)
         if not group:
             return OperationError(error=f"group with uid {group_uid} not found")
 
@@ -338,12 +347,12 @@ class UserMutations:
             permission = list(permissions)[0]
             group.permissions.remove(permission)
         else:
-            permission = await PermissionService().get(uid=permission_uid)
+            permission = await permission_service.get(uid=permission_uid)
             if not permission:
                 return OperationError(
                     error=f"permission with uid {permission_uid} not found"
                 )
             group.permissions.append(permission)
-        await group.save_async()
+        await group_service.save(group)
 
         return UpdatedGroupPerms(group=group, permission=permission)

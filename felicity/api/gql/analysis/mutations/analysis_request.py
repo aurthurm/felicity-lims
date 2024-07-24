@@ -254,7 +254,7 @@ async def create_analysis_request(
     await asyncio.sleep(1)
 
     analysis_request = await analysis_entities.AnalysisRequest.get_related(
-        uid=analysis_request.uid, related=["samples"]
+        related=["samples"], uid=analysis_request.uid
     )
 
     #

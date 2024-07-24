@@ -64,7 +64,6 @@ export const VALIDATE_PASSWORD_RESET_TOKEN = gql`
         validatePasswordResetToken(token: $token) {
             ... on PasswordResetValidityType {
             __typename
-            authUid
             username
             }
             ... on OperationError {
@@ -138,8 +137,8 @@ export const REFRESH_TOKEN = gql`
 `;
 
 export const ADD_USER = gql`
-    mutation addUser($firstName: String!, $lastName: String!, $email: String!, $groupUid: String) {
-        createUser(firstName: $firstName, lastName: $lastName, email: $email, groupUid: $groupUid) {
+    mutation addUser($firstName: String!, $lastName: String!, $email: String!, $groupUid: String, $userName: String!, $password: String!, $passwordc: String!) {
+        createUser(firstName: $firstName, lastName: $lastName, email: $email, groupUid: $groupUid, userName: $userName, password: $password, passwordc: $passwordc) {
             ... on UserType {
                 uid
                 firstName
@@ -148,12 +147,8 @@ export const ADD_USER = gql`
                 isActive
                 isSuperuser
                 mobilePhone
-                auth {
-                    uid
-                    userName
-                    isBlocked
-                    userType
-                }
+                userName
+                isBlocked
                 groups {
                     permissions {
                         uid
@@ -184,6 +179,8 @@ export const EDIT_USER = gql`
         $groupUid: String
         $mobilePhone: String
         $isActive: Boolean
+        $password: String, 
+        $passwordc: String
     ) {
         updateUser(
             userUid: $userUid
@@ -193,6 +190,7 @@ export const EDIT_USER = gql`
             groupUid: $groupUid
             mobilePhone: $mobilePhone
             isActive: $isActive
+            password: $password, passwordc: $passwordc
         ) {
             ... on UserType {
                 uid
@@ -202,88 +200,8 @@ export const EDIT_USER = gql`
                 isActive
                 isSuperuser
                 mobilePhone
-                auth {
-                    uid
-                    userName
-                    isBlocked
-                    userType
-                }
-                groups {
-                    permissions {
-                        uid
-                        action
-                        target
-                    }
-                    uid
-                    name
-                    keyword
-                    pages
-                }
-            }
-            ... on OperationError {
-                __typename
-                error
-                suggestion
-            }
-        }
-    }
-`;
-
-export const ADD_USER_AUTH = gql`
-    mutation addUserAuth($userUid: String!, $userName: String!, $password: String!, $passwordc: String!) {
-        createUserAuth(userUid: $userUid, userName: $userName, password: $password, passwordc: $passwordc) {
-            ... on UserType {
-                uid
-                firstName
-                lastName
-                email
-                isActive
-                isSuperuser
-                mobilePhone
-                auth {
-                    uid
-                    userName
-                    isBlocked
-                    userType
-                }
-                groups {
-                    permissions {
-                        uid
-                        action
-                        target
-                    }
-                    uid
-                    name
-                    keyword
-                    pages
-                }
-            }
-            ... on OperationError {
-                __typename
-                error
-                suggestion
-            }
-        }
-    }
-`;
-
-export const EDIT_USER_AUTH = gql`
-    mutation editUserAuth($userUid: String!, $userName: String!, $password: String!, $passwordc: String!) {
-        updateUserAuth(userUid: $userUid, userName: $userName, password: $password, passwordc: $passwordc) {
-            ... on UserType {
-                uid
-                firstName
-                lastName
-                email
-                isActive
-                isSuperuser
-                mobilePhone
-                auth {
-                    uid
-                    userName
-                    isBlocked
-                    userType
-                }
+                userName
+                isBlocked
                 groups {
                     permissions {
                         uid

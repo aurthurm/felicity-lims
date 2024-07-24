@@ -40,4 +40,4 @@ class PatientService(BaseService[Patient, PatientCreate, PatientUpdate]):
         data["patient_id"] = (
             await self.id_sequence_service.get_next_number(prefix="P", generic=True)
         )[1]
-        return await super().create(**data)
+        return await super().create(data)

@@ -49,10 +49,7 @@ export const GET_ALL_WORKSHEETS = gql`
                 assignedCount
                 analyst {
                     uid
-                    auth {
-                        uid
-                        userName
-                    }
+                    userName
                     firstName
                     lastName
                 }
@@ -83,10 +80,7 @@ export const GET_WORKSHEET_BY_UID = gql`
             createdAt
             analyst {
                 uid
-                auth {
-                    uid
-                    userName
-                }
+                userName
                 firstName
                 lastName
             }

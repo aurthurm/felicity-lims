@@ -123,7 +123,7 @@ class ReportImpressService(BaseService[ReportImpress, ReportImpressCreate, Repor
                     }
                 )
 
-                await super().create(**marshaller(sc_in))
+                await super().create(marshaller(sc_in))
                 if action != "pre-publish":
                     sample = await self.sample_service.publish(
                         sample, published_by=user

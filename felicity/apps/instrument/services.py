@@ -51,7 +51,7 @@ class InstrumentCalibrationService(
     ) -> InstrumentCalibration:
         data = cls._import(obj_in)
         data["calibration_id"] = (await cls.id_service.get_next_number("ICAL"))[1]
-        return await super().create(**data)
+        return await super().create(data)
 
 
 class CalibrationCertificateService(

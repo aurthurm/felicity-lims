@@ -1,3 +1,4 @@
+from uuid import uuid4
 from sqlalchemy import Boolean, Column, ForeignKey, String
 from sqlalchemy.orm import backref, relationship
 
@@ -49,7 +50,6 @@ class Client(AuditHistory):
 class ClientContact(AbstractBaseUser):
     __tablename__ = "client_contact"
 
-    email = Column(String, unique=False, index=True, nullable=True)
     email_cc = Column(String, nullable=True)
     consent_sms = Column(Boolean(), default=False)
     client_uid = Column(String, ForeignKey("client.uid"), nullable=False)
@@ -61,6 +61,9 @@ class ClientContact(AbstractBaseUser):
         ),
         lazy="selectin",
     )
+    # to be deleted later
+    user_name = Column(String, unique=True, index=True, nullable=False, default=uuid4().hex)
+    hashed_password = Column(String, nullable=False, default=uuid4().hex)
 
     @property
     def user_type(self):

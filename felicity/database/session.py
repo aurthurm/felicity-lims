@@ -23,9 +23,6 @@ async_engine = create_async_engine(
     future=True,
 )
 # async_session_factory can be used directly using: async with async_session_factory() as session: ...
-async_session_factory = sessionmaker(
-    bind=async_engine, expire_on_commit=False, autoflush=False, class_=AsyncSession
-)
 async_session = async_sessionmaker(
     bind=async_engine,
     expire_on_commit=False,

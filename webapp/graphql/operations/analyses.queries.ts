@@ -437,9 +437,7 @@ export const GET_ALL_SAMPLES = gql`
                 createdBy {
                     firstName
                     lastName
-                    auth {
-                        userName
-                    }
+                    userName
                 }
                 createdAt
                 dateCollected
@@ -597,9 +595,7 @@ export const GET_ANALYSIS_REQUESTS_BY_PATIENT_UID = gql`
                 createdBy {
                     firstName
                     lastName
-                    auth {
-                        userName
-                    }
+                    userName
                 }
                 createdAt
                 sampleType {
@@ -674,9 +670,7 @@ export const GET_ANALYSIS_REQUESTS_BY_CLIENT_UID = gql`
                 createdBy {
                     firstName
                     lastName
-                    auth {
-                        userName
-                    }
+                    userName
                 }
                 createdAt
                 sampleType {
@@ -785,9 +779,7 @@ export const GET_ANALYSIS_RESULTS_BY_SAMPLE_UID = gql`
                 uid
                 firstName
                 lastName
-                auth {
-                    userName
-                }
+                userName
             }
             dateSubmitted
             dueDate
@@ -795,9 +787,7 @@ export const GET_ANALYSIS_RESULTS_BY_SAMPLE_UID = gql`
                 uid
                 firstName
                 lastName
-                auth {
-                    userName
-                }
+                userName
             }
             dateVerified
             createdAt
@@ -872,9 +862,7 @@ export const GET_ANALYSIS_RESULT_MUTATION = gql`
                 uid
                 firstName
                 lastName
-                auth {
-                    userName
-                }
+                userName
             }
             createdByUid
         }
@@ -890,9 +878,7 @@ export const GET_SAMPLE_BY_UID = gql`
             createdBy {
                 firstName
                 lastName
-                auth {
-                    userName
-                }
+                userName
             }
             createdAt
             dateReceived
@@ -1049,9 +1035,7 @@ export const GET_ALL_QC_SETS = gql`
                     createdBy {
                         firstName
                         lastName
-                        auth {
-                            userName
-                        }
+                        userName
                     }
                     createdAt
                     updatedAt

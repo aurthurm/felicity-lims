@@ -60,4 +60,4 @@ class ShipmentService(BaseService[Shipment, ShipmentCreate, ShipmentUpdate]):
     async def create(self, obj_in: dict | ShipmentCreate) -> Shipment:
         data = self._import(obj_in)
         data["shipment_id"] = (await self.id_sequence_service.get_next_number("SHIP"))[1]
-        return await super().create(**data)
+        return await super().create(data)
