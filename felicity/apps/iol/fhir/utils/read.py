@@ -1,15 +1,16 @@
 import asyncio
 
-from felicity.apps.analysis.entities.analysis import AnalysisRequest, Sample
-from felicity.apps.analysis.entities.results import AnalysisResult
+from apps.analysis.services.analysis import SampleService, AnalysisRequestService
+from apps.patient.services import PatientService
+from apps.setup.services import LaboratoryService
+from apps.shipment.services import ShippedSampleService, ShipmentService
+from felicity.apps.analysis.entities.analysis import Sample
 from felicity.apps.analysis.utils import get_last_verificator
 from felicity.apps.iol.fhir.schema import (BundleResource,
                                            DiagnosticReportResource,
                                            Identifier, PatientResource,
                                            Reference, ServiceRequestResource,
                                            SpecimenResource)
-from felicity.apps.patient.entities import Patient
-from felicity.apps.setup.entities.setup import Laboratory
 from felicity.apps.shipment.entities import Shipment, ShippedSample
 from felicity.core.dtz import format_datetime
 
@@ -19,20 +20,23 @@ def one_of_else(of: list, one: str, default=None):
 
 
 async def get_diagnostic_report_resource(
-    service_request_uid: str, obs_uids=None, for_referral=False
+        service_request_uid: str, obs_uids=None, for_referral=False
 ) -> DiagnosticReportResource | None:
+    sample_service = SampleService()
+    analysis_request_service = AnalysisRequestService()
+
     if obs_uids is None:
         obs_uids = []
 
     ar, sample = await asyncio.gather(
-        AnalysisRequest.get(uid=service_request_uid),
-        Sample.get(analysis_request_uid=service_request_uid),
+        analysis_request_service.get(uid=service_request_uid),
+        sample_service.get(analysis_request_uid=service_request_uid),
     )
 
     if not ar or not sample:
         return None
 
-    analyses: list[AnalysisResult] = await sample.get_analysis_results()
+    analyses = await sample_service.get_analysis_results(sample.uid)
     if obs_uids:
         analyses = list(filter(lambda res: res.uid in obs_uids, analyses))
 
@@ -74,6 +78,8 @@ async def get_diagnostic_report_resource(
         )
 
     async def _resolve_based_on():
+        shipped_sample_service = ShippedSampleService()
+
         values = [
             {
                 "type": "ServiceRequest",
@@ -88,7 +94,7 @@ async def get_diagnostic_report_resource(
         ]
 
         if for_referral:
-            shipped: ShippedSample = await ShippedSample.get(sample_uid=sample.uid)
+            shipped = await shipped_sample_service.get(sample_uid=sample.uid)
             values.append(
                 {
                     "type": "ServiceRequest",
@@ -174,8 +180,10 @@ async def get_diagnostic_report_resource(
     return DiagnosticReportResource(**sr_vars)
 
 
-async def get_patient_resource(patient_id: int) -> PatientResource | None:
-    patient: Patient = await Patient.get(uid=patient_id)
+async def get_patient_resource(patient_id: str) -> PatientResource | None:
+    patient_service = PatientService()
+
+    patient = await patient_service.get(uid=patient_id)
     if not patient:
         return None
 
@@ -219,7 +227,9 @@ async def get_patient_resource(patient_id: int) -> PatientResource | None:
 
 
 async def get_specimen_resource(specimen_id: str) -> SpecimenResource:
-    sample: Sample = await Sample.get(uid=specimen_id)
+    sample_service = SampleService()
+
+    sample: Sample = await sample_service.get(uid=specimen_id)
     sp_values = {
         "resourceType": "Specimen",
         "identifier": [
@@ -258,14 +268,19 @@ async def get_specimen_resource(specimen_id: str) -> SpecimenResource:
 
 
 async def get_shipment_bundle_resource(shipment_uid: str) -> BundleResource | None:
-    shipment: Shipment = await Shipment.get(uid=shipment_uid)
-    shipped_samples: list[ShippedSample] = await ShippedSample.get_all(
+    laboratory_service = LaboratoryService()
+    shipment_service = ShipmentService()
+    shipped_sample_service = ShippedSampleService()
+    sample_service = SampleService()
+
+    shipment: Shipment = await shipment_service.get(uid=shipment_uid)
+    shipped_samples: list[ShippedSample] = await shipped_sample_service.get_all(
         shipment_uid=shipment.uid
     )
     samples: list[Sample] = list(map(lambda ss: ss.sample, shipped_samples))
 
     async def get_service_entry(sample: Sample):
-        _, analytes = await sample.get_referred_analyses()
+        _, analytes = await sample_service.get_referred_analyses(sample.uid)
         services_meta = [
             {
                 "system": "felicity/analysis",
@@ -304,7 +319,7 @@ async def get_shipment_bundle_resource(shipment_uid: str) -> BundleResource | No
         *(get_service_entry(sample) for sample in samples)
     )
 
-    laboratory = await Laboratory.get_by_setup_name()
+    laboratory = await laboratory_service.get_by_setup_name()
 
     bundle_vars = {
         "resourceType": "Bundle",
@@ -340,7 +355,6 @@ async def get_shipment_bundle_resource(shipment_uid: str) -> BundleResource | No
         ],
     }
     return BundleResource(**bundle_vars)
-
 
 # https://cloud.google.com/healthcare-api/docs/how-tos/fhir-bundles
 # the return type of a bundle must also be a bundle of response type

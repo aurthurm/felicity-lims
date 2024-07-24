@@ -1,18 +1,18 @@
 from datetime import datetime, timedelta
 
 from felicity.apps.abstract.service import BaseService
-from felicity.apps.common.utils.serializer import marshaller
 from felicity.apps.job.entities import Job
+from felicity.apps.job.enum import JobPriority, JobState
 from felicity.apps.job.repository import JobRepository
 from felicity.apps.job.schemas import JobCreate, JobUpdate
-from felicity.apps.job.enum import JobPriority, JobState
 
 
 class JobService(BaseService[Job, JobCreate, JobUpdate]):
     def __init__(self):
         super().__init__(JobRepository)
 
-    async def backoff(self, job: Job, minutes: int = 5, max_retries: int = 5):
+    async def backoff(self, uid: str, minutes: int = 5, max_retries: int = 5):
+        job = await self.get(uid=uid)
         bck = minutes * job.retries
         job.next_try = datetime.now() + timedelta(minutes=bck)
 
@@ -21,7 +21,7 @@ class JobService(BaseService[Job, JobCreate, JobUpdate]):
             job.reason = f"max retries have been exceeded: {max_retries}"
 
         job.retries += 1
-        await self.repository.update(job, **marshaller(job))
+        await self.save(job)
 
     async def fetch_sorted(self):
         filters = {
@@ -32,22 +32,25 @@ class JobService(BaseService[Job, JobCreate, JobUpdate]):
             ]
         }
         sort_attrs = "-priority",
-        return await self.repository.fetch_sorted(filters, sort_attrs)
+        return await self.repository.filter(filters=filters, sort_attrs=sort_attrs)
 
-    async def change_status(self, job: Job, new_status, change_reason=""):
+    async def change_status(self, uid: str, new_status, change_reason=""):
+        job = await self.get(uid=uid)
         job.status = new_status
         job.reason = change_reason
-        await self.repository.update(job, **marshaller(job))
+        await self.save(job)
 
-    async def increase_priority(self, job: Job):
+    async def increase_priority(self, uid: str):
+        job = await self.get(uid=uid)
         if job.priority < JobPriority.HIGH:
             job.priority += 1
-            await self.repository.update(job, **marshaller(job))
+            await self.save(job)
 
-    async def decrease_priority(self, job: Job):
+    async def decrease_priority(self, uid: str):
+        job = await self.get(uid=uid)
         if job.priority > JobPriority.NORMAL:
             job.priority -= 1
-            await self.repository.update(job, **marshaller(job))
+            await self.save(job)
 
 
 class JobWorkerService:

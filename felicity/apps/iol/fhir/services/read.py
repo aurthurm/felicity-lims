@@ -1,48 +1,25 @@
 import asyncio
 from datetime import datetime
 
-from domain.analysis.ports.service.analysis import (
-    IAnalysisRequestService,
-    ISampleService,
-)
-from domain.analysis.ports.service.result import IAnalysisResultService
-from domain.analysis.schemas import Sample
-from domain.iol.fhir.schema import (
-    BundleResource,
-    PatientResource,
-    ServiceRequestResource,
-    DiagnosticReportResource,
-    Reference,
-    Identifier,
-    SpecimenResource,
-)
-from domain.iol.ports.service import IFhirReadService
-from domain.patient.ports.service import IPatientService
-from domain.setup.ports.service import ILaboratoryService
-from domain.shipment.ports.service import (
-    IShipmentService,
-    IShippedSampleService,
-)
+from apps.analysis.entities.analysis import Sample
+from apps.analysis.services.analysis import AnalysisRequestService, SampleService
+from apps.analysis.services.result import AnalysisResultService
+from apps.iol.fhir.schema import DiagnosticReportResource, PatientResource, Identifier, SpecimenResource, \
+    BundleResource, ServiceRequestResource, Reference
+from apps.patient.services import PatientService
+from apps.setup.services import LaboratoryService
+from apps.shipment.services import ShippedSampleService, ShipmentService
 
 
-class FhirReadService(IFhirReadService):
-    def __init__(
-        self,
-        analysis_request_service: IAnalysisRequestService,
-        sample_service: ISampleService,
-        analysis_result_service: IAnalysisResultService,
-        shipped_sample_service: IShippedSampleService,
-        patient_service: IPatientService,
-        shipment_service: IShipmentService,
-        laboratory_service: ILaboratoryService,
-    ):
-        self.analysis_request_service = analysis_request_service
-        self.sample_service = sample_service
-        self.analysis_result_service = analysis_result_service
-        self.shipped_sample_service = shipped_sample_service
-        self.patient_service = patient_service
-        self.shipment_service = shipment_service
-        self.laboratory_service = laboratory_service
+class FhirReadService:
+    def __init__(self):
+        self.analysis_request_service = AnalysisRequestService()
+        self.sample_service = SampleService()
+        self.analysis_result_service = AnalysisResultService()
+        self.shipped_sample_service = ShippedSampleService()
+        self.patient_service = PatientService()
+        self.shipment_service = ShipmentService()
+        self.laboratory_service = LaboratoryService()
 
     @staticmethod
     def one_of_else(of: list, one: str, default=None):
@@ -55,7 +32,7 @@ class FhirReadService(IFhirReadService):
         return v.strftime("%Y-%m-%d %H:%M:%S")
 
     async def get_diagnostic_report_resource(
-        self, service_request_uid: str, obs_uids: list[str] = [], for_referral=False
+            self, service_request_uid: str, obs_uids: list[str] = [], for_referral=False
     ) -> DiagnosticReportResource | None:
         ar, sample = await asyncio.gather(
             self.analysis_request_service.get(uid=service_request_uid),
@@ -296,7 +273,7 @@ class FhirReadService(IFhirReadService):
         return SpecimenResource(**sp_values)
 
     async def get_shipment_bundle_resource(
-        self, shipment_uid: int
+            self, shipment_uid: int
     ) -> BundleResource | None:
         shipment = await self.shipment_service.get(uid=shipment_uid)
         shipped_samples = await self.shipped_sample_service.get_all(
@@ -305,7 +282,7 @@ class FhirReadService(IFhirReadService):
         samples = list(map(lambda ss: ss.sample, shipped_samples))
 
         async def get_service_entry(sample: Sample):
-            _, analytes = await self.sample_service.get_referred_analyses(sample)
+            _, analytes = await self.sample_service.get_referred_analyses(sample.uid)
             services_meta = [
                 {
                     "system": "felicity/analysis",

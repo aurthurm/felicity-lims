@@ -2,14 +2,14 @@ import logging
 
 from fastapi import Request
 
+from apps.job.services import JobService
+from apps.shipment.services import ShipmentService, ReferralLaboratoryService
 from felicity.apps.iol.fhir.schema import (BundleResource,
                                            DiagnosticReportResource,
                                            PatientResource, Reference,
                                            ServiceRequestResource)
-from felicity.apps.job.entities import Job
 from felicity.apps.job.enum import JobAction, JobCategory, JobPriority, JobState
 from felicity.apps.job.schemas import JobCreate
-from felicity.apps.shipment.entities import ReferralLaboratory, Shipment
 from felicity.apps.shipment.enum import ShipmentState
 from felicity.apps.shipment.schemas import ShipmentCreate
 from felicity.apps.user.entities import User
@@ -19,13 +19,13 @@ logger = logging.getLogger(__name__)
 
 
 async def create_resource(
-    resource_type: str,
-    resource_data: BundleResource
-    | PatientResource
-    | ServiceRequestResource
-    | DiagnosticReportResource,
-    request: Request,
-    current_user: User,
+        resource_type: str,
+        resource_data: BundleResource
+                       | PatientResource
+                       | ServiceRequestResource
+                       | DiagnosticReportResource,
+        request: Request,
+        current_user: User,
 ):
     logger.info(f"create resource {resource_type} ..................")
     resource_mappings = {
@@ -38,7 +38,7 @@ async def create_resource(
 
 
 async def create_bundle(
-    resource_data: BundleResource, request: Request, current_user: User
+        resource_data: BundleResource, request: Request, current_user: User
 ):
     logger.info(f"Bundle data:...")
     if resource_data.extension[0].valueString == "shipment":
@@ -48,9 +48,11 @@ async def create_bundle(
 
 
 async def create_inbound_shipment(
-    payload: BundleResource, request: Request, current_user: User
+        payload: BundleResource, request: Request, current_user: User
 ):
     """Create inbound shipment from bundle"""
+    shipment_service = ShipmentService()
+
     logger.info(f"Incoming Inbound shipment...")
 
     data = payload.model_dump(exclude_none=True)
@@ -66,7 +68,7 @@ async def create_inbound_shipment(
         incoming=True,
         state=ShipmentState.DUE,
     )
-    shipment = await Shipment.create(s_in)
+    shipment = await shipment_service.create(s_in)
 
     try:
         from felicity.apps.impress.shipment.utils import gen_pdf_manifest
@@ -77,10 +79,12 @@ async def create_inbound_shipment(
 
 
 async def resolve_ref_laboratory(ref: Reference, request: Request):
-    referral = await ReferralLaboratory.get(code=ref.identifier.value)
+    referral_laboratory_service = ReferralLaboratoryService()
+
+    referral = await referral_laboratory_service.get(code=ref.identifier.value)
     if referral:
         return referral
-    return await ReferralLaboratory.create(
+    return await referral_laboratory_service.create(
         {
             "name": ref.display,
             "code": ref.identifier.value,
@@ -94,8 +98,9 @@ async def resolve_ref_laboratory(ref: Reference, request: Request):
 
 
 async def create_diagnostic_report(
-    diagnostic_data: DiagnosticReportResource, request: Request, current_user: User
+        diagnostic_data: DiagnosticReportResource, request: Request, current_user: User
 ):
+    job_service = JobService()
     job_schema = JobCreate(
         action=JobAction.DIAGNOSTIC_REPORT,
         category=JobCategory.SHIPMENT,
@@ -105,6 +110,6 @@ async def create_diagnostic_report(
         creator_uid=current_user.uid,
         data={"data": diagnostic_data.model_dump(exclude_none=True)},
     )
-    await Job.create(job_schema)
+    await job_service.create(job_schema)
 
     return True

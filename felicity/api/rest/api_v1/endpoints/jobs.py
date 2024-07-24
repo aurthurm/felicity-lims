@@ -1,9 +1,9 @@
 import logging
 from typing import Any
 
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 
-from felicity.apps.job import entities
+from apps.job.services import JobService
 
 jobs = APIRouter(tags=["job"], prefix="/jobs")
 
@@ -12,8 +12,8 @@ logger = logging.getLogger(__name__)
 
 
 @jobs.get("", response_model=None)
-async def all_jobs() -> Any:
+async def all_jobs(job_service: JobService = Depends(JobService)) -> Any:
     """
     Retrieve all jobs
     """
-    return await entities.Job.all_async()
+    return await job_service.all()

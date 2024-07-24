@@ -1,46 +1,31 @@
-from sanic import Request
+from requests import Request
 
-from domain.iol.fhir.schema import (
-    BundleResource,
-    PatientResource,
-    ServiceRequestResource,
-    DiagnosticReportResource,
-    Reference,
-)
-from domain.iol.ports.service import IFhirCreateService
-from domain.job.enum import JobActions, JobCategories, JobStates
-from domain.job.ports.service import IJobService
-from domain.job.schemas import JobCreate
-from domain.shared.utils.serialisers import marshal
-from domain.shipment.enum import ShipmentStates
-from domain.shipment.ports.service import (
-    IShipmentService,
-    IReferralLaboratoryService,
-)
-from domain.shipment.schemas import ShipmentCreate
-from domain.user.schemas import User
+from apps.iol.fhir.schema import BundleResource, PatientResource, ServiceRequestResource, DiagnosticReportResource, \
+    Reference
+from apps.job.enum import JobAction, JobCategory, JobPriority, JobState
+from apps.job.schemas import JobCreate
+from apps.job.services import JobService
+from apps.shipment.enum import ShipmentState
+from apps.shipment.schemas import ShipmentCreate
+from apps.shipment.services import ReferralLaboratoryService, ShipmentService
+from apps.user.entities import User
 
 
-class FhirCreateService(IFhirCreateService):
-    def __init__(
-        self,
-        shipment_service: IShipmentService,
-        referral_laboratory_service: IReferralLaboratoryService,
-        job_service: IJobService,
-    ):
-        self.shipment_service = shipment_service
-        self.referral_laboratory_service = referral_laboratory_service
-        self.job_service = job_service
+class FhirCreateService:
+    def __init__(self):
+        self.shipment_service = ShipmentService()
+        self.referral_laboratory_service = ReferralLaboratoryService()
+        self.job_service = JobService()
 
     async def create_resource(
-        self,
-        resource_type: str,
-        resource_data: BundleResource
-        | PatientResource
-        | ServiceRequestResource
-        | DiagnosticReportResource,
-        request: Request,
-        current_user: User,
+            self,
+            resource_type: str,
+            resource_data: BundleResource
+                           | PatientResource
+                           | ServiceRequestResource
+                           | DiagnosticReportResource,
+            request: Request,
+            current_user: User,
     ):
         # logger.info(f"create resource {resource_type} ..................")
         resource_mappings = {
@@ -54,7 +39,7 @@ class FhirCreateService(IFhirCreateService):
         )
 
     async def create_bundle(
-        self, resource_data: BundleResource, request: Request, current_user: User
+            self, resource_data: BundleResource, request: Request, current_user: User
     ):
         # logger.info(f"Bundle data: ........")
         if resource_data.extension[0].valueString == "shipment":
@@ -63,7 +48,7 @@ class FhirCreateService(IFhirCreateService):
         return True
 
     async def create_inbound_shipment(
-        self, payload: BundleResource, request: Request, current_user: User
+            self, payload: BundleResource, request: Request, current_user: User
     ):
         """Create inbound shipment from bundle"""
         # logger.info(f"Incoming Inbound shipment ....")
@@ -81,9 +66,9 @@ class FhirCreateService(IFhirCreateService):
             laboratory_uid=laboratory.uid,
             data=data,
             incoming=True,
-            state=ShipmentStates.DUE,
+            state=ShipmentState.DUE,
         )
-        shipment = await self.shipment_service.create(marshal(s_in))
+        shipment = await self.shipment_service.create(s_in)
 
         try:
             await self.shipment_service.gen_pdf_manifest(
@@ -109,20 +94,20 @@ class FhirCreateService(IFhirCreateService):
         )
 
     async def create_diagnostic_report(
-        self,
-        diagnostic_data: DiagnosticReportResource,
-        request: Request,
-        current_user: User,
+            self,
+            diagnostic_data: DiagnosticReportResource,
+            request: Request,
+            current_user: User,
     ):
         job_schema = JobCreate(
-            action=JobActions.DIAGNOSTIC_REPORT,
-            category=JobCategories.SHIPMENT,
-            priority=JobCategories.MEDIUM,
+            action=JobAction.DIAGNOSTIC_REPORT,
+            category=JobCategory.SHIPMENT,
+            priority=JobPriority.MEDIUM,
             job_id=0,
-            status=JobStates.PENDING,
+            status=JobState.PENDING,
             creator_uid=current_user.uid,
             data={"data": diagnostic_data.model_dump(exclude_none=True)},
         )
-        await self.job_service.create(marshal(job_schema))
+        await self.job_service.create(job_schema)
 
         return True
