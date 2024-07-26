@@ -10,8 +10,8 @@ from felicity.api.gql.worksheet.types import (WorkSheetCursorPage,
                                               WorkSheetEdge,
                                               WorkSheetTemplateType,
                                               WorkSheetType)
-from felicity.apps.worksheet import entities as ws_entities
 from felicity.utils import has_value_or_is_truthy
+from felicity.apps.worksheet.services import WorkSheetService, WorkSheetTemplateService
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -53,7 +53,7 @@ class WorkSheetQuery:
 
         # filters.append({'internal_use__ne': True})
 
-        page = await ws_entities.WorkSheet.paginate_with_cursors(
+        page = await WorkSheetService().paginate_with_cursors(
             page_size=page_size,
             after_cursor=after_cursor,
             before_cursor=before_cursor,
@@ -72,28 +72,28 @@ class WorkSheetQuery:
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def worksheet_template_all(self, info) -> List[WorkSheetTemplateType]:
-        return await ws_entities.WorkSheetTemplate.all_async()
+        return await WorkSheetTemplateService().all()
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def worksheet_by_analyst(self, info, analyst_uid: str) -> List[WorkSheetType]:
-        return await ws_entities.WorkSheet.get_all(analyst_uid=analyst_uid)
+        return await WorkSheetService().get_all(analyst_uid=analyst_uid)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def worksheet_by_uid(self, info, worksheet_uid: str) -> WorkSheetType:
-        return await ws_entities.WorkSheet.get(uid=worksheet_uid)
+        return await WorkSheetService().get(uid=worksheet_uid)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def worksheet_by_id(self, info, worksheet_id: str) -> WorkSheetType:
-        return await ws_entities.WorkSheet.get(worksheet_id=worksheet_id)
+        return await WorkSheetService().get(worksheet_id=worksheet_id)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def worksheet_by_status(
         self, info, worksheet_status: str
     ) -> List[WorkSheetType]:
-        return await ws_entities.WorkSheet.get_all(status__exact=worksheet_status)
+        return await WorkSheetService().get_all(status__exact=worksheet_status)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def worksheet_template_by_uid(
         self, info, worksheet_uid: str
     ) -> List[WorkSheetType]:
-        return await ws_entities.WorkSheet.get_all(uid=worksheet_uid)
+        return await WorkSheetService().get_all(uid=worksheet_uid)

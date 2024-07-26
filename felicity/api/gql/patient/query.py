@@ -8,7 +8,7 @@ from felicity.api.gql.patient.types import (IdentificationType,
                                             PatientType)
 from felicity.api.gql.permissions import IsAuthenticated
 from felicity.api.gql.types import PageInfo
-from felicity.apps.patient import entities
+from felicity.apps.patient.services import IdentificationService, PatientService
 from felicity.utils import has_value_or_is_truthy
 
 
@@ -45,7 +45,7 @@ class PatientQuery:
 
             filters = {sa.or_: _or_}
 
-        page = await entities.Patient.paginate_with_cursors(
+        page = await PatientService().paginate_with_cursors(
             page_size=page_size,
             after_cursor=after_cursor,
             before_cursor=before_cursor,
@@ -64,13 +64,13 @@ class PatientQuery:
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def patient_by_uid(self, info, uid: str) -> Optional[PatientType]:
-        return await entities.Patient.get(uid=uid)
+        return await PatientService().get(uid=uid)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def patient_by_patient_id(
         self, info, patient_id: str
     ) -> Optional[PatientType]:
-        return await entities.Patient.get(patient_id=patient_id)
+        return await PatientService().get(patient_id=patient_id)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def patient_search(self, info, query_string: str) -> List[PatientType]:
@@ -87,15 +87,15 @@ class PatientQuery:
         for _filter in filters:
             arg = dict()
             arg[_filter] = f"%{query_string}%"
-            query = await entities.Patient.get_all(**arg)
+            query = await PatientService().get_all(**arg)
             for item in query:
                 combined.add(item)
         return list(combined)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def identification_all(self, info) -> List[IdentificationType]:
-        return await entities.Identification.all_async()
+        return await IdentificationService().all()
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def identification_by_uid(self, info, uid: str) -> IdentificationType:
-        return await entities.Identification.get(uid=uid)
+        return await IdentificationService().get(uid=uid)

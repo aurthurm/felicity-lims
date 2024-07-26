@@ -9,10 +9,6 @@ from felicity.api.gql.user.types import (GroupType, PermissionType,
                                          UserCursorPage, UserEdge, UserType)
 from felicity.apps.user.services import GroupService, PermissionService, UserService
 
-group_service = GroupService()
-permission_service = PermissionService()
-user_service = UserService()
-
 
 @strawberry.type
 class UserQuery:
@@ -26,14 +22,13 @@ class UserQuery:
             text: str | None = None,
             sort_by: list[str] | None = None,
     ) -> UserCursorPage:
-        page = await user_service.paging_filter(
+        page = await UserService().paging_filter(
             page_size=page_size,
             after_cursor=after_cursor,
             before_cursor=before_cursor,
             text=text,
             sort_by=sort_by,
         )
-        print("page: ", page)
         total_count: int = page.total_count
         edges: List[UserEdge[UserType]] = page.edges
         items: List[UserType] = page.items
@@ -48,20 +43,20 @@ class UserQuery:
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def user_by_email(self, info, email: str) -> UserType | None:
-        return await user_service.get_by_email(email=email)
+        return await UserService().get_by_email(email=email)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def group_all(self, info) -> List[GroupType]:
-        return await group_service.all()
+        return await GroupService().all()
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def group_by_uid(self, info, uid: str) -> Optional[GroupType]:
-        return await group_service.get(uid=uid)
+        return await GroupService().get(uid=uid)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def permission_all(self, info) -> List[PermissionType]:
-        return await permission_service.all()
+        return await PermissionService().all()
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def permission_by_uid(self, info, uid: str) -> Optional[PermissionType]:
-        return await permission_service.get(uid=uid)
+        return await PermissionService().get(uid=uid)

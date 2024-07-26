@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 ModelType = TypeVar("ModelType", bound=BaseEntity)
 
 
-class SampleAnalyticsInit(Generic[ModelType]):
+class EntityAnalyticsInit(Generic[ModelType]):
     def __init__(self, model: Type[ModelType]):
         self.model = model
         self.table = model.__tablename__

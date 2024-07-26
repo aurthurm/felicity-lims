@@ -376,7 +376,7 @@ async def billing_setup_profiles(profile_uids: list[str] = None) -> None:
     if profile_uids:
         profiles = await profile_service.get_by_uids(profile_uids)
     else:
-        profiles = await profile_service.all_async()
+        profiles = await profile_service.all()
 
     for profile in profiles:
         exists = await profile_price_service.get(profile_uid=profile.uid)
@@ -412,7 +412,7 @@ async def billing_setup_analysis(analysis_uids: list[str] = None) -> None:
     if analysis_uids:
         analyses = await analysis_service.get_by_uids(analysis_uids)
     else:
-        analyses = await analysis_service.all_async()
+        analyses = await analysis_service.all()
 
     for analysis in analyses:
         exists = await analysis_price_service.get(analysis_uid=analysis.uid)

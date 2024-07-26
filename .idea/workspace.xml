@@ -4,18 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9f590b69-f929-45a1-8512-12ed6efbf028" name="Changes" comment="Added Invetory starter">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/api/rest/api_v1/endpoints/jobs.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/rest/api_v1/endpoints/jobs.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/api/rest/api_v1/endpoints/reports.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/rest/api_v1/endpoints/reports.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/api/rest/api_v1/fhir/r4.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/rest/api_v1/fhir/r4.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/apps/iol/fhir/services/action.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/iol/fhir/services/action.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/apps/iol/fhir/services/create.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/iol/fhir/services/create.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/apps/iol/fhir/services/read.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/iol/fhir/services/read.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/apps/iol/fhir/utils/create.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/iol/fhir/utils/create.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/apps/iol/fhir/utils/read.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/iol/fhir/utils/read.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/apps/job/services.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/job/services.py" afterDir="false" />
-    </list>
+    <list default="true" id="9f590b69-f929-45a1-8512-12ed6efbf028" name="Changes" comment="Added Invetory starter" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />

@@ -501,7 +501,7 @@ class SampleService(BaseService[Sample, SampleCreate, SampleUpdate]):
 
     async def create(self, obj_in: dict | SampleCreate):
         data = self._import(obj_in)
-        # sample_type = await SampleType.find(data["sample_type_uid"])
+        # sample_type = await SampleType.get(data["sample_type_uid"])
         # data["sample_id"] = (await self.id_sequencer_service.get_next_number(sample_type.abbr))[1]
         data["sample_id"] = (
             await self.id_sequencer_service.get_next_number(prefix="S", generic=True)

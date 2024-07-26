@@ -5,9 +5,9 @@ import strawberry  # noqa
 from felicity.api.gql.analytics import types
 from felicity.apps.analysis.entities.analysis import Sample
 from felicity.apps.analytics import SampleAnalyticsInit
-from felicity.apps.instrument.entities import Instrument
-from felicity.apps.user.entities import User
+from felicity.apps.instrument.services import InstrumentService
 from felicity.utils import has_value_or_is_truthy
+from felicity.apps.user.services import UserService
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -22,14 +22,14 @@ def group_exists(val):
 async def get_username(val):
     if val == "unknown":
         return val
-    user = await User.get(uid=val)
+    user = await UserService().get(uid=val)
     return user.auth.user_name
 
 
 async def get_instrument(val):
     if val == "unknown":
         return val
-    instrument = await Instrument.get(uid=val)
+    instrument = await InstrumentService().get(uid=val)
     return instrument.name
 
 

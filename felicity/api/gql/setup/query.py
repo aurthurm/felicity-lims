@@ -12,33 +12,33 @@ from felicity.api.gql.setup.types import (CountryType, DistrictCursorPage,
                                           ProvinceType, SupplierType, UnitType)
 from felicity.api.gql.setup.types.department import DepartmentType
 from felicity.api.gql.types import PageInfo
-from felicity.apps.setup import entities
+from felicity.apps.setup.services import CountryService, DepartmentService, DistrictService, LaboratoryService, LaboratorySettingService, ManufacturerService, ProvinceService, SupplierService, UnitService
 from felicity.utils import has_value_or_is_truthy
 
 
 async def get_laboratory(setup_name: str) -> LaboratoryType:
-    return await entities.Laboratory.get(setup_name=setup_name)
+    return await LaboratoryService().get(setup_name=setup_name)
 
 
 async def get_laboratory_setting(setup_name: str) -> LaboratorySettingType:
-    laboratory = await entities.Laboratory.get(setup_name=setup_name)
-    return await entities.LaboratorySetting.get(laboratory_uid=laboratory.uid)
+    laboratory = await LaboratoryService().get(setup_name=setup_name)
+    return await LaboratorySettingService().get(laboratory_uid=laboratory.uid)
 
 
 async def get_all_suppliers() -> List[SupplierType]:
-    return await entities.Supplier.all_async()
+    return await SupplierService().all()
 
 
 async def get_all_manufacturers() -> List[ManufacturerType]:
-    return await entities.Manufacturer.all_async()
+    return await ManufacturerService().all()
 
 
 async def get_all_departments() -> List[DepartmentType]:
-    return await entities.Department.all_async()
+    return await DepartmentService().all()
 
 
 async def get_all_units() -> List[UnitType]:
-    return await entities.Unit.all_async()
+    return await UnitService().all()
 
 
 async def get_all_districts(
@@ -69,7 +69,7 @@ async def get_all_districts(
 
         filters = {sa.or_: _or_}
 
-    page = await entities.District.paginate_with_cursors(
+    page = await DistrictService().paginate_with_cursors(
         page_size=page_size,
         after_cursor=after_cursor,
         before_cursor=before_cursor,
@@ -113,7 +113,7 @@ async def get_all_provinces(
 
         filters = {sa.or_: _or_}
 
-    page = await entities.Province.paginate_with_cursors(
+    page = await ProvinceService().paginate_with_cursors(
         page_size=page_size,
         after_cursor=after_cursor,
         before_cursor=before_cursor,
@@ -132,7 +132,7 @@ async def get_all_provinces(
 
 
 async def get_all_countries() -> List[CountryType]:
-    return await entities.Country.all_async()
+    return await CountryService().all()
 
 
 @strawberry.type
@@ -149,7 +149,7 @@ class SetupQuery:
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def manufacturer_by_uid(self, info, uid: str) -> ManufacturerType:
-        query = await entities.Manufacturer.get(uid=uid)
+        query = await ManufacturerService().get(uid=uid)
         return query
 
     supplier_all: List[SupplierType] = strawberry.field(
@@ -158,7 +158,7 @@ class SetupQuery:
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def supplier_by_uid(self, info, uid: str) -> SupplierType:
-        query = await entities.Supplier.get(uid=uid)
+        query = await SupplierService().get(uid=uid)
         return query
 
     department_all: List[DepartmentType] = strawberry.field(
@@ -167,7 +167,7 @@ class SetupQuery:
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def department_by_uid(self, info, uid: str) -> DepartmentType:
-        query = await entities.Department.get(uid=uid)
+        query = await DepartmentService().get(uid=uid)
         return query
 
     district_all: DistrictCursorPage = strawberry.field(
@@ -176,12 +176,12 @@ class SetupQuery:
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def district_by_uid(self, info, uid: str) -> DistrictType:
-        district = await entities.District.get(uid=uid)
+        district = await DistrictService().get(uid=uid)
         return district
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def districts_by_province_uid(self, info, uid: str) -> List[DistrictType]:
-        districts = await entities.District.get_all(province_uid__exact=uid)
+        districts = await DistrictService().get_all(province_uid__exact=uid)
         return districts
 
     province_all: ProvinceCursorPage = strawberry.field(
@@ -190,12 +190,12 @@ class SetupQuery:
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def province_by_uid(self, info, uid: str) -> ProvinceType:
-        province = await entities.Province.get(uid=uid)
+        province = await ProvinceService().get(uid=uid)
         return province
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def provinces_by_country_uid(self, info, uid: str) -> List[ProvinceType]:
-        provinces = await entities.Province.get_all(country_uid__exact=uid)
+        provinces = await ProvinceService().get_all(country_uid__exact=uid)
         return provinces
 
     country_all: List[CountryType] = strawberry.field(
@@ -204,7 +204,7 @@ class SetupQuery:
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def country_by_uid(self, info, uid: str) -> CountryType:
-        country = await entities.Country.find(uid)
+        country = await CountryService().get(uid)
         return country
 
     unit_all: List[UnitType] = strawberry.field(
@@ -213,5 +213,5 @@ class SetupQuery:
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def unit_by_uid(self, info, uid: str) -> UnitType:
-        unit = await entities.Unit.find(uid)
+        unit = await UnitService().get(uid)
         return unit

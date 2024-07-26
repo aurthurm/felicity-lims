@@ -7,8 +7,8 @@ from felicity.api.gql.permissions import IsAuthenticated
 from felicity.api.gql.reflex.types import (ReflexRuleCursorPage,
                                            ReflexRuleEdge, ReflexRuleType)
 from felicity.api.gql.types import PageInfo
-from felicity.apps.reflex import entities
 from felicity.utils import has_value_or_is_truthy
+from felicity.apps.reflex.services import ReflexRuleService
 
 
 @strawberry.type
@@ -33,7 +33,7 @@ class ReflexRuleQuery:
 
             filters = {sa.or_: _or_}
 
-        page = await entities.ReflexRule.paginate_with_cursors(
+        page = await ReflexRuleService().paginate_with_cursors(
             page_size=page_size,
             after_cursor=after_cursor,
             before_cursor=before_cursor,
@@ -52,4 +52,4 @@ class ReflexRuleQuery:
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def reflex_rule_by_uid(self, info, uid: str) -> Optional[ReflexRuleType]:
-        return await entities.ReflexRule.get(uid=uid)
+        return await ReflexRuleService().get(uid=uid)

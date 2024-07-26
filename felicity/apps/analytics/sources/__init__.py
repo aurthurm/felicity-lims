@@ -1,3 +1,3 @@
-from .sample import SampleAnalyticsInit
+from .generic import EntityAnalyticsInit
 
-__all__ = ["SampleAnalyticsInit"]
+__all__ = ["EntityAnalyticsInit"]

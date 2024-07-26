@@ -11,11 +11,11 @@ from felicity.api.gql.impress.types import ReportImpressType
 from felicity.api.gql.permissions import IsAuthenticated
 from felicity.api.gql.types import BytesScalar
 from felicity.apps.analysis.utils import QC_SAMPLE
-from felicity.apps.client import Client
 from felicity.apps.impress.barcode.schema import BarCode, BarCodeMeta
 from felicity.apps.impress.barcode.utils import impress_barcodes
-from felicity.apps.impress.entities import ReportImpress
-from felicity.apps.analysis.entities.analysis import Sample
+from felicity.apps.impress.services import ReportImpressService
+from felicity.apps.analysis.services.analysis import SampleService
+from felicity.apps.client.services import ClientService
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -27,14 +27,14 @@ class ReportImpressQuery:
     async def impress_reports_meta(
             self, info, uids: List[str]
     ) -> List[ReportImpressType]:
-        return await ReportImpress.get_all(sample_uid__in=uids)
+        return await ReportImpressService().get_all(sample_uid__in=uids)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def impress_reports_download(
             self, info, uids: List[str]
     ) -> BytesScalar | None:
         """Fetch Latest report given sample id"""
-        items = await ReportImpress.get_all(sample_uid__in=uids)
+        items = await ReportImpressService().get_all(sample_uid__in=uids)
 
         def _first_of(things: List):
             if len(things) > 0:
@@ -74,7 +74,7 @@ class ReportImpressQuery:
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def impress_report_download(self, info, uid: str) -> BytesScalar | None:
-        report = await ReportImpress.get(uid=uid)
+        report = await ReportImpressService().get(uid=uid)
 
         if not report:
             return None
@@ -84,11 +84,11 @@ class ReportImpressQuery:
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def barcode_samples(self, info, sample_uids: list[str]) -> list[BytesScalar] | None:
-        samples = await Sample.get_all(uid__in=sample_uids)
+        samples = await SampleService().get_all(uid__in=sample_uids)
 
         @lru_cache
         async def _client_name(uid: str) -> str:
-            return (await Client.get(uid=uid)).name
+            return (await ClientService().get(uid=uid)).name
 
         barcode_metas = []
         for _s in samples:

@@ -200,7 +200,7 @@ class BaseNestedSets(object):
             .filter_by(tree_id=self.tree_id)
             .filter(table.c.lft < self.left)
             .order_by(table.c.lft)
-            .all_async()
+            .all()
         )
         if current_lvl_nodes:
             return current_lvl_nodes[-1]
@@ -271,7 +271,7 @@ class BaseNestedSets(object):
         nodes = cls._base_query(session)
         if query:
             nodes = query(nodes)
-        nodes = cls._base_order(nodes).all_async()
+        nodes = cls._base_order(nodes).all()
 
         # search minimal level of nodes.
         min_level = min([node.level for node in nodes] or [None])

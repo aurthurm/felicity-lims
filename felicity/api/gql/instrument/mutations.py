@@ -532,7 +532,7 @@ class InstrumentMutations:
         method = await method.save_async()
 
         # manage analyses
-        all_analyses = await analysis_entities.Analysis.all_async()
+        all_analyses = await analysis_entities.Analysis.all()
         analyses = set()
         for analysis in all_analyses:
             for _meth in analysis.methods:

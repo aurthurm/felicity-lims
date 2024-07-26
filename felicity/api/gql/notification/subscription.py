@@ -30,7 +30,7 @@ class StreamSubscription:
 
     @strawberry.subscription()  # permission_classes=[IsAuthenticated]
     async def stream_all(self) -> AsyncGenerator[ActivityStreamType, None]:  # noqa
-        streams = await ActivityStream.all_async()
+        streams = await ActivityStream.all()
         for stream in streams:
             yield stream
             await asyncio.sleep(1)

@@ -9,7 +9,7 @@ from felicity.api.gql.shipment.types import (ReferralLaboratoryType,
                                              ShipmentCursorPage, ShipmentEdge,
                                              ShipmentType)
 from felicity.api.gql.types import BytesScalar, PageInfo
-from felicity.apps.shipment import entities
+from felicity.apps.shipment.services import ReferralLaboratoryService, ShipmentService
 from felicity.utils import has_value_or_is_truthy
 
 logging.basicConfig(level=logging.INFO)
@@ -48,7 +48,7 @@ class ShipmentQuery:
         if status:
             filters.append({"state__exact": status})
 
-        page = await entities.Shipment.paginate_with_cursors(
+        page = await ShipmentService().paginate_with_cursors(
             page_size=page_size,
             after_cursor=after_cursor,
             before_cursor=before_cursor,
@@ -67,37 +67,37 @@ class ShipmentQuery:
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def shipment_by_uid(self, info, shipment_uid: str) -> ShipmentType:
-        return await entities.Shipment.get(uid=shipment_uid)
+        return await ShipmentService().get(uid=shipment_uid)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def shipment_by_id(self, info, shipment_id: str) -> ShipmentType:
-        return await entities.Shipment.get(shipment_id=shipment_id)
+        return await ShipmentService().get(shipment_id=shipment_id)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def shipment_by_status(
         self, info, shipment_status: str
     ) -> List[ShipmentType]:
-        return await entities.Shipment.get_all(status__exact=shipment_status)
+        return await ShipmentService().get_all(status__exact=shipment_status)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def referral_laboratory_all(self, info) -> list[ReferralLaboratoryType]:
-        return await entities.ReferralLaboratory.all_async()
+        return await ReferralLaboratoryService().all()
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def referral_laboratory_by_uid(
         self, info, uid: str
     ) -> ReferralLaboratoryType:
-        return await entities.ReferralLaboratory.get(uid=uid)
+        return await ReferralLaboratoryService().get(uid=uid)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def referral_laboratory_by_code(
         self, info, code: str
     ) -> ReferralLaboratoryType:
-        return await entities.ReferralLaboratory.get(code=code)
+        return await ReferralLaboratoryService().get(code=code)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def manifest_report_download(self, info, uid: str) -> BytesScalar | None:
-        shipment = await entities.Shipment.get(uid=uid)
+        shipment = await ShipmentService().get(uid=uid)
 
         if not shipment:
             return None
