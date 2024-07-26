@@ -56,9 +56,9 @@ class UserService(BaseService[User, UserCreate, UserUpdate]):
 
         if not verify_password(password, user.hashed_password):
             msg = ""
-            retries = 0
+            retries = user.login_retry
             if user.login_retry < 3:
-                msg = f"Wrong Password {3 - retries} attempts left"
+                msg = f"Wrong Password {2 - retries} attempts left"
                 user.login_retry = user.login_retry + 1
                 if user.login_retry == 3:
                     user.is_blocked = True

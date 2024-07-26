@@ -29,8 +29,6 @@ class ClientQuery:
         text: str | None = None,
         sort_by: list[str] | None = None,
     ) -> ClientCursorPage:
-        ss, dd = await auth_from_info(info)
-
         filters = {}
 
         _or_ = dict()
