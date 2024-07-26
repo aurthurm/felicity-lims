@@ -51,7 +51,7 @@ class BillingQuery:
         if has_value_or_is_truthy(partial):
             filters.append({"partial": partial})
 
-        page = await TestBillService().paginate_with_cursors(
+        page = await TestBillService().paging_filter(
             page_size=page_size,
             after_cursor=after_cursor,
             before_cursor=before_cursor,

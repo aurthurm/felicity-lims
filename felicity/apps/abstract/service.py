@@ -19,12 +19,12 @@ class BaseService(Generic[E, C, U]):
             page_size: int | None = None,
             after_cursor: str | None = None,
             before_cursor: str | None = None,
-            text: str | None = None,
+            filters: list[dict] | dict = None,
             sort_by: list[str] | None = None,
             **kwargs
     ):
         return await self.repository.paginate(
-            page_size, after_cursor, before_cursor, text, sort_by, **kwargs
+            page_size, after_cursor, before_cursor, filters, sort_by, **kwargs
         )
 
     async def search(self, **kwargs) -> list[E]:

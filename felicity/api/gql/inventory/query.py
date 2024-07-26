@@ -32,7 +32,7 @@ class InventoryQuery:
 
             filters = {sa.or_: _or_}
 
-        page = await StockItemService().paginate_with_cursors(
+        page = await StockItemService().paging_filter(
             page_size=page_size,
             after_cursor=after_cursor,
             before_cursor=before_cursor,
@@ -77,7 +77,7 @@ class InventoryQuery:
 
             filters = {sa.or_: _or_}
 
-        page = await StockItemVariantService().paginate_with_cursors(
+        page = await StockItemVariantService().paging_filter(
             page_size=page_size,
             after_cursor=after_cursor,
             before_cursor=before_cursor,
@@ -160,7 +160,7 @@ class InventoryQuery:
         if status:
             filters.append({"status__exact": status})
 
-        page = await StockOrderService().paginate_with_cursors(
+        page = await StockOrderService().paging_filter(
             page_size=page_size,
             after_cursor=after_cursor,
             before_cursor=before_cursor,
@@ -228,7 +228,7 @@ class InventoryQuery:
         if product_uid:
             filters["product_uid"] = product_uid
 
-        page = await StockAdjustmentService().paginate_with_cursors(
+        page = await StockAdjustmentService().paging_filter(
             page_size=page_size,
             after_cursor=after_cursor,
             before_cursor=before_cursor,

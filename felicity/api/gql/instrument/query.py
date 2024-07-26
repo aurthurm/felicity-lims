@@ -38,7 +38,7 @@ async def get_all_instrument_types(
 
         filters = {sa.or_: _or_}
 
-    page = await InstrumentTypeService().paginate_with_cursors(
+    page = await InstrumentTypeService().paging_filter(
         page_size=page_size,
         after_cursor=after_cursor,
         before_cursor=before_cursor,
@@ -84,7 +84,7 @@ async def get_all_instruments(
 
         filters = {sa.or_: _or_}
 
-    page = await InstrumentService().paginate_with_cursors(
+    page = await InstrumentService().paging_filter(
         page_size=page_size,
         after_cursor=after_cursor,
         before_cursor=before_cursor,
@@ -126,7 +126,7 @@ async def get_all_laboratory_instruments(
 
         filters = {sa.or_: _or_}
 
-    page = await LaboratoryInstrumentService().paginate_with_cursors(
+    page = await LaboratoryInstrumentService().paging_filter(
         page_size=page_size,
         after_cursor=after_cursor,
         before_cursor=before_cursor,
@@ -164,7 +164,7 @@ async def get_all_methods(
 
         filters = {sa.or_: _or_}
 
-    page = await MethodService().paginate_with_cursors(
+    page = await MethodService().paging_filter(
         page_size=page_size,
         after_cursor=after_cursor,
         before_cursor=before_cursor,

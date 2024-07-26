@@ -2,6 +2,8 @@ from typing import List, Optional
 
 import strawberry  # noqa
 
+import sqlalchemy as sa
+
 from felicity.api import deps
 from felicity.api.gql.permissions import IsAuthenticated
 from felicity.api.gql.types import PageInfo
@@ -21,12 +23,28 @@ class UserQuery:
             before_cursor: str | None = None,
             text: str | None = None,
             sort_by: list[str] | None = None,
-    ) -> UserCursorPage:
+    ) -> UserCursorPage:    
+        filters = {}
+
+        _or_ = dict()
+        if text:
+            arg_list = [
+                "first_name__ilike",
+                "last_name__ilike",
+                "email__ilike",
+                "mobile_phone__ilike",
+                "business_phone__ilike",
+            ]
+            for _arg in arg_list:
+                _or_[_arg] = f"%{text}%"
+
+            filters = {sa.or_: _or_}
+
         page = await UserService().paging_filter(
             page_size=page_size,
             after_cursor=after_cursor,
             before_cursor=before_cursor,
-            text=text,
+            filters=filters,
             sort_by=sort_by,
         )
         total_count: int = page.total_count

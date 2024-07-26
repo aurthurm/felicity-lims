@@ -69,7 +69,7 @@ async def get_all_districts(
 
         filters = {sa.or_: _or_}
 
-    page = await DistrictService().paginate_with_cursors(
+    page = await DistrictService().paging_filter(
         page_size=page_size,
         after_cursor=after_cursor,
         before_cursor=before_cursor,
@@ -113,7 +113,7 @@ async def get_all_provinces(
 
         filters = {sa.or_: _or_}
 
-    page = await ProvinceService().paginate_with_cursors(
+    page = await ProvinceService().paging_filter(
         page_size=page_size,
         after_cursor=after_cursor,
         before_cursor=before_cursor,

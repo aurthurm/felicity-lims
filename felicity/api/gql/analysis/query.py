@@ -79,7 +79,7 @@ class AnalysisQuery:
         # filters.append({'internal_use__ne': True})
         filters.append({"analysis_request__ne": None})
 
-        page = await SampleService().paginate_with_cursors(
+        page = await SampleService().paging_filter(
             page_size=page_size,
             after_cursor=after_cursor,
             before_cursor=before_cursor,
@@ -138,7 +138,7 @@ class AnalysisQuery:
         if not sort_by:
             sort_by = ["-priority", "uid"]
 
-        page = await SampleService().paginate_with_cursors(
+        page = await SampleService().paging_filter(
             page_size=page_size,
             after_cursor=after_cursor,
             before_cursor=before_cursor,
@@ -258,7 +258,7 @@ class AnalysisQuery:
         if qc_only:
             filters.append({"category___name__exact": "Quality Control"})
 
-        page = await AnalysisService().paginate_with_cursors(
+        page = await AnalysisService().paging_filter(
             page_size=page_size,
             after_cursor=after_cursor,
             before_cursor=before_cursor,
@@ -322,7 +322,7 @@ class AnalysisQuery:
 
         filters.append({"internal_use__ne": True})
 
-        page = await AnalysisRequestService().paginate_with_cursors(
+        page = await AnalysisRequestService().paging_filter(
             page_size=page_size,
             after_cursor=after_cursor,
             before_cursor=before_cursor,
@@ -406,7 +406,7 @@ class AnalysisQuery:
         if not sort_by:
             sort_by = ["-sample___priority", "sample___uid"]
 
-        page = await AnalysisResultService().paginate_with_cursors(
+        page = await AnalysisResultService().paging_filter(
             page_size=page_size,
             after_cursor=after_cursor,
             before_cursor=before_cursor,
@@ -506,7 +506,7 @@ class AnalysisQuery:
 
         # filters.append({'internal_use__ne': True})
 
-        page = await QCSetService().paginate_with_cursors(
+        page = await QCSetService().paging_filter(
             page_size=page_size,
             after_cursor=after_cursor,
             before_cursor=before_cursor,

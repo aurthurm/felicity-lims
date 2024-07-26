@@ -1,5 +1,5 @@
 import logging
-from typing import List, Optional
+from typing import List
 
 import sqlalchemy as sa
 import strawberry  # noqa
@@ -36,11 +36,11 @@ class WorkSheetQuery:
         _or_text_ = {}
         if has_value_or_is_truthy(text):
             arg_list = [
-                "state__ilike",
-                "worksheet_id__ilike",
-                "analyst___first_name__ilike",
-                "analyst___last_name__ilike",
-                "analyst___auth___user_name__ilike",
+                "state",
+                "worksheet_id",
+                "analyst___first_name",
+                "analyst___last_name",
+                "analyst___auth___user_name",
             ]
             for _arg in arg_list:
                 _or_text_[_arg] = f"%{text}%"
@@ -51,9 +51,7 @@ class WorkSheetQuery:
         if status:
             filters.append({"state__exact": status})
 
-        # filters.append({'internal_use__ne': True})
-
-        page = await WorkSheetService().paginate_with_cursors(
+        page = await WorkSheetService().paging_filter(
             page_size=page_size,
             after_cursor=after_cursor,
             before_cursor=before_cursor,

@@ -48,7 +48,7 @@ class ShipmentQuery:
         if status:
             filters.append({"state__exact": status})
 
-        page = await ShipmentService().paginate_with_cursors(
+        page = await ShipmentService().paging_filter(
             page_size=page_size,
             after_cursor=after_cursor,
             before_cursor=before_cursor,

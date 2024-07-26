@@ -1,3 +1,4 @@
+import sqlalchemy as sa
 from felicity.apps.common.utils.serializer import marshaller
 from felicity.core.security import (
     get_password_hash,

@@ -45,7 +45,7 @@ class PatientQuery:
 
             filters = {sa.or_: _or_}
 
-        page = await PatientService().paginate_with_cursors(
+        page = await PatientService().paging_filter(
             page_size=page_size,
             after_cursor=after_cursor,
             before_cursor=before_cursor,

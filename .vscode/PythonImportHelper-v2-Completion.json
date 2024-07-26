@@ -802,14 +802,6 @@
         "documentation": {}
     },
     {
-        "label": "Optional",
-        "importPath": "typing",
-        "description": "typing",
-        "isExtraImport": true,
-        "detail": "typing",
-        "documentation": {}
-    },
-    {
         "label": "List",
         "importPath": "typing",
         "description": "typing",
@@ -14780,70 +14772,6 @@
         "documentation": {}
     },
     {
-        "label": "PageCursor",
-        "importPath": "felicity.database.paging",
-        "description": "felicity.database.paging",
-        "isExtraImport": true,
-        "detail": "felicity.database.paging",
-        "documentation": {}
-    },
-    {
-        "label": "PageCursor",
-        "importPath": "felicity.database.paging",
-        "description": "felicity.database.paging",
-        "isExtraImport": true,
-        "detail": "felicity.database.paging",
-        "documentation": {}
-    },
-    {
-        "label": "PageCursor",
-        "importPath": "felicity.database.paging",
-        "description": "felicity.database.paging",
-        "isExtraImport": true,
-        "detail": "felicity.database.paging",
-        "documentation": {}
-    },
-    {
-        "label": "PageCursor",
-        "importPath": "felicity.database.paging",
-        "description": "felicity.database.paging",
-        "isExtraImport": true,
-        "detail": "felicity.database.paging",
-        "documentation": {}
-    },
-    {
-        "label": "PageCursor",
-        "importPath": "felicity.database.paging",
-        "description": "felicity.database.paging",
-        "isExtraImport": true,
-        "detail": "felicity.database.paging",
-        "documentation": {}
-    },
-    {
-        "label": "PageCursor",
-        "importPath": "felicity.database.paging",
-        "description": "felicity.database.paging",
-        "isExtraImport": true,
-        "detail": "felicity.database.paging",
-        "documentation": {}
-    },
-    {
-        "label": "PageCursor",
-        "importPath": "felicity.database.paging",
-        "description": "felicity.database.paging",
-        "isExtraImport": true,
-        "detail": "felicity.database.paging",
-        "documentation": {}
-    },
-    {
-        "label": "PageCursor",
-        "importPath": "felicity.database.paging",
-        "description": "felicity.database.paging",
-        "isExtraImport": true,
-        "detail": "felicity.database.paging",
-        "documentation": {}
-    },
-    {
         "label": "QueryBuilder",
         "importPath": "felicity.database.queryset",
         "description": "felicity.database.queryset",
@@ -25515,7 +25443,7 @@
         "kind": 6,
         "importPath": "felicity.apps.abstract.service",
         "description": "felicity.apps.abstract.service",
-        "peekOfCode": "class BaseService(Generic[E, C, U]):\n    def __init__(self, repository) -> None:\n        self.repository: BaseRepository = repository()\n    async def paging_filter(\n            self,\n            page_size: int | None = None,\n            after_cursor: str | None = None,\n            before_cursor: str | None = None,\n            text: str | None = None,\n            sort_by: list[str] | None = None,",
+        "peekOfCode": "class BaseService(Generic[E, C, U]):\n    def __init__(self, repository) -> None:\n        self.repository: BaseRepository = repository()\n    async def paging_filter(\n            self,\n            page_size: int | None = None,\n            after_cursor: str | None = None,\n            before_cursor: str | None = None,\n            filters: list[dict] | dict = None,\n            sort_by: list[str] | None = None,",
         "detail": "felicity.apps.abstract.service",
         "documentation": {}
     },
@@ -25542,7 +25470,7 @@
         "kind": 5,
         "importPath": "felicity.apps.abstract.service",
         "description": "felicity.apps.abstract.service",
-        "peekOfCode": "U = TypeVar(\"U\", bound=BaseModel)\nclass BaseService(Generic[E, C, U]):\n    def __init__(self, repository) -> None:\n        self.repository: BaseRepository = repository()\n    async def paging_filter(\n            self,\n            page_size: int | None = None,\n            after_cursor: str | None = None,\n            before_cursor: str | None = None,\n            text: str | None = None,",
+        "peekOfCode": "U = TypeVar(\"U\", bound=BaseModel)\nclass BaseService(Generic[E, C, U]):\n    def __init__(self, repository) -> None:\n        self.repository: BaseRepository = repository()\n    async def paging_filter(\n            self,\n            page_size: int | None = None,\n            after_cursor: str | None = None,\n            before_cursor: str | None = None,\n            filters: list[dict] | dict = None,",
         "detail": "felicity.apps.abstract.service",
         "documentation": {}
     },
@@ -28701,7 +28629,7 @@
         "kind": 6,
         "importPath": "felicity.apps.client.repositories",
         "description": "felicity.apps.client.repositories",
-        "peekOfCode": "class ClientRepository(BaseRepository[Client]):\n    def __init__(self) -> None:\n        super().__init__(Client)\n    async def paginate_with_cursors(\n        self,\n        page_size: int | None = None,\n        after_cursor: str | None = None,\n        before_cursor: str | None = None,\n        text: str | None = None,\n        sort_by: list[str] | None = None,",
+        "peekOfCode": "class ClientRepository(BaseRepository[Client]):\n    def __init__(self) -> None:\n        super().__init__(Client)\nclass ClientContactRepository(BaseRepository[ClientContact]):\n    def __init__(self) -> None:\n        super().__init__(ClientContact)",
         "detail": "felicity.apps.client.repositories",
         "documentation": {}
     },
@@ -29502,7 +29430,7 @@
         "kind": 6,
         "importPath": "felicity.apps.instrument.repository",
         "description": "felicity.apps.instrument.repository",
-        "peekOfCode": "class MethodRepository(BaseRepository[Method]):\n    def __init__(self) -> None:\n        super().__init__(Method)\n    async def paginate_with_cursors(\n            self,\n            page_size: int | None = None,\n            after_cursor: str | None = None,\n            before_cursor: str | None = None,\n            text: str | None = None,\n            sort_by: list[str] | None = None,",
+        "peekOfCode": "class MethodRepository(BaseRepository[Method]):\n    def __init__(self) -> None:\n        super().__init__(Method)\nclass InstrumentRepository(BaseRepository[Instrument]):\n    def __init__(self) -> None:\n        super().__init__(Instrument)\nclass LaboratoryInstrumentRepository(\n    BaseRepository[LaboratoryInstrument],\n):\n    def __init__(self,):",
         "detail": "felicity.apps.instrument.repository",
         "documentation": {}
     },
@@ -29511,7 +29439,7 @@
         "kind": 6,
         "importPath": "felicity.apps.instrument.repository",
         "description": "felicity.apps.instrument.repository",
-        "peekOfCode": "class InstrumentRepository(BaseRepository[Instrument]):\n    def __init__(self) -> None:\n        super().__init__(Instrument)\n    async def paginate_with_cursors(\n            self,\n            page_size: int | None = None,\n            after_cursor: str | None = None,\n            before_cursor: str | None = None,\n            text: str | None = None,\n            sort_by: list[str] | None = None,",
+        "peekOfCode": "class InstrumentRepository(BaseRepository[Instrument]):\n    def __init__(self) -> None:\n        super().__init__(Instrument)\nclass LaboratoryInstrumentRepository(\n    BaseRepository[LaboratoryInstrument],\n):\n    def __init__(self,):\n        super().__init__(LaboratoryInstrument)\nclass InstrumentTypeRepository(\n    BaseRepository[InstrumentType]",
         "detail": "felicity.apps.instrument.repository",
         "documentation": {}
     },
@@ -29529,7 +29457,7 @@
         "kind": 6,
         "importPath": "felicity.apps.instrument.repository",
         "description": "felicity.apps.instrument.repository",
-        "peekOfCode": "class InstrumentTypeRepository(\n    BaseRepository[InstrumentType]\n):\n    def __init__(self) -> None:\n        super().__init__(InstrumentType)\n    async def paginate_with_cursors(\n            self,\n            page_size: int | None = None,\n            after_cursor: str | None = None,\n            before_cursor: str | None = None,",
+        "peekOfCode": "class InstrumentTypeRepository(\n    BaseRepository[InstrumentType]\n):\n    def __init__(self) -> None:\n        super().__init__(InstrumentType)\nclass InstrumentCalibrationRepository(\n    BaseRepository[InstrumentCalibration]\n):\n    def __init__(self) -> None:\n        super().__init__(InstrumentCalibration)",
         "detail": "felicity.apps.instrument.repository",
         "documentation": {}
     },
@@ -29565,7 +29493,7 @@
         "kind": 5,
         "importPath": "felicity.apps.instrument.repository",
         "description": "felicity.apps.instrument.repository",
-        "peekOfCode": "SEQUENCE_BEGIN = 5\nSEQUENCE_CUTOFF = 10\nclass MethodRepository(BaseRepository[Method]):\n    def __init__(self) -> None:\n        super().__init__(Method)\n    async def paginate_with_cursors(\n            self,\n            page_size: int | None = None,\n            after_cursor: str | None = None,\n            before_cursor: str | None = None,",
+        "peekOfCode": "SEQUENCE_BEGIN = 5\nSEQUENCE_CUTOFF = 10\nclass MethodRepository(BaseRepository[Method]):\n    def __init__(self) -> None:\n        super().__init__(Method)\nclass InstrumentRepository(BaseRepository[Instrument]):\n    def __init__(self) -> None:\n        super().__init__(Instrument)\nclass LaboratoryInstrumentRepository(\n    BaseRepository[LaboratoryInstrument],",
         "detail": "felicity.apps.instrument.repository",
         "documentation": {}
     },
@@ -29574,7 +29502,7 @@
         "kind": 5,
         "importPath": "felicity.apps.instrument.repository",
         "description": "felicity.apps.instrument.repository",
-        "peekOfCode": "SEQUENCE_CUTOFF = 10\nclass MethodRepository(BaseRepository[Method]):\n    def __init__(self) -> None:\n        super().__init__(Method)\n    async def paginate_with_cursors(\n            self,\n            page_size: int | None = None,\n            after_cursor: str | None = None,\n            before_cursor: str | None = None,\n            text: str | None = None,",
+        "peekOfCode": "SEQUENCE_CUTOFF = 10\nclass MethodRepository(BaseRepository[Method]):\n    def __init__(self) -> None:\n        super().__init__(Method)\nclass InstrumentRepository(BaseRepository[Instrument]):\n    def __init__(self) -> None:\n        super().__init__(Instrument)\nclass LaboratoryInstrumentRepository(\n    BaseRepository[LaboratoryInstrument],\n):",
         "detail": "felicity.apps.instrument.repository",
         "documentation": {}
     },
@@ -30150,7 +30078,7 @@
         "kind": 6,
         "importPath": "felicity.apps.inventory.repository",
         "description": "felicity.apps.inventory.repository",
-        "peekOfCode": "class StockItemRepository(BaseRepository[StockItem]):\n    def __init__(self) -> None:\n        super().__init__(StockItem)\n    async def paginate_with_cursors(\n        self,\n        page_size: int | None = None,\n        after_cursor: str | None = None,\n        before_cursor: str | None = None,\n        text: str | None = None,\n        sort_by: list[str] | None = None,",
+        "peekOfCode": "class StockItemRepository(BaseRepository[StockItem]):\n    def __init__(self) -> None:\n        super().__init__(StockItem)\nclass StockItemVariantRepository(BaseRepository[StockItemVariant]):\n    def __init__(self) -> None:\n        super().__init__(StockItemVariant)\nclass StockCategoryRepository(BaseRepository[StockCategory]):\n    def __init__(self) -> None:\n        super().__init__(StockCategory)\nclass HazardRepository(BaseRepository[Hazard]):",
         "detail": "felicity.apps.inventory.repository",
         "documentation": {}
     },
@@ -30204,7 +30132,7 @@
         "kind": 6,
         "importPath": "felicity.apps.inventory.repository",
         "description": "felicity.apps.inventory.repository",
-        "peekOfCode": "class StockProductInventoryRepository(\n    BaseRepository[StockProductInventory]\n):\n    def __init__(self) -> None:\n        super().__init__(StockProductInventory)\nclass StockOrderRepository(BaseRepository[StockOrder]):\n    def __init__(self) -> None:\n        super().__init__(StockOrder)\n    async def paginate_with_cursors(\n        self,",
+        "peekOfCode": "class StockProductInventoryRepository(\n    BaseRepository[StockProductInventory]\n):\n    def __init__(self) -> None:\n        super().__init__(StockProductInventory)\nclass StockOrderRepository(BaseRepository[StockOrder]):\n    def __init__(self) -> None:\n        super().__init__(StockOrder)\nclass StockOrderProductRepository(\n    BaseRepository[StockOrderProduct]",
         "detail": "felicity.apps.inventory.repository",
         "documentation": {}
     },
@@ -30213,7 +30141,7 @@
         "kind": 6,
         "importPath": "felicity.apps.inventory.repository",
         "description": "felicity.apps.inventory.repository",
-        "peekOfCode": "class StockOrderRepository(BaseRepository[StockOrder]):\n    def __init__(self) -> None:\n        super().__init__(StockOrder)\n    async def paginate_with_cursors(\n        self,\n        page_size: int | None = None,\n        after_cursor: str | None = None,\n        before_cursor: str | None = None,\n        text: str | None = None,\n        status: None = None,",
+        "peekOfCode": "class StockOrderRepository(BaseRepository[StockOrder]):\n    def __init__(self) -> None:\n        super().__init__(StockOrder)\nclass StockOrderProductRepository(\n    BaseRepository[StockOrderProduct]\n):\n    def __init__(self) -> None:\n        super().__init__(StockOrderProduct)\nclass StockReceiptRepository(\n    BaseRepository[StockReceipt]",
         "detail": "felicity.apps.inventory.repository",
         "documentation": {}
     },
@@ -30240,7 +30168,7 @@
         "kind": 6,
         "importPath": "felicity.apps.inventory.repository",
         "description": "felicity.apps.inventory.repository",
-        "peekOfCode": "class StockAdjustmentRepository(\n    BaseRepository[StockAdjustment]\n):\n    def __init__(self) -> None:\n        super().__init__(StockAdjustment)\n    async def paginate_with_cursors(\n        self,\n        page_size: int | None = None,\n        after_cursor: str | None = None,\n        before_cursor: str | None = None,",
+        "peekOfCode": "class StockAdjustmentRepository(\n    BaseRepository[StockAdjustment]\n):\n    def __init__(self) -> None:\n        super().__init__(StockAdjustment)",
         "detail": "felicity.apps.inventory.repository",
         "documentation": {}
     },
@@ -31806,7 +31734,7 @@
         "kind": 6,
         "importPath": "felicity.apps.patient.repository",
         "description": "felicity.apps.patient.repository",
-        "peekOfCode": "class PatientRepository(BaseRepository[Patient]):\n    def __init__(self) -> None:\n        super().__init__(Patient)\n    async def paginate_with_cursors(\n            self,\n            page_size: int | None = None,\n            after_cursor: str | None = None,\n            before_cursor: str | None = None,\n            text: str | None = None,\n            sort_by: list[str] | None = None,",
+        "peekOfCode": "class PatientRepository(BaseRepository[Patient]):\n    def __init__(self) -> None:\n        super().__init__(Patient)\nclass IdentificationRepository(\n    BaseRepository[Identification]\n):\n    def __init__(self) -> None:\n        super().__init__(Identification)\nclass PatientIdentificationRepository(\n    BaseRepository[PatientIdentification]",
         "detail": "felicity.apps.patient.repository",
         "documentation": {}
     },
@@ -32085,7 +32013,7 @@
         "kind": 6,
         "importPath": "felicity.apps.reflex.repository",
         "description": "felicity.apps.reflex.repository",
-        "peekOfCode": "class ReflexRuleRepository(BaseRepository[ReflexRule]):\n    def __init__(self) -> None:\n        super().__init__(ReflexRule)\n    async def paginate_with_cursors(\n            self,\n            page_size: int | None = None,\n            after_cursor: str | None = None,\n            before_cursor: str | None = None,\n            text: str | None = None,\n            sort_by: list[str] | None = None,",
+        "peekOfCode": "class ReflexRuleRepository(BaseRepository[ReflexRule]):\n    def __init__(self) -> None:\n        super().__init__(ReflexRule)\nclass ReflexBrainAdditionRepository(\n    BaseRepository[ReflexBrainAddition]\n):\n    def __init__(self) -> None:\n        super().__init__(ReflexBrainAddition)\nclass ReflexBrainFinalRepository(\n    BaseRepository[ReflexBrainFinal]",
         "detail": "felicity.apps.reflex.repository",
         "documentation": {}
     },
@@ -32553,7 +32481,7 @@
         "kind": 6,
         "importPath": "felicity.apps.setup.repositories.location",
         "description": "felicity.apps.setup.repositories.location",
-        "peekOfCode": "class CountryRepository(BaseRepository[Country]):\n    def __init__(self) -> None:\n        super().__init__(Country)\nclass ProvinceRepository(BaseRepository[Province]):\n    def __init__(self) -> None:\n        super().__init__(Province)\n    async def paginate_with_cursors(\n            self,\n            page_size: int | None = None,\n            after_cursor: str | None = None,",
+        "peekOfCode": "class CountryRepository(BaseRepository[Country]):\n    def __init__(self) -> None:\n        super().__init__(Country)\nclass ProvinceRepository(BaseRepository[Province]):\n    def __init__(self) -> None:\n        super().__init__(Province)\nclass DistrictRepository(BaseRepository[District]):\n    def __init__(self) -> None:\n        super().__init__(District)",
         "detail": "felicity.apps.setup.repositories.location",
         "documentation": {}
     },
@@ -32562,7 +32490,7 @@
         "kind": 6,
         "importPath": "felicity.apps.setup.repositories.location",
         "description": "felicity.apps.setup.repositories.location",
-        "peekOfCode": "class ProvinceRepository(BaseRepository[Province]):\n    def __init__(self) -> None:\n        super().__init__(Province)\n    async def paginate_with_cursors(\n            self,\n            page_size: int | None = None,\n            after_cursor: str | None = None,\n            before_cursor: str | None = None,\n            text: str | None = None,\n            sort_by: list[str] | None = None,",
+        "peekOfCode": "class ProvinceRepository(BaseRepository[Province]):\n    def __init__(self) -> None:\n        super().__init__(Province)\nclass DistrictRepository(BaseRepository[District]):\n    def __init__(self) -> None:\n        super().__init__(District)",
         "detail": "felicity.apps.setup.repositories.location",
         "documentation": {}
     },
@@ -32571,7 +32499,7 @@
         "kind": 6,
         "importPath": "felicity.apps.setup.repositories.location",
         "description": "felicity.apps.setup.repositories.location",
-        "peekOfCode": "class DistrictRepository(BaseRepository[District]):\n    def __init__(self) -> None:\n        super().__init__(District)\n    async def paginate_with_cursors(\n            self,\n            page_size: int | None = None,\n            after_cursor: str | None = None,\n            before_cursor: str | None = None,\n            text: str | None = None,\n            sort_by: list[str] | None = None,",
+        "peekOfCode": "class DistrictRepository(BaseRepository[District]):\n    def __init__(self) -> None:\n        super().__init__(District)",
         "detail": "felicity.apps.setup.repositories.location",
         "documentation": {}
     },
@@ -33228,7 +33156,7 @@
         "kind": 6,
         "importPath": "felicity.apps.shipment.repository",
         "description": "felicity.apps.shipment.repository",
-        "peekOfCode": "class ReferralLaboratoryRepository(\n    BaseRepository[ReferralLaboratory]\n):\n    def __init__(self) -> None:\n        super().__init__(ReferralLaboratory)\nclass ShipmentRepository(BaseRepository[Shipment]):\n    def __init__(self) -> None:\n        super().__init__(Shipment)\n    async def paginate_with_cursors(\n        self,",
+        "peekOfCode": "class ReferralLaboratoryRepository(\n    BaseRepository[ReferralLaboratory]\n):\n    def __init__(self) -> None:\n        super().__init__(ReferralLaboratory)\nclass ShipmentRepository(BaseRepository[Shipment]):\n    def __init__(self) -> None:\n        super().__init__(Shipment)\nclass ShippedSampleRepository(BaseRepository[ShippedSample]):\n    def __init__(self) -> None:",
         "detail": "felicity.apps.shipment.repository",
         "documentation": {}
     },
@@ -33237,7 +33165,7 @@
         "kind": 6,
         "importPath": "felicity.apps.shipment.repository",
         "description": "felicity.apps.shipment.repository",
-        "peekOfCode": "class ShipmentRepository(BaseRepository[Shipment]):\n    def __init__(self) -> None:\n        super().__init__(Shipment)\n    async def paginate_with_cursors(\n        self,\n        page_size: int | None = None,\n        after_cursor: str | None = None,\n        before_cursor: str | None = None,\n        text: str | None = None,\n        incoming: bool = False,",
+        "peekOfCode": "class ShipmentRepository(BaseRepository[Shipment]):\n    def __init__(self) -> None:\n        super().__init__(Shipment)\nclass ShippedSampleRepository(BaseRepository[ShippedSample]):\n    def __init__(self) -> None:\n        super().__init__(ShippedSample)",
         "detail": "felicity.apps.shipment.repository",
         "documentation": {}
     },
@@ -33840,7 +33768,7 @@
         "kind": 6,
         "importPath": "felicity.apps.user.repository",
         "description": "felicity.apps.user.repository",
-        "peekOfCode": "class UserRepository(BaseRepository[User]):\n    def __init__(self) -> None:\n        super().__init__(User)\n    async def paginate_with_cursors(\n        self,\n        page_size: int | None = None,\n        after_cursor: str | None = None,\n        before_cursor: str | None = None,\n        text: str | None = None,\n        sort_by: list[str] | None = None,",
+        "peekOfCode": "class UserRepository(BaseRepository[User]):\n    def __init__(self) -> None:\n        super().__init__(User)\nclass PermissionRepository(BaseRepository[Permission]):\n    def __init__(self) -> None:\n        super().__init__(Permission)\nclass GroupRepository(BaseRepository[Group]):\n    def __init__(self) -> None:\n        super().__init__(Group)\nclass UserPreferenceRepository(BaseRepository[UserPreference]):",
         "detail": "felicity.apps.user.repository",
         "documentation": {}
     },
