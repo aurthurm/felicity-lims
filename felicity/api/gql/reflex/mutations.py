@@ -3,7 +3,7 @@ from typing import Dict, List, Optional
 
 import strawberry  # noqa
 
-from felicity.api.gql.auth import auth_from_info, verify_user_auth
+from felicity.api.gql.auth import auth_from_info
 from felicity.api.gql.permissions import IsAuthenticated
 from felicity.api.gql.reflex.types import (ReflexActionType, ReflexBrainType,
                                            ReflexRuleType)
@@ -80,12 +80,7 @@ class ReflexRuleMutations:
         self, info, payload: ReflexRuleInput
     ) -> ReflexRuleResponse:
 
-        is_authenticated, felicity_user = await auth_from_info(info)
-        verify_user_auth(
-            is_authenticated,
-            felicity_user,
-            "Only Authenticated user can add reflex rules",
-        )
+        felicity_user = await auth_from_info(info)
 
         if not payload.name or not payload.description:
             return OperationError(error="Name and Description are required")
@@ -110,12 +105,7 @@ class ReflexRuleMutations:
         self, info, uid: str, payload: ReflexRuleInput
     ) -> ReflexRuleResponse:
 
-        is_authenticated, felicity_user = await auth_from_info(info)
-        verify_user_auth(
-            is_authenticated,
-            felicity_user,
-            "Only Authenticated user can update reflex rules",
-        )
+        felicity_user = await auth_from_info(info)
 
         if not uid:
             return OperationError(error="No uid provided to identify update obj")
@@ -145,12 +135,7 @@ class ReflexRuleMutations:
         self, info, payload: ReflexActionInput
     ) -> ReflexActionResponse:
 
-        is_authenticated, felicity_user = await auth_from_info(info)
-        verify_user_auth(
-            is_authenticated,
-            felicity_user,
-            "Only Authenticated user can add reflex actions",
-        )
+        felicity_user = await auth_from_info(info)
 
         if (
             not len(payload.analyses) > 0
@@ -192,12 +177,7 @@ class ReflexRuleMutations:
         self, info, uid: str, payload: ReflexActionInput
     ) -> ReflexActionResponse:
 
-        is_authenticated, felicity_user = await auth_from_info(info)
-        verify_user_auth(
-            is_authenticated,
-            felicity_user,
-            "Only Authenticated user can add reflex actions",
-        )
+        felicity_user = await auth_from_info(info)
 
         if not uid:
             return OperationError(error="No uid provided to identify update obj")
@@ -233,12 +213,7 @@ class ReflexRuleMutations:
         self, info, payload: ReflexBrainInput
     ) -> ReflexBrainResponse:
 
-        is_authenticated, felicity_user = await auth_from_info(info)
-        verify_user_auth(
-            is_authenticated,
-            felicity_user,
-            "Only Authenticated user can add reflex brains",
-        )
+        felicity_user = await auth_from_info(info)
 
         if not payload.description:
             return OperationError(error="Description are required")
@@ -295,12 +270,7 @@ class ReflexRuleMutations:
         self, info, uid: str, payload: ReflexBrainInput
     ) -> ReflexBrainResponse:
 
-        is_authenticated, felicity_user = await auth_from_info(info)
-        verify_user_auth(
-            is_authenticated,
-            felicity_user,
-            "Only Authenticated user can add reflex brains",
-        )
+        felicity_user = await auth_from_info(info)
 
         if not uid:
             return OperationError(error="No uid provided to identify update obj")

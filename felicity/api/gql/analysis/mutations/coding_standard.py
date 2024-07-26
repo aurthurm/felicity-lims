@@ -4,7 +4,7 @@ from typing import Optional
 import strawberry  # noqa
 
 from felicity.api.gql.analysis.types import analysis as a_types
-from felicity.api.gql.auth import auth_from_info, verify_user_auth
+from felicity.api.gql.auth import auth_from_info
 from felicity.api.gql.permissions import IsAuthenticated
 from felicity.api.gql.types import OperationError
 from felicity.apps.analysis import schemas
@@ -32,12 +32,7 @@ async def create_coding_standard(
     info, payload: CodingStandardInputType
 ) -> CodingStandardResponse:
 
-    is_authenticated, felicity_user = await auth_from_info(info)
-    verify_user_auth(
-        is_authenticated,
-        felicity_user,
-        "Only Authenticated user can create coding standards",
-    )
+    felicity_user = await auth_from_info(info)
 
     if not payload.name:
         return OperationError(error="Name is mandatory")
@@ -65,12 +60,7 @@ async def update_coding_standard(
     info, uid: str, payload: CodingStandardInputType
 ) -> CodingStandardResponse:
 
-    is_authenticated, felicity_user = await auth_from_info(info)
-    verify_user_auth(
-        is_authenticated,
-        felicity_user,
-        "Only Authenticated user can update codind standards",
-    )
+    felicity_user = await auth_from_info(info)
 
     coding_standard = await analysis_entities.CodingStandard.get(uid=uid)
     if not coding_standard:

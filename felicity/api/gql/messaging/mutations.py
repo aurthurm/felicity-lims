@@ -4,7 +4,7 @@ from typing import List
 
 import strawberry  # noqa
 
-from felicity.api.gql.auth import auth_from_info, verify_user_auth
+from felicity.api.gql.auth import auth_from_info
 from felicity.api.gql.messaging.types import MessageType
 from felicity.api.gql.permissions import IsAuthenticated
 from felicity.api.gql.types import DeletedItem, DeleteResponse, OperationError
@@ -30,10 +30,7 @@ class MessageMutations:
         inspector = inspect.getargvalues(inspect.currentframe())
         passed_args = get_passed_args(inspector)
 
-        is_authenticated, felicity_user = await auth_from_info(info)
-        verify_user_auth(
-            is_authenticated, felicity_user, "Only Authenticated user can send messages"
-        )
+        felicity_user = await auth_from_info(info)
 
         if not recipients or not body:
             return OperationError(error="Message body and recipients are mandatory")
@@ -77,12 +74,7 @@ class MessageMutations:
         inspector = inspect.getargvalues(inspect.currentframe())
         passed_args = get_passed_args(inspector)
 
-        is_authenticated, felicity_user = await auth_from_info(info)
-        verify_user_auth(
-            is_authenticated,
-            felicity_user,
-            "Only Authenticated user can reply to messages",
-        )
+        felicity_user = await auth_from_info(info)
 
         thread: entities.MessageThread = await entities.MessageThread.get(uid=thread_uid)
         if not thread:
@@ -113,10 +105,7 @@ class MessageMutations:
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def view_message(self, info, uid: str) -> MessageResponse:
 
-        is_authenticated, felicity_user = await auth_from_info(info)
-        verify_user_auth(
-            is_authenticated, felicity_user, "Only Authenticated user can view messages"
-        )
+        felicity_user = await auth_from_info(info)
 
         message: entities.Message = await entities.Message.get(uid=uid)
         if not message:
@@ -128,12 +117,7 @@ class MessageMutations:
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def delete_message(self, info, uid: str) -> DeleteResponse:
 
-        is_authenticated, felicity_user = await auth_from_info(info)
-        verify_user_auth(
-            is_authenticated,
-            felicity_user,
-            "Only Authenticated user can delete messages",
-        )
+        felicity_user = await auth_from_info(info)
 
         message: entities.Message = await entities.Message.get(uid=uid)
         if not message:
@@ -145,12 +129,7 @@ class MessageMutations:
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def delete_thread(self, info, uid: str) -> DeleteResponse:
 
-        is_authenticated, felicity_user = await auth_from_info(info)
-        verify_user_auth(
-            is_authenticated,
-            felicity_user,
-            "Only Authenticated user can delete threads",
-        )
+        felicity_user = await auth_from_info(info)
 
         thread: entities.Message = await entities.MessageThread.get(uid=uid)
         if not thread:

@@ -5,7 +5,7 @@ from typing import Dict, List, Optional
 
 import strawberry  # noqa
 
-from felicity.api.gql.auth import auth_from_info, verify_user_auth
+from felicity.api.gql.auth import auth_from_info
 from felicity.api.gql.patient.types import IdentificationType, PatientType
 from felicity.api.gql.permissions import IsAuthenticated
 from felicity.api.gql.types import OperationError
@@ -61,12 +61,7 @@ class PatientMutations:
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_identification(info, name: str) -> IdentificationResponse:
 
-        is_authenticated, felicity_user = await auth_from_info(info)
-        verify_user_auth(
-            is_authenticated,
-            felicity_user,
-            "Only Authenticated user can create person identification",
-        )
+        felicity_user = await auth_from_info(info)
 
         if not name:
             return OperationError(error="name is mandatory")
@@ -93,12 +88,7 @@ class PatientMutations:
     async def update_identification(
         info, uid: str, name: str
     ) -> IdentificationResponse:
-        is_authenticated, felicity_user = await auth_from_info(info)
-        verify_user_auth(
-            is_authenticated,
-            felicity_user,
-            "Only Authenticated user can update person identifications",
-        )
+        felicity_user = await auth_from_info(info)
 
         identification = await entities.Identification.get(uid=uid)
         if not identification:
@@ -116,12 +106,7 @@ class PatientMutations:
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_patient(self, info, payload: PatientInputType) -> PatientResponse:
 
-        is_authenticated, felicity_user = await auth_from_info(info)
-        auth_success, auth_error = verify_user_auth(
-            is_authenticated,
-            felicity_user,
-            "Only Authenticated user can create patients",
-        )
+        felicity_user = await auth_from_info(info)
         if not auth_success:
             return auth_error
 
@@ -171,12 +156,7 @@ class PatientMutations:
         self, info, uid: str, payload: PatientInputType
     ) -> PatientResponse:
 
-        is_authenticated, felicity_user = await auth_from_info(info)
-        verify_user_auth(
-            is_authenticated,
-            felicity_user,
-            "Only Authenticated user can update patients",
-        )
+        felicity_user = await auth_from_info(info)
 
         if not uid:
             return OperationError(error="No uid provided to idenity update obj")

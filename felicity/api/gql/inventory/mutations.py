@@ -4,7 +4,7 @@ from typing import List
 
 import strawberry  # noqa
 
-from felicity.api.gql.auth import auth_from_info, verify_user_auth
+from felicity.api.gql.auth import auth_from_info
 from felicity.api.gql.inventory import types
 from felicity.api.gql.permissions import IsAuthenticated
 from felicity.api.gql.types import OperationError
@@ -172,14 +172,7 @@ class InventoryMutations:
     async def create_stock_item(
             self, info, payload: StockItemInputType
     ) -> StockItemResponse:
-        is_authenticated, felicity_user = await auth_from_info(info)
-        auth_success, auth_error = verify_user_auth(
-            is_authenticated,
-            felicity_user,
-            "Only Authenticated user can create stock item",
-        )
-        if not auth_success:
-            return auth_error
+        felicity_user = await auth_from_info(info)
 
         exists = await entities.StockItem.get(name=payload.name)
         if exists:
@@ -211,12 +204,7 @@ class InventoryMutations:
             self, info, uid: str, payload: StockItemInputType
     ) -> StockItemResponse:
 
-        is_authenticated, felicity_user = await auth_from_info(info)
-        verify_user_auth(
-            is_authenticated,
-            felicity_user,
-            "Only Authenticated user can update stock item",
-        )
+        felicity_user = await auth_from_info(info)
 
         if not uid:
             return OperationError(error="No uid provided to identity update obj.")
@@ -245,14 +233,7 @@ class InventoryMutations:
     async def create_stock_item_variant(
             self, info, stock_item_uid: str, payload: StockItemVariantInputType
     ) -> StockItemVariantResponse:
-        is_authenticated, felicity_user = await auth_from_info(info)
-        auth_success, auth_error = verify_user_auth(
-            is_authenticated,
-            felicity_user,
-            "Only Authenticated user can create stock item variant",
-        )
-        if not auth_success:
-            return auth_error
+        felicity_user = await auth_from_info(info)
 
         exists = await entities.StockItem.get(uid=stock_item_uid)
         if not exists:
@@ -275,12 +256,7 @@ class InventoryMutations:
             self, info, uid: str, payload: StockItemVariantInputType
     ) -> StockItemVariantResponse:
 
-        is_authenticated, felicity_user = await auth_from_info(info)
-        verify_user_auth(
-            is_authenticated,
-            felicity_user,
-            "Only Authenticated user can update stock item variant",
-        )
+        felicity_user = await auth_from_info(info)
 
         if not uid:
             return OperationError(error="No uid provided to identity update obj.")
@@ -309,14 +285,7 @@ class InventoryMutations:
     async def create_stock_category(
             self, info, payload: StockCategoryInputType
     ) -> StockCategoryResponse:
-        is_authenticated, felicity_user = await auth_from_info(info)
-        auth_success, auth_error = verify_user_auth(
-            is_authenticated,
-            felicity_user,
-            "Only Authenticated user can create stock categories",
-        )
-        if not auth_success:
-            return auth_error
+        felicity_user = await auth_from_info(info)
 
         exists = await entities.StockCategory.get(name=payload.name)
         if exists:
@@ -338,12 +307,7 @@ class InventoryMutations:
             self, info, uid: str, payload: StockCategoryInputType
     ) -> StockCategoryResponse:
 
-        is_authenticated, felicity_user = await auth_from_info(info)
-        verify_user_auth(
-            is_authenticated,
-            felicity_user,
-            "Only Authenticated user can update stock category",
-        )
+        felicity_user = await auth_from_info(info)
 
         if not uid:
             return OperationError(
@@ -372,14 +336,7 @@ class InventoryMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_hazard(self, info, payload: HazardInputType) -> HazardResponse:
-        is_authenticated, felicity_user = await auth_from_info(info)
-        auth_success, auth_error = verify_user_auth(
-            is_authenticated,
-            felicity_user,
-            "Only Authenticated user can create hazard",
-        )
-        if not auth_success:
-            return auth_error
+        felicity_user = await auth_from_info(info)
 
         exists = await entities.Hazard.get(name=payload.name)
         if exists:
@@ -401,12 +358,7 @@ class InventoryMutations:
             self, info, uid: str, payload: HazardInputType
     ) -> HazardResponse:
 
-        is_authenticated, felicity_user = await auth_from_info(info)
-        verify_user_auth(
-            is_authenticated,
-            felicity_user,
-            "Only Authenticated user can update hazard",
-        )
+        felicity_user = await auth_from_info(info)
 
         if not uid:
             return OperationError(error="No uid provided to identity update hazard")
@@ -435,14 +387,7 @@ class InventoryMutations:
     async def create_stock_unit(
             self, info, payload: StockUnitInputType
     ) -> StockUnitResponse:
-        is_authenticated, felicity_user = await auth_from_info(info)
-        auth_success, auth_error = verify_user_auth(
-            is_authenticated,
-            felicity_user,
-            "Only Authenticated user can create stock_unit",
-        )
-        if not auth_success:
-            return auth_error
+        felicity_user = await auth_from_info(info)
 
         exists = await entities.StockUnit.get(name=payload.name)
         if exists:
@@ -464,12 +409,7 @@ class InventoryMutations:
             self, info, uid: str, payload: StockUnitInputType
     ) -> StockUnitResponse:
 
-        is_authenticated, felicity_user = await auth_from_info(info)
-        verify_user_auth(
-            is_authenticated,
-            felicity_user,
-            "Only Authenticated user can update stock_unit",
-        )
+        felicity_user = await auth_from_info(info)
 
         if not uid:
             return OperationError(error="No uid provided to identity update obj")
@@ -498,14 +438,7 @@ class InventoryMutations:
     async def create_stock_receipt(
             self, info, payload: StockReceiptInputType
     ) -> StockItemVariantResponse:
-        is_authenticated, felicity_user = await auth_from_info(info)
-        auth_success, auth_error = verify_user_auth(
-            is_authenticated,
-            felicity_user,
-            "Only Authenticated user can receive products",
-        )
-        if not auth_success:
-            return auth_error
+        felicity_user = await auth_from_info(info)
 
         stock_lot = await entities.StockLot.get(product_uid=payload.product_uid, lot_number=payload.lot_number)
         if not stock_lot:
@@ -573,14 +506,7 @@ class InventoryMutations:
     async def create_stock_order(
             self, info, payload: StockOrderInputType
     ) -> StockOrderResponse:
-        is_authenticated, felicity_user = await auth_from_info(info)
-        auth_success, auth_error = verify_user_auth(
-            is_authenticated,
-            felicity_user,
-            "Only Authenticated user can create stock_order",
-        )
-        if not auth_success:
-            return auth_error
+        felicity_user = await auth_from_info(info)
 
         incoming: dict = {
             "created_by_uid": felicity_user.uid,
@@ -615,14 +541,7 @@ class InventoryMutations:
     async def update_stock_order(
             self, info, uid: str, payload: StockOrderInputType
     ) -> StockOrderResponse:
-        is_authenticated, felicity_user = await auth_from_info(info)
-        auth_success, auth_error = verify_user_auth(
-            is_authenticated,
-            felicity_user,
-            "Only Authenticated user can create stock_order",
-        )
-        if not auth_success:
-            return auth_error
+        felicity_user = await auth_from_info(info)
 
         stock_order: entities.StockOrder = await entities.StockOrder.get(uid=uid)
         if stock_order.status != OrderState.PREPARATION:
@@ -671,14 +590,7 @@ class InventoryMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def submit_stock_order(self, info, uid: str) -> StockOrderResponse:
-        is_authenticated, felicity_user = await auth_from_info(info)
-        auth_success, auth_error = verify_user_auth(
-            is_authenticated,
-            felicity_user,
-            "Only Authenticated user can submit stock orders",
-        )
-        if not auth_success:
-            return auth_error
+        felicity_user = await auth_from_info(info)
 
         stock_order: entities.StockOrder = await entities.StockOrder.get(uid=uid)
         if stock_order.status not in [OrderState.PREPARATION]:
@@ -695,14 +607,7 @@ class InventoryMutations:
     async def approve_stock_order(
             self, info, uid: str, payload: StockOrderApprovalInputType
     ) -> StockOrderResponse:
-        is_authenticated, felicity_user = await auth_from_info(info)
-        auth_success, auth_error = verify_user_auth(
-            is_authenticated,
-            felicity_user,
-            "Only Authenticated user can approve stock orders",
-        )
-        if not auth_success:
-            return auth_error
+        felicity_user = await auth_from_info(info)
 
         stock_order: entities.StockOrder = await entities.StockOrder.get(uid=uid)
         if stock_order.status not in [OrderState.SUBMITTED]:
@@ -719,14 +624,7 @@ class InventoryMutations:
     async def issue_stock_order(
             self, info, uid: str, payload: List[StockOrderProductLineInputType]
     ) -> StockOrderResponse:
-        is_authenticated, felicity_user = await auth_from_info(info)
-        auth_success, auth_error = verify_user_auth(
-            is_authenticated,
-            felicity_user,
-            "Only Authenticated user can delete stock orders",
-        )
-        if not auth_success:
-            return auth_error
+        felicity_user = await auth_from_info(info)
 
         stock_order: entities.StockOrder = await entities.StockOrder.get(uid=uid)
         if stock_order.status not in [OrderState.PENDING, OrderState.SUBMITTED]:
@@ -807,14 +705,7 @@ class InventoryMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def delete_stock_order(self, info, uid: str) -> StockOrderResponse:
-        is_authenticated, felicity_user = await auth_from_info(info)
-        auth_success, auth_error = verify_user_auth(
-            is_authenticated,
-            felicity_user,
-            "Only Authenticated user can delete stock orders",
-        )
-        if not auth_success:
-            return auth_error
+        felicity_user = await auth_from_info(info)
 
         stock_order: entities.StockOrder = await entities.StockOrder.get(uid=uid)
         if stock_order.status != OrderState.PREPARATION:
@@ -835,14 +726,7 @@ class InventoryMutations:
     async def create_stock_adjustment(
             self, info, payload: StockAdjustmentInputType
     ) -> StockAdjustmentResponse:
-        is_authenticated, felicity_user = await auth_from_info(info)
-        auth_success, auth_error = verify_user_auth(
-            is_authenticated,
-            felicity_user,
-            "Only Authenticated user can create stock_adjustment",
-        )
-        if not auth_success:
-            return auth_error
+        felicity_user = await auth_from_info(info)
 
         if payload.adjustment_type in [Adjust.PURCHASE, Adjust.TRANSFER_IN, Adjust.PUSHED]:
             return OperationError(

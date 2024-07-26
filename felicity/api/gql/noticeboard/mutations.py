@@ -3,7 +3,7 @@ from typing import List, Optional
 
 import strawberry  # noqa
 
-from felicity.api.gql.auth import auth_from_info, verify_user_auth
+from felicity.api.gql.auth import auth_from_info
 from felicity.api.gql.noticeboard.types import NoticeType
 from felicity.api.gql.permissions import IsAuthenticated
 from felicity.api.gql.types import DeletedItem, DeleteResponse, OperationError
@@ -34,12 +34,7 @@ class NoticeMutations:
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def create_notice(self, info, payload: NoticeInputType) -> NoticeResponse:
 
-        is_authenticated, felicity_user = await auth_from_info(info)
-        verify_user_auth(
-            is_authenticated,
-            felicity_user,
-            "Only Authenticated user can create notices",
-        )
+        felicity_user = await auth_from_info(info)
 
         if not payload.title or not payload.body or not payload.expiry:
             return OperationError(
@@ -84,12 +79,7 @@ class NoticeMutations:
         self, info, uid: str, payload: NoticeInputType
     ) -> NoticeResponse:
 
-        is_authenticated, felicity_user = await auth_from_info(info)
-        verify_user_auth(
-            is_authenticated,
-            felicity_user,
-            "Only Authenticated user can update notices",
-        )
+        felicity_user = await auth_from_info(info)
 
         notice = await entities.Notice.get(uid=uid)
         if not notice:
@@ -131,10 +121,7 @@ class NoticeMutations:
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def view_notice(self, info, uid: str, viewer: str) -> NoticeType:
 
-        is_authenticated, felicity_user = await auth_from_info(info)
-        verify_user_auth(
-            is_authenticated, felicity_user, "Only Authenticated user can view notices"
-        )
+        felicity_user = await auth_from_info(info)
 
         notice: entities.Notice = await entities.Notice.get(uid=uid)
         if not notice:
@@ -150,10 +137,7 @@ class NoticeMutations:
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def delete_notice(self, info, uid: str) -> DeleteResponse:
 
-        is_authenticated, felicity_user = await auth_from_info(info)
-        verify_user_auth(
-            is_authenticated, felicity_user, "Only Authenticated user can view notices"
-        )
+        felicity_user = await auth_from_info(info)
 
         notice: entities.Notice = await entities.Notice.get(uid=uid)
         if not notice:

@@ -7,7 +7,7 @@ from felicity.apps.analysis.enum import ResultState
 from felicity.apps.job.enum import JobAction, JobCategory, JobPriority, JobState
 from felicity.apps.worksheet.enum import WorkSheetState
 from felicity.api.gql.analysis.types import results as r_types
-from felicity.api.gql.auth import auth_from_info, verify_user_auth
+from felicity.api.gql.auth import auth_from_info
 from felicity.api.gql.permissions import (CanVerifyAnalysisResult,
                                           IsAuthenticated)
 from felicity.api.gql.types import OperationError, OperationSuccess
@@ -57,12 +57,7 @@ async def submit_analysis_results(
         source_object: str,
         source_object_uid: str,
 ) -> AnalysisResultOperationResponse:
-    is_authenticated, felicity_user = await auth_from_info(info)
-    verify_user_auth(
-        is_authenticated,
-        felicity_user,
-        "Only Authenticated user can submit analysis results",
-    )
+    felicity_user = await auth_from_info(info)
 
     if len(analysis_results) == 0:
         return OperationError(error=f"No Results to update are provided!")
@@ -106,12 +101,7 @@ async def submit_analysis_results(
 async def verify_analysis_results(
         info, analyses: list[str], source_object: str, source_object_uid: str
 ) -> AnalysisResultOperationResponse:
-    is_authenticated, felicity_user = await auth_from_info(info)
-    verify_user_auth(
-        is_authenticated,
-        felicity_user,
-        "Only Authenticated user can verify analysis results",
-    )
+    felicity_user = await auth_from_info(info)
 
     if len(analyses) == 0:
         return OperationError(error=f"No analyses to verify are provided!")
@@ -147,12 +137,7 @@ async def verify_analysis_results(
 
 @strawberry.mutation(permission_classes=[IsAuthenticated])
 async def retract_analysis_results(info, analyses: list[str]) -> AnalysisResultResponse:
-    is_authenticated, felicity_user = await auth_from_info(info)
-    verify_user_auth(
-        is_authenticated,
-        felicity_user,
-        "Only Authenticated user can retract analysis results",
-    )
+    felicity_user = await auth_from_info(info)
 
     return_results = []
 
@@ -192,12 +177,7 @@ async def retract_analysis_results(info, analyses: list[str]) -> AnalysisResultR
 
 @strawberry.mutation(permission_classes=[IsAuthenticated])
 async def retest_analysis_results(info, analyses: list[str]) -> AnalysisResultResponse:
-    is_authenticated, felicity_user = await auth_from_info(info)
-    verify_user_auth(
-        is_authenticated,
-        felicity_user,
-        "Only Authenticated user can retest analysis results",
-    )
+    felicity_user = await auth_from_info(info)
 
     if len(analyses) == 0:
         return OperationError(error=f"No analyses to Retest are provided!")
@@ -214,12 +194,7 @@ async def retest_analysis_results(info, analyses: list[str]) -> AnalysisResultRe
 
 @strawberry.mutation(permission_classes=[IsAuthenticated])
 async def cancel_analysis_results(info, analyses: list[str]) -> AnalysisResultResponse:
-    is_authenticated, felicity_user = await auth_from_info(info)
-    verify_user_auth(
-        is_authenticated,
-        felicity_user,
-        "Only Authenticated user can cancel analysis results",
-    )
+    felicity_user = await auth_from_info(info)
 
     return_results = []
 
@@ -249,12 +224,7 @@ async def cancel_analysis_results(info, analyses: list[str]) -> AnalysisResultRe
 async def re_instate_analysis_results(
         info, analyses: list[str]
 ) -> AnalysisResultResponse:
-    is_authenticated, felicity_user = await auth_from_info(info)
-    verify_user_auth(
-        is_authenticated,
-        felicity_user,
-        "Only Authenticated user can re instate cancelled analysis " "results",
-    )
+    felicity_user = await auth_from_info(info)
 
     return_results = []
 

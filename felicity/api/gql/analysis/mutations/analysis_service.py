@@ -5,7 +5,7 @@ from typing import List, Optional
 import strawberry  # noqa
 
 from felicity.api.gql.analysis.types import analysis as a_types
-from felicity.api.gql.auth import auth_from_info, verify_user_auth
+from felicity.api.gql.auth import auth_from_info
 from felicity.api.gql.permissions import IsAuthenticated
 from felicity.api.gql.types import OperationError
 from felicity.apps.analysis import schemas, utils
@@ -59,10 +59,7 @@ class AnalysisMappingInputType:
 
 @strawberry.mutation(permission_classes=[IsAuthenticated])
 async def create_analysis(info, payload: AnalysisInputType) -> ProfilesServiceResponse:
-    is_authenticated, felicity_user = await auth_from_info(info)
-    verify_user_auth(
-        is_authenticated, felicity_user, "Only Authenticated user can create analysis"
-    )
+    felicity_user = await auth_from_info(info)
 
     if not payload.name or not payload.description:
         return OperationError(error="Name and Description are mandatory")
@@ -114,10 +111,7 @@ async def create_analysis(info, payload: AnalysisInputType) -> ProfilesServiceRe
 async def update_analysis(
         info, uid: str, payload: AnalysisInputType
 ) -> ProfilesServiceResponse:
-    is_authenticated, felicity_user = await auth_from_info(info)
-    verify_user_auth(
-        is_authenticated, felicity_user, "Only Authenticated user can update analysis"
-    )
+    felicity_user = await auth_from_info(info)
 
     analysis = await analysis_entities.Analysis.get(uid=uid)
     if not analysis:
@@ -166,12 +160,7 @@ async def update_analysis(
 async def create_analysis_mapping(
         info, payload: AnalysisMappingInputType
 ) -> AnalysisMappingResponse:
-    is_authenticated, felicity_user = await auth_from_info(info)
-    verify_user_auth(
-        is_authenticated,
-        felicity_user,
-        "Only Authenticated user can create analysiss mappigs",
-    )
+    felicity_user = await auth_from_info(info)
 
     exists = await analysis_entities.AnalysisCoding.get(code=payload.code)
     if exists:
@@ -195,12 +184,7 @@ async def create_analysis_mapping(
 async def update_analysis_mapping(
         info, uid: str, payload: AnalysisMappingInputType
 ) -> AnalysisMappingResponse:
-    is_authenticated, felicity_user = await auth_from_info(info)
-    verify_user_auth(
-        is_authenticated,
-        felicity_user,
-        "Only Authenticated user can update analysis mappings",
-    )
+    felicity_user = await auth_from_info(info)
 
     analysis_mapping = await analysis_entities.AnalysisCoding.get(uid=uid)
     if not analysis_mapping:

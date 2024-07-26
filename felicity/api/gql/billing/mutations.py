@@ -4,7 +4,7 @@ from datetime import datetime
 import strawberry  # noqa
 from strawberry.types import Info  # noqa
 
-from felicity.api.gql.auth import auth_from_info, verify_user_auth
+from felicity.api.gql.auth import auth_from_info
 from felicity.api.gql.billing.types import (AnalysisDiscountType,
                                             AnalysisPriceType,
                                             ProfileDiscountType,
@@ -227,14 +227,7 @@ class BillingMutations:
             self, info: Info, payload: VoucherInput
     ) -> VoucherResponse:
 
-        is_authenticated, felicity_user = await auth_from_info(info)
-        success, auth_err = verify_user_auth(
-            is_authenticated,
-            felicity_user,
-            "Only Authenticated user can create vouchers",
-        )
-        if not success:
-            return auth_err
+        felicity_user = await auth_from_info(info)
 
         exists = await entities.Voucher.get(name=payload.name)
         if exists:
@@ -256,12 +249,7 @@ class BillingMutations:
             self, info, uid: str, payload: VoucherInput
     ) -> VoucherResponse:
 
-        is_authenticated, felicity_user = await auth_from_info(info)
-        verify_user_auth(
-            is_authenticated,
-            felicity_user,
-            "Only Authenticated user can update vouchers",
-        )
+        felicity_user = await auth_from_info(info)
 
         if not uid:
             return OperationError(error="No uid provided to identify update obj")
@@ -288,14 +276,7 @@ class BillingMutations:
             self, info: Info, payload: VoucherCodeInput
     ) -> VoucherCodeResponse:
 
-        is_authenticated, felicity_user = await auth_from_info(info)
-        success, auth_err = verify_user_auth(
-            is_authenticated,
-            felicity_user,
-            "Only Authenticated user can create voucher codes",
-        )
-        if not success:
-            return auth_err
+        felicity_user = await auth_from_info(info)
 
         exists = await entities.VoucherCode.get(code=payload.code)
         if exists:
@@ -317,12 +298,7 @@ class BillingMutations:
             self, info, uid: str, payload: VoucherCodeInput
     ) -> VoucherCodeResponse:
 
-        is_authenticated, felicity_user = await auth_from_info(info)
-        verify_user_auth(
-            is_authenticated,
-            felicity_user,
-            "Only Authenticated user can update voucher codes",
-        )
+        felicity_user = await auth_from_info(info)
 
         if not uid:
             return OperationError(error="No uid provided to identify update obj")
@@ -349,12 +325,7 @@ class BillingMutations:
             self, info, payload: BillTransactionInput
     ) -> TestBillTransactionResponse:
 
-        is_authenticated, felicity_user = await auth_from_info(info)
-        verify_user_auth(
-            is_authenticated,
-            felicity_user,
-            "Only Authenticated user can add test bill transactions",
-        )
+        felicity_user = await auth_from_info(info)
         if payload.amount <= 0:
             return OperationError(
                 error="Invalid transaction Amount.",
@@ -401,12 +372,7 @@ class BillingMutations:
             self, info, payload: ApplyVoucherInput
     ) -> TestBillTransactionResponse:
 
-        is_authenticated, felicity_user = await auth_from_info(info)
-        verify_user_auth(
-            is_authenticated,
-            felicity_user,
-            "Only Authenticated user can add test bill transactions",
-        )
+        felicity_user = await auth_from_info(info)
         bill = await utils.apply_voucher(
             payload.voucher_code, payload.test_bill_uid, payload.customer_uid
         )

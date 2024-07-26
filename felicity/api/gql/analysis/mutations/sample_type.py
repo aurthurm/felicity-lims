@@ -4,7 +4,7 @@ from typing import Optional
 import strawberry  # noqa
 
 from felicity.api.gql.analysis.types import analysis as a_types
-from felicity.api.gql.auth import auth_from_info, verify_user_auth
+from felicity.api.gql.auth import auth_from_info
 from felicity.api.gql.permissions import IsAuthenticated
 from felicity.api.gql.types import OperationError
 from felicity.apps.analysis import schemas
@@ -49,12 +49,7 @@ class SampleTypeMappingInputType:
 @strawberry.mutation(permission_classes=[IsAuthenticated])
 async def create_sample_type(info, payload: SampleTypeInputType) -> SampleTypeResponse:
 
-    is_authenticated, felicity_user = await auth_from_info(info)
-    verify_user_auth(
-        is_authenticated,
-        felicity_user,
-        "Only Authenticated user can create sample types",
-    )
+    felicity_user = await auth_from_info(info)
 
     if not payload.name or not payload.abbr:
         return OperationError(error="Name and Description are mandatory")
@@ -82,12 +77,7 @@ async def update_sample_type(
     info, uid: str, payload: SampleTypeInputType
 ) -> SampleTypeResponse:
 
-    is_authenticated, felicity_user = await auth_from_info(info)
-    verify_user_auth(
-        is_authenticated,
-        felicity_user,
-        "Only Authenticated user can update sample types",
-    )
+    felicity_user = await auth_from_info(info)
 
     sample_type = await analysis_entities.SampleType.get(uid=uid)
     if not sample_type:
@@ -111,12 +101,7 @@ async def create_sample_type_mapping(
     info, payload: SampleTypeMappingInputType
 ) -> SampleTypeMappingResponse:
 
-    is_authenticated, felicity_user = await auth_from_info(info)
-    verify_user_auth(
-        is_authenticated,
-        felicity_user,
-        "Only Authenticated user can create sample type mappigs",
-    )
+    felicity_user = await auth_from_info(info)
 
     exists = await analysis_entities.SampleTypeCoding.get(code=payload.code)
     if exists:
@@ -141,12 +126,7 @@ async def update_sample_type_mapping(
     info, uid: str, payload: SampleTypeMappingInputType
 ) -> SampleTypeMappingResponse:
 
-    is_authenticated, felicity_user = await auth_from_info(info)
-    verify_user_auth(
-        is_authenticated,
-        felicity_user,
-        "Only Authenticated user can update sample_type mappings",
-    )
+    felicity_user = await auth_from_info(info)
 
     sample_type_mapping = await analysis_entities.SampleTypeCoding.get(uid=uid)
     if not sample_type_mapping:

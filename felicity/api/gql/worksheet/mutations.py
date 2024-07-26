@@ -3,7 +3,7 @@ from typing import List, Optional
 
 import strawberry  # noqa
 
-from felicity.api.gql.auth import auth_from_info, verify_user_auth
+from felicity.api.gql.auth import auth_from_info
 from felicity.api.gql.permissions import IsAuthenticated
 from felicity.api.gql.types import OperationError
 from felicity.api.gql.worksheet.types import (WorkSheetTemplateType,
@@ -75,12 +75,7 @@ class WorkSheetMutations:
             self, info, payload: WorksheetTemplateInputType
     ) -> WorkSheetTemplateResponse:
 
-        is_authenticated, felicity_user = await auth_from_info(info)
-        verify_user_auth(
-            is_authenticated,
-            felicity_user,
-            "Only Authenticated user can create worksheet templates",
-        )
+        felicity_user = await auth_from_info(info)
 
         if not payload.name or not payload.sample_type_uid or not payload.analysis_uid:
             return OperationError(
@@ -195,12 +190,7 @@ class WorkSheetMutations:
             count: int | None = 1,
     ) -> WorkSheetsResponse:
 
-        is_authenticated, felicity_user = await auth_from_info(info)
-        verify_user_auth(
-            is_authenticated,
-            felicity_user,
-            "Only Authenticated user can create worksheets",
-        )
+        felicity_user = await auth_from_info(info)
 
         if not template_uid or not analyst_uid:
             return OperationError(error="Analyst and Template are mandatory")
@@ -278,12 +268,7 @@ class WorkSheetMutations:
             samples: Optional[List[str]] = None,
     ) -> WorkSheetResponse:  # noqa
 
-        is_authenticated, felicity_user = await auth_from_info(info)
-        verify_user_auth(
-            is_authenticated,
-            felicity_user,
-            "Only Authenticated user can update worksheets",
-        )
+        felicity_user = await auth_from_info(info)
 
         if not worksheet_uid:
             return OperationError(error="Worksheet uid required")
@@ -352,12 +337,7 @@ class WorkSheetMutations:
             self, info, template_uid: str, worksheet_uid: str
     ) -> WorkSheetResponse:
 
-        is_authenticated, felicity_user = await auth_from_info(info)
-        verify_user_auth(
-            is_authenticated,
-            felicity_user,
-            "Only Authenticated user can update worksheets",
-        )
+        felicity_user = await auth_from_info(info)
 
         if not template_uid or not worksheet_uid:
             return OperationError(error="Template and Worksheet are required")
@@ -419,12 +399,7 @@ class WorkSheetMutations:
             qc_template_uid: str | None = None,
     ) -> WorkSheetResponse:
 
-        is_authenticated, felicity_user = await auth_from_info(info)
-        verify_user_auth(
-            is_authenticated,
-            felicity_user,
-            "Only Authenticated user can update worksheets",
-        )
+        felicity_user = await auth_from_info(info)
 
         if not len(analyses_uids) > 0:
             return OperationError(error="Analyses for assignment are required")

@@ -3,7 +3,7 @@ import logging
 import strawberry  # noqa
 from strawberry.types import Info  # noqa
 
-from felicity.api.gql.auth import auth_from_info, verify_user_auth
+from felicity.api.gql.auth import auth_from_info
 from felicity.api.gql.client.types import ClientContactType, ClientType
 from felicity.api.gql.permissions import IsAuthenticated
 from felicity.api.gql.types import DeletedItem, OperationError
@@ -59,14 +59,7 @@ class ClientMutations:
         self, info: Info, payload: ClientInputType
     ) -> ClientResponse:
 
-        is_authenticated, felicity_user = await auth_from_info(info)
-        success, auth_err = verify_user_auth(
-            is_authenticated,
-            felicity_user,
-            "Only Authenticated user can create clients",
-        )
-        if not success:
-            return auth_err
+        felicity_user = await auth_from_info(info)
 
         if not payload.code or not payload.name:
             return OperationError(
@@ -108,12 +101,7 @@ class ClientMutations:
         self, info, uid: str, payload: ClientInputType
     ) -> ClientResponse:
 
-        is_authenticated, felicity_user = await auth_from_info(info)
-        verify_user_auth(
-            is_authenticated,
-            felicity_user,
-            "Only Authenticated user can update clients",
-        )
+        felicity_user = await auth_from_info(info)
 
         if not uid:
             return OperationError(error="No uid provided to identify update obj")
@@ -140,12 +128,7 @@ class ClientMutations:
         self, info, payload: ClientContactInputType
     ) -> ClientContactResponse:
 
-        is_authenticated, felicity_user = await auth_from_info(info)
-        verify_user_auth(
-            is_authenticated,
-            felicity_user,
-            "Only Authenticated user can create client contacts",
-        )
+        felicity_user = await auth_from_info(info)
 
         if not payload.client_uid or not payload.first_name:
             return OperationError(error="Please Provide a first_name and a client uid")
@@ -183,12 +166,7 @@ class ClientMutations:
         self, info, uid: str, payload: ClientContactInputType
     ) -> ClientContactResponse:
 
-        is_authenticated, felicity_user = await auth_from_info(info)
-        verify_user_auth(
-            is_authenticated,
-            felicity_user,
-            "Only Authenticated user can update client contacts",
-        )
+        felicity_user = await auth_from_info(info)
 
         if not uid:
             return OperationError(error="No uid provided to identify update obj")
@@ -215,12 +193,7 @@ class ClientMutations:
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def delete_client_contact(self, info, uid: str) -> DeleteContactResponse:
 
-        is_authenticated, felicity_user = await auth_from_info(info)
-        verify_user_auth(
-            is_authenticated,
-            felicity_user,
-            "Only Authenticated user can delete/deactivate client contacts",
-        )
+        felicity_user = await auth_from_info(info)
 
         if not uid:
             return OperationError(error="No uid provided to identify deletion obj")

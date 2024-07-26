@@ -4,7 +4,7 @@ from typing import List, Optional
 import strawberry  # noqa
 from sqlalchemy import or_
 
-from felicity.api.gql.auth import auth_from_info, verify_user_auth
+from felicity.api.gql.auth import auth_from_info
 from felicity.api.gql.permissions import IsAuthenticated
 from felicity.api.gql.shipment import types
 from felicity.api.gql.shipment.types import ShipmentType
@@ -87,12 +87,7 @@ class ShipmentMutations:
         self, info, payload: ShipmentInputType
     ) -> ShipmentsResponse:
 
-        is_authenticated, felicity_user = await auth_from_info(info)
-        verify_user_auth(
-            is_authenticated,
-            felicity_user,
-            "Only Authenticated user can create shipments",
-        )
+        felicity_user = await auth_from_info(info)
 
         if not payload.courier:
             return OperationError(error="Courier Details are required")
@@ -130,12 +125,7 @@ class ShipmentMutations:
         self, info, uid: str, payload: ShipmentUpdateInputType
     ) -> ShipmentResponse:  # noqa
 
-        is_authenticated, felicity_user = await auth_from_info(info)
-        verify_user_auth(
-            is_authenticated,
-            felicity_user,
-            "Only Authenticated user can update shipments",
-        )
+        felicity_user = await auth_from_info(info)
 
         if not uid:
             return OperationError(
@@ -168,12 +158,7 @@ class ShipmentMutations:
         self, info, uid: str, action: str
     ) -> ShipmentResponse:  # noqa
 
-        is_authenticated, felicity_user = await auth_from_info(info)
-        verify_user_auth(
-            is_authenticated,
-            felicity_user,
-            "Only Authenticated user can action shipments",
-        )
+        felicity_user = await auth_from_info(info)
 
         if not uid or not action:
             return OperationError(
@@ -211,12 +196,7 @@ class ShipmentMutations:
         self, info, uid: str, payload: ShipmentManageSamplesInput
     ) -> ShipmentResponse:
 
-        is_authenticated, felicity_user = await auth_from_info(info)
-        verify_user_auth(
-            is_authenticated,
-            felicity_user,
-            "Only Authenticated user can update shipments",
-        )
+        felicity_user = await auth_from_info(info)
 
         if not len(payload.samples) > 0:
             return OperationError(error="Samples for assignment are required")
@@ -256,12 +236,7 @@ class ShipmentMutations:
         info, payload: ReferralLaboratoryInputType
     ) -> ReferralLaboratoryResponse:
 
-        is_authenticated, felicity_user = await auth_from_info(info)
-        verify_user_auth(
-            is_authenticated,
-            felicity_user,
-            "Only Authenticated user can create referral labs",
-        )
+        felicity_user = await auth_from_info(info)
 
         if not payload.name or not payload.code:
             return OperationError(error="Name and Code are mandatory")
@@ -293,12 +268,7 @@ class ShipmentMutations:
         info, uid: str, payload: ReferralLaboratoryInputType
     ) -> ReferralLaboratoryResponse:
 
-        is_authenticated, felicity_user = await auth_from_info(info)
-        verify_user_auth(
-            is_authenticated,
-            felicity_user,
-            "Only Authenticated user can update referral labs",
-        )
+        felicity_user = await auth_from_info(info)
 
         referral_laboratory = await entities.ReferralLaboratory.get(uid=uid)
         if not referral_laboratory:

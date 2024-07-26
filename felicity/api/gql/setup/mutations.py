@@ -171,7 +171,7 @@ class SetupMutations:
         self, info, uid: str, payload: LaboratorySettingInputType
     ) -> LaboratorySettingResponse:  # noqa
 
-        is_authenticated, felicity_user = await auth_from_info(info)
+        felicity_user = await auth_from_info(info)
 
         if not uid:
             return OperationError(error="No uid provided to identity update obj")

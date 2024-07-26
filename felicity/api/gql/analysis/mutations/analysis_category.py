@@ -4,7 +4,7 @@ from typing import Optional
 import strawberry  # noqa
 
 from felicity.api.gql.analysis.types import analysis as a_types
-from felicity.api.gql.auth import auth_from_info, verify_user_auth
+from felicity.api.gql.auth import auth_from_info
 from felicity.api.gql.permissions import IsAuthenticated
 from felicity.api.gql.types import OperationError
 from felicity.apps.analysis import schemas
@@ -33,12 +33,7 @@ async def create_analysis_category(
     info, payload: AnalysisCategoryInputType
 ) -> AnalysisCategoryResponse:
 
-    is_authenticated, felicity_user = await auth_from_info(info)
-    verify_user_auth(
-        is_authenticated,
-        felicity_user,
-        "Only Authenticated user can create analysis categories",
-    )
+    felicity_user = await auth_from_info(info)
 
     if not payload.name or not payload.description:
         return OperationError(
@@ -72,12 +67,7 @@ async def update_analysis_category(
     self, info, uid: str, payload: AnalysisCategoryInputType
 ) -> AnalysisCategoryResponse:  # noqa
 
-    is_authenticated, felicity_user = await auth_from_info(info)
-    verify_user_auth(
-        is_authenticated,
-        felicity_user,
-        "Only Authenticated user can update analysis categories",
-    )
+    felicity_user = await auth_from_info(info)
 
     analysis_category = await analysis_entities.AnalysisCategory.get(uid=uid)
     if not analysis_category:

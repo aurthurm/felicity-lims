@@ -1764,14 +1764,6 @@
         "documentation": {}
     },
     {
-        "label": "verify_user_auth",
-        "importPath": "felicity.api.gql.auth",
-        "description": "felicity.api.gql.auth",
-        "isExtraImport": true,
-        "detail": "felicity.api.gql.auth",
-        "documentation": {}
-    },
-    {
         "label": "auth_from_info",
         "importPath": "felicity.api.gql.auth",
         "description": "felicity.api.gql.auth",
@@ -1780,183 +1772,7 @@
         "documentation": {}
     },
     {
-        "label": "verify_user_auth",
-        "importPath": "felicity.api.gql.auth",
-        "description": "felicity.api.gql.auth",
-        "isExtraImport": true,
-        "detail": "felicity.api.gql.auth",
-        "documentation": {}
-    },
-    {
         "label": "auth_from_info",
-        "importPath": "felicity.api.gql.auth",
-        "description": "felicity.api.gql.auth",
-        "isExtraImport": true,
-        "detail": "felicity.api.gql.auth",
-        "documentation": {}
-    },
-    {
-        "label": "verify_user_auth",
-        "importPath": "felicity.api.gql.auth",
-        "description": "felicity.api.gql.auth",
-        "isExtraImport": true,
-        "detail": "felicity.api.gql.auth",
-        "documentation": {}
-    },
-    {
-        "label": "auth_from_info",
-        "importPath": "felicity.api.gql.auth",
-        "description": "felicity.api.gql.auth",
-        "isExtraImport": true,
-        "detail": "felicity.api.gql.auth",
-        "documentation": {}
-    },
-    {
-        "label": "verify_user_auth",
-        "importPath": "felicity.api.gql.auth",
-        "description": "felicity.api.gql.auth",
-        "isExtraImport": true,
-        "detail": "felicity.api.gql.auth",
-        "documentation": {}
-    },
-    {
-        "label": "auth_from_info",
-        "importPath": "felicity.api.gql.auth",
-        "description": "felicity.api.gql.auth",
-        "isExtraImport": true,
-        "detail": "felicity.api.gql.auth",
-        "documentation": {}
-    },
-    {
-        "label": "verify_user_auth",
-        "importPath": "felicity.api.gql.auth",
-        "description": "felicity.api.gql.auth",
-        "isExtraImport": true,
-        "detail": "felicity.api.gql.auth",
-        "documentation": {}
-    },
-    {
-        "label": "auth_from_info",
-        "importPath": "felicity.api.gql.auth",
-        "description": "felicity.api.gql.auth",
-        "isExtraImport": true,
-        "detail": "felicity.api.gql.auth",
-        "documentation": {}
-    },
-    {
-        "label": "verify_user_auth",
-        "importPath": "felicity.api.gql.auth",
-        "description": "felicity.api.gql.auth",
-        "isExtraImport": true,
-        "detail": "felicity.api.gql.auth",
-        "documentation": {}
-    },
-    {
-        "label": "auth_from_info",
-        "importPath": "felicity.api.gql.auth",
-        "description": "felicity.api.gql.auth",
-        "isExtraImport": true,
-        "detail": "felicity.api.gql.auth",
-        "documentation": {}
-    },
-    {
-        "label": "verify_user_auth",
-        "importPath": "felicity.api.gql.auth",
-        "description": "felicity.api.gql.auth",
-        "isExtraImport": true,
-        "detail": "felicity.api.gql.auth",
-        "documentation": {}
-    },
-    {
-        "label": "auth_from_info",
-        "importPath": "felicity.api.gql.auth",
-        "description": "felicity.api.gql.auth",
-        "isExtraImport": true,
-        "detail": "felicity.api.gql.auth",
-        "documentation": {}
-    },
-    {
-        "label": "verify_user_auth",
-        "importPath": "felicity.api.gql.auth",
-        "description": "felicity.api.gql.auth",
-        "isExtraImport": true,
-        "detail": "felicity.api.gql.auth",
-        "documentation": {}
-    },
-    {
-        "label": "auth_from_info",
-        "importPath": "felicity.api.gql.auth",
-        "description": "felicity.api.gql.auth",
-        "isExtraImport": true,
-        "detail": "felicity.api.gql.auth",
-        "documentation": {}
-    },
-    {
-        "label": "verify_user_auth",
-        "importPath": "felicity.api.gql.auth",
-        "description": "felicity.api.gql.auth",
-        "isExtraImport": true,
-        "detail": "felicity.api.gql.auth",
-        "documentation": {}
-    },
-    {
-        "label": "auth_from_info",
-        "importPath": "felicity.api.gql.auth",
-        "description": "felicity.api.gql.auth",
-        "isExtraImport": true,
-        "detail": "felicity.api.gql.auth",
-        "documentation": {}
-    },
-    {
-        "label": "verify_user_auth",
-        "importPath": "felicity.api.gql.auth",
-        "description": "felicity.api.gql.auth",
-        "isExtraImport": true,
-        "detail": "felicity.api.gql.auth",
-        "documentation": {}
-    },
-    {
-        "label": "auth_from_info",
-        "importPath": "felicity.api.gql.auth",
-        "description": "felicity.api.gql.auth",
-        "isExtraImport": true,
-        "detail": "felicity.api.gql.auth",
-        "documentation": {}
-    },
-    {
-        "label": "verify_user_auth",
-        "importPath": "felicity.api.gql.auth",
-        "description": "felicity.api.gql.auth",
-        "isExtraImport": true,
-        "detail": "felicity.api.gql.auth",
-        "documentation": {}
-    },
-    {
-        "label": "auth_from_info",
-        "importPath": "felicity.api.gql.auth",
-        "description": "felicity.api.gql.auth",
-        "isExtraImport": true,
-        "detail": "felicity.api.gql.auth",
-        "documentation": {}
-    },
-    {
-        "label": "verify_user_auth",
-        "importPath": "felicity.api.gql.auth",
-        "description": "felicity.api.gql.auth",
-        "isExtraImport": true,
-        "detail": "felicity.api.gql.auth",
-        "documentation": {}
-    },
-    {
-        "label": "auth_from_info",
-        "importPath": "felicity.api.gql.auth",
-        "description": "felicity.api.gql.auth",
-        "isExtraImport": true,
-        "detail": "felicity.api.gql.auth",
-        "documentation": {}
-    },
-    {
-        "label": "verify_user_auth",
         "importPath": "felicity.api.gql.auth",
         "description": "felicity.api.gql.auth",
         "isExtraImport": true,
@@ -1980,14 +1796,6 @@
         "documentation": {}
     },
     {
-        "label": "verify_user_auth",
-        "importPath": "felicity.api.gql.auth",
-        "description": "felicity.api.gql.auth",
-        "isExtraImport": true,
-        "detail": "felicity.api.gql.auth",
-        "documentation": {}
-    },
-    {
         "label": "auth_from_info",
         "importPath": "felicity.api.gql.auth",
         "description": "felicity.api.gql.auth",
@@ -1996,55 +1804,7 @@
         "documentation": {}
     },
     {
-        "label": "verify_user_auth",
-        "importPath": "felicity.api.gql.auth",
-        "description": "felicity.api.gql.auth",
-        "isExtraImport": true,
-        "detail": "felicity.api.gql.auth",
-        "documentation": {}
-    },
-    {
         "label": "auth_from_info",
-        "importPath": "felicity.api.gql.auth",
-        "description": "felicity.api.gql.auth",
-        "isExtraImport": true,
-        "detail": "felicity.api.gql.auth",
-        "documentation": {}
-    },
-    {
-        "label": "verify_user_auth",
-        "importPath": "felicity.api.gql.auth",
-        "description": "felicity.api.gql.auth",
-        "isExtraImport": true,
-        "detail": "felicity.api.gql.auth",
-        "documentation": {}
-    },
-    {
-        "label": "auth_from_info",
-        "importPath": "felicity.api.gql.auth",
-        "description": "felicity.api.gql.auth",
-        "isExtraImport": true,
-        "detail": "felicity.api.gql.auth",
-        "documentation": {}
-    },
-    {
-        "label": "verify_user_auth",
-        "importPath": "felicity.api.gql.auth",
-        "description": "felicity.api.gql.auth",
-        "isExtraImport": true,
-        "detail": "felicity.api.gql.auth",
-        "documentation": {}
-    },
-    {
-        "label": "auth_from_info",
-        "importPath": "felicity.api.gql.auth",
-        "description": "felicity.api.gql.auth",
-        "isExtraImport": true,
-        "detail": "felicity.api.gql.auth",
-        "documentation": {}
-    },
-    {
-        "label": "verify_user_auth",
         "importPath": "felicity.api.gql.auth",
         "description": "felicity.api.gql.auth",
         "isExtraImport": true,
@@ -2068,7 +1828,7 @@
         "documentation": {}
     },
     {
-        "label": "verify_user_auth",
+        "label": "auth_from_info",
         "importPath": "felicity.api.gql.auth",
         "description": "felicity.api.gql.auth",
         "isExtraImport": true,
@@ -2084,7 +1844,7 @@
         "documentation": {}
     },
     {
-        "label": "verify_user_auth",
+        "label": "auth_from_info",
         "importPath": "felicity.api.gql.auth",
         "description": "felicity.api.gql.auth",
         "isExtraImport": true,
@@ -2100,7 +1860,7 @@
         "documentation": {}
     },
     {
-        "label": "verify_user_auth",
+        "label": "auth_from_info",
         "importPath": "felicity.api.gql.auth",
         "description": "felicity.api.gql.auth",
         "isExtraImport": true,
@@ -2116,7 +1876,71 @@
         "documentation": {}
     },
     {
-        "label": "verify_user_auth",
+        "label": "auth_from_info",
+        "importPath": "felicity.api.gql.auth",
+        "description": "felicity.api.gql.auth",
+        "isExtraImport": true,
+        "detail": "felicity.api.gql.auth",
+        "documentation": {}
+    },
+    {
+        "label": "auth_from_info",
+        "importPath": "felicity.api.gql.auth",
+        "description": "felicity.api.gql.auth",
+        "isExtraImport": true,
+        "detail": "felicity.api.gql.auth",
+        "documentation": {}
+    },
+    {
+        "label": "auth_from_info",
+        "importPath": "felicity.api.gql.auth",
+        "description": "felicity.api.gql.auth",
+        "isExtraImport": true,
+        "detail": "felicity.api.gql.auth",
+        "documentation": {}
+    },
+    {
+        "label": "auth_from_info",
+        "importPath": "felicity.api.gql.auth",
+        "description": "felicity.api.gql.auth",
+        "isExtraImport": true,
+        "detail": "felicity.api.gql.auth",
+        "documentation": {}
+    },
+    {
+        "label": "auth_from_info",
+        "importPath": "felicity.api.gql.auth",
+        "description": "felicity.api.gql.auth",
+        "isExtraImport": true,
+        "detail": "felicity.api.gql.auth",
+        "documentation": {}
+    },
+    {
+        "label": "auth_from_info",
+        "importPath": "felicity.api.gql.auth",
+        "description": "felicity.api.gql.auth",
+        "isExtraImport": true,
+        "detail": "felicity.api.gql.auth",
+        "documentation": {}
+    },
+    {
+        "label": "auth_from_info",
+        "importPath": "felicity.api.gql.auth",
+        "description": "felicity.api.gql.auth",
+        "isExtraImport": true,
+        "detail": "felicity.api.gql.auth",
+        "documentation": {}
+    },
+    {
+        "label": "auth_from_info",
+        "importPath": "felicity.api.gql.auth",
+        "description": "felicity.api.gql.auth",
+        "isExtraImport": true,
+        "detail": "felicity.api.gql.auth",
+        "documentation": {}
+    },
+    {
+        "label": "auth_from_info",
         "importPath": "felicity.api.gql.auth",
         "description": "felicity.api.gql.auth",
         "isExtraImport": true,
@@ -21329,7 +21153,7 @@
         "kind": 6,
         "importPath": "felicity.api.gql.analysis.mutations.analysis_category",
         "description": "felicity.api.gql.analysis.mutations.analysis_category",
-        "peekOfCode": "class AnalysisCategoryInputType:\n    name: str\n    department_uid: str | None = None\n    description: str | None = None\n    active: bool | None = True\n@strawberry.mutation(permission_classes=[IsAuthenticated])\nasync def create_analysis_category(\n    info, payload: AnalysisCategoryInputType\n) -> AnalysisCategoryResponse:\n    is_authenticated, felicity_user = await auth_from_info(info)",
+        "peekOfCode": "class AnalysisCategoryInputType:\n    name: str\n    department_uid: str | None = None\n    description: str | None = None\n    active: bool | None = True\n@strawberry.mutation(permission_classes=[IsAuthenticated])\nasync def create_analysis_category(\n    info, payload: AnalysisCategoryInputType\n) -> AnalysisCategoryResponse:\n    felicity_user = await auth_from_info(info)",
         "detail": "felicity.api.gql.analysis.mutations.analysis_category",
         "documentation": {}
     },
@@ -21446,7 +21270,7 @@
         "kind": 5,
         "importPath": "felicity.api.gql.analysis.mutations.analysis_other",
         "description": "felicity.api.gql.analysis.mutations.analysis_other",
-        "peekOfCode": "AnalysisSpecificationResponse = strawberry.union(\n    \"AnalysisSpecificationResponse\",\n    (a_types.AnalysisSpecificationType, OperationError),  # noqa\n    description=\"\",\n)\n@strawberry.mutation(permission_classes=[IsAuthenticated])\nasync def create_analysis_interim(\n    info, payload: AnalysisInterimInput\n) -> AnalysisInterimResponse:\n    is_authenticated, felicity_user = await auth_from_info(info)",
+        "peekOfCode": "AnalysisSpecificationResponse = strawberry.union(\n    \"AnalysisSpecificationResponse\",\n    (a_types.AnalysisSpecificationType, OperationError),  # noqa\n    description=\"\",\n)\n@strawberry.mutation(permission_classes=[IsAuthenticated])\nasync def create_analysis_interim(\n    info, payload: AnalysisInterimInput\n) -> AnalysisInterimResponse:\n    felicity_user = await auth_from_info(info)",
         "detail": "felicity.api.gql.analysis.mutations.analysis_other",
         "documentation": {}
     },
@@ -21473,7 +21297,7 @@
         "kind": 6,
         "importPath": "felicity.api.gql.analysis.mutations.analysis_profile",
         "description": "felicity.api.gql.analysis.mutations.analysis_profile",
-        "peekOfCode": "class ProfileMappingInputType:\n    profile_uid: str\n    coding_standard_uid: str\n    name: str\n    code: str\n    description: str | None = None\n@strawberry.mutation(permission_classes=[IsAuthenticated])\nasync def create_profile(info, payload: ProfileInputType) -> AnalysisProfileResponse:\n    is_authenticated, felicity_user = await auth_from_info(info)\n    verify_user_auth(",
+        "peekOfCode": "class ProfileMappingInputType:\n    profile_uid: str\n    coding_standard_uid: str\n    name: str\n    code: str\n    description: str | None = None\n@strawberry.mutation(permission_classes=[IsAuthenticated])\nasync def create_profile(info, payload: ProfileInputType) -> AnalysisProfileResponse:\n    felicity_user = await auth_from_info(info)\n    if not payload.name or not payload.description:",
         "detail": "felicity.api.gql.analysis.mutations.analysis_profile",
         "documentation": {}
     },
@@ -21572,7 +21396,7 @@
         "kind": 6,
         "importPath": "felicity.api.gql.analysis.mutations.analysis_request",
         "description": "felicity.api.gql.analysis.mutations.analysis_request",
-        "peekOfCode": "class ManageAnalysisInputType:\n    cancel: List[str] = None\n    add: List[str] = None\n@strawberry.mutation(permission_classes=[IsAuthenticated])\nasync def create_analysis_request(\n        info, payload: AnalysisRequestInputType\n) -> AnalysisRequestResponse:\n    logger.info(\"Received request to create analysis request\")\n    is_authenticated, felicity_user = await auth_from_info(info)\n    verify_user_auth(",
+        "peekOfCode": "class ManageAnalysisInputType:\n    cancel: List[str] = None\n    add: List[str] = None\n@strawberry.mutation(permission_classes=[IsAuthenticated])\nasync def create_analysis_request(\n        info, payload: AnalysisRequestInputType\n) -> AnalysisRequestResponse:\n    logger.info(\"Received request to create analysis request\")\n    felicity_user = await auth_from_info(info)\n    # are samples valid",
         "detail": "felicity.api.gql.analysis.mutations.analysis_request",
         "documentation": {}
     },
@@ -21671,7 +21495,7 @@
         "kind": 6,
         "importPath": "felicity.api.gql.analysis.mutations.analysis_service",
         "description": "felicity.api.gql.analysis.mutations.analysis_service",
-        "peekOfCode": "class AnalysisMappingInputType:\n    analysis_uid: str\n    coding_standard_uid: str\n    name: str\n    code: str\n    description: str | None = None\n@strawberry.mutation(permission_classes=[IsAuthenticated])\nasync def create_analysis(info, payload: AnalysisInputType) -> ProfilesServiceResponse:\n    is_authenticated, felicity_user = await auth_from_info(info)\n    verify_user_auth(",
+        "peekOfCode": "class AnalysisMappingInputType:\n    analysis_uid: str\n    coding_standard_uid: str\n    name: str\n    code: str\n    description: str | None = None\n@strawberry.mutation(permission_classes=[IsAuthenticated])\nasync def create_analysis(info, payload: AnalysisInputType) -> ProfilesServiceResponse:\n    felicity_user = await auth_from_info(info)\n    if not payload.name or not payload.description:",
         "detail": "felicity.api.gql.analysis.mutations.analysis_service",
         "documentation": {}
     },
@@ -21725,7 +21549,7 @@
         "kind": 5,
         "importPath": "felicity.api.gql.analysis.mutations.coding_standard",
         "description": "felicity.api.gql.analysis.mutations.coding_standard",
-        "peekOfCode": "CodingStandardResponse = strawberry.union(\n    \"CodingStandardResponse\",\n    (a_types.CodingStandardType, OperationError),  # noqa\n    description=\"\",\n)\n@strawberry.mutation(permission_classes=[IsAuthenticated])\nasync def create_coding_standard(\n    info, payload: CodingStandardInputType\n) -> CodingStandardResponse:\n    is_authenticated, felicity_user = await auth_from_info(info)",
+        "peekOfCode": "CodingStandardResponse = strawberry.union(\n    \"CodingStandardResponse\",\n    (a_types.CodingStandardType, OperationError),  # noqa\n    description=\"\",\n)\n@strawberry.mutation(permission_classes=[IsAuthenticated])\nasync def create_coding_standard(\n    info, payload: CodingStandardInputType\n) -> CodingStandardResponse:\n    felicity_user = await auth_from_info(info)",
         "detail": "felicity.api.gql.analysis.mutations.coding_standard",
         "documentation": {}
     },
@@ -21788,7 +21612,7 @@
         "kind": 5,
         "importPath": "felicity.api.gql.analysis.mutations.quality_control",
         "description": "felicity.api.gql.analysis.mutations.quality_control",
-        "peekOfCode": "QCTemplateResponse = strawberry.union(\n    \"QCTemplateResponse\",\n    (a_types.QCTemplateType, OperationError),  # noqa\n    description=\"\",\n)\n@strawberry.mutation(permission_classes=[IsAuthenticated])\nasync def create_QC_set(info, samples: List[QCSetInputType]) -> QCSetResponse:\n    is_authenticated, felicity_user = await auth_from_info(info)\n    verify_user_auth(\n        is_authenticated, felicity_user, \"Only Authenticated user can create qc-sets\"",
+        "peekOfCode": "QCTemplateResponse = strawberry.union(\n    \"QCTemplateResponse\",\n    (a_types.QCTemplateType, OperationError),  # noqa\n    description=\"\",\n)\n@strawberry.mutation(permission_classes=[IsAuthenticated])\nasync def create_QC_set(info, samples: List[QCSetInputType]) -> QCSetResponse:\n    felicity_user = await auth_from_info(info)\n    if not samples or len(samples) == 0:\n        return OperationError(error=\"There are No QC Requests to create\")",
         "detail": "felicity.api.gql.analysis.mutations.quality_control",
         "documentation": {}
     },
@@ -21797,7 +21621,7 @@
         "kind": 5,
         "importPath": "felicity.api.gql.analysis.mutations.rejection_reason",
         "description": "felicity.api.gql.analysis.mutations.rejection_reason",
-        "peekOfCode": "logger = logging.getLogger(__name__)\nRejectionReasonResponse = strawberry.union(\n    \"RejectionReasonResponse\",\n    (a_types.RejectionReasonType, OperationError),  # noqa\n    description=\"\",\n)\n@strawberry.mutation(permission_classes=[IsAuthenticated])\nasync def create_rejection_reason(info, reason: str) -> RejectionReasonResponse:\n    is_authenticated, felicity_user = await auth_from_info(info)\n    verify_user_auth(",
+        "peekOfCode": "logger = logging.getLogger(__name__)\nRejectionReasonResponse = strawberry.union(\n    \"RejectionReasonResponse\",\n    (a_types.RejectionReasonType, OperationError),  # noqa\n    description=\"\",\n)\n@strawberry.mutation(permission_classes=[IsAuthenticated])\nasync def create_rejection_reason(info, reason: str) -> RejectionReasonResponse:\n    felicity_user = await auth_from_info(info)\n    if not reason:",
         "detail": "felicity.api.gql.analysis.mutations.rejection_reason",
         "documentation": {}
     },
@@ -21806,7 +21630,7 @@
         "kind": 5,
         "importPath": "felicity.api.gql.analysis.mutations.rejection_reason",
         "description": "felicity.api.gql.analysis.mutations.rejection_reason",
-        "peekOfCode": "RejectionReasonResponse = strawberry.union(\n    \"RejectionReasonResponse\",\n    (a_types.RejectionReasonType, OperationError),  # noqa\n    description=\"\",\n)\n@strawberry.mutation(permission_classes=[IsAuthenticated])\nasync def create_rejection_reason(info, reason: str) -> RejectionReasonResponse:\n    is_authenticated, felicity_user = await auth_from_info(info)\n    verify_user_auth(\n        is_authenticated,",
+        "peekOfCode": "RejectionReasonResponse = strawberry.union(\n    \"RejectionReasonResponse\",\n    (a_types.RejectionReasonType, OperationError),  # noqa\n    description=\"\",\n)\n@strawberry.mutation(permission_classes=[IsAuthenticated])\nasync def create_rejection_reason(info, reason: str) -> RejectionReasonResponse:\n    felicity_user = await auth_from_info(info)\n    if not reason:\n        return OperationError(error=\"reason is mandatory\")",
         "detail": "felicity.api.gql.analysis.mutations.rejection_reason",
         "documentation": {}
     },
@@ -21833,7 +21657,7 @@
         "kind": 5,
         "importPath": "felicity.api.gql.analysis.mutations.result_option",
         "description": "felicity.api.gql.analysis.mutations.result_option",
-        "peekOfCode": "ResultOptionResponse = strawberry.union(\n    \"ResultOptionResponse\",\n    (a_types.ResultOptionType, OperationError),  # noqa\n    description=\"\",\n)\n@strawberry.mutation(permission_classes=[IsAuthenticated])\nasync def create_result_option(\n    info, payload: ResultOptionInputType\n) -> ResultOptionResponse:\n    is_authenticated, felicity_user = await auth_from_info(info)",
+        "peekOfCode": "ResultOptionResponse = strawberry.union(\n    \"ResultOptionResponse\",\n    (a_types.ResultOptionType, OperationError),  # noqa\n    description=\"\",\n)\n@strawberry.mutation(permission_classes=[IsAuthenticated])\nasync def create_result_option(\n    info, payload: ResultOptionInputType\n) -> ResultOptionResponse:\n    felicity_user = await auth_from_info(info)",
         "detail": "felicity.api.gql.analysis.mutations.result_option",
         "documentation": {}
     },
@@ -21851,7 +21675,7 @@
         "kind": 6,
         "importPath": "felicity.api.gql.analysis.mutations.sample_type",
         "description": "felicity.api.gql.analysis.mutations.sample_type",
-        "peekOfCode": "class SampleTypeMappingInputType:\n    sample_type_uid: str\n    coding_standard_uid: str\n    name: str\n    code: str\n    description: str | None = None\n@strawberry.mutation(permission_classes=[IsAuthenticated])\nasync def create_sample_type(info, payload: SampleTypeInputType) -> SampleTypeResponse:\n    is_authenticated, felicity_user = await auth_from_info(info)\n    verify_user_auth(",
+        "peekOfCode": "class SampleTypeMappingInputType:\n    sample_type_uid: str\n    coding_standard_uid: str\n    name: str\n    code: str\n    description: str | None = None\n@strawberry.mutation(permission_classes=[IsAuthenticated])\nasync def create_sample_type(info, payload: SampleTypeInputType) -> SampleTypeResponse:\n    felicity_user = await auth_from_info(info)\n    if not payload.name or not payload.abbr:",
         "detail": "felicity.api.gql.analysis.mutations.sample_type",
         "documentation": {}
     },
@@ -22679,7 +22503,7 @@
         "kind": 6,
         "importPath": "felicity.api.gql.client.mutations",
         "description": "felicity.api.gql.client.mutations",
-        "peekOfCode": "class ClientMutations:\n    @strawberry.mutation(permission_classes=[IsAuthenticated])\n    async def create_client(\n        self, info: Info, payload: ClientInputType\n    ) -> ClientResponse:\n        is_authenticated, felicity_user = await auth_from_info(info)\n        success, auth_err = verify_user_auth(\n            is_authenticated,\n            felicity_user,\n            \"Only Authenticated user can create clients\",",
+        "peekOfCode": "class ClientMutations:\n    @strawberry.mutation(permission_classes=[IsAuthenticated])\n    async def create_client(\n        self, info: Info, payload: ClientInputType\n    ) -> ClientResponse:\n        felicity_user = await auth_from_info(info)\n        if not payload.code or not payload.name:\n            return OperationError(\n                error=\"Please Provide a name and a unique client code\"\n            )",
         "detail": "felicity.api.gql.client.mutations",
         "documentation": {}
     },
@@ -23201,7 +23025,7 @@
         "kind": 6,
         "importPath": "felicity.api.gql.inventory.mutations",
         "description": "felicity.api.gql.inventory.mutations",
-        "peekOfCode": "class InventoryMutations:\n    @strawberry.mutation(permission_classes=[IsAuthenticated])\n    async def create_stock_item(\n            self, info, payload: StockItemInputType\n    ) -> StockItemResponse:\n        is_authenticated, felicity_user = await auth_from_info(info)\n        auth_success, auth_error = verify_user_auth(\n            is_authenticated,\n            felicity_user,\n            \"Only Authenticated user can create stock item\",",
+        "peekOfCode": "class InventoryMutations:\n    @strawberry.mutation(permission_classes=[IsAuthenticated])\n    async def create_stock_item(\n            self, info, payload: StockItemInputType\n    ) -> StockItemResponse:\n        felicity_user = await auth_from_info(info)\n        exists = await entities.StockItem.get(name=payload.name)\n        if exists:\n            return OperationError(error=\"StockItem with this name already exists\")\n        incoming: dict = {",
         "detail": "felicity.api.gql.inventory.mutations",
         "documentation": {}
     },
@@ -23597,7 +23421,7 @@
         "kind": 6,
         "importPath": "felicity.api.gql.messaging.mutations",
         "description": "felicity.api.gql.messaging.mutations",
-        "peekOfCode": "class MessageMutations:\n    @strawberry.mutation(permission_classes=[IsAuthenticated])\n    async def send_message(\n        self, info, recipients: List[str], body: str\n    ) -> MessageResponse:\n        inspector = inspect.getargvalues(inspect.currentframe())\n        passed_args = get_passed_args(inspector)\n        is_authenticated, felicity_user = await auth_from_info(info)\n        verify_user_auth(\n            is_authenticated, felicity_user, \"Only Authenticated user can send messages\"",
+        "peekOfCode": "class MessageMutations:\n    @strawberry.mutation(permission_classes=[IsAuthenticated])\n    async def send_message(\n        self, info, recipients: List[str], body: str\n    ) -> MessageResponse:\n        inspector = inspect.getargvalues(inspect.currentframe())\n        passed_args = get_passed_args(inspector)\n        felicity_user = await auth_from_info(info)\n        if not recipients or not body:\n            return OperationError(error=\"Message body and recipients are mandatory\")",
         "detail": "felicity.api.gql.messaging.mutations",
         "documentation": {}
     },
@@ -23660,7 +23484,7 @@
         "kind": 6,
         "importPath": "felicity.api.gql.noticeboard.mutations",
         "description": "felicity.api.gql.noticeboard.mutations",
-        "peekOfCode": "class NoticeMutations:\n    @strawberry.mutation(permission_classes=[IsAuthenticated])\n    async def create_notice(self, info, payload: NoticeInputType) -> NoticeResponse:\n        is_authenticated, felicity_user = await auth_from_info(info)\n        verify_user_auth(\n            is_authenticated,\n            felicity_user,\n            \"Only Authenticated user can create notices\",\n        )\n        if not payload.title or not payload.body or not payload.expiry:",
+        "peekOfCode": "class NoticeMutations:\n    @strawberry.mutation(permission_classes=[IsAuthenticated])\n    async def create_notice(self, info, payload: NoticeInputType) -> NoticeResponse:\n        felicity_user = await auth_from_info(info)\n        if not payload.title or not payload.body or not payload.expiry:\n            return OperationError(\n                error=\"Some fields have missing required data\",\n                suggestion=\"Make sure that the fields: [title, body, expiry] all have values\",\n            )\n        exists = await entities.Notice.get(title=payload.title)",
         "detail": "felicity.api.gql.noticeboard.mutations",
         "documentation": {}
     },
@@ -23795,7 +23619,7 @@
         "kind": 6,
         "importPath": "felicity.api.gql.patient.mutations",
         "description": "felicity.api.gql.patient.mutations",
-        "peekOfCode": "class PatientMutations:\n    @strawberry.mutation(permission_classes=[IsAuthenticated])\n    async def create_identification(info, name: str) -> IdentificationResponse:\n        is_authenticated, felicity_user = await auth_from_info(info)\n        verify_user_auth(\n            is_authenticated,\n            felicity_user,\n            \"Only Authenticated user can create person identification\",\n        )\n        if not name:",
+        "peekOfCode": "class PatientMutations:\n    @strawberry.mutation(permission_classes=[IsAuthenticated])\n    async def create_identification(info, name: str) -> IdentificationResponse:\n        felicity_user = await auth_from_info(info)\n        if not name:\n            return OperationError(error=\"name is mandatory\")\n        exists = await entities.Identification.get(name=name)\n        if exists:\n            return OperationError(\n                error=f\"The Identfication name -> {name} <- already exists\"",
         "detail": "felicity.api.gql.patient.mutations",
         "documentation": {}
     },
@@ -23822,7 +23646,7 @@
         "kind": 5,
         "importPath": "felicity.api.gql.patient.mutations",
         "description": "felicity.api.gql.patient.mutations",
-        "peekOfCode": "IdentificationResponse = strawberry.union(\n    \"IdentificationResponse\",\n    (IdentificationType, OperationError),  # noqa\n    description=\"\",\n)\n@strawberry.type\nclass PatientMutations:\n    @strawberry.mutation(permission_classes=[IsAuthenticated])\n    async def create_identification(info, name: str) -> IdentificationResponse:\n        is_authenticated, felicity_user = await auth_from_info(info)",
+        "peekOfCode": "IdentificationResponse = strawberry.union(\n    \"IdentificationResponse\",\n    (IdentificationType, OperationError),  # noqa\n    description=\"\",\n)\n@strawberry.type\nclass PatientMutations:\n    @strawberry.mutation(permission_classes=[IsAuthenticated])\n    async def create_identification(info, name: str) -> IdentificationResponse:\n        felicity_user = await auth_from_info(info)",
         "detail": "felicity.api.gql.patient.mutations",
         "documentation": {}
     },
@@ -23939,7 +23763,7 @@
         "kind": 6,
         "importPath": "felicity.api.gql.reflex.mutations",
         "description": "felicity.api.gql.reflex.mutations",
-        "peekOfCode": "class ReflexRuleMutations:\n    @strawberry.mutation(permission_classes=[IsAuthenticated])\n    async def create_reflex_rule(\n        self, info, payload: ReflexRuleInput\n    ) -> ReflexRuleResponse:\n        is_authenticated, felicity_user = await auth_from_info(info)\n        verify_user_auth(\n            is_authenticated,\n            felicity_user,\n            \"Only Authenticated user can add reflex rules\",",
+        "peekOfCode": "class ReflexRuleMutations:\n    @strawberry.mutation(permission_classes=[IsAuthenticated])\n    async def create_reflex_rule(\n        self, info, payload: ReflexRuleInput\n    ) -> ReflexRuleResponse:\n        felicity_user = await auth_from_info(info)\n        if not payload.name or not payload.description:\n            return OperationError(error=\"Name and Description are required\")\n        exists = await entities.ReflexRule.get(name=payload.name)\n        if exists:",
         "detail": "felicity.api.gql.reflex.mutations",
         "documentation": {}
     },
@@ -23975,7 +23799,7 @@
         "kind": 5,
         "importPath": "felicity.api.gql.reflex.mutations",
         "description": "felicity.api.gql.reflex.mutations",
-        "peekOfCode": "ReflexBrainResponse = strawberry.union(\n    \"ReflexBrainResponse\", (ReflexBrainType, OperationError), description=\"\"  # noqa\n)\n@strawberry.type\nclass ReflexRuleMutations:\n    @strawberry.mutation(permission_classes=[IsAuthenticated])\n    async def create_reflex_rule(\n        self, info, payload: ReflexRuleInput\n    ) -> ReflexRuleResponse:\n        is_authenticated, felicity_user = await auth_from_info(info)",
+        "peekOfCode": "ReflexBrainResponse = strawberry.union(\n    \"ReflexBrainResponse\", (ReflexBrainType, OperationError), description=\"\"  # noqa\n)\n@strawberry.type\nclass ReflexRuleMutations:\n    @strawberry.mutation(permission_classes=[IsAuthenticated])\n    async def create_reflex_rule(\n        self, info, payload: ReflexRuleInput\n    ) -> ReflexRuleResponse:\n        felicity_user = await auth_from_info(info)",
         "detail": "felicity.api.gql.reflex.mutations",
         "documentation": {}
     },
@@ -24425,7 +24249,7 @@
         "kind": 6,
         "importPath": "felicity.api.gql.shipment.mutations",
         "description": "felicity.api.gql.shipment.mutations",
-        "peekOfCode": "class ShipmentMutations:\n    @strawberry.mutation(permission_classes=[IsAuthenticated])\n    async def create_shipment(\n        self, info, payload: ShipmentInputType\n    ) -> ShipmentsResponse:\n        is_authenticated, felicity_user = await auth_from_info(info)\n        verify_user_auth(\n            is_authenticated,\n            felicity_user,\n            \"Only Authenticated user can create shipments\",",
+        "peekOfCode": "class ShipmentMutations:\n    @strawberry.mutation(permission_classes=[IsAuthenticated])\n    async def create_shipment(\n        self, info, payload: ShipmentInputType\n    ) -> ShipmentsResponse:\n        felicity_user = await auth_from_info(info)\n        if not payload.courier:\n            return OperationError(error=\"Courier Details are required\")\n        incoming = {\n            \"incoming\": False,",
         "detail": "felicity.api.gql.shipment.mutations",
         "documentation": {}
     },
@@ -24461,7 +24285,7 @@
         "kind": 5,
         "importPath": "felicity.api.gql.shipment.mutations",
         "description": "felicity.api.gql.shipment.mutations",
-        "peekOfCode": "ShipmentResponse = strawberry.union(\n    \"ShipmentResponse\", (ShipmentType, OperationError), description=\"\"  # noqa\n)\n@strawberry.type\nclass ShipmentMutations:\n    @strawberry.mutation(permission_classes=[IsAuthenticated])\n    async def create_shipment(\n        self, info, payload: ShipmentInputType\n    ) -> ShipmentsResponse:\n        is_authenticated, felicity_user = await auth_from_info(info)",
+        "peekOfCode": "ShipmentResponse = strawberry.union(\n    \"ShipmentResponse\", (ShipmentType, OperationError), description=\"\"  # noqa\n)\n@strawberry.type\nclass ShipmentMutations:\n    @strawberry.mutation(permission_classes=[IsAuthenticated])\n    async def create_shipment(\n        self, info, payload: ShipmentInputType\n    ) -> ShipmentsResponse:\n        felicity_user = await auth_from_info(info)",
         "detail": "felicity.api.gql.shipment.mutations",
         "documentation": {}
     },
@@ -24587,7 +24411,7 @@
         "kind": 6,
         "importPath": "felicity.api.gql.storage.mutations",
         "description": "felicity.api.gql.storage.mutations",
-        "peekOfCode": "class StorageMutations:\n    @strawberry.mutation(permission_classes=[IsAuthenticated])\n    async def create_store_room(\n        self, info, payload: StoreRoomInputType\n    ) -> StoreRoomResponse:\n        is_authenticated, felicity_user = await auth_from_info(info)\n        auth_success, auth_error = verify_user_auth(\n            is_authenticated,\n            felicity_user,\n            \"Only Authenticated user can create store rooms\",",
+        "peekOfCode": "class StorageMutations:\n    @strawberry.mutation(permission_classes=[IsAuthenticated])\n    async def create_store_room(\n        self, info, payload: StoreRoomInputType\n    ) -> StoreRoomResponse:\n        felicity_user = await auth_from_info(info)\n        exists = await entities.StoreRoom.get(name=payload.name)\n        if exists:\n            return OperationError(error=f\"StoreRoom with this name already exists\")\n        incoming: dict = {",
         "detail": "felicity.api.gql.storage.mutations",
         "documentation": {}
     },
@@ -25019,7 +24843,7 @@
         "kind": 6,
         "importPath": "felicity.api.gql.worksheet.mutations",
         "description": "felicity.api.gql.worksheet.mutations",
-        "peekOfCode": "class WorkSheetMutations:\n    @strawberry.mutation(permission_classes=[IsAuthenticated])\n    async def create_worksheet_template(\n            self, info, payload: WorksheetTemplateInputType\n    ) -> WorkSheetTemplateResponse:\n        is_authenticated, felicity_user = await auth_from_info(info)\n        verify_user_auth(\n            is_authenticated,\n            felicity_user,\n            \"Only Authenticated user can create worksheet templates\",",
+        "peekOfCode": "class WorkSheetMutations:\n    @strawberry.mutation(permission_classes=[IsAuthenticated])\n    async def create_worksheet_template(\n            self, info, payload: WorksheetTemplateInputType\n    ) -> WorkSheetTemplateResponse:\n        felicity_user = await auth_from_info(info)\n        if not payload.name or not payload.sample_type_uid or not payload.analysis_uid:\n            return OperationError(\n                error=\"Template name and sample type and analysis are mandatory\"\n            )",
         "detail": "felicity.api.gql.worksheet.mutations",
         "documentation": {}
     },
@@ -25055,7 +24879,7 @@
         "kind": 5,
         "importPath": "felicity.api.gql.worksheet.mutations",
         "description": "felicity.api.gql.worksheet.mutations",
-        "peekOfCode": "WorkSheetResponse = strawberry.union(\n    \"WorkSheetResponse\", (WorkSheetType, OperationError), description=\"\"  # noqa\n)\n@strawberry.type\nclass WorkSheetMutations:\n    @strawberry.mutation(permission_classes=[IsAuthenticated])\n    async def create_worksheet_template(\n            self, info, payload: WorksheetTemplateInputType\n    ) -> WorkSheetTemplateResponse:\n        is_authenticated, felicity_user = await auth_from_info(info)",
+        "peekOfCode": "WorkSheetResponse = strawberry.union(\n    \"WorkSheetResponse\", (WorkSheetType, OperationError), description=\"\"  # noqa\n)\n@strawberry.type\nclass WorkSheetMutations:\n    @strawberry.mutation(permission_classes=[IsAuthenticated])\n    async def create_worksheet_template(\n            self, info, payload: WorksheetTemplateInputType\n    ) -> WorkSheetTemplateResponse:\n        felicity_user = await auth_from_info(info)",
         "detail": "felicity.api.gql.worksheet.mutations",
         "documentation": {}
     },

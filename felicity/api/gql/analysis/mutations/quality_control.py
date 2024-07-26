@@ -8,7 +8,7 @@ from felicity.api.gql.analysis.types import (
     analysis as a_types,
     results as r_types
 )
-from felicity.api.gql.auth import auth_from_info, verify_user_auth
+from felicity.api.gql.auth import auth_from_info
 from felicity.api.gql.permissions import IsAuthenticated
 from felicity.api.gql.types import OperationError
 from felicity.apps.analysis import schemas
@@ -62,10 +62,7 @@ QCTemplateResponse = strawberry.union(
 
 @strawberry.mutation(permission_classes=[IsAuthenticated])
 async def create_QC_set(info, samples: List[QCSetInputType]) -> QCSetResponse:
-    is_authenticated, felicity_user = await auth_from_info(info)
-    verify_user_auth(
-        is_authenticated, felicity_user, "Only Authenticated user can create qc-sets"
-    )
+    felicity_user = await auth_from_info(info)
 
     if not samples or len(samples) == 0:
         return OperationError(error="There are No QC Requests to create")
@@ -149,10 +146,7 @@ async def create_QC_level(info, level: str) -> QCLevelResponse:
     inspector = inspect.getargvalues(inspect.currentframe())
     passed_args = get_passed_args(inspector)
 
-    is_authenticated, felicity_user = await auth_from_info(info)
-    verify_user_auth(
-        is_authenticated, felicity_user, "Only Authenticated user can create qc-levels"
-    )
+    felicity_user = await auth_from_info(info)
 
     if not level:
         return OperationError(error="Level Name is mandatory")
@@ -168,10 +162,7 @@ async def create_QC_level(info, level: str) -> QCLevelResponse:
 
 @strawberry.mutation(permission_classes=[IsAuthenticated])
 async def update_QC_level(info, uid: str, level: str) -> QCLevelResponse:
-    is_authenticated, felicity_user = await auth_from_info(info)
-    verify_user_auth(
-        is_authenticated, felicity_user, "Only Authenticated user can update qc-levels"
-    )
+    felicity_user = await auth_from_info(info)
 
     qc_level = await qc_entities.QCLevel.get(uid=uid)
     if not qc_level:
@@ -189,12 +180,7 @@ async def update_QC_level(info, uid: str, level: str) -> QCLevelResponse:
 
 @strawberry.mutation(permission_classes=[IsAuthenticated])
 async def create_QC_template(info, payload: QCTemplateInputType) -> QCTemplateResponse:
-    is_authenticated, felicity_user = await auth_from_info(info)
-    verify_user_auth(
-        is_authenticated,
-        felicity_user,
-        "Only Authenticated user can create qc-templates",
-    )
+    felicity_user = await auth_from_info(info)
 
     if not payload.name:
         return OperationError(error="Name is mandatory")
@@ -233,12 +219,7 @@ async def create_QC_template(info, payload: QCTemplateInputType) -> QCTemplateRe
 async def update_QC_template(
         info, uid: str, payload: QCTemplateInputType
 ) -> QCTemplateResponse:
-    is_authenticated, felicity_user = await auth_from_info(info)
-    verify_user_auth(
-        is_authenticated,
-        felicity_user,
-        "Only Authenticated user can update qc-templates",
-    )
+    felicity_user = await auth_from_info(info)
 
     qc_template = await qc_entities.QCTemplate.get(uid=uid)
     if not qc_template:

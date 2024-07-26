@@ -3,7 +3,7 @@ import logging
 import strawberry  # noqa
 
 from felicity.api.gql.analysis.types import analysis as a_types
-from felicity.api.gql.auth import auth_from_info, verify_user_auth
+from felicity.api.gql.auth import auth_from_info
 from felicity.api.gql.permissions import IsAuthenticated
 from felicity.api.gql.types import OperationError
 from felicity.apps.analysis import schemas
@@ -98,12 +98,7 @@ async def create_analysis_interim(
     info, payload: AnalysisInterimInput
 ) -> AnalysisInterimResponse:
 
-    is_authenticated, felicity_user = await auth_from_info(info)
-    verify_user_auth(
-        is_authenticated,
-        felicity_user,
-        "Only Authenticated user can add analysis interims",
-    )
+    felicity_user = await auth_from_info(info)
 
     incoming = {
         "created_by_uid": felicity_user.uid,
@@ -124,12 +119,8 @@ async def update_analysis_interim(
     info, uid: str, payload: AnalysisInterimInput
 ) -> AnalysisInterimResponse:
 
-    is_authenticated, felicity_user = await auth_from_info(info)
-    verify_user_auth(
-        is_authenticated,
-        felicity_user,
-        "Only Authenticated user can update analysis interims",
-    )
+    felicity_user = await auth_from_info(info)
+
 
     interim = await analysis_entities.AnalysisInterim.get(uid=uid)
     if not interim:
@@ -155,12 +146,7 @@ async def create_analysis_correction_factor(
     info, payload: AnalysisCorrectionFactorInput
 ) -> AnalysisCorrectionFactorResponse:
 
-    is_authenticated, felicity_user = await auth_from_info(info)
-    verify_user_auth(
-        is_authenticated,
-        felicity_user,
-        "Only Authenticated user can add analysis correction factors",
-    )
+    felicity_user = await auth_from_info(info)
 
     incoming = {
         "created_by_uid": felicity_user.uid,
@@ -181,12 +167,7 @@ async def update_analysis_correction_factor(
     info, uid: str, payload: AnalysisCorrectionFactorInput
 ) -> AnalysisCorrectionFactorResponse:
 
-    is_authenticated, felicity_user = await auth_from_info(info)
-    verify_user_auth(
-        is_authenticated,
-        felicity_user,
-        "Only Authenticated user can update analysis correction factors",
-    )
+    felicity_user = await auth_from_info(info)
 
     correction_factor = await analysis_entities.AnalysisCorrectionFactor.get(uid=uid)
     if not correction_factor:
@@ -214,12 +195,7 @@ async def create_analysis_detection_limit(
     info, payload: AnalysisDetectionLimitInput
 ) -> AnalysisDetectionLimitResponse:
 
-    is_authenticated, felicity_user = await auth_from_info(info)
-    verify_user_auth(
-        is_authenticated,
-        felicity_user,
-        "Only Authenticated user can add analysis detection limits",
-    )
+    felicity_user = await auth_from_info(info)
 
     incoming = {
         "created_by_uid": felicity_user.uid,
@@ -240,12 +216,7 @@ async def update_analysis_detection_limit(
     info, uid: str, payload: AnalysisDetectionLimitInput
 ) -> AnalysisDetectionLimitResponse:
 
-    is_authenticated, felicity_user = await auth_from_info(info)
-    verify_user_auth(
-        is_authenticated,
-        felicity_user,
-        "Only Authenticated user can update analysis interims",
-    )
+    felicity_user = await auth_from_info(info)
 
     detection_limit = await analysis_entities.AnalysisDetectionLimit.get(uid=uid)
     if not detection_limit:
@@ -273,12 +244,7 @@ async def create_analysis_uncertainty(
     info, payload: AnalysisUncertaintyInput
 ) -> AnalysisUncertaintyResponse:
 
-    is_authenticated, felicity_user = await auth_from_info(info)
-    verify_user_auth(
-        is_authenticated,
-        felicity_user,
-        "Only Authenticated user can add analysis uncertainties",
-    )
+    felicity_user = await auth_from_info(info)
 
     incoming = {
         "created_by_uid": felicity_user.uid,
@@ -299,12 +265,7 @@ async def update_analysis_uncertainty(
     info, uid: str, payload: AnalysisUncertaintyInput
 ) -> AnalysisUncertaintyResponse:
 
-    is_authenticated, felicity_user = await auth_from_info(info)
-    verify_user_auth(
-        is_authenticated,
-        felicity_user,
-        "Only Authenticated user can update analysis interims",
-    )
+    felicity_user = await auth_from_info(info)
 
     uncertainty = await analysis_entities.AnalysisUncertainty.get(uid=uid)
     if not uncertainty:
@@ -330,12 +291,7 @@ async def create_analysis_specification(
     info, payload: AnalysisSpecificationInput
 ) -> AnalysisSpecificationResponse:
 
-    is_authenticated, felicity_user = await auth_from_info(info)
-    verify_user_auth(
-        is_authenticated,
-        felicity_user,
-        "Only Authenticated user can add analysis specifications",
-    )
+    felicity_user = await auth_from_info(info)
 
     if not payload.min and not payload.warn_values:
         return OperationError(
@@ -362,12 +318,7 @@ async def update_analysis_specification(
     info, uid: str, payload: AnalysisSpecificationInput
 ) -> AnalysisSpecificationResponse:
 
-    is_authenticated, felicity_user = await auth_from_info(info)
-    verify_user_auth(
-        is_authenticated,
-        felicity_user,
-        "Only Authenticated user can update analysis specifications",
-    )
+    felicity_user = await auth_from_info(info)
 
     specification = await analysis_entities.AnalysisSpecification.get(uid=uid)
     if not specification:

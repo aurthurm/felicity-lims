@@ -5,7 +5,7 @@ from typing import List, Optional
 import strawberry  # noqa
 
 from felicity.api.gql.analysis.types import analysis as a_types
-from felicity.api.gql.auth import auth_from_info, verify_user_auth
+from felicity.api.gql.auth import auth_from_info
 from felicity.api.gql.permissions import IsAuthenticated
 from felicity.api.gql.types import OperationError
 from felicity.apps.analysis import schemas
@@ -34,12 +34,7 @@ ResultOptionResponse = strawberry.union(
 async def create_result_option(
     info, payload: ResultOptionInputType
 ) -> ResultOptionResponse:
-    is_authenticated, felicity_user = await auth_from_info(info)
-    verify_user_auth(
-        is_authenticated,
-        felicity_user,
-        "Only Authenticated user can add result options",
-    )
+    felicity_user = await auth_from_info(info)
 
     if not payload.analysis_uid:
         return OperationError(error="Analysis to attach Result Option Required")
@@ -83,12 +78,7 @@ async def create_result_option(
 async def update_result_option(
     info, uid: str, payload: ResultOptionInputType
 ) -> ResultOptionResponse:
-    is_authenticated, felicity_user = await auth_from_info(info)
-    verify_user_auth(
-        is_authenticated,
-        felicity_user,
-        "Only Authenticated user can update result options",
-    )
+    felicity_user = await auth_from_info(info)
 
     result_option = await analysis_entities.ResultOption.get(uid=uid)
     if not result_option:

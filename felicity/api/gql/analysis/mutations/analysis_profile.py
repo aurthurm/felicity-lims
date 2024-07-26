@@ -5,7 +5,7 @@ from typing import List, Optional
 import strawberry  # noqa
 
 from felicity.api.gql.analysis.types import analysis as a_types
-from felicity.api.gql.auth import auth_from_info, verify_user_auth
+from felicity.api.gql.auth import auth_from_info
 from felicity.api.gql.permissions import IsAuthenticated
 from felicity.api.gql.types import OperationError
 from felicity.apps.analysis import schemas, utils
@@ -65,12 +65,8 @@ class ProfileMappingInputType:
 
 @strawberry.mutation(permission_classes=[IsAuthenticated])
 async def create_profile(info, payload: ProfileInputType) -> AnalysisProfileResponse:
-    is_authenticated, felicity_user = await auth_from_info(info)
-    verify_user_auth(
-        is_authenticated,
-        felicity_user,
-        "Only Authenticated user can create analysis profiles",
-    )
+    felicity_user = await auth_from_info(info)
+  
 
     if not payload.name or not payload.description:
         return OperationError(
@@ -120,12 +116,7 @@ async def create_profile(info, payload: ProfileInputType) -> AnalysisProfileResp
 async def update_profile(
         info, uid: str, payload: ProfileInputType
 ) -> AnalysisProfileResponse:
-    is_authenticated, felicity_user = await auth_from_info(info)
-    verify_user_auth(
-        is_authenticated,
-        felicity_user,
-        "Only Authenticated user can update analysis profiles",
-    )
+    felicity_user = await auth_from_info(info)
 
     profile = await analysis_entities.Profile.get(uid=uid)
     if not profile:
@@ -173,12 +164,7 @@ async def update_profile(
 
 @strawberry.mutation(permission_classes=[IsAuthenticated])
 async def create_analysis_template(info, payload: AnalysisTemplateInputType) -> AnalysisTemplateResponse:
-    is_authenticated, felicity_user = await auth_from_info(info)
-    verify_user_auth(
-        is_authenticated,
-        felicity_user,
-        "Only Authenticated user can create analysis templates",
-    )
+    felicity_user = await auth_from_info(info)
 
     if not payload.name or not payload.description:
         return OperationError(
@@ -219,12 +205,7 @@ async def create_analysis_template(info, payload: AnalysisTemplateInputType) -> 
 async def update_analysis_template(
         info, uid: str, payload: AnalysisTemplateInputType
 ) -> AnalysisTemplateResponse:
-    is_authenticated, felicity_user = await auth_from_info(info)
-    verify_user_auth(
-        is_authenticated,
-        felicity_user,
-        "Only Authenticated user can update analysis templates",
-    )
+    felicity_user = await auth_from_info(info)
 
     template = await analysis_entities.AnalysisTemplate.get(uid=uid)
     if not template:
@@ -262,12 +243,7 @@ async def update_analysis_template(
 async def create_profile_mapping(
         info, payload: ProfileMappingInputType
 ) -> ProfileMappingResponse:
-    is_authenticated, felicity_user = await auth_from_info(info)
-    verify_user_auth(
-        is_authenticated,
-        felicity_user,
-        "Only Authenticated user can create profiles mappigs",
-    )
+    felicity_user = await auth_from_info(info)
 
     exists = await analysis_entities.ProfileCoding.get(code=payload.code)
     if exists:
@@ -291,12 +267,7 @@ async def create_profile_mapping(
 async def update_profile_mapping(
         info, uid: str, payload: ProfileMappingInputType
 ) -> ProfileMappingResponse:
-    is_authenticated, felicity_user = await auth_from_info(info)
-    verify_user_auth(
-        is_authenticated,
-        felicity_user,
-        "Only Authenticated user can update profile mappings",
-    )
+    felicity_user = await auth_from_info(info)
 
     profile_mapping = await analysis_entities.ProfileCoding.get(uid=uid)
     if not profile_mapping:

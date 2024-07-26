@@ -3,7 +3,7 @@ import time
 
 import strawberry  # noqa
 
-from felicity.api.gql.auth import auth_from_info, verify_user_auth
+from felicity.api.gql.auth import auth_from_info
 from felicity.api.gql.permissions import IsAuthenticated
 from felicity.api.gql.types import (MessageResponse, MessagesType,
                                     OperationError)
@@ -90,7 +90,7 @@ class UserMutations:
         user_service = UserService()
         group_service = GroupService()
         user_preference_service = UserPreferenceService()
-        is_authenticated, felicity_user = await auth_from_info(info)
+        felicity_user = await auth_from_info(info)
 
         if open_reg and not settings.USERS_OPEN_REGISTRATION:
             return OperationError(
@@ -147,7 +147,7 @@ class UserMutations:
     ) -> UserResponse:
         user_service = UserService()
         group_service = GroupService()
-        is_authenticated, felicity_user = await auth_from_info(info)
+        felicity_user = await auth_from_info(info)
 
         user = await user_service.get(uid=user_uid)
         if not user:
@@ -207,7 +207,7 @@ class UserMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def refresh(self, info, refresh_token: str) -> AuthenticatedDataResponse:
-        is_authenticated, felicity_user = await auth_from_info(info)
+        felicity_user = await auth_from_info(info)
         access_token = security.create_access_token_from_refresh(refresh_token)
         return StrawberryMapper[AuthenticatedData]().map(
             token=access_token,
@@ -273,12 +273,7 @@ class UserMutations:
     async def create_group(self, info, payload: GroupInputType) -> GroupResponse:
         group_service = GroupService()
 
-        is_authenticated, felicity_user = await auth_from_info(info)
-        verify_user_auth(
-            is_authenticated,
-            felicity_user,
-            "Only Authenticated user can add user groups",
-        )
+        felicity_user = await auth_from_info(info)
 
         if not payload.name:
             return OperationError(error="Name Required")
@@ -304,12 +299,7 @@ class UserMutations:
     async def update_group(self, info, uid: str, payload: GroupInputType) -> GroupResponse:
         group_service = GroupService()
 
-        is_authenticated, felicity_user = await auth_from_info(info)
-        verify_user_auth(
-            is_authenticated,
-            felicity_user,
-            "Only Authenticated user can update user groups",
-        )
+        felicity_user = await auth_from_info(info)
 
         group = await group_service.get(uid=uid)
         if not group:

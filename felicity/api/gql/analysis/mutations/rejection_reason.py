@@ -3,7 +3,7 @@ import logging
 import strawberry  # noqa
 
 from felicity.api.gql.analysis.types import analysis as a_types
-from felicity.api.gql.auth import auth_from_info, verify_user_auth
+from felicity.api.gql.auth import auth_from_info
 from felicity.api.gql.permissions import IsAuthenticated
 from felicity.api.gql.types import OperationError
 from felicity.apps.analysis import schemas
@@ -22,12 +22,8 @@ RejectionReasonResponse = strawberry.union(
 @strawberry.mutation(permission_classes=[IsAuthenticated])
 async def create_rejection_reason(info, reason: str) -> RejectionReasonResponse:
 
-    is_authenticated, felicity_user = await auth_from_info(info)
-    verify_user_auth(
-        is_authenticated,
-        felicity_user,
-        "Only Authenticated user can create rejection reasons",
-    )
+    felicity_user = await auth_from_info(info)
+
 
     if not reason:
         return OperationError(error="reason is mandatory")
@@ -55,12 +51,7 @@ async def create_rejection_reason(info, reason: str) -> RejectionReasonResponse:
 async def update_rejection_reason(
     info, uid: str, reason: str
 ) -> RejectionReasonResponse:
-    is_authenticated, felicity_user = await auth_from_info(info)
-    verify_user_auth(
-        is_authenticated,
-        felicity_user,
-        "Only Authenticated user can update rejection reasons",
-    )
+    felicity_user = await auth_from_info(info)
 
     rejection_reason = await analysis_entities.RejectionReason.get(uid=uid)
     if not rejection_reason:

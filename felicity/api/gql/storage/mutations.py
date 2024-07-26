@@ -4,7 +4,7 @@ from typing import Dict, List, Optional
 import strawberry  # noqa
 
 from felicity.api.gql.analysis.types.analysis import SampleType
-from felicity.api.gql.auth import auth_from_info, verify_user_auth
+from felicity.api.gql.auth import auth_from_info
 from felicity.api.gql.permissions import IsAuthenticated
 from felicity.api.gql.storage import types
 from felicity.api.gql.types import OperationError
@@ -97,14 +97,7 @@ class StorageMutations:
     async def create_store_room(
         self, info, payload: StoreRoomInputType
     ) -> StoreRoomResponse:
-        is_authenticated, felicity_user = await auth_from_info(info)
-        auth_success, auth_error = verify_user_auth(
-            is_authenticated,
-            felicity_user,
-            "Only Authenticated user can create store rooms",
-        )
-        if not auth_success:
-            return auth_error
+        felicity_user = await auth_from_info(info)
 
         exists = await entities.StoreRoom.get(name=payload.name)
         if exists:
@@ -126,12 +119,7 @@ class StorageMutations:
         self, info, uid: str, payload: StoreRoomInputType
     ) -> StoreRoomResponse:
 
-        is_authenticated, felicity_user = await auth_from_info(info)
-        verify_user_auth(
-            is_authenticated,
-            felicity_user,
-            "Only Authenticated user can update store rooms",
-        )
+        felicity_user = await auth_from_info(info)
 
         if not uid:
             return OperationError(error="No uid provided to identity update obj")
@@ -160,14 +148,7 @@ class StorageMutations:
     async def create_storage_location(
         self, info, payload: StorageLocationInputType
     ) -> StorageLocationResponse:
-        is_authenticated, felicity_user = await auth_from_info(info)
-        auth_success, auth_error = verify_user_auth(
-            is_authenticated,
-            felicity_user,
-            "Only Authenticated user can create storage locations",
-        )
-        if not auth_success:
-            return auth_error
+        felicity_user = await auth_from_info(info)
 
         exists = await entities.StorageLocation.get(name=payload.name)
         if exists:
@@ -199,12 +180,7 @@ class StorageMutations:
         self, info, uid: str, payload: StorageLocationInputType
     ) -> StorageLocationResponse:
 
-        is_authenticated, felicity_user = await auth_from_info(info)
-        verify_user_auth(
-            is_authenticated,
-            felicity_user,
-            "Only Authenticated user can update storage locations",
-        )
+        felicity_user = await auth_from_info(info)
 
         if not uid:
             return OperationError(error="No uid provided to identity update obj")
@@ -235,14 +211,7 @@ class StorageMutations:
     async def create_storage_section(
         self, info, payload: StorageSectionInputType
     ) -> StorageSectionResponse:
-        is_authenticated, felicity_user = await auth_from_info(info)
-        auth_success, auth_error = verify_user_auth(
-            is_authenticated,
-            felicity_user,
-            "Only Authenticated user can create storage sections",
-        )
-        if not auth_success:
-            return auth_error
+        felicity_user = await auth_from_info(info)
 
         exists = await entities.StorageSection.get(name=payload.name)
         if exists:
@@ -274,12 +243,7 @@ class StorageMutations:
         self, info, uid: str, payload: StorageSectionInputType
     ) -> StorageSectionResponse:
 
-        is_authenticated, felicity_user = await auth_from_info(info)
-        verify_user_auth(
-            is_authenticated,
-            felicity_user,
-            "Only Authenticated user can update storage sections",
-        )
+        felicity_user = await auth_from_info(info)
 
         if not uid:
             return OperationError(error="No uid provided to identity update obj")
@@ -310,14 +274,7 @@ class StorageMutations:
     async def create_storage_container(
         self, info, payload: StorageContainerInputType
     ) -> StorageContainerResponse:
-        is_authenticated, felicity_user = await auth_from_info(info)
-        auth_success, auth_error = verify_user_auth(
-            is_authenticated,
-            felicity_user,
-            "Only Authenticated user can create storage containers",
-        )
-        if not auth_success:
-            return auth_error
+        felicity_user = await auth_from_info(info)
 
         exists = await entities.StorageContainer.get(name=payload.name)
         if exists:
@@ -348,12 +305,7 @@ class StorageMutations:
         self, info, uid: str, payload: StorageContainerInputType
     ) -> StorageContainerResponse:
 
-        is_authenticated, felicity_user = await auth_from_info(info)
-        verify_user_auth(
-            is_authenticated,
-            felicity_user,
-            "Only Authenticated user can update storage container",
-        )
+        felicity_user = await auth_from_info(info)
 
         if not uid:
             return OperationError(error="No uid provided to identity update obj")
@@ -386,12 +338,7 @@ class StorageMutations:
     async def store_samples(
         info, payload: List[StoreSamplesInputType]
     ) -> StoreSampleResponse:
-        is_authenticated, felicity_user = await auth_from_info(info)
-        verify_user_auth(
-            is_authenticated,
-            felicity_user,
-            "Only Authenticated user can submit analysis results",
-        )
+        felicity_user = await auth_from_info(info)
 
         if len(payload) == 0:
             return OperationError(error=f"No Samples to store are provided!")
@@ -440,12 +387,7 @@ class StorageMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def recover_samples(info, sample_uids: List[str]) -> StoreSampleResponse:
-        is_authenticated, felicity_user = await auth_from_info(info)
-        verify_user_auth(
-            is_authenticated,
-            felicity_user,
-            "Only Authenticated user can recover stored samples",
-        )
+        felicity_user = await auth_from_info(info)
 
         if len(sample_uids) == 0:
             return OperationError(error=f"No Samples to recover are provided!")
