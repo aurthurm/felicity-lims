@@ -7,7 +7,9 @@ from felicity.api.gql.auth import auth_from_info
 from felicity.api.gql.permissions import IsAuthenticated
 from felicity.api.gql.types import OperationError
 from felicity.apps.analysis import schemas
-from felicity.apps.analysis.entities import analysis as analysis_entities
+from felicity.apps.analysis.services.analysis import (AnalysisCorrectionFactorService,
+    AnalysisDetectionLimitService, AnalysisInterimService, AnalysisSpecificationService,
+    AnalysisUncertaintyService)
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -108,8 +110,8 @@ async def create_analysis_interim(
         incoming[k] = v
 
     obj_in = schemas.AnalysisInterimCreate(**incoming)
-    interim: analysis_entities.AnalysisInterim = (
-        await analysis_entities.AnalysisInterim.create(obj_in)
+    interim = (
+        await AnalysisInterimService().create(obj_in)
     )
     return a_types.AnalysisInterimType(**interim.marshal_simple())
 
@@ -122,7 +124,7 @@ async def update_analysis_interim(
     felicity_user = await auth_from_info(info)
 
 
-    interim = await analysis_entities.AnalysisInterim.get(uid=uid)
+    interim = await AnalysisInterimService().get(uid=uid)
     if not interim:
         return OperationError(
             error=f"Analysis Interim with uid {uid} does not exist -- cannot update"
@@ -137,7 +139,7 @@ async def update_analysis_interim(
                 logger.warning(e)
 
     analysis_in = schemas.AnalysisInterimUpdate(**interim.to_dict(nested=False))
-    interim = await interim.update(analysis_in)
+    interim = await AnalysisInterimService().update(interim.uid, analysis_in)
     return a_types.AnalysisInterimType(**interim.marshal_simple())
 
 
@@ -156,8 +158,8 @@ async def create_analysis_correction_factor(
         incoming[k] = v
 
     obj_in = schemas.AnalysisCorrectionFactorCreate(**incoming)
-    correction_factor: analysis_entities.AnalysisCorrectionFactor = (
-        await analysis_entities.AnalysisCorrectionFactor.create(obj_in)
+    correction_factor = (
+        await AnalysisCorrectionFactorService().create(obj_in)
     )
     return a_types.AnalysisCorrectionFactorType(**correction_factor.marshal_simple())
 
@@ -169,7 +171,7 @@ async def update_analysis_correction_factor(
 
     felicity_user = await auth_from_info(info)
 
-    correction_factor = await analysis_entities.AnalysisCorrectionFactor.get(uid=uid)
+    correction_factor = await AnalysisCorrectionFactorService().get(uid=uid)
     if not correction_factor:
         return OperationError(
             error=f"Analysis Correction factor with uid {uid} does not exist -- cannot update"
@@ -186,7 +188,7 @@ async def update_analysis_correction_factor(
     analysis_in = schemas.AnalysisCorrectionFactorUpdate(
         **correction_factor.to_dict(nested=False)
     )
-    correction_factor = await correction_factor.update(analysis_in)
+    correction_factor = await AnalysisCorrectionFactorService().update(correction_factor.uid, analysis_in)
     return a_types.AnalysisCorrectionFactorType(**correction_factor.marshal_simple())
 
 
@@ -205,8 +207,8 @@ async def create_analysis_detection_limit(
         incoming[k] = v
 
     obj_in = schemas.AnalysisDetectionLimitCreate(**incoming)
-    detection_limit: analysis_entities.AnalysisDetectionLimit = (
-        await analysis_entities.AnalysisDetectionLimit.create(obj_in)
+    detection_limit = (
+        await AnalysisDetectionLimitService().create(obj_in)
     )
     return a_types.AnalysisDetectionLimitType(**detection_limit.marshal_simple())
 
@@ -218,7 +220,7 @@ async def update_analysis_detection_limit(
 
     felicity_user = await auth_from_info(info)
 
-    detection_limit = await analysis_entities.AnalysisDetectionLimit.get(uid=uid)
+    detection_limit = await AnalysisDetectionLimitService().get(uid=uid)
     if not detection_limit:
         return OperationError(
             error=f"Analysis detection limit with uid {uid} does not exist -- cannot update"
@@ -235,7 +237,7 @@ async def update_analysis_detection_limit(
     analysis_in = schemas.AnalysisDetectionLimitUpdate(
         **detection_limit.to_dict(nested=False)
     )
-    detection_limit = await detection_limit.update(analysis_in)
+    detection_limit = await AnalysisDetectionLimitService().update(detection_limit.uid, analysis_in)
     return a_types.AnalysisDetectionLimitType(**detection_limit.marshal_simple())
 
 
@@ -254,8 +256,8 @@ async def create_analysis_uncertainty(
         incoming[k] = v
 
     obj_in = schemas.AnalysisUncertaintyCreate(**incoming)
-    uncertainty: analysis_entities.AnalysisUncertainty = (
-        await analysis_entities.AnalysisUncertainty.create(obj_in)
+    uncertainty = (
+        await AnalysisUncertaintyService().create(obj_in)
     )
     return a_types.AnalysisUncertaintyType(**uncertainty.marshal_simple())
 
@@ -267,7 +269,7 @@ async def update_analysis_uncertainty(
 
     felicity_user = await auth_from_info(info)
 
-    uncertainty = await analysis_entities.AnalysisUncertainty.get(uid=uid)
+    uncertainty = await AnalysisUncertaintyService().get(uid=uid)
     if not uncertainty:
         return OperationError(
             error=f"Analysis uncertainty with uid {uid} does not exist -- cannot update"
@@ -282,7 +284,7 @@ async def update_analysis_uncertainty(
                 logger.warning(e)
 
     analysis_in = schemas.AnalysisUncertaintyUpdate(**uncertainty.to_dict(nested=False))
-    uncertainty = await uncertainty.update(analysis_in)
+    uncertainty = await AnalysisUncertaintyService().update(uncertainty.uid, analysis_in)
     return a_types.AnalysisUncertaintyType(**uncertainty.marshal_simple())
 
 
@@ -307,8 +309,8 @@ async def create_analysis_specification(
         incoming[k] = v
 
     obj_in = schemas.AnalysisSpecificationCreate(**incoming)
-    specification: analysis_entities.AnalysisSpecification = (
-        await analysis_entities.AnalysisSpecification.create(obj_in)
+    specification = (
+        await AnalysisSpecificationService().create(obj_in)
     )
     return a_types.AnalysisSpecificationType(**specification.marshal_simple())
 
@@ -320,7 +322,7 @@ async def update_analysis_specification(
 
     felicity_user = await auth_from_info(info)
 
-    specification = await analysis_entities.AnalysisSpecification.get(uid=uid)
+    specification = await AnalysisSpecificationService().get(uid=uid)
     if not specification:
         return OperationError(
             error=f"Analysis Specification with uid {uid} does not exist -- cannot update"
@@ -337,5 +339,5 @@ async def update_analysis_specification(
     analysis_in = schemas.AnalysisSpecificationUpdate(
         **specification.to_dict(nested=False)
     )
-    specification = await specification.update(analysis_in)
+    specification = await AnalysisSpecificationService().update(specification.uid, analysis_in)
     return a_types.AnalysisSpecificationType(**specification.marshal_simple())

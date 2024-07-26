@@ -7,7 +7,8 @@ from felicity.api.gql.auth import auth_from_info
 from felicity.api.gql.client.types import ClientContactType, ClientType
 from felicity.api.gql.permissions import IsAuthenticated
 from felicity.api.gql.types import DeletedItem, OperationError
-from felicity.apps.client import entities, schemas
+from felicity.apps.client import schemas
+from felicity.apps.client.services import ClientContactService, ClientService
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -66,7 +67,7 @@ class ClientMutations:
                 error="Please Provide a name and a unique client code"
             )
 
-        exists = await entities.Client.get(code=payload.code)
+        exists = await ClientService().get(code=payload.code)
         if exists:
             return OperationError(
                 error=f"Client code {payload.code} already belong to client {exists.name}"
@@ -80,7 +81,7 @@ class ClientMutations:
             incoming[k] = v
 
         obj_in = schemas.ClientCreate(**incoming)
-        client = await entities.Client.create(obj_in)
+        client = await ClientService().create(obj_in)
 
         # auto create a default contact:
         cc_in = {
@@ -92,7 +93,7 @@ class ClientMutations:
         }
 
         cc_obj_in = schemas.ClientContactCreate(**cc_in)
-        await entities.ClientContact.create(cc_obj_in)
+        await ClientContactService().create(cc_obj_in)
 
         return ClientType(**client.marshal_simple())
 
@@ -106,7 +107,7 @@ class ClientMutations:
         if not uid:
             return OperationError(error="No uid provided to identify update obj")
 
-        client = await entities.Client.get(uid=uid)
+        client = await ClientService().get(uid=uid)
         if not client:
             return OperationError(
                 error=f"Client with uid {uid} not found. Cannot update obj ..."
@@ -120,7 +121,7 @@ class ClientMutations:
                 except Exception as e:
                     logger.warning(f"failed to set attribute {field}: {e}")
         obj_in = schemas.ClientUpdate(**client.to_dict())
-        client = await client.update(obj_in)
+        client = await ClientService().update(client.uid, obj_in)
         return ClientType(**client.marshal_simple())
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
@@ -133,13 +134,13 @@ class ClientMutations:
         if not payload.client_uid or not payload.first_name:
             return OperationError(error="Please Provide a first_name and a client uid")
 
-        client_exists = await entities.Client.get(uid=payload.client_uid)
+        client_exists = await ClientService().get(uid=payload.client_uid)
         if not client_exists:
             return OperationError(
                 error=f"Client with uid {payload.client_uid} does not exist"
             )
 
-        contact_exists = await entities.ClientContact.get_all(
+        contact_exists = await ClientContactService().get_all(
             client_uid=payload.client_uid, first_name=payload.first_name
         )  # noqa
         logger.warning(contact_exists)
@@ -156,7 +157,7 @@ class ClientMutations:
             incoming[k] = v
 
         obj_in = schemas.ClientContactCreate(**incoming)
-        client_contact: entities.ClientContact = await entities.ClientContact.create(obj_in)
+        client_contact = await ClientContactService().create(obj_in)
         return ClientContactType(
             **client_contact.marshal_simple(exclude=["is_superuser", "auth_uid"])
         )
@@ -171,7 +172,7 @@ class ClientMutations:
         if not uid:
             return OperationError(error="No uid provided to identify update obj")
 
-        client_contact = await entities.ClientContact.get(uid=uid)
+        client_contact = await ClientContactService().get(uid=uid)
         if not client_contact:
             return OperationError(
                 error=f"Client Contact with uid {uid} not found. Cannot update obj ..."
@@ -185,30 +186,24 @@ class ClientMutations:
                 except Exception as e:
                     logger.warning(f"failed to set attribute {field}: {e}")
         obj_in = schemas.ClientContactUpdate(**client_contact.to_dict())
-        client_contact = await client_contact.update(obj_in)
+        client_contact = await ClientContactService().update(client_contact.uid, obj_in)
         return ClientContactType(
             **client_contact.marshal_simple(exclude=["is_superuser", "auth_uid"])
         )
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def delete_client_contact(self, info, uid: str) -> DeleteContactResponse:
-
         felicity_user = await auth_from_info(info)
-
-        if not uid:
-            return OperationError(error="No uid provided to identify deletion obj")
-
-        client_contact = await entities.ClientContact.get(uid=uid)
+        client_contact = await ClientContactService().get(uid=uid)
         if not client_contact:
             return OperationError(
                 error=f"Client Contact with uid {uid} not found. Cannot delete obj ..."
             )
-
         try:
             setattr(client_contact, "is_active", False)
         except Exception as e:
             logger.warning(f"failed to set attribute is_active: {e}")
 
         obj_in = schemas.ClientContactUpdate(**client_contact.to_dict())
-        client_contact = await client_contact.update(obj_in)
+        client_contact = await ClientContactService().update(client_contact.uid, obj_in)
         return DeletedItem(uid=client_contact.uid)

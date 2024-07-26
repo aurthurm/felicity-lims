@@ -8,7 +8,7 @@ from felicity.api.gql.auth import auth_from_info
 from felicity.api.gql.permissions import IsAuthenticated
 from felicity.api.gql.types import OperationError
 from felicity.apps.analysis import schemas
-from felicity.apps.analysis.entities import analysis as analysis_entities
+from felicity.apps.analysis.services.analysis import SampleTypeCodingService, SampleTypeService
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -54,7 +54,7 @@ async def create_sample_type(info, payload: SampleTypeInputType) -> SampleTypeRe
     if not payload.name or not payload.abbr:
         return OperationError(error="Name and Description are mandatory")
 
-    exists = await analysis_entities.SampleType.get(name=payload.name)
+    exists = await SampleTypeService().get(name=payload.name)
     if exists:
         return OperationError(error=f"Sample Type: {payload.name} already exists")
 
@@ -66,7 +66,7 @@ async def create_sample_type(info, payload: SampleTypeInputType) -> SampleTypeRe
         incoming[k] = v
 
     obj_in = schemas.SampleTypeCreate(**incoming)
-    sample_type: analysis_entities.SampleType = await analysis_entities.SampleType.create(
+    sample_type = await SampleTypeService().create(
         obj_in
     )
     return a_types.SampleTypeTyp(**sample_type.marshal_simple())
@@ -79,7 +79,7 @@ async def update_sample_type(
 
     felicity_user = await auth_from_info(info)
 
-    sample_type = await analysis_entities.SampleType.get(uid=uid)
+    sample_type = await SampleTypeService().get(uid=uid)
     if not sample_type:
         return OperationError(error=f"Sample type with uid {uid} does not exist")
 
@@ -92,7 +92,7 @@ async def update_sample_type(
                 logger.warning(e)
 
     sample_type_in = schemas.SampleTypeUpdate(**sample_type.to_dict())
-    sample_type = await sample_type.update(sample_type_in)
+    sample_type = await SampleTypeService().update(sample_type.uid, sample_type_in)
     return a_types.SampleTypeTyp(**sample_type.marshal_simple())
 
 
@@ -103,7 +103,7 @@ async def create_sample_type_mapping(
 
     felicity_user = await auth_from_info(info)
 
-    exists = await analysis_entities.SampleTypeCoding.get(code=payload.code)
+    exists = await SampleTypeCodingService().get(code=payload.code)
     if exists:
         return OperationError(error=f"Mapping: {payload.code} already exists")
 
@@ -115,8 +115,8 @@ async def create_sample_type_mapping(
         incoming[k] = v
 
     obj_in = schemas.SampleTypeCodingCreate(**incoming)
-    sample_type_mapping: analysis_entities.SampleTypeCoding = (
-        await analysis_entities.SampleTypeCoding.create(obj_in)
+    sample_type_mapping = (
+        await SampleTypeCodingService().create(obj_in)
     )
     return a_types.SampleTypeMappingType(**sample_type_mapping.marshal_simple())
 
@@ -128,7 +128,7 @@ async def update_sample_type_mapping(
 
     felicity_user = await auth_from_info(info)
 
-    sample_type_mapping = await analysis_entities.SampleTypeCoding.get(uid=uid)
+    sample_type_mapping = await SampleTypeCodingService().get(uid=uid)
     if not sample_type_mapping:
         return OperationError(error=f"Coding with uid {uid} does not exist")
 
@@ -143,5 +143,5 @@ async def update_sample_type_mapping(
     sample_type_mapping_in = schemas.SampleTypeCodingUpdate(
         **sample_type_mapping.to_dict()
     )
-    sample_type_mapping = await sample_type_mapping.update(sample_type_mapping_in)
+    sample_type_mapping = await SampleTypeCodingService().update(sample_type_mapping.uid, sample_type_mapping_in)
     return a_types.SampleTypeMappingType(**sample_type_mapping.marshal_simple())

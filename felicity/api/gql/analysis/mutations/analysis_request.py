@@ -12,15 +12,21 @@ from felicity.api.gql.permissions import CanVerifySample, IsAuthenticated
 from felicity.api.gql.types import (OperationError, OperationSuccess,
                                     SuccessErrorResponse)
 from felicity.apps.analysis import schemas
-from felicity.apps.analysis.entities import analysis as analysis_entities
-from felicity.apps.analysis.entities import results as result_entities
 from felicity.apps.analysis.enum import ResultState, SamplePriority, SampleState
 from felicity.apps.billing.utils import bill_order
-from felicity.apps.client import entities as ct_entities
-from felicity.apps.job import entities as job_entities
 from felicity.apps.job import schemas as job_schemas
 from felicity.apps.job.enum import JobAction, JobCategory, JobPriority, JobState
-from felicity.apps.patient import entities as pt_entities
+from felicity.apps.analysis.services.analysis import (AnalysisRequestService, AnalysisService,
+    AnalysisTemplateService, ProfileService, RejectionReasonService, SampleService,
+    SampleTypeService)
+from felicity.apps.analysis.services.result import AnalysisResultService
+from felicity.apps.patient.services import PatientService
+from felicity.apps.client.services import ClientService
+from felicity.apps.analysis.entities.analysis import (sample_analysis, sample_profile,
+    sample_rejection_reason)
+from felicity.apps.reflex.services import ReflexEngineService
+from felicity.apps.job.services import JobService
+from felicity.apps.notification.services import ActivityStreamService
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -112,11 +118,11 @@ async def create_analysis_request(
                 error=f"Samples must have either analysis or profiles or both"
             )
 
-    patient = await pt_entities.Patient.get(uid=payload.patient_uid)
+    patient = await PatientService().get(uid=payload.patient_uid)
     if not patient:
         return OperationError(error=f"Patient with uid {payload.patient_uid} Not found")
 
-    client = await ct_entities.Client.get(uid=payload.client_uid)
+    client = await ClientService().get(uid=payload.client_uid)
     if not client:
         return OperationError(error=f"Client with uid {payload.client_uid} Not found")
 
@@ -134,8 +140,8 @@ async def create_analysis_request(
     }
 
     obj_in = schemas.AnalysisRequestCreate(**incoming)
-    analysis_request: analysis_entities.AnalysisRequest = (
-        await analysis_entities.AnalysisRequest.create(obj_in)
+    analysis_request = (
+        await AnalysisRequestService().create(obj_in)
     )
 
     # 1. create samples
@@ -144,7 +150,7 @@ async def create_analysis_request(
     )
     for s in payload.samples:
         _st_uid = s.sample_type
-        stype = await analysis_entities.SampleType.get(uid=_st_uid)
+        stype = await SampleTypeService().get(uid=_st_uid)
         if not stype:
             return OperationError(
                 error=f"Error, failed to retrieve sample type {_st_uid}"
@@ -166,7 +172,7 @@ async def create_analysis_request(
         _profiles_analyses = set()
 
         for p_uid in s.profiles:
-            profile = await analysis_entities.Profile.get_related(
+            profile = await ProfileService().get_related(
                 related=["analyses"], uid=p_uid
             )
             profiles.append(profile)
@@ -176,7 +182,7 @@ async def create_analysis_request(
 
         # make sure the selected analyses are not part of the selected profiles
         for a_uid in s.analyses:
-            analysis = await analysis_entities.Analysis.get(uid=a_uid)
+            analysis = await AnalysisService().get(uid=a_uid)
             if analysis not in _profiles_analyses:
                 analyses.append(analysis)
                 _profiles_analyses.add(analysis)
@@ -192,25 +198,25 @@ async def create_analysis_request(
 
         #
         sample_schema = schemas.SampleCreate(**sample_in)
-        sample: analysis_entities.Sample = await analysis_entities.Sample.create(
+        sample = await SampleService().create(
             sample_schema
         )
 
         # auto receive samples
         # ?? sample_workflow based check needed
-        await sample.receive(received_by=felicity_user)
+        await SampleService().receive(sample.uid, received_by=felicity_user)
 
         # link sample to provided profiles
         for _prof in profiles:
-            await analysis_entities.Sample.table_insert(
-                table=analysis_entities.sample_profile,
+            await SampleService().repository.table_insert(
+                table=sample_profile,
                 mappings={"sample_uid": sample.uid, "profile_uid": _prof.uid},
             )
 
         # link sample to provided services
         for _anal in analyses:
-            await analysis_entities.Sample.table_insert(
-                table=analysis_entities.sample_analysis,
+            await SampleService().repository.table_insert(
+                table=sample_analysis,
                 mappings={"sample_uid": sample.uid, "analysis_uid": _anal.uid},
             )
 
@@ -239,16 +245,16 @@ async def create_analysis_request(
                     }
                 )
             )
-        created = await result_entities.AnalysisResult.bulk_create(result_schemas)
+        created = await AnalysisResultService().bulk_create(result_schemas)
 
         # initialise reflex action if exist
         logger.debug(f"ReflexUtil .... set_reflex_actions ...")
-        await ReflexUtil.set_reflex_actions(created)
+        await ReflexEngineService(created, felicity_user).set_reflex_actions(created)
 
     # ! paramount !
     await asyncio.sleep(1)
 
-    analysis_request = await analysis_entities.AnalysisRequest.get_related(
+    analysis_request = await AnalysisRequestService().get_related(
         related=["samples"], uid=analysis_request.uid
     )
 
@@ -266,11 +272,11 @@ async def clone_samples(info, samples: List[str]) -> SampleActionResponse:
         return OperationError(error=f"No Samples to clone are provided!")
 
     clones = []
-    to_clone: List[analysis_entities.Sample] = await analysis_entities.Sample.get_by_uids(
+    to_clone = await SampleService().get_by_uids(
         uids=samples
     )
     for _, _sample in enumerate(to_clone):
-        clone = await _sample.clone_afresh(felicity_user)
+        clone = await SampleService().clone_afresh(_sample.uid, felicity_user)
 
         if clone:
             clones.append(clone)
@@ -294,8 +300,8 @@ async def clone_samples(info, samples: List[str]) -> SampleActionResponse:
                     "status": ResultState.PENDING,
                 }
                 a_result_schema = schemas.AnalysisResultCreate(**a_result_in)
-                created = await result_entities.AnalysisResult.create(a_result_schema)
-                await ReflexUtil.set_reflex_actions([created])
+                created = await AnalysisResultService().create(a_result_schema)
+                await ReflexEngineService(created, felicity_user).set_reflex_actions([created])
 
     return SampleListingType(samples=clones)
 
@@ -303,28 +309,24 @@ async def clone_samples(info, samples: List[str]) -> SampleActionResponse:
 @strawberry.mutation(permission_classes=[IsAuthenticated])
 async def cancel_samples(info, samples: List[str]) -> ResultedSampleActionResponse:
     felicity_user = await auth_from_info(info)
-    (
-        is_authenticated, felicity_user, "Only Authenticated user can cancel samples"
-    )
-
     return_samples = []
 
     if len(samples) == 0:
         return OperationError(error=f"No Samples to cancel are provided!")
 
     for _sa_uid in samples:
-        sample: analysis_entities.Sample = await analysis_entities.Sample.get(uid=_sa_uid)
+        sample = await SampleService().get(uid=_sa_uid)
         if not sample:
             return OperationError(error=f"Sample with uid {_sa_uid} not found")
 
         # only samples with unassigned analyses can be cancelled
-        analysis_results = await sample.get_analysis_results()
+        analysis_results = await SampleService().get_analysis_results(sample.uid)
         match = [result.assigned for result in analysis_results]
         if any(match):
             return_samples.append(sample)
             continue
 
-        sample = await sample.cancel(cancelled_by=felicity_user)
+        sample = await SampleService().cancel(sample.uid, cancelled_by=felicity_user)
         if sample:
             return_samples.append(sample)
 
@@ -341,11 +343,11 @@ async def re_instate_samples(info, samples: List[str]) -> ResultedSampleActionRe
         return OperationError(error=f"No Samples to re instate are provided!")
 
     for _sa_uid in samples:
-        sample: analysis_entities.Sample = await analysis_entities.Sample.get(uid=_sa_uid)
+        sample = await SampleService().get(uid=_sa_uid)
         if not sample:
             return OperationError(error=f"Sample with uid {_sa_uid} not found")
 
-        sample = await sample.re_instate(re_instated_by=felicity_user)
+        sample = await SampleService().re_instate(sample.uid, re_instated_by=felicity_user)
         if sample:
             return_samples.append(sample)
 
@@ -362,11 +364,11 @@ async def receive_samples(info, samples: List[str]) -> ResultedSampleActionRespo
         return OperationError(error=f"No Samples to receive are provided!")
 
     for _sa_uid in samples:
-        sample: analysis_entities.Sample = await analysis_entities.Sample.get(uid=_sa_uid)
+        sample = await SampleService().get(uid=_sa_uid)
         if not sample:
             return OperationError(error=f"Sample with uid {_sa_uid} not found")
 
-        sample = await sample.receive(received_by=felicity_user)
+        sample = await SampleService().receive(sample.uid, received_by=felicity_user)
         if sample:
             return_samples.append(sample)
 
@@ -383,11 +385,11 @@ async def verify_samples(info, samples: List[str]) -> SampleActionResponse:
         return OperationError(error=f"No Samples to verify are provided!")
 
     for _sa_uid in samples:
-        sample = await analysis_entities.Sample.get(uid=_sa_uid)
+        sample = await SampleService().get(uid=_sa_uid)
         if not sample:
             return OperationError(error=f"Sample with uid {_sa_uid} not found")
 
-        _, sample = await sample.verify(verified_by=felicity_user)
+        _, sample = await SampleService().verify(sample.uid, verified_by=felicity_user)
         if sample:
             return_samples.append(sample)
 
@@ -406,21 +408,21 @@ async def reject_samples(
         return OperationError(error=f"No Samples to verify are provided!")
 
     for _sam in samples:
-        sample: analysis_entities.Sample = await analysis_entities.Sample.get(uid=_sam.uid)
+        sample = await SampleService().get(uid=_sam.uid)
         if not sample:
             return OperationError(error=f"Sample with uid {_sam.uid} not found")
 
         for re_uid in _sam.reasons:
-            reason = await analysis_entities.RejectionReason.get(uid=re_uid)
+            reason = await RejectionReasonService().get(uid=re_uid)
             if not reason:
                 return OperationError(
                     error=f"RejectionReason with uid {re_uid} not found"
                 )
 
             # TODO: Transactions
-            sample = await sample.reject(rejected_by=felicity_user)
-            await analysis_entities.Sample.table_insert(
-                analysis_entities.sample_rejection_reason,
+            sample = await SampleService().reject(sample.uid, rejected_by=felicity_user)
+            await SampleService().repository.table_insert(
+                sample_rejection_reason,
                 {"sample_uid": sample.uid, "rejection_reason_uid": reason.uid},
             )
 
@@ -429,7 +431,7 @@ async def reject_samples(
 
                 if sample.status == SampleState.REJECTED:
                     for analyte in sample.analysis_results:
-                        await analyte.cancel(cancelled_by=felicity_user)
+                        await AnalysisResultService().cancel(analyte.uid, cancelled_by=felicity_user)
 
     return SampleListingType(samples=return_samples)
 
@@ -446,7 +448,7 @@ async def publish_samples(
     # set status of these samples to PUBLISHING for those whose action is "publish" !important
     final_publish = list(filter(lambda p: p.action == "publish", samples))
     not_final = list(filter(lambda p: p.action != "publish", samples))
-    await analysis_entities.Sample.bulk_update_with_mappings(
+    await SampleService().bulk_update_with_mappings(
         [
             {"uid": sample.uid, "status": SampleState.PUBLISHING}
             for sample in final_publish
@@ -464,13 +466,13 @@ async def publish_samples(
         data=data,
     )
 
-    await job_entities.Job.create(job_schema)
+    await JobService().create(job_schema)
 
     # !important for frontend
     # unfreeze frontend and return sample to original state since it is a non final publish
-    ns_samples = await analysis_entities.Sample.get_by_uids([nf.uid for nf in not_final])
+    ns_samples = await SampleService().get_by_uids([nf.uid for nf in not_final])
     for sample in ns_samples:
-        await streamer.stream(sample, felicity_user, sample.status, "sample")
+        await ActivityStreamService().stream(sample, felicity_user, sample.status, "sample")
 
     return OperationSuccess(
         message="Your results are being published in the background."
@@ -487,11 +489,11 @@ async def print_samples(info, samples: List[str]) -> SampleActionResponse:
         return OperationError(error=f"No Samples to print are provided!")
 
     for _sa_uid in samples:
-        sample: analysis_entities.Sample = await analysis_entities.Sample.get(uid=_sa_uid)
+        sample = await SampleService().get(uid=_sa_uid)
         if not sample:
             return OperationError(error=f"Sample with uid {_sa_uid} not found")
 
-        sample = await sample.print(printed_by=felicity_user)
+        sample = await SampleService().print(sample.uid, printed_by=felicity_user)
         if sample:
             return_samples.append(sample)
 
@@ -508,11 +510,11 @@ async def invalidate_samples(info, samples: List[str]) -> SampleActionResponse:
         return OperationError(error=f"No Samples to invalidate are provided!")
 
     for _sa_uid in samples:
-        sample: analysis_entities.Sample = await analysis_entities.Sample.get(uid=_sa_uid)
+        sample = await SampleService().get(uid=_sa_uid)
         if not sample:
             return OperationError(error=f"Sample with uid {_sa_uid} not found")
 
-        copy, invalidated = await sample.invalidate(invalidated_by=felicity_user)
+        copy, invalidated = await SampleService().invalidate(sample.uid, invalidated_by=felicity_user)
 
         # add invalidated
         if invalidated:
@@ -541,7 +543,7 @@ async def invalidate_samples(info, samples: List[str]) -> SampleActionResponse:
                     "status": ResultState.PENDING,
                 }
                 a_result_schema = schemas.AnalysisResultCreate(**a_result_in)
-                await result_entities.AnalysisResult.create(a_result_schema)
+                await AnalysisResultService().create(a_result_schema)
 
     return SampleListingType(samples=return_samples)
 
@@ -550,13 +552,13 @@ async def invalidate_samples(info, samples: List[str]) -> SampleActionResponse:
 async def samples_apply_template(info, uid: str, analysis_template_uid: str) -> ResultedSampleActionResponse:
     felicity_user = await auth_from_info(info)
 
-    sample = await analysis_entities.Sample.get(uid=uid)
+    sample = await SampleService().get(uid=uid)
     if sample.status not in [SampleState.RECEIVED, SampleState.AWAITING, SampleState.APPROVED]:
         return OperationError(error=f"Samples in {sample.status} can not be added analyses")
 
-    template = await analysis_entities.AnalysisTemplate.get(uid=analysis_template_uid)
+    template = await AnalysisTemplateService().get(uid=analysis_template_uid)
 
-    pending_results = await result_entities.AnalysisResult.get_all(
+    pending_results = await AnalysisResultService().get_all(
         sample_uid=sample.uid,
         status=ResultState.PENDING,
         worksheet_uid=None
@@ -588,12 +590,12 @@ async def samples_apply_template(info, uid: str, analysis_template_uid: str) -> 
                     }
                 )
             )
-    await result_entities.AnalysisResult.bulk_create(result_schemas)
+    await AnalysisResultService().bulk_create(result_schemas)
 
     if sample.status != SampleState.RECEIVED:
-        await sample.change_status(status=SampleState.RECEIVED, updated_by_uid=felicity_user.uid)
+        await SampleService().change_status(sample.uid, status=SampleState.RECEIVED, updated_by_uid=felicity_user.uid)
 
-    sample = await analysis_entities.Sample.get(uid=uid)
+    sample = await SampleService().get(uid=uid)
     return ResultedSampleListingType(samples=[sample])
 
 
@@ -601,14 +603,14 @@ async def samples_apply_template(info, uid: str, analysis_template_uid: str) -> 
 async def manage_analyses(info, sample_uid: str, payload: ManageAnalysisInputType) -> ResultedSampleActionResponse:
     felicity_user = await auth_from_info(info)
 
-    sample = await analysis_entities.Sample.get(uid=sample_uid)
+    sample = await SampleService().get(uid=sample_uid)
     if sample.status not in [SampleState.RECEIVED, SampleState.AWAITING, SampleState.APPROVED]:
         return OperationError(error=f"Samples in {sample.status} can not be added analyses")
 
     # cancel
     for _anal in payload.cancel:
-        result = await result_entities.AnalysisResult.get(uid=_anal)
-        await result.cancel(cancelled_by=felicity_user)
+        result = await AnalysisResultService().get(uid=_anal)
+        await AnalysisResultService().cancel(result.uid, cancelled_by=felicity_user)
 
     # create and attach result objects for each added Analyses
     logger.info(
@@ -624,7 +626,7 @@ async def manage_analyses(info, sample_uid: str, payload: ManageAnalysisInputTyp
     )
     result_schemas = []
     for _service_uid in payload.add:
-        service = await analysis_entities.Analysis.get(uid=_service_uid)
+        service = await AnalysisService().get(uid=_service_uid)
         result_schemas.append(
             a_result_schema.model_copy(
                 update={
@@ -635,10 +637,10 @@ async def manage_analyses(info, sample_uid: str, payload: ManageAnalysisInputTyp
                 }
             )
         )
-    await result_entities.AnalysisResult.bulk_create(result_schemas)
+    await AnalysisResultService().bulk_create(result_schemas)
 
     if sample.status != SampleState.RECEIVED:
-        await sample.change_status(status=SampleState.RECEIVED, updated_by_uid=felicity_user.uid)
+        await SampleService().change_status(sample.uid, status=SampleState.RECEIVED, updated_by_uid=felicity_user.uid)
 
-    sample = await analysis_entities.Sample.get(uid=sample_uid)
+    sample = await SampleService().get(uid=sample_uid)
     return ResultedSampleListingType(samples=[sample])

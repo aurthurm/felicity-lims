@@ -9,8 +9,10 @@ from felicity.api.gql.auth import auth_from_info
 from felicity.api.gql.permissions import IsAuthenticated
 from felicity.api.gql.types import OperationError
 from felicity.apps.analysis import schemas, utils
-from felicity.apps.analysis.entities import analysis as analysis_entities
-from felicity.apps.instrument.entities import Method
+from felicity.apps.analysis.services.analysis import (AnalysisCodingService, AnalysisService,
+    ProfileService, SampleTypeService)
+from felicity.apps.analysis.entities.analysis import analysis_method, analysis_sample_type
+from felicity.apps.instrument.services import MethodService
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -64,11 +66,11 @@ async def create_analysis(info, payload: AnalysisInputType) -> ProfilesServiceRe
     if not payload.name or not payload.description:
         return OperationError(error="Name and Description are mandatory")
 
-    exists = await analysis_entities.Analysis.get(name=payload.name)
+    exists = await AnalysisService().get(name=payload.name)
     if exists:
         return OperationError(error=f"A analysis named {payload.name} already exists")
 
-    exists = await analysis_entities.Analysis.get(keyword=payload.keyword)
+    exists = await AnalysisService().get(keyword=payload.keyword)
     if exists:
         return OperationError(error=f"Analysis Keyword {payload.keyword} is not unique")
 
@@ -81,24 +83,24 @@ async def create_analysis(info, payload: AnalysisInputType) -> ProfilesServiceRe
             incoming[k] = v
 
     obj_in = schemas.AnalysisCreate(**incoming)
-    analysis: analysis_entities.Analysis = await analysis_entities.Analysis.create(obj_in)
+    analysis = await AnalysisService().create(obj_in)
 
     if payload.sample_types:
         for st_uid in payload.sample_types:
-            await analysis_entities.Analysis.table_insert(
-                table=analysis_entities.analysis_sample_type,
+            await AnalysisService().repository.table_insert(
+                table=analysis_sample_type,
                 mappings={"sample_type_uid": st_uid, "analysis_uid": analysis.uid},
             )
 
     if payload.methods:
         for m_uid in payload.methods:
-            await analysis_entities.Analysis.table_insert(
-                table=analysis_entities.analysis_method,
+            await AnalysisService().repository.table_insert(
+                table=analysis_method,
                 mappings={"method_uid": m_uid, "analysis_uid": analysis.uid},
             )
 
-    analysis = await analysis_entities.Analysis.get(uid=analysis.uid)
-    profiles = await analysis_entities.Profile.get_all(analyses___uid=analysis.uid)
+    analysis = await AnalysisService().get(uid=analysis.uid)
+    profiles = await ProfileService().get_all(analyses___uid=analysis.uid)
 
     await utils.billing_setup_analysis([analysis.uid])
 
@@ -113,7 +115,7 @@ async def update_analysis(
 ) -> ProfilesServiceResponse:
     felicity_user = await auth_from_info(info)
 
-    analysis = await analysis_entities.Analysis.get(uid=uid)
+    analysis = await AnalysisService().get(uid=uid)
     if not analysis:
         return OperationError(
             error=f"Analysis with uid {uid} does not exist -- cannot update"
@@ -128,28 +130,28 @@ async def update_analysis(
                 logger.warning(e)
 
     analysis_in = schemas.AnalysisUpdate(**analysis.to_dict(nested=False))
-    analysis = await analysis.update(analysis_in)
+    analysis = await  AnalysisService().update(analysis.uid, analysis_in)
 
     if payload.sample_types:
         analysis.sample_types.clear()
-        analysis = await analysis.save_async()
+        analysis = await AnalysisService().save(analysis)
         for _uid in payload.sample_types:
-            stype = await analysis_entities.SampleType.get(uid=_uid)
+            stype = await SampleTypeService().get(uid=_uid)
             analysis.sample_types.append(stype)
-        analysis = await analysis.save_async()
+        analysis = await AnalysisService().save(analysis)
 
     if payload.methods:
         analysis.methods.clear()
-        analysis = await analysis.save_async()
+        analysis = await AnalysisService().save(analysis)
         for _uid in payload.methods:
-            meth = await Method.get(uid=_uid)
-            await Method.table_insert(
-                table=analysis_entities.analysis_method,
+            meth = await MethodService().get(uid=_uid)
+            await MethodService().repository.table_insert(
+                table=analysis_method,
                 mappings={"method_uid": meth.uid, "analysis_uid": analysis.uid},
             )
-        analysis = await analysis.get(uid=analysis.uid)
+        analysis = await  AnalysisService().get(uid=analysis.uid)
 
-    profiles = analysis_entities.Profile.get_all(analyses___uid=analysis.uid)
+    profiles = ProfileService().get_all(analyses___uid=analysis.uid)
 
     return a_types.AnalysisWithProfiles(
         **{**analysis.marshal_simple(), "profiles": profiles}
@@ -162,7 +164,7 @@ async def create_analysis_mapping(
 ) -> AnalysisMappingResponse:
     felicity_user = await auth_from_info(info)
 
-    exists = await analysis_entities.AnalysisCoding.get(code=payload.code)
+    exists = await AnalysisCodingService().get(code=payload.code)
     if exists:
         return OperationError(error=f"Mapping: {payload.code} already exists")
 
@@ -174,8 +176,8 @@ async def create_analysis_mapping(
         incoming[k] = v
 
     obj_in = schemas.AnalysisCodingCreate(**incoming)
-    analysis_mapping: analysis_entities.AnalysisCoding = (
-        await analysis_entities.AnalysisCoding.create(obj_in)
+    analysis_mapping = (
+        await AnalysisCodingService().create(obj_in)
     )
     return a_types.AnalysisMappingType(**analysis_mapping.marshal_simple())
 
@@ -186,7 +188,7 @@ async def update_analysis_mapping(
 ) -> AnalysisMappingResponse:
     felicity_user = await auth_from_info(info)
 
-    analysis_mapping = await analysis_entities.AnalysisCoding.get(uid=uid)
+    analysis_mapping = await AnalysisCodingService().get(uid=uid)
     if not analysis_mapping:
         return OperationError(error=f"Coding with uid {uid} does not exist")
 

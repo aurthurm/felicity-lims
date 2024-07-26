@@ -11,13 +11,14 @@ from felicity.api.gql.auth import auth_from_info
 from felicity.api.gql.permissions import (CanVerifyAnalysisResult,
                                           IsAuthenticated)
 from felicity.api.gql.types import OperationError, OperationSuccess
-from felicity.apps.analysis.entities import analysis as analysis_entities
-from felicity.apps.analysis.entities import results as result_entities
 from felicity.apps.analysis.utils import retest_from_result_uids
-from felicity.apps.job import entities as job_entities
 from felicity.apps.job import schemas as job_schemas
-from felicity.apps.worksheet import entities as ws_entities
 from felicity.apps.worksheet import enum as ws_conf
+from felicity.apps.analysis.services.result import AnalysisResultService
+from felicity.apps.job.services import JobService
+from felicity.apps.worksheet.services import WorkSheetService
+from felicity.apps.analysis.services.analysis import SampleService
+from felicity.apps.notification.services import ActivityStreamService
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -65,7 +66,7 @@ async def submit_analysis_results(
     an_results = [result.__dict__ for result in analysis_results]
 
     # set status of these analysis_results to SUBMITTING
-    await result_entities.AnalysisResult.bulk_update_with_mappings(
+    await AnalysisResultService().bulk_update_with_mappings(
         [
             {"uid": _ar["uid"], "status": ResultState.SUBMITTING}
             for _ar in an_results
@@ -83,13 +84,13 @@ async def submit_analysis_results(
         data=an_results,
     )
 
-    await job_entities.Job.create(job_schema)
+    await JobService().create(job_schema)
 
     if source_object == "worksheet" and source_object_uid:
-        ws = await ws_entities.WorkSheet.get(uid=source_object_uid)
-        await ws.change_state(WorkSheetState.SUBMITTING, felicity_user.uid)
+        ws = await WorkSheetService().get(uid=source_object_uid)
+        await WorkSheetService().change_state(ws.uid, WorkSheetState.SUBMITTING, felicity_user.uid)
     # elif source_object == "sample" and source_object_uid:
-    #     sa = await analysis_entities.Sample.get(uid=source_object_uid)
+    #     sa = await SampleService().get(uid=source_object_uid)
     #     await sa.change_status("processing", felicity_user.uid)
 
     return OperationSuccess(
@@ -107,27 +108,27 @@ async def verify_analysis_results(
         return OperationError(error=f"No analyses to verify are provided!")
 
     # set status of these analysis_results to PROCESSING
-    await result_entities.AnalysisResult.bulk_update_with_mappings(
+    await AnalysisResultService().bulk_update_with_mappings(
         [{"uid": uid, "status": ResultState.APPROVING} for uid in analyses]
     )
 
     job_schema = job_schemas.JobCreate(  # noqa
-        action=actions.RESULT_VERIFY,
-        category=categories.RESULT,
-        priority=priorities.MEDIUM,
+        action=JobAction.RESULT_VERIFY,
+        category=JobCategory.RESULT,
+        priority=JobPriority.MEDIUM,
         job_id="0",
-        status=job_states.PENDING,
+        status=JobState.PENDING,
         creator_uid=felicity_user.uid,
         data=analyses,
     )
 
-    await job_entities.Job.create(job_schema)
+    await JobService().create(job_schema)
 
     if source_object == "worksheet" and source_object_uid:
-        ws = await ws_entities.WorkSheet.get(uid=source_object_uid)
-        await ws.change_state(ws_conf.worksheet_states.APPROVING, felicity_user.uid)
+        ws = await WorkSheetService().get(uid=source_object_uid)
+        await WorkSheetService().change_state(ws.uid, WorkSheetState.APPROVING, felicity_user.uid)
     # elif source_object == "sample" and source_object_uid:
-    #     sa = await analysis_entities.Sample.get(uid=source_object_uid)
+    #     sa = await SampleService().get(uid=source_object_uid)
     #     await sa.change_status("APPROVING", felicity_user.uid)
 
     return OperationSuccess(
@@ -145,26 +146,27 @@ async def retract_analysis_results(info, analyses: list[str]) -> AnalysisResultR
         return OperationError(error=f"No analyses to retract are provided!")
 
     for _ar_uid in analyses:
-        a_result: result_entities.AnalysisResult = await result_entities.AnalysisResult.get(
+        a_result = await AnalysisResultService().get(
             uid=_ar_uid
         )
         if not a_result:
             return OperationError(error=f"AnalysisResult with uid {_ar_uid} not found")
 
-        retest, a_result = await a_result.retest_result(
+        retest, a_result = await AnalysisResultService().retest_result(
+            a_result.uid,
             retested_by=felicity_user, next_action="retract"
         )
 
         # monkeypatch -> notify of sample state
-        sample = await analysis_entities.Sample.get(uid=a_result.sample_uid)
-        await streamer.stream(sample, felicity_user, sample.status, "sample")
+        sample = await SampleService().get(uid=a_result.sample_uid)
+        await ActivityStreamService().stream(sample, felicity_user, sample.status, "sample")
 
         # if in worksheet then keep add retest to ws
         if a_result.worksheet_uid:
             retest.worksheet_uid = a_result.worksheet_uid
             retest.worksheet_position = a_result.worksheet_position
             retest.assigned = True
-            retest = await retest.save_async()
+            retest = await AnalysisResultService().save(retest)
 
         # add retest
         if retest:
@@ -186,8 +188,8 @@ async def retest_analysis_results(info, analyses: list[str]) -> AnalysisResultRe
 
     # monkeypatch -> notify of sample state
     for result in originals:
-        sample = await analysis_entities.Sample.get(uid=result.sample_uid)
-        await streamer.stream(sample, felicity_user, sample.status, "sample")
+        sample = await SampleService().get(uid=result.sample_uid)
+        await ActivityStreamService().stream(sample, felicity_user, sample.status, "sample")
 
     return ResultListingType(results=retests + originals)
 
@@ -202,7 +204,7 @@ async def cancel_analysis_results(info, analyses: list[str]) -> AnalysisResultRe
         return OperationError(error=f"No analyses to Retest are provided!")
 
     for _ar_uid in analyses:
-        a_result: result_entities.AnalysisResult = await result_entities.AnalysisResult.get(
+        a_result = await AnalysisResultService().get(
             uid=_ar_uid
         )
         if not a_result:
@@ -213,7 +215,7 @@ async def cancel_analysis_results(info, analyses: list[str]) -> AnalysisResultRe
             return_results.append(a_result)
             continue
 
-        a_result = await a_result.cancel(cancelled_by=felicity_user)
+        a_result = await AnalysisResultService().cancel(a_result.uid, cancelled_by=felicity_user)
         if a_result:
             return_results.append(a_result)
 
@@ -232,13 +234,13 @@ async def re_instate_analysis_results(
         return OperationError(error=f"No analyses to Reinstate are provided!")
 
     for _ar_uid in analyses:
-        a_result: result_entities.AnalysisResult = await result_entities.AnalysisResult.get(
+        a_result = await AnalysisResultService().get(
             uid=_ar_uid
         )
         if not a_result:
             return OperationError(error=f"AnalysisResult with uid {_ar_uid} not found")
 
-        a_result = await a_result.re_instate(re_instated_by=felicity_user)
+        a_result = await AnalysisResultService().re_instate(a_result.uid, re_instated_by=felicity_user)
         if a_result:
             return_results.append(a_result)
 

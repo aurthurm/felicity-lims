@@ -7,7 +7,10 @@ from felicity.api.gql.auth import auth_from_info
 from felicity.api.gql.noticeboard.types import NoticeType
 from felicity.api.gql.permissions import IsAuthenticated
 from felicity.api.gql.types import DeletedItem, DeleteResponse, OperationError
-from felicity.apps.noticeboard import entities, schemas
+from felicity.apps.noticeboard import schemas
+from felicity.apps.noticeboard.services import NoticeService
+from felicity.apps.user.services import GroupService, UserService
+from felicity.apps.setup.services import DepartmentService
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -42,7 +45,7 @@ class NoticeMutations:
                 suggestion="Make sure that the fields: [title, body, expiry] all have values",
             )
 
-        exists = await entities.Notice.get(title=payload.title)
+        exists = await NoticeService().get(title=payload.title)
         if exists:
             return OperationError(
                 error="Notice title Duplication not Allowed",
@@ -59,19 +62,19 @@ class NoticeMutations:
         if payload.groups:
             incoming["groups"] = []
             for g_uid in payload.groups:
-                _gr = entities.Group.get(uid=g_uid)
+                _gr = GroupService().get(uid=g_uid)
                 if _gr:
                     incoming["groups"].append(_gr)
 
         if payload.departments:
             incoming["departments"] = []
             for dept_uid in payload.departments:
-                _gr = entities.Department.get(uid=dept_uid)
+                _gr = DepartmentService().get(uid=dept_uid)
                 if _gr:
                     incoming["departments"].append(_gr)
 
         obj_in = schemas.NoticeCreate(**incoming)
-        notice: entities.Notice = await entities.Notice.create(obj_in)
+        notice = await NoticeService().create(obj_in)
         return NoticeType(**notice.marshal_simple())
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
@@ -81,7 +84,7 @@ class NoticeMutations:
 
         felicity_user = await auth_from_info(info)
 
-        notice = await entities.Notice.get(uid=uid)
+        notice = await NoticeService().get(uid=uid)
         if not notice:
             raise OperationError(
                 error=f"notice with uid {uid} does not exist",
@@ -99,7 +102,7 @@ class NoticeMutations:
         if payload.groups:
             _groups = []
             for g_uid in payload.groups:
-                _gr = entities.Group.get(uid=g_uid)
+                _gr = GroupService().get(uid=g_uid)
                 if _gr:
                     _groups.append(_gr)
             setattr(notice, "groups", _groups)
@@ -107,7 +110,7 @@ class NoticeMutations:
         if payload.departments:
             _departments = []
             for dept_uid in payload.departments:
-                _gr = entities.Department.get(uid=dept_uid)
+                _gr = DepartmentService().get(uid=dept_uid)
                 if _gr:
                     _departments.append(_gr)
             setattr(notice, "departments", _departments)
@@ -115,7 +118,7 @@ class NoticeMutations:
         setattr(notice, "update_by_uid", felicity_user.uid)
 
         notice_in = schemas.NoticeUpdate(**notice.to_dict())
-        notice = await notice.update(notice_in)
+        notice = await NoticeService().update(notice.uid, notice_in)
         return NoticeType(**notice.marshal_simple())
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
@@ -123,15 +126,15 @@ class NoticeMutations:
 
         felicity_user = await auth_from_info(info)
 
-        notice: entities.Notice = await entities.Notice.get(uid=uid)
+        notice = await NoticeService().get(uid=uid)
         if not notice:
             raise Exception(f"Notice with uid {uid} does not exist")
 
-        _viewer = await entities.User.get(uid=viewer)
+        _viewer = await UserService().get(uid=viewer)
         if not _viewer:
             raise Exception(f"User with uid {viewer} does not exist")
 
-        notice = await notice.add_viewer(_viewer)
+        notice = await NoticeService().add_viewer(notice.uid, _viewer)
         return NoticeType(**notice.marshal_simple())
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
@@ -139,7 +142,7 @@ class NoticeMutations:
 
         felicity_user = await auth_from_info(info)
 
-        notice: entities.Notice = await entities.Notice.get(uid=uid)
+        notice = await NoticeService().get(uid=uid)
         if not notice:
             raise Exception(f"Notice with uid {uid} does not exist")
 

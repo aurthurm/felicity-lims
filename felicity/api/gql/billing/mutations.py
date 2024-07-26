@@ -14,11 +14,14 @@ from felicity.api.gql.billing.types import (AnalysisDiscountType,
                                             VoucherType)
 from felicity.api.gql.permissions import IsAuthenticated
 from felicity.api.gql.types import OperationError
-from felicity.apps.billing import entities, schemas, utils
+from felicity.apps.billing import schemas, utils
 from felicity.apps.billing.enum import DiscountType, TransactionKind
 from felicity.apps.billing.schemas import (TestBillTransactionUpdate,
                                            TestBillUpdate)
 from felicity.apps.impress.invoicing import utils as invoice_utils
+from felicity.apps.billing.services import (AnalysisDiscountService, AnalysisPriceService,
+    ProfileDiscountService, ProfilePriceService, TestBillService, TestBillTransactionService,
+    VoucherCodeService, VoucherService)
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -121,7 +124,7 @@ class BillingMutations:
     ) -> ProfilePriceResponse:
         _, felicity_user = await auth_from_info(info)
 
-        profile_price = await entities.ProfilePrice.get(uid=uid)
+        profile_price = await ProfilePriceService().get(uid=uid)
         incoming: dict = {
             "amount": payload.amount,
             "is_active": payload.is_active,
@@ -129,7 +132,7 @@ class BillingMutations:
             "updated_by_uid": felicity_user.uid,
         }
         obj_in = schemas.ProfilePriceUpdate(**incoming)
-        profile_price = await profile_price.update(obj_in)
+        profile_price = await ProfilePriceService().update(profile_price.uid, obj_in)
         return ProfilePriceType(**profile_price.marshal_simple())
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
@@ -138,7 +141,7 @@ class BillingMutations:
     ) -> AnalysisPriceResponse:
         _, felicity_user = await auth_from_info(info)
 
-        analysis_price = await entities.AnalysisPrice.get(uid=uid)
+        analysis_price = await AnalysisPriceService().get(uid=uid)
         incoming: dict = {
             "amount": payload.amount,
             "is_active": payload.is_active,
@@ -146,7 +149,7 @@ class BillingMutations:
             "updated_by_uid": felicity_user.uid,
         }
         obj_in = schemas.AnalysisPriceUpdate(**incoming)
-        analysis_price = await analysis_price.update(obj_in)
+        analysis_price = await AnalysisPriceService().update(analysis_price.uid, obj_in)
         return AnalysisPriceType(**analysis_price.marshal_simple())
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
@@ -158,7 +161,7 @@ class BillingMutations:
         if not uid:
             return OperationError(error="No uid provided to identify update obj")
 
-        profile_discount = await entities.ProfileDiscount.get(uid=uid)
+        profile_discount = await ProfileDiscountService().get(uid=uid)
         if not profile_discount:
             return OperationError(
                 error=f"ProfileDiscount with uid {uid} not found. Cannot update obj ..."
@@ -184,7 +187,7 @@ class BillingMutations:
         obj_in = schemas.ProfileDiscountUpdate(
             **{**profile_discount.to_dict(), **update_in}
         )
-        profile_discount = await profile_discount.update(obj_in)
+        profile_discount = await ProfileDiscountService.update(profile_discount.uid, obj_in)
         return ProfileDiscountType(
             **profile_discount.marshal_simple(),
         )
@@ -198,7 +201,7 @@ class BillingMutations:
         if not uid:
             return OperationError(error="No uid provided to identify update obj")
 
-        analysis_discount = await entities.AnalysisDiscount.get(uid=uid)
+        analysis_discount = await AnalysisDiscountService().get(uid=uid)
         if not analysis_discount:
             return OperationError(
                 error=f"AnalysisDiscount with uid {uid} not found. Cannot update obj ..."
@@ -219,7 +222,7 @@ class BillingMutations:
         obj_in = schemas.AnalysisDiscountUpdate(
             **{**analysis_discount.to_dict(), **update_in}
         )
-        analysis_discount = await analysis_discount.update(obj_in)
+        analysis_discount = await AnalysisDiscountService.update(analysis_discount.uid, obj_in)
         return AnalysisDiscountType(**analysis_discount.marshal_simple())
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
@@ -229,7 +232,7 @@ class BillingMutations:
 
         felicity_user = await auth_from_info(info)
 
-        exists = await entities.Voucher.get(name=payload.name)
+        exists = await VoucherService().get(name=payload.name)
         if exists:
             return OperationError(error=f"Voucher {payload.name} already exists")
 
@@ -241,7 +244,7 @@ class BillingMutations:
             incoming[k] = v
 
         obj_in = schemas.VoucherCreate(**incoming)
-        voucher = await entities.Voucher.create(obj_in)
+        voucher = await VoucherService().create(obj_in)
         return VoucherType(**voucher.marshal_simple())
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
@@ -254,7 +257,7 @@ class BillingMutations:
         if not uid:
             return OperationError(error="No uid provided to identify update obj")
 
-        voucher = await entities.Voucher.get(uid=uid)
+        voucher = await VoucherService().get(uid=uid)
         if not voucher:
             return OperationError(
                 error=f"Voucher with uid {uid} not found. Cannot update obj ..."
@@ -268,7 +271,7 @@ class BillingMutations:
                 except Exception as e:
                     logger.warning(f"failed to set attribute {field}: {e}")
         obj_in = schemas.VoucherUpdate(**voucher.to_dict())
-        voucher = await voucher.update(obj_in)
+        voucher = await VoucherService().update(voucher.uid, obj_in)
         return VoucherType(**voucher.marshal_simple())
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
@@ -278,7 +281,7 @@ class BillingMutations:
 
         felicity_user = await auth_from_info(info)
 
-        exists = await entities.VoucherCode.get(code=payload.code)
+        exists = await VoucherCodeService().get(code=payload.code)
         if exists:
             return OperationError(error=f"Voucher Code {payload.code} already exists")
 
@@ -290,7 +293,7 @@ class BillingMutations:
             incoming[k] = v
 
         obj_in = schemas.VoucherCodeCreate(**incoming)
-        voucher_code = await entities.VoucherCode.create(obj_in)
+        voucher_code = await VoucherCodeService().create(obj_in)
         return VoucherCodeType(**voucher_code.marshal_simple())
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
@@ -303,7 +306,7 @@ class BillingMutations:
         if not uid:
             return OperationError(error="No uid provided to identify update obj")
 
-        voucher_code = await entities.VoucherCode.get(uid=uid)
+        voucher_code = await VoucherCodeService().get(uid=uid)
         if not voucher_code:
             return OperationError(
                 error=f"Voucher with uid {uid} not found. Cannot update obj ..."
@@ -317,7 +320,7 @@ class BillingMutations:
                 except Exception as e:
                     logger.warning(f"failed to set attribute {field}: {e}")
         obj_in = schemas.VoucherCodeUpdate(**voucher_code.to_dict())
-        voucher_code = await voucher_code.update(obj_in)
+        voucher_code = await VoucherCodeService().update(voucher_code.uid, obj_in)
         return VoucherCodeType(**voucher_code.marshal_simple())
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
@@ -332,7 +335,7 @@ class BillingMutations:
                 suggestion="Transaction amount must be greater than 0",
             )
 
-        test_bill = await entities.TestBill.get(uid=payload.test_bill_uid)
+        test_bill = await TestBillService().get(uid=payload.test_bill_uid)
         incoming: dict = {
             "patient_uid": test_bill.patient_uid,
             "client_uid": test_bill.client_uid,
@@ -344,7 +347,7 @@ class BillingMutations:
             incoming[k] = v
 
         obj_in = schemas.TestBillTransactionCreate(**incoming)
-        tbt = await entities.TestBillTransaction.create(obj_in)
+        tbt = await TestBillTransactionService().create(obj_in)
 
         test_bill_update = {
             "total_paid": test_bill.total_paid + tbt.amount,
@@ -353,7 +356,7 @@ class BillingMutations:
         if test_bill_update["total_paid"] >= test_bill.total_charged:
             test_bill_update["partial"] = False
             test_bill_update["is_active"] = False
-        await test_bill.update(TestBillUpdate(**test_bill_update))
+        await TestBillService().update(test_bill.uid, TestBillUpdate(**test_bill_update))
 
         transaction_update = {"is_success": True}
         if payload.kind == TransactionKind.CASH:
@@ -363,7 +366,7 @@ class BillingMutations:
             incoming["action_required"] = False
             incoming["action_message"] = "Confirm funds reception"
 
-        tbt = await tbt.update(TestBillTransactionUpdate(**transaction_update))
+        tbt = await TestBillTransactionService().update(tbt.uid, TestBillTransactionUpdate(**transaction_update))
         await invoice_utils.impress_invoice(test_bill)
         return TestBillTransactionType(**tbt.marshal_simple())
 

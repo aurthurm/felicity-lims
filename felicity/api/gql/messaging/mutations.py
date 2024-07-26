@@ -8,9 +8,10 @@ from felicity.api.gql.auth import auth_from_info
 from felicity.api.gql.messaging.types import MessageType
 from felicity.api.gql.permissions import IsAuthenticated
 from felicity.api.gql.types import DeletedItem, DeleteResponse, OperationError
-from felicity.apps.messaging import entities, schemas
-from felicity.apps.user.entities import User
+from felicity.apps.messaging import schemas
 from felicity.utils import get_passed_args
+from felicity.apps.user.services import UserService
+from felicity.apps.messaging.services import MessageService, MessageThreadService
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -37,13 +38,13 @@ class MessageMutations:
 
         _recipients = [felicity_user]
         for _rec in recipients:
-            recipient = User.get(uid=_rec)
+            recipient = UserService().get(uid=_rec)
             if recipient and recipient not in _recipients:
                 _recipients.append(felicity_user)
 
         thread_in = schemas.MessageThreadCreate(broadcast=len(recipients) > 1)
         thread_in.recipients = _recipients
-        thread: entities.MessageThread = await entities.MessageThread.create(thread_in)
+        thread = await MessageThreadService().create(thread_in)
 
         incoming = {
             "thread_uid": thread.uid,
@@ -54,18 +55,18 @@ class MessageMutations:
         for k, v in passed_args.items():
             incoming[k] = v
 
-        exists = await entities.Message.get(body=body)
+        exists = await MessageService().get(body=body)
         if exists:
             incoming["body"] = ">> " + incoming["body"]
 
         incoming["recipients"] = []
         for user_uid in recipients:
-            _rec = User.get(uid=user_uid)
+            _rec = UserService().get(uid=user_uid)
             if _rec:
                 incoming["recipients"].append(_rec)
 
         obj_in = schemas.MessageCreate(**incoming)
-        message: entities.Message = await entities.Message.create(obj_in)
+        message = await MessageService().create(obj_in)
         return MessageType(**message.marshal_simple())
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
@@ -76,7 +77,7 @@ class MessageMutations:
 
         felicity_user = await auth_from_info(info)
 
-        thread: entities.MessageThread = await entities.MessageThread.get(uid=thread_uid)
+        thread = await MessageThreadService().get(uid=thread_uid)
         if not thread:
             return OperationError(
                 error=f"Message Thread with uid {thread_uid} not fount"
@@ -92,14 +93,14 @@ class MessageMutations:
         for k, v in passed_args.items():
             incoming[k] = v
 
-        last_message = await thread.get_last_message()
+        last_message = await MessageThreadService().get_last_message(thread.uid)
 
         if last_message:
             # not deleted
             incoming["parent_id"] = last_message.uid
 
         obj_in = schemas.MessageCreate(**incoming)
-        message: entities.Message = await entities.Message.create(obj_in)
+        message = await MessageService().create(obj_in)
         return MessageType(**message.marshal_simple())
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
@@ -107,11 +108,11 @@ class MessageMutations:
 
         felicity_user = await auth_from_info(info)
 
-        message: entities.Message = await entities.Message.get(uid=uid)
+        message = await MessageService().get(uid=uid)
         if not message:
             return OperationError(error=f"message with uid {uid} does not exist")
 
-        message = await message.add_viewer(felicity_user)
+        message = await MessageService().add_viewer(message.uid, felicity_user)
         return MessageType(**message.marshal_simple())
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
@@ -119,11 +120,11 @@ class MessageMutations:
 
         felicity_user = await auth_from_info(info)
 
-        message: entities.Message = await entities.Message.get(uid=uid)
+        message = await MessageService().get(uid=uid)
         if not message:
             return OperationError(error=f"Message with uid {uid} does not exist")
 
-        uid = await message.delete_for_user(felicity_user)
+        uid = await MessageService().delete_for_user(message.uid, felicity_user)
         return DeletedItem(uid=uid)
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
@@ -131,9 +132,9 @@ class MessageMutations:
 
         felicity_user = await auth_from_info(info)
 
-        thread: entities.Message = await entities.MessageThread.get(uid=uid)
+        thread = await MessageThreadService().get(uid=uid)
         if not thread:
             return OperationError(error=f"Message Thread with uid {uid} does not exist")
 
-        uid = await thread.delete_for_user(felicity_user)
+        uid = await MessageThreadService().delete_for_user(thread.uid, felicity_user)
         return DeletedItem(uid=uid)

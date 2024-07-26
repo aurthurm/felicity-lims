@@ -1,5 +1,6 @@
 import logging
 from dataclasses import field
+import re
 from typing import List, Optional
 
 import strawberry  # noqa
@@ -10,6 +11,10 @@ from felicity.api.gql.permissions import IsAuthenticated
 from felicity.api.gql.types import OperationError
 from felicity.apps.analysis import schemas, utils
 from felicity.apps.analysis.entities import analysis as analysis_entities
+from felicity.apps.analysis.services.analysis import (AnalysisService, AnalysisTemplateService,
+    ProfileCodingService, ProfileService, SampleTypeService)
+from felicity.apps.analysis.entities.analysis import (analysis_analysis_template, analysis_profile,
+    profile_sample_type)
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -74,7 +79,7 @@ async def create_profile(info, payload: ProfileInputType) -> AnalysisProfileResp
             suggestion="Make sure the fields name and description are not empty",
         )
 
-    exists = await analysis_entities.Profile.get(name=payload.name)
+    exists = await ProfileService().get(name=payload.name)
     if exists:
         return OperationError(
             error=f"A Profile named {payload.name} already exists",
@@ -90,25 +95,25 @@ async def create_profile(info, payload: ProfileInputType) -> AnalysisProfileResp
             incoming[k] = v
 
     obj_in = schemas.ProfileCreate(**incoming)
-    profile: analysis_entities.Profile = await analysis_entities.Profile.create(obj_in)
+    profile = await ProfileService().create(obj_in)
 
     if payload.sample_types:
         for _st_uid in payload.sample_types:
-            await analysis_entities.Profile.table_insert(
-                table=analysis_entities.profile_sample_type,
+            await ProfileService().repository.table_insert(
+                table=profile_sample_type,
                 mappings={"sample_type_uid": _st_uid, "profile_uid": profile.uid},
             )
 
     if payload.services:
         for service_uid in payload.services:
-            await analysis_entities.Analysis.table_insert(
-                table=analysis_entities.analysis_profile,
+            await AnalysisService().repository.table_insert(
+                table=analysis_profile,
                 mappings={"analysis_uid": service_uid, "profile_uid": profile.uid},
             )
 
     await utils.billing_setup_profiles([profile.uid])
 
-    profile = await analysis_entities.Profile.get(uid=profile.uid)  # noqa
+    profile = await ProfileService().get(uid=profile.uid)  # noqa
     return a_types.ProfileType(**profile.marshal_simple())
 
 
@@ -118,7 +123,7 @@ async def update_profile(
 ) -> AnalysisProfileResponse:
     felicity_user = await auth_from_info(info)
 
-    profile = await analysis_entities.Profile.get(uid=uid)
+    profile = await ProfileService().get(uid=uid)
     if not profile:
         return OperationError(
             error=f"Profile with uid {uid} does not exist",
@@ -134,15 +139,15 @@ async def update_profile(
                 logger.warning(e)
 
     profile_in = schemas.ProfileUpdate(**profile.to_dict())
-    profile = await profile.update(profile_in)
+    profile = await ProfileService().update(profile.uid, profile_in)
 
     # Analyses management
     if payload.services:
         profile.analyses.clear()
-        profile = await profile.save_async()
+        profile = await ProfileService().save(profile)
         for _uid in payload.services:
-            anal = await analysis_entities.Analysis.get(uid=_uid)
-            await analysis_entities.Analysis.table_insert(
+            anal = await AnalysisService().get(uid=_uid)
+            await AnalysisService().repository.table_insert(
                 table=analysis_entities.analysis_profile,
                 mappings={"analysis_uid": anal.uid, "profile_uid": profile.uid},
             )
@@ -150,12 +155,12 @@ async def update_profile(
     # Sample Type management
     if payload.sample_types:
         profile.sample_types.clear()
-        profile = await profile.save_async()
+        profile = await ProfileService().save(profile)
         for _uid in payload.sample_types:
-            st = await analysis_entities.SampleType.get(uid=_uid)
+            st = await SampleTypeService().get(uid=_uid)
             profile.sample_types.append(st)
-            await analysis_entities.SampleType.table_insert(
-                table=analysis_entities.profile_sample_type,
+            await SampleTypeService().repository.table_insert(
+                table=profile_sample_type,
                 mappings={"sample_type_uid": st.uid, "profile_uid": profile.uid},
             )
 
@@ -172,7 +177,7 @@ async def create_analysis_template(info, payload: AnalysisTemplateInputType) -> 
             suggestion="Make sure the fields name and description are not empty",
         )
 
-    exists = await analysis_entities.AnalysisTemplate.get(name=payload.name)
+    exists = await AnalysisTemplateService().get(name=payload.name)
     if exists:
         return OperationError(
             error=f"An Analysis Template named {payload.name} already exists",
@@ -188,16 +193,16 @@ async def create_analysis_template(info, payload: AnalysisTemplateInputType) -> 
             incoming[k] = v
 
     obj_in = schemas.AnalysisTemplateCreate(**incoming)
-    template = await analysis_entities.AnalysisTemplate.create(obj_in)
+    template = await AnalysisTemplateService().create(obj_in)
 
     if payload.services:
         for service_uid in payload.services:
-            await analysis_entities.Analysis.table_insert(
-                table=analysis_entities.analysis_analysis_template,
+            await AnalysisService().repository.table_insert(
+                table=analysis_analysis_template,
                 mappings={"analysis_uid": service_uid, "analysis_template_uid": template.uid},
             )
 
-    template = await analysis_entities.AnalysisTemplate.get(uid=template.uid)
+    template = await AnalysisTemplateService().get(uid=template.uid)
     return a_types.AnalysisTemplateType(**template.marshal_simple())
 
 
@@ -207,7 +212,7 @@ async def update_analysis_template(
 ) -> AnalysisTemplateResponse:
     felicity_user = await auth_from_info(info)
 
-    template = await analysis_entities.AnalysisTemplate.get(uid=uid)
+    template = await AnalysisTemplateService().get(uid=uid)
     if not template:
         return OperationError(
             error=f"Analysis Template with uid {uid} does not exist",
@@ -223,16 +228,16 @@ async def update_analysis_template(
                 logger.warning(e)
 
     template_in = schemas.AnalysisTemplateUpdate(**template.to_dict())
-    template = await template.update(template_in)
+    template = await AnalysisTemplateService().update(template.uid, template_in)
 
     # Analyses management
     if payload.services:
         template.analyses.clear()
-        template = await template.save_async()
+        template = await AnalysisTemplateService().save(template)
         for _uid in payload.services:
-            anal = await analysis_entities.Analysis.get(uid=_uid)
-            await analysis_entities.Analysis.table_insert(
-                table=analysis_entities.analysis_analysis_template,
+            anal = await AnalysisService().get(uid=_uid)
+            await AnalysisService().repository.table_insert(
+                table=analysis_analysis_template,
                 mappings={"analysis_uid": anal.uid, "analysis_template_uid": template.uid},
             )
 
@@ -245,7 +250,7 @@ async def create_profile_mapping(
 ) -> ProfileMappingResponse:
     felicity_user = await auth_from_info(info)
 
-    exists = await analysis_entities.ProfileCoding.get(code=payload.code)
+    exists = await ProfileCodingService().get(code=payload.code)
     if exists:
         return OperationError(error=f"Mapping: {payload.code} already exists")
 
@@ -257,8 +262,8 @@ async def create_profile_mapping(
         incoming[k] = v
 
     obj_in = schemas.ProfileCodingCreate(**incoming)
-    profile_mapping: analysis_entities.ProfileCoding = (
-        await analysis_entities.ProfileCoding.create(obj_in)
+    profile_mapping = (
+        await ProfileCodingService().create(obj_in)
     )
     return a_types.ProfileMappingType(**profile_mapping.marshal_simple())
 
@@ -269,7 +274,7 @@ async def update_profile_mapping(
 ) -> ProfileMappingResponse:
     felicity_user = await auth_from_info(info)
 
-    profile_mapping = await analysis_entities.ProfileCoding.get(uid=uid)
+    profile_mapping = await ProfileCodingService().get(uid=uid)
     if not profile_mapping:
         return OperationError(error=f"Coding with uid {uid} does not exist")
 
@@ -282,5 +287,5 @@ async def update_profile_mapping(
                 logger.warning(e)
 
     profile_mapping_in = schemas.ProfileCodingUpdate(**profile_mapping.to_dict())
-    profile_mapping = await profile_mapping.update(profile_mapping_in)
+    profile_mapping = await ProfileCodingService().update(profile_mapping.uid, profile_mapping_in)
     return a_types.ProfileMappingType(**profile_mapping.marshal_simple())
