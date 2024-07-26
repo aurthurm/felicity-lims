@@ -2,8 +2,8 @@ import logging
 
 from fastapi import Request
 
-from apps.job.services import JobService
-from apps.shipment.services import ShipmentService, ReferralLaboratoryService
+from felicity.apps.job.services import JobService
+from felicity.apps.shipment.services import ShipmentService, ReferralLaboratoryService
 from felicity.apps.iol.fhir.schema import (BundleResource,
                                            DiagnosticReportResource,
                                            PatientResource, Reference,

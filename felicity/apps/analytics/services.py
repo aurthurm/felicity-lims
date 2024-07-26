@@ -7,7 +7,7 @@ from felicity.apps.common.utils.serializer import marshaller
 
 class ReportMetaService(BaseService[ReportMeta, ReportMetaCreate, ReportMetaUpdate]):
     def __init__(self):
-        super().__init(ReportMetaRepository)
+        super().__init__(ReportMetaRepository)
 
     async def set_final(self, uid: str, status: str, location: str | None = None):
         report = await self.get(uid=uid)

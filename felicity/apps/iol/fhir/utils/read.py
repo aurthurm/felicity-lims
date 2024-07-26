@@ -1,9 +1,9 @@
 import asyncio
 
-from apps.analysis.services.analysis import SampleService, AnalysisRequestService
-from apps.patient.services import PatientService
-from apps.setup.services import LaboratoryService
-from apps.shipment.services import ShippedSampleService, ShipmentService
+from felicity.apps.analysis.services.analysis import SampleService, AnalysisRequestService
+from felicity.apps.patient.services import PatientService
+from felicity.apps.setup.services import LaboratoryService
+from felicity.apps.shipment.services import ShippedSampleService, ShipmentService
 from felicity.apps.analysis.entities.analysis import Sample
 from felicity.apps.analysis.utils import get_last_verificator
 from felicity.apps.iol.fhir.schema import (BundleResource,

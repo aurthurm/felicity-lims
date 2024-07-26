@@ -1,11 +1,11 @@
-from apps.iol.fhir.services.create import FhirCreateService
-from apps.iol.fhir.services.read import FhirReadService
-from apps.job.enum import JobState
-from apps.job.services import JobService
-from apps.notification.services import ActivityStreamService
-from apps.shipment.enum import ShipmentState
-from apps.shipment.services import ShipmentService, ShippedSampleService
-from apps.user.services import UserService
+from felicity.apps.iol.fhir.services.create import FhirCreateService
+from felicity.apps.iol.fhir.services.read import FhirReadService
+from felicity.apps.job.enum import JobState
+from felicity.apps.job.services import JobService
+from felicity.apps.notification.services import ActivityStreamService
+from felicity.apps.shipment.enum import ShipmentState
+from felicity.apps.shipment.services import ShipmentService, ShippedSampleService
+from felicity.apps.user.services import UserService
 from felicity.apps.iol.relay import post_data
 
 

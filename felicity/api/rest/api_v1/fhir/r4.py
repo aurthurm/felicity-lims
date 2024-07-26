@@ -3,7 +3,7 @@ from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, Request
 
-from apps.user.services import UserService
+from felicity.apps.user.services import UserService
 from felicity.api.deps import get_current_user
 from felicity.apps.iol.fhir.schema import (BundleResource,
                                            DiagnosticReportResource,

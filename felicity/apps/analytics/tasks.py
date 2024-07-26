@@ -4,7 +4,7 @@ from pathlib import Path
 import pandas as pd
 
 from felicity.apps.analysis.entities.analysis import Sample
-from felicity.apps.analytics import SampleAnalyticsInit
+from felicity.apps.analytics import EntityAnalyticsInit
 from felicity.apps.analytics.services import ReportMetaService
 from felicity.apps.job.services import JobService
 from felicity.apps.notification.services import ActivityStreamService, NotificationService
@@ -31,7 +31,7 @@ async def generate_report(job_uid: str) -> bool:
         return False
 
     await job_service.change_status(job.uid, new_status=JobState.RUNNING)
-    analytics = SampleAnalyticsInit(Sample)
+    analytics = EntityAnalyticsInit(Sample)
     columns, lines = await analytics.get_line_listing(
         period_start=report.period_start,
         period_end=report.period_end,

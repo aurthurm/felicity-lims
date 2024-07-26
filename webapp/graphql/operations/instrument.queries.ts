@@ -136,7 +136,6 @@ export const GET_ALL_UNITS = gql`
         unitAll {
             uid
             name
-            description
         }
     }
 `;

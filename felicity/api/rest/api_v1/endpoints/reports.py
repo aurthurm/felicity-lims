@@ -3,11 +3,11 @@ from uuid import uuid4
 
 from fastapi import APIRouter, Depends
 
-from apps.analysis.services.analysis import AnalysisService
-from apps.analytics.enum import ReportState
-from apps.analytics.services import ReportMetaService
-from apps.job.enum import JobAction, JobCategory, JobPriority, JobState
-from apps.job.services import JobService
+from felicity.apps.analysis.services.analysis import AnalysisService
+from felicity.apps.analytics.enum import ReportState
+from felicity.apps.analytics.services import ReportMetaService
+from felicity.apps.job.enum import JobAction, JobCategory, JobPriority, JobState
+from felicity.apps.job.services import JobService
 from felicity.api.deps import get_current_user
 from felicity.apps.analytics import schemas as an_schema
 from felicity.apps.job import schemas as job_schemas

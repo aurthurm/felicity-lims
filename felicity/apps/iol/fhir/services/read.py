@@ -1,14 +1,14 @@
 import asyncio
 from datetime import datetime
 
-from apps.analysis.entities.analysis import Sample
-from apps.analysis.services.analysis import AnalysisRequestService, SampleService
-from apps.analysis.services.result import AnalysisResultService
-from apps.iol.fhir.schema import DiagnosticReportResource, PatientResource, Identifier, SpecimenResource, \
+from felicity.apps.analysis.entities.analysis import Sample
+from felicity.apps.analysis.services.analysis import AnalysisRequestService, SampleService
+from felicity.apps.analysis.services.result import AnalysisResultService
+from felicity.apps.iol.fhir.schema import DiagnosticReportResource, PatientResource, Identifier, SpecimenResource, \
     BundleResource, ServiceRequestResource, Reference
-from apps.patient.services import PatientService
-from apps.setup.services import LaboratoryService
-from apps.shipment.services import ShippedSampleService, ShipmentService
+from felicity.apps.patient.services import PatientService
+from felicity.apps.setup.services import LaboratoryService
+from felicity.apps.shipment.services import ShippedSampleService, ShipmentService
 
 
 class FhirReadService:
