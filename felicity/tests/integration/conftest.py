@@ -1,7 +1,5 @@
 import logging
-import pytest
 import random
-import asyncio
 from typing import Any, Generator
 
 import pytest_asyncio
@@ -10,30 +8,14 @@ from httpx import AsyncClient
 from felicity.lims.seeds.superusers import seed_super_user
 from felicity.lims.seeds.groups_perms import seed_groups_perms
 
-from felicity.apps.abstract.entity import BaseEntity
 from felicity.core.config import settings
 from felicity.main import felicity
-from felicity.apps.job.sched import felicity_workforce_init
-from felicity.database.session import async_engine, engine
 
 fake_engine = Faker()
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-
-@pytest_asyncio.fixture(scope="session")
-async def setup():
-    logger.info("pytest_configure integration tests...")
-    async with async_engine.begin() as conn:
-        await conn.run_sync(BaseEntity.metadata.drop_all)
-        await conn.run_sync(BaseEntity.metadata.create_all)
-
-    connection = async_engine.connect()
-    yield connection
-
-    # async with async_engine.begin() as conn:
-    #     await conn.run_sync(BaseEntity.metadata.drop_all)
 
 @pytest_asyncio.fixture(scope="session", autouse=True)
 async def initialise(setup):

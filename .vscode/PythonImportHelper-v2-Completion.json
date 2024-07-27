@@ -9713,14 +9713,6 @@
         "documentation": {}
     },
     {
-        "label": "engine",
-        "importPath": "felicity.database.session",
-        "description": "felicity.database.session",
-        "isExtraImport": true,
-        "detail": "felicity.database.session",
-        "documentation": {}
-    },
-    {
         "label": "types",
         "importPath": "felicity.api.gql.analytics",
         "description": "felicity.api.gql.analytics",
@@ -13709,14 +13701,6 @@
         "documentation": {}
     },
     {
-        "label": "settings",
-        "importPath": "felicity.core.config",
-        "description": "felicity.core.config",
-        "isExtraImport": true,
-        "detail": "felicity.core.config",
-        "documentation": {}
-    },
-    {
         "label": "get_settings",
         "importPath": "felicity.core.config",
         "description": "felicity.core.config",
@@ -15886,14 +15870,6 @@
     },
     {
         "label": "AsyncEngine",
-        "importPath": "sqlalchemy.ext.asyncio",
-        "description": "sqlalchemy.ext.asyncio",
-        "isExtraImport": true,
-        "detail": "sqlalchemy.ext.asyncio",
-        "documentation": {}
-    },
-    {
-        "label": "create_async_engine",
         "importPath": "sqlalchemy.ext.asyncio",
         "description": "sqlalchemy.ext.asyncio",
         "isExtraImport": true,
@@ -21469,14 +21445,6 @@
         "documentation": {}
     },
     {
-        "label": "felicity_workforce_init",
-        "importPath": "felicity.apps.job.sched",
-        "description": "felicity.apps.job.sched",
-        "isExtraImport": true,
-        "detail": "felicity.apps.job.sched",
-        "documentation": {}
-    },
-    {
         "label": "setup_webapp",
         "importPath": "felicity.views",
         "description": "felicity.views",
@@ -21525,14 +21493,6 @@
         "documentation": {}
     },
     {
-        "label": "BaseEntity",
-        "importPath": "felicity.database.base",
-        "description": "felicity.database.base",
-        "isExtraImport": true,
-        "detail": "felicity.database.base",
-        "documentation": {}
-    },
-    {
         "label": "multiprocessing",
         "kind": 6,
         "isExtraImport": true,
@@ -21548,6 +21508,14 @@
         "importPath": "pytest_asyncio",
         "description": "pytest_asyncio",
         "detail": "pytest_asyncio",
+        "documentation": {}
+    },
+    {
+        "label": "Faker",
+        "importPath": "faker",
+        "description": "faker",
+        "isExtraImport": true,
+        "detail": "faker",
         "documentation": {}
     },
     {
@@ -36327,7 +36295,7 @@
         "kind": 5,
         "importPath": "felicity.tests.integration.conftest",
         "description": "felicity.tests.integration.conftest",
-        "peekOfCode": "fake_engine = Faker()\nlogging.basicConfig(level=logging.INFO)\nlogger = logging.getLogger(__name__)\n@pytest_asyncio.fixture(scope=\"session\")\nasync def setup():\n    logger.info(\"pytest_configure integration tests...\")\n    async with async_engine.begin() as conn:\n        await conn.run_sync(BaseEntity.metadata.drop_all)\n        await conn.run_sync(BaseEntity.metadata.create_all)\n    connection = async_engine.connect()",
+        "peekOfCode": "fake_engine = Faker()\nlogging.basicConfig(level=logging.INFO)\nlogger = logging.getLogger(__name__)\n@pytest_asyncio.fixture(scope=\"session\", autouse=True)\nasync def initialise(setup):\n    logger.info(\"init_db_add_super_user start\")\n    await seed_groups_perms()\n    await seed_super_user()\n    yield\n    logger.info(\"init_db_add_super_user teardown\")",
         "detail": "felicity.tests.integration.conftest",
         "documentation": {}
     },
@@ -36336,7 +36304,7 @@
         "kind": 5,
         "importPath": "felicity.tests.integration.conftest",
         "description": "felicity.tests.integration.conftest",
-        "peekOfCode": "logger = logging.getLogger(__name__)\n@pytest_asyncio.fixture(scope=\"session\")\nasync def setup():\n    logger.info(\"pytest_configure integration tests...\")\n    async with async_engine.begin() as conn:\n        await conn.run_sync(BaseEntity.metadata.drop_all)\n        await conn.run_sync(BaseEntity.metadata.create_all)\n    connection = async_engine.connect()\n    yield connection\n    # async with async_engine.begin() as conn:",
+        "peekOfCode": "logger = logging.getLogger(__name__)\n@pytest_asyncio.fixture(scope=\"session\", autouse=True)\nasync def initialise(setup):\n    logger.info(\"init_db_add_super_user start\")\n    await seed_groups_perms()\n    await seed_super_user()\n    yield\n    logger.info(\"init_db_add_super_user teardown\")\n@pytest_asyncio.fixture(scope=\"function\")\nasync def app_root() -> Generator[AsyncClient, Any, None]:",
         "detail": "felicity.tests.integration.conftest",
         "documentation": {}
     },
@@ -36363,16 +36331,7 @@
         "kind": 5,
         "importPath": "felicity.tests.unit.conftest",
         "description": "felicity.tests.unit.conftest",
-        "peekOfCode": "fake_engine = Faker()\nengine = create_async_engine(settings.SQLALCHEMY_TEST_DATABASE_URI)\nlogging.basicConfig(level=logging.INFO)\nlogger = logging.getLogger(__name__)\n@pytest_asyncio.fixture(scope=\"function\", autouse=True)\nasync def setup():\n    logger.info(\"pytest_configure unittest...\")\n    async with engine.begin() as conn:\n        await conn.run_sync(BaseEntity.metadata.create_all)\n    connection = engine.connect()",
-        "detail": "felicity.tests.unit.conftest",
-        "documentation": {}
-    },
-    {
-        "label": "engine",
-        "kind": 5,
-        "importPath": "felicity.tests.unit.conftest",
-        "description": "felicity.tests.unit.conftest",
-        "peekOfCode": "engine = create_async_engine(settings.SQLALCHEMY_TEST_DATABASE_URI)\nlogging.basicConfig(level=logging.INFO)\nlogger = logging.getLogger(__name__)\n@pytest_asyncio.fixture(scope=\"function\", autouse=True)\nasync def setup():\n    logger.info(\"pytest_configure unittest...\")\n    async with engine.begin() as conn:\n        await conn.run_sync(BaseEntity.metadata.create_all)\n    connection = engine.connect()\n    yield connection",
+        "peekOfCode": "fake_engine = Faker()\nlogging.basicConfig(level=logging.INFO)\nlogger = logging.getLogger(__name__)",
         "detail": "felicity.tests.unit.conftest",
         "documentation": {}
     },
@@ -36381,7 +36340,7 @@
         "kind": 5,
         "importPath": "felicity.tests.unit.conftest",
         "description": "felicity.tests.unit.conftest",
-        "peekOfCode": "logger = logging.getLogger(__name__)\n@pytest_asyncio.fixture(scope=\"function\", autouse=True)\nasync def setup():\n    logger.info(\"pytest_configure unittest...\")\n    async with engine.begin() as conn:\n        await conn.run_sync(BaseEntity.metadata.create_all)\n    connection = engine.connect()\n    yield connection\n    async with engine.begin() as conn:\n        await conn.run_sync(BaseEntity.metadata.drop_all)",
+        "peekOfCode": "logger = logging.getLogger(__name__)",
         "detail": "felicity.tests.unit.conftest",
         "documentation": {}
     },
@@ -36390,7 +36349,25 @@
         "kind": 2,
         "importPath": "felicity.tests.conftest",
         "description": "felicity.tests.conftest",
-        "peekOfCode": "def event_loop():\n    \"\"\"Overrides pytest default function scoped event loop\"\"\"\n    # return asyncio.get_event_loop()\n    policy = asyncio.get_event_loop_policy()\n    loop = policy.new_event_loop()\n    yield loop\n    loop.close()",
+        "peekOfCode": "def event_loop():\n    \"\"\"Overrides pytest default function scoped event loop\"\"\"\n    # return asyncio.get_event_loop()\n    policy = asyncio.get_event_loop_policy()\n    loop = policy.new_event_loop()\n    yield loop\n    loop.close()\n@pytest_asyncio.fixture(scope=\"session\")\nasync def setup():\n    logger.info(\"pytest_configure integration tests...\")",
+        "detail": "felicity.tests.conftest",
+        "documentation": {}
+    },
+    {
+        "label": "fake_engine",
+        "kind": 5,
+        "importPath": "felicity.tests.conftest",
+        "description": "felicity.tests.conftest",
+        "peekOfCode": "fake_engine = Faker()\nlogging.basicConfig(level=logging.INFO)\nlogger = logging.getLogger(__name__)\n@pytest_asyncio.fixture(scope=\"session\")\ndef event_loop():\n    \"\"\"Overrides pytest default function scoped event loop\"\"\"\n    # return asyncio.get_event_loop()\n    policy = asyncio.get_event_loop_policy()\n    loop = policy.new_event_loop()\n    yield loop",
+        "detail": "felicity.tests.conftest",
+        "documentation": {}
+    },
+    {
+        "label": "logger",
+        "kind": 5,
+        "importPath": "felicity.tests.conftest",
+        "description": "felicity.tests.conftest",
+        "peekOfCode": "logger = logging.getLogger(__name__)\n@pytest_asyncio.fixture(scope=\"session\")\ndef event_loop():\n    \"\"\"Overrides pytest default function scoped event loop\"\"\"\n    # return asyncio.get_event_loop()\n    policy = asyncio.get_event_loop_policy()\n    loop = policy.new_event_loop()\n    yield loop\n    loop.close()\n@pytest_asyncio.fixture(scope=\"session\")",
         "detail": "felicity.tests.conftest",
         "documentation": {}
     },
