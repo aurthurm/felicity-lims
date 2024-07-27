@@ -35,17 +35,6 @@ async def setup():
     # async with async_engine.begin() as conn:
     #     await conn.run_sync(BaseEntity.metadata.drop_all)
 
-
-@pytest_asyncio.fixture(scope="session")
-def event_loop():
-    """Overrides pytest default function scoped event loop"""
-    # return asyncio.get_event_loop()
-    policy = asyncio.get_event_loop_policy()
-    loop = policy.new_event_loop()
-    yield loop
-    loop.close()
-
-
 @pytest_asyncio.fixture(scope="session", autouse=True)
 async def initialise(setup):
     logger.info("init_db_add_super_user start")

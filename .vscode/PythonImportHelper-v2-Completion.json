@@ -10145,14 +10145,6 @@
         "documentation": {}
     },
     {
-        "label": "User",
-        "importPath": "felicity.apps.user.entities",
-        "description": "felicity.apps.user.entities",
-        "isExtraImport": true,
-        "detail": "felicity.apps.user.entities",
-        "documentation": {}
-    },
-    {
         "label": "UserService",
         "importPath": "felicity.apps.user.services",
         "description": "felicity.apps.user.services",
@@ -10346,14 +10338,6 @@
     },
     {
         "label": "UserPreferenceService",
-        "importPath": "felicity.apps.user.services",
-        "description": "felicity.apps.user.services",
-        "isExtraImport": true,
-        "detail": "felicity.apps.user.services",
-        "documentation": {}
-    },
-    {
-        "label": "UserService",
         "importPath": "felicity.apps.user.services",
         "description": "felicity.apps.user.services",
         "isExtraImport": true,
@@ -14558,14 +14542,6 @@
     },
     {
         "label": "UserUpdate",
-        "importPath": "felicity.apps.user.schemas",
-        "description": "felicity.apps.user.schemas",
-        "isExtraImport": true,
-        "detail": "felicity.apps.user.schemas",
-        "documentation": {}
-    },
-    {
-        "label": "User",
         "importPath": "felicity.apps.user.schemas",
         "description": "felicity.apps.user.schemas",
         "isExtraImport": true,
@@ -21066,14 +21042,6 @@
         "documentation": {}
     },
     {
-        "label": "UserRepository",
-        "importPath": "felicity.apps.user.repository",
-        "description": "felicity.apps.user.repository",
-        "isExtraImport": true,
-        "detail": "felicity.apps.user.repository",
-        "documentation": {}
-    },
-    {
         "label": "WorkSheetRepository",
         "importPath": "felicity.apps.worksheet.repository",
         "description": "felicity.apps.worksheet.repository",
@@ -21761,44 +21729,12 @@
         "documentation": {}
     },
     {
-        "label": "AlreadyExistsError",
-        "importPath": "felicity.apps.exceptions",
-        "description": "felicity.apps.exceptions",
-        "isExtraImport": true,
-        "detail": "felicity.apps.exceptions",
-        "documentation": {}
-    },
-    {
-        "label": "NotAllowedError",
-        "importPath": "felicity.apps.exceptions",
-        "description": "felicity.apps.exceptions",
-        "isExtraImport": true,
-        "detail": "felicity.apps.exceptions",
-        "documentation": {}
-    },
-    {
-        "label": "ValidationError",
-        "importPath": "felicity.apps.exceptions",
-        "description": "felicity.apps.exceptions",
-        "isExtraImport": true,
-        "detail": "felicity.apps.exceptions",
-        "documentation": {}
-    },
-    {
         "label": "passlib",
         "kind": 6,
         "isExtraImport": true,
         "importPath": "passlib",
         "description": "passlib",
         "detail": "passlib",
-        "documentation": {}
-    },
-    {
-        "label": "AsyncMock",
-        "importPath": "unittest.mock",
-        "description": "unittest.mock",
-        "isExtraImport": true,
-        "detail": "unittest.mock",
         "documentation": {}
     },
     {
@@ -36387,15 +36323,6 @@
         "documentation": {}
     },
     {
-        "label": "event_loop",
-        "kind": 2,
-        "importPath": "felicity.tests.integration.conftest",
-        "description": "felicity.tests.integration.conftest",
-        "peekOfCode": "def event_loop():\n    \"\"\"Overrides pytest default function scoped event loop\"\"\"\n    # return asyncio.get_event_loop()\n    policy = asyncio.get_event_loop_policy()\n    loop = policy.new_event_loop()\n    yield loop\n    loop.close()\n@pytest_asyncio.fixture(scope=\"session\", autouse=True)\nasync def initialise(setup):\n    logger.info(\"init_db_add_super_user start\")",
-        "detail": "felicity.tests.integration.conftest",
-        "documentation": {}
-    },
-    {
         "label": "fake_engine",
         "kind": 5,
         "importPath": "felicity.tests.integration.conftest",
@@ -36418,26 +36345,8 @@
         "kind": 6,
         "importPath": "felicity.tests.unit.apps.user.test_user_service",
         "description": "felicity.tests.unit.apps.user.test_user_service",
-        "peekOfCode": "class UserServiceTestCase(unittest.IsolatedAsyncioTestCase):\n    async def asyncSetUp(self):\n        self.repository = mock.create_autospec(UserRepository)\n        self.group_service = mock.AsyncMock()\n        self.permission_service = mock.AsyncMock()\n        self.user_preference_service = mock.AsyncMock()\n        self.user_service = UserService(\n            self.repository,\n            self.user_preference_service,\n            self.group_service,",
+        "peekOfCode": "class UserServiceTestCase(unittest.IsolatedAsyncioTestCase):\n    async def asyncSetUp(self):\n        self.repository = mock.create_autospec(UserRepository)\n        self.group_service = mock.AsyncMock()\n        self.permission_service = mock.AsyncMock()\n        self.user_preference_service = mock.AsyncMock()\n        self.user_service = UserService()\n        self.user_service.repository = self.repository\n        self.user_data = {\n            \"first_name\": \"anesu\",",
         "detail": "felicity.tests.unit.apps.user.test_user_service",
-        "documentation": {}
-    },
-    {
-        "label": "user_service",
-        "kind": 2,
-        "importPath": "felicity.tests.unit.apps.user.test_user_service2",
-        "description": "felicity.tests.unit.apps.user.test_user_service2",
-        "peekOfCode": "def user_service(mocker):\n    repository = mocker.create_autospec(UserRepository)\n    group_service = mocker.AsyncMock()\n    permission_service = mocker.AsyncMock()\n    user_preference_service = mocker.AsyncMock()\n    return UserService(\n        repository, user_preference_service, group_service, permission_service\n    )\n@pytest.fixture\ndef user_data():",
-        "detail": "felicity.tests.unit.apps.user.test_user_service2",
-        "documentation": {}
-    },
-    {
-        "label": "user_data",
-        "kind": 2,
-        "importPath": "felicity.tests.unit.apps.user.test_user_service2",
-        "description": "felicity.tests.unit.apps.user.test_user_service2",
-        "peekOfCode": "def user_data():\n    return {\n        \"first_name\": \"anesu\",\n        \"last_name\": \"mpofu\",\n        \"email\": \"amusewem@gmail.com\",\n        \"user_name\": \"amusem\",\n        \"password\": \"!Try#@8787?\",\n        \"passwordc\": \"!Try#@8787?\",\n        \"open_reg\": False,\n    }",
-        "detail": "felicity.tests.unit.apps.user.test_user_service2",
         "documentation": {}
     },
     {
@@ -36477,12 +36386,12 @@
         "documentation": {}
     },
     {
-        "label": "mock_user_auth",
+        "label": "event_loop",
         "kind": 2,
-        "importPath": "felicity.tests.unit.test_user",
-        "description": "felicity.tests.unit.test_user",
-        "peekOfCode": "def mock_user_auth() -> AsyncMock:\n    \"\"\"\n    User Auth Async Mock Fixture\n    :return:\n    \"\"\"\n    mock_thing = AsyncMock()\n    mock_thing.UserAuth.acquire_user_type = AsyncMock(return_value=\"lcuser\")\n    mock_thing.UserAuth.has_access = AsyncMock(return_value=True)\n    mock_thing.UserAuth.authenticate = AsyncMock(return_value=True)\n    return mock_thing",
-        "detail": "felicity.tests.unit.test_user",
+        "importPath": "felicity.tests.conftest",
+        "description": "felicity.tests.conftest",
+        "peekOfCode": "def event_loop():\n    \"\"\"Overrides pytest default function scoped event loop\"\"\"\n    # return asyncio.get_event_loop()\n    policy = asyncio.get_event_loop_policy()\n    loop = policy.new_event_loop()\n    yield loop\n    loop.close()",
+        "detail": "felicity.tests.conftest",
         "documentation": {}
     },
     {
