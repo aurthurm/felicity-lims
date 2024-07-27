@@ -9,10 +9,11 @@ from felicity.api.gql.auth import auth_from_info
 from felicity.api.gql.patient.types import IdentificationType, PatientType
 from felicity.api.gql.permissions import IsAuthenticated
 from felicity.api.gql.types import OperationError
-from felicity.apps.patient import schemas
-from felicity.apps.patient.services import (IdentificationService, PatientIdentificationService,
-    PatientService)
 from felicity.apps.client.services import ClientService
+from felicity.apps.patient import schemas
+from felicity.apps.patient.services import (IdentificationService,
+                                            PatientIdentificationService,
+                                            PatientService)
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -81,9 +82,7 @@ class PatientMutations:
         }
 
         obj_in = schemas.IdentificationCreate(**incoming)
-        identification = await IdentificationService().create(
-            obj_in
-        )
+        identification = await IdentificationService().create(obj_in)
         return IdentificationType(**identification.marshal_simple())
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
@@ -203,7 +202,9 @@ class PatientMutations:
                 id_update_in = schemas.PatientIdentificationUpdate(
                     patient_uid=patient.uid, **update_identification.to_dict()
                 )
-                identification = await PatientIdentificationService().update(identification.uid, id_update_in)
+                identification = await PatientIdentificationService().update(
+                    identification.uid, id_update_in
+                )
 
         # new
         for _pid in payload.identifications:

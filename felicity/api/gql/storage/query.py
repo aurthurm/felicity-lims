@@ -4,7 +4,10 @@ import strawberry  # noqa
 
 from felicity.api.gql.permissions import IsAuthenticated
 from felicity.api.gql.storage import types
-from felicity.apps.storage.services import StorageContainerService, StorageLocationService, StorageSectionService, StoreRoomService
+from felicity.apps.storage.services import (StorageContainerService,
+                                            StorageLocationService,
+                                            StorageSectionService,
+                                            StoreRoomService)
 
 
 @strawberry.type

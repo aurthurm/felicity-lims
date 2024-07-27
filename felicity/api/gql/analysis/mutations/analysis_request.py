@@ -12,21 +12,28 @@ from felicity.api.gql.permissions import CanVerifySample, IsAuthenticated
 from felicity.api.gql.types import (OperationError, OperationSuccess,
                                     SuccessErrorResponse)
 from felicity.apps.analysis import schemas
-from felicity.apps.analysis.enum import ResultState, SamplePriority, SampleState
-from felicity.apps.billing.utils import bill_order
-from felicity.apps.job import schemas as job_schemas
-from felicity.apps.job.enum import JobAction, JobCategory, JobPriority, JobState
-from felicity.apps.analysis.services.analysis import (AnalysisRequestService, AnalysisService,
-    AnalysisTemplateService, ProfileService, RejectionReasonService, SampleService,
-    SampleTypeService)
+from felicity.apps.analysis.entities.analysis import (sample_analysis,
+                                                      sample_profile,
+                                                      sample_rejection_reason)
+from felicity.apps.analysis.enum import (ResultState, SamplePriority,
+                                         SampleState)
+from felicity.apps.analysis.services.analysis import (AnalysisRequestService,
+                                                      AnalysisService,
+                                                      AnalysisTemplateService,
+                                                      ProfileService,
+                                                      RejectionReasonService,
+                                                      SampleService,
+                                                      SampleTypeService)
 from felicity.apps.analysis.services.result import AnalysisResultService
-from felicity.apps.patient.services import PatientService
+from felicity.apps.billing.utils import bill_order
 from felicity.apps.client.services import ClientService
-from felicity.apps.analysis.entities.analysis import (sample_analysis, sample_profile,
-    sample_rejection_reason)
-from felicity.apps.reflex.services import ReflexEngineService
+from felicity.apps.job import schemas as job_schemas
+from felicity.apps.job.enum import (JobAction, JobCategory, JobPriority,
+                                    JobState)
 from felicity.apps.job.services import JobService
 from felicity.apps.notification.services import ActivityStreamService
+from felicity.apps.patient.services import PatientService
+from felicity.apps.reflex.services import ReflexEngineService
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -104,7 +111,7 @@ class ManageAnalysisInputType:
 
 @strawberry.mutation(permission_classes=[IsAuthenticated])
 async def create_analysis_request(
-        info, payload: AnalysisRequestInputType
+    info, payload: AnalysisRequestInputType
 ) -> AnalysisRequestResponse:
     logger.info("Received request to create analysis request")
 
@@ -140,9 +147,7 @@ async def create_analysis_request(
     }
 
     obj_in = schemas.AnalysisRequestCreate(**incoming)
-    analysis_request = (
-        await AnalysisRequestService().create(obj_in)
-    )
+    analysis_request = await AnalysisRequestService().create(obj_in)
 
     # 1. create samples
     logger.info(
@@ -198,9 +203,7 @@ async def create_analysis_request(
 
         #
         sample_schema = schemas.SampleCreate(**sample_in)
-        sample = await SampleService().create(
-            sample_schema
-        )
+        sample = await SampleService().create(sample_schema)
 
         # auto receive samples
         # ?? sample_workflow based check needed
@@ -238,18 +241,20 @@ async def create_analysis_request(
                 a_result_schema.model_copy(
                     update={
                         "analysis_uid": _service.uid,
-                        "due_date": datetime.now()
-                                    + timedelta(minutes=_service.tat_length_minutes)
-                        if _service.tat_length_minutes
-                        else None,
+                        "due_date": (
+                            datetime.now()
+                            + timedelta(minutes=_service.tat_length_minutes)
+                            if _service.tat_length_minutes
+                            else None
+                        ),
                     }
                 )
             )
-        created = await AnalysisResultService().bulk_create(result_schemas)
+        created = await AnalysisResultService().bulk_create(result_schemas, related=["sample", "analysis"])
 
         # initialise reflex action if exist
         logger.debug(f"ReflexUtil .... set_reflex_actions ...")
-        await ReflexEngineService(created, felicity_user).set_reflex_actions(created)
+        ReflexEngineService(created[0], felicity_user).set_reflex_actions(created)
 
     # ! paramount !
     await asyncio.sleep(1)
@@ -272,9 +277,7 @@ async def clone_samples(info, samples: List[str]) -> SampleActionResponse:
         return OperationError(error=f"No Samples to clone are provided!")
 
     clones = []
-    to_clone = await SampleService().get_by_uids(
-        uids=samples
-    )
+    to_clone = await SampleService().get_by_uids(uids=samples)
     for _, _sample in enumerate(to_clone):
         clone = await SampleService().clone_afresh(_sample.uid, felicity_user)
 
@@ -301,7 +304,9 @@ async def clone_samples(info, samples: List[str]) -> SampleActionResponse:
                 }
                 a_result_schema = schemas.AnalysisResultCreate(**a_result_in)
                 created = await AnalysisResultService().create(a_result_schema)
-                await ReflexEngineService(created, felicity_user).set_reflex_actions([created])
+                await ReflexEngineService(created, felicity_user).set_reflex_actions(
+                    [created]
+                )
 
     return SampleListingType(samples=clones)
 
@@ -347,7 +352,9 @@ async def re_instate_samples(info, samples: List[str]) -> ResultedSampleActionRe
         if not sample:
             return OperationError(error=f"Sample with uid {_sa_uid} not found")
 
-        sample = await SampleService().re_instate(sample.uid, re_instated_by=felicity_user)
+        sample = await SampleService().re_instate(
+            sample.uid, re_instated_by=felicity_user
+        )
         if sample:
             return_samples.append(sample)
 
@@ -398,7 +405,7 @@ async def verify_samples(info, samples: List[str]) -> SampleActionResponse:
 
 @strawberry.mutation(permission_classes=[IsAuthenticated])
 async def reject_samples(
-        info, samples: List[SampleRejectInputType]
+    info, samples: List[SampleRejectInputType]
 ) -> SampleActionResponse:
     felicity_user = await auth_from_info(info)
 
@@ -431,14 +438,16 @@ async def reject_samples(
 
                 if sample.status == SampleState.REJECTED:
                     for analyte in sample.analysis_results:
-                        await AnalysisResultService().cancel(analyte.uid, cancelled_by=felicity_user)
+                        await AnalysisResultService().cancel(
+                            analyte.uid, cancelled_by=felicity_user
+                        )
 
     return SampleListingType(samples=return_samples)
 
 
 @strawberry.mutation(permission_classes=[IsAuthenticated])
 async def publish_samples(
-        info, samples: List[SamplePublishInputType]
+    info, samples: List[SamplePublishInputType]
 ) -> SuccessErrorResponse:
     felicity_user = await auth_from_info(info)
 
@@ -472,7 +481,9 @@ async def publish_samples(
     # unfreeze frontend and return sample to original state since it is a non final publish
     ns_samples = await SampleService().get_by_uids([nf.uid for nf in not_final])
     for sample in ns_samples:
-        await ActivityStreamService().stream(sample, felicity_user, sample.status, "sample")
+        await ActivityStreamService().stream(
+            sample, felicity_user, sample.status, "sample"
+        )
 
     return OperationSuccess(
         message="Your results are being published in the background."
@@ -514,7 +525,9 @@ async def invalidate_samples(info, samples: List[str]) -> SampleActionResponse:
         if not sample:
             return OperationError(error=f"Sample with uid {_sa_uid} not found")
 
-        copy, invalidated = await SampleService().invalidate(sample.uid, invalidated_by=felicity_user)
+        copy, invalidated = await SampleService().invalidate(
+            sample.uid, invalidated_by=felicity_user
+        )
 
         # add invalidated
         if invalidated:
@@ -549,19 +562,25 @@ async def invalidate_samples(info, samples: List[str]) -> SampleActionResponse:
 
 
 @strawberry.mutation(permission_classes=[IsAuthenticated])
-async def samples_apply_template(info, uid: str, analysis_template_uid: str) -> ResultedSampleActionResponse:
+async def samples_apply_template(
+    info, uid: str, analysis_template_uid: str
+) -> ResultedSampleActionResponse:
     felicity_user = await auth_from_info(info)
 
     sample = await SampleService().get(uid=uid)
-    if sample.status not in [SampleState.RECEIVED, SampleState.AWAITING, SampleState.APPROVED]:
-        return OperationError(error=f"Samples in {sample.status} can not be added analyses")
+    if sample.status not in [
+        SampleState.RECEIVED,
+        SampleState.AWAITING,
+        SampleState.APPROVED,
+    ]:
+        return OperationError(
+            error=f"Samples in {sample.status} can not be added analyses"
+        )
 
     template = await AnalysisTemplateService().get(uid=analysis_template_uid)
 
     pending_results = await AnalysisResultService().get_all(
-        sample_uid=sample.uid,
-        status=ResultState.PENDING,
-        worksheet_uid=None
+        sample_uid=sample.uid, status=ResultState.PENDING, worksheet_uid=None
     )
     pending_uids = [pr.analysis_uid for pr in pending_results]
 
@@ -584,28 +603,41 @@ async def samples_apply_template(info, uid: str, analysis_template_uid: str) -> 
                 a_result_schema.model_copy(
                     update={
                         "analysis_uid": _service.uid,
-                        "due_date": datetime.now() + timedelta(minutes=_service.tat_length_minutes)
-                        if _service.tat_length_minutes
-                        else None,
+                        "due_date": (
+                            datetime.now()
+                            + timedelta(minutes=_service.tat_length_minutes)
+                            if _service.tat_length_minutes
+                            else None
+                        ),
                     }
                 )
             )
     await AnalysisResultService().bulk_create(result_schemas)
 
     if sample.status != SampleState.RECEIVED:
-        await SampleService().change_status(sample.uid, status=SampleState.RECEIVED, updated_by_uid=felicity_user.uid)
+        await SampleService().change_status(
+            sample.uid, status=SampleState.RECEIVED, updated_by_uid=felicity_user.uid
+        )
 
     sample = await SampleService().get(uid=uid)
     return ResultedSampleListingType(samples=[sample])
 
 
 @strawberry.mutation(permission_classes=[IsAuthenticated])
-async def manage_analyses(info, sample_uid: str, payload: ManageAnalysisInputType) -> ResultedSampleActionResponse:
+async def manage_analyses(
+    info, sample_uid: str, payload: ManageAnalysisInputType
+) -> ResultedSampleActionResponse:
     felicity_user = await auth_from_info(info)
 
     sample = await SampleService().get(uid=sample_uid)
-    if sample.status not in [SampleState.RECEIVED, SampleState.AWAITING, SampleState.APPROVED]:
-        return OperationError(error=f"Samples in {sample.status} can not be added analyses")
+    if sample.status not in [
+        SampleState.RECEIVED,
+        SampleState.AWAITING,
+        SampleState.APPROVED,
+    ]:
+        return OperationError(
+            error=f"Samples in {sample.status} can not be added analyses"
+        )
 
     # cancel
     for _anal in payload.cancel:
@@ -631,16 +663,20 @@ async def manage_analyses(info, sample_uid: str, payload: ManageAnalysisInputTyp
             a_result_schema.model_copy(
                 update={
                     "analysis_uid": service.uid,
-                    "due_date": datetime.now() + timedelta(minutes=service.tat_length_minutes)
-                    if service.tat_length_minutes
-                    else None,
+                    "due_date": (
+                        datetime.now() + timedelta(minutes=service.tat_length_minutes)
+                        if service.tat_length_minutes
+                        else None
+                    ),
                 }
             )
         )
     await AnalysisResultService().bulk_create(result_schemas)
 
     if sample.status != SampleState.RECEIVED:
-        await SampleService().change_status(sample.uid, status=SampleState.RECEIVED, updated_by_uid=felicity_user.uid)
+        await SampleService().change_status(
+            sample.uid, status=SampleState.RECEIVED, updated_by_uid=felicity_user.uid
+        )
 
     sample = await SampleService().get(uid=sample_uid)
     return ResultedSampleListingType(samples=[sample])

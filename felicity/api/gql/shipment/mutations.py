@@ -9,15 +9,17 @@ from felicity.api.gql.permissions import IsAuthenticated
 from felicity.api.gql.shipment import types
 from felicity.api.gql.shipment.types import ShipmentType
 from felicity.api.gql.types import OperationError
+from felicity.apps.idsequencer.service import IdSequenceService
 from felicity.apps.job import schemas as job_schemas
-from felicity.apps.job.enum import JobAction, JobCategory, JobPriority, JobState
+from felicity.apps.job.enum import (JobAction, JobCategory, JobPriority,
+                                    JobState)
+from felicity.apps.job.services import JobService
 from felicity.apps.shipment import schemas
 from felicity.apps.shipment.enum import ShipmentState
+from felicity.apps.shipment.services import (ReferralLaboratoryService,
+                                             ShipmentService)
 from felicity.apps.shipment.utils import (action_shipment, shipment_recall,
                                           shipment_recover)
-from felicity.apps.idsequencer.service import IdSequenceService
-from felicity.apps.shipment.services import ReferralLaboratoryService, ShipmentService
-from felicity.apps.job.services import JobService
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -109,7 +111,9 @@ class ShipmentMutations:
 
         shipment_schemas = [
             sh_schema.model_copy(
-                update={"shipment_id": (await IdSequenceService().get_next_number("SH"))[1]}
+                update={
+                    "shipment_id": (await IdSequenceService().get_next_number("SH"))[1]
+                }
             )
             for i in list(range(payload.count))
         ]
@@ -151,7 +155,7 @@ class ShipmentMutations:
                     logger.warning(e)
 
         shipment_in = schemas.ShipmentUpdate(**shipment.to_dict())
-        shipment = await  ShipmentService().update(shipment.uid, shipment_in)
+        shipment = await ShipmentService().update(shipment.uid, shipment_in)
 
         return ShipmentType(**shipment.marshal_simple())
 
@@ -173,8 +177,8 @@ class ShipmentMutations:
             return OperationError(error=f"Shipment {uid} does not exist")
 
         if action == "dispatch":
-            shipment = await  ShipmentService().change_state(shipment.uid,
-                ShipmentState.AWAITING, felicity_user.uid
+            shipment = await ShipmentService().change_state(
+                shipment.uid, ShipmentState.AWAITING, felicity_user.uid
             )
 
             job_schema = job_schemas.JobCreate(
@@ -260,9 +264,7 @@ class ShipmentMutations:
             incoming[k] = v
 
         obj_in = schemas.ReferralLaboratoryCreate(**incoming)
-        referral_laboratory = (
-            await ReferralLaboratoryService().create(obj_in)
-        )
+        referral_laboratory = await ReferralLaboratoryService().create(obj_in)
         return types.ReferralLaboratoryType(**referral_laboratory.marshal_simple())
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
@@ -289,5 +291,7 @@ class ShipmentMutations:
         referral_laboratory_in = schemas.ReferralLaboratoryUpdate(
             **referral_laboratory.to_dict()
         )
-        referral_laboratory = await ReferralLaboratoryService().update(referral_laboratory.uid, referral_laboratory_in)
+        referral_laboratory = await ReferralLaboratoryService().update(
+            referral_laboratory.uid, referral_laboratory_in
+        )
         return types.ReferralLaboratoryType(**referral_laboratory.marshal_simple())

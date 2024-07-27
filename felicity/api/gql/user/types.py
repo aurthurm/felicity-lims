@@ -9,49 +9,49 @@ from felicity.api.gql.types import PageInfo
 @strawberry.type
 class PermissionType:
     uid: str
-    action: str | None
-    target: str | None
-    active: bool | None
+    action: str | None = None
+    target: str | None = None
+    active: bool | None = None
 
 
 @strawberry.type
 class GroupType:
     uid: str
-    name: str | None
-    keyword: str | None
-    members: Optional[List["UserType"]]
-    permissions: Optional[List[PermissionType]]
-    active: bool | None
-    pages: str | None
+    name: str | None = None
+    keyword: str | None = None
+    members: Optional[List["UserType"]] = None
+    permissions: Optional[List[PermissionType]] = None
+    active: bool | None = None
+    pages: str | None = None
 
 
 @strawberry.type
 class UserType:
     uid: str
-    first_name: str | None
-    last_name: str | None
-    email: str | None
-    mobile_phone: str | None
-    business_phone: str | None
-    groups: Optional[List[GroupType]]
-    preference_uid: str | None
-    preference: Optional["UserPreferenceType"]
+    first_name: str | None = None
+    last_name: str | None = None
+    email: str | None = None
+    mobile_phone: str | None = None
+    business_phone: str | None = None
+    groups: Optional[List[GroupType]] = None
+    preference_uid: str | None = None
+    preference: Optional["UserPreferenceType"] = None
     is_active: bool
     is_superuser: bool
-    bio: str | None
-    avatar: str | None
-    default_route: str | None
+    bio: str | None = None
+    avatar: str | None = None
+    default_route: str | None = None
     uid: str
     user_name: str
     login_retry: int
     is_blocked: bool
     #
-    created_by_uid: str | None
+    created_by_uid: str | None = None
     created_by: Self | None = None
-    created_at: str | None
-    updated_by_uid: str | None
+    created_at: str | None = None
+    updated_by_uid: str | None = None
     updated_by: Self | None = None
-    updated_at: str | None
+    updated_at: str | None = None
 
 
 @strawberry.type
@@ -79,13 +79,13 @@ class UserEdge:
 class UserCursorPage:
     page_info: PageInfo
     edges: Optional[List[UserEdge]]
-    items: list[UserType] | None
+    items: list[UserType] | None = None
     total_count: int
 
 
 @strawberry.type
 class UserPreferenceType:
     uid: str
-    expanded_menu: bool | None
-    departments: list[DepartmentType] | None
-    theme: str | None
+    expanded_menu: bool | None = None
+    departments: list[DepartmentType] | None = None
+    theme: str | None = None

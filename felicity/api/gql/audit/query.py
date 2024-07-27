@@ -13,4 +13,6 @@ class AuditLogQuery:
     async def audit_logs_filter(
         self, info, target_type: str, target_id: str
     ) -> List[AuditLogType]:
-        return await AuditLogService().get_all(target_type=target_type, target_id=target_id)
+        return await AuditLogService().get_all(
+            target_type=target_type, target_id=target_id
+        )

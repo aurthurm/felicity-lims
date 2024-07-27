@@ -6,10 +6,10 @@ from pydantic import BaseModel, ConfigDict
 from felicity.apps.common.schemas import BaseAuditModel
 from felicity.apps.setup.schemas import ManufacturerInDB, SupplierInDB
 
-
 #
 # InstrumentType Schemas
 #
+
 
 # Shared properties
 class InstrumentTypeBase(BaseAuditModel):
@@ -47,6 +47,7 @@ class AnalysisCategoryInDB(InstrumentTypeBaseInDB):
 #
 #  Instrument
 #
+
 
 # Shared properties
 class InstrumentBase(BaseModel):
@@ -94,6 +95,7 @@ class InstrumentInDB(InstrumentInDBBase):
 # Laboratory Instrument
 #
 
+
 # Shared properties
 class LaboratoryInstrumentBase(BaseModel):
     instrument_uid: str | None = None
@@ -133,6 +135,7 @@ class LaboratoryInstrumentInDB(LaboratoryInstrumentInDBBase):
 #
 #  InstrumentCalibration
 #
+
 
 # Shared properties
 class InstrumentCalibrationBase(BaseModel):
@@ -180,6 +183,7 @@ class InstrumentCalibrationInDB(InstrumentCalibrationInDBBase):
 #  CalibrationCertificate
 #
 
+
 # Shared properties
 class CalibrationCertificateBase(BaseModel):
     laboratory_instrument_uid: str
@@ -224,6 +228,7 @@ class CalibrationCertificateInDB(CalibrationCertificateInDBBase):
 #  InstrumentCompetence
 #
 
+
 # Shared properties
 class InstrumentCompetenceBase(BaseModel):
     instrument_uid: str
@@ -264,6 +269,7 @@ class InstrumentCompetenceInDB(InstrumentCompetenceInDBBase):
 #
 #  Method
 #
+
 
 # Shared properties
 class MethodBase(BaseModel):

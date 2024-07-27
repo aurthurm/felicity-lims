@@ -8,7 +8,7 @@
 #
 # @pytest.mark.asyncio
 # @pytest.mark.order(320)
-# async def test_add_stock_product(app, auth_data):
+# async def test_add_stock_product(app_gql, auth_data):
 #     add_stock_product_mutation = """
 #       mutation AddStockProduct($payload: StockProductInputType!){
 #           createStockProduct(payload: $payload) {
@@ -49,7 +49,7 @@
 #         ["Stromatolyser FB", "Petri Dish", "Pipette", "S-Tube", "Blood Culture Bottle"]
 #     ):
 #         stock_product["name"] = item
-#         response = await app.post(
+#         response = await app_gql.post(
 #             "/felicity-gql",
 #             json={
 #                 "query": add_stock_product_mutation,

@@ -4,10 +4,8 @@ from typing import List, Optional
 
 import strawberry  # noqa
 
-from felicity.api.gql.analysis.types import (
-    analysis as a_types,
-    results as r_types
-)
+from felicity.api.gql.analysis.types import analysis as a_types
+from felicity.api.gql.analysis.types import results as r_types
 from felicity.api.gql.auth import auth_from_info
 from felicity.api.gql.permissions import IsAuthenticated
 from felicity.api.gql.types import OperationError
@@ -15,13 +13,16 @@ from felicity.apps.analysis import schemas
 from felicity.apps.analysis.entities.analysis import Sample
 from felicity.apps.analysis.entities.qc import QCSet
 from felicity.apps.analysis.enum import ResultState, SampleState
-from felicity.apps.analysis.utils import get_qc_sample_type
-from felicity.utils import get_passed_args
-from felicity.apps.analysis.services.quality_control import (QCLevelService, QCSetService,
-    QCTemplateService)
-from felicity.apps.analysis.services.analysis import AnalysisService, ProfileService, SampleService
+from felicity.apps.analysis.services.analysis import (AnalysisService,
+                                                      ProfileService,
+                                                      SampleService)
+from felicity.apps.analysis.services.quality_control import (QCLevelService,
+                                                             QCSetService,
+                                                             QCTemplateService)
 from felicity.apps.analysis.services.result import AnalysisResultService
+from felicity.apps.analysis.utils import get_qc_sample_type
 from felicity.apps.setup.services import DepartmentService
+from felicity.utils import get_passed_args
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -221,7 +222,7 @@ async def create_QC_template(info, payload: QCTemplateInputType) -> QCTemplateRe
 
 @strawberry.mutation(permission_classes=[IsAuthenticated])
 async def update_QC_template(
-        info, uid: str, payload: QCTemplateInputType
+    info, uid: str, payload: QCTemplateInputType
 ) -> QCTemplateResponse:
     felicity_user = await auth_from_info(info)
 

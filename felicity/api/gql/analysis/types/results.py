@@ -17,42 +17,42 @@ class AnalysisResultType:
     uid: str
     sample_uid: str
     sample: SampleType
-    worksheet_uid: str | None
-    worksheet_position: int | None
+    worksheet_uid: str | None = None
+    worksheet_position: int | None = None
     assigned: bool
-    analysis_uid: str | None
-    analysis: AnalysisType | None
-    laboratory_instrument_uid: str | None
-    laboratory_instrument: LaboratoryInstrumentType | None
-    method_uid: str | None
-    method: MethodType | None
-    result: str | None
-    analyst_uid: str | None
-    analyst: UserType | None
-    submitted_by_uid: str | None
-    submitted_by: UserType | None
-    date_submitted: datetime | None
-    verified_by: list[UserType] | None
-    date_verified: datetime | None
-    invalidated_by: UserType | None
-    invalidated_by_uid: str | None
-    date_invalidated: datetime | None
-    due_date: str | None
-    date_cancelled: datetime | None
-    cancelled_by_uid: str | None
-    cancelled_by: UserType | None
+    analysis_uid: str | None = None
+    analysis: AnalysisType | None = None
+    laboratory_instrument_uid: str | None = None
+    laboratory_instrument: LaboratoryInstrumentType | None = None
+    method_uid: str | None = None
+    method: MethodType | None = None
+    result: str | None = None
+    analyst_uid: str | None = None
+    analyst: UserType | None = None
+    submitted_by_uid: str | None = None
+    submitted_by: UserType | None = None
+    date_submitted: datetime | None = None
+    verified_by: list[UserType] | None = None
+    date_verified: datetime | None = None
+    invalidated_by: UserType | None = None
+    invalidated_by_uid: str | None = None
+    date_invalidated: datetime | None = None
+    due_date: str | None = None
+    date_cancelled: datetime | None = None
+    cancelled_by_uid: str | None = None
+    cancelled_by: UserType | None = None
     retest: bool
-    parent_id: str | None
-    parent: Optional["AnalysisResultType"]
+    parent_id: str | None = None
+    parent: Optional["AnalysisResultType"] = None
     reportable: bool
-    status: str | None
-    reflex_level: int | None
-    created_by_uid: str | None
-    created_by: UserType | None
-    created_at: str | None
-    updated_by_uid: str | None
-    updated_by: UserType | None
-    updated_at: str | None
+    status: str | None = None
+    reflex_level: int | None = None
+    created_by_uid: str | None = None
+    created_by: UserType | None = None
+    created_at: str | None = None
+    updated_by_uid: str | None = None
+    updated_by: UserType | None = None
+    updated_at: str | None = None
 
     @strawberry.field
     async def worksheet_id(self, info) -> str | None:
@@ -62,7 +62,7 @@ class AnalysisResultType:
 
 @strawberry.type
 class SamplesWithResults(SampleType):
-    analysis_results: list[AnalysisResultType] | None
+    analysis_results: list[AnalysisResultType] | None = None
 
 
 @strawberry.type
@@ -74,8 +74,8 @@ class SampleEdge:
 @strawberry.type
 class SampleCursorPage:
     page_info: PageInfo
-    edges: list[SampleEdge] | None
-    items: list[SamplesWithResults] | None
+    edges: list[SampleEdge] | None = None
+    items: list[SamplesWithResults] | None = None
     total_count: int
 
 
@@ -88,15 +88,15 @@ class AnalysisResultEdge:
 @strawberry.type
 class AnalysisResultCursorPage:
     page_info: PageInfo
-    edges: list[AnalysisResultEdge] | None
-    items: list[AnalysisResultType] | None
+    edges: list[AnalysisResultEdge] | None = None
+    items: list[AnalysisResultType] | None = None
     total_count: int
 
 
 @strawberry.type
 class QCSetWithSamples(QCSetType):
-    # samples: list[SampleEdge] | None
-    samples: list[SamplesWithResults] | None
+    # samples: list[SampleEdge] | None = None
+    samples: list[SamplesWithResults] | None = None
 
 
 @strawberry.type
@@ -108,8 +108,8 @@ class QCSetEdge:
 @strawberry.type
 class QCSetCursorPage:
     page_info: PageInfo
-    edges: list[QCSetEdge] | None
-    items: list[QCSetWithSamples] | None
+    edges: list[QCSetEdge] | None = None
+    items: list[QCSetWithSamples] | None = None
     total_count: int
 
 
@@ -120,10 +120,10 @@ class ResultMutationType:
     before: str
     after: str
     mutation: str
-    date: str | None
-    created_by_uid: str | None
-    created_by: UserType | None
-    created_at: str | None
-    updated_by_uid: str | None
-    updated_by: UserType | None
-    updated_at: str | None
+    date: str | None = None
+    created_by_uid: str | None = None
+    created_by: UserType | None = None
+    created_at: str | None = None
+    updated_by_uid: str | None = None
+    updated_by: UserType | None = None
+    updated_at: str | None = None

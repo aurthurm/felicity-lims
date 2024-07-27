@@ -1,6 +1,8 @@
 import logging
 
 import pytest
+from faker import Faker
+fake_engine = Faker()
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -9,7 +11,7 @@ logger = logging.getLogger(__name__)
 @pytest.mark.asyncio
 @pytest.mark.order(60)
 async def test_add_analysis_request(
-    app, auth_data, profiles, sample_types, clients, client_contacts, patients
+    app_gql, auth_data, profiles, sample_types, clients, client_contacts, patients
 ):
     add_gql = """
         mutation AddAnalysisRequest ($payload: AnalysisRequestInputType!) {
@@ -74,31 +76,36 @@ async def test_add_analysis_request(
             {
                 "sampleType": sample_types[0]["uid"],
                 "profiles": [profiles[0]["uid"]],
+                "dateCollected": fake_engine.date_time_between(start_date='-2d', end_date='now').strftime('%Y-%m-%d %H:%M:%S'),
                 "analyses": [],
             },
             {
                 "sampleType": sample_types[0]["uid"],
                 "profiles": [profiles[0]["uid"]],
+                "dateCollected": fake_engine.date_time_between(start_date='-2d', end_date='now').strftime('%Y-%m-%d %H:%M:%S'),
                 "analyses": [],
             },
             {
                 "sampleType": sample_types[0]["uid"],
                 "profiles": [profiles[0]["uid"]],
+                "dateCollected": fake_engine.date_time_between(start_date='-2d', end_date='now').strftime('%Y-%m-%d %H:%M:%S'),
                 "analyses": [],
             },
             {
                 "sampleType": sample_types[0]["uid"],
                 "profiles": [profiles[0]["uid"]],
+                "dateCollected": fake_engine.date_time_between(start_date='-2d', end_date='now').strftime('%Y-%m-%d %H:%M:%S'),
                 "analyses": [],
             },
             {
                 "sampleType": sample_types[0]["uid"],
                 "profiles": [profiles[0]["uid"]],
+                "dateCollected": fake_engine.date_time_between(start_date='-2d', end_date='now').strftime('%Y-%m-%d %H:%M:%S'),
                 "analyses": [],
             },
         ],
     }
-    response = await app.post(
+    response = await app_gql.post(
         "/felicity-gql",
         json={"query": add_gql, "variables": {"payload": analysis_request}},
         headers=auth_data["headers"],

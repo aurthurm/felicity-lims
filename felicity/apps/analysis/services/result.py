@@ -1,26 +1,31 @@
 from datetime import datetime
 from typing import Annotated
+
 from felicity.apps.abstract.service import BaseService
-from felicity.apps.analysis.entities.results import (AnalysisResult, result_verification,
-    ResultMutation)
-from felicity.apps.analysis.repository.results import AnalysisResultRepository, ResultMutationRepository
-from felicity.apps.analysis.schemas import AnalysisResultCreate, AnalysisResultUpdate
-from felicity.apps.common.schemas.dummy import Dummy
+from felicity.apps.analysis.entities.results import (AnalysisResult,
+                                                     ResultMutation,
+                                                     result_verification)
 from felicity.apps.analysis.enum import ResultState, SampleState
-from felicity.apps.common.utils.serializer import marshaller
+from felicity.apps.analysis.repository.results import (
+    AnalysisResultRepository, ResultMutationRepository)
+from felicity.apps.analysis.schemas import (AnalysisResultCreate,
+                                            AnalysisResultUpdate)
+from felicity.apps.common.schemas.dummy import Dummy
 from felicity.apps.notification.services import ActivityStreamService
 
 
-class AnalysisResultService(BaseService[AnalysisResult, AnalysisResultCreate, AnalysisResultUpdate]):
+class AnalysisResultService(
+    BaseService[AnalysisResult, AnalysisResultCreate, AnalysisResultUpdate]
+):
     def __init__(self):
         self.streamer_service = ActivityStreamService()
         super().__init__(AnalysisResultRepository)
 
     async def verifications(self, uid: str) -> tuple[
         Annotated[int, "Total number required verifications"],
-        Annotated[int, "current number of verifications"]
+        Annotated[int, "current number of verifications"],
     ]:
-        analysis_result = await self.get(uid)
+        analysis_result = await self.get_related(uid=uid, related=["analysis"])
         required = analysis_result.analysis.required_verifications
         current = len(analysis_result.verified_by)
         return required, current
@@ -29,21 +34,20 @@ class AnalysisResultService(BaseService[AnalysisResult, AnalysisResultCreate, An
         _, verifications = await self.verifications(uid)
         if verifications == 0:
             return None
-        return self.verified_by[:-1]
+        return verifications[:-1]
 
-    async def retest_result(
-            self, uid: str, retested_by, next_action="verify"
-    ) -> tuple[
-             Annotated[
-                 "AnalysisResult", "Newly Created AnalysisResult"] | None,
-             Annotated[
-                 "AnalysisResult", "Retested AnalysisResult"]
-         ] | None:
-        analysis_result = await self.get(uid)
+    async def retest_result(self, uid: str, retested_by, next_action="verify") -> (
+        tuple[
+            Annotated["AnalysisResult", "Newly Created AnalysisResult"] | None,
+            Annotated["AnalysisResult", "Retested AnalysisResult"],
+        ]
+        | None
+    ):
+        analysis_result = await self.get(uid=uid)
         retest = None
         if analysis_result.status in [ResultState.RESULTED]:
             a_result_in = {
-                "sample_uid": analysis_result.sample.uid,
+                "sample_uid": analysis_result.sample_uid,
                 "analysis_uid": analysis_result.analysis_uid,
                 "status": ResultState.PENDING,
                 "laboratory_instrument_uid": analysis_result.laboratory_instrument_uid,
@@ -68,27 +72,27 @@ class AnalysisResultService(BaseService[AnalysisResult, AnalysisResultCreate, An
         return retest, analysis_result
 
     async def assign(self, uid: str, ws_uid, position, laboratory_instrument_uid):
-        analysis_result = await self.get(uid)
+        analysis_result = await self.get(uid=uid)
         analysis_result.worksheet_uid = ws_uid
         analysis_result.assigned = True
         analysis_result.worksheet_position = position
         analysis_result.laboratory_instrument_uid = (
             laboratory_instrument_uid if laboratory_instrument_uid else None
         )
-        return await super().update(uid, marshaller(analysis_result))
+        return await super().save(analysis_result)
 
     async def un_assign(self, uid: str):
-        analysis_result = await self.get(uid)
+        analysis_result = await self.get(uid=uid)
         analysis_result.worksheet_uid = None
         analysis_result.assigned = False
         analysis_result.worksheet_position = None
         analysis_result.laboratory_instrument_uid = None
-        return await super().update(uid, marshaller(analysis_result))
+        return await super().save(analysis_result)
 
     async def verify(self, uid: str, verifier) -> tuple[bool, "AnalysisResult"]:
-        analysis_result = await self.get(uid)
+        analysis_result = await self.get(uid=uid)
         is_verified = False
-        required, current = await self.verifications()
+        required, current = await self.verifications(uid)
         analysis_result.updated_by_uid = verifier.uid  # noqa
         if current < required and current + 1 == required:
             await self._verify(uid, verifier_uid=verifier.uid)
@@ -96,7 +100,7 @@ class AnalysisResultService(BaseService[AnalysisResult, AnalysisResultCreate, An
             analysis_result.date_verified = datetime.now()
             is_verified = True
 
-        final = await super().update(uid, marshaller(analysis_result))
+        final = await super().save(analysis_result)
         if final.status == ResultState.APPROVED:
             await self.streamer_service.stream(final, verifier, "approved", "result")
         return is_verified, final
@@ -104,34 +108,38 @@ class AnalysisResultService(BaseService[AnalysisResult, AnalysisResultCreate, An
     async def _verify(self, uid: str, verifier_uid):
         await self.repository.table_insert(
             table=result_verification,
-            mappings={"result_uid": uid, "user_uid": verifier_uid}
+            mappings={"result_uid": uid, "user_uid": verifier_uid},
         )
 
     async def retract(self, uid: str, retracted_by) -> "AnalysisResult":
-        analysis_result = await self.get(uid)
+        analysis_result = await self.get(uid=uid)
         analysis_result.status = ResultState.RETRACTED
         analysis_result.date_verified = datetime.now()
         analysis_result.updated_by_uid = retracted_by.uid  # noqa
-        final = await super().update(uid, marshaller(analysis_result))
+        final = await super().save(analysis_result)
         if final.status == ResultState.RETRACTED:
-            await self.streamer_service.stream(final, retracted_by, "retracted", "result")
+            await self.streamer_service.stream(
+                final, retracted_by, "retracted", "result"
+            )
             await self._verify(uid, verifier_uid=retracted_by.uid)
         return final
 
     async def cancel(self, uid: str, cancelled_by) -> "AnalysisResult":
-        analysis_result = await self.get(uid)
+        analysis_result = await self.get(uid=uid)
         if analysis_result.status in [ResultState.PENDING]:
             analysis_result.status = ResultState.CANCELLED
             analysis_result.cancelled_by_uid = cancelled_by.uid
             analysis_result.date_cancelled = datetime.now()
             analysis_result.updated_by_uid = cancelled_by.uid  # noqa
-        final = await super().update(uid, marshaller(analysis_result))
+        final = await super().save(analysis_result)
         if final.status == ResultState.CANCELLED:
-            await self.streamer_service.stream(final, cancelled_by, "cancelled", "result")
+            await self.streamer_service.stream(
+                final, cancelled_by, "cancelled", "result"
+            )
         return final
 
     async def re_instate(self, uid: str, re_instated_by) -> "AnalysisResult":
-        analysis_result = await self.get(uid)
+        analysis_result = await self.get(uid=uid)
         if analysis_result.sample.status not in [
             SampleState.RECEIVED,
             SampleState.EXPECTED,
@@ -145,9 +153,11 @@ class AnalysisResultService(BaseService[AnalysisResult, AnalysisResultCreate, An
             analysis_result.cancelled_by_uid = None
             analysis_result.date_cancelled = None
             analysis_result.updated_by_uid = re_instated_by.uid  # noqa
-        final = await super().update(uid, marshaller(analysis_result))
+        final = await super().save(analysis_result)
         if final.status == ResultState.PENDING:
-            await self.streamer_service.stream(final, re_instated_by, "reinstated", "result")
+            await self.streamer_service.stream(
+                final, re_instated_by, "reinstated", "result"
+            )
         return final
 
     async def change_status(self, uid: str, status) -> "AnalysisResult":
@@ -156,11 +166,12 @@ class AnalysisResultService(BaseService[AnalysisResult, AnalysisResultCreate, An
     async def hide_report(self, uid: str) -> "AnalysisResult":
         return await super().update(uid, {"reportable": False})
 
-    async def filter_for_worksheet(self,
-            analyses_status: str,
-            analysis_uid: str,
-            sample_type_uid: list[str],
-            limit: int,
+    async def filter_for_worksheet(
+        self,
+        analyses_status: str,
+        analysis_uid: str,
+        sample_type_uid: list[str],
+        limit: int,
     ) -> list["AnalysisResult"]:
         filters = {
             "status__exact": analyses_status,
@@ -169,8 +180,11 @@ class AnalysisResultService(BaseService[AnalysisResult, AnalysisResultCreate, An
             "sample___sample_type_uid__exact": sample_type_uid,
             "sample___status": SampleState.RECEIVED,
         }
-        sort_attrs = ["-sample___priority", "sample___sample_id", "-created_at"]        
-        return await self.repository.filter(filters=filters, sort_attrs=sort_attrs, limit=limit)
+        sort_attrs = ["-sample___priority", "sample___sample_id", "-created_at"]
+        return await self.repository.filter(
+            filters=filters, sort_attrs=sort_attrs, limit=limit
+        )
+
 
 class ResultMutationService(BaseService[ResultMutation, Dummy, Dummy]):
     def __init__(self):

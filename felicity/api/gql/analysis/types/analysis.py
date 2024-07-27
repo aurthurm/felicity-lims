@@ -17,50 +17,50 @@ from felicity.api.gql.user.types import UserType
 class CodingStandardType:
     uid: str
     name: str
-    description: str | None
+    description: str | None = None
     #
-    created_by_uid: str | None
-    created_by: UserType | None
-    created_at: str | None
-    updated_by_uid: str | None
-    updated_by: UserType | None
-    updated_at: str | None
+    created_by_uid: str | None = None
+    created_by: UserType | None = None
+    created_at: str | None = None
+    updated_by_uid: str | None = None
+    updated_by: UserType | None = None
+    updated_at: str | None = None
 
 
 @strawberry.type
 class SampleTypeTyp:
     uid: str
     name: str
-    description: str | None
+    description: str | None = None
     active: bool
     internal_use: bool
     abbr: str
     #
-    created_by_uid: str | None
-    created_by: UserType | None
-    created_at: str | None
-    updated_by_uid: str | None
-    updated_by: UserType | None
-    updated_at: str | None
+    created_by_uid: str | None = None
+    created_by: UserType | None = None
+    created_at: str | None = None
+    updated_by_uid: str | None = None
+    updated_by: UserType | None = None
+    updated_at: str | None = None
 
 
 @strawberry.type
 class SampleTypeMappingType:
     uid: str
     sample_type_uid: str
-    sample_type: SampleTypeTyp | None
+    sample_type: SampleTypeTyp | None = None
     coding_standard_uid: str
-    coding_standard: CodingStandardType | None
-    name: str | None
-    description: str | None
+    coding_standard: CodingStandardType | None = None
+    name: str | None = None
+    description: str | None = None
     code: str
     #
-    created_by_uid: str | None
-    created_by: UserType | None
-    created_at: str | None
-    updated_by_uid: str | None
-    updated_by: UserType | None
-    updated_at: str | None
+    created_by_uid: str | None = None
+    created_by: UserType | None = None
+    created_at: str | None = None
+    updated_by_uid: str | None = None
+    updated_by: UserType | None = None
+    updated_at: str | None = None
 
 
 @strawberry.type
@@ -68,12 +68,12 @@ class QCLevelType:
     uid: str
     level: str
     #
-    created_by_uid: str | None
-    created_by: UserType | None
-    created_at: str | None
-    updated_by_uid: str | None
-    updated_by: UserType | None
-    updated_at: str | None
+    created_by_uid: str | None = None
+    created_by: UserType | None = None
+    created_at: str | None = None
+    updated_by_uid: str | None = None
+    updated_by: UserType | None = None
+    updated_at: str | None = None
 
 
 @strawberry.type
@@ -82,12 +82,12 @@ class QCSetType:
     name: str
     note: str
     #
-    created_by_uid: str | None
-    created_by: UserType | None
-    created_at: str | None
-    updated_by_uid: str | None
-    updated_by: UserType | None
-    updated_at: str | None
+    created_by_uid: str | None = None
+    created_by: UserType | None = None
+    created_at: str | None = None
+    updated_by_uid: str | None = None
+    updated_by: UserType | None = None
+    updated_at: str | None = None
 
 
 @strawberry.type
@@ -95,12 +95,12 @@ class RejectionReasonType:
     uid: str
     reason: str
     #
-    created_by_uid: str | None
-    created_by: UserType | None
-    created_at: str | None
-    updated_by_uid: str | None
-    updated_by: UserType | None
-    updated_at: str | None
+    created_by_uid: str | None = None
+    created_by: UserType | None = None
+    created_at: str | None = None
+    updated_by_uid: str | None = None
+    updated_by: UserType | None = None
+    updated_at: str | None = None
 
 
 @strawberry.type
@@ -114,29 +114,29 @@ class AnalysisRequestType:
     client_request_id: str
     internal_use: bool
     #
-    created_by_uid: str | None
-    created_by: UserType | None
-    created_at: str | None
-    updated_by_uid: str | None
-    updated_by: UserType | None
-    updated_at: str | None
+    created_by_uid: str | None = None
+    created_by: UserType | None = None
+    created_at: str | None = None
+    updated_by_uid: str | None = None
+    updated_by: UserType | None = None
+    updated_at: str | None = None
 
 
 @strawberry.type
 class AnalysisCategoryType:
     uid: str
     name: str
-    department_uid: str | None
-    department: Optional[DepartmentType]
-    description: str | None
+    department_uid: str | None = None
+    department: Optional[DepartmentType] = None
+    description: str | None = None
     active: bool
     #
-    created_by_uid: str | None
-    created_by: UserType | None
-    created_at: str | None
-    updated_by_uid: str | None
-    updated_by: UserType | None
-    updated_at: str | None
+    created_by_uid: str | None = None
+    created_by: UserType | None = None
+    created_at: str | None = None
+    updated_by_uid: str | None = None
+    updated_by: UserType | None = None
+    updated_at: str | None = None
 
 
 @strawberry.type
@@ -146,117 +146,118 @@ class ResultOptionType:
     value: str
     analysis_uid: str
     # analysis: Optional['AnalysisType']
-    sample_types: Optional[list[SampleTypeTyp]]
+    sample_types: Optional[list[SampleTypeTyp]] = None
     #
-    created_by_uid: str | None
-    created_by: UserType | None
-    created_at: str | None
-    updated_by_uid: str | None
-    updated_by: UserType | None
-    updated_at: str | None
+    created_by_uid: str | None = None
+    created_by: UserType | None = None
+    created_at: str | None = None
+    updated_by_uid: str | None = None
+    updated_by: UserType | None = None
+    updated_at: str | None = None
 
 
 @strawberry.type
 class AnalysisType:
     uid: str
     name: str
-    description: str | None
-    keyword: str | None
-    department_uid: str | None
-    department: Optional[DepartmentType]
-    unit_uid: str | None
+    description: str | None = None
+    keyword: str | None = None
+    department_uid: str | None = None
+    department: Optional[DepartmentType] = None
+    unit_uid: str | None = None
     unit: Optional[UnitType]
-    sample_types: Optional[List[SampleTypeTyp]]
-    category_uid: str | None
-    category: Optional[AnalysisCategoryType]
-    interims: Optional[List["AnalysisInterimType"]]
-    sample_types: Optional[List[SampleTypeTyp]]
-    correction_factors: Optional[List["AnalysisCorrectionFactorType"]]
-    specifications: Optional[List["AnalysisSpecificationType"]]
-    detection_limits: Optional[List["AnalysisDetectionLimitType"]]
-    uncertainties: Optional[List["AnalysisUncertaintyType"]]
-    result_options: Optional[List[ResultOptionType]]
-    instruments: Optional[List[InstrumentType]]
-    methods: Optional[List[MethodType]]
-    tat_length_minutes: int | None
-    sort_key: int | None
-    precision: int | None
-    required_verifications: int | None
-    self_verification: bool | None
-    hidden: bool | None
-    internal_use: bool | None
-    active: bool | None
+    sample_types: Optional[List[SampleTypeTyp]] = None
+    category_uid: str | None = None
+    category: Optional[AnalysisCategoryType] = None
+    interims: Optional[List["AnalysisInterimType"]] = None
+    sample_types: Optional[List[SampleTypeTyp]] = None
+    correction_factors: Optional[List["AnalysisCorrectionFactorType"]] = None
+    specifications: Optional[List["AnalysisSpecificationType"]] = None
+    detection_limits: Optional[List["AnalysisDetectionLimitType"]] = None
+    uncertainties: Optional[List["AnalysisUncertaintyType"]] = None
+    result_options: Optional[List[ResultOptionType]] = None
+    instruments: Optional[List[InstrumentType]] = None
+    methods: Optional[List[MethodType]] = None
+    result_type: str | None = None
+    tat_length_minutes: int | None = None
+    sort_key: int | None = None
+    precision: int | None = None
+    required_verifications: int | None = None
+    self_verification: bool | None = None
+    hidden: bool | None = None
+    internal_use: bool | None = None
+    active: bool | None = None
     #
-    created_by_uid: str | None
-    created_by: UserType | None
-    created_at: str | None
-    updated_by_uid: str | None
-    updated_by: UserType | None
-    updated_at: str | None
+    created_by_uid: str | None = None
+    created_by: UserType | None = None
+    created_at: str | None = None
+    updated_by_uid: str | None = None
+    updated_by: UserType | None = None
+    updated_at: str | None = None
 
 
 @strawberry.type
 class AnalysisMappingType:
     uid: str
     analysis_uid: str
-    analysis: AnalysisType | None
+    analysis: AnalysisType | None = None
     coding_standard_uid: str
-    coding_standard: CodingStandardType | None
-    name: str | None
-    description: str | None
+    coding_standard: CodingStandardType | None = None
+    name: str | None = None
+    description: str | None = None
     code: str
     #
-    created_by_uid: str | None
-    created_by: UserType | None
-    created_at: str | None
-    updated_by_uid: str | None
-    updated_by: UserType | None
-    updated_at: str | None
+    created_by_uid: str | None = None
+    created_by: UserType | None = None
+    created_at: str | None = None
+    updated_by_uid: str | None = None
+    updated_by: UserType | None = None
+    updated_at: str | None = None
 
 
 @strawberry.type
 class ProfileType:
     uid: str
     name: str
-    description: str | None
-    keyword: str | None
-    department_uid: str | None
-    department: Optional[DepartmentType]
-    tat_length_minutes: int | None
-    analyses: Optional[List[AnalysisType]]
-    sample_types: Optional[List[SampleTypeTyp]]
+    description: str | None = None
+    keyword: str | None = None
+    department_uid: str | None = None
+    department: Optional[DepartmentType] = None
+    tat_length_minutes: int | None = None
+    analyses: Optional[List[AnalysisType]] = None
+    sample_types: Optional[List[SampleTypeTyp]] = None
     active: bool
     #
-    created_by_uid: str | None
-    created_by: UserType | None
-    created_at: str | None
-    updated_by_uid: str | None
-    updated_by: UserType | None
-    updated_at: str | None
+    created_by_uid: str | None = None
+    created_by: UserType | None = None
+    created_at: str | None = None
+    updated_by_uid: str | None = None
+    updated_by: UserType | None = None
+    updated_at: str | None = None
 
 
 @strawberry.type
 class ProfileMappingType:
     uid: str
     profile_uid: str
-    profile: ProfileType | None
+    profile: ProfileType | None = None
     coding_standard_uid: str
-    coding_standard: CodingStandardType | None
-    name: str | None
-    description: str | None
+    coding_standard: CodingStandardType | None = None
+    name: str | None = None
+    description: str | None = None
     code: str
     #
-    created_by_uid: str | None
-    created_by: UserType | None
-    created_at: str | None
-    updated_by_uid: str | None
-    updated_by: UserType | None
-    updated_at: str | None
+    created_by_uid: str | None = None
+    created_by: UserType | None = None
+    created_at: str | None = None
+    updated_by_uid: str | None = None
+    updated_by: UserType | None = None
+    updated_at: str | None = None
 
 
 @strawberry.type
 class AnalysisWithProfiles(AnalysisType):
-    profiles: Optional[List[ProfileType]]
+    profiles: Optional[List[ProfileType]] = None
 
 
 @strawberry.type
@@ -268,8 +269,8 @@ class AnalysisEdge:
 @strawberry.type
 class AnalysisCursorPage:
     page_info: PageInfo
-    edges: Optional[List[AnalysisEdge]]
-    items: Optional[List[AnalysisWithProfiles]]
+    edges: Optional[List[AnalysisEdge]] = None
+    items: Optional[List[AnalysisWithProfiles]] = None
     total_count: int
 
 
@@ -277,17 +278,17 @@ class AnalysisCursorPage:
 class AnalysisTemplateType:
     uid: str
     name: str
-    description: str | None
-    department_uid: str | None
-    department: Optional[DepartmentType]
-    analyses: Optional[List[AnalysisType]]
+    description: str | None = None
+    department_uid: str | None = None
+    department: Optional[DepartmentType] = None
+    analyses: Optional[List[AnalysisType]] = None
     #
-    created_by_uid: str | None
-    created_by: UserType | None
-    created_at: str | None
-    updated_by_uid: str | None
-    updated_by: UserType | None
-    updated_at: str | None
+    created_by_uid: str | None = None
+    created_by: UserType | None = None
+    created_at: str | None = None
+    updated_by_uid: str | None = None
+    updated_by: UserType | None = None
+    updated_at: str | None = None
 
 
 @strawberry.type
@@ -298,60 +299,60 @@ class SampleType:  # for Sample
     sample_type_uid: str
     sample_type: Optional[SampleTypeTyp]
     sample_id: str
-    profiles: Optional[List[ProfileType]]
-    analyses: Optional[List[AnalysisType]]
+    profiles: Optional[List[ProfileType]] = None
+    analyses: Optional[List[AnalysisType]] = None
     priority: int
-    status: str | None
+    status: str | None = None
     assigned: bool
-    date_collected: datetime | None
-    submitted_by_uid: str | None
-    submitted_by: UserType | None
-    date_submitted: datetime | None
-    verified_by_uid: str | None
-    verified_by: UserType | None
-    date_verified: datetime | None
-    invalidated_by_uid: str | None
-    invalidated_by: UserType | None
-    date_invalidated: datetime | None
-    received_by_uid: str | None
-    received_by: UserType | None
-    date_received: datetime | None
-    published_by_uid: str | None
-    published_by: UserType | None
-    date_published: datetime | None
-    cancelled_by_uid: str | None
-    cancelled_by: UserType | None
-    date_cancelled: datetime | None
-    printed: bool | None
-    date_printed: datetime | None
-    printed_by_uid: str | None
-    printed_by: UserType | None
-    due_date: str | None
-    rejection_reasons: Optional[List[RejectionReasonType]]
+    date_collected: datetime | None = None
+    submitted_by_uid: str | None = None
+    submitted_by: UserType | None = None
+    date_submitted: datetime | None = None
+    verified_by_uid: str | None = None
+    verified_by: UserType | None = None
+    date_verified: datetime | None = None
+    invalidated_by_uid: str | None = None
+    invalidated_by: UserType | None = None
+    date_invalidated: datetime | None = None
+    received_by_uid: str | None = None
+    received_by: UserType | None = None
+    date_received: datetime | None = None
+    published_by_uid: str | None = None
+    published_by: UserType | None = None
+    date_published: datetime | None = None
+    cancelled_by_uid: str | None = None
+    cancelled_by: UserType | None = None
+    date_cancelled: datetime | None = None
+    printed: bool | None = None
+    date_printed: datetime | None = None
+    printed_by_uid: str | None = None
+    printed_by: UserType | None = None
+    due_date: str | None = None
+    rejection_reasons: Optional[List[RejectionReasonType]] = None
     internal_use: bool
-    parent_id: str | None
-    parent: Optional["SampleType"]
+    parent_id: str | None = None
+    parent: Optional["SampleType"] = None
     # QC Samples
-    qc_set_uid: str | None
-    qc_set: Optional[QCSetType]
-    qc_level_uid: str | None
-    qc_level: Optional[QCLevelType]
+    qc_set_uid: str | None = None
+    qc_set: Optional[QCSetType] = None
+    qc_level_uid: str | None = None
+    qc_level: Optional[QCLevelType] = None
     # Bio Banking
-    storage_container_uid: str | None
-    storage_container: Optional[StorageContainerType]
-    storage_slot: str | None
-    storage_slot_index: int | None
-    stored_by_uid: str | None
-    stored_by: UserType | None
-    date_stored: datetime | None
-    date_retrieved_from_storage: datetime | None
+    storage_container_uid: str | None = None
+    storage_container: Optional[StorageContainerType] = None
+    storage_slot: str | None = None
+    storage_slot_index: int | None = None
+    stored_by_uid: str | None = None
+    stored_by: UserType | None = None
+    date_stored: datetime | None = None
+    date_retrieved_from_storage: datetime | None = None
     #
-    created_by_uid: str | None
-    created_by: UserType | None
-    created_at: str | None
-    updated_by_uid: str | None
-    updated_by: UserType | None
-    updated_at: str | None
+    created_by_uid: str | None = None
+    created_by: UserType | None = None
+    created_at: str | None = None
+    updated_by_uid: str | None = None
+    updated_by: UserType | None = None
+    updated_at: str | None = None
 
 
 @strawberry.type
@@ -368,8 +369,8 @@ class AnalysisRequestEdge:
 @strawberry.type
 class AnalysisRequestCursorPage:
     page_info: PageInfo
-    edges: Optional[List[AnalysisRequestEdge]]
-    items: Optional[List[AnalysisRequestWithSamples]]
+    edges: Optional[List[AnalysisRequestEdge]] = None
+    items: Optional[List[AnalysisRequestWithSamples]] = None
     total_count: int
 
 
@@ -377,16 +378,16 @@ class AnalysisRequestCursorPage:
 class QCTemplateType:
     uid: str
     name: str
-    description: str | None
-    departments: List[DepartmentType]
-    qc_levels: List[QCLevelType]
+    description: str | None = None
+    departments: List[DepartmentType] = None
+    qc_levels: List[QCLevelType] = None
     #
-    created_by_uid: str | None
-    created_by: UserType | None
-    created_at: str | None
-    updated_by_uid: str | None
-    updated_by: UserType | None
-    updated_at: str | None
+    created_by_uid: str | None = None
+    created_by: UserType | None = None
+    created_at: str | None = None
+    updated_by_uid: str | None = None
+    updated_by: UserType | None = None
+    updated_at: str | None = None
 
 
 @strawberry.type
@@ -397,12 +398,12 @@ class AnalysisInterimType:
     analysis_uid: str
     instrument_uid: str
     #
-    created_by_uid: str | None
-    created_by: UserType | None
-    created_at: str | None
-    updated_by_uid: str | None
-    updated_by: UserType | None
-    updated_at: str | None
+    created_by_uid: str | None = None
+    created_by: UserType | None = None
+    created_at: str | None = None
+    updated_by_uid: str | None = None
+    updated_by: UserType | None = None
+    updated_at: str | None = None
 
 
 @strawberry.type
@@ -413,12 +414,12 @@ class AnalysisCorrectionFactorType:
     instrument_uid: str
     method_uid: str
     #
-    created_by_uid: str | None
-    created_by: UserType | None
-    created_at: str | None
-    updated_by_uid: str | None
-    updated_by: UserType | None
-    updated_at: str | None
+    created_by_uid: str | None = None
+    created_by: UserType | None = None
+    created_at: str | None = None
+    updated_by_uid: str | None = None
+    updated_by: UserType | None = None
+    updated_at: str | None = None
 
 
 @strawberry.type
@@ -430,12 +431,12 @@ class AnalysisDetectionLimitType:
     instrument_uid: str
     method_uid: str
     #
-    created_by_uid: str | None
-    created_by: UserType | None
-    created_at: str | None
-    updated_by_uid: str | None
-    updated_by: UserType | None
-    updated_at: str | None
+    created_by_uid: str | None = None
+    created_by: UserType | None = None
+    created_at: str | None = None
+    updated_by_uid: str | None = None
+    updated_by: UserType | None = None
+    updated_at: str | None = None
 
 
 @strawberry.type
@@ -448,36 +449,36 @@ class AnalysisUncertaintyType:
     instrument_uid: str
     method_uid: str
     #
-    created_by_uid: str | None
-    created_by: UserType | None
-    created_at: str | None
-    updated_by_uid: str | None
-    updated_by: UserType | None
-    updated_at: str | None
+    created_by_uid: str | None = None
+    created_by: UserType | None = None
+    created_at: str | None = None
+    updated_by_uid: str | None = None
+    updated_by: UserType | None = None
+    updated_at: str | None = None
 
 
 @strawberry.type
 class AnalysisSpecificationType:
     uid: str
     analysis_uid: str
-    min: float | None
-    max: float | None
-    min_warn: float | None
-    max_warn: float | None
-    min_report: str | None
-    max_report: str | None
-    warn_values: str | None
-    warn_report: str | None
-    gender: str | None
-    age_min: int | None
-    age_max: int | None
-    method_uid: str | None
-    unit_uid: str | None
-    unit: Optional[UnitType]
+    min: float | None = None
+    max: float | None = None
+    min_warn: float | None = None
+    max_warn: float | None = None
+    min_report: str | None = None
+    max_report: str | None = None
+    warn_values: str | None = None
+    warn_report: str | None = None
+    gender: str | None = None
+    age_min: int | None = None
+    age_max: int | None = None
+    method_uid: str | None = None
+    unit_uid: str | None = None
+    unit: Optional[UnitType] = None
     #
-    created_by_uid: str | None
-    created_by: UserType | None
-    created_at: str | None
-    updated_by_uid: str | None
-    updated_by: UserType | None
-    updated_at: str | None
+    created_by_uid: str | None = None
+    created_by: UserType | None = None
+    created_at: str | None = None
+    updated_by_uid: str | None = None
+    updated_by: UserType | None = None
+    updated_at: str | None = None

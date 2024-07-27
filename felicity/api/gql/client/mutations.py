@@ -87,6 +87,7 @@ class ClientMutations:
         cc_in = {
             "first_name": "Default",
             "last_name": "Contact",
+            "email": client.email,
             "client_uid": client.uid,
             "created_by_uid": felicity_user.uid,
             "updated_by_uid": felicity_user.uid,
@@ -94,7 +95,7 @@ class ClientMutations:
 
         cc_obj_in = schemas.ClientContactCreate(**cc_in)
         await ClientContactService().create(cc_obj_in)
-
+        print(client.marshal_simple())
         return ClientType(**client.marshal_simple())
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])

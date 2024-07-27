@@ -25,6 +25,7 @@ class Laboratory(AuditUser):
     logo = Column(String, nullable=True)
     quality_statement = Column(String, nullable=True)
 
+
 class LaboratorySetting(AuditUser):
     __tablename__ = "laboratory_setting"
 

@@ -3,12 +3,18 @@ add_user_mutation = """
       $firstName: String!,
       $lastName: String!,
       $email: String!,
+      $userName: String!,
+      $password: String!,
+      $passwordc: String!,
       $openReg: Boolean
     ){
     createUser(
       firstName: $firstName,
       lastName: $lastName,
       email: $email,
+      userName: $userName,
+      password: $password,
+      passwordc: $passwordc,
       openReg: $openReg,
     ) {
         ... on UserType {
@@ -23,39 +29,12 @@ add_user_mutation = """
 }
 """
 
-add_auth_mutation = """
-  mutation AddUserAuth(
-      $userUid: String!,
-      $userName: String!,
-      $password: String!,
-      $passwordc: String!
-    ){
-    createUserAuth(
-      userUid: $userUid,
-      userName: $userName,
-      password: $password,
-      passwordc: $passwordc,
-    ) {
-        ... on UserType {
-            uid
-            auth {
-                userName
-            }
-        }
-        ... on OperationError {
-            error
-        }
-    }
-}
-"""
-
 fetch_users = """
     query {
         userAll {
             items {
-            auth {
+            
                 userName
-            }
             }
         }
     }

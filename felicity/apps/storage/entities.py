@@ -2,6 +2,7 @@ from typing import List
 
 from sqlalchemy import Boolean, Column, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
+
 from felicity.apps.abstract import AuditUser
 
 
@@ -25,6 +26,7 @@ class StorageLocation(AuditUser):
     description = Column(String, nullable=False)
     store_room_uid = Column(String, ForeignKey("store_room.uid"), nullable=False)
     store_room = relationship(StoreRoom, backref="storage_locations", lazy="selectin")
+
 
 class StorageSection(AuditUser):
     """Storage Location Section/Compartment

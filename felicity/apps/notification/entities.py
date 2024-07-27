@@ -3,7 +3,6 @@ from sqlalchemy.orm import relationship
 
 from felicity.apps.abstract import AuditUser, BaseEntity
 
-
 """
  Many to Many Link between Users and ActivityFeed
 """

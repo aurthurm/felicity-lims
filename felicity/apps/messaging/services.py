@@ -1,14 +1,19 @@
-
 from felicity.apps.abstract.service import BaseService
 from felicity.apps.common.utils.serializer import marshaller
 from felicity.apps.messaging.entities import Message, MessageThread
-from felicity.apps.messaging.repository import MessageRepository, MessageThreadRepository
-from felicity.apps.messaging.schemas import MessageCreate, MessageThreadCreate, MessageThreadUpdate, MessageUpdate
+from felicity.apps.messaging.repository import (MessageRepository,
+                                                MessageThreadRepository)
+from felicity.apps.messaging.schemas import (MessageCreate,
+                                             MessageThreadCreate,
+                                             MessageThreadUpdate,
+                                             MessageUpdate)
 from felicity.apps.user.entities import User
 from felicity.apps.user.services import UserService
 
 
-class MessageThreadService(BaseService[MessageThread, MessageThreadCreate, MessageThreadUpdate]):
+class MessageThreadService(
+    BaseService[MessageThread, MessageThreadCreate, MessageThreadUpdate]
+):
     def __init__(self):
         self.message_service = MessageService()
         super().__init__(MessageThreadRepository)
@@ -77,7 +82,7 @@ class MessageService(BaseService[Message, MessageCreate, MessageUpdate]):
         super().__init__(MessageRepository)
 
     async def send_message(
-            self, recipients: list[str], body: str, user: User
+        self, recipients: list[str], body: str, user: User
     ) -> Message:
 
         _recipients = [user]

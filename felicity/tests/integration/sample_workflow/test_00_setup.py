@@ -8,11 +8,11 @@ logger = logging.getLogger(__name__)
 
 @pytest.mark.asyncio
 @pytest.mark.order(1)
-async def test_check_installation(app):
-    response = await app.get("api/v1/setup/installation")
-    logger.info(f"reset-password response: {response} {response.json}")
+async def test_check_installation(app_api):
+    response = await app_api.get("/setup/installation")
+    logger.info(f"reset-password response: {response} {response.json()}")
     assert response.status_code == 200
-    logger.info(f"reset-password response: {response} {response.json}")
+    logger.info(f"reset-password response: {response} {response.json()}")
     _data = response.json()
     assert _data["laboratory"] is None
     assert _data["installed"] is False
@@ -21,13 +21,13 @@ async def test_check_installation(app):
 
 @pytest.mark.asyncio
 @pytest.mark.order(2)
-async def test_install(app):
-    response = await app.post(
-        "api/v1/setup/installation", json={"name": "Test Laboratory"}
+async def test_install(app_api):
+    response = await app_api.post(
+        "/setup/installation", json={"name": "Test Laboratory"}
     )
-    logger.info(f"reset-password response: {response} {response.json}")
+    logger.info(f"reset-password response: {response} {response.json()}")
     assert response.status_code == 200
-    logger.info(f"reset-password response: {response} {response.json}")
+    logger.info(f"reset-password response: {response} {response.json()}")
     assert response.json()["installed"] is True
     assert response.json()["installed"] is True
     assert response.json()["laboratory"]["setup_name"] == "felicity"

@@ -7,7 +7,9 @@ except ImportError:
 
 from sqlalchemy import Column, DateTime, ForeignKey, String, Table
 from sqlalchemy.orm import relationship
+
 from felicity.apps.abstract import AuditUser
+
 from . import enum, schemas
 
 """

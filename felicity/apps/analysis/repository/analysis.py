@@ -1,31 +1,25 @@
 from sqlalchemy import or_
 
-from felicity.apps.analysis.entities.analysis import (
-    CodingStandard,
-    SampleType,
-    SampleTypeCoding,
-    AnalysisCategory,
-    Profile,
-    AnalysisTemplate,
-    ProfileCoding,
-    Analysis,
-    AnalysisCoding,
-    AnalysisInterim,
-    AnalysisCorrectionFactor,
-    AnalysisDetectionLimit,
-    AnalysisUncertainty,
-    AnalysisSpecification,
-    ResultOption,
-    AnalysisRequest,
-    RejectionReason,
-    Sample,
-)
 from felicity.apps.abstract import BaseRepository
+from felicity.apps.analysis.entities.analysis import (Analysis,
+                                                      AnalysisCategory,
+                                                      AnalysisCoding,
+                                                      AnalysisCorrectionFactor,
+                                                      AnalysisDetectionLimit,
+                                                      AnalysisInterim,
+                                                      AnalysisRequest,
+                                                      AnalysisSpecification,
+                                                      AnalysisTemplate,
+                                                      AnalysisUncertainty,
+                                                      CodingStandard, Profile,
+                                                      ProfileCoding,
+                                                      RejectionReason,
+                                                      ResultOption, Sample,
+                                                      SampleType,
+                                                      SampleTypeCoding)
 
 
-class CodingStandardRepository(
-    BaseRepository[CodingStandard]
-):
+class CodingStandardRepository(BaseRepository[CodingStandard]):
     def __init__(self) -> None:
         super().__init__(CodingStandard)
 
@@ -35,9 +29,7 @@ class SampleTypeRepository(BaseRepository[SampleType]):
         super().__init__(SampleType)
 
 
-class SampleTypeCodingRepository(
-    BaseRepository[SampleTypeCoding]
-):
+class SampleTypeCodingRepository(BaseRepository[SampleTypeCoding]):
     def __init__(self) -> None:
         super().__init__(SampleTypeCoding)
 
@@ -52,9 +44,7 @@ class AnalysisTemplateRepository(BaseRepository[AnalysisTemplate]):
         super().__init__(AnalysisTemplate)
 
 
-class AnalysisCategoryRepository(
-    BaseRepository[AnalysisCategory]
-):
+class AnalysisCategoryRepository(BaseRepository[AnalysisCategory]):
     def __init__(self) -> None:
         super().__init__(AnalysisCategory)
 
@@ -69,44 +59,32 @@ class AnalysisRepository(BaseRepository[Analysis]):
         super().__init__(Analysis)
 
 
-class AnalysisCodingRepository(
-    BaseRepository[AnalysisCoding]
-):
+class AnalysisCodingRepository(BaseRepository[AnalysisCoding]):
     def __init__(self) -> None:
         super().__init__(AnalysisCoding)
 
 
-class AnalysisInterimRepository(
-    BaseRepository[AnalysisInterim]
-):
+class AnalysisInterimRepository(BaseRepository[AnalysisInterim]):
     def __init__(self) -> None:
         super().__init__(AnalysisInterim)
 
 
-class AnalysisCorrectionFactorRepository(
-    BaseRepository[AnalysisCorrectionFactor]
-):
+class AnalysisCorrectionFactorRepository(BaseRepository[AnalysisCorrectionFactor]):
     def __init__(self) -> None:
         super().__init__(AnalysisCorrectionFactor)
 
 
-class AnalysisDetectionLimitRepository(
-    BaseRepository[AnalysisDetectionLimit]
-):
+class AnalysisDetectionLimitRepository(BaseRepository[AnalysisDetectionLimit]):
     def __init__(self) -> None:
         super().__init__(AnalysisDetectionLimit)
 
 
-class AnalysisUncertaintyRepository(
-    BaseRepository[AnalysisUncertainty]
-):
+class AnalysisUncertaintyRepository(BaseRepository[AnalysisUncertainty]):
     def __init__(self) -> None:
         super().__init__(AnalysisUncertainty)
 
 
-class AnalysisSpecificationRepository(
-    BaseRepository[AnalysisSpecification]
-):
+class AnalysisSpecificationRepository(BaseRepository[AnalysisSpecification]):
     def __init__(self) -> None:
         super().__init__(AnalysisSpecification)
 
@@ -116,16 +94,12 @@ class ResultOptionRepository(BaseRepository[ResultOption]):
         super().__init__(ResultOption)
 
 
-class AnalysisRequestRepository(
-    BaseRepository[AnalysisRequest]
-):
+class AnalysisRequestRepository(BaseRepository[AnalysisRequest]):
     def __init__(self) -> None:
         super().__init__(AnalysisRequest)
 
 
-class RejectionReasonRepository(
-    BaseRepository[RejectionReason]
-):
+class RejectionReasonRepository(BaseRepository[RejectionReason]):
     def __init__(self) -> None:
         super().__init__(RejectionReason)
 

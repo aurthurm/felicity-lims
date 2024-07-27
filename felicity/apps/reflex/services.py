@@ -1,42 +1,35 @@
+import logging
 from datetime import datetime
 from typing import List
-import logging
 
 from felicity.apps.abstract.service import BaseService
 from felicity.apps.analysis.entities.analysis import Analysis, Sample
 from felicity.apps.analysis.entities.results import AnalysisResult
 from felicity.apps.analysis.enum import ResultState
-from felicity.apps.analysis.schemas import AnalysisResultCreate, AnalysisResultUpdate
+from felicity.apps.analysis.schemas import (AnalysisResultCreate,
+                                            AnalysisResultUpdate)
 from felicity.apps.analysis.services.result import AnalysisResultService
 from felicity.apps.common.utils.serializer import marshaller
-from felicity.apps.reflex.repository import (
-    ReflexRuleRepository,
-    ReflexActionRepository,
-    ReflexBrainRepository,
-    ReflexBrainCriteriaRepository,
-    ReflexBrainFinalRepository,
-    ReflexBrainAdditionRepository,
-)
-from felicity.apps.reflex.schemas import (
-    ReflexBrainAdditionCreate,
-    ReflexBrainAdditionUpdate,
-    ReflexBrainCriteriaCreate,
-    ReflexBrainCriteriaUpdate,
-    ReflexBrainFinalCreate,
-    ReflexBrainFinalUpdate,
-    ReflexRule,
-    ReflexBrainAddition,
-    ReflexBrainFinal,
-    ReflexBrainCriteria,
-    ReflexBrain,
-    ReflexAction,
-    ReflexRuleCreate,
-    ReflexRuleUpdate,
-    ReflexBrainCreate,
-    ReflexBrainUpdate,
-    ReflexActionCreate,
-    ReflexActionUpdate,
-)
+from felicity.apps.reflex.repository import (ReflexActionRepository,
+                                             ReflexBrainAdditionRepository,
+                                             ReflexBrainCriteriaRepository,
+                                             ReflexBrainFinalRepository,
+                                             ReflexBrainRepository,
+                                             ReflexRuleRepository)
+from felicity.apps.reflex.schemas import (ReflexAction, ReflexActionCreate,
+                                          ReflexActionUpdate, ReflexBrain,
+                                          ReflexBrainAddition,
+                                          ReflexBrainAdditionCreate,
+                                          ReflexBrainAdditionUpdate,
+                                          ReflexBrainCreate,
+                                          ReflexBrainCriteria,
+                                          ReflexBrainCriteriaCreate,
+                                          ReflexBrainCriteriaUpdate,
+                                          ReflexBrainFinal,
+                                          ReflexBrainFinalCreate,
+                                          ReflexBrainFinalUpdate,
+                                          ReflexBrainUpdate, ReflexRule,
+                                          ReflexRuleCreate, ReflexRuleUpdate)
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -46,31 +39,42 @@ class ReflexRuleService(BaseService[ReflexRule, ReflexRuleCreate, ReflexRuleUpda
     def __init__(self):
         super().__init__(ReflexRuleRepository)
 
+
 class ReflexBrainAdditionService(
-    BaseService[ReflexBrainAddition, ReflexBrainAdditionCreate, ReflexBrainAdditionUpdate]
+    BaseService[
+        ReflexBrainAddition, ReflexBrainAdditionCreate, ReflexBrainAdditionUpdate
+    ]
 ):
     def __init__(self):
         super().__init__(ReflexBrainAdditionRepository)
 
 
-class ReflexBrainFinalService(BaseService[ReflexBrainFinal, ReflexBrainFinalCreate, ReflexBrainFinalUpdate]):
+class ReflexBrainFinalService(
+    BaseService[ReflexBrainFinal, ReflexBrainFinalCreate, ReflexBrainFinalUpdate]
+):
     def __init__(self):
         super().__init__(ReflexBrainFinalRepository)
 
 
 class ReflexBrainCriteriaService(
-    BaseService[ReflexBrainCriteria, ReflexBrainCriteriaCreate, ReflexBrainCriteriaUpdate]
+    BaseService[
+        ReflexBrainCriteria, ReflexBrainCriteriaCreate, ReflexBrainCriteriaUpdate
+    ]
 ):
     def __init__(self):
         super().__init__(ReflexBrainCriteriaRepository)
 
 
-class ReflexBrainService(BaseService[ReflexBrain, ReflexBrainCreate, ReflexBrainUpdate]):
+class ReflexBrainService(
+    BaseService[ReflexBrain, ReflexBrainCreate, ReflexBrainUpdate]
+):
     def __init__(self):
         super().__init__(ReflexBrainRepository)
-      
 
-class ReflexActionService(BaseService[ReflexAction, ReflexActionCreate, ReflexActionUpdate]):
+
+class ReflexActionService(
+    BaseService[ReflexAction, ReflexActionCreate, ReflexActionUpdate]
+):
     def __init__(self):
         super().__init__(ReflexActionRepository)
 
@@ -89,7 +93,6 @@ class ReflexEngineService:
         self.analysis_result_service = AnalysisResultService()
         self.reflex_action_service = ReflexActionService()
 
-
     # TODO: apply set_reflex_actions for already created analyses
 
     async def set_reflex_actions(self, analysis_results: List[AnalysisResult]):
@@ -97,12 +100,12 @@ class ReflexEngineService:
         for result in analysis_results:
             logger.debug(f"set_reflex_actions for : {result}")
             filters = {"analyses___uid": result.analysis_uid, "level": 1}
-            action = await self.reflex_action_service.get(
-                **filters
-            )
+            action = await self.reflex_action_service.get(**filters)
             if action:
                 result.reflex_level = 1
-                await self.analysis_result_service.update(result.uid, marshaller(result))
+                await self.analysis_result_service.update(
+                    result.uid, marshaller(result)
+                )
                 logger.debug(f"set_reflex_actions done")
 
     async def do_reflex(self):
@@ -131,8 +134,7 @@ class ReflexEngineService:
 
     @staticmethod
     def can_decide(results_pool: list[AnalysisResult]):
-        """If all results in consideration are approved then a decision can be made
-        """
+        """If all results in consideration are approved then a decision can be made"""
         if not results_pool:
             return False
         return all([r.status == ResultState.APPROVED for r in results_pool])
@@ -148,17 +150,22 @@ class ReflexEngineService:
         logger.info(f"relevant results_pool: {[r.result for r in results_pool]}")
 
         if not self.can_decide(results_pool):
-            logger.info(f"A decision cannot be made -> aborting relex: {[r.status for r in results_pool]}")
+            logger.info(
+                f"A decision cannot be made -> aborting relex: {[r.status for r in results_pool]}"
+            )
             return
 
         # 1. criteria_values must match results_pool
-        criteria_values = frozenset([
-            (criteria.analysis_uid, criteria.value) for criteria in brain.analyses_values
-        ])
+        criteria_values = frozenset(
+            [
+                (criteria.analysis_uid, criteria.value)
+                for criteria in brain.analyses_values
+            ]
+        )
         logger.info(f"criteria_values: {criteria_values}")
-        results_values = frozenset([
-            (result.analysis_uid, result.result) for result in results_pool
-        ])
+        results_values = frozenset(
+            [(result.analysis_uid, result.result) for result in results_pool]
+        )
         logger.info(f"results_values: {results_values}")
 
         is_match = criteria_values == results_values
@@ -189,13 +196,18 @@ class ReflexEngineService:
         logger.info(f"criteria_anals: {criteria_anals}")
 
         if self._results_pool is None:
-            results: List[AnalysisResult] = await self.analysis_result_service.get_all(sample_uid=self.sample.uid)
+            results: List[AnalysisResult] = await self.analysis_result_service.get_all(
+                sample_uid=self.sample.uid
+            )
             self._results_pool = list(
                 filter(lambda result: result.analysis_uid in criteria_anals, results)
             )
             if len(self._results_pool) > 1:
                 self._results_pool = list(
-                    filter(lambda result: result.uid != self.analysis_result.uid, self._results_pool)
+                    filter(
+                        lambda result: result.uid != self.analysis_result.uid,
+                        self._results_pool,
+                    )
                 )
 
         logger.info(f"entire results_pool: {[r.result for r in self._results_pool]}")

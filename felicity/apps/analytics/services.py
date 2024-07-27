@@ -1,7 +1,8 @@
 from felicity.apps.abstract.service import BaseService
 from felicity.apps.analytics.enum import ReportState
 from felicity.apps.analytics.repository import ReportMetaRepository
-from felicity.apps.analytics.schemas import ReportMeta, ReportMetaCreate, ReportMetaUpdate
+from felicity.apps.analytics.schemas import (ReportMeta, ReportMetaCreate,
+                                             ReportMetaUpdate)
 from felicity.apps.common.utils.serializer import marshaller
 
 

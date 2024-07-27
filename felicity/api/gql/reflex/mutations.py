@@ -8,10 +8,15 @@ from felicity.api.gql.permissions import IsAuthenticated
 from felicity.api.gql.reflex.types import (ReflexActionType, ReflexBrainType,
                                            ReflexRuleType)
 from felicity.api.gql.types import OperationError
-from felicity.apps.reflex import schemas
-from felicity.apps.reflex.services import ReflexActionService, ReflexBrainService, ReflexRuleService
 from felicity.apps.analysis.services.analysis import AnalysisService
-from felicity.apps.reflex.entities import ReflexBrainAddition, ReflexBrainCriteria, ReflexBrainFinal, reflex_action_analysis
+from felicity.apps.reflex import schemas
+from felicity.apps.reflex.entities import (ReflexBrainAddition,
+                                           ReflexBrainCriteria,
+                                           ReflexBrainFinal,
+                                           reflex_action_analysis)
+from felicity.apps.reflex.services import (ReflexActionService,
+                                           ReflexBrainService,
+                                           ReflexRuleService)
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

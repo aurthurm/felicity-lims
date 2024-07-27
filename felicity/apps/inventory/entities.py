@@ -19,7 +19,6 @@ class StockItem(AuditUser):
     maximum_level = Column(Integer, nullable=True)
 
 
-
 class StockItemVariant(AuditUser):
     """StockItem Variant as the StockProduct"""
 
@@ -42,6 +41,7 @@ class StockCategory(AuditUser):
 
     name = Column(String, nullable=False)
     description = Column(String, nullable=False)
+
 
 class Hazard(AuditUser):
     """Hazard"""
@@ -110,7 +110,6 @@ class StockOrderProduct(AuditUser):
     remarks = Column(String, nullable=True)
 
 
-
 class StockReceipt(AuditUser):
     __tablename__ = "stock_receipt"
 
@@ -130,7 +129,7 @@ class StockReceipt(AuditUser):
     packages_received = Column(Integer, nullable=True)
     # number of units in the package
     package_factor = Column(Integer, nullable=True)
-    # total quantity received 
+    # total quantity received
     quantity_received = Column(Integer, nullable=False)
     # receipt_type can be a purchase, transfer, return
     receipt_type = Column(String, nullable=False)

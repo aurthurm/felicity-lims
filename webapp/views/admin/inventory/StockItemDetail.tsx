@@ -52,7 +52,7 @@ const StockItemDetail = defineComponent({
             formAction.value = create;
             formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + 'A VARIANT';
             showModal.value = true;
-            if (create) {
+            if (Create, related: list[str] = None) {
                 Object.assign(form, {} as IStockItemVariant);
             } else {
                 Object.assign(form, { ...obj });

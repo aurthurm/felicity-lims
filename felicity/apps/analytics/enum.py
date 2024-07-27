@@ -1,5 +1,6 @@
 from enum import StrEnum, auto
 
+
 class ReportTypes(StrEnum):
     LINE_LISTING = auto()
 

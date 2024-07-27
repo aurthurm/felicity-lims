@@ -3,7 +3,6 @@ from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, Request
 
-from felicity.apps.user.services import UserService
 from felicity.api.deps import get_current_user
 from felicity.apps.iol.fhir.schema import (BundleResource,
                                            DiagnosticReportResource,
@@ -13,16 +12,17 @@ from felicity.apps.iol.fhir.utils import (create_resource,
                                           get_diagnostic_report_resource,
                                           get_patient_resource)
 from felicity.apps.user.schemas import User
+from felicity.apps.user.services import UserService
 
 fhir_v4 = APIRouter(tags=["fhir-v4"], prefix="/fhir")
 
 
 @fhir_v4.post("/{resource_type}")
 async def add_resource(
-        request: Request,
-        resource_type: str,
-        user_service: Annotated[UserService, Depends(UserService)],
-        current_user: Annotated[User, Depends(get_current_user)],
+    request: Request,
+    resource_type: str,
+    user_service: Annotated[UserService, Depends(UserService)],
+    current_user: Annotated[User, Depends(get_current_user)],
 ):
     """
     Add a fhir resource
@@ -46,9 +46,9 @@ async def add_resource(
 
 @fhir_v4.get("/{resource}/{resource_id}")
 async def get_resource(
-        resource: str,
-        resource_id: str,
-        current_user: Annotated[User, Depends(get_current_user)],
+    resource: str,
+    resource_id: str,
+    current_user: Annotated[User, Depends(get_current_user)],
 ):
     """
     Supported Resources are DiagnosticReport and  Patient

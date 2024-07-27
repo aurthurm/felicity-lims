@@ -1,15 +1,11 @@
-import pytest
-import passlib
 from datetime import timedelta
-from core.security import (
-    get_password_hash,
-    verify_password,
-    create_access_token,
-    generate_password_reset_token,
-    verify_password_reset_token,
-    password_similarity,
-    password_check,
-)
+
+import passlib
+import pytest
+from felicity.core.security import (create_access_token, generate_password_reset_token,
+                           get_password_hash, password_check,
+                           password_similarity, verify_password,
+                           verify_password_reset_token)
 
 
 @pytest.fixture

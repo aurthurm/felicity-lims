@@ -7,7 +7,6 @@ from sqlalchemy.orm import relationship
 from felicity.apps.abstract import AuditUser, BaseEntity
 from felicity.apps.user.entities import User
 
-
 """
  Many to Many Link between Method and Instruments
 """

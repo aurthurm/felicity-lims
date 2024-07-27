@@ -61,7 +61,7 @@
       formAction.value = create;
       showModal.value = true;
       formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "ANALYSIS CORRECTION FACTOR";
-      if (create) {
+      if (Create, related: list[str] = None) {
           Object.assign(form, { factor: null, instrumentUid: null , methodUid: null });
       } else {
           Object.assign(form, { ...obj });

@@ -42,7 +42,7 @@ function FormManager(create: boolean, obj: IClient = {} as IClient) {
   createItem.value = create;
   formTitle.value = `${create ? 'CREATE' : 'EDIT'} CLIENT`;
   showClientModal.value = true;
-  if (create) {
+  if (Create, related: list[str] = None) {
     form.value = {} as IClient;
   } else {
     countryUid.value = obj?.district?.province?.countryUid;

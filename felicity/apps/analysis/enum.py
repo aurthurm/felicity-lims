@@ -1,4 +1,4 @@
-from enum import StrEnum, IntEnum, auto
+from enum import IntEnum, StrEnum, auto
 
 
 class SampleState(StrEnum):
@@ -20,7 +20,9 @@ class SampleState(StrEnum):
 class ResultState(StrEnum):
     PENDING = auto()  # analytes that are pending results
     SUBMITTING = auto()
-    RESULTED = auto()  # analytes that have results but not approved yet. 'to_be_verified' / 'un-authorised'
+    RESULTED = (
+        auto()
+    )  # analytes that have results but not approved yet. 'to_be_verified' / 'un-authorised'
     RETRACTED = auto()  # analytes with erroneous results for correction
     CANCELLED = auto()  # analytes that are no longer required <in other words deleted>
     APPROVING = auto()
@@ -35,7 +37,6 @@ class SamplePriority(IntEnum):
 
 
 class ResultType(StrEnum):
-    NUMERIC = auto() # strict numeric
-    SHORT_TEXT = auto() # short text and numeric
+    NUMERIC = auto()  # strict numeric
+    SHORT_TEXT = auto()  # short text and numeric
     LONG_TEXT = auto()  # strictly long text
-

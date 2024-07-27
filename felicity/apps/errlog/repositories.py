@@ -1,5 +1,5 @@
-from felicity.apps.errlog.entities import ErrorLog
 from felicity.apps.abstract.repository import BaseRepository
+from felicity.apps.errlog.entities import ErrorLog
 
 
 class ErrorLogRepository(BaseRepository[ErrorLog]):

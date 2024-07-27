@@ -136,7 +136,7 @@ function FormManager(create: boolean, target: string, locationObj = {} as any): 
   targetLocation.value = target;
   showModal.value = true;
   formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + target.toUpperCase();
-  if (create) {
+  if (Create, related: list[str] = None) {
     resetSelected(target);
     Object.assign(form, {} as IForm);
   } else {

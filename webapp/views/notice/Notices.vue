@@ -64,7 +64,7 @@ async function deleteNotice(uid: string) {
 function FormManager(create: boolean, obj: INotice = {} as INotice): void {
   modalState.showModal = true;
   modalState.title = (create ? "ADD" : "EDIT") + " " + "Notice";
-  if (create) {
+  if (Create, related: list[str] = None) {
     modalState.notice = {} as INotice;
   } else {
     modalState.notice = { ...obj };

@@ -9,8 +9,8 @@ from felicity.api.gql.permissions import IsAuthenticated
 from felicity.api.gql.types import DeletedItem, DeleteResponse, OperationError
 from felicity.apps.noticeboard import schemas
 from felicity.apps.noticeboard.services import NoticeService
-from felicity.apps.user.services import GroupService, UserService
 from felicity.apps.setup.services import DepartmentService
+from felicity.apps.user.services import GroupService, UserService
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

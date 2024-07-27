@@ -7,8 +7,8 @@ from felicity.api.gql.permissions import IsAuthenticated
 from felicity.api.gql.reflex.types import (ReflexRuleCursorPage,
                                            ReflexRuleEdge, ReflexRuleType)
 from felicity.api.gql.types import PageInfo
-from felicity.utils import has_value_or_is_truthy
 from felicity.apps.reflex.services import ReflexRuleService
+from felicity.utils import has_value_or_is_truthy
 
 
 @strawberry.type

@@ -10,8 +10,9 @@ from felicity.api.gql.worksheet.types import (WorkSheetCursorPage,
                                               WorkSheetEdge,
                                               WorkSheetTemplateType,
                                               WorkSheetType)
+from felicity.apps.worksheet.services import (WorkSheetService,
+                                              WorkSheetTemplateService)
 from felicity.utils import has_value_or_is_truthy
-from felicity.apps.worksheet.services import WorkSheetService, WorkSheetTemplateService
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

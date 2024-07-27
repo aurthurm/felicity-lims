@@ -15,7 +15,10 @@ from felicity.api.gql.instrument.types import (InstrumentCursorPage,
                                                MethodType)
 from felicity.api.gql.permissions import IsAuthenticated
 from felicity.api.gql.types import PageInfo
-from felicity.apps.instrument.services import InstrumentService, InstrumentTypeService, LaboratoryInstrumentService, MethodService
+from felicity.apps.instrument.services import (InstrumentService,
+                                               InstrumentTypeService,
+                                               LaboratoryInstrumentService,
+                                               MethodService)
 from felicity.utils import has_value_or_is_truthy
 
 
@@ -90,7 +93,7 @@ async def get_all_instruments(
         before_cursor=before_cursor,
         filters=filters,
         sort_by=sort_by,
-        get_related="methods",
+        get_related=["methods"],
     )
 
     total_count: int = page.total_count
@@ -132,7 +135,7 @@ async def get_all_laboratory_instruments(
         before_cursor=before_cursor,
         filters=filters,
         sort_by=sort_by,
-        get_related="methods",
+        get_related=["instrument.methods"],
     )
 
     total_count: int = page.total_count
@@ -170,7 +173,7 @@ async def get_all_methods(
         before_cursor=before_cursor,
         filters=filters,
         sort_by=sort_by,
-        get_related="instruments",
+        get_related=["instruments"],
     )
 
     total_count: int = page.total_count

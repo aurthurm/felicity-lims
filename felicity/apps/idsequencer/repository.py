@@ -1,10 +1,10 @@
 from datetime import datetime
+
 from sqlalchemy.dialects.postgresql import insert
 
-
-from felicity.apps.idsequencer.exception import SequenceGenerateError
-from felicity.apps.idsequencer.entities import IdSequence
 from felicity.apps.abstract import BaseRepository
+from felicity.apps.idsequencer.entities import IdSequence
+from felicity.apps.idsequencer.exception import SequenceGenerateError
 
 SEQUENCE_BEGIN = 5
 SEQUENCE_CUTOFF = 10

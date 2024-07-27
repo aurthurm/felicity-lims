@@ -75,6 +75,7 @@ class ClientContactBaseInDB(ClientContactBase):
 # Properties to receive via API on creation
 class ClientContactCreate(ClientContactBase):
     client_uid: str
+    email: str
 
 
 # Properties to receive via API on update

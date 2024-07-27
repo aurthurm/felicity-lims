@@ -1,7 +1,8 @@
 from felicity.apps.analysis.entities.analysis import AnalysisRequest
 from felicity.apps.billing.entities import (AnalysisPrice, ProfilePrice,
-                                          TestBill, TestBillInvoice,
-                                          TestBillTransaction, test_bill_item)
+                                            TestBill, TestBillInvoice,
+                                            TestBillTransaction,
+                                            test_bill_item)
 from felicity.apps.billing.schemas import TestBillInvoiceCreate
 from felicity.apps.common.utils.serializer import marshaller
 from felicity.apps.impress.invoicing.engine import FelicityInvoice

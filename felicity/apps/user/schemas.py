@@ -4,7 +4,6 @@ from pydantic import ConfigDict, EmailStr
 
 from felicity.apps.common.schemas import BaseAuditModel, BaseModel
 
-
 #
 #  Permission Schema
 #
@@ -47,6 +46,7 @@ class PermissionInDB(PermissionInDBBase):
 #
 #  Group Schema
 #
+
 
 # Shared properties
 class GroupBase(BaseModel):

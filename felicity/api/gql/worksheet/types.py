@@ -17,29 +17,29 @@ from felicity.api.gql.user.types import UserType
 class WorkSheetTemplateType:
     uid: str
     worksheet_type: str
-    reserved: Optional[JSONScalar]
-    number_of_samples: int | None
-    rows: int | None
-    cols: int | None
+    reserved: Optional[JSONScalar] = None
+    number_of_samples: int | None  = None
+    rows: int | None  = None
+    cols: int | None  = None
     row_wise: bool
-    state: str | None
+    state: str | None  = None
     name: str
-    description: str | None
-    analysis_uid: str | None
-    analysis: AnalysisType | None
-    qc_template_uid: str | None
-    qc_template: Optional[QCTemplateType]
-    qc_levels: Optional[List[QCLevelType]]
-    instrument_uid: str | None
-    instrument: InstrumentType | None
-    sample_type_uid: str | None
-    sample_type: Optional[SampleTypeTyp]
-    created_by_uid: str | None
-    created_by: UserType | None
-    created_at: str | None
-    updated_by_uid: str | None
-    updated_by: UserType | None
-    updated_at: str | None
+    description: str | None  = None
+    analysis_uid: str | None  = None
+    analysis: AnalysisType | None  = None
+    qc_template_uid: str | None  = None
+    qc_template: Optional[QCTemplateType] = None
+    qc_levels: Optional[List[QCLevelType]] = None
+    instrument_uid: str | None  = None
+    instrument: InstrumentType | None  = None
+    sample_type_uid: str | None  = None
+    sample_type: Optional[SampleTypeTyp] = None
+    created_by_uid: str | None  = None
+    created_by: UserType | None  = None
+    created_at: str | None  = None
+    updated_by_uid: str | None  = None
+    updated_by: UserType | None  = None
+    updated_at: str | None  = None
 
 
 @strawberry.type
@@ -47,36 +47,36 @@ class WorkSheetType:
     uid: str
     worksheet_type: str
     reserved: Optional[JSONScalar]
-    number_of_samples: int | None
-    rows: int | None
-    cols: int | None
+    number_of_samples: int | None  = None
+    rows: int | None  = None
+    cols: int | None  = None
     row_wise: bool
-    state: str | None
-    template_uid: str | None
-    template: Optional[WorkSheetTemplateType]
-    analyst_uid: str | None
-    analyst: UserType | None
+    state: str | None  = None
+    template_uid: str | None  = None
+    template: Optional[WorkSheetTemplateType] = None
+    analyst_uid: str | None  = None
+    analyst: UserType | None  = None
     worksheet_id: str
-    analysis_uid: str | None
-    analysis: AnalysisType | None
-    instrument_uid: str | None
-    instrument: InstrumentType | None
-    sample_type_uid: str | None
-    sample_type: Optional[SampleTypeTyp]
+    analysis_uid: str | None  = None
+    analysis: AnalysisType | None  = None
+    instrument_uid: str | None  = None
+    instrument: InstrumentType | None  = None
+    sample_type_uid: str | None  = None
+    sample_type: Optional[SampleTypeTyp] = None
     assigned_count: int
-    analysis_results: list[AnalysisResultType] | None
-    submitted_by_uid: str | None
-    submitted_by: UserType | None
-    date_submitted: datetime | None
-    verified_by_uid: str | None
-    verified_by: UserType | None
-    date_verified: datetime | None
-    created_by_uid: str | None
-    created_by: UserType | None
-    created_at: str | None
-    updated_by_uid: str | None
-    updated_by: UserType | None
-    updated_at: str | None
+    analysis_results: list[AnalysisResultType] | None  = None
+    submitted_by_uid: str | None  = None
+    submitted_by: UserType | None  = None
+    date_submitted: datetime | None  = None
+    verified_by_uid: str | None  = None
+    verified_by: UserType | None  = None
+    date_verified: datetime | None  = None
+    created_by_uid: str | None  = None
+    created_by: UserType | None  = None
+    created_at: str | None  = None
+    updated_by_uid: str | None  = None
+    updated_by: UserType | None  = None
+    updated_at: str | None  = None
 
 
 #  relay paginations
@@ -89,6 +89,6 @@ class WorkSheetEdge:
 @strawberry.type
 class WorkSheetCursorPage:
     page_info: PageInfo
-    edges: Optional[List[WorkSheetEdge]]
-    items: Optional[List[WorkSheetType]]
+    edges: Optional[List[WorkSheetEdge]] = None
+    items: Optional[List[WorkSheetType]] = None
     total_count: int

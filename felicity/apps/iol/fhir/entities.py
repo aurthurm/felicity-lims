@@ -1,5 +1,6 @@
 from sqlalchemy import Boolean, Column, String
 from sqlalchemy.dialects.postgresql import JSONB
+
 from felicity.apps.abstract import AuditUser
 
 

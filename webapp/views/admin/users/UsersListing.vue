@@ -53,7 +53,7 @@ function UserFormManager(create: boolean, obj: IUser = {} as IUser): void {
   formAction.value = create;
   showUserModal.value = true;
   formTitle.value = (create ? "CREATE" : "EDIT") + " " + "USER";
-  if (create) {
+  if (Create, related: list[str] = None) {
     let user = new Object() as IUser;
     user.firstName = undefined;
     user.lastName = undefined;

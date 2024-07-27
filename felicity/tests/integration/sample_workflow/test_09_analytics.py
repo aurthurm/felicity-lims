@@ -12,11 +12,11 @@
 #
 # @pytest.mark.asyncio
 # @pytest.mark.order(100)
-# async def test_generate_report(app, auth_data):
+# async def test_generate_report(app_gql, auth_data):
 #     time_now = datetime.now()
 #     period_start = (time_now - timedelta(minutes=5)).isoformat()
 #     period_end = time_now.isoformat()
-#     response = await app.post(
+#     response = await app_gql.post(
 #         "/reports/",
 #         json={
 #             "report_type": "line_listing",
@@ -45,8 +45,8 @@
 #
 # @pytest.mark.asyncio
 # @pytest.mark.order(101)
-# async def test_fetch_reports(app, client_root, auth_data):
-#     response = await app.get("/reports/", headers=auth_data["headers"])
+# async def test_fetch_reports(app_gql, client_root, auth_data):
+#     response = await app_gql.get("/reports/", headers=auth_data["headers"])
 #
 #     logger.info(f"generate report response: {response} {response.json}")
 #     assert response.status_code == 200

@@ -1,9 +1,11 @@
 import logging
 
 from felicity.apps.user import schemas
+from felicity.apps.user.services import (GroupService, UserPreferenceService,
+                                         UserService)
 from felicity.core.config import get_settings
+from .groups_perms import seed_groups, seed_permissions, seed_group_permissions_defaults
 
-from felicity.apps.user.services import GroupService, UserPreferenceService, UserService
 from .groups_perms import FGroup
 
 settings = get_settings()
@@ -18,9 +20,7 @@ async def seed_daemon_user() -> None:
     group_service = GroupService()
     preference_service = UserPreferenceService()
 
-    system_daemon = await user_service.get_by_email(
-        settings.SYSTEM_DAEMON_EMAIL
-    )
+    system_daemon = await user_service.get_related(related=["groups"], email=settings.SYSTEM_DAEMON_EMAIL)
     if not system_daemon:
         su_in = schemas.UserCreate(
             first_name="System",
@@ -31,7 +31,7 @@ async def seed_daemon_user() -> None:
             login_retry=0,
             is_superuser=True,
         )
-        system_daemon = await user_service.create(user_in=su_in)
+        system_daemon = await user_service.create(user_in=su_in, related=["groups"])
 
     admin_group = await group_service.get(name=FGroup.ADMINISTRATOR)
     if admin_group.uid not in [g.uid for g in system_daemon.groups]:
@@ -56,9 +56,7 @@ async def seed_super_user() -> None:
     group_service = GroupService()
     preference_service = UserPreferenceService()
 
-    super_user = await user_service.get_by_email(
-        settings.FIRST_SUPERUSER_EMAIL
-    )
+    super_user = await user_service.get_related(related=["groups"], email=settings.FIRST_SUPERUSER_EMAIL)
     if not super_user:
         su_in = schemas.UserCreate(
             first_name="System",
@@ -69,11 +67,11 @@ async def seed_super_user() -> None:
             login_retry=0,
             is_superuser=True,
         )
-        super_user = await user_service.create(user_in=su_in)
-    
+        super_user = await user_service.create(user_in=su_in, related=["groups"])
+
     admin_group = await group_service.get(name=FGroup.ADMINISTRATOR)
-    
-    if admin_group.uid not in [g.uid for g in super_user.groups]:
+
+    if admin_group and admin_group.uid not in [g.uid for g in super_user.groups]:
         super_user.groups.append(admin_group)
         await user_service.save(super_user)
 

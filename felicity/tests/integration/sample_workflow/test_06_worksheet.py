@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 @pytest.mark.asyncio
 @pytest.mark.order(70)
 async def test_add_worksheet_template(
-    app, auth_data, sample_types, analyses, instruments
+    app_gql, auth_data, sample_types, analyses, instruments
 ):
     add_gql = """
         mutation AddWorkSheetTemplate($payload: WorksheetTemplateInputType!){
@@ -80,7 +80,7 @@ async def test_add_worksheet_template(
         "instrumentUid": instruments[0]["uid"],
         "reserved": [],
     }
-    response = await app.post(
+    response = await app_gql.post(
         "/felicity-gql",
         json={"query": add_gql, "variables": {"payload": ws_template}},
         headers=auth_data["headers"],
@@ -104,7 +104,7 @@ async def test_add_worksheet_template(
 
 @pytest.mark.asyncio
 @pytest.mark.order(71)
-async def test_add_worksheet_using_template(app, auth_data, users_db, ws_templates):
+async def test_add_worksheet_using_template(app_gql, auth_data, users_db, ws_templates):
     add_gql = """
       mutation AddWorkSheet($analystUid:String!, $templateUid: String!, $count: Int){
         createWorksheet(analystUid: $analystUid, templateUid: $templateUid, count:$count)
@@ -118,10 +118,7 @@ async def test_add_worksheet_using_template(app, auth_data, users_db, ws_templat
               assignedCount
               analyst {
                 uid
-                auth{
-                  uid
-                  userName
-                }
+                userName
                 firstName
                 lastName
               }
@@ -154,7 +151,7 @@ async def test_add_worksheet_using_template(app, auth_data, users_db, ws_templat
         "templateUid": ws_templates[0]["uid"],
         "count": 1,
     }
-    response = await app.post(
+    response = await app_gql.post(
         "/felicity-gql",
         json={"query": add_gql, "variables": {**worksheet}},
         headers=auth_data["headers"],
@@ -171,7 +168,7 @@ async def test_add_worksheet_using_template(app, auth_data, users_db, ws_templat
     assert worksheet["analysisUid"] is not None
     assert worksheet["state"] == "empty"
 
-    job_response = await app.get("api/v1/jobs")
+    job_response = await app_gql.get("api/v1/jobs")
     logger.info(f"job response: {job_response} {job_response.json}")
 
     # process job for the next test
@@ -180,7 +177,7 @@ async def test_add_worksheet_using_template(app, auth_data, users_db, ws_templat
 
 @pytest.mark.asyncio
 @pytest.mark.order(72)
-async def test_get_worksheet_by_uid(app, auth_data, worksheets):
+async def test_get_worksheet_by_uid(app_gql, auth_data, worksheets):
     add_gql = """
       query getWorkSheetByUid($worksheetUid: String!) {
         worksheetByUid(worksheetUid: $worksheetUid) {
@@ -193,10 +190,7 @@ async def test_get_worksheet_by_uid(app, auth_data, worksheets):
           createdAt
           analyst {
             uid
-            auth{
-              uid
-              userName
-            }
+            userName
             firstName
             lastName
           }
@@ -227,9 +221,9 @@ async def test_get_worksheet_by_uid(app, auth_data, worksheets):
               uid
               name
             }
-            instrument {
+            laboratoryInstrument {
               uid
-              name
+              serialNumber
             }
             analysis {
               uid
@@ -273,7 +267,7 @@ async def test_get_worksheet_by_uid(app, auth_data, worksheets):
       }
     """
 
-    response = await app.post(
+    response = await app_gql.post(
         "/felicity-gql",
         json={"query": add_gql, "variables": {"worksheetUid": worksheets[0]["uid"]}},
         headers=auth_data["headers"],

@@ -4,7 +4,6 @@ from pydantic import BaseModel, ConfigDict, EmailStr
 
 from felicity.apps.common.schemas import BaseAuditModel
 
-
 #
 #  Laboratory
 #
@@ -89,6 +88,7 @@ class LaboratorySetting(LaboratorySettingBase):
 #  Department
 #
 
+
 # Shared properties
 class DepartmentBase(BaseModel):
     name: str = None
@@ -125,6 +125,7 @@ class DepartmentInDB(DepartmentInDBBase):
 #  Unit
 #
 
+
 # Shared properties
 class UnitBase(BaseModel):
     name: str = None
@@ -159,6 +160,7 @@ class UnitInDB(UnitInDBBase):
 #
 #  Supplier
 #
+
 
 # Shared properties
 class SupplierBase(BaseModel):
@@ -196,6 +198,7 @@ class SupplierInDB(SupplierInDBBase):
 #  Manufacturer
 #
 
+
 # Shared properties
 class ManufacturerBase(BaseModel):
     name: str = None
@@ -232,6 +235,7 @@ class ManufacturerInDB(ManufacturerInDBBase):
 # Country s
 #
 
+
 # Shared properties
 class CountryBase(BaseModel):
     name: str | None = None
@@ -267,6 +271,7 @@ class CountryInDB(CountryBaseInDB):
 #
 # Province s
 #
+
 
 # Shared properties
 class ProvinceBase(BaseModel):
@@ -311,6 +316,7 @@ class ProvinceInDB(ProvinceBaseInDB):
 #
 # District s
 #
+
 
 # Shared properties
 class DistrictBase(BaseModel):

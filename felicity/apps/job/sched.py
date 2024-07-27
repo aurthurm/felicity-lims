@@ -7,6 +7,7 @@ from felicity.apps.analysis.tasks import submit_results, verify_results
 from felicity.apps.analytics.tasks import generate_report
 from felicity.apps.impress.sample.tasks import (impress_results,
                                                 prepare_for_impress)
+from felicity.apps.job.enum import JobAction, JobCategory
 from felicity.apps.job.services import JobService
 from felicity.apps.shipment.tasks import (dispatch_shipment,
                                           populate_shipment_manually,
@@ -15,7 +16,6 @@ from felicity.apps.shipment.tasks import (dispatch_shipment,
                                           shipment_receive)
 from felicity.apps.worksheet.tasks import (populate_worksheet_plate,
                                            populate_worksheet_plate_manually)
-from felicity.apps.job.enum import JobAction, JobCategory
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

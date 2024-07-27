@@ -4,8 +4,8 @@ from sqlalchemy import Column, DateTime, ForeignKey, String
 from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.orm import relationship
 
-from felicity.apps.auditlog.mixin import AuditHistoryMixin
 from felicity.apps.abstract.entity import BaseEntity
+from felicity.apps.auditlog.mixin import AuditHistoryMixin
 
 
 class TrailMixin(object):

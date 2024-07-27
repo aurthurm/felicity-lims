@@ -9,10 +9,12 @@ from felicity.api.gql.permissions import IsAuthenticated
 from felicity.api.gql.storage import types
 from felicity.api.gql.types import OperationError
 from felicity.apps.analysis.enum import SampleState
-from felicity.apps.storage import  schemas
-from felicity.apps.storage.services import (StorageContainerService, StorageLocationService,
-    StorageSectionService, StoreRoomService)
 from felicity.apps.analysis.services.analysis import SampleService
+from felicity.apps.storage import schemas
+from felicity.apps.storage.services import (StorageContainerService,
+                                            StorageLocationService,
+                                            StorageSectionService,
+                                            StoreRoomService)
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -172,9 +174,7 @@ class StorageMutations:
             incoming[k] = v
 
         obj_in = schemas.StorageLocationCreate(**incoming)
-        storage_location = await StorageLocationService().create(
-            obj_in
-        )
+        storage_location = await StorageLocationService().create(obj_in)
         return types.StorageLocationType(**storage_location.marshal_simple())
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
@@ -187,9 +187,7 @@ class StorageMutations:
         if not uid:
             return OperationError(error="No uid provided to identity update obj")
 
-        storage_location = await StorageLocationService().get(
-            uid=uid
-        )
+        storage_location = await StorageLocationService().get(uid=uid)
         if not storage_location:
             return OperationError(
                 error=f"storage_location with uid {uid} not found. Cannot update obj ..."
@@ -206,7 +204,9 @@ class StorageMutations:
         setattr(storage_location, "updated_by_uid", felicity_user.uid)
 
         obj_in = schemas.StorageLocationUpdate(**storage_location.to_dict())
-        storage_location = await StorageLocationService().update(storage_location.uid, obj_in)
+        storage_location = await StorageLocationService().update(
+            storage_location.uid, obj_in
+        )
         return types.StorageLocationType(**storage_location.marshal_simple())
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
@@ -235,9 +235,7 @@ class StorageMutations:
             incoming[k] = v
 
         obj_in = schemas.StorageSectionCreate(**incoming)
-        storage_section = await StorageSectionService().create(
-            obj_in
-        )
+        storage_section = await StorageSectionService().create(obj_in)
         return types.StorageSectionType(**storage_section.marshal_simple())
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
@@ -250,9 +248,7 @@ class StorageMutations:
         if not uid:
             return OperationError(error="No uid provided to identity update obj")
 
-        storage_section = await StorageSectionService().get(
-            uid=uid
-        )
+        storage_section = await StorageSectionService().get(uid=uid)
         if not storage_section:
             return OperationError(
                 error=f"StorageSection with uid {uid} not found. Cannot update obj ..."
@@ -269,7 +265,9 @@ class StorageMutations:
         setattr(storage_section, "updated_by_uid", felicity_user.uid)
 
         obj_in = schemas.StorageSectionUpdate(**storage_section.to_dict())
-        storage_section = await StorageSectionService().update(storage_section.uid, obj_in)
+        storage_section = await StorageSectionService().update(
+            storage_section.uid, obj_in
+        )
         return types.StorageSectionType(**storage_section.marshal_simple())
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
@@ -293,11 +291,11 @@ class StorageMutations:
             incoming[k] = v
 
         obj_in = schemas.StorageContainerCreate(**incoming)
-        storage_container = (
-            await StorageContainerService().create(obj_in)
-        )
+        storage_container = await StorageContainerService().create(obj_in)
 
-        storage_container = await StorageContainerService().get(uid=storage_container.uid)
+        storage_container = await StorageContainerService().get(
+            uid=storage_container.uid
+        )
         return types.StorageContainerType(
             **storage_container.marshal_simple(exclude=["samples"])
         )
@@ -312,9 +310,7 @@ class StorageMutations:
         if not uid:
             return OperationError(error="No uid provided to identity update obj")
 
-        storage_container = await StorageContainerService().get(
-            uid=uid
-        )
+        storage_container = await StorageContainerService().get(uid=uid)
         if not storage_container:
             return OperationError(
                 error=f"StorageContainer with uid {uid} not found. Cannot update obj ..."
@@ -331,7 +327,9 @@ class StorageMutations:
         setattr(storage_container, "updated_by_uid", felicity_user.uid)
 
         obj_in = schemas.StorageContainerUpdate(**storage_container.to_dict())
-        storage_container = await StorageContainerService().update(storage_container.uid, obj_in)
+        storage_container = await StorageContainerService().update(
+            storage_container.uid, obj_in
+        )
         return types.StorageContainerType(
             **storage_container.marshal_simple(exclude=["samples"])
         )
@@ -357,9 +355,7 @@ class StorageMutations:
             samples = await SampleService().get_by_uids(
                 uids=[s.sample_uid for s in sample_data]
             )
-            container = await StorageContainerService().get(
-                uid=container_uid
-            )
+            container = await StorageContainerService().get(uid=container_uid)
 
             if len(samples) > container.slots:
                 return OperationError(
@@ -377,9 +373,9 @@ class StorageMutations:
                     "status": SampleState.STORED,
                     "stored_by_uid": felicity_user.uid,
                 }
-                await  SampleService.update(_sample.uid, obj_in=storage_object)
+                await SampleService.update(_sample.uid, obj_in=storage_object)
 
-            await  StorageContainerService().reset_stored_count(container.uid)
+            await StorageContainerService().reset_stored_count(container.uid)
 
         samples = await SampleService().get_by_uids(
             uids=[s.sample_uid for s in payload]

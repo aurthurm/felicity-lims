@@ -122,7 +122,7 @@
 #             before_cursor=before_cursor,
 #             filters=filters,
 #             sort_by=sort_by,
-#             get_related="analyses",
+#             get_related=["analyses"],
 #         )
 #
 #         total_count: int = page.total_count
@@ -224,7 +224,7 @@
 #             before_cursor=before_cursor,
 #             filters=filters,
 #             sort_by=sort_by,
-#             get_related="profiles",
+#             get_related=["profiles"],
 #         )
 #
 #         total_count: int = page.total_count
@@ -362,7 +362,7 @@
 #             before_cursor=before_cursor,
 #             filters=filters,
 #             sort_by=sort_by,
-#             get_related="sample",
+#             get_related=["sample"],
 #         )
 #
 #         total_count: int = page.total_count

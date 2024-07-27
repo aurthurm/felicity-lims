@@ -163,7 +163,7 @@ function FormManager(create: boolean, target: string, obj: IClient = {} as IClie
   targetItem.value = target;
   formTitle.value = (create ? "CREATE" : "EDIT") + " " + target.toUpperCase();
   if (target == "client") showClientModal.value = true;
-  if (create) {
+  if (Create, related: list[str] = None) {
     if (target == "client") Object.assign(client, {} as IClient);
   } else {
     if (target == "client") Object.assign(client, { ...obj });

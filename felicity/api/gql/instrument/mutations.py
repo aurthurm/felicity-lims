@@ -14,13 +14,18 @@ from felicity.api.gql.instrument.types import (CalibrationCertificateType,
                                                MethodType)
 from felicity.api.gql.permissions import IsAuthenticated
 from felicity.api.gql.types import OperationError
-from felicity.apps.instrument import schemas
-from felicity.apps.instrument.services import (CalibrationCertificateService,
-    InstrumentCalibrationService, InstrumentCompetenceService, InstrumentService,
-    InstrumentTypeService, LaboratoryInstrumentService, MethodService)
+from felicity.apps.analysis.entities.analysis import (analysis_instrument,
+                                                      analysis_method)
 from felicity.apps.analysis.services.analysis import AnalysisService
-from felicity.apps.analysis.entities.analysis import analysis_instrument, analysis_method
+from felicity.apps.instrument import schemas
 from felicity.apps.instrument.entities import method_instrument
+from felicity.apps.instrument.services import (CalibrationCertificateService,
+                                               InstrumentCalibrationService,
+                                               InstrumentCompetenceService,
+                                               InstrumentService,
+                                               InstrumentTypeService,
+                                               LaboratoryInstrumentService,
+                                               MethodService)
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -259,9 +264,7 @@ class InstrumentMutations:
             incoming[k] = v
 
         obj_in = schemas.InstrumentCompetenceCreate(**incoming)
-        instrument_competence = (
-            await InstrumentCompetenceService().create(obj_in)
-        )
+        instrument_competence = await InstrumentCompetenceService().create(obj_in)
         return InstrumentCompetenceType(**instrument_competence.marshal_simple())
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
@@ -305,9 +308,7 @@ class InstrumentMutations:
             incoming[k] = v
 
         obj_in = schemas.LaboratoryInstrumentCreate(**incoming)
-        laboratory_instrument = (
-            await LaboratoryInstrumentService().create(obj_in)
-        )
+        laboratory_instrument = await LaboratoryInstrumentService().create(obj_in)
         return LaboratoryInstrumentType(**laboratory_instrument.marshal_simple())
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
@@ -352,9 +353,7 @@ class InstrumentMutations:
             incoming[k] = v
 
         obj_in = schemas.InstrumentCalibrationCreate(**incoming)
-        calib = await InstrumentCalibrationService().create(
-            obj_in
-        )
+        calib = await InstrumentCalibrationService().create(obj_in)
         return InstrumentCalibrationType(**calib.marshal_simple())
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
@@ -380,7 +379,9 @@ class InstrumentMutations:
                     logger.warning(e)
 
         obj_in = schemas.InstrumentCalibrationUpdate(**caliberation.to_dict())
-        caliberation = await InstrumentCalibrationService().update(caliberation.uid, obj_in)
+        caliberation = await InstrumentCalibrationService().update(
+            caliberation.uid, obj_in
+        )
         return InstrumentCalibrationType(**caliberation.marshal_simple())
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
@@ -393,9 +394,7 @@ class InstrumentMutations:
             incoming[k] = v
 
         obj_in = schemas.CalibrationCertificateCreate(**incoming)
-        certificate = (
-            await CalibrationCertificateService().create(obj_in)
-        )
+        certificate = await CalibrationCertificateService().create(obj_in)
         return CalibrationCertificateType(**certificate.marshal_simple())
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
@@ -421,7 +420,9 @@ class InstrumentMutations:
                     logger.warning(e)
 
         obj_in = schemas.CalibrationCertificateUpdate(**certificate.to_dict())
-        certificate = await CalibrationCertificateService().update(certificate.uid, obj_in)
+        certificate = await CalibrationCertificateService().update(
+            certificate.uid, obj_in
+        )
         return CalibrationCertificateType(**certificate.marshal_simple())
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])

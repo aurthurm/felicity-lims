@@ -6,8 +6,8 @@ from felicity.api.gql.analytics import types
 from felicity.apps.analysis.entities.analysis import Sample
 from felicity.apps.analytics import SampleAnalyticsInit
 from felicity.apps.instrument.services import InstrumentService
-from felicity.utils import has_value_or_is_truthy
 from felicity.apps.user.services import UserService
+from felicity.utils import has_value_or_is_truthy
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

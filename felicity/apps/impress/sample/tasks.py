@@ -1,15 +1,15 @@
 import logging
 from typing import List
 
-from felicity.apps.analysis.enum import SampleState
 from felicity.apps.analysis.entities.analysis import Sample
+from felicity.apps.analysis.enum import SampleState
 from felicity.apps.impress.sample import utils
 from felicity.apps.job import entities as job_entities
 from felicity.apps.job import schemas as job_schemas
+from felicity.apps.job.enum import JobAction, JobCategory, JobState
 from felicity.apps.user import entities as user_entities
 from felicity.apps.user.entities import User
 from felicity.core.config import get_settings
-from felicity.apps.job.enum import JobAction, JobCategory, JobState
 
 settings = get_settings()
 logging.basicConfig(level=logging.INFO)

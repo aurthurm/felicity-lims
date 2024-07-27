@@ -1,4 +1,5 @@
 from uuid import uuid4
+
 from sqlalchemy import Boolean, Column, ForeignKey, String
 from sqlalchemy.orm import backref, relationship
 
@@ -62,7 +63,9 @@ class ClientContact(AbstractBaseUser):
         lazy="selectin",
     )
     # to be deleted later
-    user_name = Column(String, unique=True, index=True, nullable=False, default=uuid4().hex)
+    user_name = Column(
+        String, unique=True, index=True, nullable=False, default=uuid4().hex
+    )
     hashed_password = Column(String, nullable=False, default=uuid4().hex)
 
     @property

@@ -1,17 +1,19 @@
 import asyncio
 
-from felicity.apps.analysis.services.analysis import SampleService, AnalysisRequestService
-from felicity.apps.patient.services import PatientService
-from felicity.apps.setup.services import LaboratoryService
-from felicity.apps.shipment.services import ShippedSampleService, ShipmentService
 from felicity.apps.analysis.entities.analysis import Sample
+from felicity.apps.analysis.services.analysis import (AnalysisRequestService,
+                                                      SampleService)
 from felicity.apps.analysis.utils import get_last_verificator
 from felicity.apps.iol.fhir.schema import (BundleResource,
                                            DiagnosticReportResource,
                                            Identifier, PatientResource,
                                            Reference, ServiceRequestResource,
                                            SpecimenResource)
+from felicity.apps.patient.services import PatientService
+from felicity.apps.setup.services import LaboratoryService
 from felicity.apps.shipment.entities import Shipment, ShippedSample
+from felicity.apps.shipment.services import (ShipmentService,
+                                             ShippedSampleService)
 from felicity.core.dtz import format_datetime
 
 
@@ -20,7 +22,7 @@ def one_of_else(of: list, one: str, default=None):
 
 
 async def get_diagnostic_report_resource(
-        service_request_uid: str, obs_uids=None, for_referral=False
+    service_request_uid: str, obs_uids=None, for_referral=False
 ) -> DiagnosticReportResource | None:
     sample_service = SampleService()
     analysis_request_service = AnalysisRequestService()
@@ -67,9 +69,9 @@ async def get_diagnostic_report_resource(
                         "identifier": {
                             "use": "official",
                             "type": {"text": "Full Name"},
-                            "value": last_verificator.full_name
-                            if last_verificator
-                            else None,
+                            "value": (
+                                last_verificator.full_name if last_verificator else None
+                            ),
                         },
                         "display": "Reviewer",
                     },
@@ -162,9 +164,9 @@ async def get_diagnostic_report_resource(
         "performer": [
             {
                 "type": "Analyst",
-                "display": sample.submitted_by.full_name
-                if sample.submitted_by
-                else None,
+                "display": (
+                    sample.submitted_by.full_name if sample.submitted_by else None
+                ),
             }
         ],
         "resultsInterpreter": [
@@ -207,9 +209,11 @@ async def get_patient_resource(patient_id: str) -> PatientResource | None:
                 "given": [patient.first_name],
             }
         ],
-        "telecom": [{"system": "phone", "value": patient.phone_mobile, "use": "mobile"}]
-        if patient.phone_mobile
-        else [],
+        "telecom": (
+            [{"system": "phone", "value": patient.phone_mobile, "use": "mobile"}]
+            if patient.phone_mobile
+            else []
+        ),
         "gender": one_of_else(["male", "female", "other"], patient.gender, "unknown"),
         "birthDate": format_datetime(patient.date_of_birth, with_time=False),
         "managingOrganization": {
@@ -355,6 +359,7 @@ async def get_shipment_bundle_resource(shipment_uid: str) -> BundleResource | No
         ],
     }
     return BundleResource(**bundle_vars)
+
 
 # https://cloud.google.com/healthcare-api/docs/how-tos/fhir-bundles
 # the return type of a bundle must also be a bundle of response type

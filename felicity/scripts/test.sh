@@ -4,5 +4,5 @@ set -e
 set -x
 
 export TESTING=True
-pytest tests --asyncio-mode=strict "${@}"
+pytest felicity --asyncio-mode=strict "${@}"
 export TESTING=False

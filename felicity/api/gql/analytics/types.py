@@ -9,19 +9,19 @@ from felicity.api.gql.user.types import UserType
 
 @strawberry.type
 class Nothing:
-    data: str | None
+    data: str | None = None
 
 
 @strawberry.type
 class GroupCount:
     group: str
-    count: int | None
+    count: int | None = None
 
 
 @strawberry.type
 class GroupData:
     group: str
-    counts: Optional[List[GroupCount]]
+    counts: Optional[List[GroupCount]] = None
 
 
 @strawberry.type
@@ -36,19 +36,19 @@ class GroupedData:
 
 @strawberry.type
 class ProcessCounts:
-    total_samples: int | None
-    total_late: int | None
-    total_not_late: int | None
-    process_average: int | None
-    avg_extra_days: int | None
+    total_samples: int | None = None
+    total_late: int | None = None
+    total_not_late: int | None = None
+    process_average: int | None = None
+    avg_extra_days: int | None = None
     service: str | None = None
 
 
 @strawberry.type
 class ProcessData:
     process: str
-    counts: Optional[ProcessCounts]
-    groups: Optional[List[ProcessCounts]]
+    counts: Optional[ProcessCounts] = None
+    groups: Optional[List[ProcessCounts]] = None
 
 
 @strawberry.type
@@ -58,10 +58,10 @@ class ProcessStatistics:
 
 @strawberry.type
 class LaggardCounts:
-    lessThanTen: int | None
-    tenToTwenty: int | None
-    twentyToThirty: int | None
-    graterThanThirty: int | None
+    lessThanTen: int | None = None
+    tenToTwenty: int | None = None
+    twentyToThirty: int | None = None
+    graterThanThirty: int | None = None
     #
     total_incomplete: int | None = None
     total_delayed: int | None = None
@@ -71,7 +71,7 @@ class LaggardCounts:
 @strawberry.type
 class LaggardData:
     category: str
-    counts: Optional[LaggardCounts]
+    counts: Optional[LaggardCounts] = None
 
 
 @strawberry.type
@@ -85,15 +85,15 @@ class ReportMetaType:
     period_start: datetime
     period_end: datetime
     date_column: str
-    location: str | None
-    sample_states: str | None
+    location: str | None = None
+    sample_states: str | None = None
     report_type: str
-    status: str | None
-    temp: str | None
-    analyses: Optional[List[AnalysisType]]
-    created_at: str | None
-    created_by_uid: str | None
-    created_by: UserType | None
-    updated_at: str | None
-    updated_by_uid: str | None
-    updated_by: UserType | None
+    status: str | None = None
+    temp: str | None = None
+    analyses: Optional[List[AnalysisType]] = None
+    created_at: str | None = None
+    created_by_uid: str | None = None
+    created_by: UserType | None = None
+    updated_at: str | None = None
+    updated_by_uid: str | None = None
+    updated_by: UserType | None = None

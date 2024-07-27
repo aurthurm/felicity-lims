@@ -8,7 +8,7 @@
 #
 # @pytest.mark.asyncio
 # @pytest.mark.order(310)
-# async def test_add_stock_item(app, auth_data):
+# async def test_add_stock_item(app_gql, auth_data):
 #     add_stock_category_mutation = """
 #       mutation AddStockCategory($payload: StockCategoryInputType!){
 #           createStockCategory(payload: $payload) {
@@ -25,7 +25,7 @@
 #     """
 #
 #     stock_category = {"name": "Consumables", "description": "Consumables"}
-#     response = await app.post(
+#     response = await app_gql.post(
 #         "/felicity-gql",
 #         json={
 #             "query": add_stock_category_mutation,
@@ -45,7 +45,7 @@
 #
 # @pytest.mark.asyncio
 # @pytest.mark.order(311)
-# async def test_add_hazar(app, auth_data):
+# async def test_add_hazar(app_gql, auth_data):
 #     add_hazard_mutation = """
 #       mutation AddHazard($payload: HazardInputType!){
 #           createHazard(payload: $payload) {
@@ -62,7 +62,7 @@
 #     """
 #
 #     hazard = {"name": "Caution", "description": "Caution hazard"}
-#     response = await app.post(
+#     response = await app_gql.post(
 #         "/felicity-gql",
 #         json={"query": add_hazard_mutation, "variables": {"payload": hazard}},
 #         headers=auth_data["headers"],
@@ -79,7 +79,7 @@
 #
 # @pytest.mark.asyncio
 # @pytest.mark.order(312)
-# async def test_add_stock_unit(app, auth_data):
+# async def test_add_stock_unit(app_gql, auth_data):
 #     add_stock_unit_mutation = """
 #       mutation AddStockUnit($payload: StockUnitInputType!){
 #           createStockUnit(payload: $payload) {
@@ -97,7 +97,7 @@
 #     stock_unit = {
 #         "name": "ml",
 #     }
-#     response = await app.post(
+#     response = await app_gql.post(
 #         "/felicity-gql",
 #         json={"query": add_stock_unit_mutation, "variables": {"payload": stock_unit}},
 #         headers=auth_data["headers"],
@@ -113,7 +113,7 @@
 #
 # @pytest.mark.asyncio
 # @pytest.mark.order(313)
-# async def test_add_stock_packaging(app, auth_data):
+# async def test_add_stock_packaging(app_gql, auth_data):
 #     add_stock_packaging_mutation = """
 #       mutation AddStockPackaging($payload: StockPackagingInputType!){
 #           createStockPackaging(payload: $payload) {
@@ -131,7 +131,7 @@
 #     stock_packaging = {
 #         "name": "container",
 #     }
-#     response = await app.post(
+#     response = await app_gql.post(
 #         "/felicity-gql",
 #         json={
 #             "query": add_stock_packaging_mutation,
@@ -156,7 +156,7 @@
 #
 # @pytest.mark.asyncio
 # @pytest.mark.order(310)
-# async def test_add_stock_item(app, auth_data):
+# async def test_add_stock_item(app_gql, auth_data):
 #     add_stock_category_mutation = """
 #       mutation AddStockCategory($payload: StockCategoryInputType!){
 #           createStockCategory(payload: $payload) {
@@ -173,7 +173,7 @@
 #     """
 #
 #     stock_category = {"name": "Consumables", "description": "Consumables"}
-#     response = await app.post(
+#     response = await app_gql.post(
 #         "/felicity-gql",
 #         json={
 #             "query": add_stock_category_mutation,
@@ -193,7 +193,7 @@
 #
 # @pytest.mark.asyncio
 # @pytest.mark.order(311)
-# async def test_add_hazar(app, auth_data):
+# async def test_add_hazar(app_gql, auth_data):
 #     add_hazard_mutation = """
 #       mutation AddHazard($payload: HazardInputType!){
 #           createHazard(payload: $payload) {
@@ -210,7 +210,7 @@
 #     """
 #
 #     hazard = {"name": "Caution", "description": "Caution hazard"}
-#     response = await app.post(
+#     response = await app_gql.post(
 #         "/felicity-gql",
 #         json={"query": add_hazard_mutation, "variables": {"payload": hazard}},
 #         headers=auth_data["headers"],
@@ -227,7 +227,7 @@
 #
 # @pytest.mark.asyncio
 # @pytest.mark.order(312)
-# async def test_add_stock_unit(app, auth_data):
+# async def test_add_stock_unit(app_gql, auth_data):
 #     add_stock_unit_mutation = """
 #       mutation AddStockUnit($payload: StockUnitInputType!){
 #           createStockUnit(payload: $payload) {
@@ -245,7 +245,7 @@
 #     stock_unit = {
 #         "name": "ml",
 #     }
-#     response = await app.post(
+#     response = await app_gql.post(
 #         "/felicity-gql",
 #         json={"query": add_stock_unit_mutation, "variables": {"payload": stock_unit}},
 #         headers=auth_data["headers"],
@@ -261,7 +261,7 @@
 #
 # @pytest.mark.asyncio
 # @pytest.mark.order(313)
-# async def test_add_stock_packaging(app, auth_data):
+# async def test_add_stock_packaging(app_gql, auth_data):
 #     add_stock_packaging_mutation = """
 #       mutation AddStockPackaging($payload: StockPackagingInputType!){
 #           createStockPackaging(payload: $payload) {
@@ -279,7 +279,7 @@
 #     stock_packaging = {
 #         "name": "container",
 #     }
-#     response = await app.post(
+#     response = await app_gql.post(
 #         "/felicity-gql",
 #         json={
 #             "query": add_stock_packaging_mutation,

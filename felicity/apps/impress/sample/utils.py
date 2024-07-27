@@ -5,8 +5,8 @@ from typing import List
 from felicity.apps.analysis.entities.analysis import Sample
 from felicity.apps.analysis.enum import SampleState
 from felicity.apps.common.utils.serializer import marshaller
-from felicity.apps.impress.sample.engine import FelicityImpress
 from felicity.apps.impress.entities import ReportImpress
+from felicity.apps.impress.sample.engine import FelicityImpress
 from felicity.apps.impress.sample.schemas import ReportImpressCreate
 from felicity.apps.setup.caches import get_laboratory
 from felicity.utils import remove_circular_refs

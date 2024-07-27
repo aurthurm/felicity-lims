@@ -22,7 +22,7 @@
 #
 # @pytest.mark.asyncio
 # @pytest.mark.order(330)
-# async def test_stock_adjustments(app, auth_data):
+# async def test_stock_adjustments(app_gql, auth_data):
 #     add_stock_adjustment_mutation = """
 #       mutation AddStockAdjustment($payload: StockAdjustmentInputType!){
 #           createStockAdjustment(payload: $payload) {
@@ -44,7 +44,7 @@
 #         "adjustmentType": "lost",
 #         "remarks": "These items were lost",
 #     }
-#     response = await app.post(
+#     response = await app_gql.post(
 #         "/felicity-gql",
 #         json={
 #             "query": add_stock_adjustment_mutation,
@@ -61,7 +61,7 @@
 #     assert data["adjust"] == stock_adjustment["adjust"]
 #     assert data["adjustmentType"] == stock_adjustment["adjustmentType"]
 #
-#     stocks_response = await app.post(
+#     stocks_response = await app_gql.post(
 #         "/felicity-gql",
 #         json={
 #             "query": get_all_stocks_product_query,
@@ -86,7 +86,7 @@
 #         "adjustmentType": "transfer in",
 #         "remarks": "Recovered property",
 #     }
-#     new_response = await app.post(
+#     new_response = await app_gql.post(
 #         "/felicity-gql",
 #         json={
 #             "query": add_stock_adjustment_mutation,
@@ -105,7 +105,7 @@
 #     assert new_data["adjust"] == new_stock_adjustment["adjust"]
 #     assert new_data["adjustmentType"] == new_stock_adjustment["adjustmentType"]
 #
-#     new_stocks_response = await app.post(
+#     new_stocks_response = await app_gql.post(
 #         "/felicity-gql",
 #         json={
 #             "query": get_all_stocks_product_query,
@@ -124,7 +124,7 @@
 #
 # @pytest.mark.asyncio
 # @pytest.mark.order(331)
-# async def test_stock_transaction(app, auth_data):
+# async def test_stock_transaction(app_gql, auth_data):
 #     add_stock_transaction_mutation = """
 #       mutation AddStockTransaction($payload: StockTransactionInputType!){
 #           createStockTransaction(payload: $payload) {
@@ -144,7 +144,7 @@
 #         "productUid": 1,
 #         "issued": 5,
 #     }
-#     response = await app.post(
+#     response = await app_gql.post(
 #         "/felicity-gql",
 #         json={
 #             "query": add_stock_transaction_mutation,
@@ -160,7 +160,7 @@
 #     assert data["uid"] is not None
 #     assert data["issued"] == stock_transaction["issued"]
 #
-#     stocks_response = await app.post(
+#     stocks_response = await app_gql.post(
 #         "/felicity-gql",
 #         json={
 #             "query": get_all_stocks_product_query,

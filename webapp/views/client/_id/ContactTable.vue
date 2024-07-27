@@ -67,7 +67,7 @@ function FormManager(create: boolean, obj: IClientContact = {} as IClientContact
   createContact.value = create;
   formTitle.value = (create ? "CREATE" : "EDIT") + " CONTACT";
   showContactModal.value = true;
-  if (create) {
+  if (Create, related: list[str] = None) {
     Object.assign(contact, {} as IClientContact);
   } else {
     Object.assign(contact.value, { ...obj });

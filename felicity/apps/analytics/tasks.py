@@ -5,11 +5,12 @@ import pandas as pd
 
 from felicity.apps.analysis.entities.analysis import Sample
 from felicity.apps.analytics import EntityAnalyticsInit
-from felicity.apps.analytics.services import ReportMetaService
-from felicity.apps.job.services import JobService
-from felicity.apps.notification.services import ActivityStreamService, NotificationService
-from felicity.apps.job.enum import JobState
 from felicity.apps.analytics.enum import ReportState
+from felicity.apps.analytics.services import ReportMetaService
+from felicity.apps.job.enum import JobState
+from felicity.apps.job.services import JobService
+from felicity.apps.notification.services import (ActivityStreamService,
+                                                 NotificationService)
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -48,7 +49,9 @@ async def generate_report(job_uid: str) -> bool:
         file_name = report.temp + ".csv"
     except Exception as e:  # noqa
         await job_service.change_status(job.uid, new_status=JobState.FAILED)
-        await report_meta_service.set_final(report.uid, location=None, status=ReportState.FAILED)
+        await report_meta_service.set_final(
+            report.uid, location=None, status=ReportState.FAILED
+        )
         await notification_service.notify(
             f"Error encountered: Failed to save generated {report.report_type} report: {e}",
             report.created_by,
@@ -60,7 +63,9 @@ async def generate_report(job_uid: str) -> bool:
     file_path = Path(file_name)
     if not file_path.is_file():
         await job_service.change_status(job.uid, new_status=JobState.FAILED)
-        await report_meta_service.set_final(report.uid, status=ReportState.FAILED, location=None)
+        await report_meta_service.set_final(
+            report.uid, status=ReportState.FAILED, location=None
+        )
         await notification_service.notify(
             f"File access error: Failed to access generated {report.report_type} report",
             report.created_by,
@@ -68,13 +73,18 @@ async def generate_report(job_uid: str) -> bool:
         return False
 
     await job_service.change_status(job.uid, new_status=JobState.FINISHED)
-    await report_meta_service.set_final(report.uid, location=file_name, status=ReportState.READY)
+    await report_meta_service.set_final(
+        report.uid, location=file_name, status=ReportState.READY
+    )
     await notification_service.notify(
         f"Your {report.report_type} report was successfully generated",
         report.created_by,
     )
-    await activity_stream_service.stream(report, report.created_by, "generated", "report")
+    await activity_stream_service.stream(
+        report, report.created_by, "generated", "report"
+    )
     return True
+
 
 # # Convert DataFrame to a buffer (StringIO)
 # buffer = StringIO()

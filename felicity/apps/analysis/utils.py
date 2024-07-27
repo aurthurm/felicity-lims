@@ -5,35 +5,43 @@ from typing import List
 from sqlalchemy import or_
 
 from felicity.apps.analysis import schemas
-from felicity.apps.analysis.enum import ResultState, SampleState
 from felicity.apps.analysis.entities.analysis import SampleType
-from felicity.apps.analysis.entities.results import (AnalysisResult, result_verification)
+from felicity.apps.analysis.entities.results import (AnalysisResult,
+                                                     result_verification)
+from felicity.apps.analysis.enum import ResultState, SampleState
+from felicity.apps.analysis.services.analysis import (AnalysisService,
+                                                      ProfileService,
+                                                      SampleService,
+                                                      SampleTypeService)
+from felicity.apps.analysis.services.result import (AnalysisResultService,
+                                                    ResultMutationService)
 from felicity.apps.billing.enum import DiscountType, DiscountValueType
 from felicity.apps.billing.schemas import (AnalysisDiscountCreate,
                                            AnalysisPriceCreate,
                                            ProfileDiscountCreate,
                                            ProfilePriceCreate)
-from felicity.apps.job.enum import JobPriority, JobState, JobCategory, JobAction
+from felicity.apps.billing.services import (AnalysisDiscountService,
+                                            AnalysisPriceService,
+                                            ProfileDiscountService,
+                                            ProfilePriceService)
+from felicity.apps.job.enum import (JobAction, JobCategory, JobPriority,
+                                    JobState)
 from felicity.apps.job.schemas import JobCreate
+from felicity.apps.job.services import JobService
 from felicity.apps.notification.services import ActivityStreamService
 from felicity.apps.reflex.services import ReflexEngineService
-from felicity.apps.user.entities import User
-from felicity.utils import has_value_or_is_truthy
-from felicity.apps.analysis.services.analysis import (AnalysisService, ProfileService,
-    SampleService, SampleTypeService)
-from felicity.apps.analysis.services.result import AnalysisResultService, ResultMutationService
-from felicity.apps.user.services import UserService
 from felicity.apps.shipment.services import ShippedSampleService
+from felicity.apps.user.entities import User
+from felicity.apps.user.services import UserService
 from felicity.apps.worksheet.services import WorkSheetService
-from felicity.apps.job.services import JobService
-from felicity.apps.billing.services import (AnalysisDiscountService, AnalysisPriceService,
-    ProfileDiscountService, ProfilePriceService)
+from felicity.utils import has_value_or_is_truthy
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
 QC_SAMPLE = {"name": "QC Sample", "description": "QC Sample", "abbr": "QCS"}
+
 
 async def get_qc_sample_type() -> SampleType:
     st_service = SampleTypeService()
@@ -57,7 +65,9 @@ async def get_last_verificator(result_uid: str) -> User | None:
     return await user_service.get(uid=data[-1])
 
 
-async def sample_search(model, status: str, text: str, client_uid: str) -> list[SampleType]:
+async def sample_search(
+    model, status: str, text: str, client_uid: str
+) -> list[SampleType]:
     """No pagination"""
     sample_service = SampleService()
 
@@ -88,7 +98,9 @@ async def sample_search(model, status: str, text: str, client_uid: str) -> list[
     return await sample_service.filter(filters=filters, sort_attrs=["uid"])
 
 
-async def retest_from_result_uids(uids: list[str], user: User) -> tuple[list[AnalysisResult], list[AnalysisResult]]:
+async def retest_from_result_uids(
+    uids: list[str], user: User
+) -> tuple[list[AnalysisResult], list[AnalysisResult]]:
     analysis_result_service = AnalysisResultService()
 
     originals: list[AnalysisResult] = []
@@ -99,7 +111,8 @@ async def retest_from_result_uids(uids: list[str], user: User) -> tuple[list[Ana
         if not a_result:
             raise Exception(f"AnalysisResult with uid {_ar_uid} not found")
 
-        _retest, a_result = await a_result.retest_result(
+        _retest, a_result = await analysis_result_service.retest_result(
+            a_result.uid,
             retested_by=user, next_action="verify"
         )
         if _retest:
@@ -108,9 +121,13 @@ async def retest_from_result_uids(uids: list[str], user: User) -> tuple[list[Ana
     return retests, originals
 
 
-async def results_submitter(analysis_results: List[dict], submitter: User) -> list[AnalysisResult]:
+async def results_submitter(
+    analysis_results: List[dict], submitter: User
+) -> list[AnalysisResult]:
     analysis_result_service = AnalysisResultService()
     activity_stream_service = ActivityStreamService()
+    sample_service = SampleService()
+    worksheet_service = WorkSheetService()
 
     return_results: list[AnalysisResult] = []
 
@@ -143,12 +160,7 @@ async def results_submitter(analysis_results: List[dict], submitter: User) -> li
             # set submitter ad date_submitted
             setattr(a_result, "submitted_by_uid", submitter.uid)
             setattr(a_result, "date_submitted", datetime.now())
-
-            # set updated_by
-            try:
-                setattr(a_result, "updated_by_uid", submitter.uid)
-            except AttributeError:
-                pass
+            setattr(a_result, "updated_by_uid", submitter.uid)
 
         a_result_in = schemas.AnalysisResultUpdate(**a_result.to_dict())
         a_result = await analysis_result_service.update(a_result.uid, a_result_in)
@@ -157,7 +169,9 @@ async def results_submitter(analysis_results: List[dict], submitter: User) -> li
         await result_mutator(a_result)
 
         if a_result.status == ResultState.RESULTED:
-            await activity_stream_service.stream(a_result, submitter, "submitted", "result")
+            await activity_stream_service.stream(
+                a_result, submitter, "submitted", "result"
+            )
 
         # # Do Reflex Testing
         # logger.info(f"ReflexUtil .... running")
@@ -165,12 +179,10 @@ async def results_submitter(analysis_results: List[dict], submitter: User) -> li
         # logger.info(f"ReflexUtil .... done")
 
         # try to submit sample
-        if a_result.sample:
-            await a_result.sample.submit(submitted_by=submitter)
+        await sample_service.submit(a_result.sample_uid, submitted_by=submitter)
 
         # try to submit associated worksheet
-        if a_result.worksheet_uid:
-            await a_result.worksheet.submit(submitter=submitter)
+        await worksheet_service.submit(a_result.worksheet_uid, submitter=submitter)
 
         return_results.append(a_result)
     return return_results
@@ -192,7 +204,9 @@ async def verify_from_result_uids(uids: list[str], user: User) -> list[AnalysisR
         # No Empty Results
         status = getattr(a_result, "status", None)
         if status in [ResultState.RESULTED, ResultState.APPROVING]:
-            _, a_result = await analysis_result_service.verify(a_result.uid, verifier_uid=user.uid)
+            _, a_result = await analysis_result_service.verify(
+                a_result.uid, verifier=user
+            )
             to_return.append(a_result)
         else:
             continue
@@ -205,11 +219,13 @@ async def verify_from_result_uids(uids: list[str], user: User) -> list[AnalysisR
         # try to verify associated sample
         sample_verified = False
         if a_result.sample:
-            sample_verified, _ = await sample_service.verify(a_result.sample.uid, verified_by=user)
+            sample_verified, _ = await sample_service.verify(
+                a_result.sample_uid, verified_by=user
+            )
 
         # try to submit associated worksheet
         if a_result.worksheet_uid:
-            await worksheet_service.verify(a_result.worksheet.uid, verified_by=user)
+            await worksheet_service.verify(a_result.worksheet_uid, verified_by=user)
 
         # If referral then send results and mark sample as published
         shipped = await shipped_sample_service.get(sample_uid=a_result.sample_uid)
@@ -242,13 +258,16 @@ async def verify_from_result_uids(uids: list[str], user: User) -> list[AnalysisR
                 await job_service.create(job_schema)
 
                 # 2. mark sample as published
-                await  sample_service.change_status(a_result.sample.uid, SampleState.PUBLISHED)
+                await sample_service.change_status(
+                    a_result.sample_uid, SampleState.PUBLISHED
+                )
 
     return to_return
 
 
 async def result_mutator(result: AnalysisResult) -> None:
     result_mutation_service = ResultMutationService()
+    analysis_result_service = AnalysisResultService()
 
     result_in = result.result
 
@@ -261,8 +280,8 @@ async def result_mutator(result: AnalysisResult) -> None:
         # Correction factor
         for cf in correction_factors:
             if (
-                    cf.instrument_uid == result.laboratory_instrument_uid
-                    and cf.method_uid == result.method_uid
+                cf.instrument_uid == result.laboratory_instrument_uid
+                and cf.method_uid == result.method_uid
             ):
                 await result_mutation_service.create(
                     obj_in={
@@ -365,14 +384,14 @@ async def result_mutator(result: AnalysisResult) -> None:
                 result.result = spec.warn_report
 
     if result_in != result.result:
-        result = await result.save_async()
+        result = await analysis_result_service.save(result)
 
 
 async def billing_setup_profiles(profile_uids: list[str] = None) -> None:
     profile_service = ProfileService()
     profile_price_service = ProfilePriceService()
     profile_discount_service = ProfileDiscountService()
-    
+
     if profile_uids:
         profiles = await profile_service.get_by_uids(profile_uids)
     else:

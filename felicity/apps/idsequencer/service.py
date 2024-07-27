@@ -7,11 +7,9 @@ from felicity.apps.idsequencer.exception import IncompleDataError
 from felicity.apps.idsequencer.repository import IdSequenceRepository
 from felicity.apps.idsequencer.utils import sequence_alpha, sequencer
 
-
 IdSequence = TypeVar("IdSequence")
 SEQUENCE_BEGIN = 5
 SEQUENCE_CUTOFF = 10
-
 
 
 class IdSequenceService(BaseService[IdSequence, Dummy, Dummy]):

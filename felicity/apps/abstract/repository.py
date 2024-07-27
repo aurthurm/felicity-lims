@@ -1,24 +1,52 @@
-from typing import Generic, TypeVar, Any, List, AsyncIterator, Optional
+from typing import Any, AsyncIterator, Generic, List, Optional, TypeVar
 
-from sqlalchemy import or_ as sa_or_
-from sqlalchemy import select
-from sqlalchemy import update
-from sqlalchemy.orm import DeclarativeBase
+from sqlalchemy import inspect, or_ as sa_or_
+from sqlalchemy import select, update
+from sqlalchemy.orm import selectinload
 from sqlalchemy.sql import func
 from sqlalchemy.sql.expression import bindparam
 
 from felicity.apps.common.utils.serializer import marshaller
-from felicity.database.paging import (
-    PageCursor, EdgeNode, PageInfo
-)
-from felicity.database.queryset import (
-    QueryBuilder,
-    settable_attributes,
-    smart_query,
-)
+from felicity.database.paging import EdgeNode, PageCursor, PageInfo
 from felicity.database.session import async_session
+from felicity.apps.abstract.entity import BaseEntity
 
-M = TypeVar("M", bound=DeclarativeBase)
+M = TypeVar("M", bound=BaseEntity)
+
+
+
+def apply_nested_loader_options(stmt, model, path):
+    """
+    Applies loader options to nested relationships based on a dot-separated path.
+
+    :param stmt: The SQLAlchemy query object.
+    :param model: The base model from which to start applying loader options.
+    :param path: A dot-separated string representing the nested relationship path.
+    :param loader_option: The loader option function (e.g., selectinload, joinedload).
+    :return: The modified query with loader options applied to nested relationships.
+
+    select(Order).options(
+        selectinload(Order.items).selectinload(Item.keywords)
+    )
+    """
+    load_option = None
+    current_model = model
+
+    for attr in path.split("."):
+        if load_option is None:
+            load_option = selectinload(getattr(current_model, attr))
+            current_option = load_option
+        else:
+            next_option = selectinload(getattr(current_model, attr))
+            current_option = current_option.options(next_option)
+            current_option = next_option
+        
+        # Update the current model to the next model in the relationship path
+        current_model = inspect(current_model).relationships[attr].mapper.class_
+
+    
+    return stmt.options(load_option)
+
 
 
 class BaseRepository(Generic[M]):
@@ -27,24 +55,15 @@ class BaseRepository(Generic[M]):
 
     def __init__(self, model: M) -> None:
         self.model = model
-        self.queryset = QueryBuilder(model=self.model)
-
-    @staticmethod
-    def fill(m: M, **kwargs):
-        for name in kwargs.keys():
-            if name in settable_attributes(m):
-                setattr(m, name, kwargs[name])
-            else:
-                raise KeyError("Attribute '{}' doesn't exist".format(name))
-        return m
 
     async def save(self, m: M) -> M:
         async with self.async_session() as session:
             try:
-                try:
-                    session.add(m)
-                except Exception:
-                    session.merge(m)
+                session.add(m)
+                # try:
+                #     session.add(m)
+                # except Exception:
+                #     await session.merge(m)
                 await session.flush()
                 await session.commit()
             except Exception:
@@ -64,19 +83,19 @@ class BaseRepository(Generic[M]):
         return items
 
     async def create(self, **kwargs) -> M:
-        filled = self.fill(self.model, **kwargs)
+        filled = self.model.fill(self.model(), **kwargs)
         return await self.save(filled)
 
     async def bulk_create(self, bulk: list[dict]) -> list[M]:
         to_save = []
         for data in bulk:
-            fill = await self.fill(self.model, **data)
+            fill = self.model.fill(self.model(), **data)
             to_save.append(fill)
         return await self.save_all(to_save)
 
     async def update(self, uid: str, **data) -> M:
         item = await self.get(uid=uid)
-        filled = self.fill(item, **data)
+        filled = self.model.fill(item, **data)
         return await self.save(filled)
 
     async def bulk_update_where(self, update_data: list[dict], filters: dict):
@@ -85,7 +104,7 @@ class BaseRepository(Generic[M]):
         @param filters is a dict of filter values.
         e.g [{'uid': 34, update_values}, ...]
         """
-        query = smart_query(query=update(self.model), filters=filters)
+        query = self.model.smart_query(query=update(self.model), filters=filters)
         stmt = query.values(update_data).execution_options(synchronize_session="fetch")
 
         async with self.async_session() as session:
@@ -103,7 +122,7 @@ class BaseRepository(Generic[M]):
         if len(mappings) == 0:
             return
 
-        to_update = [marshaller(data) for data in mappings]
+        to_update = mappings # [marshaller(data) for data in mappings]
         for item in to_update:
             item["_uid"] = item["uid"]
 
@@ -145,14 +164,14 @@ class BaseRepository(Generic[M]):
         return results.unique().scalars().all()  # , results.keys()
 
     async def get(self, **kwargs) -> M:
-        stmt = self.queryset.where(**kwargs)
+        stmt = self.model.where(**kwargs)
         async with self.async_session() as session:
             results = await session.execute(stmt)
             found = results.scalars().first()
         return found
 
     async def get_all(self, **kwargs) -> list[M]:
-        stmt = self.queryset.where(**kwargs)
+        stmt = self.model.where(**kwargs)
         async with self.async_session() as session:
             results = await session.execute(stmt)
             found = results.scalars().all()
@@ -166,7 +185,7 @@ class BaseRepository(Generic[M]):
     async def all_by_page(self, page: int = 1, limit: int = 20, **kwargs) -> dict:
         start = (page - 1) * limit
 
-        stmt = self.queryset.where(**kwargs).limit(limit).offset(start)
+        stmt = self.model.where(**kwargs).limit(limit).offset(start)
         async with self.async_session() as session:
             results = await session.execute(stmt)
         found = results.scalars().all()
@@ -179,7 +198,7 @@ class BaseRepository(Generic[M]):
         return results.scalars().all()
 
     async def get_related(
-            self, related: Optional[list] = None, many: bool = False, **kwargs
+        self, related: Optional[list[str]] = None, many: bool = False, **kwargs
     ):
         """Return the first value in database based on given args."""
         try:
@@ -192,12 +211,10 @@ class BaseRepository(Generic[M]):
         except KeyError:
             pass
 
-        stmt = self.queryset.where(**kwargs)
+        stmt = self.model.where(**kwargs)
         if related:
-            # print(related)
-            # keys = [self.model[key] for key in related]
-            # stmt.options(selectinload(keys))
-            ...
+            for key in related:
+                stmt =  stmt.options(selectinload(getattr(self.model, key)))
 
         async with self.async_session() as session:
             results = await session.execute(stmt)
@@ -250,7 +267,7 @@ class BaseRepository(Generic[M]):
         :return: int
         """
         # filter_stmt = smart_query(query=select(self), filters=filters) noqa
-        filter_stmt = self.queryset.smart_query(filters=filters)
+        filter_stmt = self.model.smart_query(filters=filters)
         count_stmt = select(func.count(filter_stmt.c.uid)).select_from(filter_stmt)
         async with self.async_session() as session:
             res = await session.execute(count_stmt)
@@ -272,16 +289,16 @@ class BaseRepository(Generic[M]):
         return list(combined)
 
     async def filter(
-            self,
-            filters: list[dict],
-            sort_attrs: list[str] | None = None,
-            limit: int | None = None,
-            either: bool = False,
+        self,
+        filters: list[dict],
+        sort_attrs: list[str] | None = None,
+        limit: int | None = None,
+        either: bool = False,
     ) -> list[M]:
         if either:
             filters = {sa_or_: filters}
 
-        stmt = self.queryset.smart_query(filters, sort_attrs)
+        stmt = self.model.smart_query(filters, sort_attrs)
         if limit:
             stmt = stmt.limit(limit)
         async with self.async_session() as session:
@@ -290,13 +307,13 @@ class BaseRepository(Generic[M]):
         return found
 
     async def paginate(
-            self,
-            page_size: int | None,
-            after_cursor: str | None,
-            before_cursor: str | None,
-            filters: dict | list[dict] | None,
-            sort_by: list[str] | None,
-            **kwargs,
+        self,
+        page_size: int | None,
+        after_cursor: str | None,
+        before_cursor: str | None,
+        filters: dict | list[dict] | None,
+        sort_by: list[str] | None,
+        **kwargs,
     ) -> PageCursor:
         if not filters:
             filters = {}
@@ -321,11 +338,11 @@ class BaseRepository(Generic[M]):
             if cursor_limit:
                 _filters.append({sa_or_: cursor_limit})
 
-        stmt = self.queryset.smart_query(filters=_filters, sort_attrs=sort_by)
-
+        stmt = self.model.smart_query(filters=_filters, sort_attrs=sort_by)
         if kwargs.get("get_related"):
-            # stmt = stmt.options(selectinload(get_related))   noqa
-            pass
+            for key in kwargs.get("get_related"):
+                # stmt =  stmt.options(selectinload(getattr(self.model, key)))
+                stmt =  apply_nested_loader_options(stmt, self.model, key)
 
         if page_size:
             stmt = stmt.limit(page_size)
@@ -371,10 +388,10 @@ class BaseRepository(Generic[M]):
 
     @staticmethod
     def build_page_info(
-            start_cursor: str = None,
-            end_cursor: str = None,
-            has_next_page: bool = False,
-            has_previous_page: bool = False,
+        start_cursor: str = None,
+        end_cursor: str = None,
+        has_next_page: bool = False,
+        has_previous_page: bool = False,
     ) -> PageInfo:
         return PageInfo(
             **{

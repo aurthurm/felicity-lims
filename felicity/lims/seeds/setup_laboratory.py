@@ -1,11 +1,14 @@
 import logging
 
 from felicity.apps.client import schemas as client_schemas
+from felicity.apps.client.services import ClientContactService, ClientService
 from felicity.apps.setup import schemas
+from felicity.apps.setup.services import (CountryService, DepartmentService,
+                                          DistrictService, LaboratoryService,
+                                          LaboratorySettingService,
+                                          ProvinceService)
 from felicity.core.config import get_settings
 
-from felicity.apps.setup.services import CountryService, DepartmentService, DistrictService, LaboratoryService, LaboratorySettingService, ProvinceService
-from felicity.apps.client.services import ClientContactService, ClientService
 from .data import get_seeds
 
 settings = get_settings()
@@ -37,9 +40,7 @@ async def seed_geographies() -> None:
                 p_name = _prv.get("name")
                 p_code = _prv.get("code")
                 if p_name and p_code:
-                    province = await province_service.get(
-                        name=p_name, code=p_code
-                    )
+                    province = await province_service.get(name=p_name, code=p_code)
                     if not province:
                         pr_in = schemas.ProvinceCreate(
                             name=p_name, code=p_code, country_uid=country.uid
@@ -52,7 +53,9 @@ async def seed_geographies() -> None:
                             d_name = _dist.get("name")
                             d_code = _dist.get("code")
                             if d_name and d_code:
-                                district = await district_service.get(name=d_name, code=d_code)
+                                district = await district_service.get(
+                                    name=d_name, code=d_code
+                                )
                                 if not district:
                                     di_in = schemas.DistrictCreate(
                                         name=d_name,
@@ -104,9 +107,7 @@ async def seed_laboratory(name: str) -> None:
 
     if not name:
         name = data.get("laboratory_name", "Felicity Labs")
-    laboratory = await laboratory_service.get_by_setup_name(
-        "felicity"
-    )
+    laboratory = await laboratory_service.get_by_setup_name("felicity")
     if not laboratory:
         lab_in = schemas.LaboratoryCreate(
             setup_name=data.get("setup_name", "felicity"),
@@ -121,9 +122,7 @@ async def seed_laboratory(name: str) -> None:
     departments = data.get("departments", [])
     if departments:
         for _dept in departments:
-            department = await department_service.get(
-                name=_dept
-            )
+            department = await department_service.get(name=_dept)
             if not department:
                 d_in = schemas.DepartmentCreate(name=_dept, description=_dept)
                 await department_service.create(d_in)

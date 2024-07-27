@@ -3,14 +3,15 @@ import logging
 from felicity.apps.iol.fhir.utils import (get_diagnostic_report_resource,
                                           get_shipment_bundle_resource)
 from felicity.apps.iol.relay import post_data
+from felicity.apps.job.enum import JobState
 from felicity.apps.job.services import JobService
-from felicity.apps.shipment.services import ShipmentService, ShippedSampleService
+from felicity.apps.shipment.enum import ShipmentState
+from felicity.apps.shipment.services import (ShipmentService,
+                                             ShippedSampleService)
 from felicity.apps.shipment.utils import (shipment_assign, shipment_receive,
                                           shipment_reset_assigned_count,
                                           shipment_result_update)
 from felicity.apps.user.entities import User
-from felicity.apps.job.enum import JobState
-from felicity.apps.shipment.enum import ShipmentState
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -33,7 +34,8 @@ async def populate_shipment_manually(job_uid: str):
 
     shipment = await shipment_service.get(uid=shipment_uid)
     if not shipment:
-        await job_service.change_status(job.uid, 
+        await job_service.change_status(
+            job.uid,
             new_status=JobState.FAILED,
             change_reason=f"Failed to acquire Shipment {shipment_uid}",
         )
@@ -47,7 +49,8 @@ async def populate_shipment_manually(job_uid: str):
         ShipmentState.EMPTY,
         ShipmentState.PREPERATION,
     ]:
-        await job_service.change_status(job.uid, 
+        await job_service.change_status(
+            job.uid,
             new_status=JobState.FAILED,
             change_reason=f"Shipment {shipment_uid} - is already processed",
         )
@@ -88,13 +91,11 @@ async def dispatch_shipment(job_uid: str, by_uid=None):
         shipment.laboratory.password,
     )
 
-    await job_service.change_status(job.uid, 
-        new_status=JobState.PENDING if not success else JobState.FINISHED
+    await job_service.change_status(
+        job.uid, new_status=JobState.PENDING if not success else JobState.FINISHED
     )
     await shipment.change_state(
-        state=ShipmentState.FAILED
-        if not success
-        else ShipmentState.SHIPPED,
+        state=ShipmentState.FAILED if not success else ShipmentState.SHIPPED,
         updated_by_uid=by_uid if by_uid else job.creator_uid,
     )
     if not success:
@@ -120,7 +121,8 @@ async def receive_shipment(job_uid: str):
 
     shipment = await shipment_service.get(uid=shipment_uid)
     if not shipment:
-        await job_service.change_status(job.uid, 
+        await job_service.change_status(
+            job.uid,
             new_status=JobState.FAILED,
             change_reason=f"Failed to acquire Shipment {shipment_uid}",
         )
@@ -139,7 +141,6 @@ async def return_shipped_report(job_uid: str):
     shipment_service = ShipmentService()
     shipped_sample_service = ShippedSampleService()
 
-
     job = await job_service.get(uid=job_uid)
     if not job:
         return
@@ -150,12 +151,11 @@ async def return_shipped_report(job_uid: str):
     await job_service.change_status(job.uid, new_status=JobState.RUNNING)
 
     shipped_sample_uid = job.job_id
-    shipped = await shipped_sample_service.get(
-        uid=shipped_sample_uid
-    )
+    shipped = await shipped_sample_service.get(uid=shipped_sample_uid)
 
     if not shipped:
-        await job_service.change_status(job.uid, 
+        await job_service.change_status(
+            job.uid,
             new_status=JobState.FAILED,
             change_reason=f"Failed to acquire shipped sample {shipped_sample_uid}",
         )
@@ -164,7 +164,8 @@ async def return_shipped_report(job_uid: str):
 
     shipment = await shipment_service.get(uid=shipped.shipment_uid)
     if not shipment:
-        await job_service.change_status(job.uid, 
+        await job_service.change_status(
+            job.uid,
             new_status=JobState.FAILED,
             change_reason=f"Failed to acquire Shipment {shipped.shipment_uid}",
         )

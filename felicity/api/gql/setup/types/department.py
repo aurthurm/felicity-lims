@@ -4,11 +4,11 @@ import strawberry  # noqa
 @strawberry.type
 class DepartmentType:
     uid: str
-    name: str | None
-    description: str | None
-    code: str | None
+    name: str | None = None
+    description: str | None = None
+    code: str | None = None
     #
-    created_by_uid: str | None
-    created_at: str | None
-    updated_by_uid: str | None
-    updated_at: str | None
+    created_by_uid: str | None = None
+    created_at: str | None = None
+    updated_by_uid: str | None = None
+    updated_at: str | None = None

@@ -11,35 +11,35 @@ class LaboratoryType:
     uid: str
     setup_name: str
     lab_name: str
-    tag_line: str | None
-    lab_manager_uid: str | None
-    lab_manager: Optional["UserType"]
-    code: str | None
-    email: str | None
-    email_cc: str | None
-    mobile_phone: str | None
-    business_phone: str | None
-    address: str | None
-    banking: str | None
-    logo: str | None
-    quality_statement: str | None
+    tag_line: str | None = None
+    lab_manager_uid: str | None = None
+    lab_manager: Optional["UserType"] = None
+    code: str | None = None
+    email: str | None = None
+    email_cc: str | None = None
+    mobile_phone: str | None = None
+    business_phone: str | None = None
+    address: str | None = None
+    banking: str | None = None
+    logo: str | None = None
+    quality_statement: str | None = None
     #
-    created_by_uid: str | None
-    created_by: Optional["UserType"]
-    created_at: str | None
-    updated_by_uid: str | None
-    updated_by: Optional["UserType"]
-    updated_at: str | None
+    created_by_uid: str | None = None
+    created_by: Optional["UserType"] = None
+    created_at: str | None = None
+    updated_by_uid: str | None = None
+    updated_by: Optional["UserType"] = None
+    updated_at: str | None = None
 
 
 @strawberry.type
 class LaboratorySettingType:
-    created_by_uid: str | None
-    created_by: Optional["UserType"]
-    created_at: str | None
-    updated_by_uid: str | None
-    updated_by: Optional["UserType"]
-    updated_at: str | None
+    created_by_uid: str | None = None
+    created_by: Optional["UserType"] = None
+    created_at: str | None = None
+    updated_by_uid: str | None = None
+    updated_by: Optional["UserType"] = None
+    updated_at: str | None = None
     uid: str
     laboratory_uid: str
     laboratory: LaboratoryType
@@ -64,79 +64,79 @@ class LaboratorySettingType:
 @strawberry.type
 class SupplierType:
     uid: str
-    name: str | None
-    description: str | None
+    name: str | None = None
+    description: str | None = None
     #
-    created_by_uid: str | None
-    created_by: Optional["UserType"]
-    created_at: str | None
-    updated_by_uid: str | None
-    updated_by: Optional["UserType"]
-    updated_at: str | None
+    created_by_uid: str | None = None
+    created_by: Optional["UserType"] = None
+    created_at: str | None = None
+    updated_by_uid: str | None = None
+    updated_by: Optional["UserType"] = None
+    updated_at: str | None = None
 
 
 @strawberry.type
 class ManufacturerType:
     uid: str
-    name: str | None
-    description: str | None
+    name: str | None = None
+    description: str | None = None
     #
-    created_by_uid: str | None
-    created_by: Optional["UserType"]
-    created_at: str | None
-    updated_by_uid: str | None
-    updated_by: Optional["UserType"]
-    updated_at: str | None
+    created_by_uid: str | None = None
+    created_by: Optional["UserType"] = None
+    created_at: str | None = None
+    updated_by_uid: str | None = None
+    updated_by: Optional["UserType"] = None
+    updated_at: str | None = None
 
 
 @strawberry.type
 class UnitType:
     uid: str
     name: str
-    description: str | None
+    description: str | None = None
     #
-    created_by_uid: str | None
-    created_by: Optional["UserType"]
-    created_at: str | None
-    updated_by_uid: str | None
-    updated_by: Optional["UserType"]
-    updated_at: str | None
+    created_by_uid: str | None = None
+    created_by: Optional["UserType"] = None
+    created_at: str | None = None
+    updated_by_uid: str | None = None
+    updated_by: Optional["UserType"] = None
+    updated_at: str | None = None
 
 
 @strawberry.type
 class CountryType:
     uid: str
-    name: str | None
-    code: str | None
-    active: str | None
+    name: str | None = None
+    code: str | None = None
+    active: str | None = None
     #
-    created_by_uid: str | None
-    created_by: Optional["UserType"]
-    created_at: str | None
-    updated_by_uid: str | None
-    updated_by: Optional["UserType"]
-    updated_at: str | None
+    created_by_uid: str | None = None
+    created_by: Optional["UserType"] = None
+    created_at: str | None = None
+    updated_by_uid: str | None = None
+    updated_by: Optional["UserType"] = None
+    updated_at: str | None = None
 
 
 @strawberry.type
 class ProvinceType:
     uid: str
-    code: str | None
-    name: str | None
-    email: str | None
-    email_cc: str | None
-    mobile_phone: str | None
-    business_phone: str | None
-    active: bool | None
-    country_uid: str | None
-    country: Optional[CountryType]
+    code: str | None = None
+    name: str | None = None
+    email: str | None = None
+    email_cc: str | None = None
+    mobile_phone: str | None = None
+    business_phone: str | None = None
+    active: bool | None = None
+    country_uid: str | None = None
+    country: Optional[CountryType] = None
     #
-    created_by_uid: str | None
-    created_by: Optional["UserType"]
-    created_at: str | None
-    updated_by_uid: str | None
-    updated_by: Optional["UserType"]
-    updated_at: str | None
+    created_by_uid: str | None = None
+    created_by: Optional["UserType"] = None
+    created_at: str | None = None
+    updated_by_uid: str | None = None
+    updated_by: Optional["UserType"] = None
+    updated_at: str | None = None
 
 
 #  relay paginations
@@ -149,30 +149,30 @@ class ProvinceEdge:
 @strawberry.type
 class ProvinceCursorPage:
     page_info: PageInfo
-    edges: Optional[List[ProvinceEdge]]
-    items: Optional[List[ProvinceType]]
+    edges: Optional[List[ProvinceEdge]] = None
+    items: Optional[List[ProvinceType]] = None
     total_count: int
 
 
 @strawberry.type
 class DistrictType:
     uid: str
-    code: str | None
-    name: str | None
-    email: str | None
-    email_cc: str | None
-    mobile_phone: str | None
-    business_phone: str | None
-    active: bool | None
-    province_uid: str | None
-    province: Optional[ProvinceType]
+    code: str | None = None
+    name: str | None = None
+    email: str | None = None
+    email_cc: str | None = None
+    mobile_phone: str | None = None
+    business_phone: str | None = None
+    active: bool | None = None
+    province_uid: str | None = None
+    province: Optional[ProvinceType] = None
     #
-    created_by_uid: str | None
-    created_by: Optional["UserType"]
-    created_at: str | None
-    updated_by_uid: str | None
-    updated_by: Optional["UserType"]
-    updated_at: str | None
+    created_by_uid: str | None = None
+    created_by: Optional["UserType"] = None
+    created_at: str | None = None
+    updated_by_uid: str | None = None
+    updated_by: Optional["UserType"] = None
+    updated_at: str | None = None
 
 
 #  relay paginations
@@ -185,6 +185,6 @@ class DistrictEdge:
 @strawberry.type
 class DistrictCursorPage:
     page_info: PageInfo
-    edges: Optional[List[DistrictEdge]]
-    items: Optional[List[DistrictType]]
+    edges: Optional[List[DistrictEdge]] = None
+    items: Optional[List[DistrictType]] = None
     total_count: int

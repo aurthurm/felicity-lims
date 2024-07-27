@@ -103,4 +103,6 @@ class ClientQuery:
     async def client_contact_by_client_uid(
         self, info, client_uid: str
     ) -> List[ClientContactType]:
-        return await ClientContactService().get_all(client_uid=client_uid, is_active=True)
+        return await ClientContactService().get_all(
+            client_uid=client_uid, is_active=True
+        )

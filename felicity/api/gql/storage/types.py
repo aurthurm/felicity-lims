@@ -3,20 +3,21 @@ from typing import List, Optional
 import strawberry  # noqa
 
 from felicity.api.gql.user.types import UserType
-from felicity.apps.storage.entities import StorageLocation, StorageSection, StorageContainer
+from felicity.apps.storage.entities import (StorageContainer, StorageLocation,
+                                            StorageSection)
 
 
 @strawberry.type
 class StoreRoomType:
     uid: str
     name: str
-    description: str | None
-    created_at: str | None
-    created_by_uid: str | None
-    created_by: UserType | None
-    updated_at: str | None
-    updated_by_uid: str | None
-    updated_by: UserType | None
+    description: str | None = None
+    created_at: str | None = None
+    created_by_uid: str | None = None
+    created_by: UserType | None = None
+    updated_at: str | None = None
+    updated_by_uid: str | None = None
+    updated_by: UserType | None = None
 
     @strawberry.field
     async def tag(self, info) -> str:
@@ -32,15 +33,15 @@ class StoreRoomType:
 class StorageLocationType:
     uid: str
     name: str
-    description: str | None
+    description: str | None = None
     store_room_uid: str
-    store_room: Optional[StoreRoomType]
-    created_at: str | None
-    created_by_uid: str | None
-    created_by: UserType | None
-    updated_at: str | None
-    updated_by_uid: str | None
-    updated_by: UserType | None
+    store_room: Optional[StoreRoomType] = None
+    created_at: str | None = None
+    created_by_uid: str | None = None
+    created_by: UserType | None = None
+    updated_at: str | None = None
+    updated_by_uid: str | None = None
+    updated_by: UserType | None = None
 
     @strawberry.field
     async def tag(self, info) -> str:
@@ -48,9 +49,7 @@ class StorageLocationType:
 
     @strawberry.field
     async def children(self, info) -> List[Optional["StorageSectionType"]]:
-        storage_section = await StorageSection.get_all(
-            storage_location_uid=self.uid
-        )
+        storage_section = await StorageSection.get_all(storage_location_uid=self.uid)
         return [StorageSectionType(**ss.marshal_simple()) for ss in storage_section]
 
 
@@ -58,15 +57,15 @@ class StorageLocationType:
 class StorageSectionType:
     uid: str
     name: str
-    description: str | None
+    description: str | None = None
     storage_location_uid: str
-    storage_location: Optional[StorageLocationType]
-    created_at: str | None
-    created_by_uid: str | None
-    created_by: UserType | None
-    updated_at: str | None
-    updated_by_uid: str | None
-    updated_by: UserType | None
+    storage_location: Optional[StorageLocationType] = None
+    created_at: str | None = None
+    created_by_uid: str | None = None
+    created_by: UserType | None = None
+    updated_at: str | None = None
+    updated_by_uid: str | None = None
+    updated_by: UserType | None = None
 
     @strawberry.field
     async def tag(self, info) -> str:
@@ -74,9 +73,7 @@ class StorageSectionType:
 
     @strawberry.field
     async def children(self, info) -> List[Optional["StorageContainerType"]]:
-        storage_container = await StorageContainer.get_all(
-            storage_section_uid=self.uid
-        )
+        storage_container = await StorageContainer.get_all(storage_section_uid=self.uid)
         return [
             StorageContainerType(**sc.marshal_simple(exclude=["samples"]))
             for sc in storage_container
@@ -87,21 +84,21 @@ class StorageSectionType:
 class StorageContainerType:
     uid: str
     name: str
-    description: str | None
+    description: str | None = None
     storage_section_uid: str
-    storage_section: Optional[StorageSectionType]
-    grid: bool | None
-    row_wise: bool | None
-    cols: int | None
-    rows: int | None
-    slots: int | None
-    stored_count: int | None
-    created_at: str | None
-    created_by_uid: str | None
-    created_by: UserType | None
-    updated_at: str | None
-    updated_by_uid: str | None
-    updated_by: UserType | None
+    storage_section: Optional[StorageSectionType] = None
+    grid: bool | None = None
+    row_wise: bool | None = None
+    cols: int | None = None
+    rows: int | None = None
+    slots: int | None = None
+    stored_count: int | None = None
+    created_at: str | None = None
+    created_by_uid: str | None = None
+    created_by: UserType | None = None
+    updated_at: str | None = None
+    updated_by_uid: str | None = None
+    updated_by: UserType | None = None
 
     @strawberry.field
     async def tag(self, info) -> str:

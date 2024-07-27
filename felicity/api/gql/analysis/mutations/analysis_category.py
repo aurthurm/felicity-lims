@@ -56,9 +56,7 @@ async def create_analysis_category(
         incoming[k] = v
 
     obj_in = schemas.AnalysisCategoryCreate(**incoming)
-    analysis_category = (
-        await AnalysisCategoryService().create(obj_in)
-    )
+    analysis_category = await AnalysisCategoryService().create(obj_in)
     return a_types.AnalysisCategoryType(**analysis_category.marshal_simple())
 
 
@@ -85,5 +83,7 @@ async def update_analysis_category(
                 logger.warning(e)
 
     profile_in = schemas.AnalysisCategoryUpdate(**analysis_category.to_dict())
-    analysis_category = await AnalysisCategoryService().update(analysis_category.uid, profile_in)
+    analysis_category = await AnalysisCategoryService().update(
+        analysis_category.uid, profile_in
+    )
     return a_types.AnalysisCategoryType(**analysis_category.marshal_simple())

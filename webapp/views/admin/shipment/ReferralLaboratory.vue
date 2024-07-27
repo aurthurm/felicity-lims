@@ -23,7 +23,7 @@
     formAction.value = create;
     showModal.value = true;
     formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "REFERRAL LABORATORY";
-    if (create) {
+    if (Create, related: list[str] = None) {
       Object.assign(form, {} as IReferralLaboratory);
     } else {
       Object.assign(form, { ...obj });

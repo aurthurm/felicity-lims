@@ -24,7 +24,6 @@ async def create_rejection_reason(info, reason: str) -> RejectionReasonResponse:
 
     felicity_user = await auth_from_info(info)
 
-
     if not reason:
         return OperationError(error="reason is mandatory")
 
@@ -41,9 +40,7 @@ async def create_rejection_reason(info, reason: str) -> RejectionReasonResponse:
     }
 
     obj_in = schemas.RejectionReasonCreate(**incoming)
-    rejection_reason = (
-        await RejectionReasonService().create(obj_in)
-    )
+    rejection_reason = await RejectionReasonService().create(obj_in)
     return a_types.RejectionReasonType(**rejection_reason.marshal_simple())
 
 
@@ -63,5 +60,7 @@ async def update_rejection_reason(
         logger.warning(e)
 
     rr_in = schemas.RejectionReasonUpdate(**rejection_reason.to_dict())
-    rejection_reason = await RejectionReasonService().update(rejection_reason.uid, rr_in)
+    rejection_reason = await RejectionReasonService().update(
+        rejection_reason.uid, rr_in
+    )
     return a_types.RejectionReasonType(**rejection_reason.marshal_simple())

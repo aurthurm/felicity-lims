@@ -6,10 +6,10 @@ from pydantic import ConfigDict
 from felicity.apps.common.schemas import BaseAuditModel, BaseModel
 from felicity.apps.setup.schemas import Department, Unit
 
-
 #
 # Coding standard Schemas
 #
+
 
 # Shared properties
 class CodingStandardBase(BaseAuditModel):
@@ -130,6 +130,7 @@ class SampleTypeCodingInDB(SampleTypeCodingBaseInDB):
 # Profile Schemas
 #
 
+
 # Shared properties
 class ProfileBase(BaseAuditModel):
     name: str | None
@@ -171,6 +172,7 @@ class ProfileInDB(ProfileBaseInDB):
 #
 # AnalysisTemplate Schemas
 #
+
 
 # Shared properties
 class AnalysisTemplateBase(BaseAuditModel):
@@ -251,6 +253,7 @@ class ProfileCodingInDB(ProfileCodingBaseInDB):
 
 # AnalysisCategory Schemas
 #
+
 
 # Shared properties
 class AnalysisCategoryBase(BaseAuditModel):
@@ -389,6 +392,7 @@ class AnalysisCodingInDB(AnalysisCodingBaseInDB):
 # AnalysisInterim Schemas
 #
 
+
 # Shared properties
 class AnalysisInterimBase(BaseAuditModel):
     key: int
@@ -427,6 +431,7 @@ class AnalysisInterimInDB(AnalysisInterimInDB):
 # AnalysisCorrectionFactor Schemas
 #
 
+
 # Shared properties
 class AnalysisCorrectionFactorBase(BaseAuditModel):
     factor: float
@@ -464,6 +469,7 @@ class AnalysisCorrectionFactorInDB(AnalysisCorrectionFactorBaseInDB):
 #
 # AnalysisDetectionLimit Schemas
 #
+
 
 # Shared properties
 class AnalysisDetectionLimitBase(BaseAuditModel):
@@ -504,6 +510,7 @@ class AnalysisDetectionLimitInDB(AnalysisDetectionLimitBaseInDB):
 # AnalysisUncertainty Schemas
 #
 
+
 # Shared properties
 class AnalysisUncertaintyBase(BaseAuditModel):
     min: float
@@ -543,6 +550,7 @@ class AnalysisUncertaintyInDB(AnalysisUncertaintyBaseInDB):
 #
 # AnalysisSpecification Schemas
 #
+
 
 # Shared properties
 class AnalysisSpecificationBase(BaseAuditModel):
@@ -593,6 +601,7 @@ class AnalysisSpecificationInDB(AnalysisSpecificationBaseInDB):
 # Result Option Schemas
 #
 
+
 # Shared properties
 class ResultOptionBase(BaseAuditModel):
     option_key: int | None = None
@@ -629,6 +638,7 @@ class ResultOptionInDB(ResultOptionBaseInDB):
 #
 # AnalysisRequest Schemas
 #
+
 
 # Shared properties
 class AnalysisRequestBase(BaseAuditModel):
@@ -668,6 +678,7 @@ class AnalysisRequestInDB(AnalysisRequestBaseInDB):
 #
 # Sample Schemas
 #
+
 
 # Shared properties
 class SampleBase(BaseAuditModel):
@@ -714,6 +725,7 @@ class SampleInDB(SampleBaseInDB):
 # Rejection Reason Schemas
 #
 
+
 # Shared properties
 class RejectionReasonBase(BaseAuditModel):
     reason: str | None = None
@@ -748,6 +760,7 @@ class RejectionReasonInDB(RejectionReasonBaseInDB):
 #
 # AnalysisResultBase Schemas
 #
+
 
 # Shared properties
 class AnalysisResultBase(BaseAuditModel):
@@ -802,6 +815,7 @@ class AnalysisResultInDB(AnalysisResultBaseInDB):
 # QCSet Schemas
 #
 
+
 # Shared properties
 class QCSetBase(BaseAuditModel):
     name: str | None = None
@@ -838,6 +852,7 @@ class QCSetInDB(QCSetBaseInDB):
 # QCLevel Schemas
 #
 
+
 # Shared properties
 class QCLevelBase(BaseAuditModel):
     level: str | None = None
@@ -872,6 +887,7 @@ class QCLevelInDB(QCLevelBaseInDB):
 #
 # QCTemplate Schemas
 #
+
 
 # Shared properties
 class QCTemplateBase(BaseAuditModel):

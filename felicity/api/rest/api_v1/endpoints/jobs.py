@@ -17,3 +17,10 @@ async def all_jobs(job_service: JobService = Depends(JobService)) -> Any:
     Retrieve all jobs
     """
     return await job_service.all()
+
+@jobs.get("/pending", response_model=None)
+async def pending_jobs(job_service: JobService = Depends(JobService)) -> Any:
+    """
+    Retrieve all pending jobs
+    """
+    return await job_service.fetch_sorted()

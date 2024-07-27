@@ -1,10 +1,10 @@
 import logging
 
 import pytest
+from felicity.tests.integration.utils.user import (add_user_mutation,
+                                          make_password, make_username)
 
 from felicity.core.config import settings
-from tests.integration.utils.user import (add_auth_mutation, add_user_mutation,
-                                          make_password, make_username)
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 
 @pytest.mark.asyncio
 @pytest.mark.order(10)
-async def test_user_login(app):
+async def test_user_login(app_gql):
     authe = """
         mutation Auth($username: String!, $password: String!){
           authenticateUser(username: $username, password: $password) {
@@ -32,7 +32,7 @@ async def test_user_login(app):
         }
     """
 
-    response = await app.post(
+    response = await app_gql.post(
         "felicity-gql",
         json={
             "query": authe,
@@ -51,10 +51,15 @@ async def test_user_login(app):
 
 @pytest.mark.asyncio
 @pytest.mark.order(14)
-async def test_register_users(app, users, auth_data):
-    _final = []
+async def test_register_users(app_gql, users, auth_data):
     for user in users:
-        response = await app.post(
+        user ={
+            **user,
+            "userName": make_username(user["firstName"]),
+            "password": make_password(user["firstName"]),
+            "passwordc": make_password(user["firstName"]),
+        }
+        response = await app_gql.post(
             "felicity-gql",
             json={"query": add_user_mutation, "variables": user},
             headers=auth_data["headers"],
@@ -68,29 +73,4 @@ async def test_register_users(app, users, auth_data):
         assert _user["firstName"] == user["firstName"]
         assert _user["lastName"] == user["lastName"]
         assert _user["uid"] is not True
-        _final.append(_user)
-
-    _auths = []
-    for auth in _final:
-        response = await app.post(
-            "/felicity-gql",
-            json={
-                "query": add_auth_mutation,
-                "variables": {
-                    "userUid": auth["uid"],
-                    "userName": make_username(auth["firstName"]),
-                    "password": make_password(auth["firstName"]),
-                    "passwordc": make_password(auth["firstName"]),
-                },
-            },
-            headers=auth_data["headers"],
-        )
-
-        logger.info(f"add-auth response: {response} {response.json}")
-        assert response.status_code == 200
-        _auth = response.json()["data"]["createUserAuth"]
-        _auths.append(_auth)
-        assert _auth["uid"] == auth["uid"]
-        assert _auth["auth"]["userName"] == auth["firstName"].lower()
-
-    assert len(_final) == len(_auths)
+       

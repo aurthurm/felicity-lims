@@ -3,7 +3,9 @@ from datetime import datetime
 from felicity.core.dtz import format_datetime
 
 
-def marshaller(obj, path=None, memoize=None, exclude: list[str] = None, depth=2) -> dict | str:
+def marshaller(
+    obj, path=None, memoize=None, exclude: list[str] = None, depth=2
+) -> dict | str:
     """Notes:
     1. We use memoization To prevent marshalling the same object again hence speed things up
     2. We use path tracking To stop marshalling when a path starts to repeat itself or meets a certain path restriction
@@ -42,7 +44,9 @@ def marshaller(obj, path=None, memoize=None, exclude: list[str] = None, depth=2)
         #     element = val
         if isinstance(val, list):
             for item in val:
-                element.append(marshaller(item, path + [key], memoize, exclude, depth - 1))
+                element.append(
+                    marshaller(item, path + [key], memoize, exclude, depth - 1)
+                )
         else:
             element = marshaller(val, path + [key], memoize, exclude, depth - 1)
         result[key] = element

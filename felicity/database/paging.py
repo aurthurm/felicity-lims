@@ -13,11 +13,11 @@ class EdgeNode:
 
 class PageInfo:
     def __init__(
-            self,
-            start_cursor: str = None,
-            end_cursor: str = None,
-            has_next_page: bool = False,
-            has_previous_page: bool = False,
+        self,
+        start_cursor: str = None,
+        end_cursor: str = None,
+        has_next_page: bool = False,
+        has_previous_page: bool = False,
     ):
         self.start_cursor = start_cursor
         self.end_cursor = end_cursor
@@ -27,11 +27,11 @@ class PageInfo:
 
 class PageCursor:
     def __init__(
-            self,
-            total_count: int = 0,
-            edges: List[EdgeNode] = None,
-            items: List[dict] = None,
-            page_info: PageInfo = None,
+        self,
+        total_count: int = 0,
+        edges: List[EdgeNode] = None,
+        items: List[dict] = None,
+        page_info: PageInfo = None,
     ):
         self.total_count = total_count
         self.edges = edges

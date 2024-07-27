@@ -13,15 +13,15 @@ from felicity.apps.instrument.entities import Method
 @strawberry.type
 class InstrumentTypeType:
     uid: str
-    name: str | None
-    description: str | None
+    name: str | None = None
+    description: str | None = None
     #
-    created_by_uid: str | None
-    created_by: Optional["UserType"]
-    created_at: str | None
-    updated_by_uid: str | None
-    updated_by: Optional["UserType"]
-    updated_at: str | None
+    created_by_uid: str | None = None
+    created_by: Optional["UserType"] = None
+    created_at: str | None = None
+    updated_by_uid: str | None = None
+    updated_by: Optional["UserType"] = None
+    updated_at: str | None = None
 
 
 #  relay paginations
@@ -34,30 +34,30 @@ class InstrumentTypeEdge:
 @strawberry.type
 class InstrumentTypeCursorPage:
     page_info: PageInfo
-    edges: Optional[List[InstrumentTypeEdge]]
-    items: Optional[List[InstrumentTypeType]]
+    edges: Optional[List[InstrumentTypeEdge]] = None
+    items: Optional[List[InstrumentTypeType]] = None
     total_count: int
 
 
 @strawberry.type
 class InstrumentType:
     uid: str
-    name: str | None
-    description: str | None
-    keyword: str | None
-    supplier_uid: str | None
-    supplier: Optional[SupplierType]
-    manufacturer_uid: str | None
-    manufacturer: Optional[ManufacturerType]
-    instrument_type_uid: str | None
-    instrument_type: Optional[InstrumentTypeType]
+    name: str | None = None
+    description: str | None = None
+    keyword: str | None = None
+    supplier_uid: str | None = None
+    supplier: Optional[SupplierType] = None
+    manufacturer_uid: str | None = None
+    manufacturer: Optional[ManufacturerType] = None
+    instrument_type_uid: str | None = None
+    instrument_type: Optional[InstrumentTypeType] = None
     #
-    created_by_uid: str | None
-    created_by: Optional["UserType"]
-    created_at: str | None
-    updated_by_uid: str | None
-    updated_by: Optional["UserType"]
-    updated_at: str | None
+    created_by_uid: str | None = None
+    created_by: Optional["UserType"] = None
+    created_at: str | None = None
+    updated_by_uid: str | None = None
+    updated_by: Optional["UserType"] = None
+    updated_at: str | None = None
 
     methods: Optional[List["MethodType"]] = field(default_factory=list)
 
@@ -77,8 +77,8 @@ class InstrumentEdge:
 @strawberry.type
 class InstrumentCursorPage:
     page_info: PageInfo
-    edges: Optional[List[InstrumentEdge]]
-    items: Optional[List[InstrumentType]]
+    edges: Optional[List[InstrumentEdge]] = None
+    items: Optional[List[InstrumentType]] = None
     total_count: int
 
 
@@ -92,12 +92,12 @@ class LaboratoryInstrumentType:
     date_commissioned: datetime | None = None
     date_decommissioned: datetime | None = None
     #
-    created_by_uid: str | None
-    created_by: Optional["UserType"]
-    created_at: str | None
-    updated_by_uid: str | None
-    updated_by: Optional["UserType"]
-    updated_at: str | None
+    created_by_uid: str | None = None
+    created_by: Optional["UserType"] = None
+    created_at: str | None = None
+    updated_by_uid: str | None = None
+    updated_by: Optional["UserType"] = None
+    updated_at: str | None = None
 
 
 @strawberry.type
@@ -109,8 +109,8 @@ class LaboratoryInstrumentEdge:
 @strawberry.type
 class LaboratoryInstrumentCursorPage:
     page_info: PageInfo
-    edges: Optional[List[LaboratoryInstrumentEdge]]
-    items: Optional[List[LaboratoryInstrumentType]]
+    edges: Optional[List[LaboratoryInstrumentEdge]] = None
+    items: Optional[List[LaboratoryInstrumentType]] = None
     total_count: int
 
 
@@ -118,7 +118,7 @@ class LaboratoryInstrumentCursorPage:
 class InstrumentCalibrationType:
     uid: str
     laboratory_instrument_uid: str
-    laboratory_instrument: LaboratoryInstrumentType | None
+    laboratory_instrument: LaboratoryInstrumentType | None = None
     calibration_id: str
     date_reported: datetime
     report_id: str
@@ -129,19 +129,19 @@ class InstrumentCalibrationType:
     work_done: str
     remarks: str
     #
-    created_by_uid: str | None
-    created_by: Optional["UserType"]
-    created_at: str | None
-    updated_by_uid: str | None
-    updated_by: Optional["UserType"]
-    updated_at: str | None
+    created_by_uid: str | None = None
+    created_by: Optional["UserType"] = None
+    created_at: str | None = None
+    updated_by_uid: str | None = None
+    updated_by: Optional["UserType"] = None
+    updated_at: str | None = None
 
 
 @strawberry.type
 class CalibrationCertificateType:
     uid: str
     laboratory_instrument_uid: str
-    laboratory_instrument: LaboratoryInstrumentType | None
+    laboratory_instrument: LaboratoryInstrumentType | None = None
     certificate_code: str
     internal: bool
     issuer: str
@@ -152,48 +152,48 @@ class CalibrationCertificateType:
     approved_by: str
     remarks: str
     #
-    created_by_uid: str | None
-    created_by: Optional["UserType"]
-    created_at: str | None
-    updated_by_uid: str | None
-    updated_by: Optional["UserType"]
-    updated_at: str | None
+    created_by_uid: str | None = None
+    created_by: Optional["UserType"] = None
+    created_at: str | None = None
+    updated_by_uid: str | None = None
+    updated_by: Optional["UserType"] = None
+    updated_at: str | None = None
 
 
 @strawberry.type
 class InstrumentCompetenceType:
     uid: str
     instrument_uid: str
-    instrument: InstrumentType | None
+    instrument: InstrumentType | None = None
     description: str
     user_uid: str
-    user: UserType | None
+    user: UserType | None = None
     issue_date: datetime
     expiry_date: datetime
     internal: bool
-    competence: BytesScalar | None
+    competence: BytesScalar | None = None
     #
-    created_by_uid: str | None
-    created_by: Optional["UserType"]
-    created_at: str | None
-    updated_by_uid: str | None
-    updated_by: Optional["UserType"]
-    updated_at: str | None
+    created_by_uid: str | None = None
+    created_by: Optional["UserType"] = None
+    created_at: str | None = None
+    updated_by_uid: str | None = None
+    updated_by: Optional["UserType"] = None
+    updated_at: str | None = None
 
 
 @strawberry.type
 class MethodType:
     uid: str
-    name: str | None
-    description: str | None
-    keyword: str | None
+    name: str | None = None
+    description: str | None = None
+    keyword: str | None = None
     #
-    created_by_uid: str | None
-    created_by: Optional["UserType"]
-    created_at: str | None
-    updated_by_uid: str | None
-    updated_by: Optional["UserType"]
-    updated_at: str | None
+    created_by_uid: str | None = None
+    created_by: Optional["UserType"] = None
+    created_at: str | None = None
+    updated_by_uid: str | None = None
+    updated_by: Optional["UserType"] = None
+    updated_at: str | None = None
     instruments: Optional[List["InstrumentType"]] = field(default_factory=list)
 
 
@@ -207,6 +207,6 @@ class MethodEdge:
 @strawberry.type
 class MethodCursorPage:
     page_info: PageInfo
-    edges: Optional[List[MethodEdge]]
-    items: Optional[List[MethodType]]
+    edges: Optional[List[MethodEdge]] = None
+    items: Optional[List[MethodType]] = None
     total_count: int

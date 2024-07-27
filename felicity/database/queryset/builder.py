@@ -1,16 +1,13 @@
-from collections import abc, OrderedDict
+from collections import OrderedDict, abc
 from typing import TypeVar
 
 from sqlalchemy import asc, desc, inspect, select
-from sqlalchemy.ext.hybrid import hybrid_property, hybrid_method
-from sqlalchemy.orm import RelationshipProperty
-from sqlalchemy.orm import aliased
-from sqlalchemy.orm import joinedload
-from sqlalchemy.orm import subqueryload
+from sqlalchemy.ext.hybrid import hybrid_method, hybrid_property
+from sqlalchemy.orm import (RelationshipProperty, aliased, joinedload,
+                            subqueryload)
 from sqlalchemy.orm.state import InstanceState
 from sqlalchemy.orm.util import AliasedClass
-from sqlalchemy.sql import operators, extract
-from sqlalchemy_mixins import InspectionMixin
+from sqlalchemy.sql import extract, operators
 
 M = TypeVar("M")
 
@@ -492,9 +489,7 @@ def relations(model):
     """classproperty
     Return a `list` of relationship names or the given model"""
     cls = _klass(model)
-    return [
-        c.key for c in cls.__mapper__.attrs if isinstance(c, RelationshipProperty)
-    ]
+    return [c.key for c in cls.__mapper__.attrs if isinstance(c, RelationshipProperty)]
 
 
 def settable_relations(model):
@@ -526,12 +521,7 @@ def hybrid_methods(model):
 
 def filterable_attributes(model):
     cls = _klass(model)
-    return (
-            relations(cls)
-            + columns(cls)
-            + hybrid_properties(cls)
-            + hybrid_methods(cls)
-    )
+    return relations(cls) + columns(cls) + hybrid_properties(cls) + hybrid_methods(cls)
 
 
 def sortable_attributes(model):

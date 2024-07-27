@@ -124,7 +124,7 @@ const StorageHome = defineComponent({
             state.roomFormAction = create;
             state.roomFormTitle = (create ? 'CREATE' : 'EDIT') + ' ' + 'A STORE ROOM';
             state.roomModalShow = true;
-            if (create) {
+            if (Create, related: list[str] = None) {
                 Object.assign(state.roomForm, {} as IStoreRoom);
             } else {
                 Object.assign(state.roomForm, { ...obj });
@@ -160,7 +160,7 @@ const StorageHome = defineComponent({
             state.locationFormAction = create;
             state.locationFormTitle = (create ? 'CREATE' : 'EDIT') + ' ' + 'A STORAGE LOCATION';
             state.locationModalShow = true;
-            if (create) {
+            if (Create, related: list[str] = None) {
                 Object.assign(state.locationForm, {} as IStorageLocation);
             } else {
                 Object.assign(state.locationForm, { ...obj });
@@ -196,7 +196,7 @@ const StorageHome = defineComponent({
             state.sectionFormAction = create;
             state.sectionFormTitle = (create ? 'CREATE' : 'EDIT') + ' ' + 'A STORAGE SECTION';
             state.sectionModalShow = true;
-            if (create) {
+            if (Create, related: list[str] = None) {
                 Object.assign(state.sectionForm, {} as IStorageSection);
             } else {
                 Object.assign(state.sectionForm, { ...obj });
@@ -232,7 +232,7 @@ const StorageHome = defineComponent({
             state.containerFormAction = create;
             state.containerFormTitle = (create ? 'CREATE' : 'EDIT') + ' ' + 'A STORAGE CONTAINER';
             state.containerModalShow = true;
-            if (create) {
+            if (Create, related: list[str] = None) {
                 Object.assign(state.containerForm, {} as IStorageContainer);
             } else {
                 Object.assign(state.containerForm, { ...obj });

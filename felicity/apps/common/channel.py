@@ -4,7 +4,7 @@
 from asyncio import Queue
 from contextlib import asynccontextmanager
 from dataclasses import dataclass, field
-from typing import Any, AsyncIterator, Dict, Set
+from typing import Any, AsyncIterator, Set
 
 
 @dataclass

@@ -32,7 +32,7 @@ add_client_query = """
 
 @pytest.mark.asyncio
 @pytest.mark.order(20)
-async def test_register_client(app, auth_data):
+async def test_register_client(app_gql, auth_data):
     client = {
         "name": fake_engine.name(),
         "code": fake_engine.ssn(),
@@ -42,7 +42,7 @@ async def test_register_client(app, auth_data):
         "consentSms": fake_engine.boolean(),
         "active": True,
     }
-    response = await app.post(
+    response = await app_gql.post(
         "/felicity-gql",
         json={"query": add_client_query, "variables": {"payload": client}},
         headers=auth_data["headers"],

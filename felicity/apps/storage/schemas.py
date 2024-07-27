@@ -34,6 +34,7 @@ class StoreRoomUpdate(StoreRoomBase):
 # StorageLocation Schemas
 #
 
+
 # Shared properties
 class StorageLocationBase(BaseModel):
     name: str | None = None
@@ -62,6 +63,7 @@ class StorageLocationUpdate(StorageLocationBase):
 # StorageSection Schemas
 #
 
+
 # Shared properties
 class StorageSectionBase(BaseModel):
     name: str | None = None
@@ -89,6 +91,7 @@ class StorageSectionUpdate(StorageSectionBase):
 #
 # StorageContainer Schemas
 #
+
 
 # Shared properties
 class StorageContainerBase(BaseModel):

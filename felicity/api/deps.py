@@ -12,9 +12,8 @@ from strawberry.types.info import RootValueType
 
 from felicity.apps.common import schemas as core_schemas  # noqa
 from felicity.apps.user.entities import User
-from felicity.core import get_settings  # noqa
-from felicity.tests.unit.domain.user.test_user_service2 import user_service
 from felicity.apps.user.services import UserService
+from felicity.core import get_settings  # noqa
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

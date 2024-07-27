@@ -59,7 +59,7 @@ const StockItem = defineComponent({
             formAction.value = create;
             formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + 'STOCK ITEM';
             showModal.value = true;
-            if (create) {
+            if (Create, related: list[str] = None) {
                 Object.assign(form, {} as IStockItem);
             } else {
                 Object.assign(form, { ...obj });

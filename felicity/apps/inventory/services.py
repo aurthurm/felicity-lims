@@ -1,12 +1,37 @@
 import sqlalchemy as sa
 
 from felicity.apps.abstract.service import BaseService
-from felicity.apps.inventory.entities import (Hazard, StockAdjustment, StockCategory, StockItem, StockItemVariant, StockLot,
-    StockOrder, StockOrderProduct, StockProductInventory, StockReceipt, StockUnit)
-from felicity.apps.inventory.repository import HazardRepository, StockAdjustmentRepository, StockCategoryRepository, StockItemRepository, StockItemVariantRepository, StockLotRepository, StockOrderProductRepository, StockOrderRepository, StockProductInventoryRepository, StockReceiptRepository, StockUnitRepository
-from felicity.apps.inventory.schemas import HazardCreate, HazardUpdate, StockAdjustmentCreate, StockAdjustmentUpdate, StockCategoryCreate, StockCategoryUpdate, StockItemCreate, StockItemUpdate, StockItemVariantCreate, StockItemVariantUpdate, StockLotCreate, StockLotUpdate, StockOrderCreate, StockOrderProductCreate, StockOrderProductUpdate, StockOrderUpdate, StockProductInventoryCreate, StockProductInventoryUpdate, StockReceiptCreate, StockReceiptUpdate, StockUnitCreate, StockUnitUpdate
+from felicity.apps.inventory.entities import (Hazard, StockAdjustment,
+                                              StockCategory, StockItem,
+                                              StockItemVariant, StockLot,
+                                              StockOrder, StockOrderProduct,
+                                              StockProductInventory,
+                                              StockReceipt, StockUnit)
+from felicity.apps.inventory.repository import (
+    HazardRepository, StockAdjustmentRepository, StockCategoryRepository,
+    StockItemRepository, StockItemVariantRepository, StockLotRepository,
+    StockOrderProductRepository, StockOrderRepository,
+    StockProductInventoryRepository, StockReceiptRepository,
+    StockUnitRepository)
+from felicity.apps.inventory.schemas import (HazardCreate, HazardUpdate,
+                                             StockAdjustmentCreate,
+                                             StockAdjustmentUpdate,
+                                             StockCategoryCreate,
+                                             StockCategoryUpdate,
+                                             StockItemCreate, StockItemUpdate,
+                                             StockItemVariantCreate,
+                                             StockItemVariantUpdate,
+                                             StockLotCreate, StockLotUpdate,
+                                             StockOrderCreate,
+                                             StockOrderProductCreate,
+                                             StockOrderProductUpdate,
+                                             StockOrderUpdate,
+                                             StockProductInventoryCreate,
+                                             StockProductInventoryUpdate,
+                                             StockReceiptCreate,
+                                             StockReceiptUpdate,
+                                             StockUnitCreate, StockUnitUpdate)
 from felicity.database.paging import PageCursor
-
 
 
 class StockItemService(BaseService[StockItem, StockItemCreate, StockItemUpdate]):
@@ -46,7 +71,10 @@ class StockItemVariantService(
     def __init__(self) -> None:
         super().__init__(StockItemVariantRepository)
 
-class StockCategoryService(BaseService[StockCategory, StockCategoryCreate, StockCategoryUpdate]):
+
+class StockCategoryService(
+    BaseService[StockCategory, StockCategoryCreate, StockCategoryUpdate]
+):
     def __init__(self) -> None:
         super().__init__(StockCategoryRepository)
 
@@ -61,16 +89,15 @@ class StockUnitService(BaseService[StockUnit, StockUnitCreate, StockUnitUpdate])
         super().__init__(StockUnitRepository)
 
 
-
-class StockLotService(
-    BaseService[StockLot, StockLotCreate, StockLotUpdate]
-):
+class StockLotService(BaseService[StockLot, StockLotCreate, StockLotUpdate]):
     def __init__(self) -> None:
         super().__init__(StockLotRepository)
 
 
 class StockProductInventoryService(
-    BaseService[StockProductInventory, StockProductInventoryCreate, StockProductInventoryUpdate]
+    BaseService[
+        StockProductInventory, StockProductInventoryCreate, StockProductInventoryUpdate
+    ]
 ):
     def __init__(self) -> None:
         super().__init__(StockProductInventoryRepository)
@@ -124,6 +151,7 @@ class StockReceiptService(
 ):
     def __init__(self) -> None:
         super().__init__(StockReceiptRepository)
+
 
 class StockAdjustmentService(
     BaseService[StockAdjustment, StockAdjustmentCreate, StockAdjustmentUpdate]

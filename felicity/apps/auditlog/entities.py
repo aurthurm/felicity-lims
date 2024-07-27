@@ -1,5 +1,7 @@
 import json
+
 from sqlalchemy import Column, Integer, String, UnicodeText
+
 from felicity.apps.abstract.entity import BaseEntity
 
 

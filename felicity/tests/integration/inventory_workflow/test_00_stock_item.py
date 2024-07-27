@@ -38,12 +38,12 @@
 #
 # @pytest.mark.asyncio
 # @pytest.mark.order(300)
-# async def test_add_stock_item(app, auth_data):
+# async def test_add_stock_item(app_gql, auth_data):
 #     stock_item = {
 #         "name": "Cuvete",
 #         "description": "Chemistry testing cuvette for BS500",
 #     }
-#     response = await app.post(
+#     response = await app_gql.post(
 #         "/felicity-gql",
 #         json={"query": add_stock_item_query, "variables": {"payload": stock_item}},
 #         headers=auth_data["headers"],
@@ -60,12 +60,12 @@
 #
 # @pytest.mark.asyncio
 # @pytest.mark.order(301)
-# async def test_update_stock_item(app, auth_data):
+# async def test_update_stock_item(app_gql, auth_data):
 #     stock_item = {
 #         "name": "Cuvette",
 #         "description": "Chemistry testing cuvette for Mindray BS500",
 #     }
-#     response = await app.post(
+#     response = await app_gql.post(
 #         "/felicity-gql",
 #         json={
 #             "query": update_stock_item_query,

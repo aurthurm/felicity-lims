@@ -7,7 +7,7 @@ from sqlalchemy.orm import relationship
 
 from felicity.apps.abstract import AuditHistory, BaseEntity
 from felicity.apps.billing.enum import (DiscountType, DiscountValueType,
-                                          TransactionKind)
+                                        TransactionKind)
 
 
 class AnalysisPrice(AuditHistory):
@@ -99,6 +99,7 @@ class VoucherCustomer(AuditHistory):
     patient = relationship("Patient", lazy="selectin")
     voucher_code_uid = Column(String, ForeignKey("voucher_code.uid"), nullable=False)
     voucher_code = relationship("VoucherCode", lazy="selectin")
+
 
 """
  Many to Many Link between TestBill and AnalysisRequest

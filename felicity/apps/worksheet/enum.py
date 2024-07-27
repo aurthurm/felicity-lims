@@ -7,6 +7,7 @@ class WorkSheetLayout(StrEnum):
     FLAT: Single Column, can be displayed as Multi Column when needed
     GRID: Multi Column: Specific Rows and Columns
     """
+
     FLAT = auto()
     GRID = auto()
 
@@ -19,6 +20,8 @@ class WorkSheetState(StrEnum):
     EMPTY = auto()  # worksheets without samples
     PENDING = auto()  # worksheets containing at least a single 'pending' analyte
     SUBMITTING = auto()
-    AWAITING = auto()  # worksheets whose analytes are results but not all approved/verified
+    AWAITING = (
+        auto()
+    )  # worksheets whose analytes are results but not all approved/verified
     APPROVING = auto()
     APPROVED = auto()  # worksheets where all analytes are approved/verified

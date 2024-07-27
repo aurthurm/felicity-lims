@@ -32,8 +32,8 @@ BytesScalar = strawberry.scalar(
 class PageInfo:
     has_next_page: bool
     has_previous_page: bool
-    start_cursor: str | None
-    end_cursor: str | None
+    start_cursor: str | None = None
+    end_cursor: str | None = None
 
 
 @strawberry.type

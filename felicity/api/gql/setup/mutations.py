@@ -11,9 +11,11 @@ from felicity.api.gql.setup.types import (CountryType, DistrictType,
 from felicity.api.gql.setup.types.department import DepartmentType
 from felicity.api.gql.types import OperationError
 from felicity.apps.setup import schemas
-from felicity.apps.setup.services import (CountryService, DepartmentService, DistrictService,
-    LaboratoryService, LaboratorySettingService, ManufacturerService, ProvinceService,
-    SupplierService, UnitService)
+from felicity.apps.setup.services import (CountryService, DepartmentService,
+                                          DistrictService, LaboratoryService,
+                                          LaboratorySettingService,
+                                          ManufacturerService, ProvinceService,
+                                          SupplierService, UnitService)
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -179,9 +181,7 @@ class SetupMutations:
         if not uid:
             return OperationError(error="No uid provided to identity update obj")
 
-        lab_setting = await LaboratorySettingService().get(
-            uid=uid
-        )
+        lab_setting = await LaboratorySettingService().get(uid=uid)
         if not lab_setting:
             return OperationError(
                 error=f"Laboratory Setting with uid {uid} not found. Cannot update obj ..."

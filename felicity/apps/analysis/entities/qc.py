@@ -5,8 +5,8 @@ from sqlalchemy import (Boolean, Column, DateTime, Float, ForeignKey, String,
 from sqlalchemy.orm import relationship
 
 from felicity.apps.abstract import AuditUser, BaseEntity
-from felicity.apps.setup.entities.setup import Department
 from felicity.apps.analysis.enum import SampleState
+from felicity.apps.setup.entities.setup import Department
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -95,7 +95,6 @@ class QCLevel(AuditUser):
     # min_value = Column(Float, nullable=True)
     # max_value = Column(Float, nullable=True)
     # allowable_error = Column(Float, nullable=True)
-
 
 
 """

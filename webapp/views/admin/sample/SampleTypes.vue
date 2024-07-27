@@ -23,7 +23,7 @@
     formAction.value = create;
     showModal.value = true;
     formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "SAMPLE TYPE";
-    if (create) {
+    if (Create, related: list[str] = None) {
       Object.assign(form, {} as ISampleType);
     } else {
       Object.assign(form, { ...obj });

@@ -1,29 +1,29 @@
 from typing import List, Optional
 
-import strawberry  # noqa
-
 import sqlalchemy as sa
+import strawberry  # noqa
 
 from felicity.api import deps
 from felicity.api.gql.permissions import IsAuthenticated
 from felicity.api.gql.types import PageInfo
 from felicity.api.gql.user.types import (GroupType, PermissionType,
                                          UserCursorPage, UserEdge, UserType)
-from felicity.apps.user.services import GroupService, PermissionService, UserService
+from felicity.apps.user.services import (GroupService, PermissionService,
+                                         UserService)
 
 
 @strawberry.type
 class UserQuery:
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def user_all(
-            self,
-            info,
-            page_size: int | None = None,
-            after_cursor: str | None = None,
-            before_cursor: str | None = None,
-            text: str | None = None,
-            sort_by: list[str] | None = None,
-    ) -> UserCursorPage:    
+        self,
+        info,
+        page_size: int | None = None,
+        after_cursor: str | None = None,
+        before_cursor: str | None = None,
+        text: str | None = None,
+        sort_by: list[str] | None = None,
+    ) -> UserCursorPage:
         filters = {}
 
         _or_ = dict()

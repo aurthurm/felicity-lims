@@ -3,14 +3,15 @@ from uuid import uuid4
 
 from fastapi import APIRouter, Depends
 
+from felicity.api.deps import get_current_user
 from felicity.apps.analysis.services.analysis import AnalysisService
+from felicity.apps.analytics import schemas as an_schema
 from felicity.apps.analytics.enum import ReportState
 from felicity.apps.analytics.services import ReportMetaService
-from felicity.apps.job.enum import JobAction, JobCategory, JobPriority, JobState
-from felicity.apps.job.services import JobService
-from felicity.api.deps import get_current_user
-from felicity.apps.analytics import schemas as an_schema
 from felicity.apps.job import schemas as job_schemas
+from felicity.apps.job.enum import (JobAction, JobCategory, JobPriority,
+                                    JobState)
+from felicity.apps.job.services import JobService
 from felicity.apps.user.schemas import User
 from felicity.utils.dirs import delete_file, resolve_media_dirs_for
 
@@ -19,8 +20,8 @@ reports = APIRouter(tags=["reports"], prefix="/reports")
 
 @reports.get("")
 async def read_reports(
-        report_servie: Annotated[ReportMetaService, Depends(ReportMetaService)],
-        current_user: Annotated[User, Depends(get_current_user)]
+    report_servie: Annotated[ReportMetaService, Depends(ReportMetaService)],
+    current_user: Annotated[User, Depends(get_current_user)],
 ):
     """
     Retrieve previously generated csv reports.
@@ -31,11 +32,11 @@ async def read_reports(
 
 @reports.post("")
 async def request_report_generation(
-        request_in: an_schema.ReportRequest,
-        report_servie: Annotated[ReportMetaService, Depends(ReportMetaService)],
-        analysis_servie: Annotated[AnalysisService, Depends(AnalysisService)],
-        job_service: Annotated[JobService, Depends(JobService)],
-        current_user: Annotated[User, Depends(get_current_user)],
+    request_in: an_schema.ReportRequest,
+    report_servie: Annotated[ReportMetaService, Depends(ReportMetaService)],
+    analysis_servie: Annotated[AnalysisService, Depends(AnalysisService)],
+    job_service: Annotated[JobService, Depends(JobService)],
+    current_user: Annotated[User, Depends(get_current_user)],
 ) -> Any:
     """
     Generate Reports.
@@ -72,9 +73,9 @@ async def request_report_generation(
 
 @reports.delete("/{report_uid}")
 async def delete_report(
-        report_uid: str,
-        report_servie: Annotated[ReportMetaService, Depends(ReportMetaService)],
-        current_user: Annotated[User, Depends(get_current_user)],
+    report_uid: str,
+    report_servie: Annotated[ReportMetaService, Depends(ReportMetaService)],
+    current_user: Annotated[User, Depends(get_current_user)],
 ):
     report = await report_servie.get(uid=report_uid)
     delete_file(report.location)

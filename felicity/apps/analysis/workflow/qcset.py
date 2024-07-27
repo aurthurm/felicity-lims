@@ -1,9 +1,7 @@
-from felicity.apps.analysis.enum import States
 from felicity.apps.analysis.entities.analysis import QCSet, Sample
 
 
-class CQSetWorkFlowException(Exception):
-    ...
+class CQSetWorkFlowException(Exception): ...
 
 
 class CQSetWorkFlow:
@@ -27,8 +25,7 @@ class CQSetWorkFlow:
             CQSetWorkFlowException if action is not allowed
     """
 
-    def __init__(self):
-        ...
+    def __init__(self): ...
 
     @classmethod
     async def cancel(cls, uid):

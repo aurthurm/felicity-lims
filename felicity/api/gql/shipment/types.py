@@ -11,59 +11,59 @@ from felicity.apps.shipment.entities import ShippedSample
 @strawberry.type
 class ReferralLaboratoryType:
     uid: str
-    name: str | None
-    code: str | None
-    url: str | None
-    username: str | None
-    password: str | None
-    is_reference: bool | None
-    is_referral: bool | None
-    created_by_uid: str | None
-    created_by: UserType | None
-    created_at: str | None
-    updated_by_uid: str | None
-    updated_by: UserType | None
-    updated_at: str | None
+    name: str | None = None
+    code: str | None = None
+    url: str | None = None
+    username: str | None = None
+    password: str | None = None
+    is_reference: bool | None = None
+    is_referral: bool | None = None
+    created_by_uid: str | None = None
+    created_by: UserType | None = None
+    created_at: str | None = None
+    updated_by_uid: str | None = None
+    updated_by: UserType | None = None
+    updated_at: str | None = None
 
 
 @strawberry.type
 class ShipmentType:
     uid: str
-    shipment_id: str | None
-    comment: str | None
-    courier: str | None
-    assigned_count: int | None
-    data: JSONScalar | None
-    samples: list[SampleType] | None
-    shipped_samples: list["ShippedSampleType"] | None
-    state: str | None
-    incoming: bool | None = False
-    laboratory_uid: str | None
-    laboratory: ReferralLaboratoryType | None
-    json_content: JSONScalar | None
-    pdf_content: BytesScalar | None
-    finalised_by_uid: str | None
-    finalised_by: UserType | None
-    date_finalised: datetime | None
-    dispatched_by_uid: str | None
-    dispatched_by: UserType | None
-    date_dispatched: datetime | None
-    recalled_by_uid: str | None
-    recalled_by: UserType | None
-    date_recalled: datetime | None
-    rejected_by_uid: str | None
-    rejected_by: UserType | None
-    date_rejected: datetime | None
-    received_by_uid: str | None
-    received_by: UserType | None
-    date_received: datetime | None
-    created_by_uid: str | None
-    created_by: UserType | None
-    created_at: str | None
-    updated_by_uid: str | None
-    updated_by: UserType | None
-    updated_at: str | None
-    samples: list["SampleType"] | None
+    shipment_id: str | None = None
+    comment: str | None = None
+    courier: str | None = None
+    assigned_count: int | None = None
+    data: JSONScalar | None = None
+    samples: list[SampleType] | None = None
+    shipped_samples: list["ShippedSampleType"] | None = None
+    state: str | None = None
+    incoming: bool = False
+    laboratory_uid: str | None = None
+    laboratory: ReferralLaboratoryType | None = None
+    json_content: JSONScalar | None = None
+    pdf_content: BytesScalar | None = None
+    finalised_by_uid: str | None = None
+    finalised_by: UserType | None = None
+    date_finalised: datetime | None = None
+    dispatched_by_uid: str | None = None
+    dispatched_by: UserType | None = None
+    date_dispatched: datetime | None = None
+    recalled_by_uid: str | None = None
+    recalled_by: UserType | None = None
+    date_recalled: datetime | None = None
+    rejected_by_uid: str | None = None
+    rejected_by: UserType | None = None
+    date_rejected: datetime | None = None
+    received_by_uid: str | None = None
+    received_by: UserType | None = None
+    date_received: datetime | None = None
+    created_by_uid: str | None = None
+    created_by: UserType | None = None
+    created_at: str | None = None
+    updated_by_uid: str | None = None
+    updated_by: UserType | None = None
+    updated_at: str | None = None
+    samples: list["SampleType"] | None = None
 
     @strawberry.field
     async def samples(self, info) -> list["SampleType"] | None:
@@ -92,8 +92,8 @@ class ShipmentEdge:
 @strawberry.type
 class ShipmentCursorPage:
     page_info: PageInfo
-    edges: list[ShipmentEdge] | None
-    items: list[ShipmentType] | None
+    edges: list[ShipmentEdge] | None = None
+    items: list[ShipmentType] | None = None
     total_count: int
 
 
@@ -103,6 +103,6 @@ class ShippedSampleType:
     sample: SampleType
     shipment_uid: str
     shipment: ShipmentType
-    result_notified: bool | None
-    ext_sample_uid: str | None
-    ext_sample_id: str | None
+    result_notified: bool | None = None
+    ext_sample_uid: str | None = None
+    ext_sample_id: str | None = None

@@ -24,13 +24,13 @@
 #
 # @pytest.mark.asyncio
 # @pytest.mark.order(220)
-# async def test_add_storage_section(app, auth_data):
+# async def test_add_storage_section(app_gql, auth_data):
 #     storage_section = {
 #         "storageLocationUid": 1,
 #         "name": "Storage Section 1",
 #         "description": "Storage section one",
 #     }
-#     response = await app.post(
+#     response = await app_gql.post(
 #         "/felicity-gql",
 #         json={
 #             "query": add_storage_section_query,

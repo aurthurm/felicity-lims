@@ -1,8 +1,8 @@
 from .types import (HazardType, StockAdjustmentCursorPage, StockAdjustmentEdge,
                     StockAdjustmentType, StockCategoryType,
                     StockItemCursorPage, StockItemEdge, StockItemType,
-                    StockItemVariantCursorPage, StockItemVariantEdge, StockItemVariantType,
-                    StockOrderCursorPage, StockOrderEdge,
+                    StockItemVariantCursorPage, StockItemVariantEdge,
+                    StockItemVariantType, StockOrderCursorPage, StockOrderEdge,
                     StockOrderProductType, StockOrderType, StockPackagingType,
                     StockTransactionCursorPage, StockTransactionEdge,
                     StockTransactionType, StockUnitType)

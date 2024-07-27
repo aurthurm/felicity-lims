@@ -21,4 +21,3 @@ class OrderState(StrEnum):
     PENDING = auto()  # approved and pending issue
     PROCESSED = auto()  # issued
     DECLINED = auto()
-

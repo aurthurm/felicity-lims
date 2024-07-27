@@ -9,7 +9,7 @@
 #
 # @pytest.mark.asyncio
 # @pytest.mark.order(90)
-# async def test_sample_publish(app, auth_data):
+# async def test_sample_publish(app_gql, auth_data):
 #     add_gql = """
 #        mutation PublishSamples ($samples: [SamplePublishInputType!]!) {
 #         publishSamples(samples: $samples){
@@ -27,7 +27,7 @@
 #       }
 #     """
 #
-#     response = await app.post(
+#     response = await app_gql.post(
 #         "/felicity-gql",
 #         json={
 #             "query": add_gql,
@@ -56,7 +56,7 @@
 #
 # @pytest.mark.asyncio
 # @pytest.mark.order(91)
-# async def test_sample_invalidate(app, auth_data):
+# async def test_sample_invalidate(app_gql, auth_data):
 #     add_gql = """
 #       mutation InvalidateSamples ($samples: [Int!]!) {
 #         invalidateSamples(samples: $samples){
@@ -78,7 +78,7 @@
 #       }
 #     """
 #
-#     response = await app.post(
+#     response = await app_gql.post(
 #         "/felicity-gql",
 #         json={
 #             "query": add_gql,

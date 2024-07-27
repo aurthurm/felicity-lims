@@ -9,9 +9,12 @@ from felicity.api.gql.auth import auth_from_info
 from felicity.api.gql.permissions import IsAuthenticated
 from felicity.api.gql.types import OperationError
 from felicity.apps.analysis import schemas, utils
-from felicity.apps.analysis.services.analysis import (AnalysisCodingService, AnalysisService,
-    ProfileService, SampleTypeService)
-from felicity.apps.analysis.entities.analysis import analysis_method, analysis_sample_type
+from felicity.apps.analysis.entities.analysis import (analysis_method,
+                                                      analysis_sample_type)
+from felicity.apps.analysis.services.analysis import (AnalysisCodingService,
+                                                      AnalysisService,
+                                                      ProfileService,
+                                                      SampleTypeService)
 from felicity.apps.instrument.services import MethodService
 
 logging.basicConfig(level=logging.INFO)
@@ -111,7 +114,7 @@ async def create_analysis(info, payload: AnalysisInputType) -> ProfilesServiceRe
 
 @strawberry.mutation(permission_classes=[IsAuthenticated])
 async def update_analysis(
-        info, uid: str, payload: AnalysisInputType
+    info, uid: str, payload: AnalysisInputType
 ) -> ProfilesServiceResponse:
     felicity_user = await auth_from_info(info)
 
@@ -130,7 +133,7 @@ async def update_analysis(
                 logger.warning(e)
 
     analysis_in = schemas.AnalysisUpdate(**analysis.to_dict(nested=False))
-    analysis = await  AnalysisService().update(analysis.uid, analysis_in)
+    analysis = await AnalysisService().update(analysis.uid, analysis_in)
 
     if payload.sample_types:
         analysis.sample_types.clear()
@@ -149,7 +152,7 @@ async def update_analysis(
                 table=analysis_method,
                 mappings={"method_uid": meth.uid, "analysis_uid": analysis.uid},
             )
-        analysis = await  AnalysisService().get(uid=analysis.uid)
+        analysis = await AnalysisService().get(uid=analysis.uid)
 
     profiles = ProfileService().get_all(analyses___uid=analysis.uid)
 
@@ -160,7 +163,7 @@ async def update_analysis(
 
 @strawberry.mutation(permission_classes=[IsAuthenticated])
 async def create_analysis_mapping(
-        info, payload: AnalysisMappingInputType
+    info, payload: AnalysisMappingInputType
 ) -> AnalysisMappingResponse:
     felicity_user = await auth_from_info(info)
 
@@ -176,15 +179,13 @@ async def create_analysis_mapping(
         incoming[k] = v
 
     obj_in = schemas.AnalysisCodingCreate(**incoming)
-    analysis_mapping = (
-        await AnalysisCodingService().create(obj_in)
-    )
+    analysis_mapping = await AnalysisCodingService().create(obj_in)
     return a_types.AnalysisMappingType(**analysis_mapping.marshal_simple())
 
 
 @strawberry.mutation(permission_classes=[IsAuthenticated])
 async def update_analysis_mapping(
-        info, uid: str, payload: AnalysisMappingInputType
+    info, uid: str, payload: AnalysisMappingInputType
 ) -> AnalysisMappingResponse:
     felicity_user = await auth_from_info(info)
 

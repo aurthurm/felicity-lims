@@ -5,26 +5,29 @@ from typing import Any
 
 import pytz
 from dotenv import load_dotenv
-from pydantic import (AnyHttpUrl, EmailStr, ValidationInfo,
-                      field_validator)
+from pydantic import AnyHttpUrl, EmailStr, ValidationInfo, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 from felicity.utils.env import getenv_boolean, getenv_value
 
-BASE_DIR: str = os.path.abspath(os.path.join(os.path.dirname(__file__), "..")) 
+BASE_DIR: str = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 ENV_FILE: Path = Path(BASE_DIR, "./../.env")
 load_dotenv(dotenv_path=ENV_FILE)
 
 
 class Settings(BaseSettings):
     BASE_DIR: str = BASE_DIR
-    SEEDS_DIR: str = os.path.abspath(os.path.join(BASE_DIR, "lims", "seeds", "data")) 
+    SEEDS_DIR: str = os.path.abspath(os.path.join(BASE_DIR, "lims", "seeds", "data"))
     STATIC_DIR: str = os.path.join(BASE_DIR, "static")
     API_V1_STR: str = "/api/v1"
     ALGORITHM: str = "HS256"
     # secrets.token_urlsafe(32)
-    SECRET_KEY: str = "Eoy7XAjJWnr6PcgFi0FK37XbjXEfx2PdFV8GFbucReDbWiew8T79ob3ZIF3bgYi62THktkoTNdC1SrFyd_k4xQ"
-    REFRESH_SECRET_KEY: str = "KKj6HeSWwizXDnzc1SS_e-PYn3EwA4XuotoOD3J0mvmu1PLdVzbDkAeThJDTQsgYHVgYwbV5PnSbo_ZJZHEMEg"
+    SECRET_KEY: str = (
+        "Eoy7XAjJWnr6PcgFi0FK37XbjXEfx2PdFV8GFbucReDbWiew8T79ob3ZIF3bgYi62THktkoTNdC1SrFyd_k4xQ"
+    )
+    REFRESH_SECRET_KEY: str = (
+        "KKj6HeSWwizXDnzc1SS_e-PYn3EwA4XuotoOD3J0mvmu1PLdVzbDkAeThJDTQsgYHVgYwbV5PnSbo_ZJZHEMEg"
+    )
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 4 * 1  # 4 hours
     REFRESH_TOKEN_EXPIRE_MINUTES: int = 60 * 12 * 1  # 1/2 day / 12 hours
     PROJECT_NAME: str = getenv_value("PROJECT_NAME", "Felicity LIMS")
@@ -70,7 +73,7 @@ class Settings(BaseSettings):
 
     @field_validator("SQLALCHEMY_TEST_DATABASE_URI")
     def assemble_async_test_db_connection(
-            cls, v: str | None, info: ValidationInfo
+        cls, v: str | None, info: ValidationInfo
     ) -> str:
         if isinstance(v, str):
             return v

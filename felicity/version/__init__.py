@@ -1,3 +1,3 @@
 from felicity.version.version import FelicityVersion
 
-__all__ = ['FelicityVersion']
+__all__ = ["FelicityVersion"]

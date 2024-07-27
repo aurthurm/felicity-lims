@@ -1,5 +1,6 @@
 from enum import StrEnum, auto
 
+
 class DiscountType(StrEnum):
     SALE = auto()
     VOUCHER = auto()

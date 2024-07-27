@@ -12,48 +12,48 @@ class ClientType:
     uid: str
     name: str
     code: str
-    district_uid: str | None
-    district: Optional[DistrictType]
-    province_uid: str | None
-    province: Optional[ProvinceType]
-    email: str | None
-    email_cc: str | None
+    district_uid: str | None = None
+    district: Optional[DistrictType] = None
+    province_uid: str | None = None
+    province: Optional[ProvinceType] = None
+    email: str | None = None
+    email_cc: str | None = None
     consent_email: bool
-    phone_mobile: str | None
-    phone_business: str | None
+    phone_mobile: str | None = None
+    phone_business: str | None = None
     consent_sms: bool
     internal_use: bool
     active: bool
     #
-    created_by_uid: str | None
-    created_by: UserType | None
-    created_at: str | None
-    updated_by_uid: str | None
-    updated_by: UserType | None
-    updated_at: str | None
+    created_by_uid: str | None = None
+    created_by: UserType | None = None
+    created_at: str | None = None
+    updated_by_uid: str | None = None
+    updated_by: UserType | None = None
+    updated_at: str | None = None
 
 
 @strawberry.type
 class ClientContactType:
     uid: str
-    first_name: str | None
-    last_name: str | None
-    email: str | None
-    mobile_phone: str | None
-    business_phone: str | None
-    is_active: bool | None
-    email: str | None
-    email_cc: str | None
+    first_name: str | None = None
+    last_name: str | None = None
+    email: str | None = None
+    mobile_phone: str | None = None
+    business_phone: str | None = None
+    is_active: bool | None = None
+    email: str | None = None
+    email_cc: str | None = None
     consent_sms: bool
     client_uid: str
-    client: Optional[ClientType]
+    client: Optional[ClientType] = None
     #
-    created_at: str | None
-    creator_name: str | None
-    creator_uid: str | None
-    updated_at: str | None
-    updator_name: str | None
-    updator_uid: str | None
+    created_at: str | None = None
+    creator_name: str | None = None
+    creator_uid: str | None = None
+    updated_at: str | None = None
+    updator_name: str | None = None
+    updator_uid: str | None = None
 
 
 #  relay paginations
@@ -66,6 +66,6 @@ class ClientEdge:
 @strawberry.type
 class ClientCursorPage:
     page_info: PageInfo
-    edges: Optional[List[ClientEdge]]
-    items: Optional[List[ClientType]]
+    edges: Optional[List[ClientEdge]] = None
+    items: Optional[List[ClientType]] = None
     total_count: int

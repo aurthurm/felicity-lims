@@ -9,8 +9,9 @@ from felicity.api.gql.auth import auth_from_info
 from felicity.api.gql.permissions import IsAuthenticated
 from felicity.api.gql.types import OperationError
 from felicity.apps.analysis import schemas
-from felicity.apps.analysis.services.analysis import (AnalysisService, ResultOptionService,
-    SampleTypeService)
+from felicity.apps.analysis.services.analysis import (AnalysisService,
+                                                      ResultOptionService,
+                                                      SampleTypeService)
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -58,9 +59,7 @@ async def create_result_option(
             incoming[k] = v
 
     obj_in = schemas.ResultOptionCreate(**incoming)
-    result_option = (
-        await ResultOptionService().create(obj_in)
-    )
+    result_option = await ResultOptionService().create(obj_in)
 
     if payload.sample_types:
         for _st_uid in payload.sample_types:
@@ -94,7 +93,9 @@ async def update_result_option(
                 logger.warning(e)
 
     result_option_in = schemas.ResultOptionUpdate(**result_option.to_dict())
-    result_option = await ResultOptionService().update(result_option.uid, result_option_in)
+    result_option = await ResultOptionService().update(
+        result_option.uid, result_option_in
+    )
 
     if payload.sample_types:
         result_option.sample_types.clear()

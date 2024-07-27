@@ -1,9 +1,10 @@
 import logging
 
 from sqlalchemy import Boolean, Column, ForeignKey, String, Table
-from sqlalchemy.orm import  relationship
+from sqlalchemy.orm import relationship
 
 from felicity.apps.abstract.entity import BaseEntity
+
 from .abstract import AbstractBaseUser
 
 logging.basicConfig(level=logging.INFO)
@@ -11,8 +12,6 @@ logger = logging.getLogger(__name__)
 
 
 # TODO: Refactor User to LaboratoryContact, UserAuth to ContactAuth
-
-
 
 
 """
@@ -48,14 +47,12 @@ class User(AbstractBaseUser):
     )
 
 
-
 class Permission(BaseEntity):
     __tablename__ = "permission"
 
     action = Column(String, nullable=False)  # e.g create, modify
     target = Column(String, nullable=False)  # e.g sample, worksheet
     active = Column(Boolean(), default=True)
-
 
 
 class Group(BaseEntity):

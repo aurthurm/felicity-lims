@@ -6,12 +6,13 @@ from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import relationship
 
 from felicity.apps.abstract.audit import AuditHistory
+from felicity.apps.abstract.entity import BaseEntity
 from felicity.apps.shipment import enum, schemas
 from felicity.apps.user.entities import User
-from felicity.apps.abstract.entity import BaseEntity
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
 
 class ReferralLaboratory(AuditHistory):
     __tablename__ = "referral_laboratory"
@@ -62,6 +63,7 @@ class Shipment(AuditHistory):
     json_content: dict = Column(JSONB, nullable=True)
     pdf_content = Column(LargeBinary, nullable=True)
 
+
 class ShippedSample(BaseEntity):
     """ShippedSample enables samples to be shipped multiple times
     A sample can be tracked through different shipments from inception to end
@@ -76,4 +78,3 @@ class ShippedSample(BaseEntity):
     result_notified = Column(Boolean(), default=False)
     ext_sample_uid = Column(String, nullable=True)
     ext_sample_id = Column(String, nullable=True)
-

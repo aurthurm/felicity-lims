@@ -3,22 +3,23 @@ from typing import List
 
 import strawberry  # noqa
 
-from felicity.apps.analysis.enum import ResultState
-from felicity.apps.job.enum import JobAction, JobCategory, JobPriority, JobState
-from felicity.apps.worksheet.enum import WorkSheetState
 from felicity.api.gql.analysis.types import results as r_types
 from felicity.api.gql.auth import auth_from_info
 from felicity.api.gql.permissions import (CanVerifyAnalysisResult,
                                           IsAuthenticated)
 from felicity.api.gql.types import OperationError, OperationSuccess
+from felicity.apps.analysis.enum import ResultState
+from felicity.apps.analysis.services.analysis import SampleService
+from felicity.apps.analysis.services.result import AnalysisResultService
 from felicity.apps.analysis.utils import retest_from_result_uids
 from felicity.apps.job import schemas as job_schemas
-from felicity.apps.worksheet import enum as ws_conf
-from felicity.apps.analysis.services.result import AnalysisResultService
+from felicity.apps.job.enum import (JobAction, JobCategory, JobPriority,
+                                    JobState)
 from felicity.apps.job.services import JobService
-from felicity.apps.worksheet.services import WorkSheetService
-from felicity.apps.analysis.services.analysis import SampleService
 from felicity.apps.notification.services import ActivityStreamService
+from felicity.apps.worksheet import enum as ws_conf
+from felicity.apps.worksheet.enum import WorkSheetState
+from felicity.apps.worksheet.services import WorkSheetService
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -53,10 +54,10 @@ AnalysisResultOperationResponse = strawberry.union(
 
 @strawberry.mutation(permission_classes=[IsAuthenticated])
 async def submit_analysis_results(
-        info,
-        analysis_results: List[ARResultInputType],
-        source_object: str,
-        source_object_uid: str,
+    info,
+    analysis_results: List[ARResultInputType],
+    source_object: str,
+    source_object_uid: str,
 ) -> AnalysisResultOperationResponse:
     felicity_user = await auth_from_info(info)
 
@@ -67,10 +68,7 @@ async def submit_analysis_results(
 
     # set status of these analysis_results to SUBMITTING
     await AnalysisResultService().bulk_update_with_mappings(
-        [
-            {"uid": _ar["uid"], "status": ResultState.SUBMITTING}
-            for _ar in an_results
-        ]
+        [{"uid": _ar["uid"], "status": ResultState.SUBMITTING} for _ar in an_results]
     )
 
     # submit an results as jobs
@@ -88,7 +86,9 @@ async def submit_analysis_results(
 
     if source_object == "worksheet" and source_object_uid:
         ws = await WorkSheetService().get(uid=source_object_uid)
-        await WorkSheetService().change_state(ws.uid, WorkSheetState.SUBMITTING, felicity_user.uid)
+        await WorkSheetService().change_state(
+            ws.uid, WorkSheetState.SUBMITTING, felicity_user.uid
+        )
     # elif source_object == "sample" and source_object_uid:
     #     sa = await SampleService().get(uid=source_object_uid)
     #     await sa.change_status("processing", felicity_user.uid)
@@ -100,7 +100,7 @@ async def submit_analysis_results(
 
 @strawberry.mutation(permission_classes=[CanVerifyAnalysisResult])
 async def verify_analysis_results(
-        info, analyses: list[str], source_object: str, source_object_uid: str
+    info, analyses: list[str], source_object: str, source_object_uid: str
 ) -> AnalysisResultOperationResponse:
     felicity_user = await auth_from_info(info)
 
@@ -126,7 +126,9 @@ async def verify_analysis_results(
 
     if source_object == "worksheet" and source_object_uid:
         ws = await WorkSheetService().get(uid=source_object_uid)
-        await WorkSheetService().change_state(ws.uid, WorkSheetState.APPROVING, felicity_user.uid)
+        await WorkSheetService().change_state(
+            ws.uid, WorkSheetState.APPROVING, felicity_user.uid
+        )
     # elif source_object == "sample" and source_object_uid:
     #     sa = await SampleService().get(uid=source_object_uid)
     #     await sa.change_status("APPROVING", felicity_user.uid)
@@ -140,33 +142,31 @@ async def verify_analysis_results(
 async def retract_analysis_results(info, analyses: list[str]) -> AnalysisResultResponse:
     felicity_user = await auth_from_info(info)
 
-    return_results = []
-
     if len(analyses) == 0:
         return OperationError(error=f"No analyses to retract are provided!")
 
+    return_results = []
     for _ar_uid in analyses:
-        a_result = await AnalysisResultService().get(
-            uid=_ar_uid
-        )
+        a_result = await AnalysisResultService().get_related(uid=_ar_uid, related=["sample"])
         if not a_result:
             return OperationError(error=f"AnalysisResult with uid {_ar_uid} not found")
 
         retest, a_result = await AnalysisResultService().retest_result(
-            a_result.uid,
-            retested_by=felicity_user, next_action="retract"
+            a_result.uid, retested_by=felicity_user, next_action="retract"
         )
 
         # monkeypatch -> notify of sample state
         sample = await SampleService().get(uid=a_result.sample_uid)
-        await ActivityStreamService().stream(sample, felicity_user, sample.status, "sample")
+        await ActivityStreamService().stream(
+            sample, felicity_user, sample.status, "sample"
+        )
 
         # if in worksheet then keep add retest to ws
         if a_result.worksheet_uid:
             retest.worksheet_uid = a_result.worksheet_uid
             retest.worksheet_position = a_result.worksheet_position
             retest.assigned = True
-            retest = await AnalysisResultService().save(retest)
+            retest = await AnalysisResultService().save(retest, related=["sample"])
 
         # add retest
         if retest:
@@ -189,9 +189,14 @@ async def retest_analysis_results(info, analyses: list[str]) -> AnalysisResultRe
     # monkeypatch -> notify of sample state
     for result in originals:
         sample = await SampleService().get(uid=result.sample_uid)
-        await ActivityStreamService().stream(sample, felicity_user, sample.status, "sample")
-
-    return ResultListingType(results=retests + originals)
+        await ActivityStreamService().stream(
+            sample, felicity_user, sample.status, "sample"
+        )
+    _all = [
+        (await AnalysisResultService().get_related(related=["sample"], uid=res.uid))
+        for res in (retests + originals)
+    ]
+    return ResultListingType(results=_all)
 
 
 @strawberry.mutation(permission_classes=[IsAuthenticated])
@@ -204,9 +209,7 @@ async def cancel_analysis_results(info, analyses: list[str]) -> AnalysisResultRe
         return OperationError(error=f"No analyses to Retest are provided!")
 
     for _ar_uid in analyses:
-        a_result = await AnalysisResultService().get(
-            uid=_ar_uid
-        )
+        a_result = await AnalysisResultService().get(uid=_ar_uid)
         if not a_result:
             return OperationError(error=f"AnalysisResult with uid {_ar_uid} not found")
 
@@ -215,16 +218,21 @@ async def cancel_analysis_results(info, analyses: list[str]) -> AnalysisResultRe
             return_results.append(a_result)
             continue
 
-        a_result = await AnalysisResultService().cancel(a_result.uid, cancelled_by=felicity_user)
+        a_result = await AnalysisResultService().cancel(
+            a_result.uid, cancelled_by=felicity_user
+        )
         if a_result:
             return_results.append(a_result)
-
-    return ResultListingType(results=return_results)
+    _all = [
+        (await AnalysisResultService().get_related(related=["sample"], uid=res.uid))
+        for res in return_results
+    ]
+    return ResultListingType(results=_all)
 
 
 @strawberry.mutation(permission_classes=[IsAuthenticated])
 async def re_instate_analysis_results(
-        info, analyses: list[str]
+    info, analyses: list[str]
 ) -> AnalysisResultResponse:
     felicity_user = await auth_from_info(info)
 
@@ -234,14 +242,18 @@ async def re_instate_analysis_results(
         return OperationError(error=f"No analyses to Reinstate are provided!")
 
     for _ar_uid in analyses:
-        a_result = await AnalysisResultService().get(
-            uid=_ar_uid
-        )
+        a_result = await AnalysisResultService().get(uid=_ar_uid)
         if not a_result:
             return OperationError(error=f"AnalysisResult with uid {_ar_uid} not found")
 
-        a_result = await AnalysisResultService().re_instate(a_result.uid, re_instated_by=felicity_user)
+        a_result = await AnalysisResultService().re_instate(
+            a_result.uid, re_instated_by=felicity_user
+        )
         if a_result:
             return_results.append(a_result)
 
-    return ResultListingType(results=return_results)
+    _all = [
+        (await AnalysisResultService().get_related(related=["sample"], uid=res.uid))
+        for res in return_results
+    ]
+    return ResultListingType(results=_all)

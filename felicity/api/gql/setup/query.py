@@ -12,7 +12,11 @@ from felicity.api.gql.setup.types import (CountryType, DistrictCursorPage,
                                           ProvinceType, SupplierType, UnitType)
 from felicity.api.gql.setup.types.department import DepartmentType
 from felicity.api.gql.types import PageInfo
-from felicity.apps.setup.services import CountryService, DepartmentService, DistrictService, LaboratoryService, LaboratorySettingService, ManufacturerService, ProvinceService, SupplierService, UnitService
+from felicity.apps.setup.services import (CountryService, DepartmentService,
+                                          DistrictService, LaboratoryService,
+                                          LaboratorySettingService,
+                                          ManufacturerService, ProvinceService,
+                                          SupplierService, UnitService)
 from felicity.utils import has_value_or_is_truthy
 
 

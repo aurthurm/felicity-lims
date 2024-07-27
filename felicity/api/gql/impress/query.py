@@ -4,18 +4,18 @@ from functools import lru_cache
 from typing import List
 
 import strawberry  # noqa
-from PyPDF2 import PdfWriter
 from pdf2image import convert_from_bytes
+from PyPDF2 import PdfWriter
 
 from felicity.api.gql.impress.types import ReportImpressType
 from felicity.api.gql.permissions import IsAuthenticated
 from felicity.api.gql.types import BytesScalar
+from felicity.apps.analysis.services.analysis import SampleService
 from felicity.apps.analysis.utils import QC_SAMPLE
+from felicity.apps.client.services import ClientService
 from felicity.apps.impress.barcode.schema import BarCode, BarCodeMeta
 from felicity.apps.impress.barcode.utils import impress_barcodes
 from felicity.apps.impress.services import ReportImpressService
-from felicity.apps.analysis.services.analysis import SampleService
-from felicity.apps.client.services import ClientService
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -25,13 +25,13 @@ logger = logging.getLogger(__name__)
 class ReportImpressQuery:
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def impress_reports_meta(
-            self, info, uids: List[str]
+        self, info, uids: List[str]
     ) -> List[ReportImpressType]:
         return await ReportImpressService().get_all(sample_uid__in=uids)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def impress_reports_download(
-            self, info, uids: List[str]
+        self, info, uids: List[str]
     ) -> BytesScalar | None:
         """Fetch Latest report given sample id"""
         items = await ReportImpressService().get_all(sample_uid__in=uids)
@@ -83,7 +83,9 @@ class ReportImpressQuery:
         return report.pdf_content
 
     @strawberry.field(permission_classes=[IsAuthenticated])
-    async def barcode_samples(self, info, sample_uids: list[str]) -> list[BytesScalar] | None:
+    async def barcode_samples(
+        self, info, sample_uids: list[str]
+    ) -> list[BytesScalar] | None:
         samples = await SampleService().get_all(uid__in=sample_uids)
 
         @lru_cache
@@ -94,7 +96,7 @@ class ReportImpressQuery:
         for _s in samples:
             barcode = BarCode(
                 barcode=_s.sample_id,
-                metadata=[BarCodeMeta(label="Sample Type", value=_s.sample_type.name)]
+                metadata=[BarCodeMeta(label="Sample Type", value=_s.sample_type.name)],
             )
             if _s.sample_type.name == QC_SAMPLE.get("name"):
                 barcode.metadata.append(

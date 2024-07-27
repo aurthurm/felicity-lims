@@ -1,8 +1,7 @@
 import logging
 
-from felicity.apps.user import entities, schemas
+from felicity.apps.user import schemas
 from felicity.apps.user.services import GroupService, PermissionService
-from felicity.apps.common.utils.serializer import marshaller
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -246,10 +245,16 @@ async def seed_group_permissions_defaults() -> None:
                 action__exact=action, target__exact=obj
             )
             for role in roles:
-                group= await group_service.get(name=role)
+                group = await group_service.get(name=role)
                 if permission.uid not in [p.uid for p in group.permissions]:
                     group.permissions.append(permission)
                     group.pages = "DASHBOARD"
                     if group.name == FGroup.ADMINISTRATOR:
                         group.pages += ", ADMINISTRATION"
                     await group_service.save(group)
+
+
+async def seed_groups_perms() -> None:
+    await seed_groups() 
+    await seed_permissions()
+    await seed_group_permissions_defaults()

@@ -2,19 +2,24 @@ import logging
 from datetime import datetime
 
 from felicity.apps.analysis import utils
+from felicity.apps.analysis.entities.analysis import analysis_profile
 from felicity.apps.analysis.schemas import (AnalysisCategoryCreate,
                                             AnalysisCreate, ProfileCreate,
                                             QCLevelCreate,
                                             RejectionReasonCreate,
                                             SampleTypeCreate)
-from felicity.apps.analysis.entities.analysis import analysis_profile
-from felicity.apps.analysis.services.analysis import AnalysisCategoryService, AnalysisService, CodingStandardService, ProfileService, RejectionReasonService, SampleTypeService
+from felicity.apps.analysis.services.analysis import (AnalysisCategoryService,
+                                                      AnalysisService,
+                                                      CodingStandardService,
+                                                      ProfileService,
+                                                      RejectionReasonService,
+                                                      SampleTypeService)
 from felicity.apps.analysis.services.quality_control import QCLevelService
-from felicity.apps.setup.schemas import UnitCreate
 from felicity.apps.idsequencer.service import IdSequenceService
-
+from felicity.apps.setup.schemas import UnitCreate
 from felicity.apps.setup.services import DepartmentService, UnitService
 from felicity.core.config import get_settings
+
 from .data import get_seeds
 
 settings = get_settings()
@@ -26,7 +31,7 @@ units = {}
 
 async def unit_resolver(name: str, description=""):
     unit_service = UnitService()
-    
+
     if not name or name is None:
         return None
 
@@ -174,7 +179,7 @@ async def seed_analyses_services_and_profiles() -> None:
             prof_in = ProfileCreate(
                 name=_prf.get("name"),
                 description=_prf.get("description"),
-                department_uid=department.uid if department else None
+                department_uid=department.uid if department else None,
             )
             a_profile = await profile_servide.create(prof_in)
 
@@ -185,10 +190,7 @@ async def seed_analyses_services_and_profiles() -> None:
             if anal and anal.uid not in [a.uid for a in p_analyses]:
                 await profile_servide.repository.table_insert(
                     analysis_profile,
-                    mappings={
-                        "analysis_uid": anal.uid,
-                        "profile_uid": a_profile.uid
-                    }
+                    mappings={"analysis_uid": anal.uid, "profile_uid": a_profile.uid},
                 )
 
         await utils.billing_setup_profiles([a_profile.uid])

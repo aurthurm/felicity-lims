@@ -21,7 +21,7 @@
 #
 # @pytest.mark.asyncio
 # @pytest.mark.order(340)
-# async def test_create_stock_order(app, auth_data):
+# async def test_create_stock_order(app_gql, auth_data):
 #     add_stock_order_mutation = """
 #       mutation AddStockOrder($payload: StockOrderInputType!){
 #           createStockOrder(payload: $payload) {
@@ -54,7 +54,7 @@
 #             {"productUid": 5, "quantity": 5},
 #         ]
 #     }
-#     response = await app.post(
+#     response = await app_gql.post(
 #         "/felicity-gql",
 #         json={"query": add_stock_order_mutation, "variables": {"payload": stock_order}},
 #         headers=auth_data["headers"],
@@ -79,7 +79,7 @@
 #
 # @pytest.mark.asyncio
 # @pytest.mark.order(341)
-# async def test_update_stock_order(app, auth_data):
+# async def test_update_stock_order(app_gql, auth_data):
 #     add_stock_order_mutation = """
 #       mutation EditStockOrder($uid: Int!, $payload: [StockOrderProductLineInputType!]!){
 #           updateStockOrder(uid: $uid, payload: $payload) {
@@ -109,7 +109,7 @@
 #         {"productUid": 3, "quantity": 6},
 #         {"productUid": 4, "quantity": 5},
 #     ]
-#     response = await app.post(
+#     response = await app_gql.post(
 #         "/felicity-gql",
 #         json={
 #             "query": add_stock_order_mutation,

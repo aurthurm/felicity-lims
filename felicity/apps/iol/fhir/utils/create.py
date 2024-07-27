@@ -2,16 +2,18 @@ import logging
 
 from fastapi import Request
 
-from felicity.apps.job.services import JobService
-from felicity.apps.shipment.services import ShipmentService, ReferralLaboratoryService
 from felicity.apps.iol.fhir.schema import (BundleResource,
                                            DiagnosticReportResource,
                                            PatientResource, Reference,
                                            ServiceRequestResource)
-from felicity.apps.job.enum import JobAction, JobCategory, JobPriority, JobState
+from felicity.apps.job.enum import (JobAction, JobCategory, JobPriority,
+                                    JobState)
 from felicity.apps.job.schemas import JobCreate
+from felicity.apps.job.services import JobService
 from felicity.apps.shipment.enum import ShipmentState
 from felicity.apps.shipment.schemas import ShipmentCreate
+from felicity.apps.shipment.services import (ReferralLaboratoryService,
+                                             ShipmentService)
 from felicity.apps.user.entities import User
 
 logging.basicConfig(level=logging.INFO)
@@ -19,13 +21,15 @@ logger = logging.getLogger(__name__)
 
 
 async def create_resource(
-        resource_type: str,
-        resource_data: BundleResource
-                       | PatientResource
-                       | ServiceRequestResource
-                       | DiagnosticReportResource,
-        request: Request,
-        current_user: User,
+    resource_type: str,
+    resource_data: (
+        BundleResource
+        | PatientResource
+        | ServiceRequestResource
+        | DiagnosticReportResource
+    ),
+    request: Request,
+    current_user: User,
 ):
     logger.info(f"create resource {resource_type} ..................")
     resource_mappings = {
@@ -38,7 +42,7 @@ async def create_resource(
 
 
 async def create_bundle(
-        resource_data: BundleResource, request: Request, current_user: User
+    resource_data: BundleResource, request: Request, current_user: User
 ):
     logger.info(f"Bundle data:...")
     if resource_data.extension[0].valueString == "shipment":
@@ -48,7 +52,7 @@ async def create_bundle(
 
 
 async def create_inbound_shipment(
-        payload: BundleResource, request: Request, current_user: User
+    payload: BundleResource, request: Request, current_user: User
 ):
     """Create inbound shipment from bundle"""
     shipment_service = ShipmentService()
@@ -98,7 +102,7 @@ async def resolve_ref_laboratory(ref: Reference, request: Request):
 
 
 async def create_diagnostic_report(
-        diagnostic_data: DiagnosticReportResource, request: Request, current_user: User
+    diagnostic_data: DiagnosticReportResource, request: Request, current_user: User
 ):
     job_service = JobService()
     job_schema = JobCreate(

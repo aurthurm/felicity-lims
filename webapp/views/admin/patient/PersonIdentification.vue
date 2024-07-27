@@ -32,7 +32,7 @@ function FormManager(create: boolean, obj = {} as IIdentification): void {
   formAction.value = create;
   showModal.value = true;
   formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "PERSON IDENTIFICATION";
-  if (create) {
+  if (Create, related: list[str] = None) {
     Object.assign(form, {} as IIdentification);
   } else {
     Object.assign(form, { ...obj });

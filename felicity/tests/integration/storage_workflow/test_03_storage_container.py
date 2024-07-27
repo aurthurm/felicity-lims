@@ -27,14 +27,14 @@
 #
 # @pytest.mark.asyncio
 # @pytest.mark.order(230)
-# async def test_add_storage_container(app, auth_data):
+# async def test_add_storage_container(app_gql, auth_data):
 #     storage_container = {
 #         "storageSectionUid": 1,
 #         "name": "Storage Location 1",
 #         "description": "Storage section one",
 #         "slots": 100,
 #     }
-#     response = await app.post(
+#     response = await app_gql.post(
 #         "/felicity-gql",
 #         json={
 #             "query": add_storage_container_query,

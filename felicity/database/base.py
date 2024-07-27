@@ -1,9 +1,11 @@
+from felicity.apps.abstract.entity import BaseEntity  # noqa
 from felicity.apps.analysis.entities.analysis import Analysis  # noqa
 from felicity.apps.analysis.entities.analysis import AnalysisCategory  # noqa
 from felicity.apps.analysis.entities.analysis import AnalysisCoding  # noqa
 from felicity.apps.analysis.entities.analysis import AnalysisInterim  # noqa
 from felicity.apps.analysis.entities.analysis import AnalysisRequest  # noqa
-from felicity.apps.analysis.entities.analysis import AnalysisUncertainty  # noqa
+from felicity.apps.analysis.entities.analysis import \
+    AnalysisUncertainty  # noqa
 from felicity.apps.analysis.entities.analysis import CodingStandard  # noqa
 from felicity.apps.analysis.entities.analysis import Profile  # noqa
 from felicity.apps.analysis.entities.analysis import ProfileCoding  # noqa
@@ -85,4 +87,3 @@ from felicity.apps.user.entities import User  # noqa
 from felicity.apps.user.entities import UserPreference  # noqa
 from felicity.apps.worksheet.entities import WorkSheet  # noqa
 from felicity.apps.worksheet.entities import WorkSheetTemplate  # noqa
-from felicity.apps.abstract.entity import BaseEntity  # noqa

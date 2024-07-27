@@ -36,16 +36,14 @@ add_patient_query = """
 
 @pytest.mark.asyncio
 @pytest.mark.order(30)
-async def test_register_patient(app, auth_data, clients):
+async def test_register_patient(app_gql, auth_data, clients):
     patient = {
         "clientPatientId": fake_engine.ssn(),
         "firstName": fake_engine.first_name(),
         "middleName": fake_engine.first_name(),
         "lastName": fake_engine.last_name(),
         "age": random.randint(1, 90),
-        "gender": random.choice(
-            [Sex.MALE, Sex.FEMALE, Sex.TRANS_GENDER, Sex.MISSING]
-        ),
+        "gender": random.choice([Sex.MALE, Sex.FEMALE, Sex.TRANS_GENDER, Sex.MISSING]),
         "dateOfBirth": str(fake_engine.date_time()),
         "ageDobEstimated": fake_engine.boolean(),
         "clientUid": clients[0]["uid"],  # cl_data[0]["uid"],
@@ -54,7 +52,7 @@ async def test_register_patient(app, auth_data, clients):
         "consentSms": fake_engine.boolean(),
     }
 
-    response = await app.post(
+    response = await app_gql.post(
         "/felicity-gql",
         json={"query": add_patient_query, "variables": {"payload": patient}},
         headers=auth_data["headers"],

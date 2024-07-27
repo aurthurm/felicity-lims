@@ -123,9 +123,9 @@ class FelicityInvoice:
 
         # Customer Details
         full_name = (
-                get_from_nested(customer, "first_name")
-                + " "
-                + get_from_nested(customer, "last_name")
+            get_from_nested(customer, "first_name")
+            + " "
+            + get_from_nested(customer, "last_name")
         )
         self.pdf.set_font("arial", "B", 14.0)
         self.pdf.set_xy(20, 55)

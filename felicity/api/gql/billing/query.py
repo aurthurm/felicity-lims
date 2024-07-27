@@ -6,7 +6,14 @@ import strawberry  # noqa
 from felicity.api.gql.billing import types
 from felicity.api.gql.permissions import IsAuthenticated
 from felicity.api.gql.types import BytesScalar, PageInfo
-from felicity.apps.billing.services import AnalysisDiscountService, AnalysisPriceService, ProfileDiscountService, ProfilePriceService, TestBillInvoiceService, TestBillService, TestBillTransactionService, VoucherCodeService, VoucherService
+from felicity.apps.billing.services import (AnalysisDiscountService,
+                                            AnalysisPriceService,
+                                            ProfileDiscountService,
+                                            ProfilePriceService,
+                                            TestBillInvoiceService,
+                                            TestBillService,
+                                            TestBillTransactionService,
+                                            VoucherCodeService, VoucherService)
 from felicity.apps.impress.invoicing.utils import impress_invoice
 from felicity.utils import has_value_or_is_truthy
 
@@ -89,7 +96,9 @@ class BillingQuery:
     async def bill_transactions(
         self, info, bill_uid: str
     ) -> Optional[list[types.TestBillTransactionType]]:
-        transactions = await TestBillTransactionService().get_all(test_bill_uid=bill_uid)
+        transactions = await TestBillTransactionService().get_all(
+            test_bill_uid=bill_uid
+        )
         return sorted(transactions, key=lambda t: t.uid, reverse=True)
 
     @strawberry.field(permission_classes=[IsAuthenticated])

@@ -7,8 +7,9 @@ from felicity.api.gql.auth import auth_from_info
 from felicity.api.gql.permissions import IsAuthenticated
 from felicity.api.gql.types import OperationError
 from felicity.apps.analysis import schemas
-from felicity.apps.analysis.services.analysis import (AnalysisCorrectionFactorService,
-    AnalysisDetectionLimitService, AnalysisInterimService, AnalysisSpecificationService,
+from felicity.apps.analysis.services.analysis import (
+    AnalysisCorrectionFactorService, AnalysisDetectionLimitService,
+    AnalysisInterimService, AnalysisSpecificationService,
     AnalysisUncertaintyService)
 
 logging.basicConfig(level=logging.INFO)
@@ -110,9 +111,7 @@ async def create_analysis_interim(
         incoming[k] = v
 
     obj_in = schemas.AnalysisInterimCreate(**incoming)
-    interim = (
-        await AnalysisInterimService().create(obj_in)
-    )
+    interim = await AnalysisInterimService().create(obj_in)
     return a_types.AnalysisInterimType(**interim.marshal_simple())
 
 
@@ -122,7 +121,6 @@ async def update_analysis_interim(
 ) -> AnalysisInterimResponse:
 
     felicity_user = await auth_from_info(info)
-
 
     interim = await AnalysisInterimService().get(uid=uid)
     if not interim:
@@ -158,9 +156,7 @@ async def create_analysis_correction_factor(
         incoming[k] = v
 
     obj_in = schemas.AnalysisCorrectionFactorCreate(**incoming)
-    correction_factor = (
-        await AnalysisCorrectionFactorService().create(obj_in)
-    )
+    correction_factor = await AnalysisCorrectionFactorService().create(obj_in)
     return a_types.AnalysisCorrectionFactorType(**correction_factor.marshal_simple())
 
 
@@ -188,7 +184,9 @@ async def update_analysis_correction_factor(
     analysis_in = schemas.AnalysisCorrectionFactorUpdate(
         **correction_factor.to_dict(nested=False)
     )
-    correction_factor = await AnalysisCorrectionFactorService().update(correction_factor.uid, analysis_in)
+    correction_factor = await AnalysisCorrectionFactorService().update(
+        correction_factor.uid, analysis_in
+    )
     return a_types.AnalysisCorrectionFactorType(**correction_factor.marshal_simple())
 
 
@@ -207,9 +205,7 @@ async def create_analysis_detection_limit(
         incoming[k] = v
 
     obj_in = schemas.AnalysisDetectionLimitCreate(**incoming)
-    detection_limit = (
-        await AnalysisDetectionLimitService().create(obj_in)
-    )
+    detection_limit = await AnalysisDetectionLimitService().create(obj_in)
     return a_types.AnalysisDetectionLimitType(**detection_limit.marshal_simple())
 
 
@@ -237,7 +233,9 @@ async def update_analysis_detection_limit(
     analysis_in = schemas.AnalysisDetectionLimitUpdate(
         **detection_limit.to_dict(nested=False)
     )
-    detection_limit = await AnalysisDetectionLimitService().update(detection_limit.uid, analysis_in)
+    detection_limit = await AnalysisDetectionLimitService().update(
+        detection_limit.uid, analysis_in
+    )
     return a_types.AnalysisDetectionLimitType(**detection_limit.marshal_simple())
 
 
@@ -256,9 +254,7 @@ async def create_analysis_uncertainty(
         incoming[k] = v
 
     obj_in = schemas.AnalysisUncertaintyCreate(**incoming)
-    uncertainty = (
-        await AnalysisUncertaintyService().create(obj_in)
-    )
+    uncertainty = await AnalysisUncertaintyService().create(obj_in)
     return a_types.AnalysisUncertaintyType(**uncertainty.marshal_simple())
 
 
@@ -284,7 +280,9 @@ async def update_analysis_uncertainty(
                 logger.warning(e)
 
     analysis_in = schemas.AnalysisUncertaintyUpdate(**uncertainty.to_dict(nested=False))
-    uncertainty = await AnalysisUncertaintyService().update(uncertainty.uid, analysis_in)
+    uncertainty = await AnalysisUncertaintyService().update(
+        uncertainty.uid, analysis_in
+    )
     return a_types.AnalysisUncertaintyType(**uncertainty.marshal_simple())
 
 
@@ -309,9 +307,7 @@ async def create_analysis_specification(
         incoming[k] = v
 
     obj_in = schemas.AnalysisSpecificationCreate(**incoming)
-    specification = (
-        await AnalysisSpecificationService().create(obj_in)
-    )
+    specification = await AnalysisSpecificationService().create(obj_in)
     return a_types.AnalysisSpecificationType(**specification.marshal_simple())
 
 
@@ -339,5 +335,7 @@ async def update_analysis_specification(
     analysis_in = schemas.AnalysisSpecificationUpdate(
         **specification.to_dict(nested=False)
     )
-    specification = await AnalysisSpecificationService().update(specification.uid, analysis_in)
+    specification = await AnalysisSpecificationService().update(
+        specification.uid, analysis_in
+    )
     return a_types.AnalysisSpecificationType(**specification.marshal_simple())

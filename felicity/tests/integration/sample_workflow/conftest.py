@@ -2,21 +2,16 @@ import logging
 
 import pytest_asyncio
 from faker import Faker
-from sqlalchemy.ext.asyncio import create_async_engine
-
-from felicity.core.config import settings
 
 fake_engine = Faker()
-
-engine = create_async_engine(settings.SQLALCHEMY_TEST_DATABASE_URI)
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
 @pytest_asyncio.fixture(scope="function")
-async def clients(app, auth_data):
-    response = await app.post(
+async def clients(app_gql, auth_data):
+    response = await app_gql.post(
         "felicity-gql",
         json={
             "query": """
@@ -35,8 +30,8 @@ async def clients(app, auth_data):
 
 
 @pytest_asyncio.fixture(scope="function")
-async def client_contacts(app, auth_data, clients):
-    response = await app.post(
+async def client_contacts(app_gql, auth_data, clients):
+    response = await app_gql.post(
         "felicity-gql",
         json={
             "query": """
@@ -56,8 +51,8 @@ async def client_contacts(app, auth_data, clients):
 
 
 @pytest_asyncio.fixture(scope="function")
-async def sample_types(app, auth_data):
-    response = await app.post(
+async def sample_types(app_gql, auth_data):
+    response = await app_gql.post(
         "felicity-gql",
         json={
             "query": """
@@ -74,8 +69,8 @@ async def sample_types(app, auth_data):
 
 
 @pytest_asyncio.fixture(scope="function")
-async def methods(app, auth_data):
-    response = await app.post(
+async def methods(app_gql, auth_data):
+    response = await app_gql.post(
         "felicity-gql",
         json={
             "query": """
@@ -94,8 +89,8 @@ async def methods(app, auth_data):
 
 
 @pytest_asyncio.fixture(scope="function")
-async def instruments(app, auth_data):
-    response = await app.post(
+async def instruments(app_gql, auth_data):
+    response = await app_gql.post(
         "felicity-gql",
         json={
             "query": """
@@ -103,6 +98,7 @@ async def instruments(app, auth_data):
                 instrumentAll {
                     items {
                         uid
+                        name
                     }
                 }
             }
@@ -114,8 +110,28 @@ async def instruments(app, auth_data):
 
 
 @pytest_asyncio.fixture(scope="function")
-async def analyses(app, auth_data):
-    response = await app.post(
+async def laboratory_instruments(app_gql, auth_data):
+    response = await app_gql.post(
+        "felicity-gql",
+        json={
+            "query": """
+            query GetLabInstruments {
+                laboratoryInstrumentAll {
+                    items {
+                        uid
+                    }
+                }
+            }
+        """
+        },
+        headers=auth_data["headers"],
+    )
+    return response.json()["data"]["laboratoryInstrumentAll"]["items"]
+
+
+@pytest_asyncio.fixture(scope="function")
+async def analyses(app_gql, auth_data):
+    response = await app_gql.post(
         "felicity-gql",
         json={
             "query": """
@@ -134,8 +150,8 @@ async def analyses(app, auth_data):
 
 
 @pytest_asyncio.fixture(scope="function")
-async def profiles(app, auth_data):
-    response = await app.post(
+async def profiles(app_gql, auth_data):
+    response = await app_gql.post(
         "felicity-gql",
         json={
             "query": """
@@ -152,8 +168,8 @@ async def profiles(app, auth_data):
 
 
 @pytest_asyncio.fixture(scope="function")
-async def patients(app, auth_data):
-    response = await app.post(
+async def patients(app_gql, auth_data):
+    response = await app_gql.post(
         "felicity-gql",
         json={
             "query": """
@@ -172,8 +188,8 @@ async def patients(app, auth_data):
 
 
 @pytest_asyncio.fixture(scope="function")
-async def users_db(app, auth_data):
-    response = await app.post(
+async def users_db(app_gql, auth_data):
+    response = await app_gql.post(
         "felicity-gql",
         json={
             "query": """
@@ -192,8 +208,8 @@ async def users_db(app, auth_data):
 
 
 @pytest_asyncio.fixture(scope="function")
-async def ws_templates(app, auth_data):
-    response = await app.post(
+async def ws_templates(app_gql, auth_data):
+    response = await app_gql.post(
         "felicity-gql",
         json={
             "query": """
@@ -210,8 +226,8 @@ async def ws_templates(app, auth_data):
 
 
 @pytest_asyncio.fixture(scope="function")
-async def worksheets(app, auth_data):
-    response = await app.post(
+async def worksheets(app_gql, auth_data):
+    response = await app_gql.post(
         "felicity-gql",
         json={
             "query": """
@@ -230,8 +246,8 @@ async def worksheets(app, auth_data):
 
 
 @pytest_asyncio.fixture(scope="function")
-async def jobs(app, auth_data):
-    response = await app.post(
+async def jobs(app_gql, auth_data):
+    response = await app_gql.post(
         "felicity-gql",
         json={
             "query": """
@@ -250,8 +266,8 @@ async def jobs(app, auth_data):
 
 
 @pytest_asyncio.fixture(scope="function")
-async def samples(app, auth_data):
-    response = await app.post(
+async def samples(app_gql, auth_data):
+    response = await app_gql.post(
         "felicity-gql",
         json={
             "query": """
@@ -272,4 +288,5 @@ async def samples(app, auth_data):
         },
         headers=auth_data["headers"],
     )
+    print(response.json())
     return response.json()["data"]["sampleAll"]["items"]

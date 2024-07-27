@@ -40,7 +40,7 @@ function FormManager(create: boolean, obj = {} as IReflexRule): void {
   formAction.value = create;
   showModal.value = true;
   formTitle.value = (create ? "CREATE" : "EDIT") + " " + "REFLEX RULE";
-  if (create) {
+  if (Create, related: list[str] = None) {
     Object.assign(form, {} as IReflexRule);
   } else {
     Object.assign(form, { ...obj });

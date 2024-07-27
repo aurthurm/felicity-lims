@@ -8,11 +8,11 @@ from felicity.apps.analysis.entities.analysis import Sample
 from felicity.apps.analysis.entities.results import AnalysisResult
 from felicity.apps.analysis.enum import ResultState, SampleState
 from felicity.apps.analytics import EntityAnalyticsInit
-from felicity.apps.user.entities import User
-from felicity.apps.worksheet.enum import WorkSheetState
-from felicity.apps.worksheet.entities import WorkSheet
-from felicity.utils import has_value_or_is_truthy
 from felicity.apps.instrument.services import LaboratoryInstrumentService
+from felicity.apps.user.entities import User
+from felicity.apps.worksheet.entities import WorkSheet
+from felicity.apps.worksheet.enum import WorkSheetState
+from felicity.utils import has_value_or_is_truthy
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -137,7 +137,7 @@ async def count_worksheet_group_by_status(info) -> types.GroupedCounts:
 
 @strawberry.field(permission_classes=[IsAuthenticated])
 async def count_analyte_group_by_instrument(
-        info, start_date: str | None = None, end_date: str | None = None
+    info, start_date: str | None = None, end_date: str | None = None
 ) -> types.GroupedCounts:
     analytics = EntityAnalyticsInit(AnalysisResult)
     results = await analytics.get_counts_group_by(
@@ -157,7 +157,7 @@ async def count_analyte_group_by_instrument(
 
 @strawberry.field(permission_classes=[IsAuthenticated])
 async def count_sample_group_by_action(
-        info, start_date: str | None = None, end_date: str | None = None
+    info, start_date: str | None = None, end_date: str | None = None
 ) -> types.GroupedData:
     analytics = EntityAnalyticsInit(Sample)
     created = await analytics.get_counts_group_by(
@@ -207,7 +207,7 @@ async def count_sample_group_by_action(
 
 @strawberry.field(permission_classes=[IsAuthenticated])
 async def sample_process_performance(
-        info, start_date: str, end_date: str
+    info, start_date: str, end_date: str
 ) -> types.ProcessStatistics:
     analytics = EntityAnalyticsInit(Sample)
     received_to_published = await analytics.get_sample_process_performance(
@@ -282,7 +282,7 @@ async def sample_process_performance(
 
 @strawberry.field(permission_classes=[IsAuthenticated])
 async def analysis_process_performance(
-        info, process: str, start_date: str, end_date: str
+    info, process: str, start_date: str, end_date: str
 ) -> types.ProcessStatistics:
     analytics = EntityAnalyticsInit(Sample)
     processes = [

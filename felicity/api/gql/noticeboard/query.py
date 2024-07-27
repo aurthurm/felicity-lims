@@ -1,10 +1,11 @@
 from typing import List, Optional
+
 import strawberry  # noqa
 
 from felicity.api.gql.noticeboard.types import NoticeType
 from felicity.api.gql.permissions import IsAuthenticated
-from felicity.core.dtz import get_time_now
 from felicity.apps.noticeboard.services import NoticeService
+from felicity.core.dtz import get_time_now
 
 
 @strawberry.type
@@ -15,7 +16,9 @@ class NoticeQuery:
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def notices_by_creator(self, info, uid: str) -> Optional[List[NoticeType]]:
-        return await NoticeService().get_all(created_by_uid=uid, expiry__gt=get_time_now(str_format=False))
+        return await NoticeService().get_all(
+            created_by_uid=uid, expiry__gt=get_time_now(str_format=False)
+        )
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def notice_filter(
@@ -36,7 +39,5 @@ class NoticeQuery:
             filters=filters, sort_attrs=["-created_at"]
         )
 
-        notices = (
-            (await NoticeService().session.execute(notice_stmt)).scalars().all()
-        )
+        notices = (await NoticeService().session.execute(notice_stmt)).scalars().all()
         return list(notices)

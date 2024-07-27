@@ -33,9 +33,7 @@ class StreamNotificationQuery:
         )
 
         notifications = (
-            (await NotificationService().session.execute(notif_stmt))
-            .scalars()
-            .all()
+            (await NotificationService().session.execute(notif_stmt)).scalars().all()
         )
         return list(notifications)
 

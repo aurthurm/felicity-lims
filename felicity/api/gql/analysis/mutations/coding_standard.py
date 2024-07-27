@@ -49,9 +49,7 @@ async def create_coding_standard(
         incoming[k] = v
 
     obj_in = schemas.CodingStandardCreate(**incoming)
-    coding_standard = (
-        await CodingStandardService().create(obj_in)
-    )
+    coding_standard = await CodingStandardService().create(obj_in)
     return a_types.CodingStandardType(**coding_standard.marshal_simple())
 
 
@@ -75,5 +73,7 @@ async def update_coding_standard(
                 logger.warning(e)
 
     coding_standard_in = schemas.CodingStandardUpdate(**coding_standard.to_dict())
-    coding_standard = await CodingStandardService().update(coding_standard.uid, coding_standard_in)
+    coding_standard = await CodingStandardService().update(
+        coding_standard.uid, coding_standard_in
+    )
     return a_types.CodingStandardType(**coding_standard.marshal_simple())

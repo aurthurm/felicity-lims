@@ -1,5 +1,5 @@
-from felicity.apps.job.entities import Job
 from felicity.apps.abstract.repository import BaseRepository
+from felicity.apps.job.entities import Job
 
 
 class JobRepository(BaseRepository[Job]):

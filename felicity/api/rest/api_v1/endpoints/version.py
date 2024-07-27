@@ -67,5 +67,5 @@ async def upgrade() -> Any:
     return {
         "version": FelicityVersion.version,
         "updates": [{"tag": "v0.1.0", "changes": "change 1\nchange 2"}],
-        "message": "This functionality is not available yet"
+        "message": "This functionality is not available yet",
     }

@@ -15,23 +15,27 @@ class StockItemType:
     uid: str
     name: str
     category_uid: str | None = None
-    category: Optional["StockCategoryType"]
+    category: Optional["StockCategoryType"] = None
     hazard_uid: str | None = None
-    hazard: Optional["HazardType"]
-    minimum_level: int | None
-    maximum_level: int | None
-    description: str | None
-    created_at: str | None
-    created_by_uid: str | None
-    created_by: UserType | None
-    updated_at: str | None
-    updated_by_uid: str | None
-    updated_by: UserType | None
+    hazard: Optional["HazardType"] = None
+    minimum_level: int | None = None
+    maximum_level: int | None = None
+    description: str | None = None
+    created_at: str | None = None
+    created_by_uid: str | None = None
+    created_by: UserType | None = None
+    updated_at: str | None = None
+    updated_by_uid: str | None = None
+    updated_by: UserType | None = None
 
     @strawberry.field
     async def variants(self, info) -> List[Optional["StockItemVariantType"]]:
-        stock_item_variants = await entities.StockItemVariant.get_all(stock_item_uid=self.uid)
-        return [StockItemVariantType(**siv.marshal_simple()) for siv in stock_item_variants]
+        stock_item_variants = await entities.StockItemVariant.get_all(
+            stock_item_uid=self.uid
+        )
+        return [
+            StockItemVariantType(**siv.marshal_simple()) for siv in stock_item_variants
+        ]
 
 
 @strawberry.type
@@ -43,8 +47,8 @@ class StockItemEdge:
 @strawberry.type
 class StockItemCursorPage:
     page_info: PageInfo
-    edges: Optional[List[StockItemEdge]]
-    items: Optional[List[StockItemType]]
+    edges: Optional[List[StockItemEdge]] = None
+    items: Optional[List[StockItemType]] = None
     total_count: int
 
 
@@ -52,17 +56,17 @@ class StockItemCursorPage:
 class StockItemVariantType:
     uid: str
     name: str
-    stock_item_uid: str | None
-    stock_item: Optional[StockItemType]
-    minimum_level: int | None
-    maximum_level: int | None
-    description: str | None
-    created_at: str | None
-    created_by_uid: str | None
-    created_by: UserType | None
-    updated_at: str | None
-    updated_by_uid: str | None
-    updated_by: UserType | None
+    stock_item_uid: str | None = None
+    stock_item: Optional[StockItemType] = None
+    minimum_level: int | None = None
+    maximum_level: int | None = None
+    description: str | None = None
+    created_at: str | None = None
+    created_by_uid: str | None = None
+    created_by: UserType | None = None
+    updated_at: str | None = None
+    updated_by_uid: str | None = None
+    updated_by: UserType | None = None
     quantity: int
 
     @strawberry.field
@@ -83,8 +87,8 @@ class StockItemVariantEdge:
 @strawberry.type
 class StockItemVariantCursorPage:
     page_info: PageInfo
-    edges: Optional[List[StockItemVariantType]]
-    items: Optional[List[StockItemVariantType]]
+    edges: Optional[List[StockItemVariantType]] = None
+    items: Optional[List[StockItemVariantType]] = None
     total_count: int
 
 
@@ -92,26 +96,26 @@ class StockItemVariantCursorPage:
 class StockCategoryType:
     uid: str
     name: str
-    description: str | None
-    created_at: str | None
-    created_by_uid: str | None
-    created_by: UserType | None
-    updated_at: str | None
-    updated_by_uid: str | None
-    updated_by: UserType | None
+    description: str | None = None
+    created_at: str | None = None
+    created_by_uid: str | None = None
+    created_by: UserType | None = None
+    updated_at: str | None = None
+    updated_by_uid: str | None = None
+    updated_by: UserType | None = None
 
 
 @strawberry.type
 class HazardType:
     uid: str
     name: str
-    description: str | None
-    created_at: str | None
-    created_by_uid: str | None
-    created_by: UserType | None
-    updated_at: str | None
-    updated_by_uid: str | None
-    updated_by: UserType | None
+    description: str | None = None
+    created_at: str | None = None
+    created_by_uid: str | None = None
+    created_by: UserType | None = None
+    updated_at: str | None = None
+    updated_by_uid: str | None = None
+    updated_by: UserType | None = None
 
 
 @strawberry.type
@@ -120,42 +124,41 @@ class StockUnitType:
     name: str
     description: str
     synonyms: str
-    created_at: str | None
-    created_by_uid: str | None
-    created_by: UserType | None
-    updated_at: str | None
-    updated_by_uid: str | None
-    updated_by: UserType | None
+    created_at: str | None = None
+    created_by_uid: str | None = None
+    created_by: UserType | None = None
+    updated_at: str | None = None
+    updated_by_uid: str | None = None
+    updated_by: UserType | None = None
 
 
 @strawberry.type
 class StockPackagingType:
     uid: str
     name: str
-    created_at: str | None
-    created_by_uid: str | None
-    created_by: UserType | None
-    updated_at: str | None
-    updated_by_uid: str | None
-    updated_by: UserType | None
+    created_at: str | None = None
+    created_by_uid: str | None = None
+    created_by: UserType | None = None
+    updated_at: str | None = None
+    updated_by_uid: str | None = None
+    updated_by: UserType | None = None
 
 
 @strawberry.type
 class StockLotType:
     uid: str
     product_uid: str
-    product: Optional[StockItemVariantType]
+    product: Optional[StockItemVariantType] = None
     lot_number: str
     expiry_date: datetime
-    remarks: str | None
+    remarks: str | None = None
     quantity: int
 
     @strawberry.field
     async def quantity(self, info) -> int:
         total = 0
         inventories = await entities.StockProductInventory.get_all(
-            product_uid=self.product_uid,
-            stock_lot_uid=self.uid
+            product_uid=self.product_uid, stock_lot_uid=self.uid
         )
         for inv in inventories:
             total += inv.quantity
@@ -171,8 +174,8 @@ class StockLotEdge:
 @strawberry.type
 class StockLotCursorPage:
     page_info: PageInfo
-    edges: Optional[List[StockLotEdge]]
-    items: Optional[List[StockLotType]]
+    edges: Optional[List[StockLotEdge]] = None
+    items: Optional[List[StockLotType]] = None
     total_count: int
 
 
@@ -180,11 +183,11 @@ class StockLotCursorPage:
 class StockProductInventoryType:
     uid: str
     product_uid: str
-    product: Optional[StockItemVariantType]
+    product: Optional[StockItemVariantType] = None
     stock_lot_uid: str
-    stock_lot: Optional[StockLotType]
+    stock_lot: Optional[StockLotType] = None
     quantity: int
-    remarks: str | None
+    remarks: str | None = None
 
 
 @strawberry.type
@@ -196,29 +199,29 @@ class StockProductInventoryEdge:
 @strawberry.type
 class StockProductInventoryCursorPage:
     page_info: PageInfo
-    edges: Optional[List[StockProductInventoryEdge]]
-    items: Optional[List[StockProductInventoryType]]
+    edges: Optional[List[StockProductInventoryEdge]] = None
+    items: Optional[List[StockProductInventoryType]] = None
     total_count: int
 
 
 @strawberry.type
 class StockOrderType:
     uid: str
-    fulfilled_by_uid: str | None
-    fulfilled_by: UserType | None
-    order_by_uid: str | None
-    order_by: UserType | None
-    department_uid: str | None
-    department: Optional[DepartmentType]
-    status: str | None
-    remarks: str | None
-    order_number: str | None
-    created_at: str | None
-    created_by_uid: str | None
-    created_by: UserType | None
-    updated_at: str | None
-    updated_by_uid: str | None
-    updated_by: UserType | None
+    fulfilled_by_uid: str | None = None
+    fulfilled_by: UserType | None = None
+    order_by_uid: str | None = None
+    order_by: UserType | None = None
+    department_uid: str | None = None
+    department: Optional[DepartmentType] = None
+    status: str | None = None
+    remarks: str | None = None
+    order_number: str | None = None
+    created_at: str | None = None
+    created_by_uid: str | None = None
+    created_by: UserType | None = None
+    updated_at: str | None = None
+    updated_by_uid: str | None = None
+    updated_by: UserType | None = None
 
 
 @strawberry.type
@@ -230,54 +233,54 @@ class StockOrderEdge:
 @strawberry.type
 class StockOrderCursorPage:
     page_info: PageInfo
-    edges: Optional[List[StockOrderEdge]]
-    items: Optional[List[StockOrderType]]
+    edges: Optional[List[StockOrderEdge]] = None
+    items: Optional[List[StockOrderType]] = None
     total_count: int
 
 
 @strawberry.type
 class StockOrderProductType:
     uid: str
-    product_uid: str | None
-    product: Optional[StockItemVariantType]
+    product_uid: str | None = None
+    product: Optional[StockItemVariantType] = None
     stock_lot_uid: str
-    stock_lot: Optional[StockLotType]
-    order_uid: str | None
-    order: Optional[StockOrderType]
-    quantity: int | None
-    created_at: str | None
-    created_by_uid: str | None
-    created_by: UserType | None
-    updated_at: str | None
-    updated_by_uid: str | None
-    updated_by: UserType | None
+    stock_lot: Optional[StockLotType] = None
+    order_uid: str | None = None
+    order: Optional[StockOrderType] = None
+    quantity: int | None = None
+    created_at: str | None = None
+    created_by_uid: str | None = None
+    created_by: UserType | None = None
+    updated_at: str | None = None
+    updated_by_uid: str | None = None
+    updated_by: UserType | None = None
 
 
 @strawberry.type
 class StockReceiptType:
     uid: str
-    product_uid: str | None
-    product: Optional[StockItemVariantType]
-    stock_lot_uid: str | None
-    stock_lot: Optional[StockLotType]
+    product_uid: str | None = None
+    product: Optional[StockItemVariantType] = None
+    stock_lot_uid: str | None = None
+    stock_lot: Optional[StockLotType] = None
     unit_price: float
     total_price: float
-    supplier_uid: str | None
-    supplier: Optional[SupplierType]
+    supplier_uid: str | None = None
+    supplier: Optional[SupplierType] = None
     unit_uid: str
-    unit: Optional[StockUnitType]
+    unit: Optional[StockUnitType] = None
     # number of non packages received
-    singles_received: int | None
+    singles_received: int | None = None
     # number of packages received
-    packages_received: int | None
+    packages_received: int | None = None
     # number of units in the package
-    package_factor: int | None
-    # total quantity received 
-    quantity_received: int | None
+    package_factor: int | None = None
+    # total quantity received
+    quantity_received: int | None = None
     # receipt_type can be a purchase, transfer, return
     receipt_type: str
     receipt_by_uid: str
-    receipt_by: Optional[UserType]
+    receipt_by: Optional[UserType] = None
     receipt_date: datetime
 
 
@@ -290,26 +293,26 @@ class StockReceiptEdge:
 @strawberry.type
 class StockReceiptCursorPage:
     page_info: PageInfo
-    edges: Optional[List[StockReceiptEdge]]
-    items: Optional[List[StockReceiptType]]
+    edges: Optional[List[StockReceiptEdge]] = None
+    items: Optional[List[StockReceiptType]] = None
     total_count: int
 
 
 @strawberry.type
 class StockIssueType:
     uid: str
-    product_uid: str | None
-    product: Optional[StockItemVariantType]
-    stock_lot_uid: str | None
-    stock_lot: Optional[StockLotType]
+    product_uid: str | None = None
+    product: Optional[StockItemVariantType] = None
+    stock_lot_uid: str | None = None
+    stock_lot: Optional[StockLotType] = None
     issued: int
     issued_to_uid: str
-    issued_to: Optional[UserType]
+    issued_to: Optional[UserType] = None
     department_uid: str
-    department: Optional[DepartmentType]
+    department: Optional[DepartmentType] = None
     date_issued: datetime
     issue_by_uid: str
-    issue_by: Optional[UserType]
+    issue_by: Optional[UserType] = None
 
 
 @strawberry.type
@@ -321,30 +324,30 @@ class StockIssueEdge:
 @strawberry.type
 class StockIssueCursorPage:
     page_info: PageInfo
-    edges: Optional[List[StockIssueEdge]]
-    items: Optional[List[StockIssueType]]
+    edges: Optional[List[StockIssueEdge]] = None
+    items: Optional[List[StockIssueType]] = None
     total_count: int
 
 
 @strawberry.type
 class StockTransactionType:
     uid: str
-    product_uid: str | None
-    product: Optional[StockItemVariantType]
-    issued: int | None
-    issued_to_uid: str | None
-    issued_to: UserType | None
-    department_uid: str | None
-    department: Optional[DepartmentType]
-    date_issued: datetime | None
-    transaction_by_uid: str | None
-    transaction_by: UserType | None
-    created_at: str | None
-    created_by_uid: str | None
-    created_by: UserType | None
-    updated_at: str | None
-    updated_by_uid: str | None
-    updated_by: UserType | None
+    product_uid: str | None = None
+    product: Optional[StockItemVariantType] = None
+    issued: int | None = None
+    issued_to_uid: str | None = None
+    issued_to: UserType | None = None
+    department_uid: str | None = None
+    department: Optional[DepartmentType] = None
+    date_issued: datetime | None = None
+    transaction_by_uid: str | None = None
+    transaction_by: UserType | None = None
+    created_at: str | None = None
+    created_by_uid: str | None = None
+    created_by: UserType | None = None
+    updated_at: str | None = None
+    updated_by_uid: str | None = None
+    updated_by: UserType | None = None
 
 
 @strawberry.type
@@ -356,32 +359,32 @@ class StockTransactionEdge:
 @strawberry.type
 class StockTransactionCursorPage:
     page_info: PageInfo
-    edges: Optional[List[StockTransactionEdge]]
-    items: Optional[List[StockTransactionType]]
+    edges: Optional[List[StockTransactionEdge]] = None
+    items: Optional[List[StockTransactionType]] = None
     total_count: int
 
 
 @strawberry.type
 class StockAdjustmentType:
     uid: str
-    product_uid: str | None
-    product: Optional[StockItemVariantType]
-    stock_lot_uid: str | None
-    stock_lot: Optional[StockLotType]
-    adjustment_type: str | None
-    adjust: int | None
-    adjustment_date: str | None
-    remarks: str | None
-    adjustment_by_uid: str | None
-    adjustment_by: UserType | None
-    adjustment_for_uid: str | None
-    adjustment_for: UserType | None
-    created_at: str | None
-    created_by_uid: str | None
-    created_by: UserType | None
-    updated_at: str | None
-    updated_by_uid: str | None
-    updated_by: UserType | None
+    product_uid: str | None = None
+    product: Optional[StockItemVariantType] = None
+    stock_lot_uid: str | None = None
+    stock_lot: Optional[StockLotType] = None
+    adjustment_type: str | None = None
+    adjust: int | None = None
+    adjustment_date: str | None = None
+    remarks: str | None = None
+    adjustment_by_uid: str | None = None
+    adjustment_by: UserType | None = None
+    adjustment_for_uid: str | None = None
+    adjustment_for: UserType | None = None
+    created_at: str | None = None
+    created_by_uid: str | None = None
+    created_by: UserType | None = None
+    updated_at: str | None = None
+    updated_by_uid: str | None = None
+    updated_by: UserType | None = None
 
 
 @strawberry.type
@@ -393,6 +396,6 @@ class StockAdjustmentEdge:
 @strawberry.type
 class StockAdjustmentCursorPage:
     page_info: PageInfo
-    edges: Optional[List[StockAdjustmentEdge]]
-    items: Optional[List[StockAdjustmentType]]
+    edges: Optional[List[StockAdjustmentEdge]] = None
+    items: Optional[List[StockAdjustmentType]] = None
     total_count: int

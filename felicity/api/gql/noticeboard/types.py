@@ -9,15 +9,15 @@ from felicity.api.gql.user.types import GroupType, UserType
 @strawberry.type
 class NoticeType:
     uid: str
-    departments: Optional[List[DepartmentType]]
-    groups: Optional[List[GroupType]]
+    departments: Optional[List[DepartmentType]] = None
+    groups: Optional[List[GroupType]] = None
     title: str
     body: str
-    viewers: list[UserType] | None
+    viewers: list[UserType] | None = None
     expiry: str  # datetime
-    created_at: str | None
-    created_by_uid: str | None
-    created_by: UserType | None
-    updated_at: str | None
-    updated_by_uid: str | None
-    updated_by: UserType | None
+    created_at: str | None = None
+    created_by_uid: str | None = None
+    created_by: UserType | None = None
+    updated_at: str | None = None
+    updated_by_uid: str | None = None
+    updated_by: UserType | None = None

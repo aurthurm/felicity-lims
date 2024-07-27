@@ -1,25 +1,26 @@
 import sqlalchemy as sa
-from felicity.apps.common.utils.serializer import marshaller
-from felicity.core.security import (
-    get_password_hash,
-    password_check,
-    verify_password
-)
+
 from felicity.apps.abstract.service import BaseService
 from felicity.apps.common.utils import is_valid_email
+from felicity.apps.common.utils.serializer import marshaller
 from felicity.apps.user.entities import Group, Permission, User, UserPreference
-from felicity.apps.user.repository import (GroupRepository, PermissionRepository,
-    UserPreferenceRepository, UserRepository)
+from felicity.apps.user.repository import (GroupRepository,
+                                           PermissionRepository,
+                                           UserPreferenceRepository,
+                                           UserRepository)
 from felicity.apps.user.schemas import (GroupCreate, GroupUpdate,
-    PermissionCreate, PermissionUpdate, UserCreate, UserPreferenceCreate, UserPreferenceUpdate,
-    UserUpdate)
+                                        PermissionCreate, PermissionUpdate,
+                                        UserCreate, UserPreferenceCreate,
+                                        UserPreferenceUpdate, UserUpdate)
+from felicity.core.security import (get_password_hash, password_check,
+                                    verify_password)
 
 
 class UserService(BaseService[User, UserCreate, UserUpdate]):
     def __init__(self) -> None:
         super().__init__(UserRepository)
 
-    async def create(self, user_in: UserCreate) -> User:
+    async def create(self, user_in: UserCreate, related: list[str] = None) -> User:
         by_username = await self.get_by_username(user_in.user_name)
         if by_username:
             raise Exception("Username already exist")
@@ -30,7 +31,7 @@ class UserService(BaseService[User, UserCreate, UserUpdate]):
         data = self._import(user_in)
         del data["password"]
         data["hashed_password"] = hashed_password
-        return await super().create(data)
+        return await super().create(data, related=related)
 
     async def update(self, user_uid: str, user_in: UserUpdate) -> User:
         update_data = self._import(user_in)
@@ -81,7 +82,7 @@ class UserService(BaseService[User, UserCreate, UserUpdate]):
         if not user:
             return None
         return user
-    
+
     async def get_by_username(self, username) -> User:
         return await self.get(user_name=username)
 
@@ -110,9 +111,7 @@ class UserService(BaseService[User, UserCreate, UserUpdate]):
         await super().update(user_uid, user_in)
 
     async def link_preference(self, user_uid: str, preference_uid):
-        _update = {
-            "preference_uid": preference_uid
-        }
+        _update = {"preference_uid": preference_uid}
         update_in = UserUpdate(**_update)
         return await super().update(user_uid, update_in)
 
@@ -120,13 +119,15 @@ class UserService(BaseService[User, UserCreate, UserUpdate]):
 class GroupService(BaseService[Group, GroupCreate, GroupUpdate]):
     def __init__(self):
         super().__init__(GroupRepository)
-  
+
 
 class PermissionService(BaseService[Permission, PermissionCreate, PermissionUpdate]):
     def __init__(self):
         super().__init__(PermissionRepository)
 
 
-class UserPreferenceService(BaseService[UserPreference, UserPreferenceCreate, UserPreferenceUpdate]):
+class UserPreferenceService(
+    BaseService[UserPreference, UserPreferenceCreate, UserPreferenceUpdate]
+):
     def __init__(self) -> None:
         super().__init__(UserPreferenceRepository)

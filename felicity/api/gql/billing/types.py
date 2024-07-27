@@ -11,7 +11,8 @@ from felicity.api.gql.patient.types import PatientType
 from felicity.api.gql.types import BytesScalar, JSONScalar, PageInfo
 from felicity.api.gql.user.types import UserType
 from felicity.apps.analysis.entities.analysis import AnalysisRequest
-from felicity.apps.billing.entities import TestBill, VoucherCode, test_bill_item
+from felicity.apps.billing.entities import (TestBill, VoucherCode,
+                                            test_bill_item)
 
 
 @strawberry.type
@@ -21,12 +22,12 @@ class AnalysisPriceType:
     analysis: AnalysisType
     is_active: bool
     amount: float
-    created_at: str | None
-    created_by_uid: str | None
-    created_by: UserType | None
-    updated_at: str | None
-    updated_by_uid: str | None
-    updated_by: UserType | None
+    created_at: str | None = None
+    created_by_uid: str | None = None
+    created_by: UserType | None = None
+    updated_at: str | None = None
+    updated_by_uid: str | None = None
+    updated_by: UserType | None = None
 
 
 @strawberry.type
@@ -36,12 +37,12 @@ class ProfilePriceType:
     profile: ProfileType
     is_active: bool
     amount: float
-    created_at: str | None
-    created_by_uid: str | None
-    created_by: UserType | None
-    updated_at: str | None
-    updated_by_uid: str | None
-    updated_by: UserType | None
+    created_at: str | None = None
+    created_by_uid: str | None = None
+    created_by: UserType | None = None
+    updated_at: str | None = None
+    updated_by_uid: str | None = None
+    updated_by: UserType | None = None
 
 
 @strawberry.type
@@ -54,17 +55,17 @@ class AnalysisDiscountType:
     value_type: str
     start_date: datetime
     end_date: datetime
-    voucher_uid: str | None
-    voucher: Optional["VoucherType"]
+    voucher_uid: str | None = None
+    voucher: Optional["VoucherType"] = None
     value_percent: float
     value_amount: float
     is_active: bool
-    created_at: str | None
-    created_by_uid: str | None
-    created_by: UserType | None
-    updated_at: str | None
-    updated_by_uid: str | None
-    updated_by: UserType | None
+    created_at: str | None = None
+    created_by_uid: str | None = None
+    created_by: UserType | None = None
+    updated_at: str | None = None
+    updated_by_uid: str | None = None
+    updated_by: UserType | None = None
 
 
 @strawberry.type
@@ -77,17 +78,17 @@ class ProfileDiscountType:
     value_type: str
     start_date: datetime
     end_date: datetime
-    voucher_uid: str | None
-    voucher: Optional["VoucherType"]
+    voucher_uid: str | None = None
+    voucher: Optional["VoucherType"] = None
     value_percent: float
     value_amount: float
     is_active: bool
-    created_at: str | None
-    created_by_uid: str | None
-    created_by: UserType | None
-    updated_at: str | None
-    updated_by_uid: str | None
-    updated_by: UserType | None
+    created_at: str | None = None
+    created_by_uid: str | None = None
+    created_by: UserType | None = None
+    updated_at: str | None = None
+    updated_by_uid: str | None = None
+    updated_by: UserType | None = None
 
 
 @strawberry.type
@@ -100,12 +101,12 @@ class VoucherType:
     end_date: str
     once_per_customer: bool
     once_per_order: bool
-    created_at: str | None
-    created_by_uid: str | None
-    created_by: UserType | None
-    updated_at: str | None
-    updated_by_uid: str | None
-    updated_by: UserType | None
+    created_at: str | None = None
+    created_by_uid: str | None = None
+    created_by: UserType | None = None
+    updated_at: str | None = None
+    updated_by_uid: str | None = None
+    updated_by: UserType | None = None
 
     @strawberry.field
     async def codes(self) -> Optional[list["VoucherCodeType"]]:
@@ -122,11 +123,11 @@ class VoucherCodeType:
     used: int
     is_active: bool
     created_at: str
-    created_by_uid: str | None
-    created_by: UserType | None
+    created_by_uid: str | None = None
+    created_by: UserType | None = None
     updated_at: str
-    updated_by_uid: str | None
-    updated_by: UserType | None
+    updated_by_uid: str | None = None
+    updated_by: UserType | None = None
 
 
 @strawberry.type
@@ -136,12 +137,12 @@ class VoucherCustomerType:
     patient: PatientType
     voucher_code_uid: str
     voucher_code: VoucherCodeType
-    created_at: str | None
-    created_by_uid: str | None
-    created_by: UserType | None
-    updated_at: str | None
-    updated_by_uid: str | None
-    updated_by: UserType | None
+    created_at: str | None = None
+    created_by_uid: str | None = None
+    created_by: UserType | None = None
+    updated_at: str | None = None
+    updated_by_uid: str | None = None
+    updated_by: UserType | None = None
 
 
 @strawberry.type
@@ -157,13 +158,13 @@ class TestBillType:
     partial: bool
     total_charged: float
     total_paid: float
-    json_content: JSONScalar | None
-    created_at: str | None
-    created_by_uid: str | None
-    created_by: UserType | None
-    updated_at: str | None
-    updated_by_uid: str | None
-    updated_by: UserType | None
+    json_content: JSONScalar | None = None
+    created_at: str | None = None
+    created_by_uid: str | None = None
+    created_by: UserType | None = None
+    updated_at: str | None = None
+    updated_by_uid: str | None = None
+    updated_by: UserType | None = None
 
     @strawberry.field
     async def orders(self) -> Optional[list[AnalysisRequestType]]:
@@ -182,8 +183,8 @@ class TestBillEdge:
 @strawberry.type
 class TestBillCursorPage:
     page_info: PageInfo
-    edges: Optional[List[TestBillEdge]]
-    items: Optional[List[TestBillType]]
+    edges: Optional[List[TestBillEdge]] = None
+    items: Optional[List[TestBillType]] = None
     total_count: int
 
 
@@ -200,12 +201,12 @@ class TestBillTransactionType:
     notes: str
     message: str
     action_message: str
-    created_at: str | None
-    created_by_uid: str | None
-    created_by: UserType | None
-    updated_at: str | None
-    updated_by_uid: str | None
-    updated_by: UserType | None
+    created_at: str | None = None
+    created_by_uid: str | None = None
+    created_by: UserType | None = None
+    updated_at: str | None = None
+    updated_by_uid: str | None = None
+    updated_by: UserType | None = None
 
 
 @strawberry.type
@@ -213,11 +214,11 @@ class TestBillInvoiceType:
     uid: str
     test_bill_uid: str
     test_bill: TestBillType
-    json_content: JSONScalar | None
-    pdf_content: BytesScalar | None
-    created_at: str | None
-    created_by_uid: str | None
-    created_by: UserType | None
-    updated_at: str | None
-    updated_by_uid: str | None
-    updated_by: UserType | None
+    json_content: JSONScalar | None = None
+    pdf_content: BytesScalar | None = None
+    created_at: str | None = None
+    created_by_uid: str | None = None
+    created_by: UserType | None = None
+    updated_at: str | None = None
+    updated_by_uid: str | None = None
+    updated_by: UserType | None = None

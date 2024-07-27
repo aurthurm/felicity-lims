@@ -9,9 +9,10 @@ from felicity.api.gql.messaging.types import MessageType
 from felicity.api.gql.permissions import IsAuthenticated
 from felicity.api.gql.types import DeletedItem, DeleteResponse, OperationError
 from felicity.apps.messaging import schemas
-from felicity.utils import get_passed_args
+from felicity.apps.messaging.services import (MessageService,
+                                              MessageThreadService)
 from felicity.apps.user.services import UserService
-from felicity.apps.messaging.services import MessageService, MessageThreadService
+from felicity.utils import get_passed_args
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

@@ -181,7 +181,7 @@ function FormManager(create: boolean, obj = {} as IWorkSheetTemplate) {
   createItem.value = create;
   formTitle.value = (create ? "CREATE" : "EDIT") + " " + "WOKKSHEET TEMPLATE";
   showModal.value = true;
-  if (create) {
+  if (Create, related: list[str] = None) {
     let wst = {} as IWorkSheetTemplate;
     wst.instrument = {} as IInstrument;
     wst.sampleType = {} as ISampleType;

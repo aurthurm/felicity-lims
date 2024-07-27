@@ -38,9 +38,9 @@
 #
 # @pytest.mark.asyncio
 # @pytest.mark.order(200)
-# async def test_add_store_room(app, auth_data):
+# async def test_add_store_room(app_gql, auth_data):
 #     store_room = {"name": "Store Room 1", "description": "Storage area one"}
-#     response = await app.post(
+#     response = await app_gql.post(
 #         "/felicity-gql",
 #         json={"query": add_store_room_query, "variables": {"payload": store_room}},
 #         headers=auth_data["headers"],
@@ -57,12 +57,12 @@
 #
 # @pytest.mark.asyncio
 # @pytest.mark.order(201)
-# async def test_update_store_room(app, auth_data):
+# async def test_update_store_room(app_gql, auth_data):
 #     store_room = {
 #         "name": "Store Room 1 Updated",
 #         "description": "Storage area one Updated",
 #     }
-#     response = await app.post(
+#     response = await app_gql.post(
 #         "/felicity-gql",
 #         json={
 #             "query": update_store_room_query,

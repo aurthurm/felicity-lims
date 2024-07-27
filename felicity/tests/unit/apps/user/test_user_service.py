@@ -1,9 +1,10 @@
 import unittest
-
 from unittest import mock
-from felicity.apps.user.schemas import User
+
+from felicity.apps.exceptions import (AlreadyExistsError, NotAllowedError,
+                                      ValidationError)
 from felicity.apps.user.repository import UserRepository
-from felicity.apps.exceptions import NotAllowedError, AlreadyExistsError, ValidationError
+from felicity.apps.user.schemas import User
 from felicity.apps.user.services import UserService
 
 

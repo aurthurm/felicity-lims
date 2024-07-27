@@ -1,11 +1,10 @@
 import logging
 
 from felicity.apps.patient import schemas
+from felicity.apps.patient.services import IdentificationService
 from felicity.core.config import get_settings
 
-from felicity.apps.patient.services import IdentificationService
 from .data import get_seeds
-
 
 settings = get_settings()
 logging.basicConfig(level=logging.INFO)

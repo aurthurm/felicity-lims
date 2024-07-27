@@ -5,7 +5,6 @@ from sqlalchemy import text
 from sqlalchemy.future import select
 from sqlalchemy.sql import func
 
-
 from felicity.apps.abstract.repository import BaseRepository
 from felicity.apps.analysis.entities.analysis import Sample
 from felicity.apps.analytics.entities import ReportMeta

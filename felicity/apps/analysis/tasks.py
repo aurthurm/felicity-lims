@@ -31,13 +31,16 @@ async def submit_results(job_uid: str) -> NoReturn:
     try:
         await utils.results_submitter(job.data, user)
         await job_service.change_status(job.uid, new_status=JobState.FINISHED)
-        await notification_service.notify(f"Your results were successfully submitted", user)
+        await notification_service.notify(
+            f"Your results were successfully submitted", user
+        )
     except Exception as e:
-        await job_service.change_status(job.uid, new_status=JobState.FAILED)
+        await job_service.change_status(job.uid, new_status=JobState.FAILED, change_reason=str(e))
         await notification_service.notify(
             f"Failed to submit results in job with uid: {job.uid} with error: {str(e)}",
             user,
         )
+        raise
 
 
 async def verify_results(job_uid: str) -> NoReturn:
@@ -60,14 +63,17 @@ async def verify_results(job_uid: str) -> NoReturn:
     try:
         await utils.verify_from_result_uids(job.data, user)
         await job_service.change_status(job.uid, new_status=JobState.FINISHED)
-        await notification_service.notify("Your results were successfully verified", user)
+        await notification_service.notify(
+            "Your results were successfully verified", user
+        )
     except Exception as e:
         logger.debug(f"Exception ....... {e}")
-        await job_service.change_status(job.uid, new_status=JobState.FAILED)
+        await job_service.change_status(job.uid, new_status=JobState.FAILED, change_reason=str(e))
         await notification_service.notify(
             f"Failed to verify results in job with uid: {job.uid} with error: {str(e)}",
             user,
         )
+        raise
 
 
 async def setup_billing(job_uid: str) -> NoReturn:
@@ -75,7 +81,7 @@ async def setup_billing(job_uid: str) -> NoReturn:
     job_service = JobService()
     user_service = UserService()
     notification_service = NotificationService()
-    
+
     job = await job_service.get(uid=job_uid)
     if not job:
         return
@@ -99,3 +105,4 @@ async def setup_billing(job_uid: str) -> NoReturn:
             f"Failed to setup billing in job with uid: {job.uid} with error: {str(e)}",
             user,
         )
+        raise

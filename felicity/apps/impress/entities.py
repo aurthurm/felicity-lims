@@ -1,4 +1,5 @@
-from sqlalchemy import Boolean, Column, DateTime, ForeignKey, LargeBinary, String
+from sqlalchemy import (Boolean, Column, DateTime, ForeignKey, LargeBinary,
+                        String)
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import relationship
 

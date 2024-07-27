@@ -1,8 +1,11 @@
 import logging
 
 from felicity.apps.inventory import schemas
-from felicity.apps.inventory.services import HazardService, StockCategoryService, StockUnitService
+from felicity.apps.inventory.services import (HazardService,
+                                              StockCategoryService,
+                                              StockUnitService)
 from felicity.core.config import get_settings
+
 from .data import get_seeds
 
 settings = get_settings()

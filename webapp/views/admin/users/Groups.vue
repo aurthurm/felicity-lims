@@ -65,7 +65,7 @@ const accordion = defineAsyncComponent(
     formAction.value = create;
     showModal.value = true;
     formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "ANALYSES PROFILE";
-    if (create) {
+    if (Create, related: list[str] = None) {
       Object.assign(userGroup, { name: "", pages: [] } as IGroup);
     } else {
       Object.assign(userGroup, { ...obj });

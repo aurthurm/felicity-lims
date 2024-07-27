@@ -10,11 +10,14 @@ from felicity.apps.common.utils.serializer import marshaller
 from felicity.apps.impress.entities import ReportImpress
 from felicity.apps.impress.repository import ReportImpressRepository
 from felicity.apps.impress.sample.engine import FelicityImpress
-from felicity.apps.impress.sample.schemas import ReportImpressCreate, ReportImpressUpdate
-from felicity.apps.job.enum import JobAction, JobCategory, JobPriority, JobState
+from felicity.apps.impress.sample.schemas import (ReportImpressCreate,
+                                                  ReportImpressUpdate)
+from felicity.apps.job.enum import (JobAction, JobCategory, JobPriority,
+                                    JobState)
 from felicity.apps.job.schemas import JobCreate
 from felicity.apps.job.services import JobService
-from felicity.apps.notification.services import ActivityStreamService, NotificationService
+from felicity.apps.notification.services import (ActivityStreamService,
+                                                 NotificationService)
 from felicity.apps.user.entities import User
 from felicity.apps.user.services import UserService
 from felicity.core.config import get_settings
@@ -22,7 +25,9 @@ from felicity.core.config import get_settings
 settings = get_settings()
 
 
-class ReportImpressService(BaseService[ReportImpress, ReportImpressCreate, ReportImpressUpdate]):
+class ReportImpressService(
+    BaseService[ReportImpress, ReportImpressCreate, ReportImpressUpdate]
+):
     def __init__(self):
         self.sample_service = SampleService()
         self.activity_stream_service = ActivityStreamService()

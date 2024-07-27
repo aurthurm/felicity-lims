@@ -1,13 +1,17 @@
 from requests import Request
 
-from felicity.apps.iol.fhir.schema import BundleResource, PatientResource, ServiceRequestResource, DiagnosticReportResource, \
-    Reference
-from felicity.apps.job.enum import JobAction, JobCategory, JobPriority, JobState
+from felicity.apps.iol.fhir.schema import (BundleResource,
+                                           DiagnosticReportResource,
+                                           PatientResource, Reference,
+                                           ServiceRequestResource)
+from felicity.apps.job.enum import (JobAction, JobCategory, JobPriority,
+                                    JobState)
 from felicity.apps.job.schemas import JobCreate
 from felicity.apps.job.services import JobService
 from felicity.apps.shipment.enum import ShipmentState
 from felicity.apps.shipment.schemas import ShipmentCreate
-from felicity.apps.shipment.services import ReferralLaboratoryService, ShipmentService
+from felicity.apps.shipment.services import (ReferralLaboratoryService,
+                                             ShipmentService)
 from felicity.apps.user.entities import User
 
 
@@ -18,14 +22,16 @@ class FhirCreateService:
         self.job_service = JobService()
 
     async def create_resource(
-            self,
-            resource_type: str,
-            resource_data: BundleResource
-                           | PatientResource
-                           | ServiceRequestResource
-                           | DiagnosticReportResource,
-            request: Request,
-            current_user: User,
+        self,
+        resource_type: str,
+        resource_data: (
+            BundleResource
+            | PatientResource
+            | ServiceRequestResource
+            | DiagnosticReportResource
+        ),
+        request: Request,
+        current_user: User,
     ):
         # logger.info(f"create resource {resource_type} ..................")
         resource_mappings = {
@@ -39,7 +45,7 @@ class FhirCreateService:
         )
 
     async def create_bundle(
-            self, resource_data: BundleResource, request: Request, current_user: User
+        self, resource_data: BundleResource, request: Request, current_user: User
     ):
         # logger.info(f"Bundle data: ........")
         if resource_data.extension[0].valueString == "shipment":
@@ -48,7 +54,7 @@ class FhirCreateService:
         return True
 
     async def create_inbound_shipment(
-            self, payload: BundleResource, request: Request, current_user: User
+        self, payload: BundleResource, request: Request, current_user: User
     ):
         """Create inbound shipment from bundle"""
         # logger.info(f"Incoming Inbound shipment ....")
@@ -94,10 +100,10 @@ class FhirCreateService:
         )
 
     async def create_diagnostic_report(
-            self,
-            diagnostic_data: DiagnosticReportResource,
-            request: Request,
-            current_user: User,
+        self,
+        diagnostic_data: DiagnosticReportResource,
+        request: Request,
+        current_user: User,
     ):
         job_schema = JobCreate(
             action=JobAction.DIAGNOSTIC_REPORT,

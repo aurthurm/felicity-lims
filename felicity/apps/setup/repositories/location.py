@@ -1,6 +1,5 @@
-
-from felicity.apps.setup.entities import Country, Province, District
 from felicity.apps.abstract.repository import BaseRepository
+from felicity.apps.setup.entities import Country, District, Province
 
 
 class CountryRepository(BaseRepository[Country]):

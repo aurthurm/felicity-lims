@@ -8,7 +8,15 @@ from felicity.utils.loader import json_from_file
 @lru_cache
 def load_seed_files() -> dict[str, dict | list]:
     data = dict()
-    for _f in ["analyses", "clients", "laboratory", "country", "inventory", "instrument", "person"]:
+    for _f in [
+        "analyses",
+        "clients",
+        "laboratory",
+        "country",
+        "inventory",
+        "instrument",
+        "person",
+    ]:
         data[_f] = json_from_file(f"{settings.SEEDS_DIR}/{_f}")
     return data
 

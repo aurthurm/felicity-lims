@@ -1,15 +1,14 @@
 import logging
 
-from felicity.apps.analysis.enum import ResultType
-
 from sqlalchemy import (Boolean, Column, DateTime, Float, ForeignKey, Integer,
                         String, Table)
 from sqlalchemy.orm import relationship
 
-from felicity.apps.abstract import AuditHistory, AuditUser, BaseEntity
+from felicity.apps.abstract import (AuditHistory, AuditUser, BaseEntity,
+                                    BaseMPTT)
 from felicity.apps.analysis.entities.qc import QCLevel, QCSet
+from felicity.apps.analysis.enum import ResultType
 from felicity.apps.client import entities as ct_entities
-from felicity.apps.abstract import BaseMPTT
 from felicity.apps.patient import entities as pt_entities
 from felicity.apps.user.entities import User
 
@@ -98,6 +97,7 @@ class AnalysisCategory(AuditUser):
     department = relationship("Department", lazy="selectin")
     active = Column(Boolean(), default=False)
 
+
 class Profile(AuditUser):
     """Grouped Analysis e.g FBC, U&E's, MCS ..."""
 
@@ -144,7 +144,9 @@ analysis_analysis_template = Table(
     "analysis_analysis_template",
     BaseEntity.metadata,
     Column("analysis_uid", ForeignKey("analysis.uid"), primary_key=True),
-    Column("analysis_template_uid", ForeignKey("analysis_template.uid"), primary_key=True),
+    Column(
+        "analysis_template_uid", ForeignKey("analysis_template.uid"), primary_key=True
+    ),
 )
 
 
@@ -232,7 +234,7 @@ class Analysis(AuditUser):
     result_type = Column(String, default=ResultType.SHORT_TEXT, nullable=False)
     category_uid = Column(String, ForeignKey("analysis_category.uid"))
     category = relationship(AnalysisCategory, backref="analyses", lazy="selectin")
-    tat_length_minutes = Column(Integer, default=60*24)  # default 1 day
+    tat_length_minutes = Column(Integer, default=60 * 24)  # default 1 day
     sort_key = Column(Integer, default=1)
     internal_use = Column(Boolean(), default=False)  # e.g QC Services
     department_uid = Column(String, ForeignKey("department.uid"), nullable=True)
@@ -261,7 +263,6 @@ class AnalysisCoding(AuditUser):
     code = Column(String, nullable=False)
 
 
-
 class AnalysisInterim(AuditUser):
     """Analysis Interim Result Field"""
 
@@ -283,6 +284,7 @@ class AnalysisCorrectionFactor(AuditUser):
     analysis_uid = Column(String, ForeignKey("analysis.uid"), nullable=True)
     instrument_uid = Column(String, ForeignKey("instrument.uid"), nullable=True)
     method_uid = Column(String, ForeignKey("method.uid"), nullable=True)
+
 
 class AnalysisDetectionLimit(AuditUser):
     """Analysis Detection Limit"""
@@ -427,7 +429,6 @@ class RejectionReason(AuditUser):
     __tablename__ = "rejection_reason"
 
     reason = Column(String, nullable=False)
-
 
 
 class Sample(AuditHistory, BaseMPTT):

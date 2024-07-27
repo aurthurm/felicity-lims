@@ -1,23 +1,34 @@
 from felicity.apps.abstract.service import BaseService
 from felicity.apps.idsequencer.service import IdSequenceService
-from felicity.apps.patient.entities import Identification, Patient, PatientIdentification
-from felicity.apps.patient.repository import IdentificationRepository, PatientIdentificationRepository, PatientRepository
-from felicity.apps.patient.schemas import IdentificationCreate, IdentificationUpdate, PatientCreate, PatientIdentificationCreate, PatientIdentificationUpdate, PatientUpdate
+from felicity.apps.patient.entities import (Identification, Patient,
+                                            PatientIdentification)
+from felicity.apps.patient.repository import (IdentificationRepository,
+                                              PatientIdentificationRepository,
+                                              PatientRepository)
+from felicity.apps.patient.schemas import (IdentificationCreate,
+                                           IdentificationUpdate, PatientCreate,
+                                           PatientIdentificationCreate,
+                                           PatientIdentificationUpdate,
+                                           PatientUpdate)
 
 
-class IdentificationService(BaseService[Identification, IdentificationCreate, IdentificationUpdate]):
+class IdentificationService(
+    BaseService[Identification, IdentificationCreate, IdentificationUpdate]
+):
     def __init__(self):
         super().__init__(IdentificationRepository)
 
+
 class PatientIdentificationService(
-    BaseService[PatientIdentification, PatientIdentificationCreate, PatientIdentificationUpdate]
+    BaseService[
+        PatientIdentification, PatientIdentificationCreate, PatientIdentificationUpdate
+    ]
 ):
     def __init__(self):
         super().__init__(PatientIdentificationRepository)
 
 
 class PatientService(BaseService[Patient, PatientCreate, PatientUpdate]):
-    
 
     def __init__(self):
         self.id_sequence_service = IdSequenceService()
@@ -35,9 +46,9 @@ class PatientService(BaseService[Patient, PatientCreate, PatientUpdate]):
         }
         return await super().search(**filters)
 
-    async def create(self, obj_in: dict | PatientCreate) -> Patient:
+    async def create(self, obj_in: dict | PatientCreate, related: list[str] = None) -> Patient:
         data = self._import(obj_in)
         data["patient_id"] = (
             await self.id_sequence_service.get_next_number(prefix="P", generic=True)
         )[1]
-        return await super().create(data)
+        return await super().create(data, related)

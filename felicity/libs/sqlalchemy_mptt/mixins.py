@@ -124,14 +124,14 @@ class BaseNestedSets(object):
         """
         if inclusive:
             return (
-                    (self.tree_id == other.tree_id)
-                    & (self.left <= other.left)
-                    & (other.right <= self.right)
+                (self.tree_id == other.tree_id)
+                & (self.left <= other.left)
+                & (other.right <= self.right)
             )
         return (
-                (self.tree_id == other.tree_id)
-                & (self.left < other.left)
-                & (other.right < self.right)
+            (self.tree_id == other.tree_id)
+            & (self.left < other.left)
+            & (other.right < self.right)
         )
 
     @hybrid_method

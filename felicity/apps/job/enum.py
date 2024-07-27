@@ -1,4 +1,4 @@
-from enum import StrEnum, IntEnum, auto
+from enum import IntEnum, StrEnum, auto
 
 
 class JobState(StrEnum):
@@ -6,7 +6,6 @@ class JobState(StrEnum):
     RUNNING = auto()
     FAILED = auto()
     FINISHED = auto()
-
 
 
 class JobPriority(IntEnum):
@@ -31,8 +30,7 @@ class JobAction(StrEnum):
     BILLING_INIT = auto()
 
 
-
-class JobCategory(object):
+class JobCategory(StrEnum):
     SHIPMENT = auto()
     WORKSHEET = auto()
     RESULT = auto()

@@ -9,7 +9,8 @@ from felicity.api.gql.shipment.types import (ReferralLaboratoryType,
                                              ShipmentCursorPage, ShipmentEdge,
                                              ShipmentType)
 from felicity.api.gql.types import BytesScalar, PageInfo
-from felicity.apps.shipment.services import ReferralLaboratoryService, ShipmentService
+from felicity.apps.shipment.services import (ReferralLaboratoryService,
+                                             ShipmentService)
 from felicity.utils import has_value_or_is_truthy
 
 logging.basicConfig(level=logging.INFO)

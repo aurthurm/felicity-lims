@@ -1,8 +1,8 @@
 import logging
 from typing import TYPE_CHECKING
 
-from felicity.apps.analysis.enum import States
 from felicity.apps.analysis.entities.results import AnalysisResult
+from felicity.apps.analysis.enum import States
 from felicity.apps.setup.entities.setup import Laboratory, LaboratorySetting
 
 if TYPE_CHECKING:
@@ -12,8 +12,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
-class AnalysisResultWorkFlowException(Exception):
-    ...
+class AnalysisResultWorkFlowException(Exception): ...
 
 
 class AnalysisResultWorkFlow:
@@ -21,8 +20,7 @@ class AnalysisResultWorkFlow:
     Defines a set of guards that allow or prevent actions taken on AnalysisResult
     """
 
-    def __init__(self):
-        ...
+    def __init__(self): ...
 
     @classmethod
     async def retest(cls, uid, retested_by, action="verify"):
@@ -49,7 +47,10 @@ class AnalysisResultWorkFlow:
     @staticmethod
     async def _guard_assign(analysis_result: AnalysisResult) -> bool:
         allow = False
-        if analysis_result.status == States.Result.PENDING and analysis_result.assigned is False:
+        if (
+            analysis_result.status == States.Result.PENDING
+            and analysis_result.assigned is False
+        ):
             allow = True
 
         if not allow:
@@ -65,7 +66,10 @@ class AnalysisResultWorkFlow:
     @staticmethod
     async def _guard_un_assign(analysis_result: AnalysisResult) -> bool:
         allow = False
-        if analysis_result.status == States.Result.PENDING and analysis_result.assigned is True:
+        if (
+            analysis_result.status == States.Result.PENDING
+            and analysis_result.assigned is True
+        ):
             allow = True
 
         if not allow:
@@ -119,7 +123,9 @@ class AnalysisResultWorkFlow:
             await result.verify(approved_by)
 
     @staticmethod
-    async def _guard_approve(analysis_results: list[AnalysisResult], approved_by_uid) -> bool:
+    async def _guard_approve(
+        analysis_results: list[AnalysisResult], approved_by_uid
+    ) -> bool:
         laboratory = await Laboratory.get_by_setup_name("felicity")
         settings: LaboratorySetting = await LaboratorySetting.get(
             laboratory_uid=laboratory.uid
@@ -128,21 +134,33 @@ class AnalysisResultWorkFlow:
 
         for result in analysis_results:
             # Self Verification check
-            if settings.allow_self_verification is False and result.analysis.self_verification is False:
+            if (
+                settings.allow_self_verification is False
+                and result.analysis.self_verification is False
+            ):
                 # First time verifier must not be the submitter
-                if len(result.verified_by) == 0 and result.submitted_by_uid == approved_by_uid:
-                    raise AnalysisResultWorkFlowException("Cannot approve a result your own work")
+                if (
+                    len(result.verified_by) == 0
+                    and result.submitted_by_uid == approved_by_uid
+                ):
+                    raise AnalysisResultWorkFlowException(
+                        "Cannot approve a result your own work"
+                    )
                 # Cannot self co-approve
                 if approved_by_uid in [usr.uid for usr in result.verified_by]:
                     raise AnalysisResultWorkFlowException("Cannot co-approve a result")
 
             # Status check
             if result.status not in states:
-                raise AnalysisResultWorkFlowException(f"Cannot approve a {result.status} Result")
+                raise AnalysisResultWorkFlowException(
+                    f"Cannot approve a {result.status} Result"
+                )
 
             # Number of required verifications check
             required, current = await result.verifications()
             if not (current < required and current + 1 == required):
-                raise AnalysisResultWorkFlowException(f"Required approvals have already been met")
+                raise AnalysisResultWorkFlowException(
+                    f"Required approvals have already been met"
+                )
 
         return True

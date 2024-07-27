@@ -8,7 +8,7 @@
 #
 # @pytest.mark.asyncio
 # @pytest.mark.order(240)
-# async def test_add_sample_to_storage(app, auth_data):
+# async def test_add_sample_to_storage(app_gql, auth_data):
 #     add_ar_gql = """
 #         mutation AddAnalysisRequest ($payload: AnalysisRequestInputType!) {
 #           createAnalysisRequest(payload: $payload) {
@@ -76,7 +76,7 @@
 #             {"sampleType": 1, "profiles": [1], "analyses": []},
 #         ],
 #     }
-#     response = await app.post(
+#     response = await app_gql.post(
 #         "/felicity-gql",
 #         json={"query": add_ar_gql, "variables": {"payload": analysis_request}},
 #         headers=auth_data["headers"],
@@ -122,7 +122,7 @@
 #             }
 #         )
 #
-#     response = await app.post(
+#     response = await app_gql.post(
 #         "/felicity-gql",
 #         json={
 #             "query": store_samples_query,

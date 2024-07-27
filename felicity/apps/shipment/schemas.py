@@ -2,10 +2,10 @@ from pydantic import BaseModel, ConfigDict
 
 from felicity.apps.analysis.schemas import SampleBaseInDB
 
-
 #
 # ReferralLaboratory Schemas
 #
+
 
 # Shared properties
 class ReferralLaboratoryBase(BaseModel):
@@ -47,6 +47,7 @@ class ReferralLaboratoryInDB(ReferralLaboratoryBaseInDB):
 #
 # Shipment Schemas
 #
+
 
 # Shared properties
 class ShipmentBase(BaseModel):
@@ -98,6 +99,7 @@ class ShipmentInDB(ShipmentBaseInDB):
 #
 # ShippedSample Schemas
 #
+
 
 # Shared properties
 class ShippedSampleBase(BaseModel):

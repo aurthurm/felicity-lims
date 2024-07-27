@@ -1,6 +1,6 @@
 import logging
-from dataclasses import field
 import re
+from dataclasses import field
 from typing import List, Optional
 
 import strawberry  # noqa
@@ -11,10 +11,13 @@ from felicity.api.gql.permissions import IsAuthenticated
 from felicity.api.gql.types import OperationError
 from felicity.apps.analysis import schemas, utils
 from felicity.apps.analysis.entities import analysis as analysis_entities
-from felicity.apps.analysis.services.analysis import (AnalysisService, AnalysisTemplateService,
-    ProfileCodingService, ProfileService, SampleTypeService)
-from felicity.apps.analysis.entities.analysis import (analysis_analysis_template, analysis_profile,
-    profile_sample_type)
+from felicity.apps.analysis.entities.analysis import (
+    analysis_analysis_template, analysis_profile, profile_sample_type)
+from felicity.apps.analysis.services.analysis import (AnalysisService,
+                                                      AnalysisTemplateService,
+                                                      ProfileCodingService,
+                                                      ProfileService,
+                                                      SampleTypeService)
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -71,7 +74,6 @@ class ProfileMappingInputType:
 @strawberry.mutation(permission_classes=[IsAuthenticated])
 async def create_profile(info, payload: ProfileInputType) -> AnalysisProfileResponse:
     felicity_user = await auth_from_info(info)
-  
 
     if not payload.name or not payload.description:
         return OperationError(
@@ -119,7 +121,7 @@ async def create_profile(info, payload: ProfileInputType) -> AnalysisProfileResp
 
 @strawberry.mutation(permission_classes=[IsAuthenticated])
 async def update_profile(
-        info, uid: str, payload: ProfileInputType
+    info, uid: str, payload: ProfileInputType
 ) -> AnalysisProfileResponse:
     felicity_user = await auth_from_info(info)
 
@@ -168,7 +170,9 @@ async def update_profile(
 
 
 @strawberry.mutation(permission_classes=[IsAuthenticated])
-async def create_analysis_template(info, payload: AnalysisTemplateInputType) -> AnalysisTemplateResponse:
+async def create_analysis_template(
+    info, payload: AnalysisTemplateInputType
+) -> AnalysisTemplateResponse:
     felicity_user = await auth_from_info(info)
 
     if not payload.name or not payload.description:
@@ -199,7 +203,10 @@ async def create_analysis_template(info, payload: AnalysisTemplateInputType) -> 
         for service_uid in payload.services:
             await AnalysisService().repository.table_insert(
                 table=analysis_analysis_template,
-                mappings={"analysis_uid": service_uid, "analysis_template_uid": template.uid},
+                mappings={
+                    "analysis_uid": service_uid,
+                    "analysis_template_uid": template.uid,
+                },
             )
 
     template = await AnalysisTemplateService().get(uid=template.uid)
@@ -208,7 +215,7 @@ async def create_analysis_template(info, payload: AnalysisTemplateInputType) -> 
 
 @strawberry.mutation(permission_classes=[IsAuthenticated])
 async def update_analysis_template(
-        info, uid: str, payload: AnalysisTemplateInputType
+    info, uid: str, payload: AnalysisTemplateInputType
 ) -> AnalysisTemplateResponse:
     felicity_user = await auth_from_info(info)
 
@@ -238,7 +245,10 @@ async def update_analysis_template(
             anal = await AnalysisService().get(uid=_uid)
             await AnalysisService().repository.table_insert(
                 table=analysis_analysis_template,
-                mappings={"analysis_uid": anal.uid, "analysis_template_uid": template.uid},
+                mappings={
+                    "analysis_uid": anal.uid,
+                    "analysis_template_uid": template.uid,
+                },
             )
 
     return a_types.AnalysisTemplateType(**template.marshal_simple())
@@ -246,7 +256,7 @@ async def update_analysis_template(
 
 @strawberry.mutation(permission_classes=[IsAuthenticated])
 async def create_profile_mapping(
-        info, payload: ProfileMappingInputType
+    info, payload: ProfileMappingInputType
 ) -> ProfileMappingResponse:
     felicity_user = await auth_from_info(info)
 
@@ -262,15 +272,13 @@ async def create_profile_mapping(
         incoming[k] = v
 
     obj_in = schemas.ProfileCodingCreate(**incoming)
-    profile_mapping = (
-        await ProfileCodingService().create(obj_in)
-    )
+    profile_mapping = await ProfileCodingService().create(obj_in)
     return a_types.ProfileMappingType(**profile_mapping.marshal_simple())
 
 
 @strawberry.mutation(permission_classes=[IsAuthenticated])
 async def update_profile_mapping(
-        info, uid: str, payload: ProfileMappingInputType
+    info, uid: str, payload: ProfileMappingInputType
 ) -> ProfileMappingResponse:
     felicity_user = await auth_from_info(info)
 
@@ -287,5 +295,7 @@ async def update_profile_mapping(
                 logger.warning(e)
 
     profile_mapping_in = schemas.ProfileCodingUpdate(**profile_mapping.to_dict())
-    profile_mapping = await ProfileCodingService().update(profile_mapping.uid, profile_mapping_in)
+    profile_mapping = await ProfileCodingService().update(
+        profile_mapping.uid, profile_mapping_in
+    )
     return a_types.ProfileMappingType(**profile_mapping.marshal_simple())

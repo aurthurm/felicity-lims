@@ -2,13 +2,18 @@ import asyncio
 from datetime import datetime
 
 from felicity.apps.analysis.entities.analysis import Sample
-from felicity.apps.analysis.services.analysis import AnalysisRequestService, SampleService
+from felicity.apps.analysis.services.analysis import (AnalysisRequestService,
+                                                      SampleService)
 from felicity.apps.analysis.services.result import AnalysisResultService
-from felicity.apps.iol.fhir.schema import DiagnosticReportResource, PatientResource, Identifier, SpecimenResource, \
-    BundleResource, ServiceRequestResource, Reference
+from felicity.apps.iol.fhir.schema import (BundleResource,
+                                           DiagnosticReportResource,
+                                           Identifier, PatientResource,
+                                           Reference, ServiceRequestResource,
+                                           SpecimenResource)
 from felicity.apps.patient.services import PatientService
 from felicity.apps.setup.services import LaboratoryService
-from felicity.apps.shipment.services import ShippedSampleService, ShipmentService
+from felicity.apps.shipment.services import (ShipmentService,
+                                             ShippedSampleService)
 
 
 class FhirReadService:
@@ -32,7 +37,7 @@ class FhirReadService:
         return v.strftime("%Y-%m-%d %H:%M:%S")
 
     async def get_diagnostic_report_resource(
-            self, service_request_uid: str, obs_uids: list[str] = [], for_referral=False
+        self, service_request_uid: str, obs_uids: list[str] = [], for_referral=False
     ) -> DiagnosticReportResource | None:
         ar, sample = await asyncio.gather(
             self.analysis_request_service.get(uid=service_request_uid),
@@ -75,9 +80,11 @@ class FhirReadService:
                             "identifier": {
                                 "use": "official",
                                 "type": {"text": "Full Name"},
-                                "value": last_verificator.full_name
-                                if last_verificator
-                                else None,
+                                "value": (
+                                    last_verificator.full_name
+                                    if last_verificator
+                                    else None
+                                ),
                             },
                             "display": "Reviewer",
                         },
@@ -168,17 +175,17 @@ class FhirReadService:
             "performer": [
                 {
                     "type": "Analyst",
-                    "display": sample.submitted_by.full_name
-                    if sample.submitted_by
-                    else None,
+                    "display": (
+                        sample.submitted_by.full_name if sample.submitted_by else None
+                    ),
                 }
             ],
             "resultsInterpreter": [
                 {
                     "type": "Reviewer",
-                    "display": sample.verified_by.full_name
-                    if sample.verified_by
-                    else None,
+                    "display": (
+                        sample.verified_by.full_name if sample.verified_by else None
+                    ),
                 }
             ],
             "specimen": [{"type": "Specimen", "display": sample.sample_id}],
@@ -212,11 +219,11 @@ class FhirReadService:
                     "given": [patient.first_name],
                 }
             ],
-            "telecom": [
-                {"system": "phone", "value": patient.phone_mobile, "use": "mobile"}
-            ]
-            if patient.phone_mobile
-            else [],
+            "telecom": (
+                [{"system": "phone", "value": patient.phone_mobile, "use": "mobile"}]
+                if patient.phone_mobile
+                else []
+            ),
             "gender": self.one_of_else(
                 ["male", "female", "other"], patient.gender, "unknown"
             ),
@@ -273,7 +280,7 @@ class FhirReadService:
         return SpecimenResource(**sp_values)
 
     async def get_shipment_bundle_resource(
-            self, shipment_uid: int
+        self, shipment_uid: int
     ) -> BundleResource | None:
         shipment = await self.shipment_service.get(uid=shipment_uid)
         shipped_samples = await self.shipped_sample_service.get_all(

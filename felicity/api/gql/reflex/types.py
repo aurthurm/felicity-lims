@@ -13,14 +13,14 @@ class ReflexRuleType:
     uid: str
     name: str
     description: str
-    reflex_actions: Optional[List["ReflexActionType"]]
+    reflex_actions: Optional[List["ReflexActionType"]] = None
     #
-    created_by_uid: str | None
-    created_by: UserType | None
-    created_at: str | None
-    updated_by_uid: str | None
-    updated_by: UserType | None
-    updated_at: str | None
+    created_by_uid: str | None = None
+    created_by: UserType | None = None
+    created_at: str | None = None
+    updated_by_uid: str | None = None
+    updated_by: UserType | None = None
+    updated_at: str | None = None
 
 
 #  relay paginations
@@ -33,26 +33,26 @@ class ReflexRuleEdge:
 @strawberry.type
 class ReflexRuleCursorPage:
     page_info: PageInfo
-    edges: Optional[List[ReflexRuleEdge]]
-    items: Optional[List[ReflexRuleType]]
+    edges: Optional[List[ReflexRuleEdge]] = None
+    items: Optional[List[ReflexRuleType]] = None
     total_count: int
 
 
 @strawberry.type
 class ReflexBrainAdditionType:
     analysis_uid: str
-    analysis: AnalysisType | None
+    analysis: AnalysisType | None = None
     reflex_brain_uid: str
-    reflex_brain: Optional["ReflexBrainType"]
+    reflex_brain: Optional["ReflexBrainType"] = None
     count: int
 
 
 @strawberry.type
 class ReflexBrainCriteriaType:
     analysis_uid: str
-    analysis: AnalysisType | None
+    analysis: AnalysisType | None = None
     reflex_brain_uid: str
-    reflex_brain: Optional["ReflexBrainType"]
+    reflex_brain: Optional["ReflexBrainType"] = None
     operator: str
     value: str
 
@@ -60,28 +60,28 @@ class ReflexBrainCriteriaType:
 @strawberry.type
 class ReflexBrainFinalType:
     analysis_uid: str
-    analysis: AnalysisType | None
+    analysis: AnalysisType | None = None
     reflex_brain_uid: str
-    reflex_brain: Optional["ReflexBrainType"]
+    reflex_brain: Optional["ReflexBrainType"] = None
     value: str
 
 
 @strawberry.type
 class ReflexBrainType:
     reflex_action_uid: str
-    reflex_action: Optional["ReflexBrainType"]
+    reflex_action: Optional["ReflexBrainType"] = None
     uid: str
     description: str
-    analyses_values: Optional[List[ReflexBrainCriteriaType]]
-    add_new: Optional[List[ReflexBrainAdditionType]]
-    finalise: Optional[List[ReflexBrainFinalType]]
+    analyses_values: Optional[List[ReflexBrainCriteriaType]] = None
+    add_new: Optional[List[ReflexBrainAdditionType]] = None
+    finalise: Optional[List[ReflexBrainFinalType]] = None
     #
-    created_by_uid: str | None
-    created_by: UserType | None
-    created_at: str | None
-    updated_by_uid: str | None
-    updated_by: UserType | None
-    updated_at: str | None
+    created_by_uid: str | None = None
+    created_by: UserType | None = None
+    created_at: str | None = None
+    updated_by_uid: str | None = None
+    updated_by: UserType | None = None
+    updated_at: str | None = None
 
 
 @strawberry.type
@@ -89,16 +89,16 @@ class ReflexActionType:
     uid: str
     level: int
     description: str
-    analyses: Optional[List[AnalysisType]]
-    sample_type_uid: str | None
-    sample_type: Optional[SampleTypeTyp]
+    analyses: Optional[List[AnalysisType]] = None
+    sample_type_uid: str | None = None
+    sample_type: Optional[SampleTypeTyp] = None
     reflex_rule_uid: str
-    reflex_rule: Optional[ReflexRuleType]
-    brains: Optional[List[ReflexBrainType]]
+    reflex_rule: Optional[ReflexRuleType] = None
+    brains: Optional[List[ReflexBrainType]] = None
     #
-    created_by_uid: str | None
-    created_by: UserType | None
-    created_at: str | None
-    updated_by_uid: str | None
-    updated_by: UserType | None
-    updated_at: str | None
+    created_by_uid: str | None = None
+    created_by: UserType | None = None
+    created_at: str | None = None
+    updated_by_uid: str | None = None
+    updated_by: UserType | None = None
+    updated_at: str | None = None

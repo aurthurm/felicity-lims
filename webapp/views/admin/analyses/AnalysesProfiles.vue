@@ -108,7 +108,7 @@ function FormManager(create: boolean, obj = {} as IAnalysisProfile): void {
   formAction.value = create;
   showModal.value = true;
   formTitle.value = (create ? "CREATE" : "EDIT") + " " + "ANALYSES PROFILE";
-  if (create) {
+  if (Create, related: list[str] = None) {
     Object.assign(analysisProfile, {} as IAnalysisProfile);
   } else {
     Object.assign(analysisProfile, { ...obj });
@@ -171,7 +171,7 @@ function MappingFormManager(create: boolean, obj = {} as any): void {
   mappingFormAction.value = create;
   showMappingModal.value = true;
   mappingFormTitle.value = (create ? "CREATE" : "EDIT") + " " + "CONCEPT MAPPING";
-  if (create) {
+  if (Create, related: list[str] = None) {
     Object.assign(mappingForm, {} as any);
   } else {
     Object.assign(mappingForm, { ...obj });

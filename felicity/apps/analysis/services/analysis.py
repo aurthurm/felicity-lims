@@ -1,92 +1,62 @@
 from datetime import datetime, timedelta
 from typing import Any, List, Union
+
 from felicity.apps.abstract.service import BaseService
+from felicity.apps.analysis.entities.analysis import Analysis, AnalysisCategory, AnalysisCoding, AnalysisCorrectionFactor, AnalysisDetectionLimit, AnalysisInterim, AnalysisRequest, AnalysisSpecification, AnalysisTemplate, AnalysisUncertainty, CodingStandard, Profile, ProfileCoding, RejectionReason, ResultOption, Sample, SampleType, SampleTypeCoding, analysis_profile
+from felicity.apps.analysis.enum import ResultState, SampleState
 from felicity.apps.analysis.repository.analysis import (
-    AnalysisCategoryRepository,
-    AnalysisCodingRepository,
-    AnalysisTemplateRepository,
-    CodingStandardRepository,
-    RejectionReasonRepository,
-    SampleRepository,
-    SampleTypeRepository,
-    SampleTypeCodingRepository,
-    ProfileRepository,
-    ProfileCodingRepository,
-    AnalysisRepository,
-    AnalysisInterimRepository,
-    AnalysisCorrectionFactorRepository,
-    AnalysisDetectionLimitRepository,
-    AnalysisUncertaintyRepository,
-    AnalysisSpecificationRepository,
-    ResultOptionRepository,
-    AnalysisRequestRepository,
-)
-from felicity.apps.analysis.schemas import (
-    AnalysisRequestUpdate,
-    AnalysisTemplate,
-    AnalysisTemplateCreate,
-    AnalysisTemplateUpdate,
-    CodingStandard,
-    SampleType,
-    SampleTypeCoding,
-    AnalysisCategory,
-    Profile,
-    ProfileCoding,
-    Analysis,
-    AnalysisCoding,
-    AnalysisInterim,
-    AnalysisCorrectionFactor,
-    AnalysisDetectionLimit,
-    AnalysisUncertainty,
-    AnalysisSpecification,
-    ResultOption,
-    AnalysisRequest,
-    RejectionReason,
-    Sample,
-    CodingStandardCreate,
-    SampleTypeCreate,
-    SampleTypeUpdate,
-    SampleTypeCodingCreate,
-    SampleTypeCodingUpdate,
-    AnalysisCategoryCreate,
-    AnalysisCategoryUpdate,
-    ProfileCreate,
-    ProfileUpdate,
-    ProfileCodingCreate,
-    ProfileCodingUpdate,
-    AnalysisCreate,
-    AnalysisUpdate,
-    AnalysisCodingCreate,
-    AnalysisCodingUpdate,
-    CodingStandardUpdate,
-    AnalysisInterimCreate,
-    AnalysisInterimUpdate,
-    AnalysisCorrectionFactorCreate,
-    AnalysisCorrectionFactorUpdate,
-    AnalysisDetectionLimitCreate,
-    AnalysisDetectionLimitUpdate,
-    AnalysisUncertaintyCreate,
-    AnalysisUncertaintyUpdate,
-    AnalysisSpecificationCreate,
-    AnalysisSpecificationUpdate,
-    ResultOptionCreate,
-    ResultOptionUpdate,
-    RejectionReasonCreate,
-    RejectionReasonUpdate,
-    AnalysisRequestCreate,
-    SampleCreate,
-    SampleUpdate,
-)
+    AnalysisCategoryRepository, AnalysisCodingRepository,
+    AnalysisCorrectionFactorRepository, AnalysisDetectionLimitRepository,
+    AnalysisInterimRepository, AnalysisRepository, AnalysisRequestRepository,
+    AnalysisSpecificationRepository, AnalysisTemplateRepository,
+    AnalysisUncertaintyRepository, CodingStandardRepository,
+    ProfileCodingRepository, ProfileRepository, RejectionReasonRepository,
+    ResultOptionRepository, SampleRepository, SampleTypeCodingRepository,
+    SampleTypeRepository)
+from felicity.apps.analysis.schemas import (AnalysisCategoryCreate,
+                                            AnalysisCategoryUpdate,
+                                            AnalysisCodingCreate,
+                                            AnalysisCodingUpdate,
+                                            AnalysisCorrectionFactorCreate,
+                                            AnalysisCorrectionFactorUpdate,
+                                            AnalysisCreate,
+                                            AnalysisDetectionLimitCreate,
+                                            AnalysisDetectionLimitUpdate,
+                                            AnalysisInterimCreate,
+                                            AnalysisInterimUpdate,
+                                            AnalysisRequestCreate,
+                                            AnalysisRequestUpdate,
+                                            AnalysisSpecificationCreate,
+                                            AnalysisSpecificationUpdate,
+                                            AnalysisTemplateCreate,
+                                            AnalysisTemplateUpdate,
+                                            AnalysisUncertaintyCreate,
+                                            AnalysisUncertaintyUpdate,
+                                            AnalysisUpdate,
+                                            CodingStandardCreate,
+                                            CodingStandardUpdate,
+                                            ProfileCodingCreate,
+                                            ProfileCodingUpdate, ProfileCreate,
+                                            ProfileUpdate,
+                                            RejectionReasonCreate,
+                                            RejectionReasonUpdate,
+                                            ResultOptionCreate,
+                                            ResultOptionUpdate,
+                                            SampleCreate,
+                                            SampleTypeCodingCreate,
+                                            SampleTypeCodingUpdate,
+                                            SampleTypeCreate, SampleTypeUpdate,
+                                            SampleUpdate)
 from felicity.apps.analysis.services.result import AnalysisResultService
 from felicity.apps.common.utils.serializer import marshaller
 from felicity.apps.idsequencer.service import IdSequenceService
 from felicity.apps.idsequencer.utils import sequencer
-from felicity.apps.analysis.enum import ResultState, SampleState
 from felicity.apps.notification.services import ActivityStreamService
-from felicity.apps.analysis.entities.analysis import analysis_profile
 
 
-class CodingStandardService(BaseService[CodingStandard, CodingStandardCreate, CodingStandardUpdate]):
+class CodingStandardService(
+    BaseService[CodingStandard, CodingStandardCreate, CodingStandardUpdate]
+):
     def __init__(self):
         super().__init__(CodingStandardRepository)
 
@@ -95,12 +65,17 @@ class SampleTypeService(BaseService[SampleType, SampleTypeCreate, SampleTypeUpda
     def __init__(self):
         super().__init__(SampleTypeRepository)
 
-class SampleTypeCodingService(BaseService[SampleTypeCoding, SampleTypeCodingCreate, SampleTypeCodingUpdate]):
+
+class SampleTypeCodingService(
+    BaseService[SampleTypeCoding, SampleTypeCodingCreate, SampleTypeCodingUpdate]
+):
     def __init__(self):
         super().__init__(SampleTypeCodingRepository)
 
 
-class AnalysisCategoryService(BaseService[AnalysisCategory, AnalysisCategoryCreate, AnalysisCategoryUpdate]):
+class AnalysisCategoryService(
+    BaseService[AnalysisCategory, AnalysisCategoryCreate, AnalysisCategoryUpdate]
+):
     def __init__(self):
         super().__init__(AnalysisCategoryRepository)
 
@@ -122,22 +97,27 @@ class ProfileService(BaseService[Profile, ProfileCreate, ProfileUpdate]):
             profile.tat_length_minutes = tat
             return await self.update(profile, **marshaller(profile))
         return profile
-    
+
     async def get_analyses(self, uid):
         # items, cols = await self.repository.query_table(
         #     analysis_profile,
         #     **{"profile_uid": uid},
         # )
-        return (await self.repository.get_related(related=["analyses"], uid=uid)).analyses
+        return (
+            await self.repository.get_related(related=["analyses"], uid=uid)
+        ).analyses
 
 
-class AnalysisTemplateService(BaseService[AnalysisTemplate, AnalysisTemplateCreate, AnalysisTemplateUpdate]):
+class AnalysisTemplateService(
+    BaseService[AnalysisTemplate, AnalysisTemplateCreate, AnalysisTemplateUpdate]
+):
     def __init__(self) -> None:
         super().__init__(AnalysisTemplateRepository)
 
 
-
-class ProfileCodingService(BaseService[ProfileCoding, ProfileCodingCreate, ProfileCodingUpdate]):
+class ProfileCodingService(
+    BaseService[ProfileCoding, ProfileCodingCreate, ProfileCodingUpdate]
+):
     def __int__(self):
         super().__init__(ProfileCodingRepository)
 
@@ -147,70 +127,86 @@ class AnalysisService(BaseService[Analysis, AnalysisCreate, AnalysisUpdate]):
         super().__init__(AnalysisRepository)
 
 
-class AnalysisCodingService(BaseService[AnalysisCoding, AnalysisCodingCreate, AnalysisCodingUpdate]):
+class AnalysisCodingService(
+    BaseService[AnalysisCoding, AnalysisCodingCreate, AnalysisCodingUpdate]
+):
     def __init__(self):
         super().__init__(AnalysisCodingRepository)
 
-class AnalysisInterimService(BaseService[AnalysisInterim, AnalysisInterimCreate, AnalysisInterimUpdate]):
+
+class AnalysisInterimService(
+    BaseService[AnalysisInterim, AnalysisInterimCreate, AnalysisInterimUpdate]
+):
     def __init__(self):
         super().__init__(AnalysisInterimRepository)
 
+
 class AnalysisCorrectionFactorService(
-    BaseService[AnalysisCorrectionFactor, AnalysisCorrectionFactorCreate, AnalysisCorrectionFactorUpdate]
+    BaseService[
+        AnalysisCorrectionFactor,
+        AnalysisCorrectionFactorCreate,
+        AnalysisCorrectionFactorUpdate,
+    ]
 ):
     def __init__(self):
         super().__init__(AnalysisCorrectionFactorRepository)
 
- 
 
 class AnalysisDetectionLimitService(
-    BaseService[AnalysisDetectionLimit, AnalysisDetectionLimitCreate, AnalysisDetectionLimitUpdate]
+    BaseService[
+        AnalysisDetectionLimit,
+        AnalysisDetectionLimitCreate,
+        AnalysisDetectionLimitUpdate,
+    ]
 ):
     def __init__(self):
         super().__init__(AnalysisDetectionLimitRepository)
 
 
-
 class AnalysisUncertaintyService(
-    BaseService[AnalysisUncertainty, AnalysisUncertaintyCreate, AnalysisUncertaintyUpdate]
+    BaseService[
+        AnalysisUncertainty, AnalysisUncertaintyCreate, AnalysisUncertaintyUpdate
+    ]
 ):
     def __init__(self):
         super().__init__(AnalysisUncertaintyRepository)
 
 
-
 class AnalysisSpecificationService(
-    BaseService[AnalysisSpecification, AnalysisSpecificationCreate, AnalysisSpecificationUpdate]
+    BaseService[
+        AnalysisSpecification, AnalysisSpecificationCreate, AnalysisSpecificationUpdate
+    ]
 ):
     def __init__(self):
         super().__init__(AnalysisSpecificationRepository)
 
 
-
-class ResultOptionService(BaseService[ResultOption, ResultOptionCreate, ResultOptionUpdate]):
+class ResultOptionService(
+    BaseService[ResultOption, ResultOptionCreate, ResultOptionUpdate]
+):
     def __init__(self):
         super().__init__(ResultOptionRepository)
 
 
-class AnalysisRequestService(BaseService[AnalysisRequest, AnalysisRequestCreate, AnalysisRequestUpdate]):
-    id_sequence_service = IdSequenceService()
+class AnalysisRequestService(
+    BaseService[AnalysisRequest, AnalysisRequestCreate, AnalysisRequestUpdate]
+):
 
     def __init__(self):
+        self.id_sequence_service = IdSequenceService()
         super().__init__(AnalysisRequestRepository)
 
-    @classmethod
-    async def create(
-            cls, obj_in: dict | AnalysisRequestCreate
-    ):
-        data = cls._import(obj_in)
-        data["request_id"] = (await cls.id_sequence_service.get_next_number("AR"))[1]
-        return await super().create(data)
+    async def create(self, obj_in: dict | AnalysisRequestCreate, related: list[str] = None):
+        data = self._import(obj_in)
+        data["request_id"] = (await self.id_sequence_service.get_next_number("AR"))[1]
+        return await super().create(data, related)
 
 
-class RejectionReasonService(BaseService[RejectionReason, RejectionReasonCreate, RejectionReasonUpdate]):
+class RejectionReasonService(
+    BaseService[RejectionReason, RejectionReasonCreate, RejectionReasonUpdate]
+):
     def __init__(self):
         super().__init__(RejectionReasonRepository)
-
 
 
 class SampleService(BaseService[Sample, SampleCreate, SampleUpdate]):
@@ -236,8 +232,8 @@ class SampleService(BaseService[Sample, SampleCreate, SampleUpdate]):
             "internal_use",
         ]
 
-    async def update_due_date(self, uid,  reset: bool = False):
-        sample = await self.get(uid)
+    async def update_due_date(self, uid, reset: bool = False):
+        sample = await self.get(uid=uid)
 
         tats: List[Union[int, Any]] = []
         length: int = 0
@@ -258,7 +254,9 @@ class SampleService(BaseService[Sample, SampleCreate, SampleUpdate]):
                 start = datetime.now()
 
         if length:
-            return await super().update(uid, {"due_date": start + timedelta(minutes=length)})
+            return await super().update(
+                uid, {"due_date": start + timedelta(minutes=length)}
+            )
         return sample
 
     async def change_status(self, uid, status, updated_by_uid=None):
@@ -268,8 +266,10 @@ class SampleService(BaseService[Sample, SampleCreate, SampleUpdate]):
         return await super().update(uid, data)
 
     async def extend_due_date(self, uid: str, ext_minutes: int):
-        sample = await self.get(uid)
-        return await super().update(uid, {"due_date": sample.due_date + timedelta(minutes=ext_minutes)})
+        sample = await self.get(uid=uid)
+        return await super().update(
+            uid, {"due_date": sample.due_date + timedelta(minutes=ext_minutes)}
+        )
 
     async def copy_sample_id_unique(self, sample: Sample) -> str:
         split = sample.sample_id.split("_R")
@@ -318,30 +318,32 @@ class SampleService(BaseService[Sample, SampleCreate, SampleUpdate]):
         return len(analysis) != len(referred) and len(referred) > 0
 
     async def receive(self, uid: str, received_by):
-        sample = await self.get(uid)
+        sample = await self.get(uid=uid)
         if sample.status in [SampleState.EXPECTED]:
             sample.status = SampleState.RECEIVED
             sample.received_by_uid = received_by.uid
             sample.date_received = datetime.now()
             sample.updated_by_uid = received_by.uid  # noqa
-            return await super().update(uid, **marshaller(sample))
+            return await super().save(sample)
         return None
 
     async def cancel(self, uid: str, cancelled_by):
-        sample = await self.get(uid)
+        sample = await self.get(uid=uid)
         analysis_results = await self.get_analysis_results(uid)
         if sample.status in [SampleState.RECEIVED, SampleState.EXPECTED]:
             for result in analysis_results:
-                await self.analysis_result_service.cancel(result.uid, cancelled_by=cancelled_by)
+                await self.analysis_result_service.cancel(
+                    result.uid, cancelled_by=cancelled_by
+                )
             sample.status = SampleState.CANCELLED
             sample.cancelled_by_uid = cancelled_by.uid
             sample.date_cancelled = datetime.now()
             sample.updated_by_uid = cancelled_by.uid  # noqa
-            return await super().update(uid, **marshaller(sample))
+            return await super().save(sample)
         return None
 
     async def re_instate(self, uid: str, re_instated_by):
-        sample = await self.get(uid)
+        sample = await self.get(uid=uid)
         analysis_results = await self.get_analysis_results(uid)
         if sample.status in [SampleState.CANCELLED]:
             # A better way is to go to audit log and retrieve previous state
@@ -350,14 +352,16 @@ class SampleService(BaseService[Sample, SampleCreate, SampleUpdate]):
             sample.cancelled_by_uid = None
             sample.date_cancelled = None
             sample.updated_by_uid = re_instated_by.uid  # noqa
-            sample = await super().update(uid, **marshaller(sample))
+            sample = await super().save(sample)
             for result in analysis_results:
-                await self.analysis_result_service.re_instate(sample, result, re_instated_by=re_instated_by)
+                await self.analysis_result_service.re_instate(
+                    sample, result, re_instated_by=re_instated_by
+                )
             return sample
         return sample
 
-    async def submit(self, uid:str, submitted_by):
-        sample = await self.get(uid)
+    async def submit(self, uid: str, submitted_by):
+        sample = await self.get(uid=uid)
         statuses = [
             ResultState.RESULTED,
             ResultState.RETRACTED,
@@ -371,33 +375,35 @@ class SampleService(BaseService[Sample, SampleCreate, SampleUpdate]):
             sample.submitted_by_uid = submitted_by.uid
             sample.date_submitted = datetime.now()
             sample.updated_by_uid = submitted_by.uid  # noqa
-            saved = await super().update(uid, **marshaller(sample))
-            await self.streamer_service.stream(saved, submitted_by, "submitted", "sample")
+            saved = await super().save(sample)
+            await self.streamer_service.stream(
+                saved, submitted_by, "submitted", "sample"
+            )
             return saved
         return sample
 
     async def un_submit(self, uid: str):
-        sample = await self.get(uid)
+        sample = await self.get(uid=uid)
         if sample.status == SampleState.AWAITING:
             sample.status = SampleState.RECEIVED
             sample.submitted_by_uid = None
             sample.date_submitted = None
             sample.updated_by_uid = None  # noqa
-            return await super().update(uid, **marshaller(sample))
+            return await super().save(sample)
         return sample
 
     async def assign(self, uid: str):
-        sample = await self.get(uid)
+        sample = await self.get(uid=uid)
         sample.assigned = True
-        return await super().update(uid, **marshaller(sample))
+        return await super().save(sample)
 
     async def un_assign(self, uid: str):
-        sample = await self.get(uid)
+        sample = await self.get(uid=uid)
         sample.assigned = False
-        return await super().update(uid, **marshaller(sample))
+        return await super().save(sample)
 
     async def is_verifiable(self, uid: str) -> bool:
-        sample = await self.get(uid)
+        sample = await self.get(uid=uid)
         statuses = [
             ResultState.APPROVED,
             ResultState.RETRACTED,
@@ -411,83 +417,87 @@ class SampleService(BaseService[Sample, SampleCreate, SampleUpdate]):
         # if there are no results in referred state but some are in pending state. transition awaiting to pending state
         analysis, referred = await self.get_referred_analyses(uid)
         if not referred and list(  # and has pending results then :)
-                filter(lambda an: an.status in [ResultState.PENDING], analysis)
+            filter(lambda an: an.status in [ResultState.PENDING], analysis)
         ):
             await self.change_status(uid, SampleState.RECEIVED)
         return False
 
-    async def verify(self, uid:str, verified_by) -> tuple[bool, Sample]:
-        sample = await self.get(uid)
+    async def verify(self, uid: str, verified_by) -> tuple[bool, Sample]:
+        sample = await self.get(uid=uid)
         is_verifiable = await self.is_verifiable(uid)
         if is_verifiable:
             sample.status = SampleState.APPROVED
             sample.verified_by_uid = verified_by.uid
             sample.date_verified = datetime.now()
             sample.updated_by_uid = verified_by.uid  # noqa
-            saved = await super().update(uid, **marshaller(sample))
+            saved = await super().save(sample)
             await self.streamer_service.stream(saved, verified_by, "approved", "sample")
             return True, saved
         return False, sample
 
-    async def publish(self, uid:str, published_by):
-        sample = await self.get(uid)
+    async def publish(self, uid: str, published_by):
+        sample = await self.get(uid=uid)
         if sample.status in [SampleState.APPROVED, SampleState.PUBLISHING]:
             sample.status = SampleState.PUBLISHED
             sample.published_by_uid = published_by.uid
             sample.date_published = datetime.now()
             sample.updated_by_uid = published_by.uid  # noqa
-            return await super().update(uid, **marshaller(sample))
+            return await super().save(sample)
         return sample
 
-    async def print(self, uid:str , printed_by):
-        sample = await self.get(uid)
+    async def print(self, uid: str, printed_by):
+        sample = await self.get(uid=uid)
         if sample.status == SampleState.PUBLISHED:
             sample.printed = True
             sample.printed_by_uid = printed_by.uid
             sample.date_printed = datetime.now()
             sample.updated_by_uid = printed_by.uid  # noqa
-            return await super().update(uid, **marshaller(sample))
+            return await super().save(sample)
         return sample
 
     async def invalidate(self, uid: str, invalidated_by) -> tuple[Sample, Sample]:
-        sample = await self.get(uid)
+        sample = await self.get(uid=uid)
         statuses = [SampleState.APPROVED, SampleState.PUBLISHED]
         copy = None
         if sample.status in statuses:
             copy = await self.duplicate_unique(invalidated_by)
             sample.status = SampleState.INVALIDATED
             sample.invalidated_by_uid = invalidated_by.uid
-            invalidated = await super().update(uid, **marshaller(sample))
-            await self.streamer_service.stream(invalidated, invalidated_by, "invalidated", "sample")
+            invalidated = await super().save(sample)
+            await self.streamer_service.stream(
+                invalidated, invalidated_by, "invalidated", "sample"
+            )
             return copy, invalidated
         return copy, self
 
     async def reject(self, uid: str, rejected_by):
-        sample = await self.get(uid)
+        sample = await self.get(uid=uid)
         statuses = [SampleState.RECEIVED, SampleState.EXPECTED]
         if sample.status in statuses:
             sample.status = SampleState.REJECTED
             sample.received_by_uid = rejected_by.uid
             sample.updated_by_uid = rejected_by.uid  # noqa
-            rejected = await super().update(uid, **marshaller(sample))
-            await self.streamer_service.stream(rejected, rejected_by, "rejected", "sample")
+            rejected = await super().save(sample)
+            await self.streamer_service.stream(
+                rejected, rejected_by, "rejected", "sample"
+            )
             return rejected
         return sample
 
     async def store(self, uid: str, stored_by):
-        sample = await self.get(uid)
+        sample = await self.get(uid=uid)
         statuses = [SampleState.RECEIVED]
         if sample.status in statuses:
             sample.status = SampleState.STORED
             sample.stored_by = stored_by.uid
             sample.updated_by_uid = stored_by.uid  # noqa
-            stored = await super().update(uid, **marshaller(sample))
+            stored = await super().save(sample)
             await self.streamer_service.stream(stored, stored_by, "stored", "sample")
             return stored
         return sample
 
     async def recover(self, uid: str):
-        sample = await self.get(uid)
+        sample = await self.get(uid=uid)
         statuses = [SampleState.STORED]
         if sample.status in statuses:
             sample.status = SampleState.RECEIVED
@@ -495,21 +505,21 @@ class SampleService(BaseService[Sample, SampleCreate, SampleUpdate]):
             sample.storage_slot = None
             sample.storage_slot_index = None
             sample.date_retrieved_from_storage = datetime.now()
-            recovered = await super().update(uid, **marshaller(sample))
+            recovered = await super().save(sample)
             return recovered
         return sample
 
-    async def create(self, obj_in: dict | SampleCreate):
+    async def create(self, obj_in: dict | SampleCreate, related: list[str] = None):
         data = self._import(obj_in)
         # sample_type = await SampleType.get(data["sample_type_uid"])
         # data["sample_id"] = (await self.id_sequencer_service.get_next_number(sample_type.abbr))[1]
         data["sample_id"] = (
             await self.id_sequencer_service.get_next_number(prefix="S", generic=True)
         )[1]
-        return await super().create(data)
+        return await super().create(data, related)
 
     async def duplicate_unique(self, uid: str, duplicator):
-        sample = await self.get(uid)
+        sample = await self.get(uid=uid)
         data = sample.to_dict(nested=False)
         data["sample_id"] = self.copy_sample_id_unique(sample)
         for key, _ in list(data.items()):
@@ -523,7 +533,7 @@ class SampleService(BaseService[Sample, SampleCreate, SampleUpdate]):
         return await super().create(data)
 
     async def clone_afresh(self, uid: str, cloner):
-        sample = await self.get(uid)
+        sample = await self.get(uid=uid)
         data = sample.to_dict(nested=False)
         for key, _ in list(data.items()):
             if key not in self.copy_include_keys():

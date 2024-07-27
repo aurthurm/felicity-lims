@@ -40,6 +40,7 @@ class ReflexRuleUpdate(ReflexRuleBase):
 #  ReflexBrainAddition Schema
 #
 
+
 # Shared properties
 class ReflexBrainAdditionBase(BaseAuditModel):
     analysis_uid: str
@@ -70,6 +71,7 @@ class ReflexBrainAdditionUpdate(ReflexBrainAdditionBase):
 #
 #  ReflexBrainFinal Schema
 #
+
 
 # Shared properties
 class ReflexBrainFinalBase(BaseAuditModel):
@@ -102,6 +104,7 @@ class ReflexBrainFinalUpdate(ReflexBrainFinalBase):
 #  ReflexBrainCriteria Schema
 #
 
+
 # Shared properties
 class ReflexBrainCriteriaBase(BaseAuditModel):
     analysis_uid: str
@@ -133,6 +136,7 @@ class ReflexBrainCriteriaUpdate(ReflexBrainCriteriaBase):
 #  ReflexBrain Schema
 #
 
+
 # Shared properties
 class ReflexBrainBase(BaseAuditModel):
     reflex_action_uid: str
@@ -163,6 +167,7 @@ class ReflexBrainUpdate(ReflexBrainBase):
 #
 #  ReflexBrain Schema
 #
+
 
 # Shared properties
 class ReflexActionBase(BaseAuditModel):

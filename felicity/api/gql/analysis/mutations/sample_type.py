@@ -8,7 +8,8 @@ from felicity.api.gql.auth import auth_from_info
 from felicity.api.gql.permissions import IsAuthenticated
 from felicity.api.gql.types import OperationError
 from felicity.apps.analysis import schemas
-from felicity.apps.analysis.services.analysis import SampleTypeCodingService, SampleTypeService
+from felicity.apps.analysis.services.analysis import (SampleTypeCodingService,
+                                                      SampleTypeService)
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -66,9 +67,7 @@ async def create_sample_type(info, payload: SampleTypeInputType) -> SampleTypeRe
         incoming[k] = v
 
     obj_in = schemas.SampleTypeCreate(**incoming)
-    sample_type = await SampleTypeService().create(
-        obj_in
-    )
+    sample_type = await SampleTypeService().create(obj_in)
     return a_types.SampleTypeTyp(**sample_type.marshal_simple())
 
 
@@ -115,9 +114,7 @@ async def create_sample_type_mapping(
         incoming[k] = v
 
     obj_in = schemas.SampleTypeCodingCreate(**incoming)
-    sample_type_mapping = (
-        await SampleTypeCodingService().create(obj_in)
-    )
+    sample_type_mapping = await SampleTypeCodingService().create(obj_in)
     return a_types.SampleTypeMappingType(**sample_type_mapping.marshal_simple())
 
 
@@ -143,5 +140,7 @@ async def update_sample_type_mapping(
     sample_type_mapping_in = schemas.SampleTypeCodingUpdate(
         **sample_type_mapping.to_dict()
     )
-    sample_type_mapping = await SampleTypeCodingService().update(sample_type_mapping.uid, sample_type_mapping_in)
+    sample_type_mapping = await SampleTypeCodingService().update(
+        sample_type_mapping.uid, sample_type_mapping_in
+    )
     return a_types.SampleTypeMappingType(**sample_type_mapping.marshal_simple())

@@ -1,19 +1,22 @@
 import logging
+import pytest
 import random
+import asyncio
+from typing import Any, Generator
 
 import pytest_asyncio
 from faker import Faker
 from httpx import AsyncClient
-from sqlalchemy.ext.asyncio import create_async_engine
+from felicity.lims.seeds.superusers import seed_super_user
+from felicity.lims.seeds.groups_perms import seed_groups_perms
 
-from felicity.core.config import settings
 from felicity.apps.abstract.entity import BaseEntity
-from lims import create_super_user
-from main import felicity
+from felicity.core.config import settings
+from felicity.main import felicity
+from felicity.apps.job.sched import felicity_workforce_init
+from felicity.database.session import async_engine, engine
 
 fake_engine = Faker()
-
-engine = create_async_engine(settings.SQLALCHEMY_TEST_DATABASE_URI)
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -22,33 +25,56 @@ logger = logging.getLogger(__name__)
 @pytest_asyncio.fixture(scope="session")
 async def setup():
     logger.info("pytest_configure integration tests...")
-    async with engine.begin() as conn:
-        # await conn.run_sync(BaseEntity.metadata.drop_all)
+    async with async_engine.begin() as conn:
+        await conn.run_sync(BaseEntity.metadata.drop_all)
         await conn.run_sync(BaseEntity.metadata.create_all)
 
-    connection = engine.connect()
+    connection = async_engine.connect()
     yield connection
 
-    async with engine.begin() as conn:
-        await conn.run_sync(BaseEntity.metadata.drop_all)
+    # async with async_engine.begin() as conn:
+    #     await conn.run_sync(BaseEntity.metadata.drop_all)
+
+
+@pytest_asyncio.fixture(scope="session")
+def event_loop():
+    """Overrides pytest default function scoped event loop"""
+    # return asyncio.get_event_loop()
+    policy = asyncio.get_event_loop_policy()
+    loop = policy.new_event_loop()
+    yield loop
+    loop.close()
 
 
 @pytest_asyncio.fixture(scope="session", autouse=True)
 async def initialise(setup):
     logger.info("init_db_add_super_user start")
-    await create_super_user()
+    await seed_groups_perms()
+    await seed_super_user()
     yield
     logger.info("init_db_add_super_user teardown")
 
 
-@pytest_asyncio.fixture
-def app():
-    client = AsyncClient(app=felicity, base_url="http://localhost:8000")
-    yield client
+@pytest_asyncio.fixture(scope="function")
+async def app_root() -> Generator[AsyncClient, Any, None]:
+    async with AsyncClient(app=felicity, base_url="http://localhost:8080") as clt:
+        yield clt
+
+
+@pytest_asyncio.fixture(scope="function")
+async def app_api() -> Generator[AsyncClient, Any, None]:
+    async with AsyncClient(app=felicity, base_url="http://localhost:8080/api/v1") as clt:
+        yield clt
+
+
+@pytest_asyncio.fixture(scope="function")
+async def app_gql() -> Generator[AsyncClient, Any, None]:
+    async with AsyncClient(app=felicity, base_url="http://localhost:8080") as clt:
+        yield clt
 
 
 @pytest_asyncio.fixture(autouse=True)
-async def auth_data(app):
+async def auth_data(app_gql):
     authe = """
         mutation Auth($username: String!, $password: String!){
           authenticateUser(username: $username, password: $password) {
@@ -67,7 +93,7 @@ async def auth_data(app):
         }
     """
 
-    response = await app.post(
+    response = await app_gql.post(
         "felicity-gql",
         json={
             "query": authe,
