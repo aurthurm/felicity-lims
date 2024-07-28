@@ -34,6 +34,7 @@ delattr(SessionMixin, 'set_session')
 delattr(SessionMixin, 'session')
 SessionMixin.query = classproperty(new_query)
 
+
 class BaseEntity(DeclarativeBase, ReprMixin, SerializeMixin, SmartQueryMixin, AsyncAttrs):
     __repr__ = ReprMixin.__repr__
     __name__: str

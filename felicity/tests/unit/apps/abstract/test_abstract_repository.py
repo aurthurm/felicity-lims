@@ -5,39 +5,18 @@ from sqlalchemy import Column, ForeignKey, Integer, String
 from felicity.apps.abstract.repository import BaseRepository
 from felicity.database.session import async_engine
 from felicity.database.base import BaseEntity
-from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.orm import relationship
 
-
-"""
-This test assumes you have manually created the database schema `repo_schema` in your database.
-and have granted the user access to the schema.
-
-```sql
-\c test_felicity_lims
-create schema if not exists repo_schema;
-grant all privileges on schema repo_schema to felicity;
-```
-"""
-
-class BaseRepoModel(BaseEntity):
-    __abstract__ = True
-
-    @declared_attr
-    def __table_args__(cls):
-        return {"schema": "repo_schema"}
-
-
-class SomeTestModel(BaseRepoModel):
+class SomeTestModel(BaseEntity):
     __tablename__ = "test_model"
     name = Column(String)
     age = Column(Integer, nullable=True)
 
 
-class TrialModel(BaseRepoModel):
+class TrialModel(BaseEntity):
     __tablename__ = "trial_model"
     content = Column(String)
-    test_model_uid = Column(String, ForeignKey("repo_schema.test_model.uid"), nullable=True)
+    test_model_uid = Column(String, ForeignKey("test_model.uid"), nullable=True)
     test_model = relationship("SomeTestModel", backref="trials", lazy="selectin")
 
 
@@ -48,9 +27,9 @@ class TrialModel(BaseRepoModel):
 async def async_session():
     async with async_engine.begin() as conn:
         # drop
-        await conn.run_sync(BaseRepoModel.metadata.drop_all)
+        await conn.run_sync(BaseEntity.metadata.drop_all, tables=[SomeTestModel.__table__, TrialModel.__table__])
         # create
-        await conn.run_sync(BaseRepoModel.metadata.create_all)
+        await conn.run_sync(BaseEntity.metadata.create_all, tables=[SomeTestModel.__table__, TrialModel.__table__])
 
     connection = async_engine.connect()
     yield connection

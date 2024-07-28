@@ -4855,6 +4855,14 @@
         "documentation": {}
     },
     {
+        "label": "datetime",
+        "importPath": "datetime",
+        "description": "datetime",
+        "isExtraImport": true,
+        "detail": "datetime",
+        "documentation": {}
+    },
+    {
         "label": "timedelta",
         "importPath": "datetime",
         "description": "datetime",
@@ -9697,6 +9705,62 @@
         "documentation": {}
     },
     {
+        "label": "Column",
+        "importPath": "sqlalchemy",
+        "description": "sqlalchemy",
+        "isExtraImport": true,
+        "detail": "sqlalchemy",
+        "documentation": {}
+    },
+    {
+        "label": "ForeignKey",
+        "importPath": "sqlalchemy",
+        "description": "sqlalchemy",
+        "isExtraImport": true,
+        "detail": "sqlalchemy",
+        "documentation": {}
+    },
+    {
+        "label": "Integer",
+        "importPath": "sqlalchemy",
+        "description": "sqlalchemy",
+        "isExtraImport": true,
+        "detail": "sqlalchemy",
+        "documentation": {}
+    },
+    {
+        "label": "String",
+        "importPath": "sqlalchemy",
+        "description": "sqlalchemy",
+        "isExtraImport": true,
+        "detail": "sqlalchemy",
+        "documentation": {}
+    },
+    {
+        "label": "String",
+        "importPath": "sqlalchemy",
+        "description": "sqlalchemy",
+        "isExtraImport": true,
+        "detail": "sqlalchemy",
+        "documentation": {}
+    },
+    {
+        "label": "Column",
+        "importPath": "sqlalchemy",
+        "description": "sqlalchemy",
+        "isExtraImport": true,
+        "detail": "sqlalchemy",
+        "documentation": {}
+    },
+    {
+        "label": "String",
+        "importPath": "sqlalchemy",
+        "description": "sqlalchemy",
+        "isExtraImport": true,
+        "detail": "sqlalchemy",
+        "documentation": {}
+    },
+    {
         "label": "text",
         "importPath": "sqlalchemy",
         "description": "sqlalchemy",
@@ -9746,6 +9810,30 @@
     },
     {
         "label": "async_engine",
+        "importPath": "felicity.database.session",
+        "description": "felicity.database.session",
+        "isExtraImport": true,
+        "detail": "felicity.database.session",
+        "documentation": {}
+    },
+    {
+        "label": "async_engine",
+        "importPath": "felicity.database.session",
+        "description": "felicity.database.session",
+        "isExtraImport": true,
+        "detail": "felicity.database.session",
+        "documentation": {}
+    },
+    {
+        "label": "async_engine",
+        "importPath": "felicity.database.session",
+        "description": "felicity.database.session",
+        "isExtraImport": true,
+        "detail": "felicity.database.session",
+        "documentation": {}
+    },
+    {
+        "label": "async_session",
         "importPath": "felicity.database.session",
         "description": "felicity.database.session",
         "isExtraImport": true,
@@ -12315,6 +12403,14 @@
     },
     {
         "label": "get_time_now",
+        "importPath": "felicity.core.dtz",
+        "description": "felicity.core.dtz",
+        "isExtraImport": true,
+        "detail": "felicity.core.dtz",
+        "documentation": {}
+    },
+    {
+        "label": "format_datetime",
         "importPath": "felicity.core.dtz",
         "description": "felicity.core.dtz",
         "isExtraImport": true,
@@ -15021,6 +15117,14 @@
         "documentation": {}
     },
     {
+        "label": "BaseModel",
+        "importPath": "pydantic",
+        "description": "pydantic",
+        "isExtraImport": true,
+        "detail": "pydantic",
+        "documentation": {}
+    },
+    {
         "label": "marshaller",
         "importPath": "felicity.apps.common.utils.serializer",
         "description": "felicity.apps.common.utils.serializer",
@@ -15821,6 +15925,46 @@
         "documentation": {}
     },
     {
+        "label": "relationship",
+        "importPath": "sqlalchemy.orm",
+        "description": "sqlalchemy.orm",
+        "isExtraImport": true,
+        "detail": "sqlalchemy.orm",
+        "documentation": {}
+    },
+    {
+        "label": "Mapped",
+        "importPath": "sqlalchemy.orm",
+        "description": "sqlalchemy.orm",
+        "isExtraImport": true,
+        "detail": "sqlalchemy.orm",
+        "documentation": {}
+    },
+    {
+        "label": "mapped_column",
+        "importPath": "sqlalchemy.orm",
+        "description": "sqlalchemy.orm",
+        "isExtraImport": true,
+        "detail": "sqlalchemy.orm",
+        "documentation": {}
+    },
+    {
+        "label": "BaseEntity",
+        "importPath": "felicity.apps.abstract.entity",
+        "description": "felicity.apps.abstract.entity",
+        "isExtraImport": true,
+        "detail": "felicity.apps.abstract.entity",
+        "documentation": {}
+    },
+    {
+        "label": "BaseEntity",
+        "importPath": "felicity.apps.abstract.entity",
+        "description": "felicity.apps.abstract.entity",
+        "isExtraImport": true,
+        "detail": "felicity.apps.abstract.entity",
+        "documentation": {}
+    },
+    {
         "label": "BaseEntity",
         "importPath": "felicity.apps.abstract.entity",
         "description": "felicity.apps.abstract.entity",
@@ -16269,6 +16413,22 @@
         "documentation": {}
     },
     {
+        "label": "BaseRepository",
+        "importPath": "felicity.apps.abstract.repository",
+        "description": "felicity.apps.abstract.repository",
+        "isExtraImport": true,
+        "detail": "felicity.apps.abstract.repository",
+        "documentation": {}
+    },
+    {
+        "label": "BaseRepository",
+        "importPath": "felicity.apps.abstract.repository",
+        "description": "felicity.apps.abstract.repository",
+        "isExtraImport": true,
+        "detail": "felicity.apps.abstract.repository",
+        "documentation": {}
+    },
+    {
         "label": "AuditHistory",
         "importPath": "felicity.apps.abstract",
         "description": "felicity.apps.abstract",
@@ -16698,6 +16858,14 @@
         "description": "felicity.apps.setup.entities.setup",
         "isExtraImport": true,
         "detail": "felicity.apps.setup.entities.setup",
+        "documentation": {}
+    },
+    {
+        "label": "BaseService",
+        "importPath": "felicity.apps.abstract.service",
+        "description": "felicity.apps.abstract.service",
+        "isExtraImport": true,
+        "detail": "felicity.apps.abstract.service",
         "documentation": {}
     },
     {
@@ -21637,6 +21805,14 @@
         "documentation": {}
     },
     {
+        "label": "BaseEntity",
+        "importPath": "felicity.database.base",
+        "description": "felicity.database.base",
+        "isExtraImport": true,
+        "detail": "felicity.database.base",
+        "documentation": {}
+    },
+    {
         "label": "multiprocessing",
         "kind": 6,
         "isExtraImport": true,
@@ -21789,6 +21965,22 @@
         "description": "felicity.main",
         "isExtraImport": true,
         "detail": "felicity.main",
+        "documentation": {}
+    },
+    {
+        "label": "AsyncMock",
+        "importPath": "unittest.mock",
+        "description": "unittest.mock",
+        "isExtraImport": true,
+        "detail": "unittest.mock",
+        "documentation": {}
+    },
+    {
+        "label": "create_autospec",
+        "importPath": "unittest.mock",
+        "description": "unittest.mock",
+        "isExtraImport": true,
+        "detail": "unittest.mock",
         "documentation": {}
     },
     {
@@ -36423,10 +36615,46 @@
     {
         "label": "BaseRepoModel",
         "kind": 6,
-        "importPath": "felicity.tests.unit.apps.abstract.test_abstract_repository",
-        "description": "felicity.tests.unit.apps.abstract.test_abstract_repository",
+        "importPath": "felicity.tests.unit.apps.abstract.__pycache__.test_abstract_repository",
+        "description": "felicity.tests.unit.apps.abstract.__pycache__.test_abstract_repository",
         "peekOfCode": "class BaseRepoModel(BaseEntity):\n    __abstract__ = True\n    @declared_attr\n    def __table_args__(cls):\n        return {\"schema\": \"repo_schema\"}\nclass SomeTestModel(BaseRepoModel):\n    __tablename__ = \"test_model\"\n    name = Column(String)\n    age = Column(Integer, nullable=True)\nclass TrialModel(BaseRepoModel):",
-        "detail": "felicity.tests.unit.apps.abstract.test_abstract_repository",
+        "detail": "felicity.tests.unit.apps.abstract.__pycache__.test_abstract_repository",
+        "documentation": {}
+    },
+    {
+        "label": "SomeTestModel",
+        "kind": 6,
+        "importPath": "felicity.tests.unit.apps.abstract.__pycache__.test_abstract_repository",
+        "description": "felicity.tests.unit.apps.abstract.__pycache__.test_abstract_repository",
+        "peekOfCode": "class SomeTestModel(BaseRepoModel):\n    __tablename__ = \"test_model\"\n    name = Column(String)\n    age = Column(Integer, nullable=True)\nclass TrialModel(BaseRepoModel):\n    __tablename__ = \"trial_model\"\n    content = Column(String)\n    test_model_uid = Column(String, ForeignKey(\"repo_schema.test_model.uid\"), nullable=True)\n    test_model = relationship(\"SomeTestModel\", backref=\"trials\", lazy=\"selectin\")\n# Setup the async database session for testing",
+        "detail": "felicity.tests.unit.apps.abstract.__pycache__.test_abstract_repository",
+        "documentation": {}
+    },
+    {
+        "label": "TrialModel",
+        "kind": 6,
+        "importPath": "felicity.tests.unit.apps.abstract.__pycache__.test_abstract_repository",
+        "description": "felicity.tests.unit.apps.abstract.__pycache__.test_abstract_repository",
+        "peekOfCode": "class TrialModel(BaseRepoModel):\n    __tablename__ = \"trial_model\"\n    content = Column(String)\n    test_model_uid = Column(String, ForeignKey(\"repo_schema.test_model.uid\"), nullable=True)\n    test_model = relationship(\"SomeTestModel\", backref=\"trials\", lazy=\"selectin\")\n# Setup the async database session for testing\n# scope=\"module\" ensures that the session is created once for all tests in the module\n# scope=\"function\" creates a new session for each test function\n@pytest_asyncio.fixture(scope=\"function\")\nasync def async_session():",
+        "detail": "felicity.tests.unit.apps.abstract.__pycache__.test_abstract_repository",
+        "documentation": {}
+    },
+    {
+        "label": "some_test_repo",
+        "kind": 2,
+        "importPath": "felicity.tests.unit.apps.abstract.__pycache__.test_abstract_repository",
+        "description": "felicity.tests.unit.apps.abstract.__pycache__.test_abstract_repository",
+        "peekOfCode": "def some_test_repo(async_session):\n    class TestRepository(BaseRepository[SomeTestModel]):\n        def __init__(self):\n            super().__init__(SomeTestModel)\n    return TestRepository()\n@pytest_asyncio.fixture\ndef trial_repo(async_session):\n    class TrialRepository(BaseRepository[TrialModel]):\n        def __init__(self):\n            super().__init__(TrialModel)",
+        "detail": "felicity.tests.unit.apps.abstract.__pycache__.test_abstract_repository",
+        "documentation": {}
+    },
+    {
+        "label": "trial_repo",
+        "kind": 2,
+        "importPath": "felicity.tests.unit.apps.abstract.__pycache__.test_abstract_repository",
+        "description": "felicity.tests.unit.apps.abstract.__pycache__.test_abstract_repository",
+        "peekOfCode": "def trial_repo(async_session):\n    class TrialRepository(BaseRepository[TrialModel]):\n        def __init__(self):\n            super().__init__(TrialModel)\n    return TrialRepository()\n# Test cases\n@pytest.mark.asyncio\nasync def test_save(some_test_repo):\n    model = SomeTestModel(name=\"test\")\n    saved_model = await some_test_repo.save(model)",
+        "detail": "felicity.tests.unit.apps.abstract.__pycache__.test_abstract_repository",
         "documentation": {}
     },
     {
@@ -36434,7 +36662,7 @@
         "kind": 6,
         "importPath": "felicity.tests.unit.apps.abstract.test_abstract_repository",
         "description": "felicity.tests.unit.apps.abstract.test_abstract_repository",
-        "peekOfCode": "class SomeTestModel(BaseRepoModel):\n    __tablename__ = \"test_model\"\n    name = Column(String)\n    age = Column(Integer, nullable=True)\nclass TrialModel(BaseRepoModel):\n    __tablename__ = \"trial_model\"\n    content = Column(String)\n    test_model_uid = Column(String, ForeignKey(\"repo_schema.test_model.uid\"), nullable=True)\n    test_model = relationship(\"SomeTestModel\", backref=\"trials\", lazy=\"selectin\")\n# Setup the async database session for testing",
+        "peekOfCode": "class SomeTestModel(BaseEntity):\n    __tablename__ = \"test_model\"\n    name = Column(String)\n    age = Column(Integer, nullable=True)\nclass TrialModel(BaseEntity):\n    __tablename__ = \"trial_model\"\n    content = Column(String)\n    test_model_uid = Column(String, ForeignKey(\"test_model.uid\"), nullable=True)\n    test_model = relationship(\"SomeTestModel\", backref=\"trials\", lazy=\"selectin\")\n# Setup the async database session for testing",
         "detail": "felicity.tests.unit.apps.abstract.test_abstract_repository",
         "documentation": {}
     },
@@ -36443,7 +36671,7 @@
         "kind": 6,
         "importPath": "felicity.tests.unit.apps.abstract.test_abstract_repository",
         "description": "felicity.tests.unit.apps.abstract.test_abstract_repository",
-        "peekOfCode": "class TrialModel(BaseRepoModel):\n    __tablename__ = \"trial_model\"\n    content = Column(String)\n    test_model_uid = Column(String, ForeignKey(\"repo_schema.test_model.uid\"), nullable=True)\n    test_model = relationship(\"SomeTestModel\", backref=\"trials\", lazy=\"selectin\")\n# Setup the async database session for testing\n# scope=\"module\" ensures that the session is created once for all tests in the module\n# scope=\"function\" creates a new session for each test function\n@pytest_asyncio.fixture(scope=\"function\")\nasync def async_session():",
+        "peekOfCode": "class TrialModel(BaseEntity):\n    __tablename__ = \"trial_model\"\n    content = Column(String)\n    test_model_uid = Column(String, ForeignKey(\"test_model.uid\"), nullable=True)\n    test_model = relationship(\"SomeTestModel\", backref=\"trials\", lazy=\"selectin\")\n# Setup the async database session for testing\n# scope=\"module\" ensures that the session is created once for all tests in the module\n# scope=\"function\" creates a new session for each test function\n@pytest_asyncio.fixture(scope=\"function\")\nasync def async_session():",
         "detail": "felicity.tests.unit.apps.abstract.test_abstract_repository",
         "documentation": {}
     },
@@ -36463,6 +36691,78 @@
         "description": "felicity.tests.unit.apps.abstract.test_abstract_repository",
         "peekOfCode": "def trial_repo(async_session):\n    class TrialRepository(BaseRepository[TrialModel]):\n        def __init__(self):\n            super().__init__(TrialModel)\n    return TrialRepository()\n# Test cases\n@pytest.mark.asyncio\nasync def test_save(some_test_repo):\n    model = SomeTestModel(name=\"test\")\n    saved_model = await some_test_repo.save(model)",
         "detail": "felicity.tests.unit.apps.abstract.test_abstract_repository",
+        "documentation": {}
+    },
+    {
+        "label": "MockEntity",
+        "kind": 6,
+        "importPath": "felicity.tests.unit.apps.abstract.test_abstract_service",
+        "description": "felicity.tests.unit.apps.abstract.test_abstract_service",
+        "peekOfCode": "class MockEntity(BaseEntity):\n    __tablename__ = \"mock_table\"\n    name: Mapped[str] = mapped_column(String)\n    bio: Mapped[str] = mapped_column(String)\nclass CreateModel(BaseModel):\n    name: str\n    bio: str\nclass UpdateModel(BaseModel):\n    name: str | None\n    bio: str | None",
+        "detail": "felicity.tests.unit.apps.abstract.test_abstract_service",
+        "documentation": {}
+    },
+    {
+        "label": "CreateModel",
+        "kind": 6,
+        "importPath": "felicity.tests.unit.apps.abstract.test_abstract_service",
+        "description": "felicity.tests.unit.apps.abstract.test_abstract_service",
+        "peekOfCode": "class CreateModel(BaseModel):\n    name: str\n    bio: str\nclass UpdateModel(BaseModel):\n    name: str | None\n    bio: str | None\n# Define a custom repository for testing\nclass MockRepository(BaseRepository[MockEntity]):\n    def __init__(self):\n        super().__init__(MockEntity)",
+        "detail": "felicity.tests.unit.apps.abstract.test_abstract_service",
+        "documentation": {}
+    },
+    {
+        "label": "UpdateModel",
+        "kind": 6,
+        "importPath": "felicity.tests.unit.apps.abstract.test_abstract_service",
+        "description": "felicity.tests.unit.apps.abstract.test_abstract_service",
+        "peekOfCode": "class UpdateModel(BaseModel):\n    name: str | None\n    bio: str | None\n# Define a custom repository for testing\nclass MockRepository(BaseRepository[MockEntity]):\n    def __init__(self):\n        super().__init__(MockEntity)\n# Define a custom service for testing\nclass MockService(BaseService[MockEntity, CreateModel, UpdateModel]):\n    def __init__(self):",
+        "detail": "felicity.tests.unit.apps.abstract.test_abstract_service",
+        "documentation": {}
+    },
+    {
+        "label": "MockRepository",
+        "kind": 6,
+        "importPath": "felicity.tests.unit.apps.abstract.test_abstract_service",
+        "description": "felicity.tests.unit.apps.abstract.test_abstract_service",
+        "peekOfCode": "class MockRepository(BaseRepository[MockEntity]):\n    def __init__(self):\n        super().__init__(MockEntity)\n# Define a custom service for testing\nclass MockService(BaseService[MockEntity, CreateModel, UpdateModel]):\n    def __init__(self):\n        super().__init__(MockRepository)\n# Define the test fixtures\n@pytest.fixture\ndef mock_repo():",
+        "detail": "felicity.tests.unit.apps.abstract.test_abstract_service",
+        "documentation": {}
+    },
+    {
+        "label": "MockService",
+        "kind": 6,
+        "importPath": "felicity.tests.unit.apps.abstract.test_abstract_service",
+        "description": "felicity.tests.unit.apps.abstract.test_abstract_service",
+        "peekOfCode": "class MockService(BaseService[MockEntity, CreateModel, UpdateModel]):\n    def __init__(self):\n        super().__init__(MockRepository)\n# Define the test fixtures\n@pytest.fixture\ndef mock_repo():\n    return create_autospec(MockRepository, spec_set=True, instance=True)\n@pytest.fixture\ndef test_service(mock_repo):\n    service = MockService()",
+        "detail": "felicity.tests.unit.apps.abstract.test_abstract_service",
+        "documentation": {}
+    },
+    {
+        "label": "mock_repo",
+        "kind": 2,
+        "importPath": "felicity.tests.unit.apps.abstract.test_abstract_service",
+        "description": "felicity.tests.unit.apps.abstract.test_abstract_service",
+        "peekOfCode": "def mock_repo():\n    return create_autospec(MockRepository, spec_set=True, instance=True)\n@pytest.fixture\ndef test_service(mock_repo):\n    service = MockService()\n    service.repository = mock_repo\n    return service\n# Test cases\n@pytest.mark.asyncio\nasync def test_paging_filter(test_service):",
+        "detail": "felicity.tests.unit.apps.abstract.test_abstract_service",
+        "documentation": {}
+    },
+    {
+        "label": "test_service",
+        "kind": 2,
+        "importPath": "felicity.tests.unit.apps.abstract.test_abstract_service",
+        "description": "felicity.tests.unit.apps.abstract.test_abstract_service",
+        "peekOfCode": "def test_service(mock_repo):\n    service = MockService()\n    service.repository = mock_repo\n    return service\n# Test cases\n@pytest.mark.asyncio\nasync def test_paging_filter(test_service):\n    test_service.repository.paginate = AsyncMock(return_value=[\"item1\", \"item2\"])\n    result = await test_service.paging_filter(page_size=10)\n    assert result == [\"item1\", \"item2\"]",
+        "detail": "felicity.tests.unit.apps.abstract.test_abstract_service",
+        "documentation": {}
+    },
+    {
+        "label": "TestEntity",
+        "kind": 6,
+        "importPath": "felicity.tests.unit.apps.abstract.test_base_entity",
+        "description": "felicity.tests.unit.apps.abstract.test_base_entity",
+        "peekOfCode": "class TestEntity(BaseEntity):\n    __tablename__ = 'test_entity'\n    name = Column(String)\n    created_at = Column(String, default=lambda: format_datetime(datetime.utcnow(), human_format=False, with_time=True))\n@pytest_asyncio.fixture(scope=\"function\")\nasync def async_session():\n    async with async_engine.begin() as conn:\n        await conn.run_sync(BaseEntity.metadata.drop_all, tables=[TestEntity.__table__])\n        await conn.run_sync(BaseEntity.metadata.create_all, tables=[TestEntity.__table__])\n    async with async_session_factory() as session:",
+        "detail": "felicity.tests.unit.apps.abstract.test_base_entity",
         "documentation": {}
     },
     {
