@@ -17,9 +17,9 @@ from felicity.apps.job.enum import (JobAction, JobCategory, JobPriority,
                                     JobState)
 from felicity.apps.job.services import JobService
 from felicity.apps.notification.services import ActivityStreamService
-from felicity.apps.worksheet import enum as ws_conf
 from felicity.apps.worksheet.enum import WorkSheetState
 from felicity.apps.worksheet.services import WorkSheetService
+from felicity.apps.analysis.workflow.analysis_result import AnalysisResultWorkFlow
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -151,9 +151,10 @@ async def retract_analysis_results(info, analyses: list[str]) -> AnalysisResultR
         if not a_result:
             return OperationError(error=f"AnalysisResult with uid {_ar_uid} not found")
 
-        retest, a_result = await AnalysisResultService().retest_result(
-            a_result.uid, retested_by=felicity_user, next_action="retract"
+        retest, a_result = await AnalysisResultWorkFlow().retest(
+            a_result.uid, retested_by=felicity_user, action="retract"
         )
+
 
         # monkeypatch -> notify of sample state
         sample = await SampleService().get(uid=a_result.sample_uid)
@@ -218,7 +219,7 @@ async def cancel_analysis_results(info, analyses: list[str]) -> AnalysisResultRe
             return_results.append(a_result)
             continue
 
-        a_result = await AnalysisResultService().cancel(
+        a_result = await AnalysisResultWorkFlow().cancel(
             a_result.uid, cancelled_by=felicity_user
         )
         if a_result:
@@ -246,7 +247,7 @@ async def re_instate_analysis_results(
         if not a_result:
             return OperationError(error=f"AnalysisResult with uid {_ar_uid} not found")
 
-        a_result = await AnalysisResultService().re_instate(
+        a_result = await AnalysisResultWorkFlow().re_instate(
             a_result.uid, re_instated_by=felicity_user
         )
         if a_result:

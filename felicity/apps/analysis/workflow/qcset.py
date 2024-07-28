@@ -1,4 +1,5 @@
 from felicity.apps.analysis.entities.analysis import QCSet, Sample
+from felicity.apps.analysis.enum import SampleState
 
 
 class CQSetWorkFlowException(Exception): ...
@@ -26,6 +27,9 @@ class CQSetWorkFlow:
     """
 
     def __init__(self): ...
+
+    async def revert(self, uid: str, by_uid: str):
+        raise NotImplementedError()
 
     @classmethod
     async def cancel(cls, uid):

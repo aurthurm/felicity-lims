@@ -7,13 +7,22 @@ from felicity.apps.worksheet.services import WorkSheetService
 class WorksheetWorkFlowException(Exception): ...
 
 
-class WorkSheetWorkFlowService:
+class WorkSheetWorkFlow:
     """WorksheetWorkFlow
     Defines a set of guards that allow or prevent actions taken on Worksheet
     """
 
     def __init__(self):
         self.worksheet_service = WorkSheetService()
+
+    async def revert(self, uid: str, by_uid: str):
+        to_status = WorkSheetState.PENDING
+        results = await self.worksheet_service.get_analysis_results(uid)
+
+        awaiting_states = [ResultState.RESULTED, ResultState.APPROVING, ResultState.RETRACTED]
+        if all([ar.state in awaiting_states for ar in results]):
+            to_status = WorkSheetState.AWAITING
+        await self.worksheet_service.change_state(uid, to_status, by_uid)
 
     async def submit(self, uid, submitter):
         worksheet = await self.worksheet_service.get(uid=uid)

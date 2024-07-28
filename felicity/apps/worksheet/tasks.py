@@ -1,9 +1,6 @@
 import logging
 import time
-from typing import List
 
-import felicity.api.gql.analysis.types
-from felicity.apps.analysis.entities.qc import QCTemplate
 from felicity.apps.analysis.enum import ResultState, SampleState
 from felicity.apps.analysis.schemas import (AnalysisResultCreate, QCSetCreate,
                                             SampleCreate)
@@ -12,7 +9,7 @@ from felicity.apps.analysis.services.quality_control import (QCSetService,
                                                              QCTemplateService)
 from felicity.apps.analysis.services.result import AnalysisResultService
 from felicity.apps.analysis.utils import get_qc_sample_type
-from felicity.apps.common.utils.serializer import marshaller
+from felicity.apps.analysis.workflow.analysis_result import AnalysisResultWorkFlow
 from felicity.apps.job.enum import JobState
 from felicity.apps.job.services import JobService
 from felicity.apps.worksheet.entities import WorkSheet
@@ -22,12 +19,12 @@ from felicity.apps.worksheet.services import WorkSheetService
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-
 async def populate_worksheet_plate(job_uid: str):
     logger.info(f"starting job {job_uid} ....")
     job_service = JobService()
     worksheet_service = WorkSheetService()
     analysis_result_service = AnalysisResultService()
+    analysis_result_wf = AnalysisResultWorkFlow()
 
     job = await job_service.get(uid=job_uid)
     if not job:
@@ -119,7 +116,7 @@ async def populate_worksheet_plate(job_uid: str):
                 # skip reserved ?qc positions
                 position += 1
 
-            await analysis_result_service.assign(sample.uid, ws.uid, position, None)
+            await analysis_result_wf.assign(sample.uid, ws.uid, position, None)
             position += 1
 
     else:  # populate worksheet using an empty position filling strategy if not empty
@@ -137,7 +134,7 @@ async def populate_worksheet_plate(job_uid: str):
         samples = samples[: len(empty_positions)]
 
         for key in list(range(len(samples))):
-            await analysis_result_service.assign(
+            await analysis_result_wf.assign(
                 samples[key].uid, ws.uid, empty_positions[key], None
             )
 
@@ -171,6 +168,7 @@ async def setup_ws_quality_control(ws: WorkSheet):
     analysis_result_service = AnalysisResultService()
     qc_set_service = QCSetService()
     sample_service = SampleService()
+    analysis_result_wf = AnalysisResultWorkFlow()
 
     reserved_pos = ws.reserved
     if ws.template.qc_levels:
@@ -211,7 +209,7 @@ async def setup_ws_quality_control(ws: WorkSheet):
                 sample.qc_set_uid = qc_set.uid
                 sample.qc_level_uid = level.uid
                 sample.analyses.append(ws.analysis)
-                await sample_service.update(sample.uid, marshaller(sample))
+                await sample_service.save(sample)
                 logger.warning(f"Sample {sample.sample_id}, level {level.level}")
 
                 # create results linkages
@@ -223,7 +221,7 @@ async def setup_ws_quality_control(ws: WorkSheet):
                 a_result_schema = AnalysisResultCreate(**a_result_in)
                 ar = await analysis_result_service.create(a_result_schema)
                 position = get_sample_position(reserved_pos, level.uid)
-                await analysis_result_service.assign(ar.uid, ws.uid, position, None)
+                await analysis_result_wf.assign(ar.uid, ws.uid, position, None)
 
 
 async def setup_ws_quality_control_manually(ws: WorkSheet, qc_template_uid):
@@ -231,6 +229,7 @@ async def setup_ws_quality_control_manually(ws: WorkSheet, qc_template_uid):
     analysis_result_service = AnalysisResultService()
     qc_set_service = QCSetService()
     sample_service = SampleService()
+    analysis_result_wf = AnalysisResultWorkFlow()
 
     qc_template = None
     reserved_pos = None
@@ -287,7 +286,7 @@ async def setup_ws_quality_control_manually(ws: WorkSheet, qc_template_uid):
                 sample.qc_set_uid = qc_set.uid
                 sample.qc_level_uid = level.uid
                 sample.analyses.append(ws.analysis)
-                await sample_service.update(sample.uid, marshaller(sample))
+                await sample_service.save(sample)
                 logger.warning(f"Sample {sample.sample_id}, level {level.level}")
 
                 # create results linkages
@@ -299,7 +298,7 @@ async def setup_ws_quality_control_manually(ws: WorkSheet, qc_template_uid):
                 a_result_schema = AnalysisResultCreate(**a_result_in)
                 ar = await analysis_result_service.create(a_result_schema)
                 position = get_sample_position(reserved_pos, level.uid)
-                await analysis_result_service.assign(ar.uid, ws.uid, position, None)
+                await analysis_result_wf.assign(ar.uid, ws.uid, position, None)
 
 
 async def populate_worksheet_plate_manually(job_uid: str):

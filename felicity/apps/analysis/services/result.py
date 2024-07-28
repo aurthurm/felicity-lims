@@ -38,38 +38,33 @@ class AnalysisResultService(
 
     async def retest_result(self, uid: str, retested_by, next_action="verify") -> (
         tuple[
-            Annotated["AnalysisResult", "Newly Created AnalysisResult"] | None,
-            Annotated["AnalysisResult", "Retested AnalysisResult"],
+            Annotated[AnalysisResult, "Newly Created AnalysisResult"] | None,
+            Annotated[AnalysisResult, "Retested AnalysisResult"],
         ]
         | None
     ):
         analysis_result = await self.get(uid=uid)
         retest = None
-        if analysis_result.status in [ResultState.RESULTED]:
-            a_result_in = {
-                "sample_uid": analysis_result.sample_uid,
-                "analysis_uid": analysis_result.analysis_uid,
-                "status": ResultState.PENDING,
-                "laboratory_instrument_uid": analysis_result.laboratory_instrument_uid,
-                "method_uid": analysis_result.method_uid,
-                "parent_id": analysis_result.uid,
-                "retest": True,
-            }
-            a_result_schema = AnalysisResultCreate(**a_result_in)
-            retest = await self.create(a_result_schema)
+        a_result_in = {
+            "sample_uid": analysis_result.sample_uid,
+            "analysis_uid": analysis_result.analysis_uid,
+            "status": ResultState.PENDING,
+            "laboratory_instrument_uid": analysis_result.laboratory_instrument_uid,
+            "method_uid": analysis_result.method_uid,
+            "parent_id": analysis_result.uid,
+            "retest": True,
+        }
+        a_result_schema = AnalysisResultCreate(**a_result_in)
+        retest = await self.create(a_result_schema)
 
-            await self.hide_report(uid)
-            if next_action == "verify":
-                _, final = await self.verify(uid, verifier=retested_by)
-            elif next_action == "retract":
-                final = await self.retract(uid, retracted_by=retested_by)
-            else:
-                final = analysis_result
-
-            # transition sample back to received state
-            # await self.sample.un_submit()
-            return retest, final
-        return retest, analysis_result
+        await self.hide_report(uid)
+        if next_action == "verify":
+            _, final = await self.verify(uid, verifier=retested_by)
+        elif next_action == "retract":
+            final = await self.retract(uid, retracted_by=retested_by)
+        else:
+            final = analysis_result
+        return retest, final
 
     async def assign(self, uid: str, ws_uid, position, laboratory_instrument_uid):
         analysis_result = await self.get(uid=uid)
@@ -88,82 +83,74 @@ class AnalysisResultService(
         analysis_result.worksheet_position = None
         analysis_result.laboratory_instrument_uid = None
         return await super().save(analysis_result)
-
-    async def verify(self, uid: str, verifier) -> tuple[bool, "AnalysisResult"]:
+    
+    async def submit(self, uid: str, data: dict, submitter) -> AnalysisResult:
         analysis_result = await self.get(uid=uid)
-        is_verified = False
-        required, current = await self.verifications(uid)
-        analysis_result.updated_by_uid = verifier.uid  # noqa
-        if current < required and current + 1 == required:
-            await self._verify(uid, verifier_uid=verifier.uid)
-            analysis_result.status = ResultState.APPROVED
-            analysis_result.date_verified = datetime.now()
-            is_verified = True
-
+        analysis_result.result = data.get("result")
+        analysis_result.updated_by_uid = submitter.uid  # noqa
+        analysis_result.submitted_by_uid = submitter.uid  # noqa
+        analysis_result.status = ResultState.RESULTED
+        analysis_result.date_submitted = datetime.now()
         final = await super().save(analysis_result)
-        if final.status == ResultState.APPROVED:
-            await self.streamer_service.stream(final, verifier, "approved", "result")
-        return is_verified, final
+        await self.streamer_service.stream(final, submitter, "submitted", "result")
+        return final
 
-    async def _verify(self, uid: str, verifier_uid):
+    async def verify(self, uid: str, verifier) -> AnalysisResult:
+        analysis_result = await self.get(uid=uid)
+        analysis_result.updated_by_uid = verifier.uid  # noqa
+        analysis_result.status = ResultState.APPROVED
+        analysis_result.date_verified = datetime.now()
+        final = await super().save(analysis_result)
+        await self._verify(uid, verifier_uid=verifier.uid)
+        await self.streamer_service.stream(final, verifier, "approved", "result")
+        return final
+
+    async def _verify(self, uid: str, verifier_uid) -> None:
         await self.repository.table_insert(
             table=result_verification,
             mappings={"result_uid": uid, "user_uid": verifier_uid},
         )
 
-    async def retract(self, uid: str, retracted_by) -> "AnalysisResult":
+    async def retract(self, uid: str, retracted_by) -> AnalysisResult:
         analysis_result = await self.get(uid=uid)
         analysis_result.status = ResultState.RETRACTED
         analysis_result.date_verified = datetime.now()
         analysis_result.updated_by_uid = retracted_by.uid  # noqa
         final = await super().save(analysis_result)
-        if final.status == ResultState.RETRACTED:
-            await self.streamer_service.stream(
-                final, retracted_by, "retracted", "result"
-            )
-            await self._verify(uid, verifier_uid=retracted_by.uid)
+        await self.streamer_service.stream(
+            final, retracted_by, "retracted", "result"
+        )
+        await self._verify(uid, verifier_uid=retracted_by.uid)
         return final
 
-    async def cancel(self, uid: str, cancelled_by) -> "AnalysisResult":
+    async def cancel(self, uid: str, cancelled_by) -> AnalysisResult:
         analysis_result = await self.get(uid=uid)
-        if analysis_result.status in [ResultState.PENDING]:
-            analysis_result.status = ResultState.CANCELLED
-            analysis_result.cancelled_by_uid = cancelled_by.uid
-            analysis_result.date_cancelled = datetime.now()
-            analysis_result.updated_by_uid = cancelled_by.uid  # noqa
+        analysis_result.status = ResultState.CANCELLED
+        analysis_result.cancelled_by_uid = cancelled_by.uid
+        analysis_result.date_cancelled = datetime.now()
+        analysis_result.updated_by_uid = cancelled_by.uid  # noqa
         final = await super().save(analysis_result)
-        if final.status == ResultState.CANCELLED:
-            await self.streamer_service.stream(
-                final, cancelled_by, "cancelled", "result"
-            )
+        await self.streamer_service.stream(
+            final, cancelled_by, "cancelled", "result"
+        )
         return final
 
-    async def re_instate(self, uid: str, re_instated_by) -> "AnalysisResult":
+    async def re_instate(self, uid: str, re_instated_by) -> AnalysisResult:
         analysis_result = await self.get(uid=uid)
-        if analysis_result.sample.status not in [
-            SampleState.RECEIVED,
-            SampleState.EXPECTED,
-        ]:
-            raise Exception(
-                "You can only reinstate analytes of due and received samples"
-            )
-
-        if analysis_result.status in [ResultState.CANCELLED]:
-            analysis_result.status = ResultState.PENDING
-            analysis_result.cancelled_by_uid = None
-            analysis_result.date_cancelled = None
-            analysis_result.updated_by_uid = re_instated_by.uid  # noqa
+        analysis_result.status = ResultState.PENDING
+        analysis_result.cancelled_by_uid = None
+        analysis_result.date_cancelled = None
+        analysis_result.updated_by_uid = re_instated_by.uid  # noqa
         final = await super().save(analysis_result)
-        if final.status == ResultState.PENDING:
-            await self.streamer_service.stream(
-                final, re_instated_by, "reinstated", "result"
-            )
+        await self.streamer_service.stream(
+            final, re_instated_by, "reinstated", "result"
+        )
         return final
 
-    async def change_status(self, uid: str, status) -> "AnalysisResult":
+    async def change_status(self, uid: str, status) -> AnalysisResult:
         return await super().update(uid, {"status": status})
 
-    async def hide_report(self, uid: str) -> "AnalysisResult":
+    async def hide_report(self, uid: str) -> AnalysisResult:
         return await super().update(uid, {"reportable": False})
 
     async def filter_for_worksheet(
@@ -172,7 +159,7 @@ class AnalysisResultService(
         analysis_uid: str,
         sample_type_uid: list[str],
         limit: int,
-    ) -> list["AnalysisResult"]:
+    ) -> list[AnalysisResult]:
         filters = {
             "status__exact": analyses_status,
             "assigned__exact": False,

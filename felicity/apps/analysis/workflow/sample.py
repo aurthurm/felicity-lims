@@ -1,5 +1,6 @@
 from felicity.apps.analysis.entities.analysis import Sample
-from felicity.apps.analysis.enum import States
+from felicity.apps.analysis.enum import ResultState, SampleState
+from felicity.apps.analysis.services.analysis import SampleService
 
 
 class SampleWorkFlowException(Exception): ...
@@ -10,13 +11,18 @@ class SampleWorkFlow:
     Defines a set of guards that allow or prevent actions taken on Samples
     """
 
-    def __init__(self): ...
+    def __init__(self):
+        self.sample_service = SampleService()
 
-    @classmethod
-    async def receive(cls, uid):
-        sample = await Sample.get(uid=uid)
-        await cls._guard_receive(sample)
-        await sample.change_status(SampleState.RECEIVED)
+    async def revert(self, uid: str, by_uid: str) -> None:
+        # to_status = ResultState.PENDING
+        # await self.sample_service.change_status(uid, to_status)
+        raise NotImplementedError()
+    
+    async def receive(self, uid, received_by):
+        sample = await self.sample_service.get(uid=uid)
+        await self._guard_receive(sample)
+        return await self.sample_service.receive(sample.uid, received_by=received_by)
 
     @staticmethod
     async def _guard_receive(sample: Sample) -> bool:
@@ -28,11 +34,10 @@ class SampleWorkFlow:
             raise SampleWorkFlowException(f"Cannot receive this Sample")
         return True
 
-    @classmethod
-    async def cancel(cls, uid, cancelled_by):
-        sample = await Sample.get(uid=uid)
-        await cls._guard_cancel(sample)
-        await sample.cancel(cancelled_by)
+    async def cancel(self, uid, cancelled_by):
+        sample = await self.sample_service.get(uid=uid)
+        await self._guard_cancel(sample)
+        return await self.sample_service.cancel(sample.uid, cancelled_by)
 
     @staticmethod
     async def _guard_cancel(sample: Sample) -> bool:
@@ -41,11 +46,10 @@ class SampleWorkFlow:
             raise SampleWorkFlowException(f"Cannot cancel this Sample")
         return True
 
-    @classmethod
-    async def re_instate(cls, uid, re_instated_by):
-        sample = await Sample.get(uid=uid)
-        await cls._guard_re_instate(sample)
-        await sample.re_instate(re_instated_by)
+    async def re_instate(self, uid, re_instated_by):
+        sample = await self.sample_service.get(uid=uid)
+        await self._guard_re_instate(sample)
+        return await self.sample_service.re_instate(sample.uid, re_instated_by)
 
     @staticmethod
     async def _guard_re_instate(sample: Sample) -> bool:
@@ -54,21 +58,19 @@ class SampleWorkFlow:
             raise SampleWorkFlowException(f"Cannot re-instate this Sample")
         return True
 
-    @classmethod
-    async def submit(cls, uid, submitted_by):
-        sample = await Sample.get(uid=uid)
-        await cls._guard_submit(sample)
-        await sample.submit(submitted_by)
+    async def submit(self, uid, submitted_by):
+        sample = await self.sample_service.get(uid=uid)
+        await self._guard_submit(sample)
+        return await self.sample_service.submit(sample.uid, submitted_by)
 
-    @staticmethod
-    async def _guard_submit(sample: Sample) -> bool:
+    async def _guard_submit(self, sample: Sample) -> bool:
         allow = False
-        analysis_results = await sample.get_analysis_results()
+        analysis_results = await self.sample_service.get_analysis_results()
         statuses = [
-            States.Result.RESULTED,
-            States.Result.RETRACTED,
-            States.Result.APPROVED,
-            States.Result.CANCELLED,
+            ResultState.RESULTED,
+            ResultState.RETRACTED,
+            ResultState.APPROVED,
+            ResultState.CANCELLED,
         ]
         match = all([(result.status in statuses) for result in analysis_results])
         if match and sample.status == SampleState.RECEIVED:
@@ -78,11 +80,10 @@ class SampleWorkFlow:
             raise SampleWorkFlowException(f"Cannot submit this Sample")
         return True
 
-    @classmethod
-    async def un_submit(cls, uid):
-        sample = await Sample.get(uid=uid)
-        await cls._guard_un_submit(sample)
-        await sample.un_submit()
+    async def un_submit(self, uid):
+        sample = await self.sample_service.get(uid=uid)
+        await self._guard_un_submit(sample)
+        return await self.sample_service.un_submit(sample.uid)
 
     @staticmethod
     async def _guard_un_submit(sample: Sample) -> bool:
@@ -91,11 +92,10 @@ class SampleWorkFlow:
             raise SampleWorkFlowException(f"Cannot un-submit this Sample")
         return True
 
-    @classmethod
-    async def reject(cls, uid, rejected_by):
-        sample = await Sample.get(uid=uid)
-        await cls._guard_reject(sample)
-        await sample.reject(rejected_by=rejected_by)
+    async def reject(self, uid, rejected_by):
+        sample = await self.sample_service.get(uid=uid)
+        await self._guard_reject(sample)
+        return await self.sample_service.reject(sample.uid, rejected_by=rejected_by)
 
     @staticmethod
     async def _guard_reject(sample: Sample) -> bool:
@@ -104,11 +104,10 @@ class SampleWorkFlow:
             raise SampleWorkFlowException(f"Cannot reject this Sample")
         return True
 
-    @classmethod
-    async def store(cls, uid, stored_by):
-        sample = await Sample.get(uid=uid)
-        await cls._guard_store(sample)
-        return await sample.store(stored_by)
+    async def store(self, uid, stored_by):
+        sample = await self.sample_service.get(uid=uid)
+        await self._guard_store(sample)
+        return await self.sample_service.store(sample.uid, stored_by)
 
     @staticmethod
     async def _guard_store(sample: Sample) -> bool:
@@ -120,11 +119,10 @@ class SampleWorkFlow:
             raise SampleWorkFlowException(f"Cannot store this Sample")
         return True
 
-    @classmethod
-    async def recover(cls, uid):
-        sample = await Sample.get(uid=uid)
-        await cls._guard_recover(sample)
-        await sample.recover()
+    async def recover(self, uid):
+        sample = await self.sample_service.get(uid=uid)
+        await self._guard_recover(sample)
+        return await self.sample_service.recover(sample.uid)
 
     @staticmethod
     async def _guard_recover(sample: Sample) -> bool:
@@ -136,11 +134,10 @@ class SampleWorkFlow:
             raise SampleWorkFlowException(f"Cannot recover this Sample")
         return True
 
-    @classmethod
-    async def print(cls, uid, printed_by):
-        sample = await Sample.get(uid=uid)
-        await cls._guard_print(sample)
-        await sample.print(printed_by=printed_by)
+    async def print(self, uid, printed_by):
+        sample = await self.sample_service.get(uid=uid)
+        await self._guard_print(sample)
+        return await self.sample_service.print(sample.uid, printed_by=printed_by)
 
     @staticmethod
     async def _guard_print(sample: Sample) -> bool:
@@ -149,11 +146,10 @@ class SampleWorkFlow:
             raise SampleWorkFlowException(f"Cannot print this Sample")
         return True
 
-    @classmethod
-    async def invalidate(cls, uid, invalidated_by):
-        sample = await Sample.get(uid=uid)
-        await cls._guard_invalidate(sample)
-        await sample.invalidate(invalidated_by)
+    async def invalidate(self, uid, invalidated_by):
+        sample = await self.sample_service.get(uid=uid)
+        await self._guard_invalidate(sample)
+        return await self.sample_service.invalidate(sample.uid, invalidated_by)
 
     @staticmethod
     async def _guard_invalidate(sample: Sample):
@@ -162,11 +158,10 @@ class SampleWorkFlow:
             raise SampleWorkFlowException(f"Cannot invalidate this Sample")
         return True
 
-    @classmethod
-    async def publish(cls, uid, published_by):
-        sample = await Sample.get(uid=uid)
-        await cls._guard_publish(sample)
-        await sample.publish(published_by=published_by)
+    async def publish(self, uid, published_by):
+        sample = await self.sample_service.get(uid=uid)
+        await self._guard_publish(sample)
+        return await self.sample_service.publish(sample.uid, published_by=published_by)
 
     @staticmethod
     async def _guard_publish(sample):
@@ -175,11 +170,10 @@ class SampleWorkFlow:
             raise SampleWorkFlowException(f"Cannot publish this Sample")
         return True
 
-    @classmethod
-    async def assign(cls, uid):
-        sample = await Sample.get(uid=uid)
-        await cls._guard_assign(sample)
-        await sample.assign()
+    async def assign(self, uid):
+        sample = await self.sample_service.get(uid=uid)
+        await self._guard_assign(sample)
+        return await self.sample_service.assign(sample.uid)
 
     @staticmethod
     async def _guard_assign(sample):
@@ -188,11 +182,10 @@ class SampleWorkFlow:
             raise SampleWorkFlowException(f"Cannot assign this Sample")
         return True
 
-    @classmethod
-    async def un_assign(cls, uid):
-        sample = await Sample.get(uid=uid)
-        await cls._guard_un_assign(sample)
-        await sample.un_assign()
+    async def un_assign(self, uid):
+        sample = await self.sample_service.get(uid=uid)
+        await self._guard_un_assign(sample)
+        return await self.sample_service.un_assign(sample.uid)
 
     @staticmethod
     async def _guard_un_assign(sample):
@@ -201,21 +194,24 @@ class SampleWorkFlow:
             raise SampleWorkFlowException(f"Cannot publish this Sample")
         return True
 
-    @classmethod
-    async def approve(cls, sample_uids: list[list], approved_by):  # previously verify
-        samples = await Sample.get_all(uid__in=sample_uids)
-        for sample in samples:
-            await cls._guard_approve(sample)
-            await sample.verify(verified_by=approved_by)
+    async def approve(self, uid: str, approved_by):
+        sample = await self.sample_service.get(uid=uid)
+        await self._guard_approve(sample)
+        return await self.sample_service.verify(sample.uid, verified_by=approved_by)
 
-    @staticmethod
-    async def _guard_approve(sample: Sample) -> bool:
+    async def approve_all(self, sample_uids: list[str], approved_by):
+        samples = await self.sample_service.get_all(uid__in=sample_uids)
+        for sample in samples:
+            await self._guard_approve(sample)
+        return [(await self.sample_service.verify(sample.uid, verified_by=approved_by)) for sample in samples]
+
+    async def _guard_approve(self, sample: Sample) -> bool:
         allow = False
-        analyses_results = await sample.get_analysis_results()
+        analyses_results = await self.sample_service.get_analysis_results(sample.uid)
         statuses = [
-            States.Result.APPROVED,
-            States.Result.RETRACTED,
-            States.Result.CANCELLED,
+            ResultState.APPROVED,
+            ResultState.RETRACTED,
+            ResultState.CANCELLED,
         ]
         match = all([(result.status in statuses) for result in analyses_results])
 
@@ -224,9 +220,9 @@ class SampleWorkFlow:
             allow = True
 
         # Are there are results in referred state or some are in pending state
-        analysis, referred = await sample.get_referred_analyses()
+        analysis, referred = await self.sample_service.get_referred_analyses(sample.uid)
         if not referred and list(  # and has pending results then :)
-            filter(lambda an: an.status in [States.Result.PENDING], analysis)
+            filter(lambda an: an.status in [ResultState.PENDING], analysis)
         ):
             allow = False
 

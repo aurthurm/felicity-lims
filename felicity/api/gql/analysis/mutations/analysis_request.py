@@ -25,6 +25,7 @@ from felicity.apps.analysis.services.analysis import (AnalysisRequestService,
                                                       SampleService,
                                                       SampleTypeService)
 from felicity.apps.analysis.services.result import AnalysisResultService
+from felicity.apps.analysis.workflow.sample import SampleWorkFlow
 from felicity.apps.billing.utils import bill_order
 from felicity.apps.client.services import ClientService
 from felicity.apps.job import schemas as job_schemas
@@ -34,6 +35,7 @@ from felicity.apps.job.services import JobService
 from felicity.apps.notification.services import ActivityStreamService
 from felicity.apps.patient.services import PatientService
 from felicity.apps.reflex.services import ReflexEngineService
+from felicity.apps.analysis.workflow.analysis_result import AnalysisResultWorkFlow
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -331,7 +333,7 @@ async def cancel_samples(info, samples: List[str]) -> ResultedSampleActionRespon
             return_samples.append(sample)
             continue
 
-        sample = await SampleService().cancel(sample.uid, cancelled_by=felicity_user)
+        sample = await SampleWorkFlow().cancel(sample.uid, cancelled_by=felicity_user)
         if sample:
             return_samples.append(sample)
 
@@ -352,7 +354,7 @@ async def re_instate_samples(info, samples: List[str]) -> ResultedSampleActionRe
         if not sample:
             return OperationError(error=f"Sample with uid {_sa_uid} not found")
 
-        sample = await SampleService().re_instate(
+        sample = await SampleWorkFlow().re_instate(
             sample.uid, re_instated_by=felicity_user
         )
         if sample:
@@ -375,7 +377,7 @@ async def receive_samples(info, samples: List[str]) -> ResultedSampleActionRespo
         if not sample:
             return OperationError(error=f"Sample with uid {_sa_uid} not found")
 
-        sample = await SampleService().receive(sample.uid, received_by=felicity_user)
+        sample = await SampleWorkFlow().receive(sample.uid, received_by=felicity_user)
         if sample:
             return_samples.append(sample)
 
@@ -396,7 +398,7 @@ async def verify_samples(info, samples: List[str]) -> SampleActionResponse:
         if not sample:
             return OperationError(error=f"Sample with uid {_sa_uid} not found")
 
-        _, sample = await SampleService().verify(sample.uid, verified_by=felicity_user)
+        _, sample = await SampleWorkFlow().approve(sample.uid, approved_by=felicity_user)
         if sample:
             return_samples.append(sample)
 
@@ -427,7 +429,7 @@ async def reject_samples(
                 )
 
             # TODO: Transactions
-            sample = await SampleService().reject(sample.uid, rejected_by=felicity_user)
+            sample = await SampleWorkFlow().reject(sample.uid, rejected_by=felicity_user)
             await SampleService().repository.table_insert(
                 sample_rejection_reason,
                 {"sample_uid": sample.uid, "rejection_reason_uid": reason.uid},
@@ -438,7 +440,7 @@ async def reject_samples(
 
                 if sample.status == SampleState.REJECTED:
                     for analyte in sample.analysis_results:
-                        await AnalysisResultService().cancel(
+                        await AnalysisResultWorkFlow().cancel(
                             analyte.uid, cancelled_by=felicity_user
                         )
 
@@ -504,7 +506,7 @@ async def print_samples(info, samples: List[str]) -> SampleActionResponse:
         if not sample:
             return OperationError(error=f"Sample with uid {_sa_uid} not found")
 
-        sample = await SampleService().print(sample.uid, printed_by=felicity_user)
+        sample = await SampleWorkFlow().print(sample.uid, printed_by=felicity_user)
         if sample:
             return_samples.append(sample)
 
@@ -525,7 +527,7 @@ async def invalidate_samples(info, samples: List[str]) -> SampleActionResponse:
         if not sample:
             return OperationError(error=f"Sample with uid {_sa_uid} not found")
 
-        copy, invalidated = await SampleService().invalidate(
+        copy, invalidated = await SampleWorkFlow().invalidate(
             sample.uid, invalidated_by=felicity_user
         )
 
@@ -642,7 +644,7 @@ async def manage_analyses(
     # cancel
     for _anal in payload.cancel:
         result = await AnalysisResultService().get(uid=_anal)
-        await AnalysisResultService().cancel(result.uid, cancelled_by=felicity_user)
+        await AnalysisResultWorkFlow().cancel(result.uid, cancelled_by=felicity_user)
 
     # create and attach result objects for each added Analyses
     logger.info(

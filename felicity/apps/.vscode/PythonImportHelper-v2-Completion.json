@@ -20526,16 +20526,16 @@
         "kind": 6,
         "importPath": "worksheet.workflow",
         "description": "worksheet.workflow",
-        "peekOfCode": "class WorksheetWorkFlowException(Exception): ...\nclass WorkSheetWorkFlowService:\n    \"\"\"WorksheetWorkFlow\n    Defines a set of guards that allow or prevent actions taken on Worksheet\n    \"\"\"\n    def __init__(self):\n        self.worksheet_service = WorkSheetService()\n    async def submit(self, uid, submitter):\n        worksheet = await self.worksheet_service.get(uid=uid)\n        await self._guard_submit(worksheet)",
+        "peekOfCode": "class WorksheetWorkFlowException(Exception): ...\nclass WorkSheetWorkFlow:\n    \"\"\"WorksheetWorkFlow\n    Defines a set of guards that allow or prevent actions taken on Worksheet\n    \"\"\"\n    def __init__(self):\n        self.worksheet_service = WorkSheetService()\n    async def submit(self, uid, submitter):\n        worksheet = await self.worksheet_service.get(uid=uid)\n        await self._guard_submit(worksheet)",
         "detail": "worksheet.workflow",
         "documentation": {}
     },
     {
-        "label": "WorkSheetWorkFlowService",
+        "label": "WorkSheetWorkFlow",
         "kind": 6,
         "importPath": "worksheet.workflow",
         "description": "worksheet.workflow",
-        "peekOfCode": "class WorkSheetWorkFlowService:\n    \"\"\"WorksheetWorkFlow\n    Defines a set of guards that allow or prevent actions taken on Worksheet\n    \"\"\"\n    def __init__(self):\n        self.worksheet_service = WorkSheetService()\n    async def submit(self, uid, submitter):\n        worksheet = await self.worksheet_service.get(uid=uid)\n        await self._guard_submit(worksheet)\n        return self.worksheet_service.submit(submitter)",
+        "peekOfCode": "class WorkSheetWorkFlow:\n    \"\"\"WorksheetWorkFlow\n    Defines a set of guards that allow or prevent actions taken on Worksheet\n    \"\"\"\n    def __init__(self):\n        self.worksheet_service = WorkSheetService()\n    async def submit(self, uid, submitter):\n        worksheet = await self.worksheet_service.get(uid=uid)\n        await self._guard_submit(worksheet)\n        return self.worksheet_service.submit(submitter)",
         "detail": "worksheet.workflow",
         "documentation": {}
     },

@@ -8,13 +8,15 @@ from felicity.apps.analysis import schemas
 from felicity.apps.analysis.entities.analysis import SampleType
 from felicity.apps.analysis.entities.results import (AnalysisResult,
                                                      result_verification)
-from felicity.apps.analysis.enum import ResultState, SampleState
+from felicity.apps.analysis.enum import SampleState
 from felicity.apps.analysis.services.analysis import (AnalysisService,
                                                       ProfileService,
                                                       SampleService,
                                                       SampleTypeService)
 from felicity.apps.analysis.services.result import (AnalysisResultService,
                                                     ResultMutationService)
+from felicity.apps.analysis.workflow.analysis_result import AnalysisResultWorkFlow
+from felicity.apps.analysis.workflow.sample import SampleWorkFlow
 from felicity.apps.billing.enum import DiscountType, DiscountValueType
 from felicity.apps.billing.schemas import (AnalysisDiscountCreate,
                                            AnalysisPriceCreate,
@@ -28,12 +30,11 @@ from felicity.apps.job.enum import (JobAction, JobCategory, JobPriority,
                                     JobState)
 from felicity.apps.job.schemas import JobCreate
 from felicity.apps.job.services import JobService
-from felicity.apps.notification.services import ActivityStreamService
 from felicity.apps.reflex.services import ReflexEngineService
 from felicity.apps.shipment.services import ShippedSampleService
 from felicity.apps.user.entities import User
 from felicity.apps.user.services import UserService
-from felicity.apps.worksheet.services import WorkSheetService
+from felicity.apps.worksheet.workflow import WorkSheetWorkFlow
 from felicity.utils import has_value_or_is_truthy
 
 logging.basicConfig(level=logging.INFO)
@@ -102,6 +103,7 @@ async def retest_from_result_uids(
     uids: list[str], user: User
 ) -> tuple[list[AnalysisResult], list[AnalysisResult]]:
     analysis_result_service = AnalysisResultService()
+    analysis_result_wf = AnalysisResultWorkFlow()
 
     originals: list[AnalysisResult] = []
     retests: list[AnalysisResult] = []
@@ -111,7 +113,7 @@ async def retest_from_result_uids(
         if not a_result:
             raise Exception(f"AnalysisResult with uid {_ar_uid} not found")
 
-        _retest, a_result = await analysis_result_service.retest_result(
+        _retest, a_result = await analysis_result_wf.retest(
             a_result.uid,
             retested_by=user, next_action="verify"
         )
@@ -125,64 +127,41 @@ async def results_submitter(
     analysis_results: List[dict], submitter: User
 ) -> list[AnalysisResult]:
     analysis_result_service = AnalysisResultService()
-    activity_stream_service = ActivityStreamService()
-    sample_service = SampleService()
-    worksheet_service = WorkSheetService()
+    sample_wf = SampleWorkFlow()
+    worksheet_wf = WorkSheetWorkFlow()
+    analysis_result_wf = AnalysisResultWorkFlow()
 
     return_results: list[AnalysisResult] = []
 
-    for _ar in analysis_results:
+    _skipped, _submitted = await analysis_result_wf.submit(
+        analysis_results, submitter
+    )
+    return_results.extend(_skipped)
+
+    for _ar in _submitted:
         uid = _ar["uid"]
         a_result = await analysis_result_service.get(uid=uid)
-        if not a_result:
-            raise Exception(f"AnalysisResult with uid {uid} not found")
-
-        # only submit results in pending/submitting state
-        if a_result.status not in [ResultState.PENDING, ResultState.SUBMITTING]:
-            return_results.append(a_result)
-            continue
-
-        analysis_result = a_result.to_dict(nested=False)
-        for field in analysis_result:
-            if field in _ar.keys():
-                try:
-                    setattr(a_result, field, _ar.get(field, None))
-                except AttributeError as e:
-                    logger.warning(e)
-
-        # No Empty Results
-        result = getattr(a_result, "result", None)
-        if not result or result.strip() == "" or len(result.strip()) == 0:
-            setattr(a_result, "result", None)
-        else:
-            setattr(a_result, "status", ResultState.RESULTED)
-
-            # set submitter ad date_submitted
-            setattr(a_result, "submitted_by_uid", submitter.uid)
-            setattr(a_result, "date_submitted", datetime.now())
-            setattr(a_result, "updated_by_uid", submitter.uid)
-
-        a_result_in = schemas.AnalysisResultUpdate(**a_result.to_dict())
-        a_result = await analysis_result_service.update(a_result.uid, a_result_in)
+        _skipped, _submitted = await analysis_result_wf.submit(
+            a_result.uid, _ar ,submitter=submitter
+        )
 
         # mutate result
         await result_mutator(a_result)
 
-        if a_result.status == ResultState.RESULTED:
-            await activity_stream_service.stream(
-                a_result, submitter, "submitted", "result"
-            )
-
-        # # Do Reflex Testing
-        # logger.info(f"ReflexUtil .... running")
-        # await ReflexUtil(analysis_result=a_result, user=submitter).do_reflex()
-        # logger.info(f"ReflexUtil .... done")
-
         # try to submit sample
-        await sample_service.submit(a_result.sample_uid, submitted_by=submitter)
+        try:
+            await sample_wf.submit(a_result.sample_uid, submitted_by=submitter)
+        except Exception as e:
+            await sample_wf.revert(a_result.sample_uid, by_uid=submitter.uid)
+            logger.warning(e)
 
         # try to submit associated worksheet
-        await worksheet_service.submit(a_result.worksheet_uid, submitter=submitter)
+        if a_result.worksheet_uid:
+            try:
+                await worksheet_wf.submit(a_result.worksheet_uid, submitter=submitter)
+            except Exception as e:
+                await worksheet_wf.revert(a_result.worksheet_uid, by_uid=submitter.uid)
+                logger.warning(e)
 
         return_results.append(a_result)
     return return_results
@@ -190,45 +169,40 @@ async def results_submitter(
 
 async def verify_from_result_uids(uids: list[str], user: User) -> list[AnalysisResult]:
     job_service = JobService()
-    analysis_result_service = AnalysisResultService()
     sample_service = SampleService()
     shipped_sample_service = ShippedSampleService()
-    worksheet_service = WorkSheetService()
+    worksheet_wf = WorkSheetWorkFlow()
+    analysis_result_wf = AnalysisResultWorkFlow()
+    sample_wf = SampleWorkFlow()
 
-    to_return: list[AnalysisResult] = []
-    for _ar_uid in uids:
-        a_result = await analysis_result_service.get(uid=_ar_uid)
-        if not a_result:
-            raise Exception(f"AnalysisResult with uid {_ar_uid} not found")
+    approved = await analysis_result_wf.approve(uids, user)
 
-        # No Empty Results
-        status = getattr(a_result, "status", None)
-        if status in [ResultState.RESULTED, ResultState.APPROVING]:
-            _, a_result = await analysis_result_service.verify(
-                a_result.uid, verifier=user
-            )
-            to_return.append(a_result)
-        else:
-            continue
-
+    for a_result in approved:
         # Do Reflex Testing
         logger.info(f"ReflexUtil .... running")
         await ReflexEngineService(analysis_result=a_result, user=user).do_reflex()
         logger.info(f"ReflexUtil .... done")
 
         # try to verify associated sample
-        sample_verified = False
-        if a_result.sample:
-            sample_verified, _ = await sample_service.verify(
-                a_result.sample_uid, verified_by=user
-            )
+        sample_verified=False
+        try:
+            sample_verified, _ = await sample_wf.approve([a_result.sample_uid], submitted_by=user)
+        except Exception as e:
+            await sample_wf.revert(a_result.sample_uid, by_uid=user.uid)
+            logger.warning(e)
 
         # try to submit associated worksheet
         if a_result.worksheet_uid:
-            await worksheet_service.verify(a_result.worksheet_uid, verified_by=user)
+            try:
+                await worksheet_wf.approve(a_result.worksheet_uid, verified_by=user)
+            except Exception as e:
+                await worksheet_wf.revert(a_result.worksheet_uid, by_uid=user.uid)
+                logger.warning(e)
 
         # If referral then send results and mark sample as published
         shipped = await shipped_sample_service.get(sample_uid=a_result.sample_uid)
+
+        # TODO: decouple this and fire events that will trigger the shipment etc
 
         if shipped:
             # 1. create a Job to send the result
@@ -262,7 +236,7 @@ async def verify_from_result_uids(uids: list[str], user: User) -> list[AnalysisR
                     a_result.sample_uid, SampleState.PUBLISHED
                 )
 
-    return to_return
+    return approved
 
 
 async def result_mutator(result: AnalysisResult) -> None:

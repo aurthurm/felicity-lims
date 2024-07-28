@@ -77,45 +77,25 @@ class WorkSheetService(BaseService[WorkSheet, WorkSheetCreate, WorkSheetUpdate])
 
     async def submit(self, uid: str, submitter):
         worksheet = await self.get(uid=uid)
-        if worksheet.state != WorkSheetState.AWAITING:
-            states = [
-                ResultState.RESULTED,
-                ResultState.APPROVED,
-            ]
-
-            results, qc_results = await self.get_analysis_results(uid)
-            analysis_results = results + qc_results
-            if all([res.status in states for res in analysis_results]):
-                worksheet.state = WorkSheetState.AWAITING
-                worksheet.updated_by_uid = submitter.uid  # noqa
-                worksheet.submitted_by_uid = submitter.uid
-                saved = await super().save(worksheet)
-                await self.activity_streamer.stream(
-                    saved, submitter, "submitted", "worksheet"
-                )
-                return saved
+        worksheet.state = WorkSheetState.AWAITING
+        worksheet.updated_by_uid = submitter.uid  # noqa
+        worksheet.submitted_by_uid = submitter.uid
+        worksheet = await super().save(worksheet)
+        await self.activity_streamer.stream(
+            worksheet, submitter, "submitted", "worksheet"
+        )
         return worksheet
 
     async def verify(self, uid: str, verified_by):
         worksheet = await self.get(uid=uid)
-        if worksheet.state != WorkSheetState.APPROVED:
-            states = [
-                ResultState.APPROVED,
-                ResultState.RETRACTED,
-            ]
-
-            results, qc_results = await self.get_analysis_results(uid)
-            analysis_results = results + qc_results
-            if all([res.status in states for res in analysis_results]):
-                worksheet.state = WorkSheetState.APPROVED
-                worksheet.updated_by_uid = verified_by.uid  # noqa
-                worksheet.verified_by_uid = verified_by.uid
-                saved = await super().save(worksheet)
-                await self.activity_streamer.stream(
-                    saved, verified_by, "verified", "worksheet"
-                )
-                return saved
-        return self
+        worksheet.state = WorkSheetState.APPROVED
+        worksheet.updated_by_uid = verified_by.uid  # noqa
+        worksheet.verified_by_uid = verified_by.uid
+        worksheet = await super().save(worksheet)
+        await self.activity_streamer.stream(
+            worksheet, verified_by, "verified", "worksheet"
+        )
+        return worksheet
 
     async def create(self, obj_in: dict | WorkSheetCreate, related: list[str] = None) -> WorkSheet:
         data = self._import(obj_in)

@@ -1458,14 +1458,6 @@
         "documentation": {}
     },
     {
-        "label": "List",
-        "importPath": "typing",
-        "description": "typing",
-        "isExtraImport": true,
-        "detail": "typing",
-        "documentation": {}
-    },
-    {
         "label": "Callable",
         "importPath": "typing",
         "description": "typing",
@@ -1608,15 +1600,6 @@
         "importPath": "strawberry",
         "description": "strawberry",
         "detail": "strawberry",
-        "documentation": {}
-    },
-    {
-        "label": "felicity.api.gql.analysis.types",
-        "kind": 6,
-        "isExtraImport": true,
-        "importPath": "felicity.api.gql.analysis.types",
-        "description": "felicity.api.gql.analysis.types",
-        "detail": "felicity.api.gql.analysis.types",
         "documentation": {}
     },
     {
@@ -3428,6 +3411,14 @@
         "documentation": {}
     },
     {
+        "label": "SampleService",
+        "importPath": "felicity.apps.analysis.services.analysis",
+        "description": "felicity.apps.analysis.services.analysis",
+        "isExtraImport": true,
+        "detail": "felicity.apps.analysis.services.analysis",
+        "documentation": {}
+    },
+    {
         "label": "AnalysisService",
         "importPath": "felicity.apps.analysis.services.analysis",
         "description": "felicity.apps.analysis.services.analysis",
@@ -5015,7 +5006,7 @@
         "documentation": {}
     },
     {
-        "label": "States",
+        "label": "ResultState",
         "importPath": "felicity.apps.analysis.enum",
         "description": "felicity.apps.analysis.enum",
         "isExtraImport": true,
@@ -5023,7 +5014,15 @@
         "documentation": {}
     },
     {
-        "label": "States",
+        "label": "SampleState",
+        "importPath": "felicity.apps.analysis.enum",
+        "description": "felicity.apps.analysis.enum",
+        "isExtraImport": true,
+        "detail": "felicity.apps.analysis.enum",
+        "documentation": {}
+    },
+    {
+        "label": "SampleState",
         "importPath": "felicity.apps.analysis.enum",
         "description": "felicity.apps.analysis.enum",
         "isExtraImport": true,
@@ -5032,6 +5031,14 @@
     },
     {
         "label": "ResultState",
+        "importPath": "felicity.apps.analysis.enum",
+        "description": "felicity.apps.analysis.enum",
+        "isExtraImport": true,
+        "detail": "felicity.apps.analysis.enum",
+        "documentation": {}
+    },
+    {
+        "label": "SampleState",
         "importPath": "felicity.apps.analysis.enum",
         "description": "felicity.apps.analysis.enum",
         "isExtraImport": true,
@@ -5207,6 +5214,14 @@
         "documentation": {}
     },
     {
+        "label": "AnalysisResultService",
+        "importPath": "felicity.apps.analysis.services.result",
+        "description": "felicity.apps.analysis.services.result",
+        "isExtraImport": true,
+        "detail": "felicity.apps.analysis.services.result",
+        "documentation": {}
+    },
+    {
         "label": "ResultMutationService",
         "importPath": "felicity.apps.analysis.services.result",
         "description": "felicity.apps.analysis.services.result",
@@ -5252,6 +5267,22 @@
         "description": "felicity.apps.analysis.services.result",
         "isExtraImport": true,
         "detail": "felicity.apps.analysis.services.result",
+        "documentation": {}
+    },
+    {
+        "label": "SampleWorkFlow",
+        "importPath": "felicity.apps.analysis.workflow.sample",
+        "description": "felicity.apps.analysis.workflow.sample",
+        "isExtraImport": true,
+        "detail": "felicity.apps.analysis.workflow.sample",
+        "documentation": {}
+    },
+    {
+        "label": "SampleWorkFlow",
+        "importPath": "felicity.apps.analysis.workflow.sample",
+        "description": "felicity.apps.analysis.workflow.sample",
+        "isExtraImport": true,
+        "detail": "felicity.apps.analysis.workflow.sample",
         "documentation": {}
     },
     {
@@ -6015,14 +6046,6 @@
         "documentation": {}
     },
     {
-        "label": "ActivityStreamService",
-        "importPath": "felicity.apps.notification.services",
-        "description": "felicity.apps.notification.services",
-        "isExtraImport": true,
-        "detail": "felicity.apps.notification.services",
-        "documentation": {}
-    },
-    {
         "label": "NotificationService",
         "importPath": "felicity.apps.notification.services",
         "description": "felicity.apps.notification.services",
@@ -6207,6 +6230,38 @@
         "documentation": {}
     },
     {
+        "label": "AnalysisResultWorkFlow",
+        "importPath": "felicity.apps.analysis.workflow.analysis_result",
+        "description": "felicity.apps.analysis.workflow.analysis_result",
+        "isExtraImport": true,
+        "detail": "felicity.apps.analysis.workflow.analysis_result",
+        "documentation": {}
+    },
+    {
+        "label": "AnalysisResultWorkFlow",
+        "importPath": "felicity.apps.analysis.workflow.analysis_result",
+        "description": "felicity.apps.analysis.workflow.analysis_result",
+        "isExtraImport": true,
+        "detail": "felicity.apps.analysis.workflow.analysis_result",
+        "documentation": {}
+    },
+    {
+        "label": "AnalysisResultWorkFlow",
+        "importPath": "felicity.apps.analysis.workflow.analysis_result",
+        "description": "felicity.apps.analysis.workflow.analysis_result",
+        "isExtraImport": true,
+        "detail": "felicity.apps.analysis.workflow.analysis_result",
+        "documentation": {}
+    },
+    {
+        "label": "AnalysisResultWorkFlow",
+        "importPath": "felicity.apps.analysis.workflow.analysis_result",
+        "description": "felicity.apps.analysis.workflow.analysis_result",
+        "isExtraImport": true,
+        "detail": "felicity.apps.analysis.workflow.analysis_result",
+        "documentation": {}
+    },
+    {
         "label": "retest_from_result_uids",
         "importPath": "felicity.apps.analysis.utils",
         "description": "felicity.apps.analysis.utils",
@@ -6255,22 +6310,6 @@
         "documentation": {}
     },
     {
-        "label": "enum",
-        "importPath": "felicity.apps.worksheet",
-        "description": "felicity.apps.worksheet",
-        "isExtraImport": true,
-        "detail": "felicity.apps.worksheet",
-        "documentation": {}
-    },
-    {
-        "label": "schemas",
-        "importPath": "felicity.apps.worksheet",
-        "description": "felicity.apps.worksheet",
-        "isExtraImport": true,
-        "detail": "felicity.apps.worksheet",
-        "documentation": {}
-    },
-    {
         "label": "WorkSheetState",
         "importPath": "felicity.apps.worksheet.enum",
         "description": "felicity.apps.worksheet.enum",
@@ -6368,14 +6407,6 @@
     },
     {
         "label": "WorkSheetTemplateService",
-        "importPath": "felicity.apps.worksheet.services",
-        "description": "felicity.apps.worksheet.services",
-        "isExtraImport": true,
-        "detail": "felicity.apps.worksheet.services",
-        "documentation": {}
-    },
-    {
-        "label": "WorkSheetService",
         "importPath": "felicity.apps.worksheet.services",
         "description": "felicity.apps.worksheet.services",
         "isExtraImport": true,
@@ -6656,14 +6687,6 @@
         "documentation": {}
     },
     {
-        "label": "QCTemplate",
-        "importPath": "felicity.apps.analysis.entities.qc",
-        "description": "felicity.apps.analysis.entities.qc",
-        "isExtraImport": true,
-        "detail": "felicity.apps.analysis.entities.qc",
-        "documentation": {}
-    },
-    {
         "label": "QCLevel",
         "importPath": "felicity.apps.analysis.entities.qc",
         "description": "felicity.apps.analysis.entities.qc",
@@ -6937,6 +6960,22 @@
     },
     {
         "label": "LaboratoryService",
+        "importPath": "felicity.apps.setup.services",
+        "description": "felicity.apps.setup.services",
+        "isExtraImport": true,
+        "detail": "felicity.apps.setup.services",
+        "documentation": {}
+    },
+    {
+        "label": "LaboratoryService",
+        "importPath": "felicity.apps.setup.services",
+        "description": "felicity.apps.setup.services",
+        "isExtraImport": true,
+        "detail": "felicity.apps.setup.services",
+        "documentation": {}
+    },
+    {
+        "label": "LaboratorySettingService",
         "importPath": "felicity.apps.setup.services",
         "description": "felicity.apps.setup.services",
         "isExtraImport": true,
@@ -14029,6 +14068,14 @@
         "documentation": {}
     },
     {
+        "label": "schemas",
+        "importPath": "felicity.apps.worksheet",
+        "description": "felicity.apps.worksheet",
+        "isExtraImport": true,
+        "detail": "felicity.apps.worksheet",
+        "documentation": {}
+    },
+    {
         "label": "BasePermission",
         "importPath": "strawberry.permission",
         "description": "strawberry.permission",
@@ -15162,14 +15209,6 @@
         "description": "pydantic",
         "isExtraImport": true,
         "detail": "pydantic",
-        "documentation": {}
-    },
-    {
-        "label": "marshaller",
-        "importPath": "felicity.apps.common.utils.serializer",
-        "description": "felicity.apps.common.utils.serializer",
-        "isExtraImport": true,
-        "detail": "felicity.apps.common.utils.serializer",
         "documentation": {}
     },
     {
@@ -16853,22 +16892,6 @@
         "documentation": {}
     },
     {
-        "label": "Laboratory",
-        "importPath": "felicity.apps.setup.entities.setup",
-        "description": "felicity.apps.setup.entities.setup",
-        "isExtraImport": true,
-        "detail": "felicity.apps.setup.entities.setup",
-        "documentation": {}
-    },
-    {
-        "label": "LaboratorySetting",
-        "importPath": "felicity.apps.setup.entities.setup",
-        "description": "felicity.apps.setup.entities.setup",
-        "isExtraImport": true,
-        "detail": "felicity.apps.setup.entities.setup",
-        "documentation": {}
-    },
-    {
         "label": "Department",
         "importPath": "felicity.apps.setup.entities.setup",
         "description": "felicity.apps.setup.entities.setup",
@@ -18434,6 +18457,14 @@
         "description": "felicity.apps.job.schemas",
         "isExtraImport": true,
         "detail": "felicity.apps.job.schemas",
+        "documentation": {}
+    },
+    {
+        "label": "WorkSheetWorkFlow",
+        "importPath": "felicity.apps.worksheet.workflow",
+        "description": "felicity.apps.worksheet.workflow",
+        "isExtraImport": true,
+        "detail": "felicity.apps.worksheet.workflow",
         "documentation": {}
     },
     {
@@ -27242,7 +27273,7 @@
         "kind": 6,
         "importPath": "felicity.apps.analysis.workflow.analysis_result",
         "description": "felicity.apps.analysis.workflow.analysis_result",
-        "peekOfCode": "class AnalysisResultWorkFlowException(Exception): ...\nclass AnalysisResultWorkFlow:\n    \"\"\"AnalysisResultWorkFlow\n    Defines a set of guards that allow or prevent actions taken on AnalysisResult\n    \"\"\"\n    def __init__(self): ...\n    @classmethod\n    async def retest(cls, uid, retested_by, action=\"verify\"):\n        analysis_result = await AnalysisResult.get(uid=uid)\n        await cls._guard_retest(analysis_result)",
+        "peekOfCode": "class AnalysisResultWorkFlowException(Exception): ...\nclass AnalysisResultWorkFlow:\n    \"\"\"AnalysisResultWorkFlow\n    Defines a set of guards that allow or prevent actions taken on AnalysisResult\n    \"\"\"\n    def __init__(self): \n        self.analysis_result_service = AnalysisResultService()\n    async def revert(self, uid: str, by_uid: str) -> None:\n        # to_status = ResultState.PENDING\n        # await self.analysis_result_service.change_status(uid, to_status)",
         "detail": "felicity.apps.analysis.workflow.analysis_result",
         "documentation": {}
     },
@@ -27251,7 +27282,7 @@
         "kind": 6,
         "importPath": "felicity.apps.analysis.workflow.analysis_result",
         "description": "felicity.apps.analysis.workflow.analysis_result",
-        "peekOfCode": "class AnalysisResultWorkFlow:\n    \"\"\"AnalysisResultWorkFlow\n    Defines a set of guards that allow or prevent actions taken on AnalysisResult\n    \"\"\"\n    def __init__(self): ...\n    @classmethod\n    async def retest(cls, uid, retested_by, action=\"verify\"):\n        analysis_result = await AnalysisResult.get(uid=uid)\n        await cls._guard_retest(analysis_result)\n        await analysis_result.retest_result(retested_by, action)",
+        "peekOfCode": "class AnalysisResultWorkFlow:\n    \"\"\"AnalysisResultWorkFlow\n    Defines a set of guards that allow or prevent actions taken on AnalysisResult\n    \"\"\"\n    def __init__(self): \n        self.analysis_result_service = AnalysisResultService()\n    async def revert(self, uid: str, by_uid: str) -> None:\n        # to_status = ResultState.PENDING\n        # await self.analysis_result_service.change_status(uid, to_status)\n        raise NotImplementedError()",
         "detail": "felicity.apps.analysis.workflow.analysis_result",
         "documentation": {}
     },
@@ -27260,7 +27291,7 @@
         "kind": 5,
         "importPath": "felicity.apps.analysis.workflow.analysis_result",
         "description": "felicity.apps.analysis.workflow.analysis_result",
-        "peekOfCode": "logger = logging.getLogger(__name__)\nclass AnalysisResultWorkFlowException(Exception): ...\nclass AnalysisResultWorkFlow:\n    \"\"\"AnalysisResultWorkFlow\n    Defines a set of guards that allow or prevent actions taken on AnalysisResult\n    \"\"\"\n    def __init__(self): ...\n    @classmethod\n    async def retest(cls, uid, retested_by, action=\"verify\"):\n        analysis_result = await AnalysisResult.get(uid=uid)",
+        "peekOfCode": "logger = logging.getLogger(__name__)\nclass AnalysisResultWorkFlowException(Exception): ...\nclass AnalysisResultWorkFlow:\n    \"\"\"AnalysisResultWorkFlow\n    Defines a set of guards that allow or prevent actions taken on AnalysisResult\n    \"\"\"\n    def __init__(self): \n        self.analysis_result_service = AnalysisResultService()\n    async def revert(self, uid: str, by_uid: str) -> None:\n        # to_status = ResultState.PENDING",
         "detail": "felicity.apps.analysis.workflow.analysis_result",
         "documentation": {}
     },
@@ -27287,7 +27318,7 @@
         "kind": 6,
         "importPath": "felicity.apps.analysis.workflow.sample",
         "description": "felicity.apps.analysis.workflow.sample",
-        "peekOfCode": "class SampleWorkFlowException(Exception): ...\nclass SampleWorkFlow:\n    \"\"\"SampleWorkFlow\n    Defines a set of guards that allow or prevent actions taken on Samples\n    \"\"\"\n    def __init__(self): ...\n    @classmethod\n    async def receive(cls, uid):\n        sample = await Sample.get(uid=uid)\n        await cls._guard_receive(sample)",
+        "peekOfCode": "class SampleWorkFlowException(Exception): ...\nclass SampleWorkFlow:\n    \"\"\"SampleWorkFlow\n    Defines a set of guards that allow or prevent actions taken on Samples\n    \"\"\"\n    def __init__(self):\n        self.sample_service = SampleService()\n    async def revert(self, uid: str, by_uid: str) -> None:\n        # to_status = ResultState.PENDING\n        # await self.sample_service.change_status(uid, to_status)",
         "detail": "felicity.apps.analysis.workflow.sample",
         "documentation": {}
     },
@@ -27296,7 +27327,7 @@
         "kind": 6,
         "importPath": "felicity.apps.analysis.workflow.sample",
         "description": "felicity.apps.analysis.workflow.sample",
-        "peekOfCode": "class SampleWorkFlow:\n    \"\"\"SampleWorkFlow\n    Defines a set of guards that allow or prevent actions taken on Samples\n    \"\"\"\n    def __init__(self): ...\n    @classmethod\n    async def receive(cls, uid):\n        sample = await Sample.get(uid=uid)\n        await cls._guard_receive(sample)\n        await sample.change_status(SampleState.RECEIVED)",
+        "peekOfCode": "class SampleWorkFlow:\n    \"\"\"SampleWorkFlow\n    Defines a set of guards that allow or prevent actions taken on Samples\n    \"\"\"\n    def __init__(self):\n        self.sample_service = SampleService()\n    async def revert(self, uid: str, by_uid: str) -> None:\n        # to_status = ResultState.PENDING\n        # await self.sample_service.change_status(uid, to_status)\n        raise NotImplementedError()",
         "detail": "felicity.apps.analysis.workflow.sample",
         "documentation": {}
     },
@@ -35216,7 +35247,7 @@
         "kind": 5,
         "importPath": "felicity.apps.worksheet.tasks",
         "description": "felicity.apps.worksheet.tasks",
-        "peekOfCode": "logger = logging.getLogger(__name__)\nasync def populate_worksheet_plate(job_uid: str):\n    logger.info(f\"starting job {job_uid} ....\")\n    job_service = JobService()\n    worksheet_service = WorkSheetService()\n    analysis_result_service = AnalysisResultService()\n    job = await job_service.get(uid=job_uid)\n    if not job:\n        return\n    if not job.status == JobState.PENDING:",
+        "peekOfCode": "logger = logging.getLogger(__name__)\nasync def populate_worksheet_plate(job_uid: str):\n    logger.info(f\"starting job {job_uid} ....\")\n    job_service = JobService()\n    worksheet_service = WorkSheetService()\n    analysis_result_service = AnalysisResultService()\n    analysis_result_wf = AnalysisResultWorkFlow()\n    job = await job_service.get(uid=job_uid)\n    if not job:\n        return",
         "detail": "felicity.apps.worksheet.tasks",
         "documentation": {}
     },
@@ -35225,16 +35256,16 @@
         "kind": 6,
         "importPath": "felicity.apps.worksheet.workflow",
         "description": "felicity.apps.worksheet.workflow",
-        "peekOfCode": "class WorksheetWorkFlowException(Exception): ...\nclass WorkSheetWorkFlowService:\n    \"\"\"WorksheetWorkFlow\n    Defines a set of guards that allow or prevent actions taken on Worksheet\n    \"\"\"\n    def __init__(self):\n        self.worksheet_service = WorkSheetService()\n    async def submit(self, uid, submitter):\n        worksheet = await self.worksheet_service.get(uid=uid)\n        await self._guard_submit(worksheet)",
+        "peekOfCode": "class WorksheetWorkFlowException(Exception): ...\nclass WorkSheetWorkFlow:\n    \"\"\"WorksheetWorkFlow\n    Defines a set of guards that allow or prevent actions taken on Worksheet\n    \"\"\"\n    def __init__(self):\n        self.worksheet_service = WorkSheetService()\n    async def revert(self, uid: str, by_uid: str):\n        to_status = WorkSheetState.PENDING\n        results = await self.worksheet_service.get_analysis_results(uid)",
         "detail": "felicity.apps.worksheet.workflow",
         "documentation": {}
     },
     {
-        "label": "WorkSheetWorkFlowService",
+        "label": "WorkSheetWorkFlow",
         "kind": 6,
         "importPath": "felicity.apps.worksheet.workflow",
         "description": "felicity.apps.worksheet.workflow",
-        "peekOfCode": "class WorkSheetWorkFlowService:\n    \"\"\"WorksheetWorkFlow\n    Defines a set of guards that allow or prevent actions taken on Worksheet\n    \"\"\"\n    def __init__(self):\n        self.worksheet_service = WorkSheetService()\n    async def submit(self, uid, submitter):\n        worksheet = await self.worksheet_service.get(uid=uid)\n        await self._guard_submit(worksheet)\n        return self.worksheet_service.submit(submitter)",
+        "peekOfCode": "class WorkSheetWorkFlow:\n    \"\"\"WorksheetWorkFlow\n    Defines a set of guards that allow or prevent actions taken on Worksheet\n    \"\"\"\n    def __init__(self):\n        self.worksheet_service = WorkSheetService()\n    async def revert(self, uid: str, by_uid: str):\n        to_status = WorkSheetState.PENDING\n        results = await self.worksheet_service.get_analysis_results(uid)\n        awaiting_states = [ResultState.RESULTED, ResultState.APPROVING, ResultState.RETRACTED]",
         "detail": "felicity.apps.worksheet.workflow",
         "documentation": {}
     },

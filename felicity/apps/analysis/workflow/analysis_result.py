@@ -1,9 +1,11 @@
 import logging
+import re
 from typing import TYPE_CHECKING
 
 from felicity.apps.analysis.entities.results import AnalysisResult
-from felicity.apps.analysis.enum import States
-from felicity.apps.setup.entities.setup import Laboratory, LaboratorySetting
+from felicity.apps.analysis.enum import ResultState, SampleState
+from felicity.apps.analysis.services.result import AnalysisResultService
+from felicity.apps.setup.services import LaboratoryService, LaboratorySettingService
 
 if TYPE_CHECKING:
     pass
@@ -20,35 +22,39 @@ class AnalysisResultWorkFlow:
     Defines a set of guards that allow or prevent actions taken on AnalysisResult
     """
 
-    def __init__(self): ...
+    def __init__(self): 
+        self.analysis_result_service = AnalysisResultService()
 
-    @classmethod
-    async def retest(cls, uid, retested_by, action="verify"):
-        analysis_result = await AnalysisResult.get(uid=uid)
-        await cls._guard_retest(analysis_result)
-        await analysis_result.retest_result(retested_by, action)
+    async def revert(self, uid: str, by_uid: str) -> None:
+        # to_status = ResultState.PENDING
+        # await self.analysis_result_service.change_status(uid, to_status)
+        raise NotImplementedError()
+
+    async def retest(self, uid, retested_by, action="verify"):
+        result = await self.analysis_result_service.get(uid=uid)
+        await self._guard_retest(result)
+        return await self.analysis_result_service.retest_result(result.uid, retested_by, action)
 
     @staticmethod
     async def _guard_retest(analysis_result: AnalysisResult) -> bool:
         allow = False
-        if analysis_result.status == States.Result.RESULTED:
+        if analysis_result.status == ResultState.RESULTED:
             allow = True
 
         if not allow:
             raise AnalysisResultWorkFlowException(f"Cannot retest this Result")
         return True
 
-    @classmethod
-    async def assign(cls, uid, ws_uid, position, laboratory_instrument_uid):
-        analysis_result = await AnalysisResult.get(uid=uid)
-        await cls._guard_assign(analysis_result)
-        await analysis_result.assign(ws_uid, position, laboratory_instrument_uid)
+    async def assign(self, uid, ws_uid, position, laboratory_instrument_uid):
+        result = await self.analysis_result_service.get(uid=uid)
+        await self._guard_assign(result)
+        return await self.analysis_result_service.assign(result.uid, ws_uid, position, laboratory_instrument_uid)
 
     @staticmethod
     async def _guard_assign(analysis_result: AnalysisResult) -> bool:
         allow = False
         if (
-            analysis_result.status == States.Result.PENDING
+            analysis_result.status == ResultState.PENDING
             and analysis_result.assigned is False
         ):
             allow = True
@@ -57,17 +63,16 @@ class AnalysisResultWorkFlow:
             raise AnalysisResultWorkFlowException(f"Cannot assign this Result")
         return True
 
-    @classmethod
-    async def un_assign(cls, uid):
-        analysis_result = await AnalysisResult.get(uid=uid)
-        await cls._guard_un_assign(analysis_result)
-        await analysis_result.un_assign()
+    async def un_assign(self, uid):
+        result = await self.analysis_result_service.get(uid=uid)
+        await self._guard_un_assign(result)
+        return await self.analysis_result_service.un_assign(result.uid)
 
     @staticmethod
     async def _guard_un_assign(analysis_result: AnalysisResult) -> bool:
         allow = False
         if (
-            analysis_result.status == States.Result.PENDING
+            analysis_result.status == ResultState.PENDING
             and analysis_result.assigned is True
         ):
             allow = True
@@ -76,61 +81,78 @@ class AnalysisResultWorkFlow:
             raise AnalysisResultWorkFlowException(f"Cannot un-assign this Result")
         return True
 
-    @classmethod
-    async def retract(cls, uid, retracted_by):
-        analysis_result = await AnalysisResult.get(uid=uid)
-        await cls._guard_retract(analysis_result)
-        await analysis_result.retract(retracted_by)
+    async def retract(self, uid, retracted_by):
+        result = await self.analysis_result_service.get(uid=uid)
+        await self._guard_retract(result)
+        return await self.analysis_result_service.retract(result.uid, retracted_by)
 
     @staticmethod
     async def _guard_retract(analysis_result: AnalysisResult) -> bool:
-        allow = analysis_result.status == States.Result.RESULTED
+        allow = analysis_result.status == ResultState.RESULTED
         if not allow:
             raise AnalysisResultWorkFlowException(f"Cannot retract this Result")
         return True
 
-    @classmethod
-    async def cancel(cls, uid, cancelled_by):
-        analysis_result = await AnalysisResult.get(uid=uid)
-        await cls._guard_cancel(analysis_result)
-        await analysis_result.cancel(cancelled_by)
+    async def cancel(self, uid, cancelled_by):
+        result = await self.analysis_result_service.get(uid=uid)
+        await self._guard_cancel(result)
+        return await self.analysis_result_service.cancel(result.uid, cancelled_by)
 
     @staticmethod
     async def _guard_cancel(analysis_result: AnalysisResult) -> bool:
-        allow = analysis_result.status == States.Result.PENDING
+        allow = analysis_result.status == ResultState.PENDING
         if not allow:
             raise AnalysisResultWorkFlowException(f"Cannot cancel this Result")
         return True
 
-    @classmethod
-    async def re_instate(cls, uid, re_instated_by):
-        analysis_result = await AnalysisResult.get(uid=uid)
-        await cls._guard_re_instate(analysis_result)
-        await analysis_result.re_instate(re_instated_by)
+    async def re_instate(self, uid, re_instated_by):
+        result = await self.analysis_result_service.get_related(uid=uid, related=["sample"])
+        await self._guard_re_instate(result)
+        return await self.analysis_result_service.re_instate(result.uid, re_instated_by)
 
     @staticmethod
     async def _guard_re_instate(analysis_result: AnalysisResult) -> bool:
-        allow = analysis_result.status == States.Result.CANCELLED
+        if analysis_result.sample.status != SampleState.RECEIVED:
+            raise Exception(
+                "You can only reinstate analytes of received samples"
+            )
+
+        allow = analysis_result.status == ResultState.CANCELLED
         if not allow:
             raise AnalysisResultWorkFlowException(f"Cannot re-instate this Result")
         return True
+    
+    async def submit(self, data: list[dict], submitter) -> tuple[list[AnalysisResult], list[AnalysisResult]]:
+        _skipped = []
+        _submitted = []
+        for datum in data:
+            result = await self.analysis_result_service.get(uid=datum["uid"])
+            is_allowed = await self._guard_submit(result)
+            if not is_allowed:
+                _skipped.append(result)
+                continue
+            # Submit
+            _submitted.append(await self.analysis_result_service.submit(result.uid, datum, submitter))
+        return _skipped, _submitted
 
-    @classmethod
-    async def approve(cls, result_uids: list[str], approved_by):
-        analysis_results = await AnalysisResult.get_all(uid__in=result_uids)
-        await cls._guard_approve(analysis_results, approved_by.uid)
-        for result in analysis_results:
-            await result.verify(approved_by)
+    async def _guard_submit(self, result: AnalysisResult) -> bool:
+        if result.status not in [ResultState.PENDING, ResultState.SUBMITTING]:
+            return False
+        return True
 
-    @staticmethod
+    async def approve(self, result_uids: list[str], approved_by) -> list[AnalysisResult]:
+        results = await self.analysis_result_service.get_all(uid__in=result_uids) # get_related(related=["analysis"], uid__in=result_uids)
+        await self._guard_approve(results, approved_by.uid)
+        return [(await self.analysis_result_service.verify(r.uid, approved_by)) for r in results]
+
     async def _guard_approve(
-        analysis_results: list[AnalysisResult], approved_by_uid
+        self, analysis_results: list[AnalysisResult], approved_by_uid
     ) -> bool:
-        laboratory = await Laboratory.get_by_setup_name("felicity")
-        settings: LaboratorySetting = await LaboratorySetting.get(
+        laboratory = await LaboratoryService().get_by_setup_name("felicity")
+        settings = await LaboratorySettingService().get(
             laboratory_uid=laboratory.uid
         )
-        states = [States.Result.RESULTED, States.Result.APPROVING]
+        states = [ResultState.RESULTED, ResultState.APPROVING]
 
         for result in analysis_results:
             # Self Verification check
@@ -157,7 +179,7 @@ class AnalysisResultWorkFlow:
                 )
 
             # Number of required verifications check
-            required, current = await result.verifications()
+            required, current = await self.analysis_result_service.verifications(result.uid)
             if not (current < required and current + 1 == required):
                 raise AnalysisResultWorkFlowException(
                     f"Required approvals have already been met"

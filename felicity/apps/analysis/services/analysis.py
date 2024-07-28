@@ -319,78 +319,58 @@ class SampleService(BaseService[Sample, SampleCreate, SampleUpdate]):
 
     async def receive(self, uid: str, received_by):
         sample = await self.get(uid=uid)
-        if sample.status in [SampleState.EXPECTED]:
-            sample.status = SampleState.RECEIVED
-            sample.received_by_uid = received_by.uid
-            sample.date_received = datetime.now()
-            sample.updated_by_uid = received_by.uid  # noqa
-            return await super().save(sample)
-        return None
+        sample.status = SampleState.RECEIVED
+        sample.received_by_uid = received_by.uid
+        sample.date_received = datetime.now()
+        sample.updated_by_uid = received_by.uid  # noqa
+        return await super().save(sample)
 
     async def cancel(self, uid: str, cancelled_by):
         sample = await self.get(uid=uid)
         analysis_results = await self.get_analysis_results(uid)
-        if sample.status in [SampleState.RECEIVED, SampleState.EXPECTED]:
-            for result in analysis_results:
-                await self.analysis_result_service.cancel(
-                    result.uid, cancelled_by=cancelled_by
-                )
-            sample.status = SampleState.CANCELLED
-            sample.cancelled_by_uid = cancelled_by.uid
-            sample.date_cancelled = datetime.now()
-            sample.updated_by_uid = cancelled_by.uid  # noqa
-            return await super().save(sample)
-        return None
+        for result in analysis_results:
+            await self.analysis_result_service.cancel(
+                result.uid, cancelled_by=cancelled_by
+            )
+        sample.status = SampleState.CANCELLED
+        sample.cancelled_by_uid = cancelled_by.uid
+        sample.date_cancelled = datetime.now()
+        sample.updated_by_uid = cancelled_by.uid  # noqa
+        return await super().save(sample)
 
     async def re_instate(self, uid: str, re_instated_by):
         sample = await self.get(uid=uid)
         analysis_results = await self.get_analysis_results(uid)
-        if sample.status in [SampleState.CANCELLED]:
-            # A better way is to go to audit log and retrieve previous state
-            # rather than transitioning all to RECEIVED
-            sample.status = SampleState.RECEIVED
-            sample.cancelled_by_uid = None
-            sample.date_cancelled = None
-            sample.updated_by_uid = re_instated_by.uid  # noqa
-            sample = await super().save(sample)
-            for result in analysis_results:
-                await self.analysis_result_service.re_instate(
-                    sample, result, re_instated_by=re_instated_by
-                )
-            return sample
+        sample.status = SampleState.RECEIVED
+        sample.cancelled_by_uid = None
+        sample.date_cancelled = None
+        sample.updated_by_uid = re_instated_by.uid  # noqa
+        sample = await super().save(sample)
+        for result in analysis_results:
+            await self.analysis_result_service.re_instate(
+                result.uid, re_instated_by=re_instated_by
+            )
         return sample
 
     async def submit(self, uid: str, submitted_by):
         sample = await self.get(uid=uid)
-        statuses = [
-            ResultState.RESULTED,
-            ResultState.RETRACTED,
-            ResultState.APPROVED,
-            ResultState.CANCELLED,
-        ]
-        analysis_results = await self.get_analysis_results(uid)
-        match = all([(sibling.status in statuses) for sibling in analysis_results])
-        if match and sample.status in [SampleState.RECEIVED]:
-            sample.status = SampleState.AWAITING
-            sample.submitted_by_uid = submitted_by.uid
-            sample.date_submitted = datetime.now()
-            sample.updated_by_uid = submitted_by.uid  # noqa
-            saved = await super().save(sample)
-            await self.streamer_service.stream(
-                saved, submitted_by, "submitted", "sample"
-            )
-            return saved
-        return sample
+        sample.status = SampleState.AWAITING
+        sample.submitted_by_uid = submitted_by.uid
+        sample.date_submitted = datetime.now()
+        sample.updated_by_uid = submitted_by.uid  # noqa
+        saved = await super().save(sample)
+        await self.streamer_service.stream(
+            saved, submitted_by, "submitted", "sample"
+        )
+        return saved
 
     async def un_submit(self, uid: str):
         sample = await self.get(uid=uid)
-        if sample.status == SampleState.AWAITING:
-            sample.status = SampleState.RECEIVED
-            sample.submitted_by_uid = None
-            sample.date_submitted = None
-            sample.updated_by_uid = None  # noqa
-            return await super().save(sample)
-        return sample
+        sample.status = SampleState.RECEIVED
+        sample.submitted_by_uid = None
+        sample.date_submitted = None
+        sample.updated_by_uid = None  # noqa
+        return await super().save(sample)
 
     async def assign(self, uid: str):
         sample = await self.get(uid=uid)
@@ -437,77 +417,60 @@ class SampleService(BaseService[Sample, SampleCreate, SampleUpdate]):
 
     async def publish(self, uid: str, published_by):
         sample = await self.get(uid=uid)
-        if sample.status in [SampleState.APPROVED, SampleState.PUBLISHING]:
-            sample.status = SampleState.PUBLISHED
-            sample.published_by_uid = published_by.uid
-            sample.date_published = datetime.now()
-            sample.updated_by_uid = published_by.uid  # noqa
-            return await super().save(sample)
-        return sample
+        sample.status = SampleState.PUBLISHED
+        sample.published_by_uid = published_by.uid
+        sample.date_published = datetime.now()
+        sample.updated_by_uid = published_by.uid  # noqa
+        return await super().save(sample)
 
     async def print(self, uid: str, printed_by):
         sample = await self.get(uid=uid)
-        if sample.status == SampleState.PUBLISHED:
-            sample.printed = True
-            sample.printed_by_uid = printed_by.uid
-            sample.date_printed = datetime.now()
-            sample.updated_by_uid = printed_by.uid  # noqa
-            return await super().save(sample)
-        return sample
+        sample.printed = True
+        sample.printed_by_uid = printed_by.uid
+        sample.date_printed = datetime.now()
+        sample.updated_by_uid = printed_by.uid  # noqa
+        return await super().save(sample)
 
     async def invalidate(self, uid: str, invalidated_by) -> tuple[Sample, Sample]:
         sample = await self.get(uid=uid)
-        statuses = [SampleState.APPROVED, SampleState.PUBLISHED]
-        copy = None
-        if sample.status in statuses:
-            copy = await self.duplicate_unique(invalidated_by)
-            sample.status = SampleState.INVALIDATED
-            sample.invalidated_by_uid = invalidated_by.uid
-            invalidated = await super().save(sample)
-            await self.streamer_service.stream(
-                invalidated, invalidated_by, "invalidated", "sample"
-            )
-            return copy, invalidated
-        return copy, self
+        copy = await self.duplicate_unique(invalidated_by)
+        sample.status = SampleState.INVALIDATED
+        sample.invalidated_by_uid = invalidated_by.uid
+        invalidated = await super().save(sample)
+        await self.streamer_service.stream(
+            invalidated, invalidated_by, "invalidated", "sample"
+        )
+        return copy, invalidated
 
     async def reject(self, uid: str, rejected_by):
         sample = await self.get(uid=uid)
-        statuses = [SampleState.RECEIVED, SampleState.EXPECTED]
-        if sample.status in statuses:
-            sample.status = SampleState.REJECTED
-            sample.received_by_uid = rejected_by.uid
-            sample.updated_by_uid = rejected_by.uid  # noqa
-            rejected = await super().save(sample)
-            await self.streamer_service.stream(
-                rejected, rejected_by, "rejected", "sample"
-            )
-            return rejected
-        return sample
+        sample.status = SampleState.REJECTED
+        sample.received_by_uid = rejected_by.uid
+        sample.updated_by_uid = rejected_by.uid  # noqa
+        rejected = await super().save(sample)
+        await self.streamer_service.stream(
+            rejected, rejected_by, "rejected", "sample"
+        )
+        return rejected
 
     async def store(self, uid: str, stored_by):
         sample = await self.get(uid=uid)
-        statuses = [SampleState.RECEIVED]
-        if sample.status in statuses:
-            sample.status = SampleState.STORED
-            sample.stored_by = stored_by.uid
-            sample.updated_by_uid = stored_by.uid  # noqa
-            stored = await super().save(sample)
-            await self.streamer_service.stream(stored, stored_by, "stored", "sample")
-            return stored
-        return sample
+        sample.status = SampleState.STORED
+        sample.stored_by = stored_by.uid
+        sample.updated_by_uid = stored_by.uid  # noqa
+        stored = await super().save(sample)
+        await self.streamer_service.stream(stored, stored_by, "stored", "sample")
+        return stored
 
     async def recover(self, uid: str):
         sample = await self.get(uid=uid)
-        statuses = [SampleState.STORED]
-        if sample.status in statuses:
-            sample.status = SampleState.RECEIVED
-            sample.storage_container_uid = None
-            sample.storage_slot = None
-            sample.storage_slot_index = None
-            sample.date_retrieved_from_storage = datetime.now()
-            recovered = await super().save(sample)
-            return recovered
-        return sample
+        sample.status = SampleState.RECEIVED
+        sample.storage_container_uid = None
+        sample.storage_slot = None
+        sample.storage_slot_index = None
+        sample.date_retrieved_from_storage = datetime.now()
+        recovered = await super().save(sample)
+        return recovered
 
     async def create(self, obj_in: dict | SampleCreate, related: list[str] = None):
         data = self._import(obj_in)
