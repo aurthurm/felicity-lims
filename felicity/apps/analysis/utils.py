@@ -115,7 +115,7 @@ async def retest_from_result_uids(
 
         _retest, a_result = await analysis_result_wf.retest(
             a_result.uid,
-            retested_by=user, next_action="verify"
+            retested_by=user, action="verify"
         )
         if _retest:
             retests.append(_retest)
@@ -138,13 +138,7 @@ async def results_submitter(
     )
     return_results.extend(_skipped)
 
-    for _ar in _submitted:
-        uid = _ar["uid"]
-        a_result = await analysis_result_service.get(uid=uid)
-        _skipped, _submitted = await analysis_result_wf.submit(
-            a_result.uid, _ar ,submitter=submitter
-        )
-
+    for a_result in _submitted:
         # mutate result
         await result_mutator(a_result)
 

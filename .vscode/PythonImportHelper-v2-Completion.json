@@ -1603,6 +1603,15 @@
         "documentation": {}
     },
     {
+        "label": "felicity.api.gql.analysis.types",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "felicity.api.gql.analysis.types",
+        "description": "felicity.api.gql.analysis.types",
+        "detail": "felicity.api.gql.analysis.types",
+        "documentation": {}
+    },
+    {
         "label": "analysis",
         "importPath": "felicity.api.gql.analysis.types",
         "description": "felicity.api.gql.analysis.types",
@@ -27318,7 +27327,7 @@
         "kind": 6,
         "importPath": "felicity.apps.analysis.workflow.sample",
         "description": "felicity.apps.analysis.workflow.sample",
-        "peekOfCode": "class SampleWorkFlowException(Exception): ...\nclass SampleWorkFlow:\n    \"\"\"SampleWorkFlow\n    Defines a set of guards that allow or prevent actions taken on Samples\n    \"\"\"\n    def __init__(self):\n        self.sample_service = SampleService()\n    async def revert(self, uid: str, by_uid: str) -> None:\n        # to_status = ResultState.PENDING\n        # await self.sample_service.change_status(uid, to_status)",
+        "peekOfCode": "class SampleWorkFlowException(Exception): ...\nclass SampleWorkFlow:\n    \"\"\"SampleWorkFlow\n    Defines a set of guards that allow or prevent actions taken on Samples\n    \"\"\"\n    def __init__(self):\n        self.sample_service = SampleService()\n    async def revert(self, uid: str, by_uid: str) -> None:\n        to_status = ResultState.PENDING\n        results = await self.sample_service.get_analysis_results(uid)",
         "detail": "felicity.apps.analysis.workflow.sample",
         "documentation": {}
     },
@@ -27327,7 +27336,7 @@
         "kind": 6,
         "importPath": "felicity.apps.analysis.workflow.sample",
         "description": "felicity.apps.analysis.workflow.sample",
-        "peekOfCode": "class SampleWorkFlow:\n    \"\"\"SampleWorkFlow\n    Defines a set of guards that allow or prevent actions taken on Samples\n    \"\"\"\n    def __init__(self):\n        self.sample_service = SampleService()\n    async def revert(self, uid: str, by_uid: str) -> None:\n        # to_status = ResultState.PENDING\n        # await self.sample_service.change_status(uid, to_status)\n        raise NotImplementedError()",
+        "peekOfCode": "class SampleWorkFlow:\n    \"\"\"SampleWorkFlow\n    Defines a set of guards that allow or prevent actions taken on Samples\n    \"\"\"\n    def __init__(self):\n        self.sample_service = SampleService()\n    async def revert(self, uid: str, by_uid: str) -> None:\n        to_status = ResultState.PENDING\n        results = await self.sample_service.get_analysis_results(uid)\n        awaiting_satatuses = [ResultState.RESULTED, ResultState.APPROVING, ResultState.RETRACTED, ResultState.CANCELLED]",
         "detail": "felicity.apps.analysis.workflow.sample",
         "documentation": {}
     },
@@ -35256,7 +35265,7 @@
         "kind": 6,
         "importPath": "felicity.apps.worksheet.workflow",
         "description": "felicity.apps.worksheet.workflow",
-        "peekOfCode": "class WorksheetWorkFlowException(Exception): ...\nclass WorkSheetWorkFlow:\n    \"\"\"WorksheetWorkFlow\n    Defines a set of guards that allow or prevent actions taken on Worksheet\n    \"\"\"\n    def __init__(self):\n        self.worksheet_service = WorkSheetService()\n    async def revert(self, uid: str, by_uid: str):\n        to_status = WorkSheetState.PENDING\n        results = await self.worksheet_service.get_analysis_results(uid)",
+        "peekOfCode": "class WorksheetWorkFlowException(Exception): ...\nclass WorkSheetWorkFlow:\n    \"\"\"WorksheetWorkFlow\n    Defines a set of guards that allow or prevent actions taken on Worksheet\n    \"\"\"\n    def __init__(self):\n        self.worksheet_service = WorkSheetService()\n    async def revert(self, uid: str, by_uid: str):\n        to_status = WorkSheetState.PENDING\n        _results, qc_results = await self.worksheet_service.get_analysis_results(uid)",
         "detail": "felicity.apps.worksheet.workflow",
         "documentation": {}
     },
@@ -35265,7 +35274,7 @@
         "kind": 6,
         "importPath": "felicity.apps.worksheet.workflow",
         "description": "felicity.apps.worksheet.workflow",
-        "peekOfCode": "class WorkSheetWorkFlow:\n    \"\"\"WorksheetWorkFlow\n    Defines a set of guards that allow or prevent actions taken on Worksheet\n    \"\"\"\n    def __init__(self):\n        self.worksheet_service = WorkSheetService()\n    async def revert(self, uid: str, by_uid: str):\n        to_status = WorkSheetState.PENDING\n        results = await self.worksheet_service.get_analysis_results(uid)\n        awaiting_states = [ResultState.RESULTED, ResultState.APPROVING, ResultState.RETRACTED]",
+        "peekOfCode": "class WorkSheetWorkFlow:\n    \"\"\"WorksheetWorkFlow\n    Defines a set of guards that allow or prevent actions taken on Worksheet\n    \"\"\"\n    def __init__(self):\n        self.worksheet_service = WorkSheetService()\n    async def revert(self, uid: str, by_uid: str):\n        to_status = WorkSheetState.PENDING\n        _results, qc_results = await self.worksheet_service.get_analysis_results(uid)\n        results = _results + qc_results",
         "detail": "felicity.apps.worksheet.workflow",
         "documentation": {}
     },

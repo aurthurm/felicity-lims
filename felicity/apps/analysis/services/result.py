@@ -59,7 +59,7 @@ class AnalysisResultService(
 
         await self.hide_report(uid)
         if next_action == "verify":
-            _, final = await self.verify(uid, verifier=retested_by)
+            final = await self.verify(uid, verifier=retested_by)
         elif next_action == "retract":
             final = await self.retract(uid, retracted_by=retested_by)
         else:

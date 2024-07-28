@@ -1,3 +1,4 @@
+import felicity.api.gql.analysis.types
 from felicity.apps.analysis.entities.analysis import Sample
 from felicity.apps.analysis.enum import ResultState, SampleState
 from felicity.apps.analysis.services.analysis import SampleService
@@ -15,9 +16,20 @@ class SampleWorkFlow:
         self.sample_service = SampleService()
 
     async def revert(self, uid: str, by_uid: str) -> None:
-        # to_status = ResultState.PENDING
-        # await self.sample_service.change_status(uid, to_status)
-        raise NotImplementedError()
+        to_status = ResultState.PENDING
+        results = await self.sample_service.get_analysis_results(uid)
+        awaiting_satatuses = [ResultState.RESULTED, ResultState.APPROVING, ResultState.RETRACTED, ResultState.CANCELLED]
+        approved_satatuses = [ResultState.APPROVED, ResultState.RETRACTED, ResultState.CANCELLED]
+       
+        if any([result.status in ResultState.PENDING for result in results]):
+            to_status = SampleState.RECEIVED
+        elif all([result.status == ResultState.CANCELLED for result in results]):
+            to_status = SampleState.CANCELLED
+        elif all([result.status in awaiting_satatuses for result in results]):
+            to_status = SampleState.AWAITING
+        elif all([result.status in approved_satatuses for result in results]):
+            to_status = SampleState.APPROVED
+        await self.sample_service.change_status(uid, to_status, by_uid)
     
     async def receive(self, uid, received_by):
         sample = await self.sample_service.get(uid=uid)
@@ -65,7 +77,7 @@ class SampleWorkFlow:
 
     async def _guard_submit(self, sample: Sample) -> bool:
         allow = False
-        analysis_results = await self.sample_service.get_analysis_results()
+        analysis_results = await self.sample_service.get_analysis_results(sample.uid)
         statuses = [
             ResultState.RESULTED,
             ResultState.RETRACTED,

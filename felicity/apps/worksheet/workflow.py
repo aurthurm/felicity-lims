@@ -17,10 +17,12 @@ class WorkSheetWorkFlow:
 
     async def revert(self, uid: str, by_uid: str):
         to_status = WorkSheetState.PENDING
-        results = await self.worksheet_service.get_analysis_results(uid)
+        _results, qc_results = await self.worksheet_service.get_analysis_results(uid)
+        results = _results + qc_results
+        print("arrrrrrrrrrrrrr: ", results)
 
         awaiting_states = [ResultState.RESULTED, ResultState.APPROVING, ResultState.RETRACTED]
-        if all([ar.state in awaiting_states for ar in results]):
+        if all([(ar.status in awaiting_states) for ar in results]):
             to_status = WorkSheetState.AWAITING
         await self.worksheet_service.change_state(uid, to_status, by_uid)
 

@@ -180,9 +180,11 @@ class AnalysisResultWorkFlow:
 
             # Number of required verifications check
             required, current = await self.analysis_result_service.verifications(result.uid)
-            if not (current < required and current + 1 == required):
+            # if not (current < required and current + 1 == required):
+            # TODO: Needs checking
+            if required < current:
                 raise AnalysisResultWorkFlowException(
-                    f"Required approvals have already been met"
+                    f"Required approvals have been met"
                 )
 
         return True
