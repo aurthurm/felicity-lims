@@ -13,6 +13,7 @@ from felicity.api.gql.user.types import UserType
 from felicity.apps.analysis.entities.analysis import AnalysisRequest
 from felicity.apps.billing.entities import (TestBill, VoucherCode,
                                             test_bill_item)
+from felicity.apps.billing.services import TestBillService, VoucherCodeService
 
 
 @strawberry.type
@@ -110,7 +111,7 @@ class VoucherType:
 
     @strawberry.field
     async def codes(self) -> Optional[list["VoucherCodeType"]]:
-        return await VoucherCode.get_all(voucher_uid=self.uid)
+        return await VoucherCodeService().get_all(voucher_uid=self.uid)
 
 
 @strawberry.type
@@ -168,7 +169,7 @@ class TestBillType:
 
     @strawberry.field
     async def orders(self) -> Optional[list[AnalysisRequestType]]:
-        test_bills = await TestBill.query_table(
+        test_bills = await TestBillService().repository.query_table(
             test_bill_item, ["analysis_request_uid"], test_bill_uid=self.uid
         )
         return await AnalysisRequest.get_by_uids(uids=test_bills)

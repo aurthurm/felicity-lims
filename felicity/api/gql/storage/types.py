@@ -5,6 +5,8 @@ import strawberry  # noqa
 from felicity.api.gql.user.types import UserType
 from felicity.apps.storage.entities import (StorageContainer, StorageLocation,
                                             StorageSection)
+from felicity.apps.storage.services import (StorageContainerService, StorageLocationService,
+    StorageSectionService)
 
 
 @strawberry.type
@@ -25,7 +27,7 @@ class StoreRoomType:
 
     @strawberry.field
     async def children(self, info) -> List[Optional["StorageLocationType"]]:
-        storage_location = await StorageLocation.get_all(store_room_uid=self.uid)
+        storage_location = await StorageLocationService().get_all(store_room_uid=self.uid)
         return [StorageLocationType(**sl.marshal_simple()) for sl in storage_location]
 
 
@@ -49,7 +51,7 @@ class StorageLocationType:
 
     @strawberry.field
     async def children(self, info) -> List[Optional["StorageSectionType"]]:
-        storage_section = await StorageSection.get_all(storage_location_uid=self.uid)
+        storage_section = await StorageSectionService().get_all(storage_location_uid=self.uid)
         return [StorageSectionType(**ss.marshal_simple()) for ss in storage_section]
 
 
@@ -73,7 +75,7 @@ class StorageSectionType:
 
     @strawberry.field
     async def children(self, info) -> List[Optional["StorageContainerType"]]:
-        storage_container = await StorageContainer.get_all(storage_section_uid=self.uid)
+        storage_container = await StorageContainerService().get_all(storage_section_uid=self.uid)
         return [
             StorageContainerType(**sc.marshal_simple(exclude=["samples"]))
             for sc in storage_container

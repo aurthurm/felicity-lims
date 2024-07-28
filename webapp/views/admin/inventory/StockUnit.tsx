@@ -40,7 +40,7 @@ const StockUnit = defineComponent({
             formAction.value = create;
             formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + 'STOCK UNIT';
             showModal.value = true;
-            if (Create, related: list[str] = None) {
+            if (create) {
                 Object.assign(form, {} as IStockUnit);
             } else {
                 Object.assign(form, { ...obj });

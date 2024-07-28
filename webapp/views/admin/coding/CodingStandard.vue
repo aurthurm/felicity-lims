@@ -23,7 +23,7 @@
     formAction.value = create;
     showModal.value = true;
     formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "CODING STANDARD";
-    if (Create, related: list[str] = None) {
+    if (create) {
       Object.assign(form, {} as ICodingStandard);
     } else {
       Object.assign(form, { ...obj });

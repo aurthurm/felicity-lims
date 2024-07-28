@@ -60,7 +60,7 @@
       formAction.value = create;
       showModal.value = true;
       formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "ANALYSIS SPECIFICATION";
-      if (Create, related: list[str] = None) {
+      if (create) {
           Object.assign(form, {
             analysisUid: null,
             min: null,

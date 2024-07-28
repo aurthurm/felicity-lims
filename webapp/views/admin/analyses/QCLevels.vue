@@ -34,7 +34,7 @@
     formAction.value = create;
     showModal.value = true;
     formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "QC Level";
-    if (Create, related: list[str] = None) {
+    if (create) {
       Object.assign(form, { ...({} as IQCLevel) });
     } else {
       Object.assign(form, { ...obj });

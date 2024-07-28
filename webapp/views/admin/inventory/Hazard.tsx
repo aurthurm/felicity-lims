@@ -39,7 +39,7 @@ const Hazard = defineComponent({
             formAction.value = create;
             formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + 'A HAZARD';
             showModal.value = true;
-            if (Create, related: list[str] = None) {
+            if (create) {
                 Object.assign(form, {} as IHazard);
             } else {
                 Object.assign(form, { ...obj });

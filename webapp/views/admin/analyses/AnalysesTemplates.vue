@@ -93,7 +93,7 @@ function FormManager(create: boolean, obj = {} as IAnalysisTemplate): void {
   formAction.value = create;
   showModal.value = true;
   formTitle.value = (create ? "CREATE" : "EDIT") + " " + "ANALYSES TEMPLATE";
-  if (Create, related: list[str] = None) {
+  if (create) {
     Object.assign(analysisTemplate, {} as IAnalysisTemplate);
   } else {
     Object.assign(analysisTemplate, { ...obj });

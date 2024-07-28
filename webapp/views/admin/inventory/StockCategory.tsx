@@ -41,7 +41,7 @@ const StockCategory = defineComponent({
             formAction.value = create;
             formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + 'STOCK CATEGORY';
             showModal.value = true;
-            if (Create, related: list[str] = None) {
+            if (create) {
                 Object.assign(form, {} as IStockCategory);
             } else {
                 Object.assign(form, { ...obj });

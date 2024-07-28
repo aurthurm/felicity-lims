@@ -58,7 +58,7 @@
       formAction.value = create;
       showModal.value = true;
       formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "ANALYSIS INTERIM";
-      if (Create, related: list[str] = None) {
+      if (create) {
           Object.assign(form, { key: null, value: null });
       } else {
           Object.assign(form, { ...obj });

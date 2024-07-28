@@ -36,7 +36,7 @@
     state.formAction = create;
     state.showModal = true;
     state.formTitle = (create ? 'CREATE' : 'EDIT') + ' ' + "QC Level";
-    if (Create, related: list[str] = None) {
+    if (create) {
       state.form = {} as IRejectionReason
     } else {
       state.form = { ... obj };

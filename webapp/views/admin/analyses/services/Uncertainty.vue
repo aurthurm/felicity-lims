@@ -61,7 +61,7 @@
       formAction.value = create;
       showModal.value = true;
       formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "ANALYSIS UNCERTAINTY";
-      if (Create, related: list[str] = None) {
+      if (create) {
           Object.assign(form, { min: null, max: null, value: null, instrumentUid: null , methodUid: null });
       } else {
           Object.assign(form, { ...obj });

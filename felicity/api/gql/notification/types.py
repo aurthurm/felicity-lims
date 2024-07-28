@@ -12,6 +12,10 @@ from felicity.apps.analysis.entities.analysis import Sample
 from felicity.apps.analysis.entities.results import AnalysisResult
 from felicity.apps.analytics.entities import ReportMeta
 from felicity.apps.worksheet.entities import WorkSheet
+from felicity.apps.analysis.services.analysis import SampleService
+from felicity.apps.worksheet.services import WorkSheetService
+from felicity.apps.analysis.services.result import AnalysisResultService
+from felicity.apps.analytics.services import ReportMetaService
 
 
 @strawberry.type
@@ -56,7 +60,7 @@ class ActivityStreamType:
         WorkSheetType, SampleType, AnalysisResultType, ReportMetaType, UnknownObjectType
     ]:
         if self.action_object_type == "sample":
-            sample = await Sample.get(uid=self.action_object_uid)
+            sample = await SampleService().get(uid=self.action_object_uid)
             return SampleType(
                 **sample.marshal_simple(
                     exclude=["right", "left", "tree_id", "level", "analysis_results"]
@@ -65,11 +69,11 @@ class ActivityStreamType:
             )
 
         if self.action_object_type == "worksheet":
-            ws = await WorkSheet.get(uid=self.action_object_uid)
+            ws = await WorkSheetService().get(uid=self.action_object_uid)
             return WorkSheetType(**ws.marshal_simple())
 
         if self.action_object_type == "result":
-            result = await AnalysisResult.get(uid=self.action_object_uid)
+            result = await AnalysisResultService().get(uid=self.action_object_uid)
             return AnalysisResultType(
                 **result.marshal_simple(
                     exclude=[
@@ -86,7 +90,7 @@ class ActivityStreamType:
             )
 
         if self.action_object_type == "report":
-            report = await ReportMeta.get(uid=self.action_object_uid)
+            report = await ReportMetaService().get(uid=self.action_object_uid)
             return ReportMetaType(**report.marshal_simple(exclude=[]))
 
         return UnknownObjectType(

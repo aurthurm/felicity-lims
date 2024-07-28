@@ -32,7 +32,7 @@
     formAction.value = create;
     showModal.value = true;
     formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "ANALYSES METHOD";
-    if (Create, related: list[str] = None) {
+    if (create) {
       Object.assign(method, { ...{} as IMethod });
     } else {
       Object.assign(method, { ...obj });

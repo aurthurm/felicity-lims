@@ -36,7 +36,7 @@
     formAction.value = create;
     showModal.value = true;
     formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "UNIT";
-    if (Create, related: list[str] = None) {
+    if (create) {
       Object.assign(unit, { ...({} as IUnit) });
     } else {
       Object.assign(unit, { ...obj });

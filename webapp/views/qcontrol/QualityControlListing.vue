@@ -88,7 +88,7 @@
   function FormManager(create: boolean, obj: IQCRequest):void {
     formAction.value = create;
     showModal.value = true;
-    if (Create, related: list[str] = None) {
+    if (create) {
       Object.assign(form, {} as IQCRequest);
     } else {
       Object.assign(form, { ...obj });

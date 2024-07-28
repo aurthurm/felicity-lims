@@ -5,7 +5,7 @@ import strawberry  # noqa
 from felicity.api.gql.analysis.types.analysis import SampleType
 from felicity.api.gql.types import BytesScalar, JSONScalar, PageInfo
 from felicity.api.gql.user.types import UserType
-from felicity.apps.shipment.entities import ShippedSample
+from felicity.apps.shipment.services import ShippedSampleService
 
 
 @strawberry.type
@@ -72,14 +72,14 @@ class ShipmentType:
             for s in list(
                 map(
                     lambda sam: sam.sample,
-                    await ShippedSample.get_all(shipment_uid=self.uid),
+                    await ShippedSampleService().get_all(shipment_uid=self.uid),
                 )
             )
         ]
 
     @strawberry.field
     async def shipped_samples(self, info) -> list["ShippedSampleType"] | None:
-        return await ShippedSample.get_all(shipment_uid=self.uid)
+        return await ShippedSampleService().get_all(shipment_uid=self.uid)
 
 
 #  relay paginations

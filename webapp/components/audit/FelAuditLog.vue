@@ -32,7 +32,7 @@ function translateUser(userId: any): string {
     (u: any) => u["uid"]?.toString() === userId?.toString()
   );
   if (!user) return "";
-  return (user as any)["auth"]["userName"];
+  return (user as any)["userName"];
 }
 
 function translateAction(action: number): string {

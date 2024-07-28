@@ -8,7 +8,6 @@ from felicity.api.gql.analysis.types import analysis as a_types
 from felicity.api.gql.analysis.types import results as r_types
 from felicity.api.gql.permissions import IsAuthenticated
 from felicity.api.gql.types import PageInfo
-from felicity.apps.analysis import enum as analysis_conf
 from felicity.apps.analysis.services.analysis import (
     AnalysisCategoryService, AnalysisCodingService,
     AnalysisCorrectionFactorService, AnalysisDetectionLimitService,
@@ -25,6 +24,7 @@ from felicity.apps.analysis.services.result import (AnalysisResultService,
 from felicity.apps.analysis.utils import sample_search
 from felicity.database.session import async_session
 from felicity.utils import has_value_or_is_truthy
+from felicity.apps.analysis.enum import ResultState, SampleState
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -139,8 +139,8 @@ class AnalysisQuery:
         filters.append(
             {
                 "status__in": [
-                    analysis_conf.SampleState.RECEIVED,
-                    analysis_conf.SampleState.PAIRED,
+                    SampleState.RECEIVED,
+                    SampleState.PAIRED,
                 ]
             }
         )
@@ -410,8 +410,8 @@ class AnalysisQuery:
         if sample_type_uid:
             filters.append({"sample___sample_type_uid": sample_type_uid})
 
-        filters.append({"sample___status": analysis_conf.SampleState.RECEIVED})
-        filters.append({"status": analysis_conf.states.result.PENDING})
+        filters.append({"sample___status": SampleState.RECEIVED})
+        filters.append({"status": ResultState.PENDING})
 
         if not sort_by:
             sort_by = ["-sample___priority", "sample___uid"]

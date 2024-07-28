@@ -48,7 +48,7 @@
     formAction.value = create;
     showModal.value = true;
     formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "ANALYSES CATEGORY";
-    if (Create, related: list[str] = None) {
+    if (create) {
       Object.assign(form, {} as IAnalysisCategory);
     } else {
       Object.assign(form, { ...obj });

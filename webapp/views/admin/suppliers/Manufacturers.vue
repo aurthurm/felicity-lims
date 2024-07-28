@@ -35,7 +35,7 @@
     formAction.value = create;
     showModal.value = true;
     formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "MANUFACTURER";
-    if (Create, related: list[str] = None) {
+    if (create) {
       Object.assign(form, {} as IManufacturer);
     } else {
       Object.assign(form, { ...obj });

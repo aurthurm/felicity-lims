@@ -8,6 +8,7 @@ from felicity.api.gql.setup.types import ManufacturerType, SupplierType
 from felicity.api.gql.types import BytesScalar, PageInfo
 from felicity.api.gql.user.types import UserType
 from felicity.apps.instrument.entities import Method
+from felicity.apps.instrument.services import MethodService
 
 
 @strawberry.type
@@ -63,7 +64,7 @@ class InstrumentType:
 
     @strawberry.field
     async def methods(self, info) -> Optional[List["MethodType"]]:
-        m = await Method.get(instruments___uid=self.uid)
+        m = await MethodService().get(instruments___uid=self.uid)
         return MethodType(**m) if m else None
 
 

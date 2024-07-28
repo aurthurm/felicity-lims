@@ -87,7 +87,7 @@ function reflexActionFormManager(create: boolean, obj: IReflexAction = {}): void
   formAction.value = create;
   showActionModal.value = true;
   formTitle.value = (create ? "CREATE" : "EDIT") + " " + "REFLEX ACTION";
-  if (Create, related: list[str] = None) {
+  if (create) {
     Object.assign(actionForm, {} as IReflexAction);
   } else {
     let analyses: string[] = [];
@@ -174,7 +174,7 @@ function reflexBrainFormManager(create: boolean, obj: IReflexBrain = {}): void {
   showBrainModal.value = true;
   formTitle.value = (create ? "CREATE" : "EDIT") + " " + "REFLEX BRAIN";
   forAction.value = obj.uid;
-  if (Create, related: list[str] = None) {
+  if (create) {
     Object.assign(brainForm, {} as IReflexBrain);
   } else {
     let crit: IReflexBrainCriteria[] = [];

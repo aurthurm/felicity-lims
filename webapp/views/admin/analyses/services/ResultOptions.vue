@@ -62,7 +62,7 @@
       formAction.value = create;
       showModal.value = true;
       formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "RESULT OPTION";
-      if (Create, related: list[str] = None) {
+      if (create) {
           Object.assign(form, { optionKey: null, value: null });
       } else {
           Object.assign(form, { ...obj });

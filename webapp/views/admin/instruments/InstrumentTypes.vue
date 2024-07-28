@@ -43,7 +43,7 @@
     formAction.value = create;
     showModal.value = true;
     formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "INSTRUMENT TYPE";
-    if (Create, related: list[str] = None) {
+    if (create) {
       Object.assign(instrumentType, { ...({} as IInstrumentType) });
     } else {
       Object.assign(instrumentType, { ...obj });

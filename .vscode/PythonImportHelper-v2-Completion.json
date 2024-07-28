@@ -2932,14 +2932,6 @@
         "documentation": {}
     },
     {
-        "label": "enum",
-        "importPath": "felicity.apps.analysis",
-        "description": "felicity.apps.analysis",
-        "isExtraImport": true,
-        "detail": "felicity.apps.analysis",
-        "documentation": {}
-    },
-    {
         "label": "utils",
         "importPath": "felicity.apps.analysis",
         "description": "felicity.apps.analysis",
@@ -3381,6 +3373,14 @@
     },
     {
         "label": "AnalysisService",
+        "importPath": "felicity.apps.analysis.services.analysis",
+        "description": "felicity.apps.analysis.services.analysis",
+        "isExtraImport": true,
+        "detail": "felicity.apps.analysis.services.analysis",
+        "documentation": {}
+    },
+    {
+        "label": "SampleService",
         "importPath": "felicity.apps.analysis.services.analysis",
         "description": "felicity.apps.analysis.services.analysis",
         "isExtraImport": true,
@@ -4943,6 +4943,22 @@
         "documentation": {}
     },
     {
+        "label": "ResultState",
+        "importPath": "felicity.apps.analysis.enum",
+        "description": "felicity.apps.analysis.enum",
+        "isExtraImport": true,
+        "detail": "felicity.apps.analysis.enum",
+        "documentation": {}
+    },
+    {
+        "label": "SampleState",
+        "importPath": "felicity.apps.analysis.enum",
+        "description": "felicity.apps.analysis.enum",
+        "isExtraImport": true,
+        "detail": "felicity.apps.analysis.enum",
+        "documentation": {}
+    },
+    {
         "label": "SampleState",
         "importPath": "felicity.apps.analysis.enum",
         "description": "felicity.apps.analysis.enum",
@@ -5144,6 +5160,14 @@
     },
     {
         "label": "ResultMutationService",
+        "importPath": "felicity.apps.analysis.services.result",
+        "description": "felicity.apps.analysis.services.result",
+        "isExtraImport": true,
+        "detail": "felicity.apps.analysis.services.result",
+        "documentation": {}
+    },
+    {
+        "label": "AnalysisResultService",
         "importPath": "felicity.apps.analysis.services.result",
         "description": "felicity.apps.analysis.services.result",
         "isExtraImport": true,
@@ -6311,6 +6335,22 @@
         "documentation": {}
     },
     {
+        "label": "WorkSheetService",
+        "importPath": "felicity.apps.worksheet.services",
+        "description": "felicity.apps.worksheet.services",
+        "isExtraImport": true,
+        "detail": "felicity.apps.worksheet.services",
+        "documentation": {}
+    },
+    {
+        "label": "WorkSheetService",
+        "importPath": "felicity.apps.worksheet.services",
+        "description": "felicity.apps.worksheet.services",
+        "isExtraImport": true,
+        "detail": "felicity.apps.worksheet.services",
+        "documentation": {}
+    },
+    {
         "label": "WorkSheetTemplateService",
         "importPath": "felicity.apps.worksheet.services",
         "description": "felicity.apps.worksheet.services",
@@ -6456,6 +6496,14 @@
     },
     {
         "label": "LaboratoryInstrumentService",
+        "importPath": "felicity.apps.instrument.services",
+        "description": "felicity.apps.instrument.services",
+        "isExtraImport": true,
+        "detail": "felicity.apps.instrument.services",
+        "documentation": {}
+    },
+    {
+        "label": "MethodService",
         "importPath": "felicity.apps.instrument.services",
         "description": "felicity.apps.instrument.services",
         "isExtraImport": true,
@@ -10289,6 +10337,14 @@
         "documentation": {}
     },
     {
+        "label": "UserService",
+        "importPath": "felicity.apps.user.services",
+        "description": "felicity.apps.user.services",
+        "isExtraImport": true,
+        "detail": "felicity.apps.user.services",
+        "documentation": {}
+    },
+    {
         "label": "GroupService",
         "importPath": "felicity.apps.user.services",
         "description": "felicity.apps.user.services",
@@ -11066,6 +11122,22 @@
     },
     {
         "label": "VoucherService",
+        "importPath": "felicity.apps.billing.services",
+        "description": "felicity.apps.billing.services",
+        "isExtraImport": true,
+        "detail": "felicity.apps.billing.services",
+        "documentation": {}
+    },
+    {
+        "label": "TestBillService",
+        "importPath": "felicity.apps.billing.services",
+        "description": "felicity.apps.billing.services",
+        "isExtraImport": true,
+        "detail": "felicity.apps.billing.services",
+        "documentation": {}
+    },
+    {
+        "label": "VoucherCodeService",
         "importPath": "felicity.apps.billing.services",
         "description": "felicity.apps.billing.services",
         "isExtraImport": true,
@@ -12034,14 +12106,6 @@
         "documentation": {}
     },
     {
-        "label": "entities",
-        "importPath": "felicity.apps.inventory",
-        "description": "felicity.apps.inventory",
-        "isExtraImport": true,
-        "detail": "felicity.apps.inventory",
-        "documentation": {}
-    },
-    {
         "label": "schemas",
         "importPath": "felicity.apps.inventory",
         "description": "felicity.apps.inventory",
@@ -12235,6 +12299,22 @@
     },
     {
         "label": "StockUnitService",
+        "importPath": "felicity.apps.inventory.services",
+        "description": "felicity.apps.inventory.services",
+        "isExtraImport": true,
+        "detail": "felicity.apps.inventory.services",
+        "documentation": {}
+    },
+    {
+        "label": "StockItemVariantService",
+        "importPath": "felicity.apps.inventory.services",
+        "description": "felicity.apps.inventory.services",
+        "isExtraImport": true,
+        "detail": "felicity.apps.inventory.services",
+        "documentation": {}
+    },
+    {
+        "label": "StockProductInventoryService",
         "importPath": "felicity.apps.inventory.services",
         "description": "felicity.apps.inventory.services",
         "isExtraImport": true,
@@ -12655,6 +12735,30 @@
         "description": "felicity.apps.analytics.entities",
         "isExtraImport": true,
         "detail": "felicity.apps.analytics.entities",
+        "documentation": {}
+    },
+    {
+        "label": "ReportMetaService",
+        "importPath": "felicity.apps.analytics.services",
+        "description": "felicity.apps.analytics.services",
+        "isExtraImport": true,
+        "detail": "felicity.apps.analytics.services",
+        "documentation": {}
+    },
+    {
+        "label": "ReportMetaService",
+        "importPath": "felicity.apps.analytics.services",
+        "description": "felicity.apps.analytics.services",
+        "isExtraImport": true,
+        "detail": "felicity.apps.analytics.services",
+        "documentation": {}
+    },
+    {
+        "label": "ReportMetaService",
+        "importPath": "felicity.apps.analytics.services",
+        "description": "felicity.apps.analytics.services",
+        "isExtraImport": true,
+        "detail": "felicity.apps.analytics.services",
         "documentation": {}
     },
     {
@@ -13146,6 +13250,14 @@
         "documentation": {}
     },
     {
+        "label": "ShippedSampleService",
+        "importPath": "felicity.apps.shipment.services",
+        "description": "felicity.apps.shipment.services",
+        "isExtraImport": true,
+        "detail": "felicity.apps.shipment.services",
+        "documentation": {}
+    },
+    {
         "label": "ShipmentService",
         "importPath": "felicity.apps.shipment.services",
         "description": "felicity.apps.shipment.services",
@@ -13314,94 +13426,6 @@
         "documentation": {}
     },
     {
-        "label": "ShippedSample",
-        "importPath": "felicity.apps.shipment.entities",
-        "description": "felicity.apps.shipment.entities",
-        "isExtraImport": true,
-        "detail": "felicity.apps.shipment.entities",
-        "documentation": {}
-    },
-    {
-        "label": "Shipment",
-        "importPath": "felicity.apps.shipment.entities",
-        "description": "felicity.apps.shipment.entities",
-        "isExtraImport": true,
-        "detail": "felicity.apps.shipment.entities",
-        "documentation": {}
-    },
-    {
-        "label": "ShippedSample",
-        "importPath": "felicity.apps.shipment.entities",
-        "description": "felicity.apps.shipment.entities",
-        "isExtraImport": true,
-        "detail": "felicity.apps.shipment.entities",
-        "documentation": {}
-    },
-    {
-        "label": "ReferralLaboratory",
-        "importPath": "felicity.apps.shipment.entities",
-        "description": "felicity.apps.shipment.entities",
-        "isExtraImport": true,
-        "detail": "felicity.apps.shipment.entities",
-        "documentation": {}
-    },
-    {
-        "label": "Shipment",
-        "importPath": "felicity.apps.shipment.entities",
-        "description": "felicity.apps.shipment.entities",
-        "isExtraImport": true,
-        "detail": "felicity.apps.shipment.entities",
-        "documentation": {}
-    },
-    {
-        "label": "ShippedSample",
-        "importPath": "felicity.apps.shipment.entities",
-        "description": "felicity.apps.shipment.entities",
-        "isExtraImport": true,
-        "detail": "felicity.apps.shipment.entities",
-        "documentation": {}
-    },
-    {
-        "label": "ReferralLaboratory",
-        "importPath": "felicity.apps.shipment.entities",
-        "description": "felicity.apps.shipment.entities",
-        "isExtraImport": true,
-        "detail": "felicity.apps.shipment.entities",
-        "documentation": {}
-    },
-    {
-        "label": "Shipment",
-        "importPath": "felicity.apps.shipment.entities",
-        "description": "felicity.apps.shipment.entities",
-        "isExtraImport": true,
-        "detail": "felicity.apps.shipment.entities",
-        "documentation": {}
-    },
-    {
-        "label": "ShippedSample",
-        "importPath": "felicity.apps.shipment.entities",
-        "description": "felicity.apps.shipment.entities",
-        "isExtraImport": true,
-        "detail": "felicity.apps.shipment.entities",
-        "documentation": {}
-    },
-    {
-        "label": "Shipment",
-        "importPath": "felicity.apps.shipment.entities",
-        "description": "felicity.apps.shipment.entities",
-        "isExtraImport": true,
-        "detail": "felicity.apps.shipment.entities",
-        "documentation": {}
-    },
-    {
-        "label": "ShippedSample",
-        "importPath": "felicity.apps.shipment.entities",
-        "description": "felicity.apps.shipment.entities",
-        "isExtraImport": true,
-        "detail": "felicity.apps.shipment.entities",
-        "documentation": {}
-    },
-    {
         "label": "types",
         "importPath": "felicity.api.gql.storage",
         "description": "felicity.api.gql.storage",
@@ -13491,6 +13515,30 @@
     },
     {
         "label": "StoreRoomService",
+        "importPath": "felicity.apps.storage.services",
+        "description": "felicity.apps.storage.services",
+        "isExtraImport": true,
+        "detail": "felicity.apps.storage.services",
+        "documentation": {}
+    },
+    {
+        "label": "StorageContainerService",
+        "importPath": "felicity.apps.storage.services",
+        "description": "felicity.apps.storage.services",
+        "isExtraImport": true,
+        "detail": "felicity.apps.storage.services",
+        "documentation": {}
+    },
+    {
+        "label": "StorageLocationService",
+        "importPath": "felicity.apps.storage.services",
+        "description": "felicity.apps.storage.services",
+        "isExtraImport": true,
+        "detail": "felicity.apps.storage.services",
+        "documentation": {}
+    },
+    {
+        "label": "StorageSectionService",
         "importPath": "felicity.apps.storage.services",
         "description": "felicity.apps.storage.services",
         "isExtraImport": true,
@@ -14485,6 +14533,14 @@
         "documentation": {}
     },
     {
+        "label": "uuid4",
+        "importPath": "uuid",
+        "description": "uuid",
+        "isExtraImport": true,
+        "detail": "uuid",
+        "documentation": {}
+    },
+    {
         "label": "ReportState",
         "importPath": "felicity.apps.analytics.enum",
         "description": "felicity.apps.analytics.enum",
@@ -14522,22 +14578,6 @@
         "description": "felicity.apps.analytics.enum",
         "isExtraImport": true,
         "detail": "felicity.apps.analytics.enum",
-        "documentation": {}
-    },
-    {
-        "label": "ReportMetaService",
-        "importPath": "felicity.apps.analytics.services",
-        "description": "felicity.apps.analytics.services",
-        "isExtraImport": true,
-        "detail": "felicity.apps.analytics.services",
-        "documentation": {}
-    },
-    {
-        "label": "ReportMetaService",
-        "importPath": "felicity.apps.analytics.services",
-        "description": "felicity.apps.analytics.services",
-        "isExtraImport": true,
-        "detail": "felicity.apps.analytics.services",
         "documentation": {}
     },
     {
@@ -20239,6 +20279,86 @@
         "documentation": {}
     },
     {
+        "label": "Shipment",
+        "importPath": "felicity.apps.shipment.entities",
+        "description": "felicity.apps.shipment.entities",
+        "isExtraImport": true,
+        "detail": "felicity.apps.shipment.entities",
+        "documentation": {}
+    },
+    {
+        "label": "ShippedSample",
+        "importPath": "felicity.apps.shipment.entities",
+        "description": "felicity.apps.shipment.entities",
+        "isExtraImport": true,
+        "detail": "felicity.apps.shipment.entities",
+        "documentation": {}
+    },
+    {
+        "label": "ReferralLaboratory",
+        "importPath": "felicity.apps.shipment.entities",
+        "description": "felicity.apps.shipment.entities",
+        "isExtraImport": true,
+        "detail": "felicity.apps.shipment.entities",
+        "documentation": {}
+    },
+    {
+        "label": "Shipment",
+        "importPath": "felicity.apps.shipment.entities",
+        "description": "felicity.apps.shipment.entities",
+        "isExtraImport": true,
+        "detail": "felicity.apps.shipment.entities",
+        "documentation": {}
+    },
+    {
+        "label": "ShippedSample",
+        "importPath": "felicity.apps.shipment.entities",
+        "description": "felicity.apps.shipment.entities",
+        "isExtraImport": true,
+        "detail": "felicity.apps.shipment.entities",
+        "documentation": {}
+    },
+    {
+        "label": "ReferralLaboratory",
+        "importPath": "felicity.apps.shipment.entities",
+        "description": "felicity.apps.shipment.entities",
+        "isExtraImport": true,
+        "detail": "felicity.apps.shipment.entities",
+        "documentation": {}
+    },
+    {
+        "label": "Shipment",
+        "importPath": "felicity.apps.shipment.entities",
+        "description": "felicity.apps.shipment.entities",
+        "isExtraImport": true,
+        "detail": "felicity.apps.shipment.entities",
+        "documentation": {}
+    },
+    {
+        "label": "ShippedSample",
+        "importPath": "felicity.apps.shipment.entities",
+        "description": "felicity.apps.shipment.entities",
+        "isExtraImport": true,
+        "detail": "felicity.apps.shipment.entities",
+        "documentation": {}
+    },
+    {
+        "label": "Shipment",
+        "importPath": "felicity.apps.shipment.entities",
+        "description": "felicity.apps.shipment.entities",
+        "isExtraImport": true,
+        "detail": "felicity.apps.shipment.entities",
+        "documentation": {}
+    },
+    {
+        "label": "ShippedSample",
+        "importPath": "felicity.apps.shipment.entities",
+        "description": "felicity.apps.shipment.entities",
+        "isExtraImport": true,
+        "detail": "felicity.apps.shipment.entities",
+        "documentation": {}
+    },
+    {
         "label": "httpx",
         "kind": 6,
         "isExtraImport": true,
@@ -23054,7 +23174,7 @@
         "kind": 2,
         "importPath": "felicity.api.gql.analytics.query.dashboard",
         "description": "felicity.api.gql.analytics.query.dashboard",
-        "peekOfCode": "def group_exists(val):\n    if has_value_or_is_truthy(val):\n        return str(val)\n    return \"unknown\"\nasync def get_username(val):\n    if val == \"unknown\":\n        return val\n    user = await User.get(uid=val)\n    return user.auth.user_name\nasync def get_instrument(val):",
+        "peekOfCode": "def group_exists(val):\n    if has_value_or_is_truthy(val):\n        return str(val)\n    return \"unknown\"\nasync def get_username(val):\n    if val == \"unknown\":\n        return val\n    user = await UserService().get(uid=val)\n    return user.user_name\nasync def get_instrument(val):",
         "detail": "felicity.api.gql.analytics.query.dashboard",
         "documentation": {}
     },
@@ -23063,7 +23183,7 @@
         "kind": 5,
         "importPath": "felicity.api.gql.analytics.query.dashboard",
         "description": "felicity.api.gql.analytics.query.dashboard",
-        "peekOfCode": "logger = logging.getLogger(__name__)\ndef group_exists(val):\n    if has_value_or_is_truthy(val):\n        return str(val)\n    return \"unknown\"\nasync def get_username(val):\n    if val == \"unknown\":\n        return val\n    user = await User.get(uid=val)\n    return user.auth.user_name",
+        "peekOfCode": "logger = logging.getLogger(__name__)\ndef group_exists(val):\n    if has_value_or_is_truthy(val):\n        return str(val)\n    return \"unknown\"\nasync def get_username(val):\n    if val == \"unknown\":\n        return val\n    user = await UserService().get(uid=val)\n    return user.user_name",
         "detail": "felicity.api.gql.analytics.query.dashboard",
         "documentation": {}
     },

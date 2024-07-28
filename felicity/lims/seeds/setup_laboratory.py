@@ -1,4 +1,5 @@
 import logging
+from uuid import uuid4
 
 from felicity.apps.client import schemas as client_schemas
 from felicity.apps.client.services import ClientContactService, ClientService
@@ -92,7 +93,7 @@ async def seed_clients() -> None:
         contacts = await client_contact_Service.get(client_uid=client.uid)
         if not contacts:
             cc_in = client_schemas.ClientContactCreate(
-                first_name="Sr", last_name="in Charge", client_uid=client.uid
+                first_name="Sr", last_name="in Charge", client_uid=client.uid, email=f"{uuid4().hex}@dummy.inc"
             )
             await client_contact_Service.create(cc_in)
 
