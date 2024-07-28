@@ -3,6 +3,7 @@ import sqlalchemy as sa
 from felicity.apps.abstract.service import BaseService
 from felicity.apps.common.utils import is_valid_email
 from felicity.apps.common.utils.serializer import marshaller
+from felicity.apps.exceptions import AlreadyExistsError, ValidationError
 from felicity.apps.user.entities import Group, Permission, User, UserPreference
 from felicity.apps.user.repository import (GroupRepository,
                                            PermissionRepository,
@@ -23,10 +24,11 @@ class UserService(BaseService[User, UserCreate, UserUpdate]):
     async def create(self, user_in: UserCreate, related: list[str] = None) -> User:
         by_username = await self.get_by_username(user_in.user_name)
         if by_username:
-            raise Exception("Username already exist")
+            raise AlreadyExistsError("Username already exist")
+        
         policy = password_check(user_in.password, user_in.user_name)
         if not policy["password_ok"]:
-            raise Exception(policy["message"])
+            raise ValidationError(policy["message"])
         hashed_password = get_password_hash(user_in.password)
         data = self._import(user_in)
         del data["password"]

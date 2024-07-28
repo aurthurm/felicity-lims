@@ -3,6 +3,7 @@ import asyncio
 
 import pytest_asyncio
 from faker import Faker
+from sqlalchemy import text
 
 from felicity.apps.abstract.entity import BaseEntity
 from felicity.database.session import async_engine
@@ -21,8 +22,6 @@ def event_loop():
     loop = policy.new_event_loop()
     yield loop
     loop.close()
-
-
 
 @pytest_asyncio.fixture(scope="session")
 async def setup():

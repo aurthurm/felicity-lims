@@ -6,7 +6,6 @@ from sqlalchemy.orm import selectinload
 from sqlalchemy.sql import func
 from sqlalchemy.sql.expression import bindparam
 
-from felicity.apps.common.utils.serializer import marshaller
 from felicity.database.paging import EdgeNode, PageCursor, PageInfo
 from felicity.database.session import async_session
 from felicity.apps.abstract.entity import BaseEntity
@@ -31,8 +30,9 @@ def apply_nested_loader_options(stmt, model, path):
     """
     load_option = None
     current_model = model
+    paths = path.split(".") if "." in path else [path]
 
-    for attr in path.split("."):
+    for attr in paths:
         if load_option is None:
             load_option = selectinload(getattr(current_model, attr))
             current_option = load_option
@@ -57,6 +57,9 @@ class BaseRepository(Generic[M]):
         self.model = model
 
     async def save(self, m: M) -> M:
+        if not m:
+            raise ValueError("No model provided to save") # noqa
+        
         async with self.async_session() as session:
             try:
                 session.add(m)
@@ -72,6 +75,9 @@ class BaseRepository(Generic[M]):
         return m
 
     async def save_all(self, items):
+        if not items:
+            raise ValueError("No items provided to save")
+        
         async with self.async_session() as session:
             try:
                 session.add_all(items)
@@ -83,10 +89,16 @@ class BaseRepository(Generic[M]):
         return items
 
     async def create(self, **kwargs) -> M:
+        if not kwargs:
+            raise ValueError("No data provided to create a new model")
+        
         filled = self.model.fill(self.model(), **kwargs)
         return await self.save(filled)
 
     async def bulk_create(self, bulk: list[dict]) -> list[M]:
+        if not bulk:
+            raise ValueError("No data provided to create a new models")
+        
         to_save = []
         for data in bulk:
             fill = self.model.fill(self.model(), **data)
@@ -94,6 +106,9 @@ class BaseRepository(Generic[M]):
         return await self.save_all(to_save)
 
     async def update(self, uid: str, **data) -> M:
+        if not uid or not data:
+            raise ValueError("Both uid and data are required to update model")
+        
         item = await self.get(uid=uid)
         filled = self.model.fill(item, **data)
         return await self.save(filled)
@@ -104,6 +119,8 @@ class BaseRepository(Generic[M]):
         @param filters is a dict of filter values.
         e.g [{'uid': 34, update_values}, ...]
         """
+        if not update_data or not filters:
+            raise ValueError("Both update_data and filters are required to update model")
         query = self.model.smart_query(query=update(self.model), filters=filters)
         stmt = query.values(update_data).execution_options(synchronize_session="fetch")
 
@@ -119,8 +136,8 @@ class BaseRepository(Generic[M]):
         ?? there must be zero many-to-many relations
         NB: Function does not return anything
         """
-        if len(mappings) == 0:
-            return
+        if not mappings:
+            raise ValueError("No mappings provided to update")
 
         to_update = mappings # [marshaller(data) for data in mappings]
         for item in to_update:
@@ -155,6 +172,8 @@ class BaseRepository(Generic[M]):
             await session.flush()
 
     async def query_table(self, table, **kwargs):
+        if not table or not kwargs:
+            raise ValueError("Both table and filters are required to query")
         stmt = select(table)
         for k, v in kwargs.items():
             stmt = stmt.where(table.c[k] == v)
@@ -164,6 +183,8 @@ class BaseRepository(Generic[M]):
         return results.unique().scalars().all()  # , results.keys()
 
     async def get(self, **kwargs) -> M:
+        if not kwargs:
+            raise ValueError("No arguments provided to get model")
         stmt = self.model.where(**kwargs)
         async with self.async_session() as session:
             results = await session.execute(stmt)
@@ -171,6 +192,8 @@ class BaseRepository(Generic[M]):
         return found
 
     async def get_all(self, **kwargs) -> list[M]:
+        if not kwargs:
+            raise ValueError("No arguments provided to get all")
         stmt = self.model.where(**kwargs)
         async with self.async_session() as session:
             results = await session.execute(stmt)
@@ -192,29 +215,23 @@ class BaseRepository(Generic[M]):
         return found
 
     async def get_by_uids(self, uids: List[str]) -> list[M]:
+        if not uids:
+            raise ValueError("No uids provided to get by uids")
         stmt = select(self.model).where(self.model.uid.in_(uids))  # type: ignore
         async with self.async_session() as session:
             results = await session.execute(stmt.order_by(self.model.uid))
         return results.scalars().all()
 
     async def get_related(
-        self, related: Optional[list[str]] = None, many: bool = False, **kwargs
+        self, related: Optional[list[str]], many: bool = False, **kwargs
     ):
         """Return the first value in database based on given args."""
-        try:
-            del kwargs["related"]
-        except KeyError:
-            pass
-
-        try:
-            del kwargs["many"]
-        except KeyError:
-            pass
-
+        if not related:
+            raise ValueError("No related fields provided to get related")
+        
         stmt = self.model.where(**kwargs)
-        if related:
-            for key in related:
-                stmt =  stmt.options(selectinload(getattr(self.model, key)))
+        for key in related:
+            stmt = apply_nested_loader_options(stmt, self.model, key)
 
         async with self.async_session() as session:
             results = await session.execute(stmt)
@@ -255,6 +272,8 @@ class BaseRepository(Generic[M]):
         return search
 
     async def delete(self, uid: str) -> None:
+        if not uid:
+            raise ValueError("No uid provided to delete")
         obj = await self.get(uid=uid)
         async with self.async_session() as session:
             await session.delete(obj)
@@ -266,7 +285,6 @@ class BaseRepository(Generic[M]):
         :param filters:
         :return: int
         """
-        # filter_stmt = smart_query(query=select(self), filters=filters) noqa
         filter_stmt = self.model.smart_query(filters=filters)
         count_stmt = select(func.count(filter_stmt.c.uid)).select_from(filter_stmt)
         async with self.async_session() as session:
@@ -274,6 +292,8 @@ class BaseRepository(Generic[M]):
         return res.scalars().one()
 
     async def search(self, **kwargs) -> list[M]:
+        if not kwargs:
+            raise ValueError("No search arguments provided")
         filters = []
         combined = set()
         for k, v in kwargs:

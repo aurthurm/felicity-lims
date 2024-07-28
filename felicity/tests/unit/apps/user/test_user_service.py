@@ -1,7 +1,7 @@
 import unittest
 from unittest import mock
 
-from felicity.apps.exceptions import (AlreadyExistsError, NotAllowedError,
+from felicity.apps.exceptions import (AlreadyExistsError,
                                       ValidationError)
 from felicity.apps.user.repository import UserRepository
 from felicity.apps.user.schemas import User, UserCreate
@@ -41,33 +41,20 @@ class UserServiceTestCase(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(result.return_value.uid, uid)
         self.assertEqual(result.return_value.first_name, self.user_data["first_name"])
 
-    # async def test_add_user_open_reg_not_allowed(self):
-    #     with self.assertRaises(NotAllowedError):
-    #         await self.user_service.add_user(**{**self.user_data, "open_reg": True})
+    async def test_add_user_email_already_exists(self):
+        self.repository.get.return_value = User(**self.user_data)
+        with self.assertRaises(AlreadyExistsError):
+            await self.user_service.create(User(**self.user_data))
 
-    # async def test_add_user_email_already_exists(self):
-    #     self.repository.get.return_value = User(**self.user_data)
-    #     with self.assertRaises(AlreadyExistsError):
-    #         await self.user_service.add_user(**self.user_data)
+    async def test_add_user_password_policy_weak(self):
+        self.repository.get.return_value = None
+        with self.assertRaises(ValidationError):
+            await self.user_service.create(
+                UserCreate(**{
+                    **self.user_data,
+                    "password": "12345",
+                    "passwordc": "12345",
+                })
+            )
 
-    # async def test_add_user_password_policy_weak(self):
-    #     self.repository.get.return_value = None
-    #     with self.assertRaises(ValidationError):
-    #         await self.user_service.add_user(
-    #             **{
-    #                 **self.user_data,
-    #                 "password": "12345",
-    #                 "passwordc": "12345",
-    #             }
-    #         )
 
-    # async def test_add_user_password_mismatch(self):
-    #     self.repository.get.return_value = None
-    #     with self.assertRaises(ValidationError):
-    #         await self.user_service.add_user(
-    #             **{
-    #                 **self.user_data,
-    #                 "password": "!Am65$#@1u",
-    #                 "passwordc": "!Am65$#@iu",
-    #             }
-    #         )
