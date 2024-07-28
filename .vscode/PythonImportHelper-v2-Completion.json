@@ -3989,127 +3989,7 @@
         "documentation": {}
     },
     {
-        "label": "AnalysisCorrectionFactor",
-        "importPath": "felicity.apps.analysis.entities.analysis",
-        "description": "felicity.apps.analysis.entities.analysis",
-        "isExtraImport": true,
-        "detail": "felicity.apps.analysis.entities.analysis",
-        "documentation": {}
-    },
-    {
-        "label": "AnalysisDetectionLimit",
-        "importPath": "felicity.apps.analysis.entities.analysis",
-        "description": "felicity.apps.analysis.entities.analysis",
-        "isExtraImport": true,
-        "detail": "felicity.apps.analysis.entities.analysis",
-        "documentation": {}
-    },
-    {
-        "label": "AnalysisInterim",
-        "importPath": "felicity.apps.analysis.entities.analysis",
-        "description": "felicity.apps.analysis.entities.analysis",
-        "isExtraImport": true,
-        "detail": "felicity.apps.analysis.entities.analysis",
-        "documentation": {}
-    },
-    {
-        "label": "AnalysisRequest",
-        "importPath": "felicity.apps.analysis.entities.analysis",
-        "description": "felicity.apps.analysis.entities.analysis",
-        "isExtraImport": true,
-        "detail": "felicity.apps.analysis.entities.analysis",
-        "documentation": {}
-    },
-    {
-        "label": "AnalysisSpecification",
-        "importPath": "felicity.apps.analysis.entities.analysis",
-        "description": "felicity.apps.analysis.entities.analysis",
-        "isExtraImport": true,
-        "detail": "felicity.apps.analysis.entities.analysis",
-        "documentation": {}
-    },
-    {
-        "label": "AnalysisTemplate",
-        "importPath": "felicity.apps.analysis.entities.analysis",
-        "description": "felicity.apps.analysis.entities.analysis",
-        "isExtraImport": true,
-        "detail": "felicity.apps.analysis.entities.analysis",
-        "documentation": {}
-    },
-    {
-        "label": "AnalysisUncertainty",
-        "importPath": "felicity.apps.analysis.entities.analysis",
-        "description": "felicity.apps.analysis.entities.analysis",
-        "isExtraImport": true,
-        "detail": "felicity.apps.analysis.entities.analysis",
-        "documentation": {}
-    },
-    {
-        "label": "CodingStandard",
-        "importPath": "felicity.apps.analysis.entities.analysis",
-        "description": "felicity.apps.analysis.entities.analysis",
-        "isExtraImport": true,
-        "detail": "felicity.apps.analysis.entities.analysis",
-        "documentation": {}
-    },
-    {
-        "label": "Profile",
-        "importPath": "felicity.apps.analysis.entities.analysis",
-        "description": "felicity.apps.analysis.entities.analysis",
-        "isExtraImport": true,
-        "detail": "felicity.apps.analysis.entities.analysis",
-        "documentation": {}
-    },
-    {
-        "label": "ProfileCoding",
-        "importPath": "felicity.apps.analysis.entities.analysis",
-        "description": "felicity.apps.analysis.entities.analysis",
-        "isExtraImport": true,
-        "detail": "felicity.apps.analysis.entities.analysis",
-        "documentation": {}
-    },
-    {
-        "label": "RejectionReason",
-        "importPath": "felicity.apps.analysis.entities.analysis",
-        "description": "felicity.apps.analysis.entities.analysis",
-        "isExtraImport": true,
-        "detail": "felicity.apps.analysis.entities.analysis",
-        "documentation": {}
-    },
-    {
-        "label": "ResultOption",
-        "importPath": "felicity.apps.analysis.entities.analysis",
-        "description": "felicity.apps.analysis.entities.analysis",
-        "isExtraImport": true,
-        "detail": "felicity.apps.analysis.entities.analysis",
-        "documentation": {}
-    },
-    {
-        "label": "Sample",
-        "importPath": "felicity.apps.analysis.entities.analysis",
-        "description": "felicity.apps.analysis.entities.analysis",
-        "isExtraImport": true,
-        "detail": "felicity.apps.analysis.entities.analysis",
-        "documentation": {}
-    },
-    {
-        "label": "SampleType",
-        "importPath": "felicity.apps.analysis.entities.analysis",
-        "description": "felicity.apps.analysis.entities.analysis",
-        "isExtraImport": true,
-        "detail": "felicity.apps.analysis.entities.analysis",
-        "documentation": {}
-    },
-    {
-        "label": "SampleTypeCoding",
-        "importPath": "felicity.apps.analysis.entities.analysis",
-        "description": "felicity.apps.analysis.entities.analysis",
-        "isExtraImport": true,
-        "detail": "felicity.apps.analysis.entities.analysis",
-        "documentation": {}
-    },
-    {
-        "label": "analysis_profile",
+        "label": "\\",
         "importPath": "felicity.apps.analysis.entities.analysis",
         "description": "felicity.apps.analysis.entities.analysis",
         "isExtraImport": true,
@@ -15218,14 +15098,6 @@
         "description": "pydantic",
         "isExtraImport": true,
         "detail": "pydantic",
-        "documentation": {}
-    },
-    {
-        "label": "marshaller",
-        "importPath": "felicity.apps.common.utils.serializer",
-        "description": "felicity.apps.common.utils.serializer",
-        "isExtraImport": true,
-        "detail": "felicity.apps.common.utils.serializer",
         "documentation": {}
     },
     {
@@ -27120,7 +26992,7 @@
         "kind": 6,
         "importPath": "felicity.apps.analysis.services.analysis",
         "description": "felicity.apps.analysis.services.analysis",
-        "peekOfCode": "class AnalysisTemplateService(\n    BaseService[AnalysisTemplate, AnalysisTemplateCreate, AnalysisTemplateUpdate]\n):\n    def __init__(self) -> None:\n        super().__init__(AnalysisTemplateRepository)\nclass ProfileCodingService(\n    BaseService[ProfileCoding, ProfileCodingCreate, ProfileCodingUpdate]\n):\n    def __int__(self):\n        super().__init__(ProfileCodingRepository)",
+        "peekOfCode": "class AnalysisTemplateService(\n    BaseService[AnalysisTemplate, AnalysisTemplateCreate, AnalysisTemplateUpdate]\n):\n    def __init__(self) -> None:\n        super().__init__(AnalysisTemplateRepository)\nclass ProfileCodingService(BaseService[ProfileCoding, ProfileCodingCreate, ProfileCodingUpdate]):\n    def __init__(self):\n        super().__init__(ProfileCodingRepository)\nclass AnalysisService(BaseService[Analysis, AnalysisCreate, AnalysisUpdate]):\n    def __init__(self):",
         "detail": "felicity.apps.analysis.services.analysis",
         "documentation": {}
     },
@@ -27129,7 +27001,7 @@
         "kind": 6,
         "importPath": "felicity.apps.analysis.services.analysis",
         "description": "felicity.apps.analysis.services.analysis",
-        "peekOfCode": "class ProfileCodingService(\n    BaseService[ProfileCoding, ProfileCodingCreate, ProfileCodingUpdate]\n):\n    def __int__(self):\n        super().__init__(ProfileCodingRepository)\nclass AnalysisService(BaseService[Analysis, AnalysisCreate, AnalysisUpdate]):\n    def __init__(self):\n        super().__init__(AnalysisRepository)\nclass AnalysisCodingService(\n    BaseService[AnalysisCoding, AnalysisCodingCreate, AnalysisCodingUpdate]",
+        "peekOfCode": "class ProfileCodingService(BaseService[ProfileCoding, ProfileCodingCreate, ProfileCodingUpdate]):\n    def __init__(self):\n        super().__init__(ProfileCodingRepository)\nclass AnalysisService(BaseService[Analysis, AnalysisCreate, AnalysisUpdate]):\n    def __init__(self):\n        super().__init__(AnalysisRepository)\nclass AnalysisCodingService(\n    BaseService[AnalysisCoding, AnalysisCodingCreate, AnalysisCodingUpdate]\n):\n    def __init__(self):",
         "detail": "felicity.apps.analysis.services.analysis",
         "documentation": {}
     },

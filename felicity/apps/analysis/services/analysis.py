@@ -2,7 +2,10 @@ from datetime import datetime, timedelta
 from typing import Any, List, Union
 
 from felicity.apps.abstract.service import BaseService
-from felicity.apps.analysis.entities.analysis import Analysis, AnalysisCategory, AnalysisCoding, AnalysisCorrectionFactor, AnalysisDetectionLimit, AnalysisInterim, AnalysisRequest, AnalysisSpecification, AnalysisTemplate, AnalysisUncertainty, CodingStandard, Profile, ProfileCoding, RejectionReason, ResultOption, Sample, SampleType, SampleTypeCoding, analysis_profile
+from felicity.apps.analysis.entities.analysis import Analysis, AnalysisCategory, AnalysisCoding, \
+    AnalysisCorrectionFactor, AnalysisDetectionLimit, AnalysisInterim, AnalysisRequest, AnalysisSpecification, \
+    AnalysisTemplate, AnalysisUncertainty, CodingStandard, Profile, ProfileCoding, RejectionReason, ResultOption, \
+    Sample, SampleType, SampleTypeCoding
 from felicity.apps.analysis.enum import ResultState, SampleState
 from felicity.apps.analysis.repository.analysis import (
     AnalysisCategoryRepository, AnalysisCodingRepository,
@@ -48,7 +51,6 @@ from felicity.apps.analysis.schemas import (AnalysisCategoryCreate,
                                             SampleTypeCreate, SampleTypeUpdate,
                                             SampleUpdate)
 from felicity.apps.analysis.services.result import AnalysisResultService
-from felicity.apps.common.utils.serializer import marshaller
 from felicity.apps.idsequencer.service import IdSequenceService
 from felicity.apps.idsequencer.utils import sequencer
 from felicity.apps.notification.services import ActivityStreamService
@@ -95,7 +97,7 @@ class ProfileService(BaseService[Profile, ProfileCreate, ProfileUpdate]):
 
         if tat:
             profile.tat_length_minutes = tat
-            return await self.update(profile, **marshaller(profile))
+            return await self.save(profile)
         return profile
 
     async def get_analyses(self, uid):
@@ -115,10 +117,8 @@ class AnalysisTemplateService(
         super().__init__(AnalysisTemplateRepository)
 
 
-class ProfileCodingService(
-    BaseService[ProfileCoding, ProfileCodingCreate, ProfileCodingUpdate]
-):
-    def __int__(self):
+class ProfileCodingService(BaseService[ProfileCoding, ProfileCodingCreate, ProfileCodingUpdate]):
+    def __init__(self):
         super().__init__(ProfileCodingRepository)
 
 
@@ -397,7 +397,7 @@ class SampleService(BaseService[Sample, SampleCreate, SampleUpdate]):
         # if there are no results in referred state but some are in pending state. transition awaiting to pending state
         analysis, referred = await self.get_referred_analyses(uid)
         if not referred and list(  # and has pending results then :)
-            filter(lambda an: an.status in [ResultState.PENDING], analysis)
+                filter(lambda an: an.status in [ResultState.PENDING], analysis)
         ):
             await self.change_status(uid, SampleState.RECEIVED)
         return False
