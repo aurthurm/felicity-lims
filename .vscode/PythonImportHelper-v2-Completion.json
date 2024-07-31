@@ -1538,6 +1538,14 @@
         "documentation": {}
     },
     {
+        "label": "Optional",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
         "label": "List",
         "importPath": "typing",
         "description": "typing",
@@ -2477,14 +2485,6 @@
     },
     {
         "label": "PageInfo",
-        "importPath": "felicity.api.gql.types",
-        "description": "felicity.api.gql.types",
-        "isExtraImport": true,
-        "detail": "felicity.api.gql.types",
-        "documentation": {}
-    },
-    {
-        "label": "BytesScalar",
         "importPath": "felicity.api.gql.types",
         "description": "felicity.api.gql.types",
         "isExtraImport": true,
@@ -11842,6 +11842,38 @@
         "documentation": {}
     },
     {
+        "label": "MongoService",
+        "importPath": "felicity.database.mongo",
+        "description": "felicity.database.mongo",
+        "isExtraImport": true,
+        "detail": "felicity.database.mongo",
+        "documentation": {}
+    },
+    {
+        "label": "MongoCollection",
+        "importPath": "felicity.database.mongo",
+        "description": "felicity.database.mongo",
+        "isExtraImport": true,
+        "detail": "felicity.database.mongo",
+        "documentation": {}
+    },
+    {
+        "label": "MongoService",
+        "importPath": "felicity.database.mongo",
+        "description": "felicity.database.mongo",
+        "isExtraImport": true,
+        "detail": "felicity.database.mongo",
+        "documentation": {}
+    },
+    {
+        "label": "MongoCollection",
+        "importPath": "felicity.database.mongo",
+        "description": "felicity.database.mongo",
+        "isExtraImport": true,
+        "detail": "felicity.database.mongo",
+        "documentation": {}
+    },
+    {
         "label": "schemas",
         "importPath": "felicity.apps.instrument",
         "description": "felicity.apps.instrument",
@@ -17821,6 +17853,14 @@
         "documentation": {}
     },
     {
+        "label": "StrEnum",
+        "importPath": "enum",
+        "description": "enum",
+        "isExtraImport": true,
+        "detail": "enum",
+        "documentation": {}
+    },
+    {
         "label": "BaseAuditModel",
         "importPath": "felicity.apps.common.schemas",
         "description": "felicity.apps.common.schemas",
@@ -21604,6 +21644,22 @@
         "documentation": {}
     },
     {
+        "label": "ObjectId",
+        "importPath": "bson",
+        "description": "bson",
+        "isExtraImport": true,
+        "detail": "bson",
+        "documentation": {}
+    },
+    {
+        "label": "AsyncIOMotorClient",
+        "importPath": "motor.motor_asyncio",
+        "description": "motor.motor_asyncio",
+        "isExtraImport": true,
+        "detail": "motor.motor_asyncio",
+        "documentation": {}
+    },
+    {
         "label": "weakref",
         "kind": 6,
         "isExtraImport": true,
@@ -23668,7 +23724,7 @@
         "kind": 6,
         "importPath": "felicity.api.gql.impress.types",
         "description": "felicity.api.gql.impress.types",
-        "peekOfCode": "class ReportImpressType:\n    uid: str\n    state: str | None = None\n    sample_uid: str | None = None\n    sample: Optional[SampleType]\n    json_content: Optional[JSONScalar] = None\n    pdf_content: Optional[BytesScalar] = None\n    email_required: bool | None = None\n    email_sent: bool | None = None\n    sms_required: bool | None = None",
+        "peekOfCode": "class ReportImpressType:\n    uid: str\n    state: str | None = None\n    sample_uid: str | None = None\n    sample: Optional[SampleType]\n    # json_content: Optional[JSONScalar] = None\n    # pdf_content: Optional[BytesScalar] = None\n    email_required: bool | None = None\n    email_sent: bool | None = None\n    sms_required: bool | None = None",
         "detail": "felicity.api.gql.impress.types",
         "documentation": {}
     },
@@ -35820,6 +35876,33 @@
         "description": "felicity.database.queryset.builder",
         "peekOfCode": "_operators = {\n    \"isnull\": lambda c, v: (c == None) if v else (c != None),\n    \"exact\": operators.eq,\n    \"ne\": operators.ne,  # not equal or is not (for None)\n    \"gt\": operators.gt,  # greater than , >\n    \"ge\": operators.ge,  # greater than or equal, >=\n    \"lt\": operators.lt,  # lower than, <\n    \"le\": operators.le,  # lower than or equal, <=\n    \"in\": operators.in_op,\n    \"notin\": operators.notin_op,",
         "detail": "felicity.database.queryset.builder",
+        "documentation": {}
+    },
+    {
+        "label": "MongoCollection",
+        "kind": 6,
+        "importPath": "felicity.database.mongo",
+        "description": "felicity.database.mongo",
+        "peekOfCode": "class MongoCollection(StrEnum):\n    DIAGNOSTIC_REPORT = \"diagnostic-report\"\n    INVOICE = \"invoice\"\nclass MongoService:\n    def __init__(self):\n        self.db = client.felicity\n    async def create(self, collection: MongoCollection, data: dict) -> Optional[dict]:\n        collection = self.db.get_collection(collection)\n        created = await collection.insert_one(data)\n        return await collection.find_one({\"_id\": created.inserted_id})",
+        "detail": "felicity.database.mongo",
+        "documentation": {}
+    },
+    {
+        "label": "MongoService",
+        "kind": 6,
+        "importPath": "felicity.database.mongo",
+        "description": "felicity.database.mongo",
+        "peekOfCode": "class MongoService:\n    def __init__(self):\n        self.db = client.felicity\n    async def create(self, collection: MongoCollection, data: dict) -> Optional[dict]:\n        collection = self.db.get_collection(collection)\n        created = await collection.insert_one(data)\n        return await collection.find_one({\"_id\": created.inserted_id})\n    async def upsert(self, collection: MongoCollection, uid: str, data: dict) -> Optional[dict]:\n        collection = self.db.get_collection(collection)\n        result = await collection.update_one({'_id': self.oid(uid)}, {'$set': data}, upsert=True)",
+        "detail": "felicity.database.mongo",
+        "documentation": {}
+    },
+    {
+        "label": "client",
+        "kind": 5,
+        "importPath": "felicity.database.mongo",
+        "description": "felicity.database.mongo",
+        "peekOfCode": "client = AsyncIOMotorClient(\"mongodb://felicity:felicity@localhost:27027\")\nclass MongoCollection(StrEnum):\n    DIAGNOSTIC_REPORT = \"diagnostic-report\"\n    INVOICE = \"invoice\"\nclass MongoService:\n    def __init__(self):\n        self.db = client.felicity\n    async def create(self, collection: MongoCollection, data: dict) -> Optional[dict]:\n        collection = self.db.get_collection(collection)\n        created = await collection.insert_one(data)",
+        "detail": "felicity.database.mongo",
         "documentation": {}
     },
     {

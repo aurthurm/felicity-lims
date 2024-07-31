@@ -11,6 +11,7 @@ from felicity.apps.iol.minio.client import MinioClient
 from felicity.apps.iol.minio.enum import MinioBucket
 from felicity.apps.notification.services import ActivityStreamService
 from felicity.apps.setup.caches import get_laboratory
+from felicity.database.mongo import MongoService, MongoCollection
 from felicity.utils import remove_circular_refs
 
 logging.basicConfig(level=logging.INFO)
@@ -64,7 +65,7 @@ async def impress_samples(sample_meta: List[any], user):
                 **{
                     "state": report_state,
                     "sample_uid": sample.uid,
-                    "json_content": impress_meta,
+                    # "json_content": impress_meta,
                     # "pdf_content": sample_pdf,
                     "email_required": False,
                     "email_sent": False,
@@ -73,8 +74,9 @@ async def impress_samples(sample_meta: List[any], user):
                     "generated_by_uid": user.uid,
                 }
             )
-            await ReportImpressService().create(sc_in)
-            # save pdf to external storage
+            report_impress = await ReportImpressService().create(sc_in)
+
+            # save pdf to minio
             MinioClient().put_object(
                 bucket=MinioBucket.DIAGNOSTIC_REPORT,
                 object_name=sample.sample_id,
@@ -82,7 +84,15 @@ async def impress_samples(sample_meta: List[any], user):
                 metadata={
                     "state": report_state,
                     "sample_uid": sample.uid,
+                    "impress_meta_uid": report_impress.uid
                 }
+            )
+
+            # Save the json to mongodb
+            await MongoService().upsert(
+                collection=MongoCollection.DIAGNOSTIC_REPORT,
+                uid=report_impress.uid,
+                data=impress_meta
             )
 
             if action != "pre-publish":

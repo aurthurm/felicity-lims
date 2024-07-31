@@ -51,6 +51,21 @@ services:
       - "host.docker.internal:host-gateway"
     command: bash -c "cd felicity && alembic upgrade head && uvicorn main:felicity --host=0.0.0.0 --port=8000"
 
+  felicity_min:
+    container_name: felicity_min
+    image: bitnami/minio:2024.7.31
+    ports:
+      - '9000:9000'
+      - '9001:9001'
+    networks:
+      - felicitynet
+    volumes:
+      - 'minio_data:/data'
+    environment:
+      - MINIO_ROOT_USER=felicity
+      - MINIO_ROOT_PASSWORD=felicity
+      - MINIO_DEFAULT_BUCKET=felicity
+
   felicity_pg:
     container_name: felicity_pg
     image: postgres:12
@@ -70,58 +85,53 @@ services:
     networks:
       - felicitynet
 
-  pgadmin:
-    container_name: felicity.pgadmin
-    image: dpage/pgadmin4
-    environment:
-      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-admin@pgadmin.org}
-      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
-    volumes:
-      - pgadmin:/root/.pgadmin
-    ports:
-      - "${PGADMIN_PORT:-5050}:80"
-    networks:
-      - felicitynet
-    restart: unless-stopped
-    depends_on:
-      - felicity_pg
-
-  minio:
-    image: bitnami/minio:2024.7.31
-    ports:
-      - '9000:9000'
-      - '9001:9001'
-    networks:
-      - felicitynet
-    volumes:
-      - 'minio_data:/data'
-    environment:
-      - MINIO_ROOT_USER=felicity
-      - MINIO_ROOT_PASSWORD=felicity
-      - MINIO_DEFAULT_BUCKET=felicity
-
-  mongo:
+  felicity_mg:
+    container_name: felicity_mg
     image: mongo
     restart: always
     environment:
       MONGO_INITDB_ROOT_USERNAME: felicity
       MONGO_INITDB_ROOT_PASSWORD: felicity
+    ports:
+      - '27027:27017'
+    networks:
+      - felicitynet
 
-  mongo-express:
-    image: mongo-express
+  felicity_dg:
+    container_name: felicity_dg
+    image: dbgate/dbgate
     restart: always
     ports:
-      - 8081:8081
+      - 8050:3000
+    volumes:
+      - dbgate-data:/root/.dbgate
     environment:
-      ME_CONFIG_MONGODB_ADMINUSERNAME: felicity
-      ME_CONFIG_MONGODB_ADMINPASSWORD: felicity
-      ME_CONFIG_MONGODB_URL: mongodb://felicity:felicity@mongo:27017/
-      ME_CONFIG_BASICAUTH: false
+      LOGIN: felicity
+      PASSWORD: felicity
+      CONNECTIONS: pg,mg
+      LABEL_pg: Felicity Postgres
+      SERVER_pg: felicity_pg
+      USER_pg: felicity
+      PASSWORD_pg: felicity
+      DATABASE_pg: felicity_lims
+      PORT_pg: 5432
+      ENGINE_pg: postgres@dbgate-plugin-postgres
+      READONLY_pg: 1
+      # PASSWORD_MODE_pg: askUser
+      LABEL_mg: Felicity Mongo
+      URL_mg: mongodb://felicity:felicity@felicity_mg:27017/
+      DATABASE_mg: felicity
+      ENGINE_mg: mongo@dbgate-plugin-mongo
+      READONLY_mg: 1
+    networks:
+      - felicitynet
 
 volumes:
   pg-data:
   pgadmin:
   minio_data:
+  dbgate-data:
+    driver: local
 
 networks:
   felicitynet:

@@ -4,8 +4,9 @@ from typing import Optional
 import strawberry  # noqa
 
 from felicity.api.gql.analysis.types.analysis import SampleType
-from felicity.api.gql.types import BytesScalar, JSONScalar
+from felicity.api.gql.types import JSONScalar
 from felicity.api.gql.user.types import UserType
+from felicity.database.mongo import MongoService, MongoCollection
 
 
 @strawberry.type
@@ -14,8 +15,8 @@ class ReportImpressType:
     state: str | None = None
     sample_uid: str | None = None
     sample: Optional[SampleType]
-    json_content: Optional[JSONScalar] = None
-    pdf_content: Optional[BytesScalar] = None
+    # json_content: Optional[JSONScalar] = None
+    # pdf_content: Optional[BytesScalar] = None
     email_required: bool | None = None
     email_sent: bool | None = None
     sms_required: bool | None = None
@@ -27,3 +28,7 @@ class ReportImpressType:
     created_at: datetime
     updated_by_uid: str | None = None
     updated_by: UserType | None = None
+
+    @strawberry.field
+    async def json_content(self) -> Optional[JSONScalar]:
+        return await MongoService().retrieve(MongoCollection.DIAGNOSTIC_REPORT, self.uid)

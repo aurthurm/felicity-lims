@@ -40,3 +40,4 @@ opentelemetry-instrumentation-psycopg2==0.43b0
 typing-extensions==4.11.0
 async-cache==1.1.1
 minio==7.2.7
+motor==3.5.1
