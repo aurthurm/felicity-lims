@@ -10,9 +10,8 @@ from felicity.api.gql.client.types import ClientType
 from felicity.api.gql.patient.types import PatientType
 from felicity.api.gql.types import BytesScalar, JSONScalar, PageInfo
 from felicity.api.gql.user.types import UserType
-from felicity.apps.analysis.entities.analysis import AnalysisRequest
-from felicity.apps.billing.entities import (TestBill, VoucherCode,
-                                            test_bill_item)
+from felicity.apps.analysis.services.analysis import AnalysisRequestService
+from felicity.apps.billing.entities import (test_bill_item)
 from felicity.apps.billing.services import TestBillService, VoucherCodeService
 
 
@@ -172,7 +171,7 @@ class TestBillType:
         test_bills = await TestBillService().repository.query_table(
             test_bill_item, ["analysis_request_uid"], test_bill_uid=self.uid
         )
-        return await AnalysisRequest.get_by_uids(uids=test_bills)
+        return await AnalysisRequestService().get_by_uids(uids=test_bills)
 
 
 @strawberry.type

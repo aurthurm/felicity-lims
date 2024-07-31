@@ -1,17 +1,16 @@
 from typing import Any, AsyncIterator, Generic, List, Optional, TypeVar
 
-from sqlalchemy import inspect, or_ as sa_or_
+from sqlalchemy import inspect, or_ as sa_or_, Table
 from sqlalchemy import select, update
 from sqlalchemy.orm import selectinload
 from sqlalchemy.sql import func
 from sqlalchemy.sql.expression import bindparam
 
+from felicity.apps.abstract.entity import BaseEntity
 from felicity.database.paging import EdgeNode, PageCursor, PageInfo
 from felicity.database.session import async_session
-from felicity.apps.abstract.entity import BaseEntity
 
 M = TypeVar("M", bound=BaseEntity)
-
 
 
 def apply_nested_loader_options(stmt, model, path):
@@ -40,13 +39,11 @@ def apply_nested_loader_options(stmt, model, path):
             next_option = selectinload(getattr(current_model, attr))
             current_option = current_option.options(next_option)
             current_option = next_option
-        
+
         # Update the current model to the next model in the relationship path
         current_model = inspect(current_model).relationships[attr].mapper.class_
 
-    
     return stmt.options(load_option)
-
 
 
 class BaseRepository(Generic[M]):
@@ -58,8 +55,8 @@ class BaseRepository(Generic[M]):
 
     async def save(self, m: M) -> M:
         if not m:
-            raise ValueError("No model provided to save") # noqa
-        
+            raise ValueError("No model provided to save")  # noqa
+
         async with self.async_session() as session:
             try:
                 session.add(m)
@@ -77,7 +74,7 @@ class BaseRepository(Generic[M]):
     async def save_all(self, items):
         if not items:
             raise ValueError("No items provided to save")
-        
+
         async with self.async_session() as session:
             try:
                 session.add_all(items)
@@ -91,14 +88,14 @@ class BaseRepository(Generic[M]):
     async def create(self, **kwargs) -> M:
         if not kwargs:
             raise ValueError("No data provided to create a new model")
-        
+
         filled = self.model.fill(self.model(), **kwargs)
         return await self.save(filled)
 
     async def bulk_create(self, bulk: list[dict]) -> list[M]:
         if not bulk:
             raise ValueError("No data provided to create a new models")
-        
+
         to_save = []
         for data in bulk:
             fill = self.model.fill(self.model(), **data)
@@ -108,7 +105,7 @@ class BaseRepository(Generic[M]):
     async def update(self, uid: str, **data) -> M:
         if not uid or not data:
             raise ValueError("Both uid and data are required to update model")
-        
+
         item = await self.get(uid=uid)
         filled = self.model.fill(item, **data)
         return await self.save(filled)
@@ -139,7 +136,7 @@ class BaseRepository(Generic[M]):
         if not mappings:
             raise ValueError("No mappings provided to update")
 
-        to_update = mappings # [marshaller(data) for data in mappings]
+        to_update = mappings  # [marshaller(data) for data in mappings]
         for item in to_update:
             item["_uid"] = item["uid"]
 
@@ -171,10 +168,14 @@ class BaseRepository(Generic[M]):
             await session.commit()
             await session.flush()
 
-    async def query_table(self, table, **kwargs):
-        if not table or not kwargs:
+    async def query_table(self, table: Table, columns: list[str], **kwargs):
+        if table is None or not kwargs:
             raise ValueError("Both table and filters are required to query")
-        stmt = select(table)
+
+        if columns:
+            stmt = select(*(table.c[column] for column in columns))
+        else:
+            stmt = select(table)
         for k, v in kwargs.items():
             stmt = stmt.where(table.c[k] == v)
 
@@ -223,12 +224,12 @@ class BaseRepository(Generic[M]):
         return results.scalars().all()
 
     async def get_related(
-        self, related: Optional[list[str]], many: bool = False, **kwargs
+            self, related: Optional[list[str]], many: bool = False, **kwargs
     ):
         """Return the first value in database based on given args."""
         if not related:
             raise ValueError("No related fields provided to get related")
-        
+
         stmt = self.model.where(**kwargs)
         for key in related:
             stmt = apply_nested_loader_options(stmt, self.model, key)
@@ -309,11 +310,11 @@ class BaseRepository(Generic[M]):
         return list(combined)
 
     async def filter(
-        self,
-        filters: list[dict],
-        sort_attrs: list[str] | None = None,
-        limit: int | None = None,
-        either: bool = False,
+            self,
+            filters: list[dict],
+            sort_attrs: list[str] | None = None,
+            limit: int | None = None,
+            either: bool = False,
     ) -> list[M]:
         if either:
             filters = {sa_or_: filters}
@@ -327,13 +328,13 @@ class BaseRepository(Generic[M]):
         return found
 
     async def paginate(
-        self,
-        page_size: int | None,
-        after_cursor: str | None,
-        before_cursor: str | None,
-        filters: dict | list[dict] | None,
-        sort_by: list[str] | None,
-        **kwargs,
+            self,
+            page_size: int | None,
+            after_cursor: str | None,
+            before_cursor: str | None,
+            filters: dict | list[dict] | None,
+            sort_by: list[str] | None,
+            **kwargs,
     ) -> PageCursor:
         if not filters:
             filters = {}
@@ -362,7 +363,7 @@ class BaseRepository(Generic[M]):
         if kwargs.get("get_related"):
             for key in kwargs.get("get_related"):
                 # stmt =  stmt.options(selectinload(getattr(self.model, key)))
-                stmt =  apply_nested_loader_options(stmt, self.model, key)
+                stmt = apply_nested_loader_options(stmt, self.model, key)
 
         if page_size:
             stmt = stmt.limit(page_size)
@@ -408,10 +409,10 @@ class BaseRepository(Generic[M]):
 
     @staticmethod
     def build_page_info(
-        start_cursor: str = None,
-        end_cursor: str = None,
-        has_next_page: bool = False,
-        has_previous_page: bool = False,
+            start_cursor: str = None,
+            end_cursor: str = None,
+            has_next_page: bool = False,
+            has_previous_page: bool = False,
     ) -> PageInfo:
         return PageInfo(
             **{

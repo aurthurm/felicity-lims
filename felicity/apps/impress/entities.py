@@ -1,4 +1,4 @@
-from sqlalchemy import (Boolean, Column, DateTime, ForeignKey, LargeBinary,
+from sqlalchemy import (Boolean, Column, ForeignKey, LargeBinary,
                         String)
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import relationship
@@ -22,4 +22,3 @@ class ReportImpress(AuditHistory):
     sms_sent = Column(Boolean(), default=False)
     generated_by_uid = Column(String, ForeignKey("user.uid"), nullable=True)
     generated_by = relationship(User, foreign_keys=[generated_by_uid], lazy="selectin")
-    date_generated = Column(DateTime)

@@ -28,7 +28,7 @@ async def add_resource(
     Add a fhir resource
     Supported Resources are Bundle, ServiceRequest and Patient
     """
-    user = await user_service.get_by_username(current_user.username)
+    user = await user_service.get_by_username(current_user.user_name)
     data = json.loads(await request.json())
 
     resources = {

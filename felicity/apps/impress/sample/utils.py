@@ -1,19 +1,20 @@
 import logging
-from datetime import datetime
 from typing import List
 
-from felicity.apps.analysis.entities.analysis import Sample
 from felicity.apps.analysis.enum import SampleState
+from felicity.apps.analysis.services.analysis import SampleService
 from felicity.apps.common.utils.serializer import marshaller
-from felicity.apps.impress.entities import ReportImpress
 from felicity.apps.impress.sample.engine import FelicityImpress
 from felicity.apps.impress.sample.schemas import ReportImpressCreate
+from felicity.apps.impress.services import ReportImpressService
+from felicity.apps.iol.minio.client import MinioClient
+from felicity.apps.iol.minio.enum import MinioBucket
+from felicity.apps.notification.services import ActivityStreamService
 from felicity.apps.setup.caches import get_laboratory
 from felicity.utils import remove_circular_refs
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
-
 
 exclude = [
     "auth",
@@ -33,7 +34,7 @@ async def impress_samples(sample_meta: List[any], user):
     to_return = []
 
     for s_meta in sample_meta:
-        sample = await Sample.get(uid=s_meta.get("uid"))
+        sample = await SampleService().get(uid=s_meta.get("uid"))
         logger.info(f"sample {sample} {sample.status}")
 
         if sample.status in [
@@ -45,9 +46,7 @@ async def impress_samples(sample_meta: List[any], user):
             SampleState.PUBLISHED,
         ]:
             impress_meta = marshaller(sample, exclude=exclude, depth=3)
-            impress_meta["laboratory"] = laboratory.marshal_simple(
-                exclude=["lab_manager"]
-            )
+            impress_meta["laboratory"] = marshaller(laboratory, exclude=["lab_manager"])
             impress_meta = remove_circular_refs(impress_meta)
             report_state = "Unknown"
             action = s_meta.get("action")
@@ -66,24 +65,33 @@ async def impress_samples(sample_meta: List[any], user):
                     "state": report_state,
                     "sample_uid": sample.uid,
                     "json_content": impress_meta,
-                    "pdf_content": sample_pdf,
+                    # "pdf_content": sample_pdf,
                     "email_required": False,
                     "email_sent": False,
                     "sms_required": False,
                     "sms_sent": False,
                     "generated_by_uid": user.uid,
-                    "date_generated": datetime.now(),
                 }
             )
-            await ReportImpress.create(sc_in)
+            await ReportImpressService().create(sc_in)
+            # save pdf to external storage
+            MinioClient().put_object(
+                bucket=MinioBucket.DIAGNOSTIC_REPORT,
+                object_name=sample.sample_id,
+                data=sample_pdf,
+                metadata={
+                    "state": report_state,
+                    "sample_uid": sample.uid,
+                }
+            )
 
             if action != "pre-publish":
-                sample = await sample.publish(published_by=user)
+                sample = await SampleService().publish(sample.uid, published_by=user)
 
             logger.info(f"sample {sample.sample_id} has been impressed.")
             to_return.append(sample)
 
-            await streamer.stream(sample, user, "published", "sample")
+            await ActivityStreamService().stream(sample, user, "published", "sample")
         else:
             logger.info(
                 f"sample {sample.sample_id} could not be impressed - status: {sample.status}"

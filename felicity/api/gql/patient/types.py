@@ -65,7 +65,7 @@ class PatientType:
     province: Optional[ProvinceType] = None
     country_uid: str | None = None
     country: Optional[CountryType] = None
-    identifications: List[Optional[PatientIdentificationType]] = None
+    identifications: Optional[List[PatientIdentificationType]] = None
     #
     created_by_uid: str | None = None
     created_by: UserType | None = None

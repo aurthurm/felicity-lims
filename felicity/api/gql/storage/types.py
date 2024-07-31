@@ -26,7 +26,7 @@ class StoreRoomType:
         return "store-room"
 
     @strawberry.field
-    async def children(self, info) -> List[Optional["StorageLocationType"]]:
+    async def children(self, info) -> Optional[List["StorageLocationType"]]:
         storage_location = await StorageLocationService().get_all(store_room_uid=self.uid)
         return [StorageLocationType(**sl.marshal_simple()) for sl in storage_location]
 
@@ -50,7 +50,7 @@ class StorageLocationType:
         return "storage-location"
 
     @strawberry.field
-    async def children(self, info) -> List[Optional["StorageSectionType"]]:
+    async def children(self, info) -> Optional[List["StorageSectionType"]]:
         storage_section = await StorageSectionService().get_all(storage_location_uid=self.uid)
         return [StorageSectionType(**ss.marshal_simple()) for ss in storage_section]
 
@@ -74,7 +74,7 @@ class StorageSectionType:
         return "storage-section"
 
     @strawberry.field
-    async def children(self, info) -> List[Optional["StorageContainerType"]]:
+    async def children(self, info) -> Optional[List["StorageContainerType"]]:
         storage_container = await StorageContainerService().get_all(storage_section_uid=self.uid)
         return [
             StorageContainerType(**sc.marshal_simple(exclude=["samples"]))

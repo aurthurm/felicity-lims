@@ -1,7 +1,7 @@
 import logging
 from dataclasses import field
 from datetime import datetime
-from typing import Dict, List, Optional
+from typing import List, Optional
 
 import strawberry  # noqa
 
@@ -87,7 +87,7 @@ class PatientMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_identification(
-        info, uid: str, name: str
+            info, uid: str, name: str
     ) -> IdentificationResponse:
         felicity_user = await auth_from_info(info)
 
@@ -110,10 +110,10 @@ class PatientMutations:
         felicity_user = await auth_from_info(info)
 
         if (
-            not payload.client_patient_id
-            or not payload.first_name
-            or not payload.last_name
-            or not payload.client_uid
+                not payload.client_patient_id
+                or not payload.first_name
+                or not payload.last_name
+                or not payload.client_uid
         ):
             return OperationError(
                 error="Client Patient Id, First Name and Last Name , gender etc are required"
@@ -152,7 +152,7 @@ class PatientMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     async def update_patient(
-        self, info, uid: str, payload: PatientInputType
+            self, info, uid: str, payload: PatientInputType
     ) -> PatientResponse:
 
         felicity_user = await auth_from_info(info)
@@ -191,7 +191,7 @@ class PatientMutations:
         for identification in identifications:
             # deleted
             if not identification.uid in update_identification_uids:
-                await identification.delete()
+                await PatientIdentificationService().delete(identification.uid)
             else:  # update
                 update_identification = list(
                     filter(

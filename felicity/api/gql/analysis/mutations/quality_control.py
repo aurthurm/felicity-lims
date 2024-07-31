@@ -199,7 +199,7 @@ async def create_QC_template(info, payload: QCTemplateInputType) -> QCTemplateRe
             incoming[k] = v
 
     obj_in = schemas.QCTemplateCreate(**incoming)
-    qc_template = await QCTemplateService().create(obj_in)
+    qc_template = await QCTemplateService().create(obj_in, related=["qc_levels", "departments"])
 
     qc_template.qc_levels.clear()
     qc_template = await QCTemplateService().save(qc_template)
@@ -222,7 +222,7 @@ async def create_QC_template(info, payload: QCTemplateInputType) -> QCTemplateRe
 
 @strawberry.mutation(permission_classes=[IsAuthenticated])
 async def update_QC_template(
-    info, uid: str, payload: QCTemplateInputType
+        info, uid: str, payload: QCTemplateInputType
 ) -> QCTemplateResponse:
     felicity_user = await auth_from_info(info)
 

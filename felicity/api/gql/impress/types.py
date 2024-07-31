@@ -24,6 +24,6 @@ class ReportImpressType:
     generated_by: UserType | None = None
     created_by_uid: str | None = None
     created_by: UserType | None = None
+    created_at: datetime
     updated_by_uid: str | None = None
     updated_by: UserType | None = None
-    date_generated: datetime | None = None

@@ -4,8 +4,8 @@ from functools import lru_cache
 from typing import List
 
 import strawberry  # noqa
-from pdf2image import convert_from_bytes
 from PyPDF2 import PdfWriter
+from pdf2image import convert_from_bytes
 
 from felicity.api.gql.impress.types import ReportImpressType
 from felicity.api.gql.permissions import IsAuthenticated
@@ -16,6 +16,8 @@ from felicity.apps.client.services import ClientService
 from felicity.apps.impress.barcode.schema import BarCode, BarCodeMeta
 from felicity.apps.impress.barcode.utils import impress_barcodes
 from felicity.apps.impress.services import ReportImpressService
+from felicity.apps.iol.minio import MinioClient
+from felicity.apps.iol.minio.enum import MinioBucket
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -25,45 +27,20 @@ logger = logging.getLogger(__name__)
 class ReportImpressQuery:
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def impress_reports_meta(
-        self, info, uids: List[str]
+            self, info, uids: List[str]
     ) -> List[ReportImpressType]:
-        return await ReportImpressService().get_all(sample_uid__in=uids)
+        return await ReportImpressService().get_all(sample_uid__in=uids)  # noqa
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def impress_reports_download(
-        self, info, uids: List[str]
+            self, info, sample_ids: List[str]
     ) -> BytesScalar | None:
         """Fetch Latest report given sample id"""
-        items = await ReportImpressService().get_all(sample_uid__in=uids)
-
-        def _first_of(things: List):
-            if len(things) > 0:
-                return things[0]
-            return None
-
-        def _sorter(to_sort: List) -> List:
-            return sorted(to_sort, key=lambda r: r.date_generated, reverse=True)
-
-        reports = []
-        for suid in uids:
-            _report = _first_of(
-                _sorter(list(filter(lambda x: x.sample_uid == suid, items)))
-            )
-            if _report:
-                reports.append(_report)
-
-        if not reports:
-            return None
+        reports = MinioClient().get_object(MinioBucket.DIAGNOSTIC_REPORT, sample_ids)
 
         merger = PdfWriter()
         for report in reports:
-            merger.append(io.BytesIO(report.pdf_content))
-
-        # Write to an output PDF document
-        # output = open("merged-output.pdf", "wb")
-        # merger.write(output)
-        # merger.close()
-        # output.close()
+            merger.append(io.BytesIO(report))
 
         with io.BytesIO() as bytes_stream:
             merger.write(bytes_stream)
@@ -73,18 +50,17 @@ class ReportImpressQuery:
         return out_stream
 
     @strawberry.field(permission_classes=[IsAuthenticated])
-    async def impress_report_download(self, info, uid: str) -> BytesScalar | None:
-        report = await ReportImpressService().get(uid=uid)
-
+    async def impress_report_download(self, info, sample_id: str) -> BytesScalar | None:
+        report = MinioClient().get_object(MinioBucket.DIAGNOSTIC_REPORT, [sample_id])
         if not report:
             return None
 
         # io.BytesIO()
-        return report.pdf_content
+        return report[0]
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def barcode_samples(
-        self, info, sample_uids: list[str]
+            self, info, sample_uids: list[str]
     ) -> list[BytesScalar] | None:
         samples = await SampleService().get_all(uid__in=sample_uids)
 

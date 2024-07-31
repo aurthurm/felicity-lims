@@ -538,6 +538,13 @@ function getSampleUids(): string[] {
   return ready;
 }
 
+function getSampleIds(): string[] {
+  const items: ISample[] = getSamplesChecked();
+  let ready: string[] = [];
+  items?.forEach((item) => ready.push(item.sampleId!));
+  return ready;
+}
+
 //
 const {
   cancelSamples,
@@ -575,7 +582,7 @@ const printReports_ = async () =>
   await printSamples(getSampleUids()).finally(() => unCheckAll());
 
 const impressDownload_ = async () =>
-  await downloadSamplesImpress(getSampleUids()).finally(() => unCheckAll());
+  await downloadSamplesImpress(getSampleIds()).finally(() => unCheckAll());
 
 const prepareRejections = async () => {
   const selection = getSamplesChecked();

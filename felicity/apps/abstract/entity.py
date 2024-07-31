@@ -1,4 +1,3 @@
-from datetime import datetime
 from typing import Any, Mapping
 
 from sqlalchemy import Column, String, select
@@ -7,27 +6,15 @@ from sqlalchemy.orm import DeclarativeBase
 from sqlalchemy_mixins import ReprMixin, SerializeMixin, SmartQueryMixin, SessionMixin
 from sqlalchemy_mixins.utils import classproperty
 
-from felicity.core.dtz import format_datetime
 from felicity.core.uid_gen import get_flake_uid
 
-# from sqlalchemy.orm import Query
-# get_root_cls = smart_query._get_root_cls
-# def async_root_cls(query: Query):
-#     """Monkey patch SmaryQuery to handle async queries."""
-#     try:
-#         return get_root_cls(query)
-#     except ValueError:
-#         # Handle async queries
-#         if query.__dict__["_propagate_attrs"]["plugin_subject"].class_:
-#             return query.__dict__["_propagate_attrs"]["plugin_subject"].class_
-#         raise
-# smart_query._get_root_cls = lambda query: async_root_cls(query)
 
 def new_query(cls):
     """
     New implementation of query method that returns select(cls).
     """
     return select(cls)
+
 
 # Remove session-related methods
 delattr(SessionMixin, 'set_session')
@@ -76,8 +63,8 @@ class BaseEntity(DeclarativeBase, ReprMixin, SerializeMixin, SmartQueryMixin, As
         for field in data:
             if field not in exclude:
                 _v = data[field]
-                if isinstance(_v, datetime):
-                    _v = format_datetime(_v, human_format=False, with_time=True)
+                # if isinstance(_v, datetime):
+                #     _v = format_datetime(_v, human_format=False, with_time=True)
                 return_data[field] = _v
 
         return return_data

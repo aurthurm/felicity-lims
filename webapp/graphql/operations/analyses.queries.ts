@@ -1217,6 +1217,9 @@ export const GET_IMPRESS_META = gql`
             uid
             state
             sampleUid
+            sample {
+                sampleId
+            }
             jsonContent
             emailRequired
             emailSent
@@ -1227,20 +1230,20 @@ export const GET_IMPRESS_META = gql`
                 firstName
                 lastName
             }
-            dateGenerated
+            createdAt
         }
     }
 `;
 
 export const DOWNLOAD_IMPRESS_SAMPLES = gql`
-    query impressReports($uids: [String!]!) {
-        impressReportsDownload(uids: $uids)
+    query impressReports($sampleIds: [String!]!) {
+        impressReportsDownload(sampleIds: $sampleIds)
     }
 `;
 
 export const DOWNLOAD_IMPRESS = gql`
-    query impressReport($uid: String!) {
-        impressReportDownload(uid: $uid)
+    query impressReport($sampleId: String!) {
+        impressReportDownload(sampleId: $sampleId)
     }
 `;
 

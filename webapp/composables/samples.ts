@@ -198,7 +198,7 @@ export default function useSampleComposable() {
     };
 
     // DOWNLOAD_IMPRESS by SAMPLES
-    const downloadSamplesImpress = async (uids: string[]) => {
+    const downloadSamplesImpress = async (sampleIds: string[]) => {
         try {
             await Swal.fire({
                 title: 'Are you sure?',
@@ -211,7 +211,7 @@ export default function useSampleComposable() {
                 cancelButtonText: 'No, do not download!',
             }).then(async result => {
                 if (result.isConfirmed) {
-                    withClientQuery(DOWNLOAD_IMPRESS_SAMPLES, { uids }, 'impressReportsDownload').then(resp => {
+                    withClientQuery(DOWNLOAD_IMPRESS_SAMPLES, { sampleIds }, 'impressReportsDownload').then(resp => {
                         const tempLink = document.createElement('a');
                         tempLink.href = `data:application/pdf;base64,${resp}`;
                         tempLink.setAttribute('download', 'impress-report.pdf');
@@ -225,7 +225,7 @@ export default function useSampleComposable() {
     };
 
     // DOWNLOAD_IMPRESS
-    const downloadImpress = async uid => {
+    const downloadImpress = async sampleId => {
         try {
             await Swal.fire({
                 title: 'Are you sure?',
@@ -238,7 +238,7 @@ export default function useSampleComposable() {
                 cancelButtonText: 'No, do not download!',
             }).then(async result => {
                 if (result.isConfirmed) {
-                    withClientQuery(DOWNLOAD_IMPRESS, { uid }, 'impressReportDownload').then(resp => {
+                    withClientQuery(DOWNLOAD_IMPRESS, { sampleId }, 'impressReportDownload').then(resp => {
                         const tempLink = document.createElement('a');
                         tempLink.href = `data:application/pdf;base64,${resp}`;
                         tempLink.setAttribute('download', 'impress-report.pdf');

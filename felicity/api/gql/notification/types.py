@@ -8,14 +8,11 @@ from felicity.api.gql.analytics.types import ReportMetaType
 from felicity.api.gql.setup.types.department import DepartmentType
 from felicity.api.gql.user.types import GroupType, UserType
 from felicity.api.gql.worksheet.types import WorkSheetType
-from felicity.apps.analysis.entities.analysis import Sample
-from felicity.apps.analysis.entities.results import AnalysisResult
-from felicity.apps.analytics.entities import ReportMeta
-from felicity.apps.worksheet.entities import WorkSheet
 from felicity.apps.analysis.services.analysis import SampleService
-from felicity.apps.worksheet.services import WorkSheetService
 from felicity.apps.analysis.services.result import AnalysisResultService
 from felicity.apps.analytics.services import ReportMetaService
+from felicity.apps.user.services import UserService
+from felicity.apps.worksheet.services import WorkSheetService
 
 
 @strawberry.type
@@ -34,7 +31,7 @@ actionObject = strawberry.union(
 class ActivityFeedType:
     uid: str
     name: str
-    subscribers: list[UserType] | None = None 
+    subscribers: list[UserType] | None = None
 
 
 @strawberry.type
@@ -42,7 +39,6 @@ class ActivityStreamType:
     uid: str
     feeds: Optional[List[ActivityFeedType]] = None
     actor_uid: str | None = None
-    actor: UserType | None = None
     verb: str | None = None
     action_object_type: str | None = None
     action_object_uid: str | None = None
@@ -54,8 +50,12 @@ class ActivityStreamType:
     created_by: UserType | None = None
 
     @strawberry.field
+    async def actor(self) -> UserType:
+        return await UserService().get(uid=self.actor_uid)
+
+    @strawberry.field
     async def action_object(
-        self, info
+            self, info
     ) -> Union[
         WorkSheetType, SampleType, AnalysisResultType, ReportMetaType, UnknownObjectType
     ]:
@@ -73,7 +73,7 @@ class ActivityStreamType:
             return WorkSheetType(**ws.marshal_simple())
 
         if self.action_object_type == "result":
-            result = await AnalysisResultService().get(uid=self.action_object_uid)
+            result = await AnalysisResultService().get_related(related=["sample"], uid=self.action_object_uid)
             return AnalysisResultType(
                 **result.marshal_simple(
                     exclude=[

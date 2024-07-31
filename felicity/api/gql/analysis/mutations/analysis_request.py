@@ -25,6 +25,7 @@ from felicity.apps.analysis.services.analysis import (AnalysisRequestService,
                                                       SampleService,
                                                       SampleTypeService)
 from felicity.apps.analysis.services.result import AnalysisResultService
+from felicity.apps.analysis.workflow.analysis_result import AnalysisResultWorkFlow
 from felicity.apps.analysis.workflow.sample import SampleWorkFlow
 from felicity.apps.billing.utils import bill_order
 from felicity.apps.client.services import ClientService
@@ -35,7 +36,6 @@ from felicity.apps.job.services import JobService
 from felicity.apps.notification.services import ActivityStreamService
 from felicity.apps.patient.services import PatientService
 from felicity.apps.reflex.services import ReflexEngineService
-from felicity.apps.analysis.workflow.analysis_result import AnalysisResultWorkFlow
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -113,7 +113,7 @@ class ManageAnalysisInputType:
 
 @strawberry.mutation(permission_classes=[IsAuthenticated])
 async def create_analysis_request(
-    info, payload: AnalysisRequestInputType
+        info, payload: AnalysisRequestInputType
 ) -> AnalysisRequestResponse:
     logger.info("Received request to create analysis request")
 
@@ -407,7 +407,7 @@ async def verify_samples(info, samples: List[str]) -> SampleActionResponse:
 
 @strawberry.mutation(permission_classes=[IsAuthenticated])
 async def reject_samples(
-    info, samples: List[SampleRejectInputType]
+        info, samples: List[SampleRejectInputType]
 ) -> SampleActionResponse:
     felicity_user = await auth_from_info(info)
 
@@ -449,7 +449,7 @@ async def reject_samples(
 
 @strawberry.mutation(permission_classes=[IsAuthenticated])
 async def publish_samples(
-    info, samples: List[SamplePublishInputType]
+        info, samples: List[SamplePublishInputType]
 ) -> SuccessErrorResponse:
     felicity_user = await auth_from_info(info)
 
@@ -459,12 +459,13 @@ async def publish_samples(
     # set status of these samples to PUBLISHING for those whose action is "publish" !important
     final_publish = list(filter(lambda p: p.action == "publish", samples))
     not_final = list(filter(lambda p: p.action != "publish", samples))
-    await SampleService().bulk_update_with_mappings(
-        [
-            {"uid": sample.uid, "status": SampleState.PUBLISHING}
-            for sample in final_publish
-        ]
-    )
+    if final_publish:
+        await SampleService().bulk_update_with_mappings(
+            [
+                {"uid": sample.uid, "status": SampleState.PUBLISHING}
+                for sample in final_publish
+            ]
+        )
 
     data = [{"uid": s.uid, "action": s.action} for s in samples]  # noqa
     job_schema = job_schemas.JobCreate(
@@ -565,7 +566,7 @@ async def invalidate_samples(info, samples: List[str]) -> SampleActionResponse:
 
 @strawberry.mutation(permission_classes=[IsAuthenticated])
 async def samples_apply_template(
-    info, uid: str, analysis_template_uid: str
+        info, uid: str, analysis_template_uid: str
 ) -> ResultedSampleActionResponse:
     felicity_user = await auth_from_info(info)
 
@@ -627,7 +628,7 @@ async def samples_apply_template(
 
 @strawberry.mutation(permission_classes=[IsAuthenticated])
 async def manage_analyses(
-    info, sample_uid: str, payload: ManageAnalysisInputType
+        info, sample_uid: str, payload: ManageAnalysisInputType
 ) -> ResultedSampleActionResponse:
     felicity_user = await auth_from_info(info)
 

@@ -29,7 +29,7 @@ class StockItemType:
     updated_by: UserType | None = None
 
     @strawberry.field
-    async def variants(self, info) -> List[Optional["StockItemVariantType"]]:
+    async def variants(self, info) -> Optional[List["StockItemVariantType"]]:
         stock_item_variants = await StockItemVariantService().get_all(
             stock_item_uid=self.uid
         )
