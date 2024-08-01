@@ -6,4 +6,7 @@
     <option name="sdkName" value="felicity" />
   </component>
   <component name="ProjectRootManager" version="2" project-jdk-name="felicity" project-jdk-type="Python SDK" />
+  <component name="PythonCompatibilityInspectionAdvertiser">
+    <option name="version" value="3" />
+  </component>
 </project>

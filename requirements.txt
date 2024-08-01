@@ -42,3 +42,4 @@ async-cache==1.1.1
 minio==7.2.7
 motor==3.5.1
 meilisearch==0.31.4
+redis[hiredis]==5.0.8

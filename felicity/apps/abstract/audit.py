@@ -5,7 +5,10 @@ from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.orm import relationship
 
 from felicity.apps.abstract.entity import BaseEntity
-from felicity.apps.auditlog.mixin import AuditHistoryMixin
+from felicity.apps.abstract.trackable import TrackableEntity
+
+
+# from felicity.apps.auditlog.mixin import AuditHistoryMixin
 
 
 class TrailMixin(object):
@@ -40,7 +43,7 @@ class AuditUser(BaseEntity, TrailMixin):
     __abstract__ = True
 
 
-class AuditHistory(AuditUser, AuditHistoryMixin):
-    """Track Model History -> Audit Log"""
+class AuditHistory(AuditUser, TrackableEntity):
+    """Track Model Events"""
 
     __abstract__ = True

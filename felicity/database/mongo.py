@@ -10,6 +10,7 @@ client = AsyncIOMotorClient("mongodb://felicity:felicity@localhost:27027")
 class MongoCollection(StrEnum):
     DIAGNOSTIC_REPORT = "diagnostic-report"
     INVOICE = "invoice"
+    AUDIT_LOG = "audit-log"
 
 
 class MongoService:

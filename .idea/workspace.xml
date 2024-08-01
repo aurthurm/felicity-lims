@@ -5,10 +5,18 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9f590b69-f929-45a1-8512-12ed6efbf028" name="Changes" comment="Added Invetory starter">
-      <change afterPath="$PROJECT_DIR$/felicity/apps/common/channel_bck.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/felicity/apps/abstract/events.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/felicity/apps/abstract/trackable.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/felicity/apps/iol/meilisearch/handler.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docker-compose.dev.yml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-compose.dev.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/apps/common/channel.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/common/channel.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/apps/abstract/audit.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/abstract/audit.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/apps/common/channel_bck.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/apps/events.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/events.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/apps/iol/meilisearch/client.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/iol/meilisearch/client.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/core/events.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/core/events.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/database/mongo.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/database/mongo.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/lims/boot.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/lims/boot.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -58,17 +66,17 @@
     "dart.analysis.tool.window.visible": "false",
     "git-widget-placeholder": "main",
     "ignore.virus.scanning.warn.message": "true",
-    "last_opened_file_path": "/home/aurthurm/Documents/Development/felicity/felicity-lims/felicity/apps/common",
+    "last_opened_file_path": "/home/aurthurm/Documents/Development/felicity/felicity-lims/felicity/apps/iol/meilisearch",
     "settings.editor.selected.configurable": "project.propVCSSupport.DirectoryMappings"
   }
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/felicity/apps/iol/meilisearch" />
       <recent name="$PROJECT_DIR$/felicity/apps/common" />
       <recent name="$PROJECT_DIR$/felicity/apps" />
       <recent name="$PROJECT_DIR$/felicity/tests/unit" />
       <recent name="$PROJECT_DIR$/felicity/database" />
-      <recent name="$PROJECT_DIR$/felicity/apps/worksheet" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/felicity/apps/idsequencer" />

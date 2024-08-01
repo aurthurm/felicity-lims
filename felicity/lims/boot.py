@@ -2,8 +2,7 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 from opentelemetry import trace
-from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import \
-    OTLPSpanExporter
+from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import OTLPSpanExporter
 from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
 from opentelemetry.instrumentation.sqlalchemy import SQLAlchemyInstrumentor
 from opentelemetry.sdk.resources import Resource
@@ -18,6 +17,7 @@ from strawberry.subscriptions import (GRAPHQL_TRANSPORT_WS_PROTOCOL,
 from felicity.api.deps import get_gql_context
 from felicity.api.gql.schema import schema
 from felicity.api.rest.api_v1 import api
+from felicity.apps.common.channel import broadcast
 from felicity.apps.events import observe_events
 from felicity.apps.job.sched import felicity_workforce_init
 from felicity.core import get_settings
@@ -32,14 +32,13 @@ settings = get_settings()
 async def lifespan(app: FastAPI):
     if settings.LOAD_SETUP_DATA:
         await initialize_felicity()
-    # bg_tasks = BackgroundTasks(tasks=None)
-    # bg_tasks.add_task(felicity_workforce_init)
     felicity_workforce_init()
     observe_events()
+    broadcast.connect()
     #
     yield
     #
-    ...
+    broadcast.disconnect()
 
 
 def register_cors(app: FastAPI):
