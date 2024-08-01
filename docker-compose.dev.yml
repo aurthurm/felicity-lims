@@ -66,6 +66,25 @@ services:
       - MINIO_ROOT_PASSWORD=felicity
       - MINIO_DEFAULT_BUCKET=felicity
 
+  felicity_ms:
+    container_name: felicity_ms
+    image: getmeili/meilisearch:v1.8.4
+    restart: unless-stopped
+    volumes:
+      - ./data.ms:/data.ms
+    environment:
+      - http_proxy
+      - https_proxy
+      - MEILI_MASTER_KEY=${MEILI_MASTER_KEY:-masterKey}
+      - MEILI_NO_ANALYTICS=${MEILI_NO_ANALYTICS:-true}
+      - MEILI_ENV=${MEILI_ENV:-development}
+      - MEILI_LOG_LEVEL
+      - MEILI_DB_PATH=${MEILI_DB_PATH:-/data.ms}
+    ports:
+      - ${MEILI_PORT:-7700}:7700
+    networks:
+      - felicitynet
+
   felicity_pg:
     container_name: felicity_pg
     image: postgres:12
@@ -117,7 +136,6 @@ services:
       PORT_pg: 5432
       ENGINE_pg: postgres@dbgate-plugin-postgres
       READONLY_pg: 1
-      # PASSWORD_MODE_pg: askUser
       LABEL_mg: Felicity Mongo
       URL_mg: mongodb://felicity:felicity@felicity_mg:27017/
       DATABASE_mg: felicity
