@@ -85,6 +85,22 @@ services:
     networks:
       - felicitynet
 
+  felicity_df:
+    container_name: felicity_df
+    image: 'docker.dragonflydb.io/dragonflydb/dragonfly'
+    ulimits:
+      memlock: -1
+    ports:
+      - "6379:6379"
+    # For better performance, consider `host` mode instead `port` to avoid docker NAT.
+    # `host` mode is NOT currently supported in Swarm Mode.
+    # https://docs.docker.com/compose/compose-file/compose-file-v3/#network_mode
+    # network_mode: "host"
+    volumes:
+      - dragonflydata:/data
+    networks:
+      - felicitynet
+
   felicity_pg:
     container_name: felicity_pg
     image: postgres:12
@@ -148,6 +164,7 @@ volumes:
   pg-data:
   pgadmin:
   minio_data:
+  dragonflydata:
   dbgate-data:
     driver: local
 

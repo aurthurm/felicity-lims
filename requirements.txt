@@ -17,7 +17,7 @@ pydantic_settings==2.1.0
 python-multipart==0.0.6
 alembic==1.13.1
 asyncpg==0.29.0
-broadcaster~=0.2.0
+broadcaster~=0.3.0
 aiofiles==23.2.1
 pandas==2.2.0
 graphdoc@git+https://github.com/wallee94/graphdoc
