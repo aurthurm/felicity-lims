@@ -40,7 +40,7 @@ services:
       - LOAD_SETUP_DATA=${LOAD_SETUP_DATA:-False}
       - SERVE_WEBAPP=${SERVE_WEBAPP:-False}
       - REDIS_SERVER=felicity_df:6379
-      - MONGODB_SERVER=felicity_mg
+      - MONGODB_SERVER=felicity_mg:27027
       - MONGODB_USER=felicity
       - MONGODB_PASS=felicity
       - MINIO_SERVER=felicity_min:9000

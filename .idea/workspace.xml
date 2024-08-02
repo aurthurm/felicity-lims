@@ -5,17 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9f590b69-f929-45a1-8512-12ed6efbf028" name="Changes" comment="Added Invetory starter">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docker-compose.dev.yml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-compose.dev.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/api/gql/notification/subscription.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/notification/subscription.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/apps/common/channel.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/common/channel.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/apps/iol/meilisearch/client.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/iol/meilisearch/client.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/apps/iol/minio/client.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/iol/minio/client.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/felicity/core/config.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/core/config.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/felicity/database/mongo.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/database/mongo.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/lims/boot.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/lims/boot.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

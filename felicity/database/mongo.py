@@ -7,7 +7,7 @@ from motor.motor_asyncio import AsyncIOMotorClient
 from felicity.core.config import settings
 
 client = AsyncIOMotorClient(
-    f"mongodb://{settings.MONGODB_USER}:{settings.MONGODB_PASS}@{settings.MONGODB_SERVER}:27027"
+    f"mongodb://{settings.MONGODB_USER}:{settings.MONGODB_PASS}@{settings.MONGODB_SERVER}"
 )
 
 
