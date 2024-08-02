@@ -39,6 +39,15 @@ services:
       - POSTGRES_HOST_AUTH_METHOD=trust
       - LOAD_SETUP_DATA=${LOAD_SETUP_DATA:-False}
       - SERVE_WEBAPP=${SERVE_WEBAPP:-False}
+      - REDIS_SERVER=felicity_df:6379
+      - MONGODB_SERVER=felicity_mg
+      - MONGODB_USER=felicity
+      - MONGODB_PASS=felicity
+      - MINIO_SERVER=felicity_min:9000
+      - MINIO_ACCESS=felicity
+      - MINIO_SECRET=felicity
+      - MEILISEARCH_SERVER=http://felicity_ms:7700
+      - MEILISEARCH_API_KEY=http:api_key
     volumes:
       - ./felicity/:/app/felicity
     ports:
@@ -137,7 +146,7 @@ services:
     image: dbgate/dbgate
     restart: always
     ports:
-      - 8050:3000
+      - 8051:3000
     volumes:
       - dbgate-data:/root/.dbgate
     environment:

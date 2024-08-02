@@ -6,7 +6,7 @@ import strawberry  # noqa
 
 from felicity.api.gql.notification.types import ActivityStreamType
 # from felicity.api.gql.permissions import IsAuthenticated
-from felicity.apps.common.channel import BroadcastEvent, Subscriber, broadcast
+from felicity.apps.common.channel import broadcast
 from felicity.apps.notification.services import ActivityStreamService
 
 logging.basicConfig(level=logging.INFO)
@@ -17,10 +17,8 @@ logger = logging.getLogger(__name__)
 class StreamSubscription:
     @strawberry.subscription()  # permission_classes=[IsAuthenticated]
     async def latest_activity(self) -> AsyncGenerator[ActivityStreamType, None]:  # noqa
-        subscriber: Subscriber
         async with broadcast.subscribe(channel="activities") as subscriber:
             logger.info("Subscribed")
-            event: BroadcastEvent
             try:
                 async for event in subscriber:
                     logger.info(event)

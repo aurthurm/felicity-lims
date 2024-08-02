@@ -43,3 +43,4 @@ minio==7.2.7
 motor==3.5.1
 meilisearch==0.31.4
 redis[hiredis]==5.0.8
+asyncio_redis==0.16.0

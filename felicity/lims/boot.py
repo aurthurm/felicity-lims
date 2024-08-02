@@ -34,11 +34,11 @@ async def lifespan(app: FastAPI):
         await initialize_felicity()
     felicity_workforce_init()
     observe_events()
-    broadcast.connect()
+    await broadcast.connect()
     #
     yield
     #
-    broadcast.disconnect()
+    await broadcast.disconnect()
 
 
 def register_cors(app: FastAPI):

@@ -73,7 +73,7 @@ class Settings(BaseSettings):
 
     @field_validator("SQLALCHEMY_TEST_DATABASE_URI")
     def assemble_async_test_db_connection(
-        cls, v: str | None, info: ValidationInfo
+            cls, v: str | None, info: ValidationInfo
     ) -> str:
         if isinstance(v, str):
             return v
@@ -128,6 +128,15 @@ class Settings(BaseSettings):
     OTLP_SPAN_EXPORT_URL: str = getenv_value(
         "OTLP_SPAN_EXPORT_URL", "http://localhost:4317"
     )
+    REDIS_SERVER: str = getenv_value("REDIS_SERVER", "localhost:6379")
+    MONGODB_SERVER: str = getenv_value("MONGODB_SERVER", "localhost")
+    MONGODB_USER: str = getenv_value("MONGODB_USER", "felicity")
+    MONGODB_PASS: str = getenv_value("MONGODB_PASS", "felicity")
+    MINIO_SERVER: str = getenv_value("MINIO_SERVER", "http://localhost:9000")
+    MINIO_ACCESS: str = getenv_value("MINIO_ACCESS", "felicity")
+    MINIO_SECRET: str = getenv_value("MINIO_SECRET", "felicity")
+    MEILISEARCH_SERVER: str = getenv_value("MEILISEARCH_SERVER", "http://localhost:7700")
+    MEILISEARCH_API_KEY: str = getenv_value("MEILISEARCH_API_KEY", "api_key")
 
     model_config = SettingsConfigDict(
         env_file=ENV_FILE,

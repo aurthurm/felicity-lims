@@ -2,4 +2,6 @@
 
 from broadcaster import Broadcast
 
-broadcast = Broadcast("redis://localhost:6379")
+from felicity.core.config import settings
+
+broadcast = Broadcast(f"redis://{settings.REDIS_SERVER}")

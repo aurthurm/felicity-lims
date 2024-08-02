@@ -2,6 +2,13 @@
 db-data/
 caddy.data
 caddy.config
+data.ms
+pg-data
+pgadmin
+minio_data
+dragonflydata
+dbgate-data
+
 # General
 media/reports/
 deploy/tracing/signoz

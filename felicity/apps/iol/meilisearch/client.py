@@ -2,10 +2,12 @@ from datetime import datetime
 
 import meilisearch
 
+from felicity.core.config import settings
+
 
 class MeiliSearchClient:
     def __init__(self):
-        self.client = meilisearch.Client('http://127.0.0.1:7700', "api_key")
+        self.client = meilisearch.Client(settings.MEILISEARCH_SERVER, settings.MEILISEARCH_API_KEY)
 
     def create_index(self, index_name: str):
         return self.client.create_index(uid=index_name, options={"primary_key": "uid"})

@@ -4,15 +4,16 @@ from typing import BinaryIO
 from minio import Minio
 from minio.error import S3Error
 
+from felicity.core.config import settings
 from .enum import MinioBucket
 
 
 class MinioClient:
     def __init__(self):
         self.client = Minio(
-            "localhost:9000",
-            access_key="felicity",
-            secret_key="felicity",
+            settings.MINIO_SERVER,
+            access_key=settings.MINIO_ACCESS,
+            secret_key=settings.MINIO_SECRET,
             secure=False
         )
 
