@@ -13,4 +13,5 @@ class NotificationObject(StrEnum):
 class NotificationChannel(StrEnum):
     ACTIVITIES = auto()
     NOTIFICATIONS = auto()
+    PROCESSING = auto()
     JOBS = auto()

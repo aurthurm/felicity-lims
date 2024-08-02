@@ -1,12 +1,12 @@
-import asyncio
 import json
 import logging
 from typing import AsyncGenerator
 
 import strawberry  # noqa
 
-from felicity.api.gql.notification.types import ActivityStreamType
+from felicity.api.gql.notification.types import ActivityStreamType, ActivityProcessType
 from felicity.apps.common.channel import broadcast
+from felicity.apps.notification.enum import NotificationChannel
 from felicity.apps.notification.services import ActivityStreamService
 
 logging.basicConfig(level=logging.INFO)
@@ -17,24 +17,28 @@ logger = logging.getLogger(__name__)
 class StreamSubscription:
     @strawberry.subscription()  # permission_classes=[IsAuthenticated]
     async def latest_activity(self) -> AsyncGenerator[ActivityStreamType, None]:  # noqa
-        async with broadcast.subscribe(channel="activities") as subscriber:
-            logger.info("Subscribed")
+        async with broadcast.subscribe(channel=NotificationChannel.ACTIVITIES) as subscriber:
+            logger.info("Subscribed to activities")
             try:
                 async for event in subscriber:
                     logger.info(event)
                     yield ActivityStreamType(**json.loads(event.message))
             finally:
-                logger.info("Unsubscribed")
+                logger.info("Unsubscribed from activities")
 
     @strawberry.subscription()  # permission_classes=[IsAuthenticated]
     async def stream_all(self) -> AsyncGenerator[ActivityStreamType, None]:  # noqa
         streams = await ActivityStreamService().all()
         for stream in streams:
             yield stream
-            await asyncio.sleep(1)
 
-    @strawberry.subscription
-    async def count(self, target: int = 100) -> AsyncGenerator[int, None]:
-        for i in range(target):
-            yield i
-            await asyncio.sleep(0.5)
+    @strawberry.subscription()  # permission_classes=[IsAuthenticated]
+    async def stream_processes(self) -> AsyncGenerator[ActivityProcessType, None]:  # noqa
+        async with broadcast.subscribe(channel=NotificationChannel.PROCESSING) as subscriber:
+            logger.info("Subscribed to processes")
+            try:
+                async for event in subscriber:
+                    logger.info(event)
+                    yield ActivityProcessType(**json.loads(event.message))
+            finally:
+                logger.info("Unsubscribed from processes")

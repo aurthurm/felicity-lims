@@ -112,3 +112,10 @@ class NotificationType:
     created_at: str | None = None
     created_by_uid: str | None = None
     created_by: UserType | None = None
+
+
+@strawberry.type
+class ActivityProcessType:
+    uid: str
+    object_type: str
+    status: str
