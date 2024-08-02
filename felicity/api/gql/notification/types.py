@@ -1,4 +1,4 @@
-from typing import List, Optional, Union
+from typing import Optional, Union
 
 import strawberry  # noqa
 
@@ -37,7 +37,7 @@ class ActivityFeedType:
 @strawberry.type
 class ActivityStreamType:
     uid: str
-    feeds: Optional[List[ActivityFeedType]] = None
+    feeds: Optional[list[ActivityFeedType]] = None
     actor_uid: str | None = None
     verb: str | None = None
     action_object_type: str | None = None
@@ -48,6 +48,9 @@ class ActivityStreamType:
     created_at: str | None = None
     created_by_uid: str | None = None
     created_by: UserType | None = None
+    updated_at: str | None = None
+    updated_by_uid: str | None = None
+    updated_by: UserType | None = None
 
     @strawberry.field
     async def actor(self) -> UserType:

@@ -103,12 +103,12 @@ export const GET_GROUPS_AND_PERMISSIONS = gql`
 `;
 
 export const GET_AUDIT_LOG_FOR_TARGET = gql`
-    query getAuditLogs($targetType: String!, $targetId: String!) {
-        auditLogsFilter(targetType: $targetType, targetId: $targetId) {
+    query getAuditLogs($targetType: String!, $targetUid: String!) {
+        auditLogsFilter(targetType: $targetType, targetUid: $targetUid) {
             uid
-            userId
+            userUid
             targetType
-            targetId
+            targetUid
             action
             stateBefore
             stateAfter

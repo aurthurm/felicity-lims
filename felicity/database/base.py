@@ -4,8 +4,6 @@ from felicity.apps.analysis.entities.analysis import AnalysisCategory  # noqa
 from felicity.apps.analysis.entities.analysis import AnalysisCoding  # noqa
 from felicity.apps.analysis.entities.analysis import AnalysisInterim  # noqa
 from felicity.apps.analysis.entities.analysis import AnalysisRequest  # noqa
-from felicity.apps.analysis.entities.analysis import \
-    AnalysisUncertainty  # noqa
 from felicity.apps.analysis.entities.analysis import CodingStandard  # noqa
 from felicity.apps.analysis.entities.analysis import Profile  # noqa
 from felicity.apps.analysis.entities.analysis import ProfileCoding  # noqa
@@ -20,7 +18,6 @@ from felicity.apps.analysis.entities.qc import QCTemplate  # noqa
 from felicity.apps.analysis.entities.results import AnalysisResult  # noqa
 from felicity.apps.analysis.entities.results import ResultMutation  # noqa
 from felicity.apps.analytics.entities import ReportMeta  # noqa
-from felicity.apps.auditlog.entities import AuditLog  # noqa
 from felicity.apps.billing.entities import AnalysisDiscount  # noqa
 from felicity.apps.billing.entities import AnalysisPrice  # noqa
 from felicity.apps.billing.entities import ProfileDiscount  # noqa

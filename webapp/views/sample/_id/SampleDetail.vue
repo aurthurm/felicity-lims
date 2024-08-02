@@ -55,7 +55,7 @@ let currentTabComponent = computed(() => "tab-" + currentTab);
       <tab-logs
         v-if="currentTab === 'logs'"
         targetType="sample"
-        :targetId="sampleStore.sample?.uid"
+        :targetUid="sampleStore.sample?.uid"
       />
       <tab-impress v-if="currentTab === 'impress-reports'" />
     </div>

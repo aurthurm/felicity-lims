@@ -186,14 +186,6 @@
         "documentation": {}
     },
     {
-        "label": "Text",
-        "importPath": "typing",
-        "description": "typing",
-        "isExtraImport": true,
-        "detail": "typing",
-        "documentation": {}
-    },
-    {
         "label": "List",
         "importPath": "typing",
         "description": "typing",
@@ -459,14 +451,6 @@
     },
     {
         "label": "AsyncGenerator",
-        "importPath": "typing",
-        "description": "typing",
-        "isExtraImport": true,
-        "detail": "typing",
-        "documentation": {}
-    },
-    {
-        "label": "List",
         "importPath": "typing",
         "description": "typing",
         "isExtraImport": true,
@@ -1130,46 +1114,6 @@
         "documentation": {}
     },
     {
-        "label": "Any",
-        "importPath": "typing",
-        "description": "typing",
-        "isExtraImport": true,
-        "detail": "typing",
-        "documentation": {}
-    },
-    {
-        "label": "AsyncIterator",
-        "importPath": "typing",
-        "description": "typing",
-        "isExtraImport": true,
-        "detail": "typing",
-        "documentation": {}
-    },
-    {
-        "label": "Set",
-        "importPath": "typing",
-        "description": "typing",
-        "isExtraImport": true,
-        "detail": "typing",
-        "documentation": {}
-    },
-    {
-        "label": "Any",
-        "importPath": "typing",
-        "description": "typing",
-        "isExtraImport": true,
-        "detail": "typing",
-        "documentation": {}
-    },
-    {
-        "label": "Optional",
-        "importPath": "typing",
-        "description": "typing",
-        "isExtraImport": true,
-        "detail": "typing",
-        "documentation": {}
-    },
-    {
         "label": "TypeVar",
         "importPath": "typing",
         "description": "typing",
@@ -1474,6 +1418,30 @@
         "documentation": {}
     },
     {
+        "label": "List",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "Dict",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "Any",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
         "label": "Any",
         "importPath": "typing",
         "description": "typing",
@@ -1530,7 +1498,7 @@
         "documentation": {}
     },
     {
-        "label": "TypeVar",
+        "label": "Optional",
         "importPath": "typing",
         "description": "typing",
         "isExtraImport": true,
@@ -1538,7 +1506,7 @@
         "documentation": {}
     },
     {
-        "label": "Optional",
+        "label": "Any",
         "importPath": "typing",
         "description": "typing",
         "isExtraImport": true,
@@ -2405,6 +2373,14 @@
     },
     {
         "label": "PageInfo",
+        "importPath": "felicity.api.gql.types",
+        "description": "felicity.api.gql.types",
+        "isExtraImport": true,
+        "detail": "felicity.api.gql.types",
+        "documentation": {}
+    },
+    {
+        "label": "JSONScalar",
         "importPath": "felicity.api.gql.types",
         "description": "felicity.api.gql.types",
         "isExtraImport": true,
@@ -3669,22 +3645,6 @@
         "documentation": {}
     },
     {
-        "label": "dataclass",
-        "importPath": "dataclasses",
-        "description": "dataclasses",
-        "isExtraImport": true,
-        "detail": "dataclasses",
-        "documentation": {}
-    },
-    {
-        "label": "field",
-        "importPath": "dataclasses",
-        "description": "dataclasses",
-        "isExtraImport": true,
-        "detail": "dataclasses",
-        "documentation": {}
-    },
-    {
         "label": "analysis",
         "importPath": "felicity.apps.analysis.entities",
         "description": "felicity.apps.analysis.entities",
@@ -4165,14 +4125,6 @@
         "documentation": {}
     },
     {
-        "label": "\\",
-        "importPath": "felicity.apps.analysis.entities.analysis",
-        "description": "felicity.apps.analysis.entities.analysis",
-        "isExtraImport": true,
-        "detail": "felicity.apps.analysis.entities.analysis",
-        "documentation": {}
-    },
-    {
         "label": "CodingStandard",
         "importPath": "felicity.apps.analysis.entities.analysis",
         "description": "felicity.apps.analysis.entities.analysis",
@@ -4254,7 +4206,23 @@
         "documentation": {}
     },
     {
-        "label": "Queue",
+        "label": "create_task",
+        "importPath": "asyncio",
+        "description": "asyncio",
+        "isExtraImport": true,
+        "detail": "asyncio",
+        "documentation": {}
+    },
+    {
+        "label": "gather",
+        "importPath": "asyncio",
+        "description": "asyncio",
+        "isExtraImport": true,
+        "detail": "asyncio",
+        "documentation": {}
+    },
+    {
+        "label": "Lock",
         "importPath": "asyncio",
         "description": "asyncio",
         "isExtraImport": true,
@@ -4432,6 +4400,22 @@
     },
     {
         "label": "timedelta",
+        "importPath": "datetime",
+        "description": "datetime",
+        "isExtraImport": true,
+        "detail": "datetime",
+        "documentation": {}
+    },
+    {
+        "label": "datetime",
+        "importPath": "datetime",
+        "description": "datetime",
+        "isExtraImport": true,
+        "detail": "datetime",
+        "documentation": {}
+    },
+    {
+        "label": "datetime",
         "importPath": "datetime",
         "description": "datetime",
         "isExtraImport": true,
@@ -8361,6 +8345,22 @@
         "documentation": {}
     },
     {
+        "label": "event",
+        "importPath": "sqlalchemy",
+        "description": "sqlalchemy",
+        "isExtraImport": true,
+        "detail": "sqlalchemy",
+        "documentation": {}
+    },
+    {
+        "label": "inspect",
+        "importPath": "sqlalchemy",
+        "description": "sqlalchemy",
+        "isExtraImport": true,
+        "detail": "sqlalchemy",
+        "documentation": {}
+    },
+    {
         "label": "Boolean",
         "importPath": "sqlalchemy",
         "description": "sqlalchemy",
@@ -8617,54 +8617,6 @@
         "documentation": {}
     },
     {
-        "label": "Column",
-        "importPath": "sqlalchemy",
-        "description": "sqlalchemy",
-        "isExtraImport": true,
-        "detail": "sqlalchemy",
-        "documentation": {}
-    },
-    {
-        "label": "Integer",
-        "importPath": "sqlalchemy",
-        "description": "sqlalchemy",
-        "isExtraImport": true,
-        "detail": "sqlalchemy",
-        "documentation": {}
-    },
-    {
-        "label": "String",
-        "importPath": "sqlalchemy",
-        "description": "sqlalchemy",
-        "isExtraImport": true,
-        "detail": "sqlalchemy",
-        "documentation": {}
-    },
-    {
-        "label": "UnicodeText",
-        "importPath": "sqlalchemy",
-        "description": "sqlalchemy",
-        "isExtraImport": true,
-        "detail": "sqlalchemy",
-        "documentation": {}
-    },
-    {
-        "label": "event",
-        "importPath": "sqlalchemy",
-        "description": "sqlalchemy",
-        "isExtraImport": true,
-        "detail": "sqlalchemy",
-        "documentation": {}
-    },
-    {
-        "label": "inspect",
-        "importPath": "sqlalchemy",
-        "description": "sqlalchemy",
-        "isExtraImport": true,
-        "detail": "sqlalchemy",
-        "documentation": {}
-    },
-    {
         "label": "Boolean",
         "importPath": "sqlalchemy",
         "description": "sqlalchemy",
@@ -8770,14 +8722,6 @@
     },
     {
         "label": "inspect",
-        "importPath": "sqlalchemy",
-        "description": "sqlalchemy",
-        "isExtraImport": true,
-        "detail": "sqlalchemy",
-        "documentation": {}
-    },
-    {
-        "label": "Column",
         "importPath": "sqlalchemy",
         "description": "sqlalchemy",
         "isExtraImport": true,
@@ -9514,38 +9458,6 @@
     },
     {
         "label": "Table",
-        "importPath": "sqlalchemy",
-        "description": "sqlalchemy",
-        "isExtraImport": true,
-        "detail": "sqlalchemy",
-        "documentation": {}
-    },
-    {
-        "label": "asc",
-        "importPath": "sqlalchemy",
-        "description": "sqlalchemy",
-        "isExtraImport": true,
-        "detail": "sqlalchemy",
-        "documentation": {}
-    },
-    {
-        "label": "desc",
-        "importPath": "sqlalchemy",
-        "description": "sqlalchemy",
-        "isExtraImport": true,
-        "detail": "sqlalchemy",
-        "documentation": {}
-    },
-    {
-        "label": "inspect",
-        "importPath": "sqlalchemy",
-        "description": "sqlalchemy",
-        "isExtraImport": true,
-        "detail": "sqlalchemy",
-        "documentation": {}
-    },
-    {
-        "label": "select",
         "importPath": "sqlalchemy",
         "description": "sqlalchemy",
         "isExtraImport": true,
@@ -10497,19 +10409,43 @@
         "documentation": {}
     },
     {
+        "label": "MongoService",
+        "importPath": "database.mongo",
+        "description": "database.mongo",
+        "isExtraImport": true,
+        "detail": "database.mongo",
+        "documentation": {}
+    },
+    {
+        "label": "MongoCollection",
+        "importPath": "database.mongo",
+        "description": "database.mongo",
+        "isExtraImport": true,
+        "detail": "database.mongo",
+        "documentation": {}
+    },
+    {
+        "label": "MongoService",
+        "importPath": "database.mongo",
+        "description": "database.mongo",
+        "isExtraImport": true,
+        "detail": "database.mongo",
+        "documentation": {}
+    },
+    {
+        "label": "MongoCollection",
+        "importPath": "database.mongo",
+        "description": "database.mongo",
+        "isExtraImport": true,
+        "detail": "database.mongo",
+        "documentation": {}
+    },
+    {
         "label": "AuditLogType",
         "importPath": "felicity.api.gql.audit.types",
         "description": "felicity.api.gql.audit.types",
         "isExtraImport": true,
         "detail": "felicity.api.gql.audit.types",
-        "documentation": {}
-    },
-    {
-        "label": "AuditLogService",
-        "importPath": "felicity.apps.auditlog.services",
-        "description": "felicity.apps.auditlog.services",
-        "isExtraImport": true,
-        "detail": "felicity.apps.auditlog.services",
         "documentation": {}
     },
     {
@@ -12434,14 +12370,6 @@
         "documentation": {}
     },
     {
-        "label": "format_datetime",
-        "importPath": "felicity.core.dtz",
-        "description": "felicity.core.dtz",
-        "isExtraImport": true,
-        "detail": "felicity.core.dtz",
-        "documentation": {}
-    },
-    {
         "label": "datetime_math",
         "importPath": "felicity.core.dtz",
         "description": "felicity.core.dtz",
@@ -12506,15 +12434,16 @@
         "documentation": {}
     },
     {
-        "label": "BroadcastEvent",
-        "importPath": "felicity.apps.common.channel",
-        "description": "felicity.apps.common.channel",
+        "label": "json",
+        "kind": 6,
         "isExtraImport": true,
-        "detail": "felicity.apps.common.channel",
+        "importPath": "json",
+        "description": "json",
+        "detail": "json",
         "documentation": {}
     },
     {
-        "label": "Subscriber",
+        "label": "broadcast",
         "importPath": "felicity.apps.common.channel",
         "description": "felicity.apps.common.channel",
         "isExtraImport": true,
@@ -13555,12 +13484,99 @@
         "documentation": {}
     },
     {
-        "label": "json",
-        "kind": 6,
+        "label": "marshaller",
+        "importPath": "felicity.apps.common.utils.serializer",
+        "description": "felicity.apps.common.utils.serializer",
         "isExtraImport": true,
-        "importPath": "json",
-        "description": "json",
-        "detail": "json",
+        "detail": "felicity.apps.common.utils.serializer",
+        "documentation": {}
+    },
+    {
+        "label": "marshaller",
+        "importPath": "felicity.apps.common.utils.serializer",
+        "description": "felicity.apps.common.utils.serializer",
+        "isExtraImport": true,
+        "detail": "felicity.apps.common.utils.serializer",
+        "documentation": {}
+    },
+    {
+        "label": "marshaller",
+        "importPath": "felicity.apps.common.utils.serializer",
+        "description": "felicity.apps.common.utils.serializer",
+        "isExtraImport": true,
+        "detail": "felicity.apps.common.utils.serializer",
+        "documentation": {}
+    },
+    {
+        "label": "marshaller",
+        "importPath": "felicity.apps.common.utils.serializer",
+        "description": "felicity.apps.common.utils.serializer",
+        "isExtraImport": true,
+        "detail": "felicity.apps.common.utils.serializer",
+        "documentation": {}
+    },
+    {
+        "label": "marshaller",
+        "importPath": "felicity.apps.common.utils.serializer",
+        "description": "felicity.apps.common.utils.serializer",
+        "isExtraImport": true,
+        "detail": "felicity.apps.common.utils.serializer",
+        "documentation": {}
+    },
+    {
+        "label": "marshaller",
+        "importPath": "felicity.apps.common.utils.serializer",
+        "description": "felicity.apps.common.utils.serializer",
+        "isExtraImport": true,
+        "detail": "felicity.apps.common.utils.serializer",
+        "documentation": {}
+    },
+    {
+        "label": "marshaller",
+        "importPath": "felicity.apps.common.utils.serializer",
+        "description": "felicity.apps.common.utils.serializer",
+        "isExtraImport": true,
+        "detail": "felicity.apps.common.utils.serializer",
+        "documentation": {}
+    },
+    {
+        "label": "marshaller",
+        "importPath": "felicity.apps.common.utils.serializer",
+        "description": "felicity.apps.common.utils.serializer",
+        "isExtraImport": true,
+        "detail": "felicity.apps.common.utils.serializer",
+        "documentation": {}
+    },
+    {
+        "label": "marshaller",
+        "importPath": "felicity.apps.common.utils.serializer",
+        "description": "felicity.apps.common.utils.serializer",
+        "isExtraImport": true,
+        "detail": "felicity.apps.common.utils.serializer",
+        "documentation": {}
+    },
+    {
+        "label": "marshaller",
+        "importPath": "felicity.apps.common.utils.serializer",
+        "description": "felicity.apps.common.utils.serializer",
+        "isExtraImport": true,
+        "detail": "felicity.apps.common.utils.serializer",
+        "documentation": {}
+    },
+    {
+        "label": "marshaller",
+        "importPath": "felicity.apps.common.utils.serializer",
+        "description": "felicity.apps.common.utils.serializer",
+        "isExtraImport": true,
+        "detail": "felicity.apps.common.utils.serializer",
+        "documentation": {}
+    },
+    {
+        "label": "marshaller",
+        "importPath": "felicity.apps.common.utils.serializer",
+        "description": "felicity.apps.common.utils.serializer",
+        "isExtraImport": true,
+        "detail": "felicity.apps.common.utils.serializer",
         "documentation": {}
     },
     {
@@ -13645,7 +13661,7 @@
         "documentation": {}
     },
     {
-        "label": "get_settings",
+        "label": "settings",
         "importPath": "felicity.core.config",
         "description": "felicity.core.config",
         "isExtraImport": true,
@@ -13685,6 +13701,22 @@
         "documentation": {}
     },
     {
+        "label": "settings",
+        "importPath": "felicity.core.config",
+        "description": "felicity.core.config",
+        "isExtraImport": true,
+        "detail": "felicity.core.config",
+        "documentation": {}
+    },
+    {
+        "label": "settings",
+        "importPath": "felicity.core.config",
+        "description": "felicity.core.config",
+        "isExtraImport": true,
+        "detail": "felicity.core.config",
+        "documentation": {}
+    },
+    {
         "label": "get_settings",
         "importPath": "felicity.core.config",
         "description": "felicity.core.config",
@@ -13694,6 +13726,22 @@
     },
     {
         "label": "get_settings",
+        "importPath": "felicity.core.config",
+        "description": "felicity.core.config",
+        "isExtraImport": true,
+        "detail": "felicity.core.config",
+        "documentation": {}
+    },
+    {
+        "label": "get_settings",
+        "importPath": "felicity.core.config",
+        "description": "felicity.core.config",
+        "isExtraImport": true,
+        "detail": "felicity.core.config",
+        "documentation": {}
+    },
+    {
+        "label": "settings",
         "importPath": "felicity.core.config",
         "description": "felicity.core.config",
         "isExtraImport": true,
@@ -13778,6 +13826,22 @@
         "description": "felicity.core.config",
         "isExtraImport": true,
         "detail": "felicity.core.config",
+        "documentation": {}
+    },
+    {
+        "label": "post_event",
+        "importPath": "felicity.core.events",
+        "description": "felicity.core.events",
+        "isExtraImport": true,
+        "detail": "felicity.core.events",
+        "documentation": {}
+    },
+    {
+        "label": "subscribe",
+        "importPath": "felicity.core.events",
+        "description": "felicity.core.events",
+        "isExtraImport": true,
+        "detail": "felicity.core.events",
         "documentation": {}
     },
     {
@@ -14781,22 +14845,6 @@
         "documentation": {}
     },
     {
-        "label": "ConfigDict",
-        "importPath": "pydantic",
-        "description": "pydantic",
-        "isExtraImport": true,
-        "detail": "pydantic",
-        "documentation": {}
-    },
-    {
-        "label": "BaseModel",
-        "importPath": "pydantic",
-        "description": "pydantic",
-        "isExtraImport": true,
-        "detail": "pydantic",
-        "documentation": {}
-    },
-    {
         "label": "BaseModel",
         "importPath": "pydantic",
         "description": "pydantic",
@@ -15042,86 +15090,6 @@
         "description": "pydantic",
         "isExtraImport": true,
         "detail": "pydantic",
-        "documentation": {}
-    },
-    {
-        "label": "marshaller",
-        "importPath": "felicity.apps.common.utils.serializer",
-        "description": "felicity.apps.common.utils.serializer",
-        "isExtraImport": true,
-        "detail": "felicity.apps.common.utils.serializer",
-        "documentation": {}
-    },
-    {
-        "label": "marshaller",
-        "importPath": "felicity.apps.common.utils.serializer",
-        "description": "felicity.apps.common.utils.serializer",
-        "isExtraImport": true,
-        "detail": "felicity.apps.common.utils.serializer",
-        "documentation": {}
-    },
-    {
-        "label": "marshaller",
-        "importPath": "felicity.apps.common.utils.serializer",
-        "description": "felicity.apps.common.utils.serializer",
-        "isExtraImport": true,
-        "detail": "felicity.apps.common.utils.serializer",
-        "documentation": {}
-    },
-    {
-        "label": "marshaller",
-        "importPath": "felicity.apps.common.utils.serializer",
-        "description": "felicity.apps.common.utils.serializer",
-        "isExtraImport": true,
-        "detail": "felicity.apps.common.utils.serializer",
-        "documentation": {}
-    },
-    {
-        "label": "marshaller",
-        "importPath": "felicity.apps.common.utils.serializer",
-        "description": "felicity.apps.common.utils.serializer",
-        "isExtraImport": true,
-        "detail": "felicity.apps.common.utils.serializer",
-        "documentation": {}
-    },
-    {
-        "label": "marshaller",
-        "importPath": "felicity.apps.common.utils.serializer",
-        "description": "felicity.apps.common.utils.serializer",
-        "isExtraImport": true,
-        "detail": "felicity.apps.common.utils.serializer",
-        "documentation": {}
-    },
-    {
-        "label": "marshaller",
-        "importPath": "felicity.apps.common.utils.serializer",
-        "description": "felicity.apps.common.utils.serializer",
-        "isExtraImport": true,
-        "detail": "felicity.apps.common.utils.serializer",
-        "documentation": {}
-    },
-    {
-        "label": "marshaller",
-        "importPath": "felicity.apps.common.utils.serializer",
-        "description": "felicity.apps.common.utils.serializer",
-        "isExtraImport": true,
-        "detail": "felicity.apps.common.utils.serializer",
-        "documentation": {}
-    },
-    {
-        "label": "marshaller",
-        "importPath": "felicity.apps.common.utils.serializer",
-        "description": "felicity.apps.common.utils.serializer",
-        "isExtraImport": true,
-        "detail": "felicity.apps.common.utils.serializer",
-        "documentation": {}
-    },
-    {
-        "label": "marshaller",
-        "importPath": "felicity.apps.common.utils.serializer",
-        "description": "felicity.apps.common.utils.serializer",
-        "isExtraImport": true,
-        "detail": "felicity.apps.common.utils.serializer",
         "documentation": {}
     },
     {
@@ -15565,39 +15533,39 @@
         "documentation": {}
     },
     {
-        "label": "relationship",
-        "importPath": "sqlalchemy.orm",
-        "description": "sqlalchemy.orm",
-        "isExtraImport": true,
-        "detail": "sqlalchemy.orm",
-        "documentation": {}
-    },
-    {
-        "label": "relationship",
-        "importPath": "sqlalchemy.orm",
-        "description": "sqlalchemy.orm",
-        "isExtraImport": true,
-        "detail": "sqlalchemy.orm",
-        "documentation": {}
-    },
-    {
-        "label": "relationship",
-        "importPath": "sqlalchemy.orm",
-        "description": "sqlalchemy.orm",
-        "isExtraImport": true,
-        "detail": "sqlalchemy.orm",
-        "documentation": {}
-    },
-    {
-        "label": "relationship",
-        "importPath": "sqlalchemy.orm",
-        "description": "sqlalchemy.orm",
-        "isExtraImport": true,
-        "detail": "sqlalchemy.orm",
-        "documentation": {}
-    },
-    {
         "label": "class_mapper",
+        "importPath": "sqlalchemy.orm",
+        "description": "sqlalchemy.orm",
+        "isExtraImport": true,
+        "detail": "sqlalchemy.orm",
+        "documentation": {}
+    },
+    {
+        "label": "relationship",
+        "importPath": "sqlalchemy.orm",
+        "description": "sqlalchemy.orm",
+        "isExtraImport": true,
+        "detail": "sqlalchemy.orm",
+        "documentation": {}
+    },
+    {
+        "label": "relationship",
+        "importPath": "sqlalchemy.orm",
+        "description": "sqlalchemy.orm",
+        "isExtraImport": true,
+        "detail": "sqlalchemy.orm",
+        "documentation": {}
+    },
+    {
+        "label": "relationship",
+        "importPath": "sqlalchemy.orm",
+        "description": "sqlalchemy.orm",
+        "isExtraImport": true,
+        "detail": "sqlalchemy.orm",
+        "documentation": {}
+    },
+    {
+        "label": "relationship",
         "importPath": "sqlalchemy.orm",
         "description": "sqlalchemy.orm",
         "isExtraImport": true,
@@ -15750,38 +15718,6 @@
     },
     {
         "label": "relationship",
-        "importPath": "sqlalchemy.orm",
-        "description": "sqlalchemy.orm",
-        "isExtraImport": true,
-        "detail": "sqlalchemy.orm",
-        "documentation": {}
-    },
-    {
-        "label": "RelationshipProperty",
-        "importPath": "sqlalchemy.orm",
-        "description": "sqlalchemy.orm",
-        "isExtraImport": true,
-        "detail": "sqlalchemy.orm",
-        "documentation": {}
-    },
-    {
-        "label": "aliased",
-        "importPath": "sqlalchemy.orm",
-        "description": "sqlalchemy.orm",
-        "isExtraImport": true,
-        "detail": "sqlalchemy.orm",
-        "documentation": {}
-    },
-    {
-        "label": "joinedload",
-        "importPath": "sqlalchemy.orm",
-        "description": "sqlalchemy.orm",
-        "isExtraImport": true,
-        "detail": "sqlalchemy.orm",
-        "documentation": {}
-    },
-    {
-        "label": "subqueryload",
         "importPath": "sqlalchemy.orm",
         "description": "sqlalchemy.orm",
         "isExtraImport": true,
@@ -15933,19 +15869,11 @@
         "documentation": {}
     },
     {
-        "label": "BaseEntity",
-        "importPath": "felicity.apps.abstract.entity",
-        "description": "felicity.apps.abstract.entity",
+        "label": "TrackableEntity",
+        "importPath": "felicity.apps.abstract.trackable",
+        "description": "felicity.apps.abstract.trackable",
         "isExtraImport": true,
-        "detail": "felicity.apps.abstract.entity",
-        "documentation": {}
-    },
-    {
-        "label": "AuditHistoryMixin",
-        "importPath": "felicity.apps.auditlog.mixin",
-        "description": "felicity.apps.auditlog.mixin",
-        "isExtraImport": true,
-        "detail": "felicity.apps.auditlog.mixin",
+        "detail": "felicity.apps.abstract.trackable",
         "documentation": {}
     },
     {
@@ -16045,6 +15973,14 @@
         "documentation": {}
     },
     {
+        "label": "MeilisearchSyncHandler",
+        "importPath": "apps.iol.meilisearch.handler",
+        "description": "apps.iol.meilisearch.handler",
+        "isExtraImport": true,
+        "detail": "apps.iol.meilisearch.handler",
+        "documentation": {}
+    },
+    {
         "label": "BaseNestedSets",
         "importPath": "felicity.libs.sqlalchemy_mptt",
         "description": "felicity.libs.sqlalchemy_mptt",
@@ -16070,22 +16006,6 @@
     },
     {
         "label": "func",
-        "importPath": "sqlalchemy.sql",
-        "description": "sqlalchemy.sql",
-        "isExtraImport": true,
-        "detail": "sqlalchemy.sql",
-        "documentation": {}
-    },
-    {
-        "label": "extract",
-        "importPath": "sqlalchemy.sql",
-        "description": "sqlalchemy.sql",
-        "isExtraImport": true,
-        "detail": "sqlalchemy.sql",
-        "documentation": {}
-    },
-    {
-        "label": "operators",
         "importPath": "sqlalchemy.sql",
         "description": "sqlalchemy.sql",
         "isExtraImport": true,
@@ -16325,11 +16245,19 @@
         "documentation": {}
     },
     {
-        "label": "BaseRepository",
-        "importPath": "felicity.apps.abstract.repository",
-        "description": "felicity.apps.abstract.repository",
+        "label": "get_history",
+        "importPath": "sqlalchemy.orm.attributes",
+        "description": "sqlalchemy.orm.attributes",
         "isExtraImport": true,
-        "detail": "felicity.apps.abstract.repository",
+        "detail": "sqlalchemy.orm.attributes",
+        "documentation": {}
+    },
+    {
+        "label": "get_history",
+        "importPath": "sqlalchemy.orm.attributes",
+        "description": "sqlalchemy.orm.attributes",
+        "isExtraImport": true,
+        "detail": "sqlalchemy.orm.attributes",
         "documentation": {}
     },
     {
@@ -16429,22 +16357,6 @@
         "documentation": {}
     },
     {
-        "label": "BaseRepository",
-        "importPath": "felicity.apps.abstract",
-        "description": "felicity.apps.abstract",
-        "isExtraImport": true,
-        "detail": "felicity.apps.abstract",
-        "documentation": {}
-    },
-    {
-        "label": "BaseService",
-        "importPath": "felicity.apps.abstract",
-        "description": "felicity.apps.abstract",
-        "isExtraImport": true,
-        "detail": "felicity.apps.abstract",
-        "documentation": {}
-    },
-    {
         "label": "AuditHistory",
         "importPath": "felicity.apps.abstract",
         "description": "felicity.apps.abstract",
@@ -16478,14 +16390,6 @@
     },
     {
         "label": "AuditHistory",
-        "importPath": "felicity.apps.abstract",
-        "description": "felicity.apps.abstract",
-        "isExtraImport": true,
-        "detail": "felicity.apps.abstract",
-        "documentation": {}
-    },
-    {
-        "label": "AuditUser",
         "importPath": "felicity.apps.abstract",
         "description": "felicity.apps.abstract",
         "isExtraImport": true,
@@ -16730,14 +16634,6 @@
         "description": "felicity.apps.setup.entities.setup",
         "isExtraImport": true,
         "detail": "felicity.apps.setup.entities.setup",
-        "documentation": {}
-    },
-    {
-        "label": "BaseService",
-        "importPath": "felicity.apps.abstract.service",
-        "description": "felicity.apps.abstract.service",
-        "isExtraImport": true,
-        "detail": "felicity.apps.abstract.service",
         "documentation": {}
     },
     {
@@ -17653,14 +17549,6 @@
         "documentation": {}
     },
     {
-        "label": "Dummy",
-        "importPath": "felicity.apps.common.schemas.dummy",
-        "description": "felicity.apps.common.schemas.dummy",
-        "isExtraImport": true,
-        "detail": "felicity.apps.common.schemas.dummy",
-        "documentation": {}
-    },
-    {
         "label": "IntEnum",
         "importPath": "enum",
         "description": "enum",
@@ -17717,6 +17605,14 @@
         "documentation": {}
     },
     {
+        "label": "Enum",
+        "importPath": "enum",
+        "description": "enum",
+        "isExtraImport": true,
+        "detail": "enum",
+        "documentation": {}
+    },
+    {
         "label": "IntEnum",
         "importPath": "enum",
         "description": "enum",
@@ -17750,6 +17646,14 @@
     },
     {
         "label": "auto",
+        "importPath": "enum",
+        "description": "enum",
+        "isExtraImport": true,
+        "detail": "enum",
+        "documentation": {}
+    },
+    {
+        "label": "StrEnum",
         "importPath": "enum",
         "description": "enum",
         "isExtraImport": true,
@@ -18422,78 +18326,6 @@
         "documentation": {}
     },
     {
-        "label": "get_history",
-        "importPath": "sqlalchemy.orm.attributes",
-        "description": "sqlalchemy.orm.attributes",
-        "isExtraImport": true,
-        "detail": "sqlalchemy.orm.attributes",
-        "documentation": {}
-    },
-    {
-        "label": "get_history",
-        "importPath": "sqlalchemy.orm.attributes",
-        "description": "sqlalchemy.orm.attributes",
-        "isExtraImport": true,
-        "detail": "sqlalchemy.orm.attributes",
-        "documentation": {}
-    },
-    {
-        "label": "AuditLog",
-        "importPath": "felicity.apps.auditlog.entities",
-        "description": "felicity.apps.auditlog.entities",
-        "isExtraImport": true,
-        "detail": "felicity.apps.auditlog.entities",
-        "documentation": {}
-    },
-    {
-        "label": "AuditLog",
-        "importPath": "felicity.apps.auditlog.entities",
-        "description": "felicity.apps.auditlog.entities",
-        "isExtraImport": true,
-        "detail": "felicity.apps.auditlog.entities",
-        "documentation": {}
-    },
-    {
-        "label": "AuditLog",
-        "importPath": "felicity.apps.auditlog.entities",
-        "description": "felicity.apps.auditlog.entities",
-        "isExtraImport": true,
-        "detail": "felicity.apps.auditlog.entities",
-        "documentation": {}
-    },
-    {
-        "label": "AuditLog",
-        "importPath": "felicity.apps.auditlog.entities",
-        "description": "felicity.apps.auditlog.entities",
-        "isExtraImport": true,
-        "detail": "felicity.apps.auditlog.entities",
-        "documentation": {}
-    },
-    {
-        "label": "AuditLog",
-        "importPath": "felicity.apps.auditlog.entities",
-        "description": "felicity.apps.auditlog.entities",
-        "isExtraImport": true,
-        "detail": "felicity.apps.auditlog.entities",
-        "documentation": {}
-    },
-    {
-        "label": "AuditLogRepository",
-        "importPath": "felicity.apps.auditlog.repositories",
-        "description": "felicity.apps.auditlog.repositories",
-        "isExtraImport": true,
-        "detail": "felicity.apps.auditlog.repositories",
-        "documentation": {}
-    },
-    {
-        "label": "JSONB",
-        "importPath": "sqlalchemy.dialects.postgresql",
-        "description": "sqlalchemy.dialects.postgresql",
-        "isExtraImport": true,
-        "detail": "sqlalchemy.dialects.postgresql",
-        "documentation": {}
-    },
-    {
         "label": "JSONB",
         "importPath": "sqlalchemy.dialects.postgresql",
         "description": "sqlalchemy.dialects.postgresql",
@@ -18982,6 +18814,14 @@
         "documentation": {}
     },
     {
+        "label": "AuditLog",
+        "importPath": "felicity.apps.auditlog.entities",
+        "description": "felicity.apps.auditlog.entities",
+        "isExtraImport": true,
+        "detail": "felicity.apps.auditlog.entities",
+        "documentation": {}
+    },
+    {
         "label": "enum",
         "importPath": "felicity.apps.common.hooks",
         "description": "felicity.apps.common.hooks",
@@ -18990,59 +18830,11 @@
         "documentation": {}
     },
     {
-        "label": "asynccontextmanager",
-        "importPath": "contextlib",
-        "description": "contextlib",
+        "label": "Broadcast",
+        "importPath": "broadcaster",
+        "description": "broadcaster",
         "isExtraImport": true,
-        "detail": "contextlib",
-        "documentation": {}
-    },
-    {
-        "label": "asynccontextmanager",
-        "importPath": "contextlib",
-        "description": "contextlib",
-        "isExtraImport": true,
-        "detail": "contextlib",
-        "documentation": {}
-    },
-    {
-        "label": "ErrorLog",
-        "importPath": "felicity.apps.errlog.entities",
-        "description": "felicity.apps.errlog.entities",
-        "isExtraImport": true,
-        "detail": "felicity.apps.errlog.entities",
-        "documentation": {}
-    },
-    {
-        "label": "ErrorLog",
-        "importPath": "felicity.apps.errlog.entities",
-        "description": "felicity.apps.errlog.entities",
-        "isExtraImport": true,
-        "detail": "felicity.apps.errlog.entities",
-        "documentation": {}
-    },
-    {
-        "label": "ErrorLogRepository",
-        "importPath": "felicity.apps.errlog.repositories",
-        "description": "felicity.apps.errlog.repositories",
-        "isExtraImport": true,
-        "detail": "felicity.apps.errlog.repositories",
-        "documentation": {}
-    },
-    {
-        "label": "ErrorLogCreate",
-        "importPath": "felicity.apps.errlog.schemas",
-        "description": "felicity.apps.errlog.schemas",
-        "isExtraImport": true,
-        "detail": "felicity.apps.errlog.schemas",
-        "documentation": {}
-    },
-    {
-        "label": "ErrorLogUpdate",
-        "importPath": "felicity.apps.errlog.schemas",
-        "description": "felicity.apps.errlog.schemas",
-        "isExtraImport": true,
-        "detail": "felicity.apps.errlog.schemas",
+        "detail": "broadcaster",
         "documentation": {}
     },
     {
@@ -20228,6 +20020,39 @@
         "description": "felicity.apps.shipment.entities",
         "isExtraImport": true,
         "detail": "felicity.apps.shipment.entities",
+        "documentation": {}
+    },
+    {
+        "label": "meilisearch",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "meilisearch",
+        "description": "meilisearch",
+        "detail": "meilisearch",
+        "documentation": {}
+    },
+    {
+        "label": "marshaller",
+        "importPath": "apps.common.utils.serializer",
+        "description": "apps.common.utils.serializer",
+        "isExtraImport": true,
+        "detail": "apps.common.utils.serializer",
+        "documentation": {}
+    },
+    {
+        "label": "marshaller",
+        "importPath": "apps.common.utils.serializer",
+        "description": "apps.common.utils.serializer",
+        "isExtraImport": true,
+        "detail": "apps.common.utils.serializer",
+        "documentation": {}
+    },
+    {
+        "label": "MeiliSearchClient",
+        "importPath": "apps.iol.meilisearch.client",
+        "description": "apps.iol.meilisearch.client",
+        "isExtraImport": true,
+        "detail": "apps.iol.meilisearch.client",
         "documentation": {}
     },
     {
@@ -21450,6 +21275,14 @@
         "documentation": {}
     },
     {
+        "label": "init_entity_tracker_events",
+        "importPath": "felicity.apps.abstract.events",
+        "description": "felicity.apps.abstract.events",
+        "isExtraImport": true,
+        "detail": "felicity.apps.abstract.events",
+        "documentation": {}
+    },
+    {
         "label": "init_user_events",
         "importPath": "felicity.apps.user.events",
         "description": "felicity.apps.user.events",
@@ -21480,6 +21313,14 @@
         "description": "socket",
         "isExtraImport": true,
         "detail": "socket",
+        "documentation": {}
+    },
+    {
+        "label": "Lock",
+        "importPath": "threading",
+        "description": "threading",
+        "isExtraImport": true,
+        "detail": "threading",
         "documentation": {}
     },
     {
@@ -21556,11 +21397,36 @@
         "documentation": {}
     },
     {
+        "label": "traceback",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "traceback",
+        "description": "traceback",
+        "detail": "traceback",
+        "documentation": {}
+    },
+    {
         "label": "format_exception",
         "importPath": "traceback",
         "description": "traceback",
         "isExtraImport": true,
         "detail": "traceback",
+        "documentation": {}
+    },
+    {
+        "label": "ThreadPoolExecutor",
+        "importPath": "concurrent.futures",
+        "description": "concurrent.futures",
+        "isExtraImport": true,
+        "detail": "concurrent.futures",
+        "documentation": {}
+    },
+    {
+        "label": "as_completed",
+        "importPath": "concurrent.futures",
+        "description": "concurrent.futures",
+        "isExtraImport": true,
+        "detail": "concurrent.futures",
         "documentation": {}
     },
     {
@@ -21585,62 +21451,6 @@
         "description": "passlib.context",
         "isExtraImport": true,
         "detail": "passlib.context",
-        "documentation": {}
-    },
-    {
-        "label": "OrderedDict",
-        "importPath": "collections",
-        "description": "collections",
-        "isExtraImport": true,
-        "detail": "collections",
-        "documentation": {}
-    },
-    {
-        "label": "abc",
-        "importPath": "collections",
-        "description": "collections",
-        "isExtraImport": true,
-        "detail": "collections",
-        "documentation": {}
-    },
-    {
-        "label": "hybrid_method",
-        "importPath": "sqlalchemy.ext.hybrid",
-        "description": "sqlalchemy.ext.hybrid",
-        "isExtraImport": true,
-        "detail": "sqlalchemy.ext.hybrid",
-        "documentation": {}
-    },
-    {
-        "label": "hybrid_property",
-        "importPath": "sqlalchemy.ext.hybrid",
-        "description": "sqlalchemy.ext.hybrid",
-        "isExtraImport": true,
-        "detail": "sqlalchemy.ext.hybrid",
-        "documentation": {}
-    },
-    {
-        "label": "hybrid_method",
-        "importPath": "sqlalchemy.ext.hybrid",
-        "description": "sqlalchemy.ext.hybrid",
-        "isExtraImport": true,
-        "detail": "sqlalchemy.ext.hybrid",
-        "documentation": {}
-    },
-    {
-        "label": "InstanceState",
-        "importPath": "sqlalchemy.orm.state",
-        "description": "sqlalchemy.orm.state",
-        "isExtraImport": true,
-        "detail": "sqlalchemy.orm.state",
-        "documentation": {}
-    },
-    {
-        "label": "AliasedClass",
-        "importPath": "sqlalchemy.orm.util",
-        "description": "sqlalchemy.orm.util",
-        "isExtraImport": true,
-        "detail": "sqlalchemy.orm.util",
         "documentation": {}
     },
     {
@@ -21674,6 +21484,14 @@
         "description": "sqlalchemy.orm.base",
         "isExtraImport": true,
         "detail": "sqlalchemy.orm.base",
+        "documentation": {}
+    },
+    {
+        "label": "hybrid_method",
+        "importPath": "sqlalchemy.ext.hybrid",
+        "description": "sqlalchemy.ext.hybrid",
+        "isExtraImport": true,
+        "detail": "sqlalchemy.ext.hybrid",
         "documentation": {}
     },
     {
@@ -21725,6 +21543,14 @@
         "documentation": {}
     },
     {
+        "label": "asynccontextmanager",
+        "importPath": "contextlib",
+        "description": "contextlib",
+        "isExtraImport": true,
+        "detail": "contextlib",
+        "documentation": {}
+    },
+    {
         "label": "trace",
         "importPath": "opentelemetry",
         "description": "opentelemetry",
@@ -21733,7 +21559,7 @@
         "documentation": {}
     },
     {
-        "label": "\\",
+        "label": "OTLPSpanExporter",
         "importPath": "opentelemetry.exporter.otlp.proto.grpc.trace_exporter",
         "description": "opentelemetry.exporter.otlp.proto.grpc.trace_exporter",
         "isExtraImport": true,
@@ -23310,7 +23136,7 @@
         "kind": 6,
         "importPath": "felicity.api.gql.audit.query",
         "description": "felicity.api.gql.audit.query",
-        "peekOfCode": "class AuditLogQuery:\n    @strawberry.field(permission_classes=[IsAuthenticated])\n    async def audit_logs_filter(\n        self, info, target_type: str, target_id: str\n    ) -> List[AuditLogType]:\n        return await AuditLogService().get_all(\n            target_type=target_type, target_id=target_id\n        )",
+        "peekOfCode": "class AuditLogQuery:\n    @strawberry.field(permission_classes=[IsAuthenticated])\n    async def audit_logs_filter(\n            self, info, target_type: str, target_uid: str\n    ) -> List[AuditLogType] | None:\n        documents = await MongoService().search(\n            MongoCollection.AUDIT_LOG,\n            filters={\n                \"target_type\": target_type,\n                \"target_uid\": target_uid",
         "detail": "felicity.api.gql.audit.query",
         "documentation": {}
     },
@@ -23319,7 +23145,7 @@
         "kind": 6,
         "importPath": "felicity.api.gql.audit.types",
         "description": "felicity.api.gql.audit.types",
-        "peekOfCode": "class AuditLogType:\n    uid: str\n    user_id: str | None = None\n    target_type: str | None = None\n    target_id: str | None = None\n    action: int | None = None\n    state_before: Optional[Text] = None\n    state_after: Optional[Text] = None",
+        "peekOfCode": "class AuditLogType:\n    uid: str\n    user_uid: str | None = None\n    target_type: str | None = None\n    target_uid: str | None = None\n    action: int | None = None\n    state_before: Optional[JSONScalar] = None\n    state_after: Optional[JSONScalar] = None",
         "detail": "felicity.api.gql.audit.types",
         "documentation": {}
     },
@@ -24642,7 +24468,7 @@
         "kind": 6,
         "importPath": "felicity.api.gql.notification.subscription",
         "description": "felicity.api.gql.notification.subscription",
-        "peekOfCode": "class StreamSubscription:\n    @strawberry.subscription()  # permission_classes=[IsAuthenticated]\n    async def latest_activity(self) -> AsyncGenerator[ActivityStreamType, None]:  # noqa\n        subscriber: Subscriber\n        async with broadcast.subscribe(channel=\"activities\") as subscriber:\n            logger.info(\"Subscribed\")\n            event: BroadcastEvent\n            try:\n                async for event in subscriber:\n                    logger.info(event)",
+        "peekOfCode": "class StreamSubscription:\n    @strawberry.subscription()  # permission_classes=[IsAuthenticated]\n    async def latest_activity(self) -> AsyncGenerator[ActivityStreamType, None]:  # noqa\n        async with broadcast.subscribe(channel=\"activities\") as subscriber:\n            logger.info(\"Subscribed\")\n            try:\n                async for event in subscriber:\n                    logger.info(event)\n                    yield ActivityStreamType(**json.loads(event.message))\n            finally:",
         "detail": "felicity.api.gql.notification.subscription",
         "documentation": {}
     },
@@ -24651,7 +24477,7 @@
         "kind": 5,
         "importPath": "felicity.api.gql.notification.subscription",
         "description": "felicity.api.gql.notification.subscription",
-        "peekOfCode": "logger = logging.getLogger(__name__)\n@strawberry.type\nclass StreamSubscription:\n    @strawberry.subscription()  # permission_classes=[IsAuthenticated]\n    async def latest_activity(self) -> AsyncGenerator[ActivityStreamType, None]:  # noqa\n        subscriber: Subscriber\n        async with broadcast.subscribe(channel=\"activities\") as subscriber:\n            logger.info(\"Subscribed\")\n            event: BroadcastEvent\n            try:",
+        "peekOfCode": "logger = logging.getLogger(__name__)\n@strawberry.type\nclass StreamSubscription:\n    @strawberry.subscription()  # permission_classes=[IsAuthenticated]\n    async def latest_activity(self) -> AsyncGenerator[ActivityStreamType, None]:  # noqa\n        async with broadcast.subscribe(channel=\"activities\") as subscriber:\n            logger.info(\"Subscribed\")\n            try:\n                async for event in subscriber:\n                    logger.info(event)",
         "detail": "felicity.api.gql.notification.subscription",
         "documentation": {}
     },
@@ -24669,7 +24495,7 @@
         "kind": 6,
         "importPath": "felicity.api.gql.notification.types",
         "description": "felicity.api.gql.notification.types",
-        "peekOfCode": "class ActivityFeedType:\n    uid: str\n    name: str\n    subscribers: list[UserType] | None = None\n@strawberry.type\nclass ActivityStreamType:\n    uid: str\n    feeds: Optional[List[ActivityFeedType]] = None\n    actor_uid: str | None = None\n    verb: str | None = None",
+        "peekOfCode": "class ActivityFeedType:\n    uid: str\n    name: str\n    subscribers: list[UserType] | None = None\n@strawberry.type\nclass ActivityStreamType:\n    uid: str\n    feeds: Optional[list[ActivityFeedType]] = None\n    actor_uid: str | None = None\n    verb: str | None = None",
         "detail": "felicity.api.gql.notification.types",
         "documentation": {}
     },
@@ -24678,7 +24504,7 @@
         "kind": 6,
         "importPath": "felicity.api.gql.notification.types",
         "description": "felicity.api.gql.notification.types",
-        "peekOfCode": "class ActivityStreamType:\n    uid: str\n    feeds: Optional[List[ActivityFeedType]] = None\n    actor_uid: str | None = None\n    verb: str | None = None\n    action_object_type: str | None = None\n    action_object_uid: str | None = None\n    target_uid: str | None = None\n    target: str | None = None\n    viewers: list[UserType] | None = None",
+        "peekOfCode": "class ActivityStreamType:\n    uid: str\n    feeds: Optional[list[ActivityFeedType]] = None\n    actor_uid: str | None = None\n    verb: str | None = None\n    action_object_type: str | None = None\n    action_object_uid: str | None = None\n    target_uid: str | None = None\n    target: str | None = None\n    viewers: list[UserType] | None = None",
         "detail": "felicity.api.gql.notification.types",
         "documentation": {}
     },
@@ -25686,7 +25512,7 @@
         "kind": 5,
         "importPath": "felicity.api.gql.types.generic",
         "description": "felicity.api.gql.types.generic",
-        "peekOfCode": "T = TypeVar(\"T\")\nJSONScalar = strawberry.scalar(\n    NewType(\"JSONScalar\", Any),\n    serialize=lambda v: v,\n    parse_value=lambda v: json.loads(v),\n    description=\"json field\",\n)\nclass BytesEncoder(json.JSONEncoder):\n    def default(self, obj):\n        if isinstance(obj, bytes):",
+        "peekOfCode": "T = TypeVar(\"T\")\nJSONScalar = strawberry.scalar(\n    NewType(\"JSONScalar\", Any),\n    serialize=lambda v: marshaller(v),\n    parse_value=lambda v: json.loads(v),\n    description=\"json field\",\n)\nclass BytesEncoder(json.JSONEncoder):\n    def default(self, obj):\n        if isinstance(obj, bytes):",
         "detail": "felicity.api.gql.types.generic",
         "documentation": {}
     },
@@ -25695,7 +25521,7 @@
         "kind": 5,
         "importPath": "felicity.api.gql.types.generic",
         "description": "felicity.api.gql.types.generic",
-        "peekOfCode": "JSONScalar = strawberry.scalar(\n    NewType(\"JSONScalar\", Any),\n    serialize=lambda v: v,\n    parse_value=lambda v: json.loads(v),\n    description=\"json field\",\n)\nclass BytesEncoder(json.JSONEncoder):\n    def default(self, obj):\n        if isinstance(obj, bytes):\n            return obj.decode(\"utf-8\")",
+        "peekOfCode": "JSONScalar = strawberry.scalar(\n    NewType(\"JSONScalar\", Any),\n    serialize=lambda v: marshaller(v),\n    parse_value=lambda v: json.loads(v),\n    description=\"json field\",\n)\nclass BytesEncoder(json.JSONEncoder):\n    def default(self, obj):\n        if isinstance(obj, bytes):\n            return obj.decode(\"utf-8\")",
         "detail": "felicity.api.gql.types.generic",
         "documentation": {}
     },
@@ -26325,7 +26151,7 @@
         "kind": 6,
         "importPath": "felicity.apps.abstract.audit",
         "description": "felicity.apps.abstract.audit",
-        "peekOfCode": "class AuditUser(BaseEntity, TrailMixin):\n    \"\"\"Track Actioners: creator and updater\"\"\"\n    __abstract__ = True\nclass AuditHistory(AuditUser, AuditHistoryMixin):\n    \"\"\"Track Model History -> Audit Log\"\"\"\n    __abstract__ = True",
+        "peekOfCode": "class AuditUser(BaseEntity, TrailMixin):\n    \"\"\"Track Actioners: creator and updater\"\"\"\n    __abstract__ = True\nclass AuditHistory(AuditUser, TrackableEntity):\n    \"\"\"Track Model Events\"\"\"\n    __abstract__ = True",
         "detail": "felicity.apps.abstract.audit",
         "documentation": {}
     },
@@ -26334,7 +26160,7 @@
         "kind": 6,
         "importPath": "felicity.apps.abstract.audit",
         "description": "felicity.apps.abstract.audit",
-        "peekOfCode": "class AuditHistory(AuditUser, AuditHistoryMixin):\n    \"\"\"Track Model History -> Audit Log\"\"\"\n    __abstract__ = True",
+        "peekOfCode": "class AuditHistory(AuditUser, TrackableEntity):\n    \"\"\"Track Model Events\"\"\"\n    __abstract__ = True",
         "detail": "felicity.apps.abstract.audit",
         "documentation": {}
     },
@@ -26363,6 +26189,33 @@
         "description": "felicity.apps.abstract.entity",
         "peekOfCode": "SessionMixin.query = classproperty(new_query)\nclass BaseEntity(DeclarativeBase, ReprMixin, SerializeMixin, SmartQueryMixin, AsyncAttrs):\n    __repr__ = ReprMixin.__repr__\n    __name__: str\n    __abstract__ = True\n    __mapper_args__ = {\"eager_defaults\": True}\n    uid = Column(\n        String,\n        primary_key=True,\n        index=True,",
         "detail": "felicity.apps.abstract.entity",
+        "documentation": {}
+    },
+    {
+        "label": "meilisearch_tracker",
+        "kind": 2,
+        "importPath": "felicity.apps.abstract.events",
+        "description": "felicity.apps.abstract.events",
+        "peekOfCode": "def meilisearch_tracker(action: str, table_name: str, metadata):\n    logger.info(f\"Event fired: {action}:{table_name}\")\n    if not metadata:\n        return\n    if action == \"after-update\":\n        metadata = {\n            \"uid\": metadata[\"uid\"],\n            **metadata.get(\"state_after\")\n        }\n    MeilisearchSyncHandler().on_event(action, table_name, metadata)",
+        "detail": "felicity.apps.abstract.events",
+        "documentation": {}
+    },
+    {
+        "label": "init_entity_tracker_events",
+        "kind": 2,
+        "importPath": "felicity.apps.abstract.events",
+        "description": "felicity.apps.abstract.events",
+        "peekOfCode": "def init_entity_tracker_events():\n    subscribe(\"entity-tracker\", meilisearch_tracker)\n    subscribe(\"entity-tracker\", auditlog_tracker)",
+        "detail": "felicity.apps.abstract.events",
+        "documentation": {}
+    },
+    {
+        "label": "logger",
+        "kind": 5,
+        "importPath": "felicity.apps.abstract.events",
+        "description": "felicity.apps.abstract.events",
+        "peekOfCode": "logger = logging.getLogger(__name__)\ndef meilisearch_tracker(action: str, table_name: str, metadata):\n    logger.info(f\"Event fired: {action}:{table_name}\")\n    if not metadata:\n        return\n    if action == \"after-update\":\n        metadata = {\n            \"uid\": metadata[\"uid\"],\n            **metadata.get(\"state_after\")\n        }",
+        "detail": "felicity.apps.abstract.events",
         "documentation": {}
     },
     {
@@ -26435,6 +26288,24 @@
         "description": "felicity.apps.abstract.service",
         "peekOfCode": "U = TypeVar(\"U\", bound=BaseModel)\nclass BaseService(Generic[E, C, U]):\n    def __init__(self, repository) -> None:\n        self.repository: BaseRepository = repository()\n    async def paging_filter(\n            self,\n            page_size: int | None = None,\n            after_cursor: str | None = None,\n            before_cursor: str | None = None,\n            filters: list[dict] | dict = None,",
         "detail": "felicity.apps.abstract.service",
+        "documentation": {}
+    },
+    {
+        "label": "TrackableEntity",
+        "kind": 6,
+        "importPath": "felicity.apps.abstract.trackable",
+        "description": "felicity.apps.abstract.trackable",
+        "peekOfCode": "class TrackableEntity:\n    \"\"\"Allow a model to be automatically tracked\"\"\"\n    @staticmethod\n    def put_out(action, table_name, metadata):\n        \"\"\"\"handle an event that something has happened\"\"\"\n        post_event(\n            event_type=\"entity-tracker\",\n            action=action,\n            table_name=table_name,\n            metadata=metadata",
+        "detail": "felicity.apps.abstract.trackable",
+        "documentation": {}
+    },
+    {
+        "label": "logger",
+        "kind": 5,
+        "importPath": "felicity.apps.abstract.trackable",
+        "description": "felicity.apps.abstract.trackable",
+        "peekOfCode": "logger = logging.getLogger(__name__)\nclass TrackableEntity:\n    \"\"\"Allow a model to be automatically tracked\"\"\"\n    @staticmethod\n    def put_out(action, table_name, metadata):\n        \"\"\"\"handle an event that something has happened\"\"\"\n        post_event(\n            event_type=\"entity-tracker\",\n            action=action,\n            table_name=table_name,",
+        "detail": "felicity.apps.abstract.trackable",
         "documentation": {}
     },
     {
@@ -28751,96 +28622,6 @@
         "documentation": {}
     },
     {
-        "label": "AuditLog",
-        "kind": 6,
-        "importPath": "felicity.apps.auditlog.entities",
-        "description": "felicity.apps.auditlog.entities",
-        "peekOfCode": "class AuditLog(BaseEntity):\n    \"\"\"Model an audit log of user actions\"\"\"\n    __tablename__ = \"audit_log\"\n    user_id = Column(String, doc=\"The ID of the user who made the change\")\n    target_type = Column(\n        String(100), nullable=False, doc=\"The table name of the altered object\"\n    )\n    target_id = Column(String, doc=\"The ID of the altered object\")\n    action = Column(Integer, doc=\"Create (1), update (2), or delete (3)\")\n    state_before = Column(",
-        "detail": "felicity.apps.auditlog.entities",
-        "documentation": {}
-    },
-    {
-        "label": "AuditHistoryMixin",
-        "kind": 6,
-        "importPath": "felicity.apps.auditlog.mixin",
-        "description": "felicity.apps.auditlog.mixin",
-        "peekOfCode": "class AuditHistoryMixin:\n    \"\"\"Allow a model to be automatically audited\"\"\"\n    @staticmethod\n    def create_audit(connection, object_type, object_id, action, **kwargs):\n        audit = AuditLog(\n            object_type,\n            object_id,\n            action,\n            kwargs.get(\"state_before\"),\n            kwargs.get(\"state_after\"),",
-        "detail": "felicity.apps.auditlog.mixin",
-        "documentation": {}
-    },
-    {
-        "label": "custom_serial",
-        "kind": 2,
-        "importPath": "felicity.apps.auditlog.mixin",
-        "description": "felicity.apps.auditlog.mixin",
-        "peekOfCode": "def custom_serial(o):\n    if isinstance(o, (datetime.date, datetime.datetime)):\n        return o.isoformat()\n    raise TypeError(\"Type %s not serializable\" % type(o))\nclass AuditHistoryMixin:\n    \"\"\"Allow a model to be automatically audited\"\"\"\n    @staticmethod\n    def create_audit(connection, object_type, object_id, action, **kwargs):\n        audit = AuditLog(\n            object_type,",
-        "detail": "felicity.apps.auditlog.mixin",
-        "documentation": {}
-    },
-    {
-        "label": "logger",
-        "kind": 5,
-        "importPath": "felicity.apps.auditlog.mixin",
-        "description": "felicity.apps.auditlog.mixin",
-        "peekOfCode": "logger = logging.getLogger(__name__)\nACTION_CREATE = 1\nACTION_UPDATE = 2\nACTION_DELETE = 3\n# Only audit the events in this list\nPLEASE_AUDIT = [ACTION_UPDATE]\ndef custom_serial(o):\n    if isinstance(o, (datetime.date, datetime.datetime)):\n        return o.isoformat()\n    raise TypeError(\"Type %s not serializable\" % type(o))",
-        "detail": "felicity.apps.auditlog.mixin",
-        "documentation": {}
-    },
-    {
-        "label": "ACTION_CREATE",
-        "kind": 5,
-        "importPath": "felicity.apps.auditlog.mixin",
-        "description": "felicity.apps.auditlog.mixin",
-        "peekOfCode": "ACTION_CREATE = 1\nACTION_UPDATE = 2\nACTION_DELETE = 3\n# Only audit the events in this list\nPLEASE_AUDIT = [ACTION_UPDATE]\ndef custom_serial(o):\n    if isinstance(o, (datetime.date, datetime.datetime)):\n        return o.isoformat()\n    raise TypeError(\"Type %s not serializable\" % type(o))\nclass AuditHistoryMixin:",
-        "detail": "felicity.apps.auditlog.mixin",
-        "documentation": {}
-    },
-    {
-        "label": "ACTION_UPDATE",
-        "kind": 5,
-        "importPath": "felicity.apps.auditlog.mixin",
-        "description": "felicity.apps.auditlog.mixin",
-        "peekOfCode": "ACTION_UPDATE = 2\nACTION_DELETE = 3\n# Only audit the events in this list\nPLEASE_AUDIT = [ACTION_UPDATE]\ndef custom_serial(o):\n    if isinstance(o, (datetime.date, datetime.datetime)):\n        return o.isoformat()\n    raise TypeError(\"Type %s not serializable\" % type(o))\nclass AuditHistoryMixin:\n    \"\"\"Allow a model to be automatically audited\"\"\"",
-        "detail": "felicity.apps.auditlog.mixin",
-        "documentation": {}
-    },
-    {
-        "label": "ACTION_DELETE",
-        "kind": 5,
-        "importPath": "felicity.apps.auditlog.mixin",
-        "description": "felicity.apps.auditlog.mixin",
-        "peekOfCode": "ACTION_DELETE = 3\n# Only audit the events in this list\nPLEASE_AUDIT = [ACTION_UPDATE]\ndef custom_serial(o):\n    if isinstance(o, (datetime.date, datetime.datetime)):\n        return o.isoformat()\n    raise TypeError(\"Type %s not serializable\" % type(o))\nclass AuditHistoryMixin:\n    \"\"\"Allow a model to be automatically audited\"\"\"\n    @staticmethod",
-        "detail": "felicity.apps.auditlog.mixin",
-        "documentation": {}
-    },
-    {
-        "label": "PLEASE_AUDIT",
-        "kind": 5,
-        "importPath": "felicity.apps.auditlog.mixin",
-        "description": "felicity.apps.auditlog.mixin",
-        "peekOfCode": "PLEASE_AUDIT = [ACTION_UPDATE]\ndef custom_serial(o):\n    if isinstance(o, (datetime.date, datetime.datetime)):\n        return o.isoformat()\n    raise TypeError(\"Type %s not serializable\" % type(o))\nclass AuditHistoryMixin:\n    \"\"\"Allow a model to be automatically audited\"\"\"\n    @staticmethod\n    def create_audit(connection, object_type, object_id, action, **kwargs):\n        audit = AuditLog(",
-        "detail": "felicity.apps.auditlog.mixin",
-        "documentation": {}
-    },
-    {
-        "label": "AuditLogRepository",
-        "kind": 6,
-        "importPath": "felicity.apps.auditlog.repositories",
-        "description": "felicity.apps.auditlog.repositories",
-        "peekOfCode": "class AuditLogRepository(BaseRepository[AuditLog]):\n    def __init__(self) -> None:\n        super().__init__(AuditLog)",
-        "detail": "felicity.apps.auditlog.repositories",
-        "documentation": {}
-    },
-    {
-        "label": "AuditLogService",
-        "kind": 6,
-        "importPath": "felicity.apps.auditlog.services",
-        "description": "felicity.apps.auditlog.services",
-        "peekOfCode": "class AuditLogService(BaseService[AuditLog, Dummy, Dummy]):\n    def __init__(self) -> None:\n        super().__init__(AuditLogRepository)",
-        "detail": "felicity.apps.auditlog.services",
-        "documentation": {}
-    },
-    {
         "label": "AnalysisPrice",
         "kind": 6,
         "importPath": "felicity.apps.billing.entities",
@@ -29826,35 +29607,8 @@
         "kind": 2,
         "importPath": "felicity.apps.common.utils.serializer",
         "description": "felicity.apps.common.utils.serializer",
-        "peekOfCode": "def marshaller(\n    obj, path=None, memoize=None, exclude: list[str] = None, depth=2\n) -> dict | str:\n    \"\"\"Notes:\n    1. We use memoization To prevent marshalling the same object again hence speed things up\n    2. We use path tracking To stop marshalling when a path starts to repeat itself or meets a certain path restriction\n    \"\"\"\n    if memoize is None:\n        memoize = {}\n    if path is None:",
+        "peekOfCode": "def marshaller(\n        obj, path=None, memoize=None, exclude: list[str] = None, depth=2\n) -> dict | str:\n    \"\"\"\n    Custom marshaller function to convert objects to dictionaries or strings with proper handling for\n    StrEnum, datetime, and other custom objects.\n    \"\"\"\n    if memoize is None:\n        memoize = {}\n    if path is None:",
         "detail": "felicity.apps.common.utils.serializer",
-        "documentation": {}
-    },
-    {
-        "label": "BroadcastEvent",
-        "kind": 6,
-        "importPath": "felicity.apps.common.channel",
-        "description": "felicity.apps.common.channel",
-        "peekOfCode": "class BroadcastEvent:\n    channel: str\n    message: Any\n@dataclass\nclass Subscriber:\n    queue: \"Queue[BroadcastEvent]\" = field(default_factory=Queue)\n    async def __aiter__(self) -> AsyncIterator[BroadcastEvent]:\n        while True:\n            item = await self.get()\n            yield item",
-        "detail": "felicity.apps.common.channel",
-        "documentation": {}
-    },
-    {
-        "label": "Subscriber",
-        "kind": 6,
-        "importPath": "felicity.apps.common.channel",
-        "description": "felicity.apps.common.channel",
-        "peekOfCode": "class Subscriber:\n    queue: \"Queue[BroadcastEvent]\" = field(default_factory=Queue)\n    async def __aiter__(self) -> AsyncIterator[BroadcastEvent]:\n        while True:\n            item = await self.get()\n            yield item\n    async def get(self) -> BroadcastEvent:\n        item = await self.queue.get()\n        return item\n@dataclass",
-        "detail": "felicity.apps.common.channel",
-        "documentation": {}
-    },
-    {
-        "label": "Broadcast",
-        "kind": 6,
-        "importPath": "felicity.apps.common.channel",
-        "description": "felicity.apps.common.channel",
-        "peekOfCode": "class Broadcast:\n    subscribers: dict[str, Set[Queue]] = field(default_factory=dict)\n    published: Queue = Queue()\n    @asynccontextmanager\n    async def subscribe(self, channel: str) -> AsyncIterator[Subscriber]:\n        subscriber = Subscriber()\n        subscribers_set = self.subscribers.get(channel, set())\n        subscribers_set.add(subscriber.queue)\n        self.subscribers[channel] = subscribers_set\n        try:",
-        "detail": "felicity.apps.common.channel",
         "documentation": {}
     },
     {
@@ -29862,71 +29616,8 @@
         "kind": 5,
         "importPath": "felicity.apps.common.channel",
         "description": "felicity.apps.common.channel",
-        "peekOfCode": "broadcast = Broadcast()",
+        "peekOfCode": "broadcast = Broadcast(f\"redis://{settings.REDIS_SERVER}\")",
         "detail": "felicity.apps.common.channel",
-        "documentation": {}
-    },
-    {
-        "label": "ErrorLog",
-        "kind": 6,
-        "importPath": "felicity.apps.errlog.entities",
-        "description": "felicity.apps.errlog.entities",
-        "peekOfCode": "class ErrorLog(AuditUser):\n    __tablename__ = \"error_log\"\n    content = Column(JSONB)",
-        "detail": "felicity.apps.errlog.entities",
-        "documentation": {}
-    },
-    {
-        "label": "ErrorLogRepository",
-        "kind": 6,
-        "importPath": "felicity.apps.errlog.repositories",
-        "description": "felicity.apps.errlog.repositories",
-        "peekOfCode": "class ErrorLogRepository(BaseRepository[ErrorLog]):\n    def __init__(self) -> None:\n        super().__init__(ErrorLog)",
-        "detail": "felicity.apps.errlog.repositories",
-        "documentation": {}
-    },
-    {
-        "label": "ErrorLogBase",
-        "kind": 6,
-        "importPath": "felicity.apps.errlog.schemas",
-        "description": "felicity.apps.errlog.schemas",
-        "peekOfCode": "class ErrorLogBase(BaseModel):\n    content: Optional[Any] = None\nclass ErrorLog(ErrorLogBase):\n    uid: str | None = None\n    model_config = ConfigDict(from_attributes=True)\nclass ErrorLogCreate(ErrorLogBase):\n    pass\nclass ErrorLogUpdate(ErrorLogBase):\n    pass",
-        "detail": "felicity.apps.errlog.schemas",
-        "documentation": {}
-    },
-    {
-        "label": "ErrorLog",
-        "kind": 6,
-        "importPath": "felicity.apps.errlog.schemas",
-        "description": "felicity.apps.errlog.schemas",
-        "peekOfCode": "class ErrorLog(ErrorLogBase):\n    uid: str | None = None\n    model_config = ConfigDict(from_attributes=True)\nclass ErrorLogCreate(ErrorLogBase):\n    pass\nclass ErrorLogUpdate(ErrorLogBase):\n    pass",
-        "detail": "felicity.apps.errlog.schemas",
-        "documentation": {}
-    },
-    {
-        "label": "ErrorLogCreate",
-        "kind": 6,
-        "importPath": "felicity.apps.errlog.schemas",
-        "description": "felicity.apps.errlog.schemas",
-        "peekOfCode": "class ErrorLogCreate(ErrorLogBase):\n    pass\nclass ErrorLogUpdate(ErrorLogBase):\n    pass",
-        "detail": "felicity.apps.errlog.schemas",
-        "documentation": {}
-    },
-    {
-        "label": "ErrorLogUpdate",
-        "kind": 6,
-        "importPath": "felicity.apps.errlog.schemas",
-        "description": "felicity.apps.errlog.schemas",
-        "peekOfCode": "class ErrorLogUpdate(ErrorLogBase):\n    pass",
-        "detail": "felicity.apps.errlog.schemas",
-        "documentation": {}
-    },
-    {
-        "label": "ErrorLogService",
-        "kind": 6,
-        "importPath": "felicity.apps.errlog.services",
-        "description": "felicity.apps.errlog.services",
-        "peekOfCode": "class ErrorLogService(BaseService[ErrorLog, ErrorLogCreate, ErrorLogUpdate]):\n    def __int__(self):\n        super().__init__(ErrorLogRepository)",
-        "detail": "felicity.apps.errlog.services",
         "documentation": {}
     },
     {
@@ -31946,11 +31637,56 @@
         "documentation": {}
     },
     {
+        "label": "MeiliSearchClient",
+        "kind": 6,
+        "importPath": "felicity.apps.iol.meilisearch.client",
+        "description": "felicity.apps.iol.meilisearch.client",
+        "peekOfCode": "class MeiliSearchClient:\n    def __init__(self):\n        self.client = meilisearch.Client(settings.MEILISEARCH_SERVER, settings.MEILISEARCH_API_KEY)\n    def create_index(self, index_name: str):\n        logger.info(\"meilisearch -- create index --\")\n        return self.client.create_index(uid=index_name, options={\"primaryKey\": \"uid\"})\n    def add_documents(self, index_name: str, docs: list):\n        logger.info(\"meilisearch -- add documents --\")\n        index = self.client.index(index_name)\n        return index.add_documents(docs)",
+        "detail": "felicity.apps.iol.meilisearch.client",
+        "documentation": {}
+    },
+    {
+        "label": "logger",
+        "kind": 5,
+        "importPath": "felicity.apps.iol.meilisearch.client",
+        "description": "felicity.apps.iol.meilisearch.client",
+        "peekOfCode": "logger = logging.getLogger(__name__)\nclass MeiliSearchClient:\n    def __init__(self):\n        self.client = meilisearch.Client(settings.MEILISEARCH_SERVER, settings.MEILISEARCH_API_KEY)\n    def create_index(self, index_name: str):\n        logger.info(\"meilisearch -- create index --\")\n        return self.client.create_index(uid=index_name, options={\"primaryKey\": \"uid\"})\n    def add_documents(self, index_name: str, docs: list):\n        logger.info(\"meilisearch -- add documents --\")\n        index = self.client.index(index_name)",
+        "detail": "felicity.apps.iol.meilisearch.client",
+        "documentation": {}
+    },
+    {
+        "label": "CustomJSONEncoder",
+        "kind": 6,
+        "importPath": "felicity.apps.iol.meilisearch.handler",
+        "description": "felicity.apps.iol.meilisearch.handler",
+        "peekOfCode": "class CustomJSONEncoder(json.JSONEncoder):\n    def default(self, obj):\n        if isinstance(obj, StrEnum):\n            return obj.value  # Serialize StrEnum to its value\n        if isinstance(obj, datetime):\n            return obj.isoformat()  # Serialize datetime to ISO format string\n        return super().default(obj)\nclass MeilisearchSyncHandler:\n    def __init__(self):\n        self.client = MeiliSearchClient()",
+        "detail": "felicity.apps.iol.meilisearch.handler",
+        "documentation": {}
+    },
+    {
+        "label": "MeilisearchSyncHandler",
+        "kind": 6,
+        "importPath": "felicity.apps.iol.meilisearch.handler",
+        "description": "felicity.apps.iol.meilisearch.handler",
+        "peekOfCode": "class MeilisearchSyncHandler:\n    def __init__(self):\n        self.client = MeiliSearchClient()\n        self.tables_of_interest = {'sample', 'worksheet', \"result\"}\n    def should_sync(self, table_name: str):\n        return table_name in self.tables_of_interest\n    @staticmethod\n    def get_document(metadata):\n        return marshaller(metadata)\n    def on_event(self, event_type, table_name, tracked):",
+        "detail": "felicity.apps.iol.meilisearch.handler",
+        "documentation": {}
+    },
+    {
         "label": "MinioClient",
         "kind": 6,
         "importPath": "felicity.apps.iol.minio.client",
         "description": "felicity.apps.iol.minio.client",
-        "peekOfCode": "class MinioClient:\n    def __init__(self):\n        self.client = Minio(\n            \"localhost:9000\",\n            access_key=\"felicity\",\n            secret_key=\"felicity\",\n            secure=False\n        )\n    def bucket_exists(self, bucket: MinioBucket):\n        return self.client.bucket_exists(bucket)",
+        "peekOfCode": "class MinioClient:\n    def __init__(self):\n        self.client = Minio(\n            endpoint=settings.MINIO_SERVER,\n            access_key=settings.MINIO_ACCESS,\n            secret_key=settings.MINIO_SECRET,\n            secure=False\n        )\n    def bucket_exists(self, bucket: MinioBucket):\n        return self.client.bucket_exists(bucket)",
+        "detail": "felicity.apps.iol.minio.client",
+        "documentation": {}
+    },
+    {
+        "label": "logger",
+        "kind": 5,
+        "importPath": "felicity.apps.iol.minio.client",
+        "description": "felicity.apps.iol.minio.client",
+        "peekOfCode": "logger = logging.getLogger(__name__)\nclass MinioClient:\n    def __init__(self):\n        self.client = Minio(\n            endpoint=settings.MINIO_SERVER,\n            access_key=settings.MINIO_ACCESS,\n            secret_key=settings.MINIO_SECRET,\n            secure=False\n        )\n    def bucket_exists(self, bucket: MinioBucket):",
         "detail": "felicity.apps.iol.minio.client",
         "documentation": {}
     },
@@ -32616,7 +32352,7 @@
         "kind": 6,
         "importPath": "felicity.apps.notification.services",
         "description": "felicity.apps.notification.services",
-        "peekOfCode": "class ActivityFeedService(\n    BaseService[ActivityFeed, ActivityFeedCreate, ActivityFeedUpdate]\n):\n    def __init__(self):\n        super().__init__(ActivityFeedRepository)\n    async def reset_subscribers(self, activity_feed: ActivityFeed) -> ActivityFeed:\n        activity_feed.subscribers.clear()\n        return await super().save(activity_feed)\n    async def remove_subscriber(\n        self, activity_feed: ActivityFeed, user: User",
+        "peekOfCode": "class ActivityFeedService(\n    BaseService[ActivityFeed, ActivityFeedCreate, ActivityFeedUpdate]\n):\n    def __init__(self):\n        super().__init__(ActivityFeedRepository)\n    async def reset_subscribers(self, activity_feed: ActivityFeed) -> ActivityFeed:\n        activity_feed.subscribers.clear()\n        return await super().save(activity_feed)\n    async def remove_subscriber(\n            self, activity_feed: ActivityFeed, user: User",
         "detail": "felicity.apps.notification.services",
         "documentation": {}
     },
@@ -32625,7 +32361,7 @@
         "kind": 6,
         "importPath": "felicity.apps.notification.services",
         "description": "felicity.apps.notification.services",
-        "peekOfCode": "class ActivityStreamService(\n    BaseService[ActivityStream, ActivityStreamCreate, ActivityStreamUpdate]\n):\n    def __init__(self):\n        super().__init__(ActivityStreamRepository)\n    async def stream(\n        self,\n        obj: Any,\n        actor: User,\n        verb: str,",
+        "peekOfCode": "class ActivityStreamService(\n    BaseService[ActivityStream, ActivityStreamCreate, ActivityStreamUpdate]\n):\n    def __init__(self):\n        super().__init__(ActivityStreamRepository)\n    async def stream(\n            self,\n            obj: Any,\n            actor: User,\n            verb: str,",
         "detail": "felicity.apps.notification.services",
         "documentation": {}
     },
@@ -32634,7 +32370,7 @@
         "kind": 6,
         "importPath": "felicity.apps.notification.services",
         "description": "felicity.apps.notification.services",
-        "peekOfCode": "class NotificationService(\n    BaseService[Notification, NotificationCreate, NotificationUpdate]\n):\n    def __init__(self):\n        super().__init__(NotificationRepository)\n    async def notify(self,message: str, users, departments=None, groups=None) -> None:\n        n_in = NotificationCreate(message=message)\n        notification = await super().create(n_in, related=[\"users\", \"departments\", \"groups\"])\n        if not isinstance(users, list):\n            users = [users]",
+        "peekOfCode": "class NotificationService(\n    BaseService[Notification, NotificationCreate, NotificationUpdate]\n):\n    def __init__(self):\n        super().__init__(NotificationRepository)\n    async def notify(self, message: str, users, departments=None, groups=None) -> None:\n        n_in = NotificationCreate(message=message)\n        notification = await super().create(n_in, related=[\"users\", \"departments\", \"groups\"])\n        if not isinstance(users, list):\n            users = [users]",
         "detail": "felicity.apps.notification.services",
         "documentation": {}
     },
@@ -35253,7 +34989,7 @@
         "kind": 2,
         "importPath": "felicity.apps.events",
         "description": "felicity.apps.events",
-        "peekOfCode": "def observe_events():\n    init_user_events()",
+        "peekOfCode": "def observe_events():\n    init_user_events()\n    init_entity_tracker_events()",
         "detail": "felicity.apps.events",
         "documentation": {}
     },
@@ -35483,11 +35219,38 @@
         "documentation": {}
     },
     {
+        "label": "partition_functions",
+        "kind": 2,
+        "importPath": "felicity.core.events",
+        "description": "felicity.core.events",
+        "peekOfCode": "def partition_functions(functions: List[Callable[..., Any]]) -> (List[Callable[..., Any]], List[Callable[..., Any]]):\n    async_funcs = [fn for fn in functions if inspect.iscoroutinefunction(fn)]\n    sync_funcs = [fn for fn in functions if not inspect.iscoroutinefunction(fn)]\n    return async_funcs, sync_funcs\ndef get_or_create_event_loop() -> asyncio.AbstractEventLoop:\n    try:\n        return asyncio.get_event_loop()\n    except RuntimeError:\n        loop = asyncio.new_event_loop()\n        asyncio.set_event_loop(loop)",
+        "detail": "felicity.core.events",
+        "documentation": {}
+    },
+    {
+        "label": "get_or_create_event_loop",
+        "kind": 2,
+        "importPath": "felicity.core.events",
+        "description": "felicity.core.events",
+        "peekOfCode": "def get_or_create_event_loop() -> asyncio.AbstractEventLoop:\n    try:\n        return asyncio.get_event_loop()\n    except RuntimeError:\n        loop = asyncio.new_event_loop()\n        asyncio.set_event_loop(loop)\n        return loop\n# Synchronous Event System\ndef subscribe(event_type: str, fn: Callable[..., Any]) -> None:\n    with sync_lock:",
+        "detail": "felicity.core.events",
+        "documentation": {}
+    },
+    {
         "label": "subscribe",
         "kind": 2,
         "importPath": "felicity.core.events",
         "description": "felicity.core.events",
-        "peekOfCode": "def subscribe(event_type: str, fn: Callable):\n    if event_type not in subscribers:\n        subscribers[event_type] = []\n    subscribers[event_type].append(fn)\ndef post_event(event_type: str, **kwargs):\n    if event_type not in subscribers:\n        return\n    for fn in subscribers[event_type]:\n        fn(**kwargs)",
+        "peekOfCode": "def subscribe(event_type: str, fn: Callable[..., Any]) -> None:\n    with sync_lock:\n        subscribers.setdefault(event_type, []).append(fn)\ndef unsubscribe(event_type: str, fn: Callable[..., Any]) -> None:\n    with sync_lock:\n        if event_type in subscribers:\n            try:\n                subscribers[event_type].remove(fn)\n            except ValueError:\n                logger.error(",
+        "detail": "felicity.core.events",
+        "documentation": {}
+    },
+    {
+        "label": "unsubscribe",
+        "kind": 2,
+        "importPath": "felicity.core.events",
+        "description": "felicity.core.events",
+        "peekOfCode": "def unsubscribe(event_type: str, fn: Callable[..., Any]) -> None:\n    with sync_lock:\n        if event_type in subscribers:\n            try:\n                subscribers[event_type].remove(fn)\n            except ValueError:\n                logger.error(\n                    f\"Function not found in subscribers for event type: {event_type}\\n{traceback.format_exc()}\")\ndef post_event(event_type: str, **kwargs: Any) -> None:\n    with sync_lock:",
         "detail": "felicity.core.events",
         "documentation": {}
     },
@@ -35496,16 +35259,43 @@
         "kind": 2,
         "importPath": "felicity.core.events",
         "description": "felicity.core.events",
-        "peekOfCode": "def post_event(event_type: str, **kwargs):\n    if event_type not in subscribers:\n        return\n    for fn in subscribers[event_type]:\n        fn(**kwargs)",
+        "peekOfCode": "def post_event(event_type: str, **kwargs: Any) -> None:\n    with sync_lock:\n        current_subscribers = subscribers.get(event_type, [])\n    # Separate sync from async functions\n    async_funcs, sync_funcs = partition_functions(current_subscribers)\n    # Handle async functions\n    loop = get_or_create_event_loop()\n    for fn in async_funcs:\n        if loop.is_running():\n            loop.create_task(fn(**kwargs))",
         "detail": "felicity.core.events",
         "documentation": {}
     },
     {
-        "label": "subscribers",
+        "label": "safe_execute",
+        "kind": 2,
+        "importPath": "felicity.core.events",
+        "description": "felicity.core.events",
+        "peekOfCode": "def safe_execute(fn: Callable[..., Any], **kwargs: Any) -> None:\n    try:\n        fn(**kwargs)\n    except Exception as e:\n        logger.error(f\"Error in event subscriber {fn.__name__}: {e}\\n{traceback.format_exc()}\")\n# Asynchronous Event System\nasync def asubscribe(event_type: str, fn: Callable[..., Any]) -> None:\n    async with async_lock:\n        subscribers.setdefault(event_type, []).append(fn)\nasync def aunsubscribe(event_type: str, fn: Callable[..., Any]) -> None:",
+        "detail": "felicity.core.events",
+        "documentation": {}
+    },
+    {
+        "label": "logger",
         "kind": 5,
         "importPath": "felicity.core.events",
         "description": "felicity.core.events",
-        "peekOfCode": "subscribers = dict()\ndef subscribe(event_type: str, fn: Callable):\n    if event_type not in subscribers:\n        subscribers[event_type] = []\n    subscribers[event_type].append(fn)\ndef post_event(event_type: str, **kwargs):\n    if event_type not in subscribers:\n        return\n    for fn in subscribers[event_type]:\n        fn(**kwargs)",
+        "peekOfCode": "logger = logging.getLogger(__name__)\nsubscribers: Dict[str, List[Callable[..., Any]]] = {}\nsync_lock = Lock()  # Synchronous lock\nasync_lock = ALock()  # Asynchronous lock\ndef partition_functions(functions: List[Callable[..., Any]]) -> (List[Callable[..., Any]], List[Callable[..., Any]]):\n    async_funcs = [fn for fn in functions if inspect.iscoroutinefunction(fn)]\n    sync_funcs = [fn for fn in functions if not inspect.iscoroutinefunction(fn)]\n    return async_funcs, sync_funcs\ndef get_or_create_event_loop() -> asyncio.AbstractEventLoop:\n    try:",
+        "detail": "felicity.core.events",
+        "documentation": {}
+    },
+    {
+        "label": "sync_lock",
+        "kind": 5,
+        "importPath": "felicity.core.events",
+        "description": "felicity.core.events",
+        "peekOfCode": "sync_lock = Lock()  # Synchronous lock\nasync_lock = ALock()  # Asynchronous lock\ndef partition_functions(functions: List[Callable[..., Any]]) -> (List[Callable[..., Any]], List[Callable[..., Any]]):\n    async_funcs = [fn for fn in functions if inspect.iscoroutinefunction(fn)]\n    sync_funcs = [fn for fn in functions if not inspect.iscoroutinefunction(fn)]\n    return async_funcs, sync_funcs\ndef get_or_create_event_loop() -> asyncio.AbstractEventLoop:\n    try:\n        return asyncio.get_event_loop()\n    except RuntimeError:",
+        "detail": "felicity.core.events",
+        "documentation": {}
+    },
+    {
+        "label": "async_lock",
+        "kind": 5,
+        "importPath": "felicity.core.events",
+        "description": "felicity.core.events",
+        "peekOfCode": "async_lock = ALock()  # Asynchronous lock\ndef partition_functions(functions: List[Callable[..., Any]]) -> (List[Callable[..., Any]], List[Callable[..., Any]]):\n    async_funcs = [fn for fn in functions if inspect.iscoroutinefunction(fn)]\n    sync_funcs = [fn for fn in functions if not inspect.iscoroutinefunction(fn)]\n    return async_funcs, sync_funcs\ndef get_or_create_event_loop() -> asyncio.AbstractEventLoop:\n    try:\n        return asyncio.get_event_loop()\n    except RuntimeError:\n        loop = asyncio.new_event_loop()",
         "detail": "felicity.core.events",
         "documentation": {}
     },
@@ -35663,227 +35453,11 @@
         "documentation": {}
     },
     {
-        "label": "ModelNotFoundError",
-        "kind": 6,
-        "importPath": "felicity.database.queryset.builder",
-        "description": "felicity.database.queryset.builder",
-        "peekOfCode": "class ModelNotFoundError(ValueError):\n    pass\ndef _flatten_filter_keys(filters):\n    \"\"\"\n    :type filters: dict|list\n    Flatten the nested filters, extracting keys where they correspond\n    to smart_query paths, e.g.\n    {or_: {'id__gt': 1000, and_ : {\n        'id__lt': 500,\n        'related___property__in': (1,2,3)",
-        "detail": "felicity.database.queryset.builder",
-        "documentation": {}
-    },
-    {
-        "label": "QueryBuilder",
-        "kind": 6,
-        "importPath": "felicity.database.queryset.builder",
-        "description": "felicity.database.queryset.builder",
-        "peekOfCode": "class QueryBuilder:\n    def __init__(self, model: M) -> None:\n        self.model = model\n    @property\n    def query(self):\n        return select(self.model)\n    def with_(self, schema):\n        \"\"\"\n        Query class and eager load schema at once.\n        :type schema: dict",
-        "detail": "felicity.database.queryset.builder",
-        "documentation": {}
-    },
-    {
-        "label": "filter_expr",
-        "kind": 2,
-        "importPath": "felicity.database.queryset.builder",
-        "description": "felicity.database.queryset.builder",
-        "peekOfCode": "def filter_expr(model, **filters):\n    \"\"\"\n    forms expressions like [Product.age_from = 5,\n                            Product.subject_ids.in_([1,2])]\n    from filters like {'age_from': 5, 'subject_ids__in': [1,2]}\n    Example 1:\n        db.query(Product).filter(\n            *Product.filter_expr(age_from = 5, subject_ids__in=[1, 2]))\n    Example 2:\n        filters = {'age_from': 5, 'subject_ids__in': [1,2]}",
-        "detail": "felicity.database.queryset.builder",
-        "documentation": {}
-    },
-    {
-        "label": "smart_query",
-        "kind": 2,
-        "importPath": "felicity.database.queryset.builder",
-        "description": "felicity.database.queryset.builder",
-        "peekOfCode": "def smart_query(query, filters=None, sort_attrs=None, schema=None):\n    \"\"\"\n    Does magic Django-ish joins like post___user___name__startswith='Bob'\n     (see https://goo.gl/jAgCyM)\n    Does filtering, sorting and eager loading at the same time.\n    And if, say, filters and sorting need the same joinm it will be done\n     only one. That's why all stuff is combined in single method\n    :param query: sqlalchemy.orm.query.Query\n    :param filters: dict\n    :param sort_attrs: List[basestring]",
-        "detail": "felicity.database.queryset.builder",
-        "documentation": {}
-    },
-    {
-        "label": "eager_expr",
-        "kind": 2,
-        "importPath": "felicity.database.queryset.builder",
-        "description": "felicity.database.queryset.builder",
-        "peekOfCode": "def eager_expr(schema):\n    \"\"\"\n    :type schema: dict\n    \"\"\"\n    return _eager_expr_from_schema(schema)\ndef _flatten_schema(schema):\n    \"\"\"\n    :type schema: dict\n    \"\"\"\n    def _flatten(schema, parent_path, result):",
-        "detail": "felicity.database.queryset.builder",
-        "documentation": {}
-    },
-    {
-        "label": "order_expr",
-        "kind": 2,
-        "importPath": "felicity.database.queryset.builder",
-        "description": "felicity.database.queryset.builder",
-        "peekOfCode": "def order_expr(model, *columns):\n    \"\"\"\n    Forms expressions like [desc(User.first_name), asc(User.phone)]\n      from list like ['-first_name', 'phone']\n    Example for 1 column:\n      db.query(User).order_by(*User.order_expr('-first_name'))\n      # will compile to ORDER BY user.first_name DESC\n    Example for multiple columns:\n      columns = ['-first_name', 'phone']\n      db.query(User).order_by(*User.order_expr(*columns))",
-        "detail": "felicity.database.queryset.builder",
-        "documentation": {}
-    },
-    {
-        "label": "columns",
-        "kind": 2,
-        "importPath": "felicity.database.queryset.builder",
-        "description": "felicity.database.queryset.builder",
-        "peekOfCode": "def columns(model):\n    \"\"\"classproperty\"\"\"\n    cls = _klass(model)\n    return inspect(cls).columns.keys()\ndef primary_keys_full(model):\n    \"\"\"classproperty\n    Get primary key properties for a SQLAlchemy cls.\n    Taken from marshmallow_sqlalchemy\n    \"\"\"\n    cls = _klass(model)",
-        "detail": "felicity.database.queryset.builder",
-        "documentation": {}
-    },
-    {
-        "label": "primary_keys_full",
-        "kind": 2,
-        "importPath": "felicity.database.queryset.builder",
-        "description": "felicity.database.queryset.builder",
-        "peekOfCode": "def primary_keys_full(model):\n    \"\"\"classproperty\n    Get primary key properties for a SQLAlchemy cls.\n    Taken from marshmallow_sqlalchemy\n    \"\"\"\n    cls = _klass(model)\n    mapper = cls.__mapper__\n    return [mapper.get_property_by_column(column) for column in mapper.primary_key]\ndef primary_keys(model):\n    \"\"\"classproperty\"\"\"",
-        "detail": "felicity.database.queryset.builder",
-        "documentation": {}
-    },
-    {
-        "label": "primary_keys",
-        "kind": 2,
-        "importPath": "felicity.database.queryset.builder",
-        "description": "felicity.database.queryset.builder",
-        "peekOfCode": "def primary_keys(model):\n    \"\"\"classproperty\"\"\"\n    cls = _klass(model)\n    return [pk.key for pk in primary_keys_full(cls)]\ndef relations(model):\n    \"\"\"classproperty\n    Return a `list` of relationship names or the given model\"\"\"\n    cls = _klass(model)\n    return [c.key for c in cls.__mapper__.attrs if isinstance(c, RelationshipProperty)]\ndef settable_relations(model):",
-        "detail": "felicity.database.queryset.builder",
-        "documentation": {}
-    },
-    {
-        "label": "relations",
-        "kind": 2,
-        "importPath": "felicity.database.queryset.builder",
-        "description": "felicity.database.queryset.builder",
-        "peekOfCode": "def relations(model):\n    \"\"\"classproperty\n    Return a `list` of relationship names or the given model\"\"\"\n    cls = _klass(model)\n    return [c.key for c in cls.__mapper__.attrs if isinstance(c, RelationshipProperty)]\ndef settable_relations(model):\n    \"\"\"classproperty\n    Return a `list` of relationship names or the given model\"\"\"\n    cls = _klass(model)\n    return [r for r in relations(cls) if getattr(model, r).property.viewonly is False]",
-        "detail": "felicity.database.queryset.builder",
-        "documentation": {}
-    },
-    {
-        "label": "settable_relations",
-        "kind": 2,
-        "importPath": "felicity.database.queryset.builder",
-        "description": "felicity.database.queryset.builder",
-        "peekOfCode": "def settable_relations(model):\n    \"\"\"classproperty\n    Return a `list` of relationship names or the given model\"\"\"\n    cls = _klass(model)\n    return [r for r in relations(cls) if getattr(model, r).property.viewonly is False]\ndef hybrid_properties(model):\n    \"\"\"classproperty\"\"\"\n    cls = _klass(model)\n    items = inspect(cls).all_orm_descriptors\n    return [item.__name__ for item in items if isinstance(item, hybrid_property)]",
-        "detail": "felicity.database.queryset.builder",
-        "documentation": {}
-    },
-    {
-        "label": "hybrid_properties",
-        "kind": 2,
-        "importPath": "felicity.database.queryset.builder",
-        "description": "felicity.database.queryset.builder",
-        "peekOfCode": "def hybrid_properties(model):\n    \"\"\"classproperty\"\"\"\n    cls = _klass(model)\n    items = inspect(cls).all_orm_descriptors\n    return [item.__name__ for item in items if isinstance(item, hybrid_property)]\ndef hybrid_methods_full(model):\n    \"\"\"classproperty\"\"\"\n    cls = _klass(model)\n    items = inspect(cls).all_orm_descriptors\n    return {item.func.__name__: item for item in items if type(item) == hybrid_method}",
-        "detail": "felicity.database.queryset.builder",
-        "documentation": {}
-    },
-    {
-        "label": "hybrid_methods_full",
-        "kind": 2,
-        "importPath": "felicity.database.queryset.builder",
-        "description": "felicity.database.queryset.builder",
-        "peekOfCode": "def hybrid_methods_full(model):\n    \"\"\"classproperty\"\"\"\n    cls = _klass(model)\n    items = inspect(cls).all_orm_descriptors\n    return {item.func.__name__: item for item in items if type(item) == hybrid_method}\ndef hybrid_methods(model):\n    \"\"\"classproperty\"\"\"\n    cls = _klass(model)\n    return list(hybrid_methods_full(cls).keys())\ndef filterable_attributes(model):",
-        "detail": "felicity.database.queryset.builder",
-        "documentation": {}
-    },
-    {
-        "label": "hybrid_methods",
-        "kind": 2,
-        "importPath": "felicity.database.queryset.builder",
-        "description": "felicity.database.queryset.builder",
-        "peekOfCode": "def hybrid_methods(model):\n    \"\"\"classproperty\"\"\"\n    cls = _klass(model)\n    return list(hybrid_methods_full(cls).keys())\ndef filterable_attributes(model):\n    cls = _klass(model)\n    return relations(cls) + columns(cls) + hybrid_properties(cls) + hybrid_methods(cls)\ndef sortable_attributes(model):\n    cls = _klass(model)\n    return columns(cls) + hybrid_properties(cls)",
-        "detail": "felicity.database.queryset.builder",
-        "documentation": {}
-    },
-    {
-        "label": "filterable_attributes",
-        "kind": 2,
-        "importPath": "felicity.database.queryset.builder",
-        "description": "felicity.database.queryset.builder",
-        "peekOfCode": "def filterable_attributes(model):\n    cls = _klass(model)\n    return relations(cls) + columns(cls) + hybrid_properties(cls) + hybrid_methods(cls)\ndef sortable_attributes(model):\n    cls = _klass(model)\n    return columns(cls) + hybrid_properties(cls)\ndef settable_attributes(model):\n    cls = _klass(model)\n    return sortable_attributes(cls) + settable_relations(cls)\nclass QueryBuilder:",
-        "detail": "felicity.database.queryset.builder",
-        "documentation": {}
-    },
-    {
-        "label": "sortable_attributes",
-        "kind": 2,
-        "importPath": "felicity.database.queryset.builder",
-        "description": "felicity.database.queryset.builder",
-        "peekOfCode": "def sortable_attributes(model):\n    cls = _klass(model)\n    return columns(cls) + hybrid_properties(cls)\ndef settable_attributes(model):\n    cls = _klass(model)\n    return sortable_attributes(cls) + settable_relations(cls)\nclass QueryBuilder:\n    def __init__(self, model: M) -> None:\n        self.model = model\n    @property",
-        "detail": "felicity.database.queryset.builder",
-        "documentation": {}
-    },
-    {
-        "label": "settable_attributes",
-        "kind": 2,
-        "importPath": "felicity.database.queryset.builder",
-        "description": "felicity.database.queryset.builder",
-        "peekOfCode": "def settable_attributes(model):\n    cls = _klass(model)\n    return sortable_attributes(cls) + settable_relations(cls)\nclass QueryBuilder:\n    def __init__(self, model: M) -> None:\n        self.model = model\n    @property\n    def query(self):\n        return select(self.model)\n    def with_(self, schema):",
-        "detail": "felicity.database.queryset.builder",
-        "documentation": {}
-    },
-    {
-        "label": "M",
-        "kind": 5,
-        "importPath": "felicity.database.queryset.builder",
-        "description": "felicity.database.queryset.builder",
-        "peekOfCode": "M = TypeVar(\"M\")\nJOINED = \"joined\"\nSUBQUERY = \"subquery\"\nRELATION_SPLITTER = \"___\"\nOPERATOR_SPLITTER = \"__\"\nDESC_PREFIX = \"-\"\nclass ModelNotFoundError(ValueError):\n    pass\ndef _flatten_filter_keys(filters):\n    \"\"\"",
-        "detail": "felicity.database.queryset.builder",
-        "documentation": {}
-    },
-    {
-        "label": "JOINED",
-        "kind": 5,
-        "importPath": "felicity.database.queryset.builder",
-        "description": "felicity.database.queryset.builder",
-        "peekOfCode": "JOINED = \"joined\"\nSUBQUERY = \"subquery\"\nRELATION_SPLITTER = \"___\"\nOPERATOR_SPLITTER = \"__\"\nDESC_PREFIX = \"-\"\nclass ModelNotFoundError(ValueError):\n    pass\ndef _flatten_filter_keys(filters):\n    \"\"\"\n    :type filters: dict|list",
-        "detail": "felicity.database.queryset.builder",
-        "documentation": {}
-    },
-    {
-        "label": "SUBQUERY",
-        "kind": 5,
-        "importPath": "felicity.database.queryset.builder",
-        "description": "felicity.database.queryset.builder",
-        "peekOfCode": "SUBQUERY = \"subquery\"\nRELATION_SPLITTER = \"___\"\nOPERATOR_SPLITTER = \"__\"\nDESC_PREFIX = \"-\"\nclass ModelNotFoundError(ValueError):\n    pass\ndef _flatten_filter_keys(filters):\n    \"\"\"\n    :type filters: dict|list\n    Flatten the nested filters, extracting keys where they correspond",
-        "detail": "felicity.database.queryset.builder",
-        "documentation": {}
-    },
-    {
-        "label": "RELATION_SPLITTER",
-        "kind": 5,
-        "importPath": "felicity.database.queryset.builder",
-        "description": "felicity.database.queryset.builder",
-        "peekOfCode": "RELATION_SPLITTER = \"___\"\nOPERATOR_SPLITTER = \"__\"\nDESC_PREFIX = \"-\"\nclass ModelNotFoundError(ValueError):\n    pass\ndef _flatten_filter_keys(filters):\n    \"\"\"\n    :type filters: dict|list\n    Flatten the nested filters, extracting keys where they correspond\n    to smart_query paths, e.g.",
-        "detail": "felicity.database.queryset.builder",
-        "documentation": {}
-    },
-    {
-        "label": "OPERATOR_SPLITTER",
-        "kind": 5,
-        "importPath": "felicity.database.queryset.builder",
-        "description": "felicity.database.queryset.builder",
-        "peekOfCode": "OPERATOR_SPLITTER = \"__\"\nDESC_PREFIX = \"-\"\nclass ModelNotFoundError(ValueError):\n    pass\ndef _flatten_filter_keys(filters):\n    \"\"\"\n    :type filters: dict|list\n    Flatten the nested filters, extracting keys where they correspond\n    to smart_query paths, e.g.\n    {or_: {'id__gt': 1000, and_ : {",
-        "detail": "felicity.database.queryset.builder",
-        "documentation": {}
-    },
-    {
-        "label": "DESC_PREFIX",
-        "kind": 5,
-        "importPath": "felicity.database.queryset.builder",
-        "description": "felicity.database.queryset.builder",
-        "peekOfCode": "DESC_PREFIX = \"-\"\nclass ModelNotFoundError(ValueError):\n    pass\ndef _flatten_filter_keys(filters):\n    \"\"\"\n    :type filters: dict|list\n    Flatten the nested filters, extracting keys where they correspond\n    to smart_query paths, e.g.\n    {or_: {'id__gt': 1000, and_ : {\n        'id__lt': 500,",
-        "detail": "felicity.database.queryset.builder",
-        "documentation": {}
-    },
-    {
-        "label": "_operators",
-        "kind": 5,
-        "importPath": "felicity.database.queryset.builder",
-        "description": "felicity.database.queryset.builder",
-        "peekOfCode": "_operators = {\n    \"isnull\": lambda c, v: (c == None) if v else (c != None),\n    \"exact\": operators.eq,\n    \"ne\": operators.ne,  # not equal or is not (for None)\n    \"gt\": operators.gt,  # greater than , >\n    \"ge\": operators.ge,  # greater than or equal, >=\n    \"lt\": operators.lt,  # lower than, <\n    \"le\": operators.le,  # lower than or equal, <=\n    \"in\": operators.in_op,\n    \"notin\": operators.notin_op,",
-        "detail": "felicity.database.queryset.builder",
-        "documentation": {}
-    },
-    {
         "label": "MongoCollection",
         "kind": 6,
         "importPath": "felicity.database.mongo",
         "description": "felicity.database.mongo",
-        "peekOfCode": "class MongoCollection(StrEnum):\n    DIAGNOSTIC_REPORT = \"diagnostic-report\"\n    INVOICE = \"invoice\"\nclass MongoService:\n    def __init__(self):\n        self.db = client.felicity\n    async def create(self, collection: MongoCollection, data: dict) -> Optional[dict]:\n        collection = self.db.get_collection(collection)\n        created = await collection.insert_one(data)\n        return await collection.find_one({\"_id\": created.inserted_id})",
+        "peekOfCode": "class MongoCollection(StrEnum):\n    DIAGNOSTIC_REPORT = \"diagnostic-report\"\n    INVOICE = \"invoice\"\n    AUDIT_LOG = \"audit-log\"\nclass MongoService:\n    def __init__(self):\n        self.db = client.felicity\n    async def create(self, collection: MongoCollection, data: dict) -> Optional[dict]:\n        logger.info(f\"mongodb -- create:{collection} --\")\n        collection = self.db.get_collection(collection)",
         "detail": "felicity.database.mongo",
         "documentation": {}
     },
@@ -35892,7 +35466,16 @@
         "kind": 6,
         "importPath": "felicity.database.mongo",
         "description": "felicity.database.mongo",
-        "peekOfCode": "class MongoService:\n    def __init__(self):\n        self.db = client.felicity\n    async def create(self, collection: MongoCollection, data: dict) -> Optional[dict]:\n        collection = self.db.get_collection(collection)\n        created = await collection.insert_one(data)\n        return await collection.find_one({\"_id\": created.inserted_id})\n    async def upsert(self, collection: MongoCollection, uid: str, data: dict) -> Optional[dict]:\n        collection = self.db.get_collection(collection)\n        result = await collection.update_one({'_id': self.oid(uid)}, {'$set': data}, upsert=True)",
+        "peekOfCode": "class MongoService:\n    def __init__(self):\n        self.db = client.felicity\n    async def create(self, collection: MongoCollection, data: dict) -> Optional[dict]:\n        logger.info(f\"mongodb -- create:{collection} --\")\n        collection = self.db.get_collection(collection)\n        created = await collection.insert_one(data)\n        return await collection.find_one({\"_id\": created.inserted_id})\n    async def upsert(self, collection: MongoCollection, uid: str, data: dict) -> Optional[dict]:\n        logger.info(f\"mongodb -- upsert:{collection} --\")",
+        "detail": "felicity.database.mongo",
+        "documentation": {}
+    },
+    {
+        "label": "logger",
+        "kind": 5,
+        "importPath": "felicity.database.mongo",
+        "description": "felicity.database.mongo",
+        "peekOfCode": "logger = logging.getLogger(__name__)\nclient = AsyncIOMotorClient(\n    f\"mongodb://{settings.MONGODB_USER}:{settings.MONGODB_PASS}@{settings.MONGODB_SERVER}\"\n)\nclass MongoCollection(StrEnum):\n    DIAGNOSTIC_REPORT = \"diagnostic-report\"\n    INVOICE = \"invoice\"\n    AUDIT_LOG = \"audit-log\"\nclass MongoService:\n    def __init__(self):",
         "detail": "felicity.database.mongo",
         "documentation": {}
     },
@@ -35901,7 +35484,7 @@
         "kind": 5,
         "importPath": "felicity.database.mongo",
         "description": "felicity.database.mongo",
-        "peekOfCode": "client = AsyncIOMotorClient(\"mongodb://felicity:felicity@localhost:27027\")\nclass MongoCollection(StrEnum):\n    DIAGNOSTIC_REPORT = \"diagnostic-report\"\n    INVOICE = \"invoice\"\nclass MongoService:\n    def __init__(self):\n        self.db = client.felicity\n    async def create(self, collection: MongoCollection, data: dict) -> Optional[dict]:\n        collection = self.db.get_collection(collection)\n        created = await collection.insert_one(data)",
+        "peekOfCode": "client = AsyncIOMotorClient(\n    f\"mongodb://{settings.MONGODB_USER}:{settings.MONGODB_PASS}@{settings.MONGODB_SERVER}\"\n)\nclass MongoCollection(StrEnum):\n    DIAGNOSTIC_REPORT = \"diagnostic-report\"\n    INVOICE = \"invoice\"\n    AUDIT_LOG = \"audit-log\"\nclass MongoService:\n    def __init__(self):\n        self.db = client.felicity",
         "detail": "felicity.database.mongo",
         "documentation": {}
     },
@@ -36333,7 +35916,7 @@
         "kind": 5,
         "importPath": "felicity.lims.boot",
         "description": "felicity.lims.boot",
-        "peekOfCode": "settings = get_settings()\n@asynccontextmanager\nasync def lifespan(app: FastAPI):\n    if settings.LOAD_SETUP_DATA:\n        await initialize_felicity()\n    # bg_tasks = BackgroundTasks(tasks=None)\n    # bg_tasks.add_task(felicity_workforce_init)\n    felicity_workforce_init()\n    observe_events()\n    #",
+        "peekOfCode": "settings = get_settings()\n@asynccontextmanager\nasync def lifespan(app: FastAPI):\n    if settings.LOAD_SETUP_DATA:\n        await initialize_felicity()\n    felicity_workforce_init()\n    observe_events()\n    await broadcast.connect()\n    #\n    yield",
         "detail": "felicity.lims.boot",
         "documentation": {}
     },

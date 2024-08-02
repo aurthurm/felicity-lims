@@ -61,5 +61,5 @@ const columns = [
     <span v-else>No Mutations for this result</span>
     <h4 class="mt-4 font-bold text-xl text-gray-500">Result Audit Log</h4>
     <hr>
-    <FelAuditLog targetType="analysis_result" :targetId="analysisResultesultUid" />
+    <FelAuditLog targetType="analysis_result" :targetUid="analysisResultesultUid" />
 </template>

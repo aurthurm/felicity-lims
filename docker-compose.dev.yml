@@ -2,15 +2,15 @@ version: '3.5'
 
 services:
 
-  felicity_fe:
-    container_name: felicity_fe
+  felicity-webapp:
+    container_name: felicity-webapp
     restart: unless-stopped
     build:
       context: ./
       target: webapp
       dockerfile: Dockerfile.dev
     volumes:
-      - ./webapp:/app/webapp
+      - ./webapp/:/app/webapp
     environment:
       - NODE_ENV=development
       - VITE_NODE_ENV=development
@@ -19,49 +19,49 @@ services:
     ports:
       - "3000:3000"
     depends_on:
-      - felicity_pg
+      - felicity-postgres
     networks:
       - felicitynet
     command: bash -c "pnpm webapp:dev --host --port 3000"
 
-  felicity_be:
-    container_name: felicity_be
+  felicity-api:
+    container_name: felicity-api
     restart: unless-stopped
     build:
       context: ./
       target: webapi
       dockerfile: Dockerfile.dev
     environment:
-      - POSTGRES_SERVER=felicity_pg
+      - POSTGRES_SERVER=felicity-postgres
       - POSTGRES_DB=felicity_lims
       - POSTGRES_USER=felicity
       - POSTGRES_PASSWORD=felicity
       - POSTGRES_HOST_AUTH_METHOD=trust
       - LOAD_SETUP_DATA=${LOAD_SETUP_DATA:-False}
       - SERVE_WEBAPP=${SERVE_WEBAPP:-False}
-      - REDIS_SERVER=felicity_df:6379
-      - MONGODB_SERVER=felicity_mg:27027
+      - REDIS_SERVER=felicity-dragonfly:6379
+      - MONGODB_SERVER=felicity-mongo:27017
       - MONGODB_USER=felicity
       - MONGODB_PASS=felicity
-      - MINIO_SERVER=felicity_min:9000
+      - MINIO_SERVER=felicity-minio:9000
       - MINIO_ACCESS=felicity
       - MINIO_SECRET=felicity
-      - MEILISEARCH_SERVER=http://felicity_ms:7700
-      - MEILISEARCH_API_KEY=http:api_key
+      - MEILISEARCH_SERVER=http://felicity-meilisearch:7700
+      - MEILISEARCH_API_KEY=masterKey
     volumes:
       - ./felicity/:/app/felicity
     ports:
       - 8000:8000
     depends_on:
-      - felicity_pg
+      - felicity-postgres
     networks:
       - felicitynet
     extra_hosts:
       - "host.docker.internal:host-gateway"
-    command: bash -c "cd felicity && alembic upgrade head && uvicorn main:felicity --host=0.0.0.0 --port=8000"
+    command: bash -c "cd felicity && alembic upgrade head && uvicorn main:felicity --reload --host=0.0.0.0 --port=8000"
 
-  felicity_min:
-    container_name: felicity_min
+  felicity-minio:
+    container_name: felicity-minio
     image: bitnami/minio:2024.7.31
     ports:
       - '9000:9000'
@@ -75,8 +75,8 @@ services:
       - MINIO_ROOT_PASSWORD=felicity
       - MINIO_DEFAULT_BUCKET=felicity
 
-  felicity_ms:
-    container_name: felicity_ms
+  felicity-meilisearch:
+    container_name: felicity-meilisearch
     image: getmeili/meilisearch:v1.8.4
     restart: unless-stopped
     volumes:
@@ -94,8 +94,17 @@ services:
     networks:
       - felicitynet
 
-  felicity_df:
-    container_name: felicity_df
+  felicity-meiliui:
+    container_name: felicity-meiliui
+    image: riccoxie/meilisearch-ui:latest
+    restart: unless-stopped
+    ports:
+      - ${MEILI_UI_PORT:-24900}:24900
+    networks:
+      - felicitynet
+
+  felicity-dragonfly:
+    container_name: felicity-dragonfly
     image: 'docker.dragonflydb.io/dragonflydb/dragonfly'
     ulimits:
       memlock: -1
@@ -110,8 +119,8 @@ services:
     networks:
       - felicitynet
 
-  felicity_pg:
-    container_name: felicity_pg
+  felicity-postgres:
+    container_name: felicity-postgres
     image: postgres:12
     restart: unless-stopped
     environment:
@@ -129,8 +138,8 @@ services:
     networks:
       - felicitynet
 
-  felicity_mg:
-    container_name: felicity_mg
+  felicity-mongo:
+    container_name: felicity-mongo
     image: mongo
     restart: always
     environment:
@@ -141,8 +150,8 @@ services:
     networks:
       - felicitynet
 
-  felicity_dg:
-    container_name: felicity_dg
+  felicity-dbgate:
+    container_name: felicity-dbgate
     image: dbgate/dbgate
     restart: always
     ports:
@@ -154,7 +163,7 @@ services:
       PASSWORD: felicity
       CONNECTIONS: pg,mg
       LABEL_pg: Felicity Postgres
-      SERVER_pg: felicity_pg
+      SERVER_pg: felicity-postgres
       USER_pg: felicity
       PASSWORD_pg: felicity
       DATABASE_pg: felicity_lims
@@ -162,7 +171,7 @@ services:
       ENGINE_pg: postgres@dbgate-plugin-postgres
       READONLY_pg: 1
       LABEL_mg: Felicity Mongo
-      URL_mg: mongodb://felicity:felicity@felicity_mg:27017/
+      URL_mg: mongodb://felicity:felicity@felicity-mongo:27017/
       DATABASE_mg: felicity
       ENGINE_mg: mongo@dbgate-plugin-mongo
       READONLY_mg: 1

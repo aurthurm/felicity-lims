@@ -1,91 +1,114 @@
+import asyncio
+import inspect
 import logging
+import traceback
 from asyncio import create_task, gather, Lock as ALock
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from threading import Lock
-from typing import Callable, List, Dict
+from typing import Callable, List, Dict, Any
 
 # Initialize logger
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-subscribers: Dict[str, List[Callable]] = {}
-lock = Lock()  # Synchronous lock
-alock = ALock()  # Asynchronous lock
+subscribers: Dict[str, List[Callable[..., Any]]] = {}
+sync_lock = Lock()  # Synchronous lock
+async_lock = ALock()  # Asynchronous lock
+
+
+def partition_functions(functions: List[Callable[..., Any]]) -> (List[Callable[..., Any]], List[Callable[..., Any]]):
+    async_funcs = [fn for fn in functions if inspect.iscoroutinefunction(fn)]
+    sync_funcs = [fn for fn in functions if not inspect.iscoroutinefunction(fn)]
+    return async_funcs, sync_funcs
+
+
+def get_or_create_event_loop() -> asyncio.AbstractEventLoop:
+    try:
+        return asyncio.get_event_loop()
+    except RuntimeError:
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        return loop
 
 
 # Synchronous Event System
-def subscribe(event_type: str, fn: Callable):
-    with lock:
-        if event_type not in subscribers:
-            subscribers[event_type] = []
-        subscribers[event_type].append(fn)
+def subscribe(event_type: str, fn: Callable[..., Any]) -> None:
+    with sync_lock:
+        subscribers.setdefault(event_type, []).append(fn)
 
 
-def unsubscribe(event_type: str, fn: Callable):
-    with lock:
+def unsubscribe(event_type: str, fn: Callable[..., Any]) -> None:
+    with sync_lock:
         if event_type in subscribers:
             try:
                 subscribers[event_type].remove(fn)
             except ValueError:
-                logger.warning(f"Function not found in subscribers for event type: {event_type}")
+                logger.error(
+                    f"Function not found in subscribers for event type: {event_type}\n{traceback.format_exc()}")
 
 
-def post_event(event_type: str, **kwargs):
-    with lock:
-        if event_type not in subscribers:
-            return
-        current_subscribers: List[Callable] = subscribers[event_type][:]
+def post_event(event_type: str, **kwargs: Any) -> None:
+    with sync_lock:
+        current_subscribers = subscribers.get(event_type, [])
 
+    # Separate sync from async functions
+    async_funcs, sync_funcs = partition_functions(current_subscribers)
+
+    # Handle async functions
+    loop = get_or_create_event_loop()
+    for fn in async_funcs:
+        if loop.is_running():
+            loop.create_task(fn(**kwargs))
+        else:
+            asyncio.run(fn(**kwargs))
+
+    # Handle sync functions
     with ThreadPoolExecutor() as executor:
-        futures = []
-        for fn in current_subscribers:
-            futures.append(executor.submit(safe_execute, fn, **kwargs))
+        futures = [executor.submit(safe_execute, fn, **kwargs) for fn in sync_funcs]
 
         for future in as_completed(futures):
-            if future.exception() is not None:
-                logger.error(f"Error executing event handler: {future.exception()}")
+            try:
+                future.result()  # Re-raise any exception from the executed function
+            except Exception as e:
+                logger.error(f"Error executing event handler: {e}\n{traceback.format_exc()}")
 
 
-def safe_execute(fn: Callable, **kwargs):
+def safe_execute(fn: Callable[..., Any], **kwargs: Any) -> None:
     try:
         fn(**kwargs)
     except Exception as e:
-        logger.error(f"Error in event subscriber {fn.__name__}: {e}")
+        logger.error(f"Error in event subscriber {fn.__name__}: {e}\n{traceback.format_exc()}")
 
 
 # Asynchronous Event System
-async def asubscribe(event_type: str, fn: Callable):
-    async with alock:
-        if event_type not in subscribers:
-            subscribers[event_type] = []
-        subscribers[event_type].append(fn)
+async def asubscribe(event_type: str, fn: Callable[..., Any]) -> None:
+    async with async_lock:
+        subscribers.setdefault(event_type, []).append(fn)
 
 
-async def aunsubscribe(event_type: str, fn: Callable):
-    async with alock:
+async def aunsubscribe(event_type: str, fn: Callable[..., Any]) -> None:
+    async with async_lock:
         if event_type in subscribers:
             try:
                 subscribers[event_type].remove(fn)
             except ValueError:
-                logger.warning(f"Function not found in subscribers for event type: {event_type}")
+                logger.error(
+                    f"Function not found in subscribers for event type: {event_type}\n{traceback.format_exc()}")
 
 
-async def apost_event(event_type: str, **kwargs):
-    async with alock:
-        if event_type not in subscribers:
-            return
-        current_subscribers: List[Callable] = subscribers[event_type][:]
+async def apost_event(event_type: str, **kwargs: Any) -> None:
+    async with async_lock:
+        current_subscribers = subscribers.get(event_type, [])
 
     tasks = [create_task(asafe_execute(fn, **kwargs)) for fn in current_subscribers]
     await gather(*tasks)
 
 
-async def asafe_execute(fn: Callable, **kwargs):
+async def asafe_execute(fn: Callable[..., Any], **kwargs: Any) -> None:
     try:
-        if callable(fn):
-            if hasattr(fn, "__await__"):  # Check if it's an async function
-                await fn(**kwargs)
-            else:
-                fn(**kwargs)
+        if inspect.iscoroutinefunction(fn):
+            await fn(**kwargs)
+        else:
+            fn(**kwargs)
     except Exception as e:
-        logger.error(f"Error in async event subscriber {fn.__name__}: {e}")
+        logger.error(f"Error in event subscriber {fn.__name__}: {e}\n{traceback.format_exc()}")

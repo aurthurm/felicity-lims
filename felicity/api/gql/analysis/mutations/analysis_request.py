@@ -256,7 +256,7 @@ async def create_analysis_request(
 
         # initialise reflex action if exist
         logger.debug(f"ReflexUtil .... set_reflex_actions ...")
-        ReflexEngineService(created[0], felicity_user).set_reflex_actions(created)
+        await ReflexEngineService(created[0], felicity_user).set_reflex_actions(created)
 
     # ! paramount !
     await asyncio.sleep(1)
@@ -305,11 +305,13 @@ async def clone_samples(info, samples: List[str]) -> SampleActionResponse:
                     "status": ResultState.PENDING,
                 }
                 a_result_schema = schemas.AnalysisResultCreate(**a_result_in)
-                created = await AnalysisResultService().create(a_result_schema)
+                created = await AnalysisResultService().create(a_result_schema, related=["sample", "analysis"])
                 await ReflexEngineService(created, felicity_user).set_reflex_actions(
                     [created]
                 )
-
+    clones = [
+        (await SampleService().get_related(related=["sample_type"], uid=clone.uid)) for clone in clones
+    ]
     return SampleListingType(samples=clones)
 
 
@@ -482,11 +484,12 @@ async def publish_samples(
 
     # !important for frontend
     # unfreeze frontend and return sample to original state since it is a non final publish
-    ns_samples = await SampleService().get_by_uids([nf.uid for nf in not_final])
-    for sample in ns_samples:
-        await ActivityStreamService().stream(
-            sample, felicity_user, sample.status, "sample"
-        )
+    if not_final:
+        ns_samples = await SampleService().get_by_uids([nf.uid for nf in not_final])
+        for sample in ns_samples:
+            await ActivityStreamService().stream(
+                sample, felicity_user, sample.status, "sample"
+            )
 
     return OperationSuccess(
         message="Your results are being published in the background."

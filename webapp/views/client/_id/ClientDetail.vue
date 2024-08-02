@@ -30,7 +30,7 @@ let client = computed(() => clientStore.getClient);
     <div class="pt-4">
       <tab-samples v-if="currentTab === 'samples'" />
       <tab-contacts v-if="currentTab === 'contacts'" :clientUid="client?.uid" />
-      <tab-logs v-if="currentTab === 'logs'" targetType="client" :targetId="client?.uid" />
+      <tab-logs v-if="currentTab === 'logs'" targetType="client" :targetUid="client?.uid" />
     </div>
   </section>
 </template>

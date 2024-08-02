@@ -482,28 +482,28 @@ class SampleService(BaseService[Sample, SampleCreate, SampleUpdate]):
         return await super().create(data, related)
 
     async def duplicate_unique(self, uid: str, duplicator):
-        sample = await self.get(uid=uid)
+        sample = await self.get_related(related=["profiles", "analyses"], uid=uid)
         data = sample.to_dict(nested=False)
         data["sample_id"] = self.copy_sample_id_unique(sample)
         for key, _ in list(data.items()):
             if key not in self.copy_include_keys():
                 del data[key]
         data["status"] = SampleState.RECEIVED
-        data["profiles"] = self.profiles
-        data["analyses"] = self.analyses
-        data["parent_id"] = self.uid
+        data["profiles"] = sample.profiles
+        data["analyses"] = sample.analyses
+        data["parent_id"] = sample.uid
         data["created_by_uid"] = duplicator.uid
         return await super().create(data)
 
     async def clone_afresh(self, uid: str, cloner):
-        sample = await self.get(uid=uid)
+        sample = await self.get_related(related=["profiles", "analyses"], uid=uid)
         data = sample.to_dict(nested=False)
         for key, _ in list(data.items()):
             if key not in self.copy_include_keys():
                 del data[key]
         data["status"] = SampleState.RECEIVED
-        data["profiles"] = self.profiles
-        data["analyses"] = self.analyses
-        data["parent_id"] = self.uid
+        data["profiles"] = sample.profiles
+        data["analyses"] = sample.analyses
+        data["parent_id"] = sample.uid
         data["created_by_uid"] = cloner.uid
         return await self.create(obj_in=data)

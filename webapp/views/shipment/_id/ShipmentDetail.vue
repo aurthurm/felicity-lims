@@ -56,7 +56,7 @@
           <tab-logs 
           v-if="currentTab === 'logs'"
           targetType="shipment"
-          :targetId="shipment?.uid"
+          :targetUid="shipment?.uid"
           />
         </div>
 

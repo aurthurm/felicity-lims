@@ -1,11 +1,11 @@
 import asyncio
+import json
 import logging
 from typing import AsyncGenerator
 
 import strawberry  # noqa
 
 from felicity.api.gql.notification.types import ActivityStreamType
-# from felicity.api.gql.permissions import IsAuthenticated
 from felicity.apps.common.channel import broadcast
 from felicity.apps.notification.services import ActivityStreamService
 
@@ -22,7 +22,7 @@ class StreamSubscription:
             try:
                 async for event in subscriber:
                     logger.info(event)
-                    yield event.message
+                    yield ActivityStreamType(**json.loads(event.message))
             finally:
                 logger.info("Unsubscribed")
 

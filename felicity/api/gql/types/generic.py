@@ -4,11 +4,13 @@ from typing import Any, Generic, NewType, TypeVar
 
 import strawberry
 
+from felicity.apps.common.utils.serializer import marshaller
+
 T = TypeVar("T")
 
 JSONScalar = strawberry.scalar(
     NewType("JSONScalar", Any),
-    serialize=lambda v: v,
+    serialize=lambda v: marshaller(v),
     parse_value=lambda v: json.loads(v),
     description="json field",
 )

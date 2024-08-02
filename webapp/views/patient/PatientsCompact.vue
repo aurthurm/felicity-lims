@@ -179,7 +179,7 @@ const updatePatient = (patient: IPatient) => {
         <tab-samples v-if="currentTab === 'samples'" target="patient-samples" :targetUid="patientForm.uid" />
         <tab-cases v-if="currentTab === 'cases'" />
         <tab-patient-bills v-if="currentTab === 'billing'"  :patientUid="patientForm?.uid" />
-        <tab-logs v-if="currentTab === 'logs'" targetType="patient" :targetId="patientForm?.uid" />
+        <tab-logs v-if="currentTab === 'logs'" targetType="patient" :targetUid="patientForm?.uid" />
       </section>
     </div>
 

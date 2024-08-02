@@ -47,7 +47,7 @@
           <tab-logs 
           v-if="currentTab === 'logs'"
           targetType="worksheet"
-          :targetId="worksheet?.uid"
+          :targetUid="worksheet?.uid"
           />
         </div>
 

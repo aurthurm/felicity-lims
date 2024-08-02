@@ -8,10 +8,10 @@ const LoadingMessage = defineAsyncComponent(
 )
 
 const props = defineProps({
-  targetId: String,
+  targetUid: String,
   targetType: String,
 });
-const { targetType, targetId } = toRefs(props);
+const { targetType, targetUid } = toRefs(props);
 
 const userStore = useUserStore();
 const auditLogStore = useAuditLogStore();
@@ -22,14 +22,14 @@ const { auditLogs, fetchingAudits } = storeToRefs(auditLogStore);
 userStore.fetchUsers({});
 auditLogStore.fetchAuditLogs({
   targetType: targetType?.value,
-  targetId: targetId?.value,
+  targetUid: targetUid?.value,
 });
 
 let users = computed(() => userStore.getUsers);
 
-function translateUser(userId: any): string {
+function translateUser(userUid: any): string {
   const user = users?.value?.find(
-    (u: any) => u["uid"]?.toString() === userId?.toString()
+    (u: any) => u["uid"]?.toString() === userUid?.toString()
   );
   if (!user) return "";
   return (user as any)["userName"];
@@ -104,7 +104,7 @@ function changes(log: any): any {
           <div class="bg-indigo-600 rounded-full h-4 w-4 border-gray-200 border-2 z-10"></div>
           <div class="ml-4 font-medium italic">
             <span>
-              {{ translateUser(log?.userId) }} {{ translateAction(log?.action) }}
+              {{ translateUser(log?.userUid) }} {{ translateAction(log?.action) }}
               {{ log?.targetType }}
             </span>
             on <span> {{ parseDate(log?.stateAfter?.updated_at) }}</span>

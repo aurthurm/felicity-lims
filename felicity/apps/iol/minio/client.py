@@ -1,4 +1,5 @@
 import io
+import logging
 from typing import BinaryIO
 
 from minio import Minio
@@ -7,11 +8,14 @@ from minio.error import S3Error
 from felicity.core.config import settings
 from .enum import MinioBucket
 
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
 
 class MinioClient:
     def __init__(self):
         self.client = Minio(
-            settings.MINIO_SERVER,
+            endpoint=settings.MINIO_SERVER,
             access_key=settings.MINIO_ACCESS,
             secret_key=settings.MINIO_SECRET,
             secure=False
@@ -21,10 +25,12 @@ class MinioClient:
         return self.client.bucket_exists(bucket)
 
     def make_bucket(self, bucket: MinioBucket):
+        logger.info(f"minio -- add {bucket} bucket --")
         if not self.bucket_exists(bucket):
             self.client.make_bucket(bucket)
 
     def put_object(self, bucket: MinioBucket, object_name: str, data, metadata, content_type="application/pdf"):
+        logger.info(f"minio -- put {bucket} object --")
         self.make_bucket(bucket)
 
         if not isinstance(data, BinaryIO):
@@ -43,6 +49,7 @@ class MinioClient:
             raise Exception(f"Failed to upload file: {str(e)}")
 
     def get_object(self, bucket: MinioBucket, object_names: list[str]):
+        logger.info(f"minio -- get {bucket} object --")
         objects = []
         try:
             for obj_name in object_names:

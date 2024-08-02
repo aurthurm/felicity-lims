@@ -40,7 +40,6 @@ from felicity.utils import has_value_or_is_truthy
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-
 QC_SAMPLE = {"name": "QC Sample", "description": "QC Sample", "abbr": "QCS"}
 
 
@@ -67,7 +66,7 @@ async def get_last_verificator(result_uid: str) -> User | None:
 
 
 async def sample_search(
-    model, status: str, text: str, client_uid: str
+        model, status: str, text: str, client_uid: str
 ) -> list[SampleType]:
     """No pagination"""
     sample_service = SampleService()
@@ -100,7 +99,7 @@ async def sample_search(
 
 
 async def retest_from_result_uids(
-    uids: list[str], user: User
+        uids: list[str], user: User
 ) -> tuple[list[AnalysisResult], list[AnalysisResult]]:
     analysis_result_service = AnalysisResultService()
     analysis_result_wf = AnalysisResultWorkFlow()
@@ -124,7 +123,7 @@ async def retest_from_result_uids(
 
 
 async def results_submitter(
-    analysis_results: List[dict], submitter: User
+        analysis_results: List[dict], submitter: User
 ) -> list[AnalysisResult]:
     analysis_result_service = AnalysisResultService()
     sample_wf = SampleWorkFlow()
@@ -178,9 +177,9 @@ async def verify_from_result_uids(uids: list[str], user: User) -> list[AnalysisR
         logger.info(f"ReflexUtil .... done")
 
         # try to verify associated sample
-        sample_verified=False
+        sample_verified = False
         try:
-            sample_verified, _ = await sample_wf.approve([a_result.sample_uid], submitted_by=user)
+            sample_verified, _ = await sample_wf.approve(a_result.sample_uid, approved_by=user)
         except Exception as e:
             await sample_wf.revert(a_result.sample_uid, by_uid=user.uid)
             logger.warning(e)
@@ -188,7 +187,7 @@ async def verify_from_result_uids(uids: list[str], user: User) -> list[AnalysisR
         # try to submit associated worksheet
         if a_result.worksheet_uid:
             try:
-                await worksheet_wf.approve(a_result.worksheet_uid, verified_by=user)
+                await worksheet_wf.approve(a_result.worksheet_uid, approved_by=user)
             except Exception as e:
                 await worksheet_wf.revert(a_result.worksheet_uid, by_uid=user.uid)
                 logger.warning(e)
@@ -248,11 +247,11 @@ async def result_mutator(result: AnalysisResult) -> None:
         # Correction factor
         for cf in correction_factors:
             if (
-                cf.instrument_uid == result.laboratory_instrument_uid
-                and cf.method_uid == result.method_uid
+                    cf.instrument_uid == result.laboratory_instrument_uid
+                    and cf.method_uid == result.method_uid
             ):
                 await result_mutation_service.create(
-                    obj_in={
+                    c={
                         "result_uid": result.uid,
                         "before": result.result,
                         "after": result.result * cf.factor,
@@ -267,7 +266,7 @@ async def result_mutator(result: AnalysisResult) -> None:
             # Min
             if result.result < spec.min_warn:
                 await result_mutation_service.create(
-                    obj_in={
+                    c={
                         "result_uid": result.uid,
                         "before": result.result,
                         "after": spec.min_report,
@@ -283,7 +282,7 @@ async def result_mutator(result: AnalysisResult) -> None:
             # Max
             if result.result > spec.max_warn:
                 await result_mutation_service.create(
-                    obj_in={
+                    c={
                         "result_uid": result.uid,
                         "before": result.result,
                         "after": spec.max_report,
@@ -300,7 +299,7 @@ async def result_mutator(result: AnalysisResult) -> None:
         for dlim in detection_limits:
             if result.result < dlim.lower_limit:
                 await result_mutation_service.create(
-                    obj_in={
+                    c={
                         "result_uid": result.uid,
                         "before": result.result,
                         "after": f"< {dlim.lower_limit}",
@@ -312,7 +311,7 @@ async def result_mutator(result: AnalysisResult) -> None:
 
             if result.result > dlim.upper_limit:
                 await result_mutation_service.create(
-                    obj_in={
+                    c={
                         "result_uid": result.uid,
                         "before": result.result,
                         "after": f"> {dlim.upper_limit}",
@@ -327,7 +326,7 @@ async def result_mutator(result: AnalysisResult) -> None:
             for uncert in uncertainties:
                 if uncert.min <= result.result <= uncert.max:
                     await result_mutation_service.create(
-                        obj_in={
+                        c={
                             "result_uid": result.uid,
                             "before": result.result,
                             "after": f"{result.result} +/- {uncert.value}",
@@ -341,7 +340,7 @@ async def result_mutator(result: AnalysisResult) -> None:
         for spec in specifications:
             if result.result in spec.warn_values.split(","):
                 await result_mutation_service.create(
-                    obj_in={
+                    c={
                         "result_uid": result.uid,
                         "before": result.result,
                         "after": spec.warn_report,

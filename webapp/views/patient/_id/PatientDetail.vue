@@ -64,7 +64,7 @@ function addSample(patient?: IPatient): void {
       <div>
         <tab-samples v-if="currentTab === 'samples'" target="patient-samples" :targetUid="patient?.uid" />
         <tab-cases v-if="currentTab === 'cases'" />
-        <tab-logs v-if="currentTab === 'logs'" targetType="patient" :targetId="patient?.uid" />
+        <tab-logs v-if="currentTab === 'logs'" targetType="patient" :targetUid="patient?.uid" />
         <tab-patient-bills v-if="currentTab === 'billing'"  :patientUid="patient?.uid" />
       </div>
     </section>
