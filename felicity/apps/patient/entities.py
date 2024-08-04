@@ -1,17 +1,17 @@
 from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, String
 from sqlalchemy.orm import Mapped, relationship
 
-from felicity.apps.abstract import AuditHistory
+from felicity.apps.abstract import BaseEntity
 from felicity.apps.client.entities import Client
 
 
-class Identification(AuditHistory):
+class Identification(BaseEntity):
     __tablename__ = "identification"
 
     name = Column(String, index=True, unique=True, nullable=True)
 
 
-class PatientIdentification(AuditHistory):
+class PatientIdentification(BaseEntity):
     __tablename__ = "patient_identification"
 
     identification_uid = Column(String, ForeignKey("identification.uid"), nullable=True)
@@ -25,7 +25,7 @@ class PatientIdentification(AuditHistory):
     value = Column(String, index=True, nullable=False)
 
 
-class Patient(AuditHistory):
+class Patient(BaseEntity):
     __tablename__ = "patient"
 
     # Identification

@@ -4,12 +4,11 @@ from sqlalchemy import (Boolean, Column, DateTime, ForeignKey, Integer, String,
                         Table, Text)
 from sqlalchemy.orm import relationship
 
-from felicity.apps.abstract import (AuditHistory, AuditUser, BaseEntity,
+from felicity.apps.abstract import (BaseEntity,
                                     BaseMPTT)
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
-
 
 """
  Many to Many Link between AnalysisResult and User
@@ -22,7 +21,7 @@ result_verification = Table(
 )
 
 
-class AnalysisResult(AuditHistory, BaseMPTT):
+class AnalysisResult(BaseEntity, BaseMPTT):
     """Test/Analysis Result
     Number of analysis results per sample will be directly proportional to
     the number of linked sample_analyses at minimum :)
@@ -81,7 +80,7 @@ class AnalysisResult(AuditHistory, BaseMPTT):
         return self.analysis.keyword
 
 
-class ResultMutation(AuditUser):
+class ResultMutation(BaseEntity):
     """Result Mutations tracker"""
 
     __tablename__ = "result_mutation"

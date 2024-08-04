@@ -4,7 +4,7 @@ from sqlalchemy import (Boolean, Column, DateTime, ForeignKey, LargeBinary,
                         String, Table)
 from sqlalchemy.orm import relationship
 
-from felicity.apps.abstract import AuditUser, BaseEntity
+from felicity.apps.abstract import BaseEntity
 from felicity.apps.user.entities import User
 
 """
@@ -18,7 +18,7 @@ method_instrument = Table(
 )
 
 
-class Method(AuditUser):
+class Method(BaseEntity):
     """Method
     analytical method
     """
@@ -36,7 +36,7 @@ class Method(AuditUser):
     )
 
 
-class InstrumentType(AuditUser):
+class InstrumentType(BaseEntity):
     """Instrument Type"""
 
     __tablename__ = "instrument_type"
@@ -45,7 +45,7 @@ class InstrumentType(AuditUser):
     description = Column(String, nullable=False)
 
 
-class Instrument(AuditUser):
+class Instrument(BaseEntity):
     """Instrument/Analyser"""
 
     __tablename__ = "instrument"
@@ -68,7 +68,7 @@ class Instrument(AuditUser):
     )
 
 
-class LaboratoryInstrument(AuditUser):
+class LaboratoryInstrument(BaseEntity):
     """Laboratory Instrument"""
 
     __tablename__ = "laboratory_instrument"
@@ -81,7 +81,7 @@ class LaboratoryInstrument(AuditUser):
     date_decommissioned = Column(DateTime, nullable=True)
 
 
-class InstrumentCalibration(AuditUser):
+class InstrumentCalibration(BaseEntity):
     """Laboratory Instrument Calibration Task
     -   ensures the measurement accuracy of an instrument meets a known standard
     -   Is it still accurate?
@@ -106,7 +106,7 @@ class InstrumentCalibration(AuditUser):
     remarks = Column(String, nullable=True)
 
 
-class CalibrationCertificate(AuditUser):
+class CalibrationCertificate(BaseEntity):
     """Instrument Calibration Certificate"""
 
     __tablename__ = "calibration_certificate"
@@ -131,7 +131,7 @@ class CalibrationCertificate(AuditUser):
         return datetime.now() < self.valid_to_date
 
 
-# class MethodValidation(AuditUser):
+# class MethodValidation(BaseEntity):
 #     """Method Validation Test
 #     -   Establishing and confirming the analytical performance characteristics of a method
 #     -   Is it producing the right results?
@@ -152,7 +152,7 @@ class CalibrationCertificate(AuditUser):
 #     laboratory_instrument = relationship("LaboratoryInstrument", lazy="selectin")
 
 
-# class MethodVerification(AuditUser):
+# class MethodVerification(BaseEntity):
 #     """Method Verification Test
 #     -   Assess the suitability of a method under actual conditions of use
 #     -   Is it working correctly
@@ -164,7 +164,7 @@ class CalibrationCertificate(AuditUser):
 #     laboratory_instrument = relationship("LaboratoryInstrument", lazy="selectin")
 
 
-class InstrumentCompetence(AuditUser):
+class InstrumentCompetence(BaseEntity):
     __tablename__ = "instrument_competence"
 
     instrument_uid = Column(String, ForeignKey("instrument.uid"), nullable=False)
@@ -183,8 +183,7 @@ class InstrumentCompetence(AuditUser):
     async def is_valid(self):
         return datetime.now() < self.expiry_date
 
-
-# class MeasurementUncertainty(AuditUser):
+# class MeasurementUncertainty(BaseEntity):
 #     __tablename__ = "measurement_uncertainty"
 
 # https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8199534/

@@ -8,22 +8,22 @@ except ImportError:
 from sqlalchemy import Column, DateTime, ForeignKey, String, Table
 from sqlalchemy.orm import relationship
 
-from felicity.apps.abstract import AuditUser
+from felicity.apps.abstract import BaseEntity
 
-from . import enum, schemas
+from . import enum
 
 """
 Many to Many Link between ReportMeta and Analysis
 """
 analysis_reports = Table(
     "analysis_reports",
-    AuditUser.metadata,
+    BaseEntity.metadata,
     Column("analysis_uid", ForeignKey("analysis.uid"), primary_key=True),
     Column("report_uid", ForeignKey("report_meta.uid"), primary_key=True),
 )
 
 
-class ReportMeta(AuditUser):
+class ReportMeta(BaseEntity):
     """Generated Reports Metadata"""
 
     __tablename__ = "report_meta"

@@ -4,7 +4,7 @@ from sqlalchemy import (Boolean, Column, DateTime, Float, ForeignKey, Integer,
                         String, Table)
 from sqlalchemy.orm import relationship
 
-from felicity.apps.abstract import (AuditHistory, AuditUser, BaseEntity,
+from felicity.apps.abstract import (BaseEntity,
                                     BaseMPTT)
 from felicity.apps.analysis.entities.qc import QCLevel, QCSet
 from felicity.apps.analysis.enum import ResultType
@@ -16,7 +16,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
-class CodingStandard(AuditUser):
+class CodingStandard(BaseEntity):
     """conding standars e.g LOINC"""
 
     __tablename__ = "coding_standard"
@@ -25,7 +25,7 @@ class CodingStandard(AuditUser):
     description = Column(String, nullable=False)
 
 
-class SampleType(AuditUser):
+class SampleType(BaseEntity):
     """SampleType"""
 
     __tablename__ = "sample_type"
@@ -37,7 +37,7 @@ class SampleType(AuditUser):
     abbr = Column(String, nullable=False)
 
 
-class SampleTypeCoding(AuditUser):
+class SampleTypeCoding(BaseEntity):
     """SampleTypeCoding"""
 
     __tablename__ = "sampe_type_coding"
@@ -86,7 +86,7 @@ analysis_profile = Table(
 )
 
 
-class AnalysisCategory(AuditUser):
+class AnalysisCategory(BaseEntity):
     """Categorise Analysis"""
 
     __tablename__ = "analysis_category"
@@ -98,7 +98,7 @@ class AnalysisCategory(AuditUser):
     active = Column(Boolean(), default=False)
 
 
-class Profile(AuditUser):
+class Profile(BaseEntity):
     """Grouped Analysis e.g FBC, U&E's, MCS ..."""
 
     __tablename__ = "profile"
@@ -121,7 +121,7 @@ class Profile(AuditUser):
     department = relationship("Department", lazy="selectin")
 
 
-class ProfileCoding(AuditUser):
+class ProfileCoding(BaseEntity):
     """ProfileCoding"""
 
     __tablename__ = "profile_coding"
@@ -150,7 +150,7 @@ analysis_analysis_template = Table(
 )
 
 
-class AnalysisTemplate(AuditUser):
+class AnalysisTemplate(BaseEntity):
     """Template for adding Analysis extras"""
 
     __tablename__ = "analysis_template"
@@ -187,7 +187,7 @@ analysis_instrument = Table(
 )
 
 
-class Analysis(AuditUser):
+class Analysis(BaseEntity):
     """Analysis Test/Service"""
 
     __tablename__ = "analysis"
@@ -247,7 +247,7 @@ class Analysis(AuditUser):
     active = Column(Boolean(), default=False)
 
 
-class AnalysisCoding(AuditUser):
+class AnalysisCoding(BaseEntity):
     """AnalysisCoding"""
 
     __tablename__ = "analysis_coding"
@@ -263,7 +263,7 @@ class AnalysisCoding(AuditUser):
     code = Column(String, nullable=False)
 
 
-class AnalysisInterim(AuditUser):
+class AnalysisInterim(BaseEntity):
     """Analysis Interim Result Field"""
 
     __tablename__ = "analysis_interim"
@@ -275,7 +275,7 @@ class AnalysisInterim(AuditUser):
     instrument = relationship("Instrument")
 
 
-class AnalysisCorrectionFactor(AuditUser):
+class AnalysisCorrectionFactor(BaseEntity):
     """Analysis Correction Factor"""
 
     __tablename__ = "analysis_correction_factor"
@@ -286,7 +286,7 @@ class AnalysisCorrectionFactor(AuditUser):
     method_uid = Column(String, ForeignKey("method.uid"), nullable=True)
 
 
-class AnalysisDetectionLimit(AuditUser):
+class AnalysisDetectionLimit(BaseEntity):
     """Analysis Detection Limit"""
 
     __tablename__ = "analysis_detection_limit"
@@ -298,7 +298,7 @@ class AnalysisDetectionLimit(AuditUser):
     method_uid = Column(String, ForeignKey("method.uid"), nullable=True)
 
 
-class AnalysisUncertainty(AuditUser):
+class AnalysisUncertainty(BaseEntity):
     """Analysis Measurement Uncertainty
     If value is within the range min.max then result becomes a range (result +/- value)
     """
@@ -313,7 +313,7 @@ class AnalysisUncertainty(AuditUser):
     method_uid = Column(String, ForeignKey("method.uid"), nullable=True)
 
 
-class AnalysisSpecification(AuditUser):
+class AnalysisSpecification(BaseEntity):
     """Analysis Specification Ranges"""
 
     __tablename__ = "analysis_specification"
@@ -358,7 +358,7 @@ result_option_sample_type = Table(
 )
 
 
-class ResultOption(AuditUser):
+class ResultOption(BaseEntity):
     """Result Choices"""
 
     __tablename__ = "result_options"
@@ -371,7 +371,7 @@ class ResultOption(AuditUser):
     )
 
 
-class AnalysisRequest(AuditUser):
+class AnalysisRequest(BaseEntity):
     """AnalysisRequest a.k.a Laboratory Request"""
 
     __tablename__ = "analysis_request"
@@ -423,7 +423,7 @@ sample_rejection_reason = Table(
 )
 
 
-class RejectionReason(AuditUser):
+class RejectionReason(BaseEntity):
     """Rejection Reason"""
 
     __tablename__ = "rejection_reason"
@@ -431,7 +431,7 @@ class RejectionReason(AuditUser):
     reason = Column(String, nullable=False)
 
 
-class Sample(AuditHistory, BaseMPTT):
+class Sample(BaseEntity, BaseMPTT):
     """Sample"""
 
     __tablename__ = "sample"
@@ -507,7 +507,6 @@ class Sample(AuditHistory, BaseMPTT):
     )
     storage_slot = Column(String, nullable=True)
     storage_slot_index = Column(Integer, nullable=True)
-
 
 # @event.listens_for(Sample, "after_update")
 # def stream_sample_verified_entities(mapper, connection, target): # noqa

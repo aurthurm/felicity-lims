@@ -1,7 +1,7 @@
 from sqlalchemy import Column, DateTime, ForeignKey, String, Table
 from sqlalchemy.orm import relationship
 
-from felicity.apps.abstract import AuditUser, BaseEntity
+from felicity.apps.abstract import BaseEntity
 
 """
  Many to Many Link between Users and Notices
@@ -34,7 +34,7 @@ department_notice: Table = Table(
 )
 
 
-class Notice(AuditUser):
+class Notice(BaseEntity):
     """Notice"""
 
     __tablename__ = "notice"

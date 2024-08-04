@@ -22,11 +22,13 @@ delattr(SessionMixin, 'session')
 SessionMixin.query = classproperty(new_query)
 
 
-class BaseEntity(DeclarativeBase, ReprMixin, SerializeMixin, SmartQueryMixin, AsyncAttrs):
+class Base(
+    DeclarativeBase, ReprMixin, SerializeMixin, SmartQueryMixin, AsyncAttrs
+):
     __repr__ = ReprMixin.__repr__
     __name__: str
-    __abstract__ = True
     __mapper_args__ = {"eager_defaults": True}
+    __abstract__ = True
 
     uid = Column(
         String,
@@ -46,7 +48,6 @@ class BaseEntity(DeclarativeBase, ReprMixin, SerializeMixin, SmartQueryMixin, As
                 setattr(self, name, kwargs[name])
             else:
                 raise KeyError("Attribute '{}' doesn't exist".format(name))
-
         return self
 
     def marshal_simple(self, exclude=None) -> Mapping[str, Any]:

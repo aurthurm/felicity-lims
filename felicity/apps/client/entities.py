@@ -3,13 +3,13 @@ from uuid import uuid4
 from sqlalchemy import Boolean, Column, ForeignKey, String
 from sqlalchemy.orm import backref, relationship
 
-from felicity.apps.abstract import AuditHistory
+from felicity.apps.abstract import BaseEntity
 from felicity.apps.setup.entities import District, Province
 from felicity.apps.user.abstract import AbstractBaseUser
 from felicity.apps.user.enum import UserType
 
 
-class Client(AuditHistory):
+class Client(BaseEntity):
     """Client/Facility"""
 
     __tablename__ = "client"

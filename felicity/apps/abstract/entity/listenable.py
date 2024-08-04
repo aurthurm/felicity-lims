@@ -11,8 +11,9 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
-class TrackableEntity:
-    """Allow a model to be automatically tracked"""
+class EventListenable:
+    """Listen to events on model"""
+    __abstract__ = True
 
     @staticmethod
     def put_out(action, table_name, metadata):

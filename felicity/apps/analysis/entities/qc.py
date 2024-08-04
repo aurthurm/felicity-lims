@@ -4,7 +4,7 @@ from sqlalchemy import (Boolean, Column, DateTime, Float, ForeignKey, String,
                         Table)
 from sqlalchemy.orm import relationship
 
-from felicity.apps.abstract import AuditUser, BaseEntity
+from felicity.apps.abstract import BaseEntity
 from felicity.apps.analysis.enum import SampleState
 from felicity.apps.setup.entities.setup import Department
 
@@ -12,7 +12,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
-class QCSet(AuditUser):
+class QCSet(BaseEntity):
     """A Set/Group of QC Samples that are run together.
     - e.g a Viral Load Rack the QCLevels are a set i.e Negative Control, Low Pos Control, High Pos Control
     """
@@ -36,7 +36,7 @@ qc_reference_analysis = Table(
 )
 
 
-class QCReference(AuditUser):
+class QCReference(BaseEntity):
     """QC Sample Reference Material    :: Not Implemented Yet
     - can have multi analytes/Profile
     - states: Active (in-use - there must be only 1 active per analysis)
@@ -72,7 +72,7 @@ class QCReference(AuditUser):
     lot_number = Column(String, nullable=True)
 
 
-class QCLevel(AuditUser):
+class QCLevel(BaseEntity):
     """Sample Level /category
     - None - normal sample
     - Negative Control
@@ -118,7 +118,7 @@ qc_template_qc_level = Table(
 )
 
 
-class QCTemplate(AuditUser):
+class QCTemplate(BaseEntity):
     """QC Level Grouping e.g:
     Roche Viral Load CQ:
         - Neg Control

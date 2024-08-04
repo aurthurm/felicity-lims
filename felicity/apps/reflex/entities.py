@@ -1,10 +1,10 @@
 from sqlalchemy import Column, ForeignKey, Integer, String, Table
 from sqlalchemy.orm import relationship
 
-from felicity.apps.abstract import AuditHistory, BaseEntity
+from felicity.apps.abstract import BaseEntity
 
 
-class ReflexRule(AuditHistory):
+class ReflexRule(BaseEntity):
     __tablename__ = "reflex_rule"
 
     name = Column(String, index=True, unique=True, nullable=False)
@@ -55,7 +55,7 @@ class ReflexBrainCriteria(BaseEntity):
     value = Column(String)
 
 
-class ReflexBrain(AuditHistory):
+class ReflexBrain(BaseEntity):
     __tablename__ = "reflex_brain"
 
     reflex_action_uid = Column(
@@ -81,7 +81,7 @@ reflex_action_analysis = Table(
 )
 
 
-class ReflexAction(AuditHistory):
+class ReflexAction(BaseEntity):
     __tablename__ = "reflex_action"
 
     level = Column(Integer, nullable=False, default=1)

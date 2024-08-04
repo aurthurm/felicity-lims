@@ -1,12 +1,9 @@
-from datetime import datetime
+from sqlalchemy import Boolean, Column, Integer, String
 
-from sqlalchemy import Boolean, Column, DateTime, Integer, String
-from sqlalchemy.ext.declarative import declared_attr
-
-from felicity.apps.abstract import AuditUser
+from felicity.apps.abstract import BaseEntity
 
 
-class AbstractBaseUser(AuditUser):
+class AbstractBaseUser(BaseEntity):
     __abstract__ = True
 
     first_name = Column(String, index=True)

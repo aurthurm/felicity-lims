@@ -5,12 +5,12 @@ from sqlalchemy import (Boolean, Column, DateTime, Float, ForeignKey, Integer,
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import relationship
 
-from felicity.apps.abstract import AuditHistory, BaseEntity
+from felicity.apps.abstract import BaseEntity
 from felicity.apps.billing.enum import (DiscountType, DiscountValueType,
                                         TransactionKind)
 
 
-class AnalysisPrice(AuditHistory):
+class AnalysisPrice(BaseEntity):
     __tablename__ = "analysis_price"
 
     analysis_uid = Column(String, ForeignKey("analysis.uid"), nullable=True)
@@ -19,7 +19,7 @@ class AnalysisPrice(AuditHistory):
     amount = Column(Float, nullable=False)
 
 
-class ProfilePrice(AuditHistory):
+class ProfilePrice(BaseEntity):
     __tablename__ = "profile_price"
 
     profile_uid = Column(String, ForeignKey("profile.uid"), nullable=True)
@@ -28,7 +28,7 @@ class ProfilePrice(AuditHistory):
     amount = Column(Float, nullable=False)
 
 
-class AnalysisDiscount(AuditHistory):
+class AnalysisDiscount(BaseEntity):
     __tablename__ = "analysis_discount"
 
     analysis_uid = Column(String, ForeignKey("analysis.uid"), nullable=False)
@@ -45,7 +45,7 @@ class AnalysisDiscount(AuditHistory):
     is_active = Column(Boolean, nullable=False)
 
 
-class ProfileDiscount(AuditHistory):
+class ProfileDiscount(BaseEntity):
     __tablename__ = "profile_discount"
 
     profile_uid = Column(String, ForeignKey("profile.uid"), nullable=False)
@@ -62,7 +62,7 @@ class ProfileDiscount(AuditHistory):
     is_active = Column(Boolean, nullable=False)
 
 
-class Voucher(AuditHistory):
+class Voucher(BaseEntity):
     __tablename__ = "voucher"
 
     name = Column(String, nullable=False, unique=True)
@@ -79,7 +79,7 @@ class Voucher(AuditHistory):
     once_per_order = Column(Boolean, nullable=False)
 
 
-class VoucherCode(AuditHistory):
+class VoucherCode(BaseEntity):
     __tablename__ = "voucher_code"
 
     code = Column(String(20), nullable=False, unique=True)
@@ -92,7 +92,7 @@ class VoucherCode(AuditHistory):
     is_active = Column(Boolean, nullable=False)
 
 
-class VoucherCustomer(AuditHistory):
+class VoucherCustomer(BaseEntity):
     __tablename__ = "voucher_customer"
 
     patient_uid = Column(String, ForeignKey("patient.uid"), nullable=False)
@@ -114,7 +114,7 @@ test_bill_item = Table(
 )
 
 
-class TestBill(AuditHistory):
+class TestBill(BaseEntity):
     __tablename__ = "test_bill"
 
     bill_id = Column(String, nullable=False)
@@ -135,7 +135,7 @@ class TestBill(AuditHistory):
     )
 
 
-class TestBillTransaction(AuditHistory):
+class TestBillTransaction(BaseEntity):
     __tablename__ = "test_bill_transaction"
 
     test_bill_uid = Column(String, ForeignKey("test_bill.uid"), nullable=True)
@@ -150,7 +150,7 @@ class TestBillTransaction(AuditHistory):
     action_message = Column(String, nullable=True)
 
 
-class TestBillInvoice(AuditHistory):
+class TestBillInvoice(BaseEntity):
     __tablename__ = "test_bill_invoice"
 
     test_bill_uid = Column(String, ForeignKey("test_bill.uid"), nullable=True)

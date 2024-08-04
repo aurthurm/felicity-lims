@@ -1,7 +1,7 @@
 from sqlalchemy import Column, ForeignKey, String, Table
 from sqlalchemy.orm import relationship
 
-from felicity.apps.abstract import AuditUser, BaseEntity
+from felicity.apps.abstract import BaseEntity
 
 """
  Many to Many Link between Users and ActivityFeed
@@ -14,7 +14,7 @@ activity_feed_subscription = Table(
 )
 
 
-class ActivityFeed(AuditUser):
+class ActivityFeed(BaseEntity):
     """ActivityFeed"""
 
     __tablename__ = "activity_feed"
@@ -46,7 +46,7 @@ activity_stream_view = Table(
 )
 
 
-class ActivityStream(AuditUser):
+class ActivityStream(BaseEntity):
     """ActivityStream
     Actor. The object that performed the activity.
     Verb. The verb phrase that identifies the action of the activity.
@@ -113,7 +113,7 @@ department_notification = Table(
 )
 
 
-class Notification(AuditUser):
+class Notification(BaseEntity):
     """Notification
     Custom messages about system status. These are more like activity streams only that they are very specific
     messages to notify users about something important

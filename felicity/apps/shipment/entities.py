@@ -5,16 +5,14 @@ from sqlalchemy import (Boolean, Column, DateTime, ForeignKey, Integer,
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import relationship
 
-from felicity.apps.abstract.audit import AuditHistory
 from felicity.apps.abstract.entity import BaseEntity
-from felicity.apps.shipment import enum, schemas
 from felicity.apps.user.entities import User
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
-class ReferralLaboratory(AuditHistory):
+class ReferralLaboratory(BaseEntity):
     __tablename__ = "referral_laboratory"
 
     name = Column(String, nullable=True)
@@ -26,7 +24,7 @@ class ReferralLaboratory(AuditHistory):
     is_referral = Column(Boolean(), default=False)
 
 
-class Shipment(AuditHistory):
+class Shipment(BaseEntity):
     __tablename__ = "shipment"
 
     shipment_id = Column(String, index=True, unique=True, nullable=False)

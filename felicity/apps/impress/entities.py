@@ -3,12 +3,12 @@ from sqlalchemy import (Boolean, Column, ForeignKey, LargeBinary,
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import relationship
 
-from felicity.apps.abstract import AuditHistory
+from felicity.apps.abstract import BaseEntity
 from felicity.apps.analysis.entities.analysis import Sample
 from felicity.apps.user.entities import User
 
 
-class ReportImpress(AuditHistory):
+class ReportImpress(BaseEntity):
     __tablename__ = "report_impress"
 
     state = Column(String)  # preliminary, final, invalidated

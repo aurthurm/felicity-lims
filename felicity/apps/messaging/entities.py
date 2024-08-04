@@ -1,7 +1,7 @@
 from sqlalchemy import Boolean, Column, ForeignKey, String, Table
 from sqlalchemy.orm import relationship
 
-from felicity.apps.abstract import AuditUser, BaseEntity, BaseMPTT
+from felicity.apps.abstract import BaseEntity, BaseMPTT
 
 """
  Many to Many Link between Users (recipients)  and MessageThread
@@ -24,7 +24,7 @@ message_thread_delete = Table(
 )
 
 
-class MessageThread(AuditUser):
+class MessageThread(BaseEntity):
     """MessageThread"""
 
     __tablename__ = "message_thread"
@@ -58,7 +58,7 @@ message_delete = Table(
 )
 
 
-class Message(AuditUser, BaseMPTT):
+class Message(BaseEntity, BaseMPTT):
     """Message"""
 
     __tablename__ = "message"

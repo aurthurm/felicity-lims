@@ -5,7 +5,7 @@ from sqlalchemy import (Boolean, Column, DateTime, ForeignKey, Integer, String,
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import relationship
 
-from felicity.apps.abstract import AuditHistory, AuditUser, BaseEntity
+from felicity.apps.abstract import BaseEntity
 from felicity.apps.analysis.entities import analysis as analysis_entities
 from felicity.apps.analysis.entities import qc as qc_entities
 from felicity.apps.instrument.entities import Instrument
@@ -15,7 +15,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
-class WSBase(AuditUser):
+class WSBase(BaseEntity):
     __abstract__ = True
     worksheet_type = Column(String)
     reserved = Column(JSONB)
@@ -62,7 +62,7 @@ class WorkSheetTemplate(WSBase):
     sample_type = relationship(analysis_entities.SampleType, lazy="selectin")
 
 
-class WorkSheet(AuditHistory, WSBase):
+class WorkSheet(BaseEntity, WSBase):
     __tablename__ = "worksheet"
 
     template_uid = Column(String, ForeignKey("worksheet_template.uid"), nullable=False)

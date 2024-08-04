@@ -1,10 +1,10 @@
 from sqlalchemy import Column, DateTime, Float, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 
-from felicity.apps.abstract.audit import AuditUser
+from felicity.apps.abstract import BaseEntity
 
 
-class StockItem(AuditUser):
+class StockItem(BaseEntity):
     """StockItem Standardization"""
 
     __tablename__ = "stock_item"
@@ -19,7 +19,7 @@ class StockItem(AuditUser):
     maximum_level = Column(Integer, nullable=True)
 
 
-class StockItemVariant(AuditUser):
+class StockItemVariant(BaseEntity):
     """StockItem Variant as the StockProduct"""
 
     __tablename__ = "stock_item_variant"
@@ -32,7 +32,7 @@ class StockItemVariant(AuditUser):
     maximum_level = Column(Integer, nullable=True)
 
 
-class StockCategory(AuditUser):
+class StockCategory(BaseEntity):
     """StockCategory
     Consumable, Reagents, Durables
     """
@@ -43,7 +43,7 @@ class StockCategory(AuditUser):
     description = Column(String, nullable=False)
 
 
-class Hazard(AuditUser):
+class Hazard(BaseEntity):
     """Hazard"""
 
     __tablename__ = "hazard"
@@ -52,7 +52,7 @@ class Hazard(AuditUser):
     description = Column(String, nullable=False)
 
 
-class StockUnit(AuditUser):
+class StockUnit(BaseEntity):
     __tablename__ = "stock_unit"
 
     name = Column(String, nullable=False)
@@ -60,7 +60,7 @@ class StockUnit(AuditUser):
     synonyms = Column(String, nullable=True)
 
 
-class StockLot(AuditUser):
+class StockLot(BaseEntity):
     __tablename__ = "stock_lot"
 
     product_uid = Column(String, ForeignKey("stock_item_variant.uid"), nullable=True)
@@ -70,7 +70,7 @@ class StockLot(AuditUser):
     remarks = Column(String, nullable=True)
 
 
-class StockProductInventory(AuditUser):
+class StockProductInventory(BaseEntity):
     __tablename__ = "stock_product_inventory"
 
     product_uid = Column(String, ForeignKey("stock_item_variant.uid"), nullable=True)
@@ -81,7 +81,7 @@ class StockProductInventory(AuditUser):
     remarks = Column(String, nullable=True)
 
 
-class StockOrder(AuditUser):
+class StockOrder(BaseEntity):
     __tablename__ = "stock_order"
 
     order_by_uid = Column(String, ForeignKey("user.uid"), nullable=True)
@@ -97,7 +97,7 @@ class StockOrder(AuditUser):
     )
 
 
-class StockOrderProduct(AuditUser):
+class StockOrderProduct(BaseEntity):
     __tablename__ = "stock_order_product"
 
     product_uid = Column(String, ForeignKey("stock_item_variant.uid"), nullable=True)
@@ -110,7 +110,7 @@ class StockOrderProduct(AuditUser):
     remarks = Column(String, nullable=True)
 
 
-class StockReceipt(AuditUser):
+class StockReceipt(BaseEntity):
     __tablename__ = "stock_receipt"
 
     product_uid = Column(String, ForeignKey("stock_item_variant.uid"), nullable=False)
@@ -139,7 +139,7 @@ class StockReceipt(AuditUser):
     expiry_date = Column(DateTime, nullable=False)
 
 
-class StockAdjustment(AuditUser):
+class StockAdjustment(BaseEntity):
     __tablename__ = "stock_adjustment"
 
     product_uid = Column(String, ForeignKey("stock_item_variant.uid"), nullable=True)
