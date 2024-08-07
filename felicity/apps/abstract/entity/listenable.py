@@ -66,6 +66,16 @@ class EventListenable:
                     except Exception:  # noqa
                         state_before[attr.key] = getattr(target, attr.key)
 
+        if state_after:
+            to_delete = []
+            for key in state_after.keys():
+                if state_after[key] == state_before[key]:
+                    to_delete.append(key)
+
+            for _key in to_delete:
+                del state_after[_key]
+                del state_before[_key]
+
         if len(state_after.keys()) == 1:
             if "updated_at" in list(state_after.keys()):
                 return {}

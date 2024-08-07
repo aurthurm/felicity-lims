@@ -1338,14 +1338,6 @@
         "documentation": {}
     },
     {
-        "label": "List",
-        "importPath": "typing",
-        "description": "typing",
-        "isExtraImport": true,
-        "detail": "typing",
-        "documentation": {}
-    },
-    {
         "label": "Optional",
         "importPath": "typing",
         "description": "typing",
@@ -4616,14 +4608,6 @@
     },
     {
         "label": "timedelta",
-        "importPath": "datetime",
-        "description": "datetime",
-        "isExtraImport": true,
-        "detail": "datetime",
-        "documentation": {}
-    },
-    {
-        "label": "datetime",
         "importPath": "datetime",
         "description": "datetime",
         "isExtraImport": true,
@@ -8305,6 +8289,22 @@
         "documentation": {}
     },
     {
+        "label": "event",
+        "importPath": "sqlalchemy",
+        "description": "sqlalchemy",
+        "isExtraImport": true,
+        "detail": "sqlalchemy",
+        "documentation": {}
+    },
+    {
+        "label": "inspect",
+        "importPath": "sqlalchemy",
+        "description": "sqlalchemy",
+        "isExtraImport": true,
+        "detail": "sqlalchemy",
+        "documentation": {}
+    },
+    {
         "label": "inspect",
         "importPath": "sqlalchemy",
         "description": "sqlalchemy",
@@ -8338,22 +8338,6 @@
     },
     {
         "label": "update",
-        "importPath": "sqlalchemy",
-        "description": "sqlalchemy",
-        "isExtraImport": true,
-        "detail": "sqlalchemy",
-        "documentation": {}
-    },
-    {
-        "label": "event",
-        "importPath": "sqlalchemy",
-        "description": "sqlalchemy",
-        "isExtraImport": true,
-        "detail": "sqlalchemy",
-        "documentation": {}
-    },
-    {
-        "label": "inspect",
         "importPath": "sqlalchemy",
         "description": "sqlalchemy",
         "isExtraImport": true,
@@ -8617,6 +8601,38 @@
         "documentation": {}
     },
     {
+        "label": "Column",
+        "importPath": "sqlalchemy",
+        "description": "sqlalchemy",
+        "isExtraImport": true,
+        "detail": "sqlalchemy",
+        "documentation": {}
+    },
+    {
+        "label": "Integer",
+        "importPath": "sqlalchemy",
+        "description": "sqlalchemy",
+        "isExtraImport": true,
+        "detail": "sqlalchemy",
+        "documentation": {}
+    },
+    {
+        "label": "String",
+        "importPath": "sqlalchemy",
+        "description": "sqlalchemy",
+        "isExtraImport": true,
+        "detail": "sqlalchemy",
+        "documentation": {}
+    },
+    {
+        "label": "UnicodeText",
+        "importPath": "sqlalchemy",
+        "description": "sqlalchemy",
+        "isExtraImport": true,
+        "detail": "sqlalchemy",
+        "documentation": {}
+    },
+    {
         "label": "Boolean",
         "importPath": "sqlalchemy",
         "description": "sqlalchemy",
@@ -9338,14 +9354,6 @@
     },
     {
         "label": "Column",
-        "importPath": "sqlalchemy",
-        "description": "sqlalchemy",
-        "isExtraImport": true,
-        "detail": "sqlalchemy",
-        "documentation": {}
-    },
-    {
-        "label": "DateTime",
         "importPath": "sqlalchemy",
         "description": "sqlalchemy",
         "isExtraImport": true,
@@ -10406,22 +10414,6 @@
         "description": "felicity.apps.user.services",
         "isExtraImport": true,
         "detail": "felicity.apps.user.services",
-        "documentation": {}
-    },
-    {
-        "label": "MongoService",
-        "importPath": "database.mongo",
-        "description": "database.mongo",
-        "isExtraImport": true,
-        "detail": "database.mongo",
-        "documentation": {}
-    },
-    {
-        "label": "MongoCollection",
-        "importPath": "database.mongo",
-        "description": "database.mongo",
-        "isExtraImport": true,
-        "detail": "database.mongo",
         "documentation": {}
     },
     {
@@ -11810,6 +11802,22 @@
         "documentation": {}
     },
     {
+        "label": "MongoService",
+        "importPath": "felicity.database.mongo",
+        "description": "felicity.database.mongo",
+        "isExtraImport": true,
+        "detail": "felicity.database.mongo",
+        "documentation": {}
+    },
+    {
+        "label": "MongoCollection",
+        "importPath": "felicity.database.mongo",
+        "description": "felicity.database.mongo",
+        "isExtraImport": true,
+        "detail": "felicity.database.mongo",
+        "documentation": {}
+    },
+    {
         "label": "schemas",
         "importPath": "felicity.apps.instrument",
         "description": "felicity.apps.instrument",
@@ -12434,6 +12442,14 @@
         "documentation": {}
     },
     {
+        "label": "ActivityProcessType",
+        "importPath": "felicity.api.gql.notification.types",
+        "description": "felicity.api.gql.notification.types",
+        "isExtraImport": true,
+        "detail": "felicity.api.gql.notification.types",
+        "documentation": {}
+    },
+    {
         "label": "json",
         "kind": 6,
         "isExtraImport": true,
@@ -12464,6 +12480,38 @@
         "description": "felicity.apps.common.channel",
         "isExtraImport": true,
         "detail": "felicity.apps.common.channel",
+        "documentation": {}
+    },
+    {
+        "label": "broadcast",
+        "importPath": "felicity.apps.common.channel",
+        "description": "felicity.apps.common.channel",
+        "isExtraImport": true,
+        "detail": "felicity.apps.common.channel",
+        "documentation": {}
+    },
+    {
+        "label": "NotificationChannel",
+        "importPath": "felicity.apps.notification.enum",
+        "description": "felicity.apps.notification.enum",
+        "isExtraImport": true,
+        "detail": "felicity.apps.notification.enum",
+        "documentation": {}
+    },
+    {
+        "label": "NotificationChannel",
+        "importPath": "felicity.apps.notification.enum",
+        "description": "felicity.apps.notification.enum",
+        "isExtraImport": true,
+        "detail": "felicity.apps.notification.enum",
+        "documentation": {}
+    },
+    {
+        "label": "NotificationChannel",
+        "importPath": "felicity.apps.notification.enum",
+        "description": "felicity.apps.notification.enum",
+        "isExtraImport": true,
+        "detail": "felicity.apps.notification.enum",
         "documentation": {}
     },
     {
@@ -12936,22 +12984,6 @@
         "description": "felicity.apps.idsequencer.service",
         "isExtraImport": true,
         "detail": "felicity.apps.idsequencer.service",
-        "documentation": {}
-    },
-    {
-        "label": "schemas",
-        "importPath": "felicity.apps.shipment",
-        "description": "felicity.apps.shipment",
-        "isExtraImport": true,
-        "detail": "felicity.apps.shipment",
-        "documentation": {}
-    },
-    {
-        "label": "enum",
-        "importPath": "felicity.apps.shipment",
-        "description": "felicity.apps.shipment",
-        "isExtraImport": true,
-        "detail": "felicity.apps.shipment",
         "documentation": {}
     },
     {
@@ -13669,95 +13701,7 @@
         "documentation": {}
     },
     {
-        "label": "get_settings",
-        "importPath": "felicity.core.config",
-        "description": "felicity.core.config",
-        "isExtraImport": true,
-        "detail": "felicity.core.config",
-        "documentation": {}
-    },
-    {
-        "label": "get_settings",
-        "importPath": "felicity.core.config",
-        "description": "felicity.core.config",
-        "isExtraImport": true,
-        "detail": "felicity.core.config",
-        "documentation": {}
-    },
-    {
-        "label": "get_settings",
-        "importPath": "felicity.core.config",
-        "description": "felicity.core.config",
-        "isExtraImport": true,
-        "detail": "felicity.core.config",
-        "documentation": {}
-    },
-    {
-        "label": "get_settings",
-        "importPath": "felicity.core.config",
-        "description": "felicity.core.config",
-        "isExtraImport": true,
-        "detail": "felicity.core.config",
-        "documentation": {}
-    },
-    {
         "label": "settings",
-        "importPath": "felicity.core.config",
-        "description": "felicity.core.config",
-        "isExtraImport": true,
-        "detail": "felicity.core.config",
-        "documentation": {}
-    },
-    {
-        "label": "settings",
-        "importPath": "felicity.core.config",
-        "description": "felicity.core.config",
-        "isExtraImport": true,
-        "detail": "felicity.core.config",
-        "documentation": {}
-    },
-    {
-        "label": "get_settings",
-        "importPath": "felicity.core.config",
-        "description": "felicity.core.config",
-        "isExtraImport": true,
-        "detail": "felicity.core.config",
-        "documentation": {}
-    },
-    {
-        "label": "get_settings",
-        "importPath": "felicity.core.config",
-        "description": "felicity.core.config",
-        "isExtraImport": true,
-        "detail": "felicity.core.config",
-        "documentation": {}
-    },
-    {
-        "label": "get_settings",
-        "importPath": "felicity.core.config",
-        "description": "felicity.core.config",
-        "isExtraImport": true,
-        "detail": "felicity.core.config",
-        "documentation": {}
-    },
-    {
-        "label": "settings",
-        "importPath": "felicity.core.config",
-        "description": "felicity.core.config",
-        "isExtraImport": true,
-        "detail": "felicity.core.config",
-        "documentation": {}
-    },
-    {
-        "label": "get_settings",
-        "importPath": "felicity.core.config",
-        "description": "felicity.core.config",
-        "isExtraImport": true,
-        "detail": "felicity.core.config",
-        "documentation": {}
-    },
-    {
-        "label": "get_settings",
         "importPath": "felicity.core.config",
         "description": "felicity.core.config",
         "isExtraImport": true,
@@ -13826,6 +13770,118 @@
         "description": "felicity.core.config",
         "isExtraImport": true,
         "detail": "felicity.core.config",
+        "documentation": {}
+    },
+    {
+        "label": "get_settings",
+        "importPath": "felicity.core.config",
+        "description": "felicity.core.config",
+        "isExtraImport": true,
+        "detail": "felicity.core.config",
+        "documentation": {}
+    },
+    {
+        "label": "get_settings",
+        "importPath": "felicity.core.config",
+        "description": "felicity.core.config",
+        "isExtraImport": true,
+        "detail": "felicity.core.config",
+        "documentation": {}
+    },
+    {
+        "label": "settings",
+        "importPath": "felicity.core.config",
+        "description": "felicity.core.config",
+        "isExtraImport": true,
+        "detail": "felicity.core.config",
+        "documentation": {}
+    },
+    {
+        "label": "get_settings",
+        "importPath": "felicity.core.config",
+        "description": "felicity.core.config",
+        "isExtraImport": true,
+        "detail": "felicity.core.config",
+        "documentation": {}
+    },
+    {
+        "label": "get_settings",
+        "importPath": "felicity.core.config",
+        "description": "felicity.core.config",
+        "isExtraImport": true,
+        "detail": "felicity.core.config",
+        "documentation": {}
+    },
+    {
+        "label": "get_settings",
+        "importPath": "felicity.core.config",
+        "description": "felicity.core.config",
+        "isExtraImport": true,
+        "detail": "felicity.core.config",
+        "documentation": {}
+    },
+    {
+        "label": "get_settings",
+        "importPath": "felicity.core.config",
+        "description": "felicity.core.config",
+        "isExtraImport": true,
+        "detail": "felicity.core.config",
+        "documentation": {}
+    },
+    {
+        "label": "get_settings",
+        "importPath": "felicity.core.config",
+        "description": "felicity.core.config",
+        "isExtraImport": true,
+        "detail": "felicity.core.config",
+        "documentation": {}
+    },
+    {
+        "label": "get_settings",
+        "importPath": "felicity.core.config",
+        "description": "felicity.core.config",
+        "isExtraImport": true,
+        "detail": "felicity.core.config",
+        "documentation": {}
+    },
+    {
+        "label": "settings",
+        "importPath": "felicity.core.config",
+        "description": "felicity.core.config",
+        "isExtraImport": true,
+        "detail": "felicity.core.config",
+        "documentation": {}
+    },
+    {
+        "label": "settings",
+        "importPath": "felicity.core.config",
+        "description": "felicity.core.config",
+        "isExtraImport": true,
+        "detail": "felicity.core.config",
+        "documentation": {}
+    },
+    {
+        "label": "settings",
+        "importPath": "felicity.core.config",
+        "description": "felicity.core.config",
+        "isExtraImport": true,
+        "detail": "felicity.core.config",
+        "documentation": {}
+    },
+    {
+        "label": "get_settings",
+        "importPath": "felicity.core.config",
+        "description": "felicity.core.config",
+        "isExtraImport": true,
+        "detail": "felicity.core.config",
+        "documentation": {}
+    },
+    {
+        "label": "post_event",
+        "importPath": "felicity.core.events",
+        "description": "felicity.core.events",
+        "isExtraImport": true,
+        "detail": "felicity.core.events",
         "documentation": {}
     },
     {
@@ -13845,7 +13901,7 @@
         "documentation": {}
     },
     {
-        "label": "post_event",
+        "label": "subscribe",
         "importPath": "felicity.core.events",
         "description": "felicity.core.events",
         "isExtraImport": true,
@@ -15501,14 +15557,6 @@
         "documentation": {}
     },
     {
-        "label": "declared_attr",
-        "importPath": "sqlalchemy.ext.declarative",
-        "description": "sqlalchemy.ext.declarative",
-        "isExtraImport": true,
-        "detail": "sqlalchemy.ext.declarative",
-        "documentation": {}
-    },
-    {
         "label": "relationship",
         "importPath": "sqlalchemy.orm",
         "description": "sqlalchemy.orm",
@@ -15525,7 +15573,7 @@
         "documentation": {}
     },
     {
-        "label": "selectinload",
+        "label": "class_mapper",
         "importPath": "sqlalchemy.orm",
         "description": "sqlalchemy.orm",
         "isExtraImport": true,
@@ -15533,7 +15581,7 @@
         "documentation": {}
     },
     {
-        "label": "class_mapper",
+        "label": "selectinload",
         "importPath": "sqlalchemy.orm",
         "description": "sqlalchemy.orm",
         "isExtraImport": true,
@@ -15789,94 +15837,6 @@
         "documentation": {}
     },
     {
-        "label": "BaseEntity",
-        "importPath": "felicity.apps.abstract.entity",
-        "description": "felicity.apps.abstract.entity",
-        "isExtraImport": true,
-        "detail": "felicity.apps.abstract.entity",
-        "documentation": {}
-    },
-    {
-        "label": "BaseEntity",
-        "importPath": "felicity.apps.abstract.entity",
-        "description": "felicity.apps.abstract.entity",
-        "isExtraImport": true,
-        "detail": "felicity.apps.abstract.entity",
-        "documentation": {}
-    },
-    {
-        "label": "BaseEntity",
-        "importPath": "felicity.apps.abstract.entity",
-        "description": "felicity.apps.abstract.entity",
-        "isExtraImport": true,
-        "detail": "felicity.apps.abstract.entity",
-        "documentation": {}
-    },
-    {
-        "label": "BaseEntity",
-        "importPath": "felicity.apps.abstract.entity",
-        "description": "felicity.apps.abstract.entity",
-        "isExtraImport": true,
-        "detail": "felicity.apps.abstract.entity",
-        "documentation": {}
-    },
-    {
-        "label": "BaseEntity",
-        "importPath": "felicity.apps.abstract.entity",
-        "description": "felicity.apps.abstract.entity",
-        "isExtraImport": true,
-        "detail": "felicity.apps.abstract.entity",
-        "documentation": {}
-    },
-    {
-        "label": "BaseEntity",
-        "importPath": "felicity.apps.abstract.entity",
-        "description": "felicity.apps.abstract.entity",
-        "isExtraImport": true,
-        "detail": "felicity.apps.abstract.entity",
-        "documentation": {}
-    },
-    {
-        "label": "BaseEntity",
-        "importPath": "felicity.apps.abstract.entity",
-        "description": "felicity.apps.abstract.entity",
-        "isExtraImport": true,
-        "detail": "felicity.apps.abstract.entity",
-        "documentation": {}
-    },
-    {
-        "label": "BaseEntity",
-        "importPath": "felicity.apps.abstract.entity",
-        "description": "felicity.apps.abstract.entity",
-        "isExtraImport": true,
-        "detail": "felicity.apps.abstract.entity",
-        "documentation": {}
-    },
-    {
-        "label": "BaseEntity",
-        "importPath": "felicity.apps.abstract.entity",
-        "description": "felicity.apps.abstract.entity",
-        "isExtraImport": true,
-        "detail": "felicity.apps.abstract.entity",
-        "documentation": {}
-    },
-    {
-        "label": "BaseEntity",
-        "importPath": "felicity.apps.abstract.entity",
-        "description": "felicity.apps.abstract.entity",
-        "isExtraImport": true,
-        "detail": "felicity.apps.abstract.entity",
-        "documentation": {}
-    },
-    {
-        "label": "TrackableEntity",
-        "importPath": "felicity.apps.abstract.trackable",
-        "description": "felicity.apps.abstract.trackable",
-        "isExtraImport": true,
-        "detail": "felicity.apps.abstract.trackable",
-        "documentation": {}
-    },
-    {
         "label": "AsyncAttrs",
         "importPath": "sqlalchemy.ext.asyncio",
         "description": "sqlalchemy.ext.asyncio",
@@ -15973,6 +15933,22 @@
         "documentation": {}
     },
     {
+        "label": "get_history",
+        "importPath": "sqlalchemy.orm.attributes",
+        "description": "sqlalchemy.orm.attributes",
+        "isExtraImport": true,
+        "detail": "sqlalchemy.orm.attributes",
+        "documentation": {}
+    },
+    {
+        "label": "get_history",
+        "importPath": "sqlalchemy.orm.attributes",
+        "description": "sqlalchemy.orm.attributes",
+        "isExtraImport": true,
+        "detail": "sqlalchemy.orm.attributes",
+        "documentation": {}
+    },
+    {
         "label": "MeilisearchSyncHandler",
         "importPath": "apps.iol.meilisearch.handler",
         "description": "apps.iol.meilisearch.handler",
@@ -16026,6 +16002,86 @@
         "description": "sqlalchemy.sql.expression",
         "isExtraImport": true,
         "detail": "sqlalchemy.sql.expression",
+        "documentation": {}
+    },
+    {
+        "label": "BaseEntity",
+        "importPath": "felicity.apps.abstract.entity",
+        "description": "felicity.apps.abstract.entity",
+        "isExtraImport": true,
+        "detail": "felicity.apps.abstract.entity",
+        "documentation": {}
+    },
+    {
+        "label": "BaseEntity",
+        "importPath": "felicity.apps.abstract.entity",
+        "description": "felicity.apps.abstract.entity",
+        "isExtraImport": true,
+        "detail": "felicity.apps.abstract.entity",
+        "documentation": {}
+    },
+    {
+        "label": "BaseEntity",
+        "importPath": "felicity.apps.abstract.entity",
+        "description": "felicity.apps.abstract.entity",
+        "isExtraImport": true,
+        "detail": "felicity.apps.abstract.entity",
+        "documentation": {}
+    },
+    {
+        "label": "BaseEntity",
+        "importPath": "felicity.apps.abstract.entity",
+        "description": "felicity.apps.abstract.entity",
+        "isExtraImport": true,
+        "detail": "felicity.apps.abstract.entity",
+        "documentation": {}
+    },
+    {
+        "label": "BaseEntity",
+        "importPath": "felicity.apps.abstract.entity",
+        "description": "felicity.apps.abstract.entity",
+        "isExtraImport": true,
+        "detail": "felicity.apps.abstract.entity",
+        "documentation": {}
+    },
+    {
+        "label": "BaseEntity",
+        "importPath": "felicity.apps.abstract.entity",
+        "description": "felicity.apps.abstract.entity",
+        "isExtraImport": true,
+        "detail": "felicity.apps.abstract.entity",
+        "documentation": {}
+    },
+    {
+        "label": "BaseEntity",
+        "importPath": "felicity.apps.abstract.entity",
+        "description": "felicity.apps.abstract.entity",
+        "isExtraImport": true,
+        "detail": "felicity.apps.abstract.entity",
+        "documentation": {}
+    },
+    {
+        "label": "BaseEntity",
+        "importPath": "felicity.apps.abstract.entity",
+        "description": "felicity.apps.abstract.entity",
+        "isExtraImport": true,
+        "detail": "felicity.apps.abstract.entity",
+        "documentation": {}
+    },
+    {
+        "label": "BaseEntity",
+        "importPath": "felicity.apps.abstract.entity",
+        "description": "felicity.apps.abstract.entity",
+        "isExtraImport": true,
+        "detail": "felicity.apps.abstract.entity",
+        "documentation": {}
+    },
+    {
+        "label": "BaseEntity",
+        "importPath": "felicity.apps.abstract.entity",
+        "description": "felicity.apps.abstract.entity",
+        "isExtraImport": true,
+        "detail": "felicity.apps.abstract.entity",
         "documentation": {}
     },
     {
@@ -16245,38 +16301,6 @@
         "documentation": {}
     },
     {
-        "label": "get_history",
-        "importPath": "sqlalchemy.orm.attributes",
-        "description": "sqlalchemy.orm.attributes",
-        "isExtraImport": true,
-        "detail": "sqlalchemy.orm.attributes",
-        "documentation": {}
-    },
-    {
-        "label": "get_history",
-        "importPath": "sqlalchemy.orm.attributes",
-        "description": "sqlalchemy.orm.attributes",
-        "isExtraImport": true,
-        "detail": "sqlalchemy.orm.attributes",
-        "documentation": {}
-    },
-    {
-        "label": "AuditHistory",
-        "importPath": "felicity.apps.abstract",
-        "description": "felicity.apps.abstract",
-        "isExtraImport": true,
-        "detail": "felicity.apps.abstract",
-        "documentation": {}
-    },
-    {
-        "label": "AuditUser",
-        "importPath": "felicity.apps.abstract",
-        "description": "felicity.apps.abstract",
-        "isExtraImport": true,
-        "detail": "felicity.apps.abstract",
-        "documentation": {}
-    },
-    {
         "label": "BaseEntity",
         "importPath": "felicity.apps.abstract",
         "description": "felicity.apps.abstract",
@@ -16293,31 +16317,7 @@
         "documentation": {}
     },
     {
-        "label": "AuditUser",
-        "importPath": "felicity.apps.abstract",
-        "description": "felicity.apps.abstract",
-        "isExtraImport": true,
-        "detail": "felicity.apps.abstract",
-        "documentation": {}
-    },
-    {
         "label": "BaseEntity",
-        "importPath": "felicity.apps.abstract",
-        "description": "felicity.apps.abstract",
-        "isExtraImport": true,
-        "detail": "felicity.apps.abstract",
-        "documentation": {}
-    },
-    {
-        "label": "AuditHistory",
-        "importPath": "felicity.apps.abstract",
-        "description": "felicity.apps.abstract",
-        "isExtraImport": true,
-        "detail": "felicity.apps.abstract",
-        "documentation": {}
-    },
-    {
-        "label": "AuditUser",
         "importPath": "felicity.apps.abstract",
         "description": "felicity.apps.abstract",
         "isExtraImport": true,
@@ -16342,22 +16342,6 @@
     },
     {
         "label": "BaseRepository",
-        "importPath": "felicity.apps.abstract",
-        "description": "felicity.apps.abstract",
-        "isExtraImport": true,
-        "detail": "felicity.apps.abstract",
-        "documentation": {}
-    },
-    {
-        "label": "AuditUser",
-        "importPath": "felicity.apps.abstract",
-        "description": "felicity.apps.abstract",
-        "isExtraImport": true,
-        "detail": "felicity.apps.abstract",
-        "documentation": {}
-    },
-    {
-        "label": "AuditHistory",
         "importPath": "felicity.apps.abstract",
         "description": "felicity.apps.abstract",
         "isExtraImport": true,
@@ -16389,7 +16373,31 @@
         "documentation": {}
     },
     {
-        "label": "AuditHistory",
+        "label": "BaseEntity",
+        "importPath": "felicity.apps.abstract",
+        "description": "felicity.apps.abstract",
+        "isExtraImport": true,
+        "detail": "felicity.apps.abstract",
+        "documentation": {}
+    },
+    {
+        "label": "BaseRepository",
+        "importPath": "felicity.apps.abstract",
+        "description": "felicity.apps.abstract",
+        "isExtraImport": true,
+        "detail": "felicity.apps.abstract",
+        "documentation": {}
+    },
+    {
+        "label": "BaseService",
+        "importPath": "felicity.apps.abstract",
+        "description": "felicity.apps.abstract",
+        "isExtraImport": true,
+        "detail": "felicity.apps.abstract",
+        "documentation": {}
+    },
+    {
+        "label": "BaseEntity",
         "importPath": "felicity.apps.abstract",
         "description": "felicity.apps.abstract",
         "isExtraImport": true,
@@ -16413,15 +16421,7 @@
         "documentation": {}
     },
     {
-        "label": "AuditHistory",
-        "importPath": "felicity.apps.abstract",
-        "description": "felicity.apps.abstract",
-        "isExtraImport": true,
-        "detail": "felicity.apps.abstract",
-        "documentation": {}
-    },
-    {
-        "label": "AuditUser",
+        "label": "BaseEntity",
         "importPath": "felicity.apps.abstract",
         "description": "felicity.apps.abstract",
         "isExtraImport": true,
@@ -16445,7 +16445,7 @@
         "documentation": {}
     },
     {
-        "label": "AuditUser",
+        "label": "BaseEntity",
         "importPath": "felicity.apps.abstract",
         "description": "felicity.apps.abstract",
         "isExtraImport": true,
@@ -16461,7 +16461,7 @@
         "documentation": {}
     },
     {
-        "label": "AuditUser",
+        "label": "BaseEntity",
         "importPath": "felicity.apps.abstract",
         "description": "felicity.apps.abstract",
         "isExtraImport": true,
@@ -16485,7 +16485,7 @@
         "documentation": {}
     },
     {
-        "label": "AuditUser",
+        "label": "BaseEntity",
         "importPath": "felicity.apps.abstract",
         "description": "felicity.apps.abstract",
         "isExtraImport": true,
@@ -16501,7 +16501,7 @@
         "documentation": {}
     },
     {
-        "label": "AuditUser",
+        "label": "BaseEntity",
         "importPath": "felicity.apps.abstract",
         "description": "felicity.apps.abstract",
         "isExtraImport": true,
@@ -16517,15 +16517,7 @@
         "documentation": {}
     },
     {
-        "label": "AuditHistory",
-        "importPath": "felicity.apps.abstract",
-        "description": "felicity.apps.abstract",
-        "isExtraImport": true,
-        "detail": "felicity.apps.abstract",
-        "documentation": {}
-    },
-    {
-        "label": "AuditHistory",
+        "label": "BaseEntity",
         "importPath": "felicity.apps.abstract",
         "description": "felicity.apps.abstract",
         "isExtraImport": true,
@@ -16541,7 +16533,7 @@
         "documentation": {}
     },
     {
-        "label": "AuditUser",
+        "label": "BaseEntity",
         "importPath": "felicity.apps.abstract",
         "description": "felicity.apps.abstract",
         "isExtraImport": true,
@@ -16549,39 +16541,7 @@
         "documentation": {}
     },
     {
-        "label": "AuditUser",
-        "importPath": "felicity.apps.abstract",
-        "description": "felicity.apps.abstract",
-        "isExtraImport": true,
-        "detail": "felicity.apps.abstract",
-        "documentation": {}
-    },
-    {
-        "label": "AuditUser",
-        "importPath": "felicity.apps.abstract",
-        "description": "felicity.apps.abstract",
-        "isExtraImport": true,
-        "detail": "felicity.apps.abstract",
-        "documentation": {}
-    },
-    {
-        "label": "AuditUser",
-        "importPath": "felicity.apps.abstract",
-        "description": "felicity.apps.abstract",
-        "isExtraImport": true,
-        "detail": "felicity.apps.abstract",
-        "documentation": {}
-    },
-    {
-        "label": "AuditHistory",
-        "importPath": "felicity.apps.abstract",
-        "description": "felicity.apps.abstract",
-        "isExtraImport": true,
-        "detail": "felicity.apps.abstract",
-        "documentation": {}
-    },
-    {
-        "label": "AuditUser",
+        "label": "BaseEntity",
         "importPath": "felicity.apps.abstract",
         "description": "felicity.apps.abstract",
         "isExtraImport": true,
@@ -17549,6 +17509,14 @@
         "documentation": {}
     },
     {
+        "label": "Dummy",
+        "importPath": "felicity.apps.common.schemas.dummy",
+        "description": "felicity.apps.common.schemas.dummy",
+        "isExtraImport": true,
+        "detail": "felicity.apps.common.schemas.dummy",
+        "documentation": {}
+    },
+    {
         "label": "IntEnum",
         "importPath": "enum",
         "description": "enum",
@@ -18326,6 +18294,54 @@
         "documentation": {}
     },
     {
+        "label": "AuditLogService",
+        "importPath": "felicity.apps.auditlog.services",
+        "description": "felicity.apps.auditlog.services",
+        "isExtraImport": true,
+        "detail": "felicity.apps.auditlog.services",
+        "documentation": {}
+    },
+    {
+        "label": "AuditLog",
+        "importPath": "felicity.apps.auditlog.entities",
+        "description": "felicity.apps.auditlog.entities",
+        "isExtraImport": true,
+        "detail": "felicity.apps.auditlog.entities",
+        "documentation": {}
+    },
+    {
+        "label": "AuditLog",
+        "importPath": "felicity.apps.auditlog.entities",
+        "description": "felicity.apps.auditlog.entities",
+        "isExtraImport": true,
+        "detail": "felicity.apps.auditlog.entities",
+        "documentation": {}
+    },
+    {
+        "label": "AuditLog",
+        "importPath": "felicity.apps.auditlog.entities",
+        "description": "felicity.apps.auditlog.entities",
+        "isExtraImport": true,
+        "detail": "felicity.apps.auditlog.entities",
+        "documentation": {}
+    },
+    {
+        "label": "AuditLog",
+        "importPath": "felicity.apps.auditlog.entities",
+        "description": "felicity.apps.auditlog.entities",
+        "isExtraImport": true,
+        "detail": "felicity.apps.auditlog.entities",
+        "documentation": {}
+    },
+    {
+        "label": "AuditLogRepository",
+        "importPath": "felicity.apps.auditlog.repositories",
+        "description": "felicity.apps.auditlog.repositories",
+        "isExtraImport": true,
+        "detail": "felicity.apps.auditlog.repositories",
+        "documentation": {}
+    },
+    {
         "label": "JSONB",
         "importPath": "sqlalchemy.dialects.postgresql",
         "description": "sqlalchemy.dialects.postgresql",
@@ -18811,14 +18827,6 @@
         "description": "felicity.apps.client.schemas",
         "isExtraImport": true,
         "detail": "felicity.apps.client.schemas",
-        "documentation": {}
-    },
-    {
-        "label": "AuditLog",
-        "importPath": "felicity.apps.auditlog.entities",
-        "description": "felicity.apps.auditlog.entities",
-        "isExtraImport": true,
-        "detail": "felicity.apps.auditlog.entities",
         "documentation": {}
     },
     {
@@ -19348,22 +19356,6 @@
         "description": "felicity.apps.instrument.schemas",
         "isExtraImport": true,
         "detail": "felicity.apps.instrument.schemas",
-        "documentation": {}
-    },
-    {
-        "label": "AuditUser",
-        "importPath": "felicity.apps.abstract.audit",
-        "description": "felicity.apps.abstract.audit",
-        "isExtraImport": true,
-        "detail": "felicity.apps.abstract.audit",
-        "documentation": {}
-    },
-    {
-        "label": "AuditHistory",
-        "importPath": "felicity.apps.abstract.audit",
-        "description": "felicity.apps.abstract.audit",
-        "isExtraImport": true,
-        "detail": "felicity.apps.abstract.audit",
         "documentation": {}
     },
     {
@@ -20072,6 +20064,15 @@
         "documentation": {}
     },
     {
+        "label": "asyncio_redis",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "asyncio_redis",
+        "description": "asyncio_redis",
+        "detail": "asyncio_redis",
+        "documentation": {}
+    },
+    {
         "label": "httpx",
         "kind": 6,
         "isExtraImport": true,
@@ -20462,14 +20463,6 @@
         "description": "felicity.apps.notification.entities",
         "isExtraImport": true,
         "detail": "felicity.apps.notification.entities",
-        "documentation": {}
-    },
-    {
-        "label": "NotificationChannel",
-        "importPath": "felicity.apps.notification.enum",
-        "description": "felicity.apps.notification.enum",
-        "isExtraImport": true,
-        "detail": "felicity.apps.notification.enum",
         "documentation": {}
     },
     {
@@ -21283,6 +21276,14 @@
         "documentation": {}
     },
     {
+        "label": "init_auditlog_listener_events",
+        "importPath": "felicity.apps.auditlog.events",
+        "description": "felicity.apps.auditlog.events",
+        "isExtraImport": true,
+        "detail": "felicity.apps.auditlog.events",
+        "documentation": {}
+    },
+    {
         "label": "init_user_events",
         "importPath": "felicity.apps.user.events",
         "description": "felicity.apps.user.events",
@@ -21676,6 +21677,14 @@
         "description": "felicity.views",
         "isExtraImport": true,
         "detail": "felicity.views",
+        "documentation": {}
+    },
+    {
+        "label": "op",
+        "importPath": "alembic",
+        "description": "alembic",
+        "isExtraImport": true,
+        "detail": "alembic",
         "documentation": {}
     },
     {
@@ -24468,7 +24477,7 @@
         "kind": 6,
         "importPath": "felicity.api.gql.notification.subscription",
         "description": "felicity.api.gql.notification.subscription",
-        "peekOfCode": "class StreamSubscription:\n    @strawberry.subscription()  # permission_classes=[IsAuthenticated]\n    async def latest_activity(self) -> AsyncGenerator[ActivityStreamType, None]:  # noqa\n        async with broadcast.subscribe(channel=\"activities\") as subscriber:\n            logger.info(\"Subscribed\")\n            try:\n                async for event in subscriber:\n                    logger.info(event)\n                    yield ActivityStreamType(**json.loads(event.message))\n            finally:",
+        "peekOfCode": "class StreamSubscription:\n    @strawberry.subscription()  # permission_classes=[IsAuthenticated]\n    async def latest_activity(self) -> AsyncGenerator[ActivityStreamType, None]:  # noqa\n        async with broadcast.subscribe(channel=NotificationChannel.ACTIVITIES) as subscriber:\n            logger.info(\"Subscribed to activities\")\n            try:\n                async for event in subscriber:\n                    logger.info(event)\n                    yield ActivityStreamType(**json.loads(event.message))\n            finally:",
         "detail": "felicity.api.gql.notification.subscription",
         "documentation": {}
     },
@@ -24477,7 +24486,7 @@
         "kind": 5,
         "importPath": "felicity.api.gql.notification.subscription",
         "description": "felicity.api.gql.notification.subscription",
-        "peekOfCode": "logger = logging.getLogger(__name__)\n@strawberry.type\nclass StreamSubscription:\n    @strawberry.subscription()  # permission_classes=[IsAuthenticated]\n    async def latest_activity(self) -> AsyncGenerator[ActivityStreamType, None]:  # noqa\n        async with broadcast.subscribe(channel=\"activities\") as subscriber:\n            logger.info(\"Subscribed\")\n            try:\n                async for event in subscriber:\n                    logger.info(event)",
+        "peekOfCode": "logger = logging.getLogger(__name__)\n@strawberry.type\nclass StreamSubscription:\n    @strawberry.subscription()  # permission_classes=[IsAuthenticated]\n    async def latest_activity(self) -> AsyncGenerator[ActivityStreamType, None]:  # noqa\n        async with broadcast.subscribe(channel=NotificationChannel.ACTIVITIES) as subscriber:\n            logger.info(\"Subscribed to activities\")\n            try:\n                async for event in subscriber:\n                    logger.info(event)",
         "detail": "felicity.api.gql.notification.subscription",
         "documentation": {}
     },
@@ -24514,6 +24523,15 @@
         "importPath": "felicity.api.gql.notification.types",
         "description": "felicity.api.gql.notification.types",
         "peekOfCode": "class NotificationType:\n    uid: str\n    departments: Optional[DepartmentType] = None\n    groups: Optional[GroupType] = None\n    users: UserType | None = None\n    message: str\n    viewers: UserType | None = None\n    created_at: str | None = None\n    created_by_uid: str | None = None\n    created_by: UserType | None = None",
+        "detail": "felicity.api.gql.notification.types",
+        "documentation": {}
+    },
+    {
+        "label": "ActivityProcessType",
+        "kind": 6,
+        "importPath": "felicity.api.gql.notification.types",
+        "description": "felicity.api.gql.notification.types",
+        "peekOfCode": "class ActivityProcessType:\n    uid: str\n    object_type: str\n    status: str",
         "detail": "felicity.api.gql.notification.types",
         "documentation": {}
     },
@@ -26138,57 +26156,57 @@
         "documentation": {}
     },
     {
-        "label": "TrailMixin",
+        "label": "Auditable",
         "kind": 6,
-        "importPath": "felicity.apps.abstract.audit",
-        "description": "felicity.apps.abstract.audit",
-        "peekOfCode": "class TrailMixin(object):\n    @declared_attr\n    def created_at(self):\n        return Column(DateTime, default=datetime.now)\n    @declared_attr\n    def created_by_uid(self):\n        return Column(String, ForeignKey(\"user.uid\"), nullable=True)\n    @declared_attr\n    def created_by(self):\n        return relationship(\"User\", foreign_keys=[self.created_by_uid], lazy=\"selectin\")",
-        "detail": "felicity.apps.abstract.audit",
+        "importPath": "felicity.apps.abstract.entity.audit",
+        "description": "felicity.apps.abstract.entity.audit",
+        "peekOfCode": "class Auditable:\n    \"\"\"Track simple action events by user\n        Note: A table called User is required\n    \"\"\"\n    __abstract__ = True\n    # Track Creation Audits\n    @declared_attr\n    def created_at(self):\n        return Column(DateTime, default=datetime.now)\n    @declared_attr",
+        "detail": "felicity.apps.abstract.entity.audit",
         "documentation": {}
     },
     {
-        "label": "AuditUser",
+        "label": "Base",
         "kind": 6,
-        "importPath": "felicity.apps.abstract.audit",
-        "description": "felicity.apps.abstract.audit",
-        "peekOfCode": "class AuditUser(BaseEntity, TrailMixin):\n    \"\"\"Track Actioners: creator and updater\"\"\"\n    __abstract__ = True\nclass AuditHistory(AuditUser, TrackableEntity):\n    \"\"\"Track Model Events\"\"\"\n    __abstract__ = True",
-        "detail": "felicity.apps.abstract.audit",
-        "documentation": {}
-    },
-    {
-        "label": "AuditHistory",
-        "kind": 6,
-        "importPath": "felicity.apps.abstract.audit",
-        "description": "felicity.apps.abstract.audit",
-        "peekOfCode": "class AuditHistory(AuditUser, TrackableEntity):\n    \"\"\"Track Model Events\"\"\"\n    __abstract__ = True",
-        "detail": "felicity.apps.abstract.audit",
-        "documentation": {}
-    },
-    {
-        "label": "BaseEntity",
-        "kind": 6,
-        "importPath": "felicity.apps.abstract.entity",
-        "description": "felicity.apps.abstract.entity",
-        "peekOfCode": "class BaseEntity(DeclarativeBase, ReprMixin, SerializeMixin, SmartQueryMixin, AsyncAttrs):\n    __repr__ = ReprMixin.__repr__\n    __name__: str\n    __abstract__ = True\n    __mapper_args__ = {\"eager_defaults\": True}\n    uid = Column(\n        String,\n        primary_key=True,\n        index=True,\n        nullable=False,",
-        "detail": "felicity.apps.abstract.entity",
+        "importPath": "felicity.apps.abstract.entity.base",
+        "description": "felicity.apps.abstract.entity.base",
+        "peekOfCode": "class Base(\n    DeclarativeBase, ReprMixin, SerializeMixin, SmartQueryMixin, AsyncAttrs\n):\n    __repr__ = ReprMixin.__repr__\n    __name__: str\n    __mapper_args__ = {\"eager_defaults\": True}\n    __abstract__ = True\n    uid = Column(\n        String,\n        primary_key=True,",
+        "detail": "felicity.apps.abstract.entity.base",
         "documentation": {}
     },
     {
         "label": "new_query",
         "kind": 2,
-        "importPath": "felicity.apps.abstract.entity",
-        "description": "felicity.apps.abstract.entity",
-        "peekOfCode": "def new_query(cls):\n    \"\"\"\n    New implementation of query method that returns select(cls).\n    \"\"\"\n    return select(cls)\n# Remove session-related methods\ndelattr(SessionMixin, 'set_session')\ndelattr(SessionMixin, 'session')\nSessionMixin.query = classproperty(new_query)\nclass BaseEntity(DeclarativeBase, ReprMixin, SerializeMixin, SmartQueryMixin, AsyncAttrs):",
-        "detail": "felicity.apps.abstract.entity",
+        "importPath": "felicity.apps.abstract.entity.base",
+        "description": "felicity.apps.abstract.entity.base",
+        "peekOfCode": "def new_query(cls):\n    \"\"\"\n    New implementation of query method that returns select(cls).\n    \"\"\"\n    return select(cls)\n# Remove session-related methods\ndelattr(SessionMixin, 'set_session')\ndelattr(SessionMixin, 'session')\nSessionMixin.query = classproperty(new_query)\nclass Base(",
+        "detail": "felicity.apps.abstract.entity.base",
         "documentation": {}
     },
     {
         "label": "SessionMixin.query",
         "kind": 5,
-        "importPath": "felicity.apps.abstract.entity",
-        "description": "felicity.apps.abstract.entity",
-        "peekOfCode": "SessionMixin.query = classproperty(new_query)\nclass BaseEntity(DeclarativeBase, ReprMixin, SerializeMixin, SmartQueryMixin, AsyncAttrs):\n    __repr__ = ReprMixin.__repr__\n    __name__: str\n    __abstract__ = True\n    __mapper_args__ = {\"eager_defaults\": True}\n    uid = Column(\n        String,\n        primary_key=True,\n        index=True,",
-        "detail": "felicity.apps.abstract.entity",
+        "importPath": "felicity.apps.abstract.entity.base",
+        "description": "felicity.apps.abstract.entity.base",
+        "peekOfCode": "SessionMixin.query = classproperty(new_query)\nclass Base(\n    DeclarativeBase, ReprMixin, SerializeMixin, SmartQueryMixin, AsyncAttrs\n):\n    __repr__ = ReprMixin.__repr__\n    __name__: str\n    __mapper_args__ = {\"eager_defaults\": True}\n    __abstract__ = True\n    uid = Column(\n        String,",
+        "detail": "felicity.apps.abstract.entity.base",
+        "documentation": {}
+    },
+    {
+        "label": "EventListenable",
+        "kind": 6,
+        "importPath": "felicity.apps.abstract.entity.listenable",
+        "description": "felicity.apps.abstract.entity.listenable",
+        "peekOfCode": "class EventListenable:\n    \"\"\"Listen to events on model\"\"\"\n    __abstract__ = True\n    @staticmethod\n    def put_out(action, table_name, metadata):\n        \"\"\"\"handle an event that something has happened\"\"\"\n        post_event(\n            event_type=\"entity-tracker\",\n            action=action,\n            table_name=table_name,",
+        "detail": "felicity.apps.abstract.entity.listenable",
+        "documentation": {}
+    },
+    {
+        "label": "logger",
+        "kind": 5,
+        "importPath": "felicity.apps.abstract.entity.listenable",
+        "description": "felicity.apps.abstract.entity.listenable",
+        "peekOfCode": "logger = logging.getLogger(__name__)\nclass EventListenable:\n    \"\"\"Listen to events on model\"\"\"\n    __abstract__ = True\n    @staticmethod\n    def put_out(action, table_name, metadata):\n        \"\"\"\"handle an event that something has happened\"\"\"\n        post_event(\n            event_type=\"entity-tracker\",\n            action=action,",
+        "detail": "felicity.apps.abstract.entity.listenable",
         "documentation": {}
     },
     {
@@ -26205,7 +26223,7 @@
         "kind": 2,
         "importPath": "felicity.apps.abstract.events",
         "description": "felicity.apps.abstract.events",
-        "peekOfCode": "def init_entity_tracker_events():\n    subscribe(\"entity-tracker\", meilisearch_tracker)\n    subscribe(\"entity-tracker\", auditlog_tracker)",
+        "peekOfCode": "def init_entity_tracker_events():\n    subscribe(\"entity-tracker\", meilisearch_tracker)",
         "detail": "felicity.apps.abstract.events",
         "documentation": {}
     },
@@ -26291,29 +26309,11 @@
         "documentation": {}
     },
     {
-        "label": "TrackableEntity",
-        "kind": 6,
-        "importPath": "felicity.apps.abstract.trackable",
-        "description": "felicity.apps.abstract.trackable",
-        "peekOfCode": "class TrackableEntity:\n    \"\"\"Allow a model to be automatically tracked\"\"\"\n    @staticmethod\n    def put_out(action, table_name, metadata):\n        \"\"\"\"handle an event that something has happened\"\"\"\n        post_event(\n            event_type=\"entity-tracker\",\n            action=action,\n            table_name=table_name,\n            metadata=metadata",
-        "detail": "felicity.apps.abstract.trackable",
-        "documentation": {}
-    },
-    {
-        "label": "logger",
-        "kind": 5,
-        "importPath": "felicity.apps.abstract.trackable",
-        "description": "felicity.apps.abstract.trackable",
-        "peekOfCode": "logger = logging.getLogger(__name__)\nclass TrackableEntity:\n    \"\"\"Allow a model to be automatically tracked\"\"\"\n    @staticmethod\n    def put_out(action, table_name, metadata):\n        \"\"\"\"handle an event that something has happened\"\"\"\n        post_event(\n            event_type=\"entity-tracker\",\n            action=action,\n            table_name=table_name,",
-        "detail": "felicity.apps.abstract.trackable",
-        "documentation": {}
-    },
-    {
         "label": "CodingStandard",
         "kind": 6,
         "importPath": "felicity.apps.analysis.entities.analysis",
         "description": "felicity.apps.analysis.entities.analysis",
-        "peekOfCode": "class CodingStandard(AuditUser):\n    \"\"\"conding standars e.g LOINC\"\"\"\n    __tablename__ = \"coding_standard\"\n    name = Column(String, nullable=False)\n    description = Column(String, nullable=False)\nclass SampleType(AuditUser):\n    \"\"\"SampleType\"\"\"\n    __tablename__ = \"sample_type\"\n    name = Column(String, nullable=False)\n    description = Column(String, nullable=False)",
+        "peekOfCode": "class CodingStandard(BaseEntity):\n    \"\"\"conding standars e.g LOINC\"\"\"\n    __tablename__ = \"coding_standard\"\n    name = Column(String, nullable=False)\n    description = Column(String, nullable=False)\nclass SampleType(BaseEntity):\n    \"\"\"SampleType\"\"\"\n    __tablename__ = \"sample_type\"\n    name = Column(String, nullable=False)\n    description = Column(String, nullable=False)",
         "detail": "felicity.apps.analysis.entities.analysis",
         "documentation": {}
     },
@@ -26322,7 +26322,7 @@
         "kind": 6,
         "importPath": "felicity.apps.analysis.entities.analysis",
         "description": "felicity.apps.analysis.entities.analysis",
-        "peekOfCode": "class SampleType(AuditUser):\n    \"\"\"SampleType\"\"\"\n    __tablename__ = \"sample_type\"\n    name = Column(String, nullable=False)\n    description = Column(String, nullable=False)\n    active = Column(Boolean(), default=False)\n    internal_use = Column(Boolean(), default=False)  # e.g QC Sample\n    abbr = Column(String, nullable=False)\nclass SampleTypeCoding(AuditUser):\n    \"\"\"SampleTypeCoding\"\"\"",
+        "peekOfCode": "class SampleType(BaseEntity):\n    \"\"\"SampleType\"\"\"\n    __tablename__ = \"sample_type\"\n    name = Column(String, nullable=False)\n    description = Column(String, nullable=False)\n    active = Column(Boolean(), default=False)\n    internal_use = Column(Boolean(), default=False)  # e.g QC Sample\n    abbr = Column(String, nullable=False)\nclass SampleTypeCoding(BaseEntity):\n    \"\"\"SampleTypeCoding\"\"\"",
         "detail": "felicity.apps.analysis.entities.analysis",
         "documentation": {}
     },
@@ -26331,7 +26331,7 @@
         "kind": 6,
         "importPath": "felicity.apps.analysis.entities.analysis",
         "description": "felicity.apps.analysis.entities.analysis",
-        "peekOfCode": "class SampleTypeCoding(AuditUser):\n    \"\"\"SampleTypeCoding\"\"\"\n    __tablename__ = \"sampe_type_coding\"\n    sample_type_uid = Column(String, ForeignKey(\"sample_type.uid\"), nullable=False)\n    sample_type = relationship(\"SampleType\", lazy=\"selectin\")\n    coding_standard_uid = Column(\n        String, ForeignKey(\"coding_standard.uid\"), nullable=True\n    )\n    coding_standard = relationship(\"CodingStandard\", lazy=\"selectin\")\n    name = Column(String, nullable=True)",
+        "peekOfCode": "class SampleTypeCoding(BaseEntity):\n    \"\"\"SampleTypeCoding\"\"\"\n    __tablename__ = \"sampe_type_coding\"\n    sample_type_uid = Column(String, ForeignKey(\"sample_type.uid\"), nullable=False)\n    sample_type = relationship(\"SampleType\", lazy=\"selectin\")\n    coding_standard_uid = Column(\n        String, ForeignKey(\"coding_standard.uid\"), nullable=True\n    )\n    coding_standard = relationship(\"CodingStandard\", lazy=\"selectin\")\n    name = Column(String, nullable=True)",
         "detail": "felicity.apps.analysis.entities.analysis",
         "documentation": {}
     },
@@ -26340,7 +26340,7 @@
         "kind": 6,
         "importPath": "felicity.apps.analysis.entities.analysis",
         "description": "felicity.apps.analysis.entities.analysis",
-        "peekOfCode": "class AnalysisCategory(AuditUser):\n    \"\"\"Categorise Analysis\"\"\"\n    __tablename__ = \"analysis_category\"\n    name = Column(String, nullable=False)\n    description = Column(String, nullable=False)\n    department_uid = Column(String, ForeignKey(\"department.uid\"), nullable=True)\n    department = relationship(\"Department\", lazy=\"selectin\")\n    active = Column(Boolean(), default=False)\nclass Profile(AuditUser):\n    \"\"\"Grouped Analysis e.g FBC, U&E's, MCS ...\"\"\"",
+        "peekOfCode": "class AnalysisCategory(BaseEntity):\n    \"\"\"Categorise Analysis\"\"\"\n    __tablename__ = \"analysis_category\"\n    name = Column(String, nullable=False)\n    description = Column(String, nullable=False)\n    department_uid = Column(String, ForeignKey(\"department.uid\"), nullable=True)\n    department = relationship(\"Department\", lazy=\"selectin\")\n    active = Column(Boolean(), default=False)\nclass Profile(BaseEntity):\n    \"\"\"Grouped Analysis e.g FBC, U&E's, MCS ...\"\"\"",
         "detail": "felicity.apps.analysis.entities.analysis",
         "documentation": {}
     },
@@ -26349,7 +26349,7 @@
         "kind": 6,
         "importPath": "felicity.apps.analysis.entities.analysis",
         "description": "felicity.apps.analysis.entities.analysis",
-        "peekOfCode": "class Profile(AuditUser):\n    \"\"\"Grouped Analysis e.g FBC, U&E's, MCS ...\"\"\"\n    __tablename__ = \"profile\"\n    name = Column(String, nullable=False)\n    description = Column(String, nullable=False)\n    keyword = Column(String, nullable=True, unique=True)\n    tat_length_minutes = Column(Integer, nullable=True)\n    active = Column(Boolean(), default=False)\n    analyses = relationship(\n        \"Analysis\",",
+        "peekOfCode": "class Profile(BaseEntity):\n    \"\"\"Grouped Analysis e.g FBC, U&E's, MCS ...\"\"\"\n    __tablename__ = \"profile\"\n    name = Column(String, nullable=False)\n    description = Column(String, nullable=False)\n    keyword = Column(String, nullable=True, unique=True)\n    tat_length_minutes = Column(Integer, nullable=True)\n    active = Column(Boolean(), default=False)\n    analyses = relationship(\n        \"Analysis\",",
         "detail": "felicity.apps.analysis.entities.analysis",
         "documentation": {}
     },
@@ -26358,7 +26358,7 @@
         "kind": 6,
         "importPath": "felicity.apps.analysis.entities.analysis",
         "description": "felicity.apps.analysis.entities.analysis",
-        "peekOfCode": "class ProfileCoding(AuditUser):\n    \"\"\"ProfileCoding\"\"\"\n    __tablename__ = \"profile_coding\"\n    profile_uid = Column(String, ForeignKey(\"profile.uid\"), nullable=True)\n    profile = relationship(\"Profile\", lazy=\"selectin\")\n    coding_standard_uid = Column(\n        String, ForeignKey(\"coding_standard.uid\"), nullable=True\n    )\n    coding_standard = relationship(\"CodingStandard\", lazy=\"selectin\")\n    name = Column(String, nullable=True)",
+        "peekOfCode": "class ProfileCoding(BaseEntity):\n    \"\"\"ProfileCoding\"\"\"\n    __tablename__ = \"profile_coding\"\n    profile_uid = Column(String, ForeignKey(\"profile.uid\"), nullable=True)\n    profile = relationship(\"Profile\", lazy=\"selectin\")\n    coding_standard_uid = Column(\n        String, ForeignKey(\"coding_standard.uid\"), nullable=True\n    )\n    coding_standard = relationship(\"CodingStandard\", lazy=\"selectin\")\n    name = Column(String, nullable=True)",
         "detail": "felicity.apps.analysis.entities.analysis",
         "documentation": {}
     },
@@ -26367,7 +26367,7 @@
         "kind": 6,
         "importPath": "felicity.apps.analysis.entities.analysis",
         "description": "felicity.apps.analysis.entities.analysis",
-        "peekOfCode": "class AnalysisTemplate(AuditUser):\n    \"\"\"Template for adding Analysis extras\"\"\"\n    __tablename__ = \"analysis_template\"\n    name = Column(String, nullable=False)\n    description = Column(String, nullable=False)\n    analyses = relationship(\n        \"Analysis\",\n        secondary=analysis_analysis_template,\n        lazy=\"selectin\",\n    )",
+        "peekOfCode": "class AnalysisTemplate(BaseEntity):\n    \"\"\"Template for adding Analysis extras\"\"\"\n    __tablename__ = \"analysis_template\"\n    name = Column(String, nullable=False)\n    description = Column(String, nullable=False)\n    analyses = relationship(\n        \"Analysis\",\n        secondary=analysis_analysis_template,\n        lazy=\"selectin\",\n    )",
         "detail": "felicity.apps.analysis.entities.analysis",
         "documentation": {}
     },
@@ -26376,7 +26376,7 @@
         "kind": 6,
         "importPath": "felicity.apps.analysis.entities.analysis",
         "description": "felicity.apps.analysis.entities.analysis",
-        "peekOfCode": "class Analysis(AuditUser):\n    \"\"\"Analysis Test/Service\"\"\"\n    __tablename__ = \"analysis\"\n    name = Column(String, nullable=False)\n    description = Column(String, nullable=False)\n    keyword = Column(String, nullable=False, unique=True)\n    # default unit: can be overridden by specification unit\n    unit_uid = Column(String, ForeignKey(\"unit.uid\"), nullable=True)\n    unit = relationship(\"Unit\", lazy=\"selectin\")\n    profiles = relationship(",
+        "peekOfCode": "class Analysis(BaseEntity):\n    \"\"\"Analysis Test/Service\"\"\"\n    __tablename__ = \"analysis\"\n    name = Column(String, nullable=False)\n    description = Column(String, nullable=False)\n    keyword = Column(String, nullable=False, unique=True)\n    # default unit: can be overridden by specification unit\n    unit_uid = Column(String, ForeignKey(\"unit.uid\"), nullable=True)\n    unit = relationship(\"Unit\", lazy=\"selectin\")\n    profiles = relationship(",
         "detail": "felicity.apps.analysis.entities.analysis",
         "documentation": {}
     },
@@ -26385,7 +26385,7 @@
         "kind": 6,
         "importPath": "felicity.apps.analysis.entities.analysis",
         "description": "felicity.apps.analysis.entities.analysis",
-        "peekOfCode": "class AnalysisCoding(AuditUser):\n    \"\"\"AnalysisCoding\"\"\"\n    __tablename__ = \"analysis_coding\"\n    analysis_uid = Column(String, ForeignKey(\"analysis.uid\"), nullable=True)\n    analysis = relationship(\"Analysis\", lazy=\"selectin\")\n    coding_standard_uid = Column(\n        String, ForeignKey(\"coding_standard.uid\"), nullable=True\n    )\n    coding_standard = relationship(\"CodingStandard\", lazy=\"selectin\")\n    name = Column(String, nullable=True)",
+        "peekOfCode": "class AnalysisCoding(BaseEntity):\n    \"\"\"AnalysisCoding\"\"\"\n    __tablename__ = \"analysis_coding\"\n    analysis_uid = Column(String, ForeignKey(\"analysis.uid\"), nullable=True)\n    analysis = relationship(\"Analysis\", lazy=\"selectin\")\n    coding_standard_uid = Column(\n        String, ForeignKey(\"coding_standard.uid\"), nullable=True\n    )\n    coding_standard = relationship(\"CodingStandard\", lazy=\"selectin\")\n    name = Column(String, nullable=True)",
         "detail": "felicity.apps.analysis.entities.analysis",
         "documentation": {}
     },
@@ -26394,7 +26394,7 @@
         "kind": 6,
         "importPath": "felicity.apps.analysis.entities.analysis",
         "description": "felicity.apps.analysis.entities.analysis",
-        "peekOfCode": "class AnalysisInterim(AuditUser):\n    \"\"\"Analysis Interim Result Field\"\"\"\n    __tablename__ = \"analysis_interim\"\n    key = Column(Integer, nullable=False)\n    value = Column(String, nullable=False)\n    analysis_uid = Column(String, ForeignKey(\"analysis.uid\"), nullable=True)\n    instrument_uid = Column(String, ForeignKey(\"instrument.uid\"), nullable=True)\n    instrument = relationship(\"Instrument\")\nclass AnalysisCorrectionFactor(AuditUser):\n    \"\"\"Analysis Correction Factor\"\"\"",
+        "peekOfCode": "class AnalysisInterim(BaseEntity):\n    \"\"\"Analysis Interim Result Field\"\"\"\n    __tablename__ = \"analysis_interim\"\n    key = Column(Integer, nullable=False)\n    value = Column(String, nullable=False)\n    analysis_uid = Column(String, ForeignKey(\"analysis.uid\"), nullable=True)\n    instrument_uid = Column(String, ForeignKey(\"instrument.uid\"), nullable=True)\n    instrument = relationship(\"Instrument\")\nclass AnalysisCorrectionFactor(BaseEntity):\n    \"\"\"Analysis Correction Factor\"\"\"",
         "detail": "felicity.apps.analysis.entities.analysis",
         "documentation": {}
     },
@@ -26403,7 +26403,7 @@
         "kind": 6,
         "importPath": "felicity.apps.analysis.entities.analysis",
         "description": "felicity.apps.analysis.entities.analysis",
-        "peekOfCode": "class AnalysisCorrectionFactor(AuditUser):\n    \"\"\"Analysis Correction Factor\"\"\"\n    __tablename__ = \"analysis_correction_factor\"\n    factor = Column(Float, nullable=False)\n    analysis_uid = Column(String, ForeignKey(\"analysis.uid\"), nullable=True)\n    instrument_uid = Column(String, ForeignKey(\"instrument.uid\"), nullable=True)\n    method_uid = Column(String, ForeignKey(\"method.uid\"), nullable=True)\nclass AnalysisDetectionLimit(AuditUser):\n    \"\"\"Analysis Detection Limit\"\"\"\n    __tablename__ = \"analysis_detection_limit\"",
+        "peekOfCode": "class AnalysisCorrectionFactor(BaseEntity):\n    \"\"\"Analysis Correction Factor\"\"\"\n    __tablename__ = \"analysis_correction_factor\"\n    factor = Column(Float, nullable=False)\n    analysis_uid = Column(String, ForeignKey(\"analysis.uid\"), nullable=True)\n    instrument_uid = Column(String, ForeignKey(\"instrument.uid\"), nullable=True)\n    method_uid = Column(String, ForeignKey(\"method.uid\"), nullable=True)\nclass AnalysisDetectionLimit(BaseEntity):\n    \"\"\"Analysis Detection Limit\"\"\"\n    __tablename__ = \"analysis_detection_limit\"",
         "detail": "felicity.apps.analysis.entities.analysis",
         "documentation": {}
     },
@@ -26412,7 +26412,7 @@
         "kind": 6,
         "importPath": "felicity.apps.analysis.entities.analysis",
         "description": "felicity.apps.analysis.entities.analysis",
-        "peekOfCode": "class AnalysisDetectionLimit(AuditUser):\n    \"\"\"Analysis Detection Limit\"\"\"\n    __tablename__ = \"analysis_detection_limit\"\n    lower_limit = Column(Float, nullable=False)\n    upper_limit = Column(Float, nullable=False)\n    analysis_uid = Column(String, ForeignKey(\"analysis.uid\"), nullable=True)\n    instrument_uid = Column(String, ForeignKey(\"instrument.uid\"), nullable=True)\n    method_uid = Column(String, ForeignKey(\"method.uid\"), nullable=True)\nclass AnalysisUncertainty(AuditUser):\n    \"\"\"Analysis Measurement Uncertainty",
+        "peekOfCode": "class AnalysisDetectionLimit(BaseEntity):\n    \"\"\"Analysis Detection Limit\"\"\"\n    __tablename__ = \"analysis_detection_limit\"\n    lower_limit = Column(Float, nullable=False)\n    upper_limit = Column(Float, nullable=False)\n    analysis_uid = Column(String, ForeignKey(\"analysis.uid\"), nullable=True)\n    instrument_uid = Column(String, ForeignKey(\"instrument.uid\"), nullable=True)\n    method_uid = Column(String, ForeignKey(\"method.uid\"), nullable=True)\nclass AnalysisUncertainty(BaseEntity):\n    \"\"\"Analysis Measurement Uncertainty",
         "detail": "felicity.apps.analysis.entities.analysis",
         "documentation": {}
     },
@@ -26421,7 +26421,7 @@
         "kind": 6,
         "importPath": "felicity.apps.analysis.entities.analysis",
         "description": "felicity.apps.analysis.entities.analysis",
-        "peekOfCode": "class AnalysisUncertainty(AuditUser):\n    \"\"\"Analysis Measurement Uncertainty\n    If value is within the range min.max then result becomes a range (result +/- value)\n    \"\"\"\n    __tablename__ = \"analysis_uncertainty\"\n    min = Column(Float, nullable=False)\n    max = Column(Float, nullable=False)\n    value = Column(Float, nullable=False)\n    analysis_uid = Column(String, ForeignKey(\"analysis.uid\"), nullable=True)\n    instrument_uid = Column(String, ForeignKey(\"instrument.uid\"), nullable=True)",
+        "peekOfCode": "class AnalysisUncertainty(BaseEntity):\n    \"\"\"Analysis Measurement Uncertainty\n    If value is within the range min.max then result becomes a range (result +/- value)\n    \"\"\"\n    __tablename__ = \"analysis_uncertainty\"\n    min = Column(Float, nullable=False)\n    max = Column(Float, nullable=False)\n    value = Column(Float, nullable=False)\n    analysis_uid = Column(String, ForeignKey(\"analysis.uid\"), nullable=True)\n    instrument_uid = Column(String, ForeignKey(\"instrument.uid\"), nullable=True)",
         "detail": "felicity.apps.analysis.entities.analysis",
         "documentation": {}
     },
@@ -26430,7 +26430,7 @@
         "kind": 6,
         "importPath": "felicity.apps.analysis.entities.analysis",
         "description": "felicity.apps.analysis.entities.analysis",
-        "peekOfCode": "class AnalysisSpecification(AuditUser):\n    \"\"\"Analysis Specification Ranges\"\"\"\n    __tablename__ = \"analysis_specification\"\n    analysis_uid = Column(String, ForeignKey(\"analysis.uid\"), nullable=True)\n    unit_uid = Column(String, ForeignKey(\"unit.uid\"), nullable=True)\n    unit = relationship(\"Unit\", lazy=\"selectin\")\n    # Normal Range\n    min = Column(Float, nullable=True)\n    max = Column(Float, nullable=True)\n    # Below Normal Range: Raise Alarm",
+        "peekOfCode": "class AnalysisSpecification(BaseEntity):\n    \"\"\"Analysis Specification Ranges\"\"\"\n    __tablename__ = \"analysis_specification\"\n    analysis_uid = Column(String, ForeignKey(\"analysis.uid\"), nullable=True)\n    unit_uid = Column(String, ForeignKey(\"unit.uid\"), nullable=True)\n    unit = relationship(\"Unit\", lazy=\"selectin\")\n    # Normal Range\n    min = Column(Float, nullable=True)\n    max = Column(Float, nullable=True)\n    # Below Normal Range: Raise Alarm",
         "detail": "felicity.apps.analysis.entities.analysis",
         "documentation": {}
     },
@@ -26439,7 +26439,7 @@
         "kind": 6,
         "importPath": "felicity.apps.analysis.entities.analysis",
         "description": "felicity.apps.analysis.entities.analysis",
-        "peekOfCode": "class ResultOption(AuditUser):\n    \"\"\"Result Choices\"\"\"\n    __tablename__ = \"result_options\"\n    option_key = Column(Integer, nullable=False)\n    value = Column(String, nullable=False)\n    analysis_uid = Column(String, ForeignKey(\"analysis.uid\"))\n    sample_types = relationship(\n        SampleType, secondary=result_option_sample_type, lazy=\"selectin\"\n    )\nclass AnalysisRequest(AuditUser):",
+        "peekOfCode": "class ResultOption(BaseEntity):\n    \"\"\"Result Choices\"\"\"\n    __tablename__ = \"result_options\"\n    option_key = Column(Integer, nullable=False)\n    value = Column(String, nullable=False)\n    analysis_uid = Column(String, ForeignKey(\"analysis.uid\"))\n    sample_types = relationship(\n        SampleType, secondary=result_option_sample_type, lazy=\"selectin\"\n    )\nclass AnalysisRequest(BaseEntity):",
         "detail": "felicity.apps.analysis.entities.analysis",
         "documentation": {}
     },
@@ -26448,7 +26448,7 @@
         "kind": 6,
         "importPath": "felicity.apps.analysis.entities.analysis",
         "description": "felicity.apps.analysis.entities.analysis",
-        "peekOfCode": "class AnalysisRequest(AuditUser):\n    \"\"\"AnalysisRequest a.k.a Laboratory Request\"\"\"\n    __tablename__ = \"analysis_request\"\n    patient_uid = Column(String, ForeignKey(\"patient.uid\"))\n    patient = relationship(\n        pt_entities.Patient, backref=\"analysis_requests\", lazy=\"selectin\"\n    )\n    client_uid = Column(String, ForeignKey(\"client.uid\"))\n    client = relationship(\n        ct_entities.Client, backref=\"analysis_requests\", lazy=\"selectin\"",
+        "peekOfCode": "class AnalysisRequest(BaseEntity):\n    \"\"\"AnalysisRequest a.k.a Laboratory Request\"\"\"\n    __tablename__ = \"analysis_request\"\n    patient_uid = Column(String, ForeignKey(\"patient.uid\"))\n    patient = relationship(\n        pt_entities.Patient, backref=\"analysis_requests\", lazy=\"selectin\"\n    )\n    client_uid = Column(String, ForeignKey(\"client.uid\"))\n    client = relationship(\n        ct_entities.Client, backref=\"analysis_requests\", lazy=\"selectin\"",
         "detail": "felicity.apps.analysis.entities.analysis",
         "documentation": {}
     },
@@ -26457,7 +26457,7 @@
         "kind": 6,
         "importPath": "felicity.apps.analysis.entities.analysis",
         "description": "felicity.apps.analysis.entities.analysis",
-        "peekOfCode": "class RejectionReason(AuditUser):\n    \"\"\"Rejection Reason\"\"\"\n    __tablename__ = \"rejection_reason\"\n    reason = Column(String, nullable=False)\nclass Sample(AuditHistory, BaseMPTT):\n    \"\"\"Sample\"\"\"\n    __tablename__ = \"sample\"\n    analysis_request_uid = Column(\n        String, ForeignKey(\"analysis_request.uid\"), nullable=True\n    )",
+        "peekOfCode": "class RejectionReason(BaseEntity):\n    \"\"\"Rejection Reason\"\"\"\n    __tablename__ = \"rejection_reason\"\n    reason = Column(String, nullable=False)\nclass Sample(BaseEntity, BaseMPTT):\n    \"\"\"Sample\"\"\"\n    __tablename__ = \"sample\"\n    analysis_request_uid = Column(\n        String, ForeignKey(\"analysis_request.uid\"), nullable=True\n    )",
         "detail": "felicity.apps.analysis.entities.analysis",
         "documentation": {}
     },
@@ -26466,7 +26466,7 @@
         "kind": 6,
         "importPath": "felicity.apps.analysis.entities.analysis",
         "description": "felicity.apps.analysis.entities.analysis",
-        "peekOfCode": "class Sample(AuditHistory, BaseMPTT):\n    \"\"\"Sample\"\"\"\n    __tablename__ = \"sample\"\n    analysis_request_uid = Column(\n        String, ForeignKey(\"analysis_request.uid\"), nullable=True\n    )\n    analysis_request = relationship(\n        \"AnalysisRequest\", back_populates=\"samples\", lazy=\"selectin\"\n    )\n    sample_type_uid = Column(String, ForeignKey(\"sample_type.uid\"), nullable=False)",
+        "peekOfCode": "class Sample(BaseEntity, BaseMPTT):\n    \"\"\"Sample\"\"\"\n    __tablename__ = \"sample\"\n    analysis_request_uid = Column(\n        String, ForeignKey(\"analysis_request.uid\"), nullable=True\n    )\n    analysis_request = relationship(\n        \"AnalysisRequest\", back_populates=\"samples\", lazy=\"selectin\"\n    )\n    sample_type_uid = Column(String, ForeignKey(\"sample_type.uid\"), nullable=False)",
         "detail": "felicity.apps.analysis.entities.analysis",
         "documentation": {}
     },
@@ -26475,7 +26475,7 @@
         "kind": 5,
         "importPath": "felicity.apps.analysis.entities.analysis",
         "description": "felicity.apps.analysis.entities.analysis",
-        "peekOfCode": "logger = logging.getLogger(__name__)\nclass CodingStandard(AuditUser):\n    \"\"\"conding standars e.g LOINC\"\"\"\n    __tablename__ = \"coding_standard\"\n    name = Column(String, nullable=False)\n    description = Column(String, nullable=False)\nclass SampleType(AuditUser):\n    \"\"\"SampleType\"\"\"\n    __tablename__ = \"sample_type\"\n    name = Column(String, nullable=False)",
+        "peekOfCode": "logger = logging.getLogger(__name__)\nclass CodingStandard(BaseEntity):\n    \"\"\"conding standars e.g LOINC\"\"\"\n    __tablename__ = \"coding_standard\"\n    name = Column(String, nullable=False)\n    description = Column(String, nullable=False)\nclass SampleType(BaseEntity):\n    \"\"\"SampleType\"\"\"\n    __tablename__ = \"sample_type\"\n    name = Column(String, nullable=False)",
         "detail": "felicity.apps.analysis.entities.analysis",
         "documentation": {}
     },
@@ -26502,7 +26502,7 @@
         "kind": 5,
         "importPath": "felicity.apps.analysis.entities.analysis",
         "description": "felicity.apps.analysis.entities.analysis",
-        "peekOfCode": "analysis_profile = Table(\n    \"analysis_profile\",\n    BaseEntity.metadata,\n    Column(\"analysis_uid\", ForeignKey(\"analysis.uid\"), primary_key=True),\n    Column(\"profile_uid\", ForeignKey(\"profile.uid\"), primary_key=True),\n)\nclass AnalysisCategory(AuditUser):\n    \"\"\"Categorise Analysis\"\"\"\n    __tablename__ = \"analysis_category\"\n    name = Column(String, nullable=False)",
+        "peekOfCode": "analysis_profile = Table(\n    \"analysis_profile\",\n    BaseEntity.metadata,\n    Column(\"analysis_uid\", ForeignKey(\"analysis.uid\"), primary_key=True),\n    Column(\"profile_uid\", ForeignKey(\"profile.uid\"), primary_key=True),\n)\nclass AnalysisCategory(BaseEntity):\n    \"\"\"Categorise Analysis\"\"\"\n    __tablename__ = \"analysis_category\"\n    name = Column(String, nullable=False)",
         "detail": "felicity.apps.analysis.entities.analysis",
         "documentation": {}
     },
@@ -26511,7 +26511,7 @@
         "kind": 5,
         "importPath": "felicity.apps.analysis.entities.analysis",
         "description": "felicity.apps.analysis.entities.analysis",
-        "peekOfCode": "analysis_analysis_template = Table(\n    \"analysis_analysis_template\",\n    BaseEntity.metadata,\n    Column(\"analysis_uid\", ForeignKey(\"analysis.uid\"), primary_key=True),\n    Column(\n        \"analysis_template_uid\", ForeignKey(\"analysis_template.uid\"), primary_key=True\n    ),\n)\nclass AnalysisTemplate(AuditUser):\n    \"\"\"Template for adding Analysis extras\"\"\"",
+        "peekOfCode": "analysis_analysis_template = Table(\n    \"analysis_analysis_template\",\n    BaseEntity.metadata,\n    Column(\"analysis_uid\", ForeignKey(\"analysis.uid\"), primary_key=True),\n    Column(\n        \"analysis_template_uid\", ForeignKey(\"analysis_template.uid\"), primary_key=True\n    ),\n)\nclass AnalysisTemplate(BaseEntity):\n    \"\"\"Template for adding Analysis extras\"\"\"",
         "detail": "felicity.apps.analysis.entities.analysis",
         "documentation": {}
     },
@@ -26529,7 +26529,7 @@
         "kind": 5,
         "importPath": "felicity.apps.analysis.entities.analysis",
         "description": "felicity.apps.analysis.entities.analysis",
-        "peekOfCode": "analysis_instrument = Table(\n    \"analysis_instrument\",\n    BaseEntity.metadata,\n    Column(\"analysis_uid\", ForeignKey(\"analysis.uid\"), primary_key=True),\n    Column(\"instrument_uid\", ForeignKey(\"instrument.uid\"), primary_key=True),\n)\nclass Analysis(AuditUser):\n    \"\"\"Analysis Test/Service\"\"\"\n    __tablename__ = \"analysis\"\n    name = Column(String, nullable=False)",
+        "peekOfCode": "analysis_instrument = Table(\n    \"analysis_instrument\",\n    BaseEntity.metadata,\n    Column(\"analysis_uid\", ForeignKey(\"analysis.uid\"), primary_key=True),\n    Column(\"instrument_uid\", ForeignKey(\"instrument.uid\"), primary_key=True),\n)\nclass Analysis(BaseEntity):\n    \"\"\"Analysis Test/Service\"\"\"\n    __tablename__ = \"analysis\"\n    name = Column(String, nullable=False)",
         "detail": "felicity.apps.analysis.entities.analysis",
         "documentation": {}
     },
@@ -26538,7 +26538,7 @@
         "kind": 5,
         "importPath": "felicity.apps.analysis.entities.analysis",
         "description": "felicity.apps.analysis.entities.analysis",
-        "peekOfCode": "result_option_sample_type = Table(\n    \"result_option_sample_type\",\n    BaseEntity.metadata,\n    Column(\"result_option_uid\", ForeignKey(\"result_options.uid\"), primary_key=True),\n    Column(\"sample_type_uid\", ForeignKey(\"sample_type.uid\"), primary_key=True),\n)\nclass ResultOption(AuditUser):\n    \"\"\"Result Choices\"\"\"\n    __tablename__ = \"result_options\"\n    option_key = Column(Integer, nullable=False)",
+        "peekOfCode": "result_option_sample_type = Table(\n    \"result_option_sample_type\",\n    BaseEntity.metadata,\n    Column(\"result_option_uid\", ForeignKey(\"result_options.uid\"), primary_key=True),\n    Column(\"sample_type_uid\", ForeignKey(\"sample_type.uid\"), primary_key=True),\n)\nclass ResultOption(BaseEntity):\n    \"\"\"Result Choices\"\"\"\n    __tablename__ = \"result_options\"\n    option_key = Column(Integer, nullable=False)",
         "detail": "felicity.apps.analysis.entities.analysis",
         "documentation": {}
     },
@@ -26565,7 +26565,7 @@
         "kind": 5,
         "importPath": "felicity.apps.analysis.entities.analysis",
         "description": "felicity.apps.analysis.entities.analysis",
-        "peekOfCode": "sample_rejection_reason = Table(\n    \"sample_rejection_reason\",\n    BaseEntity.metadata,\n    Column(\"sample_uid\", ForeignKey(\"sample.uid\"), primary_key=True),\n    Column(\n        \"rejection_reason_uid\", ForeignKey(\"rejection_reason.uid\"), primary_key=True\n    ),\n)\nclass RejectionReason(AuditUser):\n    \"\"\"Rejection Reason\"\"\"",
+        "peekOfCode": "sample_rejection_reason = Table(\n    \"sample_rejection_reason\",\n    BaseEntity.metadata,\n    Column(\"sample_uid\", ForeignKey(\"sample.uid\"), primary_key=True),\n    Column(\n        \"rejection_reason_uid\", ForeignKey(\"rejection_reason.uid\"), primary_key=True\n    ),\n)\nclass RejectionReason(BaseEntity):\n    \"\"\"Rejection Reason\"\"\"",
         "detail": "felicity.apps.analysis.entities.analysis",
         "documentation": {}
     },
@@ -26574,7 +26574,7 @@
         "kind": 6,
         "importPath": "felicity.apps.analysis.entities.qc",
         "description": "felicity.apps.analysis.entities.qc",
-        "peekOfCode": "class QCSet(AuditUser):\n    \"\"\"A Set/Group of QC Samples that are run together.\n    - e.g a Viral Load Rack the QCLevels are a set i.e Negative Control, Low Pos Control, High Pos Control\n    \"\"\"\n    __tablename__ = \"qc_set\"\n    name = Column(String, nullable=False)\n    note = Column(String, nullable=True)\n    status = Column(String, nullable=False, default=SampleState.RECEIVED)\n    samples = relationship(\"Sample\", back_populates=\"qc_set\", lazy=\"selectin\")\n\"\"\"",
+        "peekOfCode": "class QCSet(BaseEntity):\n    \"\"\"A Set/Group of QC Samples that are run together.\n    - e.g a Viral Load Rack the QCLevels are a set i.e Negative Control, Low Pos Control, High Pos Control\n    \"\"\"\n    __tablename__ = \"qc_set\"\n    name = Column(String, nullable=False)\n    note = Column(String, nullable=True)\n    status = Column(String, nullable=False, default=SampleState.RECEIVED)\n    samples = relationship(\"Sample\", back_populates=\"qc_set\", lazy=\"selectin\")\n\"\"\"",
         "detail": "felicity.apps.analysis.entities.qc",
         "documentation": {}
     },
@@ -26583,7 +26583,7 @@
         "kind": 6,
         "importPath": "felicity.apps.analysis.entities.qc",
         "description": "felicity.apps.analysis.entities.qc",
-        "peekOfCode": "class QCReference(AuditUser):\n    \"\"\"QC Sample Reference Material    :: Not Implemented Yet\n    - can have multi analytes/Profile\n    - states: Active (in-use - there must be only 1 active per analysis)\n              InActive awaiting activation\n              Depleted\n    \"\"\"\n    __tablename__ = \"qc_reference\"\n    name = Column(String, nullable=False)\n    description = Column(String, nullable=False)",
+        "peekOfCode": "class QCReference(BaseEntity):\n    \"\"\"QC Sample Reference Material    :: Not Implemented Yet\n    - can have multi analytes/Profile\n    - states: Active (in-use - there must be only 1 active per analysis)\n              InActive awaiting activation\n              Depleted\n    \"\"\"\n    __tablename__ = \"qc_reference\"\n    name = Column(String, nullable=False)\n    description = Column(String, nullable=False)",
         "detail": "felicity.apps.analysis.entities.qc",
         "documentation": {}
     },
@@ -26592,7 +26592,7 @@
         "kind": 6,
         "importPath": "felicity.apps.analysis.entities.qc",
         "description": "felicity.apps.analysis.entities.qc",
-        "peekOfCode": "class QCLevel(AuditUser):\n    \"\"\"Sample Level /category\n    - None - normal sample\n    - Negative Control\n    - EID PositiveControl\n    - HIV Low Positive Control\n    - HIV High Positive Control\n    \"\"\"\n    __tablename__ = \"qc_level\"\n    level = Column(String, nullable=False)",
+        "peekOfCode": "class QCLevel(BaseEntity):\n    \"\"\"Sample Level /category\n    - None - normal sample\n    - Negative Control\n    - EID PositiveControl\n    - HIV Low Positive Control\n    - HIV High Positive Control\n    \"\"\"\n    __tablename__ = \"qc_level\"\n    level = Column(String, nullable=False)",
         "detail": "felicity.apps.analysis.entities.qc",
         "documentation": {}
     },
@@ -26601,7 +26601,7 @@
         "kind": 6,
         "importPath": "felicity.apps.analysis.entities.qc",
         "description": "felicity.apps.analysis.entities.qc",
-        "peekOfCode": "class QCTemplate(AuditUser):\n    \"\"\"QC Level Grouping e.g:\n    Roche Viral Load CQ:\n        - Neg Control\n        - Low Pos Control\n        - High Pos Control\n    Malaria Slide QC:\n        - Negative Control\n        - Positive COntrol\n    \"\"\"",
+        "peekOfCode": "class QCTemplate(BaseEntity):\n    \"\"\"QC Level Grouping e.g:\n    Roche Viral Load CQ:\n        - Neg Control\n        - Low Pos Control\n        - High Pos Control\n    Malaria Slide QC:\n        - Negative Control\n        - Positive COntrol\n    \"\"\"",
         "detail": "felicity.apps.analysis.entities.qc",
         "documentation": {}
     },
@@ -26610,7 +26610,7 @@
         "kind": 5,
         "importPath": "felicity.apps.analysis.entities.qc",
         "description": "felicity.apps.analysis.entities.qc",
-        "peekOfCode": "logger = logging.getLogger(__name__)\nclass QCSet(AuditUser):\n    \"\"\"A Set/Group of QC Samples that are run together.\n    - e.g a Viral Load Rack the QCLevels are a set i.e Negative Control, Low Pos Control, High Pos Control\n    \"\"\"\n    __tablename__ = \"qc_set\"\n    name = Column(String, nullable=False)\n    note = Column(String, nullable=True)\n    status = Column(String, nullable=False, default=SampleState.RECEIVED)\n    samples = relationship(\"Sample\", back_populates=\"qc_set\", lazy=\"selectin\")",
+        "peekOfCode": "logger = logging.getLogger(__name__)\nclass QCSet(BaseEntity):\n    \"\"\"A Set/Group of QC Samples that are run together.\n    - e.g a Viral Load Rack the QCLevels are a set i.e Negative Control, Low Pos Control, High Pos Control\n    \"\"\"\n    __tablename__ = \"qc_set\"\n    name = Column(String, nullable=False)\n    note = Column(String, nullable=True)\n    status = Column(String, nullable=False, default=SampleState.RECEIVED)\n    samples = relationship(\"Sample\", back_populates=\"qc_set\", lazy=\"selectin\")",
         "detail": "felicity.apps.analysis.entities.qc",
         "documentation": {}
     },
@@ -26619,7 +26619,7 @@
         "kind": 5,
         "importPath": "felicity.apps.analysis.entities.qc",
         "description": "felicity.apps.analysis.entities.qc",
-        "peekOfCode": "qc_reference_analysis = Table(\n    \"qc_reference_analysis\",\n    BaseEntity.metadata,\n    Column(\"qc_reference_uid\", ForeignKey(\"qc_reference.uid\"), primary_key=True),\n    Column(\"analysis_uid\", ForeignKey(\"analysis.uid\"), primary_key=True),\n)\nclass QCReference(AuditUser):\n    \"\"\"QC Sample Reference Material    :: Not Implemented Yet\n    - can have multi analytes/Profile\n    - states: Active (in-use - there must be only 1 active per analysis)",
+        "peekOfCode": "qc_reference_analysis = Table(\n    \"qc_reference_analysis\",\n    BaseEntity.metadata,\n    Column(\"qc_reference_uid\", ForeignKey(\"qc_reference.uid\"), primary_key=True),\n    Column(\"analysis_uid\", ForeignKey(\"analysis.uid\"), primary_key=True),\n)\nclass QCReference(BaseEntity):\n    \"\"\"QC Sample Reference Material    :: Not Implemented Yet\n    - can have multi analytes/Profile\n    - states: Active (in-use - there must be only 1 active per analysis)",
         "detail": "felicity.apps.analysis.entities.qc",
         "documentation": {}
     },
@@ -26637,7 +26637,7 @@
         "kind": 5,
         "importPath": "felicity.apps.analysis.entities.qc",
         "description": "felicity.apps.analysis.entities.qc",
-        "peekOfCode": "qc_template_qc_level = Table(\n    \"qc_template_qc_level\",\n    BaseEntity.metadata,\n    Column(\"qc_level_uid\", ForeignKey(\"qc_level.uid\"), primary_key=True),\n    Column(\"qc_template_uid\", ForeignKey(\"qc_template.uid\"), primary_key=True),\n)\nclass QCTemplate(AuditUser):\n    \"\"\"QC Level Grouping e.g:\n    Roche Viral Load CQ:\n        - Neg Control",
+        "peekOfCode": "qc_template_qc_level = Table(\n    \"qc_template_qc_level\",\n    BaseEntity.metadata,\n    Column(\"qc_level_uid\", ForeignKey(\"qc_level.uid\"), primary_key=True),\n    Column(\"qc_template_uid\", ForeignKey(\"qc_template.uid\"), primary_key=True),\n)\nclass QCTemplate(BaseEntity):\n    \"\"\"QC Level Grouping e.g:\n    Roche Viral Load CQ:\n        - Neg Control",
         "detail": "felicity.apps.analysis.entities.qc",
         "documentation": {}
     },
@@ -26646,7 +26646,7 @@
         "kind": 6,
         "importPath": "felicity.apps.analysis.entities.results",
         "description": "felicity.apps.analysis.entities.results",
-        "peekOfCode": "class AnalysisResult(AuditHistory, BaseMPTT):\n    \"\"\"Test/Analysis Result\n    Number of analysis results per sample will be directly proportional to\n    the number of linked sample_analyses at minimum :)\n    \"\"\"\n    __tablename__ = \"analysis_result\"\n    sample_uid = Column(String, ForeignKey(\"sample.uid\"), nullable=False)\n    sample = relationship(\"Sample\", back_populates=\"analysis_results\", lazy=\"selectin\")\n    analysis_uid = Column(String, ForeignKey(\"analysis.uid\"), nullable=False)\n    analysis = relationship(\"Analysis\", backref=\"analysis_results\", lazy=\"selectin\")",
+        "peekOfCode": "class AnalysisResult(BaseEntity, BaseMPTT):\n    \"\"\"Test/Analysis Result\n    Number of analysis results per sample will be directly proportional to\n    the number of linked sample_analyses at minimum :)\n    \"\"\"\n    __tablename__ = \"analysis_result\"\n    sample_uid = Column(String, ForeignKey(\"sample.uid\"), nullable=False)\n    sample = relationship(\"Sample\", back_populates=\"analysis_results\", lazy=\"selectin\")\n    analysis_uid = Column(String, ForeignKey(\"analysis.uid\"), nullable=False)\n    analysis = relationship(\"Analysis\", backref=\"analysis_results\", lazy=\"selectin\")",
         "detail": "felicity.apps.analysis.entities.results",
         "documentation": {}
     },
@@ -26655,7 +26655,7 @@
         "kind": 6,
         "importPath": "felicity.apps.analysis.entities.results",
         "description": "felicity.apps.analysis.entities.results",
-        "peekOfCode": "class ResultMutation(AuditUser):\n    \"\"\"Result Mutations tracker\"\"\"\n    __tablename__ = \"result_mutation\"\n    result_uid = Column(String, ForeignKey(\"analysis_result.uid\"), nullable=False)\n    before = Column(String, nullable=False)\n    after = Column(String, nullable=False)\n    mutation = Column(String, nullable=False)\n    date = Column(DateTime, nullable=True)",
+        "peekOfCode": "class ResultMutation(BaseEntity):\n    \"\"\"Result Mutations tracker\"\"\"\n    __tablename__ = \"result_mutation\"\n    result_uid = Column(String, ForeignKey(\"analysis_result.uid\"), nullable=False)\n    before = Column(String, nullable=False)\n    after = Column(String, nullable=False)\n    mutation = Column(String, nullable=False)\n    date = Column(DateTime, nullable=True)",
         "detail": "felicity.apps.analysis.entities.results",
         "documentation": {}
     },
@@ -26673,7 +26673,7 @@
         "kind": 5,
         "importPath": "felicity.apps.analysis.entities.results",
         "description": "felicity.apps.analysis.entities.results",
-        "peekOfCode": "result_verification = Table(\n    \"result_verification\",\n    BaseEntity.metadata,\n    Column(\"result_uid\", ForeignKey(\"analysis_result.uid\"), primary_key=True),\n    Column(\"user_uid\", ForeignKey(\"user.uid\"), primary_key=True),\n)\nclass AnalysisResult(AuditHistory, BaseMPTT):\n    \"\"\"Test/Analysis Result\n    Number of analysis results per sample will be directly proportional to\n    the number of linked sample_analyses at minimum :)",
+        "peekOfCode": "result_verification = Table(\n    \"result_verification\",\n    BaseEntity.metadata,\n    Column(\"result_uid\", ForeignKey(\"analysis_result.uid\"), primary_key=True),\n    Column(\"user_uid\", ForeignKey(\"user.uid\"), primary_key=True),\n)\nclass AnalysisResult(BaseEntity, BaseMPTT):\n    \"\"\"Test/Analysis Result\n    Number of analysis results per sample will be directly proportional to\n    the number of linked sample_analyses at minimum :)",
         "detail": "felicity.apps.analysis.entities.results",
         "documentation": {}
     },
@@ -28482,7 +28482,7 @@
         "kind": 6,
         "importPath": "felicity.apps.analytics.entities",
         "description": "felicity.apps.analytics.entities",
-        "peekOfCode": "class ReportMeta(AuditUser):\n    \"\"\"Generated Reports Metadata\"\"\"\n    __tablename__ = \"report_meta\"\n    report_type = Column(String)\n    analyses = relationship(\"Analysis\", secondary=analysis_reports, lazy=\"selectin\")\n    period_start = Column(DateTime)\n    period_end = Column(DateTime)\n    date_column = Column(String)\n    location = Column(String, nullable=True)\n    temp = Column(String, nullable=True)",
+        "peekOfCode": "class ReportMeta(BaseEntity):\n    \"\"\"Generated Reports Metadata\"\"\"\n    __tablename__ = \"report_meta\"\n    report_type = Column(String)\n    analyses = relationship(\"Analysis\", secondary=analysis_reports, lazy=\"selectin\")\n    period_start = Column(DateTime)\n    period_end = Column(DateTime)\n    date_column = Column(String)\n    location = Column(String, nullable=True)\n    temp = Column(String, nullable=True)",
         "detail": "felicity.apps.analytics.entities",
         "documentation": {}
     },
@@ -28491,7 +28491,7 @@
         "kind": 5,
         "importPath": "felicity.apps.analytics.entities",
         "description": "felicity.apps.analytics.entities",
-        "peekOfCode": "analysis_reports = Table(\n    \"analysis_reports\",\n    AuditUser.metadata,\n    Column(\"analysis_uid\", ForeignKey(\"analysis.uid\"), primary_key=True),\n    Column(\"report_uid\", ForeignKey(\"report_meta.uid\"), primary_key=True),\n)\nclass ReportMeta(AuditUser):\n    \"\"\"Generated Reports Metadata\"\"\"\n    __tablename__ = \"report_meta\"\n    report_type = Column(String)",
+        "peekOfCode": "analysis_reports = Table(\n    \"analysis_reports\",\n    BaseEntity.metadata,\n    Column(\"analysis_uid\", ForeignKey(\"analysis.uid\"), primary_key=True),\n    Column(\"report_uid\", ForeignKey(\"report_meta.uid\"), primary_key=True),\n)\nclass ReportMeta(BaseEntity):\n    \"\"\"Generated Reports Metadata\"\"\"\n    __tablename__ = \"report_meta\"\n    report_type = Column(String)",
         "detail": "felicity.apps.analytics.entities",
         "documentation": {}
     },
@@ -28622,11 +28622,56 @@
         "documentation": {}
     },
     {
+        "label": "AuditLog",
+        "kind": 6,
+        "importPath": "felicity.apps.auditlog.entities",
+        "description": "felicity.apps.auditlog.entities",
+        "peekOfCode": "class AuditLog(BaseEntity):\n    \"\"\"Model an audit log of user actions\"\"\"\n    __tablename__ = \"audit_log\"\n    user_id = Column(String, doc=\"The ID of the user who made the change\")\n    target_type = Column(\n        String(100), nullable=False, doc=\"The table name of the altered object\"\n    )\n    target_id = Column(String, doc=\"The ID of the altered object\")\n    action = Column(Integer, doc=\"Create (1), update (2), or delete (3)\")\n    state_before = Column(",
+        "detail": "felicity.apps.auditlog.entities",
+        "documentation": {}
+    },
+    {
+        "label": "init_auditlog_listener_events",
+        "kind": 2,
+        "importPath": "felicity.apps.auditlog.events",
+        "description": "felicity.apps.auditlog.events",
+        "peekOfCode": "def init_auditlog_listener_events():\n    subscribe(\"entity-tracker\", auditlog_tracker)",
+        "detail": "felicity.apps.auditlog.events",
+        "documentation": {}
+    },
+    {
+        "label": "logger",
+        "kind": 5,
+        "importPath": "felicity.apps.auditlog.events",
+        "description": "felicity.apps.auditlog.events",
+        "peekOfCode": "logger = logging.getLogger(__name__)\nasync def auditlog_tracker(action: str, table_name: str, metadata):\n    logger.info(f\"Event fired: {action}:{table_name}\")\n    if action != \"after-update\" and not metadata:\n        return\n    update = {\n        **metadata,\n        \"user_uid\": metadata[\"state_after\"].get(\"updated_by_uid\", None),\n        \"target_type\": table_name,\n        \"target_uid\": metadata.get(\"uid\"),",
+        "detail": "felicity.apps.auditlog.events",
+        "documentation": {}
+    },
+    {
+        "label": "AuditLogRepository",
+        "kind": 6,
+        "importPath": "felicity.apps.auditlog.repositories",
+        "description": "felicity.apps.auditlog.repositories",
+        "peekOfCode": "class AuditLogRepository(BaseRepository[AuditLog]):\n    def __init__(self) -> None:\n        super().__init__(AuditLog)",
+        "detail": "felicity.apps.auditlog.repositories",
+        "documentation": {}
+    },
+    {
+        "label": "AuditLogService",
+        "kind": 6,
+        "importPath": "felicity.apps.auditlog.services",
+        "description": "felicity.apps.auditlog.services",
+        "peekOfCode": "class AuditLogService(BaseService[AuditLog, Dummy, Dummy]):\n    def __init__(self) -> None:\n        super().__init__(AuditLogRepository)",
+        "detail": "felicity.apps.auditlog.services",
+        "documentation": {}
+    },
+    {
         "label": "AnalysisPrice",
         "kind": 6,
         "importPath": "felicity.apps.billing.entities",
         "description": "felicity.apps.billing.entities",
-        "peekOfCode": "class AnalysisPrice(AuditHistory):\n    __tablename__ = \"analysis_price\"\n    analysis_uid = Column(String, ForeignKey(\"analysis.uid\"), nullable=True)\n    analysis = relationship(\"Analysis\", lazy=\"selectin\")\n    is_active = Column(Boolean, nullable=False)\n    amount = Column(Float, nullable=False)\nclass ProfilePrice(AuditHistory):\n    __tablename__ = \"profile_price\"\n    profile_uid = Column(String, ForeignKey(\"profile.uid\"), nullable=True)\n    profile = relationship(\"Profile\", lazy=\"selectin\")",
+        "peekOfCode": "class AnalysisPrice(BaseEntity):\n    __tablename__ = \"analysis_price\"\n    analysis_uid = Column(String, ForeignKey(\"analysis.uid\"), nullable=True)\n    analysis = relationship(\"Analysis\", lazy=\"selectin\")\n    is_active = Column(Boolean, nullable=False)\n    amount = Column(Float, nullable=False)\nclass ProfilePrice(BaseEntity):\n    __tablename__ = \"profile_price\"\n    profile_uid = Column(String, ForeignKey(\"profile.uid\"), nullable=True)\n    profile = relationship(\"Profile\", lazy=\"selectin\")",
         "detail": "felicity.apps.billing.entities",
         "documentation": {}
     },
@@ -28635,7 +28680,7 @@
         "kind": 6,
         "importPath": "felicity.apps.billing.entities",
         "description": "felicity.apps.billing.entities",
-        "peekOfCode": "class ProfilePrice(AuditHistory):\n    __tablename__ = \"profile_price\"\n    profile_uid = Column(String, ForeignKey(\"profile.uid\"), nullable=True)\n    profile = relationship(\"Profile\", lazy=\"selectin\")\n    is_active = Column(Boolean, nullable=False)\n    amount = Column(Float, nullable=False)\nclass AnalysisDiscount(AuditHistory):\n    __tablename__ = \"analysis_discount\"\n    analysis_uid = Column(String, ForeignKey(\"analysis.uid\"), nullable=False)\n    analysis = relationship(\"Analysis\", lazy=\"selectin\")",
+        "peekOfCode": "class ProfilePrice(BaseEntity):\n    __tablename__ = \"profile_price\"\n    profile_uid = Column(String, ForeignKey(\"profile.uid\"), nullable=True)\n    profile = relationship(\"Profile\", lazy=\"selectin\")\n    is_active = Column(Boolean, nullable=False)\n    amount = Column(Float, nullable=False)\nclass AnalysisDiscount(BaseEntity):\n    __tablename__ = \"analysis_discount\"\n    analysis_uid = Column(String, ForeignKey(\"analysis.uid\"), nullable=False)\n    analysis = relationship(\"Analysis\", lazy=\"selectin\")",
         "detail": "felicity.apps.billing.entities",
         "documentation": {}
     },
@@ -28644,7 +28689,7 @@
         "kind": 6,
         "importPath": "felicity.apps.billing.entities",
         "description": "felicity.apps.billing.entities",
-        "peekOfCode": "class AnalysisDiscount(AuditHistory):\n    __tablename__ = \"analysis_discount\"\n    analysis_uid = Column(String, ForeignKey(\"analysis.uid\"), nullable=False)\n    analysis = relationship(\"Analysis\", lazy=\"selectin\")\n    name = Column(String, nullable=False)\n    discount_type = Column(String, nullable=False, default=DiscountType.VOUCHER)\n    value_type = Column(String, nullable=False, default=DiscountValueType.PERCENTATE)\n    start_date = Column(DateTime, nullable=False, default=datetime.now())\n    end_date = Column(DateTime, nullable=False, default=datetime.now())\n    voucher_uid = Column(String, ForeignKey(\"voucher.uid\"), nullable=True)",
+        "peekOfCode": "class AnalysisDiscount(BaseEntity):\n    __tablename__ = \"analysis_discount\"\n    analysis_uid = Column(String, ForeignKey(\"analysis.uid\"), nullable=False)\n    analysis = relationship(\"Analysis\", lazy=\"selectin\")\n    name = Column(String, nullable=False)\n    discount_type = Column(String, nullable=False, default=DiscountType.VOUCHER)\n    value_type = Column(String, nullable=False, default=DiscountValueType.PERCENTATE)\n    start_date = Column(DateTime, nullable=False, default=datetime.now())\n    end_date = Column(DateTime, nullable=False, default=datetime.now())\n    voucher_uid = Column(String, ForeignKey(\"voucher.uid\"), nullable=True)",
         "detail": "felicity.apps.billing.entities",
         "documentation": {}
     },
@@ -28653,7 +28698,7 @@
         "kind": 6,
         "importPath": "felicity.apps.billing.entities",
         "description": "felicity.apps.billing.entities",
-        "peekOfCode": "class ProfileDiscount(AuditHistory):\n    __tablename__ = \"profile_discount\"\n    profile_uid = Column(String, ForeignKey(\"profile.uid\"), nullable=False)\n    profile = relationship(\"Profile\", lazy=\"selectin\")\n    name = Column(String, nullable=False)\n    discount_type = Column(String, nullable=False, default=DiscountType.VOUCHER)\n    value_type = Column(String, nullable=False, default=DiscountValueType.PERCENTATE)\n    start_date = Column(DateTime, nullable=False, default=datetime.now())\n    end_date = Column(DateTime, nullable=False, default=datetime.now())\n    voucher_uid = Column(String, ForeignKey(\"voucher.uid\"), nullable=True)",
+        "peekOfCode": "class ProfileDiscount(BaseEntity):\n    __tablename__ = \"profile_discount\"\n    profile_uid = Column(String, ForeignKey(\"profile.uid\"), nullable=False)\n    profile = relationship(\"Profile\", lazy=\"selectin\")\n    name = Column(String, nullable=False)\n    discount_type = Column(String, nullable=False, default=DiscountType.VOUCHER)\n    value_type = Column(String, nullable=False, default=DiscountValueType.PERCENTATE)\n    start_date = Column(DateTime, nullable=False, default=datetime.now())\n    end_date = Column(DateTime, nullable=False, default=datetime.now())\n    voucher_uid = Column(String, ForeignKey(\"voucher.uid\"), nullable=True)",
         "detail": "felicity.apps.billing.entities",
         "documentation": {}
     },
@@ -28662,7 +28707,7 @@
         "kind": 6,
         "importPath": "felicity.apps.billing.entities",
         "description": "felicity.apps.billing.entities",
-        "peekOfCode": "class Voucher(AuditHistory):\n    __tablename__ = \"voucher\"\n    name = Column(String, nullable=False, unique=True)\n    # The number of times a voucher can be used.\n    usage_limit = Column(Integer, nullable=False, default=0)\n    # Used count of the voucher.\n    used = Column(Integer, nullable=False, default=0)\n    start_date = Column(DateTime, nullable=False)\n    end_date = Column(DateTime, nullable=False)\n    # Determine if the voucher usage should be limited to one use per customer.",
+        "peekOfCode": "class Voucher(BaseEntity):\n    __tablename__ = \"voucher\"\n    name = Column(String, nullable=False, unique=True)\n    # The number of times a voucher can be used.\n    usage_limit = Column(Integer, nullable=False, default=0)\n    # Used count of the voucher.\n    used = Column(Integer, nullable=False, default=0)\n    start_date = Column(DateTime, nullable=False)\n    end_date = Column(DateTime, nullable=False)\n    # Determine if the voucher usage should be limited to one use per customer.",
         "detail": "felicity.apps.billing.entities",
         "documentation": {}
     },
@@ -28671,7 +28716,7 @@
         "kind": 6,
         "importPath": "felicity.apps.billing.entities",
         "description": "felicity.apps.billing.entities",
-        "peekOfCode": "class VoucherCode(AuditHistory):\n    __tablename__ = \"voucher_code\"\n    code = Column(String(20), nullable=False, unique=True)\n    voucher_uid = Column(String, ForeignKey(\"voucher.uid\"), nullable=False)\n    voucher = relationship(\"Voucher\", lazy=\"selectin\")\n    # The number of times a voucher code can be used.\n    usage_limit = Column(Integer, nullable=False, default=0)\n    # Usage count of the voucher code.\n    used = Column(Integer, nullable=False, default=0)\n    is_active = Column(Boolean, nullable=False)",
+        "peekOfCode": "class VoucherCode(BaseEntity):\n    __tablename__ = \"voucher_code\"\n    code = Column(String(20), nullable=False, unique=True)\n    voucher_uid = Column(String, ForeignKey(\"voucher.uid\"), nullable=False)\n    voucher = relationship(\"Voucher\", lazy=\"selectin\")\n    # The number of times a voucher code can be used.\n    usage_limit = Column(Integer, nullable=False, default=0)\n    # Usage count of the voucher code.\n    used = Column(Integer, nullable=False, default=0)\n    is_active = Column(Boolean, nullable=False)",
         "detail": "felicity.apps.billing.entities",
         "documentation": {}
     },
@@ -28680,7 +28725,7 @@
         "kind": 6,
         "importPath": "felicity.apps.billing.entities",
         "description": "felicity.apps.billing.entities",
-        "peekOfCode": "class VoucherCustomer(AuditHistory):\n    __tablename__ = \"voucher_customer\"\n    patient_uid = Column(String, ForeignKey(\"patient.uid\"), nullable=False)\n    patient = relationship(\"Patient\", lazy=\"selectin\")\n    voucher_code_uid = Column(String, ForeignKey(\"voucher_code.uid\"), nullable=False)\n    voucher_code = relationship(\"VoucherCode\", lazy=\"selectin\")\n\"\"\"\n Many to Many Link between TestBill and AnalysisRequest\n\"\"\"\ntest_bill_item = Table(",
+        "peekOfCode": "class VoucherCustomer(BaseEntity):\n    __tablename__ = \"voucher_customer\"\n    patient_uid = Column(String, ForeignKey(\"patient.uid\"), nullable=False)\n    patient = relationship(\"Patient\", lazy=\"selectin\")\n    voucher_code_uid = Column(String, ForeignKey(\"voucher_code.uid\"), nullable=False)\n    voucher_code = relationship(\"VoucherCode\", lazy=\"selectin\")\n\"\"\"\n Many to Many Link between TestBill and AnalysisRequest\n\"\"\"\ntest_bill_item = Table(",
         "detail": "felicity.apps.billing.entities",
         "documentation": {}
     },
@@ -28689,7 +28734,7 @@
         "kind": 6,
         "importPath": "felicity.apps.billing.entities",
         "description": "felicity.apps.billing.entities",
-        "peekOfCode": "class TestBill(AuditHistory):\n    __tablename__ = \"test_bill\"\n    bill_id = Column(String, nullable=False)\n    patient_uid = Column(String, ForeignKey(\"patient.uid\"), nullable=True)\n    patient = relationship(\"Patient\", lazy=\"selectin\")\n    client_uid = Column(String, ForeignKey(\"client.uid\"), nullable=True)\n    client = relationship(\"Client\", lazy=\"selectin\")\n    is_active = Column(Boolean, nullable=False)\n    to_confirm = Column(Boolean, nullable=False)\n    partial = Column(Boolean, nullable=False)",
+        "peekOfCode": "class TestBill(BaseEntity):\n    __tablename__ = \"test_bill\"\n    bill_id = Column(String, nullable=False)\n    patient_uid = Column(String, ForeignKey(\"patient.uid\"), nullable=True)\n    patient = relationship(\"Patient\", lazy=\"selectin\")\n    client_uid = Column(String, ForeignKey(\"client.uid\"), nullable=True)\n    client = relationship(\"Client\", lazy=\"selectin\")\n    is_active = Column(Boolean, nullable=False)\n    to_confirm = Column(Boolean, nullable=False)\n    partial = Column(Boolean, nullable=False)",
         "detail": "felicity.apps.billing.entities",
         "documentation": {}
     },
@@ -28698,7 +28743,7 @@
         "kind": 6,
         "importPath": "felicity.apps.billing.entities",
         "description": "felicity.apps.billing.entities",
-        "peekOfCode": "class TestBillTransaction(AuditHistory):\n    __tablename__ = \"test_bill_transaction\"\n    test_bill_uid = Column(String, ForeignKey(\"test_bill.uid\"), nullable=True)\n    test_bill = relationship(\"TestBill\", lazy=\"selectin\")\n    kind = Column(String, nullable=False, default=TransactionKind.CASH)\n    amount = Column(Float, nullable=False, default=0.0)\n    notes = Column(String, nullable=True)\n    is_success = Column(Boolean, nullable=False, default=False)\n    processed = Column(Boolean, nullable=False, default=False)\n    message = Column(String, nullable=True)",
+        "peekOfCode": "class TestBillTransaction(BaseEntity):\n    __tablename__ = \"test_bill_transaction\"\n    test_bill_uid = Column(String, ForeignKey(\"test_bill.uid\"), nullable=True)\n    test_bill = relationship(\"TestBill\", lazy=\"selectin\")\n    kind = Column(String, nullable=False, default=TransactionKind.CASH)\n    amount = Column(Float, nullable=False, default=0.0)\n    notes = Column(String, nullable=True)\n    is_success = Column(Boolean, nullable=False, default=False)\n    processed = Column(Boolean, nullable=False, default=False)\n    message = Column(String, nullable=True)",
         "detail": "felicity.apps.billing.entities",
         "documentation": {}
     },
@@ -28707,7 +28752,7 @@
         "kind": 6,
         "importPath": "felicity.apps.billing.entities",
         "description": "felicity.apps.billing.entities",
-        "peekOfCode": "class TestBillInvoice(AuditHistory):\n    __tablename__ = \"test_bill_invoice\"\n    test_bill_uid = Column(String, ForeignKey(\"test_bill.uid\"), nullable=True)\n    test_bill = relationship(\"TestBill\", lazy=\"selectin\")\n    json_content: dict = Column(JSONB, nullable=True)\n    pdf_content = Column(LargeBinary, nullable=True)",
+        "peekOfCode": "class TestBillInvoice(BaseEntity):\n    __tablename__ = \"test_bill_invoice\"\n    test_bill_uid = Column(String, ForeignKey(\"test_bill.uid\"), nullable=True)\n    test_bill = relationship(\"TestBill\", lazy=\"selectin\")\n    json_content: dict = Column(JSONB, nullable=True)\n    pdf_content = Column(LargeBinary, nullable=True)",
         "detail": "felicity.apps.billing.entities",
         "documentation": {}
     },
@@ -28716,7 +28761,7 @@
         "kind": 5,
         "importPath": "felicity.apps.billing.entities",
         "description": "felicity.apps.billing.entities",
-        "peekOfCode": "test_bill_item = Table(\n    \"test_bill_item\",\n    BaseEntity.metadata,\n    Column(\"test_bill_uid\", ForeignKey(\"test_bill.uid\"), primary_key=True),\n    Column(\n        \"analysis_request_uid\", ForeignKey(\"analysis_request.uid\"), primary_key=True\n    ),\n)\nclass TestBill(AuditHistory):\n    __tablename__ = \"test_bill\"",
+        "peekOfCode": "test_bill_item = Table(\n    \"test_bill_item\",\n    BaseEntity.metadata,\n    Column(\"test_bill_uid\", ForeignKey(\"test_bill.uid\"), primary_key=True),\n    Column(\n        \"analysis_request_uid\", ForeignKey(\"analysis_request.uid\"), primary_key=True\n    ),\n)\nclass TestBill(BaseEntity):\n    __tablename__ = \"test_bill\"",
         "detail": "felicity.apps.billing.entities",
         "documentation": {}
     },
@@ -29355,7 +29400,7 @@
         "kind": 6,
         "importPath": "felicity.apps.client.entities",
         "description": "felicity.apps.client.entities",
-        "peekOfCode": "class Client(AuditHistory):\n    \"\"\"Client/Facility\"\"\"\n    __tablename__ = \"client\"\n    name = Column(String, nullable=False)\n    code = Column(String, index=True, unique=True, nullable=False)\n    district_uid = Column(String, ForeignKey(\"district.uid\"), nullable=True)\n    district = relationship(District, backref=\"clients\", lazy=\"selectin\")\n    province_uid = Column(String, ForeignKey(\"province.uid\"), nullable=True)\n    province = relationship(Province, backref=\"clients\", lazy=\"selectin\")\n    email = Column(String, nullable=True)",
+        "peekOfCode": "class Client(BaseEntity):\n    \"\"\"Client/Facility\"\"\"\n    __tablename__ = \"client\"\n    name = Column(String, nullable=False)\n    code = Column(String, index=True, unique=True, nullable=False)\n    district_uid = Column(String, ForeignKey(\"district.uid\"), nullable=True)\n    district = relationship(District, backref=\"clients\", lazy=\"selectin\")\n    province_uid = Column(String, ForeignKey(\"province.uid\"), nullable=True)\n    province = relationship(Province, backref=\"clients\", lazy=\"selectin\")\n    email = Column(String, nullable=True)",
         "detail": "felicity.apps.client.entities",
         "documentation": {}
     },
@@ -29976,7 +30021,7 @@
         "kind": 6,
         "importPath": "felicity.apps.impress.entities",
         "description": "felicity.apps.impress.entities",
-        "peekOfCode": "class ReportImpress(AuditHistory):\n    __tablename__ = \"report_impress\"\n    state = Column(String)  # preliminary, final, invalidated\n    sample_uid = Column(String, ForeignKey(\"sample.uid\"), nullable=False)\n    sample = relationship(Sample, foreign_keys=[sample_uid], lazy=\"selectin\")\n    json_content: dict = Column(JSONB, nullable=True)\n    pdf_content = Column(LargeBinary, nullable=True)\n    email_required = Column(Boolean(), default=False)\n    email_sent = Column(Boolean(), default=False)\n    sms_required = Column(Boolean(), default=False)",
+        "peekOfCode": "class ReportImpress(BaseEntity):\n    __tablename__ = \"report_impress\"\n    state = Column(String)  # preliminary, final, invalidated\n    sample_uid = Column(String, ForeignKey(\"sample.uid\"), nullable=False)\n    sample = relationship(Sample, foreign_keys=[sample_uid], lazy=\"selectin\")\n    json_content: dict = Column(JSONB, nullable=True)\n    pdf_content = Column(LargeBinary, nullable=True)\n    email_required = Column(Boolean(), default=False)\n    email_sent = Column(Boolean(), default=False)\n    sms_required = Column(Boolean(), default=False)",
         "detail": "felicity.apps.impress.entities",
         "documentation": {}
     },
@@ -30012,7 +30057,7 @@
         "kind": 6,
         "importPath": "felicity.apps.instrument.entities",
         "description": "felicity.apps.instrument.entities",
-        "peekOfCode": "class Method(AuditUser):\n    \"\"\"Method\n    analytical method\n    \"\"\"\n    __tablename__ = \"method\"\n    name = Column(String, nullable=False)\n    description = Column(String, nullable=True)\n    keyword = Column(String, nullable=True)\n    instruments = relationship(\n        \"Instrument\",",
+        "peekOfCode": "class Method(BaseEntity):\n    \"\"\"Method\n    analytical method\n    \"\"\"\n    __tablename__ = \"method\"\n    name = Column(String, nullable=False)\n    description = Column(String, nullable=True)\n    keyword = Column(String, nullable=True)\n    instruments = relationship(\n        \"Instrument\",",
         "detail": "felicity.apps.instrument.entities",
         "documentation": {}
     },
@@ -30021,7 +30066,7 @@
         "kind": 6,
         "importPath": "felicity.apps.instrument.entities",
         "description": "felicity.apps.instrument.entities",
-        "peekOfCode": "class InstrumentType(AuditUser):\n    \"\"\"Instrument Type\"\"\"\n    __tablename__ = \"instrument_type\"\n    name = Column(String, nullable=False)\n    description = Column(String, nullable=False)\nclass Instrument(AuditUser):\n    \"\"\"Instrument/Analyser\"\"\"\n    __tablename__ = \"instrument\"\n    name = Column(String, nullable=False)\n    description = Column(String, nullable=True)",
+        "peekOfCode": "class InstrumentType(BaseEntity):\n    \"\"\"Instrument Type\"\"\"\n    __tablename__ = \"instrument_type\"\n    name = Column(String, nullable=False)\n    description = Column(String, nullable=False)\nclass Instrument(BaseEntity):\n    \"\"\"Instrument/Analyser\"\"\"\n    __tablename__ = \"instrument\"\n    name = Column(String, nullable=False)\n    description = Column(String, nullable=True)",
         "detail": "felicity.apps.instrument.entities",
         "documentation": {}
     },
@@ -30030,7 +30075,7 @@
         "kind": 6,
         "importPath": "felicity.apps.instrument.entities",
         "description": "felicity.apps.instrument.entities",
-        "peekOfCode": "class Instrument(AuditUser):\n    \"\"\"Instrument/Analyser\"\"\"\n    __tablename__ = \"instrument\"\n    name = Column(String, nullable=False)\n    description = Column(String, nullable=True)\n    keyword = Column(String, nullable=True)\n    instrument_type_uid = Column(\n        String, ForeignKey(\"instrument_type.uid\"), nullable=True\n    )\n    instrument_type = relationship(\"InstrumentType\", lazy=\"selectin\")",
+        "peekOfCode": "class Instrument(BaseEntity):\n    \"\"\"Instrument/Analyser\"\"\"\n    __tablename__ = \"instrument\"\n    name = Column(String, nullable=False)\n    description = Column(String, nullable=True)\n    keyword = Column(String, nullable=True)\n    instrument_type_uid = Column(\n        String, ForeignKey(\"instrument_type.uid\"), nullable=True\n    )\n    instrument_type = relationship(\"InstrumentType\", lazy=\"selectin\")",
         "detail": "felicity.apps.instrument.entities",
         "documentation": {}
     },
@@ -30039,7 +30084,7 @@
         "kind": 6,
         "importPath": "felicity.apps.instrument.entities",
         "description": "felicity.apps.instrument.entities",
-        "peekOfCode": "class LaboratoryInstrument(AuditUser):\n    \"\"\"Laboratory Instrument\"\"\"\n    __tablename__ = \"laboratory_instrument\"\n    instrument_uid = Column(String, ForeignKey(\"instrument.uid\"), nullable=False)\n    instrument = relationship(\"Instrument\", lazy=\"selectin\")\n    lab_name = Column(String, nullable=False)\n    serial_number = Column(String, nullable=False)\n    date_commissioned = Column(DateTime, nullable=True)\n    date_decommissioned = Column(DateTime, nullable=True)\nclass InstrumentCalibration(AuditUser):",
+        "peekOfCode": "class LaboratoryInstrument(BaseEntity):\n    \"\"\"Laboratory Instrument\"\"\"\n    __tablename__ = \"laboratory_instrument\"\n    instrument_uid = Column(String, ForeignKey(\"instrument.uid\"), nullable=False)\n    instrument = relationship(\"Instrument\", lazy=\"selectin\")\n    lab_name = Column(String, nullable=False)\n    serial_number = Column(String, nullable=False)\n    date_commissioned = Column(DateTime, nullable=True)\n    date_decommissioned = Column(DateTime, nullable=True)\nclass InstrumentCalibration(BaseEntity):",
         "detail": "felicity.apps.instrument.entities",
         "documentation": {}
     },
@@ -30048,7 +30093,7 @@
         "kind": 6,
         "importPath": "felicity.apps.instrument.entities",
         "description": "felicity.apps.instrument.entities",
-        "peekOfCode": "class InstrumentCalibration(AuditUser):\n    \"\"\"Laboratory Instrument Calibration Task\n    -   ensures the measurement accuracy of an instrument meets a known standard\n    -   Is it still accurate?\n    \"\"\"\n    __tablename__ = \"instrument_calibration\"\n    laboratory_instrument_uid = Column(\n        String, ForeignKey(\"laboratory_instrument.uid\"), nullable=False\n    )\n    laboratory_instrument = relationship(\"LaboratoryInstrument\", lazy=\"selectin\")",
+        "peekOfCode": "class InstrumentCalibration(BaseEntity):\n    \"\"\"Laboratory Instrument Calibration Task\n    -   ensures the measurement accuracy of an instrument meets a known standard\n    -   Is it still accurate?\n    \"\"\"\n    __tablename__ = \"instrument_calibration\"\n    laboratory_instrument_uid = Column(\n        String, ForeignKey(\"laboratory_instrument.uid\"), nullable=False\n    )\n    laboratory_instrument = relationship(\"LaboratoryInstrument\", lazy=\"selectin\")",
         "detail": "felicity.apps.instrument.entities",
         "documentation": {}
     },
@@ -30057,7 +30102,7 @@
         "kind": 6,
         "importPath": "felicity.apps.instrument.entities",
         "description": "felicity.apps.instrument.entities",
-        "peekOfCode": "class CalibrationCertificate(AuditUser):\n    \"\"\"Instrument Calibration Certificate\"\"\"\n    __tablename__ = \"calibration_certificate\"\n    laboratory_instrument_uid = Column(\n        String, ForeignKey(\"laboratory_instrument.uid\"), nullable=False\n    )\n    laboratory_instrument = relationship(\"LaboratoryInstrument\", lazy=\"selectin\")\n    certificate_code = Column(String, index=True, unique=True, nullable=False)\n    certificate = Column(LargeBinary, nullable=True)\n    internal = Column(Boolean(), nullable=False)",
+        "peekOfCode": "class CalibrationCertificate(BaseEntity):\n    \"\"\"Instrument Calibration Certificate\"\"\"\n    __tablename__ = \"calibration_certificate\"\n    laboratory_instrument_uid = Column(\n        String, ForeignKey(\"laboratory_instrument.uid\"), nullable=False\n    )\n    laboratory_instrument = relationship(\"LaboratoryInstrument\", lazy=\"selectin\")\n    certificate_code = Column(String, index=True, unique=True, nullable=False)\n    certificate = Column(LargeBinary, nullable=True)\n    internal = Column(Boolean(), nullable=False)",
         "detail": "felicity.apps.instrument.entities",
         "documentation": {}
     },
@@ -30066,7 +30111,7 @@
         "kind": 6,
         "importPath": "felicity.apps.instrument.entities",
         "description": "felicity.apps.instrument.entities",
-        "peekOfCode": "class InstrumentCompetence(AuditUser):\n    __tablename__ = \"instrument_competence\"\n    instrument_uid = Column(String, ForeignKey(\"instrument.uid\"), nullable=False)\n    instrument = relationship(\"Instrument\", lazy=\"selectin\")\n    description = Column(String, default=\"competent\", nullable=True)\n    user_uid = Column(String, ForeignKey(\"user.uid\"), nullable=False)\n    user = relationship(\n        User, foreign_keys=[user_uid], backref=\"user_uid\", lazy=\"selectin\"\n    )\n    issue_date = Column(DateTime, nullable=False)",
+        "peekOfCode": "class InstrumentCompetence(BaseEntity):\n    __tablename__ = \"instrument_competence\"\n    instrument_uid = Column(String, ForeignKey(\"instrument.uid\"), nullable=False)\n    instrument = relationship(\"Instrument\", lazy=\"selectin\")\n    description = Column(String, default=\"competent\", nullable=True)\n    user_uid = Column(String, ForeignKey(\"user.uid\"), nullable=False)\n    user = relationship(\n        User, foreign_keys=[user_uid], backref=\"user_uid\", lazy=\"selectin\"\n    )\n    issue_date = Column(DateTime, nullable=False)",
         "detail": "felicity.apps.instrument.entities",
         "documentation": {}
     },
@@ -30075,7 +30120,7 @@
         "kind": 5,
         "importPath": "felicity.apps.instrument.entities",
         "description": "felicity.apps.instrument.entities",
-        "peekOfCode": "method_instrument = Table(\n    \"method_instrument\",\n    BaseEntity.metadata,\n    Column(\"method_uid\", ForeignKey(\"method.uid\"), primary_key=True),\n    Column(\"instrument_uid\", ForeignKey(\"instrument.uid\"), primary_key=True),\n)\nclass Method(AuditUser):\n    \"\"\"Method\n    analytical method\n    \"\"\"",
+        "peekOfCode": "method_instrument = Table(\n    \"method_instrument\",\n    BaseEntity.metadata,\n    Column(\"method_uid\", ForeignKey(\"method.uid\"), primary_key=True),\n    Column(\"instrument_uid\", ForeignKey(\"instrument.uid\"), primary_key=True),\n)\nclass Method(BaseEntity):\n    \"\"\"Method\n    analytical method\n    \"\"\"",
         "detail": "felicity.apps.instrument.entities",
         "documentation": {}
     },
@@ -30615,7 +30660,7 @@
         "kind": 6,
         "importPath": "felicity.apps.inventory.entities",
         "description": "felicity.apps.inventory.entities",
-        "peekOfCode": "class StockItem(AuditUser):\n    \"\"\"StockItem Standardization\"\"\"\n    __tablename__ = \"stock_item\"\n    name = Column(String, nullable=False)\n    description = Column(String, nullable=False)\n    category_uid = Column(String, ForeignKey(\"stock_category.uid\"), nullable=True)\n    category = relationship(\"StockCategory\", lazy=\"selectin\")\n    hazard_uid = Column(String, ForeignKey(\"hazard.uid\"), nullable=True)\n    hazard = relationship(\"Hazard\", lazy=\"selectin\")\n    minimum_level = Column(Integer, nullable=True)",
+        "peekOfCode": "class StockItem(BaseEntity):\n    \"\"\"StockItem Standardization\"\"\"\n    __tablename__ = \"stock_item\"\n    name = Column(String, nullable=False)\n    description = Column(String, nullable=False)\n    category_uid = Column(String, ForeignKey(\"stock_category.uid\"), nullable=True)\n    category = relationship(\"StockCategory\", lazy=\"selectin\")\n    hazard_uid = Column(String, ForeignKey(\"hazard.uid\"), nullable=True)\n    hazard = relationship(\"Hazard\", lazy=\"selectin\")\n    minimum_level = Column(Integer, nullable=True)",
         "detail": "felicity.apps.inventory.entities",
         "documentation": {}
     },
@@ -30624,7 +30669,7 @@
         "kind": 6,
         "importPath": "felicity.apps.inventory.entities",
         "description": "felicity.apps.inventory.entities",
-        "peekOfCode": "class StockItemVariant(AuditUser):\n    \"\"\"StockItem Variant as the StockProduct\"\"\"\n    __tablename__ = \"stock_item_variant\"\n    name = Column(String, nullable=False)\n    description = Column(String, nullable=False)\n    stock_item_uid = Column(String, ForeignKey(\"stock_item.uid\"), nullable=True)\n    stock_item = relationship(\"StockItem\", lazy=\"selectin\")\n    minimum_level = Column(Integer, nullable=True)\n    maximum_level = Column(Integer, nullable=True)\nclass StockCategory(AuditUser):",
+        "peekOfCode": "class StockItemVariant(BaseEntity):\n    \"\"\"StockItem Variant as the StockProduct\"\"\"\n    __tablename__ = \"stock_item_variant\"\n    name = Column(String, nullable=False)\n    description = Column(String, nullable=False)\n    stock_item_uid = Column(String, ForeignKey(\"stock_item.uid\"), nullable=True)\n    stock_item = relationship(\"StockItem\", lazy=\"selectin\")\n    minimum_level = Column(Integer, nullable=True)\n    maximum_level = Column(Integer, nullable=True)\nclass StockCategory(BaseEntity):",
         "detail": "felicity.apps.inventory.entities",
         "documentation": {}
     },
@@ -30633,7 +30678,7 @@
         "kind": 6,
         "importPath": "felicity.apps.inventory.entities",
         "description": "felicity.apps.inventory.entities",
-        "peekOfCode": "class StockCategory(AuditUser):\n    \"\"\"StockCategory\n    Consumable, Reagents, Durables\n    \"\"\"\n    __tablename__ = \"stock_category\"\n    name = Column(String, nullable=False)\n    description = Column(String, nullable=False)\nclass Hazard(AuditUser):\n    \"\"\"Hazard\"\"\"\n    __tablename__ = \"hazard\"",
+        "peekOfCode": "class StockCategory(BaseEntity):\n    \"\"\"StockCategory\n    Consumable, Reagents, Durables\n    \"\"\"\n    __tablename__ = \"stock_category\"\n    name = Column(String, nullable=False)\n    description = Column(String, nullable=False)\nclass Hazard(BaseEntity):\n    \"\"\"Hazard\"\"\"\n    __tablename__ = \"hazard\"",
         "detail": "felicity.apps.inventory.entities",
         "documentation": {}
     },
@@ -30642,7 +30687,7 @@
         "kind": 6,
         "importPath": "felicity.apps.inventory.entities",
         "description": "felicity.apps.inventory.entities",
-        "peekOfCode": "class Hazard(AuditUser):\n    \"\"\"Hazard\"\"\"\n    __tablename__ = \"hazard\"\n    name = Column(String, nullable=False)\n    description = Column(String, nullable=False)\nclass StockUnit(AuditUser):\n    __tablename__ = \"stock_unit\"\n    name = Column(String, nullable=False)\n    description = Column(String, nullable=True)\n    synonyms = Column(String, nullable=True)",
+        "peekOfCode": "class Hazard(BaseEntity):\n    \"\"\"Hazard\"\"\"\n    __tablename__ = \"hazard\"\n    name = Column(String, nullable=False)\n    description = Column(String, nullable=False)\nclass StockUnit(BaseEntity):\n    __tablename__ = \"stock_unit\"\n    name = Column(String, nullable=False)\n    description = Column(String, nullable=True)\n    synonyms = Column(String, nullable=True)",
         "detail": "felicity.apps.inventory.entities",
         "documentation": {}
     },
@@ -30651,7 +30696,7 @@
         "kind": 6,
         "importPath": "felicity.apps.inventory.entities",
         "description": "felicity.apps.inventory.entities",
-        "peekOfCode": "class StockUnit(AuditUser):\n    __tablename__ = \"stock_unit\"\n    name = Column(String, nullable=False)\n    description = Column(String, nullable=True)\n    synonyms = Column(String, nullable=True)\nclass StockLot(AuditUser):\n    __tablename__ = \"stock_lot\"\n    product_uid = Column(String, ForeignKey(\"stock_item_variant.uid\"), nullable=True)\n    product = relationship(\"StockItemVariant\", lazy=\"selectin\")\n    lot_number = Column(String, nullable=False)",
+        "peekOfCode": "class StockUnit(BaseEntity):\n    __tablename__ = \"stock_unit\"\n    name = Column(String, nullable=False)\n    description = Column(String, nullable=True)\n    synonyms = Column(String, nullable=True)\nclass StockLot(BaseEntity):\n    __tablename__ = \"stock_lot\"\n    product_uid = Column(String, ForeignKey(\"stock_item_variant.uid\"), nullable=True)\n    product = relationship(\"StockItemVariant\", lazy=\"selectin\")\n    lot_number = Column(String, nullable=False)",
         "detail": "felicity.apps.inventory.entities",
         "documentation": {}
     },
@@ -30660,7 +30705,7 @@
         "kind": 6,
         "importPath": "felicity.apps.inventory.entities",
         "description": "felicity.apps.inventory.entities",
-        "peekOfCode": "class StockLot(AuditUser):\n    __tablename__ = \"stock_lot\"\n    product_uid = Column(String, ForeignKey(\"stock_item_variant.uid\"), nullable=True)\n    product = relationship(\"StockItemVariant\", lazy=\"selectin\")\n    lot_number = Column(String, nullable=False)\n    expiry_date = Column(DateTime, nullable=False)\n    remarks = Column(String, nullable=True)\nclass StockProductInventory(AuditUser):\n    __tablename__ = \"stock_product_inventory\"\n    product_uid = Column(String, ForeignKey(\"stock_item_variant.uid\"), nullable=True)",
+        "peekOfCode": "class StockLot(BaseEntity):\n    __tablename__ = \"stock_lot\"\n    product_uid = Column(String, ForeignKey(\"stock_item_variant.uid\"), nullable=True)\n    product = relationship(\"StockItemVariant\", lazy=\"selectin\")\n    lot_number = Column(String, nullable=False)\n    expiry_date = Column(DateTime, nullable=False)\n    remarks = Column(String, nullable=True)\nclass StockProductInventory(BaseEntity):\n    __tablename__ = \"stock_product_inventory\"\n    product_uid = Column(String, ForeignKey(\"stock_item_variant.uid\"), nullable=True)",
         "detail": "felicity.apps.inventory.entities",
         "documentation": {}
     },
@@ -30669,7 +30714,7 @@
         "kind": 6,
         "importPath": "felicity.apps.inventory.entities",
         "description": "felicity.apps.inventory.entities",
-        "peekOfCode": "class StockProductInventory(AuditUser):\n    __tablename__ = \"stock_product_inventory\"\n    product_uid = Column(String, ForeignKey(\"stock_item_variant.uid\"), nullable=True)\n    product = relationship(\"StockItemVariant\", lazy=\"selectin\")\n    stock_lot_uid = Column(String, ForeignKey(\"stock_lot.uid\"), nullable=True)\n    stock_lot = relationship(\"StockLot\", lazy=\"selectin\")\n    quantity = Column(Integer, nullable=False)\n    remarks = Column(String, nullable=True)\nclass StockOrder(AuditUser):\n    __tablename__ = \"stock_order\"",
+        "peekOfCode": "class StockProductInventory(BaseEntity):\n    __tablename__ = \"stock_product_inventory\"\n    product_uid = Column(String, ForeignKey(\"stock_item_variant.uid\"), nullable=True)\n    product = relationship(\"StockItemVariant\", lazy=\"selectin\")\n    stock_lot_uid = Column(String, ForeignKey(\"stock_lot.uid\"), nullable=True)\n    stock_lot = relationship(\"StockLot\", lazy=\"selectin\")\n    quantity = Column(Integer, nullable=False)\n    remarks = Column(String, nullable=True)\nclass StockOrder(BaseEntity):\n    __tablename__ = \"stock_order\"",
         "detail": "felicity.apps.inventory.entities",
         "documentation": {}
     },
@@ -30678,7 +30723,7 @@
         "kind": 6,
         "importPath": "felicity.apps.inventory.entities",
         "description": "felicity.apps.inventory.entities",
-        "peekOfCode": "class StockOrder(AuditUser):\n    __tablename__ = \"stock_order\"\n    order_by_uid = Column(String, ForeignKey(\"user.uid\"), nullable=True)\n    order_by = relationship(\"User\", foreign_keys=[order_by_uid], lazy=\"selectin\")\n    department_uid = Column(String, ForeignKey(\"department.uid\"), nullable=True)\n    department = relationship(\"Department\", lazy=\"selectin\")\n    status = Column(String, nullable=False)\n    order_number = Column(String, nullable=False)\n    remarks = Column(String, nullable=True)\n    fulfilled_by_uid = Column(String, ForeignKey(\"user.uid\"), nullable=True)",
+        "peekOfCode": "class StockOrder(BaseEntity):\n    __tablename__ = \"stock_order\"\n    order_by_uid = Column(String, ForeignKey(\"user.uid\"), nullable=True)\n    order_by = relationship(\"User\", foreign_keys=[order_by_uid], lazy=\"selectin\")\n    department_uid = Column(String, ForeignKey(\"department.uid\"), nullable=True)\n    department = relationship(\"Department\", lazy=\"selectin\")\n    status = Column(String, nullable=False)\n    order_number = Column(String, nullable=False)\n    remarks = Column(String, nullable=True)\n    fulfilled_by_uid = Column(String, ForeignKey(\"user.uid\"), nullable=True)",
         "detail": "felicity.apps.inventory.entities",
         "documentation": {}
     },
@@ -30687,7 +30732,7 @@
         "kind": 6,
         "importPath": "felicity.apps.inventory.entities",
         "description": "felicity.apps.inventory.entities",
-        "peekOfCode": "class StockOrderProduct(AuditUser):\n    __tablename__ = \"stock_order_product\"\n    product_uid = Column(String, ForeignKey(\"stock_item_variant.uid\"), nullable=True)\n    product = relationship(\"StockItemVariant\", lazy=\"selectin\")\n    stock_lot_uid = Column(String, ForeignKey(\"stock_lot.uid\"), nullable=True)\n    stock_lot = relationship(\"StockLot\", lazy=\"selectin\")\n    order_uid = Column(String, ForeignKey(\"stock_order.uid\"), nullable=True)\n    order = relationship(\"StockOrder\", lazy=\"selectin\")\n    quantity = Column(Integer, nullable=False)\n    remarks = Column(String, nullable=True)",
+        "peekOfCode": "class StockOrderProduct(BaseEntity):\n    __tablename__ = \"stock_order_product\"\n    product_uid = Column(String, ForeignKey(\"stock_item_variant.uid\"), nullable=True)\n    product = relationship(\"StockItemVariant\", lazy=\"selectin\")\n    stock_lot_uid = Column(String, ForeignKey(\"stock_lot.uid\"), nullable=True)\n    stock_lot = relationship(\"StockLot\", lazy=\"selectin\")\n    order_uid = Column(String, ForeignKey(\"stock_order.uid\"), nullable=True)\n    order = relationship(\"StockOrder\", lazy=\"selectin\")\n    quantity = Column(Integer, nullable=False)\n    remarks = Column(String, nullable=True)",
         "detail": "felicity.apps.inventory.entities",
         "documentation": {}
     },
@@ -30696,7 +30741,7 @@
         "kind": 6,
         "importPath": "felicity.apps.inventory.entities",
         "description": "felicity.apps.inventory.entities",
-        "peekOfCode": "class StockReceipt(AuditUser):\n    __tablename__ = \"stock_receipt\"\n    product_uid = Column(String, ForeignKey(\"stock_item_variant.uid\"), nullable=False)\n    product = relationship(\"StockItemVariant\", lazy=\"selectin\")\n    stock_lot_uid = Column(String, ForeignKey(\"stock_lot.uid\"), nullable=True)\n    stock_lot = relationship(\"StockLot\", lazy=\"selectin\")\n    unit_price = Column(Float, nullable=True)\n    total_price = Column(Float, nullable=True)\n    supplier_uid = Column(String, ForeignKey(\"supplier.uid\"), nullable=True)\n    supplier = relationship(\"Supplier\", lazy=\"selectin\")",
+        "peekOfCode": "class StockReceipt(BaseEntity):\n    __tablename__ = \"stock_receipt\"\n    product_uid = Column(String, ForeignKey(\"stock_item_variant.uid\"), nullable=False)\n    product = relationship(\"StockItemVariant\", lazy=\"selectin\")\n    stock_lot_uid = Column(String, ForeignKey(\"stock_lot.uid\"), nullable=True)\n    stock_lot = relationship(\"StockLot\", lazy=\"selectin\")\n    unit_price = Column(Float, nullable=True)\n    total_price = Column(Float, nullable=True)\n    supplier_uid = Column(String, ForeignKey(\"supplier.uid\"), nullable=True)\n    supplier = relationship(\"Supplier\", lazy=\"selectin\")",
         "detail": "felicity.apps.inventory.entities",
         "documentation": {}
     },
@@ -30705,7 +30750,7 @@
         "kind": 6,
         "importPath": "felicity.apps.inventory.entities",
         "description": "felicity.apps.inventory.entities",
-        "peekOfCode": "class StockAdjustment(AuditUser):\n    __tablename__ = \"stock_adjustment\"\n    product_uid = Column(String, ForeignKey(\"stock_item_variant.uid\"), nullable=True)\n    product = relationship(\"StockItemVariant\", lazy=\"selectin\")\n    stock_lot_uid = Column(String, ForeignKey(\"stock_lot.uid\"), nullable=True)\n    stock_lot = relationship(\"StockLot\", lazy=\"selectin\")\n    adjustment_type = Column(String, nullable=False)\n    adjust = Column(Integer, nullable=False)\n    adjustment_date = Column(DateTime, nullable=False)\n    remarks = Column(String, nullable=False)",
+        "peekOfCode": "class StockAdjustment(BaseEntity):\n    __tablename__ = \"stock_adjustment\"\n    product_uid = Column(String, ForeignKey(\"stock_item_variant.uid\"), nullable=True)\n    product = relationship(\"StockItemVariant\", lazy=\"selectin\")\n    stock_lot_uid = Column(String, ForeignKey(\"stock_lot.uid\"), nullable=True)\n    stock_lot = relationship(\"StockLot\", lazy=\"selectin\")\n    adjustment_type = Column(String, nullable=False)\n    adjust = Column(Integer, nullable=False)\n    adjustment_date = Column(DateTime, nullable=False)\n    remarks = Column(String, nullable=False)",
         "detail": "felicity.apps.inventory.entities",
         "documentation": {}
     },
@@ -31371,7 +31416,7 @@
         "kind": 6,
         "importPath": "felicity.apps.iol.fhir.entities",
         "description": "felicity.apps.iol.fhir.entities",
-        "peekOfCode": "class FhirTask(AuditUser):\n    incoming = Column(Boolean, default=True)\n    data = Column(JSONB)\n    status = Column(String)",
+        "peekOfCode": "class FhirTask(BaseEntity):\n    incoming = Column(Boolean, default=True)\n    data = Column(JSONB)\n    status = Column(String)",
         "detail": "felicity.apps.iol.fhir.entities",
         "documentation": {}
     },
@@ -31700,6 +31745,15 @@
         "documentation": {}
     },
     {
+        "label": "ProcessingTracker",
+        "kind": 6,
+        "importPath": "felicity.apps.iol.redis.tracking",
+        "description": "felicity.apps.iol.redis.tracking",
+        "peekOfCode": "class ProcessingTracker:\n    @staticmethod\n    async def connect():\n        pool = await create_redis_pool()\n        redis = await pool.get_connection()\n        return pool, redis\n    async def process(self, uid: str, object_type: str):\n        pool, redis = await self.connect()\n        await redis.hmset(f\"{uid}\", {\"status\": \"processing\"})\n        pool.release(redis)",
+        "detail": "felicity.apps.iol.redis.tracking",
+        "documentation": {}
+    },
+    {
         "label": "Job",
         "kind": 6,
         "importPath": "felicity.apps.job.entities",
@@ -31848,7 +31902,7 @@
         "kind": 6,
         "importPath": "felicity.apps.messaging.entities",
         "description": "felicity.apps.messaging.entities",
-        "peekOfCode": "class MessageThread(AuditUser):\n    \"\"\"MessageThread\"\"\"\n    __tablename__ = \"message_thread\"\n    broadcast = Column(Boolean, nullable=False)\n    messages = relationship(\"Message\", back_populates=\"thread\", lazy=\"selectin\")\n    recipients = relationship(\n        \"User\", secondary=message_thread_recipient, lazy=\"selectin\"\n    )\n    deleted_by = relationship(\"User\", secondary=message_thread_delete, lazy=\"selectin\")\n\"\"\"",
+        "peekOfCode": "class MessageThread(BaseEntity):\n    \"\"\"MessageThread\"\"\"\n    __tablename__ = \"message_thread\"\n    broadcast = Column(Boolean, nullable=False)\n    messages = relationship(\"Message\", back_populates=\"thread\", lazy=\"selectin\")\n    recipients = relationship(\n        \"User\", secondary=message_thread_recipient, lazy=\"selectin\"\n    )\n    deleted_by = relationship(\"User\", secondary=message_thread_delete, lazy=\"selectin\")\n\"\"\"",
         "detail": "felicity.apps.messaging.entities",
         "documentation": {}
     },
@@ -31857,7 +31911,7 @@
         "kind": 6,
         "importPath": "felicity.apps.messaging.entities",
         "description": "felicity.apps.messaging.entities",
-        "peekOfCode": "class Message(AuditUser, BaseMPTT):\n    \"\"\"Message\"\"\"\n    __tablename__ = \"message\"\n    thread_uid = Column(String, ForeignKey(\"message_thread.uid\"), nullable=True)\n    thread = relationship(\"MessageThread\", back_populates=\"messages\", lazy=\"selectin\")\n    body = Column(String, nullable=False)\n    viewers = relationship(\"User\", secondary=message_view, lazy=\"selectin\")\n    deleted_by = relationship(\"User\", secondary=message_delete, lazy=\"selectin\")",
+        "peekOfCode": "class Message(BaseEntity, BaseMPTT):\n    \"\"\"Message\"\"\"\n    __tablename__ = \"message\"\n    thread_uid = Column(String, ForeignKey(\"message_thread.uid\"), nullable=True)\n    thread = relationship(\"MessageThread\", back_populates=\"messages\", lazy=\"selectin\")\n    body = Column(String, nullable=False)\n    viewers = relationship(\"User\", secondary=message_view, lazy=\"selectin\")\n    deleted_by = relationship(\"User\", secondary=message_delete, lazy=\"selectin\")",
         "detail": "felicity.apps.messaging.entities",
         "documentation": {}
     },
@@ -31875,7 +31929,7 @@
         "kind": 5,
         "importPath": "felicity.apps.messaging.entities",
         "description": "felicity.apps.messaging.entities",
-        "peekOfCode": "message_thread_delete = Table(\n    \"message_thread_delete\",\n    BaseEntity.metadata,\n    Column(\"message_thread_uid\", ForeignKey(\"message_thread.uid\"), primary_key=True),\n    Column(\"user_uid\", ForeignKey(\"user.uid\"), primary_key=True),\n)\nclass MessageThread(AuditUser):\n    \"\"\"MessageThread\"\"\"\n    __tablename__ = \"message_thread\"\n    broadcast = Column(Boolean, nullable=False)",
+        "peekOfCode": "message_thread_delete = Table(\n    \"message_thread_delete\",\n    BaseEntity.metadata,\n    Column(\"message_thread_uid\", ForeignKey(\"message_thread.uid\"), primary_key=True),\n    Column(\"user_uid\", ForeignKey(\"user.uid\"), primary_key=True),\n)\nclass MessageThread(BaseEntity):\n    \"\"\"MessageThread\"\"\"\n    __tablename__ = \"message_thread\"\n    broadcast = Column(Boolean, nullable=False)",
         "detail": "felicity.apps.messaging.entities",
         "documentation": {}
     },
@@ -31893,7 +31947,7 @@
         "kind": 5,
         "importPath": "felicity.apps.messaging.entities",
         "description": "felicity.apps.messaging.entities",
-        "peekOfCode": "message_delete = Table(\n    \"message_delete\",\n    BaseEntity.metadata,\n    Column(\"message_uid\", ForeignKey(\"message.uid\"), primary_key=True),\n    Column(\"user_uid\", ForeignKey(\"user.uid\"), primary_key=True),\n)\nclass Message(AuditUser, BaseMPTT):\n    \"\"\"Message\"\"\"\n    __tablename__ = \"message\"\n    thread_uid = Column(String, ForeignKey(\"message_thread.uid\"), nullable=True)",
+        "peekOfCode": "message_delete = Table(\n    \"message_delete\",\n    BaseEntity.metadata,\n    Column(\"message_uid\", ForeignKey(\"message.uid\"), primary_key=True),\n    Column(\"user_uid\", ForeignKey(\"user.uid\"), primary_key=True),\n)\nclass Message(BaseEntity, BaseMPTT):\n    \"\"\"Message\"\"\"\n    __tablename__ = \"message\"\n    thread_uid = Column(String, ForeignKey(\"message_thread.uid\"), nullable=True)",
         "detail": "felicity.apps.messaging.entities",
         "documentation": {}
     },
@@ -32010,7 +32064,7 @@
         "kind": 6,
         "importPath": "felicity.apps.noticeboard.entities",
         "description": "felicity.apps.noticeboard.entities",
-        "peekOfCode": "class Notice(AuditUser):\n    \"\"\"Notice\"\"\"\n    __tablename__ = \"notice\"\n    departments = relationship(\n        \"Department\", secondary=department_notice, lazy=\"selectin\"\n    )\n    groups = relationship(\"Group\", secondary=group_notice, lazy=\"selectin\")\n    title = Column(String, nullable=False)\n    body = Column(String, nullable=False)\n    viewers = relationship(\"User\", secondary=notice_view, lazy=\"selectin\")",
+        "peekOfCode": "class Notice(BaseEntity):\n    \"\"\"Notice\"\"\"\n    __tablename__ = \"notice\"\n    departments = relationship(\n        \"Department\", secondary=department_notice, lazy=\"selectin\"\n    )\n    groups = relationship(\"Group\", secondary=group_notice, lazy=\"selectin\")\n    title = Column(String, nullable=False)\n    body = Column(String, nullable=False)\n    viewers = relationship(\"User\", secondary=notice_view, lazy=\"selectin\")",
         "detail": "felicity.apps.noticeboard.entities",
         "documentation": {}
     },
@@ -32109,7 +32163,7 @@
         "kind": 6,
         "importPath": "felicity.apps.notification.entities",
         "description": "felicity.apps.notification.entities",
-        "peekOfCode": "class ActivityFeed(AuditUser):\n    \"\"\"ActivityFeed\"\"\"\n    __tablename__ = \"activity_feed\"\n    name = Column(String, nullable=False)\n    subscribers = relationship(\n        \"User\", secondary=activity_feed_subscription, lazy=\"selectin\"\n    )\n\"\"\"\n Many to Many Link between ActivityStream and ActivityFeed\n\"\"\"",
+        "peekOfCode": "class ActivityFeed(BaseEntity):\n    \"\"\"ActivityFeed\"\"\"\n    __tablename__ = \"activity_feed\"\n    name = Column(String, nullable=False)\n    subscribers = relationship(\n        \"User\", secondary=activity_feed_subscription, lazy=\"selectin\"\n    )\n\"\"\"\n Many to Many Link between ActivityStream and ActivityFeed\n\"\"\"",
         "detail": "felicity.apps.notification.entities",
         "documentation": {}
     },
@@ -32118,7 +32172,7 @@
         "kind": 6,
         "importPath": "felicity.apps.notification.entities",
         "description": "felicity.apps.notification.entities",
-        "peekOfCode": "class ActivityStream(AuditUser):\n    \"\"\"ActivityStream\n    Actor. The object that performed the activity.\n    Verb. The verb phrase that identifies the action of the activity.\n    Action Object. (Optional) The object linked to the action itself.\n    Target. (Optional) The object to which the activity was performed.\n    e.g. Aurthur (actor) verified (verb) worksheet ws20-1222 (action object) 20 on felicity lims (target) minutes ago\n    ?? maybe target as feed\n    \"\"\"\n    __tablename__ = \"activity_stream\"",
+        "peekOfCode": "class ActivityStream(BaseEntity):\n    \"\"\"ActivityStream\n    Actor. The object that performed the activity.\n    Verb. The verb phrase that identifies the action of the activity.\n    Action Object. (Optional) The object linked to the action itself.\n    Target. (Optional) The object to which the activity was performed.\n    e.g. Aurthur (actor) verified (verb) worksheet ws20-1222 (action object) 20 on felicity lims (target) minutes ago\n    ?? maybe target as feed\n    \"\"\"\n    __tablename__ = \"activity_stream\"",
         "detail": "felicity.apps.notification.entities",
         "documentation": {}
     },
@@ -32127,7 +32181,7 @@
         "kind": 6,
         "importPath": "felicity.apps.notification.entities",
         "description": "felicity.apps.notification.entities",
-        "peekOfCode": "class Notification(AuditUser):\n    \"\"\"Notification\n    Custom messages about system status. These are more like activity streams only that they are very specific\n    messages to notify users about something important\n    examples:\n        32 samples are due in 4 days, today, etc ....\n        7 open worksheets have been lying idle for 3 weeks including 137 samples past their due date.\n        2 worksheets have no samples, consider populating or deleting them to avoid cluttering your dashboard\n        ...\n    \"\"\"",
+        "peekOfCode": "class Notification(BaseEntity):\n    \"\"\"Notification\n    Custom messages about system status. These are more like activity streams only that they are very specific\n    messages to notify users about something important\n    examples:\n        32 samples are due in 4 days, today, etc ....\n        7 open worksheets have been lying idle for 3 weeks including 137 samples past their due date.\n        2 worksheets have no samples, consider populating or deleting them to avoid cluttering your dashboard\n        ...\n    \"\"\"",
         "detail": "felicity.apps.notification.entities",
         "documentation": {}
     },
@@ -32136,7 +32190,7 @@
         "kind": 5,
         "importPath": "felicity.apps.notification.entities",
         "description": "felicity.apps.notification.entities",
-        "peekOfCode": "activity_feed_subscription = Table(\n    \"activity_feed_subscription\",\n    BaseEntity.metadata,\n    Column(\"activity_feed_uid\", ForeignKey(\"activity_feed.uid\"), primary_key=True),\n    Column(\"user_uid\", ForeignKey(\"user.uid\"), primary_key=True),\n)\nclass ActivityFeed(AuditUser):\n    \"\"\"ActivityFeed\"\"\"\n    __tablename__ = \"activity_feed\"\n    name = Column(String, nullable=False)",
+        "peekOfCode": "activity_feed_subscription = Table(\n    \"activity_feed_subscription\",\n    BaseEntity.metadata,\n    Column(\"activity_feed_uid\", ForeignKey(\"activity_feed.uid\"), primary_key=True),\n    Column(\"user_uid\", ForeignKey(\"user.uid\"), primary_key=True),\n)\nclass ActivityFeed(BaseEntity):\n    \"\"\"ActivityFeed\"\"\"\n    __tablename__ = \"activity_feed\"\n    name = Column(String, nullable=False)",
         "detail": "felicity.apps.notification.entities",
         "documentation": {}
     },
@@ -32154,7 +32208,7 @@
         "kind": 5,
         "importPath": "felicity.apps.notification.entities",
         "description": "felicity.apps.notification.entities",
-        "peekOfCode": "activity_stream_view = Table(\n    \"activity_stream_view\",\n    BaseEntity.metadata,\n    Column(\"activity_stream_uid\", ForeignKey(\"activity_stream.uid\"), primary_key=True),\n    Column(\"user_uid\", ForeignKey(\"user.uid\"), primary_key=True),\n)\nclass ActivityStream(AuditUser):\n    \"\"\"ActivityStream\n    Actor. The object that performed the activity.\n    Verb. The verb phrase that identifies the action of the activity.",
+        "peekOfCode": "activity_stream_view = Table(\n    \"activity_stream_view\",\n    BaseEntity.metadata,\n    Column(\"activity_stream_uid\", ForeignKey(\"activity_stream.uid\"), primary_key=True),\n    Column(\"user_uid\", ForeignKey(\"user.uid\"), primary_key=True),\n)\nclass ActivityStream(BaseEntity):\n    \"\"\"ActivityStream\n    Actor. The object that performed the activity.\n    Verb. The verb phrase that identifies the action of the activity.",
         "detail": "felicity.apps.notification.entities",
         "documentation": {}
     },
@@ -32190,7 +32244,7 @@
         "kind": 5,
         "importPath": "felicity.apps.notification.entities",
         "description": "felicity.apps.notification.entities",
-        "peekOfCode": "department_notification = Table(\n    \"department_notification\",\n    BaseEntity.metadata,\n    Column(\"notification_uid\", ForeignKey(\"notification.uid\"), primary_key=True),\n    Column(\"department_uid\", ForeignKey(\"department.uid\"), primary_key=True),\n)\nclass Notification(AuditUser):\n    \"\"\"Notification\n    Custom messages about system status. These are more like activity streams only that they are very specific\n    messages to notify users about something important",
+        "peekOfCode": "department_notification = Table(\n    \"department_notification\",\n    BaseEntity.metadata,\n    Column(\"notification_uid\", ForeignKey(\"notification.uid\"), primary_key=True),\n    Column(\"department_uid\", ForeignKey(\"department.uid\"), primary_key=True),\n)\nclass Notification(BaseEntity):\n    \"\"\"Notification\n    Custom messages about system status. These are more like activity streams only that they are very specific\n    messages to notify users about something important",
         "detail": "felicity.apps.notification.entities",
         "documentation": {}
     },
@@ -32199,7 +32253,7 @@
         "kind": 6,
         "importPath": "felicity.apps.notification.enum",
         "description": "felicity.apps.notification.enum",
-        "peekOfCode": "class NotificationObject(StrEnum):\n    \"\"\"Action Object\"\"\"\n    SAMPLE = auto()\n    ANALYSIS_RESULT = auto()\n    WORKSHEET = auto()\n    REPORT = auto()\nclass NotificationChannel(StrEnum):\n    ACTIVITIES = auto()\n    NOTIFICATIONS = auto()\n    JOBS = auto()",
+        "peekOfCode": "class NotificationObject(StrEnum):\n    \"\"\"Action Object\"\"\"\n    SAMPLE = auto()\n    ANALYSIS_RESULT = auto()\n    WORKSHEET = auto()\n    REPORT = auto()\nclass NotificationChannel(StrEnum):\n    ACTIVITIES = auto()\n    NOTIFICATIONS = auto()\n    PROCESSING = auto()",
         "detail": "felicity.apps.notification.enum",
         "documentation": {}
     },
@@ -32208,7 +32262,7 @@
         "kind": 6,
         "importPath": "felicity.apps.notification.enum",
         "description": "felicity.apps.notification.enum",
-        "peekOfCode": "class NotificationChannel(StrEnum):\n    ACTIVITIES = auto()\n    NOTIFICATIONS = auto()\n    JOBS = auto()",
+        "peekOfCode": "class NotificationChannel(StrEnum):\n    ACTIVITIES = auto()\n    NOTIFICATIONS = auto()\n    PROCESSING = auto()\n    JOBS = auto()",
         "detail": "felicity.apps.notification.enum",
         "documentation": {}
     },
@@ -32379,7 +32433,7 @@
         "kind": 6,
         "importPath": "felicity.apps.patient.entities",
         "description": "felicity.apps.patient.entities",
-        "peekOfCode": "class Identification(AuditHistory):\n    __tablename__ = \"identification\"\n    name = Column(String, index=True, unique=True, nullable=True)\nclass PatientIdentification(AuditHistory):\n    __tablename__ = \"patient_identification\"\n    identification_uid = Column(String, ForeignKey(\"identification.uid\"), nullable=True)\n    identification: Mapped[\"Identification\"] = relationship(\n        \"Identification\", lazy=\"selectin\"\n    )\n    patient_uid = Column(String, ForeignKey(\"patient.uid\"), nullable=True)",
+        "peekOfCode": "class Identification(BaseEntity):\n    __tablename__ = \"identification\"\n    name = Column(String, index=True, unique=True, nullable=True)\nclass PatientIdentification(BaseEntity):\n    __tablename__ = \"patient_identification\"\n    identification_uid = Column(String, ForeignKey(\"identification.uid\"), nullable=True)\n    identification: Mapped[\"Identification\"] = relationship(\n        \"Identification\", lazy=\"selectin\"\n    )\n    patient_uid = Column(String, ForeignKey(\"patient.uid\"), nullable=True)",
         "detail": "felicity.apps.patient.entities",
         "documentation": {}
     },
@@ -32388,7 +32442,7 @@
         "kind": 6,
         "importPath": "felicity.apps.patient.entities",
         "description": "felicity.apps.patient.entities",
-        "peekOfCode": "class PatientIdentification(AuditHistory):\n    __tablename__ = \"patient_identification\"\n    identification_uid = Column(String, ForeignKey(\"identification.uid\"), nullable=True)\n    identification: Mapped[\"Identification\"] = relationship(\n        \"Identification\", lazy=\"selectin\"\n    )\n    patient_uid = Column(String, ForeignKey(\"patient.uid\"), nullable=True)\n    patient: Mapped[\"Patient\"] = relationship(\n        \"Patient\", back_populates=\"identifications\", lazy=\"selectin\"\n    )",
+        "peekOfCode": "class PatientIdentification(BaseEntity):\n    __tablename__ = \"patient_identification\"\n    identification_uid = Column(String, ForeignKey(\"identification.uid\"), nullable=True)\n    identification: Mapped[\"Identification\"] = relationship(\n        \"Identification\", lazy=\"selectin\"\n    )\n    patient_uid = Column(String, ForeignKey(\"patient.uid\"), nullable=True)\n    patient: Mapped[\"Patient\"] = relationship(\n        \"Patient\", back_populates=\"identifications\", lazy=\"selectin\"\n    )",
         "detail": "felicity.apps.patient.entities",
         "documentation": {}
     },
@@ -32397,7 +32451,7 @@
         "kind": 6,
         "importPath": "felicity.apps.patient.entities",
         "description": "felicity.apps.patient.entities",
-        "peekOfCode": "class Patient(AuditHistory):\n    __tablename__ = \"patient\"\n    # Identification\n    client_patient_id = Column(String, index=True, unique=True, nullable=False)\n    patient_id = Column(String, index=True, unique=True, nullable=True)\n    client_uid = Column(String, ForeignKey(\"client.uid\"), nullable=True)\n    client = relationship(Client, backref=\"patients\", lazy=\"selectin\")\n    # Details\n    first_name = Column(String, nullable=False)\n    middle_name = Column(String, nullable=True)",
+        "peekOfCode": "class Patient(BaseEntity):\n    __tablename__ = \"patient\"\n    # Identification\n    client_patient_id = Column(String, index=True, unique=True, nullable=False)\n    patient_id = Column(String, index=True, unique=True, nullable=True)\n    client_uid = Column(String, ForeignKey(\"client.uid\"), nullable=True)\n    client = relationship(Client, backref=\"patients\", lazy=\"selectin\")\n    # Details\n    first_name = Column(String, nullable=False)\n    middle_name = Column(String, nullable=True)",
         "detail": "felicity.apps.patient.entities",
         "documentation": {}
     },
@@ -32631,7 +32685,7 @@
         "kind": 6,
         "importPath": "felicity.apps.reflex.entities",
         "description": "felicity.apps.reflex.entities",
-        "peekOfCode": "class ReflexRule(AuditHistory):\n    __tablename__ = \"reflex_rule\"\n    name = Column(String, index=True, unique=True, nullable=False)\n    description = Column(String, nullable=False)\n    reflex_actions = relationship(\n        \"ReflexAction\", back_populates=\"reflex_rule\", lazy=\"selectin\"\n    )\nclass ReflexBrainAddition(BaseEntity):\n    \"\"\"Many to Many Link between ReflexBrain and Analysis\n    with extra data for additions",
+        "peekOfCode": "class ReflexRule(BaseEntity):\n    __tablename__ = \"reflex_rule\"\n    name = Column(String, index=True, unique=True, nullable=False)\n    description = Column(String, nullable=False)\n    reflex_actions = relationship(\n        \"ReflexAction\", back_populates=\"reflex_rule\", lazy=\"selectin\"\n    )\nclass ReflexBrainAddition(BaseEntity):\n    \"\"\"Many to Many Link between ReflexBrain and Analysis\n    with extra data for additions",
         "detail": "felicity.apps.reflex.entities",
         "documentation": {}
     },
@@ -32667,7 +32721,7 @@
         "kind": 6,
         "importPath": "felicity.apps.reflex.entities",
         "description": "felicity.apps.reflex.entities",
-        "peekOfCode": "class ReflexBrain(AuditHistory):\n    __tablename__ = \"reflex_brain\"\n    reflex_action_uid = Column(\n        String, ForeignKey(\"reflex_action.uid\"), nullable=False, default=1\n    )\n    reflex_action = relationship(\n        \"ReflexAction\", back_populates=\"brains\", lazy=\"selectin\"\n    )\n    description = Column(String, nullable=True)\n    analyses_values = relationship(ReflexBrainCriteria, lazy=\"selectin\")",
+        "peekOfCode": "class ReflexBrain(BaseEntity):\n    __tablename__ = \"reflex_brain\"\n    reflex_action_uid = Column(\n        String, ForeignKey(\"reflex_action.uid\"), nullable=False, default=1\n    )\n    reflex_action = relationship(\n        \"ReflexAction\", back_populates=\"brains\", lazy=\"selectin\"\n    )\n    description = Column(String, nullable=True)\n    analyses_values = relationship(ReflexBrainCriteria, lazy=\"selectin\")",
         "detail": "felicity.apps.reflex.entities",
         "documentation": {}
     },
@@ -32676,7 +32730,7 @@
         "kind": 6,
         "importPath": "felicity.apps.reflex.entities",
         "description": "felicity.apps.reflex.entities",
-        "peekOfCode": "class ReflexAction(AuditHistory):\n    __tablename__ = \"reflex_action\"\n    level = Column(Integer, nullable=False, default=1)\n    description = Column(String, nullable=False)\n    # triggers\n    analyses = relationship(\n        \"Analysis\", secondary=reflex_action_analysis, lazy=\"selectin\"\n    )\n    sample_type_uid = Column(String, ForeignKey(\"sample_type.uid\"), nullable=True)\n    sample_type = relationship(\"SampleType\", lazy=\"selectin\")",
+        "peekOfCode": "class ReflexAction(BaseEntity):\n    __tablename__ = \"reflex_action\"\n    level = Column(Integer, nullable=False, default=1)\n    description = Column(String, nullable=False)\n    # triggers\n    analyses = relationship(\n        \"Analysis\", secondary=reflex_action_analysis, lazy=\"selectin\"\n    )\n    sample_type_uid = Column(String, ForeignKey(\"sample_type.uid\"), nullable=True)\n    sample_type = relationship(\"SampleType\", lazy=\"selectin\")",
         "detail": "felicity.apps.reflex.entities",
         "documentation": {}
     },
@@ -32685,7 +32739,7 @@
         "kind": 5,
         "importPath": "felicity.apps.reflex.entities",
         "description": "felicity.apps.reflex.entities",
-        "peekOfCode": "reflex_action_analysis = Table(\n    \"reflex_action_analysis\",\n    BaseEntity.metadata,\n    Column(\"analysis_uid\", ForeignKey(\"analysis.uid\"), primary_key=True),\n    Column(\"reflex_action_uid\", ForeignKey(\"reflex_action.uid\"), primary_key=True),\n)\nclass ReflexAction(AuditHistory):\n    __tablename__ = \"reflex_action\"\n    level = Column(Integer, nullable=False, default=1)\n    description = Column(String, nullable=False)",
+        "peekOfCode": "reflex_action_analysis = Table(\n    \"reflex_action_analysis\",\n    BaseEntity.metadata,\n    Column(\"analysis_uid\", ForeignKey(\"analysis.uid\"), primary_key=True),\n    Column(\"reflex_action_uid\", ForeignKey(\"reflex_action.uid\"), primary_key=True),\n)\nclass ReflexAction(BaseEntity):\n    __tablename__ = \"reflex_action\"\n    level = Column(Integer, nullable=False, default=1)\n    description = Column(String, nullable=False)",
         "detail": "felicity.apps.reflex.entities",
         "documentation": {}
     },
@@ -33072,7 +33126,7 @@
         "kind": 6,
         "importPath": "felicity.apps.setup.entities.location",
         "description": "felicity.apps.setup.entities.location",
-        "peekOfCode": "class LocationBase(AuditUser):\n    __abstract__ = True\n    code = Column(String, index=True, unique=True, nullable=True)\n    name = Column(String)\n    email = Column(String, nullable=True)\n    email_cc = Column(String, nullable=True)\n    mobile_phone = Column(String, nullable=True)\n    business_phone = Column(String, nullable=True)\n    active = Column(Boolean(), default=False)\nclass District(LocationBase):",
+        "peekOfCode": "class LocationBase(BaseEntity):\n    __abstract__ = True\n    code = Column(String, index=True, unique=True, nullable=True)\n    name = Column(String)\n    email = Column(String, nullable=True)\n    email_cc = Column(String, nullable=True)\n    mobile_phone = Column(String, nullable=True)\n    business_phone = Column(String, nullable=True)\n    active = Column(Boolean(), default=False)\nclass District(LocationBase):",
         "detail": "felicity.apps.setup.entities.location",
         "documentation": {}
     },
@@ -33081,7 +33135,7 @@
         "kind": 6,
         "importPath": "felicity.apps.setup.entities.location",
         "description": "felicity.apps.setup.entities.location",
-        "peekOfCode": "class District(LocationBase):\n    __tablename__ = \"district\"\n    province_uid = Column(String, ForeignKey(\"province.uid\"))\n    province = relationship(\"Province\", backref=\"districts\", lazy=\"selectin\")\nclass Province(LocationBase):\n    __tablename__ = \"province\"\n    country_uid = Column(String, ForeignKey(\"country.uid\"))\n    country = relationship(\"Country\", backref=\"provinces\", lazy=\"selectin\")\nclass Country(AuditUser):\n    __tablename__ = \"country\"",
+        "peekOfCode": "class District(LocationBase):\n    __tablename__ = \"district\"\n    province_uid = Column(String, ForeignKey(\"province.uid\"))\n    province = relationship(\"Province\", backref=\"districts\", lazy=\"selectin\")\nclass Province(LocationBase):\n    __tablename__ = \"province\"\n    country_uid = Column(String, ForeignKey(\"country.uid\"))\n    country = relationship(\"Country\", backref=\"provinces\", lazy=\"selectin\")\nclass Country(BaseEntity):\n    __tablename__ = \"country\"",
         "detail": "felicity.apps.setup.entities.location",
         "documentation": {}
     },
@@ -33090,7 +33144,7 @@
         "kind": 6,
         "importPath": "felicity.apps.setup.entities.location",
         "description": "felicity.apps.setup.entities.location",
-        "peekOfCode": "class Province(LocationBase):\n    __tablename__ = \"province\"\n    country_uid = Column(String, ForeignKey(\"country.uid\"))\n    country = relationship(\"Country\", backref=\"provinces\", lazy=\"selectin\")\nclass Country(AuditUser):\n    __tablename__ = \"country\"\n    name = Column(String, default=\"Zimbabwe\")\n    code = Column(String, index=True, unique=True, nullable=True)\n    active = Column(Boolean(), default=False)",
+        "peekOfCode": "class Province(LocationBase):\n    __tablename__ = \"province\"\n    country_uid = Column(String, ForeignKey(\"country.uid\"))\n    country = relationship(\"Country\", backref=\"provinces\", lazy=\"selectin\")\nclass Country(BaseEntity):\n    __tablename__ = \"country\"\n    name = Column(String, default=\"Zimbabwe\")\n    code = Column(String, index=True, unique=True, nullable=True)\n    active = Column(Boolean(), default=False)",
         "detail": "felicity.apps.setup.entities.location",
         "documentation": {}
     },
@@ -33099,7 +33153,7 @@
         "kind": 6,
         "importPath": "felicity.apps.setup.entities.location",
         "description": "felicity.apps.setup.entities.location",
-        "peekOfCode": "class Country(AuditUser):\n    __tablename__ = \"country\"\n    name = Column(String, default=\"Zimbabwe\")\n    code = Column(String, index=True, unique=True, nullable=True)\n    active = Column(Boolean(), default=False)",
+        "peekOfCode": "class Country(BaseEntity):\n    __tablename__ = \"country\"\n    name = Column(String, default=\"Zimbabwe\")\n    code = Column(String, index=True, unique=True, nullable=True)\n    active = Column(Boolean(), default=False)",
         "detail": "felicity.apps.setup.entities.location",
         "documentation": {}
     },
@@ -33108,7 +33162,7 @@
         "kind": 6,
         "importPath": "felicity.apps.setup.entities.setup",
         "description": "felicity.apps.setup.entities.setup",
-        "peekOfCode": "class Laboratory(AuditUser):\n    __tablename__ = \"laboratory\"\n    setup_name = Column(\n        String, default=\"felicity\", nullable=False\n    )  # Do not change this value ever\n    lab_name = Column(String, nullable=False)\n    tag_line = Column(String, nullable=True)\n    code = Column(String, nullable=True)\n    lab_manager_uid = Column(String, ForeignKey(\"user.uid\"), nullable=True)\n    lab_manager = relationship(User, foreign_keys=[lab_manager_uid], lazy=\"selectin\")",
+        "peekOfCode": "class Laboratory(BaseEntity):\n    __tablename__ = \"laboratory\"\n    setup_name = Column(\n        String, default=\"felicity\", nullable=False\n    )  # Do not change this value ever\n    lab_name = Column(String, nullable=False)\n    tag_line = Column(String, nullable=True)\n    code = Column(String, nullable=True)\n    lab_manager_uid = Column(String, ForeignKey(\"user.uid\"), nullable=True)\n    lab_manager = relationship(User, foreign_keys=[lab_manager_uid], lazy=\"selectin\")",
         "detail": "felicity.apps.setup.entities.setup",
         "documentation": {}
     },
@@ -33117,7 +33171,7 @@
         "kind": 6,
         "importPath": "felicity.apps.setup.entities.setup",
         "description": "felicity.apps.setup.entities.setup",
-        "peekOfCode": "class LaboratorySetting(AuditUser):\n    __tablename__ = \"laboratory_setting\"\n    laboratory_uid = Column(String, ForeignKey(\"laboratory.uid\"), nullable=True)\n    laboratory = relationship(\n        Laboratory, foreign_keys=[laboratory_uid], backref=\"settings\", lazy=\"selectin\"\n    )\n    allow_self_verification = Column(Boolean(), nullable=False)\n    allow_patient_registration = Column(Boolean(), nullable=True)\n    allow_sample_registration = Column(Boolean(), nullable=True)\n    allow_worksheet_creation = Column(Boolean(), nullable=True)",
+        "peekOfCode": "class LaboratorySetting(BaseEntity):\n    __tablename__ = \"laboratory_setting\"\n    laboratory_uid = Column(String, ForeignKey(\"laboratory.uid\"), nullable=True)\n    laboratory = relationship(\n        Laboratory, foreign_keys=[laboratory_uid], backref=\"settings\", lazy=\"selectin\"\n    )\n    allow_self_verification = Column(Boolean(), nullable=False)\n    allow_patient_registration = Column(Boolean(), nullable=True)\n    allow_sample_registration = Column(Boolean(), nullable=True)\n    allow_worksheet_creation = Column(Boolean(), nullable=True)",
         "detail": "felicity.apps.setup.entities.setup",
         "documentation": {}
     },
@@ -33126,7 +33180,7 @@
         "kind": 6,
         "importPath": "felicity.apps.setup.entities.setup",
         "description": "felicity.apps.setup.entities.setup",
-        "peekOfCode": "class Supplier(AuditUser):\n    \"\"\"Supplier\"\"\"\n    __tablename__ = \"supplier\"\n    name = Column(String, nullable=False)\n    description = Column(String, nullable=True)\nclass Manufacturer(AuditUser):\n    \"\"\"Manufacturer\"\"\"\n    __tablename__ = \"manufacturer\"\n    name = Column(String, nullable=False)\n    description = Column(String, nullable=True)",
+        "peekOfCode": "class Supplier(BaseEntity):\n    \"\"\"Supplier\"\"\"\n    __tablename__ = \"supplier\"\n    name = Column(String, nullable=False)\n    description = Column(String, nullable=True)\nclass Manufacturer(BaseEntity):\n    \"\"\"Manufacturer\"\"\"\n    __tablename__ = \"manufacturer\"\n    name = Column(String, nullable=False)\n    description = Column(String, nullable=True)",
         "detail": "felicity.apps.setup.entities.setup",
         "documentation": {}
     },
@@ -33135,7 +33189,7 @@
         "kind": 6,
         "importPath": "felicity.apps.setup.entities.setup",
         "description": "felicity.apps.setup.entities.setup",
-        "peekOfCode": "class Manufacturer(AuditUser):\n    \"\"\"Manufacturer\"\"\"\n    __tablename__ = \"manufacturer\"\n    name = Column(String, nullable=False)\n    description = Column(String, nullable=True)\nclass Department(AuditUser):\n    \"\"\"Departrments/Sections\"\"\"\n    __tablename__ = \"department\"\n    name = Column(String, nullable=False)\n    description = Column(String, nullable=True)",
+        "peekOfCode": "class Manufacturer(BaseEntity):\n    \"\"\"Manufacturer\"\"\"\n    __tablename__ = \"manufacturer\"\n    name = Column(String, nullable=False)\n    description = Column(String, nullable=True)\nclass Department(BaseEntity):\n    \"\"\"Departrments/Sections\"\"\"\n    __tablename__ = \"department\"\n    name = Column(String, nullable=False)\n    description = Column(String, nullable=True)",
         "detail": "felicity.apps.setup.entities.setup",
         "documentation": {}
     },
@@ -33144,7 +33198,7 @@
         "kind": 6,
         "importPath": "felicity.apps.setup.entities.setup",
         "description": "felicity.apps.setup.entities.setup",
-        "peekOfCode": "class Department(AuditUser):\n    \"\"\"Departrments/Sections\"\"\"\n    __tablename__ = \"department\"\n    name = Column(String, nullable=False)\n    description = Column(String, nullable=True)\n    code = Column(String, nullable=True)\nclass Unit(AuditUser):\n    \"\"\"Unit for analyte measurement\"\"\"\n    __tablename__ = \"unit\"\n    name = Column(String, nullable=False)",
+        "peekOfCode": "class Department(BaseEntity):\n    \"\"\"Departrments/Sections\"\"\"\n    __tablename__ = \"department\"\n    name = Column(String, nullable=False)\n    description = Column(String, nullable=True)\n    code = Column(String, nullable=True)\nclass Unit(BaseEntity):\n    \"\"\"Unit for analyte measurement\"\"\"\n    __tablename__ = \"unit\"\n    name = Column(String, nullable=False)",
         "detail": "felicity.apps.setup.entities.setup",
         "documentation": {}
     },
@@ -33153,7 +33207,7 @@
         "kind": 6,
         "importPath": "felicity.apps.setup.entities.setup",
         "description": "felicity.apps.setup.entities.setup",
-        "peekOfCode": "class Unit(AuditUser):\n    \"\"\"Unit for analyte measurement\"\"\"\n    __tablename__ = \"unit\"\n    name = Column(String, nullable=False)\n    is_si_unit = Column(Boolean(), default=False)",
+        "peekOfCode": "class Unit(BaseEntity):\n    \"\"\"Unit for analyte measurement\"\"\"\n    __tablename__ = \"unit\"\n    name = Column(String, nullable=False)\n    is_si_unit = Column(Boolean(), default=False)",
         "detail": "felicity.apps.setup.entities.setup",
         "documentation": {}
     },
@@ -33792,7 +33846,7 @@
         "kind": 6,
         "importPath": "felicity.apps.shipment.entities",
         "description": "felicity.apps.shipment.entities",
-        "peekOfCode": "class ReferralLaboratory(AuditHistory):\n    __tablename__ = \"referral_laboratory\"\n    name = Column(String, nullable=True)\n    code = Column(String, index=True, unique=True, nullable=False)\n    url = Column(String, nullable=False)\n    username = Column(String, nullable=False)\n    password = Column(String, nullable=False)\n    is_reference = Column(Boolean(), default=False)\n    is_referral = Column(Boolean(), default=False)\nclass Shipment(AuditHistory):",
+        "peekOfCode": "class ReferralLaboratory(BaseEntity):\n    __tablename__ = \"referral_laboratory\"\n    name = Column(String, nullable=True)\n    code = Column(String, index=True, unique=True, nullable=False)\n    url = Column(String, nullable=False)\n    username = Column(String, nullable=False)\n    password = Column(String, nullable=False)\n    is_reference = Column(Boolean(), default=False)\n    is_referral = Column(Boolean(), default=False)\nclass Shipment(BaseEntity):",
         "detail": "felicity.apps.shipment.entities",
         "documentation": {}
     },
@@ -33801,7 +33855,7 @@
         "kind": 6,
         "importPath": "felicity.apps.shipment.entities",
         "description": "felicity.apps.shipment.entities",
-        "peekOfCode": "class Shipment(AuditHistory):\n    __tablename__ = \"shipment\"\n    shipment_id = Column(String, index=True, unique=True, nullable=False)\n    comment = Column(String, nullable=True)\n    courier = Column(String, nullable=False)\n    assigned_count = Column(Integer, nullable=False, default=0)\n    data = Column(JSONB)\n    state = Column(String)\n    laboratory_uid = Column(\n        String, ForeignKey(\"referral_laboratory.uid\"), nullable=True",
+        "peekOfCode": "class Shipment(BaseEntity):\n    __tablename__ = \"shipment\"\n    shipment_id = Column(String, index=True, unique=True, nullable=False)\n    comment = Column(String, nullable=True)\n    courier = Column(String, nullable=False)\n    assigned_count = Column(Integer, nullable=False, default=0)\n    data = Column(JSONB)\n    state = Column(String)\n    laboratory_uid = Column(\n        String, ForeignKey(\"referral_laboratory.uid\"), nullable=True",
         "detail": "felicity.apps.shipment.entities",
         "documentation": {}
     },
@@ -33819,7 +33873,7 @@
         "kind": 5,
         "importPath": "felicity.apps.shipment.entities",
         "description": "felicity.apps.shipment.entities",
-        "peekOfCode": "logger = logging.getLogger(__name__)\nclass ReferralLaboratory(AuditHistory):\n    __tablename__ = \"referral_laboratory\"\n    name = Column(String, nullable=True)\n    code = Column(String, index=True, unique=True, nullable=False)\n    url = Column(String, nullable=False)\n    username = Column(String, nullable=False)\n    password = Column(String, nullable=False)\n    is_reference = Column(Boolean(), default=False)\n    is_referral = Column(Boolean(), default=False)",
+        "peekOfCode": "logger = logging.getLogger(__name__)\nclass ReferralLaboratory(BaseEntity):\n    __tablename__ = \"referral_laboratory\"\n    name = Column(String, nullable=True)\n    code = Column(String, index=True, unique=True, nullable=False)\n    url = Column(String, nullable=False)\n    username = Column(String, nullable=False)\n    password = Column(String, nullable=False)\n    is_reference = Column(Boolean(), default=False)\n    is_referral = Column(Boolean(), default=False)",
         "detail": "felicity.apps.shipment.entities",
         "documentation": {}
     },
@@ -34071,7 +34125,7 @@
         "kind": 6,
         "importPath": "felicity.apps.storage.entities",
         "description": "felicity.apps.storage.entities",
-        "peekOfCode": "class StoreRoom(AuditUser):\n    \"\"\"Store Room\"\"\"\n    __tablename__ = \"store_room\"\n    name = Column(String, nullable=False)\n    description = Column(String, nullable=False)\nclass StorageLocation(AuditUser):\n    \"\"\"Storage Location\n    e.g: Fridge, CupBoard, Floor, Box, etc\n    \"\"\"\n    __tablename__ = \"storage_location\"",
+        "peekOfCode": "class StoreRoom(BaseEntity):\n    \"\"\"Store Room\"\"\"\n    __tablename__ = \"store_room\"\n    name = Column(String, nullable=False)\n    description = Column(String, nullable=False)\nclass StorageLocation(BaseEntity):\n    \"\"\"Storage Location\n    e.g: Fridge, CupBoard, Floor, Box, etc\n    \"\"\"\n    __tablename__ = \"storage_location\"",
         "detail": "felicity.apps.storage.entities",
         "documentation": {}
     },
@@ -34080,7 +34134,7 @@
         "kind": 6,
         "importPath": "felicity.apps.storage.entities",
         "description": "felicity.apps.storage.entities",
-        "peekOfCode": "class StorageLocation(AuditUser):\n    \"\"\"Storage Location\n    e.g: Fridge, CupBoard, Floor, Box, etc\n    \"\"\"\n    __tablename__ = \"storage_location\"\n    name = Column(String, nullable=False)\n    description = Column(String, nullable=False)\n    store_room_uid = Column(String, ForeignKey(\"store_room.uid\"), nullable=False)\n    store_room = relationship(StoreRoom, backref=\"storage_locations\", lazy=\"selectin\")\nclass StorageSection(AuditUser):",
+        "peekOfCode": "class StorageLocation(BaseEntity):\n    \"\"\"Storage Location\n    e.g: Fridge, CupBoard, Floor, Box, etc\n    \"\"\"\n    __tablename__ = \"storage_location\"\n    name = Column(String, nullable=False)\n    description = Column(String, nullable=False)\n    store_room_uid = Column(String, ForeignKey(\"store_room.uid\"), nullable=False)\n    store_room = relationship(StoreRoom, backref=\"storage_locations\", lazy=\"selectin\")\nclass StorageSection(BaseEntity):",
         "detail": "felicity.apps.storage.entities",
         "documentation": {}
     },
@@ -34089,7 +34143,7 @@
         "kind": 6,
         "importPath": "felicity.apps.storage.entities",
         "description": "felicity.apps.storage.entities",
-        "peekOfCode": "class StorageSection(AuditUser):\n    \"\"\"Storage Location Section/Compartment\n    e.g: Shelve, Tray, Rack, etc\n    \"\"\"\n    __tablename__ = \"storage_section\"\n    name = Column(String, nullable=False)\n    description = Column(String, nullable=False)\n    storage_location_uid = Column(\n        String, ForeignKey(\"storage_location.uid\"), nullable=False\n    )",
+        "peekOfCode": "class StorageSection(BaseEntity):\n    \"\"\"Storage Location Section/Compartment\n    e.g: Shelve, Tray, Rack, etc\n    \"\"\"\n    __tablename__ = \"storage_section\"\n    name = Column(String, nullable=False)\n    description = Column(String, nullable=False)\n    storage_location_uid = Column(\n        String, ForeignKey(\"storage_location.uid\"), nullable=False\n    )",
         "detail": "felicity.apps.storage.entities",
         "documentation": {}
     },
@@ -34098,7 +34152,7 @@
         "kind": 6,
         "importPath": "felicity.apps.storage.entities",
         "description": "felicity.apps.storage.entities",
-        "peekOfCode": "class StorageContainer(AuditUser):\n    \"\"\"Storage Carrier\n    e.g: Sample K-Lite, etc\n    \"\"\"\n    __tablename__ = \"storage_container\"\n    name = Column(String, nullable=False)\n    description = Column(String, nullable=False)\n    storage_section_uid = Column(\n        String, ForeignKey(\"storage_section.uid\"), nullable=False\n    )",
+        "peekOfCode": "class StorageContainer(BaseEntity):\n    \"\"\"Storage Carrier\n    e.g: Sample K-Lite, etc\n    \"\"\"\n    __tablename__ = \"storage_container\"\n    name = Column(String, nullable=False)\n    description = Column(String, nullable=False)\n    storage_section_uid = Column(\n        String, ForeignKey(\"storage_section.uid\"), nullable=False\n    )",
         "detail": "felicity.apps.storage.entities",
         "documentation": {}
     },
@@ -34323,7 +34377,7 @@
         "kind": 6,
         "importPath": "felicity.apps.user.abstract",
         "description": "felicity.apps.user.abstract",
-        "peekOfCode": "class AbstractBaseUser(AuditUser):\n    __abstract__ = True\n    first_name = Column(String, index=True)\n    last_name = Column(String, index=True)\n    email = Column(String, unique=True, index=True, nullable=False)\n    mobile_phone = Column(String, nullable=True)\n    business_phone = Column(String, nullable=True)\n    user_name = Column(String, unique=True, index=True, nullable=False)\n    hashed_password = Column(String, nullable=False)\n    login_retry = Column(Integer)",
+        "peekOfCode": "class AbstractBaseUser(BaseEntity):\n    __abstract__ = True\n    first_name = Column(String, index=True)\n    last_name = Column(String, index=True)\n    email = Column(String, unique=True, index=True, nullable=False)\n    mobile_phone = Column(String, nullable=True)\n    business_phone = Column(String, nullable=True)\n    user_name = Column(String, unique=True, index=True, nullable=False)\n    hashed_password = Column(String, nullable=False)\n    login_retry = Column(Integer)",
         "detail": "felicity.apps.user.abstract",
         "documentation": {}
     },
@@ -34737,7 +34791,7 @@
         "kind": 6,
         "importPath": "felicity.apps.worksheet.entities",
         "description": "felicity.apps.worksheet.entities",
-        "peekOfCode": "class WSBase(AuditUser):\n    __abstract__ = True\n    worksheet_type = Column(String)\n    reserved = Column(JSONB)\n    number_of_samples = Column(Integer)\n    rows = Column(Integer)\n    cols = Column(Integer)\n    row_wise = Column(Boolean(), default=False)\n    state = Column(String)\n\"\"\"",
+        "peekOfCode": "class WSBase(BaseEntity):\n    __abstract__ = True\n    worksheet_type = Column(String)\n    reserved = Column(JSONB)\n    number_of_samples = Column(Integer)\n    rows = Column(Integer)\n    cols = Column(Integer)\n    row_wise = Column(Boolean(), default=False)\n    state = Column(String)\n\"\"\"",
         "detail": "felicity.apps.worksheet.entities",
         "documentation": {}
     },
@@ -34755,7 +34809,7 @@
         "kind": 6,
         "importPath": "felicity.apps.worksheet.entities",
         "description": "felicity.apps.worksheet.entities",
-        "peekOfCode": "class WorkSheet(AuditHistory, WSBase):\n    __tablename__ = \"worksheet\"\n    template_uid = Column(String, ForeignKey(\"worksheet_template.uid\"), nullable=False)\n    template = relationship(\"WorkSheetTemplate\", lazy=\"selectin\")\n    analyst_uid = Column(String, ForeignKey(\"user.uid\"), nullable=False)\n    analyst = relationship(User, foreign_keys=[analyst_uid], lazy=\"selectin\")\n    worksheet_id = Column(String, index=True, unique=True, nullable=False)\n    analysis_uid = Column(String, ForeignKey(\"analysis.uid\"), nullable=True)\n    analysis = relationship(analysis_entities.Analysis, lazy=\"selectin\")\n    instrument_uid = Column(String, ForeignKey(\"instrument.uid\"), nullable=True)",
+        "peekOfCode": "class WorkSheet(BaseEntity, WSBase):\n    __tablename__ = \"worksheet\"\n    template_uid = Column(String, ForeignKey(\"worksheet_template.uid\"), nullable=False)\n    template = relationship(\"WorkSheetTemplate\", lazy=\"selectin\")\n    analyst_uid = Column(String, ForeignKey(\"user.uid\"), nullable=False)\n    analyst = relationship(User, foreign_keys=[analyst_uid], lazy=\"selectin\")\n    worksheet_id = Column(String, index=True, unique=True, nullable=False)\n    analysis_uid = Column(String, ForeignKey(\"analysis.uid\"), nullable=True)\n    analysis = relationship(analysis_entities.Analysis, lazy=\"selectin\")\n    instrument_uid = Column(String, ForeignKey(\"instrument.uid\"), nullable=True)",
         "detail": "felicity.apps.worksheet.entities",
         "documentation": {}
     },
@@ -34764,7 +34818,7 @@
         "kind": 5,
         "importPath": "felicity.apps.worksheet.entities",
         "description": "felicity.apps.worksheet.entities",
-        "peekOfCode": "logger = logging.getLogger(__name__)\nclass WSBase(AuditUser):\n    __abstract__ = True\n    worksheet_type = Column(String)\n    reserved = Column(JSONB)\n    number_of_samples = Column(Integer)\n    rows = Column(Integer)\n    cols = Column(Integer)\n    row_wise = Column(Boolean(), default=False)\n    state = Column(String)",
+        "peekOfCode": "logger = logging.getLogger(__name__)\nclass WSBase(BaseEntity):\n    __abstract__ = True\n    worksheet_type = Column(String)\n    reserved = Column(JSONB)\n    number_of_samples = Column(Integer)\n    rows = Column(Integer)\n    cols = Column(Integer)\n    row_wise = Column(Boolean(), default=False)\n    state = Column(String)",
         "detail": "felicity.apps.worksheet.entities",
         "documentation": {}
     },
@@ -34989,7 +35043,7 @@
         "kind": 2,
         "importPath": "felicity.apps.events",
         "description": "felicity.apps.events",
-        "peekOfCode": "def observe_events():\n    init_user_events()\n    init_entity_tracker_events()",
+        "peekOfCode": "def observe_events():\n    init_user_events()\n    init_auditlog_listener_events()\n    init_entity_tracker_events()",
         "detail": "felicity.apps.events",
         "documentation": {}
     },
@@ -35918,6 +35972,60 @@
         "description": "felicity.lims.boot",
         "peekOfCode": "settings = get_settings()\n@asynccontextmanager\nasync def lifespan(app: FastAPI):\n    if settings.LOAD_SETUP_DATA:\n        await initialize_felicity()\n    felicity_workforce_init()\n    observe_events()\n    await broadcast.connect()\n    #\n    yield",
         "detail": "felicity.lims.boot",
+        "documentation": {}
+    },
+    {
+        "label": "upgrade",
+        "kind": 2,
+        "importPath": "felicity.migrations.versions.28042fd2e903_removed_auditlog",
+        "description": "felicity.migrations.versions.28042fd2e903_removed_auditlog",
+        "peekOfCode": "def upgrade():\n    # ### commands auto generated by Alembic - please adjust! ###\n    op.drop_index('ix_audit_log_uid', table_name='audit_log')\n    op.drop_table('audit_log')\n    # ### end Alembic commands ###\ndef downgrade():\n    # ### commands auto generated by Alembic - please adjust! ###\n    op.create_table('audit_log',\n    sa.Column('user_id', sa.VARCHAR(), autoincrement=False, nullable=True),\n    sa.Column('target_type', sa.VARCHAR(length=100), autoincrement=False, nullable=False),",
+        "detail": "felicity.migrations.versions.28042fd2e903_removed_auditlog",
+        "documentation": {}
+    },
+    {
+        "label": "downgrade",
+        "kind": 2,
+        "importPath": "felicity.migrations.versions.28042fd2e903_removed_auditlog",
+        "description": "felicity.migrations.versions.28042fd2e903_removed_auditlog",
+        "peekOfCode": "def downgrade():\n    # ### commands auto generated by Alembic - please adjust! ###\n    op.create_table('audit_log',\n    sa.Column('user_id', sa.VARCHAR(), autoincrement=False, nullable=True),\n    sa.Column('target_type', sa.VARCHAR(length=100), autoincrement=False, nullable=False),\n    sa.Column('target_id', sa.VARCHAR(), autoincrement=False, nullable=True),\n    sa.Column('action', sa.INTEGER(), autoincrement=False, nullable=True),\n    sa.Column('state_before', sa.TEXT(), autoincrement=False, nullable=True),\n    sa.Column('state_after', sa.TEXT(), autoincrement=False, nullable=True),\n    sa.Column('uid', sa.VARCHAR(), autoincrement=False, nullable=False),",
+        "detail": "felicity.migrations.versions.28042fd2e903_removed_auditlog",
+        "documentation": {}
+    },
+    {
+        "label": "revision",
+        "kind": 5,
+        "importPath": "felicity.migrations.versions.28042fd2e903_removed_auditlog",
+        "description": "felicity.migrations.versions.28042fd2e903_removed_auditlog",
+        "peekOfCode": "revision = '28042fd2e903'\ndown_revision = 'e598ed62784d'\nbranch_labels = None\ndepends_on = None\ndef upgrade():\n    # ### commands auto generated by Alembic - please adjust! ###\n    op.drop_index('ix_audit_log_uid', table_name='audit_log')\n    op.drop_table('audit_log')\n    # ### end Alembic commands ###\ndef downgrade():",
+        "detail": "felicity.migrations.versions.28042fd2e903_removed_auditlog",
+        "documentation": {}
+    },
+    {
+        "label": "down_revision",
+        "kind": 5,
+        "importPath": "felicity.migrations.versions.28042fd2e903_removed_auditlog",
+        "description": "felicity.migrations.versions.28042fd2e903_removed_auditlog",
+        "peekOfCode": "down_revision = 'e598ed62784d'\nbranch_labels = None\ndepends_on = None\ndef upgrade():\n    # ### commands auto generated by Alembic - please adjust! ###\n    op.drop_index('ix_audit_log_uid', table_name='audit_log')\n    op.drop_table('audit_log')\n    # ### end Alembic commands ###\ndef downgrade():\n    # ### commands auto generated by Alembic - please adjust! ###",
+        "detail": "felicity.migrations.versions.28042fd2e903_removed_auditlog",
+        "documentation": {}
+    },
+    {
+        "label": "branch_labels",
+        "kind": 5,
+        "importPath": "felicity.migrations.versions.28042fd2e903_removed_auditlog",
+        "description": "felicity.migrations.versions.28042fd2e903_removed_auditlog",
+        "peekOfCode": "branch_labels = None\ndepends_on = None\ndef upgrade():\n    # ### commands auto generated by Alembic - please adjust! ###\n    op.drop_index('ix_audit_log_uid', table_name='audit_log')\n    op.drop_table('audit_log')\n    # ### end Alembic commands ###\ndef downgrade():\n    # ### commands auto generated by Alembic - please adjust! ###\n    op.create_table('audit_log',",
+        "detail": "felicity.migrations.versions.28042fd2e903_removed_auditlog",
+        "documentation": {}
+    },
+    {
+        "label": "depends_on",
+        "kind": 5,
+        "importPath": "felicity.migrations.versions.28042fd2e903_removed_auditlog",
+        "description": "felicity.migrations.versions.28042fd2e903_removed_auditlog",
+        "peekOfCode": "depends_on = None\ndef upgrade():\n    # ### commands auto generated by Alembic - please adjust! ###\n    op.drop_index('ix_audit_log_uid', table_name='audit_log')\n    op.drop_table('audit_log')\n    # ### end Alembic commands ###\ndef downgrade():\n    # ### commands auto generated by Alembic - please adjust! ###\n    op.create_table('audit_log',\n    sa.Column('user_id', sa.VARCHAR(), autoincrement=False, nullable=True),",
+        "detail": "felicity.migrations.versions.28042fd2e903_removed_auditlog",
         "documentation": {}
     },
     {

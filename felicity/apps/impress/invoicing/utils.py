@@ -1,12 +1,15 @@
-from felicity.apps.analysis.entities.analysis import AnalysisRequest
-from felicity.apps.billing.entities import (AnalysisPrice, ProfilePrice,
-                                            TestBill, TestBillInvoice,
-                                            TestBillTransaction,
-                                            test_bill_item)
+from apps.analysis.services.analysis import AnalysisRequestService
+from apps.billing.services import TestBillInvoiceService, TestBillTransactionService, AnalysisPriceService, \
+    ProfilePriceService, TestBillService
+from apps.iol.minio import MinioClient
+from apps.iol.minio.enum import MinioBucket
+from database.mongo import MongoService, MongoCollection
+from felicity.apps.billing.entities import (TestBill, test_bill_item)
 from felicity.apps.billing.schemas import TestBillInvoiceCreate
 from felicity.apps.common.utils.serializer import marshaller
 from felicity.apps.impress.invoicing.engine import FelicityInvoice
 from felicity.apps.setup.caches import get_laboratory_setting
+from felicity.core.config import settings
 
 
 async def impress_invoice(test_bill: TestBill):
@@ -26,10 +29,10 @@ async def impress_invoice(test_bill: TestBill):
 
     # orders
     impress_meta["orders"] = []
-    analysis_request_uids = await TestBill.query_table(
+    analysis_request_uids = await TestBillService().repository.query_table(
         test_bill_item, ["analysis_request_uid"], test_bill_uid=test_bill.uid
     )
-    orders = await AnalysisRequest.get_by_uids(uids=analysis_request_uids)
+    orders = await AnalysisRequestService().get_by_uids(uids=analysis_request_uids)
     for order in orders:
         _order = marshaller(order, depth=1)
         _order["samples"] = []
@@ -39,7 +42,7 @@ async def impress_invoice(test_bill: TestBill):
             _s["analyses"] = []
             for _p in _sample.profiles:
                 __p = {"name": _p.name, "price": ""}
-                p_price = await ProfilePrice.get(profile_uid=_p.uid)
+                p_price = await ProfilePriceService().get(profile_uid=_p.uid)
                 if not p_price:
                     continue
 
@@ -48,7 +51,7 @@ async def impress_invoice(test_bill: TestBill):
 
             for _a in _sample.analyses:
                 __a = {"name": _a.name, "price": ""}
-                a_price = await AnalysisPrice.get(analysis_uid=_a.uid)
+                a_price = await AnalysisPriceService().get(analysis_uid=_a.uid)
                 if not a_price:
                     continue
 
@@ -60,17 +63,40 @@ async def impress_invoice(test_bill: TestBill):
         impress_meta["orders"].append(_order)
 
     # transactions
-    transactions = await TestBillTransaction.get_all(test_bill_uid=test_bill.uid)
+    transactions = await TestBillTransactionService().get_all(test_bill_uid=test_bill.uid)
     impress_meta["transactions"] = [marshaller(t, depth=1) for t in transactions]
     pdf = await FelicityInvoice().generate(impress_meta)
-    sc_in = TestBillInvoiceCreate(
-        **{
-            "test_bill_uid": test_bill.uid,
-            "json_content": impress_meta,
-            "pdf_content": pdf,
-        }
-    )
-    print(impress_meta)
-    await TestBillInvoice.create(sc_in)
+
+    in_i = {
+        "test_bill_uid": test_bill.uid,
+        "pdf_content": pdf,
+    }
+
+    if settings.DOCUMENT_STORAGE:
+        in_i["json_content"] = impress_meta
+
+    if settings.OBJECT_STORAGE:
+        in_i["pdf_content"] = pdf
+
+    sc_in = TestBillInvoiceCreate(**in_i)
+    await TestBillInvoiceService().create(sc_in)
+
+    if settings.OBJECT_STORAGE:
+        MinioClient().put_object(
+            bucket=MinioBucket.INVOICE,
+            object_name=test_bill.bill_id,
+            data=pdf,
+            metadata={
+                "test_bill_uid": test_bill.uid,
+            }
+        )
+
+    # Save the json to mongodb
+    if settings.DOCUMENT_STORAGE:
+        await MongoService().upsert(
+            collection=MongoCollection.INVOICE,
+            uid=test_bill.uid,
+            data=impress_meta
+        )
 
     return pdf

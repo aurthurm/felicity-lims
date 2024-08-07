@@ -11,6 +11,7 @@ from felicity.apps.iol.minio.client import MinioClient
 from felicity.apps.iol.minio.enum import MinioBucket
 from felicity.apps.notification.services import ActivityStreamService
 from felicity.apps.setup.caches import get_laboratory
+from felicity.core.config import settings
 from felicity.database.mongo import MongoService, MongoCollection
 from felicity.utils import remove_circular_refs
 
@@ -61,39 +62,45 @@ async def impress_samples(sample_meta: List[any], user):
             logger.info(f"report_state {report_state}: running impress ....")
             impress_engine = FelicityImpress()
             sample_pdf = await impress_engine.generate(impress_meta, report_state)
-            sc_in = ReportImpressCreate(
-                **{
-                    "state": report_state,
-                    "sample_uid": sample.uid,
-                    # "json_content": impress_meta,
-                    # "pdf_content": sample_pdf,
-                    "email_required": False,
-                    "email_sent": False,
-                    "sms_required": False,
-                    "sms_sent": False,
-                    "generated_by_uid": user.uid,
-                }
-            )
+            ri_in = {
+                "state": report_state,
+                "sample_uid": sample.uid,
+                "email_required": False,
+                "email_sent": False,
+                "sms_required": False,
+                "sms_sent": False,
+                "generated_by_uid": user.uid,
+            }
+
+            if not settings.OBJECT_STORAGE:
+                ri_in["pdf_content"] = sample_pdf
+
+            if not settings.DOCUMENT_STORAGE:
+                ri_in["json_content"] = impress_meta
+
+            sc_in = ReportImpressCreate(**ri_in)
             report_impress = await ReportImpressService().create(sc_in)
 
             # save pdf to minio
-            MinioClient().put_object(
-                bucket=MinioBucket.DIAGNOSTIC_REPORT,
-                object_name=sample.sample_id,
-                data=sample_pdf,
-                metadata={
-                    "state": report_state,
-                    "sample_uid": sample.uid,
-                    "impress_meta_uid": report_impress.uid
-                }
-            )
+            if settings.OBJECT_STORAGE:
+                MinioClient().put_object(
+                    bucket=MinioBucket.DIAGNOSTIC_REPORT,
+                    object_name=sample.sample_id,
+                    data=sample_pdf,
+                    metadata={
+                        "state": report_state,
+                        "sample_uid": sample.uid,
+                        "impress_meta_uid": report_impress.uid
+                    }
+                )
 
             # Save the json to mongodb
-            await MongoService().upsert(
-                collection=MongoCollection.DIAGNOSTIC_REPORT,
-                uid=report_impress.uid,
-                data=impress_meta
-            )
+            if settings.DOCUMENT_STORAGE:
+                await MongoService().upsert(
+                    collection=MongoCollection.DIAGNOSTIC_REPORT,
+                    uid=report_impress.uid,
+                    data=impress_meta
+                )
 
             if action != "pre-publish":
                 sample = await SampleService().publish(sample.uid, published_by=user)

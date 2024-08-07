@@ -137,11 +137,17 @@ class Settings(BaseSettings):
     MINIO_SECRET: str = getenv_value("MINIO_SECRET", "felicity")
     MEILISEARCH_SERVER: str = getenv_value("MEILISEARCH_SERVER", "http://localhost:7700")
     MEILISEARCH_API_KEY: str = getenv_value("MEILISEARCH_API_KEY", "api_key")
+    # Store jsons to document database
+    DOCUMENT_STORAGE: bool = MONGODB_SERVER and MONGODB_USER and MONGODB_PASS
+    # Use external storage for objects/blobs
+    OBJECT_STORAGE: bool = MINIO_SERVER and MINIO_ACCESS and MINIO_SECRET
+    # Store Audit logs in main database (postgres) or externally (mongodb)
+    EXTERNAL_AUDIT: bool = True and DOCUMENT_STORAGE
 
     model_config = SettingsConfigDict(
         env_file=ENV_FILE,
         env_file_encoding="utf-8",
-        # allow | forbid | ignore --- allowed to mainatin a single .env for both felicity and its webapp
+        # allow | forbid | ignore --- allowed to maintain a single .env for both felicity and its webapp
         extra="allow",
     )
 

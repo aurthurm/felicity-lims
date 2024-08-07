@@ -5,34 +5,25 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9f590b69-f929-45a1-8512-12ed6efbf028" name="Changes" comment="Added Invetory starter">
-      <change afterPath="$PROJECT_DIR$/felicity/apps/abstract/entity/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/felicity/apps/auditlog/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/felicity/apps/auditlog/entities.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/felicity/apps/auditlog/events.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/felicity/apps/auditlog/repositories.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/felicity/apps/auditlog/services.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/apps/.vscode/PythonImportHelper-v2-Completion.json" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/.vscode/PythonImportHelper-v2-Completion.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/apps/abstract/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/abstract/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/apps/abstract/audit.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/abstract/entity/audit.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/apps/abstract/entity.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/abstract/entity/base.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/apps/abstract/trackable.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/abstract/entity/listenable.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/apps/analysis/entities/analysis.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/analysis/entities/analysis.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/apps/analysis/entities/qc.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/analysis/entities/qc.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/apps/analysis/entities/results.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/analysis/entities/results.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/apps/analytics/entities.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/analytics/entities.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/apps/billing/entities.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/billing/entities.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/apps/client/entities.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/client/entities.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/apps/impress/entities.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/impress/entities.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/apps/instrument/entities.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/instrument/entities.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/apps/inventory/entities.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/inventory/entities.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/apps/iol/fhir/entities.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/iol/fhir/entities.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/apps/messaging/entities.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/messaging/entities.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/apps/noticeboard/entities.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/noticeboard/entities.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/apps/notification/entities.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/notification/entities.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/apps/patient/entities.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/patient/entities.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/apps/reflex/entities.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/reflex/entities.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/apps/setup/entities/location.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/setup/entities/location.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/apps/setup/entities/setup.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/setup/entities/setup.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/apps/shipment/entities.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/shipment/entities.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/apps/storage/entities.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/storage/entities.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/apps/user/abstract.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/user/abstract.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/apps/worksheet/entities.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/worksheet/entities.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.vscode/PythonImportHelper-v2-Completion.json" beforeDir="false" afterPath="$PROJECT_DIR$/.vscode/PythonImportHelper-v2-Completion.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/api/gql/impress/query.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/impress/query.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/apps/abstract/entity/listenable.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/abstract/entity/listenable.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/apps/abstract/events.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/abstract/events.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/apps/events.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/events.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/apps/impress/invoicing/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/impress/invoicing/utils.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/apps/impress/sample/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/impress/sample/utils.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/apps/impress/services.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/impress/services.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/apps/impress/shipment/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/impress/shipment/utils.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/apps/iol/minio/enum.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/iol/minio/enum.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/core/config.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/core/config.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/database/base.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/database/base.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/database/mongo.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/database/mongo.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -71,27 +62,27 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ASKED_ADD_EXTERNAL_FILES": "true",
-    "Python tests.pytest for test_user.test_create_user.executor": "Run",
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "dart.analysis.tool.window.visible": "false",
-    "git-widget-placeholder": "main",
-    "ignore.virus.scanning.warn.message": "true",
-    "last_opened_file_path": "/home/aurthurm/Documents/Development/felicity/felicity-lims/felicity/apps/abstract/entity",
-    "settings.editor.selected.configurable": "project.propVCSSupport.DirectoryMappings"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,
+    &quot;Python tests.pytest for test_user.test_create_user.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;dart.analysis.tool.window.visible&quot;: &quot;false&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/home/aurthurm/Documents/Development/felicity/felicity-lims/felicity/apps/auditlog&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;project.propVCSSupport.DirectoryMappings&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/felicity/apps/auditlog" />
       <recent name="$PROJECT_DIR$/felicity/apps/abstract/entity" />
       <recent name="$PROJECT_DIR$/felicity/apps/iol/redis" />
       <recent name="$PROJECT_DIR$/felicity/apps/iol/meilisearch" />
       <recent name="$PROJECT_DIR$/felicity/apps/common" />
-      <recent name="$PROJECT_DIR$/felicity/apps" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/felicity/apps/abstract/entity" />
