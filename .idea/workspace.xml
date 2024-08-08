@@ -5,25 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9f590b69-f929-45a1-8512-12ed6efbf028" name="Changes" comment="Added Invetory starter">
-      <change afterPath="$PROJECT_DIR$/felicity/apps/auditlog/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/felicity/apps/auditlog/entities.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/felicity/apps/auditlog/events.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/felicity/apps/auditlog/repositories.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/felicity/apps/auditlog/services.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/felicity/apps/common/channel/__init__.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.vscode/PythonImportHelper-v2-Completion.json" beforeDir="false" afterPath="$PROJECT_DIR$/.vscode/PythonImportHelper-v2-Completion.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/api/gql/impress/query.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/impress/query.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/apps/abstract/entity/listenable.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/abstract/entity/listenable.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/apps/abstract/events.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/abstract/events.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/apps/events.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/events.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/apps/impress/invoicing/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/impress/invoicing/utils.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/apps/impress/sample/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/impress/sample/utils.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/apps/impress/services.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/impress/services.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/apps/impress/shipment/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/impress/shipment/utils.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/apps/iol/minio/enum.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/iol/minio/enum.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/core/config.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/core/config.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/database/base.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/database/base.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/database/mongo.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/database/mongo.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/apps/common/channel.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/common/channel/channel.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -85,11 +69,11 @@
       <recent name="$PROJECT_DIR$/felicity/apps/common" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/felicity/apps/common/channel" />
       <recent name="$PROJECT_DIR$/felicity/apps/abstract/entity" />
       <recent name="$PROJECT_DIR$/felicity/apps/idsequencer" />
       <recent name="$PROJECT_DIR$/felicity/apps" />
       <recent name="$PROJECT_DIR$/felicity/apps/workflow" />
-      <recent name="$PROJECT_DIR$/felicity/version" />
     </key>
   </component>
   <component name="RunManager" selected="Python tests.pytest for test_user.test_create_user">
