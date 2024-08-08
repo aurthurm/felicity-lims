@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import asyncio
+import subprocess
 
 import typer
 from uvicorn import Config, Server
@@ -25,6 +26,36 @@ def runserver(host: str = "0.0.0.0", port: int = 8000, workers: int = 1, reload:
         use_colors=colors
     )
     Server(config).run()
+
+
+@app.command()
+def gunicorn(
+        host: str = "0.0.0.0",
+        port: int = 8000,
+        workers: int = 1,
+        reload: bool = False,
+        colors: bool = True
+):
+    """Felicity LIMS Server
+    """
+    # Build the command to run gunicorn with uvicorn workers
+    command = [
+        "gunicorn",
+        f"--bind={host}:{port}",
+        f"--workers={workers}",
+        f"--reload" if reload else "",
+        f"--log-level=info",
+        f"--access-logfile=-" if colors else "",
+        "felicity.main:felicity",
+        "--worker-class=uvicorn.workers.UvicornWorker"
+    ]
+
+    # Join the command list into a single string and print it for debugging
+    cmd_str = " ".join(command)
+    print(f"Running command: {cmd_str}")
+
+    # Execute the command
+    subprocess.run(cmd_str, shell=True, check=True)
 
 
 @app.command()

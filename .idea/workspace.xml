@@ -5,26 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9f590b69-f929-45a1-8512-12ed6efbf028" name="Changes" comment="Added Invetory starter">
-      <change afterPath="$PROJECT_DIR$/felicity/almigrator.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/felicity/cli.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/felicity/migrations/versions/2d4b2acdf75f_its_me_again.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/felicity/migrations/versions/92f0866a8101_its_me.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/setup.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/alembic.ini" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/alembic.ini" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/api/gql/audit/query.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/api/gql/audit/query.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/apps/abstract/entity/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/abstract/entity/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/apps/abstract/events.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/abstract/events.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/apps/impress/invoicing/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/impress/invoicing/utils.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/apps/iol/meilisearch/handler.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/iol/meilisearch/handler.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/apps/notification/services.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/notification/services.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/apps/worksheet/entities.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/worksheet/entities.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/core/config.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/core/config.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/migrations/versions/10ecf5ec9e80_updated.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/migrations/versions/10ecf5ec9e80_updated.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/migrations/versions/28042fd2e903_removed_auditlog.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/migrations/versions/28042fd2e903_removed_auditlog.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/migrations/versions/e598ed62784d_removed_date_generated.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/migrations/versions/e598ed62784d_removed_date_generated.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/cli.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/cli.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
