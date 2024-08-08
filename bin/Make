@@ -1,0 +1,78 @@
+# Variables
+CONDA_INSTALLER_URL=https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
+REPO_URL=https://github.com/beak-insights/felicity-lims/
+INSTALL_DIR=/home/felicity/felicity-lims
+CONDA_DIR=/home/felicity/miniconda3
+ENV_NAME=felicity
+PYTHON_VERSION=3.12
+
+help:     ## Show this help.
+u/egrep -h '(\s##\s|^##\s)' $(MAKEFILE_LIST) | egrep -v '^--' | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[32m  %-35s\033[0m %s\n", $$1, $$2}'
+
+# Default target
+all: install-dependencies create-user clone-repo install-miniconda setup-env install-node setup-pnpm setup-db install-webapp setup-supervisor
+
+# Install dependencies
+install-dependencies:
+	sudo apt-get update
+	sudo apt-get install -y git libcairo2-dev pkg-config python3-dev gcc g++ postgresql postgresql-contrib
+
+# Create user 'felicity' with password 'felicity'
+create-user:
+	sudo adduser --disabled-password --gecos "" felicity
+	echo "felicity:felicity" | sudo chpasswd
+
+# Clone the repository
+clone-repo: create-user
+	sudo -u felicity git clone $(REPO_URL) $(INSTALL_DIR)
+
+# Download and install Miniconda
+install-miniconda:
+	wget $(CONDA_INSTALLER_URL) -O Miniconda.sh
+	bash Miniconda.sh -b -p $(CONDA_DIR)
+	rm Miniconda.sh
+
+# Create and activate the 'felicity' environment
+setup-env: install-miniconda
+	sudo -u felicity $(CONDA_DIR)/bin/conda create -n $(ENV_NAME) python=$(PYTHON_VERSION) -y
+
+# Install Node.js 18 and PNPM
+install-node:
+	curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
+	sudo apt-get install -y nodejs
+
+setup-pnpm: install-node
+	npm install -g pnpm
+
+# Set up PostgreSQL
+setup-db: install-dependencies
+	sudo systemctl start postgresql
+	sudo systemctl enable postgresql
+	sudo -u postgres psql -c "CREATE USER felicity WITH PASSWORD 'felicity';"
+	sudo -u postgres psql -c "CREATE DATABASE felicity_lims OWNER felicity;"
+	sudo -u postgres psql -d felicity_lims -c "GRANT ALL PRIVILEGES ON SCHEMA public TO felicity;"
+
+# Install webapp dependencies and build the project
+install-webapp: clone-repo setup-env setup-pnpm
+	cd $(INSTALL_DIR) && sudo -u felicity $(CONDA_DIR)/envs/$(ENV_NAME)/bin/pnpm i
+	cd $(INSTALL_DIR) && sudo -u felicity $(CONDA_DIR)/envs/$(ENV_NAME)/bin/pnpm standalone:build
+
+# Set up Supervisor
+setup-supervisor:
+	sudo apt-get install -y supervisor
+	@echo "[program:felicity_lims]" | sudo tee /etc/supervisor/conf.d/felicity_lims.conf
+	@echo "command=$(CONDA_DIR)/envs/$(ENV_NAME)/bin/python $(INSTALL_DIR)/path/to/felicity_script.py" | sudo tee -a /etc/supervisor/conf.d/felicity_lims.conf
+	@echo "autostart=true" | sudo tee -a /etc/supervisor/conf.d/felicity_lims.conf
+	@echo "autorestart=true" | sudo tee -a /etc/supervisor/conf.d/felicity_lims.conf
+	@echo "stderr_logfile=/var/log/felicity_lims.err.log" | sudo tee -a /etc/supervisor/conf.d/felicity_lims.conf
+	@echo "stdout_logfile=/var/log/felicity_lims.out.log" | sudo tee -a /etc/supervisor/conf.d/felicity_lims.conf
+	sudo supervisorctl reread
+	sudo supervisorctl update
+
+# Clean up
+clean:
+	rm -rf $(INSTALL_DIR)
+	sudo deluser felicity --remove-home
+	sudo apt-get remove --purge -y git libcairo2-dev pkg-config python3-dev gcc g++ postgresql postgresql-contrib nodejs supervisor
+	sudo apt-get autoremove -y
+	sudo apt-get clean
