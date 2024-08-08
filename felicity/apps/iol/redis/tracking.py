@@ -2,10 +2,18 @@ import json
 
 from felicity.apps.common.channel import broadcast
 from felicity.apps.notification.enum import NotificationChannel
+from felicity.core.config import settings
 from .client import create_redis_pool
 
 
 class ProcessingTracker:
+
+    def __init__(self):
+        self._store = {}
+
+    @property
+    def _has_redis(self):
+        return bool(settings.REDIS_SERVER)
 
     @staticmethod
     async def connect():
@@ -14,25 +22,37 @@ class ProcessingTracker:
         return pool, redis
 
     async def process(self, uid: str, object_type: str):
-        pool, redis = await self.connect()
-        await redis.hmset(f"{uid}", {"status": "processing"})
-        pool.release(redis)
+        if self._has_redis:
+            pool, redis = await self.connect()
+            await redis.hmset(f"{uid}", {"status": "processing"})
+            pool.release(redis)
+        else:
+            self._store[uid] = {"status": "processing"}
+
         await broadcast.publish(NotificationChannel.PROCESSING, json.dumps({
             "uid": uid, "object_type": object_type, "status": "processing"
         }))
 
     async def release(self, uid: str, object_type: str):
-        pool, redis = await self.connect()
-        await redis.delete(uid)
-        pool.release(redis)
+        if self._has_redis:
+            pool, redis = await self.connect()
+            await redis.delete(uid)
+            pool.release(redis)
+        else:
+            self._store.pop(uid, None)
+
         await broadcast.publish(NotificationChannel.PROCESSING, json.dumps({
             "uid": uid, "object_type": object_type, "status": "released"
         }))
 
     async def is_processing(self, uid: str, object_type: str):
-        pool, redis = await self.connect()
-        exists = await redis.exists(uid)
-        pool.release(redis)
+        if self._has_redis:
+            pool, redis = await self.connect()
+            exists = await redis.exists(uid)
+            pool.release(redis)
+        else:
+            exists = uid in self._store
+            
         await broadcast.publish(NotificationChannel.PROCESSING, json.dumps({
             "uid": uid, "object_type": object_type, "status": "processing"
         }))
