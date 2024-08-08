@@ -138,11 +138,11 @@ class Settings(BaseSettings):
     MEILISEARCH_SERVER: str = getenv_value("MEILISEARCH_SERVER", "http://localhost:7700")
     MEILISEARCH_API_KEY: str = getenv_value("MEILISEARCH_API_KEY", "api_key")
     # Store jsons to document database
-    DOCUMENT_STORAGE: bool = MONGODB_SERVER and MONGODB_USER and MONGODB_PASS
+    DOCUMENT_STORAGE: bool = bool(MONGODB_SERVER) and bool(MONGODB_USER) and bool(MONGODB_PASS)
     # Use external storage for objects/blobs
-    OBJECT_STORAGE: bool = MINIO_SERVER and MINIO_ACCESS and MINIO_SECRET
+    OBJECT_STORAGE: bool = bool(MINIO_SERVER) and bool(MINIO_ACCESS) and bool(MINIO_SECRET)
     # Store Audit logs in main database (postgres) or externally (mongodb)
-    EXTERNAL_AUDIT: bool = True and DOCUMENT_STORAGE
+    EXTERNAL_AUDIT: bool = True and bool(DOCUMENT_STORAGE)
 
     model_config = SettingsConfigDict(
         env_file=ENV_FILE,

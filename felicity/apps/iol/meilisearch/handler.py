@@ -2,8 +2,8 @@ import json
 from datetime import datetime
 from enum import StrEnum
 
-from apps.common.utils.serializer import marshaller
-from apps.iol.meilisearch.client import MeiliSearchClient
+from felicity.apps.common.utils.serializer import marshaller
+from felicity.apps.iol.meilisearch.client import MeiliSearchClient
 
 
 class CustomJSONEncoder(json.JSONEncoder):

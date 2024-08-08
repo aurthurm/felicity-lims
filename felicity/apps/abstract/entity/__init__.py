@@ -4,4 +4,4 @@ from .listenable import EventListenable
 
 
 class BaseEntity(Base, Auditable, EventListenable):
-    pass
+    __abstract__ = True

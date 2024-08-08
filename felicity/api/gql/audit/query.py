@@ -2,9 +2,9 @@ from typing import List
 
 import strawberry  # noqa
 
-from database.mongo import MongoService, MongoCollection
 from felicity.api.gql.audit.types import AuditLogType
 from felicity.api.gql.permissions import IsAuthenticated
+from felicity.database.mongo import MongoService, MongoCollection
 
 
 @strawberry.type

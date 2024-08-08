@@ -62,7 +62,7 @@ class WorkSheetTemplate(WSBase):
     sample_type = relationship(analysis_entities.SampleType, lazy="selectin")
 
 
-class WorkSheet(BaseEntity, WSBase):
+class WorkSheet(WSBase):
     __tablename__ = "worksheet"
 
     template_uid = Column(String, ForeignKey("worksheet_template.uid"), nullable=False)

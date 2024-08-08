@@ -1,9 +1,9 @@
 import json
 from typing import Any, List, Optional
 
-from apps.common.utils.serializer import marshaller
 from felicity.apps.abstract.service import BaseService
 from felicity.apps.common.channel import broadcast
+from felicity.apps.common.utils.serializer import marshaller
 from felicity.apps.notification.entities import (ActivityFeed, ActivityStream,
                                                  Notification)
 from felicity.apps.notification.enum import NotificationChannel

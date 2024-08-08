@@ -1,6 +1,6 @@
 import logging
 
-from apps.iol.meilisearch.handler import MeilisearchSyncHandler
+from felicity.apps.iol.meilisearch.handler import MeilisearchSyncHandler
 from felicity.core.events import subscribe
 
 logging.basicConfig(level=logging.INFO)
