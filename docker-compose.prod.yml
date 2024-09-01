@@ -2,17 +2,20 @@ version: '3.8'
 
 volumes:
   db-data:
-  pgadmin:
   caddy_data:
   caddy_config:
+  minio_data:
+  dragonflydata:
+  dbgate-data:
+    driver: local
 
 networks:
   felicitynet:
     driver: bridge
 
 services:
-  felicity_aio_caddy:
-    container_name: felicity_aio_caddy
+  felicity-aio-caddy:
+    container_name: felicity-aio-caddy
     restart: unless-stopped
     image: caddy:2-alpine
     ports:
@@ -23,27 +26,27 @@ services:
       - ./caddy.data:/data
       - ./caddy.config:/config
     environment:
-      PROXY_BACKEND: felicity_aio
+      PROXY_BACKEND: felicity-aio
       PROXY_PORT: 8000
       SERVER_HOST: ${SERVER_HOST}
     depends_on:
-      - felicity_aio
+      - felicity-aio
     networks:
       - felicitynet
 
-  felicity_aio_nginx:
-    container_name: felicity_aio_nginx
+  felicity-aio-nginx:
+    container_name: felicity-aio-nginx
     image: nginx:latest
     ports:
       - "80:80"
     environment:
-      PROXY_BACKEND: felicity_aio
+      PROXY_BACKEND: felicity-aio
       PROXY_PORT: 8000
       SERVER_HOST: ${SERVER_HOST}
     volumes:
       - ./services/nginx/proxy/:/etc/nginx/templates/
     depends_on:
-      - felicity_aio
+      - felicity-aio
     networks:
       - felicitynet
     logging:
@@ -51,15 +54,22 @@ services:
         max-size: 10m
         max-file: 5
 
-  felicity_aio:
-    container_name: felicity_aio
+  felicity-aio:
+    container_name: felicity-aio
     image: felicity_aio:1.0.0
     restart: unless-stopped
     env_file:
       - .env
     environment:
-      POSTGRES_SERVER: felicity_db
+      POSTGRES_SERVER: felicity-postgres
       SERVE_WEBAPP: True
+      REDIS_SERVER: felicity-dragonfly:6379
+      MONGODB_SERVER: felicity-mongo:27017
+      MONGODB_USER: felicity
+      MONGODB_PASS: felicity
+      MINIO_SERVER: felicity-minio:9000
+      MINIO_ACCESS: felicity
+      MINIO_SECRET: felicity
     volumes:
       - ./felicity:/app/felicity
     build:
@@ -71,14 +81,17 @@ services:
     networks:
       - felicitynet
     depends_on:
-      - felicity_db
+      - felicity-postgres
+      - felicity-dragonfly
+      - felicity-minio
+      - felicity-mongo
     logging:
       options:
         max-size: 10m
         max-file: 5
 
-  felicity_static_caddy:
-    container_name: felicity_static_caddy
+  felicity-static-caddy:
+    container_name: felicity-static-caddy
     restart: unless-stopped
     build:
       context: ./
@@ -92,11 +105,11 @@ services:
       - ./caddy.data:/data
       - ./caddy.config:/config
     environment:
-      PROXY_BACKEND: felicity_api
+      PROXY_BACKEND: felicity-api
       PROXY_PORT: 8000
       SERVER_HOST: ${SERVER_HOST}
     depends_on:
-      - felicity_api
+      - felicity-api
     networks:
       - felicitynet
     logging:
@@ -104,8 +117,8 @@ services:
         max-size: 10m
         max-file: 5
 
-  felicity_static_nginx:
-    container_name: felicity_static_nginx
+  felicity-static-nginx:
+    container_name: felicity-static-nginx
     restart: unless-stopped
     build:
       context: ./
@@ -114,13 +127,13 @@ services:
     ports:
       - "80:80"
     environment:
-      PROXY_BACKEND: felicity_api
+      PROXY_BACKEND: felicity-api
       PROXY_PORT: 8000
       SERVER_HOST: ${SERVER_HOST}
     volumes:
       - ./services/nginx/static/:/etc/nginx/templates/
     depends_on:
-      - felicity_api
+      - felicity-api
     networks:
       - felicitynet
     logging:
@@ -128,15 +141,22 @@ services:
         max-size: 10m
         max-file: 5
 
-  felicity_api:
-    container_name: felicity_api
+  felicity-api:
+    container_name: felicity-api
     image: felicity_api:1.0.0
     restart: unless-stopped
     env_file:
       - .env
     environment:
-      POSTGRES_SERVER: felicity_db
+      POSTGRES_SERVER: felicity-postgres
       SERVE_WEBAPP: False
+      REDIS_SERVER: felicity-dragonfly:6379
+      MONGODB_SERVER: felicity-mongo:27017
+      MONGODB_USER: felicity
+      MONGODB_PASS: felicity
+      MINIO_SERVER: felicity-minio:9000
+      MINIO_ACCESS: felicity
+      MINIO_SECRET: felicity
     volumes:
       - ./felicity:/app/felicity
     build:
@@ -148,14 +168,48 @@ services:
     networks:
       - felicitynet
     depends_on:
-      - felicity_db
+      - felicity-postgres
+      - felicity-dragonfly
+      - felicity-minio
+      - felicity-mongo
     logging:
       options:
         max-size: 10m
         max-file: 5
 
-  felicity_db:
-    container_name: felicity_db
+  felicity-minio:
+    container_name: felicity-minio
+    image: bitnami/minio:2024.7.31
+    ports:
+      - '9000:9000'
+      - '9001:9001'
+    networks:
+      - felicitynet
+    volumes:
+      - 'minio_data:/data'
+    environment:
+      MINIO_ROOT_USER: felicity
+      MINIO_ROOT_PASSWORD: felicity
+      MINIO_DEFAULT_BUCKET: felicity
+
+  felicity-dragonfly:
+    container_name: felicity-dragonfly
+    image: 'docker.dragonflydb.io/dragonflydb/dragonfly'
+    ulimits:
+      memlock: -1
+    ports:
+      - "6379:6379"
+    # For better performance, consider `host` mode instead `port` to avoid docker NAT.
+    # `host` mode is NOT currently supported in Swarm Mode.
+    # https://docs.docker.com/compose/compose-file/compose-file-v3/#network_mode
+    # network_mode: "host"
+    volumes:
+      - dragonflydata:/data
+    networks:
+      - felicitynet
+
+  felicity-postgres:
+    container_name: felicity-postgres
     image: postgres:12
     restart: unless-stopped
     env_file:
@@ -173,20 +227,44 @@ services:
     networks:
       - felicitynet
 
-  pgadmin:
-    container_name: felicity.pgadmin
-    image: dpage/pgadmin4
+  felicity-mongo:
+    container_name: felicity-mongo
+    image: mongo
+    restart: always
     environment:
-      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-admin@pgadmin.org}
-      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
-    volumes:
-      - ./pgadmin:/root/.pgadmin
+      MONGO_INITDB_ROOT_USERNAME: felicity
+      MONGO_INITDB_ROOT_PASSWORD: felicity
     ports:
-      - "${PGADMIN_PORT:-5050}:80"
+      - '27027:27017'
     networks:
       - felicitynet
-    restart: unless-stopped
-    depends_on:
-      - felicity_db
+
+  felicity-dbgate:
+    container_name: felicity-dbgate
+    image: dbgate/dbgate
+    restart: always
+    ports:
+      - 8051:3000
+    volumes:
+      - dbgate-data:/root/.dbgate
+    environment:
+      LOGIN: felicity
+      PASSWORD: felicity
+      CONNECTIONS: pg,mg
+      LABEL_pg: Felicity Postgres
+      SERVER_pg: felicity-postgres
+      USER_pg: felicity
+      PASSWORD_pg: felicity
+      DATABASE_pg: felicity_lims
+      PORT_pg: 5432
+      ENGINE_pg: postgres@dbgate-plugin-postgres
+      READONLY_pg: 1
+      LABEL_mg: Felicity Mongo
+      URL_mg: mongodb://felicity:felicity@felicity-mongo:27017/
+      DATABASE_mg: felicity
+      ENGINE_mg: mongo@dbgate-plugin-mongo
+      READONLY_mg: 1
+    networks:
+      - felicitynet
 
 

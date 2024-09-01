@@ -135,8 +135,6 @@ class Settings(BaseSettings):
     MINIO_SERVER: str = getenv_value("MINIO_SERVER", "localhost:9000")
     MINIO_ACCESS: str = getenv_value("MINIO_ACCESS", "felicity")
     MINIO_SECRET: str = getenv_value("MINIO_SECRET", "felicity")
-    MEILISEARCH_SERVER: str = getenv_value("MEILISEARCH_SERVER", "http://localhost:7700")
-    MEILISEARCH_API_KEY: str = getenv_value("MEILISEARCH_API_KEY", "api_key")
     # Store jsons to document database
     DOCUMENT_STORAGE: bool = bool(MONGODB_SERVER) and bool(MONGODB_USER) and bool(MONGODB_PASS)
     # Use external storage for objects/blobs

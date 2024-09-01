@@ -46,8 +46,6 @@ services:
       - MINIO_SERVER=felicity-minio:9000
       - MINIO_ACCESS=felicity
       - MINIO_SECRET=felicity
-      - MEILISEARCH_SERVER=http://felicity-meilisearch:7700
-      - MEILISEARCH_API_KEY=masterKey
     volumes:
       - ./felicity/:/app/felicity
     ports:
@@ -58,7 +56,7 @@ services:
       - felicitynet
     extra_hosts:
       - "host.docker.internal:host-gateway"
-    command: bash -c "cd felicity && alembic upgrade head && uvicorn main:felicity --reload --host=0.0.0.0 --port=8000"
+    command: bash -c "cd felicity && uvicorn main:felicity --reload --host=0.0.0.0 --port=8000"
 
   felicity-minio:
     container_name: felicity-minio
@@ -74,34 +72,6 @@ services:
       - MINIO_ROOT_USER=felicity
       - MINIO_ROOT_PASSWORD=felicity
       - MINIO_DEFAULT_BUCKET=felicity
-
-  felicity-meilisearch:
-    container_name: felicity-meilisearch
-    image: getmeili/meilisearch:v1.8.4
-    restart: unless-stopped
-    volumes:
-      - ./data.ms:/data.ms
-    environment:
-      - http_proxy
-      - https_proxy
-      - MEILI_MASTER_KEY=${MEILI_MASTER_KEY:-masterKey}
-      - MEILI_NO_ANALYTICS=${MEILI_NO_ANALYTICS:-true}
-      - MEILI_ENV=${MEILI_ENV:-development}
-      - MEILI_LOG_LEVEL
-      - MEILI_DB_PATH=${MEILI_DB_PATH:-/data.ms}
-    ports:
-      - ${MEILI_PORT:-7700}:7700
-    networks:
-      - felicitynet
-
-  felicity-meiliui:
-    container_name: felicity-meiliui
-    image: riccoxie/meilisearch-ui:latest
-    restart: unless-stopped
-    ports:
-      - ${MEILI_UI_PORT:-24900}:24900
-    networks:
-      - felicitynet
 
   felicity-dragonfly:
     container_name: felicity-dragonfly

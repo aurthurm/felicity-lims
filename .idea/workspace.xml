@@ -6,7 +6,16 @@
   <component name="ChangeListManager">
     <list default="true" id="9f590b69-f929-45a1-8512-12ed6efbf028" name="Changes" comment="Added Invetory starter">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/felicity/cli.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/cli.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Dockerfile.dev" beforeDir="false" afterPath="$PROJECT_DIR$/Dockerfile.dev" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Dockerfile.prod" beforeDir="false" afterPath="$PROJECT_DIR$/Dockerfile.prod" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/caddy.data/caddy/last_clean.json" beforeDir="false" afterPath="$PROJECT_DIR$/caddy.data/caddy/last_clean.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/caddy.data/caddy/pki/authorities/local/intermediate.crt" beforeDir="false" afterPath="$PROJECT_DIR$/caddy.data/caddy/pki/authorities/local/intermediate.crt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/caddy.data/caddy/pki/authorities/local/intermediate.key" beforeDir="false" afterPath="$PROJECT_DIR$/caddy.data/caddy/pki/authorities/local/intermediate.key" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docker-compose.dev.yml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-compose.dev.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docker-compose.prod.yml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-compose.prod.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/apps/abstract/events.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/apps/abstract/events.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/felicity/core/config.py" beforeDir="false" afterPath="$PROJECT_DIR$/felicity/core/config.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -142,6 +151,7 @@
     <servers />
   </component>
   <component name="UnknownFeatures">
+    <option featureType="com.intellij.fileTypeFactory" implementationName=".env" />
     <option featureType="com.intellij.fileTypeFactory" implementationName="*.ini" />
     <option featureType="com.intellij.fileTypeFactory" implementationName="requirements.txt" />
   </component>

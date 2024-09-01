@@ -1,4 +1,4 @@
-FROM node:18.16.0-alpine as webapp
+FROM node:18.16.0-alpine AS webapp
 RUN apk update && apk add bash
 RUN npm i -g pnpm
 RUN mkdir -p /app
@@ -12,7 +12,7 @@ COPY ./public /app/public
 COPY ./*.js /app
 COPY ./*.json /app
 
-FROM tiangolo/uvicorn-gunicorn:python3.11 as webapi
+FROM tiangolo/uvicorn-gunicorn:python3.11 AS webapi
 LABEL maintainer="Sebastian Ramirez <tiangolo@gmail.com>"
 RUN apt-get update && apt-get install -y git libpq-dev gcc
 COPY ./requirements.txt /tmp/requirements.txt

@@ -19,7 +19,7 @@ Felicity is the quality of being good, pleasant, or desirable.
 
 ### FrontEnd
 
-Felicity's frontend is developed using Vite, Vue, URQL, and Tailwind CS, etc.
+Felicity's fr17d2a812831aontend is developed using Vite, Vue, URQL, and Tailwind CS, etc.
 
 ### Backend
 

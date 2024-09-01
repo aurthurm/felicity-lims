@@ -1,14 +1,10 @@
-FROM node:18.16.0-alpine as webapp-build
-
+FROM node:18.16.0-alpine AS webapp-build
 RUN apk update && apk add bash
 RUN npm i -g pnpm
-
 RUN mkdir -p /app
 WORKDIR /app
-
 COPY ./package.json /app
 COPY ./pnpm-lock.yaml /app
-
 RUN pnpm install
 COPY ./webapp /app/webapp
 COPY ./index.html /app
@@ -18,12 +14,10 @@ COPY ./*.json /app
 RUN pnpm webapp:build:only
 
 
-FROM python:3.12.3-bookworm as server-aio
-
+FROM python:3.12.3-bookworm AS server-aio
 RUN apt-get update && apt-get install -y git libpq-dev gcc
 COPY ./requirements.txt /tmp/requirements.txt
 RUN pip install --no-cache-dir --upgrade -r /tmp/requirements.txt
-
 WORKDIR /app
 COPY ./felicity /app/felicity
 RUN  rm -rf /app/felicity/templates/static/*
@@ -33,12 +27,10 @@ ENV PYTHONPATH=/app
 CMD ["gunicorn", "felicity.main:felicity", "--bind", "0.0.0.0:8000", "--workers", "4", "--worker-class", "uvicorn.workers.UvicornWorker"]
 
 
-FROM python:3.12.3-bookworm as server-api
-
+FROM python:3.12.3-bookworm AS server-api
 RUN apt-get update && apt-get install -y git libpq-dev gcc
 COPY ./requirements.txt /tmp/requirements.txt
 RUN pip install --no-cache-dir --upgrade -r /tmp/requirements.txt
-
 WORKDIR /app
 COPY ./felicity /app/felicity
 RUN  rm -rf /app/felicity/templates/static/*
@@ -47,11 +39,11 @@ ENV PYTHONPATH=/app
 CMD ["gunicorn", "felicity.main:felicity", "--bind", "0.0.0.0:8000", "--workers", "4", "--worker-class", "uvicorn.workers.UvicornWorker"]
 
 
-FROM nginx:latest as nginx-static
+FROM nginx:latest AS nginx-static
 RUN mkdir /app
 COPY --from=webapp-build /app/dist /app
 
 
-FROM caddy:2-alpine as caddy-static
+FROM caddy:2-alpine AS caddy-static
 RUN mkdir /app
 COPY --from=webapp-build /app/dist /app
