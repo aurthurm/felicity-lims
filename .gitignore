@@ -1,3 +1,8 @@
+# editors
+.vscode
+.fleet
+.idea
+
 # docker-local-volumes
 db-data/
 caddy.data
