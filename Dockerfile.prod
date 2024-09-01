@@ -19,10 +19,10 @@ RUN apt-get update && apt-get install -y git libpq-dev gcc
 COPY ./requirements.txt /tmp/requirements.txt
 RUN pip install --no-cache-dir --upgrade -r /tmp/requirements.txt
 WORKDIR /app
-COPY ./felicity /app/felicity
+COPY . /app
 RUN  rm -rf /app/felicity/templates/static/*
 COPY --from=webapp-build /app/dist /app/felicity/templates/static
-# RUN cd /app/felicity && alembic upgrade head
+RUN cd /app && pip install -e .
 ENV PYTHONPATH=/app
 CMD ["gunicorn", "felicity.main:felicity", "--bind", "0.0.0.0:8000", "--workers", "4", "--worker-class", "uvicorn.workers.UvicornWorker"]
 
@@ -32,9 +32,9 @@ RUN apt-get update && apt-get install -y git libpq-dev gcc
 COPY ./requirements.txt /tmp/requirements.txt
 RUN pip install --no-cache-dir --upgrade -r /tmp/requirements.txt
 WORKDIR /app
-COPY ./felicity /app/felicity
+COPY . /app/
 RUN  rm -rf /app/felicity/templates/static/*
-# RUN cd /app/felicity && alembic upgrade head
+RUN cd /app && pip install -e .
 ENV PYTHONPATH=/app
 CMD ["gunicorn", "felicity.main:felicity", "--bind", "0.0.0.0:8000", "--workers", "4", "--worker-class", "uvicorn.workers.UvicornWorker"]
 

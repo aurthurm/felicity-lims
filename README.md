@@ -70,7 +70,7 @@ Docker service presets are: *felicity-aio-caddy*, *felicity-aio-nginx*, *felicit
 
 ```commandline
 docker compose -f ./docker-compose.prod.yml up -d your_preset --build
-docker compose -f docker-compose.prod.yml exec your_preset bash -c "cd felicity && alembic upgrade head"
+docker compose -f docker-compose.prod.yml exec your_preset bash -c "felicity-lims upgrade"
 docker compose -f docker-compose.prod.yml logs your_preset -f -n100
 ```
 
@@ -83,13 +83,14 @@ Docker service presets are: *felicity-static-nginx*, *felicity-static-caddy*
 
 ```commandline
 docker compose -f ./docker-compose.prod.yml up -d your_preset --build
-docker compose -f docker-compose.prod.yml exec your_preset bash -c "cd felicity && alembic upgrade head"
+docker compose -f docker-compose.prod.yml exec your_preset bash -c "felicity-lims upgrade"
 docker compose -f docker-compose.prod.yml logs your_preset -f -n100
 ```
 
 ##### Alternative deployment method without docker
 
-If you don't want to use docker, as an alternative we recommend supervisor.
+If you don't want to use docker, as an alternative we recommend supervisor. With this approach you will have
+to setup databases (postgres, mongo), minio, redis/dragonfly manually by yourself
 
 ```shell
 # install os requirements
@@ -103,7 +104,7 @@ conda activate felicity
 pip install -r requirements.txt;
 
 # setup postgres - First create a database and user 
-pnpm db:al:upgrade;
+pnpm db:upgrade;
 
 # install webapp dependencies using pnpm - we recommend node v18 +
 pnpm i;
