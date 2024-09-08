@@ -9,6 +9,5 @@ docker push amusendame/felicity-lims:aio-0.1.1
 sudo docker build -f Dockerfile.prod --target server-api -t amusendame/felicity-lims:api-0.1.1 .
 docker push amusendame/felicity-lims:api-0.1.1
 
-
 // View a summary of image vulnerabilities and recommendations
 docker scout quickview
