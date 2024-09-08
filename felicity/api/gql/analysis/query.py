@@ -23,8 +23,6 @@ from felicity.apps.analysis.services.quality_control import (QCLevelService,
 from felicity.apps.analysis.services.result import (AnalysisResultService,
                                                     ResultMutationService)
 from felicity.apps.analysis.utils import sample_search
-from felicity.apps.iol.meilisearch.client import MeiliSearchClient
-from felicity.core.config import settings
 from felicity.database.session import async_session
 from felicity.utils import has_value_or_is_truthy
 

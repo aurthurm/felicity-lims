@@ -10,7 +10,7 @@ emails==0.6
 #psycopg2==2.9.9
 apscheduler==3.10.4
 sqlalchemy_mptt==0.2.5
-sqlalchemy_mixins@git+https://github.com/aurthurm/sqlalchemy-mixins.git@async_support
+sqlalchemy_mixins@git+https://github.com/absent1706/sqlalchemy-mixins
 tenacity==8.2.3
 pydantic[email]==2.5.3
 pydantic_settings==2.1.0
