@@ -11,3 +11,4 @@ docker push amusendame/felicity-lims:api-0.1.1
 
 // View a summary of image vulnerabilities and recommendations
 docker scout quickview
+
