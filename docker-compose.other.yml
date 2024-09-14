@@ -88,11 +88,8 @@ services:
 
   felicity-static-caddy:
     container_name: felicity-static-caddy
+    image: amusendame/felicity-static-caddy:0.1.1
     restart: unless-stopped
-    build:
-      context: ./
-      target: caddy-static
-      dockerfile: Dockerfile.prod
     ports:
       - "80:80"
       - "443:443"
@@ -115,11 +112,8 @@ services:
 
   felicity-static-nginx:
     container_name: felicity-static-nginx
+    image: amusendame/felicity-static-nginx:0.1.1
     restart: unless-stopped
-    build:
-      context: ./
-      target: nginx-static
-      dockerfile: Dockerfile.prod
     ports:
       - "80:80"
     environment:
