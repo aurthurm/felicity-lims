@@ -51,8 +51,6 @@ services:
       MINIO_SERVER: felicity-minio:9000
       MINIO_ACCESS: felicity
       MINIO_SECRET: felicity
-    volumes:
-      - ./felicity:/app/felicity
     ports:
       - 8000:8000
     networks:
