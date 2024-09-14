@@ -13,7 +13,7 @@ docker push amusendame/felicity-lims:api-0.1.1
 docker scout quickview
 
 // Build nginx static
-export $(grep -v '^#' .env | xargs) && sudo docker build -f Dockerfile.prod --target nginx-static -t amusendame/felicity-static-caddy:0.1.1 .
+export $(grep -v '^#' .env | xargs) && sudo docker build -f Dockerfile.prod --target nginx-static -t amusendame/felicity-static-nginx:0.1.1 .
 docker push amusendame/felicity-static-nginx:0.1.1
 
 // Build caddy static
