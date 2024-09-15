@@ -42,8 +42,10 @@ CMD ["gunicorn", "felicity.main:felicity", "--bind", "0.0.0.0:8000", "--workers"
 FROM nginx:latest AS nginx-static
 RUN mkdir /app
 COPY --from=webapp-build /app/dist /app
-
+COPY ./services/nginx/static/default.conf.template /etc/nginx/templates/default.conf.template
+CMD ["nginx", "-g", "daemon off;"]
 
 FROM caddy:2-alpine AS caddy-static
 RUN mkdir /app
 COPY --from=webapp-build /app/dist /app
+COPY ./services/caddy/static/Caddyfile /etc/caddy/Caddyfile

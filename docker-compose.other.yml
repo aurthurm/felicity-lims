@@ -70,8 +70,6 @@ services:
       MINIO_SERVER: felicity-minio:9000
       MINIO_ACCESS: felicity
       MINIO_SECRET: felicity
-    volumes:
-      - ./felicity:/app/felicity
     ports:
       - 8000:8000
     networks:
@@ -94,7 +92,6 @@ services:
       - "80:80"
       - "443:443"
     volumes:
-      - ./services/caddy/static/Caddyfile:/etc/caddy/Caddyfile
       - ./caddy.data:/data
       - ./caddy.config:/config
     environment:
@@ -120,8 +117,6 @@ services:
       PROXY_BACKEND: felicity-api
       PROXY_PORT: 8000
       SERVER_HOST: ${SERVER_HOST}
-    volumes:
-      - ./services/nginx/static/:/etc/nginx/templates/
     depends_on:
       - felicity-api
     networks:
@@ -147,8 +142,6 @@ services:
       MINIO_SERVER: felicity-minio:9000
       MINIO_ACCESS: felicity
       MINIO_SECRET: felicity
-    volumes:
-      - ./felicity:/app/felicity
     ports:
       - 8000:8000
     networks:
@@ -252,5 +245,3 @@ services:
       READONLY_mg: 1
     networks:
       - felicitynet
-
-

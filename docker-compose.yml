@@ -24,8 +24,6 @@ services:
       PROXY_BACKEND: felicity-api
       PROXY_PORT: 8000
       SERVER_HOST: ${SERVER_HOST}
-    volumes:
-      - ./services/nginx/static/:/etc/nginx/templates/
     depends_on:
       - felicity-api
     networks:
