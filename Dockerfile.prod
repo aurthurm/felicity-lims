@@ -24,7 +24,7 @@ RUN  rm -rf /app/felicity/templates/static/*
 COPY --from=webapp-build /app/dist /app/felicity/templates/static
 RUN cd /app && pip install -e .
 ENV PYTHONPATH=/app
-CMD ["gunicorn", "felicity.main:felicity", "--bind", "0.0.0.0:8000", "--workers", "4", "--worker-class", "uvicorn.workers.UvicornWorker"]
+CMD ["gunicorn", "felicity.main:felicity", "--bind", "0.0.0.0:8000", "--workers", "1", "--worker-class", "uvicorn.workers.UvicornWorker"]
 
 
 FROM python:3.12.3-bookworm AS server-api
@@ -36,8 +36,7 @@ COPY . /app/
 RUN  rm -rf /app/felicity/templates/static/*
 RUN cd /app && pip install -e .
 ENV PYTHONPATH=/app
-CMD ["gunicorn", "felicity.main:felicity", "--bind", "0.0.0.0:8000", "--workers", "4", "--worker-class", "uvicorn.workers.UvicornWorker"]
-
+CMD ["gunicorn", "felicity.main:felicity", "--bind", "0.0.0.0:8000", "--workers", "1", "--worker-class", "uvicorn.workers.UvicornWorker"]
 
 FROM nginx:latest AS nginx-static
 RUN mkdir /app
