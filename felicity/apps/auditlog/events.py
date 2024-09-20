@@ -10,6 +10,9 @@ logger = logging.getLogger(__name__)
 
 
 async def auditlog_tracker(action: str, table_name: str, metadata):
+    if settings.AUDITABLE_ENTITIES and table_name not in settings.AUDITABLE_ENTITIES:
+        return
+
     if action != "after-update" and not metadata:
         return
 
@@ -19,7 +22,7 @@ async def auditlog_tracker(action: str, table_name: str, metadata):
     if metadata["state_after"] == metadata["state_before"]:
         return
 
-    logger.info(f"Event fired: {action}:{table_name}")
+    logger.info(f"Event fired: {action}:{table_name}  --> AuditLogEntry")
     update = {
         **metadata,
         "user_uid": metadata["state_after"].get("updated_by_uid", None),

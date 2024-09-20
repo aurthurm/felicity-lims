@@ -7,7 +7,7 @@ logger = logging.getLogger(__name__)
 
 
 def change_tracker(action: str, table_name: str, metadata):
-    logger.info(f"Event fired: {action}:{table_name}")
+    # logger.info(f"Event fired: {action}:{table_name} --> NotUsed")
     if not metadata:
         return
 
@@ -17,6 +17,7 @@ def change_tracker(action: str, table_name: str, metadata):
             **metadata.get("state_after")
         }
 
+    # Hook thinks like meilisearch here etc
     # SomeHandler().on_event(action, table_name, metadata)
 
 

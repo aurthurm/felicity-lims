@@ -138,7 +138,10 @@ class Settings(BaseSettings):
     DOCUMENT_STORAGE: bool = bool(MONGODB_SERVER) and bool(MONGODB_USER) and bool(MONGODB_PASS)
     # Use external storage for objects/blobs
     OBJECT_STORAGE: bool = bool(MINIO_SERVER) and bool(MINIO_ACCESS) and bool(MINIO_SECRET)
-
+    # Limit Tables for audit-log: if empty, all will be audited
+    AUDITABLE_ENTITIES: list[str] = [
+        "sample", "analysis_result", "test_bill", "client", "patient"
+    ]
     model_config = SettingsConfigDict(
         env_file=ENV_FILE,
         env_file_encoding="utf-8",
