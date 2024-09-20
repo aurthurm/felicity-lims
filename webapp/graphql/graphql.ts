@@ -6937,9 +6937,9 @@ export const GetAuditLogsDocument = gql`
     query getAuditLogs($targetType: String!, $targetId: String!) {
   auditLogsFilter(targetType: $targetType, targetId: $targetId) {
     uid
-    userId
+    userUid
     targetType
-    targetId
+    targetUid
     action
     stateBefore
     stateAfter

@@ -511,9 +511,9 @@ input ApplyVoucherInput {
 
 type AuditLogType {
   uid: String!
-  userId: String
+  userUid: String
   targetType: String
-  targetId: String
+  targetUid: String
   action: Int
   stateBefore: String
   stateAfter: String
