@@ -24,7 +24,6 @@ export const useAuditLogStore = defineStore('auditlog', {
                     this.auditLogs = payload?.map(logs => {
                         logs.stateAfter = typeof logs?.stateAfter === 'string' ? JSON.parse(logs?.stateAfter) : logs?.stateAfter;
                         logs.stateBefore = typeof logs?.stateBefore === 'string' ? JSON.parse(logs?.stateBefore) : logs?.stateBefore;
-                        console.log(this.auditLogs)
                         return logs;
                     });
                 })

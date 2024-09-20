@@ -68,7 +68,7 @@ async def verify_results(job_uid: str) -> NoReturn:
         await utils.verify_from_result_uids(job.data, user)
         await job_service.change_status(job.uid, new_status=JobState.FINISHED)
         for res in job.data:
-            await process_tracker.release(uid=res['uid'], object_type=TrackableObject.RESULT)
+            await process_tracker.release(uid=res, object_type=TrackableObject.RESULT)
         await notification_service.notify(
             "Your results were successfully verified", user
         )
