@@ -29,6 +29,12 @@ class FelicityBroadcast:
     subscribers: dict[str, Set[Queue]] = field(default_factory=dict)
     published: Queue = Queue()
 
+    async def connect(self):
+        ...
+
+    async def disconnect(self):
+        ...
+
     @asynccontextmanager
     async def subscribe(self, channel: str) -> AsyncIterator[Subscriber]:
         subscriber = Subscriber()

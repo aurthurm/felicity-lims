@@ -2,6 +2,7 @@
 
 import asyncio
 import subprocess
+
 import typer
 from uvicorn import Config, Server
 
@@ -74,7 +75,8 @@ def downgrade(revision: str = typer.Argument(..., help="Target revision to downg
 
 @app.command()
 def revision(message: str = typer.Argument(..., help="Message for the new revision")):
-    """Create a new Alembic revision with a message."""
+    """Not working --- no idea why yet
+    Create a new Alembic revision with a message."""
     alembic_service.create_revision(message)
     typer.echo(f"Created new revision with message: {message}")
 

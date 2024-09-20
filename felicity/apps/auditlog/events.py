@@ -21,7 +21,7 @@ async def auditlog_tracker(action: str, table_name: str, metadata):
         "target_uid": metadata.get("uid"),
     }
 
-    if settings.EXTERNAL_AUDIT:
+    if settings.DOCUMENT_STORAGE:
         await MongoService().create(MongoCollection.AUDIT_LOG, update)
     else:
         await AuditLogService().create(update)

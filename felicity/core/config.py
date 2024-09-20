@@ -37,6 +37,7 @@ class Settings(BaseSettings):
         "http://localhost:5173",
         "http://localhost:3000",
         "http://localhost:8000",
+        "http://0.0.0.0:8000",
     ]
     CORS_SUPPORTS_CREDENTIALS: bool = True
     CORS_ALLOW_HEADERS: list[str] = [
@@ -124,23 +125,19 @@ class Settings(BaseSettings):
     USERS_OPEN_REGISTRATION: bool = False
     LOAD_SETUP_DATA: bool = getenv_boolean("LOAD_SETUP_DATA", False)
     SERVE_WEBAPP: bool = getenv_boolean("SERVE_WEBAPP", True)
-    RUN_OPEN_TRACING: bool = getenv_boolean("RUN_OPEN_TRACING", False)
-    OTLP_SPAN_EXPORT_URL: str = getenv_value(
-        "OTLP_SPAN_EXPORT_URL", "http://localhost:4317"
-    )
-    REDIS_SERVER: str = getenv_value("REDIS_SERVER", "localhost:6379")
-    MONGODB_SERVER: str = getenv_value("MONGODB_SERVER", "localhost:27027")
+    OTLP_SPAN_EXPORT_URL: str = getenv_value("OTLP_SPAN_EXPORT_URL", None)  # xxx:4317
+    RUN_OPEN_TRACING: bool = bool(OTLP_SPAN_EXPORT_URL)
+    REDIS_SERVER: str | None = getenv_value("REDIS_SERVER", None)
+    MONGODB_SERVER: str | None = getenv_value("MONGODB_SERVER", None)
     MONGODB_USER: str = getenv_value("MONGODB_USER", "felicity")
     MONGODB_PASS: str = getenv_value("MONGODB_PASS", "felicity")
-    MINIO_SERVER: str = getenv_value("MINIO_SERVER", "localhost:9000")
+    MINIO_SERVER: str | None = getenv_value("MINIO_SERVER", None)
     MINIO_ACCESS: str = getenv_value("MINIO_ACCESS", "felicity")
     MINIO_SECRET: str = getenv_value("MINIO_SECRET", "felicity")
     # Store jsons to document database
     DOCUMENT_STORAGE: bool = bool(MONGODB_SERVER) and bool(MONGODB_USER) and bool(MONGODB_PASS)
     # Use external storage for objects/blobs
     OBJECT_STORAGE: bool = bool(MINIO_SERVER) and bool(MINIO_ACCESS) and bool(MINIO_SECRET)
-    # Store Audit logs in main database (postgres) or externally (mongodb)
-    EXTERNAL_AUDIT: bool = True and bool(DOCUMENT_STORAGE)
 
     model_config = SettingsConfigDict(
         env_file=ENV_FILE,
